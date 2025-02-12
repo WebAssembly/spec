@@ -25,11 +25,11 @@ module Map = Map.Make(String)
 type idxs = (string * int) Map.t
 type env = {
   mutable idxs : idxs;
-  frees : Set.t;
+  mutable frees : Set.t;
 }
 
-let unified_prefix = "u"
-let is_unified_id id = String.split_on_char '_' id |> Util.Lib.List.last |> String.starts_with ~prefix:unified_prefix
+let unified_prefix = "__unify:"
+let is_unified_id = String.starts_with ~prefix:unified_prefix
 
 let rec is_unified_exp e = match e.it with
   | IterE (e', _) -> is_unified_exp e'
@@ -40,52 +40,18 @@ let imap : idxs ref = ref Map.empty
 let init_env frees = { idxs = !imap; frees }
 
 
-(* Estimate appropriate id name for a given type *)
-let rec avoid_collision env name idx =
-  let name' = name ^ "_" ^ (string_of_int idx) in
-  if Set.mem name' env.frees then
-    avoid_collision env name (idx + 1)
-  else
-    name, idx
-
-let get_unified_idx env typid =
-  let idxs = env.idxs in
-  let len = String.length typid in
-  let n, i =
-    match Map.find_opt typid idxs with
-    | Some (n, i) when String.length n >= len && len > 0 -> typid, i
-    | Some (n, i) -> n, i
-    | None -> typid, 1
-  in
-  let name, idx = if !rename then avoid_collision env n i else n, i in
-
-  env.idxs <- Map.add typid (name, idx + 1) idxs;
-  name, idx
-
 let gen_new_unified env ty =
-  let typid = Al.Al_util.typ_to_var_name ty in
-  let name, idx = get_unified_idx env typid in
-  name ^ "_" ^ unified_prefix ^ (string_of_int idx) $ no_region
-
-let is_unified_id id = String.split_on_char '_' id |> Util.Lib.List.last |> String.starts_with ~prefix:unified_prefix
-
-let extract_unified_idx id =
-  let ss, s = String.split_on_char '_' id |> Util.Lib.List.split_last in
-  if String.starts_with ~prefix:unified_prefix s then
-    (try
-      let ss = String.concat "_" ss in
-      let s = String.sub s 1 (String.length s - 1) |> int_of_string in
-      Some (ss, s)
-    with Failure _ -> None)
-  else
-    None
+  let var = introduce_fresh_variable env.frees ty in
+  env.frees <- Set.add var env.frees;
+  unified_prefix ^ var $ ty.at
 
 (* Rename unified ids to non-unified ones *)
 (* TODO: Rename t_u1 -> t if there is no t in the prose *)
 let rename_string _env s =
-  match extract_unified_idx s with
-  | Some (base_name, idx) -> base_name ^ "_" ^ (string_of_int idx)
-  | None -> s
+  if String.starts_with ~prefix:unified_prefix s then
+    String.sub s 8 (String.length s - 8)
+  else
+    s
 
 let rename_id env id = { id with it = rename_string env id.it }
 

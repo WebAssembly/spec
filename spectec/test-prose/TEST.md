@@ -55,28 +55,28 @@ The memory type :math:`{\mathit{limits}}` is :ref:`valid <valid-val>` if:
 
 
 
-The external type :math:`{\mathit{externtype}}_1` is :ref:`valid <valid-val>` if:
+The external type :math:`{\mathit{externtype}}` is :ref:`valid <valid-val>` if:
 
 
    * Either:
 
-      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{func}~{\mathit{functype}})`.
+      * The external type :math:`{\mathit{externtype}}` is equal to :math:`(\mathsf{func}~{\mathit{functype}})`.
 
       * The function type :math:`{\mathit{functype}}` is :ref:`valid <valid-val>`.
 
    * Or:
 
-      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{global}~{\mathit{globaltype}})`.
+      * The external type :math:`{\mathit{externtype}}` is equal to :math:`(\mathsf{global}~{\mathit{globaltype}})`.
 
       * The global type :math:`{\mathit{globaltype}}` is :ref:`valid <valid-val>`.
    * Or:
 
-      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{table}~{\mathit{tabletype}})`.
+      * The external type :math:`{\mathit{externtype}}` is equal to :math:`(\mathsf{table}~{\mathit{tabletype}})`.
 
       * The table type :math:`{\mathit{tabletype}}` is :ref:`valid <valid-val>`.
    * Or:
 
-      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{mem}~{\mathit{memtype}})`.
+      * The external type :math:`{\mathit{externtype}}` is equal to :math:`(\mathsf{mem}~{\mathit{memtype}})`.
 
       * The memory type :math:`{\mathit{memtype}}` is :ref:`valid <valid-val>`.
 
@@ -151,36 +151,36 @@ The memory type :math:`{\mathit{lim}}_1` :ref:`matches <match>` the memory type 
 
 
 
-The external type :math:`{\mathit{externtype}}_1` :ref:`matches <match>` the external type :math:`{\mathit{externtype}}_2` if:
+The external type :math:`{\mathit{externtype}}` :ref:`matches <match>` the external type :math:`{\mathit{externtype}'}` if:
 
 
    * Either:
 
-      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{func}~{\mathit{ft}}_1)`.
+      * The external type :math:`{\mathit{externtype}}` is equal to :math:`(\mathsf{func}~{\mathit{ft}}_1)`.
 
-      * The external type :math:`{\mathit{externtype}}_2` is equal to :math:`(\mathsf{func}~{\mathit{ft}}_2)`.
+      * The external type :math:`{\mathit{externtype}'}` is equal to :math:`(\mathsf{func}~{\mathit{ft}}_2)`.
 
       * The function type :math:`{\mathit{ft}}_1` :ref:`matches <match>` the function type :math:`{\mathit{ft}}_2`.
 
    * Or:
 
-      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{global}~{\mathit{gt}}_1)`.
+      * The external type :math:`{\mathit{externtype}}` is equal to :math:`(\mathsf{global}~{\mathit{gt}}_1)`.
 
-      * The external type :math:`{\mathit{externtype}}_2` is equal to :math:`(\mathsf{global}~{\mathit{gt}}_2)`.
+      * The external type :math:`{\mathit{externtype}'}` is equal to :math:`(\mathsf{global}~{\mathit{gt}}_2)`.
 
       * The global type :math:`{\mathit{gt}}_1` :ref:`matches <match>` the global type :math:`{\mathit{gt}}_2`.
    * Or:
 
-      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{table}~{\mathit{tt}}_1)`.
+      * The external type :math:`{\mathit{externtype}}` is equal to :math:`(\mathsf{table}~{\mathit{tt}}_1)`.
 
-      * The external type :math:`{\mathit{externtype}}_2` is equal to :math:`(\mathsf{table}~{\mathit{tt}}_2)`.
+      * The external type :math:`{\mathit{externtype}'}` is equal to :math:`(\mathsf{table}~{\mathit{tt}}_2)`.
 
       * The table type :math:`{\mathit{tt}}_1` :ref:`matches <match>` the table type :math:`{\mathit{tt}}_2`.
    * Or:
 
-      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{mem}~{\mathit{mt}}_1)`.
+      * The external type :math:`{\mathit{externtype}}` is equal to :math:`(\mathsf{mem}~{\mathit{mt}}_1)`.
 
-      * The external type :math:`{\mathit{externtype}}_2` is equal to :math:`(\mathsf{mem}~{\mathit{mt}}_2)`.
+      * The external type :math:`{\mathit{externtype}'}` is equal to :math:`(\mathsf{mem}~{\mathit{mt}}_2)`.
 
       * The memory type :math:`{\mathit{mt}}_1` :ref:`matches <match>` the memory type :math:`{\mathit{mt}}_2`.
 
@@ -360,18 +360,18 @@ The instruction :math:`(t {.} {\mathit{relop}}_t)` is :ref:`valid <valid-val>` w
 
 
 
-The instruction :math:`({\mathit{nt}}_1 {.} {{\mathit{cvtop}}_1}{\mathsf{\_}}{{\mathit{nt}}_2})` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{nt}}_2~\rightarrow~{\mathit{nt}}_1` if:
+The instruction :math:`({\mathit{nt}}_1 {.} {{\mathit{cvtop}}}{\mathsf{\_}}{{\mathit{nt}}_2})` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{nt}}_2~\rightarrow~{\mathit{nt}}_1` if:
 
 
    * Either:
 
-      * :math:`{\mathit{cvtop}}_1` is equal to :math:`\mathsf{reinterpret}`.
+      * :math:`{\mathit{cvtop}}` is equal to :math:`\mathsf{reinterpret}`.
 
       * :math:`{|{\mathit{nt}}_1|}` is equal to :math:`{|{\mathit{nt}}_2|}`.
 
    * Or:
 
-      * :math:`{\mathit{cvtop}}_1` is equal to :math:`{\mathit{cvtop}}`.
+      * :math:`{\mathit{cvtop}}` is equal to :math:`{\mathit{cvtop}}`.
 
 
 
@@ -442,56 +442,56 @@ The instruction :math:`\mathsf{memory{.}grow}` is :ref:`valid <valid-val>` with 
 
 
 
-The instruction :math:`({{\mathit{valtype}}_1{.}\mathsf{load}}{{{\mathit{loadop\_{\scriptstyle 1}}}^?}}~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathit{valtype}}_3` if:
+The instruction :math:`({{\mathit{valtype}}{.}\mathsf{load}}{{{\mathit{loadop}}^?}}~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathit{valtype}''}` if:
 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
 
    * Either:
 
-      * The number type :math:`{\mathit{valtype}}_1` is equal to :math:`t`.
+      * The number type :math:`{\mathit{valtype}}` is equal to :math:`t`.
 
-      * :math:`{{\mathit{loadop\_{\scriptstyle 1}}}^?}` is absent.
+      * :math:`{{\mathit{loadop}}^?}` is absent.
 
-      * The number type :math:`{\mathit{valtype}}_3` is equal to :math:`t`.
+      * The number type :math:`{\mathit{valtype}''}` is equal to :math:`t`.
 
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|t|} / 8`.
 
    * Or:
 
-      * The number type :math:`{\mathit{valtype}}_1` is equal to :math:`{\mathsf{i}}{n}`.
+      * The number type :math:`{\mathit{valtype}}` is equal to :math:`{\mathsf{i}}{n}`.
 
-      * :math:`{{\mathit{loadop\_{\scriptstyle 1}}}^?}` is equal to :math:`{M}{\mathsf{\_}}{{\mathit{sx}}}`.
+      * :math:`{{\mathit{loadop}}^?}` is equal to :math:`{M}{\mathsf{\_}}{{\mathit{sx}}}`.
 
-      * The number type :math:`{\mathit{valtype}}_3` is equal to :math:`{\mathsf{i}}{n}`.
+      * The number type :math:`{\mathit{valtype}''}` is equal to :math:`{\mathsf{i}}{n}`.
 
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
 
 
 
 
-The instruction :math:`({{\mathit{valtype}}_1{.}\mathsf{store}}{{{\mathit{sz}}_1^?}}~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~{\mathit{valtype}}_2~\rightarrow~\epsilon` if:
+The instruction :math:`({{\mathit{valtype}}{.}\mathsf{store}}{{{\mathit{sz}}^?}}~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~{\mathit{valtype}'}~\rightarrow~\epsilon` if:
 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
 
    * Either:
 
-      * The number type :math:`{\mathit{valtype}}_1` is equal to :math:`t`.
+      * The number type :math:`{\mathit{valtype}}` is equal to :math:`t`.
 
-      * The pack size :math:`{{\mathit{sz}}_1^?}` is absent.
+      * The pack size :math:`{{\mathit{sz}}^?}` is absent.
 
-      * The number type :math:`{\mathit{valtype}}_2` is equal to :math:`t`.
+      * The number type :math:`{\mathit{valtype}'}` is equal to :math:`t`.
 
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|t|} / 8`.
 
    * Or:
 
-      * The number type :math:`{\mathit{valtype}}_1` is equal to :math:`{\mathsf{i}}{n}`.
+      * The number type :math:`{\mathit{valtype}}` is equal to :math:`{\mathsf{i}}{n}`.
 
-      * The pack size :math:`{{\mathit{sz}}_1^?}` is equal to :math:`M`.
+      * The pack size :math:`{{\mathit{sz}}^?}` is equal to :math:`M`.
 
-      * The number type :math:`{\mathit{valtype}}_2` is equal to :math:`{\mathsf{i}}{n}`.
+      * The number type :math:`{\mathit{valtype}'}` is equal to :math:`{\mathsf{i}}{n}`.
 
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
 
@@ -551,35 +551,35 @@ The instruction :math:`({{\mathsf{i}}{n}{.}\mathsf{store}}{M}~{\mathit{memarg}})
 
 
 
-The instruction sequence :math:`{{\mathit{instr}}_1^\ast}` is :ref:`valid <valid-val>` with the function type :math:`{{\mathit{valtype}}_1^\ast}~\rightarrow~{{\mathit{valtype}}_2^\ast}` if:
+The instruction sequence :math:`{{\mathit{instr}'}^\ast}` is :ref:`valid <valid-val>` with the function type :math:`{{\mathit{valtype}}^\ast}~\rightarrow~{{\mathit{valtype}'}^\ast}` if:
 
 
    * Either:
 
-      * The instruction sequence :math:`{{\mathit{instr}}_1^\ast}` is equal to :math:`\epsilon`.
+      * The instruction sequence :math:`{{\mathit{instr}'}^\ast}` is equal to :math:`\epsilon`.
 
-      * The number type sequence :math:`{{\mathit{valtype}}_1^\ast}` is equal to :math:`\epsilon`.
+      * The number type sequence :math:`{{\mathit{valtype}}^\ast}` is equal to :math:`\epsilon`.
 
-      * The number type sequence :math:`{{\mathit{valtype}}_2^\ast}` is equal to :math:`\epsilon`.
+      * The number type sequence :math:`{{\mathit{valtype}'}^\ast}` is equal to :math:`\epsilon`.
 
    * Or:
 
-      * The instruction sequence :math:`{{\mathit{instr}}_1^\ast}` is equal to :math:`{\mathit{instr}}_1~{{\mathit{instr}}_2^\ast}`.
+      * The instruction sequence :math:`{{\mathit{instr}'}^\ast}` is equal to :math:`{\mathit{instr}}_1~{{\mathit{instr}}_2^\ast}`.
 
-      * The number type sequence :math:`{{\mathit{valtype}}_1^\ast}` is equal to :math:`{t_1^\ast}`.
+      * The number type sequence :math:`{{\mathit{valtype}}^\ast}` is equal to :math:`{t_1^\ast}`.
 
-      * The number type sequence :math:`{{\mathit{valtype}}_2^\ast}` is equal to :math:`{t_3^\ast}`.
+      * The number type sequence :math:`{{\mathit{valtype}'}^\ast}` is equal to :math:`{t_3^\ast}`.
 
       * The instruction :math:`{\mathit{instr}}_1` is :ref:`valid <valid-val>` with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
       * The instruction sequence :math:`{{\mathit{instr}}_2^\ast}` is :ref:`valid <valid-val>` with the function type :math:`{t_2^\ast}~\rightarrow~{t_3^\ast}`.
    * Or:
 
-      * The instruction sequence :math:`{{\mathit{instr}}_1^\ast}` is equal to :math:`{{\mathit{instr}}^\ast}`.
+      * The instruction sequence :math:`{{\mathit{instr}'}^\ast}` is equal to :math:`{{\mathit{instr}}^\ast}`.
 
-      * The number type sequence :math:`{{\mathit{valtype}}_1^\ast}` is equal to :math:`{t^\ast}~{t_1^\ast}`.
+      * The number type sequence :math:`{{\mathit{valtype}}^\ast}` is equal to :math:`{t^\ast}~{t_1^\ast}`.
 
-      * The number type sequence :math:`{{\mathit{valtype}}_2^\ast}` is equal to :math:`{t^\ast}~{t_2^\ast}`.
+      * The number type sequence :math:`{{\mathit{valtype}'}^\ast}` is equal to :math:`{t^\ast}~{t_2^\ast}`.
 
       * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
@@ -617,16 +617,16 @@ The expression :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` with 
 
 
 
-:math:`{\mathit{instr}}_1` is constant if:
+:math:`{\mathit{instr}}` is constant if:
 
 
    * Either:
 
-      * The instruction :math:`{\mathit{instr}}_1` is equal to :math:`(t{.}\mathsf{const}~c)`.
+      * The instruction :math:`{\mathit{instr}}` is equal to :math:`(t{.}\mathsf{const}~c)`.
 
    * Or:
 
-      * The instruction :math:`{\mathit{instr}}_1` is equal to :math:`(\mathsf{global{.}get}~x)`.
+      * The instruction :math:`{\mathit{instr}}` is equal to :math:`(\mathsf{global{.}get}~x)`.
 
       * The global type :math:`C{.}\mathsf{globals}{}[x]` exists.
 
@@ -762,14 +762,14 @@ The import :math:`(\mathsf{import}~{\mathit{name}}_1~{\mathit{name}}_2~{\mathit{
 
 
 
-The external index :math:`{\mathit{externidx}}_1` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{externtype}}_1` if:
+The external index :math:`{\mathit{externidx}}` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{externtype}}` if:
 
 
    * Either:
 
-      * The external index :math:`{\mathit{externidx}}_1` is equal to :math:`(\mathsf{func}~x)`.
+      * The external index :math:`{\mathit{externidx}}` is equal to :math:`(\mathsf{func}~x)`.
 
-      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{func}~{\mathit{ft}})`.
+      * The external type :math:`{\mathit{externtype}}` is equal to :math:`(\mathsf{func}~{\mathit{ft}})`.
 
       * The function type :math:`C{.}\mathsf{funcs}{}[x]` exists.
 
@@ -777,27 +777,27 @@ The external index :math:`{\mathit{externidx}}_1` is :ref:`valid <valid-val>` wi
 
    * Or:
 
-      * The external index :math:`{\mathit{externidx}}_1` is equal to :math:`(\mathsf{global}~x)`.
+      * The external index :math:`{\mathit{externidx}}` is equal to :math:`(\mathsf{global}~x)`.
 
-      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{global}~{\mathit{gt}})`.
+      * The external type :math:`{\mathit{externtype}}` is equal to :math:`(\mathsf{global}~{\mathit{gt}})`.
 
       * The global type :math:`C{.}\mathsf{globals}{}[x]` exists.
 
       * The global type :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`{\mathit{gt}}`.
    * Or:
 
-      * The external index :math:`{\mathit{externidx}}_1` is equal to :math:`(\mathsf{table}~x)`.
+      * The external index :math:`{\mathit{externidx}}` is equal to :math:`(\mathsf{table}~x)`.
 
-      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{table}~{\mathit{tt}})`.
+      * The external type :math:`{\mathit{externtype}}` is equal to :math:`(\mathsf{table}~{\mathit{tt}})`.
 
       * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
 
       * The table type :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`{\mathit{tt}}`.
    * Or:
 
-      * The external index :math:`{\mathit{externidx}}_1` is equal to :math:`(\mathsf{mem}~x)`.
+      * The external index :math:`{\mathit{externidx}}` is equal to :math:`(\mathsf{mem}~x)`.
 
-      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{mem}~{\mathit{mt}})`.
+      * The external type :math:`{\mathit{externtype}}` is equal to :math:`(\mathsf{mem}~{\mathit{mt}})`.
 
       * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
 
@@ -1006,8 +1006,8 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
 
-:math:`\mathsf{br}~n_1`
-.......................
+:math:`\mathsf{br}~{n'}`
+........................
 
 
 1. Assert: Due to validation, the first non-value entry of the stack is a :math:`\mathsf{label}`.
@@ -1016,7 +1016,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`n` be the arity of L
 
-#. If :math:`n_1 = 0`, then:
+#. If :math:`{n'} = 0`, then:
 
    a. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
 
@@ -1034,9 +1034,9 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    a. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
 
-   #. If :math:`n_1 \geq 1`, then:
+   #. If :math:`{n'} \geq 1`, then:
 
-      1) Let :math:`l` be :math:`n_1 - 1`.
+      1) Let :math:`l` be :math:`{n'} - 1`.
 
       #) Pop the :math:`\mathsf{label}` L from the stack.
 
@@ -1350,8 +1350,8 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Push the value :math:`z{.}\mathsf{globals}{}[x]{.}\mathsf{value}` to the stack.
 
 
-:math:`{{\mathit{valtype}}_1{.}\mathsf{load}}{{{\mathit{loadop\_{\scriptstyle 1}}}^?}}~{\mathit{ao}}`
-.....................................................................................................
+:math:`{{\mathit{valtype}}{.}\mathsf{load}}{{{\mathit{loadop}}^?}}~{\mathit{ao}}`
+.................................................................................
 
 
 1. Let :math:`z` be the current state.
@@ -1360,9 +1360,9 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. If :math:`{{\mathit{loadop\_{\scriptstyle 1}}}^?}` is not defined, then:
+#. If :math:`{{\mathit{loadop}}^?}` is not defined, then:
 
-   a. Let :math:`t` be :math:`{\mathit{valtype}}_1`.
+   a. Let :math:`t` be :math:`{\mathit{valtype}}`.
 
    #. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|t|} / 8 > {|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
 
@@ -1372,11 +1372,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Push the value :math:`(t{.}\mathsf{const}~c)` to the stack.
 
-#. If :math:`{\mathit{valtype}}_1` is :math:`{\mathsf{i}}{n}`, then:
+#. If :math:`{\mathit{valtype}}` is :math:`{\mathsf{i}}{n}`, then:
 
-   a. If :math:`{{\mathit{loadop\_{\scriptstyle 1}}}^?}` is defined, then:
+   a. If :math:`{{\mathit{loadop}}^?}` is defined, then:
 
-      1) Let :math:`{\mathit{loadop\_{\scriptstyle 0}}}` be :math:`{{\mathit{loadop\_{\scriptstyle 1}}}^?}`.
+      1) Let :math:`{\mathit{loadop\_{\scriptstyle 0}}}` be :math:`{{\mathit{loadop}}^?}`.
 
       #) Let :math:`{n}{\mathsf{\_}}{{\mathit{sx}}}` be :math:`{\mathit{loadop\_{\scriptstyle 0}}}`.
 
@@ -1384,11 +1384,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
          a) Trap.
 
-   #. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_1`.
+   #. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}`.
 
-   #. If :math:`{{\mathit{loadop\_{\scriptstyle 1}}}^?}` is defined, then:
+   #. If :math:`{{\mathit{loadop}}^?}` is defined, then:
 
-      1) Let :math:`{\mathit{loadop\_{\scriptstyle 0}}}` be :math:`{{\mathit{loadop\_{\scriptstyle 1}}}^?}`.
+      1) Let :math:`{\mathit{loadop\_{\scriptstyle 0}}}` be :math:`{{\mathit{loadop}}^?}`.
 
       #) Let :math:`{n}{\mathsf{\_}}{{\mathit{sx}}}` be :math:`{\mathit{loadop\_{\scriptstyle 0}}}`.
 
@@ -1434,39 +1434,39 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Perform :math:`z{}[{.}\mathsf{globals}{}[x]{.}\mathsf{value} = {\mathit{val}}]`.
 
 
-:math:`{{\mathit{valtype}}_1{.}\mathsf{store}}{{{\mathit{sz}}_1^?}}~{\mathit{ao}}`
-..................................................................................
+:math:`{{\mathit{valtype}}{.}\mathsf{store}}{{{\mathit{sz}}^?}}~{\mathit{ao}}`
+..............................................................................
 
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-valtype_2>` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-valtype'>` is on the top of the stack.
 
-#. Pop the value :math:`({\mathit{valtype}}_2{.}\mathsf{const}~c)` from the stack.
+#. Pop the value :math:`({\mathit{valtype}'}{.}\mathsf{const}~c)` from the stack.
 
 #. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. Let :math:`t` be :math:`{\mathit{valtype}}_2`.
+#. Let :math:`t` be :math:`{\mathit{valtype}'}`.
 
-#. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|t|} / 8 > {|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}` and :math:`{\mathit{valtype}}_1 = t` and :math:`{{\mathit{sz}}_1^?}` is not defined, then:
+#. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|t|} / 8 > {|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}` and :math:`{\mathit{valtype}} = t` and :math:`{{\mathit{sz}}^?}` is not defined, then:
 
    a. Trap.
 
-#. If :math:`{\mathit{valtype}}_1 = t` and :math:`{{\mathit{sz}}_1^?}` is not defined, then:
+#. If :math:`{\mathit{valtype}} = t` and :math:`{{\mathit{sz}}^?}` is not defined, then:
 
    a. Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{t}(c)`.
 
    #. Perform :math:`z{}[{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|t|} / 8] = {b^\ast}]`.
 
-#. If :math:`{\mathit{valtype}}_2` is :math:`{\mathsf{i}}{n}`, then:
+#. If :math:`{\mathit{valtype}'}` is :math:`{\mathsf{i}}{n}`, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_2`.
+   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}'}`.
 
-   #. If :math:`{\mathit{valtype}}_1 = {\mathsf{i}}{n}` and :math:`{{\mathit{sz}}_1^?}` is defined, then:
+   #. If :math:`{\mathit{valtype}} = {\mathsf{i}}{n}` and :math:`{{\mathit{sz}}^?}` is defined, then:
 
-      1) Let :math:`n` be :math:`{{\mathit{sz}}_1^?}`.
+      1) Let :math:`n` be :math:`{{\mathit{sz}}^?}`.
 
       #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + n / 8 > {|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
 
@@ -1518,82 +1518,82 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Return :math:`j`.
 
 
-:math:`{\mathrm{sum}}({n_1^\ast})`
-..................................
+:math:`{\mathrm{sum}}({n^\ast})`
+................................
 
 
-1. If :math:`{n_1^\ast} = \epsilon`, then:
+1. If :math:`{n^\ast} = \epsilon`, then:
 
    a. Return :math:`0`.
 
-#. Let :math:`n~{{n'}^\ast}` be :math:`{n_1^\ast}`.
+#. Let :math:`n~{{n'}^\ast}` be :math:`{n^\ast}`.
 
 #. Return :math:`n + {\mathrm{sum}}({{n'}^\ast})`.
 
 
-:math:`{X_1^\ast}`
-..................
+:math:`{X^\ast}`
+................
 
 
-1. If :math:`{X_1^\ast} = \epsilon`, then:
+1. If :math:`{X^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Assert: Due to validation, :math:`{|{X_1^\ast}|} = 1`.
+#. Assert: Due to validation, :math:`{|{X^\ast}|} = 1`.
 
-#. Let :math:`w` be :math:`{X_1^\ast}`.
+#. Let :math:`w` be :math:`{X^\ast}`.
 
 #. Return :math:`w`.
 
 
-:math:`{X_1^?}`
-...............
+:math:`{X^?}`
+.............
 
 
-1. If :math:`{X_1^?}` is not defined, then:
+1. If :math:`{X^?}` is not defined, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`w` be :math:`{X_1^?}`.
+#. Let :math:`w` be :math:`{X^?}`.
 
 #. Return :math:`w`.
 
 
-:math:`{\mathrm{concat}}({X_1^\ast})`
-.....................................
+:math:`{\mathrm{concat}}({X^\ast})`
+...................................
 
 
-1. If :math:`{X_1^\ast} = \epsilon`, then:
+1. If :math:`{X^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{w^\ast}~{{{w'}^\ast}^\ast}` be :math:`{X_1^\ast}`.
+#. Let :math:`{w^\ast}~{{{w'}^\ast}^\ast}` be :math:`{X^\ast}`.
 
 #. Return :math:`{w^\ast}~{\mathrm{concat}}({{{w'}^\ast}^\ast})`.
 
 
-:math:`{\mathrm{signif}}(N_1)`
-..............................
+:math:`{\mathrm{signif}}(N)`
+............................
 
 
-1. If :math:`N_1 = 32`, then:
+1. If :math:`N = 32`, then:
 
    a. Return :math:`23`.
 
-#. Assert: Due to validation, :math:`N_1 = 64`.
+#. Assert: Due to validation, :math:`N = 64`.
 
 #. Return :math:`52`.
 
 
-:math:`{\mathrm{expon}}(N_1)`
-.............................
+:math:`{\mathrm{expon}}(N)`
+...........................
 
 
-1. If :math:`N_1 = 32`, then:
+1. If :math:`N = 32`, then:
 
    a. Return :math:`8`.
 
-#. Assert: Due to validation, :math:`N_1 = 64`.
+#. Assert: Due to validation, :math:`N = 64`.
 
 #. Return :math:`11`.
 
@@ -1633,38 +1633,38 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 1. Return :math:`{2^{{\mathrm{signif}}(N) - 1}}`.
 
 
-:math:`{|{\mathit{valtype}}_1|}`
-................................
+:math:`{|{\mathit{valtype}}|}`
+..............................
 
 
-1. If :math:`{\mathit{valtype}}_1 = \mathsf{i{\scriptstyle 32}}`, then:
+1. If :math:`{\mathit{valtype}} = \mathsf{i{\scriptstyle 32}}`, then:
 
    a. Return :math:`32`.
 
-#. If :math:`{\mathit{valtype}}_1 = \mathsf{i{\scriptstyle 64}}`, then:
+#. If :math:`{\mathit{valtype}} = \mathsf{i{\scriptstyle 64}}`, then:
 
    a. Return :math:`64`.
 
-#. If :math:`{\mathit{valtype}}_1 = \mathsf{f{\scriptstyle 32}}`, then:
+#. If :math:`{\mathit{valtype}} = \mathsf{f{\scriptstyle 32}}`, then:
 
    a. Return :math:`32`.
 
-#. If :math:`{\mathit{valtype}}_1 = \mathsf{f{\scriptstyle 64}}`, then:
+#. If :math:`{\mathit{valtype}} = \mathsf{f{\scriptstyle 64}}`, then:
 
    a. Return :math:`64`.
 
 #. Fail.
 
 
-:math:`{\mathrm{funcs}}({{\mathit{externtype}}_1^\ast})`
-........................................................
+:math:`{\mathrm{funcs}}({{\mathit{externtype}}^\ast})`
+......................................................
 
 
-1. If :math:`{{\mathit{externtype}}_1^\ast} = \epsilon`, then:
+1. If :math:`{{\mathit{externtype}}^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{externtype}}_0~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}_1^\ast}`.
+#. Let :math:`{\mathit{externtype}}_0~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}^\ast}`.
 
 #. If :math:`{\mathit{externtype}}_0` is :math:`\mathsf{func}`, then:
 
@@ -1672,20 +1672,20 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Return :math:`{\mathit{ft}}~{\mathrm{funcs}}({{\mathit{xt}}^\ast})`.
 
-#. Let :math:`{\mathit{externtype}}~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}_1^\ast}`.
+#. Let :math:`{\mathit{externtype}}~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}^\ast}`.
 
 #. Return :math:`{\mathrm{funcs}}({{\mathit{xt}}^\ast})`.
 
 
-:math:`{\mathrm{globals}}({{\mathit{externtype}}_1^\ast})`
-..........................................................
+:math:`{\mathrm{globals}}({{\mathit{externtype}}^\ast})`
+........................................................
 
 
-1. If :math:`{{\mathit{externtype}}_1^\ast} = \epsilon`, then:
+1. If :math:`{{\mathit{externtype}}^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{externtype}}_0~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}_1^\ast}`.
+#. Let :math:`{\mathit{externtype}}_0~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}^\ast}`.
 
 #. If :math:`{\mathit{externtype}}_0` is :math:`\mathsf{global}`, then:
 
@@ -1693,20 +1693,20 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Return :math:`{\mathit{gt}}~{\mathrm{globals}}({{\mathit{xt}}^\ast})`.
 
-#. Let :math:`{\mathit{externtype}}~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}_1^\ast}`.
+#. Let :math:`{\mathit{externtype}}~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}^\ast}`.
 
 #. Return :math:`{\mathrm{globals}}({{\mathit{xt}}^\ast})`.
 
 
-:math:`{\mathrm{tables}}({{\mathit{externtype}}_1^\ast})`
-.........................................................
+:math:`{\mathrm{tables}}({{\mathit{externtype}}^\ast})`
+.......................................................
 
 
-1. If :math:`{{\mathit{externtype}}_1^\ast} = \epsilon`, then:
+1. If :math:`{{\mathit{externtype}}^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{externtype}}_0~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}_1^\ast}`.
+#. Let :math:`{\mathit{externtype}}_0~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}^\ast}`.
 
 #. If :math:`{\mathit{externtype}}_0` is :math:`\mathsf{table}`, then:
 
@@ -1714,20 +1714,20 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Return :math:`{\mathit{tt}}~{\mathrm{tables}}({{\mathit{xt}}^\ast})`.
 
-#. Let :math:`{\mathit{externtype}}~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}_1^\ast}`.
+#. Let :math:`{\mathit{externtype}}~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}^\ast}`.
 
 #. Return :math:`{\mathrm{tables}}({{\mathit{xt}}^\ast})`.
 
 
-:math:`{\mathrm{mems}}({{\mathit{externtype}}_1^\ast})`
-.......................................................
+:math:`{\mathrm{mems}}({{\mathit{externtype}}^\ast})`
+.....................................................
 
 
-1. If :math:`{{\mathit{externtype}}_1^\ast} = \epsilon`, then:
+1. If :math:`{{\mathit{externtype}}^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{externtype}}_0~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}_1^\ast}`.
+#. Let :math:`{\mathit{externtype}}_0~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}^\ast}`.
 
 #. If :math:`{\mathit{externtype}}_0` is :math:`\mathsf{mem}`, then:
 
@@ -1735,7 +1735,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Return :math:`{\mathit{mt}}~{\mathrm{mems}}({{\mathit{xt}}^\ast})`.
 
-#. Let :math:`{\mathit{externtype}}~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}_1^\ast}`.
+#. Let :math:`{\mathit{externtype}}~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}^\ast}`.
 
 #. Return :math:`{\mathrm{mems}}({{\mathit{xt}}^\ast})`.
 
@@ -1771,162 +1771,162 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Return :math:`j`.
 
 
-:math:`{{\mathit{unop\_{\scriptstyle 1}}}}{{}_{{\mathit{valtype}}_1}}{({\mathit{val\_{\scriptstyle 1}}})}`
-..........................................................................................................
+:math:`{{\mathit{unop}}}{{}_{{\mathit{valtype}}}}{({\mathit{val}})}`
+....................................................................
 
 
-1. If :math:`{\mathit{valtype}}_1` is :math:`{\mathsf{i}}{n}`, then:
+1. If :math:`{\mathit{valtype}}` is :math:`{\mathsf{i}}{n}`, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_1`.
+   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}`.
 
-   #. Let :math:`{\mathit{iN}}` be :math:`{\mathit{val\_{\scriptstyle 1}}}`.
+   #. Let :math:`{\mathit{iN}}` be :math:`{\mathit{val}}`.
 
-   #. If :math:`{\mathit{unop\_{\scriptstyle 1}}} = \mathsf{clz}`, then:
+   #. If :math:`{\mathit{unop}} = \mathsf{clz}`, then:
 
       1) Return :math:`{{\mathrm{iclz}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}})`.
 
-   #. If :math:`{\mathit{unop\_{\scriptstyle 1}}} = \mathsf{ctz}`, then:
+   #. If :math:`{\mathit{unop}} = \mathsf{ctz}`, then:
 
       1) Return :math:`{{\mathrm{ictz}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}})`.
 
-   #. If :math:`{\mathit{unop\_{\scriptstyle 1}}} = \mathsf{popcnt}`, then:
+   #. If :math:`{\mathit{unop}} = \mathsf{popcnt}`, then:
 
       1) Return :math:`{{\mathrm{ipopcnt}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}})`.
 
-#. Assert: Due to validation, :math:`{\mathit{valtype}}_1` is :math:`{\mathsf{f}}{n}`.
+#. Assert: Due to validation, :math:`{\mathit{valtype}}` is :math:`{\mathsf{f}}{n}`.
 
-#. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}_1`.
+#. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}`.
 
-#. Let :math:`{\mathit{fN}}` be :math:`{\mathit{val\_{\scriptstyle 1}}}`.
+#. Let :math:`{\mathit{fN}}` be :math:`{\mathit{val}}`.
 
-#. If :math:`{\mathit{unop\_{\scriptstyle 1}}} = \mathsf{abs}`, then:
+#. If :math:`{\mathit{unop}} = \mathsf{abs}`, then:
 
    a. Return :math:`{{\mathrm{fabs}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}})`.
 
-#. If :math:`{\mathit{unop\_{\scriptstyle 1}}} = \mathsf{neg}`, then:
+#. If :math:`{\mathit{unop}} = \mathsf{neg}`, then:
 
    a. Return :math:`{{\mathrm{fneg}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}})`.
 
-#. If :math:`{\mathit{unop\_{\scriptstyle 1}}} = \mathsf{sqrt}`, then:
+#. If :math:`{\mathit{unop}} = \mathsf{sqrt}`, then:
 
    a. Return :math:`{{\mathrm{fsqrt}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}})`.
 
-#. If :math:`{\mathit{unop\_{\scriptstyle 1}}} = \mathsf{ceil}`, then:
+#. If :math:`{\mathit{unop}} = \mathsf{ceil}`, then:
 
    a. Return :math:`{{\mathrm{fceil}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}})`.
 
-#. If :math:`{\mathit{unop\_{\scriptstyle 1}}} = \mathsf{floor}`, then:
+#. If :math:`{\mathit{unop}} = \mathsf{floor}`, then:
 
    a. Return :math:`{{\mathrm{ffloor}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}})`.
 
-#. If :math:`{\mathit{unop\_{\scriptstyle 1}}} = \mathsf{trunc}`, then:
+#. If :math:`{\mathit{unop}} = \mathsf{trunc}`, then:
 
    a. Return :math:`{{\mathrm{ftrunc}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}})`.
 
-#. Assert: Due to validation, :math:`{\mathit{unop\_{\scriptstyle 1}}} = \mathsf{nearest}`.
+#. Assert: Due to validation, :math:`{\mathit{unop}} = \mathsf{nearest}`.
 
 #. Return :math:`{{\mathrm{fnearest}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}})`.
 
 
-:math:`{{\mathit{binop\_{\scriptstyle 1}}}}{{}_{{\mathit{valtype}}_1}}{({\mathit{val\_{\scriptstyle 1}}}, {\mathit{val\_{\scriptstyle 2}}})}`
-.............................................................................................................................................
+:math:`{{\mathit{binop}}}{{}_{{\mathit{valtype}}}}{({\mathit{val}}, {\mathit{val}}_')}`
+.......................................................................................
 
 
-1. If :math:`{\mathit{valtype}}_1` is :math:`{\mathsf{i}}{n}`, then:
+1. If :math:`{\mathit{valtype}}` is :math:`{\mathsf{i}}{n}`, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_1`.
+   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}`.
 
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{val\_{\scriptstyle 1}}}`.
+   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{val}}`.
 
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{val\_{\scriptstyle 2}}}`.
+   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{val}}_'`.
 
-   #. If :math:`{\mathit{binop\_{\scriptstyle 1}}} = \mathsf{add}`, then:
+   #. If :math:`{\mathit{binop}} = \mathsf{add}`, then:
 
       1) Return :math:`{{\mathrm{iadd}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
-   #. If :math:`{\mathit{binop\_{\scriptstyle 1}}} = \mathsf{sub}`, then:
+   #. If :math:`{\mathit{binop}} = \mathsf{sub}`, then:
 
       1) Return :math:`{{\mathrm{isub}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
-   #. If :math:`{\mathit{binop\_{\scriptstyle 1}}} = \mathsf{mul}`, then:
+   #. If :math:`{\mathit{binop}} = \mathsf{mul}`, then:
 
       1) Return :math:`{{\mathrm{imul}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
-   #. If :math:`{\mathit{binop\_{\scriptstyle 1}}}` is :math:`\mathsf{div}`, then:
+   #. If :math:`{\mathit{binop}}` is :math:`\mathsf{div}`, then:
 
-      1) Let :math:`({\mathsf{div}}{{\mathit{sx}}})` be :math:`{\mathit{binop\_{\scriptstyle 1}}}`.
+      1) Let :math:`({\mathsf{div}}{{\mathit{sx}}})` be :math:`{\mathit{binop}}`.
 
       #) Return :math:`{{{{\mathrm{idiv}}}_{{|{\mathsf{i}}{n}|}}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
 
-   #. If :math:`{\mathit{binop\_{\scriptstyle 1}}}` is :math:`\mathsf{rem}`, then:
+   #. If :math:`{\mathit{binop}}` is :math:`\mathsf{rem}`, then:
 
-      1) Let :math:`({\mathsf{rem}}{{\mathit{sx}}})` be :math:`{\mathit{binop\_{\scriptstyle 1}}}`.
+      1) Let :math:`({\mathsf{rem}}{{\mathit{sx}}})` be :math:`{\mathit{binop}}`.
 
       #) Return :math:`{{{{\mathrm{irem}}}_{{|{\mathsf{i}}{n}|}}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
 
-   #. If :math:`{\mathit{binop\_{\scriptstyle 1}}} = \mathsf{and}`, then:
+   #. If :math:`{\mathit{binop}} = \mathsf{and}`, then:
 
       1) Return :math:`{{\mathrm{iand}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
-   #. If :math:`{\mathit{binop\_{\scriptstyle 1}}} = \mathsf{or}`, then:
+   #. If :math:`{\mathit{binop}} = \mathsf{or}`, then:
 
       1) Return :math:`{{\mathrm{ior}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
-   #. If :math:`{\mathit{binop\_{\scriptstyle 1}}} = \mathsf{xor}`, then:
+   #. If :math:`{\mathit{binop}} = \mathsf{xor}`, then:
 
       1) Return :math:`{{\mathrm{ixor}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
-   #. If :math:`{\mathit{binop\_{\scriptstyle 1}}} = \mathsf{shl}`, then:
+   #. If :math:`{\mathit{binop}} = \mathsf{shl}`, then:
 
       1) Return :math:`{{\mathrm{ishl}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
-   #. If :math:`{\mathit{binop\_{\scriptstyle 1}}}` is :math:`\mathsf{shr}`, then:
+   #. If :math:`{\mathit{binop}}` is :math:`\mathsf{shr}`, then:
 
-      1) Let :math:`({\mathsf{shr}}{{\mathit{sx}}})` be :math:`{\mathit{binop\_{\scriptstyle 1}}}`.
+      1) Let :math:`({\mathsf{shr}}{{\mathit{sx}}})` be :math:`{\mathit{binop}}`.
 
       #) Return :math:`{{{{\mathrm{ishr}}}_{{|{\mathsf{i}}{n}|}}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
 
-   #. If :math:`{\mathit{binop\_{\scriptstyle 1}}} = \mathsf{rotl}`, then:
+   #. If :math:`{\mathit{binop}} = \mathsf{rotl}`, then:
 
       1) Return :math:`{{\mathrm{irotl}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
-   #. If :math:`{\mathit{binop\_{\scriptstyle 1}}} = \mathsf{rotr}`, then:
+   #. If :math:`{\mathit{binop}} = \mathsf{rotr}`, then:
 
       1) Return :math:`{{\mathrm{irotr}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
-#. Assert: Due to validation, :math:`{\mathit{valtype}}_1` is :math:`{\mathsf{f}}{n}`.
+#. Assert: Due to validation, :math:`{\mathit{valtype}}` is :math:`{\mathsf{f}}{n}`.
 
-#. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}_1`.
+#. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}`.
 
-#. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{val\_{\scriptstyle 1}}}`.
+#. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{val}}`.
 
-#. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{val\_{\scriptstyle 2}}}`.
+#. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{val}}_'`.
 
-#. If :math:`{\mathit{binop\_{\scriptstyle 1}}} = \mathsf{add}`, then:
+#. If :math:`{\mathit{binop}} = \mathsf{add}`, then:
 
    a. Return :math:`{{\mathrm{fadd}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
-#. If :math:`{\mathit{binop\_{\scriptstyle 1}}} = \mathsf{sub}`, then:
+#. If :math:`{\mathit{binop}} = \mathsf{sub}`, then:
 
    a. Return :math:`{{\mathrm{fsub}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
-#. If :math:`{\mathit{binop\_{\scriptstyle 1}}} = \mathsf{mul}`, then:
+#. If :math:`{\mathit{binop}} = \mathsf{mul}`, then:
 
    a. Return :math:`{{\mathrm{fmul}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
-#. If :math:`{\mathit{binop\_{\scriptstyle 1}}} = \mathsf{div}`, then:
+#. If :math:`{\mathit{binop}} = \mathsf{div}`, then:
 
    a. Return :math:`{{\mathrm{fdiv}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
-#. If :math:`{\mathit{binop\_{\scriptstyle 1}}} = \mathsf{min}`, then:
+#. If :math:`{\mathit{binop}} = \mathsf{min}`, then:
 
    a. Return :math:`{{\mathrm{fmin}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
-#. If :math:`{\mathit{binop\_{\scriptstyle 1}}} = \mathsf{max}`, then:
+#. If :math:`{\mathit{binop}} = \mathsf{max}`, then:
 
    a. Return :math:`{{\mathrm{fmax}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
-#. Assert: Due to validation, :math:`{\mathit{binop\_{\scriptstyle 1}}} = \mathsf{copysign}`.
+#. Assert: Due to validation, :math:`{\mathit{binop}} = \mathsf{copysign}`.
 
 #. Return :math:`{{\mathrm{fcopysign}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
@@ -1938,156 +1938,156 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 1. Return :math:`{{\mathrm{ieqz}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}})`.
 
 
-:math:`{{\mathit{relop\_{\scriptstyle 1}}}}{{}_{{\mathit{valtype}}_1}}{({\mathit{val\_{\scriptstyle 1}}}, {\mathit{val\_{\scriptstyle 2}}})}`
-.............................................................................................................................................
+:math:`{{\mathit{relop}}}{{}_{{\mathit{valtype}}}}{({\mathit{val}}, {\mathit{val}}_')}`
+.......................................................................................
 
 
-1. If :math:`{\mathit{valtype}}_1` is :math:`{\mathsf{i}}{n}`, then:
+1. If :math:`{\mathit{valtype}}` is :math:`{\mathsf{i}}{n}`, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_1`.
+   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}`.
 
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{val\_{\scriptstyle 1}}}`.
+   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{val}}`.
 
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{val\_{\scriptstyle 2}}}`.
+   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{val}}_'`.
 
-   #. If :math:`{\mathit{relop\_{\scriptstyle 1}}} = \mathsf{eq}`, then:
+   #. If :math:`{\mathit{relop}} = \mathsf{eq}`, then:
 
       1) Return :math:`{{\mathrm{ieq}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
-   #. If :math:`{\mathit{relop\_{\scriptstyle 1}}} = \mathsf{ne}`, then:
+   #. If :math:`{\mathit{relop}} = \mathsf{ne}`, then:
 
       1) Return :math:`{{\mathrm{ine}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
-   #. If :math:`{\mathit{relop\_{\scriptstyle 1}}}` is :math:`\mathsf{lt}`, then:
+   #. If :math:`{\mathit{relop}}` is :math:`\mathsf{lt}`, then:
 
-      1) Let :math:`({\mathsf{lt}}{{\mathit{sx}}})` be :math:`{\mathit{relop\_{\scriptstyle 1}}}`.
+      1) Let :math:`({\mathsf{lt}}{{\mathit{sx}}})` be :math:`{\mathit{relop}}`.
 
       #) Return :math:`{{{{\mathrm{ilt}}}_{{|{\mathsf{i}}{n}|}}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
 
-   #. If :math:`{\mathit{relop\_{\scriptstyle 1}}}` is :math:`\mathsf{gt}`, then:
+   #. If :math:`{\mathit{relop}}` is :math:`\mathsf{gt}`, then:
 
-      1) Let :math:`({\mathsf{gt}}{{\mathit{sx}}})` be :math:`{\mathit{relop\_{\scriptstyle 1}}}`.
+      1) Let :math:`({\mathsf{gt}}{{\mathit{sx}}})` be :math:`{\mathit{relop}}`.
 
       #) Return :math:`{{{{\mathrm{igt}}}_{{|{\mathsf{i}}{n}|}}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
 
-   #. If :math:`{\mathit{relop\_{\scriptstyle 1}}}` is :math:`\mathsf{le}`, then:
+   #. If :math:`{\mathit{relop}}` is :math:`\mathsf{le}`, then:
 
-      1) Let :math:`({\mathsf{le}}{{\mathit{sx}}})` be :math:`{\mathit{relop\_{\scriptstyle 1}}}`.
+      1) Let :math:`({\mathsf{le}}{{\mathit{sx}}})` be :math:`{\mathit{relop}}`.
 
       #) Return :math:`{{{{\mathrm{ile}}}_{{|{\mathsf{i}}{n}|}}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
 
-   #. If :math:`{\mathit{relop\_{\scriptstyle 1}}}` is :math:`\mathsf{ge}`, then:
+   #. If :math:`{\mathit{relop}}` is :math:`\mathsf{ge}`, then:
 
-      1) Let :math:`({\mathsf{ge}}{{\mathit{sx}}})` be :math:`{\mathit{relop\_{\scriptstyle 1}}}`.
+      1) Let :math:`({\mathsf{ge}}{{\mathit{sx}}})` be :math:`{\mathit{relop}}`.
 
       #) Return :math:`{{{{\mathrm{ige}}}_{{|{\mathsf{i}}{n}|}}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
 
-#. Assert: Due to validation, :math:`{\mathit{valtype}}_1` is :math:`{\mathsf{f}}{n}`.
+#. Assert: Due to validation, :math:`{\mathit{valtype}}` is :math:`{\mathsf{f}}{n}`.
 
-#. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}_1`.
+#. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}`.
 
-#. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{val\_{\scriptstyle 1}}}`.
+#. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{val}}`.
 
-#. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{val\_{\scriptstyle 2}}}`.
+#. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{val}}_'`.
 
-#. If :math:`{\mathit{relop\_{\scriptstyle 1}}} = \mathsf{eq}`, then:
+#. If :math:`{\mathit{relop}} = \mathsf{eq}`, then:
 
    a. Return :math:`{{\mathrm{feq}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
-#. If :math:`{\mathit{relop\_{\scriptstyle 1}}} = \mathsf{ne}`, then:
+#. If :math:`{\mathit{relop}} = \mathsf{ne}`, then:
 
    a. Return :math:`{{\mathrm{fne}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
-#. If :math:`{\mathit{relop\_{\scriptstyle 1}}} = \mathsf{lt}`, then:
+#. If :math:`{\mathit{relop}} = \mathsf{lt}`, then:
 
    a. Return :math:`{{\mathrm{flt}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
-#. If :math:`{\mathit{relop\_{\scriptstyle 1}}} = \mathsf{gt}`, then:
+#. If :math:`{\mathit{relop}} = \mathsf{gt}`, then:
 
    a. Return :math:`{{\mathrm{fgt}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
-#. If :math:`{\mathit{relop\_{\scriptstyle 1}}} = \mathsf{le}`, then:
+#. If :math:`{\mathit{relop}} = \mathsf{le}`, then:
 
    a. Return :math:`{{\mathrm{fle}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
-#. Assert: Due to validation, :math:`{\mathit{relop\_{\scriptstyle 1}}} = \mathsf{ge}`.
+#. Assert: Due to validation, :math:`{\mathit{relop}} = \mathsf{ge}`.
 
 #. Return :math:`{{\mathrm{fge}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
 
-:math:`{{\mathit{cvtop}}_1}{{}_{{\mathit{valtype}}_1, {\mathit{valtype}}_2}}{({\mathit{val\_{\scriptstyle 1}}})}`
-.................................................................................................................
+:math:`{{\mathit{cvtop}}}{{}_{{\mathit{valtype}}, {\mathit{valtype}'}}}{({\mathit{val}})}`
+..........................................................................................
 
 
-1. If :math:`{\mathit{cvtop}}_1` is :math:`\mathsf{extend}`, then:
+1. If :math:`{\mathit{cvtop}}` is :math:`\mathsf{extend}`, then:
 
-   a. Let :math:`(\mathsf{extend}~{\mathit{sx}})` be :math:`{\mathit{cvtop}}_1`.
+   a. Let :math:`(\mathsf{extend}~{\mathit{sx}})` be :math:`{\mathit{cvtop}}`.
 
-   #. Let :math:`{\mathit{iN}}` be :math:`{\mathit{val\_{\scriptstyle 1}}}`.
+   #. Let :math:`{\mathit{iN}}` be :math:`{\mathit{val}}`.
 
-   #. If :math:`{\mathit{valtype}}_1 = \mathsf{i{\scriptstyle 32}}` and :math:`{\mathit{valtype}}_2 = \mathsf{i{\scriptstyle 64}}`, then:
+   #. If :math:`{\mathit{valtype}} = \mathsf{i{\scriptstyle 32}}` and :math:`{\mathit{valtype}'} = \mathsf{i{\scriptstyle 64}}`, then:
 
       1) Return :math:`{{{{\mathrm{extend}}}_{32, 64}^{{\mathit{sx}}}}}{({\mathit{iN}})}`.
 
-#. Let :math:`{\mathit{iN}}` be :math:`{\mathit{val\_{\scriptstyle 1}}}`.
+#. Let :math:`{\mathit{iN}}` be :math:`{\mathit{val}}`.
 
-#. If :math:`{\mathit{valtype}}_1 = \mathsf{i{\scriptstyle 64}}` and :math:`{\mathit{valtype}}_2 = \mathsf{i{\scriptstyle 32}}` and :math:`{\mathit{cvtop}}_1 = \mathsf{wrap}`, then:
+#. If :math:`{\mathit{valtype}} = \mathsf{i{\scriptstyle 64}}` and :math:`{\mathit{valtype}'} = \mathsf{i{\scriptstyle 32}}` and :math:`{\mathit{cvtop}} = \mathsf{wrap}`, then:
 
    a. Return :math:`{{\mathrm{wrap}}}_{64, 32}({\mathit{iN}})`.
 
-#. If :math:`{\mathit{valtype}}_1` is :math:`{\mathsf{f}}{n}`, then:
+#. If :math:`{\mathit{valtype}}` is :math:`{\mathsf{f}}{n}`, then:
 
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}_1`.
+   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}`.
 
-   #. If :math:`{\mathit{valtype}}_2` is :math:`{\mathsf{i}}{n}`, then:
+   #. If :math:`{\mathit{valtype}'}` is :math:`{\mathsf{i}}{n}`, then:
 
-      1) Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_2`.
+      1) Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}'}`.
 
-      #) If :math:`{\mathit{cvtop}}_1` is :math:`\mathsf{trunc}`, then:
+      #) If :math:`{\mathit{cvtop}}` is :math:`\mathsf{trunc}`, then:
 
-         a) Let :math:`(\mathsf{trunc}~{\mathit{sx}})` be :math:`{\mathit{cvtop}}_1`.
+         a) Let :math:`(\mathsf{trunc}~{\mathit{sx}})` be :math:`{\mathit{cvtop}}`.
 
-         #) Let :math:`{\mathit{fN}}` be :math:`{\mathit{val\_{\scriptstyle 1}}}`.
+         #) Let :math:`{\mathit{fN}}` be :math:`{\mathit{val}}`.
 
          #) Return :math:`{{{{\mathrm{trunc}}}_{{|{\mathsf{f}}{n}|}, {|{\mathsf{i}}{n}|}}^{{\mathit{sx}}}}}{({\mathit{fN}})}`.
 
-#. Let :math:`{\mathit{fN}}` be :math:`{\mathit{val\_{\scriptstyle 1}}}`.
+#. Let :math:`{\mathit{fN}}` be :math:`{\mathit{val}}`.
 
-#. If :math:`{\mathit{valtype}}_1 = \mathsf{f{\scriptstyle 32}}` and :math:`{\mathit{valtype}}_2 = \mathsf{f{\scriptstyle 64}}` and :math:`{\mathit{cvtop}}_1 = \mathsf{promote}`, then:
+#. If :math:`{\mathit{valtype}} = \mathsf{f{\scriptstyle 32}}` and :math:`{\mathit{valtype}'} = \mathsf{f{\scriptstyle 64}}` and :math:`{\mathit{cvtop}} = \mathsf{promote}`, then:
 
    a. Return :math:`{{\mathrm{promote}}}_{32, 64}({\mathit{fN}})`.
 
-#. If :math:`{\mathit{valtype}}_1 = \mathsf{f{\scriptstyle 64}}` and :math:`{\mathit{valtype}}_2 = \mathsf{f{\scriptstyle 32}}` and :math:`{\mathit{cvtop}}_1 = \mathsf{demote}`, then:
+#. If :math:`{\mathit{valtype}} = \mathsf{f{\scriptstyle 64}}` and :math:`{\mathit{valtype}'} = \mathsf{f{\scriptstyle 32}}` and :math:`{\mathit{cvtop}} = \mathsf{demote}`, then:
 
    a. Return :math:`{{\mathrm{demote}}}_{64, 32}({\mathit{fN}})`.
 
-#. If :math:`{\mathit{valtype}}_1` is :math:`{\mathsf{i}}{n}`, then:
+#. If :math:`{\mathit{valtype}}` is :math:`{\mathsf{i}}{n}`, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_1`.
+   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}`.
 
-   #. If :math:`{\mathit{valtype}}_2` is :math:`{\mathsf{f}}{n}`, then:
+   #. If :math:`{\mathit{valtype}'}` is :math:`{\mathsf{f}}{n}`, then:
 
-      1) Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}_2`.
+      1) Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}'}`.
 
-      #) If :math:`{\mathit{cvtop}}_1` is :math:`\mathsf{convert}`, then:
+      #) If :math:`{\mathit{cvtop}}` is :math:`\mathsf{convert}`, then:
 
-         a) Let :math:`(\mathsf{convert}~{\mathit{sx}})` be :math:`{\mathit{cvtop}}_1`.
+         a) Let :math:`(\mathsf{convert}~{\mathit{sx}})` be :math:`{\mathit{cvtop}}`.
 
          #) Return :math:`{{{{\mathrm{convert}}}_{{|{\mathsf{i}}{n}|}, {|{\mathsf{f}}{n}|}}^{{\mathit{sx}}}}}{({\mathit{iN}})}`.
 
-      #) If :math:`{\mathit{cvtop}}_1 = \mathsf{reinterpret}` and :math:`{|{\mathsf{i}}{n}|} = {|{\mathsf{f}}{n}|}`, then:
+      #) If :math:`{\mathit{cvtop}} = \mathsf{reinterpret}` and :math:`{|{\mathsf{i}}{n}|} = {|{\mathsf{f}}{n}|}`, then:
 
          a) Return :math:`{{\mathrm{reinterpret}}}_{{\mathsf{i}}{n}, {\mathsf{f}}{n}}({\mathit{iN}})`.
 
-#. Assert: Due to validation, :math:`{\mathit{valtype}}_1` is :math:`{\mathsf{f}}{n}`.
+#. Assert: Due to validation, :math:`{\mathit{valtype}}` is :math:`{\mathsf{f}}{n}`.
 
-#. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}_1`.
+#. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}`.
 
-#. Assert: Due to validation, :math:`{\mathit{valtype}}_2` is :math:`{\mathsf{i}}{n}`.
+#. Assert: Due to validation, :math:`{\mathit{valtype}'}` is :math:`{\mathsf{i}}{n}`.
 
-#. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_2`.
+#. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}'}`.
 
-#. Assert: Due to validation, :math:`{\mathit{cvtop}}_1 = \mathsf{reinterpret}`.
+#. Assert: Due to validation, :math:`{\mathit{cvtop}} = \mathsf{reinterpret}`.
 
 #. Assert: Due to validation, :math:`{|{\mathsf{i}}{n}|} = {|{\mathsf{f}}{n}|}`.
 
@@ -2112,36 +2112,36 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Return :math:`p`.
 
 
-:math:`{{\mathrm{default}}}_{{\mathit{valtype}}_1}`
-...................................................
+:math:`{{\mathrm{default}}}_{{\mathit{valtype}}}`
+.................................................
 
 
-1. If :math:`{\mathit{valtype}}_1 = \mathsf{i{\scriptstyle 32}}`, then:
+1. If :math:`{\mathit{valtype}} = \mathsf{i{\scriptstyle 32}}`, then:
 
    a. Return :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~0)`.
 
-#. If :math:`{\mathit{valtype}}_1 = \mathsf{i{\scriptstyle 64}}`, then:
+#. If :math:`{\mathit{valtype}} = \mathsf{i{\scriptstyle 64}}`, then:
 
    a. Return :math:`(\mathsf{i{\scriptstyle 64}}{.}\mathsf{const}~0)`.
 
-#. If :math:`{\mathit{valtype}}_1 = \mathsf{f{\scriptstyle 32}}`, then:
+#. If :math:`{\mathit{valtype}} = \mathsf{f{\scriptstyle 32}}`, then:
 
    a. Return :math:`(\mathsf{f{\scriptstyle 32}}{.}\mathsf{const}~{+0})`.
 
-#. Assert: Due to validation, :math:`{\mathit{valtype}}_1 = \mathsf{f{\scriptstyle 64}}`.
+#. Assert: Due to validation, :math:`{\mathit{valtype}} = \mathsf{f{\scriptstyle 64}}`.
 
 #. Return :math:`(\mathsf{f{\scriptstyle 64}}{.}\mathsf{const}~{+0})`.
 
 
-:math:`{\mathrm{funcs}}({{\mathit{externaddr}}_1^\ast})`
-........................................................
+:math:`{\mathrm{funcs}}({{\mathit{externaddr}}^\ast})`
+......................................................
 
 
-1. If :math:`{{\mathit{externaddr}}_1^\ast} = \epsilon`, then:
+1. If :math:`{{\mathit{externaddr}}^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}_1^\ast}`.
+#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}^\ast}`.
 
 #. If :math:`{\mathit{externaddr}}_0` is :math:`\mathsf{func}`, then:
 
@@ -2149,20 +2149,20 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Return :math:`{\mathit{fa}}~{\mathrm{funcs}}({{\mathit{xv}}^\ast})`.
 
-#. Let :math:`{\mathit{externaddr}}~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}_1^\ast}`.
+#. Let :math:`{\mathit{externaddr}}~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}^\ast}`.
 
 #. Return :math:`{\mathrm{funcs}}({{\mathit{xv}}^\ast})`.
 
 
-:math:`{\mathrm{globals}}({{\mathit{externaddr}}_1^\ast})`
-..........................................................
+:math:`{\mathrm{globals}}({{\mathit{externaddr}}^\ast})`
+........................................................
 
 
-1. If :math:`{{\mathit{externaddr}}_1^\ast} = \epsilon`, then:
+1. If :math:`{{\mathit{externaddr}}^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}_1^\ast}`.
+#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}^\ast}`.
 
 #. If :math:`{\mathit{externaddr}}_0` is :math:`\mathsf{global}`, then:
 
@@ -2170,20 +2170,20 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Return :math:`{\mathit{ga}}~{\mathrm{globals}}({{\mathit{xv}}^\ast})`.
 
-#. Let :math:`{\mathit{externaddr}}~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}_1^\ast}`.
+#. Let :math:`{\mathit{externaddr}}~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}^\ast}`.
 
 #. Return :math:`{\mathrm{globals}}({{\mathit{xv}}^\ast})`.
 
 
-:math:`{\mathrm{tables}}({{\mathit{externaddr}}_1^\ast})`
-.........................................................
+:math:`{\mathrm{tables}}({{\mathit{externaddr}}^\ast})`
+.......................................................
 
 
-1. If :math:`{{\mathit{externaddr}}_1^\ast} = \epsilon`, then:
+1. If :math:`{{\mathit{externaddr}}^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}_1^\ast}`.
+#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}^\ast}`.
 
 #. If :math:`{\mathit{externaddr}}_0` is :math:`\mathsf{table}`, then:
 
@@ -2191,20 +2191,20 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Return :math:`{\mathit{ta}}~{\mathrm{tables}}({{\mathit{xv}}^\ast})`.
 
-#. Let :math:`{\mathit{externaddr}}~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}_1^\ast}`.
+#. Let :math:`{\mathit{externaddr}}~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}^\ast}`.
 
 #. Return :math:`{\mathrm{tables}}({{\mathit{xv}}^\ast})`.
 
 
-:math:`{\mathrm{mems}}({{\mathit{externaddr}}_1^\ast})`
-.......................................................
+:math:`{\mathrm{mems}}({{\mathit{externaddr}}^\ast})`
+.....................................................
 
 
-1. If :math:`{{\mathit{externaddr}}_1^\ast} = \epsilon`, then:
+1. If :math:`{{\mathit{externaddr}}^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}_1^\ast}`.
+#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}^\ast}`.
 
 #. If :math:`{\mathit{externaddr}}_0` is :math:`\mathsf{mem}`, then:
 
@@ -2212,7 +2212,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Return :math:`{\mathit{ma}}~{\mathrm{mems}}({{\mathit{xv}}^\ast})`.
 
-#. Let :math:`{\mathit{externaddr}}~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}_1^\ast}`.
+#. Let :math:`{\mathit{externaddr}}~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}^\ast}`.
 
 #. Return :math:`{\mathrm{mems}}({{\mathit{xv}}^\ast})`.
 
@@ -2391,15 +2391,15 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Fail.
 
 
-:math:`{\mathrm{funcs}}({{\mathit{externaddr}}_1^\ast})`
-........................................................
+:math:`{\mathrm{funcs}}({{\mathit{externaddr}}^\ast})`
+......................................................
 
 
-1. If :math:`{{\mathit{externaddr}}_1^\ast} = \epsilon`, then:
+1. If :math:`{{\mathit{externaddr}}^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}_1^\ast}`.
+#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}^\ast}`.
 
 #. If :math:`{\mathit{externaddr}}_0` is :math:`\mathsf{func}`, then:
 
@@ -2407,20 +2407,20 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Return :math:`{\mathit{fa}}~{\mathrm{funcs}}({{\mathit{externaddr}'}^\ast})`.
 
-#. Let :math:`{\mathit{externaddr}}~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}_1^\ast}`.
+#. Let :math:`{\mathit{externaddr}}~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}^\ast}`.
 
 #. Return :math:`{\mathrm{funcs}}({{\mathit{externaddr}'}^\ast})`.
 
 
-:math:`{\mathrm{globals}}({{\mathit{externaddr}}_1^\ast})`
-..........................................................
+:math:`{\mathrm{globals}}({{\mathit{externaddr}}^\ast})`
+........................................................
 
 
-1. If :math:`{{\mathit{externaddr}}_1^\ast} = \epsilon`, then:
+1. If :math:`{{\mathit{externaddr}}^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}_1^\ast}`.
+#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}^\ast}`.
 
 #. If :math:`{\mathit{externaddr}}_0` is :math:`\mathsf{global}`, then:
 
@@ -2428,20 +2428,20 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Return :math:`{\mathit{ga}}~{\mathrm{globals}}({{\mathit{externaddr}'}^\ast})`.
 
-#. Let :math:`{\mathit{externaddr}}~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}_1^\ast}`.
+#. Let :math:`{\mathit{externaddr}}~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}^\ast}`.
 
 #. Return :math:`{\mathrm{globals}}({{\mathit{externaddr}'}^\ast})`.
 
 
-:math:`{\mathrm{tables}}({{\mathit{externaddr}}_1^\ast})`
-.........................................................
+:math:`{\mathrm{tables}}({{\mathit{externaddr}}^\ast})`
+.......................................................
 
 
-1. If :math:`{{\mathit{externaddr}}_1^\ast} = \epsilon`, then:
+1. If :math:`{{\mathit{externaddr}}^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}_1^\ast}`.
+#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}^\ast}`.
 
 #. If :math:`{\mathit{externaddr}}_0` is :math:`\mathsf{table}`, then:
 
@@ -2449,20 +2449,20 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Return :math:`{\mathit{ta}}~{\mathrm{tables}}({{\mathit{externaddr}'}^\ast})`.
 
-#. Let :math:`{\mathit{externaddr}}~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}_1^\ast}`.
+#. Let :math:`{\mathit{externaddr}}~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}^\ast}`.
 
 #. Return :math:`{\mathrm{tables}}({{\mathit{externaddr}'}^\ast})`.
 
 
-:math:`{\mathrm{mems}}({{\mathit{externaddr}}_1^\ast})`
-.......................................................
+:math:`{\mathrm{mems}}({{\mathit{externaddr}}^\ast})`
+.....................................................
 
 
-1. If :math:`{{\mathit{externaddr}}_1^\ast} = \epsilon`, then:
+1. If :math:`{{\mathit{externaddr}}^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}_1^\ast}`.
+#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}^\ast}`.
 
 #. If :math:`{\mathit{externaddr}}_0` is :math:`\mathsf{mem}`, then:
 
@@ -2470,7 +2470,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Return :math:`{\mathit{ma}}~{\mathrm{mems}}({{\mathit{externaddr}'}^\ast})`.
 
-#. Let :math:`{\mathit{externaddr}}~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}_1^\ast}`.
+#. Let :math:`{\mathit{externaddr}}~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}^\ast}`.
 
 #. Return :math:`{\mathrm{mems}}({{\mathit{externaddr}'}^\ast})`.
 
@@ -2490,15 +2490,15 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Return :math:`a`.
 
 
-:math:`{\mathrm{allocfuncs}}(s, {\mathit{moduleinst}}, {{\mathit{func}}_1^\ast})`
-.................................................................................
+:math:`{\mathrm{allocfuncs}}(s, {\mathit{moduleinst}}, {{\mathit{func}}^\ast})`
+...............................................................................
 
 
-1. If :math:`{{\mathit{func}}_1^\ast} = \epsilon`, then:
+1. If :math:`{{\mathit{func}}^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{func}}~{{\mathit{func}'}^\ast}` be :math:`{{\mathit{func}}_1^\ast}`.
+#. Let :math:`{\mathit{func}}~{{\mathit{func}'}^\ast}` be :math:`{{\mathit{func}}^\ast}`.
 
 #. Let :math:`{\mathit{fa}}` be :math:`{\mathrm{allocfunc}}(s, {\mathit{moduleinst}}, {\mathit{func}})`.
 
@@ -2520,23 +2520,23 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Return :math:`a`.
 
 
-:math:`{\mathrm{allocglobals}}(s, {{\mathit{globaltype}}_1^\ast}, {{\mathit{val}}_1^\ast})`
-...........................................................................................
+:math:`{\mathrm{allocglobals}}(s, {{\mathit{globaltype}}^\ast}, {{\mathit{val}}^\ast})`
+.......................................................................................
 
 
-1. If :math:`{{\mathit{globaltype}}_1^\ast} = \epsilon`, then:
+1. If :math:`{{\mathit{globaltype}}^\ast} = \epsilon`, then:
 
-   a. Assert: :math:`{{\mathit{val}}_1^\ast} = \epsilon`.
+   a. Assert: :math:`{{\mathit{val}}^\ast} = \epsilon`.
 
    #. Return :math:`\epsilon`.
 
 #. Else:
 
-   a. Let :math:`{\mathit{globaltype}}~{{\mathit{globaltype}'}^\ast}` be :math:`{{\mathit{globaltype}}_1^\ast}`.
+   a. Let :math:`{\mathit{globaltype}}~{{\mathit{globaltype}'}^\ast}` be :math:`{{\mathit{globaltype}}^\ast}`.
 
-   #. Assert: :math:`{|{{\mathit{val}}_1^\ast}|} \geq 1`.
+   #. Assert: :math:`{|{{\mathit{val}}^\ast}|} \geq 1`.
 
-   #. Let :math:`{\mathit{val}}~{{\mathit{val}'}^\ast}` be :math:`{{\mathit{val}}_1^\ast}`.
+   #. Let :math:`{\mathit{val}}~{{\mathit{val}'}^\ast}` be :math:`{{\mathit{val}}^\ast}`.
 
    #. Let :math:`{\mathit{ga}}` be :math:`{\mathrm{allocglobal}}(s, {\mathit{globaltype}}, {\mathit{val}})`.
 
@@ -2558,15 +2558,15 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Return :math:`a`.
 
 
-:math:`{\mathrm{alloctables}}(s, {{\mathit{tabletype}}_1^\ast})`
-................................................................
+:math:`{\mathrm{alloctables}}(s, {{\mathit{tabletype}}^\ast})`
+..............................................................
 
 
-1. If :math:`{{\mathit{tabletype}}_1^\ast} = \epsilon`, then:
+1. If :math:`{{\mathit{tabletype}}^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{tabletype}}~{{\mathit{tabletype}'}^\ast}` be :math:`{{\mathit{tabletype}}_1^\ast}`.
+#. Let :math:`{\mathit{tabletype}}~{{\mathit{tabletype}'}^\ast}` be :math:`{{\mathit{tabletype}}^\ast}`.
 
 #. Let :math:`{\mathit{ta}}` be :math:`{\mathrm{alloctable}}(s, {\mathit{tabletype}})`.
 
@@ -2588,15 +2588,15 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Return :math:`a`.
 
 
-:math:`{\mathrm{allocmems}}(s, {{\mathit{memtype}}_1^\ast})`
-............................................................
+:math:`{\mathrm{allocmems}}(s, {{\mathit{memtype}}^\ast})`
+..........................................................
 
 
-1. If :math:`{{\mathit{memtype}}_1^\ast} = \epsilon`, then:
+1. If :math:`{{\mathit{memtype}}^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{memtype}}~{{\mathit{memtype}'}^\ast}` be :math:`{{\mathit{memtype}}_1^\ast}`.
+#. Let :math:`{\mathit{memtype}}~{{\mathit{memtype}'}^\ast}` be :math:`{{\mathit{memtype}}^\ast}`.
 
 #. Let :math:`{\mathit{ma}}` be :math:`{\mathrm{allocmem}}(s, {\mathit{memtype}})`.
 
@@ -2605,31 +2605,31 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Return :math:`{\mathit{ma}}~{{\mathit{ma}'}^\ast}`.
 
 
-:math:`{\mathrm{instexport}}({{\mathit{fa}}^\ast}, {{\mathit{ga}}^\ast}, {{\mathit{ta}}^\ast}, {{\mathit{ma}}^\ast}, \mathsf{export}~{\mathit{name}}~{\mathit{externidx}}_1)`
-.............................................................................................................................................................................
+:math:`{\mathrm{instexport}}({{\mathit{fa}}^\ast}, {{\mathit{ga}}^\ast}, {{\mathit{ta}}^\ast}, {{\mathit{ma}}^\ast}, \mathsf{export}~{\mathit{name}}~{\mathit{externidx}})`
+...........................................................................................................................................................................
 
 
-1. If :math:`{\mathit{externidx}}_1` is :math:`\mathsf{func}`, then:
+1. If :math:`{\mathit{externidx}}` is :math:`\mathsf{func}`, then:
 
-   a. Let :math:`(\mathsf{func}~x)` be :math:`{\mathit{externidx}}_1`.
+   a. Let :math:`(\mathsf{func}~x)` be :math:`{\mathit{externidx}}`.
 
    #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{func}~{{\mathit{fa}}^\ast}{}[x]) \}\end{array}`.
 
-#. If :math:`{\mathit{externidx}}_1` is :math:`\mathsf{global}`, then:
+#. If :math:`{\mathit{externidx}}` is :math:`\mathsf{global}`, then:
 
-   a. Let :math:`(\mathsf{global}~x)` be :math:`{\mathit{externidx}}_1`.
+   a. Let :math:`(\mathsf{global}~x)` be :math:`{\mathit{externidx}}`.
 
    #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{global}~{{\mathit{ga}}^\ast}{}[x]) \}\end{array}`.
 
-#. If :math:`{\mathit{externidx}}_1` is :math:`\mathsf{table}`, then:
+#. If :math:`{\mathit{externidx}}` is :math:`\mathsf{table}`, then:
 
-   a. Let :math:`(\mathsf{table}~x)` be :math:`{\mathit{externidx}}_1`.
+   a. Let :math:`(\mathsf{table}~x)` be :math:`{\mathit{externidx}}`.
 
    #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{table}~{{\mathit{ta}}^\ast}{}[x]) \}\end{array}`.
 
-#. Assert: :math:`{\mathit{externidx}}_1` is :math:`\mathsf{mem}`.
+#. Assert: :math:`{\mathit{externidx}}` is :math:`\mathsf{mem}`.
 
-#. Let :math:`(\mathsf{mem}~x)` be :math:`{\mathit{externidx}}_1`.
+#. Let :math:`(\mathsf{mem}~x)` be :math:`{\mathit{externidx}}`.
 
 #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{mem}~{{\mathit{ma}}^\ast}{}[x]) \}\end{array}`.
 
@@ -2687,21 +2687,21 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Return :math:`{\mathit{moduleinst}}`.
 
 
-:math:`{\mathrm{initelem}}(s, {\mathit{moduleinst}}, {{\mathit{u{\kern-0.1em\scriptstyle 32}}}_1^\ast}, {{\mathit{funcaddr}}_1^\ast})`
-......................................................................................................................................
+:math:`{\mathrm{initelem}}(s, {\mathit{moduleinst}}, {{\mathit{u{\kern-0.1em\scriptstyle 32}}}^\ast}, {{\mathit{funcaddr}}^\ast})`
+..................................................................................................................................
 
 
-1. If :math:`{{\mathit{u{\kern-0.1em\scriptstyle 32}}}_1^\ast} = \epsilon` and :math:`{{\mathit{funcaddr}}_1^\ast} = \epsilon`, then:
+1. If :math:`{{\mathit{u{\kern-0.1em\scriptstyle 32}}}^\ast} = \epsilon` and :math:`{{\mathit{funcaddr}}^\ast} = \epsilon`, then:
 
    a. Return.
 
-#. Assert: :math:`{|{{\mathit{funcaddr}}_1^\ast}|} \geq 1`.
+#. Assert: :math:`{|{{\mathit{funcaddr}}^\ast}|} \geq 1`.
 
-#. Let :math:`{a^\ast}~{{{a'}^\ast}^\ast}` be :math:`{{\mathit{funcaddr}}_1^\ast}`.
+#. Let :math:`{a^\ast}~{{{a'}^\ast}^\ast}` be :math:`{{\mathit{funcaddr}}^\ast}`.
 
-#. Assert: :math:`{|{{\mathit{u{\kern-0.1em\scriptstyle 32}}}_1^\ast}|} \geq 1`.
+#. Assert: :math:`{|{{\mathit{u{\kern-0.1em\scriptstyle 32}}}^\ast}|} \geq 1`.
 
-#. Let :math:`i~{{i'}^\ast}` be :math:`{{\mathit{u{\kern-0.1em\scriptstyle 32}}}_1^\ast}`.
+#. Let :math:`i~{{i'}^\ast}` be :math:`{{\mathit{u{\kern-0.1em\scriptstyle 32}}}^\ast}`.
 
 #. Replace :math:`s{.}\mathsf{tables}{}[{\mathit{moduleinst}}{.}\mathsf{tables}{}[0]]{.}\mathsf{refs}{}[i : {|{a^\ast}|}]` with :math:`{a^\ast}`.
 
@@ -2710,21 +2710,21 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Return.
 
 
-:math:`{\mathrm{initdata}}(s, {\mathit{moduleinst}}, {{\mathit{u{\kern-0.1em\scriptstyle 32}}}_1^\ast}, {{\mathit{byte}}_1^\ast})`
-..................................................................................................................................
+:math:`{\mathrm{initdata}}(s, {\mathit{moduleinst}}, {{\mathit{u{\kern-0.1em\scriptstyle 32}}}^\ast}, {{\mathit{byte}}^\ast})`
+..............................................................................................................................
 
 
-1. If :math:`{{\mathit{u{\kern-0.1em\scriptstyle 32}}}_1^\ast} = \epsilon` and :math:`{{\mathit{byte}}_1^\ast} = \epsilon`, then:
+1. If :math:`{{\mathit{u{\kern-0.1em\scriptstyle 32}}}^\ast} = \epsilon` and :math:`{{\mathit{byte}}^\ast} = \epsilon`, then:
 
    a. Return.
 
-#. Assert: :math:`{|{{\mathit{byte}}_1^\ast}|} \geq 1`.
+#. Assert: :math:`{|{{\mathit{byte}}^\ast}|} \geq 1`.
 
-#. Let :math:`{b^\ast}~{{{b'}^\ast}^\ast}` be :math:`{{\mathit{byte}}_1^\ast}`.
+#. Let :math:`{b^\ast}~{{{b'}^\ast}^\ast}` be :math:`{{\mathit{byte}}^\ast}`.
 
-#. Assert: :math:`{|{{\mathit{u{\kern-0.1em\scriptstyle 32}}}_1^\ast}|} \geq 1`.
+#. Assert: :math:`{|{{\mathit{u{\kern-0.1em\scriptstyle 32}}}^\ast}|} \geq 1`.
 
-#. Let :math:`i~{{i'}^\ast}` be :math:`{{\mathit{u{\kern-0.1em\scriptstyle 32}}}_1^\ast}`.
+#. Let :math:`i~{{i'}^\ast}` be :math:`{{\mathit{u{\kern-0.1em\scriptstyle 32}}}^\ast}`.
 
 #. Replace :math:`s{.}\mathsf{mems}{}[{\mathit{moduleinst}}{.}\mathsf{mems}{}[0]]{.}\mathsf{bytes}{}[i : {|{b^\ast}|}]` with :math:`{b^\ast}`.
 
@@ -2875,18 +2875,18 @@ Memtype_ok
   - limits is valid with (2 ^ 16).
 
 Externtype_ok
-- the external type externtype_1 is valid if:
+- the external type externtype is valid if:
   - Either:
-    - externtype_1 is (FUNC functype).
+    - externtype is (FUNC functype).
     - the function type functype is valid.
   - Or:
-    - externtype_1 is (GLOBAL globaltype).
+    - externtype is (GLOBAL globaltype).
     - the global type globaltype is valid.
   - Or:
-    - externtype_1 is (TABLE tabletype).
+    - externtype is (TABLE tabletype).
     - the table type tabletype is valid.
   - Or:
-    - externtype_1 is (MEM memtype).
+    - externtype is (MEM memtype).
     - the memory type memtype is valid.
 
 Externtype_ok/func
@@ -2925,22 +2925,22 @@ Memtype_sub
   - lim_1 matches lim_2.
 
 Externtype_sub
-- the external type externtype_1 matches the external type externtype_2 if:
+- the external type externtype matches the external type externtype' if:
   - Either:
-    - externtype_1 is (FUNC ft_1).
-    - externtype_2 is (FUNC ft_2).
+    - externtype is (FUNC ft_1).
+    - externtype' is (FUNC ft_2).
     - the function type ft_1 matches the function type ft_2.
   - Or:
-    - externtype_1 is (GLOBAL gt_1).
-    - externtype_2 is (GLOBAL gt_2).
+    - externtype is (GLOBAL gt_1).
+    - externtype' is (GLOBAL gt_2).
     - the global type gt_1 matches the global type gt_2.
   - Or:
-    - externtype_1 is (TABLE tt_1).
-    - externtype_2 is (TABLE tt_2).
+    - externtype is (TABLE tt_1).
+    - externtype' is (TABLE tt_2).
     - the table type tt_1 matches the table type tt_2.
   - Or:
-    - externtype_1 is (MEM mt_1).
-    - externtype_2 is (MEM mt_2).
+    - externtype is (MEM mt_1).
+    - externtype' is (MEM mt_2).
     - the memory type mt_1 matches the memory type mt_2.
 
 Externtype_sub/func
@@ -3035,12 +3035,12 @@ Instr_ok/relop
 - the instruction (RELOP t relop_t) is valid with the function type [t, t] -> [I32].
 
 Instr_ok/cvtop
-- the instruction (CVTOP nt_1 nt_2 cvtop_1) is valid with the function type [nt_2] -> [nt_1] if:
+- the instruction (CVTOP nt_1 nt_2 cvtop) is valid with the function type [nt_2] -> [nt_1] if:
   - Either:
-    - cvtop_1 is REINTERPRET.
+    - cvtop is REINTERPRET.
     - $size(nt_1) is $size(nt_2).
   - Or:
-    - cvtop_1 is cvtop.
+    - cvtop is cvtop.
 
 Instr_ok/local.get
 - the instruction (LOCAL.GET x) is valid with the function type [] -> [t] if:
@@ -3076,31 +3076,31 @@ Instr_ok/memory.grow
   - the memory type C.MEMS[0] is mt.
 
 Instr_ok/load
-- the instruction (LOAD valtype_1 loadop__1? memarg) is valid with the function type [I32] -> [valtype_3] if:
+- the instruction (LOAD valtype loadop_? memarg) is valid with the function type [I32] -> [valtype''] if:
   - the memory type C.MEMS[0] is mt.
   - Either:
-    - the number type valtype_1 is t.
-    - loadop__1? is ?().
-    - the number type valtype_3 is t.
+    - the number type valtype is t.
+    - loadop_? is ?().
+    - the number type valtype'' is t.
     - (2 ^ memarg.ALIGN) is less than or equal to ($size(t) / 8).
   - Or:
-    - valtype_1 is Inn.
-    - loadop__1? is ?(M _ sx).
-    - valtype_3 is Inn.
+    - valtype is Inn.
+    - loadop_? is ?(M _ sx).
+    - valtype'' is Inn.
     - (2 ^ memarg.ALIGN) is less than or equal to (M / 8).
 
 Instr_ok/store
-- the instruction (STORE valtype_1 sz_1? memarg) is valid with the function type [I32, valtype_2] -> [] if:
+- the instruction (STORE valtype sz? memarg) is valid with the function type [I32, valtype'] -> [] if:
   - the memory type C.MEMS[0] is mt.
   - Either:
-    - the number type valtype_1 is t.
-    - the pack size sz_1? is ?().
-    - the number type valtype_2 is t.
+    - the number type valtype is t.
+    - the pack size sz? is ?().
+    - the number type valtype' is t.
     - (2 ^ memarg.ALIGN) is less than or equal to ($size(t) / 8).
   - Or:
-    - valtype_1 is Inn.
-    - sz_1? is ?(M).
-    - valtype_2 is Inn.
+    - valtype is Inn.
+    - sz? is ?(M).
+    - valtype' is Inn.
     - (2 ^ memarg.ALIGN) is less than or equal to (M / 8).
 
 Instr_ok/cvtop-reinterpret
@@ -3131,21 +3131,21 @@ Instr_ok/store-pack
   - (2 ^ memarg.ALIGN) is less than or equal to (M / 8).
 
 Instrs_ok
-- the instruction sequence instr_1* is valid with the function type valtype_1* -> valtype_2* if:
+- the instruction sequence instr'* is valid with the function type valtype* -> valtype'* if:
   - Either:
-    - instr_1* is [].
-    - the number type sequence valtype_1* is [].
-    - the number type sequence valtype_2* is [].
+    - instr'* is [].
+    - the number type sequence valtype* is [].
+    - the number type sequence valtype'* is [].
   - Or:
-    - instr_1* is [instr_1] :: instr_2*.
-    - valtype_1* is t_1*.
-    - valtype_2* is t_3*.
+    - instr'* is [instr_1] :: instr_2*.
+    - valtype* is t_1*.
+    - valtype'* is t_3*.
     - the instruction instr_1 is valid with the function type t_1* -> t_2*.
     - the instruction sequence instr_2* is valid with the function type t_2* -> t_3*.
   - Or:
-    - instr_1* is instr*.
-    - valtype_1* is t* :: t_1*.
-    - valtype_2* is t* :: t_2*.
+    - instr'* is instr*.
+    - valtype* is t* :: t_1*.
+    - valtype'* is t* :: t_2*.
     - the instruction sequence instr* is valid with t_1* -> t_2*.
 
 Instrs_ok/empty
@@ -3165,11 +3165,11 @@ Expr_ok
   - instr* is valid with the function type [] -> t?.
 
 Instr_const
-- the instruction instr_1 is constant if:
+- the instruction instr is constant if:
   - Either:
-    - instr_1 is (t.CONST c).
+    - instr is (t.CONST c).
   - Or:
-    - instr_1 is (GLOBAL.GET x).
+    - instr is (GLOBAL.GET x).
     - the global type C.GLOBALS[x] exists.
     - C.GLOBALS[x] is (?() t).
 
@@ -3238,25 +3238,25 @@ Import_ok
   - xt is valid.
 
 Externidx_ok
-- the external index externidx_1 is valid with the external type externtype_1 if:
+- the external index externidx is valid with the external type externtype if:
   - Either:
-    - externidx_1 is (FUNC x).
-    - externtype_1 is (FUNC ft).
+    - externidx is (FUNC x).
+    - externtype is (FUNC ft).
     - the function type C.FUNCS[x] exists.
     - C.FUNCS[x] is ft.
   - Or:
-    - externidx_1 is (GLOBAL x).
-    - externtype_1 is (GLOBAL gt).
+    - externidx is (GLOBAL x).
+    - externtype is (GLOBAL gt).
     - the global type C.GLOBALS[x] exists.
     - C.GLOBALS[x] is gt.
   - Or:
-    - externidx_1 is (TABLE x).
-    - externtype_1 is (TABLE tt).
+    - externidx is (TABLE x).
+    - externtype is (TABLE tt).
     - the table type C.TABLES[x] exists.
     - C.TABLES[x] is tt.
   - Or:
-    - externidx_1 is (MEM x).
-    - externtype_1 is (MEM mt).
+    - externidx is (MEM x).
+    - externtype is (MEM mt).
     - the memory type C.MEMS[x] exists.
     - C.MEMS[x] is mt.
 
@@ -3358,10 +3358,10 @@ Step_pure/label
 3. Pop the label (LABEL_ _ { _ }) from the stack.
 4. Push the values val* to the stack.
 
-Step_pure/br n_1
+Step_pure/br n'
 1. Assert: Due to validation, the first non-value entry of the stack is a LABEL_.
 2. Let (LABEL_ n { instr'* }) be the topmost LABEL_.
-3. If (n_1 = 0), then:
+3. If (n' = 0), then:
   a. Assert: Due to validation, there are at least n values on the top of the stack.
   b. Pop the values val^n from the stack.
   c. Pop all values val'* from the top of the stack.
@@ -3370,8 +3370,8 @@ Step_pure/br n_1
   f. Execute the sequence instr'*.
 4. Else:
   a. Pop all values val* from the top of the stack.
-  b. If (n_1 >= 1), then:
-    1) Let l be (n_1 - 1).
+  b. If (n' >= 1), then:
+    1) Let l be (n' - 1).
     2) Pop the label (LABEL_ _ { _ }) from the stack.
     3) Push the values val* to the stack.
     4) Execute the instruction (BR l).
@@ -3513,25 +3513,25 @@ Step_read/global.get x
 1. Let z be the current state.
 2. Push the value $global(z, x).VALUE to the stack.
 
-Step_read/load valtype_1 loadop__1? ao
+Step_read/load valtype loadop_? ao
 1. Let z be the current state.
 2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 3. Pop the value (I32.CONST i) from the stack.
-4. If loadop__1? is not defined, then:
-  a. Let t be valtype_1.
+4. If loadop_? is not defined, then:
+  a. Let t be valtype.
   b. If (((i + ao.OFFSET) + ($size(t) / 8)) > |$mem(z, 0).BYTES|), then:
     1) Trap.
   c. Let c be $bytes__1^-1(t, $mem(z, 0).BYTES[(i + ao.OFFSET) : ($size(t) / 8)]).
   d. Push the value (t.CONST c) to the stack.
-5. If valtype_1 is Inn, then:
-  a. If loadop__1? is defined, then:
-    1) Let ?(loadop__0) be loadop__1?.
+5. If valtype is Inn, then:
+  a. If loadop_? is defined, then:
+    1) Let ?(loadop__0) be loadop_?.
     2) Let n _ sx be loadop__0.
     3) If (((i + ao.OFFSET) + (n / 8)) > |$mem(z, 0).BYTES|), then:
       a) Trap.
-  b. Let Inn be valtype_1.
-  c. If loadop__1? is defined, then:
-    1) Let ?(loadop__0) be loadop__1?.
+  b. Let Inn be valtype.
+  c. If loadop_? is defined, then:
+    1) Let ?(loadop__0) be loadop_?.
     2) Let n _ sx be loadop__0.
     3) Let c be $ibytes__1^-1(n, $mem(z, 0).BYTES[(i + ao.OFFSET) : (n / 8)]).
     4) Push the value (Inn.CONST $extend__(n, $size(Inn), sx, c)) to the stack.
@@ -3553,22 +3553,22 @@ Step/global.set x
 3. Pop the value val from the stack.
 4. Perform $with_global(z, x, val).
 
-Step/store valtype_1 sz_1? ao
+Step/store valtype sz? ao
 1. Let z be the current state.
-2. Assert: Due to validation, a value of value type valtype_2 is on the top of the stack.
-3. Pop the value (valtype_2.CONST c) from the stack.
+2. Assert: Due to validation, a value of value type valtype' is on the top of the stack.
+3. Pop the value (valtype'.CONST c) from the stack.
 4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 5. Pop the value (I32.CONST i) from the stack.
-6. Let t be valtype_2.
-7. If ((((i + ao.OFFSET) + ($size(t) / 8)) > |$mem(z, 0).BYTES|) /\ ((valtype_1 = t) /\ sz_1? is not defined)), then:
+6. Let t be valtype'.
+7. If ((((i + ao.OFFSET) + ($size(t) / 8)) > |$mem(z, 0).BYTES|) /\ ((valtype = t) /\ sz? is not defined)), then:
   a. Trap.
-8. If ((valtype_1 = t) /\ sz_1? is not defined), then:
+8. If ((valtype = t) /\ sz? is not defined), then:
   a. Let b* be $bytes_(t, c).
   b. Perform $with_mem(z, 0, (i + ao.OFFSET), ($size(t) / 8), b*).
-9. If valtype_2 is Inn, then:
-  a. Let Inn be valtype_2.
-  b. If ((valtype_1 = Inn) /\ sz_1? is defined), then:
-    1) Let ?(n) be sz_1?.
+9. If valtype' is Inn, then:
+  a. Let Inn be valtype'.
+  b. If ((valtype = Inn) /\ sz? is defined), then:
+    1) Let ?(n) be sz?.
     2) If (((i + ao.OFFSET) + (n / 8)) > |$mem(z, 0).BYTES|), then:
       a) Trap.
     3) Let b* be $ibytes_(n, $wrap__($size(Inn), n, c)).
@@ -3593,41 +3593,41 @@ min i j
   a. Return i.
 2. Return j.
 
-sum n_1*
-1. If (n_1* = []), then:
+sum n*
+1. If (n* = []), then:
   a. Return 0.
-2. Let [n] :: n'* be n_1*.
+2. Let [n] :: n'* be n*.
 3. Return (n + $sum(n'*)).
 
-opt_ `X X_1*
-1. If (X_1* = []), then:
+opt_ `X X*
+1. If (X* = []), then:
   a. Return ?().
-2. Assert: Due to validation, (|X_1*| = 1).
-3. Let [w] be X_1*.
+2. Assert: Due to validation, (|X*| = 1).
+3. Let [w] be X*.
 4. Return ?(w).
 
-list_ `X X_1?
-1. If X_1? is not defined, then:
+list_ `X X?
+1. If X? is not defined, then:
   a. Return [].
-2. Let ?(w) be X_1?.
+2. Let ?(w) be X?.
 3. Return [w].
 
-concat_ `X X_1*
-1. If (X_1* = []), then:
+concat_ `X X*
+1. If (X* = []), then:
   a. Return [].
-2. Let [w*] :: w'** be X_1*.
+2. Let [w*] :: w'** be X*.
 3. Return w* :: $concat_(`X, w'**).
 
-signif N_1
-1. If (N_1 = 32), then:
+signif N
+1. If (N = 32), then:
   a. Return 23.
-2. Assert: Due to validation, (N_1 = 64).
+2. Assert: Due to validation, (N = 64).
 3. Return 52.
 
-expon N_1
-1. If (N_1 = 32), then:
+expon N
+1. If (N = 32), then:
   a. Return 8.
-2. Assert: Due to validation, (N_1 = 64).
+2. Assert: Due to validation, (N = 64).
 3. Return 11.
 
 M N
@@ -3645,55 +3645,55 @@ fone N
 canon_ N
 1. Return (2 ^ ($signif(N) - 1)).
 
-size valtype_1
-1. If (valtype_1 = I32), then:
+size valtype
+1. If (valtype = I32), then:
   a. Return 32.
-2. If (valtype_1 = I64), then:
+2. If (valtype = I64), then:
   a. Return 64.
-3. If (valtype_1 = F32), then:
+3. If (valtype = F32), then:
   a. Return 32.
-4. If (valtype_1 = F64), then:
+4. If (valtype = F64), then:
   a. Return 64.
 5. Fail.
 
-funcsxt externtype_1*
-1. If (externtype_1* = []), then:
+funcsxt externtype*
+1. If (externtype* = []), then:
   a. Return [].
-2. Let [externtype_0] :: xt* be externtype_1*.
+2. Let [externtype_0] :: xt* be externtype*.
 3. If externtype_0 is FUNC, then:
   a. Let (FUNC ft) be externtype_0.
   b. Return [ft] :: $funcsxt(xt*).
-4. Let [externtype] :: xt* be externtype_1*.
+4. Let [externtype] :: xt* be externtype*.
 5. Return $funcsxt(xt*).
 
-globalsxt externtype_1*
-1. If (externtype_1* = []), then:
+globalsxt externtype*
+1. If (externtype* = []), then:
   a. Return [].
-2. Let [externtype_0] :: xt* be externtype_1*.
+2. Let [externtype_0] :: xt* be externtype*.
 3. If externtype_0 is GLOBAL, then:
   a. Let (GLOBAL gt) be externtype_0.
   b. Return [gt] :: $globalsxt(xt*).
-4. Let [externtype] :: xt* be externtype_1*.
+4. Let [externtype] :: xt* be externtype*.
 5. Return $globalsxt(xt*).
 
-tablesxt externtype_1*
-1. If (externtype_1* = []), then:
+tablesxt externtype*
+1. If (externtype* = []), then:
   a. Return [].
-2. Let [externtype_0] :: xt* be externtype_1*.
+2. Let [externtype_0] :: xt* be externtype*.
 3. If externtype_0 is TABLE, then:
   a. Let (TABLE tt) be externtype_0.
   b. Return [tt] :: $tablesxt(xt*).
-4. Let [externtype] :: xt* be externtype_1*.
+4. Let [externtype] :: xt* be externtype*.
 5. Return $tablesxt(xt*).
 
-memsxt externtype_1*
-1. If (externtype_1* = []), then:
+memsxt externtype*
+1. If (externtype* = []), then:
   a. Return [].
-2. Let [externtype_0] :: xt* be externtype_1*.
+2. Let [externtype_0] :: xt* be externtype*.
 3. If externtype_0 is MEM, then:
   a. Let (MEM mt) be externtype_0.
   b. Return [mt] :: $memsxt(xt*).
-4. Let [externtype] :: xt* be externtype_1*.
+4. Let [externtype] :: xt* be externtype*.
 5. Return $memsxt(xt*).
 
 memarg0
@@ -3710,162 +3710,162 @@ invsigned_ N i
 1. Let j be $signed__1^-1(N, i).
 2. Return j.
 
-unop_ valtype_1 unop__1 val__1
-1. If valtype_1 is Inn, then:
-  a. Let Inn be valtype_1.
-  b. Let iN be val__1.
-  c. If (unop__1 = CLZ), then:
+unop_ valtype unop_ val_
+1. If valtype is Inn, then:
+  a. Let Inn be valtype.
+  b. Let iN be val_.
+  c. If (unop_ = CLZ), then:
     1) Return [$iclz_($size(Inn), iN)].
-  d. If (unop__1 = CTZ), then:
+  d. If (unop_ = CTZ), then:
     1) Return [$ictz_($size(Inn), iN)].
-  e. If (unop__1 = POPCNT), then:
+  e. If (unop_ = POPCNT), then:
     1) Return [$ipopcnt_($size(Inn), iN)].
-2. Assert: Due to validation, valtype_1 is Fnn.
-3. Let Fnn be valtype_1.
-4. Let fN be val__1.
-5. If (unop__1 = ABS), then:
+2. Assert: Due to validation, valtype is Fnn.
+3. Let Fnn be valtype.
+4. Let fN be val_.
+5. If (unop_ = ABS), then:
   a. Return $fabs_($size(Fnn), fN).
-6. If (unop__1 = NEG), then:
+6. If (unop_ = NEG), then:
   a. Return $fneg_($size(Fnn), fN).
-7. If (unop__1 = SQRT), then:
+7. If (unop_ = SQRT), then:
   a. Return $fsqrt_($size(Fnn), fN).
-8. If (unop__1 = CEIL), then:
+8. If (unop_ = CEIL), then:
   a. Return $fceil_($size(Fnn), fN).
-9. If (unop__1 = FLOOR), then:
+9. If (unop_ = FLOOR), then:
   a. Return $ffloor_($size(Fnn), fN).
-10. If (unop__1 = TRUNC), then:
+10. If (unop_ = TRUNC), then:
   a. Return $ftrunc_($size(Fnn), fN).
-11. Assert: Due to validation, (unop__1 = NEAREST).
+11. Assert: Due to validation, (unop_ = NEAREST).
 12. Return $fnearest_($size(Fnn), fN).
 
-binop_ valtype_1 binop__1 val__1 val__2
-1. If valtype_1 is Inn, then:
-  a. Let Inn be valtype_1.
-  b. Let iN_1 be val__1.
-  c. Let iN_2 be val__2.
-  d. If (binop__1 = ADD), then:
+binop_ valtype binop_ val_ val_'
+1. If valtype is Inn, then:
+  a. Let Inn be valtype.
+  b. Let iN_1 be val_.
+  c. Let iN_2 be val_'.
+  d. If (binop_ = ADD), then:
     1) Return [$iadd_($size(Inn), iN_1, iN_2)].
-  e. If (binop__1 = SUB), then:
+  e. If (binop_ = SUB), then:
     1) Return [$isub_($size(Inn), iN_1, iN_2)].
-  f. If (binop__1 = MUL), then:
+  f. If (binop_ = MUL), then:
     1) Return [$imul_($size(Inn), iN_1, iN_2)].
-  g. If binop__1 is DIV, then:
-    1) Let (DIV sx) be binop__1.
+  g. If binop_ is DIV, then:
+    1) Let (DIV sx) be binop_.
     2) Return $list_(`val_((Inn : Inn <: valtype)), $idiv_($size(Inn), sx, iN_1, iN_2)).
-  h. If binop__1 is REM, then:
-    1) Let (REM sx) be binop__1.
+  h. If binop_ is REM, then:
+    1) Let (REM sx) be binop_.
     2) Return $list_(`val_((Inn : Inn <: valtype)), $irem_($size(Inn), sx, iN_1, iN_2)).
-  i. If (binop__1 = AND), then:
+  i. If (binop_ = AND), then:
     1) Return [$iand_($size(Inn), iN_1, iN_2)].
-  j. If (binop__1 = OR), then:
+  j. If (binop_ = OR), then:
     1) Return [$ior_($size(Inn), iN_1, iN_2)].
-  k. If (binop__1 = XOR), then:
+  k. If (binop_ = XOR), then:
     1) Return [$ixor_($size(Inn), iN_1, iN_2)].
-  l. If (binop__1 = SHL), then:
+  l. If (binop_ = SHL), then:
     1) Return [$ishl_($size(Inn), iN_1, iN_2)].
-  m. If binop__1 is SHR, then:
-    1) Let (SHR sx) be binop__1.
+  m. If binop_ is SHR, then:
+    1) Let (SHR sx) be binop_.
     2) Return [$ishr_($size(Inn), sx, iN_1, iN_2)].
-  n. If (binop__1 = ROTL), then:
+  n. If (binop_ = ROTL), then:
     1) Return [$irotl_($size(Inn), iN_1, iN_2)].
-  o. If (binop__1 = ROTR), then:
+  o. If (binop_ = ROTR), then:
     1) Return [$irotr_($size(Inn), iN_1, iN_2)].
-2. Assert: Due to validation, valtype_1 is Fnn.
-3. Let Fnn be valtype_1.
-4. Let fN_1 be val__1.
-5. Let fN_2 be val__2.
-6. If (binop__1 = ADD), then:
+2. Assert: Due to validation, valtype is Fnn.
+3. Let Fnn be valtype.
+4. Let fN_1 be val_.
+5. Let fN_2 be val_'.
+6. If (binop_ = ADD), then:
   a. Return $fadd_($size(Fnn), fN_1, fN_2).
-7. If (binop__1 = SUB), then:
+7. If (binop_ = SUB), then:
   a. Return $fsub_($size(Fnn), fN_1, fN_2).
-8. If (binop__1 = MUL), then:
+8. If (binop_ = MUL), then:
   a. Return $fmul_($size(Fnn), fN_1, fN_2).
-9. If (binop__1 = DIV), then:
+9. If (binop_ = DIV), then:
   a. Return $fdiv_($size(Fnn), fN_1, fN_2).
-10. If (binop__1 = MIN), then:
+10. If (binop_ = MIN), then:
   a. Return $fmin_($size(Fnn), fN_1, fN_2).
-11. If (binop__1 = MAX), then:
+11. If (binop_ = MAX), then:
   a. Return $fmax_($size(Fnn), fN_1, fN_2).
-12. Assert: Due to validation, (binop__1 = COPYSIGN).
+12. Assert: Due to validation, (binop_ = COPYSIGN).
 13. Return $fcopysign_($size(Fnn), fN_1, fN_2).
 
 testop_ Inn EQZ iN
 1. Return $ieqz_($size(Inn), iN).
 
-relop_ valtype_1 relop__1 val__1 val__2
-1. If valtype_1 is Inn, then:
-  a. Let Inn be valtype_1.
-  b. Let iN_1 be val__1.
-  c. Let iN_2 be val__2.
-  d. If (relop__1 = EQ), then:
+relop_ valtype relop_ val_ val_'
+1. If valtype is Inn, then:
+  a. Let Inn be valtype.
+  b. Let iN_1 be val_.
+  c. Let iN_2 be val_'.
+  d. If (relop_ = EQ), then:
     1) Return $ieq_($size(Inn), iN_1, iN_2).
-  e. If (relop__1 = NE), then:
+  e. If (relop_ = NE), then:
     1) Return $ine_($size(Inn), iN_1, iN_2).
-  f. If relop__1 is LT, then:
-    1) Let (LT sx) be relop__1.
+  f. If relop_ is LT, then:
+    1) Let (LT sx) be relop_.
     2) Return $ilt_($size(Inn), sx, iN_1, iN_2).
-  g. If relop__1 is GT, then:
-    1) Let (GT sx) be relop__1.
+  g. If relop_ is GT, then:
+    1) Let (GT sx) be relop_.
     2) Return $igt_($size(Inn), sx, iN_1, iN_2).
-  h. If relop__1 is LE, then:
-    1) Let (LE sx) be relop__1.
+  h. If relop_ is LE, then:
+    1) Let (LE sx) be relop_.
     2) Return $ile_($size(Inn), sx, iN_1, iN_2).
-  i. If relop__1 is GE, then:
-    1) Let (GE sx) be relop__1.
+  i. If relop_ is GE, then:
+    1) Let (GE sx) be relop_.
     2) Return $ige_($size(Inn), sx, iN_1, iN_2).
-2. Assert: Due to validation, valtype_1 is Fnn.
-3. Let Fnn be valtype_1.
-4. Let fN_1 be val__1.
-5. Let fN_2 be val__2.
-6. If (relop__1 = EQ), then:
+2. Assert: Due to validation, valtype is Fnn.
+3. Let Fnn be valtype.
+4. Let fN_1 be val_.
+5. Let fN_2 be val_'.
+6. If (relop_ = EQ), then:
   a. Return $feq_($size(Fnn), fN_1, fN_2).
-7. If (relop__1 = NE), then:
+7. If (relop_ = NE), then:
   a. Return $fne_($size(Fnn), fN_1, fN_2).
-8. If (relop__1 = LT), then:
+8. If (relop_ = LT), then:
   a. Return $flt_($size(Fnn), fN_1, fN_2).
-9. If (relop__1 = GT), then:
+9. If (relop_ = GT), then:
   a. Return $fgt_($size(Fnn), fN_1, fN_2).
-10. If (relop__1 = LE), then:
+10. If (relop_ = LE), then:
   a. Return $fle_($size(Fnn), fN_1, fN_2).
-11. Assert: Due to validation, (relop__1 = GE).
+11. Assert: Due to validation, (relop_ = GE).
 12. Return $fge_($size(Fnn), fN_1, fN_2).
 
-cvtop__ valtype_1 valtype_2 cvtop_1 val__1
-1. If cvtop_1 is EXTEND, then:
-  a. Let (EXTEND sx) be cvtop_1.
-  b. Let iN be val__1.
-  c. If ((valtype_1 = I32) /\ (valtype_2 = I64)), then:
+cvtop__ valtype valtype' cvtop val_
+1. If cvtop is EXTEND, then:
+  a. Let (EXTEND sx) be cvtop.
+  b. Let iN be val_.
+  c. If ((valtype = I32) /\ (valtype' = I64)), then:
     1) Return [$extend__(32, 64, sx, iN)].
-2. Let iN be val__1.
-3. If ((valtype_1 = I64) /\ ((valtype_2 = I32) /\ (cvtop_1 = WRAP))), then:
+2. Let iN be val_.
+3. If ((valtype = I64) /\ ((valtype' = I32) /\ (cvtop = WRAP))), then:
   a. Return [$wrap__(64, 32, iN)].
-4. If valtype_1 is Fnn, then:
-  a. Let Fnn be valtype_1.
-  b. If valtype_2 is Inn, then:
-    1) Let Inn be valtype_2.
-    2) If cvtop_1 is TRUNC, then:
-      a) Let (TRUNC sx) be cvtop_1.
-      b) Let fN be val__1.
+4. If valtype is Fnn, then:
+  a. Let Fnn be valtype.
+  b. If valtype' is Inn, then:
+    1) Let Inn be valtype'.
+    2) If cvtop is TRUNC, then:
+      a) Let (TRUNC sx) be cvtop.
+      b) Let fN be val_.
       c) Return $list_(`val_((Inn : Inn <: valtype)), $trunc__($size(Fnn), $size(Inn), sx, fN)).
-5. Let fN be val__1.
-6. If ((valtype_1 = F32) /\ ((valtype_2 = F64) /\ (cvtop_1 = PROMOTE))), then:
+5. Let fN be val_.
+6. If ((valtype = F32) /\ ((valtype' = F64) /\ (cvtop = PROMOTE))), then:
   a. Return $promote__(32, 64, fN).
-7. If ((valtype_1 = F64) /\ ((valtype_2 = F32) /\ (cvtop_1 = DEMOTE))), then:
+7. If ((valtype = F64) /\ ((valtype' = F32) /\ (cvtop = DEMOTE))), then:
   a. Return $demote__(64, 32, fN).
-8. If valtype_1 is Inn, then:
-  a. Let Inn be valtype_1.
-  b. If valtype_2 is Fnn, then:
-    1) Let Fnn be valtype_2.
-    2) If cvtop_1 is CONVERT, then:
-      a) Let (CONVERT sx) be cvtop_1.
+8. If valtype is Inn, then:
+  a. Let Inn be valtype.
+  b. If valtype' is Fnn, then:
+    1) Let Fnn be valtype'.
+    2) If cvtop is CONVERT, then:
+      a) Let (CONVERT sx) be cvtop.
       b) Return [$convert__($size(Inn), $size(Fnn), sx, iN)].
-    3) If ((cvtop_1 = REINTERPRET) /\ ($size(Inn) = $size(Fnn))), then:
+    3) If ((cvtop = REINTERPRET) /\ ($size(Inn) = $size(Fnn))), then:
       a) Return [$reinterpret__(Inn, Fnn, iN)].
-9. Assert: Due to validation, valtype_1 is Fnn.
-10. Let Fnn be valtype_1.
-11. Assert: Due to validation, valtype_2 is Inn.
-12. Let Inn be valtype_2.
-13. Assert: Due to validation, (cvtop_1 = REINTERPRET).
+9. Assert: Due to validation, valtype is Fnn.
+10. Let Fnn be valtype.
+11. Assert: Due to validation, valtype' is Inn.
+12. Let Inn be valtype'.
+13. Assert: Due to validation, (cvtop = REINTERPRET).
 14. Assert: Due to validation, ($size(Inn) = $size(Fnn)).
 15. Return [$reinterpret__(Fnn, Inn, fN)].
 
@@ -3877,54 +3877,54 @@ invfbytes_ N b*
 1. Let p be $fbytes__1^-1(N, b*).
 2. Return p.
 
-default_ valtype_1
-1. If (valtype_1 = I32), then:
+default_ valtype
+1. If (valtype = I32), then:
   a. Return (I32.CONST 0).
-2. If (valtype_1 = I64), then:
+2. If (valtype = I64), then:
   a. Return (I64.CONST 0).
-3. If (valtype_1 = F32), then:
+3. If (valtype = F32), then:
   a. Return (F32.CONST $fzero(32)).
-4. Assert: Due to validation, (valtype_1 = F64).
+4. Assert: Due to validation, (valtype = F64).
 5. Return (F64.CONST $fzero(64)).
 
-funcsxa externaddr_1*
-1. If (externaddr_1* = []), then:
+funcsxa externaddr*
+1. If (externaddr* = []), then:
   a. Return [].
-2. Let [externaddr_0] :: xv* be externaddr_1*.
+2. Let [externaddr_0] :: xv* be externaddr*.
 3. If externaddr_0 is FUNC, then:
   a. Let (FUNC fa) be externaddr_0.
   b. Return [fa] :: $funcsxa(xv*).
-4. Let [externaddr] :: xv* be externaddr_1*.
+4. Let [externaddr] :: xv* be externaddr*.
 5. Return $funcsxa(xv*).
 
-globalsxa externaddr_1*
-1. If (externaddr_1* = []), then:
+globalsxa externaddr*
+1. If (externaddr* = []), then:
   a. Return [].
-2. Let [externaddr_0] :: xv* be externaddr_1*.
+2. Let [externaddr_0] :: xv* be externaddr*.
 3. If externaddr_0 is GLOBAL, then:
   a. Let (GLOBAL ga) be externaddr_0.
   b. Return [ga] :: $globalsxa(xv*).
-4. Let [externaddr] :: xv* be externaddr_1*.
+4. Let [externaddr] :: xv* be externaddr*.
 5. Return $globalsxa(xv*).
 
-tablesxa externaddr_1*
-1. If (externaddr_1* = []), then:
+tablesxa externaddr*
+1. If (externaddr* = []), then:
   a. Return [].
-2. Let [externaddr_0] :: xv* be externaddr_1*.
+2. Let [externaddr_0] :: xv* be externaddr*.
 3. If externaddr_0 is TABLE, then:
   a. Let (TABLE ta) be externaddr_0.
   b. Return [ta] :: $tablesxa(xv*).
-4. Let [externaddr] :: xv* be externaddr_1*.
+4. Let [externaddr] :: xv* be externaddr*.
 5. Return $tablesxa(xv*).
 
-memsxa externaddr_1*
-1. If (externaddr_1* = []), then:
+memsxa externaddr*
+1. If (externaddr* = []), then:
   a. Return [].
-2. Let [externaddr_0] :: xv* be externaddr_1*.
+2. Let [externaddr_0] :: xv* be externaddr*.
 3. If externaddr_0 is MEM, then:
   a. Let (MEM ma) be externaddr_0.
   b. Return [ma] :: $memsxa(xv*).
-4. Let [externaddr] :: xv* be externaddr_1*.
+4. Let [externaddr] :: xv* be externaddr*.
 5. Return $memsxa(xv*).
 
 store (s, f)
@@ -4003,44 +4003,44 @@ growmemory mi n
   b. Return mi'.
 4. Fail.
 
-funcs externaddr_1*
-1. If (externaddr_1* = []), then:
+funcs externaddr*
+1. If (externaddr* = []), then:
   a. Return [].
-2. Let [externaddr_0] :: externaddr'* be externaddr_1*.
+2. Let [externaddr_0] :: externaddr'* be externaddr*.
 3. If externaddr_0 is FUNC, then:
   a. Let (FUNC fa) be externaddr_0.
   b. Return [fa] :: $funcs(externaddr'*).
-4. Let [externaddr] :: externaddr'* be externaddr_1*.
+4. Let [externaddr] :: externaddr'* be externaddr*.
 5. Return $funcs(externaddr'*).
 
-globals externaddr_1*
-1. If (externaddr_1* = []), then:
+globals externaddr*
+1. If (externaddr* = []), then:
   a. Return [].
-2. Let [externaddr_0] :: externaddr'* be externaddr_1*.
+2. Let [externaddr_0] :: externaddr'* be externaddr*.
 3. If externaddr_0 is GLOBAL, then:
   a. Let (GLOBAL ga) be externaddr_0.
   b. Return [ga] :: $globals(externaddr'*).
-4. Let [externaddr] :: externaddr'* be externaddr_1*.
+4. Let [externaddr] :: externaddr'* be externaddr*.
 5. Return $globals(externaddr'*).
 
-tables externaddr_1*
-1. If (externaddr_1* = []), then:
+tables externaddr*
+1. If (externaddr* = []), then:
   a. Return [].
-2. Let [externaddr_0] :: externaddr'* be externaddr_1*.
+2. Let [externaddr_0] :: externaddr'* be externaddr*.
 3. If externaddr_0 is TABLE, then:
   a. Let (TABLE ta) be externaddr_0.
   b. Return [ta] :: $tables(externaddr'*).
-4. Let [externaddr] :: externaddr'* be externaddr_1*.
+4. Let [externaddr] :: externaddr'* be externaddr*.
 5. Return $tables(externaddr'*).
 
-mems externaddr_1*
-1. If (externaddr_1* = []), then:
+mems externaddr*
+1. If (externaddr* = []), then:
   a. Return [].
-2. Let [externaddr_0] :: externaddr'* be externaddr_1*.
+2. Let [externaddr_0] :: externaddr'* be externaddr*.
 3. If externaddr_0 is MEM, then:
   a. Let (MEM ma) be externaddr_0.
   b. Return [ma] :: $mems(externaddr'*).
-4. Let [externaddr] :: externaddr'* be externaddr_1*.
+4. Let [externaddr] :: externaddr'* be externaddr*.
 5. Return $mems(externaddr'*).
 
 allocfunc s moduleinst func
@@ -4050,10 +4050,10 @@ allocfunc s moduleinst func
 4. Append fi to the s.FUNCS.
 5. Return a.
 
-allocfuncs s moduleinst func_1*
-1. If (func_1* = []), then:
+allocfuncs s moduleinst func*
+1. If (func* = []), then:
   a. Return [].
-2. Let [func] :: func'* be func_1*.
+2. Let [func] :: func'* be func*.
 3. Let fa be $allocfunc(s, moduleinst, func).
 4. Let fa'* be $allocfuncs(s, moduleinst, func'*).
 5. Return [fa] :: fa'*.
@@ -4064,14 +4064,14 @@ allocglobal s globaltype val
 3. Append gi to the s.GLOBALS.
 4. Return a.
 
-allocglobals s globaltype_1* val_1*
-1. If (globaltype_1* = []), then:
-  a. Assert: Due to validation, (val_1* = []).
+allocglobals s globaltype* val*
+1. If (globaltype* = []), then:
+  a. Assert: Due to validation, (val* = []).
   b. Return [].
 2. Else:
-  a. Let [globaltype] :: globaltype'* be globaltype_1*.
-  b. Assert: Due to validation, (|val_1*| >= 1).
-  c. Let [val] :: val'* be val_1*.
+  a. Let [globaltype] :: globaltype'* be globaltype*.
+  b. Assert: Due to validation, (|val*| >= 1).
+  c. Let [val] :: val'* be val*.
   d. Let ga be $allocglobal(s, globaltype, val).
   e. Let ga'* be $allocglobals(s, globaltype'*, val'*).
   f. Return [ga] :: ga'*.
@@ -4082,10 +4082,10 @@ alloctable s ([ i .. j ])
 3. Append ti to the s.TABLES.
 4. Return a.
 
-alloctables s tabletype_1*
-1. If (tabletype_1* = []), then:
+alloctables s tabletype*
+1. If (tabletype* = []), then:
   a. Return [].
-2. Let [tabletype] :: tabletype'* be tabletype_1*.
+2. Let [tabletype] :: tabletype'* be tabletype*.
 3. Let ta be $alloctable(s, tabletype).
 4. Let ta'* be $alloctables(s, tabletype'*).
 5. Return [ta] :: ta'*.
@@ -4096,26 +4096,26 @@ allocmem s ([ i .. j ])
 3. Append mi to the s.MEMS.
 4. Return a.
 
-allocmems s memtype_1*
-1. If (memtype_1* = []), then:
+allocmems s memtype*
+1. If (memtype* = []), then:
   a. Return [].
-2. Let [memtype] :: memtype'* be memtype_1*.
+2. Let [memtype] :: memtype'* be memtype*.
 3. Let ma be $allocmem(s, memtype).
 4. Let ma'* be $allocmems(s, memtype'*).
 5. Return [ma] :: ma'*.
 
-instexport fa* ga* ta* ma* (EXPORT name externidx_1)
-1. If externidx_1 is FUNC, then:
-  a. Let (FUNC x) be externidx_1.
+instexport fa* ga* ta* ma* (EXPORT name externidx)
+1. If externidx is FUNC, then:
+  a. Let (FUNC x) be externidx.
   b. Return { NAME: name; ADDR: (FUNC fa*[x]) }.
-2. If externidx_1 is GLOBAL, then:
-  a. Let (GLOBAL x) be externidx_1.
+2. If externidx is GLOBAL, then:
+  a. Let (GLOBAL x) be externidx.
   b. Return { NAME: name; ADDR: (GLOBAL ga*[x]) }.
-3. If externidx_1 is TABLE, then:
-  a. Let (TABLE x) be externidx_1.
+3. If externidx is TABLE, then:
+  a. Let (TABLE x) be externidx.
   b. Return { NAME: name; ADDR: (TABLE ta*[x]) }.
-4. Assert: Due to validation, externidx_1 is MEM.
-5. Let (MEM x) be externidx_1.
+4. Assert: Due to validation, externidx is MEM.
+5. Let (MEM x) be externidx.
 6. Return { NAME: name; ADDR: (MEM ma*[x]) }.
 
 allocmodule s module externaddr* val*
@@ -4144,24 +4144,24 @@ allocmodule s module externaddr* val*
 23. Assert: Due to validation, (memaddr_0* = ma*).
 24. Return moduleinst.
 
-initelem s moduleinst u32_1* funcaddr_1*
-1. If ((u32_1* = []) /\ (funcaddr_1* = [])), then:
+initelem s moduleinst u32* funcaddr*
+1. If ((u32* = []) /\ (funcaddr* = [])), then:
   a. Return.
-2. Assert: Due to validation, (|funcaddr_1*| >= 1).
-3. Let [a*] :: a'** be funcaddr_1*.
-4. Assert: Due to validation, (|u32_1*| >= 1).
-5. Let [i] :: i'* be u32_1*.
+2. Assert: Due to validation, (|funcaddr*| >= 1).
+3. Let [a*] :: a'** be funcaddr*.
+4. Assert: Due to validation, (|u32*| >= 1).
+5. Let [i] :: i'* be u32*.
 6. Replace s.TABLES[moduleinst.TABLES[0]].REFS[i : |a*|] with ?(a)*.
 7. Perform $initelem(s, moduleinst, i'*, a'**).
 8. Return.
 
-initdata s moduleinst u32_1* byte_1*
-1. If ((u32_1* = []) /\ (byte_1* = [])), then:
+initdata s moduleinst u32* byte*
+1. If ((u32* = []) /\ (byte* = [])), then:
   a. Return.
-2. Assert: Due to validation, (|byte_1*| >= 1).
-3. Let [b*] :: b'** be byte_1*.
-4. Assert: Due to validation, (|u32_1*| >= 1).
-5. Let [i] :: i'* be u32_1*.
+2. Assert: Due to validation, (|byte*| >= 1).
+3. Let [b*] :: b'** be byte*.
+4. Assert: Due to validation, (|u32*| >= 1).
+5. Let [i] :: i'* be u32*.
 6. Replace s.MEMS[moduleinst.MEMS[0]].BYTES[i : |b*|] with b*.
 7. Perform $initdata(s, moduleinst, i'*, b'**).
 8. Return.
@@ -4264,28 +4264,28 @@ The memory type :math:`{\mathit{limits}}~\mathsf{page}` is :ref:`valid <valid-va
 
 
 
-The external type :math:`{\mathit{externtype}}_1` is :ref:`valid <valid-val>` if:
+The external type :math:`{\mathit{externtype}}` is :ref:`valid <valid-val>` if:
 
 
    * Either:
 
-      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{func}~{\mathit{functype}})`.
+      * The external type :math:`{\mathit{externtype}}` is equal to :math:`(\mathsf{func}~{\mathit{functype}})`.
 
       * The function type :math:`{\mathit{functype}}` is :ref:`valid <valid-val>`.
 
    * Or:
 
-      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{global}~{\mathit{globaltype}})`.
+      * The external type :math:`{\mathit{externtype}}` is equal to :math:`(\mathsf{global}~{\mathit{globaltype}})`.
 
       * The global type :math:`{\mathit{globaltype}}` is :ref:`valid <valid-val>`.
    * Or:
 
-      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{table}~{\mathit{tabletype}})`.
+      * The external type :math:`{\mathit{externtype}}` is equal to :math:`(\mathsf{table}~{\mathit{tabletype}})`.
 
       * The table type :math:`{\mathit{tabletype}}` is :ref:`valid <valid-val>`.
    * Or:
 
-      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{mem}~{\mathit{memtype}})`.
+      * The external type :math:`{\mathit{externtype}}` is equal to :math:`(\mathsf{mem}~{\mathit{memtype}})`.
 
       * The memory type :math:`{\mathit{memtype}}` is :ref:`valid <valid-val>`.
 
@@ -4324,16 +4324,16 @@ The external type :math:`(\mathsf{mem}~{\mathit{memtype}})` is :ref:`valid <vali
 
 
 
-The value type :math:`{\mathit{valtype}}_1` :ref:`matches <match>` the value type :math:`t` if:
+The value type :math:`{\mathit{valtype}}` :ref:`matches <match>` the value type :math:`t` if:
 
 
    * Either:
 
-      * The value type :math:`{\mathit{valtype}}_1` is equal to :math:`t`.
+      * The value type :math:`{\mathit{valtype}}` is equal to :math:`t`.
 
    * Or:
 
-      * The value type :math:`{\mathit{valtype}}_1` is equal to :math:`\mathsf{bot}`.
+      * The value type :math:`{\mathit{valtype}}` is equal to :math:`\mathsf{bot}`.
 
 
 
@@ -4396,36 +4396,36 @@ The memory type :math:`{\mathit{lim}}_1~\mathsf{page}` :ref:`matches <match>` th
 
 
 
-The external type :math:`{\mathit{externtype}}_1` :ref:`matches <match>` the external type :math:`{\mathit{externtype}}_2` if:
+The external type :math:`{\mathit{externtype}}` :ref:`matches <match>` the external type :math:`{\mathit{externtype}'}` if:
 
 
    * Either:
 
-      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{func}~{\mathit{ft}}_1)`.
+      * The external type :math:`{\mathit{externtype}}` is equal to :math:`(\mathsf{func}~{\mathit{ft}}_1)`.
 
-      * The external type :math:`{\mathit{externtype}}_2` is equal to :math:`(\mathsf{func}~{\mathit{ft}}_2)`.
+      * The external type :math:`{\mathit{externtype}'}` is equal to :math:`(\mathsf{func}~{\mathit{ft}}_2)`.
 
       * The function type :math:`{\mathit{ft}}_1` :ref:`matches <match>` the function type :math:`{\mathit{ft}}_2`.
 
    * Or:
 
-      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{global}~{\mathit{gt}}_1)`.
+      * The external type :math:`{\mathit{externtype}}` is equal to :math:`(\mathsf{global}~{\mathit{gt}}_1)`.
 
-      * The external type :math:`{\mathit{externtype}}_2` is equal to :math:`(\mathsf{global}~{\mathit{gt}}_2)`.
+      * The external type :math:`{\mathit{externtype}'}` is equal to :math:`(\mathsf{global}~{\mathit{gt}}_2)`.
 
       * The global type :math:`{\mathit{gt}}_1` :ref:`matches <match>` the global type :math:`{\mathit{gt}}_2`.
    * Or:
 
-      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{table}~{\mathit{tt}}_1)`.
+      * The external type :math:`{\mathit{externtype}}` is equal to :math:`(\mathsf{table}~{\mathit{tt}}_1)`.
 
-      * The external type :math:`{\mathit{externtype}}_2` is equal to :math:`(\mathsf{table}~{\mathit{tt}}_2)`.
+      * The external type :math:`{\mathit{externtype}'}` is equal to :math:`(\mathsf{table}~{\mathit{tt}}_2)`.
 
       * The table type :math:`{\mathit{tt}}_1` :ref:`matches <match>` the table type :math:`{\mathit{tt}}_2`.
    * Or:
 
-      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{mem}~{\mathit{mt}}_1)`.
+      * The external type :math:`{\mathit{externtype}}` is equal to :math:`(\mathsf{mem}~{\mathit{mt}}_1)`.
 
-      * The external type :math:`{\mathit{externtype}}_2` is equal to :math:`(\mathsf{mem}~{\mathit{mt}}_2)`.
+      * The external type :math:`{\mathit{externtype}'}` is equal to :math:`(\mathsf{mem}~{\mathit{mt}}_2)`.
 
       * The memory type :math:`{\mathit{mt}}_1` :ref:`matches <match>` the memory type :math:`{\mathit{mt}}_2`.
 
@@ -4464,24 +4464,24 @@ The external type :math:`(\mathsf{mem}~{\mathit{mt}}_1)` :ref:`matches <match>` 
 
 
 
-The block type :math:`{\mathit{blocktype}}_1` is :ref:`valid <valid-val>` with the function type :math:`{{\mathit{valtype}}_1^\ast}~\rightarrow~{{\mathit{valtype}}_2^\ast}` if:
+The block type :math:`{\mathit{blocktype}}` is :ref:`valid <valid-val>` with the function type :math:`{{\mathit{valtype}'}^\ast}~\rightarrow~{{\mathit{valtype}''}^\ast}` if:
 
 
    * Either:
 
-      * The block type :math:`{\mathit{blocktype}}_1` is equal to :math:`{{\mathit{valtype}}^?}`.
+      * The block type :math:`{\mathit{blocktype}}` is equal to :math:`{{\mathit{valtype}}^?}`.
 
-      * The value type sequence :math:`{{\mathit{valtype}}_1^\ast}` is equal to :math:`\epsilon`.
+      * The value type sequence :math:`{{\mathit{valtype}'}^\ast}` is equal to :math:`\epsilon`.
 
-      * The value type sequence :math:`{{\mathit{valtype}}_2^\ast}` is equal to :math:`{{\mathit{valtype}}^?}`.
+      * The value type sequence :math:`{{\mathit{valtype}''}^\ast}` is equal to :math:`{{\mathit{valtype}}^?}`.
 
    * Or:
 
-      * The block type :math:`{\mathit{blocktype}}_1` is equal to :math:`{\mathit{typeidx}}`.
+      * The block type :math:`{\mathit{blocktype}}` is equal to :math:`{\mathit{typeidx}}`.
 
-      * The value type sequence :math:`{{\mathit{valtype}}_1^\ast}` is equal to :math:`{t_1^\ast}`.
+      * The value type sequence :math:`{{\mathit{valtype}'}^\ast}` is equal to :math:`{t_1^\ast}`.
 
-      * The value type sequence :math:`{{\mathit{valtype}}_2^\ast}` is equal to :math:`{t_2^\ast}`.
+      * The value type sequence :math:`{{\mathit{valtype}''}^\ast}` is equal to :math:`{t_2^\ast}`.
 
       * The function type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
 
@@ -4520,16 +4520,16 @@ The instruction :math:`\mathsf{drop}` is :ref:`valid <valid-val>` with the funct
 
 
 
-The instruction :math:`(\mathsf{select}~{{\mathit{valtype}}_1^?})` is :ref:`valid <valid-val>` with the function type :math:`t~t~\mathsf{i{\scriptstyle 32}}~\rightarrow~t` if:
+The instruction :math:`(\mathsf{select}~{{\mathit{valtype}}^?})` is :ref:`valid <valid-val>` with the function type :math:`t~t~\mathsf{i{\scriptstyle 32}}~\rightarrow~t` if:
 
 
    * Either:
 
-      * The value type sequence :math:`{{\mathit{valtype}}_1^?}` is equal to :math:`t`.
+      * The value type sequence :math:`{{\mathit{valtype}}^?}` is equal to :math:`t`.
 
    * Or:
 
-      * The value type sequence :math:`{{\mathit{valtype}}_1^?}` is absent.
+      * The value type sequence :math:`{{\mathit{valtype}}^?}` is absent.
 
       * The value type :math:`t` :ref:`matches <match>` the value type :math:`{t'}`.
 
@@ -4671,18 +4671,18 @@ The instruction :math:`({\mathit{nt}} {.} {\mathit{relop}}_{\mathit{nt}})` is :r
 
 
 
-The instruction :math:`({\mathit{nt}}_1 {.} {{\mathit{cvtop}}_1}{\mathsf{\_}}{{\mathit{nt}}_2})` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{nt}}_2~\rightarrow~{\mathit{nt}}_1` if:
+The instruction :math:`({\mathit{nt}}_1 {.} {{\mathit{cvtop}}}{\mathsf{\_}}{{\mathit{nt}}_2})` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{nt}}_2~\rightarrow~{\mathit{nt}}_1` if:
 
 
    * Either:
 
-      * :math:`{\mathit{cvtop}}_1` is equal to :math:`\mathsf{reinterpret}`.
+      * :math:`{\mathit{cvtop}}` is equal to :math:`\mathsf{reinterpret}`.
 
       * :math:`{|{\mathit{nt}}_1|}` is equal to :math:`{|{\mathit{nt}}_2|}`.
 
    * Or:
 
-      * :math:`{\mathit{cvtop}}_1` is equal to :math:`{\mathit{cvtop}}`.
+      * :math:`{\mathit{cvtop}}` is equal to :math:`{\mathit{cvtop}}`.
 
 
 
@@ -5017,81 +5017,81 @@ The instruction :math:`(\mathsf{data{.}drop}~x)` is :ref:`valid <valid-val>` wit
 
 
 
-The instruction :math:`({{\mathit{numtype}}_1{.}\mathsf{load}}{{{\mathit{loadop\_{\scriptstyle 1}}}^?}}~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathit{valtype}}_1` if:
+The instruction :math:`({{\mathit{numtype}}{.}\mathsf{load}}{{{\mathit{loadop}}^?}}~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathit{valtype}}` if:
 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
 
    * Either:
 
-      * The number type :math:`{\mathit{numtype}}_1` is equal to :math:`{\mathit{nt}}`.
+      * The number type :math:`{\mathit{numtype}}` is equal to :math:`{\mathit{nt}}`.
 
-      * :math:`{{\mathit{loadop\_{\scriptstyle 1}}}^?}` is absent.
+      * :math:`{{\mathit{loadop}}^?}` is absent.
 
-      * The value type :math:`{\mathit{valtype}}_1` is equal to :math:`{\mathit{nt}}`.
+      * The value type :math:`{\mathit{valtype}}` is equal to :math:`{\mathit{nt}}`.
 
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
 
    * Or:
 
-      * The number type :math:`{\mathit{numtype}}_1` is equal to :math:`{\mathsf{i}}{n}`.
+      * The number type :math:`{\mathit{numtype}}` is equal to :math:`{\mathsf{i}}{n}`.
 
-      * :math:`{{\mathit{loadop\_{\scriptstyle 1}}}^?}` is equal to :math:`{M}{\mathsf{\_}}{{\mathit{sx}}}`.
+      * :math:`{{\mathit{loadop}}^?}` is equal to :math:`{M}{\mathsf{\_}}{{\mathit{sx}}}`.
 
-      * The value type :math:`{\mathit{valtype}}_1` is equal to :math:`{\mathsf{i}}{n}`.
+      * The value type :math:`{\mathit{valtype}}` is equal to :math:`{\mathsf{i}}{n}`.
 
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
 
 
 
 
-The instruction :math:`({{\mathit{numtype}}_1{.}\mathsf{store}}{{{\mathit{sz}}_1^?}}~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~{\mathit{valtype}}_1~\rightarrow~\epsilon` if:
+The instruction :math:`({{\mathit{numtype}}{.}\mathsf{store}}{{{\mathit{sz}}^?}}~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~{\mathit{valtype}}~\rightarrow~\epsilon` if:
 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
 
    * Either:
 
-      * The number type :math:`{\mathit{numtype}}_1` is equal to :math:`{\mathit{nt}}`.
+      * The number type :math:`{\mathit{numtype}}` is equal to :math:`{\mathit{nt}}`.
 
-      * The pack size :math:`{{\mathit{sz}}_1^?}` is absent.
+      * The pack size :math:`{{\mathit{sz}}^?}` is absent.
 
-      * The value type :math:`{\mathit{valtype}}_1` is equal to :math:`{\mathit{nt}}`.
+      * The value type :math:`{\mathit{valtype}}` is equal to :math:`{\mathit{nt}}`.
 
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
 
    * Or:
 
-      * The number type :math:`{\mathit{numtype}}_1` is equal to :math:`{\mathsf{i}}{n}`.
+      * The number type :math:`{\mathit{numtype}}` is equal to :math:`{\mathsf{i}}{n}`.
 
-      * The pack size :math:`{{\mathit{sz}}_1^?}` is equal to :math:`M`.
+      * The pack size :math:`{{\mathit{sz}}^?}` is equal to :math:`M`.
 
-      * The value type :math:`{\mathit{valtype}}_1` is equal to :math:`{\mathsf{i}}{n}`.
+      * The value type :math:`{\mathit{valtype}}` is equal to :math:`{\mathsf{i}}{n}`.
 
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
 
 
 
 
-The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~{\mathit{vloadop}}_1~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
+The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~{\mathit{vloadop}}~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
 
    * Either:
 
-      * :math:`{\mathit{vloadop}}_1` is equal to :math:`({M}{\mathsf{x}}{N}{\mathsf{\_}}{{\mathit{sx}}})`.
+      * :math:`{\mathit{vloadop}}` is equal to :math:`({M}{\mathsf{x}}{N}{\mathsf{\_}}{{\mathit{sx}}})`.
 
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8 \cdot N`.
 
    * Or:
 
-      * :math:`{\mathit{vloadop}}_1` is equal to :math:`({n}{\mathsf{\_}}{\mathsf{splat}})`.
+      * :math:`{\mathit{vloadop}}` is equal to :math:`({n}{\mathsf{\_}}{\mathsf{splat}})`.
 
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`n / 8`.
    * Or:
 
-      * :math:`{\mathit{vloadop}}_1` is equal to :math:`({n}{\mathsf{\_}}{\mathsf{zero}})`.
+      * :math:`{\mathit{vloadop}}` is equal to :math:`({n}{\mathsf{\_}}{\mathsf{zero}})`.
 
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`n / 8`.
 
@@ -5230,35 +5230,35 @@ The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~({n}{\maths
 
 
 
-The instruction sequence :math:`{{\mathit{instr}}_1^\ast}` is :ref:`valid <valid-val>` with the function type :math:`{{\mathit{valtype}}_1^\ast}~\rightarrow~{{\mathit{valtype}}_2^\ast}` if:
+The instruction sequence :math:`{{\mathit{instr}'}^\ast}` is :ref:`valid <valid-val>` with the function type :math:`{{\mathit{valtype}}^\ast}~\rightarrow~{{\mathit{valtype}'}^\ast}` if:
 
 
    * Either:
 
-      * The instruction sequence :math:`{{\mathit{instr}}_1^\ast}` is equal to :math:`\epsilon`.
+      * The instruction sequence :math:`{{\mathit{instr}'}^\ast}` is equal to :math:`\epsilon`.
 
-      * The value type sequence :math:`{{\mathit{valtype}}_1^\ast}` is equal to :math:`\epsilon`.
+      * The value type sequence :math:`{{\mathit{valtype}}^\ast}` is equal to :math:`\epsilon`.
 
-      * The value type sequence :math:`{{\mathit{valtype}}_2^\ast}` is equal to :math:`\epsilon`.
+      * The value type sequence :math:`{{\mathit{valtype}'}^\ast}` is equal to :math:`\epsilon`.
 
    * Or:
 
-      * The instruction sequence :math:`{{\mathit{instr}}_1^\ast}` is equal to :math:`{\mathit{instr}}_1~{{\mathit{instr}}_2^\ast}`.
+      * The instruction sequence :math:`{{\mathit{instr}'}^\ast}` is equal to :math:`{\mathit{instr}}_1~{{\mathit{instr}}_2^\ast}`.
 
-      * The value type sequence :math:`{{\mathit{valtype}}_1^\ast}` is equal to :math:`{t_1^\ast}`.
+      * The value type sequence :math:`{{\mathit{valtype}}^\ast}` is equal to :math:`{t_1^\ast}`.
 
-      * The value type sequence :math:`{{\mathit{valtype}}_2^\ast}` is equal to :math:`{t_3^\ast}`.
+      * The value type sequence :math:`{{\mathit{valtype}'}^\ast}` is equal to :math:`{t_3^\ast}`.
 
       * The instruction :math:`{\mathit{instr}}_1` is :ref:`valid <valid-val>` with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
       * The instruction sequence :math:`{{\mathit{instr}}_2^\ast}` is :ref:`valid <valid-val>` with the function type :math:`{t_2^\ast}~\rightarrow~{t_3^\ast}`.
    * Or:
 
-      * The instruction sequence :math:`{{\mathit{instr}}_1^\ast}` is equal to :math:`{{\mathit{instr}}^\ast}`.
+      * The instruction sequence :math:`{{\mathit{instr}'}^\ast}` is equal to :math:`{{\mathit{instr}}^\ast}`.
 
-      * The value type sequence :math:`{{\mathit{valtype}}_1^\ast}` is equal to :math:`{{t'}_1^\ast}`.
+      * The value type sequence :math:`{{\mathit{valtype}}^\ast}` is equal to :math:`{{t'}_1^\ast}`.
 
-      * The value type sequence :math:`{{\mathit{valtype}}_2^\ast}` is equal to :math:`{{t'}_2^\ast}`.
+      * The value type sequence :math:`{{\mathit{valtype}'}^\ast}` is equal to :math:`{{t'}_2^\ast}`.
 
       * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
@@ -5267,11 +5267,11 @@ The instruction sequence :math:`{{\mathit{instr}}_1^\ast}` is :ref:`valid <valid
       * The result type :math:`{t_2^\ast}` :ref:`matches <match>` the result type :math:`{{t'}_2^\ast}`.
    * Or:
 
-      * The instruction sequence :math:`{{\mathit{instr}}_1^\ast}` is equal to :math:`{{\mathit{instr}}^\ast}`.
+      * The instruction sequence :math:`{{\mathit{instr}'}^\ast}` is equal to :math:`{{\mathit{instr}}^\ast}`.
 
-      * The value type sequence :math:`{{\mathit{valtype}}_1^\ast}` is equal to :math:`{t^\ast}~{t_1^\ast}`.
+      * The value type sequence :math:`{{\mathit{valtype}}^\ast}` is equal to :math:`{t^\ast}~{t_1^\ast}`.
 
-      * The value type sequence :math:`{{\mathit{valtype}}_2^\ast}` is equal to :math:`{t^\ast}~{t_2^\ast}`.
+      * The value type sequence :math:`{{\mathit{valtype}'}^\ast}` is equal to :math:`{t^\ast}~{t_2^\ast}`.
 
       * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
@@ -5321,25 +5321,25 @@ The expression :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` with 
 
 
 
-:math:`{\mathit{val}}_1` is constant if:
+:math:`{\mathit{val}}` is constant if:
 
 
    * Either:
 
-      * The value :math:`{\mathit{val}}_1` is equal to :math:`({\mathit{nt}}{.}\mathsf{const}~c)`.
+      * The value :math:`{\mathit{val}}` is equal to :math:`({\mathit{nt}}{.}\mathsf{const}~c)`.
 
    * Or:
 
-      * The value :math:`{\mathit{val}}_1` is equal to :math:`({\mathit{vt}}{.}\mathsf{const}~{\mathit{vc}})`.
+      * The value :math:`{\mathit{val}}` is equal to :math:`({\mathit{vt}}{.}\mathsf{const}~{\mathit{vc}})`.
    * Or:
 
-      * The value :math:`{\mathit{val}}_1` is equal to :math:`(\mathsf{ref{.}null}~{\mathit{rt}})`.
+      * The value :math:`{\mathit{val}}` is equal to :math:`(\mathsf{ref{.}null}~{\mathit{rt}})`.
    * Or:
 
-      * The value :math:`{\mathit{val}}_1` is equal to :math:`(\mathsf{ref{.}func}~x)`.
+      * The value :math:`{\mathit{val}}` is equal to :math:`(\mathsf{ref{.}func}~x)`.
    * Or:
 
-      * The value :math:`{\mathit{val}}_1` is equal to :math:`(\mathsf{global{.}get}~x)`.
+      * The value :math:`{\mathit{val}}` is equal to :math:`(\mathsf{global{.}get}~x)`.
 
       * The global type :math:`C{.}\mathsf{globals}{}[x]` exists.
 
@@ -5438,12 +5438,12 @@ The memory :math:`(\mathsf{memory}~{\mathit{mt}})` is :ref:`valid <valid-val>` w
 
 
 
-:math:`{\mathit{elemmode}}_1` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{rt}}` if:
+:math:`{\mathit{elemmode}}` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{rt}}` if:
 
 
    * Either:
 
-      * :math:`{\mathit{elemmode}}_1` is equal to :math:`(\mathsf{active}~x~{\mathit{expr}})`.
+      * :math:`{\mathit{elemmode}}` is equal to :math:`(\mathsf{active}~x~{\mathit{expr}})`.
 
       * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
 
@@ -5455,10 +5455,10 @@ The memory :math:`(\mathsf{memory}~{\mathit{mt}})` is :ref:`valid <valid-val>` w
 
    * Or:
 
-      * :math:`{\mathit{elemmode}}_1` is equal to :math:`\mathsf{passive}`.
+      * :math:`{\mathit{elemmode}}` is equal to :math:`\mathsf{passive}`.
    * Or:
 
-      * :math:`{\mathit{elemmode}}_1` is equal to :math:`\mathsf{declare}`.
+      * :math:`{\mathit{elemmode}}` is equal to :math:`\mathsf{declare}`.
 
 
 
@@ -5501,12 +5501,12 @@ The table segment :math:`(\mathsf{elem}~{\mathit{rt}}~{{\mathit{expr}}^\ast}~{\m
 
 
 
-:math:`{\mathit{datamode}}_1` is :ref:`valid <valid-val>` if:
+:math:`{\mathit{datamode}}` is :ref:`valid <valid-val>` if:
 
 
    * Either:
 
-      * :math:`{\mathit{datamode}}_1` is equal to :math:`(\mathsf{active}~0~{\mathit{expr}})`.
+      * :math:`{\mathit{datamode}}` is equal to :math:`(\mathsf{active}~0~{\mathit{expr}})`.
 
       * The memory type :math:`C{.}\mathsf{mems}{}[0]` is equal to :math:`{\mathit{mt}}`.
 
@@ -5516,7 +5516,7 @@ The table segment :math:`(\mathsf{elem}~{\mathit{rt}}~{{\mathit{expr}}^\ast}~{\m
 
    * Or:
 
-      * :math:`{\mathit{datamode}}_1` is equal to :math:`\mathsf{passive}`.
+      * :math:`{\mathit{datamode}}` is equal to :math:`\mathsf{passive}`.
 
 
 
@@ -5564,14 +5564,14 @@ The import :math:`(\mathsf{import}~{\mathit{name}}_1~{\mathit{name}}_2~{\mathit{
 
 
 
-The external index :math:`{\mathit{externidx}}_1` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{externtype}}_1` if:
+The external index :math:`{\mathit{externidx}}` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{externtype}}` if:
 
 
    * Either:
 
-      * The external index :math:`{\mathit{externidx}}_1` is equal to :math:`(\mathsf{func}~x)`.
+      * The external index :math:`{\mathit{externidx}}` is equal to :math:`(\mathsf{func}~x)`.
 
-      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{func}~{\mathit{ft}})`.
+      * The external type :math:`{\mathit{externtype}}` is equal to :math:`(\mathsf{func}~{\mathit{ft}})`.
 
       * The function type :math:`C{.}\mathsf{funcs}{}[x]` exists.
 
@@ -5579,27 +5579,27 @@ The external index :math:`{\mathit{externidx}}_1` is :ref:`valid <valid-val>` wi
 
    * Or:
 
-      * The external index :math:`{\mathit{externidx}}_1` is equal to :math:`(\mathsf{global}~x)`.
+      * The external index :math:`{\mathit{externidx}}` is equal to :math:`(\mathsf{global}~x)`.
 
-      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{global}~{\mathit{gt}})`.
+      * The external type :math:`{\mathit{externtype}}` is equal to :math:`(\mathsf{global}~{\mathit{gt}})`.
 
       * The global type :math:`C{.}\mathsf{globals}{}[x]` exists.
 
       * The global type :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`{\mathit{gt}}`.
    * Or:
 
-      * The external index :math:`{\mathit{externidx}}_1` is equal to :math:`(\mathsf{table}~x)`.
+      * The external index :math:`{\mathit{externidx}}` is equal to :math:`(\mathsf{table}~x)`.
 
-      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{table}~{\mathit{tt}})`.
+      * The external type :math:`{\mathit{externtype}}` is equal to :math:`(\mathsf{table}~{\mathit{tt}})`.
 
       * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
 
       * The table type :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`{\mathit{tt}}`.
    * Or:
 
-      * The external index :math:`{\mathit{externidx}}_1` is equal to :math:`(\mathsf{mem}~x)`.
+      * The external index :math:`{\mathit{externidx}}` is equal to :math:`(\mathsf{mem}~x)`.
 
-      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{mem}~{\mathit{mt}})`.
+      * The external type :math:`{\mathit{externtype}}` is equal to :math:`(\mathsf{mem}~{\mathit{mt}})`.
 
       * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
 
@@ -5808,8 +5808,8 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
 
-:math:`\mathsf{br}~n_1`
-.......................
+:math:`\mathsf{br}~{n'}`
+........................
 
 
 1. Assert: Due to validation, the first non-value entry of the stack is a :math:`\mathsf{label}`.
@@ -5818,7 +5818,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`n` be the arity of L
 
-#. If :math:`n_1 = 0`, then:
+#. If :math:`{n'} = 0`, then:
 
    a. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
 
@@ -5836,9 +5836,9 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    a. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
 
-   #. If :math:`n_1 \geq 1`, then:
+   #. If :math:`{n'} \geq 1`, then:
 
-      1) Let :math:`l` be :math:`n_1 - 1`.
+      1) Let :math:`l` be :math:`{n'} - 1`.
 
       #) Pop the :math:`\mathsf{label}` L from the stack.
 
@@ -6270,17 +6270,17 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
 
-:math:`{{{\mathit{lanetype}}_1}{\mathsf{x}}{N}{.}\mathsf{extract\_lane}}{{{\mathit{sx}}_1^?}}~i`
-................................................................................................
+:math:`{{{\mathit{lanetype}}}{\mathsf{x}}{N}{.}\mathsf{extract\_lane}}{{{\mathit{sx}'}^?}}~i`
+.............................................................................................
 
 
 1. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
-#. If :math:`{{\mathit{sx}}_1^?}` is not defined and :math:`{\mathit{lanetype}}_1` is number type, then:
+#. If :math:`{{\mathit{sx}'}^?}` is not defined and :math:`{\mathit{lanetype}}` is number type, then:
 
-   a. Let :math:`{\mathit{nt}}` be :math:`{\mathit{lanetype}}_1`.
+   a. Let :math:`{\mathit{nt}}` be :math:`{\mathit{lanetype}}`.
 
    #. If :math:`i < {|{{\mathrm{lanes}}}_{{{\mathit{nt}}}{\mathsf{x}}{N}}(c_1)|}`, then:
 
@@ -6288,13 +6288,13 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       #) Push the value :math:`({\mathit{nt}}{.}\mathsf{const}~c_2)` to the stack.
 
-#. If :math:`{\mathit{lanetype}}_1` is packed type, then:
+#. If :math:`{\mathit{lanetype}}` is packed type, then:
 
-   a. Let :math:`{\mathit{pt}}` be :math:`{\mathit{lanetype}}_1`.
+   a. Let :math:`{\mathit{pt}}` be :math:`{\mathit{lanetype}}`.
 
-   #. If :math:`{{\mathit{sx}}_1^?}` is defined, then:
+   #. If :math:`{{\mathit{sx}'}^?}` is defined, then:
 
-      1) Let :math:`{\mathit{sx}}` be :math:`{{\mathit{sx}}_1^?}`.
+      1) Let :math:`{\mathit{sx}}` be :math:`{{\mathit{sx}'}^?}`.
 
       #) If :math:`i < {|{{\mathrm{lanes}}}_{{{\mathit{pt}}}{\mathsf{x}}{N}}(c_1)|}`, then:
 
@@ -6377,23 +6377,23 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
 
-:math:`{{\mathit{lanetype}}_1}{\mathsf{x}}{n_1} {.} {{{\mathit{lanetype}}_2}{\mathsf{x}}{n_2}}{\mathsf{\_}}{{\mathit{vcvtop}}}{\mathsf{\_}}{{{\mathit{half}}_1^?}}{\mathsf{\_}}{{{\mathit{zero}}_1^?}}`
-.......................................................................................................................................................................................................
+:math:`{{\mathit{lanetype}}}{\mathsf{x}}{n} {.} {{{\mathit{lanetype}'}}{\mathsf{x}}{{n'}}}{\mathsf{\_}}{{\mathit{vcvtop}}}{\mathsf{\_}}{{{\mathit{half}'}^?}}{\mathsf{\_}}{{{\mathit{zero}'}^?}}`
+.................................................................................................................................................................................................
 
 
 1. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
-#. If :math:`{{\mathit{half}}_1^?}` is not defined and :math:`{{\mathit{zero}}_1^?}` is not defined, then:
+#. If :math:`{{\mathit{half}'}^?}` is not defined and :math:`{{\mathit{zero}'}^?}` is not defined, then:
 
-   a. Let :math:`{{\mathsf{i}}{n}}_1` be :math:`{\mathit{lanetype}}_2`.
+   a. Let :math:`{{\mathsf{i}}{n}}_1` be :math:`{\mathit{lanetype}'}`.
 
-   #. Let :math:`{{\mathsf{i}}{n}}_2` be :math:`{\mathit{lanetype}}_1`.
+   #. Let :math:`{{\mathsf{i}}{n}}_2` be :math:`{\mathit{lanetype}}`.
 
-   #. Let :math:`M` be :math:`n_2`.
+   #. Let :math:`M` be :math:`{n'}`.
 
-   #. If :math:`n_1 = M`, then:
+   #. If :math:`n = M`, then:
 
       1) Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M}}(c_1)`.
 
@@ -6405,19 +6405,19 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
          #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
-#. If :math:`{{\mathit{zero}}_1^?}` is not defined, then:
+#. If :math:`{{\mathit{zero}'}^?}` is not defined, then:
 
-   a. Let :math:`{{\mathsf{i}}{n}}_1` be :math:`{\mathit{lanetype}}_2`.
+   a. Let :math:`{{\mathsf{i}}{n}}_1` be :math:`{\mathit{lanetype}'}`.
 
-   #. Let :math:`{{\mathsf{i}}{n}}_2` be :math:`{\mathit{lanetype}}_1`.
+   #. Let :math:`{{\mathsf{i}}{n}}_2` be :math:`{\mathit{lanetype}}`.
 
-   #. Let :math:`M_1` be :math:`n_2`.
+   #. Let :math:`M_1` be :math:`{n'}`.
 
-   #. Let :math:`M_2` be :math:`n_1`.
+   #. Let :math:`M_2` be :math:`n`.
 
-   #. If :math:`{{\mathit{half}}_1^?}` is defined, then:
+   #. If :math:`{{\mathit{half}'}^?}` is defined, then:
 
-      1) Let :math:`{\mathit{half}}` be :math:`{{\mathit{half}}_1^?}`.
+      1) Let :math:`{\mathit{half}}` be :math:`{{\mathit{half}'}^?}`.
 
       #) Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M_1}}(c_1){}[{\mathrm{half}}({\mathit{half}}, 0, M_2) : M_2]`.
 
@@ -6429,21 +6429,21 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
          #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
-#. If :math:`{{\mathit{half}}_1^?}` is not defined, then:
+#. If :math:`{{\mathit{half}'}^?}` is not defined, then:
 
-   a. Let :math:`M_1` be :math:`n_2`.
+   a. Let :math:`M_1` be :math:`{n'}`.
 
-   #. Let :math:`M_2` be :math:`n_1`.
+   #. Let :math:`M_2` be :math:`n`.
 
-   #. If :math:`{\mathit{lanetype}}_2` is number type, then:
+   #. If :math:`{\mathit{lanetype}'}` is number type, then:
 
-      1) Let :math:`{\mathit{nt}}_1` be :math:`{\mathit{lanetype}}_2`.
+      1) Let :math:`{\mathit{nt}}_1` be :math:`{\mathit{lanetype}'}`.
 
-      #) If :math:`{\mathit{lanetype}}_1` is number type, then:
+      #) If :math:`{\mathit{lanetype}}` is number type, then:
 
-         a) Let :math:`{\mathit{nt}}_2` be :math:`{\mathit{lanetype}}_1`.
+         a) Let :math:`{\mathit{nt}}_2` be :math:`{\mathit{lanetype}}`.
 
-         #) If :math:`{{\mathit{zero}}_1^?}` is defined, then:
+         #) If :math:`{{\mathit{zero}'}^?}` is defined, then:
 
             1. Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathit{nt}}_1}{\mathsf{x}}{M_1}}(c_1)`.
 
@@ -6788,8 +6788,8 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
    #. Execute the instruction :math:`(\mathsf{table{.}init}~x~y)`.
 
 
-:math:`{{\mathit{numtype}}_1{.}\mathsf{load}}{{{\mathit{loadop\_{\scriptstyle 1}}}^?}}~{\mathit{ao}}`
-.....................................................................................................
+:math:`{{\mathit{numtype}}{.}\mathsf{load}}{{{\mathit{loadop}}^?}}~{\mathit{ao}}`
+.................................................................................
 
 
 1. Let :math:`z` be the current state.
@@ -6798,9 +6798,9 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. If :math:`{{\mathit{loadop\_{\scriptstyle 1}}}^?}` is not defined, then:
+#. If :math:`{{\mathit{loadop}}^?}` is not defined, then:
 
-   a. Let :math:`{\mathit{nt}}` be :math:`{\mathit{numtype}}_1`.
+   a. Let :math:`{\mathit{nt}}` be :math:`{\mathit{numtype}}`.
 
    #. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|{\mathit{nt}}|} / 8 > {|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
 
@@ -6810,11 +6810,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Push the value :math:`({\mathit{nt}}{.}\mathsf{const}~c)` to the stack.
 
-#. If :math:`{\mathit{numtype}}_1` is :math:`{\mathsf{i}}{n}`, then:
+#. If :math:`{\mathit{numtype}}` is :math:`{\mathsf{i}}{n}`, then:
 
-   a. If :math:`{{\mathit{loadop\_{\scriptstyle 1}}}^?}` is defined, then:
+   a. If :math:`{{\mathit{loadop}}^?}` is defined, then:
 
-      1) Let :math:`{\mathit{loadop\_{\scriptstyle 0}}}` be :math:`{{\mathit{loadop\_{\scriptstyle 1}}}^?}`.
+      1) Let :math:`{\mathit{loadop\_{\scriptstyle 0}}}` be :math:`{{\mathit{loadop}}^?}`.
 
       #) Let :math:`{n}{\mathsf{\_}}{{\mathit{sx}}}` be :math:`{\mathit{loadop\_{\scriptstyle 0}}}`.
 
@@ -6822,11 +6822,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
          a) Trap.
 
-   #. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}_1`.
+   #. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}`.
 
-   #. If :math:`{{\mathit{loadop\_{\scriptstyle 1}}}^?}` is defined, then:
+   #. If :math:`{{\mathit{loadop}}^?}` is defined, then:
 
-      1) Let :math:`{\mathit{loadop\_{\scriptstyle 0}}}` be :math:`{{\mathit{loadop\_{\scriptstyle 1}}}^?}`.
+      1) Let :math:`{\mathit{loadop\_{\scriptstyle 0}}}` be :math:`{{\mathit{loadop}}^?}`.
 
       #) Let :math:`{n}{\mathsf{\_}}{{\mathit{sx}}}` be :math:`{\mathit{loadop\_{\scriptstyle 0}}}`.
 
@@ -6835,8 +6835,8 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
       #) Push the value :math:`({\mathsf{i}}{n}{.}\mathsf{const}~{{{{\mathrm{extend}}}_{n, {|{\mathsf{i}}{n}|}}^{{\mathit{sx}}}}}{(c)})` to the stack.
 
 
-:math:`\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~{{\mathit{vloadop}}_1^?}~{\mathit{ao}}`
-...........................................................................................
+:math:`\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~{{\mathit{vloadop}}^?}~{\mathit{ao}}`
+.........................................................................................
 
 
 1. Let :math:`z` be the current state.
@@ -6845,11 +6845,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|\mathsf{v{\scriptstyle 128}}|} / 8 > {|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}` and :math:`{{\mathit{vloadop}}_1^?}` is not defined, then:
+#. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|\mathsf{v{\scriptstyle 128}}|} / 8 > {|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}` and :math:`{{\mathit{vloadop}}^?}` is not defined, then:
 
    a. Trap.
 
-#. If :math:`{{\mathit{vloadop}}_1^?}` is not defined, then:
+#. If :math:`{{\mathit{vloadop}}^?}` is not defined, then:
 
    a. Let :math:`c` be the result for which :math:`{{\mathrm{bytes}}}_{\mathsf{v{\scriptstyle 128}}}(c)` :math:`=` :math:`z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|\mathsf{v{\scriptstyle 128}}|} / 8]`.
 
@@ -6857,7 +6857,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Else:
 
-   a. Let :math:`{\mathit{vloadop}}_0` be :math:`{{\mathit{vloadop}}_1^?}`.
+   a. Let :math:`{\mathit{vloadop}}_0` be :math:`{{\mathit{vloadop}}^?}`.
 
    #. If :math:`{\mathit{vloadop}}_0` is :math:`\mathsf{shape}`, then:
 
@@ -7192,39 +7192,39 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Perform :math:`z{}[{.}\mathsf{elems}{}[x]{.}\mathsf{refs} = \epsilon]`.
 
 
-:math:`{{\mathit{numtype}}_1{.}\mathsf{store}}{{{\mathit{sz}}_1^?}}~{\mathit{ao}}`
-..................................................................................
+:math:`{{\mathit{numtype}}{.}\mathsf{store}}{{{\mathit{sz}}^?}}~{\mathit{ao}}`
+..............................................................................
 
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-numtype_2>` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-numtype'>` is on the top of the stack.
 
-#. Pop the value :math:`({\mathit{numtype}}_2{.}\mathsf{const}~c)` from the stack.
+#. Pop the value :math:`({\mathit{numtype}'}{.}\mathsf{const}~c)` from the stack.
 
 #. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. Let :math:`{\mathit{nt}}` be :math:`{\mathit{numtype}}_2`.
+#. Let :math:`{\mathit{nt}}` be :math:`{\mathit{numtype}'}`.
 
-#. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|{\mathit{nt}}|} / 8 > {|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}` and :math:`{\mathit{numtype}}_1 = {\mathit{nt}}` and :math:`{{\mathit{sz}}_1^?}` is not defined, then:
+#. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|{\mathit{nt}}|} / 8 > {|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}` and :math:`{\mathit{numtype}} = {\mathit{nt}}` and :math:`{{\mathit{sz}}^?}` is not defined, then:
 
    a. Trap.
 
-#. If :math:`{\mathit{numtype}}_1 = {\mathit{nt}}` and :math:`{{\mathit{sz}}_1^?}` is not defined, then:
+#. If :math:`{\mathit{numtype}} = {\mathit{nt}}` and :math:`{{\mathit{sz}}^?}` is not defined, then:
 
    a. Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{{\mathit{nt}}}(c)`.
 
    #. Perform :math:`z{}[{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|{\mathit{nt}}|} / 8] = {b^\ast}]`.
 
-#. If :math:`{\mathit{numtype}}_2` is :math:`{\mathsf{i}}{n}`, then:
+#. If :math:`{\mathit{numtype}'}` is :math:`{\mathsf{i}}{n}`, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}_2`.
+   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}'}`.
 
-   #. If :math:`{\mathit{numtype}}_1 = {\mathsf{i}}{n}` and :math:`{{\mathit{sz}}_1^?}` is defined, then:
+   #. If :math:`{\mathit{numtype}} = {\mathsf{i}}{n}` and :math:`{{\mathit{sz}}^?}` is defined, then:
 
-      1) Let :math:`n` be :math:`{{\mathit{sz}}_1^?}`.
+      1) Let :math:`n` be :math:`{{\mathit{sz}}^?}`.
 
       #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + n / 8 > {|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
 
@@ -7339,121 +7339,121 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Return :math:`j`.
 
 
-:math:`{\mathrm{sum}}({n_1^\ast})`
-..................................
+:math:`{\mathrm{sum}}({n^\ast})`
+................................
 
 
-1. If :math:`{n_1^\ast} = \epsilon`, then:
+1. If :math:`{n^\ast} = \epsilon`, then:
 
    a. Return :math:`0`.
 
-#. Let :math:`n~{{n'}^\ast}` be :math:`{n_1^\ast}`.
+#. Let :math:`n~{{n'}^\ast}` be :math:`{n^\ast}`.
 
 #. Return :math:`n + {\mathrm{sum}}({{n'}^\ast})`.
 
 
-:math:`{X_1^\ast}`
-..................
+:math:`{X^\ast}`
+................
 
 
-1. If :math:`{X_1^\ast} = \epsilon`, then:
+1. If :math:`{X^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Assert: Due to validation, :math:`{|{X_1^\ast}|} = 1`.
+#. Assert: Due to validation, :math:`{|{X^\ast}|} = 1`.
 
-#. Let :math:`w` be :math:`{X_1^\ast}`.
+#. Let :math:`w` be :math:`{X^\ast}`.
 
 #. Return :math:`w`.
 
 
-:math:`{X_1^?}`
-...............
+:math:`{X^?}`
+.............
 
 
-1. If :math:`{X_1^?}` is not defined, then:
+1. If :math:`{X^?}` is not defined, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`w` be :math:`{X_1^?}`.
+#. Let :math:`w` be :math:`{X^?}`.
 
 #. Return :math:`w`.
 
 
-:math:`{\mathrm{concat}}({X_1^\ast})`
-.....................................
+:math:`{\mathrm{concat}}({X^\ast})`
+...................................
 
 
-1. If :math:`{X_1^\ast} = \epsilon`, then:
+1. If :math:`{X^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{w^\ast}~{{{w'}^\ast}^\ast}` be :math:`{X_1^\ast}`.
+#. Let :math:`{w^\ast}~{{{w'}^\ast}^\ast}` be :math:`{X^\ast}`.
 
 #. Return :math:`{w^\ast}~{\mathrm{concat}}({{{w'}^\ast}^\ast})`.
 
 
-:math:`{{\mathrm{setproduct{\kern-0.1em\scriptstyle 2}}}}_{X}(w_1, {X_1^\ast})`
-...............................................................................
+:math:`{{\mathrm{setproduct{\kern-0.1em\scriptstyle 2}}}}_{X}(w_1, {X^\ast})`
+.............................................................................
 
 
-1. If :math:`{X_1^\ast} = \epsilon`, then:
+1. If :math:`{X^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{{w'}^\ast}~{{w^\ast}^\ast}` be :math:`{X_1^\ast}`.
+#. Let :math:`{{w'}^\ast}~{{w^\ast}^\ast}` be :math:`{X^\ast}`.
 
 #. Return :math:`w_1~{{w'}^\ast}~{{\mathrm{setproduct{\kern-0.1em\scriptstyle 2}}}}_{X}(w_1, {{w^\ast}^\ast})`.
 
 
-:math:`{{\mathrm{setproduct{\kern-0.1em\scriptstyle 1}}}}_{X}({X_1^\ast}, {{w^\ast}^\ast})`
-...........................................................................................
+:math:`{{\mathrm{setproduct{\kern-0.1em\scriptstyle 1}}}}_{X}({X^\ast}, {{w^\ast}^\ast})`
+.........................................................................................
 
 
-1. If :math:`{X_1^\ast} = \epsilon`, then:
+1. If :math:`{X^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`w_1~{{w'}^\ast}` be :math:`{X_1^\ast}`.
+#. Let :math:`w_1~{{w'}^\ast}` be :math:`{X^\ast}`.
 
 #. Return :math:`{{\mathrm{setproduct{\kern-0.1em\scriptstyle 2}}}}_{X}(w_1, {{w^\ast}^\ast})~{{\mathrm{setproduct{\kern-0.1em\scriptstyle 1}}}}_{X}({{w'}^\ast}, {{w^\ast}^\ast})`.
 
 
-:math:`\Large\times~{X_1^\ast}`
-...............................
+:math:`\Large\times~{X^\ast}`
+.............................
 
 
-1. If :math:`{X_1^\ast} = \epsilon`, then:
+1. If :math:`{X^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{w_1^\ast}~{{w^\ast}^\ast}` be :math:`{X_1^\ast}`.
+#. Let :math:`{w_1^\ast}~{{w^\ast}^\ast}` be :math:`{X^\ast}`.
 
 #. Return :math:`{{\mathrm{setproduct{\kern-0.1em\scriptstyle 1}}}}_{X}({w_1^\ast}, \Large\times~{{w^\ast}^\ast})`.
 
 
-:math:`{\mathrm{signif}}(N_1)`
-..............................
+:math:`{\mathrm{signif}}(N)`
+............................
 
 
-1. If :math:`N_1 = 32`, then:
+1. If :math:`N = 32`, then:
 
    a. Return :math:`23`.
 
-#. Assert: Due to validation, :math:`N_1 = 64`.
+#. Assert: Due to validation, :math:`N = 64`.
 
 #. Return :math:`52`.
 
 
-:math:`{\mathrm{expon}}(N_1)`
-.............................
+:math:`{\mathrm{expon}}(N)`
+...........................
 
 
-1. If :math:`N_1 = 32`, then:
+1. If :math:`N = 32`, then:
 
    a. Return :math:`8`.
 
-#. Assert: Due to validation, :math:`N_1 = 64`.
+#. Assert: Due to validation, :math:`N = 64`.
 
 #. Return :math:`11`.
 
@@ -7493,27 +7493,27 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 1. Return :math:`{2^{{\mathrm{signif}}(N) - 1}}`.
 
 
-:math:`{|{\mathit{valtype}}_1|}`
-................................
+:math:`{|{\mathit{valtype}}|}`
+..............................
 
 
-1. If :math:`{\mathit{valtype}}_1 = \mathsf{i{\scriptstyle 32}}`, then:
-
-   a. Return :math:`32`.
-
-#. If :math:`{\mathit{valtype}}_1 = \mathsf{i{\scriptstyle 64}}`, then:
-
-   a. Return :math:`64`.
-
-#. If :math:`{\mathit{valtype}}_1 = \mathsf{f{\scriptstyle 32}}`, then:
+1. If :math:`{\mathit{valtype}} = \mathsf{i{\scriptstyle 32}}`, then:
 
    a. Return :math:`32`.
 
-#. If :math:`{\mathit{valtype}}_1 = \mathsf{f{\scriptstyle 64}}`, then:
+#. If :math:`{\mathit{valtype}} = \mathsf{i{\scriptstyle 64}}`, then:
 
    a. Return :math:`64`.
 
-#. If :math:`{\mathit{valtype}}_1 = \mathsf{v{\scriptstyle 128}}`, then:
+#. If :math:`{\mathit{valtype}} = \mathsf{f{\scriptstyle 32}}`, then:
+
+   a. Return :math:`32`.
+
+#. If :math:`{\mathit{valtype}} = \mathsf{f{\scriptstyle 64}}`, then:
+
+   a. Return :math:`64`.
+
+#. If :math:`{\mathit{valtype}} = \mathsf{v{\scriptstyle 128}}`, then:
 
    a. Return :math:`128`.
 
@@ -7527,32 +7527,32 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 1. Return :math:`{|{\mathsf{i}}{n}|}`.
 
 
-:math:`{|{\mathit{packtype}}_1|}`
-.................................
+:math:`{|{\mathit{packtype}}|}`
+...............................
 
 
-1. If :math:`{\mathit{packtype}}_1 = \mathsf{i{\scriptstyle 8}}`, then:
+1. If :math:`{\mathit{packtype}} = \mathsf{i{\scriptstyle 8}}`, then:
 
    a. Return :math:`8`.
 
-#. Assert: Due to validation, :math:`{\mathit{packtype}}_1 = \mathsf{i{\scriptstyle 16}}`.
+#. Assert: Due to validation, :math:`{\mathit{packtype}} = \mathsf{i{\scriptstyle 16}}`.
 
 #. Return :math:`16`.
 
 
-:math:`{|{\mathit{lanetype}}_1|}`
-.................................
+:math:`{|{\mathit{lanetype}}|}`
+...............................
 
 
-1. If :math:`{\mathit{lanetype}}_1` is number type, then:
+1. If :math:`{\mathit{lanetype}}` is number type, then:
 
-   a. Let :math:`{\mathit{numtype}}` be :math:`{\mathit{lanetype}}_1`.
+   a. Let :math:`{\mathit{numtype}}` be :math:`{\mathit{lanetype}}`.
 
    #. Return :math:`{|{\mathit{numtype}}|}`.
 
-#. Assert: Due to validation, :math:`{\mathit{lanetype}}_1` is packed type.
+#. Assert: Due to validation, :math:`{\mathit{lanetype}}` is packed type.
 
-#. Let :math:`{\mathit{packtype}}` be :math:`{\mathit{lanetype}}_1`.
+#. Let :math:`{\mathit{packtype}}` be :math:`{\mathit{lanetype}}`.
 
 #. Return :math:`{|{\mathit{packtype}}|}`.
 
@@ -7606,17 +7606,17 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 1. Return :math:`{|{\mathit{lt}}|}`.
 
 
-:math:`{\mathrm{zero}}({\mathit{numtype}}_1)`
-.............................................
+:math:`{\mathrm{zero}}({\mathit{numtype}})`
+...........................................
 
 
-1. If :math:`{\mathit{numtype}}_1` is :math:`{\mathsf{i}}{n}`, then:
+1. If :math:`{\mathit{numtype}}` is :math:`{\mathsf{i}}{n}`, then:
 
    a. Return :math:`0`.
 
-#. Assert: Due to validation, :math:`{\mathit{numtype}}_1` is :math:`{\mathsf{f}}{n}`.
+#. Assert: Due to validation, :math:`{\mathit{numtype}}` is :math:`{\mathsf{f}}{n}`.
 
-#. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{numtype}}_1`.
+#. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{numtype}}`.
 
 #. Return :math:`{+0}`.
 
@@ -7635,30 +7635,30 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 1. Return :math:`{|{\mathsf{i}}{n}|} \cdot N`.
 
 
-:math:`{\mathrm{concat}}({{\mathit{byte}}_1^\ast})`
-...................................................
+:math:`{\mathrm{concat}}({{\mathit{byte}}^\ast})`
+.................................................
 
 
-1. If :math:`{{\mathit{byte}}_1^\ast} = \epsilon`, then:
+1. If :math:`{{\mathit{byte}}^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{b^\ast}~{{{b'}^\ast}^\ast}` be :math:`{{\mathit{byte}}_1^\ast}`.
+#. Let :math:`{b^\ast}~{{{b'}^\ast}^\ast}` be :math:`{{\mathit{byte}}^\ast}`.
 
 #. Return :math:`{b^\ast}~{\mathrm{concat}}({{{b'}^\ast}^\ast})`.
 
 
-:math:`{\mathrm{unpack}}({\mathit{lanetype}}_1)`
-................................................
+:math:`{\mathrm{unpack}}({\mathit{lanetype}})`
+..............................................
 
 
-1. If :math:`{\mathit{lanetype}}_1` is number type, then:
+1. If :math:`{\mathit{lanetype}}` is number type, then:
 
-   a. Let :math:`{\mathit{numtype}}` be :math:`{\mathit{lanetype}}_1`.
+   a. Let :math:`{\mathit{numtype}}` be :math:`{\mathit{lanetype}}`.
 
    #. Return :math:`{\mathit{numtype}}`.
 
-#. Assert: Due to validation, :math:`{\mathit{lanetype}}_1` is packed type.
+#. Assert: Due to validation, :math:`{\mathit{lanetype}}` is packed type.
 
 #. Return :math:`\mathsf{i{\scriptstyle 32}}`.
 
@@ -7670,15 +7670,15 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 1. Return :math:`{\mathrm{unpack}}({\mathsf{i}}{n})`.
 
 
-:math:`{\mathrm{funcs}}({{\mathit{externtype}}_1^\ast})`
-........................................................
+:math:`{\mathrm{funcs}}({{\mathit{externtype}}^\ast})`
+......................................................
 
 
-1. If :math:`{{\mathit{externtype}}_1^\ast} = \epsilon`, then:
+1. If :math:`{{\mathit{externtype}}^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{externtype}}_0~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}_1^\ast}`.
+#. Let :math:`{\mathit{externtype}}_0~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}^\ast}`.
 
 #. If :math:`{\mathit{externtype}}_0` is :math:`\mathsf{func}`, then:
 
@@ -7686,20 +7686,20 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Return :math:`{\mathit{ft}}~{\mathrm{funcs}}({{\mathit{xt}}^\ast})`.
 
-#. Let :math:`{\mathit{externtype}}~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}_1^\ast}`.
+#. Let :math:`{\mathit{externtype}}~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}^\ast}`.
 
 #. Return :math:`{\mathrm{funcs}}({{\mathit{xt}}^\ast})`.
 
 
-:math:`{\mathrm{globals}}({{\mathit{externtype}}_1^\ast})`
-..........................................................
+:math:`{\mathrm{globals}}({{\mathit{externtype}}^\ast})`
+........................................................
 
 
-1. If :math:`{{\mathit{externtype}}_1^\ast} = \epsilon`, then:
+1. If :math:`{{\mathit{externtype}}^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{externtype}}_0~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}_1^\ast}`.
+#. Let :math:`{\mathit{externtype}}_0~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}^\ast}`.
 
 #. If :math:`{\mathit{externtype}}_0` is :math:`\mathsf{global}`, then:
 
@@ -7707,20 +7707,20 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Return :math:`{\mathit{gt}}~{\mathrm{globals}}({{\mathit{xt}}^\ast})`.
 
-#. Let :math:`{\mathit{externtype}}~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}_1^\ast}`.
+#. Let :math:`{\mathit{externtype}}~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}^\ast}`.
 
 #. Return :math:`{\mathrm{globals}}({{\mathit{xt}}^\ast})`.
 
 
-:math:`{\mathrm{tables}}({{\mathit{externtype}}_1^\ast})`
-.........................................................
+:math:`{\mathrm{tables}}({{\mathit{externtype}}^\ast})`
+.......................................................
 
 
-1. If :math:`{{\mathit{externtype}}_1^\ast} = \epsilon`, then:
+1. If :math:`{{\mathit{externtype}}^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{externtype}}_0~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}_1^\ast}`.
+#. Let :math:`{\mathit{externtype}}_0~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}^\ast}`.
 
 #. If :math:`{\mathit{externtype}}_0` is :math:`\mathsf{table}`, then:
 
@@ -7728,20 +7728,20 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Return :math:`{\mathit{tt}}~{\mathrm{tables}}({{\mathit{xt}}^\ast})`.
 
-#. Let :math:`{\mathit{externtype}}~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}_1^\ast}`.
+#. Let :math:`{\mathit{externtype}}~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}^\ast}`.
 
 #. Return :math:`{\mathrm{tables}}({{\mathit{xt}}^\ast})`.
 
 
-:math:`{\mathrm{mems}}({{\mathit{externtype}}_1^\ast})`
-.......................................................
+:math:`{\mathrm{mems}}({{\mathit{externtype}}^\ast})`
+.....................................................
 
 
-1. If :math:`{{\mathit{externtype}}_1^\ast} = \epsilon`, then:
+1. If :math:`{{\mathit{externtype}}^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{externtype}}_0~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}_1^\ast}`.
+#. Let :math:`{\mathit{externtype}}_0~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}^\ast}`.
 
 #. If :math:`{\mathit{externtype}}_0` is :math:`\mathsf{mem}`, then:
 
@@ -7749,39 +7749,39 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Return :math:`{\mathit{mt}}~{\mathrm{mems}}({{\mathit{xt}}^\ast})`.
 
-#. Let :math:`{\mathit{externtype}}~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}_1^\ast}`.
+#. Let :math:`{\mathit{externtype}}~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}^\ast}`.
 
 #. Return :math:`{\mathrm{mems}}({{\mathit{xt}}^\ast})`.
 
 
-:math:`{\mathrm{dataidx}}({\mathit{instr}}_1)`
-..............................................
+:math:`{\mathrm{dataidx}}({\mathit{instr}})`
+............................................
 
 
-1. If :math:`{\mathit{instr}}_1` is :math:`\mathsf{memory{.}init}`, then:
+1. If :math:`{\mathit{instr}}` is :math:`\mathsf{memory{.}init}`, then:
 
-   a. Let :math:`(\mathsf{memory{.}init}~x)` be :math:`{\mathit{instr}}_1`.
+   a. Let :math:`(\mathsf{memory{.}init}~x)` be :math:`{\mathit{instr}}`.
 
    #. Return :math:`x`.
 
-#. If :math:`{\mathit{instr}}_1` is :math:`\mathsf{data{.}drop}`, then:
+#. If :math:`{\mathit{instr}}` is :math:`\mathsf{data{.}drop}`, then:
 
-   a. Let :math:`(\mathsf{data{.}drop}~x)` be :math:`{\mathit{instr}}_1`.
+   a. Let :math:`(\mathsf{data{.}drop}~x)` be :math:`{\mathit{instr}}`.
 
    #. Return :math:`x`.
 
 #. Return :math:`\epsilon`.
 
 
-:math:`{\mathrm{dataidx}}({{\mathit{instr}}_1^\ast})`
-.....................................................
+:math:`{\mathrm{dataidx}}({{\mathit{instr}}^\ast})`
+...................................................
 
 
-1. If :math:`{{\mathit{instr}}_1^\ast} = \epsilon`, then:
+1. If :math:`{{\mathit{instr}}^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{instr}}~{{\mathit{instr}'}^\ast}` be :math:`{{\mathit{instr}}_1^\ast}`.
+#. Let :math:`{\mathit{instr}}~{{\mathit{instr}'}^\ast}` be :math:`{{\mathit{instr}}^\ast}`.
 
 #. Return :math:`{\mathrm{dataidx}}({\mathit{instr}})~{\mathrm{dataidx}}({{\mathit{instr}'}^\ast})`.
 
@@ -7800,15 +7800,15 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 1. Return :math:`{\mathrm{dataidx}}(e)`.
 
 
-:math:`{\mathrm{dataidx}}({{\mathit{func}}_1^\ast})`
-....................................................
+:math:`{\mathrm{dataidx}}({{\mathit{func}}^\ast})`
+..................................................
 
 
-1. If :math:`{{\mathit{func}}_1^\ast} = \epsilon`, then:
+1. If :math:`{{\mathit{func}}^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{func}}~{{\mathit{func}'}^\ast}` be :math:`{{\mathit{func}}_1^\ast}`.
+#. Let :math:`{\mathit{func}}~{{\mathit{func}'}^\ast}` be :math:`{{\mathit{func}}^\ast}`.
 
 #. Return :math:`{\mathrm{dataidx}}({\mathit{func}})~{\mathrm{dataidx}}({{\mathit{func}'}^\ast})`.
 
@@ -7844,168 +7844,168 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Return :math:`j`.
 
 
-:math:`{{\mathit{unop\_{\scriptstyle 1}}}}{{}_{{\mathit{numtype}}_1}}{({\mathit{num\_{\scriptstyle 1}}})}`
-..........................................................................................................
+:math:`{{\mathit{unop}}}{{}_{{\mathit{numtype}}}}{({\mathit{num}})}`
+....................................................................
 
 
-1. If :math:`{\mathit{numtype}}_1` is :math:`{\mathsf{i}}{n}`, then:
+1. If :math:`{\mathit{numtype}}` is :math:`{\mathsf{i}}{n}`, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}_1`.
+   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}`.
 
-   #. Let :math:`{\mathit{iN}}` be :math:`{\mathit{num\_{\scriptstyle 1}}}`.
+   #. Let :math:`{\mathit{iN}}` be :math:`{\mathit{num}}`.
 
-   #. If :math:`{\mathit{unop\_{\scriptstyle 1}}} = \mathsf{clz}`, then:
+   #. If :math:`{\mathit{unop}} = \mathsf{clz}`, then:
 
       1) Return :math:`{{\mathrm{iclz}}}_{N}({\mathit{iN}})`.
 
-   #. If :math:`{\mathit{unop\_{\scriptstyle 1}}} = \mathsf{ctz}`, then:
+   #. If :math:`{\mathit{unop}} = \mathsf{ctz}`, then:
 
       1) Return :math:`{{\mathrm{ictz}}}_{N}({\mathit{iN}})`.
 
-   #. If :math:`{\mathit{unop\_{\scriptstyle 1}}} = \mathsf{popcnt}`, then:
+   #. If :math:`{\mathit{unop}} = \mathsf{popcnt}`, then:
 
       1) Return :math:`{{\mathrm{ipopcnt}}}_{N}({\mathit{iN}})`.
 
-   #. Assert: Due to validation, :math:`{\mathit{unop\_{\scriptstyle 1}}}` is :math:`\mathsf{extend}`.
+   #. Assert: Due to validation, :math:`{\mathit{unop}}` is :math:`\mathsf{extend}`.
 
-   #. Let :math:`(\mathsf{extend}~M)` be :math:`{\mathit{unop\_{\scriptstyle 1}}}`.
+   #. Let :math:`(\mathsf{extend}~M)` be :math:`{\mathit{unop}}`.
 
    #. Return :math:`{{{{\mathrm{extend}}}_{M, N}^{\mathsf{s}}}}{({{\mathrm{wrap}}}_{N, M}({\mathit{iN}}))}`.
 
-#. Assert: Due to validation, :math:`{\mathit{numtype}}_1` is :math:`{\mathsf{f}}{n}`.
+#. Assert: Due to validation, :math:`{\mathit{numtype}}` is :math:`{\mathsf{f}}{n}`.
 
-#. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{numtype}}_1`.
+#. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{numtype}}`.
 
-#. Let :math:`{\mathit{fN}}` be :math:`{\mathit{num\_{\scriptstyle 1}}}`.
+#. Let :math:`{\mathit{fN}}` be :math:`{\mathit{num}}`.
 
-#. If :math:`{\mathit{unop\_{\scriptstyle 1}}} = \mathsf{abs}`, then:
+#. If :math:`{\mathit{unop}} = \mathsf{abs}`, then:
 
    a. Return :math:`{{\mathrm{fabs}}}_{N}({\mathit{fN}})`.
 
-#. If :math:`{\mathit{unop\_{\scriptstyle 1}}} = \mathsf{neg}`, then:
+#. If :math:`{\mathit{unop}} = \mathsf{neg}`, then:
 
    a. Return :math:`{{\mathrm{fneg}}}_{N}({\mathit{fN}})`.
 
-#. If :math:`{\mathit{unop\_{\scriptstyle 1}}} = \mathsf{sqrt}`, then:
+#. If :math:`{\mathit{unop}} = \mathsf{sqrt}`, then:
 
    a. Return :math:`{{\mathrm{fsqrt}}}_{N}({\mathit{fN}})`.
 
-#. If :math:`{\mathit{unop\_{\scriptstyle 1}}} = \mathsf{ceil}`, then:
+#. If :math:`{\mathit{unop}} = \mathsf{ceil}`, then:
 
    a. Return :math:`{{\mathrm{fceil}}}_{N}({\mathit{fN}})`.
 
-#. If :math:`{\mathit{unop\_{\scriptstyle 1}}} = \mathsf{floor}`, then:
+#. If :math:`{\mathit{unop}} = \mathsf{floor}`, then:
 
    a. Return :math:`{{\mathrm{ffloor}}}_{N}({\mathit{fN}})`.
 
-#. If :math:`{\mathit{unop\_{\scriptstyle 1}}} = \mathsf{trunc}`, then:
+#. If :math:`{\mathit{unop}} = \mathsf{trunc}`, then:
 
    a. Return :math:`{{\mathrm{ftrunc}}}_{N}({\mathit{fN}})`.
 
-#. Assert: Due to validation, :math:`{\mathit{unop\_{\scriptstyle 1}}} = \mathsf{nearest}`.
+#. Assert: Due to validation, :math:`{\mathit{unop}} = \mathsf{nearest}`.
 
 #. Return :math:`{{\mathrm{fnearest}}}_{N}({\mathit{fN}})`.
 
 
-:math:`{{\mathit{binop\_{\scriptstyle 1}}}}{{}_{{\mathit{numtype}}_1}}{({\mathit{num\_{\scriptstyle 1}}}, {\mathit{num\_{\scriptstyle 2}}})}`
-.............................................................................................................................................
+:math:`{{\mathit{binop}}}{{}_{{\mathit{numtype}}}}{({\mathit{num}}, {\mathit{num}}_')}`
+.......................................................................................
 
 
-1. If :math:`{\mathit{numtype}}_1` is :math:`{\mathsf{i}}{n}`, then:
+1. If :math:`{\mathit{numtype}}` is :math:`{\mathsf{i}}{n}`, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}_1`.
+   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}`.
 
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_{\scriptstyle 1}}}`.
+   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num}}`.
 
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_{\scriptstyle 2}}}`.
+   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num}}_'`.
 
-   #. If :math:`{\mathit{binop\_{\scriptstyle 1}}} = \mathsf{add}`, then:
+   #. If :math:`{\mathit{binop}} = \mathsf{add}`, then:
 
       1) Return :math:`{{\mathrm{iadd}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
-   #. If :math:`{\mathit{binop\_{\scriptstyle 1}}} = \mathsf{sub}`, then:
+   #. If :math:`{\mathit{binop}} = \mathsf{sub}`, then:
 
       1) Return :math:`{{\mathrm{isub}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
-   #. If :math:`{\mathit{binop\_{\scriptstyle 1}}} = \mathsf{mul}`, then:
+   #. If :math:`{\mathit{binop}} = \mathsf{mul}`, then:
 
       1) Return :math:`{{\mathrm{imul}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
-   #. If :math:`{\mathit{binop\_{\scriptstyle 1}}}` is :math:`\mathsf{div}`, then:
+   #. If :math:`{\mathit{binop}}` is :math:`\mathsf{div}`, then:
 
-      1) Let :math:`({\mathsf{div}}{{\mathit{sx}}})` be :math:`{\mathit{binop\_{\scriptstyle 1}}}`.
+      1) Let :math:`({\mathsf{div}}{{\mathit{sx}}})` be :math:`{\mathit{binop}}`.
 
       #) Return :math:`{{{{\mathrm{idiv}}}_{N}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
 
-   #. If :math:`{\mathit{binop\_{\scriptstyle 1}}}` is :math:`\mathsf{rem}`, then:
+   #. If :math:`{\mathit{binop}}` is :math:`\mathsf{rem}`, then:
 
-      1) Let :math:`({\mathsf{rem}}{{\mathit{sx}}})` be :math:`{\mathit{binop\_{\scriptstyle 1}}}`.
+      1) Let :math:`({\mathsf{rem}}{{\mathit{sx}}})` be :math:`{\mathit{binop}}`.
 
       #) Return :math:`{{{{\mathrm{irem}}}_{N}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
 
-   #. If :math:`{\mathit{binop\_{\scriptstyle 1}}} = \mathsf{and}`, then:
+   #. If :math:`{\mathit{binop}} = \mathsf{and}`, then:
 
       1) Return :math:`{{\mathrm{iand}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
-   #. If :math:`{\mathit{binop\_{\scriptstyle 1}}} = \mathsf{or}`, then:
+   #. If :math:`{\mathit{binop}} = \mathsf{or}`, then:
 
       1) Return :math:`{{\mathrm{ior}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
-   #. If :math:`{\mathit{binop\_{\scriptstyle 1}}} = \mathsf{xor}`, then:
+   #. If :math:`{\mathit{binop}} = \mathsf{xor}`, then:
 
       1) Return :math:`{{\mathrm{ixor}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
-   #. If :math:`{\mathit{binop\_{\scriptstyle 1}}} = \mathsf{shl}`, then:
+   #. If :math:`{\mathit{binop}} = \mathsf{shl}`, then:
 
       1) Return :math:`{{\mathrm{ishl}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
-   #. If :math:`{\mathit{binop\_{\scriptstyle 1}}}` is :math:`\mathsf{shr}`, then:
+   #. If :math:`{\mathit{binop}}` is :math:`\mathsf{shr}`, then:
 
-      1) Let :math:`({\mathsf{shr}}{{\mathit{sx}}})` be :math:`{\mathit{binop\_{\scriptstyle 1}}}`.
+      1) Let :math:`({\mathsf{shr}}{{\mathit{sx}}})` be :math:`{\mathit{binop}}`.
 
       #) Return :math:`{{{{\mathrm{ishr}}}_{N}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
 
-   #. If :math:`{\mathit{binop\_{\scriptstyle 1}}} = \mathsf{rotl}`, then:
+   #. If :math:`{\mathit{binop}} = \mathsf{rotl}`, then:
 
       1) Return :math:`{{\mathrm{irotl}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
-   #. If :math:`{\mathit{binop\_{\scriptstyle 1}}} = \mathsf{rotr}`, then:
+   #. If :math:`{\mathit{binop}} = \mathsf{rotr}`, then:
 
       1) Return :math:`{{\mathrm{irotr}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
-#. Assert: Due to validation, :math:`{\mathit{numtype}}_1` is :math:`{\mathsf{f}}{n}`.
+#. Assert: Due to validation, :math:`{\mathit{numtype}}` is :math:`{\mathsf{f}}{n}`.
 
-#. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{numtype}}_1`.
+#. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{numtype}}`.
 
-#. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_{\scriptstyle 1}}}`.
+#. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num}}`.
 
-#. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{num\_{\scriptstyle 2}}}`.
+#. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{num}}_'`.
 
-#. If :math:`{\mathit{binop\_{\scriptstyle 1}}} = \mathsf{add}`, then:
+#. If :math:`{\mathit{binop}} = \mathsf{add}`, then:
 
    a. Return :math:`{{\mathrm{fadd}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
-#. If :math:`{\mathit{binop\_{\scriptstyle 1}}} = \mathsf{sub}`, then:
+#. If :math:`{\mathit{binop}} = \mathsf{sub}`, then:
 
    a. Return :math:`{{\mathrm{fsub}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
-#. If :math:`{\mathit{binop\_{\scriptstyle 1}}} = \mathsf{mul}`, then:
+#. If :math:`{\mathit{binop}} = \mathsf{mul}`, then:
 
    a. Return :math:`{{\mathrm{fmul}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
-#. If :math:`{\mathit{binop\_{\scriptstyle 1}}} = \mathsf{div}`, then:
+#. If :math:`{\mathit{binop}} = \mathsf{div}`, then:
 
    a. Return :math:`{{\mathrm{fdiv}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
-#. If :math:`{\mathit{binop\_{\scriptstyle 1}}} = \mathsf{min}`, then:
+#. If :math:`{\mathit{binop}} = \mathsf{min}`, then:
 
    a. Return :math:`{{\mathrm{fmin}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
-#. If :math:`{\mathit{binop\_{\scriptstyle 1}}} = \mathsf{max}`, then:
+#. If :math:`{\mathit{binop}} = \mathsf{max}`, then:
 
    a. Return :math:`{{\mathrm{fmax}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
-#. Assert: Due to validation, :math:`{\mathit{binop\_{\scriptstyle 1}}} = \mathsf{copysign}`.
+#. Assert: Due to validation, :math:`{\mathit{binop}} = \mathsf{copysign}`.
 
 #. Return :math:`{{\mathrm{fcopysign}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
@@ -8017,192 +8017,192 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 1. Return :math:`{{\mathrm{ieqz}}}_{N}({\mathit{iN}})`.
 
 
-:math:`{{\mathit{relop\_{\scriptstyle 1}}}}{{}_{{\mathit{numtype}}_1}}{({\mathit{num\_{\scriptstyle 1}}}, {\mathit{num\_{\scriptstyle 2}}})}`
-.............................................................................................................................................
+:math:`{{\mathit{relop}}}{{}_{{\mathit{numtype}}}}{({\mathit{num}}, {\mathit{num}}_')}`
+.......................................................................................
 
 
-1. If :math:`{\mathit{numtype}}_1` is :math:`{\mathsf{i}}{n}`, then:
+1. If :math:`{\mathit{numtype}}` is :math:`{\mathsf{i}}{n}`, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}_1`.
+   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}`.
 
-   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_{\scriptstyle 1}}}`.
+   #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num}}`.
 
-   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num\_{\scriptstyle 2}}}`.
+   #. Let :math:`{\mathit{iN}}_2` be :math:`{\mathit{num}}_'`.
 
-   #. If :math:`{\mathit{relop\_{\scriptstyle 1}}} = \mathsf{eq}`, then:
+   #. If :math:`{\mathit{relop}} = \mathsf{eq}`, then:
 
       1) Return :math:`{{\mathrm{ieq}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
-   #. If :math:`{\mathit{relop\_{\scriptstyle 1}}} = \mathsf{ne}`, then:
+   #. If :math:`{\mathit{relop}} = \mathsf{ne}`, then:
 
       1) Return :math:`{{\mathrm{ine}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
-   #. If :math:`{\mathit{relop\_{\scriptstyle 1}}}` is :math:`\mathsf{lt}`, then:
+   #. If :math:`{\mathit{relop}}` is :math:`\mathsf{lt}`, then:
 
-      1) Let :math:`({\mathsf{lt}}{{\mathit{sx}}})` be :math:`{\mathit{relop\_{\scriptstyle 1}}}`.
+      1) Let :math:`({\mathsf{lt}}{{\mathit{sx}}})` be :math:`{\mathit{relop}}`.
 
       #) Return :math:`{{{{\mathrm{ilt}}}_{N}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
 
-   #. If :math:`{\mathit{relop\_{\scriptstyle 1}}}` is :math:`\mathsf{gt}`, then:
+   #. If :math:`{\mathit{relop}}` is :math:`\mathsf{gt}`, then:
 
-      1) Let :math:`({\mathsf{gt}}{{\mathit{sx}}})` be :math:`{\mathit{relop\_{\scriptstyle 1}}}`.
+      1) Let :math:`({\mathsf{gt}}{{\mathit{sx}}})` be :math:`{\mathit{relop}}`.
 
       #) Return :math:`{{{{\mathrm{igt}}}_{N}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
 
-   #. If :math:`{\mathit{relop\_{\scriptstyle 1}}}` is :math:`\mathsf{le}`, then:
+   #. If :math:`{\mathit{relop}}` is :math:`\mathsf{le}`, then:
 
-      1) Let :math:`({\mathsf{le}}{{\mathit{sx}}})` be :math:`{\mathit{relop\_{\scriptstyle 1}}}`.
+      1) Let :math:`({\mathsf{le}}{{\mathit{sx}}})` be :math:`{\mathit{relop}}`.
 
       #) Return :math:`{{{{\mathrm{ile}}}_{N}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
 
-   #. If :math:`{\mathit{relop\_{\scriptstyle 1}}}` is :math:`\mathsf{ge}`, then:
+   #. If :math:`{\mathit{relop}}` is :math:`\mathsf{ge}`, then:
 
-      1) Let :math:`({\mathsf{ge}}{{\mathit{sx}}})` be :math:`{\mathit{relop\_{\scriptstyle 1}}}`.
+      1) Let :math:`({\mathsf{ge}}{{\mathit{sx}}})` be :math:`{\mathit{relop}}`.
 
       #) Return :math:`{{{{\mathrm{ige}}}_{N}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
 
-#. Assert: Due to validation, :math:`{\mathit{numtype}}_1` is :math:`{\mathsf{f}}{n}`.
+#. Assert: Due to validation, :math:`{\mathit{numtype}}` is :math:`{\mathsf{f}}{n}`.
 
-#. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{numtype}}_1`.
+#. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{numtype}}`.
 
-#. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_{\scriptstyle 1}}}`.
+#. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num}}`.
 
-#. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{num\_{\scriptstyle 2}}}`.
+#. Let :math:`{\mathit{fN}}_2` be :math:`{\mathit{num}}_'`.
 
-#. If :math:`{\mathit{relop\_{\scriptstyle 1}}} = \mathsf{eq}`, then:
+#. If :math:`{\mathit{relop}} = \mathsf{eq}`, then:
 
    a. Return :math:`{{\mathrm{feq}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
-#. If :math:`{\mathit{relop\_{\scriptstyle 1}}} = \mathsf{ne}`, then:
+#. If :math:`{\mathit{relop}} = \mathsf{ne}`, then:
 
    a. Return :math:`{{\mathrm{fne}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
-#. If :math:`{\mathit{relop\_{\scriptstyle 1}}} = \mathsf{lt}`, then:
+#. If :math:`{\mathit{relop}} = \mathsf{lt}`, then:
 
    a. Return :math:`{{\mathrm{flt}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
-#. If :math:`{\mathit{relop\_{\scriptstyle 1}}} = \mathsf{gt}`, then:
+#. If :math:`{\mathit{relop}} = \mathsf{gt}`, then:
 
    a. Return :math:`{{\mathrm{fgt}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
-#. If :math:`{\mathit{relop\_{\scriptstyle 1}}} = \mathsf{le}`, then:
+#. If :math:`{\mathit{relop}} = \mathsf{le}`, then:
 
    a. Return :math:`{{\mathrm{fle}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
-#. Assert: Due to validation, :math:`{\mathit{relop\_{\scriptstyle 1}}} = \mathsf{ge}`.
+#. Assert: Due to validation, :math:`{\mathit{relop}} = \mathsf{ge}`.
 
 #. Return :math:`{{\mathrm{fge}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
 
-:math:`{{\mathit{cvtop}}_1}{{}_{{\mathit{numtype}}_1, {\mathit{numtype}}_3}}{({\mathit{num\_{\scriptstyle 1}}})}`
-.................................................................................................................
+:math:`{{\mathit{cvtop}}}{{}_{{\mathit{numtype}}, {\mathit{numtype}''}}}{({\mathit{num}})}`
+...........................................................................................
 
 
-1. If :math:`{\mathit{numtype}}_1` is :math:`{\mathsf{i}}{n}`, then:
+1. If :math:`{\mathit{numtype}}` is :math:`{\mathsf{i}}{n}`, then:
 
-   a. Let :math:`{{\mathsf{i}}{n}}_1` be :math:`{\mathit{numtype}}_1`.
+   a. Let :math:`{{\mathsf{i}}{n}}_1` be :math:`{\mathit{numtype}}`.
 
-   #. If :math:`{\mathit{numtype}}_3` is :math:`{\mathsf{i}}{n}`, then:
+   #. If :math:`{\mathit{numtype}''}` is :math:`{\mathsf{i}}{n}`, then:
 
-      1) Let :math:`{{\mathsf{i}}{n}}_2` be :math:`{\mathit{numtype}}_3`.
+      1) Let :math:`{{\mathsf{i}}{n}}_2` be :math:`{\mathit{numtype}''}`.
 
-      #) If :math:`{\mathit{cvtop}}_1` is :math:`\mathsf{extend}`, then:
+      #) If :math:`{\mathit{cvtop}}` is :math:`\mathsf{extend}`, then:
 
-         a) Let :math:`(\mathsf{extend}~{\mathit{sx}})` be :math:`{\mathit{cvtop}}_1`.
+         a) Let :math:`(\mathsf{extend}~{\mathit{sx}})` be :math:`{\mathit{cvtop}}`.
 
-         #) Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_{\scriptstyle 1}}}`.
+         #) Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num}}`.
 
          #) Return :math:`{{{{\mathrm{extend}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{iN}}_1)}`.
 
-      #) Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_{\scriptstyle 1}}}`.
+      #) Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num}}`.
 
-      #) If :math:`{\mathit{cvtop}}_1 = \mathsf{wrap}`, then:
+      #) If :math:`{\mathit{cvtop}} = \mathsf{wrap}`, then:
 
          a) Return :math:`{{\mathrm{wrap}}}_{N_1, N_2}({\mathit{iN}}_1)`.
 
-#. If :math:`{\mathit{numtype}}_1` is :math:`{\mathsf{f}}{n}`, then:
+#. If :math:`{\mathit{numtype}}` is :math:`{\mathsf{f}}{n}`, then:
 
-   a. Let :math:`{{\mathsf{f}}{n}}_1` be :math:`{\mathit{numtype}}_1`.
+   a. Let :math:`{{\mathsf{f}}{n}}_1` be :math:`{\mathit{numtype}}`.
 
-   #. If :math:`{\mathit{numtype}}_3` is :math:`{\mathsf{i}}{n}`, then:
+   #. If :math:`{\mathit{numtype}''}` is :math:`{\mathsf{i}}{n}`, then:
 
-      1) Let :math:`{{\mathsf{i}}{n}}_2` be :math:`{\mathit{numtype}}_3`.
+      1) Let :math:`{{\mathsf{i}}{n}}_2` be :math:`{\mathit{numtype}''}`.
 
-      #) If :math:`{\mathit{cvtop}}_1` is :math:`\mathsf{trunc}`, then:
+      #) If :math:`{\mathit{cvtop}}` is :math:`\mathsf{trunc}`, then:
 
-         a) Let :math:`(\mathsf{trunc}~{\mathit{sx}})` be :math:`{\mathit{cvtop}}_1`.
+         a) Let :math:`(\mathsf{trunc}~{\mathit{sx}})` be :math:`{\mathit{cvtop}}`.
 
-         #) Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_{\scriptstyle 1}}}`.
+         #) Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num}}`.
 
          #) Return :math:`{{{{\mathrm{trunc}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{fN}}_1)}`.
 
-      #) If :math:`{\mathit{cvtop}}_1` is :math:`\mathsf{trunc\_sat}`, then:
+      #) If :math:`{\mathit{cvtop}}` is :math:`\mathsf{trunc\_sat}`, then:
 
-         a) Let :math:`(\mathsf{trunc\_sat}~{\mathit{sx}})` be :math:`{\mathit{cvtop}}_1`.
+         a) Let :math:`(\mathsf{trunc\_sat}~{\mathit{sx}})` be :math:`{\mathit{cvtop}}`.
 
-         #) Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_{\scriptstyle 1}}}`.
+         #) Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num}}`.
 
          #) Return :math:`{{{{\mathrm{trunc\_sat}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{fN}}_1)}`.
 
-#. If :math:`{\mathit{numtype}}_1` is :math:`{\mathsf{i}}{n}`, then:
+#. If :math:`{\mathit{numtype}}` is :math:`{\mathsf{i}}{n}`, then:
 
-   a. Let :math:`{{\mathsf{i}}{n}}_1` be :math:`{\mathit{numtype}}_1`.
+   a. Let :math:`{{\mathsf{i}}{n}}_1` be :math:`{\mathit{numtype}}`.
 
-   #. If :math:`{\mathit{numtype}}_3` is :math:`{\mathsf{f}}{n}`, then:
+   #. If :math:`{\mathit{numtype}''}` is :math:`{\mathsf{f}}{n}`, then:
 
-      1) Let :math:`{{\mathsf{f}}{n}}_2` be :math:`{\mathit{numtype}}_3`.
+      1) Let :math:`{{\mathsf{f}}{n}}_2` be :math:`{\mathit{numtype}''}`.
 
-      #) If :math:`{\mathit{cvtop}}_1` is :math:`\mathsf{convert}`, then:
+      #) If :math:`{\mathit{cvtop}}` is :math:`\mathsf{convert}`, then:
 
-         a) Let :math:`(\mathsf{convert}~{\mathit{sx}})` be :math:`{\mathit{cvtop}}_1`.
+         a) Let :math:`(\mathsf{convert}~{\mathit{sx}})` be :math:`{\mathit{cvtop}}`.
 
-         #) Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_{\scriptstyle 1}}}`.
+         #) Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num}}`.
 
          #) Return :math:`{{{{\mathrm{convert}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{iN}}_1)}`.
 
-#. If :math:`{\mathit{numtype}}_1` is :math:`{\mathsf{f}}{n}`, then:
+#. If :math:`{\mathit{numtype}}` is :math:`{\mathsf{f}}{n}`, then:
 
-   a. Let :math:`{{\mathsf{f}}{n}}_1` be :math:`{\mathit{numtype}}_1`.
+   a. Let :math:`{{\mathsf{f}}{n}}_1` be :math:`{\mathit{numtype}}`.
 
-   #. If :math:`{\mathit{numtype}}_3` is :math:`{\mathsf{f}}{n}`, then:
+   #. If :math:`{\mathit{numtype}''}` is :math:`{\mathsf{f}}{n}`, then:
 
-      1) Let :math:`{{\mathsf{f}}{n}}_2` be :math:`{\mathit{numtype}}_3`.
+      1) Let :math:`{{\mathsf{f}}{n}}_2` be :math:`{\mathit{numtype}''}`.
 
-      #) Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_{\scriptstyle 1}}}`.
+      #) Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num}}`.
 
-      #) If :math:`{\mathit{cvtop}}_1 = \mathsf{promote}`, then:
+      #) If :math:`{\mathit{cvtop}} = \mathsf{promote}`, then:
 
          a) Return :math:`{{\mathrm{promote}}}_{N_1, N_2}({\mathit{fN}}_1)`.
 
-      #) If :math:`{\mathit{cvtop}}_1 = \mathsf{demote}`, then:
+      #) If :math:`{\mathit{cvtop}} = \mathsf{demote}`, then:
 
          a) Return :math:`{{\mathrm{demote}}}_{N_1, N_2}({\mathit{fN}}_1)`.
 
-#. If :math:`{\mathit{numtype}}_1` is :math:`{\mathsf{i}}{n}`, then:
+#. If :math:`{\mathit{numtype}}` is :math:`{\mathsf{i}}{n}`, then:
 
-   a. Let :math:`{{\mathsf{i}}{n}}_1` be :math:`{\mathit{numtype}}_1`.
+   a. Let :math:`{{\mathsf{i}}{n}}_1` be :math:`{\mathit{numtype}}`.
 
-   #. If :math:`{\mathit{numtype}}_3` is :math:`{\mathsf{f}}{n}`, then:
+   #. If :math:`{\mathit{numtype}''}` is :math:`{\mathsf{f}}{n}`, then:
 
-      1) Let :math:`{{\mathsf{f}}{n}}_2` be :math:`{\mathit{numtype}}_3`.
+      1) Let :math:`{{\mathsf{f}}{n}}_2` be :math:`{\mathit{numtype}''}`.
 
-      #) Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num\_{\scriptstyle 1}}}`.
+      #) Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{num}}`.
 
-      #) If :math:`{\mathit{cvtop}}_1 = \mathsf{reinterpret}` and :math:`{|{{\mathsf{i}}{n}}_1|} = {|{{\mathsf{f}}{n}}_2|}`, then:
+      #) If :math:`{\mathit{cvtop}} = \mathsf{reinterpret}` and :math:`{|{{\mathsf{i}}{n}}_1|} = {|{{\mathsf{f}}{n}}_2|}`, then:
 
          a) Return :math:`{{\mathrm{reinterpret}}}_{{{\mathsf{i}}{n}}_1, {{\mathsf{f}}{n}}_2}({\mathit{iN}}_1)`.
 
-#. Assert: Due to validation, :math:`{\mathit{numtype}}_1` is :math:`{\mathsf{f}}{n}`.
+#. Assert: Due to validation, :math:`{\mathit{numtype}}` is :math:`{\mathsf{f}}{n}`.
 
-#. Let :math:`{{\mathsf{f}}{n}}_1` be :math:`{\mathit{numtype}}_1`.
+#. Let :math:`{{\mathsf{f}}{n}}_1` be :math:`{\mathit{numtype}}`.
 
-#. Assert: Due to validation, :math:`{\mathit{numtype}}_3` is :math:`{\mathsf{i}}{n}`.
+#. Assert: Due to validation, :math:`{\mathit{numtype}''}` is :math:`{\mathsf{i}}{n}`.
 
-#. Let :math:`{{\mathsf{i}}{n}}_2` be :math:`{\mathit{numtype}}_3`.
+#. Let :math:`{{\mathsf{i}}{n}}_2` be :math:`{\mathit{numtype}''}`.
 
-#. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num\_{\scriptstyle 1}}}`.
+#. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{num}}`.
 
-#. Assert: Due to validation, :math:`{\mathit{cvtop}}_1 = \mathsf{reinterpret}`.
+#. Assert: Due to validation, :math:`{\mathit{cvtop}} = \mathsf{reinterpret}`.
 
 #. Assert: Due to validation, :math:`{|{{\mathsf{f}}{n}}_1|} = {|{{\mathsf{i}}{n}}_2|}`.
 
@@ -8227,32 +8227,32 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Return :math:`p`.
 
 
-:math:`{{\mathrm{pack}}}_{{\mathit{lanetype}}_1}(c)`
-....................................................
+:math:`{{\mathrm{pack}}}_{{\mathit{lanetype}}}(c)`
+..................................................
 
 
-1. If :math:`{\mathit{lanetype}}_1` is number type, then:
+1. If :math:`{\mathit{lanetype}}` is number type, then:
 
    a. Return :math:`c`.
 
-#. Assert: Due to validation, :math:`{\mathit{lanetype}}_1` is packed type.
+#. Assert: Due to validation, :math:`{\mathit{lanetype}}` is packed type.
 
-#. Let :math:`{\mathit{packtype}}` be :math:`{\mathit{lanetype}}_1`.
+#. Let :math:`{\mathit{packtype}}` be :math:`{\mathit{lanetype}}`.
 
 #. Return :math:`{{\mathrm{wrap}}}_{{|{\mathrm{unpack}}({\mathit{packtype}})|}, {|{\mathit{packtype}}|}}(c)`.
 
 
-:math:`{{\mathrm{unpack}}}_{{\mathit{lanetype}}_1}(c)`
-......................................................
+:math:`{{\mathrm{unpack}}}_{{\mathit{lanetype}}}(c)`
+....................................................
 
 
-1. If :math:`{\mathit{lanetype}}_1` is number type, then:
+1. If :math:`{\mathit{lanetype}}` is number type, then:
 
    a. Return :math:`c`.
 
-#. Assert: Due to validation, :math:`{\mathit{lanetype}}_1` is packed type.
+#. Assert: Due to validation, :math:`{\mathit{lanetype}}` is packed type.
 
-#. Let :math:`{\mathit{packtype}}` be :math:`{\mathit{lanetype}}_1`.
+#. Let :math:`{\mathit{packtype}}` be :math:`{\mathit{lanetype}}`.
 
 #. Return :math:`{{{{\mathrm{extend}}}_{{|{\mathit{packtype}}|}, {|{\mathrm{unpack}}({\mathit{packtype}})|}}^{\mathsf{u}}}}{(c)}`.
 
@@ -8266,15 +8266,15 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Return :math:`{\mathit{vc}}`.
 
 
-:math:`{\mathrm{half}}({\mathit{half}}_1, i, j)`
-................................................
+:math:`{\mathrm{half}}({\mathit{half}}, i, j)`
+..............................................
 
 
-1. If :math:`{\mathit{half}}_1 = \mathsf{low}`, then:
+1. If :math:`{\mathit{half}} = \mathsf{low}`, then:
 
    a. Return :math:`i`.
 
-#. Assert: Due to validation, :math:`{\mathit{half}}_1 = \mathsf{high}`.
+#. Assert: Due to validation, :math:`{\mathit{half}} = \mathsf{high}`.
 
 #. Return :math:`j`.
 
@@ -8286,23 +8286,23 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 1. Return :math:`{{\mathrm{inot}}}_{{|\mathsf{v{\scriptstyle 128}}|}}({\mathit{v{\kern-0.1em\scriptstyle 128}}})`.
 
 
-:math:`{{\mathit{vvbinop}}_1}{{}_{\mathsf{v{\scriptstyle 128}}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1, {\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)}`
-...........................................................................................................................................................
+:math:`{{\mathit{vvbinop}}}{{}_{\mathsf{v{\scriptstyle 128}}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1, {\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)}`
+.........................................................................................................................................................
 
 
-1. If :math:`{\mathit{vvbinop}}_1 = \mathsf{and}`, then:
+1. If :math:`{\mathit{vvbinop}} = \mathsf{and}`, then:
 
    a. Return :math:`{{\mathrm{iand}}}_{{|\mathsf{v{\scriptstyle 128}}|}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1, {\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
-#. If :math:`{\mathit{vvbinop}}_1 = \mathsf{andnot}`, then:
+#. If :math:`{\mathit{vvbinop}} = \mathsf{andnot}`, then:
 
    a. Return :math:`{{\mathrm{iandnot}}}_{{|\mathsf{v{\scriptstyle 128}}|}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1, {\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
-#. If :math:`{\mathit{vvbinop}}_1 = \mathsf{or}`, then:
+#. If :math:`{\mathit{vvbinop}} = \mathsf{or}`, then:
 
    a. Return :math:`{{\mathrm{ior}}}_{{|\mathsf{v{\scriptstyle 128}}|}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1, {\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
-#. Assert: Due to validation, :math:`{\mathit{vvbinop}}_1 = \mathsf{xor}`.
+#. Assert: Due to validation, :math:`{\mathit{vvbinop}} = \mathsf{xor}`.
 
 #. Return :math:`{{\mathrm{ixor}}}_{{|\mathsf{v{\scriptstyle 128}}|}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1, {\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
@@ -8314,15 +8314,15 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 1. Return :math:`{{\mathrm{ibitselect}}}_{{|\mathsf{v{\scriptstyle 128}}|}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1, {\mathit{v{\kern-0.1em\scriptstyle 128}}}_2, {\mathit{v{\kern-0.1em\scriptstyle 128}}}_3)`.
 
 
-:math:`{{\mathit{vunop\_{\scriptstyle 1}}}}{{}_{{{\mathit{lanetype}}_1}{\mathsf{x}}{M}}}{({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)}`
-........................................................................................................................................
+:math:`{{\mathit{vunop}}}{{}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}}{({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)}`
+....................................................................................................................
 
 
-1. If :math:`{\mathit{lanetype}}_1` is :math:`{\mathsf{i}}{n}`, then:
+1. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{i}}{n}`, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{lanetype}}_1`.
+   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{lanetype}}`.
 
-   #. If :math:`{\mathit{vunop\_{\scriptstyle 1}}} = \mathsf{abs}`, then:
+   #. If :math:`{\mathit{vunop}} = \mathsf{abs}`, then:
 
       1) Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
@@ -8330,7 +8330,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
-   #. If :math:`{\mathit{vunop\_{\scriptstyle 1}}} = \mathsf{neg}`, then:
+   #. If :math:`{\mathit{vunop}} = \mathsf{neg}`, then:
 
       1) Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
@@ -8338,7 +8338,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
-   #. If :math:`{\mathit{vunop\_{\scriptstyle 1}}} = \mathsf{popcnt}`, then:
+   #. If :math:`{\mathit{vunop}} = \mathsf{popcnt}`, then:
 
       1) Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
@@ -8346,11 +8346,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
-#. Assert: Due to validation, :math:`{\mathit{lanetype}}_1` is :math:`{\mathsf{f}}{n}`.
+#. Assert: Due to validation, :math:`{\mathit{lanetype}}` is :math:`{\mathsf{f}}{n}`.
 
-#. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_1`.
+#. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}`.
 
-#. If :math:`{\mathit{vunop\_{\scriptstyle 1}}} = \mathsf{abs}`, then:
+#. If :math:`{\mathit{vunop}} = \mathsf{abs}`, then:
 
    a. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
@@ -8360,7 +8360,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
-#. If :math:`{\mathit{vunop\_{\scriptstyle 1}}} = \mathsf{neg}`, then:
+#. If :math:`{\mathit{vunop}} = \mathsf{neg}`, then:
 
    a. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
@@ -8370,7 +8370,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
-#. If :math:`{\mathit{vunop\_{\scriptstyle 1}}} = \mathsf{sqrt}`, then:
+#. If :math:`{\mathit{vunop}} = \mathsf{sqrt}`, then:
 
    a. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
@@ -8380,7 +8380,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
-#. If :math:`{\mathit{vunop\_{\scriptstyle 1}}} = \mathsf{ceil}`, then:
+#. If :math:`{\mathit{vunop}} = \mathsf{ceil}`, then:
 
    a. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
@@ -8390,7 +8390,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
-#. If :math:`{\mathit{vunop\_{\scriptstyle 1}}} = \mathsf{floor}`, then:
+#. If :math:`{\mathit{vunop}} = \mathsf{floor}`, then:
 
    a. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
@@ -8400,7 +8400,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
-#. If :math:`{\mathit{vunop\_{\scriptstyle 1}}} = \mathsf{trunc}`, then:
+#. If :math:`{\mathit{vunop}} = \mathsf{trunc}`, then:
 
    a. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
@@ -8410,7 +8410,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
-#. Assert: Due to validation, :math:`{\mathit{vunop\_{\scriptstyle 1}}} = \mathsf{nearest}`.
+#. Assert: Due to validation, :math:`{\mathit{vunop}} = \mathsf{nearest}`.
 
 #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
@@ -8421,15 +8421,15 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
 
-:math:`{{\mathit{vbinop\_{\scriptstyle 1}}}}{{}_{{{\mathit{lanetype}}_1}{\mathsf{x}}{M}}}{({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1, {\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)}`
-......................................................................................................................................................................................
+:math:`{{\mathit{vbinop}}}{{}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}}{({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1, {\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)}`
+..................................................................................................................................................................
 
 
-1. If :math:`{\mathit{lanetype}}_1` is :math:`{\mathsf{i}}{n}`, then:
+1. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{i}}{n}`, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{lanetype}}_1`.
+   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{lanetype}}`.
 
-   #. If :math:`{\mathit{vbinop\_{\scriptstyle 1}}} = \mathsf{add}`, then:
+   #. If :math:`{\mathit{vbinop}} = \mathsf{add}`, then:
 
       1) Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
@@ -8439,7 +8439,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
-   #. If :math:`{\mathit{vbinop\_{\scriptstyle 1}}} = \mathsf{sub}`, then:
+   #. If :math:`{\mathit{vbinop}} = \mathsf{sub}`, then:
 
       1) Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
@@ -8449,9 +8449,9 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
-   #. If :math:`{\mathit{vbinop\_{\scriptstyle 1}}}` is :math:`\mathsf{min}`, then:
+   #. If :math:`{\mathit{vbinop}}` is :math:`\mathsf{min}`, then:
 
-      1) Let :math:`({\mathsf{min}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vbinop\_{\scriptstyle 1}}}`.
+      1) Let :math:`({\mathsf{min}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vbinop}}`.
 
       #) Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
@@ -8461,9 +8461,9 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
-   #. If :math:`{\mathit{vbinop\_{\scriptstyle 1}}}` is :math:`\mathsf{max}`, then:
+   #. If :math:`{\mathit{vbinop}}` is :math:`\mathsf{max}`, then:
 
-      1) Let :math:`({\mathsf{max}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vbinop\_{\scriptstyle 1}}}`.
+      1) Let :math:`({\mathsf{max}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vbinop}}`.
 
       #) Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
@@ -8473,9 +8473,9 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
-   #. If :math:`{\mathit{vbinop\_{\scriptstyle 1}}}` is :math:`\mathsf{add\_sat}`, then:
+   #. If :math:`{\mathit{vbinop}}` is :math:`\mathsf{add\_sat}`, then:
 
-      1) Let :math:`({\mathsf{add\_sat}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vbinop\_{\scriptstyle 1}}}`.
+      1) Let :math:`({\mathsf{add\_sat}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vbinop}}`.
 
       #) Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
@@ -8485,9 +8485,9 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
-   #. If :math:`{\mathit{vbinop\_{\scriptstyle 1}}}` is :math:`\mathsf{sub\_sat}`, then:
+   #. If :math:`{\mathit{vbinop}}` is :math:`\mathsf{sub\_sat}`, then:
 
-      1) Let :math:`({\mathsf{sub\_sat}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vbinop\_{\scriptstyle 1}}}`.
+      1) Let :math:`({\mathsf{sub\_sat}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vbinop}}`.
 
       #) Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
@@ -8497,7 +8497,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
-   #. If :math:`{\mathit{vbinop\_{\scriptstyle 1}}} = \mathsf{mul}`, then:
+   #. If :math:`{\mathit{vbinop}} = \mathsf{mul}`, then:
 
       1) Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
@@ -8507,7 +8507,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
-   #. If :math:`{\mathit{vbinop\_{\scriptstyle 1}}} = `, then:
+   #. If :math:`{\mathit{vbinop}} = `, then:
 
       1) Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
@@ -8517,7 +8517,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
-   #. If :math:`{\mathit{vbinop\_{\scriptstyle 1}}} = `, then:
+   #. If :math:`{\mathit{vbinop}} = `, then:
 
       1) Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
@@ -8527,11 +8527,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
-#. Assert: Due to validation, :math:`{\mathit{lanetype}}_1` is :math:`{\mathsf{f}}{n}`.
+#. Assert: Due to validation, :math:`{\mathit{lanetype}}` is :math:`{\mathsf{f}}{n}`.
 
-#. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_1`.
+#. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}`.
 
-#. If :math:`{\mathit{vbinop\_{\scriptstyle 1}}} = \mathsf{add}`, then:
+#. If :math:`{\mathit{vbinop}} = \mathsf{add}`, then:
 
    a. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
@@ -8543,7 +8543,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
-#. If :math:`{\mathit{vbinop\_{\scriptstyle 1}}} = \mathsf{sub}`, then:
+#. If :math:`{\mathit{vbinop}} = \mathsf{sub}`, then:
 
    a. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
@@ -8555,7 +8555,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
-#. If :math:`{\mathit{vbinop\_{\scriptstyle 1}}} = \mathsf{mul}`, then:
+#. If :math:`{\mathit{vbinop}} = \mathsf{mul}`, then:
 
    a. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
@@ -8567,7 +8567,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
-#. If :math:`{\mathit{vbinop\_{\scriptstyle 1}}} = \mathsf{div}`, then:
+#. If :math:`{\mathit{vbinop}} = \mathsf{div}`, then:
 
    a. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
@@ -8579,7 +8579,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
-#. If :math:`{\mathit{vbinop\_{\scriptstyle 1}}} = \mathsf{min}`, then:
+#. If :math:`{\mathit{vbinop}} = \mathsf{min}`, then:
 
    a. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
@@ -8591,7 +8591,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
-#. If :math:`{\mathit{vbinop\_{\scriptstyle 1}}} = \mathsf{max}`, then:
+#. If :math:`{\mathit{vbinop}} = \mathsf{max}`, then:
 
    a. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
@@ -8603,7 +8603,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
-#. If :math:`{\mathit{vbinop\_{\scriptstyle 1}}} = \mathsf{pmin}`, then:
+#. If :math:`{\mathit{vbinop}} = \mathsf{pmin}`, then:
 
    a. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
@@ -8615,7 +8615,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
-#. Assert: Due to validation, :math:`{\mathit{vbinop\_{\scriptstyle 1}}} = \mathsf{pmax}`.
+#. Assert: Due to validation, :math:`{\mathit{vbinop}} = \mathsf{pmax}`.
 
 #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
@@ -8628,15 +8628,15 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
 
-:math:`{{\mathit{vrelop\_{\scriptstyle 1}}}}{{}_{{{\mathit{lanetype}}_1}{\mathsf{x}}{M}}}{({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1, {\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)}`
-......................................................................................................................................................................................
+:math:`{{\mathit{vrelop}}}{{}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}}{({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1, {\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)}`
+..................................................................................................................................................................
 
 
-1. If :math:`{\mathit{lanetype}}_1` is :math:`{\mathsf{i}}{n}`, then:
+1. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{i}}{n}`, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{lanetype}}_1`.
+   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{lanetype}}`.
 
-   #. If :math:`{\mathit{vrelop\_{\scriptstyle 1}}} = \mathsf{eq}`, then:
+   #. If :math:`{\mathit{vrelop}} = \mathsf{eq}`, then:
 
       1) Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
@@ -8648,7 +8648,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
-   #. If :math:`{\mathit{vrelop\_{\scriptstyle 1}}} = \mathsf{ne}`, then:
+   #. If :math:`{\mathit{vrelop}} = \mathsf{ne}`, then:
 
       1) Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
@@ -8660,9 +8660,9 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
-   #. If :math:`{\mathit{vrelop\_{\scriptstyle 1}}}` is :math:`\mathsf{lt}`, then:
+   #. If :math:`{\mathit{vrelop}}` is :math:`\mathsf{lt}`, then:
 
-      1) Let :math:`(\mathsf{lt}~{\mathit{sx}})` be :math:`{\mathit{vrelop\_{\scriptstyle 1}}}`.
+      1) Let :math:`(\mathsf{lt}~{\mathit{sx}})` be :math:`{\mathit{vrelop}}`.
 
       #) Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
@@ -8674,9 +8674,9 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
-   #. If :math:`{\mathit{vrelop\_{\scriptstyle 1}}}` is :math:`\mathsf{gt}`, then:
+   #. If :math:`{\mathit{vrelop}}` is :math:`\mathsf{gt}`, then:
 
-      1) Let :math:`(\mathsf{gt}~{\mathit{sx}})` be :math:`{\mathit{vrelop\_{\scriptstyle 1}}}`.
+      1) Let :math:`(\mathsf{gt}~{\mathit{sx}})` be :math:`{\mathit{vrelop}}`.
 
       #) Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
@@ -8688,9 +8688,9 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
-   #. If :math:`{\mathit{vrelop\_{\scriptstyle 1}}}` is :math:`\mathsf{le}`, then:
+   #. If :math:`{\mathit{vrelop}}` is :math:`\mathsf{le}`, then:
 
-      1) Let :math:`(\mathsf{le}~{\mathit{sx}})` be :math:`{\mathit{vrelop\_{\scriptstyle 1}}}`.
+      1) Let :math:`(\mathsf{le}~{\mathit{sx}})` be :math:`{\mathit{vrelop}}`.
 
       #) Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
@@ -8702,9 +8702,9 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
-   #. If :math:`{\mathit{vrelop\_{\scriptstyle 1}}}` is :math:`\mathsf{ge}`, then:
+   #. If :math:`{\mathit{vrelop}}` is :math:`\mathsf{ge}`, then:
 
-      1) Let :math:`(\mathsf{ge}~{\mathit{sx}})` be :math:`{\mathit{vrelop\_{\scriptstyle 1}}}`.
+      1) Let :math:`(\mathsf{ge}~{\mathit{sx}})` be :math:`{\mathit{vrelop}}`.
 
       #) Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
@@ -8716,11 +8716,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
-#. Assert: Due to validation, :math:`{\mathit{lanetype}}_1` is :math:`{\mathsf{f}}{n}`.
+#. Assert: Due to validation, :math:`{\mathit{lanetype}}` is :math:`{\mathsf{f}}{n}`.
 
-#. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}_1`.
+#. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}`.
 
-#. If :math:`{\mathit{vrelop\_{\scriptstyle 1}}} = \mathsf{eq}`, then:
+#. If :math:`{\mathit{vrelop}} = \mathsf{eq}`, then:
 
    a. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
@@ -8734,7 +8734,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
-#. If :math:`{\mathit{vrelop\_{\scriptstyle 1}}} = \mathsf{ne}`, then:
+#. If :math:`{\mathit{vrelop}} = \mathsf{ne}`, then:
 
    a. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
@@ -8748,7 +8748,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
-#. If :math:`{\mathit{vrelop\_{\scriptstyle 1}}} = \mathsf{lt}`, then:
+#. If :math:`{\mathit{vrelop}} = \mathsf{lt}`, then:
 
    a. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
@@ -8762,7 +8762,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
-#. If :math:`{\mathit{vrelop\_{\scriptstyle 1}}} = \mathsf{gt}`, then:
+#. If :math:`{\mathit{vrelop}} = \mathsf{gt}`, then:
 
    a. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
@@ -8776,7 +8776,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
-#. If :math:`{\mathit{vrelop\_{\scriptstyle 1}}} = \mathsf{le}`, then:
+#. If :math:`{\mathit{vrelop}} = \mathsf{le}`, then:
 
    a. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
@@ -8790,7 +8790,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
-#. Assert: Due to validation, :math:`{\mathit{vrelop\_{\scriptstyle 1}}} = \mathsf{ge}`.
+#. Assert: Due to validation, :math:`{\mathit{vrelop}} = \mathsf{ge}`.
 
 #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
@@ -8805,73 +8805,73 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
 
-:math:`{{\mathrm{vcvtop}}}_{{{\mathit{lanetype}}_2}{\mathsf{x}}{M_1}, {{\mathit{lanetype}}_1}{\mathsf{x}}{M_2}}({\mathit{vcvtop}}_1, {\mathit{lane\_{\scriptstyle 1}}})`
-........................................................................................................................................................................
+:math:`{{\mathrm{vcvtop}}}_{{{\mathit{lanetype}'}}{\mathsf{x}}{M_1}, {{\mathit{lanetype}}}{\mathsf{x}}{M_2}}({\mathit{vcvtop}}, {\mathit{lane}})`
+.................................................................................................................................................
 
 
-1. If :math:`{\mathit{lanetype}}_2` is :math:`{\mathsf{i}}{n}`, then:
+1. If :math:`{\mathit{lanetype}'}` is :math:`{\mathsf{i}}{n}`, then:
 
-   a. Let :math:`{{\mathsf{i}}{n}}_1` be :math:`{\mathit{lanetype}}_2`.
+   a. Let :math:`{{\mathsf{i}}{n}}_1` be :math:`{\mathit{lanetype}'}`.
 
-   #. If :math:`{\mathit{lanetype}}_1` is :math:`{\mathsf{i}}{n}`, then:
+   #. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{i}}{n}`, then:
 
-      1) Let :math:`{{\mathsf{i}}{n}}_2` be :math:`{\mathit{lanetype}}_1`.
+      1) Let :math:`{{\mathsf{i}}{n}}_2` be :math:`{\mathit{lanetype}}`.
 
-      #) If :math:`{\mathit{vcvtop}}_1` is :math:`\mathsf{extend}`, then:
+      #) If :math:`{\mathit{vcvtop}}` is :math:`\mathsf{extend}`, then:
 
-         a) Let :math:`(\mathsf{extend}~{\mathit{sx}})` be :math:`{\mathit{vcvtop}}_1`.
+         a) Let :math:`(\mathsf{extend}~{\mathit{sx}})` be :math:`{\mathit{vcvtop}}`.
 
-         #) Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{lane\_{\scriptstyle 1}}}`.
+         #) Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{lane}}`.
 
          #) Let :math:`{\mathit{iN}}_2` be :math:`{{{{\mathrm{extend}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{iN}}_1)}`.
 
          #) Return :math:`{\mathit{iN}}_2`.
 
-   #. If :math:`{\mathit{lanetype}}_1` is :math:`{\mathsf{f}}{n}`, then:
+   #. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{f}}{n}`, then:
 
-      1) Let :math:`{{\mathsf{f}}{n}}_2` be :math:`{\mathit{lanetype}}_1`.
+      1) Let :math:`{{\mathsf{f}}{n}}_2` be :math:`{\mathit{lanetype}}`.
 
-      #) If :math:`{\mathit{vcvtop}}_1` is :math:`\mathsf{convert}`, then:
+      #) If :math:`{\mathit{vcvtop}}` is :math:`\mathsf{convert}`, then:
 
-         a) Let :math:`(\mathsf{convert}~{\mathit{sx}})` be :math:`{\mathit{vcvtop}}_1`.
+         a) Let :math:`(\mathsf{convert}~{\mathit{sx}})` be :math:`{\mathit{vcvtop}}`.
 
-         #) Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{lane\_{\scriptstyle 1}}}`.
+         #) Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{lane}}`.
 
          #) Let :math:`{\mathit{fN}}_2` be :math:`{{{{\mathrm{convert}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{iN}}_1)}`.
 
          #) Return :math:`{\mathit{fN}}_2`.
 
-#. Assert: Due to validation, :math:`{\mathit{lanetype}}_2` is :math:`{\mathsf{f}}{n}`.
+#. Assert: Due to validation, :math:`{\mathit{lanetype}'}` is :math:`{\mathsf{f}}{n}`.
 
-#. Let :math:`{{\mathsf{f}}{n}}_1` be :math:`{\mathit{lanetype}}_2`.
+#. Let :math:`{{\mathsf{f}}{n}}_1` be :math:`{\mathit{lanetype}'}`.
 
-#. If :math:`{\mathit{lanetype}}_1` is :math:`{\mathsf{i}}{n}`, then:
+#. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{i}}{n}`, then:
 
-   a. Let :math:`{{\mathsf{i}}{n}}_2` be :math:`{\mathit{lanetype}}_1`.
+   a. Let :math:`{{\mathsf{i}}{n}}_2` be :math:`{\mathit{lanetype}}`.
 
-   #. If :math:`{\mathit{vcvtop}}_1` is :math:`\mathsf{trunc\_sat}`, then:
+   #. If :math:`{\mathit{vcvtop}}` is :math:`\mathsf{trunc\_sat}`, then:
 
-      1) Let :math:`(\mathsf{trunc\_sat}~{\mathit{sx}})` be :math:`{\mathit{vcvtop}}_1`.
+      1) Let :math:`(\mathsf{trunc\_sat}~{\mathit{sx}})` be :math:`{\mathit{vcvtop}}`.
 
-      #) Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{lane\_{\scriptstyle 1}}}`.
+      #) Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{lane}}`.
 
       #) Let :math:`{{\mathit{iN}}_2^?}` be :math:`{{{{\mathrm{trunc\_sat}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{fN}}_1)}`.
 
       #) Return :math:`{{\mathit{iN}}_2^?}`.
 
-#. Assert: Due to validation, :math:`{\mathit{lanetype}}_1` is :math:`{\mathsf{f}}{n}`.
+#. Assert: Due to validation, :math:`{\mathit{lanetype}}` is :math:`{\mathsf{f}}{n}`.
 
-#. Let :math:`{{\mathsf{f}}{n}}_2` be :math:`{\mathit{lanetype}}_1`.
+#. Let :math:`{{\mathsf{f}}{n}}_2` be :math:`{\mathit{lanetype}}`.
 
-#. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{lane\_{\scriptstyle 1}}}`.
+#. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{lane}}`.
 
-#. If :math:`{\mathit{vcvtop}}_1 = \mathsf{demote}`, then:
+#. If :math:`{\mathit{vcvtop}} = \mathsf{demote}`, then:
 
    a. Let :math:`{{\mathit{fN}}_2^\ast}` be :math:`{{\mathrm{demote}}}_{N_1, N_2}({\mathit{fN}}_1)`.
 
    #. Return :math:`{{\mathit{fN}}_2^\ast}`.
 
-#. Assert: Due to validation, :math:`{\mathit{vcvtop}}_1 = \mathsf{promote}`.
+#. Assert: Due to validation, :math:`{\mathit{vcvtop}} = \mathsf{promote}`.
 
 #. Let :math:`{{\mathit{fN}}_2^\ast}` be :math:`{{\mathrm{promote}}}_{N_1, N_2}({\mathit{fN}}_1)`.
 
@@ -8891,13 +8891,13 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Return :math:`c`.
 
 
-:math:`{{\mathrm{vextbinop}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M_2}}({\mathit{vextbinop\_{\scriptstyle 1}}}, c_1, c_2)`
-.................................................................................................................................................................
+:math:`{{\mathrm{vextbinop}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M_2}}({\mathit{vextbinop}}, c_1, c_2)`
+...............................................................................................................................................
 
 
-1. If :math:`{\mathit{vextbinop\_{\scriptstyle 1}}}` is :math:`\mathsf{extmul}`, then:
+1. If :math:`{\mathit{vextbinop}}` is :math:`\mathsf{extmul}`, then:
 
-   a. Let :math:`({\mathsf{extmul}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vextbinop\_{\scriptstyle 1}}}`.
+   a. Let :math:`({\mathsf{extmul}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vextbinop}}`.
 
    #. Let :math:`{{\mathit{ci}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M_2}}(c_1){}[{\mathrm{half}}({\mathit{hf}}, 0, M_1) : M_1]`.
 
@@ -8907,7 +8907,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Return :math:`c`.
 
-#. Assert: Due to validation, :math:`{\mathit{vextbinop\_{\scriptstyle 1}}} = `.
+#. Assert: Due to validation, :math:`{\mathit{vextbinop}} = `.
 
 #. Let :math:`{{\mathit{ci}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M_2}}(c_1)`.
 
@@ -8920,63 +8920,63 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Return :math:`c`.
 
 
-:math:`{{{\mathit{vshiftop\_{\scriptstyle 1}}}}{\mathsf{\_}}~{{\mathsf{i}}{n}}{\mathsf{x}}{M}}{({\mathit{lane}}, n)}`
-.....................................................................................................................
+:math:`{{{\mathit{vshiftop}}}{\mathsf{\_}}~{{\mathsf{i}}{n}}{\mathsf{x}}{M}}{({\mathit{lane}}, n)}`
+...................................................................................................
 
 
-1. If :math:`{\mathit{vshiftop\_{\scriptstyle 1}}} = \mathsf{shl}`, then:
+1. If :math:`{\mathit{vshiftop}} = \mathsf{shl}`, then:
 
    a. Return :math:`{{\mathrm{ishl}}}_{N}({\mathit{lane}}, n)`.
 
-#. Assert: Due to validation, :math:`{\mathit{vshiftop\_{\scriptstyle 1}}}` is :math:`\mathsf{shr}`.
+#. Assert: Due to validation, :math:`{\mathit{vshiftop}}` is :math:`\mathsf{shr}`.
 
-#. Let :math:`(\mathsf{shr}~{\mathit{sx}})` be :math:`{\mathit{vshiftop\_{\scriptstyle 1}}}`.
+#. Let :math:`(\mathsf{shr}~{\mathit{sx}})` be :math:`{\mathit{vshiftop}}`.
 
 #. Return :math:`{{{{\mathrm{ishr}}}_{N}^{{\mathit{sx}}}}}{({\mathit{lane}}, n)}`.
 
 
-:math:`{{\mathrm{default}}}_{{\mathit{valtype}}_1}`
-...................................................
+:math:`{{\mathrm{default}}}_{{\mathit{valtype}}}`
+.................................................
 
 
-1. If :math:`{\mathit{valtype}}_1 = \mathsf{i{\scriptstyle 32}}`, then:
+1. If :math:`{\mathit{valtype}} = \mathsf{i{\scriptstyle 32}}`, then:
 
    a. Return :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~0)`.
 
-#. If :math:`{\mathit{valtype}}_1 = \mathsf{i{\scriptstyle 64}}`, then:
+#. If :math:`{\mathit{valtype}} = \mathsf{i{\scriptstyle 64}}`, then:
 
    a. Return :math:`(\mathsf{i{\scriptstyle 64}}{.}\mathsf{const}~0)`.
 
-#. If :math:`{\mathit{valtype}}_1 = \mathsf{f{\scriptstyle 32}}`, then:
+#. If :math:`{\mathit{valtype}} = \mathsf{f{\scriptstyle 32}}`, then:
 
    a. Return :math:`(\mathsf{f{\scriptstyle 32}}{.}\mathsf{const}~{+0})`.
 
-#. If :math:`{\mathit{valtype}}_1 = \mathsf{f{\scriptstyle 64}}`, then:
+#. If :math:`{\mathit{valtype}} = \mathsf{f{\scriptstyle 64}}`, then:
 
    a. Return :math:`(\mathsf{f{\scriptstyle 64}}{.}\mathsf{const}~{+0})`.
 
-#. If :math:`{\mathit{valtype}}_1 = \mathsf{v{\scriptstyle 128}}`, then:
+#. If :math:`{\mathit{valtype}} = \mathsf{v{\scriptstyle 128}}`, then:
 
    a. Return :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~0)`.
 
-#. If :math:`{\mathit{valtype}}_1 = \mathsf{funcref}`, then:
+#. If :math:`{\mathit{valtype}} = \mathsf{funcref}`, then:
 
    a. Return :math:`(\mathsf{ref{.}null}~\mathsf{funcref})`.
 
-#. Assert: Due to validation, :math:`{\mathit{valtype}}_1 = \mathsf{externref}`.
+#. Assert: Due to validation, :math:`{\mathit{valtype}} = \mathsf{externref}`.
 
 #. Return :math:`(\mathsf{ref{.}null}~\mathsf{externref})`.
 
 
-:math:`{\mathrm{funcs}}({{\mathit{externaddr}}_1^\ast})`
-........................................................
+:math:`{\mathrm{funcs}}({{\mathit{externaddr}}^\ast})`
+......................................................
 
 
-1. If :math:`{{\mathit{externaddr}}_1^\ast} = \epsilon`, then:
+1. If :math:`{{\mathit{externaddr}}^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}_1^\ast}`.
+#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}^\ast}`.
 
 #. If :math:`{\mathit{externaddr}}_0` is :math:`\mathsf{func}`, then:
 
@@ -8984,20 +8984,20 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Return :math:`{\mathit{fa}}~{\mathrm{funcs}}({{\mathit{xv}}^\ast})`.
 
-#. Let :math:`{\mathit{externaddr}}~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}_1^\ast}`.
+#. Let :math:`{\mathit{externaddr}}~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}^\ast}`.
 
 #. Return :math:`{\mathrm{funcs}}({{\mathit{xv}}^\ast})`.
 
 
-:math:`{\mathrm{globals}}({{\mathit{externaddr}}_1^\ast})`
-..........................................................
+:math:`{\mathrm{globals}}({{\mathit{externaddr}}^\ast})`
+........................................................
 
 
-1. If :math:`{{\mathit{externaddr}}_1^\ast} = \epsilon`, then:
+1. If :math:`{{\mathit{externaddr}}^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}_1^\ast}`.
+#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}^\ast}`.
 
 #. If :math:`{\mathit{externaddr}}_0` is :math:`\mathsf{global}`, then:
 
@@ -9005,20 +9005,20 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Return :math:`{\mathit{ga}}~{\mathrm{globals}}({{\mathit{xv}}^\ast})`.
 
-#. Let :math:`{\mathit{externaddr}}~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}_1^\ast}`.
+#. Let :math:`{\mathit{externaddr}}~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}^\ast}`.
 
 #. Return :math:`{\mathrm{globals}}({{\mathit{xv}}^\ast})`.
 
 
-:math:`{\mathrm{tables}}({{\mathit{externaddr}}_1^\ast})`
-.........................................................
+:math:`{\mathrm{tables}}({{\mathit{externaddr}}^\ast})`
+.......................................................
 
 
-1. If :math:`{{\mathit{externaddr}}_1^\ast} = \epsilon`, then:
+1. If :math:`{{\mathit{externaddr}}^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}_1^\ast}`.
+#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}^\ast}`.
 
 #. If :math:`{\mathit{externaddr}}_0` is :math:`\mathsf{table}`, then:
 
@@ -9026,20 +9026,20 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Return :math:`{\mathit{ta}}~{\mathrm{tables}}({{\mathit{xv}}^\ast})`.
 
-#. Let :math:`{\mathit{externaddr}}~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}_1^\ast}`.
+#. Let :math:`{\mathit{externaddr}}~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}^\ast}`.
 
 #. Return :math:`{\mathrm{tables}}({{\mathit{xv}}^\ast})`.
 
 
-:math:`{\mathrm{mems}}({{\mathit{externaddr}}_1^\ast})`
-.......................................................
+:math:`{\mathrm{mems}}({{\mathit{externaddr}}^\ast})`
+.....................................................
 
 
-1. If :math:`{{\mathit{externaddr}}_1^\ast} = \epsilon`, then:
+1. If :math:`{{\mathit{externaddr}}^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}_1^\ast}`.
+#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}^\ast}`.
 
 #. If :math:`{\mathit{externaddr}}_0` is :math:`\mathsf{mem}`, then:
 
@@ -9047,7 +9047,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Return :math:`{\mathit{ma}}~{\mathrm{mems}}({{\mathit{xv}}^\ast})`.
 
-#. Let :math:`{\mathit{externaddr}}~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}_1^\ast}`.
+#. Let :math:`{\mathit{externaddr}}~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}^\ast}`.
 
 #. Return :math:`{\mathrm{mems}}({{\mathit{xv}}^\ast})`.
 
@@ -9268,17 +9268,17 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Fail.
 
 
-:math:`{{\mathrm{blocktype}}}_{z}({\mathit{blocktype}}_1)`
-..........................................................
+:math:`{{\mathrm{blocktype}}}_{z}({\mathit{blocktype}})`
+........................................................
 
 
-1. If :math:`{\mathit{blocktype}}_1 = \epsilon`, then:
+1. If :math:`{\mathit{blocktype}} = \epsilon`, then:
 
    a. Return :math:`\epsilon~\rightarrow~\epsilon`.
 
-#. If :math:`{\mathit{blocktype}}_1` is , then:
+#. If :math:`{\mathit{blocktype}}` is , then:
 
-   a. Let :math:`{{\mathit{valtype}}_0^?}` be :math:`{\mathit{blocktype}}_1`.
+   a. Let :math:`{{\mathit{valtype}}_0^?}` be :math:`{\mathit{blocktype}}`.
 
    #. If :math:`{{\mathit{valtype}}_0^?}` is defined, then:
 
@@ -9286,22 +9286,22 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       #) Return :math:`\epsilon~\rightarrow~t`.
 
-#. Assert: Due to validation, :math:`{\mathit{blocktype}}_1` is .
+#. Assert: Due to validation, :math:`{\mathit{blocktype}}` is .
 
-#. Let :math:`x` be :math:`{\mathit{blocktype}}_1`.
+#. Let :math:`x` be :math:`{\mathit{blocktype}}`.
 
 #. Return :math:`z{.}\mathsf{types}{}[x]`.
 
 
-:math:`{\mathrm{funcs}}({{\mathit{externaddr}}_1^\ast})`
-........................................................
+:math:`{\mathrm{funcs}}({{\mathit{externaddr}}^\ast})`
+......................................................
 
 
-1. If :math:`{{\mathit{externaddr}}_1^\ast} = \epsilon`, then:
+1. If :math:`{{\mathit{externaddr}}^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}_1^\ast}`.
+#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}^\ast}`.
 
 #. If :math:`{\mathit{externaddr}}_0` is :math:`\mathsf{func}`, then:
 
@@ -9309,20 +9309,20 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Return :math:`{\mathit{fa}}~{\mathrm{funcs}}({{\mathit{externaddr}'}^\ast})`.
 
-#. Let :math:`{\mathit{externaddr}}~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}_1^\ast}`.
+#. Let :math:`{\mathit{externaddr}}~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}^\ast}`.
 
 #. Return :math:`{\mathrm{funcs}}({{\mathit{externaddr}'}^\ast})`.
 
 
-:math:`{\mathrm{globals}}({{\mathit{externaddr}}_1^\ast})`
-..........................................................
+:math:`{\mathrm{globals}}({{\mathit{externaddr}}^\ast})`
+........................................................
 
 
-1. If :math:`{{\mathit{externaddr}}_1^\ast} = \epsilon`, then:
+1. If :math:`{{\mathit{externaddr}}^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}_1^\ast}`.
+#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}^\ast}`.
 
 #. If :math:`{\mathit{externaddr}}_0` is :math:`\mathsf{global}`, then:
 
@@ -9330,20 +9330,20 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Return :math:`{\mathit{ga}}~{\mathrm{globals}}({{\mathit{externaddr}'}^\ast})`.
 
-#. Let :math:`{\mathit{externaddr}}~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}_1^\ast}`.
+#. Let :math:`{\mathit{externaddr}}~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}^\ast}`.
 
 #. Return :math:`{\mathrm{globals}}({{\mathit{externaddr}'}^\ast})`.
 
 
-:math:`{\mathrm{tables}}({{\mathit{externaddr}}_1^\ast})`
-.........................................................
+:math:`{\mathrm{tables}}({{\mathit{externaddr}}^\ast})`
+.......................................................
 
 
-1. If :math:`{{\mathit{externaddr}}_1^\ast} = \epsilon`, then:
+1. If :math:`{{\mathit{externaddr}}^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}_1^\ast}`.
+#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}^\ast}`.
 
 #. If :math:`{\mathit{externaddr}}_0` is :math:`\mathsf{table}`, then:
 
@@ -9351,20 +9351,20 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Return :math:`{\mathit{ta}}~{\mathrm{tables}}({{\mathit{externaddr}'}^\ast})`.
 
-#. Let :math:`{\mathit{externaddr}}~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}_1^\ast}`.
+#. Let :math:`{\mathit{externaddr}}~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}^\ast}`.
 
 #. Return :math:`{\mathrm{tables}}({{\mathit{externaddr}'}^\ast})`.
 
 
-:math:`{\mathrm{mems}}({{\mathit{externaddr}}_1^\ast})`
-.......................................................
+:math:`{\mathrm{mems}}({{\mathit{externaddr}}^\ast})`
+.....................................................
 
 
-1. If :math:`{{\mathit{externaddr}}_1^\ast} = \epsilon`, then:
+1. If :math:`{{\mathit{externaddr}}^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}_1^\ast}`.
+#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}^\ast}`.
 
 #. If :math:`{\mathit{externaddr}}_0` is :math:`\mathsf{mem}`, then:
 
@@ -9372,7 +9372,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Return :math:`{\mathit{ma}}~{\mathrm{mems}}({{\mathit{externaddr}'}^\ast})`.
 
-#. Let :math:`{\mathit{externaddr}}~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}_1^\ast}`.
+#. Let :math:`{\mathit{externaddr}}~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}^\ast}`.
 
 #. Return :math:`{\mathrm{mems}}({{\mathit{externaddr}'}^\ast})`.
 
@@ -9392,15 +9392,15 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Return :math:`a`.
 
 
-:math:`{\mathrm{allocfuncs}}(s, {\mathit{moduleinst}}, {{\mathit{func}}_1^\ast})`
-.................................................................................
+:math:`{\mathrm{allocfuncs}}(s, {\mathit{moduleinst}}, {{\mathit{func}}^\ast})`
+...............................................................................
 
 
-1. If :math:`{{\mathit{func}}_1^\ast} = \epsilon`, then:
+1. If :math:`{{\mathit{func}}^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{func}}~{{\mathit{func}'}^\ast}` be :math:`{{\mathit{func}}_1^\ast}`.
+#. Let :math:`{\mathit{func}}~{{\mathit{func}'}^\ast}` be :math:`{{\mathit{func}}^\ast}`.
 
 #. Let :math:`{\mathit{fa}}` be :math:`{\mathrm{allocfunc}}(s, {\mathit{moduleinst}}, {\mathit{func}})`.
 
@@ -9422,23 +9422,23 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Return :math:`a`.
 
 
-:math:`{\mathrm{allocglobals}}(s, {{\mathit{globaltype}}_1^\ast}, {{\mathit{val}}_1^\ast})`
-...........................................................................................
+:math:`{\mathrm{allocglobals}}(s, {{\mathit{globaltype}}^\ast}, {{\mathit{val}}^\ast})`
+.......................................................................................
 
 
-1. If :math:`{{\mathit{globaltype}}_1^\ast} = \epsilon`, then:
+1. If :math:`{{\mathit{globaltype}}^\ast} = \epsilon`, then:
 
-   a. Assert: :math:`{{\mathit{val}}_1^\ast} = \epsilon`.
+   a. Assert: :math:`{{\mathit{val}}^\ast} = \epsilon`.
 
    #. Return :math:`\epsilon`.
 
 #. Else:
 
-   a. Let :math:`{\mathit{globaltype}}~{{\mathit{globaltype}'}^\ast}` be :math:`{{\mathit{globaltype}}_1^\ast}`.
+   a. Let :math:`{\mathit{globaltype}}~{{\mathit{globaltype}'}^\ast}` be :math:`{{\mathit{globaltype}}^\ast}`.
 
-   #. Assert: :math:`{|{{\mathit{val}}_1^\ast}|} \geq 1`.
+   #. Assert: :math:`{|{{\mathit{val}}^\ast}|} \geq 1`.
 
-   #. Let :math:`{\mathit{val}}~{{\mathit{val}'}^\ast}` be :math:`{{\mathit{val}}_1^\ast}`.
+   #. Let :math:`{\mathit{val}}~{{\mathit{val}'}^\ast}` be :math:`{{\mathit{val}}^\ast}`.
 
    #. Let :math:`{\mathit{ga}}` be :math:`{\mathrm{allocglobal}}(s, {\mathit{globaltype}}, {\mathit{val}})`.
 
@@ -9460,15 +9460,15 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Return :math:`a`.
 
 
-:math:`{\mathrm{alloctables}}(s, {{\mathit{tabletype}}_1^\ast})`
-................................................................
+:math:`{\mathrm{alloctables}}(s, {{\mathit{tabletype}}^\ast})`
+..............................................................
 
 
-1. If :math:`{{\mathit{tabletype}}_1^\ast} = \epsilon`, then:
+1. If :math:`{{\mathit{tabletype}}^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{tabletype}}~{{\mathit{tabletype}'}^\ast}` be :math:`{{\mathit{tabletype}}_1^\ast}`.
+#. Let :math:`{\mathit{tabletype}}~{{\mathit{tabletype}'}^\ast}` be :math:`{{\mathit{tabletype}}^\ast}`.
 
 #. Let :math:`{\mathit{ta}}` be :math:`{\mathrm{alloctable}}(s, {\mathit{tabletype}})`.
 
@@ -9490,15 +9490,15 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Return :math:`a`.
 
 
-:math:`{\mathrm{allocmems}}(s, {{\mathit{memtype}}_1^\ast})`
-............................................................
+:math:`{\mathrm{allocmems}}(s, {{\mathit{memtype}}^\ast})`
+..........................................................
 
 
-1. If :math:`{{\mathit{memtype}}_1^\ast} = \epsilon`, then:
+1. If :math:`{{\mathit{memtype}}^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{memtype}}~{{\mathit{memtype}'}^\ast}` be :math:`{{\mathit{memtype}}_1^\ast}`.
+#. Let :math:`{\mathit{memtype}}~{{\mathit{memtype}'}^\ast}` be :math:`{{\mathit{memtype}}^\ast}`.
 
 #. Let :math:`{\mathit{ma}}` be :math:`{\mathrm{allocmem}}(s, {\mathit{memtype}})`.
 
@@ -9520,21 +9520,21 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Return :math:`a`.
 
 
-:math:`{\mathrm{allocelems}}(s, {{\mathit{reftype}}_1^\ast}, {{\mathit{ref}}_1^\ast})`
-......................................................................................
+:math:`{\mathrm{allocelems}}(s, {{\mathit{reftype}}^\ast}, {{\mathit{ref}''}^\ast})`
+....................................................................................
 
 
-1. If :math:`{{\mathit{reftype}}_1^\ast} = \epsilon` and :math:`{{\mathit{ref}}_1^\ast} = \epsilon`, then:
+1. If :math:`{{\mathit{reftype}}^\ast} = \epsilon` and :math:`{{\mathit{ref}''}^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Assert: :math:`{|{{\mathit{ref}}_1^\ast}|} \geq 1`.
+#. Assert: :math:`{|{{\mathit{ref}''}^\ast}|} \geq 1`.
 
-#. Let :math:`{{\mathit{ref}}^\ast}~{{{\mathit{ref}'}^\ast}^\ast}` be :math:`{{\mathit{ref}}_1^\ast}`.
+#. Let :math:`{{\mathit{ref}}^\ast}~{{{\mathit{ref}'}^\ast}^\ast}` be :math:`{{\mathit{ref}''}^\ast}`.
 
-#. Assert: :math:`{|{{\mathit{reftype}}_1^\ast}|} \geq 1`.
+#. Assert: :math:`{|{{\mathit{reftype}}^\ast}|} \geq 1`.
 
-#. Let :math:`{\mathit{rt}}~{{\mathit{rt}'}^\ast}` be :math:`{{\mathit{reftype}}_1^\ast}`.
+#. Let :math:`{\mathit{rt}}~{{\mathit{rt}'}^\ast}` be :math:`{{\mathit{reftype}}^\ast}`.
 
 #. Let :math:`{\mathit{ea}}` be :math:`{\mathrm{allocelem}}(s, {\mathit{rt}}, {{\mathit{ref}}^\ast})`.
 
@@ -9556,15 +9556,15 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Return :math:`a`.
 
 
-:math:`{\mathrm{allocdatas}}(s, {{\mathit{byte}}_1^\ast})`
+:math:`{\mathrm{allocdatas}}(s, {{\mathit{byte}''}^\ast})`
 ..........................................................
 
 
-1. If :math:`{{\mathit{byte}}_1^\ast} = \epsilon`, then:
+1. If :math:`{{\mathit{byte}''}^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{{\mathit{byte}}^\ast}~{{{\mathit{byte}'}^\ast}^\ast}` be :math:`{{\mathit{byte}}_1^\ast}`.
+#. Let :math:`{{\mathit{byte}}^\ast}~{{{\mathit{byte}'}^\ast}^\ast}` be :math:`{{\mathit{byte}''}^\ast}`.
 
 #. Let :math:`{\mathit{da}}` be :math:`{\mathrm{allocdata}}(s, {{\mathit{byte}}^\ast})`.
 
@@ -9573,31 +9573,31 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Return :math:`{\mathit{da}}~{{\mathit{da}'}^\ast}`.
 
 
-:math:`{\mathrm{instexport}}({{\mathit{fa}}^\ast}, {{\mathit{ga}}^\ast}, {{\mathit{ta}}^\ast}, {{\mathit{ma}}^\ast}, \mathsf{export}~{\mathit{name}}~{\mathit{externidx}}_1)`
-.............................................................................................................................................................................
+:math:`{\mathrm{instexport}}({{\mathit{fa}}^\ast}, {{\mathit{ga}}^\ast}, {{\mathit{ta}}^\ast}, {{\mathit{ma}}^\ast}, \mathsf{export}~{\mathit{name}}~{\mathit{externidx}})`
+...........................................................................................................................................................................
 
 
-1. If :math:`{\mathit{externidx}}_1` is :math:`\mathsf{func}`, then:
+1. If :math:`{\mathit{externidx}}` is :math:`\mathsf{func}`, then:
 
-   a. Let :math:`(\mathsf{func}~x)` be :math:`{\mathit{externidx}}_1`.
+   a. Let :math:`(\mathsf{func}~x)` be :math:`{\mathit{externidx}}`.
 
    #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{func}~{{\mathit{fa}}^\ast}{}[x]) \}\end{array}`.
 
-#. If :math:`{\mathit{externidx}}_1` is :math:`\mathsf{global}`, then:
+#. If :math:`{\mathit{externidx}}` is :math:`\mathsf{global}`, then:
 
-   a. Let :math:`(\mathsf{global}~x)` be :math:`{\mathit{externidx}}_1`.
+   a. Let :math:`(\mathsf{global}~x)` be :math:`{\mathit{externidx}}`.
 
    #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{global}~{{\mathit{ga}}^\ast}{}[x]) \}\end{array}`.
 
-#. If :math:`{\mathit{externidx}}_1` is :math:`\mathsf{table}`, then:
+#. If :math:`{\mathit{externidx}}` is :math:`\mathsf{table}`, then:
 
-   a. Let :math:`(\mathsf{table}~x)` be :math:`{\mathit{externidx}}_1`.
+   a. Let :math:`(\mathsf{table}~x)` be :math:`{\mathit{externidx}}`.
 
    #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{table}~{{\mathit{ta}}^\ast}{}[x]) \}\end{array}`.
 
-#. Assert: :math:`{\mathit{externidx}}_1` is :math:`\mathsf{mem}`.
+#. Assert: :math:`{\mathit{externidx}}` is :math:`\mathsf{mem}`.
 
-#. Let :math:`(\mathsf{mem}~x)` be :math:`{\mathit{externidx}}_1`.
+#. Let :math:`(\mathsf{mem}~x)` be :math:`{\mathit{externidx}}`.
 
 #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{mem}~{{\mathit{ma}}^\ast}{}[x]) \}\end{array}`.
 
@@ -9671,38 +9671,38 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Return :math:`{\mathit{moduleinst}}`.
 
 
-:math:`{\mathrm{runelem}}(\mathsf{elem}~{\mathit{reftype}}~{{\mathit{expr}}^\ast}~{\mathit{elemmode}}_1, i)`
-............................................................................................................
+:math:`{\mathrm{runelem}}(\mathsf{elem}~{\mathit{reftype}}~{{\mathit{expr}}^\ast}~{\mathit{elemmode}}, i)`
+..........................................................................................................
 
 
-1. If :math:`{\mathit{elemmode}}_1 = \mathsf{passive}`, then:
+1. If :math:`{\mathit{elemmode}} = \mathsf{passive}`, then:
 
    a. Return :math:`\epsilon`.
 
-#. If :math:`{\mathit{elemmode}}_1 = \mathsf{declare}`, then:
+#. If :math:`{\mathit{elemmode}} = \mathsf{declare}`, then:
 
    a. Return :math:`(\mathsf{elem{.}drop}~i)`.
 
-#. Assert: :math:`{\mathit{elemmode}}_1` is :math:`\mathsf{active}`.
+#. Assert: :math:`{\mathit{elemmode}}` is :math:`\mathsf{active}`.
 
-#. Let :math:`(\mathsf{active}~x~{{\mathit{instr}}^\ast})` be :math:`{\mathit{elemmode}}_1`.
+#. Let :math:`(\mathsf{active}~x~{{\mathit{instr}}^\ast})` be :math:`{\mathit{elemmode}}`.
 
 #. Let :math:`n` be :math:`{|{{\mathit{expr}}^\ast}|}`.
 
 #. Return :math:`{{\mathit{instr}}^\ast}~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~0)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)~(\mathsf{table{.}init}~x~i)~(\mathsf{elem{.}drop}~i)`.
 
 
-:math:`{\mathrm{rundata}}(\mathsf{data}~{{\mathit{byte}}^\ast}~{\mathit{datamode}}_1, i)`
-.........................................................................................
+:math:`{\mathrm{rundata}}(\mathsf{data}~{{\mathit{byte}}^\ast}~{\mathit{datamode}}, i)`
+.......................................................................................
 
 
-1. If :math:`{\mathit{datamode}}_1 = \mathsf{passive}`, then:
+1. If :math:`{\mathit{datamode}} = \mathsf{passive}`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Assert: :math:`{\mathit{datamode}}_1` is :math:`\mathsf{active}`.
+#. Assert: :math:`{\mathit{datamode}}` is :math:`\mathsf{active}`.
 
-#. Let :math:`(\mathsf{active}~{\mathit{memidx}}_0~{{\mathit{instr}}^\ast})` be :math:`{\mathit{datamode}}_1`.
+#. Let :math:`(\mathsf{active}~{\mathit{memidx}}_0~{{\mathit{instr}}^\ast})` be :math:`{\mathit{datamode}}`.
 
 #. Assert: Due to validation, :math:`{\mathit{memidx}}_0 = 0`.
 
@@ -9851,18 +9851,18 @@ Memtype_ok
   - the limits limits is valid with (2 ^ 16).
 
 Externtype_ok
-- the external type externtype_1 is valid if:
+- the external type externtype is valid if:
   - Either:
-    - externtype_1 is (FUNC functype).
+    - externtype is (FUNC functype).
     - the function type functype is valid.
   - Or:
-    - externtype_1 is (GLOBAL globaltype).
+    - externtype is (GLOBAL globaltype).
     - the global type globaltype is valid.
   - Or:
-    - externtype_1 is (TABLE tabletype).
+    - externtype is (TABLE tabletype).
     - the table type tabletype is valid.
   - Or:
-    - externtype_1 is (MEM memtype).
+    - externtype is (MEM memtype).
     - the memory type memtype is valid.
 
 Externtype_ok/func
@@ -9882,11 +9882,11 @@ Externtype_ok/mem
   - the memory type memtype is valid.
 
 Valtype_sub
-- the value type valtype_1 matches the value type t if:
+- the value type valtype matches the value type t if:
   - Either:
-    - valtype_1 is t.
+    - valtype is t.
   - Or:
-    - valtype_1 is BOT.
+    - valtype is BOT.
 
 Valtype_sub/refl
 - t matches only itself.
@@ -9920,22 +9920,22 @@ Memtype_sub
   - the limits lim_1 matches the limits lim_2.
 
 Externtype_sub
-- the external type externtype_1 matches the external type externtype_2 if:
+- the external type externtype matches the external type externtype' if:
   - Either:
-    - externtype_1 is (FUNC ft_1).
-    - externtype_2 is (FUNC ft_2).
+    - externtype is (FUNC ft_1).
+    - externtype' is (FUNC ft_2).
     - the function type ft_1 matches the function type ft_2.
   - Or:
-    - externtype_1 is (GLOBAL gt_1).
-    - externtype_2 is (GLOBAL gt_2).
+    - externtype is (GLOBAL gt_1).
+    - externtype' is (GLOBAL gt_2).
     - the global type gt_1 matches the global type gt_2.
   - Or:
-    - externtype_1 is (TABLE tt_1).
-    - externtype_2 is (TABLE tt_2).
+    - externtype is (TABLE tt_1).
+    - externtype' is (TABLE tt_2).
     - the table type tt_1 matches the table type tt_2.
   - Or:
-    - externtype_1 is (MEM mt_1).
-    - externtype_2 is (MEM mt_2).
+    - externtype is (MEM mt_1).
+    - externtype' is (MEM mt_2).
     - the memory type mt_1 matches the memory type mt_2.
 
 Externtype_sub/func
@@ -9955,15 +9955,15 @@ Externtype_sub/mem
   - the memory type mt_1 matches the memory type mt_2.
 
 Blocktype_ok
-- the block type blocktype_1 is valid with the function type valtype_1* -> valtype_2* if:
+- the block type blocktype is valid with the function type valtype'* -> valtype''* if:
   - Either:
-    - blocktype_1 is (_RESULT valtype?).
-    - the value type sequence valtype_1* is [].
-    - the value type sequence valtype_2* is valtype?.
+    - blocktype is (_RESULT valtype?).
+    - the value type sequence valtype'* is [].
+    - the value type sequence valtype''* is valtype?.
   - Or:
-    - blocktype_1 is (_IDX typeidx).
-    - valtype_1* is t_1*.
-    - valtype_2* is t_2*.
+    - blocktype is (_IDX typeidx).
+    - valtype'* is t_1*.
+    - valtype''* is t_2*.
     - the function type C.TYPES[typeidx] exists.
     - C.TYPES[typeidx] is t_1* -> t_2*.
 
@@ -9985,11 +9985,11 @@ Instr_ok/drop
 - the instruction DROP is valid with the function type [t] -> [].
 
 Instr_ok/select
-- the instruction (SELECT valtype_1?) is valid with the function type [t, t, I32] -> [t] if:
+- the instruction (SELECT valtype?) is valid with the function type [t, t, I32] -> [t] if:
   - Either:
-    - the value type sequence valtype_1? is ?([t]).
+    - the value type sequence valtype? is ?([t]).
   - Or:
-    - valtype_1? is ?().
+    - valtype? is ?().
     - the value type t matches the value type t'.
     - t' is numtype or t' is vectype.
 
@@ -10063,12 +10063,12 @@ Instr_ok/relop
 - the instruction (RELOP nt relop_nt) is valid with the function type [nt, nt] -> [I32].
 
 Instr_ok/cvtop
-- the instruction (CVTOP nt_1 nt_2 cvtop_1) is valid with the function type [nt_2] -> [nt_1] if:
+- the instruction (CVTOP nt_1 nt_2 cvtop) is valid with the function type [nt_2] -> [nt_1] if:
   - Either:
-    - cvtop_1 is REINTERPRET.
+    - cvtop is REINTERPRET.
     - $size(nt_1) is $size(nt_2).
   - Or:
-    - cvtop_1 is cvtop.
+    - cvtop is cvtop.
 
 Instr_ok/ref.null
 - the instruction (REF.NULL rt) is valid with the function type [] -> [rt].
@@ -10245,44 +10245,44 @@ Instr_ok/data.drop
   - C.DATAS[x] is OK.
 
 Instr_ok/load
-- the instruction (LOAD numtype_1 loadop__1? memarg) is valid with the function type [I32] -> [valtype_1] if:
+- the instruction (LOAD numtype loadop_? memarg) is valid with the function type [I32] -> [valtype] if:
   - the memory type C.MEMS[0] is mt.
   - Either:
-    - the number type numtype_1 is nt.
-    - loadop__1? is ?().
-    - the value type valtype_1 is nt.
+    - the number type numtype is nt.
+    - loadop_? is ?().
+    - the value type valtype is nt.
     - (2 ^ memarg.ALIGN) is less than or equal to ($size(nt) / 8).
   - Or:
-    - numtype_1 is Inn.
-    - loadop__1? is ?(M _ sx).
-    - valtype_1 is Inn.
+    - numtype is Inn.
+    - loadop_? is ?(M _ sx).
+    - valtype is Inn.
     - (2 ^ memarg.ALIGN) is less than or equal to (M / 8).
 
 Instr_ok/store
-- the instruction (STORE numtype_1 sz_1? memarg) is valid with the function type [I32, valtype_1] -> [] if:
+- the instruction (STORE numtype sz? memarg) is valid with the function type [I32, valtype] -> [] if:
   - the memory type C.MEMS[0] is mt.
   - Either:
-    - the number type numtype_1 is nt.
-    - the pack size sz_1? is ?().
-    - the value type valtype_1 is nt.
+    - the number type numtype is nt.
+    - the pack size sz? is ?().
+    - the value type valtype is nt.
     - (2 ^ memarg.ALIGN) is less than or equal to ($size(nt) / 8).
   - Or:
-    - numtype_1 is Inn.
-    - sz_1? is ?(M).
-    - valtype_1 is Inn.
+    - numtype is Inn.
+    - sz? is ?(M).
+    - valtype is Inn.
     - (2 ^ memarg.ALIGN) is less than or equal to (M / 8).
 
 Instr_ok/vload
-- the instruction (VLOAD V128 ?(vloadop_1) memarg) is valid with the function type [I32] -> [V128] if:
+- the instruction (VLOAD V128 ?(vloadop) memarg) is valid with the function type [I32] -> [V128] if:
   - the memory type C.MEMS[0] is mt.
   - Either:
-    - vloadop_1 is (SHAPE M X N _ sx).
+    - vloadop is (SHAPE M X N _ sx).
     - (2 ^ memarg.ALIGN) is less than or equal to ((M / 8) * N).
   - Or:
-    - vloadop_1 is (SPLAT n).
+    - vloadop is (SPLAT n).
     - (2 ^ memarg.ALIGN) is less than or equal to (n / 8).
   - Or:
-    - vloadop_1 is (ZERO n).
+    - vloadop is (ZERO n).
     - (2 ^ memarg.ALIGN) is less than or equal to (n / 8).
 
 Instr_ok/vload_lane
@@ -10353,28 +10353,28 @@ Instr_ok/vload-zero
   - (2 ^ memarg.ALIGN) is less than or equal to (n / 8).
 
 Instrs_ok
-- the instruction sequence instr_1* is valid with the function type valtype_1* -> valtype_2* if:
+- the instruction sequence instr'* is valid with the function type valtype* -> valtype'* if:
   - Either:
-    - instr_1* is [].
-    - the value type sequence valtype_1* is [].
-    - the value type sequence valtype_2* is [].
+    - instr'* is [].
+    - the value type sequence valtype* is [].
+    - the value type sequence valtype'* is [].
   - Or:
-    - instr_1* is [instr_1] :: instr_2*.
-    - valtype_1* is t_1*.
-    - valtype_2* is t_3*.
+    - instr'* is [instr_1] :: instr_2*.
+    - valtype* is t_1*.
+    - valtype'* is t_3*.
     - the instruction instr_1 is valid with the function type t_1* -> t_2*.
     - the instruction sequence instr_2* is valid with the function type t_2* -> t_3*.
   - Or:
-    - instr_1* is instr*.
-    - valtype_1* is t'_1*.
-    - valtype_2* is t'_2*.
+    - instr'* is instr*.
+    - valtype* is t'_1*.
+    - valtype'* is t'_2*.
     - the instruction sequence instr* is valid with t_1* -> t_2*.
     - the result type t'_1* matches the result type t_1*.
     - the result type t_2* matches the result type t'_2*.
   - Or:
-    - instr_1* is instr*.
-    - valtype_1* is t* :: t_1*.
-    - valtype_2* is t* :: t_2*.
+    - instr'* is instr*.
+    - valtype* is t* :: t_1*.
+    - valtype'* is t* :: t_2*.
     - instr* is valid with t_1* -> t_2*.
 
 Instrs_ok/empty
@@ -10400,17 +10400,17 @@ Expr_ok
   - instr* is valid with the function type [] -> t*.
 
 Instr_const
-- the value val_1 is constant if:
+- the value val is constant if:
   - Either:
-    - val_1 is (nt.CONST c).
+    - val is (nt.CONST c).
   - Or:
-    - val_1 is (vt.CONST vc).
+    - val is (vt.CONST vc).
   - Or:
-    - val_1 is (REF.NULL rt).
+    - val is (REF.NULL rt).
   - Or:
-    - val_1 is (REF.FUNC x).
+    - val is (REF.FUNC x).
   - Or:
-    - val_1 is (GLOBAL.GET x).
+    - val is (GLOBAL.GET x).
     - the global type C.GLOBALS[x] exists.
     - C.GLOBALS[x] is (?() t).
 
@@ -10462,17 +10462,17 @@ Mem_ok
   - mt is valid.
 
 Elemmode_ok
-- elemmode_1 is valid with the reference type rt if:
+- elemmode is valid with the reference type rt if:
   - Either:
-    - elemmode_1 is (ACTIVE x expr).
+    - elemmode is (ACTIVE x expr).
     - the table type C.TABLES[x] exists.
     - C.TABLES[x] is (lim rt).
     - the expression expr is valid with the value type I32.
     - expr is constant.
   - Or:
-    - elemmode_1 is PASSIVE.
+    - elemmode is PASSIVE.
   - Or:
-    - elemmode_1 is DECLARE.
+    - elemmode is DECLARE.
 
 Elemmode_ok/active
 - (ACTIVE x expr) is valid with the reference type rt if:
@@ -10495,14 +10495,14 @@ Elem_ok
   - elemmode is valid with rt.
 
 Datamode_ok
-- datamode_1 is valid if:
+- datamode is valid if:
   - Either:
-    - datamode_1 is (ACTIVE 0 expr).
+    - datamode is (ACTIVE 0 expr).
     - the memory type C.MEMS[0] is mt.
     - the expression expr is valid with the value type I32.
     - expr is constant.
   - Or:
-    - datamode_1 is PASSIVE.
+    - datamode is PASSIVE.
 
 Datamode_ok/active
 - (ACTIVE 0 expr) is valid if:
@@ -10527,25 +10527,25 @@ Import_ok
   - xt is valid.
 
 Externidx_ok
-- the external index externidx_1 is valid with the external type externtype_1 if:
+- the external index externidx is valid with the external type externtype if:
   - Either:
-    - externidx_1 is (FUNC x).
-    - externtype_1 is (FUNC ft).
+    - externidx is (FUNC x).
+    - externtype is (FUNC ft).
     - the function type C.FUNCS[x] exists.
     - C.FUNCS[x] is ft.
   - Or:
-    - externidx_1 is (GLOBAL x).
-    - externtype_1 is (GLOBAL gt).
+    - externidx is (GLOBAL x).
+    - externtype is (GLOBAL gt).
     - the global type C.GLOBALS[x] exists.
     - C.GLOBALS[x] is gt.
   - Or:
-    - externidx_1 is (TABLE x).
-    - externtype_1 is (TABLE tt).
+    - externidx is (TABLE x).
+    - externtype is (TABLE tt).
     - the table type C.TABLES[x] exists.
     - C.TABLES[x] is tt.
   - Or:
-    - externidx_1 is (MEM x).
-    - externtype_1 is (MEM mt).
+    - externidx is (MEM x).
+    - externtype is (MEM mt).
     - the memory type C.MEMS[x] exists.
     - C.MEMS[x] is mt.
 
@@ -10647,10 +10647,10 @@ Step_pure/label
 3. Pop the label (LABEL_ _ { _ }) from the stack.
 4. Push the values val* to the stack.
 
-Step_pure/br n_1
+Step_pure/br n'
 1. Assert: Due to validation, the first non-value entry of the stack is a LABEL_.
 2. Let (LABEL_ n { instr'* }) be the topmost LABEL_.
-3. If (n_1 = 0), then:
+3. If (n' = 0), then:
   a. Assert: Due to validation, there are at least n values on the top of the stack.
   b. Pop the values val^n from the stack.
   c. Pop all values val'* from the top of the stack.
@@ -10659,8 +10659,8 @@ Step_pure/br n_1
   f. Execute the sequence instr'*.
 4. Else:
   a. Pop all values val* from the top of the stack.
-  b. If (n_1 >= 1), then:
-    1) Let l be (n_1 - 1).
+  b. If (n' >= 1), then:
+    1) Let l be (n' - 1).
     2) Pop the label (LABEL_ _ { _ }) from the stack.
     3) Push the values val* to the stack.
     4) Execute the instruction (BR l).
@@ -10863,18 +10863,18 @@ Step_pure/vsplat Lnn X N
 4. Let c be $invlanes_(Lnn X N, $packnum_(Lnn, c_1)^N).
 5. Push the value (V128.CONST c) to the stack.
 
-Step_pure/vextract_lane lanetype_1 X N sx_1? i
+Step_pure/vextract_lane lanetype X N sx'? i
 1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_1) from the stack.
-3. If (sx_1? is not defined /\ lanetype_1 is numtype), then:
-  a. Let nt be lanetype_1.
+3. If (sx'? is not defined /\ lanetype is numtype), then:
+  a. Let nt be lanetype.
   b. If (i < |$lanes_(nt X N, c_1)|), then:
     1) Let c_2 be $lanes_(nt X N, c_1)[i].
     2) Push the value (nt.CONST c_2) to the stack.
-4. If lanetype_1 is packtype, then:
-  a. Let pt be lanetype_1.
-  b. If sx_1? is defined, then:
-    1) Let ?(sx) be sx_1?.
+4. If lanetype is packtype, then:
+  a. Let pt be lanetype.
+  b. If sx'? is defined, then:
+    1) Let ?(sx) be sx'?.
     2) If (i < |$lanes_(pt X N, c_1)|), then:
       a) Let c_2 be $extend__($psize(pt), 32, sx, $lanes_(pt X N, c_1)[i]).
       b) Push the value (I32.CONST c_2) to the stack.
@@ -10914,39 +10914,39 @@ Step_pure/vnarrow Jnn_2 X N_2 Jnn_1 X N_1 sx
 9. Let c be $invlanes_(Jnn_2 X N_2, cj_1* :: cj_2*).
 10. Push the value (V128.CONST c) to the stack.
 
-Step_pure/vcvtop lanetype_1 X n_1 lanetype_2 X n_2 vcvtop half_1? zero_1?
+Step_pure/vcvtop lanetype X n lanetype' X n' vcvtop half'? zero'?
 1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_1) from the stack.
-3. If (half_1? is not defined /\ zero_1? is not defined), then:
-  a. Let Lnn_1 be lanetype_2.
-  b. Let Lnn_2 be lanetype_1.
-  c. Let M be n_2.
-  d. If (n_1 = M), then:
+3. If (half'? is not defined /\ zero'? is not defined), then:
+  a. Let Lnn_1 be lanetype'.
+  b. Let Lnn_2 be lanetype.
+  c. Let M be n'.
+  d. If (n = M), then:
     1) Let ci* be $lanes_(Lnn_1 X M, c_1).
     2) Let cj** be $setproduct_(`lane_(Lnn_2), $vcvtop__(Lnn_1 X M, Lnn_2 X M, vcvtop, ci)*).
     3) If (|$invlanes_(Lnn_2 X M, cj*)*| > 0), then:
       a) Let c be an element of $invlanes_(Lnn_2 X M, cj*)*.
       b) Push the value (V128.CONST c) to the stack.
-4. If zero_1? is not defined, then:
-  a. Let Lnn_1 be lanetype_2.
-  b. Let Lnn_2 be lanetype_1.
-  c. Let M_1 be n_2.
-  d. Let M_2 be n_1.
-  e. If half_1? is defined, then:
-    1) Let ?(half) be half_1?.
+4. If zero'? is not defined, then:
+  a. Let Lnn_1 be lanetype'.
+  b. Let Lnn_2 be lanetype.
+  c. Let M_1 be n'.
+  d. Let M_2 be n.
+  e. If half'? is defined, then:
+    1) Let ?(half) be half'?.
     2) Let ci* be $lanes_(Lnn_1 X M_1, c_1)[$half(half, 0, M_2) : M_2].
     3) Let cj** be $setproduct_(`lane_(Lnn_2), $vcvtop__(Lnn_1 X M_1, Lnn_2 X M_2, vcvtop, ci)*).
     4) If (|$invlanes_(Lnn_2 X M_2, cj*)*| > 0), then:
       a) Let c be an element of $invlanes_(Lnn_2 X M_2, cj*)*.
       b) Push the value (V128.CONST c) to the stack.
-5. If half_1? is not defined, then:
-  a. Let M_1 be n_2.
-  b. Let M_2 be n_1.
-  c. If lanetype_2 is numtype, then:
-    1) Let nt_1 be lanetype_2.
-    2) If lanetype_1 is numtype, then:
-      a) Let nt_2 be lanetype_1.
-      b) If zero_1? is defined, then:
+5. If half'? is not defined, then:
+  a. Let M_1 be n'.
+  b. Let M_2 be n.
+  c. If lanetype' is numtype, then:
+    1) Let nt_1 be lanetype'.
+    2) If lanetype is numtype, then:
+      a) Let nt_2 be lanetype.
+      b) If zero'? is defined, then:
         1. Let ci* be $lanes_(nt_1 X M_1, c_1).
         2. Let cj** be $setproduct_(`lane_((nt_2 : numtype <: lanetype)), $vcvtop__(nt_1 X M_1, nt_2 X M_2, vcvtop, ci)* :: [$zero(nt_2)]^M_1).
         3. If (|$invlanes_(nt_2 X M_2, cj*)*| > 0), then:
@@ -11108,40 +11108,40 @@ Step_read/table.init x y
   f. Push the value (I32.CONST (n - 1)) to the stack.
   g. Execute the instruction (TABLE.INIT x y).
 
-Step_read/load numtype_1 loadop__1? ao
+Step_read/load numtype loadop_? ao
 1. Let z be the current state.
 2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 3. Pop the value (I32.CONST i) from the stack.
-4. If loadop__1? is not defined, then:
-  a. Let nt be numtype_1.
+4. If loadop_? is not defined, then:
+  a. Let nt be numtype.
   b. If (((i + ao.OFFSET) + ($size(nt) / 8)) > |$mem(z, 0).BYTES|), then:
     1) Trap.
   c. Let c be $nbytes__1^-1(nt, $mem(z, 0).BYTES[(i + ao.OFFSET) : ($size(nt) / 8)]).
   d. Push the value (nt.CONST c) to the stack.
-5. If numtype_1 is Inn, then:
-  a. If loadop__1? is defined, then:
-    1) Let ?(loadop__0) be loadop__1?.
+5. If numtype is Inn, then:
+  a. If loadop_? is defined, then:
+    1) Let ?(loadop__0) be loadop_?.
     2) Let n _ sx be loadop__0.
     3) If (((i + ao.OFFSET) + (n / 8)) > |$mem(z, 0).BYTES|), then:
       a) Trap.
-  b. Let Inn be numtype_1.
-  c. If loadop__1? is defined, then:
-    1) Let ?(loadop__0) be loadop__1?.
+  b. Let Inn be numtype.
+  c. If loadop_? is defined, then:
+    1) Let ?(loadop__0) be loadop_?.
     2) Let n _ sx be loadop__0.
     3) Let c be $ibytes__1^-1(n, $mem(z, 0).BYTES[(i + ao.OFFSET) : (n / 8)]).
     4) Push the value (Inn.CONST $extend__(n, $size(Inn), sx, c)) to the stack.
 
-Step_read/vload V128 vloadop_1? ao
+Step_read/vload V128 vloadop? ao
 1. Let z be the current state.
 2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 3. Pop the value (I32.CONST i) from the stack.
-4. If ((((i + ao.OFFSET) + ($size(V128) / 8)) > |$mem(z, 0).BYTES|) /\ vloadop_1? is not defined), then:
+4. If ((((i + ao.OFFSET) + ($size(V128) / 8)) > |$mem(z, 0).BYTES|) /\ vloadop? is not defined), then:
   a. Trap.
-5. If vloadop_1? is not defined, then:
+5. If vloadop? is not defined, then:
   a. Let c be $vbytes__1^-1(V128, $mem(z, 0).BYTES[(i + ao.OFFSET) : ($size(V128) / 8)]).
   b. Push the value (V128.CONST c) to the stack.
 6. Else:
-  a. Let ?(vloadop_0) be vloadop_1?.
+  a. Let ?(vloadop_0) be vloadop?.
   b. If vloadop_0 is SHAPE, then:
     1) Let (SHAPE M X N _ sx) be vloadop_0.
     2) If (((i + ao.OFFSET) + ((M * N) / 8)) > |$mem(z, 0).BYTES|), then:
@@ -11304,22 +11304,22 @@ Step/elem.drop x
 1. Let z be the current state.
 2. Perform $with_elem(z, x, []).
 
-Step/store numtype_1 sz_1? ao
+Step/store numtype sz? ao
 1. Let z be the current state.
-2. Assert: Due to validation, a value of value type numtype_2 is on the top of the stack.
-3. Pop the value (numtype_2.CONST c) from the stack.
+2. Assert: Due to validation, a value of value type numtype' is on the top of the stack.
+3. Pop the value (numtype'.CONST c) from the stack.
 4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 5. Pop the value (I32.CONST i) from the stack.
-6. Let nt be numtype_2.
-7. If ((((i + ao.OFFSET) + ($size(nt) / 8)) > |$mem(z, 0).BYTES|) /\ ((numtype_1 = nt) /\ sz_1? is not defined)), then:
+6. Let nt be numtype'.
+7. If ((((i + ao.OFFSET) + ($size(nt) / 8)) > |$mem(z, 0).BYTES|) /\ ((numtype = nt) /\ sz? is not defined)), then:
   a. Trap.
-8. If ((numtype_1 = nt) /\ sz_1? is not defined), then:
+8. If ((numtype = nt) /\ sz? is not defined), then:
   a. Let b* be $nbytes_(nt, c).
   b. Perform $with_mem(z, 0, (i + ao.OFFSET), ($size(nt) / 8), b*).
-9. If numtype_2 is Inn, then:
-  a. Let Inn be numtype_2.
-  b. If ((numtype_1 = Inn) /\ sz_1? is defined), then:
-    1) Let ?(n) be sz_1?.
+9. If numtype' is Inn, then:
+  a. Let Inn be numtype'.
+  b. If ((numtype = Inn) /\ sz? is defined), then:
+    1) Let ?(n) be sz?.
     2) If (((i + ao.OFFSET) + (n / 8)) > |$mem(z, 0).BYTES|), then:
       a) Trap.
     3) Let b* be $ibytes_(n, $wrap__($size(Inn), n, c)).
@@ -11374,59 +11374,59 @@ min i j
   a. Return i.
 2. Return j.
 
-sum n_1*
-1. If (n_1* = []), then:
+sum n*
+1. If (n* = []), then:
   a. Return 0.
-2. Let [n] :: n'* be n_1*.
+2. Let [n] :: n'* be n*.
 3. Return (n + $sum(n'*)).
 
-opt_ `X X_1*
-1. If (X_1* = []), then:
+opt_ `X X*
+1. If (X* = []), then:
   a. Return ?().
-2. Assert: Due to validation, (|X_1*| = 1).
-3. Let [w] be X_1*.
+2. Assert: Due to validation, (|X*| = 1).
+3. Let [w] be X*.
 4. Return ?(w).
 
-list_ `X X_1?
-1. If X_1? is not defined, then:
+list_ `X X?
+1. If X? is not defined, then:
   a. Return [].
-2. Let ?(w) be X_1?.
+2. Let ?(w) be X?.
 3. Return [w].
 
-concat_ `X X_1*
-1. If (X_1* = []), then:
+concat_ `X X*
+1. If (X* = []), then:
   a. Return [].
-2. Let [w*] :: w'** be X_1*.
+2. Let [w*] :: w'** be X*.
 3. Return w* :: $concat_(`X, w'**).
 
-setproduct2_ `X w_1 X_1*
-1. If (X_1* = []), then:
+setproduct2_ `X w_1 X*
+1. If (X* = []), then:
   a. Return [].
-2. Let [w'*] :: w** be X_1*.
+2. Let [w'*] :: w** be X*.
 3. Return [[w_1] :: w'*] :: $setproduct2_(`X, w_1, w**).
 
-setproduct1_ `X X_1* w**
-1. If (X_1* = []), then:
+setproduct1_ `X X* w**
+1. If (X* = []), then:
   a. Return [].
-2. Let [w_1] :: w'* be X_1*.
+2. Let [w_1] :: w'* be X*.
 3. Return $setproduct2_(`X, w_1, w**) :: $setproduct1_(`X, w'*, w**).
 
-setproduct_ `X X_1*
-1. If (X_1* = []), then:
+setproduct_ `X X*
+1. If (X* = []), then:
   a. Return [[]].
-2. Let [w_1*] :: w** be X_1*.
+2. Let [w_1*] :: w** be X*.
 3. Return $setproduct1_(`X, w_1*, $setproduct_(`X, w**)).
 
-signif N_1
-1. If (N_1 = 32), then:
+signif N
+1. If (N = 32), then:
   a. Return 23.
-2. Assert: Due to validation, (N_1 = 64).
+2. Assert: Due to validation, (N = 64).
 3. Return 52.
 
-expon N_1
-1. If (N_1 = 32), then:
+expon N
+1. If (N = 32), then:
   a. Return 8.
-2. Assert: Due to validation, (N_1 = 64).
+2. Assert: Due to validation, (N = 64).
 3. Return 11.
 
 M N
@@ -11444,34 +11444,34 @@ fone N
 canon_ N
 1. Return (2 ^ ($signif(N) - 1)).
 
-size valtype_1
-1. If (valtype_1 = I32), then:
+size valtype
+1. If (valtype = I32), then:
   a. Return 32.
-2. If (valtype_1 = I64), then:
+2. If (valtype = I64), then:
   a. Return 64.
-3. If (valtype_1 = F32), then:
+3. If (valtype = F32), then:
   a. Return 32.
-4. If (valtype_1 = F64), then:
+4. If (valtype = F64), then:
   a. Return 64.
-5. If (valtype_1 = V128), then:
+5. If (valtype = V128), then:
   a. Return 128.
 6. Fail.
 
 isize Inn
 1. Return $size(Inn).
 
-psize packtype_1
-1. If (packtype_1 = I8), then:
+psize packtype
+1. If (packtype = I8), then:
   a. Return 8.
-2. Assert: Due to validation, (packtype_1 = I16).
+2. Assert: Due to validation, (packtype = I16).
 3. Return 16.
 
-lsize lanetype_1
-1. If lanetype_1 is numtype, then:
-  a. Let numtype be lanetype_1.
+lsize lanetype
+1. If lanetype is numtype, then:
+  a. Let numtype be lanetype.
   b. Return $size(numtype).
-2. Assert: Due to validation, lanetype_1 is packtype.
-3. Let packtype be lanetype_1.
+2. Assert: Due to validation, lanetype is packtype.
+3. Let packtype be lanetype.
 4. Return $psize(packtype).
 
 lanetype Lnn X N
@@ -11495,11 +11495,11 @@ lsizenn1 lt
 lsizenn2 lt
 1. Return $lsize(lt).
 
-zero numtype_1
-1. If numtype_1 is Inn, then:
+zero numtype
+1. If numtype is Inn, then:
   a. Return 0.
-2. Assert: Due to validation, numtype_1 is Fnn.
-3. Let Fnn be numtype_1.
+2. Assert: Due to validation, numtype is Fnn.
+3. Let Fnn be numtype.
 4. Return $fzero($size(Fnn)).
 
 dim Lnn X N
@@ -11508,75 +11508,75 @@ dim Lnn X N
 shsize Lnn X N
 1. Return ($lsize(Lnn) * N).
 
-concat_bytes byte_1*
-1. If (byte_1* = []), then:
+concat_bytes byte*
+1. If (byte* = []), then:
   a. Return [].
-2. Let [b*] :: b'** be byte_1*.
+2. Let [b*] :: b'** be byte*.
 3. Return b* :: $concat_bytes(b'**).
 
-unpack lanetype_1
-1. If lanetype_1 is numtype, then:
-  a. Let numtype be lanetype_1.
+unpack lanetype
+1. If lanetype is numtype, then:
+  a. Let numtype be lanetype.
   b. Return numtype.
-2. Assert: Due to validation, lanetype_1 is packtype.
+2. Assert: Due to validation, lanetype is packtype.
 3. Return I32.
 
 shunpack Lnn X N
 1. Return $unpack(Lnn).
 
-funcsxt externtype_1*
-1. If (externtype_1* = []), then:
+funcsxt externtype*
+1. If (externtype* = []), then:
   a. Return [].
-2. Let [externtype_0] :: xt* be externtype_1*.
+2. Let [externtype_0] :: xt* be externtype*.
 3. If externtype_0 is FUNC, then:
   a. Let (FUNC ft) be externtype_0.
   b. Return [ft] :: $funcsxt(xt*).
-4. Let [externtype] :: xt* be externtype_1*.
+4. Let [externtype] :: xt* be externtype*.
 5. Return $funcsxt(xt*).
 
-globalsxt externtype_1*
-1. If (externtype_1* = []), then:
+globalsxt externtype*
+1. If (externtype* = []), then:
   a. Return [].
-2. Let [externtype_0] :: xt* be externtype_1*.
+2. Let [externtype_0] :: xt* be externtype*.
 3. If externtype_0 is GLOBAL, then:
   a. Let (GLOBAL gt) be externtype_0.
   b. Return [gt] :: $globalsxt(xt*).
-4. Let [externtype] :: xt* be externtype_1*.
+4. Let [externtype] :: xt* be externtype*.
 5. Return $globalsxt(xt*).
 
-tablesxt externtype_1*
-1. If (externtype_1* = []), then:
+tablesxt externtype*
+1. If (externtype* = []), then:
   a. Return [].
-2. Let [externtype_0] :: xt* be externtype_1*.
+2. Let [externtype_0] :: xt* be externtype*.
 3. If externtype_0 is TABLE, then:
   a. Let (TABLE tt) be externtype_0.
   b. Return [tt] :: $tablesxt(xt*).
-4. Let [externtype] :: xt* be externtype_1*.
+4. Let [externtype] :: xt* be externtype*.
 5. Return $tablesxt(xt*).
 
-memsxt externtype_1*
-1. If (externtype_1* = []), then:
+memsxt externtype*
+1. If (externtype* = []), then:
   a. Return [].
-2. Let [externtype_0] :: xt* be externtype_1*.
+2. Let [externtype_0] :: xt* be externtype*.
 3. If externtype_0 is MEM, then:
   a. Let (MEM mt) be externtype_0.
   b. Return [mt] :: $memsxt(xt*).
-4. Let [externtype] :: xt* be externtype_1*.
+4. Let [externtype] :: xt* be externtype*.
 5. Return $memsxt(xt*).
 
-dataidx_instr instr_1
-1. If instr_1 is MEMORY.INIT, then:
-  a. Let (MEMORY.INIT x) be instr_1.
+dataidx_instr instr
+1. If instr is MEMORY.INIT, then:
+  a. Let (MEMORY.INIT x) be instr.
   b. Return [x].
-2. If instr_1 is DATA.DROP, then:
-  a. Let (DATA.DROP x) be instr_1.
+2. If instr is DATA.DROP, then:
+  a. Let (DATA.DROP x) be instr.
   b. Return [x].
 3. Return [].
 
-dataidx_instrs instr_1*
-1. If (instr_1* = []), then:
+dataidx_instrs instr*
+1. If (instr* = []), then:
   a. Return [].
-2. Let [instr] :: instr'* be instr_1*.
+2. Let [instr] :: instr'* be instr*.
 3. Return $dataidx_instr(instr) :: $dataidx_instrs(instr'*).
 
 dataidx_expr in*
@@ -11585,10 +11585,10 @@ dataidx_expr in*
 dataidx_func (FUNC x loc* e)
 1. Return $dataidx_expr(e).
 
-dataidx_funcs func_1*
-1. If (func_1* = []), then:
+dataidx_funcs func*
+1. If (func* = []), then:
   a. Return [].
-2. Let [func] :: func'* be func_1*.
+2. Let [func] :: func'* be func*.
 3. Return $dataidx_func(func) :: $dataidx_funcs(func'*).
 
 memarg0
@@ -11605,183 +11605,183 @@ invsigned_ N i
 1. Let j be $signed__1^-1(N, i).
 2. Return j.
 
-unop_ numtype_1 unop__1 num__1
-1. If numtype_1 is Inn, then:
-  a. Let Inn be numtype_1.
-  b. Let iN be num__1.
-  c. If (unop__1 = CLZ), then:
+unop_ numtype unop_ num_
+1. If numtype is Inn, then:
+  a. Let Inn be numtype.
+  b. Let iN be num_.
+  c. If (unop_ = CLZ), then:
     1) Return [$iclz_($sizenn(Inn), iN)].
-  d. If (unop__1 = CTZ), then:
+  d. If (unop_ = CTZ), then:
     1) Return [$ictz_($sizenn(Inn), iN)].
-  e. If (unop__1 = POPCNT), then:
+  e. If (unop_ = POPCNT), then:
     1) Return [$ipopcnt_($sizenn(Inn), iN)].
-  f. Assert: Due to validation, unop__1 is EXTEND.
-  g. Let (EXTEND M) be unop__1.
+  f. Assert: Due to validation, unop_ is EXTEND.
+  g. Let (EXTEND M) be unop_.
   h. Return [$extend__(M, $sizenn(Inn), S, $wrap__($sizenn(Inn), M, iN))].
-2. Assert: Due to validation, numtype_1 is Fnn.
-3. Let Fnn be numtype_1.
-4. Let fN be num__1.
-5. If (unop__1 = ABS), then:
+2. Assert: Due to validation, numtype is Fnn.
+3. Let Fnn be numtype.
+4. Let fN be num_.
+5. If (unop_ = ABS), then:
   a. Return $fabs_($sizenn(Fnn), fN).
-6. If (unop__1 = NEG), then:
+6. If (unop_ = NEG), then:
   a. Return $fneg_($sizenn(Fnn), fN).
-7. If (unop__1 = SQRT), then:
+7. If (unop_ = SQRT), then:
   a. Return $fsqrt_($sizenn(Fnn), fN).
-8. If (unop__1 = CEIL), then:
+8. If (unop_ = CEIL), then:
   a. Return $fceil_($sizenn(Fnn), fN).
-9. If (unop__1 = FLOOR), then:
+9. If (unop_ = FLOOR), then:
   a. Return $ffloor_($sizenn(Fnn), fN).
-10. If (unop__1 = TRUNC), then:
+10. If (unop_ = TRUNC), then:
   a. Return $ftrunc_($sizenn(Fnn), fN).
-11. Assert: Due to validation, (unop__1 = NEAREST).
+11. Assert: Due to validation, (unop_ = NEAREST).
 12. Return $fnearest_($sizenn(Fnn), fN).
 
-binop_ numtype_1 binop__1 num__1 num__2
-1. If numtype_1 is Inn, then:
-  a. Let Inn be numtype_1.
-  b. Let iN_1 be num__1.
-  c. Let iN_2 be num__2.
-  d. If (binop__1 = ADD), then:
+binop_ numtype binop_ num_ num_'
+1. If numtype is Inn, then:
+  a. Let Inn be numtype.
+  b. Let iN_1 be num_.
+  c. Let iN_2 be num_'.
+  d. If (binop_ = ADD), then:
     1) Return [$iadd_($sizenn(Inn), iN_1, iN_2)].
-  e. If (binop__1 = SUB), then:
+  e. If (binop_ = SUB), then:
     1) Return [$isub_($sizenn(Inn), iN_1, iN_2)].
-  f. If (binop__1 = MUL), then:
+  f. If (binop_ = MUL), then:
     1) Return [$imul_($sizenn(Inn), iN_1, iN_2)].
-  g. If binop__1 is DIV, then:
-    1) Let (DIV sx) be binop__1.
+  g. If binop_ is DIV, then:
+    1) Let (DIV sx) be binop_.
     2) Return $list_(`num_((Inn : Inn <: numtype)), $idiv_($sizenn(Inn), sx, iN_1, iN_2)).
-  h. If binop__1 is REM, then:
-    1) Let (REM sx) be binop__1.
+  h. If binop_ is REM, then:
+    1) Let (REM sx) be binop_.
     2) Return $list_(`num_((Inn : Inn <: numtype)), $irem_($sizenn(Inn), sx, iN_1, iN_2)).
-  i. If (binop__1 = AND), then:
+  i. If (binop_ = AND), then:
     1) Return [$iand_($sizenn(Inn), iN_1, iN_2)].
-  j. If (binop__1 = OR), then:
+  j. If (binop_ = OR), then:
     1) Return [$ior_($sizenn(Inn), iN_1, iN_2)].
-  k. If (binop__1 = XOR), then:
+  k. If (binop_ = XOR), then:
     1) Return [$ixor_($sizenn(Inn), iN_1, iN_2)].
-  l. If (binop__1 = SHL), then:
+  l. If (binop_ = SHL), then:
     1) Return [$ishl_($sizenn(Inn), iN_1, iN_2)].
-  m. If binop__1 is SHR, then:
-    1) Let (SHR sx) be binop__1.
+  m. If binop_ is SHR, then:
+    1) Let (SHR sx) be binop_.
     2) Return [$ishr_($sizenn(Inn), sx, iN_1, iN_2)].
-  n. If (binop__1 = ROTL), then:
+  n. If (binop_ = ROTL), then:
     1) Return [$irotl_($sizenn(Inn), iN_1, iN_2)].
-  o. If (binop__1 = ROTR), then:
+  o. If (binop_ = ROTR), then:
     1) Return [$irotr_($sizenn(Inn), iN_1, iN_2)].
-2. Assert: Due to validation, numtype_1 is Fnn.
-3. Let Fnn be numtype_1.
-4. Let fN_1 be num__1.
-5. Let fN_2 be num__2.
-6. If (binop__1 = ADD), then:
+2. Assert: Due to validation, numtype is Fnn.
+3. Let Fnn be numtype.
+4. Let fN_1 be num_.
+5. Let fN_2 be num_'.
+6. If (binop_ = ADD), then:
   a. Return $fadd_($sizenn(Fnn), fN_1, fN_2).
-7. If (binop__1 = SUB), then:
+7. If (binop_ = SUB), then:
   a. Return $fsub_($sizenn(Fnn), fN_1, fN_2).
-8. If (binop__1 = MUL), then:
+8. If (binop_ = MUL), then:
   a. Return $fmul_($sizenn(Fnn), fN_1, fN_2).
-9. If (binop__1 = DIV), then:
+9. If (binop_ = DIV), then:
   a. Return $fdiv_($sizenn(Fnn), fN_1, fN_2).
-10. If (binop__1 = MIN), then:
+10. If (binop_ = MIN), then:
   a. Return $fmin_($sizenn(Fnn), fN_1, fN_2).
-11. If (binop__1 = MAX), then:
+11. If (binop_ = MAX), then:
   a. Return $fmax_($sizenn(Fnn), fN_1, fN_2).
-12. Assert: Due to validation, (binop__1 = COPYSIGN).
+12. Assert: Due to validation, (binop_ = COPYSIGN).
 13. Return $fcopysign_($sizenn(Fnn), fN_1, fN_2).
 
 testop_ Inn EQZ iN
 1. Return $ieqz_($sizenn(Inn), iN).
 
-relop_ numtype_1 relop__1 num__1 num__2
-1. If numtype_1 is Inn, then:
-  a. Let Inn be numtype_1.
-  b. Let iN_1 be num__1.
-  c. Let iN_2 be num__2.
-  d. If (relop__1 = EQ), then:
+relop_ numtype relop_ num_ num_'
+1. If numtype is Inn, then:
+  a. Let Inn be numtype.
+  b. Let iN_1 be num_.
+  c. Let iN_2 be num_'.
+  d. If (relop_ = EQ), then:
     1) Return $ieq_($sizenn(Inn), iN_1, iN_2).
-  e. If (relop__1 = NE), then:
+  e. If (relop_ = NE), then:
     1) Return $ine_($sizenn(Inn), iN_1, iN_2).
-  f. If relop__1 is LT, then:
-    1) Let (LT sx) be relop__1.
+  f. If relop_ is LT, then:
+    1) Let (LT sx) be relop_.
     2) Return $ilt_($sizenn(Inn), sx, iN_1, iN_2).
-  g. If relop__1 is GT, then:
-    1) Let (GT sx) be relop__1.
+  g. If relop_ is GT, then:
+    1) Let (GT sx) be relop_.
     2) Return $igt_($sizenn(Inn), sx, iN_1, iN_2).
-  h. If relop__1 is LE, then:
-    1) Let (LE sx) be relop__1.
+  h. If relop_ is LE, then:
+    1) Let (LE sx) be relop_.
     2) Return $ile_($sizenn(Inn), sx, iN_1, iN_2).
-  i. If relop__1 is GE, then:
-    1) Let (GE sx) be relop__1.
+  i. If relop_ is GE, then:
+    1) Let (GE sx) be relop_.
     2) Return $ige_($sizenn(Inn), sx, iN_1, iN_2).
-2. Assert: Due to validation, numtype_1 is Fnn.
-3. Let Fnn be numtype_1.
-4. Let fN_1 be num__1.
-5. Let fN_2 be num__2.
-6. If (relop__1 = EQ), then:
+2. Assert: Due to validation, numtype is Fnn.
+3. Let Fnn be numtype.
+4. Let fN_1 be num_.
+5. Let fN_2 be num_'.
+6. If (relop_ = EQ), then:
   a. Return $feq_($sizenn(Fnn), fN_1, fN_2).
-7. If (relop__1 = NE), then:
+7. If (relop_ = NE), then:
   a. Return $fne_($sizenn(Fnn), fN_1, fN_2).
-8. If (relop__1 = LT), then:
+8. If (relop_ = LT), then:
   a. Return $flt_($sizenn(Fnn), fN_1, fN_2).
-9. If (relop__1 = GT), then:
+9. If (relop_ = GT), then:
   a. Return $fgt_($sizenn(Fnn), fN_1, fN_2).
-10. If (relop__1 = LE), then:
+10. If (relop_ = LE), then:
   a. Return $fle_($sizenn(Fnn), fN_1, fN_2).
-11. Assert: Due to validation, (relop__1 = GE).
+11. Assert: Due to validation, (relop_ = GE).
 12. Return $fge_($sizenn(Fnn), fN_1, fN_2).
 
-cvtop__ numtype_1 numtype_3 cvtop_1 num__1
-1. If numtype_1 is Inn, then:
-  a. Let Inn_1 be numtype_1.
-  b. If numtype_3 is Inn, then:
-    1) Let Inn_2 be numtype_3.
-    2) If cvtop_1 is EXTEND, then:
-      a) Let (EXTEND sx) be cvtop_1.
-      b) Let iN_1 be num__1.
+cvtop__ numtype numtype'' cvtop num_
+1. If numtype is Inn, then:
+  a. Let Inn_1 be numtype.
+  b. If numtype'' is Inn, then:
+    1) Let Inn_2 be numtype''.
+    2) If cvtop is EXTEND, then:
+      a) Let (EXTEND sx) be cvtop.
+      b) Let iN_1 be num_.
       c) Return [$extend__($sizenn1(Inn_1), $sizenn2(Inn_2), sx, iN_1)].
-    3) Let iN_1 be num__1.
-    4) If (cvtop_1 = WRAP), then:
+    3) Let iN_1 be num_.
+    4) If (cvtop = WRAP), then:
       a) Return [$wrap__($sizenn1(Inn_1), $sizenn2(Inn_2), iN_1)].
-2. If numtype_1 is Fnn, then:
-  a. Let Fnn_1 be numtype_1.
-  b. If numtype_3 is Inn, then:
-    1) Let Inn_2 be numtype_3.
-    2) If cvtop_1 is TRUNC, then:
-      a) Let (TRUNC sx) be cvtop_1.
-      b) Let fN_1 be num__1.
+2. If numtype is Fnn, then:
+  a. Let Fnn_1 be numtype.
+  b. If numtype'' is Inn, then:
+    1) Let Inn_2 be numtype''.
+    2) If cvtop is TRUNC, then:
+      a) Let (TRUNC sx) be cvtop.
+      b) Let fN_1 be num_.
       c) Return $list_(`num_((Inn_2 : Inn <: numtype)), $trunc__($sizenn1(Fnn_1), $sizenn2(Inn_2), sx, fN_1)).
-    3) If cvtop_1 is TRUNC_SAT, then:
-      a) Let (TRUNC_SAT sx) be cvtop_1.
-      b) Let fN_1 be num__1.
+    3) If cvtop is TRUNC_SAT, then:
+      a) Let (TRUNC_SAT sx) be cvtop.
+      b) Let fN_1 be num_.
       c) Return $list_(`num_((Inn_2 : Inn <: numtype)), $trunc_sat__($sizenn1(Fnn_1), $sizenn2(Inn_2), sx, fN_1)).
-3. If numtype_1 is Inn, then:
-  a. Let Inn_1 be numtype_1.
-  b. If numtype_3 is Fnn, then:
-    1) Let Fnn_2 be numtype_3.
-    2) If cvtop_1 is CONVERT, then:
-      a) Let (CONVERT sx) be cvtop_1.
-      b) Let iN_1 be num__1.
+3. If numtype is Inn, then:
+  a. Let Inn_1 be numtype.
+  b. If numtype'' is Fnn, then:
+    1) Let Fnn_2 be numtype''.
+    2) If cvtop is CONVERT, then:
+      a) Let (CONVERT sx) be cvtop.
+      b) Let iN_1 be num_.
       c) Return [$convert__($sizenn1(Inn_1), $sizenn2(Fnn_2), sx, iN_1)].
-4. If numtype_1 is Fnn, then:
-  a. Let Fnn_1 be numtype_1.
-  b. If numtype_3 is Fnn, then:
-    1) Let Fnn_2 be numtype_3.
-    2) Let fN_1 be num__1.
-    3) If (cvtop_1 = PROMOTE), then:
+4. If numtype is Fnn, then:
+  a. Let Fnn_1 be numtype.
+  b. If numtype'' is Fnn, then:
+    1) Let Fnn_2 be numtype''.
+    2) Let fN_1 be num_.
+    3) If (cvtop = PROMOTE), then:
       a) Return $promote__($sizenn1(Fnn_1), $sizenn2(Fnn_2), fN_1).
-    4) If (cvtop_1 = DEMOTE), then:
+    4) If (cvtop = DEMOTE), then:
       a) Return $demote__($sizenn1(Fnn_1), $sizenn2(Fnn_2), fN_1).
-5. If numtype_1 is Inn, then:
-  a. Let Inn_1 be numtype_1.
-  b. If numtype_3 is Fnn, then:
-    1) Let Fnn_2 be numtype_3.
-    2) Let iN_1 be num__1.
-    3) If ((cvtop_1 = REINTERPRET) /\ ($size(Inn_1) = $size(Fnn_2))), then:
+5. If numtype is Inn, then:
+  a. Let Inn_1 be numtype.
+  b. If numtype'' is Fnn, then:
+    1) Let Fnn_2 be numtype''.
+    2) Let iN_1 be num_.
+    3) If ((cvtop = REINTERPRET) /\ ($size(Inn_1) = $size(Fnn_2))), then:
       a) Return [$reinterpret__(Inn_1, Fnn_2, iN_1)].
-6. Assert: Due to validation, numtype_1 is Fnn.
-7. Let Fnn_1 be numtype_1.
-8. Assert: Due to validation, numtype_3 is Inn.
-9. Let Inn_2 be numtype_3.
-10. Let fN_1 be num__1.
-11. Assert: Due to validation, (cvtop_1 = REINTERPRET).
+6. Assert: Due to validation, numtype is Fnn.
+7. Let Fnn_1 be numtype.
+8. Assert: Due to validation, numtype'' is Inn.
+9. Let Inn_2 be numtype''.
+10. Let fN_1 be num_.
+11. Assert: Due to validation, (cvtop = REINTERPRET).
 12. Assert: Due to validation, ($size(Fnn_1) = $size(Inn_2)).
 13. Return [$reinterpret__(Fnn_1, Inn_2, fN_1)].
 
@@ -11793,283 +11793,283 @@ invfbytes_ N b*
 1. Let p be $fbytes__1^-1(N, b*).
 2. Return p.
 
-packnum_ lanetype_1 c
-1. If lanetype_1 is numtype, then:
+packnum_ lanetype c
+1. If lanetype is numtype, then:
   a. Return c.
-2. Assert: Due to validation, lanetype_1 is packtype.
-3. Let packtype be lanetype_1.
+2. Assert: Due to validation, lanetype is packtype.
+3. Let packtype be lanetype.
 4. Return $wrap__($size($unpack(packtype)), $psize(packtype), c).
 
-unpacknum_ lanetype_1 c
-1. If lanetype_1 is numtype, then:
+unpacknum_ lanetype c
+1. If lanetype is numtype, then:
   a. Return c.
-2. Assert: Due to validation, lanetype_1 is packtype.
-3. Let packtype be lanetype_1.
+2. Assert: Due to validation, lanetype is packtype.
+3. Let packtype be lanetype.
 4. Return $extend__($psize(packtype), $size($unpack(packtype)), U, c).
 
 invlanes_ sh c*
 1. Let vc be $lanes__1^-1(sh, c*).
 2. Return vc.
 
-half half_1 i j
-1. If (half_1 = LOW), then:
+half half i j
+1. If (half = LOW), then:
   a. Return i.
-2. Assert: Due to validation, (half_1 = HIGH).
+2. Assert: Due to validation, (half = HIGH).
 3. Return j.
 
 vvunop_ V128 NOT v128
 1. Return $inot_($size(V128), v128).
 
-vvbinop_ V128 vvbinop_1 v128_1 v128_2
-1. If (vvbinop_1 = AND), then:
+vvbinop_ V128 vvbinop v128_1 v128_2
+1. If (vvbinop = AND), then:
   a. Return $iand_($size(V128), v128_1, v128_2).
-2. If (vvbinop_1 = ANDNOT), then:
+2. If (vvbinop = ANDNOT), then:
   a. Return $iandnot_($size(V128), v128_1, v128_2).
-3. If (vvbinop_1 = OR), then:
+3. If (vvbinop = OR), then:
   a. Return $ior_($size(V128), v128_1, v128_2).
-4. Assert: Due to validation, (vvbinop_1 = XOR).
+4. Assert: Due to validation, (vvbinop = XOR).
 5. Return $ixor_($size(V128), v128_1, v128_2).
 
 vvternop_ V128 BITSELECT v128_1 v128_2 v128_3
 1. Return $ibitselect_($size(V128), v128_1, v128_2, v128_3).
 
-vunop_ lanetype_1 X M vunop__1 v128_1
-1. If lanetype_1 is Jnn, then:
-  a. Let Jnn be lanetype_1.
-  b. If (vunop__1 = ABS), then:
+vunop_ lanetype X M vunop_ v128_1
+1. If lanetype is Jnn, then:
+  a. Let Jnn be lanetype.
+  b. If (vunop_ = ABS), then:
     1) Let lane_1* be $lanes_(Jnn X M, v128_1).
     2) Let v128 be $invlanes_(Jnn X M, $iabs_($lsizenn(Jnn), lane_1)*).
     3) Return [v128].
-  c. If (vunop__1 = NEG), then:
+  c. If (vunop_ = NEG), then:
     1) Let lane_1* be $lanes_(Jnn X M, v128_1).
     2) Let v128 be $invlanes_(Jnn X M, $ineg_($lsizenn(Jnn), lane_1)*).
     3) Return [v128].
-  d. If (vunop__1 = POPCNT), then:
+  d. If (vunop_ = POPCNT), then:
     1) Let lane_1* be $lanes_(Jnn X M, v128_1).
     2) Let v128 be $invlanes_(Jnn X M, $ipopcnt_($lsizenn(Jnn), lane_1)*).
     3) Return [v128].
-2. Assert: Due to validation, lanetype_1 is Fnn.
-3. Let Fnn be lanetype_1.
-4. If (vunop__1 = ABS), then:
+2. Assert: Due to validation, lanetype is Fnn.
+3. Let Fnn be lanetype.
+4. If (vunop_ = ABS), then:
   a. Let lane_1* be $lanes_(Fnn X M, v128_1).
   b. Let lane** be $setproduct_(`lane_((Fnn : Fnn <: lanetype)), $fabs_($sizenn(Fnn), lane_1)*).
   c. Let v128* be $invlanes_(Fnn X M, lane*)*.
   d. Return v128*.
-5. If (vunop__1 = NEG), then:
+5. If (vunop_ = NEG), then:
   a. Let lane_1* be $lanes_(Fnn X M, v128_1).
   b. Let lane** be $setproduct_(`lane_((Fnn : Fnn <: lanetype)), $fneg_($sizenn(Fnn), lane_1)*).
   c. Let v128* be $invlanes_(Fnn X M, lane*)*.
   d. Return v128*.
-6. If (vunop__1 = SQRT), then:
+6. If (vunop_ = SQRT), then:
   a. Let lane_1* be $lanes_(Fnn X M, v128_1).
   b. Let lane** be $setproduct_(`lane_((Fnn : Fnn <: lanetype)), $fsqrt_($sizenn(Fnn), lane_1)*).
   c. Let v128* be $invlanes_(Fnn X M, lane*)*.
   d. Return v128*.
-7. If (vunop__1 = CEIL), then:
+7. If (vunop_ = CEIL), then:
   a. Let lane_1* be $lanes_(Fnn X M, v128_1).
   b. Let lane** be $setproduct_(`lane_((Fnn : Fnn <: lanetype)), $fceil_($sizenn(Fnn), lane_1)*).
   c. Let v128* be $invlanes_(Fnn X M, lane*)*.
   d. Return v128*.
-8. If (vunop__1 = FLOOR), then:
+8. If (vunop_ = FLOOR), then:
   a. Let lane_1* be $lanes_(Fnn X M, v128_1).
   b. Let lane** be $setproduct_(`lane_((Fnn : Fnn <: lanetype)), $ffloor_($sizenn(Fnn), lane_1)*).
   c. Let v128* be $invlanes_(Fnn X M, lane*)*.
   d. Return v128*.
-9. If (vunop__1 = TRUNC), then:
+9. If (vunop_ = TRUNC), then:
   a. Let lane_1* be $lanes_(Fnn X M, v128_1).
   b. Let lane** be $setproduct_(`lane_((Fnn : Fnn <: lanetype)), $ftrunc_($sizenn(Fnn), lane_1)*).
   c. Let v128* be $invlanes_(Fnn X M, lane*)*.
   d. Return v128*.
-10. Assert: Due to validation, (vunop__1 = NEAREST).
+10. Assert: Due to validation, (vunop_ = NEAREST).
 11. Let lane_1* be $lanes_(Fnn X M, v128_1).
 12. Let lane** be $setproduct_(`lane_((Fnn : Fnn <: lanetype)), $fnearest_($sizenn(Fnn), lane_1)*).
 13. Let v128* be $invlanes_(Fnn X M, lane*)*.
 14. Return v128*.
 
-vbinop_ lanetype_1 X M vbinop__1 v128_1 v128_2
-1. If lanetype_1 is Jnn, then:
-  a. Let Jnn be lanetype_1.
-  b. If (vbinop__1 = ADD), then:
+vbinop_ lanetype X M vbinop_ v128_1 v128_2
+1. If lanetype is Jnn, then:
+  a. Let Jnn be lanetype.
+  b. If (vbinop_ = ADD), then:
     1) Let lane_1* be $lanes_(Jnn X M, v128_1).
     2) Let lane_2* be $lanes_(Jnn X M, v128_2).
     3) Let v128 be $invlanes_(Jnn X M, $iadd_($lsizenn(Jnn), lane_1, lane_2)*).
     4) Return [v128].
-  c. If (vbinop__1 = SUB), then:
+  c. If (vbinop_ = SUB), then:
     1) Let lane_1* be $lanes_(Jnn X M, v128_1).
     2) Let lane_2* be $lanes_(Jnn X M, v128_2).
     3) Let v128 be $invlanes_(Jnn X M, $isub_($lsizenn(Jnn), lane_1, lane_2)*).
     4) Return [v128].
-  d. If vbinop__1 is MIN, then:
-    1) Let (MIN sx) be vbinop__1.
+  d. If vbinop_ is MIN, then:
+    1) Let (MIN sx) be vbinop_.
     2) Let lane_1* be $lanes_(Jnn X M, v128_1).
     3) Let lane_2* be $lanes_(Jnn X M, v128_2).
     4) Let v128 be $invlanes_(Jnn X M, $imin_($lsizenn(Jnn), sx, lane_1, lane_2)*).
     5) Return [v128].
-  e. If vbinop__1 is MAX, then:
-    1) Let (MAX sx) be vbinop__1.
+  e. If vbinop_ is MAX, then:
+    1) Let (MAX sx) be vbinop_.
     2) Let lane_1* be $lanes_(Jnn X M, v128_1).
     3) Let lane_2* be $lanes_(Jnn X M, v128_2).
     4) Let v128 be $invlanes_(Jnn X M, $imax_($lsizenn(Jnn), sx, lane_1, lane_2)*).
     5) Return [v128].
-  f. If vbinop__1 is ADD_SAT, then:
-    1) Let (ADD_SAT sx) be vbinop__1.
+  f. If vbinop_ is ADD_SAT, then:
+    1) Let (ADD_SAT sx) be vbinop_.
     2) Let lane_1* be $lanes_(Jnn X M, v128_1).
     3) Let lane_2* be $lanes_(Jnn X M, v128_2).
     4) Let v128 be $invlanes_(Jnn X M, $iadd_sat_($lsizenn(Jnn), sx, lane_1, lane_2)*).
     5) Return [v128].
-  g. If vbinop__1 is SUB_SAT, then:
-    1) Let (SUB_SAT sx) be vbinop__1.
+  g. If vbinop_ is SUB_SAT, then:
+    1) Let (SUB_SAT sx) be vbinop_.
     2) Let lane_1* be $lanes_(Jnn X M, v128_1).
     3) Let lane_2* be $lanes_(Jnn X M, v128_2).
     4) Let v128 be $invlanes_(Jnn X M, $isub_sat_($lsizenn(Jnn), sx, lane_1, lane_2)*).
     5) Return [v128].
-  h. If (vbinop__1 = MUL), then:
+  h. If (vbinop_ = MUL), then:
     1) Let lane_1* be $lanes_(Jnn X M, v128_1).
     2) Let lane_2* be $lanes_(Jnn X M, v128_2).
     3) Let v128 be $invlanes_(Jnn X M, $imul_($lsizenn(Jnn), lane_1, lane_2)*).
     4) Return [v128].
-  i. If (vbinop__1 = AVGRU), then:
+  i. If (vbinop_ = AVGRU), then:
     1) Let lane_1* be $lanes_(Jnn X M, v128_1).
     2) Let lane_2* be $lanes_(Jnn X M, v128_2).
     3) Let v128 be $invlanes_(Jnn X M, $iavgr_($lsizenn(Jnn), U, lane_1, lane_2)*).
     4) Return [v128].
-  j. If (vbinop__1 = Q15MULR_SATS), then:
+  j. If (vbinop_ = Q15MULR_SATS), then:
     1) Let lane_1* be $lanes_(Jnn X M, v128_1).
     2) Let lane_2* be $lanes_(Jnn X M, v128_2).
     3) Let v128 be $invlanes_(Jnn X M, $iq15mulr_sat_($lsizenn(Jnn), S, lane_1, lane_2)*).
     4) Return [v128].
-2. Assert: Due to validation, lanetype_1 is Fnn.
-3. Let Fnn be lanetype_1.
-4. If (vbinop__1 = ADD), then:
+2. Assert: Due to validation, lanetype is Fnn.
+3. Let Fnn be lanetype.
+4. If (vbinop_ = ADD), then:
   a. Let lane_1* be $lanes_(Fnn X M, v128_1).
   b. Let lane_2* be $lanes_(Fnn X M, v128_2).
   c. Let lane** be $setproduct_(`lane_((Fnn : Fnn <: lanetype)), $fadd_($sizenn(Fnn), lane_1, lane_2)*).
   d. Let v128* be $invlanes_(Fnn X M, lane*)*.
   e. Return v128*.
-5. If (vbinop__1 = SUB), then:
+5. If (vbinop_ = SUB), then:
   a. Let lane_1* be $lanes_(Fnn X M, v128_1).
   b. Let lane_2* be $lanes_(Fnn X M, v128_2).
   c. Let lane** be $setproduct_(`lane_((Fnn : Fnn <: lanetype)), $fsub_($sizenn(Fnn), lane_1, lane_2)*).
   d. Let v128* be $invlanes_(Fnn X M, lane*)*.
   e. Return v128*.
-6. If (vbinop__1 = MUL), then:
+6. If (vbinop_ = MUL), then:
   a. Let lane_1* be $lanes_(Fnn X M, v128_1).
   b. Let lane_2* be $lanes_(Fnn X M, v128_2).
   c. Let lane** be $setproduct_(`lane_((Fnn : Fnn <: lanetype)), $fmul_($sizenn(Fnn), lane_1, lane_2)*).
   d. Let v128* be $invlanes_(Fnn X M, lane*)*.
   e. Return v128*.
-7. If (vbinop__1 = DIV), then:
+7. If (vbinop_ = DIV), then:
   a. Let lane_1* be $lanes_(Fnn X M, v128_1).
   b. Let lane_2* be $lanes_(Fnn X M, v128_2).
   c. Let lane** be $setproduct_(`lane_((Fnn : Fnn <: lanetype)), $fdiv_($sizenn(Fnn), lane_1, lane_2)*).
   d. Let v128* be $invlanes_(Fnn X M, lane*)*.
   e. Return v128*.
-8. If (vbinop__1 = MIN), then:
+8. If (vbinop_ = MIN), then:
   a. Let lane_1* be $lanes_(Fnn X M, v128_1).
   b. Let lane_2* be $lanes_(Fnn X M, v128_2).
   c. Let lane** be $setproduct_(`lane_((Fnn : Fnn <: lanetype)), $fmin_($sizenn(Fnn), lane_1, lane_2)*).
   d. Let v128* be $invlanes_(Fnn X M, lane*)*.
   e. Return v128*.
-9. If (vbinop__1 = MAX), then:
+9. If (vbinop_ = MAX), then:
   a. Let lane_1* be $lanes_(Fnn X M, v128_1).
   b. Let lane_2* be $lanes_(Fnn X M, v128_2).
   c. Let lane** be $setproduct_(`lane_((Fnn : Fnn <: lanetype)), $fmax_($sizenn(Fnn), lane_1, lane_2)*).
   d. Let v128* be $invlanes_(Fnn X M, lane*)*.
   e. Return v128*.
-10. If (vbinop__1 = PMIN), then:
+10. If (vbinop_ = PMIN), then:
   a. Let lane_1* be $lanes_(Fnn X M, v128_1).
   b. Let lane_2* be $lanes_(Fnn X M, v128_2).
   c. Let lane** be $setproduct_(`lane_((Fnn : Fnn <: lanetype)), $fpmin_($sizenn(Fnn), lane_1, lane_2)*).
   d. Let v128* be $invlanes_(Fnn X M, lane*)*.
   e. Return v128*.
-11. Assert: Due to validation, (vbinop__1 = PMAX).
+11. Assert: Due to validation, (vbinop_ = PMAX).
 12. Let lane_1* be $lanes_(Fnn X M, v128_1).
 13. Let lane_2* be $lanes_(Fnn X M, v128_2).
 14. Let lane** be $setproduct_(`lane_((Fnn : Fnn <: lanetype)), $fpmax_($sizenn(Fnn), lane_1, lane_2)*).
 15. Let v128* be $invlanes_(Fnn X M, lane*)*.
 16. Return v128*.
 
-vrelop_ lanetype_1 X M vrelop__1 v128_1 v128_2
-1. If lanetype_1 is Jnn, then:
-  a. Let Jnn be lanetype_1.
-  b. If (vrelop__1 = EQ), then:
+vrelop_ lanetype X M vrelop_ v128_1 v128_2
+1. If lanetype is Jnn, then:
+  a. Let Jnn be lanetype.
+  b. If (vrelop_ = EQ), then:
     1) Let lane_1* be $lanes_(Jnn X M, v128_1).
     2) Let lane_2* be $lanes_(Jnn X M, v128_2).
     3) Let lane_3* be $extend__(1, $lsizenn(Jnn), S, $ieq_($lsizenn(Jnn), lane_1, lane_2))*.
     4) Let v128 be $invlanes_(Jnn X M, lane_3*).
     5) Return v128.
-  c. If (vrelop__1 = NE), then:
+  c. If (vrelop_ = NE), then:
     1) Let lane_1* be $lanes_(Jnn X M, v128_1).
     2) Let lane_2* be $lanes_(Jnn X M, v128_2).
     3) Let lane_3* be $extend__(1, $lsizenn(Jnn), S, $ine_($lsizenn(Jnn), lane_1, lane_2))*.
     4) Let v128 be $invlanes_(Jnn X M, lane_3*).
     5) Return v128.
-  d. If vrelop__1 is LT, then:
-    1) Let (LT sx) be vrelop__1.
+  d. If vrelop_ is LT, then:
+    1) Let (LT sx) be vrelop_.
     2) Let lane_1* be $lanes_(Jnn X M, v128_1).
     3) Let lane_2* be $lanes_(Jnn X M, v128_2).
     4) Let lane_3* be $extend__(1, $lsizenn(Jnn), S, $ilt_($lsizenn(Jnn), sx, lane_1, lane_2))*.
     5) Let v128 be $invlanes_(Jnn X M, lane_3*).
     6) Return v128.
-  e. If vrelop__1 is GT, then:
-    1) Let (GT sx) be vrelop__1.
+  e. If vrelop_ is GT, then:
+    1) Let (GT sx) be vrelop_.
     2) Let lane_1* be $lanes_(Jnn X M, v128_1).
     3) Let lane_2* be $lanes_(Jnn X M, v128_2).
     4) Let lane_3* be $extend__(1, $lsizenn(Jnn), S, $igt_($lsizenn(Jnn), sx, lane_1, lane_2))*.
     5) Let v128 be $invlanes_(Jnn X M, lane_3*).
     6) Return v128.
-  f. If vrelop__1 is LE, then:
-    1) Let (LE sx) be vrelop__1.
+  f. If vrelop_ is LE, then:
+    1) Let (LE sx) be vrelop_.
     2) Let lane_1* be $lanes_(Jnn X M, v128_1).
     3) Let lane_2* be $lanes_(Jnn X M, v128_2).
     4) Let lane_3* be $extend__(1, $lsizenn(Jnn), S, $ile_($lsizenn(Jnn), sx, lane_1, lane_2))*.
     5) Let v128 be $invlanes_(Jnn X M, lane_3*).
     6) Return v128.
-  g. If vrelop__1 is GE, then:
-    1) Let (GE sx) be vrelop__1.
+  g. If vrelop_ is GE, then:
+    1) Let (GE sx) be vrelop_.
     2) Let lane_1* be $lanes_(Jnn X M, v128_1).
     3) Let lane_2* be $lanes_(Jnn X M, v128_2).
     4) Let lane_3* be $extend__(1, $lsizenn(Jnn), S, $ige_($lsizenn(Jnn), sx, lane_1, lane_2))*.
     5) Let v128 be $invlanes_(Jnn X M, lane_3*).
     6) Return v128.
-2. Assert: Due to validation, lanetype_1 is Fnn.
-3. Let Fnn be lanetype_1.
-4. If (vrelop__1 = EQ), then:
+2. Assert: Due to validation, lanetype is Fnn.
+3. Let Fnn be lanetype.
+4. If (vrelop_ = EQ), then:
   a. Let lane_1* be $lanes_(Fnn X M, v128_1).
   b. Let lane_2* be $lanes_(Fnn X M, v128_2).
   c. Let Inn be $isize^-1($size(Fnn)).
   d. Let lane_3* be $extend__(1, $sizenn(Fnn), S, $feq_($sizenn(Fnn), lane_1, lane_2))*.
   e. Let v128 be $invlanes_(Inn X M, lane_3*).
   f. Return v128.
-5. If (vrelop__1 = NE), then:
+5. If (vrelop_ = NE), then:
   a. Let lane_1* be $lanes_(Fnn X M, v128_1).
   b. Let lane_2* be $lanes_(Fnn X M, v128_2).
   c. Let Inn be $isize^-1($size(Fnn)).
   d. Let lane_3* be $extend__(1, $sizenn(Fnn), S, $fne_($sizenn(Fnn), lane_1, lane_2))*.
   e. Let v128 be $invlanes_(Inn X M, lane_3*).
   f. Return v128.
-6. If (vrelop__1 = LT), then:
+6. If (vrelop_ = LT), then:
   a. Let lane_1* be $lanes_(Fnn X M, v128_1).
   b. Let lane_2* be $lanes_(Fnn X M, v128_2).
   c. Let Inn be $isize^-1($size(Fnn)).
   d. Let lane_3* be $extend__(1, $sizenn(Fnn), S, $flt_($sizenn(Fnn), lane_1, lane_2))*.
   e. Let v128 be $invlanes_(Inn X M, lane_3*).
   f. Return v128.
-7. If (vrelop__1 = GT), then:
+7. If (vrelop_ = GT), then:
   a. Let lane_1* be $lanes_(Fnn X M, v128_1).
   b. Let lane_2* be $lanes_(Fnn X M, v128_2).
   c. Let Inn be $isize^-1($size(Fnn)).
   d. Let lane_3* be $extend__(1, $sizenn(Fnn), S, $fgt_($sizenn(Fnn), lane_1, lane_2))*.
   e. Let v128 be $invlanes_(Inn X M, lane_3*).
   f. Return v128.
-8. If (vrelop__1 = LE), then:
+8. If (vrelop_ = LE), then:
   a. Let lane_1* be $lanes_(Fnn X M, v128_1).
   b. Let lane_2* be $lanes_(Fnn X M, v128_2).
   c. Let Inn be $isize^-1($size(Fnn)).
   d. Let lane_3* be $extend__(1, $sizenn(Fnn), S, $fle_($sizenn(Fnn), lane_1, lane_2))*.
   e. Let v128 be $invlanes_(Inn X M, lane_3*).
   f. Return v128.
-9. Assert: Due to validation, (vrelop__1 = GE).
+9. Assert: Due to validation, (vrelop_ = GE).
 10. Let lane_1* be $lanes_(Fnn X M, v128_1).
 11. Let lane_2* be $lanes_(Fnn X M, v128_2).
 12. Let Inn be $isize^-1($size(Fnn)).
@@ -12077,39 +12077,39 @@ vrelop_ lanetype_1 X M vrelop__1 v128_1 v128_2
 14. Let v128 be $invlanes_(Inn X M, lane_3*).
 15. Return v128.
 
-vcvtop__ lanetype_2 X M_1 lanetype_1 X M_2 vcvtop_1 lane__1
-1. If lanetype_2 is Jnn, then:
-  a. Let Jnn_1 be lanetype_2.
-  b. If lanetype_1 is Jnn, then:
-    1) Let Jnn_2 be lanetype_1.
-    2) If vcvtop_1 is EXTEND, then:
-      a) Let (EXTEND sx) be vcvtop_1.
-      b) Let iN_1 be lane__1.
+vcvtop__ lanetype' X M_1 lanetype X M_2 vcvtop lane_
+1. If lanetype' is Jnn, then:
+  a. Let Jnn_1 be lanetype'.
+  b. If lanetype is Jnn, then:
+    1) Let Jnn_2 be lanetype.
+    2) If vcvtop is EXTEND, then:
+      a) Let (EXTEND sx) be vcvtop.
+      b) Let iN_1 be lane_.
       c) Let iN_2 be $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), sx, iN_1).
       d) Return [iN_2].
-  c. If lanetype_1 is Fnn, then:
-    1) Let Fnn_2 be lanetype_1.
-    2) If vcvtop_1 is CONVERT, then:
-      a) Let (CONVERT sx) be vcvtop_1.
-      b) Let iN_1 be lane__1.
+  c. If lanetype is Fnn, then:
+    1) Let Fnn_2 be lanetype.
+    2) If vcvtop is CONVERT, then:
+      a) Let (CONVERT sx) be vcvtop.
+      b) Let iN_1 be lane_.
       c) Let fN_2 be $convert__($lsizenn1(Jnn_1), $lsizenn2(Fnn_2), sx, iN_1).
       d) Return [fN_2].
-2. Assert: Due to validation, lanetype_2 is Fnn.
-3. Let Fnn_1 be lanetype_2.
-4. If lanetype_1 is Inn, then:
-  a. Let Inn_2 be lanetype_1.
-  b. If vcvtop_1 is TRUNC_SAT, then:
-    1) Let (TRUNC_SAT sx) be vcvtop_1.
-    2) Let fN_1 be lane__1.
+2. Assert: Due to validation, lanetype' is Fnn.
+3. Let Fnn_1 be lanetype'.
+4. If lanetype is Inn, then:
+  a. Let Inn_2 be lanetype.
+  b. If vcvtop is TRUNC_SAT, then:
+    1) Let (TRUNC_SAT sx) be vcvtop.
+    2) Let fN_1 be lane_.
     3) Let iN_2? be $trunc_sat__($lsizenn1(Fnn_1), $lsizenn2(Inn_2), sx, fN_1).
     4) Return $list_(`lane_((Inn_2 : Inn <: lanetype)), iN_2?).
-5. Assert: Due to validation, lanetype_1 is Fnn.
-6. Let Fnn_2 be lanetype_1.
-7. Let fN_1 be lane__1.
-8. If (vcvtop_1 = DEMOTE), then:
+5. Assert: Due to validation, lanetype is Fnn.
+6. Let Fnn_2 be lanetype.
+7. Let fN_1 be lane_.
+8. If (vcvtop = DEMOTE), then:
   a. Let fN_2* be $demote__($lsizenn1(Fnn_1), $lsizenn2(Fnn_2), fN_1).
   b. Return fN_2*.
-9. Assert: Due to validation, (vcvtop_1 = PROMOTE).
+9. Assert: Due to validation, (vcvtop = PROMOTE).
 10. Let fN_2* be $promote__($lsizenn1(Fnn_1), $lsizenn2(Fnn_2), fN_1).
 11. Return fN_2*.
 
@@ -12119,81 +12119,81 @@ vextunop__ Inn_1 X M_1 Inn_2 X M_2 (EXTADD_PAIRWISE sx) c_1
 3. Let c be $invlanes_(Inn_1 X M_1, $iadd_($lsizenn1(Inn_1), cj_1, cj_2)*).
 4. Return c.
 
-vextbinop__ Inn_1 X M_1 Inn_2 X M_2 vextbinop__1 c_1 c_2
-1. If vextbinop__1 is EXTMUL, then:
-  a. Let (EXTMUL sx hf) be vextbinop__1.
+vextbinop__ Inn_1 X M_1 Inn_2 X M_2 vextbinop_ c_1 c_2
+1. If vextbinop_ is EXTMUL, then:
+  a. Let (EXTMUL sx hf) be vextbinop_.
   b. Let ci_1* be $lanes_(Inn_2 X M_2, c_1)[$half(hf, 0, M_1) : M_1].
   c. Let ci_2* be $lanes_(Inn_2 X M_2, c_2)[$half(hf, 0, M_1) : M_1].
   d. Let c be $invlanes_(Inn_1 X M_1, $imul_($lsizenn1(Inn_1), $extend__($lsizenn2(Inn_2), $lsizenn1(Inn_1), sx, ci_1), $extend__($lsizenn2(Inn_2), $lsizenn1(Inn_1), sx, ci_2))*).
   e. Return c.
-2. Assert: Due to validation, (vextbinop__1 = DOTS).
+2. Assert: Due to validation, (vextbinop_ = DOTS).
 3. Let ci_1* be $lanes_(Inn_2 X M_2, c_1).
 4. Let ci_2* be $lanes_(Inn_2 X M_2, c_2).
 5. Let [cj_1, cj_2]* be $concat__1^-1(`iN($lsizenn1((Inn_1 : Inn <: lanetype))), $imul_($lsizenn1(Inn_1), $extend__($lsizenn2(Inn_2), $lsizenn1(Inn_1), S, ci_1), $extend__($lsizenn2(Inn_2), $lsizenn1(Inn_1), S, ci_2))*).
 6. Let c be $invlanes_(Inn_1 X M_1, $iadd_($lsizenn1(Inn_1), cj_1, cj_2)*).
 7. Return c.
 
-vshiftop_ Jnn X M vshiftop__1 lane n
-1. If (vshiftop__1 = SHL), then:
+vshiftop_ Jnn X M vshiftop_ lane n
+1. If (vshiftop_ = SHL), then:
   a. Return $ishl_($lsizenn(Jnn), lane, n).
-2. Assert: Due to validation, vshiftop__1 is SHR.
-3. Let (SHR sx) be vshiftop__1.
+2. Assert: Due to validation, vshiftop_ is SHR.
+3. Let (SHR sx) be vshiftop_.
 4. Return $ishr_($lsizenn(Jnn), sx, lane, n).
 
-default_ valtype_1
-1. If (valtype_1 = I32), then:
+default_ valtype
+1. If (valtype = I32), then:
   a. Return (I32.CONST 0).
-2. If (valtype_1 = I64), then:
+2. If (valtype = I64), then:
   a. Return (I64.CONST 0).
-3. If (valtype_1 = F32), then:
+3. If (valtype = F32), then:
   a. Return (F32.CONST $fzero(32)).
-4. If (valtype_1 = F64), then:
+4. If (valtype = F64), then:
   a. Return (F64.CONST $fzero(64)).
-5. If (valtype_1 = V128), then:
+5. If (valtype = V128), then:
   a. Return (V128.CONST 0).
-6. If (valtype_1 = FUNCREF), then:
+6. If (valtype = FUNCREF), then:
   a. Return (REF.NULL FUNCREF).
-7. Assert: Due to validation, (valtype_1 = EXTERNREF).
+7. Assert: Due to validation, (valtype = EXTERNREF).
 8. Return (REF.NULL EXTERNREF).
 
-funcsxa externaddr_1*
-1. If (externaddr_1* = []), then:
+funcsxa externaddr*
+1. If (externaddr* = []), then:
   a. Return [].
-2. Let [externaddr_0] :: xv* be externaddr_1*.
+2. Let [externaddr_0] :: xv* be externaddr*.
 3. If externaddr_0 is FUNC, then:
   a. Let (FUNC fa) be externaddr_0.
   b. Return [fa] :: $funcsxa(xv*).
-4. Let [externaddr] :: xv* be externaddr_1*.
+4. Let [externaddr] :: xv* be externaddr*.
 5. Return $funcsxa(xv*).
 
-globalsxa externaddr_1*
-1. If (externaddr_1* = []), then:
+globalsxa externaddr*
+1. If (externaddr* = []), then:
   a. Return [].
-2. Let [externaddr_0] :: xv* be externaddr_1*.
+2. Let [externaddr_0] :: xv* be externaddr*.
 3. If externaddr_0 is GLOBAL, then:
   a. Let (GLOBAL ga) be externaddr_0.
   b. Return [ga] :: $globalsxa(xv*).
-4. Let [externaddr] :: xv* be externaddr_1*.
+4. Let [externaddr] :: xv* be externaddr*.
 5. Return $globalsxa(xv*).
 
-tablesxa externaddr_1*
-1. If (externaddr_1* = []), then:
+tablesxa externaddr*
+1. If (externaddr* = []), then:
   a. Return [].
-2. Let [externaddr_0] :: xv* be externaddr_1*.
+2. Let [externaddr_0] :: xv* be externaddr*.
 3. If externaddr_0 is TABLE, then:
   a. Let (TABLE ta) be externaddr_0.
   b. Return [ta] :: $tablesxa(xv*).
-4. Let [externaddr] :: xv* be externaddr_1*.
+4. Let [externaddr] :: xv* be externaddr*.
 5. Return $tablesxa(xv*).
 
-memsxa externaddr_1*
-1. If (externaddr_1* = []), then:
+memsxa externaddr*
+1. If (externaddr* = []), then:
   a. Return [].
-2. Let [externaddr_0] :: xv* be externaddr_1*.
+2. Let [externaddr_0] :: xv* be externaddr*.
 3. If externaddr_0 is MEM, then:
   a. Let (MEM ma) be externaddr_0.
   b. Return [ma] :: $memsxa(xv*).
-4. Let [externaddr] :: xv* be externaddr_1*.
+4. Let [externaddr] :: xv* be externaddr*.
 5. Return $memsxa(xv*).
 
 store (s, f)
@@ -12290,56 +12290,56 @@ growmemory mi n
   b. Return mi'.
 4. Fail.
 
-blocktype z blocktype_1
-1. If (blocktype_1 = (_RESULT ?())), then:
+blocktype z blocktype
+1. If (blocktype = (_RESULT ?())), then:
   a. Return [] -> [].
-2. If blocktype_1 is _RESULT, then:
-  a. Let (_RESULT valtype_0?) be blocktype_1.
+2. If blocktype is _RESULT, then:
+  a. Let (_RESULT valtype_0?) be blocktype.
   b. If valtype_0? is defined, then:
     1) Let ?(t) be valtype_0?.
     2) Return [] -> [t].
-3. Assert: Due to validation, blocktype_1 is _IDX.
-4. Let (_IDX x) be blocktype_1.
+3. Assert: Due to validation, blocktype is _IDX.
+4. Let (_IDX x) be blocktype.
 5. Return $type(z, x).
 
-funcs externaddr_1*
-1. If (externaddr_1* = []), then:
+funcs externaddr*
+1. If (externaddr* = []), then:
   a. Return [].
-2. Let [externaddr_0] :: externaddr'* be externaddr_1*.
+2. Let [externaddr_0] :: externaddr'* be externaddr*.
 3. If externaddr_0 is FUNC, then:
   a. Let (FUNC fa) be externaddr_0.
   b. Return [fa] :: $funcs(externaddr'*).
-4. Let [externaddr] :: externaddr'* be externaddr_1*.
+4. Let [externaddr] :: externaddr'* be externaddr*.
 5. Return $funcs(externaddr'*).
 
-globals externaddr_1*
-1. If (externaddr_1* = []), then:
+globals externaddr*
+1. If (externaddr* = []), then:
   a. Return [].
-2. Let [externaddr_0] :: externaddr'* be externaddr_1*.
+2. Let [externaddr_0] :: externaddr'* be externaddr*.
 3. If externaddr_0 is GLOBAL, then:
   a. Let (GLOBAL ga) be externaddr_0.
   b. Return [ga] :: $globals(externaddr'*).
-4. Let [externaddr] :: externaddr'* be externaddr_1*.
+4. Let [externaddr] :: externaddr'* be externaddr*.
 5. Return $globals(externaddr'*).
 
-tables externaddr_1*
-1. If (externaddr_1* = []), then:
+tables externaddr*
+1. If (externaddr* = []), then:
   a. Return [].
-2. Let [externaddr_0] :: externaddr'* be externaddr_1*.
+2. Let [externaddr_0] :: externaddr'* be externaddr*.
 3. If externaddr_0 is TABLE, then:
   a. Let (TABLE ta) be externaddr_0.
   b. Return [ta] :: $tables(externaddr'*).
-4. Let [externaddr] :: externaddr'* be externaddr_1*.
+4. Let [externaddr] :: externaddr'* be externaddr*.
 5. Return $tables(externaddr'*).
 
-mems externaddr_1*
-1. If (externaddr_1* = []), then:
+mems externaddr*
+1. If (externaddr* = []), then:
   a. Return [].
-2. Let [externaddr_0] :: externaddr'* be externaddr_1*.
+2. Let [externaddr_0] :: externaddr'* be externaddr*.
 3. If externaddr_0 is MEM, then:
   a. Let (MEM ma) be externaddr_0.
   b. Return [ma] :: $mems(externaddr'*).
-4. Let [externaddr] :: externaddr'* be externaddr_1*.
+4. Let [externaddr] :: externaddr'* be externaddr*.
 5. Return $mems(externaddr'*).
 
 allocfunc s moduleinst func
@@ -12349,10 +12349,10 @@ allocfunc s moduleinst func
 4. Append fi to the s.FUNCS.
 5. Return a.
 
-allocfuncs s moduleinst func_1*
-1. If (func_1* = []), then:
+allocfuncs s moduleinst func*
+1. If (func* = []), then:
   a. Return [].
-2. Let [func] :: func'* be func_1*.
+2. Let [func] :: func'* be func*.
 3. Let fa be $allocfunc(s, moduleinst, func).
 4. Let fa'* be $allocfuncs(s, moduleinst, func'*).
 5. Return [fa] :: fa'*.
@@ -12363,14 +12363,14 @@ allocglobal s globaltype val
 3. Append gi to the s.GLOBALS.
 4. Return a.
 
-allocglobals s globaltype_1* val_1*
-1. If (globaltype_1* = []), then:
-  a. Assert: Due to validation, (val_1* = []).
+allocglobals s globaltype* val*
+1. If (globaltype* = []), then:
+  a. Assert: Due to validation, (val* = []).
   b. Return [].
 2. Else:
-  a. Let [globaltype] :: globaltype'* be globaltype_1*.
-  b. Assert: Due to validation, (|val_1*| >= 1).
-  c. Let [val] :: val'* be val_1*.
+  a. Let [globaltype] :: globaltype'* be globaltype*.
+  b. Assert: Due to validation, (|val*| >= 1).
+  c. Let [val] :: val'* be val*.
   d. Let ga be $allocglobal(s, globaltype, val).
   e. Let ga'* be $allocglobals(s, globaltype'*, val'*).
   f. Return [ga] :: ga'*.
@@ -12381,10 +12381,10 @@ alloctable s (([ i .. j ]) rt)
 3. Append ti to the s.TABLES.
 4. Return a.
 
-alloctables s tabletype_1*
-1. If (tabletype_1* = []), then:
+alloctables s tabletype*
+1. If (tabletype* = []), then:
   a. Return [].
-2. Let [tabletype] :: tabletype'* be tabletype_1*.
+2. Let [tabletype] :: tabletype'* be tabletype*.
 3. Let ta be $alloctable(s, tabletype).
 4. Let ta'* be $alloctables(s, tabletype'*).
 5. Return [ta] :: ta'*.
@@ -12395,10 +12395,10 @@ allocmem s ([ i .. j ]) PAGE
 3. Append mi to the s.MEMS.
 4. Return a.
 
-allocmems s memtype_1*
-1. If (memtype_1* = []), then:
+allocmems s memtype*
+1. If (memtype* = []), then:
   a. Return [].
-2. Let [memtype] :: memtype'* be memtype_1*.
+2. Let [memtype] :: memtype'* be memtype*.
 3. Let ma be $allocmem(s, memtype).
 4. Let ma'* be $allocmems(s, memtype'*).
 5. Return [ma] :: ma'*.
@@ -12409,13 +12409,13 @@ allocelem s rt ref*
 3. Append ei to the s.ELEMS.
 4. Return a.
 
-allocelems s reftype_1* ref_1*
-1. If ((reftype_1* = []) /\ (ref_1* = [])), then:
+allocelems s reftype* ref''*
+1. If ((reftype* = []) /\ (ref''* = [])), then:
   a. Return [].
-2. Assert: Due to validation, (|ref_1*| >= 1).
-3. Let [ref*] :: ref'** be ref_1*.
-4. Assert: Due to validation, (|reftype_1*| >= 1).
-5. Let [rt] :: rt'* be reftype_1*.
+2. Assert: Due to validation, (|ref''*| >= 1).
+3. Let [ref*] :: ref'** be ref''*.
+4. Assert: Due to validation, (|reftype*| >= 1).
+5. Let [rt] :: rt'* be reftype*.
 6. Let ea be $allocelem(s, rt, ref*).
 7. Let ea'* be $allocelems(s, rt'*, ref'**).
 8. Return [ea] :: ea'*.
@@ -12426,26 +12426,26 @@ allocdata s byte*
 3. Append di to the s.DATAS.
 4. Return a.
 
-allocdatas s byte_1*
-1. If (byte_1* = []), then:
+allocdatas s byte''*
+1. If (byte''* = []), then:
   a. Return [].
-2. Let [byte*] :: byte'** be byte_1*.
+2. Let [byte*] :: byte'** be byte''*.
 3. Let da be $allocdata(s, byte*).
 4. Let da'* be $allocdatas(s, byte'**).
 5. Return [da] :: da'*.
 
-instexport fa* ga* ta* ma* (EXPORT name externidx_1)
-1. If externidx_1 is FUNC, then:
-  a. Let (FUNC x) be externidx_1.
+instexport fa* ga* ta* ma* (EXPORT name externidx)
+1. If externidx is FUNC, then:
+  a. Let (FUNC x) be externidx.
   b. Return { NAME: name; ADDR: (FUNC fa*[x]) }.
-2. If externidx_1 is GLOBAL, then:
-  a. Let (GLOBAL x) be externidx_1.
+2. If externidx is GLOBAL, then:
+  a. Let (GLOBAL x) be externidx.
   b. Return { NAME: name; ADDR: (GLOBAL ga*[x]) }.
-3. If externidx_1 is TABLE, then:
-  a. Let (TABLE x) be externidx_1.
+3. If externidx is TABLE, then:
+  a. Let (TABLE x) be externidx.
   b. Return { NAME: name; ADDR: (TABLE ta*[x]) }.
-4. Assert: Due to validation, externidx_1 is MEM.
-5. Let (MEM x) be externidx_1.
+4. Assert: Due to validation, externidx is MEM.
+5. Let (MEM x) be externidx.
 6. Return { NAME: name; ADDR: (MEM ma*[x]) }.
 
 allocmodule s module externaddr* val* ref**
@@ -12482,21 +12482,21 @@ allocmodule s module externaddr* val* ref**
 31. Assert: Due to validation, (dataaddr_0* = da*).
 32. Return moduleinst.
 
-runelem (ELEM reftype expr* elemmode_1) i
-1. If (elemmode_1 = PASSIVE), then:
+runelem (ELEM reftype expr* elemmode) i
+1. If (elemmode = PASSIVE), then:
   a. Return [].
-2. If (elemmode_1 = DECLARE), then:
+2. If (elemmode = DECLARE), then:
   a. Return [(ELEM.DROP i)].
-3. Assert: Due to validation, elemmode_1 is ACTIVE.
-4. Let (ACTIVE x instr*) be elemmode_1.
+3. Assert: Due to validation, elemmode is ACTIVE.
+4. Let (ACTIVE x instr*) be elemmode.
 5. Let n be |expr*|.
 6. Return instr* :: [(I32.CONST 0), (I32.CONST n), (TABLE.INIT x i), (ELEM.DROP i)].
 
-rundata (DATA byte* datamode_1) i
-1. If (datamode_1 = PASSIVE), then:
+rundata (DATA byte* datamode) i
+1. If (datamode = PASSIVE), then:
   a. Return [].
-2. Assert: Due to validation, datamode_1 is ACTIVE.
-3. Let (ACTIVE memidx_0 instr*) be datamode_1.
+2. Assert: Due to validation, datamode is ACTIVE.
+3. Let (ACTIVE memidx_0 instr*) be datamode.
 4. Assert: Due to validation, (memidx_0 = 0).
 5. Let n be |byte*|.
 6. Return instr* :: [(I32.CONST 0), (I32.CONST n), (MEMORY.INIT i), (DATA.DROP i)].
@@ -12574,23 +12574,23 @@ The vector type :math:`{\mathit{vectype}}` is always :ref:`valid <valid-val>`.
 
 
 
-The heap type :math:`{\mathit{heaptype}}_1` is :ref:`valid <valid-val>` if:
+The heap type :math:`{\mathit{heaptype}}` is :ref:`valid <valid-val>` if:
 
 
    * Either:
 
-      * The heap type :math:`{\mathit{heaptype}}_1` is equal to :math:`{\mathit{absheaptype}}`.
+      * The heap type :math:`{\mathit{heaptype}}` is equal to :math:`{\mathit{absheaptype}}`.
 
    * Or:
 
-      * The heap type :math:`{\mathit{heaptype}}_1` is equal to :math:`{\mathit{typeidx}}`.
+      * The heap type :math:`{\mathit{heaptype}}` is equal to :math:`{\mathit{typeidx}}`.
 
       * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
 
       * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is equal to :math:`{\mathit{dt}}`.
    * Or:
 
-      * The heap type :math:`{\mathit{heaptype}}_1` is equal to :math:`(\mathsf{rec}~i)`.
+      * The heap type :math:`{\mathit{heaptype}}` is equal to :math:`(\mathsf{rec}~i)`.
 
       * The sub type :math:`C{.}\mathsf{recs}{}[i]` exists.
 
@@ -12632,28 +12632,28 @@ The reference type :math:`(\mathsf{ref}~{\mathsf{null}^?}~{\mathit{heaptype}})` 
 
 
 
-The value type :math:`{\mathit{valtype}}_1` is :ref:`valid <valid-val>` if:
+The value type :math:`{\mathit{valtype}}` is :ref:`valid <valid-val>` if:
 
 
    * Either:
 
-      * The value type :math:`{\mathit{valtype}}_1` is equal to :math:`{\mathit{numtype}}`.
+      * The value type :math:`{\mathit{valtype}}` is equal to :math:`{\mathit{numtype}}`.
 
       * The number type :math:`{\mathit{numtype}}` is :ref:`valid <valid-val>`.
 
    * Or:
 
-      * The value type :math:`{\mathit{valtype}}_1` is equal to :math:`{\mathit{vectype}}`.
+      * The value type :math:`{\mathit{valtype}}` is equal to :math:`{\mathit{vectype}}`.
 
       * The vector type :math:`{\mathit{vectype}}` is :ref:`valid <valid-val>`.
    * Or:
 
-      * The value type :math:`{\mathit{valtype}}_1` is equal to :math:`{\mathit{reftype}}`.
+      * The value type :math:`{\mathit{valtype}}` is equal to :math:`{\mathit{reftype}}`.
 
       * The reference type :math:`{\mathit{reftype}}` is :ref:`valid <valid-val>`.
    * Or:
 
-      * The value type :math:`{\mathit{valtype}}_1` is equal to :math:`\mathsf{bot}`.
+      * The value type :math:`{\mathit{valtype}}` is equal to :math:`\mathsf{bot}`.
 
 
 
@@ -12722,18 +12722,18 @@ The packed type :math:`{\mathit{packtype}}` is always :ref:`valid <valid-val>`.
 
 
 
-The storage type :math:`{\mathit{storagetype}}_1` is :ref:`valid <valid-val>` if:
+The storage type :math:`{\mathit{storagetype}}` is :ref:`valid <valid-val>` if:
 
 
    * Either:
 
-      * The storage type :math:`{\mathit{storagetype}}_1` is equal to :math:`{\mathit{valtype}}`.
+      * The storage type :math:`{\mathit{storagetype}}` is equal to :math:`{\mathit{valtype}}`.
 
       * The value type :math:`{\mathit{valtype}}` is :ref:`valid <valid-val>`.
 
    * Or:
 
-      * The storage type :math:`{\mathit{storagetype}}_1` is equal to :math:`{\mathit{packtype}}`.
+      * The storage type :math:`{\mathit{storagetype}}` is equal to :math:`{\mathit{packtype}}`.
 
       * The packed type :math:`{\mathit{packtype}}` is :ref:`valid <valid-val>`.
 
@@ -12774,12 +12774,12 @@ The function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is :ref:`valid <vali
 
 
 
-The composite type :math:`{\mathit{comptype}}_1` is :ref:`valid <valid-val>` if:
+The composite type :math:`{\mathit{comptype}}` is :ref:`valid <valid-val>` if:
 
 
    * Either:
 
-      * The composite type :math:`{\mathit{comptype}}_1` is equal to :math:`(\mathsf{struct}~{{\mathit{fieldtype}}^\ast})`.
+      * The composite type :math:`{\mathit{comptype}}` is equal to :math:`(\mathsf{struct}~{{\mathit{fieldtype}}^\ast})`.
 
       * For all :math:`{\mathit{fieldtype}}` in :math:`{{\mathit{fieldtype}}^\ast}`:
 
@@ -12787,12 +12787,12 @@ The composite type :math:`{\mathit{comptype}}_1` is :ref:`valid <valid-val>` if:
 
    * Or:
 
-      * The composite type :math:`{\mathit{comptype}}_1` is equal to :math:`(\mathsf{array}~{\mathit{fieldtype}})`.
+      * The composite type :math:`{\mathit{comptype}}` is equal to :math:`(\mathsf{array}~{\mathit{fieldtype}})`.
 
       * The field type :math:`{\mathit{fieldtype}}` is :ref:`valid <valid-val>`.
    * Or:
 
-      * The composite type :math:`{\mathit{comptype}}_1` is equal to :math:`(\mathsf{func}~{\mathit{functype}})`.
+      * The composite type :math:`{\mathit{comptype}}` is equal to :math:`(\mathsf{func}~{\mathit{functype}})`.
 
       * The function type :math:`{\mathit{functype}}` is :ref:`valid <valid-val>`.
 
@@ -12873,20 +12873,20 @@ The defined type :math:`{\mathit{deftype}}_1` :ref:`matches <match>` the defined
 
 
 
-The heap type :math:`{\mathit{heaptype}}_1` :ref:`matches <match>` the heap type :math:`{\mathit{heaptype}}_2` if:
+The heap type :math:`{\mathit{heaptype}}` :ref:`matches <match>` the heap type :math:`{\mathit{heaptype}'}` if:
 
 
    * Either:
 
-      * The heap type :math:`{\mathit{heaptype}}_1` is equal to :math:`{\mathit{heaptype}}`.
+      * The heap type :math:`{\mathit{heaptype}}` is equal to :math:`{\mathit{heaptype}}`.
 
-      * The heap type :math:`{\mathit{heaptype}}_2` is equal to :math:`{\mathit{heaptype}}`.
+      * The heap type :math:`{\mathit{heaptype}'}` is equal to :math:`{\mathit{heaptype}}`.
 
    * Or:
 
-      * The heap type :math:`{\mathit{heaptype}}_1` is equal to :math:`{\mathit{heaptype}}_1`.
+      * The heap type :math:`{\mathit{heaptype}}` is equal to :math:`{\mathit{heaptype}}_1`.
 
-      * The heap type :math:`{\mathit{heaptype}}_2` is equal to :math:`{\mathit{heaptype}}_2`.
+      * The heap type :math:`{\mathit{heaptype}'}` is equal to :math:`{\mathit{heaptype}}_2`.
 
       * The heap type :math:`{\mathit{heaptype}'}` is :ref:`valid <valid-val>`.
 
@@ -12895,75 +12895,75 @@ The heap type :math:`{\mathit{heaptype}}_1` :ref:`matches <match>` the heap type
       * The heap type :math:`{\mathit{heaptype}'}` :ref:`matches <match>` the heap type :math:`{\mathit{heaptype}}_2`.
    * Or:
 
-      * The heap type :math:`{\mathit{heaptype}}_1` is equal to :math:`\mathsf{eq}`.
+      * The heap type :math:`{\mathit{heaptype}}` is equal to :math:`\mathsf{eq}`.
 
-      * The heap type :math:`{\mathit{heaptype}}_2` is equal to :math:`\mathsf{any}`.
+      * The heap type :math:`{\mathit{heaptype}'}` is equal to :math:`\mathsf{any}`.
    * Or:
 
-      * The heap type :math:`{\mathit{heaptype}}_1` is equal to :math:`\mathsf{i{\scriptstyle 31}}`.
+      * The heap type :math:`{\mathit{heaptype}}` is equal to :math:`\mathsf{i{\scriptstyle 31}}`.
 
-      * The heap type :math:`{\mathit{heaptype}}_2` is equal to :math:`\mathsf{eq}`.
+      * The heap type :math:`{\mathit{heaptype}'}` is equal to :math:`\mathsf{eq}`.
    * Or:
 
-      * The heap type :math:`{\mathit{heaptype}}_1` is equal to :math:`\mathsf{struct}`.
+      * The heap type :math:`{\mathit{heaptype}}` is equal to :math:`\mathsf{struct}`.
 
-      * The heap type :math:`{\mathit{heaptype}}_2` is equal to :math:`\mathsf{eq}`.
+      * The heap type :math:`{\mathit{heaptype}'}` is equal to :math:`\mathsf{eq}`.
    * Or:
 
-      * The heap type :math:`{\mathit{heaptype}}_1` is equal to :math:`\mathsf{array}`.
+      * The heap type :math:`{\mathit{heaptype}}` is equal to :math:`\mathsf{array}`.
 
-      * The heap type :math:`{\mathit{heaptype}}_2` is equal to :math:`\mathsf{eq}`.
+      * The heap type :math:`{\mathit{heaptype}'}` is equal to :math:`\mathsf{eq}`.
    * Or:
 
-      * The heap type :math:`{\mathit{heaptype}}_1` is equal to :math:`{\mathit{deftype}}`.
+      * The heap type :math:`{\mathit{heaptype}}` is equal to :math:`{\mathit{deftype}}`.
 
-      * The heap type :math:`{\mathit{heaptype}}_2` is equal to :math:`\mathsf{struct}`.
+      * The heap type :math:`{\mathit{heaptype}'}` is equal to :math:`\mathsf{struct}`.
 
       * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`{\mathit{deftype}}` is the composite type :math:`(\mathsf{struct}~{{\mathit{fieldtype}}^\ast})`.
    * Or:
 
-      * The heap type :math:`{\mathit{heaptype}}_1` is equal to :math:`{\mathit{deftype}}`.
+      * The heap type :math:`{\mathit{heaptype}}` is equal to :math:`{\mathit{deftype}}`.
 
-      * The heap type :math:`{\mathit{heaptype}}_2` is equal to :math:`\mathsf{array}`.
+      * The heap type :math:`{\mathit{heaptype}'}` is equal to :math:`\mathsf{array}`.
 
       * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`{\mathit{deftype}}` is the composite type :math:`(\mathsf{array}~{\mathit{fieldtype}})`.
    * Or:
 
-      * The heap type :math:`{\mathit{heaptype}}_1` is equal to :math:`{\mathit{deftype}}`.
+      * The heap type :math:`{\mathit{heaptype}}` is equal to :math:`{\mathit{deftype}}`.
 
-      * The heap type :math:`{\mathit{heaptype}}_2` is equal to :math:`\mathsf{func}`.
+      * The heap type :math:`{\mathit{heaptype}'}` is equal to :math:`\mathsf{func}`.
 
       * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`{\mathit{deftype}}` is the composite type :math:`(\mathsf{func}~{\mathit{functype}})`.
    * Or:
 
-      * The heap type :math:`{\mathit{heaptype}}_1` is equal to :math:`{\mathit{deftype}}_1`.
+      * The heap type :math:`{\mathit{heaptype}}` is equal to :math:`{\mathit{deftype}}_1`.
 
-      * The heap type :math:`{\mathit{heaptype}}_2` is equal to :math:`{\mathit{deftype}}_2`.
+      * The heap type :math:`{\mathit{heaptype}'}` is equal to :math:`{\mathit{deftype}}_2`.
 
       * The defined type :math:`{\mathit{deftype}}_1` :ref:`matches <match>` the defined type :math:`{\mathit{deftype}}_2`.
    * Or:
 
-      * The heap type :math:`{\mathit{heaptype}}_1` is equal to :math:`{\mathit{typeidx}}`.
+      * The heap type :math:`{\mathit{heaptype}}` is equal to :math:`{\mathit{typeidx}}`.
 
-      * The heap type :math:`{\mathit{heaptype}}_2` is equal to :math:`{\mathit{heaptype}}`.
+      * The heap type :math:`{\mathit{heaptype}'}` is equal to :math:`{\mathit{heaptype}}`.
 
       * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
 
       * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` :ref:`matches <match>` the heap type :math:`{\mathit{heaptype}}`.
    * Or:
 
-      * The heap type :math:`{\mathit{heaptype}}_1` is equal to :math:`{\mathit{heaptype}}`.
+      * The heap type :math:`{\mathit{heaptype}}` is equal to :math:`{\mathit{heaptype}}`.
 
-      * The heap type :math:`{\mathit{heaptype}}_2` is equal to :math:`{\mathit{typeidx}}`.
+      * The heap type :math:`{\mathit{heaptype}'}` is equal to :math:`{\mathit{typeidx}}`.
 
       * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
 
       * The heap type :math:`{\mathit{heaptype}}` :ref:`matches <match>` the defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]`.
    * Or:
 
-      * The heap type :math:`{\mathit{heaptype}}_1` is equal to :math:`(\mathsf{rec}~i)`.
+      * The heap type :math:`{\mathit{heaptype}}` is equal to :math:`(\mathsf{rec}~i)`.
 
-      * The heap type :math:`{\mathit{heaptype}}_2` is equal to :math:`{{\mathit{typeuse}}^\ast}{}[j]`.
+      * The heap type :math:`{\mathit{heaptype}'}` is equal to :math:`{{\mathit{typeuse}}^\ast}{}[j]`.
 
       * :math:`{|{{\mathit{typeuse}}^\ast}|}` is greater than :math:`j`.
 
@@ -12972,30 +12972,30 @@ The heap type :math:`{\mathit{heaptype}}_1` :ref:`matches <match>` the heap type
       * The sub type :math:`C{.}\mathsf{recs}{}[i]` is equal to :math:`(\mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~{\mathit{ct}})`.
    * Or:
 
-      * The heap type :math:`{\mathit{heaptype}}_1` is equal to :math:`\mathsf{none}`.
+      * The heap type :math:`{\mathit{heaptype}}` is equal to :math:`\mathsf{none}`.
 
-      * The heap type :math:`{\mathit{heaptype}}_2` is equal to :math:`{\mathit{heaptype}}`.
+      * The heap type :math:`{\mathit{heaptype}'}` is equal to :math:`{\mathit{heaptype}}`.
 
       * The heap type :math:`{\mathit{heaptype}}` :ref:`matches <match>` the heap type :math:`\mathsf{any}`.
    * Or:
 
-      * The heap type :math:`{\mathit{heaptype}}_1` is equal to :math:`\mathsf{nofunc}`.
+      * The heap type :math:`{\mathit{heaptype}}` is equal to :math:`\mathsf{nofunc}`.
 
-      * The heap type :math:`{\mathit{heaptype}}_2` is equal to :math:`{\mathit{heaptype}}`.
+      * The heap type :math:`{\mathit{heaptype}'}` is equal to :math:`{\mathit{heaptype}}`.
 
       * The heap type :math:`{\mathit{heaptype}}` :ref:`matches <match>` the heap type :math:`\mathsf{func}`.
    * Or:
 
-      * The heap type :math:`{\mathit{heaptype}}_1` is equal to :math:`\mathsf{noextern}`.
+      * The heap type :math:`{\mathit{heaptype}}` is equal to :math:`\mathsf{noextern}`.
 
-      * The heap type :math:`{\mathit{heaptype}}_2` is equal to :math:`{\mathit{heaptype}}`.
+      * The heap type :math:`{\mathit{heaptype}'}` is equal to :math:`{\mathit{heaptype}}`.
 
       * The heap type :math:`{\mathit{heaptype}}` :ref:`matches <match>` the heap type :math:`\mathsf{extern}`.
    * Or:
 
-      * The heap type :math:`{\mathit{heaptype}}_1` is equal to :math:`\mathsf{bot}`.
+      * The heap type :math:`{\mathit{heaptype}}` is equal to :math:`\mathsf{bot}`.
 
-      * The heap type :math:`{\mathit{heaptype}}_2` is equal to :math:`{\mathit{heaptype}}`.
+      * The heap type :math:`{\mathit{heaptype}'}` is equal to :math:`{\mathit{heaptype}}`.
 
 
 
@@ -13130,22 +13130,22 @@ The heap type :math:`\mathsf{bot}` :ref:`matches <match>` the heap type :math:`{
 
 
 
-The reference type :math:`(\mathsf{ref}~{{\mathsf{null}^?}}_1~{\mathit{ht}}_1)` :ref:`matches <match>` the reference type :math:`(\mathsf{ref}~{{\mathsf{null}^?}}_2~{\mathit{ht}}_2)` if:
+The reference type :math:`(\mathsf{ref}~{\mathit{NULL}}_{\mathit{opt}}~{\mathit{ht}}_1)` :ref:`matches <match>` the reference type :math:`(\mathsf{ref}~{\mathit{NULL}}_{\mathit{opt}'}~{\mathit{ht}}_2)` if:
 
 
    * The heap type :math:`{\mathit{ht}}_1` :ref:`matches <match>` the heap type :math:`{\mathit{ht}}_2`.
 
    * Either:
 
-      * :math:`{{\mathsf{null}^?}}_1` is absent.
+      * :math:`{\mathit{NULL}}_{\mathit{opt}}` is absent.
 
-      * :math:`{{\mathsf{null}^?}}_2` is absent.
+      * :math:`{\mathit{NULL}}_{\mathit{opt}'}` is absent.
 
    * Or:
 
-      * :math:`{{\mathsf{null}^?}}_1` is equal to :math:`{\mathsf{null}^?}`.
+      * :math:`{\mathit{NULL}}_{\mathit{opt}}` is equal to :math:`{\mathsf{null}^?}`.
 
-      * :math:`{{\mathsf{null}^?}}_2` is equal to :math:`\mathsf{null}`.
+      * :math:`{\mathit{NULL}}_{\mathit{opt}'}` is equal to :math:`\mathsf{null}`.
 
 
 
@@ -13171,36 +13171,36 @@ The vector type :math:`{\mathit{vectype}}` :ref:`matches <match>` only itself.
 
 
 
-The value type :math:`{\mathit{valtype}}_1` :ref:`matches <match>` the value type :math:`{\mathit{valtype}}_2` if:
+The value type :math:`{\mathit{valtype}}` :ref:`matches <match>` the value type :math:`{\mathit{valtype}'}` if:
 
 
    * Either:
 
-      * The value type :math:`{\mathit{valtype}}_1` is equal to :math:`{\mathit{numtype}}_1`.
+      * The value type :math:`{\mathit{valtype}}` is equal to :math:`{\mathit{numtype}}_1`.
 
-      * The value type :math:`{\mathit{valtype}}_2` is equal to :math:`{\mathit{numtype}}_2`.
+      * The value type :math:`{\mathit{valtype}'}` is equal to :math:`{\mathit{numtype}}_2`.
 
       * The number type :math:`{\mathit{numtype}}_1` :ref:`matches <match>` the number type :math:`{\mathit{numtype}}_2`.
 
    * Or:
 
-      * The value type :math:`{\mathit{valtype}}_1` is equal to :math:`{\mathit{vectype}}_1`.
+      * The value type :math:`{\mathit{valtype}}` is equal to :math:`{\mathit{vectype}}_1`.
 
-      * The value type :math:`{\mathit{valtype}}_2` is equal to :math:`{\mathit{vectype}}_2`.
+      * The value type :math:`{\mathit{valtype}'}` is equal to :math:`{\mathit{vectype}}_2`.
 
       * The vector type :math:`{\mathit{vectype}}_1` :ref:`matches <match>` the vector type :math:`{\mathit{vectype}}_2`.
    * Or:
 
-      * The value type :math:`{\mathit{valtype}}_1` is equal to :math:`{\mathit{reftype}}_1`.
+      * The value type :math:`{\mathit{valtype}}` is equal to :math:`{\mathit{reftype}}_1`.
 
-      * The value type :math:`{\mathit{valtype}}_2` is equal to :math:`{\mathit{reftype}}_2`.
+      * The value type :math:`{\mathit{valtype}'}` is equal to :math:`{\mathit{reftype}}_2`.
 
       * The reference type :math:`{\mathit{reftype}}_1` :ref:`matches <match>` the reference type :math:`{\mathit{reftype}}_2`.
    * Or:
 
-      * The value type :math:`{\mathit{valtype}}_1` is equal to :math:`\mathsf{bot}`.
+      * The value type :math:`{\mathit{valtype}}` is equal to :math:`\mathsf{bot}`.
 
-      * The value type :math:`{\mathit{valtype}}_2` is equal to :math:`{\mathit{valtype}}`.
+      * The value type :math:`{\mathit{valtype}'}` is equal to :math:`{\mathit{valtype}}`.
 
 
 
@@ -13234,22 +13234,22 @@ The value type :math:`\mathsf{bot}` :ref:`matches <match>` the value type :math:
 
 
 
-The storage type :math:`{\mathit{storagetype}}_1` :ref:`matches <match>` the storage type :math:`{\mathit{storagetype}}_2` if:
+The storage type :math:`{\mathit{storagetype}}` :ref:`matches <match>` the storage type :math:`{\mathit{storagetype}'}` if:
 
 
    * Either:
 
-      * The storage type :math:`{\mathit{storagetype}}_1` is equal to :math:`{\mathit{valtype}}_1`.
+      * The storage type :math:`{\mathit{storagetype}}` is equal to :math:`{\mathit{valtype}}_1`.
 
-      * The storage type :math:`{\mathit{storagetype}}_2` is equal to :math:`{\mathit{valtype}}_2`.
+      * The storage type :math:`{\mathit{storagetype}'}` is equal to :math:`{\mathit{valtype}}_2`.
 
       * The value type :math:`{\mathit{valtype}}_1` :ref:`matches <match>` the value type :math:`{\mathit{valtype}}_2`.
 
    * Or:
 
-      * The storage type :math:`{\mathit{storagetype}}_1` is equal to :math:`{\mathit{packtype}}_1`.
+      * The storage type :math:`{\mathit{storagetype}}` is equal to :math:`{\mathit{packtype}}_1`.
 
-      * The storage type :math:`{\mathit{storagetype}}_2` is equal to :math:`{\mathit{packtype}}_2`.
+      * The storage type :math:`{\mathit{storagetype}'}` is equal to :math:`{\mathit{packtype}}_2`.
 
       * The packed type :math:`{\mathit{packtype}}_1` :ref:`matches <match>` the packed type :math:`{\mathit{packtype}}_2`.
 
@@ -13272,22 +13272,22 @@ The storage type :math:`{\mathit{packtype}}_1` :ref:`matches <match>` the storag
 
 
 
-The field type :math:`({{\mathsf{mut}^?}}_1~{\mathit{zt}}_1)` :ref:`matches <match>` the field type :math:`({{\mathsf{mut}^?}}_2~{\mathit{zt}}_2)` if:
+The field type :math:`({\mathit{MUT}}_{\mathit{opt}}~{\mathit{zt}}_1)` :ref:`matches <match>` the field type :math:`({\mathit{MUT}}_{\mathit{opt}'}~{\mathit{zt}}_2)` if:
 
 
    * The storage type :math:`{\mathit{zt}}_1` :ref:`matches <match>` the storage type :math:`{\mathit{zt}}_2`.
 
    * Either:
 
-      * :math:`{{\mathsf{mut}^?}}_1` is absent.
+      * :math:`{\mathit{MUT}}_{\mathit{opt}}` is absent.
 
-      * :math:`{{\mathsf{mut}^?}}_2` is absent.
+      * :math:`{\mathit{MUT}}_{\mathit{opt}'}` is absent.
 
    * Or:
 
-      * :math:`{{\mathsf{mut}^?}}_1` is equal to :math:`\mathsf{mut}`.
+      * :math:`{\mathit{MUT}}_{\mathit{opt}}` is equal to :math:`\mathsf{mut}`.
 
-      * :math:`{{\mathsf{mut}^?}}_2` is equal to :math:`\mathsf{mut}`.
+      * :math:`{\mathit{MUT}}_{\mathit{opt}'}` is equal to :math:`\mathsf{mut}`.
 
       * The storage type :math:`{\mathit{zt}}_2` :ref:`matches <match>` the storage type :math:`{\mathit{zt}}_1`.
 
@@ -13334,14 +13334,14 @@ The function type :math:`{t_{11}^\ast}~\rightarrow~{t_{12}^\ast}` :ref:`matches 
 
 
 
-The composite type :math:`{\mathit{comptype}}_1` :ref:`matches <match>` the composite type :math:`{\mathit{comptype}}_2` if:
+The composite type :math:`{\mathit{comptype}}` :ref:`matches <match>` the composite type :math:`{\mathit{comptype}'}` if:
 
 
    * Either:
 
-      * The composite type :math:`{\mathit{comptype}}_1` is equal to :math:`(\mathsf{struct}~{{\mathit{yt}}_1^\ast}~{\mathit{yt}'}_1)`.
+      * The composite type :math:`{\mathit{comptype}}` is equal to :math:`(\mathsf{struct}~{{\mathit{yt}}_1^\ast}~{\mathit{yt}'}_1)`.
 
-      * The composite type :math:`{\mathit{comptype}}_2` is equal to :math:`(\mathsf{struct}~{{\mathit{yt}}_2^\ast})`.
+      * The composite type :math:`{\mathit{comptype}'}` is equal to :math:`(\mathsf{struct}~{{\mathit{yt}}_2^\ast})`.
 
       * :math:`{|{{\mathit{yt}}_1^\ast}|}` is equal to :math:`{|{{\mathit{yt}}_2^\ast}|}`.
 
@@ -13351,16 +13351,16 @@ The composite type :math:`{\mathit{comptype}}_1` :ref:`matches <match>` the comp
 
    * Or:
 
-      * The composite type :math:`{\mathit{comptype}}_1` is equal to :math:`(\mathsf{array}~{\mathit{yt}}_1)`.
+      * The composite type :math:`{\mathit{comptype}}` is equal to :math:`(\mathsf{array}~{\mathit{yt}}_1)`.
 
-      * The composite type :math:`{\mathit{comptype}}_2` is equal to :math:`(\mathsf{array}~{\mathit{yt}}_2)`.
+      * The composite type :math:`{\mathit{comptype}'}` is equal to :math:`(\mathsf{array}~{\mathit{yt}}_2)`.
 
       * The field type :math:`{\mathit{yt}}_1` :ref:`matches <match>` the field type :math:`{\mathit{yt}}_2`.
    * Or:
 
-      * The composite type :math:`{\mathit{comptype}}_1` is equal to :math:`(\mathsf{func}~{\mathit{ft}}_1)`.
+      * The composite type :math:`{\mathit{comptype}}` is equal to :math:`(\mathsf{func}~{\mathit{ft}}_1)`.
 
-      * The composite type :math:`{\mathit{comptype}}_2` is equal to :math:`(\mathsf{func}~{\mathit{ft}}_2)`.
+      * The composite type :math:`{\mathit{comptype}'}` is equal to :math:`(\mathsf{func}~{\mathit{ft}}_2)`.
 
       * The function type :math:`{\mathit{ft}}_1` :ref:`matches <match>` the function type :math:`{\mathit{ft}}_2`.
 
@@ -13451,16 +13451,16 @@ The sub type :math:`(\mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~{
 
 
 
-The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}_1^\ast})` is :ref:`valid <valid-val>` with :math:`({\mathsf{ok}}{(x, i)})` if:
+The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}'}^\ast})` is :ref:`valid <valid-val>` with :math:`({\mathsf{ok}}{(x, i)})` if:
 
 
    * Either:
 
-      * The sub type sequence :math:`{{\mathit{subtype}}_1^\ast}` is equal to :math:`\epsilon`.
+      * The sub type sequence :math:`{{\mathit{subtype}'}^\ast}` is equal to :math:`\epsilon`.
 
    * Or:
 
-      * The sub type sequence :math:`{{\mathit{subtype}}_1^\ast}` is equal to :math:`{\mathit{subtype}}_1~{{\mathit{subtype}}^\ast}`.
+      * The sub type sequence :math:`{{\mathit{subtype}'}^\ast}` is equal to :math:`{\mathit{subtype}}_1~{{\mathit{subtype}}^\ast}`.
 
       * The sub type :math:`{\mathit{subtype}}_1` is :ref:`valid <valid-val>` with :math:`({\mathsf{ok}}{(x, i)})`.
 
@@ -13484,16 +13484,16 @@ The recursive type :math:`(\mathsf{rec}~{\mathit{subtype}}_1~{{\mathit{subtype}}
 
 
 
-The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}_1^\ast})` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x)})` if:
+The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}'}^\ast})` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x)})` if:
 
 
    * Either:
 
-      * The sub type sequence :math:`{{\mathit{subtype}}_1^\ast}` is equal to :math:`\epsilon`.
+      * The sub type sequence :math:`{{\mathit{subtype}'}^\ast}` is equal to :math:`\epsilon`.
 
    * Or:
 
-      * The sub type sequence :math:`{{\mathit{subtype}}_1^\ast}` is equal to :math:`{\mathit{subtype}}_1~{{\mathit{subtype}}^\ast}`.
+      * The sub type sequence :math:`{{\mathit{subtype}'}^\ast}` is equal to :math:`{\mathit{subtype}}_1~{{\mathit{subtype}}^\ast}`.
 
       * The sub type :math:`{\mathit{subtype}}_1` is :ref:`valid <valid-val>` with :math:`({\mathsf{ok}}{(x)})`.
 
@@ -13575,12 +13575,12 @@ The tag type :math:`{\mathit{deftype}}` is :ref:`valid <valid-val>` if:
 
 
 
-The external type :math:`{\mathit{externtype}}_1` is :ref:`valid <valid-val>` if:
+The external type :math:`{\mathit{externtype}}` is :ref:`valid <valid-val>` if:
 
 
    * Either:
 
-      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{func}~{\mathit{deftype}})`.
+      * The external type :math:`{\mathit{externtype}}` is equal to :math:`(\mathsf{func}~{\mathit{deftype}})`.
 
       * The defined type :math:`{\mathit{deftype}}` is :ref:`valid <valid-val>`.
 
@@ -13588,22 +13588,22 @@ The external type :math:`{\mathit{externtype}}_1` is :ref:`valid <valid-val>` if
 
    * Or:
 
-      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{global}~{\mathit{globaltype}})`.
+      * The external type :math:`{\mathit{externtype}}` is equal to :math:`(\mathsf{global}~{\mathit{globaltype}})`.
 
       * The global type :math:`{\mathit{globaltype}}` is :ref:`valid <valid-val>`.
    * Or:
 
-      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{table}~{\mathit{tabletype}})`.
+      * The external type :math:`{\mathit{externtype}}` is equal to :math:`(\mathsf{table}~{\mathit{tabletype}})`.
 
       * The table type :math:`{\mathit{tabletype}}` is :ref:`valid <valid-val>`.
    * Or:
 
-      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{mem}~{\mathit{memtype}})`.
+      * The external type :math:`{\mathit{externtype}}` is equal to :math:`(\mathsf{mem}~{\mathit{memtype}})`.
 
       * The memory type :math:`{\mathit{memtype}}` is :ref:`valid <valid-val>`.
    * Or:
 
-      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{tag}~{\mathit{tagtype}})`.
+      * The external type :math:`{\mathit{externtype}}` is equal to :math:`(\mathsf{tag}~{\mathit{tagtype}})`.
 
       * The tag type :math:`{\mathit{tagtype}}` is :ref:`valid <valid-val>`.
 
@@ -13684,22 +13684,22 @@ The limits range :math:`{}[~n_1~..~m_1~]` :ref:`matches <match>` the limits rang
 
 
 
-The global type :math:`({{\mathsf{mut}^?}}_1~{\mathit{valtype}}_1)` :ref:`matches <match>` the global type :math:`({{\mathsf{mut}^?}}_2~{\mathit{valtype}}_2)` if:
+The global type :math:`({\mathit{MUT}}_{\mathit{opt}}~{\mathit{valtype}}_1)` :ref:`matches <match>` the global type :math:`({\mathit{MUT}}_{\mathit{opt}'}~{\mathit{valtype}}_2)` if:
 
 
    * The value type :math:`{\mathit{valtype}}_1` :ref:`matches <match>` the value type :math:`{\mathit{valtype}}_2`.
 
    * Either:
 
-      * :math:`{{\mathsf{mut}^?}}_1` is absent.
+      * :math:`{\mathit{MUT}}_{\mathit{opt}}` is absent.
 
-      * :math:`{{\mathsf{mut}^?}}_2` is absent.
+      * :math:`{\mathit{MUT}}_{\mathit{opt}'}` is absent.
 
    * Or:
 
-      * :math:`{{\mathsf{mut}^?}}_1` is equal to :math:`\mathsf{mut}`.
+      * :math:`{\mathit{MUT}}_{\mathit{opt}}` is equal to :math:`\mathsf{mut}`.
 
-      * :math:`{{\mathsf{mut}^?}}_2` is equal to :math:`\mathsf{mut}`.
+      * :math:`{\mathit{MUT}}_{\mathit{opt}'}` is equal to :math:`\mathsf{mut}`.
 
       * The value type :math:`{\mathit{valtype}}_2` :ref:`matches <match>` the value type :math:`{\mathit{valtype}}_1`.
 
@@ -13754,43 +13754,43 @@ The tag type :math:`{\mathit{deftype}}_1` :ref:`matches <match>` the tag type :m
 
 
 
-The external type :math:`{\mathit{externtype}}_1` :ref:`matches <match>` the external type :math:`{\mathit{externtype}}_2` if:
+The external type :math:`{\mathit{externtype}}` :ref:`matches <match>` the external type :math:`{\mathit{externtype}'}` if:
 
 
    * Either:
 
-      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{func}~{\mathit{deftype}}_1)`.
+      * The external type :math:`{\mathit{externtype}}` is equal to :math:`(\mathsf{func}~{\mathit{deftype}}_1)`.
 
-      * The external type :math:`{\mathit{externtype}}_2` is equal to :math:`(\mathsf{func}~{\mathit{deftype}}_2)`.
+      * The external type :math:`{\mathit{externtype}'}` is equal to :math:`(\mathsf{func}~{\mathit{deftype}}_2)`.
 
       * The defined type :math:`{\mathit{deftype}}_1` :ref:`matches <match>` the defined type :math:`{\mathit{deftype}}_2`.
 
    * Or:
 
-      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{global}~{\mathit{globaltype}}_1)`.
+      * The external type :math:`{\mathit{externtype}}` is equal to :math:`(\mathsf{global}~{\mathit{globaltype}}_1)`.
 
-      * The external type :math:`{\mathit{externtype}}_2` is equal to :math:`(\mathsf{global}~{\mathit{globaltype}}_2)`.
+      * The external type :math:`{\mathit{externtype}'}` is equal to :math:`(\mathsf{global}~{\mathit{globaltype}}_2)`.
 
       * The global type :math:`{\mathit{globaltype}}_1` :ref:`matches <match>` the global type :math:`{\mathit{globaltype}}_2`.
    * Or:
 
-      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{table}~{\mathit{tabletype}}_1)`.
+      * The external type :math:`{\mathit{externtype}}` is equal to :math:`(\mathsf{table}~{\mathit{tabletype}}_1)`.
 
-      * The external type :math:`{\mathit{externtype}}_2` is equal to :math:`(\mathsf{table}~{\mathit{tabletype}}_2)`.
+      * The external type :math:`{\mathit{externtype}'}` is equal to :math:`(\mathsf{table}~{\mathit{tabletype}}_2)`.
 
       * The table type :math:`{\mathit{tabletype}}_1` :ref:`matches <match>` the table type :math:`{\mathit{tabletype}}_2`.
    * Or:
 
-      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{mem}~{\mathit{memtype}}_1)`.
+      * The external type :math:`{\mathit{externtype}}` is equal to :math:`(\mathsf{mem}~{\mathit{memtype}}_1)`.
 
-      * The external type :math:`{\mathit{externtype}}_2` is equal to :math:`(\mathsf{mem}~{\mathit{memtype}}_2)`.
+      * The external type :math:`{\mathit{externtype}'}` is equal to :math:`(\mathsf{mem}~{\mathit{memtype}}_2)`.
 
       * The memory type :math:`{\mathit{memtype}}_1` :ref:`matches <match>` the memory type :math:`{\mathit{memtype}}_2`.
    * Or:
 
-      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{tag}~{\mathit{tagtype}}_1)`.
+      * The external type :math:`{\mathit{externtype}}` is equal to :math:`(\mathsf{tag}~{\mathit{tagtype}}_1)`.
 
-      * The external type :math:`{\mathit{externtype}}_2` is equal to :math:`(\mathsf{tag}~{\mathit{tagtype}}_2)`.
+      * The external type :math:`{\mathit{externtype}'}` is equal to :math:`(\mathsf{tag}~{\mathit{tagtype}}_2)`.
 
       * The tag type :math:`{\mathit{tagtype}}_1` :ref:`matches <match>` the tag type :math:`{\mathit{tagtype}}_2`.
 
@@ -13837,16 +13837,16 @@ The external type :math:`(\mathsf{tag}~{\mathit{tagtype}}_1)` :ref:`matches <mat
 
 
 
-The block type :math:`{\mathit{blocktype}}_1` is :ref:`valid <valid-val>` as the instruction type :math:`{{\mathit{valtype}}_1^\ast}~\rightarrow~{{\mathit{valtype}}_2^\ast}` if:
+The block type :math:`{\mathit{blocktype}}` is :ref:`valid <valid-val>` as the instruction type :math:`{{\mathit{valtype}'}^\ast}~\rightarrow~{{\mathit{valtype}''}^\ast}` if:
 
 
    * Either:
 
-      * The block type :math:`{\mathit{blocktype}}_1` is equal to :math:`{{\mathit{valtype}}^?}`.
+      * The block type :math:`{\mathit{blocktype}}` is equal to :math:`{{\mathit{valtype}}^?}`.
 
-      * The value type sequence :math:`{{\mathit{valtype}}_1^\ast}` is equal to :math:`\epsilon`.
+      * The value type sequence :math:`{{\mathit{valtype}'}^\ast}` is equal to :math:`\epsilon`.
 
-      * The value type sequence :math:`{{\mathit{valtype}}_2^\ast}` is equal to :math:`{{\mathit{valtype}}^?}`.
+      * The value type sequence :math:`{{\mathit{valtype}''}^\ast}` is equal to :math:`{{\mathit{valtype}}^?}`.
 
       * If :math:`{\mathit{valtype}}` is defined, then:
 
@@ -13854,11 +13854,11 @@ The block type :math:`{\mathit{blocktype}}_1` is :ref:`valid <valid-val>` as the
 
    * Or:
 
-      * The block type :math:`{\mathit{blocktype}}_1` is equal to :math:`{\mathit{typeidx}}`.
+      * The block type :math:`{\mathit{blocktype}}` is equal to :math:`{\mathit{typeidx}}`.
 
-      * The value type sequence :math:`{{\mathit{valtype}}_1^\ast}` is equal to :math:`{t_1^\ast}`.
+      * The value type sequence :math:`{{\mathit{valtype}'}^\ast}` is equal to :math:`{t_1^\ast}`.
 
-      * The value type sequence :math:`{{\mathit{valtype}}_2^\ast}` is equal to :math:`{t_2^\ast}`.
+      * The value type sequence :math:`{{\mathit{valtype}''}^\ast}` is equal to :math:`{t_2^\ast}`.
 
       * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
 
@@ -13887,14 +13887,14 @@ The block type :math:`{\mathit{typeidx}}` is :ref:`valid <valid-val>` as the ins
 
 
 
-The catch clause :math:`{\mathit{catch}}_1` is :ref:`valid <valid-val>` if:
+The catch clause :math:`{\mathit{catch}}` is :ref:`valid <valid-val>` if:
 
 
    * The result type :math:`C{.}\mathsf{labels}{}[l]` exists.
 
    * Either:
 
-      * The catch clause :math:`{\mathit{catch}}_1` is equal to :math:`(\mathsf{catch}~x~l)`.
+      * The catch clause :math:`{\mathit{catch}}` is equal to :math:`(\mathsf{catch}~x~l)`.
 
       * The tag type :math:`C{.}\mathsf{tags}{}[x]` exists.
 
@@ -13904,7 +13904,7 @@ The catch clause :math:`{\mathit{catch}}_1` is :ref:`valid <valid-val>` if:
 
    * Or:
 
-      * The catch clause :math:`{\mathit{catch}}_1` is equal to :math:`(\mathsf{catch\_ref}~x~l)`.
+      * The catch clause :math:`{\mathit{catch}}` is equal to :math:`(\mathsf{catch\_ref}~x~l)`.
 
       * The tag type :math:`C{.}\mathsf{tags}{}[x]` exists.
 
@@ -13913,12 +13913,12 @@ The catch clause :math:`{\mathit{catch}}_1` is :ref:`valid <valid-val>` if:
       * The result type :math:`{t^\ast}~(\mathsf{ref}~\epsilon~\mathsf{exn})` :ref:`matches <match>` the result type :math:`C{.}\mathsf{labels}{}[l]`.
    * Or:
 
-      * The catch clause :math:`{\mathit{catch}}_1` is equal to :math:`(\mathsf{catch\_all}~l)`.
+      * The catch clause :math:`{\mathit{catch}}` is equal to :math:`(\mathsf{catch\_all}~l)`.
 
       * The result type :math:`\epsilon` :ref:`matches <match>` the result type :math:`C{.}\mathsf{labels}{}[l]`.
    * Or:
 
-      * The catch clause :math:`{\mathit{catch}}_1` is equal to :math:`(\mathsf{catch\_all\_ref}~l)`.
+      * The catch clause :math:`{\mathit{catch}}` is equal to :math:`(\mathsf{catch\_all\_ref}~l)`.
 
       * The result type :math:`(\mathsf{ref}~\epsilon~\mathsf{exn})` :ref:`matches <match>` the result type :math:`C{.}\mathsf{labels}{}[l]`.
 
@@ -14002,18 +14002,18 @@ The instruction :math:`\mathsf{drop}` is :ref:`valid <valid-val>` with the instr
 
 
 
-The instruction :math:`(\mathsf{select}~{{\mathit{valtype}}_1^?})` is :ref:`valid <valid-val>` with the instruction type :math:`t~t~\mathsf{i{\scriptstyle 32}}~\rightarrow~t` if:
+The instruction :math:`(\mathsf{select}~{{\mathit{valtype}}^?})` is :ref:`valid <valid-val>` with the instruction type :math:`t~t~\mathsf{i{\scriptstyle 32}}~\rightarrow~t` if:
 
 
    * The value type :math:`t` is :ref:`valid <valid-val>`.
 
    * Either:
 
-      * The value type sequence :math:`{{\mathit{valtype}}_1^?}` is equal to :math:`t`.
+      * The value type sequence :math:`{{\mathit{valtype}}^?}` is equal to :math:`t`.
 
    * Or:
 
-      * The value type sequence :math:`{{\mathit{valtype}}_1^?}` is absent.
+      * The value type sequence :math:`{{\mathit{valtype}}^?}` is absent.
 
       * The value type :math:`t` :ref:`matches <match>` the value type :math:`{t'}`.
 
@@ -14976,7 +14976,7 @@ The instruction :math:`(\mathsf{data{.}drop}~x)` is :ref:`valid <valid-val>` wit
 
 
 
-The instruction :math:`({{\mathit{numtype}}_1{.}\mathsf{load}}{{{\mathit{loadop\_{\scriptstyle 1}}}^?}}~x~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}~\rightarrow~{\mathit{valtype}}_1` if:
+The instruction :math:`({{\mathit{numtype}}{.}\mathsf{load}}{{{\mathit{loadop}}^?}}~x~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}~\rightarrow~{\mathit{valtype}}` if:
 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
@@ -14985,28 +14985,28 @@ The instruction :math:`({{\mathit{numtype}}_1{.}\mathsf{load}}{{{\mathit{loadop\
 
    * Either:
 
-      * The number type :math:`{\mathit{numtype}}_1` is equal to :math:`{\mathit{nt}}`.
+      * The number type :math:`{\mathit{numtype}}` is equal to :math:`{\mathit{nt}}`.
 
-      * :math:`{{\mathit{loadop\_{\scriptstyle 1}}}^?}` is absent.
+      * :math:`{{\mathit{loadop}}^?}` is absent.
 
-      * The value type :math:`{\mathit{valtype}}_1` is equal to :math:`{\mathit{nt}}`.
+      * The value type :math:`{\mathit{valtype}}` is equal to :math:`{\mathit{nt}}`.
 
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
 
    * Or:
 
-      * The number type :math:`{\mathit{numtype}}_1` is equal to :math:`{\mathsf{i}}{N}`.
+      * The number type :math:`{\mathit{numtype}}` is equal to :math:`{\mathsf{i}}{N}`.
 
-      * :math:`{{\mathit{loadop\_{\scriptstyle 1}}}^?}` is equal to :math:`{M}{\mathsf{\_}}{{\mathit{sx}}}`.
+      * :math:`{{\mathit{loadop}}^?}` is equal to :math:`{M}{\mathsf{\_}}{{\mathit{sx}}}`.
 
-      * The value type :math:`{\mathit{valtype}}_1` is equal to :math:`{\mathsf{i}}{N}`.
+      * The value type :math:`{\mathit{valtype}}` is equal to :math:`{\mathsf{i}}{N}`.
 
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
 
 
 
 
-The instruction :math:`({{\mathit{numtype}}_1{.}\mathsf{store}}{{{\mathit{storeop\_{\scriptstyle 1}}}^?}}~x~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}~{\mathit{valtype}}_1~\rightarrow~\epsilon` if:
+The instruction :math:`({{\mathit{numtype}}{.}\mathsf{store}}{{{\mathit{storeop}}^?}}~x~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}~{\mathit{valtype}}~\rightarrow~\epsilon` if:
 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
@@ -15015,28 +15015,28 @@ The instruction :math:`({{\mathit{numtype}}_1{.}\mathsf{store}}{{{\mathit{storeo
 
    * Either:
 
-      * The number type :math:`{\mathit{numtype}}_1` is equal to :math:`{\mathit{nt}}`.
+      * The number type :math:`{\mathit{numtype}}` is equal to :math:`{\mathit{nt}}`.
 
-      * :math:`{{\mathit{storeop\_{\scriptstyle 1}}}^?}` is absent.
+      * :math:`{{\mathit{storeop}}^?}` is absent.
 
-      * The value type :math:`{\mathit{valtype}}_1` is equal to :math:`{\mathit{nt}}`.
+      * The value type :math:`{\mathit{valtype}}` is equal to :math:`{\mathit{nt}}`.
 
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
 
    * Or:
 
-      * The number type :math:`{\mathit{numtype}}_1` is equal to :math:`{\mathsf{i}}{N}`.
+      * The number type :math:`{\mathit{numtype}}` is equal to :math:`{\mathsf{i}}{N}`.
 
-      * :math:`{{\mathit{storeop\_{\scriptstyle 1}}}^?}` is equal to :math:`M`.
+      * :math:`{{\mathit{storeop}}^?}` is equal to :math:`M`.
 
-      * The value type :math:`{\mathit{valtype}}_1` is equal to :math:`{\mathsf{i}}{N}`.
+      * The value type :math:`{\mathit{valtype}}` is equal to :math:`{\mathsf{i}}{N}`.
 
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
 
 
 
 
-The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{{\mathit{vloadop\_{\scriptstyle 1}}}^?}}~x~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
+The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{{\mathit{vloadop}}^?}}~x~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
@@ -15045,23 +15045,23 @@ The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{{\mathit
 
    * Either:
 
-      * :math:`{{\mathit{vloadop\_{\scriptstyle 1}}}^?}` is absent.
+      * :math:`{{\mathit{vloadop}}^?}` is absent.
 
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|\mathsf{v{\scriptstyle 128}}|} / 8`.
 
    * Or:
 
-      * :math:`{{\mathit{vloadop\_{\scriptstyle 1}}}^?}` is equal to :math:`({M}{\mathsf{x}}{N}{\mathsf{\_}}{{\mathit{sx}}})`.
+      * :math:`{{\mathit{vloadop}}^?}` is equal to :math:`({M}{\mathsf{x}}{N}{\mathsf{\_}}{{\mathit{sx}}})`.
 
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8 \cdot N`.
    * Or:
 
-      * :math:`{{\mathit{vloadop\_{\scriptstyle 1}}}^?}` is equal to :math:`({N}{\mathsf{\_}}{\mathsf{splat}})`.
+      * :math:`{{\mathit{vloadop}}^?}` is equal to :math:`({N}{\mathsf{\_}}{\mathsf{splat}})`.
 
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`N / 8`.
    * Or:
 
-      * :math:`{{\mathit{vloadop\_{\scriptstyle 1}}}^?}` is equal to :math:`({N}{\mathsf{\_}}{\mathsf{zero}})`.
+      * :math:`{{\mathit{vloadop}}^?}` is equal to :math:`({N}{\mathsf{\_}}{\mathsf{zero}})`.
 
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`N / 8`.
 
@@ -15224,20 +15224,20 @@ The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{N}{\math
 
 
 
-The instruction sequence :math:`{{\mathit{instr}}_1^\ast}` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{instrtype}}_1` if:
+The instruction sequence :math:`{{\mathit{instr}'}^\ast}` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{instrtype}}` if:
 
 
    * Either:
 
-      * The instruction sequence :math:`{{\mathit{instr}}_1^\ast}` is equal to :math:`\epsilon`.
+      * The instruction sequence :math:`{{\mathit{instr}'}^\ast}` is equal to :math:`\epsilon`.
 
-      * The instruction type :math:`{\mathit{instrtype}}_1` is equal to :math:`\epsilon~\rightarrow~\epsilon`.
+      * The instruction type :math:`{\mathit{instrtype}}` is equal to :math:`\epsilon~\rightarrow~\epsilon`.
 
    * Or:
 
-      * The instruction sequence :math:`{{\mathit{instr}}_1^\ast}` is equal to :math:`{\mathit{instr}}_1~{{\mathit{instr}}_2^\ast}`.
+      * The instruction sequence :math:`{{\mathit{instr}'}^\ast}` is equal to :math:`{\mathit{instr}}_1~{{\mathit{instr}}_2^\ast}`.
 
-      * The instruction type :math:`{\mathit{instrtype}}_1` is equal to :math:`{t_1^\ast}~{\rightarrow}_{{x_1^\ast}~{x_2^\ast}}\,{t_3^\ast}`.
+      * The instruction type :math:`{\mathit{instrtype}}` is equal to :math:`{t_1^\ast}~{\rightarrow}_{{x_1^\ast}~{x_2^\ast}}\,{t_3^\ast}`.
 
       * The instruction :math:`{\mathit{instr}}_1` is :ref:`valid <valid-val>` with the instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x_1^\ast}}\,{t_2^\ast}`.
 
@@ -15256,9 +15256,9 @@ The instruction sequence :math:`{{\mathit{instr}}_1^\ast}` is :ref:`valid <valid
       * Under the context :math:`C{}[{.}\mathsf{local}{}[{x_1^\ast}] = {(\mathsf{set}~t)^\ast}]`, the instruction sequence :math:`{{\mathit{instr}}_2^\ast}` is :ref:`valid <valid-val>` with the instruction type :math:`{t_2^\ast}~{\rightarrow}_{{x_2^\ast}}\,{t_3^\ast}`.
    * Or:
 
-      * The instruction sequence :math:`{{\mathit{instr}}_1^\ast}` is equal to :math:`{{\mathit{instr}}^\ast}`.
+      * The instruction sequence :math:`{{\mathit{instr}'}^\ast}` is equal to :math:`{{\mathit{instr}}^\ast}`.
 
-      * The instruction type :math:`{\mathit{instrtype}}_1` is equal to :math:`{\mathit{it}'}`.
+      * The instruction type :math:`{\mathit{instrtype}}` is equal to :math:`{\mathit{it}'}`.
 
       * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{it}}`.
 
@@ -15267,9 +15267,9 @@ The instruction sequence :math:`{{\mathit{instr}}_1^\ast}` is :ref:`valid <valid
       * The instruction type :math:`{\mathit{it}'}` is :ref:`valid <valid-val>`.
    * Or:
 
-      * The instruction sequence :math:`{{\mathit{instr}}_1^\ast}` is equal to :math:`{{\mathit{instr}}^\ast}`.
+      * The instruction sequence :math:`{{\mathit{instr}'}^\ast}` is equal to :math:`{{\mathit{instr}}^\ast}`.
 
-      * The instruction type :math:`{\mathit{instrtype}}_1` is equal to :math:`{t^\ast}~{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t^\ast}~{t_2^\ast}`.
+      * The instruction type :math:`{\mathit{instrtype}}` is equal to :math:`{t^\ast}~{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t^\ast}~{t_2^\ast}`.
 
       * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` with the instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}`.
 
@@ -15343,56 +15343,56 @@ The value type :math:`t` is not defaultable if:
 
 
 
-:math:`{\mathit{val}}_1` is constant if:
+:math:`{\mathit{val}}` is constant if:
 
 
    * Either:
 
-      * The value :math:`{\mathit{val}}_1` is equal to :math:`({\mathit{nt}}{.}\mathsf{const}~c_{\mathit{nt}})`.
+      * The value :math:`{\mathit{val}}` is equal to :math:`({\mathit{nt}}{.}\mathsf{const}~c_{\mathit{nt}})`.
 
    * Or:
 
-      * The value :math:`{\mathit{val}}_1` is equal to :math:`({\mathit{vt}}{.}\mathsf{const}~c_{\mathit{vt}})`.
+      * The value :math:`{\mathit{val}}` is equal to :math:`({\mathit{vt}}{.}\mathsf{const}~c_{\mathit{vt}})`.
    * Or:
 
-      * The value :math:`{\mathit{val}}_1` is equal to :math:`(\mathsf{ref{.}null}~{\mathit{ht}})`.
+      * The value :math:`{\mathit{val}}` is equal to :math:`(\mathsf{ref{.}null}~{\mathit{ht}})`.
    * Or:
 
-      * The value :math:`{\mathit{val}}_1` is equal to :math:`\mathsf{ref{.}i{\scriptstyle 31}}`.
+      * The value :math:`{\mathit{val}}` is equal to :math:`\mathsf{ref{.}i{\scriptstyle 31}}`.
    * Or:
 
-      * The value :math:`{\mathit{val}}_1` is equal to :math:`(\mathsf{ref{.}func}~x)`.
+      * The value :math:`{\mathit{val}}` is equal to :math:`(\mathsf{ref{.}func}~x)`.
    * Or:
 
-      * The value :math:`{\mathit{val}}_1` is equal to :math:`(\mathsf{struct{.}new}~x)`.
+      * The value :math:`{\mathit{val}}` is equal to :math:`(\mathsf{struct{.}new}~x)`.
    * Or:
 
-      * The value :math:`{\mathit{val}}_1` is equal to :math:`(\mathsf{struct{.}new\_default}~x)`.
+      * The value :math:`{\mathit{val}}` is equal to :math:`(\mathsf{struct{.}new\_default}~x)`.
    * Or:
 
-      * The value :math:`{\mathit{val}}_1` is equal to :math:`(\mathsf{array{.}new}~x)`.
+      * The value :math:`{\mathit{val}}` is equal to :math:`(\mathsf{array{.}new}~x)`.
    * Or:
 
-      * The value :math:`{\mathit{val}}_1` is equal to :math:`(\mathsf{array{.}new\_default}~x)`.
+      * The value :math:`{\mathit{val}}` is equal to :math:`(\mathsf{array{.}new\_default}~x)`.
    * Or:
 
-      * The value :math:`{\mathit{val}}_1` is equal to :math:`(\mathsf{array{.}new\_fixed}~x~n)`.
+      * The value :math:`{\mathit{val}}` is equal to :math:`(\mathsf{array{.}new\_fixed}~x~n)`.
    * Or:
 
-      * The value :math:`{\mathit{val}}_1` is equal to :math:`\mathsf{any{.}convert\_extern}`.
+      * The value :math:`{\mathit{val}}` is equal to :math:`\mathsf{any{.}convert\_extern}`.
    * Or:
 
-      * The value :math:`{\mathit{val}}_1` is equal to :math:`\mathsf{extern{.}convert\_any}`.
+      * The value :math:`{\mathit{val}}` is equal to :math:`\mathsf{extern{.}convert\_any}`.
    * Or:
 
-      * The value :math:`{\mathit{val}}_1` is equal to :math:`(\mathsf{global{.}get}~x)`.
+      * The value :math:`{\mathit{val}}` is equal to :math:`(\mathsf{global{.}get}~x)`.
 
       * The global type :math:`C{.}\mathsf{globals}{}[x]` exists.
 
       * The global type :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`(\epsilon~t)`.
    * Or:
 
-      * The value :math:`{\mathit{val}}_1` is equal to :math:`({\mathsf{i}}{N} {.} {\mathit{binop}})`.
+      * The value :math:`{\mathit{val}}` is equal to :math:`({\mathsf{i}}{N} {.} {\mathit{binop}})`.
 
       * :math:`{\mathsf{i}}{N}` is contained in [:math:`\mathsf{i{\scriptstyle 32}}`; :math:`\mathsf{i{\scriptstyle 64}}`].
 
@@ -15505,18 +15505,18 @@ The type definition :math:`(\mathsf{type}~{\mathit{rectype}})` is :ref:`valid <v
 
 
 
-The local :math:`(\mathsf{local}~t)` is :ref:`valid <valid-val>` with the local type :math:`({\mathit{init}}_1~t)` if:
+The local :math:`(\mathsf{local}~t)` is :ref:`valid <valid-val>` with the local type :math:`({\mathit{init}}~t)` if:
 
 
    * Either:
 
-      * The initialization status :math:`{\mathit{init}}_1` is equal to :math:`\mathsf{set}`.
+      * The initialization status :math:`{\mathit{init}}` is equal to :math:`\mathsf{set}`.
 
       * A :ref:`default value <aux-default>` for the value type :math:`t` is defined.
 
    * Or:
 
-      * The initialization status :math:`{\mathit{init}}_1` is equal to :math:`\mathsf{unset}`.
+      * The initialization status :math:`{\mathit{init}}` is equal to :math:`\mathsf{unset}`.
 
       * A :ref:`default value <aux-default>` for the value type :math:`t` is not defined.
 
@@ -15603,12 +15603,12 @@ The tag :math:`(\mathsf{tag}~x)` is :ref:`valid <valid-val>` with the tag type :
 
 
 
-The element mode :math:`{\mathit{elemmode}}_1` is :ref:`valid <valid-val>` with the element type :math:`{\mathit{rt}}` if:
+The element mode :math:`{\mathit{elemmode}}` is :ref:`valid <valid-val>` with the element type :math:`{\mathit{rt}}` if:
 
 
    * Either:
 
-      * The element mode :math:`{\mathit{elemmode}}_1` is equal to :math:`(\mathsf{active}~x~{\mathit{expr}})`.
+      * The element mode :math:`{\mathit{elemmode}}` is equal to :math:`(\mathsf{active}~x~{\mathit{expr}})`.
 
       * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
 
@@ -15622,10 +15622,10 @@ The element mode :math:`{\mathit{elemmode}}_1` is :ref:`valid <valid-val>` with 
 
    * Or:
 
-      * The element mode :math:`{\mathit{elemmode}}_1` is equal to :math:`\mathsf{passive}`.
+      * The element mode :math:`{\mathit{elemmode}}` is equal to :math:`\mathsf{passive}`.
    * Or:
 
-      * The element mode :math:`{\mathit{elemmode}}_1` is equal to :math:`\mathsf{declare}`.
+      * The element mode :math:`{\mathit{elemmode}}` is equal to :math:`\mathsf{declare}`.
 
 
 
@@ -15672,12 +15672,12 @@ The element segment :math:`(\mathsf{elem}~{\mathit{elemtype}}~{{\mathit{expr}}^\
 
 
 
-The data mode :math:`{\mathit{datamode}}_1` is :ref:`valid <valid-val>` with the data type :math:`\mathsf{ok}` if:
+The data mode :math:`{\mathit{datamode}}` is :ref:`valid <valid-val>` with the data type :math:`\mathsf{ok}` if:
 
 
    * Either:
 
-      * The data mode :math:`{\mathit{datamode}}_1` is equal to :math:`(\mathsf{active}~x~{\mathit{expr}})`.
+      * The data mode :math:`{\mathit{datamode}}` is equal to :math:`(\mathsf{active}~x~{\mathit{expr}})`.
 
       * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
 
@@ -15689,7 +15689,7 @@ The data mode :math:`{\mathit{datamode}}_1` is :ref:`valid <valid-val>` with the
 
    * Or:
 
-      * The data mode :math:`{\mathit{datamode}}_1` is equal to :math:`\mathsf{passive}`.
+      * The data mode :math:`{\mathit{datamode}}` is equal to :math:`\mathsf{passive}`.
 
 
 
@@ -15739,14 +15739,14 @@ The import :math:`(\mathsf{import}~{\mathit{name}}_1~{\mathit{name}}_2~{\mathit{
 
 
 
-The external index :math:`{\mathit{externidx}}_1` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{externtype}}_1` if:
+The external index :math:`{\mathit{externidx}}` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{externtype}}` if:
 
 
    * Either:
 
-      * The external index :math:`{\mathit{externidx}}_1` is equal to :math:`(\mathsf{func}~x)`.
+      * The external index :math:`{\mathit{externidx}}` is equal to :math:`(\mathsf{func}~x)`.
 
-      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{func}~{\mathit{dt}})`.
+      * The external type :math:`{\mathit{externtype}}` is equal to :math:`(\mathsf{func}~{\mathit{dt}})`.
 
       * The defined type :math:`C{.}\mathsf{funcs}{}[x]` exists.
 
@@ -15754,36 +15754,36 @@ The external index :math:`{\mathit{externidx}}_1` is :ref:`valid <valid-val>` wi
 
    * Or:
 
-      * The external index :math:`{\mathit{externidx}}_1` is equal to :math:`(\mathsf{global}~x)`.
+      * The external index :math:`{\mathit{externidx}}` is equal to :math:`(\mathsf{global}~x)`.
 
-      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{global}~{\mathit{gt}})`.
+      * The external type :math:`{\mathit{externtype}}` is equal to :math:`(\mathsf{global}~{\mathit{gt}})`.
 
       * The global type :math:`C{.}\mathsf{globals}{}[x]` exists.
 
       * The global type :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`{\mathit{gt}}`.
    * Or:
 
-      * The external index :math:`{\mathit{externidx}}_1` is equal to :math:`(\mathsf{table}~x)`.
+      * The external index :math:`{\mathit{externidx}}` is equal to :math:`(\mathsf{table}~x)`.
 
-      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{table}~{\mathit{tt}})`.
+      * The external type :math:`{\mathit{externtype}}` is equal to :math:`(\mathsf{table}~{\mathit{tt}})`.
 
       * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
 
       * The table type :math:`C{.}\mathsf{tables}{}[x]` is equal to :math:`{\mathit{tt}}`.
    * Or:
 
-      * The external index :math:`{\mathit{externidx}}_1` is equal to :math:`(\mathsf{mem}~x)`.
+      * The external index :math:`{\mathit{externidx}}` is equal to :math:`(\mathsf{mem}~x)`.
 
-      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{mem}~{\mathit{mt}})`.
+      * The external type :math:`{\mathit{externtype}}` is equal to :math:`(\mathsf{mem}~{\mathit{mt}})`.
 
       * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
 
       * The memory type :math:`C{.}\mathsf{mems}{}[x]` is equal to :math:`{\mathit{mt}}`.
    * Or:
 
-      * The external index :math:`{\mathit{externidx}}_1` is equal to :math:`(\mathsf{tag}~x)`.
+      * The external index :math:`{\mathit{externidx}}` is equal to :math:`(\mathsf{tag}~x)`.
 
-      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{tag}~{\mathit{jt}})`.
+      * The external type :math:`{\mathit{externtype}}` is equal to :math:`(\mathsf{tag}~{\mathit{jt}})`.
 
       * The tag type :math:`C{.}\mathsf{tags}{}[x]` exists.
 
@@ -15850,20 +15850,20 @@ The export :math:`(\mathsf{export}~{\mathit{name}}~{\mathit{externidx}})` is :re
 
 
 
-The global sequence :math:`{{\mathit{global}}_1^\ast}` is :ref:`valid <valid-val>` with the global type sequence :math:`{{\mathit{globaltype}}_1^\ast}` if:
+The global sequence :math:`{{\mathit{global}'}^\ast}` is :ref:`valid <valid-val>` with the global type sequence :math:`{{\mathit{globaltype}}^\ast}` if:
 
 
    * Either:
 
-      * The global sequence :math:`{{\mathit{global}}_1^\ast}` is equal to :math:`\epsilon`.
+      * The global sequence :math:`{{\mathit{global}'}^\ast}` is equal to :math:`\epsilon`.
 
-      * The global type sequence :math:`{{\mathit{globaltype}}_1^\ast}` is equal to :math:`\epsilon`.
+      * The global type sequence :math:`{{\mathit{globaltype}}^\ast}` is equal to :math:`\epsilon`.
 
    * Or:
 
-      * The global sequence :math:`{{\mathit{global}}_1^\ast}` is equal to :math:`{\mathit{global}}_1~{{\mathit{global}}^\ast}`.
+      * The global sequence :math:`{{\mathit{global}'}^\ast}` is equal to :math:`{\mathit{global}}_1~{{\mathit{global}}^\ast}`.
 
-      * The global type sequence :math:`{{\mathit{globaltype}}_1^\ast}` is equal to :math:`{\mathit{gt}}_1~{{\mathit{gt}}^\ast}`.
+      * The global type sequence :math:`{{\mathit{globaltype}}^\ast}` is equal to :math:`{\mathit{gt}}_1~{{\mathit{gt}}^\ast}`.
 
       * The global :math:`{\mathit{global}}_1` is :ref:`valid <valid-val>` with the global type :math:`{\mathit{gt}}_1`.
 
@@ -15891,20 +15891,20 @@ The global sequence :math:`{\mathit{global}}_1~{{\mathit{global}}^\ast}` is :ref
 
 
 
-The type definition sequence :math:`{{\mathit{type}}_1^\ast}` is :ref:`valid <valid-val>` with the defined type sequence :math:`{{\mathit{deftype}}_1^\ast}` if:
+The type definition sequence :math:`{{\mathit{type}'}^\ast}` is :ref:`valid <valid-val>` with the defined type sequence :math:`{{\mathit{deftype}}^\ast}` if:
 
 
    * Either:
 
-      * The type definition sequence :math:`{{\mathit{type}}_1^\ast}` is equal to :math:`\epsilon`.
+      * The type definition sequence :math:`{{\mathit{type}'}^\ast}` is equal to :math:`\epsilon`.
 
-      * The defined type sequence :math:`{{\mathit{deftype}}_1^\ast}` is equal to :math:`\epsilon`.
+      * The defined type sequence :math:`{{\mathit{deftype}}^\ast}` is equal to :math:`\epsilon`.
 
    * Or:
 
-      * The type definition sequence :math:`{{\mathit{type}}_1^\ast}` is equal to :math:`{\mathit{type}}_1~{{\mathit{type}}^\ast}`.
+      * The type definition sequence :math:`{{\mathit{type}'}^\ast}` is equal to :math:`{\mathit{type}}_1~{{\mathit{type}}^\ast}`.
 
-      * The defined type sequence :math:`{{\mathit{deftype}}_1^\ast}` is equal to :math:`{{\mathit{dt}}_1^\ast}~{{\mathit{dt}}^\ast}`.
+      * The defined type sequence :math:`{{\mathit{deftype}}^\ast}` is equal to :math:`{{\mathit{dt}}_1^\ast}~{{\mathit{dt}}^\ast}`.
 
       * The type definition :math:`{\mathit{type}}_1` is :ref:`valid <valid-val>` with the defined type sequence :math:`{{\mathit{dt}}_1^\ast}`.
 
@@ -16026,69 +16026,69 @@ The vector value :math:`({\mathit{vt}}{.}\mathsf{const}~c)` is :ref:`valid <vali
 
 
 
-The reference value :math:`{\mathit{ref}}_1` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{reftype}}_1` if:
+The reference value :math:`{\mathit{ref}}` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{reftype}}` if:
 
 
    * Either:
 
-      * The reference value :math:`{\mathit{ref}}_1` is equal to :math:`(\mathsf{ref{.}null}~{\mathit{ht}})`.
+      * The reference value :math:`{\mathit{ref}}` is equal to :math:`(\mathsf{ref{.}null}~{\mathit{ht}})`.
 
-      * The reference type :math:`{\mathit{reftype}}_1` is equal to :math:`(\mathsf{ref}~\mathsf{null}~{\mathit{ht}'})`.
+      * The reference type :math:`{\mathit{reftype}}` is equal to :math:`(\mathsf{ref}~\mathsf{null}~{\mathit{ht}'})`.
 
       * The heap type :math:`{\mathit{ht}'}` :ref:`matches <match>` the heap type :math:`{\mathit{ht}}`.
 
    * Or:
 
-      * The reference value :math:`{\mathit{ref}}_1` is equal to :math:`(\mathsf{ref{.}i{\scriptstyle 31}}~i)`.
+      * The reference value :math:`{\mathit{ref}}` is equal to :math:`(\mathsf{ref{.}i{\scriptstyle 31}}~i)`.
 
-      * The reference type :math:`{\mathit{reftype}}_1` is equal to :math:`(\mathsf{ref}~\epsilon~\mathsf{i{\scriptstyle 31}})`.
+      * The reference type :math:`{\mathit{reftype}}` is equal to :math:`(\mathsf{ref}~\epsilon~\mathsf{i{\scriptstyle 31}})`.
    * Or:
 
-      * The reference value :math:`{\mathit{ref}}_1` is equal to :math:`(\mathsf{ref{.}struct}~a)`.
+      * The reference value :math:`{\mathit{ref}}` is equal to :math:`(\mathsf{ref{.}struct}~a)`.
 
-      * The reference type :math:`{\mathit{reftype}}_1` is equal to :math:`(\mathsf{ref}~\epsilon~{\mathit{dt}})`.
+      * The reference type :math:`{\mathit{reftype}}` is equal to :math:`(\mathsf{ref}~\epsilon~{\mathit{dt}})`.
 
       * The structure instance :math:`s{.}\mathsf{structs}{}[a]` exists.
 
       * The defined type :math:`s{.}\mathsf{structs}{}[a]{.}\mathsf{type}` is equal to :math:`{\mathit{dt}}`.
    * Or:
 
-      * The reference value :math:`{\mathit{ref}}_1` is equal to :math:`(\mathsf{ref{.}array}~a)`.
+      * The reference value :math:`{\mathit{ref}}` is equal to :math:`(\mathsf{ref{.}array}~a)`.
 
-      * The reference type :math:`{\mathit{reftype}}_1` is equal to :math:`(\mathsf{ref}~\epsilon~{\mathit{dt}})`.
+      * The reference type :math:`{\mathit{reftype}}` is equal to :math:`(\mathsf{ref}~\epsilon~{\mathit{dt}})`.
 
       * The array instance :math:`s{.}\mathsf{arrays}{}[a]` exists.
 
       * The defined type :math:`s{.}\mathsf{arrays}{}[a]{.}\mathsf{type}` is equal to :math:`{\mathit{dt}}`.
    * Or:
 
-      * The reference value :math:`{\mathit{ref}}_1` is equal to :math:`(\mathsf{ref{.}func}~a)`.
+      * The reference value :math:`{\mathit{ref}}` is equal to :math:`(\mathsf{ref{.}func}~a)`.
 
-      * The reference type :math:`{\mathit{reftype}}_1` is equal to :math:`(\mathsf{ref}~\epsilon~{\mathit{dt}})`.
+      * The reference type :math:`{\mathit{reftype}}` is equal to :math:`(\mathsf{ref}~\epsilon~{\mathit{dt}})`.
 
       * The function instance :math:`s{.}\mathsf{funcs}{}[a]` exists.
 
       * The defined type :math:`s{.}\mathsf{funcs}{}[a]{.}\mathsf{type}` is equal to :math:`{\mathit{dt}}`.
    * Or:
 
-      * The reference value :math:`{\mathit{ref}}_1` is equal to :math:`(\mathsf{ref{.}exn}~a)`.
+      * The reference value :math:`{\mathit{ref}}` is equal to :math:`(\mathsf{ref{.}exn}~a)`.
 
-      * The reference type :math:`{\mathit{reftype}}_1` is equal to :math:`(\mathsf{ref}~\epsilon~\mathsf{exn})`.
+      * The reference type :math:`{\mathit{reftype}}` is equal to :math:`(\mathsf{ref}~\epsilon~\mathsf{exn})`.
    * Or:
 
-      * The reference value :math:`{\mathit{ref}}_1` is equal to :math:`(\mathsf{ref{.}host}~a)`.
+      * The reference value :math:`{\mathit{ref}}` is equal to :math:`(\mathsf{ref{.}host}~a)`.
 
-      * The reference type :math:`{\mathit{reftype}}_1` is equal to :math:`(\mathsf{ref}~\epsilon~\mathsf{any})`.
+      * The reference type :math:`{\mathit{reftype}}` is equal to :math:`(\mathsf{ref}~\epsilon~\mathsf{any})`.
    * Or:
 
-      * The reference value :math:`{\mathit{ref}}_1` is equal to :math:`(\mathsf{ref{.}extern}~{\mathit{addrref}})`.
+      * The reference value :math:`{\mathit{ref}}` is equal to :math:`(\mathsf{ref{.}extern}~{\mathit{addrref}})`.
 
-      * The reference type :math:`{\mathit{reftype}}_1` is equal to :math:`(\mathsf{ref}~\epsilon~\mathsf{extern})`.
+      * The reference type :math:`{\mathit{reftype}}` is equal to :math:`(\mathsf{ref}~\epsilon~\mathsf{extern})`.
    * Or:
 
-      * The reference value :math:`{\mathit{ref}}_1` is equal to :math:`{\mathit{ref}}`.
+      * The reference value :math:`{\mathit{ref}}` is equal to :math:`{\mathit{ref}}`.
 
-      * The reference type :math:`{\mathit{reftype}}_1` is equal to :math:`{\mathit{rt}}`.
+      * The reference type :math:`{\mathit{reftype}}` is equal to :math:`{\mathit{rt}}`.
 
       * Under the context :math:`s`, the reference value :math:`{\mathit{ref}}` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{rt}'}`.
 
@@ -16165,29 +16165,29 @@ The reference value :math:`{\mathit{ref}}` is :ref:`valid <valid-val>` with the 
 
 
 
-The value :math:`{\mathit{val}}_1` is :ref:`valid <valid-val>` with the value type :math:`{\mathit{valtype}}_1` if:
+The value :math:`{\mathit{val}}` is :ref:`valid <valid-val>` with the value type :math:`{\mathit{valtype}}` if:
 
 
    * Either:
 
-      * The value :math:`{\mathit{val}}_1` is equal to :math:`{\mathit{num}}`.
+      * The value :math:`{\mathit{val}}` is equal to :math:`{\mathit{num}}`.
 
-      * The value type :math:`{\mathit{valtype}}_1` is equal to :math:`{\mathit{nt}}`.
+      * The value type :math:`{\mathit{valtype}}` is equal to :math:`{\mathit{nt}}`.
 
       * Under the context :math:`s`, the number value :math:`{\mathit{num}}` is :ref:`valid <valid-val>` with the number type :math:`{\mathit{nt}}`.
 
    * Or:
 
-      * The value :math:`{\mathit{val}}_1` is equal to :math:`{\mathit{vec}}`.
+      * The value :math:`{\mathit{val}}` is equal to :math:`{\mathit{vec}}`.
 
-      * The value type :math:`{\mathit{valtype}}_1` is equal to :math:`{\mathit{vt}}`.
+      * The value type :math:`{\mathit{valtype}}` is equal to :math:`{\mathit{vt}}`.
 
       * Under the context :math:`s`, the vector value :math:`{\mathit{vec}}` is :ref:`valid <valid-val>` with the vector type :math:`{\mathit{vt}}`.
    * Or:
 
-      * The value :math:`{\mathit{val}}_1` is equal to :math:`{\mathit{ref}}`.
+      * The value :math:`{\mathit{val}}` is equal to :math:`{\mathit{ref}}`.
 
-      * The value type :math:`{\mathit{valtype}}_1` is equal to :math:`{\mathit{rt}}`.
+      * The value type :math:`{\mathit{valtype}}` is equal to :math:`{\mathit{rt}}`.
 
       * Under the context :math:`s`, the reference value :math:`{\mathit{ref}}` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{rt}}`.
 
@@ -16218,14 +16218,14 @@ The value :math:`{\mathit{ref}}` is :ref:`valid <valid-val>` with the value type
 
 
 
-The external address :math:`{\mathit{externaddr}}_1` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{externtype}}_1` if:
+The external address :math:`{\mathit{externaddr}}` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{externtype}}` if:
 
 
    * Either:
 
-      * The external address :math:`{\mathit{externaddr}}_1` is equal to :math:`(\mathsf{func}~a)`.
+      * The external address :math:`{\mathit{externaddr}}` is equal to :math:`(\mathsf{func}~a)`.
 
-      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{func}~{\mathit{funcinst}}{.}\mathsf{type})`.
+      * The external type :math:`{\mathit{externtype}}` is equal to :math:`(\mathsf{func}~{\mathit{funcinst}}{.}\mathsf{type})`.
 
       * The function instance :math:`s{.}\mathsf{funcs}{}[a]` exists.
 
@@ -16233,45 +16233,45 @@ The external address :math:`{\mathit{externaddr}}_1` is :ref:`valid <valid-val>`
 
    * Or:
 
-      * The external address :math:`{\mathit{externaddr}}_1` is equal to :math:`(\mathsf{global}~a)`.
+      * The external address :math:`{\mathit{externaddr}}` is equal to :math:`(\mathsf{global}~a)`.
 
-      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{global}~{\mathit{globalinst}}{.}\mathsf{type})`.
+      * The external type :math:`{\mathit{externtype}}` is equal to :math:`(\mathsf{global}~{\mathit{globalinst}}{.}\mathsf{type})`.
 
       * The global instance :math:`s{.}\mathsf{globals}{}[a]` exists.
 
       * The global instance :math:`s{.}\mathsf{globals}{}[a]` is equal to :math:`{\mathit{globalinst}}`.
    * Or:
 
-      * The external address :math:`{\mathit{externaddr}}_1` is equal to :math:`(\mathsf{table}~a)`.
+      * The external address :math:`{\mathit{externaddr}}` is equal to :math:`(\mathsf{table}~a)`.
 
-      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{table}~{\mathit{tableinst}}{.}\mathsf{type})`.
+      * The external type :math:`{\mathit{externtype}}` is equal to :math:`(\mathsf{table}~{\mathit{tableinst}}{.}\mathsf{type})`.
 
       * The table instance :math:`s{.}\mathsf{tables}{}[a]` exists.
 
       * The table instance :math:`s{.}\mathsf{tables}{}[a]` is equal to :math:`{\mathit{tableinst}}`.
    * Or:
 
-      * The external address :math:`{\mathit{externaddr}}_1` is equal to :math:`(\mathsf{mem}~a)`.
+      * The external address :math:`{\mathit{externaddr}}` is equal to :math:`(\mathsf{mem}~a)`.
 
-      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{mem}~{\mathit{meminst}}{.}\mathsf{type})`.
+      * The external type :math:`{\mathit{externtype}}` is equal to :math:`(\mathsf{mem}~{\mathit{meminst}}{.}\mathsf{type})`.
 
       * The memory instance :math:`s{.}\mathsf{mems}{}[a]` exists.
 
       * The memory instance :math:`s{.}\mathsf{mems}{}[a]` is equal to :math:`{\mathit{meminst}}`.
    * Or:
 
-      * The external address :math:`{\mathit{externaddr}}_1` is equal to :math:`(\mathsf{tag}~a)`.
+      * The external address :math:`{\mathit{externaddr}}` is equal to :math:`(\mathsf{tag}~a)`.
 
-      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`(\mathsf{tag}~{\mathit{taginst}}{.}\mathsf{type})`.
+      * The external type :math:`{\mathit{externtype}}` is equal to :math:`(\mathsf{tag}~{\mathit{taginst}}{.}\mathsf{type})`.
 
       * The tag instance :math:`s{.}\mathsf{tags}{}[a]` exists.
 
       * The tag instance :math:`s{.}\mathsf{tags}{}[a]` is equal to :math:`{\mathit{taginst}}`.
    * Or:
 
-      * The external address :math:`{\mathit{externaddr}}_1` is equal to :math:`{\mathit{externaddr}}`.
+      * The external address :math:`{\mathit{externaddr}}` is equal to :math:`{\mathit{externaddr}}`.
 
-      * The external type :math:`{\mathit{externtype}}_1` is equal to :math:`{\mathit{xt}}`.
+      * The external type :math:`{\mathit{externtype}}` is equal to :math:`{\mathit{xt}}`.
 
       * Under the context :math:`s`, the external address :math:`{\mathit{externaddr}}` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{xt}'}`.
 
@@ -16340,35 +16340,35 @@ The external address :math:`{\mathit{externaddr}}` is :ref:`valid <valid-val>` w
 
 
 
-The instruction sequence :math:`{\mathit{instr}}_1` is :ref:`valid <valid-val>` with the function type :math:`{{\mathit{valtype}}_1^\ast}~\rightarrow~{{\mathit{valtype}}_3^\ast}` if:
+The instruction sequence :math:`{\mathit{instr}'}` is :ref:`valid <valid-val>` with the function type :math:`{{\mathit{valtype}}^\ast}~\rightarrow~{{\mathit{valtype}''}^\ast}` if:
 
 
    * Either:
 
-      * The instruction :math:`{\mathit{instr}}_1` is equal to :math:`(\mathsf{i{\scriptstyle 32}} {.} \mathsf{add})`.
+      * The instruction :math:`{\mathit{instr}'}` is equal to :math:`(\mathsf{i{\scriptstyle 32}} {.} \mathsf{add})`.
 
-      * The value type sequence :math:`{{\mathit{valtype}}_1^\ast}` is equal to :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}`.
+      * The value type sequence :math:`{{\mathit{valtype}}^\ast}` is equal to :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}`.
 
-      * The value type sequence :math:`{{\mathit{valtype}}_3^\ast}` is equal to :math:`\mathsf{i{\scriptstyle 32}}`.
+      * The value type sequence :math:`{{\mathit{valtype}''}^\ast}` is equal to :math:`\mathsf{i{\scriptstyle 32}}`.
 
    * Or:
 
-      * The instruction :math:`{\mathit{instr}}_1` is equal to :math:`(\mathsf{global{.}get}~x)`.
+      * The instruction :math:`{\mathit{instr}'}` is equal to :math:`(\mathsf{global{.}get}~x)`.
 
-      * The value type sequence :math:`{{\mathit{valtype}}_1^\ast}` is equal to :math:`\epsilon`.
+      * The value type sequence :math:`{{\mathit{valtype}}^\ast}` is equal to :math:`\epsilon`.
 
-      * The value type sequence :math:`{{\mathit{valtype}}_3^\ast}` is equal to :math:`t`.
+      * The value type sequence :math:`{{\mathit{valtype}''}^\ast}` is equal to :math:`t`.
 
       * The global type :math:`C{.}\mathsf{globals}{}[x]` exists.
 
       * The global type :math:`C{.}\mathsf{globals}{}[x]` is equal to :math:`({\mathsf{mut}^?}~t)`.
    * Or:
 
-      * The instruction :math:`{\mathit{instr}}_1` is equal to :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{instr}}^\ast})`.
+      * The instruction :math:`{\mathit{instr}'}` is equal to :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{instr}}^\ast})`.
 
-      * The value type sequence :math:`{{\mathit{valtype}}_1^\ast}` is equal to :math:`{t_1^\ast}`.
+      * The value type sequence :math:`{{\mathit{valtype}}^\ast}` is equal to :math:`{t_1^\ast}`.
 
-      * The value type sequence :math:`{{\mathit{valtype}}_3^\ast}` is equal to :math:`{t_2^\ast}`.
+      * The value type sequence :math:`{{\mathit{valtype}''}^\ast}` is equal to :math:`{t_2^\ast}`.
 
       * The block type :math:`{\mathit{blocktype}}` is :ref:`valid <valid-val>` as the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
@@ -16867,15 +16867,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Assert: Due to validation, a value is on the top of the stack.
 
-#. Pop the value :math:`{\mathit{val}}_1` from the stack.
+#. Pop the value :math:`{\mathit{val}}` from the stack.
 
-#. If :math:`{\mathit{val}}_1` is :math:`\mathsf{ref{.}null}`, then:
+#. If :math:`{\mathit{val}}` is :math:`\mathsf{ref{.}null}`, then:
 
    a. Trap.
 
-#. If :math:`{\mathit{val}}_1` is :math:`\mathsf{ref{.}i{\scriptstyle 31}}`, then:
+#. If :math:`{\mathit{val}}` is :math:`\mathsf{ref{.}i{\scriptstyle 31}}`, then:
 
-   a. Let :math:`(\mathsf{ref{.}i{\scriptstyle 31}}~i)` be :math:`{\mathit{val}}_1`.
+   a. Let :math:`(\mathsf{ref{.}i{\scriptstyle 31}}~i)` be :math:`{\mathit{val}}`.
 
    #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{{{{\mathrm{extend}}}_{31, 32}^{{\mathit{sx}}}}}{(i)})` to the stack.
 
@@ -16903,15 +16903,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Assert: Due to validation, a value is on the top of the stack.
 
-#. Pop the value :math:`{\mathit{val}}_1` from the stack.
+#. Pop the value :math:`{\mathit{val}}` from the stack.
 
-#. If :math:`{\mathit{val}}_1` is :math:`\mathsf{ref{.}null}`, then:
+#. If :math:`{\mathit{val}}` is :math:`\mathsf{ref{.}null}`, then:
 
    a. Push the value :math:`(\mathsf{ref{.}null}~\mathsf{extern})` to the stack.
 
-#. If :math:`{\mathit{val}}_1` is address value, then:
+#. If :math:`{\mathit{val}}` is address value, then:
 
-   a. Let :math:`{\mathit{addrref}}` be :math:`{\mathit{val}}_1`.
+   a. Let :math:`{\mathit{addrref}}` be :math:`{\mathit{val}}`.
 
    #. Push the value :math:`(\mathsf{ref{.}extern}~{\mathit{addrref}})` to the stack.
 
@@ -16922,15 +16922,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Assert: Due to validation, a value is on the top of the stack.
 
-#. Pop the value :math:`{\mathit{val}}_1` from the stack.
+#. Pop the value :math:`{\mathit{val}}` from the stack.
 
-#. If :math:`{\mathit{val}}_1` is :math:`\mathsf{ref{.}null}`, then:
+#. If :math:`{\mathit{val}}` is :math:`\mathsf{ref{.}null}`, then:
 
    a. Push the value :math:`(\mathsf{ref{.}null}~\mathsf{any})` to the stack.
 
-#. If :math:`{\mathit{val}}_1` is :math:`\mathsf{ref{.}extern}`, then:
+#. If :math:`{\mathit{val}}` is :math:`\mathsf{ref{.}extern}`, then:
 
-   a. Let :math:`(\mathsf{ref{.}extern}~{\mathit{addrref}})` be :math:`{\mathit{val}}_1`.
+   a. Let :math:`(\mathsf{ref{.}extern}~{\mathit{addrref}})` be :math:`{\mathit{val}}`.
 
    #. Push the value :math:`{\mathit{addrref}}` to the stack.
 
@@ -17177,17 +17177,17 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
 
-:math:`{{{\mathit{lanetype}}_1}{\mathsf{x}}{M}{.}\mathsf{extract\_lane}}{\mathsf{\_}}{{{\mathit{sx}}_1^?}}~i`
-.............................................................................................................
+:math:`{{{\mathit{lanetype}}}{\mathsf{x}}{M}{.}\mathsf{extract\_lane}}{\mathsf{\_}}{{{\mathit{sx}'}^?}}~i`
+..........................................................................................................
 
 
 1. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
-#. If :math:`{{\mathit{sx}}_1^?}` is not defined and :math:`{\mathit{lanetype}}_1` is number type, then:
+#. If :math:`{{\mathit{sx}'}^?}` is not defined and :math:`{\mathit{lanetype}}` is number type, then:
 
-   a. Let :math:`{\mathit{nt}}` be :math:`{\mathit{lanetype}}_1`.
+   a. Let :math:`{\mathit{nt}}` be :math:`{\mathit{lanetype}}`.
 
    #. If :math:`i < {|{{\mathrm{lanes}}}_{{{\mathit{nt}}}{\mathsf{x}}{M}}(c_1)|}`, then:
 
@@ -17195,13 +17195,13 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       #) Push the value :math:`({\mathit{nt}}{.}\mathsf{const}~c_2)` to the stack.
 
-#. If :math:`{\mathit{lanetype}}_1` is packed type, then:
+#. If :math:`{\mathit{lanetype}}` is packed type, then:
 
-   a. Let :math:`{\mathit{pt}}` be :math:`{\mathit{lanetype}}_1`.
+   a. Let :math:`{\mathit{pt}}` be :math:`{\mathit{lanetype}}`.
 
-   #. If :math:`{{\mathit{sx}}_1^?}` is defined, then:
+   #. If :math:`{{\mathit{sx}'}^?}` is defined, then:
 
-      1) Let :math:`{\mathit{sx}}` be :math:`{{\mathit{sx}}_1^?}`.
+      1) Let :math:`{\mathit{sx}}` be :math:`{{\mathit{sx}'}^?}`.
 
       #) If :math:`i < {|{{\mathrm{lanes}}}_{{{\mathit{pt}}}{\mathsf{x}}{M}}(c_1)|}`, then:
 
@@ -17432,17 +17432,17 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a :ref:`value type <syntax-val'>` is on the top of the stack.
 
-#. Pop the value :math:`{\mathit{val}}_1` from the stack.
+#. Pop the value :math:`{\mathit{val}'}` from the stack.
 
-#. If :math:`{\mathit{val}}_1` is :math:`\mathsf{ref{.}null}`, then:
+#. If :math:`{\mathit{val}'}` is :math:`\mathsf{ref{.}null}`, then:
 
    a. Trap.
 
-#. If :math:`{\mathit{val}}_1` is :math:`\mathsf{ref{.}func}`, then:
+#. If :math:`{\mathit{val}'}` is :math:`\mathsf{ref{.}func}`, then:
 
-   a. Let :math:`(\mathsf{ref{.}func}~a)` be :math:`{\mathit{val}}_1`.
+   a. Let :math:`(\mathsf{ref{.}func}~a)` be :math:`{\mathit{val}'}`.
 
    #. If :math:`a < {|z{.}\mathsf{funcs}|}`, then:
 
@@ -17522,11 +17522,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    a. If the first non-value entry of the stack is a :math:`\mathsf{frame}`, then:
 
-      1) Assert: Due to validation, a value is on the top of the stack.
+      1) Assert: Due to validation, a :ref:`value type <syntax-val''>` is on the top of the stack.
 
-      #) Pop the value :math:`{\mathit{val}}_1` from the stack.
+      #) Pop the value :math:`{\mathit{val}''}` from the stack.
 
-      #) If :math:`{\mathit{val}}_1` is :math:`\mathsf{ref{.}null}`, then:
+      #) If :math:`{\mathit{val}''}` is :math:`\mathsf{ref{.}null}`, then:
 
          a) Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
 
@@ -17534,9 +17534,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
          #) Trap.
 
-      #) If :math:`{\mathit{val}}_1` is :math:`\mathsf{ref{.}func}`, then:
+      #) If :math:`{\mathit{val}''}` is :math:`\mathsf{ref{.}func}`, then:
 
-         a) Let :math:`(\mathsf{ref{.}func}~a)` be :math:`{\mathit{val}}_1`.
+         a) Let :math:`(\mathsf{ref{.}func}~a)` be :math:`{\mathit{val}''}`.
 
          #) If :math:`a < {|z{.}\mathsf{funcs}|}`, then:
 
@@ -17567,17 +17567,17 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a :ref:`value type <syntax-val'>` is on the top of the stack.
 
-#. Pop the value :math:`{\mathit{val}}_1` from the stack.
+#. Pop the value :math:`{\mathit{val}'}` from the stack.
 
-#. If :math:`{\mathit{val}}_1` is :math:`\mathsf{ref{.}null}`, then:
+#. If :math:`{\mathit{val}'}` is :math:`\mathsf{ref{.}null}`, then:
 
    a. Trap.
 
-#. If :math:`{\mathit{val}}_1` is :math:`\mathsf{ref{.}exn}`, then:
+#. If :math:`{\mathit{val}'}` is :math:`\mathsf{ref{.}exn}`, then:
 
-   a. Let :math:`(\mathsf{ref{.}exn}~a)` be :math:`{\mathit{val}}_1`.
+   a. Let :math:`(\mathsf{ref{.}exn}~a)` be :math:`{\mathit{val}'}`.
 
    #. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
 
@@ -17607,7 +17607,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       #) Else if not the first non-value entry of the stack is a :math:`\mathsf{handler}`, then:
 
-         a) Throw the exception :math:`{\mathit{val}}_1` as a result.
+         a) Throw the exception :math:`{\mathit{val}'}` as a result.
 
       #) Else:
 
@@ -17615,9 +17615,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
          #) Let :math:`n` be the arity of H
 
-         #) Let :math:`{{\mathit{catch}}_1^\ast}` be the catch handler of H
+         #) Let :math:`{{\mathit{catch}''}^\ast}` be the catch handler of H
 
-         #) If :math:`{{\mathit{catch}}_1^\ast} = \epsilon`, then:
+         #) If :math:`{{\mathit{catch}''}^\ast} = \epsilon`, then:
 
             1. Pop the :math:`\mathsf{handler}` H from the stack.
 
@@ -17627,7 +17627,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
          #) Else if :math:`a \geq {|z{.}\mathsf{exns}|}`, then:
 
-            1. Let :math:`{\mathit{catch}}_0~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_1^\ast}`.
+            1. Let :math:`{\mathit{catch}}_0~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}''}^\ast}`.
 
             #. If :math:`{\mathit{catch}}_0` is :math:`\mathsf{catch\_all}`, then:
 
@@ -17639,7 +17639,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
             #. Else if :math:`{\mathit{catch}}_0` is not :math:`\mathsf{catch\_all\_ref}`, then:
 
-               a. Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_1^\ast}`.
+               a. Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}''}^\ast}`.
 
                #. Pop the :math:`\mathsf{handler}` H from the stack.
 
@@ -17665,7 +17665,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
             1. Let :math:`{{\mathit{val}}^\ast}` be :math:`z{.}\mathsf{exns}{}[a]{.}\mathsf{fields}`.
 
-            #. Let :math:`{\mathit{catch}}_0~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_1^\ast}`.
+            #. Let :math:`{\mathit{catch}}_0~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}''}^\ast}`.
 
             #. If :math:`{\mathit{catch}}_0` is :math:`\mathsf{catch}`, then:
 
@@ -17681,7 +17681,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
                #. Else:
 
-                  1) Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_1^\ast}`.
+                  1) Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}''}^\ast}`.
 
                   #) Pop the :math:`\mathsf{handler}` H from the stack.
 
@@ -17699,7 +17699,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
                #. If :math:`x \geq {|z{.}\mathsf{tags}|}`, then:
 
-                  1) Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_1^\ast}`.
+                  1) Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}''}^\ast}`.
 
                   #) Pop the :math:`\mathsf{handler}` H from the stack.
 
@@ -17713,7 +17713,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
                #. Else if :math:`z{.}\mathsf{exns}{}[a]{.}\mathsf{tag} \neq z{.}\mathsf{tags}{}[x]`, then:
 
-                  1) Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_1^\ast}`.
+                  1) Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}''}^\ast}`.
 
                   #) Pop the :math:`\mathsf{handler}` H from the stack.
 
@@ -17747,7 +17747,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
                #. Else if :math:`{\mathit{catch}}_0` is not :math:`\mathsf{catch\_all\_ref}`, then:
 
-                  1) Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_1^\ast}`.
+                  1) Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}''}^\ast}`.
 
                   #) Pop the :math:`\mathsf{handler}` H from the stack.
 
@@ -17771,7 +17771,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Else if not the first non-value entry of the stack is a :math:`\mathsf{label}` and not the first non-value entry of the stack is a :math:`\mathsf{frame}` and not the first non-value entry of the stack is a :math:`\mathsf{handler}`, then:
 
-   a. Throw the exception :math:`{\mathit{val}}_1` as a result.
+   a. Throw the exception :math:`{\mathit{val}'}` as a result.
 
 
 :math:`\mathsf{try\_table}~{\mathit{bt}}~{{\mathit{catch}}^\ast}~{{\mathit{instr}}^\ast}`
@@ -17890,15 +17890,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Assert: Due to validation, a value is on the top of the stack.
 
-#. Pop the value :math:`{\mathit{val}}_1` from the stack.
+#. Pop the value :math:`{\mathit{val}}` from the stack.
 
-#. If :math:`{\mathit{val}}_1` is :math:`\mathsf{ref{.}null}`, then:
+#. If :math:`{\mathit{val}}` is :math:`\mathsf{ref{.}null}`, then:
 
    a. Trap.
 
-#. If :math:`{\mathit{val}}_1` is :math:`\mathsf{ref{.}struct}`, then:
+#. If :math:`{\mathit{val}}` is :math:`\mathsf{ref{.}struct}`, then:
 
-   a. Let :math:`(\mathsf{ref{.}struct}~a)` be :math:`{\mathit{val}}_1`.
+   a. Let :math:`(\mathsf{ref{.}struct}~a)` be :math:`{\mathit{val}}`.
 
    #. If :math:`i < {|z{.}\mathsf{structs}{}[a]{.}\mathsf{fields}|}` and :math:`a < {|z{.}\mathsf{structs}|}`, then:
 
@@ -18008,15 +18008,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Assert: Due to validation, a value is on the top of the stack.
 
-#. Pop the value :math:`{\mathit{val}}_1` from the stack.
+#. Pop the value :math:`{\mathit{val}}` from the stack.
 
-#. If :math:`{\mathit{val}}_1` is :math:`\mathsf{ref{.}null}`, then:
+#. If :math:`{\mathit{val}}` is :math:`\mathsf{ref{.}null}`, then:
 
    a. Trap.
 
-#. If :math:`{\mathit{val}}_1` is :math:`\mathsf{ref{.}array}`, then:
+#. If :math:`{\mathit{val}}` is :math:`\mathsf{ref{.}array}`, then:
 
-   a. Let :math:`(\mathsf{ref{.}array}~a)` be :math:`{\mathit{val}}_1`.
+   a. Let :math:`(\mathsf{ref{.}array}~a)` be :math:`{\mathit{val}}`.
 
    #. If :math:`a < {|z{.}\mathsf{arrays}|}` and :math:`i \geq {|z{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}|}`, then:
 
@@ -18041,15 +18041,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Assert: Due to validation, a value is on the top of the stack.
 
-#. Pop the value :math:`{\mathit{val}}_1` from the stack.
+#. Pop the value :math:`{\mathit{val}}` from the stack.
 
-#. If :math:`{\mathit{val}}_1` is :math:`\mathsf{ref{.}null}`, then:
+#. If :math:`{\mathit{val}}` is :math:`\mathsf{ref{.}null}`, then:
 
    a. Trap.
 
-#. If :math:`{\mathit{val}}_1` is :math:`\mathsf{ref{.}array}`, then:
+#. If :math:`{\mathit{val}}` is :math:`\mathsf{ref{.}array}`, then:
 
-   a. Let :math:`(\mathsf{ref{.}array}~a)` be :math:`{\mathit{val}}_1`.
+   a. Let :math:`(\mathsf{ref{.}array}~a)` be :math:`{\mathit{val}}`.
 
    #. If :math:`a < {|z{.}\mathsf{arrays}|}`, then:
 
@@ -18074,17 +18074,17 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a :ref:`value type <syntax-val'>` is on the top of the stack.
 
-#. Pop the value :math:`{\mathit{val}}_1` from the stack.
+#. Pop the value :math:`{\mathit{val}'}` from the stack.
 
-#. If :math:`{\mathit{val}}_1` is :math:`\mathsf{ref{.}null}`, then:
+#. If :math:`{\mathit{val}'}` is :math:`\mathsf{ref{.}null}`, then:
 
    a. Trap.
 
-#. If :math:`{\mathit{val}}_1` is :math:`\mathsf{ref{.}array}`, then:
+#. If :math:`{\mathit{val}'}` is :math:`\mathsf{ref{.}array}`, then:
 
-   a. Let :math:`(\mathsf{ref{.}array}~a)` be :math:`{\mathit{val}}_1`.
+   a. Let :math:`(\mathsf{ref{.}array}~a)` be :math:`{\mathit{val}'}`.
 
    #. If :math:`a \geq {|z{.}\mathsf{arrays}|}`, then:
 
@@ -18135,35 +18135,35 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Assert: Due to validation, a value is on the top of the stack.
 
-#. Pop the value :math:`{\mathit{val}}_1` from the stack.
+#. Pop the value :math:`{\mathit{val}}` from the stack.
 
 #. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1)` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a :ref:`value type <syntax-val'>` is on the top of the stack.
 
-#. Pop the value :math:`{\mathit{val}}_2` from the stack.
+#. Pop the value :math:`{\mathit{val}'}` from the stack.
 
-#. If :math:`{\mathit{val}}_2` is :math:`\mathsf{ref{.}null}` and :math:`{\mathit{val}}_1` is reference value, then:
-
-   a. Trap.
-
-#. If :math:`{\mathit{val}}_1` is :math:`\mathsf{ref{.}null}` and :math:`{\mathit{val}}_2` is reference value, then:
+#. If :math:`{\mathit{val}'}` is :math:`\mathsf{ref{.}null}` and :math:`{\mathit{val}}` is reference value, then:
 
    a. Trap.
 
-#. If :math:`{\mathit{val}}_2` is :math:`\mathsf{ref{.}array}`, then:
+#. If :math:`{\mathit{val}}` is :math:`\mathsf{ref{.}null}` and :math:`{\mathit{val}'}` is reference value, then:
 
-   a. Let :math:`(\mathsf{ref{.}array}~a_1)` be :math:`{\mathit{val}}_2`.
+   a. Trap.
 
-   #. If :math:`{\mathit{val}}_1` is :math:`\mathsf{ref{.}array}`, then:
+#. If :math:`{\mathit{val}'}` is :math:`\mathsf{ref{.}array}`, then:
+
+   a. Let :math:`(\mathsf{ref{.}array}~a_1)` be :math:`{\mathit{val}'}`.
+
+   #. If :math:`{\mathit{val}}` is :math:`\mathsf{ref{.}array}`, then:
 
       1) If :math:`a_1 < {|z{.}\mathsf{arrays}|}` and :math:`i_1 + n > {|z{.}\mathsf{arrays}{}[a_1]{.}\mathsf{fields}|}`, then:
 
          a) Trap.
 
-      #) Let :math:`(\mathsf{ref{.}array}~a_2)` be :math:`{\mathit{val}}_1`.
+      #) Let :math:`(\mathsf{ref{.}array}~a_2)` be :math:`{\mathit{val}}`.
 
       #) If :math:`a_2 \geq {|z{.}\mathsf{arrays}|}`, then:
 
@@ -18254,15 +18254,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Assert: Due to validation, a value is on the top of the stack.
 
-#. Pop the value :math:`{\mathit{val}}_1` from the stack.
+#. Pop the value :math:`{\mathit{val}}` from the stack.
 
-#. If :math:`{\mathit{val}}_1` is :math:`\mathsf{ref{.}null}`, then:
+#. If :math:`{\mathit{val}}` is :math:`\mathsf{ref{.}null}`, then:
 
    a. Trap.
 
-#. If :math:`{\mathit{val}}_1` is :math:`\mathsf{ref{.}array}`, then:
+#. If :math:`{\mathit{val}}` is :math:`\mathsf{ref{.}array}`, then:
 
-   a. Let :math:`(\mathsf{ref{.}array}~a)` be :math:`{\mathit{val}}_1`.
+   a. Let :math:`(\mathsf{ref{.}array}~a)` be :math:`{\mathit{val}}`.
 
    #. If :math:`a < {|z{.}\mathsf{arrays}|}` and :math:`i + n > {|z{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}|}`, then:
 
@@ -18319,15 +18319,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Assert: Due to validation, a value is on the top of the stack.
 
-#. Pop the value :math:`{\mathit{val}}_1` from the stack.
+#. Pop the value :math:`{\mathit{val}}` from the stack.
 
-#. If :math:`{\mathit{val}}_1` is :math:`\mathsf{ref{.}null}`, then:
+#. If :math:`{\mathit{val}}` is :math:`\mathsf{ref{.}null}`, then:
 
    a. Trap.
 
-#. If :math:`{\mathit{val}}_1` is :math:`\mathsf{ref{.}array}`, then:
+#. If :math:`{\mathit{val}}` is :math:`\mathsf{ref{.}array}`, then:
 
-   a. Let :math:`(\mathsf{ref{.}array}~a)` be :math:`{\mathit{val}}_1`.
+   a. Let :math:`(\mathsf{ref{.}array}~a)` be :math:`{\mathit{val}}`.
 
    #. If :math:`a < {|z{.}\mathsf{arrays}|}` and :math:`i + n > {|z{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}|}`, then:
 
@@ -18583,8 +18583,8 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
    #. Execute the instruction :math:`(\mathsf{table{.}init}~x~y)`.
 
 
-:math:`{{\mathit{numtype}}_1{.}\mathsf{load}}{{{\mathit{loadop\_{\scriptstyle 1}}}^?}}~x~{\mathit{ao}}`
-.......................................................................................................
+:math:`{{\mathit{numtype}}{.}\mathsf{load}}{{{\mathit{loadop}}^?}}~x~{\mathit{ao}}`
+...................................................................................
 
 
 1. Let :math:`z` be the current state.
@@ -18593,9 +18593,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~i)` from the stack.
 
-#. If :math:`{{\mathit{loadop\_{\scriptstyle 1}}}^?}` is not defined, then:
+#. If :math:`{{\mathit{loadop}}^?}` is not defined, then:
 
-   a. Let :math:`{\mathit{nt}}` be :math:`{\mathit{numtype}}_1`.
+   a. Let :math:`{\mathit{nt}}` be :math:`{\mathit{numtype}}`.
 
    #. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|{\mathit{nt}}|} / 8 > {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
 
@@ -18605,11 +18605,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. Push the value :math:`({\mathit{nt}}{.}\mathsf{const}~c)` to the stack.
 
-#. If :math:`{\mathit{numtype}}_1` is :math:`{\mathsf{i}}{N}`, then:
+#. If :math:`{\mathit{numtype}}` is :math:`{\mathsf{i}}{N}`, then:
 
-   a. If :math:`{{\mathit{loadop\_{\scriptstyle 1}}}^?}` is defined, then:
+   a. If :math:`{{\mathit{loadop}}^?}` is defined, then:
 
-      1) Let :math:`{\mathit{loadop\_{\scriptstyle 0}}}` be :math:`{{\mathit{loadop\_{\scriptstyle 1}}}^?}`.
+      1) Let :math:`{\mathit{loadop\_{\scriptstyle 0}}}` be :math:`{{\mathit{loadop}}^?}`.
 
       #) Let :math:`{n}{\mathsf{\_}}{{\mathit{sx}}}` be :math:`{\mathit{loadop\_{\scriptstyle 0}}}`.
 
@@ -18617,11 +18617,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
          a) Trap.
 
-   #. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}_1`.
+   #. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}`.
 
-   #. If :math:`{{\mathit{loadop\_{\scriptstyle 1}}}^?}` is defined, then:
+   #. If :math:`{{\mathit{loadop}}^?}` is defined, then:
 
-      1) Let :math:`{\mathit{loadop\_{\scriptstyle 0}}}` be :math:`{{\mathit{loadop\_{\scriptstyle 1}}}^?}`.
+      1) Let :math:`{\mathit{loadop\_{\scriptstyle 0}}}` be :math:`{{\mathit{loadop}}^?}`.
 
       #) Let :math:`{n}{\mathsf{\_}}{{\mathit{sx}}}` be :math:`{\mathit{loadop\_{\scriptstyle 0}}}`.
 
@@ -18630,8 +18630,8 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
       #) Push the value :math:`({\mathsf{i}}{N}{.}\mathsf{const}~{{{{\mathrm{extend}}}_{n, {|{\mathsf{i}}{N}|}}^{{\mathit{sx}}}}}{(c)})` to the stack.
 
 
-:math:`{\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{{\mathit{vloadop\_{\scriptstyle 1}}}^?}}~x~{\mathit{ao}}`
-................................................................................................................
+:math:`{\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{{\mathit{vloadop}}^?}}~x~{\mathit{ao}}`
+..............................................................................................
 
 
 1. Let :math:`z` be the current state.
@@ -18640,11 +18640,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~i)` from the stack.
 
-#. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|\mathsf{v{\scriptstyle 128}}|} / 8 > {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}` and :math:`{{\mathit{vloadop\_{\scriptstyle 1}}}^?}` is not defined, then:
+#. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|\mathsf{v{\scriptstyle 128}}|} / 8 > {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}` and :math:`{{\mathit{vloadop}}^?}` is not defined, then:
 
    a. Trap.
 
-#. If :math:`{{\mathit{vloadop\_{\scriptstyle 1}}}^?}` is not defined, then:
+#. If :math:`{{\mathit{vloadop}}^?}` is not defined, then:
 
    a. Let :math:`c` be the result for which :math:`{{\mathrm{bytes}}}_{\mathsf{v{\scriptstyle 128}}}(c)` :math:`=` :math:`z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|\mathsf{v{\scriptstyle 128}}|} / 8]`.
 
@@ -18652,7 +18652,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Else:
 
-   a. Let :math:`{\mathit{vloadop\_{\scriptstyle 0}}}` be :math:`{{\mathit{vloadop\_{\scriptstyle 1}}}^?}`.
+   a. Let :math:`{\mathit{vloadop\_{\scriptstyle 0}}}` be :math:`{{\mathit{vloadop}}^?}`.
 
    #. If :math:`{\mathit{vloadop\_{\scriptstyle 0}}}` is :math:`\mathsf{shape}`, then:
 
@@ -18972,17 +18972,17 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`{\mathit{val}}` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a :ref:`value type <syntax-val'>` is on the top of the stack.
 
-#. Pop the value :math:`{\mathit{val}}_1` from the stack.
+#. Pop the value :math:`{\mathit{val}'}` from the stack.
 
-#. If :math:`{\mathit{val}}_1` is :math:`\mathsf{ref{.}null}`, then:
+#. If :math:`{\mathit{val}'}` is :math:`\mathsf{ref{.}null}`, then:
 
    a. Trap.
 
-#. If :math:`{\mathit{val}}_1` is :math:`\mathsf{ref{.}struct}`, then:
+#. If :math:`{\mathit{val}'}` is :math:`\mathsf{ref{.}struct}`, then:
 
-   a. Let :math:`(\mathsf{ref{.}struct}~a)` be :math:`{\mathit{val}}_1`.
+   a. Let :math:`(\mathsf{ref{.}struct}~a)` be :math:`{\mathit{val}'}`.
 
    #. Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])` is :math:`\mathsf{struct}`.
 
@@ -19034,17 +19034,17 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Assert: Due to validation, a :ref:`value type <syntax-val'>` is on the top of the stack.
 
-#. Pop the value :math:`{\mathit{val}}_1` from the stack.
+#. Pop the value :math:`{\mathit{val}'}` from the stack.
 
-#. If :math:`{\mathit{val}}_1` is :math:`\mathsf{ref{.}null}`, then:
+#. If :math:`{\mathit{val}'}` is :math:`\mathsf{ref{.}null}`, then:
 
    a. Trap.
 
-#. If :math:`{\mathit{val}}_1` is :math:`\mathsf{ref{.}array}`, then:
+#. If :math:`{\mathit{val}'}` is :math:`\mathsf{ref{.}array}`, then:
 
-   a. Let :math:`(\mathsf{ref{.}array}~a)` be :math:`{\mathit{val}}_1`.
+   a. Let :math:`(\mathsf{ref{.}array}~a)` be :math:`{\mathit{val}'}`.
 
    #. If :math:`a < {|z{.}\mathsf{arrays}|}` and :math:`i \geq {|z{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}|}`, then:
 
@@ -19142,39 +19142,39 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Perform :math:`z{}[{.}\mathsf{elems}{}[x]{.}\mathsf{refs} = \epsilon]`.
 
 
-:math:`{{\mathit{numtype}}_1{.}\mathsf{store}}{{{\mathit{storeop\_{\scriptstyle 1}}}^?}}~x~{\mathit{ao}}`
-.........................................................................................................
+:math:`{{\mathit{numtype}}{.}\mathsf{store}}{{{\mathit{storeop}}^?}}~x~{\mathit{ao}}`
+.....................................................................................
 
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-numtype_3>` is on the top of the stack.
+#. Assert: Due to validation, a :ref:`number type <syntax-numtype''>` is on the top of the stack.
 
-#. Pop the value :math:`({\mathit{numtype}}_3{.}\mathsf{const}~c)` from the stack.
+#. Pop the value :math:`({\mathit{numtype}''}{.}\mathsf{const}~c)` from the stack.
 
 #. Assert: Due to validation, a :ref:`number type <syntax-at>` is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~i)` from the stack.
 
-#. Let :math:`{\mathit{nt}}` be :math:`{\mathit{numtype}}_3`.
+#. Let :math:`{\mathit{nt}}` be :math:`{\mathit{numtype}''}`.
 
-#. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|{\mathit{nt}}|} / 8 > {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}` and :math:`{\mathit{numtype}}_1 = {\mathit{nt}}` and :math:`{{\mathit{storeop\_{\scriptstyle 1}}}^?}` is not defined, then:
+#. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|{\mathit{nt}}|} / 8 > {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}` and :math:`{\mathit{numtype}} = {\mathit{nt}}` and :math:`{{\mathit{storeop}}^?}` is not defined, then:
 
    a. Trap.
 
-#. If :math:`{\mathit{numtype}}_1 = {\mathit{nt}}` and :math:`{{\mathit{storeop\_{\scriptstyle 1}}}^?}` is not defined, then:
+#. If :math:`{\mathit{numtype}} = {\mathit{nt}}` and :math:`{{\mathit{storeop}}^?}` is not defined, then:
 
    a. Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{{\mathit{nt}}}(c)`.
 
    #. Perform :math:`z{}[{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|{\mathit{nt}}|} / 8] = {b^\ast}]`.
 
-#. If :math:`{\mathit{numtype}}_3` is :math:`{\mathsf{i}}{N}`, then:
+#. If :math:`{\mathit{numtype}''}` is :math:`{\mathsf{i}}{N}`, then:
 
-   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}_3`.
+   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}''}`.
 
-   #. If :math:`{\mathit{numtype}}_1 = {\mathsf{i}}{N}` and :math:`{{\mathit{storeop\_{\scriptstyle 1}}}^?}` is defined, then:
+   #. If :math:`{\mathit{numtype}} = {\mathsf{i}}{N}` and :math:`{{\mathit{storeop}}^?}` is defined, then:
 
-      1) Let :math:`n` be :math:`{{\mathit{storeop\_{\scriptstyle 1}}}^?}`.
+      1) Let :math:`n` be :math:`{{\mathit{storeop}}^?}`.
 
       #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + n / 8 > {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
 
@@ -19282,95 +19282,95 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`j`.
 
 
-:math:`{\Sigma}\, {n_1^\ast}`
-.............................
+:math:`{\Sigma}\, {n^\ast}`
+...........................
 
 
-1. If :math:`{n_1^\ast} = \epsilon`, then:
+1. If :math:`{n^\ast} = \epsilon`, then:
 
    a. Return :math:`0`.
 
-#. Let :math:`n~{{n'}^\ast}` be :math:`{n_1^\ast}`.
+#. Let :math:`n~{{n'}^\ast}` be :math:`{n^\ast}`.
 
 #. Return :math:`n + {\Sigma}\, {{n'}^\ast}`.
 
 
-:math:`{\Pi}\, {n_1^\ast}`
-..........................
+:math:`{\Pi}\, {n^\ast}`
+........................
 
 
-1. If :math:`{n_1^\ast} = \epsilon`, then:
+1. If :math:`{n^\ast} = \epsilon`, then:
 
    a. Return :math:`1`.
 
-#. Let :math:`n~{{n'}^\ast}` be :math:`{n_1^\ast}`.
+#. Let :math:`n~{{n'}^\ast}` be :math:`{n^\ast}`.
 
 #. Return :math:`n \cdot {\Pi}\, {{n'}^\ast}`.
 
 
-:math:`{X_1^\ast}`
-..................
+:math:`{X^\ast}`
+................
 
 
-1. If :math:`{X_1^\ast} = \epsilon`, then:
+1. If :math:`{X^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Assert: Due to validation, :math:`{|{X_1^\ast}|} = 1`.
+#. Assert: Due to validation, :math:`{|{X^\ast}|} = 1`.
 
-#. Let :math:`w` be :math:`{X_1^\ast}`.
+#. Let :math:`w` be :math:`{X^\ast}`.
 
 #. Return :math:`w`.
 
 
-:math:`{\bigoplus}\, {X_1^\ast}`
-................................
+:math:`{\bigoplus}\, {X^\ast}`
+..............................
 
 
-1. If :math:`{X_1^\ast} = \epsilon`, then:
+1. If :math:`{X^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{w^\ast}~{{{w'}^\ast}^\ast}` be :math:`{X_1^\ast}`.
+#. Let :math:`{w^\ast}~{{{w'}^\ast}^\ast}` be :math:`{X^\ast}`.
 
 #. Return :math:`{w^\ast}~{\bigoplus}\, {{{w'}^\ast}^\ast}`.
 
 
-:math:`{\bigoplus}\, {X_1^\ast}`
-................................
+:math:`{\bigoplus}\, {X^\ast}`
+..............................
 
 
-1. If :math:`{X_1^\ast} = \epsilon`, then:
+1. If :math:`{X^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{w^{n}}~{({{w'}^{n}})^\ast}` be :math:`{X_1^\ast}`.
+#. Let :math:`{w^{n}}~{({{w'}^{n}})^\ast}` be :math:`{X^\ast}`.
 
 #. Return :math:`{w^{n}}~{\bigoplus}\, {({{w'}^{n}})^\ast}`.
 
 
-:math:`{X_1^\ast}~{\mathrm{disjoint}}`
-......................................
+:math:`{X^\ast}~{\mathrm{disjoint}}`
+....................................
 
 
-1. If :math:`{X_1^\ast} = \epsilon`, then:
+1. If :math:`{X^\ast} = \epsilon`, then:
 
    a. Return true.
 
-#. Let :math:`w~{{w'}^\ast}` be :math:`{X_1^\ast}`.
+#. Let :math:`w~{{w'}^\ast}` be :math:`{X^\ast}`.
 
 #. Return :math:`w` is not contained in :math:`{{w'}^\ast}` and :math:`{{w'}^\ast}~{\mathrm{disjoint}}`.
 
 
-:math:`{{\mathrm{setminus{\kern-0.1em\scriptstyle 1}}}}_{X}(w, {X_1^\ast})`
-...........................................................................
+:math:`{{\mathrm{setminus{\kern-0.1em\scriptstyle 1}}}}_{X}(w, {X^\ast})`
+.........................................................................
 
 
-1. If :math:`{X_1^\ast} = \epsilon`, then:
+1. If :math:`{X^\ast} = \epsilon`, then:
 
    a. Return :math:`w`.
 
-#. Let :math:`w_1~{{w'}^\ast}` be :math:`{X_1^\ast}`.
+#. Let :math:`w_1~{{w'}^\ast}` be :math:`{X^\ast}`.
 
 #. If :math:`w = w_1`, then:
 
@@ -19379,80 +19379,80 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`{{\mathrm{setminus{\kern-0.1em\scriptstyle 1}}}}_{X}(w, {{w'}^\ast})`.
 
 
-:math:`{X_1^\ast} \setminus {w^\ast}`
-.....................................
+:math:`{X^\ast} \setminus {w^\ast}`
+...................................
 
 
-1. If :math:`{X_1^\ast} = \epsilon`, then:
+1. If :math:`{X^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`w_1~{{w'}^\ast}` be :math:`{X_1^\ast}`.
+#. Let :math:`w_1~{{w'}^\ast}` be :math:`{X^\ast}`.
 
 #. Return :math:`{{\mathrm{setminus{\kern-0.1em\scriptstyle 1}}}}_{X}(w_1, {w^\ast})~{{w'}^\ast} \setminus {w^\ast}`.
 
 
-:math:`{{\mathrm{setproduct{\kern-0.1em\scriptstyle 2}}}}_{X}(w_1, {X_1^\ast})`
-...............................................................................
+:math:`{{\mathrm{setproduct{\kern-0.1em\scriptstyle 2}}}}_{X}(w_1, {X^\ast})`
+.............................................................................
 
 
-1. If :math:`{X_1^\ast} = \epsilon`, then:
+1. If :math:`{X^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{{w'}^\ast}~{{w^\ast}^\ast}` be :math:`{X_1^\ast}`.
+#. Let :math:`{{w'}^\ast}~{{w^\ast}^\ast}` be :math:`{X^\ast}`.
 
 #. Return :math:`w_1~{{w'}^\ast}~{{\mathrm{setproduct{\kern-0.1em\scriptstyle 2}}}}_{X}(w_1, {{w^\ast}^\ast})`.
 
 
-:math:`{{\mathrm{setproduct{\kern-0.1em\scriptstyle 1}}}}_{X}({X_1^\ast}, {{w^\ast}^\ast})`
-...........................................................................................
+:math:`{{\mathrm{setproduct{\kern-0.1em\scriptstyle 1}}}}_{X}({X^\ast}, {{w^\ast}^\ast})`
+.........................................................................................
 
 
-1. If :math:`{X_1^\ast} = \epsilon`, then:
+1. If :math:`{X^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`w_1~{{w'}^\ast}` be :math:`{X_1^\ast}`.
+#. Let :math:`w_1~{{w'}^\ast}` be :math:`{X^\ast}`.
 
 #. Return :math:`{{\mathrm{setproduct{\kern-0.1em\scriptstyle 2}}}}_{X}(w_1, {{w^\ast}^\ast})~{{\mathrm{setproduct{\kern-0.1em\scriptstyle 1}}}}_{X}({{w'}^\ast}, {{w^\ast}^\ast})`.
 
 
-:math:`\Large\times~{X_1^\ast}`
-...............................
+:math:`\Large\times~{X^\ast}`
+.............................
 
 
-1. If :math:`{X_1^\ast} = \epsilon`, then:
+1. If :math:`{X^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{w_1^\ast}~{{w^\ast}^\ast}` be :math:`{X_1^\ast}`.
+#. Let :math:`{w_1^\ast}~{{w^\ast}^\ast}` be :math:`{X^\ast}`.
 
 #. Return :math:`{{\mathrm{setproduct{\kern-0.1em\scriptstyle 1}}}}_{X}({w_1^\ast}, \Large\times~{{w^\ast}^\ast})`.
 
 
-:math:`{\mathrm{signif}}(N_1)`
-..............................
+:math:`{\mathrm{signif}}(N)`
+............................
 
 
-1. If :math:`N_1 = 32`, then:
+1. If :math:`N = 32`, then:
 
    a. Return :math:`23`.
 
-#. Assert: Due to validation, :math:`N_1 = 64`.
+#. Assert: Due to validation, :math:`N = 64`.
 
 #. Return :math:`52`.
 
 
-:math:`{\mathrm{expon}}(N_1)`
-.............................
+:math:`{\mathrm{expon}}(N)`
+...........................
 
 
-1. If :math:`N_1 = 32`, then:
+1. If :math:`N = 32`, then:
 
    a. Return :math:`8`.
 
-#. Assert: Due to validation, :math:`N_1 = 64`.
+#. Assert: Due to validation, :math:`N = 64`.
 
 #. Return :math:`11`.
 
@@ -19594,23 +19594,23 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return :math:`(\mathsf{ref}~\mathsf{null}~\mathsf{noextern})`.
 
 
-:math:`{|{\mathit{numtype}}_1|}`
-................................
+:math:`{|{\mathit{numtype}}|}`
+..............................
 
 
-1. If :math:`{\mathit{numtype}}_1 = \mathsf{i{\scriptstyle 32}}`, then:
+1. If :math:`{\mathit{numtype}} = \mathsf{i{\scriptstyle 32}}`, then:
 
    a. Return :math:`32`.
 
-#. If :math:`{\mathit{numtype}}_1 = \mathsf{i{\scriptstyle 64}}`, then:
+#. If :math:`{\mathit{numtype}} = \mathsf{i{\scriptstyle 64}}`, then:
 
    a. Return :math:`64`.
 
-#. If :math:`{\mathit{numtype}}_1 = \mathsf{f{\scriptstyle 32}}`, then:
+#. If :math:`{\mathit{numtype}} = \mathsf{f{\scriptstyle 32}}`, then:
 
    a. Return :math:`32`.
 
-#. Assert: Due to validation, :math:`{\mathit{numtype}}_1 = \mathsf{f{\scriptstyle 64}}`.
+#. Assert: Due to validation, :math:`{\mathit{numtype}} = \mathsf{f{\scriptstyle 64}}`.
 
 #. Return :math:`64`.
 
@@ -19622,55 +19622,55 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return :math:`128`.
 
 
-:math:`{|{\mathit{packtype}}_1|}`
-.................................
+:math:`{|{\mathit{packtype}}|}`
+...............................
 
 
-1. If :math:`{\mathit{packtype}}_1 = \mathsf{i{\scriptstyle 8}}`, then:
+1. If :math:`{\mathit{packtype}} = \mathsf{i{\scriptstyle 8}}`, then:
 
    a. Return :math:`8`.
 
-#. Assert: Due to validation, :math:`{\mathit{packtype}}_1 = \mathsf{i{\scriptstyle 16}}`.
+#. Assert: Due to validation, :math:`{\mathit{packtype}} = \mathsf{i{\scriptstyle 16}}`.
 
 #. Return :math:`16`.
 
 
-:math:`{|{\mathit{lanetype}}_1|}`
-.................................
+:math:`{|{\mathit{lanetype}}|}`
+...............................
 
 
-1. If :math:`{\mathit{lanetype}}_1` is number type, then:
+1. If :math:`{\mathit{lanetype}}` is number type, then:
 
-   a. Let :math:`{\mathit{numtype}}` be :math:`{\mathit{lanetype}}_1`.
+   a. Let :math:`{\mathit{numtype}}` be :math:`{\mathit{lanetype}}`.
 
    #. Return :math:`{|{\mathit{numtype}}|}`.
 
-#. Assert: Due to validation, :math:`{\mathit{lanetype}}_1` is packed type.
+#. Assert: Due to validation, :math:`{\mathit{lanetype}}` is packed type.
 
-#. Let :math:`{\mathit{packtype}}` be :math:`{\mathit{lanetype}}_1`.
+#. Let :math:`{\mathit{packtype}}` be :math:`{\mathit{lanetype}}`.
 
 #. Return :math:`{|{\mathit{packtype}}|}`.
 
 
-:math:`{|{\mathit{storagetype}}_1|}`
-....................................
+:math:`{|{\mathit{storagetype}}|}`
+..................................
 
 
-1. If :math:`{\mathit{storagetype}}_1` is number type, then:
+1. If :math:`{\mathit{storagetype}}` is number type, then:
 
-   a. Let :math:`{\mathit{numtype}}` be :math:`{\mathit{storagetype}}_1`.
+   a. Let :math:`{\mathit{numtype}}` be :math:`{\mathit{storagetype}}`.
 
    #. Return :math:`{|{\mathit{numtype}}|}`.
 
-#. If :math:`{\mathit{storagetype}}_1` is vector type, then:
+#. If :math:`{\mathit{storagetype}}` is vector type, then:
 
-   a. Let :math:`{\mathit{vectype}}` be :math:`{\mathit{storagetype}}_1`.
+   a. Let :math:`{\mathit{vectype}}` be :math:`{\mathit{storagetype}}`.
 
    #. Return :math:`{|{\mathit{vectype}}|}`.
 
-#. Assert: Due to validation, :math:`{\mathit{storagetype}}_1` is packed type.
+#. Assert: Due to validation, :math:`{\mathit{storagetype}}` is packed type.
 
-#. Let :math:`{\mathit{packtype}}` be :math:`{\mathit{storagetype}}_1`.
+#. Let :math:`{\mathit{packtype}}` be :math:`{\mathit{storagetype}}`.
 
 #. Return :math:`{|{\mathit{packtype}}|}`.
 
@@ -19731,47 +19731,47 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return :math:`{|{\mathit{lt}}|}`.
 
 
-:math:`{\mathrm{unpack}}({\mathit{lanetype}}_1)`
-................................................
+:math:`{\mathrm{unpack}}({\mathit{lanetype}})`
+..............................................
 
 
-1. If :math:`{\mathit{lanetype}}_1` is number type, then:
+1. If :math:`{\mathit{lanetype}}` is number type, then:
 
-   a. Let :math:`{\mathit{numtype}}` be :math:`{\mathit{lanetype}}_1`.
+   a. Let :math:`{\mathit{numtype}}` be :math:`{\mathit{lanetype}}`.
 
    #. Return :math:`{\mathit{numtype}}`.
 
-#. Assert: Due to validation, :math:`{\mathit{lanetype}}_1` is packed type.
+#. Assert: Due to validation, :math:`{\mathit{lanetype}}` is packed type.
 
 #. Return :math:`\mathsf{i{\scriptstyle 32}}`.
 
 
-:math:`{\mathrm{unpack}}({\mathit{storagetype}}_1)`
-...................................................
+:math:`{\mathrm{unpack}}({\mathit{storagetype}})`
+.................................................
 
 
-1. If :math:`{\mathit{storagetype}}_1` is value type, then:
+1. If :math:`{\mathit{storagetype}}` is value type, then:
 
-   a. Let :math:`{\mathit{valtype}}` be :math:`{\mathit{storagetype}}_1`.
+   a. Let :math:`{\mathit{valtype}}` be :math:`{\mathit{storagetype}}`.
 
    #. Return :math:`{\mathit{valtype}}`.
 
-#. Assert: Due to validation, :math:`{\mathit{storagetype}}_1` is packed type.
+#. Assert: Due to validation, :math:`{\mathit{storagetype}}` is packed type.
 
 #. Return :math:`\mathsf{i{\scriptstyle 32}}`.
 
 
-:math:`{\mathrm{unpack}}({\mathit{storagetype}}_1)`
-...................................................
+:math:`{\mathrm{unpack}}({\mathit{storagetype}})`
+.................................................
 
 
-1. If :math:`{\mathit{storagetype}}_1` is number type, then:
+1. If :math:`{\mathit{storagetype}}` is number type, then:
 
-   a. Let :math:`{\mathit{numtype}}` be :math:`{\mathit{storagetype}}_1`.
+   a. Let :math:`{\mathit{numtype}}` be :math:`{\mathit{storagetype}}`.
 
    #. Return :math:`{\mathit{numtype}}`.
 
-#. If :math:`{\mathit{storagetype}}_1` is packed type, then:
+#. If :math:`{\mathit{storagetype}}` is packed type, then:
 
    a. Return :math:`\mathsf{i{\scriptstyle 32}}`.
 
@@ -19785,23 +19785,23 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return :math:`{\mathit{vectype}}`.
 
 
-:math:`{\mathrm{unpack}}({\mathit{storagetype}}_1)`
-...................................................
+:math:`{\mathrm{unpack}}({\mathit{storagetype}})`
+.................................................
 
 
-1. If :math:`{\mathit{storagetype}}_1` is literal type, then:
+1. If :math:`{\mathit{storagetype}}` is literal type, then:
 
-   a. Let :math:`{\mathit{consttype}}` be :math:`{\mathit{storagetype}}_1`.
+   a. Let :math:`{\mathit{consttype}}` be :math:`{\mathit{storagetype}}`.
 
    #. Return :math:`{\mathit{consttype}}`.
 
-#. If :math:`{\mathit{storagetype}}_1` is packed type, then:
+#. If :math:`{\mathit{storagetype}}` is packed type, then:
 
    a. Return :math:`\mathsf{i{\scriptstyle 32}}`.
 
-#. If :math:`{\mathit{storagetype}}_1` is lane type, then:
+#. If :math:`{\mathit{storagetype}}` is lane type, then:
 
-   a. Let :math:`{\mathit{lanetype}}` be :math:`{\mathit{storagetype}}_1`.
+   a. Let :math:`{\mathit{lanetype}}` be :math:`{\mathit{storagetype}}`.
 
    #. Return :math:`{\mathrm{unpack}}({\mathit{lanetype}})`.
 
@@ -19829,15 +19829,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return :math:`{\mathrm{unpack}}({\mathsf{i}}{N})`.
 
 
-:math:`{\mathrm{funcs}}({{\mathit{externidx}}_1^\ast})`
-.......................................................
+:math:`{\mathrm{funcs}}({{\mathit{externidx}}^\ast})`
+.....................................................
 
 
-1. If :math:`{{\mathit{externidx}}_1^\ast} = \epsilon`, then:
+1. If :math:`{{\mathit{externidx}}^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{externidx}}_0~{{\mathit{xx}}^\ast}` be :math:`{{\mathit{externidx}}_1^\ast}`.
+#. Let :math:`{\mathit{externidx}}_0~{{\mathit{xx}}^\ast}` be :math:`{{\mathit{externidx}}^\ast}`.
 
 #. If :math:`{\mathit{externidx}}_0` is :math:`\mathsf{func}`, then:
 
@@ -19845,20 +19845,20 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. Return :math:`x~{\mathrm{funcs}}({{\mathit{xx}}^\ast})`.
 
-#. Let :math:`{\mathit{externidx}}~{{\mathit{xx}}^\ast}` be :math:`{{\mathit{externidx}}_1^\ast}`.
+#. Let :math:`{\mathit{externidx}}~{{\mathit{xx}}^\ast}` be :math:`{{\mathit{externidx}}^\ast}`.
 
 #. Return :math:`{\mathrm{funcs}}({{\mathit{xx}}^\ast})`.
 
 
-:math:`{\mathrm{globals}}({{\mathit{externidx}}_1^\ast})`
-.........................................................
+:math:`{\mathrm{globals}}({{\mathit{externidx}}^\ast})`
+.......................................................
 
 
-1. If :math:`{{\mathit{externidx}}_1^\ast} = \epsilon`, then:
+1. If :math:`{{\mathit{externidx}}^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{externidx}}_0~{{\mathit{xx}}^\ast}` be :math:`{{\mathit{externidx}}_1^\ast}`.
+#. Let :math:`{\mathit{externidx}}_0~{{\mathit{xx}}^\ast}` be :math:`{{\mathit{externidx}}^\ast}`.
 
 #. If :math:`{\mathit{externidx}}_0` is :math:`\mathsf{global}`, then:
 
@@ -19866,20 +19866,20 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. Return :math:`x~{\mathrm{globals}}({{\mathit{xx}}^\ast})`.
 
-#. Let :math:`{\mathit{externidx}}~{{\mathit{xx}}^\ast}` be :math:`{{\mathit{externidx}}_1^\ast}`.
+#. Let :math:`{\mathit{externidx}}~{{\mathit{xx}}^\ast}` be :math:`{{\mathit{externidx}}^\ast}`.
 
 #. Return :math:`{\mathrm{globals}}({{\mathit{xx}}^\ast})`.
 
 
-:math:`{\mathrm{tables}}({{\mathit{externidx}}_1^\ast})`
-........................................................
+:math:`{\mathrm{tables}}({{\mathit{externidx}}^\ast})`
+......................................................
 
 
-1. If :math:`{{\mathit{externidx}}_1^\ast} = \epsilon`, then:
+1. If :math:`{{\mathit{externidx}}^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{externidx}}_0~{{\mathit{xx}}^\ast}` be :math:`{{\mathit{externidx}}_1^\ast}`.
+#. Let :math:`{\mathit{externidx}}_0~{{\mathit{xx}}^\ast}` be :math:`{{\mathit{externidx}}^\ast}`.
 
 #. If :math:`{\mathit{externidx}}_0` is :math:`\mathsf{table}`, then:
 
@@ -19887,20 +19887,20 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. Return :math:`x~{\mathrm{tables}}({{\mathit{xx}}^\ast})`.
 
-#. Let :math:`{\mathit{externidx}}~{{\mathit{xx}}^\ast}` be :math:`{{\mathit{externidx}}_1^\ast}`.
+#. Let :math:`{\mathit{externidx}}~{{\mathit{xx}}^\ast}` be :math:`{{\mathit{externidx}}^\ast}`.
 
 #. Return :math:`{\mathrm{tables}}({{\mathit{xx}}^\ast})`.
 
 
-:math:`{\mathrm{mems}}({{\mathit{externidx}}_1^\ast})`
-......................................................
+:math:`{\mathrm{mems}}({{\mathit{externidx}}^\ast})`
+....................................................
 
 
-1. If :math:`{{\mathit{externidx}}_1^\ast} = \epsilon`, then:
+1. If :math:`{{\mathit{externidx}}^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{externidx}}_0~{{\mathit{xx}}^\ast}` be :math:`{{\mathit{externidx}}_1^\ast}`.
+#. Let :math:`{\mathit{externidx}}_0~{{\mathit{xx}}^\ast}` be :math:`{{\mathit{externidx}}^\ast}`.
 
 #. If :math:`{\mathit{externidx}}_0` is :math:`\mathsf{mem}`, then:
 
@@ -19908,20 +19908,20 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. Return :math:`x~{\mathrm{mems}}({{\mathit{xx}}^\ast})`.
 
-#. Let :math:`{\mathit{externidx}}~{{\mathit{xx}}^\ast}` be :math:`{{\mathit{externidx}}_1^\ast}`.
+#. Let :math:`{\mathit{externidx}}~{{\mathit{xx}}^\ast}` be :math:`{{\mathit{externidx}}^\ast}`.
 
 #. Return :math:`{\mathrm{mems}}({{\mathit{xx}}^\ast})`.
 
 
-:math:`{\mathrm{tags}}({{\mathit{externidx}}_1^\ast})`
-......................................................
+:math:`{\mathrm{tags}}({{\mathit{externidx}}^\ast})`
+....................................................
 
 
-1. If :math:`{{\mathit{externidx}}_1^\ast} = \epsilon`, then:
+1. If :math:`{{\mathit{externidx}}^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{externidx}}_0~{{\mathit{xx}}^\ast}` be :math:`{{\mathit{externidx}}_1^\ast}`.
+#. Let :math:`{\mathit{externidx}}_0~{{\mathit{xx}}^\ast}` be :math:`{{\mathit{externidx}}^\ast}`.
 
 #. If :math:`{\mathit{externidx}}_0` is :math:`\mathsf{tag}`, then:
 
@@ -19929,54 +19929,54 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. Return :math:`x~{\mathrm{tags}}({{\mathit{xx}}^\ast})`.
 
-#. Let :math:`{\mathit{externidx}}~{{\mathit{xx}}^\ast}` be :math:`{{\mathit{externidx}}_1^\ast}`.
+#. Let :math:`{\mathit{externidx}}~{{\mathit{xx}}^\ast}` be :math:`{{\mathit{externidx}}^\ast}`.
 
 #. Return :math:`{\mathrm{tags}}({{\mathit{xx}}^\ast})`.
 
 
-:math:`{\mathsf{i}}{N_1}`
-.........................
+:math:`{\mathsf{i}}{N}`
+.......................
 
 
-1. If :math:`N_1 = 32`, then:
+1. If :math:`N = 32`, then:
 
    a. Return :math:`\mathsf{i{\scriptstyle 32}}`.
 
-#. Assert: Due to validation, :math:`N_1 = 64`.
+#. Assert: Due to validation, :math:`N = 64`.
 
 #. Return :math:`\mathsf{i{\scriptstyle 64}}`.
 
 
-:math:`{\mathsf{f}}{N_1}`
-.........................
+:math:`{\mathsf{f}}{N}`
+.......................
 
 
-1. If :math:`N_1 = 32`, then:
+1. If :math:`N = 32`, then:
 
    a. Return :math:`\mathsf{f{\scriptstyle 32}}`.
 
-#. Assert: Due to validation, :math:`N_1 = 64`.
+#. Assert: Due to validation, :math:`N = 64`.
 
 #. Return :math:`\mathsf{f{\scriptstyle 64}}`.
 
 
-:math:`{\mathsf{i}}{N_1}`
-.........................
+:math:`{\mathsf{i}}{N}`
+.......................
 
 
-1. If :math:`N_1 = 8`, then:
+1. If :math:`N = 8`, then:
 
    a. Return :math:`\mathsf{i{\scriptstyle 8}}`.
 
-#. If :math:`N_1 = 16`, then:
+#. If :math:`N = 16`, then:
 
    a. Return :math:`\mathsf{i{\scriptstyle 16}}`.
 
-#. If :math:`N_1 = 32`, then:
+#. If :math:`N = 32`, then:
 
    a. Return :math:`\mathsf{i{\scriptstyle 32}}`.
 
-#. Assert: Due to validation, :math:`N_1 = 64`.
+#. Assert: Due to validation, :math:`N = 64`.
 
 #. Return :math:`\mathsf{i{\scriptstyle 64}}`.
 
@@ -19992,28 +19992,28 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`{\mathit{at}}_2`.
 
 
-:math:`\mathsf{ref}~{\mathsf{null}}{{{}_{1}^?}}~{\mathit{ht}}_1 \setminus \mathsf{ref}~{{\mathsf{null}^?}}_1~{\mathit{ht}}_2`
-.............................................................................................................................
+:math:`\mathsf{ref}~{\mathsf{null}}{{{}_{1}^?}}~{\mathit{ht}}_1 \setminus \mathsf{ref}~{\mathit{NULL}}_{\mathit{opt}}~{\mathit{ht}}_2`
+......................................................................................................................................
 
 
-1. If :math:`{{\mathsf{null}^?}}_1 = \mathsf{null}`, then:
+1. If :math:`{\mathit{NULL}}_{\mathit{opt}} = \mathsf{null}`, then:
 
    a. Return :math:`(\mathsf{ref}~\epsilon~{\mathit{ht}}_1)`.
 
-#. Assert: Due to validation, :math:`{{\mathsf{null}^?}}_1` is not defined.
+#. Assert: Due to validation, :math:`{\mathit{NULL}}_{\mathit{opt}}` is not defined.
 
 #. Return :math:`(\mathsf{ref}~{\mathsf{null}}{{{}_{1}^?}}~{\mathit{ht}}_1)`.
 
 
-:math:`{\mathrm{funcs}}({{\mathit{externtype}}_1^\ast})`
-........................................................
+:math:`{\mathrm{funcs}}({{\mathit{externtype}}^\ast})`
+......................................................
 
 
-1. If :math:`{{\mathit{externtype}}_1^\ast} = \epsilon`, then:
+1. If :math:`{{\mathit{externtype}}^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{externtype}}_0~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}_1^\ast}`.
+#. Let :math:`{\mathit{externtype}}_0~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}^\ast}`.
 
 #. If :math:`{\mathit{externtype}}_0` is :math:`\mathsf{func}`, then:
 
@@ -20021,20 +20021,20 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. Return :math:`{\mathit{dt}}~{\mathrm{funcs}}({{\mathit{xt}}^\ast})`.
 
-#. Let :math:`{\mathit{externtype}}~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}_1^\ast}`.
+#. Let :math:`{\mathit{externtype}}~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}^\ast}`.
 
 #. Return :math:`{\mathrm{funcs}}({{\mathit{xt}}^\ast})`.
 
 
-:math:`{\mathrm{globals}}({{\mathit{externtype}}_1^\ast})`
-..........................................................
+:math:`{\mathrm{globals}}({{\mathit{externtype}}^\ast})`
+........................................................
 
 
-1. If :math:`{{\mathit{externtype}}_1^\ast} = \epsilon`, then:
+1. If :math:`{{\mathit{externtype}}^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{externtype}}_0~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}_1^\ast}`.
+#. Let :math:`{\mathit{externtype}}_0~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}^\ast}`.
 
 #. If :math:`{\mathit{externtype}}_0` is :math:`\mathsf{global}`, then:
 
@@ -20042,20 +20042,20 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. Return :math:`{\mathit{gt}}~{\mathrm{globals}}({{\mathit{xt}}^\ast})`.
 
-#. Let :math:`{\mathit{externtype}}~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}_1^\ast}`.
+#. Let :math:`{\mathit{externtype}}~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}^\ast}`.
 
 #. Return :math:`{\mathrm{globals}}({{\mathit{xt}}^\ast})`.
 
 
-:math:`{\mathrm{tables}}({{\mathit{externtype}}_1^\ast})`
-.........................................................
+:math:`{\mathrm{tables}}({{\mathit{externtype}}^\ast})`
+.......................................................
 
 
-1. If :math:`{{\mathit{externtype}}_1^\ast} = \epsilon`, then:
+1. If :math:`{{\mathit{externtype}}^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{externtype}}_0~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}_1^\ast}`.
+#. Let :math:`{\mathit{externtype}}_0~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}^\ast}`.
 
 #. If :math:`{\mathit{externtype}}_0` is :math:`\mathsf{table}`, then:
 
@@ -20063,20 +20063,20 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. Return :math:`{\mathit{tt}}~{\mathrm{tables}}({{\mathit{xt}}^\ast})`.
 
-#. Let :math:`{\mathit{externtype}}~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}_1^\ast}`.
+#. Let :math:`{\mathit{externtype}}~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}^\ast}`.
 
 #. Return :math:`{\mathrm{tables}}({{\mathit{xt}}^\ast})`.
 
 
-:math:`{\mathrm{mems}}({{\mathit{externtype}}_1^\ast})`
-.......................................................
+:math:`{\mathrm{mems}}({{\mathit{externtype}}^\ast})`
+.....................................................
 
 
-1. If :math:`{{\mathit{externtype}}_1^\ast} = \epsilon`, then:
+1. If :math:`{{\mathit{externtype}}^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{externtype}}_0~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}_1^\ast}`.
+#. Let :math:`{\mathit{externtype}}_0~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}^\ast}`.
 
 #. If :math:`{\mathit{externtype}}_0` is :math:`\mathsf{mem}`, then:
 
@@ -20084,20 +20084,20 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. Return :math:`{\mathit{mt}}~{\mathrm{mems}}({{\mathit{xt}}^\ast})`.
 
-#. Let :math:`{\mathit{externtype}}~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}_1^\ast}`.
+#. Let :math:`{\mathit{externtype}}~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}^\ast}`.
 
 #. Return :math:`{\mathrm{mems}}({{\mathit{xt}}^\ast})`.
 
 
-:math:`{\mathrm{tags}}({{\mathit{externtype}}_1^\ast})`
-.......................................................
+:math:`{\mathrm{tags}}({{\mathit{externtype}}^\ast})`
+.....................................................
 
 
-1. If :math:`{{\mathit{externtype}}_1^\ast} = \epsilon`, then:
+1. If :math:`{{\mathit{externtype}}^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{externtype}}_0~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}_1^\ast}`.
+#. Let :math:`{\mathit{externtype}}_0~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}^\ast}`.
 
 #. If :math:`{\mathit{externtype}}_0` is :math:`\mathsf{tag}`, then:
 
@@ -20105,26 +20105,26 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. Return :math:`{\mathit{jt}}~{\mathrm{tags}}({{\mathit{xt}}^\ast})`.
 
-#. Let :math:`{\mathit{externtype}}~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}_1^\ast}`.
+#. Let :math:`{\mathit{externtype}}~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}^\ast}`.
 
 #. Return :math:`{\mathrm{tags}}({{\mathit{xt}}^\ast})`.
 
 
-:math:`{{\mathit{tv}}}{{}[ {{\mathit{typevar}}_1^\ast} := {{\mathit{typeuse}}_1^\ast} ]}`
-.........................................................................................
+:math:`{{\mathit{tv}}}{{}[ {{\mathit{typevar}}^\ast} := {{\mathit{typeuse}}^\ast} ]}`
+.....................................................................................
 
 
-1. If :math:`{{\mathit{typevar}}_1^\ast} = \epsilon` and :math:`{{\mathit{typeuse}}_1^\ast} = \epsilon`, then:
+1. If :math:`{{\mathit{typevar}}^\ast} = \epsilon` and :math:`{{\mathit{typeuse}}^\ast} = \epsilon`, then:
 
    a. Return :math:`{\mathit{tv}}`.
 
-#. Assert: Due to validation, :math:`{|{{\mathit{typeuse}}_1^\ast}|} \geq 1`.
+#. Assert: Due to validation, :math:`{|{{\mathit{typeuse}}^\ast}|} \geq 1`.
 
-#. Let :math:`{\mathit{tu}}_1~{{\mathit{tu}'}^\ast}` be :math:`{{\mathit{typeuse}}_1^\ast}`.
+#. Let :math:`{\mathit{tu}}_1~{{\mathit{tu}'}^\ast}` be :math:`{{\mathit{typeuse}}^\ast}`.
 
-#. Assert: Due to validation, :math:`{|{{\mathit{typevar}}_1^\ast}|} \geq 1`.
+#. Assert: Due to validation, :math:`{|{{\mathit{typevar}}^\ast}|} \geq 1`.
 
-#. Let :math:`{\mathit{tv}}_1~{{\mathit{tv}'}^\ast}` be :math:`{{\mathit{typevar}}_1^\ast}`.
+#. Let :math:`{\mathit{tv}}_1~{{\mathit{tv}'}^\ast}` be :math:`{{\mathit{typevar}}^\ast}`.
 
 #. If :math:`{\mathit{tv}} = {\mathit{tv}}_1`, then:
 
@@ -20154,40 +20154,40 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return :math:`{\mathit{vt}}`.
 
 
-:math:`{{\mathit{typeuse}}_1}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`
-..................................................................................
+:math:`{{\mathit{typeuse}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`
+................................................................................
 
 
-1. If :math:`{\mathit{typeuse}}_1` is type variable, then:
+1. If :math:`{\mathit{typeuse}}` is type variable, then:
 
-   a. Let :math:`{\mathit{tv}'}` be :math:`{\mathit{typeuse}}_1`.
+   a. Let :math:`{\mathit{tv}'}` be :math:`{\mathit{typeuse}}`.
 
    #. Return :math:`{{\mathit{tv}'}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`.
 
-#. Assert: Due to validation, :math:`{\mathit{typeuse}}_1` is defined type.
+#. Assert: Due to validation, :math:`{\mathit{typeuse}}` is defined type.
 
-#. Let :math:`{\mathit{dt}}` be :math:`{\mathit{typeuse}}_1`.
+#. Let :math:`{\mathit{dt}}` be :math:`{\mathit{typeuse}}`.
 
 #. Return :math:`{{\mathit{dt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`.
 
 
-:math:`{{\mathit{heaptype}}_1}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`
-...................................................................................
+:math:`{{\mathit{heaptype}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`
+.................................................................................
 
 
-1. If :math:`{\mathit{heaptype}}_1` is type variable, then:
+1. If :math:`{\mathit{heaptype}}` is type variable, then:
 
-   a. Let :math:`{\mathit{tv}'}` be :math:`{\mathit{heaptype}}_1`.
+   a. Let :math:`{\mathit{tv}'}` be :math:`{\mathit{heaptype}}`.
 
    #. Return :math:`{{\mathit{tv}'}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`.
 
-#. If :math:`{\mathit{heaptype}}_1` is defined type, then:
+#. If :math:`{\mathit{heaptype}}` is defined type, then:
 
-   a. Let :math:`{\mathit{dt}}` be :math:`{\mathit{heaptype}}_1`.
+   a. Let :math:`{\mathit{dt}}` be :math:`{\mathit{heaptype}}`.
 
    #. Return :math:`{{\mathit{dt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`.
 
-#. Let :math:`{\mathit{ht}}` be :math:`{\mathit{heaptype}}_1`.
+#. Let :math:`{\mathit{ht}}` be :math:`{\mathit{heaptype}}`.
 
 #. Return :math:`{\mathit{ht}}`.
 
@@ -20199,46 +20199,46 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return :math:`(\mathsf{ref}~{\mathsf{null}^?}~{{\mathit{ht}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]})`.
 
 
-:math:`{{\mathit{valtype}}_1}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`
-..................................................................................
+:math:`{{\mathit{valtype}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`
+................................................................................
 
 
-1. If :math:`{\mathit{valtype}}_1` is number type, then:
+1. If :math:`{\mathit{valtype}}` is number type, then:
 
-   a. Let :math:`{\mathit{nt}}` be :math:`{\mathit{valtype}}_1`.
+   a. Let :math:`{\mathit{nt}}` be :math:`{\mathit{valtype}}`.
 
    #. Return :math:`{{\mathit{nt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`.
 
-#. If :math:`{\mathit{valtype}}_1` is vector type, then:
+#. If :math:`{\mathit{valtype}}` is vector type, then:
 
-   a. Let :math:`{\mathit{vt}}` be :math:`{\mathit{valtype}}_1`.
+   a. Let :math:`{\mathit{vt}}` be :math:`{\mathit{valtype}}`.
 
    #. Return :math:`{{\mathit{vt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`.
 
-#. If :math:`{\mathit{valtype}}_1` is reference type, then:
+#. If :math:`{\mathit{valtype}}` is reference type, then:
 
-   a. Let :math:`{\mathit{rt}}` be :math:`{\mathit{valtype}}_1`.
+   a. Let :math:`{\mathit{rt}}` be :math:`{\mathit{valtype}}`.
 
    #. Return :math:`{{\mathit{rt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`.
 
-#. Assert: Due to validation, :math:`{\mathit{valtype}}_1 = \mathsf{bot}`.
+#. Assert: Due to validation, :math:`{\mathit{valtype}} = \mathsf{bot}`.
 
 #. Return :math:`\mathsf{bot}`.
 
 
-:math:`{{\mathit{storagetype}}_1}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`
-......................................................................................
+:math:`{{\mathit{storagetype}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`
+....................................................................................
 
 
-1. If :math:`{\mathit{storagetype}}_1` is value type, then:
+1. If :math:`{\mathit{storagetype}}` is value type, then:
 
-   a. Let :math:`t` be :math:`{\mathit{storagetype}}_1`.
+   a. Let :math:`t` be :math:`{\mathit{storagetype}}`.
 
    #. Return :math:`{t}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`.
 
-#. Assert: Due to validation, :math:`{\mathit{storagetype}}_1` is packed type.
+#. Assert: Due to validation, :math:`{\mathit{storagetype}}` is packed type.
 
-#. Let :math:`{\mathit{pt}}` be :math:`{\mathit{storagetype}}_1`.
+#. Let :math:`{\mathit{pt}}` be :math:`{\mathit{storagetype}}`.
 
 #. Return :math:`{{\mathit{pt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`.
 
@@ -20250,25 +20250,25 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return :math:`({\mathsf{mut}^?}~{{\mathit{zt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]})`.
 
 
-:math:`{{\mathit{comptype}}_1}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`
-...................................................................................
+:math:`{{\mathit{comptype}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`
+.................................................................................
 
 
-1. If :math:`{\mathit{comptype}}_1` is :math:`\mathsf{struct}`, then:
+1. If :math:`{\mathit{comptype}}` is :math:`\mathsf{struct}`, then:
 
-   a. Let :math:`(\mathsf{struct}~{{\mathit{yt}}^\ast})` be :math:`{\mathit{comptype}}_1`.
+   a. Let :math:`(\mathsf{struct}~{{\mathit{yt}}^\ast})` be :math:`{\mathit{comptype}}`.
 
    #. Return :math:`(\mathsf{struct}~{{{\mathit{yt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}^\ast})`.
 
-#. If :math:`{\mathit{comptype}}_1` is :math:`\mathsf{array}`, then:
+#. If :math:`{\mathit{comptype}}` is :math:`\mathsf{array}`, then:
 
-   a. Let :math:`(\mathsf{array}~{\mathit{yt}})` be :math:`{\mathit{comptype}}_1`.
+   a. Let :math:`(\mathsf{array}~{\mathit{yt}})` be :math:`{\mathit{comptype}}`.
 
    #. Return :math:`(\mathsf{array}~{{\mathit{yt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]})`.
 
-#. Assert: Due to validation, :math:`{\mathit{comptype}}_1` is :math:`\mathsf{func}`.
+#. Assert: Due to validation, :math:`{\mathit{comptype}}` is :math:`\mathsf{func}`.
 
-#. Let :math:`(\mathsf{func}~{\mathit{ft}})` be :math:`{\mathit{comptype}}_1`.
+#. Let :math:`(\mathsf{func}~{\mathit{ft}})` be :math:`{\mathit{comptype}}`.
 
 #. Return :math:`(\mathsf{func}~{{\mathit{ft}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]})`.
 
@@ -20336,37 +20336,37 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return :math:`{{\mathit{dt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`.
 
 
-:math:`{{\mathit{externtype}}_1}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`
-.....................................................................................
+:math:`{{\mathit{externtype}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`
+...................................................................................
 
 
-1. If :math:`{\mathit{externtype}}_1` is :math:`\mathsf{func}`, then:
+1. If :math:`{\mathit{externtype}}` is :math:`\mathsf{func}`, then:
 
-   a. Let :math:`(\mathsf{func}~{\mathit{dt}})` be :math:`{\mathit{externtype}}_1`.
+   a. Let :math:`(\mathsf{func}~{\mathit{dt}})` be :math:`{\mathit{externtype}}`.
 
    #. Return :math:`(\mathsf{func}~{{\mathit{dt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]})`.
 
-#. If :math:`{\mathit{externtype}}_1` is :math:`\mathsf{global}`, then:
+#. If :math:`{\mathit{externtype}}` is :math:`\mathsf{global}`, then:
 
-   a. Let :math:`(\mathsf{global}~{\mathit{gt}})` be :math:`{\mathit{externtype}}_1`.
+   a. Let :math:`(\mathsf{global}~{\mathit{gt}})` be :math:`{\mathit{externtype}}`.
 
    #. Return :math:`(\mathsf{global}~{{\mathit{gt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]})`.
 
-#. If :math:`{\mathit{externtype}}_1` is :math:`\mathsf{table}`, then:
+#. If :math:`{\mathit{externtype}}` is :math:`\mathsf{table}`, then:
 
-   a. Let :math:`(\mathsf{table}~{\mathit{tt}})` be :math:`{\mathit{externtype}}_1`.
+   a. Let :math:`(\mathsf{table}~{\mathit{tt}})` be :math:`{\mathit{externtype}}`.
 
    #. Return :math:`(\mathsf{table}~{{\mathit{tt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]})`.
 
-#. If :math:`{\mathit{externtype}}_1` is :math:`\mathsf{mem}`, then:
+#. If :math:`{\mathit{externtype}}` is :math:`\mathsf{mem}`, then:
 
-   a. Let :math:`(\mathsf{mem}~{\mathit{mt}})` be :math:`{\mathit{externtype}}_1`.
+   a. Let :math:`(\mathsf{mem}~{\mathit{mt}})` be :math:`{\mathit{externtype}}`.
 
    #. Return :math:`(\mathsf{mem}~{{\mathit{mt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]})`.
 
-#. Assert: Due to validation, :math:`{\mathit{externtype}}_1` is :math:`\mathsf{tag}`.
+#. Assert: Due to validation, :math:`{\mathit{externtype}}` is :math:`\mathsf{tag}`.
 
-#. Let :math:`(\mathsf{tag}~{\mathit{jt}})` be :math:`{\mathit{externtype}}_1`.
+#. Let :math:`(\mathsf{tag}~{\mathit{jt}})` be :math:`{\mathit{externtype}}`.
 
 #. Return :math:`(\mathsf{tag}~{{\mathit{jt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]})`.
 
@@ -20427,15 +20427,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return :math:`{{\mathit{mmt}}}{{}[ {i^{i<n}} := {{\mathit{tu}}^{n}} ]}`.
 
 
-:math:`{{{\mathit{deftype}}_1^\ast}}{{}[ {:=}\, {{\mathit{tu}}^\ast} ]}`
-........................................................................
+:math:`{{{\mathit{deftype}}^\ast}}{{}[ {:=}\, {{\mathit{tu}}^\ast} ]}`
+......................................................................
 
 
-1. If :math:`{{\mathit{deftype}}_1^\ast} = \epsilon`, then:
+1. If :math:`{{\mathit{deftype}}^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{dt}}_1~{{\mathit{dt}}^\ast}` be :math:`{{\mathit{deftype}}_1^\ast}`.
+#. Let :math:`{\mathit{dt}}_1~{{\mathit{dt}}^\ast}` be :math:`{{\mathit{deftype}}^\ast}`.
 
 #. Return :math:`{{\mathit{dt}}_1}{{}[ {:=}\, {{\mathit{tu}}^\ast} ]}~{{{\mathit{dt}}^\ast}}{{}[ {:=}\, {{\mathit{tu}}^\ast} ]}`.
 
@@ -20492,45 +20492,45 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{align}~0,\; \mathsf{offset}~0 \}\end{array}`.
 
 
-:math:`{\mathit{consttype}}_1{.}\mathsf{const}~c`
-.................................................
+:math:`{\mathit{consttype}}{.}\mathsf{const}~c`
+...............................................
 
 
-1. If :math:`{\mathit{consttype}}_1` is number type, then:
+1. If :math:`{\mathit{consttype}}` is number type, then:
 
-   a. Let :math:`{\mathit{numtype}}` be :math:`{\mathit{consttype}}_1`.
+   a. Let :math:`{\mathit{numtype}}` be :math:`{\mathit{consttype}}`.
 
    #. Return :math:`({\mathit{numtype}}{.}\mathsf{const}~c)`.
 
-#. Assert: Due to validation, :math:`{\mathit{consttype}}_1` is vector type.
+#. Assert: Due to validation, :math:`{\mathit{consttype}}` is vector type.
 
-#. Let :math:`{\mathit{vectype}}` be :math:`{\mathit{consttype}}_1`.
+#. Let :math:`{\mathit{vectype}}` be :math:`{\mathit{consttype}}`.
 
 #. Return :math:`({\mathit{vectype}}{.}\mathsf{const}~c)`.
 
 
-:math:`{\mathrm{free}}_{\mathit{opt}}({{\mathit{free}}_1^?})`
-.............................................................
+:math:`{\mathrm{free}}_{\mathit{opt}}({{\mathit{free}}^?})`
+...........................................................
 
 
-1. If :math:`{{\mathit{free}}_1^?}` is not defined, then:
+1. If :math:`{{\mathit{free}}^?}` is not defined, then:
 
    a. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
 
-#. Let :math:`{\mathit{free}}` be :math:`{{\mathit{free}}_1^?}`.
+#. Let :math:`{\mathit{free}}` be :math:`{{\mathit{free}}^?}`.
 
 #. Return :math:`{\mathit{free}}`.
 
 
-:math:`{\mathrm{free}}_{\mathit{list}}({{\mathit{free}}_1^\ast})`
-.................................................................
+:math:`{\mathrm{free}}_{\mathit{list}}({{\mathit{free}}^\ast})`
+...............................................................
 
 
-1. If :math:`{{\mathit{free}}_1^\ast} = \epsilon`, then:
+1. If :math:`{{\mathit{free}}^\ast} = \epsilon`, then:
 
    a. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
 
-#. Let :math:`{\mathit{free}}~{{\mathit{free}'}^\ast}` be :math:`{{\mathit{free}}_1^\ast}`.
+#. Let :math:`{\mathit{free}}~{{\mathit{free}'}^\ast}` be :math:`{{\mathit{free}}^\ast}`.
 
 #. Return `free ++ $free_list(free'*{free' <- free'*})`.
 
@@ -20598,31 +20598,31 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{labels}~{\mathit{labelidx}} \}\end{array}`.
 
 
-:math:`{\mathrm{free}}_{\mathit{externidx}}({\mathit{externidx}}_1)`
-....................................................................
+:math:`{\mathrm{free}}_{\mathit{externidx}}({\mathit{externidx}})`
+..................................................................
 
 
-1. If :math:`{\mathit{externidx}}_1` is :math:`\mathsf{func}`, then:
+1. If :math:`{\mathit{externidx}}` is :math:`\mathsf{func}`, then:
 
-   a. Let :math:`(\mathsf{func}~{\mathit{funcidx}})` be :math:`{\mathit{externidx}}_1`.
+   a. Let :math:`(\mathsf{func}~{\mathit{funcidx}})` be :math:`{\mathit{externidx}}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{funcidx}}({\mathit{funcidx}})`.
 
-#. If :math:`{\mathit{externidx}}_1` is :math:`\mathsf{global}`, then:
+#. If :math:`{\mathit{externidx}}` is :math:`\mathsf{global}`, then:
 
-   a. Let :math:`(\mathsf{global}~{\mathit{globalidx}})` be :math:`{\mathit{externidx}}_1`.
+   a. Let :math:`(\mathsf{global}~{\mathit{globalidx}})` be :math:`{\mathit{externidx}}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{globalidx}}({\mathit{globalidx}})`.
 
-#. If :math:`{\mathit{externidx}}_1` is :math:`\mathsf{table}`, then:
+#. If :math:`{\mathit{externidx}}` is :math:`\mathsf{table}`, then:
 
-   a. Let :math:`(\mathsf{table}~{\mathit{tableidx}})` be :math:`{\mathit{externidx}}_1`.
+   a. Let :math:`(\mathsf{table}~{\mathit{tableidx}})` be :math:`{\mathit{externidx}}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{tableidx}}({\mathit{tableidx}})`.
 
-#. Assert: Due to validation, :math:`{\mathit{externidx}}_1` is :math:`\mathsf{mem}`.
+#. Assert: Due to validation, :math:`{\mathit{externidx}}` is :math:`\mathsf{mem}`.
 
-#. Let :math:`(\mathsf{mem}~{\mathit{memidx}})` be :math:`{\mathit{externidx}}_1`.
+#. Let :math:`(\mathsf{mem}~{\mathit{memidx}})` be :math:`{\mathit{externidx}}`.
 
 #. Return :math:`{\mathrm{free}}_{\mathit{memidx}}({\mathit{memidx}})`.
 
@@ -20648,19 +20648,19 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
 
 
-:math:`{\mathrm{free}}_{\mathit{lanetype}}({\mathit{lanetype}}_1)`
-..................................................................
+:math:`{\mathrm{free}}_{\mathit{lanetype}}({\mathit{lanetype}})`
+................................................................
 
 
-1. If :math:`{\mathit{lanetype}}_1` is number type, then:
+1. If :math:`{\mathit{lanetype}}` is number type, then:
 
-   a. Let :math:`{\mathit{numtype}}` be :math:`{\mathit{lanetype}}_1`.
+   a. Let :math:`{\mathit{numtype}}` be :math:`{\mathit{lanetype}}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{numtype}}({\mathit{numtype}})`.
 
-#. Assert: Due to validation, :math:`{\mathit{lanetype}}_1` is packed type.
+#. Assert: Due to validation, :math:`{\mathit{lanetype}}` is packed type.
 
-#. Let :math:`{\mathit{packtype}}` be :math:`{\mathit{lanetype}}_1`.
+#. Let :math:`{\mathit{packtype}}` be :math:`{\mathit{lanetype}}`.
 
 #. Return :math:`{\mathrm{free}}_{\mathit{packtype}}({\mathit{packtype}})`.
 
@@ -20672,19 +20672,19 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
 
 
-:math:`{\mathrm{free}}_{\mathit{consttype}}({\mathit{consttype}}_1)`
-....................................................................
+:math:`{\mathrm{free}}_{\mathit{consttype}}({\mathit{consttype}})`
+..................................................................
 
 
-1. If :math:`{\mathit{consttype}}_1` is number type, then:
+1. If :math:`{\mathit{consttype}}` is number type, then:
 
-   a. Let :math:`{\mathit{numtype}}` be :math:`{\mathit{consttype}}_1`.
+   a. Let :math:`{\mathit{numtype}}` be :math:`{\mathit{consttype}}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{numtype}}({\mathit{numtype}})`.
 
-#. Assert: Due to validation, :math:`{\mathit{consttype}}_1` is vector type.
+#. Assert: Due to validation, :math:`{\mathit{consttype}}` is vector type.
 
-#. Let :math:`{\mathit{vectype}}` be :math:`{\mathit{consttype}}_1`.
+#. Let :math:`{\mathit{vectype}}` be :math:`{\mathit{consttype}}`.
 
 #. Return :math:`{\mathrm{free}}_{\mathit{vectype}}({\mathit{vectype}})`.
 
@@ -20696,34 +20696,34 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
 
 
-:math:`{\mathrm{free}}_{\mathit{typevar}}({\mathit{typevar}}_1)`
-................................................................
+:math:`{\mathrm{free}}_{\mathit{typevar}}({\mathit{typevar}})`
+..............................................................
 
 
-1. If :math:`{\mathit{typevar}}_1` is , then:
+1. If :math:`{\mathit{typevar}}` is , then:
 
-   a. Let :math:`{\mathit{typeidx}}` be :math:`{\mathit{typevar}}_1`.
+   a. Let :math:`{\mathit{typeidx}}` be :math:`{\mathit{typevar}}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}})`.
 
-#. Assert: Due to validation, :math:`{\mathit{typevar}}_1` is :math:`\mathsf{rec}`.
+#. Assert: Due to validation, :math:`{\mathit{typevar}}` is :math:`\mathsf{rec}`.
 
 #. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
 
 
-:math:`{\mathrm{free}}_{\mathit{heaptype}}({\mathit{heaptype}}_1)`
-..................................................................
+:math:`{\mathrm{free}}_{\mathit{heaptype}}({\mathit{heaptype}})`
+................................................................
 
 
-1. If :math:`{\mathit{heaptype}}_1` is abstract heap type, then:
+1. If :math:`{\mathit{heaptype}}` is abstract heap type, then:
 
-   a. Let :math:`{\mathit{absheaptype}}` be :math:`{\mathit{heaptype}}_1`.
+   a. Let :math:`{\mathit{absheaptype}}` be :math:`{\mathit{heaptype}}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{absheaptype}}({\mathit{absheaptype}})`.
 
-#. Assert: Due to validation, :math:`{\mathit{heaptype}}_1` is type use.
+#. Assert: Due to validation, :math:`{\mathit{heaptype}}` is type use.
 
-#. Let :math:`{\mathit{typeuse}}` be :math:`{\mathit{heaptype}}_1`.
+#. Let :math:`{\mathit{typeuse}}` be :math:`{\mathit{heaptype}}`.
 
 #. Return :math:`{\mathrm{free}}_{\mathit{typeuse}}({\mathit{typeuse}})`.
 
@@ -20735,46 +20735,46 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return :math:`{\mathrm{free}}_{\mathit{heaptype}}({\mathit{heaptype}})`.
 
 
-:math:`{\mathrm{free}}_{\mathit{typeuse}}({\mathit{typeuse}}_1)`
-................................................................
+:math:`{\mathrm{free}}_{\mathit{typeuse}}({\mathit{typeuse}})`
+..............................................................
 
 
-1. If :math:`{\mathit{typeuse}}_1` is type variable, then:
+1. If :math:`{\mathit{typeuse}}` is type variable, then:
 
-   a. Let :math:`{\mathit{typevar}}` be :math:`{\mathit{typeuse}}_1`.
+   a. Let :math:`{\mathit{typevar}}` be :math:`{\mathit{typeuse}}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{typevar}}({\mathit{typevar}})`.
 
-#. Assert: Due to validation, :math:`{\mathit{typeuse}}_1` is defined type.
+#. Assert: Due to validation, :math:`{\mathit{typeuse}}` is defined type.
 
-#. Let :math:`{\mathit{deftype}}` be :math:`{\mathit{typeuse}}_1`.
+#. Let :math:`{\mathit{deftype}}` be :math:`{\mathit{typeuse}}`.
 
 #. Return :math:`{\mathrm{free}}_{\mathit{deftype}}({\mathit{deftype}})`.
 
 
-:math:`{\mathrm{free}}_{\mathit{valtype}}({\mathit{valtype}}_1)`
-................................................................
+:math:`{\mathrm{free}}_{\mathit{valtype}}({\mathit{valtype}})`
+..............................................................
 
 
-1. If :math:`{\mathit{valtype}}_1` is number type, then:
+1. If :math:`{\mathit{valtype}}` is number type, then:
 
-   a. Let :math:`{\mathit{numtype}}` be :math:`{\mathit{valtype}}_1`.
+   a. Let :math:`{\mathit{numtype}}` be :math:`{\mathit{valtype}}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{numtype}}({\mathit{numtype}})`.
 
-#. If :math:`{\mathit{valtype}}_1` is vector type, then:
+#. If :math:`{\mathit{valtype}}` is vector type, then:
 
-   a. Let :math:`{\mathit{vectype}}` be :math:`{\mathit{valtype}}_1`.
+   a. Let :math:`{\mathit{vectype}}` be :math:`{\mathit{valtype}}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{vectype}}({\mathit{vectype}})`.
 
-#. If :math:`{\mathit{valtype}}_1` is reference type, then:
+#. If :math:`{\mathit{valtype}}` is reference type, then:
 
-   a. Let :math:`{\mathit{reftype}}` be :math:`{\mathit{valtype}}_1`.
+   a. Let :math:`{\mathit{reftype}}` be :math:`{\mathit{valtype}}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{reftype}}({\mathit{reftype}})`.
 
-#. Assert: Due to validation, :math:`{\mathit{valtype}}_1 = \mathsf{bot}`.
+#. Assert: Due to validation, :math:`{\mathit{valtype}} = \mathsf{bot}`.
 
 #. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
 
@@ -20786,19 +20786,19 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return :math:`{\mathrm{free}}_{\mathit{list}}({{\mathrm{free}}_{\mathit{valtype}}({\mathit{valtype}})^\ast})`.
 
 
-:math:`{\mathrm{free}}_{\mathit{storagetype}}({\mathit{storagetype}}_1)`
-........................................................................
+:math:`{\mathrm{free}}_{\mathit{storagetype}}({\mathit{storagetype}})`
+......................................................................
 
 
-1. If :math:`{\mathit{storagetype}}_1` is value type, then:
+1. If :math:`{\mathit{storagetype}}` is value type, then:
 
-   a. Let :math:`{\mathit{valtype}}` be :math:`{\mathit{storagetype}}_1`.
+   a. Let :math:`{\mathit{valtype}}` be :math:`{\mathit{storagetype}}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{valtype}}({\mathit{valtype}})`.
 
-#. Assert: Due to validation, :math:`{\mathit{storagetype}}_1` is packed type.
+#. Assert: Due to validation, :math:`{\mathit{storagetype}}` is packed type.
 
-#. Let :math:`{\mathit{packtype}}` be :math:`{\mathit{storagetype}}_1`.
+#. Let :math:`{\mathit{packtype}}` be :math:`{\mathit{storagetype}}`.
 
 #. Return :math:`{\mathrm{free}}_{\mathit{packtype}}({\mathit{packtype}})`.
 
@@ -20831,25 +20831,25 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return `$free_resulttype(resulttype_1) ++ $free_resulttype(resulttype_2)`.
 
 
-:math:`{\mathrm{free}}_{\mathit{comptype}}({\mathit{comptype}}_1)`
-..................................................................
+:math:`{\mathrm{free}}_{\mathit{comptype}}({\mathit{comptype}})`
+................................................................
 
 
-1. If :math:`{\mathit{comptype}}_1` is :math:`\mathsf{struct}`, then:
+1. If :math:`{\mathit{comptype}}` is :math:`\mathsf{struct}`, then:
 
-   a. Let :math:`(\mathsf{struct}~{\mathit{structtype}})` be :math:`{\mathit{comptype}}_1`.
+   a. Let :math:`(\mathsf{struct}~{\mathit{structtype}})` be :math:`{\mathit{comptype}}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{structtype}}({\mathit{structtype}})`.
 
-#. If :math:`{\mathit{comptype}}_1` is :math:`\mathsf{array}`, then:
+#. If :math:`{\mathit{comptype}}` is :math:`\mathsf{array}`, then:
 
-   a. Let :math:`(\mathsf{array}~{\mathit{arraytype}})` be :math:`{\mathit{comptype}}_1`.
+   a. Let :math:`(\mathsf{array}~{\mathit{arraytype}})` be :math:`{\mathit{comptype}}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{arraytype}}({\mathit{arraytype}})`.
 
-#. Assert: Due to validation, :math:`{\mathit{comptype}}_1` is :math:`\mathsf{func}`.
+#. Assert: Due to validation, :math:`{\mathit{comptype}}` is :math:`\mathsf{func}`.
 
-#. Let :math:`(\mathsf{func}~{\mathit{functype}})` be :math:`{\mathit{comptype}}_1`.
+#. Let :math:`(\mathsf{func}~{\mathit{functype}})` be :math:`{\mathit{comptype}}`.
 
 #. Return :math:`{\mathrm{free}}_{\mathit{functype}}({\mathit{functype}})`.
 
@@ -20917,37 +20917,37 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
 
 
-:math:`{\mathrm{free}}_{\mathit{externtype}}({\mathit{externtype}}_1)`
-......................................................................
+:math:`{\mathrm{free}}_{\mathit{externtype}}({\mathit{externtype}})`
+....................................................................
 
 
-1. If :math:`{\mathit{externtype}}_1` is :math:`\mathsf{func}`, then:
+1. If :math:`{\mathit{externtype}}` is :math:`\mathsf{func}`, then:
 
-   a. Let :math:`(\mathsf{func}~{\mathit{typeuse}})` be :math:`{\mathit{externtype}}_1`.
+   a. Let :math:`(\mathsf{func}~{\mathit{typeuse}})` be :math:`{\mathit{externtype}}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{typeuse}}({\mathit{typeuse}})`.
 
-#. If :math:`{\mathit{externtype}}_1` is :math:`\mathsf{global}`, then:
+#. If :math:`{\mathit{externtype}}` is :math:`\mathsf{global}`, then:
 
-   a. Let :math:`(\mathsf{global}~{\mathit{globaltype}})` be :math:`{\mathit{externtype}}_1`.
+   a. Let :math:`(\mathsf{global}~{\mathit{globaltype}})` be :math:`{\mathit{externtype}}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{globaltype}}({\mathit{globaltype}})`.
 
-#. If :math:`{\mathit{externtype}}_1` is :math:`\mathsf{table}`, then:
+#. If :math:`{\mathit{externtype}}` is :math:`\mathsf{table}`, then:
 
-   a. Let :math:`(\mathsf{table}~{\mathit{tabletype}})` be :math:`{\mathit{externtype}}_1`.
+   a. Let :math:`(\mathsf{table}~{\mathit{tabletype}})` be :math:`{\mathit{externtype}}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{tabletype}}({\mathit{tabletype}})`.
 
-#. If :math:`{\mathit{externtype}}_1` is :math:`\mathsf{mem}`, then:
+#. If :math:`{\mathit{externtype}}` is :math:`\mathsf{mem}`, then:
 
-   a. Let :math:`(\mathsf{mem}~{\mathit{memtype}})` be :math:`{\mathit{externtype}}_1`.
+   a. Let :math:`(\mathsf{mem}~{\mathit{memtype}})` be :math:`{\mathit{externtype}}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{memtype}}({\mathit{memtype}})`.
 
-#. Assert: Due to validation, :math:`{\mathit{externtype}}_1` is :math:`\mathsf{tag}`.
+#. Assert: Due to validation, :math:`{\mathit{externtype}}` is :math:`\mathsf{tag}`.
 
-#. Let :math:`(\mathsf{tag}~{\mathit{tagtype}})` be :math:`{\mathit{externtype}}_1`.
+#. Let :math:`(\mathsf{tag}~{\mathit{tagtype}})` be :math:`{\mathit{externtype}}`.
 
 #. Return :math:`{\mathrm{free}}_{\mathit{tagtype}}({\mathit{tagtype}})`.
 
@@ -20966,617 +20966,617 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return :math:`{\mathrm{free}}_{\mathit{lanetype}}({\mathit{lanetype}})`.
 
 
-:math:`{\mathrm{free}}_{\mathit{blocktype}}({\mathit{blocktype}}_1)`
-....................................................................
+:math:`{\mathrm{free}}_{\mathit{blocktype}}({\mathit{blocktype}})`
+..................................................................
 
 
-1. If :math:`{\mathit{blocktype}}_1` is , then:
+1. If :math:`{\mathit{blocktype}}` is , then:
 
-   a. Let :math:`{{\mathit{valtype}}^?}` be :math:`{\mathit{blocktype}}_1`.
+   a. Let :math:`{{\mathit{valtype}}^?}` be :math:`{\mathit{blocktype}}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{opt}}({{\mathrm{free}}_{\mathit{valtype}}({\mathit{valtype}})^?})`.
 
-#. Assert: Due to validation, :math:`{\mathit{blocktype}}_1` is .
+#. Assert: Due to validation, :math:`{\mathit{blocktype}}` is .
 
-#. Let :math:`{\mathit{funcidx}}` be :math:`{\mathit{blocktype}}_1`.
+#. Let :math:`{\mathit{funcidx}}` be :math:`{\mathit{blocktype}}`.
 
 #. Return :math:`{\mathrm{free}}_{\mathit{funcidx}}({\mathit{funcidx}})`.
 
 
-:math:`{\mathrm{shift}}_{\mathit{labelidxs}}({{\mathit{labelidx}}_1^\ast})`
-...........................................................................
+:math:`{\mathrm{shift}}_{\mathit{labelidxs}}({{\mathit{labelidx}}^\ast})`
+.........................................................................
 
 
-1. If :math:`{{\mathit{labelidx}}_1^\ast} = \epsilon`, then:
+1. If :math:`{{\mathit{labelidx}}^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{labelidx}}_0~{{\mathit{labelidx}'}^\ast}` be :math:`{{\mathit{labelidx}}_1^\ast}`.
+#. Let :math:`{\mathit{labelidx}}_0~{{\mathit{labelidx}'}^\ast}` be :math:`{{\mathit{labelidx}}^\ast}`.
 
 #. If :math:`{\mathit{labelidx}}_0 = 0`, then:
 
    a. Return :math:`{\mathrm{shift}}_{\mathit{labelidxs}}({{\mathit{labelidx}'}^\ast})`.
 
-#. Let :math:`{\mathit{labelidx}}~{{\mathit{labelidx}'}^\ast}` be :math:`{{\mathit{labelidx}}_1^\ast}`.
+#. Let :math:`{\mathit{labelidx}}~{{\mathit{labelidx}'}^\ast}` be :math:`{{\mathit{labelidx}}^\ast}`.
 
 #. Return :math:`{\mathit{labelidx}} - 1~{\mathrm{shift}}_{\mathit{labelidxs}}({{\mathit{labelidx}'}^\ast})`.
 
 
-:math:`{\mathrm{free}}_{\mathit{instr}}({\mathit{instr}}_3)`
-............................................................
+:math:`{\mathrm{free}}_{\mathit{instr}}({\mathit{instr}'})`
+...........................................................
 
 
-1. If :math:`{\mathit{instr}}_3 = \mathsf{nop}`, then:
-
-   a. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
-
-#. If :math:`{\mathit{instr}}_3 = \mathsf{unreachable}`, then:
+1. If :math:`{\mathit{instr}'} = \mathsf{nop}`, then:
 
    a. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
 
-#. If :math:`{\mathit{instr}}_3 = \mathsf{drop}`, then:
+#. If :math:`{\mathit{instr}'} = \mathsf{unreachable}`, then:
 
    a. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
 
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{select}`, then:
+#. If :math:`{\mathit{instr}'} = \mathsf{drop}`, then:
 
-   a. Let :math:`(\mathsf{select}~{({{\mathit{valtype}}^\ast})^?})` be :math:`{\mathit{instr}}_3`.
+   a. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
+
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{select}`, then:
+
+   a. Let :math:`(\mathsf{select}~{({{\mathit{valtype}}^\ast})^?})` be :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{opt}}({{\mathrm{free}}_{\mathit{list}}({{\mathrm{free}}_{\mathit{valtype}}({\mathit{valtype}})^\ast})^?})`.
 
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{block}`, then:
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{block}`, then:
 
-   a. Let :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{instr}}^\ast})` be :math:`{\mathit{instr}}_3`.
-
-   #. Return `$free_blocktype(blocktype) ++ $free_block(instr*{instr <- instr*})`.
-
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{loop}`, then:
-
-   a. Let :math:`(\mathsf{loop}~{\mathit{blocktype}}~{{\mathit{instr}}^\ast})` be :math:`{\mathit{instr}}_3`.
+   a. Let :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{instr}}^\ast})` be :math:`{\mathit{instr}'}`.
 
    #. Return `$free_blocktype(blocktype) ++ $free_block(instr*{instr <- instr*})`.
 
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{if}`, then:
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{loop}`, then:
 
-   a. Let :math:`(\mathsf{if}~{\mathit{blocktype}}~{{\mathit{instr}}_1^\ast}~\mathsf{else}~{{\mathit{instr}}_2^\ast})` be :math:`{\mathit{instr}}_3`.
+   a. Let :math:`(\mathsf{loop}~{\mathit{blocktype}}~{{\mathit{instr}}^\ast})` be :math:`{\mathit{instr}'}`.
+
+   #. Return `$free_blocktype(blocktype) ++ $free_block(instr*{instr <- instr*})`.
+
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{if}`, then:
+
+   a. Let :math:`(\mathsf{if}~{\mathit{blocktype}}~{{\mathit{instr}}_1^\ast}~\mathsf{else}~{{\mathit{instr}}_2^\ast})` be :math:`{\mathit{instr}'}`.
 
    #. Return `$free_blocktype(blocktype) ++ $free_block(instr_1*{instr_1 <- instr_1*}) ++ $free_block(instr_2*{instr_2 <- instr_2*})`.
 
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{br}`, then:
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{br}`, then:
 
-   a. Let :math:`(\mathsf{br}~{\mathit{labelidx}})` be :math:`{\mathit{instr}}_3`.
-
-   #. Return :math:`{\mathrm{free}}_{\mathit{labelidx}}({\mathit{labelidx}})`.
-
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{br\_if}`, then:
-
-   a. Let :math:`(\mathsf{br\_if}~{\mathit{labelidx}})` be :math:`{\mathit{instr}}_3`.
+   a. Let :math:`(\mathsf{br}~{\mathit{labelidx}})` be :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{labelidx}}({\mathit{labelidx}})`.
 
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{br\_table}`, then:
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{br\_if}`, then:
 
-   a. Let :math:`(\mathsf{br\_table}~{{\mathit{labelidx}}^\ast}~{\mathit{labelidx}'})` be :math:`{\mathit{instr}}_3`.
+   a. Let :math:`(\mathsf{br\_if}~{\mathit{labelidx}})` be :math:`{\mathit{instr}'}`.
+
+   #. Return :math:`{\mathrm{free}}_{\mathit{labelidx}}({\mathit{labelidx}})`.
+
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{br\_table}`, then:
+
+   a. Let :math:`(\mathsf{br\_table}~{{\mathit{labelidx}}^\ast}~{\mathit{labelidx}'})` be :math:`{\mathit{instr}'}`.
 
    #. Return `$free_list($free_labelidx(labelidx)*{}) ++ $free_labelidx(labelidx)`.
 
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{br\_on\_null}`, then:
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{br\_on\_null}`, then:
 
-   a. Let :math:`(\mathsf{br\_on\_null}~{\mathit{labelidx}})` be :math:`{\mathit{instr}}_3`.
-
-   #. Return :math:`{\mathrm{free}}_{\mathit{labelidx}}({\mathit{labelidx}})`.
-
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{br\_on\_non\_null}`, then:
-
-   a. Let :math:`(\mathsf{br\_on\_non\_null}~{\mathit{labelidx}})` be :math:`{\mathit{instr}}_3`.
+   a. Let :math:`(\mathsf{br\_on\_null}~{\mathit{labelidx}})` be :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{labelidx}}({\mathit{labelidx}})`.
 
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{br\_on\_cast}`, then:
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{br\_on\_non\_null}`, then:
 
-   a. Let :math:`(\mathsf{br\_on\_cast}~{\mathit{labelidx}}~{\mathit{reftype}}_1~{\mathit{reftype}}_2)` be :math:`{\mathit{instr}}_3`.
+   a. Let :math:`(\mathsf{br\_on\_non\_null}~{\mathit{labelidx}})` be :math:`{\mathit{instr}'}`.
+
+   #. Return :math:`{\mathrm{free}}_{\mathit{labelidx}}({\mathit{labelidx}})`.
+
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{br\_on\_cast}`, then:
+
+   a. Let :math:`(\mathsf{br\_on\_cast}~{\mathit{labelidx}}~{\mathit{reftype}}_1~{\mathit{reftype}}_2)` be :math:`{\mathit{instr}'}`.
 
    #. Return `$free_labelidx(labelidx) ++ $free_reftype(reftype_1) ++ $free_reftype(reftype_2)`.
 
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{br\_on\_cast\_fail}`, then:
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{br\_on\_cast\_fail}`, then:
 
-   a. Let :math:`(\mathsf{br\_on\_cast\_fail}~{\mathit{labelidx}}~{\mathit{reftype}}_1~{\mathit{reftype}}_2)` be :math:`{\mathit{instr}}_3`.
+   a. Let :math:`(\mathsf{br\_on\_cast\_fail}~{\mathit{labelidx}}~{\mathit{reftype}}_1~{\mathit{reftype}}_2)` be :math:`{\mathit{instr}'}`.
 
    #. Return `$free_labelidx(labelidx) ++ $free_reftype(reftype_1) ++ $free_reftype(reftype_2)`.
 
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{call}`, then:
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{call}`, then:
 
-   a. Let :math:`(\mathsf{call}~{\mathit{funcidx}})` be :math:`{\mathit{instr}}_3`.
+   a. Let :math:`(\mathsf{call}~{\mathit{funcidx}})` be :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{funcidx}}({\mathit{funcidx}})`.
 
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{call\_ref}`, then:
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{call\_ref}`, then:
 
-   a. Let :math:`(\mathsf{call\_ref}~{\mathit{typeuse}})` be :math:`{\mathit{instr}}_3`.
+   a. Let :math:`(\mathsf{call\_ref}~{\mathit{typeuse}})` be :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{typeuse}}({\mathit{typeuse}})`.
 
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{call\_indirect}`, then:
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{call\_indirect}`, then:
 
-   a. Let :math:`(\mathsf{call\_indirect}~{\mathit{tableidx}}~{\mathit{typeuse}})` be :math:`{\mathit{instr}}_3`.
+   a. Let :math:`(\mathsf{call\_indirect}~{\mathit{tableidx}}~{\mathit{typeuse}})` be :math:`{\mathit{instr}'}`.
 
    #. Return `$free_tableidx(tableidx) ++ $free_typeuse(typeuse)`.
 
-#. If :math:`{\mathit{instr}}_3 = \mathsf{return}`, then:
+#. If :math:`{\mathit{instr}'} = \mathsf{return}`, then:
 
    a. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
 
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{return\_call}`, then:
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{return\_call}`, then:
 
-   a. Let :math:`(\mathsf{return\_call}~{\mathit{funcidx}})` be :math:`{\mathit{instr}}_3`.
+   a. Let :math:`(\mathsf{return\_call}~{\mathit{funcidx}})` be :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{funcidx}}({\mathit{funcidx}})`.
 
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{return\_call\_ref}`, then:
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{return\_call\_ref}`, then:
 
-   a. Let :math:`(\mathsf{return\_call\_ref}~{\mathit{typeuse}})` be :math:`{\mathit{instr}}_3`.
+   a. Let :math:`(\mathsf{return\_call\_ref}~{\mathit{typeuse}})` be :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{typeuse}}({\mathit{typeuse}})`.
 
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{return\_call\_indirect}`, then:
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{return\_call\_indirect}`, then:
 
-   a. Let :math:`(\mathsf{return\_call\_indirect}~{\mathit{tableidx}}~{\mathit{typeuse}})` be :math:`{\mathit{instr}}_3`.
+   a. Let :math:`(\mathsf{return\_call\_indirect}~{\mathit{tableidx}}~{\mathit{typeuse}})` be :math:`{\mathit{instr}'}`.
 
    #. Return `$free_tableidx(tableidx) ++ $free_typeuse(typeuse)`.
 
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{const}`, then:
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{const}`, then:
 
-   a. Let :math:`({\mathit{numtype}}{.}\mathsf{const}~{\mathit{numlit}})` be :math:`{\mathit{instr}}_3`.
-
-   #. Return :math:`{\mathrm{free}}_{\mathit{numtype}}({\mathit{numtype}})`.
-
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{unop}`, then:
-
-   a. Let :math:`({\mathit{numtype}} {.} {\mathit{unop}})` be :math:`{\mathit{instr}}_3`.
+   a. Let :math:`({\mathit{numtype}}{.}\mathsf{const}~{\mathit{numlit}})` be :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{numtype}}({\mathit{numtype}})`.
 
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{binop}`, then:
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{unop}`, then:
 
-   a. Let :math:`({\mathit{numtype}} {.} {\mathit{binop}})` be :math:`{\mathit{instr}}_3`.
-
-   #. Return :math:`{\mathrm{free}}_{\mathit{numtype}}({\mathit{numtype}})`.
-
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{testop}`, then:
-
-   a. Let :math:`({\mathit{numtype}} {.} {\mathit{testop}})` be :math:`{\mathit{instr}}_3`.
+   a. Let :math:`({\mathit{numtype}} {.} {\mathit{unop}})` be :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{numtype}}({\mathit{numtype}})`.
 
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{relop}`, then:
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{binop}`, then:
 
-   a. Let :math:`({\mathit{numtype}} {.} {\mathit{relop}})` be :math:`{\mathit{instr}}_3`.
+   a. Let :math:`({\mathit{numtype}} {.} {\mathit{binop}})` be :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{numtype}}({\mathit{numtype}})`.
 
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{cvtop}`, then:
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{testop}`, then:
 
-   a. Let :math:`({\mathit{numtype}}_1 {.} {{\mathit{cvtop}}}{\mathsf{\_}}{{\mathit{numtype}}_2})` be :math:`{\mathit{instr}}_3`.
+   a. Let :math:`({\mathit{numtype}} {.} {\mathit{testop}})` be :math:`{\mathit{instr}'}`.
+
+   #. Return :math:`{\mathrm{free}}_{\mathit{numtype}}({\mathit{numtype}})`.
+
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{relop}`, then:
+
+   a. Let :math:`({\mathit{numtype}} {.} {\mathit{relop}})` be :math:`{\mathit{instr}'}`.
+
+   #. Return :math:`{\mathrm{free}}_{\mathit{numtype}}({\mathit{numtype}})`.
+
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{cvtop}`, then:
+
+   a. Let :math:`({\mathit{numtype}}_1 {.} {{\mathit{cvtop}}}{\mathsf{\_}}{{\mathit{numtype}}_2})` be :math:`{\mathit{instr}'}`.
 
    #. Return `$free_numtype(numtype_1) ++ $free_numtype(numtype_2)`.
 
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{vconst}`, then:
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{vconst}`, then:
 
-   a. Let :math:`({\mathit{vectype}}{.}\mathsf{const}~{\mathit{veclit}})` be :math:`{\mathit{instr}}_3`.
-
-   #. Return :math:`{\mathrm{free}}_{\mathit{vectype}}({\mathit{vectype}})`.
-
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{vvunop}`, then:
-
-   a. Let :math:`({\mathit{vectype}} {.} {\mathit{vvunop}})` be :math:`{\mathit{instr}}_3`.
+   a. Let :math:`({\mathit{vectype}}{.}\mathsf{const}~{\mathit{veclit}})` be :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{vectype}}({\mathit{vectype}})`.
 
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{vvbinop}`, then:
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{vvunop}`, then:
 
-   a. Let :math:`({\mathit{vectype}} {.} {\mathit{vvbinop}})` be :math:`{\mathit{instr}}_3`.
-
-   #. Return :math:`{\mathrm{free}}_{\mathit{vectype}}({\mathit{vectype}})`.
-
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{vvternop}`, then:
-
-   a. Let :math:`({\mathit{vectype}} {.} {\mathit{vvternop}})` be :math:`{\mathit{instr}}_3`.
+   a. Let :math:`({\mathit{vectype}} {.} {\mathit{vvunop}})` be :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{vectype}}({\mathit{vectype}})`.
 
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{vvtestop}`, then:
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{vvbinop}`, then:
 
-   a. Let :math:`({\mathit{vectype}} {.} {\mathit{vvtestop}})` be :math:`{\mathit{instr}}_3`.
+   a. Let :math:`({\mathit{vectype}} {.} {\mathit{vvbinop}})` be :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{vectype}}({\mathit{vectype}})`.
 
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{vunop}`, then:
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{vvternop}`, then:
 
-   a. Let :math:`({\mathit{shape}} {.} {\mathit{vunop}})` be :math:`{\mathit{instr}}_3`.
+   a. Let :math:`({\mathit{vectype}} {.} {\mathit{vvternop}})` be :math:`{\mathit{instr}'}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{shape}}({\mathit{shape}})`.
+   #. Return :math:`{\mathrm{free}}_{\mathit{vectype}}({\mathit{vectype}})`.
 
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{vbinop}`, then:
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{vvtestop}`, then:
 
-   a. Let :math:`({\mathit{shape}} {.} {\mathit{vbinop}})` be :math:`{\mathit{instr}}_3`.
+   a. Let :math:`({\mathit{vectype}} {.} {\mathit{vvtestop}})` be :math:`{\mathit{instr}'}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{shape}}({\mathit{shape}})`.
+   #. Return :math:`{\mathrm{free}}_{\mathit{vectype}}({\mathit{vectype}})`.
 
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{vternop}`, then:
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{vunop}`, then:
 
-   a. Let :math:`({\mathit{shape}} {.} {\mathit{vternop}})` be :math:`{\mathit{instr}}_3`.
-
-   #. Return :math:`{\mathrm{free}}_{\mathit{shape}}({\mathit{shape}})`.
-
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{vtestop}`, then:
-
-   a. Let :math:`({\mathit{shape}} {.} {\mathit{vtestop}})` be :math:`{\mathit{instr}}_3`.
+   a. Let :math:`({\mathit{shape}} {.} {\mathit{vunop}})` be :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{shape}}({\mathit{shape}})`.
 
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{vrelop}`, then:
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{vbinop}`, then:
 
-   a. Let :math:`({\mathit{shape}} {.} {\mathit{vrelop}})` be :math:`{\mathit{instr}}_3`.
+   a. Let :math:`({\mathit{shape}} {.} {\mathit{vbinop}})` be :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{shape}}({\mathit{shape}})`.
 
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{vshiftop}`, then:
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{vternop}`, then:
 
-   a. Let :math:`({\mathit{ishape}} {.} {\mathit{vshiftop}})` be :math:`{\mathit{instr}}_3`.
+   a. Let :math:`({\mathit{shape}} {.} {\mathit{vternop}})` be :math:`{\mathit{instr}'}`.
+
+   #. Return :math:`{\mathrm{free}}_{\mathit{shape}}({\mathit{shape}})`.
+
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{vtestop}`, then:
+
+   a. Let :math:`({\mathit{shape}} {.} {\mathit{vtestop}})` be :math:`{\mathit{instr}'}`.
+
+   #. Return :math:`{\mathrm{free}}_{\mathit{shape}}({\mathit{shape}})`.
+
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{vrelop}`, then:
+
+   a. Let :math:`({\mathit{shape}} {.} {\mathit{vrelop}})` be :math:`{\mathit{instr}'}`.
+
+   #. Return :math:`{\mathrm{free}}_{\mathit{shape}}({\mathit{shape}})`.
+
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{vshiftop}`, then:
+
+   a. Let :math:`({\mathit{ishape}} {.} {\mathit{vshiftop}})` be :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{shape}}({\mathit{ishape}})`.
 
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{vbitmask}`, then:
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{vbitmask}`, then:
 
-   a. Let :math:`({\mathit{ishape}}{.}\mathsf{bitmask})` be :math:`{\mathit{instr}}_3`.
+   a. Let :math:`({\mathit{ishape}}{.}\mathsf{bitmask})` be :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{shape}}({\mathit{ishape}})`.
 
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{vswizzlop}`, then:
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{vswizzlop}`, then:
 
-   a. Let :math:`({\mathit{bshape}} {.} {\mathit{vswizzlop}})` be :math:`{\mathit{instr}}_3`.
-
-   #. Return :math:`{\mathrm{free}}_{\mathit{shape}}({\mathit{bshape}})`.
-
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{vshuffle}`, then:
-
-   a. Let :math:`({\mathit{bshape}}{.}\mathsf{shuffle}~{{\mathit{laneidx}}^\ast})` be :math:`{\mathit{instr}}_3`.
+   a. Let :math:`({\mathit{bshape}} {.} {\mathit{vswizzlop}})` be :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{shape}}({\mathit{bshape}})`.
 
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{vextunop}`, then:
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{vshuffle}`, then:
 
-   a. Let :math:`({\mathit{ishape}}_1 {.} {{\mathit{vextunop}}}{\mathsf{\_}}{{\mathit{ishape}}_2})` be :math:`{\mathit{instr}}_3`.
+   a. Let :math:`({\mathit{bshape}}{.}\mathsf{shuffle}~{{\mathit{laneidx}}^\ast})` be :math:`{\mathit{instr}'}`.
 
-   #. Return `$free_shape(ishape_1) ++ $free_shape(ishape_2)`.
+   #. Return :math:`{\mathrm{free}}_{\mathit{shape}}({\mathit{bshape}})`.
 
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{vextbinop}`, then:
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{vextunop}`, then:
 
-   a. Let :math:`({\mathit{ishape}}_1 {.} {{\mathit{vextbinop}}}{\mathsf{\_}}{{\mathit{ishape}}_2})` be :math:`{\mathit{instr}}_3`.
-
-   #. Return `$free_shape(ishape_1) ++ $free_shape(ishape_2)`.
-
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{vnarrow}`, then:
-
-   a. Let :math:`({{\mathit{ishape}}_1{.}\mathsf{narrow}}{\mathsf{\_}}{{\mathit{ishape}}_2}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{instr}}_3`.
+   a. Let :math:`({\mathit{ishape}}_1 {.} {{\mathit{vextunop}}}{\mathsf{\_}}{{\mathit{ishape}}_2})` be :math:`{\mathit{instr}'}`.
 
    #. Return `$free_shape(ishape_1) ++ $free_shape(ishape_2)`.
 
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{vcvtop}`, then:
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{vextbinop}`, then:
 
-   a. Let :math:`({\mathit{shape}}_1 {.} {{\mathit{vcvtop}}}{\mathsf{\_}}{{{\mathit{zero}}^?}}{\mathsf{\_}}{{\mathit{shape}}_2}{\mathsf{\_}}{{{\mathit{half}}^?}})` be :math:`{\mathit{instr}}_3`.
+   a. Let :math:`({\mathit{ishape}}_1 {.} {{\mathit{vextbinop}}}{\mathsf{\_}}{{\mathit{ishape}}_2})` be :math:`{\mathit{instr}'}`.
+
+   #. Return `$free_shape(ishape_1) ++ $free_shape(ishape_2)`.
+
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{vnarrow}`, then:
+
+   a. Let :math:`({{\mathit{ishape}}_1{.}\mathsf{narrow}}{\mathsf{\_}}{{\mathit{ishape}}_2}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{instr}'}`.
+
+   #. Return `$free_shape(ishape_1) ++ $free_shape(ishape_2)`.
+
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{vcvtop}`, then:
+
+   a. Let :math:`({\mathit{shape}}_1 {.} {{\mathit{vcvtop}}}{\mathsf{\_}}{{{\mathit{zero}}^?}}{\mathsf{\_}}{{\mathit{shape}}_2}{\mathsf{\_}}{{{\mathit{half}}^?}})` be :math:`{\mathit{instr}'}`.
 
    #. Return `$free_shape(shape_1) ++ $free_shape(shape_2)`.
 
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{vsplat}`, then:
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{vsplat}`, then:
 
-   a. Let :math:`({\mathit{shape}}{.}\mathsf{splat})` be :math:`{\mathit{instr}}_3`.
-
-   #. Return :math:`{\mathrm{free}}_{\mathit{shape}}({\mathit{shape}})`.
-
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{vextract\_lane}`, then:
-
-   a. Let :math:`({{\mathit{shape}}{.}\mathsf{extract\_lane}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~{\mathit{laneidx}})` be :math:`{\mathit{instr}}_3`.
+   a. Let :math:`({\mathit{shape}}{.}\mathsf{splat})` be :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{shape}}({\mathit{shape}})`.
 
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{vreplace\_lane}`, then:
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{vextract\_lane}`, then:
 
-   a. Let :math:`({\mathit{shape}}{.}\mathsf{replace\_lane}~{\mathit{laneidx}})` be :math:`{\mathit{instr}}_3`.
+   a. Let :math:`({{\mathit{shape}}{.}\mathsf{extract\_lane}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~{\mathit{laneidx}})` be :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{shape}}({\mathit{shape}})`.
 
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{ref{.}null}`, then:
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{vreplace\_lane}`, then:
 
-   a. Let :math:`(\mathsf{ref{.}null}~{\mathit{heaptype}})` be :math:`{\mathit{instr}}_3`.
+   a. Let :math:`({\mathit{shape}}{.}\mathsf{replace\_lane}~{\mathit{laneidx}})` be :math:`{\mathit{instr}'}`.
+
+   #. Return :math:`{\mathrm{free}}_{\mathit{shape}}({\mathit{shape}})`.
+
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{ref{.}null}`, then:
+
+   a. Let :math:`(\mathsf{ref{.}null}~{\mathit{heaptype}})` be :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{heaptype}}({\mathit{heaptype}})`.
 
-#. If :math:`{\mathit{instr}}_3 = \mathsf{ref{.}is\_null}`, then:
+#. If :math:`{\mathit{instr}'} = \mathsf{ref{.}is\_null}`, then:
 
    a. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
 
-#. If :math:`{\mathit{instr}}_3 = \mathsf{ref{.}as\_non\_null}`, then:
+#. If :math:`{\mathit{instr}'} = \mathsf{ref{.}as\_non\_null}`, then:
 
    a. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
 
-#. If :math:`{\mathit{instr}}_3 = \mathsf{ref{.}eq}`, then:
+#. If :math:`{\mathit{instr}'} = \mathsf{ref{.}eq}`, then:
 
    a. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
 
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{ref{.}test}`, then:
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{ref{.}test}`, then:
 
-   a. Let :math:`(\mathsf{ref{.}test}~{\mathit{reftype}})` be :math:`{\mathit{instr}}_3`.
+   a. Let :math:`(\mathsf{ref{.}test}~{\mathit{reftype}})` be :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{reftype}}({\mathit{reftype}})`.
 
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{ref{.}cast}`, then:
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{ref{.}cast}`, then:
 
-   a. Let :math:`(\mathsf{ref{.}cast}~{\mathit{reftype}})` be :math:`{\mathit{instr}}_3`.
+   a. Let :math:`(\mathsf{ref{.}cast}~{\mathit{reftype}})` be :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{reftype}}({\mathit{reftype}})`.
 
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{ref{.}func}`, then:
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{ref{.}func}`, then:
 
-   a. Let :math:`(\mathsf{ref{.}func}~{\mathit{funcidx}})` be :math:`{\mathit{instr}}_3`.
+   a. Let :math:`(\mathsf{ref{.}func}~{\mathit{funcidx}})` be :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{funcidx}}({\mathit{funcidx}})`.
 
-#. If :math:`{\mathit{instr}}_3 = \mathsf{ref{.}i{\scriptstyle 31}}`, then:
+#. If :math:`{\mathit{instr}'} = \mathsf{ref{.}i{\scriptstyle 31}}`, then:
 
    a. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
 
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{i{\scriptstyle 31}{.}get}`, then:
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{i{\scriptstyle 31}{.}get}`, then:
 
    a. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
 
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{struct{.}new}`, then:
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{struct{.}new}`, then:
 
    a. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
 
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{struct{.}new\_default}`, then:
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{struct{.}new\_default}`, then:
 
-   a. Let :math:`(\mathsf{struct{.}new\_default}~{\mathit{typeidx}})` be :math:`{\mathit{instr}}_3`.
-
-   #. Return :math:`{\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}})`.
-
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{struct{.}get}`, then:
-
-   a. Let :math:`({\mathsf{struct{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~{\mathit{typeidx}}~{32})` be :math:`{\mathit{instr}}_3`.
+   a. Let :math:`(\mathsf{struct{.}new\_default}~{\mathit{typeidx}})` be :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}})`.
 
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{struct{.}set}`, then:
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{struct{.}get}`, then:
 
-   a. Let :math:`(\mathsf{struct{.}set}~{\mathit{typeidx}}~{32})` be :math:`{\mathit{instr}}_3`.
-
-   #. Return :math:`{\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}})`.
-
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{array{.}new}`, then:
-
-   a. Let :math:`(\mathsf{array{.}new}~{\mathit{typeidx}})` be :math:`{\mathit{instr}}_3`.
+   a. Let :math:`({\mathsf{struct{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~{\mathit{typeidx}}~{\mathit{u{\kern-0.1em\scriptstyle 32}}})` be :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}})`.
 
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{array{.}new\_default}`, then:
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{struct{.}set}`, then:
 
-   a. Let :math:`(\mathsf{array{.}new\_default}~{\mathit{typeidx}})` be :math:`{\mathit{instr}}_3`.
-
-   #. Return :math:`{\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}})`.
-
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{array{.}new\_fixed}`, then:
-
-   a. Let :math:`(\mathsf{array{.}new\_fixed}~{\mathit{typeidx}}~{32})` be :math:`{\mathit{instr}}_3`.
+   a. Let :math:`(\mathsf{struct{.}set}~{\mathit{typeidx}}~{\mathit{u{\kern-0.1em\scriptstyle 32}}})` be :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}})`.
 
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{array{.}new\_data}`, then:
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{array{.}new}`, then:
 
-   a. Let :math:`(\mathsf{array{.}new\_data}~{\mathit{typeidx}}~{\mathit{dataidx}})` be :math:`{\mathit{instr}}_3`.
+   a. Let :math:`(\mathsf{array{.}new}~{\mathit{typeidx}})` be :math:`{\mathit{instr}'}`.
+
+   #. Return :math:`{\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}})`.
+
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{array{.}new\_default}`, then:
+
+   a. Let :math:`(\mathsf{array{.}new\_default}~{\mathit{typeidx}})` be :math:`{\mathit{instr}'}`.
+
+   #. Return :math:`{\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}})`.
+
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{array{.}new\_fixed}`, then:
+
+   a. Let :math:`(\mathsf{array{.}new\_fixed}~{\mathit{typeidx}}~{\mathit{u{\kern-0.1em\scriptstyle 32}}})` be :math:`{\mathit{instr}'}`.
+
+   #. Return :math:`{\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}})`.
+
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{array{.}new\_data}`, then:
+
+   a. Let :math:`(\mathsf{array{.}new\_data}~{\mathit{typeidx}}~{\mathit{dataidx}})` be :math:`{\mathit{instr}'}`.
 
    #. Return `$free_typeidx(typeidx) ++ $free_dataidx(dataidx)`.
 
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{array{.}new\_elem}`, then:
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{array{.}new\_elem}`, then:
 
-   a. Let :math:`(\mathsf{array{.}new\_elem}~{\mathit{typeidx}}~{\mathit{elemidx}})` be :math:`{\mathit{instr}}_3`.
+   a. Let :math:`(\mathsf{array{.}new\_elem}~{\mathit{typeidx}}~{\mathit{elemidx}})` be :math:`{\mathit{instr}'}`.
 
    #. Return `$free_typeidx(typeidx) ++ $free_elemidx(elemidx)`.
 
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{array{.}get}`, then:
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{array{.}get}`, then:
 
-   a. Let :math:`({\mathsf{array{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~{\mathit{typeidx}})` be :math:`{\mathit{instr}}_3`.
-
-   #. Return :math:`{\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}})`.
-
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{array{.}set}`, then:
-
-   a. Let :math:`(\mathsf{array{.}set}~{\mathit{typeidx}})` be :math:`{\mathit{instr}}_3`.
+   a. Let :math:`({\mathsf{array{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~{\mathit{typeidx}})` be :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}})`.
 
-#. If :math:`{\mathit{instr}}_3 = \mathsf{array{.}len}`, then:
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{array{.}set}`, then:
+
+   a. Let :math:`(\mathsf{array{.}set}~{\mathit{typeidx}})` be :math:`{\mathit{instr}'}`.
+
+   #. Return :math:`{\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}})`.
+
+#. If :math:`{\mathit{instr}'} = \mathsf{array{.}len}`, then:
 
    a. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
 
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{array{.}fill}`, then:
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{array{.}fill}`, then:
 
-   a. Let :math:`(\mathsf{array{.}fill}~{\mathit{typeidx}})` be :math:`{\mathit{instr}}_3`.
+   a. Let :math:`(\mathsf{array{.}fill}~{\mathit{typeidx}})` be :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}})`.
 
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{array{.}copy}`, then:
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{array{.}copy}`, then:
 
-   a. Let :math:`(\mathsf{array{.}copy}~{\mathit{typeidx}}_1~{\mathit{typeidx}}_2)` be :math:`{\mathit{instr}}_3`.
+   a. Let :math:`(\mathsf{array{.}copy}~{\mathit{typeidx}}_1~{\mathit{typeidx}}_2)` be :math:`{\mathit{instr}'}`.
 
    #. Return `$free_typeidx(typeidx_1) ++ $free_typeidx(typeidx_2)`.
 
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{array{.}init\_data}`, then:
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{array{.}init\_data}`, then:
 
-   a. Let :math:`(\mathsf{array{.}init\_data}~{\mathit{typeidx}}~{\mathit{dataidx}})` be :math:`{\mathit{instr}}_3`.
+   a. Let :math:`(\mathsf{array{.}init\_data}~{\mathit{typeidx}}~{\mathit{dataidx}})` be :math:`{\mathit{instr}'}`.
 
    #. Return `$free_typeidx(typeidx) ++ $free_dataidx(dataidx)`.
 
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{array{.}init\_elem}`, then:
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{array{.}init\_elem}`, then:
 
-   a. Let :math:`(\mathsf{array{.}init\_elem}~{\mathit{typeidx}}~{\mathit{elemidx}})` be :math:`{\mathit{instr}}_3`.
+   a. Let :math:`(\mathsf{array{.}init\_elem}~{\mathit{typeidx}}~{\mathit{elemidx}})` be :math:`{\mathit{instr}'}`.
 
    #. Return `$free_typeidx(typeidx) ++ $free_elemidx(elemidx)`.
 
-#. If :math:`{\mathit{instr}}_3 = \mathsf{extern{.}convert\_any}`, then:
+#. If :math:`{\mathit{instr}'} = \mathsf{extern{.}convert\_any}`, then:
 
    a. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
 
-#. If :math:`{\mathit{instr}}_3 = \mathsf{any{.}convert\_extern}`, then:
+#. If :math:`{\mathit{instr}'} = \mathsf{any{.}convert\_extern}`, then:
 
    a. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
 
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{local{.}get}`, then:
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{local{.}get}`, then:
 
-   a. Let :math:`(\mathsf{local{.}get}~{\mathit{localidx}})` be :math:`{\mathit{instr}}_3`.
-
-   #. Return :math:`{\mathrm{free}}_{\mathit{localidx}}({\mathit{localidx}})`.
-
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{local{.}set}`, then:
-
-   a. Let :math:`(\mathsf{local{.}set}~{\mathit{localidx}})` be :math:`{\mathit{instr}}_3`.
+   a. Let :math:`(\mathsf{local{.}get}~{\mathit{localidx}})` be :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{localidx}}({\mathit{localidx}})`.
 
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{local{.}tee}`, then:
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{local{.}set}`, then:
 
-   a. Let :math:`(\mathsf{local{.}tee}~{\mathit{localidx}})` be :math:`{\mathit{instr}}_3`.
+   a. Let :math:`(\mathsf{local{.}set}~{\mathit{localidx}})` be :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{localidx}}({\mathit{localidx}})`.
 
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{global{.}get}`, then:
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{local{.}tee}`, then:
 
-   a. Let :math:`(\mathsf{global{.}get}~{\mathit{globalidx}})` be :math:`{\mathit{instr}}_3`.
+   a. Let :math:`(\mathsf{local{.}tee}~{\mathit{localidx}})` be :math:`{\mathit{instr}'}`.
+
+   #. Return :math:`{\mathrm{free}}_{\mathit{localidx}}({\mathit{localidx}})`.
+
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{global{.}get}`, then:
+
+   a. Let :math:`(\mathsf{global{.}get}~{\mathit{globalidx}})` be :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{globalidx}}({\mathit{globalidx}})`.
 
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{global{.}set}`, then:
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{global{.}set}`, then:
 
-   a. Let :math:`(\mathsf{global{.}set}~{\mathit{globalidx}})` be :math:`{\mathit{instr}}_3`.
+   a. Let :math:`(\mathsf{global{.}set}~{\mathit{globalidx}})` be :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{globalidx}}({\mathit{globalidx}})`.
 
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{table{.}get}`, then:
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{table{.}get}`, then:
 
-   a. Let :math:`(\mathsf{table{.}get}~{\mathit{tableidx}})` be :math:`{\mathit{instr}}_3`.
-
-   #. Return :math:`{\mathrm{free}}_{\mathit{tableidx}}({\mathit{tableidx}})`.
-
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{table{.}set}`, then:
-
-   a. Let :math:`(\mathsf{table{.}set}~{\mathit{tableidx}})` be :math:`{\mathit{instr}}_3`.
+   a. Let :math:`(\mathsf{table{.}get}~{\mathit{tableidx}})` be :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{tableidx}}({\mathit{tableidx}})`.
 
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{table{.}size}`, then:
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{table{.}set}`, then:
 
-   a. Let :math:`(\mathsf{table{.}size}~{\mathit{tableidx}})` be :math:`{\mathit{instr}}_3`.
-
-   #. Return :math:`{\mathrm{free}}_{\mathit{tableidx}}({\mathit{tableidx}})`.
-
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{table{.}grow}`, then:
-
-   a. Let :math:`(\mathsf{table{.}grow}~{\mathit{tableidx}})` be :math:`{\mathit{instr}}_3`.
+   a. Let :math:`(\mathsf{table{.}set}~{\mathit{tableidx}})` be :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{tableidx}}({\mathit{tableidx}})`.
 
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{table{.}fill}`, then:
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{table{.}size}`, then:
 
-   a. Let :math:`(\mathsf{table{.}fill}~{\mathit{tableidx}})` be :math:`{\mathit{instr}}_3`.
+   a. Let :math:`(\mathsf{table{.}size}~{\mathit{tableidx}})` be :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{tableidx}}({\mathit{tableidx}})`.
 
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{table{.}copy}`, then:
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{table{.}grow}`, then:
 
-   a. Let :math:`(\mathsf{table{.}copy}~{\mathit{tableidx}}_1~{\mathit{tableidx}}_2)` be :math:`{\mathit{instr}}_3`.
+   a. Let :math:`(\mathsf{table{.}grow}~{\mathit{tableidx}})` be :math:`{\mathit{instr}'}`.
+
+   #. Return :math:`{\mathrm{free}}_{\mathit{tableidx}}({\mathit{tableidx}})`.
+
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{table{.}fill}`, then:
+
+   a. Let :math:`(\mathsf{table{.}fill}~{\mathit{tableidx}})` be :math:`{\mathit{instr}'}`.
+
+   #. Return :math:`{\mathrm{free}}_{\mathit{tableidx}}({\mathit{tableidx}})`.
+
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{table{.}copy}`, then:
+
+   a. Let :math:`(\mathsf{table{.}copy}~{\mathit{tableidx}}_1~{\mathit{tableidx}}_2)` be :math:`{\mathit{instr}'}`.
 
    #. Return `$free_tableidx(tableidx_1) ++ $free_tableidx(tableidx_2)`.
 
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{table{.}init}`, then:
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{table{.}init}`, then:
 
-   a. Let :math:`(\mathsf{table{.}init}~{\mathit{tableidx}}~{\mathit{elemidx}})` be :math:`{\mathit{instr}}_3`.
+   a. Let :math:`(\mathsf{table{.}init}~{\mathit{tableidx}}~{\mathit{elemidx}})` be :math:`{\mathit{instr}'}`.
 
    #. Return `$free_tableidx(tableidx) ++ $free_elemidx(elemidx)`.
 
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{elem{.}drop}`, then:
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{elem{.}drop}`, then:
 
-   a. Let :math:`(\mathsf{elem{.}drop}~{\mathit{elemidx}})` be :math:`{\mathit{instr}}_3`.
+   a. Let :math:`(\mathsf{elem{.}drop}~{\mathit{elemidx}})` be :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{elemidx}}({\mathit{elemidx}})`.
 
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{load}`, then:
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{load}`, then:
 
-   a. Let :math:`({{\mathit{numtype}}{.}\mathsf{load}}{{{\mathit{loadop}}^?}}~{\mathit{memidx}}~{\mathit{memarg}})` be :math:`{\mathit{instr}}_3`.
-
-   #. Return `$free_numtype(numtype) ++ $free_memidx(memidx)`.
-
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{store}`, then:
-
-   a. Let :math:`({{\mathit{numtype}}{.}\mathsf{store}}{{{\mathit{storeop}}^?}}~{\mathit{memidx}}~{\mathit{memarg}})` be :math:`{\mathit{instr}}_3`.
+   a. Let :math:`({{\mathit{numtype}}{.}\mathsf{load}}{{{\mathit{loadop}}^?}}~{\mathit{memidx}}~{\mathit{memarg}})` be :math:`{\mathit{instr}'}`.
 
    #. Return `$free_numtype(numtype) ++ $free_memidx(memidx)`.
 
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{vload}`, then:
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{store}`, then:
 
-   a. Let :math:`({{\mathit{vectype}}{.}\mathsf{load}}{{{\mathit{vloadop}}^?}}~{\mathit{memidx}}~{\mathit{memarg}})` be :math:`{\mathit{instr}}_3`.
+   a. Let :math:`({{\mathit{numtype}}{.}\mathsf{store}}{{{\mathit{storeop}}^?}}~{\mathit{memidx}}~{\mathit{memarg}})` be :math:`{\mathit{instr}'}`.
 
-   #. Return `$free_vectype(vectype) ++ $free_memidx(memidx)`.
+   #. Return `$free_numtype(numtype) ++ $free_memidx(memidx)`.
 
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{vload\_lane}`, then:
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{vload}`, then:
 
-   a. Let :math:`({{\mathit{vectype}}{.}\mathsf{load}}{{\mathit{sz}}}{\mathsf{\_}}{\mathsf{lane}}~{\mathit{memidx}}~{\mathit{memarg}}~{\mathit{laneidx}})` be :math:`{\mathit{instr}}_3`.
-
-   #. Return `$free_vectype(vectype) ++ $free_memidx(memidx)`.
-
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{vstore}`, then:
-
-   a. Let :math:`({\mathit{vectype}}{.}\mathsf{store}~{\mathit{memidx}}~{\mathit{memarg}})` be :math:`{\mathit{instr}}_3`.
+   a. Let :math:`({{\mathit{vectype}}{.}\mathsf{load}}{{{\mathit{vloadop}}^?}}~{\mathit{memidx}}~{\mathit{memarg}})` be :math:`{\mathit{instr}'}`.
 
    #. Return `$free_vectype(vectype) ++ $free_memidx(memidx)`.
 
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{vstore\_lane}`, then:
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{vload\_lane}`, then:
 
-   a. Let :math:`({{\mathit{vectype}}{.}\mathsf{store}}{{\mathit{sz}}}{\mathsf{\_}}{\mathsf{lane}}~{\mathit{memidx}}~{\mathit{memarg}}~{\mathit{laneidx}})` be :math:`{\mathit{instr}}_3`.
+   a. Let :math:`({{\mathit{vectype}}{.}\mathsf{load}}{{\mathit{sz}}}{\mathsf{\_}}{\mathsf{lane}}~{\mathit{memidx}}~{\mathit{memarg}}~{\mathit{laneidx}})` be :math:`{\mathit{instr}'}`.
 
    #. Return `$free_vectype(vectype) ++ $free_memidx(memidx)`.
 
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{memory{.}size}`, then:
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{vstore}`, then:
 
-   a. Let :math:`(\mathsf{memory{.}size}~{\mathit{memidx}})` be :math:`{\mathit{instr}}_3`.
+   a. Let :math:`({\mathit{vectype}}{.}\mathsf{store}~{\mathit{memidx}}~{\mathit{memarg}})` be :math:`{\mathit{instr}'}`.
+
+   #. Return `$free_vectype(vectype) ++ $free_memidx(memidx)`.
+
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{vstore\_lane}`, then:
+
+   a. Let :math:`({{\mathit{vectype}}{.}\mathsf{store}}{{\mathit{sz}}}{\mathsf{\_}}{\mathsf{lane}}~{\mathit{memidx}}~{\mathit{memarg}}~{\mathit{laneidx}})` be :math:`{\mathit{instr}'}`.
+
+   #. Return `$free_vectype(vectype) ++ $free_memidx(memidx)`.
+
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{memory{.}size}`, then:
+
+   a. Let :math:`(\mathsf{memory{.}size}~{\mathit{memidx}})` be :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{memidx}}({\mathit{memidx}})`.
 
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{memory{.}grow}`, then:
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{memory{.}grow}`, then:
 
-   a. Let :math:`(\mathsf{memory{.}grow}~{\mathit{memidx}})` be :math:`{\mathit{instr}}_3`.
-
-   #. Return :math:`{\mathrm{free}}_{\mathit{memidx}}({\mathit{memidx}})`.
-
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{memory{.}fill}`, then:
-
-   a. Let :math:`(\mathsf{memory{.}fill}~{\mathit{memidx}})` be :math:`{\mathit{instr}}_3`.
+   a. Let :math:`(\mathsf{memory{.}grow}~{\mathit{memidx}})` be :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{memidx}}({\mathit{memidx}})`.
 
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{memory{.}copy}`, then:
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{memory{.}fill}`, then:
 
-   a. Let :math:`(\mathsf{memory{.}copy}~{\mathit{memidx}}_1~{\mathit{memidx}}_2)` be :math:`{\mathit{instr}}_3`.
+   a. Let :math:`(\mathsf{memory{.}fill}~{\mathit{memidx}})` be :math:`{\mathit{instr}'}`.
+
+   #. Return :math:`{\mathrm{free}}_{\mathit{memidx}}({\mathit{memidx}})`.
+
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{memory{.}copy}`, then:
+
+   a. Let :math:`(\mathsf{memory{.}copy}~{\mathit{memidx}}_1~{\mathit{memidx}}_2)` be :math:`{\mathit{instr}'}`.
 
    #. Return `$free_memidx(memidx_1) ++ $free_memidx(memidx_2)`.
 
-#. If :math:`{\mathit{instr}}_3` is :math:`\mathsf{memory{.}init}`, then:
+#. If :math:`{\mathit{instr}'}` is :math:`\mathsf{memory{.}init}`, then:
 
-   a. Let :math:`(\mathsf{memory{.}init}~{\mathit{memidx}}~{\mathit{dataidx}})` be :math:`{\mathit{instr}}_3`.
+   a. Let :math:`(\mathsf{memory{.}init}~{\mathit{memidx}}~{\mathit{dataidx}})` be :math:`{\mathit{instr}'}`.
 
    #. Return `$free_memidx(memidx) ++ $free_dataidx(dataidx)`.
 
-#. Assert: Due to validation, :math:`{\mathit{instr}}_3` is :math:`\mathsf{data{.}drop}`.
+#. Assert: Due to validation, :math:`{\mathit{instr}'}` is :math:`\mathsf{data{.}drop}`.
 
-#. Let :math:`(\mathsf{data{.}drop}~{\mathit{dataidx}})` be :math:`{\mathit{instr}}_3`.
+#. Let :math:`(\mathsf{data{.}drop}~{\mathit{dataidx}})` be :math:`{\mathit{instr}'}`.
 
 #. Return :math:`{\mathrm{free}}_{\mathit{dataidx}}({\mathit{dataidx}})`.
 
@@ -21646,21 +21646,21 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return :math:`{\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}})`.
 
 
-:math:`{\mathrm{free}}_{\mathit{elemmode}}({\mathit{elemmode}}_1)`
-..................................................................
+:math:`{\mathrm{free}}_{\mathit{elemmode}}({\mathit{elemmode}})`
+................................................................
 
 
-1. If :math:`{\mathit{elemmode}}_1` is :math:`\mathsf{active}`, then:
+1. If :math:`{\mathit{elemmode}}` is :math:`\mathsf{active}`, then:
 
-   a. Let :math:`(\mathsf{active}~{\mathit{tableidx}}~{\mathit{expr}})` be :math:`{\mathit{elemmode}}_1`.
+   a. Let :math:`(\mathsf{active}~{\mathit{tableidx}}~{\mathit{expr}})` be :math:`{\mathit{elemmode}}`.
 
    #. Return `$free_tableidx(tableidx) ++ $free_expr(expr)`.
 
-#. If :math:`{\mathit{elemmode}}_1 = \mathsf{passive}`, then:
+#. If :math:`{\mathit{elemmode}} = \mathsf{passive}`, then:
 
    a. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
 
-#. Assert: Due to validation, :math:`{\mathit{elemmode}}_1 = \mathsf{declare}`.
+#. Assert: Due to validation, :math:`{\mathit{elemmode}} = \mathsf{declare}`.
 
 #. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
 
@@ -21672,17 +21672,17 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return `$free_reftype(reftype) ++ $free_list($free_expr(expr)*{expr <- expr*}) ++ $free_elemmode(elemmode)`.
 
 
-:math:`{\mathrm{free}}_{\mathit{datamode}}({\mathit{datamode}}_1)`
-..................................................................
+:math:`{\mathrm{free}}_{\mathit{datamode}}({\mathit{datamode}})`
+................................................................
 
 
-1. If :math:`{\mathit{datamode}}_1` is :math:`\mathsf{active}`, then:
+1. If :math:`{\mathit{datamode}}` is :math:`\mathsf{active}`, then:
 
-   a. Let :math:`(\mathsf{active}~{\mathit{memidx}}~{\mathit{expr}})` be :math:`{\mathit{datamode}}_1`.
+   a. Let :math:`(\mathsf{active}~{\mathit{memidx}}~{\mathit{expr}})` be :math:`{\mathit{datamode}}`.
 
    #. Return `$free_memidx(memidx) ++ $free_expr(expr)`.
 
-#. Assert: Due to validation, :math:`{\mathit{datamode}}_1 = \mathsf{passive}`.
+#. Assert: Due to validation, :math:`{\mathit{datamode}} = \mathsf{passive}`.
 
 #. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
 
@@ -21736,34 +21736,34 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return :math:`{\mathrm{free}}_{\mathit{list}}({{\mathrm{free}}_{\mathit{func}}({\mathit{func}})^\ast}){.}\mathsf{datas}`.
 
 
-:math:`C{}[{.}\mathsf{local}{}[{{\mathit{localidx}}_1^\ast}] = {{\mathit{localtype}}_1^\ast}]`
-..............................................................................................
+:math:`C{}[{.}\mathsf{local}{}[{{\mathit{localidx}}^\ast}] = {{\mathit{localtype}}^\ast}]`
+..........................................................................................
 
 
-1. If :math:`{{\mathit{localidx}}_1^\ast} = \epsilon` and :math:`{{\mathit{localtype}}_1^\ast} = \epsilon`, then:
+1. If :math:`{{\mathit{localidx}}^\ast} = \epsilon` and :math:`{{\mathit{localtype}}^\ast} = \epsilon`, then:
 
    a. Return :math:`C`.
 
-#. Assert: Due to validation, :math:`{|{{\mathit{localtype}}_1^\ast}|} \geq 1`.
+#. Assert: Due to validation, :math:`{|{{\mathit{localtype}}^\ast}|} \geq 1`.
 
-#. Let :math:`{{\mathit{lt}}}_1~{{{\mathit{lt}}}^\ast}` be :math:`{{\mathit{localtype}}_1^\ast}`.
+#. Let :math:`{{\mathit{lt}}}_1~{{{\mathit{lt}}}^\ast}` be :math:`{{\mathit{localtype}}^\ast}`.
 
-#. Assert: Due to validation, :math:`{|{{\mathit{localidx}}_1^\ast}|} \geq 1`.
+#. Assert: Due to validation, :math:`{|{{\mathit{localidx}}^\ast}|} \geq 1`.
 
-#. Let :math:`x_1~{x^\ast}` be :math:`{{\mathit{localidx}}_1^\ast}`.
+#. Let :math:`x_1~{x^\ast}` be :math:`{{\mathit{localidx}}^\ast}`.
 
 #. Return :math:`C{}[{.}\mathsf{locals}{}[x_1] = {{\mathit{lt}}}_1]{}[{.}\mathsf{local}{}[{x^\ast}] = {{{\mathit{lt}}}^\ast}]`.
 
 
-:math:`{{{\mathrm{clos}}^\ast}}{({{\mathit{deftype}}_1^\ast})}`
-...............................................................
+:math:`{{{\mathrm{clos}}^\ast}}{({{\mathit{deftype}}^\ast})}`
+.............................................................
 
 
-1. If :math:`{{\mathit{deftype}}_1^\ast} = \epsilon`, then:
+1. If :math:`{{\mathit{deftype}}^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{{\mathit{dt}}^\ast}~{\mathit{dt}}_n` be :math:`{{\mathit{deftype}}_1^\ast}`.
+#. Let :math:`{{\mathit{dt}}^\ast}~{\mathit{dt}}_n` be :math:`{{\mathit{deftype}}^\ast}`.
 
 #. Let :math:`{{\mathit{dt}'}^\ast}` be :math:`{{{\mathrm{clos}}^\ast}}{({{\mathit{dt}}^\ast})}`.
 
@@ -21797,75 +21797,75 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`{{\mathit{mmt}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}`.
 
 
-:math:`{\mathit{typeuse}}_1 \prec x, i`
-.......................................
+:math:`{\mathit{typeuse}} \prec x, i`
+.....................................
 
 
-1. If :math:`{\mathit{typeuse}}_1` is defined type, then:
+1. If :math:`{\mathit{typeuse}}` is defined type, then:
 
    a. Return true.
 
-#. If :math:`{\mathit{typeuse}}_1` is , then:
+#. If :math:`{\mathit{typeuse}}` is , then:
 
-   a. Let :math:`{\mathit{typeidx}}` be :math:`{\mathit{typeuse}}_1`.
+   a. Let :math:`{\mathit{typeidx}}` be :math:`{\mathit{typeuse}}`.
 
    #. Return :math:`{\mathit{typeidx}} < x`.
 
-#. Assert: Due to validation, :math:`{\mathit{typeuse}}_1` is :math:`\mathsf{rec}`.
+#. Assert: Due to validation, :math:`{\mathit{typeuse}}` is :math:`\mathsf{rec}`.
 
-#. Let :math:`(\mathsf{rec}~j)` be :math:`{\mathit{typeuse}}_1`.
+#. Let :math:`(\mathsf{rec}~j)` be :math:`{\mathit{typeuse}}`.
 
 #. Return :math:`j < i`.
 
 
-:math:`{{\mathrm{unroll}}}_{C}({\mathit{heaptype}}_1)`
-......................................................
+:math:`{{\mathrm{unroll}}}_{C}({\mathit{heaptype}})`
+....................................................
 
 
-1. If :math:`{\mathit{heaptype}}_1` is defined type, then:
+1. If :math:`{\mathit{heaptype}}` is defined type, then:
 
-   a. Let :math:`{\mathit{deftype}}` be :math:`{\mathit{heaptype}}_1`.
+   a. Let :math:`{\mathit{deftype}}` be :math:`{\mathit{heaptype}}`.
 
    #. Return :math:`{\mathrm{unroll}}({\mathit{deftype}})`.
 
-#. If :math:`{\mathit{heaptype}}_1` is , then:
+#. If :math:`{\mathit{heaptype}}` is , then:
 
-   a. Let :math:`{\mathit{typeidx}}` be :math:`{\mathit{heaptype}}_1`.
+   a. Let :math:`{\mathit{typeidx}}` be :math:`{\mathit{heaptype}}`.
 
    #. Return :math:`{\mathrm{unroll}}(C{.}\mathsf{types}{}[{\mathit{typeidx}}])`.
 
-#. Assert: Due to validation, :math:`{\mathit{heaptype}}_1` is :math:`\mathsf{rec}`.
+#. Assert: Due to validation, :math:`{\mathit{heaptype}}` is :math:`\mathsf{rec}`.
 
-#. Let :math:`(\mathsf{rec}~i)` be :math:`{\mathit{heaptype}}_1`.
+#. Let :math:`(\mathsf{rec}~i)` be :math:`{\mathit{heaptype}}`.
 
 #. Return :math:`C{.}\mathsf{recs}{}[i]`.
 
 
-:math:`{{\mathrm{default}}}_{{\mathit{valtype}}_1}`
-...................................................
+:math:`{{\mathrm{default}}}_{{\mathit{valtype}}}`
+.................................................
 
 
-1. If :math:`{\mathit{valtype}}_1` is :math:`{\mathsf{i}}{N}`, then:
+1. If :math:`{\mathit{valtype}}` is :math:`{\mathsf{i}}{N}`, then:
 
-   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{valtype}}_1`.
+   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{valtype}}`.
 
    #. Return :math:`({\mathsf{i}}{N}{.}\mathsf{const}~0)`.
 
-#. If :math:`{\mathit{valtype}}_1` is :math:`{\mathsf{f}}{N}`, then:
+#. If :math:`{\mathit{valtype}}` is :math:`{\mathsf{f}}{N}`, then:
 
-   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{valtype}}_1`.
+   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{valtype}}`.
 
    #. Return :math:`({\mathsf{f}}{N}{.}\mathsf{const}~{+0})`.
 
-#. If :math:`{\mathit{valtype}}_1` is :math:`{\mathsf{v}}{N}`, then:
+#. If :math:`{\mathit{valtype}}` is :math:`{\mathsf{v}}{N}`, then:
 
-   a. Let :math:`{\mathsf{v}}{N}` be :math:`{\mathit{valtype}}_1`.
+   a. Let :math:`{\mathsf{v}}{N}` be :math:`{\mathit{valtype}}`.
 
    #. Return :math:`({\mathsf{v}}{N}{.}\mathsf{const}~0)`.
 
-#. Assert: Due to validation, :math:`{\mathit{valtype}}_1` is :math:`\mathsf{ref}`.
+#. Assert: Due to validation, :math:`{\mathit{valtype}}` is :math:`\mathsf{ref}`.
 
-#. Let :math:`(\mathsf{ref}~{\mathit{NULL}}_{{\mathit{opt}}_0}~{\mathit{ht}})` be :math:`{\mathit{valtype}}_1`.
+#. Let :math:`(\mathsf{ref}~{\mathit{NULL}}_{{\mathit{opt}}_0}~{\mathit{ht}})` be :math:`{\mathit{valtype}}`.
 
 #. If :math:`{\mathit{NULL}}_{{\mathit{opt}}_0} = \mathsf{null}`, then:
 
@@ -21947,15 +21947,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`j`.
 
 
-:math:`{\mathrm{sx}}({\mathit{storagetype}}_1)`
-...............................................
+:math:`{\mathrm{sx}}({\mathit{storagetype}})`
+.............................................
 
 
-1. If :math:`{\mathit{storagetype}}_1` is literal type, then:
+1. If :math:`{\mathit{storagetype}}` is literal type, then:
 
    a. Return :math:`\epsilon`.
 
-#. Assert: Due to validation, :math:`{\mathit{storagetype}}_1` is packed type.
+#. Assert: Due to validation, :math:`{\mathit{storagetype}}` is packed type.
 
 #. Return :math:`\mathsf{s}`.
 
@@ -21964,26 +21964,26 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .........
 
 
-1. If :math:`{\mathit{lanetype}}_1` is :math:`{\mathsf{i}}{N}`, then:
+1. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{i}}{N}`, then:
 
    a. Return :math:`0`.
 
-#. Assert: Due to validation, :math:`{\mathit{lanetype}}_1` is :math:`{\mathsf{f}}{N}`.
+#. Assert: Due to validation, :math:`{\mathit{lanetype}}` is :math:`{\mathsf{f}}{N}`.
 
-#. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_1`.
+#. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}`.
 
 #. Return :math:`{+0}`.
 
 
-:math:`\mathbb{B}(b_1)`
-.......................
+:math:`\mathbb{B}(b)`
+.....................
 
 
-1. If :math:`b_1` is false, then:
+1. If :math:`b` is false, then:
 
    a. Return :math:`0`.
 
-#. Assert: Due to validation, :math:`b_1` is true.
+#. Assert: Due to validation, :math:`b` is true.
 
 #. Return :math:`1`.
 
@@ -22036,15 +22036,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`{{\mathrm{ineg}}}_{N}(i_1)`.
 
 
-:math:`{{{{\mathrm{iextend}}}_{N, M}^{{\mathit{sx}}_1}}}{(i)}`
-..............................................................
+:math:`{{{{\mathrm{iextend}}}_{N, M}^{{\mathit{sx}}}}}{(i)}`
+............................................................
 
 
-1. If :math:`{\mathit{sx}}_1 = \mathsf{u}`, then:
+1. If :math:`{\mathit{sx}} = \mathsf{u}`, then:
 
    a. Return :math:`i \mathbin{\mathrm{mod}} ({2^{M}})`.
 
-#. Assert: Due to validation, :math:`{\mathit{sx}}_1 = \mathsf{s}`.
+#. Assert: Due to validation, :math:`{\mathit{sx}} = \mathsf{s}`.
 
 #. Return :math:`{{{{\mathrm{signed}}}_{N}^{{-1}}}}{({{\mathrm{signed}}}_{M}(i \mathbin{\mathrm{mod}} ({2^{M}})))}`.
 
@@ -22070,28 +22070,28 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return :math:`i_1 \cdot i_2 \mathbin{\mathrm{mod}} ({2^{N}})`.
 
 
-:math:`{{{{\mathrm{iadd\_sat}}}_{N}^{{\mathit{sx}}_1}}}{(i_1, i_2)}`
-....................................................................
+:math:`{{{{\mathrm{iadd\_sat}}}_{N}^{{\mathit{sx}}}}}{(i_1, i_2)}`
+..................................................................
 
 
-1. If :math:`{\mathit{sx}}_1 = \mathsf{u}`, then:
+1. If :math:`{\mathit{sx}} = \mathsf{u}`, then:
 
    a. Return :math:`{{\mathrm{sat\_u}}}_{N}(i_1 + i_2)`.
 
-#. Assert: Due to validation, :math:`{\mathit{sx}}_1 = \mathsf{s}`.
+#. Assert: Due to validation, :math:`{\mathit{sx}} = \mathsf{s}`.
 
 #. Return :math:`{{{{\mathrm{signed}}}_{N}^{{-1}}}}{({{\mathrm{sat\_s}}}_{N}({{\mathrm{signed}}}_{N}(i_1) + {{\mathrm{signed}}}_{N}(i_2)))}`.
 
 
-:math:`{{{{\mathrm{isub\_sat}}}_{N}^{{\mathit{sx}}_1}}}{(i_1, i_2)}`
-....................................................................
+:math:`{{{{\mathrm{isub\_sat}}}_{N}^{{\mathit{sx}}}}}{(i_1, i_2)}`
+..................................................................
 
 
-1. If :math:`{\mathit{sx}}_1 = \mathsf{u}`, then:
+1. If :math:`{\mathit{sx}} = \mathsf{u}`, then:
 
    a. Return :math:`{{\mathrm{sat\_u}}}_{N}(i_1 - i_2)`.
 
-#. Assert: Due to validation, :math:`{\mathit{sx}}_1 = \mathsf{s}`.
+#. Assert: Due to validation, :math:`{\mathit{sx}} = \mathsf{s}`.
 
 #. Return :math:`{{{{\mathrm{signed}}}_{N}^{{-1}}}}{({{\mathrm{sat\_s}}}_{N}({{\mathrm{signed}}}_{N}(i_1) - {{\mathrm{signed}}}_{N}(i_2)))}`.
 
@@ -22124,280 +22124,280 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return :math:`\mathbb{B}(i_1 \neq i_2)`.
 
 
-:math:`{{{{\mathrm{ilt}}}_{N}^{{\mathit{sx}}_1}}}{(i_1, i_2)}`
-..............................................................
+:math:`{{{{\mathrm{ilt}}}_{N}^{{\mathit{sx}}}}}{(i_1, i_2)}`
+............................................................
 
 
-1. If :math:`{\mathit{sx}}_1 = \mathsf{u}`, then:
+1. If :math:`{\mathit{sx}} = \mathsf{u}`, then:
 
    a. Return :math:`\mathbb{B}(i_1 < i_2)`.
 
-#. Assert: Due to validation, :math:`{\mathit{sx}}_1 = \mathsf{s}`.
+#. Assert: Due to validation, :math:`{\mathit{sx}} = \mathsf{s}`.
 
 #. Return :math:`\mathbb{B}({{\mathrm{signed}}}_{N}(i_1) < {{\mathrm{signed}}}_{N}(i_2))`.
 
 
-:math:`{{{{\mathrm{igt}}}_{N}^{{\mathit{sx}}_1}}}{(i_1, i_2)}`
-..............................................................
+:math:`{{{{\mathrm{igt}}}_{N}^{{\mathit{sx}}}}}{(i_1, i_2)}`
+............................................................
 
 
-1. If :math:`{\mathit{sx}}_1 = \mathsf{u}`, then:
+1. If :math:`{\mathit{sx}} = \mathsf{u}`, then:
 
    a. Return :math:`\mathbb{B}(i_1 > i_2)`.
 
-#. Assert: Due to validation, :math:`{\mathit{sx}}_1 = \mathsf{s}`.
+#. Assert: Due to validation, :math:`{\mathit{sx}} = \mathsf{s}`.
 
 #. Return :math:`\mathbb{B}({{\mathrm{signed}}}_{N}(i_1) > {{\mathrm{signed}}}_{N}(i_2))`.
 
 
-:math:`{{{{\mathrm{ile}}}_{N}^{{\mathit{sx}}_1}}}{(i_1, i_2)}`
-..............................................................
+:math:`{{{{\mathrm{ile}}}_{N}^{{\mathit{sx}}}}}{(i_1, i_2)}`
+............................................................
 
 
-1. If :math:`{\mathit{sx}}_1 = \mathsf{u}`, then:
+1. If :math:`{\mathit{sx}} = \mathsf{u}`, then:
 
    a. Return :math:`\mathbb{B}(i_1 \leq i_2)`.
 
-#. Assert: Due to validation, :math:`{\mathit{sx}}_1 = \mathsf{s}`.
+#. Assert: Due to validation, :math:`{\mathit{sx}} = \mathsf{s}`.
 
 #. Return :math:`\mathbb{B}({{\mathrm{signed}}}_{N}(i_1) \leq {{\mathrm{signed}}}_{N}(i_2))`.
 
 
-:math:`{{{{\mathrm{ige}}}_{N}^{{\mathit{sx}}_1}}}{(i_1, i_2)}`
-..............................................................
+:math:`{{{{\mathrm{ige}}}_{N}^{{\mathit{sx}}}}}{(i_1, i_2)}`
+............................................................
 
 
-1. If :math:`{\mathit{sx}}_1 = \mathsf{u}`, then:
+1. If :math:`{\mathit{sx}} = \mathsf{u}`, then:
 
    a. Return :math:`\mathbb{B}(i_1 \geq i_2)`.
 
-#. Assert: Due to validation, :math:`{\mathit{sx}}_1 = \mathsf{s}`.
+#. Assert: Due to validation, :math:`{\mathit{sx}} = \mathsf{s}`.
 
 #. Return :math:`\mathbb{B}({{\mathrm{signed}}}_{N}(i_1) \geq {{\mathrm{signed}}}_{N}(i_2))`.
 
 
-:math:`{{\mathrm{pack}}}_{{\mathit{lanetype}}_1}(c)`
+:math:`{{\mathrm{pack}}}_{{\mathit{lanetype}}}(c)`
+..................................................
+
+
+1. If :math:`{\mathit{lanetype}}` is number type, then:
+
+   a. Return :math:`c`.
+
+#. Assert: Due to validation, :math:`{\mathit{lanetype}}` is packed type.
+
+#. Let :math:`{\mathit{packtype}}` be :math:`{\mathit{lanetype}}`.
+
+#. Return :math:`{{\mathrm{wrap}}}_{{|{\mathrm{unpack}}({\mathit{packtype}})|}, {|{\mathit{packtype}}|}}(c)`.
+
+
+:math:`{{\mathrm{unpack}}}_{{\mathit{lanetype}}}(c)`
 ....................................................
 
 
-1. If :math:`{\mathit{lanetype}}_1` is number type, then:
+1. If :math:`{\mathit{lanetype}}` is number type, then:
 
    a. Return :math:`c`.
 
-#. Assert: Due to validation, :math:`{\mathit{lanetype}}_1` is packed type.
+#. Assert: Due to validation, :math:`{\mathit{lanetype}}` is packed type.
 
-#. Let :math:`{\mathit{packtype}}` be :math:`{\mathit{lanetype}}_1`.
-
-#. Return :math:`{{\mathrm{wrap}}}_{{|{\mathrm{unpack}}({\mathit{packtype}})|}, {|{\mathit{packtype}}|}}(c)`.
-
-
-:math:`{{\mathrm{unpack}}}_{{\mathit{lanetype}}_1}(c)`
-......................................................
-
-
-1. If :math:`{\mathit{lanetype}}_1` is number type, then:
-
-   a. Return :math:`c`.
-
-#. Assert: Due to validation, :math:`{\mathit{lanetype}}_1` is packed type.
-
-#. Let :math:`{\mathit{packtype}}` be :math:`{\mathit{lanetype}}_1`.
+#. Let :math:`{\mathit{packtype}}` be :math:`{\mathit{lanetype}}`.
 
 #. Return :math:`{{{{\mathrm{extend}}}_{{|{\mathit{packtype}}|}, {|{\mathrm{unpack}}({\mathit{packtype}})|}}^{\mathsf{u}}}}{(c)}`.
 
 
-:math:`{{\mathrm{pack}}}_{{\mathit{storagetype}}_1}(c)`
+:math:`{{\mathrm{pack}}}_{{\mathit{storagetype}}}(c)`
+.....................................................
+
+
+1. If :math:`{\mathit{storagetype}}` is literal type, then:
+
+   a. Return :math:`c`.
+
+#. Assert: Due to validation, :math:`{\mathit{storagetype}}` is packed type.
+
+#. Let :math:`{\mathit{packtype}}` be :math:`{\mathit{storagetype}}`.
+
+#. Return :math:`{{\mathrm{wrap}}}_{{|{\mathrm{unpack}}({\mathit{packtype}})|}, {|{\mathit{packtype}}|}}(c)`.
+
+
+:math:`{{\mathrm{unpack}}}_{{\mathit{storagetype}}}(c)`
 .......................................................
 
 
-1. If :math:`{\mathit{storagetype}}_1` is literal type, then:
+1. If :math:`{\mathit{storagetype}}` is literal type, then:
 
    a. Return :math:`c`.
 
-#. Assert: Due to validation, :math:`{\mathit{storagetype}}_1` is packed type.
+#. Assert: Due to validation, :math:`{\mathit{storagetype}}` is packed type.
 
-#. Let :math:`{\mathit{packtype}}` be :math:`{\mathit{storagetype}}_1`.
-
-#. Return :math:`{{\mathrm{wrap}}}_{{|{\mathrm{unpack}}({\mathit{packtype}})|}, {|{\mathit{packtype}}|}}(c)`.
-
-
-:math:`{{\mathrm{unpack}}}_{{\mathit{storagetype}}_1}(c)`
-.........................................................
-
-
-1. If :math:`{\mathit{storagetype}}_1` is literal type, then:
-
-   a. Return :math:`c`.
-
-#. Assert: Due to validation, :math:`{\mathit{storagetype}}_1` is packed type.
-
-#. Let :math:`{\mathit{packtype}}` be :math:`{\mathit{storagetype}}_1`.
+#. Let :math:`{\mathit{packtype}}` be :math:`{\mathit{storagetype}}`.
 
 #. Return :math:`{{{{\mathrm{extend}}}_{{|{\mathit{packtype}}|}, {|{\mathrm{unpack}}({\mathit{packtype}})|}}^{\mathsf{u}}}}{(c)}`.
 
 
-:math:`{{\mathit{unop\_{\scriptstyle 1}}}}{{}_{{\mathit{numtype}}_1}({\mathit{num\_{\scriptstyle 1}}})}`
-........................................................................................................
+:math:`{{\mathit{unop}}}{{}_{{\mathit{numtype}}}({\mathit{num}})}`
+..................................................................
 
 
-1. If :math:`{\mathit{numtype}}_1` is :math:`{\mathsf{i}}{N}`, then:
+1. If :math:`{\mathit{numtype}}` is :math:`{\mathsf{i}}{N}`, then:
 
-   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}_1`.
+   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}`.
 
-   #. Let :math:`i` be :math:`{\mathit{num\_{\scriptstyle 1}}}`.
+   #. Let :math:`i` be :math:`{\mathit{num}}`.
 
-   #. If :math:`{\mathit{unop\_{\scriptstyle 1}}} = \mathsf{clz}`, then:
+   #. If :math:`{\mathit{unop}} = \mathsf{clz}`, then:
 
       1) Return :math:`{{\mathrm{iclz}}}_{N}(i)`.
 
-   #. If :math:`{\mathit{unop\_{\scriptstyle 1}}} = \mathsf{ctz}`, then:
+   #. If :math:`{\mathit{unop}} = \mathsf{ctz}`, then:
 
       1) Return :math:`{{\mathrm{ictz}}}_{N}(i)`.
 
-   #. If :math:`{\mathit{unop\_{\scriptstyle 1}}} = \mathsf{popcnt}`, then:
+   #. If :math:`{\mathit{unop}} = \mathsf{popcnt}`, then:
 
       1) Return :math:`{{\mathrm{ipopcnt}}}_{N}(i)`.
 
-   #. Assert: Due to validation, :math:`{\mathit{unop\_{\scriptstyle 1}}}` is :math:`\mathsf{extend}`.
+   #. Assert: Due to validation, :math:`{\mathit{unop}}` is :math:`\mathsf{extend}`.
 
-   #. Let :math:`({\mathsf{extend}}{M}{\mathsf{\_}}{\mathsf{s}})` be :math:`{\mathit{unop\_{\scriptstyle 1}}}`.
+   #. Let :math:`({\mathsf{extend}}{M}{\mathsf{\_}}{\mathsf{s}})` be :math:`{\mathit{unop}}`.
 
    #. Return :math:`{{{{\mathrm{iextend}}}_{N, M}^{\mathsf{s}}}}{(i)}`.
 
-#. Assert: Due to validation, :math:`{\mathit{numtype}}_1` is :math:`{\mathsf{f}}{N}`.
+#. Assert: Due to validation, :math:`{\mathit{numtype}}` is :math:`{\mathsf{f}}{N}`.
 
-#. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{numtype}}_1`.
+#. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{numtype}}`.
 
-#. Let :math:`f` be :math:`{\mathit{num\_{\scriptstyle 1}}}`.
+#. Let :math:`f` be :math:`{\mathit{num}}`.
 
-#. If :math:`{\mathit{unop\_{\scriptstyle 1}}} = \mathsf{abs}`, then:
+#. If :math:`{\mathit{unop}} = \mathsf{abs}`, then:
 
    a. Return :math:`{{\mathrm{fabs}}}_{N}(f)`.
 
-#. If :math:`{\mathit{unop\_{\scriptstyle 1}}} = \mathsf{neg}`, then:
+#. If :math:`{\mathit{unop}} = \mathsf{neg}`, then:
 
    a. Return :math:`{{\mathrm{fneg}}}_{N}(f)`.
 
-#. If :math:`{\mathit{unop\_{\scriptstyle 1}}} = \mathsf{sqrt}`, then:
+#. If :math:`{\mathit{unop}} = \mathsf{sqrt}`, then:
 
    a. Return :math:`{{\mathrm{fsqrt}}}_{N}(f)`.
 
-#. If :math:`{\mathit{unop\_{\scriptstyle 1}}} = \mathsf{ceil}`, then:
+#. If :math:`{\mathit{unop}} = \mathsf{ceil}`, then:
 
    a. Return :math:`{{\mathrm{fceil}}}_{N}(f)`.
 
-#. If :math:`{\mathit{unop\_{\scriptstyle 1}}} = \mathsf{floor}`, then:
+#. If :math:`{\mathit{unop}} = \mathsf{floor}`, then:
 
    a. Return :math:`{{\mathrm{ffloor}}}_{N}(f)`.
 
-#. If :math:`{\mathit{unop\_{\scriptstyle 1}}} = \mathsf{trunc}`, then:
+#. If :math:`{\mathit{unop}} = \mathsf{trunc}`, then:
 
    a. Return :math:`{{\mathrm{ftrunc}}}_{N}(f)`.
 
-#. Assert: Due to validation, :math:`{\mathit{unop\_{\scriptstyle 1}}} = \mathsf{nearest}`.
+#. Assert: Due to validation, :math:`{\mathit{unop}} = \mathsf{nearest}`.
 
 #. Return :math:`{{\mathrm{fnearest}}}_{N}(f)`.
 
 
-:math:`{{\mathit{binop\_{\scriptstyle 1}}}}{{}_{{\mathit{numtype}}_1}({\mathit{num\_{\scriptstyle 1}}}, {\mathit{num\_{\scriptstyle 2}}})}`
-...........................................................................................................................................
+:math:`{{\mathit{binop}}}{{}_{{\mathit{numtype}}}({\mathit{num}}, {\mathit{num}}_')}`
+.....................................................................................
 
 
-1. If :math:`{\mathit{numtype}}_1` is :math:`{\mathsf{i}}{N}`, then:
+1. If :math:`{\mathit{numtype}}` is :math:`{\mathsf{i}}{N}`, then:
 
-   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}_1`.
+   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}`.
 
-   #. Let :math:`i_1` be :math:`{\mathit{num\_{\scriptstyle 1}}}`.
+   #. Let :math:`i_1` be :math:`{\mathit{num}}`.
 
-   #. Let :math:`i_2` be :math:`{\mathit{num\_{\scriptstyle 2}}}`.
+   #. Let :math:`i_2` be :math:`{\mathit{num}}_'`.
 
-   #. If :math:`{\mathit{binop\_{\scriptstyle 1}}} = \mathsf{add}`, then:
+   #. If :math:`{\mathit{binop}} = \mathsf{add}`, then:
 
       1) Return :math:`{{\mathrm{iadd}}}_{N}(i_1, i_2)`.
 
-   #. If :math:`{\mathit{binop\_{\scriptstyle 1}}} = \mathsf{sub}`, then:
+   #. If :math:`{\mathit{binop}} = \mathsf{sub}`, then:
 
       1) Return :math:`{{\mathrm{isub}}}_{N}(i_1, i_2)`.
 
-   #. If :math:`{\mathit{binop\_{\scriptstyle 1}}} = \mathsf{mul}`, then:
+   #. If :math:`{\mathit{binop}} = \mathsf{mul}`, then:
 
       1) Return :math:`{{\mathrm{imul}}}_{N}(i_1, i_2)`.
 
-   #. If :math:`{\mathit{binop\_{\scriptstyle 1}}}` is :math:`\mathsf{div}`, then:
+   #. If :math:`{\mathit{binop}}` is :math:`\mathsf{div}`, then:
 
-      1) Let :math:`({\mathsf{div}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{binop\_{\scriptstyle 1}}}`.
+      1) Let :math:`({\mathsf{div}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{binop}}`.
 
       #) Return :math:`{{{{\mathrm{idiv}}}_{N}^{{\mathit{sx}}}}}{(i_1, i_2)}`.
 
-   #. If :math:`{\mathit{binop\_{\scriptstyle 1}}}` is :math:`\mathsf{rem}`, then:
+   #. If :math:`{\mathit{binop}}` is :math:`\mathsf{rem}`, then:
 
-      1) Let :math:`({\mathsf{rem}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{binop\_{\scriptstyle 1}}}`.
+      1) Let :math:`({\mathsf{rem}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{binop}}`.
 
       #) Return :math:`{{{{\mathrm{irem}}}_{N}^{{\mathit{sx}}}}}{(i_1, i_2)}`.
 
-   #. If :math:`{\mathit{binop\_{\scriptstyle 1}}} = \mathsf{and}`, then:
+   #. If :math:`{\mathit{binop}} = \mathsf{and}`, then:
 
       1) Return :math:`{{\mathrm{iand}}}_{N}(i_1, i_2)`.
 
-   #. If :math:`{\mathit{binop\_{\scriptstyle 1}}} = \mathsf{or}`, then:
+   #. If :math:`{\mathit{binop}} = \mathsf{or}`, then:
 
       1) Return :math:`{{\mathrm{ior}}}_{N}(i_1, i_2)`.
 
-   #. If :math:`{\mathit{binop\_{\scriptstyle 1}}} = \mathsf{xor}`, then:
+   #. If :math:`{\mathit{binop}} = \mathsf{xor}`, then:
 
       1) Return :math:`{{\mathrm{ixor}}}_{N}(i_1, i_2)`.
 
-   #. If :math:`{\mathit{binop\_{\scriptstyle 1}}} = \mathsf{shl}`, then:
+   #. If :math:`{\mathit{binop}} = \mathsf{shl}`, then:
 
       1) Return :math:`{{\mathrm{ishl}}}_{N}(i_1, i_2)`.
 
-   #. If :math:`{\mathit{binop\_{\scriptstyle 1}}}` is :math:`\mathsf{shr}`, then:
+   #. If :math:`{\mathit{binop}}` is :math:`\mathsf{shr}`, then:
 
-      1) Let :math:`({\mathsf{shr}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{binop\_{\scriptstyle 1}}}`.
+      1) Let :math:`({\mathsf{shr}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{binop}}`.
 
       #) Return :math:`{{{{\mathrm{ishr}}}_{N}^{{\mathit{sx}}}}}{(i_1, i_2)}`.
 
-   #. If :math:`{\mathit{binop\_{\scriptstyle 1}}} = \mathsf{rotl}`, then:
+   #. If :math:`{\mathit{binop}} = \mathsf{rotl}`, then:
 
       1) Return :math:`{{\mathrm{irotl}}}_{N}(i_1, i_2)`.
 
-   #. If :math:`{\mathit{binop\_{\scriptstyle 1}}} = \mathsf{rotr}`, then:
+   #. If :math:`{\mathit{binop}} = \mathsf{rotr}`, then:
 
       1) Return :math:`{{\mathrm{irotr}}}_{N}(i_1, i_2)`.
 
-#. Assert: Due to validation, :math:`{\mathit{numtype}}_1` is :math:`{\mathsf{f}}{N}`.
+#. Assert: Due to validation, :math:`{\mathit{numtype}}` is :math:`{\mathsf{f}}{N}`.
 
-#. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{numtype}}_1`.
+#. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{numtype}}`.
 
-#. Let :math:`f_1` be :math:`{\mathit{num\_{\scriptstyle 1}}}`.
+#. Let :math:`f_1` be :math:`{\mathit{num}}`.
 
-#. Let :math:`f_2` be :math:`{\mathit{num\_{\scriptstyle 2}}}`.
+#. Let :math:`f_2` be :math:`{\mathit{num}}_'`.
 
-#. If :math:`{\mathit{binop\_{\scriptstyle 1}}} = \mathsf{add}`, then:
+#. If :math:`{\mathit{binop}} = \mathsf{add}`, then:
 
    a. Return :math:`{{\mathrm{fadd}}}_{N}(f_1, f_2)`.
 
-#. If :math:`{\mathit{binop\_{\scriptstyle 1}}} = \mathsf{sub}`, then:
+#. If :math:`{\mathit{binop}} = \mathsf{sub}`, then:
 
    a. Return :math:`{{\mathrm{fsub}}}_{N}(f_1, f_2)`.
 
-#. If :math:`{\mathit{binop\_{\scriptstyle 1}}} = \mathsf{mul}`, then:
+#. If :math:`{\mathit{binop}} = \mathsf{mul}`, then:
 
    a. Return :math:`{{\mathrm{fmul}}}_{N}(f_1, f_2)`.
 
-#. If :math:`{\mathit{binop\_{\scriptstyle 1}}} = \mathsf{div}`, then:
+#. If :math:`{\mathit{binop}} = \mathsf{div}`, then:
 
    a. Return :math:`{{\mathrm{fdiv}}}_{N}(f_1, f_2)`.
 
-#. If :math:`{\mathit{binop\_{\scriptstyle 1}}} = \mathsf{min}`, then:
+#. If :math:`{\mathit{binop}} = \mathsf{min}`, then:
 
    a. Return :math:`{{\mathrm{fmin}}}_{N}(f_1, f_2)`.
 
-#. If :math:`{\mathit{binop\_{\scriptstyle 1}}} = \mathsf{max}`, then:
+#. If :math:`{\mathit{binop}} = \mathsf{max}`, then:
 
    a. Return :math:`{{\mathrm{fmax}}}_{N}(f_1, f_2)`.
 
-#. Assert: Due to validation, :math:`{\mathit{binop\_{\scriptstyle 1}}} = \mathsf{copysign}`.
+#. Assert: Due to validation, :math:`{\mathit{binop}} = \mathsf{copysign}`.
 
 #. Return :math:`{{\mathrm{fcopysign}}}_{N}(f_1, f_2)`.
 
@@ -22409,192 +22409,192 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return :math:`{{\mathrm{ieqz}}}_{N}(i)`.
 
 
-:math:`{{\mathit{relop\_{\scriptstyle 1}}}}{{}_{{\mathit{numtype}}_1}({\mathit{num\_{\scriptstyle 1}}}, {\mathit{num\_{\scriptstyle 2}}})}`
-...........................................................................................................................................
+:math:`{{\mathit{relop}}}{{}_{{\mathit{numtype}}}({\mathit{num}}, {\mathit{num}}_')}`
+.....................................................................................
 
 
-1. If :math:`{\mathit{numtype}}_1` is :math:`{\mathsf{i}}{N}`, then:
+1. If :math:`{\mathit{numtype}}` is :math:`{\mathsf{i}}{N}`, then:
 
-   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}_1`.
+   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}`.
 
-   #. Let :math:`i_1` be :math:`{\mathit{num\_{\scriptstyle 1}}}`.
+   #. Let :math:`i_1` be :math:`{\mathit{num}}`.
 
-   #. Let :math:`i_2` be :math:`{\mathit{num\_{\scriptstyle 2}}}`.
+   #. Let :math:`i_2` be :math:`{\mathit{num}}_'`.
 
-   #. If :math:`{\mathit{relop\_{\scriptstyle 1}}} = \mathsf{eq}`, then:
+   #. If :math:`{\mathit{relop}} = \mathsf{eq}`, then:
 
       1) Return :math:`{{\mathrm{ieq}}}_{N}(i_1, i_2)`.
 
-   #. If :math:`{\mathit{relop\_{\scriptstyle 1}}} = \mathsf{ne}`, then:
+   #. If :math:`{\mathit{relop}} = \mathsf{ne}`, then:
 
       1) Return :math:`{{\mathrm{ine}}}_{N}(i_1, i_2)`.
 
-   #. If :math:`{\mathit{relop\_{\scriptstyle 1}}}` is :math:`\mathsf{lt}`, then:
+   #. If :math:`{\mathit{relop}}` is :math:`\mathsf{lt}`, then:
 
-      1) Let :math:`({\mathsf{lt}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{relop\_{\scriptstyle 1}}}`.
+      1) Let :math:`({\mathsf{lt}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{relop}}`.
 
       #) Return :math:`{{{{\mathrm{ilt}}}_{N}^{{\mathit{sx}}}}}{(i_1, i_2)}`.
 
-   #. If :math:`{\mathit{relop\_{\scriptstyle 1}}}` is :math:`\mathsf{gt}`, then:
+   #. If :math:`{\mathit{relop}}` is :math:`\mathsf{gt}`, then:
 
-      1) Let :math:`({\mathsf{gt}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{relop\_{\scriptstyle 1}}}`.
+      1) Let :math:`({\mathsf{gt}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{relop}}`.
 
       #) Return :math:`{{{{\mathrm{igt}}}_{N}^{{\mathit{sx}}}}}{(i_1, i_2)}`.
 
-   #. If :math:`{\mathit{relop\_{\scriptstyle 1}}}` is :math:`\mathsf{le}`, then:
+   #. If :math:`{\mathit{relop}}` is :math:`\mathsf{le}`, then:
 
-      1) Let :math:`({\mathsf{le}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{relop\_{\scriptstyle 1}}}`.
+      1) Let :math:`({\mathsf{le}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{relop}}`.
 
       #) Return :math:`{{{{\mathrm{ile}}}_{N}^{{\mathit{sx}}}}}{(i_1, i_2)}`.
 
-   #. If :math:`{\mathit{relop\_{\scriptstyle 1}}}` is :math:`\mathsf{ge}`, then:
+   #. If :math:`{\mathit{relop}}` is :math:`\mathsf{ge}`, then:
 
-      1) Let :math:`({\mathsf{ge}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{relop\_{\scriptstyle 1}}}`.
+      1) Let :math:`({\mathsf{ge}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{relop}}`.
 
       #) Return :math:`{{{{\mathrm{ige}}}_{N}^{{\mathit{sx}}}}}{(i_1, i_2)}`.
 
-#. Assert: Due to validation, :math:`{\mathit{numtype}}_1` is :math:`{\mathsf{f}}{N}`.
+#. Assert: Due to validation, :math:`{\mathit{numtype}}` is :math:`{\mathsf{f}}{N}`.
 
-#. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{numtype}}_1`.
+#. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{numtype}}`.
 
-#. Let :math:`f_1` be :math:`{\mathit{num\_{\scriptstyle 1}}}`.
+#. Let :math:`f_1` be :math:`{\mathit{num}}`.
 
-#. Let :math:`f_2` be :math:`{\mathit{num\_{\scriptstyle 2}}}`.
+#. Let :math:`f_2` be :math:`{\mathit{num}}_'`.
 
-#. If :math:`{\mathit{relop\_{\scriptstyle 1}}} = \mathsf{eq}`, then:
+#. If :math:`{\mathit{relop}} = \mathsf{eq}`, then:
 
    a. Return :math:`{{\mathrm{feq}}}_{N}(f_1, f_2)`.
 
-#. If :math:`{\mathit{relop\_{\scriptstyle 1}}} = \mathsf{ne}`, then:
+#. If :math:`{\mathit{relop}} = \mathsf{ne}`, then:
 
    a. Return :math:`{{\mathrm{fne}}}_{N}(f_1, f_2)`.
 
-#. If :math:`{\mathit{relop\_{\scriptstyle 1}}} = \mathsf{lt}`, then:
+#. If :math:`{\mathit{relop}} = \mathsf{lt}`, then:
 
    a. Return :math:`{{\mathrm{flt}}}_{N}(f_1, f_2)`.
 
-#. If :math:`{\mathit{relop\_{\scriptstyle 1}}} = \mathsf{gt}`, then:
+#. If :math:`{\mathit{relop}} = \mathsf{gt}`, then:
 
    a. Return :math:`{{\mathrm{fgt}}}_{N}(f_1, f_2)`.
 
-#. If :math:`{\mathit{relop\_{\scriptstyle 1}}} = \mathsf{le}`, then:
+#. If :math:`{\mathit{relop}} = \mathsf{le}`, then:
 
    a. Return :math:`{{\mathrm{fle}}}_{N}(f_1, f_2)`.
 
-#. Assert: Due to validation, :math:`{\mathit{relop\_{\scriptstyle 1}}} = \mathsf{ge}`.
+#. Assert: Due to validation, :math:`{\mathit{relop}} = \mathsf{ge}`.
 
 #. Return :math:`{{\mathrm{fge}}}_{N}(f_1, f_2)`.
 
 
-:math:`{{\mathit{cvtop}}_1}{{}_{{\mathit{numtype}}_1, {\mathit{numtype}}_3}({\mathit{num\_{\scriptstyle 1}}})}`
-...............................................................................................................
+:math:`{{\mathit{cvtop}}}{{}_{{\mathit{numtype}}, {\mathit{numtype}''}}({\mathit{num}})}`
+.........................................................................................
 
 
-1. If :math:`{\mathit{numtype}}_1` is :math:`{\mathsf{i}}{N}`, then:
+1. If :math:`{\mathit{numtype}}` is :math:`{\mathsf{i}}{N}`, then:
 
-   a. Let :math:`{{\mathsf{i}}{N}}_1` be :math:`{\mathit{numtype}}_1`.
+   a. Let :math:`{{\mathsf{i}}{N}}_1` be :math:`{\mathit{numtype}}`.
 
-   #. If :math:`{\mathit{numtype}}_3` is :math:`{\mathsf{i}}{N}`, then:
+   #. If :math:`{\mathit{numtype}''}` is :math:`{\mathsf{i}}{N}`, then:
 
-      1) Let :math:`{{\mathsf{i}}{N}}_2` be :math:`{\mathit{numtype}}_3`.
+      1) Let :math:`{{\mathsf{i}}{N}}_2` be :math:`{\mathit{numtype}''}`.
 
-      #) If :math:`{\mathit{cvtop}}_1` is :math:`\mathsf{extend}`, then:
+      #) If :math:`{\mathit{cvtop}}` is :math:`\mathsf{extend}`, then:
 
-         a) Let :math:`({\mathsf{extend}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{cvtop}}_1`.
+         a) Let :math:`({\mathsf{extend}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{cvtop}}`.
 
-         #) Let :math:`i_1` be :math:`{\mathit{num\_{\scriptstyle 1}}}`.
+         #) Let :math:`i_1` be :math:`{\mathit{num}}`.
 
          #) Return :math:`{{{{\mathrm{extend}}}_{N_1, N_2}^{{\mathit{sx}}}}}{(i_1)}`.
 
-      #) Let :math:`i_1` be :math:`{\mathit{num\_{\scriptstyle 1}}}`.
+      #) Let :math:`i_1` be :math:`{\mathit{num}}`.
 
-      #) If :math:`{\mathit{cvtop}}_1 = \mathsf{wrap}`, then:
+      #) If :math:`{\mathit{cvtop}} = \mathsf{wrap}`, then:
 
          a) Return :math:`{{\mathrm{wrap}}}_{N_1, N_2}(i_1)`.
 
-#. If :math:`{\mathit{numtype}}_1` is :math:`{\mathsf{f}}{N}`, then:
+#. If :math:`{\mathit{numtype}}` is :math:`{\mathsf{f}}{N}`, then:
 
-   a. Let :math:`{{\mathsf{f}}{N}}_1` be :math:`{\mathit{numtype}}_1`.
+   a. Let :math:`{{\mathsf{f}}{N}}_1` be :math:`{\mathit{numtype}}`.
 
-   #. If :math:`{\mathit{numtype}}_3` is :math:`{\mathsf{i}}{N}`, then:
+   #. If :math:`{\mathit{numtype}''}` is :math:`{\mathsf{i}}{N}`, then:
 
-      1) Let :math:`{{\mathsf{i}}{N}}_2` be :math:`{\mathit{numtype}}_3`.
+      1) Let :math:`{{\mathsf{i}}{N}}_2` be :math:`{\mathit{numtype}''}`.
 
-      #) If :math:`{\mathit{cvtop}}_1` is :math:`\mathsf{trunc}`, then:
+      #) If :math:`{\mathit{cvtop}}` is :math:`\mathsf{trunc}`, then:
 
-         a) Let :math:`({\mathsf{trunc}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{cvtop}}_1`.
+         a) Let :math:`({\mathsf{trunc}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{cvtop}}`.
 
-         #) Let :math:`f_1` be :math:`{\mathit{num\_{\scriptstyle 1}}}`.
+         #) Let :math:`f_1` be :math:`{\mathit{num}}`.
 
          #) Return :math:`{{{{\mathrm{trunc}}}_{N_1, N_2}^{{\mathit{sx}}}}}{(f_1)}`.
 
-      #) If :math:`{\mathit{cvtop}}_1` is :math:`\mathsf{trunc\_sat}`, then:
+      #) If :math:`{\mathit{cvtop}}` is :math:`\mathsf{trunc\_sat}`, then:
 
-         a) Let :math:`({\mathsf{trunc\_sat}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{cvtop}}_1`.
+         a) Let :math:`({\mathsf{trunc\_sat}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{cvtop}}`.
 
-         #) Let :math:`f_1` be :math:`{\mathit{num\_{\scriptstyle 1}}}`.
+         #) Let :math:`f_1` be :math:`{\mathit{num}}`.
 
          #) Return :math:`{{{{\mathrm{trunc\_sat}}}_{N_1, N_2}^{{\mathit{sx}}}}}{(f_1)}`.
 
-#. If :math:`{\mathit{numtype}}_1` is :math:`{\mathsf{i}}{N}`, then:
+#. If :math:`{\mathit{numtype}}` is :math:`{\mathsf{i}}{N}`, then:
 
-   a. Let :math:`{{\mathsf{i}}{N}}_1` be :math:`{\mathit{numtype}}_1`.
+   a. Let :math:`{{\mathsf{i}}{N}}_1` be :math:`{\mathit{numtype}}`.
 
-   #. If :math:`{\mathit{numtype}}_3` is :math:`{\mathsf{f}}{N}`, then:
+   #. If :math:`{\mathit{numtype}''}` is :math:`{\mathsf{f}}{N}`, then:
 
-      1) Let :math:`{{\mathsf{f}}{N}}_2` be :math:`{\mathit{numtype}}_3`.
+      1) Let :math:`{{\mathsf{f}}{N}}_2` be :math:`{\mathit{numtype}''}`.
 
-      #) If :math:`{\mathit{cvtop}}_1` is :math:`\mathsf{convert}`, then:
+      #) If :math:`{\mathit{cvtop}}` is :math:`\mathsf{convert}`, then:
 
-         a) Let :math:`({\mathsf{convert}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{cvtop}}_1`.
+         a) Let :math:`({\mathsf{convert}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{cvtop}}`.
 
-         #) Let :math:`i_1` be :math:`{\mathit{num\_{\scriptstyle 1}}}`.
+         #) Let :math:`i_1` be :math:`{\mathit{num}}`.
 
          #) Return :math:`{{{{\mathrm{convert}}}_{N_1, N_2}^{{\mathit{sx}}}}}{(i_1)}`.
 
-#. If :math:`{\mathit{numtype}}_1` is :math:`{\mathsf{f}}{N}`, then:
+#. If :math:`{\mathit{numtype}}` is :math:`{\mathsf{f}}{N}`, then:
 
-   a. Let :math:`{{\mathsf{f}}{N}}_1` be :math:`{\mathit{numtype}}_1`.
+   a. Let :math:`{{\mathsf{f}}{N}}_1` be :math:`{\mathit{numtype}}`.
 
-   #. If :math:`{\mathit{numtype}}_3` is :math:`{\mathsf{f}}{N}`, then:
+   #. If :math:`{\mathit{numtype}''}` is :math:`{\mathsf{f}}{N}`, then:
 
-      1) Let :math:`{{\mathsf{f}}{N}}_2` be :math:`{\mathit{numtype}}_3`.
+      1) Let :math:`{{\mathsf{f}}{N}}_2` be :math:`{\mathit{numtype}''}`.
 
-      #) Let :math:`f_1` be :math:`{\mathit{num\_{\scriptstyle 1}}}`.
+      #) Let :math:`f_1` be :math:`{\mathit{num}}`.
 
-      #) If :math:`{\mathit{cvtop}}_1 = \mathsf{promote}`, then:
+      #) If :math:`{\mathit{cvtop}} = \mathsf{promote}`, then:
 
          a) Return :math:`{{\mathrm{promote}}}_{N_1, N_2}(f_1)`.
 
-      #) If :math:`{\mathit{cvtop}}_1 = \mathsf{demote}`, then:
+      #) If :math:`{\mathit{cvtop}} = \mathsf{demote}`, then:
 
          a) Return :math:`{{\mathrm{demote}}}_{N_1, N_2}(f_1)`.
 
-#. If :math:`{\mathit{numtype}}_1` is :math:`{\mathsf{i}}{N}`, then:
+#. If :math:`{\mathit{numtype}}` is :math:`{\mathsf{i}}{N}`, then:
 
-   a. Let :math:`{{\mathsf{i}}{N}}_1` be :math:`{\mathit{numtype}}_1`.
+   a. Let :math:`{{\mathsf{i}}{N}}_1` be :math:`{\mathit{numtype}}`.
 
-   #. If :math:`{\mathit{numtype}}_3` is :math:`{\mathsf{f}}{N}`, then:
+   #. If :math:`{\mathit{numtype}''}` is :math:`{\mathsf{f}}{N}`, then:
 
-      1) Let :math:`{{\mathsf{f}}{N}}_2` be :math:`{\mathit{numtype}}_3`.
+      1) Let :math:`{{\mathsf{f}}{N}}_2` be :math:`{\mathit{numtype}''}`.
 
-      #) Let :math:`i_1` be :math:`{\mathit{num\_{\scriptstyle 1}}}`.
+      #) Let :math:`i_1` be :math:`{\mathit{num}}`.
 
-      #) If :math:`{\mathit{cvtop}}_1 = \mathsf{reinterpret}` and :math:`{|{{\mathsf{i}}{N}}_1|} = {|{{\mathsf{f}}{N}}_2|}`, then:
+      #) If :math:`{\mathit{cvtop}} = \mathsf{reinterpret}` and :math:`{|{{\mathsf{i}}{N}}_1|} = {|{{\mathsf{f}}{N}}_2|}`, then:
 
          a) Return :math:`{{\mathrm{reinterpret}}}_{{{\mathsf{i}}{N}}_1, {{\mathsf{f}}{N}}_2}(i_1)`.
 
-#. Assert: Due to validation, :math:`{\mathit{numtype}}_1` is :math:`{\mathsf{f}}{N}`.
+#. Assert: Due to validation, :math:`{\mathit{numtype}}` is :math:`{\mathsf{f}}{N}`.
 
-#. Let :math:`{{\mathsf{f}}{N}}_1` be :math:`{\mathit{numtype}}_1`.
+#. Let :math:`{{\mathsf{f}}{N}}_1` be :math:`{\mathit{numtype}}`.
 
-#. Assert: Due to validation, :math:`{\mathit{numtype}}_3` is :math:`{\mathsf{i}}{N}`.
+#. Assert: Due to validation, :math:`{\mathit{numtype}''}` is :math:`{\mathsf{i}}{N}`.
 
-#. Let :math:`{{\mathsf{i}}{N}}_2` be :math:`{\mathit{numtype}}_3`.
+#. Let :math:`{{\mathsf{i}}{N}}_2` be :math:`{\mathit{numtype}''}`.
 
-#. Let :math:`f_1` be :math:`{\mathit{num\_{\scriptstyle 1}}}`.
+#. Let :math:`f_1` be :math:`{\mathit{num}}`.
 
-#. Assert: Due to validation, :math:`{\mathit{cvtop}}_1 = \mathsf{reinterpret}`.
+#. Assert: Due to validation, :math:`{\mathit{cvtop}} = \mathsf{reinterpret}`.
 
 #. Assert: Due to validation, :math:`{|{{\mathsf{f}}{N}}_1|} = {|{{\mathsf{i}}{N}}_2|}`.
 
@@ -22610,23 +22610,23 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`{\mathit{vc}}`.
 
 
-:math:`{\mathrm{half}}({\mathit{half}}_1, i, j)`
-................................................
+:math:`{\mathrm{half}}({\mathit{half}}, i, j)`
+..............................................
 
 
-1. If :math:`{\mathit{lanetype}}_1` is :math:`{\mathsf{i}}{N}` and :math:`{\mathit{lanetype}}_2` is :math:`{\mathsf{i}}{N}`, then:
+1. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{i}}{N}` and :math:`{\mathit{lanetype}'}` is :math:`{\mathsf{i}}{N}`, then:
 
-   a. If :math:`{\mathit{half}}_1 = \mathsf{low}`, then:
+   a. If :math:`{\mathit{half}} = \mathsf{low}`, then:
 
       1) Return :math:`i`.
 
-   #. If :math:`{\mathit{half}}_1 = \mathsf{high}`, then:
+   #. If :math:`{\mathit{half}} = \mathsf{high}`, then:
 
       1) Return :math:`j`.
 
-#. Assert: Due to validation, :math:`{\mathit{lanetype}}_2` is :math:`{\mathsf{f}}{N}`.
+#. Assert: Due to validation, :math:`{\mathit{lanetype}'}` is :math:`{\mathsf{f}}{N}`.
 
-#. Assert: Due to validation, :math:`{\mathit{half}}_1 = \mathsf{low}`.
+#. Assert: Due to validation, :math:`{\mathit{half}} = \mathsf{low}`.
 
 #. Return :math:`i`.
 
@@ -22892,23 +22892,23 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return :math:`{{\mathrm{inot}}}_{N}(v)`.
 
 
-:math:`{{\mathit{vvbinop}}_1}{{}_{{\mathsf{v}}{N}}(v_1, v_2)}`
-..............................................................
+:math:`{{\mathit{vvbinop}}}{{}_{{\mathsf{v}}{N}}(v_1, v_2)}`
+............................................................
 
 
-1. If :math:`{\mathit{vvbinop}}_1 = \mathsf{and}`, then:
+1. If :math:`{\mathit{vvbinop}} = \mathsf{and}`, then:
 
    a. Return :math:`{{\mathrm{iand}}}_{N}(v_1, v_2)`.
 
-#. If :math:`{\mathit{vvbinop}}_1 = \mathsf{andnot}`, then:
+#. If :math:`{\mathit{vvbinop}} = \mathsf{andnot}`, then:
 
    a. Return :math:`{{\mathrm{iandnot}}}_{N}(v_1, v_2)`.
 
-#. If :math:`{\mathit{vvbinop}}_1 = \mathsf{or}`, then:
+#. If :math:`{\mathit{vvbinop}} = \mathsf{or}`, then:
 
    a. Return :math:`{{\mathrm{ior}}}_{N}(v_1, v_2)`.
 
-#. Assert: Due to validation, :math:`{\mathit{vvbinop}}_1 = \mathsf{xor}`.
+#. Assert: Due to validation, :math:`{\mathit{vvbinop}} = \mathsf{xor}`.
 
 #. Return :math:`{{\mathrm{ixor}}}_{N}(v_1, v_2)`.
 
@@ -22920,181 +22920,181 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return :math:`{{\mathrm{ibitselect}}}_{N}(v_1, v_2, v_3)`.
 
 
-:math:`{{\mathit{vunop\_{\scriptstyle 1}}}}{{}_{{{\mathit{lanetype}}_1}{\mathsf{x}}{M}}(v)}`
-............................................................................................
+:math:`{{\mathit{vunop}}}{{}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}(v)}`
+........................................................................
 
 
-1. If :math:`{\mathit{lanetype}}_1` is :math:`{\mathsf{f}}{N}`, then:
+1. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{f}}{N}`, then:
 
-   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_1`.
+   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}`.
 
-   #. If :math:`{\mathit{vunop\_{\scriptstyle 1}}} = \mathsf{abs}`, then:
+   #. If :math:`{\mathit{vunop}} = \mathsf{abs}`, then:
 
       1) Return :math:`{{\mathrm{fvunop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fabs}}, v)`.
 
-   #. If :math:`{\mathit{vunop\_{\scriptstyle 1}}} = \mathsf{neg}`, then:
+   #. If :math:`{\mathit{vunop}} = \mathsf{neg}`, then:
 
       1) Return :math:`{{\mathrm{fvunop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fneg}}, v)`.
 
-   #. If :math:`{\mathit{vunop\_{\scriptstyle 1}}} = \mathsf{sqrt}`, then:
+   #. If :math:`{\mathit{vunop}} = \mathsf{sqrt}`, then:
 
       1) Return :math:`{{\mathrm{fvunop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fsqrt}}, v)`.
 
-   #. If :math:`{\mathit{vunop\_{\scriptstyle 1}}} = \mathsf{ceil}`, then:
+   #. If :math:`{\mathit{vunop}} = \mathsf{ceil}`, then:
 
       1) Return :math:`{{\mathrm{fvunop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fceil}}, v)`.
 
-   #. If :math:`{\mathit{vunop\_{\scriptstyle 1}}} = \mathsf{floor}`, then:
+   #. If :math:`{\mathit{vunop}} = \mathsf{floor}`, then:
 
       1) Return :math:`{{\mathrm{fvunop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{ffloor}}, v)`.
 
-   #. If :math:`{\mathit{vunop\_{\scriptstyle 1}}} = \mathsf{trunc}`, then:
+   #. If :math:`{\mathit{vunop}} = \mathsf{trunc}`, then:
 
       1) Return :math:`{{\mathrm{fvunop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{ftrunc}}, v)`.
 
-   #. If :math:`{\mathit{vunop\_{\scriptstyle 1}}} = \mathsf{nearest}`, then:
+   #. If :math:`{\mathit{vunop}} = \mathsf{nearest}`, then:
 
       1) Return :math:`{{\mathrm{fvunop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fnearest}}, v)`.
 
-#. Assert: Due to validation, :math:`{\mathit{lanetype}}_1` is :math:`{\mathsf{i}}{N}`.
+#. Assert: Due to validation, :math:`{\mathit{lanetype}}` is :math:`{\mathsf{i}}{N}`.
 
-#. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{lanetype}}_1`.
+#. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{lanetype}}`.
 
-#. If :math:`{\mathit{vunop\_{\scriptstyle 1}}} = \mathsf{abs}`, then:
+#. If :math:`{\mathit{vunop}} = \mathsf{abs}`, then:
 
    a. Return :math:`{{\mathrm{ivunop}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{iabs}}, v)`.
 
-#. If :math:`{\mathit{vunop\_{\scriptstyle 1}}} = \mathsf{neg}`, then:
+#. If :math:`{\mathit{vunop}} = \mathsf{neg}`, then:
 
    a. Return :math:`{{\mathrm{ivunop}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{ineg}}, v)`.
 
-#. Assert: Due to validation, :math:`{\mathit{vunop\_{\scriptstyle 1}}} = \mathsf{popcnt}`.
+#. Assert: Due to validation, :math:`{\mathit{vunop}} = \mathsf{popcnt}`.
 
 #. Return :math:`{{\mathrm{ivunop}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{ipopcnt}}, v)`.
 
 
-:math:`{{\mathit{vbinop\_{\scriptstyle 1}}}}{{}_{{{\mathit{lanetype}}_1}{\mathsf{x}}{M}}(v_1, v_2)}`
-....................................................................................................
+:math:`{{\mathit{vbinop}}}{{}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}(v_1, v_2)}`
+................................................................................
 
 
-1. If :math:`{\mathit{lanetype}}_1` is :math:`{\mathsf{i}}{N}`, then:
+1. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{i}}{N}`, then:
 
-   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{lanetype}}_1`.
+   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{lanetype}}`.
 
-   #. If :math:`{\mathit{vbinop\_{\scriptstyle 1}}} = \mathsf{add}`, then:
+   #. If :math:`{\mathit{vbinop}} = \mathsf{add}`, then:
 
       1) Return :math:`{{\mathrm{ivbinop}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{iadd}}, v_1, v_2)`.
 
-   #. If :math:`{\mathit{vbinop\_{\scriptstyle 1}}} = \mathsf{sub}`, then:
+   #. If :math:`{\mathit{vbinop}} = \mathsf{sub}`, then:
 
       1) Return :math:`{{\mathrm{ivbinop}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{isub}}, v_1, v_2)`.
 
-   #. If :math:`{\mathit{vbinop\_{\scriptstyle 1}}} = \mathsf{mul}`, then:
+   #. If :math:`{\mathit{vbinop}} = \mathsf{mul}`, then:
 
       1) Return :math:`{{\mathrm{ivbinop}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{imul}}, v_1, v_2)`.
 
-   #. If :math:`{\mathit{vbinop\_{\scriptstyle 1}}}` is :math:`\mathsf{add\_sat}`, then:
+   #. If :math:`{\mathit{vbinop}}` is :math:`\mathsf{add\_sat}`, then:
 
-      1) Let :math:`({\mathsf{add\_sat}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vbinop\_{\scriptstyle 1}}}`.
+      1) Let :math:`({\mathsf{add\_sat}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vbinop}}`.
 
       #) Return :math:`{{\mathrm{ivbinopsx}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{iadd}}_{{\mathit{sat}}}, {\mathit{sx}}, v_1, v_2)`.
 
-   #. If :math:`{\mathit{vbinop\_{\scriptstyle 1}}}` is :math:`\mathsf{sub\_sat}`, then:
+   #. If :math:`{\mathit{vbinop}}` is :math:`\mathsf{sub\_sat}`, then:
 
-      1) Let :math:`({\mathsf{sub\_sat}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vbinop\_{\scriptstyle 1}}}`.
+      1) Let :math:`({\mathsf{sub\_sat}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vbinop}}`.
 
       #) Return :math:`{{\mathrm{ivbinopsx}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{isub}}_{{\mathit{sat}}}, {\mathit{sx}}, v_1, v_2)`.
 
-   #. If :math:`{\mathit{vbinop\_{\scriptstyle 1}}}` is :math:`\mathsf{min}`, then:
+   #. If :math:`{\mathit{vbinop}}` is :math:`\mathsf{min}`, then:
 
-      1) Let :math:`({\mathsf{min}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vbinop\_{\scriptstyle 1}}}`.
+      1) Let :math:`({\mathsf{min}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vbinop}}`.
 
       #) Return :math:`{{\mathrm{ivbinopsx}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{imin}}, {\mathit{sx}}, v_1, v_2)`.
 
-   #. If :math:`{\mathit{vbinop\_{\scriptstyle 1}}}` is :math:`\mathsf{max}`, then:
+   #. If :math:`{\mathit{vbinop}}` is :math:`\mathsf{max}`, then:
 
-      1) Let :math:`({\mathsf{max}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vbinop\_{\scriptstyle 1}}}`.
+      1) Let :math:`({\mathsf{max}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vbinop}}`.
 
       #) Return :math:`{{\mathrm{ivbinopsx}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{imax}}, {\mathit{sx}}, v_1, v_2)`.
 
-   #. If :math:`{\mathit{vbinop\_{\scriptstyle 1}}} = `, then:
+   #. If :math:`{\mathit{vbinop}} = `, then:
 
       1) Return :math:`{{\mathrm{ivbinopsx}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{iavgr}}, \mathsf{u}, v_1, v_2)`.
 
-   #. If :math:`{\mathit{vbinop\_{\scriptstyle 1}}} = `, then:
+   #. If :math:`{\mathit{vbinop}} = `, then:
 
       1) Return :math:`{{\mathrm{ivbinopsx}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{iq{\kern-0.1em\scriptstyle 15\kern-0.1em}mulr}}_{{\mathit{sat}}}, \mathsf{s}, v_1, v_2)`.
 
-   #. If :math:`{\mathit{vbinop\_{\scriptstyle 1}}} = `, then:
+   #. If :math:`{\mathit{vbinop}} = `, then:
 
       1) Return :math:`{{\mathrm{ivbinopsxnd}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{irelaxed}}_{{\mathit{q{\kern-0.1em\scriptstyle 15\kern-0.1em}mulr}}}, \mathsf{s}, v_1, v_2)`.
 
-#. Assert: Due to validation, :math:`{\mathit{lanetype}}_1` is :math:`{\mathsf{f}}{N}`.
+#. Assert: Due to validation, :math:`{\mathit{lanetype}}` is :math:`{\mathsf{f}}{N}`.
 
-#. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_1`.
+#. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}`.
 
-#. If :math:`{\mathit{vbinop\_{\scriptstyle 1}}} = \mathsf{add}`, then:
+#. If :math:`{\mathit{vbinop}} = \mathsf{add}`, then:
 
    a. Return :math:`{{\mathrm{fvbinop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fadd}}, v_1, v_2)`.
 
-#. If :math:`{\mathit{vbinop\_{\scriptstyle 1}}} = \mathsf{sub}`, then:
+#. If :math:`{\mathit{vbinop}} = \mathsf{sub}`, then:
 
    a. Return :math:`{{\mathrm{fvbinop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fsub}}, v_1, v_2)`.
 
-#. If :math:`{\mathit{vbinop\_{\scriptstyle 1}}} = \mathsf{mul}`, then:
+#. If :math:`{\mathit{vbinop}} = \mathsf{mul}`, then:
 
    a. Return :math:`{{\mathrm{fvbinop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fmul}}, v_1, v_2)`.
 
-#. If :math:`{\mathit{vbinop\_{\scriptstyle 1}}} = \mathsf{div}`, then:
+#. If :math:`{\mathit{vbinop}} = \mathsf{div}`, then:
 
    a. Return :math:`{{\mathrm{fvbinop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fdiv}}, v_1, v_2)`.
 
-#. If :math:`{\mathit{vbinop\_{\scriptstyle 1}}} = \mathsf{min}`, then:
+#. If :math:`{\mathit{vbinop}} = \mathsf{min}`, then:
 
    a. Return :math:`{{\mathrm{fvbinop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fmin}}, v_1, v_2)`.
 
-#. If :math:`{\mathit{vbinop\_{\scriptstyle 1}}} = \mathsf{max}`, then:
+#. If :math:`{\mathit{vbinop}} = \mathsf{max}`, then:
 
    a. Return :math:`{{\mathrm{fvbinop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fmax}}, v_1, v_2)`.
 
-#. If :math:`{\mathit{vbinop\_{\scriptstyle 1}}} = \mathsf{pmin}`, then:
+#. If :math:`{\mathit{vbinop}} = \mathsf{pmin}`, then:
 
    a. Return :math:`{{\mathrm{fvbinop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fpmin}}, v_1, v_2)`.
 
-#. If :math:`{\mathit{vbinop\_{\scriptstyle 1}}} = \mathsf{pmax}`, then:
+#. If :math:`{\mathit{vbinop}} = \mathsf{pmax}`, then:
 
    a. Return :math:`{{\mathrm{fvbinop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fpmax}}, v_1, v_2)`.
 
-#. If :math:`{\mathit{vbinop\_{\scriptstyle 1}}} = \mathsf{relaxed\_min}`, then:
+#. If :math:`{\mathit{vbinop}} = \mathsf{relaxed\_min}`, then:
 
    a. Return :math:`{{\mathrm{fvbinop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{frelaxed}}_{{\mathit{min}}}, v_1, v_2)`.
 
-#. Assert: Due to validation, :math:`{\mathit{vbinop\_{\scriptstyle 1}}} = \mathsf{relaxed\_max}`.
+#. Assert: Due to validation, :math:`{\mathit{vbinop}} = \mathsf{relaxed\_max}`.
 
 #. Return :math:`{{\mathrm{fvbinop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{frelaxed}}_{{\mathit{max}}}, v_1, v_2)`.
 
 
-:math:`{{\mathit{vternop\_{\scriptstyle 1}}}}{{}_{{{\mathit{lanetype}}_1}{\mathsf{x}}{M}}(v_1, v_2, v_3)}`
-..........................................................................................................
+:math:`{{\mathit{vternop}}}{{}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}(v_1, v_2, v_3)}`
+......................................................................................
 
 
-1. If :math:`{\mathit{lanetype}}_1` is :math:`{\mathsf{i}}{N}`, then:
+1. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{i}}{N}`, then:
 
-   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{lanetype}}_1`.
+   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{lanetype}}`.
 
-   #. If :math:`{\mathit{vternop\_{\scriptstyle 1}}} = \mathsf{relaxed\_laneselect}`, then:
+   #. If :math:`{\mathit{vternop}} = \mathsf{relaxed\_laneselect}`, then:
 
       1) Return :math:`{{\mathrm{ivternopnd}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{irelaxed}}_{{\mathit{laneselect}}}, v_1, v_2, v_3)`.
 
-#. Assert: Due to validation, :math:`{\mathit{lanetype}}_1` is :math:`{\mathsf{f}}{N}`.
+#. Assert: Due to validation, :math:`{\mathit{lanetype}}` is :math:`{\mathsf{f}}{N}`.
 
-#. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_1`.
+#. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}`.
 
-#. If :math:`{\mathit{vternop\_{\scriptstyle 1}}} = \mathsf{relaxed\_madd}`, then:
+#. If :math:`{\mathit{vternop}} = \mathsf{relaxed\_madd}`, then:
 
    a. Return :math:`{{\mathrm{fvternop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{frelaxed}}_{{\mathit{madd}}}, v_1, v_2, v_3)`.
 
-#. Assert: Due to validation, :math:`{\mathit{vternop\_{\scriptstyle 1}}} = \mathsf{relaxed\_nmadd}`.
+#. Assert: Due to validation, :math:`{\mathit{vternop}} = \mathsf{relaxed\_nmadd}`.
 
 #. Return :math:`{{\mathrm{fvternop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{frelaxed}}_{{\mathit{nmadd}}}, v_1, v_2, v_3)`.
 
@@ -23106,155 +23106,155 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return :math:`{{\mathrm{ivtestop}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{inez}}, v)`.
 
 
-:math:`{{\mathit{vrelop\_{\scriptstyle 1}}}}{{}_{{{\mathit{lanetype}}_1}{\mathsf{x}}{M}}(v_1, v_2)}`
-....................................................................................................
+:math:`{{\mathit{vrelop}}}{{}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}(v_1, v_2)}`
+................................................................................
 
 
-1. If :math:`{\mathit{lanetype}}_1` is :math:`{\mathsf{i}}{N}`, then:
+1. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{i}}{N}`, then:
 
-   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{lanetype}}_1`.
+   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{lanetype}}`.
 
-   #. If :math:`{\mathit{vrelop\_{\scriptstyle 1}}} = \mathsf{eq}`, then:
+   #. If :math:`{\mathit{vrelop}} = \mathsf{eq}`, then:
 
       1) Return :math:`{{\mathrm{ivrelop}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{ieq}}, v_1, v_2)`.
 
-   #. If :math:`{\mathit{vrelop\_{\scriptstyle 1}}} = \mathsf{ne}`, then:
+   #. If :math:`{\mathit{vrelop}} = \mathsf{ne}`, then:
 
       1) Return :math:`{{\mathrm{ivrelop}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{ine}}, v_1, v_2)`.
 
-   #. If :math:`{\mathit{vrelop\_{\scriptstyle 1}}}` is :math:`\mathsf{lt}`, then:
+   #. If :math:`{\mathit{vrelop}}` is :math:`\mathsf{lt}`, then:
 
-      1) Let :math:`({\mathsf{lt}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vrelop\_{\scriptstyle 1}}}`.
+      1) Let :math:`({\mathsf{lt}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vrelop}}`.
 
       #) Return :math:`{{\mathrm{ivrelopsx}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{ilt}}, {\mathit{sx}}, v_1, v_2)`.
 
-   #. If :math:`{\mathit{vrelop\_{\scriptstyle 1}}}` is :math:`\mathsf{gt}`, then:
+   #. If :math:`{\mathit{vrelop}}` is :math:`\mathsf{gt}`, then:
 
-      1) Let :math:`({\mathsf{gt}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vrelop\_{\scriptstyle 1}}}`.
+      1) Let :math:`({\mathsf{gt}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vrelop}}`.
 
       #) Return :math:`{{\mathrm{ivrelopsx}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{igt}}, {\mathit{sx}}, v_1, v_2)`.
 
-   #. If :math:`{\mathit{vrelop\_{\scriptstyle 1}}}` is :math:`\mathsf{le}`, then:
+   #. If :math:`{\mathit{vrelop}}` is :math:`\mathsf{le}`, then:
 
-      1) Let :math:`({\mathsf{le}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vrelop\_{\scriptstyle 1}}}`.
+      1) Let :math:`({\mathsf{le}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vrelop}}`.
 
       #) Return :math:`{{\mathrm{ivrelopsx}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{ile}}, {\mathit{sx}}, v_1, v_2)`.
 
-   #. If :math:`{\mathit{vrelop\_{\scriptstyle 1}}}` is :math:`\mathsf{ge}`, then:
+   #. If :math:`{\mathit{vrelop}}` is :math:`\mathsf{ge}`, then:
 
-      1) Let :math:`({\mathsf{ge}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vrelop\_{\scriptstyle 1}}}`.
+      1) Let :math:`({\mathsf{ge}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vrelop}}`.
 
       #) Return :math:`{{\mathrm{ivrelopsx}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{ige}}, {\mathit{sx}}, v_1, v_2)`.
 
-#. Assert: Due to validation, :math:`{\mathit{lanetype}}_1` is :math:`{\mathsf{f}}{N}`.
+#. Assert: Due to validation, :math:`{\mathit{lanetype}}` is :math:`{\mathsf{f}}{N}`.
 
-#. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}_1`.
+#. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}`.
 
-#. If :math:`{\mathit{vrelop\_{\scriptstyle 1}}} = \mathsf{eq}`, then:
+#. If :math:`{\mathit{vrelop}} = \mathsf{eq}`, then:
 
    a. Return :math:`{{\mathrm{fvrelop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{feq}}, v_1, v_2)`.
 
-#. If :math:`{\mathit{vrelop\_{\scriptstyle 1}}} = \mathsf{ne}`, then:
+#. If :math:`{\mathit{vrelop}} = \mathsf{ne}`, then:
 
    a. Return :math:`{{\mathrm{fvrelop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fne}}, v_1, v_2)`.
 
-#. If :math:`{\mathit{vrelop\_{\scriptstyle 1}}} = \mathsf{lt}`, then:
+#. If :math:`{\mathit{vrelop}} = \mathsf{lt}`, then:
 
    a. Return :math:`{{\mathrm{fvrelop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{flt}}, v_1, v_2)`.
 
-#. If :math:`{\mathit{vrelop\_{\scriptstyle 1}}} = \mathsf{gt}`, then:
+#. If :math:`{\mathit{vrelop}} = \mathsf{gt}`, then:
 
    a. Return :math:`{{\mathrm{fvrelop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fgt}}, v_1, v_2)`.
 
-#. If :math:`{\mathit{vrelop\_{\scriptstyle 1}}} = \mathsf{le}`, then:
+#. If :math:`{\mathit{vrelop}} = \mathsf{le}`, then:
 
    a. Return :math:`{{\mathrm{fvrelop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fle}}, v_1, v_2)`.
 
-#. Assert: Due to validation, :math:`{\mathit{vrelop\_{\scriptstyle 1}}} = \mathsf{ge}`.
+#. Assert: Due to validation, :math:`{\mathit{vrelop}} = \mathsf{ge}`.
 
 #. Return :math:`{{\mathrm{fvrelop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{fge}}, v_1, v_2)`.
 
 
-:math:`{{\mathrm{lcvtop}}}_{{{\mathit{lanetype}}_3}{\mathsf{x}}{M_1}, {{\mathit{lanetype}}_1}{\mathsf{x}}{M_2}}({\mathit{vcvtop}}_1, c_1)`
-..........................................................................................................................................
+:math:`{{\mathrm{lcvtop}}}_{{{\mathit{lanetype}''}}{\mathsf{x}}{M_1}, {{\mathit{lanetype}}}{\mathsf{x}}{M_2}}({\mathit{vcvtop}}, c_1)`
+......................................................................................................................................
 
 
-1. If :math:`{\mathit{lanetype}}_3` is :math:`{\mathsf{i}}{N}`, then:
+1. If :math:`{\mathit{lanetype}''}` is :math:`{\mathsf{i}}{N}`, then:
 
-   a. Let :math:`{{\mathsf{i}}{N}}_1` be :math:`{\mathit{lanetype}}_3`.
+   a. Let :math:`{{\mathsf{i}}{N}}_1` be :math:`{\mathit{lanetype}''}`.
 
-   #. If :math:`{\mathit{lanetype}}_1` is :math:`{\mathsf{i}}{N}`, then:
+   #. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{i}}{N}`, then:
 
-      1) Let :math:`{{\mathsf{i}}{N}}_2` be :math:`{\mathit{lanetype}}_1`.
+      1) Let :math:`{{\mathsf{i}}{N}}_2` be :math:`{\mathit{lanetype}}`.
 
-      #) If :math:`{\mathit{vcvtop}}_1` is :math:`\mathsf{extend}`, then:
+      #) If :math:`{\mathit{vcvtop}}` is :math:`\mathsf{extend}`, then:
 
-         a) Let :math:`({\mathsf{extend}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vcvtop}}_1`.
+         a) Let :math:`({\mathsf{extend}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vcvtop}}`.
 
          #) Let :math:`c` be :math:`{{{{\mathrm{extend}}}_{N_1, N_2}^{{\mathit{sx}}}}}{(c_1)}`.
 
          #) Return :math:`c`.
 
-   #. If :math:`{\mathit{lanetype}}_1` is :math:`{\mathsf{f}}{N}`, then:
+   #. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{f}}{N}`, then:
 
-      1) Let :math:`{{\mathsf{f}}{N}}_2` be :math:`{\mathit{lanetype}}_1`.
+      1) Let :math:`{{\mathsf{f}}{N}}_2` be :math:`{\mathit{lanetype}}`.
 
-      #) If :math:`{\mathit{vcvtop}}_1` is :math:`\mathsf{convert}`, then:
+      #) If :math:`{\mathit{vcvtop}}` is :math:`\mathsf{convert}`, then:
 
-         a) Let :math:`({\mathsf{convert}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vcvtop}}_1`.
+         a) Let :math:`({\mathsf{convert}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vcvtop}}`.
 
          #) Let :math:`c` be :math:`{{{{\mathrm{convert}}}_{N_1, N_2}^{{\mathit{sx}}}}}{(c_1)}`.
 
          #) Return :math:`c`.
 
-#. Assert: Due to validation, :math:`{\mathit{lanetype}}_3` is :math:`{\mathsf{f}}{N}`.
+#. Assert: Due to validation, :math:`{\mathit{lanetype}''}` is :math:`{\mathsf{f}}{N}`.
 
-#. Let :math:`{{\mathsf{f}}{N}}_1` be :math:`{\mathit{lanetype}}_3`.
+#. Let :math:`{{\mathsf{f}}{N}}_1` be :math:`{\mathit{lanetype}''}`.
 
-#. If :math:`{\mathit{lanetype}}_1` is :math:`{\mathsf{i}}{N}`, then:
+#. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{i}}{N}`, then:
 
-   a. Let :math:`{{\mathsf{i}}{N}}_2` be :math:`{\mathit{lanetype}}_1`.
+   a. Let :math:`{{\mathsf{i}}{N}}_2` be :math:`{\mathit{lanetype}}`.
 
-   #. If :math:`{\mathit{vcvtop}}_1` is :math:`\mathsf{trunc\_sat}`, then:
+   #. If :math:`{\mathit{vcvtop}}` is :math:`\mathsf{trunc\_sat}`, then:
 
-      1) Let :math:`({\mathsf{trunc\_sat}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vcvtop}}_1`.
+      1) Let :math:`({\mathsf{trunc\_sat}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vcvtop}}`.
 
       #) Let :math:`{c^?}` be :math:`{{{{\mathrm{trunc\_sat}}}_{N_1, N_2}^{{\mathit{sx}}}}}{(c_1)}`.
 
       #) Return :math:`{c^?}`.
 
-   #. If :math:`{\mathit{vcvtop}}_1` is :math:`\mathsf{relaxed\_trunc}`, then:
+   #. If :math:`{\mathit{vcvtop}}` is :math:`\mathsf{relaxed\_trunc}`, then:
 
-      1) Let :math:`({\mathsf{relaxed\_trunc}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vcvtop}}_1`.
+      1) Let :math:`({\mathsf{relaxed\_trunc}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vcvtop}}`.
 
       #) Let :math:`{c^?}` be :math:`{{{{\mathrm{relaxed\_trunc}}}_{N_1, N_2}^{{\mathit{sx}}}}}{(c_1)}`.
 
       #) Return :math:`{c^?}`.
 
-#. Assert: Due to validation, :math:`{\mathit{lanetype}}_1` is :math:`{\mathsf{f}}{N}`.
+#. Assert: Due to validation, :math:`{\mathit{lanetype}}` is :math:`{\mathsf{f}}{N}`.
 
-#. Let :math:`{{\mathsf{f}}{N}}_2` be :math:`{\mathit{lanetype}}_1`.
+#. Let :math:`{{\mathsf{f}}{N}}_2` be :math:`{\mathit{lanetype}}`.
 
-#. If :math:`{\mathit{vcvtop}}_1 = \mathsf{demote}`, then:
+#. If :math:`{\mathit{vcvtop}} = \mathsf{demote}`, then:
 
    a. Let :math:`{c^\ast}` be :math:`{{\mathrm{demote}}}_{N_1, N_2}(c_1)`.
 
    #. Return :math:`{c^\ast}`.
 
-#. Assert: Due to validation, :math:`{\mathit{vcvtop}}_1 = \mathsf{promote}`.
+#. Assert: Due to validation, :math:`{\mathit{vcvtop}} = \mathsf{promote}`.
 
 #. Let :math:`{c^\ast}` be :math:`{{\mathrm{promote}}}_{N_1, N_2}(c_1)`.
 
 #. Return :math:`{c^\ast}`.
 
 
-:math:`{{\mathrm{vcvtop}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{n_1}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{n_2}}({\mathit{vcvtop}}, {{\mathit{half}}_1^?}, {{\mathit{zero}}_1^?}, v_1)`
-..................................................................................................................................................................................
+:math:`{{\mathrm{vcvtop}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{n}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{{n'}}}({\mathit{vcvtop}}, {{\mathit{half}}^?}, {{\mathit{zero}}^?}, v_1)`
+.............................................................................................................................................................................
 
 
-1. Let :math:`M` be :math:`n_2`.
+1. Let :math:`M` be :math:`{n'}`.
 
-#. If :math:`{{\mathit{half}}_1^?}` is not defined and :math:`{{\mathit{zero}}_1^?}` is not defined and :math:`n_1 = M`, then:
+#. If :math:`{{\mathit{half}}^?}` is not defined and :math:`{{\mathit{zero}}^?}` is not defined and :math:`n = M`, then:
 
    a. Let :math:`{c_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M}}(v_1)`.
 
@@ -23264,13 +23264,13 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. Return :math:`v`.
 
-#. Let :math:`M_1` be :math:`n_1`.
+#. Let :math:`M_1` be :math:`n`.
 
-#. Let :math:`M_2` be :math:`n_2`.
+#. Let :math:`M_2` be :math:`{n'}`.
 
-#. If :math:`{{\mathit{zero}}_1^?}` is not defined and :math:`{{\mathit{half}}_1^?}` is defined, then:
+#. If :math:`{{\mathit{zero}}^?}` is not defined and :math:`{{\mathit{half}}^?}` is defined, then:
 
-   a. Let :math:`{\mathit{half}}` be :math:`{{\mathit{half}}_1^?}`.
+   a. Let :math:`{\mathit{half}}` be :math:`{{\mathit{half}}^?}`.
 
    #. Let :math:`{c_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}}(v_1){}[{\mathrm{half}}({\mathit{half}}, 0, M_2) : M_2]`.
 
@@ -23280,9 +23280,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. Return :math:`v`.
 
-#. Assert: Due to validation, :math:`{{\mathit{half}}_1^?}` is not defined.
+#. Assert: Due to validation, :math:`{{\mathit{half}}^?}` is not defined.
 
-#. Assert: Due to validation, :math:`{{\mathit{zero}}_1^?}` is defined.
+#. Assert: Due to validation, :math:`{{\mathit{zero}}^?}` is defined.
 
 #. Let :math:`{c_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}}(v_1)`.
 
@@ -23293,17 +23293,17 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`v`.
 
 
-:math:`{{\mathit{vshiftop\_{\scriptstyle 1}}}}{{}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}}{(v, i)}`
-..............................................................................................
+:math:`{{\mathit{vshiftop}}}{{}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}}{(v, i)}`
+............................................................................
 
 
-1. If :math:`{\mathit{vshiftop\_{\scriptstyle 1}}} = \mathsf{shl}`, then:
+1. If :math:`{\mathit{vshiftop}} = \mathsf{shl}`, then:
 
    a. Return :math:`{{\mathrm{ivshiftop}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{ishl}}, v, i)`.
 
-#. Assert: Due to validation, :math:`{\mathit{vshiftop\_{\scriptstyle 1}}}` is :math:`\mathsf{shr}`.
+#. Assert: Due to validation, :math:`{\mathit{vshiftop}}` is :math:`\mathsf{shr}`.
 
-#. Let :math:`({\mathsf{shr}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vshiftop\_{\scriptstyle 1}}}`.
+#. Let :math:`({\mathsf{shr}}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vshiftop}}`.
 
 #. Return :math:`{{\mathrm{ivshiftopsx}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{ishr}}, {\mathit{sx}}, v, i)`.
 
@@ -23315,15 +23315,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return :math:`{{\mathrm{ivbitmaskop}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}(v)`.
 
 
-:math:`{{\mathit{vswizzlop\_{\scriptstyle 1}}}}{{}_{{\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{M}}(v_1, v_2)}`
-............................................................................................................
+:math:`{{\mathit{vswizzlop}}}{{}_{{\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{M}}(v_1, v_2)}`
+..........................................................................................
 
 
-1. If :math:`{\mathit{vswizzlop\_{\scriptstyle 1}}} = \mathsf{swizzle}`, then:
+1. If :math:`{\mathit{vswizzlop}} = \mathsf{swizzle}`, then:
 
    a. Return :math:`{{\mathrm{ivswizzlop}}}_{{\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{M}}({\mathrm{iswizzle}}_{{\mathit{lane}}}, v_1, v_2)`.
 
-#. Assert: Due to validation, :math:`{\mathit{vswizzlop\_{\scriptstyle 1}}} = \mathsf{relaxed\_swizzle}`.
+#. Assert: Due to validation, :math:`{\mathit{vswizzlop}} = \mathsf{relaxed\_swizzle}`.
 
 #. Return :math:`{{\mathrm{ivswizzlop}}}_{{\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{M}}({\mathrm{irelaxed}}_{{\mathit{swizzle}}_{{\mathit{lane}}}}, v_1, v_2)`.
 
@@ -23423,23 +23423,23 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return :math:`{{{\mathrm{imul}}}_{N}(i_1, i_2)^\ast}`.
 
 
-:math:`{{\mathit{vextbinop}}_1}{{}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}(v_1, v_2)}`
-...............................................................................................................................
+:math:`{{\mathit{vextbinop}}}{{}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}(v_1, v_2)}`
+.............................................................................................................................
 
 
-1. If :math:`{\mathit{vextbinop}}_1` is :math:`\mathsf{extmul}`, then:
+1. If :math:`{\mathit{vextbinop}}` is :math:`\mathsf{extmul}`, then:
 
-   a. Let :math:`({\mathsf{extmul}}{\mathsf{\_}}{{\mathit{sx}}}{\mathsf{\_}}{{\mathit{half}}})` be :math:`{\mathit{vextbinop}}_1`.
+   a. Let :math:`({\mathsf{extmul}}{\mathsf{\_}}{{\mathit{sx}}}{\mathsf{\_}}{{\mathit{half}}})` be :math:`{\mathit{vextbinop}}`.
 
    #. Let :math:`i` be :math:`{\mathrm{half}}({\mathit{half}}, 0, M_2)`.
 
    #. Return :math:`{{\mathrm{ivextbinop}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}({\mathrm{ivmul}}, {\mathit{sx}}, {\mathit{sx}}, i, M_2, v_1, v_2)`.
 
-#. If :math:`{\mathit{vextbinop}}_1 = `, then:
+#. If :math:`{\mathit{vextbinop}} = `, then:
 
    a. Return :math:`{{\mathrm{ivextbinop}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}({\mathrm{ivdot}}, \mathsf{s}, \mathsf{s}, 0, M_1, v_1, v_2)`.
 
-#. Assert: Due to validation, :math:`{\mathit{vextbinop}}_1 = `.
+#. Assert: Due to validation, :math:`{\mathit{vextbinop}} = `.
 
 #. Return :math:`{{\mathrm{ivextbinop}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}({\mathrm{ivdot}}_{{\mathit{sat}}}, \mathsf{s}, {{\mathrm{relaxed}}({\mathrm{R}}_{\mathit{idot}})}{{}[ \mathsf{s}, \mathsf{u} ]}, 0, M_1, v_1, v_2)`.
 
@@ -23515,63 +23515,63 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return :math:`1024`.
 
 
-:math:`{{\mathrm{pack}}}_{{\mathit{storagetype}}_1}({\mathit{val}}_1)`
-......................................................................
+:math:`{{\mathrm{pack}}}_{{\mathit{storagetype}}}({\mathit{val}})`
+..................................................................
 
 
-1. If :math:`{\mathit{storagetype}}_1` is value type, then:
+1. If :math:`{\mathit{storagetype}}` is value type, then:
 
-   a. Let :math:`{\mathit{val}}` be :math:`{\mathit{val}}_1`.
+   a. Let :math:`{\mathit{val}}` be :math:`{\mathit{val}}`.
 
    #. Return :math:`{\mathit{val}}`.
 
-#. Assert: Due to validation, :math:`{\mathit{storagetype}}_1` is packed type.
+#. Assert: Due to validation, :math:`{\mathit{storagetype}}` is packed type.
 
-#. Let :math:`{\mathit{packtype}}` be :math:`{\mathit{storagetype}}_1`.
+#. Let :math:`{\mathit{packtype}}` be :math:`{\mathit{storagetype}}`.
 
-#. Assert: Due to validation, :math:`{\mathit{val}}_1` is :math:`\mathsf{const}`.
+#. Assert: Due to validation, :math:`{\mathit{val}}` is :math:`\mathsf{const}`.
 
-#. Let :math:`({\mathit{numtype}}_0{.}\mathsf{const}~i)` be :math:`{\mathit{val}}_1`.
+#. Let :math:`({\mathit{numtype}}_0{.}\mathsf{const}~i)` be :math:`{\mathit{val}}`.
 
 #. Assert: Due to validation, :math:`{\mathit{numtype}}_0 = \mathsf{i{\scriptstyle 32}}`.
 
 #. Return :math:`({\mathit{packtype}}{.}\mathsf{pack}~{{\mathrm{wrap}}}_{32, {|{\mathit{packtype}}|}}(i))`.
 
 
-:math:`{{{{\mathrm{unpack}}}_{{\mathit{storagetype}}_1}^{{{\mathit{sx}}_1^?}}}}{({\mathit{fieldval}}_1)}`
-.........................................................................................................
+:math:`{{{{\mathrm{unpack}}}_{{\mathit{storagetype}}}^{{{\mathit{sx}}^?}}}}{({\mathit{fieldval}})}`
+...................................................................................................
 
 
-1. If :math:`{\mathit{storagetype}}_1` is value type and :math:`{\mathit{fieldval}}_1` is value, then:
+1. If :math:`{\mathit{storagetype}}` is value type and :math:`{\mathit{fieldval}}` is value, then:
 
-   a. Let :math:`{\mathit{val}}` be :math:`{\mathit{fieldval}}_1`.
+   a. Let :math:`{\mathit{val}}` be :math:`{\mathit{fieldval}}`.
 
-   #. If :math:`{{\mathit{sx}}_1^?}` is not defined, then:
+   #. If :math:`{{\mathit{sx}}^?}` is not defined, then:
 
       1) Return :math:`{\mathit{val}}`.
 
-#. Assert: Due to validation, :math:`{\mathit{fieldval}}_1` is :math:`\mathsf{pack}`.
+#. Assert: Due to validation, :math:`{\mathit{fieldval}}` is :math:`\mathsf{pack}`.
 
-#. Let :math:`({\mathit{packtype}}{.}\mathsf{pack}~i)` be :math:`{\mathit{fieldval}}_1`.
+#. Let :math:`({\mathit{packtype}}{.}\mathsf{pack}~i)` be :math:`{\mathit{fieldval}}`.
 
-#. Assert: Due to validation, :math:`{{\mathit{sx}}_1^?}` is defined.
+#. Assert: Due to validation, :math:`{{\mathit{sx}}^?}` is defined.
 
-#. Let :math:`{\mathit{sx}}` be :math:`{{\mathit{sx}}_1^?}`.
+#. Let :math:`{\mathit{sx}}` be :math:`{{\mathit{sx}}^?}`.
 
-#. Assert: Due to validation, :math:`{\mathit{storagetype}}_1 = {\mathit{packtype}}`.
+#. Assert: Due to validation, :math:`{\mathit{storagetype}} = {\mathit{packtype}}`.
 
 #. Return :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{{{{\mathrm{extend}}}_{{|{\mathit{packtype}}|}, 32}^{{\mathit{sx}}}}}{(i)})`.
 
 
-:math:`{\mathrm{funcs}}({{\mathit{externaddr}}_1^\ast})`
-........................................................
+:math:`{\mathrm{funcs}}({{\mathit{externaddr}}^\ast})`
+......................................................
 
 
-1. If :math:`{{\mathit{externaddr}}_1^\ast} = \epsilon`, then:
+1. If :math:`{{\mathit{externaddr}}^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xa}}^\ast}` be :math:`{{\mathit{externaddr}}_1^\ast}`.
+#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xa}}^\ast}` be :math:`{{\mathit{externaddr}}^\ast}`.
 
 #. If :math:`{\mathit{externaddr}}_0` is :math:`\mathsf{func}`, then:
 
@@ -23579,20 +23579,20 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. Return :math:`a~{\mathrm{funcs}}({{\mathit{xa}}^\ast})`.
 
-#. Let :math:`{\mathit{externaddr}}~{{\mathit{xa}}^\ast}` be :math:`{{\mathit{externaddr}}_1^\ast}`.
+#. Let :math:`{\mathit{externaddr}}~{{\mathit{xa}}^\ast}` be :math:`{{\mathit{externaddr}}^\ast}`.
 
 #. Return :math:`{\mathrm{funcs}}({{\mathit{xa}}^\ast})`.
 
 
-:math:`{\mathrm{globals}}({{\mathit{externaddr}}_1^\ast})`
-..........................................................
+:math:`{\mathrm{globals}}({{\mathit{externaddr}}^\ast})`
+........................................................
 
 
-1. If :math:`{{\mathit{externaddr}}_1^\ast} = \epsilon`, then:
+1. If :math:`{{\mathit{externaddr}}^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xa}}^\ast}` be :math:`{{\mathit{externaddr}}_1^\ast}`.
+#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xa}}^\ast}` be :math:`{{\mathit{externaddr}}^\ast}`.
 
 #. If :math:`{\mathit{externaddr}}_0` is :math:`\mathsf{global}`, then:
 
@@ -23600,20 +23600,20 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. Return :math:`a~{\mathrm{globals}}({{\mathit{xa}}^\ast})`.
 
-#. Let :math:`{\mathit{externaddr}}~{{\mathit{xa}}^\ast}` be :math:`{{\mathit{externaddr}}_1^\ast}`.
+#. Let :math:`{\mathit{externaddr}}~{{\mathit{xa}}^\ast}` be :math:`{{\mathit{externaddr}}^\ast}`.
 
 #. Return :math:`{\mathrm{globals}}({{\mathit{xa}}^\ast})`.
 
 
-:math:`{\mathrm{tables}}({{\mathit{externaddr}}_1^\ast})`
-.........................................................
+:math:`{\mathrm{tables}}({{\mathit{externaddr}}^\ast})`
+.......................................................
 
 
-1. If :math:`{{\mathit{externaddr}}_1^\ast} = \epsilon`, then:
+1. If :math:`{{\mathit{externaddr}}^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xa}}^\ast}` be :math:`{{\mathit{externaddr}}_1^\ast}`.
+#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xa}}^\ast}` be :math:`{{\mathit{externaddr}}^\ast}`.
 
 #. If :math:`{\mathit{externaddr}}_0` is :math:`\mathsf{table}`, then:
 
@@ -23621,20 +23621,20 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. Return :math:`a~{\mathrm{tables}}({{\mathit{xa}}^\ast})`.
 
-#. Let :math:`{\mathit{externaddr}}~{{\mathit{xa}}^\ast}` be :math:`{{\mathit{externaddr}}_1^\ast}`.
+#. Let :math:`{\mathit{externaddr}}~{{\mathit{xa}}^\ast}` be :math:`{{\mathit{externaddr}}^\ast}`.
 
 #. Return :math:`{\mathrm{tables}}({{\mathit{xa}}^\ast})`.
 
 
-:math:`{\mathrm{mems}}({{\mathit{externaddr}}_1^\ast})`
-.......................................................
+:math:`{\mathrm{mems}}({{\mathit{externaddr}}^\ast})`
+.....................................................
 
 
-1. If :math:`{{\mathit{externaddr}}_1^\ast} = \epsilon`, then:
+1. If :math:`{{\mathit{externaddr}}^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xa}}^\ast}` be :math:`{{\mathit{externaddr}}_1^\ast}`.
+#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xa}}^\ast}` be :math:`{{\mathit{externaddr}}^\ast}`.
 
 #. If :math:`{\mathit{externaddr}}_0` is :math:`\mathsf{mem}`, then:
 
@@ -23642,20 +23642,20 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. Return :math:`a~{\mathrm{mems}}({{\mathit{xa}}^\ast})`.
 
-#. Let :math:`{\mathit{externaddr}}~{{\mathit{xa}}^\ast}` be :math:`{{\mathit{externaddr}}_1^\ast}`.
+#. Let :math:`{\mathit{externaddr}}~{{\mathit{xa}}^\ast}` be :math:`{{\mathit{externaddr}}^\ast}`.
 
 #. Return :math:`{\mathrm{mems}}({{\mathit{xa}}^\ast})`.
 
 
-:math:`{\mathrm{tags}}({{\mathit{externaddr}}_1^\ast})`
-.......................................................
+:math:`{\mathrm{tags}}({{\mathit{externaddr}}^\ast})`
+.....................................................
 
 
-1. If :math:`{{\mathit{externaddr}}_1^\ast} = \epsilon`, then:
+1. If :math:`{{\mathit{externaddr}}^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xa}}^\ast}` be :math:`{{\mathit{externaddr}}_1^\ast}`.
+#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xa}}^\ast}` be :math:`{{\mathit{externaddr}}^\ast}`.
 
 #. If :math:`{\mathit{externaddr}}_0` is :math:`\mathsf{tag}`, then:
 
@@ -23663,7 +23663,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. Return :math:`a~{\mathrm{tags}}({{\mathit{xa}}^\ast})`.
 
-#. Let :math:`{\mathit{externaddr}}~{{\mathit{xa}}^\ast}` be :math:`{{\mathit{externaddr}}_1^\ast}`.
+#. Let :math:`{\mathit{externaddr}}~{{\mathit{xa}}^\ast}` be :math:`{{\mathit{externaddr}}^\ast}`.
 
 #. Return :math:`{\mathrm{tags}}({{\mathit{xa}}^\ast})`.
 
@@ -23954,13 +23954,13 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`{\mathit{meminst}'}`.
 
 
-:math:`{{\mathrm{blocktype}}}_{z}({\mathit{blocktype}}_1)`
-..........................................................
+:math:`{{\mathrm{blocktype}}}_{z}({\mathit{blocktype}})`
+........................................................
 
 
-1. If :math:`{\mathit{blocktype}}_1` is , then:
+1. If :math:`{\mathit{blocktype}}` is , then:
 
-   a. Let :math:`x` be :math:`{\mathit{blocktype}}_1`.
+   a. Let :math:`x` be :math:`{\mathit{blocktype}}`.
 
    #. Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])` is :math:`\mathsf{func}`.
 
@@ -23968,22 +23968,22 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. Return :math:`{\mathit{ft}}`.
 
-#. Assert: Due to validation, :math:`{\mathit{blocktype}}_1` is .
+#. Assert: Due to validation, :math:`{\mathit{blocktype}}` is .
 
-#. Let :math:`{t^?}` be :math:`{\mathit{blocktype}}_1`.
+#. Let :math:`{t^?}` be :math:`{\mathit{blocktype}}`.
 
 #. Return :math:`\epsilon~\rightarrow~{t^?}`.
 
 
-:math:`{{{\mathrm{alloctype}}^\ast}}{({{\mathit{type}}_1^\ast})}`
-.................................................................
+:math:`{{{\mathrm{alloctype}}^\ast}}{({{\mathit{type}}^\ast})}`
+...............................................................
 
 
-1. If :math:`{{\mathit{type}}_1^\ast} = \epsilon`, then:
+1. If :math:`{{\mathit{type}}^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{{\mathit{type}'}^\ast}~{\mathit{type}}` be :math:`{{\mathit{type}}_1^\ast}`.
+#. Let :math:`{{\mathit{type}'}^\ast}~{\mathit{type}}` be :math:`{{\mathit{type}}^\ast}`.
 
 #. Let :math:`(\mathsf{type}~{\mathit{rectype}})` be :math:`{\mathit{type}}`.
 
@@ -24009,29 +24009,29 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`a`.
 
 
-:math:`{{{\mathrm{allocfunc}}^\ast}}{(s, {{\mathit{deftype}}_1^\ast}, {{{\mathit{code}}}_1^\ast}, {{\mathit{moduleinst}}_1^\ast})}`
-...................................................................................................................................
+:math:`{{{\mathrm{allocfunc}}^\ast}}{(s, {{\mathit{deftype}}^\ast}, {{\mathit{code}}^\ast}, {{\mathit{moduleinst}}^\ast})}`
+...........................................................................................................................
 
 
-1. If :math:`{{\mathit{deftype}}_1^\ast} = \epsilon`, then:
+1. If :math:`{{\mathit{deftype}}^\ast} = \epsilon`, then:
 
-   a. Assert: :math:`{{{\mathit{code}}}_1^\ast} = \epsilon`.
+   a. Assert: :math:`{{\mathit{code}}^\ast} = \epsilon`.
 
-   #. Assert: :math:`{{\mathit{moduleinst}}_1^\ast} = \epsilon`.
+   #. Assert: :math:`{{\mathit{moduleinst}}^\ast} = \epsilon`.
 
    #. Return :math:`\epsilon`.
 
 #. Else:
 
-   a. Let :math:`{\mathit{dt}}~{{\mathit{dt}'}^\ast}` be :math:`{{\mathit{deftype}}_1^\ast}`.
+   a. Let :math:`{\mathit{dt}}~{{\mathit{dt}'}^\ast}` be :math:`{{\mathit{deftype}}^\ast}`.
 
-   #. Assert: :math:`{|{{{\mathit{code}}}_1^\ast}|} \geq 1`.
+   #. Assert: :math:`{|{{\mathit{code}}^\ast}|} \geq 1`.
 
-   #. Let :math:`{\mathit{code}}~{{{\mathit{code}}'}^\ast}` be :math:`{{{\mathit{code}}}_1^\ast}`.
+   #. Let :math:`{\mathit{code}}~{{{\mathit{code}}'}^\ast}` be :math:`{{\mathit{code}}^\ast}`.
 
-   #. Assert: :math:`{|{{\mathit{moduleinst}}_1^\ast}|} \geq 1`.
+   #. Assert: :math:`{|{{\mathit{moduleinst}}^\ast}|} \geq 1`.
 
-   #. Let :math:`{\mathit{moduleinst}}~{{\mathit{moduleinst}'}^\ast}` be :math:`{{\mathit{moduleinst}}_1^\ast}`.
+   #. Let :math:`{\mathit{moduleinst}}~{{\mathit{moduleinst}'}^\ast}` be :math:`{{\mathit{moduleinst}}^\ast}`.
 
    #. Let :math:`{\mathit{fa}}` be :math:`{\mathrm{allocfunc}}(s, {\mathit{dt}}, {\mathit{code}}, {\mathit{moduleinst}})`.
 
@@ -24053,23 +24053,23 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`a`.
 
 
-:math:`{{{\mathrm{allocglobal}}^\ast}}{(s, {{\mathit{globaltype}}_1^\ast}, {{\mathit{val}}_1^\ast})}`
-.....................................................................................................
+:math:`{{{\mathrm{allocglobal}}^\ast}}{(s, {{\mathit{globaltype}}^\ast}, {{\mathit{val}}^\ast})}`
+.................................................................................................
 
 
-1. If :math:`{{\mathit{globaltype}}_1^\ast} = \epsilon`, then:
+1. If :math:`{{\mathit{globaltype}}^\ast} = \epsilon`, then:
 
-   a. Assert: :math:`{{\mathit{val}}_1^\ast} = \epsilon`.
+   a. Assert: :math:`{{\mathit{val}}^\ast} = \epsilon`.
 
    #. Return :math:`\epsilon`.
 
 #. Else:
 
-   a. Let :math:`{\mathit{globaltype}}~{{\mathit{globaltype}'}^\ast}` be :math:`{{\mathit{globaltype}}_1^\ast}`.
+   a. Let :math:`{\mathit{globaltype}}~{{\mathit{globaltype}'}^\ast}` be :math:`{{\mathit{globaltype}}^\ast}`.
 
-   #. Assert: :math:`{|{{\mathit{val}}_1^\ast}|} \geq 1`.
+   #. Assert: :math:`{|{{\mathit{val}}^\ast}|} \geq 1`.
 
-   #. Let :math:`{\mathit{val}}~{{\mathit{val}'}^\ast}` be :math:`{{\mathit{val}}_1^\ast}`.
+   #. Let :math:`{\mathit{val}}~{{\mathit{val}'}^\ast}` be :math:`{{\mathit{val}}^\ast}`.
 
    #. Let :math:`{\mathit{ga}}` be :math:`{\mathrm{allocglobal}}(s, {\mathit{globaltype}}, {\mathit{val}})`.
 
@@ -24091,21 +24091,21 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`a`.
 
 
-:math:`{{{\mathrm{alloctable}}^\ast}}{(s, {{\mathit{tabletype}}_1^\ast}, {{\mathit{ref}}_1^\ast})}`
-...................................................................................................
+:math:`{{{\mathrm{alloctable}}^\ast}}{(s, {{\mathit{tabletype}}^\ast}, {{\mathit{ref}}^\ast})}`
+...............................................................................................
 
 
-1. If :math:`{{\mathit{tabletype}}_1^\ast} = \epsilon` and :math:`{{\mathit{ref}}_1^\ast} = \epsilon`, then:
+1. If :math:`{{\mathit{tabletype}}^\ast} = \epsilon` and :math:`{{\mathit{ref}}^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Assert: :math:`{|{{\mathit{ref}}_1^\ast}|} \geq 1`.
+#. Assert: :math:`{|{{\mathit{ref}}^\ast}|} \geq 1`.
 
-#. Let :math:`{\mathit{ref}}~{{\mathit{ref}'}^\ast}` be :math:`{{\mathit{ref}}_1^\ast}`.
+#. Let :math:`{\mathit{ref}}~{{\mathit{ref}'}^\ast}` be :math:`{{\mathit{ref}}^\ast}`.
 
-#. Assert: :math:`{|{{\mathit{tabletype}}_1^\ast}|} \geq 1`.
+#. Assert: :math:`{|{{\mathit{tabletype}}^\ast}|} \geq 1`.
 
-#. Let :math:`{\mathit{tabletype}}~{{\mathit{tabletype}'}^\ast}` be :math:`{{\mathit{tabletype}}_1^\ast}`.
+#. Let :math:`{\mathit{tabletype}}~{{\mathit{tabletype}'}^\ast}` be :math:`{{\mathit{tabletype}}^\ast}`.
 
 #. Let :math:`{\mathit{ta}}` be :math:`{\mathrm{alloctable}}(s, {\mathit{tabletype}}, {\mathit{ref}})`.
 
@@ -24127,15 +24127,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`a`.
 
 
-:math:`{{{\mathrm{allocmem}}^\ast}}{(s, {{\mathit{memtype}}_1^\ast})}`
-......................................................................
+:math:`{{{\mathrm{allocmem}}^\ast}}{(s, {{\mathit{memtype}}^\ast})}`
+....................................................................
 
 
-1. If :math:`{{\mathit{memtype}}_1^\ast} = \epsilon`, then:
+1. If :math:`{{\mathit{memtype}}^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{memtype}}~{{\mathit{memtype}'}^\ast}` be :math:`{{\mathit{memtype}}_1^\ast}`.
+#. Let :math:`{\mathit{memtype}}~{{\mathit{memtype}'}^\ast}` be :math:`{{\mathit{memtype}}^\ast}`.
 
 #. Let :math:`{\mathit{ma}}` be :math:`{\mathrm{allocmem}}(s, {\mathit{memtype}})`.
 
@@ -24157,15 +24157,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`a`.
 
 
-:math:`{{{\mathrm{alloctag}}^\ast}}{(s, {{\mathit{tagtype}}_1^\ast})}`
-......................................................................
+:math:`{{{\mathrm{alloctag}}^\ast}}{(s, {{\mathit{tagtype}}^\ast})}`
+....................................................................
 
 
-1. If :math:`{{\mathit{tagtype}}_1^\ast} = \epsilon`, then:
+1. If :math:`{{\mathit{tagtype}}^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{jt}}~{{\mathit{jt}'}^\ast}` be :math:`{{\mathit{tagtype}}_1^\ast}`.
+#. Let :math:`{\mathit{jt}}~{{\mathit{jt}'}^\ast}` be :math:`{{\mathit{tagtype}}^\ast}`.
 
 #. Let :math:`{\mathit{ja}}` be :math:`{\mathrm{alloctag}}(s, {\mathit{jt}})`.
 
@@ -24187,21 +24187,21 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`a`.
 
 
-:math:`{{{\mathrm{allocelem}}^\ast}}{(s, {{\mathit{elemtype}}_1^\ast}, {{\mathit{ref}}_1^\ast})}`
-.................................................................................................
+:math:`{{{\mathrm{allocelem}}^\ast}}{(s, {{\mathit{elemtype}}^\ast}, {{\mathit{ref}''}^\ast})}`
+...............................................................................................
 
 
-1. If :math:`{{\mathit{elemtype}}_1^\ast} = \epsilon` and :math:`{{\mathit{ref}}_1^\ast} = \epsilon`, then:
+1. If :math:`{{\mathit{elemtype}}^\ast} = \epsilon` and :math:`{{\mathit{ref}''}^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Assert: :math:`{|{{\mathit{ref}}_1^\ast}|} \geq 1`.
+#. Assert: :math:`{|{{\mathit{ref}''}^\ast}|} \geq 1`.
 
-#. Let :math:`{{\mathit{ref}}^\ast}~{{{\mathit{ref}'}^\ast}^\ast}` be :math:`{{\mathit{ref}}_1^\ast}`.
+#. Let :math:`{{\mathit{ref}}^\ast}~{{{\mathit{ref}'}^\ast}^\ast}` be :math:`{{\mathit{ref}''}^\ast}`.
 
-#. Assert: :math:`{|{{\mathit{elemtype}}_1^\ast}|} \geq 1`.
+#. Assert: :math:`{|{{\mathit{elemtype}}^\ast}|} \geq 1`.
 
-#. Let :math:`{\mathit{rt}}~{{\mathit{rt}'}^\ast}` be :math:`{{\mathit{elemtype}}_1^\ast}`.
+#. Let :math:`{\mathit{rt}}~{{\mathit{rt}'}^\ast}` be :math:`{{\mathit{elemtype}}^\ast}`.
 
 #. Let :math:`{\mathit{ea}}` be :math:`{\mathrm{allocelem}}(s, {\mathit{rt}}, {{\mathit{ref}}^\ast})`.
 
@@ -24223,21 +24223,21 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`a`.
 
 
-:math:`{{{\mathrm{allocdata}}^\ast}}{(s, {{\mathit{datatype}}_1^\ast}, {{\mathit{byte}}_1^\ast})}`
-..................................................................................................
+:math:`{{{\mathrm{allocdata}}^\ast}}{(s, {{\mathit{datatype}}^\ast}, {{\mathit{byte}}^\ast})}`
+..............................................................................................
 
 
-1. If :math:`{{\mathit{datatype}}_1^\ast} = \epsilon` and :math:`{{\mathit{byte}}_1^\ast} = \epsilon`, then:
+1. If :math:`{{\mathit{datatype}}^\ast} = \epsilon` and :math:`{{\mathit{byte}}^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Assert: :math:`{|{{\mathit{byte}}_1^\ast}|} \geq 1`.
+#. Assert: :math:`{|{{\mathit{byte}}^\ast}|} \geq 1`.
 
-#. Let :math:`{b^\ast}~{{{b'}^\ast}^\ast}` be :math:`{{\mathit{byte}}_1^\ast}`.
+#. Let :math:`{b^\ast}~{{{b'}^\ast}^\ast}` be :math:`{{\mathit{byte}}^\ast}`.
 
-#. Assert: :math:`{|{{\mathit{datatype}}_1^\ast}|} \geq 1`.
+#. Assert: :math:`{|{{\mathit{datatype}}^\ast}|} \geq 1`.
 
-#. Let :math:`{\mathit{ok}}~{{\mathit{ok}'}^\ast}` be :math:`{{\mathit{datatype}}_1^\ast}`.
+#. Let :math:`{\mathit{ok}}~{{\mathit{ok}'}^\ast}` be :math:`{{\mathit{datatype}}^\ast}`.
 
 #. Let :math:`{\mathit{da}}` be :math:`{\mathrm{allocdata}}(s, {\mathit{ok}}, {b^\ast})`.
 
@@ -24246,37 +24246,37 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`{\mathit{da}}~{{\mathit{da}'}^\ast}`.
 
 
-:math:`{\mathrm{allocexport}}({\mathit{moduleinst}}, \mathsf{export}~{\mathit{name}}~{\mathit{externidx}}_1)`
-.............................................................................................................
+:math:`{\mathrm{allocexport}}({\mathit{moduleinst}}, \mathsf{export}~{\mathit{name}}~{\mathit{externidx}})`
+...........................................................................................................
 
 
-1. If :math:`{\mathit{externidx}}_1` is :math:`\mathsf{func}`, then:
+1. If :math:`{\mathit{externidx}}` is :math:`\mathsf{func}`, then:
 
-   a. Let :math:`(\mathsf{func}~x)` be :math:`{\mathit{externidx}}_1`.
+   a. Let :math:`(\mathsf{func}~x)` be :math:`{\mathit{externidx}}`.
 
    #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{func}~{\mathit{moduleinst}}{.}\mathsf{funcs}{}[x]) \}\end{array}`.
 
-#. If :math:`{\mathit{externidx}}_1` is :math:`\mathsf{global}`, then:
+#. If :math:`{\mathit{externidx}}` is :math:`\mathsf{global}`, then:
 
-   a. Let :math:`(\mathsf{global}~x)` be :math:`{\mathit{externidx}}_1`.
+   a. Let :math:`(\mathsf{global}~x)` be :math:`{\mathit{externidx}}`.
 
    #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{global}~{\mathit{moduleinst}}{.}\mathsf{globals}{}[x]) \}\end{array}`.
 
-#. If :math:`{\mathit{externidx}}_1` is :math:`\mathsf{table}`, then:
+#. If :math:`{\mathit{externidx}}` is :math:`\mathsf{table}`, then:
 
-   a. Let :math:`(\mathsf{table}~x)` be :math:`{\mathit{externidx}}_1`.
+   a. Let :math:`(\mathsf{table}~x)` be :math:`{\mathit{externidx}}`.
 
    #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{table}~{\mathit{moduleinst}}{.}\mathsf{tables}{}[x]) \}\end{array}`.
 
-#. If :math:`{\mathit{externidx}}_1` is :math:`\mathsf{mem}`, then:
+#. If :math:`{\mathit{externidx}}` is :math:`\mathsf{mem}`, then:
 
-   a. Let :math:`(\mathsf{mem}~x)` be :math:`{\mathit{externidx}}_1`.
+   a. Let :math:`(\mathsf{mem}~x)` be :math:`{\mathit{externidx}}`.
 
    #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{mem}~{\mathit{moduleinst}}{.}\mathsf{mems}{}[x]) \}\end{array}`.
 
-#. Assert: :math:`{\mathit{externidx}}_1` is :math:`\mathsf{tag}`.
+#. Assert: :math:`{\mathit{externidx}}` is :math:`\mathsf{tag}`.
 
-#. Let :math:`(\mathsf{tag}~x)` be :math:`{\mathit{externidx}}_1`.
+#. Let :math:`(\mathsf{tag}~x)` be :math:`{\mathit{externidx}}`.
 
 #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{tag}~{\mathit{moduleinst}}{.}\mathsf{tags}{}[x]) \}\end{array}`.
 
@@ -24369,55 +24369,55 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`{\mathit{moduleinst}}`.
 
 
-:math:`{{\mathrm{runelem}}}_{x}(\mathsf{elem}~{\mathit{rt}}~{e^{n}}~{\mathit{elemmode}}_1)`
-...........................................................................................
+:math:`{{\mathrm{runelem}}}_{x}(\mathsf{elem}~{\mathit{rt}}~{e^{n}}~{\mathit{elemmode}})`
+.........................................................................................
 
 
-1. If :math:`{\mathit{elemmode}}_1 = \mathsf{passive}`, then:
+1. If :math:`{\mathit{elemmode}} = \mathsf{passive}`, then:
 
    a. Return :math:`\epsilon`.
 
-#. If :math:`{\mathit{elemmode}}_1 = \mathsf{declare}`, then:
+#. If :math:`{\mathit{elemmode}} = \mathsf{declare}`, then:
 
    a. Return :math:`(\mathsf{elem{.}drop}~x)`.
 
-#. Assert: :math:`{\mathit{elemmode}}_1` is :math:`\mathsf{active}`.
+#. Assert: :math:`{\mathit{elemmode}}` is :math:`\mathsf{active}`.
 
-#. Let :math:`(\mathsf{active}~y~{{\mathit{instr}}^\ast})` be :math:`{\mathit{elemmode}}_1`.
+#. Let :math:`(\mathsf{active}~y~{{\mathit{instr}}^\ast})` be :math:`{\mathit{elemmode}}`.
 
 #. Return :math:`{{\mathit{instr}}^\ast}~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~0)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)~(\mathsf{table{.}init}~y~x)~(\mathsf{elem{.}drop}~x)`.
 
 
-:math:`{{\mathrm{rundata}}}_{x}(\mathsf{data}~{b^{n}}~{\mathit{datamode}}_1)`
-.............................................................................
+:math:`{{\mathrm{rundata}}}_{x}(\mathsf{data}~{b^{n}}~{\mathit{datamode}})`
+...........................................................................
 
 
-1. If :math:`{\mathit{datamode}}_1 = \mathsf{passive}`, then:
+1. If :math:`{\mathit{datamode}} = \mathsf{passive}`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Assert: :math:`{\mathit{datamode}}_1` is :math:`\mathsf{active}`.
+#. Assert: :math:`{\mathit{datamode}}` is :math:`\mathsf{active}`.
 
-#. Let :math:`(\mathsf{active}~y~{{\mathit{instr}}^\ast})` be :math:`{\mathit{datamode}}_1`.
+#. Let :math:`(\mathsf{active}~y~{{\mathit{instr}}^\ast})` be :math:`{\mathit{datamode}}`.
 
 #. Return :math:`{{\mathit{instr}}^\ast}~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~0)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)~(\mathsf{memory{.}init}~y~x)~(\mathsf{data{.}drop}~x)`.
 
 
-:math:`{{{\mathrm{evalglobal}}^\ast}}{(z, {{\mathit{globaltype}}_1^\ast}, {{\mathit{expr}}_1^\ast})}`
-.....................................................................................................
+:math:`{{{\mathrm{evalglobal}}^\ast}}{(z, {{\mathit{globaltype}}^\ast}, {{\mathit{expr}}^\ast})}`
+.................................................................................................
 
 
-1. If :math:`{{\mathit{globaltype}}_1^\ast} = \epsilon` and :math:`{{\mathit{expr}}_1^\ast} = \epsilon`, then:
+1. If :math:`{{\mathit{globaltype}}^\ast} = \epsilon` and :math:`{{\mathit{expr}}^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Assert: :math:`{|{{\mathit{expr}}_1^\ast}|} \geq 1`.
+#. Assert: :math:`{|{{\mathit{expr}}^\ast}|} \geq 1`.
 
-#. Let :math:`{\mathit{expr}}~{{\mathit{expr}'}^\ast}` be :math:`{{\mathit{expr}}_1^\ast}`.
+#. Let :math:`{\mathit{expr}}~{{\mathit{expr}'}^\ast}` be :math:`{{\mathit{expr}}^\ast}`.
 
-#. Assert: :math:`{|{{\mathit{globaltype}}_1^\ast}|} \geq 1`.
+#. Assert: :math:`{|{{\mathit{globaltype}}^\ast}|} \geq 1`.
 
-#. Let :math:`{\mathit{gt}}~{{\mathit{gt}'}^\ast}` be :math:`{{\mathit{globaltype}}_1^\ast}`.
+#. Let :math:`{\mathit{gt}}~{{\mathit{gt}'}^\ast}` be :math:`{{\mathit{globaltype}}^\ast}`.
 
 #. Let :math:`(s, f)` be :math:`z`.
 
@@ -24560,23 +24560,23 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`{{\mathit{val}'}^{k}}`.
 
 
-:math:`{{{\mathrm{allocX}}^\ast}}{(s, {X_1^\ast}, {Y_1^\ast})}`
-...............................................................
+:math:`{{{\mathrm{allocX}}^\ast}}{(s, {X^\ast}, {Y^\ast})}`
+...........................................................
 
 
-1. If :math:`{X_1^\ast} = \epsilon`, then:
+1. If :math:`{X^\ast} = \epsilon`, then:
 
-   a. Assert: Due to validation, :math:`{Y_1^\ast} = \epsilon`.
+   a. Assert: Due to validation, :math:`{Y^\ast} = \epsilon`.
 
    #. Return :math:`\epsilon`.
 
 #. Else:
 
-   a. Let :math:`X~{{X'}^\ast}` be :math:`{X_1^\ast}`.
+   a. Let :math:`X~{{X'}^\ast}` be :math:`{X^\ast}`.
 
-   #. Assert: Due to validation, :math:`{|{Y_1^\ast}|} \geq 1`.
+   #. Assert: Due to validation, :math:`{|{Y^\ast}|} \geq 1`.
 
-   #. Let :math:`Y~{{Y'}^\ast}` be :math:`{Y_1^\ast}`.
+   #. Let :math:`Y~{{Y'}^\ast}` be :math:`{Y^\ast}`.
 
    #. Let :math:`a` be :math:`{\mathrm{allocX}}(X, Y, s, X, Y)`.
 
@@ -24620,15 +24620,15 @@ Vectype_ok
 - the vector type vectype is always valid.
 
 Heaptype_ok
-- the heap type heaptype_1 is valid if:
+- the heap type heaptype is valid if:
   - Either:
-    - heaptype_1 is absheaptype.
+    - heaptype is absheaptype.
   - Or:
-    - heaptype_1 is (_IDX typeidx).
+    - heaptype is (_IDX typeidx).
     - the defined type C.TYPES[typeidx] exists.
     - C.TYPES[typeidx] is dt.
   - Or:
-    - heaptype_1 is (REC i).
+    - heaptype is (REC i).
     - the sub type C.RECS[i] exists.
     - C.RECS[i] is st.
 
@@ -24650,18 +24650,18 @@ Reftype_ok
   - the heap type heaptype is valid.
 
 Valtype_ok
-- the value type valtype_1 is valid if:
+- the value type valtype is valid if:
   - Either:
-    - valtype_1 is numtype.
+    - valtype is numtype.
     - the number type numtype is valid.
   - Or:
-    - valtype_1 is vectype.
+    - valtype is vectype.
     - the vector type vectype is valid.
   - Or:
-    - valtype_1 is reftype.
+    - valtype is reftype.
     - the reference type reftype is valid.
   - Or:
-    - valtype_1 is BOT.
+    - valtype is BOT.
 
 Valtype_ok/num
 - the value type numtype is valid if:
@@ -24697,12 +24697,12 @@ Packtype_ok
 - the packed type packtype is always valid.
 
 Storagetype_ok
-- the storage type storagetype_1 is valid if:
+- the storage type storagetype is valid if:
   - Either:
-    - storagetype_1 is valtype.
+    - storagetype is valtype.
     - the value type valtype is valid.
   - Or:
-    - storagetype_1 is packtype.
+    - storagetype is packtype.
     - the packed type packtype is valid.
 
 Storagetype_ok/val
@@ -24723,16 +24723,16 @@ Functype_ok
   - the result type t_2* is valid.
 
 Comptype_ok
-- the composite type comptype_1 is valid if:
+- the composite type comptype is valid if:
   - Either:
-    - comptype_1 is (STRUCT fieldtype*).
+    - comptype is (STRUCT fieldtype*).
     - For all fieldtype in fieldtype*:
       - the field type fieldtype is valid.
   - Or:
-    - comptype_1 is (ARRAY fieldtype).
+    - comptype is (ARRAY fieldtype).
     - fieldtype is valid.
   - Or:
-    - comptype_1 is (FUNC functype).
+    - comptype is (FUNC functype).
     - the function type functype is valid.
 
 Comptype_ok/struct
@@ -24774,75 +24774,75 @@ Deftype_sub/super
   - the type use typeuse*[i] matches deftype_2.
 
 Heaptype_sub
-- the heap type heaptype_1 matches the heap type heaptype_2 if:
+- the heap type heaptype matches the heap type heaptype' if:
   - Either:
-    - heaptype_1 is heaptype.
-    - heaptype_2 is heaptype.
+    - heaptype is heaptype.
+    - heaptype' is heaptype.
   - Or:
-    - heaptype_1 is heaptype_1.
-    - heaptype_2 is heaptype_2.
-    - the heap type heaptype' is valid.
-    - heaptype_1 matches heaptype'.
-    - heaptype' matches heaptype_2.
+    - heaptype is heaptype_1.
+    - heaptype' is heaptype_2.
+    - heaptype' is valid.
+    - the heap type heaptype_1 matches heaptype'.
+    - heaptype' matches the heap type heaptype_2.
   - Or:
-    - heaptype_1 is EQ.
-    - heaptype_2 is ANY.
+    - heaptype is EQ.
+    - heaptype' is ANY.
   - Or:
-    - heaptype_1 is I31.
-    - heaptype_2 is EQ.
+    - heaptype is I31.
+    - heaptype' is EQ.
   - Or:
-    - heaptype_1 is STRUCT.
-    - heaptype_2 is EQ.
+    - heaptype is STRUCT.
+    - heaptype' is EQ.
   - Or:
-    - heaptype_1 is ARRAY.
-    - heaptype_2 is EQ.
+    - heaptype is ARRAY.
+    - heaptype' is EQ.
   - Or:
-    - heaptype_1 is deftype.
-    - heaptype_2 is STRUCT.
+    - heaptype is deftype.
+    - heaptype' is STRUCT.
     - The :ref:`expansion <aux-expand-deftype>` of the defined type deftype is the composite type (STRUCT fieldtype*).
   - Or:
-    - heaptype_1 is deftype.
-    - heaptype_2 is ARRAY.
+    - heaptype is deftype.
+    - heaptype' is ARRAY.
     - The :ref:`expansion <aux-expand-deftype>` of deftype is the composite type (ARRAY fieldtype).
   - Or:
-    - heaptype_1 is deftype.
-    - heaptype_2 is FUNC.
+    - heaptype is deftype.
+    - heaptype' is FUNC.
     - The :ref:`expansion <aux-expand-deftype>` of deftype is the composite type (FUNC functype).
   - Or:
-    - heaptype_1 is deftype_1.
-    - heaptype_2 is deftype_2.
+    - heaptype is deftype_1.
+    - heaptype' is deftype_2.
     - the defined type deftype_1 matches the defined type deftype_2.
   - Or:
-    - heaptype_1 is (_IDX typeidx).
-    - heaptype_2 is heaptype.
+    - heaptype is (_IDX typeidx).
+    - heaptype' is heaptype.
     - the defined type C.TYPES[typeidx] exists.
-    - C.TYPES[typeidx] matches the heap type heaptype.
+    - C.TYPES[typeidx] matches heaptype.
   - Or:
-    - heaptype_1 is heaptype.
-    - heaptype_2 is (_IDX typeidx).
+    - heaptype is heaptype.
+    - heaptype' is (_IDX typeidx).
     - C.TYPES[typeidx] exists.
     - heaptype matches C.TYPES[typeidx].
   - Or:
-    - heaptype_1 is (REC i).
-    - heaptype_2 is typeuse*[j].
+    - heaptype is (REC i).
+    - heaptype' is typeuse*[j].
     - |typeuse*| is greater than j.
     - the sub type C.RECS[i] exists.
     - C.RECS[i] is (SUB fin typeuse* ct).
   - Or:
-    - heaptype_1 is NONE.
-    - heaptype_2 is heaptype.
+    - heaptype is NONE.
+    - heaptype' is heaptype.
     - heaptype matches the heap type ANY.
   - Or:
-    - heaptype_1 is NOFUNC.
-    - heaptype_2 is heaptype.
+    - heaptype is NOFUNC.
+    - heaptype' is heaptype.
     - heaptype matches the heap type FUNC.
   - Or:
-    - heaptype_1 is NOEXTERN.
-    - heaptype_2 is heaptype.
+    - heaptype is NOEXTERN.
+    - heaptype' is heaptype.
     - heaptype matches the heap type EXTERN.
   - Or:
-    - heaptype_1 is BOT.
-    - heaptype_2 is heaptype.
+    - heaptype is BOT.
+    - heaptype' is heaptype.
 
 Heaptype_sub/refl
 - heaptype matches only itself.
@@ -24913,14 +24913,14 @@ Heaptype_sub/bot
 - the heap type BOT matches heaptype.
 
 Reftype_sub
-- the reference type (REF nul_1 ht_1) matches the reference type (REF nul_2 ht_2) if:
+- the reference type (REF NULL_opt ht_1) matches the reference type (REF NULL_opt' ht_2) if:
   - the heap type ht_1 matches the heap type ht_2.
   - Either:
-    - nul_1 is ?().
-    - nul_2 is ?().
+    - NULL_opt is ?().
+    - NULL_opt' is ?().
   - Or:
-    - nul_1 is NULL?.
-    - nul_2 is ?(NULL).
+    - NULL_opt is NULL?.
+    - NULL_opt' is ?(NULL).
 
 Reftype_sub/nonnull
 - the reference type (REF ?() ht_1) matches the reference type (REF ?() ht_2) if:
@@ -24934,22 +24934,22 @@ Vectype_sub
 - the vector type vectype matches only itself.
 
 Valtype_sub
-- the value type valtype_1 matches the value type valtype_2 if:
+- the value type valtype matches the value type valtype' if:
   - Either:
-    - valtype_1 is numtype_1.
-    - valtype_2 is numtype_2.
+    - valtype is numtype_1.
+    - valtype' is numtype_2.
     - the number type numtype_1 matches the number type numtype_2.
   - Or:
-    - valtype_1 is vectype_1.
-    - valtype_2 is vectype_2.
+    - valtype is vectype_1.
+    - valtype' is vectype_2.
     - the vector type vectype_1 matches the vector type vectype_2.
   - Or:
-    - valtype_1 is reftype_1.
-    - valtype_2 is reftype_2.
+    - valtype is reftype_1.
+    - valtype' is reftype_2.
     - the reference type reftype_1 matches the reference type reftype_2.
   - Or:
-    - valtype_1 is BOT.
-    - valtype_2 is valtype.
+    - valtype is BOT.
+    - valtype' is valtype.
 
 Valtype_sub/num
 - the value type numtype_1 matches the value type numtype_2 if:
@@ -24967,14 +24967,14 @@ Valtype_sub/bot
 - the value type BOT matches the value type valtype.
 
 Storagetype_sub
-- the storage type storagetype_1 matches the storage type storagetype_2 if:
+- the storage type storagetype matches the storage type storagetype' if:
   - Either:
-    - storagetype_1 is valtype_1.
-    - storagetype_2 is valtype_2.
+    - storagetype is valtype_1.
+    - storagetype' is valtype_2.
     - the value type valtype_1 matches the value type valtype_2.
   - Or:
-    - storagetype_1 is packtype_1.
-    - storagetype_2 is packtype_2.
+    - storagetype is packtype_1.
+    - storagetype' is packtype_2.
     - the packed type packtype_1 matches the packed type packtype_2.
 
 Storagetype_sub/val
@@ -24986,14 +24986,14 @@ Storagetype_sub/pack
   - packtype_1 matches packtype_2.
 
 Fieldtype_sub
-- the field type (mut_1 zt_1) matches the field type (mut_2 zt_2) if:
+- the field type (MUT_opt zt_1) matches the field type (MUT_opt' zt_2) if:
   - the storage type zt_1 matches the storage type zt_2.
   - Either:
-    - mut_1 is ?().
-    - mut_2 is ?().
+    - MUT_opt is ?().
+    - MUT_opt' is ?().
   - Or:
-    - mut_1 is ?(MUT).
-    - mut_2 is ?(MUT).
+    - MUT_opt is ?(MUT).
+    - MUT_opt' is ?(MUT).
     - zt_2 matches zt_1.
 
 Fieldtype_sub/const
@@ -25017,20 +25017,20 @@ Functype_sub
   - the result type t_12* matches the result type t_22*.
 
 Comptype_sub
-- the composite type comptype_1 matches the composite type comptype_2 if:
+- the composite type comptype matches the composite type comptype' if:
   - Either:
-    - comptype_1 is (STRUCT yt_1* :: [yt'_1]).
-    - comptype_2 is (STRUCT yt_2*).
+    - comptype is (STRUCT yt_1* :: [yt'_1]).
+    - comptype' is (STRUCT yt_2*).
     - |yt_1*| is |yt_2*|.
     - For all yt_1 in yt_1*, and corresponding yt_2 in yt_2*:
       - the field type yt_1 matches the field type yt_2.
   - Or:
-    - comptype_1 is (ARRAY yt_1).
-    - comptype_2 is (ARRAY yt_2).
+    - comptype is (ARRAY yt_1).
+    - comptype' is (ARRAY yt_2).
     - yt_1 matches yt_2.
   - Or:
-    - comptype_1 is (FUNC ft_1).
-    - comptype_2 is (FUNC ft_2).
+    - comptype is (FUNC ft_1).
+    - comptype' is (FUNC ft_2).
     - the function type ft_1 matches the function type ft_2.
 
 Comptype_sub/struct
@@ -25076,11 +25076,11 @@ Subtype_ok2
     - comptype matches the composite type comptype'.
 
 Rectype_ok2
-- the recursive type (REC subtype_1*) is valid with (OK x i) if:
+- the recursive type (REC subtype'*) is valid with (OK x i) if:
   - Either:
-    - the sub type sequence subtype_1* is [].
+    - the sub type sequence subtype'* is [].
   - Or:
-    - subtype_1* is [subtype_1] :: subtype*.
+    - subtype'* is [subtype_1] :: subtype*.
     - the sub type subtype_1 is valid with (OK x i).
     - the recursive type (REC subtype*) is valid with (OK (x + 1) (i + 1)).
 
@@ -25093,11 +25093,11 @@ Rectype_ok2/cons
   - the recursive type (REC subtype*) is valid with (OK (x + 1) (i + 1)).
 
 Rectype_ok
-- the recursive type (REC subtype_1*) is valid for (OK x) if:
+- the recursive type (REC subtype'*) is valid for (OK x) if:
   - Either:
-    - the sub type sequence subtype_1* is [].
+    - the sub type sequence subtype'* is [].
   - Or:
-    - subtype_1* is [subtype_1] :: subtype*.
+    - subtype'* is [subtype_1] :: subtype*.
     - the sub type subtype_1 is valid with (OK x).
     - the recursive type (REC subtype*) is valid for (OK (x + 1)).
 
@@ -25139,22 +25139,22 @@ Tagtype_ok
   - The :ref:`expansion <aux-expand-deftype>` of deftype is the composite type (FUNC functype).
 
 Externtype_ok
-- the external type externtype_1 is valid if:
+- the external type externtype is valid if:
   - Either:
-    - externtype_1 is (FUNC deftype).
+    - externtype is (FUNC deftype).
     - the defined type deftype is valid.
     - The :ref:`expansion <aux-expand-deftype>` of deftype is the composite type (FUNC functype).
   - Or:
-    - externtype_1 is (GLOBAL globaltype).
+    - externtype is (GLOBAL globaltype).
     - the global type globaltype is valid.
   - Or:
-    - externtype_1 is (TABLE tabletype).
+    - externtype is (TABLE tabletype).
     - the table type tabletype is valid.
   - Or:
-    - externtype_1 is (MEM memtype).
+    - externtype is (MEM memtype).
     - the memory type memtype is valid.
   - Or:
-    - externtype_1 is (TAG tagtype).
+    - externtype is (TAG tagtype).
     - the tag type tagtype is valid.
 
 Externtype_ok/func
@@ -25195,14 +25195,14 @@ Limits_sub
   - m_1 is less than or equal to m_2.
 
 Globaltype_sub
-- the global type (mut_1 valtype_1) matches the global type (mut_2 valtype_2) if:
+- the global type (MUT_opt valtype_1) matches the global type (MUT_opt' valtype_2) if:
   - the value type valtype_1 matches the value type valtype_2.
   - Either:
-    - mut_1 is ?().
-    - mut_2 is ?().
+    - MUT_opt is ?().
+    - MUT_opt' is ?().
   - Or:
-    - mut_1 is ?(MUT).
-    - mut_2 is ?(MUT).
+    - MUT_opt is ?(MUT).
+    - MUT_opt' is ?(MUT).
     - valtype_2 matches valtype_1.
 
 Globaltype_sub/const
@@ -25230,26 +25230,26 @@ Tagtype_sub
   - deftype_2 matches deftype_1.
 
 Externtype_sub
-- the external type externtype_1 matches the external type externtype_2 if:
+- the external type externtype matches the external type externtype' if:
   - Either:
-    - externtype_1 is (FUNC deftype_1).
-    - externtype_2 is (FUNC deftype_2).
+    - externtype is (FUNC deftype_1).
+    - externtype' is (FUNC deftype_2).
     - the defined type deftype_1 matches the defined type deftype_2.
   - Or:
-    - externtype_1 is (GLOBAL globaltype_1).
-    - externtype_2 is (GLOBAL globaltype_2).
+    - externtype is (GLOBAL globaltype_1).
+    - externtype' is (GLOBAL globaltype_2).
     - the global type globaltype_1 matches the global type globaltype_2.
   - Or:
-    - externtype_1 is (TABLE tabletype_1).
-    - externtype_2 is (TABLE tabletype_2).
+    - externtype is (TABLE tabletype_1).
+    - externtype' is (TABLE tabletype_2).
     - the table type tabletype_1 matches the table type tabletype_2.
   - Or:
-    - externtype_1 is (MEM memtype_1).
-    - externtype_2 is (MEM memtype_2).
+    - externtype is (MEM memtype_1).
+    - externtype' is (MEM memtype_2).
     - the memory type memtype_1 matches the memory type memtype_2.
   - Or:
-    - externtype_1 is (TAG tagtype_1).
-    - externtype_2 is (TAG tagtype_2).
+    - externtype is (TAG tagtype_1).
+    - externtype' is (TAG tagtype_2).
     - the tag type tagtype_1 matches the tag type tagtype_2.
 
 Externtype_sub/func
@@ -25273,17 +25273,17 @@ Externtype_sub/tag
   - the tag type tagtype_1 matches the tag type tagtype_2.
 
 Blocktype_ok
-- the block type blocktype_1 is valid as the instruction type valtype_1* -> valtype_2* if:
+- the block type blocktype is valid as the instruction type valtype'* -> valtype''* if:
   - Either:
-    - blocktype_1 is (_RESULT valtype?).
-    - the value type sequence valtype_1* is [].
-    - the value type sequence valtype_2* is valtype?.
+    - blocktype is (_RESULT valtype?).
+    - the value type sequence valtype'* is [].
+    - the value type sequence valtype''* is valtype?.
     - If valtype is defined, then:
       - the value type valtype is valid.
   - Or:
-    - blocktype_1 is (_IDX typeidx).
-    - valtype_1* is t_1*.
-    - valtype_2* is t_2*.
+    - blocktype is (_IDX typeidx).
+    - valtype'* is t_1*.
+    - valtype''* is t_2*.
     - the defined type C.TYPES[typeidx] exists.
     - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[typeidx] is the composite type (FUNC t_1* -> t_2*).
 
@@ -25298,23 +25298,23 @@ Blocktype_ok/typeidx
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[typeidx] is the composite type (FUNC t_1* -> t_2*).
 
 Catch_ok
-- the catch clause catch_1 is valid if:
+- the catch clause catch is valid if:
   - the result type C.LABELS[l] exists.
   - Either:
-    - catch_1 is (CATCH x l).
+    - catch is (CATCH x l).
     - the tag type C.TAGS[x] exists.
     - The :ref:`expansion <aux-expand-deftype>` of C.TAGS[x] is the composite type (FUNC t* -> []).
     - the result type t* matches C.LABELS[l].
   - Or:
-    - catch_1 is (CATCH_REF x l).
+    - catch is (CATCH_REF x l).
     - C.TAGS[x] exists.
     - The :ref:`expansion <aux-expand-deftype>` of C.TAGS[x] is (FUNC t* -> []).
     - the result type t* :: [(REF ?() EXN)] matches C.LABELS[l].
   - Or:
-    - catch_1 is (CATCH_ALL l).
+    - catch is (CATCH_ALL l).
     - the result type [] matches C.LABELS[l].
   - Or:
-    - catch_1 is (CATCH_ALL_REF l).
+    - catch is (CATCH_ALL_REF l).
     - the result type [(REF ?() EXN)] matches C.LABELS[l].
 
 Catch_ok/catch
@@ -25357,12 +25357,12 @@ Instr_ok/drop
   - the value type t is valid.
 
 Instr_ok/select
-- the instruction (SELECT valtype_1?) is valid with the instruction type [t, t, I32] -> [t] if:
+- the instruction (SELECT valtype?) is valid with the instruction type [t, t, I32] -> [t] if:
   - the value type t is valid.
   - Either:
-    - the value type sequence valtype_1? is ?([t]).
+    - the value type sequence valtype? is ?([t]).
   - Or:
-    - valtype_1? is ?().
+    - valtype? is ?().
     - t matches the value type t'.
     - t' is numtype or t' is vectype.
 
@@ -25858,50 +25858,50 @@ Instr_ok/data.drop
   - C.DATAS[x] is OK.
 
 Instr_ok/load
-- the instruction (LOAD numtype_1 loadop__1? x memarg) is valid with the instruction type [at] -> [valtype_1] if:
+- the instruction (LOAD numtype loadop_? x memarg) is valid with the instruction type [at] -> [valtype] if:
   - the memory type C.MEMS[x] exists.
   - C.MEMS[x] is at lim PAGE.
   - Either:
-    - the number type numtype_1 is nt.
-    - loadop__1? is ?().
-    - the value type valtype_1 is nt.
+    - the number type numtype is nt.
+    - loadop_? is ?().
+    - the value type valtype is nt.
     - (2 ^ memarg.ALIGN) is less than or equal to ($size(nt) / 8).
   - Or:
-    - numtype_1 is Inn.
-    - loadop__1? is ?(M _ sx).
-    - valtype_1 is Inn.
+    - numtype is Inn.
+    - loadop_? is ?(M _ sx).
+    - valtype is Inn.
     - (2 ^ memarg.ALIGN) is less than or equal to (M / 8).
 
 Instr_ok/store
-- the instruction (STORE numtype_1 storeop__1? x memarg) is valid with the instruction type [at, valtype_1] -> [] if:
+- the instruction (STORE numtype storeop_? x memarg) is valid with the instruction type [at, valtype] -> [] if:
   - the memory type C.MEMS[x] exists.
   - C.MEMS[x] is at lim PAGE.
   - Either:
-    - the number type numtype_1 is nt.
-    - storeop__1? is ?().
-    - the value type valtype_1 is nt.
+    - the number type numtype is nt.
+    - storeop_? is ?().
+    - the value type valtype is nt.
     - (2 ^ memarg.ALIGN) is less than or equal to ($size(nt) / 8).
   - Or:
-    - numtype_1 is Inn.
-    - storeop__1? is ?(M).
-    - valtype_1 is Inn.
+    - numtype is Inn.
+    - storeop_? is ?(M).
+    - valtype is Inn.
     - (2 ^ memarg.ALIGN) is less than or equal to (M / 8).
 
 Instr_ok/vload
-- the instruction (VLOAD V128 vloadop__1? x memarg) is valid with the instruction type [at] -> [V128] if:
+- the instruction (VLOAD V128 vloadop_? x memarg) is valid with the instruction type [at] -> [V128] if:
   - the memory type C.MEMS[x] exists.
   - C.MEMS[x] is at lim PAGE.
   - Either:
-    - vloadop__1? is ?().
+    - vloadop_? is ?().
     - (2 ^ memarg.ALIGN) is less than or equal to ($vsize(V128) / 8).
   - Or:
-    - vloadop__1? is ?((SHAPE M X N _ sx)).
+    - vloadop_? is ?((SHAPE M X N _ sx)).
     - (2 ^ memarg.ALIGN) is less than or equal to ((M / 8) * N).
   - Or:
-    - vloadop__1? is ?((SPLAT N)).
+    - vloadop_? is ?((SPLAT N)).
     - (2 ^ memarg.ALIGN) is less than or equal to (N / 8).
   - Or:
-    - vloadop__1? is ?((ZERO N)).
+    - vloadop_? is ?((ZERO N)).
     - (2 ^ memarg.ALIGN) is less than or equal to (N / 8).
 
 Instr_ok/vload_lane
@@ -25983,13 +25983,13 @@ Instr_ok/vload-zero
   - (2 ^ memarg.ALIGN) is less than or equal to (N / 8).
 
 Instrs_ok
-- the instruction sequence instr_1* is valid with the instruction type instrtype_1 if:
+- the instruction sequence instr'* is valid with the instruction type instrtype if:
   - Either:
-    - instr_1* is [].
-    - instrtype_1 is [] -> [].
+    - instr'* is [].
+    - instrtype is [] -> [].
   - Or:
-    - instr_1* is [instr_1] :: instr_2*.
-    - instrtype_1 is t_1* ->_ x_1* :: x_2* t_3*.
+    - instr'* is [instr_1] :: instr_2*.
+    - instrtype is t_1* ->_ x_1* :: x_2* t_3*.
     - the instruction instr_1 is valid with the instruction type t_1* ->_ x_1* t_2*.
     - |init*| is |t*|.
     - |init*| is |x_1*|.
@@ -25999,14 +25999,14 @@ Instrs_ok
       - C.LOCALS[x_1] is (init t).
     - Under the context $with_locals(C, x_1*, (SET t)*), the instruction sequence instr_2* is valid with the instruction type t_2* ->_ x_2* t_3*.
   - Or:
-    - instr_1* is instr*.
-    - instrtype_1 is it'.
+    - instr'* is instr*.
+    - instrtype is it'.
     - the instruction sequence instr* is valid with the instruction type it.
     - it matches the instruction type it'.
     - it' is valid.
   - Or:
-    - instr_1* is instr*.
-    - instrtype_1 is t* :: t_1* ->_ x* t* :: t_2*.
+    - instr'* is instr*.
+    - instrtype is t* :: t_1* ->_ x* t* :: t_2*.
     - instr* is valid with the instruction type t_1* ->_ x* t_2*.
     - the result type t* is valid.
 
@@ -26044,37 +26044,37 @@ Nondefaultable
   - the value $default_(t) is ?().
 
 Instr_const
-- the value val_1 is constant if:
+- the value val is constant if:
   - Either:
-    - val_1 is (nt.CONST c_nt).
+    - val is (nt.CONST c_nt).
   - Or:
-    - val_1 is (vt.CONST c_vt).
+    - val is (vt.CONST c_vt).
   - Or:
-    - val_1 is (REF.NULL ht).
+    - val is (REF.NULL ht).
   - Or:
-    - val_1 is REF.I31.
+    - val is REF.I31.
   - Or:
-    - val_1 is (REF.FUNC x).
+    - val is (REF.FUNC x).
   - Or:
-    - val_1 is (STRUCT.NEW x).
+    - val is (STRUCT.NEW x).
   - Or:
-    - val_1 is (STRUCT.NEW_DEFAULT x).
+    - val is (STRUCT.NEW_DEFAULT x).
   - Or:
-    - val_1 is (ARRAY.NEW x).
+    - val is (ARRAY.NEW x).
   - Or:
-    - val_1 is (ARRAY.NEW_DEFAULT x).
+    - val is (ARRAY.NEW_DEFAULT x).
   - Or:
-    - val_1 is (ARRAY.NEW_FIXED x n).
+    - val is (ARRAY.NEW_FIXED x n).
   - Or:
-    - val_1 is ANY.CONVERT_EXTERN.
+    - val is ANY.CONVERT_EXTERN.
   - Or:
-    - val_1 is EXTERN.CONVERT_ANY.
+    - val is EXTERN.CONVERT_ANY.
   - Or:
-    - val_1 is (GLOBAL.GET x).
+    - val is (GLOBAL.GET x).
     - the global type C.GLOBALS[x] exists.
     - C.GLOBALS[x] is (?() t).
   - Or:
-    - val_1 is (BINOP Inn binop).
+    - val is (BINOP Inn binop).
     - Inn is contained in [I32, I64].
     - binop is contained in [ADD, SUB, MUL].
 
@@ -26137,12 +26137,12 @@ Type_ok
   - Under the context C', the recursive type rectype is valid for (OK x).
 
 Local_ok
-- the local (LOCAL t) is valid with the local type (init_1 t) if:
+- the local (LOCAL t) is valid with the local type (init t) if:
   - Either:
-    - the initialization status init_1 is SET.
+    - the initialization status init is SET.
     - A :ref:`default value <aux-default>` for the value type t is defined.
   - Or:
-    - init_1 is UNSET.
+    - init is UNSET.
     - A :ref:`default value <aux-default>` for t is not defined.
 
 Local_ok/set
@@ -26186,18 +26186,18 @@ Tag_ok
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (FUNC functype).
 
 Elemmode_ok
-- the element mode elemmode_1 is valid with the element type rt if:
+- the element mode elemmode is valid with the element type rt if:
   - Either:
-    - elemmode_1 is (ACTIVE x expr).
+    - elemmode is (ACTIVE x expr).
     - the table type C.TABLES[x] exists.
     - C.TABLES[x] is (at lim rt').
     - rt matches the reference type rt'.
     - the expression expr is valid with the value type I32.
     - expr is constant.
   - Or:
-    - elemmode_1 is PASSIVE.
+    - elemmode is PASSIVE.
   - Or:
-    - elemmode_1 is DECLARE.
+    - elemmode is DECLARE.
 
 Elemmode_ok/active
 - the element mode (ACTIVE x expr) is valid with the element type rt if:
@@ -26222,15 +26222,15 @@ Elem_ok
   - the element mode elemmode is valid with elemtype.
 
 Datamode_ok
-- the data mode datamode_1 is valid with the data type OK if:
+- the data mode datamode is valid with the data type OK if:
   - Either:
-    - datamode_1 is (ACTIVE x expr).
+    - datamode is (ACTIVE x expr).
     - the memory type C.MEMS[x] exists.
     - C.MEMS[x] is mt.
     - the expression expr is valid with the value type I32.
     - expr is constant.
   - Or:
-    - datamode_1 is PASSIVE.
+    - datamode is PASSIVE.
 
 Datamode_ok/active
 - the data mode (ACTIVE x expr) is valid with the data type OK if:
@@ -26256,30 +26256,30 @@ Import_ok
   - xt is valid.
 
 Externidx_ok
-- the external index externidx_1 is valid with the external type externtype_1 if:
+- the external index externidx is valid with the external type externtype if:
   - Either:
-    - externidx_1 is (FUNC x).
-    - externtype_1 is (FUNC dt).
+    - externidx is (FUNC x).
+    - externtype is (FUNC dt).
     - the defined type C.FUNCS[x] exists.
     - C.FUNCS[x] is dt.
   - Or:
-    - externidx_1 is (GLOBAL x).
-    - externtype_1 is (GLOBAL gt).
+    - externidx is (GLOBAL x).
+    - externtype is (GLOBAL gt).
     - the global type C.GLOBALS[x] exists.
     - C.GLOBALS[x] is gt.
   - Or:
-    - externidx_1 is (TABLE x).
-    - externtype_1 is (TABLE tt).
+    - externidx is (TABLE x).
+    - externtype is (TABLE tt).
     - the table type C.TABLES[x] exists.
     - C.TABLES[x] is tt.
   - Or:
-    - externidx_1 is (MEM x).
-    - externtype_1 is (MEM mt).
+    - externidx is (MEM x).
+    - externtype is (MEM mt).
     - the memory type C.MEMS[x] exists.
     - C.MEMS[x] is mt.
   - Or:
-    - externidx_1 is (TAG x).
-    - externtype_1 is (TAG jt).
+    - externidx is (TAG x).
+    - externtype is (TAG jt).
     - the tag type C.TAGS[x] exists.
     - C.TAGS[x] is jt.
 
@@ -26313,13 +26313,13 @@ Export_ok
   - the external index externidx is valid with xt.
 
 Globals_ok
-- the global sequence global_1* is valid with the global type sequence globaltype_1* if:
+- the global sequence global'* is valid with the global type sequence globaltype* if:
   - Either:
-    - global_1* is [].
-    - globaltype_1* is [].
+    - global'* is [].
+    - globaltype* is [].
   - Or:
-    - global_1* is [global_1] :: global*.
-    - globaltype_1* is [gt_1] :: gt*.
+    - global'* is [global_1] :: global*.
+    - globaltype* is [gt_1] :: gt*.
     - the global global_1 is valid with the global type gt_1.
     - the context C' is the context C with .GLOBALS appended by [gt_1].
     - Under the context C', the global sequence global* is valid with the global type sequence gt*.
@@ -26334,13 +26334,13 @@ Globals_ok/cons
   - Under the context C', the global sequence global* is valid with the global type sequence gt*.
 
 Types_ok
-- the type definition sequence type_1* is valid with the defined type sequence deftype_1* if:
+- the type definition sequence type'* is valid with the defined type sequence deftype* if:
   - Either:
-    - type_1* is [].
-    - deftype_1* is [].
+    - type'* is [].
+    - deftype* is [].
   - Or:
-    - type_1* is [type_1] :: type*.
-    - deftype_1* is dt_1* :: dt*.
+    - type'* is [type_1] :: type*.
+    - deftype* is dt_1* :: dt*.
     - the type definition type_1 is valid with the defined type sequence dt_1*.
     - the context C' is the context C with .TYPES appended by dt_1*.
     - Under the context C', the type definition sequence type* is valid with the defined type sequence dt*.
@@ -26403,42 +26403,42 @@ Vec_type
 - the vector value (vt.CONST c) is valid with the vector type vt.
 
 Ref_type
-- the reference value ref_1 is valid with the reference type reftype_1 if:
+- the reference value ref is valid with the reference type reftype if:
   - Either:
-    - ref_1 is (REF.NULL ht).
-    - reftype_1 is (REF ?(NULL) ht').
+    - ref is (REF.NULL ht).
+    - reftype is (REF ?(NULL) ht').
     - the heap type ht' matches the heap type ht.
   - Or:
-    - ref_1 is (REF.I31_NUM i).
-    - reftype_1 is (REF ?() I31).
+    - ref is (REF.I31_NUM i).
+    - reftype is (REF ?() I31).
   - Or:
-    - ref_1 is (REF.STRUCT_ADDR a).
-    - reftype_1 is (REF ?() dt).
+    - ref is (REF.STRUCT_ADDR a).
+    - reftype is (REF ?() dt).
     - the structure instance s.STRUCTS[a] exists.
     - the defined type s.STRUCTS[a].TYPE is dt.
   - Or:
-    - ref_1 is (REF.ARRAY_ADDR a).
-    - reftype_1 is (REF ?() dt).
+    - ref is (REF.ARRAY_ADDR a).
+    - reftype is (REF ?() dt).
     - the array instance s.ARRAYS[a] exists.
     - the defined type s.ARRAYS[a].TYPE is dt.
   - Or:
-    - ref_1 is (REF.FUNC_ADDR a).
-    - reftype_1 is (REF ?() dt).
+    - ref is (REF.FUNC_ADDR a).
+    - reftype is (REF ?() dt).
     - the function instance s.FUNCS[a] exists.
     - the defined type s.FUNCS[a].TYPE is dt.
   - Or:
-    - ref_1 is (REF.EXN_ADDR a).
-    - reftype_1 is (REF ?() EXN).
+    - ref is (REF.EXN_ADDR a).
+    - reftype is (REF ?() EXN).
   - Or:
-    - ref_1 is (REF.HOST_ADDR a).
-    - reftype_1 is (REF ?() ANY).
+    - ref is (REF.HOST_ADDR a).
+    - reftype is (REF ?() ANY).
   - Or:
-    - ref_1 is (REF.EXTERN addrref).
-    - reftype_1 is (REF ?() EXTERN).
+    - ref is (REF.EXTERN addrref).
+    - reftype is (REF ?() EXTERN).
   - Or:
-    - ref_1 is ref.
-    - reftype_1 is rt.
-    - Under the context s, the reference value ref is valid with the reference type rt'.
+    - ref is ref.
+    - reftype is rt.
+    - Under the context s, ref is valid with the reference type rt'.
     - rt' matches the reference type rt.
 
 Ref_type/null
@@ -26478,18 +26478,18 @@ Ref_type/sub
   - rt' matches rt.
 
 Val_type
-- the value val_1 is valid with the value type valtype_1 if:
+- the value val is valid with the value type valtype if:
   - Either:
-    - val_1 is num.
-    - valtype_1 is nt.
+    - val is num.
+    - valtype is nt.
     - Under the context s, the number value num is valid with the number type nt.
   - Or:
-    - val_1 is vec.
-    - valtype_1 is vt.
+    - val is vec.
+    - valtype is vt.
     - Under the context s, the vector value vec is valid with the vector type vt.
   - Or:
-    - val_1 is ref.
-    - valtype_1 is rt.
+    - val is ref.
+    - valtype is rt.
     - Under the context s, the reference value ref is valid with the reference type rt.
 
 Val_type/num
@@ -26505,36 +26505,36 @@ Val_type/ref
   - Under the context s, ref is valid with rt.
 
 Externaddr_type
-- the external address externaddr_1 is valid with the external type externtype_1 if:
+- the external address externaddr is valid with the external type externtype if:
   - Either:
-    - externaddr_1 is (FUNC a).
-    - externtype_1 is (FUNC funcinst.TYPE).
+    - externaddr is (FUNC a).
+    - externtype is (FUNC funcinst.TYPE).
     - the function instance s.FUNCS[a] exists.
     - s.FUNCS[a] is funcinst.
   - Or:
-    - externaddr_1 is (GLOBAL a).
-    - externtype_1 is (GLOBAL globalinst.TYPE).
+    - externaddr is (GLOBAL a).
+    - externtype is (GLOBAL globalinst.TYPE).
     - the global instance s.GLOBALS[a] exists.
     - s.GLOBALS[a] is globalinst.
   - Or:
-    - externaddr_1 is (TABLE a).
-    - externtype_1 is (TABLE tableinst.TYPE).
+    - externaddr is (TABLE a).
+    - externtype is (TABLE tableinst.TYPE).
     - the table instance s.TABLES[a] exists.
     - s.TABLES[a] is tableinst.
   - Or:
-    - externaddr_1 is (MEM a).
-    - externtype_1 is (MEM meminst.TYPE).
+    - externaddr is (MEM a).
+    - externtype is (MEM meminst.TYPE).
     - the memory instance s.MEMS[a] exists.
     - s.MEMS[a] is meminst.
   - Or:
-    - externaddr_1 is (TAG a).
-    - externtype_1 is (TAG taginst.TYPE).
+    - externaddr is (TAG a).
+    - externtype is (TAG taginst.TYPE).
     - the tag instance s.TAGS[a] exists.
     - s.TAGS[a] is taginst.
   - Or:
-    - externaddr_1 is externaddr.
-    - externtype_1 is xt.
-    - Under the context s, the external address externaddr is valid with the external type xt'.
+    - externaddr is externaddr.
+    - externtype is xt.
+    - Under the context s, externaddr is valid with the external type xt'.
     - xt' matches the external type xt.
 
 Externaddr_type/func
@@ -26568,21 +26568,21 @@ Externaddr_type/sub
   - xt' matches xt.
 
 NotationTypingInstrScheme
-- the instruction sequence [instr_1] is valid with the function type valtype_1* -> valtype_3* if:
+- the instruction sequence [instr'] is valid with the function type valtype* -> valtype''* if:
   - Either:
-    - the instruction instr_1 is (BINOP I32 ADD).
-    - the value type sequence valtype_1* is [I32, I32].
-    - the value type sequence valtype_3* is [I32].
+    - the instruction instr' is (BINOP I32 ADD).
+    - the value type sequence valtype* is [I32, I32].
+    - the value type sequence valtype''* is [I32].
   - Or:
-    - instr_1 is (GLOBAL.GET x).
-    - valtype_1* is [].
-    - valtype_3* is [t].
+    - instr' is (GLOBAL.GET x).
+    - valtype* is [].
+    - valtype''* is [t].
     - the global type C.GLOBALS[x] exists.
     - C.GLOBALS[x] is (mut t).
   - Or:
-    - instr_1 is (BLOCK blocktype instr*).
-    - valtype_1* is t_1*.
-    - valtype_3* is t_2*.
+    - instr' is (BLOCK blocktype instr*).
+    - valtype* is t_1*.
+    - valtype''* is t_2*.
     - the block type blocktype is valid as the instruction type t_1* -> t_2*.
     - the context C' is the context C with .LABELS prepended by [t_2*].
     - Under the context C', the instruction sequence instr* is valid with t_1* -> t_2*.
@@ -26815,11 +26815,11 @@ Step_pure/ref.eq
 
 Step_pure/i31.get sx
 1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value val_1 from the stack.
-3. If val_1 is REF.NULL, then:
+2. Pop the value val from the stack.
+3. If val is REF.NULL, then:
   a. Trap.
-4. If val_1 is REF.I31_NUM, then:
-  a. Let (REF.I31_NUM i) be val_1.
+4. If val is REF.I31_NUM, then:
+  a. Let (REF.I31_NUM i) be val.
   b. Push the value (I32.CONST $extend__(31, 32, sx, i)) to the stack.
 
 Step_pure/array.new x
@@ -26832,20 +26832,20 @@ Step_pure/array.new x
 
 Step_pure/extern.convert_any
 1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value val_1 from the stack.
-3. If val_1 is REF.NULL, then:
+2. Pop the value val from the stack.
+3. If val is REF.NULL, then:
   a. Push the value (REF.NULL EXTERN) to the stack.
-4. If val_1 is addrref, then:
-  a. Let addrref be val_1.
+4. If val is addrref, then:
+  a. Let addrref be val.
   b. Push the value (REF.EXTERN addrref) to the stack.
 
 Step_pure/any.convert_extern
 1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value val_1 from the stack.
-3. If val_1 is REF.NULL, then:
+2. Pop the value val from the stack.
+3. If val is REF.NULL, then:
   a. Push the value (REF.NULL ANY) to the stack.
-4. If val_1 is REF.EXTERN, then:
-  a. Let (REF.EXTERN addrref) be val_1.
+4. If val is REF.EXTERN, then:
+  a. Let (REF.EXTERN addrref) be val.
   b. Push the value addrref to the stack.
 
 Step_pure/vvunop V128 vvunop
@@ -26962,18 +26962,18 @@ Step_pure/vsplat Lnn X M
 4. Let c be $invlanes_(Lnn X M, $lpacknum_(Lnn, c_1)^M).
 5. Push the value (V128.CONST c) to the stack.
 
-Step_pure/vextract_lane lanetype_1 X M sx_1? i
+Step_pure/vextract_lane lanetype X M sx'? i
 1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_1) from the stack.
-3. If (sx_1? is not defined /\ lanetype_1 is numtype), then:
-  a. Let nt be lanetype_1.
+3. If (sx'? is not defined /\ lanetype is numtype), then:
+  a. Let nt be lanetype.
   b. If (i < |$lanes_(nt X M, c_1)|), then:
     1) Let c_2 be $lanes_(nt X M, c_1)[i].
     2) Push the value (nt.CONST c_2) to the stack.
-4. If lanetype_1 is packtype, then:
-  a. Let pt be lanetype_1.
-  b. If sx_1? is defined, then:
-    1) Let ?(sx) be sx_1?.
+4. If lanetype is packtype, then:
+  a. Let pt be lanetype.
+  b. If sx'? is defined, then:
+    1) Let ?(sx) be sx'?.
     2) If (i < |$lanes_(pt X M, c_1)|), then:
       a) Let c_2 be $extend__($psize(pt), 32, sx, $lanes_(pt X M, c_1)[i]).
       b) Push the value (I32.CONST c_2) to the stack.
@@ -27078,12 +27078,12 @@ Step_read/call x
 
 Step_read/call_ref yy
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
-3. Pop the value val_1 from the stack.
-4. If val_1 is REF.NULL, then:
+2. Assert: Due to validation, a value of value type val' is on the top of the stack.
+3. Pop the value val' from the stack.
+4. If val' is REF.NULL, then:
   a. Trap.
-5. If val_1 is REF.FUNC_ADDR, then:
-  a. Let (REF.FUNC_ADDR a) be val_1.
+5. If val' is REF.FUNC_ADDR, then:
+  a. Let (REF.FUNC_ADDR a) be val'.
   b. If (a < |$funcinst(z)|), then:
     1) Let fi be $funcinst(z)[a].
     2) Assert: Due to validation, fi.CODE is FUNC.
@@ -27119,14 +27119,14 @@ Step_read/return_call_ref yy
   c. Push the values val* to the stack.
   d. Execute the instruction (RETURN_CALL_REF yy).
 4. Else if the first non-value entry of the stack is a FRAME_, then:
-  a. Assert: Due to validation, a value is on the top of the stack.
-  b. Pop the value val_1 from the stack.
-  c. If val_1 is REF.NULL, then:
+  a. Assert: Due to validation, a value of value type val'' is on the top of the stack.
+  b. Pop the value val'' from the stack.
+  c. If val'' is REF.NULL, then:
     1) Pop all values val* from the top of the stack.
     2) Pop the frame (FRAME_ _ { _ }) from the stack.
     3) Trap.
-  d. If val_1 is REF.FUNC_ADDR, then:
-    1) Let (REF.FUNC_ADDR a) be val_1.
+  d. If val'' is REF.FUNC_ADDR, then:
+    1) Let (REF.FUNC_ADDR a) be val''.
     2) If (a < |$funcinst(z)|), then:
       a) Assert: Due to validation, $expanddt($funcinst(z)[a].TYPE) is FUNC.
       b) Let (FUNC functype_0) be $expanddt($funcinst(z)[a].TYPE).
@@ -27141,12 +27141,12 @@ Step_read/return_call_ref yy
 
 Step_read/throw_ref
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
-3. Pop the value val_1 from the stack.
-4. If val_1 is REF.NULL, then:
+2. Assert: Due to validation, a value of value type val' is on the top of the stack.
+3. Pop the value val' from the stack.
+4. If val' is REF.NULL, then:
   a. Trap.
-5. If val_1 is REF.EXN_ADDR, then:
-  a. Let (REF.EXN_ADDR a) be val_1.
+5. If val' is REF.EXN_ADDR, then:
+  a. Let (REF.EXN_ADDR a) be val'.
   b. Pop all values val* from the top of the stack.
   c. If (val* =/= []), then:
     1) Push the value (REF.EXN_ADDR a) to the stack.
@@ -27160,21 +27160,21 @@ Step_read/throw_ref
     2) Push the value (REF.EXN_ADDR a) to the stack.
     3) Execute the instruction THROW_REF.
   f. Else if not the first non-value entry of the stack is a HANDLER_, then:
-    1) Throw the exception val_1 as a result.
+    1) Throw the exception val' as a result.
   g. Else:
-    1) Let (HANDLER_ n { catch_1* }) be the topmost HANDLER_.
-    2) If (catch_1* = []), then:
+    1) Let (HANDLER_ n { catch''* }) be the topmost HANDLER_.
+    2) If (catch''* = []), then:
       a) Pop the handler (HANDLER_ _ { _ }) from the stack.
       b) Push the value (REF.EXN_ADDR a) to the stack.
       c) Execute the instruction THROW_REF.
     3) Else if (a >= |$exninst(z)|), then:
-      a) Let [catch_0] :: catch'* be catch_1*.
+      a) Let [catch_0] :: catch'* be catch''*.
       b) If catch_0 is CATCH_ALL, then:
         1. Let (CATCH_ALL l) be catch_0.
         2. Pop the handler (HANDLER_ _ { _ }) from the stack.
         3. Execute the instruction (BR l).
       c) Else if catch_0 is not CATCH_ALL_REF, then:
-        1. Let [catch] :: catch'* be catch_1*.
+        1. Let [catch] :: catch'* be catch''*.
         2. Pop the handler (HANDLER_ _ { _ }) from the stack.
         3. Push the handler (HANDLER_ n { catch'* }) to the stack.
         4. Push the value (REF.EXN_ADDR a) to the stack.
@@ -27186,7 +27186,7 @@ Step_read/throw_ref
         4. Execute the instruction (BR l).
     4) Else:
       a) Let val* be $exninst(z)[a].FIELDS.
-      b) Let [catch_0] :: catch'* be catch_1*.
+      b) Let [catch_0] :: catch'* be catch''*.
       c) If catch_0 is CATCH, then:
         1. Let (CATCH x l) be catch_0.
         2. If ((x < |$tagaddr(z)|) /\ ($exninst(z)[a].TAG = $tagaddr(z)[x])), then:
@@ -27194,7 +27194,7 @@ Step_read/throw_ref
           b. Push the values val* to the stack.
           c. Execute the instruction (BR l).
         3. Else:
-          a. Let [catch] :: catch'* be catch_1*.
+          a. Let [catch] :: catch'* be catch''*.
           b. Pop the handler (HANDLER_ _ { _ }) from the stack.
           c. Push the handler (HANDLER_ n { catch'* }) to the stack.
           d. Push the value (REF.EXN_ADDR a) to the stack.
@@ -27202,13 +27202,13 @@ Step_read/throw_ref
       d) Else if catch_0 is CATCH_REF, then:
         1. Let (CATCH_REF x l) be catch_0.
         2. If (x >= |$tagaddr(z)|), then:
-          a. Let [catch] :: catch'* be catch_1*.
+          a. Let [catch] :: catch'* be catch''*.
           b. Pop the handler (HANDLER_ _ { _ }) from the stack.
           c. Push the handler (HANDLER_ n { catch'* }) to the stack.
           d. Push the value (REF.EXN_ADDR a) to the stack.
           e. Execute the instruction THROW_REF.
         3. Else if ($exninst(z)[a].TAG =/= $tagaddr(z)[x]), then:
-          a. Let [catch] :: catch'* be catch_1*.
+          a. Let [catch] :: catch'* be catch''*.
           b. Pop the handler (HANDLER_ _ { _ }) from the stack.
           c. Push the handler (HANDLER_ n { catch'* }) to the stack.
           d. Push the value (REF.EXN_ADDR a) to the stack.
@@ -27223,7 +27223,7 @@ Step_read/throw_ref
         2. Pop the handler (HANDLER_ _ { _ }) from the stack.
         3. Execute the instruction (BR l).
       f) Else if catch_0 is not CATCH_ALL_REF, then:
-        1. Let [catch] :: catch'* be catch_1*.
+        1. Let [catch] :: catch'* be catch''*.
         2. Pop the handler (HANDLER_ _ { _ }) from the stack.
         3. Push the handler (HANDLER_ n { catch'* }) to the stack.
         4. Push the value (REF.EXN_ADDR a) to the stack.
@@ -27234,7 +27234,7 @@ Step_read/throw_ref
         3. Push the value (REF.EXN_ADDR a) to the stack.
         4. Execute the instruction (BR l).
 6. Else if (not the first non-value entry of the stack is a LABEL_ /\ (not the first non-value entry of the stack is a FRAME_ /\ not the first non-value entry of the stack is a HANDLER_)), then:
-  a. Throw the exception val_1 as a result.
+  a. Throw the exception val' as a result.
 
 Step_read/try_table bt catch* instr*
 1. Let z be the current state.
@@ -27286,11 +27286,11 @@ Step_read/struct.new_default x
 Step_read/struct.get sx? x i
 1. Let z be the current state.
 2. Assert: Due to validation, a value is on the top of the stack.
-3. Pop the value val_1 from the stack.
-4. If val_1 is REF.NULL, then:
+3. Pop the value val from the stack.
+4. If val is REF.NULL, then:
   a. Trap.
-5. If val_1 is REF.STRUCT_ADDR, then:
-  a. Let (REF.STRUCT_ADDR a) be val_1.
+5. If val is REF.STRUCT_ADDR, then:
+  a. Let (REF.STRUCT_ADDR a) be val.
   b. If ((i < |$structinst(z)[a].FIELDS|) /\ (a < |$structinst(z)|)), then:
     1) Assert: Due to validation, $expanddt($type(z, x)) is STRUCT.
     2) Let (STRUCT structtype_0) be $expanddt($type(z, x)).
@@ -27343,11 +27343,11 @@ Step_read/array.get sx? x
 2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 3. Pop the value (I32.CONST i) from the stack.
 4. Assert: Due to validation, a value is on the top of the stack.
-5. Pop the value val_1 from the stack.
-6. If val_1 is REF.NULL, then:
+5. Pop the value val from the stack.
+6. If val is REF.NULL, then:
   a. Trap.
-7. If val_1 is REF.ARRAY_ADDR, then:
-  a. Let (REF.ARRAY_ADDR a) be val_1.
+7. If val is REF.ARRAY_ADDR, then:
+  a. Let (REF.ARRAY_ADDR a) be val.
   b. If ((a < |$arrayinst(z)|) /\ (i >= |$arrayinst(z)[a].FIELDS|)), then:
     1) Trap.
   c. If ((i < |$arrayinst(z)[a].FIELDS|) /\ (a < |$arrayinst(z)|)), then:
@@ -27359,11 +27359,11 @@ Step_read/array.get sx? x
 Step_read/array.len
 1. Let z be the current state.
 2. Assert: Due to validation, a value is on the top of the stack.
-3. Pop the value val_1 from the stack.
-4. If val_1 is REF.NULL, then:
+3. Pop the value val from the stack.
+4. If val is REF.NULL, then:
   a. Trap.
-5. If val_1 is REF.ARRAY_ADDR, then:
-  a. Let (REF.ARRAY_ADDR a) be val_1.
+5. If val is REF.ARRAY_ADDR, then:
+  a. Let (REF.ARRAY_ADDR a) be val.
   b. If (a < |$arrayinst(z)|), then:
     1) Push the value (I32.CONST |$arrayinst(z)[a].FIELDS|) to the stack.
 
@@ -27375,12 +27375,12 @@ Step_read/array.fill x
 5. Pop the value val from the stack.
 6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 7. Pop the value (I32.CONST i) from the stack.
-8. Assert: Due to validation, a value is on the top of the stack.
-9. Pop the value val_1 from the stack.
-10. If val_1 is REF.NULL, then:
+8. Assert: Due to validation, a value of value type val' is on the top of the stack.
+9. Pop the value val' from the stack.
+10. If val' is REF.NULL, then:
   a. Trap.
-11. If val_1 is REF.ARRAY_ADDR, then:
-  a. Let (REF.ARRAY_ADDR a) be val_1.
+11. If val' is REF.ARRAY_ADDR, then:
+  a. Let (REF.ARRAY_ADDR a) be val'.
   b. If (a >= |$arrayinst(z)|), then:
     1) Do nothing.
   c. Else if ((i + n) > |$arrayinst(z)[a].FIELDS|), then:
@@ -27405,21 +27405,21 @@ Step_read/array.copy x_1 x_2
 4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 5. Pop the value (I32.CONST i_2) from the stack.
 6. Assert: Due to validation, a value is on the top of the stack.
-7. Pop the value val_1 from the stack.
+7. Pop the value val from the stack.
 8. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 9. Pop the value (I32.CONST i_1) from the stack.
-10. Assert: Due to validation, a value is on the top of the stack.
-11. Pop the value val_2 from the stack.
-12. If (val_2 is REF.NULL /\ val_1 is ref), then:
+10. Assert: Due to validation, a value of value type val' is on the top of the stack.
+11. Pop the value val' from the stack.
+12. If (val' is REF.NULL /\ val is ref), then:
   a. Trap.
-13. If (val_1 is REF.NULL /\ val_2 is ref), then:
+13. If (val is REF.NULL /\ val' is ref), then:
   a. Trap.
-14. If val_2 is REF.ARRAY_ADDR, then:
-  a. Let (REF.ARRAY_ADDR a_1) be val_2.
-  b. If val_1 is REF.ARRAY_ADDR, then:
+14. If val' is REF.ARRAY_ADDR, then:
+  a. Let (REF.ARRAY_ADDR a_1) be val'.
+  b. If val is REF.ARRAY_ADDR, then:
     1) If ((a_1 < |$arrayinst(z)|) /\ ((i_1 + n) > |$arrayinst(z)[a_1].FIELDS|)), then:
       a) Trap.
-    2) Let (REF.ARRAY_ADDR a_2) be val_1.
+    2) Let (REF.ARRAY_ADDR a_2) be val.
     3) If (a_2 >= |$arrayinst(z)|), then:
       a) Do nothing.
     4) Else if ((i_2 + n) > |$arrayinst(z)[a_2].FIELDS|), then:
@@ -27464,11 +27464,11 @@ Step_read/array.init_elem x y
 6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 7. Pop the value (I32.CONST i) from the stack.
 8. Assert: Due to validation, a value is on the top of the stack.
-9. Pop the value val_1 from the stack.
-10. If val_1 is REF.NULL, then:
+9. Pop the value val from the stack.
+10. If val is REF.NULL, then:
   a. Trap.
-11. If val_1 is REF.ARRAY_ADDR, then:
-  a. Let (REF.ARRAY_ADDR a) be val_1.
+11. If val is REF.ARRAY_ADDR, then:
+  a. Let (REF.ARRAY_ADDR a) be val.
   b. If ((a < |$arrayinst(z)|) /\ ((i + n) > |$arrayinst(z)[a].FIELDS|)), then:
     1) Trap.
   c. If ((j + n) > |$elem(z, y).REFS|), then:
@@ -27496,11 +27496,11 @@ Step_read/array.init_data x y
 6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 7. Pop the value (I32.CONST i) from the stack.
 8. Assert: Due to validation, a value is on the top of the stack.
-9. Pop the value val_1 from the stack.
-10. If val_1 is REF.NULL, then:
+9. Pop the value val from the stack.
+10. If val is REF.NULL, then:
   a. Trap.
-11. If val_1 is REF.ARRAY_ADDR, then:
-  a. Let (REF.ARRAY_ADDR a) be val_1.
+11. If val is REF.ARRAY_ADDR, then:
+  a. Let (REF.ARRAY_ADDR a) be val.
   b. If ((a < |$arrayinst(z)|) /\ ((i + n) > |$arrayinst(z)[a].FIELDS|)), then:
     1) Trap.
   c. If $expanddt($type(z, x)) is ARRAY, then:
@@ -27625,40 +27625,40 @@ Step_read/table.init x y
   f. Push the value (I32.CONST (n - 1)) to the stack.
   g. Execute the instruction (TABLE.INIT x y).
 
-Step_read/load numtype_1 loadop__1? x ao
+Step_read/load numtype loadop_? x ao
 1. Let z be the current state.
 2. Assert: Due to validation, a value of value type at is on the top of the stack.
 3. Pop the value (at.CONST i) from the stack.
-4. If loadop__1? is not defined, then:
-  a. Let nt be numtype_1.
+4. If loadop_? is not defined, then:
+  a. Let nt be numtype.
   b. If (((i + ao.OFFSET) + ($size(nt) / 8)) > |$mem(z, x).BYTES|), then:
     1) Trap.
   c. Let c be $nbytes__1^-1(nt, $mem(z, x).BYTES[(i + ao.OFFSET) : ($size(nt) / 8)]).
   d. Push the value (nt.CONST c) to the stack.
-5. If numtype_1 is Inn, then:
-  a. If loadop__1? is defined, then:
-    1) Let ?(loadop__0) be loadop__1?.
+5. If numtype is Inn, then:
+  a. If loadop_? is defined, then:
+    1) Let ?(loadop__0) be loadop_?.
     2) Let n _ sx be loadop__0.
     3) If (((i + ao.OFFSET) + (n / 8)) > |$mem(z, x).BYTES|), then:
       a) Trap.
-  b. Let Inn be numtype_1.
-  c. If loadop__1? is defined, then:
-    1) Let ?(loadop__0) be loadop__1?.
+  b. Let Inn be numtype.
+  c. If loadop_? is defined, then:
+    1) Let ?(loadop__0) be loadop_?.
     2) Let n _ sx be loadop__0.
     3) Let c be $ibytes__1^-1(n, $mem(z, x).BYTES[(i + ao.OFFSET) : (n / 8)]).
     4) Push the value (Inn.CONST $extend__(n, $size(Inn), sx, c)) to the stack.
 
-Step_read/vload V128 vloadop__1? x ao
+Step_read/vload V128 vloadop_? x ao
 1. Let z be the current state.
 2. Assert: Due to validation, a value of value type at is on the top of the stack.
 3. Pop the value (at.CONST i) from the stack.
-4. If ((((i + ao.OFFSET) + ($vsize(V128) / 8)) > |$mem(z, x).BYTES|) /\ vloadop__1? is not defined), then:
+4. If ((((i + ao.OFFSET) + ($vsize(V128) / 8)) > |$mem(z, x).BYTES|) /\ vloadop_? is not defined), then:
   a. Trap.
-5. If vloadop__1? is not defined, then:
+5. If vloadop_? is not defined, then:
   a. Let c be $vbytes__1^-1(V128, $mem(z, x).BYTES[(i + ao.OFFSET) : ($vsize(V128) / 8)]).
   b. Push the value (V128.CONST c) to the stack.
 6. Else:
-  a. Let ?(vloadop__0) be vloadop__1?.
+  a. Let ?(vloadop__0) be vloadop_?.
   b. If vloadop__0 is SHAPE, then:
     1) Let (SHAPE M X K _ sx) be vloadop__0.
     2) If (((i + ao.OFFSET) + ((M * K) / 8)) > |$mem(z, x).BYTES|), then:
@@ -27814,12 +27814,12 @@ Step/struct.set x i
 1. Let z be the current state.
 2. Assert: Due to validation, a value is on the top of the stack.
 3. Pop the value val from the stack.
-4. Assert: Due to validation, a value is on the top of the stack.
-5. Pop the value val_1 from the stack.
-6. If val_1 is REF.NULL, then:
+4. Assert: Due to validation, a value of value type val' is on the top of the stack.
+5. Pop the value val' from the stack.
+6. If val' is REF.NULL, then:
   a. Trap.
-7. If val_1 is REF.STRUCT_ADDR, then:
-  a. Let (REF.STRUCT_ADDR a) be val_1.
+7. If val' is REF.STRUCT_ADDR, then:
+  a. Let (REF.STRUCT_ADDR a) be val'.
   b. Assert: Due to validation, $expanddt($type(z, x)) is STRUCT.
   c. Let (STRUCT structtype_0) be $expanddt($type(z, x)).
   d. Let (mut zt)* be structtype_0.
@@ -27844,12 +27844,12 @@ Step/array.set x
 3. Pop the value val from the stack.
 4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 5. Pop the value (I32.CONST i) from the stack.
-6. Assert: Due to validation, a value is on the top of the stack.
-7. Pop the value val_1 from the stack.
-8. If val_1 is REF.NULL, then:
+6. Assert: Due to validation, a value of value type val' is on the top of the stack.
+7. Pop the value val' from the stack.
+8. If val' is REF.NULL, then:
   a. Trap.
-9. If val_1 is REF.ARRAY_ADDR, then:
-  a. Let (REF.ARRAY_ADDR a) be val_1.
+9. If val' is REF.ARRAY_ADDR, then:
+  a. Let (REF.ARRAY_ADDR a) be val'.
   b. If ((a < |$arrayinst(z)|) /\ (i >= |$arrayinst(z)[a].FIELDS|)), then:
     1) Trap.
   c. Assert: Due to validation, $expanddt($type(z, x)) is ARRAY.
@@ -27896,22 +27896,22 @@ Step/elem.drop x
 1. Let z be the current state.
 2. Perform $with_elem(z, x, []).
 
-Step/store numtype_1 storeop__1? x ao
+Step/store numtype storeop_? x ao
 1. Let z be the current state.
-2. Assert: Due to validation, a value of value type numtype_3 is on the top of the stack.
-3. Pop the value (numtype_3.CONST c) from the stack.
+2. Assert: Due to validation, a value of value type numtype'' is on the top of the stack.
+3. Pop the value (numtype''.CONST c) from the stack.
 4. Assert: Due to validation, a value of value type at is on the top of the stack.
 5. Pop the value (at.CONST i) from the stack.
-6. Let nt be numtype_3.
-7. If ((((i + ao.OFFSET) + ($size(nt) / 8)) > |$mem(z, x).BYTES|) /\ ((numtype_1 = nt) /\ storeop__1? is not defined)), then:
+6. Let nt be numtype''.
+7. If ((((i + ao.OFFSET) + ($size(nt) / 8)) > |$mem(z, x).BYTES|) /\ ((numtype = nt) /\ storeop_? is not defined)), then:
   a. Trap.
-8. If ((numtype_1 = nt) /\ storeop__1? is not defined), then:
+8. If ((numtype = nt) /\ storeop_? is not defined), then:
   a. Let b* be $nbytes_(nt, c).
   b. Perform $with_mem(z, x, (i + ao.OFFSET), ($size(nt) / 8), b*).
-9. If numtype_3 is Inn, then:
-  a. Let Inn be numtype_3.
-  b. If ((numtype_1 = Inn) /\ storeop__1? is defined), then:
-    1) Let ?(n) be storeop__1?.
+9. If numtype'' is Inn, then:
+  a. Let Inn be numtype''.
+  b. If ((numtype = Inn) /\ storeop_? is defined), then:
+    1) Let ?(n) be storeop_?.
     2) If (((i + ao.OFFSET) + (n / 8)) > |$mem(z, x).BYTES|), then:
       a) Trap.
     3) Let b* be $ibytes_(n, $wrap__($size(Inn), n, c)).
@@ -27963,85 +27963,85 @@ min i j
   a. Return i.
 2. Return j.
 
-sum n_1*
-1. If (n_1* = []), then:
+sum n*
+1. If (n* = []), then:
   a. Return 0.
-2. Let [n] :: n'* be n_1*.
+2. Let [n] :: n'* be n*.
 3. Return (n + $sum(n'*)).
 
-prod n_1*
-1. If (n_1* = []), then:
+prod n*
+1. If (n* = []), then:
   a. Return 1.
-2. Let [n] :: n'* be n_1*.
+2. Let [n] :: n'* be n*.
 3. Return (n * $prod(n'*)).
 
-opt_ `X X_1*
-1. If (X_1* = []), then:
+opt_ `X X*
+1. If (X* = []), then:
   a. Return ?().
-2. Assert: Due to validation, (|X_1*| = 1).
-3. Let [w] be X_1*.
+2. Assert: Due to validation, (|X*| = 1).
+3. Let [w] be X*.
 4. Return ?(w).
 
-concat_ `X X_1*
-1. If (X_1* = []), then:
+concat_ `X X*
+1. If (X* = []), then:
   a. Return [].
-2. Let [w*] :: w'** be X_1*.
+2. Let [w*] :: w'** be X*.
 3. Return w* :: $concat_(`X, w'**).
 
-concatn_ `X X_1* n
-1. If (X_1* = []), then:
+concatn_ `X X* n
+1. If (X* = []), then:
   a. Return [].
-2. Let [w^n] :: w'^n* be X_1*.
+2. Let [w^n] :: w'^n* be X*.
 3. Return w^n :: $concatn_(`X, w'^n*, n).
 
-disjoint_ `X X_1*
-1. If (X_1* = []), then:
+disjoint_ `X X*
+1. If (X* = []), then:
   a. Return true.
-2. Let [w] :: w'* be X_1*.
+2. Let [w] :: w'* be X*.
 3. Return (w is not contained in w'* /\ $disjoint_(`X, w'*)).
 
-setminus1_ `X w X_1*
-1. If (X_1* = []), then:
+setminus1_ `X w X*
+1. If (X* = []), then:
   a. Return [w].
-2. Let [w_1] :: w'* be X_1*.
+2. Let [w_1] :: w'* be X*.
 3. If (w = w_1), then:
   a. Return [].
 4. Return $setminus1_(`X, w, w'*).
 
-setminus_ `X X_1* w*
-1. If (X_1* = []), then:
+setminus_ `X X* w*
+1. If (X* = []), then:
   a. Return [].
-2. Let [w_1] :: w'* be X_1*.
+2. Let [w_1] :: w'* be X*.
 3. Return $setminus1_(`X, w_1, w*) :: $setminus_(`X, w'*, w*).
 
-setproduct2_ `X w_1 X_1*
-1. If (X_1* = []), then:
+setproduct2_ `X w_1 X*
+1. If (X* = []), then:
   a. Return [].
-2. Let [w'*] :: w** be X_1*.
+2. Let [w'*] :: w** be X*.
 3. Return [[w_1] :: w'*] :: $setproduct2_(`X, w_1, w**).
 
-setproduct1_ `X X_1* w**
-1. If (X_1* = []), then:
+setproduct1_ `X X* w**
+1. If (X* = []), then:
   a. Return [].
-2. Let [w_1] :: w'* be X_1*.
+2. Let [w_1] :: w'* be X*.
 3. Return $setproduct2_(`X, w_1, w**) :: $setproduct1_(`X, w'*, w**).
 
-setproduct_ `X X_1*
-1. If (X_1* = []), then:
+setproduct_ `X X*
+1. If (X* = []), then:
   a. Return [[]].
-2. Let [w_1*] :: w** be X_1*.
+2. Let [w_1*] :: w** be X*.
 3. Return $setproduct1_(`X, w_1*, $setproduct_(`X, w**)).
 
-signif N_1
-1. If (N_1 = 32), then:
+signif N
+1. If (N = 32), then:
   a. Return 23.
-2. Assert: Due to validation, (N_1 = 64).
+2. Assert: Due to validation, (N = 64).
 3. Return 52.
 
-expon N_1
-1. If (N_1 = 32), then:
+expon N
+1. If (N = 32), then:
   a. Return 8.
-2. Assert: Due to validation, (N_1 = 64).
+2. Assert: Due to validation, (N = 64).
 3. Return 11.
 
 M N
@@ -28103,42 +28103,42 @@ NULLEXNREF
 NULLEXTERNREF
 1. Return (REF ?(NULL) NOEXTERN).
 
-size numtype_1
-1. If (numtype_1 = I32), then:
+size numtype
+1. If (numtype = I32), then:
   a. Return 32.
-2. If (numtype_1 = I64), then:
+2. If (numtype = I64), then:
   a. Return 64.
-3. If (numtype_1 = F32), then:
+3. If (numtype = F32), then:
   a. Return 32.
-4. Assert: Due to validation, (numtype_1 = F64).
+4. Assert: Due to validation, (numtype = F64).
 5. Return 64.
 
 vsize V128
 1. Return 128.
 
-psize packtype_1
-1. If (packtype_1 = I8), then:
+psize packtype
+1. If (packtype = I8), then:
   a. Return 8.
-2. Assert: Due to validation, (packtype_1 = I16).
+2. Assert: Due to validation, (packtype = I16).
 3. Return 16.
 
-lsize lanetype_1
-1. If lanetype_1 is numtype, then:
-  a. Let numtype be lanetype_1.
+lsize lanetype
+1. If lanetype is numtype, then:
+  a. Let numtype be lanetype.
   b. Return $size(numtype).
-2. Assert: Due to validation, lanetype_1 is packtype.
-3. Let packtype be lanetype_1.
+2. Assert: Due to validation, lanetype is packtype.
+3. Let packtype be lanetype.
 4. Return $psize(packtype).
 
-zsize storagetype_1
-1. If storagetype_1 is numtype, then:
-  a. Let numtype be storagetype_1.
+zsize storagetype
+1. If storagetype is numtype, then:
+  a. Let numtype be storagetype.
   b. Return $size(numtype).
-2. If storagetype_1 is vectype, then:
-  a. Let vectype be storagetype_1.
+2. If storagetype is vectype, then:
+  a. Let vectype be storagetype.
   b. Return $vsize(vectype).
-3. Assert: Due to validation, storagetype_1 is packtype.
-4. Let packtype be storagetype_1.
+3. Assert: Due to validation, storagetype is packtype.
+4. Let packtype be storagetype.
 5. Return $psize(packtype).
 
 sizenn nt
@@ -28165,39 +28165,39 @@ lsizenn1 lt
 lsizenn2 lt
 1. Return $lsize(lt).
 
-lunpack lanetype_1
-1. If lanetype_1 is numtype, then:
-  a. Let numtype be lanetype_1.
+lunpack lanetype
+1. If lanetype is numtype, then:
+  a. Let numtype be lanetype.
   b. Return numtype.
-2. Assert: Due to validation, lanetype_1 is packtype.
+2. Assert: Due to validation, lanetype is packtype.
 3. Return I32.
 
-unpack storagetype_1
-1. If storagetype_1 is valtype, then:
-  a. Let valtype be storagetype_1.
+unpack storagetype
+1. If storagetype is valtype, then:
+  a. Let valtype be storagetype.
   b. Return valtype.
-2. Assert: Due to validation, storagetype_1 is packtype.
+2. Assert: Due to validation, storagetype is packtype.
 3. Return I32.
 
-nunpack storagetype_1
-1. If storagetype_1 is numtype, then:
-  a. Let numtype be storagetype_1.
+nunpack storagetype
+1. If storagetype is numtype, then:
+  a. Let numtype be storagetype.
   b. Return numtype.
-2. If storagetype_1 is packtype, then:
+2. If storagetype is packtype, then:
   a. Return I32.
 3. Fail.
 
 vunpack vectype
 1. Return vectype.
 
-cunpack storagetype_1
-1. If storagetype_1 is consttype, then:
-  a. Let consttype be storagetype_1.
+cunpack storagetype
+1. If storagetype is consttype, then:
+  a. Let consttype be storagetype.
   b. Return consttype.
-2. If storagetype_1 is packtype, then:
+2. If storagetype is packtype, then:
   a. Return I32.
-3. If storagetype_1 is lanetype, then:
-  a. Let lanetype be storagetype_1.
+3. If storagetype is lanetype, then:
+  a. Let lanetype be storagetype.
   b. Return $lunpack(lanetype).
 4. Fail.
 
@@ -28210,76 +28210,76 @@ lanetype Lnn X N
 unpackshape Lnn X N
 1. Return $lunpack(Lnn).
 
-funcsxx externidx_1*
-1. If (externidx_1* = []), then:
+funcsxx externidx*
+1. If (externidx* = []), then:
   a. Return [].
-2. Let [externidx_0] :: xx* be externidx_1*.
+2. Let [externidx_0] :: xx* be externidx*.
 3. If externidx_0 is FUNC, then:
   a. Let (FUNC x) be externidx_0.
   b. Return [x] :: $funcsxx(xx*).
-4. Let [externidx] :: xx* be externidx_1*.
+4. Let [externidx] :: xx* be externidx*.
 5. Return $funcsxx(xx*).
 
-globalsxx externidx_1*
-1. If (externidx_1* = []), then:
+globalsxx externidx*
+1. If (externidx* = []), then:
   a. Return [].
-2. Let [externidx_0] :: xx* be externidx_1*.
+2. Let [externidx_0] :: xx* be externidx*.
 3. If externidx_0 is GLOBAL, then:
   a. Let (GLOBAL x) be externidx_0.
   b. Return [x] :: $globalsxx(xx*).
-4. Let [externidx] :: xx* be externidx_1*.
+4. Let [externidx] :: xx* be externidx*.
 5. Return $globalsxx(xx*).
 
-tablesxx externidx_1*
-1. If (externidx_1* = []), then:
+tablesxx externidx*
+1. If (externidx* = []), then:
   a. Return [].
-2. Let [externidx_0] :: xx* be externidx_1*.
+2. Let [externidx_0] :: xx* be externidx*.
 3. If externidx_0 is TABLE, then:
   a. Let (TABLE x) be externidx_0.
   b. Return [x] :: $tablesxx(xx*).
-4. Let [externidx] :: xx* be externidx_1*.
+4. Let [externidx] :: xx* be externidx*.
 5. Return $tablesxx(xx*).
 
-memsxx externidx_1*
-1. If (externidx_1* = []), then:
+memsxx externidx*
+1. If (externidx* = []), then:
   a. Return [].
-2. Let [externidx_0] :: xx* be externidx_1*.
+2. Let [externidx_0] :: xx* be externidx*.
 3. If externidx_0 is MEM, then:
   a. Let (MEM x) be externidx_0.
   b. Return [x] :: $memsxx(xx*).
-4. Let [externidx] :: xx* be externidx_1*.
+4. Let [externidx] :: xx* be externidx*.
 5. Return $memsxx(xx*).
 
-tagsxx externidx_1*
-1. If (externidx_1* = []), then:
+tagsxx externidx*
+1. If (externidx* = []), then:
   a. Return [].
-2. Let [externidx_0] :: xx* be externidx_1*.
+2. Let [externidx_0] :: xx* be externidx*.
 3. If externidx_0 is TAG, then:
   a. Let (TAG x) be externidx_0.
   b. Return [x] :: $tagsxx(xx*).
-4. Let [externidx] :: xx* be externidx_1*.
+4. Let [externidx] :: xx* be externidx*.
 5. Return $tagsxx(xx*).
 
-IN N_1
-1. If (N_1 = 32), then:
+IN N
+1. If (N = 32), then:
   a. Return I32.
-2. Assert: Due to validation, (N_1 = 64).
+2. Assert: Due to validation, (N = 64).
 3. Return I64.
 
-FN N_1
-1. If (N_1 = 32), then:
+FN N
+1. If (N = 32), then:
   a. Return F32.
-2. Assert: Due to validation, (N_1 = 64).
+2. Assert: Due to validation, (N = 64).
 3. Return F64.
 
-JN N_1
-1. If (N_1 = 8), then:
+JN N
+1. If (N = 8), then:
   a. Return I8.
-2. If (N_1 = 16), then:
+2. If (N = 16), then:
   a. Return I16.
-3. If (N_1 = 32), then:
+3. If (N = 32), then:
   a. Return I32.
-4. Assert: Due to validation, (N_1 = 64).
+4. Assert: Due to validation, (N = 64).
 5. Return I64.
 
 minat at_1 at_2
@@ -28287,69 +28287,69 @@ minat at_1 at_2
   a. Return at_1.
 2. Return at_2.
 
-diffrt (REF nul1 ht_1) (REF nul_1 ht_2)
-1. If (nul_1 = ?(NULL)), then:
+diffrt (REF nul1 ht_1) (REF NULL_opt ht_2)
+1. If (NULL_opt = ?(NULL)), then:
   a. Return (REF ?() ht_1).
-2. Assert: Due to validation, nul_1 is not defined.
+2. Assert: Due to validation, NULL_opt is not defined.
 3. Return (REF nul1 ht_1).
 
-funcsxt externtype_1*
-1. If (externtype_1* = []), then:
+funcsxt externtype*
+1. If (externtype* = []), then:
   a. Return [].
-2. Let [externtype_0] :: xt* be externtype_1*.
+2. Let [externtype_0] :: xt* be externtype*.
 3. If externtype_0 is FUNC, then:
   a. Let (FUNC dt) be externtype_0.
   b. Return [dt] :: $funcsxt(xt*).
-4. Let [externtype] :: xt* be externtype_1*.
+4. Let [externtype] :: xt* be externtype*.
 5. Return $funcsxt(xt*).
 
-globalsxt externtype_1*
-1. If (externtype_1* = []), then:
+globalsxt externtype*
+1. If (externtype* = []), then:
   a. Return [].
-2. Let [externtype_0] :: xt* be externtype_1*.
+2. Let [externtype_0] :: xt* be externtype*.
 3. If externtype_0 is GLOBAL, then:
   a. Let (GLOBAL gt) be externtype_0.
   b. Return [gt] :: $globalsxt(xt*).
-4. Let [externtype] :: xt* be externtype_1*.
+4. Let [externtype] :: xt* be externtype*.
 5. Return $globalsxt(xt*).
 
-tablesxt externtype_1*
-1. If (externtype_1* = []), then:
+tablesxt externtype*
+1. If (externtype* = []), then:
   a. Return [].
-2. Let [externtype_0] :: xt* be externtype_1*.
+2. Let [externtype_0] :: xt* be externtype*.
 3. If externtype_0 is TABLE, then:
   a. Let (TABLE tt) be externtype_0.
   b. Return [tt] :: $tablesxt(xt*).
-4. Let [externtype] :: xt* be externtype_1*.
+4. Let [externtype] :: xt* be externtype*.
 5. Return $tablesxt(xt*).
 
-memsxt externtype_1*
-1. If (externtype_1* = []), then:
+memsxt externtype*
+1. If (externtype* = []), then:
   a. Return [].
-2. Let [externtype_0] :: xt* be externtype_1*.
+2. Let [externtype_0] :: xt* be externtype*.
 3. If externtype_0 is MEM, then:
   a. Let (MEM mt) be externtype_0.
   b. Return [mt] :: $memsxt(xt*).
-4. Let [externtype] :: xt* be externtype_1*.
+4. Let [externtype] :: xt* be externtype*.
 5. Return $memsxt(xt*).
 
-tagsxt externtype_1*
-1. If (externtype_1* = []), then:
+tagsxt externtype*
+1. If (externtype* = []), then:
   a. Return [].
-2. Let [externtype_0] :: xt* be externtype_1*.
+2. Let [externtype_0] :: xt* be externtype*.
 3. If externtype_0 is TAG, then:
   a. Let (TAG jt) be externtype_0.
   b. Return [jt] :: $tagsxt(xt*).
-4. Let [externtype] :: xt* be externtype_1*.
+4. Let [externtype] :: xt* be externtype*.
 5. Return $tagsxt(xt*).
 
-subst_typevar tv typevar_1* typeuse_1*
-1. If ((typevar_1* = []) /\ (typeuse_1* = [])), then:
+subst_typevar tv typevar* typeuse*
+1. If ((typevar* = []) /\ (typeuse* = [])), then:
   a. Return tv.
-2. Assert: Due to validation, (|typeuse_1*| >= 1).
-3. Let [tu_1] :: tu'* be typeuse_1*.
-4. Assert: Due to validation, (|typevar_1*| >= 1).
-5. Let [tv_1] :: tv'* be typevar_1*.
+2. Assert: Due to validation, (|typeuse*| >= 1).
+3. Let [tu_1] :: tu'* be typeuse*.
+4. Assert: Due to validation, (|typevar*| >= 1).
+5. Let [tv_1] :: tv'* be typevar*.
 6. If (tv = tv_1), then:
   a. Return tu_1.
 7. Return $subst_typevar(tv, tv'*, tu'*).
@@ -28363,60 +28363,60 @@ subst_numtype nt tv* tu*
 subst_vectype vt tv* tu*
 1. Return vt.
 
-subst_typeuse typeuse_1 tv* tu*
-1. If typeuse_1 is typevar, then:
-  a. Let tv' be typeuse_1.
+subst_typeuse typeuse tv* tu*
+1. If typeuse is typevar, then:
+  a. Let tv' be typeuse.
   b. Return $subst_typevar(tv', tv*, tu*).
-2. Assert: Due to validation, typeuse_1 is deftype.
-3. Let dt be typeuse_1.
+2. Assert: Due to validation, typeuse is deftype.
+3. Let dt be typeuse.
 4. Return $subst_deftype(dt, tv*, tu*).
 
-subst_heaptype heaptype_1 tv* tu*
-1. If heaptype_1 is typevar, then:
-  a. Let tv' be heaptype_1.
+subst_heaptype heaptype tv* tu*
+1. If heaptype is typevar, then:
+  a. Let tv' be heaptype.
   b. Return $subst_typevar(tv', tv*, tu*).
-2. If heaptype_1 is deftype, then:
-  a. Let dt be heaptype_1.
+2. If heaptype is deftype, then:
+  a. Let dt be heaptype.
   b. Return $subst_deftype(dt, tv*, tu*).
-3. Let ht be heaptype_1.
+3. Let ht be heaptype.
 4. Return ht.
 
 subst_reftype (REF nul ht) tv* tu*
 1. Return (REF nul $subst_heaptype(ht, tv*, tu*)).
 
-subst_valtype valtype_1 tv* tu*
-1. If valtype_1 is numtype, then:
-  a. Let nt be valtype_1.
+subst_valtype valtype tv* tu*
+1. If valtype is numtype, then:
+  a. Let nt be valtype.
   b. Return $subst_numtype(nt, tv*, tu*).
-2. If valtype_1 is vectype, then:
-  a. Let vt be valtype_1.
+2. If valtype is vectype, then:
+  a. Let vt be valtype.
   b. Return $subst_vectype(vt, tv*, tu*).
-3. If valtype_1 is reftype, then:
-  a. Let rt be valtype_1.
+3. If valtype is reftype, then:
+  a. Let rt be valtype.
   b. Return $subst_reftype(rt, tv*, tu*).
-4. Assert: Due to validation, (valtype_1 = BOT).
+4. Assert: Due to validation, (valtype = BOT).
 5. Return BOT.
 
-subst_storagetype storagetype_1 tv* tu*
-1. If storagetype_1 is valtype, then:
-  a. Let t be storagetype_1.
+subst_storagetype storagetype tv* tu*
+1. If storagetype is valtype, then:
+  a. Let t be storagetype.
   b. Return $subst_valtype(t, tv*, tu*).
-2. Assert: Due to validation, storagetype_1 is packtype.
-3. Let pt be storagetype_1.
+2. Assert: Due to validation, storagetype is packtype.
+3. Let pt be storagetype.
 4. Return $subst_packtype(pt, tv*, tu*).
 
 subst_fieldtype (mut zt) tv* tu*
 1. Return (mut $subst_storagetype(zt, tv*, tu*)).
 
-subst_comptype comptype_1 tv* tu*
-1. If comptype_1 is STRUCT, then:
-  a. Let (STRUCT yt*) be comptype_1.
+subst_comptype comptype tv* tu*
+1. If comptype is STRUCT, then:
+  a. Let (STRUCT yt*) be comptype.
   b. Return (STRUCT $subst_fieldtype(yt, tv*, tu*)*).
-2. If comptype_1 is ARRAY, then:
-  a. Let (ARRAY yt) be comptype_1.
+2. If comptype is ARRAY, then:
+  a. Let (ARRAY yt) be comptype.
   b. Return (ARRAY $subst_fieldtype(yt, tv*, tu*)).
-3. Assert: Due to validation, comptype_1 is FUNC.
-4. Let (FUNC ft) be comptype_1.
+3. Assert: Due to validation, comptype is FUNC.
+4. Let (FUNC ft) be comptype.
 5. Return (FUNC $subst_functype(ft, tv*, tu*)).
 
 subst_subtype (SUB fin tu'* ct) tv* tu*
@@ -28446,21 +28446,21 @@ subst_memtype at lim PAGE tv* tu*
 subst_tagtype dt tv* tu*
 1. Return $subst_deftype(dt, tv*, tu*).
 
-subst_externtype externtype_1 tv* tu*
-1. If externtype_1 is FUNC, then:
-  a. Let (FUNC dt) be externtype_1.
+subst_externtype externtype tv* tu*
+1. If externtype is FUNC, then:
+  a. Let (FUNC dt) be externtype.
   b. Return (FUNC $subst_deftype(dt, tv*, tu*)).
-2. If externtype_1 is GLOBAL, then:
-  a. Let (GLOBAL gt) be externtype_1.
+2. If externtype is GLOBAL, then:
+  a. Let (GLOBAL gt) be externtype.
   b. Return (GLOBAL $subst_globaltype(gt, tv*, tu*)).
-3. If externtype_1 is TABLE, then:
-  a. Let (TABLE tt) be externtype_1.
+3. If externtype is TABLE, then:
+  a. Let (TABLE tt) be externtype.
   b. Return (TABLE $subst_tabletype(tt, tv*, tu*)).
-4. If externtype_1 is MEM, then:
-  a. Let (MEM mt) be externtype_1.
+4. If externtype is MEM, then:
+  a. Let (MEM mt) be externtype.
   b. Return (MEM $subst_memtype(mt, tv*, tu*)).
-5. Assert: Due to validation, externtype_1 is TAG.
-6. Let (TAG jt) be externtype_1.
+5. Assert: Due to validation, externtype is TAG.
+6. Let (TAG jt) be externtype.
 7. Return (TAG $subst_tagtype(jt, tv*, tu*)).
 
 subst_moduletype xt_1* -> xt_2* tv* tu*
@@ -28487,10 +28487,10 @@ subst_all_memtype mt tu^n
 subst_all_moduletype mmt tu^n
 1. Return $subst_moduletype(mmt, (_IDX i)^(i<n), tu^n).
 
-subst_all_deftypes deftype_1* tu*
-1. If (deftype_1* = []), then:
+subst_all_deftypes deftype* tu*
+1. If (deftype* = []), then:
   a. Return [].
-2. Let [dt_1] :: dt* be deftype_1*.
+2. Let [dt_1] :: dt* be deftype*.
 3. Return [$subst_all_deftype(dt_1, tu*)] :: $subst_all_deftypes(dt*, tu*).
 
 rollrt x rectype
@@ -28516,24 +28516,24 @@ expanddt deftype
 memarg0
 1. Return { ALIGN: 0; OFFSET: 0 }.
 
-const consttype_1 c
-1. If consttype_1 is numtype, then:
-  a. Let numtype be consttype_1.
+const consttype c
+1. If consttype is numtype, then:
+  a. Let numtype be consttype.
   b. Return (numtype.CONST c).
-2. Assert: Due to validation, consttype_1 is vectype.
-3. Let vectype be consttype_1.
+2. Assert: Due to validation, consttype is vectype.
+3. Let vectype be consttype.
 4. Return (vectype.CONST c).
 
-free_opt free_1?
-1. If free_1? is not defined, then:
+free_opt free?
+1. If free? is not defined, then:
   a. Return {}.
-2. Let ?(free) be free_1?.
+2. Let ?(free) be free?.
 3. Return free.
 
-free_list free_1*
-1. If (free_1* = []), then:
+free_list free*
+1. If (free* = []), then:
   a. Return {}.
-2. Let [free] :: free'* be free_1*.
+2. Let [free] :: free'* be free*.
 3. Return free ++ $free_list(free'*).
 
 free_typeidx typeidx
@@ -28563,18 +28563,18 @@ free_localidx localidx
 free_labelidx labelidx
 1. Return { LABELS: [labelidx] }.
 
-free_externidx externidx_1
-1. If externidx_1 is FUNC, then:
-  a. Let (FUNC funcidx) be externidx_1.
+free_externidx externidx
+1. If externidx is FUNC, then:
+  a. Let (FUNC funcidx) be externidx.
   b. Return $free_funcidx(funcidx).
-2. If externidx_1 is GLOBAL, then:
-  a. Let (GLOBAL globalidx) be externidx_1.
+2. If externidx is GLOBAL, then:
+  a. Let (GLOBAL globalidx) be externidx.
   b. Return $free_globalidx(globalidx).
-3. If externidx_1 is TABLE, then:
-  a. Let (TABLE tableidx) be externidx_1.
+3. If externidx is TABLE, then:
+  a. Let (TABLE tableidx) be externidx.
   b. Return $free_tableidx(tableidx).
-4. Assert: Due to validation, externidx_1 is MEM.
-5. Let (MEM memidx) be externidx_1.
+4. Assert: Due to validation, externidx is MEM.
+5. Let (MEM memidx) be externidx.
 6. Return $free_memidx(memidx).
 
 free_addrtype addrtype
@@ -28586,76 +28586,76 @@ free_numtype numtype
 free_packtype packtype
 1. Return {}.
 
-free_lanetype lanetype_1
-1. If lanetype_1 is numtype, then:
-  a. Let numtype be lanetype_1.
+free_lanetype lanetype
+1. If lanetype is numtype, then:
+  a. Let numtype be lanetype.
   b. Return $free_numtype(numtype).
-2. Assert: Due to validation, lanetype_1 is packtype.
-3. Let packtype be lanetype_1.
+2. Assert: Due to validation, lanetype is packtype.
+3. Let packtype be lanetype.
 4. Return $free_packtype(packtype).
 
 free_vectype vectype
 1. Return {}.
 
-free_consttype consttype_1
-1. If consttype_1 is numtype, then:
-  a. Let numtype be consttype_1.
+free_consttype consttype
+1. If consttype is numtype, then:
+  a. Let numtype be consttype.
   b. Return $free_numtype(numtype).
-2. Assert: Due to validation, consttype_1 is vectype.
-3. Let vectype be consttype_1.
+2. Assert: Due to validation, consttype is vectype.
+3. Let vectype be consttype.
 4. Return $free_vectype(vectype).
 
 free_absheaptype absheaptype
 1. Return {}.
 
-free_typevar typevar_1
-1. If typevar_1 is _IDX, then:
-  a. Let (_IDX typeidx) be typevar_1.
+free_typevar typevar
+1. If typevar is _IDX, then:
+  a. Let (_IDX typeidx) be typevar.
   b. Return $free_typeidx(typeidx).
-2. Assert: Due to validation, typevar_1 is REC.
+2. Assert: Due to validation, typevar is REC.
 3. Return {}.
 
-free_heaptype heaptype_1
-1. If heaptype_1 is absheaptype, then:
-  a. Let absheaptype be heaptype_1.
+free_heaptype heaptype
+1. If heaptype is absheaptype, then:
+  a. Let absheaptype be heaptype.
   b. Return $free_absheaptype(absheaptype).
-2. Assert: Due to validation, heaptype_1 is typeuse.
-3. Let typeuse be heaptype_1.
+2. Assert: Due to validation, heaptype is typeuse.
+3. Let typeuse be heaptype.
 4. Return $free_typeuse(typeuse).
 
 free_reftype (REF nul heaptype)
 1. Return $free_heaptype(heaptype).
 
-free_typeuse typeuse_1
-1. If typeuse_1 is typevar, then:
-  a. Let typevar be typeuse_1.
+free_typeuse typeuse
+1. If typeuse is typevar, then:
+  a. Let typevar be typeuse.
   b. Return $free_typevar(typevar).
-2. Assert: Due to validation, typeuse_1 is deftype.
-3. Let deftype be typeuse_1.
+2. Assert: Due to validation, typeuse is deftype.
+3. Let deftype be typeuse.
 4. Return $free_deftype(deftype).
 
-free_valtype valtype_1
-1. If valtype_1 is numtype, then:
-  a. Let numtype be valtype_1.
+free_valtype valtype
+1. If valtype is numtype, then:
+  a. Let numtype be valtype.
   b. Return $free_numtype(numtype).
-2. If valtype_1 is vectype, then:
-  a. Let vectype be valtype_1.
+2. If valtype is vectype, then:
+  a. Let vectype be valtype.
   b. Return $free_vectype(vectype).
-3. If valtype_1 is reftype, then:
-  a. Let reftype be valtype_1.
+3. If valtype is reftype, then:
+  a. Let reftype be valtype.
   b. Return $free_reftype(reftype).
-4. Assert: Due to validation, (valtype_1 = BOT).
+4. Assert: Due to validation, (valtype = BOT).
 5. Return {}.
 
 free_resulttype valtype*
 1. Return $free_list($free_valtype(valtype)*).
 
-free_storagetype storagetype_1
-1. If storagetype_1 is valtype, then:
-  a. Let valtype be storagetype_1.
+free_storagetype storagetype
+1. If storagetype is valtype, then:
+  a. Let valtype be storagetype.
   b. Return $free_valtype(valtype).
-2. Assert: Due to validation, storagetype_1 is packtype.
-3. Let packtype be storagetype_1.
+2. Assert: Due to validation, storagetype is packtype.
+3. Let packtype be storagetype.
 4. Return $free_packtype(packtype).
 
 free_fieldtype (mut storagetype)
@@ -28670,15 +28670,15 @@ free_arraytype fieldtype
 free_functype resulttype_1 -> resulttype_2
 1. Return $free_resulttype(resulttype_1) ++ $free_resulttype(resulttype_2).
 
-free_comptype comptype_1
-1. If comptype_1 is STRUCT, then:
-  a. Let (STRUCT structtype) be comptype_1.
+free_comptype comptype
+1. If comptype is STRUCT, then:
+  a. Let (STRUCT structtype) be comptype.
   b. Return $free_structtype(structtype).
-2. If comptype_1 is ARRAY, then:
-  a. Let (ARRAY arraytype) be comptype_1.
+2. If comptype is ARRAY, then:
+  a. Let (ARRAY arraytype) be comptype.
   b. Return $free_arraytype(arraytype).
-3. Assert: Due to validation, comptype_1 is FUNC.
-4. Let (FUNC functype) be comptype_1.
+3. Assert: Due to validation, comptype is FUNC.
+4. Let (FUNC functype) be comptype.
 5. Return $free_functype(functype).
 
 free_subtype (SUB fin typeuse* comptype)
@@ -28708,21 +28708,21 @@ free_elemtype reftype
 free_datatype OK
 1. Return {}.
 
-free_externtype externtype_1
-1. If externtype_1 is FUNC, then:
-  a. Let (FUNC typeuse) be externtype_1.
+free_externtype externtype
+1. If externtype is FUNC, then:
+  a. Let (FUNC typeuse) be externtype.
   b. Return $free_typeuse(typeuse).
-2. If externtype_1 is GLOBAL, then:
-  a. Let (GLOBAL globaltype) be externtype_1.
+2. If externtype is GLOBAL, then:
+  a. Let (GLOBAL globaltype) be externtype.
   b. Return $free_globaltype(globaltype).
-3. If externtype_1 is TABLE, then:
-  a. Let (TABLE tabletype) be externtype_1.
+3. If externtype is TABLE, then:
+  a. Let (TABLE tabletype) be externtype.
   b. Return $free_tabletype(tabletype).
-4. If externtype_1 is MEM, then:
-  a. Let (MEM memtype) be externtype_1.
+4. If externtype is MEM, then:
+  a. Let (MEM memtype) be externtype.
   b. Return $free_memtype(memtype).
-5. Assert: Due to validation, externtype_1 is TAG.
-6. Let (TAG tagtype) be externtype_1.
+5. Assert: Due to validation, externtype is TAG.
+6. Let (TAG tagtype) be externtype.
 7. Return $free_tagtype(tagtype).
 
 free_moduletype externtype_1* -> externtype_2*
@@ -28731,310 +28731,310 @@ free_moduletype externtype_1* -> externtype_2*
 free_shape lanetype X dim
 1. Return $free_lanetype(lanetype).
 
-free_blocktype blocktype_1
-1. If blocktype_1 is _RESULT, then:
-  a. Let (_RESULT valtype?) be blocktype_1.
+free_blocktype blocktype
+1. If blocktype is _RESULT, then:
+  a. Let (_RESULT valtype?) be blocktype.
   b. Return $free_opt($free_valtype(valtype)?).
-2. Assert: Due to validation, blocktype_1 is _IDX.
-3. Let (_IDX funcidx) be blocktype_1.
+2. Assert: Due to validation, blocktype is _IDX.
+3. Let (_IDX funcidx) be blocktype.
 4. Return $free_funcidx(funcidx).
 
-shift_labelidxs labelidx_1*
-1. If (labelidx_1* = []), then:
+shift_labelidxs labelidx*
+1. If (labelidx* = []), then:
   a. Return [].
-2. Let [labelidx_0] :: labelidx'* be labelidx_1*.
+2. Let [labelidx_0] :: labelidx'* be labelidx*.
 3. If (labelidx_0 = 0), then:
   a. Return $shift_labelidxs(labelidx'*).
-4. Let [labelidx] :: labelidx'* be labelidx_1*.
+4. Let [labelidx] :: labelidx'* be labelidx*.
 5. Return [(labelidx - 1)] :: $shift_labelidxs(labelidx'*).
 
-free_instr instr_3
-1. If (instr_3 = NOP), then:
+free_instr instr'
+1. If (instr' = NOP), then:
   a. Return {}.
-2. If (instr_3 = UNREACHABLE), then:
+2. If (instr' = UNREACHABLE), then:
   a. Return {}.
-3. If (instr_3 = DROP), then:
+3. If (instr' = DROP), then:
   a. Return {}.
-4. If instr_3 is SELECT, then:
-  a. Let (SELECT valtype*?) be instr_3.
+4. If instr' is SELECT, then:
+  a. Let (SELECT valtype*?) be instr'.
   b. Return $free_opt($free_list($free_valtype(valtype)*)?).
-5. If instr_3 is BLOCK, then:
-  a. Let (BLOCK blocktype instr*) be instr_3.
+5. If instr' is BLOCK, then:
+  a. Let (BLOCK blocktype instr*) be instr'.
   b. Return $free_blocktype(blocktype) ++ $free_block(instr*).
-6. If instr_3 is LOOP, then:
-  a. Let (LOOP blocktype instr*) be instr_3.
+6. If instr' is LOOP, then:
+  a. Let (LOOP blocktype instr*) be instr'.
   b. Return $free_blocktype(blocktype) ++ $free_block(instr*).
-7. If instr_3 is IF, then:
-  a. Let (IF blocktype instr_1* ELSE instr_2*) be instr_3.
+7. If instr' is IF, then:
+  a. Let (IF blocktype instr_1* ELSE instr_2*) be instr'.
   b. Return $free_blocktype(blocktype) ++ $free_block(instr_1*) ++ $free_block(instr_2*).
-8. If instr_3 is BR, then:
-  a. Let (BR labelidx) be instr_3.
+8. If instr' is BR, then:
+  a. Let (BR labelidx) be instr'.
   b. Return $free_labelidx(labelidx).
-9. If instr_3 is BR_IF, then:
-  a. Let (BR_IF labelidx) be instr_3.
+9. If instr' is BR_IF, then:
+  a. Let (BR_IF labelidx) be instr'.
   b. Return $free_labelidx(labelidx).
-10. If instr_3 is BR_TABLE, then:
-  a. Let (BR_TABLE labelidx* labelidx') be instr_3.
+10. If instr' is BR_TABLE, then:
+  a. Let (BR_TABLE labelidx* labelidx') be instr'.
   b. Return $free_list($free_labelidx(labelidx)*) ++ $free_labelidx(labelidx).
-11. If instr_3 is BR_ON_NULL, then:
-  a. Let (BR_ON_NULL labelidx) be instr_3.
+11. If instr' is BR_ON_NULL, then:
+  a. Let (BR_ON_NULL labelidx) be instr'.
   b. Return $free_labelidx(labelidx).
-12. If instr_3 is BR_ON_NON_NULL, then:
-  a. Let (BR_ON_NON_NULL labelidx) be instr_3.
+12. If instr' is BR_ON_NON_NULL, then:
+  a. Let (BR_ON_NON_NULL labelidx) be instr'.
   b. Return $free_labelidx(labelidx).
-13. If instr_3 is BR_ON_CAST, then:
-  a. Let (BR_ON_CAST labelidx reftype_1 reftype_2) be instr_3.
+13. If instr' is BR_ON_CAST, then:
+  a. Let (BR_ON_CAST labelidx reftype_1 reftype_2) be instr'.
   b. Return $free_labelidx(labelidx) ++ $free_reftype(reftype_1) ++ $free_reftype(reftype_2).
-14. If instr_3 is BR_ON_CAST_FAIL, then:
-  a. Let (BR_ON_CAST_FAIL labelidx reftype_1 reftype_2) be instr_3.
+14. If instr' is BR_ON_CAST_FAIL, then:
+  a. Let (BR_ON_CAST_FAIL labelidx reftype_1 reftype_2) be instr'.
   b. Return $free_labelidx(labelidx) ++ $free_reftype(reftype_1) ++ $free_reftype(reftype_2).
-15. If instr_3 is CALL, then:
-  a. Let (CALL funcidx) be instr_3.
+15. If instr' is CALL, then:
+  a. Let (CALL funcidx) be instr'.
   b. Return $free_funcidx(funcidx).
-16. If instr_3 is CALL_REF, then:
-  a. Let (CALL_REF typeuse) be instr_3.
+16. If instr' is CALL_REF, then:
+  a. Let (CALL_REF typeuse) be instr'.
   b. Return $free_typeuse(typeuse).
-17. If instr_3 is CALL_INDIRECT, then:
-  a. Let (CALL_INDIRECT tableidx typeuse) be instr_3.
+17. If instr' is CALL_INDIRECT, then:
+  a. Let (CALL_INDIRECT tableidx typeuse) be instr'.
   b. Return $free_tableidx(tableidx) ++ $free_typeuse(typeuse).
-18. If (instr_3 = RETURN), then:
+18. If (instr' = RETURN), then:
   a. Return {}.
-19. If instr_3 is RETURN_CALL, then:
-  a. Let (RETURN_CALL funcidx) be instr_3.
+19. If instr' is RETURN_CALL, then:
+  a. Let (RETURN_CALL funcidx) be instr'.
   b. Return $free_funcidx(funcidx).
-20. If instr_3 is RETURN_CALL_REF, then:
-  a. Let (RETURN_CALL_REF typeuse) be instr_3.
+20. If instr' is RETURN_CALL_REF, then:
+  a. Let (RETURN_CALL_REF typeuse) be instr'.
   b. Return $free_typeuse(typeuse).
-21. If instr_3 is RETURN_CALL_INDIRECT, then:
-  a. Let (RETURN_CALL_INDIRECT tableidx typeuse) be instr_3.
+21. If instr' is RETURN_CALL_INDIRECT, then:
+  a. Let (RETURN_CALL_INDIRECT tableidx typeuse) be instr'.
   b. Return $free_tableidx(tableidx) ++ $free_typeuse(typeuse).
-22. If instr_3 is CONST, then:
-  a. Let (numtype.CONST numlit) be instr_3.
+22. If instr' is CONST, then:
+  a. Let (numtype.CONST numlit) be instr'.
   b. Return $free_numtype(numtype).
-23. If instr_3 is UNOP, then:
-  a. Let (UNOP numtype unop) be instr_3.
+23. If instr' is UNOP, then:
+  a. Let (UNOP numtype unop) be instr'.
   b. Return $free_numtype(numtype).
-24. If instr_3 is BINOP, then:
-  a. Let (BINOP numtype binop) be instr_3.
+24. If instr' is BINOP, then:
+  a. Let (BINOP numtype binop) be instr'.
   b. Return $free_numtype(numtype).
-25. If instr_3 is TESTOP, then:
-  a. Let (TESTOP numtype testop) be instr_3.
+25. If instr' is TESTOP, then:
+  a. Let (TESTOP numtype testop) be instr'.
   b. Return $free_numtype(numtype).
-26. If instr_3 is RELOP, then:
-  a. Let (RELOP numtype relop) be instr_3.
+26. If instr' is RELOP, then:
+  a. Let (RELOP numtype relop) be instr'.
   b. Return $free_numtype(numtype).
-27. If instr_3 is CVTOP, then:
-  a. Let (CVTOP numtype_1 numtype_2 cvtop) be instr_3.
+27. If instr' is CVTOP, then:
+  a. Let (CVTOP numtype_1 numtype_2 cvtop) be instr'.
   b. Return $free_numtype(numtype_1) ++ $free_numtype(numtype_2).
-28. If instr_3 is VCONST, then:
-  a. Let (vectype.CONST veclit) be instr_3.
+28. If instr' is VCONST, then:
+  a. Let (vectype.CONST veclit) be instr'.
   b. Return $free_vectype(vectype).
-29. If instr_3 is VVUNOP, then:
-  a. Let (VVUNOP vectype vvunop) be instr_3.
+29. If instr' is VVUNOP, then:
+  a. Let (VVUNOP vectype vvunop) be instr'.
   b. Return $free_vectype(vectype).
-30. If instr_3 is VVBINOP, then:
-  a. Let (VVBINOP vectype vvbinop) be instr_3.
+30. If instr' is VVBINOP, then:
+  a. Let (VVBINOP vectype vvbinop) be instr'.
   b. Return $free_vectype(vectype).
-31. If instr_3 is VVTERNOP, then:
-  a. Let (VVTERNOP vectype vvternop) be instr_3.
+31. If instr' is VVTERNOP, then:
+  a. Let (VVTERNOP vectype vvternop) be instr'.
   b. Return $free_vectype(vectype).
-32. If instr_3 is VVTESTOP, then:
-  a. Let (VVTESTOP vectype vvtestop) be instr_3.
+32. If instr' is VVTESTOP, then:
+  a. Let (VVTESTOP vectype vvtestop) be instr'.
   b. Return $free_vectype(vectype).
-33. If instr_3 is VUNOP, then:
-  a. Let (VUNOP shape vunop) be instr_3.
+33. If instr' is VUNOP, then:
+  a. Let (VUNOP shape vunop) be instr'.
   b. Return $free_shape(shape).
-34. If instr_3 is VBINOP, then:
-  a. Let (VBINOP shape vbinop) be instr_3.
+34. If instr' is VBINOP, then:
+  a. Let (VBINOP shape vbinop) be instr'.
   b. Return $free_shape(shape).
-35. If instr_3 is VTERNOP, then:
-  a. Let (VTERNOP shape vternop) be instr_3.
+35. If instr' is VTERNOP, then:
+  a. Let (VTERNOP shape vternop) be instr'.
   b. Return $free_shape(shape).
-36. If instr_3 is VTESTOP, then:
-  a. Let (VTESTOP shape vtestop) be instr_3.
+36. If instr' is VTESTOP, then:
+  a. Let (VTESTOP shape vtestop) be instr'.
   b. Return $free_shape(shape).
-37. If instr_3 is VRELOP, then:
-  a. Let (VRELOP shape vrelop) be instr_3.
+37. If instr' is VRELOP, then:
+  a. Let (VRELOP shape vrelop) be instr'.
   b. Return $free_shape(shape).
-38. If instr_3 is VSHIFTOP, then:
-  a. Let (VSHIFTOP ishape vshiftop) be instr_3.
+38. If instr' is VSHIFTOP, then:
+  a. Let (VSHIFTOP ishape vshiftop) be instr'.
   b. Return $free_shape(ishape).
-39. If instr_3 is VBITMASK, then:
-  a. Let (VBITMASK ishape) be instr_3.
+39. If instr' is VBITMASK, then:
+  a. Let (VBITMASK ishape) be instr'.
   b. Return $free_shape(ishape).
-40. If instr_3 is VSWIZZLOP, then:
-  a. Let (VSWIZZLOP bshape vswizzlop) be instr_3.
+40. If instr' is VSWIZZLOP, then:
+  a. Let (VSWIZZLOP bshape vswizzlop) be instr'.
   b. Return $free_shape(bshape).
-41. If instr_3 is VSHUFFLE, then:
-  a. Let (VSHUFFLE bshape laneidx*) be instr_3.
+41. If instr' is VSHUFFLE, then:
+  a. Let (VSHUFFLE bshape laneidx*) be instr'.
   b. Return $free_shape(bshape).
-42. If instr_3 is VEXTUNOP, then:
-  a. Let (VEXTUNOP ishape_1 ishape_2 vextunop) be instr_3.
+42. If instr' is VEXTUNOP, then:
+  a. Let (VEXTUNOP ishape_1 ishape_2 vextunop) be instr'.
   b. Return $free_shape(ishape_1) ++ $free_shape(ishape_2).
-43. If instr_3 is VEXTBINOP, then:
-  a. Let (VEXTBINOP ishape_1 ishape_2 vextbinop) be instr_3.
+43. If instr' is VEXTBINOP, then:
+  a. Let (VEXTBINOP ishape_1 ishape_2 vextbinop) be instr'.
   b. Return $free_shape(ishape_1) ++ $free_shape(ishape_2).
-44. If instr_3 is VNARROW, then:
-  a. Let (VNARROW ishape_1 ishape_2 sx) be instr_3.
+44. If instr' is VNARROW, then:
+  a. Let (VNARROW ishape_1 ishape_2 sx) be instr'.
   b. Return $free_shape(ishape_1) ++ $free_shape(ishape_2).
-45. If instr_3 is VCVTOP, then:
-  a. Let (VCVTOP shape_1 shape_2 vcvtop half? zero?) be instr_3.
+45. If instr' is VCVTOP, then:
+  a. Let (VCVTOP shape_1 shape_2 vcvtop half? zero?) be instr'.
   b. Return $free_shape(shape_1) ++ $free_shape(shape_2).
-46. If instr_3 is VSPLAT, then:
-  a. Let (VSPLAT shape) be instr_3.
+46. If instr' is VSPLAT, then:
+  a. Let (VSPLAT shape) be instr'.
   b. Return $free_shape(shape).
-47. If instr_3 is VEXTRACT_LANE, then:
-  a. Let (VEXTRACT_LANE shape sx? laneidx) be instr_3.
+47. If instr' is VEXTRACT_LANE, then:
+  a. Let (VEXTRACT_LANE shape sx? laneidx) be instr'.
   b. Return $free_shape(shape).
-48. If instr_3 is VREPLACE_LANE, then:
-  a. Let (VREPLACE_LANE shape laneidx) be instr_3.
+48. If instr' is VREPLACE_LANE, then:
+  a. Let (VREPLACE_LANE shape laneidx) be instr'.
   b. Return $free_shape(shape).
-49. If instr_3 is REF.NULL, then:
-  a. Let (REF.NULL heaptype) be instr_3.
+49. If instr' is REF.NULL, then:
+  a. Let (REF.NULL heaptype) be instr'.
   b. Return $free_heaptype(heaptype).
-50. If (instr_3 = REF.IS_NULL), then:
+50. If (instr' = REF.IS_NULL), then:
   a. Return {}.
-51. If (instr_3 = REF.AS_NON_NULL), then:
+51. If (instr' = REF.AS_NON_NULL), then:
   a. Return {}.
-52. If (instr_3 = REF.EQ), then:
+52. If (instr' = REF.EQ), then:
   a. Return {}.
-53. If instr_3 is REF.TEST, then:
-  a. Let (REF.TEST reftype) be instr_3.
+53. If instr' is REF.TEST, then:
+  a. Let (REF.TEST reftype) be instr'.
   b. Return $free_reftype(reftype).
-54. If instr_3 is REF.CAST, then:
-  a. Let (REF.CAST reftype) be instr_3.
+54. If instr' is REF.CAST, then:
+  a. Let (REF.CAST reftype) be instr'.
   b. Return $free_reftype(reftype).
-55. If instr_3 is REF.FUNC, then:
-  a. Let (REF.FUNC funcidx) be instr_3.
+55. If instr' is REF.FUNC, then:
+  a. Let (REF.FUNC funcidx) be instr'.
   b. Return $free_funcidx(funcidx).
-56. If (instr_3 = REF.I31), then:
+56. If (instr' = REF.I31), then:
   a. Return {}.
-57. If instr_3 is I31.GET, then:
+57. If instr' is I31.GET, then:
   a. Return {}.
-58. If instr_3 is STRUCT.NEW, then:
+58. If instr' is STRUCT.NEW, then:
   a. Return {}.
-59. If instr_3 is STRUCT.NEW_DEFAULT, then:
-  a. Let (STRUCT.NEW_DEFAULT typeidx) be instr_3.
+59. If instr' is STRUCT.NEW_DEFAULT, then:
+  a. Let (STRUCT.NEW_DEFAULT typeidx) be instr'.
   b. Return $free_typeidx(typeidx).
-60. If instr_3 is STRUCT.GET, then:
-  a. Let (STRUCT.GET sx? typeidx _32) be instr_3.
+60. If instr' is STRUCT.GET, then:
+  a. Let (STRUCT.GET sx? typeidx u32) be instr'.
   b. Return $free_typeidx(typeidx).
-61. If instr_3 is STRUCT.SET, then:
-  a. Let (STRUCT.SET typeidx _32) be instr_3.
+61. If instr' is STRUCT.SET, then:
+  a. Let (STRUCT.SET typeidx u32) be instr'.
   b. Return $free_typeidx(typeidx).
-62. If instr_3 is ARRAY.NEW, then:
-  a. Let (ARRAY.NEW typeidx) be instr_3.
+62. If instr' is ARRAY.NEW, then:
+  a. Let (ARRAY.NEW typeidx) be instr'.
   b. Return $free_typeidx(typeidx).
-63. If instr_3 is ARRAY.NEW_DEFAULT, then:
-  a. Let (ARRAY.NEW_DEFAULT typeidx) be instr_3.
+63. If instr' is ARRAY.NEW_DEFAULT, then:
+  a. Let (ARRAY.NEW_DEFAULT typeidx) be instr'.
   b. Return $free_typeidx(typeidx).
-64. If instr_3 is ARRAY.NEW_FIXED, then:
-  a. Let (ARRAY.NEW_FIXED typeidx _32) be instr_3.
+64. If instr' is ARRAY.NEW_FIXED, then:
+  a. Let (ARRAY.NEW_FIXED typeidx u32) be instr'.
   b. Return $free_typeidx(typeidx).
-65. If instr_3 is ARRAY.NEW_DATA, then:
-  a. Let (ARRAY.NEW_DATA typeidx dataidx) be instr_3.
+65. If instr' is ARRAY.NEW_DATA, then:
+  a. Let (ARRAY.NEW_DATA typeidx dataidx) be instr'.
   b. Return $free_typeidx(typeidx) ++ $free_dataidx(dataidx).
-66. If instr_3 is ARRAY.NEW_ELEM, then:
-  a. Let (ARRAY.NEW_ELEM typeidx elemidx) be instr_3.
+66. If instr' is ARRAY.NEW_ELEM, then:
+  a. Let (ARRAY.NEW_ELEM typeidx elemidx) be instr'.
   b. Return $free_typeidx(typeidx) ++ $free_elemidx(elemidx).
-67. If instr_3 is ARRAY.GET, then:
-  a. Let (ARRAY.GET sx? typeidx) be instr_3.
+67. If instr' is ARRAY.GET, then:
+  a. Let (ARRAY.GET sx? typeidx) be instr'.
   b. Return $free_typeidx(typeidx).
-68. If instr_3 is ARRAY.SET, then:
-  a. Let (ARRAY.SET typeidx) be instr_3.
+68. If instr' is ARRAY.SET, then:
+  a. Let (ARRAY.SET typeidx) be instr'.
   b. Return $free_typeidx(typeidx).
-69. If (instr_3 = ARRAY.LEN), then:
+69. If (instr' = ARRAY.LEN), then:
   a. Return {}.
-70. If instr_3 is ARRAY.FILL, then:
-  a. Let (ARRAY.FILL typeidx) be instr_3.
+70. If instr' is ARRAY.FILL, then:
+  a. Let (ARRAY.FILL typeidx) be instr'.
   b. Return $free_typeidx(typeidx).
-71. If instr_3 is ARRAY.COPY, then:
-  a. Let (ARRAY.COPY typeidx_1 typeidx_2) be instr_3.
+71. If instr' is ARRAY.COPY, then:
+  a. Let (ARRAY.COPY typeidx_1 typeidx_2) be instr'.
   b. Return $free_typeidx(typeidx_1) ++ $free_typeidx(typeidx_2).
-72. If instr_3 is ARRAY.INIT_DATA, then:
-  a. Let (ARRAY.INIT_DATA typeidx dataidx) be instr_3.
+72. If instr' is ARRAY.INIT_DATA, then:
+  a. Let (ARRAY.INIT_DATA typeidx dataidx) be instr'.
   b. Return $free_typeidx(typeidx) ++ $free_dataidx(dataidx).
-73. If instr_3 is ARRAY.INIT_ELEM, then:
-  a. Let (ARRAY.INIT_ELEM typeidx elemidx) be instr_3.
+73. If instr' is ARRAY.INIT_ELEM, then:
+  a. Let (ARRAY.INIT_ELEM typeidx elemidx) be instr'.
   b. Return $free_typeidx(typeidx) ++ $free_elemidx(elemidx).
-74. If (instr_3 = EXTERN.CONVERT_ANY), then:
+74. If (instr' = EXTERN.CONVERT_ANY), then:
   a. Return {}.
-75. If (instr_3 = ANY.CONVERT_EXTERN), then:
+75. If (instr' = ANY.CONVERT_EXTERN), then:
   a. Return {}.
-76. If instr_3 is LOCAL.GET, then:
-  a. Let (LOCAL.GET localidx) be instr_3.
+76. If instr' is LOCAL.GET, then:
+  a. Let (LOCAL.GET localidx) be instr'.
   b. Return $free_localidx(localidx).
-77. If instr_3 is LOCAL.SET, then:
-  a. Let (LOCAL.SET localidx) be instr_3.
+77. If instr' is LOCAL.SET, then:
+  a. Let (LOCAL.SET localidx) be instr'.
   b. Return $free_localidx(localidx).
-78. If instr_3 is LOCAL.TEE, then:
-  a. Let (LOCAL.TEE localidx) be instr_3.
+78. If instr' is LOCAL.TEE, then:
+  a. Let (LOCAL.TEE localidx) be instr'.
   b. Return $free_localidx(localidx).
-79. If instr_3 is GLOBAL.GET, then:
-  a. Let (GLOBAL.GET globalidx) be instr_3.
+79. If instr' is GLOBAL.GET, then:
+  a. Let (GLOBAL.GET globalidx) be instr'.
   b. Return $free_globalidx(globalidx).
-80. If instr_3 is GLOBAL.SET, then:
-  a. Let (GLOBAL.SET globalidx) be instr_3.
+80. If instr' is GLOBAL.SET, then:
+  a. Let (GLOBAL.SET globalidx) be instr'.
   b. Return $free_globalidx(globalidx).
-81. If instr_3 is TABLE.GET, then:
-  a. Let (TABLE.GET tableidx) be instr_3.
+81. If instr' is TABLE.GET, then:
+  a. Let (TABLE.GET tableidx) be instr'.
   b. Return $free_tableidx(tableidx).
-82. If instr_3 is TABLE.SET, then:
-  a. Let (TABLE.SET tableidx) be instr_3.
+82. If instr' is TABLE.SET, then:
+  a. Let (TABLE.SET tableidx) be instr'.
   b. Return $free_tableidx(tableidx).
-83. If instr_3 is TABLE.SIZE, then:
-  a. Let (TABLE.SIZE tableidx) be instr_3.
+83. If instr' is TABLE.SIZE, then:
+  a. Let (TABLE.SIZE tableidx) be instr'.
   b. Return $free_tableidx(tableidx).
-84. If instr_3 is TABLE.GROW, then:
-  a. Let (TABLE.GROW tableidx) be instr_3.
+84. If instr' is TABLE.GROW, then:
+  a. Let (TABLE.GROW tableidx) be instr'.
   b. Return $free_tableidx(tableidx).
-85. If instr_3 is TABLE.FILL, then:
-  a. Let (TABLE.FILL tableidx) be instr_3.
+85. If instr' is TABLE.FILL, then:
+  a. Let (TABLE.FILL tableidx) be instr'.
   b. Return $free_tableidx(tableidx).
-86. If instr_3 is TABLE.COPY, then:
-  a. Let (TABLE.COPY tableidx_1 tableidx_2) be instr_3.
+86. If instr' is TABLE.COPY, then:
+  a. Let (TABLE.COPY tableidx_1 tableidx_2) be instr'.
   b. Return $free_tableidx(tableidx_1) ++ $free_tableidx(tableidx_2).
-87. If instr_3 is TABLE.INIT, then:
-  a. Let (TABLE.INIT tableidx elemidx) be instr_3.
+87. If instr' is TABLE.INIT, then:
+  a. Let (TABLE.INIT tableidx elemidx) be instr'.
   b. Return $free_tableidx(tableidx) ++ $free_elemidx(elemidx).
-88. If instr_3 is ELEM.DROP, then:
-  a. Let (ELEM.DROP elemidx) be instr_3.
+88. If instr' is ELEM.DROP, then:
+  a. Let (ELEM.DROP elemidx) be instr'.
   b. Return $free_elemidx(elemidx).
-89. If instr_3 is LOAD, then:
-  a. Let (LOAD numtype loadop? memidx memarg) be instr_3.
+89. If instr' is LOAD, then:
+  a. Let (LOAD numtype loadop? memidx memarg) be instr'.
   b. Return $free_numtype(numtype) ++ $free_memidx(memidx).
-90. If instr_3 is STORE, then:
-  a. Let (STORE numtype storeop? memidx memarg) be instr_3.
+90. If instr' is STORE, then:
+  a. Let (STORE numtype storeop? memidx memarg) be instr'.
   b. Return $free_numtype(numtype) ++ $free_memidx(memidx).
-91. If instr_3 is VLOAD, then:
-  a. Let (VLOAD vectype vloadop? memidx memarg) be instr_3.
+91. If instr' is VLOAD, then:
+  a. Let (VLOAD vectype vloadop? memidx memarg) be instr'.
   b. Return $free_vectype(vectype) ++ $free_memidx(memidx).
-92. If instr_3 is VLOAD_LANE, then:
-  a. Let (VLOAD_LANE vectype sz memidx memarg laneidx) be instr_3.
+92. If instr' is VLOAD_LANE, then:
+  a. Let (VLOAD_LANE vectype sz memidx memarg laneidx) be instr'.
   b. Return $free_vectype(vectype) ++ $free_memidx(memidx).
-93. If instr_3 is VSTORE, then:
-  a. Let (VSTORE vectype memidx memarg) be instr_3.
+93. If instr' is VSTORE, then:
+  a. Let (VSTORE vectype memidx memarg) be instr'.
   b. Return $free_vectype(vectype) ++ $free_memidx(memidx).
-94. If instr_3 is VSTORE_LANE, then:
-  a. Let (VSTORE_LANE vectype sz memidx memarg laneidx) be instr_3.
+94. If instr' is VSTORE_LANE, then:
+  a. Let (VSTORE_LANE vectype sz memidx memarg laneidx) be instr'.
   b. Return $free_vectype(vectype) ++ $free_memidx(memidx).
-95. If instr_3 is MEMORY.SIZE, then:
-  a. Let (MEMORY.SIZE memidx) be instr_3.
+95. If instr' is MEMORY.SIZE, then:
+  a. Let (MEMORY.SIZE memidx) be instr'.
   b. Return $free_memidx(memidx).
-96. If instr_3 is MEMORY.GROW, then:
-  a. Let (MEMORY.GROW memidx) be instr_3.
+96. If instr' is MEMORY.GROW, then:
+  a. Let (MEMORY.GROW memidx) be instr'.
   b. Return $free_memidx(memidx).
-97. If instr_3 is MEMORY.FILL, then:
-  a. Let (MEMORY.FILL memidx) be instr_3.
+97. If instr' is MEMORY.FILL, then:
+  a. Let (MEMORY.FILL memidx) be instr'.
   b. Return $free_memidx(memidx).
-98. If instr_3 is MEMORY.COPY, then:
-  a. Let (MEMORY.COPY memidx_1 memidx_2) be instr_3.
+98. If instr' is MEMORY.COPY, then:
+  a. Let (MEMORY.COPY memidx_1 memidx_2) be instr'.
   b. Return $free_memidx(memidx_1) ++ $free_memidx(memidx_2).
-99. If instr_3 is MEMORY.INIT, then:
-  a. Let (MEMORY.INIT memidx dataidx) be instr_3.
+99. If instr' is MEMORY.INIT, then:
+  a. Let (MEMORY.INIT memidx dataidx) be instr'.
   b. Return $free_memidx(memidx) ++ $free_dataidx(dataidx).
-100. Assert: Due to validation, instr_3 is DATA.DROP.
-101. Let (DATA.DROP dataidx) be instr_3.
+100. Assert: Due to validation, instr' is DATA.DROP.
+101. Let (DATA.DROP dataidx) be instr'.
 102. Return $free_dataidx(dataidx).
 
 free_block instr*
@@ -29065,23 +29065,23 @@ free_mem (MEMORY memtype)
 free_tag (TAG typeidx)
 1. Return $free_typeidx(typeidx).
 
-free_elemmode elemmode_1
-1. If elemmode_1 is ACTIVE, then:
-  a. Let (ACTIVE tableidx expr) be elemmode_1.
+free_elemmode elemmode
+1. If elemmode is ACTIVE, then:
+  a. Let (ACTIVE tableidx expr) be elemmode.
   b. Return $free_tableidx(tableidx) ++ $free_expr(expr).
-2. If (elemmode_1 = PASSIVE), then:
+2. If (elemmode = PASSIVE), then:
   a. Return {}.
-3. Assert: Due to validation, (elemmode_1 = DECLARE).
+3. Assert: Due to validation, (elemmode = DECLARE).
 4. Return {}.
 
 free_elem (ELEM reftype expr* elemmode)
 1. Return $free_reftype(reftype) ++ $free_list($free_expr(expr)*) ++ $free_elemmode(elemmode).
 
-free_datamode datamode_1
-1. If datamode_1 is ACTIVE, then:
-  a. Let (ACTIVE memidx expr) be datamode_1.
+free_datamode datamode
+1. If datamode is ACTIVE, then:
+  a. Let (ACTIVE memidx expr) be datamode.
   b. Return $free_memidx(memidx) ++ $free_expr(expr).
-2. Assert: Due to validation, (datamode_1 = PASSIVE).
+2. Assert: Due to validation, (datamode = PASSIVE).
 3. Return {}.
 
 free_data (DATA byte* datamode)
@@ -29105,19 +29105,19 @@ funcidx_module module
 dataidx_funcs func*
 1. Return $free_list($free_func(func)*).DATAS.
 
-with_locals C localidx_1* localtype_1*
-1. If ((localidx_1* = []) /\ (localtype_1* = [])), then:
+with_locals C localidx* localtype*
+1. If ((localidx* = []) /\ (localtype* = [])), then:
   a. Return C.
-2. Assert: Due to validation, (|localtype_1*| >= 1).
-3. Let [lct_1] :: lct* be localtype_1*.
-4. Assert: Due to validation, (|localidx_1*| >= 1).
-5. Let [x_1] :: x* be localidx_1*.
+2. Assert: Due to validation, (|localtype*| >= 1).
+3. Let [lct_1] :: lct* be localtype*.
+4. Assert: Due to validation, (|localidx*| >= 1).
+5. Let [x_1] :: x* be localidx*.
 6. Return $with_locals(C with .LOCALS[x_1] replaced by lct_1, x*, lct*).
 
-clos_deftypes deftype_1*
-1. If (deftype_1* = []), then:
+clos_deftypes deftype*
+1. If (deftype* = []), then:
   a. Return [].
-2. Let dt* :: [dt_n] be deftype_1*.
+2. Let dt* :: [dt_n] be deftype*.
 3. Let dt'* be $clos_deftypes(dt*).
 4. Return dt'* :: [$subst_all_deftype(dt_n, dt'*)].
 
@@ -29133,39 +29133,39 @@ clos_moduletype C mmt
 1. Let dt* be $clos_deftypes(C.TYPES).
 2. Return $subst_all_moduletype(mmt, dt*).
 
-before typeuse_1 x i
-1. If typeuse_1 is deftype, then:
+before typeuse x i
+1. If typeuse is deftype, then:
   a. Return true.
-2. If typeuse_1 is _IDX, then:
-  a. Let (_IDX typeidx) be typeuse_1.
+2. If typeuse is _IDX, then:
+  a. Let (_IDX typeidx) be typeuse.
   b. Return (typeidx < x).
-3. Assert: Due to validation, typeuse_1 is REC.
-4. Let (REC j) be typeuse_1.
+3. Assert: Due to validation, typeuse is REC.
+4. Let (REC j) be typeuse.
 5. Return (j < i).
 
-unrollht C heaptype_1
-1. If heaptype_1 is deftype, then:
-  a. Let deftype be heaptype_1.
+unrollht C heaptype
+1. If heaptype is deftype, then:
+  a. Let deftype be heaptype.
   b. Return $unrolldt(deftype).
-2. If heaptype_1 is _IDX, then:
-  a. Let (_IDX typeidx) be heaptype_1.
+2. If heaptype is _IDX, then:
+  a. Let (_IDX typeidx) be heaptype.
   b. Return $unrolldt(C.TYPES[typeidx]).
-3. Assert: Due to validation, heaptype_1 is REC.
-4. Let (REC i) be heaptype_1.
+3. Assert: Due to validation, heaptype is REC.
+4. Let (REC i) be heaptype.
 5. Return C.RECS[i].
 
-default_ valtype_1
-1. If valtype_1 is Inn, then:
-  a. Let Inn be valtype_1.
+default_ valtype
+1. If valtype is Inn, then:
+  a. Let Inn be valtype.
   b. Return ?((Inn.CONST 0)).
-2. If valtype_1 is Fnn, then:
-  a. Let Fnn be valtype_1.
+2. If valtype is Fnn, then:
+  a. Let Fnn be valtype.
   b. Return ?((Fnn.CONST $fzero($size(Fnn)))).
-3. If valtype_1 is Vnn, then:
-  a. Let Vnn be valtype_1.
+3. If valtype is Vnn, then:
+  a. Let Vnn be valtype.
   b. Return ?((Vnn.CONST 0)).
-4. Assert: Due to validation, valtype_1 is REF.
-5. Let (REF NULL_opt_0 ht) be valtype_1.
+4. Assert: Due to validation, valtype is REF.
+5. Let (REF NULL_opt_0 ht) be valtype.
 6. If (NULL_opt_0 = ?(NULL)), then:
   a. Return ?((REF.NULL ht)).
 7. Assert: Due to validation, NULL_opt_0 is not defined.
@@ -29203,23 +29203,23 @@ invsigned_ N i
 1. Let j be $signed__1^-1(N, i).
 2. Return j.
 
-sx storagetype_1
-1. If storagetype_1 is consttype, then:
+sx storagetype
+1. If storagetype is consttype, then:
   a. Return ?().
-2. Assert: Due to validation, storagetype_1 is packtype.
+2. Assert: Due to validation, storagetype is packtype.
 3. Return ?(S).
 
-zero lanetype_1
-1. If lanetype_1 is Jnn, then:
+zero lanetype
+1. If lanetype is Jnn, then:
   a. Return 0.
-2. Assert: Due to validation, lanetype_1 is Fnn.
-3. Let Fnn be lanetype_1.
+2. Assert: Due to validation, lanetype is Fnn.
+3. Let Fnn be lanetype.
 4. Return $fzero($size(Fnn)).
 
-bool b_1
-1. If (b_1 = false), then:
+bool b
+1. If (b = false), then:
   a. Return 0.
-2. Assert: Due to validation, (b_1 = true).
+2. Assert: Due to validation, (b = true).
 3. Return 1.
 
 sat_u_ N i
@@ -29244,10 +29244,10 @@ iabs_ N i_1
   a. Return i_1.
 2. Return $ineg_(N, i_1).
 
-iextend_ N M sx_1 i
-1. If (sx_1 = U), then:
+iextend_ N M sx i
+1. If (sx = U), then:
   a. Return (i \ (2 ^ M)).
-2. Assert: Due to validation, (sx_1 = S).
+2. Assert: Due to validation, (sx = S).
 3. Return $invsigned_(N, $signed_(M, (i \ (2 ^ M)))).
 
 iadd_ N i_1 i_2
@@ -29259,16 +29259,16 @@ isub_ N i_1 i_2
 imul_ N i_1 i_2
 1. Return ((i_1 * i_2) \ (2 ^ N)).
 
-iadd_sat_ N sx_1 i_1 i_2
-1. If (sx_1 = U), then:
+iadd_sat_ N sx i_1 i_2
+1. If (sx = U), then:
   a. Return $sat_u_(N, (i_1 + i_2)).
-2. Assert: Due to validation, (sx_1 = S).
+2. Assert: Due to validation, (sx = S).
 3. Return $invsigned_(N, $sat_s_(N, ($signed_(N, i_1) + $signed_(N, i_2)))).
 
-isub_sat_ N sx_1 i_1 i_2
-1. If (sx_1 = U), then:
+isub_sat_ N sx i_1 i_2
+1. If (sx = U), then:
   a. Return $sat_u_(N, (i_1 - i_2)).
-2. Assert: Due to validation, (sx_1 = S).
+2. Assert: Due to validation, (sx = S).
 3. Return $invsigned_(N, $sat_s_(N, ($signed_(N, i_1) - $signed_(N, i_2)))).
 
 ieqz_ N i_1
@@ -29283,235 +29283,235 @@ ieq_ N i_1 i_2
 ine_ N i_1 i_2
 1. Return $bool((i_1 =/= i_2)).
 
-ilt_ N sx_1 i_1 i_2
-1. If (sx_1 = U), then:
+ilt_ N sx i_1 i_2
+1. If (sx = U), then:
   a. Return $bool((i_1 < i_2)).
-2. Assert: Due to validation, (sx_1 = S).
+2. Assert: Due to validation, (sx = S).
 3. Return $bool(($signed_(N, i_1) < $signed_(N, i_2))).
 
-igt_ N sx_1 i_1 i_2
-1. If (sx_1 = U), then:
+igt_ N sx i_1 i_2
+1. If (sx = U), then:
   a. Return $bool((i_1 > i_2)).
-2. Assert: Due to validation, (sx_1 = S).
+2. Assert: Due to validation, (sx = S).
 3. Return $bool(($signed_(N, i_1) > $signed_(N, i_2))).
 
-ile_ N sx_1 i_1 i_2
-1. If (sx_1 = U), then:
+ile_ N sx i_1 i_2
+1. If (sx = U), then:
   a. Return $bool((i_1 <= i_2)).
-2. Assert: Due to validation, (sx_1 = S).
+2. Assert: Due to validation, (sx = S).
 3. Return $bool(($signed_(N, i_1) <= $signed_(N, i_2))).
 
-ige_ N sx_1 i_1 i_2
-1. If (sx_1 = U), then:
+ige_ N sx i_1 i_2
+1. If (sx = U), then:
   a. Return $bool((i_1 >= i_2)).
-2. Assert: Due to validation, (sx_1 = S).
+2. Assert: Due to validation, (sx = S).
 3. Return $bool(($signed_(N, i_1) >= $signed_(N, i_2))).
 
-lpacknum_ lanetype_1 c
-1. If lanetype_1 is numtype, then:
+lpacknum_ lanetype c
+1. If lanetype is numtype, then:
   a. Return c.
-2. Assert: Due to validation, lanetype_1 is packtype.
-3. Let packtype be lanetype_1.
+2. Assert: Due to validation, lanetype is packtype.
+3. Let packtype be lanetype.
 4. Return $wrap__($size($lunpack(packtype)), $psize(packtype), c).
 
-lunpacknum_ lanetype_1 c
-1. If lanetype_1 is numtype, then:
+lunpacknum_ lanetype c
+1. If lanetype is numtype, then:
   a. Return c.
-2. Assert: Due to validation, lanetype_1 is packtype.
-3. Let packtype be lanetype_1.
+2. Assert: Due to validation, lanetype is packtype.
+3. Let packtype be lanetype.
 4. Return $extend__($psize(packtype), $size($lunpack(packtype)), U, c).
 
-cpacknum_ storagetype_1 c
-1. If storagetype_1 is consttype, then:
+cpacknum_ storagetype c
+1. If storagetype is consttype, then:
   a. Return c.
-2. Assert: Due to validation, storagetype_1 is packtype.
-3. Let packtype be storagetype_1.
+2. Assert: Due to validation, storagetype is packtype.
+3. Let packtype be storagetype.
 4. Return $wrap__($size($lunpack(packtype)), $psize(packtype), c).
 
-cunpacknum_ storagetype_1 c
-1. If storagetype_1 is consttype, then:
+cunpacknum_ storagetype c
+1. If storagetype is consttype, then:
   a. Return c.
-2. Assert: Due to validation, storagetype_1 is packtype.
-3. Let packtype be storagetype_1.
+2. Assert: Due to validation, storagetype is packtype.
+3. Let packtype be storagetype.
 4. Return $extend__($psize(packtype), $size($lunpack(packtype)), U, c).
 
-unop_ numtype_1 unop__1 num__1
-1. If numtype_1 is Inn, then:
-  a. Let Inn be numtype_1.
-  b. Let i be num__1.
-  c. If (unop__1 = CLZ), then:
+unop_ numtype unop_ num_
+1. If numtype is Inn, then:
+  a. Let Inn be numtype.
+  b. Let i be num_.
+  c. If (unop_ = CLZ), then:
     1) Return [$iclz_($sizenn(Inn), i)].
-  d. If (unop__1 = CTZ), then:
+  d. If (unop_ = CTZ), then:
     1) Return [$ictz_($sizenn(Inn), i)].
-  e. If (unop__1 = POPCNT), then:
+  e. If (unop_ = POPCNT), then:
     1) Return [$ipopcnt_($sizenn(Inn), i)].
-  f. Assert: Due to validation, unop__1 is EXTEND.
-  g. Let (EXTEND M) be unop__1.
+  f. Assert: Due to validation, unop_ is EXTEND.
+  g. Let (EXTEND M) be unop_.
   h. Return [$iextend_($sizenn(Inn), M, S, i)].
-2. Assert: Due to validation, numtype_1 is Fnn.
-3. Let Fnn be numtype_1.
-4. Let f be num__1.
-5. If (unop__1 = ABS), then:
+2. Assert: Due to validation, numtype is Fnn.
+3. Let Fnn be numtype.
+4. Let f be num_.
+5. If (unop_ = ABS), then:
   a. Return $fabs_($sizenn(Fnn), f).
-6. If (unop__1 = NEG), then:
+6. If (unop_ = NEG), then:
   a. Return $fneg_($sizenn(Fnn), f).
-7. If (unop__1 = SQRT), then:
+7. If (unop_ = SQRT), then:
   a. Return $fsqrt_($sizenn(Fnn), f).
-8. If (unop__1 = CEIL), then:
+8. If (unop_ = CEIL), then:
   a. Return $fceil_($sizenn(Fnn), f).
-9. If (unop__1 = FLOOR), then:
+9. If (unop_ = FLOOR), then:
   a. Return $ffloor_($sizenn(Fnn), f).
-10. If (unop__1 = TRUNC), then:
+10. If (unop_ = TRUNC), then:
   a. Return $ftrunc_($sizenn(Fnn), f).
-11. Assert: Due to validation, (unop__1 = NEAREST).
+11. Assert: Due to validation, (unop_ = NEAREST).
 12. Return $fnearest_($sizenn(Fnn), f).
 
-binop_ numtype_1 binop__1 num__1 num__2
-1. If numtype_1 is Inn, then:
-  a. Let Inn be numtype_1.
-  b. Let i_1 be num__1.
-  c. Let i_2 be num__2.
-  d. If (binop__1 = ADD), then:
+binop_ numtype binop_ num_ num_'
+1. If numtype is Inn, then:
+  a. Let Inn be numtype.
+  b. Let i_1 be num_.
+  c. Let i_2 be num_'.
+  d. If (binop_ = ADD), then:
     1) Return [$iadd_($sizenn(Inn), i_1, i_2)].
-  e. If (binop__1 = SUB), then:
+  e. If (binop_ = SUB), then:
     1) Return [$isub_($sizenn(Inn), i_1, i_2)].
-  f. If (binop__1 = MUL), then:
+  f. If (binop_ = MUL), then:
     1) Return [$imul_($sizenn(Inn), i_1, i_2)].
-  g. If binop__1 is DIV, then:
-    1) Let (DIV sx) be binop__1.
+  g. If binop_ is DIV, then:
+    1) Let (DIV sx) be binop_.
     2) Return $idiv_($sizenn(Inn), sx, i_1, i_2).
-  h. If binop__1 is REM, then:
-    1) Let (REM sx) be binop__1.
+  h. If binop_ is REM, then:
+    1) Let (REM sx) be binop_.
     2) Return $irem_($sizenn(Inn), sx, i_1, i_2).
-  i. If (binop__1 = AND), then:
+  i. If (binop_ = AND), then:
     1) Return [$iand_($sizenn(Inn), i_1, i_2)].
-  j. If (binop__1 = OR), then:
+  j. If (binop_ = OR), then:
     1) Return [$ior_($sizenn(Inn), i_1, i_2)].
-  k. If (binop__1 = XOR), then:
+  k. If (binop_ = XOR), then:
     1) Return [$ixor_($sizenn(Inn), i_1, i_2)].
-  l. If (binop__1 = SHL), then:
+  l. If (binop_ = SHL), then:
     1) Return [$ishl_($sizenn(Inn), i_1, i_2)].
-  m. If binop__1 is SHR, then:
-    1) Let (SHR sx) be binop__1.
+  m. If binop_ is SHR, then:
+    1) Let (SHR sx) be binop_.
     2) Return [$ishr_($sizenn(Inn), sx, i_1, i_2)].
-  n. If (binop__1 = ROTL), then:
+  n. If (binop_ = ROTL), then:
     1) Return [$irotl_($sizenn(Inn), i_1, i_2)].
-  o. If (binop__1 = ROTR), then:
+  o. If (binop_ = ROTR), then:
     1) Return [$irotr_($sizenn(Inn), i_1, i_2)].
-2. Assert: Due to validation, numtype_1 is Fnn.
-3. Let Fnn be numtype_1.
-4. Let f_1 be num__1.
-5. Let f_2 be num__2.
-6. If (binop__1 = ADD), then:
+2. Assert: Due to validation, numtype is Fnn.
+3. Let Fnn be numtype.
+4. Let f_1 be num_.
+5. Let f_2 be num_'.
+6. If (binop_ = ADD), then:
   a. Return $fadd_($sizenn(Fnn), f_1, f_2).
-7. If (binop__1 = SUB), then:
+7. If (binop_ = SUB), then:
   a. Return $fsub_($sizenn(Fnn), f_1, f_2).
-8. If (binop__1 = MUL), then:
+8. If (binop_ = MUL), then:
   a. Return $fmul_($sizenn(Fnn), f_1, f_2).
-9. If (binop__1 = DIV), then:
+9. If (binop_ = DIV), then:
   a. Return $fdiv_($sizenn(Fnn), f_1, f_2).
-10. If (binop__1 = MIN), then:
+10. If (binop_ = MIN), then:
   a. Return $fmin_($sizenn(Fnn), f_1, f_2).
-11. If (binop__1 = MAX), then:
+11. If (binop_ = MAX), then:
   a. Return $fmax_($sizenn(Fnn), f_1, f_2).
-12. Assert: Due to validation, (binop__1 = COPYSIGN).
+12. Assert: Due to validation, (binop_ = COPYSIGN).
 13. Return $fcopysign_($sizenn(Fnn), f_1, f_2).
 
 testop_ Inn EQZ i
 1. Return $ieqz_($sizenn(Inn), i).
 
-relop_ numtype_1 relop__1 num__1 num__2
-1. If numtype_1 is Inn, then:
-  a. Let Inn be numtype_1.
-  b. Let i_1 be num__1.
-  c. Let i_2 be num__2.
-  d. If (relop__1 = EQ), then:
+relop_ numtype relop_ num_ num_'
+1. If numtype is Inn, then:
+  a. Let Inn be numtype.
+  b. Let i_1 be num_.
+  c. Let i_2 be num_'.
+  d. If (relop_ = EQ), then:
     1) Return $ieq_($sizenn(Inn), i_1, i_2).
-  e. If (relop__1 = NE), then:
+  e. If (relop_ = NE), then:
     1) Return $ine_($sizenn(Inn), i_1, i_2).
-  f. If relop__1 is LT, then:
-    1) Let (LT sx) be relop__1.
+  f. If relop_ is LT, then:
+    1) Let (LT sx) be relop_.
     2) Return $ilt_($sizenn(Inn), sx, i_1, i_2).
-  g. If relop__1 is GT, then:
-    1) Let (GT sx) be relop__1.
+  g. If relop_ is GT, then:
+    1) Let (GT sx) be relop_.
     2) Return $igt_($sizenn(Inn), sx, i_1, i_2).
-  h. If relop__1 is LE, then:
-    1) Let (LE sx) be relop__1.
+  h. If relop_ is LE, then:
+    1) Let (LE sx) be relop_.
     2) Return $ile_($sizenn(Inn), sx, i_1, i_2).
-  i. If relop__1 is GE, then:
-    1) Let (GE sx) be relop__1.
+  i. If relop_ is GE, then:
+    1) Let (GE sx) be relop_.
     2) Return $ige_($sizenn(Inn), sx, i_1, i_2).
-2. Assert: Due to validation, numtype_1 is Fnn.
-3. Let Fnn be numtype_1.
-4. Let f_1 be num__1.
-5. Let f_2 be num__2.
-6. If (relop__1 = EQ), then:
+2. Assert: Due to validation, numtype is Fnn.
+3. Let Fnn be numtype.
+4. Let f_1 be num_.
+5. Let f_2 be num_'.
+6. If (relop_ = EQ), then:
   a. Return $feq_($sizenn(Fnn), f_1, f_2).
-7. If (relop__1 = NE), then:
+7. If (relop_ = NE), then:
   a. Return $fne_($sizenn(Fnn), f_1, f_2).
-8. If (relop__1 = LT), then:
+8. If (relop_ = LT), then:
   a. Return $flt_($sizenn(Fnn), f_1, f_2).
-9. If (relop__1 = GT), then:
+9. If (relop_ = GT), then:
   a. Return $fgt_($sizenn(Fnn), f_1, f_2).
-10. If (relop__1 = LE), then:
+10. If (relop_ = LE), then:
   a. Return $fle_($sizenn(Fnn), f_1, f_2).
-11. Assert: Due to validation, (relop__1 = GE).
+11. Assert: Due to validation, (relop_ = GE).
 12. Return $fge_($sizenn(Fnn), f_1, f_2).
 
-cvtop__ numtype_1 numtype_3 cvtop___1 num__1
-1. If numtype_1 is Inn, then:
-  a. Let Inn_1 be numtype_1.
-  b. If numtype_3 is Inn, then:
-    1) Let Inn_2 be numtype_3.
-    2) If cvtop___1 is EXTEND, then:
-      a) Let (EXTEND sx) be cvtop___1.
-      b) Let i_1 be num__1.
+cvtop__ numtype numtype'' cvtop__ num_
+1. If numtype is Inn, then:
+  a. Let Inn_1 be numtype.
+  b. If numtype'' is Inn, then:
+    1) Let Inn_2 be numtype''.
+    2) If cvtop__ is EXTEND, then:
+      a) Let (EXTEND sx) be cvtop__.
+      b) Let i_1 be num_.
       c) Return [$extend__($sizenn1(Inn_1), $sizenn2(Inn_2), sx, i_1)].
-    3) Let i_1 be num__1.
-    4) If (cvtop___1 = WRAP), then:
+    3) Let i_1 be num_.
+    4) If (cvtop__ = WRAP), then:
       a) Return [$wrap__($sizenn1(Inn_1), $sizenn2(Inn_2), i_1)].
-2. If numtype_1 is Fnn, then:
-  a. Let Fnn_1 be numtype_1.
-  b. If numtype_3 is Inn, then:
-    1) Let Inn_2 be numtype_3.
-    2) If cvtop___1 is TRUNC, then:
-      a) Let (TRUNC sx) be cvtop___1.
-      b) Let f_1 be num__1.
+2. If numtype is Fnn, then:
+  a. Let Fnn_1 be numtype.
+  b. If numtype'' is Inn, then:
+    1) Let Inn_2 be numtype''.
+    2) If cvtop__ is TRUNC, then:
+      a) Let (TRUNC sx) be cvtop__.
+      b) Let f_1 be num_.
       c) Return $trunc__($sizenn1(Fnn_1), $sizenn2(Inn_2), sx, f_1).
-    3) If cvtop___1 is TRUNC_SAT, then:
-      a) Let (TRUNC_SAT sx) be cvtop___1.
-      b) Let f_1 be num__1.
+    3) If cvtop__ is TRUNC_SAT, then:
+      a) Let (TRUNC_SAT sx) be cvtop__.
+      b) Let f_1 be num_.
       c) Return $trunc_sat__($sizenn1(Fnn_1), $sizenn2(Inn_2), sx, f_1).
-3. If numtype_1 is Inn, then:
-  a. Let Inn_1 be numtype_1.
-  b. If numtype_3 is Fnn, then:
-    1) Let Fnn_2 be numtype_3.
-    2) If cvtop___1 is CONVERT, then:
-      a) Let (CONVERT sx) be cvtop___1.
-      b) Let i_1 be num__1.
+3. If numtype is Inn, then:
+  a. Let Inn_1 be numtype.
+  b. If numtype'' is Fnn, then:
+    1) Let Fnn_2 be numtype''.
+    2) If cvtop__ is CONVERT, then:
+      a) Let (CONVERT sx) be cvtop__.
+      b) Let i_1 be num_.
       c) Return [$convert__($sizenn1(Inn_1), $sizenn2(Fnn_2), sx, i_1)].
-4. If numtype_1 is Fnn, then:
-  a. Let Fnn_1 be numtype_1.
-  b. If numtype_3 is Fnn, then:
-    1) Let Fnn_2 be numtype_3.
-    2) Let f_1 be num__1.
-    3) If (cvtop___1 = PROMOTE), then:
+4. If numtype is Fnn, then:
+  a. Let Fnn_1 be numtype.
+  b. If numtype'' is Fnn, then:
+    1) Let Fnn_2 be numtype''.
+    2) Let f_1 be num_.
+    3) If (cvtop__ = PROMOTE), then:
       a) Return $promote__($sizenn1(Fnn_1), $sizenn2(Fnn_2), f_1).
-    4) If (cvtop___1 = DEMOTE), then:
+    4) If (cvtop__ = DEMOTE), then:
       a) Return $demote__($sizenn1(Fnn_1), $sizenn2(Fnn_2), f_1).
-5. If numtype_1 is Inn, then:
-  a. Let Inn_1 be numtype_1.
-  b. If numtype_3 is Fnn, then:
-    1) Let Fnn_2 be numtype_3.
-    2) Let i_1 be num__1.
-    3) If ((cvtop___1 = REINTERPRET) /\ ($size(Inn_1) = $size(Fnn_2))), then:
+5. If numtype is Inn, then:
+  a. Let Inn_1 be numtype.
+  b. If numtype'' is Fnn, then:
+    1) Let Fnn_2 be numtype''.
+    2) Let i_1 be num_.
+    3) If ((cvtop__ = REINTERPRET) /\ ($size(Inn_1) = $size(Fnn_2))), then:
       a) Return [$reinterpret__(Inn_1, Fnn_2, i_1)].
-6. Assert: Due to validation, numtype_1 is Fnn.
-7. Let Fnn_1 be numtype_1.
-8. Assert: Due to validation, numtype_3 is Inn.
-9. Let Inn_2 be numtype_3.
-10. Let f_1 be num__1.
-11. Assert: Due to validation, (cvtop___1 = REINTERPRET).
+6. Assert: Due to validation, numtype is Fnn.
+7. Let Fnn_1 be numtype.
+8. Assert: Due to validation, numtype'' is Inn.
+9. Let Inn_2 be numtype''.
+10. Let f_1 be num_.
+11. Assert: Due to validation, (cvtop__ = REINTERPRET).
 12. Assert: Due to validation, ($size(Fnn_1) = $size(Inn_2)).
 13. Return [$reinterpret__(Fnn_1, Inn_2, f_1)].
 
@@ -29519,14 +29519,14 @@ invlanes_ sh c*
 1. Let vc be $lanes__1^-1(sh, c*).
 2. Return vc.
 
-half__ lanetype_1 X M_1 lanetype_2 X M_2 half___1 i j
-1. If (lanetype_1 is Jnn /\ lanetype_2 is Jnn), then:
-  a. If (half___1 = LOW), then:
+half__ lanetype X M_1 lanetype' X M_2 half__ i j
+1. If (lanetype is Jnn /\ lanetype' is Jnn), then:
+  a. If (half__ = LOW), then:
     1) Return i.
-  b. If (half___1 = HIGH), then:
+  b. If (half__ = HIGH), then:
     1) Return j.
-2. Assert: Due to validation, lanetype_2 is Fnn.
-3. Assert: Due to validation, (half___1 = LOW).
+2. Assert: Due to validation, lanetype' is Fnn.
+3. Assert: Due to validation, (half__ = LOW).
 4. Return i.
 
 iswizzle_lane_ N c* i
@@ -29649,216 +29649,216 @@ ivshufflop_ Jnn X M i* v_1 v_2
 vvunop_ Vnn NOT v
 1. Return [$inot_($vsizenn(Vnn), v)].
 
-vvbinop_ Vnn vvbinop_1 v_1 v_2
-1. If (vvbinop_1 = AND), then:
+vvbinop_ Vnn vvbinop v_1 v_2
+1. If (vvbinop = AND), then:
   a. Return [$iand_($vsizenn(Vnn), v_1, v_2)].
-2. If (vvbinop_1 = ANDNOT), then:
+2. If (vvbinop = ANDNOT), then:
   a. Return [$iandnot_($vsizenn(Vnn), v_1, v_2)].
-3. If (vvbinop_1 = OR), then:
+3. If (vvbinop = OR), then:
   a. Return [$ior_($vsizenn(Vnn), v_1, v_2)].
-4. Assert: Due to validation, (vvbinop_1 = XOR).
+4. Assert: Due to validation, (vvbinop = XOR).
 5. Return [$ixor_($vsizenn(Vnn), v_1, v_2)].
 
 vvternop_ Vnn BITSELECT v_1 v_2 v_3
 1. Return [$ibitselect_($vsizenn(Vnn), v_1, v_2, v_3)].
 
-vunop_ lanetype_1 X M vunop__1 v
-1. If lanetype_1 is Fnn, then:
-  a. Let Fnn be lanetype_1.
-  b. If (vunop__1 = ABS), then:
+vunop_ lanetype X M vunop_ v
+1. If lanetype is Fnn, then:
+  a. Let Fnn be lanetype.
+  b. If (vunop_ = ABS), then:
     1) Return $fvunop_(Fnn X M, $fabs_, v).
-  c. If (vunop__1 = NEG), then:
+  c. If (vunop_ = NEG), then:
     1) Return $fvunop_(Fnn X M, $fneg_, v).
-  d. If (vunop__1 = SQRT), then:
+  d. If (vunop_ = SQRT), then:
     1) Return $fvunop_(Fnn X M, $fsqrt_, v).
-  e. If (vunop__1 = CEIL), then:
+  e. If (vunop_ = CEIL), then:
     1) Return $fvunop_(Fnn X M, $fceil_, v).
-  f. If (vunop__1 = FLOOR), then:
+  f. If (vunop_ = FLOOR), then:
     1) Return $fvunop_(Fnn X M, $ffloor_, v).
-  g. If (vunop__1 = TRUNC), then:
+  g. If (vunop_ = TRUNC), then:
     1) Return $fvunop_(Fnn X M, $ftrunc_, v).
-  h. If (vunop__1 = NEAREST), then:
+  h. If (vunop_ = NEAREST), then:
     1) Return $fvunop_(Fnn X M, $fnearest_, v).
-2. Assert: Due to validation, lanetype_1 is Jnn.
-3. Let Jnn be lanetype_1.
-4. If (vunop__1 = ABS), then:
+2. Assert: Due to validation, lanetype is Jnn.
+3. Let Jnn be lanetype.
+4. If (vunop_ = ABS), then:
   a. Return $ivunop_(Jnn X M, $iabs_, v).
-5. If (vunop__1 = NEG), then:
+5. If (vunop_ = NEG), then:
   a. Return $ivunop_(Jnn X M, $ineg_, v).
-6. Assert: Due to validation, (vunop__1 = POPCNT).
+6. Assert: Due to validation, (vunop_ = POPCNT).
 7. Return $ivunop_(Jnn X M, $ipopcnt_, v).
 
-vbinop_ lanetype_1 X M vbinop__1 v_1 v_2
-1. If lanetype_1 is Jnn, then:
-  a. Let Jnn be lanetype_1.
-  b. If (vbinop__1 = ADD), then:
+vbinop_ lanetype X M vbinop_ v_1 v_2
+1. If lanetype is Jnn, then:
+  a. Let Jnn be lanetype.
+  b. If (vbinop_ = ADD), then:
     1) Return $ivbinop_(Jnn X M, $iadd_, v_1, v_2).
-  c. If (vbinop__1 = SUB), then:
+  c. If (vbinop_ = SUB), then:
     1) Return $ivbinop_(Jnn X M, $isub_, v_1, v_2).
-  d. If (vbinop__1 = MUL), then:
+  d. If (vbinop_ = MUL), then:
     1) Return $ivbinop_(Jnn X M, $imul_, v_1, v_2).
-  e. If vbinop__1 is ADD_SAT, then:
-    1) Let (ADD_SAT sx) be vbinop__1.
+  e. If vbinop_ is ADD_SAT, then:
+    1) Let (ADD_SAT sx) be vbinop_.
     2) Return $ivbinopsx_(Jnn X M, $iadd_sat_, sx, v_1, v_2).
-  f. If vbinop__1 is SUB_SAT, then:
-    1) Let (SUB_SAT sx) be vbinop__1.
+  f. If vbinop_ is SUB_SAT, then:
+    1) Let (SUB_SAT sx) be vbinop_.
     2) Return $ivbinopsx_(Jnn X M, $isub_sat_, sx, v_1, v_2).
-  g. If vbinop__1 is MIN, then:
-    1) Let (MIN sx) be vbinop__1.
+  g. If vbinop_ is MIN, then:
+    1) Let (MIN sx) be vbinop_.
     2) Return $ivbinopsx_(Jnn X M, $imin_, sx, v_1, v_2).
-  h. If vbinop__1 is MAX, then:
-    1) Let (MAX sx) be vbinop__1.
+  h. If vbinop_ is MAX, then:
+    1) Let (MAX sx) be vbinop_.
     2) Return $ivbinopsx_(Jnn X M, $imax_, sx, v_1, v_2).
-  i. If (vbinop__1 = AVGRU), then:
+  i. If (vbinop_ = AVGRU), then:
     1) Return $ivbinopsx_(Jnn X M, $iavgr_, U, v_1, v_2).
-  j. If (vbinop__1 = Q15MULR_SATS), then:
+  j. If (vbinop_ = Q15MULR_SATS), then:
     1) Return $ivbinopsx_(Jnn X M, $iq15mulr_sat_, S, v_1, v_2).
-  k. If (vbinop__1 = RELAXED_Q15MULRS), then:
+  k. If (vbinop_ = RELAXED_Q15MULRS), then:
     1) Return $ivbinopsxnd_(Jnn X M, $irelaxed_q15mulr_, S, v_1, v_2).
-2. Assert: Due to validation, lanetype_1 is Fnn.
-3. Let Fnn be lanetype_1.
-4. If (vbinop__1 = ADD), then:
+2. Assert: Due to validation, lanetype is Fnn.
+3. Let Fnn be lanetype.
+4. If (vbinop_ = ADD), then:
   a. Return $fvbinop_(Fnn X M, $fadd_, v_1, v_2).
-5. If (vbinop__1 = SUB), then:
+5. If (vbinop_ = SUB), then:
   a. Return $fvbinop_(Fnn X M, $fsub_, v_1, v_2).
-6. If (vbinop__1 = MUL), then:
+6. If (vbinop_ = MUL), then:
   a. Return $fvbinop_(Fnn X M, $fmul_, v_1, v_2).
-7. If (vbinop__1 = DIV), then:
+7. If (vbinop_ = DIV), then:
   a. Return $fvbinop_(Fnn X M, $fdiv_, v_1, v_2).
-8. If (vbinop__1 = MIN), then:
+8. If (vbinop_ = MIN), then:
   a. Return $fvbinop_(Fnn X M, $fmin_, v_1, v_2).
-9. If (vbinop__1 = MAX), then:
+9. If (vbinop_ = MAX), then:
   a. Return $fvbinop_(Fnn X M, $fmax_, v_1, v_2).
-10. If (vbinop__1 = PMIN), then:
+10. If (vbinop_ = PMIN), then:
   a. Return $fvbinop_(Fnn X M, $fpmin_, v_1, v_2).
-11. If (vbinop__1 = PMAX), then:
+11. If (vbinop_ = PMAX), then:
   a. Return $fvbinop_(Fnn X M, $fpmax_, v_1, v_2).
-12. If (vbinop__1 = RELAXED_MIN), then:
+12. If (vbinop_ = RELAXED_MIN), then:
   a. Return $fvbinop_(Fnn X M, $frelaxed_min_, v_1, v_2).
-13. Assert: Due to validation, (vbinop__1 = RELAXED_MAX).
+13. Assert: Due to validation, (vbinop_ = RELAXED_MAX).
 14. Return $fvbinop_(Fnn X M, $frelaxed_max_, v_1, v_2).
 
-vternop_ lanetype_1 X M vternop__1 v_1 v_2 v_3
-1. If lanetype_1 is Jnn, then:
-  a. Let Jnn be lanetype_1.
-  b. If (vternop__1 = RELAXED_LANESELECT), then:
+vternop_ lanetype X M vternop_ v_1 v_2 v_3
+1. If lanetype is Jnn, then:
+  a. Let Jnn be lanetype.
+  b. If (vternop_ = RELAXED_LANESELECT), then:
     1) Return $ivternopnd_(Jnn X M, $irelaxed_laneselect_, v_1, v_2, v_3).
-2. Assert: Due to validation, lanetype_1 is Fnn.
-3. Let Fnn be lanetype_1.
-4. If (vternop__1 = RELAXED_MADD), then:
+2. Assert: Due to validation, lanetype is Fnn.
+3. Let Fnn be lanetype.
+4. If (vternop_ = RELAXED_MADD), then:
   a. Return $fvternop_(Fnn X M, $frelaxed_madd_, v_1, v_2, v_3).
-5. Assert: Due to validation, (vternop__1 = RELAXED_NMADD).
+5. Assert: Due to validation, (vternop_ = RELAXED_NMADD).
 6. Return $fvternop_(Fnn X M, $frelaxed_nmadd_, v_1, v_2, v_3).
 
 vtestop_ Jnn X M ALL_TRUE v
 1. Return $ivtestop_(Jnn X M, $inez_, v).
 
-vrelop_ lanetype_1 X M vrelop__1 v_1 v_2
-1. If lanetype_1 is Jnn, then:
-  a. Let Jnn be lanetype_1.
-  b. If (vrelop__1 = EQ), then:
+vrelop_ lanetype X M vrelop_ v_1 v_2
+1. If lanetype is Jnn, then:
+  a. Let Jnn be lanetype.
+  b. If (vrelop_ = EQ), then:
     1) Return $ivrelop_(Jnn X M, $ieq_, v_1, v_2).
-  c. If (vrelop__1 = NE), then:
+  c. If (vrelop_ = NE), then:
     1) Return $ivrelop_(Jnn X M, $ine_, v_1, v_2).
-  d. If vrelop__1 is LT, then:
-    1) Let (LT sx) be vrelop__1.
+  d. If vrelop_ is LT, then:
+    1) Let (LT sx) be vrelop_.
     2) Return $ivrelopsx_(Jnn X M, $ilt_, sx, v_1, v_2).
-  e. If vrelop__1 is GT, then:
-    1) Let (GT sx) be vrelop__1.
+  e. If vrelop_ is GT, then:
+    1) Let (GT sx) be vrelop_.
     2) Return $ivrelopsx_(Jnn X M, $igt_, sx, v_1, v_2).
-  f. If vrelop__1 is LE, then:
-    1) Let (LE sx) be vrelop__1.
+  f. If vrelop_ is LE, then:
+    1) Let (LE sx) be vrelop_.
     2) Return $ivrelopsx_(Jnn X M, $ile_, sx, v_1, v_2).
-  g. If vrelop__1 is GE, then:
-    1) Let (GE sx) be vrelop__1.
+  g. If vrelop_ is GE, then:
+    1) Let (GE sx) be vrelop_.
     2) Return $ivrelopsx_(Jnn X M, $ige_, sx, v_1, v_2).
-2. Assert: Due to validation, lanetype_1 is Fnn.
-3. Let Fnn be lanetype_1.
-4. If (vrelop__1 = EQ), then:
+2. Assert: Due to validation, lanetype is Fnn.
+3. Let Fnn be lanetype.
+4. If (vrelop_ = EQ), then:
   a. Return $fvrelop_(Fnn X M, $feq_, v_1, v_2).
-5. If (vrelop__1 = NE), then:
+5. If (vrelop_ = NE), then:
   a. Return $fvrelop_(Fnn X M, $fne_, v_1, v_2).
-6. If (vrelop__1 = LT), then:
+6. If (vrelop_ = LT), then:
   a. Return $fvrelop_(Fnn X M, $flt_, v_1, v_2).
-7. If (vrelop__1 = GT), then:
+7. If (vrelop_ = GT), then:
   a. Return $fvrelop_(Fnn X M, $fgt_, v_1, v_2).
-8. If (vrelop__1 = LE), then:
+8. If (vrelop_ = LE), then:
   a. Return $fvrelop_(Fnn X M, $fle_, v_1, v_2).
-9. Assert: Due to validation, (vrelop__1 = GE).
+9. Assert: Due to validation, (vrelop_ = GE).
 10. Return $fvrelop_(Fnn X M, $fge_, v_1, v_2).
 
-lcvtop__ lanetype_3 X M_1 lanetype_1 X M_2 vcvtop___1 c_1
-1. If lanetype_3 is Jnn, then:
-  a. Let Jnn_1 be lanetype_3.
-  b. If lanetype_1 is Jnn, then:
-    1) Let Jnn_2 be lanetype_1.
-    2) If vcvtop___1 is EXTEND, then:
-      a) Let (EXTEND sx) be vcvtop___1.
+lcvtop__ lanetype'' X M_1 lanetype X M_2 vcvtop__ c_1
+1. If lanetype'' is Jnn, then:
+  a. Let Jnn_1 be lanetype''.
+  b. If lanetype is Jnn, then:
+    1) Let Jnn_2 be lanetype.
+    2) If vcvtop__ is EXTEND, then:
+      a) Let (EXTEND sx) be vcvtop__.
       b) Let c be $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), sx, c_1).
       c) Return [c].
-  c. If lanetype_1 is Fnn, then:
-    1) Let Fnn_2 be lanetype_1.
-    2) If vcvtop___1 is CONVERT, then:
-      a) Let (CONVERT sx) be vcvtop___1.
+  c. If lanetype is Fnn, then:
+    1) Let Fnn_2 be lanetype.
+    2) If vcvtop__ is CONVERT, then:
+      a) Let (CONVERT sx) be vcvtop__.
       b) Let c be $convert__($lsizenn1(Jnn_1), $lsizenn2(Fnn_2), sx, c_1).
       c) Return [c].
-2. Assert: Due to validation, lanetype_3 is Fnn.
-3. Let Fnn_1 be lanetype_3.
-4. If lanetype_1 is Inn, then:
-  a. Let Inn_2 be lanetype_1.
-  b. If vcvtop___1 is TRUNC_SAT, then:
-    1) Let (TRUNC_SAT sx) be vcvtop___1.
+2. Assert: Due to validation, lanetype'' is Fnn.
+3. Let Fnn_1 be lanetype''.
+4. If lanetype is Inn, then:
+  a. Let Inn_2 be lanetype.
+  b. If vcvtop__ is TRUNC_SAT, then:
+    1) Let (TRUNC_SAT sx) be vcvtop__.
     2) Let c? be $trunc_sat__($lsizenn1(Fnn_1), $lsizenn2(Inn_2), sx, c_1).
     3) Return c?.
-  c. If vcvtop___1 is RELAXED_TRUNC, then:
-    1) Let (RELAXED_TRUNC sx) be vcvtop___1.
+  c. If vcvtop__ is RELAXED_TRUNC, then:
+    1) Let (RELAXED_TRUNC sx) be vcvtop__.
     2) Let c? be $relaxed_trunc__($lsizenn1(Fnn_1), $lsizenn2(Inn_2), sx, c_1).
     3) Return c?.
-5. Assert: Due to validation, lanetype_1 is Fnn.
-6. Let Fnn_2 be lanetype_1.
-7. If (vcvtop___1 = DEMOTE), then:
+5. Assert: Due to validation, lanetype is Fnn.
+6. Let Fnn_2 be lanetype.
+7. If (vcvtop__ = DEMOTE), then:
   a. Let c* be $demote__($lsizenn1(Fnn_1), $lsizenn2(Fnn_2), c_1).
   b. Return c*.
-8. Assert: Due to validation, (vcvtop___1 = PROMOTE).
+8. Assert: Due to validation, (vcvtop__ = PROMOTE).
 9. Let c* be $promote__($lsizenn1(Fnn_1), $lsizenn2(Fnn_2), c_1).
 10. Return c*.
 
-vcvtop__ Lnn_1 X n_1 Lnn_2 X n_2 vcvtop half___1? zero___1? v_1
-1. Let M be n_2.
-2. If (half___1? is not defined /\ (zero___1? is not defined /\ (n_1 = M))), then:
+vcvtop__ Lnn_1 X n Lnn_2 X n' vcvtop half__? zero__? v_1
+1. Let M be n'.
+2. If (half__? is not defined /\ (zero__? is not defined /\ (n = M))), then:
   a. Let c_1* be $lanes_(Lnn_1 X M, v_1).
   b. Let c** be $setproduct_(`lane_(Lnn_2), $lcvtop__(Lnn_1 X M, Lnn_2 X M, vcvtop, c_1)*).
   c. Let v be an element of $invlanes_(Lnn_2 X M, c*)*.
   d. Return v.
-3. Let M_1 be n_1.
-4. Let M_2 be n_2.
-5. If (zero___1? is not defined /\ half___1? is defined), then:
-  a. Let ?(half) be half___1?.
+3. Let M_1 be n.
+4. Let M_2 be n'.
+5. If (zero__? is not defined /\ half__? is defined), then:
+  a. Let ?(half) be half__?.
   b. Let c_1* be $lanes_(Lnn_1 X M_1, v_1)[$half__(Lnn_1 X M_1, Lnn_2 X M_2, half, 0, M_2) : M_2].
   c. Let c** be $setproduct_(`lane_(Lnn_2), $lcvtop__(Lnn_1 X M_1, Lnn_2 X M_2, vcvtop, c_1)*).
   d. Let v be an element of $invlanes_(Lnn_2 X M_2, c*)*.
   e. Return v.
-6. Assert: Due to validation, half___1? is not defined.
-7. Assert: Due to validation, zero___1? is defined.
+6. Assert: Due to validation, half__? is not defined.
+7. Assert: Due to validation, zero__? is defined.
 8. Let c_1* be $lanes_(Lnn_1 X M_1, v_1).
 9. Let c** be $setproduct_(`lane_(Lnn_2), $lcvtop__(Lnn_1 X M_1, Lnn_2 X M_2, vcvtop, c_1)* :: [$zero(Lnn_2)]^M_1).
 10. Let v be an element of $invlanes_(Lnn_2 X M_2, c*)*.
 11. Return v.
 
-vshiftop_ Jnn X M vshiftop__1 v i
-1. If (vshiftop__1 = SHL), then:
+vshiftop_ Jnn X M vshiftop_ v i
+1. If (vshiftop_ = SHL), then:
   a. Return $ivshiftop_(Jnn X M, $ishl_, v, i).
-2. Assert: Due to validation, vshiftop__1 is SHR.
-3. Let (SHR sx) be vshiftop__1.
+2. Assert: Due to validation, vshiftop_ is SHR.
+3. Let (SHR sx) be vshiftop_.
 4. Return $ivshiftopsx_(Jnn X M, $ishr_, sx, v, i).
 
 vbitmaskop_ Jnn X M v
 1. Return $ivbitmaskop_(Jnn X M, v).
 
-vswizzlop_ I8 X M vswizzlop__1 v_1 v_2
-1. If (vswizzlop__1 = SWIZZLE), then:
+vswizzlop_ I8 X M vswizzlop_ v_1 v_2
+1. If (vswizzlop_ = SWIZZLE), then:
   a. Return $ivswizzlop_(I8 X M, $iswizzle_lane_, v_1, v_2).
-2. Assert: Due to validation, (vswizzlop__1 = RELAXED_SWIZZLE).
+2. Assert: Due to validation, (vswizzlop_ = RELAXED_SWIZZLE).
 3. Return $ivswizzlop_(I8 X M, $irelaxed_swizzle_lane_, v_1, v_2).
 
 vshufflop_ I8 X M i* v_1 v_2
@@ -29904,14 +29904,14 @@ ivextbinop__ Jnn_1 X M_1 Jnn_2 X M_2 $f_ sx_1 sx_2 i k v_1 v_2
 ivmul_ N i_1* i_2*
 1. Return $imul_(N, i_1, i_2)*.
 
-vextbinop__ Jnn_1 X M_1 Jnn_2 X M_2 vextbinop___1 v_1 v_2
-1. If vextbinop___1 is EXTMUL, then:
-  a. Let (EXTMUL sx half) be vextbinop___1.
+vextbinop__ Jnn_1 X M_1 Jnn_2 X M_2 vextbinop__ v_1 v_2
+1. If vextbinop__ is EXTMUL, then:
+  a. Let (EXTMUL sx half) be vextbinop__.
   b. Let i be $half__(Jnn_1 X M_1, Jnn_2 X M_2, half, 0, M_2).
   c. Return $ivextbinop__(Jnn_1 X M_1, Jnn_2 X M_2, $ivmul_, sx, sx, i, M_2, v_1, v_2).
-2. If (vextbinop___1 = DOTS), then:
+2. If (vextbinop__ = DOTS), then:
   a. Return $ivextbinop__(Jnn_1 X M_1, Jnn_2 X M_2, $ivdot_, S, S, 0, M_1, v_1, v_2).
-3. Assert: Due to validation, (vextbinop___1 = RELAXED_DOTS).
+3. Assert: Due to validation, (vextbinop__ = RELAXED_DOTS).
 4. Return $ivextbinop__(Jnn_1 X M_1, Jnn_2 X M_2, $ivdot_sat_, S, $relaxed2($R_idot(), `sx, S, U), 0, M_1, v_1, v_2).
 
 vextternop__ Jnn_1 X M_1 Jnn_2 X M_2 RELAXED_DOT_ADDS c_1 c_2 c_3
@@ -29946,77 +29946,77 @@ inst_memtype moduleinst mt
 Ki
 1. Return 1024.
 
-packfield_ storagetype_1 val_1
-1. If storagetype_1 is valtype, then:
-  a. Let val be val_1.
+packfield_ storagetype val
+1. If storagetype is valtype, then:
+  a. Let val be val.
   b. Return val.
-2. Assert: Due to validation, storagetype_1 is packtype.
-3. Let packtype be storagetype_1.
-4. Assert: Due to validation, val_1 is CONST.
-5. Let (numtype_0.CONST i) be val_1.
+2. Assert: Due to validation, storagetype is packtype.
+3. Let packtype be storagetype.
+4. Assert: Due to validation, val is CONST.
+5. Let (numtype_0.CONST i) be val.
 6. Assert: Due to validation, (numtype_0 = I32).
 7. Return (PACK packtype $wrap__(32, $psize(packtype), i)).
 
-unpackfield_ storagetype_1 sx_1? fieldval_1
-1. If (storagetype_1 is valtype /\ fieldval_1 is val), then:
-  a. Let val be fieldval_1.
-  b. If sx_1? is not defined, then:
+unpackfield_ storagetype sx? fieldval
+1. If (storagetype is valtype /\ fieldval is val), then:
+  a. Let val be fieldval.
+  b. If sx? is not defined, then:
     1) Return val.
-2. Assert: Due to validation, fieldval_1 is PACK.
-3. Let (PACK packtype i) be fieldval_1.
-4. Assert: Due to validation, sx_1? is defined.
-5. Let ?(sx) be sx_1?.
-6. Assert: Due to validation, (storagetype_1 = packtype).
+2. Assert: Due to validation, fieldval is PACK.
+3. Let (PACK packtype i) be fieldval.
+4. Assert: Due to validation, sx? is defined.
+5. Let ?(sx) be sx?.
+6. Assert: Due to validation, (storagetype = packtype).
 7. Return (I32.CONST $extend__($psize(packtype), 32, sx, i)).
 
-funcsxa externaddr_1*
-1. If (externaddr_1* = []), then:
+funcsxa externaddr*
+1. If (externaddr* = []), then:
   a. Return [].
-2. Let [externaddr_0] :: xa* be externaddr_1*.
+2. Let [externaddr_0] :: xa* be externaddr*.
 3. If externaddr_0 is FUNC, then:
   a. Let (FUNC a) be externaddr_0.
   b. Return [a] :: $funcsxa(xa*).
-4. Let [externaddr] :: xa* be externaddr_1*.
+4. Let [externaddr] :: xa* be externaddr*.
 5. Return $funcsxa(xa*).
 
-globalsxa externaddr_1*
-1. If (externaddr_1* = []), then:
+globalsxa externaddr*
+1. If (externaddr* = []), then:
   a. Return [].
-2. Let [externaddr_0] :: xa* be externaddr_1*.
+2. Let [externaddr_0] :: xa* be externaddr*.
 3. If externaddr_0 is GLOBAL, then:
   a. Let (GLOBAL a) be externaddr_0.
   b. Return [a] :: $globalsxa(xa*).
-4. Let [externaddr] :: xa* be externaddr_1*.
+4. Let [externaddr] :: xa* be externaddr*.
 5. Return $globalsxa(xa*).
 
-tablesxa externaddr_1*
-1. If (externaddr_1* = []), then:
+tablesxa externaddr*
+1. If (externaddr* = []), then:
   a. Return [].
-2. Let [externaddr_0] :: xa* be externaddr_1*.
+2. Let [externaddr_0] :: xa* be externaddr*.
 3. If externaddr_0 is TABLE, then:
   a. Let (TABLE a) be externaddr_0.
   b. Return [a] :: $tablesxa(xa*).
-4. Let [externaddr] :: xa* be externaddr_1*.
+4. Let [externaddr] :: xa* be externaddr*.
 5. Return $tablesxa(xa*).
 
-memsxa externaddr_1*
-1. If (externaddr_1* = []), then:
+memsxa externaddr*
+1. If (externaddr* = []), then:
   a. Return [].
-2. Let [externaddr_0] :: xa* be externaddr_1*.
+2. Let [externaddr_0] :: xa* be externaddr*.
 3. If externaddr_0 is MEM, then:
   a. Let (MEM a) be externaddr_0.
   b. Return [a] :: $memsxa(xa*).
-4. Let [externaddr] :: xa* be externaddr_1*.
+4. Let [externaddr] :: xa* be externaddr*.
 5. Return $memsxa(xa*).
 
-tagsxa externaddr_1*
-1. If (externaddr_1* = []), then:
+tagsxa externaddr*
+1. If (externaddr* = []), then:
   a. Return [].
-2. Let [externaddr_0] :: xa* be externaddr_1*.
+2. Let [externaddr_0] :: xa* be externaddr*.
 3. If externaddr_0 is TAG, then:
   a. Let (TAG a) be externaddr_0.
   b. Return [a] :: $tagsxa(xa*).
-4. Let [externaddr] :: xa* be externaddr_1*.
+4. Let [externaddr] :: xa* be externaddr*.
 5. Return $tagsxa(xa*).
 
 store (s, f)
@@ -30143,20 +30143,20 @@ growmem meminst n
 4. Let meminst' be { TYPE: at ([ i' .. j ]) PAGE; BYTES: b* :: 0^(n * (64 * $Ki())) }.
 5. Return meminst'.
 
-blocktype_ z blocktype_1
-1. If blocktype_1 is _IDX, then:
-  a. Let (_IDX x) be blocktype_1.
+blocktype_ z blocktype
+1. If blocktype is _IDX, then:
+  a. Let (_IDX x) be blocktype.
   b. Assert: Due to validation, $expanddt($type(z, x)) is FUNC.
   c. Let (FUNC ft) be $expanddt($type(z, x)).
   d. Return ft.
-2. Assert: Due to validation, blocktype_1 is _RESULT.
-3. Let (_RESULT t?) be blocktype_1.
+2. Assert: Due to validation, blocktype is _RESULT.
+3. Let (_RESULT t?) be blocktype.
 4. Return [] -> t?.
 
-alloctypes type_1*
-1. If (type_1* = []), then:
+alloctypes type*
+1. If (type* = []), then:
   a. Return [].
-2. Let type'* :: [type] be type_1*.
+2. Let type'* :: [type] be type*.
 3. Let (TYPE rectype) be type.
 4. Let deftype'* be $alloctypes(type'*).
 5. Let x be |deftype'*|.
@@ -30169,17 +30169,17 @@ allocfunc s deftype funccode moduleinst
 3. Append funcinst to the s.FUNCS.
 4. Return a.
 
-allocfuncs s deftype_1* funccode_1* moduleinst_1*
-1. If (deftype_1* = []), then:
-  a. Assert: Due to validation, (funccode_1* = []).
-  b. Assert: Due to validation, (moduleinst_1* = []).
+allocfuncs s deftype* code* moduleinst*
+1. If (deftype* = []), then:
+  a. Assert: Due to validation, (code* = []).
+  b. Assert: Due to validation, (moduleinst* = []).
   c. Return [].
 2. Else:
-  a. Let [dt] :: dt'* be deftype_1*.
-  b. Assert: Due to validation, (|funccode_1*| >= 1).
-  c. Let [funccode] :: funccode'* be funccode_1*.
-  d. Assert: Due to validation, (|moduleinst_1*| >= 1).
-  e. Let [moduleinst] :: moduleinst'* be moduleinst_1*.
+  a. Let [dt] :: dt'* be deftype*.
+  b. Assert: Due to validation, (|code*| >= 1).
+  c. Let [funccode] :: funccode'* be code*.
+  d. Assert: Due to validation, (|moduleinst*| >= 1).
+  e. Let [moduleinst] :: moduleinst'* be moduleinst*.
   f. Let fa be $allocfunc(s, dt, funccode, moduleinst).
   g. Let fa'* be $allocfuncs(s, dt'*, funccode'*, moduleinst'*).
   h. Return [fa] :: fa'*.
@@ -30190,14 +30190,14 @@ allocglobal s globaltype val
 3. Append globalinst to the s.GLOBALS.
 4. Return a.
 
-allocglobals s globaltype_1* val_1*
-1. If (globaltype_1* = []), then:
-  a. Assert: Due to validation, (val_1* = []).
+allocglobals s globaltype* val*
+1. If (globaltype* = []), then:
+  a. Assert: Due to validation, (val* = []).
   b. Return [].
 2. Else:
-  a. Let [globaltype] :: globaltype'* be globaltype_1*.
-  b. Assert: Due to validation, (|val_1*| >= 1).
-  c. Let [val] :: val'* be val_1*.
+  a. Let [globaltype] :: globaltype'* be globaltype*.
+  b. Assert: Due to validation, (|val*| >= 1).
+  c. Let [val] :: val'* be val*.
   d. Let ga be $allocglobal(s, globaltype, val).
   e. Let ga'* be $allocglobals(s, globaltype'*, val'*).
   f. Return [ga] :: ga'*.
@@ -30208,13 +30208,13 @@ alloctable s (at ([ i .. j ]) rt) ref
 3. Append tableinst to the s.TABLES.
 4. Return a.
 
-alloctables s tabletype_1* ref_1*
-1. If ((tabletype_1* = []) /\ (ref_1* = [])), then:
+alloctables s tabletype* ref*
+1. If ((tabletype* = []) /\ (ref* = [])), then:
   a. Return [].
-2. Assert: Due to validation, (|ref_1*| >= 1).
-3. Let [ref] :: ref'* be ref_1*.
-4. Assert: Due to validation, (|tabletype_1*| >= 1).
-5. Let [tabletype] :: tabletype'* be tabletype_1*.
+2. Assert: Due to validation, (|ref*| >= 1).
+3. Let [ref] :: ref'* be ref*.
+4. Assert: Due to validation, (|tabletype*| >= 1).
+5. Let [tabletype] :: tabletype'* be tabletype*.
 6. Let ta be $alloctable(s, tabletype, ref).
 7. Let ta'* be $alloctables(s, tabletype'*, ref'*).
 8. Return [ta] :: ta'*.
@@ -30225,10 +30225,10 @@ allocmem s at ([ i .. j ]) PAGE
 3. Append meminst to the s.MEMS.
 4. Return a.
 
-allocmems s memtype_1*
-1. If (memtype_1* = []), then:
+allocmems s memtype*
+1. If (memtype* = []), then:
   a. Return [].
-2. Let [memtype] :: memtype'* be memtype_1*.
+2. Let [memtype] :: memtype'* be memtype*.
 3. Let ma be $allocmem(s, memtype).
 4. Let ma'* be $allocmems(s, memtype'*).
 5. Return [ma] :: ma'*.
@@ -30239,10 +30239,10 @@ alloctag s tagtype
 3. Append taginst to the s.TAGS.
 4. Return a.
 
-alloctags s tagtype_1*
-1. If (tagtype_1* = []), then:
+alloctags s tagtype*
+1. If (tagtype* = []), then:
   a. Return [].
-2. Let [jt] :: jt'* be tagtype_1*.
+2. Let [jt] :: jt'* be tagtype*.
 3. Let ja be $alloctag(s, jt).
 4. Let ja'* be $alloctags(s, jt'*).
 5. Return [ja] :: ja'*.
@@ -30253,13 +30253,13 @@ allocelem s elemtype ref*
 3. Append eleminst to the s.ELEMS.
 4. Return a.
 
-allocelems s elemtype_1* ref_1*
-1. If ((elemtype_1* = []) /\ (ref_1* = [])), then:
+allocelems s elemtype* ref''*
+1. If ((elemtype* = []) /\ (ref''* = [])), then:
   a. Return [].
-2. Assert: Due to validation, (|ref_1*| >= 1).
-3. Let [ref*] :: ref'** be ref_1*.
-4. Assert: Due to validation, (|elemtype_1*| >= 1).
-5. Let [rt] :: rt'* be elemtype_1*.
+2. Assert: Due to validation, (|ref''*| >= 1).
+3. Let [ref*] :: ref'** be ref''*.
+4. Assert: Due to validation, (|elemtype*| >= 1).
+5. Let [rt] :: rt'* be elemtype*.
 6. Let ea be $allocelem(s, rt, ref*).
 7. Let ea'* be $allocelems(s, rt'*, ref'**).
 8. Return [ea] :: ea'*.
@@ -30270,32 +30270,32 @@ allocdata s OK byte*
 3. Append datainst to the s.DATAS.
 4. Return a.
 
-allocdatas s datatype_1* byte_1*
-1. If ((datatype_1* = []) /\ (byte_1* = [])), then:
+allocdatas s datatype* byte*
+1. If ((datatype* = []) /\ (byte* = [])), then:
   a. Return [].
-2. Assert: Due to validation, (|byte_1*| >= 1).
-3. Let [b*] :: b'** be byte_1*.
-4. Assert: Due to validation, (|datatype_1*| >= 1).
-5. Let [ok] :: ok'* be datatype_1*.
+2. Assert: Due to validation, (|byte*| >= 1).
+3. Let [b*] :: b'** be byte*.
+4. Assert: Due to validation, (|datatype*| >= 1).
+5. Let [ok] :: ok'* be datatype*.
 6. Let da be $allocdata(s, ok, b*).
 7. Let da'* be $allocdatas(s, ok'*, b'**).
 8. Return [da] :: da'*.
 
-allocexport moduleinst (EXPORT name externidx_1)
-1. If externidx_1 is FUNC, then:
-  a. Let (FUNC x) be externidx_1.
+allocexport moduleinst (EXPORT name externidx)
+1. If externidx is FUNC, then:
+  a. Let (FUNC x) be externidx.
   b. Return { NAME: name; ADDR: (FUNC moduleinst.FUNCS[x]) }.
-2. If externidx_1 is GLOBAL, then:
-  a. Let (GLOBAL x) be externidx_1.
+2. If externidx is GLOBAL, then:
+  a. Let (GLOBAL x) be externidx.
   b. Return { NAME: name; ADDR: (GLOBAL moduleinst.GLOBALS[x]) }.
-3. If externidx_1 is TABLE, then:
-  a. Let (TABLE x) be externidx_1.
+3. If externidx is TABLE, then:
+  a. Let (TABLE x) be externidx.
   b. Return { NAME: name; ADDR: (TABLE moduleinst.TABLES[x]) }.
-4. If externidx_1 is MEM, then:
-  a. Let (MEM x) be externidx_1.
+4. If externidx is MEM, then:
+  a. Let (MEM x) be externidx.
   b. Return { NAME: name; ADDR: (MEM moduleinst.MEMS[x]) }.
-5. Assert: Due to validation, externidx_1 is TAG.
-6. Let (TAG x) be externidx_1.
+5. Assert: Due to validation, externidx is TAG.
+6. Let (TAG x) be externidx.
 7. Return { NAME: name; ADDR: (TAG moduleinst.TAGS[x]) }.
 
 allocexports moduleinst export*
@@ -30341,29 +30341,29 @@ allocmodule s module externaddr* val_G* ref_T* ref_E**
 37. Assert: Due to validation, (dataaddr_0* = da*).
 38. Return moduleinst.
 
-runelem_ x (ELEM rt e^n elemmode_1)
-1. If (elemmode_1 = PASSIVE), then:
+runelem_ x (ELEM rt e^n elemmode)
+1. If (elemmode = PASSIVE), then:
   a. Return [].
-2. If (elemmode_1 = DECLARE), then:
+2. If (elemmode = DECLARE), then:
   a. Return [(ELEM.DROP x)].
-3. Assert: Due to validation, elemmode_1 is ACTIVE.
-4. Let (ACTIVE y instr*) be elemmode_1.
+3. Assert: Due to validation, elemmode is ACTIVE.
+4. Let (ACTIVE y instr*) be elemmode.
 5. Return instr* :: [(I32.CONST 0), (I32.CONST n), (TABLE.INIT y x), (ELEM.DROP x)].
 
-rundata_ x (DATA b^n datamode_1)
-1. If (datamode_1 = PASSIVE), then:
+rundata_ x (DATA b^n datamode)
+1. If (datamode = PASSIVE), then:
   a. Return [].
-2. Assert: Due to validation, datamode_1 is ACTIVE.
-3. Let (ACTIVE y instr*) be datamode_1.
+2. Assert: Due to validation, datamode is ACTIVE.
+3. Let (ACTIVE y instr*) be datamode.
 4. Return instr* :: [(I32.CONST 0), (I32.CONST n), (MEMORY.INIT y x), (DATA.DROP x)].
 
-evalglobals z globaltype_1* expr_1*
-1. If ((globaltype_1* = []) /\ (expr_1* = [])), then:
+evalglobals z globaltype* expr*
+1. If ((globaltype* = []) /\ (expr* = [])), then:
   a. Return [].
-2. Assert: Due to validation, (|expr_1*| >= 1).
-3. Let [expr] :: expr'* be expr_1*.
-4. Assert: Due to validation, (|globaltype_1*| >= 1).
-5. Let [gt] :: gt'* be globaltype_1*.
+2. Assert: Due to validation, (|expr*| >= 1).
+3. Let [expr] :: expr'* be expr*.
+4. Assert: Due to validation, (|globaltype*| >= 1).
+5. Let [gt] :: gt'* be globaltype*.
 6. Let (s, f) be z.
 7. Let [val] be $Eval_expr(z, expr).
 8. Let a be $allocglobal(s, gt, val).
@@ -30421,14 +30421,14 @@ invoke s funcaddr val*
 12. Pop the frame (FRAME_ k { f }) from the stack.
 13. Return val'^k.
 
-allocXs `X `Y s X_1* Y_1*
-1. If (X_1* = []), then:
-  a. Assert: Due to validation, (Y_1* = []).
+allocXs `X `Y s X* Y*
+1. If (X* = []), then:
+  a. Assert: Due to validation, (Y* = []).
   b. Return [].
 2. Else:
-  a. Let [X] :: X'* be X_1*.
-  b. Assert: Due to validation, (|Y_1*| >= 1).
-  c. Let [Y] :: Y'* be Y_1*.
+  a. Let [X] :: X'* be X*.
+  b. Assert: Due to validation, (|Y*| >= 1).
+  c. Let [Y] :: Y'* be Y*.
   d. Let a be $allocX(`X, `Y, s, X, Y).
   e. Let a'* be $allocXs(`X, `Y, s, X'*, Y'*).
   f. Return [a] :: a'*.

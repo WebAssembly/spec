@@ -203,6 +203,22 @@ let get_var_set_in_algo (algo: Al.Ast.algorithm) : Al.Free.IdSet.t =
     (get_vars_in_list get_vars_in_arg (params_of_algo algo))
     (get_vars_in_list get_vars_in_instr (body_of_algo algo))
 
+let get_dimension (var: string) : string =
+  let length = String.length var in
+
+  let list = String.index_opt var '*' in
+  let list1 = String.index_opt var '+' in
+  let listn = String.index_opt var '^' in
+  let opt = String.index_opt var '?' in
+
+  let min_idx idx =
+    function
+    | Some idx' -> if idx < idx' then idx else idx'
+    | _ -> idx in
+
+  let dim_idx = List.fold_left min_idx length [ list; list1; listn; opt ] in
+  String.sub var dim_idx (length - dim_idx)
+
 let rec remove_dimension (var: string) : string =
   if
     String.ends_with ~suffix:"*" var ||
