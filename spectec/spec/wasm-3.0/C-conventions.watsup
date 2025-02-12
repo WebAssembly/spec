@@ -76,7 +76,7 @@ var L : label
 
 ;; Allocation
 
-def $allocX(syntax X, syntax Y, store, X, Y) : (store, addr) hint(macro none)
+def $allocX(syntax X, syntax Y, store, X, Y) : (store, addr) hint(show $allocX#((%3, %4, %5))) hint(macro none)
 def $allocXs(syntax X, syntax Y, store, X*, Y*) : (store, addr*) hint(show $allocX*#((%3, %4, %5))) hint(macro none)
 def $allocXs(syntax X, syntax Y, s, eps, eps) = (s, eps)
 def $allocXs(syntax X, syntax Y, s, X X'*, Y Y'*) = (s_2, a a'*)
