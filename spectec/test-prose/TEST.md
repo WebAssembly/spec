@@ -3599,24 +3599,24 @@ sum n_1*
 2. Let [n] :: n'* be n_1*.
 3. Return (n + $sum(n'*)).
 
-opt_ X X_1*
+opt_ `X X_1*
 1. If (X_1* = []), then:
   a. Return ?().
 2. Assert: Due to validation, (|X_1*| = 1).
 3. Let [w] be X_1*.
 4. Return ?(w).
 
-list_ X X_1?
+list_ `X X_1?
 1. If X_1? is not defined, then:
   a. Return [].
 2. Let ?(w) be X_1?.
 3. Return [w].
 
-concat_ X X_1*
+concat_ `X X_1*
 1. If (X_1* = []), then:
   a. Return [].
 2. Let [w*] :: w'** be X_1*.
-3. Return w* :: $concat_(X, w'**).
+3. Return w* :: $concat_(`X, w'**).
 
 signif N_1
 1. If (N_1 = 32), then:
@@ -3751,10 +3751,10 @@ binop_ valtype_1 binop__1 val__1 val__2
     1) Return [$imul_($size(Inn), iN_1, iN_2)].
   g. If binop__1 is DIV, then:
     1) Let (DIV sx) be binop__1.
-    2) Return $list_(val_((Inn : Inn <: valtype)), $idiv_($size(Inn), sx, iN_1, iN_2)).
+    2) Return $list_(`val_((Inn : Inn <: valtype)), $idiv_($size(Inn), sx, iN_1, iN_2)).
   h. If binop__1 is REM, then:
     1) Let (REM sx) be binop__1.
-    2) Return $list_(val_((Inn : Inn <: valtype)), $irem_($size(Inn), sx, iN_1, iN_2)).
+    2) Return $list_(`val_((Inn : Inn <: valtype)), $irem_($size(Inn), sx, iN_1, iN_2)).
   i. If (binop__1 = AND), then:
     1) Return [$iand_($size(Inn), iN_1, iN_2)].
   j. If (binop__1 = OR), then:
@@ -3846,7 +3846,7 @@ cvtop__ valtype_1 valtype_2 cvtop_1 val__1
     2) If cvtop_1 is TRUNC, then:
       a) Let (TRUNC sx) be cvtop_1.
       b) Let fN be val__1.
-      c) Return $list_(val_((Inn : Inn <: valtype)), $trunc__($size(Fnn), $size(Inn), sx, fN)).
+      c) Return $list_(`val_((Inn : Inn <: valtype)), $trunc__($size(Fnn), $size(Inn), sx, fN)).
 5. Let fN be val__1.
 6. If ((valtype_1 = F32) /\ ((valtype_2 = F64) /\ (cvtop_1 = PROMOTE))), then:
   a. Return $promote__(32, 64, fN).
@@ -10923,7 +10923,7 @@ Step_pure/vcvtop lanetype_1 X n_1 lanetype_2 X n_2 vcvtop half_1? zero_1?
   c. Let M be n_2.
   d. If (n_1 = M), then:
     1) Let ci* be $lanes_(Lnn_1 X M, c_1).
-    2) Let cj** be $setproduct_(lane_(Lnn_2), $vcvtop__(Lnn_1 X M, Lnn_2 X M, vcvtop, ci)*).
+    2) Let cj** be $setproduct_(`lane_(Lnn_2), $vcvtop__(Lnn_1 X M, Lnn_2 X M, vcvtop, ci)*).
     3) If (|$invlanes_(Lnn_2 X M, cj*)*| > 0), then:
       a) Let c be an element of $invlanes_(Lnn_2 X M, cj*)*.
       b) Push the value (V128.CONST c) to the stack.
@@ -10935,7 +10935,7 @@ Step_pure/vcvtop lanetype_1 X n_1 lanetype_2 X n_2 vcvtop half_1? zero_1?
   e. If half_1? is defined, then:
     1) Let ?(half) be half_1?.
     2) Let ci* be $lanes_(Lnn_1 X M_1, c_1)[$half(half, 0, M_2) : M_2].
-    3) Let cj** be $setproduct_(lane_(Lnn_2), $vcvtop__(Lnn_1 X M_1, Lnn_2 X M_2, vcvtop, ci)*).
+    3) Let cj** be $setproduct_(`lane_(Lnn_2), $vcvtop__(Lnn_1 X M_1, Lnn_2 X M_2, vcvtop, ci)*).
     4) If (|$invlanes_(Lnn_2 X M_2, cj*)*| > 0), then:
       a) Let c be an element of $invlanes_(Lnn_2 X M_2, cj*)*.
       b) Push the value (V128.CONST c) to the stack.
@@ -10948,7 +10948,7 @@ Step_pure/vcvtop lanetype_1 X n_1 lanetype_2 X n_2 vcvtop half_1? zero_1?
       a) Let nt_2 be lanetype_1.
       b) If zero_1? is defined, then:
         1. Let ci* be $lanes_(nt_1 X M_1, c_1).
-        2. Let cj** be $setproduct_(lane_((nt_2 : numtype <: lanetype)), $vcvtop__(nt_1 X M_1, nt_2 X M_2, vcvtop, ci)* :: [$zero(nt_2)]^M_1).
+        2. Let cj** be $setproduct_(`lane_((nt_2 : numtype <: lanetype)), $vcvtop__(nt_1 X M_1, nt_2 X M_2, vcvtop, ci)* :: [$zero(nt_2)]^M_1).
         3. If (|$invlanes_(nt_2 X M_2, cj*)*| > 0), then:
           a. Let c be an element of $invlanes_(nt_2 X M_2, cj*)*.
           b. Push the value (V128.CONST c) to the stack.
@@ -11380,42 +11380,42 @@ sum n_1*
 2. Let [n] :: n'* be n_1*.
 3. Return (n + $sum(n'*)).
 
-opt_ X X_1*
+opt_ `X X_1*
 1. If (X_1* = []), then:
   a. Return ?().
 2. Assert: Due to validation, (|X_1*| = 1).
 3. Let [w] be X_1*.
 4. Return ?(w).
 
-list_ X X_1?
+list_ `X X_1?
 1. If X_1? is not defined, then:
   a. Return [].
 2. Let ?(w) be X_1?.
 3. Return [w].
 
-concat_ X X_1*
+concat_ `X X_1*
 1. If (X_1* = []), then:
   a. Return [].
 2. Let [w*] :: w'** be X_1*.
-3. Return w* :: $concat_(X, w'**).
+3. Return w* :: $concat_(`X, w'**).
 
-setproduct2_ X w_1 X_1*
+setproduct2_ `X w_1 X_1*
 1. If (X_1* = []), then:
   a. Return [].
 2. Let [w'*] :: w** be X_1*.
-3. Return [[w_1] :: w'*] :: $setproduct2_(X, w_1, w**).
+3. Return [[w_1] :: w'*] :: $setproduct2_(`X, w_1, w**).
 
-setproduct1_ X X_1* w**
+setproduct1_ `X X_1* w**
 1. If (X_1* = []), then:
   a. Return [].
 2. Let [w_1] :: w'* be X_1*.
-3. Return $setproduct2_(X, w_1, w**) :: $setproduct1_(X, w'*, w**).
+3. Return $setproduct2_(`X, w_1, w**) :: $setproduct1_(`X, w'*, w**).
 
-setproduct_ X X_1*
+setproduct_ `X X_1*
 1. If (X_1* = []), then:
   a. Return [[]].
 2. Let [w_1*] :: w** be X_1*.
-3. Return $setproduct1_(X, w_1*, $setproduct_(X, w**)).
+3. Return $setproduct1_(`X, w_1*, $setproduct_(`X, w**)).
 
 signif N_1
 1. If (N_1 = 32), then:
@@ -11649,10 +11649,10 @@ binop_ numtype_1 binop__1 num__1 num__2
     1) Return [$imul_($sizenn(Inn), iN_1, iN_2)].
   g. If binop__1 is DIV, then:
     1) Let (DIV sx) be binop__1.
-    2) Return $list_(num_((Inn : Inn <: numtype)), $idiv_($sizenn(Inn), sx, iN_1, iN_2)).
+    2) Return $list_(`num_((Inn : Inn <: numtype)), $idiv_($sizenn(Inn), sx, iN_1, iN_2)).
   h. If binop__1 is REM, then:
     1) Let (REM sx) be binop__1.
-    2) Return $list_(num_((Inn : Inn <: numtype)), $irem_($sizenn(Inn), sx, iN_1, iN_2)).
+    2) Return $list_(`num_((Inn : Inn <: numtype)), $irem_($sizenn(Inn), sx, iN_1, iN_2)).
   i. If (binop__1 = AND), then:
     1) Return [$iand_($sizenn(Inn), iN_1, iN_2)].
   j. If (binop__1 = OR), then:
@@ -11747,11 +11747,11 @@ cvtop__ numtype_1 numtype_3 cvtop_1 num__1
     2) If cvtop_1 is TRUNC, then:
       a) Let (TRUNC sx) be cvtop_1.
       b) Let fN_1 be num__1.
-      c) Return $list_(num_((Inn_2 : Inn <: numtype)), $trunc__($sizenn1(Fnn_1), $sizenn2(Inn_2), sx, fN_1)).
+      c) Return $list_(`num_((Inn_2 : Inn <: numtype)), $trunc__($sizenn1(Fnn_1), $sizenn2(Inn_2), sx, fN_1)).
     3) If cvtop_1 is TRUNC_SAT, then:
       a) Let (TRUNC_SAT sx) be cvtop_1.
       b) Let fN_1 be num__1.
-      c) Return $list_(num_((Inn_2 : Inn <: numtype)), $trunc_sat__($sizenn1(Fnn_1), $sizenn2(Inn_2), sx, fN_1)).
+      c) Return $list_(`num_((Inn_2 : Inn <: numtype)), $trunc_sat__($sizenn1(Fnn_1), $sizenn2(Inn_2), sx, fN_1)).
 3. If numtype_1 is Inn, then:
   a. Let Inn_1 be numtype_1.
   b. If numtype_3 is Fnn, then:
@@ -11852,37 +11852,37 @@ vunop_ lanetype_1 X M vunop__1 v128_1
 3. Let Fnn be lanetype_1.
 4. If (vunop__1 = ABS), then:
   a. Let lane_1* be $lanes_(Fnn X M, v128_1).
-  b. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fabs_($sizenn(Fnn), lane_1)*).
+  b. Let lane** be $setproduct_(`lane_((Fnn : Fnn <: lanetype)), $fabs_($sizenn(Fnn), lane_1)*).
   c. Let v128* be $invlanes_(Fnn X M, lane*)*.
   d. Return v128*.
 5. If (vunop__1 = NEG), then:
   a. Let lane_1* be $lanes_(Fnn X M, v128_1).
-  b. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fneg_($sizenn(Fnn), lane_1)*).
+  b. Let lane** be $setproduct_(`lane_((Fnn : Fnn <: lanetype)), $fneg_($sizenn(Fnn), lane_1)*).
   c. Let v128* be $invlanes_(Fnn X M, lane*)*.
   d. Return v128*.
 6. If (vunop__1 = SQRT), then:
   a. Let lane_1* be $lanes_(Fnn X M, v128_1).
-  b. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fsqrt_($sizenn(Fnn), lane_1)*).
+  b. Let lane** be $setproduct_(`lane_((Fnn : Fnn <: lanetype)), $fsqrt_($sizenn(Fnn), lane_1)*).
   c. Let v128* be $invlanes_(Fnn X M, lane*)*.
   d. Return v128*.
 7. If (vunop__1 = CEIL), then:
   a. Let lane_1* be $lanes_(Fnn X M, v128_1).
-  b. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fceil_($sizenn(Fnn), lane_1)*).
+  b. Let lane** be $setproduct_(`lane_((Fnn : Fnn <: lanetype)), $fceil_($sizenn(Fnn), lane_1)*).
   c. Let v128* be $invlanes_(Fnn X M, lane*)*.
   d. Return v128*.
 8. If (vunop__1 = FLOOR), then:
   a. Let lane_1* be $lanes_(Fnn X M, v128_1).
-  b. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $ffloor_($sizenn(Fnn), lane_1)*).
+  b. Let lane** be $setproduct_(`lane_((Fnn : Fnn <: lanetype)), $ffloor_($sizenn(Fnn), lane_1)*).
   c. Let v128* be $invlanes_(Fnn X M, lane*)*.
   d. Return v128*.
 9. If (vunop__1 = TRUNC), then:
   a. Let lane_1* be $lanes_(Fnn X M, v128_1).
-  b. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $ftrunc_($sizenn(Fnn), lane_1)*).
+  b. Let lane** be $setproduct_(`lane_((Fnn : Fnn <: lanetype)), $ftrunc_($sizenn(Fnn), lane_1)*).
   c. Let v128* be $invlanes_(Fnn X M, lane*)*.
   d. Return v128*.
 10. Assert: Due to validation, (vunop__1 = NEAREST).
 11. Let lane_1* be $lanes_(Fnn X M, v128_1).
-12. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fnearest_($sizenn(Fnn), lane_1)*).
+12. Let lane** be $setproduct_(`lane_((Fnn : Fnn <: lanetype)), $fnearest_($sizenn(Fnn), lane_1)*).
 13. Let v128* be $invlanes_(Fnn X M, lane*)*.
 14. Return v128*.
 
@@ -11943,49 +11943,49 @@ vbinop_ lanetype_1 X M vbinop__1 v128_1 v128_2
 4. If (vbinop__1 = ADD), then:
   a. Let lane_1* be $lanes_(Fnn X M, v128_1).
   b. Let lane_2* be $lanes_(Fnn X M, v128_2).
-  c. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fadd_($sizenn(Fnn), lane_1, lane_2)*).
+  c. Let lane** be $setproduct_(`lane_((Fnn : Fnn <: lanetype)), $fadd_($sizenn(Fnn), lane_1, lane_2)*).
   d. Let v128* be $invlanes_(Fnn X M, lane*)*.
   e. Return v128*.
 5. If (vbinop__1 = SUB), then:
   a. Let lane_1* be $lanes_(Fnn X M, v128_1).
   b. Let lane_2* be $lanes_(Fnn X M, v128_2).
-  c. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fsub_($sizenn(Fnn), lane_1, lane_2)*).
+  c. Let lane** be $setproduct_(`lane_((Fnn : Fnn <: lanetype)), $fsub_($sizenn(Fnn), lane_1, lane_2)*).
   d. Let v128* be $invlanes_(Fnn X M, lane*)*.
   e. Return v128*.
 6. If (vbinop__1 = MUL), then:
   a. Let lane_1* be $lanes_(Fnn X M, v128_1).
   b. Let lane_2* be $lanes_(Fnn X M, v128_2).
-  c. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fmul_($sizenn(Fnn), lane_1, lane_2)*).
+  c. Let lane** be $setproduct_(`lane_((Fnn : Fnn <: lanetype)), $fmul_($sizenn(Fnn), lane_1, lane_2)*).
   d. Let v128* be $invlanes_(Fnn X M, lane*)*.
   e. Return v128*.
 7. If (vbinop__1 = DIV), then:
   a. Let lane_1* be $lanes_(Fnn X M, v128_1).
   b. Let lane_2* be $lanes_(Fnn X M, v128_2).
-  c. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fdiv_($sizenn(Fnn), lane_1, lane_2)*).
+  c. Let lane** be $setproduct_(`lane_((Fnn : Fnn <: lanetype)), $fdiv_($sizenn(Fnn), lane_1, lane_2)*).
   d. Let v128* be $invlanes_(Fnn X M, lane*)*.
   e. Return v128*.
 8. If (vbinop__1 = MIN), then:
   a. Let lane_1* be $lanes_(Fnn X M, v128_1).
   b. Let lane_2* be $lanes_(Fnn X M, v128_2).
-  c. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fmin_($sizenn(Fnn), lane_1, lane_2)*).
+  c. Let lane** be $setproduct_(`lane_((Fnn : Fnn <: lanetype)), $fmin_($sizenn(Fnn), lane_1, lane_2)*).
   d. Let v128* be $invlanes_(Fnn X M, lane*)*.
   e. Return v128*.
 9. If (vbinop__1 = MAX), then:
   a. Let lane_1* be $lanes_(Fnn X M, v128_1).
   b. Let lane_2* be $lanes_(Fnn X M, v128_2).
-  c. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fmax_($sizenn(Fnn), lane_1, lane_2)*).
+  c. Let lane** be $setproduct_(`lane_((Fnn : Fnn <: lanetype)), $fmax_($sizenn(Fnn), lane_1, lane_2)*).
   d. Let v128* be $invlanes_(Fnn X M, lane*)*.
   e. Return v128*.
 10. If (vbinop__1 = PMIN), then:
   a. Let lane_1* be $lanes_(Fnn X M, v128_1).
   b. Let lane_2* be $lanes_(Fnn X M, v128_2).
-  c. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fpmin_($sizenn(Fnn), lane_1, lane_2)*).
+  c. Let lane** be $setproduct_(`lane_((Fnn : Fnn <: lanetype)), $fpmin_($sizenn(Fnn), lane_1, lane_2)*).
   d. Let v128* be $invlanes_(Fnn X M, lane*)*.
   e. Return v128*.
 11. Assert: Due to validation, (vbinop__1 = PMAX).
 12. Let lane_1* be $lanes_(Fnn X M, v128_1).
 13. Let lane_2* be $lanes_(Fnn X M, v128_2).
-14. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fpmax_($sizenn(Fnn), lane_1, lane_2)*).
+14. Let lane** be $setproduct_(`lane_((Fnn : Fnn <: lanetype)), $fpmax_($sizenn(Fnn), lane_1, lane_2)*).
 15. Let v128* be $invlanes_(Fnn X M, lane*)*.
 16. Return v128*.
 
@@ -12102,7 +12102,7 @@ vcvtop__ lanetype_2 X M_1 lanetype_1 X M_2 vcvtop_1 lane__1
     1) Let (TRUNC_SAT sx) be vcvtop_1.
     2) Let fN_1 be lane__1.
     3) Let iN_2? be $trunc_sat__($lsizenn1(Fnn_1), $lsizenn2(Inn_2), sx, fN_1).
-    4) Return $list_(lane_((Inn_2 : Inn <: lanetype)), iN_2?).
+    4) Return $list_(`lane_((Inn_2 : Inn <: lanetype)), iN_2?).
 5. Assert: Due to validation, lanetype_1 is Fnn.
 6. Let Fnn_2 be lanetype_1.
 7. Let fN_1 be lane__1.
@@ -12115,7 +12115,7 @@ vcvtop__ lanetype_2 X M_1 lanetype_1 X M_2 vcvtop_1 lane__1
 
 vextunop__ Inn_1 X M_1 Inn_2 X M_2 (EXTADD_PAIRWISE sx) c_1
 1. Let ci* be $lanes_(Inn_2 X M_2, c_1).
-2. Let [cj_1, cj_2]* be $concat__1^-1(iN($lsizenn1((Inn_1 : Inn <: lanetype))), $extend__($lsizenn2(Inn_2), $lsizenn1(Inn_1), sx, ci)*).
+2. Let [cj_1, cj_2]* be $concat__1^-1(`iN($lsizenn1((Inn_1 : Inn <: lanetype))), $extend__($lsizenn2(Inn_2), $lsizenn1(Inn_1), sx, ci)*).
 3. Let c be $invlanes_(Inn_1 X M_1, $iadd_($lsizenn1(Inn_1), cj_1, cj_2)*).
 4. Return c.
 
@@ -12129,7 +12129,7 @@ vextbinop__ Inn_1 X M_1 Inn_2 X M_2 vextbinop__1 c_1 c_2
 2. Assert: Due to validation, (vextbinop__1 = DOTS).
 3. Let ci_1* be $lanes_(Inn_2 X M_2, c_1).
 4. Let ci_2* be $lanes_(Inn_2 X M_2, c_2).
-5. Let [cj_1, cj_2]* be $concat__1^-1(iN($lsizenn1((Inn_1 : Inn <: lanetype))), $imul_($lsizenn1(Inn_1), $extend__($lsizenn2(Inn_2), $lsizenn1(Inn_1), S, ci_1), $extend__($lsizenn2(Inn_2), $lsizenn1(Inn_1), S, ci_2))*).
+5. Let [cj_1, cj_2]* be $concat__1^-1(`iN($lsizenn1((Inn_1 : Inn <: lanetype))), $imul_($lsizenn1(Inn_1), $extend__($lsizenn2(Inn_2), $lsizenn1(Inn_1), S, ci_1), $extend__($lsizenn2(Inn_2), $lsizenn1(Inn_1), S, ci_2))*).
 6. Let c be $invlanes_(Inn_1 X M_1, $iadd_($lsizenn1(Inn_1), cj_1, cj_2)*).
 7. Return c.
 
@@ -12510,8 +12510,8 @@ instantiate s module externaddr*
 6. Let (START x)? be start?.
 7. Let (GLOBAL globaltype expr_G)* be global*.
 8. Let (ELEM reftype expr_E* elemmode)* be elem*.
-9. Let instr_D* be $concat_(instr, $rundata(data*[j], j)^(j<n_D)).
-10. Let instr_E* be $concat_(instr, $runelem(elem*[i], i)^(i<n_E)).
+9. Let instr_D* be $concat_(`instr, $rundata(data*[j], j)^(j<n_D)).
+10. Let instr_E* be $concat_(`instr, $runelem(elem*[i], i)^(i<n_E)).
 11. Let moduleinst_init be { TYPES: functype*; FUNCS: $funcs(externaddr*) :: (|s.FUNCS| + i_F)^(i_F<n_F); GLOBALS: $globals(externaddr*) }.
 12. Let f_init be { MODULE: moduleinst_init }.
 13. Let z be (s, f_init).
@@ -25182,7 +25182,7 @@ Instrtype_sub
 - the instruction type t_11* ->_ x_1* t_12* matches the instruction type t_21* ->_ x_2* t_22* if:
   - the result type t_21* matches the result type t_11*.
   - the result type t_12* matches the result type t_22*.
-  - the local index sequence x* is $setminus_(localidx, x_2*, x_1*).
+  - the local index sequence x* is $setminus_(`localidx, x_2*, x_1*).
   - |t*| is |x*|.
   - For all x in x*:
     - the local type C.LOCALS[x] exists.
@@ -26385,7 +26385,7 @@ Module_ok
   - |export*| is |xt_E*|.
   - For all export in export*, and corresponding nm in nm*, and corresponding xt_E in xt_E*:
     - the export export is valid with the name nm and the external type xt_E.
-  - $disjoint_(name, nm*) is true.
+  - $disjoint_(`name, nm*) is true.
   - C is C' with .GLOBALS appended by gt* with .TABLES appended by tt_I* :: tt* with .MEMS appended by mt_I* :: mt* with .TAGS appended by jt_I* :: jt* with .ELEMS appended by rt* with .DATAS appended by ok*.
   - the context C' is { TYPES: dt'*; FUNCS: dt_I* :: dt*; GLOBALS: gt_I*; RETURN: ?(); REFS: x* }.
   - the function index sequence x* is $funcidx_nonfuncs((global* table* mem* elem* data*)).
@@ -27333,7 +27333,7 @@ Step_read/array.new_data x y
 8. Let (mut zt) be arraytype_0.
 9. If ((i + ((n * $zsize(zt)) / 8)) > |$data(z, y).BYTES|), then:
   a. Trap.
-10. Let byte** be $concatn__1^-1(byte, ($zsize(zt) / 8), $data(z, y).BYTES[i : ((n * $zsize(zt)) / 8)]).
+10. Let byte** be $concatn__1^-1(`byte, ($zsize(zt) / 8), $data(z, y).BYTES[i : ((n * $zsize(zt)) / 8)]).
 11. Let c^n be $zbytes__1^-1(zt, byte*)*.
 12. Push the values $const($cunpack(zt), $cunpacknum_(zt, c))^n to the stack.
 13. Execute the instruction (ARRAY.NEW_FIXED x n).
@@ -27975,62 +27975,62 @@ prod n_1*
 2. Let [n] :: n'* be n_1*.
 3. Return (n * $prod(n'*)).
 
-opt_ X X_1*
+opt_ `X X_1*
 1. If (X_1* = []), then:
   a. Return ?().
 2. Assert: Due to validation, (|X_1*| = 1).
 3. Let [w] be X_1*.
 4. Return ?(w).
 
-concat_ X X_1*
+concat_ `X X_1*
 1. If (X_1* = []), then:
   a. Return [].
 2. Let [w*] :: w'** be X_1*.
-3. Return w* :: $concat_(X, w'**).
+3. Return w* :: $concat_(`X, w'**).
 
-concatn_ X X_1* n
+concatn_ `X X_1* n
 1. If (X_1* = []), then:
   a. Return [].
 2. Let [w^n] :: w'^n* be X_1*.
-3. Return w^n :: $concatn_(X, w'^n*, n).
+3. Return w^n :: $concatn_(`X, w'^n*, n).
 
-disjoint_ X X_1*
+disjoint_ `X X_1*
 1. If (X_1* = []), then:
   a. Return true.
 2. Let [w] :: w'* be X_1*.
-3. Return (w is not contained in w'* /\ $disjoint_(X, w'*)).
+3. Return (w is not contained in w'* /\ $disjoint_(`X, w'*)).
 
-setminus1_ X w X_1*
+setminus1_ `X w X_1*
 1. If (X_1* = []), then:
   a. Return [w].
 2. Let [w_1] :: w'* be X_1*.
 3. If (w = w_1), then:
   a. Return [].
-4. Return $setminus1_(X, w, w'*).
+4. Return $setminus1_(`X, w, w'*).
 
-setminus_ X X_1* w*
+setminus_ `X X_1* w*
 1. If (X_1* = []), then:
   a. Return [].
 2. Let [w_1] :: w'* be X_1*.
-3. Return $setminus1_(X, w_1, w*) :: $setminus_(X, w'*, w*).
+3. Return $setminus1_(`X, w_1, w*) :: $setminus_(`X, w'*, w*).
 
-setproduct2_ X w_1 X_1*
+setproduct2_ `X w_1 X_1*
 1. If (X_1* = []), then:
   a. Return [].
 2. Let [w'*] :: w** be X_1*.
-3. Return [[w_1] :: w'*] :: $setproduct2_(X, w_1, w**).
+3. Return [[w_1] :: w'*] :: $setproduct2_(`X, w_1, w**).
 
-setproduct1_ X X_1* w**
+setproduct1_ `X X_1* w**
 1. If (X_1* = []), then:
   a. Return [].
 2. Let [w_1] :: w'* be X_1*.
-3. Return $setproduct2_(X, w_1, w**) :: $setproduct1_(X, w'*, w**).
+3. Return $setproduct2_(`X, w_1, w**) :: $setproduct1_(`X, w'*, w**).
 
-setproduct_ X X_1*
+setproduct_ `X X_1*
 1. If (X_1* = []), then:
   a. Return [[]].
 2. Let [w_1*] :: w** be X_1*.
-3. Return $setproduct1_(X, w_1*, $setproduct_(X, w**)).
+3. Return $setproduct1_(`X, w_1*, $setproduct_(`X, w**)).
 
 signif N_1
 1. If (N_1 = 32), then:
@@ -29174,12 +29174,12 @@ default_ valtype_1
 funcidx_nonfuncs (global* table* mem* elem* data*)
 1. Return $funcidx_module((MODULE [] [] [] global* table* mem* [] elem* data* ?() [])).
 
-relaxed2 i X X_1 X_2
+relaxed2 i `X X_1 X_2
 1. If $ND(), then:
   a. Return [X_1, X_2][i].
 2. Return [X_1, X_2][0].
 
-relaxed4 i X X_1 X_2 X_3 X_4
+relaxed4 i `X X_1 X_2 X_3 X_4
 1. If $ND(), then:
   a. Return [X_1, X_2, X_3, X_4][i].
 2. Return [X_1, X_2, X_3, X_4][0].
@@ -29539,7 +29539,7 @@ irelaxed_swizzle_lane_ N c* i
   a. Return c*[i].
 2. If ($signed_(N, i) < 0), then:
   a. Return 0.
-3. Return $relaxed2($R_swizzle(), iN(N), 0, c*[(i \ |c*|)]).
+3. Return $relaxed2($R_swizzle(), `iN(N), 0, c*[(i \ |c*|)]).
 
 ivunop_ Jnn X M $f_ v_1
 1. Let c_1* be $lanes_(Jnn X M, v_1).
@@ -29548,7 +29548,7 @@ ivunop_ Jnn X M $f_ v_1
 
 fvunop_ Fnn X M $f_ v_1
 1. Let c_1* be $lanes_(Fnn X M, v_1).
-2. Let c** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $f_($sizenn(Fnn), c_1)*).
+2. Let c** be $setproduct_(`lane_((Fnn : Fnn <: lanetype)), $f_($sizenn(Fnn), c_1)*).
 3. Return $invlanes_(Fnn X M, c*)*.
 
 ivbinop_ Jnn X M $f_ v_1 v_2
@@ -29566,27 +29566,27 @@ ivbinopsx_ Jnn X M $f_ sx v_1 v_2
 ivbinopsxnd_ Jnn X M $f_ sx v_1 v_2
 1. Let c_1* be $lanes_(Jnn X M, v_1).
 2. Let c_2* be $lanes_(Jnn X M, v_2).
-3. Let c** be $setproduct_(lane_((Jnn : Jnn <: lanetype)), $f_($lsizenn(Jnn), sx, c_1, c_2)*).
+3. Let c** be $setproduct_(`lane_((Jnn : Jnn <: lanetype)), $f_($lsizenn(Jnn), sx, c_1, c_2)*).
 4. Return $invlanes_(Jnn X M, c*)*.
 
 fvbinop_ Fnn X M $f_ v_1 v_2
 1. Let c_1* be $lanes_(Fnn X M, v_1).
 2. Let c_2* be $lanes_(Fnn X M, v_2).
-3. Let c** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $f_($sizenn(Fnn), c_1, c_2)*).
+3. Let c** be $setproduct_(`lane_((Fnn : Fnn <: lanetype)), $f_($sizenn(Fnn), c_1, c_2)*).
 4. Return $invlanes_(Fnn X M, c*)*.
 
 ivternopnd_ Jnn X M $f_ v_1 v_2 v_3
 1. Let c_1* be $lanes_(Jnn X M, v_1).
 2. Let c_2* be $lanes_(Jnn X M, v_2).
 3. Let c_3* be $lanes_(Jnn X M, v_3).
-4. Let c** be $setproduct_(lane_((Jnn : Jnn <: lanetype)), $f_($lsizenn(Jnn), c_1, c_2, c_3)*).
+4. Let c** be $setproduct_(`lane_((Jnn : Jnn <: lanetype)), $f_($lsizenn(Jnn), c_1, c_2, c_3)*).
 5. Return $invlanes_(Jnn X M, c*)*.
 
 fvternop_ Fnn X M $f_ v_1 v_2 v_3
 1. Let c_1* be $lanes_(Fnn X M, v_1).
 2. Let c_2* be $lanes_(Fnn X M, v_2).
 3. Let c_3* be $lanes_(Fnn X M, v_3).
-4. Let c** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $f_($sizenn(Fnn), c_1, c_2, c_3)*).
+4. Let c** be $setproduct_(`lane_((Fnn : Fnn <: lanetype)), $f_($sizenn(Fnn), c_1, c_2, c_3)*).
 5. Return $invlanes_(Fnn X M, c*)*.
 
 ivtestop_ Jnn X M $f_ v_1
@@ -29827,7 +29827,7 @@ vcvtop__ Lnn_1 X n_1 Lnn_2 X n_2 vcvtop half___1? zero___1? v_1
 1. Let M be n_2.
 2. If (half___1? is not defined /\ (zero___1? is not defined /\ (n_1 = M))), then:
   a. Let c_1* be $lanes_(Lnn_1 X M, v_1).
-  b. Let c** be $setproduct_(lane_(Lnn_2), $lcvtop__(Lnn_1 X M, Lnn_2 X M, vcvtop, c_1)*).
+  b. Let c** be $setproduct_(`lane_(Lnn_2), $lcvtop__(Lnn_1 X M, Lnn_2 X M, vcvtop, c_1)*).
   c. Let v be an element of $invlanes_(Lnn_2 X M, c*)*.
   d. Return v.
 3. Let M_1 be n_1.
@@ -29835,13 +29835,13 @@ vcvtop__ Lnn_1 X n_1 Lnn_2 X n_2 vcvtop half___1? zero___1? v_1
 5. If (zero___1? is not defined /\ half___1? is defined), then:
   a. Let ?(half) be half___1?.
   b. Let c_1* be $lanes_(Lnn_1 X M_1, v_1)[$half__(Lnn_1 X M_1, Lnn_2 X M_2, half, 0, M_2) : M_2].
-  c. Let c** be $setproduct_(lane_(Lnn_2), $lcvtop__(Lnn_1 X M_1, Lnn_2 X M_2, vcvtop, c_1)*).
+  c. Let c** be $setproduct_(`lane_(Lnn_2), $lcvtop__(Lnn_1 X M_1, Lnn_2 X M_2, vcvtop, c_1)*).
   d. Let v be an element of $invlanes_(Lnn_2 X M_2, c*)*.
   e. Return v.
 6. Assert: Due to validation, half___1? is not defined.
 7. Assert: Due to validation, zero___1? is defined.
 8. Let c_1* be $lanes_(Lnn_1 X M_1, v_1).
-9. Let c** be $setproduct_(lane_(Lnn_2), $lcvtop__(Lnn_1 X M_1, Lnn_2 X M_2, vcvtop, c_1)* :: [$zero(Lnn_2)]^M_1).
+9. Let c** be $setproduct_(`lane_(Lnn_2), $lcvtop__(Lnn_1 X M_1, Lnn_2 X M_2, vcvtop, c_1)* :: [$zero(Lnn_2)]^M_1).
 10. Let v be an element of $invlanes_(Lnn_2 X M_2, c*)*.
 11. Return v.
 
@@ -29873,7 +29873,7 @@ vnarrowop__ Jnn_1 X M_1 Jnn_2 X M_2 sx v_1 v_2
 6. Return v.
 
 ivadd_pairwise_ N i*
-1. Let [j_1, j_2]* be $concat__1^-1(N, i*).
+1. Let [j_1, j_2]* be $concat__1^-1(`N, i*).
 2. Return $iadd_(N, j_1, j_2)*.
 
 ivextunop__ Jnn_1 X M_1 Jnn_2 X M_2 $f_ sx v_1
@@ -29886,11 +29886,11 @@ vextunop__ Jnn_1 X M_1 Jnn_2 X M_2 (EXTADD_PAIRWISE sx) v_1
 1. Return $ivextunop__(Jnn_1 X M_1, Jnn_2 X M_2, $ivadd_pairwise_, sx, v_1).
 
 ivdot_ N i_1* i_2*
-1. Let [j_1, j_2]* be $concat__1^-1(iN(N), $imul_(N, i_1, i_2)*).
+1. Let [j_1, j_2]* be $concat__1^-1(`iN(N), $imul_(N, i_1, i_2)*).
 2. Return $iadd_(N, j_1, j_2)*.
 
 ivdot_sat_ N i_1* i_2*
-1. Let [j_1, j_2]* be $concat__1^-1(iN(N), $imul_(N, i_1, i_2)*).
+1. Let [j_1, j_2]* be $concat__1^-1(`iN(N), $imul_(N, i_1, i_2)*).
 2. Return $iadd_sat_(N, S, j_1, j_2)*.
 
 ivextbinop__ Jnn_1 X M_1 Jnn_2 X M_2 $f_ sx_1 sx_2 i k v_1 v_2
@@ -29912,7 +29912,7 @@ vextbinop__ Jnn_1 X M_1 Jnn_2 X M_2 vextbinop___1 v_1 v_2
 2. If (vextbinop___1 = DOTS), then:
   a. Return $ivextbinop__(Jnn_1 X M_1, Jnn_2 X M_2, $ivdot_, S, S, 0, M_1, v_1, v_2).
 3. Assert: Due to validation, (vextbinop___1 = RELAXED_DOTS).
-4. Return $ivextbinop__(Jnn_1 X M_1, Jnn_2 X M_2, $ivdot_sat_, S, $relaxed2($R_idot(), sx, S, U), 0, M_1, v_1, v_2).
+4. Return $ivextbinop__(Jnn_1 X M_1, Jnn_2 X M_2, $ivdot_sat_, S, $relaxed2($R_idot(), `sx, S, U), 0, M_1, v_1, v_2).
 
 vextternop__ Jnn_1 X M_1 Jnn_2 X M_2 RELAXED_DOT_ADDS c_1 c_2 c_3
 1. Let M be (2 * M_2).
@@ -30376,8 +30376,8 @@ instantiate s module externaddr*
 2. Let (MODULE type* import* func* global* table* mem* tag* elem* data* start? export*) be module.
 3. If not $Externaddr_type(externaddr, xt_I)*, then:
   a. Fail.
-4. Let instr_D* be $concat_(instr, $rundata_(i_D, data*[i_D])^(i_D<|data*|)).
-5. Let instr_E* be $concat_(instr, $runelem_(i_E, elem*[i_E])^(i_E<|elem*|)).
+4. Let instr_D* be $concat_(`instr, $rundata_(i_D, data*[i_D])^(i_D<|data*|)).
+5. Let instr_E* be $concat_(`instr, $runelem_(i_E, elem*[i_E])^(i_E<|elem*|)).
 6. Let (START x)? be start?.
 7. Let moduleinst_0 be { TYPES: $alloctypes(type*); FUNCS: $funcsxa(externaddr*) :: (|s.FUNCS| + i_F)^(i_F<|func*|); GLOBALS: $globalsxa(externaddr*) }.
 8. Let (TABLE tabletype expr_T)* be table*.
@@ -30421,7 +30421,7 @@ invoke s funcaddr val*
 12. Pop the frame (FRAME_ k { f }) from the stack.
 13. Return val'^k.
 
-allocXs X Y s X_1* Y_1*
+allocXs `X `Y s X_1* Y_1*
 1. If (X_1* = []), then:
   a. Assert: Due to validation, (Y_1* = []).
   b. Return [].
@@ -30429,11 +30429,11 @@ allocXs X Y s X_1* Y_1*
   a. Let [X] :: X'* be X_1*.
   b. Assert: Due to validation, (|Y_1*| >= 1).
   c. Let [Y] :: Y'* be Y_1*.
-  d. Let a be $allocX(X, Y, s, X, Y).
-  e. Let a'* be $allocXs(X, Y, s, X'*, Y'*).
+  d. Let a be $allocX(`X, `Y, s, X, Y).
+  e. Let a'* be $allocXs(`X, `Y, s, X'*, Y'*).
   f. Return [a] :: a'*.
 
-var X
+var `X
 1. Return 0.
 
 Eval_expr instr*
