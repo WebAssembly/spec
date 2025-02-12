@@ -363,7 +363,16 @@ and case_to_el_exprs al el =
   match al with
   | [] -> error no_region "empty mixop in a AL case expr"
   | hd::tl ->
-    List.fold_left2 (fun acc a e -> a::Some(e)::acc) [ hd ] tl el
+    List.fold_left2
+      (fun acc a e ->
+        match e.it with
+        (* Remove epsilon argument for case *)
+        | El.Ast.EpsE when hd <> None -> a::None::acc
+        | _ -> a::Some(e)::acc
+      )
+      [ hd ]
+      tl
+      el
     |> List.filter_map (fun x -> x)
     |> List.rev
 

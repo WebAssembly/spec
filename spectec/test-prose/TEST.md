@@ -511,7 +511,7 @@ The instruction :math:`({\mathit{nt}}_1 {.} {{\mathit{cvtop}}}{\mathsf{\_}}{{\ma
 
 
 
-The instruction :math:`({t{.}\mathsf{load}}{\epsilon}~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~t` if:
+The instruction :math:`(\mathsf{load}~t~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~t` if:
 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is of the form :math:`{\mathit{mt}}`.
@@ -531,7 +531,7 @@ The instruction :math:`({{\mathsf{i}}{n}{.}\mathsf{load}}{{M}{\mathsf{\_}}{{\mat
 
 
 
-The instruction :math:`({t{.}\mathsf{store}}{\epsilon}~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~t~\rightarrow~\epsilon` if:
+The instruction :math:`(\mathsf{store}~t~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~t~\rightarrow~\epsilon` if:
 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is of the form :math:`{\mathit{mt}}`.
@@ -5137,7 +5137,7 @@ The instruction :math:`(\mathsf{select}~t)` is :ref:`valid <valid-val>` with the
 
 
 
-The instruction :math:`(\mathsf{select}~\epsilon)` is :ref:`valid <valid-val>` with the function type :math:`t~t~\mathsf{i{\scriptstyle 32}}~\rightarrow~t` if:
+The instruction :math:`(\mathsf{select})` is :ref:`valid <valid-val>` with the function type :math:`t~t~\mathsf{i{\scriptstyle 32}}~\rightarrow~t` if:
 
 
    * The value type :math:`t` :ref:`matches <match>` the value type :math:`{t'}`.
@@ -5160,7 +5160,7 @@ The instruction :math:`({\mathit{nt}}_1 {.} {{\mathit{cvtop}}}{\mathsf{\_}}{{\ma
 
 
 
-The instruction :math:`({{\mathit{nt}}{.}\mathsf{load}}{\epsilon}~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathit{nt}}` if:
+The instruction :math:`(\mathsf{load}~{\mathit{nt}}~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathit{nt}}` if:
 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is of the form :math:`{\mathit{mt}}`.
@@ -5180,7 +5180,7 @@ The instruction :math:`({{\mathsf{i}}{n}{.}\mathsf{load}}{{M}{\mathsf{\_}}{{\mat
 
 
 
-The instruction :math:`({{\mathit{nt}}{.}\mathsf{store}}{\epsilon}~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~{\mathit{nt}}~\rightarrow~\epsilon` if:
+The instruction :math:`(\mathsf{store}~{\mathit{nt}}~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~{\mathit{nt}}~\rightarrow~\epsilon` if:
 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is of the form :math:`{\mathit{mt}}`.
@@ -9272,7 +9272,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ........................................................
 
 
-1. If :math:`{\mathit{blocktype}} = \epsilon`, then:
+1. If :math:`{\mathit{blocktype}} = ()`, then:
 
    a. Return :math:`\epsilon~\rightarrow~\epsilon`.
 
@@ -13150,7 +13150,7 @@ The reference type :math:`(\mathsf{ref}~{\mathsf{null}^?}~{\mathit{ht}}_1)` :ref
 
 
 
-The reference type :math:`(\mathsf{ref}~\epsilon~{\mathit{ht}}_1)` :ref:`matches <match>` the reference type :math:`(\mathsf{ref}~\epsilon~{\mathit{ht}}_2)` if:
+The reference type :math:`(\mathsf{ref}~{\mathit{ht}}_1)` :ref:`matches <match>` the reference type :math:`(\mathsf{ref}~{\mathit{ht}}_2)` if:
 
 
    * The heap type :math:`{\mathit{ht}}_1` :ref:`matches <match>` the heap type :math:`{\mathit{ht}}_2`.
@@ -13414,7 +13414,7 @@ The sub type :math:`(\mathsf{sub}~{\mathsf{final}^?}~{x^\ast}~{\mathit{comptype}
 
    * For all :math:`{\mathit{comptype}'}` in :math:`{{\mathit{comptype}'}^\ast}`, and corresponding :math:`x` in :math:`{x^\ast}`, and corresponding :math:`{\mathit{x'*}}` in :math:`{{\mathit{x'*}}^\ast}`:
 
-      * The sub type :math:`{\mathrm{unroll}}(C{.}\mathsf{types}{}[x])` is of the form :math:`(\mathsf{sub}~\epsilon~{{x'}^\ast}~{\mathit{comptype}'})`.
+      * The sub type :math:`{\mathrm{unroll}}(C{.}\mathsf{types}{}[x])` is of the form :math:`(\mathsf{sub}~{{x'}^\ast}~{\mathit{comptype}'})`.
 
    * The composite type :math:`{\mathit{comptype}}` is :ref:`valid <valid-val>`.
 
@@ -13440,7 +13440,7 @@ The sub type :math:`(\mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~{
 
    * For all :math:`{\mathit{comptype}'}` in :math:`{{\mathit{comptype}'}^\ast}`, and corresponding :math:`{\mathit{typeuse}}` in :math:`{{\mathit{typeuse}}^\ast}`, and corresponding :math:`{\mathit{typeuse'*}}` in :math:`{{\mathit{typeuse'*}}^\ast}`:
 
-      * The sub type :math:`{{\mathrm{unroll}}}_{C}({\mathit{typeuse}})` is of the form :math:`(\mathsf{sub}~\epsilon~{{\mathit{typeuse}'}^\ast}~{\mathit{comptype}'})`.
+      * The sub type :math:`{{\mathrm{unroll}}}_{C}({\mathit{typeuse}})` is of the form :math:`(\mathsf{sub}~{{\mathit{typeuse}'}^\ast}~{\mathit{comptype}'})`.
 
    * The composite type :math:`{\mathit{comptype}}` is :ref:`valid <valid-val>`.
 
@@ -13469,7 +13469,7 @@ The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}'}^\ast})` is :ref:`va
 
 
 
-The recursive type :math:`(\mathsf{rec}~\epsilon)` is :ref:`valid <valid-val>` with :math:`({\mathsf{ok}}{(x, i)})`.
+The recursive type :math:`(\mathsf{rec})` is :ref:`valid <valid-val>` with :math:`({\mathsf{ok}}{(x, i)})`.
 
 
 
@@ -13502,7 +13502,7 @@ The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}'}^\ast})` is :ref:`va
 
 
 
-The recursive type :math:`(\mathsf{rec}~\epsilon)` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x)})`.
+The recursive type :math:`(\mathsf{rec})` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x)})`.
 
 
 
@@ -13910,7 +13910,7 @@ The catch clause :math:`{\mathit{catch}}` is :ref:`valid <valid-val>` if:
 
       * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{tags}{}[x]` is the composite type :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`.
 
-      * The result type :math:`{t^\ast}~(\mathsf{ref}~\epsilon~\mathsf{exn})` :ref:`matches <match>` the result type :math:`C{.}\mathsf{labels}{}[l]`.
+      * The result type :math:`{t^\ast}~(\mathsf{ref}~\mathsf{exn})` :ref:`matches <match>` the result type :math:`C{.}\mathsf{labels}{}[l]`.
    * Or:
 
       * The catch clause :math:`{\mathit{catch}}` is of the form :math:`(\mathsf{catch\_all}~l)`.
@@ -13920,7 +13920,7 @@ The catch clause :math:`{\mathit{catch}}` is :ref:`valid <valid-val>` if:
 
       * The catch clause :math:`{\mathit{catch}}` is of the form :math:`(\mathsf{catch\_all\_ref}~l)`.
 
-      * The result type :math:`(\mathsf{ref}~\epsilon~\mathsf{exn})` :ref:`matches <match>` the result type :math:`C{.}\mathsf{labels}{}[l]`.
+      * The result type :math:`(\mathsf{ref}~\mathsf{exn})` :ref:`matches <match>` the result type :math:`C{.}\mathsf{labels}{}[l]`.
 
 
 
@@ -13948,7 +13948,7 @@ The catch clause :math:`(\mathsf{catch\_ref}~x~l)` is :ref:`valid <valid-val>` i
 
    * The result type :math:`C{.}\mathsf{labels}{}[l]` exists.
 
-   * The result type :math:`{t^\ast}~(\mathsf{ref}~\epsilon~\mathsf{exn})` :ref:`matches <match>` the result type :math:`C{.}\mathsf{labels}{}[l]`.
+   * The result type :math:`{t^\ast}~(\mathsf{ref}~\mathsf{exn})` :ref:`matches <match>` the result type :math:`C{.}\mathsf{labels}{}[l]`.
 
 
 
@@ -13968,7 +13968,7 @@ The catch clause :math:`(\mathsf{catch\_all\_ref}~l)` is :ref:`valid <valid-val>
 
    * The result type :math:`C{.}\mathsf{labels}{}[l]` exists.
 
-   * The result type :math:`(\mathsf{ref}~\epsilon~\mathsf{exn})` :ref:`matches <match>` the result type :math:`C{.}\mathsf{labels}{}[l]`.
+   * The result type :math:`(\mathsf{ref}~\mathsf{exn})` :ref:`matches <match>` the result type :math:`C{.}\mathsf{labels}{}[l]`.
 
 
 
@@ -14102,7 +14102,7 @@ The instruction :math:`(\mathsf{br\_table}~{l^\ast}~{l'})` is :ref:`valid <valid
 
 
 
-The instruction :math:`(\mathsf{br\_on\_null}~l)` is :ref:`valid <valid-val>` with the instruction type :math:`{t^\ast}~(\mathsf{ref}~\mathsf{null}~{\mathit{ht}})~\rightarrow~{t^\ast}~(\mathsf{ref}~\epsilon~{\mathit{ht}})` if:
+The instruction :math:`(\mathsf{br\_on\_null}~l)` is :ref:`valid <valid-val>` with the instruction type :math:`{t^\ast}~(\mathsf{ref}~\mathsf{null}~{\mathit{ht}})~\rightarrow~{t^\ast}~(\mathsf{ref}~{\mathit{ht}})` if:
 
 
    * The result type :math:`C{.}\mathsf{labels}{}[l]` exists.
@@ -14119,7 +14119,7 @@ The instruction :math:`(\mathsf{br\_on\_non\_null}~l)` is :ref:`valid <valid-val
 
    * The result type :math:`C{.}\mathsf{labels}{}[l]` exists.
 
-   * The result type :math:`C{.}\mathsf{labels}{}[l]` is of the form :math:`{t^\ast}~(\mathsf{ref}~\epsilon~{\mathit{ht}})`.
+   * The result type :math:`C{.}\mathsf{labels}{}[l]` is of the form :math:`{t^\ast}~(\mathsf{ref}~{\mathit{ht}})`.
 
 
 
@@ -14336,7 +14336,7 @@ The instruction :math:`(\mathsf{ref{.}null}~{\mathit{ht}})` is :ref:`valid <vali
 
 
 
-The instruction :math:`(\mathsf{ref{.}func}~x)` is :ref:`valid <valid-val>` with the instruction type :math:`\epsilon~\rightarrow~(\mathsf{ref}~\epsilon~{\mathit{dt}})` if:
+The instruction :math:`(\mathsf{ref{.}func}~x)` is :ref:`valid <valid-val>` with the instruction type :math:`\epsilon~\rightarrow~(\mathsf{ref}~{\mathit{dt}})` if:
 
 
    * The defined type :math:`C{.}\mathsf{funcs}{}[x]` exists.
@@ -14348,7 +14348,7 @@ The instruction :math:`(\mathsf{ref{.}func}~x)` is :ref:`valid <valid-val>` with
 
 
 
-The instruction :math:`\mathsf{ref{.}i{\scriptstyle 31}}` is :ref:`valid <valid-val>` with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~(\mathsf{ref}~\epsilon~\mathsf{i{\scriptstyle 31}})`.
+The instruction :math:`\mathsf{ref{.}i{\scriptstyle 31}}` is :ref:`valid <valid-val>` with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~(\mathsf{ref}~\mathsf{i{\scriptstyle 31}})`.
 
 
 
@@ -14361,7 +14361,7 @@ The instruction :math:`\mathsf{ref{.}is\_null}` is :ref:`valid <valid-val>` with
 
 
 
-The instruction :math:`\mathsf{ref{.}as\_non\_null}` is :ref:`valid <valid-val>` with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~{\mathit{ht}})~\rightarrow~(\mathsf{ref}~\epsilon~{\mathit{ht}})` if:
+The instruction :math:`\mathsf{ref{.}as\_non\_null}` is :ref:`valid <valid-val>` with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~{\mathit{ht}})~\rightarrow~(\mathsf{ref}~{\mathit{ht}})` if:
 
 
    * The heap type :math:`{\mathit{ht}}` is :ref:`valid <valid-val>`.
@@ -14403,7 +14403,7 @@ The instruction :math:`({\mathsf{i{\scriptstyle 31}{.}get}}{\mathsf{\_}}{{\mathi
 
 
 
-The instruction :math:`(\mathsf{struct{.}new}~x)` is :ref:`valid <valid-val>` with the instruction type :math:`{t^\ast}~\rightarrow~(\mathsf{ref}~\epsilon~x)` if:
+The instruction :math:`(\mathsf{struct{.}new}~x)` is :ref:`valid <valid-val>` with the instruction type :math:`{t^\ast}~\rightarrow~(\mathsf{ref}~x)` if:
 
 
    * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
@@ -14415,7 +14415,7 @@ The instruction :math:`(\mathsf{struct{.}new}~x)` is :ref:`valid <valid-val>` wi
 
 
 
-The instruction :math:`(\mathsf{struct{.}new\_default}~x)` is :ref:`valid <valid-val>` with the instruction type :math:`\epsilon~\rightarrow~(\mathsf{ref}~\epsilon~x)` if:
+The instruction :math:`(\mathsf{struct{.}new\_default}~x)` is :ref:`valid <valid-val>` with the instruction type :math:`\epsilon~\rightarrow~(\mathsf{ref}~x)` if:
 
 
    * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
@@ -14463,7 +14463,7 @@ The instruction :math:`(\mathsf{struct{.}set}~x~i)` is :ref:`valid <valid-val>` 
 
 
 
-The instruction :math:`(\mathsf{array{.}new}~x)` is :ref:`valid <valid-val>` with the instruction type :math:`t~\mathsf{i{\scriptstyle 32}}~\rightarrow~(\mathsf{ref}~\epsilon~x)` if:
+The instruction :math:`(\mathsf{array{.}new}~x)` is :ref:`valid <valid-val>` with the instruction type :math:`t~\mathsf{i{\scriptstyle 32}}~\rightarrow~(\mathsf{ref}~x)` if:
 
 
    * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
@@ -14475,7 +14475,7 @@ The instruction :math:`(\mathsf{array{.}new}~x)` is :ref:`valid <valid-val>` wit
 
 
 
-The instruction :math:`(\mathsf{array{.}new\_default}~x)` is :ref:`valid <valid-val>` with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~(\mathsf{ref}~\epsilon~x)` if:
+The instruction :math:`(\mathsf{array{.}new\_default}~x)` is :ref:`valid <valid-val>` with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~(\mathsf{ref}~x)` if:
 
 
    * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
@@ -14487,7 +14487,7 @@ The instruction :math:`(\mathsf{array{.}new\_default}~x)` is :ref:`valid <valid-
 
 
 
-The instruction :math:`(\mathsf{array{.}new\_fixed}~x~n)` is :ref:`valid <valid-val>` with the instruction type :math:`{t^{n}}~\rightarrow~(\mathsf{ref}~\epsilon~x)` if:
+The instruction :math:`(\mathsf{array{.}new\_fixed}~x~n)` is :ref:`valid <valid-val>` with the instruction type :math:`{t^{n}}~\rightarrow~(\mathsf{ref}~x)` if:
 
 
    * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
@@ -14499,7 +14499,7 @@ The instruction :math:`(\mathsf{array{.}new\_fixed}~x~n)` is :ref:`valid <valid-
 
 
 
-The instruction :math:`(\mathsf{array{.}new\_elem}~x~y)` is :ref:`valid <valid-val>` with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~(\mathsf{ref}~\epsilon~x)` if:
+The instruction :math:`(\mathsf{array{.}new\_elem}~x~y)` is :ref:`valid <valid-val>` with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~(\mathsf{ref}~x)` if:
 
 
    * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
@@ -14513,7 +14513,7 @@ The instruction :math:`(\mathsf{array{.}new\_elem}~x~y)` is :ref:`valid <valid-v
 
 
 
-The instruction :math:`(\mathsf{array{.}new\_data}~x~y)` is :ref:`valid <valid-val>` with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~(\mathsf{ref}~\epsilon~x)` if:
+The instruction :math:`(\mathsf{array{.}new\_data}~x~y)` is :ref:`valid <valid-val>` with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~(\mathsf{ref}~x)` if:
 
 
    * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
@@ -15116,7 +15116,7 @@ The instruction :math:`(\mathsf{select}~t)` is :ref:`valid <valid-val>` with the
 
 
 
-The instruction :math:`(\mathsf{select}~\epsilon)` is :ref:`valid <valid-val>` with the instruction type :math:`t~t~\mathsf{i{\scriptstyle 32}}~\rightarrow~t` if:
+The instruction :math:`(\mathsf{select})` is :ref:`valid <valid-val>` with the instruction type :math:`t~t~\mathsf{i{\scriptstyle 32}}~\rightarrow~t` if:
 
 
    * The value type :math:`t` is :ref:`valid <valid-val>`.
@@ -15128,7 +15128,7 @@ The instruction :math:`(\mathsf{select}~\epsilon)` is :ref:`valid <valid-val>` w
 
 
 
-The instruction :math:`({{\mathit{nt}}{.}\mathsf{load}}{\epsilon}~x~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}~\rightarrow~{\mathit{nt}}` if:
+The instruction :math:`({\mathit{nt}}{.}\mathsf{load}~x~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}~\rightarrow~{\mathit{nt}}` if:
 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
@@ -15152,7 +15152,7 @@ The instruction :math:`({{\mathsf{i}}{N}{.}\mathsf{load}}{{M}{\mathsf{\_}}{{\mat
 
 
 
-The instruction :math:`({{\mathit{nt}}{.}\mathsf{store}}{\epsilon}~x~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}~{\mathit{nt}}~\rightarrow~\epsilon` if:
+The instruction :math:`({\mathit{nt}}{.}\mathsf{store}~x~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}~{\mathit{nt}}~\rightarrow~\epsilon` if:
 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
@@ -15176,7 +15176,7 @@ The instruction :math:`({{\mathsf{i}}{N}{.}\mathsf{store}}{M}~x~{\mathit{memarg}
 
 
 
-The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{\epsilon}~x~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
+The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~x~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
@@ -16041,12 +16041,12 @@ The reference value :math:`{\mathit{ref}'}` is :ref:`valid <valid-val>` with the
 
       * The reference value :math:`{\mathit{ref}'}` is of the form :math:`(\mathsf{ref{.}i{\scriptstyle 31}}~i)`.
 
-      * The reference type :math:`{\mathit{rt}''}` is of the form :math:`(\mathsf{ref}~\epsilon~\mathsf{i{\scriptstyle 31}})`.
+      * The reference type :math:`{\mathit{rt}''}` is of the form :math:`(\mathsf{ref}~\mathsf{i{\scriptstyle 31}})`.
    * Or:
 
       * The reference value :math:`{\mathit{ref}'}` is of the form :math:`(\mathsf{ref{.}struct}~a)`.
 
-      * The reference type :math:`{\mathit{rt}''}` is of the form :math:`(\mathsf{ref}~\epsilon~{\mathit{dt}})`.
+      * The reference type :math:`{\mathit{rt}''}` is of the form :math:`(\mathsf{ref}~{\mathit{dt}})`.
 
       * The structure instance :math:`s{.}\mathsf{structs}{}[a]` exists.
 
@@ -16055,7 +16055,7 @@ The reference value :math:`{\mathit{ref}'}` is :ref:`valid <valid-val>` with the
 
       * The reference value :math:`{\mathit{ref}'}` is of the form :math:`(\mathsf{ref{.}array}~a)`.
 
-      * The reference type :math:`{\mathit{rt}''}` is of the form :math:`(\mathsf{ref}~\epsilon~{\mathit{dt}})`.
+      * The reference type :math:`{\mathit{rt}''}` is of the form :math:`(\mathsf{ref}~{\mathit{dt}})`.
 
       * The array instance :math:`s{.}\mathsf{arrays}{}[a]` exists.
 
@@ -16064,7 +16064,7 @@ The reference value :math:`{\mathit{ref}'}` is :ref:`valid <valid-val>` with the
 
       * The reference value :math:`{\mathit{ref}'}` is of the form :math:`(\mathsf{ref{.}func}~a)`.
 
-      * The reference type :math:`{\mathit{rt}''}` is of the form :math:`(\mathsf{ref}~\epsilon~{\mathit{dt}})`.
+      * The reference type :math:`{\mathit{rt}''}` is of the form :math:`(\mathsf{ref}~{\mathit{dt}})`.
 
       * The function instance :math:`s{.}\mathsf{funcs}{}[a]` exists.
 
@@ -16073,17 +16073,17 @@ The reference value :math:`{\mathit{ref}'}` is :ref:`valid <valid-val>` with the
 
       * The reference value :math:`{\mathit{ref}'}` is of the form :math:`(\mathsf{ref{.}exn}~a)`.
 
-      * The reference type :math:`{\mathit{rt}''}` is of the form :math:`(\mathsf{ref}~\epsilon~\mathsf{exn})`.
+      * The reference type :math:`{\mathit{rt}''}` is of the form :math:`(\mathsf{ref}~\mathsf{exn})`.
    * Or:
 
       * The reference value :math:`{\mathit{ref}'}` is of the form :math:`(\mathsf{ref{.}host}~a)`.
 
-      * The reference type :math:`{\mathit{rt}''}` is of the form :math:`(\mathsf{ref}~\epsilon~\mathsf{any})`.
+      * The reference type :math:`{\mathit{rt}''}` is of the form :math:`(\mathsf{ref}~\mathsf{any})`.
    * Or:
 
       * The reference value :math:`{\mathit{ref}'}` is of the form :math:`(\mathsf{ref{.}extern}~{\mathit{addrref}})`.
 
-      * The reference type :math:`{\mathit{rt}''}` is of the form :math:`(\mathsf{ref}~\epsilon~\mathsf{extern})`.
+      * The reference type :math:`{\mathit{rt}''}` is of the form :math:`(\mathsf{ref}~\mathsf{extern})`.
    * Or:
 
       * The reference value :math:`{\mathit{ref}'}` is of the form :math:`{\mathit{ref}}`.
@@ -16105,12 +16105,12 @@ The reference value :math:`(\mathsf{ref{.}null}~{\mathit{ht}})` is :ref:`valid <
 
 
 
-The reference value :math:`(\mathsf{ref{.}i{\scriptstyle 31}}~i)` is :ref:`valid <valid-val>` with the reference type :math:`(\mathsf{ref}~\epsilon~\mathsf{i{\scriptstyle 31}})`.
+The reference value :math:`(\mathsf{ref{.}i{\scriptstyle 31}}~i)` is :ref:`valid <valid-val>` with the reference type :math:`(\mathsf{ref}~\mathsf{i{\scriptstyle 31}})`.
 
 
 
 
-The reference value :math:`(\mathsf{ref{.}struct}~a)` is :ref:`valid <valid-val>` with the reference type :math:`(\mathsf{ref}~\epsilon~{\mathit{dt}})` if:
+The reference value :math:`(\mathsf{ref{.}struct}~a)` is :ref:`valid <valid-val>` with the reference type :math:`(\mathsf{ref}~{\mathit{dt}})` if:
 
 
    * The structure instance :math:`s{.}\mathsf{structs}{}[a]` exists.
@@ -16120,7 +16120,7 @@ The reference value :math:`(\mathsf{ref{.}struct}~a)` is :ref:`valid <valid-val>
 
 
 
-The reference value :math:`(\mathsf{ref{.}array}~a)` is :ref:`valid <valid-val>` with the reference type :math:`(\mathsf{ref}~\epsilon~{\mathit{dt}})` if:
+The reference value :math:`(\mathsf{ref{.}array}~a)` is :ref:`valid <valid-val>` with the reference type :math:`(\mathsf{ref}~{\mathit{dt}})` if:
 
 
    * The array instance :math:`s{.}\mathsf{arrays}{}[a]` exists.
@@ -16130,7 +16130,7 @@ The reference value :math:`(\mathsf{ref{.}array}~a)` is :ref:`valid <valid-val>`
 
 
 
-The reference value :math:`(\mathsf{ref{.}func}~a)` is :ref:`valid <valid-val>` with the reference type :math:`(\mathsf{ref}~\epsilon~{\mathit{dt}})` if:
+The reference value :math:`(\mathsf{ref{.}func}~a)` is :ref:`valid <valid-val>` with the reference type :math:`(\mathsf{ref}~{\mathit{dt}})` if:
 
 
    * The function instance :math:`s{.}\mathsf{funcs}{}[a]` exists.
@@ -16140,17 +16140,17 @@ The reference value :math:`(\mathsf{ref{.}func}~a)` is :ref:`valid <valid-val>` 
 
 
 
-The reference value :math:`(\mathsf{ref{.}exn}~a)` is :ref:`valid <valid-val>` with the reference type :math:`(\mathsf{ref}~\epsilon~\mathsf{exn})`.
+The reference value :math:`(\mathsf{ref{.}exn}~a)` is :ref:`valid <valid-val>` with the reference type :math:`(\mathsf{ref}~\mathsf{exn})`.
 
 
 
 
-The reference value :math:`(\mathsf{ref{.}host}~a)` is :ref:`valid <valid-val>` with the reference type :math:`(\mathsf{ref}~\epsilon~\mathsf{any})`.
+The reference value :math:`(\mathsf{ref{.}host}~a)` is :ref:`valid <valid-val>` with the reference type :math:`(\mathsf{ref}~\mathsf{any})`.
 
 
 
 
-The reference value :math:`(\mathsf{ref{.}extern}~{\mathit{addrref}})` is :ref:`valid <valid-val>` with the reference type :math:`(\mathsf{ref}~\epsilon~\mathsf{extern})`.
+The reference value :math:`(\mathsf{ref{.}extern}~{\mathit{addrref}})` is :ref:`valid <valid-val>` with the reference type :math:`(\mathsf{ref}~\mathsf{extern})`.
 
 
 
@@ -19998,7 +19998,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. If :math:`{\mathsf{null}^?} = \mathsf{null}`, then:
 
-   a. Return :math:`(\mathsf{ref}~\epsilon~{\mathit{ht}}_1)`.
+   a. Return :math:`(\mathsf{ref}~{\mathit{ht}}_1)`.
 
 #. Assert: Due to validation, :math:`{\mathsf{null}^?}` is not defined.
 
@@ -21880,7 +21880,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ................................................................................................................................................
 
 
-1. Return :math:`{\mathrm{funcidx}}(\mathsf{module}~\epsilon~\epsilon~\epsilon~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~\epsilon~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~\epsilon~\epsilon)`.
+1. Return :math:`{\mathrm{funcidx}}(\mathsf{module}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast})`.
 
 
 :math:`{{\mathrm{relaxed}}(i)}{{}[ X_1, X_2 ]}`
