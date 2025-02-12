@@ -438,8 +438,8 @@ and il_to_el_typ t =
 (* Operators *)
 
 let render_prose_cmpop = function
-  | `EqOp -> "is equal to"
-  | `NeOp -> "is not equal to"
+  | `EqOp -> "is of the form"
+  | `NeOp -> "is not of the form"
   | `LtOp -> "is less than"
   | `GtOp -> "is greater than"
   | `LeOp -> "is less than or equal to"
@@ -1158,6 +1158,11 @@ let rec render_instr env algoname index depth instr =
       (render_stack_prefix e) (render_expr env e)
   | Al.Ast.PopAllI e ->
     sprintf "%s Pop all values %s from the top of the stack." (render_order index depth)
+      (render_expr env e)
+  | Al.Ast.LetI (lhs, { it = LenE e; _ }) ->
+    sprintf "%s Let %s be the length of %s."
+      (render_order index depth)
+      (render_expr env lhs)
       (render_expr env e)
   | Al.Ast.LetI (e, { it = Al.Ast.IterE ({ it = Al.Ast.InvCallE (id, nl, al); _ }, iterexp); _ }) ->
     let elhs, erhs = al_invcalle_to_al_bine e id nl al in
