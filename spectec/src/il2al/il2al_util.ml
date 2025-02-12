@@ -242,12 +242,8 @@ let introduce_fresh_variable
 
   let open Al.Free in
 
-  let prefix =
-    let rec get_prefix typ' =
-      match typ'.it with
-      | IterT (inner_typ, _) -> get_prefix inner_typ
-      | _ -> Option.value prefix ~default:(typ_to_var_name typ') in
-    get_prefix typ in
+  let var = Option.value ~default:(Al.Al_util.typ_to_var_name typ) prefix in
+  let prefix, suffix = remove_dimension var, get_dimension var in
 
   let idset =
     idset
@@ -255,7 +251,7 @@ let introduce_fresh_variable
     |> IdSet.map remove_dimension in
 
   let rec get_fresh_variable (var: string) : string =
-    if IdSet.mem var idset then get_fresh_variable (var^"'") else var in
+    if IdSet.mem var idset then get_fresh_variable (var^"'"^suffix) else var^suffix in
 
   get_fresh_variable prefix
 

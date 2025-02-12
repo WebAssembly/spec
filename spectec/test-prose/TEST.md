@@ -13130,22 +13130,22 @@ The heap type :math:`\mathsf{bot}` :ref:`matches <match>` the heap type :math:`{
 
 
 
-The reference type :math:`(\mathsf{ref}~{\mathit{NULL}}_{\mathit{opt}}~{\mathit{ht}}_1)` :ref:`matches <match>` the reference type :math:`(\mathsf{ref}~{\mathit{NULL}}_{\mathit{opt}'}~{\mathit{ht}}_2)` if:
+The reference type :math:`(\mathsf{ref}~{\mathsf{null}^?}~{\mathit{ht}}_1)` :ref:`matches <match>` the reference type :math:`(\mathsf{ref}~{{\mathsf{null}^?}'}~{\mathit{ht}}_2)` if:
 
 
    * The heap type :math:`{\mathit{ht}}_1` :ref:`matches <match>` the heap type :math:`{\mathit{ht}}_2`.
 
    * Either:
 
-      * :math:`{\mathit{NULL}}_{\mathit{opt}}` is absent.
+      * :math:`{\mathsf{null}^?}` is absent.
 
-      * :math:`{\mathit{NULL}}_{\mathit{opt}'}` is absent.
+      * :math:`{{\mathsf{null}^?}'}` is absent.
 
    * Or:
 
-      * :math:`{\mathit{NULL}}_{\mathit{opt}}` is of the form :math:`{\mathsf{null}^?}`.
+      * :math:`{\mathsf{null}^?}` is of the form :math:`{\mathsf{null}^?}`.
 
-      * :math:`{\mathit{NULL}}_{\mathit{opt}'}` is of the form :math:`\mathsf{null}`.
+      * :math:`{{\mathsf{null}^?}'}` is of the form :math:`\mathsf{null}`.
 
 
 
@@ -13272,22 +13272,22 @@ The storage type :math:`{\mathit{packtype}}_1` :ref:`matches <match>` the storag
 
 
 
-The field type :math:`({\mathit{MUT}}_{\mathit{opt}}~{\mathit{zt}}_1)` :ref:`matches <match>` the field type :math:`({\mathit{MUT}}_{\mathit{opt}'}~{\mathit{zt}}_2)` if:
+The field type :math:`({\mathsf{mut}^?}~{\mathit{zt}}_1)` :ref:`matches <match>` the field type :math:`({{\mathsf{mut}^?}'}~{\mathit{zt}}_2)` if:
 
 
    * The storage type :math:`{\mathit{zt}}_1` :ref:`matches <match>` the storage type :math:`{\mathit{zt}}_2`.
 
    * Either:
 
-      * :math:`{\mathit{MUT}}_{\mathit{opt}}` is absent.
+      * :math:`{\mathsf{mut}^?}` is absent.
 
-      * :math:`{\mathit{MUT}}_{\mathit{opt}'}` is absent.
+      * :math:`{{\mathsf{mut}^?}'}` is absent.
 
    * Or:
 
-      * :math:`{\mathit{MUT}}_{\mathit{opt}}` is of the form :math:`\mathsf{mut}`.
+      * :math:`{\mathsf{mut}^?}` is of the form :math:`\mathsf{mut}`.
 
-      * :math:`{\mathit{MUT}}_{\mathit{opt}'}` is of the form :math:`\mathsf{mut}`.
+      * :math:`{{\mathsf{mut}^?}'}` is of the form :math:`\mathsf{mut}`.
 
       * The storage type :math:`{\mathit{zt}}_2` :ref:`matches <match>` the storage type :math:`{\mathit{zt}}_1`.
 
@@ -13684,22 +13684,22 @@ The limits range :math:`{}[~n_1~..~m_1~]` :ref:`matches <match>` the limits rang
 
 
 
-The global type :math:`({\mathit{MUT}}_{\mathit{opt}}~{\mathit{valtype}}_1)` :ref:`matches <match>` the global type :math:`({\mathit{MUT}}_{\mathit{opt}'}~{\mathit{valtype}}_2)` if:
+The global type :math:`({\mathsf{mut}^?}~{\mathit{valtype}}_1)` :ref:`matches <match>` the global type :math:`({{\mathsf{mut}^?}'}~{\mathit{valtype}}_2)` if:
 
 
    * The value type :math:`{\mathit{valtype}}_1` :ref:`matches <match>` the value type :math:`{\mathit{valtype}}_2`.
 
    * Either:
 
-      * :math:`{\mathit{MUT}}_{\mathit{opt}}` is absent.
+      * :math:`{\mathsf{mut}^?}` is absent.
 
-      * :math:`{\mathit{MUT}}_{\mathit{opt}'}` is absent.
+      * :math:`{{\mathsf{mut}^?}'}` is absent.
 
    * Or:
 
-      * :math:`{\mathit{MUT}}_{\mathit{opt}}` is of the form :math:`\mathsf{mut}`.
+      * :math:`{\mathsf{mut}^?}` is of the form :math:`\mathsf{mut}`.
 
-      * :math:`{\mathit{MUT}}_{\mathit{opt}'}` is of the form :math:`\mathsf{mut}`.
+      * :math:`{{\mathsf{mut}^?}'}` is of the form :math:`\mathsf{mut}`.
 
       * The value type :math:`{\mathit{valtype}}_2` :ref:`matches <match>` the value type :math:`{\mathit{valtype}}_1`.
 
@@ -19992,15 +19992,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`{\mathit{at}}_2`.
 
 
-:math:`\mathsf{ref}~{\mathsf{null}}{{{}_{1}^?}}~{\mathit{ht}}_1 \setminus \mathsf{ref}~{\mathit{NULL}}_{\mathit{opt}}~{\mathit{ht}}_2`
-......................................................................................................................................
+:math:`\mathsf{ref}~{\mathsf{null}}{{{}_{1}^?}}~{\mathit{ht}}_1 \setminus \mathsf{ref}~{\mathsf{null}^?}~{\mathit{ht}}_2`
+.........................................................................................................................
 
 
-1. If :math:`{\mathit{NULL}}_{\mathit{opt}} = \mathsf{null}`, then:
+1. If :math:`{\mathsf{null}^?} = \mathsf{null}`, then:
 
    a. Return :math:`(\mathsf{ref}~\epsilon~{\mathit{ht}}_1)`.
 
-#. Assert: Due to validation, :math:`{\mathit{NULL}}_{\mathit{opt}}` is not defined.
+#. Assert: Due to validation, :math:`{\mathsf{null}^?}` is not defined.
 
 #. Return :math:`(\mathsf{ref}~{\mathsf{null}}{{{}_{1}^?}}~{\mathit{ht}}_1)`.
 
@@ -24009,13 +24009,13 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`a`.
 
 
-:math:`{{{\mathrm{allocfunc}}^\ast}}{(s, {{\mathit{deftype}}^\ast}, {{\mathit{code}}^\ast}, {{\mathit{moduleinst}''}^\ast})}`
-.............................................................................................................................
+:math:`{{{\mathrm{allocfunc}}^\ast}}{(s, {{\mathit{deftype}}^\ast}, {{{\mathit{code}}''}^\ast}, {{\mathit{moduleinst}''}^\ast})}`
+.................................................................................................................................
 
 
 1. If :math:`{{\mathit{deftype}}^\ast} = \epsilon`, then:
 
-   a. Assert: :math:`{{\mathit{code}}^\ast} = \epsilon`.
+   a. Assert: :math:`{{{\mathit{code}}''}^\ast} = \epsilon`.
 
    #. Assert: :math:`{{\mathit{moduleinst}''}^\ast} = \epsilon`.
 
@@ -24025,9 +24025,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    a. Let :math:`{\mathit{dt}}~{{\mathit{dt}'}^\ast}` be :math:`{{\mathit{deftype}}^\ast}`.
 
-   #. Assert: :math:`{|{{\mathit{code}}^\ast}|} \geq 1`.
+   #. Assert: :math:`{|{{{\mathit{code}}''}^\ast}|} \geq 1`.
 
-   #. Let :math:`{\mathit{code}}~{{{\mathit{code}}'}^\ast}` be :math:`{{\mathit{code}}^\ast}`.
+   #. Let :math:`{\mathit{code}}~{{{\mathit{code}}'}^\ast}` be :math:`{{{\mathit{code}}''}^\ast}`.
 
    #. Assert: :math:`{|{{\mathit{moduleinst}''}^\ast}|} \geq 1`.
 
@@ -24913,14 +24913,14 @@ Heaptype_sub/bot
 - the heap type BOT matches heaptype.
 
 Reftype_sub
-- the reference type (REF NULL_opt ht_1) matches the reference type (REF NULL_opt' ht_2) if:
+- the reference type (REF nul ht_1) matches the reference type (REF nul' ht_2) if:
   - the heap type ht_1 matches the heap type ht_2.
   - Either:
-    - NULL_opt is ?().
-    - NULL_opt' is ?().
+    - nul is ?().
+    - nul' is ?().
   - Or:
-    - NULL_opt is NULL?.
-    - NULL_opt' is ?(NULL).
+    - nul is NULL?.
+    - nul' is ?(NULL).
 
 Reftype_sub/nonnull
 - the reference type (REF ?() ht_1) matches the reference type (REF ?() ht_2) if:
@@ -24986,14 +24986,14 @@ Storagetype_sub/pack
   - packtype_1 matches packtype_2.
 
 Fieldtype_sub
-- the field type (MUT_opt zt_1) matches the field type (MUT_opt' zt_2) if:
+- the field type (mut zt_1) matches the field type (mut' zt_2) if:
   - the storage type zt_1 matches the storage type zt_2.
   - Either:
-    - MUT_opt is ?().
-    - MUT_opt' is ?().
+    - mut is ?().
+    - mut' is ?().
   - Or:
-    - MUT_opt is ?(MUT).
-    - MUT_opt' is ?(MUT).
+    - mut is ?(MUT).
+    - mut' is ?(MUT).
     - zt_2 matches zt_1.
 
 Fieldtype_sub/const
@@ -25195,14 +25195,14 @@ Limits_sub
   - m_1 is less than or equal to m_2.
 
 Globaltype_sub
-- the global type (MUT_opt valtype_1) matches the global type (MUT_opt' valtype_2) if:
+- the global type (mut valtype_1) matches the global type (mut' valtype_2) if:
   - the value type valtype_1 matches the value type valtype_2.
   - Either:
-    - MUT_opt is ?().
-    - MUT_opt' is ?().
+    - mut is ?().
+    - mut' is ?().
   - Or:
-    - MUT_opt is ?(MUT).
-    - MUT_opt' is ?(MUT).
+    - mut is ?(MUT).
+    - mut' is ?(MUT).
     - valtype_2 matches valtype_1.
 
 Globaltype_sub/const
@@ -28287,10 +28287,10 @@ minat at_1 at_2
   a. Return at_1.
 2. Return at_2.
 
-diffrt (REF nul1 ht_1) (REF NULL_opt ht_2)
-1. If (NULL_opt = ?(NULL)), then:
+diffrt (REF nul1 ht_1) (REF nul ht_2)
+1. If (nul = ?(NULL)), then:
   a. Return (REF ?() ht_1).
-2. Assert: Due to validation, NULL_opt is not defined.
+2. Assert: Due to validation, nul is not defined.
 3. Return (REF nul1 ht_1).
 
 funcsxt externtype'*
@@ -30169,15 +30169,15 @@ allocfunc s deftype funccode moduleinst
 3. Append funcinst to the s.FUNCS.
 4. Return a.
 
-allocfuncs s deftype* code* moduleinst''*
+allocfuncs s deftype* funccode''* moduleinst''*
 1. If (deftype* = []), then:
-  a. Assert: Due to validation, (code* = []).
+  a. Assert: Due to validation, (funccode''* = []).
   b. Assert: Due to validation, (moduleinst''* = []).
   c. Return [].
 2. Else:
   a. Let [dt] :: dt'* be deftype*.
-  b. Assert: Due to validation, (|code*| >= 1).
-  c. Let [funccode] :: funccode'* be code*.
+  b. Assert: Due to validation, (|funccode''*| >= 1).
+  c. Let [funccode] :: funccode'* be funccode''*.
   d. Assert: Due to validation, (|moduleinst''*| >= 1).
   e. Let [moduleinst] :: moduleinst'* be moduleinst''*.
   f. Let fa be $allocfunc(s, dt, funccode, moduleinst).
