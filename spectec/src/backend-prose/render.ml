@@ -1312,7 +1312,7 @@ let rec render_instr env algoname index depth instr =
       (render_opt " " (render_expr env) "" e_opt)
   | Al.Ast.EnterI ({ it = Al.Ast.CaseE (mixop, _); _ } as e1, e2, il) ->
     let atom = mixop |> List.hd |> List.hd in
-    sprintf "%s %s\n\n%s%s Enter %s with the %s %s.%s"
+    sprintf "%s %s\n\n%s%s Enter the block %s with the %s %s.%s"
       (render_order index depth)
       (render_control_frame_binding env e1)
       (repeat indent depth)
@@ -1321,8 +1321,8 @@ let rec render_instr env algoname index depth instr =
       (render_atom env atom)
       (String.sub (Atom.to_string atom) 0 1)
       (render_instrs env algoname (depth + 1) il)
-  | Al.Ast.EnterI (e1, (e2), il) ->
-    sprintf "%s enter %s with label %s.%s" (render_order index depth)
+  | Al.Ast.EnterI (e1, e2, il) ->
+    sprintf "%s Enter the block %s with label %s.%s" (render_order index depth)
       (render_expr env e2) (render_expr env e1)
       (render_instrs env algoname (depth + 1) il)
   | Al.Ast.ExecuteI e ->

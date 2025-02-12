@@ -1241,7 +1241,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Let L be the :math:`\mathsf{label}` whose arity is :math:`n` and whose continuation is the end of the block.
 
-   a. Enter :math:`{{\mathit{instr}}^\ast}` with the :math:`\mathsf{label}` L.
+   a. Enter the block :math:`{{\mathit{instr}}^\ast}` with the :math:`\mathsf{label}` L.
 
 #. Let :math:`n` be :math:`1`.
 
@@ -1249,7 +1249,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Let L be the :math:`\mathsf{label}` whose arity is :math:`n` and whose continuation is the end of the block.
 
-   a. Enter :math:`{{\mathit{instr}}^\ast}` with the :math:`\mathsf{label}` L.
+   a. Enter the block :math:`{{\mathit{instr}}^\ast}` with the :math:`\mathsf{label}` L.
 
 
 :math:`\mathsf{loop}~{t^?}~{{\mathit{instr}}^\ast}`
@@ -1258,7 +1258,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let L be the :math:`\mathsf{label}` whose continuation is the start of the block.
 
-1. Enter :math:`{{\mathit{instr}}^\ast}` with the :math:`\mathsf{label}` L.
+1. Enter the block :math:`{{\mathit{instr}}^\ast}` with the :math:`\mathsf{label}` L.
 
 
 :math:`\mathsf{call}~x`
@@ -1329,7 +1329,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let L be the :math:`\mathsf{label}` whose arity is :math:`n` and whose continuation is the end of the block.
 
-#. Enter :math:`{{\mathit{instr}}^\ast}` with the :math:`\mathsf{label}` L.
+#. Enter the block :math:`{{\mathit{instr}}^\ast}` with the :math:`\mathsf{label}` L.
 
 
 :math:`\mathsf{local{.}get}~x`
@@ -6485,7 +6485,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let L be the :math:`\mathsf{label}` whose arity is :math:`n` and whose continuation is the end of the block.
 
-#. Enter :math:`{{\mathit{val}}^{k}}~{{\mathit{instr}}^\ast}` with the :math:`\mathsf{label}` L.
+#. Enter the block :math:`{{\mathit{val}}^{k}}~{{\mathit{instr}}^\ast}` with the :math:`\mathsf{label}` L.
 
 
 :math:`\mathsf{loop}~{\mathit{bt}}~{{\mathit{instr}}^\ast}`
@@ -6502,7 +6502,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let L be the :math:`\mathsf{label}` whose arity is :math:`k` and whose continuation is the start of the block.
 
-#. Enter :math:`{{\mathit{val}}^{k}}~{{\mathit{instr}}^\ast}` with the :math:`\mathsf{label}` L.
+#. Enter the block :math:`{{\mathit{val}}^{k}}~{{\mathit{instr}}^\ast}` with the :math:`\mathsf{label}` L.
 
 
 :math:`\mathsf{call}~x`
@@ -6573,7 +6573,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let L be the :math:`\mathsf{label}` whose arity is :math:`n` and whose continuation is the end of the block.
 
-#. Enter :math:`{{\mathit{instr}}^\ast}` with the :math:`\mathsf{label}` L.
+#. Enter the block :math:`{{\mathit{instr}}^\ast}` with the :math:`\mathsf{label}` L.
 
 
 :math:`\mathsf{ref{.}func}~x`
@@ -17339,7 +17339,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let L be the :math:`\mathsf{label}` whose arity is :math:`n` and whose continuation is the end of the block.
 
-#. Enter :math:`{{\mathit{val}}^{m}}~{{\mathit{instr}}^\ast}` with the :math:`\mathsf{label}` L.
+#. Enter the block :math:`{{\mathit{val}}^{m}}~{{\mathit{instr}}^\ast}` with the :math:`\mathsf{label}` L.
 
 
 :math:`\mathsf{loop}~{\mathit{bt}}~{{\mathit{instr}}^\ast}`
@@ -17356,7 +17356,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let L be the :math:`\mathsf{label}` whose arity is :math:`m` and whose continuation is the start of the block.
 
-#. Enter :math:`{{\mathit{val}}^{m}}~{{\mathit{instr}}^\ast}` with the :math:`\mathsf{label}` L.
+#. Enter the block :math:`{{\mathit{val}}^{m}}~{{\mathit{instr}}^\ast}` with the :math:`\mathsf{label}` L.
 
 
 :math:`\mathsf{br\_on\_cast}~l~{\mathit{rt}}_1~{\mathit{rt}}_2`
@@ -17472,7 +17472,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       #) Let L be the :math:`\mathsf{label}` whose arity is :math:`m` and whose continuation is the end of the block.
 
-      #) Enter :math:`{{\mathit{instr}}^\ast}` with the :math:`\mathsf{label}` L.
+      #) Enter the block :math:`{{\mathit{instr}}^\ast}` with the :math:`\mathsf{label}` L.
 
 
 :math:`\mathsf{return\_call}~x`
@@ -17792,7 +17792,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let L be the :math:`\mathsf{label}` whose arity is :math:`n` and whose continuation is the end of the block.
 
-#. Enter :math:`{{\mathit{val}}^{m}}~{{\mathit{instr}}^\ast}` with the :math:`\mathsf{label}` L.
+#. Enter the block :math:`{{\mathit{val}}^{m}}~{{\mathit{instr}}^\ast}` with the :math:`\mathsf{label}` L.
 
 
 :math:`\mathsf{ref{.}null}~x`
