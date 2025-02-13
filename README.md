@@ -11,8 +11,6 @@
 This repository is a clone of the `wasm-3.0` branch of [github.com/WebAssembly/spec/](https://github.com/WebAssembly/spec/).
 It contains the prototype implementation of [SpecTec](spectec/README.md) and a version of the core spec document modified to be built with SpecTec.
 
-This repository is based on the [function references proposal](proposals/function-references/Overview.md) as a baseline and includes all respective changes.
-
 Original `README` from upstream repository follows...
 
 
