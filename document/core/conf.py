@@ -297,8 +297,20 @@ latex_elements = {
   'pointsize': '10pt',
 
    # Additional stuff for the LaTeX preamble.
+   # enumitem package is used to allow deeper nesting of lists, than the default 4 levels.
    # Don't type-set cross references with emphasis.
-   'preamble': '\\renewcommand\\sphinxcrossref[1]{#1}\n',
+   'preamble': r'''
+      \renewcommand\sphinxcrossref[1]{#1}
+      \usepackage{enumitem}
+      \setlistdepth{9}
+      \renewlist{enumerate}{enumerate}{9}
+      \setlist[enumerate,1]{label=\arabic*.}
+      \setlist[enumerate,2]{label=\alph*.}
+      \setlist[enumerate,3]{label=\roman*.}
+      \setlist[enumerate,4]{label=\Alph*.}
+      \setlist[enumerate,5]{label=\Roman*.}
+      \renewcommand\sphinxcrossref[1]{#1}
+   ''',
 
    # Latex figure (float) alignment
   'figure_align': 'htbp',

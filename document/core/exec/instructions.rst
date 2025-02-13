@@ -707,7 +707,9 @@ $${rule: {Step_read/array.fill-*}}
 
 .. _exec-array.copy:
 
-.. todo:: (3) Introduce if-let instruction instead of "is of the case". (5) Use "the expansion of" instead of $expand function application. + Too deeply nested
+$${rule-prose: Step_read/array.copy}
+
+.. todo:: (3) Introduce if-let instruction instead of "is of the case". (5) Use "the expansion of" instead of $expand function application. + Was too deeply nested
    Below is the actual prose.
 
 1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
@@ -1906,6 +1908,8 @@ $${rule: {Step_read/return_call}}
 :math:`\RETURNCALLREF~x`
 ........................
 
+$${rule-prose: Step_read/return_call_ref}
+
 .. todo:: (*) Prose not spliced, Sphinx cannot build the document with deeply nested ordered list. (mainly caused by spurious conditions that should be assertions)
 
 1. Assert: due to :ref:`validation <valid-return_call_ref>`, a :ref:`function reference <syntax-ref>` is on the top of the stack.
@@ -1941,7 +1945,9 @@ $${rule: Step/throw}
 
 .. _exec-throw_ref:
 
-.. todo:: Too deeply nested
+$${rule-prose: Step_read/throw_ref}
+
+.. todo:: Was too deeply nested
 
 1. Assert: due to :ref:`validation <valid-throw_ref>`, a :ref:`reference <syntax-ref>` is on the top of the stack.
 
