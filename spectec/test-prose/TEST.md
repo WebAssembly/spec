@@ -556,11 +556,11 @@ The instruction sequence :math:`{{\mathit{instr}'}^\ast}` is :ref:`valid <valid-
 
    * Either:
 
-      * The instruction sequence :math:`{{\mathit{instr}'}^\ast}` is of the form :math:`\epsilon`.
+      * The instruction sequence :math:`{{\mathit{instr}'}^\ast}` is empty.
 
-      * The number type sequence :math:`{{\mathit{valtype}}^\ast}` is of the form :math:`\epsilon`.
+      * The number type sequence :math:`{{\mathit{valtype}}^\ast}` is empty.
 
-      * The number type sequence :math:`{{\mathit{valtype}'}^\ast}` is of the form :math:`\epsilon`.
+      * The number type sequence :math:`{{\mathit{valtype}'}^\ast}` is empty.
 
    * Or:
 
@@ -4471,7 +4471,7 @@ The block type :math:`{\mathit{blocktype}}` is :ref:`valid <valid-val>` with the
 
       * The block type :math:`{\mathit{blocktype}}` is of the form :math:`{{\mathit{valtype}}^?}`.
 
-      * The value type sequence :math:`{{\mathit{valtype}'}^\ast}` is of the form :math:`\epsilon`.
+      * The value type sequence :math:`{{\mathit{valtype}'}^\ast}` is empty.
 
       * The value type sequence :math:`{{\mathit{valtype}''}^\ast}` is of the form :math:`{{\mathit{valtype}}^?}`.
 
@@ -5235,11 +5235,11 @@ The instruction sequence :math:`{{\mathit{instr}'}^\ast}` is :ref:`valid <valid-
 
    * Either:
 
-      * The instruction sequence :math:`{{\mathit{instr}'}^\ast}` is of the form :math:`\epsilon`.
+      * The instruction sequence :math:`{{\mathit{instr}'}^\ast}` is empty.
 
-      * The value type sequence :math:`{{\mathit{valtype}}^\ast}` is of the form :math:`\epsilon`.
+      * The value type sequence :math:`{{\mathit{valtype}}^\ast}` is empty.
 
-      * The value type sequence :math:`{{\mathit{valtype}'}^\ast}` is of the form :math:`\epsilon`.
+      * The value type sequence :math:`{{\mathit{valtype}'}^\ast}` is empty.
 
    * Or:
 
@@ -13456,7 +13456,7 @@ The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}'}^\ast})` is :ref:`va
 
    * Either:
 
-      * The sub type sequence :math:`{{\mathit{subtype}'}^\ast}` is of the form :math:`\epsilon`.
+      * The sub type sequence :math:`{{\mathit{subtype}'}^\ast}` is empty.
 
    * Or:
 
@@ -13489,7 +13489,7 @@ The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}'}^\ast})` is :ref:`va
 
    * Either:
 
-      * The sub type sequence :math:`{{\mathit{subtype}'}^\ast}` is of the form :math:`\epsilon`.
+      * The sub type sequence :math:`{{\mathit{subtype}'}^\ast}` is empty.
 
    * Or:
 
@@ -13844,7 +13844,7 @@ The block type :math:`{\mathit{blocktype}}` is :ref:`valid <valid-val>` as the i
 
       * The block type :math:`{\mathit{blocktype}}` is of the form :math:`{{\mathit{valtype}}^?}`.
 
-      * The value type sequence :math:`{{\mathit{valtype}'}^\ast}` is of the form :math:`\epsilon`.
+      * The value type sequence :math:`{{\mathit{valtype}'}^\ast}` is empty.
 
       * The value type sequence :math:`{{\mathit{valtype}''}^\ast}` is of the form :math:`{{\mathit{valtype}}^?}`.
 
@@ -15229,7 +15229,7 @@ The instruction sequence :math:`{{\mathit{instr}'}^\ast}` is :ref:`valid <valid-
 
    * Either:
 
-      * The instruction sequence :math:`{{\mathit{instr}'}^\ast}` is of the form :math:`\epsilon`.
+      * The instruction sequence :math:`{{\mathit{instr}'}^\ast}` is empty.
 
       * The instruction type :math:`{\mathit{it}''}` is of the form :math:`\epsilon~\rightarrow~\epsilon`.
 
@@ -15855,9 +15855,9 @@ The global sequence :math:`{{\mathit{global}'}^\ast}` is :ref:`valid <valid-val>
 
    * Either:
 
-      * The global sequence :math:`{{\mathit{global}'}^\ast}` is of the form :math:`\epsilon`.
+      * The global sequence :math:`{{\mathit{global}'}^\ast}` is empty.
 
-      * The global type sequence :math:`{{\mathit{globaltype}}^\ast}` is of the form :math:`\epsilon`.
+      * The global type sequence :math:`{{\mathit{globaltype}}^\ast}` is empty.
 
    * Or:
 
@@ -15896,9 +15896,9 @@ The type definition sequence :math:`{{\mathit{type}'}^\ast}` is :ref:`valid <val
 
    * Either:
 
-      * The type definition sequence :math:`{{\mathit{type}'}^\ast}` is of the form :math:`\epsilon`.
+      * The type definition sequence :math:`{{\mathit{type}'}^\ast}` is empty.
 
-      * The defined type sequence :math:`{{\mathit{deftype}}^\ast}` is of the form :math:`\epsilon`.
+      * The defined type sequence :math:`{{\mathit{deftype}}^\ast}` is empty.
 
    * Or:
 
@@ -16355,7 +16355,7 @@ The instruction sequence :math:`{\mathit{instr}'}` is :ref:`valid <valid-val>` w
 
       * The instruction :math:`{\mathit{instr}'}` is of the form :math:`(\mathsf{global{.}get}~x)`.
 
-      * The value type sequence :math:`{{\mathit{valtype}}^\ast}` is of the form :math:`\epsilon`.
+      * The value type sequence :math:`{{\mathit{valtype}}^\ast}` is empty.
 
       * The value type sequence :math:`{{\mathit{valtype}'}^\ast}` is of the form :math:`t`.
 
