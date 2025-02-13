@@ -128,43 +128,27 @@ let rec preprocess_prem prem =
     prem
     |> preprocess_prem
     |> List.map (fun new_prem -> IterPr (new_prem, iterexp) $ prem.at)
-  | RulePr (id, mixop, exp) when id.it = "Expand" ->
-    (match mixop, exp.it with
-    (* Expand: `dt` ~~ `ct` *)
-    | [[]; [approx]; []], TupE [dt; ct] when approx.it = Approx ->
-      (* `$expanddt(dt) = ct` *)
-      let expanddt =
-        CallE ("expanddt" $ prem.at, [ExpA dt $ dt.at]) $$ prem.at % ct.note
-      in
-      let new_prem =
-        IfPr (CmpE (`EqOp, `BoolT, expanddt, ct) $$ prem.at % (BoolT $ no_region))
-      in
-
-      (* Add function definition to AL environment *)
-      if not (Env.mem_def !Al.Valid.il_env id) then (
-        let param = ExpP ("_" $ no_region, dt.note) $ dt.at in
-        Al.Valid.il_env := Env.bind_def !Al.Valid.il_env id ([param], ct.note, [])
-      );
-
-      [ new_prem $ prem.at ]
-    (* Expand: ??? *)
-    | _ -> [ prem ]
-    )
   | RulePr (id, mixop, exp) ->
-    (match mixop, exp.it with
-    (* `id`: |- `lhs` : `rhs` *)
-    | [[turnstile]; [colon]; []], TupE [lhs; rhs]
-    (* `id`: C |- `lhs` : `rhs` *)
-    | [[]; [turnstile]; [colon]; []], TupE [_; lhs; rhs]
-    when turnstile.it = Turnstile && colon.it = Colon ->
-      typing_functions := id.it :: !typing_functions;
-
-      (* $`id`(`lhs`) = `rhs` *)
-      let typing_function_call =
+    let lhs_rhs_opt = 
+      match mixop, exp.it with
+      (* `id`: |- `lhs` : `rhs` *)
+      | [[turnstile]; [colon]; []], TupE [lhs; rhs]
+      (* `id`: C |- `lhs` : `rhs` *)
+      | [[]; [turnstile]; [colon]; []], TupE [_; lhs; rhs]
+      when turnstile.it = Turnstile && colon.it = Colon ->
+        typing_functions := id.it :: !typing_functions;
+        Some (lhs, rhs)
+      (* `lhs` ~~ `rhs` *)
+      | [[]; [approx]; []], TupE [lhs; rhs] when approx.it = Approx -> Some (lhs, rhs)
+      | _ -> None
+    in
+    (match lhs_rhs_opt with
+    | Some (lhs, rhs) -> 
+      let function_call =
         CallE (id, [ExpA lhs $ lhs.at]) $$ exp.at % rhs.note
       in
       let new_prem =
-        IfPr (CmpE (`EqOp, `BoolT, typing_function_call, rhs) $$ exp.at % (BoolT $ no_region))
+        IfPr (CmpE (`EqOp, `BoolT, function_call, rhs) $$ prem.at % (BoolT $ no_region))
       in
 
       (* Add function definition to AL environment *)
@@ -174,8 +158,7 @@ let rec preprocess_prem prem =
       );
 
       [ new_prem $ prem.at ]
-    | _ -> [ prem ]
-    )
+    | None -> [ prem ])
   (* Split -- if e1 /\ e2 *)
   | IfPr ( { it = BinE (`AndOp, _, e1, e2); _ } ) ->
     preprocess_prem (IfPr e1 $ prem.at) @ preprocess_prem (IfPr e2 $ prem.at)

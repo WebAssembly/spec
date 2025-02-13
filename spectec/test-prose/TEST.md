@@ -17454,9 +17454,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       #) Let :math:`{(\mathsf{local}~t)^\ast}` be :math:`{{\mathit{local}}_0^\ast}`.
 
-      #) Assert: Due to validation, :math:`{\mathrm{expand}}({\mathit{fi}}{.}\mathsf{type})` is :math:`\mathsf{func}`.
+      #) Assert: Due to validation, the :ref:`expansion <aux-expand-deftype>` of :math:`{\mathit{fi}}{.}\mathsf{type}` is :math:`\mathsf{func}`.
 
-      #) Let :math:`(\mathsf{func}~{\mathit{functype}}_0)` be :math:`{\mathrm{expand}}({\mathit{fi}}{.}\mathsf{type})`.
+      #) Let :math:`(\mathsf{func}~{\mathit{functype}}_0)` be the :ref:`expansion <aux-expand-deftype>` of :math:`{\mathit{fi}}{.}\mathsf{type}`.
 
       #) Let :math:`{t_1^{n}}~\rightarrow~{t_2^{m}}` be :math:`{\mathit{functype}}_0`.
 
@@ -17540,9 +17540,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
          #) If :math:`a < {|z{.}\mathsf{funcs}|}`, then:
 
-            1. Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{funcs}{}[a]{.}\mathsf{type})` is :math:`\mathsf{func}`.
+            1. Assert: Due to validation, the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{funcs}{}[a]{.}\mathsf{type}` is :math:`\mathsf{func}`.
 
-            #. Let :math:`(\mathsf{func}~{\mathit{functype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{funcs}{}[a]{.}\mathsf{type})`.
+            #. Let :math:`(\mathsf{func}~{\mathit{functype}}_0)` be the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{funcs}{}[a]{.}\mathsf{type}`.
 
             #. Let :math:`{t_1^{n}}~\rightarrow~{t_2^{m}}` be :math:`{\mathit{functype}}_0`.
 
@@ -17865,9 +17865,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])` is :math:`\mathsf{struct}`.
+#. Assert: Due to validation, the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{types}{}[x]` is :math:`\mathsf{struct}`.
 
-#. Let :math:`(\mathsf{struct}~{\mathit{structtype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
+#. Let :math:`(\mathsf{struct}~{\mathit{structtype}}_0)` be the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{types}{}[x]`.
 
 #. Let :math:`{({\mathsf{mut}^?}~{\mathit{zt}})^\ast}` be :math:`{\mathit{structtype}}_0`.
 
@@ -17902,9 +17902,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. If :math:`i < {|z{.}\mathsf{structs}{}[a]{.}\mathsf{fields}|}` and :math:`a < {|z{.}\mathsf{structs}|}`, then:
 
-      1) Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])` is :math:`\mathsf{struct}`.
+      1) Assert: Due to validation, the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{types}{}[x]` is :math:`\mathsf{struct}`.
 
-      #) Let :math:`(\mathsf{struct}~{\mathit{structtype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
+      #) Let :math:`(\mathsf{struct}~{\mathit{structtype}}_0)` be the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{types}{}[x]`.
 
       #) Let :math:`{({\mathsf{mut}^?}~{\mathit{zt}})^\ast}` be :math:`{\mathit{structtype}}_0`.
 
@@ -17923,9 +17923,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])` is :math:`\mathsf{array}`.
+#. Assert: Due to validation, the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{types}{}[x]` is :math:`\mathsf{array}`.
 
-#. Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
+#. Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{types}{}[x]`.
 
 #. Let :math:`({\mathsf{mut}^?}~{\mathit{zt}})` be :math:`{\mathit{arraytype}}_0`.
 
@@ -17977,9 +17977,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])` is :math:`\mathsf{array}`.
+#. Assert: Due to validation, the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{types}{}[x]` is :math:`\mathsf{array}`.
 
-#. Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
+#. Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{types}{}[x]`.
 
 #. Let :math:`({\mathsf{mut}^?}~{\mathit{zt}})` be :math:`{\mathit{arraytype}}_0`.
 
@@ -18024,9 +18024,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. If :math:`i < {|z{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}|}` and :math:`a < {|z{.}\mathsf{arrays}|}`, then:
 
-      1) Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])` is :math:`\mathsf{array}`.
+      1) Assert: Due to validation, the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{types}{}[x]` is :math:`\mathsf{array}`.
 
-      #) Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
+      #) Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{types}{}[x]`.
 
       #) Let :math:`({\mathsf{mut}^?}~{\mathit{zt}})` be :math:`{\mathit{arraytype}}_0`.
 
@@ -18179,9 +18179,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       #) Else:
 
-         a) Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x_2])` is :math:`\mathsf{array}`.
+         a) Assert: Due to validation, the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{types}{}[x_2]` is :math:`\mathsf{array}`.
 
-         #) Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x_2])`.
+         #) Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{types}{}[x_2]`.
 
          #) Let :math:`({\mathsf{mut}^?}~{\mathit{zt}}_2)` be :math:`{\mathit{arraytype}}_0`.
 
@@ -18333,9 +18333,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       1) Trap.
 
-   #. If :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])` is :math:`\mathsf{array}`, then:
+   #. If the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{types}{}[x]` is :math:`\mathsf{array}`, then:
 
-      1) Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
+      1) Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{types}{}[x]`.
 
       #) Let :math:`({\mathsf{mut}^?}~{\mathit{zt}})` be :math:`{\mathit{arraytype}}_0`.
 
@@ -18914,9 +18914,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Assert: Due to validation, :math:`x < {|z{.}\mathsf{tags}|}`.
 
-#. Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{tags}{}[x]{.}\mathsf{type})` is :math:`\mathsf{func}`.
+#. Assert: Due to validation, the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{tags}{}[x]{.}\mathsf{type}` is :math:`\mathsf{func}`.
 
-#. Let :math:`(\mathsf{func}~{\mathit{functype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{tags}{}[x]{.}\mathsf{type})`.
+#. Let :math:`(\mathsf{func}~{\mathit{functype}}_0)` be the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{tags}{}[x]{.}\mathsf{type}`.
 
 #. Let :math:`{t^{n}}~\rightarrow~{\mathit{resulttype}}_1` be :math:`{\mathit{functype}}_0`.
 
@@ -18943,9 +18943,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])` is :math:`\mathsf{struct}`.
+#. Assert: Due to validation, the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{types}{}[x]` is :math:`\mathsf{struct}`.
 
-#. Let :math:`(\mathsf{struct}~{\mathit{structtype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
+#. Let :math:`(\mathsf{struct}~{\mathit{structtype}}_0)` be the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{types}{}[x]`.
 
 #. Let :math:`{({\mathsf{mut}^?}~{\mathit{zt}})^{n}}` be :math:`{\mathit{structtype}}_0`.
 
@@ -18984,9 +18984,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    a. Let :math:`(\mathsf{ref{.}struct}~a)` be :math:`{\mathit{val}'}`.
 
-   #. Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])` is :math:`\mathsf{struct}`.
+   #. Assert: Due to validation, the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{types}{}[x]` is :math:`\mathsf{struct}`.
 
-   #. Let :math:`(\mathsf{struct}~{\mathit{structtype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
+   #. Let :math:`(\mathsf{struct}~{\mathit{structtype}}_0)` be the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{types}{}[x]`.
 
    #. Let :math:`{({\mathsf{mut}^?}~{\mathit{zt}})^\ast}` be :math:`{\mathit{structtype}}_0`.
 
@@ -19001,9 +19001,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])` is :math:`\mathsf{array}`.
+#. Assert: Due to validation, the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{types}{}[x]` is :math:`\mathsf{array}`.
 
-#. Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
+#. Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{types}{}[x]`.
 
 #. Let :math:`({\mathsf{mut}^?}~{\mathit{zt}})` be :math:`{\mathit{arraytype}}_0`.
 
@@ -19050,9 +19050,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       1) Trap.
 
-   #. Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])` is :math:`\mathsf{array}`.
+   #. Assert: Due to validation, the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{types}{}[x]` is :math:`\mathsf{array}`.
 
-   #. Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
+   #. Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{types}{}[x]`.
 
    #. Let :math:`({\mathsf{mut}^?}~{\mathit{zt}})` be :math:`{\mathit{arraytype}}_0`.
 
@@ -23962,9 +23962,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    a. Let :math:`x` be :math:`{\mathit{blocktype}}`.
 
-   #. Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])` is :math:`\mathsf{func}`.
+   #. Assert: Due to validation, the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{types}{}[x]` is :math:`\mathsf{func}`.
 
-   #. Let :math:`(\mathsf{func}~{\mathit{ft}})` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
+   #. Let :math:`(\mathsf{func}~{\mathit{ft}})` be the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{types}{}[x]`.
 
    #. Return :math:`{\mathit{ft}}`.
 
@@ -24523,9 +24523,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ........................................................................
 
 
-1. Assert: :math:`{\mathrm{expand}}(s{.}\mathsf{funcs}{}[{\mathit{funcaddr}}]{.}\mathsf{type})` is :math:`\mathsf{func}`.
+1. Assert: the :ref:`expansion <aux-expand-deftype>` of :math:`s{.}\mathsf{funcs}{}[{\mathit{funcaddr}}]{.}\mathsf{type}` is :math:`\mathsf{func}`.
 
-#. Let :math:`(\mathsf{func}~{\mathit{functype}}_0)` be :math:`{\mathrm{expand}}(s{.}\mathsf{funcs}{}[{\mathit{funcaddr}}]{.}\mathsf{type})`.
+#. Let :math:`(\mathsf{func}~{\mathit{functype}}_0)` be the :ref:`expansion <aux-expand-deftype>` of :math:`s{.}\mathsf{funcs}{}[{\mathit{funcaddr}}]{.}\mathsf{type}`.
 
 #. Let :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` be :math:`{\mathit{functype}}_0`.
 
@@ -27089,8 +27089,8 @@ Step_read/call_ref yy
     2) Assert: Due to validation, fi.CODE is FUNC.
     3) Let (FUNC x local_0* instr*) be fi.CODE.
     4) Let (LOCAL t)* be local_0*.
-    5) Assert: Due to validation, $expanddt(fi.TYPE) is FUNC.
-    6) Let (FUNC functype_0) be $expanddt(fi.TYPE).
+    5) Assert: Due to validation, $Expand(fi.TYPE) is FUNC.
+    6) Let (FUNC functype_0) be $Expand(fi.TYPE).
     7) Let t_1^n -> t_2^m be functype_0.
     8) Assert: Due to validation, there are at least n values on the top of the stack.
     9) Pop the values val^n from the stack.
@@ -27128,8 +27128,8 @@ Step_read/return_call_ref yy
   d. If val'' is REF.FUNC_ADDR, then:
     1) Let (REF.FUNC_ADDR a) be val''.
     2) If (a < |$funcinst(z)|), then:
-      a) Assert: Due to validation, $expanddt($funcinst(z)[a].TYPE) is FUNC.
-      b) Let (FUNC functype_0) be $expanddt($funcinst(z)[a].TYPE).
+      a) Assert: Due to validation, $Expand($funcinst(z)[a].TYPE) is FUNC.
+      b) Let (FUNC functype_0) be $Expand($funcinst(z)[a].TYPE).
       c) Let t_1^n -> t_2^m be functype_0.
       d) Assert: Due to validation, there are at least n values on the top of the stack.
       e) Pop the values val^n from the stack.
@@ -27274,8 +27274,8 @@ Step_read/ref.cast rt
 
 Step_read/struct.new_default x
 1. Let z be the current state.
-2. Assert: Due to validation, $expanddt($type(z, x)) is STRUCT.
-3. Let (STRUCT structtype_0) be $expanddt($type(z, x)).
+2. Assert: Due to validation, $Expand($type(z, x)) is STRUCT.
+3. Let (STRUCT structtype_0) be $Expand($type(z, x)).
 4. Let (mut zt)* be structtype_0.
 5. Assert: Due to validation, $default_($unpack(zt)) is defined*.
 6. Let ?(val)* be $default_($unpack(zt))*.
@@ -27292,8 +27292,8 @@ Step_read/struct.get sx? x i
 5. If val is REF.STRUCT_ADDR, then:
   a. Let (REF.STRUCT_ADDR a) be val.
   b. If ((i < |$structinst(z)[a].FIELDS|) /\ (a < |$structinst(z)|)), then:
-    1) Assert: Due to validation, $expanddt($type(z, x)) is STRUCT.
-    2) Let (STRUCT structtype_0) be $expanddt($type(z, x)).
+    1) Assert: Due to validation, $Expand($type(z, x)) is STRUCT.
+    2) Let (STRUCT structtype_0) be $Expand($type(z, x)).
     3) Let (mut zt)* be structtype_0.
     4) If (i < |zt*|), then:
       a) Push the value $unpackfield_(zt*[i], sx?, $structinst(z)[a].FIELDS[i]) to the stack.
@@ -27302,8 +27302,8 @@ Step_read/array.new_default x
 1. Let z be the current state.
 2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 3. Pop the value (I32.CONST n) from the stack.
-4. Assert: Due to validation, $expanddt($type(z, x)) is ARRAY.
-5. Let (ARRAY arraytype_0) be $expanddt($type(z, x)).
+4. Assert: Due to validation, $Expand($type(z, x)) is ARRAY.
+5. Let (ARRAY arraytype_0) be $Expand($type(z, x)).
 6. Let (mut zt) be arraytype_0.
 7. Assert: Due to validation, $default_($unpack(zt)) is defined.
 8. Let ?(val) be $default_($unpack(zt)).
@@ -27328,8 +27328,8 @@ Step_read/array.new_data x y
 3. Pop the value (I32.CONST n) from the stack.
 4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 5. Pop the value (I32.CONST i) from the stack.
-6. Assert: Due to validation, $expanddt($type(z, x)) is ARRAY.
-7. Let (ARRAY arraytype_0) be $expanddt($type(z, x)).
+6. Assert: Due to validation, $Expand($type(z, x)) is ARRAY.
+7. Let (ARRAY arraytype_0) be $Expand($type(z, x)).
 8. Let (mut zt) be arraytype_0.
 9. If ((i + ((n * $zsize(zt)) / 8)) > |$data(z, y).BYTES|), then:
   a. Trap.
@@ -27351,8 +27351,8 @@ Step_read/array.get sx? x
   b. If ((a < |$arrayinst(z)|) /\ (i >= |$arrayinst(z)[a].FIELDS|)), then:
     1) Trap.
   c. If ((i < |$arrayinst(z)[a].FIELDS|) /\ (a < |$arrayinst(z)|)), then:
-    1) Assert: Due to validation, $expanddt($type(z, x)) is ARRAY.
-    2) Let (ARRAY arraytype_0) be $expanddt($type(z, x)).
+    1) Assert: Due to validation, $Expand($type(z, x)) is ARRAY.
+    2) Let (ARRAY arraytype_0) be $Expand($type(z, x)).
     3) Let (mut zt) be arraytype_0.
     4) Push the value $unpackfield_(zt, sx?, $arrayinst(z)[a].FIELDS[i]) to the stack.
 
@@ -27427,8 +27427,8 @@ Step_read/array.copy x_1 x_2
     5) If (n = 0), then:
       a) Do nothing.
     6) Else:
-      a) Assert: Due to validation, $expanddt($type(z, x_2)) is ARRAY.
-      b) Let (ARRAY arraytype_0) be $expanddt($type(z, x_2)).
+      a) Assert: Due to validation, $Expand($type(z, x_2)) is ARRAY.
+      b) Let (ARRAY arraytype_0) be $Expand($type(z, x_2)).
       c) Let (mut zt_2) be arraytype_0.
       d) Let sx? be $sx(zt_2).
       e) Push the value (REF.ARRAY_ADDR a_1) to the stack.
@@ -27503,8 +27503,8 @@ Step_read/array.init_data x y
   a. Let (REF.ARRAY_ADDR a) be val.
   b. If ((a < |$arrayinst(z)|) /\ ((i + n) > |$arrayinst(z)[a].FIELDS|)), then:
     1) Trap.
-  c. If $expanddt($type(z, x)) is ARRAY, then:
-    1) Let (ARRAY arraytype_0) be $expanddt($type(z, x)).
+  c. If $Expand($type(z, x)) is ARRAY, then:
+    1) Let (ARRAY arraytype_0) be $Expand($type(z, x)).
     2) Let (mut zt) be arraytype_0.
     3) If ((j + ((n * $zsize(zt)) / 8)) > |$data(z, y).BYTES|), then:
       a) Trap.
@@ -27786,8 +27786,8 @@ Step_read/memory.init x y
 Step/throw x
 1. Let z be the current state.
 2. Assert: Due to validation, (x < |$tagaddr(z)|).
-3. Assert: Due to validation, $expanddt($tag(z, x).TYPE) is FUNC.
-4. Let (FUNC functype_0) be $expanddt($tag(z, x).TYPE).
+3. Assert: Due to validation, $Expand($tag(z, x).TYPE) is FUNC.
+4. Let (FUNC functype_0) be $Expand($tag(z, x).TYPE).
 5. Let t^n -> resulttype_1 be functype_0.
 6. Assert: Due to validation, (resulttype_1 = []).
 7. Let a be |$exninst(z)|.
@@ -27800,8 +27800,8 @@ Step/throw x
 
 Step/struct.new x
 1. Let z be the current state.
-2. Assert: Due to validation, $expanddt($type(z, x)) is STRUCT.
-3. Let (STRUCT structtype_0) be $expanddt($type(z, x)).
+2. Assert: Due to validation, $Expand($type(z, x)) is STRUCT.
+3. Let (STRUCT structtype_0) be $Expand($type(z, x)).
 4. Let (mut zt)^n be structtype_0.
 5. Let a be |$structinst(z)|.
 6. Assert: Due to validation, there are at least n values on the top of the stack.
@@ -27820,16 +27820,16 @@ Step/struct.set x i
   a. Trap.
 7. If val' is REF.STRUCT_ADDR, then:
   a. Let (REF.STRUCT_ADDR a) be val'.
-  b. Assert: Due to validation, $expanddt($type(z, x)) is STRUCT.
-  c. Let (STRUCT structtype_0) be $expanddt($type(z, x)).
+  b. Assert: Due to validation, $Expand($type(z, x)) is STRUCT.
+  c. Let (STRUCT structtype_0) be $Expand($type(z, x)).
   d. Let (mut zt)* be structtype_0.
   e. If (i < |zt*|), then:
     1) Perform $with_struct(z, a, i, $packfield_(zt*[i], val)).
 
 Step/array.new_fixed x n
 1. Let z be the current state.
-2. Assert: Due to validation, $expanddt($type(z, x)) is ARRAY.
-3. Let (ARRAY arraytype_0) be $expanddt($type(z, x)).
+2. Assert: Due to validation, $Expand($type(z, x)) is ARRAY.
+3. Let (ARRAY arraytype_0) be $Expand($type(z, x)).
 4. Let (mut zt) be arraytype_0.
 5. Let a be |$arrayinst(z)|.
 6. Assert: Due to validation, there are at least n values on the top of the stack.
@@ -27852,8 +27852,8 @@ Step/array.set x
   a. Let (REF.ARRAY_ADDR a) be val'.
   b. If ((a < |$arrayinst(z)|) /\ (i >= |$arrayinst(z)[a].FIELDS|)), then:
     1) Trap.
-  c. Assert: Due to validation, $expanddt($type(z, x)) is ARRAY.
-  d. Let (ARRAY arraytype_0) be $expanddt($type(z, x)).
+  c. Assert: Due to validation, $Expand($type(z, x)) is ARRAY.
+  d. Let (ARRAY arraytype_0) be $Expand($type(z, x)).
   e. Let (mut zt) be arraytype_0.
   f. Perform $with_array(z, a, i, $packfield_(zt, val)).
 
@@ -30146,8 +30146,8 @@ growmem meminst n
 blocktype_ z blocktype
 1. If blocktype is _IDX, then:
   a. Let (_IDX x) be blocktype.
-  b. Assert: Due to validation, $expanddt($type(z, x)) is FUNC.
-  c. Let (FUNC ft) be $expanddt($type(z, x)).
+  b. Assert: Due to validation, $Expand($type(z, x)) is FUNC.
+  c. Let (FUNC ft) be $Expand($type(z, x)).
   d. Return ft.
 2. Assert: Due to validation, blocktype is _RESULT.
 3. Let (_RESULT t?) be blocktype.
@@ -30406,8 +30406,8 @@ instantiate s module externaddr*
 29. Return f.MODULE.
 
 invoke s funcaddr val*
-1. Assert: Due to validation, $expanddt(s.FUNCS[funcaddr].TYPE) is FUNC.
-2. Let (FUNC functype_0) be $expanddt(s.FUNCS[funcaddr].TYPE).
+1. Assert: Due to validation, $Expand(s.FUNCS[funcaddr].TYPE) is FUNC.
+2. Let (FUNC functype_0) be $Expand(s.FUNCS[funcaddr].TYPE).
 3. Let t_1* -> t_2* be functype_0.
 4. Let f be { MODULE: {} }.
 5. If not $Val_type(val, t_1)*, then:

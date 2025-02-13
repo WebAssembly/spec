@@ -253,25 +253,25 @@ and al_to_el_expr expr =
       | Some _ ->
         None
       | _ ->
-          let elid = id $ no_region in
-          let* elal = al_to_el_args al in
-          (* Unwrap parenthsized args *)
-          let elal = List.map
-            (fun elarg ->
-              let elarg = match elarg with
-              | El.Ast.ExpA exp ->
-                let exp = match exp.it with
-                | ParenE exp' -> exp'
-                | _ -> exp
-                in
-                El.Ast.ExpA exp
-              | _ -> elarg
+        let elid = id $ no_region in
+        let* elal = al_to_el_args al in
+        (* Unwrap parenthsized args *)
+        let elal = List.map
+          (fun elarg ->
+            let elarg = match elarg with
+            | El.Ast.ExpA exp ->
+              let exp = match exp.it with
+              | ParenE exp' -> exp'
+              | _ -> exp
               in
-              (ref elarg) $ no_region
-            )
-            elal
-          in
-          Some (El.Ast.CallE (elid, elal))
+              El.Ast.ExpA exp
+            | _ -> elarg
+            in
+            (ref elarg) $ no_region
+          )
+          elal
+        in
+        Some (El.Ast.CallE (elid, elal))
       )
     | Al.Ast.CatE (e1, e2) ->
       let* ele1 = al_to_el_expr e1 in
@@ -598,14 +598,20 @@ and render_expr' env expr =
     if id = "Eval_expr" then
       (match args with
       | [instrs] ->
-        "the result of :ref:`evaluating <exec-expr>` " ^ instrs
+        sprintf "the result of :ref:`evaluating <exec-expr>` %s" instrs
       | _ -> error expr.at (Printf.sprintf "Invalid arity for relation call: %d ([ %s ])" (List.length args) (String.concat " " args));
+      )
+    else if id = "Expand" then
+      (match args with
+      | [arg1] ->
+        sprintf "the :ref:`expansion <aux-expand-deftype>` of %s" arg1
+      | _ -> error expr.at "Invalid arity for relation call";
       )
     else if String.ends_with ~suffix:"_type" id || String.ends_with ~suffix:"_ok" id then
       (match args with
       | [arg1; arg2] ->
-        arg1 ^ " is :ref:`valid <valid-val>` with type " ^ arg2
-      | [arg] -> "the type of " ^ arg
+        sprintf "%s is :ref:`valid <valid-val>` with type %s" arg1 arg2
+      | [arg] -> sprintf "the type of %s" arg
       | _ -> error expr.at "Invalid arity for relation call";
       )
     else error expr.at ("Not supported relation call: " ^ id);

@@ -141,12 +141,23 @@ let val_type = function
     with exn -> raise (Exception.Invalid (exn, Printexc.get_raw_backtrace ())))
   | vs -> Numerics.error_values "$Val_type" vs
 
+let expand = function
+  | [ v ] ->
+    (try
+      v
+      |> Construct.al_to_def_type
+      |> Types.expand_def_type
+      |> Construct.al_of_str_type
+    with exn -> raise (Exception.Invalid (exn, Printexc.get_raw_backtrace ())))
+  | vs -> Numerics.error_values "$Expand" vs
+
 let manual_map =
   FuncMap.empty
   |> FuncMap.add "Ref_type" ref_type
   |> FuncMap.add "Module_ok" module_ok
   |> FuncMap.add "Val_type" val_type
   |> FuncMap.add "Externaddr_type" externaddr_type
+  |> FuncMap.add "Expand" expand
 
 let mem name =
 
