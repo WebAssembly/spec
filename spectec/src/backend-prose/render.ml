@@ -218,6 +218,8 @@ and al_to_el_expr expr =
       let* elop = al_to_el_unop op in
       let* ele = al_to_el_expr e in
       Some (El.Ast.UnE (elop, ele))
+    | Al.Ast.BinE (`LeOp, { it = LenE _; _ }, { it = NumE (`Nat z | `Int z); _ })
+    when z = Z.zero -> None
     | Al.Ast.BinE (op, e1, e2) ->
       (match op with
       | #Num.binop as elop ->
@@ -571,6 +573,8 @@ and render_expr' env expr =
     let sop = render_al_unop op in
     let se = render_expr env e in
     sprintf "%s %s" sop se
+  | Al.Ast.BinE (`LeOp, { it = LenE e1; _ }, { it = NumE (`Nat z | `Int z); _ })
+    when z = Z.zero -> sprintf "%s is empty" (render_expr env e1)
   | Al.Ast.BinE (op, e1, e2) ->
     let sop = render_al_binop op in
     let se1 = render_expr env e1 in
@@ -860,6 +864,8 @@ let rec render_single_stmt ?(with_type=true) env stmt  =
         (render_expr env e1)
         (render_arith_cmpop cmpop)
         (render_expr env e2)
+    | CmpS ({ it = LenE e1; _ }, `LeOp, { it = NumE (`Nat z | `Int z); _ })
+    when z = Z.zero -> sprintf "%s is empty" (render_expr env e1)
     | CmpS ({ it = LenE e1; _ }, cmpop, e2) ->
       sprintf "The length of %s %s %s"
         (render_expr env e1)

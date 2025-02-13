@@ -1139,7 +1139,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Pop the value :math:`({\mathit{valtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
-#. If :math:`{|{{\mathit{unop}}}{{}_{t}}{(c_1)}|} \leq 0`, then:
+#. If :math:`{{\mathit{unop}}}{{}_{t}}{(c_1)}` is empty, then:
 
    a. Trap.
 
@@ -1160,7 +1160,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Pop the value :math:`({\mathit{valtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
-#. If :math:`{|{{\mathit{binop}}}{{}_{t}}{(c_1, c_2)}|} \leq 0`, then:
+#. If :math:`{{\mathit{binop}}}{{}_{t}}{(c_1, c_2)}` is empty, then:
 
    a. Trap.
 
@@ -1207,7 +1207,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Pop the value :math:`({\mathit{valtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
-#. If :math:`{|{{\mathit{cvtop}}}{{}_{t_1, t_2}}{(c_1)}|} \leq 0`, then:
+#. If :math:`{{\mathit{cvtop}}}{{}_{t_1, t_2}}{(c_1)}` is empty, then:
 
    a. Trap.
 
@@ -5941,7 +5941,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
-#. If :math:`{|{{\mathit{unop}}}{{}_{{\mathit{nt}}}}{(c_1)}|} \leq 0`, then:
+#. If :math:`{{\mathit{unop}}}{{}_{{\mathit{nt}}}}{(c_1)}` is empty, then:
 
    a. Trap.
 
@@ -5962,7 +5962,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
-#. If :math:`{|{{\mathit{binop}}}{{}_{{\mathit{nt}}}}{(c_1, c_2)}|} \leq 0`, then:
+#. If :math:`{{\mathit{binop}}}{{}_{{\mathit{nt}}}}{(c_1, c_2)}` is empty, then:
 
    a. Trap.
 
@@ -6009,7 +6009,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
-#. If :math:`{|{{\mathit{cvtop}}}{{}_{{\mathit{nt}}_1, {\mathit{nt}}_2}}{(c_1)}|} \leq 0`, then:
+#. If :math:`{{\mathit{cvtop}}}{{}_{{\mathit{nt}}_1, {\mathit{nt}}_2}}{(c_1)}` is empty, then:
 
    a. Trap.
 
@@ -6107,7 +6107,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
-#. If :math:`{|{{\mathit{vunop}}}{{}_{{\mathit{sh}}}}{(c_1)}|} \leq 0`, then:
+#. If :math:`{{\mathit{vunop}}}{{}_{{\mathit{sh}}}}{(c_1)}` is empty, then:
 
    a. Trap.
 
@@ -6128,7 +6128,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
-#. If :math:`{|{{\mathit{vbinop}}}{{}_{{\mathit{sh}}}}{(c_1, c_2)}|} \leq 0`, then:
+#. If :math:`{{\mathit{vbinop}}}{{}_{{\mathit{sh}}}}{(c_1, c_2)}` is empty, then:
 
    a. Trap.
 
@@ -16706,7 +16706,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
-#. If :math:`{|{{\mathit{unop}}}{{}_{{\mathit{nt}}}(c_1)}|} \leq 0`, then:
+#. If :math:`{{\mathit{unop}}}{{}_{{\mathit{nt}}}(c_1)}` is empty, then:
 
    a. Trap.
 
@@ -16727,7 +16727,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
-#. If :math:`{|{{\mathit{binop}}}{{}_{{\mathit{nt}}}(c_1, c_2)}|} \leq 0`, then:
+#. If :math:`{{\mathit{binop}}}{{}_{{\mathit{nt}}}(c_1, c_2)}` is empty, then:
 
    a. Trap.
 
@@ -16774,7 +16774,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
-#. If :math:`{|{{\mathit{cvtop}}}{{}_{{\mathit{nt}}_1, {\mathit{nt}}_2}(c_1)}|} \leq 0`, then:
+#. If :math:`{{\mathit{cvtop}}}{{}_{{\mathit{nt}}_1, {\mathit{nt}}_2}(c_1)}` is empty, then:
 
    a. Trap.
 
@@ -17013,7 +17013,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
-#. If :math:`{|{{\mathit{vunop}}}{{}_{{\mathit{sh}}}(c_1)}|} \leq 0`, then:
+#. If :math:`{{\mathit{vunop}}}{{}_{{\mathit{sh}}}(c_1)}` is empty, then:
 
    a. Trap.
 
@@ -17034,7 +17034,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
-#. If :math:`{|{{\mathit{vbinop}}}{{}_{{\mathit{sh}}}(c_1, c_2)}|} \leq 0`, then:
+#. If :math:`{{\mathit{vbinop}}}{{}_{{\mathit{sh}}}(c_1, c_2)}` is empty, then:
 
    a. Trap.
 
@@ -17059,7 +17059,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
-#. If :math:`{|{{\mathit{vternop}}}{{}_{{\mathit{sh}}}(c_1, c_2, c_3)}|} \leq 0`, then:
+#. If :math:`{{\mathit{vternop}}}{{}_{{\mathit{sh}}}(c_1, c_2, c_3)}` is empty, then:
 
    a. Trap.
 
