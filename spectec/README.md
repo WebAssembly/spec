@@ -157,8 +157,6 @@ A smaller, self-contained example for a SpecTec specification, a small document 
 
 ### Running Interpreter Backend
 
-The interpreter backend can be found in the [`al`](https://github.com/Wasm-DSL/spectec/tree/al) branch at the moment.
-
 To run a wast file,
 ```
 watsup spec/* --interpreter test-interpreter/sample.wast
