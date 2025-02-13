@@ -94,42 +94,6 @@ Larger examples can be found in the [`spec`](spec) subdirectory.
 
 Documentation can be found in the [`doc`](doc) subdirectory.
 
-Regarding the use of the language:
-
-* [Source Language](doc/Language.md)
-* [Latex Backend](doc/Latex.md)
-
-Regarding the internal representations usable by backends:
-
-* [External Language](doc/EL.md)
-* [Internal Language](doc/IL.md)
-
-
-## Status
-
-The implementation defines two AST representations:
-
-* an external language (EL), suitable for backends generating latex,
-* an internal language (IL), suitable for backends generating programs. 
-
-Currently, the implementation consists of merely the frontend, which performs:
-
-* parsing,
-* multiplicity checking,
-* recursion analysis,
-* type checking for the EL,
-* elaboration from EL into IL,
-* splicing expressions and definitions into files.
-
-Lowering from EL into IL infers additional information and makes it explicit in the representation:
-
-* resolve notational overloading and mixfix applications,
-* resolve overloading of variant constructors and annotate them with their type,
-* insert injections from variant subtypes into supertypes,
-* insert injections from singletons into options/lists,
-* insert binders and types for local variables in rules and functions,
-* mark recursion groups and group definitions with rules, ordering everything by dependency.
-
 
 ## Building
 
@@ -177,73 +141,25 @@ To generate a specification document in Latex or Sphinx (to be built into pdf or
   ```
 
 
-## Running Latex Backend
+### Building the Spec
 
-The tool can splice Latex formulas generated from, or expressed in terms of, the DSL into files. For example, invoking
+The core spec document in this repo is build using SpecTec by default. To build:
 ```
-watsup <source-files ...> -p <patch-files ...>
-```
-where `source-files` are the DSL files, and `patch-files` is a set of files to process (Latex, Sphinx, or other text formats), will splice Latex formulas or displaystyle definitions into the latter files.
-
-Consider a Latex file like the following:
-```
-[...]
-\subsection*{Syntax}
-
-@@@{syntax: numtype vectype reftype valtype resulttype}
-
-@@@{syntax: instr expr}
-
-
-\subsection*{Typing @@{relation: Instr_ok}}
-
-An instruction sequence @@{:instr*} is well-typed with an instruction type @@{:t_1* -> t_2*} according to the following rules:
-
-@@@{rule: InstrSeq_ok/empty InstrSeq_ok/seq}
-
-@@@{rule: InstrSeq_ok/weak InstrSeq_ok/frame}
-[...]
-```
-The places to splice in formulas are indicated by _anchors_. For Latex, the two possible anchors are currently `@@` or `@@@`, which expand to `$...$` and `$$...$$`, respectively (for Sphinx, replace the anchor tokens with `$` and `$$`).
-
-There are two forms of splices:
-
-1. _expression splice_ (`@@{: exp }`): simply renders a DSL expression,
-2. _definition splice_ (`@@{sort: id id ...}`): inserts the named definitions or rules of the indicated sort `sort` as defined in the DSL sources.
-
-See the [documentation](doc/Latex.md) for more details.
-
-
-## Running Sphinx Backend (WIP)
-
-The full pdf/html document generation via Sphinx currently resides in the [`al`](https://github.com/Wasm-DSL/spectec/tree/al) branch.
-
-To build both pdf and html specification document,
-```
-$ git checkout al
-$ make
-$ cd test-prose
-$ make all
+$ cd ../document/core
+$ make main
 ```
 
-It splices Latex formulas and typesetted prose into the template `rst` document at `test-prose/doc`.
-Then, Sphinx builds the `rst` files into desired formats such as pdf or html.
+
+### Example
+
+A smaller, self-contained example for a SpecTec specification, a small document with splices, and a suitable Makefile can be found in the [example](doc/example/) directory.
 
 
-## Running Interpreter Backend (WIP)
+### Running Interpreter Backend
 
 The interpreter backend can be found in the [`al`](https://github.com/Wasm-DSL/spectec/tree/al) branch at the moment.
 
 To run a wast file,
 ```
-$ git checkout al
-$ make
-$ ./watsup spec/* --interpreter test-interpreter/sample.wast
-```
-
-You may also run all wast files in the directory.
-```
-$ git checkout al
-$ make
-$ ./watsup spec/* --interpreter ../test/core
+watsup spec/* --interpreter test-interpreter/sample.wast
 ```
