@@ -4719,8 +4719,8 @@ $$
 
 $$
 \begin{array}[t]{@{}lrcl@{}l@{}}
-{[\textsc{\scriptsize Expand\_use{-}deftype}]} \quad & {\mathit{deftype}} & \approx & C~{\mathit{comptype}} & \quad \mbox{if}~ {\mathit{deftype}} \approx {\mathit{comptype}} \\
-{[\textsc{\scriptsize Expand\_use{-}typeidx}]} \quad & {\mathit{typeidx}} & \approx & C~{\mathit{comptype}} & \quad \mbox{if}~ C{.}\mathsf{types}{}[{\mathit{typeidx}}] \approx {\mathit{comptype}} \\
+{[\textsc{\scriptsize Expand\_use{-}deftype}]} \quad & {\mathit{deftype}} & {\approx}_{C} {} & {\mathit{comptype}} & \quad \mbox{if}~ {\mathit{deftype}} \approx {\mathit{comptype}} \\
+{[\textsc{\scriptsize Expand\_use{-}typeidx}]} \quad & {\mathit{typeidx}} & {\approx}_{C} {} & {\mathit{comptype}} & \quad \mbox{if}~ C{.}\mathsf{types}{}[{\mathit{typeidx}}] \approx {\mathit{comptype}} \\
 \end{array}
 $$
 
