@@ -1662,13 +1662,16 @@ let render_ruledef env d : row list =
   | RuleD (id1, id2, e, prems) ->
     let e1, op, e2 =
       match e.it with
-      | InfixE (e1, op, e2) -> e1, op, e2
+      | InfixE (e1, op, ({it = SeqE (e21::es22); _} as e2)) when Atom.is_sub op ->
+        let e1' = SeqE [] $ Source.no_region in
+        e1, {e with it = InfixE (e1', op, {e2 with it = SeqE [e21]})}, {e2 with it = SeqE es22}
+      | InfixE (e1, op, e2) -> e1, {e with it = AtomE op}, e2
       | _ -> error e.at "unrecognized format for tabular rule, infix operator expected"
     in
     prefix_rows_hd
       ( Col (render_rule_deco env "" id1 id2 " \\quad") ::
         Col (render_exp env e1) ::
-        Col (render_atom env op) ::
+        Col (render_exp env op) ::
         if e1.at.right.line = e2.at.left.line then
           Col (render_exp env e2) :: []
         else

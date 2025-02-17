@@ -156,7 +156,7 @@ $${definition: rollrt unrollrt rolldt unrolldt}
 
 In addition, the following auxiliary relation denotes the *expansion* of a :ref:`defined type <syntax-deftype>` or :ref:`type use <syntax-typeuse>`:
 
-$${rule: Expand Expand_use/*}
+$${rule: Expand {Expand_use/*}}
 
 $${relation-ignore: Expand Expand_use}
 $${definition-ignore: expanddt}
