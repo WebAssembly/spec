@@ -1,8 +1,8 @@
 ;;
-;; Allocation
+;; Execution of Modules
 ;;
 
-;; Definitions
+;; Allocation
 
 def $alloctypes(type*) : deftype* hint(show $alloctype*#((%)))
 def $alloctypes(eps) = eps
@@ -63,9 +63,9 @@ def $alloctag(s, tagtype) = (s ++ {TAGS taginst}, |s.TAGS|)
 
 def $alloctags(store, tagtype*) : (store, tagaddr*) hint(show $alloctag*#((%,%)))
 def $alloctags(s, eps) = (s, eps)
-def $alloctags(s, jt jt'*) = (s_2, ja ja'*)
-  -- if (s_1, ja) = $alloctag(s, jt)
-  -- if (s_2, ja'*) = $alloctags(s_1, jt'*)
+def $alloctags(s, tagtype tagtype'*) = (s_2, ja ja'*)
+  -- if (s_1, ja) = $alloctag(s, tagtype)
+  -- if (s_2, ja'*) = $alloctags(s_1, tagtype'*)
 
 def $allocelem(store, elemtype, ref*) : (store, elemaddr)
 def $allocelem(s, elemtype, ref*) = (s ++ {ELEMS eleminst}, |s.ELEMS|)
@@ -99,8 +99,6 @@ def $allocexport(moduleinst, EXPORT name (TAG x)) = { NAME name, ADDR (TAG modul
 def $allocexports(moduleinst, export*) : exportinst* hint(show $allocexport*#(%,%))
 def $allocexports(moduleinst, export*) = $allocexport(moduleinst, export)*
 
-
-;; Modules
 
 def $allocmodule(store, module, externaddr*, val*, ref*, (ref*)*) : (store, moduleinst)
 def $allocmodule(s, module, externaddr*, val_G*, ref_T*, (ref_E*)*) = (s_7, moduleinst)
@@ -151,9 +149,7 @@ def $allocmodule(s, module, externaddr*, val_G*, ref_T*, (ref_E*)*) = (s_7, modu
     }
 
 
-;;
 ;; Instantiation
-;;
 
 def $runelem_(elemidx, elem) : instr*
 def $runelem_(x, ELEM rt e^n (PASSIVE)) = eps
@@ -180,7 +176,7 @@ def $instantiate(store, module, externaddr*) : config
 def $instantiate(s, module, externaddr*) = s'; f; instr_E* instr_D* instr_S?
   ---- ----
   -- Module_ok: |- module : xt_I* -> xt_E*
-  -- (Externaddr_type: s |- externaddr : xt_I)*
+  -- (Externaddr_ok: s |- externaddr : xt_I)*
   ----
   -- if module = MODULE type* import* func* global* table* mem* tag* elem* data* start? export*
   -- if global* = (GLOBAL globaltype expr_G)*
@@ -205,13 +201,11 @@ def $instantiate(s, module, externaddr*) = s'; f; instr_E* instr_D* instr_S?
   -- if instr_S? = (CALL x)?
 
 
-;;
 ;; Invocation
-;;
 
 def $invoke(store, funcaddr, val*) : config
 def $invoke(s, funcaddr, val*) = s; f; val* (REF.FUNC_ADDR funcaddr) (CALL_REF s.FUNCS[funcaddr].TYPE)
   ---- ----
   -- Expand: s.FUNCS[funcaddr].TYPE ~~ FUNC (t_1* -> t_2*)
-  -- (Val_type: s |- val : t_1)*
+  -- (Val_ok: s |- val : t_1)*
   -- if f = {MODULE {}}  ;; TODO(2, rossberg): inline

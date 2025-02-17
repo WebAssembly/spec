@@ -1,5 +1,5 @@
 ;;
-;; Reduction
+;; Execution of Instructions
 ;;
 
 relation Step: config ~> config       hint(name "E") hint(macro "stepto") hint(tabular)
@@ -144,8 +144,8 @@ rule Step_pure/br_on_non_null-addr:
 
 rule Step_read/br_on_cast-succeed:
   s; f; ref (BR_ON_CAST l rt_1 rt_2)  ~>  ref (BR l)
-  ;; TODO(3, rossberg): -- Ref_type: s |- ref : $inst_reftype(f.MODULE, rt_2)
-  -- Ref_type: s |- ref : rt
+  ;; TODO(3, rossberg): -- Ref_ok: s |- ref : $inst_reftype(f.MODULE, rt_2)
+  -- Ref_ok: s |- ref : rt
   -- Reftype_sub: {} |- rt <: $inst_reftype(f.MODULE, rt_2)
 
 rule Step_read/br_on_cast-fail:
@@ -155,8 +155,8 @@ rule Step_read/br_on_cast-fail:
 
 rule Step_read/br_on_cast_fail-succeed:
   s; f; ref (BR_ON_CAST_FAIL l rt_1 rt_2)  ~>  ref
-  ;; TODO(3, rossberg): -- Ref_type: s |- ref : $inst_reftype(f.MODULE, rt_2)
-  -- Ref_type: s |- ref : rt
+  ;; TODO(3, rossberg): -- Ref_ok: s |- ref : $inst_reftype(f.MODULE, rt_2)
+  -- Ref_ok: s |- ref : rt
   -- Reftype_sub: {} |- rt <: $inst_reftype(f.MODULE, rt_2)
 
 rule Step_read/br_on_cast_fail-fail:
@@ -249,12 +249,12 @@ rule Step_read/throw_ref-handler-empty:
 rule Step_read/throw_ref-handler-catch:
   z; (HANDLER_ n `{(CATCH x l) catch'*} (REF.EXN_ADDR a) THROW_REF)  ~>  val* (BR l)
   -- if $exninst(z)[a].TAG = $tagaddr(z)[x]
-  -- if val* = $exninst(z)[a].FIELDS  ;; TODO(3, rossberg): inline
+  -- if val* = $exninst(z)[a].FIELDS
 
 rule Step_read/throw_ref-handler-catch_ref:
   z; (HANDLER_ n `{(CATCH_REF x l) catch'*} (REF.EXN_ADDR a) THROW_REF)  ~>  val* (REF.EXN_ADDR a) (BR l)
   -- if $exninst(z)[a].TAG = $tagaddr(z)[x]
-  -- if val* = $exninst(z)[a].FIELDS  ;; TODO(3, rossberg): inline
+  -- if val* = $exninst(z)[a].FIELDS
 
 rule Step_read/throw_ref-handler-catch_all:
   z; (HANDLER_ n `{(CATCH_ALL l) catch'*} (REF.EXN_ADDR a) THROW_REF)  ~>  (BR l)
@@ -372,8 +372,8 @@ rule Step_pure/ref.eq-false:
 
 rule Step_read/ref.test-true:
   s; f; ref (REF.TEST rt)  ~>  (CONST I32 1)
-  ;; TODO(3, rossberg): -- Ref_type: s |- ref : $inst_reftype(f.MODULE, rt)
-  -- Ref_type: s |- ref : rt'
+  ;; TODO(3, rossberg): -- Ref_ok: s |- ref : $inst_reftype(f.MODULE, rt)
+  -- Ref_ok: s |- ref : rt'
   -- Reftype_sub: {} |- rt' <: $inst_reftype(f.MODULE, rt)
 
 rule Step_read/ref.test-false:
@@ -383,8 +383,8 @@ rule Step_read/ref.test-false:
 
 rule Step_read/ref.cast-succeed:
   s; f; ref (REF.CAST rt)  ~>  ref
-  ;; TODO(3, rossberg): -- Ref_type: s |- ref : $inst_reftype(f.MODULE, rt)
-  -- Ref_type: s |- ref : rt'
+  ;; TODO(3, rossberg): -- Ref_ok: s |- ref : $inst_reftype(f.MODULE, rt)
+  -- Ref_ok: s |- ref : rt'
   -- Reftype_sub: {} |- rt' <: $inst_reftype(f.MODULE, rt)
 
 rule Step_read/ref.cast-fail:
@@ -716,8 +716,8 @@ rule Step_pure/vbitmask:
 
 
 rule Step_pure/vswizzlop:
-  (VCONST V128 c_1) (VCONST V128 c_2) (VSWIZZLOP sh vswizzlop)  ~>  (VCONST V128 c)
-  -- if c = $vswizzlop_(sh, vswizzlop, c_1, c_2)
+  (VCONST V128 c_1) (VCONST V128 c_2) (VSWIZZLOP sh swizzlop)  ~>  (VCONST V128 c)
+  -- if c = $vswizzlop_(sh, swizzlop, c_1, c_2)
 
 
 rule Step_pure/vshuffle:
@@ -849,21 +849,21 @@ rule Step_read/table.copy-oob:
   -- if $(i_1 + n) > |$table(z, x_1).REFS| \/ $(i_2 + n) > |$table(z, x_2).REFS|
 
 rule Step_read/table.copy-zero:
-  z; (CONST at_1 i_1) (CONST at_2 i_2) (CONST at' n) (TABLE.COPY x_1 x_2)  ~>  eps
+  z; (CONST at_1 i_1) (CONST at_2 i_2) (CONST at' n) (TABLE.COPY x y)  ~>  eps
   -- otherwise
   -- if n = 0
 
 rule Step_read/table.copy-le:
-  z; (CONST at_1 i_1) (CONST at_2 i_2) (CONST at' n) (TABLE.COPY x_1 x_2)  ~>
-    (CONST at_1 i_1) (CONST at_2 i_2) (TABLE.GET x_2) (TABLE.SET x_1)
-    (CONST at_1 $(i_1+1)) (CONST at_2 $(i_2+1)) (CONST at' $(n-1)) (TABLE.COPY x_1 x_2)
+  z; (CONST at_1 i_1) (CONST at_2 i_2) (CONST at' n) (TABLE.COPY x y)  ~>
+    (CONST at_1 i_1) (CONST at_2 i_2) (TABLE.GET y) (TABLE.SET x)
+    (CONST at_1 $(i_1+1)) (CONST at_2 $(i_2+1)) (CONST at' $(n-1)) (TABLE.COPY x y)
   -- otherwise
   -- if i_1 <= i_2
 
 rule Step_read/table.copy-gt:
-  z; (CONST at_1 i_1) (CONST at_2 i_2) (CONST at' n) (TABLE.COPY x_1 x_2)  ~>
-    (CONST at_1 $(i_1+n-1)) (CONST at_2 $(i_2+n-1)) (TABLE.GET x_2) (TABLE.SET x_1)
-    (CONST at_1 i_1) (CONST at_2 i_2) (CONST at' $(n-1)) (TABLE.COPY x_1 x_2)
+  z; (CONST at_1 i_1) (CONST at_2 i_2) (CONST at' n) (TABLE.COPY x y)  ~>
+    (CONST at_1 $(i_1+n-1)) (CONST at_2 $(i_2+n-1)) (TABLE.GET y) (TABLE.SET x)
+    (CONST at_1 i_1) (CONST at_2 i_2) (CONST at' $(n-1)) (TABLE.COPY x y)
   -- otherwise
 
 
@@ -879,7 +879,7 @@ rule Step_read/table.init-zero:
 
 rule Step_read/table.init-succ:
   z; (CONST at i) (CONST I32 j) (CONST I32 n) (TABLE.INIT x y)  ~>
-    (CONST at i) $elem(z, y).REFS[j] (TABLE.SET x)
+    (CONST at i) $elem(z,y).REFS[j] (TABLE.SET x)
     (CONST at $(i+1)) (CONST I32 $(j+1)) (CONST I32 $(n-1)) (TABLE.INIT x y)
   -- otherwise
 

@@ -1,0 +1,5 @@
+;;
+;; Profiles
+;;
+
+def $ND : bool  ;; non-determinism

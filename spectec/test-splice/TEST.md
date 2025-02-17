@@ -717,12 +717,12 @@ warning: rule `Export_ok` was never spliced
 warning: rule `Expr_const` was never spliced
 warning: rule `Expr_ok` was never spliced
 warning: rule `Expr_ok_const` was never spliced
-warning: rule `Externaddr_type/func` was never spliced
-warning: rule `Externaddr_type/global` was never spliced
-warning: rule `Externaddr_type/table` was never spliced
-warning: rule `Externaddr_type/mem` was never spliced
-warning: rule `Externaddr_type/tag` was never spliced
-warning: rule `Externaddr_type/sub` was never spliced
+warning: rule `Externaddr_ok/func` was never spliced
+warning: rule `Externaddr_ok/global` was never spliced
+warning: rule `Externaddr_ok/table` was never spliced
+warning: rule `Externaddr_ok/mem` was never spliced
+warning: rule `Externaddr_ok/tag` was never spliced
+warning: rule `Externaddr_ok/sub` was never spliced
 warning: rule `Externidx_ok/func` was never spliced
 warning: rule `Externidx_ok/global` was never spliced
 warning: rule `Externidx_ok/table` was never spliced
@@ -909,7 +909,7 @@ warning: rule `NotationTypingInstrScheme/i32.add` was never spliced
 warning: rule `NotationTypingInstrScheme/global.get` was never spliced
 warning: rule `NotationTypingInstrScheme/block` was never spliced
 warning: rule `NotationTypingScheme` was never spliced
-warning: rule `Num_type` was never spliced
+warning: rule `Num_ok` was never spliced
 warning: rule `Numtype_ok` was never spliced
 warning: rule `Numtype_sub` was never spliced
 warning: rule `Packtype_ok` was never spliced
@@ -919,15 +919,15 @@ warning: rule `Rectype_ok/cons` was never spliced
 warning: rule `Rectype_ok/_rec2` was never spliced
 warning: rule `Rectype_ok2/empty` was never spliced
 warning: rule `Rectype_ok2/cons` was never spliced
-warning: rule `Ref_type/null` was never spliced
-warning: rule `Ref_type/i31` was never spliced
-warning: rule `Ref_type/struct` was never spliced
-warning: rule `Ref_type/array` was never spliced
-warning: rule `Ref_type/func` was never spliced
-warning: rule `Ref_type/exn` was never spliced
-warning: rule `Ref_type/host` was never spliced
-warning: rule `Ref_type/extern` was never spliced
-warning: rule `Ref_type/sub` was never spliced
+warning: rule `Ref_ok/null` was never spliced
+warning: rule `Ref_ok/i31` was never spliced
+warning: rule `Ref_ok/struct` was never spliced
+warning: rule `Ref_ok/array` was never spliced
+warning: rule `Ref_ok/func` was never spliced
+warning: rule `Ref_ok/exn` was never spliced
+warning: rule `Ref_ok/host` was never spliced
+warning: rule `Ref_ok/extern` was never spliced
+warning: rule `Ref_ok/sub` was never spliced
 warning: rule `Reftype_ok` was never spliced
 warning: rule `Reftype_sub/nonnull` was never spliced
 warning: rule `Reftype_sub/null` was never spliced
@@ -1161,9 +1161,9 @@ warning: rule `Tagtype_sub` was never spliced
 warning: rule `Type_ok` was never spliced
 warning: rule `Types_ok/empty` was never spliced
 warning: rule `Types_ok/cons` was never spliced
-warning: rule `Val_type/num` was never spliced
-warning: rule `Val_type/vec` was never spliced
-warning: rule `Val_type/ref` was never spliced
+warning: rule `Val_ok/num` was never spliced
+warning: rule `Val_ok/vec` was never spliced
+warning: rule `Val_ok/ref` was never spliced
 warning: rule `Valtype_ok/num` was never spliced
 warning: rule `Valtype_ok/vec` was never spliced
 warning: rule `Valtype_ok/ref` was never spliced
@@ -1172,7 +1172,7 @@ warning: rule `Valtype_sub/num` was never spliced
 warning: rule `Valtype_sub/vec` was never spliced
 warning: rule `Valtype_sub/ref` was never spliced
 warning: rule `Valtype_sub/bot` was never spliced
-warning: rule `Vec_type` was never spliced
+warning: rule `Vec_ok` was never spliced
 warning: rule `Vectype_ok` was never spliced
 warning: rule `Vectype_sub` was never spliced
 warning: definition `ANYREF` was never spliced
@@ -1625,13 +1625,13 @@ warning: rule prose `Eval_expr` was never spliced
 warning: rule prose `Export_ok` was never spliced
 warning: rule prose `Expr_const` was never spliced
 warning: rule prose `Expr_ok` was never spliced
-warning: rule prose `Externaddr_type` was never spliced
-warning: rule prose `Externaddr_type/func` was never spliced
-warning: rule prose `Externaddr_type/global` was never spliced
-warning: rule prose `Externaddr_type/mem` was never spliced
-warning: rule prose `Externaddr_type/sub` was never spliced
-warning: rule prose `Externaddr_type/table` was never spliced
-warning: rule prose `Externaddr_type/tag` was never spliced
+warning: rule prose `Externaddr_ok` was never spliced
+warning: rule prose `Externaddr_ok/func` was never spliced
+warning: rule prose `Externaddr_ok/global` was never spliced
+warning: rule prose `Externaddr_ok/mem` was never spliced
+warning: rule prose `Externaddr_ok/sub` was never spliced
+warning: rule prose `Externaddr_ok/table` was never spliced
+warning: rule prose `Externaddr_ok/tag` was never spliced
 warning: rule prose `Externidx_ok` was never spliced
 warning: rule prose `Externidx_ok/func` was never spliced
 warning: rule prose `Externidx_ok/global` was never spliced
@@ -1835,7 +1835,7 @@ warning: rule prose `NotationTypingInstrScheme` was never spliced
 warning: rule prose `NotationTypingInstrScheme/block` was never spliced
 warning: rule prose `NotationTypingInstrScheme/global.get` was never spliced
 warning: rule prose `NotationTypingInstrScheme/i32.add` was never spliced
-warning: rule prose `Num_type` was never spliced
+warning: rule prose `Num_ok` was never spliced
 warning: rule prose `Numtype_ok` was never spliced
 warning: rule prose `Numtype_sub` was never spliced
 warning: rule prose `Packtype_ok` was never spliced
@@ -1846,16 +1846,16 @@ warning: rule prose `Rectype_ok/empty` was never spliced
 warning: rule prose `Rectype_ok2` was never spliced
 warning: rule prose `Rectype_ok2/cons` was never spliced
 warning: rule prose `Rectype_ok2/empty` was never spliced
-warning: rule prose `Ref_type` was never spliced
-warning: rule prose `Ref_type/array` was never spliced
-warning: rule prose `Ref_type/exn` was never spliced
-warning: rule prose `Ref_type/extern` was never spliced
-warning: rule prose `Ref_type/func` was never spliced
-warning: rule prose `Ref_type/host` was never spliced
-warning: rule prose `Ref_type/i31` was never spliced
-warning: rule prose `Ref_type/null` was never spliced
-warning: rule prose `Ref_type/struct` was never spliced
-warning: rule prose `Ref_type/sub` was never spliced
+warning: rule prose `Ref_ok` was never spliced
+warning: rule prose `Ref_ok/array` was never spliced
+warning: rule prose `Ref_ok/exn` was never spliced
+warning: rule prose `Ref_ok/extern` was never spliced
+warning: rule prose `Ref_ok/func` was never spliced
+warning: rule prose `Ref_ok/host` was never spliced
+warning: rule prose `Ref_ok/i31` was never spliced
+warning: rule prose `Ref_ok/null` was never spliced
+warning: rule prose `Ref_ok/struct` was never spliced
+warning: rule prose `Ref_ok/sub` was never spliced
 warning: rule prose `Reftype_ok` was never spliced
 warning: rule prose `Reftype_sub` was never spliced
 warning: rule prose `Reftype_sub/nonnull` was never spliced
@@ -1986,10 +1986,10 @@ warning: rule prose `Type_ok` was never spliced
 warning: rule prose `Types_ok` was never spliced
 warning: rule prose `Types_ok/cons` was never spliced
 warning: rule prose `Types_ok/empty` was never spliced
-warning: rule prose `Val_type` was never spliced
-warning: rule prose `Val_type/num` was never spliced
-warning: rule prose `Val_type/ref` was never spliced
-warning: rule prose `Val_type/vec` was never spliced
+warning: rule prose `Val_ok` was never spliced
+warning: rule prose `Val_ok/num` was never spliced
+warning: rule prose `Val_ok/ref` was never spliced
+warning: rule prose `Val_ok/vec` was never spliced
 warning: rule prose `Valtype_ok` was never spliced
 warning: rule prose `Valtype_ok/bot` was never spliced
 warning: rule prose `Valtype_ok/num` was never spliced
@@ -2000,7 +2000,7 @@ warning: rule prose `Valtype_sub/bot` was never spliced
 warning: rule prose `Valtype_sub/num` was never spliced
 warning: rule prose `Valtype_sub/ref` was never spliced
 warning: rule prose `Valtype_sub/vec` was never spliced
-warning: rule prose `Vec_type` was never spliced
+warning: rule prose `Vec_ok` was never spliced
 warning: rule prose `Vectype_ok` was never spliced
 warning: rule prose `Vectype_sub` was never spliced
 warning: definition prose `ANYREF` was never spliced

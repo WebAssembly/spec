@@ -1,52 +1,179 @@
 ;;
-;; Auxiliary definitions on Types
+;; Execution Configurations
 ;;
 
-;; Instantiation
+;; Addresses
 
-def $inst_valtype(moduleinst, valtype) : valtype  hint(show $inst_(%,%)) hint(macro "insttype")
-def $inst_reftype(moduleinst, reftype) : reftype  hint(show $inst_(%,%)) hint(macro "insttype")
-def $inst_globaltype(moduleinst, globaltype) : globaltype  hint(show $inst_(%,%)) hint(macro "insttype")
-def $inst_tabletype(moduleinst, tabletype) : tabletype  hint(show $inst_(%,%)) hint(macro "insttype")
-def $inst_memtype(moduleinst, memtype) : memtype  hint(show $inst_(%,%)) hint(macro "insttype")
+syntax addr hint(desc "address") = nat
+syntax funcaddr hint(desc "function address") = addr
+syntax globaladdr hint(desc "global address") = addr
+syntax tableaddr hint(desc "table address") = addr
+syntax memaddr hint(desc "memory address") = addr
+syntax tagaddr hint(desc "tag address") = addr
+syntax elemaddr hint(desc "elem address") = addr
+syntax dataaddr hint(desc "data address") = addr
+syntax hostaddr hint(desc "host address") = addr
+syntax structaddr hint(desc "structure address") = addr
+syntax arrayaddr hint(desc "array address") = addr
+syntax exnaddr hint(desc "exception address") = addr
 
-;; TODO(3, rossberg): make inlining moduleinst.TYPES work
-def $inst_valtype(moduleinst, t) = $subst_all_valtype(t, dt*)
-  -- if dt* = moduleinst.TYPES
-def $inst_reftype(moduleinst, rt) = $subst_all_reftype(rt, dt*)
-  -- if dt* = moduleinst.TYPES
-def $inst_globaltype(moduleinst, gt) = $subst_all_globaltype(gt, dt*)
-  -- if dt* = moduleinst.TYPES
-def $inst_tabletype(moduleinst, tt) = $subst_all_tabletype(tt, dt*)
-  -- if dt* = moduleinst.TYPES
-def $inst_memtype(moduleinst, mt) = $subst_all_memtype(mt, dt*)
-  -- if dt* = moduleinst.TYPES
+syntax externaddr hint(desc "external address") hint(macro "%" "XA%") =
+  | FUNC funcaddr | GLOBAL globaladdr | TABLE tableaddr | MEM memaddr | TAG tagaddr
+
+var a : addr
+var xa : externaddr
 
 
-;;
-;; Auxiliary definitions on Values
-;;
+;; Values
+
+syntax num hint(desc "number value") =
+  | CONST numtype num_(numtype)          hint(show %.CONST %%)
+
+syntax vec hint(desc "vector value") =
+  | VCONST vectype vec_(vectype)         hint(show %.CONST %%)    hint(macro "VCONST")
+
+syntax addrref hint(desc "address value") =
+  | REF.I31_NUM u31                      hint(show REF.I31 %%)    hint(macro "%NUM")
+  | REF.STRUCT_ADDR structaddr           hint(show REF.STRUCT %%) hint(macro "%ADDR")
+  | REF.ARRAY_ADDR arrayaddr             hint(show REF.ARRAY %%)  hint(macro "%ADDR")
+  | REF.FUNC_ADDR funcaddr               hint(show REF.FUNC %%)   hint(macro "%ADDR")
+  | REF.EXN_ADDR exnaddr                 hint(show REF.EXN %%)    hint(macro "%ADDR")
+  | REF.HOST_ADDR hostaddr               hint(show REF.HOST %%)   hint(macro "%ADDR")
+  | REF.EXTERN addrref
+
+syntax ref hint(desc "reference value")  hint(macro "reff") =
+  | addrref
+  | REF.NULL heaptype
+
+syntax val hint(desc "value") =
+  | num | vec | ref
+
+syntax result hint(desc "result") =
+  | _VALS val* | `(REF.EXN_ADDR exnaddr) THROW_REF | TRAP
+
+var r : ref
+var res : result
+
+
+;; Instances
+
+syntax hostfunc hint(desc "host function") hint(macro "%" "FI%") = `...
+syntax funccode hint(show code) hint(macro "funccode") = func | hostfunc
+
+syntax funcinst hint(desc "function instance") hint(macro "%" "FI%") =
+  { TYPE deftype, MODULE moduleinst, CODE funccode }
+
+syntax globalinst hint(desc "global instance") hint(macro "%" "GI%") =
+  { TYPE globaltype, VALUE val }
+
+syntax tableinst hint(desc "table instance") hint(macro "%" "TI%") =
+  { TYPE tabletype, REFS ref* }
+
+syntax meminst hint(desc "memory instance") hint(macro "%" "MI%") =
+  { TYPE memtype, BYTES byte* }
+
+syntax taginst hint(desc "tag instance") hint(macro "%" "HI%") =
+  { TYPE tagtype }
+
+syntax eleminst hint(desc "element instance") hint(macro "%" "EI%") =
+  { TYPE elemtype, REFS ref* }
+
+syntax datainst hint(desc "data instance") hint(macro "%" "DI%") =
+  { BYTES byte* }
+
+syntax exportinst hint(desc "export instance") hint(macro "%" "XI%") =
+  { NAME name, ADDR externaddr }
+
+
+syntax packval hint(desc "packed value") =
+  | PACK packtype iN($psizenn(packtype))    hint(show %.PACK %)
+
+syntax fieldval hint(desc "field value") =
+  | val | packval
+
+syntax structinst hint(desc "structure instance") hint(macro "%" "SI%") =
+  { TYPE deftype, FIELDS fieldval* }
+
+syntax arrayinst hint(desc "array instance") hint(macro "%" "AI%") =
+  { TYPE deftype, FIELDS fieldval* }
+
+syntax exninst hint(desc "exception instance") hint(macro "%" "EI%") =
+  { TAG tagaddr, FIELDS val* }
+
+
+syntax moduleinst hint(desc "module instance") hint(macro "%" "MI%") =
+  { TYPES deftype*,
+    FUNCS funcaddr*,
+    GLOBALS globaladdr*,
+    TABLES tableaddr*,
+    MEMS memaddr*,
+    TAGS tagaddr*,
+    ELEMS elemaddr*,
+    DATAS dataaddr*,
+    EXPORTS exportinst* }
+
+
+;; State
+
+syntax store hint(desc "store") hint(macro "%" "S%") =
+  { FUNCS funcinst*,
+    GLOBALS globalinst*,
+    TABLES tableinst*,
+    MEMS meminst*,
+    TAGS taginst*,
+    ELEMS eleminst*,
+    DATAS datainst*,
+    STRUCTS structinst*,
+    ARRAYS arrayinst*,
+    EXNS exninst* }
+
+syntax frame hint(desc "frame") hint(macro "%" "A%") =
+  { LOCALS (val?)*, MODULE moduleinst }
+
+
+;; Administrative instructions
+
+syntax instr/admin hint(desc "administrative instruction") =
+  | ...
+  | addrref
+  | LABEL_ n `{instr*} instr*   hint(show LABEL_%#% %%)
+  | FRAME_ n `{frame} instr*    hint(show FRAME_%#% %%)
+  | HANDLER_ n `{catch*} instr* hint(show HANDLER_%#% %%)
+  | TRAP
+
+
+;; Configurations
+
+syntax state hint(desc "state") = store; frame
+syntax config hint(desc "configuration") = state; instr*
+
+
+;; Meta variables
+
+var mm : moduleinst
+var fi : funcinst
+var gi : globalinst
+var ti : tableinst
+var mi : meminst
+var hi : taginst
+var ei : eleminst
+var di : datainst
+var xi : exportinst
+var exn : exninst
+
+var si : structinst
+var ai : arrayinst
+var fv : fieldval
+var pv : packval
+
+var s : store
+var z : state
+
 
 ;; Constants
 
 def $Ki : nat hint(macro none)
 def $Ki = 1024
-
-
-;; Default values
-
-def $default_(valtype) : val?
-def $default_(Inn) = (CONST Inn 0)
-def $default_(Fnn) = (CONST Fnn $fzero($size(Fnn)))
-def $default_(Vnn) = (VCONST Vnn 0)
-def $default_(REF NULL ht) = (REF.NULL ht)
-def $default_(REF ht) = eps
-
-;;relation Defaultable: |- valtype DEFAULTABLE ;; forward-declared in typing
-rule Defaultable: |- t DEFAULTABLE -- if $default_(t) =/= eps
-
-;;relation Nondefaultable: |- valtype NONDEFAULTABLE ;; forward-declared in typing
-rule Nondefaultable: |- t NONDEFAULTABLE -- if $default_(t) = eps
 
 
 ;; Packed fields
@@ -90,11 +217,7 @@ def $tagsxa((TAG a) xa*) = a $tagsxa(xa*)
 def $tagsxa(externaddr xa*) = $tagsxa(xa*)  -- otherwise
 
 
-;;
-;; Auxiliary definitions on State
-;;
-
-;; Access
+;; State access
 
 def $store(state) : store             hint(show %.STORE) hint(macro "Z%")
 def $frame(state) : frame             hint(show %.FRAME) hint(macro "Z%")
@@ -129,6 +252,7 @@ def $structinst((s; f)) = s.STRUCTS
 def $arrayinst((s; f)) = s.ARRAYS
 def $exninst((s; f)) = s.EXNS
 
+
 def $type(state, typeidx) : deftype         hint(show %.TYPES[%])   hint(macro "Z%")
 def $func(state, funcidx) : funcinst        hint(show %.FUNCS[%])   hint(macro "Z%")
 def $global(state, globalidx) : globalinst  hint(show %.GLOBALS[%]) hint(macro "Z%")
@@ -150,7 +274,7 @@ def $data((s; f), x) = s.DATAS[f.MODULE.DATAS[x]]
 def $local((s; f), x) = f.LOCALS[x]
 
 
-;; Update
+;; State update
 
 def $with_local(state, localidx, val) : state               hint(show %[.LOCALS[%] = %])            hint(macro "Z%")
 def $with_global(state, globalidx, val) : state             hint(show %[.GLOBALS[%].VALUE = %])     hint(macro "ZG%")
@@ -173,6 +297,7 @@ def $with_elem((s; f), x, r*) = s[.ELEMS[f.MODULE.ELEMS[x]].REFS = r*]; f
 def $with_data((s; f), x, b*) = s[.DATAS[f.MODULE.DATAS[x]].BYTES = b*]; f
 def $with_struct((s; f), a, i, fv) = s[.STRUCTS[a].FIELDS[i] = fv]; f
 def $with_array((s; f), a, i, fv) = s[.ARRAYS[a].FIELDS[i] = fv]; f
+
 
 def $add_structinst(state, structinst*) : state  hint(show %[.STRUCTS =++ %]) hint(macro "Z%")
 def $add_arrayinst(state, arrayinst*) : state    hint(show %[.ARRAYS =++ %])  hint(macro "Z%")

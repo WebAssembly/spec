@@ -130,7 +130,7 @@ let externaddr_type = function
       let extern_type = Construct.al_to_extern_type t in
       boolV (Match.match_extern_type [] externaddr_type extern_type)
     with exn -> raise (Exception.Invalid (exn, Printexc.get_raw_backtrace ())))
-  | vs -> Numerics.error_values "$Externaddr_type" vs
+  | vs -> Numerics.error_values "$Externaddr_ok" vs
 
 let val_type = function
   | [ v; t ] ->
@@ -139,7 +139,7 @@ let val_type = function
     (try
       boolV (Match.match_val_type [] (Value.type_of_value value) val_type)
     with exn -> raise (Exception.Invalid (exn, Printexc.get_raw_backtrace ())))
-  | vs -> Numerics.error_values "$Val_type" vs
+  | vs -> Numerics.error_values "$Val_ok" vs
 
 let expand = function
   | [ v ] ->
@@ -153,10 +153,10 @@ let expand = function
 
 let manual_map =
   FuncMap.empty
-  |> FuncMap.add "Ref_type" ref_type
+  |> FuncMap.add "Ref_ok" ref_type
   |> FuncMap.add "Module_ok" module_ok
-  |> FuncMap.add "Val_type" val_type
-  |> FuncMap.add "Externaddr_type" externaddr_type
+  |> FuncMap.add "Val_ok" val_type
+  |> FuncMap.add "Externaddr_ok" externaddr_type
   |> FuncMap.add "Expand" expand
 
 let mem name =

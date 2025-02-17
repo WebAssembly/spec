@@ -1,0 +1,12 @@
+;;
+;; Auxiliary definitions used for describing binary format notation
+;;
+
+;; Binary format
+
+grammar Btypewriter : () hint(macro none) = 0x00 => ()
+
+syntax symdots hint(show `...) hint(macro none) = 0
+def $var(syntax X) : nat hint(show %) hint(macro none) def $var(syntax X) = 0x00
+grammar Bvar(syntax X) : () hint(show %) hint(macro none) = 0x00 => ()
+grammar Bsym : A hint(macro none) = Bvar(B_1) => $var(A_1) | Bvar(symdots) | Bvar(B_n) => $var(A_n)

@@ -1,36 +1,15 @@
 ;;
-;; General definitions
+;; General Functions on Sequences
 ;;
 
-;; General variable conventions
-
-syntax N hint(macro none) = nat  ;; hack
-syntax M hint(macro none) = nat  ;; hack
-syntax K hint(macro none) = nat  ;; hack
-syntax n hint(macro none) = nat  ;; hack
-syntax m hint(macro none) = nat  ;; hack
-
-
-;; General numeric functions
-
-def $min(nat, nat) : nat
-def $min(i, j) = i  -- if $(i <= j)
-def $min(i, j) = j  -- otherwise
-
-def $sum(nat*) : nat  hint(show (+) %) hint(macro none)
-def $sum(eps) = 0
-def $sum(n n'*) = $(n + $sum(n'*))
-
-def $prod(nat*) : nat  hint(show (*) %) hint(macro none)
-def $prod(eps) = 1
-def $prod(n n'*) = $(n * $prod(n'*))
-
-
-;; General sequence functions
+;; Type casting
 
 def $opt_(syntax X, X*) : X?  hint(show %2)
 def $opt_(syntax X, eps) = eps
 def $opt_(syntax X, w) = w
+
+
+;; Concatenation
 
 def $concat_(syntax X, (X*)*) : X*  hint(show (++) %2)
 def $concat_(syntax X, eps) = eps

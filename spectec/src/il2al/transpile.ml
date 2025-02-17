@@ -848,7 +848,7 @@ let insert_frame_binding instrs =
 (* This function infers whether the frame should be
    considered global or not within this given AL function.
 
-There are two kinds of auxilirary functions:
+There are two kinds of auxiliary functions:
   1) Global: Parameters contain a frame.
   2) Not global: Parameters do not contain a frame.
 
@@ -1014,10 +1014,10 @@ let rec enforce_return' il =
       (match enforce_return il1, enforce_return il2 with
       | [], [] -> enforce_return' tl
       | new_il, [] ->
-        (* HARDCODE: handling patial function *)
+        (* HARDCODE: handling partial function *)
         (match c.it with
         | IterE ({ it = CallE (id, _); _ }, _)
-          when List.mem id ["Externaddr_type"; "Val_type"] ->
+          when List.mem id ["Externaddr_ok"; "Val_ok"] ->
             rev new_il @ (ifI (neg c, [failI () ~at: at], [])) :: tl
         | _ ->
           rev new_il @ (assertI c ~at:at :: tl)

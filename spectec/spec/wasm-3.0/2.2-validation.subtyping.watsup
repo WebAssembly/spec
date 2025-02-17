@@ -1,0 +1,248 @@
+;;
+;; Subtyping
+;;
+
+;; Value types
+
+relation Numtype_sub: context |- numtype <: numtype    hint(name "S-num")  hint(macro "%numtypematch")
+relation Vectype_sub: context |- vectype <: vectype    hint(name "S-vec")  hint(macro "%vectypematch")
+relation Heaptype_sub: context |- heaptype <: heaptype hint(name "S-heap") hint(macro "%heaptypematch")
+relation Reftype_sub: context |- reftype <: reftype    hint(name "S-ref")  hint(macro "%reftypematch")
+relation Valtype_sub: context |- valtype <: valtype    hint(name "S-val")  hint(macro "%valtypematch")
+
+rule Numtype_sub:
+  C |- numtype <: numtype
+
+rule Vectype_sub:
+  C |- vectype <: vectype
+
+
+rule Heaptype_sub/refl:
+  C |- heaptype <: heaptype
+
+rule Heaptype_sub/trans:
+  C |- heaptype_1 <: heaptype_2
+  -- Heaptype_ok: C |- heaptype' : OK
+  -- Heaptype_sub: C |- heaptype_1 <: heaptype'
+  -- Heaptype_sub: C |- heaptype' <: heaptype_2
+
+rule Heaptype_sub/eq-any:
+  C |- EQ <: ANY
+
+rule Heaptype_sub/i31-eq:
+  C |- I31 <: EQ
+
+rule Heaptype_sub/struct-eq:
+  C |- STRUCT <: EQ
+
+rule Heaptype_sub/array-eq:
+  C |- ARRAY <: EQ
+
+rule Heaptype_sub/struct:
+  C |- deftype <: STRUCT
+  -- Expand: deftype ~~ STRUCT fieldtype*
+
+rule Heaptype_sub/array:
+  C |- deftype <: ARRAY
+  -- Expand: deftype ~~ ARRAY fieldtype
+
+rule Heaptype_sub/func:
+  C |- deftype <: FUNC
+  -- Expand: deftype ~~ FUNC functype
+
+rule Heaptype_sub/def:
+  C |- deftype_1 <: deftype_2
+  -- Deftype_sub: C |- deftype_1 <: deftype_2
+
+rule Heaptype_sub/typeidx-l:
+  C |- _IDX typeidx <: heaptype
+  -- Heaptype_sub: C |- C.TYPES[typeidx] <: heaptype
+
+rule Heaptype_sub/typeidx-r:
+  C |- heaptype <: _IDX typeidx
+  -- Heaptype_sub: C |- heaptype <: C.TYPES[typeidx]
+
+rule Heaptype_sub/rec:
+  C |- REC i <: typeuse*[j]
+  -- if C.RECS[i] = SUB fin typeuse* ct
+
+rule Heaptype_sub/none:
+  C |- NONE <: heaptype
+  -- Heaptype_sub: C |- heaptype <: ANY
+
+rule Heaptype_sub/nofunc:
+  C |- NOFUNC <: heaptype
+  -- Heaptype_sub: C |- heaptype <: FUNC
+
+rule Heaptype_sub/noextern:
+  C |- NOEXTERN <: heaptype
+  -- Heaptype_sub: C |- heaptype <: EXTERN
+
+rule Heaptype_sub/bot:
+  C |- BOT <: heaptype
+
+
+rule Reftype_sub/nonnull:
+  C |- REF ht_1 <: REF ht_2
+  -- Heaptype_sub: C |- ht_1 <: ht_2
+
+rule Reftype_sub/null:
+  C |- REF NULL? ht_1 <: REF NULL ht_2
+  -- Heaptype_sub: C |- ht_1 <: ht_2
+
+
+rule Valtype_sub/num:
+  C |- numtype_1 <: numtype_2
+  -- Numtype_sub: C |- numtype_1 <: numtype_2
+
+rule Valtype_sub/vec:
+  C |- vectype_1 <: vectype_2
+  -- Vectype_sub: C |- vectype_1 <: vectype_2
+
+rule Valtype_sub/ref:
+  C |- reftype_1 <: reftype_2
+  -- Reftype_sub: C |- reftype_1 <: reftype_2
+
+rule Valtype_sub/bot:
+  C |- BOT <: valtype
+
+
+;; Result & instruction types
+
+relation Resulttype_sub: context |- resulttype <: resulttype  hint(name "S-result") hint(macro "%resulttypematch")
+relation Instrtype_sub: context |- instrtype <: instrtype     hint(name "S-instr")  hint(macro "%instrtypematch")
+
+rule Resulttype_sub:
+  C |- t_1* <: t_2*
+  -- (Valtype_sub: C |- t_1 <: t_2)*
+
+rule Instrtype_sub:
+  C |- t_11* ->_(x_1*) t_12* <: t_21* ->_(x_2*) t_22*
+  -- Resulttype_sub: C |- t_21* <: t_11*
+  -- Resulttype_sub: C |- t_12* <: t_22*
+  -- if x* = $setminus_(localidx, x_2*, x_1*)
+  -- (if C.LOCALS[x] = SET t)*
+
+
+;; Type definitions
+
+relation Packtype_sub: context |- packtype <: packtype          hint(name "S-pack")    hint(macro "%packtypematch")
+relation Storagetype_sub: context |- storagetype <: storagetype hint(name "S-storage") hint(macro "%storagetypematch")
+relation Fieldtype_sub: context |- fieldtype <: fieldtype       hint(name "S-field")   hint(macro "%fieldtypematch")
+relation Functype_sub: context |- functype <: functype          hint(name "S-func")    hint(macro "%functypematch")
+
+;; Forward declared in validation.types
+;;relation Comptype_sub: context |- comptype <: comptype        hint(name "S-comp")    hint(macro "%comptypematch")
+;;relation Deftype_sub: context |- deftype <: deftype           hint(name "S-def")     hint(macro "%deftypematch")
+
+
+rule Packtype_sub:
+  C |- packtype <: packtype
+
+
+rule Storagetype_sub/val:
+  C |- valtype_1 <: valtype_2
+  -- Valtype_sub: C |- valtype_1 <: valtype_2
+
+rule Storagetype_sub/pack:
+  C |- packtype_1 <: packtype_2
+  -- Packtype_sub: C |- packtype_1 <: packtype_2
+
+
+rule Fieldtype_sub/const:
+  C |- zt_1 <: zt_2
+  -- Storagetype_sub: C |- zt_1 <: zt_2
+
+rule Fieldtype_sub/var:
+  C |- MUT zt_1 <: MUT zt_2
+  -- Storagetype_sub: C |- zt_1 <: zt_2
+  -- Storagetype_sub: C |- zt_2 <: zt_1
+
+
+rule Comptype_sub/struct:
+  C |- STRUCT (yt_1* yt'_1) <: STRUCT yt_2*
+  -- (Fieldtype_sub: C |- yt_1 <: yt_2)*
+
+rule Comptype_sub/array:
+  C |- ARRAY yt_1 <: ARRAY yt_2
+  -- Fieldtype_sub: C |- yt_1 <: yt_2
+
+rule Comptype_sub/func:
+  C |- FUNC ft_1 <: FUNC ft_2
+  -- Functype_sub: C |- ft_1 <: ft_2
+
+
+rule Deftype_sub/refl:
+  C |- deftype_1 <: deftype_2
+  -- if $clos_deftype(C, deftype_1) = $clos_deftype(C, deftype_2)
+
+rule Deftype_sub/super:
+  C |- deftype_1 <: deftype_2
+  -- if $unrolldt(deftype_1) = SUB fin typeuse* ct
+  -- Heaptype_sub: C |- typeuse*[i] <: deftype_2
+
+
+;; External types
+
+relation Limits_sub: context |- limits <: limits             hint(name "S-limits") hint(macro "%limitsmatch")
+relation Globaltype_sub: context |- globaltype <: globaltype hint(name "S-global") hint(macro "%globaltypematch")
+relation Tabletype_sub: context |- tabletype <: tabletype    hint(name "S-table")  hint(macro "%tabletypematch")
+relation Memtype_sub: context |- memtype <: memtype          hint(name "S-mem")    hint(macro "%memtypematch")
+relation Tagtype_sub: context |- tagtype <: tagtype          hint(name "S-tag")    hint(macro "%tagtypematch")
+relation Externtype_sub: context |- externtype <: externtype hint(name "S-extern") hint(macro "%externtypematch")
+
+
+rule Limits_sub:
+  C |- `[n_1 .. m_1] <: `[n_2 .. m_2]
+  -- if n_1 >= n_2
+  -- if m_1 <= m_2
+
+rule Functype_sub:
+  C |- t_11* -> t_12* <: t_21* -> t_22*
+  -- Resulttype_sub: C |- t_21* <: t_11*
+  -- Resulttype_sub: C |- t_12* <: t_22*
+
+rule Globaltype_sub/const:
+  C |- valtype_1 <: valtype_2
+  -- Valtype_sub: C |- valtype_1 <: valtype_2
+
+rule Globaltype_sub/var:
+  C |- MUT valtype_1 <: MUT valtype_2
+  -- Valtype_sub: C |- valtype_1 <: valtype_2
+  -- Valtype_sub: C |- valtype_2 <: valtype_1
+
+rule Tabletype_sub:
+  C |- addrtype limits_1 reftype_1 <: addrtype limits_2 reftype_2
+  -- Limits_sub: C |- limits_1 <: limits_2
+  -- Reftype_sub: C |- reftype_1 <: reftype_2
+  -- Reftype_sub: C |- reftype_2 <: reftype_1
+
+rule Memtype_sub:
+  C |- addrtype limits_1 PAGE <: addrtype limits_2 PAGE
+  -- Limits_sub: C |- limits_1 <: limits_2
+
+rule Tagtype_sub:
+  C |- deftype_1 <: deftype_2
+  -- Deftype_sub: C |- deftype_1 <: deftype_2
+  -- Deftype_sub: C |- deftype_2 <: deftype_1
+
+
+rule Externtype_sub/func:
+  C |- FUNC deftype_1 <: FUNC deftype_2
+  -- Deftype_sub: C |- deftype_1 <: deftype_2
+
+rule Externtype_sub/global:
+  C |- GLOBAL globaltype_1 <: GLOBAL globaltype_2
+  -- Globaltype_sub: C |- globaltype_1 <: globaltype_2
+
+rule Externtype_sub/table:
+  C |- TABLE tabletype_1 <: TABLE tabletype_2
+  -- Tabletype_sub: C |- tabletype_1 <: tabletype_2
+
+rule Externtype_sub/mem:
+  C |- MEM memtype_1 <: MEM memtype_2
+  -- Memtype_sub: C |- memtype_1 <: memtype_2
+
+rule Externtype_sub/tag:
+  C |- TAG tagtype_1 <: TAG tagtype_2
+  -- Tagtype_sub: C |- tagtype_1 <: tagtype_2
