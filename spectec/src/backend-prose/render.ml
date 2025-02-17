@@ -601,7 +601,7 @@ and render_expr' env expr =
         sprintf "the result of :ref:`evaluating <exec-expr>` %s" instrs
       | _ -> error expr.at (Printf.sprintf "Invalid arity for relation call: %d ([ %s ])" (List.length args) (String.concat " " args));
       )
-    else if id = "Expand" then
+    else if id = "Expand" || id = "Expand_use" then
       (match args with
       | [arg1] ->
         sprintf "the :ref:`expansion <aux-expand-deftype>` of %s" arg1

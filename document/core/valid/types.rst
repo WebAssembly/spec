@@ -33,10 +33,11 @@ $${rule-prose: Vectype_ok}
 $${rule: Vectype_ok}
 
 
-.. index:: heap type, type identifier
+.. index:: heap type, type index, type use
    pair: validation; heap type
    single: abstract syntax; heap type
 .. _valid-heaptype:
+.. _valid-typeuse:
 
 Heap Types
 ~~~~~~~~~~
@@ -46,9 +47,9 @@ $${rule-prose: Heaptype_ok/abs}
 $${rule: Heaptype_ok/abs}
 
 
-$${rule-prose: Heaptype_ok/typeidx}
+$${rule-prose: Typeuse_ok/typeidx}
 
-$${rule: Heaptype_ok/typeidx}
+$${rule: Typeuse_ok/typeidx}
 
 
 .. index:: reference type, heap type

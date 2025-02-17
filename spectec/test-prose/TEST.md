@@ -12561,6 +12561,7 @@ watsup 0.4 generator
 == Translating to AL...
 == Prose Generation...
 Untranslated relation Expand: `%~~%`(deftype, comptype)
+Untranslated relation Expand_use: `%~~_%%`(typeuse, context, comptype)
 
 
 
@@ -12574,6 +12575,26 @@ The vector type :math:`{\mathit{vectype}}` is always :ref:`valid <valid-val>`.
 
 
 
+The packed type :math:`{\mathit{packtype}}` is always :ref:`valid <valid-val>`.
+
+
+
+
+The packed type :math:`{\mathit{packtype}}` :ref:`matches <match>` only itself.
+
+
+
+
+The number type :math:`{\mathit{numtype}}` :ref:`matches <match>` only itself.
+
+
+
+
+The vector type :math:`{\mathit{vectype}}` :ref:`matches <match>` only itself.
+
+
+
+
 The heap type :math:`{\mathit{heaptype}}` is :ref:`valid <valid-val>` if:
 
 
@@ -12583,18 +12604,9 @@ The heap type :math:`{\mathit{heaptype}}` is :ref:`valid <valid-val>` if:
 
    * Or:
 
-      * The heap type :math:`{\mathit{heaptype}}` is of the form :math:`{\mathit{typeidx}}`.
+      * The heap type :math:`{\mathit{heaptype}}` is of the form :math:`{\mathit{typeuse}}`.
 
-      * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
-
-      * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is of the form :math:`{\mathit{dt}}`.
-   * Or:
-
-      * The heap type :math:`{\mathit{heaptype}}` is of the form :math:`(\mathsf{rec}~i)`.
-
-      * The sub type :math:`C{.}\mathsf{recs}{}[i]` exists.
-
-      * The sub type :math:`C{.}\mathsf{recs}{}[i]` is of the form :math:`{\mathit{st}}`.
+      * The type use :math:`{\mathit{typeuse}}` is :ref:`valid <valid-val>`.
 
 
 
@@ -12604,22 +12616,10 @@ The heap type :math:`{\mathit{absheaptype}}` is always :ref:`valid <valid-val>`.
 
 
 
-The heap type :math:`{\mathit{typeidx}}` is :ref:`valid <valid-val>` if:
+The heap type :math:`{\mathit{typeuse}}` is :ref:`valid <valid-val>` if:
 
 
-   * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
-
-   * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is of the form :math:`{\mathit{dt}}`.
-
-
-
-
-The heap type :math:`(\mathsf{rec}~i)` is :ref:`valid <valid-val>` if:
-
-
-   * The sub type :math:`C{.}\mathsf{recs}{}[i]` exists.
-
-   * The sub type :math:`C{.}\mathsf{recs}{}[i]` is of the form :math:`{\mathit{st}}`.
+   * The type use :math:`{\mathit{typeuse}}` is :ref:`valid <valid-val>`.
 
 
 
@@ -12687,6 +12687,61 @@ The value type :math:`\mathsf{bot}` is always :ref:`valid <valid-val>`.
 
 
 
+The type use :math:`{\mathit{typeuse}}` is :ref:`valid <valid-val>` if:
+
+
+   * Either:
+
+      * The type use :math:`{\mathit{typeuse}}` is of the form :math:`{\mathit{typeidx}}`.
+
+      * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
+
+      * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is of the form :math:`{\mathit{dt}}`.
+
+   * Or:
+
+      * The type use :math:`{\mathit{typeuse}}` is of the form :math:`{\mathit{deftype}}`.
+
+      * The defined type :math:`{\mathit{deftype}}` is :ref:`valid <valid-val>`.
+   * Or:
+
+      * The type use :math:`{\mathit{typeuse}}` is of the form :math:`(\mathsf{rec}~i)`.
+
+      * The sub type :math:`C{.}\mathsf{recs}{}[i]` exists.
+
+      * The sub type :math:`C{.}\mathsf{recs}{}[i]` is of the form :math:`{\mathit{st}}`.
+
+
+
+
+The type use :math:`{\mathit{typeidx}}` is :ref:`valid <valid-val>` if:
+
+
+   * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
+
+   * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is of the form :math:`{\mathit{dt}}`.
+
+
+
+
+The type use :math:`{\mathit{deftype}}` is :ref:`valid <valid-val>` if:
+
+
+   * The defined type :math:`{\mathit{deftype}}` is :ref:`valid <valid-val>`.
+
+
+
+
+The type use :math:`(\mathsf{rec}~i)` is :ref:`valid <valid-val>` if:
+
+
+   * The sub type :math:`C{.}\mathsf{recs}{}[i]` exists.
+
+   * The sub type :math:`C{.}\mathsf{recs}{}[i]` is of the form :math:`{\mathit{st}}`.
+
+
+
+
 The result type :math:`{t^\ast}` is :ref:`valid <valid-val>` if:
 
 
@@ -12697,27 +12752,10 @@ The result type :math:`{t^\ast}` is :ref:`valid <valid-val>` if:
 
 
 
-The instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}` is :ref:`valid <valid-val>` if:
+The field type :math:`({\mathsf{mut}^?}~{\mathit{storagetype}})` is :ref:`valid <valid-val>` if:
 
 
-   * The result type :math:`{t_1^\ast}` is :ref:`valid <valid-val>`.
-
-   * The result type :math:`{t_2^\ast}` is :ref:`valid <valid-val>`.
-
-   * The length of :math:`{{{\mathit{lt}}}^\ast}` is equal to the length of :math:`{x^\ast}`.
-
-   * For all :math:`x` in :math:`{x^\ast}`:
-
-      * The local type :math:`C{.}\mathsf{locals}{}[x]` exists.
-
-   * For all :math:`{{\mathit{lt}}}` in :math:`{{{\mathit{lt}}}^\ast}`, and corresponding :math:`x` in :math:`{x^\ast}`:
-
-      * The local type :math:`C{.}\mathsf{locals}{}[x]` is of the form :math:`{{\mathit{lt}}}`.
-
-
-
-
-The packed type :math:`{\mathit{packtype}}` is always :ref:`valid <valid-val>`.
+   * The storage type :math:`{\mathit{storagetype}}` is :ref:`valid <valid-val>`.
 
 
 
@@ -12752,24 +12790,6 @@ The storage type :math:`{\mathit{packtype}}` is :ref:`valid <valid-val>` if:
 
 
    * The packed type :math:`{\mathit{packtype}}` is :ref:`valid <valid-val>`.
-
-
-
-
-The field type :math:`({\mathsf{mut}^?}~{\mathit{storagetype}})` is :ref:`valid <valid-val>` if:
-
-
-   * The storage type :math:`{\mathit{storagetype}}` is :ref:`valid <valid-val>`.
-
-
-
-
-The function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is :ref:`valid <valid-val>` if:
-
-
-   * The result type :math:`{t_1^\ast}` is :ref:`valid <valid-val>`.
-
-   * The result type :math:`{t_2^\ast}` is :ref:`valid <valid-val>`.
 
 
 
@@ -12825,12 +12845,207 @@ The composite type :math:`(\mathsf{func}~{\mathit{functype}})` is :ref:`valid <v
 
 
 
-The packed type :math:`{\mathit{packtype}}` :ref:`matches <match>` only itself.
+The function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is :ref:`valid <valid-val>` if:
+
+
+   * The result type :math:`{t_1^\ast}` is :ref:`valid <valid-val>`.
+
+   * The result type :math:`{t_2^\ast}` is :ref:`valid <valid-val>`.
 
 
 
 
-The number type :math:`{\mathit{numtype}}` :ref:`matches <match>` only itself.
+The sub type :math:`(\mathsf{sub}~{\mathsf{final}^?}~{x^\ast}~{\mathit{comptype}})` is :ref:`valid <valid-val>` with :math:`({\mathsf{ok}}{(x_0)})` if:
+
+
+   * The length of :math:`{x^\ast}` is less than or equal to :math:`1`.
+
+   * For all :math:`x` in :math:`{x^\ast}`:
+
+      * The index :math:`x` is less than :math:`x_0`.
+
+   * The length of :math:`{{\mathit{comptype}'}^\ast}` is equal to the length of :math:`{x^\ast}`.
+
+   * The length of :math:`{{\mathit{comptype}'}^\ast}` is equal to the length of :math:`{{{x'}^\ast}^\ast}`.
+
+   * For all :math:`x` in :math:`{x^\ast}`:
+
+      * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
+
+   * For all :math:`{\mathit{comptype}'}` in :math:`{{\mathit{comptype}'}^\ast}`, and corresponding :math:`x` in :math:`{x^\ast}`, and corresponding :math:`{\mathit{x'*}}` in :math:`{{\mathit{x'*}}^\ast}`:
+
+      * The sub type :math:`{\mathrm{unroll}}(C{.}\mathsf{types}{}[x])` is of the form :math:`(\mathsf{sub}~{{x'}^\ast}~{\mathit{comptype}'})`.
+
+   * The composite type :math:`{\mathit{comptype}}` is :ref:`valid <valid-val>`.
+
+   * For all :math:`{\mathit{comptype}'}` in :math:`{{\mathit{comptype}'}^\ast}`:
+
+      * The composite type :math:`{\mathit{comptype}}` :ref:`matches <match>` the composite type :math:`{\mathit{comptype}'}`.
+
+
+
+
+The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}'}^\ast})` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x)})` if:
+
+
+   * Either:
+
+      * The sub type sequence :math:`{{\mathit{subtype}'}^\ast}` is empty.
+
+   * Or:
+
+      * The sub type sequence :math:`{{\mathit{subtype}'}^\ast}` is of the form :math:`{\mathit{subtype}}_1~{{\mathit{subtype}}^\ast}`.
+
+      * The sub type :math:`{\mathit{subtype}}_1` is :ref:`valid <valid-val>` with :math:`({\mathsf{ok}}{(x)})`.
+
+      * The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x + 1)})`.
+
+
+
+
+The recursive type :math:`(\mathsf{rec})` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x)})`.
+
+
+
+
+The recursive type :math:`(\mathsf{rec}~{\mathit{subtype}}_1~{{\mathit{subtype}}^\ast})` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x)})` if:
+
+
+   * The sub type :math:`{\mathit{subtype}}_1` is :ref:`valid <valid-val>` with :math:`({\mathsf{ok}}{(x)})`.
+
+   * The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x + 1)})`.
+
+
+
+
+The sub type :math:`(\mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~{\mathit{compttype}})` is :ref:`valid <valid-val>` with :math:`({\mathsf{ok}}{(x, i)})` if:
+
+
+   * The length of :math:`{{\mathit{typeuse}}^\ast}` is less than or equal to :math:`1`.
+
+   * For all :math:`{\mathit{typeuse}}` in :math:`{{\mathit{typeuse}}^\ast}`:
+
+      * :math:`{\mathit{typeuse}} \prec x, i` is of the form true.
+
+   * The length of :math:`{{\mathit{comptype}'}^\ast}` is equal to the length of :math:`{{\mathit{typeuse}}^\ast}`.
+
+   * The length of :math:`{{\mathit{comptype}'}^\ast}` is equal to the length of :math:`{{{\mathit{typeuse}'}^\ast}^\ast}`.
+
+   * For all :math:`{\mathit{comptype}'}` in :math:`{{\mathit{comptype}'}^\ast}`, and corresponding :math:`{\mathit{typeuse}}` in :math:`{{\mathit{typeuse}}^\ast}`, and corresponding :math:`{\mathit{typeuse'*}}` in :math:`{{\mathit{typeuse'*}}^\ast}`:
+
+      * The sub type :math:`{{\mathrm{unroll}}}_{C}({\mathit{typeuse}})` is of the form :math:`(\mathsf{sub}~{{\mathit{typeuse}'}^\ast}~{\mathit{comptype}'})`.
+
+   * The composite type :math:`{\mathit{comptype}}` is :ref:`valid <valid-val>`.
+
+   * For all :math:`{\mathit{comptype}'}` in :math:`{{\mathit{comptype}'}^\ast}`:
+
+      * The composite type :math:`{\mathit{comptype}}` :ref:`matches <match>` the composite type :math:`{\mathit{comptype}'}`.
+
+
+
+
+The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}'}^\ast})` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x, i)})` if:
+
+
+   * Either:
+
+      * The sub type sequence :math:`{{\mathit{subtype}'}^\ast}` is empty.
+
+   * Or:
+
+      * The sub type sequence :math:`{{\mathit{subtype}'}^\ast}` is of the form :math:`{\mathit{subtype}}_1~{{\mathit{subtype}}^\ast}`.
+
+      * The sub type :math:`{\mathit{subtype}}_1` is :ref:`valid <valid-val>` with :math:`({\mathsf{ok}}{(x, i)})`.
+
+      * The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x + 1, i + 1)})`.
+
+
+
+
+The recursive type :math:`(\mathsf{rec})` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x, i)})`.
+
+
+
+
+The recursive type :math:`(\mathsf{rec}~{\mathit{subtype}}_1~{{\mathit{subtype}}^\ast})` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x, i)})` if:
+
+
+   * The sub type :math:`{\mathit{subtype}}_1` is :ref:`valid <valid-val>` with :math:`({\mathsf{ok}}{(x, i)})`.
+
+   * The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x + 1, i + 1)})`.
+
+
+
+
+The defined type :math:`({\mathit{rectype}} {.} i)` is :ref:`valid <valid-val>` if:
+
+
+   * The recursive type :math:`{\mathit{rectype}}` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x)})`.
+
+   * The recursive type :math:`{\mathit{rectype}}` is of the form :math:`(\mathsf{rec}~{{\mathit{subtype}}^{n}})`.
+
+   * :math:`i` is less than :math:`n`.
+
+
+
+
+The composite type :math:`{\mathit{comptype}}` :ref:`matches <match>` the composite type :math:`{\mathit{comptype}'}` if:
+
+
+   * Either:
+
+      * The composite type :math:`{\mathit{comptype}}` is of the form :math:`(\mathsf{struct}~{{\mathit{yt}}_1^\ast}~{\mathit{yt}'}_1)`.
+
+      * The composite type :math:`{\mathit{comptype}'}` is of the form :math:`(\mathsf{struct}~{{\mathit{yt}}_2^\ast})`.
+
+      * The length of :math:`{{\mathit{yt}}_1^\ast}` is equal to the length of :math:`{{\mathit{yt}}_2^\ast}`.
+
+      * For all :math:`{\mathit{yt}}_1` in :math:`{{\mathit{yt}}_1^\ast}`, and corresponding :math:`{\mathit{yt}}_2` in :math:`{{\mathit{yt}}_2^\ast}`:
+
+         * The field type :math:`{\mathit{yt}}_1` :ref:`matches <match>` the field type :math:`{\mathit{yt}}_2`.
+
+   * Or:
+
+      * The composite type :math:`{\mathit{comptype}}` is of the form :math:`(\mathsf{array}~{\mathit{yt}}_1)`.
+
+      * The composite type :math:`{\mathit{comptype}'}` is of the form :math:`(\mathsf{array}~{\mathit{yt}}_2)`.
+
+      * The field type :math:`{\mathit{yt}}_1` :ref:`matches <match>` the field type :math:`{\mathit{yt}}_2`.
+   * Or:
+
+      * The composite type :math:`{\mathit{comptype}}` is of the form :math:`(\mathsf{func}~{\mathit{ft}}_1)`.
+
+      * The composite type :math:`{\mathit{comptype}'}` is of the form :math:`(\mathsf{func}~{\mathit{ft}}_2)`.
+
+      * The function type :math:`{\mathit{ft}}_1` :ref:`matches <match>` the function type :math:`{\mathit{ft}}_2`.
+
+
+
+
+The composite type :math:`(\mathsf{struct}~{{\mathit{yt}}_1^\ast}~{\mathit{yt}'}_1)` :ref:`matches <match>` the composite type :math:`(\mathsf{struct}~{{\mathit{yt}}_2^\ast})` if:
+
+
+   * The length of :math:`{{\mathit{yt}}_1^\ast}` is equal to the length of :math:`{{\mathit{yt}}_2^\ast}`.
+
+   * For all :math:`{\mathit{yt}}_1` in :math:`{{\mathit{yt}}_1^\ast}`, and corresponding :math:`{\mathit{yt}}_2` in :math:`{{\mathit{yt}}_2^\ast}`:
+
+      * The field type :math:`{\mathit{yt}}_1` :ref:`matches <match>` the field type :math:`{\mathit{yt}}_2`.
+
+
+
+
+The composite type :math:`(\mathsf{array}~{\mathit{yt}}_1)` :ref:`matches <match>` the composite type :math:`(\mathsf{array}~{\mathit{yt}}_2)` if:
+
+
+   * The field type :math:`{\mathit{yt}}_1` :ref:`matches <match>` the field type :math:`{\mathit{yt}}_2`.
+
+
+
+
+The composite type :math:`(\mathsf{func}~{\mathit{ft}}_1)` :ref:`matches <match>` the composite type :math:`(\mathsf{func}~{\mathit{ft}}_2)` if:
+
+
+   * The function type :math:`{\mathit{ft}}_1` :ref:`matches <match>` the function type :math:`{\mathit{ft}}_2`.
 
 
 
@@ -13166,11 +13381,6 @@ The reference type :math:`(\mathsf{ref}~{\mathsf{null}^?}~{\mathit{ht}}_1)` :ref
 
 
 
-The vector type :math:`{\mathit{vectype}}` :ref:`matches <match>` only itself.
-
-
-
-
 The value type :math:`{\mathit{valtype}'}` :ref:`matches <match>` the value type :math:`{\mathit{valtype}''}` if:
 
 
@@ -13230,6 +13440,18 @@ The value type :math:`{\mathit{reftype}}_1` :ref:`matches <match>` the value typ
 
 
 The value type :math:`\mathsf{bot}` :ref:`matches <match>` the value type :math:`{\mathit{valtype}}`.
+
+
+
+
+The result type :math:`{t_1^\ast}` :ref:`matches <match>` the result type :math:`{t_2^\ast}` if:
+
+
+   * The length of :math:`{t_1^\ast}` is equal to the length of :math:`{t_2^\ast}`.
+
+   * For all :math:`t_1` in :math:`{t_1^\ast}`, and corresponding :math:`t_2` in :math:`{t_2^\ast}`:
+
+      * The value type :math:`t_1` :ref:`matches <match>` the value type :math:`t_2`.
 
 
 
@@ -13312,18 +13534,6 @@ The field type :math:`(\mathsf{mut}~{\mathit{zt}}_1)` :ref:`matches <match>` the
 
 
 
-The result type :math:`{t_1^\ast}` :ref:`matches <match>` the result type :math:`{t_2^\ast}` if:
-
-
-   * The length of :math:`{t_1^\ast}` is equal to the length of :math:`{t_2^\ast}`.
-
-   * For all :math:`t_1` in :math:`{t_1^\ast}`, and corresponding :math:`t_2` in :math:`{t_2^\ast}`:
-
-      * The value type :math:`t_1` :ref:`matches <match>` the value type :math:`t_2`.
-
-
-
-
 The function type :math:`{t_{11}^\ast}~\rightarrow~{t_{12}^\ast}` :ref:`matches <match>` the function type :math:`{t_{21}^\ast}~\rightarrow~{t_{22}^\ast}` if:
 
 
@@ -13334,197 +13544,22 @@ The function type :math:`{t_{11}^\ast}~\rightarrow~{t_{12}^\ast}` :ref:`matches 
 
 
 
-The composite type :math:`{\mathit{comptype}}` :ref:`matches <match>` the composite type :math:`{\mathit{comptype}'}` if:
+The instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}` is :ref:`valid <valid-val>` if:
 
 
-   * Either:
+   * The result type :math:`{t_1^\ast}` is :ref:`valid <valid-val>`.
 
-      * The composite type :math:`{\mathit{comptype}}` is of the form :math:`(\mathsf{struct}~{{\mathit{yt}}_1^\ast}~{\mathit{yt}'}_1)`.
+   * The result type :math:`{t_2^\ast}` is :ref:`valid <valid-val>`.
 
-      * The composite type :math:`{\mathit{comptype}'}` is of the form :math:`(\mathsf{struct}~{{\mathit{yt}}_2^\ast})`.
-
-      * The length of :math:`{{\mathit{yt}}_1^\ast}` is equal to the length of :math:`{{\mathit{yt}}_2^\ast}`.
-
-      * For all :math:`{\mathit{yt}}_1` in :math:`{{\mathit{yt}}_1^\ast}`, and corresponding :math:`{\mathit{yt}}_2` in :math:`{{\mathit{yt}}_2^\ast}`:
-
-         * The field type :math:`{\mathit{yt}}_1` :ref:`matches <match>` the field type :math:`{\mathit{yt}}_2`.
-
-   * Or:
-
-      * The composite type :math:`{\mathit{comptype}}` is of the form :math:`(\mathsf{array}~{\mathit{yt}}_1)`.
-
-      * The composite type :math:`{\mathit{comptype}'}` is of the form :math:`(\mathsf{array}~{\mathit{yt}}_2)`.
-
-      * The field type :math:`{\mathit{yt}}_1` :ref:`matches <match>` the field type :math:`{\mathit{yt}}_2`.
-   * Or:
-
-      * The composite type :math:`{\mathit{comptype}}` is of the form :math:`(\mathsf{func}~{\mathit{ft}}_1)`.
-
-      * The composite type :math:`{\mathit{comptype}'}` is of the form :math:`(\mathsf{func}~{\mathit{ft}}_2)`.
-
-      * The function type :math:`{\mathit{ft}}_1` :ref:`matches <match>` the function type :math:`{\mathit{ft}}_2`.
-
-
-
-
-The composite type :math:`(\mathsf{struct}~{{\mathit{yt}}_1^\ast}~{\mathit{yt}'}_1)` :ref:`matches <match>` the composite type :math:`(\mathsf{struct}~{{\mathit{yt}}_2^\ast})` if:
-
-
-   * The length of :math:`{{\mathit{yt}}_1^\ast}` is equal to the length of :math:`{{\mathit{yt}}_2^\ast}`.
-
-   * For all :math:`{\mathit{yt}}_1` in :math:`{{\mathit{yt}}_1^\ast}`, and corresponding :math:`{\mathit{yt}}_2` in :math:`{{\mathit{yt}}_2^\ast}`:
-
-      * The field type :math:`{\mathit{yt}}_1` :ref:`matches <match>` the field type :math:`{\mathit{yt}}_2`.
-
-
-
-
-The composite type :math:`(\mathsf{array}~{\mathit{yt}}_1)` :ref:`matches <match>` the composite type :math:`(\mathsf{array}~{\mathit{yt}}_2)` if:
-
-
-   * The field type :math:`{\mathit{yt}}_1` :ref:`matches <match>` the field type :math:`{\mathit{yt}}_2`.
-
-
-
-
-The composite type :math:`(\mathsf{func}~{\mathit{ft}}_1)` :ref:`matches <match>` the composite type :math:`(\mathsf{func}~{\mathit{ft}}_2)` if:
-
-
-   * The function type :math:`{\mathit{ft}}_1` :ref:`matches <match>` the function type :math:`{\mathit{ft}}_2`.
-
-
-
-
-The sub type :math:`(\mathsf{sub}~{\mathsf{final}^?}~{x^\ast}~{\mathit{comptype}})` is :ref:`valid <valid-val>` with :math:`({\mathsf{ok}}{(x_0)})` if:
-
-
-   * The length of :math:`{x^\ast}` is less than or equal to :math:`1`.
+   * The length of :math:`{{{\mathit{lt}}}^\ast}` is equal to the length of :math:`{x^\ast}`.
 
    * For all :math:`x` in :math:`{x^\ast}`:
 
-      * The index :math:`x` is less than :math:`x_0`.
+      * The local type :math:`C{.}\mathsf{locals}{}[x]` exists.
 
-   * The length of :math:`{{\mathit{comptype}'}^\ast}` is equal to the length of :math:`{x^\ast}`.
+   * For all :math:`{{\mathit{lt}}}` in :math:`{{{\mathit{lt}}}^\ast}`, and corresponding :math:`x` in :math:`{x^\ast}`:
 
-   * The length of :math:`{{\mathit{comptype}'}^\ast}` is equal to the length of :math:`{{{x'}^\ast}^\ast}`.
-
-   * For all :math:`x` in :math:`{x^\ast}`:
-
-      * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
-
-   * For all :math:`{\mathit{comptype}'}` in :math:`{{\mathit{comptype}'}^\ast}`, and corresponding :math:`x` in :math:`{x^\ast}`, and corresponding :math:`{\mathit{x'*}}` in :math:`{{\mathit{x'*}}^\ast}`:
-
-      * The sub type :math:`{\mathrm{unroll}}(C{.}\mathsf{types}{}[x])` is of the form :math:`(\mathsf{sub}~{{x'}^\ast}~{\mathit{comptype}'})`.
-
-   * The composite type :math:`{\mathit{comptype}}` is :ref:`valid <valid-val>`.
-
-   * For all :math:`{\mathit{comptype}'}` in :math:`{{\mathit{comptype}'}^\ast}`:
-
-      * The composite type :math:`{\mathit{comptype}}` :ref:`matches <match>` the composite type :math:`{\mathit{comptype}'}`.
-
-
-
-
-The sub type :math:`(\mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~{\mathit{compttype}})` is :ref:`valid <valid-val>` with :math:`({\mathsf{ok}}{(x, i)})` if:
-
-
-   * The length of :math:`{{\mathit{typeuse}}^\ast}` is less than or equal to :math:`1`.
-
-   * For all :math:`{\mathit{typeuse}}` in :math:`{{\mathit{typeuse}}^\ast}`:
-
-      * :math:`{\mathit{typeuse}} \prec x, i` is of the form true.
-
-   * The length of :math:`{{\mathit{comptype}'}^\ast}` is equal to the length of :math:`{{\mathit{typeuse}}^\ast}`.
-
-   * The length of :math:`{{\mathit{comptype}'}^\ast}` is equal to the length of :math:`{{{\mathit{typeuse}'}^\ast}^\ast}`.
-
-   * For all :math:`{\mathit{comptype}'}` in :math:`{{\mathit{comptype}'}^\ast}`, and corresponding :math:`{\mathit{typeuse}}` in :math:`{{\mathit{typeuse}}^\ast}`, and corresponding :math:`{\mathit{typeuse'*}}` in :math:`{{\mathit{typeuse'*}}^\ast}`:
-
-      * The sub type :math:`{{\mathrm{unroll}}}_{C}({\mathit{typeuse}})` is of the form :math:`(\mathsf{sub}~{{\mathit{typeuse}'}^\ast}~{\mathit{comptype}'})`.
-
-   * The composite type :math:`{\mathit{comptype}}` is :ref:`valid <valid-val>`.
-
-   * For all :math:`{\mathit{comptype}'}` in :math:`{{\mathit{comptype}'}^\ast}`:
-
-      * The composite type :math:`{\mathit{comptype}}` :ref:`matches <match>` the composite type :math:`{\mathit{comptype}'}`.
-
-
-
-
-The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}'}^\ast})` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x, i)})` if:
-
-
-   * Either:
-
-      * The sub type sequence :math:`{{\mathit{subtype}'}^\ast}` is empty.
-
-   * Or:
-
-      * The sub type sequence :math:`{{\mathit{subtype}'}^\ast}` is of the form :math:`{\mathit{subtype}}_1~{{\mathit{subtype}}^\ast}`.
-
-      * The sub type :math:`{\mathit{subtype}}_1` is :ref:`valid <valid-val>` with :math:`({\mathsf{ok}}{(x, i)})`.
-
-      * The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x + 1, i + 1)})`.
-
-
-
-
-The recursive type :math:`(\mathsf{rec})` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x, i)})`.
-
-
-
-
-The recursive type :math:`(\mathsf{rec}~{\mathit{subtype}}_1~{{\mathit{subtype}}^\ast})` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x, i)})` if:
-
-
-   * The sub type :math:`{\mathit{subtype}}_1` is :ref:`valid <valid-val>` with :math:`({\mathsf{ok}}{(x, i)})`.
-
-   * The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x + 1, i + 1)})`.
-
-
-
-
-The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}'}^\ast})` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x)})` if:
-
-
-   * Either:
-
-      * The sub type sequence :math:`{{\mathit{subtype}'}^\ast}` is empty.
-
-   * Or:
-
-      * The sub type sequence :math:`{{\mathit{subtype}'}^\ast}` is of the form :math:`{\mathit{subtype}}_1~{{\mathit{subtype}}^\ast}`.
-
-      * The sub type :math:`{\mathit{subtype}}_1` is :ref:`valid <valid-val>` with :math:`({\mathsf{ok}}{(x)})`.
-
-      * The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x + 1)})`.
-
-
-
-
-The recursive type :math:`(\mathsf{rec})` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x)})`.
-
-
-
-
-The recursive type :math:`(\mathsf{rec}~{\mathit{subtype}}_1~{{\mathit{subtype}}^\ast})` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x)})` if:
-
-
-   * The sub type :math:`{\mathit{subtype}}_1` is :ref:`valid <valid-val>` with :math:`({\mathsf{ok}}{(x)})`.
-
-   * The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x + 1)})`.
-
-
-
-
-The defined type :math:`({\mathit{rectype}} {.} i)` is :ref:`valid <valid-val>` if:
-
-
-   * The recursive type :math:`{\mathit{rectype}}` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x)})`.
-
-   * The recursive type :math:`{\mathit{rectype}}` is of the form :math:`(\mathsf{rec}~{{\mathit{subtype}}^{n}})`.
-
-   * :math:`i` is less than :math:`n`.
+      * The local type :math:`C{.}\mathsf{locals}{}[x]` is of the form :math:`{{\mathit{lt}}}`.
 
 
 
@@ -13580,11 +13615,11 @@ The external type :math:`{\mathit{externtype}}` is :ref:`valid <valid-val>` if:
 
    * Either:
 
-      * The external type :math:`{\mathit{externtype}}` is of the form :math:`(\mathsf{func}~{\mathit{deftype}})`.
+      * The external type :math:`{\mathit{externtype}}` is of the form :math:`(\mathsf{func}~{\mathit{typeuse}})`.
 
-      * The defined type :math:`{\mathit{deftype}}` is :ref:`valid <valid-val>`.
+      * The type use :math:`{\mathit{typeuse}}` is :ref:`valid <valid-val>`.
 
-      * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`{\mathit{deftype}}` is the composite type :math:`(\mathsf{func}~{\mathit{functype}})`.
+      * The :ref:`expansion <aux-expand-typeuse>` of the context :math:`C` is the composite type :math:`(\mathsf{func}~{\mathit{functype}})`.
 
    * Or:
 
@@ -13603,19 +13638,21 @@ The external type :math:`{\mathit{externtype}}` is :ref:`valid <valid-val>` if:
       * The memory type :math:`{\mathit{memtype}}` is :ref:`valid <valid-val>`.
    * Or:
 
-      * The external type :math:`{\mathit{externtype}}` is of the form :math:`(\mathsf{tag}~{\mathit{tagtype}})`.
+      * The external type :math:`{\mathit{externtype}}` is of the form :math:`(\mathsf{tag}~{\mathit{typeuse}})`.
 
-      * The tag type :math:`{\mathit{tagtype}}` is :ref:`valid <valid-val>`.
+      * The type use :math:`{\mathit{typeuse}}` is :ref:`valid <valid-val>`.
 
-
-
-
-The external type :math:`(\mathsf{func}~{\mathit{deftype}})` is :ref:`valid <valid-val>` if:
+      * The :ref:`expansion <aux-expand-typeuse>` of the context :math:`C` is the composite type :math:`(\mathsf{func}~{\mathit{functype}})`.
 
 
-   * The defined type :math:`{\mathit{deftype}}` is :ref:`valid <valid-val>`.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`{\mathit{deftype}}` is the composite type :math:`(\mathsf{func}~{\mathit{functype}})`.
+
+The external type :math:`(\mathsf{func}~{\mathit{typeuse}})` is :ref:`valid <valid-val>` if:
+
+
+   * The type use :math:`{\mathit{typeuse}}` is :ref:`valid <valid-val>`.
+
+   * The :ref:`expansion <aux-expand-typeuse>` of the context :math:`C` is the composite type :math:`(\mathsf{func}~{\mathit{functype}})`.
 
 
 
@@ -13644,10 +13681,12 @@ The external type :math:`(\mathsf{mem}~{\mathit{memtype}})` is :ref:`valid <vali
 
 
 
-The external type :math:`(\mathsf{tag}~{\mathit{tagtype}})` is :ref:`valid <valid-val>` if:
+The external type :math:`(\mathsf{tag}~{\mathit{typeuse}})` is :ref:`valid <valid-val>` if:
 
 
-   * The tag type :math:`{\mathit{tagtype}}` is :ref:`valid <valid-val>`.
+   * The type use :math:`{\mathit{typeuse}}` is :ref:`valid <valid-val>`.
+
+   * The :ref:`expansion <aux-expand-typeuse>` of the context :math:`C` is the composite type :math:`(\mathsf{func}~{\mathit{functype}})`.
 
 
 
@@ -24621,37 +24660,39 @@ watsup 0.4 generator
 == Translating to AL...
 == Prose Generation...
 Untranslated relation Expand: `%~~%`(deftype, comptype)
+Untranslated relation Expand_use: `%~~_%%`(typeuse, context, comptype)
 Numtype_ok
 - the number type numtype is always valid.
 
 Vectype_ok
 - the vector type vectype is always valid.
 
+Packtype_ok
+- the packed type packtype is always valid.
+
+Packtype_sub
+- packtype matches only itself.
+
+Numtype_sub
+- numtype matches only itself.
+
+Vectype_sub
+- vectype matches only itself.
+
 Heaptype_ok
 - the heap type heaptype is valid if:
   - Either:
     - heaptype is absheaptype.
   - Or:
-    - heaptype is (_IDX typeidx).
-    - the defined type C.TYPES[typeidx] exists.
-    - C.TYPES[typeidx] is dt.
-  - Or:
-    - heaptype is (REC i).
-    - the sub type C.RECS[i] exists.
-    - C.RECS[i] is st.
+    - heaptype is typeuse.
+    - the type use typeuse is valid.
 
 Heaptype_ok/abs
 - the heap type absheaptype is always valid.
 
-Heaptype_ok/typeidx
-- the heap type (_IDX typeidx) is valid if:
-  - the defined type C.TYPES[typeidx] exists.
-  - C.TYPES[typeidx] is dt.
-
-Heaptype_ok/rec
-- the heap type (REC i) is valid if:
-  - the sub type C.RECS[i] exists.
-  - C.RECS[i] is st.
+Heaptype_ok/typeuse
+- the heap type typeuse is valid if:
+  - typeuse is valid.
 
 Reftype_ok
 - the reference type (REF NULL? heaptype) is valid if:
@@ -24686,23 +24727,42 @@ Valtype_ok/ref
 Valtype_ok/bot
 - the value type BOT is always valid.
 
+Typeuse_ok
+- the type use typeuse is valid if:
+  - Either:
+    - typeuse is (_IDX typeidx).
+    - the defined type C.TYPES[typeidx] exists.
+    - C.TYPES[typeidx] is dt.
+  - Or:
+    - typeuse is deftype.
+    - the defined type deftype is valid.
+  - Or:
+    - typeuse is (REC i).
+    - the sub type C.RECS[i] exists.
+    - C.RECS[i] is st.
+
+Typeuse_ok/typeidx
+- the type use (_IDX typeidx) is valid if:
+  - the defined type C.TYPES[typeidx] exists.
+  - C.TYPES[typeidx] is dt.
+
+Typeuse_ok/deftype
+- the type use deftype is valid if:
+  - deftype is valid.
+
+Typeuse_ok/rec
+- the type use (REC i) is valid if:
+  - the sub type C.RECS[i] exists.
+  - C.RECS[i] is st.
+
 Resulttype_ok
 - the result type t* is valid if:
   - For all t in t*:
     - the value type t is valid.
 
-Instrtype_ok
-- the instruction type t_1* ->_ x* t_2* is valid if:
-  - the result type t_1* is valid.
-  - the result type t_2* is valid.
-  - |lct*| is |x*|.
-  - For all x in x*:
-    - the local type C.LOCALS[x] exists.
-  - For all lct in lct*, and corresponding x in x*:
-    - C.LOCALS[x] is lct.
-
-Packtype_ok
-- the packed type packtype is always valid.
+Fieldtype_ok
+- the field type (MUT? storagetype) is valid if:
+  - the storage type storagetype is valid.
 
 Storagetype_ok
 - the storage type storagetype is valid if:
@@ -24720,15 +24780,6 @@ Storagetype_ok/val
 Storagetype_ok/pack
 - the storage type packtype is valid if:
   - packtype is valid.
-
-Fieldtype_ok
-- the field type (MUT? storagetype) is valid if:
-  - the storage type storagetype is valid.
-
-Functype_ok
-- the function type t_1* -> t_2* is valid if:
-  - the result type t_1* is valid.
-  - the result type t_2* is valid.
 
 Comptype_ok
 - the composite type comptype is valid if:
@@ -24756,11 +24807,109 @@ Comptype_ok/func
 - the composite type (FUNC functype) is valid if:
   - the function type functype is valid.
 
-Packtype_sub
-- the packed type packtype matches only itself.
+Functype_ok
+- the function type t_1* -> t_2* is valid if:
+  - the result type t_1* is valid.
+  - the result type t_2* is valid.
 
-Numtype_sub
-- the number type numtype matches only itself.
+Subtype_ok
+- the sub type (SUB FINAL? (_IDX x)* comptype) is valid with (OK x_0) if:
+  - |x*| is less than or equal to 1.
+  - For all x in x*:
+    - the index x is less than x_0.
+  - |comptype'*| is |x*|.
+  - |comptype'*| is |x'**|.
+  - For all x in x*:
+    - the defined type C.TYPES[x] exists.
+  - For all comptype' in comptype'*, and corresponding x in x*, and corresponding x'* in x'**:
+    - the sub type $unrolldt(C.TYPES[x]) is (SUB ?() (_IDX x')* comptype').
+  - the composite type comptype is valid.
+  - For all comptype' in comptype'*:
+    - comptype matches the composite type comptype'.
+
+Rectype_ok
+- the recursive type (REC subtype'*) is valid for (OK x) if:
+  - Either:
+    - the sub type sequence subtype'* is [].
+  - Or:
+    - subtype'* is [subtype_1] :: subtype*.
+    - the sub type subtype_1 is valid with (OK x).
+    - the recursive type (REC subtype*) is valid for (OK (x + 1)).
+
+Rectype_ok/empty
+- the recursive type (REC []) is valid for (OK x).
+
+Rectype_ok/cons
+- the recursive type (REC [subtype_1] :: subtype*) is valid for (OK x) if:
+  - the sub type subtype_1 is valid with (OK x).
+  - the recursive type (REC subtype*) is valid for (OK (x + 1)).
+
+Subtype_ok2
+- the sub type (SUB FINAL? typeuse* compttype) is valid with (OK x i) if:
+  - |typeuse*| is less than or equal to 1.
+  - For all typeuse in typeuse*:
+    - $before(typeuse, x, i) is true.
+  - |comptype'*| is |typeuse*|.
+  - |comptype'*| is |typeuse'**|.
+  - For all comptype' in comptype'*, and corresponding typeuse in typeuse*, and corresponding typeuse'* in typeuse'**:
+    - the sub type $unrollht(C, typeuse) is (SUB ?() typeuse'* comptype').
+  - the composite type comptype is valid.
+  - For all comptype' in comptype'*:
+    - comptype matches the composite type comptype'.
+
+Rectype_ok2
+- the recursive type (REC subtype'*) is valid for (OK x i) if:
+  - Either:
+    - the sub type sequence subtype'* is [].
+  - Or:
+    - subtype'* is [subtype_1] :: subtype*.
+    - the sub type subtype_1 is valid with (OK x i).
+    - the recursive type (REC subtype*) is valid for (OK (x + 1) (i + 1)).
+
+Rectype_ok2/empty
+- the recursive type (REC []) is valid for (OK x i).
+
+Rectype_ok2/cons
+- the recursive type (REC [subtype_1] :: subtype*) is valid for (OK x i) if:
+  - the sub type subtype_1 is valid with (OK x i).
+  - the recursive type (REC subtype*) is valid for (OK (x + 1) (i + 1)).
+
+Deftype_ok
+- the defined type (DEF rectype i) is valid if:
+  - the recursive type rectype is valid for (OK x).
+  - rectype is (REC subtype^n).
+  - i is less than n.
+
+Comptype_sub
+- the composite type comptype matches the composite type comptype' if:
+  - Either:
+    - comptype is (STRUCT yt_1* :: [yt'_1]).
+    - comptype' is (STRUCT yt_2*).
+    - |yt_1*| is |yt_2*|.
+    - For all yt_1 in yt_1*, and corresponding yt_2 in yt_2*:
+      - the field type yt_1 matches the field type yt_2.
+  - Or:
+    - comptype is (ARRAY yt_1).
+    - comptype' is (ARRAY yt_2).
+    - yt_1 matches yt_2.
+  - Or:
+    - comptype is (FUNC ft_1).
+    - comptype' is (FUNC ft_2).
+    - the function type ft_1 matches the function type ft_2.
+
+Comptype_sub/struct
+- the composite type (STRUCT yt_1* :: [yt'_1]) matches the composite type (STRUCT yt_2*) if:
+  - |yt_1*| is |yt_2*|.
+  - For all yt_1 in yt_1*, and corresponding yt_2 in yt_2*:
+    - the field type yt_1 matches the field type yt_2.
+
+Comptype_sub/array
+- the composite type (ARRAY yt_1) matches the composite type (ARRAY yt_2) if:
+  - the field type yt_1 matches the field type yt_2.
+
+Comptype_sub/func
+- the composite type (FUNC ft_1) matches the composite type (FUNC ft_2) if:
+  - the function type ft_1 matches the function type ft_2.
 
 Deftype_sub
 - the defined type deftype_1 matches the defined type deftype_2 if:
@@ -24938,9 +25087,6 @@ Reftype_sub/null
 - the reference type (REF NULL? ht_1) matches the reference type (REF ?(NULL) ht_2) if:
   - the heap type ht_1 matches the heap type ht_2.
 
-Vectype_sub
-- the vector type vectype matches only itself.
-
 Valtype_sub
 - the value type valtype' matches the value type valtype'' if:
   - Either:
@@ -24973,6 +25119,12 @@ Valtype_sub/ref
 
 Valtype_sub/bot
 - the value type BOT matches the value type valtype.
+
+Resulttype_sub
+- the result type t_1* matches the result type t_2* if:
+  - |t_1*| is |t_2*|.
+  - For all t_1 in t_1*, and corresponding t_2 in t_2*:
+    - the value type t_1 matches the value type t_2.
 
 Storagetype_sub
 - the storage type storagetype matches the storage type storagetype' if:
@@ -25013,115 +25165,20 @@ Fieldtype_sub/var
   - the storage type zt_1 matches the storage type zt_2.
   - zt_2 matches zt_1.
 
-Resulttype_sub
-- the result type t_1* matches the result type t_2* if:
-  - |t_1*| is |t_2*|.
-  - For all t_1 in t_1*, and corresponding t_2 in t_2*:
-    - the value type t_1 matches the value type t_2.
-
 Functype_sub
 - the function type t_11* -> t_12* matches the function type t_21* -> t_22* if:
   - the result type t_21* matches the result type t_11*.
   - the result type t_12* matches the result type t_22*.
 
-Comptype_sub
-- the composite type comptype matches the composite type comptype' if:
-  - Either:
-    - comptype is (STRUCT yt_1* :: [yt'_1]).
-    - comptype' is (STRUCT yt_2*).
-    - |yt_1*| is |yt_2*|.
-    - For all yt_1 in yt_1*, and corresponding yt_2 in yt_2*:
-      - the field type yt_1 matches the field type yt_2.
-  - Or:
-    - comptype is (ARRAY yt_1).
-    - comptype' is (ARRAY yt_2).
-    - yt_1 matches yt_2.
-  - Or:
-    - comptype is (FUNC ft_1).
-    - comptype' is (FUNC ft_2).
-    - the function type ft_1 matches the function type ft_2.
-
-Comptype_sub/struct
-- the composite type (STRUCT yt_1* :: [yt'_1]) matches the composite type (STRUCT yt_2*) if:
-  - |yt_1*| is |yt_2*|.
-  - For all yt_1 in yt_1*, and corresponding yt_2 in yt_2*:
-    - the field type yt_1 matches the field type yt_2.
-
-Comptype_sub/array
-- the composite type (ARRAY yt_1) matches the composite type (ARRAY yt_2) if:
-  - the field type yt_1 matches the field type yt_2.
-
-Comptype_sub/func
-- the composite type (FUNC ft_1) matches the composite type (FUNC ft_2) if:
-  - the function type ft_1 matches the function type ft_2.
-
-Subtype_ok
-- the sub type (SUB FINAL? (_IDX x)* comptype) is valid with (OK x_0) if:
-  - |x*| is less than or equal to 1.
+Instrtype_ok
+- the instruction type t_1* ->_ x* t_2* is valid if:
+  - the result type t_1* is valid.
+  - the result type t_2* is valid.
+  - |lct*| is |x*|.
   - For all x in x*:
-    - the index x is less than x_0.
-  - |comptype'*| is |x*|.
-  - |comptype'*| is |x'**|.
-  - For all x in x*:
-    - the defined type C.TYPES[x] exists.
-  - For all comptype' in comptype'*, and corresponding x in x*, and corresponding x'* in x'**:
-    - the sub type $unrolldt(C.TYPES[x]) is (SUB ?() (_IDX x')* comptype').
-  - the composite type comptype is valid.
-  - For all comptype' in comptype'*:
-    - comptype matches the composite type comptype'.
-
-Subtype_ok2
-- the sub type (SUB FINAL? typeuse* compttype) is valid with (OK x i) if:
-  - |typeuse*| is less than or equal to 1.
-  - For all typeuse in typeuse*:
-    - $before(typeuse, x, i) is true.
-  - |comptype'*| is |typeuse*|.
-  - |comptype'*| is |typeuse'**|.
-  - For all comptype' in comptype'*, and corresponding typeuse in typeuse*, and corresponding typeuse'* in typeuse'**:
-    - the sub type $unrollht(C, typeuse) is (SUB ?() typeuse'* comptype').
-  - the composite type comptype is valid.
-  - For all comptype' in comptype'*:
-    - comptype matches the composite type comptype'.
-
-Rectype_ok2
-- the recursive type (REC subtype'*) is valid for (OK x i) if:
-  - Either:
-    - the sub type sequence subtype'* is [].
-  - Or:
-    - subtype'* is [subtype_1] :: subtype*.
-    - the sub type subtype_1 is valid with (OK x i).
-    - the recursive type (REC subtype*) is valid for (OK (x + 1) (i + 1)).
-
-Rectype_ok2/empty
-- the recursive type (REC []) is valid for (OK x i).
-
-Rectype_ok2/cons
-- the recursive type (REC [subtype_1] :: subtype*) is valid for (OK x i) if:
-  - the sub type subtype_1 is valid with (OK x i).
-  - the recursive type (REC subtype*) is valid for (OK (x + 1) (i + 1)).
-
-Rectype_ok
-- the recursive type (REC subtype'*) is valid for (OK x) if:
-  - Either:
-    - the sub type sequence subtype'* is [].
-  - Or:
-    - subtype'* is [subtype_1] :: subtype*.
-    - the sub type subtype_1 is valid with (OK x).
-    - the recursive type (REC subtype*) is valid for (OK (x + 1)).
-
-Rectype_ok/empty
-- the recursive type (REC []) is valid for (OK x).
-
-Rectype_ok/cons
-- the recursive type (REC [subtype_1] :: subtype*) is valid for (OK x) if:
-  - the sub type subtype_1 is valid with (OK x).
-  - the recursive type (REC subtype*) is valid for (OK (x + 1)).
-
-Deftype_ok
-- the defined type (DEF rectype i) is valid if:
-  - the recursive type rectype is valid for (OK x).
-  - rectype is (REC subtype^n).
-  - i is less than n.
+    - the local type C.LOCALS[x] exists.
+  - For all lct in lct*, and corresponding x in x*:
+    - C.LOCALS[x] is lct.
 
 Limits_ok
 - the limits range ([ n .. m ]) is valid within k if:
@@ -25149,9 +25206,9 @@ Tagtype_ok
 Externtype_ok
 - the external type externtype is valid if:
   - Either:
-    - externtype is (FUNC deftype).
-    - the defined type deftype is valid.
-    - The :ref:`expansion <aux-expand-deftype>` of deftype is the composite type (FUNC functype).
+    - externtype is (FUNC typeuse).
+    - the type use typeuse is valid.
+    - The :ref:`expansion <aux-expand-typeuse>` of the context C is the composite type (FUNC functype).
   - Or:
     - externtype is (GLOBAL globaltype).
     - the global type globaltype is valid.
@@ -25162,13 +25219,14 @@ Externtype_ok
     - externtype is (MEM memtype).
     - the memory type memtype is valid.
   - Or:
-    - externtype is (TAG tagtype).
-    - the tag type tagtype is valid.
+    - externtype is (TAG typeuse).
+    - typeuse is valid.
+    - The :ref:`expansion <aux-expand-typeuse>` of C is (FUNC functype).
 
 Externtype_ok/func
-- the external type (FUNC deftype) is valid if:
-  - the defined type deftype is valid.
-  - The :ref:`expansion <aux-expand-deftype>` of deftype is the composite type (FUNC functype).
+- the external type (FUNC typeuse) is valid if:
+  - the type use typeuse is valid.
+  - The :ref:`expansion <aux-expand-typeuse>` of the context C is the composite type (FUNC functype).
 
 Externtype_ok/global
 - the external type (GLOBAL globaltype) is valid if:
@@ -25183,8 +25241,9 @@ Externtype_ok/mem
   - the memory type memtype is valid.
 
 Externtype_ok/tag
-- the external type (TAG tagtype) is valid if:
-  - the tag type tagtype is valid.
+- the external type (TAG typeuse) is valid if:
+  - the type use typeuse is valid.
+  - The :ref:`expansion <aux-expand-typeuse>` of the context C is the composite type (FUNC functype).
 
 Instrtype_sub
 - the instruction type t_11* ->_ x_1* t_12* matches the instruction type t_21* ->_ x_2* t_22* if:

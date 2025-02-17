@@ -203,8 +203,6 @@ def $JN(64) = I64
 
 ;; Size
 
-;; def |I n| = |F n| = |V n| = n        ;; TODO(2, rossberg): show this?
-
 def $size(numtype) : nat       hint(show |%|)
 def $vsize(vectype) : nat      hint(show |%|)
 def $psize(packtype) : nat     hint(show |%|)
@@ -290,7 +288,7 @@ def $diffrt((REF nul1 ht_1), (REF ht_2)) = (REF nul1 ht_1)
 
 ;; Sort projection
 
-;; TODO(2, rossberg): add built-in notation for comprehensions?
+;; TODO(3, rossberg): add built-in notation for comprehensions?
 
 def $funcsxt(externtype*) : deftype*       hint(show $funcs(%))   hint(macro "funcsxt")
 def $globalsxt(externtype*) : globaltype*  hint(show $globals(%)) hint(macro "globalsxt")
@@ -436,9 +434,6 @@ def $rolldt(typeidx, rectype) : deftype* hint(show $roll_(%)*#((%))) hint(macro 
 def $unrolldt(deftype) : subtype         hint(show $unroll(%))     hint(macro "unrolldt")
 def $expanddt(deftype) : comptype        hint(show $expand(%))     hint(macro "expanddt")
 
-;; TODO(3, rossberg): in general, multi-dimensional use of dimensioned vars is ambiguous;
-;; for example, x** with dimension x* could be x1 x2 x1 x2 or x1 x1 x2 x2.
-;; For now, we avoid to reuse the dimension var in exact same form
 def $rollrt(x, rectype) = REC ($subst_subtype(subtype, ((_IDX $(x + i)))^(i<n), (REC i)^(i<n)))^n
   -- if rectype = REC subtype^n
 def $unrollrt(rectype) = REC ($subst_subtype(subtype, (REC i)^(i<n), (DEF rectype i)^(i<n)))^n
@@ -447,12 +442,7 @@ def $unrollrt(rectype) = REC ($subst_subtype(subtype, (REC i)^(i<n), (DEF rectyp
 def $rolldt(x, rectype) = (DEF (REC subtype^n) i)^(i<n)  -- if $rollrt(x, rectype) = REC subtype^n
 def $unrolldt(DEF rectype i) = subtype*[i]               -- if $unrollrt(rectype) = REC subtype*
 
-def $expanddt(deftype) = comptype              -- if $unrolldt(deftype) = SUB fin typeuse* comptype
-
-
-relation Expand: deftype ~~ comptype hint(macro "%expanddt") hint(tabular)
-  hint(prose "The :ref:`expansion <aux-expand-deftype>` of %1 is %2")  ;; TODO(3, ?): avoid hardcoding reST
-rule Expand: deftype ~~ comptype               -- if $unrolldt(deftype) = SUB fin typeuse* comptype
+def $expanddt(deftype) = comptype                        -- if $unrolldt(deftype) = SUB fin typeuse* comptype
 
 
 ;; Free indices

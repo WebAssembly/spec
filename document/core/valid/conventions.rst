@@ -130,6 +130,7 @@ Conventions
 .. _aux-roll-deftype:
 .. _aux-unroll-deftype:
 .. _aux-expand-deftype:
+.. _aux-expand-typeuse:
 
 Rolling and Unrolling
 ~~~~~~~~~~~~~~~~~~~~~
@@ -153,11 +154,11 @@ These operations are extended to :ref:`defined types <syntax-deftype>` and defin
 
 $${definition: rollrt unrollrt rolldt unrolldt}
 
-In addition, the following auxiliary relation denotes the *expansion* of a :ref:`defined type <syntax-deftype>`:
+In addition, the following auxiliary relation denotes the *expansion* of a :ref:`defined type <syntax-deftype>` or :ref:`type use <syntax-typeuse>`:
 
-$${rule: Expand}
+$${rule: Expand Expand_use/*}
 
-$${relation-ignore: Expand}
+$${relation-ignore: Expand Expand_use}
 $${definition-ignore: expanddt}
 
 

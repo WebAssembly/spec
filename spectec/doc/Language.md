@@ -737,6 +737,17 @@ l = {A x, B y, C z}** /\ (x < 100)** /\ z <- y*
 ```
 is inferred with dimensions `x**`, `y*`, and scalar `z` and `l`.
 
+*Note:* Multi-dimensional use of dimensioned vars is ambiguous
+when the iterations contain no additional context,
+because it could be interpreted as both row-major or column-major.
+For example, the expression `y**`,
+when `y` has dimension `y*`,
+could denote either `y1 y2... y1 y2...` or `y1 y1... y2 y2...`.
+Both forms can be disambiguated by naming at least one of the dimensions:
+if the dimension of `y` is `y^n`,
+then `(y^n)*` would describe the former
+and `(y*)^n` the latter sequence.
+
 
 ##### Type Checking and Inference
 
@@ -1225,11 +1236,12 @@ atomop ::=
   "in" | ":" | ";" | "\" | <:"
   "<<" | ">>"
   "|-" | "-|"
-  ":=" | "~~"
+  ":=" | "~~" | "~~_"
   "->" | "~>" | "~>*" | "=>"
   "`." | ".." | "..."
   "`?" | "`+" | "`*"
   "(/\)" | "(\/)" | "(+)" | "(*)" | "(++)"
+  ":_" | "=_" | "==_" | "->_" | "=>_" | "~>_" | "~>*_" | "|-_" | "-|_"
 ```
 
 

@@ -53,9 +53,13 @@ SpecTec interprets underscores as subscripting in a few places:
   a *trailing* underscore causes the consecutive expression in a sequence to be type-set as a subscript
   (e.g., `LABEL_ n`).
 
-* In addition, certain infix operator atoms (currently, `->` and `=>`) can be suffixed with an underscore,
+* In addition, certain [infix operator atoms](Language.md#identifiers-and-atoms) can be suffixed with an underscore,
   which causes the consecutive expression to their right to be set as a subscript
   (e.g., `x ->_ y z`).
+
+  The outermost parentheses around the subscripted expression will be removed.
+  Add an extra layer of parentheses to force them to appear
+  (e.g., `x ->_((a, b)) z` to produce `x \to_{(a, b)} z`.
 
 * In a function identifier,
   trailing underscores cause the leading arguments to be set as a subscript,
@@ -70,7 +74,7 @@ SpecTec interprets underscores as subscripting in a few places:
   The outermost parentheses around the subscripted argument will be removed
   (e.g., the ones enclosing the tuple).
   Add an extra layer of parentheses to force them to appear
-  (e.g., `$f_((x + y))` to produce `f_{(x + y)}`.
+  (e.g., `$f_((x + y))` to produce `f_{(x + y)}`).
 
   If there are further arguments,
   they are type-set as an argument list as usual.

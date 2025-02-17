@@ -10,6 +10,7 @@ $ (../src/exe-watsup/main.exe ../spec/wasm-3.0/*.watsup -l --splice-latex -p spe
 == Translating to AL...
 == Prose Generation...
 Untranslated relation Expand: `%~~%`(deftype, comptype)
+Untranslated relation Expand_use: `%~~_%%`(typeuse, context, comptype)
 == Splicing...
 \documentclass[a4paper]{scrartcl}
 
@@ -713,6 +714,8 @@ warning: rule `Elemmode_ok/passive` was never spliced
 warning: rule `Elemmode_ok/declare` was never spliced
 warning: rule `Eval_expr` was never spliced
 warning: rule `Expand` was never spliced
+warning: rule `Expand_use/deftype` was never spliced
+warning: rule `Expand_use/typeidx` was never spliced
 warning: rule `Export_ok` was never spliced
 warning: rule `Expr_const` was never spliced
 warning: rule `Expr_ok` was never spliced
@@ -751,8 +754,7 @@ warning: rule `Globaltype_ok` was never spliced
 warning: rule `Globaltype_sub/const` was never spliced
 warning: rule `Globaltype_sub/var` was never spliced
 warning: rule `Heaptype_ok/abs` was never spliced
-warning: rule `Heaptype_ok/typeidx` was never spliced
-warning: rule `Heaptype_ok/rec` was never spliced
+warning: rule `Heaptype_ok/typeuse` was never spliced
 warning: rule `Heaptype_sub/refl` was never spliced
 warning: rule `Heaptype_sub/trans` was never spliced
 warning: rule `Heaptype_sub/eq-any` was never spliced
@@ -1161,6 +1163,9 @@ warning: rule `Tagtype_sub` was never spliced
 warning: rule `Type_ok` was never spliced
 warning: rule `Types_ok/empty` was never spliced
 warning: rule `Types_ok/cons` was never spliced
+warning: rule `Typeuse_ok/typeidx` was never spliced
+warning: rule `Typeuse_ok/deftype` was never spliced
+warning: rule `Typeuse_ok/rec` was never spliced
 warning: rule `Val_ok/num` was never spliced
 warning: rule `Val_ok/vec` was never spliced
 warning: rule `Val_ok/ref` was never spliced
@@ -1667,8 +1672,7 @@ warning: rule prose `Globaltype_sub/const` was never spliced
 warning: rule prose `Globaltype_sub/var` was never spliced
 warning: rule prose `Heaptype_ok` was never spliced
 warning: rule prose `Heaptype_ok/abs` was never spliced
-warning: rule prose `Heaptype_ok/rec` was never spliced
-warning: rule prose `Heaptype_ok/typeidx` was never spliced
+warning: rule prose `Heaptype_ok/typeuse` was never spliced
 warning: rule prose `Heaptype_sub` was never spliced
 warning: rule prose `Heaptype_sub/array` was never spliced
 warning: rule prose `Heaptype_sub/bot` was never spliced
@@ -1986,6 +1990,10 @@ warning: rule prose `Type_ok` was never spliced
 warning: rule prose `Types_ok` was never spliced
 warning: rule prose `Types_ok/cons` was never spliced
 warning: rule prose `Types_ok/empty` was never spliced
+warning: rule prose `Typeuse_ok` was never spliced
+warning: rule prose `Typeuse_ok/deftype` was never spliced
+warning: rule prose `Typeuse_ok/rec` was never spliced
+warning: rule prose `Typeuse_ok/typeidx` was never spliced
 warning: rule prose `Val_ok` was never spliced
 warning: rule prose `Val_ok/num` was never spliced
 warning: rule prose `Val_ok/ref` was never spliced

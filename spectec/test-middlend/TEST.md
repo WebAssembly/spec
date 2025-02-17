@@ -1003,13 +1003,13 @@ def $diffrt(reftype : reftype, reftype : reftype) : reftype
 ;; 1.2-syntax.types.watsup
 rec {
 
-;; 1.2-syntax.types.watsup:295.1-295.88
+;; 1.2-syntax.types.watsup:293.1-293.88
 def $funcsxt(externtype*) : deftype*
-  ;; 1.2-syntax.types.watsup:301.1-301.24
+  ;; 1.2-syntax.types.watsup:299.1-299.24
   def $funcsxt([]) = []
-  ;; 1.2-syntax.types.watsup:302.1-302.47
+  ;; 1.2-syntax.types.watsup:300.1-300.47
   def $funcsxt{dt : deftype, `xt*` : externtype*}([FUNC_externtype((dt : deftype <: typeuse))] ++ xt*{xt <- `xt*`}) = [dt] ++ $funcsxt(xt*{xt <- `xt*`})
-  ;; 1.2-syntax.types.watsup:303.1-303.59
+  ;; 1.2-syntax.types.watsup:301.1-301.59
   def $funcsxt{externtype : externtype, `xt*` : externtype*}([externtype] ++ xt*{xt <- `xt*`}) = $funcsxt(xt*{xt <- `xt*`})
     -- otherwise
 }
@@ -1017,13 +1017,13 @@ def $funcsxt(externtype*) : deftype*
 ;; 1.2-syntax.types.watsup
 rec {
 
-;; 1.2-syntax.types.watsup:296.1-296.90
+;; 1.2-syntax.types.watsup:294.1-294.90
 def $globalsxt(externtype*) : globaltype*
-  ;; 1.2-syntax.types.watsup:305.1-305.26
+  ;; 1.2-syntax.types.watsup:303.1-303.26
   def $globalsxt([]) = []
-  ;; 1.2-syntax.types.watsup:306.1-306.53
+  ;; 1.2-syntax.types.watsup:304.1-304.53
   def $globalsxt{gt : globaltype, `xt*` : externtype*}([GLOBAL_externtype(gt)] ++ xt*{xt <- `xt*`}) = [gt] ++ $globalsxt(xt*{xt <- `xt*`})
-  ;; 1.2-syntax.types.watsup:307.1-307.63
+  ;; 1.2-syntax.types.watsup:305.1-305.63
   def $globalsxt{externtype : externtype, `xt*` : externtype*}([externtype] ++ xt*{xt <- `xt*`}) = $globalsxt(xt*{xt <- `xt*`})
     -- otherwise
 }
@@ -1031,13 +1031,13 @@ def $globalsxt(externtype*) : globaltype*
 ;; 1.2-syntax.types.watsup
 rec {
 
-;; 1.2-syntax.types.watsup:297.1-297.89
+;; 1.2-syntax.types.watsup:295.1-295.89
 def $tablesxt(externtype*) : tabletype*
-  ;; 1.2-syntax.types.watsup:309.1-309.25
+  ;; 1.2-syntax.types.watsup:307.1-307.25
   def $tablesxt([]) = []
-  ;; 1.2-syntax.types.watsup:310.1-310.50
+  ;; 1.2-syntax.types.watsup:308.1-308.50
   def $tablesxt{tt : tabletype, `xt*` : externtype*}([TABLE_externtype(tt)] ++ xt*{xt <- `xt*`}) = [tt] ++ $tablesxt(xt*{xt <- `xt*`})
-  ;; 1.2-syntax.types.watsup:311.1-311.61
+  ;; 1.2-syntax.types.watsup:309.1-309.61
   def $tablesxt{externtype : externtype, `xt*` : externtype*}([externtype] ++ xt*{xt <- `xt*`}) = $tablesxt(xt*{xt <- `xt*`})
     -- otherwise
 }
@@ -1045,13 +1045,13 @@ def $tablesxt(externtype*) : tabletype*
 ;; 1.2-syntax.types.watsup
 rec {
 
-;; 1.2-syntax.types.watsup:298.1-298.87
+;; 1.2-syntax.types.watsup:296.1-296.87
 def $memsxt(externtype*) : memtype*
-  ;; 1.2-syntax.types.watsup:313.1-313.23
+  ;; 1.2-syntax.types.watsup:311.1-311.23
   def $memsxt([]) = []
-  ;; 1.2-syntax.types.watsup:314.1-314.44
+  ;; 1.2-syntax.types.watsup:312.1-312.44
   def $memsxt{mt : memtype, `xt*` : externtype*}([MEM_externtype(mt)] ++ xt*{xt <- `xt*`}) = [mt] ++ $memsxt(xt*{xt <- `xt*`})
-  ;; 1.2-syntax.types.watsup:315.1-315.57
+  ;; 1.2-syntax.types.watsup:313.1-313.57
   def $memsxt{externtype : externtype, `xt*` : externtype*}([externtype] ++ xt*{xt <- `xt*`}) = $memsxt(xt*{xt <- `xt*`})
     -- otherwise
 }
@@ -1059,13 +1059,13 @@ def $memsxt(externtype*) : memtype*
 ;; 1.2-syntax.types.watsup
 rec {
 
-;; 1.2-syntax.types.watsup:299.1-299.87
+;; 1.2-syntax.types.watsup:297.1-297.87
 def $tagsxt(externtype*) : tagtype*
-  ;; 1.2-syntax.types.watsup:317.1-317.23
+  ;; 1.2-syntax.types.watsup:315.1-315.23
   def $tagsxt([]) = []
-  ;; 1.2-syntax.types.watsup:318.1-318.44
+  ;; 1.2-syntax.types.watsup:316.1-316.44
   def $tagsxt{jt : tagtype, `xt*` : externtype*}([TAG_externtype((jt : deftype <: typeuse))] ++ xt*{xt <- `xt*`}) = [jt] ++ $tagsxt(xt*{xt <- `xt*`})
-  ;; 1.2-syntax.types.watsup:319.1-319.57
+  ;; 1.2-syntax.types.watsup:317.1-317.57
   def $tagsxt{externtype : externtype, `xt*` : externtype*}([externtype] ++ xt*{xt <- `xt*`}) = $tagsxt(xt*{xt <- `xt*`})
     -- otherwise
 }
@@ -1073,14 +1073,14 @@ def $tagsxt(externtype*) : tagtype*
 ;; 1.2-syntax.types.watsup
 rec {
 
-;; 1.2-syntax.types.watsup:324.1-324.112
+;; 1.2-syntax.types.watsup:322.1-322.112
 def $subst_typevar(typevar : typevar, typevar*, typeuse*) : typeuse
-  ;; 1.2-syntax.types.watsup:353.1-353.38
+  ;; 1.2-syntax.types.watsup:351.1-351.38
   def $subst_typevar{tv : typevar}(tv, [], []) = (tv : typevar <: typeuse)
-  ;; 1.2-syntax.types.watsup:354.1-354.95
+  ;; 1.2-syntax.types.watsup:352.1-352.95
   def $subst_typevar{tv : typevar, tv_1 : typevar, `tv'*` : typevar*, tu_1 : typeuse, `tu'*` : typeuse*}(tv, [tv_1] ++ tv'*{tv' <- `tv'*`}, [tu_1] ++ tu'*{tu' <- `tu'*`}) = tu_1
     -- if (tv = tv_1)
-  ;; 1.2-syntax.types.watsup:355.1-355.92
+  ;; 1.2-syntax.types.watsup:353.1-353.92
   def $subst_typevar{tv : typevar, tv_1 : typevar, `tv'*` : typevar*, tu_1 : typeuse, `tu'*` : typeuse*}(tv, [tv_1] ++ tv'*{tv' <- `tv'*`}, [tu_1] ++ tu'*{tu' <- `tu'*`}) = $subst_typevar(tv, tv'*{tv' <- `tv'*`}, tu'*{tu' <- `tu'*`})
     -- otherwise
 }
@@ -1103,78 +1103,78 @@ def $subst_vectype(vectype : vectype, typevar*, typeuse*) : vectype
 ;; 1.2-syntax.types.watsup
 rec {
 
-;; 1.2-syntax.types.watsup:325.1-325.112
+;; 1.2-syntax.types.watsup:323.1-323.112
 def $subst_typeuse(typeuse : typeuse, typevar*, typeuse*) : typeuse
-  ;; 1.2-syntax.types.watsup:357.1-357.66
+  ;; 1.2-syntax.types.watsup:355.1-355.66
   def $subst_typeuse{tv' : typevar, `tv*` : typevar*, `tu*` : typeuse*}((tv' : typevar <: typeuse), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = $subst_typevar(tv', tv*{tv <- `tv*`}, tu*{tu <- `tu*`})
-  ;; 1.2-syntax.types.watsup:358.1-358.64
+  ;; 1.2-syntax.types.watsup:356.1-356.64
   def $subst_typeuse{dt : deftype, `tv*` : typevar*, `tu*` : typeuse*}((dt : deftype <: typeuse), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ($subst_deftype(dt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) : deftype <: typeuse)
 
-;; 1.2-syntax.types.watsup:330.1-330.112
+;; 1.2-syntax.types.watsup:328.1-328.112
 def $subst_heaptype(heaptype : heaptype, typevar*, typeuse*) : heaptype
-  ;; 1.2-syntax.types.watsup:364.1-364.67
+  ;; 1.2-syntax.types.watsup:362.1-362.67
   def $subst_heaptype{tv' : typevar, `tv*` : typevar*, `tu*` : typeuse*}((tv' : typevar <: heaptype), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ($subst_typevar(tv', tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) : typeuse <: heaptype)
-  ;; 1.2-syntax.types.watsup:365.1-365.65
+  ;; 1.2-syntax.types.watsup:363.1-363.65
   def $subst_heaptype{dt : deftype, `tv*` : typevar*, `tu*` : typeuse*}((dt : deftype <: heaptype), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ($subst_deftype(dt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) : deftype <: heaptype)
-  ;; 1.2-syntax.types.watsup:366.1-366.53
+  ;; 1.2-syntax.types.watsup:364.1-364.53
   def $subst_heaptype{ht : heaptype, `tv*` : typevar*, `tu*` : typeuse*}(ht, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ht
     -- otherwise
 
-;; 1.2-syntax.types.watsup:331.1-331.112
+;; 1.2-syntax.types.watsup:329.1-329.112
 def $subst_reftype(reftype : reftype, typevar*, typeuse*) : reftype
-  ;; 1.2-syntax.types.watsup:368.1-368.83
+  ;; 1.2-syntax.types.watsup:366.1-366.83
   def $subst_reftype{nul : nul, ht : heaptype, `tv*` : typevar*, `tu*` : typeuse*}(REF_reftype(nul, ht), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = REF_reftype(nul, $subst_heaptype(ht, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}))
 
-;; 1.2-syntax.types.watsup:332.1-332.112
+;; 1.2-syntax.types.watsup:330.1-330.112
 def $subst_valtype(valtype : valtype, typevar*, typeuse*) : valtype
-  ;; 1.2-syntax.types.watsup:370.1-370.64
+  ;; 1.2-syntax.types.watsup:368.1-368.64
   def $subst_valtype{nt : numtype, `tv*` : typevar*, `tu*` : typeuse*}((nt : numtype <: valtype), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ($subst_numtype(nt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) : numtype <: valtype)
-  ;; 1.2-syntax.types.watsup:371.1-371.64
+  ;; 1.2-syntax.types.watsup:369.1-369.64
   def $subst_valtype{vt : vectype, `tv*` : typevar*, `tu*` : typeuse*}((vt : vectype <: valtype), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ($subst_vectype(vt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) : vectype <: valtype)
-  ;; 1.2-syntax.types.watsup:372.1-372.64
+  ;; 1.2-syntax.types.watsup:370.1-370.64
   def $subst_valtype{rt : reftype, `tv*` : typevar*, `tu*` : typeuse*}((rt : reftype <: valtype), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ($subst_reftype(rt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) : reftype <: valtype)
-  ;; 1.2-syntax.types.watsup:373.1-373.40
+  ;; 1.2-syntax.types.watsup:371.1-371.40
   def $subst_valtype{`tv*` : typevar*, `tu*` : typeuse*}(BOT_valtype, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = BOT_valtype
 
-;; 1.2-syntax.types.watsup:335.1-335.112
+;; 1.2-syntax.types.watsup:333.1-333.112
 def $subst_storagetype(storagetype : storagetype, typevar*, typeuse*) : storagetype
-  ;; 1.2-syntax.types.watsup:377.1-377.66
+  ;; 1.2-syntax.types.watsup:375.1-375.66
   def $subst_storagetype{t : valtype, `tv*` : typevar*, `tu*` : typeuse*}((t : valtype <: storagetype), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ($subst_valtype(t, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) : valtype <: storagetype)
-  ;; 1.2-syntax.types.watsup:378.1-378.69
+  ;; 1.2-syntax.types.watsup:376.1-376.69
   def $subst_storagetype{pt : packtype, `tv*` : typevar*, `tu*` : typeuse*}((pt : packtype <: storagetype), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ($subst_packtype(pt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) : packtype <: storagetype)
 
-;; 1.2-syntax.types.watsup:336.1-336.112
+;; 1.2-syntax.types.watsup:334.1-334.112
 def $subst_fieldtype(fieldtype : fieldtype, typevar*, typeuse*) : fieldtype
-  ;; 1.2-syntax.types.watsup:380.1-380.80
+  ;; 1.2-syntax.types.watsup:378.1-378.80
   def $subst_fieldtype{mut : mut, zt : storagetype, `tv*` : typevar*, `tu*` : typeuse*}(`%%`_fieldtype(mut, zt), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = `%%`_fieldtype(mut, $subst_storagetype(zt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}))
 
-;; 1.2-syntax.types.watsup:338.1-338.112
+;; 1.2-syntax.types.watsup:336.1-336.112
 def $subst_comptype(comptype : comptype, typevar*, typeuse*) : comptype
-  ;; 1.2-syntax.types.watsup:382.1-382.85
+  ;; 1.2-syntax.types.watsup:380.1-380.85
   def $subst_comptype{`yt*` : fieldtype*, `tv*` : typevar*, `tu*` : typeuse*}(STRUCT_comptype(`%`_structtype(yt*{yt <- `yt*`})), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = STRUCT_comptype(`%`_structtype($subst_fieldtype(yt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`})*{yt <- `yt*`}))
-  ;; 1.2-syntax.types.watsup:383.1-383.81
+  ;; 1.2-syntax.types.watsup:381.1-381.81
   def $subst_comptype{yt : fieldtype, `tv*` : typevar*, `tu*` : typeuse*}(ARRAY_comptype(yt), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ARRAY_comptype($subst_fieldtype(yt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}))
-  ;; 1.2-syntax.types.watsup:384.1-384.78
+  ;; 1.2-syntax.types.watsup:382.1-382.78
   def $subst_comptype{ft : functype, `tv*` : typevar*, `tu*` : typeuse*}(FUNC_comptype(ft), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = FUNC_comptype($subst_functype(ft, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}))
 
-;; 1.2-syntax.types.watsup:339.1-339.112
+;; 1.2-syntax.types.watsup:337.1-337.112
 def $subst_subtype(subtype : subtype, typevar*, typeuse*) : subtype
-  ;; 1.2-syntax.types.watsup:386.1-387.71
+  ;; 1.2-syntax.types.watsup:384.1-385.71
   def $subst_subtype{fin : fin, `tu'*` : typeuse*, ct : comptype, `tv*` : typevar*, `tu*` : typeuse*}(SUB_subtype(fin, tu'*{tu' <- `tu'*`}, ct), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = SUB_subtype(fin, $subst_typeuse(tu', tv*{tv <- `tv*`}, tu*{tu <- `tu*`})*{tu' <- `tu'*`}, $subst_comptype(ct, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}))
 
-;; 1.2-syntax.types.watsup:340.1-340.112
+;; 1.2-syntax.types.watsup:338.1-338.112
 def $subst_rectype(rectype : rectype, typevar*, typeuse*) : rectype
-  ;; 1.2-syntax.types.watsup:389.1-389.76
+  ;; 1.2-syntax.types.watsup:387.1-387.76
   def $subst_rectype{`st*` : subtype*, `tv*` : typevar*, `tu*` : typeuse*}(REC_rectype(`%`_list(st*{st <- `st*`})), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = REC_rectype(`%`_list($subst_subtype(st, tv*{tv <- `tv*`}, tu*{tu <- `tu*`})*{st <- `st*`}))
 
-;; 1.2-syntax.types.watsup:341.1-341.112
+;; 1.2-syntax.types.watsup:339.1-339.112
 def $subst_deftype(deftype : deftype, typevar*, typeuse*) : deftype
-  ;; 1.2-syntax.types.watsup:391.1-391.78
+  ;; 1.2-syntax.types.watsup:389.1-389.78
   def $subst_deftype{qt : rectype, i : n, `tv*` : typevar*, `tu*` : typeuse*}(DEF_deftype(qt, i), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = DEF_deftype($subst_rectype(qt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}), i)
 
-;; 1.2-syntax.types.watsup:344.1-344.112
+;; 1.2-syntax.types.watsup:342.1-342.112
 def $subst_functype(functype : functype, typevar*, typeuse*) : functype
-  ;; 1.2-syntax.types.watsup:394.1-394.113
+  ;; 1.2-syntax.types.watsup:392.1-392.113
   def $subst_functype{`t_1*` : valtype*, `t_2*` : valtype*, `tv*` : typevar*, `tu*` : typeuse*}(`%->%`_functype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), `%`_resulttype(t_2*{t_2 <- `t_2*`})), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = `%->%`_functype(`%`_resulttype($subst_valtype(t_1, tv*{tv <- `tv*`}, tu*{tu <- `tu*`})*{t_1 <- `t_1*`}), `%`_resulttype($subst_valtype(t_2, tv*{tv <- `tv*`}, tu*{tu <- `tu*`})*{t_2 <- `t_2*`}))
 }
 
@@ -1259,11 +1259,11 @@ def $subst_all_moduletype(moduletype : moduletype, heaptype*) : moduletype
 ;; 1.2-syntax.types.watsup
 rec {
 
-;; 1.2-syntax.types.watsup:426.1-426.98
+;; 1.2-syntax.types.watsup:424.1-424.98
 def $subst_all_deftypes(deftype*, heaptype*) : deftype*
-  ;; 1.2-syntax.types.watsup:427.1-427.40
+  ;; 1.2-syntax.types.watsup:425.1-425.40
   def $subst_all_deftypes{`tu*` : typeuse*}([], (tu : typeuse <: heaptype)*{tu <- `tu*`}) = []
-  ;; 1.2-syntax.types.watsup:428.1-428.101
+  ;; 1.2-syntax.types.watsup:426.1-426.101
   def $subst_all_deftypes{dt_1 : deftype, `dt*` : deftype*, `tu*` : typeuse*}([dt_1] ++ dt*{dt <- `dt*`}, (tu : typeuse <: heaptype)*{tu <- `tu*`}) = [$subst_all_deftype(dt_1, (tu : typeuse <: heaptype)*{tu <- `tu*`})] ++ $subst_all_deftypes(dt*{dt <- `dt*`}, (tu : typeuse <: heaptype)*{tu <- `tu*`})
 }
 
@@ -1295,13 +1295,6 @@ def $unrolldt(deftype : deftype) : subtype
 def $expanddt(deftype : deftype) : comptype
   ;; 1.2-syntax.types.watsup
   def $expanddt{deftype : deftype, comptype : comptype, fin : fin, `typeuse*` : typeuse*}(deftype) = comptype
-    -- if ($unrolldt(deftype) = SUB_subtype(fin, typeuse*{typeuse <- `typeuse*`}, comptype))
-
-;; 1.2-syntax.types.watsup
-relation Expand: `%~~%`(deftype, comptype)
-  ;; 1.2-syntax.types.watsup
-  rule _{deftype : deftype, comptype : comptype, fin : fin, `typeuse*` : typeuse*}:
-    `%~~%`(deftype, comptype)
     -- if ($unrolldt(deftype) = SUB_subtype(fin, typeuse*{typeuse <- `typeuse*`}, comptype))
 
 ;; 1.2-syntax.types.watsup
@@ -1353,90 +1346,90 @@ def $free_typevar(typevar : typevar) : free
 ;; 1.2-syntax.types.watsup
 rec {
 
-;; 1.2-syntax.types.watsup:467.1-467.36
+;; 1.2-syntax.types.watsup:457.1-457.36
 def $free_heaptype(heaptype : heaptype) : free
-  ;; 1.2-syntax.types.watsup:518.1-518.65
+  ;; 1.2-syntax.types.watsup:508.1-508.65
   def $free_heaptype{absheaptype : absheaptype}((absheaptype : absheaptype <: heaptype)) = $free_absheaptype(absheaptype)
-  ;; 1.2-syntax.types.watsup:519.1-519.53
+  ;; 1.2-syntax.types.watsup:509.1-509.53
   def $free_heaptype{typeuse : typeuse}((typeuse : typeuse <: heaptype)) = $free_typeuse(typeuse)
 
-;; 1.2-syntax.types.watsup:468.1-468.34
+;; 1.2-syntax.types.watsup:458.1-458.34
 def $free_reftype(reftype : reftype) : free
-  ;; 1.2-syntax.types.watsup:521.1-521.63
+  ;; 1.2-syntax.types.watsup:511.1-511.63
   def $free_reftype{nul : nul, heaptype : heaptype}(REF_reftype(nul, heaptype)) = $free_heaptype(heaptype)
 
-;; 1.2-syntax.types.watsup:470.1-470.34
+;; 1.2-syntax.types.watsup:460.1-460.34
 def $free_typeuse(typeuse : typeuse) : free
-  ;; 1.2-syntax.types.watsup:515.1-515.52
+  ;; 1.2-syntax.types.watsup:505.1-505.52
   def $free_typeuse{typevar : typevar}((typevar : typevar <: typeuse)) = $free_typevar(typevar)
-  ;; 1.2-syntax.types.watsup:516.1-516.52
+  ;; 1.2-syntax.types.watsup:506.1-506.52
   def $free_typeuse{deftype : deftype}((deftype : deftype <: typeuse)) = $free_deftype(deftype)
 
-;; 1.2-syntax.types.watsup:471.1-471.34
+;; 1.2-syntax.types.watsup:461.1-461.34
 def $free_valtype(valtype : valtype) : free
-  ;; 1.2-syntax.types.watsup:523.1-523.52
+  ;; 1.2-syntax.types.watsup:513.1-513.52
   def $free_valtype{numtype : numtype}((numtype : numtype <: valtype)) = $free_numtype(numtype)
-  ;; 1.2-syntax.types.watsup:524.1-524.52
+  ;; 1.2-syntax.types.watsup:514.1-514.52
   def $free_valtype{vectype : vectype}((vectype : vectype <: valtype)) = $free_vectype(vectype)
-  ;; 1.2-syntax.types.watsup:525.1-525.52
+  ;; 1.2-syntax.types.watsup:515.1-515.52
   def $free_valtype{reftype : reftype}((reftype : reftype <: valtype)) = $free_reftype(reftype)
-  ;; 1.2-syntax.types.watsup:526.1-526.28
+  ;; 1.2-syntax.types.watsup:516.1-516.28
   def $free_valtype(BOT_valtype) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
 
-;; 1.2-syntax.types.watsup:473.1-473.40
+;; 1.2-syntax.types.watsup:463.1-463.40
 def $free_resulttype(resulttype : resulttype) : free
-  ;; 1.2-syntax.types.watsup:528.1-528.69
+  ;; 1.2-syntax.types.watsup:518.1-518.69
   def $free_resulttype{`valtype*` : valtype*}(`%`_resulttype(valtype*{valtype <- `valtype*`})) = $free_list($free_valtype(valtype)*{valtype <- `valtype*`})
 
-;; 1.2-syntax.types.watsup:474.1-474.42
+;; 1.2-syntax.types.watsup:464.1-464.42
 def $free_storagetype(storagetype : storagetype) : free
-  ;; 1.2-syntax.types.watsup:530.1-530.56
+  ;; 1.2-syntax.types.watsup:520.1-520.56
   def $free_storagetype{valtype : valtype}((valtype : valtype <: storagetype)) = $free_valtype(valtype)
-  ;; 1.2-syntax.types.watsup:531.1-531.59
+  ;; 1.2-syntax.types.watsup:521.1-521.59
   def $free_storagetype{packtype : packtype}((packtype : packtype <: storagetype)) = $free_packtype(packtype)
 
-;; 1.2-syntax.types.watsup:475.1-475.38
+;; 1.2-syntax.types.watsup:465.1-465.38
 def $free_fieldtype(fieldtype : fieldtype) : free
-  ;; 1.2-syntax.types.watsup:533.1-533.70
+  ;; 1.2-syntax.types.watsup:523.1-523.70
   def $free_fieldtype{mut : mut, storagetype : storagetype}(`%%`_fieldtype(mut, storagetype)) = $free_storagetype(storagetype)
 
-;; 1.2-syntax.types.watsup:476.1-476.40
+;; 1.2-syntax.types.watsup:466.1-466.40
 def $free_structtype(structtype : structtype) : free
-  ;; 1.2-syntax.types.watsup:538.1-538.75
+  ;; 1.2-syntax.types.watsup:528.1-528.75
   def $free_structtype{`fieldtype*` : fieldtype*}(`%`_structtype(fieldtype*{fieldtype <- `fieldtype*`})) = $free_list($free_fieldtype(fieldtype)*{fieldtype <- `fieldtype*`})
 
-;; 1.2-syntax.types.watsup:477.1-477.38
+;; 1.2-syntax.types.watsup:467.1-467.38
 def $free_arraytype(arraytype : arraytype) : free
-  ;; 1.2-syntax.types.watsup:540.1-540.60
+  ;; 1.2-syntax.types.watsup:530.1-530.60
   def $free_arraytype{fieldtype : fieldtype}(fieldtype) = $free_fieldtype(fieldtype)
 
-;; 1.2-syntax.types.watsup:478.1-478.36
+;; 1.2-syntax.types.watsup:468.1-468.36
 def $free_functype(functype : functype) : free
-  ;; 1.2-syntax.types.watsup:535.1-536.67
+  ;; 1.2-syntax.types.watsup:525.1-526.67
   def $free_functype{resulttype_1 : resulttype, resulttype_2 : resulttype}(`%->%`_functype(resulttype_1, resulttype_2)) = $free_resulttype(resulttype_1) +++ $free_resulttype(resulttype_2)
 
-;; 1.2-syntax.types.watsup:479.1-479.36
+;; 1.2-syntax.types.watsup:469.1-469.36
 def $free_comptype(comptype : comptype) : free
-  ;; 1.2-syntax.types.watsup:542.1-542.69
+  ;; 1.2-syntax.types.watsup:532.1-532.69
   def $free_comptype{structtype : structtype}(STRUCT_comptype(structtype)) = $free_structtype(structtype)
-  ;; 1.2-syntax.types.watsup:543.1-543.65
+  ;; 1.2-syntax.types.watsup:533.1-533.65
   def $free_comptype{arraytype : arraytype}(ARRAY_comptype(arraytype)) = $free_arraytype(arraytype)
-  ;; 1.2-syntax.types.watsup:544.1-544.61
+  ;; 1.2-syntax.types.watsup:534.1-534.61
   def $free_comptype{functype : functype}(FUNC_comptype(functype)) = $free_functype(functype)
 
-;; 1.2-syntax.types.watsup:480.1-480.34
+;; 1.2-syntax.types.watsup:470.1-470.34
 def $free_subtype(subtype : subtype) : free
-  ;; 1.2-syntax.types.watsup:546.1-547.66
+  ;; 1.2-syntax.types.watsup:536.1-537.66
   def $free_subtype{fin : fin, `typeuse*` : typeuse*, comptype : comptype}(SUB_subtype(fin, typeuse*{typeuse <- `typeuse*`}, comptype)) = $free_list($free_typeuse(typeuse)*{typeuse <- `typeuse*`}) +++ $free_comptype(comptype)
 
-;; 1.2-syntax.types.watsup:481.1-481.34
+;; 1.2-syntax.types.watsup:471.1-471.34
 def $free_rectype(rectype : rectype) : free
-  ;; 1.2-syntax.types.watsup:549.1-549.70
+  ;; 1.2-syntax.types.watsup:539.1-539.70
   def $free_rectype{`subtype*` : subtype*}(REC_rectype(`%`_list(subtype*{subtype <- `subtype*`}))) = $free_list($free_subtype(subtype)*{subtype <- `subtype*`})
 
-;; 1.2-syntax.types.watsup:509.1-509.34
+;; 1.2-syntax.types.watsup:499.1-499.34
 def $free_deftype(deftype : deftype) : free
-  ;; 1.2-syntax.types.watsup:510.1-510.58
+  ;; 1.2-syntax.types.watsup:500.1-500.58
   def $free_deftype{rectype : rectype, n : n}(DEF_deftype(rectype, n)) = $free_rectype(rectype)
 }
 
@@ -2643,66 +2636,6 @@ relation Vectype_ok: `%|-%:OK`(context, vectype)
     `%|-%:OK`(C, vectype)
 
 ;; 2.1-validation.types.watsup
-relation Heaptype_ok: `%|-%:OK`(context, heaptype)
-  ;; 2.1-validation.types.watsup
-  rule abs{C : context, absheaptype : absheaptype}:
-    `%|-%:OK`(C, (absheaptype : absheaptype <: heaptype))
-
-  ;; 2.1-validation.types.watsup
-  rule typeidx{C : context, typeidx : typeidx, dt : deftype}:
-    `%|-%:OK`(C, _IDX_heaptype(typeidx))
-    -- if (C.TYPES_context[typeidx!`%`_typeidx.0] = dt)
-
-  ;; 2.1-validation.types.watsup
-  rule rec{C : context, i : nat, st : subtype}:
-    `%|-%:OK`(C, REC_heaptype(i))
-    -- if (C.RECS_context[i] = st)
-
-;; 2.1-validation.types.watsup
-relation Reftype_ok: `%|-%:OK`(context, reftype)
-  ;; 2.1-validation.types.watsup
-  rule _{C : context, heaptype : heaptype}:
-    `%|-%:OK`(C, REF_reftype(NULL_NULL?{}, heaptype))
-    -- Heaptype_ok: `%|-%:OK`(C, heaptype)
-
-;; 2.1-validation.types.watsup
-relation Valtype_ok: `%|-%:OK`(context, valtype)
-  ;; 2.1-validation.types.watsup
-  rule num{C : context, numtype : numtype}:
-    `%|-%:OK`(C, (numtype : numtype <: valtype))
-    -- Numtype_ok: `%|-%:OK`(C, numtype)
-
-  ;; 2.1-validation.types.watsup
-  rule vec{C : context, vectype : vectype}:
-    `%|-%:OK`(C, (vectype : vectype <: valtype))
-    -- Vectype_ok: `%|-%:OK`(C, vectype)
-
-  ;; 2.1-validation.types.watsup
-  rule ref{C : context, reftype : reftype}:
-    `%|-%:OK`(C, (reftype : reftype <: valtype))
-    -- Reftype_ok: `%|-%:OK`(C, reftype)
-
-  ;; 2.1-validation.types.watsup
-  rule bot{C : context}:
-    `%|-%:OK`(C, BOT_valtype)
-
-;; 2.1-validation.types.watsup
-relation Resulttype_ok: `%|-%:OK`(context, resulttype)
-  ;; 2.1-validation.types.watsup
-  rule _{C : context, `t*` : valtype*}:
-    `%|-%:OK`(C, `%`_resulttype(t*{t <- `t*`}))
-    -- (Valtype_ok: `%|-%:OK`(C, t))*{t <- `t*`}
-
-;; 2.1-validation.types.watsup
-relation Instrtype_ok: `%|-%:OK`(context, instrtype)
-  ;; 2.1-validation.types.watsup
-  rule _{C : context, `t_1*` : valtype*, `x*` : idx*, `t_2*` : valtype*, `lct*` : localtype*}:
-    `%|-%:OK`(C, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), x*{x <- `x*`}, `%`_resulttype(t_2*{t_2 <- `t_2*`})))
-    -- Resulttype_ok: `%|-%:OK`(C, `%`_resulttype(t_1*{t_1 <- `t_1*`}))
-    -- Resulttype_ok: `%|-%:OK`(C, `%`_resulttype(t_2*{t_2 <- `t_2*`}))
-    -- (if (C.LOCALS_context[x!`%`_idx.0] = lct))*{lct <- `lct*`, x <- `x*`}
-
-;; 2.1-validation.types.watsup
 syntax oktypeidx =
   | OK{typeidx : typeidx}(typeidx : typeidx)
 
@@ -2715,50 +2648,6 @@ relation Packtype_ok: `%|-%:OK`(context, packtype)
   ;; 2.1-validation.types.watsup
   rule _{C : context, packtype : packtype}:
     `%|-%:OK`(C, packtype)
-
-;; 2.1-validation.types.watsup
-relation Storagetype_ok: `%|-%:OK`(context, storagetype)
-  ;; 2.1-validation.types.watsup
-  rule val{C : context, valtype : valtype}:
-    `%|-%:OK`(C, (valtype : valtype <: storagetype))
-    -- Valtype_ok: `%|-%:OK`(C, valtype)
-
-  ;; 2.1-validation.types.watsup
-  rule pack{C : context, packtype : packtype}:
-    `%|-%:OK`(C, (packtype : packtype <: storagetype))
-    -- Packtype_ok: `%|-%:OK`(C, packtype)
-
-;; 2.1-validation.types.watsup
-relation Fieldtype_ok: `%|-%:OK`(context, fieldtype)
-  ;; 2.1-validation.types.watsup
-  rule _{C : context, storagetype : storagetype}:
-    `%|-%:OK`(C, `%%`_fieldtype(MUT_MUT?{}, storagetype))
-    -- Storagetype_ok: `%|-%:OK`(C, storagetype)
-
-;; 2.1-validation.types.watsup
-relation Functype_ok: `%|-%:OK`(context, functype)
-  ;; 2.1-validation.types.watsup
-  rule _{C : context, `t_1*` : valtype*, `t_2*` : valtype*}:
-    `%|-%:OK`(C, `%->%`_functype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), `%`_resulttype(t_2*{t_2 <- `t_2*`})))
-    -- Resulttype_ok: `%|-%:OK`(C, `%`_resulttype(t_1*{t_1 <- `t_1*`}))
-    -- Resulttype_ok: `%|-%:OK`(C, `%`_resulttype(t_2*{t_2 <- `t_2*`}))
-
-;; 2.1-validation.types.watsup
-relation Comptype_ok: `%|-%:OK`(context, comptype)
-  ;; 2.1-validation.types.watsup
-  rule struct{C : context, `fieldtype*` : fieldtype*}:
-    `%|-%:OK`(C, STRUCT_comptype(`%`_structtype(fieldtype*{fieldtype <- `fieldtype*`})))
-    -- (Fieldtype_ok: `%|-%:OK`(C, fieldtype))*{fieldtype <- `fieldtype*`}
-
-  ;; 2.1-validation.types.watsup
-  rule array{C : context, fieldtype : fieldtype}:
-    `%|-%:OK`(C, ARRAY_comptype(fieldtype))
-    -- Fieldtype_ok: `%|-%:OK`(C, fieldtype)
-
-  ;; 2.1-validation.types.watsup
-  rule func{C : context, functype : functype}:
-    `%|-%:OK`(C, FUNC_comptype(functype))
-    -- Functype_ok: `%|-%:OK`(C, functype)
 
 ;; 2.2-validation.subtyping.watsup
 relation Packtype_sub: `%|-%<:%`(context, packtype, packtype)
@@ -2773,9 +2662,224 @@ relation Numtype_sub: `%|-%<:%`(context, numtype, numtype)
     `%|-%<:%`(C, numtype, numtype)
 
 ;; 2.1-validation.types.watsup
+relation Expand: `%~~%`(deftype, comptype)
+  ;; 2.1-validation.types.watsup
+  rule _{deftype : deftype, comptype : comptype}:
+    `%~~%`(deftype, comptype)
+    -- if ($expanddt(deftype) = comptype)
+
+;; 2.2-validation.subtyping.watsup
+relation Vectype_sub: `%|-%<:%`(context, vectype, vectype)
+  ;; 2.2-validation.subtyping.watsup
+  rule _{C : context, vectype : vectype}:
+    `%|-%<:%`(C, vectype, vectype)
+
+;; 2.1-validation.types.watsup
+def $before(typeuse : typeuse, typeidx : typeidx, nat : nat) : bool
+  ;; 2.1-validation.types.watsup
+  def $before{deftype : deftype, x : idx, i : nat}((deftype : deftype <: typeuse), x, i) = true
+  ;; 2.1-validation.types.watsup
+  def $before{typeidx : typeidx, x : idx, i : nat}(_IDX_typeuse(typeidx), x, i) = (typeidx!`%`_typeidx.0 < x!`%`_idx.0)
+  ;; 2.1-validation.types.watsup
+  def $before{j : nat, x : idx, i : nat}(REC_typeuse(j), x, i) = (j < i)
+
+;; 2.1-validation.types.watsup
+def $unrollht(context : context, heaptype : heaptype) : subtype
+  ;; 2.1-validation.types.watsup
+  def $unrollht{C : context, deftype : deftype}(C, (deftype : deftype <: heaptype)) = $unrolldt(deftype)
+  ;; 2.1-validation.types.watsup
+  def $unrollht{C : context, typeidx : typeidx}(C, _IDX_heaptype(typeidx)) = $unrolldt(C.TYPES_context[typeidx!`%`_typeidx.0])
+  ;; 2.1-validation.types.watsup
+  def $unrollht{C : context, i : nat}(C, REC_heaptype(i)) = C.RECS_context[i]
+
+;; 2.1-validation.types.watsup
 rec {
 
-;; 2.1-validation.types.watsup:85.1-85.107
+;; 2.1-validation.types.watsup:9.1-9.92
+relation Heaptype_ok: `%|-%:OK`(context, heaptype)
+  ;; 2.1-validation.types.watsup:20.1-21.24
+  rule abs{C : context, absheaptype : absheaptype}:
+    `%|-%:OK`(C, (absheaptype : absheaptype <: heaptype))
+
+  ;; 2.1-validation.types.watsup:23.1-25.35
+  rule typeuse{C : context, typeuse : typeuse}:
+    `%|-%:OK`(C, (typeuse : typeuse <: heaptype))
+    -- Typeuse_ok: `%|-%:OK`(C, typeuse)
+
+;; 2.1-validation.types.watsup:10.1-10.91
+relation Reftype_ok: `%|-%:OK`(context, reftype)
+  ;; 2.1-validation.types.watsup:27.1-29.37
+  rule _{C : context, heaptype : heaptype}:
+    `%|-%:OK`(C, REF_reftype(NULL_NULL?{}, heaptype))
+    -- Heaptype_ok: `%|-%:OK`(C, heaptype)
+
+;; 2.1-validation.types.watsup:11.1-11.91
+relation Valtype_ok: `%|-%:OK`(context, valtype)
+  ;; 2.1-validation.types.watsup:31.1-33.35
+  rule num{C : context, numtype : numtype}:
+    `%|-%:OK`(C, (numtype : numtype <: valtype))
+    -- Numtype_ok: `%|-%:OK`(C, numtype)
+
+  ;; 2.1-validation.types.watsup:35.1-37.35
+  rule vec{C : context, vectype : vectype}:
+    `%|-%:OK`(C, (vectype : vectype <: valtype))
+    -- Vectype_ok: `%|-%:OK`(C, vectype)
+
+  ;; 2.1-validation.types.watsup:39.1-41.35
+  rule ref{C : context, reftype : reftype}:
+    `%|-%:OK`(C, (reftype : reftype <: valtype))
+    -- Reftype_ok: `%|-%:OK`(C, reftype)
+
+  ;; 2.1-validation.types.watsup:43.1-44.16
+  rule bot{C : context}:
+    `%|-%:OK`(C, BOT_valtype)
+
+;; 2.1-validation.types.watsup:12.1-12.94
+relation Typeuse_ok: `%|-%:OK`(context, typeuse)
+  ;; 2.1-validation.types.watsup:98.1-100.30
+  rule typeidx{C : context, typeidx : typeidx, dt : deftype}:
+    `%|-%:OK`(C, _IDX_typeuse(typeidx))
+    -- if (C.TYPES_context[typeidx!`%`_typeidx.0] = dt)
+
+  ;; 2.1-validation.types.watsup:102.1-104.35
+  rule deftype{C : context, deftype : deftype}:
+    `%|-%:OK`(C, (deftype : deftype <: typeuse))
+    -- Deftype_ok: `%|-%:OK`(C, deftype)
+
+  ;; 2.1-validation.types.watsup:106.1-108.23
+  rule rec{C : context, i : nat, st : subtype}:
+    `%|-%:OK`(C, REC_typeuse(i))
+    -- if (C.RECS_context[i] = st)
+
+;; 2.1-validation.types.watsup:49.1-49.100
+relation Resulttype_ok: `%|-%:OK`(context, resulttype)
+  ;; 2.1-validation.types.watsup:52.1-54.32
+  rule _{C : context, `t*` : valtype*}:
+    `%|-%:OK`(C, `%`_resulttype(t*{t <- `t*`}))
+    -- (Valtype_ok: `%|-%:OK`(C, t))*{t <- `t*`}
+
+;; 2.1-validation.types.watsup:83.1-83.104
+relation Fieldtype_ok: `%|-%:OK`(context, fieldtype)
+  ;; 2.1-validation.types.watsup:122.1-124.43
+  rule _{C : context, storagetype : storagetype}:
+    `%|-%:OK`(C, `%%`_fieldtype(MUT_MUT?{}, storagetype))
+    -- Storagetype_ok: `%|-%:OK`(C, storagetype)
+
+;; 2.1-validation.types.watsup:84.1-84.106
+relation Storagetype_ok: `%|-%:OK`(context, storagetype)
+  ;; 2.1-validation.types.watsup:114.1-116.35
+  rule val{C : context, valtype : valtype}:
+    `%|-%:OK`(C, (valtype : valtype <: storagetype))
+    -- Valtype_ok: `%|-%:OK`(C, valtype)
+
+  ;; 2.1-validation.types.watsup:118.1-120.37
+  rule pack{C : context, packtype : packtype}:
+    `%|-%:OK`(C, (packtype : packtype <: storagetype))
+    -- Packtype_ok: `%|-%:OK`(C, packtype)
+
+;; 2.1-validation.types.watsup:85.1-85.103
+relation Comptype_ok: `%|-%:OK`(context, comptype)
+  ;; 2.1-validation.types.watsup:127.1-129.42
+  rule struct{C : context, `fieldtype*` : fieldtype*}:
+    `%|-%:OK`(C, STRUCT_comptype(`%`_structtype(fieldtype*{fieldtype <- `fieldtype*`})))
+    -- (Fieldtype_ok: `%|-%:OK`(C, fieldtype))*{fieldtype <- `fieldtype*`}
+
+  ;; 2.1-validation.types.watsup:131.1-133.39
+  rule array{C : context, fieldtype : fieldtype}:
+    `%|-%:OK`(C, ARRAY_comptype(fieldtype))
+    -- Fieldtype_ok: `%|-%:OK`(C, fieldtype)
+
+  ;; 2.1-validation.types.watsup:135.1-137.37
+  rule func{C : context, functype : functype}:
+    `%|-%:OK`(C, FUNC_comptype(functype))
+    -- Functype_ok: `%|-%:OK`(C, functype)
+
+;; 2.1-validation.types.watsup:86.1-86.103
+relation Functype_ok: `%|-%:OK`(context, functype)
+  ;; 2.1-validation.types.watsup:211.1-214.35
+  rule _{C : context, `t_1*` : valtype*, `t_2*` : valtype*}:
+    `%|-%:OK`(C, `%->%`_functype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), `%`_resulttype(t_2*{t_2 <- `t_2*`})))
+    -- Resulttype_ok: `%|-%:OK`(C, `%`_resulttype(t_1*{t_1 <- `t_1*`}))
+    -- Resulttype_ok: `%|-%:OK`(C, `%`_resulttype(t_2*{t_2 <- `t_2*`}))
+
+;; 2.1-validation.types.watsup:87.1-87.102
+relation Subtype_ok: `%|-%:%`(context, subtype, oktypeidx)
+  ;; 2.1-validation.types.watsup:140.1-147.49
+  rule _{C : context, `x*` : idx*, comptype : comptype, x_0 : idx, `x'**` : idx**, `comptype'*` : comptype*}:
+    `%|-%:%`(C, SUB_subtype(FINAL_FINAL?{}, _IDX_typeuse(x)*{x <- `x*`}, comptype), OK_oktypeidx(x_0))
+    -- if (|x*{x <- `x*`}| <= 1)
+    -- (if (x!`%`_idx.0 < x_0!`%`_idx.0))*{x <- `x*`}
+    -- (if ($unrolldt(C.TYPES_context[x!`%`_idx.0]) = SUB_subtype(?(), _IDX_typeuse(x')*{x' <- `x'*`}, comptype')))*{comptype' <- `comptype'*`, x <- `x*`, `x'*` <- `x'**`}
+    -- Comptype_ok: `%|-%:OK`(C, comptype)
+    -- (Comptype_sub: `%|-%<:%`(C, comptype, comptype'))*{comptype' <- `comptype'*`}
+
+;; 2.1-validation.types.watsup:88.1-88.123
+relation Rectype_ok: `%|-%:%`(context, rectype, oktypeidx)
+  ;; 2.1-validation.types.watsup:169.1-170.23
+  rule empty{C : context, x : idx}:
+    `%|-%:%`(C, REC_rectype(`%`_list([])), OK_oktypeidx(x))
+
+  ;; 2.1-validation.types.watsup:172.1-175.48
+  rule cons{C : context, subtype_1 : subtype, `subtype*` : subtype*, x : idx}:
+    `%|-%:%`(C, REC_rectype(`%`_list([subtype_1] ++ subtype*{subtype <- `subtype*`})), OK_oktypeidx(x))
+    -- Subtype_ok: `%|-%:%`(C, subtype_1, OK_oktypeidx(x))
+    -- Rectype_ok: `%|-%:%`(C, REC_rectype(`%`_list(subtype*{subtype <- `subtype*`})), OK_oktypeidx(`%`_typeidx((x!`%`_idx.0 + 1))))
+
+  ;; 2.1-validation.types.watsup:177.1-179.60
+  rule _rec2{C : context, `subtype*` : subtype*, x : idx}:
+    `%|-%:%`(C, REC_rectype(`%`_list(subtype*{subtype <- `subtype*`})), OK_oktypeidx(x))
+    -- Rectype_ok2: `%|-%:%`({TYPES [], RECS subtype*{subtype <- `subtype*`}, FUNCS [], GLOBALS [], TABLES [], MEMS [], TAGS [], ELEMS [], DATAS [], LOCALS [], LABELS [], RETURN ?(), REFS []} +++ C, REC_rectype(`%`_list(subtype*{subtype <- `subtype*`})), OK_oktypeidxnat(x, 0))
+
+;; 2.1-validation.types.watsup:89.1-89.105
+relation Subtype_ok2: `%|-%:%`(context, subtype, oktypeidxnat)
+  ;; 2.1-validation.types.watsup:159.1-166.49
+  rule _{C : context, `typeuse*` : typeuse*, compttype : comptype, x : idx, i : nat, `typeuse'**` : typeuse**, `comptype'*` : comptype*, comptype : comptype}:
+    `%|-%:%`(C, SUB_subtype(FINAL_FINAL?{}, typeuse*{typeuse <- `typeuse*`}, compttype), OK_oktypeidxnat(x, i))
+    -- if (|typeuse*{typeuse <- `typeuse*`}| <= 1)
+    -- (if $before(typeuse, x, i))*{typeuse <- `typeuse*`}
+    -- (if ($unrollht(C, (typeuse : typeuse <: heaptype)) = SUB_subtype(?(), typeuse'*{typeuse' <- `typeuse'*`}, comptype')))*{comptype' <- `comptype'*`, typeuse <- `typeuse*`, `typeuse'*` <- `typeuse'**`}
+    -- Comptype_ok: `%|-%:OK`(C, comptype)
+    -- (Comptype_sub: `%|-%<:%`(C, comptype, comptype'))*{comptype' <- `comptype'*`}
+
+;; 2.1-validation.types.watsup:90.1-90.126
+relation Rectype_ok2: `%|-%:%`(context, rectype, oktypeidxnat)
+  ;; 2.1-validation.types.watsup:181.1-182.24
+  rule empty{C : context, x : idx, i : nat}:
+    `%|-%:%`(C, REC_rectype(`%`_list([])), OK_oktypeidxnat(x, i))
+
+  ;; 2.1-validation.types.watsup:184.1-187.55
+  rule cons{C : context, subtype_1 : subtype, `subtype*` : subtype*, x : idx, i : nat}:
+    `%|-%:%`(C, REC_rectype(`%`_list([subtype_1] ++ subtype*{subtype <- `subtype*`})), OK_oktypeidxnat(x, i))
+    -- Subtype_ok2: `%|-%:%`(C, subtype_1, OK_oktypeidxnat(x, i))
+    -- Rectype_ok2: `%|-%:%`(C, REC_rectype(`%`_list(subtype*{subtype <- `subtype*`})), OK_oktypeidxnat(`%`_typeidx((x!`%`_idx.0 + 1)), (i + 1)))
+
+;; 2.1-validation.types.watsup:91.1-91.102
+relation Deftype_ok: `%|-%:OK`(context, deftype)
+  ;; 2.1-validation.types.watsup:190.1-194.14
+  rule _{C : context, rectype : rectype, i : n, x : idx, `subtype*` : subtype*, n : n}:
+    `%|-%:OK`(C, DEF_deftype(rectype, i))
+    -- Rectype_ok: `%|-%:%`(C, rectype, OK_oktypeidx(x))
+    -- if (rectype = REC_rectype(`%`_list(subtype^n{subtype <- `subtype*`})))
+    -- if (i < n)
+
+;; 2.1-validation.types.watsup:94.1-94.108
+relation Comptype_sub: `%|-%<:%`(context, comptype, comptype)
+  ;; 2.2-validation.subtyping.watsup:162.1-164.41
+  rule struct{C : context, `yt_1*` : fieldtype*, yt'_1 : fieldtype, `yt_2*` : fieldtype*}:
+    `%|-%<:%`(C, STRUCT_comptype(`%`_structtype(yt_1*{yt_1 <- `yt_1*`} ++ [yt'_1])), STRUCT_comptype(`%`_structtype(yt_2*{yt_2 <- `yt_2*`})))
+    -- (Fieldtype_sub: `%|-%<:%`(C, yt_1, yt_2))*{yt_1 <- `yt_1*`, yt_2 <- `yt_2*`}
+
+  ;; 2.2-validation.subtyping.watsup:166.1-168.38
+  rule array{C : context, yt_1 : fieldtype, yt_2 : fieldtype}:
+    `%|-%<:%`(C, ARRAY_comptype(yt_1), ARRAY_comptype(yt_2))
+    -- Fieldtype_sub: `%|-%<:%`(C, yt_1, yt_2)
+
+  ;; 2.2-validation.subtyping.watsup:170.1-172.37
+  rule func{C : context, ft_1 : functype, ft_2 : functype}:
+    `%|-%<:%`(C, FUNC_comptype(ft_1), FUNC_comptype(ft_2))
+    -- Functype_sub: `%|-%<:%`(C, ft_1, ft_2)
+
+;; 2.1-validation.types.watsup:95.1-95.107
 relation Deftype_sub: `%|-%<:%`(context, deftype, deftype)
   ;; 2.2-validation.subtyping.watsup:175.1-177.66
   rule refl{C : context, deftype_1 : deftype, deftype_2 : deftype}:
@@ -2870,189 +2974,101 @@ relation Heaptype_sub: `%|-%<:%`(context, heaptype, heaptype)
   ;; 2.2-validation.subtyping.watsup:81.1-82.23
   rule bot{C : context, heaptype : heaptype}:
     `%|-%<:%`(C, BOT_heaptype, heaptype)
-}
 
-;; 2.2-validation.subtyping.watsup
+;; 2.2-validation.subtyping.watsup:10.1-10.103
 relation Reftype_sub: `%|-%<:%`(context, reftype, reftype)
-  ;; 2.2-validation.subtyping.watsup
+  ;; 2.2-validation.subtyping.watsup:85.1-87.37
   rule nonnull{C : context, ht_1 : heaptype, ht_2 : heaptype}:
     `%|-%<:%`(C, REF_reftype(?(), ht_1), REF_reftype(?(), ht_2))
     -- Heaptype_sub: `%|-%<:%`(C, ht_1, ht_2)
 
-  ;; 2.2-validation.subtyping.watsup
+  ;; 2.2-validation.subtyping.watsup:89.1-91.37
   rule null{C : context, ht_1 : heaptype, ht_2 : heaptype}:
     `%|-%<:%`(C, REF_reftype(NULL_NULL?{}, ht_1), REF_reftype(?(NULL_NULL), ht_2))
     -- Heaptype_sub: `%|-%<:%`(C, ht_1, ht_2)
 
-;; 2.2-validation.subtyping.watsup
-relation Vectype_sub: `%|-%<:%`(context, vectype, vectype)
-  ;; 2.2-validation.subtyping.watsup
-  rule _{C : context, vectype : vectype}:
-    `%|-%<:%`(C, vectype, vectype)
-
-;; 2.2-validation.subtyping.watsup
+;; 2.2-validation.subtyping.watsup:11.1-11.103
 relation Valtype_sub: `%|-%<:%`(context, valtype, valtype)
-  ;; 2.2-validation.subtyping.watsup
+  ;; 2.2-validation.subtyping.watsup:94.1-96.46
   rule num{C : context, numtype_1 : numtype, numtype_2 : numtype}:
     `%|-%<:%`(C, (numtype_1 : numtype <: valtype), (numtype_2 : numtype <: valtype))
     -- Numtype_sub: `%|-%<:%`(C, numtype_1, numtype_2)
 
-  ;; 2.2-validation.subtyping.watsup
+  ;; 2.2-validation.subtyping.watsup:98.1-100.46
   rule vec{C : context, vectype_1 : vectype, vectype_2 : vectype}:
     `%|-%<:%`(C, (vectype_1 : vectype <: valtype), (vectype_2 : vectype <: valtype))
     -- Vectype_sub: `%|-%<:%`(C, vectype_1, vectype_2)
 
-  ;; 2.2-validation.subtyping.watsup
+  ;; 2.2-validation.subtyping.watsup:102.1-104.46
   rule ref{C : context, reftype_1 : reftype, reftype_2 : reftype}:
     `%|-%<:%`(C, (reftype_1 : reftype <: valtype), (reftype_2 : reftype <: valtype))
     -- Reftype_sub: `%|-%<:%`(C, reftype_1, reftype_2)
 
-  ;; 2.2-validation.subtyping.watsup
+  ;; 2.2-validation.subtyping.watsup:106.1-107.22
   rule bot{C : context, valtype : valtype}:
     `%|-%<:%`(C, BOT_valtype, valtype)
 
-;; 2.2-validation.subtyping.watsup
+;; 2.2-validation.subtyping.watsup:112.1-112.115
+relation Resulttype_sub: `%|-%<:%`(context, resulttype, resulttype)
+  ;; 2.2-validation.subtyping.watsup:115.1-117.37
+  rule _{C : context, `t_1*` : valtype*, `t_2*` : valtype*}:
+    `%|-%<:%`(C, `%`_resulttype(t_1*{t_1 <- `t_1*`}), `%`_resulttype(t_2*{t_2 <- `t_2*`}))
+    -- (Valtype_sub: `%|-%<:%`(C, t_1, t_2))*{t_1 <- `t_1*`, t_2 <- `t_2*`}
+
+;; 2.2-validation.subtyping.watsup:130.1-130.119
 relation Storagetype_sub: `%|-%<:%`(context, storagetype, storagetype)
-  ;; 2.2-validation.subtyping.watsup
+  ;; 2.2-validation.subtyping.watsup:143.1-145.46
   rule val{C : context, valtype_1 : valtype, valtype_2 : valtype}:
     `%|-%<:%`(C, (valtype_1 : valtype <: storagetype), (valtype_2 : valtype <: storagetype))
     -- Valtype_sub: `%|-%<:%`(C, valtype_1, valtype_2)
 
-  ;; 2.2-validation.subtyping.watsup
+  ;; 2.2-validation.subtyping.watsup:147.1-149.49
   rule pack{C : context, packtype_1 : packtype, packtype_2 : packtype}:
     `%|-%<:%`(C, (packtype_1 : packtype <: storagetype), (packtype_2 : packtype <: storagetype))
     -- Packtype_sub: `%|-%<:%`(C, packtype_1, packtype_2)
 
-;; 2.2-validation.subtyping.watsup
+;; 2.2-validation.subtyping.watsup:131.1-131.117
 relation Fieldtype_sub: `%|-%<:%`(context, fieldtype, fieldtype)
-  ;; 2.2-validation.subtyping.watsup
+  ;; 2.2-validation.subtyping.watsup:152.1-154.40
   rule const{C : context, zt_1 : storagetype, zt_2 : storagetype}:
     `%|-%<:%`(C, `%%`_fieldtype(?(), zt_1), `%%`_fieldtype(?(), zt_2))
     -- Storagetype_sub: `%|-%<:%`(C, zt_1, zt_2)
 
-  ;; 2.2-validation.subtyping.watsup
+  ;; 2.2-validation.subtyping.watsup:156.1-159.40
   rule var{C : context, zt_1 : storagetype, zt_2 : storagetype}:
     `%|-%<:%`(C, `%%`_fieldtype(?(MUT_MUT), zt_1), `%%`_fieldtype(?(MUT_MUT), zt_2))
     -- Storagetype_sub: `%|-%<:%`(C, zt_1, zt_2)
     -- Storagetype_sub: `%|-%<:%`(C, zt_2, zt_1)
 
-;; 2.2-validation.subtyping.watsup
-relation Resulttype_sub: `%|-%<:%`(context, resulttype, resulttype)
-  ;; 2.2-validation.subtyping.watsup
-  rule _{C : context, `t_1*` : valtype*, `t_2*` : valtype*}:
-    `%|-%<:%`(C, `%`_resulttype(t_1*{t_1 <- `t_1*`}), `%`_resulttype(t_2*{t_2 <- `t_2*`}))
-    -- (Valtype_sub: `%|-%<:%`(C, t_1, t_2))*{t_1 <- `t_1*`, t_2 <- `t_2*`}
-
-;; 2.2-validation.subtyping.watsup
+;; 2.2-validation.subtyping.watsup:132.1-132.116
 relation Functype_sub: `%|-%<:%`(context, functype, functype)
-  ;; 2.2-validation.subtyping.watsup
+  ;; 2.2-validation.subtyping.watsup:200.1-203.41
   rule _{C : context, `t_11*` : valtype*, `t_12*` : valtype*, `t_21*` : valtype*, `t_22*` : valtype*}:
     `%|-%<:%`(C, `%->%`_functype(`%`_resulttype(t_11*{t_11 <- `t_11*`}), `%`_resulttype(t_12*{t_12 <- `t_12*`})), `%->%`_functype(`%`_resulttype(t_21*{t_21 <- `t_21*`}), `%`_resulttype(t_22*{t_22 <- `t_22*`})))
     -- Resulttype_sub: `%|-%<:%`(C, `%`_resulttype(t_21*{t_21 <- `t_21*`}), `%`_resulttype(t_11*{t_11 <- `t_11*`}))
     -- Resulttype_sub: `%|-%<:%`(C, `%`_resulttype(t_12*{t_12 <- `t_12*`}), `%`_resulttype(t_22*{t_22 <- `t_22*`}))
-
-;; 2.1-validation.types.watsup
-relation Comptype_sub: `%|-%<:%`(context, comptype, comptype)
-  ;; 2.2-validation.subtyping.watsup
-  rule struct{C : context, `yt_1*` : fieldtype*, yt'_1 : fieldtype, `yt_2*` : fieldtype*}:
-    `%|-%<:%`(C, STRUCT_comptype(`%`_structtype(yt_1*{yt_1 <- `yt_1*`} ++ [yt'_1])), STRUCT_comptype(`%`_structtype(yt_2*{yt_2 <- `yt_2*`})))
-    -- (Fieldtype_sub: `%|-%<:%`(C, yt_1, yt_2))*{yt_1 <- `yt_1*`, yt_2 <- `yt_2*`}
-
-  ;; 2.2-validation.subtyping.watsup
-  rule array{C : context, yt_1 : fieldtype, yt_2 : fieldtype}:
-    `%|-%<:%`(C, ARRAY_comptype(yt_1), ARRAY_comptype(yt_2))
-    -- Fieldtype_sub: `%|-%<:%`(C, yt_1, yt_2)
-
-  ;; 2.2-validation.subtyping.watsup
-  rule func{C : context, ft_1 : functype, ft_2 : functype}:
-    `%|-%<:%`(C, FUNC_comptype(ft_1), FUNC_comptype(ft_2))
-    -- Functype_sub: `%|-%<:%`(C, ft_1, ft_2)
-
-;; 2.1-validation.types.watsup
-relation Subtype_ok: `%|-%:%`(context, subtype, oktypeidx)
-  ;; 2.1-validation.types.watsup
-  rule _{C : context, `x*` : idx*, comptype : comptype, x_0 : idx, `x'**` : idx**, `comptype'*` : comptype*}:
-    `%|-%:%`(C, SUB_subtype(FINAL_FINAL?{}, _IDX_typeuse(x)*{x <- `x*`}, comptype), OK_oktypeidx(x_0))
-    -- if (|x*{x <- `x*`}| <= 1)
-    -- (if (x!`%`_idx.0 < x_0!`%`_idx.0))*{x <- `x*`}
-    -- (if ($unrolldt(C.TYPES_context[x!`%`_idx.0]) = SUB_subtype(?(), _IDX_typeuse(x')*{x' <- `x'*`}, comptype')))*{comptype' <- `comptype'*`, x <- `x*`, `x'*` <- `x'**`}
-    -- Comptype_ok: `%|-%:OK`(C, comptype)
-    -- (Comptype_sub: `%|-%<:%`(C, comptype, comptype'))*{comptype' <- `comptype'*`}
-
-;; 2.1-validation.types.watsup
-def $before(typeuse : typeuse, typeidx : typeidx, nat : nat) : bool
-  ;; 2.1-validation.types.watsup
-  def $before{deftype : deftype, x : idx, i : nat}((deftype : deftype <: typeuse), x, i) = true
-  ;; 2.1-validation.types.watsup
-  def $before{typeidx : typeidx, x : idx, i : nat}(_IDX_typeuse(typeidx), x, i) = (typeidx!`%`_typeidx.0 < x!`%`_idx.0)
-  ;; 2.1-validation.types.watsup
-  def $before{j : nat, x : idx, i : nat}(REC_typeuse(j), x, i) = (j < i)
-
-;; 2.1-validation.types.watsup
-def $unrollht(context : context, heaptype : heaptype) : subtype
-  ;; 2.1-validation.types.watsup
-  def $unrollht{C : context, deftype : deftype}(C, (deftype : deftype <: heaptype)) = $unrolldt(deftype)
-  ;; 2.1-validation.types.watsup
-  def $unrollht{C : context, typeidx : typeidx}(C, _IDX_heaptype(typeidx)) = $unrolldt(C.TYPES_context[typeidx!`%`_typeidx.0])
-  ;; 2.1-validation.types.watsup
-  def $unrollht{C : context, i : nat}(C, REC_heaptype(i)) = C.RECS_context[i]
-
-;; 2.1-validation.types.watsup
-relation Subtype_ok2: `%|-%:%`(context, subtype, oktypeidxnat)
-  ;; 2.1-validation.types.watsup
-  rule _{C : context, `typeuse*` : typeuse*, compttype : comptype, x : idx, i : nat, `typeuse'**` : typeuse**, `comptype'*` : comptype*, comptype : comptype}:
-    `%|-%:%`(C, SUB_subtype(FINAL_FINAL?{}, typeuse*{typeuse <- `typeuse*`}, compttype), OK_oktypeidxnat(x, i))
-    -- if (|typeuse*{typeuse <- `typeuse*`}| <= 1)
-    -- (if $before(typeuse, x, i))*{typeuse <- `typeuse*`}
-    -- (if ($unrollht(C, (typeuse : typeuse <: heaptype)) = SUB_subtype(?(), typeuse'*{typeuse' <- `typeuse'*`}, comptype')))*{comptype' <- `comptype'*`, typeuse <- `typeuse*`, `typeuse'*` <- `typeuse'**`}
-    -- Comptype_ok: `%|-%:OK`(C, comptype)
-    -- (Comptype_sub: `%|-%<:%`(C, comptype, comptype'))*{comptype' <- `comptype'*`}
-
-;; 2.1-validation.types.watsup
-rec {
-
-;; 2.1-validation.types.watsup:80.1-80.126
-relation Rectype_ok2: `%|-%:%`(context, rectype, oktypeidxnat)
-  ;; 2.1-validation.types.watsup:158.1-159.24
-  rule empty{C : context, x : idx, i : nat}:
-    `%|-%:%`(C, REC_rectype(`%`_list([])), OK_oktypeidxnat(x, i))
-
-  ;; 2.1-validation.types.watsup:161.1-164.55
-  rule cons{C : context, subtype_1 : subtype, `subtype*` : subtype*, x : idx, i : nat}:
-    `%|-%:%`(C, REC_rectype(`%`_list([subtype_1] ++ subtype*{subtype <- `subtype*`})), OK_oktypeidxnat(x, i))
-    -- Subtype_ok2: `%|-%:%`(C, subtype_1, OK_oktypeidxnat(x, i))
-    -- Rectype_ok2: `%|-%:%`(C, REC_rectype(`%`_list(subtype*{subtype <- `subtype*`})), OK_oktypeidxnat(`%`_typeidx((x!`%`_idx.0 + 1)), (i + 1)))
 }
 
 ;; 2.1-validation.types.watsup
-rec {
-
-;; 2.1-validation.types.watsup:78.1-78.123
-relation Rectype_ok: `%|-%:%`(context, rectype, oktypeidx)
-  ;; 2.1-validation.types.watsup:146.1-147.23
-  rule empty{C : context, x : idx}:
-    `%|-%:%`(C, REC_rectype(`%`_list([])), OK_oktypeidx(x))
-
-  ;; 2.1-validation.types.watsup:149.1-152.48
-  rule cons{C : context, subtype_1 : subtype, `subtype*` : subtype*, x : idx}:
-    `%|-%:%`(C, REC_rectype(`%`_list([subtype_1] ++ subtype*{subtype <- `subtype*`})), OK_oktypeidx(x))
-    -- Subtype_ok: `%|-%:%`(C, subtype_1, OK_oktypeidx(x))
-    -- Rectype_ok: `%|-%:%`(C, REC_rectype(`%`_list(subtype*{subtype <- `subtype*`})), OK_oktypeidx(`%`_typeidx((x!`%`_idx.0 + 1))))
-
-  ;; 2.1-validation.types.watsup:154.1-156.60
-  rule _rec2{C : context, `subtype*` : subtype*, x : idx}:
-    `%|-%:%`(C, REC_rectype(`%`_list(subtype*{subtype <- `subtype*`})), OK_oktypeidx(x))
-    -- Rectype_ok2: `%|-%:%`({TYPES [], RECS subtype*{subtype <- `subtype*`}, FUNCS [], GLOBALS [], TABLES [], MEMS [], TAGS [], ELEMS [], DATAS [], LOCALS [], LABELS [], RETURN ?(), REFS []} +++ C, REC_rectype(`%`_list(subtype*{subtype <- `subtype*`})), OK_oktypeidxnat(x, 0))
-}
+relation Instrtype_ok: `%|-%:OK`(context, instrtype)
+  ;; 2.1-validation.types.watsup
+  rule _{C : context, `t_1*` : valtype*, `x*` : idx*, `t_2*` : valtype*, `lct*` : localtype*}:
+    `%|-%:OK`(C, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), x*{x <- `x*`}, `%`_resulttype(t_2*{t_2 <- `t_2*`})))
+    -- Resulttype_ok: `%|-%:OK`(C, `%`_resulttype(t_1*{t_1 <- `t_1*`}))
+    -- Resulttype_ok: `%|-%:OK`(C, `%`_resulttype(t_2*{t_2 <- `t_2*`}))
+    -- (if (C.LOCALS_context[x!`%`_idx.0] = lct))*{lct <- `lct*`, x <- `x*`}
 
 ;; 2.1-validation.types.watsup
-relation Deftype_ok: `%|-%:OK`(context, deftype)
+relation Expand_use: `%~~_%%`(typeuse, context, comptype)
   ;; 2.1-validation.types.watsup
-  rule _{C : context, rectype : rectype, i : n, x : idx, `subtype*` : subtype*, n : n}:
-    `%|-%:OK`(C, DEF_deftype(rectype, i))
-    -- Rectype_ok: `%|-%:%`(C, rectype, OK_oktypeidx(x))
-    -- if (rectype = REC_rectype(`%`_list(subtype^n{subtype <- `subtype*`})))
-    -- if (i < n)
+  rule deftype{deftype : deftype, C : context, comptype : comptype}:
+    `%~~_%%`((deftype : deftype <: typeuse), C, comptype)
+    -- Expand: `%~~%`(deftype, comptype)
+
+  ;; 2.1-validation.types.watsup
+  rule typeidx{typeidx : typeidx, C : context, comptype : comptype}:
+    `%~~_%%`(_IDX_typeuse(typeidx), C, comptype)
+    -- Expand: `%~~%`(C.TYPES_context[typeidx!`%`_typeidx.0], comptype)
 
 ;; 2.1-validation.types.watsup
 relation Limits_ok: `%|-%:%`(context, limits, nat)
@@ -3094,10 +3110,10 @@ relation Tagtype_ok: `%|-%:OK`(context, tagtype)
 ;; 2.1-validation.types.watsup
 relation Externtype_ok: `%|-%:OK`(context, externtype)
   ;; 2.1-validation.types.watsup
-  rule func{C : context, deftype : deftype, functype : functype}:
-    `%|-%:OK`(C, FUNC_externtype((deftype : deftype <: typeuse)))
-    -- Deftype_ok: `%|-%:OK`(C, deftype)
-    -- Expand: `%~~%`(deftype, FUNC_comptype(functype))
+  rule func{C : context, typeuse : typeuse, functype : functype}:
+    `%|-%:OK`(C, FUNC_externtype(typeuse))
+    -- Typeuse_ok: `%|-%:OK`(C, typeuse)
+    -- Expand_use: `%~~_%%`(typeuse, C, FUNC_comptype(functype))
 
   ;; 2.1-validation.types.watsup
   rule global{C : context, globaltype : globaltype}:
@@ -3115,9 +3131,10 @@ relation Externtype_ok: `%|-%:OK`(context, externtype)
     -- Memtype_ok: `%|-%:OK`(C, memtype)
 
   ;; 2.1-validation.types.watsup
-  rule tag{C : context, tagtype : tagtype}:
-    `%|-%:OK`(C, TAG_externtype((tagtype : deftype <: typeuse)))
-    -- Tagtype_ok: `%|-%:OK`(C, tagtype)
+  rule tag{C : context, typeuse : typeuse, functype : functype}:
+    `%|-%:OK`(C, TAG_externtype(typeuse))
+    -- Typeuse_ok: `%|-%:OK`(C, typeuse)
+    -- Expand_use: `%~~_%%`(typeuse, C, FUNC_comptype(functype))
 
 ;; 2.2-validation.subtyping.watsup
 relation Instrtype_sub: `%|-%<:%`(context, instrtype, instrtype)
@@ -9875,13 +9892,13 @@ def $diffrt(reftype : reftype, reftype : reftype) : reftype
 ;; 1.2-syntax.types.watsup
 rec {
 
-;; 1.2-syntax.types.watsup:295.1-295.88
+;; 1.2-syntax.types.watsup:293.1-293.88
 def $funcsxt(externtype*) : deftype*
-  ;; 1.2-syntax.types.watsup:301.1-301.24
+  ;; 1.2-syntax.types.watsup:299.1-299.24
   def $funcsxt([]) = []
-  ;; 1.2-syntax.types.watsup:302.1-302.47
+  ;; 1.2-syntax.types.watsup:300.1-300.47
   def $funcsxt{dt : deftype, `xt*` : externtype*}([FUNC_externtype((dt : deftype <: typeuse))] ++ xt*{xt <- `xt*`}) = [dt] ++ $funcsxt(xt*{xt <- `xt*`})
-  ;; 1.2-syntax.types.watsup:303.1-303.59
+  ;; 1.2-syntax.types.watsup:301.1-301.59
   def $funcsxt{externtype : externtype, `xt*` : externtype*}([externtype] ++ xt*{xt <- `xt*`}) = $funcsxt(xt*{xt <- `xt*`})
     -- otherwise
 }
@@ -9889,13 +9906,13 @@ def $funcsxt(externtype*) : deftype*
 ;; 1.2-syntax.types.watsup
 rec {
 
-;; 1.2-syntax.types.watsup:296.1-296.90
+;; 1.2-syntax.types.watsup:294.1-294.90
 def $globalsxt(externtype*) : globaltype*
-  ;; 1.2-syntax.types.watsup:305.1-305.26
+  ;; 1.2-syntax.types.watsup:303.1-303.26
   def $globalsxt([]) = []
-  ;; 1.2-syntax.types.watsup:306.1-306.53
+  ;; 1.2-syntax.types.watsup:304.1-304.53
   def $globalsxt{gt : globaltype, `xt*` : externtype*}([GLOBAL_externtype(gt)] ++ xt*{xt <- `xt*`}) = [gt] ++ $globalsxt(xt*{xt <- `xt*`})
-  ;; 1.2-syntax.types.watsup:307.1-307.63
+  ;; 1.2-syntax.types.watsup:305.1-305.63
   def $globalsxt{externtype : externtype, `xt*` : externtype*}([externtype] ++ xt*{xt <- `xt*`}) = $globalsxt(xt*{xt <- `xt*`})
     -- otherwise
 }
@@ -9903,13 +9920,13 @@ def $globalsxt(externtype*) : globaltype*
 ;; 1.2-syntax.types.watsup
 rec {
 
-;; 1.2-syntax.types.watsup:297.1-297.89
+;; 1.2-syntax.types.watsup:295.1-295.89
 def $tablesxt(externtype*) : tabletype*
-  ;; 1.2-syntax.types.watsup:309.1-309.25
+  ;; 1.2-syntax.types.watsup:307.1-307.25
   def $tablesxt([]) = []
-  ;; 1.2-syntax.types.watsup:310.1-310.50
+  ;; 1.2-syntax.types.watsup:308.1-308.50
   def $tablesxt{tt : tabletype, `xt*` : externtype*}([TABLE_externtype(tt)] ++ xt*{xt <- `xt*`}) = [tt] ++ $tablesxt(xt*{xt <- `xt*`})
-  ;; 1.2-syntax.types.watsup:311.1-311.61
+  ;; 1.2-syntax.types.watsup:309.1-309.61
   def $tablesxt{externtype : externtype, `xt*` : externtype*}([externtype] ++ xt*{xt <- `xt*`}) = $tablesxt(xt*{xt <- `xt*`})
     -- otherwise
 }
@@ -9917,13 +9934,13 @@ def $tablesxt(externtype*) : tabletype*
 ;; 1.2-syntax.types.watsup
 rec {
 
-;; 1.2-syntax.types.watsup:298.1-298.87
+;; 1.2-syntax.types.watsup:296.1-296.87
 def $memsxt(externtype*) : memtype*
-  ;; 1.2-syntax.types.watsup:313.1-313.23
+  ;; 1.2-syntax.types.watsup:311.1-311.23
   def $memsxt([]) = []
-  ;; 1.2-syntax.types.watsup:314.1-314.44
+  ;; 1.2-syntax.types.watsup:312.1-312.44
   def $memsxt{mt : memtype, `xt*` : externtype*}([MEM_externtype(mt)] ++ xt*{xt <- `xt*`}) = [mt] ++ $memsxt(xt*{xt <- `xt*`})
-  ;; 1.2-syntax.types.watsup:315.1-315.57
+  ;; 1.2-syntax.types.watsup:313.1-313.57
   def $memsxt{externtype : externtype, `xt*` : externtype*}([externtype] ++ xt*{xt <- `xt*`}) = $memsxt(xt*{xt <- `xt*`})
     -- otherwise
 }
@@ -9931,13 +9948,13 @@ def $memsxt(externtype*) : memtype*
 ;; 1.2-syntax.types.watsup
 rec {
 
-;; 1.2-syntax.types.watsup:299.1-299.87
+;; 1.2-syntax.types.watsup:297.1-297.87
 def $tagsxt(externtype*) : tagtype*
-  ;; 1.2-syntax.types.watsup:317.1-317.23
+  ;; 1.2-syntax.types.watsup:315.1-315.23
   def $tagsxt([]) = []
-  ;; 1.2-syntax.types.watsup:318.1-318.44
+  ;; 1.2-syntax.types.watsup:316.1-316.44
   def $tagsxt{jt : tagtype, `xt*` : externtype*}([TAG_externtype((jt : deftype <: typeuse))] ++ xt*{xt <- `xt*`}) = [jt] ++ $tagsxt(xt*{xt <- `xt*`})
-  ;; 1.2-syntax.types.watsup:319.1-319.57
+  ;; 1.2-syntax.types.watsup:317.1-317.57
   def $tagsxt{externtype : externtype, `xt*` : externtype*}([externtype] ++ xt*{xt <- `xt*`}) = $tagsxt(xt*{xt <- `xt*`})
     -- otherwise
 }
@@ -9945,14 +9962,14 @@ def $tagsxt(externtype*) : tagtype*
 ;; 1.2-syntax.types.watsup
 rec {
 
-;; 1.2-syntax.types.watsup:324.1-324.112
+;; 1.2-syntax.types.watsup:322.1-322.112
 def $subst_typevar(typevar : typevar, typevar*, typeuse*) : typeuse
-  ;; 1.2-syntax.types.watsup:353.1-353.38
+  ;; 1.2-syntax.types.watsup:351.1-351.38
   def $subst_typevar{tv : typevar}(tv, [], []) = (tv : typevar <: typeuse)
-  ;; 1.2-syntax.types.watsup:354.1-354.95
+  ;; 1.2-syntax.types.watsup:352.1-352.95
   def $subst_typevar{tv : typevar, tv_1 : typevar, `tv'*` : typevar*, tu_1 : typeuse, `tu'*` : typeuse*}(tv, [tv_1] ++ tv'*{tv' <- `tv'*`}, [tu_1] ++ tu'*{tu' <- `tu'*`}) = tu_1
     -- if (tv = tv_1)
-  ;; 1.2-syntax.types.watsup:355.1-355.92
+  ;; 1.2-syntax.types.watsup:353.1-353.92
   def $subst_typevar{tv : typevar, tv_1 : typevar, `tv'*` : typevar*, tu_1 : typeuse, `tu'*` : typeuse*}(tv, [tv_1] ++ tv'*{tv' <- `tv'*`}, [tu_1] ++ tu'*{tu' <- `tu'*`}) = $subst_typevar(tv, tv'*{tv' <- `tv'*`}, tu'*{tu' <- `tu'*`})
     -- otherwise
 }
@@ -9975,78 +9992,78 @@ def $subst_vectype(vectype : vectype, typevar*, typeuse*) : vectype
 ;; 1.2-syntax.types.watsup
 rec {
 
-;; 1.2-syntax.types.watsup:325.1-325.112
+;; 1.2-syntax.types.watsup:323.1-323.112
 def $subst_typeuse(typeuse : typeuse, typevar*, typeuse*) : typeuse
-  ;; 1.2-syntax.types.watsup:357.1-357.66
+  ;; 1.2-syntax.types.watsup:355.1-355.66
   def $subst_typeuse{tv' : typevar, `tv*` : typevar*, `tu*` : typeuse*}((tv' : typevar <: typeuse), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = $subst_typevar(tv', tv*{tv <- `tv*`}, tu*{tu <- `tu*`})
-  ;; 1.2-syntax.types.watsup:358.1-358.64
+  ;; 1.2-syntax.types.watsup:356.1-356.64
   def $subst_typeuse{dt : deftype, `tv*` : typevar*, `tu*` : typeuse*}((dt : deftype <: typeuse), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ($subst_deftype(dt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) : deftype <: typeuse)
 
-;; 1.2-syntax.types.watsup:330.1-330.112
+;; 1.2-syntax.types.watsup:328.1-328.112
 def $subst_heaptype(heaptype : heaptype, typevar*, typeuse*) : heaptype
-  ;; 1.2-syntax.types.watsup:364.1-364.67
+  ;; 1.2-syntax.types.watsup:362.1-362.67
   def $subst_heaptype{tv' : typevar, `tv*` : typevar*, `tu*` : typeuse*}((tv' : typevar <: heaptype), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ($subst_typevar(tv', tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) : typeuse <: heaptype)
-  ;; 1.2-syntax.types.watsup:365.1-365.65
+  ;; 1.2-syntax.types.watsup:363.1-363.65
   def $subst_heaptype{dt : deftype, `tv*` : typevar*, `tu*` : typeuse*}((dt : deftype <: heaptype), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ($subst_deftype(dt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) : deftype <: heaptype)
-  ;; 1.2-syntax.types.watsup:366.1-366.53
+  ;; 1.2-syntax.types.watsup:364.1-364.53
   def $subst_heaptype{ht : heaptype, `tv*` : typevar*, `tu*` : typeuse*}(ht, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ht
     -- otherwise
 
-;; 1.2-syntax.types.watsup:331.1-331.112
+;; 1.2-syntax.types.watsup:329.1-329.112
 def $subst_reftype(reftype : reftype, typevar*, typeuse*) : reftype
-  ;; 1.2-syntax.types.watsup:368.1-368.83
+  ;; 1.2-syntax.types.watsup:366.1-366.83
   def $subst_reftype{nul : nul, ht : heaptype, `tv*` : typevar*, `tu*` : typeuse*}(REF_reftype(nul, ht), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = REF_reftype(nul, $subst_heaptype(ht, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}))
 
-;; 1.2-syntax.types.watsup:332.1-332.112
+;; 1.2-syntax.types.watsup:330.1-330.112
 def $subst_valtype(valtype : valtype, typevar*, typeuse*) : valtype
-  ;; 1.2-syntax.types.watsup:370.1-370.64
+  ;; 1.2-syntax.types.watsup:368.1-368.64
   def $subst_valtype{nt : numtype, `tv*` : typevar*, `tu*` : typeuse*}((nt : numtype <: valtype), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ($subst_numtype(nt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) : numtype <: valtype)
-  ;; 1.2-syntax.types.watsup:371.1-371.64
+  ;; 1.2-syntax.types.watsup:369.1-369.64
   def $subst_valtype{vt : vectype, `tv*` : typevar*, `tu*` : typeuse*}((vt : vectype <: valtype), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ($subst_vectype(vt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) : vectype <: valtype)
-  ;; 1.2-syntax.types.watsup:372.1-372.64
+  ;; 1.2-syntax.types.watsup:370.1-370.64
   def $subst_valtype{rt : reftype, `tv*` : typevar*, `tu*` : typeuse*}((rt : reftype <: valtype), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ($subst_reftype(rt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) : reftype <: valtype)
-  ;; 1.2-syntax.types.watsup:373.1-373.40
+  ;; 1.2-syntax.types.watsup:371.1-371.40
   def $subst_valtype{`tv*` : typevar*, `tu*` : typeuse*}(BOT_valtype, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = BOT_valtype
 
-;; 1.2-syntax.types.watsup:335.1-335.112
+;; 1.2-syntax.types.watsup:333.1-333.112
 def $subst_storagetype(storagetype : storagetype, typevar*, typeuse*) : storagetype
-  ;; 1.2-syntax.types.watsup:377.1-377.66
+  ;; 1.2-syntax.types.watsup:375.1-375.66
   def $subst_storagetype{t : valtype, `tv*` : typevar*, `tu*` : typeuse*}((t : valtype <: storagetype), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ($subst_valtype(t, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) : valtype <: storagetype)
-  ;; 1.2-syntax.types.watsup:378.1-378.69
+  ;; 1.2-syntax.types.watsup:376.1-376.69
   def $subst_storagetype{pt : packtype, `tv*` : typevar*, `tu*` : typeuse*}((pt : packtype <: storagetype), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ($subst_packtype(pt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) : packtype <: storagetype)
 
-;; 1.2-syntax.types.watsup:336.1-336.112
+;; 1.2-syntax.types.watsup:334.1-334.112
 def $subst_fieldtype(fieldtype : fieldtype, typevar*, typeuse*) : fieldtype
-  ;; 1.2-syntax.types.watsup:380.1-380.80
+  ;; 1.2-syntax.types.watsup:378.1-378.80
   def $subst_fieldtype{mut : mut, zt : storagetype, `tv*` : typevar*, `tu*` : typeuse*}(`%%`_fieldtype(mut, zt), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = `%%`_fieldtype(mut, $subst_storagetype(zt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}))
 
-;; 1.2-syntax.types.watsup:338.1-338.112
+;; 1.2-syntax.types.watsup:336.1-336.112
 def $subst_comptype(comptype : comptype, typevar*, typeuse*) : comptype
-  ;; 1.2-syntax.types.watsup:382.1-382.85
+  ;; 1.2-syntax.types.watsup:380.1-380.85
   def $subst_comptype{`yt*` : fieldtype*, `tv*` : typevar*, `tu*` : typeuse*}(STRUCT_comptype(`%`_structtype(yt*{yt <- `yt*`})), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = STRUCT_comptype(`%`_structtype($subst_fieldtype(yt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`})*{yt <- `yt*`}))
-  ;; 1.2-syntax.types.watsup:383.1-383.81
+  ;; 1.2-syntax.types.watsup:381.1-381.81
   def $subst_comptype{yt : fieldtype, `tv*` : typevar*, `tu*` : typeuse*}(ARRAY_comptype(yt), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ARRAY_comptype($subst_fieldtype(yt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}))
-  ;; 1.2-syntax.types.watsup:384.1-384.78
+  ;; 1.2-syntax.types.watsup:382.1-382.78
   def $subst_comptype{ft : functype, `tv*` : typevar*, `tu*` : typeuse*}(FUNC_comptype(ft), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = FUNC_comptype($subst_functype(ft, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}))
 
-;; 1.2-syntax.types.watsup:339.1-339.112
+;; 1.2-syntax.types.watsup:337.1-337.112
 def $subst_subtype(subtype : subtype, typevar*, typeuse*) : subtype
-  ;; 1.2-syntax.types.watsup:386.1-387.71
+  ;; 1.2-syntax.types.watsup:384.1-385.71
   def $subst_subtype{fin : fin, `tu'*` : typeuse*, ct : comptype, `tv*` : typevar*, `tu*` : typeuse*}(SUB_subtype(fin, tu'*{tu' <- `tu'*`}, ct), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = SUB_subtype(fin, $subst_typeuse(tu', tv*{tv <- `tv*`}, tu*{tu <- `tu*`})*{tu' <- `tu'*`}, $subst_comptype(ct, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}))
 
-;; 1.2-syntax.types.watsup:340.1-340.112
+;; 1.2-syntax.types.watsup:338.1-338.112
 def $subst_rectype(rectype : rectype, typevar*, typeuse*) : rectype
-  ;; 1.2-syntax.types.watsup:389.1-389.76
+  ;; 1.2-syntax.types.watsup:387.1-387.76
   def $subst_rectype{`st*` : subtype*, `tv*` : typevar*, `tu*` : typeuse*}(REC_rectype(`%`_list(st*{st <- `st*`})), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = REC_rectype(`%`_list($subst_subtype(st, tv*{tv <- `tv*`}, tu*{tu <- `tu*`})*{st <- `st*`}))
 
-;; 1.2-syntax.types.watsup:341.1-341.112
+;; 1.2-syntax.types.watsup:339.1-339.112
 def $subst_deftype(deftype : deftype, typevar*, typeuse*) : deftype
-  ;; 1.2-syntax.types.watsup:391.1-391.78
+  ;; 1.2-syntax.types.watsup:389.1-389.78
   def $subst_deftype{qt : rectype, i : n, `tv*` : typevar*, `tu*` : typeuse*}(DEF_deftype(qt, i), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = DEF_deftype($subst_rectype(qt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}), i)
 
-;; 1.2-syntax.types.watsup:344.1-344.112
+;; 1.2-syntax.types.watsup:342.1-342.112
 def $subst_functype(functype : functype, typevar*, typeuse*) : functype
-  ;; 1.2-syntax.types.watsup:394.1-394.113
+  ;; 1.2-syntax.types.watsup:392.1-392.113
   def $subst_functype{`t_1*` : valtype*, `t_2*` : valtype*, `tv*` : typevar*, `tu*` : typeuse*}(`%->%`_functype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), `%`_resulttype(t_2*{t_2 <- `t_2*`})), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = `%->%`_functype(`%`_resulttype($subst_valtype(t_1, tv*{tv <- `tv*`}, tu*{tu <- `tu*`})*{t_1 <- `t_1*`}), `%`_resulttype($subst_valtype(t_2, tv*{tv <- `tv*`}, tu*{tu <- `tu*`})*{t_2 <- `t_2*`}))
 }
 
@@ -10131,11 +10148,11 @@ def $subst_all_moduletype(moduletype : moduletype, heaptype*) : moduletype
 ;; 1.2-syntax.types.watsup
 rec {
 
-;; 1.2-syntax.types.watsup:426.1-426.98
+;; 1.2-syntax.types.watsup:424.1-424.98
 def $subst_all_deftypes(deftype*, heaptype*) : deftype*
-  ;; 1.2-syntax.types.watsup:427.1-427.40
+  ;; 1.2-syntax.types.watsup:425.1-425.40
   def $subst_all_deftypes{`tu*` : typeuse*}([], (tu : typeuse <: heaptype)*{tu <- `tu*`}) = []
-  ;; 1.2-syntax.types.watsup:428.1-428.101
+  ;; 1.2-syntax.types.watsup:426.1-426.101
   def $subst_all_deftypes{dt_1 : deftype, `dt*` : deftype*, `tu*` : typeuse*}([dt_1] ++ dt*{dt <- `dt*`}, (tu : typeuse <: heaptype)*{tu <- `tu*`}) = [$subst_all_deftype(dt_1, (tu : typeuse <: heaptype)*{tu <- `tu*`})] ++ $subst_all_deftypes(dt*{dt <- `dt*`}, (tu : typeuse <: heaptype)*{tu <- `tu*`})
 }
 
@@ -10167,13 +10184,6 @@ def $unrolldt(deftype : deftype) : subtype
 def $expanddt(deftype : deftype) : comptype
   ;; 1.2-syntax.types.watsup
   def $expanddt{deftype : deftype, comptype : comptype, fin : fin, `typeuse*` : typeuse*}(deftype) = comptype
-    -- if ($unrolldt(deftype) = SUB_subtype(fin, typeuse*{typeuse <- `typeuse*`}, comptype))
-
-;; 1.2-syntax.types.watsup
-relation Expand: `%~~%`(deftype, comptype)
-  ;; 1.2-syntax.types.watsup
-  rule _{deftype : deftype, comptype : comptype, fin : fin, `typeuse*` : typeuse*}:
-    `%~~%`(deftype, comptype)
     -- if ($unrolldt(deftype) = SUB_subtype(fin, typeuse*{typeuse <- `typeuse*`}, comptype))
 
 ;; 1.2-syntax.types.watsup
@@ -10225,90 +10235,90 @@ def $free_typevar(typevar : typevar) : free
 ;; 1.2-syntax.types.watsup
 rec {
 
-;; 1.2-syntax.types.watsup:467.1-467.36
+;; 1.2-syntax.types.watsup:457.1-457.36
 def $free_heaptype(heaptype : heaptype) : free
-  ;; 1.2-syntax.types.watsup:518.1-518.65
+  ;; 1.2-syntax.types.watsup:508.1-508.65
   def $free_heaptype{absheaptype : absheaptype}((absheaptype : absheaptype <: heaptype)) = $free_absheaptype(absheaptype)
-  ;; 1.2-syntax.types.watsup:519.1-519.53
+  ;; 1.2-syntax.types.watsup:509.1-509.53
   def $free_heaptype{typeuse : typeuse}((typeuse : typeuse <: heaptype)) = $free_typeuse(typeuse)
 
-;; 1.2-syntax.types.watsup:468.1-468.34
+;; 1.2-syntax.types.watsup:458.1-458.34
 def $free_reftype(reftype : reftype) : free
-  ;; 1.2-syntax.types.watsup:521.1-521.63
+  ;; 1.2-syntax.types.watsup:511.1-511.63
   def $free_reftype{nul : nul, heaptype : heaptype}(REF_reftype(nul, heaptype)) = $free_heaptype(heaptype)
 
-;; 1.2-syntax.types.watsup:470.1-470.34
+;; 1.2-syntax.types.watsup:460.1-460.34
 def $free_typeuse(typeuse : typeuse) : free
-  ;; 1.2-syntax.types.watsup:515.1-515.52
+  ;; 1.2-syntax.types.watsup:505.1-505.52
   def $free_typeuse{typevar : typevar}((typevar : typevar <: typeuse)) = $free_typevar(typevar)
-  ;; 1.2-syntax.types.watsup:516.1-516.52
+  ;; 1.2-syntax.types.watsup:506.1-506.52
   def $free_typeuse{deftype : deftype}((deftype : deftype <: typeuse)) = $free_deftype(deftype)
 
-;; 1.2-syntax.types.watsup:471.1-471.34
+;; 1.2-syntax.types.watsup:461.1-461.34
 def $free_valtype(valtype : valtype) : free
-  ;; 1.2-syntax.types.watsup:523.1-523.52
+  ;; 1.2-syntax.types.watsup:513.1-513.52
   def $free_valtype{numtype : numtype}((numtype : numtype <: valtype)) = $free_numtype(numtype)
-  ;; 1.2-syntax.types.watsup:524.1-524.52
+  ;; 1.2-syntax.types.watsup:514.1-514.52
   def $free_valtype{vectype : vectype}((vectype : vectype <: valtype)) = $free_vectype(vectype)
-  ;; 1.2-syntax.types.watsup:525.1-525.52
+  ;; 1.2-syntax.types.watsup:515.1-515.52
   def $free_valtype{reftype : reftype}((reftype : reftype <: valtype)) = $free_reftype(reftype)
-  ;; 1.2-syntax.types.watsup:526.1-526.28
+  ;; 1.2-syntax.types.watsup:516.1-516.28
   def $free_valtype(BOT_valtype) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
 
-;; 1.2-syntax.types.watsup:473.1-473.40
+;; 1.2-syntax.types.watsup:463.1-463.40
 def $free_resulttype(resulttype : resulttype) : free
-  ;; 1.2-syntax.types.watsup:528.1-528.69
+  ;; 1.2-syntax.types.watsup:518.1-518.69
   def $free_resulttype{`valtype*` : valtype*}(`%`_resulttype(valtype*{valtype <- `valtype*`})) = $free_list($free_valtype(valtype)*{valtype <- `valtype*`})
 
-;; 1.2-syntax.types.watsup:474.1-474.42
+;; 1.2-syntax.types.watsup:464.1-464.42
 def $free_storagetype(storagetype : storagetype) : free
-  ;; 1.2-syntax.types.watsup:530.1-530.56
+  ;; 1.2-syntax.types.watsup:520.1-520.56
   def $free_storagetype{valtype : valtype}((valtype : valtype <: storagetype)) = $free_valtype(valtype)
-  ;; 1.2-syntax.types.watsup:531.1-531.59
+  ;; 1.2-syntax.types.watsup:521.1-521.59
   def $free_storagetype{packtype : packtype}((packtype : packtype <: storagetype)) = $free_packtype(packtype)
 
-;; 1.2-syntax.types.watsup:475.1-475.38
+;; 1.2-syntax.types.watsup:465.1-465.38
 def $free_fieldtype(fieldtype : fieldtype) : free
-  ;; 1.2-syntax.types.watsup:533.1-533.70
+  ;; 1.2-syntax.types.watsup:523.1-523.70
   def $free_fieldtype{mut : mut, storagetype : storagetype}(`%%`_fieldtype(mut, storagetype)) = $free_storagetype(storagetype)
 
-;; 1.2-syntax.types.watsup:476.1-476.40
+;; 1.2-syntax.types.watsup:466.1-466.40
 def $free_structtype(structtype : structtype) : free
-  ;; 1.2-syntax.types.watsup:538.1-538.75
+  ;; 1.2-syntax.types.watsup:528.1-528.75
   def $free_structtype{`fieldtype*` : fieldtype*}(`%`_structtype(fieldtype*{fieldtype <- `fieldtype*`})) = $free_list($free_fieldtype(fieldtype)*{fieldtype <- `fieldtype*`})
 
-;; 1.2-syntax.types.watsup:477.1-477.38
+;; 1.2-syntax.types.watsup:467.1-467.38
 def $free_arraytype(arraytype : arraytype) : free
-  ;; 1.2-syntax.types.watsup:540.1-540.60
+  ;; 1.2-syntax.types.watsup:530.1-530.60
   def $free_arraytype{fieldtype : fieldtype}(fieldtype) = $free_fieldtype(fieldtype)
 
-;; 1.2-syntax.types.watsup:478.1-478.36
+;; 1.2-syntax.types.watsup:468.1-468.36
 def $free_functype(functype : functype) : free
-  ;; 1.2-syntax.types.watsup:535.1-536.67
+  ;; 1.2-syntax.types.watsup:525.1-526.67
   def $free_functype{resulttype_1 : resulttype, resulttype_2 : resulttype}(`%->%`_functype(resulttype_1, resulttype_2)) = $free_resulttype(resulttype_1) +++ $free_resulttype(resulttype_2)
 
-;; 1.2-syntax.types.watsup:479.1-479.36
+;; 1.2-syntax.types.watsup:469.1-469.36
 def $free_comptype(comptype : comptype) : free
-  ;; 1.2-syntax.types.watsup:542.1-542.69
+  ;; 1.2-syntax.types.watsup:532.1-532.69
   def $free_comptype{structtype : structtype}(STRUCT_comptype(structtype)) = $free_structtype(structtype)
-  ;; 1.2-syntax.types.watsup:543.1-543.65
+  ;; 1.2-syntax.types.watsup:533.1-533.65
   def $free_comptype{arraytype : arraytype}(ARRAY_comptype(arraytype)) = $free_arraytype(arraytype)
-  ;; 1.2-syntax.types.watsup:544.1-544.61
+  ;; 1.2-syntax.types.watsup:534.1-534.61
   def $free_comptype{functype : functype}(FUNC_comptype(functype)) = $free_functype(functype)
 
-;; 1.2-syntax.types.watsup:480.1-480.34
+;; 1.2-syntax.types.watsup:470.1-470.34
 def $free_subtype(subtype : subtype) : free
-  ;; 1.2-syntax.types.watsup:546.1-547.66
+  ;; 1.2-syntax.types.watsup:536.1-537.66
   def $free_subtype{fin : fin, `typeuse*` : typeuse*, comptype : comptype}(SUB_subtype(fin, typeuse*{typeuse <- `typeuse*`}, comptype)) = $free_list($free_typeuse(typeuse)*{typeuse <- `typeuse*`}) +++ $free_comptype(comptype)
 
-;; 1.2-syntax.types.watsup:481.1-481.34
+;; 1.2-syntax.types.watsup:471.1-471.34
 def $free_rectype(rectype : rectype) : free
-  ;; 1.2-syntax.types.watsup:549.1-549.70
+  ;; 1.2-syntax.types.watsup:539.1-539.70
   def $free_rectype{`subtype*` : subtype*}(REC_rectype(`%`_list(subtype*{subtype <- `subtype*`}))) = $free_list($free_subtype(subtype)*{subtype <- `subtype*`})
 
-;; 1.2-syntax.types.watsup:509.1-509.34
+;; 1.2-syntax.types.watsup:499.1-499.34
 def $free_deftype(deftype : deftype) : free
-  ;; 1.2-syntax.types.watsup:510.1-510.58
+  ;; 1.2-syntax.types.watsup:500.1-500.58
   def $free_deftype{rectype : rectype, n : n}(DEF_deftype(rectype, n)) = $free_rectype(rectype)
 }
 
@@ -11515,66 +11525,6 @@ relation Vectype_ok: `%|-%:OK`(context, vectype)
     `%|-%:OK`(C, vectype)
 
 ;; 2.1-validation.types.watsup
-relation Heaptype_ok: `%|-%:OK`(context, heaptype)
-  ;; 2.1-validation.types.watsup
-  rule abs{C : context, absheaptype : absheaptype}:
-    `%|-%:OK`(C, (absheaptype : absheaptype <: heaptype))
-
-  ;; 2.1-validation.types.watsup
-  rule typeidx{C : context, typeidx : typeidx, dt : deftype}:
-    `%|-%:OK`(C, _IDX_heaptype(typeidx))
-    -- if (C.TYPES_context[typeidx!`%`_typeidx.0] = dt)
-
-  ;; 2.1-validation.types.watsup
-  rule rec{C : context, i : nat, st : subtype}:
-    `%|-%:OK`(C, REC_heaptype(i))
-    -- if (C.RECS_context[i] = st)
-
-;; 2.1-validation.types.watsup
-relation Reftype_ok: `%|-%:OK`(context, reftype)
-  ;; 2.1-validation.types.watsup
-  rule _{C : context, heaptype : heaptype}:
-    `%|-%:OK`(C, REF_reftype(NULL_NULL?{}, heaptype))
-    -- Heaptype_ok: `%|-%:OK`(C, heaptype)
-
-;; 2.1-validation.types.watsup
-relation Valtype_ok: `%|-%:OK`(context, valtype)
-  ;; 2.1-validation.types.watsup
-  rule num{C : context, numtype : numtype}:
-    `%|-%:OK`(C, (numtype : numtype <: valtype))
-    -- Numtype_ok: `%|-%:OK`(C, numtype)
-
-  ;; 2.1-validation.types.watsup
-  rule vec{C : context, vectype : vectype}:
-    `%|-%:OK`(C, (vectype : vectype <: valtype))
-    -- Vectype_ok: `%|-%:OK`(C, vectype)
-
-  ;; 2.1-validation.types.watsup
-  rule ref{C : context, reftype : reftype}:
-    `%|-%:OK`(C, (reftype : reftype <: valtype))
-    -- Reftype_ok: `%|-%:OK`(C, reftype)
-
-  ;; 2.1-validation.types.watsup
-  rule bot{C : context}:
-    `%|-%:OK`(C, BOT_valtype)
-
-;; 2.1-validation.types.watsup
-relation Resulttype_ok: `%|-%:OK`(context, resulttype)
-  ;; 2.1-validation.types.watsup
-  rule _{C : context, `t*` : valtype*}:
-    `%|-%:OK`(C, `%`_resulttype(t*{t <- `t*`}))
-    -- (Valtype_ok: `%|-%:OK`(C, t))*{t <- `t*`}
-
-;; 2.1-validation.types.watsup
-relation Instrtype_ok: `%|-%:OK`(context, instrtype)
-  ;; 2.1-validation.types.watsup
-  rule _{C : context, `t_1*` : valtype*, `x*` : idx*, `t_2*` : valtype*, `lct*` : localtype*}:
-    `%|-%:OK`(C, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), x*{x <- `x*`}, `%`_resulttype(t_2*{t_2 <- `t_2*`})))
-    -- Resulttype_ok: `%|-%:OK`(C, `%`_resulttype(t_1*{t_1 <- `t_1*`}))
-    -- Resulttype_ok: `%|-%:OK`(C, `%`_resulttype(t_2*{t_2 <- `t_2*`}))
-    -- (if (C.LOCALS_context[x!`%`_idx.0] = lct))*{lct <- `lct*`, x <- `x*`}
-
-;; 2.1-validation.types.watsup
 syntax oktypeidx =
   | OK{typeidx : typeidx}(typeidx : typeidx)
 
@@ -11587,50 +11537,6 @@ relation Packtype_ok: `%|-%:OK`(context, packtype)
   ;; 2.1-validation.types.watsup
   rule _{C : context, packtype : packtype}:
     `%|-%:OK`(C, packtype)
-
-;; 2.1-validation.types.watsup
-relation Storagetype_ok: `%|-%:OK`(context, storagetype)
-  ;; 2.1-validation.types.watsup
-  rule val{C : context, valtype : valtype}:
-    `%|-%:OK`(C, (valtype : valtype <: storagetype))
-    -- Valtype_ok: `%|-%:OK`(C, valtype)
-
-  ;; 2.1-validation.types.watsup
-  rule pack{C : context, packtype : packtype}:
-    `%|-%:OK`(C, (packtype : packtype <: storagetype))
-    -- Packtype_ok: `%|-%:OK`(C, packtype)
-
-;; 2.1-validation.types.watsup
-relation Fieldtype_ok: `%|-%:OK`(context, fieldtype)
-  ;; 2.1-validation.types.watsup
-  rule _{C : context, storagetype : storagetype}:
-    `%|-%:OK`(C, `%%`_fieldtype(MUT_MUT?{}, storagetype))
-    -- Storagetype_ok: `%|-%:OK`(C, storagetype)
-
-;; 2.1-validation.types.watsup
-relation Functype_ok: `%|-%:OK`(context, functype)
-  ;; 2.1-validation.types.watsup
-  rule _{C : context, `t_1*` : valtype*, `t_2*` : valtype*}:
-    `%|-%:OK`(C, `%->%`_functype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), `%`_resulttype(t_2*{t_2 <- `t_2*`})))
-    -- Resulttype_ok: `%|-%:OK`(C, `%`_resulttype(t_1*{t_1 <- `t_1*`}))
-    -- Resulttype_ok: `%|-%:OK`(C, `%`_resulttype(t_2*{t_2 <- `t_2*`}))
-
-;; 2.1-validation.types.watsup
-relation Comptype_ok: `%|-%:OK`(context, comptype)
-  ;; 2.1-validation.types.watsup
-  rule struct{C : context, `fieldtype*` : fieldtype*}:
-    `%|-%:OK`(C, STRUCT_comptype(`%`_structtype(fieldtype*{fieldtype <- `fieldtype*`})))
-    -- (Fieldtype_ok: `%|-%:OK`(C, fieldtype))*{fieldtype <- `fieldtype*`}
-
-  ;; 2.1-validation.types.watsup
-  rule array{C : context, fieldtype : fieldtype}:
-    `%|-%:OK`(C, ARRAY_comptype(fieldtype))
-    -- Fieldtype_ok: `%|-%:OK`(C, fieldtype)
-
-  ;; 2.1-validation.types.watsup
-  rule func{C : context, functype : functype}:
-    `%|-%:OK`(C, FUNC_comptype(functype))
-    -- Functype_ok: `%|-%:OK`(C, functype)
 
 ;; 2.2-validation.subtyping.watsup
 relation Packtype_sub: `%|-%<:%`(context, packtype, packtype)
@@ -11645,9 +11551,224 @@ relation Numtype_sub: `%|-%<:%`(context, numtype, numtype)
     `%|-%<:%`(C, numtype, numtype)
 
 ;; 2.1-validation.types.watsup
+relation Expand: `%~~%`(deftype, comptype)
+  ;; 2.1-validation.types.watsup
+  rule _{deftype : deftype, comptype : comptype}:
+    `%~~%`(deftype, comptype)
+    -- if ($expanddt(deftype) = comptype)
+
+;; 2.2-validation.subtyping.watsup
+relation Vectype_sub: `%|-%<:%`(context, vectype, vectype)
+  ;; 2.2-validation.subtyping.watsup
+  rule _{C : context, vectype : vectype}:
+    `%|-%<:%`(C, vectype, vectype)
+
+;; 2.1-validation.types.watsup
+def $before(typeuse : typeuse, typeidx : typeidx, nat : nat) : bool
+  ;; 2.1-validation.types.watsup
+  def $before{deftype : deftype, x : idx, i : nat}((deftype : deftype <: typeuse), x, i) = true
+  ;; 2.1-validation.types.watsup
+  def $before{typeidx : typeidx, x : idx, i : nat}(_IDX_typeuse(typeidx), x, i) = (typeidx!`%`_typeidx.0 < x!`%`_idx.0)
+  ;; 2.1-validation.types.watsup
+  def $before{j : nat, x : idx, i : nat}(REC_typeuse(j), x, i) = (j < i)
+
+;; 2.1-validation.types.watsup
+def $unrollht(context : context, heaptype : heaptype) : subtype
+  ;; 2.1-validation.types.watsup
+  def $unrollht{C : context, deftype : deftype}(C, (deftype : deftype <: heaptype)) = $unrolldt(deftype)
+  ;; 2.1-validation.types.watsup
+  def $unrollht{C : context, typeidx : typeidx}(C, _IDX_heaptype(typeidx)) = $unrolldt(C.TYPES_context[typeidx!`%`_typeidx.0])
+  ;; 2.1-validation.types.watsup
+  def $unrollht{C : context, i : nat}(C, REC_heaptype(i)) = C.RECS_context[i]
+
+;; 2.1-validation.types.watsup
 rec {
 
-;; 2.1-validation.types.watsup:85.1-85.107
+;; 2.1-validation.types.watsup:9.1-9.92
+relation Heaptype_ok: `%|-%:OK`(context, heaptype)
+  ;; 2.1-validation.types.watsup:20.1-21.24
+  rule abs{C : context, absheaptype : absheaptype}:
+    `%|-%:OK`(C, (absheaptype : absheaptype <: heaptype))
+
+  ;; 2.1-validation.types.watsup:23.1-25.35
+  rule typeuse{C : context, typeuse : typeuse}:
+    `%|-%:OK`(C, (typeuse : typeuse <: heaptype))
+    -- Typeuse_ok: `%|-%:OK`(C, typeuse)
+
+;; 2.1-validation.types.watsup:10.1-10.91
+relation Reftype_ok: `%|-%:OK`(context, reftype)
+  ;; 2.1-validation.types.watsup:27.1-29.37
+  rule _{C : context, heaptype : heaptype}:
+    `%|-%:OK`(C, REF_reftype(NULL_NULL?{}, heaptype))
+    -- Heaptype_ok: `%|-%:OK`(C, heaptype)
+
+;; 2.1-validation.types.watsup:11.1-11.91
+relation Valtype_ok: `%|-%:OK`(context, valtype)
+  ;; 2.1-validation.types.watsup:31.1-33.35
+  rule num{C : context, numtype : numtype}:
+    `%|-%:OK`(C, (numtype : numtype <: valtype))
+    -- Numtype_ok: `%|-%:OK`(C, numtype)
+
+  ;; 2.1-validation.types.watsup:35.1-37.35
+  rule vec{C : context, vectype : vectype}:
+    `%|-%:OK`(C, (vectype : vectype <: valtype))
+    -- Vectype_ok: `%|-%:OK`(C, vectype)
+
+  ;; 2.1-validation.types.watsup:39.1-41.35
+  rule ref{C : context, reftype : reftype}:
+    `%|-%:OK`(C, (reftype : reftype <: valtype))
+    -- Reftype_ok: `%|-%:OK`(C, reftype)
+
+  ;; 2.1-validation.types.watsup:43.1-44.16
+  rule bot{C : context}:
+    `%|-%:OK`(C, BOT_valtype)
+
+;; 2.1-validation.types.watsup:12.1-12.94
+relation Typeuse_ok: `%|-%:OK`(context, typeuse)
+  ;; 2.1-validation.types.watsup:98.1-100.30
+  rule typeidx{C : context, typeidx : typeidx, dt : deftype}:
+    `%|-%:OK`(C, _IDX_typeuse(typeidx))
+    -- if (C.TYPES_context[typeidx!`%`_typeidx.0] = dt)
+
+  ;; 2.1-validation.types.watsup:102.1-104.35
+  rule deftype{C : context, deftype : deftype}:
+    `%|-%:OK`(C, (deftype : deftype <: typeuse))
+    -- Deftype_ok: `%|-%:OK`(C, deftype)
+
+  ;; 2.1-validation.types.watsup:106.1-108.23
+  rule rec{C : context, i : nat, st : subtype}:
+    `%|-%:OK`(C, REC_typeuse(i))
+    -- if (C.RECS_context[i] = st)
+
+;; 2.1-validation.types.watsup:49.1-49.100
+relation Resulttype_ok: `%|-%:OK`(context, resulttype)
+  ;; 2.1-validation.types.watsup:52.1-54.32
+  rule _{C : context, `t*` : valtype*}:
+    `%|-%:OK`(C, `%`_resulttype(t*{t <- `t*`}))
+    -- (Valtype_ok: `%|-%:OK`(C, t))*{t <- `t*`}
+
+;; 2.1-validation.types.watsup:83.1-83.104
+relation Fieldtype_ok: `%|-%:OK`(context, fieldtype)
+  ;; 2.1-validation.types.watsup:122.1-124.43
+  rule _{C : context, storagetype : storagetype}:
+    `%|-%:OK`(C, `%%`_fieldtype(MUT_MUT?{}, storagetype))
+    -- Storagetype_ok: `%|-%:OK`(C, storagetype)
+
+;; 2.1-validation.types.watsup:84.1-84.106
+relation Storagetype_ok: `%|-%:OK`(context, storagetype)
+  ;; 2.1-validation.types.watsup:114.1-116.35
+  rule val{C : context, valtype : valtype}:
+    `%|-%:OK`(C, (valtype : valtype <: storagetype))
+    -- Valtype_ok: `%|-%:OK`(C, valtype)
+
+  ;; 2.1-validation.types.watsup:118.1-120.37
+  rule pack{C : context, packtype : packtype}:
+    `%|-%:OK`(C, (packtype : packtype <: storagetype))
+    -- Packtype_ok: `%|-%:OK`(C, packtype)
+
+;; 2.1-validation.types.watsup:85.1-85.103
+relation Comptype_ok: `%|-%:OK`(context, comptype)
+  ;; 2.1-validation.types.watsup:127.1-129.42
+  rule struct{C : context, `fieldtype*` : fieldtype*}:
+    `%|-%:OK`(C, STRUCT_comptype(`%`_structtype(fieldtype*{fieldtype <- `fieldtype*`})))
+    -- (Fieldtype_ok: `%|-%:OK`(C, fieldtype))*{fieldtype <- `fieldtype*`}
+
+  ;; 2.1-validation.types.watsup:131.1-133.39
+  rule array{C : context, fieldtype : fieldtype}:
+    `%|-%:OK`(C, ARRAY_comptype(fieldtype))
+    -- Fieldtype_ok: `%|-%:OK`(C, fieldtype)
+
+  ;; 2.1-validation.types.watsup:135.1-137.37
+  rule func{C : context, functype : functype}:
+    `%|-%:OK`(C, FUNC_comptype(functype))
+    -- Functype_ok: `%|-%:OK`(C, functype)
+
+;; 2.1-validation.types.watsup:86.1-86.103
+relation Functype_ok: `%|-%:OK`(context, functype)
+  ;; 2.1-validation.types.watsup:211.1-214.35
+  rule _{C : context, `t_1*` : valtype*, `t_2*` : valtype*}:
+    `%|-%:OK`(C, `%->%`_functype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), `%`_resulttype(t_2*{t_2 <- `t_2*`})))
+    -- Resulttype_ok: `%|-%:OK`(C, `%`_resulttype(t_1*{t_1 <- `t_1*`}))
+    -- Resulttype_ok: `%|-%:OK`(C, `%`_resulttype(t_2*{t_2 <- `t_2*`}))
+
+;; 2.1-validation.types.watsup:87.1-87.102
+relation Subtype_ok: `%|-%:%`(context, subtype, oktypeidx)
+  ;; 2.1-validation.types.watsup:140.1-147.49
+  rule _{C : context, `x*` : idx*, comptype : comptype, x_0 : idx, `x'**` : idx**, `comptype'*` : comptype*}:
+    `%|-%:%`(C, SUB_subtype(FINAL_FINAL?{}, _IDX_typeuse(x)*{x <- `x*`}, comptype), OK_oktypeidx(x_0))
+    -- if (|x*{x <- `x*`}| <= 1)
+    -- (if (x!`%`_idx.0 < x_0!`%`_idx.0))*{x <- `x*`}
+    -- (if ($unrolldt(C.TYPES_context[x!`%`_idx.0]) = SUB_subtype(?(), _IDX_typeuse(x')*{x' <- `x'*`}, comptype')))*{comptype' <- `comptype'*`, x <- `x*`, `x'*` <- `x'**`}
+    -- Comptype_ok: `%|-%:OK`(C, comptype)
+    -- (Comptype_sub: `%|-%<:%`(C, comptype, comptype'))*{comptype' <- `comptype'*`}
+
+;; 2.1-validation.types.watsup:88.1-88.123
+relation Rectype_ok: `%|-%:%`(context, rectype, oktypeidx)
+  ;; 2.1-validation.types.watsup:169.1-170.23
+  rule empty{C : context, x : idx}:
+    `%|-%:%`(C, REC_rectype(`%`_list([])), OK_oktypeidx(x))
+
+  ;; 2.1-validation.types.watsup:172.1-175.48
+  rule cons{C : context, subtype_1 : subtype, `subtype*` : subtype*, x : idx}:
+    `%|-%:%`(C, REC_rectype(`%`_list([subtype_1] ++ subtype*{subtype <- `subtype*`})), OK_oktypeidx(x))
+    -- Subtype_ok: `%|-%:%`(C, subtype_1, OK_oktypeidx(x))
+    -- Rectype_ok: `%|-%:%`(C, REC_rectype(`%`_list(subtype*{subtype <- `subtype*`})), OK_oktypeidx(`%`_typeidx((x!`%`_idx.0 + 1))))
+
+  ;; 2.1-validation.types.watsup:177.1-179.60
+  rule _rec2{C : context, `subtype*` : subtype*, x : idx}:
+    `%|-%:%`(C, REC_rectype(`%`_list(subtype*{subtype <- `subtype*`})), OK_oktypeidx(x))
+    -- Rectype_ok2: `%|-%:%`({TYPES [], RECS subtype*{subtype <- `subtype*`}, FUNCS [], GLOBALS [], TABLES [], MEMS [], TAGS [], ELEMS [], DATAS [], LOCALS [], LABELS [], RETURN ?(), REFS []} +++ C, REC_rectype(`%`_list(subtype*{subtype <- `subtype*`})), OK_oktypeidxnat(x, 0))
+
+;; 2.1-validation.types.watsup:89.1-89.105
+relation Subtype_ok2: `%|-%:%`(context, subtype, oktypeidxnat)
+  ;; 2.1-validation.types.watsup:159.1-166.49
+  rule _{C : context, `typeuse*` : typeuse*, compttype : comptype, x : idx, i : nat, `typeuse'**` : typeuse**, `comptype'*` : comptype*, comptype : comptype}:
+    `%|-%:%`(C, SUB_subtype(FINAL_FINAL?{}, typeuse*{typeuse <- `typeuse*`}, compttype), OK_oktypeidxnat(x, i))
+    -- if (|typeuse*{typeuse <- `typeuse*`}| <= 1)
+    -- (if $before(typeuse, x, i))*{typeuse <- `typeuse*`}
+    -- (if ($unrollht(C, (typeuse : typeuse <: heaptype)) = SUB_subtype(?(), typeuse'*{typeuse' <- `typeuse'*`}, comptype')))*{comptype' <- `comptype'*`, typeuse <- `typeuse*`, `typeuse'*` <- `typeuse'**`}
+    -- Comptype_ok: `%|-%:OK`(C, comptype)
+    -- (Comptype_sub: `%|-%<:%`(C, comptype, comptype'))*{comptype' <- `comptype'*`}
+
+;; 2.1-validation.types.watsup:90.1-90.126
+relation Rectype_ok2: `%|-%:%`(context, rectype, oktypeidxnat)
+  ;; 2.1-validation.types.watsup:181.1-182.24
+  rule empty{C : context, x : idx, i : nat}:
+    `%|-%:%`(C, REC_rectype(`%`_list([])), OK_oktypeidxnat(x, i))
+
+  ;; 2.1-validation.types.watsup:184.1-187.55
+  rule cons{C : context, subtype_1 : subtype, `subtype*` : subtype*, x : idx, i : nat}:
+    `%|-%:%`(C, REC_rectype(`%`_list([subtype_1] ++ subtype*{subtype <- `subtype*`})), OK_oktypeidxnat(x, i))
+    -- Subtype_ok2: `%|-%:%`(C, subtype_1, OK_oktypeidxnat(x, i))
+    -- Rectype_ok2: `%|-%:%`(C, REC_rectype(`%`_list(subtype*{subtype <- `subtype*`})), OK_oktypeidxnat(`%`_typeidx((x!`%`_idx.0 + 1)), (i + 1)))
+
+;; 2.1-validation.types.watsup:91.1-91.102
+relation Deftype_ok: `%|-%:OK`(context, deftype)
+  ;; 2.1-validation.types.watsup:190.1-194.14
+  rule _{C : context, rectype : rectype, i : n, x : idx, `subtype*` : subtype*, n : n}:
+    `%|-%:OK`(C, DEF_deftype(rectype, i))
+    -- Rectype_ok: `%|-%:%`(C, rectype, OK_oktypeidx(x))
+    -- if (rectype = REC_rectype(`%`_list(subtype^n{subtype <- `subtype*`})))
+    -- if (i < n)
+
+;; 2.1-validation.types.watsup:94.1-94.108
+relation Comptype_sub: `%|-%<:%`(context, comptype, comptype)
+  ;; 2.2-validation.subtyping.watsup:162.1-164.41
+  rule struct{C : context, `yt_1*` : fieldtype*, yt'_1 : fieldtype, `yt_2*` : fieldtype*}:
+    `%|-%<:%`(C, STRUCT_comptype(`%`_structtype(yt_1*{yt_1 <- `yt_1*`} ++ [yt'_1])), STRUCT_comptype(`%`_structtype(yt_2*{yt_2 <- `yt_2*`})))
+    -- (Fieldtype_sub: `%|-%<:%`(C, yt_1, yt_2))*{yt_1 <- `yt_1*`, yt_2 <- `yt_2*`}
+
+  ;; 2.2-validation.subtyping.watsup:166.1-168.38
+  rule array{C : context, yt_1 : fieldtype, yt_2 : fieldtype}:
+    `%|-%<:%`(C, ARRAY_comptype(yt_1), ARRAY_comptype(yt_2))
+    -- Fieldtype_sub: `%|-%<:%`(C, yt_1, yt_2)
+
+  ;; 2.2-validation.subtyping.watsup:170.1-172.37
+  rule func{C : context, ft_1 : functype, ft_2 : functype}:
+    `%|-%<:%`(C, FUNC_comptype(ft_1), FUNC_comptype(ft_2))
+    -- Functype_sub: `%|-%<:%`(C, ft_1, ft_2)
+
+;; 2.1-validation.types.watsup:95.1-95.107
 relation Deftype_sub: `%|-%<:%`(context, deftype, deftype)
   ;; 2.2-validation.subtyping.watsup:175.1-177.66
   rule refl{C : context, deftype_1 : deftype, deftype_2 : deftype}:
@@ -11742,189 +11863,101 @@ relation Heaptype_sub: `%|-%<:%`(context, heaptype, heaptype)
   ;; 2.2-validation.subtyping.watsup:81.1-82.23
   rule bot{C : context, heaptype : heaptype}:
     `%|-%<:%`(C, BOT_heaptype, heaptype)
-}
 
-;; 2.2-validation.subtyping.watsup
+;; 2.2-validation.subtyping.watsup:10.1-10.103
 relation Reftype_sub: `%|-%<:%`(context, reftype, reftype)
-  ;; 2.2-validation.subtyping.watsup
+  ;; 2.2-validation.subtyping.watsup:85.1-87.37
   rule nonnull{C : context, ht_1 : heaptype, ht_2 : heaptype}:
     `%|-%<:%`(C, REF_reftype(?(), ht_1), REF_reftype(?(), ht_2))
     -- Heaptype_sub: `%|-%<:%`(C, ht_1, ht_2)
 
-  ;; 2.2-validation.subtyping.watsup
+  ;; 2.2-validation.subtyping.watsup:89.1-91.37
   rule null{C : context, ht_1 : heaptype, ht_2 : heaptype}:
     `%|-%<:%`(C, REF_reftype(NULL_NULL?{}, ht_1), REF_reftype(?(NULL_NULL), ht_2))
     -- Heaptype_sub: `%|-%<:%`(C, ht_1, ht_2)
 
-;; 2.2-validation.subtyping.watsup
-relation Vectype_sub: `%|-%<:%`(context, vectype, vectype)
-  ;; 2.2-validation.subtyping.watsup
-  rule _{C : context, vectype : vectype}:
-    `%|-%<:%`(C, vectype, vectype)
-
-;; 2.2-validation.subtyping.watsup
+;; 2.2-validation.subtyping.watsup:11.1-11.103
 relation Valtype_sub: `%|-%<:%`(context, valtype, valtype)
-  ;; 2.2-validation.subtyping.watsup
+  ;; 2.2-validation.subtyping.watsup:94.1-96.46
   rule num{C : context, numtype_1 : numtype, numtype_2 : numtype}:
     `%|-%<:%`(C, (numtype_1 : numtype <: valtype), (numtype_2 : numtype <: valtype))
     -- Numtype_sub: `%|-%<:%`(C, numtype_1, numtype_2)
 
-  ;; 2.2-validation.subtyping.watsup
+  ;; 2.2-validation.subtyping.watsup:98.1-100.46
   rule vec{C : context, vectype_1 : vectype, vectype_2 : vectype}:
     `%|-%<:%`(C, (vectype_1 : vectype <: valtype), (vectype_2 : vectype <: valtype))
     -- Vectype_sub: `%|-%<:%`(C, vectype_1, vectype_2)
 
-  ;; 2.2-validation.subtyping.watsup
+  ;; 2.2-validation.subtyping.watsup:102.1-104.46
   rule ref{C : context, reftype_1 : reftype, reftype_2 : reftype}:
     `%|-%<:%`(C, (reftype_1 : reftype <: valtype), (reftype_2 : reftype <: valtype))
     -- Reftype_sub: `%|-%<:%`(C, reftype_1, reftype_2)
 
-  ;; 2.2-validation.subtyping.watsup
+  ;; 2.2-validation.subtyping.watsup:106.1-107.22
   rule bot{C : context, valtype : valtype}:
     `%|-%<:%`(C, BOT_valtype, valtype)
 
-;; 2.2-validation.subtyping.watsup
+;; 2.2-validation.subtyping.watsup:112.1-112.115
+relation Resulttype_sub: `%|-%<:%`(context, resulttype, resulttype)
+  ;; 2.2-validation.subtyping.watsup:115.1-117.37
+  rule _{C : context, `t_1*` : valtype*, `t_2*` : valtype*}:
+    `%|-%<:%`(C, `%`_resulttype(t_1*{t_1 <- `t_1*`}), `%`_resulttype(t_2*{t_2 <- `t_2*`}))
+    -- (Valtype_sub: `%|-%<:%`(C, t_1, t_2))*{t_1 <- `t_1*`, t_2 <- `t_2*`}
+
+;; 2.2-validation.subtyping.watsup:130.1-130.119
 relation Storagetype_sub: `%|-%<:%`(context, storagetype, storagetype)
-  ;; 2.2-validation.subtyping.watsup
+  ;; 2.2-validation.subtyping.watsup:143.1-145.46
   rule val{C : context, valtype_1 : valtype, valtype_2 : valtype}:
     `%|-%<:%`(C, (valtype_1 : valtype <: storagetype), (valtype_2 : valtype <: storagetype))
     -- Valtype_sub: `%|-%<:%`(C, valtype_1, valtype_2)
 
-  ;; 2.2-validation.subtyping.watsup
+  ;; 2.2-validation.subtyping.watsup:147.1-149.49
   rule pack{C : context, packtype_1 : packtype, packtype_2 : packtype}:
     `%|-%<:%`(C, (packtype_1 : packtype <: storagetype), (packtype_2 : packtype <: storagetype))
     -- Packtype_sub: `%|-%<:%`(C, packtype_1, packtype_2)
 
-;; 2.2-validation.subtyping.watsup
+;; 2.2-validation.subtyping.watsup:131.1-131.117
 relation Fieldtype_sub: `%|-%<:%`(context, fieldtype, fieldtype)
-  ;; 2.2-validation.subtyping.watsup
+  ;; 2.2-validation.subtyping.watsup:152.1-154.40
   rule const{C : context, zt_1 : storagetype, zt_2 : storagetype}:
     `%|-%<:%`(C, `%%`_fieldtype(?(), zt_1), `%%`_fieldtype(?(), zt_2))
     -- Storagetype_sub: `%|-%<:%`(C, zt_1, zt_2)
 
-  ;; 2.2-validation.subtyping.watsup
+  ;; 2.2-validation.subtyping.watsup:156.1-159.40
   rule var{C : context, zt_1 : storagetype, zt_2 : storagetype}:
     `%|-%<:%`(C, `%%`_fieldtype(?(MUT_MUT), zt_1), `%%`_fieldtype(?(MUT_MUT), zt_2))
     -- Storagetype_sub: `%|-%<:%`(C, zt_1, zt_2)
     -- Storagetype_sub: `%|-%<:%`(C, zt_2, zt_1)
 
-;; 2.2-validation.subtyping.watsup
-relation Resulttype_sub: `%|-%<:%`(context, resulttype, resulttype)
-  ;; 2.2-validation.subtyping.watsup
-  rule _{C : context, `t_1*` : valtype*, `t_2*` : valtype*}:
-    `%|-%<:%`(C, `%`_resulttype(t_1*{t_1 <- `t_1*`}), `%`_resulttype(t_2*{t_2 <- `t_2*`}))
-    -- (Valtype_sub: `%|-%<:%`(C, t_1, t_2))*{t_1 <- `t_1*`, t_2 <- `t_2*`}
-
-;; 2.2-validation.subtyping.watsup
+;; 2.2-validation.subtyping.watsup:132.1-132.116
 relation Functype_sub: `%|-%<:%`(context, functype, functype)
-  ;; 2.2-validation.subtyping.watsup
+  ;; 2.2-validation.subtyping.watsup:200.1-203.41
   rule _{C : context, `t_11*` : valtype*, `t_12*` : valtype*, `t_21*` : valtype*, `t_22*` : valtype*}:
     `%|-%<:%`(C, `%->%`_functype(`%`_resulttype(t_11*{t_11 <- `t_11*`}), `%`_resulttype(t_12*{t_12 <- `t_12*`})), `%->%`_functype(`%`_resulttype(t_21*{t_21 <- `t_21*`}), `%`_resulttype(t_22*{t_22 <- `t_22*`})))
     -- Resulttype_sub: `%|-%<:%`(C, `%`_resulttype(t_21*{t_21 <- `t_21*`}), `%`_resulttype(t_11*{t_11 <- `t_11*`}))
     -- Resulttype_sub: `%|-%<:%`(C, `%`_resulttype(t_12*{t_12 <- `t_12*`}), `%`_resulttype(t_22*{t_22 <- `t_22*`}))
-
-;; 2.1-validation.types.watsup
-relation Comptype_sub: `%|-%<:%`(context, comptype, comptype)
-  ;; 2.2-validation.subtyping.watsup
-  rule struct{C : context, `yt_1*` : fieldtype*, yt'_1 : fieldtype, `yt_2*` : fieldtype*}:
-    `%|-%<:%`(C, STRUCT_comptype(`%`_structtype(yt_1*{yt_1 <- `yt_1*`} ++ [yt'_1])), STRUCT_comptype(`%`_structtype(yt_2*{yt_2 <- `yt_2*`})))
-    -- (Fieldtype_sub: `%|-%<:%`(C, yt_1, yt_2))*{yt_1 <- `yt_1*`, yt_2 <- `yt_2*`}
-
-  ;; 2.2-validation.subtyping.watsup
-  rule array{C : context, yt_1 : fieldtype, yt_2 : fieldtype}:
-    `%|-%<:%`(C, ARRAY_comptype(yt_1), ARRAY_comptype(yt_2))
-    -- Fieldtype_sub: `%|-%<:%`(C, yt_1, yt_2)
-
-  ;; 2.2-validation.subtyping.watsup
-  rule func{C : context, ft_1 : functype, ft_2 : functype}:
-    `%|-%<:%`(C, FUNC_comptype(ft_1), FUNC_comptype(ft_2))
-    -- Functype_sub: `%|-%<:%`(C, ft_1, ft_2)
-
-;; 2.1-validation.types.watsup
-relation Subtype_ok: `%|-%:%`(context, subtype, oktypeidx)
-  ;; 2.1-validation.types.watsup
-  rule _{C : context, `x*` : idx*, comptype : comptype, x_0 : idx, `x'**` : idx**, `comptype'*` : comptype*}:
-    `%|-%:%`(C, SUB_subtype(FINAL_FINAL?{}, _IDX_typeuse(x)*{x <- `x*`}, comptype), OK_oktypeidx(x_0))
-    -- if (|x*{x <- `x*`}| <= 1)
-    -- (if (x!`%`_idx.0 < x_0!`%`_idx.0))*{x <- `x*`}
-    -- (if ($unrolldt(C.TYPES_context[x!`%`_idx.0]) = SUB_subtype(?(), _IDX_typeuse(x')*{x' <- `x'*`}, comptype')))*{comptype' <- `comptype'*`, x <- `x*`, `x'*` <- `x'**`}
-    -- Comptype_ok: `%|-%:OK`(C, comptype)
-    -- (Comptype_sub: `%|-%<:%`(C, comptype, comptype'))*{comptype' <- `comptype'*`}
-
-;; 2.1-validation.types.watsup
-def $before(typeuse : typeuse, typeidx : typeidx, nat : nat) : bool
-  ;; 2.1-validation.types.watsup
-  def $before{deftype : deftype, x : idx, i : nat}((deftype : deftype <: typeuse), x, i) = true
-  ;; 2.1-validation.types.watsup
-  def $before{typeidx : typeidx, x : idx, i : nat}(_IDX_typeuse(typeidx), x, i) = (typeidx!`%`_typeidx.0 < x!`%`_idx.0)
-  ;; 2.1-validation.types.watsup
-  def $before{j : nat, x : idx, i : nat}(REC_typeuse(j), x, i) = (j < i)
-
-;; 2.1-validation.types.watsup
-def $unrollht(context : context, heaptype : heaptype) : subtype
-  ;; 2.1-validation.types.watsup
-  def $unrollht{C : context, deftype : deftype}(C, (deftype : deftype <: heaptype)) = $unrolldt(deftype)
-  ;; 2.1-validation.types.watsup
-  def $unrollht{C : context, typeidx : typeidx}(C, _IDX_heaptype(typeidx)) = $unrolldt(C.TYPES_context[typeidx!`%`_typeidx.0])
-  ;; 2.1-validation.types.watsup
-  def $unrollht{C : context, i : nat}(C, REC_heaptype(i)) = C.RECS_context[i]
-
-;; 2.1-validation.types.watsup
-relation Subtype_ok2: `%|-%:%`(context, subtype, oktypeidxnat)
-  ;; 2.1-validation.types.watsup
-  rule _{C : context, `typeuse*` : typeuse*, compttype : comptype, x : idx, i : nat, `typeuse'**` : typeuse**, `comptype'*` : comptype*, comptype : comptype}:
-    `%|-%:%`(C, SUB_subtype(FINAL_FINAL?{}, typeuse*{typeuse <- `typeuse*`}, compttype), OK_oktypeidxnat(x, i))
-    -- if (|typeuse*{typeuse <- `typeuse*`}| <= 1)
-    -- (if $before(typeuse, x, i))*{typeuse <- `typeuse*`}
-    -- (if ($unrollht(C, (typeuse : typeuse <: heaptype)) = SUB_subtype(?(), typeuse'*{typeuse' <- `typeuse'*`}, comptype')))*{comptype' <- `comptype'*`, typeuse <- `typeuse*`, `typeuse'*` <- `typeuse'**`}
-    -- Comptype_ok: `%|-%:OK`(C, comptype)
-    -- (Comptype_sub: `%|-%<:%`(C, comptype, comptype'))*{comptype' <- `comptype'*`}
-
-;; 2.1-validation.types.watsup
-rec {
-
-;; 2.1-validation.types.watsup:80.1-80.126
-relation Rectype_ok2: `%|-%:%`(context, rectype, oktypeidxnat)
-  ;; 2.1-validation.types.watsup:158.1-159.24
-  rule empty{C : context, x : idx, i : nat}:
-    `%|-%:%`(C, REC_rectype(`%`_list([])), OK_oktypeidxnat(x, i))
-
-  ;; 2.1-validation.types.watsup:161.1-164.55
-  rule cons{C : context, subtype_1 : subtype, `subtype*` : subtype*, x : idx, i : nat}:
-    `%|-%:%`(C, REC_rectype(`%`_list([subtype_1] ++ subtype*{subtype <- `subtype*`})), OK_oktypeidxnat(x, i))
-    -- Subtype_ok2: `%|-%:%`(C, subtype_1, OK_oktypeidxnat(x, i))
-    -- Rectype_ok2: `%|-%:%`(C, REC_rectype(`%`_list(subtype*{subtype <- `subtype*`})), OK_oktypeidxnat(`%`_typeidx((x!`%`_idx.0 + 1)), (i + 1)))
 }
 
 ;; 2.1-validation.types.watsup
-rec {
-
-;; 2.1-validation.types.watsup:78.1-78.123
-relation Rectype_ok: `%|-%:%`(context, rectype, oktypeidx)
-  ;; 2.1-validation.types.watsup:146.1-147.23
-  rule empty{C : context, x : idx}:
-    `%|-%:%`(C, REC_rectype(`%`_list([])), OK_oktypeidx(x))
-
-  ;; 2.1-validation.types.watsup:149.1-152.48
-  rule cons{C : context, subtype_1 : subtype, `subtype*` : subtype*, x : idx}:
-    `%|-%:%`(C, REC_rectype(`%`_list([subtype_1] ++ subtype*{subtype <- `subtype*`})), OK_oktypeidx(x))
-    -- Subtype_ok: `%|-%:%`(C, subtype_1, OK_oktypeidx(x))
-    -- Rectype_ok: `%|-%:%`(C, REC_rectype(`%`_list(subtype*{subtype <- `subtype*`})), OK_oktypeidx(`%`_typeidx((x!`%`_idx.0 + 1))))
-
-  ;; 2.1-validation.types.watsup:154.1-156.60
-  rule _rec2{C : context, `subtype*` : subtype*, x : idx}:
-    `%|-%:%`(C, REC_rectype(`%`_list(subtype*{subtype <- `subtype*`})), OK_oktypeidx(x))
-    -- Rectype_ok2: `%|-%:%`({TYPES [], RECS subtype*{subtype <- `subtype*`}, FUNCS [], GLOBALS [], TABLES [], MEMS [], TAGS [], ELEMS [], DATAS [], LOCALS [], LABELS [], RETURN ?(), REFS []} +++ C, REC_rectype(`%`_list(subtype*{subtype <- `subtype*`})), OK_oktypeidxnat(x, 0))
-}
+relation Instrtype_ok: `%|-%:OK`(context, instrtype)
+  ;; 2.1-validation.types.watsup
+  rule _{C : context, `t_1*` : valtype*, `x*` : idx*, `t_2*` : valtype*, `lct*` : localtype*}:
+    `%|-%:OK`(C, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), x*{x <- `x*`}, `%`_resulttype(t_2*{t_2 <- `t_2*`})))
+    -- Resulttype_ok: `%|-%:OK`(C, `%`_resulttype(t_1*{t_1 <- `t_1*`}))
+    -- Resulttype_ok: `%|-%:OK`(C, `%`_resulttype(t_2*{t_2 <- `t_2*`}))
+    -- (if (C.LOCALS_context[x!`%`_idx.0] = lct))*{lct <- `lct*`, x <- `x*`}
 
 ;; 2.1-validation.types.watsup
-relation Deftype_ok: `%|-%:OK`(context, deftype)
+relation Expand_use: `%~~_%%`(typeuse, context, comptype)
   ;; 2.1-validation.types.watsup
-  rule _{C : context, rectype : rectype, i : n, x : idx, `subtype*` : subtype*, n : n}:
-    `%|-%:OK`(C, DEF_deftype(rectype, i))
-    -- Rectype_ok: `%|-%:%`(C, rectype, OK_oktypeidx(x))
-    -- if (rectype = REC_rectype(`%`_list(subtype^n{subtype <- `subtype*`})))
-    -- if (i < n)
+  rule deftype{deftype : deftype, C : context, comptype : comptype}:
+    `%~~_%%`((deftype : deftype <: typeuse), C, comptype)
+    -- Expand: `%~~%`(deftype, comptype)
+
+  ;; 2.1-validation.types.watsup
+  rule typeidx{typeidx : typeidx, C : context, comptype : comptype}:
+    `%~~_%%`(_IDX_typeuse(typeidx), C, comptype)
+    -- Expand: `%~~%`(C.TYPES_context[typeidx!`%`_typeidx.0], comptype)
 
 ;; 2.1-validation.types.watsup
 relation Limits_ok: `%|-%:%`(context, limits, nat)
@@ -11966,10 +11999,10 @@ relation Tagtype_ok: `%|-%:OK`(context, tagtype)
 ;; 2.1-validation.types.watsup
 relation Externtype_ok: `%|-%:OK`(context, externtype)
   ;; 2.1-validation.types.watsup
-  rule func{C : context, deftype : deftype, functype : functype}:
-    `%|-%:OK`(C, FUNC_externtype((deftype : deftype <: typeuse)))
-    -- Deftype_ok: `%|-%:OK`(C, deftype)
-    -- Expand: `%~~%`(deftype, FUNC_comptype(functype))
+  rule func{C : context, typeuse : typeuse, functype : functype}:
+    `%|-%:OK`(C, FUNC_externtype(typeuse))
+    -- Typeuse_ok: `%|-%:OK`(C, typeuse)
+    -- Expand_use: `%~~_%%`(typeuse, C, FUNC_comptype(functype))
 
   ;; 2.1-validation.types.watsup
   rule global{C : context, globaltype : globaltype}:
@@ -11987,9 +12020,10 @@ relation Externtype_ok: `%|-%:OK`(context, externtype)
     -- Memtype_ok: `%|-%:OK`(C, memtype)
 
   ;; 2.1-validation.types.watsup
-  rule tag{C : context, tagtype : tagtype}:
-    `%|-%:OK`(C, TAG_externtype((tagtype : deftype <: typeuse)))
-    -- Tagtype_ok: `%|-%:OK`(C, tagtype)
+  rule tag{C : context, typeuse : typeuse, functype : functype}:
+    `%|-%:OK`(C, TAG_externtype(typeuse))
+    -- Typeuse_ok: `%|-%:OK`(C, typeuse)
+    -- Expand_use: `%~~_%%`(typeuse, C, FUNC_comptype(functype))
 
 ;; 2.2-validation.subtyping.watsup
 relation Instrtype_sub: `%|-%<:%`(context, instrtype, instrtype)
@@ -18749,13 +18783,13 @@ def $diffrt(reftype : reftype, reftype : reftype) : reftype
 ;; 1.2-syntax.types.watsup
 rec {
 
-;; 1.2-syntax.types.watsup:295.1-295.88
+;; 1.2-syntax.types.watsup:293.1-293.88
 def $funcsxt(externtype*) : deftype*
-  ;; 1.2-syntax.types.watsup:301.1-301.24
+  ;; 1.2-syntax.types.watsup:299.1-299.24
   def $funcsxt([]) = []
-  ;; 1.2-syntax.types.watsup:302.1-302.47
+  ;; 1.2-syntax.types.watsup:300.1-300.47
   def $funcsxt{dt : deftype, `xt*` : externtype*}([FUNC_externtype((dt : deftype <: typeuse))] ++ xt*{xt <- `xt*`}) = [dt] ++ $funcsxt(xt*{xt <- `xt*`})
-  ;; 1.2-syntax.types.watsup:303.1-303.59
+  ;; 1.2-syntax.types.watsup:301.1-301.59
   def $funcsxt{externtype : externtype, `xt*` : externtype*}([externtype] ++ xt*{xt <- `xt*`}) = $funcsxt(xt*{xt <- `xt*`})
     -- otherwise
 }
@@ -18763,13 +18797,13 @@ def $funcsxt(externtype*) : deftype*
 ;; 1.2-syntax.types.watsup
 rec {
 
-;; 1.2-syntax.types.watsup:296.1-296.90
+;; 1.2-syntax.types.watsup:294.1-294.90
 def $globalsxt(externtype*) : globaltype*
-  ;; 1.2-syntax.types.watsup:305.1-305.26
+  ;; 1.2-syntax.types.watsup:303.1-303.26
   def $globalsxt([]) = []
-  ;; 1.2-syntax.types.watsup:306.1-306.53
+  ;; 1.2-syntax.types.watsup:304.1-304.53
   def $globalsxt{gt : globaltype, `xt*` : externtype*}([GLOBAL_externtype(gt)] ++ xt*{xt <- `xt*`}) = [gt] ++ $globalsxt(xt*{xt <- `xt*`})
-  ;; 1.2-syntax.types.watsup:307.1-307.63
+  ;; 1.2-syntax.types.watsup:305.1-305.63
   def $globalsxt{externtype : externtype, `xt*` : externtype*}([externtype] ++ xt*{xt <- `xt*`}) = $globalsxt(xt*{xt <- `xt*`})
     -- otherwise
 }
@@ -18777,13 +18811,13 @@ def $globalsxt(externtype*) : globaltype*
 ;; 1.2-syntax.types.watsup
 rec {
 
-;; 1.2-syntax.types.watsup:297.1-297.89
+;; 1.2-syntax.types.watsup:295.1-295.89
 def $tablesxt(externtype*) : tabletype*
-  ;; 1.2-syntax.types.watsup:309.1-309.25
+  ;; 1.2-syntax.types.watsup:307.1-307.25
   def $tablesxt([]) = []
-  ;; 1.2-syntax.types.watsup:310.1-310.50
+  ;; 1.2-syntax.types.watsup:308.1-308.50
   def $tablesxt{tt : tabletype, `xt*` : externtype*}([TABLE_externtype(tt)] ++ xt*{xt <- `xt*`}) = [tt] ++ $tablesxt(xt*{xt <- `xt*`})
-  ;; 1.2-syntax.types.watsup:311.1-311.61
+  ;; 1.2-syntax.types.watsup:309.1-309.61
   def $tablesxt{externtype : externtype, `xt*` : externtype*}([externtype] ++ xt*{xt <- `xt*`}) = $tablesxt(xt*{xt <- `xt*`})
     -- otherwise
 }
@@ -18791,13 +18825,13 @@ def $tablesxt(externtype*) : tabletype*
 ;; 1.2-syntax.types.watsup
 rec {
 
-;; 1.2-syntax.types.watsup:298.1-298.87
+;; 1.2-syntax.types.watsup:296.1-296.87
 def $memsxt(externtype*) : memtype*
-  ;; 1.2-syntax.types.watsup:313.1-313.23
+  ;; 1.2-syntax.types.watsup:311.1-311.23
   def $memsxt([]) = []
-  ;; 1.2-syntax.types.watsup:314.1-314.44
+  ;; 1.2-syntax.types.watsup:312.1-312.44
   def $memsxt{mt : memtype, `xt*` : externtype*}([MEM_externtype(mt)] ++ xt*{xt <- `xt*`}) = [mt] ++ $memsxt(xt*{xt <- `xt*`})
-  ;; 1.2-syntax.types.watsup:315.1-315.57
+  ;; 1.2-syntax.types.watsup:313.1-313.57
   def $memsxt{externtype : externtype, `xt*` : externtype*}([externtype] ++ xt*{xt <- `xt*`}) = $memsxt(xt*{xt <- `xt*`})
     -- otherwise
 }
@@ -18805,13 +18839,13 @@ def $memsxt(externtype*) : memtype*
 ;; 1.2-syntax.types.watsup
 rec {
 
-;; 1.2-syntax.types.watsup:299.1-299.87
+;; 1.2-syntax.types.watsup:297.1-297.87
 def $tagsxt(externtype*) : tagtype*
-  ;; 1.2-syntax.types.watsup:317.1-317.23
+  ;; 1.2-syntax.types.watsup:315.1-315.23
   def $tagsxt([]) = []
-  ;; 1.2-syntax.types.watsup:318.1-318.44
+  ;; 1.2-syntax.types.watsup:316.1-316.44
   def $tagsxt{jt : tagtype, `xt*` : externtype*}([TAG_externtype((jt : deftype <: typeuse))] ++ xt*{xt <- `xt*`}) = [jt] ++ $tagsxt(xt*{xt <- `xt*`})
-  ;; 1.2-syntax.types.watsup:319.1-319.57
+  ;; 1.2-syntax.types.watsup:317.1-317.57
   def $tagsxt{externtype : externtype, `xt*` : externtype*}([externtype] ++ xt*{xt <- `xt*`}) = $tagsxt(xt*{xt <- `xt*`})
     -- otherwise
 }
@@ -18819,14 +18853,14 @@ def $tagsxt(externtype*) : tagtype*
 ;; 1.2-syntax.types.watsup
 rec {
 
-;; 1.2-syntax.types.watsup:324.1-324.112
+;; 1.2-syntax.types.watsup:322.1-322.112
 def $subst_typevar(typevar : typevar, typevar*, typeuse*) : typeuse
-  ;; 1.2-syntax.types.watsup:353.1-353.38
+  ;; 1.2-syntax.types.watsup:351.1-351.38
   def $subst_typevar{tv : typevar}(tv, [], []) = (tv : typevar <: typeuse)
-  ;; 1.2-syntax.types.watsup:354.1-354.95
+  ;; 1.2-syntax.types.watsup:352.1-352.95
   def $subst_typevar{tv : typevar, tv_1 : typevar, `tv'*` : typevar*, tu_1 : typeuse, `tu'*` : typeuse*}(tv, [tv_1] ++ tv'*{tv' <- `tv'*`}, [tu_1] ++ tu'*{tu' <- `tu'*`}) = tu_1
     -- if (tv = tv_1)
-  ;; 1.2-syntax.types.watsup:355.1-355.92
+  ;; 1.2-syntax.types.watsup:353.1-353.92
   def $subst_typevar{tv : typevar, tv_1 : typevar, `tv'*` : typevar*, tu_1 : typeuse, `tu'*` : typeuse*}(tv, [tv_1] ++ tv'*{tv' <- `tv'*`}, [tu_1] ++ tu'*{tu' <- `tu'*`}) = $subst_typevar(tv, tv'*{tv' <- `tv'*`}, tu'*{tu' <- `tu'*`})
     -- otherwise
 }
@@ -18849,78 +18883,78 @@ def $subst_vectype(vectype : vectype, typevar*, typeuse*) : vectype
 ;; 1.2-syntax.types.watsup
 rec {
 
-;; 1.2-syntax.types.watsup:325.1-325.112
+;; 1.2-syntax.types.watsup:323.1-323.112
 def $subst_typeuse(typeuse : typeuse, typevar*, typeuse*) : typeuse
-  ;; 1.2-syntax.types.watsup:357.1-357.66
+  ;; 1.2-syntax.types.watsup:355.1-355.66
   def $subst_typeuse{tv' : typevar, `tv*` : typevar*, `tu*` : typeuse*}((tv' : typevar <: typeuse), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = $subst_typevar(tv', tv*{tv <- `tv*`}, tu*{tu <- `tu*`})
-  ;; 1.2-syntax.types.watsup:358.1-358.64
+  ;; 1.2-syntax.types.watsup:356.1-356.64
   def $subst_typeuse{dt : deftype, `tv*` : typevar*, `tu*` : typeuse*}((dt : deftype <: typeuse), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ($subst_deftype(dt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) : deftype <: typeuse)
 
-;; 1.2-syntax.types.watsup:330.1-330.112
+;; 1.2-syntax.types.watsup:328.1-328.112
 def $subst_heaptype(heaptype : heaptype, typevar*, typeuse*) : heaptype
-  ;; 1.2-syntax.types.watsup:364.1-364.67
+  ;; 1.2-syntax.types.watsup:362.1-362.67
   def $subst_heaptype{tv' : typevar, `tv*` : typevar*, `tu*` : typeuse*}((tv' : typevar <: heaptype), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ($subst_typevar(tv', tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) : typeuse <: heaptype)
-  ;; 1.2-syntax.types.watsup:365.1-365.65
+  ;; 1.2-syntax.types.watsup:363.1-363.65
   def $subst_heaptype{dt : deftype, `tv*` : typevar*, `tu*` : typeuse*}((dt : deftype <: heaptype), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ($subst_deftype(dt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) : deftype <: heaptype)
-  ;; 1.2-syntax.types.watsup:366.1-366.53
+  ;; 1.2-syntax.types.watsup:364.1-364.53
   def $subst_heaptype{ht : heaptype, `tv*` : typevar*, `tu*` : typeuse*}(ht, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ht
     -- otherwise
 
-;; 1.2-syntax.types.watsup:331.1-331.112
+;; 1.2-syntax.types.watsup:329.1-329.112
 def $subst_reftype(reftype : reftype, typevar*, typeuse*) : reftype
-  ;; 1.2-syntax.types.watsup:368.1-368.83
+  ;; 1.2-syntax.types.watsup:366.1-366.83
   def $subst_reftype{nul : nul, ht : heaptype, `tv*` : typevar*, `tu*` : typeuse*}(REF_reftype(nul, ht), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = REF_reftype(nul, $subst_heaptype(ht, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}))
 
-;; 1.2-syntax.types.watsup:332.1-332.112
+;; 1.2-syntax.types.watsup:330.1-330.112
 def $subst_valtype(valtype : valtype, typevar*, typeuse*) : valtype
-  ;; 1.2-syntax.types.watsup:370.1-370.64
+  ;; 1.2-syntax.types.watsup:368.1-368.64
   def $subst_valtype{nt : numtype, `tv*` : typevar*, `tu*` : typeuse*}((nt : numtype <: valtype), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ($subst_numtype(nt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) : numtype <: valtype)
-  ;; 1.2-syntax.types.watsup:371.1-371.64
+  ;; 1.2-syntax.types.watsup:369.1-369.64
   def $subst_valtype{vt : vectype, `tv*` : typevar*, `tu*` : typeuse*}((vt : vectype <: valtype), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ($subst_vectype(vt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) : vectype <: valtype)
-  ;; 1.2-syntax.types.watsup:372.1-372.64
+  ;; 1.2-syntax.types.watsup:370.1-370.64
   def $subst_valtype{rt : reftype, `tv*` : typevar*, `tu*` : typeuse*}((rt : reftype <: valtype), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ($subst_reftype(rt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) : reftype <: valtype)
-  ;; 1.2-syntax.types.watsup:373.1-373.40
+  ;; 1.2-syntax.types.watsup:371.1-371.40
   def $subst_valtype{`tv*` : typevar*, `tu*` : typeuse*}(BOT_valtype, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = BOT_valtype
 
-;; 1.2-syntax.types.watsup:335.1-335.112
+;; 1.2-syntax.types.watsup:333.1-333.112
 def $subst_storagetype(storagetype : storagetype, typevar*, typeuse*) : storagetype
-  ;; 1.2-syntax.types.watsup:377.1-377.66
+  ;; 1.2-syntax.types.watsup:375.1-375.66
   def $subst_storagetype{t : valtype, `tv*` : typevar*, `tu*` : typeuse*}((t : valtype <: storagetype), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ($subst_valtype(t, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) : valtype <: storagetype)
-  ;; 1.2-syntax.types.watsup:378.1-378.69
+  ;; 1.2-syntax.types.watsup:376.1-376.69
   def $subst_storagetype{pt : packtype, `tv*` : typevar*, `tu*` : typeuse*}((pt : packtype <: storagetype), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ($subst_packtype(pt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) : packtype <: storagetype)
 
-;; 1.2-syntax.types.watsup:336.1-336.112
+;; 1.2-syntax.types.watsup:334.1-334.112
 def $subst_fieldtype(fieldtype : fieldtype, typevar*, typeuse*) : fieldtype
-  ;; 1.2-syntax.types.watsup:380.1-380.80
+  ;; 1.2-syntax.types.watsup:378.1-378.80
   def $subst_fieldtype{mut : mut, zt : storagetype, `tv*` : typevar*, `tu*` : typeuse*}(`%%`_fieldtype(mut, zt), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = `%%`_fieldtype(mut, $subst_storagetype(zt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}))
 
-;; 1.2-syntax.types.watsup:338.1-338.112
+;; 1.2-syntax.types.watsup:336.1-336.112
 def $subst_comptype(comptype : comptype, typevar*, typeuse*) : comptype
-  ;; 1.2-syntax.types.watsup:382.1-382.85
+  ;; 1.2-syntax.types.watsup:380.1-380.85
   def $subst_comptype{`yt*` : fieldtype*, `tv*` : typevar*, `tu*` : typeuse*}(STRUCT_comptype(`%`_structtype(yt*{yt <- `yt*`})), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = STRUCT_comptype(`%`_structtype($subst_fieldtype(yt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`})*{yt <- `yt*`}))
-  ;; 1.2-syntax.types.watsup:383.1-383.81
+  ;; 1.2-syntax.types.watsup:381.1-381.81
   def $subst_comptype{yt : fieldtype, `tv*` : typevar*, `tu*` : typeuse*}(ARRAY_comptype(yt), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ARRAY_comptype($subst_fieldtype(yt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}))
-  ;; 1.2-syntax.types.watsup:384.1-384.78
+  ;; 1.2-syntax.types.watsup:382.1-382.78
   def $subst_comptype{ft : functype, `tv*` : typevar*, `tu*` : typeuse*}(FUNC_comptype(ft), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = FUNC_comptype($subst_functype(ft, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}))
 
-;; 1.2-syntax.types.watsup:339.1-339.112
+;; 1.2-syntax.types.watsup:337.1-337.112
 def $subst_subtype(subtype : subtype, typevar*, typeuse*) : subtype
-  ;; 1.2-syntax.types.watsup:386.1-387.71
+  ;; 1.2-syntax.types.watsup:384.1-385.71
   def $subst_subtype{fin : fin, `tu'*` : typeuse*, ct : comptype, `tv*` : typevar*, `tu*` : typeuse*}(SUB_subtype(fin, tu'*{tu' <- `tu'*`}, ct), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = SUB_subtype(fin, $subst_typeuse(tu', tv*{tv <- `tv*`}, tu*{tu <- `tu*`})*{tu' <- `tu'*`}, $subst_comptype(ct, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}))
 
-;; 1.2-syntax.types.watsup:340.1-340.112
+;; 1.2-syntax.types.watsup:338.1-338.112
 def $subst_rectype(rectype : rectype, typevar*, typeuse*) : rectype
-  ;; 1.2-syntax.types.watsup:389.1-389.76
+  ;; 1.2-syntax.types.watsup:387.1-387.76
   def $subst_rectype{`st*` : subtype*, `tv*` : typevar*, `tu*` : typeuse*}(REC_rectype(`%`_list(st*{st <- `st*`})), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = REC_rectype(`%`_list($subst_subtype(st, tv*{tv <- `tv*`}, tu*{tu <- `tu*`})*{st <- `st*`}))
 
-;; 1.2-syntax.types.watsup:341.1-341.112
+;; 1.2-syntax.types.watsup:339.1-339.112
 def $subst_deftype(deftype : deftype, typevar*, typeuse*) : deftype
-  ;; 1.2-syntax.types.watsup:391.1-391.78
+  ;; 1.2-syntax.types.watsup:389.1-389.78
   def $subst_deftype{qt : rectype, i : n, `tv*` : typevar*, `tu*` : typeuse*}(DEF_deftype(qt, i), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = DEF_deftype($subst_rectype(qt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}), i)
 
-;; 1.2-syntax.types.watsup:344.1-344.112
+;; 1.2-syntax.types.watsup:342.1-342.112
 def $subst_functype(functype : functype, typevar*, typeuse*) : functype
-  ;; 1.2-syntax.types.watsup:394.1-394.113
+  ;; 1.2-syntax.types.watsup:392.1-392.113
   def $subst_functype{`t_1*` : valtype*, `t_2*` : valtype*, `tv*` : typevar*, `tu*` : typeuse*}(`%->%`_functype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), `%`_resulttype(t_2*{t_2 <- `t_2*`})), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = `%->%`_functype(`%`_resulttype($subst_valtype(t_1, tv*{tv <- `tv*`}, tu*{tu <- `tu*`})*{t_1 <- `t_1*`}), `%`_resulttype($subst_valtype(t_2, tv*{tv <- `tv*`}, tu*{tu <- `tu*`})*{t_2 <- `t_2*`}))
 }
 
@@ -19005,11 +19039,11 @@ def $subst_all_moduletype(moduletype : moduletype, heaptype*) : moduletype
 ;; 1.2-syntax.types.watsup
 rec {
 
-;; 1.2-syntax.types.watsup:426.1-426.98
+;; 1.2-syntax.types.watsup:424.1-424.98
 def $subst_all_deftypes(deftype*, heaptype*) : deftype*
-  ;; 1.2-syntax.types.watsup:427.1-427.40
+  ;; 1.2-syntax.types.watsup:425.1-425.40
   def $subst_all_deftypes{`tu*` : typeuse*}([], (tu : typeuse <: heaptype)*{tu <- `tu*`}) = []
-  ;; 1.2-syntax.types.watsup:428.1-428.101
+  ;; 1.2-syntax.types.watsup:426.1-426.101
   def $subst_all_deftypes{dt_1 : deftype, `dt*` : deftype*, `tu*` : typeuse*}([dt_1] ++ dt*{dt <- `dt*`}, (tu : typeuse <: heaptype)*{tu <- `tu*`}) = [$subst_all_deftype(dt_1, (tu : typeuse <: heaptype)*{tu <- `tu*`})] ++ $subst_all_deftypes(dt*{dt <- `dt*`}, (tu : typeuse <: heaptype)*{tu <- `tu*`})
 }
 
@@ -19041,13 +19075,6 @@ def $unrolldt(deftype : deftype) : subtype
 def $expanddt(deftype : deftype) : comptype
   ;; 1.2-syntax.types.watsup
   def $expanddt{deftype : deftype, comptype : comptype, fin : fin, `typeuse*` : typeuse*}(deftype) = comptype
-    -- if ($unrolldt(deftype) = SUB_subtype(fin, typeuse*{typeuse <- `typeuse*`}, comptype))
-
-;; 1.2-syntax.types.watsup
-relation Expand: `%~~%`(deftype, comptype)
-  ;; 1.2-syntax.types.watsup
-  rule _{deftype : deftype, comptype : comptype, fin : fin, `typeuse*` : typeuse*}:
-    `%~~%`(deftype, comptype)
     -- if ($unrolldt(deftype) = SUB_subtype(fin, typeuse*{typeuse <- `typeuse*`}, comptype))
 
 ;; 1.2-syntax.types.watsup
@@ -19099,90 +19126,90 @@ def $free_typevar(typevar : typevar) : free
 ;; 1.2-syntax.types.watsup
 rec {
 
-;; 1.2-syntax.types.watsup:467.1-467.36
+;; 1.2-syntax.types.watsup:457.1-457.36
 def $free_heaptype(heaptype : heaptype) : free
-  ;; 1.2-syntax.types.watsup:518.1-518.65
+  ;; 1.2-syntax.types.watsup:508.1-508.65
   def $free_heaptype{absheaptype : absheaptype}((absheaptype : absheaptype <: heaptype)) = $free_absheaptype(absheaptype)
-  ;; 1.2-syntax.types.watsup:519.1-519.53
+  ;; 1.2-syntax.types.watsup:509.1-509.53
   def $free_heaptype{typeuse : typeuse}((typeuse : typeuse <: heaptype)) = $free_typeuse(typeuse)
 
-;; 1.2-syntax.types.watsup:468.1-468.34
+;; 1.2-syntax.types.watsup:458.1-458.34
 def $free_reftype(reftype : reftype) : free
-  ;; 1.2-syntax.types.watsup:521.1-521.63
+  ;; 1.2-syntax.types.watsup:511.1-511.63
   def $free_reftype{nul : nul, heaptype : heaptype}(REF_reftype(nul, heaptype)) = $free_heaptype(heaptype)
 
-;; 1.2-syntax.types.watsup:470.1-470.34
+;; 1.2-syntax.types.watsup:460.1-460.34
 def $free_typeuse(typeuse : typeuse) : free
-  ;; 1.2-syntax.types.watsup:515.1-515.52
+  ;; 1.2-syntax.types.watsup:505.1-505.52
   def $free_typeuse{typevar : typevar}((typevar : typevar <: typeuse)) = $free_typevar(typevar)
-  ;; 1.2-syntax.types.watsup:516.1-516.52
+  ;; 1.2-syntax.types.watsup:506.1-506.52
   def $free_typeuse{deftype : deftype}((deftype : deftype <: typeuse)) = $free_deftype(deftype)
 
-;; 1.2-syntax.types.watsup:471.1-471.34
+;; 1.2-syntax.types.watsup:461.1-461.34
 def $free_valtype(valtype : valtype) : free
-  ;; 1.2-syntax.types.watsup:523.1-523.52
+  ;; 1.2-syntax.types.watsup:513.1-513.52
   def $free_valtype{numtype : numtype}((numtype : numtype <: valtype)) = $free_numtype(numtype)
-  ;; 1.2-syntax.types.watsup:524.1-524.52
+  ;; 1.2-syntax.types.watsup:514.1-514.52
   def $free_valtype{vectype : vectype}((vectype : vectype <: valtype)) = $free_vectype(vectype)
-  ;; 1.2-syntax.types.watsup:525.1-525.52
+  ;; 1.2-syntax.types.watsup:515.1-515.52
   def $free_valtype{reftype : reftype}((reftype : reftype <: valtype)) = $free_reftype(reftype)
-  ;; 1.2-syntax.types.watsup:526.1-526.28
+  ;; 1.2-syntax.types.watsup:516.1-516.28
   def $free_valtype(BOT_valtype) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
 
-;; 1.2-syntax.types.watsup:473.1-473.40
+;; 1.2-syntax.types.watsup:463.1-463.40
 def $free_resulttype(resulttype : resulttype) : free
-  ;; 1.2-syntax.types.watsup:528.1-528.69
+  ;; 1.2-syntax.types.watsup:518.1-518.69
   def $free_resulttype{`valtype*` : valtype*}(`%`_resulttype(valtype*{valtype <- `valtype*`})) = $free_list($free_valtype(valtype)*{valtype <- `valtype*`})
 
-;; 1.2-syntax.types.watsup:474.1-474.42
+;; 1.2-syntax.types.watsup:464.1-464.42
 def $free_storagetype(storagetype : storagetype) : free
-  ;; 1.2-syntax.types.watsup:530.1-530.56
+  ;; 1.2-syntax.types.watsup:520.1-520.56
   def $free_storagetype{valtype : valtype}((valtype : valtype <: storagetype)) = $free_valtype(valtype)
-  ;; 1.2-syntax.types.watsup:531.1-531.59
+  ;; 1.2-syntax.types.watsup:521.1-521.59
   def $free_storagetype{packtype : packtype}((packtype : packtype <: storagetype)) = $free_packtype(packtype)
 
-;; 1.2-syntax.types.watsup:475.1-475.38
+;; 1.2-syntax.types.watsup:465.1-465.38
 def $free_fieldtype(fieldtype : fieldtype) : free
-  ;; 1.2-syntax.types.watsup:533.1-533.70
+  ;; 1.2-syntax.types.watsup:523.1-523.70
   def $free_fieldtype{mut : mut, storagetype : storagetype}(`%%`_fieldtype(mut, storagetype)) = $free_storagetype(storagetype)
 
-;; 1.2-syntax.types.watsup:476.1-476.40
+;; 1.2-syntax.types.watsup:466.1-466.40
 def $free_structtype(structtype : structtype) : free
-  ;; 1.2-syntax.types.watsup:538.1-538.75
+  ;; 1.2-syntax.types.watsup:528.1-528.75
   def $free_structtype{`fieldtype*` : fieldtype*}(`%`_structtype(fieldtype*{fieldtype <- `fieldtype*`})) = $free_list($free_fieldtype(fieldtype)*{fieldtype <- `fieldtype*`})
 
-;; 1.2-syntax.types.watsup:477.1-477.38
+;; 1.2-syntax.types.watsup:467.1-467.38
 def $free_arraytype(arraytype : arraytype) : free
-  ;; 1.2-syntax.types.watsup:540.1-540.60
+  ;; 1.2-syntax.types.watsup:530.1-530.60
   def $free_arraytype{fieldtype : fieldtype}(fieldtype) = $free_fieldtype(fieldtype)
 
-;; 1.2-syntax.types.watsup:478.1-478.36
+;; 1.2-syntax.types.watsup:468.1-468.36
 def $free_functype(functype : functype) : free
-  ;; 1.2-syntax.types.watsup:535.1-536.67
+  ;; 1.2-syntax.types.watsup:525.1-526.67
   def $free_functype{resulttype_1 : resulttype, resulttype_2 : resulttype}(`%->%`_functype(resulttype_1, resulttype_2)) = $free_resulttype(resulttype_1) +++ $free_resulttype(resulttype_2)
 
-;; 1.2-syntax.types.watsup:479.1-479.36
+;; 1.2-syntax.types.watsup:469.1-469.36
 def $free_comptype(comptype : comptype) : free
-  ;; 1.2-syntax.types.watsup:542.1-542.69
+  ;; 1.2-syntax.types.watsup:532.1-532.69
   def $free_comptype{structtype : structtype}(STRUCT_comptype(structtype)) = $free_structtype(structtype)
-  ;; 1.2-syntax.types.watsup:543.1-543.65
+  ;; 1.2-syntax.types.watsup:533.1-533.65
   def $free_comptype{arraytype : arraytype}(ARRAY_comptype(arraytype)) = $free_arraytype(arraytype)
-  ;; 1.2-syntax.types.watsup:544.1-544.61
+  ;; 1.2-syntax.types.watsup:534.1-534.61
   def $free_comptype{functype : functype}(FUNC_comptype(functype)) = $free_functype(functype)
 
-;; 1.2-syntax.types.watsup:480.1-480.34
+;; 1.2-syntax.types.watsup:470.1-470.34
 def $free_subtype(subtype : subtype) : free
-  ;; 1.2-syntax.types.watsup:546.1-547.66
+  ;; 1.2-syntax.types.watsup:536.1-537.66
   def $free_subtype{fin : fin, `typeuse*` : typeuse*, comptype : comptype}(SUB_subtype(fin, typeuse*{typeuse <- `typeuse*`}, comptype)) = $free_list($free_typeuse(typeuse)*{typeuse <- `typeuse*`}) +++ $free_comptype(comptype)
 
-;; 1.2-syntax.types.watsup:481.1-481.34
+;; 1.2-syntax.types.watsup:471.1-471.34
 def $free_rectype(rectype : rectype) : free
-  ;; 1.2-syntax.types.watsup:549.1-549.70
+  ;; 1.2-syntax.types.watsup:539.1-539.70
   def $free_rectype{`subtype*` : subtype*}(REC_rectype(`%`_list(subtype*{subtype <- `subtype*`}))) = $free_list($free_subtype(subtype)*{subtype <- `subtype*`})
 
-;; 1.2-syntax.types.watsup:509.1-509.34
+;; 1.2-syntax.types.watsup:499.1-499.34
 def $free_deftype(deftype : deftype) : free
-  ;; 1.2-syntax.types.watsup:510.1-510.58
+  ;; 1.2-syntax.types.watsup:500.1-500.58
   def $free_deftype{rectype : rectype, n : n}(DEF_deftype(rectype, n)) = $free_rectype(rectype)
 }
 
@@ -20389,70 +20416,6 @@ relation Vectype_ok: `%|-%:OK`(context, vectype)
     `%|-%:OK`(C, vectype)
 
 ;; 2.1-validation.types.watsup
-relation Heaptype_ok: `%|-%:OK`(context, heaptype)
-  ;; 2.1-validation.types.watsup
-  rule abs{C : context, absheaptype : absheaptype}:
-    `%|-%:OK`(C, (absheaptype : absheaptype <: heaptype))
-
-  ;; 2.1-validation.types.watsup
-  rule typeidx{C : context, typeidx : typeidx, dt : deftype}:
-    `%|-%:OK`(C, _IDX_heaptype(typeidx))
-    -- if (typeidx!`%`_typeidx.0 < |C.TYPES_context|)
-    -- if (C.TYPES_context[typeidx!`%`_typeidx.0] = dt)
-
-  ;; 2.1-validation.types.watsup
-  rule rec{C : context, i : nat, st : subtype}:
-    `%|-%:OK`(C, REC_heaptype(i))
-    -- if (i < |C.RECS_context|)
-    -- if (C.RECS_context[i] = st)
-
-;; 2.1-validation.types.watsup
-relation Reftype_ok: `%|-%:OK`(context, reftype)
-  ;; 2.1-validation.types.watsup
-  rule _{C : context, heaptype : heaptype}:
-    `%|-%:OK`(C, REF_reftype(NULL_NULL?{}, heaptype))
-    -- Heaptype_ok: `%|-%:OK`(C, heaptype)
-
-;; 2.1-validation.types.watsup
-relation Valtype_ok: `%|-%:OK`(context, valtype)
-  ;; 2.1-validation.types.watsup
-  rule num{C : context, numtype : numtype}:
-    `%|-%:OK`(C, (numtype : numtype <: valtype))
-    -- Numtype_ok: `%|-%:OK`(C, numtype)
-
-  ;; 2.1-validation.types.watsup
-  rule vec{C : context, vectype : vectype}:
-    `%|-%:OK`(C, (vectype : vectype <: valtype))
-    -- Vectype_ok: `%|-%:OK`(C, vectype)
-
-  ;; 2.1-validation.types.watsup
-  rule ref{C : context, reftype : reftype}:
-    `%|-%:OK`(C, (reftype : reftype <: valtype))
-    -- Reftype_ok: `%|-%:OK`(C, reftype)
-
-  ;; 2.1-validation.types.watsup
-  rule bot{C : context}:
-    `%|-%:OK`(C, BOT_valtype)
-
-;; 2.1-validation.types.watsup
-relation Resulttype_ok: `%|-%:OK`(context, resulttype)
-  ;; 2.1-validation.types.watsup
-  rule _{C : context, `t*` : valtype*}:
-    `%|-%:OK`(C, `%`_resulttype(t*{t <- `t*`}))
-    -- (Valtype_ok: `%|-%:OK`(C, t))*{t <- `t*`}
-
-;; 2.1-validation.types.watsup
-relation Instrtype_ok: `%|-%:OK`(context, instrtype)
-  ;; 2.1-validation.types.watsup
-  rule _{C : context, `t_1*` : valtype*, `x*` : idx*, `t_2*` : valtype*, `lct*` : localtype*}:
-    `%|-%:OK`(C, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), x*{x <- `x*`}, `%`_resulttype(t_2*{t_2 <- `t_2*`})))
-    -- Resulttype_ok: `%|-%:OK`(C, `%`_resulttype(t_1*{t_1 <- `t_1*`}))
-    -- Resulttype_ok: `%|-%:OK`(C, `%`_resulttype(t_2*{t_2 <- `t_2*`}))
-    -- if (|`lct*`| = |`x*`|)
-    -- (if (x!`%`_idx.0 < |C.LOCALS_context|))*{x <- `x*`}
-    -- (if (C.LOCALS_context[x!`%`_idx.0] = lct))*{lct <- `lct*`, x <- `x*`}
-
-;; 2.1-validation.types.watsup
 syntax oktypeidx =
   | OK{typeidx : typeidx}(typeidx : typeidx)
 
@@ -20465,50 +20428,6 @@ relation Packtype_ok: `%|-%:OK`(context, packtype)
   ;; 2.1-validation.types.watsup
   rule _{C : context, packtype : packtype}:
     `%|-%:OK`(C, packtype)
-
-;; 2.1-validation.types.watsup
-relation Storagetype_ok: `%|-%:OK`(context, storagetype)
-  ;; 2.1-validation.types.watsup
-  rule val{C : context, valtype : valtype}:
-    `%|-%:OK`(C, (valtype : valtype <: storagetype))
-    -- Valtype_ok: `%|-%:OK`(C, valtype)
-
-  ;; 2.1-validation.types.watsup
-  rule pack{C : context, packtype : packtype}:
-    `%|-%:OK`(C, (packtype : packtype <: storagetype))
-    -- Packtype_ok: `%|-%:OK`(C, packtype)
-
-;; 2.1-validation.types.watsup
-relation Fieldtype_ok: `%|-%:OK`(context, fieldtype)
-  ;; 2.1-validation.types.watsup
-  rule _{C : context, storagetype : storagetype}:
-    `%|-%:OK`(C, `%%`_fieldtype(MUT_MUT?{}, storagetype))
-    -- Storagetype_ok: `%|-%:OK`(C, storagetype)
-
-;; 2.1-validation.types.watsup
-relation Functype_ok: `%|-%:OK`(context, functype)
-  ;; 2.1-validation.types.watsup
-  rule _{C : context, `t_1*` : valtype*, `t_2*` : valtype*}:
-    `%|-%:OK`(C, `%->%`_functype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), `%`_resulttype(t_2*{t_2 <- `t_2*`})))
-    -- Resulttype_ok: `%|-%:OK`(C, `%`_resulttype(t_1*{t_1 <- `t_1*`}))
-    -- Resulttype_ok: `%|-%:OK`(C, `%`_resulttype(t_2*{t_2 <- `t_2*`}))
-
-;; 2.1-validation.types.watsup
-relation Comptype_ok: `%|-%:OK`(context, comptype)
-  ;; 2.1-validation.types.watsup
-  rule struct{C : context, `fieldtype*` : fieldtype*}:
-    `%|-%:OK`(C, STRUCT_comptype(`%`_structtype(fieldtype*{fieldtype <- `fieldtype*`})))
-    -- (Fieldtype_ok: `%|-%:OK`(C, fieldtype))*{fieldtype <- `fieldtype*`}
-
-  ;; 2.1-validation.types.watsup
-  rule array{C : context, fieldtype : fieldtype}:
-    `%|-%:OK`(C, ARRAY_comptype(fieldtype))
-    -- Fieldtype_ok: `%|-%:OK`(C, fieldtype)
-
-  ;; 2.1-validation.types.watsup
-  rule func{C : context, functype : functype}:
-    `%|-%:OK`(C, FUNC_comptype(functype))
-    -- Functype_ok: `%|-%:OK`(C, functype)
 
 ;; 2.2-validation.subtyping.watsup
 relation Packtype_sub: `%|-%<:%`(context, packtype, packtype)
@@ -20523,9 +20442,232 @@ relation Numtype_sub: `%|-%<:%`(context, numtype, numtype)
     `%|-%<:%`(C, numtype, numtype)
 
 ;; 2.1-validation.types.watsup
+relation Expand: `%~~%`(deftype, comptype)
+  ;; 2.1-validation.types.watsup
+  rule _{deftype : deftype, comptype : comptype}:
+    `%~~%`(deftype, comptype)
+    -- if ($expanddt(deftype) = comptype)
+
+;; 2.2-validation.subtyping.watsup
+relation Vectype_sub: `%|-%<:%`(context, vectype, vectype)
+  ;; 2.2-validation.subtyping.watsup
+  rule _{C : context, vectype : vectype}:
+    `%|-%<:%`(C, vectype, vectype)
+
+;; 2.1-validation.types.watsup
+def $before(typeuse : typeuse, typeidx : typeidx, nat : nat) : bool
+  ;; 2.1-validation.types.watsup
+  def $before{deftype : deftype, x : idx, i : nat}((deftype : deftype <: typeuse), x, i) = true
+  ;; 2.1-validation.types.watsup
+  def $before{typeidx : typeidx, x : idx, i : nat}(_IDX_typeuse(typeidx), x, i) = (typeidx!`%`_typeidx.0 < x!`%`_idx.0)
+  ;; 2.1-validation.types.watsup
+  def $before{j : nat, x : idx, i : nat}(REC_typeuse(j), x, i) = (j < i)
+
+;; 2.1-validation.types.watsup
+def $unrollht(context : context, heaptype : heaptype) : subtype
+  ;; 2.1-validation.types.watsup
+  def $unrollht{C : context, deftype : deftype}(C, (deftype : deftype <: heaptype)) = $unrolldt(deftype)
+  ;; 2.1-validation.types.watsup
+  def $unrollht{C : context, typeidx : typeidx}(C, _IDX_heaptype(typeidx)) = $unrolldt(C.TYPES_context[typeidx!`%`_typeidx.0])
+  ;; 2.1-validation.types.watsup
+  def $unrollht{C : context, i : nat}(C, REC_heaptype(i)) = C.RECS_context[i]
+
+;; 2.1-validation.types.watsup
 rec {
 
-;; 2.1-validation.types.watsup:85.1-85.107
+;; 2.1-validation.types.watsup:9.1-9.92
+relation Heaptype_ok: `%|-%:OK`(context, heaptype)
+  ;; 2.1-validation.types.watsup:20.1-21.24
+  rule abs{C : context, absheaptype : absheaptype}:
+    `%|-%:OK`(C, (absheaptype : absheaptype <: heaptype))
+
+  ;; 2.1-validation.types.watsup:23.1-25.35
+  rule typeuse{C : context, typeuse : typeuse}:
+    `%|-%:OK`(C, (typeuse : typeuse <: heaptype))
+    -- Typeuse_ok: `%|-%:OK`(C, typeuse)
+
+;; 2.1-validation.types.watsup:10.1-10.91
+relation Reftype_ok: `%|-%:OK`(context, reftype)
+  ;; 2.1-validation.types.watsup:27.1-29.37
+  rule _{C : context, heaptype : heaptype}:
+    `%|-%:OK`(C, REF_reftype(NULL_NULL?{}, heaptype))
+    -- Heaptype_ok: `%|-%:OK`(C, heaptype)
+
+;; 2.1-validation.types.watsup:11.1-11.91
+relation Valtype_ok: `%|-%:OK`(context, valtype)
+  ;; 2.1-validation.types.watsup:31.1-33.35
+  rule num{C : context, numtype : numtype}:
+    `%|-%:OK`(C, (numtype : numtype <: valtype))
+    -- Numtype_ok: `%|-%:OK`(C, numtype)
+
+  ;; 2.1-validation.types.watsup:35.1-37.35
+  rule vec{C : context, vectype : vectype}:
+    `%|-%:OK`(C, (vectype : vectype <: valtype))
+    -- Vectype_ok: `%|-%:OK`(C, vectype)
+
+  ;; 2.1-validation.types.watsup:39.1-41.35
+  rule ref{C : context, reftype : reftype}:
+    `%|-%:OK`(C, (reftype : reftype <: valtype))
+    -- Reftype_ok: `%|-%:OK`(C, reftype)
+
+  ;; 2.1-validation.types.watsup:43.1-44.16
+  rule bot{C : context}:
+    `%|-%:OK`(C, BOT_valtype)
+
+;; 2.1-validation.types.watsup:12.1-12.94
+relation Typeuse_ok: `%|-%:OK`(context, typeuse)
+  ;; 2.1-validation.types.watsup:98.1-100.30
+  rule typeidx{C : context, typeidx : typeidx, dt : deftype}:
+    `%|-%:OK`(C, _IDX_typeuse(typeidx))
+    -- if (typeidx!`%`_typeidx.0 < |C.TYPES_context|)
+    -- if (C.TYPES_context[typeidx!`%`_typeidx.0] = dt)
+
+  ;; 2.1-validation.types.watsup:102.1-104.35
+  rule deftype{C : context, deftype : deftype}:
+    `%|-%:OK`(C, (deftype : deftype <: typeuse))
+    -- Deftype_ok: `%|-%:OK`(C, deftype)
+
+  ;; 2.1-validation.types.watsup:106.1-108.23
+  rule rec{C : context, i : nat, st : subtype}:
+    `%|-%:OK`(C, REC_typeuse(i))
+    -- if (i < |C.RECS_context|)
+    -- if (C.RECS_context[i] = st)
+
+;; 2.1-validation.types.watsup:49.1-49.100
+relation Resulttype_ok: `%|-%:OK`(context, resulttype)
+  ;; 2.1-validation.types.watsup:52.1-54.32
+  rule _{C : context, `t*` : valtype*}:
+    `%|-%:OK`(C, `%`_resulttype(t*{t <- `t*`}))
+    -- (Valtype_ok: `%|-%:OK`(C, t))*{t <- `t*`}
+
+;; 2.1-validation.types.watsup:83.1-83.104
+relation Fieldtype_ok: `%|-%:OK`(context, fieldtype)
+  ;; 2.1-validation.types.watsup:122.1-124.43
+  rule _{C : context, storagetype : storagetype}:
+    `%|-%:OK`(C, `%%`_fieldtype(MUT_MUT?{}, storagetype))
+    -- Storagetype_ok: `%|-%:OK`(C, storagetype)
+
+;; 2.1-validation.types.watsup:84.1-84.106
+relation Storagetype_ok: `%|-%:OK`(context, storagetype)
+  ;; 2.1-validation.types.watsup:114.1-116.35
+  rule val{C : context, valtype : valtype}:
+    `%|-%:OK`(C, (valtype : valtype <: storagetype))
+    -- Valtype_ok: `%|-%:OK`(C, valtype)
+
+  ;; 2.1-validation.types.watsup:118.1-120.37
+  rule pack{C : context, packtype : packtype}:
+    `%|-%:OK`(C, (packtype : packtype <: storagetype))
+    -- Packtype_ok: `%|-%:OK`(C, packtype)
+
+;; 2.1-validation.types.watsup:85.1-85.103
+relation Comptype_ok: `%|-%:OK`(context, comptype)
+  ;; 2.1-validation.types.watsup:127.1-129.42
+  rule struct{C : context, `fieldtype*` : fieldtype*}:
+    `%|-%:OK`(C, STRUCT_comptype(`%`_structtype(fieldtype*{fieldtype <- `fieldtype*`})))
+    -- (Fieldtype_ok: `%|-%:OK`(C, fieldtype))*{fieldtype <- `fieldtype*`}
+
+  ;; 2.1-validation.types.watsup:131.1-133.39
+  rule array{C : context, fieldtype : fieldtype}:
+    `%|-%:OK`(C, ARRAY_comptype(fieldtype))
+    -- Fieldtype_ok: `%|-%:OK`(C, fieldtype)
+
+  ;; 2.1-validation.types.watsup:135.1-137.37
+  rule func{C : context, functype : functype}:
+    `%|-%:OK`(C, FUNC_comptype(functype))
+    -- Functype_ok: `%|-%:OK`(C, functype)
+
+;; 2.1-validation.types.watsup:86.1-86.103
+relation Functype_ok: `%|-%:OK`(context, functype)
+  ;; 2.1-validation.types.watsup:211.1-214.35
+  rule _{C : context, `t_1*` : valtype*, `t_2*` : valtype*}:
+    `%|-%:OK`(C, `%->%`_functype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), `%`_resulttype(t_2*{t_2 <- `t_2*`})))
+    -- Resulttype_ok: `%|-%:OK`(C, `%`_resulttype(t_1*{t_1 <- `t_1*`}))
+    -- Resulttype_ok: `%|-%:OK`(C, `%`_resulttype(t_2*{t_2 <- `t_2*`}))
+
+;; 2.1-validation.types.watsup:87.1-87.102
+relation Subtype_ok: `%|-%:%`(context, subtype, oktypeidx)
+  ;; 2.1-validation.types.watsup:140.1-147.49
+  rule _{C : context, `x*` : idx*, comptype : comptype, x_0 : idx, `x'**` : idx**, `comptype'*` : comptype*}:
+    `%|-%:%`(C, SUB_subtype(FINAL_FINAL?{}, _IDX_typeuse(x)*{x <- `x*`}, comptype), OK_oktypeidx(x_0))
+    -- if (|x*{x <- `x*`}| <= 1)
+    -- (if (x!`%`_idx.0 < x_0!`%`_idx.0))*{x <- `x*`}
+    -- if (|`comptype'*`| = |`x*`|)
+    -- if (|`comptype'*`| = |`x'**`|)
+    -- (if (x!`%`_idx.0 < |C.TYPES_context|))*{x <- `x*`}
+    -- (if ($unrolldt(C.TYPES_context[x!`%`_idx.0]) = SUB_subtype(?(), _IDX_typeuse(x')*{x' <- `x'*`}, comptype')))*{comptype' <- `comptype'*`, x <- `x*`, `x'*` <- `x'**`}
+    -- Comptype_ok: `%|-%:OK`(C, comptype)
+    -- (Comptype_sub: `%|-%<:%`(C, comptype, comptype'))*{comptype' <- `comptype'*`}
+
+;; 2.1-validation.types.watsup:88.1-88.123
+relation Rectype_ok: `%|-%:%`(context, rectype, oktypeidx)
+  ;; 2.1-validation.types.watsup:169.1-170.23
+  rule empty{C : context, x : idx}:
+    `%|-%:%`(C, REC_rectype(`%`_list([])), OK_oktypeidx(x))
+
+  ;; 2.1-validation.types.watsup:172.1-175.48
+  rule cons{C : context, subtype_1 : subtype, `subtype*` : subtype*, x : idx}:
+    `%|-%:%`(C, REC_rectype(`%`_list([subtype_1] ++ subtype*{subtype <- `subtype*`})), OK_oktypeidx(x))
+    -- Subtype_ok: `%|-%:%`(C, subtype_1, OK_oktypeidx(x))
+    -- Rectype_ok: `%|-%:%`(C, REC_rectype(`%`_list(subtype*{subtype <- `subtype*`})), OK_oktypeidx(`%`_typeidx((x!`%`_idx.0 + 1))))
+
+  ;; 2.1-validation.types.watsup:177.1-179.60
+  rule _rec2{C : context, `subtype*` : subtype*, x : idx}:
+    `%|-%:%`(C, REC_rectype(`%`_list(subtype*{subtype <- `subtype*`})), OK_oktypeidx(x))
+    -- Rectype_ok2: `%|-%:%`({TYPES [], RECS subtype*{subtype <- `subtype*`}, FUNCS [], GLOBALS [], TABLES [], MEMS [], TAGS [], ELEMS [], DATAS [], LOCALS [], LABELS [], RETURN ?(), REFS []} +++ C, REC_rectype(`%`_list(subtype*{subtype <- `subtype*`})), OK_oktypeidxnat(x, 0))
+
+;; 2.1-validation.types.watsup:89.1-89.105
+relation Subtype_ok2: `%|-%:%`(context, subtype, oktypeidxnat)
+  ;; 2.1-validation.types.watsup:159.1-166.49
+  rule _{C : context, `typeuse*` : typeuse*, compttype : comptype, x : idx, i : nat, `typeuse'**` : typeuse**, `comptype'*` : comptype*, comptype : comptype}:
+    `%|-%:%`(C, SUB_subtype(FINAL_FINAL?{}, typeuse*{typeuse <- `typeuse*`}, compttype), OK_oktypeidxnat(x, i))
+    -- if (|typeuse*{typeuse <- `typeuse*`}| <= 1)
+    -- (if $before(typeuse, x, i))*{typeuse <- `typeuse*`}
+    -- if (|`comptype'*`| = |`typeuse*`|)
+    -- if (|`comptype'*`| = |`typeuse'**`|)
+    -- (if ($unrollht(C, (typeuse : typeuse <: heaptype)) = SUB_subtype(?(), typeuse'*{typeuse' <- `typeuse'*`}, comptype')))*{comptype' <- `comptype'*`, typeuse <- `typeuse*`, `typeuse'*` <- `typeuse'**`}
+    -- Comptype_ok: `%|-%:OK`(C, comptype)
+    -- (Comptype_sub: `%|-%<:%`(C, comptype, comptype'))*{comptype' <- `comptype'*`}
+
+;; 2.1-validation.types.watsup:90.1-90.126
+relation Rectype_ok2: `%|-%:%`(context, rectype, oktypeidxnat)
+  ;; 2.1-validation.types.watsup:181.1-182.24
+  rule empty{C : context, x : idx, i : nat}:
+    `%|-%:%`(C, REC_rectype(`%`_list([])), OK_oktypeidxnat(x, i))
+
+  ;; 2.1-validation.types.watsup:184.1-187.55
+  rule cons{C : context, subtype_1 : subtype, `subtype*` : subtype*, x : idx, i : nat}:
+    `%|-%:%`(C, REC_rectype(`%`_list([subtype_1] ++ subtype*{subtype <- `subtype*`})), OK_oktypeidxnat(x, i))
+    -- Subtype_ok2: `%|-%:%`(C, subtype_1, OK_oktypeidxnat(x, i))
+    -- Rectype_ok2: `%|-%:%`(C, REC_rectype(`%`_list(subtype*{subtype <- `subtype*`})), OK_oktypeidxnat(`%`_typeidx((x!`%`_idx.0 + 1)), (i + 1)))
+
+;; 2.1-validation.types.watsup:91.1-91.102
+relation Deftype_ok: `%|-%:OK`(context, deftype)
+  ;; 2.1-validation.types.watsup:190.1-194.14
+  rule _{C : context, rectype : rectype, i : n, x : idx, `subtype*` : subtype*, n : n}:
+    `%|-%:OK`(C, DEF_deftype(rectype, i))
+    -- Rectype_ok: `%|-%:%`(C, rectype, OK_oktypeidx(x))
+    -- if (rectype = REC_rectype(`%`_list(subtype^n{subtype <- `subtype*`})))
+    -- if (i < n)
+
+;; 2.1-validation.types.watsup:94.1-94.108
+relation Comptype_sub: `%|-%<:%`(context, comptype, comptype)
+  ;; 2.2-validation.subtyping.watsup:162.1-164.41
+  rule struct{C : context, `yt_1*` : fieldtype*, yt'_1 : fieldtype, `yt_2*` : fieldtype*}:
+    `%|-%<:%`(C, STRUCT_comptype(`%`_structtype(yt_1*{yt_1 <- `yt_1*`} ++ [yt'_1])), STRUCT_comptype(`%`_structtype(yt_2*{yt_2 <- `yt_2*`})))
+    -- if (|`yt_1*`| = |`yt_2*`|)
+    -- (Fieldtype_sub: `%|-%<:%`(C, yt_1, yt_2))*{yt_1 <- `yt_1*`, yt_2 <- `yt_2*`}
+
+  ;; 2.2-validation.subtyping.watsup:166.1-168.38
+  rule array{C : context, yt_1 : fieldtype, yt_2 : fieldtype}:
+    `%|-%<:%`(C, ARRAY_comptype(yt_1), ARRAY_comptype(yt_2))
+    -- Fieldtype_sub: `%|-%<:%`(C, yt_1, yt_2)
+
+  ;; 2.2-validation.subtyping.watsup:170.1-172.37
+  rule func{C : context, ft_1 : functype, ft_2 : functype}:
+    `%|-%<:%`(C, FUNC_comptype(ft_1), FUNC_comptype(ft_2))
+    -- Functype_sub: `%|-%<:%`(C, ft_1, ft_2)
+
+;; 2.1-validation.types.watsup:95.1-95.107
 relation Deftype_sub: `%|-%<:%`(context, deftype, deftype)
   ;; 2.2-validation.subtyping.watsup:175.1-177.66
   rule refl{C : context, deftype_1 : deftype, deftype_2 : deftype}:
@@ -20625,196 +20767,105 @@ relation Heaptype_sub: `%|-%<:%`(context, heaptype, heaptype)
   ;; 2.2-validation.subtyping.watsup:81.1-82.23
   rule bot{C : context, heaptype : heaptype}:
     `%|-%<:%`(C, BOT_heaptype, heaptype)
-}
 
-;; 2.2-validation.subtyping.watsup
+;; 2.2-validation.subtyping.watsup:10.1-10.103
 relation Reftype_sub: `%|-%<:%`(context, reftype, reftype)
-  ;; 2.2-validation.subtyping.watsup
+  ;; 2.2-validation.subtyping.watsup:85.1-87.37
   rule nonnull{C : context, ht_1 : heaptype, ht_2 : heaptype}:
     `%|-%<:%`(C, REF_reftype(?(), ht_1), REF_reftype(?(), ht_2))
     -- Heaptype_sub: `%|-%<:%`(C, ht_1, ht_2)
 
-  ;; 2.2-validation.subtyping.watsup
+  ;; 2.2-validation.subtyping.watsup:89.1-91.37
   rule null{C : context, ht_1 : heaptype, ht_2 : heaptype}:
     `%|-%<:%`(C, REF_reftype(NULL_NULL?{}, ht_1), REF_reftype(?(NULL_NULL), ht_2))
     -- Heaptype_sub: `%|-%<:%`(C, ht_1, ht_2)
 
-;; 2.2-validation.subtyping.watsup
-relation Vectype_sub: `%|-%<:%`(context, vectype, vectype)
-  ;; 2.2-validation.subtyping.watsup
-  rule _{C : context, vectype : vectype}:
-    `%|-%<:%`(C, vectype, vectype)
-
-;; 2.2-validation.subtyping.watsup
+;; 2.2-validation.subtyping.watsup:11.1-11.103
 relation Valtype_sub: `%|-%<:%`(context, valtype, valtype)
-  ;; 2.2-validation.subtyping.watsup
+  ;; 2.2-validation.subtyping.watsup:94.1-96.46
   rule num{C : context, numtype_1 : numtype, numtype_2 : numtype}:
     `%|-%<:%`(C, (numtype_1 : numtype <: valtype), (numtype_2 : numtype <: valtype))
     -- Numtype_sub: `%|-%<:%`(C, numtype_1, numtype_2)
 
-  ;; 2.2-validation.subtyping.watsup
+  ;; 2.2-validation.subtyping.watsup:98.1-100.46
   rule vec{C : context, vectype_1 : vectype, vectype_2 : vectype}:
     `%|-%<:%`(C, (vectype_1 : vectype <: valtype), (vectype_2 : vectype <: valtype))
     -- Vectype_sub: `%|-%<:%`(C, vectype_1, vectype_2)
 
-  ;; 2.2-validation.subtyping.watsup
+  ;; 2.2-validation.subtyping.watsup:102.1-104.46
   rule ref{C : context, reftype_1 : reftype, reftype_2 : reftype}:
     `%|-%<:%`(C, (reftype_1 : reftype <: valtype), (reftype_2 : reftype <: valtype))
     -- Reftype_sub: `%|-%<:%`(C, reftype_1, reftype_2)
 
-  ;; 2.2-validation.subtyping.watsup
+  ;; 2.2-validation.subtyping.watsup:106.1-107.22
   rule bot{C : context, valtype : valtype}:
     `%|-%<:%`(C, BOT_valtype, valtype)
 
-;; 2.2-validation.subtyping.watsup
-relation Storagetype_sub: `%|-%<:%`(context, storagetype, storagetype)
-  ;; 2.2-validation.subtyping.watsup
-  rule val{C : context, valtype_1 : valtype, valtype_2 : valtype}:
-    `%|-%<:%`(C, (valtype_1 : valtype <: storagetype), (valtype_2 : valtype <: storagetype))
-    -- Valtype_sub: `%|-%<:%`(C, valtype_1, valtype_2)
-
-  ;; 2.2-validation.subtyping.watsup
-  rule pack{C : context, packtype_1 : packtype, packtype_2 : packtype}:
-    `%|-%<:%`(C, (packtype_1 : packtype <: storagetype), (packtype_2 : packtype <: storagetype))
-    -- Packtype_sub: `%|-%<:%`(C, packtype_1, packtype_2)
-
-;; 2.2-validation.subtyping.watsup
-relation Fieldtype_sub: `%|-%<:%`(context, fieldtype, fieldtype)
-  ;; 2.2-validation.subtyping.watsup
-  rule const{C : context, zt_1 : storagetype, zt_2 : storagetype}:
-    `%|-%<:%`(C, `%%`_fieldtype(?(), zt_1), `%%`_fieldtype(?(), zt_2))
-    -- Storagetype_sub: `%|-%<:%`(C, zt_1, zt_2)
-
-  ;; 2.2-validation.subtyping.watsup
-  rule var{C : context, zt_1 : storagetype, zt_2 : storagetype}:
-    `%|-%<:%`(C, `%%`_fieldtype(?(MUT_MUT), zt_1), `%%`_fieldtype(?(MUT_MUT), zt_2))
-    -- Storagetype_sub: `%|-%<:%`(C, zt_1, zt_2)
-    -- Storagetype_sub: `%|-%<:%`(C, zt_2, zt_1)
-
-;; 2.2-validation.subtyping.watsup
+;; 2.2-validation.subtyping.watsup:112.1-112.115
 relation Resulttype_sub: `%|-%<:%`(context, resulttype, resulttype)
-  ;; 2.2-validation.subtyping.watsup
+  ;; 2.2-validation.subtyping.watsup:115.1-117.37
   rule _{C : context, `t_1*` : valtype*, `t_2*` : valtype*}:
     `%|-%<:%`(C, `%`_resulttype(t_1*{t_1 <- `t_1*`}), `%`_resulttype(t_2*{t_2 <- `t_2*`}))
     -- if (|`t_1*`| = |`t_2*`|)
     -- (Valtype_sub: `%|-%<:%`(C, t_1, t_2))*{t_1 <- `t_1*`, t_2 <- `t_2*`}
 
-;; 2.2-validation.subtyping.watsup
+;; 2.2-validation.subtyping.watsup:130.1-130.119
+relation Storagetype_sub: `%|-%<:%`(context, storagetype, storagetype)
+  ;; 2.2-validation.subtyping.watsup:143.1-145.46
+  rule val{C : context, valtype_1 : valtype, valtype_2 : valtype}:
+    `%|-%<:%`(C, (valtype_1 : valtype <: storagetype), (valtype_2 : valtype <: storagetype))
+    -- Valtype_sub: `%|-%<:%`(C, valtype_1, valtype_2)
+
+  ;; 2.2-validation.subtyping.watsup:147.1-149.49
+  rule pack{C : context, packtype_1 : packtype, packtype_2 : packtype}:
+    `%|-%<:%`(C, (packtype_1 : packtype <: storagetype), (packtype_2 : packtype <: storagetype))
+    -- Packtype_sub: `%|-%<:%`(C, packtype_1, packtype_2)
+
+;; 2.2-validation.subtyping.watsup:131.1-131.117
+relation Fieldtype_sub: `%|-%<:%`(context, fieldtype, fieldtype)
+  ;; 2.2-validation.subtyping.watsup:152.1-154.40
+  rule const{C : context, zt_1 : storagetype, zt_2 : storagetype}:
+    `%|-%<:%`(C, `%%`_fieldtype(?(), zt_1), `%%`_fieldtype(?(), zt_2))
+    -- Storagetype_sub: `%|-%<:%`(C, zt_1, zt_2)
+
+  ;; 2.2-validation.subtyping.watsup:156.1-159.40
+  rule var{C : context, zt_1 : storagetype, zt_2 : storagetype}:
+    `%|-%<:%`(C, `%%`_fieldtype(?(MUT_MUT), zt_1), `%%`_fieldtype(?(MUT_MUT), zt_2))
+    -- Storagetype_sub: `%|-%<:%`(C, zt_1, zt_2)
+    -- Storagetype_sub: `%|-%<:%`(C, zt_2, zt_1)
+
+;; 2.2-validation.subtyping.watsup:132.1-132.116
 relation Functype_sub: `%|-%<:%`(context, functype, functype)
-  ;; 2.2-validation.subtyping.watsup
+  ;; 2.2-validation.subtyping.watsup:200.1-203.41
   rule _{C : context, `t_11*` : valtype*, `t_12*` : valtype*, `t_21*` : valtype*, `t_22*` : valtype*}:
     `%|-%<:%`(C, `%->%`_functype(`%`_resulttype(t_11*{t_11 <- `t_11*`}), `%`_resulttype(t_12*{t_12 <- `t_12*`})), `%->%`_functype(`%`_resulttype(t_21*{t_21 <- `t_21*`}), `%`_resulttype(t_22*{t_22 <- `t_22*`})))
     -- Resulttype_sub: `%|-%<:%`(C, `%`_resulttype(t_21*{t_21 <- `t_21*`}), `%`_resulttype(t_11*{t_11 <- `t_11*`}))
     -- Resulttype_sub: `%|-%<:%`(C, `%`_resulttype(t_12*{t_12 <- `t_12*`}), `%`_resulttype(t_22*{t_22 <- `t_22*`}))
-
-;; 2.1-validation.types.watsup
-relation Comptype_sub: `%|-%<:%`(context, comptype, comptype)
-  ;; 2.2-validation.subtyping.watsup
-  rule struct{C : context, `yt_1*` : fieldtype*, yt'_1 : fieldtype, `yt_2*` : fieldtype*}:
-    `%|-%<:%`(C, STRUCT_comptype(`%`_structtype(yt_1*{yt_1 <- `yt_1*`} ++ [yt'_1])), STRUCT_comptype(`%`_structtype(yt_2*{yt_2 <- `yt_2*`})))
-    -- if (|`yt_1*`| = |`yt_2*`|)
-    -- (Fieldtype_sub: `%|-%<:%`(C, yt_1, yt_2))*{yt_1 <- `yt_1*`, yt_2 <- `yt_2*`}
-
-  ;; 2.2-validation.subtyping.watsup
-  rule array{C : context, yt_1 : fieldtype, yt_2 : fieldtype}:
-    `%|-%<:%`(C, ARRAY_comptype(yt_1), ARRAY_comptype(yt_2))
-    -- Fieldtype_sub: `%|-%<:%`(C, yt_1, yt_2)
-
-  ;; 2.2-validation.subtyping.watsup
-  rule func{C : context, ft_1 : functype, ft_2 : functype}:
-    `%|-%<:%`(C, FUNC_comptype(ft_1), FUNC_comptype(ft_2))
-    -- Functype_sub: `%|-%<:%`(C, ft_1, ft_2)
-
-;; 2.1-validation.types.watsup
-relation Subtype_ok: `%|-%:%`(context, subtype, oktypeidx)
-  ;; 2.1-validation.types.watsup
-  rule _{C : context, `x*` : idx*, comptype : comptype, x_0 : idx, `x'**` : idx**, `comptype'*` : comptype*}:
-    `%|-%:%`(C, SUB_subtype(FINAL_FINAL?{}, _IDX_typeuse(x)*{x <- `x*`}, comptype), OK_oktypeidx(x_0))
-    -- if (|x*{x <- `x*`}| <= 1)
-    -- (if (x!`%`_idx.0 < x_0!`%`_idx.0))*{x <- `x*`}
-    -- if (|`comptype'*`| = |`x*`|)
-    -- if (|`comptype'*`| = |`x'**`|)
-    -- (if (x!`%`_idx.0 < |C.TYPES_context|))*{x <- `x*`}
-    -- (if ($unrolldt(C.TYPES_context[x!`%`_idx.0]) = SUB_subtype(?(), _IDX_typeuse(x')*{x' <- `x'*`}, comptype')))*{comptype' <- `comptype'*`, x <- `x*`, `x'*` <- `x'**`}
-    -- Comptype_ok: `%|-%:OK`(C, comptype)
-    -- (Comptype_sub: `%|-%<:%`(C, comptype, comptype'))*{comptype' <- `comptype'*`}
-
-;; 2.1-validation.types.watsup
-def $before(typeuse : typeuse, typeidx : typeidx, nat : nat) : bool
-  ;; 2.1-validation.types.watsup
-  def $before{deftype : deftype, x : idx, i : nat}((deftype : deftype <: typeuse), x, i) = true
-  ;; 2.1-validation.types.watsup
-  def $before{typeidx : typeidx, x : idx, i : nat}(_IDX_typeuse(typeidx), x, i) = (typeidx!`%`_typeidx.0 < x!`%`_idx.0)
-  ;; 2.1-validation.types.watsup
-  def $before{j : nat, x : idx, i : nat}(REC_typeuse(j), x, i) = (j < i)
-
-;; 2.1-validation.types.watsup
-def $unrollht(context : context, heaptype : heaptype) : subtype
-  ;; 2.1-validation.types.watsup
-  def $unrollht{C : context, deftype : deftype}(C, (deftype : deftype <: heaptype)) = $unrolldt(deftype)
-  ;; 2.1-validation.types.watsup
-  def $unrollht{C : context, typeidx : typeidx}(C, _IDX_heaptype(typeidx)) = $unrolldt(C.TYPES_context[typeidx!`%`_typeidx.0])
-  ;; 2.1-validation.types.watsup
-  def $unrollht{C : context, i : nat}(C, REC_heaptype(i)) = C.RECS_context[i]
-
-;; 2.1-validation.types.watsup
-relation Subtype_ok2: `%|-%:%`(context, subtype, oktypeidxnat)
-  ;; 2.1-validation.types.watsup
-  rule _{C : context, `typeuse*` : typeuse*, compttype : comptype, x : idx, i : nat, `typeuse'**` : typeuse**, `comptype'*` : comptype*, comptype : comptype}:
-    `%|-%:%`(C, SUB_subtype(FINAL_FINAL?{}, typeuse*{typeuse <- `typeuse*`}, compttype), OK_oktypeidxnat(x, i))
-    -- if (|typeuse*{typeuse <- `typeuse*`}| <= 1)
-    -- (if $before(typeuse, x, i))*{typeuse <- `typeuse*`}
-    -- if (|`comptype'*`| = |`typeuse*`|)
-    -- if (|`comptype'*`| = |`typeuse'**`|)
-    -- (if ($unrollht(C, (typeuse : typeuse <: heaptype)) = SUB_subtype(?(), typeuse'*{typeuse' <- `typeuse'*`}, comptype')))*{comptype' <- `comptype'*`, typeuse <- `typeuse*`, `typeuse'*` <- `typeuse'**`}
-    -- Comptype_ok: `%|-%:OK`(C, comptype)
-    -- (Comptype_sub: `%|-%<:%`(C, comptype, comptype'))*{comptype' <- `comptype'*`}
-
-;; 2.1-validation.types.watsup
-rec {
-
-;; 2.1-validation.types.watsup:80.1-80.126
-relation Rectype_ok2: `%|-%:%`(context, rectype, oktypeidxnat)
-  ;; 2.1-validation.types.watsup:158.1-159.24
-  rule empty{C : context, x : idx, i : nat}:
-    `%|-%:%`(C, REC_rectype(`%`_list([])), OK_oktypeidxnat(x, i))
-
-  ;; 2.1-validation.types.watsup:161.1-164.55
-  rule cons{C : context, subtype_1 : subtype, `subtype*` : subtype*, x : idx, i : nat}:
-    `%|-%:%`(C, REC_rectype(`%`_list([subtype_1] ++ subtype*{subtype <- `subtype*`})), OK_oktypeidxnat(x, i))
-    -- Subtype_ok2: `%|-%:%`(C, subtype_1, OK_oktypeidxnat(x, i))
-    -- Rectype_ok2: `%|-%:%`(C, REC_rectype(`%`_list(subtype*{subtype <- `subtype*`})), OK_oktypeidxnat(`%`_typeidx((x!`%`_idx.0 + 1)), (i + 1)))
 }
 
 ;; 2.1-validation.types.watsup
-rec {
-
-;; 2.1-validation.types.watsup:78.1-78.123
-relation Rectype_ok: `%|-%:%`(context, rectype, oktypeidx)
-  ;; 2.1-validation.types.watsup:146.1-147.23
-  rule empty{C : context, x : idx}:
-    `%|-%:%`(C, REC_rectype(`%`_list([])), OK_oktypeidx(x))
-
-  ;; 2.1-validation.types.watsup:149.1-152.48
-  rule cons{C : context, subtype_1 : subtype, `subtype*` : subtype*, x : idx}:
-    `%|-%:%`(C, REC_rectype(`%`_list([subtype_1] ++ subtype*{subtype <- `subtype*`})), OK_oktypeidx(x))
-    -- Subtype_ok: `%|-%:%`(C, subtype_1, OK_oktypeidx(x))
-    -- Rectype_ok: `%|-%:%`(C, REC_rectype(`%`_list(subtype*{subtype <- `subtype*`})), OK_oktypeidx(`%`_typeidx((x!`%`_idx.0 + 1))))
-
-  ;; 2.1-validation.types.watsup:154.1-156.60
-  rule _rec2{C : context, `subtype*` : subtype*, x : idx}:
-    `%|-%:%`(C, REC_rectype(`%`_list(subtype*{subtype <- `subtype*`})), OK_oktypeidx(x))
-    -- Rectype_ok2: `%|-%:%`({TYPES [], RECS subtype*{subtype <- `subtype*`}, FUNCS [], GLOBALS [], TABLES [], MEMS [], TAGS [], ELEMS [], DATAS [], LOCALS [], LABELS [], RETURN ?(), REFS []} +++ C, REC_rectype(`%`_list(subtype*{subtype <- `subtype*`})), OK_oktypeidxnat(x, 0))
-}
+relation Instrtype_ok: `%|-%:OK`(context, instrtype)
+  ;; 2.1-validation.types.watsup
+  rule _{C : context, `t_1*` : valtype*, `x*` : idx*, `t_2*` : valtype*, `lct*` : localtype*}:
+    `%|-%:OK`(C, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), x*{x <- `x*`}, `%`_resulttype(t_2*{t_2 <- `t_2*`})))
+    -- Resulttype_ok: `%|-%:OK`(C, `%`_resulttype(t_1*{t_1 <- `t_1*`}))
+    -- Resulttype_ok: `%|-%:OK`(C, `%`_resulttype(t_2*{t_2 <- `t_2*`}))
+    -- if (|`lct*`| = |`x*`|)
+    -- (if (x!`%`_idx.0 < |C.LOCALS_context|))*{x <- `x*`}
+    -- (if (C.LOCALS_context[x!`%`_idx.0] = lct))*{lct <- `lct*`, x <- `x*`}
 
 ;; 2.1-validation.types.watsup
-relation Deftype_ok: `%|-%:OK`(context, deftype)
+relation Expand_use: `%~~_%%`(typeuse, context, comptype)
   ;; 2.1-validation.types.watsup
-  rule _{C : context, rectype : rectype, i : n, x : idx, `subtype*` : subtype*, n : n}:
-    `%|-%:OK`(C, DEF_deftype(rectype, i))
-    -- Rectype_ok: `%|-%:%`(C, rectype, OK_oktypeidx(x))
-    -- if (rectype = REC_rectype(`%`_list(subtype^n{subtype <- `subtype*`})))
-    -- if (i < n)
+  rule deftype{deftype : deftype, C : context, comptype : comptype}:
+    `%~~_%%`((deftype : deftype <: typeuse), C, comptype)
+    -- Expand: `%~~%`(deftype, comptype)
+
+  ;; 2.1-validation.types.watsup
+  rule typeidx{typeidx : typeidx, C : context, comptype : comptype}:
+    `%~~_%%`(_IDX_typeuse(typeidx), C, comptype)
+    -- if (typeidx!`%`_typeidx.0 < |C.TYPES_context|)
+    -- Expand: `%~~%`(C.TYPES_context[typeidx!`%`_typeidx.0], comptype)
 
 ;; 2.1-validation.types.watsup
 relation Limits_ok: `%|-%:%`(context, limits, nat)
@@ -20856,10 +20907,10 @@ relation Tagtype_ok: `%|-%:OK`(context, tagtype)
 ;; 2.1-validation.types.watsup
 relation Externtype_ok: `%|-%:OK`(context, externtype)
   ;; 2.1-validation.types.watsup
-  rule func{C : context, deftype : deftype, functype : functype}:
-    `%|-%:OK`(C, FUNC_externtype((deftype : deftype <: typeuse)))
-    -- Deftype_ok: `%|-%:OK`(C, deftype)
-    -- Expand: `%~~%`(deftype, FUNC_comptype(functype))
+  rule func{C : context, typeuse : typeuse, functype : functype}:
+    `%|-%:OK`(C, FUNC_externtype(typeuse))
+    -- Typeuse_ok: `%|-%:OK`(C, typeuse)
+    -- Expand_use: `%~~_%%`(typeuse, C, FUNC_comptype(functype))
 
   ;; 2.1-validation.types.watsup
   rule global{C : context, globaltype : globaltype}:
@@ -20877,9 +20928,10 @@ relation Externtype_ok: `%|-%:OK`(context, externtype)
     -- Memtype_ok: `%|-%:OK`(C, memtype)
 
   ;; 2.1-validation.types.watsup
-  rule tag{C : context, tagtype : tagtype}:
-    `%|-%:OK`(C, TAG_externtype((tagtype : deftype <: typeuse)))
-    -- Tagtype_ok: `%|-%:OK`(C, tagtype)
+  rule tag{C : context, typeuse : typeuse, functype : functype}:
+    `%|-%:OK`(C, TAG_externtype(typeuse))
+    -- Typeuse_ok: `%|-%:OK`(C, typeuse)
+    -- Expand_use: `%~~_%%`(typeuse, C, FUNC_comptype(functype))
 
 ;; 2.2-validation.subtyping.watsup
 relation Instrtype_sub: `%|-%<:%`(context, instrtype, instrtype)

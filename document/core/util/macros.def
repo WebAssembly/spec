@@ -344,6 +344,7 @@
 .. |unrolldt| mathdef:: \xref{valid/conventions}{aux-unroll-deftype}{\F{unroll}}
 .. |expanddt| mathdef:: \xref{valid/conventions}{aux-expand-deftype}{\F{expand}}
 .. |approxexpanddt| mathdef:: \xref{valid/conventions}{aux-expand-deftype}{\approx}
+.. |approxexpandyy| mathdef:: \xref{valid/conventions}{aux-expand-typeuse}{\approx}
 .. |unrollht| mathdef:: \xref{appendix/properties}{aux-unroll-heaptype}{\F{unroll}}
 
 .. |unpack| mathdef:: \xref{syntax/types}{aux-unpack}{\F{unpack}}
@@ -1229,6 +1230,7 @@
 .. |vdashtagtype| mathdef:: \xref{valid/types}{valid-tagtype}{\vdash}
 .. |vdashexterntype| mathdef:: \xref{valid/types}{valid-externtype}{\vdash}
 .. |vdashdeftype| mathdef:: \xref{valid/types}{valid-deftype}{\vdash}
+.. |vdashtypeuse| mathdef:: \xref{valid/types}{valid-typeuse}{\vdash}
 
 .. |vdashinstrtype| mathdef:: \xref{valid/types}{valid-instrtype}{\vdash}
 
@@ -1250,6 +1252,7 @@
 .. |OKrectype| mathdef:: \xref{valid/types}{valid-rectype}{\K{ok}}
 .. |OKrectypeext| mathdef:: \xref{valid/types}{valid-rectype}{\K{ok}}
 .. |OKdeftype| mathdef:: \xref{valid/types}{valid-deftype}{\K{ok}}
+.. |OKtypeuse| mathdef:: \xref{valid/types}{valid-typeuse}{\K{ok}}
 .. |OKtabletype| mathdef:: \xref{valid/types}{valid-tabletype}{\K{ok}}
 .. |OKmemtype| mathdef:: \xref{valid/types}{valid-memtype}{\K{ok}}
 .. |OKglobaltype| mathdef:: \xref{valid/types}{valid-globaltype}{\K{ok}}
@@ -1785,6 +1788,10 @@
 
 .. Judgements
 
+.. |vdashnum| mathdef:: \xref{exec/values}{valid-num}{\vdash}
+.. |vdashvec| mathdef:: \xref{exec/values}{valid-vec}{\vdash}
+.. |vdashref| mathdef:: \xref{exec/values}{valid-ref}{\vdash}
+.. |vdashval| mathdef:: \xref{exec/values}{valid-val}{\vdash}
 .. |vdashexternaddr| mathdef:: \xref{exec/values}{valid-externaddr}{\vdash}
 
 
@@ -1794,12 +1801,6 @@
 .. Judgements
 
 .. |vdashadmininstr| mathdef:: \xref{appendix/properties}{valid-instr-admin}{\vdash}
-
-.. |vdashnum| mathdef:: \xref{exec/values}{valid-num}{\vdash}
-.. |vdashvec| mathdef:: \xref{exec/values}{valid-vec}{\vdash}
-.. |vdashref| mathdef:: \xref{exec/values}{valid-ref}{\vdash}
-.. |vdashval| mathdef:: \xref{exec/values}{valid-val}{\vdash}
-.. |vdashexternaddr| mathdef:: \xref{exec/values}{valid-externaddr}{\vdash}
 
 .. |vdashresult| mathdef:: \xref{appendix/properties}{valid-result}{\vdash}
 .. |vdashfieldval| mathdef:: \xref{appendix/properties}{valid-fieldval}{\vdash}

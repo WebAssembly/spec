@@ -6,7 +6,7 @@ open Ds
 
 module FuncMap = Map.Make (String)
 
-let ref_type =
+let ref_ok =
   (* TODO: some / none *)
   let null = some "NULL" in
   let nonull = none "NULL" in
@@ -114,7 +114,7 @@ let module_ok = function
 
   | vs -> Numerics.error_values "$Module_ok" vs
 
-let externaddr_type = function
+let externaddr_ok = function
   | [ CaseV (name, [ NumV (`Nat z) ]); t ] ->
     (try
       let addr = Z.to_int z in
@@ -132,7 +132,7 @@ let externaddr_type = function
     with exn -> raise (Exception.Invalid (exn, Printexc.get_raw_backtrace ())))
   | vs -> Numerics.error_values "$Externaddr_ok" vs
 
-let val_type = function
+let val_ok = function
   | [ v; t ] ->
     let value = Construct.al_to_value v in
     let val_type = Construct.al_to_val_type t in
@@ -153,10 +153,10 @@ let expand = function
 
 let manual_map =
   FuncMap.empty
-  |> FuncMap.add "Ref_ok" ref_type
+  |> FuncMap.add "Ref_ok" ref_ok
   |> FuncMap.add "Module_ok" module_ok
-  |> FuncMap.add "Val_ok" val_type
-  |> FuncMap.add "Externaddr_ok" externaddr_type
+  |> FuncMap.add "Val_ok" val_ok
+  |> FuncMap.add "Externaddr_ok" externaddr_ok
   |> FuncMap.add "Expand" expand
 
 let mem name =

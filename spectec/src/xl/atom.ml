@@ -21,23 +21,31 @@ and atom' =
   | ArrowSub                     (* `->_` *)
   | Arrow2Sub                    (* ``=>_` *)
   | Colon                        (* `:` *)
+  | ColonSub                     (* `:_` *)
   | Sub                          (* `<:` *)
   | Sup                          (* `:>` *)
   | Assign                       (* `:=` *)
   | Equal                        (* ``=` *)
+  | EqualSub                     (* ``=_` *)
   | NotEqual                     (* ``=/=` *)
   | Less                         (* ``<` *)
   | Greater                      (* ``>` *)
   | LessEqual                    (* ``<=` *)
   | GreaterEqual                 (* ``>=` *)
   | Equiv                        (* `==` *)
+  | EquivSub                     (* `==_` *)
   | Approx                       (* `~~` *)
+  | ApproxSub                    (* `~~_` *)
   | SqArrow                      (* `~>` *)
+  | SqArrowSub                   (* `~>_` *)
   | SqArrowStar                  (* `~>*` *)
+  | SqArrowStarSub               (* `~>*_` *)
   | Prec                         (* `<<` *)
   | Succ                         (* `>>` *)
   | Turnstile                    (* `|-` *)
+  | TurnstileSub                 (* `|-_` *)
   | Tilesturn                    (* `-|` *)
+  | TilesturnSub                 (* `-|_` *)
   | Quest                        (* ``?` *)
   | Plus                         (* ``+` *)
   | Star                         (* ``*` *)
@@ -63,14 +71,23 @@ let compare atom1 atom2 =
 let is_sub atom =
   match atom.it with
   | Atom id -> id <> "" && id.[String.length id - 1] = '_'
-  | ArrowSub | Arrow2Sub -> true
+  | ArrowSub | Arrow2Sub | ColonSub | EqualSub | EquivSub | ApproxSub
+  | SqArrowSub | SqArrowStarSub | TurnstileSub | TilesturnSub -> true
   | _ -> false
 
 let sub atom1 atom2 = 
   match atom1.it, atom2.it with
   | Atom id1, Atom id2 -> id1 = id2 ^ "_"
   | ArrowSub, Arrow
-  | Arrow2Sub, Arrow2 -> true
+  | Arrow2Sub, Arrow2
+  | ColonSub, Colon
+  | EqualSub, Equal
+  | EquivSub, Equiv
+  | ApproxSub, Approx
+  | SqArrowSub, SqArrow
+  | SqArrowStarSub, SqArrowStar
+  | TurnstileSub, Turnstile
+  | TilesturnSub, Tilesturn -> true
   | _, _ -> false
 
 
@@ -92,23 +109,31 @@ let to_string atom =
   | ArrowSub -> "->_"
   | Arrow2Sub -> "=>_"
   | Colon -> ":"
+  | ColonSub -> ":_"
   | Sub -> "<:"
   | Sup -> ":>"
   | Assign -> ":="
   | Equal -> "="
+  | EqualSub -> "=_"
   | NotEqual -> "=/="
   | Less -> "<"
   | Greater -> ">"
   | LessEqual -> "<="
   | GreaterEqual -> ">="
   | Equiv -> "=="
+  | EquivSub -> "==_"
   | Approx -> "~~"
+  | ApproxSub -> "~~_"
   | SqArrow -> "~>"
+  | SqArrowSub -> "~>_"
   | SqArrowStar -> "~>*"
+  | SqArrowStarSub -> "~>*_"
   | Prec -> "<<"
   | Succ -> ">>"
   | Tilesturn -> "-|"
+  | TilesturnSub -> "-|_"
   | Turnstile -> "|-"
+  | TurnstileSub -> "|-_"
   | Quest -> "?"
   | Plus -> "+"
   | Star -> "*"
@@ -148,23 +173,31 @@ let name atom =
   | ArrowSub -> "arrow_"          (* Latex: \rightarrow with subscript *)
   | Arrow2Sub -> "darrow_"        (* Latex: \Rightarrow with subscript *)
   | Colon -> "colon"              (* Latex: : *)
+  | ColonSub -> "colon_"          (* Latex: : with subscript *)
   | Sub -> "sub"                  (* Latex: \leq or <: *)
   | Sup -> "sup"                  (* Latex: \geq or :> *)
   | Assign -> "assign"            (* Latex: := *)
   | Equal -> "eq"
-  | NotEqual -> "neq"             (* Latex: \neq *)
+  | EqualSub -> "eq_"             (* Latex: \eq with subscript *)
+  | NotEqual -> "neq"
   | Less -> "lt"                  (* Latex: < *)
   | Greater -> "gt"               (* Latex: > *)
   | LessEqual -> "leq"            (* Latex: \leq *)
   | GreaterEqual -> "geq"         (* Latex: \geq *)
   | Equiv -> "equiv"
+  | EquivSub -> "equiv_"
   | Approx -> "approx"
+  | ApproxSub -> "approx_"
   | SqArrow -> "sqarrow"          (* Latex: \hookrightarrow *)
+  | SqArrowSub -> "sqarrow_"      (* Latex: \hookrightarrow with subscript *)
   | SqArrowStar -> "sqarrowstar"  (* Latex: \hookrightarrow^\ast *)
+  | SqArrowStarSub -> "sqarrowstar_" (* Latex: \hookrightarrow^\ast with subscript *)
   | Prec -> "prec"
   | Succ -> "succ"
   | Tilesturn -> "dashv"
+  | TilesturnSub -> "dashv_"      (* Latex: \dashv with subscript *)
   | Turnstile -> "vdash"
+  | TurnstileSub -> "vdash_"      (* Latex: \vdash with subscript *)
   | Quest -> "quest"              (* Latex: ? *)
   | Plus -> "plus"                (* Latex: + *)
   | Star -> "ast"

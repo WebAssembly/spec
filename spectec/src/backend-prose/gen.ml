@@ -34,7 +34,7 @@ let flatten_rec def =
 
 let is_validation_helper_relation def =
   match def.it with
-  | Ast.RelD (id, _, _, _) -> id.it = "Expand"
+  | Ast.RelD (id, _, _, _) -> id.it = "Expand" || id.it = "Expand_use"
   | _ -> false
 (* NOTE: Assume validation relation is `|-` *)
 let is_validation_relation def =

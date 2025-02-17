@@ -122,7 +122,7 @@ var x33 : s33 hint(show x)
 
 ;; Sort projection
 
-;; TODO(2, rossberg): add built-in notation for comprehensions?
+;; TODO(3, rossberg): add built-in notation for comprehensions?
 
 def $funcsxx(externidx*) : typeidx*      hint(show $funcs(%))   hint(macro "funcsxx")
 def $globalsxx(externidx*) : globalidx*  hint(show $globals(%)) hint(macro "globalsxx")

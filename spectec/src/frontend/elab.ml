@@ -1404,7 +1404,21 @@ and elab_exp_notation' env tid e t : (Il.exp list * Subst.t) attempt =
     when Atom.sub atom' atom ->
     let e21 = ParenE (SeqE [] $ at) $ at in
     elab_exp_notation' env tid (SeqE ((AtomE atom' $ at) :: e21 :: es2) $ e.at) t
-  (* Iterations may be inlined *)
+  (* Trailing notation can be flattened *)
+  | SeqE (e1::es2), SeqT [t1] ->
+    choice env [
+      (fun env ->
+        let* es1', s1 = elab_exp_notation' env tid (unparen_exp e1) t1 in
+        let e2 = SeqE es2 $ Source.over_region (after_region e1.at :: List.map Source.at es2) in
+        let t2 = SeqT [] $ Source.after_region t1.at in
+        let* es2', s2 = elab_exp_notation' env tid e2 (Subst.subst_typ s1 t2) in
+        Ok (es1' @ es2', Subst.union s1 s2)
+      );
+      (fun env ->
+        let* e' = elab_exp env e t1 in
+        Ok ([e'], Subst.empty)
+      )
+    ]
   | SeqE (e1::es2), SeqT (t1::ts2) ->
     let* es1', s1 = elab_exp_notation' env tid (unparen_exp e1) t1 in
     let e2 = SeqE es2 $ Source.over_region (after_region e1.at :: List.map Source.at es2) in

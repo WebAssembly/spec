@@ -134,6 +134,7 @@ and token = parse
   | "{" { LBRACE }
   | "}" { RBRACE }
   | ":" { COLON }
+  | ":_" { COLONSUB }
   | ";" { SEMICOLON }
   | "," { COMMA }
   | "." { DOT }
@@ -166,6 +167,9 @@ and token = parse
   | ":=" { ASSIGN }
   | "==" { EQUIV }
   | "=++" { EQCAT }
+  | "=_" { EQSUB }
+  | "==_" { EQUIVSUB }
+  | "~~_" { APPROXSUB }
 
   | "~" { NOT }
   | "/\\" { AND }
@@ -194,11 +198,15 @@ and token = parse
   | "=>_" { ARROW2SUB }
   | "<=>" { DARROW2 }
   | "~>" { SQARROW }
+  | "~>_" { SQARROWSUB }
   | "~>*" { SQARROWSTAR }
+  | "~>*_" { SQARROWSTARSUB }
   | "<<" { PREC }
   | ">>" { SUCC }
   | "|-" { TURNSTILE }
   | "-|" { TILESTURN }
+  | "|-_" { TURNSTILESUB }
+  | "-|_" { TILESTURNSUB }
 
   | "$" { DOLLAR }
 

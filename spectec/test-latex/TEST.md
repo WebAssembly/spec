@@ -2974,8 +2974,6 @@ $$
 
 \vspace{1ex}
 
-\vspace{1ex}
-
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
 {|\mathsf{i{\scriptstyle 32}}|} & = & 32 \\
@@ -3403,16 +3401,6 @@ $$
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
 {\mathrm{expand}}({\mathit{deftype}}) & = & {\mathit{comptype}} & \quad \mbox{if}~ {\mathrm{unroll}}({\mathit{deftype}}) = \mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~{\mathit{comptype}} \\
-\end{array}
-$$
-
-\vspace{1ex}
-
-$\boxed{{\mathit{deftype}} \approx {\mathit{comptype}}}$
-
-$$
-\begin{array}[t]{@{}lrcl@{}l@{}}
-{[\textsc{\scriptsize Expand}]} \quad & {\mathit{deftype}} & \approx & {\mathit{comptype}} & \quad \mbox{if}~ {\mathrm{unroll}}({\mathit{deftype}}) = \mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~{\mathit{comptype}} \\
 \end{array}
 $$
 
@@ -4588,7 +4576,7 @@ $\boxed{{\mathit{context}} \vdash {\mathit{reftype}} : \mathsf{ok}}$
 
 $\boxed{{\mathit{context}} \vdash {\mathit{valtype}} : \mathsf{ok}}$
 
-\vspace{1ex}
+$\boxed{{\mathit{context}} \vdash {\mathit{typeuse}} : \mathsf{ok}}$
 
 $$
 \begin{array}{@{}c@{}}\displaystyle
@@ -4623,21 +4611,10 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C{.}\mathsf{types}{}[{\mathit{typeidx}}] = {\mathit{dt}}
+C \vdash {\mathit{typeuse}} : \mathsf{ok}
 }{
-C \vdash {\mathit{typeidx}} : \mathsf{ok}
-} \, {[\textsc{\scriptsize K{-}heap{-}typeidx}]}
-\qquad
-\end{array}
-$$
-
-$$
-\begin{array}{@{}c@{}}\displaystyle
-\frac{
-C{.}\mathsf{recs}{}[i] = {\mathit{st}}
-}{
-C \vdash \mathsf{rec}~i : \mathsf{ok}
-} \, {[\textsc{\scriptsize K{-}heap{-}rec}]}
+C \vdash {\mathit{typeuse}} : \mathsf{ok}
+} \, {[\textsc{\scriptsize K{-}heap{-}typeuse}]}
 \qquad
 \end{array}
 $$
@@ -4730,6 +4707,25 @@ $$
 
 \vspace{1ex}
 
+$\boxed{{\mathit{deftype}} \approx {\mathit{comptype}}}$
+
+$\boxed{{\mathit{typeuse}} \approx_{{\mathit{context}}} {\mathit{comptype}}}$
+
+$$
+\begin{array}[t]{@{}lrcl@{}l@{}}
+{[\textsc{\scriptsize Expand}]} \quad & {\mathit{deftype}} & \approx & {\mathit{comptype}} & \quad \mbox{if}~ {\mathrm{expand}}({\mathit{deftype}}) = {\mathit{comptype}} \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lrcl@{}l@{}}
+{[\textsc{\scriptsize Expand\_use{-}deftype}]} \quad & {\mathit{deftype}} & \approx & C~{\mathit{comptype}} & \quad \mbox{if}~ {\mathit{deftype}} \approx {\mathit{comptype}} \\
+{[\textsc{\scriptsize Expand\_use{-}typeidx}]} \quad & {\mathit{typeidx}} & \approx & C~{\mathit{comptype}} & \quad \mbox{if}~ C{.}\mathsf{types}{}[{\mathit{typeidx}}] \approx {\mathit{comptype}} \\
+\end{array}
+$$
+
+\vspace{1ex}
+
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}}
 & {\mathsf{ok}}{({\mathit{typeidx}})} & ::= & {\mathsf{ok}}{({\mathit{typeidx}})} \\
@@ -4760,6 +4756,41 @@ $\boxed{{\mathit{context}} \vdash {\mathit{deftype}} : \mathsf{ok}}$
 $\boxed{{\mathit{context}} \vdash {\mathit{comptype}} \leq {\mathit{comptype}}}$
 
 $\boxed{{\mathit{context}} \vdash {\mathit{deftype}} \leq {\mathit{deftype}}}$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+C{.}\mathsf{types}{}[{\mathit{typeidx}}] = {\mathit{dt}}
+}{
+C \vdash {\mathit{typeidx}} : \mathsf{ok}
+} \, {[\textsc{\scriptsize K{-}typeuse{-}typeidx}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+C \vdash {\mathit{deftype}} : \mathsf{ok}
+}{
+C \vdash {\mathit{deftype}} : \mathsf{ok}
+} \, {[\textsc{\scriptsize K{-}typeuse{-}deftype}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+C{.}\mathsf{recs}{}[i] = {\mathit{st}}
+}{
+C \vdash \mathsf{rec}~i : \mathsf{ok}
+} \, {[\textsc{\scriptsize K{-}typeuse{-}rec}]}
+\qquad
+\end{array}
+$$
 
 \vspace{1ex}
 
@@ -5070,11 +5101,11 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C \vdash {\mathit{deftype}} : \mathsf{ok}
+C \vdash {\mathit{typeuse}} : \mathsf{ok}
  \qquad
-{\mathit{deftype}} \approx \mathsf{func}~{\mathit{functype}}
+{\mathit{typeuse}} \approx_{C} \mathsf{func}~{\mathit{functype}}
 }{
-C \vdash \mathsf{func}~{\mathit{deftype}} : \mathsf{ok}
+C \vdash \mathsf{func}~{\mathit{typeuse}} : \mathsf{ok}
 } \, {[\textsc{\scriptsize K{-}extern{-}func}]}
 \qquad
 \end{array}
@@ -5116,9 +5147,11 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C \vdash {\mathit{tagtype}} : \mathsf{ok}
+C \vdash {\mathit{typeuse}} : \mathsf{ok}
+ \qquad
+{\mathit{typeuse}} \approx_{C} \mathsf{func}~{\mathit{functype}}
 }{
-C \vdash \mathsf{tag}~{\mathit{tagtype}} : \mathsf{ok}
+C \vdash \mathsf{tag}~{\mathit{typeuse}} : \mathsf{ok}
 } \, {[\textsc{\scriptsize K{-}extern{-}tag}]}
 \qquad
 \end{array}
