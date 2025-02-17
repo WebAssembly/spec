@@ -1795,7 +1795,12 @@
 
 .. |vdashadmininstr| mathdef:: \xref{appendix/properties}{valid-instr-admin}{\vdash}
 
+.. |vdashnum| mathdef:: \xref{exec/values}{valid-num}{\vdash}
+.. |vdashvec| mathdef:: \xref{exec/values}{valid-vec}{\vdash}
+.. |vdashref| mathdef:: \xref{exec/values}{valid-ref}{\vdash}
 .. |vdashval| mathdef:: \xref{exec/values}{valid-val}{\vdash}
+.. |vdashexternaddr| mathdef:: \xref{exec/values}{valid-externaddr}{\vdash}
+
 .. |vdashresult| mathdef:: \xref{appendix/properties}{valid-result}{\vdash}
 .. |vdashfieldval| mathdef:: \xref{appendix/properties}{valid-fieldval}{\vdash}
 .. |vdashpackval| mathdef:: \xref{appendix/properties}{valid-packval}{\vdash}

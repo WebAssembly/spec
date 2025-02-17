@@ -14,7 +14,7 @@ For the purpose of checking argument :ref:`values <syntax-val>` against the para
 values are classified by :ref:`value types <syntax-valtype>`.
 The following auxiliary typing rules specify this typing relation relative to a :ref:`store <syntax-store>` :math:`S` in which possibly referenced :ref:`addresses <syntax-addr>` live.
 
-${rule-ignore: Val_type/*}
+${rule-ignore: Val_ok/*}
 
 
 .. _valid-num:
@@ -22,13 +22,13 @@ ${rule-ignore: Val_type/*}
 Numeric Values
 ..............
 
-${rule-prose: Num_type}
+${rule-prose: Num_ok}
 
 .. todo:: below is the official specification
 
 * The value is valid with :ref:`number type <syntax-numtype>` :math:`t`.
 
-$${rule: Num_type}
+$${rule: Num_ok}
 
 
 .. _valid-vec:
@@ -36,13 +36,13 @@ $${rule: Num_type}
 Vector Values
 .............
 
-$${rule-prose: Vec_type}
+$${rule-prose: Vec_ok}
 
 .. todo:: below is the official specification
 
 * The value is valid with :ref:`vector type <syntax-vectype>` :math:`t`.
 
-$${rule: Vec_type}
+$${rule: Vec_ok}
 
 
 .. _valid-ref:
@@ -50,7 +50,7 @@ $${rule: Vec_type}
 Null References
 ...............
 
-$${rule-prose: Ref_type/null}
+$${rule-prose: Ref_ok/null}
 
 .. todo:: below is the official specification
 
@@ -58,7 +58,7 @@ $${rule-prose: Ref_type/null}
 
 * Then the value is valid with :ref:`reference type <syntax-reftype>` :math:`(\REF~\NULL~t')`, where the :ref:`heap type <syntax-heaptype>` :math:`t'` is the least type that :ref:`matches <match-heaptype>` :math:`t`.
 
-$${rule: Ref_type/null}
+$${rule: Ref_ok/null}
 
 .. note::
    A null reference can be typed with any smaller type.
@@ -71,13 +71,13 @@ $${rule: Ref_type/null}
 Scalar References
 .................
 
-$${rule-prose: Ref_type/i31}
+$${rule-prose: Ref_ok/i31}
 
 .. todo:: below is the official specification
 
 * The value is valid with :ref:`reference type <syntax-reftype>` :math:`(\REF~\I31)`.
 
-$${rule: Ref_type/i31}
+$${rule: Ref_ok/i31}
 
 
 .. _valid-ref.struct:
@@ -85,7 +85,7 @@ $${rule: Ref_type/i31}
 Structure References
 ....................
 
-$${rule-prose: Ref_type/struct}
+$${rule-prose: Ref_ok/struct}
 
 .. todo:: below is the official specification
 
@@ -99,7 +99,7 @@ $${rule-prose: Ref_type/struct}
 
 * Then the value is valid with :ref:`reference type <syntax-reftype>` :math:`(\REF~\deftype)`.
 
-$${rule: Ref_type/struct}
+$${rule: Ref_ok/struct}
 
 
 .. _valid-ref.array:
@@ -107,7 +107,7 @@ $${rule: Ref_type/struct}
 Array References
 ................
 
-$${rule-prose: Ref_type/array}
+$${rule-prose: Ref_ok/array}
 
 .. todo:: below is the official specification
 
@@ -121,7 +121,7 @@ $${rule-prose: Ref_type/array}
 
 * Then the value is valid with :ref:`reference type <syntax-reftype>` :math:`(\REF~\arraytype)`.
 
-$${rule: Ref_type/array}
+$${rule: Ref_ok/array}
 
 
 .. _valid-ref.exn:
@@ -129,7 +129,7 @@ $${rule: Ref_type/array}
 Exception References
 ....................
 
-$${rule-prose: Ref_type/exn}
+$${rule-prose: Ref_ok/exn}
 
 .. todo:: below is the official specification
 
@@ -137,13 +137,13 @@ $${rule-prose: Ref_type/exn}
 
 * Then the value is valid with :ref:`reference type <syntax-reftype>` :math:`\EXNREF`.
 
-$${rule: Ref_type/exn}
+$${rule: Ref_ok/exn}
 
 
 Function References
 ...................
 
-$${rule-prose: Ref_type/func}
+$${rule-prose: Ref_ok/func}
 
 .. todo:: below is the official specification
 
@@ -157,28 +157,28 @@ $${rule-prose: Ref_type/func}
 
 * Then the value is valid with :ref:`reference type <syntax-reftype>` :math:`(\REF~\functype)`.
 
-$${rule: Ref_type/func}
+$${rule: Ref_ok/func}
 
 
 Host References
 ...............
 
-$${rule-prose: Ref_type/host}
+$${rule-prose: Ref_ok/host}
 
 .. todo:: below is the official specification
 
 * The value is valid with :ref:`reference type <syntax-reftype>` :math:`(\REF~\ANY)`.
 
-$${rule: Ref_type/host}
+$${rule: Ref_ok/host}
 
 .. note::
-   A bare host reference is considered to be internalized.
+   A bare host reference is considered internalized.
 
 
 External References
 ...................
 
-$${rule-prose: Ref_type/extern}
+$${rule-prose: Ref_ok/extern}
 
 .. todo:: below is the official specification
 
@@ -188,13 +188,13 @@ $${rule-prose: Ref_type/extern}
 
 * Then the value is valid with :ref:`reference type <syntax-reftype>` :math:`(\REF~\NULL^?~\EXTERN)`.
 
-$${rule: Ref_type/extern}
+$${rule: Ref_ok/extern}
 
 
 Subsumption
 ...........
 
-$${rule-prose: Ref_type/sub}
+$${rule-prose: Ref_ok/sub}
 
 .. todo:: below is the official specification
 
@@ -204,7 +204,7 @@ $${rule-prose: Ref_type/sub}
 
 * Then the value is valid with type :math:`t'`.
 
-$${rule: Ref_type/sub}
+$${rule: Ref_ok/sub}
 
 
 .. index:: external address, external type, validation, import, store
@@ -224,7 +224,7 @@ The following auxiliary typing rules specify this typing relation relative to a 
 Functions
 .........
 
-$${rule-prose: Externaddr_type/func}
+$${rule-prose: Externaddr_ok/func}
 
 .. todo:: below is the official specification
 
@@ -232,7 +232,7 @@ $${rule-prose: Externaddr_type/func}
 
 * Then :math:`\XAFUNC~a` is valid with :ref:`external type <syntax-externtype>` :math:`\XTFUNC~S.\SFUNCS[a].\FITYPE`.
 
-$${rule: Externaddr_type/func}
+$${rule: Externaddr_ok/func}
 
 
 .. index:: table type, table address
@@ -241,7 +241,7 @@ $${rule: Externaddr_type/func}
 Tables
 ......
 
-$${rule-prose: Externaddr_type/table}
+$${rule-prose: Externaddr_ok/table}
 
 .. todo:: below is the official specification
 
@@ -249,7 +249,7 @@ $${rule-prose: Externaddr_type/table}
 
 * Then :math:`\XATABLE~a` is valid with :ref:`external type <syntax-externtype>` :math:`\XTTABLE~S.\STABLES[a].\TITYPE`.
 
-$${rule: Externaddr_type/table}
+$${rule: Externaddr_ok/table}
 
 
 .. index:: memory type, memory address
@@ -258,7 +258,7 @@ $${rule: Externaddr_type/table}
 Memories
 ........
 
-$${rule-prose: Externaddr_type/mem}
+$${rule-prose: Externaddr_ok/mem}
 
 .. todo:: below is the official specification
 
@@ -266,7 +266,7 @@ $${rule-prose: Externaddr_type/mem}
 
 * Then :math:`\XAMEM~a` is valid with :ref:`external type <syntax-externtype>` :math:`\XTMEM~S.\SMEMS[a].\MITYPE`.
 
-$${rule: Externaddr_type/mem}
+$${rule: Externaddr_ok/mem}
 
 
 .. index:: global type, global address, value type, mutability
@@ -275,7 +275,7 @@ $${rule: Externaddr_type/mem}
 Globals
 .......
 
-$${rule-prose: Externaddr_type/global}
+$${rule-prose: Externaddr_ok/global}
 
 .. todo:: below is the official specification
 
@@ -283,7 +283,7 @@ $${rule-prose: Externaddr_type/global}
 
 * Then :math:`\XAGLOBAL~a` is valid with :ref:`external type <syntax-externtype>` :math:`\XTGLOBAL~S.\SGLOBALS[a].\GITYPE`.
 
-$${rule: Externaddr_type/global}
+$${rule: Externaddr_ok/global}
 
 
 .. index:: tag type, tag address, exception tag, function type
@@ -292,7 +292,7 @@ $${rule: Externaddr_type/global}
 Tags
 ....
 
-$${rule-prose: Externaddr_type/tag}
+$${rule-prose: Externaddr_ok/tag}
 
 .. todo:: below is the official specification
 
@@ -302,13 +302,13 @@ $${rule-prose: Externaddr_type/tag}
 
 * Then :math:`\XATAG~a` is valid with :ref:`external type <syntax-externtype>` :math:`\XTTAG~\tagtype`.
 
-$${rule: Externaddr_type/tag}
+$${rule: Externaddr_ok/tag}
 
 
 Subsumption
 ...........
 
-$${rule-prose: Externaddr_type/sub}
+$${rule-prose: Externaddr_ok/sub}
 
 .. todo:: below is the official specification
 
@@ -318,4 +318,4 @@ $${rule-prose: Externaddr_type/sub}
 
 * Then the external address is valid with type :math:`\X{et'}`.
 
-$${rule: Externaddr_type/sub}
+$${rule: Externaddr_ok/sub}
