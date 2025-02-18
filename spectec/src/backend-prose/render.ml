@@ -746,7 +746,7 @@ and render_expr' env expr =
   | Al.Ast.IsCaseOfE (e, a) ->
     let se = render_expr env e in
     let sa = render_atom env a in
-    sprintf "%s is %s" se sa
+    sprintf "%s is some %s" se sa
   | Al.Ast.HasTypeE (e, t) ->
     let se = render_expr env e in
     let st = render_type_desc (render_typ env) t in
