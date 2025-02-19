@@ -77,9 +77,7 @@ and is_bine expr = match expr.it with
 let (let*) = Option.bind
   
 let find_section env link =
-  (* print_endline ("link: " ^ link); *)
   let ans = Macro.find_section env.macro link in
-  (* print_endline ("ans: " ^ (if ans then "true" else "false")); *)
   ans
 
 let inject_link s link = sprintf ":ref:`%s <%s>`" s link
@@ -93,7 +91,7 @@ let type_with_link env e =
   | Il.Ast.IterT (typ, Il.Ast.Opt) -> typ, ""
   | Il.Ast.IterT (typ, Il.Ast.List) -> typ, " sequence"
   | _ -> e.note, "" in
-  let s = Prose_util.extract_desc typ ^ iter in
+  let s = Prose_util.extract_desc typ in
   let typ_name = Il.Print.string_of_typ typ in
   let* ref = try_inject_link env s ("syntax-" ^ typ_name) in
   Some (ref ^ iter)
