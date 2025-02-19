@@ -337,26 +337,42 @@ and al_to_el_expr expr =
       (* Current rules for omitting parenthesis around a CaseE:
         1) Has no argument
         2) Is infix notation
-        3) Is bracketed
+        3) Is bracketed -> render into BrackE
         4) Is argument of CallE -> add first, omit later at CallE *)
-      let is_bracked mixop =
+      let find_brace_opt mixop =
         let s = Mixop.to_string mixop in
         let first = String.get s 1 in
         let last = String.get s (String.length s - 2) in
+        let atom_of atom = atom $$ no_region % (Atom.info "") in
         match first, last with
-        | '(', ')'
-        | '[', ']'
-        | '{', '}' -> true
-        | _ -> false
+        | '(', ')' -> Some (atom_of Atom.LParen, atom_of Atom.RParen)
+        | '[', ']' -> Some (atom_of Atom.LBrack, atom_of Atom.RBrack)
+        | '{', '}' -> Some (atom_of Atom.LBrace, atom_of Atom.RBrace)
+        | _ -> None
       in
       let elal = mixop_to_el_exprs op in
       let* elel = al_to_el_exprs el in
-      let ele = El.Ast.SeqE (case_to_el_exprs elal elel) in
+      let eles = case_to_el_exprs elal elel in
+      let ele = El.Ast.SeqE eles in
       (match elal, elel with
       | _, [] -> Some ele
       | None :: Some _ :: _, _ -> Some ele
-      | _ when is_bracked op -> Some ele
-      | _ -> Some (El.Ast.ParenE (ele $ no_region))
+      | _ ->
+        (match find_brace_opt op with
+        | Some (lbr, rbr) ->
+          (* Split braces of el expressions *)
+          let _, eles = Util.Lib.List.split_hd eles in
+          let eles, _ = Util.Lib.List.split_last eles in
+          let eles = 
+            (match eles with
+            | [e1; { it = El.Ast.AtomE atom; _ }; e2] when atom.it = Xl.Atom.Dot2 ->
+              (* HARDCODE: postprocess limits to infix notation *)
+              El.Ast.InfixE (e1, atom, e2)
+            | _ -> El.Ast.SeqE eles 
+            ) in
+          Some (El.Ast.BrackE (lbr, eles $ no_region, rbr))
+        | None -> Some (El.Ast.ParenE (ele $ no_region))
+        )
       )
     | Al.Ast.OptE (Some e) ->
       let* ele = al_to_el_expr e in
