@@ -12872,7 +12872,7 @@ The sub type :math:`(\mathsf{sub}~{\mathsf{final}^?}~{x^\ast}~{\mathit{comptype}
 
       * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-   * For all :math:`{\mathit{comptype}'}` in :math:`{{\mathit{comptype}'}^\ast}`, and corresponding :math:`x` in :math:`{x^\ast}`, and corresponding :math:`{\mathit{x'*}}` in :math:`{{\mathit{x'*}}^\ast}`:
+   * For all :math:`{\mathit{comptype}'}` in :math:`{{\mathit{comptype}'}^\ast}`, and corresponding :math:`x` in :math:`{x^\ast}`, and corresponding :math:`{{x'}^\ast}` in :math:`{{{x'}^\ast}^\ast}`:
 
       * The sub type :math:`{\mathrm{unroll}}(C{.}\mathsf{types}{}[x])` is of the form :math:`(\mathsf{sub}~{{x'}^\ast}~{\mathit{comptype}'})`.
 
@@ -12931,7 +12931,7 @@ The sub type :math:`(\mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~{
 
    * The length of :math:`{{\mathit{comptype}'}^\ast}` is equal to the length of :math:`{{{\mathit{typeuse}'}^\ast}^\ast}`.
 
-   * For all :math:`{\mathit{comptype}'}` in :math:`{{\mathit{comptype}'}^\ast}`, and corresponding :math:`{\mathit{typeuse}}` in :math:`{{\mathit{typeuse}}^\ast}`, and corresponding :math:`{\mathit{typeuse'*}}` in :math:`{{\mathit{typeuse'*}}^\ast}`:
+   * For all :math:`{\mathit{comptype}'}` in :math:`{{\mathit{comptype}'}^\ast}`, and corresponding :math:`{\mathit{typeuse}}` in :math:`{{\mathit{typeuse}}^\ast}`, and corresponding :math:`{{\mathit{typeuse}'}^\ast}` in :math:`{{{\mathit{typeuse}'}^\ast}^\ast}`:
 
       * The sub type :math:`{{\mathrm{unroll}}}_{C}({\mathit{typeuse}})` is of the form :math:`(\mathsf{sub}~{{\mathit{typeuse}'}^\ast}~{\mathit{comptype}'})`.
 
@@ -17920,7 +17920,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{{\mathit{val}}^\ast}` be :math:`{{{\mathrm{default}}}_{{\mathrm{unpack}}({\mathit{zt}})}^\ast}`.
 
-#. Assert: Due to validation, :math:`{|{\mathit{val*}}|} = {|{\mathit{zt*}}|}`.
+#. Assert: Due to validation, :math:`{|{{\mathit{val}}^\ast}|} = {|{{\mathit{zt}}^\ast}|}`.
 
 #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 

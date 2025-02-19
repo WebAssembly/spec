@@ -310,6 +310,13 @@ and al_to_el_expr expr =
     | Al.Ast.StrE r ->
       let* elexpfield = al_to_el_record r in
       Some (El.Ast.StrE elexpfield)
+    | Al.Ast.VarE id when String.ends_with ~suffix:"*" id ->
+      let l = String.split_on_char '*' id in
+      let id, iters = Util.Lib.List.split_hd l in
+      let elid = id $ no_region in
+      let ele = El.Ast.VarE (elid, []) in
+      let wrap_iter e _ = El.Ast.IterE (e $ no_region, El.Ast.List) in
+      Some (List.fold_left wrap_iter ele iters)
     | Al.Ast.VarE id | Al.Ast.SubE (id, _) ->
       let elid = id $ no_region in
       Some (El.Ast.VarE (elid, []))
