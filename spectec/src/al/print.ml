@@ -323,9 +323,6 @@ let rec string_of_instr' depth instr =
   | AppendI (e1, e2) ->
     sprintf " %s :+ %s"
       (string_of_expr e2) (string_of_expr e1)
-  | FieldWiseAppendI (e1, e2) ->
-    sprintf " %s :⨁ %s"
-      (string_of_expr e2) (string_of_expr e1)
   | YetI s -> sprintf " YetI: %s." s
 
 and string_of_instrs' depth instrs =
@@ -596,12 +593,6 @@ let rec structured_string_of_instr' depth instr =
     ^ ")"
   | AppendI (e1, e2) ->
     "AppendI ("
-    ^ structured_string_of_expr e1
-    ^ ", "
-    ^ structured_string_of_expr e2
-    ^ ")"
-  | FieldWiseAppendI (e1, e2) ->
-    "FieldWiseAppendI ("
     ^ structured_string_of_expr e1
     ^ ", "
     ^ structured_string_of_expr e2

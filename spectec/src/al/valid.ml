@@ -705,12 +705,6 @@ let rec valid_instr (env: Env.t) (instr: instr) : Env.t =
     valid_expr env expr2;
     check_list source expr1.note;
     env
-  | FieldWiseAppendI (expr1, expr2) ->
-    valid_expr env expr1;
-    valid_expr env expr2;
-    check_struct source expr1.note;
-    check_struct source expr2.note;
-    env
   | OtherwiseI _ | YetI _ -> error_valid "invalid instruction" source ""
   )
 

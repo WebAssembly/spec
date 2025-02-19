@@ -128,7 +128,6 @@ let rec eq_instr i1 i2 =
   | ReplaceI (e11, p1, e12), ReplaceI (e21, p2, e22) ->
     eq_expr e11 e21 && eq_path p1 p2 && eq_expr e12 e22
   | AppendI (e11, e12), AppendI (e21, e22) -> eq_expr e11 e21 && eq_expr e12 e22
-  | FieldWiseAppendI (e11, e12),FieldWiseAppendI (e21, e22) -> eq_expr e11 e21 && eq_expr e12 e22
   | OtherwiseI il1, OtherwiseI il2 -> eq_instrs il1 il2
   | YetI s1, YetI s2 -> s1 = s2
   | _ -> false

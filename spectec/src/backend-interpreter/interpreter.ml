@@ -667,22 +667,6 @@ and step_instr (fname: string) (ctx: AlContext.t) (env: value Env.t) (instr: ins
     | _, v -> a := Array.append !a [|v|]
     );
     ctx
-  | FieldWiseAppendI (e1, e2) ->
-    let s1 = eval_expr env e1 |> unwrap_strv in
-    let s2 = eval_expr env e2 |> unwrap_strv in
-    Record.iter
-    (fun (id, v) ->
-    let arr1 = match !v with
-    | ListV arr_ref -> arr_ref
-    | _ -> failwith (sprintf "`%s` is not a list" (string_of_value !v))
-    in
-    let arr2 = match Record.find id s2 with
-    | ListV arr_ref -> arr_ref
-    | v -> failwith (sprintf "`%s` is not a list" (string_of_value v))
-    in
-    arr1 := Array.append !arr1 !arr2
-    ) s1;
-    ctx
   | _ -> failwith "cannot step instr"
 
 and try_step_instr fname ctx env instr =

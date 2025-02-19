@@ -73,7 +73,7 @@ let walk_instr (walker: unit_walker) (instr: instr) : unit =
   | TrapI | FailI | NopI | ReturnI None | ExitI _ | YetI _ -> ()
   | AssertI e | ThrowI e | PushI e | PopI e | PopAllI e
   | ReturnI (Some e)| ExecuteI e | ExecuteSeqI e -> walker.walk_expr walker e
-  | LetI (e1, e2) | AppendI (e1, e2) | FieldWiseAppendI (e1, e2) ->
+  | LetI (e1, e2) | AppendI (e1, e2) ->
     walker.walk_expr walker e1; walker.walk_expr walker e2
   | PerformI (_, al) -> List.iter (walker.walk_arg walker) al
   | ReplaceI (e1, p, e2) ->
@@ -193,7 +193,6 @@ let walk_instr (walker: walker) (instr: instr) : instr list =
     | ExitI _ -> instr.it
     | ReplaceI (e1, p, e2) -> ReplaceI (walk_expr e1, walk_path p, walk_expr e2)
     | AppendI (e1, e2) -> AppendI (walk_expr e1, walk_expr e2)
-    | FieldWiseAppendI (e1, e2) -> FieldWiseAppendI (walk_expr e1, walk_expr e2)
     | YetI _ -> instr.it
   in
   [{ instr with it }]

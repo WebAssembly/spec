@@ -137,7 +137,6 @@ and instr' =
   | ExitI of atom                         (* `exit` *)
   | ReplaceI of expr * path * expr        (* `replace` expr `->` path `with` expr *)
   | AppendI of expr * expr                (* `append` expr `to the` expr *)
-  | FieldWiseAppendI of expr * expr       (* `append` expr `to the` expr `, fieldwise` *)
   (* Administrative instructions *)
   | OtherwiseI of instr list              (* only during the intermediate processing of il->al *)
   | YetI of string                        (* for future not yet implemented feature *)

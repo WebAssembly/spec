@@ -688,12 +688,6 @@ let hide_state instr =
     [ letI (addr, e2) ~at:at;
       appendI (access, e1) ~at:at;
       returnI (Some addr) ~at:at ]
-  (* Fieldwise Append & Return *)
-  | ReturnI (Some ({ it = TupE [ { it = CompE (e1, e2); _ } as s; e ]; _  })) when is_store s ->
-    let addr = varE "a" ~note:e.note in
-    [ letI (addr, e) ~at:at;
-      fieldWiseAppendI (e1, e2) ~at:at;
-      returnI (Some addr) ~at:at ]
   (* Replace store *)
   | ReturnI (Some ({ it = TupE [ { it = UpdE (s, ps, e); note; _ }; f ]; _ })) when is_store s && is_frame f ->
     let hs, t = Lib.List.split_last ps in
@@ -713,10 +707,6 @@ let hide_state instr =
   | ReturnI (Some ({ it = TupE [ { it = ExtE (s, ps, e, Back); note; _ }; f ]; _ })) when is_store s && is_frame f ->
     let access = { (mk_access ps s) with note } in
     [ appendI (access, e) ~at:at ]
-  (* Fieldwise append store / frame *)
-  | ReturnI (Some ({ it = TupE [ { it = CompE (e1, e2); _ } as s; f ]; _ }))
-  | ReturnI (Some ({ it = TupE [ s; { it = CompE (e1, e2); _ } as f ]; _ })) when is_store s && is_frame f ->
-    [ fieldWiseAppendI (e1, e2) ~at:at ]
   (* Return *)
   | ReturnI (Some e) when is_state e || is_store e -> [ returnI None ~at:at ]
   | _ -> [ instr ]

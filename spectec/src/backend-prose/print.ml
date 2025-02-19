@@ -329,9 +329,6 @@ let rec string_of_instr' depth instr =
   | AppendI (e1, e2) ->
     sprintf "%s Append %s to the %s." (make_index depth)
       (string_of_expr e2) (string_of_expr e1)
-  | FieldWiseAppendI (e1, e2) ->
-    sprintf "%s Append %s to the %s, fieldwise." (make_index depth)
-      (string_of_expr e2) (string_of_expr e1)
   | YetI s -> sprintf "%s YetI: %s." (make_index depth) s
 
 and string_of_instrs' depth instrs =
