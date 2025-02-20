@@ -8884,7 +8884,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M_2}}(c_1)`.
 
-#. Let :math:`{{\mathit{cj}}_1~{\mathit{cj}}_2^\ast}` be the result for which :math:`{\mathrm{concat}}({{\mathit{cj}}_1~{\mathit{cj}}_2^\ast})` :math:`=` :math:`{{{{{\mathrm{extend}}}_{N_2, N_1}^{{\mathit{sx}}}}}{({\mathit{ci}})}^\ast}`.
+#. Let :math:`{{\mathit{cj}}_1~{\mathit{cj}}_2^\ast}` be the result for which the :ref:`concatenation <notation-concat>` of :math:`{{\mathit{cj}}_1~{\mathit{cj}}_2^\ast}` is :math:`{{{{{\mathrm{extend}}}_{N_2, N_1}^{{\mathit{sx}}}}}{({\mathit{ci}})}^\ast}`.
 
 #. Let :math:`c` be :math:`{{\mathrm{invlanes}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M_1}}({{{\mathrm{iadd}}}_{N_1}({\mathit{cj}}_1, {\mathit{cj}}_2)^\ast})`.
 
@@ -8913,7 +8913,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{{\mathit{ci}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M_2}}(c_2)`.
 
-#. Let :math:`{{\mathit{cj}}_1~{\mathit{cj}}_2^\ast}` be the result for which :math:`{\mathrm{concat}}({{\mathit{cj}}_1~{\mathit{cj}}_2^\ast})` :math:`=` :math:`{{{\mathrm{imul}}}_{N_1}({{{{\mathrm{extend}}}_{N_2, N_1}^{\mathsf{s}}}}{({\mathit{ci}}_1)}, {{{{\mathrm{extend}}}_{N_2, N_1}^{\mathsf{s}}}}{({\mathit{ci}}_2)})^\ast}`.
+#. Let :math:`{{\mathit{cj}}_1~{\mathit{cj}}_2^\ast}` be the result for which the :ref:`concatenation <notation-concat>` of :math:`{{\mathit{cj}}_1~{\mathit{cj}}_2^\ast}` is :math:`{{{\mathrm{imul}}}_{N_1}({{{{\mathrm{extend}}}_{N_2, N_1}^{\mathsf{s}}}}{({\mathit{ci}}_1)}, {{{{\mathrm{extend}}}_{N_2, N_1}^{\mathsf{s}}}}{({\mathit{ci}}_2)})^\ast}`.
 
 #. Let :math:`c` be :math:`{{\mathrm{invlanes}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M_1}}({{{\mathrm{iadd}}}_{N_1}({\mathit{cj}}_1, {\mathit{cj}}_2)^\ast})`.
 
@@ -9731,9 +9731,9 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{(\mathsf{elem}~{\mathit{reftype}}~{{\mathit{expr}}_{\mathsf{e}}^\ast}~{\mathit{elemmode}})^\ast}` be :math:`{{\mathit{elem}}^\ast}`.
 
-#. Let :math:`{{\mathit{instr}}_{\mathsf{d}}^\ast}` be the concatenation of :math:`{{\mathrm{rundata}}({{\mathit{data}}^\ast}{}[j], j)^{j<n_{\mathsf{d}}}}`.
+#. Let :math:`{{\mathit{instr}}_{\mathsf{d}}^\ast}` be the :ref:`concatenation <notation-concat>` of :math:`{{\mathrm{rundata}}({{\mathit{data}}^\ast}{}[j], j)^{j<n_{\mathsf{d}}}}`.
 
-#. Let :math:`{{\mathit{instr}}_{\mathsf{e}}^\ast}` be the concatenation of :math:`{{\mathrm{runelem}}({{\mathit{elem}}^\ast}{}[i], i)^{i<n_{\mathsf{e}}}}`.
+#. Let :math:`{{\mathit{instr}}_{\mathsf{e}}^\ast}` be the :ref:`concatenation <notation-concat>` of :math:`{{\mathrm{runelem}}({{\mathit{elem}}^\ast}{}[i], i)^{i<n_{\mathsf{e}}}}`.
 
 #. Let :math:`{\mathit{moduleinst}}_{\mathit{init}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{functype}}^\ast},\; \mathsf{funcs}~{\mathrm{funcs}}({{\mathit{externaddr}}^\ast})~{({|s{.}\mathsf{funcs}|} + i_{\mathsf{f}})^{i_{\mathsf{f}}<n_{\mathsf{f}}}},\; \mathsf{globals}~{\mathrm{globals}}({{\mathit{externaddr}}^\ast}) \}\end{array}`.
 
@@ -18032,7 +18032,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    a. Trap.
 
-#. Let :math:`{{{\mathit{byte}}^\ast}^\ast}` be the result for which :math:`{\bigoplus}\, {{{\mathit{byte}}^\ast}^\ast}` :math:`=` :math:`z{.}\mathsf{datas}{}[y]{.}\mathsf{bytes}{}[i : n \cdot {|{\mathit{zt}}|} / 8]`.
+#. Let :math:`{{{\mathit{byte}}^\ast}^\ast}` be the result for which each :math:`{{\mathit{byte}}^\ast}` has length :math:`{|{\mathit{zt}}|} / 8`, and the :ref:`concatenation <notation-concat>` of :math:`{{{\mathit{byte}}^\ast}^\ast}` is :math:`z{.}\mathsf{datas}{}[y]{.}\mathsf{bytes}{}[i : n \cdot {|{\mathit{zt}}|} / 8]`.
 
 #. Let :math:`{c^{n}}` be the result for which :math:`{({{\mathrm{bytes}}}_{{\mathit{zt}}}({c^{n}}) = {{\mathit{byte}}^\ast})^\ast}`.
 
@@ -23403,7 +23403,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ..................................................
 
 
-1. Let :math:`{j_1~j_2^\ast}` be the result for which :math:`{\bigoplus}\, {j_1~j_2^\ast}` :math:`=` :math:`{i^\ast}`.
+1. Let :math:`{j_1~j_2^\ast}` be the result for which the :ref:`concatenation <notation-concat>` of :math:`{j_1~j_2^\ast}` is :math:`{i^\ast}`.
 
 #. Return :math:`{{{\mathrm{iadd}}}_{N}(j_1, j_2)^\ast}`.
 
@@ -23432,7 +23432,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ......................................................
 
 
-1. Let :math:`{j_1~j_2^\ast}` be the result for which :math:`{\bigoplus}\, {j_1~j_2^\ast}` :math:`=` :math:`{{{\mathrm{imul}}}_{N}(i_1, i_2)^\ast}`.
+1. Let :math:`{j_1~j_2^\ast}` be the result for which the :ref:`concatenation <notation-concat>` of :math:`{j_1~j_2^\ast}` is :math:`{{{\mathrm{imul}}}_{N}(i_1, i_2)^\ast}`.
 
 #. Return :math:`{{{\mathrm{iadd}}}_{N}(j_1, j_2)^\ast}`.
 
@@ -23441,7 +23441,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ...........................................................
 
 
-1. Let :math:`{j_1~j_2^\ast}` be the result for which :math:`{\bigoplus}\, {j_1~j_2^\ast}` :math:`=` :math:`{{{\mathrm{imul}}}_{N}(i_1, i_2)^\ast}`.
+1. Let :math:`{j_1~j_2^\ast}` be the result for which the :ref:`concatenation <notation-concat>` of :math:`{j_1~j_2^\ast}` is :math:`{{{\mathrm{imul}}}_{N}(i_1, i_2)^\ast}`.
 
 #. Return :math:`{{{{{\mathrm{iadd\_sat}}}_{N}^{\mathsf{s}}}}{(j_1, j_2)}^\ast}`.
 
@@ -24501,9 +24501,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       1) Fail.
 
-#. Let :math:`{{\mathit{instr}}_{\mathsf{d}}^\ast}` be the concatenation of :math:`{{{\mathrm{rundata}}}_{i_{\mathsf{d}}}({{\mathit{data}}^\ast}{}[i_{\mathsf{d}}])^{i_{\mathsf{d}}<{|{{\mathit{data}}^\ast}|}}}`.
+#. Let :math:`{{\mathit{instr}}_{\mathsf{d}}^\ast}` be the :ref:`concatenation <notation-concat>` of :math:`{{{\mathrm{rundata}}}_{i_{\mathsf{d}}}({{\mathit{data}}^\ast}{}[i_{\mathsf{d}}])^{i_{\mathsf{d}}<{|{{\mathit{data}}^\ast}|}}}`.
 
-#. Let :math:`{{\mathit{instr}}_{\mathsf{e}}^\ast}` be the concatenation of :math:`{{{\mathrm{runelem}}}_{i_{\mathsf{e}}}({{\mathit{elem}}^\ast}{}[i_{\mathsf{e}}])^{i_{\mathsf{e}}<{|{{\mathit{elem}}^\ast}|}}}`.
+#. Let :math:`{{\mathit{instr}}_{\mathsf{e}}^\ast}` be the :ref:`concatenation <notation-concat>` of :math:`{{{\mathrm{runelem}}}_{i_{\mathsf{e}}}({{\mathit{elem}}^\ast}{}[i_{\mathsf{e}}])^{i_{\mathsf{e}}<{|{{\mathit{elem}}^\ast}|}}}`.
 
 #. Let :math:`{(\mathsf{start}~x)^?}` be :math:`{{\mathit{start}}^?}`.
 

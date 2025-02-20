@@ -613,6 +613,14 @@ and render_expr' env expr =
     (match dir with
     | Al.Ast.Front -> sprintf "%s with %s prepended by %s" se1 sps se2
     | Al.Ast.Back -> sprintf "%s with %s appended by %s" se1 sps se2)
+  | Al.Ast.CallE (("concat_" | "concatn_" as id), al) ->
+    (* HARDCODE: rendering of concat_ *)
+    let args = List.map (render_arg env) al in
+    (match args with
+    | [_; expr] | [_; expr; _] ->
+      "the :ref:`concatenation <notation-concat>` of " ^ expr
+    | _ -> error expr.at "Invalid arity for function " ^ id;
+    )
   | Al.Ast.CallE (id, al) ->
     (* HARDCODE: relation call *)
     let args = List.map (render_arg env) al in
@@ -1264,6 +1272,26 @@ let rec render_instr env algoname index depth instr =
         let ebin = Al.Al_util.binE (`EqOp, elhs, erhs) ~note:Al.Al_util.no_note in
         let eiter = Al.Al_util.iterE (ebin, iterexp) ~note:Al.Al_util.no_note in
         "", sprintf "the result for which %s" (render_expr env eiter)
+      | Al.Ast.InvCallE ("concat_", nl, al) ->
+        let elhs, erhs = al_invcalle_to_al_bine e1 "concat_" nl al in
+        "", sprintf "the result for which %s is %s"
+          (render_expr' env elhs)
+          (render_expr env erhs)
+      | Al.Ast.InvCallE ("concatn_", nl, al) ->
+        let elhs, erhs = al_invcalle_to_al_bine e1 "concatn_" nl al in
+        (match elhs.it with
+        | CallE (_, [_; { it = Al.Ast.ExpA e'; _}; n]) ->
+          (match e'.it with
+          | Al.Ast.IterE (e'', _) -> 
+            "", sprintf "the result for which each %s has length %s, and %s is %s"
+              (render_expr env e'')
+              (render_arg env n)
+              (render_expr' env elhs)
+              (render_expr env erhs)
+          | _ -> error instr.at "Invalid argument for function concatn_"
+          )
+        | _ -> error instr.at "Invalid arity for function concatn_"
+        )
       | Al.Ast.InvCallE (id, nl, al) ->
         let elhs, erhs = al_invcalle_to_al_bine e1 id nl al in
         "", sprintf "the result for which %s %s %s"
@@ -1288,14 +1316,7 @@ let rec render_instr env algoname index depth instr =
         let assert_instr = Al.Ast.AssertI (is_valid) |> to_instr in
         let valid_check_string = render_instr env algoname index depth assert_instr in
         valid_check_string ^ "\n\n", render_expr env e2
-      | Al.Ast.CallE ("concat_", al) ->
-        let args = List.map (render_arg env) al in
-        let ce = (match args with
-        | [_; expr] ->
-          "the concatenation of " ^ expr
-        | _ -> error instr.at "Invalid arity for relation call";
-        ) in
-        "", ce
+      | Al.Ast.CallE (("concat_" | "concatn_"), _) -> "", render_expr' env e2
       | _ -> (match e1.it with
         | _ ->
           let rec find_eval_expr e = match e.it with
