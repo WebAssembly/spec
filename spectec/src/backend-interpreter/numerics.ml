@@ -32,7 +32,7 @@ let i8_to_i32 i8 =
   (* NOTE: This operation extends the sign of i8 to i32 *)
   I32.shr_s (I32.shl i8 24l) 24l
 let i16_to_i32 i16 =
-  (* NOTE: This operation extends the sign of i8 to i32 *)
+  (* NOTE: This operation extends the sign of i16 to i32 *)
   I32.shr_s (I32.shl i16 16l) 16l
 
 let catch_ixx_exception f = try f() |> someV with
@@ -127,35 +127,6 @@ let sat : numerics =
       );
   }
 
-let iadd : numerics =
-  {
-    name = "iadd";
-    f =
-      (function
-      | [ NumV (`Nat z); NumV (`Nat m); NumV (`Nat n) ] -> Z.(logand (add m n) (maskN z)) |> al_of_z_nat
-      | vs -> error_values "iadd" vs
-      );
-  }
-let isub : numerics =
-  {
-    name = "isub";
-    f =
-      (function
-      | [ NumV (`Nat z); NumV (`Nat m); NumV (`Nat n) ] ->
-        let z' = Z.to_int z in
-        Z.(logand (sub (add Z.(shift_left one z') m) n) (maskN z)) |> al_of_z_nat
-      | vs -> error_values "isub" vs
-      );
-  }
-let imul : numerics =
-  {
-    name = "imul";
-    f =
-      (function
-      | [ NumV (`Nat z); NumV (`Nat m); NumV (`Nat n) ] -> Z.(logand (mul m n) (maskN z)) |> al_of_z_nat
-      | vs -> error_values "imul" vs
-      );
-  }
 let idiv : numerics =
   {
     name = "idiv";
@@ -360,42 +331,6 @@ let ipopcnt : numerics =
       | vs -> error_values "ipopcnt" vs
       );
   }
-let ieqz : numerics =
-  {
-    name = "ieqz";
-    f =
-      (function
-      | [ NumV _; NumV (`Nat m) ] -> m = Z.zero |> al_of_bool
-      | vs -> error_values "ieqz" vs
-      );
-  }
-let inez : numerics =
-  {
-    name = "inez";
-    f =
-      (function
-      | [ NumV _; NumV (`Nat m) ] -> m <> Z.zero |> al_of_bool
-      | vs -> error_values "inez" vs
-      );
-  }
-let ieq : numerics =
-  {
-    name = "ieq";
-    f =
-      (function
-      | [ NumV _; NumV (`Nat m); NumV (`Nat n) ] -> Z.equal m n |> al_of_bool
-      | vs -> error_values "ieq" vs
-      );
-  }
-let ine : numerics =
-  {
-    name = "ine";
-    f =
-      (function
-      | [ NumV _; NumV (`Nat m); NumV (`Nat n) ] -> Z.equal m n |> not |> al_of_bool
-      | vs -> error_values "ine" vs
-      );
-  }
 let ilt : numerics =
   {
     name = "ilt";
@@ -422,32 +357,6 @@ let igt : numerics =
       | vs -> error_values "igt" vs
       );
   }
-let ile : numerics =
-  {
-    name = "ile";
-    f =
-      (function
-      | [ NumV _; CaseV ("U", []); NumV (`Nat m); NumV (`Nat n) ] -> m <= n |> al_of_bool
-      | [ NumV _ as z; CaseV ("S", []); NumV _ as m; NumV _ as n ] ->
-        let m = signed.f [ z; m ] |> al_to_z_int in
-        let n = signed.f [ z; n ] |> al_to_z_int in
-        m <= n |> al_of_bool
-      | vs -> error_values "ile" vs
-      );
-  }
-let ige : numerics =
-  {
-    name = "ige";
-    f =
-      (function
-      | [ NumV _; CaseV ("U", []); NumV (`Nat m); NumV (`Nat n) ] -> m >= n |> al_of_bool
-      | [ NumV _ as z; CaseV ("S", []); NumV _ as m; NumV _ as n ] ->
-        let m = signed.f [ z; m ] |> al_to_z_int in
-        let n = signed.f [ z; n ] |> al_to_z_int in
-        m >= n |> al_of_bool
-      | vs -> error_values "ige" vs
-      );
-  }
 let ibitselect : numerics =
   {
     name = "ibitselect";
@@ -468,24 +377,6 @@ let irelaxed_laneselect : numerics =
       | vs -> error_values "irelaxed_laneselect" vs
       );
   }
-let iabs : numerics =
-  {
-    name = "iabs";
-    f =
-      (function
-      | [ NumV _ as z; NumV _ as m ] -> signed.f [ z; m ] |> al_to_z_int |> Z.abs |> al_of_z_nat
-      | vs -> error_values "iabs" vs
-      );
-  }
-let ineg : numerics =
-  {
-    name = "ineg";
-    f =
-      (function
-      | [ NumV (`Nat z); NumV (`Nat m) ] -> Z.(logand (shift_left one (to_int z) - m) (maskN z)) |> al_of_z_nat
-      | vs -> error_values "ineg" vs
-      );
-  }
 let imin : numerics =
   {
     name = "imin";
@@ -504,34 +395,6 @@ let imax : numerics =
       | [ NumV _ as z; CaseV (_, []) as sx; NumV _ as m; NumV _ as n ] ->
         (if al_to_nat (igt.f [ z; sx; m; n ]) = 1 then m else n)
       | vs -> error_values "imax" vs
-      );
-  }
-let iadd_sat : numerics =
-  {
-    name = "iadd_sat";
-    f =
-      (function
-      | [ NumV _ as z; CaseV ("U", []); NumV (`Nat m); NumV (`Nat n) ] ->
-        sat.f [ z; nullary "U"; NumV (`Int Z.(add m n))]
-      | [ NumV _ as z; CaseV ("S", []); NumV (`Nat m); NumV (`Nat n) ] ->
-        let m = signed.f [ z; NumV (`Nat m) ] |> al_to_z_int in
-        let n = signed.f [ z; NumV (`Nat n) ] |> al_to_z_int in
-        sat.f [ z; nullary "S"; NumV (`Int Z.(add m n))]
-      | vs -> error_values "iadd_sat" vs
-      );
-  }
-let isub_sat : numerics =
-  {
-    name = "isub_sat";
-    f =
-      (function
-      | [ NumV _ as z; CaseV ("U", []); NumV (`Nat m); NumV (`Nat n) ] ->
-        sat.f [ z; nullary "U"; NumV (`Int Z.(sub m n))]
-      | [ NumV _ as z; CaseV ("S", []); NumV (`Nat m); NumV (`Nat n) ] ->
-        let m = signed.f [ z; NumV (`Nat m) ] |> al_to_z_int in
-        let n = signed.f [ z; NumV (`Nat n) ] |> al_to_z_int in
-        sat.f [ z; nullary "S"; NumV (`Int Z.(sub m n))]
-      | vs -> error_values "isub_sat" vs
       );
   }
 let iavgr : numerics =
@@ -1314,9 +1177,6 @@ let numerics_list : numerics list = [
   signed;
   inverse_of_signed;
   sat;
-  iadd;
-  isub;
-  imul;
   idiv;
   irem;
   inot;
@@ -1332,22 +1192,10 @@ let numerics_list : numerics list = [
   iclz;
   ictz;
   ipopcnt;
-  ieqz;
-  inez;
-  ieq;
-  ine;
-  ilt;
-  igt;
-  ile;
-  ige;
   ibitselect;
   irelaxed_laneselect;
-  iabs;
-  ineg;
   imin;
   imax;
-  iadd_sat;
-  isub_sat;
   iavgr;
   iq15mulr_sat;
   irelaxed_q15mulr;

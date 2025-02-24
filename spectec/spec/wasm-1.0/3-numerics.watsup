@@ -2,6 +2,13 @@
 ;; Numerics
 ;;
 
+;; Conversions
+
+def $bool(bool) : nat
+def $bool(false) = 0
+def $bool(true) = 1
+
+
 ;; Signed numbers
 
 def $signed_(N, nat) : int
@@ -60,12 +67,30 @@ def $iclz_(N, iN(N)) : iN(N)
 def $ictz_(N, iN(N)) : iN(N)
 def $ipopcnt_(N, iN(N)) : iN(N)
 def $ieqz_(N, iN(N)) : u32
+def $inez_(N, iN(N)) : u32
 def $ieq_(N, iN(N), iN(N)) : u32
 def $ine_(N, iN(N), iN(N)) : u32
 def $ilt_(N, sx, iN(N), iN(N)) : u32     hint(show $ilt_(%)^(%)#((%,%)))
 def $igt_(N, sx, iN(N), iN(N)) : u32     hint(show $igt_(%)^(%)#((%,%)))
 def $ile_(N, sx, iN(N), iN(N)) : u32     hint(show $ile_(%)^(%)#((%,%)))
 def $ige_(N, sx, iN(N), iN(N)) : u32     hint(show $ige_(%)^(%)#((%,%)))
+
+;; TODO(3, rossberg): implement numerics internally
+def $iadd_(N, i_1, i_2) = $((i_1 + i_2) \ 2^N)
+def $isub_(N, i_1, i_2) = $((2^N + i_1 - i_2) \ 2^N)
+def $imul_(N, i_1, i_2) = $((i_1 * i_2) \ 2^N)
+def $ieqz_(N, i_1) = $bool(i_1 = 0)
+def $inez_(N, i_1) = $bool(i_1 =/= 0)
+def $ieq_(N, i_1, i_2) = $bool(i_1 = i_2)
+def $ine_(N, i_1, i_2) = $bool(i_1 =/= i_2)
+def $ilt_(N, U, i_1, i_2) = $bool(i_1 < i_2)
+def $ilt_(N, S, i_1, i_2) = $bool($signed_(N, i_1) < $signed_(N, i_2))
+def $igt_(N, U, i_1, i_2) = $bool(i_1 > i_2)
+def $igt_(N, S, i_1, i_2) = $bool($signed_(N, i_1) > $signed_(N, i_2))
+def $ile_(N, U, i_1, i_2) = $bool(i_1 <= i_2)
+def $ile_(N, S, i_1, i_2) = $bool($signed_(N, i_1) <= $signed_(N, i_2))
+def $ige_(N, U, i_1, i_2) = $bool(i_1 >= i_2)
+def $ige_(N, S, i_1, i_2) = $bool($signed_(N, i_1) >= $signed_(N, i_2))
 
 def $fadd_(N, fN(N), fN(N)) : fN(N)*
 def $fsub_(N, fN(N), fN(N)) : fN(N)*

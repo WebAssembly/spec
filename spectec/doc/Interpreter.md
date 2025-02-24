@@ -68,6 +68,11 @@ Some validation algorithms are hardcoded in `src/backend-interpreter/manual.ml`.
 These implementations call the validation functions of the reference interpreter.
 Further efforts may be needed to make this validation independent.
 
+#### 3. Numerics Dependency
+Some numeric functions, such as `$fadd_`, are declared but not defined in the specification.
+For these functions, SpecTec's interpreter currently relies on the implementation from the reference interpreter.
+Our goal is to eventually implement these numeric functions directly within the specification.
+
 ### Formal Semantics of Prose
 
 TODO

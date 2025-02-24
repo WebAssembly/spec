@@ -1747,6 +1747,19 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 1. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{align}~0,\; \mathsf{offset}~0 \}\end{array}`.
 
 
+:math:`\mathbb{B}(b)`
+.....................
+
+
+1. If :math:`b` is false, then:
+
+   a. Return :math:`0`.
+
+#. Assert: Due to validation, :math:`b` is true.
+
+#. Return :math:`1`.
+
+
 :math:`{{\mathrm{signed}}}_{N}(i)`
 ..................................
 
@@ -1826,6 +1839,27 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Assert: Due to validation, :math:`{\mathit{unop}} = \mathsf{nearest}`.
 
 #. Return :math:`{{\mathrm{fnearest}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}})`.
+
+
+:math:`{{\mathrm{iadd}}}_{N}(i_1, i_2)`
+.......................................
+
+
+1. Return :math:`(i_1 + i_2) \mathbin{\mathrm{mod}} ({2^{N}})`.
+
+
+:math:`{{\mathrm{imul}}}_{N}(i_1, i_2)`
+.......................................
+
+
+1. Return :math:`i_1 \cdot i_2 \mathbin{\mathrm{mod}} ({2^{N}})`.
+
+
+:math:`{{\mathrm{isub}}}_{N}(i_1, i_2)`
+.......................................
+
+
+1. Return :math:`({2^{N}} + i_1 - i_2) \mathbin{\mathrm{mod}} ({2^{N}})`.
 
 
 :math:`{{\mathit{binop}}}{{}_{{\mathit{valtype}}}}{({\mathit{iN}}_{1'}, {\mathit{iN}}_{2'})}`
@@ -1931,11 +1965,84 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Return :math:`{{\mathrm{fcopysign}}}_{{|{\mathsf{f}}{n}|}}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
 
+:math:`{{\mathrm{ieqz}}}_{N}(i_1)`
+..................................
+
+
+1. Return :math:`\mathbb{B}(i_1 = 0)`.
+
+
 :math:`{\mathsf{eqz}}{{}_{{\mathsf{i}}{n}}}{({\mathit{iN}})}`
 .............................................................
 
 
 1. Return :math:`{{\mathrm{ieqz}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}})`.
+
+
+:math:`{{\mathrm{ieq}}}_{N}(i_1, i_2)`
+......................................
+
+
+1. Return :math:`\mathbb{B}(i_1 = i_2)`.
+
+
+:math:`{{{{\mathrm{ige}}}_{N}^{{\mathit{sx}}}}}{(i_1, i_2)}`
+............................................................
+
+
+1. If :math:`{\mathit{sx}} = \mathsf{u}`, then:
+
+   a. Return :math:`\mathbb{B}(i_1 \geq i_2)`.
+
+#. Assert: Due to validation, :math:`{\mathit{sx}} = \mathsf{s}`.
+
+#. Return :math:`\mathbb{B}({{\mathrm{signed}}}_{N}(i_1) \geq {{\mathrm{signed}}}_{N}(i_2))`.
+
+
+:math:`{{{{\mathrm{igt}}}_{N}^{{\mathit{sx}}}}}{(i_1, i_2)}`
+............................................................
+
+
+1. If :math:`{\mathit{sx}} = \mathsf{u}`, then:
+
+   a. Return :math:`\mathbb{B}(i_1 > i_2)`.
+
+#. Assert: Due to validation, :math:`{\mathit{sx}} = \mathsf{s}`.
+
+#. Return :math:`\mathbb{B}({{\mathrm{signed}}}_{N}(i_1) > {{\mathrm{signed}}}_{N}(i_2))`.
+
+
+:math:`{{{{\mathrm{ile}}}_{N}^{{\mathit{sx}}}}}{(i_1, i_2)}`
+............................................................
+
+
+1. If :math:`{\mathit{sx}} = \mathsf{u}`, then:
+
+   a. Return :math:`\mathbb{B}(i_1 \leq i_2)`.
+
+#. Assert: Due to validation, :math:`{\mathit{sx}} = \mathsf{s}`.
+
+#. Return :math:`\mathbb{B}({{\mathrm{signed}}}_{N}(i_1) \leq {{\mathrm{signed}}}_{N}(i_2))`.
+
+
+:math:`{{{{\mathrm{ilt}}}_{N}^{{\mathit{sx}}}}}{(i_1, i_2)}`
+............................................................
+
+
+1. If :math:`{\mathit{sx}} = \mathsf{u}`, then:
+
+   a. Return :math:`\mathbb{B}(i_1 < i_2)`.
+
+#. Assert: Due to validation, :math:`{\mathit{sx}} = \mathsf{s}`.
+
+#. Return :math:`\mathbb{B}({{\mathrm{signed}}}_{N}(i_1) < {{\mathrm{signed}}}_{N}(i_2))`.
+
+
+:math:`{{\mathrm{ine}}}_{N}(i_1, i_2)`
+......................................
+
+
+1. Return :math:`\mathbb{B}(i_1 \neq i_2)`.
 
 
 :math:`{{\mathit{relop}}}{{}_{{\mathit{valtype}}}}{({\mathit{iN}}_{1'}, {\mathit{iN}}_{2'})}`
@@ -2110,6 +2217,13 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 1. Let :math:`p` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{f}}{N}}(p)` :math:`=` :math:`{b^\ast}`.
 
 #. Return :math:`p`.
+
+
+:math:`{{\mathrm{inez}}}_{N}(i_1)`
+..................................
+
+
+1. Return :math:`\mathbb{B}(i_1 \neq 0)`.
 
 
 :math:`{{\mathrm{default}}}_{{\mathit{valtype}}}`
@@ -3699,6 +3813,12 @@ memsxt externtype'*
 memarg0
 1. Return { ALIGN: 0; OFFSET: 0 }.
 
+bool b
+1. If (b = false), then:
+  a. Return 0.
+2. Assert: Due to validation, (b = true).
+3. Return 1.
+
 signed_ N i
 1. If (i < (2 ^ (N - 1))), then:
   a. Return i.
@@ -3737,6 +3857,15 @@ unop_ valtype unop_ iN'
   a. Return $ftrunc_($size(Fnn), fN).
 11. Assert: Due to validation, (unop_ = NEAREST).
 12. Return $fnearest_($size(Fnn), fN).
+
+iadd_ N i_1 i_2
+1. Return ((i_1 + i_2) \ (2 ^ N)).
+
+imul_ N i_1 i_2
+1. Return ((i_1 * i_2) \ (2 ^ N)).
+
+isub_ N i_1 i_2
+1. Return ((((2 ^ N) + i_1) - i_2) \ (2 ^ N)).
 
 binop_ valtype binop_ iN_1' iN_2'
 1. If valtype is Inn, then:
@@ -3789,8 +3918,41 @@ binop_ valtype binop_ iN_1' iN_2'
 12. Assert: Due to validation, (binop_ = COPYSIGN).
 13. Return $fcopysign_($size(Fnn), fN_1, fN_2).
 
+ieqz_ N i_1
+1. Return $bool((i_1 = 0)).
+
 testop_ Inn EQZ iN
 1. Return $ieqz_($size(Inn), iN).
+
+ieq_ N i_1 i_2
+1. Return $bool((i_1 = i_2)).
+
+ige_ N sx i_1 i_2
+1. If (sx = U), then:
+  a. Return $bool((i_1 >= i_2)).
+2. Assert: Due to validation, (sx = S).
+3. Return $bool(($signed_(N, i_1) >= $signed_(N, i_2))).
+
+igt_ N sx i_1 i_2
+1. If (sx = U), then:
+  a. Return $bool((i_1 > i_2)).
+2. Assert: Due to validation, (sx = S).
+3. Return $bool(($signed_(N, i_1) > $signed_(N, i_2))).
+
+ile_ N sx i_1 i_2
+1. If (sx = U), then:
+  a. Return $bool((i_1 <= i_2)).
+2. Assert: Due to validation, (sx = S).
+3. Return $bool(($signed_(N, i_1) <= $signed_(N, i_2))).
+
+ilt_ N sx i_1 i_2
+1. If (sx = U), then:
+  a. Return $bool((i_1 < i_2)).
+2. Assert: Due to validation, (sx = S).
+3. Return $bool(($signed_(N, i_1) < $signed_(N, i_2))).
+
+ine_ N i_1 i_2
+1. Return $bool((i_1 =/= i_2)).
 
 relop_ valtype relop_ iN_1' iN_2'
 1. If valtype is Inn, then:
@@ -3876,6 +4038,9 @@ invibytes_ N b*
 invfbytes_ N b*
 1. Let p be $fbytes__1^-1(N, b*).
 2. Return p.
+
+inez_ N i_1
+1. Return $bool((i_1 =/= 0)).
 
 default_ valtype
 1. If (valtype = I32), then:
@@ -7820,6 +7985,19 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 1. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{align}~0,\; \mathsf{offset}~0 \}\end{array}`.
 
 
+:math:`\mathbb{B}(b)`
+.....................
+
+
+1. If :math:`b` is false, then:
+
+   a. Return :math:`0`.
+
+#. Assert: Due to validation, :math:`b` is true.
+
+#. Return :math:`1`.
+
+
 :math:`{{\mathrm{signed}}}_{N}(i)`
 ..................................
 
@@ -7842,6 +8020,36 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 1. Let :math:`j` be the result for which :math:`{{\mathrm{signed}}}_{N}(j)` :math:`=` :math:`i`.
 
 #. Return :math:`j`.
+
+
+:math:`{{\mathrm{sat\_u}}}_{N}(i)`
+..................................
+
+
+1. If :math:`i < 0`, then:
+
+   a. Return :math:`0`.
+
+#. If :math:`i > {2^{N}} - 1`, then:
+
+   a. Return :math:`{2^{N}} - 1`.
+
+#. Return :math:`i`.
+
+
+:math:`{{\mathrm{sat\_s}}}_{N}(i)`
+..................................
+
+
+1. If :math:`i < {-{2^{N - 1}}}`, then:
+
+   a. Return :math:`{-{2^{N - 1}}}`.
+
+#. If :math:`i > {2^{N - 1}} - 1`, then:
+
+   a. Return :math:`{2^{N - 1}} - 1`.
+
+#. Return :math:`i`.
 
 
 :math:`{{\mathit{unop}}}{{}_{{\mathit{numtype}}}}{({\mathit{iN}'})}`
@@ -7905,6 +8113,27 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Assert: Due to validation, :math:`{\mathit{unop}} = \mathsf{nearest}`.
 
 #. Return :math:`{{\mathrm{fnearest}}}_{N}({\mathit{fN}})`.
+
+
+:math:`{{\mathrm{iadd}}}_{N}(i_1, i_2)`
+.......................................
+
+
+1. Return :math:`(i_1 + i_2) \mathbin{\mathrm{mod}} ({2^{N}})`.
+
+
+:math:`{{\mathrm{imul}}}_{N}(i_1, i_2)`
+.......................................
+
+
+1. Return :math:`i_1 \cdot i_2 \mathbin{\mathrm{mod}} ({2^{N}})`.
+
+
+:math:`{{\mathrm{isub}}}_{N}(i_1, i_2)`
+.......................................
+
+
+1. Return :math:`({2^{N}} + i_1 - i_2) \mathbin{\mathrm{mod}} ({2^{N}})`.
 
 
 :math:`{{\mathit{binop}}}{{}_{{\mathit{numtype}}}}{({\mathit{iN}}_{1'}, {\mathit{iN}}_{2'})}`
@@ -8010,11 +8239,84 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Return :math:`{{\mathrm{fcopysign}}}_{N}({\mathit{fN}}_1, {\mathit{fN}}_2)`.
 
 
+:math:`{{\mathrm{ieqz}}}_{N}(i_1)`
+..................................
+
+
+1. Return :math:`\mathbb{B}(i_1 = 0)`.
+
+
 :math:`{\mathsf{eqz}}{{}_{{\mathsf{i}}{n}}}{({\mathit{iN}})}`
 .............................................................
 
 
 1. Return :math:`{{\mathrm{ieqz}}}_{N}({\mathit{iN}})`.
+
+
+:math:`{{\mathrm{ieq}}}_{N}(i_1, i_2)`
+......................................
+
+
+1. Return :math:`\mathbb{B}(i_1 = i_2)`.
+
+
+:math:`{{{{\mathrm{ige}}}_{N}^{{\mathit{sx}}}}}{(i_1, i_2)}`
+............................................................
+
+
+1. If :math:`{\mathit{sx}} = \mathsf{u}`, then:
+
+   a. Return :math:`\mathbb{B}(i_1 \geq i_2)`.
+
+#. Assert: Due to validation, :math:`{\mathit{sx}} = \mathsf{s}`.
+
+#. Return :math:`\mathbb{B}({{\mathrm{signed}}}_{N}(i_1) \geq {{\mathrm{signed}}}_{N}(i_2))`.
+
+
+:math:`{{{{\mathrm{igt}}}_{N}^{{\mathit{sx}}}}}{(i_1, i_2)}`
+............................................................
+
+
+1. If :math:`{\mathit{sx}} = \mathsf{u}`, then:
+
+   a. Return :math:`\mathbb{B}(i_1 > i_2)`.
+
+#. Assert: Due to validation, :math:`{\mathit{sx}} = \mathsf{s}`.
+
+#. Return :math:`\mathbb{B}({{\mathrm{signed}}}_{N}(i_1) > {{\mathrm{signed}}}_{N}(i_2))`.
+
+
+:math:`{{{{\mathrm{ile}}}_{N}^{{\mathit{sx}}}}}{(i_1, i_2)}`
+............................................................
+
+
+1. If :math:`{\mathit{sx}} = \mathsf{u}`, then:
+
+   a. Return :math:`\mathbb{B}(i_1 \leq i_2)`.
+
+#. Assert: Due to validation, :math:`{\mathit{sx}} = \mathsf{s}`.
+
+#. Return :math:`\mathbb{B}({{\mathrm{signed}}}_{N}(i_1) \leq {{\mathrm{signed}}}_{N}(i_2))`.
+
+
+:math:`{{{{\mathrm{ilt}}}_{N}^{{\mathit{sx}}}}}{(i_1, i_2)}`
+............................................................
+
+
+1. If :math:`{\mathit{sx}} = \mathsf{u}`, then:
+
+   a. Return :math:`\mathbb{B}(i_1 < i_2)`.
+
+#. Assert: Due to validation, :math:`{\mathit{sx}} = \mathsf{s}`.
+
+#. Return :math:`\mathbb{B}({{\mathrm{signed}}}_{N}(i_1) < {{\mathrm{signed}}}_{N}(i_2))`.
+
+
+:math:`{{\mathrm{ine}}}_{N}(i_1, i_2)`
+......................................
+
+
+1. Return :math:`\mathbb{B}(i_1 \neq i_2)`.
 
 
 :math:`{{\mathit{relop}}}{{}_{{\mathit{numtype}}}}{({\mathit{iN}}_{1'}, {\mathit{iN}}_{2'})}`
@@ -8225,6 +8527,57 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 1. Let :math:`p` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{f}}{N}}(p)` :math:`=` :math:`{b^\ast}`.
 
 #. Return :math:`p`.
+
+
+:math:`{{\mathrm{inez}}}_{N}(i_1)`
+..................................
+
+
+1. Return :math:`\mathbb{B}(i_1 \neq 0)`.
+
+
+:math:`{{\mathrm{ineg}}}_{N}(i_1)`
+..................................
+
+
+1. Return :math:`{{{{\mathrm{signed}}}_{N}^{{-1}}}}{({-{{\mathrm{signed}}}_{N}(i_1)})}`.
+
+
+:math:`{{\mathrm{iabs}}}_{N}(i_1)`
+..................................
+
+
+1. If :math:`{{\mathrm{signed}}}_{N}(i_1) \geq 0`, then:
+
+   a. Return :math:`i_1`.
+
+#. Return :math:`{{\mathrm{ineg}}}_{N}(i_1)`.
+
+
+:math:`{{{{\mathrm{iadd\_sat}}}_{N}^{{\mathit{sx}}}}}{(i_1, i_2)}`
+..................................................................
+
+
+1. If :math:`{\mathit{sx}} = \mathsf{u}`, then:
+
+   a. Return :math:`{{\mathrm{sat\_u}}}_{N}(i_1 + i_2)`.
+
+#. Assert: Due to validation, :math:`{\mathit{sx}} = \mathsf{s}`.
+
+#. Return :math:`{{{{\mathrm{signed}}}_{N}^{{-1}}}}{({{\mathrm{sat\_s}}}_{N}({{\mathrm{signed}}}_{N}(i_1) + {{\mathrm{signed}}}_{N}(i_2)))}`.
+
+
+:math:`{{{{\mathrm{isub\_sat}}}_{N}^{{\mathit{sx}}}}}{(i_1, i_2)}`
+..................................................................
+
+
+1. If :math:`{\mathit{sx}} = \mathsf{u}`, then:
+
+   a. Return :math:`{{\mathrm{sat\_u}}}_{N}(i_1 - i_2)`.
+
+#. Assert: Due to validation, :math:`{\mathit{sx}} = \mathsf{s}`.
+
+#. Return :math:`{{{{\mathrm{signed}}}_{N}^{{-1}}}}{({{\mathrm{sat\_s}}}_{N}({{\mathrm{signed}}}_{N}(i_1) - {{\mathrm{signed}}}_{N}(i_2)))}`.
 
 
 :math:`{{\mathrm{pack}}}_{{\mathit{lanetype}}}(c)`
@@ -11594,6 +11947,12 @@ dataidx_funcs func''*
 memarg0
 1. Return { ALIGN: 0; OFFSET: 0 }.
 
+bool b
+1. If (b = false), then:
+  a. Return 0.
+2. Assert: Due to validation, (b = true).
+3. Return 1.
+
 signed_ N i
 1. If (i < (2 ^ (N - 1))), then:
   a. Return i.
@@ -11604,6 +11963,20 @@ signed_ N i
 invsigned_ N i
 1. Let j be $signed__1^-1(N, i).
 2. Return j.
+
+sat_u_ N i
+1. If (i < 0), then:
+  a. Return 0.
+2. If (i > ((2 ^ N) - 1)), then:
+  a. Return ((2 ^ N) - 1).
+3. Return i.
+
+sat_s_ N i
+1. If (i < (- (2 ^ (N - 1)))), then:
+  a. Return (- (2 ^ (N - 1))).
+2. If (i > ((2 ^ (N - 1)) - 1)), then:
+  a. Return ((2 ^ (N - 1)) - 1).
+3. Return i.
 
 unop_ numtype unop_ iN'
 1. If numtype is Inn, then:
@@ -11635,6 +12008,15 @@ unop_ numtype unop_ iN'
   a. Return $ftrunc_($sizenn(Fnn), fN).
 11. Assert: Due to validation, (unop_ = NEAREST).
 12. Return $fnearest_($sizenn(Fnn), fN).
+
+iadd_ N i_1 i_2
+1. Return ((i_1 + i_2) \ (2 ^ N)).
+
+imul_ N i_1 i_2
+1. Return ((i_1 * i_2) \ (2 ^ N)).
+
+isub_ N i_1 i_2
+1. Return ((((2 ^ N) + i_1) - i_2) \ (2 ^ N)).
 
 binop_ numtype binop_ iN_1' iN_2'
 1. If numtype is Inn, then:
@@ -11687,8 +12069,41 @@ binop_ numtype binop_ iN_1' iN_2'
 12. Assert: Due to validation, (binop_ = COPYSIGN).
 13. Return $fcopysign_($sizenn(Fnn), fN_1, fN_2).
 
+ieqz_ N i_1
+1. Return $bool((i_1 = 0)).
+
 testop_ Inn EQZ iN
 1. Return $ieqz_($sizenn(Inn), iN).
+
+ieq_ N i_1 i_2
+1. Return $bool((i_1 = i_2)).
+
+ige_ N sx i_1 i_2
+1. If (sx = U), then:
+  a. Return $bool((i_1 >= i_2)).
+2. Assert: Due to validation, (sx = S).
+3. Return $bool(($signed_(N, i_1) >= $signed_(N, i_2))).
+
+igt_ N sx i_1 i_2
+1. If (sx = U), then:
+  a. Return $bool((i_1 > i_2)).
+2. Assert: Due to validation, (sx = S).
+3. Return $bool(($signed_(N, i_1) > $signed_(N, i_2))).
+
+ile_ N sx i_1 i_2
+1. If (sx = U), then:
+  a. Return $bool((i_1 <= i_2)).
+2. Assert: Due to validation, (sx = S).
+3. Return $bool(($signed_(N, i_1) <= $signed_(N, i_2))).
+
+ilt_ N sx i_1 i_2
+1. If (sx = U), then:
+  a. Return $bool((i_1 < i_2)).
+2. Assert: Due to validation, (sx = S).
+3. Return $bool(($signed_(N, i_1) < $signed_(N, i_2))).
+
+ine_ N i_1 i_2
+1. Return $bool((i_1 =/= i_2)).
 
 relop_ numtype relop_ iN_1' iN_2'
 1. If numtype is Inn, then:
@@ -11792,6 +12207,29 @@ invibytes_ N b*
 invfbytes_ N b*
 1. Let p be $fbytes__1^-1(N, b*).
 2. Return p.
+
+inez_ N i_1
+1. Return $bool((i_1 =/= 0)).
+
+ineg_ N i_1
+1. Return $invsigned_(N, (- $signed_(N, i_1))).
+
+iabs_ N i_1
+1. If ($signed_(N, i_1) >= 0), then:
+  a. Return i_1.
+2. Return $ineg_(N, i_1).
+
+iadd_sat_ N sx i_1 i_2
+1. If (sx = U), then:
+  a. Return $sat_u_(N, (i_1 + i_2)).
+2. Assert: Due to validation, (sx = S).
+3. Return $invsigned_(N, $sat_s_(N, ($signed_(N, i_1) + $signed_(N, i_2)))).
+
+isub_sat_ N sx i_1 i_2
+1. If (sx = U), then:
+  a. Return $sat_u_(N, (i_1 - i_2)).
+2. Assert: Due to validation, (sx = S).
+3. Return $invsigned_(N, $sat_s_(N, ($signed_(N, i_1) - $signed_(N, i_2)))).
 
 packnum_ lanetype c
 1. If lanetype is numtype, then:
