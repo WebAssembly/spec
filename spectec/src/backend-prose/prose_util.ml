@@ -1,5 +1,130 @@
 open Util.Source
+open Printf
 
+(* Errors *)
+
+let error at msg = Util.Error.error at "prose rendering" msg
+
+(* Environment *)
+
+module Map = Map.Make(String)
+type hints = (El.Ast.exp option * El.Ast.exp list) Map.t   (* exact match and partial matches*)
+
+let map_update ?(partial = false) x y map =
+  if partial then
+    map := Map.update x
+      (function
+      | None -> Some (None, [y])
+      | Some (y', l) -> Some (y', y :: l)
+      ) !map
+  else
+    map := Map.update x
+      (function
+      | None -> Some (Some y, [])
+      | Some (None, l) -> Some (Some y, l)
+      | Some (Some y', l) ->
+        if El.Eq.eq_exp y y' then
+          Some (Some y', l)
+        else
+          let msg = sprintf "multiple prose hints for %s: %s, %s"
+            x (El.Print.string_of_exp y) (El.Print.string_of_exp y') in
+          error no_region msg
+      ) !map
+
+type hintenv = 
+  {
+    prose_hints : hints ref;
+    desc_hints : hints ref;
+  }
+
+let hintenv = 
+  {
+    prose_hints = ref Map.empty;
+    desc_hints = ref Map.empty;
+  }
+
+(* Collect hints *)
+
+let env_hints ?(partial = false) name map id hints =
+  let open El.Ast in
+  List.iter (fun {hintid; hintexp} ->
+    if hintid.it = name then (
+      (* print_endline (sprintf "prose hint for %s found: %s" id.it (El.Print.string_of_exp hintexp)); *)
+      map_update id.it hintexp map ~partial
+    )
+  ) hints
+
+let env_hintdef ?(partial = false) hd =
+  match hd.it with
+  | El.Ast.VarH (id, hints) ->
+    env_hints "desc" hintenv.desc_hints id hints ~partial;
+    env_hints "prose" hintenv.prose_hints id hints;
+  | El.Ast.TypH (id1, id2, hints) ->
+    let id = if id2.it = "" then id1 else (id1.it ^ "/" ^ id2.it) $ id2.at in
+    env_hints "desc" hintenv.desc_hints id hints;
+  | El.Ast.GramH (id1, id2, hints) ->
+    let id = if id2.it = "" then id1 else (id1.it ^ "/" ^ id2.it) $ id2.at in
+    env_hints "desc" hintenv.desc_hints id hints;
+  | El.Ast.RelH (id, hints) ->
+    env_hints "prose" hintenv.prose_hints id hints
+  | _ -> ()
+
+let env_typ id t =
+  let open El.Ast in
+  match t.it with
+  | El.Ast.StrT l ->
+    List.iter (function
+    | Nl -> ()
+    | Elem (atom, _, hints) ->
+      let id = sprintf "%s.%s" (Xl.Atom.to_string atom) id.it  $ no_region in
+      env_hints "desc" hintenv.desc_hints id hints;
+      env_hints "prose" hintenv.prose_hints id hints;
+    ) l
+  | El.Ast.CaseT (_, _, l, _) ->
+    List.iter (function
+    | Nl -> ()
+    | Elem (atom, _, hints) ->
+      let id = sprintf "%s.%s" (Xl.Atom.to_string atom) id.it  $ no_region in
+      env_hints "desc" hintenv.desc_hints id hints;
+      env_hints "prose" hintenv.prose_hints id hints;
+    ) l
+  | El.Ast.ConT (_, hints) ->
+    env_hints "desc" hintenv.desc_hints id hints;
+    env_hints "prose" hintenv.prose_hints id hints;
+  | _ -> ()
+
+let env_def d =
+  let open El.Ast in
+  match d.it with
+  | FamD (id, _ps, hints) ->
+    env_hintdef (TypH (id, "" $ id.at, hints) $ d.at);
+    env_hintdef (VarH (id, hints) $ d.at);
+  | TypD (id1, id2, _args, t, hints) ->
+    if id2.it = "" then
+      env_hintdef (VarH (id1, hints) $ d.at)
+    else
+      env_hintdef (TypH (id1, id2, hints) $ d.at);
+      env_hintdef (VarH (id1, hints) $ d.at) ~partial:true;
+    env_typ id1 t;
+  | GramD (id1, id2, _ps, t, _gram, hints) ->
+    env_hintdef (GramH (id1, id2, hints) $ d.at);
+    env_typ id1 t;
+  | RelD (id, t, hints) ->
+    env_hintdef (RelH (id, hints) $ d.at);
+    env_typ id t;
+  | VarD (id, t, hints) ->
+    env_hintdef (VarH (id, hints) $ d.at);
+    env_typ id t;
+  | DecD (id, _as, _e, hints) ->
+    env_hintdef (DecH (id, hints) $ d.at);
+  | HintD hd ->
+    env_hintdef hd;
+  | RuleD _ | DefD _ | SepD -> ()
+
+let init_hintenv script =
+  List.iter env_def script
+
+(* Helpers *)
 
 let find_relation name =
   let open El.Ast in
@@ -9,26 +134,22 @@ let find_relation name =
   | _ -> false
   ) !Langs.el
 
-let extract_desc_hint = List.find_map (function
-  | El.Ast.{ hintid = id; hintexp = { it = TextE desc; _ } }
-    when id.it = "desc" -> Some desc
-  | _ -> None)
-
 let rec extract_desc typ = match typ.it with
   | Il.Ast.IterT (typ, Opt) -> extract_desc typ
   | Il.Ast.IterT (typ, _) -> [extract_desc typ; "sequence"] |> String.concat " "
   | Il.Ast.VarT _ ->
     let name = Il.Print.string_of_typ typ in
-    (match !Langs.el |> List.find_map (fun def ->
-      match def.it with
-      | El.Ast.TypD (id, subid, _, _, hints)
-      | El.Ast.HintD {it = TypH (id, subid, hints); _}
-        when id.it = name && (List.mem subid.it [""; "syn"]) ->
-        extract_desc_hint hints
-      | _ -> None)
-    with
-    | Some desc -> desc
-    | None -> "")
+    (match Map.find_opt name !(hintenv.desc_hints) with
+    | Some (Some { it = TextE desc; _ }, _) -> desc
+    | Some (None, l) ->
+      let match_texte e = match e.it with
+        | El.Ast.TextE desc -> Some desc
+        | _ -> None
+      in
+      (match List.find_map match_texte l with
+      | Some desc -> desc
+      | None -> "")
+    | _ -> "")
   | _ -> ""
 
 let rec alternate xs ys =

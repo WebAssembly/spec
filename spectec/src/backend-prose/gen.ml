@@ -688,6 +688,8 @@ let gen_prose el il al =
 
   let validation_prose = gen_validation_prose () in
   let execution_prose = gen_execution_prose () in
+  
+  Prose_util.init_hintenv !Langs.el;
 
   validation_prose @ execution_prose
   |> postprocess_prose
