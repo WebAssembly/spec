@@ -1802,7 +1802,7 @@ Memory Instructions
 
 * The lane index :math:`\laneidx` must be smaller than :math:`128/N`.
 
-* Then the instruction is valid with type :math:`[\X{at}~\V128] \to [\V128]`.
+* Then the instruction is valid with type :math:`[\X{at}~\V128] \to []`.
 
 .. math::
    \frac{
