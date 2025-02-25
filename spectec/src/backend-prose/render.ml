@@ -87,13 +87,9 @@ let try_inject_link env s link =
   else None
 
 let type_with_link env e =
-  let typ, iter = match e.note.it with
-  | Il.Ast.IterT (typ, Il.Ast.Opt) -> typ, ""
-  | Il.Ast.IterT (typ, Il.Ast.List) -> typ, " sequence"
-  | _ -> e.note, "" in
-  let s = Prose_util.extract_desc typ in
-  let typ_name = Il.Print.string_of_typ typ in
-  let* ref = try_inject_link env s ("syntax-" ^ typ_name) in
+  let* desc, iter = Prose_util.extract_desc e in
+  let typ_name = Il.Print.string_of_typ e.note in
+  let* ref = try_inject_link env desc ("syntax-" ^ typ_name) in
   Some (ref ^ iter)
 
 let valid_link env e =
@@ -139,11 +135,6 @@ let al_invcalle_to_al_bine e id nl al =
     | _ -> Al.Al_util.tupE erhs ~note:Al.Al_util.no_note)
   in
   elhs, erhs
-
-let render_type_desc f t =
-  match Prose_util.extract_desc t with
-  | "" -> f t
-  | desc -> desc
 
 (* Translation from Al exp to El exp *)
 
@@ -778,7 +769,10 @@ and render_expr' env expr =
     sprintf "%s is some %s" se sa
   | Al.Ast.HasTypeE (e, t) ->
     let se = render_expr env e in
-    let st = render_type_desc (render_typ env) t in
+    let te = Al.Ast.VarE "" $$ no_region % t in
+    let st = match Prose_util.extract_desc te with
+    | None -> render_typ env t
+    | Some (desc, seq) -> desc ^ seq in
     sprintf "%s is %s" se st
   | Al.Ast.IsValidE e ->
     let typ_name = Il.Print.string_of_typ_name e.note in
@@ -797,8 +791,9 @@ and render_expr' env expr =
         sprintf "a value of %s %s" vtref se
       | Some vtref -> sprintf "a %s" vtref
       | None ->
-        let desc_hint = Prose_util.extract_desc e.note in
-        let desc_hint = if desc_hint = "" then "value type" else desc_hint in
+        let desc_hint = match Prose_util.extract_desc e with
+        | None -> "value type"
+        | Some (desc, seq) -> desc ^ seq in
         let first_letter = Char.lowercase_ascii (String.get desc_hint 0) in
         let article =
           if List.mem first_letter ['a'; 'e'; 'i'; 'o'; 'u'] then
@@ -848,13 +843,12 @@ let typs = ref Map.empty
 let init_typs () = typs := Map.empty
 let render_expr_with_type env e =
   let s = render_expr env e in
-  let t = Prose_util.extract_desc e.note in
-  if t = "" then
-    render_expr env e
-  else
+  match Prose_util.extract_desc e with
+  | None -> render_expr env e
+  | Some (desc, seq) ->
     let lt = match type_with_link env e with
     | Some lt -> lt
-    | None -> t
+    | None -> desc ^ seq
     in
     "the " ^ lt ^ " " ^ s
 
