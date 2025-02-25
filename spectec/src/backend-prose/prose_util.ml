@@ -176,9 +176,9 @@ let extract_desc expr =
     match expr.it with
     | Al.Ast.AccE (e', { it = IdxP _ ; _ }) ->
       (match e'.it with
-      | Al.Ast.AccE (e'', { it = DotP atom; _ })
-        when Il.Print.string_of_typ e''.note = "context" ->
-        let* desc, st = find_desc_hint ("context." ^ Xl.Atom.to_string atom) in
+      | Al.Ast.AccE (e'', { it = DotP atom; _ }) ->
+        let name = Il.Print.string_of_typ e''.note ^ "." ^ Xl.Atom.to_string atom in
+        let* desc, st = find_desc_hint name in
         if (st = 0) then None
         else Some (desc, repeat (st-1) " sequence")
       | _ -> None
