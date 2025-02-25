@@ -13132,9 +13132,9 @@ The type use :math:`{\mathit{typeuse}}` is :ref:`valid <valid-val>` if:
 
       * The type use :math:`{\mathit{typeuse}}` is of the form :math:`{\mathit{typeidx}}`.
 
-      * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
+      * The type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
 
-      * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is of the form :math:`{\mathit{dt}}`.
+      * The type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is of the form :math:`{\mathit{dt}}`.
 
    * Or:
 
@@ -13145,9 +13145,9 @@ The type use :math:`{\mathit{typeuse}}` is :ref:`valid <valid-val>` if:
 
       * The type use :math:`{\mathit{typeuse}}` is of the form :math:`(\mathsf{rec}~i)`.
 
-      * The sub type :math:`C{.}\mathsf{recs}{}[i]` exists.
+      * The recursive type :math:`C{.}\mathsf{recs}{}[i]` exists.
 
-      * The sub type :math:`C{.}\mathsf{recs}{}[i]` is of the form :math:`{\mathit{st}}`.
+      * The recursive type :math:`C{.}\mathsf{recs}{}[i]` is of the form :math:`{\mathit{st}}`.
 
 
 
@@ -13155,9 +13155,9 @@ The type use :math:`{\mathit{typeuse}}` is :ref:`valid <valid-val>` if:
 The type use :math:`{\mathit{typeidx}}` is :ref:`valid <valid-val>` if:
 
 
-   * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
+   * The type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
 
-   * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is of the form :math:`{\mathit{dt}}`.
+   * The type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is of the form :math:`{\mathit{dt}}`.
 
 
 
@@ -13173,9 +13173,9 @@ The type use :math:`{\mathit{deftype}}` is :ref:`valid <valid-val>` if:
 The type use :math:`(\mathsf{rec}~i)` is :ref:`valid <valid-val>` if:
 
 
-   * The sub type :math:`C{.}\mathsf{recs}{}[i]` exists.
+   * The recursive type :math:`C{.}\mathsf{recs}{}[i]` exists.
 
-   * The sub type :math:`C{.}\mathsf{recs}{}[i]` is of the form :math:`{\mathit{st}}`.
+   * The recursive type :math:`C{.}\mathsf{recs}{}[i]` is of the form :math:`{\mathit{st}}`.
 
 
 
@@ -13308,7 +13308,7 @@ The sub type :math:`(\mathsf{sub}~{\mathsf{final}^?}~{x^\ast}~{\mathit{comptype}
 
    * For all :math:`x` in :math:`{x^\ast}`:
 
-      * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
+      * The type :math:`C{.}\mathsf{types}{}[x]` exists.
 
    * For all :math:`{\mathit{comptype}'}` in :math:`{{\mathit{comptype}'}^\ast}`, and corresponding :math:`x` in :math:`{x^\ast}`, and corresponding :math:`{{x'}^\ast}` in :math:`{{{x'}^\ast}^\ast}`:
 
@@ -13600,18 +13600,18 @@ The heap type :math:`{\mathit{heaptype}''}` :ref:`matches <match>` the heap type
 
       * The heap type :math:`{\mathit{heaptype}'''}` is of the form :math:`{\mathit{heaptype}}`.
 
-      * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
+      * The type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
 
-      * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` :ref:`matches <match>` the heap type :math:`{\mathit{heaptype}}`.
+      * The type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` :ref:`matches <match>` the heap type :math:`{\mathit{heaptype}}`.
    * Or:
 
       * The heap type :math:`{\mathit{heaptype}''}` is of the form :math:`{\mathit{heaptype}}`.
 
       * The heap type :math:`{\mathit{heaptype}'''}` is of the form :math:`{\mathit{typeidx}}`.
 
-      * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
+      * The type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
 
-      * The heap type :math:`{\mathit{heaptype}}` :ref:`matches <match>` the defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]`.
+      * The heap type :math:`{\mathit{heaptype}}` :ref:`matches <match>` the type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]`.
    * Or:
 
       * The heap type :math:`{\mathit{heaptype}''}` is of the form :math:`(\mathsf{rec}~i)`.
@@ -13620,9 +13620,9 @@ The heap type :math:`{\mathit{heaptype}''}` :ref:`matches <match>` the heap type
 
       * The length of :math:`{{\mathit{typeuse}}^\ast}` is greater than :math:`j`.
 
-      * The sub type :math:`C{.}\mathsf{recs}{}[i]` exists.
+      * The recursive type :math:`C{.}\mathsf{recs}{}[i]` exists.
 
-      * The sub type :math:`C{.}\mathsf{recs}{}[i]` is of the form :math:`(\mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~{\mathit{ct}})`.
+      * The recursive type :math:`C{.}\mathsf{recs}{}[i]` is of the form :math:`(\mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~{\mathit{ct}})`.
    * Or:
 
       * The heap type :math:`{\mathit{heaptype}''}` is of the form :math:`\mathsf{none}`.
@@ -13725,9 +13725,9 @@ The heap type :math:`{\mathit{deftype}}_1` :ref:`matches <match>` the heap type 
 The heap type :math:`{\mathit{typeidx}}` :ref:`matches <match>` the heap type :math:`{\mathit{heaptype}}` if:
 
 
-   * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
+   * The type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
 
-   * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` :ref:`matches <match>` the heap type :math:`{\mathit{heaptype}}`.
+   * The type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` :ref:`matches <match>` the heap type :math:`{\mathit{heaptype}}`.
 
 
 
@@ -13735,9 +13735,9 @@ The heap type :math:`{\mathit{typeidx}}` :ref:`matches <match>` the heap type :m
 The heap type :math:`{\mathit{heaptype}}` :ref:`matches <match>` the heap type :math:`{\mathit{typeidx}}` if:
 
 
-   * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
+   * The type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
 
-   * The heap type :math:`{\mathit{heaptype}}` :ref:`matches <match>` the defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]`.
+   * The heap type :math:`{\mathit{heaptype}}` :ref:`matches <match>` the type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]`.
 
 
 
@@ -13747,9 +13747,9 @@ The heap type :math:`(\mathsf{rec}~i)` :ref:`matches <match>` the type use :math
 
    * The length of :math:`{{\mathit{typeuse}}^\ast}` is greater than :math:`j`.
 
-   * The sub type :math:`C{.}\mathsf{recs}{}[i]` exists.
+   * The recursive type :math:`C{.}\mathsf{recs}{}[i]` exists.
 
-   * The sub type :math:`C{.}\mathsf{recs}{}[i]` is of the form :math:`(\mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~{\mathit{ct}})`.
+   * The recursive type :math:`C{.}\mathsf{recs}{}[i]` is of the form :math:`(\mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~{\mathit{ct}})`.
 
 
 
@@ -14337,9 +14337,9 @@ The block type :math:`{\mathit{blocktype}}` is :ref:`valid <valid-val>` as the i
 
       * The value type sequence :math:`{{\mathit{valtype}''}^\ast}` is of the form :math:`{t_2^\ast}`.
 
-      * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
+      * The type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
 
-      * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
+      * The :ref:`expansion <aux-expand-deftype>` of the type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
 
 
 
@@ -14357,9 +14357,9 @@ The block type :math:`{{\mathit{valtype}}^?}` is :ref:`valid <valid-val>` as the
 The block type :math:`{\mathit{typeidx}}` is :ref:`valid <valid-val>` as the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
-   * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
+   * The type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
+   * The :ref:`expansion <aux-expand-deftype>` of the type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
 
 
 
@@ -14652,9 +14652,9 @@ The instruction :math:`(\mathsf{call}~x)` is :ref:`valid <valid-val>` with the i
 The instruction :math:`(\mathsf{call\_ref}~x)` is :ref:`valid <valid-val>` with the instruction type :math:`{t_1^\ast}~(\mathsf{ref}~\mathsf{null}~x)~\rightarrow~{t_2^\ast}` if:
 
 
-   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
+   * The type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
+   * The :ref:`expansion <aux-expand-deftype>` of the type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
 
 
 
@@ -14668,9 +14668,9 @@ The instruction :math:`(\mathsf{call\_indirect}~x~y)` is :ref:`valid <valid-val>
 
    * The reference type :math:`{\mathit{rt}}` :ref:`matches <match>` the reference type :math:`(\mathsf{ref}~\mathsf{null}~\mathsf{func})`.
 
-   * The defined type :math:`C{.}\mathsf{types}{}[y]` exists.
+   * The type :math:`C{.}\mathsf{types}{}[y]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[y]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
+   * The :ref:`expansion <aux-expand-deftype>` of the type :math:`C{.}\mathsf{types}{}[y]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
 
 
 
@@ -14704,9 +14704,9 @@ The instruction :math:`(\mathsf{return\_call}~x)` is :ref:`valid <valid-val>` wi
 The instruction :math:`(\mathsf{return\_call\_ref}~x)` is :ref:`valid <valid-val>` with the instruction type :math:`{t_3^\ast}~{t_1^\ast}~(\mathsf{ref}~\mathsf{null}~x)~\rightarrow~{t_4^\ast}` if:
 
 
-   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
+   * The type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
+   * The :ref:`expansion <aux-expand-deftype>` of the type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
 
    * The result type :math:`C{.}\mathsf{return}` is of the form :math:`{{t'}_2^\ast}`.
 
@@ -14726,9 +14726,9 @@ The instruction :math:`(\mathsf{return\_call\_indirect}~x~y)` is :ref:`valid <va
 
    * The reference type :math:`{\mathit{rt}}` :ref:`matches <match>` the reference type :math:`(\mathsf{ref}~\mathsf{null}~\mathsf{func})`.
 
-   * The defined type :math:`C{.}\mathsf{types}{}[y]` exists.
+   * The type :math:`C{.}\mathsf{types}{}[y]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[y]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
+   * The :ref:`expansion <aux-expand-deftype>` of the type :math:`C{.}\mathsf{types}{}[y]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
 
    * The result type :math:`C{.}\mathsf{return}` is of the form :math:`{{t'}_2^\ast}`.
 
@@ -14883,9 +14883,9 @@ The instruction :math:`({\mathsf{i{\scriptstyle 31}{.}get}}{\mathsf{\_}}{{\mathi
 The instruction :math:`(\mathsf{struct{.}new}~x)` is :ref:`valid <valid-val>` with the instruction type :math:`{t^\ast}~\rightarrow~(\mathsf{ref}~x)` if:
 
 
-   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
+   * The type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{struct}~{({\mathsf{mut}^?}~{\mathit{zt}})^\ast})`.
+   * The :ref:`expansion <aux-expand-deftype>` of the type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{struct}~{({\mathsf{mut}^?}~{\mathit{zt}})^\ast})`.
 
    * Let :math:`{t^\ast}` be the value type sequence :math:`{{\mathrm{unpack}}({\mathit{zt}})^\ast}`.
 
@@ -14895,9 +14895,9 @@ The instruction :math:`(\mathsf{struct{.}new}~x)` is :ref:`valid <valid-val>` wi
 The instruction :math:`(\mathsf{struct{.}new\_default}~x)` is :ref:`valid <valid-val>` with the instruction type :math:`\epsilon~\rightarrow~(\mathsf{ref}~x)` if:
 
 
-   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
+   * The type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{struct}~{({\mathsf{mut}^?}~{\mathit{zt}})^\ast})`.
+   * The :ref:`expansion <aux-expand-deftype>` of the type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{struct}~{({\mathsf{mut}^?}~{\mathit{zt}})^\ast})`.
 
    * For all :math:`{\mathit{zt}}` in :math:`{{\mathit{zt}}^\ast}`:
 
@@ -14909,9 +14909,9 @@ The instruction :math:`(\mathsf{struct{.}new\_default}~x)` is :ref:`valid <valid
 The instruction :math:`({\mathsf{struct{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~x~i)` is :ref:`valid <valid-val>` with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~x)~\rightarrow~t` if:
 
 
-   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
+   * The type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{struct}~{{\mathit{yt}}^\ast})`.
+   * The :ref:`expansion <aux-expand-deftype>` of the type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{struct}~{{\mathit{yt}}^\ast})`.
 
    * The length of :math:`{{\mathit{yt}}^\ast}` is greater than :math:`i`.
 
@@ -14927,9 +14927,9 @@ The instruction :math:`({\mathsf{struct{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~
 The instruction :math:`(\mathsf{struct{.}set}~x~i)` is :ref:`valid <valid-val>` with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~x)~t~\rightarrow~\epsilon` if:
 
 
-   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
+   * The type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{struct}~{{\mathit{yt}}^\ast})`.
+   * The :ref:`expansion <aux-expand-deftype>` of the type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{struct}~{{\mathit{yt}}^\ast})`.
 
    * The length of :math:`{{\mathit{yt}}^\ast}` is greater than :math:`i`.
 
@@ -14943,9 +14943,9 @@ The instruction :math:`(\mathsf{struct{.}set}~x~i)` is :ref:`valid <valid-val>` 
 The instruction :math:`(\mathsf{array{.}new}~x)` is :ref:`valid <valid-val>` with the instruction type :math:`t~\mathsf{i{\scriptstyle 32}}~\rightarrow~(\mathsf{ref}~x)` if:
 
 
-   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
+   * The type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`.
+   * The :ref:`expansion <aux-expand-deftype>` of the type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`.
 
    * Let :math:`t` be the value type :math:`{\mathrm{unpack}}({\mathit{zt}})`.
 
@@ -14955,9 +14955,9 @@ The instruction :math:`(\mathsf{array{.}new}~x)` is :ref:`valid <valid-val>` wit
 The instruction :math:`(\mathsf{array{.}new\_default}~x)` is :ref:`valid <valid-val>` with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~(\mathsf{ref}~x)` if:
 
 
-   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
+   * The type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`.
+   * The :ref:`expansion <aux-expand-deftype>` of the type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`.
 
    * A :ref:`default value <aux-default>` for the value type :math:`{\mathrm{unpack}}({\mathit{zt}})` is defined.
 
@@ -14967,9 +14967,9 @@ The instruction :math:`(\mathsf{array{.}new\_default}~x)` is :ref:`valid <valid-
 The instruction :math:`(\mathsf{array{.}new\_fixed}~x~n)` is :ref:`valid <valid-val>` with the instruction type :math:`{t^{n}}~\rightarrow~(\mathsf{ref}~x)` if:
 
 
-   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
+   * The type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`.
+   * The :ref:`expansion <aux-expand-deftype>` of the type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`.
 
    * Let :math:`t` be the value type :math:`{\mathrm{unpack}}({\mathit{zt}})`.
 
@@ -14979,9 +14979,9 @@ The instruction :math:`(\mathsf{array{.}new\_fixed}~x~n)` is :ref:`valid <valid-
 The instruction :math:`(\mathsf{array{.}new\_elem}~x~y)` is :ref:`valid <valid-val>` with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~(\mathsf{ref}~x)` if:
 
 
-   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
+   * The type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{rt}}))`.
+   * The :ref:`expansion <aux-expand-deftype>` of the type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{rt}}))`.
 
    * The element segment :math:`C{.}\mathsf{elems}{}[y]` exists.
 
@@ -14993,9 +14993,9 @@ The instruction :math:`(\mathsf{array{.}new\_elem}~x~y)` is :ref:`valid <valid-v
 The instruction :math:`(\mathsf{array{.}new\_data}~x~y)` is :ref:`valid <valid-val>` with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~(\mathsf{ref}~x)` if:
 
 
-   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
+   * The type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`.
+   * The :ref:`expansion <aux-expand-deftype>` of the type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`.
 
    * The value type :math:`{\mathrm{unpack}}({\mathit{zt}})` is of the form :math:`{\mathit{numtype}}` or :math:`{\mathrm{unpack}}({\mathit{zt}})` is of the form :math:`{\mathit{vectype}}`.
 
@@ -15009,9 +15009,9 @@ The instruction :math:`(\mathsf{array{.}new\_data}~x~y)` is :ref:`valid <valid-v
 The instruction :math:`({\mathsf{array{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~x)` is :ref:`valid <valid-val>` with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~x)~\mathsf{i{\scriptstyle 32}}~\rightarrow~t` if:
 
 
-   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
+   * The type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`.
+   * The :ref:`expansion <aux-expand-deftype>` of the type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`.
 
    * The signedness :math:`{{\mathit{sx}}^?}` is absent if and only if the storage type :math:`{\mathit{zt}}` is of the form :math:`{\mathrm{unpack}}({\mathit{zt}})`.
 
@@ -15023,9 +15023,9 @@ The instruction :math:`({\mathsf{array{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~x
 The instruction :math:`(\mathsf{array{.}set}~x)` is :ref:`valid <valid-val>` with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~x)~\mathsf{i{\scriptstyle 32}}~t~\rightarrow~\epsilon` if:
 
 
-   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
+   * The type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}))`.
+   * The :ref:`expansion <aux-expand-deftype>` of the type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}))`.
 
    * Let :math:`t` be the value type :math:`{\mathrm{unpack}}({\mathit{zt}})`.
 
@@ -15040,9 +15040,9 @@ The instruction :math:`\mathsf{array{.}len}` is :ref:`valid <valid-val>` with th
 The instruction :math:`(\mathsf{array{.}fill}~x)` is :ref:`valid <valid-val>` with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~x)~\mathsf{i{\scriptstyle 32}}~t~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
-   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
+   * The type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}))`.
+   * The :ref:`expansion <aux-expand-deftype>` of the type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}))`.
 
    * Let :math:`t` be the value type :math:`{\mathrm{unpack}}({\mathit{zt}})`.
 
@@ -15052,13 +15052,13 @@ The instruction :math:`(\mathsf{array{.}fill}~x)` is :ref:`valid <valid-val>` wi
 The instruction :math:`(\mathsf{array{.}copy}~x_1~x_2)` is :ref:`valid <valid-val>` with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~x_1)~\mathsf{i{\scriptstyle 32}}~(\mathsf{ref}~\mathsf{null}~x_2)~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
-   * The defined type :math:`C{.}\mathsf{types}{}[x_1]` exists.
+   * The type :math:`C{.}\mathsf{types}{}[x_1]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x_1]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}_1))`.
+   * The :ref:`expansion <aux-expand-deftype>` of the type :math:`C{.}\mathsf{types}{}[x_1]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}_1))`.
 
-   * The defined type :math:`C{.}\mathsf{types}{}[x_2]` exists.
+   * The type :math:`C{.}\mathsf{types}{}[x_2]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x_2]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}_2))`.
+   * The :ref:`expansion <aux-expand-deftype>` of the type :math:`C{.}\mathsf{types}{}[x_2]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}_2))`.
 
    * The storage type :math:`{\mathit{zt}}_2` :ref:`matches <match>` the storage type :math:`{\mathit{zt}}_1`.
 
@@ -15068,9 +15068,9 @@ The instruction :math:`(\mathsf{array{.}copy}~x_1~x_2)` is :ref:`valid <valid-va
 The instruction :math:`(\mathsf{array{.}init\_elem}~x~y)` is :ref:`valid <valid-val>` with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~x)~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
-   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
+   * The type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}))`.
+   * The :ref:`expansion <aux-expand-deftype>` of the type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}))`.
 
    * The element segment :math:`C{.}\mathsf{elems}{}[y]` exists.
 
@@ -15082,9 +15082,9 @@ The instruction :math:`(\mathsf{array{.}init\_elem}~x~y)` is :ref:`valid <valid-
 The instruction :math:`(\mathsf{array{.}init\_data}~x~y)` is :ref:`valid <valid-val>` with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~x)~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
-   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
+   * The type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}))`.
+   * The :ref:`expansion <aux-expand-deftype>` of the type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}))`.
 
    * The value type :math:`{\mathrm{unpack}}({\mathit{zt}})` is of the form :math:`{\mathit{numtype}}` or :math:`{\mathrm{unpack}}({\mathit{zt}})` is of the form :math:`{\mathit{vectype}}`.
 
@@ -16016,12 +16016,12 @@ The local :math:`(\mathsf{local}~t)` is :ref:`valid <valid-val>` with the local 
 
 
 
-The function :math:`(\mathsf{func}~x~{{\mathit{local}}^\ast}~{\mathit{expr}})` is :ref:`valid <valid-val>` with the defined type :math:`C{.}\mathsf{types}{}[x]` if:
+The function :math:`(\mathsf{func}~x~{{\mathit{local}}^\ast}~{\mathit{expr}})` is :ref:`valid <valid-val>` with the type :math:`C{.}\mathsf{types}{}[x]` if:
 
 
-   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
+   * The type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
+   * The :ref:`expansion <aux-expand-deftype>` of the type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
 
    * The length of :math:`{{{\mathit{lt}}}^\ast}` is equal to the length of :math:`{{\mathit{local}}^\ast}`.
 
@@ -16070,12 +16070,12 @@ The memory :math:`(\mathsf{memory}~{\mathit{memtype}})` is :ref:`valid <valid-va
 
 
 
-The tag :math:`(\mathsf{tag}~x)` is :ref:`valid <valid-val>` with the tag type :math:`C{.}\mathsf{types}{}[x]` if:
+The tag :math:`(\mathsf{tag}~x)` is :ref:`valid <valid-val>` with the type :math:`C{.}\mathsf{types}{}[x]` if:
 
 
-   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
+   * The type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{func}~{\mathit{functype}})`.
+   * The :ref:`expansion <aux-expand-deftype>` of the type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{func}~{\mathit{functype}})`.
 
 
 
@@ -25169,19 +25169,19 @@ Typeuse_ok
 - the type use typeuse is valid if:
   - Either:
     - typeuse is (_IDX typeidx).
-    - the defined type C.TYPES[typeidx] exists.
+    - the type C.TYPES[typeidx] exists.
     - C.TYPES[typeidx] is dt.
   - Or:
     - typeuse is deftype.
     - the defined type deftype is valid.
   - Or:
     - typeuse is (REC i).
-    - the sub type C.RECS[i] exists.
+    - the recursive type C.RECS[i] exists.
     - C.RECS[i] is st.
 
 Typeuse_ok/typeidx
 - the type use (_IDX typeidx) is valid if:
-  - the defined type C.TYPES[typeidx] exists.
+  - the type C.TYPES[typeidx] exists.
   - C.TYPES[typeidx] is dt.
 
 Typeuse_ok/deftype
@@ -25190,7 +25190,7 @@ Typeuse_ok/deftype
 
 Typeuse_ok/rec
 - the type use (REC i) is valid if:
-  - the sub type C.RECS[i] exists.
+  - the recursive type C.RECS[i] exists.
   - C.RECS[i] is st.
 
 Resulttype_ok
@@ -25258,7 +25258,7 @@ Subtype_ok
   - |comptype'*| is |x*|.
   - |comptype'*| is |x'**|.
   - For all x in x*:
-    - the defined type C.TYPES[x] exists.
+    - the type C.TYPES[x] exists.
   - For all comptype' in comptype'*, and corresponding x in x*, and corresponding x'* in x'**:
     - the sub type $unrolldt(C.TYPES[x]) is (SUB ?() (_IDX x')* comptype').
   - the composite type comptype is valid.
@@ -25410,7 +25410,7 @@ Heaptype_sub
   - Or:
     - heaptype'' is (_IDX typeidx).
     - heaptype''' is heaptype.
-    - the defined type C.TYPES[typeidx] exists.
+    - the type C.TYPES[typeidx] exists.
     - C.TYPES[typeidx] matches the heap type heaptype.
   - Or:
     - heaptype'' is heaptype.
@@ -25421,7 +25421,7 @@ Heaptype_sub
     - heaptype'' is (REC i).
     - heaptype''' is typeuse*[j].
     - |typeuse*| is greater than j.
-    - the sub type C.RECS[i] exists.
+    - the recursive type C.RECS[i] exists.
     - C.RECS[i] is (SUB fin typeuse* ct).
   - Or:
     - heaptype'' is NONE.
@@ -25478,18 +25478,18 @@ Heaptype_sub/def
 
 Heaptype_sub/typeidx
 - the heap type (_IDX typeidx) matches the heap type heaptype if:
-  - the defined type C.TYPES[typeidx] exists.
+  - the type C.TYPES[typeidx] exists.
   - C.TYPES[typeidx] matches heaptype.
 
 Heaptype_sub/typeidx
 - the heap type heaptype matches the heap type (_IDX typeidx) if:
-  - the defined type C.TYPES[typeidx] exists.
+  - the type C.TYPES[typeidx] exists.
   - heaptype matches C.TYPES[typeidx].
 
 Heaptype_sub/rec
 - the heap type (REC i) matches the type use typeuse*[j] if:
   - |typeuse*| is greater than j.
-  - the sub type C.RECS[i] exists.
+  - the recursive type C.RECS[i] exists.
   - C.RECS[i] is (SUB fin typeuse* ct).
 
 Heaptype_sub/none
@@ -25789,7 +25789,7 @@ Blocktype_ok
     - blocktype is (_IDX typeidx).
     - valtype'* is t_1*.
     - valtype''* is t_2*.
-    - the defined type C.TYPES[typeidx] exists.
+    - the type C.TYPES[typeidx] exists.
     - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[typeidx] is the composite type (FUNC t_1* -> t_2*).
 
 Blocktype_ok/valtype
@@ -25799,7 +25799,7 @@ Blocktype_ok/valtype
 
 Blocktype_ok/typeidx
 - the block type (_IDX typeidx) is valid as the instruction type t_1* -> t_2* if:
-  - the defined type C.TYPES[typeidx] exists.
+  - the type C.TYPES[typeidx] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[typeidx] is the composite type (FUNC t_1* -> t_2*).
 
 Catch_ok
@@ -25948,7 +25948,7 @@ Instr_ok/call
 
 Instr_ok/call_ref
 - the instruction (CALL_REF (_IDX x)) is valid with the instruction type t_1* :: [(REF ?(NULL) (_IDX x))] -> t_2* if:
-  - the defined type C.TYPES[x] exists.
+  - the type C.TYPES[x] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (FUNC t_1* -> t_2*).
 
 Instr_ok/call_indirect
@@ -25956,7 +25956,7 @@ Instr_ok/call_indirect
   - the table C.TABLES[x] exists.
   - C.TABLES[x] is (at lim rt).
   - the reference type rt matches the reference type (REF ?(NULL) FUNC).
-  - the defined type C.TYPES[y] exists.
+  - the type C.TYPES[y] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[y] is the composite type (FUNC t_1* -> t_2*).
 
 Instr_ok/return
@@ -25974,7 +25974,7 @@ Instr_ok/return_call
 
 Instr_ok/return_call_ref
 - the instruction (RETURN_CALL_REF (_IDX x)) is valid with the instruction type t_3* :: t_1* :: [(REF ?(NULL) (_IDX x))] -> t_4* if:
-  - the defined type C.TYPES[x] exists.
+  - the type C.TYPES[x] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (FUNC t_1* -> t_2*).
   - the result type C.RETURN is ?(t'_2*).
   - the result type t_2* matches the result type t'_2*.
@@ -25985,7 +25985,7 @@ Instr_ok/return_call_indirect
   - the table C.TABLES[x] exists.
   - C.TABLES[x] is (at lim rt).
   - the reference type rt matches the reference type (REF ?(NULL) FUNC).
-  - the defined type C.TYPES[y] exists.
+  - the type C.TYPES[y] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[y] is the composite type (FUNC t_1* -> t_2*).
   - the result type C.RETURN is ?(t'_2*).
   - the result type t_2* matches the result type t'_2*.
@@ -26068,20 +26068,20 @@ Instr_ok/i31.get
 
 Instr_ok/struct.new
 - the instruction (STRUCT.NEW x) is valid with the instruction type t* -> [(REF ?() (_IDX x))] if:
-  - the defined type C.TYPES[x] exists.
+  - the type C.TYPES[x] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (STRUCT (mut zt)*).
   - Let t* be the value type sequence $unpack(zt)*.
 
 Instr_ok/struct.new_default
 - the instruction (STRUCT.NEW_DEFAULT x) is valid with the instruction type [] -> [(REF ?() (_IDX x))] if:
-  - the defined type C.TYPES[x] exists.
+  - the type C.TYPES[x] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (STRUCT (mut zt)*).
   - For all zt in zt*:
     - A :ref:`default value <aux-default>` for the value type $unpack(zt) is defined.
 
 Instr_ok/struct.get
 - the instruction (STRUCT.GET sx? x i) is valid with the instruction type [(REF ?(NULL) (_IDX x))] -> [t] if:
-  - the defined type C.TYPES[x] exists.
+  - the type C.TYPES[x] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (STRUCT yt*).
   - |yt*| is greater than i.
   - the field type yt*[i] is (mut zt).
@@ -26090,7 +26090,7 @@ Instr_ok/struct.get
 
 Instr_ok/struct.set
 - the instruction (STRUCT.SET x i) is valid with the instruction type [(REF ?(NULL) (_IDX x)), t] -> [] if:
-  - the defined type C.TYPES[x] exists.
+  - the type C.TYPES[x] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (STRUCT yt*).
   - |yt*| is greater than i.
   - the field type yt*[i] is (?(MUT) zt).
@@ -26098,32 +26098,32 @@ Instr_ok/struct.set
 
 Instr_ok/array.new
 - the instruction (ARRAY.NEW x) is valid with the instruction type [t, I32] -> [(REF ?() (_IDX x))] if:
-  - the defined type C.TYPES[x] exists.
+  - the type C.TYPES[x] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (ARRAY (mut zt)).
   - Let t be the value type $unpack(zt).
 
 Instr_ok/array.new_default
 - the instruction (ARRAY.NEW_DEFAULT x) is valid with the instruction type [I32] -> [(REF ?() (_IDX x))] if:
-  - the defined type C.TYPES[x] exists.
+  - the type C.TYPES[x] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (ARRAY (mut zt)).
   - A :ref:`default value <aux-default>` for the value type $unpack(zt) is defined.
 
 Instr_ok/array.new_fixed
 - the instruction (ARRAY.NEW_FIXED x n) is valid with the instruction type t^n -> [(REF ?() (_IDX x))] if:
-  - the defined type C.TYPES[x] exists.
+  - the type C.TYPES[x] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (ARRAY (mut zt)).
   - Let t be the value type $unpack(zt).
 
 Instr_ok/array.new_elem
 - the instruction (ARRAY.NEW_ELEM x y) is valid with the instruction type [I32, I32] -> [(REF ?() (_IDX x))] if:
-  - the defined type C.TYPES[x] exists.
+  - the type C.TYPES[x] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (ARRAY (mut rt)).
   - the element segment C.ELEMS[y] exists.
   - C.ELEMS[y] matches the reference type rt.
 
 Instr_ok/array.new_data
 - the instruction (ARRAY.NEW_DATA x y) is valid with the instruction type [I32, I32] -> [(REF ?() (_IDX x))] if:
-  - the defined type C.TYPES[x] exists.
+  - the type C.TYPES[x] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (ARRAY (mut zt)).
   - $unpack(zt) is numtype or the value type $unpack(zt) is vectype.
   - the data segment C.DATAS[y] exists.
@@ -26131,14 +26131,14 @@ Instr_ok/array.new_data
 
 Instr_ok/array.get
 - the instruction (ARRAY.GET sx? x) is valid with the instruction type [(REF ?(NULL) (_IDX x)), I32] -> [t] if:
-  - the defined type C.TYPES[x] exists.
+  - the type C.TYPES[x] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (ARRAY (mut zt)).
   - the signedness sx? is ?() if and only if the storage type zt is $unpack(zt).
   - Let t be the value type $unpack(zt).
 
 Instr_ok/array.set
 - the instruction (ARRAY.SET x) is valid with the instruction type [(REF ?(NULL) (_IDX x)), I32, t] -> [] if:
-  - the defined type C.TYPES[x] exists.
+  - the type C.TYPES[x] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (ARRAY (?(MUT) zt)).
   - Let t be the value type $unpack(zt).
 
@@ -26147,28 +26147,28 @@ Instr_ok/array.len
 
 Instr_ok/array.fill
 - the instruction (ARRAY.FILL x) is valid with the instruction type [(REF ?(NULL) (_IDX x)), I32, t, I32] -> [] if:
-  - the defined type C.TYPES[x] exists.
+  - the type C.TYPES[x] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (ARRAY (?(MUT) zt)).
   - Let t be the value type $unpack(zt).
 
 Instr_ok/array.copy
 - the instruction (ARRAY.COPY x_1 x_2) is valid with the instruction type [(REF ?(NULL) (_IDX x_1)), I32, (REF ?(NULL) (_IDX x_2)), I32, I32] -> [] if:
-  - the defined type C.TYPES[x_1] exists.
+  - the type C.TYPES[x_1] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x_1] is the composite type (ARRAY (?(MUT) zt_1)).
-  - the defined type C.TYPES[x_2] exists.
+  - the type C.TYPES[x_2] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x_2] is the composite type (ARRAY (mut zt_2)).
   - the storage type zt_2 matches the storage type zt_1.
 
 Instr_ok/array.init_elem
 - the instruction (ARRAY.INIT_ELEM x y) is valid with the instruction type [(REF ?(NULL) (_IDX x)), I32, I32, I32] -> [] if:
-  - the defined type C.TYPES[x] exists.
+  - the type C.TYPES[x] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (ARRAY (?(MUT) zt)).
   - the element segment C.ELEMS[y] exists.
   - C.ELEMS[y] matches the storage type zt.
 
 Instr_ok/array.init_data
 - the instruction (ARRAY.INIT_DATA x y) is valid with the instruction type [(REF ?(NULL) (_IDX x)), I32, I32, I32] -> [] if:
-  - the defined type C.TYPES[x] exists.
+  - the type C.TYPES[x] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (ARRAY (?(MUT) zt)).
   - $unpack(zt) is numtype or the value type $unpack(zt) is vectype.
   - the data segment C.DATAS[y] exists.
@@ -26659,7 +26659,7 @@ Local_ok/unset
   - A :ref:`default value <aux-default>` for the value type t is not defined.
 
 Func_ok
-- the function (FUNC x local* expr) is valid with the defined type C.TYPES[x] if:
+- the function (FUNC x local* expr) is valid with the type C.TYPES[x] if:
   - C.TYPES[x] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (FUNC t_1* -> t_2*).
   - |lct*| is |local*|.
@@ -26686,7 +26686,7 @@ Mem_ok
   - memtype is valid.
 
 Tag_ok
-- the tag (TAG x) is valid with the tag type C.TYPES[x] if:
+- the tag (TAG x) is valid with the type C.TYPES[x] if:
   - C.TYPES[x] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (FUNC functype).
 

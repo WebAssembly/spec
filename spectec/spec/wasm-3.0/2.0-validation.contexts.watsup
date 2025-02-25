@@ -22,8 +22,8 @@ var it : instrtype
 ;; Contexts
 
 syntax context hint(desc "context") hint(macro "%" "C%") =
-  { TYPES deftype*,
-    RECS subtype*,
+  { TYPES deftype*          hint(desc "type sequence"),
+    RECS subtype*           hint(desc "recursive type sequence"),
     FUNCS deftype*          hint(desc "function sequence"),
     GLOBALS globaltype*     hint(desc "global sequence"),
     TABLES tabletype*       hint(desc "table sequence"),
