@@ -539,6 +539,9 @@ let render_el_exp env exp =
   let sexp = Str.global_replace newline "" sexp in
   render_math sexp
 
+let render_el_typ env typ =
+  Backend_latex.Render.render_typ env.render_latex typ |> render_math
+
 let render_arg env arg =
   let el_arg = match al_to_el_arg arg with
   | None ->
@@ -555,7 +558,7 @@ let rec render_expr env expr = match al_to_el_expr expr with
 
 and render_typ env typ =
   match il_to_el_typ typ with
-  | Some elt -> Backend_latex.Render.render_typ env.render_latex elt |> render_math
+  | Some elt -> render_el_typ env elt
   | None -> Il.Print.string_of_typ typ
 
 (* Categories 2 and 3 are rendered by the prose backend,
@@ -567,8 +570,13 @@ and render_expr' env expr =
   | Al.Ast.CvtE (e, _, _) -> render_expr' env e
   | Al.Ast.UnE (`NotOp, { it = Al.Ast.IsCaseOfE (e, a); _ }) ->
     let se = render_expr env e in
-    let sa = render_atom env a in
-    sprintf "%s is not %s" se sa
+    let sts =
+      Prose_util.find_case_typ (Il.Print.string_of_typ_name e.note) a
+      |> List.map (render_el_typ env)
+      |> List.filter (fun s -> s <> "")
+      |> String.concat " "
+    in
+    sprintf "%s is not some %s" se sts
   | Al.Ast.UnE (`NotOp, { it = Al.Ast.IsDefinedE e; _ }) ->
     let se = render_expr env e in
     sprintf "%s is not defined" se
@@ -774,8 +782,13 @@ and render_expr' env expr =
     sprintf "%s is defined" se
   | Al.Ast.IsCaseOfE (e, a) ->
     let se = render_expr env e in
-    let sa = render_atom env a in
-    sprintf "%s is some %s" se sa
+    let sts =
+      Prose_util.find_case_typ (Il.Print.string_of_typ_name e.note) a
+      |> List.map (render_el_typ env)
+      |> List.filter (fun s -> s <> "")
+      |> String.concat " "
+    in
+    sprintf "%s is some %s" se sts
   | Al.Ast.HasTypeE (e, t) ->
     let se = render_expr env e in
     let st = render_type_desc (render_typ env) t in

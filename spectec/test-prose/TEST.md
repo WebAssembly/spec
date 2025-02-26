@@ -16,6 +16,58 @@ watsup 0.4 generator
 == IL Validation after pass sideconditions...
 == Translating to AL...
 == Prose Generation...
+s: externtype
+a: FUNC
+s: externtype
+a: GLOBAL
+s: externtype
+a: TABLE
+s: externtype
+a: MEM
+s: binop_
+a: DIV
+s: binop_
+a: REM
+s: binop_
+a: SHR
+s: relop_
+a: LT
+s: relop_
+a: GT
+s: relop_
+a: LE
+s: relop_
+a: GE
+s: cvtop
+a: EXTEND
+s: cvtop
+a: TRUNC
+s: cvtop
+a: CONVERT
+s: externaddr
+a: FUNC
+s: externaddr
+a: GLOBAL
+s: externaddr
+a: TABLE
+s: externaddr
+a: MEM
+s: externaddr
+a: FUNC
+s: externaddr
+a: GLOBAL
+s: externaddr
+a: TABLE
+s: externaddr
+a: MEM
+s: externidx
+a: FUNC
+s: externidx
+a: GLOBAL
+s: externidx
+a: TABLE
+s: externidx
+a: MEM
 
 
 
@@ -1666,7 +1718,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{\mathit{externtype}}_0~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}'}^\ast}`.
 
-#. If :math:`{\mathit{externtype}}_0` is some :math:`\mathsf{func}`, then:
+#. If :math:`{\mathit{externtype}}_0` is some :math:`\mathsf{func}` :math:`{\mathit{functype}}`, then:
 
    a. Let :math:`(\mathsf{func}~{\mathit{ft}})` be the destructuring of :math:`{\mathit{externtype}}_0`.
 
@@ -1687,7 +1739,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{\mathit{externtype}}_0~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}'}^\ast}`.
 
-#. If :math:`{\mathit{externtype}}_0` is some :math:`\mathsf{global}`, then:
+#. If :math:`{\mathit{externtype}}_0` is some :math:`\mathsf{global}` :math:`{\mathit{globaltype}}`, then:
 
    a. Let :math:`(\mathsf{global}~{\mathit{gt}})` be the destructuring of :math:`{\mathit{externtype}}_0`.
 
@@ -1708,7 +1760,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{\mathit{externtype}}_0~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}'}^\ast}`.
 
-#. If :math:`{\mathit{externtype}}_0` is some :math:`\mathsf{table}`, then:
+#. If :math:`{\mathit{externtype}}_0` is some :math:`\mathsf{table}` :math:`{\mathit{tabletype}}`, then:
 
    a. Let :math:`(\mathsf{table}~{\mathit{tt}})` be the destructuring of :math:`{\mathit{externtype}}_0`.
 
@@ -1729,7 +1781,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{\mathit{externtype}}_0~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}'}^\ast}`.
 
-#. If :math:`{\mathit{externtype}}_0` is some :math:`\mathsf{mem}`, then:
+#. If :math:`{\mathit{externtype}}_0` is some :math:`\mathsf{mem}` :math:`{\mathit{memtype}}`, then:
 
    a. Let :math:`(\mathsf{mem}~{\mathit{mt}})` be the destructuring of :math:`{\mathit{externtype}}_0`.
 
@@ -1886,13 +1938,13 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       1) Return :math:`{{\mathrm{imul}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
-   #. If :math:`{\mathit{binop}}` is some :math:`\mathsf{div}`, then:
+   #. If :math:`{\mathit{binop}}` is some :math:`\mathsf{div}` :math:`{\mathit{sx}}`, then:
 
       1) Let :math:`({\mathsf{div}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{binop}}`.
 
       #) Return :math:`{{{{\mathrm{idiv}}}_{{|{\mathsf{i}}{n}|}}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
 
-   #. If :math:`{\mathit{binop}}` is some :math:`\mathsf{rem}`, then:
+   #. If :math:`{\mathit{binop}}` is some :math:`\mathsf{rem}` :math:`{\mathit{sx}}`, then:
 
       1) Let :math:`({\mathsf{rem}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{binop}}`.
 
@@ -1914,7 +1966,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       1) Return :math:`{{\mathrm{ishl}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
-   #. If :math:`{\mathit{binop}}` is some :math:`\mathsf{shr}`, then:
+   #. If :math:`{\mathit{binop}}` is some :math:`\mathsf{shr}` :math:`{\mathit{sx}}`, then:
 
       1) Let :math:`({\mathsf{shr}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{binop}}`.
 
@@ -2065,25 +2117,25 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       1) Return :math:`{{\mathrm{ine}}}_{{|{\mathsf{i}}{n}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
-   #. If :math:`{\mathit{relop}}` is some :math:`\mathsf{lt}`, then:
+   #. If :math:`{\mathit{relop}}` is some :math:`\mathsf{lt}` :math:`{\mathit{sx}}`, then:
 
       1) Let :math:`({\mathsf{lt}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{relop}}`.
 
       #) Return :math:`{{{{\mathrm{ilt}}}_{{|{\mathsf{i}}{n}|}}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
 
-   #. If :math:`{\mathit{relop}}` is some :math:`\mathsf{gt}`, then:
+   #. If :math:`{\mathit{relop}}` is some :math:`\mathsf{gt}` :math:`{\mathit{sx}}`, then:
 
       1) Let :math:`({\mathsf{gt}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{relop}}`.
 
       #) Return :math:`{{{{\mathrm{igt}}}_{{|{\mathsf{i}}{n}|}}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
 
-   #. If :math:`{\mathit{relop}}` is some :math:`\mathsf{le}`, then:
+   #. If :math:`{\mathit{relop}}` is some :math:`\mathsf{le}` :math:`{\mathit{sx}}`, then:
 
       1) Let :math:`({\mathsf{le}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{relop}}`.
 
       #) Return :math:`{{{{\mathrm{ile}}}_{{|{\mathsf{i}}{n}|}}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
 
-   #. If :math:`{\mathit{relop}}` is some :math:`\mathsf{ge}`, then:
+   #. If :math:`{\mathit{relop}}` is some :math:`\mathsf{ge}` :math:`{\mathit{sx}}`, then:
 
       1) Let :math:`({\mathsf{ge}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{relop}}`.
 
@@ -2126,7 +2178,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ..........................................................................................
 
 
-1. If :math:`{\mathit{cvtop}}` is some :math:`\mathsf{extend}`, then:
+1. If :math:`{\mathit{cvtop}}` is some :math:`\mathsf{extend}` :math:`{\mathit{sx}}`, then:
 
    a. Let :math:`(\mathsf{extend}~{\mathit{sx}})` be the destructuring of :math:`{\mathit{cvtop}}`.
 
@@ -2150,7 +2202,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       1) Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}'}`.
 
-      #) If :math:`{\mathit{cvtop}}` is some :math:`\mathsf{trunc}`, then:
+      #) If :math:`{\mathit{cvtop}}` is some :math:`\mathsf{trunc}` :math:`{\mathit{sx}}`, then:
 
          a) Let :math:`(\mathsf{trunc}~{\mathit{sx}})` be the destructuring of :math:`{\mathit{cvtop}}`.
 
@@ -2176,7 +2228,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       1) Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}'}`.
 
-      #) If :math:`{\mathit{cvtop}}` is some :math:`\mathsf{convert}`, then:
+      #) If :math:`{\mathit{cvtop}}` is some :math:`\mathsf{convert}` :math:`{\mathit{sx}}`, then:
 
          a) Let :math:`(\mathsf{convert}~{\mathit{sx}})` be the destructuring of :math:`{\mathit{cvtop}}`.
 
@@ -2257,7 +2309,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}'}^\ast}`.
 
-#. If :math:`{\mathit{externaddr}}_0` is some :math:`\mathsf{func}`, then:
+#. If :math:`{\mathit{externaddr}}_0` is some :math:`\mathsf{func}` :math:`{\mathit{funcaddr}}`, then:
 
    a. Let :math:`(\mathsf{func}~{\mathit{fa}})` be the destructuring of :math:`{\mathit{externaddr}}_0`.
 
@@ -2278,7 +2330,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}'}^\ast}`.
 
-#. If :math:`{\mathit{externaddr}}_0` is some :math:`\mathsf{global}`, then:
+#. If :math:`{\mathit{externaddr}}_0` is some :math:`\mathsf{global}` :math:`{\mathit{globaladdr}}`, then:
 
    a. Let :math:`(\mathsf{global}~{\mathit{ga}})` be the destructuring of :math:`{\mathit{externaddr}}_0`.
 
@@ -2299,7 +2351,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}'}^\ast}`.
 
-#. If :math:`{\mathit{externaddr}}_0` is some :math:`\mathsf{table}`, then:
+#. If :math:`{\mathit{externaddr}}_0` is some :math:`\mathsf{table}` :math:`{\mathit{tableaddr}}`, then:
 
    a. Let :math:`(\mathsf{table}~{\mathit{ta}})` be the destructuring of :math:`{\mathit{externaddr}}_0`.
 
@@ -2320,7 +2372,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}'}^\ast}`.
 
-#. If :math:`{\mathit{externaddr}}_0` is some :math:`\mathsf{mem}`, then:
+#. If :math:`{\mathit{externaddr}}_0` is some :math:`\mathsf{mem}` :math:`{\mathit{memaddr}}`, then:
 
    a. Let :math:`(\mathsf{mem}~{\mathit{ma}})` be the destructuring of :math:`{\mathit{externaddr}}_0`.
 
@@ -2515,7 +2567,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{\mathit{externaddr}}_0~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}''}^\ast}`.
 
-#. If :math:`{\mathit{externaddr}}_0` is some :math:`\mathsf{func}`, then:
+#. If :math:`{\mathit{externaddr}}_0` is some :math:`\mathsf{func}` :math:`{\mathit{funcaddr}}`, then:
 
    a. Let :math:`(\mathsf{func}~{\mathit{fa}})` be the destructuring of :math:`{\mathit{externaddr}}_0`.
 
@@ -2536,7 +2588,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{\mathit{externaddr}}_0~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}''}^\ast}`.
 
-#. If :math:`{\mathit{externaddr}}_0` is some :math:`\mathsf{global}`, then:
+#. If :math:`{\mathit{externaddr}}_0` is some :math:`\mathsf{global}` :math:`{\mathit{globaladdr}}`, then:
 
    a. Let :math:`(\mathsf{global}~{\mathit{ga}})` be the destructuring of :math:`{\mathit{externaddr}}_0`.
 
@@ -2557,7 +2609,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{\mathit{externaddr}}_0~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}''}^\ast}`.
 
-#. If :math:`{\mathit{externaddr}}_0` is some :math:`\mathsf{table}`, then:
+#. If :math:`{\mathit{externaddr}}_0` is some :math:`\mathsf{table}` :math:`{\mathit{tableaddr}}`, then:
 
    a. Let :math:`(\mathsf{table}~{\mathit{ta}})` be the destructuring of :math:`{\mathit{externaddr}}_0`.
 
@@ -2578,7 +2630,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{\mathit{externaddr}}_0~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}''}^\ast}`.
 
-#. If :math:`{\mathit{externaddr}}_0` is some :math:`\mathsf{mem}`, then:
+#. If :math:`{\mathit{externaddr}}_0` is some :math:`\mathsf{mem}` :math:`{\mathit{memaddr}}`, then:
 
    a. Let :math:`(\mathsf{mem}~{\mathit{ma}})` be the destructuring of :math:`{\mathit{externaddr}}_0`.
 
@@ -2723,25 +2775,25 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ...........................................................................................................................................................................
 
 
-1. If :math:`{\mathit{externidx}}` is some :math:`\mathsf{func}`, then:
+1. If :math:`{\mathit{externidx}}` is some :math:`\mathsf{func}` :math:`{\mathit{funcidx}}`, then:
 
    a. Let :math:`(\mathsf{func}~x)` be the destructuring of :math:`{\mathit{externidx}}`.
 
    #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{func}~{{\mathit{fa}}^\ast}{}[x]) \}\end{array}`.
 
-#. If :math:`{\mathit{externidx}}` is some :math:`\mathsf{global}`, then:
+#. If :math:`{\mathit{externidx}}` is some :math:`\mathsf{global}` :math:`{\mathit{globalidx}}`, then:
 
    a. Let :math:`(\mathsf{global}~x)` be the destructuring of :math:`{\mathit{externidx}}`.
 
    #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{global}~{{\mathit{ga}}^\ast}{}[x]) \}\end{array}`.
 
-#. If :math:`{\mathit{externidx}}` is some :math:`\mathsf{table}`, then:
+#. If :math:`{\mathit{externidx}}` is some :math:`\mathsf{table}` :math:`{\mathit{tableidx}}`, then:
 
    a. Let :math:`(\mathsf{table}~x)` be the destructuring of :math:`{\mathit{externidx}}`.
 
    #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{table}~{{\mathit{ta}}^\ast}{}[x]) \}\end{array}`.
 
-#. Assert: :math:`{\mathit{externidx}}` is some :math:`\mathsf{mem}`.
+#. Assert: :math:`{\mathit{externidx}}` is some :math:`\mathsf{mem}` :math:`{\mathit{memidx}}`.
 
 #. Let :math:`(\mathsf{mem}~x)` be the destructuring of :math:`{\mathit{externidx}}`.
 
@@ -4390,6 +4442,110 @@ watsup 0.4 generator
 == IL Validation after pass sideconditions...
 == Translating to AL...
 == Prose Generation...
+s: ref
+a: REF.NULL
+s: ref
+a: REF.FUNC_ADDR
+s: vloadop
+a: SHAPE
+s: vloadop
+a: SPLAT
+s: vloadop
+a: ZERO
+s: externtype
+a: FUNC
+s: externtype
+a: GLOBAL
+s: externtype
+a: TABLE
+s: externtype
+a: MEM
+s: instr
+a: MEMORY.INIT
+s: instr
+a: DATA.DROP
+s: unop_
+a: EXTEND
+s: binop_
+a: DIV
+s: binop_
+a: REM
+s: binop_
+a: SHR
+s: relop_
+a: LT
+s: relop_
+a: GT
+s: relop_
+a: LE
+s: relop_
+a: GE
+s: cvtop
+a: EXTEND
+s: cvtop
+a: TRUNC
+s: cvtop
+a: TRUNC_SAT
+s: cvtop
+a: CONVERT
+s: vbinop_
+a: MIN
+s: vbinop_
+a: MAX
+s: vbinop_
+a: ADD_SAT
+s: vbinop_
+a: SUB_SAT
+s: vrelop_
+a: LT
+s: vrelop_
+a: GT
+s: vrelop_
+a: LE
+s: vrelop_
+a: GE
+s: vcvtop
+a: EXTEND
+s: vcvtop
+a: CONVERT
+s: vcvtop
+a: TRUNC_SAT
+s: vextbinop_
+a: EXTMUL
+s: vshiftop_
+a: SHR
+s: externaddr
+a: FUNC
+s: externaddr
+a: GLOBAL
+s: externaddr
+a: TABLE
+s: externaddr
+a: MEM
+s: blocktype
+a: _RESULT
+s: blocktype
+a: _IDX
+s: externaddr
+a: FUNC
+s: externaddr
+a: GLOBAL
+s: externaddr
+a: TABLE
+s: externaddr
+a: MEM
+s: externidx
+a: FUNC
+s: externidx
+a: GLOBAL
+s: externidx
+a: TABLE
+s: externidx
+a: MEM
+s: elemmode
+a: ACTIVE
+s: datamode
+a: ACTIVE
 
 
 
@@ -6191,7 +6347,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Pop the value :math:`{\mathit{ref}}` from the stack.
 
-#. If :math:`{\mathit{ref}}` is some :math:`\mathsf{ref{.}null}`, then:
+#. If :math:`{\mathit{ref}}` is some :math:`\mathsf{ref{.}null}` :math:`{\mathit{reftype}}`, then:
 
    a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~1)` to the stack.
 
@@ -6695,7 +6851,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    a. Trap.
 
-#. If :math:`z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}{}[i]` is not :math:`\mathsf{ref{.}func\_addr}`, then:
+#. If :math:`z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}{}[i]` is not some :math:`\mathsf{ref{.}func\_addr}` :math:`{\mathit{funcaddr}}`, then:
 
    a. Trap.
 
@@ -7024,7 +7180,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    a. Let :math:`{\mathit{vloadop}}_0` be :math:`{{\mathit{vloadop}}^?}`.
 
-   #. If :math:`{\mathit{vloadop}}_0` is some :math:`\mathsf{shape}`, then:
+   #. If :math:`{\mathit{vloadop}}_0` is some :math:`\mathsf{shape}` :math:`\mathbb{N}` :math:`\mathsf{x}` :math:`\mathbb{N}` :math:`\mathsf{\_}` :math:`{\mathit{sx}}`, then:
 
       1) Let :math:`({M}{\mathsf{x}}{N}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{vloadop}}_0`.
 
@@ -7042,7 +7198,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
          #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
-   #. If :math:`{\mathit{vloadop}}_0` is some :math:`\mathsf{splat}`, then:
+   #. If :math:`{\mathit{vloadop}}_0` is some :math:`\mathsf{splat}` :math:`\mathbb{N}`, then:
 
       1) Let :math:`({N}{\mathsf{\_}}{\mathsf{splat}})` be the destructuring of :math:`{\mathit{vloadop}}_0`.
 
@@ -7062,7 +7218,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
          #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
-   #. If :math:`{\mathit{vloadop}}_0` is some :math:`\mathsf{zero}`, then:
+   #. If :math:`{\mathit{vloadop}}_0` is some :math:`\mathsf{zero}` :math:`\mathbb{N}`, then:
 
       1) Let :math:`({N}{\mathsf{\_}}{\mathsf{zero}})` be the destructuring of :math:`{\mathit{vloadop}}_0`.
 
@@ -7845,7 +8001,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{\mathit{externtype}}_0~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}'}^\ast}`.
 
-#. If :math:`{\mathit{externtype}}_0` is some :math:`\mathsf{func}`, then:
+#. If :math:`{\mathit{externtype}}_0` is some :math:`\mathsf{func}` :math:`{\mathit{functype}}`, then:
 
    a. Let :math:`(\mathsf{func}~{\mathit{ft}})` be the destructuring of :math:`{\mathit{externtype}}_0`.
 
@@ -7866,7 +8022,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{\mathit{externtype}}_0~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}'}^\ast}`.
 
-#. If :math:`{\mathit{externtype}}_0` is some :math:`\mathsf{global}`, then:
+#. If :math:`{\mathit{externtype}}_0` is some :math:`\mathsf{global}` :math:`{\mathit{globaltype}}`, then:
 
    a. Let :math:`(\mathsf{global}~{\mathit{gt}})` be the destructuring of :math:`{\mathit{externtype}}_0`.
 
@@ -7887,7 +8043,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{\mathit{externtype}}_0~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}'}^\ast}`.
 
-#. If :math:`{\mathit{externtype}}_0` is some :math:`\mathsf{table}`, then:
+#. If :math:`{\mathit{externtype}}_0` is some :math:`\mathsf{table}` :math:`{\mathit{tabletype}}`, then:
 
    a. Let :math:`(\mathsf{table}~{\mathit{tt}})` be the destructuring of :math:`{\mathit{externtype}}_0`.
 
@@ -7908,7 +8064,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{\mathit{externtype}}_0~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}'}^\ast}`.
 
-#. If :math:`{\mathit{externtype}}_0` is some :math:`\mathsf{mem}`, then:
+#. If :math:`{\mathit{externtype}}_0` is some :math:`\mathsf{mem}` :math:`{\mathit{memtype}}`, then:
 
    a. Let :math:`(\mathsf{mem}~{\mathit{mt}})` be the destructuring of :math:`{\mathit{externtype}}_0`.
 
@@ -7923,13 +8079,13 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ............................................
 
 
-1. If :math:`{\mathit{instr}}` is some :math:`\mathsf{memory{.}init}`, then:
+1. If :math:`{\mathit{instr}}` is some :math:`\mathsf{memory{.}init}` :math:`{\mathit{dataidx}}`, then:
 
    a. Let :math:`(\mathsf{memory{.}init}~x)` be the destructuring of :math:`{\mathit{instr}}`.
 
    #. Return :math:`x`.
 
-#. If :math:`{\mathit{instr}}` is some :math:`\mathsf{data{.}drop}`, then:
+#. If :math:`{\mathit{instr}}` is some :math:`\mathsf{data{.}drop}` :math:`{\mathit{dataidx}}`, then:
 
    a. Let :math:`(\mathsf{data{.}drop}~x)` be the destructuring of :math:`{\mathit{instr}}`.
 
@@ -8074,7 +8230,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       1) Return :math:`{{\mathrm{ipopcnt}}}_{N}({\mathit{iN}})`.
 
-   #. Assert: Due to validation, :math:`{\mathit{unop}}` is some :math:`\mathsf{extend}`.
+   #. Assert: Due to validation, :math:`{\mathit{unop}}` is some :math:`\mathsf{extend}` :math:`n`.
 
    #. Let :math:`(\mathsf{extend}~M)` be the destructuring of :math:`{\mathit{unop}}`.
 
@@ -8160,13 +8316,13 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       1) Return :math:`{{\mathrm{imul}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
-   #. If :math:`{\mathit{binop}}` is some :math:`\mathsf{div}`, then:
+   #. If :math:`{\mathit{binop}}` is some :math:`\mathsf{div}` :math:`{\mathit{sx}}`, then:
 
       1) Let :math:`({\mathsf{div}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{binop}}`.
 
       #) Return :math:`{{{{\mathrm{idiv}}}_{N}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
 
-   #. If :math:`{\mathit{binop}}` is some :math:`\mathsf{rem}`, then:
+   #. If :math:`{\mathit{binop}}` is some :math:`\mathsf{rem}` :math:`{\mathit{sx}}`, then:
 
       1) Let :math:`({\mathsf{rem}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{binop}}`.
 
@@ -8188,7 +8344,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       1) Return :math:`{{\mathrm{ishl}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
-   #. If :math:`{\mathit{binop}}` is some :math:`\mathsf{shr}`, then:
+   #. If :math:`{\mathit{binop}}` is some :math:`\mathsf{shr}` :math:`{\mathit{sx}}`, then:
 
       1) Let :math:`({\mathsf{shr}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{binop}}`.
 
@@ -8339,25 +8495,25 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       1) Return :math:`{{\mathrm{ine}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
-   #. If :math:`{\mathit{relop}}` is some :math:`\mathsf{lt}`, then:
+   #. If :math:`{\mathit{relop}}` is some :math:`\mathsf{lt}` :math:`{\mathit{sx}}`, then:
 
       1) Let :math:`({\mathsf{lt}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{relop}}`.
 
       #) Return :math:`{{{{\mathrm{ilt}}}_{N}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
 
-   #. If :math:`{\mathit{relop}}` is some :math:`\mathsf{gt}`, then:
+   #. If :math:`{\mathit{relop}}` is some :math:`\mathsf{gt}` :math:`{\mathit{sx}}`, then:
 
       1) Let :math:`({\mathsf{gt}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{relop}}`.
 
       #) Return :math:`{{{{\mathrm{igt}}}_{N}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
 
-   #. If :math:`{\mathit{relop}}` is some :math:`\mathsf{le}`, then:
+   #. If :math:`{\mathit{relop}}` is some :math:`\mathsf{le}` :math:`{\mathit{sx}}`, then:
 
       1) Let :math:`({\mathsf{le}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{relop}}`.
 
       #) Return :math:`{{{{\mathrm{ile}}}_{N}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
 
-   #. If :math:`{\mathit{relop}}` is some :math:`\mathsf{ge}`, then:
+   #. If :math:`{\mathit{relop}}` is some :math:`\mathsf{ge}` :math:`{\mathit{sx}}`, then:
 
       1) Let :math:`({\mathsf{ge}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{relop}}`.
 
@@ -8408,7 +8564,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       1) Let :math:`{{\mathsf{i}}{n}}_2` be :math:`{\mathit{numtype}''}`.
 
-      #) If :math:`{\mathit{cvtop}}` is some :math:`\mathsf{extend}`, then:
+      #) If :math:`{\mathit{cvtop}}` is some :math:`\mathsf{extend}` :math:`{\mathit{sx}}`, then:
 
          a) Let :math:`(\mathsf{extend}~{\mathit{sx}})` be the destructuring of :math:`{\mathit{cvtop}}`.
 
@@ -8430,7 +8586,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       1) Let :math:`{{\mathsf{i}}{n}}_2` be :math:`{\mathit{numtype}''}`.
 
-      #) If :math:`{\mathit{cvtop}}` is some :math:`\mathsf{trunc}`, then:
+      #) If :math:`{\mathit{cvtop}}` is some :math:`\mathsf{trunc}` :math:`{\mathit{sx}}`, then:
 
          a) Let :math:`(\mathsf{trunc}~{\mathit{sx}})` be the destructuring of :math:`{\mathit{cvtop}}`.
 
@@ -8438,7 +8594,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
          #) Return :math:`{{{{\mathrm{trunc}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{fN}}_1)}`.
 
-      #) If :math:`{\mathit{cvtop}}` is some :math:`\mathsf{trunc\_sat}`, then:
+      #) If :math:`{\mathit{cvtop}}` is some :math:`\mathsf{trunc\_sat}` :math:`{\mathit{sx}}`, then:
 
          a) Let :math:`(\mathsf{trunc\_sat}~{\mathit{sx}})` be the destructuring of :math:`{\mathit{cvtop}}`.
 
@@ -8454,7 +8610,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       1) Let :math:`{{\mathsf{f}}{n}}_2` be :math:`{\mathit{numtype}''}`.
 
-      #) If :math:`{\mathit{cvtop}}` is some :math:`\mathsf{convert}`, then:
+      #) If :math:`{\mathit{cvtop}}` is some :math:`\mathsf{convert}` :math:`{\mathit{sx}}`, then:
 
          a) Let :math:`(\mathsf{convert}~{\mathit{sx}})` be the destructuring of :math:`{\mathit{cvtop}}`.
 
@@ -8802,7 +8958,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
-   #. If :math:`{\mathit{vbinop}}` is some :math:`\mathsf{min}`, then:
+   #. If :math:`{\mathit{vbinop}}` is some :math:`\mathsf{min}` :math:`{\mathit{sx}}`, then:
 
       1) Let :math:`({\mathsf{min}}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{vbinop}}`.
 
@@ -8814,7 +8970,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
-   #. If :math:`{\mathit{vbinop}}` is some :math:`\mathsf{max}`, then:
+   #. If :math:`{\mathit{vbinop}}` is some :math:`\mathsf{max}` :math:`{\mathit{sx}}`, then:
 
       1) Let :math:`({\mathsf{max}}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{vbinop}}`.
 
@@ -8826,7 +8982,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
-   #. If :math:`{\mathit{vbinop}}` is some :math:`\mathsf{add\_sat}`, then:
+   #. If :math:`{\mathit{vbinop}}` is some :math:`\mathsf{add\_sat}` :math:`{\mathit{sx}}`, then:
 
       1) Let :math:`({\mathsf{add\_sat}}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{vbinop}}`.
 
@@ -8838,7 +8994,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
-   #. If :math:`{\mathit{vbinop}}` is some :math:`\mathsf{sub\_sat}`, then:
+   #. If :math:`{\mathit{vbinop}}` is some :math:`\mathsf{sub\_sat}` :math:`{\mathit{sx}}`, then:
 
       1) Let :math:`({\mathsf{sub\_sat}}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{vbinop}}`.
 
@@ -9013,7 +9169,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
-   #. If :math:`{\mathit{vrelop}}` is some :math:`\mathsf{lt}`, then:
+   #. If :math:`{\mathit{vrelop}}` is some :math:`\mathsf{lt}` :math:`{\mathit{sx}}`, then:
 
       1) Let :math:`(\mathsf{lt}~{\mathit{sx}})` be the destructuring of :math:`{\mathit{vrelop}}`.
 
@@ -9027,7 +9183,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
-   #. If :math:`{\mathit{vrelop}}` is some :math:`\mathsf{gt}`, then:
+   #. If :math:`{\mathit{vrelop}}` is some :math:`\mathsf{gt}` :math:`{\mathit{sx}}`, then:
 
       1) Let :math:`(\mathsf{gt}~{\mathit{sx}})` be the destructuring of :math:`{\mathit{vrelop}}`.
 
@@ -9041,7 +9197,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
-   #. If :math:`{\mathit{vrelop}}` is some :math:`\mathsf{le}`, then:
+   #. If :math:`{\mathit{vrelop}}` is some :math:`\mathsf{le}` :math:`{\mathit{sx}}`, then:
 
       1) Let :math:`(\mathsf{le}~{\mathit{sx}})` be the destructuring of :math:`{\mathit{vrelop}}`.
 
@@ -9055,7 +9211,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
-   #. If :math:`{\mathit{vrelop}}` is some :math:`\mathsf{ge}`, then:
+   #. If :math:`{\mathit{vrelop}}` is some :math:`\mathsf{ge}` :math:`{\mathit{sx}}`, then:
 
       1) Let :math:`(\mathsf{ge}~{\mathit{sx}})` be the destructuring of :math:`{\mathit{vrelop}}`.
 
@@ -9170,7 +9326,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       1) Let :math:`{{\mathsf{i}}{n}}_2` be :math:`{\mathit{lanetype}}`.
 
-      #) If :math:`{\mathit{vcvtop}}` is some :math:`\mathsf{extend}`, then:
+      #) If :math:`{\mathit{vcvtop}}` is some :math:`\mathsf{extend}` :math:`{\mathit{sx}}`, then:
 
          a) Let :math:`(\mathsf{extend}~{\mathit{sx}})` be the destructuring of :math:`{\mathit{vcvtop}}`.
 
@@ -9184,7 +9340,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       1) Let :math:`{{\mathsf{f}}{n}}_2` be :math:`{\mathit{lanetype}}`.
 
-      #) If :math:`{\mathit{vcvtop}}` is some :math:`\mathsf{convert}`, then:
+      #) If :math:`{\mathit{vcvtop}}` is some :math:`\mathsf{convert}` :math:`{\mathit{sx}}`, then:
 
          a) Let :math:`(\mathsf{convert}~{\mathit{sx}})` be the destructuring of :math:`{\mathit{vcvtop}}`.
 
@@ -9202,7 +9358,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    a. Let :math:`{{\mathsf{i}}{n}}_2` be :math:`{\mathit{lanetype}}`.
 
-   #. If :math:`{\mathit{vcvtop}}` is some :math:`\mathsf{trunc\_sat}`, then:
+   #. If :math:`{\mathit{vcvtop}}` is some :math:`\mathsf{trunc\_sat}` :math:`{\mathit{sx}}`, then:
 
       1) Let :math:`(\mathsf{trunc\_sat}~{\mathit{sx}})` be the destructuring of :math:`{\mathit{vcvtop}}`.
 
@@ -9248,7 +9404,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ...............................................................................................................................................
 
 
-1. If :math:`{\mathit{vextbinop}}` is some :math:`\mathsf{extmul}`, then:
+1. If :math:`{\mathit{vextbinop}}` is some :math:`\mathsf{extmul}` :math:`{\mathit{sx}}` :math:`{\mathit{half}}`, then:
 
    a. Let :math:`({\mathsf{extmul}}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{vextbinop}}`.
 
@@ -9281,7 +9437,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    a. Return :math:`{{\mathrm{ishl}}}_{N}({\mathit{lane}}, n)`.
 
-#. Assert: Due to validation, :math:`{\mathit{vshiftop}}` is some :math:`\mathsf{shr}`.
+#. Assert: Due to validation, :math:`{\mathit{vshiftop}}` is some :math:`\mathsf{shr}` :math:`{\mathit{sx}}`.
 
 #. Let :math:`(\mathsf{shr}~{\mathit{sx}})` be the destructuring of :math:`{\mathit{vshiftop}}`.
 
@@ -9331,7 +9487,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}'}^\ast}`.
 
-#. If :math:`{\mathit{externaddr}}_0` is some :math:`\mathsf{func}`, then:
+#. If :math:`{\mathit{externaddr}}_0` is some :math:`\mathsf{func}` :math:`{\mathit{funcaddr}}`, then:
 
    a. Let :math:`(\mathsf{func}~{\mathit{fa}})` be the destructuring of :math:`{\mathit{externaddr}}_0`.
 
@@ -9352,7 +9508,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}'}^\ast}`.
 
-#. If :math:`{\mathit{externaddr}}_0` is some :math:`\mathsf{global}`, then:
+#. If :math:`{\mathit{externaddr}}_0` is some :math:`\mathsf{global}` :math:`{\mathit{globaladdr}}`, then:
 
    a. Let :math:`(\mathsf{global}~{\mathit{ga}})` be the destructuring of :math:`{\mathit{externaddr}}_0`.
 
@@ -9373,7 +9529,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}'}^\ast}`.
 
-#. If :math:`{\mathit{externaddr}}_0` is some :math:`\mathsf{table}`, then:
+#. If :math:`{\mathit{externaddr}}_0` is some :math:`\mathsf{table}` :math:`{\mathit{tableaddr}}`, then:
 
    a. Let :math:`(\mathsf{table}~{\mathit{ta}})` be the destructuring of :math:`{\mathit{externaddr}}_0`.
 
@@ -9394,7 +9550,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}'}^\ast}`.
 
-#. If :math:`{\mathit{externaddr}}_0` is some :math:`\mathsf{mem}`, then:
+#. If :math:`{\mathit{externaddr}}_0` is some :math:`\mathsf{mem}` :math:`{\mathit{memaddr}}`, then:
 
    a. Let :math:`(\mathsf{mem}~{\mathit{ma}})` be the destructuring of :math:`{\mathit{externaddr}}_0`.
 
@@ -9629,7 +9785,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    a. Return :math:`\epsilon~\rightarrow~\epsilon`.
 
-#. If :math:`{\mathit{blocktype}}` is some , then:
+#. If :math:`{\mathit{blocktype}}` is some :math:`{{\mathit{valtype}}^?}`, then:
 
    a. Let :math:`{{\mathit{valtype}}_0^?}` be the destructuring of :math:`{\mathit{blocktype}}`.
 
@@ -9639,7 +9795,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       #) Return :math:`\epsilon~\rightarrow~t`.
 
-#. Assert: Due to validation, :math:`{\mathit{blocktype}}` is some .
+#. Assert: Due to validation, :math:`{\mathit{blocktype}}` is some :math:`{\mathit{funcidx}}`.
 
 #. Let :math:`x` be the destructuring of :math:`{\mathit{blocktype}}`.
 
@@ -9656,7 +9812,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{\mathit{externaddr}}_0~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}''}^\ast}`.
 
-#. If :math:`{\mathit{externaddr}}_0` is some :math:`\mathsf{func}`, then:
+#. If :math:`{\mathit{externaddr}}_0` is some :math:`\mathsf{func}` :math:`{\mathit{funcaddr}}`, then:
 
    a. Let :math:`(\mathsf{func}~{\mathit{fa}})` be the destructuring of :math:`{\mathit{externaddr}}_0`.
 
@@ -9677,7 +9833,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{\mathit{externaddr}}_0~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}''}^\ast}`.
 
-#. If :math:`{\mathit{externaddr}}_0` is some :math:`\mathsf{global}`, then:
+#. If :math:`{\mathit{externaddr}}_0` is some :math:`\mathsf{global}` :math:`{\mathit{globaladdr}}`, then:
 
    a. Let :math:`(\mathsf{global}~{\mathit{ga}})` be the destructuring of :math:`{\mathit{externaddr}}_0`.
 
@@ -9698,7 +9854,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{\mathit{externaddr}}_0~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}''}^\ast}`.
 
-#. If :math:`{\mathit{externaddr}}_0` is some :math:`\mathsf{table}`, then:
+#. If :math:`{\mathit{externaddr}}_0` is some :math:`\mathsf{table}` :math:`{\mathit{tableaddr}}`, then:
 
    a. Let :math:`(\mathsf{table}~{\mathit{ta}})` be the destructuring of :math:`{\mathit{externaddr}}_0`.
 
@@ -9719,7 +9875,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{\mathit{externaddr}}_0~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}''}^\ast}`.
 
-#. If :math:`{\mathit{externaddr}}_0` is some :math:`\mathsf{mem}`, then:
+#. If :math:`{\mathit{externaddr}}_0` is some :math:`\mathsf{mem}` :math:`{\mathit{memaddr}}`, then:
 
    a. Let :math:`(\mathsf{mem}~{\mathit{ma}})` be the destructuring of :math:`{\mathit{externaddr}}_0`.
 
@@ -9930,25 +10086,25 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ...........................................................................................................................................................................
 
 
-1. If :math:`{\mathit{externidx}}` is some :math:`\mathsf{func}`, then:
+1. If :math:`{\mathit{externidx}}` is some :math:`\mathsf{func}` :math:`{\mathit{funcidx}}`, then:
 
    a. Let :math:`(\mathsf{func}~x)` be the destructuring of :math:`{\mathit{externidx}}`.
 
    #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{func}~{{\mathit{fa}}^\ast}{}[x]) \}\end{array}`.
 
-#. If :math:`{\mathit{externidx}}` is some :math:`\mathsf{global}`, then:
+#. If :math:`{\mathit{externidx}}` is some :math:`\mathsf{global}` :math:`{\mathit{globalidx}}`, then:
 
    a. Let :math:`(\mathsf{global}~x)` be the destructuring of :math:`{\mathit{externidx}}`.
 
    #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{global}~{{\mathit{ga}}^\ast}{}[x]) \}\end{array}`.
 
-#. If :math:`{\mathit{externidx}}` is some :math:`\mathsf{table}`, then:
+#. If :math:`{\mathit{externidx}}` is some :math:`\mathsf{table}` :math:`{\mathit{tableidx}}`, then:
 
    a. Let :math:`(\mathsf{table}~x)` be the destructuring of :math:`{\mathit{externidx}}`.
 
    #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{table}~{{\mathit{ta}}^\ast}{}[x]) \}\end{array}`.
 
-#. Assert: :math:`{\mathit{externidx}}` is some :math:`\mathsf{mem}`.
+#. Assert: :math:`{\mathit{externidx}}` is some :math:`\mathsf{mem}` :math:`{\mathit{memidx}}`.
 
 #. Let :math:`(\mathsf{mem}~x)` be the destructuring of :math:`{\mathit{externidx}}`.
 
@@ -10036,7 +10192,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    a. Return :math:`(\mathsf{elem{.}drop}~i)`.
 
-#. Assert: :math:`{\mathit{elemmode}}` is some :math:`\mathsf{active}`.
+#. Assert: :math:`{\mathit{elemmode}}` is some :math:`\mathsf{active}` :math:`{\mathit{tableidx}}` :math:`{\mathit{expr}}`.
 
 #. Let :math:`(\mathsf{active}~x~{{\mathit{instr}}^\ast})` be the destructuring of :math:`{\mathit{elemmode}}`.
 
@@ -10053,7 +10209,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    a. Return :math:`\epsilon`.
 
-#. Assert: :math:`{\mathit{datamode}}` is some :math:`\mathsf{active}`.
+#. Assert: :math:`{\mathit{datamode}}` is some :math:`\mathsf{active}` :math:`{\mathit{memidx}}` :math:`{\mathit{expr}}`.
 
 #. Let :math:`(\mathsf{active}~{\mathit{memidx}}_0~{{\mathit{instr}}^\ast})` be the destructuring of :math:`{\mathit{datamode}}`.
 
@@ -13000,6 +13156,474 @@ watsup 0.4 generator
 == Prose Generation...
 Untranslated relation Expand: `%~~%`(deftype, comptype)
 Untranslated relation Expand_use: `%~~_%%`(typeuse, context, comptype)
+s: val
+a: REF.NULL
+s: val
+a: REF.NULL
+s: ref
+a: REF.NULL
+s: ref
+a: REF.NULL
+s: ref
+a: REF.NULL
+s: ref
+a: REF.NULL
+s: val
+a: REF.NULL
+s: val
+a: REF.I31_NUM
+s: val
+a: REF.NULL
+s: val
+a: REF.NULL
+s: val
+a: REF.EXTERN
+s: val
+a: REF.NULL
+s: funccode
+a: FUNC
+s: comptype
+a: FUNC
+s: val
+a: REF.FUNC_ADDR
+s: val
+a: REF.NULL
+s: comptype
+a: FUNC
+s: val
+a: REF.FUNC_ADDR
+s: val
+a: REF.NULL
+s: catch
+a: CATCH_ALL_REF
+s: catch
+a: CATCH_ALL
+s: catch
+a: CATCH_REF
+s: catch
+a: CATCH
+s: catch
+a: CATCH_ALL_REF
+s: catch
+a: CATCH_ALL
+s: val
+a: REF.EXN_ADDR
+s: comptype
+a: STRUCT
+s: val
+a: REF.NULL
+s: comptype
+a: STRUCT
+s: val
+a: REF.STRUCT_ADDR
+s: comptype
+a: ARRAY
+s: comptype
+a: ARRAY
+s: val
+a: REF.NULL
+s: comptype
+a: ARRAY
+s: val
+a: REF.ARRAY_ADDR
+s: val
+a: REF.NULL
+s: val
+a: REF.ARRAY_ADDR
+s: val
+a: REF.NULL
+s: val
+a: REF.ARRAY_ADDR
+s: val
+a: REF.NULL
+s: val
+a: REF.NULL
+s: comptype
+a: ARRAY
+s: val
+a: REF.ARRAY_ADDR
+s: val
+a: REF.ARRAY_ADDR
+s: val
+a: REF.NULL
+s: val
+a: REF.ARRAY_ADDR
+s: val
+a: REF.NULL
+s: comptype
+a: ARRAY
+s: val
+a: REF.ARRAY_ADDR
+s: vloadop_
+a: SHAPE
+s: vloadop_
+a: SPLAT
+s: vloadop_
+a: ZERO
+s: comptype
+a: FUNC
+s: comptype
+a: STRUCT
+s: val
+a: REF.NULL
+s: comptype
+a: STRUCT
+s: val
+a: REF.STRUCT_ADDR
+s: comptype
+a: ARRAY
+s: val
+a: REF.NULL
+s: comptype
+a: ARRAY
+s: val
+a: REF.ARRAY_ADDR
+s: externidx
+a: FUNC
+s: externidx
+a: GLOBAL
+s: externidx
+a: TABLE
+s: externidx
+a: MEM
+s: externidx
+a: TAG
+s: externidx
+a: FUNC
+s: externidx
+a: GLOBAL
+s: externidx
+a: TABLE
+s: externidx
+a: MEM
+s: externtype
+a: FUNC
+s: externtype
+a: GLOBAL
+s: externtype
+a: TABLE
+s: externtype
+a: MEM
+s: externtype
+a: TAG
+s: comptype
+a: STRUCT
+s: comptype
+a: ARRAY
+s: comptype
+a: FUNC
+s: externtype
+a: FUNC
+s: externtype
+a: GLOBAL
+s: externtype
+a: TABLE
+s: externtype
+a: MEM
+s: externtype
+a: TAG
+s: typevar
+a: _IDX
+s: typevar
+a: REC
+s: comptype
+a: STRUCT
+s: comptype
+a: ARRAY
+s: comptype
+a: FUNC
+s: externtype
+a: FUNC
+s: externtype
+a: GLOBAL
+s: externtype
+a: TABLE
+s: externtype
+a: MEM
+s: blocktype
+a: _RESULT
+s: blocktype
+a: _IDX
+s: instr
+a: SELECT
+s: instr
+a: BLOCK
+s: instr
+a: LOOP
+s: instr
+a: IF
+s: instr
+a: BR
+s: instr
+a: BR_IF
+s: instr
+a: BR_TABLE
+s: instr
+a: BR_ON_NULL
+s: instr
+a: BR_ON_NON_NULL
+s: instr
+a: BR_ON_CAST
+s: instr
+a: BR_ON_CAST_FAIL
+s: instr
+a: CALL
+s: instr
+a: CALL_REF
+s: instr
+a: CALL_INDIRECT
+s: instr
+a: RETURN_CALL
+s: instr
+a: RETURN_CALL_REF
+s: instr
+a: RETURN_CALL_INDIRECT
+s: instr
+a: CONST
+s: instr
+a: UNOP
+s: instr
+a: BINOP
+s: instr
+a: TESTOP
+s: instr
+a: RELOP
+s: instr
+a: CVTOP
+s: instr
+a: VCONST
+s: instr
+a: VVUNOP
+s: instr
+a: VVBINOP
+s: instr
+a: VVTERNOP
+s: instr
+a: VVTESTOP
+s: instr
+a: VUNOP
+s: instr
+a: VBINOP
+s: instr
+a: VTERNOP
+s: instr
+a: VTESTOP
+s: instr
+a: VRELOP
+s: instr
+a: VSHIFTOP
+s: instr
+a: VBITMASK
+s: instr
+a: VSWIZZLOP
+s: instr
+a: VSHUFFLE
+s: instr
+a: VEXTUNOP
+s: instr
+a: VEXTBINOP
+s: instr
+a: VNARROW
+s: instr
+a: VCVTOP
+s: instr
+a: VSPLAT
+s: instr
+a: VEXTRACT_LANE
+s: instr
+a: VREPLACE_LANE
+s: instr
+a: REF.NULL
+s: instr
+a: REF.TEST
+s: instr
+a: REF.CAST
+s: instr
+a: REF.FUNC
+s: instr
+a: I31.GET
+s: instr
+a: STRUCT.NEW
+s: instr
+a: STRUCT.NEW_DEFAULT
+s: instr
+a: STRUCT.GET
+s: instr
+a: STRUCT.SET
+s: instr
+a: ARRAY.NEW
+s: instr
+a: ARRAY.NEW_DEFAULT
+s: instr
+a: ARRAY.NEW_FIXED
+s: instr
+a: ARRAY.NEW_DATA
+s: instr
+a: ARRAY.NEW_ELEM
+s: instr
+a: ARRAY.GET
+s: instr
+a: ARRAY.SET
+s: instr
+a: ARRAY.FILL
+s: instr
+a: ARRAY.COPY
+s: instr
+a: ARRAY.INIT_DATA
+s: instr
+a: ARRAY.INIT_ELEM
+s: instr
+a: LOCAL.GET
+s: instr
+a: LOCAL.SET
+s: instr
+a: LOCAL.TEE
+s: instr
+a: GLOBAL.GET
+s: instr
+a: GLOBAL.SET
+s: instr
+a: TABLE.GET
+s: instr
+a: TABLE.SET
+s: instr
+a: TABLE.SIZE
+s: instr
+a: TABLE.GROW
+s: instr
+a: TABLE.FILL
+s: instr
+a: TABLE.COPY
+s: instr
+a: TABLE.INIT
+s: instr
+a: ELEM.DROP
+s: instr
+a: LOAD
+s: instr
+a: STORE
+s: instr
+a: VLOAD
+s: instr
+a: VLOAD_LANE
+s: instr
+a: VSTORE
+s: instr
+a: VSTORE_LANE
+s: instr
+a: MEMORY.SIZE
+s: instr
+a: MEMORY.GROW
+s: instr
+a: MEMORY.FILL
+s: instr
+a: MEMORY.COPY
+s: instr
+a: MEMORY.INIT
+s: instr
+a: DATA.DROP
+s: elemmode
+a: ACTIVE
+s: datamode
+a: ACTIVE
+s: typeuse
+a: _IDX
+s: typeuse
+a: REC
+s: heaptype
+a: _IDX
+s: heaptype
+a: REC
+s: valtype
+a: REF
+s: unop_
+a: EXTEND
+s: binop_
+a: DIV
+s: binop_
+a: REM
+s: binop_
+a: SHR
+s: relop_
+a: LT
+s: relop_
+a: GT
+s: relop_
+a: LE
+s: relop_
+a: GE
+s: cvtop__
+a: EXTEND
+s: cvtop__
+a: TRUNC
+s: cvtop__
+a: TRUNC_SAT
+s: cvtop__
+a: CONVERT
+s: vbinop_
+a: ADD_SAT
+s: vbinop_
+a: SUB_SAT
+s: vbinop_
+a: MIN
+s: vbinop_
+a: MAX
+s: vrelop_
+a: LT
+s: vrelop_
+a: GT
+s: vrelop_
+a: LE
+s: vrelop_
+a: GE
+s: vcvtop__
+a: EXTEND
+s: vcvtop__
+a: CONVERT
+s: vcvtop__
+a: TRUNC_SAT
+s: vcvtop__
+a: RELAXED_TRUNC
+s: vshiftop_
+a: SHR
+s: vextbinop__
+a: EXTMUL
+s: val
+a: CONST
+s: fieldval
+a: PACK
+s: externaddr
+a: FUNC
+s: externaddr
+a: GLOBAL
+s: externaddr
+a: TABLE
+s: externaddr
+a: MEM
+s: externaddr
+a: TAG
+s: comptype
+a: FUNC
+s: blocktype
+a: _IDX
+s: blocktype
+a: _RESULT
+s: externidx
+a: FUNC
+s: externidx
+a: GLOBAL
+s: externidx
+a: TABLE
+s: externidx
+a: MEM
+s: externidx
+a: TAG
+s: elemmode
+a: ACTIVE
+s: datamode
+a: ACTIVE
+s: comptype
+a: FUNC
 
 
 
@@ -17062,7 +17686,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`{\mathit{val}}` from the stack.
 
-#. If :math:`{\mathit{val}}` is some :math:`\mathsf{ref{.}null}`, then:
+#. If :math:`{\mathit{val}}` is some :math:`\mathsf{ref{.}null}` :math:`{\mathit{heaptype}}`, then:
 
    a. Execute the instruction :math:`(\mathsf{br}~l)`.
 
@@ -17079,7 +17703,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`{\mathit{val}}` from the stack.
 
-#. If :math:`{\mathit{val}}` is some :math:`\mathsf{ref{.}null}`, then:
+#. If :math:`{\mathit{val}}` is some :math:`\mathsf{ref{.}null}` :math:`{\mathit{heaptype}}`, then:
 
    a. Do nothing.
 
@@ -17293,7 +17917,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`{\mathit{ref}}` from the stack.
 
-#. If :math:`{\mathit{ref}}` is some :math:`\mathsf{ref{.}null}`, then:
+#. If :math:`{\mathit{ref}}` is some :math:`\mathsf{ref{.}null}` :math:`{\mathit{heaptype}}`, then:
 
    a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~1)` to the stack.
 
@@ -17310,7 +17934,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`{\mathit{ref}}` from the stack.
 
-#. If :math:`{\mathit{ref}}` is some :math:`\mathsf{ref{.}null}`, then:
+#. If :math:`{\mathit{ref}}` is some :math:`\mathsf{ref{.}null}` :math:`{\mathit{heaptype}}`, then:
 
    a. Trap.
 
@@ -17329,9 +17953,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`{\mathit{ref}}_1` from the stack.
 
-#. If :math:`{\mathit{ref}}_1` is some :math:`\mathsf{ref{.}null}`, then:
+#. If :math:`{\mathit{ref}}_1` is some :math:`\mathsf{ref{.}null}` :math:`{\mathit{heaptype}}`, then:
 
-   a. If :math:`{\mathit{ref}}_2` is some :math:`\mathsf{ref{.}null}`, then:
+   a. If :math:`{\mathit{ref}}_2` is some :math:`\mathsf{ref{.}null}` :math:`{\mathit{heaptype}}`, then:
 
       1) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~1)` to the stack.
 
@@ -17360,11 +17984,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`{\mathit{val}}` from the stack.
 
-#. If :math:`{\mathit{val}}` is some :math:`\mathsf{ref{.}null}`, then:
+#. If :math:`{\mathit{val}}` is some :math:`\mathsf{ref{.}null}` :math:`{\mathit{heaptype}}`, then:
 
    a. Trap.
 
-#. If :math:`{\mathit{val}}` is some :math:`\mathsf{ref{.}i{\scriptstyle 31}}`, then:
+#. If :math:`{\mathit{val}}` is some :math:`\mathsf{ref{.}i{\scriptstyle 31}}` :math:`{\mathit{u{\kern-0.1em\scriptstyle 31}}}`, then:
 
    a. Let :math:`(\mathsf{ref{.}i{\scriptstyle 31}}~i)` be the destructuring of :math:`{\mathit{val}}`.
 
@@ -17396,7 +18020,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`{\mathit{val}}` from the stack.
 
-#. If :math:`{\mathit{val}}` is some :math:`\mathsf{ref{.}null}`, then:
+#. If :math:`{\mathit{val}}` is some :math:`\mathsf{ref{.}null}` :math:`{\mathit{heaptype}}`, then:
 
    a. Push the value :math:`(\mathsf{ref{.}null}~\mathsf{extern})` to the stack.
 
@@ -17415,11 +18039,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`{\mathit{val}}` from the stack.
 
-#. If :math:`{\mathit{val}}` is some :math:`\mathsf{ref{.}null}`, then:
+#. If :math:`{\mathit{val}}` is some :math:`\mathsf{ref{.}null}` :math:`{\mathit{heaptype}}`, then:
 
    a. Push the value :math:`(\mathsf{ref{.}null}~\mathsf{any})` to the stack.
 
-#. If :math:`{\mathit{val}}` is some :math:`\mathsf{ref{.}extern}`, then:
+#. If :math:`{\mathit{val}}` is some :math:`\mathsf{ref{.}extern}` :math:`{\mathit{addrref}}`, then:
 
    a. Let :math:`(\mathsf{ref{.}extern}~{\mathit{addrref}})` be the destructuring of :math:`{\mathit{val}}`.
 
@@ -17923,11 +18547,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`{\mathit{val}'}` from the stack.
 
-#. If :math:`{\mathit{val}'}` is some :math:`\mathsf{ref{.}null}`, then:
+#. If :math:`{\mathit{val}'}` is some :math:`\mathsf{ref{.}null}` :math:`{\mathit{heaptype}}`, then:
 
    a. Trap.
 
-#. If :math:`{\mathit{val}'}` is some :math:`\mathsf{ref{.}func}`, then:
+#. If :math:`{\mathit{val}'}` is some :math:`\mathsf{ref{.}func}` :math:`{\mathit{funcaddr}}`, then:
 
    a. Let :math:`(\mathsf{ref{.}func}~a)` be the destructuring of :math:`{\mathit{val}'}`.
 
@@ -17935,13 +18559,13 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       1) Let :math:`{\mathit{fi}}` be :math:`z{.}\mathsf{funcs}{}[a]`.
 
-      #) Assert: Due to validation, :math:`{\mathit{fi}}{.}\mathsf{code}` is some :math:`\mathsf{func}`.
+      #) Assert: Due to validation, :math:`{\mathit{fi}}{.}\mathsf{code}` is some :math:`\mathsf{func}` :math:`{\mathit{typeidx}}` :math:`{{\mathit{local}}^\ast}` :math:`{\mathit{expr}}`.
 
       #) Let :math:`(\mathsf{func}~x~{{\mathit{local}}_0^\ast}~{{\mathit{instr}}^\ast})` be the destructuring of :math:`{\mathit{fi}}{.}\mathsf{code}`.
 
       #) Let :math:`{(\mathsf{local}~t)^\ast}` be :math:`{{\mathit{local}}_0^\ast}`.
 
-      #) Assert: Due to validation, the :ref:`expansion <aux-expand-deftype>` of :math:`{\mathit{fi}}{.}\mathsf{type}` is some :math:`\mathsf{func}`.
+      #) Assert: Due to validation, the :ref:`expansion <aux-expand-deftype>` of :math:`{\mathit{fi}}{.}\mathsf{type}` is some :math:`\mathsf{func}` :math:`{\mathit{functype}}`.
 
       #) Let :math:`(\mathsf{func}~{\mathit{functype}}_0)` be the destructuring of the :ref:`expansion <aux-expand-deftype>` of :math:`{\mathit{fi}}{.}\mathsf{type}`.
 
@@ -18013,7 +18637,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       #) Pop the value :math:`{\mathit{val}''}` from the stack.
 
-      #) If :math:`{\mathit{val}''}` is some :math:`\mathsf{ref{.}null}`, then:
+      #) If :math:`{\mathit{val}''}` is some :math:`\mathsf{ref{.}null}` :math:`{\mathit{heaptype}}`, then:
 
          a) Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
 
@@ -18021,13 +18645,13 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
          #) Trap.
 
-      #) If :math:`{\mathit{val}''}` is some :math:`\mathsf{ref{.}func}`, then:
+      #) If :math:`{\mathit{val}''}` is some :math:`\mathsf{ref{.}func}` :math:`{\mathit{funcaddr}}`, then:
 
          a) Let :math:`(\mathsf{ref{.}func}~a)` be the destructuring of :math:`{\mathit{val}''}`.
 
          #) If :math:`a < {|z{.}\mathsf{funcs}|}`, then:
 
-            1. Assert: Due to validation, the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{funcs}{}[a]{.}\mathsf{type}` is some :math:`\mathsf{func}`.
+            1. Assert: Due to validation, the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{funcs}{}[a]{.}\mathsf{type}` is some :math:`\mathsf{func}` :math:`{\mathit{functype}}`.
 
             #. Let :math:`(\mathsf{func}~{\mathit{functype}}_0)` be the destructuring of the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{funcs}{}[a]{.}\mathsf{type}`.
 
@@ -18058,11 +18682,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`{\mathit{val}'}` from the stack.
 
-#. If :math:`{\mathit{val}'}` is some :math:`\mathsf{ref{.}null}`, then:
+#. If :math:`{\mathit{val}'}` is some :math:`\mathsf{ref{.}null}` :math:`{\mathit{heaptype}}`, then:
 
    a. Trap.
 
-#. If :math:`{\mathit{val}'}` is some :math:`\mathsf{ref{.}exn}`, then:
+#. If :math:`{\mathit{val}'}` is some :math:`\mathsf{ref{.}exn}` :math:`{\mathit{exnaddr}}`, then:
 
    a. Let :math:`(\mathsf{ref{.}exn}~a)` be the destructuring of :math:`{\mathit{val}'}`.
 
@@ -18116,7 +18740,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
             1. Let :math:`{\mathit{catch}}_0~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}''}^\ast}`.
 
-            #. If :math:`{\mathit{catch}}_0` is some :math:`\mathsf{catch\_all}`, then:
+            #. If :math:`{\mathit{catch}}_0` is some :math:`\mathsf{catch\_all}` :math:`{\mathit{labelidx}}`, then:
 
                a. Let :math:`(\mathsf{catch\_all}~l)` be the destructuring of :math:`{\mathit{catch}}_0`.
 
@@ -18124,7 +18748,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
                #. Execute the instruction :math:`(\mathsf{br}~l)`.
 
-            #. Else if :math:`{\mathit{catch}}_0` is not :math:`\mathsf{catch\_all\_ref}`, then:
+            #. Else if :math:`{\mathit{catch}}_0` is not some :math:`\mathsf{catch\_all\_ref}` :math:`{\mathit{labelidx}}`, then:
 
                a. Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}''}^\ast}`.
 
@@ -18154,7 +18778,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
             #. Let :math:`{\mathit{catch}}_0~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}''}^\ast}`.
 
-            #. If :math:`{\mathit{catch}}_0` is some :math:`\mathsf{catch}`, then:
+            #. If :math:`{\mathit{catch}}_0` is some :math:`\mathsf{catch}` :math:`{\mathit{tagidx}}` :math:`{\mathit{labelidx}}`, then:
 
                a. Let :math:`(\mathsf{catch}~x~l)` be the destructuring of :math:`{\mathit{catch}}_0`.
 
@@ -18180,7 +18804,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
                   #) Execute the instruction :math:`\mathsf{throw\_ref}`.
 
-            #. Else if :math:`{\mathit{catch}}_0` is some :math:`\mathsf{catch\_ref}`, then:
+            #. Else if :math:`{\mathit{catch}}_0` is some :math:`\mathsf{catch\_ref}` :math:`{\mathit{tagidx}}` :math:`{\mathit{labelidx}}`, then:
 
                a. Let :math:`(\mathsf{catch\_ref}~x~l)` be the destructuring of :math:`{\mathit{catch}}_0`.
 
@@ -18224,7 +18848,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
             #. Else:
 
-               a. If :math:`{\mathit{catch}}_0` is some :math:`\mathsf{catch\_all}`, then:
+               a. If :math:`{\mathit{catch}}_0` is some :math:`\mathsf{catch\_all}` :math:`{\mathit{labelidx}}`, then:
 
                   1) Let :math:`(\mathsf{catch\_all}~l)` be the destructuring of :math:`{\mathit{catch}}_0`.
 
@@ -18232,7 +18856,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
                   #) Execute the instruction :math:`(\mathsf{br}~l)`.
 
-               #. Else if :math:`{\mathit{catch}}_0` is not :math:`\mathsf{catch\_all\_ref}`, then:
+               #. Else if :math:`{\mathit{catch}}_0` is not some :math:`\mathsf{catch\_all\_ref}` :math:`{\mathit{labelidx}}`, then:
 
                   1) Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}''}^\ast}`.
 
@@ -18348,7 +18972,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{types}{}[x]` is some :math:`\mathsf{struct}`.
+#. Assert: Due to validation, the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{types}{}[x]` is some :math:`\mathsf{struct}` :math:`{\mathit{structtype}}`.
 
 #. Let :math:`(\mathsf{struct}~{\mathit{structtype}}_0)` be the destructuring of the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{types}{}[x]`.
 
@@ -18375,17 +18999,17 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`{\mathit{val}}` from the stack.
 
-#. If :math:`{\mathit{val}}` is some :math:`\mathsf{ref{.}null}`, then:
+#. If :math:`{\mathit{val}}` is some :math:`\mathsf{ref{.}null}` :math:`{\mathit{heaptype}}`, then:
 
    a. Trap.
 
-#. If :math:`{\mathit{val}}` is some :math:`\mathsf{ref{.}struct}`, then:
+#. If :math:`{\mathit{val}}` is some :math:`\mathsf{ref{.}struct}` :math:`{\mathit{structaddr}}`, then:
 
    a. Let :math:`(\mathsf{ref{.}struct}~a)` be the destructuring of :math:`{\mathit{val}}`.
 
    #. If :math:`i < {|z{.}\mathsf{structs}{}[a]{.}\mathsf{fields}|}` and :math:`a < {|z{.}\mathsf{structs}|}`, then:
 
-      1) Assert: Due to validation, the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{types}{}[x]` is some :math:`\mathsf{struct}`.
+      1) Assert: Due to validation, the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{types}{}[x]` is some :math:`\mathsf{struct}` :math:`{\mathit{structtype}}`.
 
       #) Let :math:`(\mathsf{struct}~{\mathit{structtype}}_0)` be the destructuring of the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{types}{}[x]`.
 
@@ -18406,7 +19030,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{types}{}[x]` is some :math:`\mathsf{array}`.
+#. Assert: Due to validation, the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{types}{}[x]` is some :math:`\mathsf{array}` :math:`{\mathit{arraytype}}`.
 
 #. Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be the destructuring of the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{types}{}[x]`.
 
@@ -18460,7 +19084,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. Assert: Due to validation, the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{types}{}[x]` is some :math:`\mathsf{array}`.
+#. Assert: Due to validation, the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{types}{}[x]` is some :math:`\mathsf{array}` :math:`{\mathit{arraytype}}`.
 
 #. Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be the destructuring of the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{types}{}[x]`.
 
@@ -18493,11 +19117,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`{\mathit{val}}` from the stack.
 
-#. If :math:`{\mathit{val}}` is some :math:`\mathsf{ref{.}null}`, then:
+#. If :math:`{\mathit{val}}` is some :math:`\mathsf{ref{.}null}` :math:`{\mathit{heaptype}}`, then:
 
    a. Trap.
 
-#. If :math:`{\mathit{val}}` is some :math:`\mathsf{ref{.}array}`, then:
+#. If :math:`{\mathit{val}}` is some :math:`\mathsf{ref{.}array}` :math:`{\mathit{arrayaddr}}`, then:
 
    a. Let :math:`(\mathsf{ref{.}array}~a)` be the destructuring of :math:`{\mathit{val}}`.
 
@@ -18507,7 +19131,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. If :math:`i < {|z{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}|}` and :math:`a < {|z{.}\mathsf{arrays}|}`, then:
 
-      1) Assert: Due to validation, the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{types}{}[x]` is some :math:`\mathsf{array}`.
+      1) Assert: Due to validation, the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{types}{}[x]` is some :math:`\mathsf{array}` :math:`{\mathit{arraytype}}`.
 
       #) Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be the destructuring of the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{types}{}[x]`.
 
@@ -18526,11 +19150,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`{\mathit{val}}` from the stack.
 
-#. If :math:`{\mathit{val}}` is some :math:`\mathsf{ref{.}null}`, then:
+#. If :math:`{\mathit{val}}` is some :math:`\mathsf{ref{.}null}` :math:`{\mathit{heaptype}}`, then:
 
    a. Trap.
 
-#. If :math:`{\mathit{val}}` is some :math:`\mathsf{ref{.}array}`, then:
+#. If :math:`{\mathit{val}}` is some :math:`\mathsf{ref{.}array}` :math:`{\mathit{arrayaddr}}`, then:
 
    a. Let :math:`(\mathsf{ref{.}array}~a)` be the destructuring of :math:`{\mathit{val}}`.
 
@@ -18561,11 +19185,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`{\mathit{val}'}` from the stack.
 
-#. If :math:`{\mathit{val}'}` is some :math:`\mathsf{ref{.}null}`, then:
+#. If :math:`{\mathit{val}'}` is some :math:`\mathsf{ref{.}null}` :math:`{\mathit{heaptype}}`, then:
 
    a. Trap.
 
-#. If :math:`{\mathit{val}'}` is some :math:`\mathsf{ref{.}array}`, then:
+#. If :math:`{\mathit{val}'}` is some :math:`\mathsf{ref{.}array}` :math:`{\mathit{arrayaddr}}`, then:
 
    a. Let :math:`(\mathsf{ref{.}array}~a)` be the destructuring of :math:`{\mathit{val}'}`.
 
@@ -18628,19 +19252,19 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`{\mathit{val}'}` from the stack.
 
-#. If :math:`{\mathit{val}'}` is some :math:`\mathsf{ref{.}null}` and :math:`{\mathit{val}}` is reference value, then:
+#. If :math:`{\mathit{val}'}` is some :math:`\mathsf{ref{.}null}` :math:`{\mathit{heaptype}}` and :math:`{\mathit{val}}` is reference value, then:
 
    a. Trap.
 
-#. If :math:`{\mathit{val}}` is some :math:`\mathsf{ref{.}null}` and :math:`{\mathit{val}'}` is reference value, then:
+#. If :math:`{\mathit{val}}` is some :math:`\mathsf{ref{.}null}` :math:`{\mathit{heaptype}}` and :math:`{\mathit{val}'}` is reference value, then:
 
    a. Trap.
 
-#. If :math:`{\mathit{val}'}` is some :math:`\mathsf{ref{.}array}`, then:
+#. If :math:`{\mathit{val}'}` is some :math:`\mathsf{ref{.}array}` :math:`{\mathit{arrayaddr}}`, then:
 
    a. Let :math:`(\mathsf{ref{.}array}~a_1)` be the destructuring of :math:`{\mathit{val}'}`.
 
-   #. If :math:`{\mathit{val}}` is some :math:`\mathsf{ref{.}array}`, then:
+   #. If :math:`{\mathit{val}}` is some :math:`\mathsf{ref{.}array}` :math:`{\mathit{arrayaddr}}`, then:
 
       1) If :math:`a_1 < {|z{.}\mathsf{arrays}|}` and :math:`i_1 + n > {|z{.}\mathsf{arrays}{}[a_1]{.}\mathsf{fields}|}`, then:
 
@@ -18662,7 +19286,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       #) Else:
 
-         a) Assert: Due to validation, the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{types}{}[x_2]` is some :math:`\mathsf{array}`.
+         a) Assert: Due to validation, the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{types}{}[x_2]` is some :math:`\mathsf{array}` :math:`{\mathit{arraytype}}`.
 
          #) Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be the destructuring of the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{types}{}[x_2]`.
 
@@ -18739,11 +19363,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`{\mathit{val}}` from the stack.
 
-#. If :math:`{\mathit{val}}` is some :math:`\mathsf{ref{.}null}`, then:
+#. If :math:`{\mathit{val}}` is some :math:`\mathsf{ref{.}null}` :math:`{\mathit{heaptype}}`, then:
 
    a. Trap.
 
-#. If :math:`{\mathit{val}}` is some :math:`\mathsf{ref{.}array}`, then:
+#. If :math:`{\mathit{val}}` is some :math:`\mathsf{ref{.}array}` :math:`{\mathit{arrayaddr}}`, then:
 
    a. Let :math:`(\mathsf{ref{.}array}~a)` be the destructuring of :math:`{\mathit{val}}`.
 
@@ -18804,11 +19428,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`{\mathit{val}}` from the stack.
 
-#. If :math:`{\mathit{val}}` is some :math:`\mathsf{ref{.}null}`, then:
+#. If :math:`{\mathit{val}}` is some :math:`\mathsf{ref{.}null}` :math:`{\mathit{heaptype}}`, then:
 
    a. Trap.
 
-#. If :math:`{\mathit{val}}` is some :math:`\mathsf{ref{.}array}`, then:
+#. If :math:`{\mathit{val}}` is some :math:`\mathsf{ref{.}array}` :math:`{\mathit{arrayaddr}}`, then:
 
    a. Let :math:`(\mathsf{ref{.}array}~a)` be the destructuring of :math:`{\mathit{val}}`.
 
@@ -18816,7 +19440,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       1) Trap.
 
-   #. If the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{types}{}[x]` is some :math:`\mathsf{array}`, then:
+   #. If the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{types}{}[x]` is some :math:`\mathsf{array}` :math:`{\mathit{arraytype}}`, then:
 
       1) Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be the destructuring of the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{types}{}[x]`.
 
@@ -19145,7 +19769,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    a. Let :math:`{\mathit{vloadop\_{\scriptstyle 0}}}` be :math:`{{\mathit{vloadop}}^?}`.
 
-   #. If :math:`{\mathit{vloadop\_{\scriptstyle 0}}}` is some :math:`\mathsf{shape}`, then:
+   #. If :math:`{\mathit{vloadop\_{\scriptstyle 0}}}` is some :math:`\mathsf{shape}` :math:`{\mathit{sz}}` :math:`\mathsf{x}` :math:`M` :math:`\mathsf{\_}` :math:`{\mathit{sx}}`, then:
 
       1) Let :math:`({M}{\mathsf{x}}{K}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{vloadop\_{\scriptstyle 0}}}`.
 
@@ -19163,7 +19787,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
          #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
-   #. If :math:`{\mathit{vloadop\_{\scriptstyle 0}}}` is some :math:`\mathsf{splat}`, then:
+   #. If :math:`{\mathit{vloadop\_{\scriptstyle 0}}}` is some :math:`\mathsf{splat}` :math:`{\mathit{sz}}`, then:
 
       1) Let :math:`({N}{\mathsf{\_}}{\mathsf{splat}})` be the destructuring of :math:`{\mathit{vloadop\_{\scriptstyle 0}}}`.
 
@@ -19183,7 +19807,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
          #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
-   #. If :math:`{\mathit{vloadop\_{\scriptstyle 0}}}` is some :math:`\mathsf{zero}`, then:
+   #. If :math:`{\mathit{vloadop\_{\scriptstyle 0}}}` is some :math:`\mathsf{zero}` :math:`{\mathit{sz}}`, then:
 
       1) Let :math:`({N}{\mathsf{\_}}{\mathsf{zero}})` be the destructuring of :math:`{\mathit{vloadop\_{\scriptstyle 0}}}`.
 
@@ -19405,7 +20029,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Assert: Due to validation, :math:`x < {|z{.}\mathsf{tags}|}`.
 
-#. Assert: Due to validation, the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{tags}{}[x]{.}\mathsf{type}` is some :math:`\mathsf{func}`.
+#. Assert: Due to validation, the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{tags}{}[x]{.}\mathsf{type}` is some :math:`\mathsf{func}` :math:`{\mathit{functype}}`.
 
 #. Let :math:`(\mathsf{func}~{\mathit{functype}}_0)` be the destructuring of the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{tags}{}[x]{.}\mathsf{type}`.
 
@@ -19434,7 +20058,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{types}{}[x]` is some :math:`\mathsf{struct}`.
+#. Assert: Due to validation, the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{types}{}[x]` is some :math:`\mathsf{struct}` :math:`{\mathit{structtype}}`.
 
 #. Let :math:`(\mathsf{struct}~{\mathit{structtype}}_0)` be the destructuring of the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{types}{}[x]`.
 
@@ -19467,15 +20091,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`{\mathit{val}'}` from the stack.
 
-#. If :math:`{\mathit{val}'}` is some :math:`\mathsf{ref{.}null}`, then:
+#. If :math:`{\mathit{val}'}` is some :math:`\mathsf{ref{.}null}` :math:`{\mathit{heaptype}}`, then:
 
    a. Trap.
 
-#. If :math:`{\mathit{val}'}` is some :math:`\mathsf{ref{.}struct}`, then:
+#. If :math:`{\mathit{val}'}` is some :math:`\mathsf{ref{.}struct}` :math:`{\mathit{structaddr}}`, then:
 
    a. Let :math:`(\mathsf{ref{.}struct}~a)` be the destructuring of :math:`{\mathit{val}'}`.
 
-   #. Assert: Due to validation, the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{types}{}[x]` is some :math:`\mathsf{struct}`.
+   #. Assert: Due to validation, the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{types}{}[x]` is some :math:`\mathsf{struct}` :math:`{\mathit{structtype}}`.
 
    #. Let :math:`(\mathsf{struct}~{\mathit{structtype}}_0)` be the destructuring of the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{types}{}[x]`.
 
@@ -19492,7 +20116,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{types}{}[x]` is some :math:`\mathsf{array}`.
+#. Assert: Due to validation, the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{types}{}[x]` is some :math:`\mathsf{array}` :math:`{\mathit{arraytype}}`.
 
 #. Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be the destructuring of the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{types}{}[x]`.
 
@@ -19529,11 +20153,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`{\mathit{val}'}` from the stack.
 
-#. If :math:`{\mathit{val}'}` is some :math:`\mathsf{ref{.}null}`, then:
+#. If :math:`{\mathit{val}'}` is some :math:`\mathsf{ref{.}null}` :math:`{\mathit{heaptype}}`, then:
 
    a. Trap.
 
-#. If :math:`{\mathit{val}'}` is some :math:`\mathsf{ref{.}array}`, then:
+#. If :math:`{\mathit{val}'}` is some :math:`\mathsf{ref{.}array}` :math:`{\mathit{arrayaddr}}`, then:
 
    a. Let :math:`(\mathsf{ref{.}array}~a)` be the destructuring of :math:`{\mathit{val}'}`.
 
@@ -19541,7 +20165,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       1) Trap.
 
-   #. Assert: Due to validation, the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{types}{}[x]` is some :math:`\mathsf{array}`.
+   #. Assert: Due to validation, the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{types}{}[x]` is some :math:`\mathsf{array}` :math:`{\mathit{arraytype}}`.
 
    #. Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be the destructuring of the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{types}{}[x]`.
 
@@ -20011,7 +20635,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{\mathit{externidx}}_0~{{\mathit{xx}}^\ast}` be :math:`{{\mathit{externidx}'}^\ast}`.
 
-#. If :math:`{\mathit{externidx}}_0` is some :math:`\mathsf{func}`, then:
+#. If :math:`{\mathit{externidx}}_0` is some :math:`\mathsf{func}` :math:`{\mathit{funcidx}}`, then:
 
    a. Let :math:`(\mathsf{func}~x)` be the destructuring of :math:`{\mathit{externidx}}_0`.
 
@@ -20032,7 +20656,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{\mathit{externidx}}_0~{{\mathit{xx}}^\ast}` be :math:`{{\mathit{externidx}'}^\ast}`.
 
-#. If :math:`{\mathit{externidx}}_0` is some :math:`\mathsf{global}`, then:
+#. If :math:`{\mathit{externidx}}_0` is some :math:`\mathsf{global}` :math:`{\mathit{globalidx}}`, then:
 
    a. Let :math:`(\mathsf{global}~x)` be the destructuring of :math:`{\mathit{externidx}}_0`.
 
@@ -20053,7 +20677,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{\mathit{externidx}}_0~{{\mathit{xx}}^\ast}` be :math:`{{\mathit{externidx}'}^\ast}`.
 
-#. If :math:`{\mathit{externidx}}_0` is some :math:`\mathsf{table}`, then:
+#. If :math:`{\mathit{externidx}}_0` is some :math:`\mathsf{table}` :math:`{\mathit{tableidx}}`, then:
 
    a. Let :math:`(\mathsf{table}~x)` be the destructuring of :math:`{\mathit{externidx}}_0`.
 
@@ -20074,7 +20698,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{\mathit{externidx}}_0~{{\mathit{xx}}^\ast}` be :math:`{{\mathit{externidx}'}^\ast}`.
 
-#. If :math:`{\mathit{externidx}}_0` is some :math:`\mathsf{mem}`, then:
+#. If :math:`{\mathit{externidx}}_0` is some :math:`\mathsf{mem}` :math:`{\mathit{memidx}}`, then:
 
    a. Let :math:`(\mathsf{mem}~x)` be the destructuring of :math:`{\mathit{externidx}}_0`.
 
@@ -20095,7 +20719,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{\mathit{externidx}}_0~{{\mathit{xx}}^\ast}` be :math:`{{\mathit{externidx}'}^\ast}`.
 
-#. If :math:`{\mathit{externidx}}_0` is some :math:`\mathsf{tag}`, then:
+#. If :math:`{\mathit{externidx}}_0` is some :math:`\mathsf{tag}` :math:`{\mathit{tagidx}}`, then:
 
    a. Let :math:`(\mathsf{tag}~x)` be the destructuring of :math:`{\mathit{externidx}}_0`.
 
@@ -20199,25 +20823,25 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ..................................................................
 
 
-1. If :math:`{\mathit{externidx}}` is some :math:`\mathsf{func}`, then:
+1. If :math:`{\mathit{externidx}}` is some :math:`\mathsf{func}` :math:`{\mathit{funcidx}}`, then:
 
    a. Let :math:`(\mathsf{func}~{\mathit{funcidx}})` be the destructuring of :math:`{\mathit{externidx}}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{funcidx}}({\mathit{funcidx}})`.
 
-#. If :math:`{\mathit{externidx}}` is some :math:`\mathsf{global}`, then:
+#. If :math:`{\mathit{externidx}}` is some :math:`\mathsf{global}` :math:`{\mathit{globalidx}}`, then:
 
    a. Let :math:`(\mathsf{global}~{\mathit{globalidx}})` be the destructuring of :math:`{\mathit{externidx}}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{globalidx}}({\mathit{globalidx}})`.
 
-#. If :math:`{\mathit{externidx}}` is some :math:`\mathsf{table}`, then:
+#. If :math:`{\mathit{externidx}}` is some :math:`\mathsf{table}` :math:`{\mathit{tableidx}}`, then:
 
    a. Let :math:`(\mathsf{table}~{\mathit{tableidx}})` be the destructuring of :math:`{\mathit{externidx}}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{tableidx}}({\mathit{tableidx}})`.
 
-#. Assert: Due to validation, :math:`{\mathit{externidx}}` is some :math:`\mathsf{mem}`.
+#. Assert: Due to validation, :math:`{\mathit{externidx}}` is some :math:`\mathsf{mem}` :math:`{\mathit{memidx}}`.
 
 #. Let :math:`(\mathsf{mem}~{\mathit{memidx}})` be the destructuring of :math:`{\mathit{externidx}}`.
 
@@ -20603,7 +21227,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{\mathit{externtype}}_0~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}'}^\ast}`.
 
-#. If :math:`{\mathit{externtype}}_0` is some :math:`\mathsf{func}`, then:
+#. If :math:`{\mathit{externtype}}_0` is some :math:`\mathsf{func}` :math:`{\mathit{typeuse}}`, then:
 
    a. Let :math:`(\mathsf{func}~{\mathit{dt}})` be the destructuring of :math:`{\mathit{externtype}}_0`.
 
@@ -20624,7 +21248,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{\mathit{externtype}}_0~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}'}^\ast}`.
 
-#. If :math:`{\mathit{externtype}}_0` is some :math:`\mathsf{global}`, then:
+#. If :math:`{\mathit{externtype}}_0` is some :math:`\mathsf{global}` :math:`{\mathit{globaltype}}`, then:
 
    a. Let :math:`(\mathsf{global}~{\mathit{gt}})` be the destructuring of :math:`{\mathit{externtype}}_0`.
 
@@ -20645,7 +21269,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{\mathit{externtype}}_0~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}'}^\ast}`.
 
-#. If :math:`{\mathit{externtype}}_0` is some :math:`\mathsf{table}`, then:
+#. If :math:`{\mathit{externtype}}_0` is some :math:`\mathsf{table}` :math:`{\mathit{tabletype}}`, then:
 
    a. Let :math:`(\mathsf{table}~{\mathit{tt}})` be the destructuring of :math:`{\mathit{externtype}}_0`.
 
@@ -20666,7 +21290,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{\mathit{externtype}}_0~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}'}^\ast}`.
 
-#. If :math:`{\mathit{externtype}}_0` is some :math:`\mathsf{mem}`, then:
+#. If :math:`{\mathit{externtype}}_0` is some :math:`\mathsf{mem}` :math:`{\mathit{memtype}}`, then:
 
    a. Let :math:`(\mathsf{mem}~{\mathit{mt}})` be the destructuring of :math:`{\mathit{externtype}}_0`.
 
@@ -20687,7 +21311,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{\mathit{externtype}}_0~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}'}^\ast}`.
 
-#. If :math:`{\mathit{externtype}}_0` is some :math:`\mathsf{tag}`, then:
+#. If :math:`{\mathit{externtype}}_0` is some :math:`\mathsf{tag}` :math:`{\mathit{typeuse}}`, then:
 
    a. Let :math:`(\mathsf{tag}~{\mathit{jt}})` be the destructuring of :math:`{\mathit{externtype}}_0`.
 
@@ -20842,19 +21466,19 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .................................................................................
 
 
-1. If :math:`{\mathit{comptype}}` is some :math:`\mathsf{struct}`, then:
+1. If :math:`{\mathit{comptype}}` is some :math:`\mathsf{struct}` :math:`{\mathit{structtype}}`, then:
 
    a. Let :math:`(\mathsf{struct}~{{\mathit{yt}}^\ast})` be the destructuring of :math:`{\mathit{comptype}}`.
 
    #. Return :math:`(\mathsf{struct}~{{{\mathit{yt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}^\ast})`.
 
-#. If :math:`{\mathit{comptype}}` is some :math:`\mathsf{array}`, then:
+#. If :math:`{\mathit{comptype}}` is some :math:`\mathsf{array}` :math:`{\mathit{arraytype}}`, then:
 
    a. Let :math:`(\mathsf{array}~{\mathit{yt}})` be the destructuring of :math:`{\mathit{comptype}}`.
 
    #. Return :math:`(\mathsf{array}~{{\mathit{yt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]})`.
 
-#. Assert: Due to validation, :math:`{\mathit{comptype}}` is some :math:`\mathsf{func}`.
+#. Assert: Due to validation, :math:`{\mathit{comptype}}` is some :math:`\mathsf{func}` :math:`{\mathit{functype}}`.
 
 #. Let :math:`(\mathsf{func}~{\mathit{ft}})` be the destructuring of :math:`{\mathit{comptype}}`.
 
@@ -20928,31 +21552,31 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ...................................................................................
 
 
-1. If :math:`{\mathit{externtype}}` is some :math:`\mathsf{func}`, then:
+1. If :math:`{\mathit{externtype}}` is some :math:`\mathsf{func}` :math:`{\mathit{typeuse}}`, then:
 
    a. Let :math:`(\mathsf{func}~{\mathit{dt}})` be the destructuring of :math:`{\mathit{externtype}}`.
 
    #. Return :math:`(\mathsf{func}~{{\mathit{dt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]})`.
 
-#. If :math:`{\mathit{externtype}}` is some :math:`\mathsf{global}`, then:
+#. If :math:`{\mathit{externtype}}` is some :math:`\mathsf{global}` :math:`{\mathit{globaltype}}`, then:
 
    a. Let :math:`(\mathsf{global}~{\mathit{gt}})` be the destructuring of :math:`{\mathit{externtype}}`.
 
    #. Return :math:`(\mathsf{global}~{{\mathit{gt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]})`.
 
-#. If :math:`{\mathit{externtype}}` is some :math:`\mathsf{table}`, then:
+#. If :math:`{\mathit{externtype}}` is some :math:`\mathsf{table}` :math:`{\mathit{tabletype}}`, then:
 
    a. Let :math:`(\mathsf{table}~{\mathit{tt}})` be the destructuring of :math:`{\mathit{externtype}}`.
 
    #. Return :math:`(\mathsf{table}~{{\mathit{tt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]})`.
 
-#. If :math:`{\mathit{externtype}}` is some :math:`\mathsf{mem}`, then:
+#. If :math:`{\mathit{externtype}}` is some :math:`\mathsf{mem}` :math:`{\mathit{memtype}}`, then:
 
    a. Let :math:`(\mathsf{mem}~{\mathit{mt}})` be the destructuring of :math:`{\mathit{externtype}}`.
 
    #. Return :math:`(\mathsf{mem}~{{\mathit{mt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]})`.
 
-#. Assert: Due to validation, :math:`{\mathit{externtype}}` is some :math:`\mathsf{tag}`.
+#. Assert: Due to validation, :math:`{\mathit{externtype}}` is some :math:`\mathsf{tag}` :math:`{\mathit{typeuse}}`.
 
 #. Let :math:`(\mathsf{tag}~{\mathit{jt}})` be the destructuring of :math:`{\mathit{externtype}}`.
 
@@ -21146,13 +21770,13 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ..............................................................
 
 
-1. If :math:`{\mathit{typevar}}` is some , then:
+1. If :math:`{\mathit{typevar}}` is some :math:`{\mathit{typeidx}}`, then:
 
    a. Let :math:`{\mathit{typeidx}}` be the destructuring of :math:`{\mathit{typevar}}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}})`.
 
-#. Assert: Due to validation, :math:`{\mathit{typevar}}` is some :math:`\mathsf{rec}`.
+#. Assert: Due to validation, :math:`{\mathit{typevar}}` is some :math:`\mathsf{rec}` :math:`\mathbb{N}`.
 
 #. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
 
@@ -21281,19 +21905,19 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ................................................................
 
 
-1. If :math:`{\mathit{comptype}}` is some :math:`\mathsf{struct}`, then:
+1. If :math:`{\mathit{comptype}}` is some :math:`\mathsf{struct}` :math:`{\mathit{structtype}}`, then:
 
    a. Let :math:`(\mathsf{struct}~{\mathit{structtype}})` be the destructuring of :math:`{\mathit{comptype}}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{structtype}}({\mathit{structtype}})`.
 
-#. If :math:`{\mathit{comptype}}` is some :math:`\mathsf{array}`, then:
+#. If :math:`{\mathit{comptype}}` is some :math:`\mathsf{array}` :math:`{\mathit{arraytype}}`, then:
 
    a. Let :math:`(\mathsf{array}~{\mathit{arraytype}})` be the destructuring of :math:`{\mathit{comptype}}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{arraytype}}({\mathit{arraytype}})`.
 
-#. Assert: Due to validation, :math:`{\mathit{comptype}}` is some :math:`\mathsf{func}`.
+#. Assert: Due to validation, :math:`{\mathit{comptype}}` is some :math:`\mathsf{func}` :math:`{\mathit{functype}}`.
 
 #. Let :math:`(\mathsf{func}~{\mathit{functype}})` be the destructuring of :math:`{\mathit{comptype}}`.
 
@@ -21367,25 +21991,25 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ....................................................................
 
 
-1. If :math:`{\mathit{externtype}}` is some :math:`\mathsf{func}`, then:
+1. If :math:`{\mathit{externtype}}` is some :math:`\mathsf{func}` :math:`{\mathit{typeuse}}`, then:
 
    a. Let :math:`(\mathsf{func}~{\mathit{typeuse}})` be the destructuring of :math:`{\mathit{externtype}}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{typeuse}}({\mathit{typeuse}})`.
 
-#. If :math:`{\mathit{externtype}}` is some :math:`\mathsf{global}`, then:
+#. If :math:`{\mathit{externtype}}` is some :math:`\mathsf{global}` :math:`{\mathit{globaltype}}`, then:
 
    a. Let :math:`(\mathsf{global}~{\mathit{globaltype}})` be the destructuring of :math:`{\mathit{externtype}}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{globaltype}}({\mathit{globaltype}})`.
 
-#. If :math:`{\mathit{externtype}}` is some :math:`\mathsf{table}`, then:
+#. If :math:`{\mathit{externtype}}` is some :math:`\mathsf{table}` :math:`{\mathit{tabletype}}`, then:
 
    a. Let :math:`(\mathsf{table}~{\mathit{tabletype}})` be the destructuring of :math:`{\mathit{externtype}}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{tabletype}}({\mathit{tabletype}})`.
 
-#. Assert: Due to validation, :math:`{\mathit{externtype}}` is some :math:`\mathsf{mem}`.
+#. Assert: Due to validation, :math:`{\mathit{externtype}}` is some :math:`\mathsf{mem}` :math:`{\mathit{memtype}}`.
 
 #. Let :math:`(\mathsf{mem}~{\mathit{memtype}})` be the destructuring of :math:`{\mathit{externtype}}`.
 
@@ -21455,13 +22079,13 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ..................................................................
 
 
-1. If :math:`{\mathit{blocktype}}` is some , then:
+1. If :math:`{\mathit{blocktype}}` is some :math:`{{\mathit{valtype}}^?}`, then:
 
    a. Let :math:`{{\mathit{valtype}}^?}` be the destructuring of :math:`{\mathit{blocktype}}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{opt}}({{\mathrm{free}}_{\mathit{valtype}}({\mathit{valtype}})^?})`.
 
-#. Assert: Due to validation, :math:`{\mathit{blocktype}}` is some .
+#. Assert: Due to validation, :math:`{\mathit{blocktype}}` is some :math:`{\mathit{funcidx}}`.
 
 #. Let :math:`{\mathit{funcidx}}` be the destructuring of :math:`{\mathit{blocktype}}`.
 
@@ -21503,85 +22127,85 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    a. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{select}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{select}` :math:`{({{\mathit{valtype}}^\ast})^?}`, then:
 
    a. Let :math:`(\mathsf{select}~{({{\mathit{valtype}}^\ast})^?})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{opt}}({{\mathrm{free}}_{\mathit{list}}({{\mathrm{free}}_{\mathit{valtype}}({\mathit{valtype}})^\ast})^?})`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{block}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{block}` :math:`{\mathit{blocktype}}` :math:`{{\mathit{instr}}^\ast}`, then:
 
    a. Let :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{instr}}^\ast})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return `$free_blocktype(blocktype) ++ $free_block(instr*{instr <- instr*})`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{loop}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{loop}` :math:`{\mathit{blocktype}}` :math:`{{\mathit{instr}}^\ast}`, then:
 
    a. Let :math:`(\mathsf{loop}~{\mathit{blocktype}}~{{\mathit{instr}}^\ast})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return `$free_blocktype(blocktype) ++ $free_block(instr*{instr <- instr*})`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{if}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{if}` :math:`{\mathit{blocktype}}` :math:`{{\mathit{instr}}^\ast}` :math:`\mathsf{else}` :math:`{{\mathit{instr}}^\ast}`, then:
 
    a. Let :math:`(\mathsf{if}~{\mathit{blocktype}}~{{\mathit{instr}}_1^\ast}~\mathsf{else}~{{\mathit{instr}}_2^\ast})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return `$free_blocktype(blocktype) ++ $free_block(instr_1*{instr_1 <- instr_1*}) ++ $free_block(instr_2*{instr_2 <- instr_2*})`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{br}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{br}` :math:`{\mathit{labelidx}}`, then:
 
    a. Let :math:`(\mathsf{br}~{\mathit{labelidx}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{labelidx}}({\mathit{labelidx}})`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{br\_if}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{br\_if}` :math:`{\mathit{labelidx}}`, then:
 
    a. Let :math:`(\mathsf{br\_if}~{\mathit{labelidx}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{labelidx}}({\mathit{labelidx}})`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{br\_table}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{br\_table}` :math:`{{\mathit{labelidx}}^\ast}` :math:`{\mathit{labelidx}}`, then:
 
    a. Let :math:`(\mathsf{br\_table}~{{\mathit{labelidx}}^\ast}~{\mathit{labelidx}'})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return `$free_list($free_labelidx(labelidx)*{}) ++ $free_labelidx(labelidx)`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{br\_on\_null}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{br\_on\_null}` :math:`{\mathit{labelidx}}`, then:
 
    a. Let :math:`(\mathsf{br\_on\_null}~{\mathit{labelidx}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{labelidx}}({\mathit{labelidx}})`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{br\_on\_non\_null}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{br\_on\_non\_null}` :math:`{\mathit{labelidx}}`, then:
 
    a. Let :math:`(\mathsf{br\_on\_non\_null}~{\mathit{labelidx}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{labelidx}}({\mathit{labelidx}})`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{br\_on\_cast}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{br\_on\_cast}` :math:`{\mathit{labelidx}}` :math:`{\mathit{reftype}}` :math:`{\mathit{reftype}}`, then:
 
    a. Let :math:`(\mathsf{br\_on\_cast}~{\mathit{labelidx}}~{\mathit{reftype}}_1~{\mathit{reftype}}_2)` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return `$free_labelidx(labelidx) ++ $free_reftype(reftype_1) ++ $free_reftype(reftype_2)`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{br\_on\_cast\_fail}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{br\_on\_cast\_fail}` :math:`{\mathit{labelidx}}` :math:`{\mathit{reftype}}` :math:`{\mathit{reftype}}`, then:
 
    a. Let :math:`(\mathsf{br\_on\_cast\_fail}~{\mathit{labelidx}}~{\mathit{reftype}}_1~{\mathit{reftype}}_2)` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return `$free_labelidx(labelidx) ++ $free_reftype(reftype_1) ++ $free_reftype(reftype_2)`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{call}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{call}` :math:`{\mathit{funcidx}}`, then:
 
    a. Let :math:`(\mathsf{call}~{\mathit{funcidx}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{funcidx}}({\mathit{funcidx}})`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{call\_ref}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{call\_ref}` :math:`{\mathit{typeuse}}`, then:
 
    a. Let :math:`(\mathsf{call\_ref}~{\mathit{typeuse}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{typeuse}}({\mathit{typeuse}})`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{call\_indirect}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{call\_indirect}` :math:`{\mathit{tableidx}}` :math:`{\mathit{typeuse}}`, then:
 
    a. Let :math:`(\mathsf{call\_indirect}~{\mathit{tableidx}}~{\mathit{typeuse}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
@@ -21591,187 +22215,187 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    a. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{return\_call}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{return\_call}` :math:`{\mathit{funcidx}}`, then:
 
    a. Let :math:`(\mathsf{return\_call}~{\mathit{funcidx}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{funcidx}}({\mathit{funcidx}})`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{return\_call\_ref}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{return\_call\_ref}` :math:`{\mathit{typeuse}}`, then:
 
    a. Let :math:`(\mathsf{return\_call\_ref}~{\mathit{typeuse}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{typeuse}}({\mathit{typeuse}})`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{return\_call\_indirect}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{return\_call\_indirect}` :math:`{\mathit{tableidx}}` :math:`{\mathit{typeuse}}`, then:
 
    a. Let :math:`(\mathsf{return\_call\_indirect}~{\mathit{tableidx}}~{\mathit{typeuse}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return `$free_tableidx(tableidx) ++ $free_typeuse(typeuse)`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{const}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{const}` :math:`{\mathit{numtype}}` :math:`{{\mathit{num}}}_{{\mathit{numtype}}}`, then:
 
    a. Let :math:`({\mathit{numtype}}{.}\mathsf{const}~{\mathit{numlit}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{numtype}}({\mathit{numtype}})`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{unop}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{unop}` :math:`{\mathit{numtype}}` :math:`{{\mathit{unop}}}_{{\mathit{numtype}}}`, then:
 
    a. Let :math:`({\mathit{numtype}} {.} {\mathit{unop}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{numtype}}({\mathit{numtype}})`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{binop}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{binop}` :math:`{\mathit{numtype}}` :math:`{{\mathit{binop}}}_{{\mathit{numtype}}}`, then:
 
    a. Let :math:`({\mathit{numtype}} {.} {\mathit{binop}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{numtype}}({\mathit{numtype}})`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{testop}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{testop}` :math:`{\mathit{numtype}}` :math:`{{\mathit{testop}}}_{{\mathit{numtype}}}`, then:
 
    a. Let :math:`({\mathit{numtype}} {.} {\mathit{testop}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{numtype}}({\mathit{numtype}})`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{relop}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{relop}` :math:`{\mathit{numtype}}` :math:`{{\mathit{relop}}}_{{\mathit{numtype}}}`, then:
 
    a. Let :math:`({\mathit{numtype}} {.} {\mathit{relop}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{numtype}}({\mathit{numtype}})`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{cvtop}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{cvtop}` :math:`{\mathit{numtype}}_1` :math:`{\mathit{numtype}}_2` :math:`{{\mathit{cvtop}}}_{{\mathit{numtype}}_2, {\mathit{numtype}}_1}`, then:
 
    a. Let :math:`({\mathit{numtype}}_1 {.} {{\mathit{cvtop}}}{\mathsf{\_}}{{\mathit{numtype}}_2})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return `$free_numtype(numtype_1) ++ $free_numtype(numtype_2)`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{vconst}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{vconst}` :math:`{\mathit{vectype}}` :math:`{{\mathit{vec}}}_{{\mathit{vectype}}}`, then:
 
    a. Let :math:`({\mathit{vectype}}{.}\mathsf{const}~{\mathit{veclit}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{vectype}}({\mathit{vectype}})`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{vvunop}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{vvunop}` :math:`{\mathit{vectype}}` :math:`{\mathit{vvunop}}`, then:
 
    a. Let :math:`({\mathit{vectype}} {.} {\mathit{vvunop}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{vectype}}({\mathit{vectype}})`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{vvbinop}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{vvbinop}` :math:`{\mathit{vectype}}` :math:`{\mathit{vvbinop}}`, then:
 
    a. Let :math:`({\mathit{vectype}} {.} {\mathit{vvbinop}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{vectype}}({\mathit{vectype}})`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{vvternop}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{vvternop}` :math:`{\mathit{vectype}}` :math:`{\mathit{vvternop}}`, then:
 
    a. Let :math:`({\mathit{vectype}} {.} {\mathit{vvternop}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{vectype}}({\mathit{vectype}})`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{vvtestop}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{vvtestop}` :math:`{\mathit{vectype}}` :math:`{\mathit{vvtestop}}`, then:
 
    a. Let :math:`({\mathit{vectype}} {.} {\mathit{vvtestop}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{vectype}}({\mathit{vectype}})`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{vunop}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{vunop}` :math:`{\mathit{shape}}` :math:`{{\mathit{vunop}}}_{{\mathit{shape}}}`, then:
 
    a. Let :math:`({\mathit{shape}} {.} {\mathit{vunop}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{shape}}({\mathit{shape}})`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{vbinop}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{vbinop}` :math:`{\mathit{shape}}` :math:`{{\mathit{vbinop}}}_{{\mathit{shape}}}`, then:
 
    a. Let :math:`({\mathit{shape}} {.} {\mathit{vbinop}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{shape}}({\mathit{shape}})`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{vternop}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{vternop}` :math:`{\mathit{shape}}` :math:`{{\mathit{vternop}}}_{{\mathit{shape}}}`, then:
 
    a. Let :math:`({\mathit{shape}} {.} {\mathit{vternop}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{shape}}({\mathit{shape}})`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{vtestop}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{vtestop}` :math:`{\mathit{shape}}` :math:`{{\mathit{vtestop}}}_{{\mathit{shape}}}`, then:
 
    a. Let :math:`({\mathit{shape}} {.} {\mathit{vtestop}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{shape}}({\mathit{shape}})`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{vrelop}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{vrelop}` :math:`{\mathit{shape}}` :math:`{{\mathit{vrelop}}}_{{\mathit{shape}}}`, then:
 
    a. Let :math:`({\mathit{shape}} {.} {\mathit{vrelop}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{shape}}({\mathit{shape}})`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{vshiftop}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{vshiftop}` :math:`{\mathit{ishape}}` :math:`{{\mathit{vshiftop}}}_{{\mathit{ishape}}}`, then:
 
    a. Let :math:`({\mathit{ishape}} {.} {\mathit{vshiftop}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{shape}}({\mathit{ishape}})`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{vbitmask}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{vbitmask}` :math:`{\mathit{ishape}}`, then:
 
    a. Let :math:`({\mathit{ishape}}{.}\mathsf{bitmask})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{shape}}({\mathit{ishape}})`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{vswizzlop}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{vswizzlop}` :math:`{\mathit{bshape}}` :math:`{{\mathit{vswizzlop}}}_{{\mathit{bshape}}}`, then:
 
    a. Let :math:`({\mathit{bshape}} {.} {\mathit{vswizzlop}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{shape}}({\mathit{bshape}})`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{vshuffle}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{vshuffle}` :math:`{\mathit{bshape}}` :math:`{{\mathit{laneidx}}^\ast}`, then:
 
    a. Let :math:`({\mathit{bshape}}{.}\mathsf{shuffle}~{{\mathit{laneidx}}^\ast})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{shape}}({\mathit{bshape}})`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{vextunop}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{vextunop}` :math:`{\mathit{ishape}}_1` :math:`{\mathit{ishape}}_2` :math:`{{\mathit{vextunop}}}_{{\mathit{ishape}}_2, {\mathit{ishape}}_1}`, then:
 
    a. Let :math:`({\mathit{ishape}}_1 {.} {{\mathit{vextunop}}}{\mathsf{\_}}{{\mathit{ishape}}_2})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return `$free_shape(ishape_1) ++ $free_shape(ishape_2)`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{vextbinop}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{vextbinop}` :math:`{\mathit{ishape}}_1` :math:`{\mathit{ishape}}_2` :math:`{{\mathit{vextbinop}}}_{{\mathit{ishape}}_2, {\mathit{ishape}}_1}`, then:
 
    a. Let :math:`({\mathit{ishape}}_1 {.} {{\mathit{vextbinop}}}{\mathsf{\_}}{{\mathit{ishape}}_2})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return `$free_shape(ishape_1) ++ $free_shape(ishape_2)`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{vnarrow}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{vnarrow}` :math:`{\mathit{ishape}}_1` :math:`{\mathit{ishape}}_2` :math:`{\mathit{sx}}`, then:
 
    a. Let :math:`({{\mathit{ishape}}_1{.}\mathsf{narrow}}{\mathsf{\_}}{{\mathit{ishape}}_2}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return `$free_shape(ishape_1) ++ $free_shape(ishape_2)`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{vcvtop}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{vcvtop}` :math:`{\mathit{shape}}_1` :math:`{\mathit{shape}}_2` :math:`{{\mathit{vcvtop}}}_{{\mathit{shape}}_2, {\mathit{shape}}_1}` :math:`{{{\mathit{half}}}_{{\mathit{shape}}_2, {\mathit{shape}}_1}^?}` :math:`{{{\mathit{zero}}}_{{\mathit{shape}}_2, {\mathit{shape}}_1}^?}`, then:
 
    a. Let :math:`({\mathit{shape}}_1 {.} {{\mathit{vcvtop}}}{\mathsf{\_}}{{{\mathit{zero}}^?}}{\mathsf{\_}}{{\mathit{shape}}_2}{\mathsf{\_}}{{{\mathit{half}}^?}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return `$free_shape(shape_1) ++ $free_shape(shape_2)`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{vsplat}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{vsplat}` :math:`{\mathit{shape}}`, then:
 
    a. Let :math:`({\mathit{shape}}{.}\mathsf{splat})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{shape}}({\mathit{shape}})`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{vextract\_lane}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{vextract\_lane}` :math:`{\mathit{shape}}` :math:`{{\mathit{sx}}^?}` :math:`{\mathit{laneidx}}`, then:
 
    a. Let :math:`({{\mathit{shape}}{.}\mathsf{extract\_lane}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~{\mathit{laneidx}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{shape}}({\mathit{shape}})`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{vreplace\_lane}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{vreplace\_lane}` :math:`{\mathit{shape}}` :math:`{\mathit{laneidx}}`, then:
 
    a. Let :math:`({\mathit{shape}}{.}\mathsf{replace\_lane}~{\mathit{laneidx}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{shape}}({\mathit{shape}})`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{ref{.}null}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{ref{.}null}` :math:`{\mathit{heaptype}}`, then:
 
    a. Let :math:`(\mathsf{ref{.}null}~{\mathit{heaptype}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
@@ -21789,19 +22413,19 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    a. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{ref{.}test}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{ref{.}test}` :math:`{\mathit{reftype}}`, then:
 
    a. Let :math:`(\mathsf{ref{.}test}~{\mathit{reftype}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{reftype}}({\mathit{reftype}})`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{ref{.}cast}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{ref{.}cast}` :math:`{\mathit{reftype}}`, then:
 
    a. Let :math:`(\mathsf{ref{.}cast}~{\mathit{reftype}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{reftype}}({\mathit{reftype}})`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{ref{.}func}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{ref{.}func}` :math:`{\mathit{funcidx}}`, then:
 
    a. Let :math:`(\mathsf{ref{.}func}~{\mathit{funcidx}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
@@ -21811,69 +22435,69 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    a. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{i{\scriptstyle 31}{.}get}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{i{\scriptstyle 31}{.}get}` :math:`{\mathit{sx}}`, then:
 
    a. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{struct{.}new}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{struct{.}new}` :math:`{\mathit{typeidx}}`, then:
 
    a. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{struct{.}new\_default}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{struct{.}new\_default}` :math:`{\mathit{typeidx}}`, then:
 
    a. Let :math:`(\mathsf{struct{.}new\_default}~{\mathit{typeidx}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}})`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{struct{.}get}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{struct{.}get}` :math:`{{\mathit{sx}}^?}` :math:`{\mathit{typeidx}}` :math:`{\mathit{u{\kern-0.1em\scriptstyle 32}}}`, then:
 
    a. Let :math:`({\mathsf{struct{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~{\mathit{typeidx}}~{\mathit{u{\kern-0.1em\scriptstyle 32}}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}})`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{struct{.}set}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{struct{.}set}` :math:`{\mathit{typeidx}}` :math:`{\mathit{u{\kern-0.1em\scriptstyle 32}}}`, then:
 
    a. Let :math:`(\mathsf{struct{.}set}~{\mathit{typeidx}}~{\mathit{u{\kern-0.1em\scriptstyle 32}}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}})`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{array{.}new}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{array{.}new}` :math:`{\mathit{typeidx}}`, then:
 
    a. Let :math:`(\mathsf{array{.}new}~{\mathit{typeidx}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}})`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{array{.}new\_default}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{array{.}new\_default}` :math:`{\mathit{typeidx}}`, then:
 
    a. Let :math:`(\mathsf{array{.}new\_default}~{\mathit{typeidx}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}})`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{array{.}new\_fixed}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{array{.}new\_fixed}` :math:`{\mathit{typeidx}}` :math:`{\mathit{u{\kern-0.1em\scriptstyle 32}}}`, then:
 
    a. Let :math:`(\mathsf{array{.}new\_fixed}~{\mathit{typeidx}}~{\mathit{u{\kern-0.1em\scriptstyle 32}}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}})`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{array{.}new\_data}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{array{.}new\_data}` :math:`{\mathit{typeidx}}` :math:`{\mathit{dataidx}}`, then:
 
    a. Let :math:`(\mathsf{array{.}new\_data}~{\mathit{typeidx}}~{\mathit{dataidx}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return `$free_typeidx(typeidx) ++ $free_dataidx(dataidx)`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{array{.}new\_elem}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{array{.}new\_elem}` :math:`{\mathit{typeidx}}` :math:`{\mathit{elemidx}}`, then:
 
    a. Let :math:`(\mathsf{array{.}new\_elem}~{\mathit{typeidx}}~{\mathit{elemidx}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return `$free_typeidx(typeidx) ++ $free_elemidx(elemidx)`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{array{.}get}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{array{.}get}` :math:`{{\mathit{sx}}^?}` :math:`{\mathit{typeidx}}`, then:
 
    a. Let :math:`({\mathsf{array{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~{\mathit{typeidx}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}})`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{array{.}set}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{array{.}set}` :math:`{\mathit{typeidx}}`, then:
 
    a. Let :math:`(\mathsf{array{.}set}~{\mathit{typeidx}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
@@ -21883,25 +22507,25 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    a. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{array{.}fill}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{array{.}fill}` :math:`{\mathit{typeidx}}`, then:
 
    a. Let :math:`(\mathsf{array{.}fill}~{\mathit{typeidx}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}})`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{array{.}copy}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{array{.}copy}` :math:`{\mathit{typeidx}}` :math:`{\mathit{typeidx}}`, then:
 
    a. Let :math:`(\mathsf{array{.}copy}~{\mathit{typeidx}}_1~{\mathit{typeidx}}_2)` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return `$free_typeidx(typeidx_1) ++ $free_typeidx(typeidx_2)`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{array{.}init\_data}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{array{.}init\_data}` :math:`{\mathit{typeidx}}` :math:`{\mathit{dataidx}}`, then:
 
    a. Let :math:`(\mathsf{array{.}init\_data}~{\mathit{typeidx}}~{\mathit{dataidx}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return `$free_typeidx(typeidx) ++ $free_dataidx(dataidx)`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{array{.}init\_elem}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{array{.}init\_elem}` :math:`{\mathit{typeidx}}` :math:`{\mathit{elemidx}}`, then:
 
    a. Let :math:`(\mathsf{array{.}init\_elem}~{\mathit{typeidx}}~{\mathit{elemidx}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
@@ -21915,151 +22539,151 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    a. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{local{.}get}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{local{.}get}` :math:`{\mathit{localidx}}`, then:
 
    a. Let :math:`(\mathsf{local{.}get}~{\mathit{localidx}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{localidx}}({\mathit{localidx}})`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{local{.}set}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{local{.}set}` :math:`{\mathit{localidx}}`, then:
 
    a. Let :math:`(\mathsf{local{.}set}~{\mathit{localidx}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{localidx}}({\mathit{localidx}})`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{local{.}tee}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{local{.}tee}` :math:`{\mathit{localidx}}`, then:
 
    a. Let :math:`(\mathsf{local{.}tee}~{\mathit{localidx}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{localidx}}({\mathit{localidx}})`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{global{.}get}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{global{.}get}` :math:`{\mathit{globalidx}}`, then:
 
    a. Let :math:`(\mathsf{global{.}get}~{\mathit{globalidx}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{globalidx}}({\mathit{globalidx}})`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{global{.}set}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{global{.}set}` :math:`{\mathit{globalidx}}`, then:
 
    a. Let :math:`(\mathsf{global{.}set}~{\mathit{globalidx}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{globalidx}}({\mathit{globalidx}})`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{table{.}get}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{table{.}get}` :math:`{\mathit{tableidx}}`, then:
 
    a. Let :math:`(\mathsf{table{.}get}~{\mathit{tableidx}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{tableidx}}({\mathit{tableidx}})`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{table{.}set}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{table{.}set}` :math:`{\mathit{tableidx}}`, then:
 
    a. Let :math:`(\mathsf{table{.}set}~{\mathit{tableidx}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{tableidx}}({\mathit{tableidx}})`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{table{.}size}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{table{.}size}` :math:`{\mathit{tableidx}}`, then:
 
    a. Let :math:`(\mathsf{table{.}size}~{\mathit{tableidx}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{tableidx}}({\mathit{tableidx}})`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{table{.}grow}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{table{.}grow}` :math:`{\mathit{tableidx}}`, then:
 
    a. Let :math:`(\mathsf{table{.}grow}~{\mathit{tableidx}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{tableidx}}({\mathit{tableidx}})`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{table{.}fill}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{table{.}fill}` :math:`{\mathit{tableidx}}`, then:
 
    a. Let :math:`(\mathsf{table{.}fill}~{\mathit{tableidx}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{tableidx}}({\mathit{tableidx}})`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{table{.}copy}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{table{.}copy}` :math:`{\mathit{tableidx}}` :math:`{\mathit{tableidx}}`, then:
 
    a. Let :math:`(\mathsf{table{.}copy}~{\mathit{tableidx}}_1~{\mathit{tableidx}}_2)` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return `$free_tableidx(tableidx_1) ++ $free_tableidx(tableidx_2)`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{table{.}init}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{table{.}init}` :math:`{\mathit{tableidx}}` :math:`{\mathit{elemidx}}`, then:
 
    a. Let :math:`(\mathsf{table{.}init}~{\mathit{tableidx}}~{\mathit{elemidx}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return `$free_tableidx(tableidx) ++ $free_elemidx(elemidx)`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{elem{.}drop}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{elem{.}drop}` :math:`{\mathit{elemidx}}`, then:
 
    a. Let :math:`(\mathsf{elem{.}drop}~{\mathit{elemidx}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{elemidx}}({\mathit{elemidx}})`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{load}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{load}` :math:`{\mathit{numtype}}` :math:`{{{\mathit{loadop}}}_{{\mathit{numtype}}}^?}` :math:`{\mathit{memidx}}` :math:`{\mathit{memarg}}`, then:
 
    a. Let :math:`({{\mathit{numtype}}{.}\mathsf{load}}{{{\mathit{loadop}}^?}}~{\mathit{memidx}}~{\mathit{memarg}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return `$free_numtype(numtype) ++ $free_memidx(memidx)`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{store}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{store}` :math:`{\mathit{numtype}}` :math:`{{{\mathit{storeop}}}_{{\mathit{numtype}}}^?}` :math:`{\mathit{memidx}}` :math:`{\mathit{memarg}}`, then:
 
    a. Let :math:`({{\mathit{numtype}}{.}\mathsf{store}}{{{\mathit{storeop}}^?}}~{\mathit{memidx}}~{\mathit{memarg}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return `$free_numtype(numtype) ++ $free_memidx(memidx)`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{vload}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{vload}` :math:`{\mathit{vectype}}` :math:`{{{\mathit{vloadop}}}_{{\mathit{vectype}}}^?}` :math:`{\mathit{memidx}}` :math:`{\mathit{memarg}}`, then:
 
    a. Let :math:`({{\mathit{vectype}}{.}\mathsf{load}}{{{\mathit{vloadop}}^?}}~{\mathit{memidx}}~{\mathit{memarg}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return `$free_vectype(vectype) ++ $free_memidx(memidx)`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{vload\_lane}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{vload\_lane}` :math:`{\mathit{vectype}}` :math:`{\mathit{sz}}` :math:`{\mathit{memidx}}` :math:`{\mathit{memarg}}` :math:`{\mathit{laneidx}}`, then:
 
    a. Let :math:`({{\mathit{vectype}}{.}\mathsf{load}}{{\mathit{sz}}}{\mathsf{\_}}{\mathsf{lane}}~{\mathit{memidx}}~{\mathit{memarg}}~{\mathit{laneidx}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return `$free_vectype(vectype) ++ $free_memidx(memidx)`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{vstore}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{vstore}` :math:`{\mathit{vectype}}` :math:`{\mathit{memidx}}` :math:`{\mathit{memarg}}`, then:
 
    a. Let :math:`({\mathit{vectype}}{.}\mathsf{store}~{\mathit{memidx}}~{\mathit{memarg}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return `$free_vectype(vectype) ++ $free_memidx(memidx)`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{vstore\_lane}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{vstore\_lane}` :math:`{\mathit{vectype}}` :math:`{\mathit{sz}}` :math:`{\mathit{memidx}}` :math:`{\mathit{memarg}}` :math:`{\mathit{laneidx}}`, then:
 
    a. Let :math:`({{\mathit{vectype}}{.}\mathsf{store}}{{\mathit{sz}}}{\mathsf{\_}}{\mathsf{lane}}~{\mathit{memidx}}~{\mathit{memarg}}~{\mathit{laneidx}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return `$free_vectype(vectype) ++ $free_memidx(memidx)`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{memory{.}size}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{memory{.}size}` :math:`{\mathit{memidx}}`, then:
 
    a. Let :math:`(\mathsf{memory{.}size}~{\mathit{memidx}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{memidx}}({\mathit{memidx}})`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{memory{.}grow}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{memory{.}grow}` :math:`{\mathit{memidx}}`, then:
 
    a. Let :math:`(\mathsf{memory{.}grow}~{\mathit{memidx}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{memidx}}({\mathit{memidx}})`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{memory{.}fill}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{memory{.}fill}` :math:`{\mathit{memidx}}`, then:
 
    a. Let :math:`(\mathsf{memory{.}fill}~{\mathit{memidx}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{memidx}}({\mathit{memidx}})`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{memory{.}copy}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{memory{.}copy}` :math:`{\mathit{memidx}}` :math:`{\mathit{memidx}}`, then:
 
    a. Let :math:`(\mathsf{memory{.}copy}~{\mathit{memidx}}_1~{\mathit{memidx}}_2)` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return `$free_memidx(memidx_1) ++ $free_memidx(memidx_2)`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{memory{.}init}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{memory{.}init}` :math:`{\mathit{memidx}}` :math:`{\mathit{dataidx}}`, then:
 
    a. Let :math:`(\mathsf{memory{.}init}~{\mathit{memidx}}~{\mathit{dataidx}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return `$free_memidx(memidx) ++ $free_dataidx(dataidx)`.
 
-#. Assert: Due to validation, :math:`{\mathit{instr}'}` is some :math:`\mathsf{data{.}drop}`.
+#. Assert: Due to validation, :math:`{\mathit{instr}'}` is some :math:`\mathsf{data{.}drop}` :math:`{\mathit{dataidx}}`.
 
 #. Let :math:`(\mathsf{data{.}drop}~{\mathit{dataidx}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
@@ -22135,7 +22759,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ................................................................
 
 
-1. If :math:`{\mathit{elemmode}}` is some :math:`\mathsf{active}`, then:
+1. If :math:`{\mathit{elemmode}}` is some :math:`\mathsf{active}` :math:`{\mathit{tableidx}}` :math:`{\mathit{expr}}`, then:
 
    a. Let :math:`(\mathsf{active}~{\mathit{tableidx}}~{\mathit{expr}})` be the destructuring of :math:`{\mathit{elemmode}}`.
 
@@ -22161,7 +22785,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ................................................................
 
 
-1. If :math:`{\mathit{datamode}}` is some :math:`\mathsf{active}`, then:
+1. If :math:`{\mathit{datamode}}` is some :math:`\mathsf{active}` :math:`{\mathit{memidx}}` :math:`{\mathit{expr}}`, then:
 
    a. Let :math:`(\mathsf{active}~{\mathit{memidx}}~{\mathit{expr}})` be the destructuring of :math:`{\mathit{datamode}}`.
 
@@ -22290,13 +22914,13 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    a. Return true.
 
-#. If :math:`{\mathit{typeuse}}` is some , then:
+#. If :math:`{\mathit{typeuse}}` is some :math:`{\mathit{typeidx}}`, then:
 
    a. Let :math:`{\mathit{typeidx}}` be the destructuring of :math:`{\mathit{typeuse}}`.
 
    #. Return :math:`{\mathit{typeidx}} < x`.
 
-#. Assert: Due to validation, :math:`{\mathit{typeuse}}` is some :math:`\mathsf{rec}`.
+#. Assert: Due to validation, :math:`{\mathit{typeuse}}` is some :math:`\mathsf{rec}` :math:`\mathbb{N}`.
 
 #. Let :math:`(\mathsf{rec}~j)` be the destructuring of :math:`{\mathit{typeuse}}`.
 
@@ -22313,13 +22937,13 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. Return :math:`{\mathrm{unroll}}({\mathit{deftype}})`.
 
-#. If :math:`{\mathit{heaptype}}` is some , then:
+#. If :math:`{\mathit{heaptype}}` is some :math:`{\mathit{typeidx}}`, then:
 
    a. Let :math:`{\mathit{typeidx}}` be the destructuring of :math:`{\mathit{heaptype}}`.
 
    #. Return :math:`{\mathrm{unroll}}(C{.}\mathsf{types}{}[{\mathit{typeidx}}])`.
 
-#. Assert: Due to validation, :math:`{\mathit{heaptype}}` is some :math:`\mathsf{rec}`.
+#. Assert: Due to validation, :math:`{\mathit{heaptype}}` is some :math:`\mathsf{rec}` :math:`\mathbb{N}`.
 
 #. Let :math:`(\mathsf{rec}~i)` be the destructuring of :math:`{\mathit{heaptype}}`.
 
@@ -22348,7 +22972,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. Return :math:`({\mathsf{v}}{N}{.}\mathsf{const}~0)`.
 
-#. Assert: Due to validation, :math:`{\mathit{valtype}}` is some :math:`\mathsf{ref}`.
+#. Assert: Due to validation, :math:`{\mathit{valtype}}` is some :math:`\mathsf{ref}` :math:`{\mathsf{null}^?}` :math:`{\mathit{heaptype}}`.
 
 #. Let :math:`(\mathsf{ref}~{\mathit{NULL}}_{{\mathit{opt}}_0}~{\mathit{ht}})` be the destructuring of :math:`{\mathit{valtype}}`.
 
@@ -22743,7 +23367,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       1) Return :math:`{{\mathrm{ipopcnt}}}_{N}(i)`.
 
-   #. Assert: Due to validation, :math:`{\mathit{unop}}` is some :math:`\mathsf{extend}`.
+   #. Assert: Due to validation, :math:`{\mathit{unop}}` is some :math:`\mathsf{extend}` :math:`{\mathit{sz}}`.
 
    #. Let :math:`({\mathsf{extend}}{M}{\mathsf{\_}}{\mathsf{s}})` be the destructuring of :math:`{\mathit{unop}}`.
 
@@ -22808,13 +23432,13 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       1) Return :math:`{{\mathrm{imul}}}_{N}(i_1, i_2)`.
 
-   #. If :math:`{\mathit{binop}}` is some :math:`\mathsf{div}`, then:
+   #. If :math:`{\mathit{binop}}` is some :math:`\mathsf{div}` :math:`{\mathit{sx}}`, then:
 
       1) Let :math:`({\mathsf{div}}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{binop}}`.
 
       #) Return :math:`{{{{\mathrm{idiv}}}_{N}^{{\mathit{sx}}}}}{(i_1, i_2)}`.
 
-   #. If :math:`{\mathit{binop}}` is some :math:`\mathsf{rem}`, then:
+   #. If :math:`{\mathit{binop}}` is some :math:`\mathsf{rem}` :math:`{\mathit{sx}}`, then:
 
       1) Let :math:`({\mathsf{rem}}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{binop}}`.
 
@@ -22836,7 +23460,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       1) Return :math:`{{\mathrm{ishl}}}_{N}(i_1, i_2)`.
 
-   #. If :math:`{\mathit{binop}}` is some :math:`\mathsf{shr}`, then:
+   #. If :math:`{\mathit{binop}}` is some :math:`\mathsf{shr}` :math:`{\mathit{sx}}`, then:
 
       1) Let :math:`({\mathsf{shr}}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{binop}}`.
 
@@ -22914,25 +23538,25 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       1) Return :math:`{{\mathrm{ine}}}_{N}(i_1, i_2)`.
 
-   #. If :math:`{\mathit{relop}}` is some :math:`\mathsf{lt}`, then:
+   #. If :math:`{\mathit{relop}}` is some :math:`\mathsf{lt}` :math:`{\mathit{sx}}`, then:
 
       1) Let :math:`({\mathsf{lt}}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{relop}}`.
 
       #) Return :math:`{{{{\mathrm{ilt}}}_{N}^{{\mathit{sx}}}}}{(i_1, i_2)}`.
 
-   #. If :math:`{\mathit{relop}}` is some :math:`\mathsf{gt}`, then:
+   #. If :math:`{\mathit{relop}}` is some :math:`\mathsf{gt}` :math:`{\mathit{sx}}`, then:
 
       1) Let :math:`({\mathsf{gt}}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{relop}}`.
 
       #) Return :math:`{{{{\mathrm{igt}}}_{N}^{{\mathit{sx}}}}}{(i_1, i_2)}`.
 
-   #. If :math:`{\mathit{relop}}` is some :math:`\mathsf{le}`, then:
+   #. If :math:`{\mathit{relop}}` is some :math:`\mathsf{le}` :math:`{\mathit{sx}}`, then:
 
       1) Let :math:`({\mathsf{le}}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{relop}}`.
 
       #) Return :math:`{{{{\mathrm{ile}}}_{N}^{{\mathit{sx}}}}}{(i_1, i_2)}`.
 
-   #. If :math:`{\mathit{relop}}` is some :math:`\mathsf{ge}`, then:
+   #. If :math:`{\mathit{relop}}` is some :math:`\mathsf{ge}` :math:`{\mathit{sx}}`, then:
 
       1) Let :math:`({\mathsf{ge}}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{relop}}`.
 
@@ -22983,7 +23607,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       1) Let :math:`{{\mathsf{i}}{N}}_2` be :math:`{\mathit{numtype}''}`.
 
-      #) If :math:`{\mathit{cvtop}}` is some :math:`\mathsf{extend}`, then:
+      #) If :math:`{\mathit{cvtop}}` is some :math:`\mathsf{extend}` :math:`{\mathit{sx}}`, then:
 
          a) Let :math:`({\mathsf{extend}}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{cvtop}}`.
 
@@ -23005,7 +23629,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       1) Let :math:`{{\mathsf{i}}{N}}_2` be :math:`{\mathit{numtype}''}`.
 
-      #) If :math:`{\mathit{cvtop}}` is some :math:`\mathsf{trunc}`, then:
+      #) If :math:`{\mathit{cvtop}}` is some :math:`\mathsf{trunc}` :math:`{\mathit{sx}}`, then:
 
          a) Let :math:`({\mathsf{trunc}}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{cvtop}}`.
 
@@ -23013,7 +23637,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
          #) Return :math:`{{{{\mathrm{trunc}}}_{N_1, N_2}^{{\mathit{sx}}}}}{(f_1)}`.
 
-      #) If :math:`{\mathit{cvtop}}` is some :math:`\mathsf{trunc\_sat}`, then:
+      #) If :math:`{\mathit{cvtop}}` is some :math:`\mathsf{trunc\_sat}` :math:`{\mathit{sx}}`, then:
 
          a) Let :math:`({\mathsf{trunc\_sat}}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{cvtop}}`.
 
@@ -23029,7 +23653,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       1) Let :math:`{{\mathsf{f}}{N}}_2` be :math:`{\mathit{numtype}''}`.
 
-      #) If :math:`{\mathit{cvtop}}` is some :math:`\mathsf{convert}`, then:
+      #) If :math:`{\mathit{cvtop}}` is some :math:`\mathsf{convert}` :math:`{\mathit{sx}}`, then:
 
          a) Let :math:`({\mathsf{convert}}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{cvtop}}`.
 
@@ -23478,25 +24102,25 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       1) Return :math:`{{\mathrm{ivbinop}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{imul}}, v_1, v_2)`.
 
-   #. If :math:`{\mathit{vbinop}}` is some :math:`\mathsf{add\_sat}`, then:
+   #. If :math:`{\mathit{vbinop}}` is some :math:`\mathsf{add\_sat}` :math:`{\mathit{sx}}`, then:
 
       1) Let :math:`({\mathsf{add\_sat}}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{vbinop}}`.
 
       #) Return :math:`{{\mathrm{ivbinopsx}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{iadd}}_{{\mathit{sat}}}, {\mathit{sx}}, v_1, v_2)`.
 
-   #. If :math:`{\mathit{vbinop}}` is some :math:`\mathsf{sub\_sat}`, then:
+   #. If :math:`{\mathit{vbinop}}` is some :math:`\mathsf{sub\_sat}` :math:`{\mathit{sx}}`, then:
 
       1) Let :math:`({\mathsf{sub\_sat}}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{vbinop}}`.
 
       #) Return :math:`{{\mathrm{ivbinopsx}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{isub}}_{{\mathit{sat}}}, {\mathit{sx}}, v_1, v_2)`.
 
-   #. If :math:`{\mathit{vbinop}}` is some :math:`\mathsf{min}`, then:
+   #. If :math:`{\mathit{vbinop}}` is some :math:`\mathsf{min}` :math:`{\mathit{sx}}`, then:
 
       1) Let :math:`({\mathsf{min}}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{vbinop}}`.
 
       #) Return :math:`{{\mathrm{ivbinopsx}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{imin}}, {\mathit{sx}}, v_1, v_2)`.
 
-   #. If :math:`{\mathit{vbinop}}` is some :math:`\mathsf{max}`, then:
+   #. If :math:`{\mathit{vbinop}}` is some :math:`\mathsf{max}` :math:`{\mathit{sx}}`, then:
 
       1) Let :math:`({\mathsf{max}}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{vbinop}}`.
 
@@ -23607,25 +24231,25 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       1) Return :math:`{{\mathrm{ivrelop}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{ine}}, v_1, v_2)`.
 
-   #. If :math:`{\mathit{vrelop}}` is some :math:`\mathsf{lt}`, then:
+   #. If :math:`{\mathit{vrelop}}` is some :math:`\mathsf{lt}` :math:`{\mathit{sx}}`, then:
 
       1) Let :math:`({\mathsf{lt}}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{vrelop}}`.
 
       #) Return :math:`{{\mathrm{ivrelopsx}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{ilt}}, {\mathit{sx}}, v_1, v_2)`.
 
-   #. If :math:`{\mathit{vrelop}}` is some :math:`\mathsf{gt}`, then:
+   #. If :math:`{\mathit{vrelop}}` is some :math:`\mathsf{gt}` :math:`{\mathit{sx}}`, then:
 
       1) Let :math:`({\mathsf{gt}}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{vrelop}}`.
 
       #) Return :math:`{{\mathrm{ivrelopsx}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{igt}}, {\mathit{sx}}, v_1, v_2)`.
 
-   #. If :math:`{\mathit{vrelop}}` is some :math:`\mathsf{le}`, then:
+   #. If :math:`{\mathit{vrelop}}` is some :math:`\mathsf{le}` :math:`{\mathit{sx}}`, then:
 
       1) Let :math:`({\mathsf{le}}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{vrelop}}`.
 
       #) Return :math:`{{\mathrm{ivrelopsx}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{ile}}, {\mathit{sx}}, v_1, v_2)`.
 
-   #. If :math:`{\mathit{vrelop}}` is some :math:`\mathsf{ge}`, then:
+   #. If :math:`{\mathit{vrelop}}` is some :math:`\mathsf{ge}` :math:`{\mathit{sx}}`, then:
 
       1) Let :math:`({\mathsf{ge}}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{vrelop}}`.
 
@@ -23672,7 +24296,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       1) Let :math:`{{\mathsf{i}}{N}}_2` be :math:`{\mathit{lanetype}}`.
 
-      #) If :math:`{\mathit{vcvtop}}` is some :math:`\mathsf{extend}`, then:
+      #) If :math:`{\mathit{vcvtop}}` is some :math:`\mathsf{extend}` :math:`{\mathit{sx}}`, then:
 
          a) Let :math:`({\mathsf{extend}}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{vcvtop}}`.
 
@@ -23684,7 +24308,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       1) Let :math:`{{\mathsf{f}}{N}}_2` be :math:`{\mathit{lanetype}}`.
 
-      #) If :math:`{\mathit{vcvtop}}` is some :math:`\mathsf{convert}`, then:
+      #) If :math:`{\mathit{vcvtop}}` is some :math:`\mathsf{convert}` :math:`{\mathit{sx}}`, then:
 
          a) Let :math:`({\mathsf{convert}}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{vcvtop}}`.
 
@@ -23700,7 +24324,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    a. Let :math:`{{\mathsf{i}}{N}}_2` be :math:`{\mathit{lanetype}}`.
 
-   #. If :math:`{\mathit{vcvtop}}` is some :math:`\mathsf{trunc\_sat}`, then:
+   #. If :math:`{\mathit{vcvtop}}` is some :math:`\mathsf{trunc\_sat}` :math:`{\mathit{sx}}`, then:
 
       1) Let :math:`({\mathsf{trunc\_sat}}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{vcvtop}}`.
 
@@ -23708,7 +24332,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       #) Return :math:`{c^?}`.
 
-   #. If :math:`{\mathit{vcvtop}}` is some :math:`\mathsf{relaxed\_trunc}`, then:
+   #. If :math:`{\mathit{vcvtop}}` is some :math:`\mathsf{relaxed\_trunc}` :math:`{\mathit{sx}}`, then:
 
       1) Let :math:`({\mathsf{relaxed\_trunc}}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{vcvtop}}`.
 
@@ -23786,7 +24410,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    a. Return :math:`{{\mathrm{ivshiftop}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{ishl}}, v, i)`.
 
-#. Assert: Due to validation, :math:`{\mathit{vshiftop}}` is some :math:`\mathsf{shr}`.
+#. Assert: Due to validation, :math:`{\mathit{vshiftop}}` is some :math:`\mathsf{shr}` :math:`{\mathit{sx}}`.
 
 #. Let :math:`({\mathsf{shr}}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{vshiftop}}`.
 
@@ -23912,7 +24536,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .............................................................................................................................
 
 
-1. If :math:`{\mathit{vextbinop}}` is some :math:`\mathsf{extmul}`, then:
+1. If :math:`{\mathit{vextbinop}}` is some :math:`\mathsf{extmul}` :math:`{\mathit{sx}}` :math:`{{\mathit{half}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}`, then:
 
    a. Let :math:`({\mathsf{extmul}}{\mathsf{\_}}{{\mathit{sx}}}{\mathsf{\_}}{{\mathit{half}}})` be the destructuring of :math:`{\mathit{vextbinop}}`.
 
@@ -23969,7 +24593,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{\mathit{packtype}}` be :math:`{\mathit{storagetype}}`.
 
-#. Assert: Due to validation, :math:`{\mathit{val}'}` is some :math:`\mathsf{const}`.
+#. Assert: Due to validation, :math:`{\mathit{val}'}` is some :math:`\mathsf{const}` :math:`{\mathit{numtype}}` :math:`{{\mathit{num}}}_{{\mathit{numtype}}}`.
 
 #. Let :math:`({\mathit{numtype}}_0{.}\mathsf{const}~i)` be the destructuring of :math:`{\mathit{val}'}`.
 
@@ -23990,7 +24614,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       1) Return :math:`{\mathit{val}}`.
 
-#. Assert: Due to validation, :math:`{\mathit{fieldval}}` is some :math:`\mathsf{pack}`.
+#. Assert: Due to validation, :math:`{\mathit{fieldval}}` is some :math:`\mathsf{pack}` :math:`{\mathit{packtype}}` :math:`{i}{N}`.
 
 #. Let :math:`({\mathit{packtype}}{.}\mathsf{pack}~i)` be the destructuring of :math:`{\mathit{fieldval}}`.
 
@@ -24013,7 +24637,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xa}}^\ast}` be :math:`{{\mathit{externaddr}'}^\ast}`.
 
-#. If :math:`{\mathit{externaddr}}_0` is some :math:`\mathsf{func}`, then:
+#. If :math:`{\mathit{externaddr}}_0` is some :math:`\mathsf{func}` :math:`{\mathit{funcaddr}}`, then:
 
    a. Let :math:`(\mathsf{func}~a)` be the destructuring of :math:`{\mathit{externaddr}}_0`.
 
@@ -24034,7 +24658,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xa}}^\ast}` be :math:`{{\mathit{externaddr}'}^\ast}`.
 
-#. If :math:`{\mathit{externaddr}}_0` is some :math:`\mathsf{global}`, then:
+#. If :math:`{\mathit{externaddr}}_0` is some :math:`\mathsf{global}` :math:`{\mathit{globaladdr}}`, then:
 
    a. Let :math:`(\mathsf{global}~a)` be the destructuring of :math:`{\mathit{externaddr}}_0`.
 
@@ -24055,7 +24679,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xa}}^\ast}` be :math:`{{\mathit{externaddr}'}^\ast}`.
 
-#. If :math:`{\mathit{externaddr}}_0` is some :math:`\mathsf{table}`, then:
+#. If :math:`{\mathit{externaddr}}_0` is some :math:`\mathsf{table}` :math:`{\mathit{tableaddr}}`, then:
 
    a. Let :math:`(\mathsf{table}~a)` be the destructuring of :math:`{\mathit{externaddr}}_0`.
 
@@ -24076,7 +24700,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xa}}^\ast}` be :math:`{{\mathit{externaddr}'}^\ast}`.
 
-#. If :math:`{\mathit{externaddr}}_0` is some :math:`\mathsf{mem}`, then:
+#. If :math:`{\mathit{externaddr}}_0` is some :math:`\mathsf{mem}` :math:`{\mathit{memaddr}}`, then:
 
    a. Let :math:`(\mathsf{mem}~a)` be the destructuring of :math:`{\mathit{externaddr}}_0`.
 
@@ -24097,7 +24721,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xa}}^\ast}` be :math:`{{\mathit{externaddr}'}^\ast}`.
 
-#. If :math:`{\mathit{externaddr}}_0` is some :math:`\mathsf{tag}`, then:
+#. If :math:`{\mathit{externaddr}}_0` is some :math:`\mathsf{tag}` :math:`{\mathit{tagaddr}}`, then:
 
    a. Let :math:`(\mathsf{tag}~a)` be the destructuring of :math:`{\mathit{externaddr}}_0`.
 
@@ -24443,17 +25067,17 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ........................................................
 
 
-1. If :math:`{\mathit{blocktype}}` is some , then:
+1. If :math:`{\mathit{blocktype}}` is some :math:`{\mathit{funcidx}}`, then:
 
    a. Let :math:`x` be the destructuring of :math:`{\mathit{blocktype}}`.
 
-   #. Assert: Due to validation, the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{types}{}[x]` is some :math:`\mathsf{func}`.
+   #. Assert: Due to validation, the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{types}{}[x]` is some :math:`\mathsf{func}` :math:`{\mathit{functype}}`.
 
    #. Let :math:`(\mathsf{func}~{\mathit{ft}})` be the destructuring of the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{types}{}[x]`.
 
    #. Return :math:`{\mathit{ft}}`.
 
-#. Assert: Due to validation, :math:`{\mathit{blocktype}}` is some .
+#. Assert: Due to validation, :math:`{\mathit{blocktype}}` is some :math:`{{\mathit{valtype}}^?}`.
 
 #. Let :math:`{t^?}` be the destructuring of :math:`{\mathit{blocktype}}`.
 
@@ -24735,31 +25359,31 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ...........................................................................................................
 
 
-1. If :math:`{\mathit{externidx}}` is some :math:`\mathsf{func}`, then:
+1. If :math:`{\mathit{externidx}}` is some :math:`\mathsf{func}` :math:`{\mathit{funcidx}}`, then:
 
    a. Let :math:`(\mathsf{func}~x)` be the destructuring of :math:`{\mathit{externidx}}`.
 
    #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{func}~{\mathit{moduleinst}}{.}\mathsf{funcs}{}[x]) \}\end{array}`.
 
-#. If :math:`{\mathit{externidx}}` is some :math:`\mathsf{global}`, then:
+#. If :math:`{\mathit{externidx}}` is some :math:`\mathsf{global}` :math:`{\mathit{globalidx}}`, then:
 
    a. Let :math:`(\mathsf{global}~x)` be the destructuring of :math:`{\mathit{externidx}}`.
 
    #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{global}~{\mathit{moduleinst}}{.}\mathsf{globals}{}[x]) \}\end{array}`.
 
-#. If :math:`{\mathit{externidx}}` is some :math:`\mathsf{table}`, then:
+#. If :math:`{\mathit{externidx}}` is some :math:`\mathsf{table}` :math:`{\mathit{tableidx}}`, then:
 
    a. Let :math:`(\mathsf{table}~x)` be the destructuring of :math:`{\mathit{externidx}}`.
 
    #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{table}~{\mathit{moduleinst}}{.}\mathsf{tables}{}[x]) \}\end{array}`.
 
-#. If :math:`{\mathit{externidx}}` is some :math:`\mathsf{mem}`, then:
+#. If :math:`{\mathit{externidx}}` is some :math:`\mathsf{mem}` :math:`{\mathit{memidx}}`, then:
 
    a. Let :math:`(\mathsf{mem}~x)` be the destructuring of :math:`{\mathit{externidx}}`.
 
    #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{mem}~{\mathit{moduleinst}}{.}\mathsf{mems}{}[x]) \}\end{array}`.
 
-#. Assert: Due to validation, :math:`{\mathit{externidx}}` is some :math:`\mathsf{tag}`.
+#. Assert: Due to validation, :math:`{\mathit{externidx}}` is some :math:`\mathsf{tag}` :math:`{\mathit{tagidx}}`.
 
 #. Let :math:`(\mathsf{tag}~x)` be the destructuring of :math:`{\mathit{externidx}}`.
 
@@ -24866,7 +25490,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    a. Return :math:`(\mathsf{elem{.}drop}~x)`.
 
-#. Assert: Due to validation, :math:`{\mathit{elemmode}}` is some :math:`\mathsf{active}`.
+#. Assert: Due to validation, :math:`{\mathit{elemmode}}` is some :math:`\mathsf{active}` :math:`{\mathit{tableidx}}` :math:`{\mathit{expr}}`.
 
 #. Let :math:`(\mathsf{active}~y~{{\mathit{instr}}^\ast})` be the destructuring of :math:`{\mathit{elemmode}}`.
 
@@ -24881,7 +25505,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    a. Return :math:`\epsilon`.
 
-#. Assert: Due to validation, :math:`{\mathit{datamode}}` is some :math:`\mathsf{active}`.
+#. Assert: Due to validation, :math:`{\mathit{datamode}}` is some :math:`\mathsf{active}` :math:`{\mathit{memidx}}` :math:`{\mathit{expr}}`.
 
 #. Let :math:`(\mathsf{active}~y~{{\mathit{instr}}^\ast})` be the destructuring of :math:`{\mathit{datamode}}`.
 
@@ -25008,7 +25632,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ........................................................................
 
 
-1. Assert: Due to validation, the :ref:`expansion <aux-expand-deftype>` of :math:`s{.}\mathsf{funcs}{}[{\mathit{funcaddr}}]{.}\mathsf{type}` is some :math:`\mathsf{func}`.
+1. Assert: Due to validation, the :ref:`expansion <aux-expand-deftype>` of :math:`s{.}\mathsf{funcs}{}[{\mathit{funcaddr}}]{.}\mathsf{type}` is some :math:`\mathsf{func}` :math:`{\mathit{functype}}`.
 
 #. Let :math:`(\mathsf{func}~{\mathit{functype}}_0)` be the destructuring of the :ref:`expansion <aux-expand-deftype>` of :math:`s{.}\mathsf{funcs}{}[{\mathit{funcaddr}}]{.}\mathsf{type}`.
 

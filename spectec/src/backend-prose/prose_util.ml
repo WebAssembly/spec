@@ -202,3 +202,37 @@ let string_of_stack_prefix expr =
     Printf.sprintf "the %s" evalctx_name
   | IterE _ -> "the values"
   | _ -> "the value"
+
+let rec find_case_typ' s a: El.Ast.typ list option =
+  let open El.Ast in
+  let find_typd = function
+    | { it = TypD (id', _, _, typ, _); _ } when s = id'.it -> Some typ
+    | _ -> None
+  in
+  let typds = List.filter_map find_typd !Langs.el in
+  List.find_map (function
+  | { it = CaseT (_, ts, tcs, _); _ } ->
+    let find_typ = function
+      | Elem (atom, (typ, _prems), _hints) when Xl.Atom.eq atom a ->
+        (match typ.it with
+        | SeqT ts -> Some ts
+        | _ -> None)
+      | _ -> None
+    in
+    (match List.find_map find_typ tcs with
+    | Some ts -> Some ts
+    | _ -> 
+      List.find_map (function
+      | Nl -> None
+      | Elem typ -> find_case_typ' (El.Print.string_of_typ typ) a
+      ) ts
+    )
+  | _ -> None) typds
+
+let find_case_typ s a: El.Ast.typ list =
+  match find_case_typ' s a with
+  | Some ts -> ts
+  | None -> 
+    let msg = sprintf "cannot find typcase of atom %s from typ %s"
+      (Xl.Atom.to_string a) s in
+    error no_region msg
