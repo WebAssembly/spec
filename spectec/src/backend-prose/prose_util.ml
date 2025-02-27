@@ -76,7 +76,7 @@ let env_typ id t =
     List.iter (function
     | Nl -> ()
     | Elem (atom, _, hints) ->
-      let id = sprintf "%s.%s" (Xl.Atom.to_string atom) id.it  $ no_region in
+      let id = sprintf "%s.%s" id.it (Xl.Atom.to_string atom) $ no_region in
       env_hints "desc" hintenv.desc_hints id hints;
       env_hints "prose" hintenv.prose_hints id hints;
     ) l
@@ -84,7 +84,7 @@ let env_typ id t =
     List.iter (function
     | Nl -> ()
     | Elem (atom, _, hints) ->
-      let id = sprintf "%s.%s" (Xl.Atom.to_string atom) id.it  $ no_region in
+      let id = sprintf "%s.%s" id.it (Xl.Atom.to_string atom) $ no_region in
       env_hints "desc" hintenv.desc_hints id hints;
       env_hints "prose" hintenv.prose_hints id hints;
     ) l
@@ -126,6 +126,8 @@ let init_hintenv script =
 
 (* Helpers *)
 
+let (let*) = Option.bind
+
 let find_relation name =
   let open El.Ast in
   List.find_opt (fun def ->
@@ -134,23 +136,39 @@ let find_relation name =
   | _ -> false
   ) !Langs.el
 
-let rec extract_desc typ = match typ.it with
-  | Il.Ast.IterT (typ, Opt) -> extract_desc typ
-  | Il.Ast.IterT (typ, _) -> [extract_desc typ; "sequence"] |> String.concat " "
+let find_desc_hint name =
+  match Map.find_opt name !(hintenv.desc_hints) with
+  | Some (Some { it = TextE desc; _ }, _) -> Some desc
+  | Some (None, l) ->
+    let match_texte e = match e.it with
+      | El.Ast.TextE desc -> Some desc
+      | _ -> None
+    in
+    (match List.find_map match_texte l with
+    | Some desc -> Some desc
+    | None -> None)
+  | _ -> None
+
+let rec unwrap_itert typ = match typ.it with
+| Il.Ast.IterT (typ, Opt) -> unwrap_itert typ
+| Il.Ast.IterT (typ, _) ->
+  let bt, iter = unwrap_itert typ in
+  (bt, iter + 1)
+| _ -> (typ, 0)
+
+let extract_desc' typ =
+  let bt, iter = unwrap_itert typ in
+  match bt.it with
   | Il.Ast.VarT _ ->
-    let name = Il.Print.string_of_typ typ in
-    (match Map.find_opt name !(hintenv.desc_hints) with
-    | Some (Some { it = TextE desc; _ }, _) -> desc
-    | Some (None, l) ->
-      let match_texte e = match e.it with
-        | El.Ast.TextE desc -> Some desc
-        | _ -> None
-      in
-      (match List.find_map match_texte l with
-      | Some desc -> desc
-      | None -> "")
-    | _ -> "")
-  | _ -> ""
+    let name = Il.Print.string_of_typ bt in
+    let* desc = find_desc_hint name in
+    Some (desc, iter)
+  | _ -> None
+
+let extract_desc expr =
+  let* desc, iter = extract_desc' expr.note in
+  let rec repeat n s = if (n = 0) then "" else (repeat (n-1) s) ^ s in
+  Some (desc, repeat iter " sequence")
 
 let rec alternate xs ys =
   match xs with

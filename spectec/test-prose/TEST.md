@@ -16,67 +16,15 @@ watsup 0.4 generator
 == IL Validation after pass sideconditions...
 == Translating to AL...
 == Prose Generation...
-s: externtype
-a: FUNC
-s: externtype
-a: GLOBAL
-s: externtype
-a: TABLE
-s: externtype
-a: MEM
-s: binop_
-a: DIV
-s: binop_
-a: REM
-s: binop_
-a: SHR
-s: relop_
-a: LT
-s: relop_
-a: GT
-s: relop_
-a: LE
-s: relop_
-a: GE
-s: cvtop
-a: EXTEND
-s: cvtop
-a: TRUNC
-s: cvtop
-a: CONVERT
-s: externaddr
-a: FUNC
-s: externaddr
-a: GLOBAL
-s: externaddr
-a: TABLE
-s: externaddr
-a: MEM
-s: externaddr
-a: FUNC
-s: externaddr
-a: GLOBAL
-s: externaddr
-a: TABLE
-s: externaddr
-a: MEM
-s: externidx
-a: FUNC
-s: externidx
-a: GLOBAL
-s: externidx
-a: TABLE
-s: externidx
-a: MEM
 
 
 
-The limits :math:`{}[ n .. m ]` is :ref:`valid <valid-val>` with :math:`k` if:
+The limits :math:`{}[ n .. m ]` is :ref:`valid <valid-val>` with the :math:`k` :math:`k` if:
 
 
-   * :math:`n` is less than or equal to :math:`m`.
+   * The :math:`n` :math:`n` is less than or equal to :math:`m`.
 
-   * :math:`m` is less than or equal to :math:`k`.
+   * The :math:`m` :math:`m` is less than or equal to :math:`k`.
 
 
 
@@ -94,7 +42,7 @@ The global type :math:`({\mathsf{mut}^?}~t)` is always :ref:`valid <valid-val>`.
 The table type :math:`{\mathit{limits}}` is :ref:`valid <valid-val>` if:
 
 
-   * The limits :math:`{\mathit{limits}}` is :ref:`valid <valid-val>` with :math:`{2^{32}} - 1`.
+   * The limits :math:`{\mathit{limits}}` is :ref:`valid <valid-val>` with the :math:`{2^{32}} - 1` :math:`{2^{32}} - 1`.
 
 
 
@@ -102,7 +50,7 @@ The table type :math:`{\mathit{limits}}` is :ref:`valid <valid-val>` if:
 The memory type :math:`{\mathit{limits}}` is :ref:`valid <valid-val>` if:
 
 
-   * The limits :math:`{\mathit{limits}}` is :ref:`valid <valid-val>` with :math:`{2^{16}}`.
+   * The limits :math:`{\mathit{limits}}` is :ref:`valid <valid-val>` with the :math:`{2^{16}}` :math:`{2^{16}}`.
 
 
 
@@ -170,9 +118,9 @@ The external type :math:`(\mathsf{mem}~{\mathit{memtype}})` is :ref:`valid <vali
 The limits :math:`{}[ n_{11} .. n_{12} ]` :ref:`matches <match>` the limits :math:`{}[ n_{21} .. n_{22} ]` if:
 
 
-   * :math:`n_{11}` is greater than or equal to :math:`n_{21}`.
+   * The :math:`n_{11}` :math:`n_{11}` is greater than or equal to :math:`n_{21}`.
 
-   * :math:`n_{12}` is less than or equal to :math:`n_{22}`.
+   * The :math:`n_{12}` :math:`n_{12}` is less than or equal to :math:`n_{22}`.
 
 
 
@@ -417,13 +365,13 @@ The instruction :math:`({\mathit{nt}}_1 {.} {{\mathit{cvtop}'}}{\mathsf{\_}}{{\m
 
    * Either:
 
-      * :math:`{\mathit{cvtop}'}` is of the form :math:`\mathsf{reinterpret}`.
+      * The :math:`{\mathit{cvtop}'}` :math:`{\mathit{cvtop}'}` is of the form :math:`\mathsf{reinterpret}`.
 
-      * :math:`{|{\mathit{nt}}_1|}` is of the form :math:`{|{\mathit{nt}}_2|}`.
+      * The :math:`{|{\mathit{nt}}_1|}` :math:`{|{\mathit{nt}}_1|}` is of the form :math:`{|{\mathit{nt}}_2|}`.
 
    * Or:
 
-      * :math:`{\mathit{cvtop}'}` is of the form :math:`{\mathit{cvtop}}`.
+      * The :math:`{\mathit{cvtop}'}` :math:`{\mathit{cvtop}'}` is of the form :math:`{\mathit{cvtop}}`.
 
 
 
@@ -503,21 +451,21 @@ The instruction :math:`({{t'}{.}\mathsf{load}}{{{\mathit{loadop}}^?}}~{\mathit{m
 
       * The number type :math:`{t'}` is of the form :math:`t`.
 
-      * :math:`{{\mathit{loadop}}^?}` is absent.
+      * The :math:`{{\mathit{loadop}}^?}` :math:`{{\mathit{loadop}}^?}` is absent.
 
       * The number type :math:`{t'''}` is of the form :math:`t`.
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|t|} / 8`.
+      * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|t|} / 8`.
 
    * Or:
 
       * The number type :math:`{t'}` is of the form :math:`{\mathsf{i}}{n}`.
 
-      * :math:`{{\mathit{loadop}}^?}` is of the form :math:`{M}{\mathsf{\_}}{{\mathit{sx}}}`.
+      * The :math:`{{\mathit{loadop}}^?}` :math:`{{\mathit{loadop}}^?}` is of the form :math:`{M}{\mathsf{\_}}{{\mathit{sx}}}`.
 
       * The number type :math:`{t'''}` is of the form :math:`{\mathsf{i}}{n}`.
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
+      * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
 
 
 
@@ -535,7 +483,7 @@ The instruction :math:`({{t'}{.}\mathsf{store}}{{{\mathit{sz}}^?}}~{\mathit{mema
 
       * The number type :math:`{t''}` is of the form :math:`t`.
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|t|} / 8`.
+      * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|t|} / 8`.
 
    * Or:
 
@@ -545,7 +493,7 @@ The instruction :math:`({{t'}{.}\mathsf{store}}{{{\mathit{sz}}^?}}~{\mathit{mema
 
       * The number type :math:`{t''}` is of the form :math:`{\mathsf{i}}{n}`.
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
+      * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
 
 
 
@@ -553,7 +501,7 @@ The instruction :math:`({{t'}{.}\mathsf{store}}{{{\mathit{sz}}^?}}~{\mathit{mema
 The instruction :math:`({\mathit{nt}}_1 {.} {\mathsf{reinterpret}}{\mathsf{\_}}{{\mathit{nt}}_2})` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{nt}}_2~\rightarrow~{\mathit{nt}}_1` if:
 
 
-   * :math:`{|{\mathit{nt}}_1|}` is of the form :math:`{|{\mathit{nt}}_2|}`.
+   * The :math:`{|{\mathit{nt}}_1|}` :math:`{|{\mathit{nt}}_1|}` is of the form :math:`{|{\mathit{nt}}_2|}`.
 
 
 
@@ -568,7 +516,7 @@ The instruction :math:`(\mathsf{load}~t~{\mathit{memarg}})` is :ref:`valid <vali
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is of the form :math:`{\mathit{mt}}`.
 
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|t|} / 8`.
+   * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|t|} / 8`.
 
 
 
@@ -578,7 +526,7 @@ The instruction :math:`({{\mathsf{i}}{n}{.}\mathsf{load}}{{M}{\mathsf{\_}}{{\mat
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is of the form :math:`{\mathit{mt}}`.
 
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
+   * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
 
 
 
@@ -588,7 +536,7 @@ The instruction :math:`(\mathsf{store}~t~{\mathit{memarg}})` is :ref:`valid <val
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is of the form :math:`{\mathit{mt}}`.
 
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|t|} / 8`.
+   * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|t|} / 8`.
 
 
 
@@ -598,7 +546,7 @@ The instruction :math:`({{\mathsf{i}}{n}{.}\mathsf{store}}{M}~{\mathit{memarg}})
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is of the form :math:`{\mathit{mt}}`.
 
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
+   * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
 
 
 
@@ -1007,7 +955,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 .......................
 
 
-1. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
+1. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` from the stack.
 
@@ -1032,7 +980,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 .............................................................................
 
 
-1. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
+1. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` from the stack.
 
@@ -1088,7 +1036,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. If :math:`{n'} \geq 1`, then:
 
-      1) Let :math:`l` be :math:`{n'} - 1`.
+      1) Let :math:`l` be the label index :math:`{n'} - 1`.
 
       #) Pop the :math:`\mathsf{label}` L from the stack.
 
@@ -1101,7 +1049,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 .........................
 
 
-1. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
+1. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` from the stack.
 
@@ -1118,7 +1066,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ........................................
 
 
-1. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
+1. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -1187,7 +1135,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 .............................
 
 
-1. Assert: Due to validation, a :ref:`number type <syntax-t>` is on the top of the stack.
+1. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{valtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
@@ -1204,11 +1152,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ..............................
 
 
-1. Assert: Due to validation, a :ref:`number type <syntax-t>` is on the top of the stack.
+1. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{valtype}}_0{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a :ref:`value type <syntax-num>` is on the top of the stack.
+#. Assert: Due to validation, value type is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{valtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
@@ -1225,7 +1173,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ...............................
 
 
-1. Assert: Due to validation, a :ref:`number type <syntax-t>` is on the top of the stack.
+1. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{valtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
@@ -1238,11 +1186,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ..............................
 
 
-1. Assert: Due to validation, a :ref:`number type <syntax-t>` is on the top of the stack.
+1. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{valtype}}_0{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a :ref:`value type <syntax-num>` is on the top of the stack.
+#. Assert: Due to validation, value type is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{valtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
@@ -1255,7 +1203,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ....................................................
 
 
-1. Assert: Due to validation, a :ref:`number type <syntax-t_1>` is on the top of the stack.
+1. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{valtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
@@ -1330,7 +1278,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
+#. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -1373,7 +1321,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Pop the values :math:`{{\mathit{val}}^{k}}` from the stack.
 
-#. Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~{{\mathit{val}}^{k}}~{{{\mathrm{default}}}_{t}^\ast},\; \mathsf{module}~{\mathit{mm}} \}\end{array}`.
+#. Let :math:`f` be the frame :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~{{\mathit{val}}^{k}}~{{{\mathrm{default}}}_{t}^\ast},\; \mathsf{module}~{\mathit{mm}} \}\end{array}`.
 
 #. Let F be the :math:`\mathsf{frame}` :math:`f` whose arity is :math:`n`.
 
@@ -1408,13 +1356,13 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
+#. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
 #. If :math:`{{\mathit{loadop}}^?}` is not defined, then:
 
-   a. Let :math:`t` be :math:`{t'}`.
+   a. Let :math:`t` be the number type :math:`{t'}`.
 
    #. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|t|} / 8 > {|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
 
@@ -1436,7 +1384,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
          a) Trap.
 
-   #. Let :math:`{\mathsf{i}}{n}` be :math:`{t'}`.
+   #. Let :math:`{\mathsf{i}}{n}` be the number type :math:`{t'}`.
 
    #. If :math:`{{\mathit{loadop}}^?}` is defined, then:
 
@@ -1492,15 +1440,15 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a :ref:`value type <syntax-num>` is on the top of the stack.
+#. Assert: Due to validation, value type is on the top of the stack.
 
 #. Pop the value :math:`({t''}{.}\mathsf{const}~c)` from the stack.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
+#. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. Let :math:`t` be :math:`{t''}`.
+#. Let :math:`t` be the number type :math:`{t''}`.
 
 #. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|t|} / 8 > {|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}` and :math:`{t'} = t` and :math:`{{\mathit{sz}}^?}` is not defined, then:
 
@@ -1514,7 +1462,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. If :math:`{t''}` is :math:`{\mathsf{i}}{n}`, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{t''}`.
+   a. Let :math:`{\mathsf{i}}{n}` be the number type :math:`{t''}`.
 
    #. If :math:`{t'} = {\mathsf{i}}{n}` and :math:`{{\mathit{sz}}^?}` is defined, then:
 
@@ -1535,13 +1483,13 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
+#. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
 #. Either:
 
-   a. Let :math:`{\mathit{mi}}` be :math:`{\mathrm{growmemory}}(z{.}\mathsf{mems}{}[0], n)`.
+   a. Let :math:`{\mathit{mi}}` be the memory instance :math:`{\mathrm{growmemory}}(z{.}\mathsf{mems}{}[0], n)`.
 
    #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|} / (64 \, {\mathrm{Ki}}))` to the stack.
 
@@ -1842,7 +1790,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. If :math:`{\mathit{valtype}}` is :math:`{\mathsf{i}}{n}`, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}`.
+   a. Let :math:`{\mathsf{i}}{n}` be the number type :math:`{\mathit{valtype}}`.
 
    #. Let :math:`{\mathit{iN}}` be :math:`{\mathit{iN}'}`.
 
@@ -1860,7 +1808,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Assert: Due to validation, :math:`{\mathit{valtype}}` is :math:`{\mathsf{f}}{n}`.
 
-#. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}`.
+#. Let :math:`{\mathsf{f}}{n}` be the number type :math:`{\mathit{valtype}}`.
 
 #. Let :math:`{\mathit{fN}}` be :math:`{\mathit{iN}'}`.
 
@@ -1920,7 +1868,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. If :math:`{\mathit{valtype}}` is :math:`{\mathsf{i}}{n}`, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}`.
+   a. Let :math:`{\mathsf{i}}{n}` be the number type :math:`{\mathit{valtype}}`.
 
    #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{iN}}_{1'}`.
 
@@ -1982,7 +1930,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Assert: Due to validation, :math:`{\mathit{valtype}}` is :math:`{\mathsf{f}}{n}`.
 
-#. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}`.
+#. Let :math:`{\mathsf{f}}{n}` be the number type :math:`{\mathit{valtype}}`.
 
 #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{iN}}_{1'}`.
 
@@ -2103,7 +2051,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. If :math:`{\mathit{valtype}}` is :math:`{\mathsf{i}}{n}`, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}`.
+   a. Let :math:`{\mathsf{i}}{n}` be the number type :math:`{\mathit{valtype}}`.
 
    #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{iN}}_{1'}`.
 
@@ -2143,7 +2091,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Assert: Due to validation, :math:`{\mathit{valtype}}` is :math:`{\mathsf{f}}{n}`.
 
-#. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}`.
+#. Let :math:`{\mathsf{f}}{n}` be the number type :math:`{\mathit{valtype}}`.
 
 #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{iN}}_{1'}`.
 
@@ -2196,11 +2144,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. If :math:`{\mathit{valtype}}` is :math:`{\mathsf{f}}{n}`, then:
 
-   a. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}`.
+   a. Let :math:`{\mathsf{f}}{n}` be the number type :math:`{\mathit{valtype}}`.
 
    #. If :math:`{\mathit{valtype}'}` is :math:`{\mathsf{i}}{n}`, then:
 
-      1) Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}'}`.
+      1) Let :math:`{\mathsf{i}}{n}` be the number type :math:`{\mathit{valtype}'}`.
 
       #) If :math:`{\mathit{cvtop}}` is some :math:`\mathsf{trunc}` :math:`{\mathit{sx}}`, then:
 
@@ -2222,11 +2170,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. If :math:`{\mathit{valtype}}` is :math:`{\mathsf{i}}{n}`, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}`.
+   a. Let :math:`{\mathsf{i}}{n}` be the number type :math:`{\mathit{valtype}}`.
 
    #. If :math:`{\mathit{valtype}'}` is :math:`{\mathsf{f}}{n}`, then:
 
-      1) Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}'}`.
+      1) Let :math:`{\mathsf{f}}{n}` be the number type :math:`{\mathit{valtype}'}`.
 
       #) If :math:`{\mathit{cvtop}}` is some :math:`\mathsf{convert}` :math:`{\mathit{sx}}`, then:
 
@@ -2240,11 +2188,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Assert: Due to validation, :math:`{\mathit{valtype}}` is :math:`{\mathsf{f}}{n}`.
 
-#. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{valtype}}`.
+#. Let :math:`{\mathsf{f}}{n}` be the number type :math:`{\mathit{valtype}}`.
 
 #. Assert: Due to validation, :math:`{\mathit{valtype}'}` is :math:`{\mathsf{i}}{n}`.
 
-#. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}'}`.
+#. Let :math:`{\mathsf{i}}{n}` be the number type :math:`{\mathit{valtype}'}`.
 
 #. Assert: Due to validation, :math:`{\mathit{cvtop}} = \mathsf{reinterpret}`.
 
@@ -2533,7 +2481,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. If :math:`{i'} \leq j`, then:
 
-   a. Let :math:`{\mathit{ti}'}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{}[ {i'} .. j ],\; \mathsf{refs}~{a^\ast}~{\epsilon^{n}} \}\end{array}`.
+   a. Let :math:`{\mathit{ti}'}` be the table instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{}[ {i'} .. j ],\; \mathsf{refs}~{a^\ast}~{\epsilon^{n}} \}\end{array}`.
 
    #. Return :math:`{\mathit{ti}'}`.
 
@@ -2550,7 +2498,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. If :math:`{i'} \leq j`, then:
 
-   a. Let :math:`{\mathit{mi}'}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{}[ {i'} .. j ],\; \mathsf{bytes}~{b^\ast}~{\mathtt{0x00}^{n \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
+   a. Let :math:`{\mathit{mi}'}` be the memory instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{}[ {i'} .. j ],\; \mathsf{bytes}~{b^\ast}~{\mathtt{0x00}^{n \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
 
    #. Return :math:`{\mathit{mi}'}`.
 
@@ -2647,7 +2595,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`(\mathsf{func}~x~{{\mathit{local}}^\ast}~{\mathit{expr}})` be the destructuring of :math:`{\mathit{func}}`.
 
-#. Let :math:`{\mathit{fi}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{\mathit{moduleinst}}{.}\mathsf{types}{}[x],\; \mathsf{module}~{\mathit{moduleinst}},\; \mathsf{code}~{\mathit{func}} \}\end{array}`.
+#. Let :math:`{\mathit{fi}}` be the function instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{\mathit{moduleinst}}{.}\mathsf{types}{}[x],\; \mathsf{module}~{\mathit{moduleinst}},\; \mathsf{code}~{\mathit{func}} \}\end{array}`.
 
 #. Let :math:`a` be the length of :math:`s{.}\mathsf{funcs}`.
 
@@ -2677,7 +2625,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ........................................................................
 
 
-1. Let :math:`{\mathit{gi}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{\mathit{globaltype}},\; \mathsf{value}~{\mathit{val}} \}\end{array}`.
+1. Let :math:`{\mathit{gi}}` be the global instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{\mathit{globaltype}},\; \mathsf{value}~{\mathit{val}} \}\end{array}`.
 
 #. Let :math:`a` be the length of :math:`s{.}\mathsf{globals}`.
 
@@ -2715,7 +2663,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ..............................................
 
 
-1. Let :math:`{\mathit{ti}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{}[ i .. j ],\; \mathsf{refs}~{\epsilon^{i}} \}\end{array}`.
+1. Let :math:`{\mathit{ti}}` be the table instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{}[ i .. j ],\; \mathsf{refs}~{\epsilon^{i}} \}\end{array}`.
 
 #. Let :math:`a` be the length of :math:`s{.}\mathsf{tables}`.
 
@@ -2745,7 +2693,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ............................................
 
 
-1. Let :math:`{\mathit{mi}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{}[ i .. j ],\; \mathsf{bytes}~{\mathtt{0x00}^{i \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
+1. Let :math:`{\mathit{mi}}` be the memory instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{}[ i .. j ],\; \mathsf{bytes}~{\mathtt{0x00}^{i \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
 
 #. Let :math:`a` be the length of :math:`s{.}\mathsf{mems}`.
 
@@ -2832,7 +2780,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{{\mathit{xi}}^\ast}` be :math:`{{\mathrm{instexport}}({{\mathit{fa}}_{\mathit{ex}}^\ast}~{{\mathit{fa}}^\ast}, {{\mathit{ga}}_{\mathit{ex}}^\ast}~{{\mathit{ga}}^\ast}, {{\mathit{ta}}_{\mathit{ex}}^\ast}~{{\mathit{ta}}^\ast}, {{\mathit{ma}}_{\mathit{ex}}^\ast}~{{\mathit{ma}}^\ast}, {\mathit{export}})^\ast}`.
 
-#. Let :math:`{\mathit{moduleinst}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{ft}}^\ast},\; \mathsf{funcs}~{{\mathit{fa}}_{\mathit{ex}}^\ast}~{{\mathit{fa}}^\ast},\; \mathsf{globals}~{{\mathit{ga}}_{\mathit{ex}}^\ast}~{{\mathit{ga}}^\ast},\; \mathsf{tables}~{{\mathit{ta}}_{\mathit{ex}}^\ast}~{{\mathit{ta}}^\ast},\; \mathsf{mems}~{{\mathit{ma}}_{\mathit{ex}}^\ast}~{{\mathit{ma}}^\ast},\; \mathsf{exports}~{{\mathit{xi}}^\ast} \}\end{array}`.
+#. Let :math:`{\mathit{moduleinst}}` be the module instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{ft}}^\ast},\; \mathsf{funcs}~{{\mathit{fa}}_{\mathit{ex}}^\ast}~{{\mathit{fa}}^\ast},\; \mathsf{globals}~{{\mathit{ga}}_{\mathit{ex}}^\ast}~{{\mathit{ga}}^\ast},\; \mathsf{tables}~{{\mathit{ta}}_{\mathit{ex}}^\ast}~{{\mathit{ta}}^\ast},\; \mathsf{mems}~{{\mathit{ma}}_{\mathit{ex}}^\ast}~{{\mathit{ma}}^\ast},\; \mathsf{exports}~{{\mathit{xi}}^\ast} \}\end{array}`.
 
 #. Let :math:`{{\mathit{funcaddr}}_0^\ast}` be :math:`{\mathrm{allocfuncs}}(s, {\mathit{moduleinst}}, {{\mathit{func}}^{n_{\mathit{func}}}})`.
 
@@ -2917,11 +2865,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{(\mathsf{global}~{\mathit{globaltype}}~{\mathit{expr}}_{\mathsf{g}})^\ast}` be :math:`{{\mathit{global}}^\ast}`.
 
-#. Let :math:`{\mathit{moduleinst}}_{\mathit{init}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{functype}}^\ast},\; \mathsf{funcs}~{\mathrm{funcs}}({{\mathit{externaddr}}^\ast})~{({|s{.}\mathsf{funcs}|} + i_{\mathsf{f}})^{i_{\mathsf{f}}<n_{\mathsf{f}}}},\; \mathsf{globals}~{\mathrm{globals}}({{\mathit{externaddr}}^\ast}) \}\end{array}`.
+#. Let :math:`{\mathit{moduleinst}}_{\mathit{init}}` be the module instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{functype}}^\ast},\; \mathsf{funcs}~{\mathrm{funcs}}({{\mathit{externaddr}}^\ast})~{({|s{.}\mathsf{funcs}|} + i_{\mathsf{f}})^{i_{\mathsf{f}}<n_{\mathsf{f}}}},\; \mathsf{globals}~{\mathrm{globals}}({{\mathit{externaddr}}^\ast}) \}\end{array}`.
 
-#. Let :math:`f_{\mathit{init}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{module}~{\mathit{moduleinst}}_{\mathit{init}} \}\end{array}`.
+#. Let :math:`f_{\mathit{init}}` be the frame :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{module}~{\mathit{moduleinst}}_{\mathit{init}} \}\end{array}`.
 
-#. Let :math:`z` be :math:`(s, f_{\mathit{init}})`.
+#. Let :math:`z` be the state :math:`(s, f_{\mathit{init}})`.
 
 #. Let F be the :math:`\mathsf{frame}` :math:`z{.}\mathsf{frame}`.
 
@@ -2949,7 +2897,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{\mathit{moduleinst}}` be :math:`{\mathrm{allocmodule}}(s, {\mathit{module}}, {{\mathit{externaddr}}^\ast}, {{\mathit{val}}^\ast})`.
 
-#. Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{module}~{\mathit{moduleinst}} \}\end{array}`.
+#. Let :math:`f` be the frame :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{module}~{\mathit{moduleinst}} \}\end{array}`.
 
 #. Perform :math:`{\mathrm{initelem}}(s, {\mathit{moduleinst}}, {i_{\mathsf{e}}^\ast}, {{{\mathit{moduleinst}}{.}\mathsf{funcs}{}[x]^\ast}^\ast})`.
 
@@ -2974,7 +2922,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 .................................................................
 
 
-1. Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{module}~\{ \begin{array}[t]{@{}l@{}} \}\end{array} \}\end{array}`.
+1. Let :math:`f` be the frame :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{module}~\{ \begin{array}[t]{@{}l@{}} \}\end{array} \}\end{array}`.
 
 #. Let F be the :math:`\mathsf{frame}` :math:`(s, f)`.
 
@@ -4442,119 +4390,15 @@ watsup 0.4 generator
 == IL Validation after pass sideconditions...
 == Translating to AL...
 == Prose Generation...
-s: ref
-a: REF.NULL
-s: ref
-a: REF.FUNC_ADDR
-s: vloadop
-a: SHAPE
-s: vloadop
-a: SPLAT
-s: vloadop
-a: ZERO
-s: externtype
-a: FUNC
-s: externtype
-a: GLOBAL
-s: externtype
-a: TABLE
-s: externtype
-a: MEM
-s: instr
-a: MEMORY.INIT
-s: instr
-a: DATA.DROP
-s: unop_
-a: EXTEND
-s: binop_
-a: DIV
-s: binop_
-a: REM
-s: binop_
-a: SHR
-s: relop_
-a: LT
-s: relop_
-a: GT
-s: relop_
-a: LE
-s: relop_
-a: GE
-s: cvtop
-a: EXTEND
-s: cvtop
-a: TRUNC
-s: cvtop
-a: TRUNC_SAT
-s: cvtop
-a: CONVERT
-s: vbinop_
-a: MIN
-s: vbinop_
-a: MAX
-s: vbinop_
-a: ADD_SAT
-s: vbinop_
-a: SUB_SAT
-s: vrelop_
-a: LT
-s: vrelop_
-a: GT
-s: vrelop_
-a: LE
-s: vrelop_
-a: GE
-s: vcvtop
-a: EXTEND
-s: vcvtop
-a: CONVERT
-s: vcvtop
-a: TRUNC_SAT
-s: vextbinop_
-a: EXTMUL
-s: vshiftop_
-a: SHR
-s: externaddr
-a: FUNC
-s: externaddr
-a: GLOBAL
-s: externaddr
-a: TABLE
-s: externaddr
-a: MEM
-s: blocktype
-a: _RESULT
-s: blocktype
-a: _IDX
-s: externaddr
-a: FUNC
-s: externaddr
-a: GLOBAL
-s: externaddr
-a: TABLE
-s: externaddr
-a: MEM
-s: externidx
-a: FUNC
-s: externidx
-a: GLOBAL
-s: externidx
-a: TABLE
-s: externidx
-a: MEM
-s: elemmode
-a: ACTIVE
-s: datamode
-a: ACTIVE
 
 
 
-The limits :math:`{}[ n .. m ]` is :ref:`valid <valid-val>` with :math:`k` if:
+The limits :math:`{}[ n .. m ]` is :ref:`valid <valid-val>` with the :math:`k` :math:`k` if:
 
 
-   * :math:`n` is less than or equal to :math:`m`.
+   * The :math:`n` :math:`n` is less than or equal to :math:`m`.
 
-   * :math:`m` is less than or equal to :math:`k`.
+   * The :math:`m` :math:`m` is less than or equal to :math:`k`.
 
 
 
@@ -4572,7 +4416,7 @@ The global type :math:`({\mathsf{mut}^?}~t)` is always :ref:`valid <valid-val>`.
 The table type :math:`({\mathit{limits}}~{\mathit{reftype}})` is :ref:`valid <valid-val>` if:
 
 
-   * The limits :math:`{\mathit{limits}}` is :ref:`valid <valid-val>` with :math:`{2^{32}} - 1`.
+   * The limits :math:`{\mathit{limits}}` is :ref:`valid <valid-val>` with the :math:`{2^{32}} - 1` :math:`{2^{32}} - 1`.
 
 
 
@@ -4580,7 +4424,7 @@ The table type :math:`({\mathit{limits}}~{\mathit{reftype}})` is :ref:`valid <va
 The memory type :math:`{\mathit{limits}}~\mathsf{page}` is :ref:`valid <valid-val>` if:
 
 
-   * The limits :math:`{\mathit{limits}}` is :ref:`valid <valid-val>` with :math:`{2^{16}}`.
+   * The limits :math:`{\mathit{limits}}` is :ref:`valid <valid-val>` with the :math:`{2^{16}}` :math:`{2^{16}}`.
 
 
 
@@ -4684,9 +4528,9 @@ The result type :math:`{t_1^\ast}` :ref:`matches <match>` the result type :math:
 The limits :math:`{}[ n_{11} .. n_{12} ]` :ref:`matches <match>` the limits :math:`{}[ n_{21} .. n_{22} ]` if:
 
 
-   * :math:`n_{11}` is greater than or equal to :math:`n_{21}`.
+   * The :math:`n_{11}` :math:`n_{11}` is greater than or equal to :math:`n_{21}`.
 
-   * :math:`n_{12}` is less than or equal to :math:`n_{22}`.
+   * The :math:`n_{12}` :math:`n_{12}` is less than or equal to :math:`n_{22}`.
 
 
 
@@ -4997,13 +4841,13 @@ The instruction :math:`({\mathit{nt}}_1 {.} {{\mathit{cvtop}'}}{\mathsf{\_}}{{\m
 
    * Either:
 
-      * :math:`{\mathit{cvtop}'}` is of the form :math:`\mathsf{reinterpret}`.
+      * The :math:`{\mathit{cvtop}'}` :math:`{\mathit{cvtop}'}` is of the form :math:`\mathsf{reinterpret}`.
 
-      * :math:`{|{\mathit{nt}}_1|}` is of the form :math:`{|{\mathit{nt}}_2|}`.
+      * The :math:`{|{\mathit{nt}}_1|}` :math:`{|{\mathit{nt}}_1|}` is of the form :math:`{|{\mathit{nt}}_2|}`.
 
    * Or:
 
-      * :math:`{\mathit{cvtop}'}` is of the form :math:`{\mathit{cvtop}}`.
+      * The :math:`{\mathit{cvtop}'}` :math:`{\mathit{cvtop}'}` is of the form :math:`{\mathit{cvtop}}`.
 
 
 
@@ -5347,21 +5191,21 @@ The instruction :math:`({{\mathit{nt}'}{.}\mathsf{load}}{{{\mathit{loadop}}^?}}~
 
       * The number type :math:`{\mathit{nt}'}` is of the form :math:`{\mathit{nt}}`.
 
-      * :math:`{{\mathit{loadop}}^?}` is absent.
+      * The :math:`{{\mathit{loadop}}^?}` :math:`{{\mathit{loadop}}^?}` is absent.
 
       * The value type :math:`{\mathit{valtype}}` is of the form :math:`{\mathit{nt}}`.
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
+      * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
 
    * Or:
 
       * The number type :math:`{\mathit{nt}'}` is of the form :math:`{\mathsf{i}}{n}`.
 
-      * :math:`{{\mathit{loadop}}^?}` is of the form :math:`{M}{\mathsf{\_}}{{\mathit{sx}}}`.
+      * The :math:`{{\mathit{loadop}}^?}` :math:`{{\mathit{loadop}}^?}` is of the form :math:`{M}{\mathsf{\_}}{{\mathit{sx}}}`.
 
       * The value type :math:`{\mathit{valtype}}` is of the form :math:`{\mathsf{i}}{n}`.
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
+      * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
 
 
 
@@ -5379,7 +5223,7 @@ The instruction :math:`({{\mathit{nt}'}{.}\mathsf{store}}{{{\mathit{sz}}^?}}~{\m
 
       * The value type :math:`{\mathit{valtype}}` is of the form :math:`{\mathit{nt}}`.
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
+      * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
 
    * Or:
 
@@ -5389,7 +5233,7 @@ The instruction :math:`({{\mathit{nt}'}{.}\mathsf{store}}{{{\mathit{sz}}^?}}~{\m
 
       * The value type :math:`{\mathit{valtype}}` is of the form :math:`{\mathsf{i}}{n}`.
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
+      * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
 
 
 
@@ -5401,20 +5245,20 @@ The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~{\mathit{vl
 
    * Either:
 
-      * :math:`{\mathit{vloadop}}` is of the form :math:`({M}{\mathsf{x}}{N}{\mathsf{\_}}{{\mathit{sx}}})`.
+      * The :math:`{\mathit{vloadop}}` :math:`{\mathit{vloadop}}` is of the form :math:`({M}{\mathsf{x}}{N}{\mathsf{\_}}{{\mathit{sx}}})`.
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8 \cdot N`.
+      * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8 \cdot N`.
 
    * Or:
 
-      * :math:`{\mathit{vloadop}}` is of the form :math:`({n}{\mathsf{\_}}{\mathsf{splat}})`.
+      * The :math:`{\mathit{vloadop}}` :math:`{\mathit{vloadop}}` is of the form :math:`({n}{\mathsf{\_}}{\mathsf{splat}})`.
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`n / 8`.
+      * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`n / 8`.
    * Or:
 
-      * :math:`{\mathit{vloadop}}` is of the form :math:`({n}{\mathsf{\_}}{\mathsf{zero}})`.
+      * The :math:`{\mathit{vloadop}}` :math:`{\mathit{vloadop}}` is of the form :math:`({n}{\mathsf{\_}}{\mathsf{zero}})`.
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`n / 8`.
+      * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`n / 8`.
 
 
 
@@ -5424,9 +5268,9 @@ The instruction :math:`(\mathsf{vload\_lane}~\mathsf{v{\scriptstyle 128}}~n~{\ma
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is of the form :math:`{\mathit{mt}}`.
 
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`n / 8`.
+   * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`n / 8`.
 
-   * :math:`{\mathit{laneidx}}` is less than :math:`128 / n`.
+   * The :math:`{\mathit{laneidx}}` :math:`{\mathit{laneidx}}` is less than :math:`128 / n`.
 
 
 
@@ -5436,7 +5280,7 @@ The instruction :math:`(\mathsf{vstore}~\mathsf{v{\scriptstyle 128}}~{\mathit{me
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is of the form :math:`{\mathit{mt}}`.
 
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|\mathsf{v{\scriptstyle 128}}|} / 8`.
+   * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|\mathsf{v{\scriptstyle 128}}|} / 8`.
 
 
 
@@ -5446,9 +5290,9 @@ The instruction :math:`(\mathsf{vstore\_lane}~\mathsf{v{\scriptstyle 128}}~n~{\m
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is of the form :math:`{\mathit{mt}}`.
 
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`n / 8`.
+   * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`n / 8`.
 
-   * :math:`{\mathit{laneidx}}` is less than :math:`128 / n`.
+   * The :math:`{\mathit{laneidx}}` :math:`{\mathit{laneidx}}` is less than :math:`128 / n`.
 
 
 
@@ -5471,7 +5315,7 @@ The instruction :math:`(\mathsf{select})` is :ref:`valid <valid-val>` with the f
 The instruction :math:`({\mathit{nt}}_1 {.} {\mathsf{reinterpret}}{\mathsf{\_}}{{\mathit{nt}}_2})` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{nt}}_2~\rightarrow~{\mathit{nt}}_1` if:
 
 
-   * :math:`{|{\mathit{nt}}_1|}` is of the form :math:`{|{\mathit{nt}}_2|}`.
+   * The :math:`{|{\mathit{nt}}_1|}` :math:`{|{\mathit{nt}}_1|}` is of the form :math:`{|{\mathit{nt}}_2|}`.
 
 
 
@@ -5486,7 +5330,7 @@ The instruction :math:`(\mathsf{load}~{\mathit{nt}}~{\mathit{memarg}})` is :ref:
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is of the form :math:`{\mathit{mt}}`.
 
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
+   * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
 
 
 
@@ -5496,7 +5340,7 @@ The instruction :math:`({{\mathsf{i}}{n}{.}\mathsf{load}}{{M}{\mathsf{\_}}{{\mat
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is of the form :math:`{\mathit{mt}}`.
 
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
+   * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
 
 
 
@@ -5506,7 +5350,7 @@ The instruction :math:`(\mathsf{store}~{\mathit{nt}}~{\mathit{memarg}})` is :ref
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is of the form :math:`{\mathit{mt}}`.
 
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
+   * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
 
 
 
@@ -5516,7 +5360,7 @@ The instruction :math:`({{\mathsf{i}}{n}{.}\mathsf{store}}{M}~{\mathit{memarg}})
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is of the form :math:`{\mathit{mt}}`.
 
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
+   * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
 
 
 
@@ -5526,7 +5370,7 @@ The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~({M}{\maths
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is of the form :math:`{\mathit{mt}}`.
 
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8 \cdot N`.
+   * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8 \cdot N`.
 
 
 
@@ -5536,7 +5380,7 @@ The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~({n}{\maths
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is of the form :math:`{\mathit{mt}}`.
 
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`n / 8`.
+   * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`n / 8`.
 
 
 
@@ -5546,7 +5390,7 @@ The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~({n}{\maths
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is of the form :math:`{\mathit{mt}}`.
 
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`n / 8`.
+   * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`n / 8`.
 
 
 
@@ -5759,12 +5603,12 @@ The memory :math:`(\mathsf{memory}~{\mathit{mt}})` is :ref:`valid <valid-val>` w
 
 
 
-:math:`{\mathit{elemmode}}` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{rt}}` if:
+The :math:`{\mathit{elemmode}}` :math:`{\mathit{elemmode}}` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{rt}}` if:
 
 
    * Either:
 
-      * :math:`{\mathit{elemmode}}` is of the form :math:`(\mathsf{active}~x~{\mathit{expr}})`.
+      * The :math:`{\mathit{elemmode}}` :math:`{\mathit{elemmode}}` is of the form :math:`(\mathsf{active}~x~{\mathit{expr}})`.
 
       * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
 
@@ -5776,15 +5620,15 @@ The memory :math:`(\mathsf{memory}~{\mathit{mt}})` is :ref:`valid <valid-val>` w
 
    * Or:
 
-      * :math:`{\mathit{elemmode}}` is of the form :math:`\mathsf{passive}`.
+      * The :math:`{\mathit{elemmode}}` :math:`{\mathit{elemmode}}` is of the form :math:`\mathsf{passive}`.
    * Or:
 
-      * :math:`{\mathit{elemmode}}` is of the form :math:`\mathsf{declare}`.
+      * The :math:`{\mathit{elemmode}}` :math:`{\mathit{elemmode}}` is of the form :math:`\mathsf{declare}`.
 
 
 
 
-:math:`(\mathsf{active}~x~{\mathit{expr}})` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{rt}}` if:
+The :math:`(\mathsf{active}~x~{\mathit{expr}})` :math:`(\mathsf{active}~x~{\mathit{expr}})` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{rt}}` if:
 
 
    * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
@@ -5798,12 +5642,12 @@ The memory :math:`(\mathsf{memory}~{\mathit{mt}})` is :ref:`valid <valid-val>` w
 
 
 
-:math:`\mathsf{passive}` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{rt}}`.
+The :math:`\mathsf{passive}` :math:`\mathsf{passive}` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{rt}}`.
 
 
 
 
-:math:`\mathsf{declare}` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{rt}}`.
+The :math:`\mathsf{declare}` :math:`\mathsf{declare}` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{rt}}`.
 
 
 
@@ -5817,17 +5661,17 @@ The table segment :math:`(\mathsf{elem}~{\mathit{rt}}~{{\mathit{expr}}^\ast}~{\m
 
       * :math:`{\mathit{expr}}` is constant.
 
-   * :math:`{\mathit{elemmode}}` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{rt}}`.
+   * The :math:`{\mathit{elemmode}}` :math:`{\mathit{elemmode}}` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{rt}}`.
 
 
 
 
-:math:`{\mathit{datamode}}` is :ref:`valid <valid-val>` if:
+The :math:`{\mathit{datamode}}` :math:`{\mathit{datamode}}` is :ref:`valid <valid-val>` if:
 
 
    * Either:
 
-      * :math:`{\mathit{datamode}}` is of the form :math:`(\mathsf{active}~0~{\mathit{expr}})`.
+      * The :math:`{\mathit{datamode}}` :math:`{\mathit{datamode}}` is of the form :math:`(\mathsf{active}~0~{\mathit{expr}})`.
 
       * The memory type :math:`C{.}\mathsf{mems}{}[0]` is of the form :math:`{\mathit{mt}}`.
 
@@ -5837,12 +5681,12 @@ The table segment :math:`(\mathsf{elem}~{\mathit{rt}}~{{\mathit{expr}}^\ast}~{\m
 
    * Or:
 
-      * :math:`{\mathit{datamode}}` is of the form :math:`\mathsf{passive}`.
+      * The :math:`{\mathit{datamode}}` :math:`{\mathit{datamode}}` is of the form :math:`\mathsf{passive}`.
 
 
 
 
-:math:`(\mathsf{active}~0~{\mathit{expr}})` is :ref:`valid <valid-val>` if:
+The :math:`(\mathsf{active}~0~{\mathit{expr}})` :math:`(\mathsf{active}~0~{\mathit{expr}})` is :ref:`valid <valid-val>` if:
 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is of the form :math:`{\mathit{mt}}`.
@@ -5854,7 +5698,7 @@ The table segment :math:`(\mathsf{elem}~{\mathit{rt}}~{{\mathit{expr}}^\ast}~{\m
 
 
 
-:math:`\mathsf{passive}` is always :ref:`valid <valid-val>`.
+The :math:`\mathsf{passive}` :math:`\mathsf{passive}` is always :ref:`valid <valid-val>`.
 
 
 
@@ -5862,7 +5706,7 @@ The table segment :math:`(\mathsf{elem}~{\mathit{rt}}~{{\mathit{expr}}^\ast}~{\m
 The memory segment :math:`(\mathsf{data}~{b^\ast}~{\mathit{datamode}})` is :ref:`valid <valid-val>` if:
 
 
-   * :math:`{\mathit{datamode}}` is :ref:`valid <valid-val>`.
+   * The :math:`{\mathit{datamode}}` :math:`{\mathit{datamode}}` is :ref:`valid <valid-val>`.
 
 
 
@@ -6078,7 +5922,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ......................................
 
 
-1. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
+1. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` from the stack.
 
@@ -6103,7 +5947,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 .....................................................................................
 
 
-1. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
+1. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` from the stack.
 
@@ -6159,7 +6003,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. If :math:`{n'} \geq 1`, then:
 
-      1) Let :math:`l` be :math:`{n'} - 1`.
+      1) Let :math:`l` be the label index :math:`{n'} - 1`.
 
       #) Pop the :math:`\mathsf{label}` L from the stack.
 
@@ -6172,7 +6016,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 .........................
 
 
-1. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
+1. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` from the stack.
 
@@ -6189,7 +6033,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ........................................
 
 
-1. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
+1. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -6258,7 +6102,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 .........................................
 
 
-1. Assert: Due to validation, a :ref:`number type <syntax-nt>` is on the top of the stack.
+1. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
@@ -6275,11 +6119,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ..........................................
 
 
-1. Assert: Due to validation, a :ref:`number type <syntax-nt>` is on the top of the stack.
+1. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a :ref:`number <syntax-num>` is on the top of the stack.
+#. Assert: Due to validation, a number is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
@@ -6296,7 +6140,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ...........................................
 
 
-1. Assert: Due to validation, a :ref:`number type <syntax-nt>` is on the top of the stack.
+1. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
@@ -6309,11 +6153,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ..........................................
 
 
-1. Assert: Due to validation, a :ref:`number type <syntax-nt>` is on the top of the stack.
+1. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a :ref:`number <syntax-num>` is on the top of the stack.
+#. Assert: Due to validation, a number is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
@@ -6326,7 +6170,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ............................................................................
 
 
-1. Assert: Due to validation, a :ref:`number type <syntax-nt_1>` is on the top of the stack.
+1. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
@@ -6343,7 +6187,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ...............................
 
 
-1. Assert: Due to validation, a :ref:`reference <syntax-ref>` is on the top of the stack.
+1. Assert: Due to validation, a reference is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{ref}}` from the stack.
 
@@ -6360,7 +6204,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ..........................................................
 
 
-1. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
+1. Assert: Due to validation, a vector type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -6373,11 +6217,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ...........................................................
 
 
-1. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
+1. Assert: Due to validation, a vector type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
+#. Assert: Due to validation, a vector type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -6390,15 +6234,15 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ............................................................
 
 
-1. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
+1. Assert: Due to validation, a vector type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_3)` from the stack.
 
-#. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
+#. Assert: Due to validation, a vector type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
+#. Assert: Due to validation, a vector type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -6411,7 +6255,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ...........................................................
 
 
-1. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
+1. Assert: Due to validation, a vector type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -6424,7 +6268,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ..........................................
 
 
-1. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
+1. Assert: Due to validation, a vector type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -6441,11 +6285,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ...........................................
 
 
-1. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
+1. Assert: Due to validation, a vector type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
+#. Assert: Due to validation, a vector type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -6462,7 +6306,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ...............................................................
 
 
-1. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
+1. Assert: Due to validation, a vector type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` from the stack.
 
@@ -6481,11 +6325,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ...........................................
 
 
-1. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
+1. Assert: Due to validation, a vector type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
+#. Assert: Due to validation, a vector type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -6498,11 +6342,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ................................................................
 
 
-1. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
+1. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
+#. Assert: Due to validation, a vector type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -6517,7 +6361,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ...........................................................
 
 
-1. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
+1. Assert: Due to validation, a vector type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` from the stack.
 
@@ -6532,11 +6376,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ...........................................................
 
 
-1. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
+1. Assert: Due to validation, a vector type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
+#. Assert: Due to validation, a vector type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -6557,11 +6401,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ....................................................................
 
 
-1. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
+1. Assert: Due to validation, a vector type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
+#. Assert: Due to validation, a vector type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -6595,13 +6439,13 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 .............................................................................................
 
 
-1. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
+1. Assert: Due to validation, a vector type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
 #. If :math:`{{\mathit{sx}'}^?}` is not defined and :math:`{\mathit{lanetype}}` is number type, then:
 
-   a. Let :math:`{\mathit{nt}}` be :math:`{\mathit{lanetype}}`.
+   a. Let :math:`{\mathit{nt}}` be the lane type :math:`{\mathit{lanetype}}`.
 
    #. If :math:`i < {|{{\mathrm{lanes}}}_{{{\mathit{nt}}}{\mathsf{x}}{N}}(c_1)|}`, then:
 
@@ -6611,7 +6455,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. If :math:`{\mathit{lanetype}}` is packed type, then:
 
-   a. Let :math:`{\mathit{pt}}` be :math:`{\mathit{lanetype}}`.
+   a. Let :math:`{\mathit{pt}}` be the lane type :math:`{\mathit{lanetype}}`.
 
    #. If :math:`{{\mathit{sx}'}^?}` is defined, then:
 
@@ -6634,7 +6478,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Assert: Due to validation, :math:`{\mathit{numtype}}_0 = {\mathrm{unpack}}({\mathsf{i}}{n})`.
 
-#. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
+#. Assert: Due to validation, a vector type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -6647,7 +6491,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 .............................................................................
 
 
-1. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
+1. Assert: Due to validation, a vector type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -6660,11 +6504,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ...............................................................................
 
 
-1. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
+1. Assert: Due to validation, a vector type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
+#. Assert: Due to validation, a vector type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -6677,11 +6521,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ...................................................................................................................................................
 
 
-1. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
+1. Assert: Due to validation, a vector type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
+#. Assert: Due to validation, a vector type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -6702,15 +6546,15 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ..........................................................................................................................................................................................................
 
 
-1. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
+1. Assert: Due to validation, a vector type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
 #. If :math:`{{\mathit{half}'}^?}` is not defined and :math:`{{\mathit{zero}'}^?}` is not defined, then:
 
-   a. Let :math:`{{\mathsf{i}}{n}}_1` be :math:`{{\mathsf{i}}{n}}_{1'}`.
+   a. Let :math:`{{\mathsf{i}}{n}}_1` be the lane type :math:`{{\mathsf{i}}{n}}_{1'}`.
 
-   #. Let :math:`{{\mathsf{i}}{n}}_2` be :math:`{{\mathsf{i}}{n}}_{2'}`.
+   #. Let :math:`{{\mathsf{i}}{n}}_2` be the lane type :math:`{{\mathsf{i}}{n}}_{2'}`.
 
    #. Let :math:`M` be :math:`{M''}`.
 
@@ -6728,9 +6572,9 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. If :math:`{{\mathit{zero}'}^?}` is not defined, then:
 
-   a. Let :math:`{{\mathsf{i}}{n}}_1` be :math:`{{\mathsf{i}}{n}}_{1'}`.
+   a. Let :math:`{{\mathsf{i}}{n}}_1` be the lane type :math:`{{\mathsf{i}}{n}}_{1'}`.
 
-   #. Let :math:`{{\mathsf{i}}{n}}_2` be :math:`{{\mathsf{i}}{n}}_{2'}`.
+   #. Let :math:`{{\mathsf{i}}{n}}_2` be the lane type :math:`{{\mathsf{i}}{n}}_{2'}`.
 
    #. Let :math:`M_1` be :math:`{M''}`.
 
@@ -6758,11 +6602,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. If :math:`{{\mathsf{i}}{n}}_{1'}` is number type, then:
 
-      1) Let :math:`{\mathit{nt}}_1` be :math:`{{\mathsf{i}}{n}}_{1'}`.
+      1) Let :math:`{\mathit{nt}}_1` be the lane type :math:`{{\mathsf{i}}{n}}_{1'}`.
 
       #) If :math:`{{\mathsf{i}}{n}}_{2'}` is number type, then:
 
-         a) Let :math:`{\mathit{nt}}_2` be :math:`{{\mathsf{i}}{n}}_{2'}`.
+         a) Let :math:`{\mathit{nt}}_2` be the lane type :math:`{{\mathsf{i}}{n}}_{2'}`.
 
          #) If :math:`{{\mathit{zero}'}^?}` is defined, then:
 
@@ -6843,7 +6687,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
+#. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -6886,7 +6730,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Pop the values :math:`{{\mathit{val}}^{k}}` from the stack.
 
-#. Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~{{\mathit{val}}^{k}}~{{{\mathrm{default}}}_{t}^\ast},\; \mathsf{module}~{\mathit{mm}} \}\end{array}`.
+#. Let :math:`f` be the frame :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~{{\mathit{val}}^{k}}~{{{\mathrm{default}}}_{t}^\ast},\; \mathsf{module}~{\mathit{mm}} \}\end{array}`.
 
 #. Let F be the :math:`\mathsf{frame}` :math:`f` whose arity is :math:`n`.
 
@@ -6932,7 +6776,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
+#. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -6960,7 +6804,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
+#. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
@@ -6968,7 +6812,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Pop the value :math:`{\mathit{val}}` from the stack.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
+#. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -7003,15 +6847,15 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
+#. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
+#. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
+#. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` from the stack.
 
@@ -7068,15 +6912,15 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
+#. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
+#. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
+#. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` from the stack.
 
@@ -7115,13 +6959,13 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
+#. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
 #. If :math:`{{\mathit{loadop}}^?}` is not defined, then:
 
-   a. Let :math:`{\mathit{nt}}` be :math:`{\mathit{nt}'}`.
+   a. Let :math:`{\mathit{nt}}` be the number type :math:`{\mathit{nt}'}`.
 
    #. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|{\mathit{nt}}|} / 8 > {|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
 
@@ -7143,7 +6987,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
          a) Trap.
 
-   #. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{nt}'}`.
+   #. Let :math:`{\mathsf{i}}{n}` be the number type :math:`{\mathit{nt}'}`.
 
    #. If :math:`{{\mathit{loadop}}^?}` is defined, then:
 
@@ -7162,7 +7006,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
+#. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -7239,11 +7083,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
+#. Assert: Due to validation, a vector type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
+#. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -7281,7 +7125,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
+#. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
@@ -7289,7 +7133,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Pop the value :math:`{\mathit{val}}` from the stack.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
+#. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -7324,15 +7168,15 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
+#. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
+#. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
+#. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` from the stack.
 
@@ -7389,15 +7233,15 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
+#. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
+#. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
+#. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` from the stack.
 
@@ -7462,11 +7306,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a :ref:`reference <syntax-ref>` is on the top of the stack.
+#. Assert: Due to validation, a reference is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{ref}}` from the stack.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
+#. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -7483,17 +7327,17 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
+#. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a :ref:`reference <syntax-ref>` is on the top of the stack.
+#. Assert: Due to validation, a reference is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{ref}}` from the stack.
 
 #. Either:
 
-   a. Let :math:`{\mathit{ti}}` be :math:`{\mathrm{growtable}}(z{.}\mathsf{tables}{}[x], n, {\mathit{ref}})`.
+   a. Let :math:`{\mathit{ti}}` be the table instance :math:`{\mathrm{growtable}}(z{.}\mathsf{tables}{}[x], n, {\mathit{ref}})`.
 
    #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|})` to the stack.
 
@@ -7519,15 +7363,15 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a :ref:`number <syntax-num>` is on the top of the stack.
+#. Assert: Due to validation, a number is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{nt}''}{.}\mathsf{const}~c)` from the stack.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
+#. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. Let :math:`{\mathit{nt}}` be :math:`{\mathit{nt}''}`.
+#. Let :math:`{\mathit{nt}}` be the number type :math:`{\mathit{nt}''}`.
 
 #. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|{\mathit{nt}}|} / 8 > {|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}` and :math:`{\mathit{nt}'} = {\mathit{nt}}` and :math:`{{\mathit{sz}}^?}` is not defined, then:
 
@@ -7541,7 +7385,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. If :math:`{\mathit{nt}''}` is :math:`{\mathsf{i}}{n}`, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{nt}''}`.
+   a. Let :math:`{\mathsf{i}}{n}` be the number type :math:`{\mathit{nt}''}`.
 
    #. If :math:`{\mathit{nt}'} = {\mathsf{i}}{n}` and :math:`{{\mathit{sz}}^?}` is defined, then:
 
@@ -7562,11 +7406,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
+#. Assert: Due to validation, a vector type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` from the stack.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
+#. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -7585,11 +7429,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
+#. Assert: Due to validation, a vector type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` from the stack.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
+#. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -7616,13 +7460,13 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
+#. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
 #. Either:
 
-   a. Let :math:`{\mathit{mi}}` be :math:`{\mathrm{growmemory}}(z{.}\mathsf{mems}{}[0], n)`.
+   a. Let :math:`{\mathit{mi}}` be the memory instance :math:`{\mathrm{growmemory}}(z{.}\mathsf{mems}{}[0], n)`.
 
    #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|} / (64 \, {\mathrm{Ki}}))` to the stack.
 
@@ -7867,13 +7711,13 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. If :math:`{\mathit{lanetype}}` is number type, then:
 
-   a. Let :math:`{\mathit{numtype}}` be :math:`{\mathit{lanetype}}`.
+   a. Let :math:`{\mathit{numtype}}` be the lane type :math:`{\mathit{lanetype}}`.
 
    #. Return :math:`{|{\mathit{numtype}}|}`.
 
 #. Assert: Due to validation, :math:`{\mathit{lanetype}}` is packed type.
 
-#. Let :math:`{\mathit{packtype}}` be :math:`{\mathit{lanetype}}`.
+#. Let :math:`{\mathit{packtype}}` be the lane type :math:`{\mathit{lanetype}}`.
 
 #. Return :math:`{|{\mathit{packtype}}|}`.
 
@@ -7937,7 +7781,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Assert: Due to validation, :math:`{\mathit{numtype}}` is :math:`{\mathsf{f}}{n}`.
 
-#. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{numtype}}`.
+#. Let :math:`{\mathsf{f}}{n}` be the number type :math:`{\mathit{numtype}}`.
 
 #. Return :math:`{+0}`.
 
@@ -7975,7 +7819,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. If :math:`{\mathit{lanetype}}` is number type, then:
 
-   a. Let :math:`{\mathit{numtype}}` be :math:`{\mathit{lanetype}}`.
+   a. Let :math:`{\mathit{numtype}}` be the lane type :math:`{\mathit{lanetype}}`.
 
    #. Return :math:`{\mathit{numtype}}`.
 
@@ -8214,7 +8058,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. If :math:`{\mathit{numtype}}` is :math:`{\mathsf{i}}{n}`, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}`.
+   a. Let :math:`{\mathsf{i}}{n}` be the number type :math:`{\mathit{numtype}}`.
 
    #. Let :math:`{\mathit{iN}}` be :math:`{\mathit{iN}'}`.
 
@@ -8238,7 +8082,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Assert: Due to validation, :math:`{\mathit{numtype}}` is :math:`{\mathsf{f}}{n}`.
 
-#. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{numtype}}`.
+#. Let :math:`{\mathsf{f}}{n}` be the number type :math:`{\mathit{numtype}}`.
 
 #. Let :math:`{\mathit{fN}}` be :math:`{\mathit{iN}'}`.
 
@@ -8298,7 +8142,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. If :math:`{\mathit{numtype}}` is :math:`{\mathsf{i}}{n}`, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}`.
+   a. Let :math:`{\mathsf{i}}{n}` be the number type :math:`{\mathit{numtype}}`.
 
    #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{iN}}_{1'}`.
 
@@ -8360,7 +8204,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Assert: Due to validation, :math:`{\mathit{numtype}}` is :math:`{\mathsf{f}}{n}`.
 
-#. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{numtype}}`.
+#. Let :math:`{\mathsf{f}}{n}` be the number type :math:`{\mathit{numtype}}`.
 
 #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{iN}}_{1'}`.
 
@@ -8481,7 +8325,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. If :math:`{\mathit{numtype}}` is :math:`{\mathsf{i}}{n}`, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}`.
+   a. Let :math:`{\mathsf{i}}{n}` be the number type :math:`{\mathit{numtype}}`.
 
    #. Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{iN}}_{1'}`.
 
@@ -8521,7 +8365,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Assert: Due to validation, :math:`{\mathit{numtype}}` is :math:`{\mathsf{f}}{n}`.
 
-#. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{numtype}}`.
+#. Let :math:`{\mathsf{f}}{n}` be the number type :math:`{\mathit{numtype}}`.
 
 #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{iN}}_{1'}`.
 
@@ -8558,11 +8402,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. If :math:`{\mathit{numtype}}` is :math:`{\mathsf{i}}{n}`, then:
 
-   a. Let :math:`{{\mathsf{i}}{n}}_1` be :math:`{\mathit{numtype}}`.
+   a. Let :math:`{{\mathsf{i}}{n}}_1` be the number type :math:`{\mathit{numtype}}`.
 
    #. If :math:`{\mathit{numtype}''}` is :math:`{\mathsf{i}}{n}`, then:
 
-      1) Let :math:`{{\mathsf{i}}{n}}_2` be :math:`{\mathit{numtype}''}`.
+      1) Let :math:`{{\mathsf{i}}{n}}_2` be the number type :math:`{\mathit{numtype}''}`.
 
       #) If :math:`{\mathit{cvtop}}` is some :math:`\mathsf{extend}` :math:`{\mathit{sx}}`, then:
 
@@ -8580,11 +8424,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. If :math:`{\mathit{numtype}}` is :math:`{\mathsf{f}}{n}`, then:
 
-   a. Let :math:`{{\mathsf{f}}{n}}_1` be :math:`{\mathit{numtype}}`.
+   a. Let :math:`{{\mathsf{f}}{n}}_1` be the number type :math:`{\mathit{numtype}}`.
 
    #. If :math:`{\mathit{numtype}''}` is :math:`{\mathsf{i}}{n}`, then:
 
-      1) Let :math:`{{\mathsf{i}}{n}}_2` be :math:`{\mathit{numtype}''}`.
+      1) Let :math:`{{\mathsf{i}}{n}}_2` be the number type :math:`{\mathit{numtype}''}`.
 
       #) If :math:`{\mathit{cvtop}}` is some :math:`\mathsf{trunc}` :math:`{\mathit{sx}}`, then:
 
@@ -8604,11 +8448,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. If :math:`{\mathit{numtype}}` is :math:`{\mathsf{i}}{n}`, then:
 
-   a. Let :math:`{{\mathsf{i}}{n}}_1` be :math:`{\mathit{numtype}}`.
+   a. Let :math:`{{\mathsf{i}}{n}}_1` be the number type :math:`{\mathit{numtype}}`.
 
    #. If :math:`{\mathit{numtype}''}` is :math:`{\mathsf{f}}{n}`, then:
 
-      1) Let :math:`{{\mathsf{f}}{n}}_2` be :math:`{\mathit{numtype}''}`.
+      1) Let :math:`{{\mathsf{f}}{n}}_2` be the number type :math:`{\mathit{numtype}''}`.
 
       #) If :math:`{\mathit{cvtop}}` is some :math:`\mathsf{convert}` :math:`{\mathit{sx}}`, then:
 
@@ -8620,11 +8464,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. If :math:`{\mathit{numtype}}` is :math:`{\mathsf{f}}{n}`, then:
 
-   a. Let :math:`{{\mathsf{f}}{n}}_1` be :math:`{\mathit{numtype}}`.
+   a. Let :math:`{{\mathsf{f}}{n}}_1` be the number type :math:`{\mathit{numtype}}`.
 
    #. If :math:`{\mathit{numtype}''}` is :math:`{\mathsf{f}}{n}`, then:
 
-      1) Let :math:`{{\mathsf{f}}{n}}_2` be :math:`{\mathit{numtype}''}`.
+      1) Let :math:`{{\mathsf{f}}{n}}_2` be the number type :math:`{\mathit{numtype}''}`.
 
       #) Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{iN}}_{1'}`.
 
@@ -8638,11 +8482,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. If :math:`{\mathit{numtype}}` is :math:`{\mathsf{i}}{n}`, then:
 
-   a. Let :math:`{{\mathsf{i}}{n}}_1` be :math:`{\mathit{numtype}}`.
+   a. Let :math:`{{\mathsf{i}}{n}}_1` be the number type :math:`{\mathit{numtype}}`.
 
    #. If :math:`{\mathit{numtype}''}` is :math:`{\mathsf{f}}{n}`, then:
 
-      1) Let :math:`{{\mathsf{f}}{n}}_2` be :math:`{\mathit{numtype}''}`.
+      1) Let :math:`{{\mathsf{f}}{n}}_2` be the number type :math:`{\mathit{numtype}''}`.
 
       #) Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{iN}}_{1'}`.
 
@@ -8652,11 +8496,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Assert: Due to validation, :math:`{\mathit{numtype}}` is :math:`{\mathsf{f}}{n}`.
 
-#. Let :math:`{{\mathsf{f}}{n}}_1` be :math:`{\mathit{numtype}}`.
+#. Let :math:`{{\mathsf{f}}{n}}_1` be the number type :math:`{\mathit{numtype}}`.
 
 #. Assert: Due to validation, :math:`{\mathit{numtype}''}` is :math:`{\mathsf{i}}{n}`.
 
-#. Let :math:`{{\mathsf{i}}{n}}_2` be :math:`{\mathit{numtype}''}`.
+#. Let :math:`{{\mathsf{i}}{n}}_2` be the number type :math:`{\mathit{numtype}''}`.
 
 #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{iN}}_{1'}`.
 
@@ -8746,7 +8590,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Assert: Due to validation, :math:`{\mathit{lanetype}}` is packed type.
 
-#. Let :math:`{\mathit{packtype}}` be :math:`{\mathit{lanetype}}`.
+#. Let :math:`{\mathit{packtype}}` be the lane type :math:`{\mathit{lanetype}}`.
 
 #. Return :math:`{{\mathrm{wrap}}}_{{|{\mathrm{unpack}}({\mathit{packtype}})|}, {|{\mathit{packtype}}|}}(c)`.
 
@@ -8761,7 +8605,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Assert: Due to validation, :math:`{\mathit{lanetype}}` is packed type.
 
-#. Let :math:`{\mathit{packtype}}` be :math:`{\mathit{lanetype}}`.
+#. Let :math:`{\mathit{packtype}}` be the lane type :math:`{\mathit{lanetype}}`.
 
 #. Return :math:`{{{{\mathrm{extend}}}_{{|{\mathit{packtype}}|}, {|{\mathrm{unpack}}({\mathit{packtype}})|}}^{\mathsf{u}}}}{(c)}`.
 
@@ -8829,7 +8673,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{i}}{n}`, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{lanetype}}`.
+   a. Let :math:`{\mathsf{i}}{n}` be the lane type :math:`{\mathit{lanetype}}`.
 
    #. If :math:`{\mathit{vunop}} = \mathsf{abs}`, then:
 
@@ -8857,7 +8701,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Assert: Due to validation, :math:`{\mathit{lanetype}}` is :math:`{\mathsf{f}}{n}`.
 
-#. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}`.
+#. Let :math:`{\mathsf{f}}{n}` be the lane type :math:`{\mathit{lanetype}}`.
 
 #. If :math:`{\mathit{vunop}} = \mathsf{abs}`, then:
 
@@ -8936,7 +8780,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{i}}{n}`, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{lanetype}}`.
+   a. Let :math:`{\mathsf{i}}{n}` be the lane type :math:`{\mathit{lanetype}}`.
 
    #. If :math:`{\mathit{vbinop}} = \mathsf{add}`, then:
 
@@ -9038,7 +8882,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Assert: Due to validation, :math:`{\mathit{lanetype}}` is :math:`{\mathsf{f}}{n}`.
 
-#. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}`.
+#. Let :math:`{\mathsf{f}}{n}` be the lane type :math:`{\mathit{lanetype}}`.
 
 #. If :math:`{\mathit{vbinop}} = \mathsf{add}`, then:
 
@@ -9143,7 +8987,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{i}}{n}`, then:
 
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{lanetype}}`.
+   a. Let :math:`{\mathsf{i}}{n}` be the lane type :math:`{\mathit{lanetype}}`.
 
    #. If :math:`{\mathit{vrelop}} = \mathsf{eq}`, then:
 
@@ -9227,7 +9071,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Assert: Due to validation, :math:`{\mathit{lanetype}}` is :math:`{\mathsf{f}}{n}`.
 
-#. Let :math:`{\mathsf{f}}{n}` be :math:`{\mathit{lanetype}}`.
+#. Let :math:`{\mathsf{f}}{n}` be the lane type :math:`{\mathit{lanetype}}`.
 
 #. If :math:`{\mathit{vrelop}} = \mathsf{eq}`, then:
 
@@ -9320,11 +9164,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. If :math:`{\mathit{lanetype}'}` is :math:`{\mathsf{i}}{n}`, then:
 
-   a. Let :math:`{{\mathsf{i}}{n}}_1` be :math:`{\mathit{lanetype}'}`.
+   a. Let :math:`{{\mathsf{i}}{n}}_1` be the lane type :math:`{\mathit{lanetype}'}`.
 
    #. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{i}}{n}`, then:
 
-      1) Let :math:`{{\mathsf{i}}{n}}_2` be :math:`{\mathit{lanetype}}`.
+      1) Let :math:`{{\mathsf{i}}{n}}_2` be the lane type :math:`{\mathit{lanetype}}`.
 
       #) If :math:`{\mathit{vcvtop}}` is some :math:`\mathsf{extend}` :math:`{\mathit{sx}}`, then:
 
@@ -9338,7 +9182,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{f}}{n}`, then:
 
-      1) Let :math:`{{\mathsf{f}}{n}}_2` be :math:`{\mathit{lanetype}}`.
+      1) Let :math:`{{\mathsf{f}}{n}}_2` be the lane type :math:`{\mathit{lanetype}}`.
 
       #) If :math:`{\mathit{vcvtop}}` is some :math:`\mathsf{convert}` :math:`{\mathit{sx}}`, then:
 
@@ -9352,11 +9196,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Assert: Due to validation, :math:`{\mathit{lanetype}'}` is :math:`{\mathsf{f}}{n}`.
 
-#. Let :math:`{{\mathsf{f}}{n}}_1` be :math:`{\mathit{lanetype}'}`.
+#. Let :math:`{{\mathsf{f}}{n}}_1` be the lane type :math:`{\mathit{lanetype}'}`.
 
 #. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{i}}{n}`, then:
 
-   a. Let :math:`{{\mathsf{i}}{n}}_2` be :math:`{\mathit{lanetype}}`.
+   a. Let :math:`{{\mathsf{i}}{n}}_2` be the lane type :math:`{\mathit{lanetype}}`.
 
    #. If :math:`{\mathit{vcvtop}}` is some :math:`\mathsf{trunc\_sat}` :math:`{\mathit{sx}}`, then:
 
@@ -9370,7 +9214,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Assert: Due to validation, :math:`{\mathit{lanetype}}` is :math:`{\mathsf{f}}{n}`.
 
-#. Let :math:`{{\mathsf{f}}{n}}_2` be :math:`{\mathit{lanetype}}`.
+#. Let :math:`{{\mathsf{f}}{n}}_2` be the lane type :math:`{\mathit{lanetype}}`.
 
 #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{iN}}_{1'}`.
 
@@ -9753,7 +9597,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. If :math:`{i'} \leq j`, then:
 
-   a. Let :math:`{\mathit{ti}'}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({}[ {i'} .. j ]~{\mathit{rt}}),\; \mathsf{refs}~{{r'}^\ast}~{r^{n}} \}\end{array}`.
+   a. Let :math:`{\mathit{ti}'}` be the table instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({}[ {i'} .. j ]~{\mathit{rt}}),\; \mathsf{refs}~{{r'}^\ast}~{r^{n}} \}\end{array}`.
 
    #. Return :math:`{\mathit{ti}'}`.
 
@@ -9770,7 +9614,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. If :math:`{i'} \leq j`, then:
 
-   a. Let :math:`{\mathit{mi}'}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{}[ {i'} .. j ]~\mathsf{page},\; \mathsf{bytes}~{b^\ast}~{\mathtt{0x00}^{n \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
+   a. Let :math:`{\mathit{mi}'}` be the memory instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{}[ {i'} .. j ]~\mathsf{page},\; \mathsf{bytes}~{b^\ast}~{\mathtt{0x00}^{n \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
 
    #. Return :math:`{\mathit{mi}'}`.
 
@@ -9787,7 +9631,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. If :math:`{\mathit{blocktype}}` is some :math:`{{\mathit{valtype}}^?}`, then:
 
-   a. Let :math:`{{\mathit{valtype}}_0^?}` be the destructuring of :math:`{\mathit{blocktype}}`.
+   a. Let :math:`{{\mathit{valtype}}_0^?}` be the block type :math:`{\mathit{blocktype}}`.
 
    #. If :math:`{{\mathit{valtype}}_0^?}` is defined, then:
 
@@ -9797,7 +9641,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Assert: Due to validation, :math:`{\mathit{blocktype}}` is some :math:`{\mathit{funcidx}}`.
 
-#. Let :math:`x` be the destructuring of :math:`{\mathit{blocktype}}`.
+#. Let :math:`x` be the block type :math:`{\mathit{blocktype}}`.
 
 #. Return :math:`z{.}\mathsf{types}{}[x]`.
 
@@ -9892,7 +9736,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`(\mathsf{func}~x~{{\mathit{local}}^\ast}~{\mathit{expr}})` be the destructuring of :math:`{\mathit{func}}`.
 
-#. Let :math:`{\mathit{fi}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{\mathit{moduleinst}}{.}\mathsf{types}{}[x],\; \mathsf{module}~{\mathit{moduleinst}},\; \mathsf{code}~{\mathit{func}} \}\end{array}`.
+#. Let :math:`{\mathit{fi}}` be the function instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{\mathit{moduleinst}}{.}\mathsf{types}{}[x],\; \mathsf{module}~{\mathit{moduleinst}},\; \mathsf{code}~{\mathit{func}} \}\end{array}`.
 
 #. Let :math:`a` be the length of :math:`s{.}\mathsf{funcs}`.
 
@@ -9922,7 +9766,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ........................................................................
 
 
-1. Let :math:`{\mathit{gi}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{\mathit{globaltype}},\; \mathsf{value}~{\mathit{val}} \}\end{array}`.
+1. Let :math:`{\mathit{gi}}` be the global instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{\mathit{globaltype}},\; \mathsf{value}~{\mathit{val}} \}\end{array}`.
 
 #. Let :math:`a` be the length of :math:`s{.}\mathsf{globals}`.
 
@@ -9960,7 +9804,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ............................................................
 
 
-1. Let :math:`{\mathit{ti}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({}[ i .. j ]~{\mathit{rt}}),\; \mathsf{refs}~{(\mathsf{ref{.}null}~{\mathit{rt}})^{i}} \}\end{array}`.
+1. Let :math:`{\mathit{ti}}` be the table instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({}[ i .. j ]~{\mathit{rt}}),\; \mathsf{refs}~{(\mathsf{ref{.}null}~{\mathit{rt}})^{i}} \}\end{array}`.
 
 #. Let :math:`a` be the length of :math:`s{.}\mathsf{tables}`.
 
@@ -9990,7 +9834,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ..........................................................
 
 
-1. Let :math:`{\mathit{mi}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{}[ i .. j ]~\mathsf{page},\; \mathsf{bytes}~{\mathtt{0x00}^{i \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
+1. Let :math:`{\mathit{mi}}` be the memory instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{}[ i .. j ]~\mathsf{page},\; \mathsf{bytes}~{\mathtt{0x00}^{i \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
 
 #. Let :math:`a` be the length of :math:`s{.}\mathsf{mems}`.
 
@@ -10020,7 +9864,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 .....................................................................
 
 
-1. Let :math:`{\mathit{ei}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{\mathit{rt}},\; \mathsf{refs}~{{\mathit{ref}}^\ast} \}\end{array}`.
+1. Let :math:`{\mathit{ei}}` be the element instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{\mathit{rt}},\; \mathsf{refs}~{{\mathit{ref}}^\ast} \}\end{array}`.
 
 #. Let :math:`a` be the length of :math:`s{.}\mathsf{elems}`.
 
@@ -10056,7 +9900,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 .......................................................
 
 
-1. Let :math:`{\mathit{di}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{bytes}~{{\mathit{byte}}^\ast} \}\end{array}`.
+1. Let :math:`{\mathit{di}}` be the data instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{bytes}~{{\mathit{byte}}^\ast} \}\end{array}`.
 
 #. Let :math:`a` be the length of :math:`s{.}\mathsf{datas}`.
 
@@ -10151,7 +9995,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{{\mathit{xi}}^\ast}` be :math:`{{\mathrm{instexport}}({{\mathit{fa}}_{\mathit{ex}}^\ast}~{{\mathit{fa}}^\ast}, {{\mathit{ga}}_{\mathit{ex}}^\ast}~{{\mathit{ga}}^\ast}, {{\mathit{ta}}_{\mathit{ex}}^\ast}~{{\mathit{ta}}^\ast}, {{\mathit{ma}}_{\mathit{ex}}^\ast}~{{\mathit{ma}}^\ast}, {\mathit{export}})^\ast}`.
 
-#. Let :math:`{\mathit{moduleinst}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{ft}}^\ast},\; \mathsf{funcs}~{{\mathit{fa}}_{\mathit{ex}}^\ast}~{{\mathit{fa}}^\ast},\; \mathsf{globals}~{{\mathit{ga}}_{\mathit{ex}}^\ast}~{{\mathit{ga}}^\ast},\; \mathsf{tables}~{{\mathit{ta}}_{\mathit{ex}}^\ast}~{{\mathit{ta}}^\ast},\; \mathsf{mems}~{{\mathit{ma}}_{\mathit{ex}}^\ast}~{{\mathit{ma}}^\ast},\; \mathsf{elems}~{{\mathit{ea}}^\ast},\; \mathsf{datas}~{{\mathit{da}}^\ast},\; \mathsf{exports}~{{\mathit{xi}}^\ast} \}\end{array}`.
+#. Let :math:`{\mathit{moduleinst}}` be the module instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{ft}}^\ast},\; \mathsf{funcs}~{{\mathit{fa}}_{\mathit{ex}}^\ast}~{{\mathit{fa}}^\ast},\; \mathsf{globals}~{{\mathit{ga}}_{\mathit{ex}}^\ast}~{{\mathit{ga}}^\ast},\; \mathsf{tables}~{{\mathit{ta}}_{\mathit{ex}}^\ast}~{{\mathit{ta}}^\ast},\; \mathsf{mems}~{{\mathit{ma}}_{\mathit{ex}}^\ast}~{{\mathit{ma}}^\ast},\; \mathsf{elems}~{{\mathit{ea}}^\ast},\; \mathsf{datas}~{{\mathit{da}}^\ast},\; \mathsf{exports}~{{\mathit{xi}}^\ast} \}\end{array}`.
 
 #. Let :math:`{{\mathit{funcaddr}}_0^\ast}` be :math:`{\mathrm{allocfuncs}}(s, {\mathit{moduleinst}}, {{\mathit{func}}^{n_{\mathit{func}}}})`.
 
@@ -10244,11 +10088,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{{\mathit{instr}}_{\mathsf{e}}^\ast}` be the :ref:`concatenation <notation-concat>` of :math:`{{\mathrm{runelem}}({{\mathit{elem}}^\ast}{}[i], i)^{i<n_{\mathsf{e}}}}`.
 
-#. Let :math:`{\mathit{moduleinst}}_{\mathit{init}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{functype}}^\ast},\; \mathsf{funcs}~{\mathrm{funcs}}({{\mathit{externaddr}}^\ast})~{({|s{.}\mathsf{funcs}|} + i_{\mathsf{f}})^{i_{\mathsf{f}}<n_{\mathsf{f}}}},\; \mathsf{globals}~{\mathrm{globals}}({{\mathit{externaddr}}^\ast}) \}\end{array}`.
+#. Let :math:`{\mathit{moduleinst}}_{\mathit{init}}` be the module instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{functype}}^\ast},\; \mathsf{funcs}~{\mathrm{funcs}}({{\mathit{externaddr}}^\ast})~{({|s{.}\mathsf{funcs}|} + i_{\mathsf{f}})^{i_{\mathsf{f}}<n_{\mathsf{f}}}},\; \mathsf{globals}~{\mathrm{globals}}({{\mathit{externaddr}}^\ast}) \}\end{array}`.
 
-#. Let :math:`f_{\mathit{init}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{module}~{\mathit{moduleinst}}_{\mathit{init}} \}\end{array}`.
+#. Let :math:`f_{\mathit{init}}` be the frame :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{module}~{\mathit{moduleinst}}_{\mathit{init}} \}\end{array}`.
 
-#. Let :math:`z` be :math:`(s, f_{\mathit{init}})`.
+#. Let :math:`z` be the state :math:`(s, f_{\mathit{init}})`.
 
 #. Let F be the :math:`\mathsf{frame}` :math:`z{.}\mathsf{frame}`.
 
@@ -10268,7 +10112,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{\mathit{moduleinst}}` be :math:`{\mathrm{allocmodule}}(s, {\mathit{module}}, {{\mathit{externaddr}}^\ast}, {{\mathit{val}}^\ast}, {{{\mathit{ref}}^\ast}^\ast})`.
 
-#. Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{module}~{\mathit{moduleinst}} \}\end{array}`.
+#. Let :math:`f` be the frame :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{module}~{\mathit{moduleinst}} \}\end{array}`.
 
 #. Let F be the :math:`\mathsf{frame}` :math:`f`.
 
@@ -10293,7 +10137,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 .................................................................
 
 
-1. Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{module}~\{ \begin{array}[t]{@{}l@{}} \}\end{array} \}\end{array}`.
+1. Let :math:`f` be the frame :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{module}~\{ \begin{array}[t]{@{}l@{}} \}\end{array} \}\end{array}`.
 
 #. Let F be the :math:`\mathsf{frame}` :math:`(s, f)`.
 
@@ -13156,474 +13000,6 @@ watsup 0.4 generator
 == Prose Generation...
 Untranslated relation Expand: `%~~%`(deftype, comptype)
 Untranslated relation Expand_use: `%~~_%%`(typeuse, context, comptype)
-s: val
-a: REF.NULL
-s: val
-a: REF.NULL
-s: ref
-a: REF.NULL
-s: ref
-a: REF.NULL
-s: ref
-a: REF.NULL
-s: ref
-a: REF.NULL
-s: val
-a: REF.NULL
-s: val
-a: REF.I31_NUM
-s: val
-a: REF.NULL
-s: val
-a: REF.NULL
-s: val
-a: REF.EXTERN
-s: val
-a: REF.NULL
-s: funccode
-a: FUNC
-s: comptype
-a: FUNC
-s: val
-a: REF.FUNC_ADDR
-s: val
-a: REF.NULL
-s: comptype
-a: FUNC
-s: val
-a: REF.FUNC_ADDR
-s: val
-a: REF.NULL
-s: catch
-a: CATCH_ALL_REF
-s: catch
-a: CATCH_ALL
-s: catch
-a: CATCH_REF
-s: catch
-a: CATCH
-s: catch
-a: CATCH_ALL_REF
-s: catch
-a: CATCH_ALL
-s: val
-a: REF.EXN_ADDR
-s: comptype
-a: STRUCT
-s: val
-a: REF.NULL
-s: comptype
-a: STRUCT
-s: val
-a: REF.STRUCT_ADDR
-s: comptype
-a: ARRAY
-s: comptype
-a: ARRAY
-s: val
-a: REF.NULL
-s: comptype
-a: ARRAY
-s: val
-a: REF.ARRAY_ADDR
-s: val
-a: REF.NULL
-s: val
-a: REF.ARRAY_ADDR
-s: val
-a: REF.NULL
-s: val
-a: REF.ARRAY_ADDR
-s: val
-a: REF.NULL
-s: val
-a: REF.NULL
-s: comptype
-a: ARRAY
-s: val
-a: REF.ARRAY_ADDR
-s: val
-a: REF.ARRAY_ADDR
-s: val
-a: REF.NULL
-s: val
-a: REF.ARRAY_ADDR
-s: val
-a: REF.NULL
-s: comptype
-a: ARRAY
-s: val
-a: REF.ARRAY_ADDR
-s: vloadop_
-a: SHAPE
-s: vloadop_
-a: SPLAT
-s: vloadop_
-a: ZERO
-s: comptype
-a: FUNC
-s: comptype
-a: STRUCT
-s: val
-a: REF.NULL
-s: comptype
-a: STRUCT
-s: val
-a: REF.STRUCT_ADDR
-s: comptype
-a: ARRAY
-s: val
-a: REF.NULL
-s: comptype
-a: ARRAY
-s: val
-a: REF.ARRAY_ADDR
-s: externidx
-a: FUNC
-s: externidx
-a: GLOBAL
-s: externidx
-a: TABLE
-s: externidx
-a: MEM
-s: externidx
-a: TAG
-s: externidx
-a: FUNC
-s: externidx
-a: GLOBAL
-s: externidx
-a: TABLE
-s: externidx
-a: MEM
-s: externtype
-a: FUNC
-s: externtype
-a: GLOBAL
-s: externtype
-a: TABLE
-s: externtype
-a: MEM
-s: externtype
-a: TAG
-s: comptype
-a: STRUCT
-s: comptype
-a: ARRAY
-s: comptype
-a: FUNC
-s: externtype
-a: FUNC
-s: externtype
-a: GLOBAL
-s: externtype
-a: TABLE
-s: externtype
-a: MEM
-s: externtype
-a: TAG
-s: typevar
-a: _IDX
-s: typevar
-a: REC
-s: comptype
-a: STRUCT
-s: comptype
-a: ARRAY
-s: comptype
-a: FUNC
-s: externtype
-a: FUNC
-s: externtype
-a: GLOBAL
-s: externtype
-a: TABLE
-s: externtype
-a: MEM
-s: blocktype
-a: _RESULT
-s: blocktype
-a: _IDX
-s: instr
-a: SELECT
-s: instr
-a: BLOCK
-s: instr
-a: LOOP
-s: instr
-a: IF
-s: instr
-a: BR
-s: instr
-a: BR_IF
-s: instr
-a: BR_TABLE
-s: instr
-a: BR_ON_NULL
-s: instr
-a: BR_ON_NON_NULL
-s: instr
-a: BR_ON_CAST
-s: instr
-a: BR_ON_CAST_FAIL
-s: instr
-a: CALL
-s: instr
-a: CALL_REF
-s: instr
-a: CALL_INDIRECT
-s: instr
-a: RETURN_CALL
-s: instr
-a: RETURN_CALL_REF
-s: instr
-a: RETURN_CALL_INDIRECT
-s: instr
-a: CONST
-s: instr
-a: UNOP
-s: instr
-a: BINOP
-s: instr
-a: TESTOP
-s: instr
-a: RELOP
-s: instr
-a: CVTOP
-s: instr
-a: VCONST
-s: instr
-a: VVUNOP
-s: instr
-a: VVBINOP
-s: instr
-a: VVTERNOP
-s: instr
-a: VVTESTOP
-s: instr
-a: VUNOP
-s: instr
-a: VBINOP
-s: instr
-a: VTERNOP
-s: instr
-a: VTESTOP
-s: instr
-a: VRELOP
-s: instr
-a: VSHIFTOP
-s: instr
-a: VBITMASK
-s: instr
-a: VSWIZZLOP
-s: instr
-a: VSHUFFLE
-s: instr
-a: VEXTUNOP
-s: instr
-a: VEXTBINOP
-s: instr
-a: VNARROW
-s: instr
-a: VCVTOP
-s: instr
-a: VSPLAT
-s: instr
-a: VEXTRACT_LANE
-s: instr
-a: VREPLACE_LANE
-s: instr
-a: REF.NULL
-s: instr
-a: REF.TEST
-s: instr
-a: REF.CAST
-s: instr
-a: REF.FUNC
-s: instr
-a: I31.GET
-s: instr
-a: STRUCT.NEW
-s: instr
-a: STRUCT.NEW_DEFAULT
-s: instr
-a: STRUCT.GET
-s: instr
-a: STRUCT.SET
-s: instr
-a: ARRAY.NEW
-s: instr
-a: ARRAY.NEW_DEFAULT
-s: instr
-a: ARRAY.NEW_FIXED
-s: instr
-a: ARRAY.NEW_DATA
-s: instr
-a: ARRAY.NEW_ELEM
-s: instr
-a: ARRAY.GET
-s: instr
-a: ARRAY.SET
-s: instr
-a: ARRAY.FILL
-s: instr
-a: ARRAY.COPY
-s: instr
-a: ARRAY.INIT_DATA
-s: instr
-a: ARRAY.INIT_ELEM
-s: instr
-a: LOCAL.GET
-s: instr
-a: LOCAL.SET
-s: instr
-a: LOCAL.TEE
-s: instr
-a: GLOBAL.GET
-s: instr
-a: GLOBAL.SET
-s: instr
-a: TABLE.GET
-s: instr
-a: TABLE.SET
-s: instr
-a: TABLE.SIZE
-s: instr
-a: TABLE.GROW
-s: instr
-a: TABLE.FILL
-s: instr
-a: TABLE.COPY
-s: instr
-a: TABLE.INIT
-s: instr
-a: ELEM.DROP
-s: instr
-a: LOAD
-s: instr
-a: STORE
-s: instr
-a: VLOAD
-s: instr
-a: VLOAD_LANE
-s: instr
-a: VSTORE
-s: instr
-a: VSTORE_LANE
-s: instr
-a: MEMORY.SIZE
-s: instr
-a: MEMORY.GROW
-s: instr
-a: MEMORY.FILL
-s: instr
-a: MEMORY.COPY
-s: instr
-a: MEMORY.INIT
-s: instr
-a: DATA.DROP
-s: elemmode
-a: ACTIVE
-s: datamode
-a: ACTIVE
-s: typeuse
-a: _IDX
-s: typeuse
-a: REC
-s: heaptype
-a: _IDX
-s: heaptype
-a: REC
-s: valtype
-a: REF
-s: unop_
-a: EXTEND
-s: binop_
-a: DIV
-s: binop_
-a: REM
-s: binop_
-a: SHR
-s: relop_
-a: LT
-s: relop_
-a: GT
-s: relop_
-a: LE
-s: relop_
-a: GE
-s: cvtop__
-a: EXTEND
-s: cvtop__
-a: TRUNC
-s: cvtop__
-a: TRUNC_SAT
-s: cvtop__
-a: CONVERT
-s: vbinop_
-a: ADD_SAT
-s: vbinop_
-a: SUB_SAT
-s: vbinop_
-a: MIN
-s: vbinop_
-a: MAX
-s: vrelop_
-a: LT
-s: vrelop_
-a: GT
-s: vrelop_
-a: LE
-s: vrelop_
-a: GE
-s: vcvtop__
-a: EXTEND
-s: vcvtop__
-a: CONVERT
-s: vcvtop__
-a: TRUNC_SAT
-s: vcvtop__
-a: RELAXED_TRUNC
-s: vshiftop_
-a: SHR
-s: vextbinop__
-a: EXTMUL
-s: val
-a: CONST
-s: fieldval
-a: PACK
-s: externaddr
-a: FUNC
-s: externaddr
-a: GLOBAL
-s: externaddr
-a: TABLE
-s: externaddr
-a: MEM
-s: externaddr
-a: TAG
-s: comptype
-a: FUNC
-s: blocktype
-a: _IDX
-s: blocktype
-a: _RESULT
-s: externidx
-a: FUNC
-s: externidx
-a: GLOBAL
-s: externidx
-a: TABLE
-s: externidx
-a: MEM
-s: externidx
-a: TAG
-s: elemmode
-a: ACTIVE
-s: datamode
-a: ACTIVE
-s: comptype
-a: FUNC
 
 
 
@@ -13917,7 +13293,7 @@ The function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is :ref:`valid <vali
 
 
 
-The sub type :math:`(\mathsf{sub}~{\mathsf{final}^?}~{x^\ast}~{\mathit{comptype}})` is :ref:`valid <valid-val>` with :math:`({\mathsf{ok}}{(x_0)})` if:
+The sub type :math:`(\mathsf{sub}~{\mathsf{final}^?}~{x^\ast}~{\mathit{comptype}})` is :ref:`valid <valid-val>` with the :math:`({\mathsf{ok}}{(x_0)})` :math:`({\mathsf{ok}}{(x_0)})` if:
 
 
    * The length of :math:`{x^\ast}` is less than or equal to :math:`1`.
@@ -13947,7 +13323,7 @@ The sub type :math:`(\mathsf{sub}~{\mathsf{final}^?}~{x^\ast}~{\mathit{comptype}
 
 
 
-The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}'}^\ast})` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x)})` if:
+The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}'}^\ast})` is :ref:`valid <valid-val>` for the :math:`({\mathsf{ok}}{(x)})` :math:`({\mathsf{ok}}{(x)})` if:
 
 
    * Either:
@@ -13958,36 +13334,36 @@ The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}'}^\ast})` is :ref:`va
 
       * The sub type sequence :math:`{{\mathit{subtype}'}^\ast}` is of the form :math:`{\mathit{subtype}}_1~{{\mathit{subtype}}^\ast}`.
 
-      * The sub type :math:`{\mathit{subtype}}_1` is :ref:`valid <valid-val>` with :math:`({\mathsf{ok}}{(x)})`.
+      * The sub type :math:`{\mathit{subtype}}_1` is :ref:`valid <valid-val>` with the :math:`({\mathsf{ok}}{(x)})` :math:`({\mathsf{ok}}{(x)})`.
 
-      * The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x + 1)})`.
-
-
-
-
-The recursive type :math:`(\mathsf{rec})` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x)})`.
+      * The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is :ref:`valid <valid-val>` for the :math:`({\mathsf{ok}}{(x + 1)})` :math:`({\mathsf{ok}}{(x + 1)})`.
 
 
 
 
-The recursive type :math:`(\mathsf{rec}~{\mathit{subtype}}_1~{{\mathit{subtype}}^\ast})` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x)})` if:
-
-
-   * The sub type :math:`{\mathit{subtype}}_1` is :ref:`valid <valid-val>` with :math:`({\mathsf{ok}}{(x)})`.
-
-   * The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x + 1)})`.
+The recursive type :math:`(\mathsf{rec})` is :ref:`valid <valid-val>` for the :math:`({\mathsf{ok}}{(x)})` :math:`({\mathsf{ok}}{(x)})`.
 
 
 
 
-The sub type :math:`(\mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~{\mathit{compttype}})` is :ref:`valid <valid-val>` with :math:`({\mathsf{ok}}{(x, i)})` if:
+The recursive type :math:`(\mathsf{rec}~{\mathit{subtype}}_1~{{\mathit{subtype}}^\ast})` is :ref:`valid <valid-val>` for the :math:`({\mathsf{ok}}{(x)})` :math:`({\mathsf{ok}}{(x)})` if:
+
+
+   * The sub type :math:`{\mathit{subtype}}_1` is :ref:`valid <valid-val>` with the :math:`({\mathsf{ok}}{(x)})` :math:`({\mathsf{ok}}{(x)})`.
+
+   * The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is :ref:`valid <valid-val>` for the :math:`({\mathsf{ok}}{(x + 1)})` :math:`({\mathsf{ok}}{(x + 1)})`.
+
+
+
+
+The sub type :math:`(\mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~{\mathit{compttype}})` is :ref:`valid <valid-val>` with the :math:`({\mathsf{ok}}{(x, i)})` :math:`({\mathsf{ok}}{(x, i)})` if:
 
 
    * The length of :math:`{{\mathit{typeuse}}^\ast}` is less than or equal to :math:`1`.
 
    * For all :math:`{\mathit{typeuse}}` in :math:`{{\mathit{typeuse}}^\ast}`:
 
-      * :math:`{\mathit{typeuse}} \prec x, i` is of the form true.
+      * The :math:`{\mathit{typeuse}} \prec x, i` :math:`{\mathit{typeuse}} \prec x, i` is of the form true.
 
    * The length of :math:`{{\mathit{comptype}'}^\ast}` is equal to the length of :math:`{{\mathit{typeuse}}^\ast}`.
 
@@ -14006,7 +13382,7 @@ The sub type :math:`(\mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~{
 
 
 
-The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}'}^\ast})` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x, i)})` if:
+The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}'}^\ast})` is :ref:`valid <valid-val>` for the :math:`({\mathsf{ok}}{(x, i)})` :math:`({\mathsf{ok}}{(x, i)})` if:
 
 
    * Either:
@@ -14017,24 +13393,24 @@ The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}'}^\ast})` is :ref:`va
 
       * The sub type sequence :math:`{{\mathit{subtype}'}^\ast}` is of the form :math:`{\mathit{subtype}}_1~{{\mathit{subtype}}^\ast}`.
 
-      * The sub type :math:`{\mathit{subtype}}_1` is :ref:`valid <valid-val>` with :math:`({\mathsf{ok}}{(x, i)})`.
+      * The sub type :math:`{\mathit{subtype}}_1` is :ref:`valid <valid-val>` with the :math:`({\mathsf{ok}}{(x, i)})` :math:`({\mathsf{ok}}{(x, i)})`.
 
-      * The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x + 1, i + 1)})`.
-
-
-
-
-The recursive type :math:`(\mathsf{rec})` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x, i)})`.
+      * The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is :ref:`valid <valid-val>` for the :math:`({\mathsf{ok}}{(x + 1, i + 1)})` :math:`({\mathsf{ok}}{(x + 1, i + 1)})`.
 
 
 
 
-The recursive type :math:`(\mathsf{rec}~{\mathit{subtype}}_1~{{\mathit{subtype}}^\ast})` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x, i)})` if:
+The recursive type :math:`(\mathsf{rec})` is :ref:`valid <valid-val>` for the :math:`({\mathsf{ok}}{(x, i)})` :math:`({\mathsf{ok}}{(x, i)})`.
 
 
-   * The sub type :math:`{\mathit{subtype}}_1` is :ref:`valid <valid-val>` with :math:`({\mathsf{ok}}{(x, i)})`.
 
-   * The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x + 1, i + 1)})`.
+
+The recursive type :math:`(\mathsf{rec}~{\mathit{subtype}}_1~{{\mathit{subtype}}^\ast})` is :ref:`valid <valid-val>` for the :math:`({\mathsf{ok}}{(x, i)})` :math:`({\mathsf{ok}}{(x, i)})` if:
+
+
+   * The sub type :math:`{\mathit{subtype}}_1` is :ref:`valid <valid-val>` with the :math:`({\mathsf{ok}}{(x, i)})` :math:`({\mathsf{ok}}{(x, i)})`.
+
+   * The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is :ref:`valid <valid-val>` for the :math:`({\mathsf{ok}}{(x + 1, i + 1)})` :math:`({\mathsf{ok}}{(x + 1, i + 1)})`.
 
 
 
@@ -14042,11 +13418,11 @@ The recursive type :math:`(\mathsf{rec}~{\mathit{subtype}}_1~{{\mathit{subtype}}
 The defined type :math:`({\mathit{rectype}} {.} i)` is :ref:`valid <valid-val>` if:
 
 
-   * The recursive type :math:`{\mathit{rectype}}` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x)})`.
+   * The recursive type :math:`{\mathit{rectype}}` is :ref:`valid <valid-val>` for the :math:`({\mathsf{ok}}{(x)})` :math:`({\mathsf{ok}}{(x)})`.
 
    * The recursive type :math:`{\mathit{rectype}}` is of the form :math:`(\mathsf{rec}~{{\mathit{subtype}}^{n}})`.
 
-   * :math:`i` is less than :math:`n`.
+   * The :math:`i` :math:`i` is less than :math:`n`.
 
 
 
@@ -14414,15 +13790,15 @@ The reference type :math:`(\mathsf{ref}~{\mathsf{null}^?}~{\mathit{ht}}_1)` :ref
 
    * Either:
 
-      * :math:`{\mathsf{null}^?}` is absent.
+      * The :math:`{\mathsf{null}^?}` :math:`{\mathsf{null}^?}` is absent.
 
-      * :math:`{{\mathsf{null}^?}'}` is absent.
+      * The :math:`{{\mathsf{null}^?}'}` :math:`{{\mathsf{null}^?}'}` is absent.
 
    * Or:
 
-      * :math:`{\mathsf{null}^?}` is of the form :math:`{\mathsf{null}^?}`.
+      * The :math:`{\mathsf{null}^?}` :math:`{\mathsf{null}^?}` is of the form :math:`{\mathsf{null}^?}`.
 
-      * :math:`{{\mathsf{null}^?}'}` is of the form :math:`\mathsf{null}`.
+      * The :math:`{{\mathsf{null}^?}'}` :math:`{{\mathsf{null}^?}'}` is of the form :math:`\mathsf{null}`.
 
 
 
@@ -14563,15 +13939,15 @@ The field type :math:`({\mathsf{mut}^?}~{\mathit{zt}}_1)` :ref:`matches <match>`
 
    * Either:
 
-      * :math:`{\mathsf{mut}^?}` is absent.
+      * The :math:`{\mathsf{mut}^?}` :math:`{\mathsf{mut}^?}` is absent.
 
-      * :math:`{{\mathsf{mut}^?}'}` is absent.
+      * The :math:`{{\mathsf{mut}^?}'}` :math:`{{\mathsf{mut}^?}'}` is absent.
 
    * Or:
 
-      * :math:`{\mathsf{mut}^?}` is of the form :math:`\mathsf{mut}`.
+      * The :math:`{\mathsf{mut}^?}` :math:`{\mathsf{mut}^?}` is of the form :math:`\mathsf{mut}`.
 
-      * :math:`{{\mathsf{mut}^?}'}` is of the form :math:`\mathsf{mut}`.
+      * The :math:`{{\mathsf{mut}^?}'}` :math:`{{\mathsf{mut}^?}'}` is of the form :math:`\mathsf{mut}`.
 
       * The storage type :math:`{\mathit{zt}}_2` :ref:`matches <match>` the storage type :math:`{\mathit{zt}}_1`.
 
@@ -14626,12 +14002,12 @@ The instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}` is 
 
 
 
-The limits range :math:`{}[ n .. m ]` is :ref:`valid <valid-val>` within :math:`k` if:
+The limits range :math:`{}[ n .. m ]` is :ref:`valid <valid-val>` within the :math:`k` :math:`k` if:
 
 
-   * :math:`n` is less than or equal to :math:`m`.
+   * The :math:`n` :math:`n` is less than or equal to :math:`m`.
 
-   * :math:`m` is less than or equal to :math:`k`.
+   * The :math:`m` :math:`m` is less than or equal to :math:`k`.
 
 
 
@@ -14647,7 +14023,7 @@ The global type :math:`({\mathsf{mut}^?}~t)` is :ref:`valid <valid-val>` if:
 The table type :math:`({\mathit{addrtype}}~{\mathit{limits}}~{\mathit{reftype}})` is :ref:`valid <valid-val>` if:
 
 
-   * The limits range :math:`{\mathit{limits}}` is :ref:`valid <valid-val>` within :math:`{2^{32}} - 1`.
+   * The limits range :math:`{\mathit{limits}}` is :ref:`valid <valid-val>` within the :math:`{2^{32}} - 1` :math:`{2^{32}} - 1`.
 
    * The reference type :math:`{\mathit{reftype}}` is :ref:`valid <valid-val>`.
 
@@ -14657,7 +14033,7 @@ The table type :math:`({\mathit{addrtype}}~{\mathit{limits}}~{\mathit{reftype}})
 The memory type :math:`({\mathit{addrtype}}~{\mathit{limits}}~\mathsf{page})` is :ref:`valid <valid-val>` if:
 
 
-   * The limits range :math:`{\mathit{limits}}` is :ref:`valid <valid-val>` within :math:`{2^{16}}`.
+   * The limits range :math:`{\mathit{limits}}` is :ref:`valid <valid-val>` within the :math:`{2^{16}}` :math:`{2^{16}}`.
 
 
 
@@ -14778,9 +14154,9 @@ The instruction type :math:`{t_{11}^\ast}~{\rightarrow}_{{x_1^\ast}}\,{t_{12}^\a
 The limits range :math:`{}[ n_1 .. m_1 ]` :ref:`matches <match>` the limits range :math:`{}[ n_2 .. m_2 ]` if:
 
 
-   * :math:`n_1` is greater than or equal to :math:`n_2`.
+   * The :math:`n_1` :math:`n_1` is greater than or equal to :math:`n_2`.
 
-   * :math:`m_1` is less than or equal to :math:`m_2`.
+   * The :math:`m_1` :math:`m_1` is less than or equal to :math:`m_2`.
 
 
 
@@ -14792,15 +14168,15 @@ The global type :math:`({\mathsf{mut}^?}~{\mathit{valtype}}_1)` :ref:`matches <m
 
    * Either:
 
-      * :math:`{\mathsf{mut}^?}` is absent.
+      * The :math:`{\mathsf{mut}^?}` :math:`{\mathsf{mut}^?}` is absent.
 
-      * :math:`{{\mathsf{mut}^?}'}` is absent.
+      * The :math:`{{\mathsf{mut}^?}'}` :math:`{{\mathsf{mut}^?}'}` is absent.
 
    * Or:
 
-      * :math:`{\mathsf{mut}^?}` is of the form :math:`\mathsf{mut}`.
+      * The :math:`{\mathsf{mut}^?}` :math:`{\mathsf{mut}^?}` is of the form :math:`\mathsf{mut}`.
 
-      * :math:`{{\mathsf{mut}^?}'}` is of the form :math:`\mathsf{mut}`.
+      * The :math:`{{\mathsf{mut}^?}'}` :math:`{{\mathsf{mut}^?}'}` is of the form :math:`\mathsf{mut}`.
 
       * The value type :math:`{\mathit{valtype}}_2` :ref:`matches <match>` the value type :math:`{\mathit{valtype}}_1`.
 
@@ -15722,7 +15098,7 @@ The instruction :math:`(\mathsf{array{.}init\_data}~x~y)` is :ref:`valid <valid-
 The instruction :math:`\mathsf{extern{.}convert\_any}` is :ref:`valid <valid-val>` with the instruction type :math:`(\mathsf{ref}~{\mathsf{null}}{{{}_{1}^?}}~\mathsf{any})~\rightarrow~(\mathsf{ref}~{\mathsf{null}}{{{}_{2}^?}}~\mathsf{extern})` if:
 
 
-   * :math:`{\mathsf{null}}{{{}_{1}^?}}` is of the form :math:`{\mathsf{null}}{{{}_{2}^?}}`.
+   * The :math:`{\mathsf{null}}{{{}_{1}^?}}` :math:`{\mathsf{null}}{{{}_{1}^?}}` is of the form :math:`{\mathsf{null}}{{{}_{2}^?}}`.
 
 
 
@@ -15730,7 +15106,7 @@ The instruction :math:`\mathsf{extern{.}convert\_any}` is :ref:`valid <valid-val
 The instruction :math:`\mathsf{any{.}convert\_extern}` is :ref:`valid <valid-val>` with the instruction type :math:`(\mathsf{ref}~{\mathsf{null}}{{{}_{1}^?}}~\mathsf{extern})~\rightarrow~(\mathsf{ref}~{\mathsf{null}}{{{}_{2}^?}}~\mathsf{any})` if:
 
 
-   * :math:`{\mathsf{null}}{{{}_{1}^?}}` is of the form :math:`{\mathsf{null}}{{{}_{2}^?}}`.
+   * The :math:`{\mathsf{null}}{{{}_{1}^?}}` :math:`{\mathsf{null}}{{{}_{1}^?}}` is of the form :math:`{\mathsf{null}}{{{}_{2}^?}}`.
 
 
 
@@ -16088,21 +15464,21 @@ The instruction :math:`({{\mathit{nt}'}{.}\mathsf{load}}{{{\mathit{loadop}}^?}}~
 
       * The number type :math:`{\mathit{nt}'}` is of the form :math:`{\mathit{nt}}`.
 
-      * :math:`{{\mathit{loadop}}^?}` is absent.
+      * The :math:`{{\mathit{loadop}}^?}` :math:`{{\mathit{loadop}}^?}` is absent.
 
       * The value type :math:`{\mathit{valtype}}` is of the form :math:`{\mathit{nt}}`.
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
+      * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
 
    * Or:
 
       * The number type :math:`{\mathit{nt}'}` is of the form :math:`{\mathsf{i}}{N}`.
 
-      * :math:`{{\mathit{loadop}}^?}` is of the form :math:`{M}{\mathsf{\_}}{{\mathit{sx}}}`.
+      * The :math:`{{\mathit{loadop}}^?}` :math:`{{\mathit{loadop}}^?}` is of the form :math:`{M}{\mathsf{\_}}{{\mathit{sx}}}`.
 
       * The value type :math:`{\mathit{valtype}}` is of the form :math:`{\mathsf{i}}{N}`.
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
+      * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
 
 
 
@@ -16118,21 +15494,21 @@ The instruction :math:`({{\mathit{nt}'}{.}\mathsf{store}}{{{\mathit{storeop}}^?}
 
       * The number type :math:`{\mathit{nt}'}` is of the form :math:`{\mathit{nt}}`.
 
-      * :math:`{{\mathit{storeop}}^?}` is absent.
+      * The :math:`{{\mathit{storeop}}^?}` :math:`{{\mathit{storeop}}^?}` is absent.
 
       * The value type :math:`{\mathit{valtype}}` is of the form :math:`{\mathit{nt}}`.
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
+      * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
 
    * Or:
 
       * The number type :math:`{\mathit{nt}'}` is of the form :math:`{\mathsf{i}}{N}`.
 
-      * :math:`{{\mathit{storeop}}^?}` is of the form :math:`M`.
+      * The :math:`{{\mathit{storeop}}^?}` :math:`{{\mathit{storeop}}^?}` is of the form :math:`M`.
 
       * The value type :math:`{\mathit{valtype}}` is of the form :math:`{\mathsf{i}}{N}`.
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
+      * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
 
 
 
@@ -16146,25 +15522,25 @@ The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{{\mathit
 
    * Either:
 
-      * :math:`{{\mathit{vloadop}}^?}` is absent.
+      * The :math:`{{\mathit{vloadop}}^?}` :math:`{{\mathit{vloadop}}^?}` is absent.
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|\mathsf{v{\scriptstyle 128}}|} / 8`.
+      * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|\mathsf{v{\scriptstyle 128}}|} / 8`.
 
    * Or:
 
-      * :math:`{{\mathit{vloadop}}^?}` is of the form :math:`({M}{\mathsf{x}}{N}{\mathsf{\_}}{{\mathit{sx}}})`.
+      * The :math:`{{\mathit{vloadop}}^?}` :math:`{{\mathit{vloadop}}^?}` is of the form :math:`({M}{\mathsf{x}}{N}{\mathsf{\_}}{{\mathit{sx}}})`.
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8 \cdot N`.
+      * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8 \cdot N`.
    * Or:
 
-      * :math:`{{\mathit{vloadop}}^?}` is of the form :math:`({N}{\mathsf{\_}}{\mathsf{splat}})`.
+      * The :math:`{{\mathit{vloadop}}^?}` :math:`{{\mathit{vloadop}}^?}` is of the form :math:`({N}{\mathsf{\_}}{\mathsf{splat}})`.
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`N / 8`.
+      * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`N / 8`.
    * Or:
 
-      * :math:`{{\mathit{vloadop}}^?}` is of the form :math:`({N}{\mathsf{\_}}{\mathsf{zero}})`.
+      * The :math:`{{\mathit{vloadop}}^?}` :math:`{{\mathit{vloadop}}^?}` is of the form :math:`({N}{\mathsf{\_}}{\mathsf{zero}})`.
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`N / 8`.
+      * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`N / 8`.
 
 
 
@@ -16176,9 +15552,9 @@ The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{N}{\maths
 
    * The memory type :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
 
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`N / 8`.
+   * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`N / 8`.
 
-   * :math:`i` is less than :math:`128 / N`.
+   * The :math:`i` :math:`i` is less than :math:`128 / N`.
 
 
 
@@ -16190,7 +15566,7 @@ The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{store}~x~{\mathit
 
    * The memory type :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
 
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|\mathsf{v{\scriptstyle 128}}|} / 8`.
+   * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|\mathsf{v{\scriptstyle 128}}|} / 8`.
 
 
 
@@ -16202,9 +15578,9 @@ The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{store}}{N}{\math
 
    * The memory type :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
 
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`N / 8`.
+   * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`N / 8`.
 
-   * :math:`i` is less than :math:`128 / N`.
+   * The :math:`i` :math:`i` is less than :math:`128 / N`.
 
 
 
@@ -16236,7 +15612,7 @@ The instruction :math:`({\mathit{nt}}{.}\mathsf{load}~x~{\mathit{memarg}})` is :
 
    * The memory type :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
 
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
+   * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
 
 
 
@@ -16248,7 +15624,7 @@ The instruction :math:`({{\mathsf{i}}{N}{.}\mathsf{load}}{{M}{\mathsf{\_}}{{\mat
 
    * The memory type :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
 
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
+   * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
 
 
 
@@ -16260,7 +15636,7 @@ The instruction :math:`({\mathit{nt}}{.}\mathsf{store}~x~{\mathit{memarg}})` is 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
 
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
+   * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
 
 
 
@@ -16272,7 +15648,7 @@ The instruction :math:`({{\mathsf{i}}{N}{.}\mathsf{store}}{M}~x~{\mathit{memarg}
 
    * The memory type :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
 
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
+   * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
 
 
 
@@ -16284,7 +15660,7 @@ The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~x~{\mathit{
 
    * The memory type :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
 
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|\mathsf{v{\scriptstyle 128}}|} / 8`.
+   * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|\mathsf{v{\scriptstyle 128}}|} / 8`.
 
 
 
@@ -16296,7 +15672,7 @@ The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{M}{\math
 
    * The memory type :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
 
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8 \cdot N`.
+   * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8 \cdot N`.
 
 
 
@@ -16308,7 +15684,7 @@ The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{N}{\math
 
    * The memory type :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
 
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`N / 8`.
+   * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`N / 8`.
 
 
 
@@ -16320,7 +15696,7 @@ The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{N}{\math
 
    * The memory type :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
 
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`N / 8`.
+   * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`N / 8`.
 
 
 
@@ -16601,7 +15977,7 @@ The type definition :math:`(\mathsf{type}~{\mathit{rectype}})` is :ref:`valid <v
 
    * Let :math:`{C'}` be the same context as :math:`C`, but with the defined type sequence :math:`{{\mathit{dt}}^\ast}` appended to the field :math:`\mathsf{types}`.
 
-   * Under the context :math:`{C'}`, the recursive type :math:`{\mathit{rectype}}` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x)})`.
+   * Under the context :math:`{C'}`, the recursive type :math:`{\mathit{rectype}}` is :ref:`valid <valid-val>` for the :math:`({\mathsf{ok}}{(x)})` :math:`({\mathsf{ok}}{(x)})`.
 
 
 
@@ -17094,7 +16470,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       * The export :math:`{\mathit{export}}` is :ref:`valid <valid-val>` with the name :math:`{\mathit{nm}}` and the external type :math:`{\mathit{xt}}_{\mathsf{e}}`.
 
-   * :math:`{{\mathit{nm}}^\ast}~{\mathrm{disjoint}}` is of the form true.
+   * The :math:`{{\mathit{nm}}^\ast}~{\mathrm{disjoint}}` :math:`{{\mathit{nm}}^\ast}~{\mathrm{disjoint}}` is of the form true.
 
    * The context :math:`C` is of the form :math:`{C'}{}[{.}\mathsf{globals} \mathrel{{=}{\oplus}} {{\mathit{gt}}^\ast}]{}[{.}\mathsf{tables} \mathrel{{=}{\oplus}} {{\mathit{tt}}_{\mathsf{i}}^\ast}~{{\mathit{tt}}^\ast}]{}[{.}\mathsf{mems} \mathrel{{=}{\oplus}} {{\mathit{mt}}_{\mathsf{i}}^\ast}~{{\mathit{mt}}^\ast}]{}[{.}\mathsf{tags} \mathrel{{=}{\oplus}} {{\mathit{jt}}_{\mathsf{i}}^\ast}~{{\mathit{jt}}^\ast}]{}[{.}\mathsf{elems} \mathrel{{=}{\oplus}} {{\mathit{rt}}^\ast}]{}[{.}\mathsf{datas} \mathrel{{=}{\oplus}} {{\mathit{ok}}^\ast}]`.
 
@@ -17546,7 +16922,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ......................................
 
 
-1. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
+1. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` from the stack.
 
@@ -17571,7 +16947,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .....................................................................................
 
 
-1. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
+1. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` from the stack.
 
@@ -17648,7 +17024,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .........................
 
 
-1. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
+1. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` from the stack.
 
@@ -17665,7 +17041,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ........................................
 
 
-1. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
+1. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -17817,7 +17193,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .........................................
 
 
-1. Assert: Due to validation, a :ref:`number type <syntax-nt>` is on the top of the stack.
+1. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
@@ -17834,11 +17210,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ..........................................
 
 
-1. Assert: Due to validation, a :ref:`number type <syntax-nt>` is on the top of the stack.
+1. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a :ref:`number value <syntax-num>` is on the top of the stack.
+#. Assert: Due to validation, a number value is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
@@ -17855,7 +17231,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ...........................................
 
 
-1. Assert: Due to validation, a :ref:`number type <syntax-nt>` is on the top of the stack.
+1. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
@@ -17868,11 +17244,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ..........................................
 
 
-1. Assert: Due to validation, a :ref:`number type <syntax-nt>` is on the top of the stack.
+1. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a :ref:`number value <syntax-num>` is on the top of the stack.
+#. Assert: Due to validation, a number value is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
@@ -17885,7 +17261,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ............................................................................
 
 
-1. Assert: Due to validation, a :ref:`number type <syntax-nt_1>` is on the top of the stack.
+1. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
@@ -17902,7 +17278,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .........................................
 
 
-1. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
+1. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -17913,7 +17289,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ...............................
 
 
-1. Assert: Due to validation, a :ref:`reference value <syntax-ref>` is on the top of the stack.
+1. Assert: Due to validation, a reference value is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{ref}}` from the stack.
 
@@ -17930,7 +17306,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ....................................
 
 
-1. Assert: Due to validation, a :ref:`reference value <syntax-ref>` is on the top of the stack.
+1. Assert: Due to validation, a reference value is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{ref}}` from the stack.
 
@@ -17945,11 +17321,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .........................
 
 
-1. Assert: Due to validation, a :ref:`reference value <syntax-ref>` is on the top of the stack.
+1. Assert: Due to validation, a reference value is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{ref}}_2` from the stack.
 
-#. Assert: Due to validation, a :ref:`reference value <syntax-ref>` is on the top of the stack.
+#. Assert: Due to validation, a reference value is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{ref}}_1` from the stack.
 
@@ -17999,7 +17375,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ..............................
 
 
-1. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
+1. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
@@ -18026,7 +17402,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. If :math:`{\mathit{val}}` is address value, then:
 
-   a. Let :math:`{\mathit{addrref}}` be :math:`{\mathit{val}}`.
+   a. Let :math:`{\mathit{addrref}}` be the instruction :math:`{\mathit{val}}`.
 
    #. Push the value :math:`(\mathsf{ref{.}extern}~{\mathit{addrref}})` to the stack.
 
@@ -18054,7 +17430,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ..........................................................
 
 
-1. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
+1. Assert: Due to validation, a vector type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -18069,11 +17445,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ...........................................................
 
 
-1. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
+1. Assert: Due to validation, a vector type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
+#. Assert: Due to validation, a vector type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -18088,15 +17464,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ............................................................
 
 
-1. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
+1. Assert: Due to validation, a vector type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_3)` from the stack.
 
-#. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
+#. Assert: Due to validation, a vector type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
+#. Assert: Due to validation, a vector type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -18111,7 +17487,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ...........................................................
 
 
-1. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
+1. Assert: Due to validation, a vector type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -18124,7 +17500,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ..........................................
 
 
-1. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
+1. Assert: Due to validation, a vector type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -18141,11 +17517,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ...........................................
 
 
-1. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
+1. Assert: Due to validation, a vector type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
+#. Assert: Due to validation, a vector type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -18162,15 +17538,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ............................................
 
 
-1. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
+1. Assert: Due to validation, a vector type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_3)` from the stack.
 
-#. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
+#. Assert: Due to validation, a vector type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
+#. Assert: Due to validation, a vector type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -18187,7 +17563,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ............................................
 
 
-1. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
+1. Assert: Due to validation, a vector type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -18200,11 +17576,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ...........................................
 
 
-1. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
+1. Assert: Due to validation, a vector type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
+#. Assert: Due to validation, a vector type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -18217,11 +17593,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .............................................
 
 
-1. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
+1. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
+#. Assert: Due to validation, a vector type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -18234,7 +17610,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ........................................
 
 
-1. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
+1. Assert: Due to validation, a vector type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -18247,11 +17623,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .............................................
 
 
-1. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
+1. Assert: Due to validation, a vector type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
+#. Assert: Due to validation, a vector type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -18264,11 +17640,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .................................................
 
 
-1. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
+1. Assert: Due to validation, a vector type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
+#. Assert: Due to validation, a vector type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -18296,13 +17672,13 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ..........................................................................................................
 
 
-1. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
+1. Assert: Due to validation, a vector type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
 #. If :math:`{{\mathit{sx}'}^?}` is not defined and :math:`{\mathit{lanetype}}` is number type, then:
 
-   a. Let :math:`{\mathit{nt}}` be :math:`{\mathit{lanetype}}`.
+   a. Let :math:`{\mathit{nt}}` be the lane type :math:`{\mathit{lanetype}}`.
 
    #. If :math:`i < {|{{\mathrm{lanes}}}_{{{\mathit{nt}}}{\mathsf{x}}{M}}(c_1)|}`, then:
 
@@ -18312,7 +17688,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. If :math:`{\mathit{lanetype}}` is packed type, then:
 
-   a. Let :math:`{\mathit{pt}}` be :math:`{\mathit{lanetype}}`.
+   a. Let :math:`{\mathit{pt}}` be the lane type :math:`{\mathit{lanetype}}`.
 
    #. If :math:`{{\mathit{sx}'}^?}` is defined, then:
 
@@ -18335,7 +17711,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Assert: Due to validation, :math:`{\mathit{numtype}}_0 = {\mathrm{unpack}}({\mathsf{i}}{N})`.
 
-#. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
+#. Assert: Due to validation, a vector type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -18348,7 +17724,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ...............................................................................
 
 
-1. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
+1. Assert: Due to validation, a vector type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -18361,11 +17737,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ................................................................................
 
 
-1. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
+1. Assert: Due to validation, a vector type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
+#. Assert: Due to validation, a vector type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -18378,15 +17754,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .................................................................................
 
 
-1. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
+1. Assert: Due to validation, a vector type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_3)` from the stack.
 
-#. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
+#. Assert: Due to validation, a vector type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
+#. Assert: Due to validation, a vector type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -18399,11 +17775,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .....................................................................................................
 
 
-1. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
+1. Assert: Due to validation, a vector type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
+#. Assert: Due to validation, a vector type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -18416,7 +17792,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .................................................................................................................................................
 
 
-1. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
+1. Assert: Due to validation, a vector type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
@@ -18480,7 +17856,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let F be the topmost :math:`\mathsf{frame}`.
 
-#. Assert: Due to validation, a :ref:`reference value <syntax-ref>` is on the top of the stack.
+#. Assert: Due to validation, a reference value is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{ref}}` from the stack.
 
@@ -18503,7 +17879,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let F be the topmost :math:`\mathsf{frame}`.
 
-#. Assert: Due to validation, a :ref:`reference value <syntax-ref>` is on the top of the stack.
+#. Assert: Due to validation, a reference value is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{ref}}` from the stack.
 
@@ -18528,7 +17904,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Assert: Due to validation, :math:`x < {|z{.}\mathsf{module}{.}\mathsf{funcs}|}`.
 
-#. Let :math:`a` be :math:`z{.}\mathsf{module}{.}\mathsf{funcs}{}[x]`.
+#. Let :math:`a` be the address :math:`z{.}\mathsf{module}{.}\mathsf{funcs}{}[x]`.
 
 #. Assert: Due to validation, :math:`a < {|z{.}\mathsf{funcs}|}`.
 
@@ -18557,7 +17933,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. If :math:`a < {|z{.}\mathsf{funcs}|}`, then:
 
-      1) Let :math:`{\mathit{fi}}` be :math:`z{.}\mathsf{funcs}{}[a]`.
+      1) Let :math:`{\mathit{fi}}` be the function instance :math:`z{.}\mathsf{funcs}{}[a]`.
 
       #) Assert: Due to validation, :math:`{\mathit{fi}}{.}\mathsf{code}` is some :math:`\mathsf{func}` :math:`{\mathit{typeidx}}` :math:`{{\mathit{local}}^\ast}` :math:`{\mathit{expr}}`.
 
@@ -18575,7 +17951,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       #) Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
 
-      #) Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~{{\mathit{val}}^{n}}~{{{\mathrm{default}}}_{t}^\ast},\; \mathsf{module}~{\mathit{fi}}{.}\mathsf{module} \}\end{array}`.
+      #) Let :math:`f` be the frame :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~{{\mathit{val}}^{n}}~{{{\mathrm{default}}}_{t}^\ast},\; \mathsf{module}~{\mathit{fi}}{.}\mathsf{module} \}\end{array}`.
 
       #) Let F be the :math:`\mathsf{frame}` :math:`f` whose arity is :math:`m`.
 
@@ -18594,7 +17970,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Assert: Due to validation, :math:`x < {|z{.}\mathsf{module}{.}\mathsf{funcs}|}`.
 
-#. Let :math:`a` be :math:`z{.}\mathsf{module}{.}\mathsf{funcs}{}[x]`.
+#. Let :math:`a` be the address :math:`z{.}\mathsf{module}{.}\mathsf{funcs}{}[x]`.
 
 #. Assert: Due to validation, :math:`a < {|z{.}\mathsf{funcs}|}`.
 
@@ -18932,7 +18308,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let F be the topmost :math:`\mathsf{frame}`.
 
-#. Assert: Due to validation, a :ref:`reference value <syntax-ref>` is on the top of the stack.
+#. Assert: Due to validation, a reference value is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{ref}}` from the stack.
 
@@ -18953,7 +18329,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let F be the topmost :math:`\mathsf{frame}`.
 
-#. Assert: Due to validation, a :ref:`reference value <syntax-ref>` is on the top of the stack.
+#. Assert: Due to validation, a reference value is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{ref}}` from the stack.
 
@@ -19026,7 +18402,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
+#. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
@@ -19051,11 +18427,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
+#. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
+#. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -19076,11 +18452,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
+#. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
+#. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -19109,7 +18485,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
+#. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -19169,7 +18545,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
+#. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
@@ -19177,7 +18553,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`{\mathit{val}}` from the stack.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
+#. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -19232,11 +18608,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
+#. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
+#. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2)` from the stack.
 
@@ -19244,7 +18620,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`{\mathit{val}}` from the stack.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
+#. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1)` from the stack.
 
@@ -19347,15 +18723,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
+#. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
+#. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` from the stack.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
+#. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -19385,7 +18761,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. Else if :math:`j < {|z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}|}`, then:
 
-      1) Let :math:`{\mathit{ref}}` be :math:`z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}{}[j]`.
+      1) Let :math:`{\mathit{ref}}` be the reference value :math:`z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}{}[j]`.
 
       #) Push the value :math:`(\mathsf{ref{.}array}~a)` to the stack.
 
@@ -19412,15 +18788,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
+#. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
+#. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` from the stack.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
+#. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -19500,7 +18876,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Let :math:`{\mathit{val}}` be :math:`z{.}\mathsf{globals}{}[x]{.}\mathsf{value}`.
+#. Let :math:`{\mathit{val}}` be the value :math:`z{.}\mathsf{globals}{}[x]{.}\mathsf{value}`.
 
 #. Push the value :math:`{\mathit{val}}` to the stack.
 
@@ -19511,7 +18887,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a :ref:`number value <syntax-num>` is on the top of the stack.
+#. Assert: Due to validation, a number value is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~i)` from the stack.
 
@@ -19541,7 +18917,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a :ref:`number value <syntax-num>` is on the top of the stack.
+#. Assert: Due to validation, a number value is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~n)` from the stack.
 
@@ -19549,7 +18925,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`{\mathit{val}}` from the stack.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-at>` is on the top of the stack.
+#. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~i)` from the stack.
 
@@ -19584,21 +18960,21 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a :ref:`number value <syntax-num>` is on the top of the stack.
+#. Assert: Due to validation, a number value is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}'}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a :ref:`number value <syntax-num>` is on the top of the stack.
+#. Assert: Due to validation, a number value is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}_2{.}\mathsf{const}~i_2)` from the stack.
 
-#. Assert: Due to validation, a :ref:`number value <syntax-num>` is on the top of the stack.
+#. Assert: Due to validation, a number value is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}_1{.}\mathsf{const}~i_1)` from the stack.
 
-#. Let :math:`x_1` be :math:`x_{1'}`.
+#. Let :math:`x_1` be the table index :math:`x_{1'}`.
 
-#. Let :math:`x_2` be :math:`x_{2'}`.
+#. Let :math:`x_2` be the table index :math:`x_{2'}`.
 
 #. If :math:`i_1 + n > {|z{.}\mathsf{tables}{}[x_1]{.}\mathsf{refs}|}`, then:
 
@@ -19614,9 +18990,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Else:
 
-   a. Let :math:`x` be :math:`x_{1'}`.
+   a. Let :math:`x` be the table index :math:`x_{1'}`.
 
-   #. Let :math:`y` be :math:`x_{2'}`.
+   #. Let :math:`y` be the table index :math:`x_{2'}`.
 
    #. If :math:`i_1 \leq i_2`, then:
 
@@ -19657,15 +19033,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
+#. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
+#. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` from the stack.
 
-#. Assert: Due to validation, a :ref:`number value <syntax-num>` is on the top of the stack.
+#. Assert: Due to validation, a number value is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~i)` from the stack.
 
@@ -19704,13 +19080,13 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a :ref:`number value <syntax-num>` is on the top of the stack.
+#. Assert: Due to validation, a number value is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~i)` from the stack.
 
 #. If :math:`{{\mathit{loadop}}^?}` is not defined, then:
 
-   a. Let :math:`{\mathit{nt}}` be :math:`{\mathit{nt}'}`.
+   a. Let :math:`{\mathit{nt}}` be the number type :math:`{\mathit{nt}'}`.
 
    #. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|{\mathit{nt}}|} / 8 > {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
 
@@ -19732,7 +19108,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
          a) Trap.
 
-   #. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{nt}'}`.
+   #. Let :math:`{\mathsf{i}}{N}` be the number type :math:`{\mathit{nt}'}`.
 
    #. If :math:`{{\mathit{loadop}}^?}` is defined, then:
 
@@ -19751,7 +19127,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a :ref:`number value <syntax-num>` is on the top of the stack.
+#. Assert: Due to validation, a number value is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~i)` from the stack.
 
@@ -19828,11 +19204,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
+#. Assert: Due to validation, a vector type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
-#. Assert: Due to validation, a :ref:`number value <syntax-num>` is on the top of the stack.
+#. Assert: Due to validation, a number value is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~i)` from the stack.
 
@@ -19872,7 +19248,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a :ref:`number value <syntax-num>` is on the top of the stack.
+#. Assert: Due to validation, a number value is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~n)` from the stack.
 
@@ -19880,7 +19256,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`{\mathit{val}}` from the stack.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-at>` is on the top of the stack.
+#. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~i)` from the stack.
 
@@ -19915,15 +19291,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a :ref:`number value <syntax-num>` is on the top of the stack.
+#. Assert: Due to validation, a number value is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}'}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a :ref:`number value <syntax-num>` is on the top of the stack.
+#. Assert: Due to validation, a number value is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}_2{.}\mathsf{const}~i_2)` from the stack.
 
-#. Assert: Due to validation, a :ref:`number value <syntax-num>` is on the top of the stack.
+#. Assert: Due to validation, a number value is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}_1{.}\mathsf{const}~i_1)` from the stack.
 
@@ -19980,15 +19356,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
+#. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
+#. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` from the stack.
 
-#. Assert: Due to validation, a :ref:`number value <syntax-num>` is on the top of the stack.
+#. Assert: Due to validation, a number value is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~i)` from the stack.
 
@@ -20043,7 +19419,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
 
-#. Let :math:`{\mathit{exn}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{tag}~z{.}\mathsf{tags}{}[x],\; \mathsf{fields}~{{\mathit{val}}^{n}} \}\end{array}`.
+#. Let :math:`{\mathit{exn}}` be the exception instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{tag}~z{.}\mathsf{tags}{}[x],\; \mathsf{fields}~{{\mathit{val}}^{n}} \}\end{array}`.
 
 #. Perform :math:`z{}[{.}\mathsf{exns} \mathrel{{=}{\oplus}} {\mathit{exn}}]`.
 
@@ -20070,7 +19446,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
 
-#. Let :math:`{\mathit{si}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~z{.}\mathsf{types}{}[x],\; \mathsf{fields}~{{{\mathrm{pack}}}_{{\mathit{zt}}}({\mathit{val}})^{n}} \}\end{array}`.
+#. Let :math:`{\mathit{si}}` be the structure instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~z{.}\mathsf{types}{}[x],\; \mathsf{fields}~{{{\mathrm{pack}}}_{{\mathit{zt}}}({\mathit{val}})^{n}} \}\end{array}`.
 
 #. Push the value :math:`(\mathsf{ref{.}struct}~a)` to the stack.
 
@@ -20128,7 +19504,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
 
-#. Let :math:`{\mathit{ai}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~z{.}\mathsf{types}{}[x],\; \mathsf{fields}~{{{\mathrm{pack}}}_{{\mathit{zt}}}({\mathit{val}})^{n}} \}\end{array}`.
+#. Let :math:`{\mathit{ai}}` be the array instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~z{.}\mathsf{types}{}[x],\; \mathsf{fields}~{{{\mathrm{pack}}}_{{\mathit{zt}}}({\mathit{val}})^{n}} \}\end{array}`.
 
 #. Push the value :math:`(\mathsf{ref{.}array}~a)` to the stack.
 
@@ -20145,7 +19521,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`{\mathit{val}}` from the stack.
 
-#. Assert: Due to validation, a :ref:`number type <syntax-I32>` is on the top of the stack.
+#. Assert: Due to validation, a number type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
@@ -20206,11 +19582,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a :ref:`reference value <syntax-ref>` is on the top of the stack.
+#. Assert: Due to validation, a reference value is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{ref}}` from the stack.
 
-#. Assert: Due to validation, a :ref:`number value <syntax-num>` is on the top of the stack.
+#. Assert: Due to validation, a number value is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~i)` from the stack.
 
@@ -20227,17 +19603,17 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a :ref:`number value <syntax-num>` is on the top of the stack.
+#. Assert: Due to validation, a number value is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~n)` from the stack.
 
-#. Assert: Due to validation, a :ref:`reference value <syntax-ref>` is on the top of the stack.
+#. Assert: Due to validation, a reference value is on the top of the stack.
 
 #. Pop the value :math:`{\mathit{ref}}` from the stack.
 
 #. Either:
 
-   a. Let :math:`{\mathit{ti}}` be :math:`{\mathrm{growtable}}(z{.}\mathsf{tables}{}[x], n, {\mathit{ref}})`.
+   a. Let :math:`{\mathit{ti}}` be the table instance :math:`{\mathrm{growtable}}(z{.}\mathsf{tables}{}[x], n, {\mathit{ref}})`.
 
    #. Push the value :math:`({\mathit{at}}{.}\mathsf{const}~{|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|})` to the stack.
 
@@ -20263,15 +19639,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a :ref:`number value <syntax-num>` is on the top of the stack.
+#. Assert: Due to validation, a number value is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{nt}'''}{.}\mathsf{const}~c)` from the stack.
 
-#. Assert: Due to validation, a :ref:`number value <syntax-num>` is on the top of the stack.
+#. Assert: Due to validation, a number value is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~i)` from the stack.
 
-#. Let :math:`{\mathit{nt}}` be :math:`{\mathit{nt}'''}`.
+#. Let :math:`{\mathit{nt}}` be the number type :math:`{\mathit{nt}'''}`.
 
 #. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|{\mathit{nt}}|} / 8 > {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}` and :math:`{\mathit{nt}'} = {\mathit{nt}}` and :math:`{{\mathit{storeop}}^?}` is not defined, then:
 
@@ -20285,7 +19661,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. If :math:`{\mathit{nt}'''}` is :math:`{\mathsf{i}}{N}`, then:
 
-   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{nt}'''}`.
+   a. Let :math:`{\mathsf{i}}{N}` be the number type :math:`{\mathit{nt}'''}`.
 
    #. If :math:`{\mathit{nt}'} = {\mathsf{i}}{N}` and :math:`{{\mathit{storeop}}^?}` is defined, then:
 
@@ -20306,11 +19682,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
+#. Assert: Due to validation, a vector type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` from the stack.
 
-#. Assert: Due to validation, a :ref:`number value <syntax-num>` is on the top of the stack.
+#. Assert: Due to validation, a number value is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~i)` from the stack.
 
@@ -20329,11 +19705,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a :ref:`vector type <syntax-V128>` is on the top of the stack.
+#. Assert: Due to validation, a vector type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` from the stack.
 
-#. Assert: Due to validation, a :ref:`number value <syntax-num>` is on the top of the stack.
+#. Assert: Due to validation, a number value is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~i)` from the stack.
 
@@ -20360,13 +19736,13 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a :ref:`number value <syntax-num>` is on the top of the stack.
+#. Assert: Due to validation, a number value is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~n)` from the stack.
 
 #. Either:
 
-   a. Let :math:`{\mathit{mi}}` be :math:`{\mathrm{growmem}}(z{.}\mathsf{mems}{}[x], n)`.
+   a. Let :math:`{\mathit{mi}}` be the memory instance :math:`{\mathrm{growmem}}(z{.}\mathsf{mems}{}[x], n)`.
 
    #. Push the value :math:`({\mathit{at}}{.}\mathsf{const}~{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|} / (64 \, {\mathrm{Ki}}))` to the stack.
 
@@ -21026,13 +20402,13 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. If :math:`{\mathit{lanetype}}` is number type, then:
 
-   a. Let :math:`{\mathit{numtype}}` be :math:`{\mathit{lanetype}}`.
+   a. Let :math:`{\mathit{numtype}}` be the lane type :math:`{\mathit{lanetype}}`.
 
    #. Return :math:`{|{\mathit{numtype}}|}`.
 
 #. Assert: Due to validation, :math:`{\mathit{lanetype}}` is packed type.
 
-#. Let :math:`{\mathit{packtype}}` be :math:`{\mathit{lanetype}}`.
+#. Let :math:`{\mathit{packtype}}` be the lane type :math:`{\mathit{lanetype}}`.
 
 #. Return :math:`{|{\mathit{packtype}}|}`.
 
@@ -21043,19 +20419,19 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. If :math:`{\mathit{storagetype}}` is number type, then:
 
-   a. Let :math:`{\mathit{numtype}}` be :math:`{\mathit{storagetype}}`.
+   a. Let :math:`{\mathit{numtype}}` be the storage type :math:`{\mathit{storagetype}}`.
 
    #. Return :math:`{|{\mathit{numtype}}|}`.
 
 #. If :math:`{\mathit{storagetype}}` is vector type, then:
 
-   a. Let :math:`{\mathit{vectype}}` be :math:`{\mathit{storagetype}}`.
+   a. Let :math:`{\mathit{vectype}}` be the storage type :math:`{\mathit{storagetype}}`.
 
    #. Return :math:`{|{\mathit{vectype}}|}`.
 
 #. Assert: Due to validation, :math:`{\mathit{storagetype}}` is packed type.
 
-#. Let :math:`{\mathit{packtype}}` be :math:`{\mathit{storagetype}}`.
+#. Let :math:`{\mathit{packtype}}` be the storage type :math:`{\mathit{storagetype}}`.
 
 #. Return :math:`{|{\mathit{packtype}}|}`.
 
@@ -21122,7 +20498,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. If :math:`{\mathit{lanetype}}` is number type, then:
 
-   a. Let :math:`{\mathit{numtype}}` be :math:`{\mathit{lanetype}}`.
+   a. Let :math:`{\mathit{numtype}}` be the lane type :math:`{\mathit{lanetype}}`.
 
    #. Return :math:`{\mathit{numtype}}`.
 
@@ -21137,7 +20513,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. If :math:`{\mathit{storagetype}}` is value type, then:
 
-   a. Let :math:`{\mathit{valtype}}` be :math:`{\mathit{storagetype}}`.
+   a. Let :math:`{\mathit{valtype}}` be the storage type :math:`{\mathit{storagetype}}`.
 
    #. Return :math:`{\mathit{valtype}}`.
 
@@ -21152,7 +20528,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. If :math:`{\mathit{storagetype}}` is number type, then:
 
-   a. Let :math:`{\mathit{numtype}}` be :math:`{\mathit{storagetype}}`.
+   a. Let :math:`{\mathit{numtype}}` be the storage type :math:`{\mathit{storagetype}}`.
 
    #. Return :math:`{\mathit{numtype}}`.
 
@@ -21176,7 +20552,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. If :math:`{\mathit{storagetype}}` is literal type, then:
 
-   a. Let :math:`{\mathit{consttype}}` be :math:`{\mathit{storagetype}}`.
+   a. Let :math:`{\mathit{consttype}}` be the storage type :math:`{\mathit{storagetype}}`.
 
    #. Return :math:`{\mathit{consttype}}`.
 
@@ -21186,7 +20562,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. If :math:`{\mathit{storagetype}}` is lane type, then:
 
-   a. Let :math:`{\mathit{lanetype}}` be :math:`{\mathit{storagetype}}`.
+   a. Let :math:`{\mathit{lanetype}}` be the storage type :math:`{\mathit{storagetype}}`.
 
    #. Return :math:`{\mathrm{unpack}}({\mathit{lanetype}})`.
 
@@ -21372,13 +20748,13 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. If :math:`{\mathit{typeuse}}` is type variable, then:
 
-   a. Let :math:`{\mathit{tv}'}` be :math:`{\mathit{typeuse}}`.
+   a. Let :math:`{\mathit{tv}'}` be the type use :math:`{\mathit{typeuse}}`.
 
    #. Return :math:`{{\mathit{tv}'}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`.
 
 #. Assert: Due to validation, :math:`{\mathit{typeuse}}` is defined type.
 
-#. Let :math:`{\mathit{dt}}` be :math:`{\mathit{typeuse}}`.
+#. Let :math:`{\mathit{dt}}` be the type use :math:`{\mathit{typeuse}}`.
 
 #. Return :math:`{{\mathit{dt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`.
 
@@ -21389,17 +20765,17 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. If :math:`{\mathit{heaptype}}` is type variable, then:
 
-   a. Let :math:`{\mathit{tv}'}` be :math:`{\mathit{heaptype}}`.
+   a. Let :math:`{\mathit{tv}'}` be the heap type :math:`{\mathit{heaptype}}`.
 
    #. Return :math:`{{\mathit{tv}'}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`.
 
 #. If :math:`{\mathit{heaptype}}` is defined type, then:
 
-   a. Let :math:`{\mathit{dt}}` be :math:`{\mathit{heaptype}}`.
+   a. Let :math:`{\mathit{dt}}` be the heap type :math:`{\mathit{heaptype}}`.
 
    #. Return :math:`{{\mathit{dt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`.
 
-#. Let :math:`{\mathit{ht}}` be :math:`{\mathit{heaptype}}`.
+#. Let :math:`{\mathit{ht}}` be the heap type :math:`{\mathit{heaptype}}`.
 
 #. Return :math:`{\mathit{ht}}`.
 
@@ -21417,19 +20793,19 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. If :math:`{\mathit{valtype}}` is number type, then:
 
-   a. Let :math:`{\mathit{nt}}` be :math:`{\mathit{valtype}}`.
+   a. Let :math:`{\mathit{nt}}` be the value type :math:`{\mathit{valtype}}`.
 
    #. Return :math:`{{\mathit{nt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`.
 
 #. If :math:`{\mathit{valtype}}` is vector type, then:
 
-   a. Let :math:`{\mathit{vt}}` be :math:`{\mathit{valtype}}`.
+   a. Let :math:`{\mathit{vt}}` be the value type :math:`{\mathit{valtype}}`.
 
    #. Return :math:`{{\mathit{vt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`.
 
 #. If :math:`{\mathit{valtype}}` is reference type, then:
 
-   a. Let :math:`{\mathit{rt}}` be :math:`{\mathit{valtype}}`.
+   a. Let :math:`{\mathit{rt}}` be the value type :math:`{\mathit{valtype}}`.
 
    #. Return :math:`{{\mathit{rt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`.
 
@@ -21444,13 +20820,13 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. If :math:`{\mathit{storagetype}}` is value type, then:
 
-   a. Let :math:`t` be :math:`{\mathit{storagetype}}`.
+   a. Let :math:`t` be the storage type :math:`{\mathit{storagetype}}`.
 
    #. Return :math:`{t}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`.
 
 #. Assert: Due to validation, :math:`{\mathit{storagetype}}` is packed type.
 
-#. Let :math:`{\mathit{pt}}` be :math:`{\mathit{storagetype}}`.
+#. Let :math:`{\mathit{pt}}` be the storage type :math:`{\mathit{storagetype}}`.
 
 #. Return :math:`{{\mathit{pt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`.
 
@@ -21724,13 +21100,13 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. If :math:`{\mathit{lanetype}}` is number type, then:
 
-   a. Let :math:`{\mathit{numtype}}` be :math:`{\mathit{lanetype}}`.
+   a. Let :math:`{\mathit{numtype}}` be the lane type :math:`{\mathit{lanetype}}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{numtype}}({\mathit{numtype}})`.
 
 #. Assert: Due to validation, :math:`{\mathit{lanetype}}` is packed type.
 
-#. Let :math:`{\mathit{packtype}}` be :math:`{\mathit{lanetype}}`.
+#. Let :math:`{\mathit{packtype}}` be the lane type :math:`{\mathit{lanetype}}`.
 
 #. Return :math:`{\mathrm{free}}_{\mathit{packtype}}({\mathit{packtype}})`.
 
@@ -21748,13 +21124,13 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. If :math:`{\mathit{consttype}}` is number type, then:
 
-   a. Let :math:`{\mathit{numtype}}` be :math:`{\mathit{consttype}}`.
+   a. Let :math:`{\mathit{numtype}}` be the literal type :math:`{\mathit{consttype}}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{numtype}}({\mathit{numtype}})`.
 
 #. Assert: Due to validation, :math:`{\mathit{consttype}}` is vector type.
 
-#. Let :math:`{\mathit{vectype}}` be :math:`{\mathit{consttype}}`.
+#. Let :math:`{\mathit{vectype}}` be the literal type :math:`{\mathit{consttype}}`.
 
 #. Return :math:`{\mathrm{free}}_{\mathit{vectype}}({\mathit{vectype}})`.
 
@@ -21772,7 +21148,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. If :math:`{\mathit{typevar}}` is some :math:`{\mathit{typeidx}}`, then:
 
-   a. Let :math:`{\mathit{typeidx}}` be the destructuring of :math:`{\mathit{typevar}}`.
+   a. Let :math:`{\mathit{typeidx}}` be the type variable :math:`{\mathit{typevar}}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}})`.
 
@@ -21787,13 +21163,13 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. If :math:`{\mathit{heaptype}}` is abstract heap type, then:
 
-   a. Let :math:`{\mathit{absheaptype}}` be :math:`{\mathit{heaptype}}`.
+   a. Let :math:`{\mathit{absheaptype}}` be the heap type :math:`{\mathit{heaptype}}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{absheaptype}}({\mathit{absheaptype}})`.
 
 #. Assert: Due to validation, :math:`{\mathit{heaptype}}` is type use.
 
-#. Let :math:`{\mathit{typeuse}}` be :math:`{\mathit{heaptype}}`.
+#. Let :math:`{\mathit{typeuse}}` be the heap type :math:`{\mathit{heaptype}}`.
 
 #. Return :math:`{\mathrm{free}}_{\mathit{typeuse}}({\mathit{typeuse}})`.
 
@@ -21811,13 +21187,13 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. If :math:`{\mathit{typeuse}}` is type variable, then:
 
-   a. Let :math:`{\mathit{typevar}}` be :math:`{\mathit{typeuse}}`.
+   a. Let :math:`{\mathit{typevar}}` be the type use :math:`{\mathit{typeuse}}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{typevar}}({\mathit{typevar}})`.
 
 #. Assert: Due to validation, :math:`{\mathit{typeuse}}` is defined type.
 
-#. Let :math:`{\mathit{deftype}}` be :math:`{\mathit{typeuse}}`.
+#. Let :math:`{\mathit{deftype}}` be the type use :math:`{\mathit{typeuse}}`.
 
 #. Return :math:`{\mathrm{free}}_{\mathit{deftype}}({\mathit{deftype}})`.
 
@@ -21828,19 +21204,19 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. If :math:`{\mathit{valtype}}` is number type, then:
 
-   a. Let :math:`{\mathit{numtype}}` be :math:`{\mathit{valtype}}`.
+   a. Let :math:`{\mathit{numtype}}` be the value type :math:`{\mathit{valtype}}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{numtype}}({\mathit{numtype}})`.
 
 #. If :math:`{\mathit{valtype}}` is vector type, then:
 
-   a. Let :math:`{\mathit{vectype}}` be :math:`{\mathit{valtype}}`.
+   a. Let :math:`{\mathit{vectype}}` be the value type :math:`{\mathit{valtype}}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{vectype}}({\mathit{vectype}})`.
 
 #. If :math:`{\mathit{valtype}}` is reference type, then:
 
-   a. Let :math:`{\mathit{reftype}}` be :math:`{\mathit{valtype}}`.
+   a. Let :math:`{\mathit{reftype}}` be the value type :math:`{\mathit{valtype}}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{reftype}}({\mathit{reftype}})`.
 
@@ -21862,13 +21238,13 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. If :math:`{\mathit{storagetype}}` is value type, then:
 
-   a. Let :math:`{\mathit{valtype}}` be :math:`{\mathit{storagetype}}`.
+   a. Let :math:`{\mathit{valtype}}` be the storage type :math:`{\mathit{storagetype}}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{valtype}}({\mathit{valtype}})`.
 
 #. Assert: Due to validation, :math:`{\mathit{storagetype}}` is packed type.
 
-#. Let :math:`{\mathit{packtype}}` be :math:`{\mathit{storagetype}}`.
+#. Let :math:`{\mathit{packtype}}` be the storage type :math:`{\mathit{storagetype}}`.
 
 #. Return :math:`{\mathrm{free}}_{\mathit{packtype}}({\mathit{packtype}})`.
 
@@ -22057,13 +21433,13 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. If :math:`{\mathit{consttype}}` is number type, then:
 
-   a. Let :math:`{\mathit{numtype}}` be :math:`{\mathit{consttype}}`.
+   a. Let :math:`{\mathit{numtype}}` be the literal type :math:`{\mathit{consttype}}`.
 
    #. Return :math:`({\mathit{numtype}}{.}\mathsf{const}~c)`.
 
 #. Assert: Due to validation, :math:`{\mathit{consttype}}` is vector type.
 
-#. Let :math:`{\mathit{vectype}}` be :math:`{\mathit{consttype}}`.
+#. Let :math:`{\mathit{vectype}}` be the literal type :math:`{\mathit{consttype}}`.
 
 #. Return :math:`({\mathit{vectype}}{.}\mathsf{const}~c)`.
 
@@ -22081,13 +21457,13 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. If :math:`{\mathit{blocktype}}` is some :math:`{{\mathit{valtype}}^?}`, then:
 
-   a. Let :math:`{{\mathit{valtype}}^?}` be the destructuring of :math:`{\mathit{blocktype}}`.
+   a. Let :math:`{{\mathit{valtype}}^?}` be the block type :math:`{\mathit{blocktype}}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{opt}}({{\mathrm{free}}_{\mathit{valtype}}({\mathit{valtype}})^?})`.
 
 #. Assert: Due to validation, :math:`{\mathit{blocktype}}` is some :math:`{\mathit{funcidx}}`.
 
-#. Let :math:`{\mathit{funcidx}}` be the destructuring of :math:`{\mathit{blocktype}}`.
+#. Let :math:`{\mathit{funcidx}}` be the block type :math:`{\mathit{blocktype}}`.
 
 #. Return :math:`{\mathrm{free}}_{\mathit{funcidx}}({\mathit{funcidx}})`.
 
@@ -22916,7 +22292,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. If :math:`{\mathit{typeuse}}` is some :math:`{\mathit{typeidx}}`, then:
 
-   a. Let :math:`{\mathit{typeidx}}` be the destructuring of :math:`{\mathit{typeuse}}`.
+   a. Let :math:`{\mathit{typeidx}}` be the type use :math:`{\mathit{typeuse}}`.
 
    #. Return :math:`{\mathit{typeidx}} < x`.
 
@@ -22933,13 +22309,13 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. If :math:`{\mathit{heaptype}}` is defined type, then:
 
-   a. Let :math:`{\mathit{deftype}}` be :math:`{\mathit{heaptype}}`.
+   a. Let :math:`{\mathit{deftype}}` be the heap type :math:`{\mathit{heaptype}}`.
 
    #. Return :math:`{\mathrm{unroll}}({\mathit{deftype}})`.
 
 #. If :math:`{\mathit{heaptype}}` is some :math:`{\mathit{typeidx}}`, then:
 
-   a. Let :math:`{\mathit{typeidx}}` be the destructuring of :math:`{\mathit{heaptype}}`.
+   a. Let :math:`{\mathit{typeidx}}` be the heap type :math:`{\mathit{heaptype}}`.
 
    #. Return :math:`{\mathrm{unroll}}(C{.}\mathsf{types}{}[{\mathit{typeidx}}])`.
 
@@ -22956,19 +22332,19 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. If :math:`{\mathit{valtype}}` is :math:`{\mathsf{i}}{N}`, then:
 
-   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{valtype}}`.
+   a. Let :math:`{\mathsf{i}}{N}` be the value type :math:`{\mathit{valtype}}`.
 
    #. Return :math:`({\mathsf{i}}{N}{.}\mathsf{const}~0)`.
 
 #. If :math:`{\mathit{valtype}}` is :math:`{\mathsf{f}}{N}`, then:
 
-   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{valtype}}`.
+   a. Let :math:`{\mathsf{f}}{N}` be the value type :math:`{\mathit{valtype}}`.
 
    #. Return :math:`({\mathsf{f}}{N}{.}\mathsf{const}~{+0})`.
 
 #. If :math:`{\mathit{valtype}}` is :math:`{\mathsf{v}}{N}`, then:
 
-   a. Let :math:`{\mathsf{v}}{N}` be :math:`{\mathit{valtype}}`.
+   a. Let :math:`{\mathsf{v}}{N}` be the value type :math:`{\mathit{valtype}}`.
 
    #. Return :math:`({\mathsf{v}}{N}{.}\mathsf{const}~0)`.
 
@@ -23079,7 +22455,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Assert: Due to validation, :math:`{\mathit{lanetype}}` is :math:`{\mathsf{f}}{N}`.
 
-#. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}`.
+#. Let :math:`{\mathsf{f}}{N}` be the lane type :math:`{\mathit{lanetype}}`.
 
 #. Return :math:`{+0}`.
 
@@ -23295,7 +22671,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Assert: Due to validation, :math:`{\mathit{lanetype}}` is packed type.
 
-#. Let :math:`{\mathit{packtype}}` be :math:`{\mathit{lanetype}}`.
+#. Let :math:`{\mathit{packtype}}` be the lane type :math:`{\mathit{lanetype}}`.
 
 #. Return :math:`{{\mathrm{wrap}}}_{{|{\mathrm{unpack}}({\mathit{packtype}})|}, {|{\mathit{packtype}}|}}(c)`.
 
@@ -23310,7 +22686,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Assert: Due to validation, :math:`{\mathit{storagetype}}` is packed type.
 
-#. Let :math:`{\mathit{packtype}}` be :math:`{\mathit{storagetype}}`.
+#. Let :math:`{\mathit{packtype}}` be the storage type :math:`{\mathit{storagetype}}`.
 
 #. Return :math:`{{\mathrm{wrap}}}_{{|{\mathrm{unpack}}({\mathit{packtype}})|}, {|{\mathit{packtype}}|}}(c)`.
 
@@ -23325,7 +22701,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Assert: Due to validation, :math:`{\mathit{lanetype}}` is packed type.
 
-#. Let :math:`{\mathit{packtype}}` be :math:`{\mathit{lanetype}}`.
+#. Let :math:`{\mathit{packtype}}` be the lane type :math:`{\mathit{lanetype}}`.
 
 #. Return :math:`{{{{\mathrm{extend}}}_{{|{\mathit{packtype}}|}, {|{\mathrm{unpack}}({\mathit{packtype}})|}}^{\mathsf{u}}}}{(c)}`.
 
@@ -23340,7 +22716,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Assert: Due to validation, :math:`{\mathit{storagetype}}` is packed type.
 
-#. Let :math:`{\mathit{packtype}}` be :math:`{\mathit{storagetype}}`.
+#. Let :math:`{\mathit{packtype}}` be the storage type :math:`{\mathit{storagetype}}`.
 
 #. Return :math:`{{{{\mathrm{extend}}}_{{|{\mathit{packtype}}|}, {|{\mathrm{unpack}}({\mathit{packtype}})|}}^{\mathsf{u}}}}{(c)}`.
 
@@ -23351,7 +22727,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. If :math:`{\mathit{numtype}}` is :math:`{\mathsf{i}}{N}`, then:
 
-   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}`.
+   a. Let :math:`{\mathsf{i}}{N}` be the number type :math:`{\mathit{numtype}}`.
 
    #. Let :math:`i` be :math:`{i'}`.
 
@@ -23375,7 +22751,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Assert: Due to validation, :math:`{\mathit{numtype}}` is :math:`{\mathsf{f}}{N}`.
 
-#. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{numtype}}`.
+#. Let :math:`{\mathsf{f}}{N}` be the number type :math:`{\mathit{numtype}}`.
 
 #. Let :math:`f` be :math:`{i'}`.
 
@@ -23414,7 +22790,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. If :math:`{\mathit{numtype}}` is :math:`{\mathsf{i}}{N}`, then:
 
-   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}`.
+   a. Let :math:`{\mathsf{i}}{N}` be the number type :math:`{\mathit{numtype}}`.
 
    #. Let :math:`i_1` be :math:`i_{1'}`.
 
@@ -23476,7 +22852,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Assert: Due to validation, :math:`{\mathit{numtype}}` is :math:`{\mathsf{f}}{N}`.
 
-#. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{numtype}}`.
+#. Let :math:`{\mathsf{f}}{N}` be the number type :math:`{\mathit{numtype}}`.
 
 #. Let :math:`f_1` be :math:`i_{1'}`.
 
@@ -23524,7 +22900,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. If :math:`{\mathit{numtype}}` is :math:`{\mathsf{i}}{N}`, then:
 
-   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}`.
+   a. Let :math:`{\mathsf{i}}{N}` be the number type :math:`{\mathit{numtype}}`.
 
    #. Let :math:`i_1` be :math:`i_{1'}`.
 
@@ -23564,7 +22940,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Assert: Due to validation, :math:`{\mathit{numtype}}` is :math:`{\mathsf{f}}{N}`.
 
-#. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{numtype}}`.
+#. Let :math:`{\mathsf{f}}{N}` be the number type :math:`{\mathit{numtype}}`.
 
 #. Let :math:`f_1` be :math:`i_{1'}`.
 
@@ -23601,11 +22977,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. If :math:`{\mathit{numtype}}` is :math:`{\mathsf{i}}{N}`, then:
 
-   a. Let :math:`{{\mathsf{i}}{N}}_1` be :math:`{\mathit{numtype}}`.
+   a. Let :math:`{{\mathsf{i}}{N}}_1` be the number type :math:`{\mathit{numtype}}`.
 
    #. If :math:`{\mathit{numtype}''}` is :math:`{\mathsf{i}}{N}`, then:
 
-      1) Let :math:`{{\mathsf{i}}{N}}_2` be :math:`{\mathit{numtype}''}`.
+      1) Let :math:`{{\mathsf{i}}{N}}_2` be the number type :math:`{\mathit{numtype}''}`.
 
       #) If :math:`{\mathit{cvtop}}` is some :math:`\mathsf{extend}` :math:`{\mathit{sx}}`, then:
 
@@ -23623,11 +22999,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. If :math:`{\mathit{numtype}}` is :math:`{\mathsf{f}}{N}`, then:
 
-   a. Let :math:`{{\mathsf{f}}{N}}_1` be :math:`{\mathit{numtype}}`.
+   a. Let :math:`{{\mathsf{f}}{N}}_1` be the number type :math:`{\mathit{numtype}}`.
 
    #. If :math:`{\mathit{numtype}''}` is :math:`{\mathsf{i}}{N}`, then:
 
-      1) Let :math:`{{\mathsf{i}}{N}}_2` be :math:`{\mathit{numtype}''}`.
+      1) Let :math:`{{\mathsf{i}}{N}}_2` be the number type :math:`{\mathit{numtype}''}`.
 
       #) If :math:`{\mathit{cvtop}}` is some :math:`\mathsf{trunc}` :math:`{\mathit{sx}}`, then:
 
@@ -23647,11 +23023,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. If :math:`{\mathit{numtype}}` is :math:`{\mathsf{i}}{N}`, then:
 
-   a. Let :math:`{{\mathsf{i}}{N}}_1` be :math:`{\mathit{numtype}}`.
+   a. Let :math:`{{\mathsf{i}}{N}}_1` be the number type :math:`{\mathit{numtype}}`.
 
    #. If :math:`{\mathit{numtype}''}` is :math:`{\mathsf{f}}{N}`, then:
 
-      1) Let :math:`{{\mathsf{f}}{N}}_2` be :math:`{\mathit{numtype}''}`.
+      1) Let :math:`{{\mathsf{f}}{N}}_2` be the number type :math:`{\mathit{numtype}''}`.
 
       #) If :math:`{\mathit{cvtop}}` is some :math:`\mathsf{convert}` :math:`{\mathit{sx}}`, then:
 
@@ -23663,11 +23039,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. If :math:`{\mathit{numtype}}` is :math:`{\mathsf{f}}{N}`, then:
 
-   a. Let :math:`{{\mathsf{f}}{N}}_1` be :math:`{\mathit{numtype}}`.
+   a. Let :math:`{{\mathsf{f}}{N}}_1` be the number type :math:`{\mathit{numtype}}`.
 
    #. If :math:`{\mathit{numtype}''}` is :math:`{\mathsf{f}}{N}`, then:
 
-      1) Let :math:`{{\mathsf{f}}{N}}_2` be :math:`{\mathit{numtype}''}`.
+      1) Let :math:`{{\mathsf{f}}{N}}_2` be the number type :math:`{\mathit{numtype}''}`.
 
       #) Let :math:`f_1` be :math:`i_{1'}`.
 
@@ -23681,11 +23057,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. If :math:`{\mathit{numtype}}` is :math:`{\mathsf{i}}{N}`, then:
 
-   a. Let :math:`{{\mathsf{i}}{N}}_1` be :math:`{\mathit{numtype}}`.
+   a. Let :math:`{{\mathsf{i}}{N}}_1` be the number type :math:`{\mathit{numtype}}`.
 
    #. If :math:`{\mathit{numtype}''}` is :math:`{\mathsf{f}}{N}`, then:
 
-      1) Let :math:`{{\mathsf{f}}{N}}_2` be :math:`{\mathit{numtype}''}`.
+      1) Let :math:`{{\mathsf{f}}{N}}_2` be the number type :math:`{\mathit{numtype}''}`.
 
       #) Let :math:`i_1` be :math:`i_{1'}`.
 
@@ -23695,11 +23071,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Assert: Due to validation, :math:`{\mathit{numtype}}` is :math:`{\mathsf{f}}{N}`.
 
-#. Let :math:`{{\mathsf{f}}{N}}_1` be :math:`{\mathit{numtype}}`.
+#. Let :math:`{{\mathsf{f}}{N}}_1` be the number type :math:`{\mathit{numtype}}`.
 
 #. Assert: Due to validation, :math:`{\mathit{numtype}''}` is :math:`{\mathsf{i}}{N}`.
 
-#. Let :math:`{{\mathsf{i}}{N}}_2` be :math:`{\mathit{numtype}''}`.
+#. Let :math:`{{\mathsf{i}}{N}}_2` be the number type :math:`{\mathit{numtype}''}`.
 
 #. Let :math:`f_1` be :math:`i_{1'}`.
 
@@ -24035,7 +23411,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{f}}{N}`, then:
 
-   a. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}`.
+   a. Let :math:`{\mathsf{f}}{N}` be the lane type :math:`{\mathit{lanetype}}`.
 
    #. If :math:`{\mathit{vunop}} = \mathsf{abs}`, then:
 
@@ -24067,7 +23443,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Assert: Due to validation, :math:`{\mathit{lanetype}}` is :math:`{\mathsf{i}}{N}`.
 
-#. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{lanetype}}`.
+#. Let :math:`{\mathsf{i}}{N}` be the lane type :math:`{\mathit{lanetype}}`.
 
 #. If :math:`{\mathit{vunop}} = \mathsf{abs}`, then:
 
@@ -24088,7 +23464,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{i}}{N}`, then:
 
-   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{lanetype}}`.
+   a. Let :math:`{\mathsf{i}}{N}` be the lane type :math:`{\mathit{lanetype}}`.
 
    #. If :math:`{\mathit{vbinop}} = \mathsf{add}`, then:
 
@@ -24140,7 +23516,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Assert: Due to validation, :math:`{\mathit{lanetype}}` is :math:`{\mathsf{f}}{N}`.
 
-#. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}`.
+#. Let :math:`{\mathsf{f}}{N}` be the lane type :math:`{\mathit{lanetype}}`.
 
 #. If :math:`{\mathit{vbinop}} = \mathsf{add}`, then:
 
@@ -24189,7 +23565,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{i}}{N}`, then:
 
-   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{lanetype}}`.
+   a. Let :math:`{\mathsf{i}}{N}` be the lane type :math:`{\mathit{lanetype}}`.
 
    #. If :math:`{\mathit{vternop}} = \mathsf{relaxed\_laneselect}`, then:
 
@@ -24197,7 +23573,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Assert: Due to validation, :math:`{\mathit{lanetype}}` is :math:`{\mathsf{f}}{N}`.
 
-#. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}`.
+#. Let :math:`{\mathsf{f}}{N}` be the lane type :math:`{\mathit{lanetype}}`.
 
 #. If :math:`{\mathit{vternop}} = \mathsf{relaxed\_madd}`, then:
 
@@ -24221,7 +23597,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{i}}{N}`, then:
 
-   a. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{lanetype}}`.
+   a. Let :math:`{\mathsf{i}}{N}` be the lane type :math:`{\mathit{lanetype}}`.
 
    #. If :math:`{\mathit{vrelop}} = \mathsf{eq}`, then:
 
@@ -24257,7 +23633,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Assert: Due to validation, :math:`{\mathit{lanetype}}` is :math:`{\mathsf{f}}{N}`.
 
-#. Let :math:`{\mathsf{f}}{N}` be :math:`{\mathit{lanetype}}`.
+#. Let :math:`{\mathsf{f}}{N}` be the lane type :math:`{\mathit{lanetype}}`.
 
 #. If :math:`{\mathit{vrelop}} = \mathsf{eq}`, then:
 
@@ -24290,11 +23666,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. If :math:`{\mathit{lanetype}''}` is :math:`{\mathsf{i}}{N}`, then:
 
-   a. Let :math:`{{\mathsf{i}}{N}}_1` be :math:`{\mathit{lanetype}''}`.
+   a. Let :math:`{{\mathsf{i}}{N}}_1` be the lane type :math:`{\mathit{lanetype}''}`.
 
    #. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{i}}{N}`, then:
 
-      1) Let :math:`{{\mathsf{i}}{N}}_2` be :math:`{\mathit{lanetype}}`.
+      1) Let :math:`{{\mathsf{i}}{N}}_2` be the lane type :math:`{\mathit{lanetype}}`.
 
       #) If :math:`{\mathit{vcvtop}}` is some :math:`\mathsf{extend}` :math:`{\mathit{sx}}`, then:
 
@@ -24306,7 +23682,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{f}}{N}`, then:
 
-      1) Let :math:`{{\mathsf{f}}{N}}_2` be :math:`{\mathit{lanetype}}`.
+      1) Let :math:`{{\mathsf{f}}{N}}_2` be the lane type :math:`{\mathit{lanetype}}`.
 
       #) If :math:`{\mathit{vcvtop}}` is some :math:`\mathsf{convert}` :math:`{\mathit{sx}}`, then:
 
@@ -24318,11 +23694,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Assert: Due to validation, :math:`{\mathit{lanetype}''}` is :math:`{\mathsf{f}}{N}`.
 
-#. Let :math:`{{\mathsf{f}}{N}}_1` be :math:`{\mathit{lanetype}''}`.
+#. Let :math:`{{\mathsf{f}}{N}}_1` be the lane type :math:`{\mathit{lanetype}''}`.
 
 #. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{i}}{N}`, then:
 
-   a. Let :math:`{{\mathsf{i}}{N}}_2` be :math:`{\mathit{lanetype}}`.
+   a. Let :math:`{{\mathsf{i}}{N}}_2` be the lane type :math:`{\mathit{lanetype}}`.
 
    #. If :math:`{\mathit{vcvtop}}` is some :math:`\mathsf{trunc\_sat}` :math:`{\mathit{sx}}`, then:
 
@@ -24342,7 +23718,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Assert: Due to validation, :math:`{\mathit{lanetype}}` is :math:`{\mathsf{f}}{N}`.
 
-#. Let :math:`{{\mathsf{f}}{N}}_2` be :math:`{\mathit{lanetype}}`.
+#. Let :math:`{{\mathsf{f}}{N}}_2` be the lane type :math:`{\mathit{lanetype}}`.
 
 #. If :math:`{\mathit{vcvtop}} = \mathsf{demote}`, then:
 
@@ -24540,7 +23916,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    a. Let :math:`({\mathsf{extmul}}{\mathsf{\_}}{{\mathit{sx}}}{\mathsf{\_}}{{\mathit{half}}})` be the destructuring of :math:`{\mathit{vextbinop}}`.
 
-   #. Let :math:`i` be :math:`{\mathrm{half}}({\mathit{half}}, 0, M_2)`.
+   #. Let :math:`i` be the lane index :math:`{\mathrm{half}}({\mathit{half}}, 0, M_2)`.
 
    #. Return :math:`{{\mathrm{ivextbinop}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}({\mathrm{ivmul}}, {\mathit{sx}}, {\mathit{sx}}, i, M_2, v_1, v_2)`.
 
@@ -24585,13 +23961,13 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. If :math:`{\mathit{storagetype}}` is value type, then:
 
-   a. Let :math:`{\mathit{val}}` be :math:`{\mathit{val}'}`.
+   a. Let :math:`{\mathit{val}}` be the value :math:`{\mathit{val}'}`.
 
    #. Return :math:`{\mathit{val}}`.
 
 #. Assert: Due to validation, :math:`{\mathit{storagetype}}` is packed type.
 
-#. Let :math:`{\mathit{packtype}}` be :math:`{\mathit{storagetype}}`.
+#. Let :math:`{\mathit{packtype}}` be the storage type :math:`{\mathit{storagetype}}`.
 
 #. Assert: Due to validation, :math:`{\mathit{val}'}` is some :math:`\mathsf{const}` :math:`{\mathit{numtype}}` :math:`{{\mathit{num}}}_{{\mathit{numtype}}}`.
 
@@ -24608,7 +23984,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. If :math:`{\mathit{storagetype}}` is value type and :math:`{\mathit{fieldval}}` is value, then:
 
-   a. Let :math:`{\mathit{val}}` be :math:`{\mathit{fieldval}}`.
+   a. Let :math:`{\mathit{val}}` be the field value :math:`{\mathit{fieldval}}`.
 
    #. If :math:`{{\mathit{sx}'}^?}` is not defined, then:
 
@@ -24996,7 +24372,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{i'}` be :math:`{|{{r'}^\ast}|} + n`.
 
-#. Let :math:`{\mathit{tableinst}'}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({\mathit{at}}~{}[ {i'} .. j ]~{\mathit{rt}}),\; \mathsf{refs}~{{r'}^\ast}~{r^{n}} \}\end{array}`.
+#. Let :math:`{\mathit{tableinst}'}` be the table instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({\mathit{at}}~{}[ {i'} .. j ]~{\mathit{rt}}),\; \mathsf{refs}~{{r'}^\ast}~{r^{n}} \}\end{array}`.
 
 #. Return :math:`{\mathit{tableinst}'}`.
 
@@ -25013,7 +24389,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{i'}` be :math:`{|{b^\ast}|} / (64 \, {\mathrm{Ki}}) + n`.
 
-#. Let :math:`{\mathit{meminst}'}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({\mathit{at}}~{}[ {i'} .. j ]~\mathsf{page}),\; \mathsf{bytes}~{b^\ast}~{\mathtt{0x00}^{n \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
+#. Let :math:`{\mathit{meminst}'}` be the memory instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({\mathit{at}}~{}[ {i'} .. j ]~\mathsf{page}),\; \mathsf{bytes}~{b^\ast}~{\mathtt{0x00}^{n \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
 
 #. Return :math:`{\mathit{meminst}'}`.
 
@@ -25069,7 +24445,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. If :math:`{\mathit{blocktype}}` is some :math:`{\mathit{funcidx}}`, then:
 
-   a. Let :math:`x` be the destructuring of :math:`{\mathit{blocktype}}`.
+   a. Let :math:`x` be the block type :math:`{\mathit{blocktype}}`.
 
    #. Assert: Due to validation, the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{types}{}[x]` is some :math:`\mathsf{func}` :math:`{\mathit{functype}}`.
 
@@ -25079,7 +24455,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Assert: Due to validation, :math:`{\mathit{blocktype}}` is some :math:`{{\mathit{valtype}}^?}`.
 
-#. Let :math:`{t^?}` be the destructuring of :math:`{\mathit{blocktype}}`.
+#. Let :math:`{t^?}` be the block type :math:`{\mathit{blocktype}}`.
 
 #. Return :math:`\epsilon~\rightarrow~{t^?}`.
 
@@ -25109,7 +24485,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ...........................................................................................
 
 
-1. Let :math:`{\mathit{funcinst}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{\mathit{deftype}},\; \mathsf{module}~{\mathit{moduleinst}},\; \mathsf{code}~{\mathit{code}} \}\end{array}`.
+1. Let :math:`{\mathit{funcinst}}` be the function instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{\mathit{deftype}},\; \mathsf{module}~{\mathit{moduleinst}},\; \mathsf{code}~{\mathit{code}} \}\end{array}`.
 
 #. Let :math:`a` be the length of :math:`s{.}\mathsf{funcs}`.
 
@@ -25153,7 +24529,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ........................................................................
 
 
-1. Let :math:`{\mathit{globalinst}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{\mathit{globaltype}},\; \mathsf{value}~{\mathit{val}} \}\end{array}`.
+1. Let :math:`{\mathit{globalinst}}` be the global instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{\mathit{globaltype}},\; \mathsf{value}~{\mathit{val}} \}\end{array}`.
 
 #. Let :math:`a` be the length of :math:`s{.}\mathsf{globals}`.
 
@@ -25191,7 +24567,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ..........................................................................................
 
 
-1. Let :math:`{\mathit{tableinst}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({\mathit{at}}~{}[ i .. j ]~{\mathit{rt}}),\; \mathsf{refs}~{{\mathit{ref}}^{i}} \}\end{array}`.
+1. Let :math:`{\mathit{tableinst}}` be the table instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({\mathit{at}}~{}[ i .. j ]~{\mathit{rt}}),\; \mathsf{refs}~{{\mathit{ref}}^{i}} \}\end{array}`.
 
 #. Let :math:`a` be the length of :math:`s{.}\mathsf{tables}`.
 
@@ -25227,7 +24603,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ........................................................................
 
 
-1. Let :math:`{\mathit{meminst}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({\mathit{at}}~{}[ i .. j ]~\mathsf{page}),\; \mathsf{bytes}~{\mathtt{0x00}^{i \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
+1. Let :math:`{\mathit{meminst}}` be the memory instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({\mathit{at}}~{}[ i .. j ]~\mathsf{page}),\; \mathsf{bytes}~{\mathtt{0x00}^{i \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
 
 #. Let :math:`a` be the length of :math:`s{.}\mathsf{mems}`.
 
@@ -25257,7 +24633,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ..................................................
 
 
-1. Let :math:`{\mathit{taginst}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{\mathit{tagtype}} \}\end{array}`.
+1. Let :math:`{\mathit{taginst}}` be the tag instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{\mathit{tagtype}} \}\end{array}`.
 
 #. Let :math:`a` be the length of :math:`s{.}\mathsf{tags}`.
 
@@ -25287,7 +24663,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ...........................................................................
 
 
-1. Let :math:`{\mathit{eleminst}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{\mathit{elemtype}},\; \mathsf{refs}~{{\mathit{ref}}^\ast} \}\end{array}`.
+1. Let :math:`{\mathit{eleminst}}` be the element instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{\mathit{elemtype}},\; \mathsf{refs}~{{\mathit{ref}}^\ast} \}\end{array}`.
 
 #. Let :math:`a` be the length of :math:`s{.}\mathsf{elems}`.
 
@@ -25323,7 +24699,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ....................................................................
 
 
-1. Let :math:`{\mathit{datainst}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{bytes}~{{\mathit{byte}}^\ast} \}\end{array}`.
+1. Let :math:`{\mathit{datainst}}` be the data instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{bytes}~{{\mathit{byte}}^\ast} \}\end{array}`.
 
 #. Let :math:`a` be the length of :math:`s{.}\mathsf{datas}`.
 
@@ -25445,7 +24821,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{{\mathit{xi}}^\ast}` be :math:`{{{\mathrm{allocexport}}^\ast}}{(\{ \begin{array}[t]{@{}l@{}}\mathsf{funcs}~{{\mathit{fa}}_{\mathsf{i}}^\ast}~{{\mathit{fa}}^\ast},\; \mathsf{globals}~{{\mathit{ga}}_{\mathsf{i}}^\ast}~{{\mathit{ga}}^\ast},\; \mathsf{tables}~{{\mathit{ta}}_{\mathsf{i}}^\ast}~{{\mathit{ta}}^\ast},\; \mathsf{mems}~{{\mathit{ma}}_{\mathsf{i}}^\ast}~{{\mathit{ma}}^\ast},\; \mathsf{tags}~{{\mathit{aa}}_{\mathsf{i}}^\ast}~{{\mathit{aa}}^\ast} \}\end{array}, {{\mathit{export}}^\ast})}`.
 
-#. Let :math:`{\mathit{moduleinst}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{dt}}^\ast},\; \mathsf{funcs}~{{\mathit{fa}}_{\mathsf{i}}^\ast}~{{\mathit{fa}}^\ast},\; \mathsf{globals}~{{\mathit{ga}}_{\mathsf{i}}^\ast}~{{\mathit{ga}}^\ast},\; \mathsf{tables}~{{\mathit{ta}}_{\mathsf{i}}^\ast}~{{\mathit{ta}}^\ast},\; \mathsf{mems}~{{\mathit{ma}}_{\mathsf{i}}^\ast}~{{\mathit{ma}}^\ast},\; \mathsf{tags}~{{\mathit{aa}}_{\mathsf{i}}^\ast}~{{\mathit{aa}}^\ast},\; \mathsf{elems}~{{\mathit{ea}}^\ast},\; \mathsf{datas}~{{\mathit{da}}^\ast},\; \mathsf{exports}~{{\mathit{xi}}^\ast} \}\end{array}`.
+#. Let :math:`{\mathit{moduleinst}}` be the module instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{dt}}^\ast},\; \mathsf{funcs}~{{\mathit{fa}}_{\mathsf{i}}^\ast}~{{\mathit{fa}}^\ast},\; \mathsf{globals}~{{\mathit{ga}}_{\mathsf{i}}^\ast}~{{\mathit{ga}}^\ast},\; \mathsf{tables}~{{\mathit{ta}}_{\mathsf{i}}^\ast}~{{\mathit{ta}}^\ast},\; \mathsf{mems}~{{\mathit{ma}}_{\mathsf{i}}^\ast}~{{\mathit{ma}}^\ast},\; \mathsf{tags}~{{\mathit{aa}}_{\mathsf{i}}^\ast}~{{\mathit{aa}}^\ast},\; \mathsf{elems}~{{\mathit{ea}}^\ast},\; \mathsf{datas}~{{\mathit{da}}^\ast},\; \mathsf{exports}~{{\mathit{xi}}^\ast} \}\end{array}`.
 
 #. Let :math:`{{\mathit{funcaddr}}_0^\ast}` be :math:`{{{\mathrm{allocfunc}}^\ast}}{(s, {{{\mathit{dt}}^\ast}{}[x]^\ast}, {(\mathsf{func}~x~{{\mathit{local}}^\ast}~{\mathit{expr}}_{\mathsf{f}})^\ast}, {{\mathit{moduleinst}}^{{|{{\mathit{func}}^\ast}|}}})}`.
 
@@ -25569,7 +24945,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{(\mathsf{start}~x)^?}` be :math:`{{\mathit{start}}^?}`.
 
-#. Let :math:`{\mathit{moduleinst}}_0` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{{\mathrm{alloctype}}^\ast}}{({{\mathit{type}}^\ast})},\; \mathsf{funcs}~{\mathrm{funcs}}({{\mathit{externaddr}}^\ast})~{({|s{.}\mathsf{funcs}|} + i_{\mathsf{f}})^{i_{\mathsf{f}}<{|{{\mathit{func}}^\ast}|}}},\; \mathsf{globals}~{\mathrm{globals}}({{\mathit{externaddr}}^\ast}) \}\end{array}`.
+#. Let :math:`{\mathit{moduleinst}}_0` be the module instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{{\mathrm{alloctype}}^\ast}}{({{\mathit{type}}^\ast})},\; \mathsf{funcs}~{\mathrm{funcs}}({{\mathit{externaddr}}^\ast})~{({|s{.}\mathsf{funcs}|} + i_{\mathsf{f}})^{i_{\mathsf{f}}<{|{{\mathit{func}}^\ast}|}}},\; \mathsf{globals}~{\mathrm{globals}}({{\mathit{externaddr}}^\ast}) \}\end{array}`.
 
 #. Let :math:`{(\mathsf{table}~{\mathit{tabletype}}~{\mathit{expr}}_{\mathsf{t}})^\ast}` be :math:`{{\mathit{table}}^\ast}`.
 
@@ -25579,7 +24955,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{{\mathit{instr}}_{\mathsf{s}}^?}` be :math:`{(\mathsf{call}~x)^?}`.
 
-#. Let :math:`z` be :math:`(s, \{ \begin{array}[t]{@{}l@{}}\mathsf{module}~{\mathit{moduleinst}}_0 \}\end{array})`.
+#. Let :math:`z` be the state :math:`(s, \{ \begin{array}[t]{@{}l@{}}\mathsf{module}~{\mathit{moduleinst}}_0 \}\end{array})`.
 
 #. Let F be the :math:`\mathsf{frame}` :math:`z{.}\mathsf{frame}`.
 
@@ -25607,7 +24983,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{\mathit{moduleinst}}` be :math:`{\mathrm{allocmodule}}(s, {\mathit{module}}, {{\mathit{externaddr}}^\ast}, {{\mathit{val}}_{\mathsf{g}}^\ast}, {{\mathit{ref}}_{\mathsf{t}}^\ast}, {{{\mathit{ref}}_{\mathsf{e}}^\ast}^\ast})`.
 
-#. Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{module}~{\mathit{moduleinst}} \}\end{array}`.
+#. Let :math:`f` be the frame :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{module}~{\mathit{moduleinst}} \}\end{array}`.
 
 #. Let F be the :math:`\mathsf{frame}` :math:`f`.
 
@@ -25638,7 +25014,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` be the destructuring of :math:`{\mathit{functype}}_0`.
 
-#. Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{module}~\{ \begin{array}[t]{@{}l@{}} \}\end{array} \}\end{array}`.
+#. Let :math:`f` be the frame :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{module}~\{ \begin{array}[t]{@{}l@{}} \}\end{array} \}\end{array}`.
 
 #. If :math:`{|{t_1^\ast}|} \neq {|{{\mathit{val}}^\ast}|}`, then:
 

@@ -87,26 +87,32 @@ let try_inject_link env s link =
   else None
 
 let type_with_link env e =
-  let typ, iter = match e.note.it with
-  | Il.Ast.IterT (typ, Il.Ast.Opt) -> typ, ""
-  | Il.Ast.IterT (typ, Il.Ast.List) -> typ, " sequence"
-  | _ -> e.note, "" in
-  let s = Prose_util.extract_desc typ in
-  let typ_name = Il.Print.string_of_typ typ in
-  let* ref = try_inject_link env s ("syntax-" ^ typ_name) in
-  Some (ref ^ iter)
+  let* text, iter = Prose_util.extract_desc e in
+  let typ_name = Il.Print.string_of_typ e.note in
+  let link =
+    if typ_name = "context" then "context"
+    else "syntax-" ^ typ_name in
+  match try_inject_link env text link with
+  | Some ref -> Some (ref ^ iter)
+  | None -> Some (text ^ iter)
 
 let valid_link env e =
-  let s = Il.Print.string_of_typ e.note in
-  match try_inject_link env "valid" ("valid-" ^ s) with
-  | Some s -> s
-  | None -> inject_link "valid" "valid-val"
+  let bt, _ = Prose_util.unwrap_itert e.note in
+  let typ_name = Il.Print.string_of_typ bt in
+  let text = "valid" in
+  let link = "valid-" ^ typ_name in
+  match try_inject_link env text link with
+  | Some ref -> ref
+  | None -> inject_link text "valid-val"
 
 let match_link env e =
-  let s = Il.Print.string_of_typ e.note in
-  match try_inject_link env "matches" ("match-" ^ s) with
-  | Some s -> s
-  | None -> inject_link "matches" "match"
+  let bt, _ = Prose_util.unwrap_itert e.note in
+  let typ_name = Il.Print.string_of_typ bt in
+  let text = "matches" in
+  let link = "match-" ^ typ_name in
+  match try_inject_link env text link with
+  | Some ref -> ref
+  | None -> inject_link text "match"
 
 (* Translation from Al inverse call exp to Al binary exp *)
 let e2a e = Al.Ast.ExpA e $ e.at
@@ -139,11 +145,6 @@ let al_invcalle_to_al_bine e id nl al =
     | _ -> Al.Al_util.tupE erhs ~note:Al.Al_util.no_note)
   in
   elhs, erhs
-
-let render_type_desc f t =
-  match Prose_util.extract_desc t with
-  | "" -> f t
-  | desc -> desc
 
 (* Translation from Al exp to El exp *)
 
@@ -791,14 +792,13 @@ and render_expr' env expr =
     sprintf "%s is some %s" se sts
   | Al.Ast.HasTypeE (e, t) ->
     let se = render_expr env e in
-    let st = render_type_desc (render_typ env) t in
+    let te = Al.Ast.VarE "" $$ no_region % t in
+    let st = match Prose_util.extract_desc te with
+    | None -> render_typ env t
+    | Some (desc, seq) -> desc ^ seq in
     sprintf "%s is %s" se st
   | Al.Ast.IsValidE e ->
-    let typ_name = Il.Print.string_of_typ_name e.note in
-    let vref = match try_inject_link env "valid" ("valid-" ^ typ_name) with
-    | Some s -> s
-    | None -> inject_link "valid" "valid-val"
-    in
+    let vref = valid_link env e in
     let se = render_expr env e in
     sprintf "%s is %s" se vref
   | Al.Ast.TopValueE (Some e) ->
@@ -809,17 +809,7 @@ and render_expr' env expr =
         let se = render_expr env e in
         sprintf "a value of %s %s" vtref se
       | Some vtref -> sprintf "a %s" vtref
-      | None ->
-        let desc_hint = Prose_util.extract_desc e.note in
-        let desc_hint = if desc_hint = "" then "value type" else desc_hint in
-        let first_letter = Char.lowercase_ascii (String.get desc_hint 0) in
-        let article =
-          if List.mem first_letter ['a'; 'e'; 'i'; 'o'; 'u'] then
-            "an"
-          else
-            "a"
-        in
-        sprintf "%s :ref:`%s <syntax-%s>`" article desc_hint (Al.Print.string_of_expr e)
+      | None -> "value type"
       )
     in
     sprintf "%s is on the top of the stack" value
@@ -861,15 +851,11 @@ let typs = ref Map.empty
 let init_typs () = typs := Map.empty
 let render_expr_with_type env e =
   let s = render_expr env e in
-  let t = Prose_util.extract_desc e.note in
-  if t = "" then
-    render_expr env e
-  else
-    let lt = match type_with_link env e with
-    | Some lt -> lt
-    | None -> t
-    in
-    "the " ^ lt ^ " " ^ s
+  let lt = match type_with_link env e with
+  | Some lt -> lt
+  | None -> render_expr env e
+  in
+  "the " ^ lt ^ " " ^ s
 
 
 (* Validation Statements *)
@@ -1358,8 +1344,7 @@ let rec render_instr env algoname index depth instr =
           )
         )
       ) in
-      let desc = match e1.it with
-      | VarE _ -> (
+      let type_desc = (
         if String.starts_with ~prefix:":math:" rhs then (
           match type_with_link env e1 with
           | Some s -> 
@@ -1367,7 +1352,10 @@ let rec render_instr env algoname index depth instr =
           | None -> ""
         )
         else ""
-      )
+      ) in
+      let desc = match e1.it with
+      | VarE _ -> type_desc
+      | CaseE (mixop, [_]) when (Mixop.to_string mixop).[0] = '_' -> type_desc
       | CaseE _ | StrE _ | TupE _ -> "the destructuring of "
       | _ -> ""
       in
