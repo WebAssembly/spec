@@ -166,9 +166,24 @@ let extract_desc' typ =
   | _ -> None
 
 let extract_desc expr =
-  let* desc, iter = extract_desc' expr.note in
-  let rec repeat n s = if (n = 0) then "" else (repeat (n-1) s) ^ s in
-  Some (desc, repeat iter " sequence")
+  let extract_context_desc expr =
+    match expr.it with
+    | Al.Ast.AccE (e', { it = IdxP _ ; _ }) ->
+      (match e'.it with
+      | Al.Ast.AccE (e'', { it = DotP atom; _ }) ->
+        let name = Il.Print.string_of_typ e''.note ^ "." ^ Xl.Atom.to_string atom in
+        let* desc = find_desc_hint name in
+        Some (desc, "")
+      | _ -> None
+      )
+    | _ -> None
+  in
+  match extract_context_desc expr with
+  | Some (desc, seq) -> Some (desc, seq)
+  | None ->
+    let* desc, iter = extract_desc' expr.note in
+    let rec repeat n s = if (n = 0) then "" else (repeat (n-1) s) ^ s in
+    Some (desc, repeat iter " sequence")
 
 let rec alternate xs ys =
   match xs with

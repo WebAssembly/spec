@@ -13132,9 +13132,9 @@ The type use :math:`{\mathit{typeuse}}` is :ref:`valid <valid-val>` if:
 
       * The type use :math:`{\mathit{typeuse}}` is of the form :math:`{\mathit{typeidx}}`.
 
-      * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
+      * The type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
 
-      * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is of the form :math:`{\mathit{dt}}`.
+      * The type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is of the form :math:`{\mathit{dt}}`.
 
    * Or:
 
@@ -13145,9 +13145,9 @@ The type use :math:`{\mathit{typeuse}}` is :ref:`valid <valid-val>` if:
 
       * The type use :math:`{\mathit{typeuse}}` is of the form :math:`(\mathsf{rec}~i)`.
 
-      * The sub type :math:`C{.}\mathsf{recs}{}[i]` exists.
+      * The recursive type :math:`C{.}\mathsf{recs}{}[i]` exists.
 
-      * The sub type :math:`C{.}\mathsf{recs}{}[i]` is of the form :math:`{\mathit{st}}`.
+      * The recursive type :math:`C{.}\mathsf{recs}{}[i]` is of the form :math:`{\mathit{st}}`.
 
 
 
@@ -13155,9 +13155,9 @@ The type use :math:`{\mathit{typeuse}}` is :ref:`valid <valid-val>` if:
 The type use :math:`{\mathit{typeidx}}` is :ref:`valid <valid-val>` if:
 
 
-   * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
+   * The type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
 
-   * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is of the form :math:`{\mathit{dt}}`.
+   * The type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is of the form :math:`{\mathit{dt}}`.
 
 
 
@@ -13173,9 +13173,9 @@ The type use :math:`{\mathit{deftype}}` is :ref:`valid <valid-val>` if:
 The type use :math:`(\mathsf{rec}~i)` is :ref:`valid <valid-val>` if:
 
 
-   * The sub type :math:`C{.}\mathsf{recs}{}[i]` exists.
+   * The recursive type :math:`C{.}\mathsf{recs}{}[i]` exists.
 
-   * The sub type :math:`C{.}\mathsf{recs}{}[i]` is of the form :math:`{\mathit{st}}`.
+   * The recursive type :math:`C{.}\mathsf{recs}{}[i]` is of the form :math:`{\mathit{st}}`.
 
 
 
@@ -13308,7 +13308,7 @@ The sub type :math:`(\mathsf{sub}~{\mathsf{final}^?}~{x^\ast}~{\mathit{comptype}
 
    * For all :math:`x` in :math:`{x^\ast}`:
 
-      * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
+      * The type :math:`C{.}\mathsf{types}{}[x]` exists.
 
    * For all :math:`{\mathit{comptype}'}` in :math:`{{\mathit{comptype}'}^\ast}`, and corresponding :math:`x` in :math:`{x^\ast}`, and corresponding :math:`{{x'}^\ast}` in :math:`{{{x'}^\ast}^\ast}`:
 
@@ -13600,18 +13600,18 @@ The heap type :math:`{\mathit{heaptype}''}` :ref:`matches <match>` the heap type
 
       * The heap type :math:`{\mathit{heaptype}'''}` is of the form :math:`{\mathit{heaptype}}`.
 
-      * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
+      * The type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
 
-      * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` :ref:`matches <match>` the heap type :math:`{\mathit{heaptype}}`.
+      * The type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` :ref:`matches <match>` the heap type :math:`{\mathit{heaptype}}`.
    * Or:
 
       * The heap type :math:`{\mathit{heaptype}''}` is of the form :math:`{\mathit{heaptype}}`.
 
       * The heap type :math:`{\mathit{heaptype}'''}` is of the form :math:`{\mathit{typeidx}}`.
 
-      * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
+      * The type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
 
-      * The heap type :math:`{\mathit{heaptype}}` :ref:`matches <match>` the defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]`.
+      * The heap type :math:`{\mathit{heaptype}}` :ref:`matches <match>` the type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]`.
    * Or:
 
       * The heap type :math:`{\mathit{heaptype}''}` is of the form :math:`(\mathsf{rec}~i)`.
@@ -13620,9 +13620,9 @@ The heap type :math:`{\mathit{heaptype}''}` :ref:`matches <match>` the heap type
 
       * The length of :math:`{{\mathit{typeuse}}^\ast}` is greater than :math:`j`.
 
-      * The sub type :math:`C{.}\mathsf{recs}{}[i]` exists.
+      * The recursive type :math:`C{.}\mathsf{recs}{}[i]` exists.
 
-      * The sub type :math:`C{.}\mathsf{recs}{}[i]` is of the form :math:`(\mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~{\mathit{ct}})`.
+      * The recursive type :math:`C{.}\mathsf{recs}{}[i]` is of the form :math:`(\mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~{\mathit{ct}})`.
    * Or:
 
       * The heap type :math:`{\mathit{heaptype}''}` is of the form :math:`\mathsf{none}`.
@@ -13725,9 +13725,9 @@ The heap type :math:`{\mathit{deftype}}_1` :ref:`matches <match>` the heap type 
 The heap type :math:`{\mathit{typeidx}}` :ref:`matches <match>` the heap type :math:`{\mathit{heaptype}}` if:
 
 
-   * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
+   * The type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
 
-   * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` :ref:`matches <match>` the heap type :math:`{\mathit{heaptype}}`.
+   * The type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` :ref:`matches <match>` the heap type :math:`{\mathit{heaptype}}`.
 
 
 
@@ -13735,9 +13735,9 @@ The heap type :math:`{\mathit{typeidx}}` :ref:`matches <match>` the heap type :m
 The heap type :math:`{\mathit{heaptype}}` :ref:`matches <match>` the heap type :math:`{\mathit{typeidx}}` if:
 
 
-   * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
+   * The type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
 
-   * The heap type :math:`{\mathit{heaptype}}` :ref:`matches <match>` the defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]`.
+   * The heap type :math:`{\mathit{heaptype}}` :ref:`matches <match>` the type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]`.
 
 
 
@@ -13747,9 +13747,9 @@ The heap type :math:`(\mathsf{rec}~i)` :ref:`matches <match>` the type use :math
 
    * The length of :math:`{{\mathit{typeuse}}^\ast}` is greater than :math:`j`.
 
-   * The sub type :math:`C{.}\mathsf{recs}{}[i]` exists.
+   * The recursive type :math:`C{.}\mathsf{recs}{}[i]` exists.
 
-   * The sub type :math:`C{.}\mathsf{recs}{}[i]` is of the form :math:`(\mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~{\mathit{ct}})`.
+   * The recursive type :math:`C{.}\mathsf{recs}{}[i]` is of the form :math:`(\mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~{\mathit{ct}})`.
 
 
 
@@ -13993,11 +13993,11 @@ The instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}` is 
 
    * For all :math:`x` in :math:`{x^\ast}`:
 
-      * The local type :math:`C{.}\mathsf{locals}{}[x]` exists.
+      * The local :math:`C{.}\mathsf{locals}{}[x]` exists.
 
    * For all :math:`{{\mathit{lt}}}` in :math:`{{{\mathit{lt}}}^\ast}`, and corresponding :math:`x` in :math:`{x^\ast}`:
 
-      * The local type :math:`C{.}\mathsf{locals}{}[x]` is of the form :math:`{{\mathit{lt}}}`.
+      * The local :math:`C{.}\mathsf{locals}{}[x]` is of the form :math:`{{\mathit{lt}}}`.
 
 
 
@@ -14142,11 +14142,11 @@ The instruction type :math:`{t_{11}^\ast}~{\rightarrow}_{{x_1^\ast}}\,{t_{12}^\a
 
    * For all :math:`x` in :math:`{x^\ast}`:
 
-      * The local type :math:`C{.}\mathsf{locals}{}[x]` exists.
+      * The local :math:`C{.}\mathsf{locals}{}[x]` exists.
 
    * For all :math:`t` in :math:`{t^\ast}`, and corresponding :math:`x` in :math:`{x^\ast}`:
 
-      * The local type :math:`C{.}\mathsf{locals}{}[x]` is of the form :math:`(\mathsf{set}~t)`.
+      * The local :math:`C{.}\mathsf{locals}{}[x]` is of the form :math:`(\mathsf{set}~t)`.
 
 
 
@@ -14337,9 +14337,9 @@ The block type :math:`{\mathit{blocktype}}` is :ref:`valid <valid-val>` as the i
 
       * The value type sequence :math:`{{\mathit{valtype}''}^\ast}` is of the form :math:`{t_2^\ast}`.
 
-      * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
+      * The type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
 
-      * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
+      * The :ref:`expansion <aux-expand-deftype>` of the type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
 
 
 
@@ -14357,9 +14357,9 @@ The block type :math:`{{\mathit{valtype}}^?}` is :ref:`valid <valid-val>` as the
 The block type :math:`{\mathit{typeidx}}` is :ref:`valid <valid-val>` as the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
-   * The defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
+   * The type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
+   * The :ref:`expansion <aux-expand-deftype>` of the type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
 
 
 
@@ -14367,37 +14367,37 @@ The block type :math:`{\mathit{typeidx}}` is :ref:`valid <valid-val>` as the ins
 The catch clause :math:`{\mathit{catch}}` is :ref:`valid <valid-val>` if:
 
 
-   * The result type :math:`C{.}\mathsf{labels}{}[l]` exists.
+   * The label :math:`C{.}\mathsf{labels}{}[l]` exists.
 
    * Either:
 
       * The catch clause :math:`{\mathit{catch}}` is of the form :math:`(\mathsf{catch}~x~l)`.
 
-      * The tag type :math:`C{.}\mathsf{tags}{}[x]` exists.
+      * The tag :math:`C{.}\mathsf{tags}{}[x]` exists.
 
-      * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{tags}{}[x]` is the composite type :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`.
+      * The :ref:`expansion <aux-expand-deftype>` of the tag :math:`C{.}\mathsf{tags}{}[x]` is the composite type :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`.
 
-      * The result type :math:`{t^\ast}` :ref:`matches <match>` the result type :math:`C{.}\mathsf{labels}{}[l]`.
+      * The result type :math:`{t^\ast}` :ref:`matches <match>` the label :math:`C{.}\mathsf{labels}{}[l]`.
 
    * Or:
 
       * The catch clause :math:`{\mathit{catch}}` is of the form :math:`(\mathsf{catch\_ref}~x~l)`.
 
-      * The tag type :math:`C{.}\mathsf{tags}{}[x]` exists.
+      * The tag :math:`C{.}\mathsf{tags}{}[x]` exists.
 
-      * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{tags}{}[x]` is the composite type :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`.
+      * The :ref:`expansion <aux-expand-deftype>` of the tag :math:`C{.}\mathsf{tags}{}[x]` is the composite type :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`.
 
-      * The result type :math:`{t^\ast}~(\mathsf{ref}~\mathsf{exn})` :ref:`matches <match>` the result type :math:`C{.}\mathsf{labels}{}[l]`.
+      * The result type :math:`{t^\ast}~(\mathsf{ref}~\mathsf{exn})` :ref:`matches <match>` the label :math:`C{.}\mathsf{labels}{}[l]`.
    * Or:
 
       * The catch clause :math:`{\mathit{catch}}` is of the form :math:`(\mathsf{catch\_all}~l)`.
 
-      * The result type :math:`\epsilon` :ref:`matches <match>` the result type :math:`C{.}\mathsf{labels}{}[l]`.
+      * The result type :math:`\epsilon` :ref:`matches <match>` the label :math:`C{.}\mathsf{labels}{}[l]`.
    * Or:
 
       * The catch clause :math:`{\mathit{catch}}` is of the form :math:`(\mathsf{catch\_all\_ref}~l)`.
 
-      * The result type :math:`(\mathsf{ref}~\mathsf{exn})` :ref:`matches <match>` the result type :math:`C{.}\mathsf{labels}{}[l]`.
+      * The result type :math:`(\mathsf{ref}~\mathsf{exn})` :ref:`matches <match>` the label :math:`C{.}\mathsf{labels}{}[l]`.
 
 
 
@@ -14405,13 +14405,13 @@ The catch clause :math:`{\mathit{catch}}` is :ref:`valid <valid-val>` if:
 The catch clause :math:`(\mathsf{catch}~x~l)` is :ref:`valid <valid-val>` if:
 
 
-   * The tag type :math:`C{.}\mathsf{tags}{}[x]` exists.
+   * The tag :math:`C{.}\mathsf{tags}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{tags}{}[x]` is the composite type :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`.
+   * The :ref:`expansion <aux-expand-deftype>` of the tag :math:`C{.}\mathsf{tags}{}[x]` is the composite type :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`.
 
-   * The result type :math:`C{.}\mathsf{labels}{}[l]` exists.
+   * The label :math:`C{.}\mathsf{labels}{}[l]` exists.
 
-   * The result type :math:`{t^\ast}` :ref:`matches <match>` the result type :math:`C{.}\mathsf{labels}{}[l]`.
+   * The result type :math:`{t^\ast}` :ref:`matches <match>` the label :math:`C{.}\mathsf{labels}{}[l]`.
 
 
 
@@ -14419,13 +14419,13 @@ The catch clause :math:`(\mathsf{catch}~x~l)` is :ref:`valid <valid-val>` if:
 The catch clause :math:`(\mathsf{catch\_ref}~x~l)` is :ref:`valid <valid-val>` if:
 
 
-   * The tag type :math:`C{.}\mathsf{tags}{}[x]` exists.
+   * The tag :math:`C{.}\mathsf{tags}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{tags}{}[x]` is the composite type :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`.
+   * The :ref:`expansion <aux-expand-deftype>` of the tag :math:`C{.}\mathsf{tags}{}[x]` is the composite type :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`.
 
-   * The result type :math:`C{.}\mathsf{labels}{}[l]` exists.
+   * The label :math:`C{.}\mathsf{labels}{}[l]` exists.
 
-   * The result type :math:`{t^\ast}~(\mathsf{ref}~\mathsf{exn})` :ref:`matches <match>` the result type :math:`C{.}\mathsf{labels}{}[l]`.
+   * The result type :math:`{t^\ast}~(\mathsf{ref}~\mathsf{exn})` :ref:`matches <match>` the label :math:`C{.}\mathsf{labels}{}[l]`.
 
 
 
@@ -14433,9 +14433,9 @@ The catch clause :math:`(\mathsf{catch\_ref}~x~l)` is :ref:`valid <valid-val>` i
 The catch clause :math:`(\mathsf{catch\_all}~l)` is :ref:`valid <valid-val>` if:
 
 
-   * The result type :math:`C{.}\mathsf{labels}{}[l]` exists.
+   * The label :math:`C{.}\mathsf{labels}{}[l]` exists.
 
-   * The result type :math:`\epsilon` :ref:`matches <match>` the result type :math:`C{.}\mathsf{labels}{}[l]`.
+   * The result type :math:`\epsilon` :ref:`matches <match>` the label :math:`C{.}\mathsf{labels}{}[l]`.
 
 
 
@@ -14443,9 +14443,9 @@ The catch clause :math:`(\mathsf{catch\_all}~l)` is :ref:`valid <valid-val>` if:
 The catch clause :math:`(\mathsf{catch\_all\_ref}~l)` is :ref:`valid <valid-val>` if:
 
 
-   * The result type :math:`C{.}\mathsf{labels}{}[l]` exists.
+   * The label :math:`C{.}\mathsf{labels}{}[l]` exists.
 
-   * The result type :math:`(\mathsf{ref}~\mathsf{exn})` :ref:`matches <match>` the result type :math:`C{.}\mathsf{labels}{}[l]`.
+   * The result type :math:`(\mathsf{ref}~\mathsf{exn})` :ref:`matches <match>` the label :math:`C{.}\mathsf{labels}{}[l]`.
 
 
 
@@ -14540,9 +14540,9 @@ The instruction :math:`(\mathsf{if}~{\mathit{bt}}~{{\mathit{instr}}_1^\ast}~\mat
 The instruction :math:`(\mathsf{br}~l)` is :ref:`valid <valid-val>` with the instruction type :math:`{t_1^\ast}~{t^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
-   * The result type :math:`C{.}\mathsf{labels}{}[l]` exists.
+   * The label :math:`C{.}\mathsf{labels}{}[l]` exists.
 
-   * The result type :math:`C{.}\mathsf{labels}{}[l]` is of the form :math:`{t^\ast}`.
+   * The label :math:`C{.}\mathsf{labels}{}[l]` is of the form :math:`{t^\ast}`.
 
    * The instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is :ref:`valid <valid-val>`.
 
@@ -14552,9 +14552,9 @@ The instruction :math:`(\mathsf{br}~l)` is :ref:`valid <valid-val>` with the ins
 The instruction :math:`(\mathsf{br\_if}~l)` is :ref:`valid <valid-val>` with the instruction type :math:`{t^\ast}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t^\ast}` if:
 
 
-   * The result type :math:`C{.}\mathsf{labels}{}[l]` exists.
+   * The label :math:`C{.}\mathsf{labels}{}[l]` exists.
 
-   * The result type :math:`C{.}\mathsf{labels}{}[l]` is of the form :math:`{t^\ast}`.
+   * The label :math:`C{.}\mathsf{labels}{}[l]` is of the form :math:`{t^\ast}`.
 
 
 
@@ -14564,15 +14564,15 @@ The instruction :math:`(\mathsf{br\_table}~{l^\ast}~{l'})` is :ref:`valid <valid
 
    * For all :math:`l` in :math:`{l^\ast}`:
 
-      * The result type :math:`C{.}\mathsf{labels}{}[l]` exists.
+      * The label :math:`C{.}\mathsf{labels}{}[l]` exists.
 
    * For all :math:`l` in :math:`{l^\ast}`:
 
-      * The result type :math:`{t^\ast}` :ref:`matches <match>` the result type :math:`C{.}\mathsf{labels}{}[l]`.
+      * The result type :math:`{t^\ast}` :ref:`matches <match>` the label :math:`C{.}\mathsf{labels}{}[l]`.
 
-   * The result type :math:`C{.}\mathsf{labels}{}[{l'}]` exists.
+   * The label :math:`C{.}\mathsf{labels}{}[{l'}]` exists.
 
-   * The result type :math:`{t^\ast}` :ref:`matches <match>` the result type :math:`C{.}\mathsf{labels}{}[{l'}]`.
+   * The result type :math:`{t^\ast}` :ref:`matches <match>` the label :math:`C{.}\mathsf{labels}{}[{l'}]`.
 
    * The instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is :ref:`valid <valid-val>`.
 
@@ -14582,9 +14582,9 @@ The instruction :math:`(\mathsf{br\_table}~{l^\ast}~{l'})` is :ref:`valid <valid
 The instruction :math:`(\mathsf{br\_on\_null}~l)` is :ref:`valid <valid-val>` with the instruction type :math:`{t^\ast}~(\mathsf{ref}~\mathsf{null}~{\mathit{ht}})~\rightarrow~{t^\ast}~(\mathsf{ref}~{\mathit{ht}})` if:
 
 
-   * The result type :math:`C{.}\mathsf{labels}{}[l]` exists.
+   * The label :math:`C{.}\mathsf{labels}{}[l]` exists.
 
-   * The result type :math:`C{.}\mathsf{labels}{}[l]` is of the form :math:`{t^\ast}`.
+   * The label :math:`C{.}\mathsf{labels}{}[l]` is of the form :math:`{t^\ast}`.
 
    * The heap type :math:`{\mathit{ht}}` is :ref:`valid <valid-val>`.
 
@@ -14594,9 +14594,9 @@ The instruction :math:`(\mathsf{br\_on\_null}~l)` is :ref:`valid <valid-val>` wi
 The instruction :math:`(\mathsf{br\_on\_non\_null}~l)` is :ref:`valid <valid-val>` with the instruction type :math:`{t^\ast}~(\mathsf{ref}~\mathsf{null}~{\mathit{ht}})~\rightarrow~{t^\ast}` if:
 
 
-   * The result type :math:`C{.}\mathsf{labels}{}[l]` exists.
+   * The label :math:`C{.}\mathsf{labels}{}[l]` exists.
 
-   * The result type :math:`C{.}\mathsf{labels}{}[l]` is of the form :math:`{t^\ast}~(\mathsf{ref}~{\mathit{ht}})`.
+   * The label :math:`C{.}\mathsf{labels}{}[l]` is of the form :math:`{t^\ast}~(\mathsf{ref}~{\mathit{ht}})`.
 
 
 
@@ -14604,9 +14604,9 @@ The instruction :math:`(\mathsf{br\_on\_non\_null}~l)` is :ref:`valid <valid-val
 The instruction :math:`(\mathsf{br\_on\_cast}~l~{\mathit{rt}}_1~{\mathit{rt}}_2)` is :ref:`valid <valid-val>` with the instruction type :math:`{t^\ast}~{\mathit{rt}}_1~\rightarrow~{t^\ast}~{t'}` if:
 
 
-   * The result type :math:`C{.}\mathsf{labels}{}[l]` exists.
+   * The label :math:`C{.}\mathsf{labels}{}[l]` exists.
 
-   * The result type :math:`C{.}\mathsf{labels}{}[l]` is of the form :math:`{t^\ast}~{\mathit{rt}}`.
+   * The label :math:`C{.}\mathsf{labels}{}[l]` is of the form :math:`{t^\ast}~{\mathit{rt}}`.
 
    * The reference type :math:`{\mathit{rt}}_1` is :ref:`valid <valid-val>`.
 
@@ -14624,9 +14624,9 @@ The instruction :math:`(\mathsf{br\_on\_cast}~l~{\mathit{rt}}_1~{\mathit{rt}}_2)
 The instruction :math:`(\mathsf{br\_on\_cast\_fail}~l~{\mathit{rt}}_1~{\mathit{rt}}_2)` is :ref:`valid <valid-val>` with the instruction type :math:`{t^\ast}~{\mathit{rt}}_1~\rightarrow~{t^\ast}~{\mathit{rt}}_2` if:
 
 
-   * The result type :math:`C{.}\mathsf{labels}{}[l]` exists.
+   * The label :math:`C{.}\mathsf{labels}{}[l]` exists.
 
-   * The result type :math:`C{.}\mathsf{labels}{}[l]` is of the form :math:`{t^\ast}~{\mathit{rt}}`.
+   * The label :math:`C{.}\mathsf{labels}{}[l]` is of the form :math:`{t^\ast}~{\mathit{rt}}`.
 
    * The reference type :math:`{\mathit{rt}}_1` is :ref:`valid <valid-val>`.
 
@@ -14642,9 +14642,9 @@ The instruction :math:`(\mathsf{br\_on\_cast\_fail}~l~{\mathit{rt}}_1~{\mathit{r
 The instruction :math:`(\mathsf{call}~x)` is :ref:`valid <valid-val>` with the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
-   * The defined type :math:`C{.}\mathsf{funcs}{}[x]` exists.
+   * The function :math:`C{.}\mathsf{funcs}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{funcs}{}[x]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
+   * The :ref:`expansion <aux-expand-deftype>` of the function :math:`C{.}\mathsf{funcs}{}[x]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
 
 
 
@@ -14652,9 +14652,9 @@ The instruction :math:`(\mathsf{call}~x)` is :ref:`valid <valid-val>` with the i
 The instruction :math:`(\mathsf{call\_ref}~x)` is :ref:`valid <valid-val>` with the instruction type :math:`{t_1^\ast}~(\mathsf{ref}~\mathsf{null}~x)~\rightarrow~{t_2^\ast}` if:
 
 
-   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
+   * The type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
+   * The :ref:`expansion <aux-expand-deftype>` of the type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
 
 
 
@@ -14662,15 +14662,15 @@ The instruction :math:`(\mathsf{call\_ref}~x)` is :ref:`valid <valid-val>` with 
 The instruction :math:`(\mathsf{call\_indirect}~x~y)` is :ref:`valid <valid-val>` with the instruction type :math:`{t_1^\ast}~{\mathit{at}}~\rightarrow~{t_2^\ast}` if:
 
 
-   * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
+   * The table :math:`C{.}\mathsf{tables}{}[x]` exists.
 
-   * The table type :math:`C{.}\mathsf{tables}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~{\mathit{rt}})`.
+   * The table :math:`C{.}\mathsf{tables}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~{\mathit{rt}})`.
 
    * The reference type :math:`{\mathit{rt}}` :ref:`matches <match>` the reference type :math:`(\mathsf{ref}~\mathsf{null}~\mathsf{func})`.
 
-   * The defined type :math:`C{.}\mathsf{types}{}[y]` exists.
+   * The type :math:`C{.}\mathsf{types}{}[y]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[y]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
+   * The :ref:`expansion <aux-expand-deftype>` of the type :math:`C{.}\mathsf{types}{}[y]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
 
 
 
@@ -14688,9 +14688,9 @@ The instruction :math:`\mathsf{return}` is :ref:`valid <valid-val>` with the ins
 The instruction :math:`(\mathsf{return\_call}~x)` is :ref:`valid <valid-val>` with the instruction type :math:`{t_3^\ast}~{t_1^\ast}~\rightarrow~{t_4^\ast}` if:
 
 
-   * The defined type :math:`C{.}\mathsf{funcs}{}[x]` exists.
+   * The function :math:`C{.}\mathsf{funcs}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{funcs}{}[x]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
+   * The :ref:`expansion <aux-expand-deftype>` of the function :math:`C{.}\mathsf{funcs}{}[x]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
 
    * The result type :math:`C{.}\mathsf{return}` is of the form :math:`{{t'}_2^\ast}`.
 
@@ -14704,9 +14704,9 @@ The instruction :math:`(\mathsf{return\_call}~x)` is :ref:`valid <valid-val>` wi
 The instruction :math:`(\mathsf{return\_call\_ref}~x)` is :ref:`valid <valid-val>` with the instruction type :math:`{t_3^\ast}~{t_1^\ast}~(\mathsf{ref}~\mathsf{null}~x)~\rightarrow~{t_4^\ast}` if:
 
 
-   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
+   * The type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
+   * The :ref:`expansion <aux-expand-deftype>` of the type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
 
    * The result type :math:`C{.}\mathsf{return}` is of the form :math:`{{t'}_2^\ast}`.
 
@@ -14720,15 +14720,15 @@ The instruction :math:`(\mathsf{return\_call\_ref}~x)` is :ref:`valid <valid-val
 The instruction :math:`(\mathsf{return\_call\_indirect}~x~y)` is :ref:`valid <valid-val>` with the instruction type :math:`{t_3^\ast}~{t_1^\ast}~{\mathit{at}}~\rightarrow~{t_4^\ast}` if:
 
 
-   * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
+   * The table :math:`C{.}\mathsf{tables}{}[x]` exists.
 
-   * The table type :math:`C{.}\mathsf{tables}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~{\mathit{rt}})`.
+   * The table :math:`C{.}\mathsf{tables}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~{\mathit{rt}})`.
 
    * The reference type :math:`{\mathit{rt}}` :ref:`matches <match>` the reference type :math:`(\mathsf{ref}~\mathsf{null}~\mathsf{func})`.
 
-   * The defined type :math:`C{.}\mathsf{types}{}[y]` exists.
+   * The type :math:`C{.}\mathsf{types}{}[y]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[y]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
+   * The :ref:`expansion <aux-expand-deftype>` of the type :math:`C{.}\mathsf{types}{}[y]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
 
    * The result type :math:`C{.}\mathsf{return}` is of the form :math:`{{t'}_2^\ast}`.
 
@@ -14742,9 +14742,9 @@ The instruction :math:`(\mathsf{return\_call\_indirect}~x~y)` is :ref:`valid <va
 The instruction :math:`(\mathsf{throw}~x)` is :ref:`valid <valid-val>` with the instruction type :math:`{t_1^\ast}~{t^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
-   * The tag type :math:`C{.}\mathsf{tags}{}[x]` exists.
+   * The tag :math:`C{.}\mathsf{tags}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{tags}{}[x]` is the composite type :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`.
+   * The :ref:`expansion <aux-expand-deftype>` of the tag :math:`C{.}\mathsf{tags}{}[x]` is the composite type :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`.
 
    * The instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is :ref:`valid <valid-val>`.
 
@@ -14816,9 +14816,9 @@ The instruction :math:`(\mathsf{ref{.}null}~{\mathit{ht}})` is :ref:`valid <vali
 The instruction :math:`(\mathsf{ref{.}func}~x)` is :ref:`valid <valid-val>` with the instruction type :math:`\epsilon~\rightarrow~(\mathsf{ref}~{\mathit{dt}})` if:
 
 
-   * The defined type :math:`C{.}\mathsf{funcs}{}[x]` exists.
+   * The function :math:`C{.}\mathsf{funcs}{}[x]` exists.
 
-   * The defined type :math:`C{.}\mathsf{funcs}{}[x]` is of the form :math:`{\mathit{dt}}`.
+   * The function :math:`C{.}\mathsf{funcs}{}[x]` is of the form :math:`{\mathit{dt}}`.
 
    * :math:`x` is contained in :math:`C{.}\mathsf{refs}`.
 
@@ -14883,9 +14883,9 @@ The instruction :math:`({\mathsf{i{\scriptstyle 31}{.}get}}{\mathsf{\_}}{{\mathi
 The instruction :math:`(\mathsf{struct{.}new}~x)` is :ref:`valid <valid-val>` with the instruction type :math:`{t^\ast}~\rightarrow~(\mathsf{ref}~x)` if:
 
 
-   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
+   * The type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{struct}~{({\mathsf{mut}^?}~{\mathit{zt}})^\ast})`.
+   * The :ref:`expansion <aux-expand-deftype>` of the type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{struct}~{({\mathsf{mut}^?}~{\mathit{zt}})^\ast})`.
 
    * Let :math:`{t^\ast}` be the value type sequence :math:`{{\mathrm{unpack}}({\mathit{zt}})^\ast}`.
 
@@ -14895,9 +14895,9 @@ The instruction :math:`(\mathsf{struct{.}new}~x)` is :ref:`valid <valid-val>` wi
 The instruction :math:`(\mathsf{struct{.}new\_default}~x)` is :ref:`valid <valid-val>` with the instruction type :math:`\epsilon~\rightarrow~(\mathsf{ref}~x)` if:
 
 
-   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
+   * The type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{struct}~{({\mathsf{mut}^?}~{\mathit{zt}})^\ast})`.
+   * The :ref:`expansion <aux-expand-deftype>` of the type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{struct}~{({\mathsf{mut}^?}~{\mathit{zt}})^\ast})`.
 
    * For all :math:`{\mathit{zt}}` in :math:`{{\mathit{zt}}^\ast}`:
 
@@ -14909,9 +14909,9 @@ The instruction :math:`(\mathsf{struct{.}new\_default}~x)` is :ref:`valid <valid
 The instruction :math:`({\mathsf{struct{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~x~i)` is :ref:`valid <valid-val>` with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~x)~\rightarrow~t` if:
 
 
-   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
+   * The type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{struct}~{{\mathit{yt}}^\ast})`.
+   * The :ref:`expansion <aux-expand-deftype>` of the type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{struct}~{{\mathit{yt}}^\ast})`.
 
    * The length of :math:`{{\mathit{yt}}^\ast}` is greater than :math:`i`.
 
@@ -14927,9 +14927,9 @@ The instruction :math:`({\mathsf{struct{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~
 The instruction :math:`(\mathsf{struct{.}set}~x~i)` is :ref:`valid <valid-val>` with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~x)~t~\rightarrow~\epsilon` if:
 
 
-   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
+   * The type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{struct}~{{\mathit{yt}}^\ast})`.
+   * The :ref:`expansion <aux-expand-deftype>` of the type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{struct}~{{\mathit{yt}}^\ast})`.
 
    * The length of :math:`{{\mathit{yt}}^\ast}` is greater than :math:`i`.
 
@@ -14943,9 +14943,9 @@ The instruction :math:`(\mathsf{struct{.}set}~x~i)` is :ref:`valid <valid-val>` 
 The instruction :math:`(\mathsf{array{.}new}~x)` is :ref:`valid <valid-val>` with the instruction type :math:`t~\mathsf{i{\scriptstyle 32}}~\rightarrow~(\mathsf{ref}~x)` if:
 
 
-   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
+   * The type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`.
+   * The :ref:`expansion <aux-expand-deftype>` of the type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`.
 
    * Let :math:`t` be the value type :math:`{\mathrm{unpack}}({\mathit{zt}})`.
 
@@ -14955,9 +14955,9 @@ The instruction :math:`(\mathsf{array{.}new}~x)` is :ref:`valid <valid-val>` wit
 The instruction :math:`(\mathsf{array{.}new\_default}~x)` is :ref:`valid <valid-val>` with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~(\mathsf{ref}~x)` if:
 
 
-   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
+   * The type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`.
+   * The :ref:`expansion <aux-expand-deftype>` of the type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`.
 
    * A :ref:`default value <aux-default>` for the value type :math:`{\mathrm{unpack}}({\mathit{zt}})` is defined.
 
@@ -14967,9 +14967,9 @@ The instruction :math:`(\mathsf{array{.}new\_default}~x)` is :ref:`valid <valid-
 The instruction :math:`(\mathsf{array{.}new\_fixed}~x~n)` is :ref:`valid <valid-val>` with the instruction type :math:`{t^{n}}~\rightarrow~(\mathsf{ref}~x)` if:
 
 
-   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
+   * The type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`.
+   * The :ref:`expansion <aux-expand-deftype>` of the type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`.
 
    * Let :math:`t` be the value type :math:`{\mathrm{unpack}}({\mathit{zt}})`.
 
@@ -14979,13 +14979,13 @@ The instruction :math:`(\mathsf{array{.}new\_fixed}~x~n)` is :ref:`valid <valid-
 The instruction :math:`(\mathsf{array{.}new\_elem}~x~y)` is :ref:`valid <valid-val>` with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~(\mathsf{ref}~x)` if:
 
 
-   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
+   * The type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{rt}}))`.
+   * The :ref:`expansion <aux-expand-deftype>` of the type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{rt}}))`.
 
-   * The element type :math:`C{.}\mathsf{elems}{}[y]` exists.
+   * The element segment :math:`C{.}\mathsf{elems}{}[y]` exists.
 
-   * The reference type :math:`C{.}\mathsf{elems}{}[y]` :ref:`matches <match>` the reference type :math:`{\mathit{rt}}`.
+   * The element segment :math:`C{.}\mathsf{elems}{}[y]` :ref:`matches <match>` the reference type :math:`{\mathit{rt}}`.
 
 
 
@@ -14993,15 +14993,15 @@ The instruction :math:`(\mathsf{array{.}new\_elem}~x~y)` is :ref:`valid <valid-v
 The instruction :math:`(\mathsf{array{.}new\_data}~x~y)` is :ref:`valid <valid-val>` with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~(\mathsf{ref}~x)` if:
 
 
-   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
+   * The type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`.
+   * The :ref:`expansion <aux-expand-deftype>` of the type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`.
 
    * The value type :math:`{\mathrm{unpack}}({\mathit{zt}})` is of the form :math:`{\mathit{numtype}}` or :math:`{\mathrm{unpack}}({\mathit{zt}})` is of the form :math:`{\mathit{vectype}}`.
 
-   * The data type :math:`C{.}\mathsf{datas}{}[y]` exists.
+   * The data segment :math:`C{.}\mathsf{datas}{}[y]` exists.
 
-   * The data type :math:`C{.}\mathsf{datas}{}[y]` is of the form :math:`\mathsf{ok}`.
+   * The data segment :math:`C{.}\mathsf{datas}{}[y]` is of the form :math:`\mathsf{ok}`.
 
 
 
@@ -15009,9 +15009,9 @@ The instruction :math:`(\mathsf{array{.}new\_data}~x~y)` is :ref:`valid <valid-v
 The instruction :math:`({\mathsf{array{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~x)` is :ref:`valid <valid-val>` with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~x)~\mathsf{i{\scriptstyle 32}}~\rightarrow~t` if:
 
 
-   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
+   * The type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`.
+   * The :ref:`expansion <aux-expand-deftype>` of the type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`.
 
    * The signedness :math:`{{\mathit{sx}}^?}` is absent if and only if the storage type :math:`{\mathit{zt}}` is of the form :math:`{\mathrm{unpack}}({\mathit{zt}})`.
 
@@ -15023,9 +15023,9 @@ The instruction :math:`({\mathsf{array{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~x
 The instruction :math:`(\mathsf{array{.}set}~x)` is :ref:`valid <valid-val>` with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~x)~\mathsf{i{\scriptstyle 32}}~t~\rightarrow~\epsilon` if:
 
 
-   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
+   * The type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}))`.
+   * The :ref:`expansion <aux-expand-deftype>` of the type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}))`.
 
    * Let :math:`t` be the value type :math:`{\mathrm{unpack}}({\mathit{zt}})`.
 
@@ -15040,9 +15040,9 @@ The instruction :math:`\mathsf{array{.}len}` is :ref:`valid <valid-val>` with th
 The instruction :math:`(\mathsf{array{.}fill}~x)` is :ref:`valid <valid-val>` with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~x)~\mathsf{i{\scriptstyle 32}}~t~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
-   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
+   * The type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}))`.
+   * The :ref:`expansion <aux-expand-deftype>` of the type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}))`.
 
    * Let :math:`t` be the value type :math:`{\mathrm{unpack}}({\mathit{zt}})`.
 
@@ -15052,13 +15052,13 @@ The instruction :math:`(\mathsf{array{.}fill}~x)` is :ref:`valid <valid-val>` wi
 The instruction :math:`(\mathsf{array{.}copy}~x_1~x_2)` is :ref:`valid <valid-val>` with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~x_1)~\mathsf{i{\scriptstyle 32}}~(\mathsf{ref}~\mathsf{null}~x_2)~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
-   * The defined type :math:`C{.}\mathsf{types}{}[x_1]` exists.
+   * The type :math:`C{.}\mathsf{types}{}[x_1]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x_1]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}_1))`.
+   * The :ref:`expansion <aux-expand-deftype>` of the type :math:`C{.}\mathsf{types}{}[x_1]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}_1))`.
 
-   * The defined type :math:`C{.}\mathsf{types}{}[x_2]` exists.
+   * The type :math:`C{.}\mathsf{types}{}[x_2]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x_2]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}_2))`.
+   * The :ref:`expansion <aux-expand-deftype>` of the type :math:`C{.}\mathsf{types}{}[x_2]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}_2))`.
 
    * The storage type :math:`{\mathit{zt}}_2` :ref:`matches <match>` the storage type :math:`{\mathit{zt}}_1`.
 
@@ -15068,13 +15068,13 @@ The instruction :math:`(\mathsf{array{.}copy}~x_1~x_2)` is :ref:`valid <valid-va
 The instruction :math:`(\mathsf{array{.}init\_elem}~x~y)` is :ref:`valid <valid-val>` with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~x)~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
-   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
+   * The type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}))`.
+   * The :ref:`expansion <aux-expand-deftype>` of the type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}))`.
 
-   * The element type :math:`C{.}\mathsf{elems}{}[y]` exists.
+   * The element segment :math:`C{.}\mathsf{elems}{}[y]` exists.
 
-   * The element type :math:`C{.}\mathsf{elems}{}[y]` :ref:`matches <match>` the storage type :math:`{\mathit{zt}}`.
+   * The element segment :math:`C{.}\mathsf{elems}{}[y]` :ref:`matches <match>` the storage type :math:`{\mathit{zt}}`.
 
 
 
@@ -15082,15 +15082,15 @@ The instruction :math:`(\mathsf{array{.}init\_elem}~x~y)` is :ref:`valid <valid-
 The instruction :math:`(\mathsf{array{.}init\_data}~x~y)` is :ref:`valid <valid-val>` with the instruction type :math:`(\mathsf{ref}~\mathsf{null}~x)~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
-   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
+   * The type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}))`.
+   * The :ref:`expansion <aux-expand-deftype>` of the type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}))`.
 
    * The value type :math:`{\mathrm{unpack}}({\mathit{zt}})` is of the form :math:`{\mathit{numtype}}` or :math:`{\mathrm{unpack}}({\mathit{zt}})` is of the form :math:`{\mathit{vectype}}`.
 
-   * The data type :math:`C{.}\mathsf{datas}{}[y]` exists.
+   * The data segment :math:`C{.}\mathsf{datas}{}[y]` exists.
 
-   * The data type :math:`C{.}\mathsf{datas}{}[y]` is of the form :math:`\mathsf{ok}`.
+   * The data segment :math:`C{.}\mathsf{datas}{}[y]` is of the form :math:`\mathsf{ok}`.
 
 
 
@@ -15242,9 +15242,9 @@ The instruction :math:`({\mathit{sh}}_1 {.} {{\mathit{vcvtop}}}{\mathsf{\_}}{{{\
 The instruction :math:`(\mathsf{local{.}get}~x)` is :ref:`valid <valid-val>` with the instruction type :math:`\epsilon~\rightarrow~t` if:
 
 
-   * The local type :math:`C{.}\mathsf{locals}{}[x]` exists.
+   * The local :math:`C{.}\mathsf{locals}{}[x]` exists.
 
-   * The local type :math:`C{.}\mathsf{locals}{}[x]` is of the form :math:`(\mathsf{set}~t)`.
+   * The local :math:`C{.}\mathsf{locals}{}[x]` is of the form :math:`(\mathsf{set}~t)`.
 
 
 
@@ -15252,9 +15252,9 @@ The instruction :math:`(\mathsf{local{.}get}~x)` is :ref:`valid <valid-val>` wit
 The instruction :math:`(\mathsf{local{.}set}~x)` is :ref:`valid <valid-val>` with the instruction type :math:`t~{\rightarrow}_{x}\,\epsilon` if:
 
 
-   * The local type :math:`C{.}\mathsf{locals}{}[x]` exists.
+   * The local :math:`C{.}\mathsf{locals}{}[x]` exists.
 
-   * The local type :math:`C{.}\mathsf{locals}{}[x]` is of the form :math:`({\mathit{init}}~t)`.
+   * The local :math:`C{.}\mathsf{locals}{}[x]` is of the form :math:`({\mathit{init}}~t)`.
 
 
 
@@ -15262,9 +15262,9 @@ The instruction :math:`(\mathsf{local{.}set}~x)` is :ref:`valid <valid-val>` wit
 The instruction :math:`(\mathsf{local{.}tee}~x)` is :ref:`valid <valid-val>` with the instruction type :math:`t~{\rightarrow}_{x}\,t` if:
 
 
-   * The local type :math:`C{.}\mathsf{locals}{}[x]` exists.
+   * The local :math:`C{.}\mathsf{locals}{}[x]` exists.
 
-   * The local type :math:`C{.}\mathsf{locals}{}[x]` is of the form :math:`({\mathit{init}}~t)`.
+   * The local :math:`C{.}\mathsf{locals}{}[x]` is of the form :math:`({\mathit{init}}~t)`.
 
 
 
@@ -15272,9 +15272,9 @@ The instruction :math:`(\mathsf{local{.}tee}~x)` is :ref:`valid <valid-val>` wit
 The instruction :math:`(\mathsf{global{.}get}~x)` is :ref:`valid <valid-val>` with the instruction type :math:`\epsilon~\rightarrow~t` if:
 
 
-   * The global type :math:`C{.}\mathsf{globals}{}[x]` exists.
+   * The global :math:`C{.}\mathsf{globals}{}[x]` exists.
 
-   * The global type :math:`C{.}\mathsf{globals}{}[x]` is of the form :math:`({\mathsf{mut}^?}~t)`.
+   * The global :math:`C{.}\mathsf{globals}{}[x]` is of the form :math:`({\mathsf{mut}^?}~t)`.
 
 
 
@@ -15282,9 +15282,9 @@ The instruction :math:`(\mathsf{global{.}get}~x)` is :ref:`valid <valid-val>` wi
 The instruction :math:`(\mathsf{global{.}set}~x)` is :ref:`valid <valid-val>` with the instruction type :math:`t~\rightarrow~\epsilon` if:
 
 
-   * The global type :math:`C{.}\mathsf{globals}{}[x]` exists.
+   * The global :math:`C{.}\mathsf{globals}{}[x]` exists.
 
-   * The global type :math:`C{.}\mathsf{globals}{}[x]` is of the form :math:`(\mathsf{mut}~t)`.
+   * The global :math:`C{.}\mathsf{globals}{}[x]` is of the form :math:`(\mathsf{mut}~t)`.
 
 
 
@@ -15292,9 +15292,9 @@ The instruction :math:`(\mathsf{global{.}set}~x)` is :ref:`valid <valid-val>` wi
 The instruction :math:`(\mathsf{table{.}get}~x)` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}~\rightarrow~{\mathit{rt}}` if:
 
 
-   * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
+   * The table :math:`C{.}\mathsf{tables}{}[x]` exists.
 
-   * The table type :math:`C{.}\mathsf{tables}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~{\mathit{rt}})`.
+   * The table :math:`C{.}\mathsf{tables}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~{\mathit{rt}})`.
 
 
 
@@ -15302,9 +15302,9 @@ The instruction :math:`(\mathsf{table{.}get}~x)` is :ref:`valid <valid-val>` wit
 The instruction :math:`(\mathsf{table{.}set}~x)` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}~{\mathit{rt}}~\rightarrow~\epsilon` if:
 
 
-   * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
+   * The table :math:`C{.}\mathsf{tables}{}[x]` exists.
 
-   * The table type :math:`C{.}\mathsf{tables}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~{\mathit{rt}})`.
+   * The table :math:`C{.}\mathsf{tables}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~{\mathit{rt}})`.
 
 
 
@@ -15312,9 +15312,9 @@ The instruction :math:`(\mathsf{table{.}set}~x)` is :ref:`valid <valid-val>` wit
 The instruction :math:`(\mathsf{table{.}size}~x)` is :ref:`valid <valid-val>` with the instruction type :math:`\epsilon~\rightarrow~{\mathit{at}}` if:
 
 
-   * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
+   * The table :math:`C{.}\mathsf{tables}{}[x]` exists.
 
-   * The table type :math:`C{.}\mathsf{tables}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~{\mathit{rt}})`.
+   * The table :math:`C{.}\mathsf{tables}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~{\mathit{rt}})`.
 
 
 
@@ -15322,9 +15322,9 @@ The instruction :math:`(\mathsf{table{.}size}~x)` is :ref:`valid <valid-val>` wi
 The instruction :math:`(\mathsf{table{.}grow}~x)` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{rt}}~{\mathit{at}}~\rightarrow~\mathsf{i{\scriptstyle 32}}` if:
 
 
-   * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
+   * The table :math:`C{.}\mathsf{tables}{}[x]` exists.
 
-   * The table type :math:`C{.}\mathsf{tables}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~{\mathit{rt}})`.
+   * The table :math:`C{.}\mathsf{tables}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~{\mathit{rt}})`.
 
 
 
@@ -15332,9 +15332,9 @@ The instruction :math:`(\mathsf{table{.}grow}~x)` is :ref:`valid <valid-val>` wi
 The instruction :math:`(\mathsf{table{.}fill}~x)` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}~{\mathit{rt}}~{\mathit{at}}~\rightarrow~\epsilon` if:
 
 
-   * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
+   * The table :math:`C{.}\mathsf{tables}{}[x]` exists.
 
-   * The table type :math:`C{.}\mathsf{tables}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~{\mathit{rt}})`.
+   * The table :math:`C{.}\mathsf{tables}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~{\mathit{rt}})`.
 
 
 
@@ -15342,13 +15342,13 @@ The instruction :math:`(\mathsf{table{.}fill}~x)` is :ref:`valid <valid-val>` wi
 The instruction :math:`(\mathsf{table{.}copy}~x_1~x_2)` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}_1~{\mathit{at}}_2~t~\rightarrow~\epsilon` if:
 
 
-   * The table type :math:`C{.}\mathsf{tables}{}[x_1]` exists.
+   * The table :math:`C{.}\mathsf{tables}{}[x_1]` exists.
 
-   * The table type :math:`C{.}\mathsf{tables}{}[x_1]` is of the form :math:`({\mathit{at}}_1~{\mathit{lim}}_1~{\mathit{rt}}_1)`.
+   * The table :math:`C{.}\mathsf{tables}{}[x_1]` is of the form :math:`({\mathit{at}}_1~{\mathit{lim}}_1~{\mathit{rt}}_1)`.
 
-   * The table type :math:`C{.}\mathsf{tables}{}[x_2]` exists.
+   * The table :math:`C{.}\mathsf{tables}{}[x_2]` exists.
 
-   * The table type :math:`C{.}\mathsf{tables}{}[x_2]` is of the form :math:`({\mathit{at}}_2~{\mathit{lim}}_2~{\mathit{rt}}_2)`.
+   * The table :math:`C{.}\mathsf{tables}{}[x_2]` is of the form :math:`({\mathit{at}}_2~{\mathit{lim}}_2~{\mathit{rt}}_2)`.
 
    * The reference type :math:`{\mathit{rt}}_2` :ref:`matches <match>` the reference type :math:`{\mathit{rt}}_1`.
 
@@ -15360,13 +15360,13 @@ The instruction :math:`(\mathsf{table{.}copy}~x_1~x_2)` is :ref:`valid <valid-va
 The instruction :math:`(\mathsf{table{.}init}~x~y)` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
-   * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
+   * The table :math:`C{.}\mathsf{tables}{}[x]` exists.
 
-   * The table type :math:`C{.}\mathsf{tables}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~{\mathit{rt}}_1)`.
+   * The table :math:`C{.}\mathsf{tables}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~{\mathit{rt}}_1)`.
 
-   * The element type :math:`C{.}\mathsf{elems}{}[y]` exists.
+   * The element segment :math:`C{.}\mathsf{elems}{}[y]` exists.
 
-   * The reference type :math:`C{.}\mathsf{elems}{}[y]` is of the form :math:`{\mathit{rt}}_2`.
+   * The element segment :math:`C{.}\mathsf{elems}{}[y]` is of the form :math:`{\mathit{rt}}_2`.
 
    * The reference type :math:`{\mathit{rt}}_2` :ref:`matches <match>` the reference type :math:`{\mathit{rt}}_1`.
 
@@ -15376,9 +15376,9 @@ The instruction :math:`(\mathsf{table{.}init}~x~y)` is :ref:`valid <valid-val>` 
 The instruction :math:`(\mathsf{elem{.}drop}~x)` is :ref:`valid <valid-val>` with the instruction type :math:`\epsilon~\rightarrow~\epsilon` if:
 
 
-   * The element type :math:`C{.}\mathsf{elems}{}[x]` exists.
+   * The element segment :math:`C{.}\mathsf{elems}{}[x]` exists.
 
-   * The reference type :math:`C{.}\mathsf{elems}{}[x]` is of the form :math:`{\mathit{rt}}`.
+   * The element segment :math:`C{.}\mathsf{elems}{}[x]` is of the form :math:`{\mathit{rt}}`.
 
 
 
@@ -15386,9 +15386,9 @@ The instruction :math:`(\mathsf{elem{.}drop}~x)` is :ref:`valid <valid-val>` wit
 The instruction :math:`(\mathsf{memory{.}size}~x)` is :ref:`valid <valid-val>` with the instruction type :math:`\epsilon~\rightarrow~{\mathit{at}}` if:
 
 
-   * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
+   * The memory :math:`C{.}\mathsf{mems}{}[x]` exists.
 
-   * The memory type :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
+   * The memory :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
 
 
 
@@ -15396,9 +15396,9 @@ The instruction :math:`(\mathsf{memory{.}size}~x)` is :ref:`valid <valid-val>` w
 The instruction :math:`(\mathsf{memory{.}grow}~x)` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}~\rightarrow~{\mathit{at}}` if:
 
 
-   * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
+   * The memory :math:`C{.}\mathsf{mems}{}[x]` exists.
 
-   * The memory type :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
+   * The memory :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
 
 
 
@@ -15406,9 +15406,9 @@ The instruction :math:`(\mathsf{memory{.}grow}~x)` is :ref:`valid <valid-val>` w
 The instruction :math:`(\mathsf{memory{.}fill}~x)` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}~\mathsf{i{\scriptstyle 32}}~{\mathit{at}}~\rightarrow~\epsilon` if:
 
 
-   * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
+   * The memory :math:`C{.}\mathsf{mems}{}[x]` exists.
 
-   * The memory type :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
+   * The memory :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
 
 
 
@@ -15416,13 +15416,13 @@ The instruction :math:`(\mathsf{memory{.}fill}~x)` is :ref:`valid <valid-val>` w
 The instruction :math:`(\mathsf{memory{.}copy}~x_1~x_2)` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}_1~{\mathit{at}}_2~t~\rightarrow~\epsilon` if:
 
 
-   * The memory type :math:`C{.}\mathsf{mems}{}[x_1]` exists.
+   * The memory :math:`C{.}\mathsf{mems}{}[x_1]` exists.
 
-   * The memory type :math:`C{.}\mathsf{mems}{}[x_1]` is of the form :math:`({\mathit{at}}_1~{\mathit{lim}}_1~\mathsf{page})`.
+   * The memory :math:`C{.}\mathsf{mems}{}[x_1]` is of the form :math:`({\mathit{at}}_1~{\mathit{lim}}_1~\mathsf{page})`.
 
-   * The memory type :math:`C{.}\mathsf{mems}{}[x_2]` exists.
+   * The memory :math:`C{.}\mathsf{mems}{}[x_2]` exists.
 
-   * The memory type :math:`C{.}\mathsf{mems}{}[x_2]` is of the form :math:`({\mathit{at}}_2~{\mathit{lim}}_2~\mathsf{page})`.
+   * The memory :math:`C{.}\mathsf{mems}{}[x_2]` is of the form :math:`({\mathit{at}}_2~{\mathit{lim}}_2~\mathsf{page})`.
 
    * Let :math:`t` be the address type :math:`{\mathrm{min}}({\mathit{at}}_1, {\mathit{at}}_2)`.
 
@@ -15432,13 +15432,13 @@ The instruction :math:`(\mathsf{memory{.}copy}~x_1~x_2)` is :ref:`valid <valid-v
 The instruction :math:`(\mathsf{memory{.}init}~x~y)` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}~\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\epsilon` if:
 
 
-   * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
+   * The memory :math:`C{.}\mathsf{mems}{}[x]` exists.
 
-   * The memory type :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
+   * The memory :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
 
-   * The data type :math:`C{.}\mathsf{datas}{}[y]` exists.
+   * The data segment :math:`C{.}\mathsf{datas}{}[y]` exists.
 
-   * The data type :math:`C{.}\mathsf{datas}{}[y]` is of the form :math:`\mathsf{ok}`.
+   * The data segment :math:`C{.}\mathsf{datas}{}[y]` is of the form :math:`\mathsf{ok}`.
 
 
 
@@ -15446,9 +15446,9 @@ The instruction :math:`(\mathsf{memory{.}init}~x~y)` is :ref:`valid <valid-val>`
 The instruction :math:`(\mathsf{data{.}drop}~x)` is :ref:`valid <valid-val>` with the instruction type :math:`\epsilon~\rightarrow~\epsilon` if:
 
 
-   * The data type :math:`C{.}\mathsf{datas}{}[x]` exists.
+   * The data segment :math:`C{.}\mathsf{datas}{}[x]` exists.
 
-   * The data type :math:`C{.}\mathsf{datas}{}[x]` is of the form :math:`\mathsf{ok}`.
+   * The data segment :math:`C{.}\mathsf{datas}{}[x]` is of the form :math:`\mathsf{ok}`.
 
 
 
@@ -15456,9 +15456,9 @@ The instruction :math:`(\mathsf{data{.}drop}~x)` is :ref:`valid <valid-val>` wit
 The instruction :math:`({{\mathit{nt}'}{.}\mathsf{load}}{{{\mathit{loadop}}^?}}~x~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}~\rightarrow~{\mathit{valtype}}` if:
 
 
-   * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
+   * The memory :math:`C{.}\mathsf{mems}{}[x]` exists.
 
-   * The memory type :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
+   * The memory :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
 
    * Either:
 
@@ -15486,9 +15486,9 @@ The instruction :math:`({{\mathit{nt}'}{.}\mathsf{load}}{{{\mathit{loadop}}^?}}~
 The instruction :math:`({{\mathit{nt}'}{.}\mathsf{store}}{{{\mathit{storeop}}^?}}~x~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}~{\mathit{valtype}}~\rightarrow~\epsilon` if:
 
 
-   * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
+   * The memory :math:`C{.}\mathsf{mems}{}[x]` exists.
 
-   * The memory type :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
+   * The memory :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
 
    * Either:
 
@@ -15516,9 +15516,9 @@ The instruction :math:`({{\mathit{nt}'}{.}\mathsf{store}}{{{\mathit{storeop}}^?}
 The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{{\mathit{vloadop}}^?}}~x~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
 
 
-   * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
+   * The memory :math:`C{.}\mathsf{mems}{}[x]` exists.
 
-   * The memory type :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
+   * The memory :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
 
    * Either:
 
@@ -15548,9 +15548,9 @@ The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{{\mathit
 The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{N}{\mathsf{\_}}{\mathsf{lane}}~x~{\mathit{memarg}}~i)` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
 
 
-   * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
+   * The memory :math:`C{.}\mathsf{mems}{}[x]` exists.
 
-   * The memory type :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
+   * The memory :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
 
    * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`N / 8`.
 
@@ -15562,9 +15562,9 @@ The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{N}{\maths
 The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{store}~x~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\epsilon` if:
 
 
-   * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
+   * The memory :math:`C{.}\mathsf{mems}{}[x]` exists.
 
-   * The memory type :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
+   * The memory :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
 
    * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|\mathsf{v{\scriptstyle 128}}|} / 8`.
 
@@ -15574,9 +15574,9 @@ The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{store}~x~{\mathit
 The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{store}}{N}{\mathsf{\_}}{\mathsf{lane}}~x~{\mathit{memarg}}~i)` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\epsilon` if:
 
 
-   * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
+   * The memory :math:`C{.}\mathsf{mems}{}[x]` exists.
 
-   * The memory type :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
+   * The memory :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
 
    * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`N / 8`.
 
@@ -15608,9 +15608,9 @@ The instruction :math:`(\mathsf{select})` is :ref:`valid <valid-val>` with the i
 The instruction :math:`({\mathit{nt}}{.}\mathsf{load}~x~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}~\rightarrow~{\mathit{nt}}` if:
 
 
-   * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
+   * The memory :math:`C{.}\mathsf{mems}{}[x]` exists.
 
-   * The memory type :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
+   * The memory :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
 
    * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
 
@@ -15620,9 +15620,9 @@ The instruction :math:`({\mathit{nt}}{.}\mathsf{load}~x~{\mathit{memarg}})` is :
 The instruction :math:`({{\mathsf{i}}{N}{.}\mathsf{load}}{{M}{\mathsf{\_}}{{\mathit{sx}}}}~x~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}~\rightarrow~{\mathsf{i}}{N}` if:
 
 
-   * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
+   * The memory :math:`C{.}\mathsf{mems}{}[x]` exists.
 
-   * The memory type :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
+   * The memory :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
 
    * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
 
@@ -15632,9 +15632,9 @@ The instruction :math:`({{\mathsf{i}}{N}{.}\mathsf{load}}{{M}{\mathsf{\_}}{{\mat
 The instruction :math:`({\mathit{nt}}{.}\mathsf{store}~x~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}~{\mathit{nt}}~\rightarrow~\epsilon` if:
 
 
-   * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
+   * The memory :math:`C{.}\mathsf{mems}{}[x]` exists.
 
-   * The memory type :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
+   * The memory :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
 
    * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
 
@@ -15644,9 +15644,9 @@ The instruction :math:`({\mathit{nt}}{.}\mathsf{store}~x~{\mathit{memarg}})` is 
 The instruction :math:`({{\mathsf{i}}{N}{.}\mathsf{store}}{M}~x~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}~{\mathsf{i}}{N}~\rightarrow~\epsilon` if:
 
 
-   * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
+   * The memory :math:`C{.}\mathsf{mems}{}[x]` exists.
 
-   * The memory type :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
+   * The memory :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
 
    * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
 
@@ -15656,9 +15656,9 @@ The instruction :math:`({{\mathsf{i}}{N}{.}\mathsf{store}}{M}~x~{\mathit{memarg}
 The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~x~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
 
 
-   * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
+   * The memory :math:`C{.}\mathsf{mems}{}[x]` exists.
 
-   * The memory type :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
+   * The memory :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
 
    * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|\mathsf{v{\scriptstyle 128}}|} / 8`.
 
@@ -15668,9 +15668,9 @@ The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~x~{\mathit{
 The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{M}{\mathsf{x}}{N}{\mathsf{\_}}{{\mathit{sx}}}}~x~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
 
 
-   * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
+   * The memory :math:`C{.}\mathsf{mems}{}[x]` exists.
 
-   * The memory type :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
+   * The memory :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
 
    * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8 \cdot N`.
 
@@ -15680,9 +15680,9 @@ The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{M}{\math
 The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{N}{\mathsf{\_}}{\mathsf{splat}}}~x~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
 
 
-   * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
+   * The memory :math:`C{.}\mathsf{mems}{}[x]` exists.
 
-   * The memory type :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
+   * The memory :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
 
    * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`N / 8`.
 
@@ -15692,9 +15692,9 @@ The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{N}{\math
 The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{N}{\mathsf{\_}}{\mathsf{zero}}}~x~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
 
 
-   * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
+   * The memory :math:`C{.}\mathsf{mems}{}[x]` exists.
 
-   * The memory type :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
+   * The memory :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
 
    * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`N / 8`.
 
@@ -15724,11 +15724,11 @@ The instruction sequence :math:`{{\mathit{instr}'}^\ast}` is :ref:`valid <valid-
 
       * For all :math:`x_1` in :math:`{x_1^\ast}`:
 
-         * The local type :math:`C{.}\mathsf{locals}{}[x_1]` exists.
+         * The local :math:`C{.}\mathsf{locals}{}[x_1]` exists.
 
       * For all :math:`{\mathit{init}}` in :math:`{{\mathit{init}}^\ast}`, and corresponding :math:`t` in :math:`{t^\ast}`, and corresponding :math:`x_1` in :math:`{x_1^\ast}`:
 
-         * The local type :math:`C{.}\mathsf{locals}{}[x_1]` is of the form :math:`({\mathit{init}}~t)`.
+         * The local :math:`C{.}\mathsf{locals}{}[x_1]` is of the form :math:`({\mathit{init}}~t)`.
 
       * Under the context :math:`C{}[{.}\mathsf{local}{}[{x_1^\ast}] = {(\mathsf{set}~t)^\ast}]`, the instruction sequence :math:`{{\mathit{instr}}_2^\ast}` is :ref:`valid <valid-val>` with the instruction type :math:`{t_2^\ast}~{\rightarrow}_{{x_2^\ast}}\,{t_3^\ast}`.
    * Or:
@@ -15771,11 +15771,11 @@ The instruction sequence :math:`{\mathit{instr}}_1~{{\mathit{instr}}_2^\ast}` is
 
    * For all :math:`x_1` in :math:`{x_1^\ast}`:
 
-      * The local type :math:`C{.}\mathsf{locals}{}[x_1]` exists.
+      * The local :math:`C{.}\mathsf{locals}{}[x_1]` exists.
 
    * For all :math:`{\mathit{init}}` in :math:`{{\mathit{init}}^\ast}`, and corresponding :math:`t` in :math:`{t^\ast}`, and corresponding :math:`x_1` in :math:`{x_1^\ast}`:
 
-      * The local type :math:`C{.}\mathsf{locals}{}[x_1]` is of the form :math:`({\mathit{init}}~t)`.
+      * The local :math:`C{.}\mathsf{locals}{}[x_1]` is of the form :math:`({\mathit{init}}~t)`.
 
    * Under the context :math:`C{}[{.}\mathsf{local}{}[{x_1^\ast}] = {(\mathsf{set}~t)^\ast}]`, the instruction sequence :math:`{{\mathit{instr}}_2^\ast}` is :ref:`valid <valid-val>` with the instruction type :math:`{t_2^\ast}~{\rightarrow}_{{x_2^\ast}}\,{t_3^\ast}`.
 
@@ -15864,9 +15864,9 @@ The value type :math:`t` is not defaultable if:
 
       * The value :math:`{\mathit{val}}` is of the form :math:`(\mathsf{global{.}get}~x)`.
 
-      * The global type :math:`C{.}\mathsf{globals}{}[x]` exists.
+      * The global :math:`C{.}\mathsf{globals}{}[x]` exists.
 
-      * The global type :math:`C{.}\mathsf{globals}{}[x]` is of the form :math:`(\epsilon~t)`.
+      * The global :math:`C{.}\mathsf{globals}{}[x]` is of the form :math:`(\epsilon~t)`.
    * Or:
 
       * The value :math:`{\mathit{val}}` is of the form :math:`({\mathsf{i}}{N} {.} {\mathit{binop}})`.
@@ -15941,9 +15941,9 @@ The value type :math:`t` is not defaultable if:
 :math:`(\mathsf{global{.}get}~x)` is constant if:
 
 
-   * The global type :math:`C{.}\mathsf{globals}{}[x]` exists.
+   * The global :math:`C{.}\mathsf{globals}{}[x]` exists.
 
-   * The global type :math:`C{.}\mathsf{globals}{}[x]` is of the form :math:`(\epsilon~t)`.
+   * The global :math:`C{.}\mathsf{globals}{}[x]` is of the form :math:`(\epsilon~t)`.
 
 
 
@@ -16016,12 +16016,12 @@ The local :math:`(\mathsf{local}~t)` is :ref:`valid <valid-val>` with the local 
 
 
 
-The function :math:`(\mathsf{func}~x~{{\mathit{local}}^\ast}~{\mathit{expr}})` is :ref:`valid <valid-val>` with the defined type :math:`C{.}\mathsf{types}{}[x]` if:
+The function :math:`(\mathsf{func}~x~{{\mathit{local}}^\ast}~{\mathit{expr}})` is :ref:`valid <valid-val>` with the type :math:`C{.}\mathsf{types}{}[x]` if:
 
 
-   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
+   * The type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
+   * The :ref:`expansion <aux-expand-deftype>` of the type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
 
    * The length of :math:`{{{\mathit{lt}}}^\ast}` is equal to the length of :math:`{{\mathit{local}}^\ast}`.
 
@@ -16070,12 +16070,12 @@ The memory :math:`(\mathsf{memory}~{\mathit{memtype}})` is :ref:`valid <valid-va
 
 
 
-The tag :math:`(\mathsf{tag}~x)` is :ref:`valid <valid-val>` with the tag type :math:`C{.}\mathsf{types}{}[x]` if:
+The tag :math:`(\mathsf{tag}~x)` is :ref:`valid <valid-val>` with the type :math:`C{.}\mathsf{types}{}[x]` if:
 
 
-   * The defined type :math:`C{.}\mathsf{types}{}[x]` exists.
+   * The type :math:`C{.}\mathsf{types}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{func}~{\mathit{functype}})`.
+   * The :ref:`expansion <aux-expand-deftype>` of the type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{func}~{\mathit{functype}})`.
 
 
 
@@ -16087,9 +16087,9 @@ The element mode :math:`{\mathit{elemmode}}` is :ref:`valid <valid-val>` with th
 
       * The element mode :math:`{\mathit{elemmode}}` is of the form :math:`(\mathsf{active}~x~{\mathit{expr}})`.
 
-      * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
+      * The table :math:`C{.}\mathsf{tables}{}[x]` exists.
 
-      * The table type :math:`C{.}\mathsf{tables}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~{\mathit{rt}'})`.
+      * The table :math:`C{.}\mathsf{tables}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~{\mathit{rt}'})`.
 
       * The reference type :math:`{\mathit{rt}}` :ref:`matches <match>` the reference type :math:`{\mathit{rt}'}`.
 
@@ -16110,9 +16110,9 @@ The element mode :math:`{\mathit{elemmode}}` is :ref:`valid <valid-val>` with th
 The element mode :math:`(\mathsf{active}~x~{\mathit{expr}})` is :ref:`valid <valid-val>` with the element type :math:`{\mathit{rt}}` if:
 
 
-   * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
+   * The table :math:`C{.}\mathsf{tables}{}[x]` exists.
 
-   * The table type :math:`C{.}\mathsf{tables}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~{\mathit{rt}'})`.
+   * The table :math:`C{.}\mathsf{tables}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~{\mathit{rt}'})`.
 
    * The reference type :math:`{\mathit{rt}}` :ref:`matches <match>` the reference type :math:`{\mathit{rt}'}`.
 
@@ -16156,9 +16156,9 @@ The data mode :math:`{\mathit{datamode}}` is :ref:`valid <valid-val>` with the d
 
       * The data mode :math:`{\mathit{datamode}}` is of the form :math:`(\mathsf{active}~x~{\mathit{expr}})`.
 
-      * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
+      * The memory :math:`C{.}\mathsf{mems}{}[x]` exists.
 
-      * The memory type :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`{\mathit{mt}}`.
+      * The memory :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`{\mathit{mt}}`.
 
       * The expression :math:`{\mathit{expr}}` is :ref:`valid <valid-val>` with the value type :math:`\mathsf{i{\scriptstyle 32}}`.
 
@@ -16174,9 +16174,9 @@ The data mode :math:`{\mathit{datamode}}` is :ref:`valid <valid-val>` with the d
 The data mode :math:`(\mathsf{active}~x~{\mathit{expr}})` is :ref:`valid <valid-val>` with the data type :math:`\mathsf{ok}` if:
 
 
-   * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
+   * The memory :math:`C{.}\mathsf{mems}{}[x]` exists.
 
-   * The memory type :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`{\mathit{mt}}`.
+   * The memory :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`{\mathit{mt}}`.
 
    * The expression :math:`{\mathit{expr}}` is :ref:`valid <valid-val>` with the value type :math:`\mathsf{i{\scriptstyle 32}}`.
 
@@ -16201,9 +16201,9 @@ The memory segment :math:`(\mathsf{data}~{b^\ast}~{\mathit{datamode}})` is :ref:
 The start function :math:`(\mathsf{start}~x)` is :ref:`valid <valid-val>` if:
 
 
-   * The defined type :math:`C{.}\mathsf{funcs}{}[x]` exists.
+   * The function :math:`C{.}\mathsf{funcs}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{funcs}{}[x]` is the composite type :math:`(\mathsf{func}~\epsilon~\rightarrow~\epsilon)`.
+   * The :ref:`expansion <aux-expand-deftype>` of the function :math:`C{.}\mathsf{funcs}{}[x]` is the composite type :math:`(\mathsf{func}~\epsilon~\rightarrow~\epsilon)`.
 
 
 
@@ -16225,9 +16225,9 @@ The external index :math:`{\mathit{externidx}}` is :ref:`valid <valid-val>` with
 
       * The external type :math:`{\mathit{externtype}}` is of the form :math:`(\mathsf{func}~{\mathit{dt}})`.
 
-      * The defined type :math:`C{.}\mathsf{funcs}{}[x]` exists.
+      * The function :math:`C{.}\mathsf{funcs}{}[x]` exists.
 
-      * The defined type :math:`C{.}\mathsf{funcs}{}[x]` is of the form :math:`{\mathit{dt}}`.
+      * The function :math:`C{.}\mathsf{funcs}{}[x]` is of the form :math:`{\mathit{dt}}`.
 
    * Or:
 
@@ -16235,36 +16235,36 @@ The external index :math:`{\mathit{externidx}}` is :ref:`valid <valid-val>` with
 
       * The external type :math:`{\mathit{externtype}}` is of the form :math:`(\mathsf{global}~{\mathit{gt}})`.
 
-      * The global type :math:`C{.}\mathsf{globals}{}[x]` exists.
+      * The global :math:`C{.}\mathsf{globals}{}[x]` exists.
 
-      * The global type :math:`C{.}\mathsf{globals}{}[x]` is of the form :math:`{\mathit{gt}}`.
+      * The global :math:`C{.}\mathsf{globals}{}[x]` is of the form :math:`{\mathit{gt}}`.
    * Or:
 
       * The external index :math:`{\mathit{externidx}}` is of the form :math:`(\mathsf{table}~x)`.
 
       * The external type :math:`{\mathit{externtype}}` is of the form :math:`(\mathsf{table}~{\mathit{tt}})`.
 
-      * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
+      * The table :math:`C{.}\mathsf{tables}{}[x]` exists.
 
-      * The table type :math:`C{.}\mathsf{tables}{}[x]` is of the form :math:`{\mathit{tt}}`.
+      * The table :math:`C{.}\mathsf{tables}{}[x]` is of the form :math:`{\mathit{tt}}`.
    * Or:
 
       * The external index :math:`{\mathit{externidx}}` is of the form :math:`(\mathsf{mem}~x)`.
 
       * The external type :math:`{\mathit{externtype}}` is of the form :math:`(\mathsf{mem}~{\mathit{mt}})`.
 
-      * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
+      * The memory :math:`C{.}\mathsf{mems}{}[x]` exists.
 
-      * The memory type :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`{\mathit{mt}}`.
+      * The memory :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`{\mathit{mt}}`.
    * Or:
 
       * The external index :math:`{\mathit{externidx}}` is of the form :math:`(\mathsf{tag}~x)`.
 
       * The external type :math:`{\mathit{externtype}}` is of the form :math:`(\mathsf{tag}~{\mathit{jt}})`.
 
-      * The tag type :math:`C{.}\mathsf{tags}{}[x]` exists.
+      * The tag :math:`C{.}\mathsf{tags}{}[x]` exists.
 
-      * The tag type :math:`C{.}\mathsf{tags}{}[x]` is of the form :math:`{\mathit{jt}}`.
+      * The tag :math:`C{.}\mathsf{tags}{}[x]` is of the form :math:`{\mathit{jt}}`.
 
 
 
@@ -16272,9 +16272,9 @@ The external index :math:`{\mathit{externidx}}` is :ref:`valid <valid-val>` with
 The external index :math:`(\mathsf{func}~x)` is :ref:`valid <valid-val>` with the external type :math:`(\mathsf{func}~{\mathit{dt}})` if:
 
 
-   * The defined type :math:`C{.}\mathsf{funcs}{}[x]` exists.
+   * The function :math:`C{.}\mathsf{funcs}{}[x]` exists.
 
-   * The defined type :math:`C{.}\mathsf{funcs}{}[x]` is of the form :math:`{\mathit{dt}}`.
+   * The function :math:`C{.}\mathsf{funcs}{}[x]` is of the form :math:`{\mathit{dt}}`.
 
 
 
@@ -16282,9 +16282,9 @@ The external index :math:`(\mathsf{func}~x)` is :ref:`valid <valid-val>` with th
 The external index :math:`(\mathsf{global}~x)` is :ref:`valid <valid-val>` with the external type :math:`(\mathsf{global}~{\mathit{gt}})` if:
 
 
-   * The global type :math:`C{.}\mathsf{globals}{}[x]` exists.
+   * The global :math:`C{.}\mathsf{globals}{}[x]` exists.
 
-   * The global type :math:`C{.}\mathsf{globals}{}[x]` is of the form :math:`{\mathit{gt}}`.
+   * The global :math:`C{.}\mathsf{globals}{}[x]` is of the form :math:`{\mathit{gt}}`.
 
 
 
@@ -16292,9 +16292,9 @@ The external index :math:`(\mathsf{global}~x)` is :ref:`valid <valid-val>` with 
 The external index :math:`(\mathsf{table}~x)` is :ref:`valid <valid-val>` with the external type :math:`(\mathsf{table}~{\mathit{tt}})` if:
 
 
-   * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
+   * The table :math:`C{.}\mathsf{tables}{}[x]` exists.
 
-   * The table type :math:`C{.}\mathsf{tables}{}[x]` is of the form :math:`{\mathit{tt}}`.
+   * The table :math:`C{.}\mathsf{tables}{}[x]` is of the form :math:`{\mathit{tt}}`.
 
 
 
@@ -16302,9 +16302,9 @@ The external index :math:`(\mathsf{table}~x)` is :ref:`valid <valid-val>` with t
 The external index :math:`(\mathsf{mem}~x)` is :ref:`valid <valid-val>` with the external type :math:`(\mathsf{mem}~{\mathit{mt}})` if:
 
 
-   * The memory type :math:`C{.}\mathsf{mems}{}[x]` exists.
+   * The memory :math:`C{.}\mathsf{mems}{}[x]` exists.
 
-   * The memory type :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`{\mathit{mt}}`.
+   * The memory :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`{\mathit{mt}}`.
 
 
 
@@ -16312,9 +16312,9 @@ The external index :math:`(\mathsf{mem}~x)` is :ref:`valid <valid-val>` with the
 The external index :math:`(\mathsf{tag}~x)` is :ref:`valid <valid-val>` with the external type :math:`(\mathsf{tag}~{\mathit{jt}})` if:
 
 
-   * The tag type :math:`C{.}\mathsf{tags}{}[x]` exists.
+   * The tag :math:`C{.}\mathsf{tags}{}[x]` exists.
 
-   * The tag type :math:`C{.}\mathsf{tags}{}[x]` is of the form :math:`{\mathit{jt}}`.
+   * The tag :math:`C{.}\mathsf{tags}{}[x]` is of the form :math:`{\mathit{jt}}`.
 
 
 
@@ -16850,9 +16850,9 @@ The instruction sequence :math:`{\mathit{instr}'}` is :ref:`valid <valid-val>` w
 
       * The value type sequence :math:`{{\mathit{valtype}'}^\ast}` is of the form :math:`t`.
 
-      * The global type :math:`C{.}\mathsf{globals}{}[x]` exists.
+      * The global :math:`C{.}\mathsf{globals}{}[x]` exists.
 
-      * The global type :math:`C{.}\mathsf{globals}{}[x]` is of the form :math:`({\mathsf{mut}^?}~t)`.
+      * The global :math:`C{.}\mathsf{globals}{}[x]` is of the form :math:`({\mathsf{mut}^?}~t)`.
    * Or:
 
       * The instruction :math:`{\mathit{instr}'}` is of the form :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{instr}}^\ast})`.
@@ -16878,9 +16878,9 @@ The instruction sequence :math:`(\mathsf{i{\scriptstyle 32}} {.} \mathsf{add})` 
 The instruction sequence :math:`(\mathsf{global{.}get}~x)` is :ref:`valid <valid-val>` with the function type :math:`\epsilon~\rightarrow~t` if:
 
 
-   * The global type :math:`C{.}\mathsf{globals}{}[x]` exists.
+   * The global :math:`C{.}\mathsf{globals}{}[x]` exists.
 
-   * The global type :math:`C{.}\mathsf{globals}{}[x]` is of the form :math:`({\mathsf{mut}^?}~t)`.
+   * The global :math:`C{.}\mathsf{globals}{}[x]` is of the form :math:`({\mathsf{mut}^?}~t)`.
 
 
 
@@ -25169,19 +25169,19 @@ Typeuse_ok
 - the type use typeuse is valid if:
   - Either:
     - typeuse is (_IDX typeidx).
-    - the defined type C.TYPES[typeidx] exists.
+    - the type C.TYPES[typeidx] exists.
     - C.TYPES[typeidx] is dt.
   - Or:
     - typeuse is deftype.
     - the defined type deftype is valid.
   - Or:
     - typeuse is (REC i).
-    - the sub type C.RECS[i] exists.
+    - the recursive type C.RECS[i] exists.
     - C.RECS[i] is st.
 
 Typeuse_ok/typeidx
 - the type use (_IDX typeidx) is valid if:
-  - the defined type C.TYPES[typeidx] exists.
+  - the type C.TYPES[typeidx] exists.
   - C.TYPES[typeidx] is dt.
 
 Typeuse_ok/deftype
@@ -25190,7 +25190,7 @@ Typeuse_ok/deftype
 
 Typeuse_ok/rec
 - the type use (REC i) is valid if:
-  - the sub type C.RECS[i] exists.
+  - the recursive type C.RECS[i] exists.
   - C.RECS[i] is st.
 
 Resulttype_ok
@@ -25258,7 +25258,7 @@ Subtype_ok
   - |comptype'*| is |x*|.
   - |comptype'*| is |x'**|.
   - For all x in x*:
-    - the defined type C.TYPES[x] exists.
+    - the type C.TYPES[x] exists.
   - For all comptype' in comptype'*, and corresponding x in x*, and corresponding x'* in x'**:
     - the sub type $unrolldt(C.TYPES[x]) is (SUB ?() (_IDX x')* comptype').
   - the composite type comptype is valid.
@@ -25410,7 +25410,7 @@ Heaptype_sub
   - Or:
     - heaptype'' is (_IDX typeidx).
     - heaptype''' is heaptype.
-    - the defined type C.TYPES[typeidx] exists.
+    - the type C.TYPES[typeidx] exists.
     - C.TYPES[typeidx] matches the heap type heaptype.
   - Or:
     - heaptype'' is heaptype.
@@ -25421,7 +25421,7 @@ Heaptype_sub
     - heaptype'' is (REC i).
     - heaptype''' is typeuse*[j].
     - |typeuse*| is greater than j.
-    - the sub type C.RECS[i] exists.
+    - the recursive type C.RECS[i] exists.
     - C.RECS[i] is (SUB fin typeuse* ct).
   - Or:
     - heaptype'' is NONE.
@@ -25478,18 +25478,18 @@ Heaptype_sub/def
 
 Heaptype_sub/typeidx
 - the heap type (_IDX typeidx) matches the heap type heaptype if:
-  - the defined type C.TYPES[typeidx] exists.
+  - the type C.TYPES[typeidx] exists.
   - C.TYPES[typeidx] matches heaptype.
 
 Heaptype_sub/typeidx
 - the heap type heaptype matches the heap type (_IDX typeidx) if:
-  - the defined type C.TYPES[typeidx] exists.
+  - the type C.TYPES[typeidx] exists.
   - heaptype matches C.TYPES[typeidx].
 
 Heaptype_sub/rec
 - the heap type (REC i) matches the type use typeuse*[j] if:
   - |typeuse*| is greater than j.
-  - the sub type C.RECS[i] exists.
+  - the recursive type C.RECS[i] exists.
   - C.RECS[i] is (SUB fin typeuse* ct).
 
 Heaptype_sub/none
@@ -25614,7 +25614,7 @@ Instrtype_ok
   - the result type t_2* is valid.
   - |lct*| is |x*|.
   - For all x in x*:
-    - the local type C.LOCALS[x] exists.
+    - the local C.LOCALS[x] exists.
   - For all lct in lct*, and corresponding x in x*:
     - C.LOCALS[x] is lct.
 
@@ -25690,7 +25690,7 @@ Instrtype_sub
   - the local index sequence x* is $setminus_(`localidx, x_2*, x_1*).
   - |t*| is |x*|.
   - For all x in x*:
-    - the local type C.LOCALS[x] exists.
+    - the local C.LOCALS[x] exists.
   - For all t in t*, and corresponding x in x*:
     - C.LOCALS[x] is (SET t).
 
@@ -25789,7 +25789,7 @@ Blocktype_ok
     - blocktype is (_IDX typeidx).
     - valtype'* is t_1*.
     - valtype''* is t_2*.
-    - the defined type C.TYPES[typeidx] exists.
+    - the type C.TYPES[typeidx] exists.
     - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[typeidx] is the composite type (FUNC t_1* -> t_2*).
 
 Blocktype_ok/valtype
@@ -25799,15 +25799,15 @@ Blocktype_ok/valtype
 
 Blocktype_ok/typeidx
 - the block type (_IDX typeidx) is valid as the instruction type t_1* -> t_2* if:
-  - the defined type C.TYPES[typeidx] exists.
+  - the type C.TYPES[typeidx] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[typeidx] is the composite type (FUNC t_1* -> t_2*).
 
 Catch_ok
 - the catch clause catch is valid if:
-  - the result type C.LABELS[l] exists.
+  - the label C.LABELS[l] exists.
   - Either:
     - catch is (CATCH x l).
-    - the tag type C.TAGS[x] exists.
+    - the tag C.TAGS[x] exists.
     - The :ref:`expansion <aux-expand-deftype>` of C.TAGS[x] is the composite type (FUNC t* -> []).
     - the result type t* matches C.LABELS[l].
   - Or:
@@ -25824,26 +25824,26 @@ Catch_ok
 
 Catch_ok/catch
 - the catch clause (CATCH x l) is valid if:
-  - the tag type C.TAGS[x] exists.
+  - the tag C.TAGS[x] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TAGS[x] is the composite type (FUNC t* -> []).
-  - the result type C.LABELS[l] exists.
+  - the label C.LABELS[l] exists.
   - the result type t* matches C.LABELS[l].
 
 Catch_ok/catch_ref
 - the catch clause (CATCH_REF x l) is valid if:
-  - the tag type C.TAGS[x] exists.
+  - the tag C.TAGS[x] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TAGS[x] is the composite type (FUNC t* -> []).
-  - the result type C.LABELS[l] exists.
+  - the label C.LABELS[l] exists.
   - the result type t* :: [(REF ?() EXN)] matches C.LABELS[l].
 
 Catch_ok/catch_all
 - the catch clause (CATCH_ALL l) is valid if:
-  - the result type C.LABELS[l] exists.
+  - the label C.LABELS[l] exists.
   - the result type [] matches C.LABELS[l].
 
 Catch_ok/catch_all_ref
 - the catch clause (CATCH_ALL_REF l) is valid if:
-  - the result type C.LABELS[l] exists.
+  - the label C.LABELS[l] exists.
   - the result type [(REF ?() EXN)] matches C.LABELS[l].
 
 Defaultable
@@ -25892,39 +25892,39 @@ Instr_ok/if
 
 Instr_ok/br
 - the instruction (BR l) is valid with the instruction type t_1* :: t* -> t_2* if:
-  - the result type C.LABELS[l] exists.
+  - the label C.LABELS[l] exists.
   - C.LABELS[l] is t*.
   - the instruction type t_1* -> t_2* is valid.
 
 Instr_ok/br_if
 - the instruction (BR_IF l) is valid with the instruction type t* :: [I32] -> t* if:
-  - the result type C.LABELS[l] exists.
+  - the label C.LABELS[l] exists.
   - C.LABELS[l] is t*.
 
 Instr_ok/br_table
 - the instruction (BR_TABLE l* l') is valid with the instruction type t_1* :: t* :: [I32] -> t_2* if:
   - For all l in l*:
-    - the result type C.LABELS[l] exists.
+    - the label C.LABELS[l] exists.
   - For all l in l*:
     - the result type t* matches C.LABELS[l].
-  - the result type C.LABELS[l'] exists.
+  - the label C.LABELS[l'] exists.
   - t* matches C.LABELS[l'].
   - the instruction type t_1* -> t_2* is valid.
 
 Instr_ok/br_on_null
 - the instruction (BR_ON_NULL l) is valid with the instruction type t* :: [(REF ?(NULL) ht)] -> t* :: [(REF ?() ht)] if:
-  - the result type C.LABELS[l] exists.
+  - the label C.LABELS[l] exists.
   - C.LABELS[l] is t*.
   - the heap type ht is valid.
 
 Instr_ok/br_on_non_null
 - the instruction (BR_ON_NON_NULL l) is valid with the instruction type t* :: [(REF ?(NULL) ht)] -> t* if:
-  - the result type C.LABELS[l] exists.
+  - the label C.LABELS[l] exists.
   - C.LABELS[l] is t* :: [(REF ?() ht)].
 
 Instr_ok/br_on_cast
 - the instruction (BR_ON_CAST l rt_1 rt_2) is valid with the instruction type t* :: [rt_1] -> t* :: [t'] if:
-  - the result type C.LABELS[l] exists.
+  - the label C.LABELS[l] exists.
   - C.LABELS[l] is t* :: [rt].
   - the reference type rt_1 is valid.
   - the reference type rt_2 is valid.
@@ -25934,7 +25934,7 @@ Instr_ok/br_on_cast
 
 Instr_ok/br_on_cast_fail
 - the instruction (BR_ON_CAST_FAIL l rt_1 rt_2) is valid with the instruction type t* :: [rt_1] -> t* :: [rt_2] if:
-  - the result type C.LABELS[l] exists.
+  - the label C.LABELS[l] exists.
   - C.LABELS[l] is t* :: [rt].
   - the reference type rt_1 is valid.
   - the reference type rt_2 is valid.
@@ -25943,20 +25943,20 @@ Instr_ok/br_on_cast_fail
 
 Instr_ok/call
 - the instruction (CALL x) is valid with the instruction type t_1* -> t_2* if:
-  - the defined type C.FUNCS[x] exists.
+  - the function C.FUNCS[x] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.FUNCS[x] is the composite type (FUNC t_1* -> t_2*).
 
 Instr_ok/call_ref
 - the instruction (CALL_REF (_IDX x)) is valid with the instruction type t_1* :: [(REF ?(NULL) (_IDX x))] -> t_2* if:
-  - the defined type C.TYPES[x] exists.
+  - the type C.TYPES[x] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (FUNC t_1* -> t_2*).
 
 Instr_ok/call_indirect
 - the instruction (CALL_INDIRECT x (_IDX y)) is valid with the instruction type t_1* :: [at] -> t_2* if:
-  - the table type C.TABLES[x] exists.
+  - the table C.TABLES[x] exists.
   - C.TABLES[x] is (at lim rt).
   - the reference type rt matches the reference type (REF ?(NULL) FUNC).
-  - the defined type C.TYPES[y] exists.
+  - the type C.TYPES[y] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[y] is the composite type (FUNC t_1* -> t_2*).
 
 Instr_ok/return
@@ -25966,7 +25966,7 @@ Instr_ok/return
 
 Instr_ok/return_call
 - the instruction (RETURN_CALL x) is valid with the instruction type t_3* :: t_1* -> t_4* if:
-  - the defined type C.FUNCS[x] exists.
+  - the function C.FUNCS[x] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.FUNCS[x] is the composite type (FUNC t_1* -> t_2*).
   - the result type C.RETURN is ?(t'_2*).
   - the result type t_2* matches the result type t'_2*.
@@ -25974,7 +25974,7 @@ Instr_ok/return_call
 
 Instr_ok/return_call_ref
 - the instruction (RETURN_CALL_REF (_IDX x)) is valid with the instruction type t_3* :: t_1* :: [(REF ?(NULL) (_IDX x))] -> t_4* if:
-  - the defined type C.TYPES[x] exists.
+  - the type C.TYPES[x] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (FUNC t_1* -> t_2*).
   - the result type C.RETURN is ?(t'_2*).
   - the result type t_2* matches the result type t'_2*.
@@ -25982,10 +25982,10 @@ Instr_ok/return_call_ref
 
 Instr_ok/return_call_indirect
 - the instruction (RETURN_CALL_INDIRECT x (_IDX y)) is valid with the instruction type t_3* :: t_1* :: [at] -> t_4* if:
-  - the table type C.TABLES[x] exists.
+  - the table C.TABLES[x] exists.
   - C.TABLES[x] is (at lim rt).
   - the reference type rt matches the reference type (REF ?(NULL) FUNC).
-  - the defined type C.TYPES[y] exists.
+  - the type C.TYPES[y] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[y] is the composite type (FUNC t_1* -> t_2*).
   - the result type C.RETURN is ?(t'_2*).
   - the result type t_2* matches the result type t'_2*.
@@ -25993,7 +25993,7 @@ Instr_ok/return_call_indirect
 
 Instr_ok/throw
 - the instruction (THROW x) is valid with the instruction type t_1* :: t* -> t_2* if:
-  - the tag type C.TAGS[x] exists.
+  - the tag C.TAGS[x] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TAGS[x] is the composite type (FUNC t* -> []).
   - the instruction type t_1* -> t_2* is valid.
 
@@ -26033,7 +26033,7 @@ Instr_ok/ref.null
 
 Instr_ok/ref.func
 - the instruction (REF.FUNC x) is valid with the instruction type [] -> [(REF ?() dt)] if:
-  - the defined type C.FUNCS[x] exists.
+  - the function C.FUNCS[x] exists.
   - C.FUNCS[x] is dt.
   - x is contained in C.REFS.
 
@@ -26068,20 +26068,20 @@ Instr_ok/i31.get
 
 Instr_ok/struct.new
 - the instruction (STRUCT.NEW x) is valid with the instruction type t* -> [(REF ?() (_IDX x))] if:
-  - the defined type C.TYPES[x] exists.
+  - the type C.TYPES[x] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (STRUCT (mut zt)*).
   - Let t* be the value type sequence $unpack(zt)*.
 
 Instr_ok/struct.new_default
 - the instruction (STRUCT.NEW_DEFAULT x) is valid with the instruction type [] -> [(REF ?() (_IDX x))] if:
-  - the defined type C.TYPES[x] exists.
+  - the type C.TYPES[x] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (STRUCT (mut zt)*).
   - For all zt in zt*:
     - A :ref:`default value <aux-default>` for the value type $unpack(zt) is defined.
 
 Instr_ok/struct.get
 - the instruction (STRUCT.GET sx? x i) is valid with the instruction type [(REF ?(NULL) (_IDX x))] -> [t] if:
-  - the defined type C.TYPES[x] exists.
+  - the type C.TYPES[x] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (STRUCT yt*).
   - |yt*| is greater than i.
   - the field type yt*[i] is (mut zt).
@@ -26090,7 +26090,7 @@ Instr_ok/struct.get
 
 Instr_ok/struct.set
 - the instruction (STRUCT.SET x i) is valid with the instruction type [(REF ?(NULL) (_IDX x)), t] -> [] if:
-  - the defined type C.TYPES[x] exists.
+  - the type C.TYPES[x] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (STRUCT yt*).
   - |yt*| is greater than i.
   - the field type yt*[i] is (?(MUT) zt).
@@ -26098,47 +26098,47 @@ Instr_ok/struct.set
 
 Instr_ok/array.new
 - the instruction (ARRAY.NEW x) is valid with the instruction type [t, I32] -> [(REF ?() (_IDX x))] if:
-  - the defined type C.TYPES[x] exists.
+  - the type C.TYPES[x] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (ARRAY (mut zt)).
   - Let t be the value type $unpack(zt).
 
 Instr_ok/array.new_default
 - the instruction (ARRAY.NEW_DEFAULT x) is valid with the instruction type [I32] -> [(REF ?() (_IDX x))] if:
-  - the defined type C.TYPES[x] exists.
+  - the type C.TYPES[x] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (ARRAY (mut zt)).
   - A :ref:`default value <aux-default>` for the value type $unpack(zt) is defined.
 
 Instr_ok/array.new_fixed
 - the instruction (ARRAY.NEW_FIXED x n) is valid with the instruction type t^n -> [(REF ?() (_IDX x))] if:
-  - the defined type C.TYPES[x] exists.
+  - the type C.TYPES[x] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (ARRAY (mut zt)).
   - Let t be the value type $unpack(zt).
 
 Instr_ok/array.new_elem
 - the instruction (ARRAY.NEW_ELEM x y) is valid with the instruction type [I32, I32] -> [(REF ?() (_IDX x))] if:
-  - the defined type C.TYPES[x] exists.
+  - the type C.TYPES[x] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (ARRAY (mut rt)).
-  - the element type C.ELEMS[y] exists.
+  - the element segment C.ELEMS[y] exists.
   - C.ELEMS[y] matches the reference type rt.
 
 Instr_ok/array.new_data
 - the instruction (ARRAY.NEW_DATA x y) is valid with the instruction type [I32, I32] -> [(REF ?() (_IDX x))] if:
-  - the defined type C.TYPES[x] exists.
+  - the type C.TYPES[x] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (ARRAY (mut zt)).
   - $unpack(zt) is numtype or the value type $unpack(zt) is vectype.
-  - the data type C.DATAS[y] exists.
+  - the data segment C.DATAS[y] exists.
   - C.DATAS[y] is OK.
 
 Instr_ok/array.get
 - the instruction (ARRAY.GET sx? x) is valid with the instruction type [(REF ?(NULL) (_IDX x)), I32] -> [t] if:
-  - the defined type C.TYPES[x] exists.
+  - the type C.TYPES[x] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (ARRAY (mut zt)).
   - the signedness sx? is ?() if and only if the storage type zt is $unpack(zt).
   - Let t be the value type $unpack(zt).
 
 Instr_ok/array.set
 - the instruction (ARRAY.SET x) is valid with the instruction type [(REF ?(NULL) (_IDX x)), I32, t] -> [] if:
-  - the defined type C.TYPES[x] exists.
+  - the type C.TYPES[x] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (ARRAY (?(MUT) zt)).
   - Let t be the value type $unpack(zt).
 
@@ -26147,31 +26147,31 @@ Instr_ok/array.len
 
 Instr_ok/array.fill
 - the instruction (ARRAY.FILL x) is valid with the instruction type [(REF ?(NULL) (_IDX x)), I32, t, I32] -> [] if:
-  - the defined type C.TYPES[x] exists.
+  - the type C.TYPES[x] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (ARRAY (?(MUT) zt)).
   - Let t be the value type $unpack(zt).
 
 Instr_ok/array.copy
 - the instruction (ARRAY.COPY x_1 x_2) is valid with the instruction type [(REF ?(NULL) (_IDX x_1)), I32, (REF ?(NULL) (_IDX x_2)), I32, I32] -> [] if:
-  - the defined type C.TYPES[x_1] exists.
+  - the type C.TYPES[x_1] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x_1] is the composite type (ARRAY (?(MUT) zt_1)).
-  - the defined type C.TYPES[x_2] exists.
+  - the type C.TYPES[x_2] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x_2] is the composite type (ARRAY (mut zt_2)).
   - the storage type zt_2 matches the storage type zt_1.
 
 Instr_ok/array.init_elem
 - the instruction (ARRAY.INIT_ELEM x y) is valid with the instruction type [(REF ?(NULL) (_IDX x)), I32, I32, I32] -> [] if:
-  - the defined type C.TYPES[x] exists.
+  - the type C.TYPES[x] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (ARRAY (?(MUT) zt)).
-  - the element type C.ELEMS[y] exists.
+  - the element segment C.ELEMS[y] exists.
   - C.ELEMS[y] matches the storage type zt.
 
 Instr_ok/array.init_data
 - the instruction (ARRAY.INIT_DATA x y) is valid with the instruction type [(REF ?(NULL) (_IDX x)), I32, I32, I32] -> [] if:
-  - the defined type C.TYPES[x] exists.
+  - the type C.TYPES[x] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (ARRAY (?(MUT) zt)).
   - $unpack(zt) is numtype or the value type $unpack(zt) is vectype.
-  - the data type C.DATAS[y] exists.
+  - the data segment C.DATAS[y] exists.
   - C.DATAS[y] is OK.
 
 Instr_ok/extern.convert_any
@@ -26257,114 +26257,114 @@ Instr_ok/vcvtop
 
 Instr_ok/local.get
 - the instruction (LOCAL.GET x) is valid with the instruction type [] -> [t] if:
-  - the local type C.LOCALS[x] exists.
+  - the local C.LOCALS[x] exists.
   - C.LOCALS[x] is (SET t).
 
 Instr_ok/local.set
 - the instruction (LOCAL.SET x) is valid with the instruction type [t] ->_ [x] [] if:
-  - the local type C.LOCALS[x] exists.
+  - the local C.LOCALS[x] exists.
   - C.LOCALS[x] is (init t).
 
 Instr_ok/local.tee
 - the instruction (LOCAL.TEE x) is valid with the instruction type [t] ->_ [x] [t] if:
-  - the local type C.LOCALS[x] exists.
+  - the local C.LOCALS[x] exists.
   - C.LOCALS[x] is (init t).
 
 Instr_ok/global.get
 - the instruction (GLOBAL.GET x) is valid with the instruction type [] -> [t] if:
-  - the global type C.GLOBALS[x] exists.
+  - the global C.GLOBALS[x] exists.
   - C.GLOBALS[x] is (mut t).
 
 Instr_ok/global.set
 - the instruction (GLOBAL.SET x) is valid with the instruction type [t] -> [] if:
-  - the global type C.GLOBALS[x] exists.
+  - the global C.GLOBALS[x] exists.
   - C.GLOBALS[x] is (?(MUT) t).
 
 Instr_ok/table.get
 - the instruction (TABLE.GET x) is valid with the instruction type [at] -> [rt] if:
-  - the table type C.TABLES[x] exists.
+  - the table C.TABLES[x] exists.
   - C.TABLES[x] is (at lim rt).
 
 Instr_ok/table.set
 - the instruction (TABLE.SET x) is valid with the instruction type [at, rt] -> [] if:
-  - the table type C.TABLES[x] exists.
+  - the table C.TABLES[x] exists.
   - C.TABLES[x] is (at lim rt).
 
 Instr_ok/table.size
 - the instruction (TABLE.SIZE x) is valid with the instruction type [] -> [at] if:
-  - the table type C.TABLES[x] exists.
+  - the table C.TABLES[x] exists.
   - C.TABLES[x] is (at lim rt).
 
 Instr_ok/table.grow
 - the instruction (TABLE.GROW x) is valid with the instruction type [rt, at] -> [I32] if:
-  - the table type C.TABLES[x] exists.
+  - the table C.TABLES[x] exists.
   - C.TABLES[x] is (at lim rt).
 
 Instr_ok/table.fill
 - the instruction (TABLE.FILL x) is valid with the instruction type [at, rt, at] -> [] if:
-  - the table type C.TABLES[x] exists.
+  - the table C.TABLES[x] exists.
   - C.TABLES[x] is (at lim rt).
 
 Instr_ok/table.copy
 - the instruction (TABLE.COPY x_1 x_2) is valid with the instruction type [at_1, at_2, t] -> [] if:
-  - the table type C.TABLES[x_1] exists.
+  - the table C.TABLES[x_1] exists.
   - C.TABLES[x_1] is (at_1 lim_1 rt_1).
-  - the table type C.TABLES[x_2] exists.
+  - the table C.TABLES[x_2] exists.
   - C.TABLES[x_2] is (at_2 lim_2 rt_2).
   - the reference type rt_2 matches the reference type rt_1.
   - Let t be the address type $minat(at_1, at_2).
 
 Instr_ok/table.init
 - the instruction (TABLE.INIT x y) is valid with the instruction type [at, I32, I32] -> [] if:
-  - the table type C.TABLES[x] exists.
+  - the table C.TABLES[x] exists.
   - C.TABLES[x] is (at lim rt_1).
-  - the element type C.ELEMS[y] exists.
+  - the element segment C.ELEMS[y] exists.
   - C.ELEMS[y] is rt_2.
   - the reference type rt_2 matches the reference type rt_1.
 
 Instr_ok/elem.drop
 - the instruction (ELEM.DROP x) is valid with the instruction type [] -> [] if:
-  - the element type C.ELEMS[x] exists.
+  - the element segment C.ELEMS[x] exists.
   - C.ELEMS[x] is rt.
 
 Instr_ok/memory.size
 - the instruction (MEMORY.SIZE x) is valid with the instruction type [] -> [at] if:
-  - the memory type C.MEMS[x] exists.
+  - the memory C.MEMS[x] exists.
   - C.MEMS[x] is at lim PAGE.
 
 Instr_ok/memory.grow
 - the instruction (MEMORY.GROW x) is valid with the instruction type [at] -> [at] if:
-  - the memory type C.MEMS[x] exists.
+  - the memory C.MEMS[x] exists.
   - C.MEMS[x] is at lim PAGE.
 
 Instr_ok/memory.fill
 - the instruction (MEMORY.FILL x) is valid with the instruction type [at, I32, at] -> [] if:
-  - the memory type C.MEMS[x] exists.
+  - the memory C.MEMS[x] exists.
   - C.MEMS[x] is at lim PAGE.
 
 Instr_ok/memory.copy
 - the instruction (MEMORY.COPY x_1 x_2) is valid with the instruction type [at_1, at_2, t] -> [] if:
-  - the memory type C.MEMS[x_1] exists.
+  - the memory C.MEMS[x_1] exists.
   - C.MEMS[x_1] is at_1 lim_1 PAGE.
-  - the memory type C.MEMS[x_2] exists.
+  - the memory C.MEMS[x_2] exists.
   - C.MEMS[x_2] is at_2 lim_2 PAGE.
   - Let t be the address type $minat(at_1, at_2).
 
 Instr_ok/memory.init
 - the instruction (MEMORY.INIT x y) is valid with the instruction type [at, I32, I32] -> [] if:
-  - the memory type C.MEMS[x] exists.
+  - the memory C.MEMS[x] exists.
   - C.MEMS[x] is at lim PAGE.
-  - the data type C.DATAS[y] exists.
+  - the data segment C.DATAS[y] exists.
   - C.DATAS[y] is OK.
 
 Instr_ok/data.drop
 - the instruction (DATA.DROP x) is valid with the instruction type [] -> [] if:
-  - the data type C.DATAS[x] exists.
+  - the data segment C.DATAS[x] exists.
   - C.DATAS[x] is OK.
 
 Instr_ok/load
 - the instruction (LOAD nt' loadop_? x memarg) is valid with the instruction type [at] -> [valtype] if:
-  - the memory type C.MEMS[x] exists.
+  - the memory C.MEMS[x] exists.
   - C.MEMS[x] is at lim PAGE.
   - Either:
     - the number type nt' is nt.
@@ -26379,7 +26379,7 @@ Instr_ok/load
 
 Instr_ok/store
 - the instruction (STORE nt' storeop_? x memarg) is valid with the instruction type [at, valtype] -> [] if:
-  - the memory type C.MEMS[x] exists.
+  - the memory C.MEMS[x] exists.
   - C.MEMS[x] is at lim PAGE.
   - Either:
     - the number type nt' is nt.
@@ -26394,7 +26394,7 @@ Instr_ok/store
 
 Instr_ok/vload
 - the instruction (VLOAD V128 vloadop_? x memarg) is valid with the instruction type [at] -> [V128] if:
-  - the memory type C.MEMS[x] exists.
+  - the memory C.MEMS[x] exists.
   - C.MEMS[x] is at lim PAGE.
   - Either:
     - vloadop_? is ?().
@@ -26411,20 +26411,20 @@ Instr_ok/vload
 
 Instr_ok/vload_lane
 - the instruction (VLOAD_LANE V128 N x memarg i) is valid with the instruction type [at, V128] -> [V128] if:
-  - the memory type C.MEMS[x] exists.
+  - the memory C.MEMS[x] exists.
   - C.MEMS[x] is at lim PAGE.
   - (2 ^ memarg.ALIGN) is less than or equal to (N / 8).
   - i is less than (128 / N).
 
 Instr_ok/vstore
 - the instruction (VSTORE V128 x memarg) is valid with the instruction type [at, V128] -> [] if:
-  - the memory type C.MEMS[x] exists.
+  - the memory C.MEMS[x] exists.
   - C.MEMS[x] is at lim PAGE.
   - (2 ^ memarg.ALIGN) is less than or equal to ($vsize(V128) / 8).
 
 Instr_ok/vstore_lane
 - the instruction (VSTORE_LANE V128 N x memarg i) is valid with the instruction type [at, V128] -> [] if:
-  - the memory type C.MEMS[x] exists.
+  - the memory C.MEMS[x] exists.
   - C.MEMS[x] is at lim PAGE.
   - (2 ^ memarg.ALIGN) is less than or equal to (N / 8).
   - i is less than (128 / N).
@@ -26441,49 +26441,49 @@ Instr_ok/select-impl
 
 Instr_ok/load-val
 - the instruction (LOAD nt ?() x memarg) is valid with the instruction type [at] -> [nt] if:
-  - the memory type C.MEMS[x] exists.
+  - the memory C.MEMS[x] exists.
   - C.MEMS[x] is at lim PAGE.
   - (2 ^ memarg.ALIGN) is less than or equal to ($size(nt) / 8).
 
 Instr_ok/load-pack
 - the instruction (LOAD Inn ?(M _ sx) x memarg) is valid with the instruction type [at] -> [Inn] if:
-  - the memory type C.MEMS[x] exists.
+  - the memory C.MEMS[x] exists.
   - C.MEMS[x] is at lim PAGE.
   - (2 ^ memarg.ALIGN) is less than or equal to (M / 8).
 
 Instr_ok/store-val
 - the instruction (STORE nt ?() x memarg) is valid with the instruction type [at, nt] -> [] if:
-  - the memory type C.MEMS[x] exists.
+  - the memory C.MEMS[x] exists.
   - C.MEMS[x] is at lim PAGE.
   - (2 ^ memarg.ALIGN) is less than or equal to ($size(nt) / 8).
 
 Instr_ok/store-pack
 - the instruction (STORE Inn ?(M) x memarg) is valid with the instruction type [at, Inn] -> [] if:
-  - the memory type C.MEMS[x] exists.
+  - the memory C.MEMS[x] exists.
   - C.MEMS[x] is at lim PAGE.
   - (2 ^ memarg.ALIGN) is less than or equal to (M / 8).
 
 Instr_ok/vload-val
 - the instruction (VLOAD V128 ?() x memarg) is valid with the instruction type [at] -> [V128] if:
-  - the memory type C.MEMS[x] exists.
+  - the memory C.MEMS[x] exists.
   - C.MEMS[x] is at lim PAGE.
   - (2 ^ memarg.ALIGN) is less than or equal to ($vsize(V128) / 8).
 
 Instr_ok/vload-pack
 - the instruction (VLOAD V128 ?((SHAPE M X N _ sx)) x memarg) is valid with the instruction type [at] -> [V128] if:
-  - the memory type C.MEMS[x] exists.
+  - the memory C.MEMS[x] exists.
   - C.MEMS[x] is at lim PAGE.
   - (2 ^ memarg.ALIGN) is less than or equal to ((M / 8) * N).
 
 Instr_ok/vload-splat
 - the instruction (VLOAD V128 ?((SPLAT N)) x memarg) is valid with the instruction type [at] -> [V128] if:
-  - the memory type C.MEMS[x] exists.
+  - the memory C.MEMS[x] exists.
   - C.MEMS[x] is at lim PAGE.
   - (2 ^ memarg.ALIGN) is less than or equal to (N / 8).
 
 Instr_ok/vload-zero
 - the instruction (VLOAD V128 ?((ZERO N)) x memarg) is valid with the instruction type [at] -> [V128] if:
-  - the memory type C.MEMS[x] exists.
+  - the memory C.MEMS[x] exists.
   - C.MEMS[x] is at lim PAGE.
   - (2 ^ memarg.ALIGN) is less than or equal to (N / 8).
 
@@ -26499,7 +26499,7 @@ Instrs_ok
     - |init*| is |t*|.
     - |init*| is |x_1*|.
     - For all x_1 in x_1*:
-      - the local type C.LOCALS[x_1] exists.
+      - the local C.LOCALS[x_1] exists.
     - For all init in init*, and corresponding t in t*, and corresponding x_1 in x_1*:
       - C.LOCALS[x_1] is (init t).
     - Under the context $with_locals(C, x_1*, (SET t)*), the instruction sequence instr_2* is valid with the instruction type t_2* ->_ x_2* t_3*.
@@ -26524,7 +26524,7 @@ Instrs_ok/seq
   - |init*| is |t*|.
   - |init*| is |x_1*|.
   - For all x_1 in x_1*:
-    - the local type C.LOCALS[x_1] exists.
+    - the local C.LOCALS[x_1] exists.
   - For all init in init*, and corresponding t in t*, and corresponding x_1 in x_1*:
     - C.LOCALS[x_1] is (init t).
   - Under the context $with_locals(C, x_1*, (SET t)*), the instruction sequence instr_2* is valid with the instruction type t_2* ->_ x_2* t_3*.
@@ -26576,7 +26576,7 @@ Instr_const
     - val is EXTERN.CONVERT_ANY.
   - Or:
     - val is (GLOBAL.GET x).
-    - the global type C.GLOBALS[x] exists.
+    - the global C.GLOBALS[x] exists.
     - C.GLOBALS[x] is (?() t).
   - Or:
     - val is (BINOP Inn binop).
@@ -26621,7 +26621,7 @@ Instr_const/extern.convert_any
 
 Instr_const/global.get
 - the instruction (GLOBAL.GET x) is constant if:
-  - the global type C.GLOBALS[x] exists.
+  - the global C.GLOBALS[x] exists.
   - C.GLOBALS[x] is (?() t).
 
 Instr_const/binop
@@ -26659,7 +26659,7 @@ Local_ok/unset
   - A :ref:`default value <aux-default>` for the value type t is not defined.
 
 Func_ok
-- the function (FUNC x local* expr) is valid with the defined type C.TYPES[x] if:
+- the function (FUNC x local* expr) is valid with the type C.TYPES[x] if:
   - C.TYPES[x] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (FUNC t_1* -> t_2*).
   - |lct*| is |local*|.
@@ -26686,7 +26686,7 @@ Mem_ok
   - memtype is valid.
 
 Tag_ok
-- the tag (TAG x) is valid with the tag type C.TYPES[x] if:
+- the tag (TAG x) is valid with the type C.TYPES[x] if:
   - C.TYPES[x] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (FUNC functype).
 
@@ -26694,7 +26694,7 @@ Elemmode_ok
 - the element mode elemmode is valid with the element type rt if:
   - Either:
     - elemmode is (ACTIVE x expr).
-    - the table type C.TABLES[x] exists.
+    - the table C.TABLES[x] exists.
     - C.TABLES[x] is (at lim rt').
     - rt matches the reference type rt'.
     - the expression expr is valid with the value type I32.
@@ -26706,7 +26706,7 @@ Elemmode_ok
 
 Elemmode_ok/active
 - the element mode (ACTIVE x expr) is valid with the element type rt if:
-  - the table type C.TABLES[x] exists.
+  - the table C.TABLES[x] exists.
   - C.TABLES[x] is (at lim rt').
   - rt matches the reference type rt'.
   - the expression expr is valid with the value type I32.
@@ -26730,7 +26730,7 @@ Datamode_ok
 - the data mode datamode is valid with the data type OK if:
   - Either:
     - datamode is (ACTIVE x expr).
-    - the memory type C.MEMS[x] exists.
+    - the memory C.MEMS[x] exists.
     - C.MEMS[x] is mt.
     - the expression expr is valid with the value type I32.
     - expr is constant.
@@ -26739,7 +26739,7 @@ Datamode_ok
 
 Datamode_ok/active
 - the data mode (ACTIVE x expr) is valid with the data type OK if:
-  - the memory type C.MEMS[x] exists.
+  - the memory C.MEMS[x] exists.
   - C.MEMS[x] is mt.
   - the expression expr is valid with the value type I32.
   - expr is constant.
@@ -26753,7 +26753,7 @@ Data_ok
 
 Start_ok
 - the start function (START x) is valid if:
-  - the defined type C.FUNCS[x] exists.
+  - the function C.FUNCS[x] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.FUNCS[x] is the composite type (FUNC [] -> []).
 
 Import_ok
@@ -26765,52 +26765,52 @@ Externidx_ok
   - Either:
     - externidx is (FUNC x).
     - externtype is (FUNC dt).
-    - the defined type C.FUNCS[x] exists.
+    - the function C.FUNCS[x] exists.
     - C.FUNCS[x] is dt.
   - Or:
     - externidx is (GLOBAL x).
     - externtype is (GLOBAL gt).
-    - the global type C.GLOBALS[x] exists.
+    - the global C.GLOBALS[x] exists.
     - C.GLOBALS[x] is gt.
   - Or:
     - externidx is (TABLE x).
     - externtype is (TABLE tt).
-    - the table type C.TABLES[x] exists.
+    - the table C.TABLES[x] exists.
     - C.TABLES[x] is tt.
   - Or:
     - externidx is (MEM x).
     - externtype is (MEM mt).
-    - the memory type C.MEMS[x] exists.
+    - the memory C.MEMS[x] exists.
     - C.MEMS[x] is mt.
   - Or:
     - externidx is (TAG x).
     - externtype is (TAG jt).
-    - the tag type C.TAGS[x] exists.
+    - the tag C.TAGS[x] exists.
     - C.TAGS[x] is jt.
 
 Externidx_ok/func
 - the external index (FUNC x) is valid with the external type (FUNC dt) if:
-  - the defined type C.FUNCS[x] exists.
+  - the function C.FUNCS[x] exists.
   - C.FUNCS[x] is dt.
 
 Externidx_ok/global
 - the external index (GLOBAL x) is valid with the external type (GLOBAL gt) if:
-  - the global type C.GLOBALS[x] exists.
+  - the global C.GLOBALS[x] exists.
   - C.GLOBALS[x] is gt.
 
 Externidx_ok/table
 - the external index (TABLE x) is valid with the external type (TABLE tt) if:
-  - the table type C.TABLES[x] exists.
+  - the table C.TABLES[x] exists.
   - C.TABLES[x] is tt.
 
 Externidx_ok/mem
 - the external index (MEM x) is valid with the external type (MEM mt) if:
-  - the memory type C.MEMS[x] exists.
+  - the memory C.MEMS[x] exists.
   - C.MEMS[x] is mt.
 
 Externidx_ok/tag
 - the external index (TAG x) is valid with the external type (TAG jt) if:
-  - the tag type C.TAGS[x] exists.
+  - the tag C.TAGS[x] exists.
   - C.TAGS[x] is jt.
 
 Export_ok
@@ -27088,7 +27088,7 @@ NotationTypingInstrScheme
     - instr' is (GLOBAL.GET x).
     - valtype* is [].
     - valtype'* is [t].
-    - the global type C.GLOBALS[x] exists.
+    - the global C.GLOBALS[x] exists.
     - C.GLOBALS[x] is (mut t).
   - Or:
     - instr' is (BLOCK blocktype instr*).
@@ -27103,7 +27103,7 @@ NotationTypingInstrScheme/i32.add
 
 NotationTypingInstrScheme/global.get
 - the instruction sequence [(GLOBAL.GET x)] is valid with the function type [] -> [t] if:
-  - the global type C.GLOBALS[x] exists.
+  - the global C.GLOBALS[x] exists.
   - C.GLOBALS[x] is (mut t).
 
 NotationTypingInstrScheme/block

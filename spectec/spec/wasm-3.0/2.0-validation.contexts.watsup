@@ -22,17 +22,17 @@ var it : instrtype
 ;; Contexts
 
 syntax context hint(desc "context") hint(macro "%" "C%") =
-  { TYPES deftype*,
-    RECS subtype*,
-    FUNCS deftype*,
-    GLOBALS globaltype*,
-    TABLES tabletype*,
-    MEMS memtype*,
-    TAGS tagtype*,
-    ELEMS elemtype*,
-    DATAS datatype*,
-    LOCALS localtype*,
-    LABELS resulttype*,
+  { TYPES deftype*          hint(desc "type"),
+    RECS subtype*           hint(desc "recursive type"),
+    FUNCS deftype*          hint(desc "function"),
+    GLOBALS globaltype*     hint(desc "global"),
+    TABLES tabletype*       hint(desc "table"),
+    MEMS memtype*           hint(desc "memory"),
+    TAGS tagtype*           hint(desc "tag"),
+    ELEMS elemtype*         hint(desc "element segment"),
+    DATAS datatype*         hint(desc "data segment"),
+    LOCALS localtype*       hint(desc "local"),
+    LABELS resulttype*      hint(desc "label"),
     RETURN resulttype?,
     REFS funcidx*
   }
