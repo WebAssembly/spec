@@ -33,8 +33,6 @@ $${rule: {Step_pure/unreachable}}
 
 $${rule-prose: Step_pure/drop}
 
-.. todo:: (1) Remove trailing "Do nothing."
-
 $${rule: Step_pure/drop}
 
 
@@ -169,8 +167,6 @@ $${rule: Step_read/ref.func}
 
 $${rule-prose: Step_pure/ref.is_null}
 
-.. todo:: (3) Introduce if-let instruction instead of "is of the case".
-
 $${rule: {Step_pure/ref.is_null-*}}
 
 
@@ -178,16 +174,12 @@ $${rule: {Step_pure/ref.is_null-*}}
 
 $${rule-prose: Step_pure/ref.as_non_null}
 
-.. todo:: (3) Introduce if-let instruction instead of "is of the case".
-
 $${rule: {Step_pure/ref.as_non_null-*}}
 
 
 .. _exec-ref.eq:
 
 $${rule-prose: Step_pure/ref.eq}
-
-.. todo:: (3) Introduce if-let instruction instead of "is of the case".
 
 $${rule: {Step_pure/ref.eq-*}}
 
@@ -197,7 +189,7 @@ $${rule: {Step_pure/ref.eq-*}}
 $${rule-prose: Step_read/ref.test}
 
 .. todo:: (9) Need to handle RulePr s \|- ref : rt properly in prose instead of $ref_type_of
-   Below is the actual prose.
+   below is the official specification
 
 1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
 
@@ -229,7 +221,7 @@ $${rule: {Step_read/ref.test-*}}
 $${rule-prose: Step_read/ref.cast}
 
 .. todo:: (9) Need to handle RulePr s \|- ref : rt properly in prose instead of $ref_type_of
-   Below is the actual prose. 
+   below is the official specification 
 
 1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
 
@@ -267,8 +259,8 @@ $${rule: {Step_pure/ref.i31}}
 
 $${rule-prose: Step_pure/i31.get}
 
-.. todo:: (3) Introduce if-let instruction instead of "is of the case". (4) Guarantees from validation can help simplify the prose.
-   Below is the actual prose.
+.. todo:: (4) Guarantees from validation can help simplify the prose.
+   below is the official specification
 
 1. Assert: due to :ref:`validation <valid-i31.get>`, a :ref:`value <syntax-val>` of :ref:`type <syntax-valtype>` :math:`(\REF~\NULL~\I31)` is on the top of the stack.
 
@@ -293,70 +285,12 @@ $${rule: {Step_pure/i31.get-*}}
 
 $${rule-prose: Step/struct.new}
 
-.. todo:: (3') Introduce let binding instead of "is of the case". (5) Use "the expansion of" instead of $expand function application.
-   Below is the actual prose.
-
-1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
-
-2. Assert: due to :ref:`validation <valid-struct.new>`, the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]` exists.
-
-3. Let :math:`\deftype` be the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]`.
-
-4. Assert: due to :ref:`validation <valid-struct.new>`, the :ref:`expansion <aux-expand-deftype>` of :math:`\deftype` is a :ref:`structure type <syntax-structtype>`.
-
-5. Let :math:`\TSTRUCT~\X{ft}^\ast` be the :ref:`expanded <aux-expand-deftype>` :ref:`structure type <syntax-structtype>` of :math:`\deftype`.
-
-6. Let :math:`n` be the length of the :ref:`field type <syntax-fieldtype>` sequence :math:`\X{ft}^\ast`.
-
-7. Assert: due to :ref:`validation <valid-struct.new>`, :math:`n` :ref:`values <syntax-val>` are on the top of the stack.
-
-8. Pop the :math:`n` values :math:`\val^\ast` from the stack.
-
-9. For every value :math:`\val_i` in :math:`\val^\ast` and corresponding :ref:`field type <syntax-fieldtype>` :math:`\X{ft}_i` in :math:`\X{ft}^\ast`:
-
-   a. Let :math:`\fieldval_i` be the result of computing :math:`\packfield_{\X{ft}_i}(\val_i))`.
-
-10. Let :math:`\fieldval^\ast` the concatenation of all field values :math:`\fieldval_i`.
-
-11. Let :math:`\X{si}` be the :ref:`structure instance <syntax-structinst>` :math:`\{\SITYPE~\deftype, \SIFIELDS~\fieldval^\ast\}`.
-
-12. Let :math:`a` be the length of :math:`S.\SSTRUCTS`.
-
-13. Append :math:`\X{si}` to :math:`S.\SSTRUCTS`.
-
-14. Push the :ref:`structure reference <syntax-ref.struct>` :math:`\REFSTRUCTADDR~a` to the stack.
-
 $${rule: {Step/struct.new}}
 
 
 .. _exec-struct.new_default:
 
 $${rule-prose: Step_read/struct.new_default}
-
-.. todo:: (3') Introduce let binding instead of "is of the case". (5) Use "the expansion of" instead of $expand function application.
-   Below is the actual prose.
-
-1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
-
-2. Assert: due to :ref:`validation <valid-struct.new_default>`, the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]` exists.
-
-3. Let :math:`\deftype` be the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]`.
-
-4. Assert: due to :ref:`validation <valid-struct.new_default>`, the :ref:`expansion <aux-expand-deftype>` of :math:`\deftype` is a :ref:`structure type <syntax-structtype>`.
-
-5. Let :math:`\TSTRUCT~\X{ft}^\ast` be the :ref:`expanded <aux-expand-deftype>` :ref:`structure type <syntax-structtype>` of :math:`\deftype`.
-
-6. Let :math:`n` be the length of the :ref:`field type <syntax-fieldtype>` sequence :math:`\X{ft}^\ast`.
-
-7. For every :ref:`field type <syntax-fieldtype>` :math:`\X{ft}_i` in :math:`\X{ft}^\ast`:
-
-   a. Let :math:`t_i` be the :ref:`value type <syntax-valtype>` :math:`\unpack(\X{ft}_i)`.
-
-   b. Assert: due to :ref:`validation <valid-struct.new_default>`, :math:`\default_{t_i}` is defined.
-
-   c. Push the :ref:`value <syntax-val>` :math:`\default_{t_i}` to the stack.
-
-8. Execute the instruction :math:`(\STRUCTNEW~x)`.
 
 $${rule: {Step_read/struct.new_default}}
 
@@ -366,84 +300,12 @@ $${rule: {Step_read/struct.new_default}}
 
 $${rule-prose: Step_read/struct.get}
 
-.. todo:: (3) Introduce if-let instruction instead of "is of the case". (5) Use "the expansion of" instead of $expand function application.
-   Below is the actual prose.
-
-1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
-
-2. Assert: due to :ref:`validation <valid-struct.get>`, the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]` exists.
-
-3. Let :math:`\deftype` be the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]`.
-
-4. Assert: due to :ref:`validation <valid-struct.get>`, the :ref:`expansion <aux-expand-deftype>` of :math:`\deftype` is a :ref:`structure type <syntax-structtype>` with at least :math:`y + 1` fields.
-
-5. Let :math:`\TSTRUCT~\X{ft}^\ast` be the :ref:`expanded <aux-expand-deftype>` :ref:`structure type <syntax-structtype>` of :math:`\deftype`.
-
-6. Let :math:`\X{ft}_y` be the :math:`y`-th :ref:`field type <syntax-fieldtype>` of :math:`\X{ft}^\ast`.
-
-7. Assert: due to :ref:`validation <valid-struct.get>`, a :ref:`value <syntax-val>` of :ref:`type <syntax-valtype>` :math:`(\REF~\NULL~x)` is on the top of the stack.
-
-8. Pop the value :math:`\reff` from the stack.
-
-9. If :math:`\reff` is :math:`\REFNULL~t`, then:
-
-   a. Trap.
-
-10. Assert: due to :ref:`validation <valid-struct.get>`, a :math:`\reff` is a :ref:`structure reference <syntax-ref.struct>`.
-
-11. Let :math:`\REFSTRUCTADDR~a` be the reference value :math:`\reff`.
-
-12. Assert: due to :ref:`validation <valid-struct.get>`, the :ref:`structure instance <syntax-structinst>` :math:`S.\SSTRUCTS[a]` exists and has at least :math:`y + 1` fields.
-
-13. Let :math:`\fieldval` be the :ref:`field value <syntax-fieldval>` :math:`S.\SSTRUCTS[a].\SIFIELDS[y]`.
-
-14. Let :math:`\val` be the result of computing :math:`\unpackfield^{\sx^?}_{\X{ft}_y}(\fieldval))`.
-
-15. Push the value :math:`\val` to the stack.
-
 $${rule: {Step_read/struct.get-*}}
 
 
 .. _exec-struct.set:
 
 $${rule-prose: Step/struct.set}
-
-.. todo:: (3) Introduce if-let instruction instead of "is of the case". (5) Use "the expansion of" instead of $expand function application.
-   Below is the actual prose.
-
-1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
-
-2. Assert: due to :ref:`validation <valid-struct.set>`, the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]` exists.
-
-3. Let :math:`\deftype` be the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]`.
-
-4. Assert: due to :ref:`validation <valid-struct.set>`, the :ref:`expansion <aux-expand-deftype>` of :math:`\deftype` is a :ref:`structure type <syntax-structtype>` with at least :math:`y + 1` fields.
-
-5. Let :math:`\TSTRUCT~\X{ft}^\ast` be the :ref:`expanded <aux-expand-deftype>` :ref:`structure type <syntax-structtype>` of :math:`\deftype`.
-
-6. Let :math:`\X{ft}_y` be the :math:`y`-th :ref:`field type <syntax-fieldtype>` of :math:`\X{ft}^\ast`.
-
-7. Assert: due to :ref:`validation <valid-struct.set>`, a :ref:`value <syntax-val>` is on the top of the stack.
-
-8. Pop the value :math:`\val` from the stack.
-
-9. Assert: due to :ref:`validation <valid-struct.set>`, a :ref:`value <syntax-val>` of :ref:`type <syntax-valtype>` :math:`(\REF~\NULL~x)` is on the top of the stack.
-
-10. Pop the value :math:`\reff` from the stack.
-
-11. If :math:`\reff` is :math:`\REFNULL~t`, then:
-
-   a. Trap.
-
-12. Assert: due to :ref:`validation <valid-struct.set>`, a :math:`\reff` is a :ref:`structure reference <syntax-ref.struct>`.
-
-13. Let :math:`\REFSTRUCTADDR~a` be the reference value :math:`\reff`.
-
-14. Assert: due to :ref:`validation <valid-struct.set>`, the :ref:`structure instance <syntax-structinst>` :math:`S.\SSTRUCTS[a]` exists and has at least :math:`y + 1` fields.
-
-15. Let :math:`\fieldval` be the result of computing :math:`\packfield_{\X{ft}_y}(\val))`.
-
-16. Replace the :ref:`field value <syntax-fieldval>` :math:`S.\SSTRUCTS[a].\SIFIELDS[y]` with :math:`\fieldval`.
 
 $${rule: {Step/struct.set-*}}
    
@@ -459,31 +321,6 @@ $${rule: {Step_pure/array.new}}
 
 $${rule-prose: Step_read/array.new_default}
 
-.. todo:: (3') Introduce let binding instead of "is of the case". (5) Use "the expansion of" instead of $expand function application.
-   Below is the actual prose.
-
-1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
-
-2. Assert: due to :ref:`validation <valid-array.new_default>`, the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]` exists.
-
-3. Let :math:`\deftype` be the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]`.
-
-4. Assert: due to :ref:`validation <valid-array.new_default>`, the :ref:`expansion <aux-expand-deftype>` of :math:`\deftype` is an :ref:`array type <syntax-arraytype>`.
-
-5. Let :math:`\TARRAY~\X{ft}` be the :ref:`expanded <aux-expand-deftype>` :ref:`array type <syntax-arraytype>` of :math:`\deftype`.
-
-6. Assert: due to :ref:`validation <valid-array.new_default>`, a :ref:`value <syntax-val>` of type :math:`\I32` is on the top of the stack.
-
-7. Pop the value :math:`\I32.\CONST~n` from the stack.
-
-8. Let :math:`t` be the :ref:`value type <syntax-valtype>` :math:`\unpack(\X{ft})`.
-
-9. Assert: due to :ref:`validation <valid-array.new_default>`, :math:`\default_t` is defined.
-
-10. Push the :ref:`value <syntax-val>` :math:`\default_t` to the stack :math:`n` times.
-
-11. Execute the instruction :math:`(\ARRAYNEWFIXED~x~n)`.
-
 $${rule: {Step_read/array.new_default}}
 
 
@@ -491,92 +328,12 @@ $${rule: {Step_read/array.new_default}}
 
 $${rule-prose: Step/array.new_fixed}
 
-.. todo:: (3') Introduce let binding instead of "is of the case". (5) Use "the expansion of" instead of $expand function application.
-   Below is the actual prose.
-
-1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
-
-2. Assert: due to :ref:`validation <valid-array.new_fixed>`, the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]` exists.
-
-3. Let :math:`\deftype` be the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]`.
-
-4. Assert: due to :ref:`validation <valid-array.new_fixed>`, the :ref:`expansion <aux-expand-deftype>` of :math:`\deftype` is a :ref:`array type <syntax-arraytype>`.
-
-5. Let :math:`\TARRAY~\X{ft}` be the :ref:`expanded <aux-expand-deftype>` :ref:`array type <syntax-arraytype>` of :math:`\deftype`.
-
-6. Assert: due to :ref:`validation <valid-array.new_fixed>`, :math:`n` :ref:`values <syntax-val>` are on the top of the stack.
-
-7. Pop the :math:`n` values :math:`\val^\ast` from the stack.
-
-8. For every value :math:`\val_i` in :math:`\val^\ast`:
-
-   a. Let :math:`\fieldval_i` be the result of computing :math:`\packfield_{\X{ft}}(\val_i))`.
-
-9. Let :math:`\fieldval^\ast` be the concatenation of all field values :math:`\fieldval_i`.
-
-10. Let :math:`\X{ai}` be the :ref:`array instance <syntax-arrayinst>` :math:`\{\AITYPE~\deftype, \AIFIELDS~\fieldval^\ast\}`.
-
-11. Let :math:`a` be the length of :math:`S.\SARRAYS`.
-
-12. Append :math:`\X{ai}` to :math:`S.\SARRAYS`.
-
-13. Push the :ref:`array reference <syntax-ref.array>` :math:`\REFARRAYADDR~a` to the stack.
-
 $${rule: {Step/array.new_fixed}}
 
 
 .. _exec-array.new_data:
 
 $${rule-prose: Step_read/array.new_data}
-
-.. todo:: (7) Render $inverse_ with display hint.
-   Below is the actual prose.
-
-1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
-
-2. Assert: due to :ref:`validation <valid-array.new_data>`, the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]` exists.
-
-3. Let :math:`\deftype` be the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]`.
-
-4. Assert: due to :ref:`validation <valid-array.new_data>`, the :ref:`expansion <aux-expand-deftype>` of :math:`\deftype` is an :ref:`array type <syntax-arraytype>`.
-
-5. Let :math:`\TARRAY~\X{ft}` be the :ref:`expanded <aux-expand-deftype>` :ref:`array type <syntax-arraytype>` of :math:`\deftype`.
-
-6. Assert: due to :ref:`validation <valid-array.new_data>`, the :ref:`data address <syntax-dataaddr>` :math:`F.\AMODULE.\MIDATAS[y]` exists.
-
-7. Let :math:`\X{da}` be the :ref:`data address <syntax-dataaddr>` :math:`F.\AMODULE.\MIDATAS[y]`.
-
-8. Assert: due to :ref:`validation <valid-array.new_data>`, the :ref:`data instance <syntax-datainst>` :math:`S.\SDATAS[\X{da}]` exists.
-
-9. Let :math:`\datainst` be the :ref:`data instance <syntax-datainst>` :math:`S.\SDATAS[\X{da}]`.
-
-10. Assert: due to :ref:`validation <valid-array.new_data>`, two :ref:`values <syntax-val>` of type :math:`\I32` are on the top of the stack.
-
-11. Pop the value :math:`\I32.\CONST~n` from the stack.
-
-12. Pop the value :math:`\I32.\CONST~s` from the stack.
-
-13. Assert: due to :ref:`validation <valid-array.new_data>`, the :ref:`field type <syntax-fieldtype>` :math:`\X{ft}` has a defined :ref:`bit width <bitwidth-fieldtype>`.
-
-14. Let :math:`z` be the :ref:`bit width <bitwidth-fieldtype>` of :ref:`field type <syntax-fieldtype>` :math:`\X{ft}` divided by eight.
-
-15. If the sum of :math:`s` and :math:`n` times :math:`z` is larger than the length of :math:`\datainst.\DIBYTES`, then:
-
-    a. Trap.
-
-16. Let :math:`b^\ast` be the :ref:`byte <syntax-byte>` sequence :math:`\datainst.\DIBYTES[s \slice n \cdot z]`.
-
-17. Let :math:`t` be the :ref:`value type <syntax-valtype>` :math:`\unpack(\X{ft})`.
-
-18. For each of the :math:`n` consecutive subsequences :math:`{b'}^z` of :math:`b^\ast`:
-
-    a. Assert: due to :ref:`validation <valid-array.new_data>`, :math:`\bytes_{\X{ft}}` is defined.
-
-    b. Let :math:`c_i` be the constant for which :math:`\bytes_{\X{ft}}(c_i)` is :math:`{b'}^z`.
-
-    c. Push the value :math:`t.\CONST~c_i` to the stack.
-
-19. Execute the instruction :math:`(\ARRAYNEWFIXED~x~n)`.
 
 $${rule: {Step_read/array.new_data-*}}
 
@@ -593,96 +350,12 @@ $${rule: {Step_read/array.new_elem-*}}
 
 $${rule-prose: Step_read/array.get}
 
-.. todo:: (3) Introduce if-let instruction instead of "is of the case". (5) Use "the expansion of" instead of $expand function application.
-   Below is the actual prose.
-
-1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
-
-2. Assert: due to :ref:`validation <valid-array.get>`, the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]` exists.
-
-3. Let :math:`\deftype` be the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]`.
-
-4. Assert: due to :ref:`validation <valid-array.get>`, the :ref:`expansion <aux-expand-deftype>` of :math:`\deftype` is an :ref:`array type <syntax-arraytype>`.
-
-5. Let :math:`\TARRAY~\X{ft}` be the :ref:`expanded <aux-expand-deftype>` :ref:`array type <syntax-arraytype>` of :math:`\deftype`.
-
-6. Assert: due to :ref:`validation <valid-array.get>`, a :ref:`value <syntax-val>` of :ref:`type <syntax-valtype>` :math:`\I32` is on the top of the stack.
-
-7. Pop the value :math:`\I32.\CONST~i` from the stack.
-
-8. Assert: due to :ref:`validation <valid-array.get>`, a :ref:`value <syntax-val>` of :ref:`type <syntax-valtype>` :math:`(\REF~\NULL~x)` is on the top of the stack.
-
-9. Pop the value :math:`\reff` from the stack.
-
-10. If :math:`\reff` is :math:`\REFNULL~t`, then:
-
-   a. Trap.
-
-11. Assert: due to :ref:`validation <valid-array.get>`, :math:`\reff` is an :ref:`array reference <syntax-ref.array>`.
-
-12. Let :math:`\REFARRAYADDR~a` be the reference value :math:`\reff`.
-
-13. Assert: due to :ref:`validation <valid-array.get>`, the :ref:`array instance <syntax-arrayinst>` :math:`S.\SARRAYS[a]` exists.
-
-14. If :math:`n` is larger than or equal to the length of :math:`S.\SARRAYS[a].\AIFIELDS`, then:
-
-    a. Trap.
-
-15. Let :math:`\fieldval` be the :ref:`field value <syntax-fieldval>` :math:`S.\SARRAYS[a].\AIFIELDS[i]`.
-
-16. Let :math:`\val` be the result of computing :math:`\unpackfield^{\sx^?}_{\X{ft}}(\fieldval))`.
-
-17. Push the value :math:`\val` to the stack.
-
 $${rule: {Step_read/array.get-*}}
 
 
 .. _exec-array.set:
 
 $${rule-prose: Step/array.set}
-
-.. todo:: (3) Introduce if-let instruction instead of "is of the case". (5) Use "the expansion of" instead of $expand function application.
-   Below is the actual prose.
-
-1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
-
-2. Assert: due to :ref:`validation <valid-array.set>`, the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]` exists.
-
-3. Let :math:`\deftype` be the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]`.
-
-4. Assert: due to :ref:`validation <valid-array.set>`, the :ref:`expansion <aux-expand-deftype>` of :math:`\deftype` is an :ref:`array type <syntax-arraytype>`.
-
-5. Let :math:`\TARRAY~\X{ft}` be the :ref:`expanded <aux-expand-deftype>` :ref:`array type <syntax-arraytype>` of :math:`\deftype`.
-
-6. Assert: due to :ref:`validation <valid-array.set>`, a :ref:`value <syntax-val>` is on the top of the stack.
-
-7. Pop the value :math:`\val` from the stack.
-
-8. Assert: due to :ref:`validation <valid-array.set>`, a :ref:`value <syntax-val>` of :ref:`type <syntax-valtype>` :math:`\I32` is on the top of the stack.
-
-9. Pop the value :math:`\I32.\CONST~i` from the stack.
-
-10. Assert: due to :ref:`validation <valid-array.set>`, a :ref:`value <syntax-val>` of :ref:`type <syntax-valtype>` :math:`(\REF~\NULL~x)` is on the top of the stack.
-
-11. Pop the value :math:`\reff` from the stack.
-
-12. If :math:`\reff` is :math:`\REFNULL~t`, then:
-
-   a. Trap.
-
-13. Assert: due to :ref:`validation <valid-array.set>`, :math:`\reff` is an :ref:`array reference <syntax-ref.array>`.
-
-14. Let :math:`\REFARRAYADDR~a` be the reference value :math:`\reff`.
-
-15. Assert: due to :ref:`validation <valid-array.set>`, the :ref:`array instance <syntax-arrayinst>` :math:`S.\SARRAYS[a]` exists.
-
-16. If :math:`n` is larger than or equal to the length of :math:`S.\SARRAYS[a].\AIFIELDS`, then:
-
-    a. Trap.
-
-17. Let :math:`\fieldval` be the result of computing :math:`\packfield_{\X{ft}}(\val))`.
-
-18. Replace the :ref:`field value <syntax-fieldval>` :math:`S.\SARRAYS[a].\AIFIELDS[i]` with :math:`\fieldval`.
 
 $${rule: {Step/array.set-*}}
 
@@ -691,8 +364,6 @@ $${rule: {Step/array.set-*}}
 
 $${rule-prose: Step_read/array.len}
 
-.. todo:: (3) Introduce if-let instruction instead of "is of the case".
-
 $${rule: {Step_read/array.len-*}}
 
 
@@ -700,135 +371,12 @@ $${rule: {Step_read/array.len-*}}
 
 $${rule-prose: Step_read/array.fill}
 
-.. todo:: (3) Introduce if-let instruction instead of "is of the case".
-
 $${rule: {Step_read/array.fill-*}}
 
 
 .. _exec-array.copy:
 
 $${rule-prose: Step_read/array.copy}
-
-.. todo:: (3) Introduce if-let instruction instead of "is of the case". (5) Use "the expansion of" instead of $expand function application. + Was too deeply nested
-   Below is the actual prose.
-
-1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
-
-2. Assert: due to :ref:`validation <valid-array.copy>`, the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[y]` exists.
-
-3. Let :math:`\deftype` be the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[y]`.
-
-4. Assert: due to :ref:`validation <valid-array.copy>`, the :ref:`expansion <aux-expand-deftype>` of :math:`\deftype` is an :ref:`array type <syntax-arraytype>`.
-
-5. Let :math:`\TARRAY~\mut~\X{st}` be the :ref:`expanded <aux-expand-deftype>` :ref:`array type <syntax-arraytype>` :math:`\deftype`.
-
-6. Assert: due to :ref:`validation <valid-array.copy>`, a :ref:`value <syntax-val>` of :ref:`type <syntax-valtype>` :math:`\I32` is on the top of the stack.
-
-7. Pop the value :math:`\I32.\CONST~n` from the stack.
-
-8. Assert: due to :ref:`validation <valid-array.copy>`, a :ref:`value <syntax-val>` of :ref:`type <syntax-valtype>` :math:`\I32` is on the top of the stack.
-
-9. Pop the value :math:`\I32.\CONST~s` from the stack.
-
-10. Assert: due to :ref:`validation <valid-array.copy>`, a :ref:`value <syntax-val>` of :ref:`type <syntax-valtype>` :math:`(\REF~\NULL~y)` is on the top of the stack.
-
-11. Pop the value :math:`\reff_2` from the stack.
-
-12. Assert: due to :ref:`validation <valid-array.copy>`, a :ref:`value <syntax-val>` of :ref:`type <syntax-valtype>` :math:`\I32` is on the top of the stack.
-
-13. Pop the value :math:`\I32.\CONST~d` from the stack.
-
-14. Assert: due to :ref:`validation <valid-array.copy>`, a :ref:`value <syntax-val>` of :ref:`type <syntax-valtype>` :math:`(\REF~\NULL~x)` is on the top of the stack.
-
-15. Pop the value :math:`\reff_1` from the stack.
-
-16. If :math:`\reff_1` is :math:`\REFNULL~t`, then:
-
-   a. Trap.
-
-17. Assert: due to :ref:`validation <valid-array.copy>`, :math:`\reff_1` is an :ref:`array reference <syntax-ref.array>`.
-
-18. Let :math:`\REFARRAYADDR~a_1` be the reference value :math:`\reff_1`.
-
-19. If :math:`\reff_2` is :math:`\REFNULL~t`, then:
-
-   a. Trap.
-
-20. Assert: due to :ref:`validation <valid-array.copy>`, :math:`\reff_2` is an :ref:`array reference <syntax-ref.array>`.
-
-21. Let :math:`\REFARRAYADDR~a_2` be the reference value :math:`\reff_2`.
-
-22. Assert: due to :ref:`validation <valid-array.copy>`, the :ref:`array instance <syntax-arrayinst>` :math:`S.\SARRAYS[a_1]` exists.
-
-23. Assert: due to :ref:`validation <valid-array.copy>`, the :ref:`array instance <syntax-arrayinst>` :math:`S.\SARRAYS[a_2]` exists.
-
-24. If :math:`d + n` is larger than the length of :math:`S.\SARRAYS[a_1].\AIFIELDS`, then:
-
-    a. Trap.
-
-25. If :math:`s + n` is larger than the length of :math:`S.\SARRAYS[a_2].\AIFIELDS`, then:
-
-    a. Trap.
-
-26. If :math:`n = 0`, then:
-
-    a. Return.
-
-27. If :math:`d \leq s`, then:
-
-    a. Push the value :math:`\REFARRAYADDR~a_1` to the stack.
-
-    b. Push the value :math:`\I32.\CONST~d` to the stack.
-
-    c. Push the value :math:`\REFARRAYADDR~a_2` to the stack.
-
-    d. Push the value :math:`\I32.\CONST~s` to the stack.
-
-    e. Execute :math:`\F{getfield}(\X{st})`.
-
-    f. Execute the instruction :math:`\ARRAYSET~x`.
-
-    g. Push the value :math:`\REFARRAYADDR~a_1` to the stack.
-
-    h. Assert: due to the earlier check against the array size, :math:`d+1 < 2^{32}`.
-
-    i. Push the value :math:`\I32.\CONST~(d+1)` to the stack.
-
-    j. Push the value :math:`\REFARRAYADDR~a_2` to the stack.
-
-    k. Assert: due to the earlier check against the array size, :math:`s+1 < 2^{32}`.
-
-    l. Push the value :math:`\I32.\CONST~(s+1)` to the stack.
-
-28. Else:
-
-    a. Push the value :math:`\REFARRAYADDR~a_1` to the stack.
-
-    b. Assert: due to the earlier check against the array size, :math:`d+n-1 < 2^{32}`.
-
-    c. Push the value :math:`\I32.\CONST~(d+n-1)` to the stack.
-
-    d. Push the value :math:`\REFARRAYADDR~a_2` to the stack.
-
-    e. Assert: due to the earlier check against the array size, :math:`s+n-1 < 2^{32}`.
-
-    f. Push the value :math:`\I32.\CONST~(s+n-1)` to the stack.
-
-    g. Execute :math:`\F{getfield}(\X{st})`.
-
-    h. Execute the instruction :math:`\ARRAYSET~x`.
-
-    i. Push the value :math:`\REFARRAYADDR~a_1` to the stack.
-
-    j. Push the value :math:`\I32.\CONST~d` to the stack.
-
-    k. Push the value :math:`\REFARRAYADDR~a_2` to the stack.
-
-    l. Push the value :math:`\I32.\CONST~s` to the stack.
-
-29. Push the value :math:`\I32.\CONST~(n-1)` to the stack.
-
-30. Execute the instruction :math:`\ARRAYCOPY~x~y`.
 
 $${rule: {Step_read/array.copy-*}}
 
@@ -842,95 +390,12 @@ $${definition: sx}
 
 $${rule-prose: Step_read/array.init_data}
 
-.. todo:: (7) Render $inverse_ with display hint.
-   Below is the actual prose.
-
-1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
-
-2. Assert: due to :ref:`validation <valid-array.init_data>`, the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]` exists.
-
-3. Let :math:`\deftype` be the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]`.
-
-4. Assert: due to :ref:`validation <valid-array.init_data>`, the :ref:`expansion <aux-expand-deftype>` of :math:`\deftype` is an :ref:`array type <syntax-arraytype>`.
-
-5. Let :math:`\TARRAY~\X{ft}` be the :ref:`expanded <aux-expand-deftype>` :ref:`array type <syntax-arraytype>` :math:`\deftype`.
-
-6. Assert: due to :ref:`validation <valid-array.init_data>`, the :ref:`data address <syntax-dataaddr>` :math:`F.\AMODULE.\MIDATAS[y]` exists.
-
-7. Let :math:`\X{da}` be the :ref:`data address <syntax-dataaddr>` :math:`F.\AMODULE.\MIDATAS[y]`.
-
-8. Assert: due to :ref:`validation <valid-array.init_data>`, the :ref:`data instance <syntax-datainst>` :math:`S.\SDATAS[\X{da}]` exists.
-
-9. Let :math:`\datainst` be the :ref:`data instance <syntax-datainst>` :math:`S.\SDATAS[\X{da}]`.
-
-10. Assert: due to :ref:`validation <valid-array.init_data>`, three values of type :math:`\I32` are on the top of the stack.
-
-11. Pop the value :math:`\I32.\CONST~n` from the stack.
-
-12. Pop the value :math:`\I32.\CONST~s` from the stack.
-
-13. Pop the value :math:`\I32.\CONST~d` from the stack.
-
-14. Assert: due to :ref:`validation <valid-array.init_data>`, a :ref:`value <syntax-val>` of :ref:`type <syntax-valtype>` :math:`(\REF~\NULL~x)` is on the top of the stack.
-
-15. Pop the value :math:`\reff` from the stack.
-
-16. If :math:`\reff` is :math:`\REFNULL~t`, then:
-
-   a. Trap.
-
-17. Assert: due to :ref:`validation <valid-array.init_data>`, :math:`\reff` is an :ref:`array reference <syntax-ref.array>`.
-
-18. Let :math:`\REFARRAYADDR~a` be the reference value :math:`\reff`.
-
-19. Assert: due to :ref:`validation <valid-array.init_data>`, the :ref:`array instance <syntax-arrayinst>` :math:`S.\SARRAYS[a]` exists.
-
-20. Assert: due to :ref:`validation <valid-array.init_data>`, the :ref:`field type <syntax-fieldtype>` :math:`\X{ft}` has a defined :ref:`bit width <bitwidth-fieldtype>`.
-
-21. Let :math:`z` be the :ref:`bit width <bitwidth-fieldtype>` of :ref:`field type <syntax-fieldtype>` :math:`\X{ft}` divided by eight.
-
-22. If :math:`d + n` is larger than the length of :math:`S.\SARRAYS[a].\AIFIELDS`, or the sum of :math:`s` and :math:`n` times :math:`z` is larger than the length of :math:`\datainst.\DIBYTES`, then:
-
-    a. Trap.
-
-23. If :math:`n = 0`, then:
-
-    a. Return.
-
-24. Let :math:`b^\ast` be the :ref:`byte <syntax-byte>` sequence :math:`\datainst.\DIBYTES[s \slice z]`.
-
-25. Let :math:`t` be the :ref:`value type <syntax-valtype>` :math:`\unpack(\X{ft})`.
-
-26. Assert: due to :ref:`validation <valid-array.init_data>`, :math:`\bytes_{\X{ft}}` is defined.
-
-27. Let :math:`c` be the constant for which :math:`\bytes_{\X{ft}}(c)` is :math:`b^\ast`.
-
-28. Push the value :math:`\REFARRAYADDR~a` to the stack.
-
-29. Push the value :math:`\I32.\CONST~d` to the stack.
-
-30. Push the value :math:`t.\CONST~c` to the stack.
-
-31. Execute the instruction :math:`\ARRAYSET~x`.
-
-32. Push the value :math:`\REFARRAYADDR~a` to the stack.
-
-33. Push the value :math:`\I32.\CONST~(d+1)` to the stack.
-
-34. Push the value :math:`\I32.\CONST~(s+z)` to the stack.
-
-35. Push the value :math:`\I32.\CONST~(n-1)` to the stack.
-
-36. Execute the instruction :math:`\ARRAYINITDATA~x~y`.
-
 $${rule: {Step_read/array.init_data-*}}
 
 
 .. _exec-array.init_elem:
 
 $${rule-prose: Step_read/array.init_elem}
-
-.. todo:: (3) Introduce if-let instruction instead of "is of the case".
 
 $${rule: {Step_read/array.init_elem-*}}
 
@@ -939,16 +404,12 @@ $${rule: {Step_read/array.init_elem-*}}
 
 $${rule-prose: Step_pure/any.convert_extern}
 
-.. todo:: (3) Introduce if-let instruction instead of "is of the case".
-
 $${rule: {Step_pure/any.convert_extern-*}}
 
 
 .. _exec-extern.convert_any:
 
 $${rule-prose: Step_pure/extern.convert_any}
-
-.. todo:: (3) Introduce if-let instruction instead of "is of the case".
 
 $${rule: {Step_pure/extern.convert_any-*}}
 
@@ -1298,47 +759,6 @@ Memory Instructions
 .. _exec-vload-val:
 
 $${rule-prose: Step_read/load}
-
-.. todo:: (7) Render $inverse_of_nbytes with display hint.
-   Below is the actual prose.
-
-1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
-
-2. Assert: due to :ref:`validation <valid-load-pack>`, :math:`F.\AMODULE.\MIMEMS[x]` exists.
-
-3. Let :math:`a` be the :ref:`memory address <syntax-memaddr>` :math:`F.\AMODULE.\MIMEMS[x]`.
-
-4. Assert: due to :ref:`validation <valid-load-pack>`, :math:`S.\SMEMS[a]` exists.
-
-5. Let :math:`\X{mem}` be the :ref:`memory instance <syntax-meminst>` :math:`S.\SMEMS[a]`.
-
-6. Assert: due to :ref:`validation <valid-load-pack>`, a value of some :ref:`address type <syntax-addrtype>` :math:`\X{at}` is on the top of the stack.
-
-7. Pop the value :math:`\X{at}.\CONST~i` from the stack.
-
-8. Let :math:`\X{ea}` be the integer :math:`i + \memarg.\OFFSET`.
-
-9. If :math:`N` is not part of the instruction, then:
-
-   a. Let :math:`N` be the :ref:`bit width <syntax-numtype>` :math:`|t|` of :ref:`number type <syntax-numtype>` :math:`t`.
-
-10. If :math:`\X{ea} + N/8` is larger than the length of :math:`\X{mem}.\MIBYTES`, then:
-
-    a. Trap.
-
-11. Let :math:`b^\ast` be the byte sequence :math:`\X{mem}.\MIBYTES[\X{ea} \slice N/8]`.
-
-12. If :math:`N` and :math:`\sx` are part of the instruction, then:
-
-    a. Let :math:`n` be the integer for which :math:`\bytes_{\iN}(n) = b^\ast`.
-
-    b. Let :math:`c` be the result of computing :math:`\extend^{\sx}_{N,|t|}(n)`.
-
-13. Else:
-
-    a. Let :math:`c` be the constant for which :math:`\bytes_t(c) = b^\ast`.
-
-14. Push the value :math:`t.\CONST~c` to the stack.
 
 $${rule: {Step_read/load-*}}
 
@@ -1774,16 +1194,12 @@ $${rule: {Step_pure/br_table-*}}
 
 $${rule-prose: Step_pure/br_on_null}
 
-.. todo:: (3) Introduce if-let instruction instead of "is of the case".
-
 $${rule: {Step_pure/br_on_null-*}}
 
 
 .. _exec-br_on_non_null:
 
 $${rule-prose: Step_pure/br_on_non_null}
-
-.. todo:: (3) Introduce if-let instruction instead of "is of the case".
 
 $${rule: {Step_pure/br_on_non_null-*}}
 
@@ -1793,7 +1209,7 @@ $${rule: {Step_pure/br_on_non_null-*}}
 $${rule-prose: Step_read/br_on_cast}
 
 .. todo:: (9) Need to handle RulePr s \|- ref : rt properly in prose instead of $ref_type_of
-   Below is the acutal prose.
+   below is the official specification
 
 1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
 
@@ -1823,7 +1239,7 @@ $${rule: {Step_read/br_on_cast-*}}
 $${rule-prose: Step_read/br_on_cast_fail}
 
 .. todo:: (9) Need to handle RulePr s \|- ref : rt properly in prose instead of $ref_type_of
-   Below is the actual prose.
+   below is the official specification
 
 1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
 
@@ -1946,84 +1362,6 @@ $${rule: Step/throw}
 .. _exec-throw_ref:
 
 $${rule-prose: Step_read/throw_ref}
-
-.. todo:: Was too deeply nested
-
-1. Assert: due to :ref:`validation <valid-throw_ref>`, a :ref:`reference <syntax-ref>` is on the top of the stack.
-
-2. Pop the reference :math:`\reff` from the stack.
-
-3. If :math:`\reff` is :math:`\REFNULL~\X{ht}`, then:
-
-   a. Trap.
-
-4. Assert: due to :ref:`validation <valid-throw_ref>`, :math:`\reff` is an :ref:`exception reference <syntax-ref.exn>`.
-
-5. Let :math:`\REFEXNADDR~\X{ea}` be :math:`\reff`.
-
-6. Assert: due to :ref:`validation <valid-throw_ref>`, :math:`S.\SEXNS[\X{ea}]` exists.
-
-7. Let :math:`\X{exn}` be the :ref:`exception instance <syntax-exninst>` :math:`S.\SEXNS[\X{ea}]`.
-
-8. Let :math:`a` be the :ref:`tag address <syntax-tagaddr>` :math:`\X{exn}.\EITAG`.
-
-9. While the stack is not empty and the top of the stack is not an :ref:`exception handler <syntax-handler>`, do:
-
-   a. Pop the top element from the stack.
-
-10. Assert: the stack is now either empty, or there is an exception handler on the top of the stack.
-
-11. If the stack is empty, then:
-
-   a. Return the exception :math:`(\REFEXNADDR~a)` as a :ref:`result <syntax-result>`.
-
-12. Assert: there is an :ref:`exception handler <syntax-handler>` on the top of the stack.
-
-13. Pop the exception handler  :math:`\HANDLER_n\{\catch^\ast\}` from the stack.
-
-14. If :math:`\catch^\ast` is empty, then:
-
-    a. Push the exception reference :math:`\REFEXNADDR~\X{ea}` back to the stack.
-
-    b. Execute the instruction |THROWREF| again.
-
-15. Else:
-
-    a. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
-
-    b. Let :math:`\catch_1` be the first :ref:`catch clause <syntax-catch>` in :math:`\catch^\ast` and :math:`{\catch'}^\ast` the remaining clauses.
-
-    c. If :math:`\catch_1` is of the form :math:`\CATCH~x~l` and the :ref:`tag address <syntax-tagaddr>` :math:`a` equals :math:`F.\AMODULE.\MITAGS[x]`, then:
-
-       i. Push the values :math:`\X{exn}.\EIFIELDS` to the stack.
-
-       ii. Execute the instruction :math:`\BR~l`.
-
-    d. Else if :math:`\catch_1` is of the form :math:`\CATCHREF~x~l` and the :ref:`tag address <syntax-tagaddr>` :math:`a` equals :math:`F.\AMODULE.\MITAGS[x]`, then:
-
-       i. Push the values :math:`\X{exn}.\EIFIELDS` to the stack.
-
-       ii. Push the exception reference :math:`\REFEXNADDR~\X{ea}` to the stack.
-
-       iii. Execute the instruction :math:`\BR~l`.
-
-    e. Else if :math:`\catch_1` is of the form :math:`\CATCHALL~l`, then:
-
-       i. Execute the instruction :math:`\BR~l`.
-
-    f. Else if :math:`\catch_1` is of the form :math:`\CATCHALLREF~l`, then:
-
-       i. Push the exception reference :math:`\REFEXNADDR~\X{ea}` to the stack.
-
-       ii. Execute the instruction :math:`\BR~l`.
-
-    g. Else:
-
-       1. Push the modified handler  :math:`\HANDLER_n\{{\catch'}^\ast\}` back to the stack.
-
-       2. Push the exception reference :math:`\REFEXNADDR~\X{ea}` back to the stack.
-
-       3. Execute the instruction :math:`\THROWREF` again.
 
 $${rule: Step_read/throw_ref-*}
 
@@ -2269,18 +1607,6 @@ Expressions
 An :ref:`expression <syntax-expr>` is *evaluated* relative to a :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>` pointing to its containing :ref:`module instance <syntax-moduleinst>`.
 
 $${rule-prose: Eval_expr}
-
-.. todo:: This is the manual prose:
-
-1. Jump to the start of the instruction sequence :math:`\instr^\ast` of the expression.
-
-2. Execute the instruction sequence.
-
-3. Assert: due to :ref:`validation <valid-expr>`, the top of the stack contains a :ref:`value <syntax-val>`.
-
-4. Pop the :ref:`value <syntax-val>` :math:`\val` from the stack.
-
-The value :math:`\val` is the result of the evaluation.
 
 $${rule: Eval_expr}
 

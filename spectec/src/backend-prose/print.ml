@@ -367,8 +367,8 @@ let string_of_expr_with_type e =
   if List.mem s !render_type_visit then s else (
     render_type_visit := s :: !render_type_visit;
     match Prose_util.extract_desc e with
-    | None -> string_of_expr e
     | Some (desc, seq) -> "the " ^ desc ^ seq ^ " " ^ string_of_expr e
+    | None -> string_of_expr e
   )
 
 let string_of_cmpop = function

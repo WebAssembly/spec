@@ -137,37 +137,32 @@ let find_relation name =
   ) !Langs.el
 
 let find_desc_hint name =
-  let rec extract_seq desc =
-    if String.ends_with desc ~suffix:" sequence" then
-      let desc', st = extract_seq (String.sub desc 0 (String.length desc - 9)) in
-      desc', st+1
-    else desc, 0
-  in
   match Map.find_opt name !(hintenv.desc_hints) with
-  | Some (Some { it = TextE desc; _ }, _) -> Some (extract_seq desc)
+  | Some (Some { it = TextE desc; _ }, _) -> Some desc
   | Some (None, l) ->
     let match_texte e = match e.it with
       | El.Ast.TextE desc -> Some desc
       | _ -> None
     in
     (match List.find_map match_texte l with
-    | Some desc -> Some (extract_seq desc)
+    | Some desc -> Some desc
     | None -> None)
   | _ -> None
 
-let rec repeat n s = if (n = 0) then "" else (repeat (n-1) s) ^ s
+let rec unwrap_itert typ = match typ.it with
+| Il.Ast.IterT (typ, Opt) -> unwrap_itert typ
+| Il.Ast.IterT (typ, _) ->
+  let bt, iter = unwrap_itert typ in
+  (bt, iter + 1)
+| _ -> (typ, 0)
 
-let rec extract_desc' typ = match typ.it with
-  | Il.Ast.IterT (typ, Opt) -> (match extract_desc' typ with
-    | Some (desc, seq) -> Some (desc, seq)
-    | None -> None)
-  | Il.Ast.IterT (typ, _) -> (match extract_desc' typ with
-  | Some (desc, seq) -> Some (desc, seq ^ " sequence")
-  | None -> None)
+let extract_desc' typ =
+  let bt, iter = unwrap_itert typ in
+  match bt.it with
   | Il.Ast.VarT _ ->
-    let name = Il.Print.string_of_typ typ in
-    let* desc, st = find_desc_hint name in
-    Some (desc, repeat st " sequence")
+    let name = Il.Print.string_of_typ bt in
+    let* desc = find_desc_hint name in
+    Some (desc, iter)
   | _ -> None
 
 let extract_desc expr =
@@ -177,17 +172,20 @@ let extract_desc expr =
       (match e'.it with
       | Al.Ast.AccE (e'', { it = DotP atom; _ }) ->
         let name = Il.Print.string_of_typ e''.note ^ "." ^ Xl.Atom.to_string atom in
-        let* desc, st = find_desc_hint name in
-        Some (desc, repeat st " sequence")
+        let* desc = find_desc_hint name in
+        Some (desc, "")
       | _ -> None
       )
     | _ -> None
   in
   match extract_context_desc expr with
   | Some (desc, seq) -> Some (desc, seq)
-  | None -> extract_desc' expr.note
+  | None ->
+    let* desc, iter = extract_desc' expr.note in
+    let rec repeat n s = if (n = 0) then "" else (repeat (n-1) s) ^ s in
+    Some (desc, repeat iter " sequence")
 
-  let rec alternate xs ys =
+let rec alternate xs ys =
   match xs with
   | [] -> ys
   | x :: xs -> x :: alternate ys xs
@@ -237,3 +235,37 @@ let string_of_stack_prefix expr =
     Printf.sprintf "the %s" evalctx_name
   | IterE _ -> "the values"
   | _ -> "the value"
+
+let rec find_case_typ' s a: El.Ast.typ list option =
+  let open El.Ast in
+  let find_typd = function
+    | { it = TypD (id', _, _, typ, _); _ } when s = id'.it -> Some typ
+    | _ -> None
+  in
+  let typds = List.filter_map find_typd !Langs.el in
+  List.find_map (function
+  | { it = CaseT (_, ts, tcs, _); _ } ->
+    let find_typ = function
+      | Elem (atom, (typ, _prems), _hints) when Xl.Atom.eq atom a ->
+        (match typ.it with
+        | SeqT ts -> Some ts
+        | _ -> None)
+      | _ -> None
+    in
+    (match List.find_map find_typ tcs with
+    | Some ts -> Some ts
+    | _ -> 
+      List.find_map (function
+      | Nl -> None
+      | Elem typ -> find_case_typ' (El.Print.string_of_typ typ) a
+      ) ts
+    )
+  | _ -> None) typds
+
+let find_case_typ s a: El.Ast.typ list =
+  match find_case_typ' s a with
+  | Some ts -> ts
+  | None -> 
+    let msg = sprintf "cannot find typcase of atom %s from typ %s"
+      (Xl.Atom.to_string a) s in
+    error no_region msg
