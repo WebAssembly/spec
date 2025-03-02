@@ -1,6 +1,8 @@
 ;; Test `return_call_indirect` operator
 
 (module
+  (import "spectest" "print_i32_f32" (func $print_i32_f32 (param i32 f32)))
+
   ;; Auxiliary definitions
   (type $proc (func))
   (type $out-i32 (func (result i32)))
@@ -39,6 +41,19 @@
   (func $over-i64-duplicate (type $over-i64-duplicate) (local.get 0))
   (func $over-f32-duplicate (type $over-f32-duplicate) (local.get 0))
   (func $over-f64-duplicate (type $over-f64-duplicate) (local.get 0))
+
+  (func $tailprint_i32_f32 (export "tailprint_i32_f32") (param i32 f32)
+    (return_call $print_i32_f32 (local.get 0) (local.get 1))
+  )
+
+  (func $swizzle (param f64 i64) (result i32 f32)
+    (i32.wrap_i64 (local.get 1))
+    (f32.demote_f64 (local.get 0))
+  )
+
+  (func $type-f64-i64-to-i32-f32 (export "type-f64-i64-to-i32-f32") (param f64 i64) (result i32 f32)
+    (return_call $swizzle (local.get 0) (local.get 1))
+  )
 
   (table funcref
     (elem
@@ -208,6 +223,17 @@
       )
     )
   )
+
+  ;; Multiple parameters / multiple results
+  (table $tab4 funcref (elem $tailprint_i32_f32 $type-f64-i64-to-i32-f32))
+
+  (func (export "call_tailprint") (param i32 f32)
+    (return_call_indirect $tab4 (param i32 f32) (local.get 0) (local.get 1) (i32.const 0))
+  )
+
+  (func (export "call_mpmr") (param f64 i64) (result i32 f32)
+    (return_call_indirect $tab4 (param f64 i64) (result i32 f32) (local.get 0) (local.get 1) (i32.const 1))
+  )
 )
 
 (assert_return (invoke "type-i32") (i32.const 0x132))
@@ -233,7 +259,7 @@
 (assert_return (invoke "dispatch" (i32.const 17) (i64.const 2)) (i64.const 2))
 (assert_trap (invoke "dispatch" (i32.const 0) (i64.const 2)) "indirect call type mismatch")
 (assert_trap (invoke "dispatch" (i32.const 15) (i64.const 2)) "indirect call type mismatch")
-(assert_trap (invoke "dispatch" (i32.const 20) (i64.const 2)) "undefined element")
+(assert_trap (invoke "dispatch" (i32.const 22) (i64.const 2)) "undefined element")
 (assert_trap (invoke "dispatch" (i32.const -1) (i64.const 2)) "undefined element")
 (assert_trap (invoke "dispatch" (i32.const 1213432423) (i64.const 2)) "undefined element")
 
@@ -266,6 +292,8 @@
 (assert_return (invoke "odd" (i32.const 200_002)) (i32.const 99))
 (assert_return (invoke "odd" (i32.const 300_003)) (i32.const 44))
 
+(assert_return (invoke "call_tailprint" (i32.const 5) (f32.const 91.0)))
+(assert_return (invoke "call_mpmr" (f64.const 4.2) (i64.const 99)) (i32.const 99) (f32.const 4.2))
 
 ;; Invalid syntax
 
