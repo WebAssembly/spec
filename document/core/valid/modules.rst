@@ -417,8 +417,6 @@ $${rule-prose: Module_ok}
 
 $${rule: Module_ok}
 
-.. todo:: Check refs; check export names
-
 .. note::
    All functions in a module are mutually recursive.
    Consequently, the definition of the :ref:`context <context>` ${:C} in this rule is recursive:

@@ -192,7 +192,9 @@ provided that :math:`N = |t|\cdot M`.
 
 This function is a bijection on |IN|, hence it is invertible.
 
-.. todo:: pack/unpacknum
+Numeric values can be *packed* into lanes of a specific :ref:`lane type <syntax-lanetype>` and vice versa:
+
+$${definition: lpacknum_ lunpacknum_}
 
 
 .. index:: byte, little endian, memory
@@ -1775,10 +1777,7 @@ It computes :math:`(z_1 \cdot z_2) + z_3` as if with unbounded range and precisi
 Conversions
 ~~~~~~~~~~~
 
-.. _op-ext:
 .. _op-extend:
-
-.. todo:: ext or extend?
 
 :math:`\extendu_{M,N}(i)`
 .........................
