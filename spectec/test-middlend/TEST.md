@@ -2802,7 +2802,7 @@ relation Functype_ok: `%|-%:OK`(context, functype)
     -- Resulttype_ok: `%|-%:OK`(C, `%`_resulttype(t_1*{t_1 <- `t_1*`}))
     -- Resulttype_ok: `%|-%:OK`(C, `%`_resulttype(t_2*{t_2 <- `t_2*`}))
 
-;; 2.1-validation.types.watsup:87.1-87.102
+;; 2.1-validation.types.watsup:87.1-87.123
 relation Subtype_ok: `%|-%:%`(context, subtype, oktypeidx)
   ;; 2.1-validation.types.watsup:140.1-147.49
   rule _{C : context, `x*` : idx*, comptype : comptype, x_0 : idx, `x'**` : idx**, `comptype'*` : comptype*}:
@@ -2830,7 +2830,7 @@ relation Rectype_ok: `%|-%:%`(context, rectype, oktypeidx)
     `%|-%:%`(C, REC_rectype(`%`_list(subtype*{subtype <- `subtype*`})), OK_oktypeidx(x))
     -- Rectype_ok2: `%|-%:%`({TYPES [], RECS subtype*{subtype <- `subtype*`}, FUNCS [], GLOBALS [], TABLES [], MEMS [], TAGS [], ELEMS [], DATAS [], LOCALS [], LABELS [], RETURN ?(), REFS []} +++ C, REC_rectype(`%`_list(subtype*{subtype <- `subtype*`})), OK_oktypeidxnat(x, 0))
 
-;; 2.1-validation.types.watsup:89.1-89.105
+;; 2.1-validation.types.watsup:89.1-89.126
 relation Subtype_ok2: `%|-%:%`(context, subtype, oktypeidxnat)
   ;; 2.1-validation.types.watsup:159.1-166.49
   rule _{C : context, `typeuse*` : typeuse*, compttype : comptype, x : idx, i : nat, `typeuse'**` : typeuse**, `comptype'*` : comptype*, comptype : comptype}:
@@ -11691,7 +11691,7 @@ relation Functype_ok: `%|-%:OK`(context, functype)
     -- Resulttype_ok: `%|-%:OK`(C, `%`_resulttype(t_1*{t_1 <- `t_1*`}))
     -- Resulttype_ok: `%|-%:OK`(C, `%`_resulttype(t_2*{t_2 <- `t_2*`}))
 
-;; 2.1-validation.types.watsup:87.1-87.102
+;; 2.1-validation.types.watsup:87.1-87.123
 relation Subtype_ok: `%|-%:%`(context, subtype, oktypeidx)
   ;; 2.1-validation.types.watsup:140.1-147.49
   rule _{C : context, `x*` : idx*, comptype : comptype, x_0 : idx, `x'**` : idx**, `comptype'*` : comptype*}:
@@ -11719,7 +11719,7 @@ relation Rectype_ok: `%|-%:%`(context, rectype, oktypeidx)
     `%|-%:%`(C, REC_rectype(`%`_list(subtype*{subtype <- `subtype*`})), OK_oktypeidx(x))
     -- Rectype_ok2: `%|-%:%`({TYPES [], RECS subtype*{subtype <- `subtype*`}, FUNCS [], GLOBALS [], TABLES [], MEMS [], TAGS [], ELEMS [], DATAS [], LOCALS [], LABELS [], RETURN ?(), REFS []} +++ C, REC_rectype(`%`_list(subtype*{subtype <- `subtype*`})), OK_oktypeidxnat(x, 0))
 
-;; 2.1-validation.types.watsup:89.1-89.105
+;; 2.1-validation.types.watsup:89.1-89.126
 relation Subtype_ok2: `%|-%:%`(context, subtype, oktypeidxnat)
   ;; 2.1-validation.types.watsup:159.1-166.49
   rule _{C : context, `typeuse*` : typeuse*, compttype : comptype, x : idx, i : nat, `typeuse'**` : typeuse**, `comptype'*` : comptype*, comptype : comptype}:
@@ -20584,7 +20584,7 @@ relation Functype_ok: `%|-%:OK`(context, functype)
     -- Resulttype_ok: `%|-%:OK`(C, `%`_resulttype(t_1*{t_1 <- `t_1*`}))
     -- Resulttype_ok: `%|-%:OK`(C, `%`_resulttype(t_2*{t_2 <- `t_2*`}))
 
-;; 2.1-validation.types.watsup:87.1-87.102
+;; 2.1-validation.types.watsup:87.1-87.123
 relation Subtype_ok: `%|-%:%`(context, subtype, oktypeidx)
   ;; 2.1-validation.types.watsup:140.1-147.49
   rule _{C : context, `x*` : idx*, comptype : comptype, x_0 : idx, `x'**` : idx**, `comptype'*` : comptype*}:
@@ -20615,7 +20615,7 @@ relation Rectype_ok: `%|-%:%`(context, rectype, oktypeidx)
     `%|-%:%`(C, REC_rectype(`%`_list(subtype*{subtype <- `subtype*`})), OK_oktypeidx(x))
     -- Rectype_ok2: `%|-%:%`({TYPES [], RECS subtype*{subtype <- `subtype*`}, FUNCS [], GLOBALS [], TABLES [], MEMS [], TAGS [], ELEMS [], DATAS [], LOCALS [], LABELS [], RETURN ?(), REFS []} +++ C, REC_rectype(`%`_list(subtype*{subtype <- `subtype*`})), OK_oktypeidxnat(x, 0))
 
-;; 2.1-validation.types.watsup:89.1-89.105
+;; 2.1-validation.types.watsup:89.1-89.126
 relation Subtype_ok2: `%|-%:%`(context, subtype, oktypeidxnat)
   ;; 2.1-validation.types.watsup:159.1-166.49
   rule _{C : context, `typeuse*` : typeuse*, compttype : comptype, x : idx, i : nat, `typeuse'**` : typeuse**, `comptype'*` : comptype*, comptype : comptype}:
