@@ -2117,7 +2117,7 @@ Control Instructions
 
 * The label :math:`C.\CLABELS[l]` must be defined in the context.
 
-* The :ref:`result type <syntax-resulttype>` :math:`[t^\ast]` must be the same as :math:`C.\CLABELS[l]`.
+* The :ref:`result type <syntax-resulttype>` :math:`[t^\ast]` must :ref:`match <match-resulttype>` :math:`C.\CLABELS[l]`.
 
 * Then the catch clause is valid.
 
@@ -2125,7 +2125,7 @@ Control Instructions
    \frac{
      \expanddt(C.\CTAGS[x]) = [t^\ast] \toF []
      \qquad
-     C.\CLABELS[l] = [t^\ast]
+     C \vdashresulttypematch [t^\ast] \matchesresulttype C.\CLABELS[l]
    }{
      C \vdashcatch \CATCH~x~l \ok
    }
@@ -2159,13 +2159,13 @@ Control Instructions
 
 * The label :math:`C.\CLABELS[l]` must be defined in the context.
 
-* The :ref:`result type <syntax-resulttype>` :math:`C.\CLABELS[l]` must be empty.
+* The :ref:`result type <syntax-resulttype>` :math:`[]` must :ref:`match <match-resulttype>` :math:`C.\CLABELS[l]`.
 
 * Then the catch clause is valid.
 
 .. math::
    \frac{
-     C.\CLABELS[l] = []
+     C \vdashresulttypematch [] \matchesresulttype C.\CLABELS[l]
    }{
      C \vdashcatch \CATCHALL~l \ok
    }
