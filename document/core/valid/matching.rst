@@ -76,9 +76,9 @@ A :ref:`heap type <syntax-heaptype>` :math:`\heaptype_1` matches a :ref:`heap ty
 
 * Or :math:`\heaptype_1` is :math:`\NOFUNC` and :math:`\heaptype_2` :ref:`matches <match-heaptype>` :math:`\FUNC`.
 
-* Or :math:`\heaptype_1` is :math:`\NOEXN` and :math:`\heaptype_2` :ref:`matches <match-heaptype>` :math:`\EXN`.
+* Or :math:`\heaptype_1` is :math:`\NOEXN` and :math:`\heaptype_2` is :math:`\EXN`.
 
-* Or :math:`\heaptype_1` is :math:`\NOEXTERN` and :math:`\heaptype_2` :ref:`matches <match-heaptype>` :math:`\EXTERN`.
+* Or :math:`\heaptype_1` is :math:`\NOEXTERN` and :math:`\heaptype_2` is :math:`\EXTERN`.
 
 * Or :math:`\heaptype_1` is :math:`\BOTH`.
 
@@ -170,15 +170,13 @@ A :ref:`heap type <syntax-heaptype>` :math:`\heaptype_1` matches a :ref:`heap ty
    }
    \qquad
    \frac{
-     C \vdashheaptypematch \X{ht} \matchesheaptype \EXN
    }{
-     C \vdashheaptypematch \NOEXN \matchesheaptype \X{ht}
+     C \vdashheaptypematch \NOEXN \matchesheaptype \EXN
    }
    \qquad
    \frac{
-     C \vdashheaptypematch \X{ht} \matchesheaptype \EXTERN
    }{
-     C \vdashheaptypematch \NOEXTERN \matchesheaptype \X{ht}
+     C \vdashheaptypematch \NOEXTERN \matchesheaptype \EXTERN
    }
 
 .. math::
