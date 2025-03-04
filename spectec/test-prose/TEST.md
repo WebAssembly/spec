@@ -24938,7 +24938,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    a. Fail.
 
-#. For all :math:`{\mathit{externaddr}}`, and :math:`{\mathit{xt}}_{\mathsf{i}}` in :math:`{({\mathit{externaddr}}, {\mathit{xt}}_{\mathsf{i}})^\ast}`:
+#. For all externaddr in :math:`{{\mathit{externaddr}}^\ast}`, and corresponding xt_I in :math:`{{\mathit{xt}}_{\mathsf{i}}^\ast}`:
 
    a. If :math:`{\mathit{externaddr}}` is not :ref:`valid <valid-val>` with type :math:`{\mathit{xt}}_{\mathsf{i}}`, then:
 
@@ -25025,7 +25025,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    a. Fail.
 
-#. For all :math:`t_1`, and :math:`{\mathit{val}}` in :math:`{(t_1, {\mathit{val}})^\ast}`:
+#. For all t_1 in :math:`{t_1^\ast}`, and corresponding val in :math:`{{\mathit{val}}^\ast}`:
 
    a. If :math:`{\mathit{val}}` is not :ref:`valid <valid-val>` with type :math:`t_1`, then:
 

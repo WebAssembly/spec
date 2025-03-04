@@ -1083,28 +1083,10 @@ let rec render_instr env algoname index depth instr =
         sprintf "For all %s from %s to %s" sid selb seub, [ eid ]
       | _ ->
         let eids = List.map (fun id -> Al.Al_util.varE id ~note:Al.Al_util.no_note) ids in
-        let sids = List.map (fun eid -> render_expr env eid) eids in
-        let sids =
-          match sids with
-          | [] -> ""
-          | [ sid ] -> sid
-          | _ ->
-              let sids, sid_last =
-                List.rev sids |> List.tl |> List.rev,
-                List.rev sids |> List.hd
-              in
-              String.concat ", " sids ^ ", and " ^ sid_last
-        in
-        let eiter =
-          match eids with
-          | [] -> assert false
-          | [ eid ] -> eid
-          | _ -> Al.Al_util.tupE eids ~note:Al.Al_util.no_note
-        in
-        let eiter = Al.Al_util.iterE (eiter, (iter, [])) ~note:Al.Al_util.no_note in
         let eiters = List.map (fun eid -> Al.Al_util.iterE (eid, (iter, [])) ~note:Al.Al_util.no_note) eids in
-        let siter = render_expr env eiter in
-        sprintf "For all %s in %s" sids siter, eiters
+        let render_iter env (e1, e2) = e1 ^ " in " ^ (render_expr env e2) in
+        let render_iters env iters = List.map (render_iter env) iters |> String.concat ", and corresponding " in
+        sprintf "For all %s" (render_iters env xes), eiters
       ) in
 
       let negate_cond cond =
@@ -1276,6 +1258,7 @@ let rec render_instr env algoname index depth instr =
         "", sprintf "the result for which %s is %s"
           (render_expr' env elhs)
           (render_expr env erhs)
+    (* HARDCODE: rendering of concat_ *)
       | Al.Ast.InvCallE ("concatn_", nl, al) ->
         let elhs, erhs = al_invcalle_to_al_bine e1 "concatn_" nl al in
         (match elhs.it with
