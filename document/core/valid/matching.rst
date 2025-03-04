@@ -76,6 +76,8 @@ A :ref:`heap type <syntax-heaptype>` :math:`\heaptype_1` matches a :ref:`heap ty
 
 * Or :math:`\heaptype_1` is :math:`\NOFUNC` and :math:`\heaptype_2` :ref:`matches <match-heaptype>` :math:`\FUNC`.
 
+* Or :math:`\heaptype_1` is :math:`\NOEXN` and :math:`\heaptype_2` :ref:`matches <match-heaptype>` :math:`\EXN`.
+
 * Or :math:`\heaptype_1` is :math:`\NOEXTERN` and :math:`\heaptype_2` :ref:`matches <match-heaptype>` :math:`\EXTERN`.
 
 * Or :math:`\heaptype_1` is :math:`\BOTH`.
@@ -165,6 +167,12 @@ A :ref:`heap type <syntax-heaptype>` :math:`\heaptype_1` matches a :ref:`heap ty
      C \vdashheaptypematch \X{ht} \matchesheaptype \FUNC
    }{
      C \vdashheaptypematch \NOFUNC \matchesheaptype \X{ht}
+   }
+   \qquad
+   \frac{
+     C \vdashheaptypematch \X{ht} \matchesheaptype \EXN
+   }{
+     C \vdashheaptypematch \NOEXN \matchesheaptype \X{ht}
    }
    \qquad
    \frac{
