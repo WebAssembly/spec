@@ -2770,13 +2770,13 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{{\mathit{ta}}_{\mathit{ex}}^\ast}` be :math:`{\mathrm{tables}}({{\mathit{externaddr}}^\ast})`.
 
-#. Let :math:`{{\mathit{fa}}^\ast}` be :math:`{({|s{.}\mathsf{funcs}|} + i_{\mathit{func}})^{i_{\mathit{func}}<n_{\mathit{func}}}}`.
+#. Let :math:`{{\mathit{fa}}^\ast}` be :math:`{|s{.}\mathsf{funcs}|} + i_{\mathit{func}}` for all :math:`i_{\mathit{func}}` from :math:`0` to :math:`n_{\mathit{func}} - 1`.
 
-#. Let :math:`{{\mathit{ga}}^\ast}` be :math:`{({|s{.}\mathsf{globals}|} + i_{\mathit{global}})^{i_{\mathit{global}}<n_{\mathit{global}}}}`.
+#. Let :math:`{{\mathit{ga}}^\ast}` be :math:`{|s{.}\mathsf{globals}|} + i_{\mathit{global}}` for all :math:`i_{\mathit{global}}` from :math:`0` to :math:`n_{\mathit{global}} - 1`.
 
-#. Let :math:`{{\mathit{ta}}^\ast}` be :math:`{({|s{.}\mathsf{tables}|} + i_{\mathit{table}})^{i_{\mathit{table}}<n_{\mathit{table}}}}`.
+#. Let :math:`{{\mathit{ta}}^\ast}` be :math:`{|s{.}\mathsf{tables}|} + i_{\mathit{table}}` for all :math:`i_{\mathit{table}}` from :math:`0` to :math:`n_{\mathit{table}} - 1`.
 
-#. Let :math:`{{\mathit{ma}}^\ast}` be :math:`{({|s{.}\mathsf{mems}|} + i_{\mathit{mem}})^{i_{\mathit{mem}}<n_{\mathit{mem}}}}`.
+#. Let :math:`{{\mathit{ma}}^\ast}` be :math:`{|s{.}\mathsf{mems}|} + i_{\mathit{mem}}` for all :math:`i_{\mathit{mem}}` from :math:`0` to :math:`n_{\mathit{mem}} - 1`.
 
 #. Let :math:`{{\mathit{xi}}^\ast}` be :math:`{{\mathrm{instexport}}({{\mathit{fa}}_{\mathit{ex}}^\ast}~{{\mathit{fa}}^\ast}, {{\mathit{ga}}_{\mathit{ex}}^\ast}~{{\mathit{ga}}^\ast}, {{\mathit{ta}}_{\mathit{ex}}^\ast}~{{\mathit{ta}}^\ast}, {{\mathit{ma}}_{\mathit{ex}}^\ast}~{{\mathit{ma}}^\ast}, {\mathit{export}})^\ast}`.
 
@@ -9981,17 +9981,17 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{{\mathit{ta}}_{\mathit{ex}}^\ast}` be :math:`{\mathrm{tables}}({{\mathit{externaddr}}^\ast})`.
 
-#. Let :math:`{{\mathit{fa}}^\ast}` be :math:`{({|s{.}\mathsf{funcs}|} + i_{\mathit{func}})^{i_{\mathit{func}}<n_{\mathit{func}}}}`.
+#. Let :math:`{{\mathit{fa}}^\ast}` be :math:`{|s{.}\mathsf{funcs}|} + i_{\mathit{func}}` for all :math:`i_{\mathit{func}}` from :math:`0` to :math:`n_{\mathit{func}} - 1`.
 
-#. Let :math:`{{\mathit{ga}}^\ast}` be :math:`{({|s{.}\mathsf{globals}|} + i_{\mathit{global}})^{i_{\mathit{global}}<n_{\mathit{global}}}}`.
+#. Let :math:`{{\mathit{ga}}^\ast}` be :math:`{|s{.}\mathsf{globals}|} + i_{\mathit{global}}` for all :math:`i_{\mathit{global}}` from :math:`0` to :math:`n_{\mathit{global}} - 1`.
 
-#. Let :math:`{{\mathit{ta}}^\ast}` be :math:`{({|s{.}\mathsf{tables}|} + i_{\mathit{table}})^{i_{\mathit{table}}<n_{\mathit{table}}}}`.
+#. Let :math:`{{\mathit{ta}}^\ast}` be :math:`{|s{.}\mathsf{tables}|} + i_{\mathit{table}}` for all :math:`i_{\mathit{table}}` from :math:`0` to :math:`n_{\mathit{table}} - 1`.
 
-#. Let :math:`{{\mathit{ma}}^\ast}` be :math:`{({|s{.}\mathsf{mems}|} + i_{\mathit{mem}})^{i_{\mathit{mem}}<n_{\mathit{mem}}}}`.
+#. Let :math:`{{\mathit{ma}}^\ast}` be :math:`{|s{.}\mathsf{mems}|} + i_{\mathit{mem}}` for all :math:`i_{\mathit{mem}}` from :math:`0` to :math:`n_{\mathit{mem}} - 1`.
 
-#. Let :math:`{{\mathit{ea}}^\ast}` be :math:`{({|s{.}\mathsf{elems}|} + i_{\mathit{elem}})^{i_{\mathit{elem}}<n_{\mathit{elem}}}}`.
+#. Let :math:`{{\mathit{ea}}^\ast}` be :math:`{|s{.}\mathsf{elems}|} + i_{\mathit{elem}}` for all :math:`i_{\mathit{elem}}` from :math:`0` to :math:`n_{\mathit{elem}} - 1`.
 
-#. Let :math:`{{\mathit{da}}^\ast}` be :math:`{({|s{.}\mathsf{datas}|} + i_{\mathit{data}})^{i_{\mathit{data}}<n_{\mathit{data}}}}`.
+#. Let :math:`{{\mathit{da}}^\ast}` be :math:`{|s{.}\mathsf{datas}|} + i_{\mathit{data}}` for all :math:`i_{\mathit{data}}` from :math:`0` to :math:`n_{\mathit{data}} - 1`.
 
 #. Let :math:`{{\mathit{xi}}^\ast}` be :math:`{{\mathrm{instexport}}({{\mathit{fa}}_{\mathit{ex}}^\ast}~{{\mathit{fa}}^\ast}, {{\mathit{ga}}_{\mathit{ex}}^\ast}~{{\mathit{ga}}^\ast}, {{\mathit{ta}}_{\mathit{ex}}^\ast}~{{\mathit{ta}}^\ast}, {{\mathit{ma}}_{\mathit{ex}}^\ast}~{{\mathit{ma}}^\ast}, {\mathit{export}})^\ast}`.
 
@@ -24794,19 +24794,19 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{{\mathit{ta}}_{\mathsf{i}}^\ast}` be :math:`{\mathrm{tables}}({{\mathit{externaddr}}^\ast})`.
 
-#. Let :math:`{{\mathit{fa}}^\ast}` be :math:`{({|s{.}\mathsf{funcs}|} + i_{\mathsf{f}})^{i_{\mathsf{f}}<{|{{\mathit{func}}^\ast}|}}}`.
+#. Let :math:`{{\mathit{fa}}^\ast}` be :math:`{|s{.}\mathsf{funcs}|} + i_{\mathsf{f}}` for all :math:`i_{\mathsf{f}}` from :math:`0` to :math:`{|{{\mathit{func}}^\ast}|} - 1`.
 
-#. Let :math:`{{\mathit{ga}}^\ast}` be :math:`{({|s{.}\mathsf{globals}|} + i_{\mathsf{g}})^{i_{\mathsf{g}}<{|{{\mathit{global}}^\ast}|}}}`.
+#. Let :math:`{{\mathit{ga}}^\ast}` be :math:`{|s{.}\mathsf{globals}|} + i_{\mathsf{g}}` for all :math:`i_{\mathsf{g}}` from :math:`0` to :math:`{|{{\mathit{global}}^\ast}|} - 1`.
 
-#. Let :math:`{{\mathit{ta}}^\ast}` be :math:`{({|s{.}\mathsf{tables}|} + i_{\mathsf{t}})^{i_{\mathsf{t}}<{|{{\mathit{table}}^\ast}|}}}`.
+#. Let :math:`{{\mathit{ta}}^\ast}` be :math:`{|s{.}\mathsf{tables}|} + i_{\mathsf{t}}` for all :math:`i_{\mathsf{t}}` from :math:`0` to :math:`{|{{\mathit{table}}^\ast}|} - 1`.
 
-#. Let :math:`{{\mathit{aa}}^\ast}` be :math:`{({|s{.}\mathsf{tags}|} + i_{\mathsf{a}})^{i_{\mathsf{a}}<{|{{\mathit{tag}}^\ast}|}}}`.
+#. Let :math:`{{\mathit{aa}}^\ast}` be :math:`{|s{.}\mathsf{tags}|} + i_{\mathsf{a}}` for all :math:`i_{\mathsf{a}}` from :math:`0` to :math:`{|{{\mathit{tag}}^\ast}|} - 1`.
 
-#. Let :math:`{{\mathit{ma}}^\ast}` be :math:`{({|s{.}\mathsf{mems}|} + i_{\mathsf{m}})^{i_{\mathsf{m}}<{|{{\mathit{mem}}^\ast}|}}}`.
+#. Let :math:`{{\mathit{ma}}^\ast}` be :math:`{|s{.}\mathsf{mems}|} + i_{\mathsf{m}}` for all :math:`i_{\mathsf{m}}` from :math:`0` to :math:`{|{{\mathit{mem}}^\ast}|} - 1`.
 
-#. Let :math:`{{\mathit{ea}}^\ast}` be :math:`{({|s{.}\mathsf{elems}|} + i_{\mathsf{e}})^{i_{\mathsf{e}}<{|{{\mathit{elem}}^\ast}|}}}`.
+#. Let :math:`{{\mathit{ea}}^\ast}` be :math:`{|s{.}\mathsf{elems}|} + i_{\mathsf{e}}` for all :math:`i_{\mathsf{e}}` from :math:`0` to :math:`{|{{\mathit{elem}}^\ast}|} - 1`.
 
-#. Let :math:`{{\mathit{da}}^\ast}` be :math:`{({|s{.}\mathsf{datas}|} + i_{\mathsf{d}})^{i_{\mathsf{d}}<{|{{\mathit{data}}^\ast}|}}}`.
+#. Let :math:`{{\mathit{da}}^\ast}` be :math:`{|s{.}\mathsf{datas}|} + i_{\mathsf{d}}` for all :math:`i_{\mathsf{d}}` from :math:`0` to :math:`{|{{\mathit{data}}^\ast}|} - 1`.
 
 #. Let :math:`{(\mathsf{memory}~{\mathit{memtype}})^\ast}` be :math:`{{\mathit{mem}}^\ast}`.
 
@@ -24938,7 +24938,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    a. Fail.
 
-#. For all externaddr in :math:`{{\mathit{externaddr}}^\ast}`, and corresponding xt_I in :math:`{{\mathit{xt}}_{\mathsf{i}}^\ast}`:
+#. For all :math:`{\mathit{externaddr}}` in :math:`{{\mathit{externaddr}}^\ast}`, and corresponding :math:`{\mathit{xt}}_{\mathsf{i}}` in :math:`{{\mathit{xt}}_{\mathsf{i}}^\ast}`:
 
    a. If :math:`{\mathit{externaddr}}` is not :ref:`valid <valid-val>` with type :math:`{\mathit{xt}}_{\mathsf{i}}`, then:
 
@@ -25025,7 +25025,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    a. Fail.
 
-#. For all t_1 in :math:`{t_1^\ast}`, and corresponding val in :math:`{{\mathit{val}}^\ast}`:
+#. For all :math:`t_1` in :math:`{t_1^\ast}`, and corresponding :math:`{\mathit{val}}` in :math:`{{\mathit{val}}^\ast}`:
 
    a. If :math:`{\mathit{val}}` is not :ref:`valid <valid-val>` with type :math:`t_1`, then:
 

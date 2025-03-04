@@ -635,8 +635,8 @@ and render_expr' env expr =
     let args = List.map (render_arg env) al in
     if id = "Eval_expr" then
       (match args with
-      | [instrs] ->
-        sprintf "the result of :ref:`evaluating <exec-expr>` %s" instrs
+      | [arg] ->
+        sprintf "the result of :ref:`evaluating <exec-expr>` %s" arg
       | _ -> error expr.at (Printf.sprintf "Invalid arity for relation call: %d ([ %s ])" (List.length args) (String.concat " " args));
       )
     else if id = "Expand" || id = "Expand_use" then
@@ -746,28 +746,10 @@ and render_expr' env expr =
       let seub = render_expr env eub in
       sprintf "for all %s from %s to %s, %s" sid selb seub se
     | _ ->
-      let eids = List.map (fun id -> Al.Al_util.varE id ~note:Al.Al_util.no_note) ids in
-      let sids = List.map (fun eid -> render_expr env eid) eids in
-      let sids =
-        match sids with
-        | [] -> ""
-        | [ sid ] -> sid
-        | _ ->
-            let sids, sid_last =
-              List.rev sids |> List.tl |> List.rev,
-              List.rev sids |> List.hd
-            in
-            String.concat ", " sids ^ ", and " ^ sid_last
-      in
-      let eiter =
-        match eids with
-        | [] -> assert false
-        | [ eid ] -> eid
-        | _ -> Al.Al_util.tupE eids ~note:Al.Al_util.no_note
-      in
-      let eiter = Al.Al_util.iterE (eiter, (iter, [])) ~note:Al.Al_util.no_note in
-      let siter = render_expr env eiter in
-      sprintf "for all %s in %s, %s" sids siter se)
+      let iters = List.map (fun (e1, e2) -> (Al.Al_util.varE e1 ~note:Al.Al_util.no_note, e2)) xes in
+      let render_iter env (e1, e2) = (render_expr env e1) ^ " in " ^ (render_expr env e2) in
+      let render_iters env iters = List.map (render_iter env) iters |> String.concat ", and corresponding " in
+      sprintf "for all %s, %s" (render_iters env iters) se)
   | Al.Ast.GetCurStateE -> "the current state"
   | Al.Ast.GetCurContextE None -> "the topmost control frame"
   | Al.Ast.GetCurContextE (Some a) ->
@@ -1084,9 +1066,10 @@ let rec render_instr env algoname index depth instr =
       | _ ->
         let eids = List.map (fun id -> Al.Al_util.varE id ~note:Al.Al_util.no_note) ids in
         let eiters = List.map (fun eid -> Al.Al_util.iterE (eid, (iter, [])) ~note:Al.Al_util.no_note) eids in
-        let render_iter env (e1, e2) = e1 ^ " in " ^ (render_expr env e2) in
+        let iters = List.map (fun (e1, e2) -> (Al.Al_util.varE e1 ~note:Al.Al_util.no_note, e2)) xes in
+        let render_iter env (e1, e2) = (render_expr env e1) ^ " in " ^ (render_expr env e2) in
         let render_iters env iters = List.map (render_iter env) iters |> String.concat ", and corresponding " in
-        sprintf "For all %s" (render_iters env xes), eiters
+        sprintf "For all %s" (render_iters env iters), eiters
       ) in
 
       let negate_cond cond =
@@ -1253,12 +1236,29 @@ let rec render_instr env algoname index depth instr =
         let ebin = Al.Al_util.binE (`EqOp, elhs, erhs) ~note:Al.Al_util.no_note in
         let eiter = Al.Al_util.iterE (ebin, iterexp) ~note:Al.Al_util.no_note in
         "", sprintf "the result for which %s" (render_expr env eiter)
+      | Al.Ast.IterE (e, (Al.Ast.ListN (ie, Some id), xes)) ->
+        let se = render_expr env e in
+        let ids = List.map fst xes in
+        assert (ids = [ id ]);
+        let eid = Al.Al_util.varE id ~note:Al.Al_util.no_note in
+        let sid = render_expr env eid in
+        let elb = Al.Al_util.natE Z.zero ~note:Al.Al_util.no_note in
+        let selb = render_expr env elb in
+        let eub =
+          Al.Al_util.binE (
+            `SubOp,
+            ie,
+            Al.Al_util.natE Z.one ~note:Al.Al_util.no_note)
+          ~note:Al.Al_util.no_note
+        in
+        let seub = render_expr env eub in
+        "", sprintf "%s for all %s from %s to %s" se sid selb seub
       | Al.Ast.InvCallE ("concat_", nl, al) ->
         let elhs, erhs = al_invcalle_to_al_bine e1 "concat_" nl al in
         "", sprintf "the result for which %s is %s"
           (render_expr' env elhs)
           (render_expr env erhs)
-    (* HARDCODE: rendering of concat_ *)
+      (* HARDCODE: rendering of concat_ *)
       | Al.Ast.InvCallE ("concatn_", nl, al) ->
         let elhs, erhs = al_invcalle_to_al_bine e1 "concatn_" nl al in
         (match elhs.it with
