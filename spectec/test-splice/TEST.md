@@ -770,6 +770,7 @@ warning: rule `Heaptype_sub/typeidx-r` was never spliced
 warning: rule `Heaptype_sub/rec` was never spliced
 warning: rule `Heaptype_sub/none` was never spliced
 warning: rule `Heaptype_sub/nofunc` was never spliced
+warning: rule `Heaptype_sub/noexn` was never spliced
 warning: rule `Heaptype_sub/noextern` was never spliced
 warning: rule `Heaptype_sub/bot` was never spliced
 warning: rule `Import_ok` was never spliced
@@ -1680,6 +1681,7 @@ warning: rule prose `Heaptype_sub/def` was never spliced
 warning: rule prose `Heaptype_sub/eq` was never spliced
 warning: rule prose `Heaptype_sub/func` was never spliced
 warning: rule prose `Heaptype_sub/i31` was never spliced
+warning: rule prose `Heaptype_sub/noexn` was never spliced
 warning: rule prose `Heaptype_sub/noextern` was never spliced
 warning: rule prose `Heaptype_sub/nofunc` was never spliced
 warning: rule prose `Heaptype_sub/none` was never spliced

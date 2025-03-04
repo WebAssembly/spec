@@ -66,7 +66,9 @@ A :ref:`heap type <syntax-heaptype>` ${:heaptype_1} matches a :ref:`heap type <s
 
 * Or :math:`\heaptype_1` is :math:`\NOFUNC` and :math:`\heaptype_2` :ref:`matches <match-heaptype>` :math:`\FUNC`.
 
-* Or :math:`\heaptype_1` is :math:`\NOEXTERN` and :math:`\heaptype_2` :ref:`matches <match-heaptype>` :math:`\EXTERN`.
+* Or :math:`\heaptype_1` is :math:`\NOEXN` and :math:`\heaptype_2` is :math:`\EXN`.
+
+* Or :math:`\heaptype_1` is :math:`\NOEXTERN` and :math:`\heaptype_2` is :math:`\EXTERN`.
 
 * Or :math:`\heaptype_1` is :math:`\BOTH`.
 
@@ -76,7 +78,7 @@ $${rule:
   {Heaptype_sub/struct Heaptype_sub/array Heaptype_sub/func}
   {Heaptype_sub/typeidx-l Heaptype_sub/typeidx-r}
   {Heaptype_sub/rec}
-  {Heaptype_sub/none Heaptype_sub/nofunc Heaptype_sub/noextern}
+  {Heaptype_sub/none Heaptype_sub/nofunc heaptype_sub/noexn Heaptype_sub/noextern}
   {Heaptype_sub/bot}
 }
 $${rule-ignore: Heaptype_sub/def}

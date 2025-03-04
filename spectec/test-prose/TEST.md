@@ -13639,11 +13639,14 @@ The heap type :math:`{\mathit{heaptype}''}` :ref:`matches <match>` the heap type
       * The heap type :math:`{\mathit{heaptype}}` :ref:`matches <match>` the heap type :math:`\mathsf{func}`.
    * Or:
 
+      * The heap type :math:`{\mathit{heaptype}''}` is of the form :math:`\mathsf{noexn}`.
+
+      * The heap type :math:`{\mathit{heaptype}'''}` is of the form :math:`\mathsf{exn}`.
+   * Or:
+
       * The heap type :math:`{\mathit{heaptype}''}` is of the form :math:`\mathsf{noextern}`.
 
-      * The heap type :math:`{\mathit{heaptype}'''}` is of the form :math:`{\mathit{heaptype}}`.
-
-      * The heap type :math:`{\mathit{heaptype}}` :ref:`matches <match>` the heap type :math:`\mathsf{extern}`.
+      * The heap type :math:`{\mathit{heaptype}'''}` is of the form :math:`\mathsf{extern}`.
    * Or:
 
       * The heap type :math:`{\mathit{heaptype}''}` is of the form :math:`\mathsf{bot}`.
@@ -13770,10 +13773,12 @@ The heap type :math:`\mathsf{nofunc}` :ref:`matches <match>` the heap type :math
 
 
 
-The heap type :math:`\mathsf{noextern}` :ref:`matches <match>` the heap type :math:`{\mathit{heaptype}}` if:
+The heap type :math:`\mathsf{noexn}` :ref:`matches <match>` the heap type :math:`\mathsf{exn}`.
 
 
-   * The heap type :math:`{\mathit{heaptype}}` :ref:`matches <match>` the heap type :math:`\mathsf{extern}`.
+
+
+The heap type :math:`\mathsf{noextern}` :ref:`matches <match>` the heap type :math:`\mathsf{extern}`.
 
 
 
@@ -25432,9 +25437,11 @@ Heaptype_sub
     - heaptype''' is heaptype.
     - heaptype matches the heap type FUNC.
   - Or:
+    - heaptype'' is NOEXN.
+    - heaptype''' is EXN.
+  - Or:
     - heaptype'' is NOEXTERN.
-    - heaptype''' is heaptype.
-    - heaptype matches the heap type EXTERN.
+    - heaptype''' is EXTERN.
   - Or:
     - heaptype'' is BOT.
     - heaptype''' is heaptype.
@@ -25500,9 +25507,11 @@ Heaptype_sub/nofunc
 - the heap type NOFUNC matches the heap type heaptype if:
   - heaptype matches the heap type FUNC.
 
+Heaptype_sub/noexn
+- the heap type NOEXN matches the heap type EXN.
+
 Heaptype_sub/noextern
-- the heap type NOEXTERN matches the heap type heaptype if:
-  - heaptype matches the heap type EXTERN.
+- the heap type NOEXTERN matches the heap type EXTERN.
 
 Heaptype_sub/bot
 - the heap type BOT matches heaptype.

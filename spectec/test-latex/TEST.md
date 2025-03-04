@@ -5358,9 +5358,18 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C \vdash {\mathit{heaptype}} \leq \mathsf{extern}
 }{
-C \vdash \mathsf{noextern} \leq {\mathit{heaptype}}
+C \vdash \mathsf{noexn} \leq \mathsf{exn}
+} \, {[\textsc{\scriptsize S{-}heap{-}noexn}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+}{
+C \vdash \mathsf{noextern} \leq \mathsf{extern}
 } \, {[\textsc{\scriptsize S{-}heap{-}noextern}]}
 \qquad
 \end{array}
