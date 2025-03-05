@@ -56,9 +56,9 @@ A :ref:`heap type <syntax-heaptype>` :math:`\heaptype_1` matches a :ref:`heap ty
 
 * Or there exists a :ref:`valid <valid-heaptype>` :ref:`heap type <syntax-heaptype>` :math:`\heaptype'`, such that :math:`\heaptype_1` :ref:`matches <match-heaptype>` :math:`\heaptype'` and :math:`\heaptype'` :ref:`matches <match-heaptype>` :math:`\heaptype_2`.
 
-* Or :math:`heaptype_1` is :math:`\EQT` and :math:`\heaptype_2` is :math:`\ANY`.
+* Or :math:`\heaptype_1` is :math:`\EQT` and :math:`\heaptype_2` is :math:`\ANY`.
 
-* Or :math:`\heaptype_1` is one of :math:`\I31`, :math:`\STRUCT`, or :math:`\ARRAY` and :math:`heaptype_2` is :math:`\EQT`.
+* Or :math:`\heaptype_1` is one of :math:`\I31`, :math:`\STRUCT`, or :math:`\ARRAY` and :math:`\heaptype_2` is :math:`\EQT`.
 
 * Or :math:`\heaptype_1` is a :ref:`defined type <syntax-deftype>` which :ref:`expands <aux-expand-deftype>` to a :ref:`structure type <syntax-structtype>` and :math:`\heaptype_2` is :math:`\STRUCT`.
 
@@ -194,7 +194,7 @@ A :ref:`heap type <syntax-heaptype>` :math:`\heaptype_1` matches a :ref:`heap ty
 Reference Types
 ~~~~~~~~~~~~~~~
 
-A :ref:`reference type <syntax-reftype>` :math:`\REF~\NULL_1^?~heaptype_1` matches a :ref:`reference type <syntax-reftype>` :math:`\REF~\NULL_2^?~heaptype_2` if and only if:
+A :ref:`reference type <syntax-reftype>` :math:`\REF~\NULL_1^?~\heaptype_1` matches a :ref:`reference type <syntax-reftype>` :math:`\REF~\NULL_2^?~\heaptype_2` if and only if:
 
 * The :ref:`heap type <syntax-heaptype>` :math:`\heaptype_1` :ref:`matches <match-heaptype>` :math:`\heaptype_2`.
 
@@ -264,7 +264,7 @@ Instruction Types
 ~~~~~~~~~~~~~~~~~
 
 Subtyping is further lifted to :ref:`instruction types <syntax-instrtype>`.
-An :ref:`instruction type <syntax-instrtype>` :math:`[t_{11}^\ast] \to_{x_1^\ast} [t_{12}^\ast]` matches a type :math:`[t_{21}^ast] \to_{x_2^\ast} [t_{22}^\ast]` if and only if:
+An :ref:`instruction type <syntax-instrtype>` :math:`[t_{11}^\ast] \to_{x_1^\ast} [t_{12}^\ast]` matches a type :math:`[t_{21}^\ast] \to_{x_2^\ast} [t_{22}^\ast]` if and only if:
 
 * There is a common sequence of :ref:`value types <syntax-valtype>` :math:`t^\ast` such that :math:`t_{21}^\ast` equals :math:`t^\ast~{t'_{21}}^\ast` and :math:`t_{22}^\ast` equals :math:`t^\ast~{t'_{22}}^\ast`.
 
@@ -304,7 +304,7 @@ An :ref:`instruction type <syntax-instrtype>` :math:`[t_{11}^\ast] \to_{x_1^\ast
 Function Types
 ~~~~~~~~~~~~~~
 
-A :ref:`function type <syntax-functype>` :math:`[t_{11}^\ast] \toF [t_{12}^\ast]` matches a type :math:`[t_{21}^ast] \toF [t_{22}^\ast]` if and only if:
+A :ref:`function type <syntax-functype>` :math:`[t_{11}^\ast] \toF [t_{12}^\ast]` matches a type :math:`[t_{21}^\ast] \toF [t_{22}^\ast]` if and only if:
 
 * The :ref:`result type <syntax-resulttype>` :math:`[t_{21}^\ast]` :ref:`matches <match-resulttype>` :math:`[t_{11}^\ast]`.
 
