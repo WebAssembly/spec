@@ -119,19 +119,6 @@ Instruction Types
 
 $${rule-prose: Instrtype_ok}
 
-.. todo:: below is the official specification
-
-:math:`t_1^\ast \rightarrow_{x^\ast} t_2^\ast`
-..............................................
-
-* The :ref:`result type <syntax-resulttype>` :math:`t_1^\ast` must be :ref:`valid <valid-resulttype>`.
-
-* The :ref:`result type <syntax-resulttype>` :math:`t_2^\ast` must be :ref:`valid <valid-resulttype>`.
-
-* Each :ref:`local index <syntax-localidx>` :math:`x_i` in :math:`x^\ast` must be defined in the context.
-
-* Then the instruction type is valid.
-
 $${rule: Instrtype_ok}
 
 
@@ -222,18 +209,6 @@ Recursive Types
 
 $${rule-prose: Rectype_ok}
 
-.. todo:: below is the official specification
-
-* Either the sequence :math:`\subtype^\ast` is empty.
-
-* Or:
-
-  * The first :ref:`sub type <syntax-subtype>` of the sequence :math:`\subtype^\ast` must be :ref:`valid <valid-subtype>` for the :ref:`type index <syntax-typeidx>` :math:`x`.
-
-  * The remaining sequence :math:`\subtype^\ast` must be :ref:`valid <valid-rectype>` for the :ref:`type index <syntax-typeidx>` :math:`x + 1`.
-
-* Then the recursive type is valid for the :ref:`type index <syntax-typeidx>` :math:`x`.
-
 $${rule: {Rectype_ok/empty Rectype_ok/cons}}
 
 
@@ -241,28 +216,6 @@ $${rule: {Rectype_ok/empty Rectype_ok/cons}}
 ........................................
 
 $${rule-prose: Subtype_ok}
-
-.. todo:: below is the official specification
-
-* The :ref:`composite type <syntax-comptype>` :math:`\comptype` must be :ref:`valid <valid-comptype>`.
-
-* The sequence :math:`y^\ast` may be no longer than :math:`1`.
-
-* For every :ref:`type index <syntax-typeidx>` :math:`y_i` in :math:`y^\ast`:
-
-  * The :ref:`type index <syntax-typeidx>` :math:`y_i` must be smaller than :math:`x`.
-
-  * The :ref:`type index <syntax-typeidx>` :math:`y_i` must exist in the context :math:`C`.
-
-  * Let :math:`\subtype_i` be the :ref:`unrolling <aux-unroll-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`C.\CTYPES[y_i]`.
-
-  * The :ref:`sub type <syntax-subtype>` :math:`\subtype_i` must not contain :math:`\TFINAL`.
-
-  * Let :math:`\comptype'_i` be the :ref:`composite type <syntax-comptype>` in :math:`\subtype_i`.
-
-  * The :ref:`composite type <syntax-comptype>` :math:`\comptype` must :ref:`match <match-comptype>` :math:`\comptype'_i`.
-
-* Then the sub type is valid for the :ref:`type index <syntax-typeidx>` :math:`x`.
 
 $${rule: Subtype_ok}
 
