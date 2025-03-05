@@ -5,6 +5,7 @@ type hintenv
 val hintenv : hintenv
 val init_hintenv : El.Ast.def list -> unit
 val find_relation : string -> El.Ast.def option
+val find_hint : string -> string -> El.Ast.exp option
 val unwrap_itert : Il.Ast.typ -> Il.Ast.typ * int
 val extract_desc : Al.Ast.expr -> (string * string) option
 val alternate : 'a list -> 'a list -> 'a list

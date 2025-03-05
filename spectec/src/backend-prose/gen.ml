@@ -20,7 +20,6 @@ let print_yet_prem prem fname =
 
 (* Helpers *)
 
-module HintMap = Langs.Map
 module Map = Map.Make(String)
 module Set = Set.Make(String)
 
@@ -49,25 +48,6 @@ let extract_validation_il il =
   |> List.filter
     (fun rel -> is_validation_relation rel || is_validation_helper_relation rel)
 
-let extract_rel_ids il =
-  List.map (fun def ->
-    match def.it with
-    | Ast.RelD (id, _, _, _) -> id.it
-    | _ -> assert false
-  ) il
-
-let extract_prose_hints valid_il il =
-  let rel_ids = extract_rel_ids valid_il in
-  List.fold_left (fun m def ->
-    match def.it with
-    | Ast.HintD {it = RelH (id', hints); _} when List.mem id'.it rel_ids ->
-      let hints' = List.filter (fun Ast.{hintid; _} ->
-        String.starts_with ~prefix:"prose" hintid.it) hints
-      in
-      HintMap.add id'.it hints' m
-    | _ -> m
-  ) HintMap.empty il
-
 let atomize atom' = atom' $$ no_region % (Atom.info "")
 
 let rel_has_id id rel =
@@ -75,17 +55,16 @@ let rel_has_id id rel =
   | Ast.RelD (id', _, _, _) -> id.it = id'.it
   | _ -> false
 
-let extract_prose_hint target Ast.{hintid; hintexp} =
+let extract_prose_hint hintexp =
   match hintexp.it with
-  | TextE hint when hintid.it = target -> Some hint
-  | _ when hintid.it = target ->
+  | El.Ast.TextE hint -> Some hint
+  | _ ->
     El.Print.string_of_exp hintexp |> print_endline;
     None
-  | _ -> None
 
 let extract_rel_hint relid hintid =
-  match HintMap.find_opt relid.it !Langs.prose_hints with
-  | Some hints -> List.find_map (extract_prose_hint hintid) hints
+  match Prose_util.find_hint hintid relid.it with
+  | Some hint -> extract_prose_hint hint
   | None -> None
 
 let swap = function `LtOp -> `GtOp | `GtOp -> `LtOp | `LeOp -> `GeOp | `GeOp -> `LeOp | op -> op
@@ -682,14 +661,12 @@ let gen_execution_prose () =
 let gen_prose el il al =
   Langs.el := el;
   Langs.validation_il := extract_validation_il il;
-  Langs.prose_hints := extract_prose_hints !Langs.validation_il il;
   Langs.il := il;
   Langs.al := al;
+  Prose_util.init_hintenv !Langs.el;
 
   let validation_prose = gen_validation_prose () in
   let execution_prose = gen_execution_prose () in
-  
-  Prose_util.init_hintenv !Langs.el;
 
   validation_prose @ execution_prose
   |> postprocess_prose

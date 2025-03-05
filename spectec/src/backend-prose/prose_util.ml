@@ -34,12 +34,14 @@ let map_update ?(partial = false) x y map =
 type hintenv = 
   {
     prose_hints : hints ref;
+    prosepp_hints : hints ref;
     desc_hints : hints ref;
   }
 
 let hintenv = 
   {
     prose_hints = ref Map.empty;
+    prosepp_hints = ref Map.empty;
     desc_hints = ref Map.empty;
   }
 
@@ -59,6 +61,7 @@ let env_hintdef ?(partial = false) hd =
   | El.Ast.VarH (id, hints) ->
     env_hints "desc" hintenv.desc_hints id hints ~partial;
     env_hints "prose" hintenv.prose_hints id hints;
+    env_hints "prosepp" hintenv.prosepp_hints id hints;
   | El.Ast.TypH (id1, id2, hints) ->
     let id = if id2.it = "" then id1 else (id1.it ^ "/" ^ id2.it) $ id2.at in
     env_hints "desc" hintenv.desc_hints id hints;
@@ -66,7 +69,8 @@ let env_hintdef ?(partial = false) hd =
     let id = if id2.it = "" then id1 else (id1.it ^ "/" ^ id2.it) $ id2.at in
     env_hints "desc" hintenv.desc_hints id hints;
   | El.Ast.RelH (id, hints) ->
-    env_hints "prose" hintenv.prose_hints id hints
+    env_hints "prose" hintenv.prose_hints id hints;
+    env_hints "prosepp" hintenv.prosepp_hints id hints;
   | _ -> ()
 
 let env_typ id t =
@@ -79,6 +83,7 @@ let env_typ id t =
       let id = sprintf "%s.%s" id.it (Xl.Atom.to_string atom) $ no_region in
       env_hints "desc" hintenv.desc_hints id hints;
       env_hints "prose" hintenv.prose_hints id hints;
+      env_hints "prosepp" hintenv.prosepp_hints id hints;
     ) l
   | El.Ast.CaseT (_, _, l, _) ->
     List.iter (function
@@ -87,10 +92,12 @@ let env_typ id t =
       let id = sprintf "%s.%s" id.it (Xl.Atom.to_string atom) $ no_region in
       env_hints "desc" hintenv.desc_hints id hints;
       env_hints "prose" hintenv.prose_hints id hints;
+      env_hints "prosepp" hintenv.prosepp_hints id hints;
     ) l
   | El.Ast.ConT (_, hints) ->
     env_hints "desc" hintenv.desc_hints id hints;
     env_hints "prose" hintenv.prose_hints id hints;
+    env_hints "prosepp" hintenv.prosepp_hints id hints;
   | _ -> ()
 
 let env_def d =
@@ -137,6 +144,7 @@ let find_relation name =
   ) !Langs.el
 
 let find_desc_hint name =
+  (* Assumption: desc hint is TextE *)
   match Map.find_opt name !(hintenv.desc_hints) with
   | Some (Some { it = TextE desc; _ }, _) -> Some desc
   | Some (None, l) ->
@@ -147,6 +155,22 @@ let find_desc_hint name =
     (match List.find_map match_texte l with
     | Some desc -> Some desc
     | None -> None)
+  | _ -> None
+
+let find_prose_hint name =
+  match Map.find_opt name !(hintenv.prose_hints) with
+  | Some (Some prose, _) | Some (None, [prose; _]) -> Some prose
+  | _ -> None
+
+let find_prosepp_hint name =
+  match Map.find_opt name !(hintenv.prosepp_hints) with
+  | Some (Some prose, _) | Some (None, [prose; _]) -> Some prose
+  | _ -> None
+
+let find_hint hintid name =
+  match hintid with
+  | "prose" -> find_prose_hint name
+  | "prosepp" -> find_prosepp_hint name
   | _ -> None
 
 let rec unwrap_itert typ = match typ.it with
