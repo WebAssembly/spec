@@ -54,7 +54,7 @@ The following auxiliary typing rules specify this typing relation relative to a 
    \frac{
      \vdashheaptype t \ok
      \qquad
-     t' \in \{\NONE, \NOFUNC, \NOEXTERN\}
+     t' \in \{\NONE, \NOFUNC, \NOEXN, \NOEXTERN\}
      \qquad
      \vdashheaptypematch t' \matchesheaptype t
    }{
