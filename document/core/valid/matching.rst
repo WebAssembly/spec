@@ -78,7 +78,7 @@ $${rule:
   {Heaptype_sub/struct Heaptype_sub/array Heaptype_sub/func}
   {Heaptype_sub/typeidx-l Heaptype_sub/typeidx-r}
   {Heaptype_sub/rec}
-  {Heaptype_sub/none Heaptype_sub/nofunc heaptype_sub/noexn Heaptype_sub/noextern}
+  {Heaptype_sub/none Heaptype_sub/nofunc Heaptype_sub/noexn Heaptype_sub/noextern}
   {Heaptype_sub/bot}
 }
 $${rule-ignore: Heaptype_sub/def}
