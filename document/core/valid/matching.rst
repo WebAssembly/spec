@@ -56,7 +56,7 @@ A :ref:`heap type <syntax-heaptype>` :math:`\heaptype_1` matches a :ref:`heap ty
 
 * Or there exists a :ref:`valid <valid-heaptype>` :ref:`heap type <syntax-heaptype>` :math:`\heaptype'`, such that :math:`\heaptype_1` :ref:`matches <match-heaptype>` :math:`\heaptype'` and :math:`\heaptype'` :ref:`matches <match-heaptype>` :math:`\heaptype_2`.
 
-* Or :math:`heaptype_1` is :math:`\EQT` and :math:`\heaptype_2` is :math:`\ANY`.
+* Or :math:`\heaptype_1` is :math:`\EQT` and :math:`\heaptype_2` is :math:`\ANY`.
 
 * Or :math:`\heaptype_1` is one of :math:`\I31`, :math:`\STRUCT`, or :math:`\ARRAY` and :math:`\heaptype_2` is :math:`\EQT`.
 
