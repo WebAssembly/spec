@@ -385,9 +385,9 @@ Element segments :math:`\elem` are classified by the :ref:`reference type <synta
 
 * The table :math:`C.\CTABLES[x]` must be defined in the context.
 
-* Let :math:`\limits~t` be the :ref:`table type <syntax-tabletype>` :math:`C.\CTABLES[x]`.
+* Let :math:`\X{at}~\limits~t` be the :ref:`table type <syntax-tabletype>` :math:`C.\CTABLES[x]`.
 
-* The expression :math:`\expr` must be :ref:`valid <valid-expr>` with :ref:`result type <syntax-resulttype>` :math:`[\I32]`.
+* The expression :math:`\expr` must be :ref:`valid <valid-expr>` with :ref:`result type <syntax-resulttype>` :math:`[\X{at}]`.
 
 * The expression :math:`\expr` must be :ref:`constant <valid-constant>`.
 
@@ -396,9 +396,9 @@ Element segments :math:`\elem` are classified by the :ref:`reference type <synta
 .. math::
    \frac{
      \begin{array}{@{}c@{}}
-     C.\CTABLES[x] = \limits~t
+     C.\CTABLES[x] = \X{at}~\limits~t
      \\
-     C \vdashexpr \expr : [\I32]
+     C \vdashexpr \expr : [\X{at}]
      \qquad
      C \vdashexprconst \expr \const
      \end{array}
@@ -466,7 +466,9 @@ Data segments :math:`\data` are not classified by any type but merely checked fo
 
 * The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
-* The expression :math:`\expr` must be :ref:`valid <valid-expr>` with :ref:`result type <syntax-resulttype>` :math:`[\I32]`.
+* Let :math:`\X{at}~\limits` be the :ref:`memory type <syntax-memtype>` :math:`C.\CMEMS[x]`.
+
+* The expression :math:`\expr` must be :ref:`valid <valid-expr>` with :ref:`result type <syntax-resulttype>` :math:`[\X{at}]`.
 
 * The expression :math:`\expr` must be :ref:`constant <valid-constant>`.
 
@@ -474,9 +476,9 @@ Data segments :math:`\data` are not classified by any type but merely checked fo
 
 .. math::
    \frac{
-     C.\CMEMS[x] = \limits
+     C.\CMEMS[x] = \X{at}~\limits
      \qquad
-     C \vdashexpr \expr : [\I32]
+     C \vdashexpr \expr : [\X{at}]
      \qquad
      C \vdashexprconst \expr \const
    }{
