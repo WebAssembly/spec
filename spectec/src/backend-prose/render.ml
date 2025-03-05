@@ -340,11 +340,11 @@ and al_to_el_expr expr =
         2) Is infix notation
         3) Is bracketed -> render into BrackE
         4) Is argument of CallE -> add first, omit later at CallE *)
+      let atom_of atom = atom $$ no_region % (Atom.info "") in
       let find_brace_opt mixop =
         let s = Mixop.to_string mixop in
         let first = String.get s 1 in
         let last = String.get s (String.length s - 2) in
-        let atom_of atom = atom $$ no_region % (Atom.info "") in
         match first, last with
         | '(', ')' -> Some (atom_of Atom.LParen, atom_of Atom.RParen)
         | '[', ']' -> Some (atom_of Atom.LBrack, atom_of Atom.RBrack)
@@ -354,6 +354,11 @@ and al_to_el_expr expr =
       let elal = mixop_to_el_exprs op in
       let* elel = al_to_el_exprs el in
       let eles = case_to_el_exprs elal elel in
+      (* HARDCODE: rendering oktypeidx *)
+      let eles = match Mixop.to_string op, eles with
+      | "OK", [arg1; arg2] -> [arg1; El.Ast.ParenE arg2 $ no_region]
+      | _ -> eles
+      in
       let ele = El.Ast.SeqE eles in
       (match elal, elel with
       | _, [] -> Some ele
@@ -833,11 +838,9 @@ let typs = ref Map.empty
 let init_typs () = typs := Map.empty
 let render_expr_with_type env e =
   let s = render_expr env e in
-  let lt = match type_with_link env e with
-  | Some lt -> lt
-  | None -> render_expr env e
-  in
-  "the " ^ lt ^ " " ^ s
+  match type_with_link env e with
+  | Some lt -> "the " ^ lt ^ " " ^ s
+  | None -> s
 
 
 (* Validation Statements *)

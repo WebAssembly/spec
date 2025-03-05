@@ -19,12 +19,12 @@ watsup 0.4 generator
 
 
 
-The limits :math:`{}[ n .. m ]` is :ref:`valid <valid-val>` with the :math:`k` :math:`k` if:
+The limits :math:`{}[ n .. m ]` is :ref:`valid <valid-val>` with :math:`k` if:
 
 
-   * The :math:`n` :math:`n` is less than or equal to :math:`m`.
+   * :math:`n` is less than or equal to :math:`m`.
 
-   * The :math:`m` :math:`m` is less than or equal to :math:`k`.
+   * :math:`m` is less than or equal to :math:`k`.
 
 
 
@@ -42,7 +42,7 @@ The global type :math:`({\mathsf{mut}^?}~t)` is always :ref:`valid <valid-val>`.
 The table type :math:`{\mathit{limits}}` is :ref:`valid <valid-val>` if:
 
 
-   * The limits :math:`{\mathit{limits}}` is :ref:`valid <valid-val>` with the :math:`{2^{32}} - 1` :math:`{2^{32}} - 1`.
+   * The limits :math:`{\mathit{limits}}` is :ref:`valid <valid-val>` with :math:`{2^{32}} - 1`.
 
 
 
@@ -50,7 +50,7 @@ The table type :math:`{\mathit{limits}}` is :ref:`valid <valid-val>` if:
 The memory type :math:`{\mathit{limits}}` is :ref:`valid <valid-val>` if:
 
 
-   * The limits :math:`{\mathit{limits}}` is :ref:`valid <valid-val>` with the :math:`{2^{16}}` :math:`{2^{16}}`.
+   * The limits :math:`{\mathit{limits}}` is :ref:`valid <valid-val>` with :math:`{2^{16}}`.
 
 
 
@@ -118,9 +118,9 @@ The external type :math:`(\mathsf{mem}~{\mathit{memtype}})` is :ref:`valid <vali
 The limits :math:`{}[ n_{11} .. n_{12} ]` :ref:`matches <match>` the limits :math:`{}[ n_{21} .. n_{22} ]` if:
 
 
-   * The :math:`n_{11}` :math:`n_{11}` is greater than or equal to :math:`n_{21}`.
+   * :math:`n_{11}` is greater than or equal to :math:`n_{21}`.
 
-   * The :math:`n_{12}` :math:`n_{12}` is less than or equal to :math:`n_{22}`.
+   * :math:`n_{12}` is less than or equal to :math:`n_{22}`.
 
 
 
@@ -365,13 +365,13 @@ The instruction :math:`({\mathit{nt}}_1 {.} {{\mathit{cvtop}'}}{\mathsf{\_}}{{\m
 
    * Either:
 
-      * The :math:`{\mathit{cvtop}'}` :math:`{\mathit{cvtop}'}` is of the form :math:`\mathsf{reinterpret}`.
+      * :math:`{\mathit{cvtop}'}` is of the form :math:`\mathsf{reinterpret}`.
 
-      * The :math:`{|{\mathit{nt}}_1|}` :math:`{|{\mathit{nt}}_1|}` is of the form :math:`{|{\mathit{nt}}_2|}`.
+      * :math:`{|{\mathit{nt}}_1|}` is of the form :math:`{|{\mathit{nt}}_2|}`.
 
    * Or:
 
-      * The :math:`{\mathit{cvtop}'}` :math:`{\mathit{cvtop}'}` is of the form :math:`{\mathit{cvtop}}`.
+      * :math:`{\mathit{cvtop}'}` is of the form :math:`{\mathit{cvtop}}`.
 
 
 
@@ -451,21 +451,21 @@ The instruction :math:`({{t'}{.}\mathsf{load}}{{{\mathit{loadop}}^?}}~{\mathit{m
 
       * The number type :math:`{t'}` is of the form :math:`t`.
 
-      * The :math:`{{\mathit{loadop}}^?}` :math:`{{\mathit{loadop}}^?}` is absent.
+      * :math:`{{\mathit{loadop}}^?}` is absent.
 
       * The number type :math:`{t'''}` is of the form :math:`t`.
 
-      * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|t|} / 8`.
+      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|t|} / 8`.
 
    * Or:
 
       * The number type :math:`{t'}` is of the form :math:`{\mathsf{i}}{n}`.
 
-      * The :math:`{{\mathit{loadop}}^?}` :math:`{{\mathit{loadop}}^?}` is of the form :math:`{M}{\mathsf{\_}}{{\mathit{sx}}}`.
+      * :math:`{{\mathit{loadop}}^?}` is of the form :math:`{M}{\mathsf{\_}}{{\mathit{sx}}}`.
 
       * The number type :math:`{t'''}` is of the form :math:`{\mathsf{i}}{n}`.
 
-      * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
+      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
 
 
 
@@ -483,7 +483,7 @@ The instruction :math:`({{t'}{.}\mathsf{store}}{{{\mathit{sz}}^?}}~{\mathit{mema
 
       * The number type :math:`{t''}` is of the form :math:`t`.
 
-      * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|t|} / 8`.
+      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|t|} / 8`.
 
    * Or:
 
@@ -493,7 +493,7 @@ The instruction :math:`({{t'}{.}\mathsf{store}}{{{\mathit{sz}}^?}}~{\mathit{mema
 
       * The number type :math:`{t''}` is of the form :math:`{\mathsf{i}}{n}`.
 
-      * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
+      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
 
 
 
@@ -501,7 +501,7 @@ The instruction :math:`({{t'}{.}\mathsf{store}}{{{\mathit{sz}}^?}}~{\mathit{mema
 The instruction :math:`({\mathit{nt}}_1 {.} {\mathsf{reinterpret}}{\mathsf{\_}}{{\mathit{nt}}_2})` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{nt}}_2~\rightarrow~{\mathit{nt}}_1` if:
 
 
-   * The :math:`{|{\mathit{nt}}_1|}` :math:`{|{\mathit{nt}}_1|}` is of the form :math:`{|{\mathit{nt}}_2|}`.
+   * :math:`{|{\mathit{nt}}_1|}` is of the form :math:`{|{\mathit{nt}}_2|}`.
 
 
 
@@ -516,7 +516,7 @@ The instruction :math:`(\mathsf{load}~t~{\mathit{memarg}})` is :ref:`valid <vali
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is of the form :math:`{\mathit{mt}}`.
 
-   * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|t|} / 8`.
+   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|t|} / 8`.
 
 
 
@@ -526,7 +526,7 @@ The instruction :math:`({{\mathsf{i}}{n}{.}\mathsf{load}}{{M}{\mathsf{\_}}{{\mat
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is of the form :math:`{\mathit{mt}}`.
 
-   * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
+   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
 
 
 
@@ -536,7 +536,7 @@ The instruction :math:`(\mathsf{store}~t~{\mathit{memarg}})` is :ref:`valid <val
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is of the form :math:`{\mathit{mt}}`.
 
-   * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|t|} / 8`.
+   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|t|} / 8`.
 
 
 
@@ -546,7 +546,7 @@ The instruction :math:`({{\mathsf{i}}{n}{.}\mathsf{store}}{M}~{\mathit{memarg}})
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is of the form :math:`{\mathit{mt}}`.
 
-   * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
+   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
 
 
 
@@ -4393,12 +4393,12 @@ watsup 0.4 generator
 
 
 
-The limits :math:`{}[ n .. m ]` is :ref:`valid <valid-val>` with the :math:`k` :math:`k` if:
+The limits :math:`{}[ n .. m ]` is :ref:`valid <valid-val>` with :math:`k` if:
 
 
-   * The :math:`n` :math:`n` is less than or equal to :math:`m`.
+   * :math:`n` is less than or equal to :math:`m`.
 
-   * The :math:`m` :math:`m` is less than or equal to :math:`k`.
+   * :math:`m` is less than or equal to :math:`k`.
 
 
 
@@ -4416,7 +4416,7 @@ The global type :math:`({\mathsf{mut}^?}~t)` is always :ref:`valid <valid-val>`.
 The table type :math:`({\mathit{limits}}~{\mathit{reftype}})` is :ref:`valid <valid-val>` if:
 
 
-   * The limits :math:`{\mathit{limits}}` is :ref:`valid <valid-val>` with the :math:`{2^{32}} - 1` :math:`{2^{32}} - 1`.
+   * The limits :math:`{\mathit{limits}}` is :ref:`valid <valid-val>` with :math:`{2^{32}} - 1`.
 
 
 
@@ -4424,7 +4424,7 @@ The table type :math:`({\mathit{limits}}~{\mathit{reftype}})` is :ref:`valid <va
 The memory type :math:`{\mathit{limits}}~\mathsf{page}` is :ref:`valid <valid-val>` if:
 
 
-   * The limits :math:`{\mathit{limits}}` is :ref:`valid <valid-val>` with the :math:`{2^{16}}` :math:`{2^{16}}`.
+   * The limits :math:`{\mathit{limits}}` is :ref:`valid <valid-val>` with :math:`{2^{16}}`.
 
 
 
@@ -4528,9 +4528,9 @@ The result type :math:`{t_1^\ast}` :ref:`matches <match>` the result type :math:
 The limits :math:`{}[ n_{11} .. n_{12} ]` :ref:`matches <match>` the limits :math:`{}[ n_{21} .. n_{22} ]` if:
 
 
-   * The :math:`n_{11}` :math:`n_{11}` is greater than or equal to :math:`n_{21}`.
+   * :math:`n_{11}` is greater than or equal to :math:`n_{21}`.
 
-   * The :math:`n_{12}` :math:`n_{12}` is less than or equal to :math:`n_{22}`.
+   * :math:`n_{12}` is less than or equal to :math:`n_{22}`.
 
 
 
@@ -4841,13 +4841,13 @@ The instruction :math:`({\mathit{nt}}_1 {.} {{\mathit{cvtop}'}}{\mathsf{\_}}{{\m
 
    * Either:
 
-      * The :math:`{\mathit{cvtop}'}` :math:`{\mathit{cvtop}'}` is of the form :math:`\mathsf{reinterpret}`.
+      * :math:`{\mathit{cvtop}'}` is of the form :math:`\mathsf{reinterpret}`.
 
-      * The :math:`{|{\mathit{nt}}_1|}` :math:`{|{\mathit{nt}}_1|}` is of the form :math:`{|{\mathit{nt}}_2|}`.
+      * :math:`{|{\mathit{nt}}_1|}` is of the form :math:`{|{\mathit{nt}}_2|}`.
 
    * Or:
 
-      * The :math:`{\mathit{cvtop}'}` :math:`{\mathit{cvtop}'}` is of the form :math:`{\mathit{cvtop}}`.
+      * :math:`{\mathit{cvtop}'}` is of the form :math:`{\mathit{cvtop}}`.
 
 
 
@@ -5191,21 +5191,21 @@ The instruction :math:`({{\mathit{nt}'}{.}\mathsf{load}}{{{\mathit{loadop}}^?}}~
 
       * The number type :math:`{\mathit{nt}'}` is of the form :math:`{\mathit{nt}}`.
 
-      * The :math:`{{\mathit{loadop}}^?}` :math:`{{\mathit{loadop}}^?}` is absent.
+      * :math:`{{\mathit{loadop}}^?}` is absent.
 
       * The value type :math:`{\mathit{valtype}}` is of the form :math:`{\mathit{nt}}`.
 
-      * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
+      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
 
    * Or:
 
       * The number type :math:`{\mathit{nt}'}` is of the form :math:`{\mathsf{i}}{n}`.
 
-      * The :math:`{{\mathit{loadop}}^?}` :math:`{{\mathit{loadop}}^?}` is of the form :math:`{M}{\mathsf{\_}}{{\mathit{sx}}}`.
+      * :math:`{{\mathit{loadop}}^?}` is of the form :math:`{M}{\mathsf{\_}}{{\mathit{sx}}}`.
 
       * The value type :math:`{\mathit{valtype}}` is of the form :math:`{\mathsf{i}}{n}`.
 
-      * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
+      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
 
 
 
@@ -5223,7 +5223,7 @@ The instruction :math:`({{\mathit{nt}'}{.}\mathsf{store}}{{{\mathit{sz}}^?}}~{\m
 
       * The value type :math:`{\mathit{valtype}}` is of the form :math:`{\mathit{nt}}`.
 
-      * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
+      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
 
    * Or:
 
@@ -5233,7 +5233,7 @@ The instruction :math:`({{\mathit{nt}'}{.}\mathsf{store}}{{{\mathit{sz}}^?}}~{\m
 
       * The value type :math:`{\mathit{valtype}}` is of the form :math:`{\mathsf{i}}{n}`.
 
-      * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
+      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
 
 
 
@@ -5245,20 +5245,20 @@ The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~{\mathit{vl
 
    * Either:
 
-      * The :math:`{\mathit{vloadop}}` :math:`{\mathit{vloadop}}` is of the form :math:`({M}{\mathsf{x}}{N}{\mathsf{\_}}{{\mathit{sx}}})`.
+      * :math:`{\mathit{vloadop}}` is of the form :math:`({M}{\mathsf{x}}{N}{\mathsf{\_}}{{\mathit{sx}}})`.
 
-      * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8 \cdot N`.
+      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8 \cdot N`.
 
    * Or:
 
-      * The :math:`{\mathit{vloadop}}` :math:`{\mathit{vloadop}}` is of the form :math:`({n}{\mathsf{\_}}{\mathsf{splat}})`.
+      * :math:`{\mathit{vloadop}}` is of the form :math:`({n}{\mathsf{\_}}{\mathsf{splat}})`.
 
-      * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`n / 8`.
+      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`n / 8`.
    * Or:
 
-      * The :math:`{\mathit{vloadop}}` :math:`{\mathit{vloadop}}` is of the form :math:`({n}{\mathsf{\_}}{\mathsf{zero}})`.
+      * :math:`{\mathit{vloadop}}` is of the form :math:`({n}{\mathsf{\_}}{\mathsf{zero}})`.
 
-      * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`n / 8`.
+      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`n / 8`.
 
 
 
@@ -5268,9 +5268,9 @@ The instruction :math:`(\mathsf{vload\_lane}~\mathsf{v{\scriptstyle 128}}~n~{\ma
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is of the form :math:`{\mathit{mt}}`.
 
-   * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`n / 8`.
+   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`n / 8`.
 
-   * The :math:`{\mathit{laneidx}}` :math:`{\mathit{laneidx}}` is less than :math:`128 / n`.
+   * :math:`{\mathit{laneidx}}` is less than :math:`128 / n`.
 
 
 
@@ -5280,7 +5280,7 @@ The instruction :math:`(\mathsf{vstore}~\mathsf{v{\scriptstyle 128}}~{\mathit{me
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is of the form :math:`{\mathit{mt}}`.
 
-   * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|\mathsf{v{\scriptstyle 128}}|} / 8`.
+   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|\mathsf{v{\scriptstyle 128}}|} / 8`.
 
 
 
@@ -5290,9 +5290,9 @@ The instruction :math:`(\mathsf{vstore\_lane}~\mathsf{v{\scriptstyle 128}}~n~{\m
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is of the form :math:`{\mathit{mt}}`.
 
-   * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`n / 8`.
+   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`n / 8`.
 
-   * The :math:`{\mathit{laneidx}}` :math:`{\mathit{laneidx}}` is less than :math:`128 / n`.
+   * :math:`{\mathit{laneidx}}` is less than :math:`128 / n`.
 
 
 
@@ -5315,7 +5315,7 @@ The instruction :math:`(\mathsf{select})` is :ref:`valid <valid-val>` with the f
 The instruction :math:`({\mathit{nt}}_1 {.} {\mathsf{reinterpret}}{\mathsf{\_}}{{\mathit{nt}}_2})` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{nt}}_2~\rightarrow~{\mathit{nt}}_1` if:
 
 
-   * The :math:`{|{\mathit{nt}}_1|}` :math:`{|{\mathit{nt}}_1|}` is of the form :math:`{|{\mathit{nt}}_2|}`.
+   * :math:`{|{\mathit{nt}}_1|}` is of the form :math:`{|{\mathit{nt}}_2|}`.
 
 
 
@@ -5330,7 +5330,7 @@ The instruction :math:`(\mathsf{load}~{\mathit{nt}}~{\mathit{memarg}})` is :ref:
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is of the form :math:`{\mathit{mt}}`.
 
-   * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
+   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
 
 
 
@@ -5340,7 +5340,7 @@ The instruction :math:`({{\mathsf{i}}{n}{.}\mathsf{load}}{{M}{\mathsf{\_}}{{\mat
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is of the form :math:`{\mathit{mt}}`.
 
-   * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
+   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
 
 
 
@@ -5350,7 +5350,7 @@ The instruction :math:`(\mathsf{store}~{\mathit{nt}}~{\mathit{memarg}})` is :ref
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is of the form :math:`{\mathit{mt}}`.
 
-   * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
+   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
 
 
 
@@ -5360,7 +5360,7 @@ The instruction :math:`({{\mathsf{i}}{n}{.}\mathsf{store}}{M}~{\mathit{memarg}})
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is of the form :math:`{\mathit{mt}}`.
 
-   * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
+   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
 
 
 
@@ -5370,7 +5370,7 @@ The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~({M}{\maths
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is of the form :math:`{\mathit{mt}}`.
 
-   * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8 \cdot N`.
+   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8 \cdot N`.
 
 
 
@@ -5380,7 +5380,7 @@ The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~({n}{\maths
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is of the form :math:`{\mathit{mt}}`.
 
-   * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`n / 8`.
+   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`n / 8`.
 
 
 
@@ -5390,7 +5390,7 @@ The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~({n}{\maths
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is of the form :math:`{\mathit{mt}}`.
 
-   * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`n / 8`.
+   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`n / 8`.
 
 
 
@@ -5603,12 +5603,12 @@ The memory :math:`(\mathsf{memory}~{\mathit{mt}})` is :ref:`valid <valid-val>` w
 
 
 
-The :math:`{\mathit{elemmode}}` :math:`{\mathit{elemmode}}` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{rt}}` if:
+:math:`{\mathit{elemmode}}` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{rt}}` if:
 
 
    * Either:
 
-      * The :math:`{\mathit{elemmode}}` :math:`{\mathit{elemmode}}` is of the form :math:`(\mathsf{active}~x~{\mathit{expr}})`.
+      * :math:`{\mathit{elemmode}}` is of the form :math:`(\mathsf{active}~x~{\mathit{expr}})`.
 
       * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
 
@@ -5620,15 +5620,15 @@ The :math:`{\mathit{elemmode}}` :math:`{\mathit{elemmode}}` is :ref:`valid <vali
 
    * Or:
 
-      * The :math:`{\mathit{elemmode}}` :math:`{\mathit{elemmode}}` is of the form :math:`\mathsf{passive}`.
+      * :math:`{\mathit{elemmode}}` is of the form :math:`\mathsf{passive}`.
    * Or:
 
-      * The :math:`{\mathit{elemmode}}` :math:`{\mathit{elemmode}}` is of the form :math:`\mathsf{declare}`.
+      * :math:`{\mathit{elemmode}}` is of the form :math:`\mathsf{declare}`.
 
 
 
 
-The :math:`(\mathsf{active}~x~{\mathit{expr}})` :math:`(\mathsf{active}~x~{\mathit{expr}})` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{rt}}` if:
+:math:`(\mathsf{active}~x~{\mathit{expr}})` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{rt}}` if:
 
 
    * The table type :math:`C{.}\mathsf{tables}{}[x]` exists.
@@ -5642,12 +5642,12 @@ The :math:`(\mathsf{active}~x~{\mathit{expr}})` :math:`(\mathsf{active}~x~{\math
 
 
 
-The :math:`\mathsf{passive}` :math:`\mathsf{passive}` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{rt}}`.
+:math:`\mathsf{passive}` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{rt}}`.
 
 
 
 
-The :math:`\mathsf{declare}` :math:`\mathsf{declare}` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{rt}}`.
+:math:`\mathsf{declare}` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{rt}}`.
 
 
 
@@ -5661,17 +5661,17 @@ The table segment :math:`(\mathsf{elem}~{\mathit{rt}}~{{\mathit{expr}}^\ast}~{\m
 
       * :math:`{\mathit{expr}}` is constant.
 
-   * The :math:`{\mathit{elemmode}}` :math:`{\mathit{elemmode}}` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{rt}}`.
+   * :math:`{\mathit{elemmode}}` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{rt}}`.
 
 
 
 
-The :math:`{\mathit{datamode}}` :math:`{\mathit{datamode}}` is :ref:`valid <valid-val>` if:
+:math:`{\mathit{datamode}}` is :ref:`valid <valid-val>` if:
 
 
    * Either:
 
-      * The :math:`{\mathit{datamode}}` :math:`{\mathit{datamode}}` is of the form :math:`(\mathsf{active}~0~{\mathit{expr}})`.
+      * :math:`{\mathit{datamode}}` is of the form :math:`(\mathsf{active}~0~{\mathit{expr}})`.
 
       * The memory type :math:`C{.}\mathsf{mems}{}[0]` is of the form :math:`{\mathit{mt}}`.
 
@@ -5681,12 +5681,12 @@ The :math:`{\mathit{datamode}}` :math:`{\mathit{datamode}}` is :ref:`valid <vali
 
    * Or:
 
-      * The :math:`{\mathit{datamode}}` :math:`{\mathit{datamode}}` is of the form :math:`\mathsf{passive}`.
+      * :math:`{\mathit{datamode}}` is of the form :math:`\mathsf{passive}`.
 
 
 
 
-The :math:`(\mathsf{active}~0~{\mathit{expr}})` :math:`(\mathsf{active}~0~{\mathit{expr}})` is :ref:`valid <valid-val>` if:
+:math:`(\mathsf{active}~0~{\mathit{expr}})` is :ref:`valid <valid-val>` if:
 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is of the form :math:`{\mathit{mt}}`.
@@ -5698,7 +5698,7 @@ The :math:`(\mathsf{active}~0~{\mathit{expr}})` :math:`(\mathsf{active}~0~{\math
 
 
 
-The :math:`\mathsf{passive}` :math:`\mathsf{passive}` is always :ref:`valid <valid-val>`.
+:math:`\mathsf{passive}` is always :ref:`valid <valid-val>`.
 
 
 
@@ -5706,7 +5706,7 @@ The :math:`\mathsf{passive}` :math:`\mathsf{passive}` is always :ref:`valid <val
 The memory segment :math:`(\mathsf{data}~{b^\ast}~{\mathit{datamode}})` is :ref:`valid <valid-val>` if:
 
 
-   * The :math:`{\mathit{datamode}}` :math:`{\mathit{datamode}}` is :ref:`valid <valid-val>`.
+   * :math:`{\mathit{datamode}}` is :ref:`valid <valid-val>`.
 
 
 
@@ -13293,7 +13293,7 @@ The function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is :ref:`valid <vali
 
 
 
-The sub type :math:`(\mathsf{sub}~{\mathsf{final}^?}~{x^\ast}~{\mathit{comptype}})` is :ref:`valid <valid-val>` for the :math:`({\mathsf{ok}}{x_0})` :math:`({\mathsf{ok}}{x_0})` if:
+The sub type :math:`(\mathsf{sub}~{\mathsf{final}^?}~{x^\ast}~{\mathit{comptype}})` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x_0)})` if:
 
 
    * The length of :math:`{x^\ast}` is less than or equal to :math:`1`.
@@ -13323,7 +13323,7 @@ The sub type :math:`(\mathsf{sub}~{\mathsf{final}^?}~{x^\ast}~{\mathit{comptype}
 
 
 
-The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}'}^\ast})` is :ref:`valid <valid-val>` for the :math:`({\mathsf{ok}}{x})` :math:`({\mathsf{ok}}{x})` if:
+The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}'}^\ast})` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x)})` if:
 
 
    * Either:
@@ -13334,36 +13334,36 @@ The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}'}^\ast})` is :ref:`va
 
       * The sub type sequence :math:`{{\mathit{subtype}'}^\ast}` is of the form :math:`{\mathit{subtype}}_1~{{\mathit{subtype}}^\ast}`.
 
-      * The sub type :math:`{\mathit{subtype}}_1` is :ref:`valid <valid-val>` for the :math:`({\mathsf{ok}}{x})` :math:`({\mathsf{ok}}{x})`.
+      * The sub type :math:`{\mathit{subtype}}_1` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x)})`.
 
-      * The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is :ref:`valid <valid-val>` for the :math:`({\mathsf{ok}}{x + 1})` :math:`({\mathsf{ok}}{x + 1})`.
-
-
-
-
-The recursive type :math:`(\mathsf{rec})` is :ref:`valid <valid-val>` for the :math:`({\mathsf{ok}}{x})` :math:`({\mathsf{ok}}{x})`.
+      * The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x + 1)})`.
 
 
 
 
-The recursive type :math:`(\mathsf{rec}~{\mathit{subtype}}_1~{{\mathit{subtype}}^\ast})` is :ref:`valid <valid-val>` for the :math:`({\mathsf{ok}}{x})` :math:`({\mathsf{ok}}{x})` if:
-
-
-   * The sub type :math:`{\mathit{subtype}}_1` is :ref:`valid <valid-val>` for the :math:`({\mathsf{ok}}{x})` :math:`({\mathsf{ok}}{x})`.
-
-   * The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is :ref:`valid <valid-val>` for the :math:`({\mathsf{ok}}{x + 1})` :math:`({\mathsf{ok}}{x + 1})`.
+The recursive type :math:`(\mathsf{rec})` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x)})`.
 
 
 
 
-The sub type :math:`(\mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~{\mathit{compttype}})` is :ref:`valid <valid-val>` for the :math:`({\mathsf{ok}}{(x, i)})` :math:`({\mathsf{ok}}{(x, i)})` if:
+The recursive type :math:`(\mathsf{rec}~{\mathit{subtype}}_1~{{\mathit{subtype}}^\ast})` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x)})` if:
+
+
+   * The sub type :math:`{\mathit{subtype}}_1` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x)})`.
+
+   * The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x + 1)})`.
+
+
+
+
+The sub type :math:`(\mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~{\mathit{compttype}})` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x, i)})` if:
 
 
    * The length of :math:`{{\mathit{typeuse}}^\ast}` is less than or equal to :math:`1`.
 
    * For all :math:`{\mathit{typeuse}}` in :math:`{{\mathit{typeuse}}^\ast}`:
 
-      * The :math:`{\mathit{typeuse}} \prec x, i` :math:`{\mathit{typeuse}} \prec x, i` is of the form true.
+      * :math:`{\mathit{typeuse}} \prec x, i` is of the form true.
 
    * The length of :math:`{{\mathit{comptype}'}^\ast}` is equal to the length of :math:`{{\mathit{typeuse}}^\ast}`.
 
@@ -13382,7 +13382,7 @@ The sub type :math:`(\mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~{
 
 
 
-The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}'}^\ast})` is :ref:`valid <valid-val>` for the :math:`({\mathsf{ok}}{(x, i)})` :math:`({\mathsf{ok}}{(x, i)})` if:
+The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}'}^\ast})` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x, i)})` if:
 
 
    * Either:
@@ -13393,24 +13393,24 @@ The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}'}^\ast})` is :ref:`va
 
       * The sub type sequence :math:`{{\mathit{subtype}'}^\ast}` is of the form :math:`{\mathit{subtype}}_1~{{\mathit{subtype}}^\ast}`.
 
-      * The sub type :math:`{\mathit{subtype}}_1` is :ref:`valid <valid-val>` for the :math:`({\mathsf{ok}}{(x, i)})` :math:`({\mathsf{ok}}{(x, i)})`.
+      * The sub type :math:`{\mathit{subtype}}_1` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x, i)})`.
 
-      * The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is :ref:`valid <valid-val>` for the :math:`({\mathsf{ok}}{(x + 1, i + 1)})` :math:`({\mathsf{ok}}{(x + 1, i + 1)})`.
-
-
-
-
-The recursive type :math:`(\mathsf{rec})` is :ref:`valid <valid-val>` for the :math:`({\mathsf{ok}}{(x, i)})` :math:`({\mathsf{ok}}{(x, i)})`.
+      * The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x + 1, i + 1)})`.
 
 
 
 
-The recursive type :math:`(\mathsf{rec}~{\mathit{subtype}}_1~{{\mathit{subtype}}^\ast})` is :ref:`valid <valid-val>` for the :math:`({\mathsf{ok}}{(x, i)})` :math:`({\mathsf{ok}}{(x, i)})` if:
+The recursive type :math:`(\mathsf{rec})` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x, i)})`.
 
 
-   * The sub type :math:`{\mathit{subtype}}_1` is :ref:`valid <valid-val>` for the :math:`({\mathsf{ok}}{(x, i)})` :math:`({\mathsf{ok}}{(x, i)})`.
 
-   * The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is :ref:`valid <valid-val>` for the :math:`({\mathsf{ok}}{(x + 1, i + 1)})` :math:`({\mathsf{ok}}{(x + 1, i + 1)})`.
+
+The recursive type :math:`(\mathsf{rec}~{\mathit{subtype}}_1~{{\mathit{subtype}}^\ast})` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x, i)})` if:
+
+
+   * The sub type :math:`{\mathit{subtype}}_1` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x, i)})`.
+
+   * The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x + 1, i + 1)})`.
 
 
 
@@ -13418,11 +13418,11 @@ The recursive type :math:`(\mathsf{rec}~{\mathit{subtype}}_1~{{\mathit{subtype}}
 The defined type :math:`({\mathit{rectype}} {.} i)` is :ref:`valid <valid-val>` if:
 
 
-   * The recursive type :math:`{\mathit{rectype}}` is :ref:`valid <valid-val>` for the :math:`({\mathsf{ok}}{x})` :math:`({\mathsf{ok}}{x})`.
+   * The recursive type :math:`{\mathit{rectype}}` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x)})`.
 
    * The recursive type :math:`{\mathit{rectype}}` is of the form :math:`(\mathsf{rec}~{{\mathit{subtype}}^{n}})`.
 
-   * The :math:`i` :math:`i` is less than :math:`n`.
+   * :math:`i` is less than :math:`n`.
 
 
 
@@ -13805,15 +13805,15 @@ The reference type :math:`(\mathsf{ref}~{\mathsf{null}^?}~{\mathit{ht}}_1)` :ref
 
    * Either:
 
-      * The :math:`{\mathsf{null}^?}` :math:`{\mathsf{null}^?}` is absent.
+      * :math:`{\mathsf{null}^?}` is absent.
 
-      * The :math:`{{\mathsf{null}^?}'}` :math:`{{\mathsf{null}^?}'}` is absent.
+      * :math:`{{\mathsf{null}^?}'}` is absent.
 
    * Or:
 
-      * The :math:`{\mathsf{null}^?}` :math:`{\mathsf{null}^?}` is of the form :math:`{\mathsf{null}^?}`.
+      * :math:`{\mathsf{null}^?}` is of the form :math:`{\mathsf{null}^?}`.
 
-      * The :math:`{{\mathsf{null}^?}'}` :math:`{{\mathsf{null}^?}'}` is of the form :math:`\mathsf{null}`.
+      * :math:`{{\mathsf{null}^?}'}` is of the form :math:`\mathsf{null}`.
 
 
 
@@ -13954,15 +13954,15 @@ The field type :math:`({\mathsf{mut}^?}~{\mathit{zt}}_1)` :ref:`matches <match>`
 
    * Either:
 
-      * The :math:`{\mathsf{mut}^?}` :math:`{\mathsf{mut}^?}` is absent.
+      * :math:`{\mathsf{mut}^?}` is absent.
 
-      * The :math:`{{\mathsf{mut}^?}'}` :math:`{{\mathsf{mut}^?}'}` is absent.
+      * :math:`{{\mathsf{mut}^?}'}` is absent.
 
    * Or:
 
-      * The :math:`{\mathsf{mut}^?}` :math:`{\mathsf{mut}^?}` is of the form :math:`\mathsf{mut}`.
+      * :math:`{\mathsf{mut}^?}` is of the form :math:`\mathsf{mut}`.
 
-      * The :math:`{{\mathsf{mut}^?}'}` :math:`{{\mathsf{mut}^?}'}` is of the form :math:`\mathsf{mut}`.
+      * :math:`{{\mathsf{mut}^?}'}` is of the form :math:`\mathsf{mut}`.
 
       * The storage type :math:`{\mathit{zt}}_2` :ref:`matches <match>` the storage type :math:`{\mathit{zt}}_1`.
 
@@ -14017,12 +14017,12 @@ The instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}` is 
 
 
 
-The limits range :math:`{}[ n .. m ]` is :ref:`valid <valid-val>` within the :math:`k` :math:`k` if:
+The limits range :math:`{}[ n .. m ]` is :ref:`valid <valid-val>` within :math:`k` if:
 
 
-   * The :math:`n` :math:`n` is less than or equal to :math:`m`.
+   * :math:`n` is less than or equal to :math:`m`.
 
-   * The :math:`m` :math:`m` is less than or equal to :math:`k`.
+   * :math:`m` is less than or equal to :math:`k`.
 
 
 
@@ -14038,7 +14038,7 @@ The global type :math:`({\mathsf{mut}^?}~t)` is :ref:`valid <valid-val>` if:
 The table type :math:`({\mathit{addrtype}}~{\mathit{limits}}~{\mathit{reftype}})` is :ref:`valid <valid-val>` if:
 
 
-   * The limits range :math:`{\mathit{limits}}` is :ref:`valid <valid-val>` within the :math:`{2^{32}} - 1` :math:`{2^{32}} - 1`.
+   * The limits range :math:`{\mathit{limits}}` is :ref:`valid <valid-val>` within :math:`{2^{32}} - 1`.
 
    * The reference type :math:`{\mathit{reftype}}` is :ref:`valid <valid-val>`.
 
@@ -14048,7 +14048,7 @@ The table type :math:`({\mathit{addrtype}}~{\mathit{limits}}~{\mathit{reftype}})
 The memory type :math:`({\mathit{addrtype}}~{\mathit{limits}}~\mathsf{page})` is :ref:`valid <valid-val>` if:
 
 
-   * The limits range :math:`{\mathit{limits}}` is :ref:`valid <valid-val>` within the :math:`{2^{16}}` :math:`{2^{16}}`.
+   * The limits range :math:`{\mathit{limits}}` is :ref:`valid <valid-val>` within :math:`{2^{16}}`.
 
 
 
@@ -14169,9 +14169,9 @@ The instruction type :math:`{t_{11}^\ast}~{\rightarrow}_{{x_1^\ast}}\,{t_{12}^\a
 The limits range :math:`{}[ n_1 .. m_1 ]` :ref:`matches <match>` the limits range :math:`{}[ n_2 .. m_2 ]` if:
 
 
-   * The :math:`n_1` :math:`n_1` is greater than or equal to :math:`n_2`.
+   * :math:`n_1` is greater than or equal to :math:`n_2`.
 
-   * The :math:`m_1` :math:`m_1` is less than or equal to :math:`m_2`.
+   * :math:`m_1` is less than or equal to :math:`m_2`.
 
 
 
@@ -14183,15 +14183,15 @@ The global type :math:`({\mathsf{mut}^?}~{\mathit{valtype}}_1)` :ref:`matches <m
 
    * Either:
 
-      * The :math:`{\mathsf{mut}^?}` :math:`{\mathsf{mut}^?}` is absent.
+      * :math:`{\mathsf{mut}^?}` is absent.
 
-      * The :math:`{{\mathsf{mut}^?}'}` :math:`{{\mathsf{mut}^?}'}` is absent.
+      * :math:`{{\mathsf{mut}^?}'}` is absent.
 
    * Or:
 
-      * The :math:`{\mathsf{mut}^?}` :math:`{\mathsf{mut}^?}` is of the form :math:`\mathsf{mut}`.
+      * :math:`{\mathsf{mut}^?}` is of the form :math:`\mathsf{mut}`.
 
-      * The :math:`{{\mathsf{mut}^?}'}` :math:`{{\mathsf{mut}^?}'}` is of the form :math:`\mathsf{mut}`.
+      * :math:`{{\mathsf{mut}^?}'}` is of the form :math:`\mathsf{mut}`.
 
       * The value type :math:`{\mathit{valtype}}_2` :ref:`matches <match>` the value type :math:`{\mathit{valtype}}_1`.
 
@@ -15113,7 +15113,7 @@ The instruction :math:`(\mathsf{array{.}init\_data}~x~y)` is :ref:`valid <valid-
 The instruction :math:`\mathsf{extern{.}convert\_any}` is :ref:`valid <valid-val>` with the instruction type :math:`(\mathsf{ref}~{\mathsf{null}}{{{}_{1}^?}}~\mathsf{any})~\rightarrow~(\mathsf{ref}~{\mathsf{null}}{{{}_{2}^?}}~\mathsf{extern})` if:
 
 
-   * The :math:`{\mathsf{null}}{{{}_{1}^?}}` :math:`{\mathsf{null}}{{{}_{1}^?}}` is of the form :math:`{\mathsf{null}}{{{}_{2}^?}}`.
+   * :math:`{\mathsf{null}}{{{}_{1}^?}}` is of the form :math:`{\mathsf{null}}{{{}_{2}^?}}`.
 
 
 
@@ -15121,7 +15121,7 @@ The instruction :math:`\mathsf{extern{.}convert\_any}` is :ref:`valid <valid-val
 The instruction :math:`\mathsf{any{.}convert\_extern}` is :ref:`valid <valid-val>` with the instruction type :math:`(\mathsf{ref}~{\mathsf{null}}{{{}_{1}^?}}~\mathsf{extern})~\rightarrow~(\mathsf{ref}~{\mathsf{null}}{{{}_{2}^?}}~\mathsf{any})` if:
 
 
-   * The :math:`{\mathsf{null}}{{{}_{1}^?}}` :math:`{\mathsf{null}}{{{}_{1}^?}}` is of the form :math:`{\mathsf{null}}{{{}_{2}^?}}`.
+   * :math:`{\mathsf{null}}{{{}_{1}^?}}` is of the form :math:`{\mathsf{null}}{{{}_{2}^?}}`.
 
 
 
@@ -15479,21 +15479,21 @@ The instruction :math:`({{\mathit{nt}'}{.}\mathsf{load}}{{{\mathit{loadop}}^?}}~
 
       * The number type :math:`{\mathit{nt}'}` is of the form :math:`{\mathit{nt}}`.
 
-      * The :math:`{{\mathit{loadop}}^?}` :math:`{{\mathit{loadop}}^?}` is absent.
+      * :math:`{{\mathit{loadop}}^?}` is absent.
 
       * The value type :math:`{\mathit{valtype}}` is of the form :math:`{\mathit{nt}}`.
 
-      * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
+      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
 
    * Or:
 
       * The number type :math:`{\mathit{nt}'}` is of the form :math:`{\mathsf{i}}{N}`.
 
-      * The :math:`{{\mathit{loadop}}^?}` :math:`{{\mathit{loadop}}^?}` is of the form :math:`{M}{\mathsf{\_}}{{\mathit{sx}}}`.
+      * :math:`{{\mathit{loadop}}^?}` is of the form :math:`{M}{\mathsf{\_}}{{\mathit{sx}}}`.
 
       * The value type :math:`{\mathit{valtype}}` is of the form :math:`{\mathsf{i}}{N}`.
 
-      * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
+      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
 
 
 
@@ -15509,21 +15509,21 @@ The instruction :math:`({{\mathit{nt}'}{.}\mathsf{store}}{{{\mathit{storeop}}^?}
 
       * The number type :math:`{\mathit{nt}'}` is of the form :math:`{\mathit{nt}}`.
 
-      * The :math:`{{\mathit{storeop}}^?}` :math:`{{\mathit{storeop}}^?}` is absent.
+      * :math:`{{\mathit{storeop}}^?}` is absent.
 
       * The value type :math:`{\mathit{valtype}}` is of the form :math:`{\mathit{nt}}`.
 
-      * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
+      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
 
    * Or:
 
       * The number type :math:`{\mathit{nt}'}` is of the form :math:`{\mathsf{i}}{N}`.
 
-      * The :math:`{{\mathit{storeop}}^?}` :math:`{{\mathit{storeop}}^?}` is of the form :math:`M`.
+      * :math:`{{\mathit{storeop}}^?}` is of the form :math:`M`.
 
       * The value type :math:`{\mathit{valtype}}` is of the form :math:`{\mathsf{i}}{N}`.
 
-      * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
+      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
 
 
 
@@ -15537,25 +15537,25 @@ The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{{\mathit
 
    * Either:
 
-      * The :math:`{{\mathit{vloadop}}^?}` :math:`{{\mathit{vloadop}}^?}` is absent.
+      * :math:`{{\mathit{vloadop}}^?}` is absent.
 
-      * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|\mathsf{v{\scriptstyle 128}}|} / 8`.
+      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|\mathsf{v{\scriptstyle 128}}|} / 8`.
 
    * Or:
 
-      * The :math:`{{\mathit{vloadop}}^?}` :math:`{{\mathit{vloadop}}^?}` is of the form :math:`({M}{\mathsf{x}}{N}{\mathsf{\_}}{{\mathit{sx}}})`.
+      * :math:`{{\mathit{vloadop}}^?}` is of the form :math:`({M}{\mathsf{x}}{N}{\mathsf{\_}}{{\mathit{sx}}})`.
 
-      * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8 \cdot N`.
+      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8 \cdot N`.
    * Or:
 
-      * The :math:`{{\mathit{vloadop}}^?}` :math:`{{\mathit{vloadop}}^?}` is of the form :math:`({N}{\mathsf{\_}}{\mathsf{splat}})`.
+      * :math:`{{\mathit{vloadop}}^?}` is of the form :math:`({N}{\mathsf{\_}}{\mathsf{splat}})`.
 
-      * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`N / 8`.
+      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`N / 8`.
    * Or:
 
-      * The :math:`{{\mathit{vloadop}}^?}` :math:`{{\mathit{vloadop}}^?}` is of the form :math:`({N}{\mathsf{\_}}{\mathsf{zero}})`.
+      * :math:`{{\mathit{vloadop}}^?}` is of the form :math:`({N}{\mathsf{\_}}{\mathsf{zero}})`.
 
-      * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`N / 8`.
+      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`N / 8`.
 
 
 
@@ -15567,9 +15567,9 @@ The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{N}{\maths
 
    * The memory :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
 
-   * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`N / 8`.
+   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`N / 8`.
 
-   * The :math:`i` :math:`i` is less than :math:`128 / N`.
+   * :math:`i` is less than :math:`128 / N`.
 
 
 
@@ -15581,7 +15581,7 @@ The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{store}~x~{\mathit
 
    * The memory :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
 
-   * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|\mathsf{v{\scriptstyle 128}}|} / 8`.
+   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|\mathsf{v{\scriptstyle 128}}|} / 8`.
 
 
 
@@ -15593,9 +15593,9 @@ The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{store}}{N}{\math
 
    * The memory :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
 
-   * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`N / 8`.
+   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`N / 8`.
 
-   * The :math:`i` :math:`i` is less than :math:`128 / N`.
+   * :math:`i` is less than :math:`128 / N`.
 
 
 
@@ -15627,7 +15627,7 @@ The instruction :math:`({\mathit{nt}}{.}\mathsf{load}~x~{\mathit{memarg}})` is :
 
    * The memory :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
 
-   * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
+   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
 
 
 
@@ -15639,7 +15639,7 @@ The instruction :math:`({{\mathsf{i}}{N}{.}\mathsf{load}}{{M}{\mathsf{\_}}{{\mat
 
    * The memory :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
 
-   * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
+   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
 
 
 
@@ -15651,7 +15651,7 @@ The instruction :math:`({\mathit{nt}}{.}\mathsf{store}~x~{\mathit{memarg}})` is 
 
    * The memory :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
 
-   * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
+   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
 
 
 
@@ -15663,7 +15663,7 @@ The instruction :math:`({{\mathsf{i}}{N}{.}\mathsf{store}}{M}~x~{\mathit{memarg}
 
    * The memory :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
 
-   * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
+   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
 
 
 
@@ -15675,7 +15675,7 @@ The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~x~{\mathit{
 
    * The memory :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
 
-   * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|\mathsf{v{\scriptstyle 128}}|} / 8`.
+   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|\mathsf{v{\scriptstyle 128}}|} / 8`.
 
 
 
@@ -15687,7 +15687,7 @@ The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{M}{\math
 
    * The memory :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
 
-   * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8 \cdot N`.
+   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8 \cdot N`.
 
 
 
@@ -15699,7 +15699,7 @@ The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{N}{\math
 
    * The memory :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
 
-   * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`N / 8`.
+   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`N / 8`.
 
 
 
@@ -15711,7 +15711,7 @@ The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{N}{\math
 
    * The memory :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
 
-   * The :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`N / 8`.
+   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`N / 8`.
 
 
 
@@ -15992,7 +15992,7 @@ The type definition :math:`(\mathsf{type}~{\mathit{rectype}})` is :ref:`valid <v
 
    * Let :math:`{C'}` be the same context as :math:`C`, but with the defined type sequence :math:`{{\mathit{dt}}^\ast}` appended to the field :math:`\mathsf{types}`.
 
-   * Under the context :math:`{C'}`, the recursive type :math:`{\mathit{rectype}}` is :ref:`valid <valid-val>` for the :math:`({\mathsf{ok}}{x})` :math:`({\mathsf{ok}}{x})`.
+   * Under the context :math:`{C'}`, the recursive type :math:`{\mathit{rectype}}` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x)})`.
 
 
 
@@ -16485,7 +16485,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       * The export :math:`{\mathit{export}}` is :ref:`valid <valid-val>` with the name :math:`{\mathit{nm}}` and the external type :math:`{\mathit{xt}}_{\mathsf{e}}`.
 
-   * The :math:`{{\mathit{nm}}^\ast}~{\mathrm{disjoint}}` :math:`{{\mathit{nm}}^\ast}~{\mathrm{disjoint}}` is of the form true.
+   * :math:`{{\mathit{nm}}^\ast}~{\mathrm{disjoint}}` is of the form true.
 
    * The context :math:`C` is of the form :math:`{C'}{}[{.}\mathsf{globals} \mathrel{{=}{\oplus}} {{\mathit{gt}}^\ast}]{}[{.}\mathsf{tables} \mathrel{{=}{\oplus}} {{\mathit{tt}}_{\mathsf{i}}^\ast}~{{\mathit{tt}}^\ast}]{}[{.}\mathsf{mems} \mathrel{{=}{\oplus}} {{\mathit{mt}}_{\mathsf{i}}^\ast}~{{\mathit{mt}}^\ast}]{}[{.}\mathsf{tags} \mathrel{{=}{\oplus}} {{\mathit{jt}}_{\mathsf{i}}^\ast}~{{\mathit{jt}}^\ast}]{}[{.}\mathsf{elems} \mathrel{{=}{\oplus}} {{\mathit{rt}}^\ast}]{}[{.}\mathsf{datas} \mathrel{{=}{\oplus}} {{\mathit{ok}}^\ast}]`.
 
