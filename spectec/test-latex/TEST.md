@@ -5358,8 +5358,9 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
+C \vdash {\mathit{heaptype}} \leq \mathsf{exn}
 }{
-C \vdash \mathsf{noexn} \leq \mathsf{exn}
+C \vdash \mathsf{noexn} \leq {\mathit{heaptype}}
 } \, {[\textsc{\scriptsize S{-}heap{-}noexn}]}
 \qquad
 \end{array}
@@ -5368,8 +5369,9 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
+C \vdash {\mathit{heaptype}} \leq \mathsf{extern}
 }{
-C \vdash \mathsf{noextern} \leq \mathsf{extern}
+C \vdash \mathsf{noextern} \leq {\mathit{heaptype}}
 } \, {[\textsc{\scriptsize S{-}heap{-}noextern}]}
 \qquad
 \end{array}
@@ -7649,7 +7651,7 @@ C{.}\mathsf{tables}{}[x] = {\mathit{at}}~{\mathit{lim}}~{\mathit{rt}'}
  \qquad
 C \vdash {\mathit{rt}} \leq {\mathit{rt}'}
  \qquad
-C \vdash {\mathit{expr}} : \mathsf{i{\scriptstyle 32}}~\mathsf{const}
+C \vdash {\mathit{expr}} : {\mathit{at}}~\mathsf{const}
 }{
 C \vdash \mathsf{active}~x~{\mathit{expr}} : {\mathit{rt}}
 } \, {[\textsc{\scriptsize T{-}elemmode{-}active}]}
@@ -7680,9 +7682,9 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C{.}\mathsf{mems}{}[x] = {\mathit{mt}}
+C{.}\mathsf{mems}{}[x] = {\mathit{at}}~{\mathit{lim}}~\mathsf{page}
  \qquad
-C \vdash {\mathit{expr}} : \mathsf{i{\scriptstyle 32}}~\mathsf{const}
+C \vdash {\mathit{expr}} : {\mathit{at}}~\mathsf{const}
 }{
 C \vdash \mathsf{active}~x~{\mathit{expr}} : \mathsf{ok}
 } \, {[\textsc{\scriptsize T{-}datamode{-}active}]}

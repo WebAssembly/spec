@@ -71,7 +71,7 @@ rule Elemmode_ok/active:
   C |- ACTIVE x expr : rt
   -- if C.TABLES[x] = at lim rt'
   -- Reftype_sub: C |- rt <: rt'
-  -- Expr_ok_const: C |- expr : I32 CONST
+  -- Expr_ok_const: C |- expr : at CONST
 
 rule Elemmode_ok/passive:
   C |- PASSIVE : rt
@@ -81,8 +81,8 @@ rule Elemmode_ok/declare:
 
 rule Datamode_ok/active:
   C |- ACTIVE x expr : OK
-  -- if C.MEMS[x] = mt
-  -- Expr_ok_const: C |- expr : I32 CONST
+  -- if C.MEMS[x] = at lim PAGE
+  -- Expr_ok_const: C |- expr : at CONST
 
 rule Datamode_ok/passive:
   C |- PASSIVE : OK

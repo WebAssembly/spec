@@ -75,10 +75,12 @@ rule Heaptype_sub/nofunc:
   -- Heaptype_sub: C |- heaptype <: FUNC
 
 rule Heaptype_sub/noexn:
-  C |- NOEXN <: EXN
+  C |- NOEXN <: heaptype
+  -- Heaptype_sub: C |- heaptype <: EXN
 
 rule Heaptype_sub/noextern:
-  C |- NOEXTERN <: EXTERN
+  C |- NOEXTERN <: heaptype
+  -- Heaptype_sub: C |- heaptype <: EXTERN
 
 rule Heaptype_sub/bot:
   C |- BOT <: heaptype

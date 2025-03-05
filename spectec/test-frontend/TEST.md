@@ -2874,29 +2874,29 @@ relation Deftype_ok: `%|-%:OK`(context, deftype)
 
 ;; 2.1-validation.types.watsup:94.1-94.108
 relation Comptype_sub: `%|-%<:%`(context, comptype, comptype)
-  ;; 2.2-validation.subtyping.watsup:164.1-166.41
+  ;; 2.2-validation.subtyping.watsup:166.1-168.41
   rule struct{C : context, `yt_1*` : fieldtype*, yt'_1 : fieldtype, `yt_2*` : fieldtype*}:
     `%|-%<:%`(C, STRUCT_comptype(`%`_structtype(yt_1*{yt_1 <- `yt_1*`} ++ [yt'_1])), STRUCT_comptype(`%`_structtype(yt_2*{yt_2 <- `yt_2*`})))
     -- (Fieldtype_sub: `%|-%<:%`(C, yt_1, yt_2))*{yt_1 <- `yt_1*`, yt_2 <- `yt_2*`}
 
-  ;; 2.2-validation.subtyping.watsup:168.1-170.38
+  ;; 2.2-validation.subtyping.watsup:170.1-172.38
   rule array{C : context, yt_1 : fieldtype, yt_2 : fieldtype}:
     `%|-%<:%`(C, ARRAY_comptype(yt_1), ARRAY_comptype(yt_2))
     -- Fieldtype_sub: `%|-%<:%`(C, yt_1, yt_2)
 
-  ;; 2.2-validation.subtyping.watsup:172.1-174.37
+  ;; 2.2-validation.subtyping.watsup:174.1-176.37
   rule func{C : context, ft_1 : functype, ft_2 : functype}:
     `%|-%<:%`(C, FUNC_comptype(ft_1), FUNC_comptype(ft_2))
     -- Functype_sub: `%|-%<:%`(C, ft_1, ft_2)
 
 ;; 2.1-validation.types.watsup:95.1-95.107
 relation Deftype_sub: `%|-%<:%`(context, deftype, deftype)
-  ;; 2.2-validation.subtyping.watsup:177.1-179.66
+  ;; 2.2-validation.subtyping.watsup:179.1-181.66
   rule refl{C : context, deftype_1 : deftype, deftype_2 : deftype}:
     `%|-%<:%`(C, deftype_1, deftype_2)
     -- if ($clos_deftype(C, deftype_1) = $clos_deftype(C, deftype_2))
 
-  ;; 2.2-validation.subtyping.watsup:181.1-184.49
+  ;; 2.2-validation.subtyping.watsup:183.1-186.49
   rule super{C : context, deftype_1 : deftype, deftype_2 : deftype, fin : fin, `typeuse*` : typeuse*, ct : comptype, i : nat}:
     `%|-%<:%`(C, deftype_1, deftype_2)
     -- if ($unrolldt(deftype_1) = SUB_subtype(fin, typeuse*{typeuse <- `typeuse*`}, ct))
@@ -2976,86 +2976,88 @@ relation Heaptype_sub: `%|-%<:%`(context, heaptype, heaptype)
     `%|-%<:%`(C, NOFUNC_heaptype, heaptype)
     -- Heaptype_sub: `%|-%<:%`(C, heaptype, FUNC_heaptype)
 
-  ;; 2.2-validation.subtyping.watsup:77.1-78.20
-  rule noexn{C : context}:
-    `%|-%<:%`(C, NOEXN_heaptype, EXN_heaptype)
+  ;; 2.2-validation.subtyping.watsup:77.1-79.40
+  rule noexn{C : context, heaptype : heaptype}:
+    `%|-%<:%`(C, NOEXN_heaptype, heaptype)
+    -- Heaptype_sub: `%|-%<:%`(C, heaptype, EXN_heaptype)
 
-  ;; 2.2-validation.subtyping.watsup:80.1-81.26
-  rule noextern{C : context}:
-    `%|-%<:%`(C, NOEXTERN_heaptype, EXTERN_heaptype)
+  ;; 2.2-validation.subtyping.watsup:81.1-83.43
+  rule noextern{C : context, heaptype : heaptype}:
+    `%|-%<:%`(C, NOEXTERN_heaptype, heaptype)
+    -- Heaptype_sub: `%|-%<:%`(C, heaptype, EXTERN_heaptype)
 
-  ;; 2.2-validation.subtyping.watsup:83.1-84.23
+  ;; 2.2-validation.subtyping.watsup:85.1-86.23
   rule bot{C : context, heaptype : heaptype}:
     `%|-%<:%`(C, BOT_heaptype, heaptype)
 
 ;; 2.2-validation.subtyping.watsup:10.1-10.103
 relation Reftype_sub: `%|-%<:%`(context, reftype, reftype)
-  ;; 2.2-validation.subtyping.watsup:87.1-89.37
+  ;; 2.2-validation.subtyping.watsup:89.1-91.37
   rule nonnull{C : context, ht_1 : heaptype, ht_2 : heaptype}:
     `%|-%<:%`(C, REF_reftype(?(), ht_1), REF_reftype(?(), ht_2))
     -- Heaptype_sub: `%|-%<:%`(C, ht_1, ht_2)
 
-  ;; 2.2-validation.subtyping.watsup:91.1-93.37
+  ;; 2.2-validation.subtyping.watsup:93.1-95.37
   rule null{C : context, ht_1 : heaptype, ht_2 : heaptype}:
     `%|-%<:%`(C, REF_reftype(NULL_NULL?{}, ht_1), REF_reftype(?(NULL_NULL), ht_2))
     -- Heaptype_sub: `%|-%<:%`(C, ht_1, ht_2)
 
 ;; 2.2-validation.subtyping.watsup:11.1-11.103
 relation Valtype_sub: `%|-%<:%`(context, valtype, valtype)
-  ;; 2.2-validation.subtyping.watsup:96.1-98.46
+  ;; 2.2-validation.subtyping.watsup:98.1-100.46
   rule num{C : context, numtype_1 : numtype, numtype_2 : numtype}:
     `%|-%<:%`(C, (numtype_1 : numtype <: valtype), (numtype_2 : numtype <: valtype))
     -- Numtype_sub: `%|-%<:%`(C, numtype_1, numtype_2)
 
-  ;; 2.2-validation.subtyping.watsup:100.1-102.46
+  ;; 2.2-validation.subtyping.watsup:102.1-104.46
   rule vec{C : context, vectype_1 : vectype, vectype_2 : vectype}:
     `%|-%<:%`(C, (vectype_1 : vectype <: valtype), (vectype_2 : vectype <: valtype))
     -- Vectype_sub: `%|-%<:%`(C, vectype_1, vectype_2)
 
-  ;; 2.2-validation.subtyping.watsup:104.1-106.46
+  ;; 2.2-validation.subtyping.watsup:106.1-108.46
   rule ref{C : context, reftype_1 : reftype, reftype_2 : reftype}:
     `%|-%<:%`(C, (reftype_1 : reftype <: valtype), (reftype_2 : reftype <: valtype))
     -- Reftype_sub: `%|-%<:%`(C, reftype_1, reftype_2)
 
-  ;; 2.2-validation.subtyping.watsup:108.1-109.22
+  ;; 2.2-validation.subtyping.watsup:110.1-111.22
   rule bot{C : context, valtype : valtype}:
     `%|-%<:%`(C, BOT_valtype, valtype)
 
-;; 2.2-validation.subtyping.watsup:114.1-114.115
+;; 2.2-validation.subtyping.watsup:116.1-116.115
 relation Resulttype_sub: `%|-%<:%`(context, resulttype, resulttype)
-  ;; 2.2-validation.subtyping.watsup:117.1-119.37
+  ;; 2.2-validation.subtyping.watsup:119.1-121.37
   rule _{C : context, `t_1*` : valtype*, `t_2*` : valtype*}:
     `%|-%<:%`(C, `%`_resulttype(t_1*{t_1 <- `t_1*`}), `%`_resulttype(t_2*{t_2 <- `t_2*`}))
     -- (Valtype_sub: `%|-%<:%`(C, t_1, t_2))*{t_1 <- `t_1*`, t_2 <- `t_2*`}
 
-;; 2.2-validation.subtyping.watsup:132.1-132.119
+;; 2.2-validation.subtyping.watsup:134.1-134.119
 relation Storagetype_sub: `%|-%<:%`(context, storagetype, storagetype)
-  ;; 2.2-validation.subtyping.watsup:145.1-147.46
+  ;; 2.2-validation.subtyping.watsup:147.1-149.46
   rule val{C : context, valtype_1 : valtype, valtype_2 : valtype}:
     `%|-%<:%`(C, (valtype_1 : valtype <: storagetype), (valtype_2 : valtype <: storagetype))
     -- Valtype_sub: `%|-%<:%`(C, valtype_1, valtype_2)
 
-  ;; 2.2-validation.subtyping.watsup:149.1-151.49
+  ;; 2.2-validation.subtyping.watsup:151.1-153.49
   rule pack{C : context, packtype_1 : packtype, packtype_2 : packtype}:
     `%|-%<:%`(C, (packtype_1 : packtype <: storagetype), (packtype_2 : packtype <: storagetype))
     -- Packtype_sub: `%|-%<:%`(C, packtype_1, packtype_2)
 
-;; 2.2-validation.subtyping.watsup:133.1-133.117
+;; 2.2-validation.subtyping.watsup:135.1-135.117
 relation Fieldtype_sub: `%|-%<:%`(context, fieldtype, fieldtype)
-  ;; 2.2-validation.subtyping.watsup:154.1-156.40
+  ;; 2.2-validation.subtyping.watsup:156.1-158.40
   rule const{C : context, zt_1 : storagetype, zt_2 : storagetype}:
     `%|-%<:%`(C, `%%`_fieldtype(?(), zt_1), `%%`_fieldtype(?(), zt_2))
     -- Storagetype_sub: `%|-%<:%`(C, zt_1, zt_2)
 
-  ;; 2.2-validation.subtyping.watsup:158.1-161.40
+  ;; 2.2-validation.subtyping.watsup:160.1-163.40
   rule var{C : context, zt_1 : storagetype, zt_2 : storagetype}:
     `%|-%<:%`(C, `%%`_fieldtype(?(MUT_MUT), zt_1), `%%`_fieldtype(?(MUT_MUT), zt_2))
     -- Storagetype_sub: `%|-%<:%`(C, zt_1, zt_2)
     -- Storagetype_sub: `%|-%<:%`(C, zt_2, zt_1)
 
-;; 2.2-validation.subtyping.watsup:134.1-134.116
+;; 2.2-validation.subtyping.watsup:136.1-136.116
 relation Functype_sub: `%|-%<:%`(context, functype, functype)
-  ;; 2.2-validation.subtyping.watsup:202.1-205.41
+  ;; 2.2-validation.subtyping.watsup:204.1-207.41
   rule _{C : context, `t_11*` : valtype*, `t_12*` : valtype*, `t_21*` : valtype*, `t_22*` : valtype*}:
     `%|-%<:%`(C, `%->%`_functype(`%`_resulttype(t_11*{t_11 <- `t_11*`}), `%`_resulttype(t_12*{t_12 <- `t_12*`})), `%->%`_functype(`%`_resulttype(t_21*{t_21 <- `t_21*`}), `%`_resulttype(t_22*{t_22 <- `t_22*`})))
     -- Resulttype_sub: `%|-%<:%`(C, `%`_resulttype(t_21*{t_21 <- `t_21*`}), `%`_resulttype(t_11*{t_11 <- `t_11*`}))
@@ -4071,7 +4073,7 @@ relation Elemmode_ok: `%|-%:%`(context, elemmode, elemtype)
     `%|-%:%`(C, ACTIVE_elemmode(x, expr), rt)
     -- if (C.TABLES_context[x!`%`_idx.0] = `%%%`_tabletype(at, lim, rt'))
     -- Reftype_sub: `%|-%<:%`(C, rt, rt')
-    -- Expr_ok_const: `%|-%:%CONST`(C, expr, I32_valtype)
+    -- Expr_ok_const: `%|-%:%CONST`(C, expr, (at : addrtype <: valtype))
 
   ;; 2.4-validation.modules.watsup
   rule passive{C : context, rt : reftype}:
@@ -4093,10 +4095,10 @@ relation Elem_ok: `%|-%:%`(context, elem, elemtype)
 ;; 2.4-validation.modules.watsup
 relation Datamode_ok: `%|-%:%`(context, datamode, datatype)
   ;; 2.4-validation.modules.watsup
-  rule active{C : context, x : idx, expr : expr, mt : memtype}:
+  rule active{C : context, x : idx, expr : expr, at : addrtype, lim : limits}:
     `%|-%:%`(C, ACTIVE_datamode(x, expr), OK_datatype)
-    -- if (C.MEMS_context[x!`%`_idx.0] = mt)
-    -- Expr_ok_const: `%|-%:%CONST`(C, expr, I32_valtype)
+    -- if (C.MEMS_context[x!`%`_idx.0] = `%%PAGE`_memtype(at, lim))
+    -- Expr_ok_const: `%|-%:%CONST`(C, expr, (at : addrtype <: valtype))
 
   ;; 2.4-validation.modules.watsup
   rule passive{C : context}:

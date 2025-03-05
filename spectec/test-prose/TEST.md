@@ -13641,12 +13641,16 @@ The heap type :math:`{\mathit{heaptype}''}` :ref:`matches <match>` the heap type
 
       * The heap type :math:`{\mathit{heaptype}''}` is of the form :math:`\mathsf{noexn}`.
 
-      * The heap type :math:`{\mathit{heaptype}'''}` is of the form :math:`\mathsf{exn}`.
+      * The heap type :math:`{\mathit{heaptype}'''}` is of the form :math:`{\mathit{heaptype}}`.
+
+      * The heap type :math:`{\mathit{heaptype}}` :ref:`matches <match>` the heap type :math:`\mathsf{exn}`.
    * Or:
 
       * The heap type :math:`{\mathit{heaptype}''}` is of the form :math:`\mathsf{noextern}`.
 
-      * The heap type :math:`{\mathit{heaptype}'''}` is of the form :math:`\mathsf{extern}`.
+      * The heap type :math:`{\mathit{heaptype}'''}` is of the form :math:`{\mathit{heaptype}}`.
+
+      * The heap type :math:`{\mathit{heaptype}}` :ref:`matches <match>` the heap type :math:`\mathsf{extern}`.
    * Or:
 
       * The heap type :math:`{\mathit{heaptype}''}` is of the form :math:`\mathsf{bot}`.
@@ -13773,12 +13777,18 @@ The heap type :math:`\mathsf{nofunc}` :ref:`matches <match>` the heap type :math
 
 
 
-The heap type :math:`\mathsf{noexn}` :ref:`matches <match>` the heap type :math:`\mathsf{exn}`.
+The heap type :math:`\mathsf{noexn}` :ref:`matches <match>` the heap type :math:`{\mathit{heaptype}}` if:
+
+
+   * The heap type :math:`{\mathit{heaptype}}` :ref:`matches <match>` the heap type :math:`\mathsf{exn}`.
 
 
 
 
-The heap type :math:`\mathsf{noextern}` :ref:`matches <match>` the heap type :math:`\mathsf{extern}`.
+The heap type :math:`\mathsf{noextern}` :ref:`matches <match>` the heap type :math:`{\mathit{heaptype}}` if:
+
+
+   * The heap type :math:`{\mathit{heaptype}}` :ref:`matches <match>` the heap type :math:`\mathsf{extern}`.
 
 
 
@@ -16098,7 +16108,7 @@ The element mode :math:`{\mathit{elemmode}}` is :ref:`valid <valid-val>` with th
 
       * The reference type :math:`{\mathit{rt}}` :ref:`matches <match>` the reference type :math:`{\mathit{rt}'}`.
 
-      * The expression :math:`{\mathit{expr}}` is :ref:`valid <valid-val>` with the value type :math:`\mathsf{i{\scriptstyle 32}}`.
+      * The expression :math:`{\mathit{expr}}` is :ref:`valid <valid-val>` with the value type :math:`{\mathit{at}}`.
 
       * :math:`{\mathit{expr}}` is constant.
 
@@ -16121,7 +16131,7 @@ The element mode :math:`(\mathsf{active}~x~{\mathit{expr}})` is :ref:`valid <val
 
    * The reference type :math:`{\mathit{rt}}` :ref:`matches <match>` the reference type :math:`{\mathit{rt}'}`.
 
-   * The expression :math:`{\mathit{expr}}` is :ref:`valid <valid-val>` with the value type :math:`\mathsf{i{\scriptstyle 32}}`.
+   * The expression :math:`{\mathit{expr}}` is :ref:`valid <valid-val>` with the value type :math:`{\mathit{at}}`.
 
    * :math:`{\mathit{expr}}` is constant.
 
@@ -16163,9 +16173,9 @@ The data mode :math:`{\mathit{datamode}}` is :ref:`valid <valid-val>` with the d
 
       * The memory :math:`C{.}\mathsf{mems}{}[x]` exists.
 
-      * The memory :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`{\mathit{mt}}`.
+      * The memory :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
 
-      * The expression :math:`{\mathit{expr}}` is :ref:`valid <valid-val>` with the value type :math:`\mathsf{i{\scriptstyle 32}}`.
+      * The expression :math:`{\mathit{expr}}` is :ref:`valid <valid-val>` with the value type :math:`{\mathit{at}}`.
 
       * :math:`{\mathit{expr}}` is constant.
 
@@ -16181,9 +16191,9 @@ The data mode :math:`(\mathsf{active}~x~{\mathit{expr}})` is :ref:`valid <valid-
 
    * The memory :math:`C{.}\mathsf{mems}{}[x]` exists.
 
-   * The memory :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`{\mathit{mt}}`.
+   * The memory :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
 
-   * The expression :math:`{\mathit{expr}}` is :ref:`valid <valid-val>` with the value type :math:`\mathsf{i{\scriptstyle 32}}`.
+   * The expression :math:`{\mathit{expr}}` is :ref:`valid <valid-val>` with the value type :math:`{\mathit{at}}`.
 
    * :math:`{\mathit{expr}}` is constant.
 
@@ -25438,10 +25448,12 @@ Heaptype_sub
     - heaptype matches the heap type FUNC.
   - Or:
     - heaptype'' is NOEXN.
-    - heaptype''' is EXN.
+    - heaptype''' is heaptype.
+    - heaptype matches the heap type EXN.
   - Or:
     - heaptype'' is NOEXTERN.
-    - heaptype''' is EXTERN.
+    - heaptype''' is heaptype.
+    - heaptype matches the heap type EXTERN.
   - Or:
     - heaptype'' is BOT.
     - heaptype''' is heaptype.
@@ -25508,10 +25520,12 @@ Heaptype_sub/nofunc
   - heaptype matches the heap type FUNC.
 
 Heaptype_sub/noexn
-- the heap type NOEXN matches the heap type EXN.
+- the heap type NOEXN matches the heap type heaptype if:
+  - heaptype matches the heap type EXN.
 
 Heaptype_sub/noextern
-- the heap type NOEXTERN matches the heap type EXTERN.
+- the heap type NOEXTERN matches the heap type heaptype if:
+  - heaptype matches the heap type EXTERN.
 
 Heaptype_sub/bot
 - the heap type BOT matches heaptype.
@@ -26706,7 +26720,7 @@ Elemmode_ok
     - the table C.TABLES[x] exists.
     - C.TABLES[x] is (at lim rt').
     - rt matches the reference type rt'.
-    - the expression expr is valid with the value type I32.
+    - the expression expr is valid with the value type at.
     - expr is constant.
   - Or:
     - elemmode is PASSIVE.
@@ -26718,7 +26732,7 @@ Elemmode_ok/active
   - the table C.TABLES[x] exists.
   - C.TABLES[x] is (at lim rt').
   - rt matches the reference type rt'.
-  - the expression expr is valid with the value type I32.
+  - the expression expr is valid with the value type at.
   - expr is constant.
 
 Elemmode_ok/passive
@@ -26740,8 +26754,8 @@ Datamode_ok
   - Either:
     - datamode is (ACTIVE x expr).
     - the memory C.MEMS[x] exists.
-    - C.MEMS[x] is mt.
-    - the expression expr is valid with the value type I32.
+    - C.MEMS[x] is at lim PAGE.
+    - the expression expr is valid with the value type at.
     - expr is constant.
   - Or:
     - datamode is PASSIVE.
@@ -26749,8 +26763,8 @@ Datamode_ok
 Datamode_ok/active
 - the data mode (ACTIVE x expr) is valid with the data type OK if:
   - the memory C.MEMS[x] exists.
-  - C.MEMS[x] is mt.
-  - the expression expr is valid with the value type I32.
+  - C.MEMS[x] is at lim PAGE.
+  - the expression expr is valid with the value type at.
   - expr is constant.
 
 Datamode_ok/passive
