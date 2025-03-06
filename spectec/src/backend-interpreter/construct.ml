@@ -21,7 +21,7 @@ let error_value category v = error category ("`" ^ string_of_value v ^ "`")
 let error_values category vs = error category ("`[" ^ string_of_values ", " vs ^ "]`")
 
 let error_instr category instr' =
-  error category ("`" ^ Sexpr.to_string 60 (Arrange.instr (instr' @@ no_region)) ^ "`")
+  error category ("`" ^ Reference_interpreter.Sexpr.to_string 60 (Arrange.instr (instr' @@ no_region)) ^ "`")
 
 (* Constant *)
 

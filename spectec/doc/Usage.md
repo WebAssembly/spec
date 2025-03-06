@@ -25,6 +25,19 @@ The following general options are available:
 * `--help` — print all available options
 
 
+### AST Mode
+
+```
+watsup [option] file ... --ast [-o file]
+```
+This performs checking and then outputs the abstract syntax true of the [intermediate language](IL.md),
+either into the given file, or to stdout.
+
+The following general options are available:
+
+* `--ast-width` - set the line width for pretty-printing the output (default is 80)
+
+
 ### Splicing Mode
 
 ```

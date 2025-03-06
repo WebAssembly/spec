@@ -1,5 +1,6 @@
 open Ast
 
+val string_of_id : id -> string
 val string_of_atom : atom -> string
 val string_of_unop : unop -> string
 val string_of_binop : binop -> string

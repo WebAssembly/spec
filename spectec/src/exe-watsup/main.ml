@@ -1,13 +1,14 @@
 (* Configuration *)
 
 let name = "watsup"
-let version = "0.4"
+let version = "0.5"
 
 
 (* Flags and parameters *)
 
 type target =
  | Check
+ | Ast
  | Latex
  | Prose of bool
  | Splice of Backend_splice.Config.t
@@ -45,6 +46,7 @@ let srcs = ref []    (* spec src file arguments *)
 let pdsts = ref []   (* patch file arguments *)
 let odsts = ref []   (* output file arguments *)
 
+let ast_width = ref Backend_ast.Config.default.width
 let latex_macros = ref false
 
 let print_el = ref false
@@ -120,6 +122,7 @@ let argspec = Arg.align (
     " Warn about unused or multiply used prose splices";
 
   "--check", Arg.Unit (fun () -> target := Check), " Check only (default)";
+  "--ast", Arg.Unit (fun () -> target := Ast), " Generate AST";
   "--latex", Arg.Unit (fun () -> target := Latex), " Generate Latex";
   "--splice-latex", Arg.Unit (fun () -> target := Splice Backend_splice.Config.latex),
     " Splice Sphinx";
@@ -133,6 +136,7 @@ let argspec = Arg.align (
     " Debug interpreter";
   "--unified-vars", Arg.Unit (fun () -> Il2al.Unify.rename := false),
     " Use unified variables (_u) in AL";
+  "--ast-width", Arg.Set_int ast_width, " Line width for pretty-printing AST (default 80)";
   "--latex-macros", Arg.Set latex_macros, " Splice Latex with macro invocations";
 
   "--print-el", Arg.Set print_el, " Print EL";
@@ -198,7 +202,7 @@ let () =
     if !print_final_il && not !print_all_il then print_il il;
 
     let al =
-      if not (!print_al || !print_al_o <> "") && (!target = Check || !target = Latex) then []
+      if not !print_al && !print_al_o = "" && (!target = Check || !target = Ast || !target = Latex) then []
       else (
         log "Translating to AL...";
         let interp = match !target with
@@ -231,6 +235,23 @@ let () =
 
     (match !target with
     | Check -> ()
+
+    | Ast ->
+      log "AST Generation...";
+      let config = Backend_ast.Config.{width = !ast_width} in
+      (match !odsts with
+      | [] ->
+        Backend_ast.Print.output_script stdout config il;
+        print_endline ""
+      | [odst] ->
+        Out_channel.with_open_text odst (fun oc ->
+          Backend_ast.Print.output_script oc config il;
+          Out_channel.output_string oc "\n"
+        )
+      | _ ->
+        prerr_endline "too many output file names";
+        exit 2
+      )
 
     | Latex ->
       log "Latex Generation...";

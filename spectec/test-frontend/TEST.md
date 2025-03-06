@@ -11,7 +11,7 @@ cat: test.tex: No such file or directory
 
 ```sh
 $ (cd ../spec/wasm-3.0 && ../../src/exe-watsup/main.exe *.watsup -v -l --print-il --print-no-pos --check)
-watsup 0.4 generator
+watsup 0.5 generator
 == Parsing...
 == Elaboration...
 

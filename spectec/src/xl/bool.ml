@@ -6,6 +6,9 @@ type cmpop = [`EqOp | `NeOp]
 
 let to_string = string_of_bool
 
+let string_of_typ = function
+  | `BoolT -> "bool"
+
 let string_of_unop = function
   | `NotOp -> "~"
 
