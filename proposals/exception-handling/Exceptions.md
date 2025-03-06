@@ -295,7 +295,7 @@ The following rules are added to *instructions*:
 ```
   try_table blocktype catch* instruction* end |
   throw tag_index |
-  throw_ref label |
+  throw_ref |
 ```
 
 Like the `block`, `loop`, and `if` instructions, the `try_table` instruction is
