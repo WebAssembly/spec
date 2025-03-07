@@ -744,10 +744,11 @@ let rec step (c : config) : config =
       | ArrayNewData (x, y), Num n :: Num s :: vs' ->
         let n_64 = addr_of_num n in
         let s_64 = addr_of_num s in
-        if data_oob c.frame y s n then
+        let ArrayT (FieldT (_mut, st)) = array_type c.frame.inst x in
+        let m_64 = I64.mul n_64 (I64.of_int_u (storage_size st)) in
+        if data_oob c.frame y s (num_of_addr I64AT m_64) then
           vs', [Trapping (memory_error e.at Memory.Bounds) @@ e.at]
         else
-          let ArrayT (FieldT (_mut, st)) = array_type c.frame.inst x in
           let seg = data c.frame.inst y in
           let args = Lib.List64.init n_64
             (fun i ->
