@@ -744,10 +744,11 @@ let rec step (c : config) : config =
       | ArrayNewData (x, y), Num n :: Num s :: vs' ->
         let n_64 = addr_of_num n in
         let s_64 = addr_of_num s in
-        if data_oob c.frame y s n then
+        let ArrayT (FieldT (_mut, st)) = array_type c.frame.inst x in
+        let m_64 = I64.mul n_64 (I64.of_int_u (storage_size st)) in
+        if data_oob c.frame y s (I64 m_64) then
           vs', [Trapping (memory_error e.at Memory.Bounds) @@ e.at]
         else
-          let ArrayT (FieldT (_mut, st)) = array_type c.frame.inst x in
           let seg = data c.frame.inst y in
           let args = Lib.List64.init n_64
             (fun i ->
@@ -869,14 +870,16 @@ let rec step (c : config) : config =
       | ArrayInitData (x, y),
         Num (I32 n) :: Num s :: Num (I32 d) :: Ref (Aggr.ArrayRef a) :: vs' ->
         let s_64 = addr_of_num s in
+        let n_64 = I64_convert.extend_i32_u n in
+        let ArrayT (FieldT (_mut, st)) = array_type c.frame.inst x in
+        let m_64 = I64.mul n_64 (I64.of_int_u (storage_size st)) in
         if array_oob a d n then
           vs', [Trapping "out of bounds array access" @@ e.at]
-        else if data_oob c.frame y s (I64 (I64_convert.extend_i32_u n)) then
+        else if data_oob c.frame y s (I64 m_64) then
           vs', [Trapping (memory_error e.at Memory.Bounds) @@ e.at]
         else if n = 0l then
           vs', []
         else
-          let ArrayT (FieldT (_mut, st)) = array_type c.frame.inst x in
           let seg = data c.frame.inst y in
           let v = Data.load_val_storage seg s_64 st in
           vs', List.map (Lib.Fun.flip (@@) e.at) [
