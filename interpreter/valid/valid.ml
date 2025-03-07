@@ -543,6 +543,9 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : infer_in
   | ReturnCallIndirect (x, y) ->
     let TableT (at, _lim, t) = table c x in
     let FuncT (ts1, ts2) = func_type c y in
+    require (match_ref_type c.types t (Null, FuncHT)) x.at
+      ("type mismatch: instruction requires table of function type" ^
+       " but table has element type " ^ string_of_ref_type t);
     require (match_result_type c.types ts2 c.results) e.at
       ("type mismatch: current function requires result type " ^
        string_of_result_type c.results ^

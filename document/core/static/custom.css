@@ -82,3 +82,9 @@ div.sphinxsidebar a {
 div.sphinxsidebar a:hover {
   border-bottom: 1px dotted;
 }
+
+@media screen and (max-width: 875px) {
+    div.bodywrapper {
+        margin: 0;
+    }
+}

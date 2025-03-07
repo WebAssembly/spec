@@ -405,5 +405,5 @@ $${grammar: {Bmagic Bversion Bmodule}}
    The version of the WebAssembly binary format may increase in the future
    if backward-incompatible changes have to be made to the format.
    However, such changes are expected to occur very infrequently, if ever.
-   The binary format is intended to be forward-compatible,
-   such that future extensions can be made without incrementing its version.
+   The binary format is intended to be extensible,
+   such that future features can be added without incrementing its version.
