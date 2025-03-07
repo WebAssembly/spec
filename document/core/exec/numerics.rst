@@ -1717,7 +1717,7 @@ It computes :math:`(z_1 \cdot z_2) + z_3` as if with unbounded range and precisi
 
 * Else if both :math:`z_1` and :math:`z_2` are zeroes, then return :math:`1`.
 
-* Else if :math:`z_1` is smaller than or equal to :math:`z_2`, then return :math:`1`.
+* Else if :math:`z_1` is larger than or equal to :math:`z_2`, then return :math:`1`.
 
 * Else return :math:`0`.
 
