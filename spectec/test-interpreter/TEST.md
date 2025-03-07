@@ -906,13 +906,13 @@ watsup 0.5 generator
 - 18/18 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/gc/array_init_data.wast =====
-- 34/34 (100.00%)
+- 48/48 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/gc/array_init_elem.wast =====
 - 24/24 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/gc/array_new_data.wast =====
-- 19/19 (100.00%)
+- 33/33 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/gc/array_new_elem.wast =====
 - 26/26 (100.00%)
@@ -1508,7 +1508,7 @@ watsup 0.5 generator
 ===== ../../test-interpreter/spec-test-3/utf8-invalid-encoding.wast =====
 - 0/0 (100.00%)
 
-Total [52975/52975] (100.00%)
+Total [53003/53003] (100.00%)
 
 == Complete.
 ```
