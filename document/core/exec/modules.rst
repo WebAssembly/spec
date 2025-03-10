@@ -670,7 +670,7 @@ It is up to the :ref:`embedder <embedder>` to define how such conditions are rep
      &\wedge& (\expr_{\F{g}} = \global.\GINIT)^\ast \\
      &\wedge& (\expr_{\F{t}} = \table.\GINIT)^\ast \\
      &\wedge& (\expr_{\F{e}}^\ast = \elem.\EINIT)^n \\[1ex]
-     &\wedge& S', \moduleinst = \allocmodule(S, \module, \externval^k, \val^\ast, (\reff^\ast)^n) \\
+     &\wedge& S', \moduleinst = \allocmodule(S, \module, \externval^k, \val_{\F{g}}^\ast, \reff_{\F{t}}^\ast, (\reff_{\F{e}}^\ast)^n) \\
      &\wedge& F = \{ \AMODULE~\moduleinst, \ALOCALS~\epsilon \} \\[1ex]
      &\wedge& (S'; F; \expr_{\F{g}} \stepto^\ast S'; F; \val_{\F{g}}~\END)^\ast \\
      &\wedge& (S'; F; \expr_{\F{t}} \stepto^\ast S'; F; \reff_{\F{t}}~\END)^\ast \\
