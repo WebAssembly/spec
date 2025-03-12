@@ -13,4 +13,4 @@ On the use of the language:
 On the internal representations usable by backends:
 
 * [External Language](EL.md) (TBD)
-* [Internal Language](IL.md) (TBD)
+* [Internal Language](IL.md)
