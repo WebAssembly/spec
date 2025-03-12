@@ -3,6 +3,10 @@
 This explainer reflects the up-to-date version of the exception handling
 proposal agreed on [Oct 2023 CG
 meeting](https://github.com/WebAssembly/meetings/blob/main/main/2023/CG-10.md#exception-handling-vote-on-proposal-to-re-introduce-exnref).
+See the [legacy
+proposal](https://github.com/WebAssembly/exception-handling/blob/main/proposals/exception-handling/legacy/Exceptions.md)
+for the previous version of the proposal that is still supported in several
+browsers.
 
 ---
 
