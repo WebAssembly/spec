@@ -39,8 +39,8 @@ rule Step/ctxt-label:
   -- Step: z; instr* ~> z'; instr'*
 
 rule Step/ctxt-frame:
-  s; f; (FRAME_ n `{f'} instr*)  ~>  s'; f; (FRAME_ n `{f'} instr'*)
-  -- Step: s; f'; instr* ~> s'; f'; instr'*
+  s; f; (FRAME_ n `{f'} instr*)  ~>  s'; f; (FRAME_ n `{f''} instr'*)
+  -- Step: s; f'; instr* ~> s'; f''; instr'*
 
 
 ;; Polymorphic instructions
