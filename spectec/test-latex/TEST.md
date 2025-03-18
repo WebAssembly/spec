@@ -9635,7 +9635,7 @@ $$
 {\land}~ {{\mathit{val}}^\ast} \neq \epsilon \lor {{\mathit{instr}}_1^\ast} \neq \epsilon \\
 \end{array} \\
 {[\textsc{\scriptsize E{-}ctxt{-}label}]} \quad & z ; ({{\mathsf{label}}_{n}}{\{ {{\mathit{instr}}_0^\ast} \}}~{{\mathit{instr}}^\ast}) & \hookrightarrow & {z'} ; ({{\mathsf{label}}_{n}}{\{ {{\mathit{instr}}_0^\ast} \}}~{{\mathit{instr}'}^\ast}) & \quad \mbox{if}~ z ; {{\mathit{instr}}^\ast} \hookrightarrow {z'} ; {{\mathit{instr}'}^\ast} \\
-{[\textsc{\scriptsize E{-}ctxt{-}frame}]} \quad & s ; f ; ({{\mathsf{frame}}_{n}}{\{ {f'} \}}~{{\mathit{instr}}^\ast}) & \hookrightarrow & {s'} ; f ; ({{\mathsf{frame}}_{n}}{\{ {f'} \}}~{{\mathit{instr}'}^\ast}) & \quad \mbox{if}~ s ; {f'} ; {{\mathit{instr}}^\ast} \hookrightarrow {s'} ; {f'} ; {{\mathit{instr}'}^\ast} \\
+{[\textsc{\scriptsize E{-}ctxt{-}frame}]} \quad & s ; f ; ({{\mathsf{frame}}_{n}}{\{ {f'} \}}~{{\mathit{instr}}^\ast}) & \hookrightarrow & {s'} ; f ; ({{\mathsf{frame}}_{n}}{\{ {f''} \}}~{{\mathit{instr}'}^\ast}) & \quad \mbox{if}~ s ; {f'} ; {{\mathit{instr}}^\ast} \hookrightarrow {s'} ; {f''} ; {{\mathit{instr}'}^\ast} \\
 \end{array}
 $$
 
