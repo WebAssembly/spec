@@ -1466,7 +1466,7 @@ Control Instructions
 
 * The label :math:`C.\CLABELS[l]` must be defined in the context.
 
-* The :ref:`result type <syntax-resulttype>` :math:`C.\CLABELS[l] must be :math:`[\EXNREF]`.
+* The :ref:`result type <syntax-resulttype>` :math:`C.\CLABELS[l]` must be :math:`[\EXNREF]`.
 
 * Then the catch clause is valid.
 
