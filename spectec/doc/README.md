@@ -9,6 +9,7 @@ On the use of the language:
 * [Latex Backend](Latex.md)
 * [Prose Backend](Prose.md)
 * [Interpreter Backend](Interpreter.md)
+* [Assumptions](Assumptions.md)
 
 On the internal representations usable by backends:
 
