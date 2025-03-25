@@ -90,7 +90,7 @@ When translating IL to AL, the store is processed globally through `remove_store
 ## Interpreter ([src/backend-interpreter](https://github.com/Wasm-DSL/spectec/blob/965415756005b74ecaa39fe81aec1986ba79a210/spectec/src/backend-interpreter))
 
 - The AL interpreter has two main entry points: instantiation and invocation.
-- Certain AL algorithms related to relations and numeric functions are hardcoded in ([numerics.ml](https://github.com/Wasm-DSL/spectec/blob/965415756005b74ecaa39fe81aec1986ba79a210/spectec/src/backend-interpreter/numerics.ml)).
+- Certain AL algorithms related to relations and numeric functions are hardcoded in ([relation.ml](https://github.com/Wasm-DSL/spectec/blob/965415756005b74ecaa39fe81aec1986ba79a210/spectec/src/backend-interpreter/relation.ml)) and ([numerics.ml](https://github.com/Wasm-DSL/spectec/blob/965415756005b74ecaa39fe81aec1986ba79a210/spectec/src/backend-interpreter/numerics.ml)).
 - The store fields are hardcoded, meaning any newly added field must be explicitly hardcoded. The variable name corresponding to the store is hardcoded as “`s`” ([ds.ml#L48-L68](https://github.com/Wasm-DSL/spectec/blob/965415756005b74ecaa39fe81aec1986ba79a210/spectec/src/backend-interpreter/ds.ml#L48-L68)).
 - When handling a Wasm instruction, the logic for determining whether it is a Wasm value is hardcoded. If a new Wasm value is added, hardcoding must be added ([interpreter.ml#L675-L683](https://github.com/Wasm-DSL/spectec/blob/965415756005b74ecaa39fe81aec1986ba79a210/spectec/src/backend-interpreter/interpreter.ml#L675-L683)).
 - Partial assignment logic for `Let` instruction is not fully supported.
