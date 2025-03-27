@@ -83,7 +83,7 @@ rule Instr_ok/br_table:
   C |- BR_TABLE l* l' : t_1* t* I32 -> t_2*
   -- (Resulttype_sub: C |- t* <: C.LABELS[l])*
   -- Resulttype_sub: C |- t* <: C.LABELS[l']
-  -- Instrtype_ok: C |- t_1* -> t_2* : OK
+  -- Instrtype_ok: C |- t_1* t* I32 -> t_2* : OK
 
 rule Instr_ok/br_on_null:
   C |- BR_ON_NULL l : t* (REF NULL ht) -> t* (REF ht)
