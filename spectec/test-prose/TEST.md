@@ -13432,7 +13432,7 @@ The composite type :math:`{\mathit{comptype}}` :ref:`matches <match>` the compos
 
    * Either:
 
-      * The composite type :math:`{\mathit{comptype}}` is of the form :math:`(\mathsf{struct}~{{\mathit{yt}}_1^\ast}~{\mathit{yt}'}_1)`.
+      * The composite type :math:`{\mathit{comptype}}` is of the form :math:`(\mathsf{struct}~{{\mathit{yt}}_1^\ast}~{{\mathit{yt}'}_1^\ast})`.
 
       * The composite type :math:`{\mathit{comptype}'}` is of the form :math:`(\mathsf{struct}~{{\mathit{yt}}_2^\ast})`.
 
@@ -13460,7 +13460,7 @@ The composite type :math:`{\mathit{comptype}}` :ref:`matches <match>` the compos
 
 
 
-The composite type :math:`(\mathsf{struct}~{{\mathit{yt}}_1^\ast}~{\mathit{yt}'}_1)` :ref:`matches <match>` the composite type :math:`(\mathsf{struct}~{{\mathit{yt}}_2^\ast})` if:
+The composite type :math:`(\mathsf{struct}~{{\mathit{yt}}_1^\ast}~{{\mathit{yt}'}_1^\ast})` :ref:`matches <match>` the composite type :math:`(\mathsf{struct}~{{\mathit{yt}}_2^\ast})` if:
 
 
    * The length of :math:`{{\mathit{yt}}_1^\ast}` is equal to the length of :math:`{{\mathit{yt}}_2^\ast}`.
@@ -25336,7 +25336,7 @@ Deftype_ok
 Comptype_sub
 - the composite type comptype matches the composite type comptype' if:
   - Either:
-    - comptype is (STRUCT yt_1* :: [yt'_1]).
+    - comptype is (STRUCT yt_1* :: yt'_1*).
     - comptype' is (STRUCT yt_2*).
     - |yt_1*| is |yt_2*|.
     - For all yt_1 in yt_1*, and corresponding yt_2 in yt_2*:
@@ -25351,7 +25351,7 @@ Comptype_sub
     - the function type ft_1 matches the function type ft_2.
 
 Comptype_sub/struct
-- the composite type (STRUCT yt_1* :: [yt'_1]) matches the composite type (STRUCT yt_2*) if:
+- the composite type (STRUCT yt_1* :: yt'_1*) matches the composite type (STRUCT yt_2*) if:
   - |yt_1*| is |yt_2*|.
   - For all yt_1 in yt_1*, and corresponding yt_2 in yt_2*:
     - the field type yt_1 matches the field type yt_2.

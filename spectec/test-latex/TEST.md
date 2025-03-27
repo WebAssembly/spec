@@ -5569,7 +5569,7 @@ $$
 \frac{
 (C \vdash {\mathit{yt}}_1 \leq {\mathit{yt}}_2)^\ast
 }{
-C \vdash \mathsf{struct}~({{\mathit{yt}}_1^\ast}~{\mathit{yt}'}_1) \leq \mathsf{struct}~{{\mathit{yt}}_2^\ast}
+C \vdash \mathsf{struct}~({{\mathit{yt}}_1^\ast}~{{\mathit{yt}'}_1^\ast}) \leq \mathsf{struct}~{{\mathit{yt}}_2^\ast}
 } \, {[\textsc{\scriptsize S{-}comp{-}struct}]}
 \qquad
 \end{array}

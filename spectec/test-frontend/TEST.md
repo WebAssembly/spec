@@ -2875,8 +2875,8 @@ relation Deftype_ok: `%|-%:OK`(context, deftype)
 ;; 2.1-validation.types.watsup:94.1-94.108
 relation Comptype_sub: `%|-%<:%`(context, comptype, comptype)
   ;; 2.2-validation.subtyping.watsup:166.1-168.41
-  rule struct{C : context, `yt_1*` : fieldtype*, yt'_1 : fieldtype, `yt_2*` : fieldtype*}:
-    `%|-%<:%`(C, STRUCT_comptype(`%`_structtype(yt_1*{yt_1 <- `yt_1*`} ++ [yt'_1])), STRUCT_comptype(`%`_structtype(yt_2*{yt_2 <- `yt_2*`})))
+  rule struct{C : context, `yt_1*` : fieldtype*, `yt'_1*` : fieldtype*, `yt_2*` : fieldtype*}:
+    `%|-%<:%`(C, STRUCT_comptype(`%`_structtype(yt_1*{yt_1 <- `yt_1*`} ++ yt'_1*{yt'_1 <- `yt'_1*`})), STRUCT_comptype(`%`_structtype(yt_2*{yt_2 <- `yt_2*`})))
     -- (Fieldtype_sub: `%|-%<:%`(C, yt_1, yt_2))*{yt_1 <- `yt_1*`, yt_2 <- `yt_2*`}
 
   ;; 2.2-validation.subtyping.watsup:170.1-172.38
