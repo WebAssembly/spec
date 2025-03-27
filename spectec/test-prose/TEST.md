@@ -14589,7 +14589,7 @@ The instruction :math:`(\mathsf{br\_table}~{l^\ast}~{l'})` is :ref:`valid <valid
 
    * The result type :math:`{t^\ast}` :ref:`matches <match>` the label :math:`C{.}\mathsf{labels}{}[{l'}]`.
 
-   * The instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is :ref:`valid <valid-val>`.
+   * The instruction type :math:`{t_1^\ast}~{t^\ast}~\mathsf{i{\scriptstyle 32}}~\rightarrow~{t_2^\ast}` is :ref:`valid <valid-val>`.
 
 
 
@@ -25932,7 +25932,7 @@ Instr_ok/br_table
     - the result type t* matches C.LABELS[l].
   - the label C.LABELS[l'] exists.
   - t* matches C.LABELS[l'].
-  - the instruction type t_1* -> t_2* is valid.
+  - t_1* :: t* :: [I32] -> t_2* is valid.
 
 Instr_ok/br_on_null
 - the instruction (BR_ON_NULL l) is valid with the instruction type t* :: [(REF ?(NULL) ht)] -> t* :: [(REF ?() ht)] if:

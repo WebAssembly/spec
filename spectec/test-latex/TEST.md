@@ -5963,7 +5963,7 @@ $$
  \qquad
 C \vdash {t^\ast} \leq C{.}\mathsf{labels}{}[{l'}]
  \qquad
-C \vdash {t_1^\ast} \rightarrow {t_2^\ast} : \mathsf{ok}
+C \vdash {t_1^\ast}~{t^\ast}~\mathsf{i{\scriptstyle 32}} \rightarrow {t_2^\ast} : \mathsf{ok}
 }{
 C \vdash \mathsf{br\_table}~{l^\ast}~{l'} : {t_1^\ast}~{t^\ast}~\mathsf{i{\scriptstyle 32}} \rightarrow {t_2^\ast}
 } \, {[\textsc{\scriptsize T{-}br\_table}]}
