@@ -675,8 +675,10 @@ Instructions in this group are concerned with linear :ref:`memory <syntax-mem>`.
    \begin{array}{llrl}
    \production{memory immediate} & \memarg &::=&
      \{ \OFFSET~\u64, \ALIGN~\u32 \} \\
+   \production{type width} & \X{nn} &::=&
+     \K{32} ~|~ \K{64} \\
    \production{lane width} & \X{ww} &::=&
-     8 ~|~ 16 ~|~ 32 ~|~ 64 \\
+     \K{8} ~|~ \K{16} ~|~ \K{32} ~|~ \K{64} \\
    \production{instruction} & \instr &::=&
      \dots \\&&|&
      \K{i}\X{nn}\K{.}\LOAD~\memidx~\memarg ~|~
