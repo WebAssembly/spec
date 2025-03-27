@@ -962,3 +962,41 @@
   )
   "type mismatch"
 )
+
+;; memop flags >= 0x80
+(assert_malformed
+  (module binary
+    "\00asm" "\01\00\00\00"
+    "\01\04\01\60\00\00"       ;; Type section: 1 type
+    "\03\02\01\00"             ;; Function section: 1 function
+    "\05\03\01\00\01"          ;; Memory section: 1 memory
+    "\0a\0b\01"                ;; Code section: 1 function
+
+    ;; function 0
+    "\09\00"
+    "\41\00"                   ;; i32.const 0
+    "\28\80\01\00"             ;; i32.load offset=0 align="2**128" (malformed)
+    "\1a"                      ;; drop
+    "\0b"                      ;; end
+  )
+  "malformed memop flags"
+)
+
+;; memop flags > 0xff (and & 0xff = 0)
+(assert_malformed
+  (module binary
+    "\00asm" "\01\00\00\00"
+    "\01\04\01\60\00\00"       ;; Type section: 1 type
+    "\03\02\01\00"             ;; Function section: 1 function
+    "\05\03\01\00\01"          ;; Memory section: 1 memory
+    "\0a\0b\01"                ;; Code section: 1 function
+
+    ;; function 0
+    "\09\00"
+    "\41\00"                   ;; i32.const 0
+    "\28\80\02\00"             ;; i32.load offset=0 align="2**256" (malformed)
+    "\1a"                      ;; drop
+    "\0b"                      ;; end
+  )
+  "malformed memop flags"
+)
