@@ -456,7 +456,7 @@ Aggregate Reference Instructions
      \qquad
      C \vdashvaltypedefaultable \unpacktype(\X{st}) \defaultable
    }{
-     C \vdashinstr \ARRAYNEW~x : [\I32] \to [(\REF~x)]
+     C \vdashinstr \ARRAYNEWDEFAULT~x : [\I32] \to [(\REF~x)]
    }
 
 .. _valid-array.new_fixed:
