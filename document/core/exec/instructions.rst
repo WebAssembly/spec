@@ -697,7 +697,7 @@ Reference Instructions
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   F; (\I32.\CONST~n)~(\ARRAYNEWDEFAULT~x) &\stepto& (\default_{\unpacktype(\X{ft}}))^n~(\ARRAYNEWFIXED~x~n)
+   F; (\I32.\CONST~n)~(\ARRAYNEWDEFAULT~x) &\stepto& (\default_{\unpacktype(\X{ft})})^n~(\ARRAYNEWFIXED~x~n)
      \\&&
      \begin{array}[t]{@{}r@{~}l@{}}
       (\iff & \expanddt(F.\AMODULE.\MITYPES[x]) = \TARRAY~\X{ft})
