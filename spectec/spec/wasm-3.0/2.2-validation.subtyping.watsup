@@ -164,7 +164,7 @@ rule Fieldtype_sub/var:
 
 
 rule Comptype_sub/struct:
-  C |- STRUCT (yt_1* yt'_1) <: STRUCT yt_2*
+  C |- STRUCT (yt_1* yt'_1*) <: STRUCT yt_2*
   -- (Fieldtype_sub: C |- yt_1 <: yt_2)*
 
 rule Comptype_sub/array:
