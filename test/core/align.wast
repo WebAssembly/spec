@@ -1000,3 +1000,25 @@
   )
   "malformed memop flags"
 )
+
+;; Max align and offset in non-malformed text
+(module
+  (memory i64 1)
+  (func
+    i64.const 0
+    i32.load offset=0xFFFF_FFFF_FFFF_FFFF
+    drop
+  )
+)
+
+(assert_invalid
+  (module
+    (memory 1)
+    (func
+      i32.const 0
+      i32.load offset=0xFFFF_FFFF_FFFF_FFFF align=0x8000_0000_0000_0000
+      drop
+    )
+  )
+  "alignment must not be larger than natural"
+)
