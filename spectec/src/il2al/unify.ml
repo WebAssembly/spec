@@ -156,9 +156,6 @@ let rec overlap env e1 e2 = if eq_exp e1 e2 then e1 else
       CaseE (mixop1, overlap env e1 e2) |> replace_it
     | SubE (e1, typ1, typ1'), SubE (e2, typ2, typ2') when eq_typ typ1 typ2 && eq_typ typ1' typ2' ->
       SubE (overlap env e1 e2, typ1, typ1') |> replace_it
-    (* HARDCODE: Unifying CatE with non-CatE *)
-    | CatE ({ it = IterE (_, (ListN _, _)); _ } as e1', _), _ -> overlap env e1 { e2 with it = CatE (e1', e2) }
-    | _, CatE ({ it = IterE (_, (ListN _, _)); _ } as e2', _) -> overlap env { e1 with it = CatE (e2', e1) } e2
     (* HARDCODE: Prevent vals overlapped into instr *)
     | _ when Il2al_util.is_val e1 && Il2al_util.is_val e2 ->
       let ty = overlap_typ env e1.note e2.note in
