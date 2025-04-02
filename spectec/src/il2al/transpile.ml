@@ -224,17 +224,17 @@ let swap_if instr =
   | IfI (c, il1, il2) when count_instrs il1 > count_instrs il2 -> ifI (neg c, il2, il1) ~at:at
   | _ -> instr
 
-let rec return_at_last = function
+let rec exit_at_last = function
   | [] -> false
   | h :: t ->
     match h.it with
     | TrapI | ReturnI _ | FailI -> true
-    | _ -> return_at_last t
+    | _ -> exit_at_last t
 
-let early_return instr =
+let early_exit instr =
   let at = instr.at in
   match instr.it with
-  | IfI (c, il1, il2) when return_at_last il1 -> ifI (c, il1, []) ~at:at :: il2
+  | IfI (c, il1, il2) when exit_at_last il1 -> ifI (c, il1, []) ~at:at :: il2
   | _ -> [ instr ]
 
 (* If c then (A; B) else (A; C) --> A; If c then B else C *)
@@ -544,9 +544,9 @@ let rec enhance_readability instrs =
   in
   let post_instr =
     unify_if_head
-    >>@ unify_if_tail
     >>@ lift swap_if
-    >>@ early_return
+    >>@ early_exit
+    >>@ unify_if_tail
     >>@ lift merge_three_branches
     >>@ remove_trivial_case_check
   in
