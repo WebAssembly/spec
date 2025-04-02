@@ -261,15 +261,15 @@ let val_mixops = ref []
 let is_val exp =
   if (!val_mixops = []) then (
     let id = "val" $ no_region in
-    match Il.Env.find_typ !Al.Valid.il_env id with
-    | _, [inst] -> (
+    match Il.Env.find_opt_typ !Al.Valid.il_env id with
+    | Some(_, [inst]) -> (
       match inst.it with
       | InstD ([], [], { it = VariantT typcases; _ }) -> (
         val_mixops := List.map (fun (mixop, _, _) -> mixop) typcases
       )
-      | _ -> error no_region "syntax definition of val is wrong"
+      | _ -> ()
     )
-    | _ -> error no_region "syntax definition of val is wrong"
+    | _ -> ()
   );
   match exp.it with
   | CaseE (mixop, _) -> (

@@ -191,17 +191,21 @@ let is_num typ =
   | _ -> false
 
 let rec sub_typ typ1 typ2 =
-  let typ1', typ2' = ground_typ_of typ1, ground_typ_of typ2 in
-  match typ1'.it, typ2'.it with
-  | IterT (typ1'', _), IterT (typ2'', _) -> sub_typ typ1'' typ2''
-  | NumT _, NumT _ -> true
-  | _, _ -> IlEval.sub_typ !il_env typ1' typ2'
+  try
+    let typ1', typ2' = ground_typ_of typ1, ground_typ_of typ2 in
+    match typ1'.it, typ2'.it with
+    | IterT (typ1'', _), IterT (typ2'', _) -> sub_typ typ1'' typ2''
+    | NumT _, NumT _ -> true
+    | _, _ -> IlEval.sub_typ !il_env typ1' typ2'
+  with Util.Error.Error (_, "undeclared type") -> false
 
 let rec matches typ1 typ2 =
-  match (ground_typ_of typ1).it, (ground_typ_of typ2).it with
-  | IterT (typ1', _), IterT (typ2', _) -> matches typ1' typ2'
-  | VarT (id1, _), VarT (id2, _) when id1.it = id2.it -> true
-  | _ -> sub_typ typ1 typ2 || sub_typ typ2 typ1
+  try
+    match (ground_typ_of typ1).it, (ground_typ_of typ2).it with
+    | IterT (typ1', _), IterT (typ2', _) -> matches typ1' typ2'
+    | VarT (id1, _), VarT (id2, _) when id1.it = id2.it -> true
+    | _ -> sub_typ typ1 typ2 || sub_typ typ2 typ1
+  with Util.Error.Error (_, "undeclared type") -> false
 
 
 (* Helper functions *)
