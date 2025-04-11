@@ -559,6 +559,7 @@ exp_atom_ :
 
 exp_list : exp_list_ { $1 $ $sloc }
 exp_list_ :
+  | LBRACK RBRACK { ListE [] }
   | LBRACK exp_seq RBRACK { ListE (as_seq_exp $2) }
   | exp_list iter { IterE ($1, $2) }
 
