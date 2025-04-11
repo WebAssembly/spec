@@ -91,7 +91,7 @@ a type is first declared,
 specifying its parameters.
 Then, one or several definitions for different instantiations of the parameters can be provided.
 Each case is given as clausal equation with argument expressions on the left,
-which are treated as *patterns*.
+which are treated as [patterns](#pattern-matching).
 The instantiation of a type is determined by the equation whose pattern is matched by the concrete argument.
 This gives rise to *type families*.
 
@@ -497,7 +497,7 @@ exp ::= ...
 ```
 
 There are no expressions for accessing tuples.
-Instead, they are decomposed by pattern matching.
+Instead, they are decomposed by [pattern matching](#pattern-matching).
 
 
 #### Sequences and Lists
@@ -879,7 +879,7 @@ def $tok(0) = true
 def $tok(n) = $tik($(n - 1))
 ```
 
-The clauses of a function express a (sequential) pattern match.
+The clauses of a function express a (sequential) [pattern match](#pattern-matching).
 Their left-hand side argument expressions are interpreted as patterns
 and therefore restricted in shape.
 In addition, each clause can have [premises](#premises) acting as pattern guards.
@@ -965,6 +965,54 @@ The previous map function can be made polymorphic as follows:
 def $map(syntax X, def $f(X) : X, X*) : X*
 def $map(syntax X, $f, eps) = eps
 def $map(syntax X, $f, x y*) = $f(x) $map(X, $f, y*)
+```
+
+
+### Pattern Matching
+
+Definitions that have parameters,
+e.g., [functions](#functions), [types](#type-definitions), and [grammars](#grammars),
+are be defined with [expressions](#expressions) on their left-hand side that act as *patterns*.
+
+When a definition, such as a function or type, is given by multiple clauses,
+then the patterns of each clause are tried in order,
+until one is found that matches *and* whose premises hold.
+
+To match a pattern,
+it is first reduced to *normal form* (which isn't necessarily a value!),
+which is then compared syntactically to the respective argument's normal form.
+If their outermost shapes match,
+the process is iterated with corresponding nested expressions.
+
+An unbound variable (or a wildcard `_`) can be matched by any expression.
+When this happened, all occurrences of that variable in the remainder of the definition are substituted by that expression.
+That includes the remainder of the pattern,
+with the effect that variables can be used in a non-linear fashion.
+
+**Example:**
+Multiple occurrences of the same variable can be used as implicit equality constraints:
+```
+def $find(nat, nat*) : bool
+def $find(n, eps) = false
+def $find(n, n n'*) = true
+def $find(n, n_1 n'*) = $find(n, n'*)
+```
+
+As this example shows, patterns can also be [iterations](iteration).
+An iteration can only be matched by a sequence of appropriate length.
+The individual elements are then projected onto the element pattern,
+generally yielding a sequences bound to variables of respective dimension.
+If the iteration pattern has an (unbound) length variable,
+then this variable is bound as well.
+
+**Example:**
+The following functions demonstrate these points.
+```
+def $len(int*) : nat
+def $len(i^n) = n  ;; $len(arg) = |arg|
+
+def $unzip((nat, nat)*) : (nat*, nat*)
+def $unzip((x, y)*) = x*, y*
 ```
 
 
@@ -1095,7 +1143,7 @@ Accordingly, grammar identifiers may have corresponding arguments.
 
 Finally, a symbol may be prefixed by an *attribute pattern*.
 Such a pattern takes the form of an [expression](#expressions)
-that is interpreted as a pattern,
+that is interpreted as a [pattern](#pattern-matching),
 in the same way as the left-hand side of [function clauses](#functions).
 This pattern is matched by the attribute synthesised by parsing the respective symbol.
 Any variables occurring in the pattern are instantiated accordingly and can be used on the right.
