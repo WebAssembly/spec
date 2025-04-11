@@ -166,3 +166,24 @@ def $a3 = $($mppm(+3) + $mppm(-4))
 
 def $a4 : int
 def $a4 = $($mpmp(+3) + $mpmp(-4))
+
+
+
+
+
+def $signed_(nat, nat) : int
+def $invsigned_(nat, nat) : int
+def $int(int) : int
+def $irem_(nat, nat, nat) : nat
+def $irem_(n, i_1, i_2) = $invsigned_(n, $(j_1 - j_2 * $int($(j_1 / j_2))))
+  -- if j_1 = $signed_(n, i_1)
+  -- if j_2 = $signed_(n, i_2)
+
+
+(;
+-def $ivadd_pairwise_{N : N, `i*` : iN(N)*, `j_1*` : iN(N)*, `j_2*` : iN(N)*}(N, i*{i <- `i*`}) = $iadd_(N, j_1, j_2)*{j_1 <- `j_1*`, j_2 <- `j_2*`}
+-  -- if ($concat_(syntax N, [j_1!`%`_iN.0 j_2!`%`_iN.0]*{j_1 <- `j_1*`, j_2 <- `j_2*`}) = i!`%`_iN.0*{i <- `i*`})
+
++def $ivadd_pairwise_{N : N, `i*` : iN(N)*, `j_1*` : N*, `j_2*` : N*}(N, i*{i <- `i*`}) = $iadd_(N, `%`_iN(j_1), `%`_iN(j_2))*{j_1 <- `j_1*`, j_2 <- `j_2*`}
++  -- if ($concat_(syntax N, [j_1 j_2]*{j_1 <- `j_1*`, j_2 <- `j_2*`}) = i!`%`_iN.0*{i <- `i*`})
+;)

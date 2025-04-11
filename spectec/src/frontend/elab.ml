@@ -1082,13 +1082,23 @@ and infer_exp' env e : (Il.exp' * typ') attempt =
     )
   | CatE (e1, e2) ->
     let* e1', t1 = infer_exp env e1 in
-    let* _ = as_cat_typ "operand" env Infer t1 e.at in
+    let* _ = as_cat_typ "operand" env Infer t1 e1.at in
     let* e2' = elab_exp env e2 t1 in
     Ok ((if is_iter_typ env t1 then Il.CatE (e1', e2') else Il.CompE (e1', e2')), t1.it)
   | MemE (e1, e2) ->
-    let* e1', t1 = infer_exp env e1 in
-    let* e2' = elab_exp env e2 (IterT (t1, List) $ e2.at) in
-    Ok (Il.MemE (e1', e2'), BoolT)
+    choice env [
+      (fun env ->
+        let* e1', t1 = infer_exp env e1 in
+        let* e2' = elab_exp env e2 (IterT (t1, List) $ e2.at) in
+        Ok (Il.MemE (e1', e2'), BoolT)
+      );
+      (fun env ->
+        let* e2', t2 = infer_exp env e2 in
+        let* t1 = as_list_typ "operand" env Infer t2 e2.at in
+        let* e1' = elab_exp env e1 t1 in
+        Ok (Il.MemE (e1', e2'), BoolT)
+      );
+    ]
   | LenE e1 ->
     let* e1', t1 = infer_exp env e1 in
     let* _t11 = as_list_typ "expression" env Infer t1 e1.at in
@@ -2334,10 +2344,10 @@ let elab_def env d : Il.def list =
     let ps, t, clauses' = find "definition" env.defs id in
     let as', s = elab_args `Lhs env' as_ ps d.at in
     let as' = List.map (Dim.annot_arg dims') as' in
+    let prems' = concat_map_filter_nl_list (elab_prem env') prems in
     let e' = checkpoint (elab_exp env' e (Subst.subst_typ s t)) in
     let e' = Dim.annot_exp dims' e' in
-    let prems' = List.map (Dim.annot_prem dims')
-      (concat_map_filter_nl_list (elab_prem env') prems) in
+    let prems' = List.map (Dim.annot_prem dims') prems' in
     let bs' = infer_binds env env' dims d in
     let clause' = Il.DefD (bs', as', e', prems') $ d.at in
     env.defs <- rebind "definition" env.defs id (ps, t, clauses' @ [(d, clause')]);
