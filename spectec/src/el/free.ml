@@ -160,7 +160,7 @@ and det_exp e =
   match e.it with
   | VarE (id, []) -> bound_varid id
   | VarE _ -> assert false
-  | CvtE (e1, _) | UnE (#Num.unop, e1)
+  | CvtE (e1, _) | UnE ((#Num.unop | `PlusMinusOp | `MinusPlusOp), e1)
   | ParenE e1 | BrackE (_, e1, _) | ArithE e1 -> det_exp e1
   (* We consider arithmetic expressions determinate,
    * since we sometimes need to use invertible formulas. *)

@@ -134,3 +134,35 @@ def $g(def $h, syntax Y, y) = $h(Y, y)
 
 def $x : nat
 def $x = $($g(def $f, syntax nat, 1) + $g($f, nat, 2))
+
+
+
+;;
+;; Plus/minus
+;;
+
+var n : nat
+
+def $pmpm(int) : int
+def $pmpm(+-n) = +-n
+
+def $pmmp(int) : int
+def $pmmp(+-n) = -+n
+
+def $mppm(int) : int
+def $mppm(-+n) = +-n
+
+def $mpmp(int) : int
+def $mpmp(-+n) = -+n
+
+def $a1 : int
+def $a1 = $($pmpm(+3) + $pmpm(-4))
+
+def $a2 : int
+def $a2 = $($pmmp(+3) + $pmmp(-4))
+
+def $a3 : int
+def $a3 = $($mppm(+3) + $mppm(-4))
+
+def $a4 : int
+def $a4 = $($mpmp(+3) + $mpmp(-4))
