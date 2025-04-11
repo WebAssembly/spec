@@ -2,7 +2,7 @@
   (libraries spectec)
   (deps
     (file ../src/exe-watsup/main.exe)
-    (glob_files_rec ../spec/*)
+    ;(glob_files_rec ../../specification/*)
     (source_tree spec-test-1)
     (source_tree spec-test-2)
     (source_tree spec-test-3)

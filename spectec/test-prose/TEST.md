@@ -3,9 +3,8 @@
 ```sh
 $ for v in 1 2 3; do ( \
 >   echo "Generating prose for Wasm $v.0..." && \
->   cd ../spec/wasm-$v.0 && \
->   ../../src/exe-watsup/main.exe *.watsup -v -l --prose-rst && \
->   ../../src/exe-watsup/main.exe *.watsup -v -l --prose \
+>   ../src/exe-watsup/main.exe ../../../../specification/wasm-$v.0/*.watsup -v -l --prose-rst && \
+>   ../src/exe-watsup/main.exe ../../../../specification/wasm-$v.0/*.watsup -v -l --prose \
 > ) done
 Generating prose for Wasm 1.0...
 watsup 0.5 generator
