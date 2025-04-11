@@ -873,10 +873,10 @@ def $tik(nat) : bool
 def $tok(nat) : bool
 
 def $tik(0) = false
-def $tik(n) = $tok(n - 1)
+def $tik(n) = $tok($(n - 1))
 
 def $tok(0) = true
-def $tok(n) = $tik(n - 1)
+def $tok(n) = $tik($(n - 1))
 ```
 
 The clauses of a function express a (sequential) pattern match.
