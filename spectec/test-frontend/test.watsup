@@ -51,18 +51,30 @@ def $testemptyv3(V3 "" 0) = 0
 def $testemptyv4(variant) : nat
 def $testemptyv4(V4 list 0) = 0
 def $testemptyv4(V4 eps 0) = 0
-;;def $testemptyv4(V4 0) = 0
+def $testemptyv4(V4 0) = 0
 def $testemptyv4(V4 L 0) = 0
+def $testemptyv4(V4 L L L 0) = 0
+def $testemptyv4(V4 ([]) 0) = 0
+def $testemptyv4(V4 ([L]) 0) = 0
+def $testemptyv4(V4 ([L L L]) 0) = 0
 
 def $testemptyv5(variant) : nat
 def $testemptyv5(V5 eps 0) = 0
-;;def $testemptyv5(V5 0) = 0
+def $testemptyv5(V5 0) = 0
 def $testemptyv5(V5 L 0) = 0
+def $testemptyv5(V5 L L L 0) = 0
+def $testemptyv5(V5 ([]) 0) = 0
+def $testemptyv5(V5 ([L]) 0) = 0
+def $testemptyv5(V5 ([L L L]) 0) = 0
 
 def $testemptyv6(variant) : nat
 def $testemptyv6(V6 eps 0) = 0
-;;def $testemptyv6(V6 0) = 0
+def $testemptyv6(V6 0) = 0
 def $testemptyv6(V6 "" 0) = 0
+def $testemptyv6(V6 "" "" 0) = 0
+def $testemptyv6(V6 ([]) 0) = 0
+def $testemptyv6(V6 ([""]) 0) = 0
+def $testemptyv6(V6 (["" ""]) 0) = 0
 
 def $testemptyn1(notation1) : nat
 def $testemptyn1(opt 0) = 0
@@ -83,18 +95,30 @@ def $testemptyn3("" 0) = 0
 def $testemptyn4(notation4) : nat
 def $testemptyn4(list 0) = 0
 def $testemptyn4(eps 0) = 0
-;;def $testemptyn4(0) = 0
+def $testemptyn4(0) = 0
 def $testemptyn4(L 0) = 0
+def $testemptyn4(L L L 0) = 0
+def $testemptyn4(([]) 0) = 0
+def $testemptyn4(([L]) 0) = 0
+def $testemptyn4(([L L L]) 0) = 0
 
 def $testemptyn5(notation5) : nat
 def $testemptyn5(eps 0) = 0
-;;def $testemptyn5(0) = 0
+def $testemptyn5(0) = 0
 def $testemptyn5(L 0) = 0
+def $testemptyn5(L L L 0) = 0
+def $testemptyn5(([]) 0) = 0
+def $testemptyn5(([L]) 0) = 0
+def $testemptyn5(([L L L]) 0) = 0
 
 def $testemptyn6(notation6) : nat
 def $testemptyn6(eps 0) = 0
-;;def $testemptyn6(0) = 0
+def $testemptyn6(0) = 0
 def $testemptyn6("" 0) = 0
+def $testemptyn6("" "" "" 0) = 0
+def $testemptyn6(([]) 0) = 0
+def $testemptyn6(([""]) 0) = 0
+def $testemptyn6((["" "" ""]) 0) = 0
 
 
 
