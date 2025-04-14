@@ -44,7 +44,7 @@ watsup 0.5 generator
 == Complete.
 $ for v in 1 2 3; do ( \
 >   echo "Running test for Wasm $v.0..." && \
->   ../src/exe-watsup/main.exe ../../../../specification/wasm-3.0/*.watsup -v -l --test-version $v --interpreter ../test-interpreter/spec-test-$v \
+>   ../src/exe-watsup/main.exe ../../../../specification/wasm-$v.0/*.watsup -v -l --test-version $v --interpreter ../test-interpreter/spec-test-$v \
 > ) done 2>&1
 Running test for Wasm 1.0...
 watsup 0.5 generator
