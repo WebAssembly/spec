@@ -23930,7 +23930,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    a. Let :math:`({\mathsf{extmul}}{\mathsf{\_}}{{\mathit{sx}}}{\mathsf{\_}}{{\mathit{half}}})` be the destructuring of :math:`{\mathit{vextbinop}}`.
 
-   #. Let :math:`i` be the lane index :math:`{\mathrm{half}}({\mathit{half}}, 0, M_2)`.
+   #. Let :math:`i` be :math:`{\mathrm{half}}({\mathit{half}}, 0, M_2)`.
 
    #. Return :math:`{{\mathrm{ivextbinop}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}({\mathrm{ivmul}}, {\mathit{sx}}, {\mathit{sx}}, i, M_2, v_1, v_2)`.
 
@@ -24997,9 +24997,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{\mathit{moduleinst}}` be :math:`{\mathrm{allocmodule}}(s, {\mathit{module}}, {{\mathit{externaddr}}^\ast}, {{\mathit{val}}_{\mathsf{g}}^\ast}, {{\mathit{ref}}_{\mathsf{t}}^\ast}, {{{\mathit{ref}}_{\mathsf{e}}^\ast}^\ast})`.
 
-#. Let :math:`f` be the frame :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{module}~{\mathit{moduleinst}} \}\end{array}`.
-
-#. Let F be the :math:`\mathsf{frame}` :math:`f`.
+#. Let F be the :math:`\mathsf{frame}` :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{module}~{\mathit{moduleinst}} \}\end{array}`.
 
 #. Push the :math:`\mathsf{frame}` F.
 
@@ -25015,7 +25013,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the :math:`\mathsf{frame}` F from the stack.
 
-#. Return :math:`f{.}\mathsf{module}`.
+#. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{module}~{\mathit{moduleinst}} \}\end{array}{.}\mathsf{module}`.
 
 
 :math:`{\mathrm{invoke}}(s, {\mathit{funcaddr}}, {{\mathit{val}}^\ast})`
@@ -25027,8 +25025,6 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Let :math:`(\mathsf{func}~{\mathit{functype}}_0)` be the destructuring of the :ref:`expansion <aux-expand-deftype>` of :math:`s{.}\mathsf{funcs}{}[{\mathit{funcaddr}}]{.}\mathsf{type}`.
 
 #. Let :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` be the destructuring of :math:`{\mathit{functype}}_0`.
-
-#. Let :math:`f` be the frame :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{module}~\{ \begin{array}[t]{@{}l@{}} \}\end{array} \}\end{array}`.
 
 #. If :math:`{|{t_1^\ast}|} \neq {|{{\mathit{val}}^\ast}|}`, then:
 
@@ -25042,7 +25038,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`k` be the length of :math:`{t_2^\ast}`.
 
-#. Let F be the :math:`\mathsf{frame}` :math:`f` whose arity is :math:`k`.
+#. Let F be the :math:`\mathsf{frame}` :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{module}~\{ \begin{array}[t]{@{}l@{}} \}\end{array} \}\end{array}` whose arity is :math:`k`.
 
 #. Push the :math:`\mathsf{frame}` F.
 
@@ -30929,31 +30925,29 @@ instantiate s module externaddr*
 20. Let [ref_E]** be $Eval_expr(z, expr_E)**.
 21. Pop the frame (FRAME_ 0 { f }) from the stack.
 22. Let moduleinst be $allocmodule(s, module, externaddr*, val_G*, ref_T*, ref_E**).
-23. Let f be { MODULE: moduleinst }.
-24. Push the frame (FRAME_ 0 { f }) to the stack.
-25. Execute the sequence instr_E*.
-26. Execute the sequence instr_D*.
-27. If instr_S? is defined, then:
+23. Push the frame (FRAME_ 0 { { MODULE: moduleinst } }) to the stack.
+24. Execute the sequence instr_E*.
+25. Execute the sequence instr_D*.
+26. If instr_S? is defined, then:
   a. Let ?(instr_0) be instr_S?.
   b. Execute the instruction instr_0.
-28. Pop the frame (FRAME_ 0 { f }) from the stack.
-29. Return f.MODULE.
+27. Pop the frame (FRAME_ 0 { { MODULE: moduleinst } }) from the stack.
+28. Return { MODULE: moduleinst }.MODULE.
 
 invoke s funcaddr val*
 1. Assert: Due to validation, $Expand(s.FUNCS[funcaddr].TYPE) is some FUNC.
 2. Let (FUNC functype_0) be $Expand(s.FUNCS[funcaddr].TYPE).
 3. Let t_1* -> t_2* be functype_0.
-4. Let f be { MODULE: {} }.
-5. If not $Val_ok(val, t_1)*, then:
+4. If not $Val_ok(val, t_1)*, then:
   a. Fail.
-6. Let k be |t_2*|.
-7. Push the frame (FRAME_ k { f }) to the stack.
-8. Push the values val* to the stack.
-9. Push the value (REF.FUNC_ADDR funcaddr) to the stack.
-10. Execute the instruction (CALL_REF s.FUNCS[funcaddr].TYPE).
-11. Pop the values val'^k from the stack.
-12. Pop the frame (FRAME_ k { f }) from the stack.
-13. Return val'^k.
+5. Let k be |t_2*|.
+6. Push the frame (FRAME_ k { { MODULE: {} } }) to the stack.
+7. Push the values val* to the stack.
+8. Push the value (REF.FUNC_ADDR funcaddr) to the stack.
+9. Execute the instruction (CALL_REF s.FUNCS[funcaddr].TYPE).
+10. Pop the values val'^k from the stack.
+11. Pop the frame (FRAME_ k { { MODULE: {} } }) from the stack.
+12. Return val'^k.
 
 allocXs `X `Y s X''* Y''*
 1. If (X''* = []), then:

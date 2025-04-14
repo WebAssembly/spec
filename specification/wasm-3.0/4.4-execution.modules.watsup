@@ -173,7 +173,7 @@ def $evalglobals(z, gt gt'*, expr expr'*) = (z', val val'*)
   -- if (z', val'*) = $evalglobals((s'; f[.MODULE.GLOBALS =++ a]), gt'*, expr'*)
 
 def $instantiate(store, module, externaddr*) : config
-def $instantiate(s, module, externaddr*) = s'; f; instr_E* instr_D* instr_S?
+def $instantiate(s, module, externaddr*) = s'; {MODULE moduleinst}; instr_E* instr_D* instr_S?
   ---- ----
   -- Module_ok: |- module : xt_I* -> xt_E*
   -- (Externaddr_ok: s |- externaddr : xt_I)*
@@ -195,7 +195,6 @@ def $instantiate(s, module, externaddr*) = s'; f; instr_E* instr_D* instr_S?
   -- (Eval_expr : z'; expr_T ~>* z'; ref_T)*
   -- (Eval_expr : z'; expr_E ~>* z'; ref_E)**
   -- if (s', moduleinst) = $allocmodule(s, module, externaddr*, val_G*, ref_T*, (ref_E*)*)
-  -- if f = {MODULE moduleinst}  ;; TODO(2, rossberg): inline
   -- if instr_E* = $concat_(instr, $runelem_(i_E, elem*[i_E])^(i_E<|elem*|))
   -- if instr_D* = $concat_(instr, $rundata_(i_D, data*[i_D])^(i_D<|data*|))
   -- if instr_S? = (CALL x)?
@@ -204,8 +203,7 @@ def $instantiate(s, module, externaddr*) = s'; f; instr_E* instr_D* instr_S?
 ;; Invocation
 
 def $invoke(store, funcaddr, val*) : config
-def $invoke(s, funcaddr, val*) = s; f; val* (REF.FUNC_ADDR funcaddr) (CALL_REF s.FUNCS[funcaddr].TYPE)
+def $invoke(s, funcaddr, val*) = s; {MODULE {}}; val* (REF.FUNC_ADDR funcaddr) (CALL_REF s.FUNCS[funcaddr].TYPE)
   ---- ----
   -- Expand: s.FUNCS[funcaddr].TYPE ~~ FUNC (t_1* -> t_2*)
   -- (Val_ok: s |- val : t_1)*
-  -- if f = {MODULE {}}  ;; TODO(2, rossberg): inline
