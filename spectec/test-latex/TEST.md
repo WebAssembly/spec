@@ -2374,7 +2374,7 @@ $$
 # Preview
 
 ```sh
-$ (../src/exe-watsup/main.exe ../spec/wasm-3.0/*.watsup --latex)
+$ (../src/exe-watsup/main.exe ../../../../specification/wasm-3.0/*.watsup --latex)
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}}
 & N & ::= & 0 ~|~ 1 ~|~ 2 ~|~ \dots \\
