@@ -13,7 +13,7 @@ SpecTec produces declarative prose to describe the validation rules for each rel
 
 **Example:**
 ```wasm
-;; 3-typing.watsup
+;; 3-typing.spectec
 rule Instr_ok/local.get:
   C |- LOCAL.GET x : eps -> t
   -- if C.LOCALS[x] = SET t
@@ -33,7 +33,7 @@ SpecTec generates stepwise, algorithmic prose to describe the execution semantic
 
 **Example:**
 ```wasm
-;; 8-reduction.watsup
+;; 8-reduction.spectec
 rule Step_read/local.get:
   z; (LOCAL.GET x)  ~>  val
   -- if $local(z, x) = val
@@ -54,7 +54,7 @@ SpecTec also generates stepwise, algorithmic prose for function definitions. The
 
 **Example:**
 ```wasm
-;; 1-syntax.watsup
+;; 1-syntax.spectec
 def $size(numtype) : nat
 
 def $size(I32) = 32
@@ -80,12 +80,12 @@ size(nt)
 
 The following command generates prose for the given spec files in the `spec/wasm-3.0` directory and prints it to stdout in plain text:
 ```sh
-./watsup spec/wasm-3.0/*.watsup --prose
+./spectec spec/wasm-3.0/*.spectec --prose
 ```
 
 To generate prose in ReStructuredText format, use:
 ```sh
-./watsup spec/wasm-3.0/*.watsup --prose-rst
+./spectec spec/wasm-3.0/*.spectec --prose-rst
 ```
 
 ### Caveats
@@ -117,10 +117,10 @@ For relations, users can provide a `prose-hint` to specify how it should be rend
 
 **Example:**
 ```wasm
-;; 2-syntax-aux.watsup
+;; 2-syntax-aux.spectec
 relation Expand: deftype ~~ comptype   hint(prose "The expansion of" %1 "is" %2)
 
-;; 3-typing.watsup
+;; 3-typing.spectec
 rule Instr_ok/call:
   C |- CALL x : t_1* -> t_2*
   -- Expand: C.FUNCS[x] ~~ FUNC (t_1* -> t_2*)

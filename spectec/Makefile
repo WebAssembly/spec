@@ -1,6 +1,6 @@
 # Configuration
 
-NAME = watsup
+NAME = spectec
 EXT = $(NAME)
 LOG = _log
 

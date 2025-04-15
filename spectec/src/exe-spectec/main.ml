@@ -1,6 +1,6 @@
 (* Configuration *)
 
-let name = "watsup"
+let name = "spectec"
 let version = "0.5"
 
 

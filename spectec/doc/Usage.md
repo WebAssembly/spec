@@ -8,7 +8,7 @@ Use the `--help` option to get a list of additional options.
 ### Checking Mode
 
 ```
-watsup [option] file ...
+spectec [option] file ...
 ```
 This invocation takes a list of SpecTec sources,
 concatenates them,
@@ -28,7 +28,7 @@ The following general options are available:
 ### AST Mode
 
 ```
-watsup [option] file ... --ast [-o file]
+spectec [option] file ... --ast [-o file]
 ```
 This performs checking and then outputs the abstract syntax true of the [intermediate language](IL.md),
 either into the given file, or to stdout.
@@ -41,8 +41,8 @@ The following general options are available:
 ### Splicing Mode
 
 ```
-watsup [option] file ... --splice-sphinx -p file ... [-i | -o file ...]
-watsup [option] file ... --splice-latex -p file ... [-i | -o file ...]
+spectec [option] file ... --splice-sphinx -p file ... [-i | -o file ...]
+spectec [option] file ... --splice-latex -p file ... [-i | -o file ...]
 ```
 This performs checking and [*splicing*](Splicing.md).
 Splicing processes a list of inputs containing *splice anchors*
@@ -96,7 +96,7 @@ The following additional options are available:
 ### Interpreter Mode
 
 ```
-watsup [option] file ... --interpreter file ...
+spectec [option] file ... --interpreter file ...
 ```
 This invokes the meta-interpreter built into SpecTec.
 

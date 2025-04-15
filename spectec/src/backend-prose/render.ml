@@ -1158,8 +1158,8 @@ let rec render_instr env algoname index depth instr =
       (repeat indent depth ^ or_index)
       (render_instrs env algoname (depth + 1) il2)
   | Al.Ast.AssertI c ->
-    (* HARDCODE: omit "Due to validation" for assertions from 9-module.watsup *)
-    if String.ends_with ~suffix:"module.watsup" c.at.left.file then (
+    (* HARDCODE: omit "Due to validation" for assertions from 9-module.spectec *)
+    if String.ends_with ~suffix:"module.spectec" c.at.left.file then (
       sprintf "%s Assert: %s." (render_order index depth) (render_expr env c)
     ) else (
       let lname = String.lowercase_ascii algoname in

@@ -533,10 +533,10 @@ that contain *splices* of individual definitions.
 Such documents are assumed to be in reStructuredText,
 since that is the format that the Wasm spec is currently using.
 
-For example, assuming the above definition of NanoWasm is collected in a file `NanoWasm.watsup`,
+For example, assuming the above definition of NanoWasm is collected in a file `NanoWasm.spectec`,
 then we can use the command
 ```
-watsup NanoWasm.watsup --splice-sphinx -p NanoWasm.rst.in -o NanoWasm.rst
+spectec NanoWasm.spectec --splice-sphinx -p NanoWasm.rst.in -o NanoWasm.rst
 ```
 to feed the following `.rst.in` file to SpecTec and produce proper `.rst` output:
 ```

@@ -1,7 +1,7 @@
 # Test
 
 ```sh
-$ (../src/exe-watsup/main.exe test.watsup --latex)
+$ (../src/exe-spectec/main.exe test.spectec --latex)
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
 {\mathrm{test}}_{{\mathit{sub}}_{{\mathsf{atom}}_{22}}}(n_{1_{{\mathit{xyz}}_y}}) & = & 0 \\
@@ -1186,7 +1186,7 @@ $$
 ```
 
 ```sh
-$ (../src/exe-watsup/main.exe test.watsup --latex --latex-macros)
+$ (../src/exe-spectec/main.exe test.spectec --latex --latex-macros)
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
 {\mathrm{test}}_{{\mathit{sub}}_{{\mathsf{atom}}_{22}}}(n_{1_{{\mathit{xyz}}_y}}) & = & 0 \\
@@ -2374,7 +2374,7 @@ $$
 # Preview
 
 ```sh
-$ (../src/exe-watsup/main.exe ../../../../specification/wasm-3.0/*.watsup --latex)
+$ (../src/exe-spectec/main.exe ../../../../specification/wasm-3.0/*.spectec --latex)
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}}
 & N & ::= & 0 ~|~ 1 ~|~ 2 ~|~ \dots \\
