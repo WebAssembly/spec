@@ -119,7 +119,7 @@ You will need `ocaml` installed with `dune`, `menhir`, `mdx`, and the `zarith` l
 
 ### Building the Project
 
-* Invoke `make` to build the `watsup` executable.
+* Invoke `make` to build the `spectec` executable.
 
 * In the same place, invoke `make test` to run it on the demo files from the `spec` directory.
 
@@ -159,5 +159,5 @@ A smaller, self-contained example for a SpecTec specification, a small document 
 
 To run a wast file,
 ```
-watsup spec/* --interpreter test-interpreter/sample.wast
+spectec spec/* --interpreter test-interpreter/sample.wast
 ```

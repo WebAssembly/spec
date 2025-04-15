@@ -165,7 +165,7 @@ and [render.ml#L1286-L1303](https://github.com/Wasm-DSL/spectec/blob/96541575600
 - Control frames ([render.ml#L688-L705](https://github.com/Wasm-DSL/spectec/blob/965415756005b74ecaa39fe81aec1986ba79a210/spectec/src/backend-prose/render.ml#L688-L705)):
 The first atom in the `mixop` of `CaseE` directly matches the hardcoded string (`LABEL_`, `FRAME_`, `HANDLER_`). The string should also be added here if a new control frame is added.
 - Omitting `Due to validation` ([render.ml#L1161-L1164](https://github.com/Wasm-DSL/spectec/blob/965415756005b74ecaa39fe81aec1986ba79a210/spectec/src/backend-prose/render.ml#L1161-L1164)):
-Assert instructions (`AssertI`) can be divided into those generated due to validation and those that are not. The prose backend checks whether `at` of `AssertI` corresponds to `module.watsup`. If not, the phrase `Due to validation` is omitted.
+Assert instructions (`AssertI`) can be divided into those generated due to validation and those that are not. The prose backend checks whether `at` of `AssertI` corresponds to `module.spectec`. If not, the phrase `Due to validation` is omitted.
 - Rendering `If not cond*, then fail` ([render.ml#L1049-L1112](https://github.com/Wasm-DSL/spectec/blob/965415756005b74ecaa39fe81aec1986ba79a210/spectec/src/backend-prose/render.ml#L1049-L1112)):
 We hardcode the sentence in the above format to include a length condition and output it in more detail. Ex:
   ```
