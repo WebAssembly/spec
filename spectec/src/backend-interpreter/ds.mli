@@ -26,6 +26,7 @@ end
 module Register : sig
   val add : string -> value -> unit
   val add_with_var : Reference_interpreter.Script.var option -> value -> unit
+  exception ModuleNotFound of string
   val find : string -> value
   val get_module_name : Reference_interpreter.Script.var option -> string
 end

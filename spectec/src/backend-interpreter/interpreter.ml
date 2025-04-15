@@ -26,10 +26,10 @@ let fail_path path msg =
 let try_with_error fname at stringifier f step =
   let prefix = if fname <> empty then "$" ^ fname ^ ": " else fname in
   try f step with
-  | Exception.WrongConversion msg
-  | Exception.ArgMismatch msg
-  | Exception.UnknownFunc msg
-  | Exception.FreeVar msg
+  |(Exception.WrongConversion _
+  | Exception.ArgMismatch _
+  | Exception.UnknownFunc _
+  | Exception.FreeVar _) as e -> error at (prefix ^ Printexc.to_string e) (stringifier step)
   | Failure msg -> error at (prefix ^ msg) (stringifier step)
 
 

@@ -224,6 +224,7 @@ let run_command' command =
 let run_command command =
   let start_time = Sys.time () in
   let result =
+    let print_fail at msg = Printf.printf "- Test failed at %s (%s)\n" (string_of_region at) msg in
     try
       run_command' command
     with
@@ -231,17 +232,17 @@ let run_command command =
       let msg' = msg ^ " (interpreting " ^ step ^ " at " ^ Source.string_of_region at ^ ")" in
       command.at |> string_of_region |> print_endline;
       (* error_interpret at msg' *)
-      print_endline ("- Test failed at " ^ string_of_region command.at ^
-        " (" ^ msg' ^ ")");
+      print_fail command.at msg';
       fail
     | Exception.Invalid (e, backtrace) ->
-      print_endline ("- Test failed at " ^ string_of_region command.at ^
-        " (" ^ Printexc.to_string e ^ ")");
+      print_fail command.at (Printexc.to_string e);
       Printexc.print_raw_backtrace stdout backtrace;
       fail
+    | Register.ModuleNotFound x ->
+      print_fail command.at ("Target module(" ^ x ^ ") does not exist or is not instantiated sucessfully");
+      fail
     | e ->
-      print_endline ("- Test failed at " ^ string_of_region command.at ^
-        " (" ^ Printexc.to_string e ^ ")");
+      print_fail command.at (Printexc.to_string e);
       Printexc.print_backtrace stdout;
       fail
   in

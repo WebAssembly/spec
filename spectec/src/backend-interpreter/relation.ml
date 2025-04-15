@@ -52,7 +52,9 @@ let ref_ok =
   | [CaseV ("REF.EXTERN", [ _ ])] -> CaseV ("REF", [ nonull; nullary "EXTERN"])
   | vs -> Numerics.error_values "$Ref_type" vs
 
-let module_ok = function
+let module_ok v =
+  if !Construct.version <> 3 then failwith "This hardcoded function ($Module_ok) should be only called with test version 3.0";
+  match v with
   | [
     CaseV (
       "MODULE",

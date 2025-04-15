@@ -143,7 +143,12 @@ module Register = struct
     | Some name -> add name.it moduleinst
     | _ -> ()
 
-  let find name = Map.find name !_register
+  exception ModuleNotFound of string
+
+  let find name =
+    match Map.find_opt name !_register with
+    | Some x -> x
+    | None -> raise @@ ModuleNotFound name
 
   let get_module_name var =
     let open Reference_interpreter.Source in
