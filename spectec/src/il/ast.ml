@@ -46,7 +46,7 @@ and typcase = mixop * (bind list * typ * prem list) * hint list  (* variant case
 
 (* Expressions *)
 
-and unop = [Bool.unop | Num.unop | `PlusMinusOp | `MinusPlusOp]
+and unop = [Bool.unop | Num.unop]
 and binop = [Bool.binop | Num.binop]
 and cmpop = [Bool.cmpop | Num.cmpop]
 

@@ -31,8 +31,6 @@ let string_of_id id =
 let string_of_unop = function
   | #Bool.unop as op -> Bool.string_of_unop op
   | #Num.unop as op -> Num.string_of_unop op
-  | `PlusMinusOp -> "+-"
-  | `MinusPlusOp -> "-+"
 
 let string_of_binop = function
   | #Bool.binop as op -> Bool.string_of_binop op

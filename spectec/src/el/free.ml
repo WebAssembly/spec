@@ -81,6 +81,9 @@ let bound_gramid id = if id.it = "_" then empty else free_gramid id
 let bound_varid id = if id.it = "_" then empty else free_varid id
 let bound_defid id = if id.it = "_" then empty else free_defid id
 
+let free_op op = {empty with varid = Set.singleton op}
+let bound_op op = free_op op
+
 
 (* Iterations *)
 
@@ -127,11 +130,16 @@ and det_typcon ((t, prems), _) = det_typ t + det_prems prems
 
 (* Expressions *)
 
+and free_unop = function
+  | #signop as op -> free_op (Print.string_of_unop op)
+  | _ -> empty
+
 and free_exp e =
   match e.it with
   | VarE (id, as_) -> free_varid id + free_list free_arg as_
   | AtomE _ | BoolE _ | NumE _ | TextE _ | EpsE | HoleE _ | LatexE _ -> empty
-  | CvtE (e1, _) | UnE (_, e1) | DotE (e1, _) | LenE e1
+  | UnE (op, e1) -> free_unop op + free_exp e1
+  | CvtE (e1, _) | DotE (e1, _) | LenE e1
   | ParenE e1 | BrackE (_, e1, _) | ArithE e1 | UnparenE e1 -> free_exp e1
   | SizeE id -> free_gramid id
   | BinE (e1, _, e2) | CmpE (e1, _, e2)
@@ -156,11 +164,19 @@ and free_path p =
   | DotP (p1, _) -> free_path p1
 
 
+and det_unop =
+  function
+  | #signop ->
+    bound_op (Print.string_of_unop `PlusMinusOp) +
+    bound_op (Print.string_of_unop `MinusPlusOp)
+  | _ -> empty
+
 and det_exp e =
   match e.it with
   | VarE (id, []) -> bound_varid id
   | VarE _ -> assert false
-  | CvtE (e1, _) | UnE ((#Num.unop | `PlusMinusOp | `MinusPlusOp), e1)
+  | UnE (#signop as op, e1) -> det_unop op + det_exp e1
+  | CvtE (e1, _) | UnE (#Num.unop, e1)
   | ParenE e1 | BrackE (_, e1, _) | ArithE e1 -> det_exp e1
   (* We consider arithmetic expressions determinate,
    * since we sometimes need to use invertible formulas. *)

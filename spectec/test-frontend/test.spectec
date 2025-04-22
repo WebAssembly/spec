@@ -142,48 +142,80 @@ def $x = $($g(def $f, syntax nat, 1) + $g($f, nat, 2))
 ;;
 
 var n : nat
+var m : nat
 
-def $pmpm(int) : int
-def $pmpm(+-n) = +-n
+def $pppp(int, int) : int
+def $pppm(int, int) : int
+def $ppmp(int, int) : int
+def $ppmm(int, int) : int
+def $pmpp(int, int) : int
+def $pmpm(int, int) : int
+def $pmmp(int, int) : int
+def $pmmm(int, int) : int
+def $mppp(int, int) : int
+def $mppm(int, int) : int
+def $mpmp(int, int) : int
+def $mpmm(int, int) : int
+def $mmpp(int, int) : int
+def $mmpm(int, int) : int
+def $mmmp(int, int) : int
+def $mmmm(int, int) : int
 
-def $pmmp(int) : int
-def $pmmp(+-n) = -+n
+def $pppp(+-n, +-m) = $((+-n) + (+-m))
+def $pppm(+-n, +-m) = $((+-n) + (-+m))
+def $ppmp(+-n, +-m) = $((-+n) + (+-m))
+def $ppmm(+-n, +-m) = $((-+n) + (-+m))
+def $pmpp(+-n, -+m) = $((+-n) + (+-m))
+def $pmpm(+-n, -+m) = $((+-n) + (-+m))
+def $pmmp(+-n, -+m) = $((-+n) + (+-m))
+def $pmmm(+-n, -+m) = $((-+n) + (-+m))
+def $mppp(-+n, +-m) = $((+-n) + (+-m))
+def $mppm(-+n, +-m) = $((+-n) + (-+m))
+def $mpmp(-+n, +-m) = $((-+n) + (+-m))
+def $mpmm(-+n, +-m) = $((-+n) + (-+m))
+def $mmpp(-+n, -+m) = $((+-n) + (+-m))
+def $mmpm(-+n, -+m) = $((+-n) + (-+m))
+def $mmmp(-+n, -+m) = $((-+n) + (+-m))
+def $mmmm(-+n, -+m) = $((-+n) + (-+m))
 
-def $mppm(int) : int
-def $mppm(-+n) = +-n
+syntax val(int)
+syntax val(+1) = Val1
+syntax val(+7) = Val7
+syntax val(-1) = Valm1
+syntax val(-7) = Valm7
 
-def $mpmp(int) : int
-def $mpmp(-+n) = -+n
+def $eq(int_1, int_2, val(int_1)) : val(int_2)
 
-def $a1 : int
-def $a1 = $($pmpm(+3) + $pmpm(-4))
-
-def $a2 : int
-def $a2 = $($pmmp(+3) + $pmmp(-4))
-
-def $a3 : int
-def $a3 = $($mppm(+3) + $mppm(-4))
-
-def $a4 : int
-def $a4 = $($mpmp(+3) + $mpmp(-4))
-
-
-
-
-
-def $signed_(nat, nat) : int
-def $invsigned_(nat, nat) : int
-def $int(int) : int
-def $irem_(nat, nat, nat) : nat
-def $irem_(n, i_1, i_2) = $invsigned_(n, $(j_1 - j_2 * $int($(j_1 / j_2))))
-  -- if j_1 = $signed_(n, i_1)
-  -- if j_2 = $signed_(n, i_2)
-
-
-(;
--def $ivadd_pairwise_{N : N, `i*` : iN(N)*, `j_1*` : iN(N)*, `j_2*` : iN(N)*}(N, i*{i <- `i*`}) = $iadd_(N, j_1, j_2)*{j_1 <- `j_1*`, j_2 <- `j_2*`}
--  -- if ($concat_(syntax N, [j_1!`%`_iN.0 j_2!`%`_iN.0]*{j_1 <- `j_1*`, j_2 <- `j_2*`}) = i!`%`_iN.0*{i <- `i*`})
-
-+def $ivadd_pairwise_{N : N, `i*` : iN(N)*, `j_1*` : N*, `j_2*` : N*}(N, i*{i <- `i*`}) = $iadd_(N, `%`_iN(j_1), `%`_iN(j_2))*{j_1 <- `j_1*`, j_2 <- `j_2*`}
-+  -- if ($concat_(syntax N, [j_1 j_2]*{j_1 <- `j_1*`, j_2 <- `j_2*`}) = i!`%`_iN.0*{i <- `i*`})
-;)
+def $eq(1, 1, x) = x
+def $eq($pppp(3, 4), 7, x) = x
+def $eq($pppp(-3, -4), -7, x) = x
+def $eq($pppm(3, 4), -1, x) = x
+def $eq($pppm(-3, -4), 1, x) = x
+def $eq($ppmp(3, 4), 1, x) = x
+def $eq($ppmp(-3, -4), -1, x) = x
+def $eq($ppmm(3, 4), -7, x) = x
+def $eq($ppmm(-3, -4), 7, x) = x
+def $eq($pmpp(3, -4), 7, x) = x
+def $eq($pmpp(-3, 4), -7, x) = x
+def $eq($pmpm(3, -4), -1, x) = x
+def $eq($pmpm(-3, 4), 1, x) = x
+def $eq($pmmp(3, -4), 1, x) = x
+def $eq($pmmp(-3, 4), -1, x) = x
+def $eq($pmmm(3, -4), -7, x) = x
+def $eq($pmmm(-3, 4), 7, x) = x
+def $eq($mppp(3, -4), -7, x) = x
+def $eq($mppp(-3, 4), 7, x) = x
+def $eq($mppm(3, -4), 1, x) = x
+def $eq($mppm(-3, 4), -1, x) = x
+def $eq($mpmp(3, -4), -1, x) = x
+def $eq($mpmp(-3, 4), 1, x) = x
+def $eq($mpmm(3, -4), 7, x) = x
+def $eq($mpmm(-3, 4), -7, x) = x
+def $eq($mmpp(3, 4), -7, x) = x
+def $eq($mmpp(-3, -4), 7, x) = x
+def $eq($mmpm(3, 4), 1, x) = x
+def $eq($mmpm(-3, -4), -1, x) = x
+def $eq($mmmp(3, 4), -1, x) = x
+def $eq($mmmp(-3, -4), 1, x) = x
+def $eq($mmmm(3, 4), 7, x) = x
+def $eq($mmmm(-3, -4), -7, x) = x

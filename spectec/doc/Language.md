@@ -470,7 +470,7 @@ arith ::=
   "$" "(" exp ")"                      escape back to general expression syntax
   "$" numtyp "$" "(" arith ")"         numeric conversion
 
-unop  ::= notop | "+" | "-"
+unop  ::= notop | "+" | "-" | "+-" | "-+"
 binop ::= logop | "+" | "-" | "*" | "/" | "\" | "^"
 ```
 Except for the addition of unary and binary arithmetic operators,
@@ -486,6 +486,33 @@ Values can also be *converted explicitly* between different numeric types,
 using the form `$numtyp$(...)`.
 This is a partial operation,
 it is undefined when the operand value is not representable in the target type.
+
+*Alternate signs* `+-` and `-+`` behave like special meta-variables for the sign of a number.
+All occurrences of either in a single definition must be "bound" consistently.
+This is primarily useful to express dual cases of [functions](#functions) without duplication.
+
+**Example:**
+The function definition
+```
+def $f(int, int) : int
+def $f(+-n, +-m) = $(+-n*2 + +-m)   ;; arguments have same sign
+def $f(+-n, -+m) = $(-+n*3 + +-m)   ;; arguments have opposite signs
+```
+is shorthand for
+```
+def $f(+n, +m) = $(+n*2 + +m)
+def $f(-n, -m) = $(-n*2 + -m)
+def $f(+n, -m) = $(-n*3 + +m)
+def $f(-n, +m) = $(+n*3 + -m)
+```
+In this expansion, each clause is duplicated,
+with the first copy using the first choice of each occurrence of these operators
+(that is, all `+-` become `+` and all `-+` become `-`),
+and the second copy using the second
+(all `+-` become `-` and all `-+` become `+`).
+For this to be meaningful,
+at least one occurrence of an alternate sign must be in a [pattern](#pattern-matching) or condition,
+which determines the choice and distinguishes the two cases.
 
 
 #### Tuples
@@ -1013,6 +1040,28 @@ def $len(i^n) = n  ;; $len(arg) = |arg|
 
 def $unzip((nat, nat)*) : (nat*, nat*)
 def $unzip((x, y)*) = x*, y*
+```
+
+The use of signs, that is, unary operators `+` and `-`,
+has a specific interpretation in that they are only matched by numbers with the respective sign.
+For this purpose, 0 counts as positive.
+Matching of the operand pattern then proceeds with the absolute value of the original argument.
+
+**Example:**
+The following definition defines the absolute value:
+```
+def $abs(int) : nat
+def $abs(+n) = n
+def $abs(-n) = n
+```
+
+[Alternate signs](#arithmetic-expressions) `+-` and `-+` can be used to express clauses matching on signs more compactly.
+
+**Example:**
+This version of `$abs` is equivalent to the above:
+```
+def $abs(int) : nat
+def $abs(+-n) = n
 ```
 
 
