@@ -130,7 +130,7 @@ To generate a specification document in Latex or Sphinx (to be built into pdf or
 
 * Have `python3` version 3.7 or higher with `pip3` installed.
 
-* Install `sphinx` version 7.1.2 and `six` version 1.16.0 via `pip3` (default versions).
+* Install `sphinx` version 8.1.3 or higher and `six` version 1.16.0 via `pip3` (default versions).
   ```
   $ pip3 install sphinx six
   ```
