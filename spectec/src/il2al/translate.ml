@@ -196,7 +196,6 @@ and translate_exp exp =
     let op = match op with
     | #Bool.unop as op' -> op'
     | #Num.unop as op' -> op'
-    | `PlusMinusOp | `MinusPlusOp -> error_exp exp "AL unary expression"
     in
     unE (op, exp') ~at ~note
   | Il.BinE (#Il.binop as op, _, exp1, exp2) ->

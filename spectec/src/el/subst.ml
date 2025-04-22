@@ -11,6 +11,7 @@ type subst =
     typid : typ Map.t;
     gramid : sym Map.t;
     defid : id Map.t;
+    unop : unop Map.t;
   }
 
 type t = subst
@@ -20,24 +21,31 @@ let empty =
     typid = Map.empty;
     gramid = Map.empty;
     defid = Map.empty;
+    unop = Map.empty;
   }
 
 let mem_varid s id = Map.mem id.it s.varid
 let mem_typid s id = Map.mem id.it s.typid
 let mem_gramid s id = Map.mem id.it s.gramid
 let mem_defid s id = Map.mem id.it s.defid
+let mem_unop s op = Map.mem (Print.string_of_unop op) s.unop
 
 let add_varid s id e = if id.it = "_" then s else {s with varid = Map.add id.it e s.varid}
 let add_typid s id t = if id.it = "_" then s else {s with typid = Map.add id.it t s.typid}
 let add_gramid s id g = if id.it = "_" then s else {s with gramid = Map.add id.it g s.gramid}
 let add_defid s id id' = if id.it = "_" then s else {s with defid = Map.add id.it id' s.defid}
+let add_unop s op op' = {s with unop = Map.add (Print.string_of_unop op) op' s.unop}
 
 let union s1 s2 =
   { varid = Map.union (fun _ _e1 e2 -> Some e2) s1.varid s2.varid;
     typid = Map.union (fun _ _t1 t2 -> Some t2) s1.typid s2.typid;
     gramid = Map.union (fun _ _g1 g2 -> Some g2) s1.gramid s2.gramid;
     defid = Map.union (fun _ _id1 id2 -> Some id2) s1.defid s2.defid;
+    unop = Map.union (fun _ _op1 op2 -> Some op2) s1.unop s2.unop;
   }
+
+let pm_fst = add_unop (add_unop empty `PlusMinusOp `PlusOp) `MinusPlusOp `MinusOp
+let pm_snd = add_unop (add_unop empty `PlusMinusOp `MinusOp) `MinusPlusOp `PlusOp
 
 
 (* Helpers *)
@@ -117,6 +125,14 @@ and subst_typenum s (e, eo) =
 
 (* Expressions *)
 
+and subst_unop s = function
+  | #signop as op ->
+    (match Map.find_opt (Print.string_of_unop op) s.unop with
+    | Some op' -> op'
+    | None -> op
+    )
+  | op -> op
+
 and subst_exp s e =
   (match e.it with
   | VarE (id, args) ->
@@ -126,7 +142,7 @@ and subst_exp s e =
     )
   | AtomE _ | BoolE _ | NumE _ | TextE _ -> e.it
   | CvtE (e1, nt) -> CvtE (subst_exp s e1, nt)
-  | UnE (op, e1) -> UnE (op, subst_exp s e1)
+  | UnE (op, e1) -> UnE (subst_unop s op, subst_exp s e1)
   | BinE (e1, op, e2) -> BinE (subst_exp s e1, op, subst_exp s e2)
   | CmpE (e1, op, e2) -> CmpE (subst_exp s e1, op, subst_exp s e2)
   | EpsE -> EpsE
@@ -192,7 +208,6 @@ and subst_sym s g =
   | UnparenG g1 -> UnparenG (subst_sym s g1)
   ) $ g.at
 
-(*
 and subst_prod s prod =
   let (g, e, prems) = prod.it in
   (subst_sym s g, subst_exp s e, subst_nl_list subst_prem s prems) $ prod.at
@@ -200,7 +215,6 @@ and subst_prod s prod =
 and subst_gram s gram =
   let (dots1, prods, dots2) = gram.it in
   (dots1, subst_nl_list subst_prod s prods, dots2) $ gram.at
-*)
 
 
 (* Premises *)
@@ -233,3 +247,17 @@ and subst_param s p =
   | GramP (id, t) -> GramP (id, subst_typ s t)
   | DefP (id, ps, t) -> DefP (id, List.map (subst_param s) ps, subst_typ s t)
   ) $ p.at
+
+let subst_def s d =
+  (match d.it with
+  | FamD (x, ps, hs) -> FamD (x, List.map (subst_param s) ps, hs)
+  | TypD (x1, x2, as_, t, hs) -> TypD (x1, x2, List.map (subst_arg s) as_, subst_typ s t, hs)
+  | GramD (x1, x2, ps, t, gr, hs) -> GramD (x1, x2, List.map (subst_param s) ps, subst_typ s t, subst_gram s gr, hs)
+  | VarD (x, t, hs) -> VarD (x, subst_typ s t, hs)
+  | SepD -> SepD
+  | RelD (x, t, hs) -> RelD (x, subst_typ s t, hs)
+  | RuleD (x1, x2, e, prs) -> RuleD (x1, x2, subst_exp s e, Convert.map_nl_list (subst_prem s) prs)
+  | DecD (x, ps, t, hs) -> DecD (x, List.map (subst_param s) ps, subst_typ s t, hs)
+  | DefD (x, as_, e, prs) -> DefD (x, List.map (subst_arg s) as_, subst_exp s e, Convert.map_nl_list (subst_prem s) prs)
+  | HintD hd -> HintD hd
+  ) $ d.at

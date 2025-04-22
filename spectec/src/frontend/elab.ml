@@ -98,6 +98,7 @@ type env =
     mutable defs : def_typ env';
     mutable grams : gram_typ env';
     mutable atoms : atom env';    (* implicit single-atom type defs *)
+    mutable pm : bool;            (* +- or -+ encountered *)
   }
 
 let new_env () =
@@ -122,12 +123,14 @@ let new_env () =
     defs = Map.empty;
     grams = Map.empty;
     atoms = Map.empty;
+    pm = false;
   }
 
 let local_env env =
   {env with gvars = env.gvars; vars = env.vars; typs = env.typs; defs = env.defs}
 let promote_env env' env =
-  env.gvars <- env'.gvars; env.vars <- env'.vars; env.typs <- env'.typs; env.defs <- env'.defs
+  env.gvars <- env'.gvars; env.vars <- env'.vars; env.typs <- env'.typs; env.defs <- env'.defs;
+  env.pm <- env'.pm
 
 let bound env' id = Map.mem id.it env'
 
@@ -610,8 +613,9 @@ let infer_cmpop'' op ts =
 
 let infer_unop' = function
   | #Bool.unop as op -> [op, `BoolT, BoolT, BoolT]
-  | (`PlusOp | `MinusOp | `PlusMinusOp | `MinusPlusOp) as op ->
-    infer_unop'' op [`IntT; `RatT; `RealT]
+  | #Num.unop as op -> infer_unop'' op [`IntT; `RatT; `RealT]
+  | `PlusMinusOp -> infer_unop'' `PlusOp [`IntT; `RatT; `RealT]
+  | `MinusPlusOp -> infer_unop'' `MinusOp [`IntT; `RatT; `RealT]
 
 let infer_binop' = function
   | #Bool.binop as op -> [op, `BoolT, BoolT, BoolT, BoolT]
@@ -998,6 +1002,7 @@ and infer_exp' env e : (Il.exp' * typ') attempt =
     let* e1', t1 = infer_exp env e1 in
     let* op', ot, t1', t = infer_unop env op (typ_rep env t1) e.at in
     let* e1'' = cast_exp "operand" env e1' t1 t1' in
+    if op = `PlusMinusOp || op = `MinusPlusOp then env.pm <- true;
     Ok (Il.UnE (op', ot, e1''), t.it)
   | BinE (e1, op, e2) ->
     let* e1', t1 = infer_exp env e1 in
@@ -1296,7 +1301,15 @@ and elab_exp_plain' env e t : Il.exp' attempt =
       let* e' = elab_exp_variant env (expand_id env t) e tcs t e.at in
       Ok e'.it
     else
-      fail_typ env e.at "expression" t
+      let name =
+        match e.it with
+        | EpsE -> "empty sequence"
+        | AtomE _ -> "atom"
+        | InfixE _ -> "infix notation"
+        | BrackE _ -> "bracket notation"
+        | SeqE _ -> "expression sequence"
+        | _ -> assert false
+      in fail_typ env e.at name t
   | IterE (e1, iter2) ->
     let* t1, iter = as_iter_typ "iteration" env Check t e.at in
     let iter2' = elab_iterexp env iter2 in
@@ -1848,9 +1861,10 @@ and elab_sym_list env = function
     let gs', ts, env'' = elab_sym_list env' gs in
     g'::gs', t::ts, env''
 
-and elab_prod env prod t : Il.prod =
+and elab_prod env prod t : Il.prod list =
   let (g, e, prems) = prod.it in
   let env' = local_env env in
+  env'.pm <- false;
   let dims = Dim.check_prod prod in
   let dims' = Dim.Env.map (List.map (elab_iter env')) dims in
   let g', _t', env'' = elab_sym env' g in
@@ -1869,11 +1883,15 @@ and elab_prod env prod t : Il.prod =
   Acc.sym g;
   Acc.exp e;
   Acc.prems prems;
-  Il.ProdD (!acc_bs', g', e', prems') $ prod.at
+  let prod' = Il.ProdD (!acc_bs', g', e', prems') $ prod.at in
+  if not env'.pm then
+    [prod']
+  else
+    prod' :: elab_prod env Subst.(subst_prod pm_snd (Iter.clone_prod prod)) t
 
 and elab_gram env gram t : Il.prod list =
   let (_dots1, prods, _dots2) = gram.it in
-  map_filter_nl_list (fun prod -> elab_prod env prod t) prods
+  concat_map_filter_nl_list (fun prod -> elab_prod env prod t) prods
 
 
 (* Definitions *)
@@ -2218,12 +2236,14 @@ let infer_no_binds env dims d =
   assert (bs' = [])
 
 
-let elab_def env d : Il.def list =
+let rec elab_def env d : Il.def list =
   Debug.(log_in "el.elab_def" line);
   Debug.(log_in_at "el.elab_def" d.at (fun _ -> el_def d));
   match d.it with
   | FamD (id, ps, hints) ->
+    env.pm <- false;
     let ps' = elab_params (local_env env) ps in
+    if env.pm then error d.at "misplaced +- or -+ operator in syntax type declaration";
     let dims = Dim.check_def d in
     infer_no_binds env dims d;
     env.typs <- rebind "syntax type" env.typs id (ps, Family []);
@@ -2231,6 +2251,7 @@ let elab_def env d : Il.def list =
       @ elab_hintdef env (TypH (id, "" $ id.at, hints) $ d.at)
   | TypD (id1, id2, as_, t, hints) ->
     let env' = local_env env in
+    env'.pm <- false;
     let ps1, k1 = find "syntax type" env.typs id1 in
     let as', _s = elab_args `Lhs env' as_ ps1 d.at in
     let dt' = elab_typ_definition env' id1 t in
@@ -2271,11 +2292,14 @@ let elab_def env d : Il.def list =
       let ps = List.map Convert.param_of_arg as_ in
       let ps' = elab_params (local_env env) ps in
       [Il.TypD (id1, ps', [inst']) $ d.at]
-    ) @ elab_hintdef env (TypH (id1, id2, hints) $ d.at)
+    ) @ elab_hintdef env (TypH (id1, id2, hints) $ d.at) @
+    (if not env'.pm then [] else elab_def env Subst.(subst_def pm_snd (Iter.clone_def d)))
   | GramD (id1, id2, ps, t, gram, hints) ->
     let env' = local_env env in
+    env'.pm <- false;
     let ps' = elab_params env' ps in
     let t' = elab_typ env' t in
+    if env'.pm then error d.at "misplaced +- or -+ operator in grammar";
     let prods' = elab_gram env' gram t in
     let dims = Dim.check_def d in
     infer_no_binds env' dims d;
@@ -2302,7 +2326,9 @@ let elab_def env d : Il.def list =
     (if last then [Il.GramD (id1, ps', t', []) $ d.at] else [])
       @ elab_hintdef env (GramH (id1, id2, hints) $ d.at)
   | RelD (id, t, hints) ->
+    env.pm <- false;
     let mixop, ts', _ts = elab_typ_notation env id t in
+    if env.pm then error d.at "misplaced +- or -+ operator in relation";
     let dims = Dim.check_def d in
     infer_no_binds env dims d;
     env.rels <- bind "relation" env.rels id (t, []);
@@ -2310,6 +2336,7 @@ let elab_def env d : Il.def list =
       @ elab_hintdef env (RelH (id, hints) $ d.at)
   | RuleD (id1, id2, e, prems) ->
     let env' = local_env env in
+    env'.pm <- false;
     let dims = Dim.check_def d in
     let dims' = Dim.Env.map (List.map (elab_iter env')) dims in
     let t, rules' = find "relation" env.rels id1 in
@@ -2321,17 +2348,21 @@ let elab_def env d : Il.def list =
     let bs' = infer_binds env env' dims d in
     let rule' = Il.RuleD (id2, bs', mixop, tup_exp' es' e.at, prems') $ d.at in
     env.rels <- rebind "relation" env.rels id1 (t, rules' @ [rule']);
-    []
+    if not env'.pm then [] else elab_def env Subst.(subst_def pm_snd (Iter.clone_def d))
   | VarD (id, t, _hints) ->
+    env.pm <- false;
     let _t' = elab_typ env t in
+    if env.pm then error d.at "misplaced +- or -+ operator in variable declaration";
     let dims = Dim.check_def d in
     infer_no_binds env dims d;
     env.gvars <- rebind "variable" env.gvars id t;
     []
   | DecD (id, ps, t, hints) ->
     let env' = local_env env in
+    env'.pm <- false;
     let ps' = elab_params env' ps in
     let t' = elab_typ env' t in
+    if env'.pm then error d.at "misplaced +- or -+ operator in declaration";
     let dims = Dim.check_def d in
     infer_no_binds env dims d;
     env.defs <- bind "definition" env.defs id (ps, t, []);
@@ -2339,6 +2370,7 @@ let elab_def env d : Il.def list =
       @ elab_hintdef env (DecH (id, hints) $ d.at)
   | DefD (id, as_, e, prems) ->
     let env' = local_env env in
+    env'.pm <- false;
     let dims = Dim.check_def d in
     let dims' = Dim.Env.map (List.map (elab_iter env')) dims in
     let ps, t, clauses' = find "definition" env.defs id in
@@ -2351,7 +2383,7 @@ let elab_def env d : Il.def list =
     let bs' = infer_binds env env' dims d in
     let clause' = Il.DefD (bs', as', e', prems') $ d.at in
     env.defs <- rebind "definition" env.defs id (ps, t, clauses' @ [(d, clause')]);
-    []
+    if not env'.pm then [] else elab_def env Subst.(subst_def pm_snd (Iter.clone_def d))
   | SepD ->
     []
   | HintD hd ->

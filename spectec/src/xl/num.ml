@@ -95,7 +95,13 @@ let rec cvt typ num : num option =
   | `Real r, `RatT -> Some (`Rat (Q.of_float r))
   | `Real _, `RealT -> Some num
 
-let adjust num1 num2 : num * num =
+let rec narrow : num -> num = function
+  | `Int i when i >= Z.zero -> `Nat i
+  | `Rat q when Q.den q = Z.one -> narrow (`Int (Q.num q))
+  | `Real z when z = Z.(to_float (of_float z)) -> narrow (`Int (Z.of_float z))
+  | num -> num
+
+let widen num1 num2 : num * num =
 	match num1, num2 with
   | `Real _, _ -> num1, Option.get (cvt `RealT num2)
   | _, `Real _ -> Option.get (cvt `RealT num1), num2
@@ -106,15 +112,22 @@ let adjust num1 num2 : num * num =
   | `Nat _, `Nat _ -> num1, num2
 
 
+let abs num : num =
+  match num with
+  | `Nat n -> `Nat n
+  | `Int i -> `Int (Z.abs i)
+  | `Rat q -> `Rat (Q.abs q)
+  | `Real z -> `Real (Float.abs z)
+
 let un (op : unop) num : num option =
   Util.Debug_log.(log "xl.num.un"
     (fun _ -> string_of_unop op ^ " " ^ to_string num)
     (function None -> "?" | Some num -> to_string num)
   ) @@ fun _ ->
 	match op, num with
-  | (`PlusOp | `MinusOp), `Nat _ -> None
+  | `PlusOp, `Nat n -> Some (`Nat n)
   | `PlusOp, (`Int _ | `Rat _ | `Real _) -> Some num
-  | `MinusOp, `Int n -> Some (`Int (Z.neg n))
+  | `MinusOp, (`Nat n | `Int n) -> Some (`Int (Z.neg n))
   | `MinusOp, `Rat q -> Some (`Rat (Q.neg q))
   | `MinusOp, `Real r -> Some (`Real (-. r))
 
@@ -174,6 +187,12 @@ let one = function
 
 let is_zero num = num = zero (to_typ num)
 let is_one num = num = one (to_typ num)
+
+let is_neg = function
+  | `Nat _ -> false
+  | `Int i -> i < Z.zero
+  | `Rat q -> Q.(q < zero)
+  | `Real r -> r < 0.0
 
 (*
 let left_neutral op num =

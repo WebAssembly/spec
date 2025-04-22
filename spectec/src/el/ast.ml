@@ -18,6 +18,8 @@ type text = string
 type id = string phrase
 type atom = Atom.atom
 
+type signop = [`PlusMinusOp | `MinusPlusOp]
+
 
 (* Iteration *)
 
@@ -69,7 +71,7 @@ and numop =
   | `AtomOp  (* `n *)
 ]
 
-and unop = [Bool.unop | Num.unop | `PlusMinusOp | `MinusPlusOp]
+and unop = [Bool.unop | Num.unop | signop]
 and binop = [Bool.binop | Num.binop]
 and cmpop = [Bool.cmpop | Num.cmpop]
 

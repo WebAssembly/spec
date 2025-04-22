@@ -261,11 +261,23 @@ and clone_typ t =
   | SeqT ts -> SeqT (List.map clone_typ ts)
   | InfixT (t1, atom, t2) -> InfixT (clone_typ t1, clone_atom atom, clone_typ t2)
   | BrackT (atom1, t1, atom2) -> BrackT (clone_atom atom1, clone_typ t1, clone_atom atom2)
-  | StrT _ | CaseT _ | ConT _ | RangeT _ -> assert false
+  | StrT tfs -> StrT (Convert.map_nl_list clone_typfield tfs)
+  | CaseT (dots1, ts, tcs, dots2) -> CaseT (dots1, Convert.map_nl_list clone_typ ts, Convert.map_nl_list clone_typcase tcs, dots2)
+  | ConT tc -> ConT (clone_typcon tc)
+  | RangeT tes -> RangeT (Convert.map_nl_list clone_typenum tes)
   ) $ t.at
 
+and clone_typfield (atom, (t, prs), hints) =
+  (clone_atom atom, (clone_typ t, Convert.map_nl_list clone_prem prs), List.map clone_hint hints)
+
 and clone_typcase (atom, (t, prs), hints) =
-  (clone_atom atom, (clone_typ t, prs), List.map clone_hint hints)
+  (clone_atom atom, (clone_typ t, Convert.map_nl_list clone_prem prs), List.map clone_hint hints)
+
+and clone_typcon ((t, prs), hints) =
+  ((clone_typ t, Convert.map_nl_list clone_prem prs), List.map clone_hint hints)
+
+and clone_typenum (e1, eo2) =
+  (clone_exp e1, Option.map clone_exp eo2)
 
 and clone_exp e =
   (match e.it with
@@ -311,6 +323,39 @@ and clone_path p =
   | DotP (p1, atom) -> DotP (clone_path p1, clone_atom atom)
   ) $ p.at
 
+and clone_sym g =
+  (match g.it with
+  | VarG (id, args) -> VarG (id, List.map clone_arg args)
+  | (NumG _ | TextG _ | EpsG) as g' -> g'
+  | SeqG gs -> SeqG (Convert.map_nl_list clone_sym gs)
+  | AltG gs -> AltG (Convert.map_nl_list clone_sym gs)
+  | RangeG (g1, g2) -> RangeG (clone_sym g1, clone_sym g2)
+  | ParenG g1 -> ParenG (clone_sym g1)
+  | TupG gs -> TupG (List.map clone_sym gs)
+  | IterG (g1, iter) -> IterG (clone_sym g1, clone_iter iter)
+  | ArithG e1 -> ArithG (clone_exp e1)
+  | AttrG (e1, g2) -> AttrG (clone_exp e1, clone_sym g2)
+  | FuseG (g1, g2) -> FuseG (clone_sym g1, clone_sym g2)
+  | UnparenG g1 -> UnparenG (clone_sym g1)
+  ) $ g.at
+
+and clone_prod prod =
+  let g, e, prs = prod.it in
+  {prod with it = clone_sym g, clone_exp e, Convert.map_nl_list clone_prem prs}
+
+and clone_gram gram =
+  let dots1, prods, dots2 = gram.it in
+  {gram with it = dots1, Convert.map_nl_list clone_prod prods, dots2}
+
+and clone_prem pr =
+  (match pr.it with
+  | VarPr (x, t) -> VarPr (x, clone_typ t)
+  | RulePr (x, e) -> RulePr (x, clone_exp e)
+  | IfPr e -> IfPr (clone_exp e)
+  | ElsePr -> ElsePr
+  | IterPr (pr1, it) -> IterPr (clone_prem pr1, clone_iter it)
+  ) $ pr.at
+
 and clone_arg a =
   (match !(a.it) with
   | ExpA e -> ExpA (clone_exp e)
@@ -319,4 +364,36 @@ and clone_arg a =
   | DefA _ as a' -> a'
   ) |> ref $ a.at
 
+and clone_param p =
+  (match p.it with
+  | ExpP (x, t) -> ExpP (x, clone_typ t)
+  | TypP x -> TypP x
+  | GramP (x, t) -> GramP (x, clone_typ t)
+  | DefP (x, ps, t) -> DefP (x, List.map clone_param ps, clone_typ t)
+  ) $ p.at
+
 and clone_hint hint = {hint with hintexp = clone_exp hint.hintexp}
+
+let clone_hintdef d =
+  (match d.it with
+  | AtomH (x, at, hs) -> AtomH (x, clone_atom at, List.map clone_hint hs)
+  | TypH (x1, x2, hs) -> TypH (x1, x2, List.map clone_hint hs)
+  | GramH (x1, x2, hs) -> GramH (x1, x2, List.map clone_hint hs)
+  | RelH (x, hs) -> RelH (x, List.map clone_hint hs)
+  | VarH (x, hs) -> VarH (x, List.map clone_hint hs)
+  | DecH (x, hs) -> DecH (x, List.map clone_hint hs)
+  ) $ d.at
+
+let clone_def d =
+  (match d.it with
+  | FamD (x, ps, hs) -> FamD (x, List.map clone_param ps, List.map clone_hint hs)
+  | TypD (x1, x2, as_, t, hs) -> TypD (x1, x2, List.map clone_arg as_, clone_typ t, List.map clone_hint hs)
+  | GramD (x1, x2, ps, t, gr, hs) -> GramD (x1, x2, List.map clone_param ps, clone_typ t, clone_gram gr, List.map clone_hint hs)
+  | VarD (x, t, hs) -> VarD (x, clone_typ t, List.map clone_hint hs)
+  | SepD -> SepD
+  | RelD (x, t, hs) -> RelD (x, clone_typ t, List.map clone_hint hs)
+  | RuleD (x1, x2, e, prs) -> RuleD (x1, x2, clone_exp e, Convert.map_nl_list clone_prem prs)
+  | DecD (x, ps, t, hs) -> DecD (x, List.map clone_param ps, clone_typ t, List.map clone_hint hs)
+  | DefD (x, as_, e, prs) -> DefD (x, List.map clone_arg as_, clone_exp e, Convert.map_nl_list clone_prem prs)
+  | HintD hd -> HintD (clone_hintdef hd)
+  ) $ d.at

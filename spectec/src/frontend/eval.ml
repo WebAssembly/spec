@@ -151,13 +151,14 @@ and reduce_exp env e : exp =
     (fun r -> fmt "%s" (el_exp r))
   ) @@ fun _ ->
   match e.it with
-  | VarE _ | AtomE _ | BoolE _ | NumE _ | TextE _ | SizeE _ -> e
+  | VarE _ | AtomE _ | BoolE _ | TextE _ | SizeE _ -> e
+  | NumE (numop, n) -> NumE (numop, Num.narrow n) $ e.at
   | CvtE (e1, nt) ->
     let e1' = reduce_exp env e1 in
     (match e1'.it with
-    | NumE (op, n) ->
+    | NumE (numop, n) ->
       (match Num.cvt nt n with
-      | Some n' -> NumE (op, n') $ e.at
+      | Some n' -> NumE (numop, n') $ e.at
       | None -> e1'
       )
     | _ -> e1'
@@ -173,6 +174,7 @@ and reduce_exp env e : exp =
       ) $ e.at
     | `NotOp, UnE (`NotOp, e11') -> e11'
     | `MinusOp, UnE (`MinusOp, e11') -> e11'
+    | `PlusOp, _ -> e1'
     | _ -> UnE (op, e1') $ e.at
     )
   | BinE (e1, op, e2) ->
@@ -185,7 +187,14 @@ and reduce_exp env e : exp =
       | Some e' -> e'
       )
     | #Num.binop as op' ->
-      (match Num.bin_partial op' e1'.it e2'.it of_num_exp to_num_exp with
+      let e1'', e2'' =
+        match e1'.it, e2'.it with
+        | NumE (numop1, n1), NumE (numop2, n2) ->
+          let n1', n2' = Num.widen n1 n2 in
+          NumE (numop1, n1'), NumE (numop2, n2')
+        | _, _ -> e1'.it, e2'.it
+      in
+      (match Num.bin_partial op' e1'' e2'' of_num_exp to_num_exp with
       | None -> BinE (e1', op, e2')
       | Some e' -> e'
       )
@@ -503,7 +512,7 @@ and match_exp env s e1 e2 : subst option =
         match e1.it, t2'.it with
         | BoolE _, BoolT
         | TextE _, TextT -> true
-        | NumE (_, n), NumT t -> t = Num.to_typ n
+        | NumE (_, n), NumT t -> t >= Num.to_typ (Num.narrow n)
         | UnE ((`MinusOp | `PlusOp), _), NumT t1 -> t1 >= `IntT
         | NumE (_, `Nat n), RangeT tes ->
           List.exists (function
@@ -533,6 +542,17 @@ and match_exp env s e1 e2 : subst option =
   | BoolE b1, BoolE b2 when b1 = b2 -> Some s
   | NumE (_, n1), NumE (_, n2) when n1 = n2 -> Some s
   | TextE s1, TextE s2 when s1 = s2 -> Some s
+  | NumE (_, n1), UnE (`PlusOp, e21) when not (Num.is_neg n1) ->
+    match_exp env s e1 e21
+  | NumE (numop, n1), UnE (`MinusOp, e21) when Num.is_neg n1 ->
+    match_exp env s (reduce_exp env {e1 with it = NumE (numop, Num.abs n1)}) e21
+  | NumE (_, n1), UnE (#signop as op, _) ->
+    let pm, mp =
+      if Num.is_neg n1 = (op = `MinusPlusOp)
+      then `PlusOp, `MinusOp else `MinusOp, `PlusOp
+    in
+    match_exp env
+      (Subst.add_unop (Subst.add_unop s `PlusMinusOp pm) `MinusPlusOp mp) e1 e2
 (*
   | UnE (op1, e11), UnE (op2, e21) when op1 = op2 -> match_exp env s e11 e21
   | BinE (e11, op1, e12), BinE (e21, op2, e22) when op1 = op2 ->

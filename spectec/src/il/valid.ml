@@ -110,7 +110,6 @@ let infer_unop at op ot =
     if not (Num.typ_unop op nt nt) then
       error at ("illegal type " ^ string_of_numtyp nt ^ " for unary operator");
     NumT nt, NumT nt
-  | (`PlusMinusOp | `MinusPlusOp), (#Num.typ as nt) -> NumT nt, NumT nt
   | _, _ ->
     error at ("malformed unary operator annotation")
 

@@ -584,6 +584,10 @@ and match_exp' env s e1 e2 : subst option =
   | BoolE b1, BoolE b2 when b1 = b2 -> Some s
   | NumE n1, NumE n2 when n1 = n2 -> Some s
   | TextE s1, TextE s2 when s1 = s2 -> Some s
+  | NumE n1, UnE (`PlusOp, _, e21) when not (Num.is_neg n1) ->
+    match_exp env s e1 e21
+  | NumE n1, UnE (`MinusOp, _, e21) when Num.is_neg n1 ->
+    match_exp env s (reduce_exp env {e1 with it = NumE (Num.abs n1)}) e21
 (*
   | UnE (op1, _, e11), UnE (op2, _, e21) when op1 = op2 -> match_exp' env s e11 e21
   | BinE (e11, op1, e12), BinE (e21, op2, e22) when op1 = op2 ->
