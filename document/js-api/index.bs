@@ -1796,8 +1796,8 @@ In practice, an implementation may run out of resources for valid modules below 
 <li>The maximum number of types defined in a recursion group is 1,000,000.</li>
 <li>The maximum depth of a defined subtype hierarchy is 63 (where a type defined with no supertype has depth 0).
 <li>The maximum number of functions defined in a module is 1,000,000.</li>
-<li>The maximum number of imports declared in a module is 100,000.</li>
-<li>The maximum number of exports declared in a module is 100,000.</li>
+<li>The maximum number of imports declared in a module is 1,000,000.</li>
+<li>The maximum number of exports declared in a module is 1,000,000.</li>
 <li>The maximum number of globals defined in a module is 1,000,000.</li>
 <li>The maximum number of tags defined in a module is 1,000,000.</li>
 <li>The maximum number of data segments defined in a module is 100,000.</li>

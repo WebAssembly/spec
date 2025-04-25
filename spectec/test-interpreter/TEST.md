@@ -775,7 +775,7 @@ spectec 0.5 generator
 - 246/246 (100.00%)
 
 ===== ../test-interpreter/spec-test-3/align.wast =====
-- 140/140 (100.00%)
+- 143/143 (100.00%)
 
 ===== ../test-interpreter/spec-test-3/align64.wast =====
 - 135/135 (100.00%)
@@ -1504,7 +1504,7 @@ spectec 0.5 generator
 ===== ../test-interpreter/spec-test-3/utf8-invalid-encoding.wast =====
 - 0/0 (100.00%)
 
-Total [53003/53003] (100.00%)
+Total [53006/53006] (100.00%)
 
 == Complete.
 ```

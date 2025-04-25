@@ -385,10 +385,10 @@ Lexically, an |Toffset| or |Talign| phrase is considered a single :ref:`keyword 
    \production{memory argument} & \Tmemarg_N &::=&
      o{:}\Toffset~~a{:}\Talign_N &\Rightarrow& \{ \ALIGN~n,~\OFFSET~o \} & (\iff a = 2^n) \\
    \production{memory offset} & \Toffset &::=&
-     \text{offset{=}}o{:}\Tu32 &\Rightarrow& o \\ &&|&
+     \text{offset{=}}o{:}\Tu64 &\Rightarrow& o \\ &&|&
      \epsilon &\Rightarrow& 0 \\
    \production{memory alignment} & \Talign_N &::=&
-     \text{align{=}}a{:}\Tu32 &\Rightarrow& a \\ &&|&
+     \text{align{=}}a{:}\Tu64 &\Rightarrow& a \\ &&|&
      \epsilon &\Rightarrow& N \\
    \production{instruction} & \Tplaininstr_I &::=& \dots \phantom{averylonginstructionnameforvectext} && \phantom{vechasreallylonginstructionnames} \\ &&|&
      \text{i32.load}~~x{:}\Tmemidx~~m{:}\Tmemarg_4 &\Rightarrow& \I32.\LOAD~x~m \\ &&|&

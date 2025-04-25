@@ -303,7 +303,7 @@ Address Types
 Abbreviations
 .............
 
-The address type can be omited, in which case it defaults :math:`\I32`:
+The address type can be omitted, in which case it defaults :math:`\I32`:
 
 .. math::
    \begin{array}{llclll}
@@ -322,8 +322,8 @@ Limits
 .. math::
     \begin{array}{llclll}
     \production{limits} & \Tlimits &::=&
-      n{:}\Tu32 &\Rightarrow& \{ \LMIN~n, \LMAX~\epsilon \} \\ &&|&
-      n{:}\Tu32~~m{:}\Tu32 &\Rightarrow& \{ \LMIN~n, \LMAX~m \} \\
+      n{:}\Tu64 &\Rightarrow& \{ \LMIN~n, \LMAX~\epsilon \} \\ &&|&
+      n{:}\Tu64~~m{:}\Tu64 &\Rightarrow& \{ \LMIN~n, \LMAX~m \} \\
     \end{array}
 
 
