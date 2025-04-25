@@ -4,9 +4,9 @@
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <title>WebAssembly JavaScript Interface</title>
   <meta content="ED" name="w3c-status">
-  <meta content="Bikeshed version c67c745b1, updated Fri Jan 17 14:27:28 2025 -0800" name="generator">
+  <meta content="Bikeshed version b25686b9f, updated Fri Mar 14 14:15:20 2025 -0700" name="generator">
   <link href="https://www.w3.org/TR/wasm-js-api-2/" rel="canonical">
-  <meta content="05949f507908aac3ad2a21661b5c39fa013da950" name="revision">
+  <meta content="7f41deacb7bb4adb9d7dfe5b37c4d4c58287a480" name="revision">
   <meta content="dark light" name="color-scheme">
 <style>
 emu-const {
@@ -743,7 +743,7 @@ var[data-var-color="6"] { --var-vg: #FFBCF2; }
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">WebAssembly JavaScript Interface</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types/#ED">Editor’s Draft</a>, <time class="dt-updated" datetime="2025-01-28">28 January 2025</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types/#ED">Editor’s Draft</a>, <time class="dt-updated" datetime="2025-04-25">25 April 2025</time></p>
    <details open>
     <summary>More details about this document</summary>
     <div data-fill-with="spec-metadata">
@@ -1013,7 +1013,7 @@ This mapping is used to ensure that, for a given <a data-link-type="dfn" href="h
      To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="read-the-imports">read the imports</dfn> from a WebAssembly module <var>module</var> from imports object <var>importObject</var>, perform the following steps: 
     <ol>
      <li data-md>
-      <p>If <var>module</var>.<a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/modules.html#syntax-module" id="ref-for-syntax-module①">imports</a> <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-is-empty" id="ref-for-list-is-empty">is not empty</a>, and <var>importObject</var> is undefined, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror">TypeError</a></code> exception.</p>
+      <p>If <var>module</var>.<a data-link-type="dfn" data-refhint-key="32e497d6" href="https://webassembly.github.io/spec/core/syntax/modules.html#syntax-module" id="ref-for-syntax-module①">imports</a> <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-is-empty" id="ref-for-list-is-empty">is not empty</a>, and <var>importObject</var> is undefined, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror">TypeError</a></code> exception.</p>
      <li data-md>
       <p>Let <var>imports</var> be « ».</p>
      <li data-md>
@@ -1050,7 +1050,7 @@ This mapping is used to ensure that, for a given <a data-link-type="dfn" href="h
           <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-append" id="ref-for-list-append">Append</a> <var>externfunc</var> to <var>imports</var>.</p>
         </ol>
        <li data-md>
-        <p>If <var>externtype</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#external-types" id="ref-for-external-types①">global</a> <var>mut</var> <var>valtype</var>,</p>
+        <p>If <var>externtype</var> is of the form <a data-link-type="dfn" data-refhint-key="4581e593" href="https://webassembly.github.io/spec/core/syntax/types.html#external-types" id="ref-for-external-types①">global</a> <var>mut</var> <var>valtype</var>,</p>
         <ol>
          <li data-md>
           <p>If <var>v</var> <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-ecmascript-language-types-number-type" id="ref-for-sec-ecmascript-language-types-number-type">is a Number</a> or <var>v</var> <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-ecmascript-language-types-bigint-type" id="ref-for-sec-ecmascript-language-types-bigint-type">is a BigInt</a>,</p>
@@ -1100,7 +1100,7 @@ This mapping is used to ensure that, for a given <a data-link-type="dfn" href="h
           <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-append" id="ref-for-list-append①">Append</a> <var>externglobal</var> to <var>imports</var>.</p>
         </ol>
        <li data-md>
-        <p>If <var>externtype</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#external-types" id="ref-for-external-types②">mem</a> <var>memtype</var>,</p>
+        <p>If <var>externtype</var> is of the form <a data-link-type="dfn" data-refhint-key="80a23595" href="https://webassembly.github.io/spec/core/syntax/types.html#external-types" id="ref-for-external-types②">mem</a> <var>memtype</var>,</p>
         <ol>
          <li data-md>
           <p>If <var>v</var> does not <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#implements" id="ref-for-implements①">implement</a> <code class="idl"><a data-link-type="idl" href="#memory" id="ref-for-memory②">Memory</a></code>, throw a <code class="idl"><a data-link-type="idl" href="#exceptiondef-linkerror" id="ref-for-exceptiondef-linkerror⑤">LinkError</a></code> exception.</p>
@@ -1110,7 +1110,7 @@ This mapping is used to ensure that, for a given <a data-link-type="dfn" href="h
           <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-append" id="ref-for-list-append②">Append</a> <var>externmem</var> to <var>imports</var>.</p>
         </ol>
        <li data-md>
-        <p>If <var>externtype</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#external-types" id="ref-for-external-types③">table</a> <var>tabletype</var>,</p>
+        <p>If <var>externtype</var> is of the form <a data-link-type="dfn" data-refhint-key="d7f31bd6" href="https://webassembly.github.io/spec/core/syntax/types.html#external-types" id="ref-for-external-types③">table</a> <var>tabletype</var>,</p>
         <ol>
          <li data-md>
           <p>If <var>v</var> does not <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#implements" id="ref-for-implements②">implement</a> <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table①">Table</a></code>, throw a <code class="idl"><a data-link-type="idl" href="#exceptiondef-linkerror" id="ref-for-exceptiondef-linkerror⑥">LinkError</a></code> exception.</p>
@@ -1133,7 +1133,7 @@ The verification of WebAssembly type requirements is deferred to the
      To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="create-an-exports-object">create an exports object</dfn> from a WebAssembly module <var>module</var> and instance <var>instance</var>, perform the following steps: 
     <ol>
      <li data-md>
-      <p>Let <var>exportsObject</var> be <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands②">!</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/ordinary-and-exotic-objects-behaviours.html#sec-ordinaryobjectcreate" id="ref-for-sec-ordinaryobjectcreate">OrdinaryObjectCreate</a>(null).</p>
+      <p>Let <var>exportsObject</var> be <a data-link-type="dfn" data-refhint-key="f4fa6c3b" href="https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands②">!</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/ordinary-and-exotic-objects-behaviours.html#sec-ordinaryobjectcreate" id="ref-for-sec-ordinaryobjectcreate">OrdinaryObjectCreate</a>(null).</p>
      <li data-md>
       <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate①">For each</a> (<var>name</var>, <var>externtype</var>) of <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-module-exports" id="ref-for-embed-module-exports">module_exports</a>(<var>module</var>),</p>
       <ol>
@@ -1154,7 +1154,7 @@ The verification of WebAssembly type requirements is deferred to the
           <p>Let <var>value</var> be <var>func</var>.</p>
         </ol>
        <li data-md>
-        <p>If <var>externtype</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#external-types" id="ref-for-external-types⑤">global</a> <var>mut</var> <var>globaltype</var>,</p>
+        <p>If <var>externtype</var> is of the form <a data-link-type="dfn" data-refhint-key="4581e593" href="https://webassembly.github.io/spec/core/syntax/types.html#external-types" id="ref-for-external-types⑤">global</a> <var>mut</var> <var>globaltype</var>,</p>
         <ol>
          <li data-md>
           <p class="assertion">Assert: <var>externval</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-externval" id="ref-for-syntax-externval⑨">global</a> <var>globaladdr</var>.</p>
@@ -1166,7 +1166,7 @@ The verification of WebAssembly type requirements is deferred to the
           <p>Let <var>value</var> be <var>global</var>.</p>
         </ol>
        <li data-md>
-        <p>If <var>externtype</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#external-types" id="ref-for-external-types⑥">mem</a> <var>memtype</var>,</p>
+        <p>If <var>externtype</var> is of the form <a data-link-type="dfn" data-refhint-key="80a23595" href="https://webassembly.github.io/spec/core/syntax/types.html#external-types" id="ref-for-external-types⑥">mem</a> <var>memtype</var>,</p>
         <ol>
          <li data-md>
           <p class="assertion">Assert: <var>externval</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-externval" id="ref-for-syntax-externval①①">mem</a> <var>memaddr</var>.</p>
@@ -1178,7 +1178,7 @@ The verification of WebAssembly type requirements is deferred to the
           <p>Let <var>value</var> be <var>memory</var>.</p>
         </ol>
        <li data-md>
-        <p>If <var>externtype</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#external-types" id="ref-for-external-types⑦">table</a> <var>tabletype</var>,</p>
+        <p>If <var>externtype</var> is of the form <a data-link-type="dfn" data-refhint-key="d7f31bd6" href="https://webassembly.github.io/spec/core/syntax/types.html#external-types" id="ref-for-external-types⑦">table</a> <var>tabletype</var>,</p>
         <ol>
          <li data-md>
           <p class="assertion">Assert: <var>externval</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-externval" id="ref-for-syntax-externval①③">table</a> <var>tableaddr</var>.</p>
@@ -1190,13 +1190,13 @@ The verification of WebAssembly type requirements is deferred to the
           <p>Let <var>value</var> be <var>table</var>.</p>
         </ol>
        <li data-md>
-        <p>Let <var>status</var> be <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands③">!</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-createdataproperty" id="ref-for-sec-createdataproperty">CreateDataProperty</a>(<var>exportsObject</var>, <var>name</var>, <var>value</var>).</p>
+        <p>Let <var>status</var> be <a data-link-type="dfn" data-refhint-key="f4fa6c3b" href="https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands③">!</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-createdataproperty" id="ref-for-sec-createdataproperty">CreateDataProperty</a>(<var>exportsObject</var>, <var>name</var>, <var>value</var>).</p>
        <li data-md>
         <p class="assertion">Assert: <var>status</var> is true.</p>
       </ol>
       <p class="note" role="note"><span class="marker">Note:</span> the validity and uniqueness checks performed during <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/valid/modules.html#valid-module" id="ref-for-valid-module">WebAssembly module validation</a> ensure that each property name is valid and no properties are defined twice.</p>
      <li data-md>
-      <p>Perform <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands④">!</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-setintegritylevel" id="ref-for-sec-setintegritylevel">SetIntegrityLevel</a>(<var>exportsObject</var>, <code>"frozen"</code>).</p>
+      <p>Perform <a data-link-type="dfn" data-refhint-key="f4fa6c3b" href="https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands④">!</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-setintegritylevel" id="ref-for-sec-setintegritylevel">SetIntegrityLevel</a>(<var>exportsObject</var>, <code>"frozen"</code>).</p>
      <li data-md>
       <p>Return <var>exportsObject</var>.</p>
     </ol>
@@ -1358,11 +1358,11 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://web
      <li data-md>
       <p>"function" if <var>type</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#external-types" id="ref-for-external-types⑧">func</a> <var>functype</var></p>
      <li data-md>
-      <p>"table" if <var>type</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#external-types" id="ref-for-external-types⑨">table</a> <var>tabletype</var></p>
+      <p>"table" if <var>type</var> is of the form <a data-link-type="dfn" data-refhint-key="d7f31bd6" href="https://webassembly.github.io/spec/core/syntax/types.html#external-types" id="ref-for-external-types⑨">table</a> <var>tabletype</var></p>
      <li data-md>
-      <p>"memory" if <var>type</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#external-types" id="ref-for-external-types①⓪">mem</a> <var>memtype</var></p>
+      <p>"memory" if <var>type</var> is of the form <a data-link-type="dfn" data-refhint-key="80a23595" href="https://webassembly.github.io/spec/core/syntax/types.html#external-types" id="ref-for-external-types①⓪">mem</a> <var>memtype</var></p>
      <li data-md>
-      <p>"global" if <var>type</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#external-types" id="ref-for-external-types①①">global</a> <var>globaltype</var></p>
+      <p>"global" if <var>type</var> is of the form <a data-link-type="dfn" data-refhint-key="4581e593" href="https://webassembly.github.io/spec/core/syntax/types.html#external-types" id="ref-for-external-types①①">global</a> <var>globaltype</var></p>
     </ul>
    </div>
    <div class="algorithm" data-algorithm="exports(moduleObject)" data-algorithm-for="Module">
@@ -1420,7 +1420,7 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://web
        <li data-md>
         <p>Let <var>name</var> be the <code>name</code> of <var>customSection</var>, <a data-link-type="dfn" href="https://encoding.spec.whatwg.org/#utf-8-decode-without-bom-or-fail" id="ref-for-utf-8-decode-without-bom-or-fail">decoded as UTF-8</a>.</p>
        <li data-md>
-        <p class="assertion">Assert: <var>name</var> is not failure (<var>moduleObject</var>.[[Module]] is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/valid/modules.html#valid-module" id="ref-for-valid-module①">valid</a>).</p>
+        <p class="assertion">Assert: <var>name</var> is not failure (<var>moduleObject</var>.[[Module]] is <a data-link-type="dfn" data-refhint-key="db25377b" href="https://webassembly.github.io/spec/core/valid/modules.html#valid-module" id="ref-for-valid-module①">valid</a>).</p>
        <li data-md>
         <p>If <var>name</var> equals <var>sectionName</var> as string values,</p>
         <ol>
@@ -1608,7 +1608,7 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://web
       <p>If <a data-link-type="dfn" href="https://tc39.es/proposal-resizablearraybuffer/#sec-isfixedarraybuffer" id="ref-for-sec-isfixedarraybuffer">IsFixedLengthArrayBuffer</a>(<var>buffer</var>) is true,</p>
       <ol>
        <li data-md>
-        <p>Perform <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands⑤">!</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/structured-data.html#sec-detacharraybuffer" id="ref-for-sec-detacharraybuffer">DetachArrayBuffer</a>(<var>buffer</var>, "WebAssembly.Memory").</p>
+        <p>Perform <a data-link-type="dfn" data-refhint-key="f4fa6c3b" href="https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands⑤">!</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/structured-data.html#sec-detacharraybuffer" id="ref-for-sec-detacharraybuffer">DetachArrayBuffer</a>(<var>buffer</var>, "WebAssembly.Memory").</p>
        <li data-md>
         <p>Let <var>buffer</var> be the result of <a data-link-type="dfn" href="#create-a-fixed-length-memory-buffer" id="ref-for-create-a-fixed-length-memory-buffer①">creating a fixed length memory buffer</a> from <var>memaddr</var>.</p>
        <li data-md>
@@ -1683,7 +1683,7 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://web
      <li data-md>
       <p>Let <var>fixedBuffer</var> be the result of <a data-link-type="dfn" href="#create-a-fixed-length-memory-buffer" id="ref-for-create-a-fixed-length-memory-buffer②">creating a fixed length memory buffer</a> from <var>memaddr</var>.</p>
      <li data-md>
-      <p>Perform <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands⑥">!</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/structured-data.html#sec-detacharraybuffer" id="ref-for-sec-detacharraybuffer①">DetachArrayBuffer</a>(<var>buffer</var>, "WebAssembly.Memory").</p>
+      <p>Perform <a data-link-type="dfn" data-refhint-key="f4fa6c3b" href="https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands⑥">!</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/structured-data.html#sec-detacharraybuffer" id="ref-for-sec-detacharraybuffer①">DetachArrayBuffer</a>(<var>buffer</var>, "WebAssembly.Memory").</p>
      <li data-md>
       <p>Set <strong>this</strong>.[[BufferObject]] to <var>fixedBuffer</var>.</p>
      <li data-md>
@@ -1718,7 +1718,7 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://web
      <li data-md>
       <p>Let <var>resizableBuffer</var> be the result of <a data-link-type="dfn" href="#create-a-resizable-memory-buffer" id="ref-for-create-a-resizable-memory-buffer">creating a resizable memory buffer</a> from <var>memaddr</var> and <var>maxsize</var>.</p>
      <li data-md>
-      <p>Perform <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands⑦">!</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/structured-data.html#sec-detacharraybuffer" id="ref-for-sec-detacharraybuffer②">DetachArrayBuffer</a>(<var>buffer</var>, "WebAssembly.Memory").</p>
+      <p>Perform <a data-link-type="dfn" data-refhint-key="f4fa6c3b" href="https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands⑦">!</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/structured-data.html#sec-detacharraybuffer" id="ref-for-sec-detacharraybuffer②">DetachArrayBuffer</a>(<var>buffer</var>, "WebAssembly.Memory").</p>
      <li data-md>
       <p>Set <strong>this</strong>.[[BufferObject]] to <var>resizableBuffer</var>.</p>
      <li data-md>
@@ -2020,19 +2020,19 @@ Each <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table�
      The algorithm <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="tovaluetype">ToValueType</dfn>(<var>s</var>) performs the following steps: 
     <ol>
      <li data-md>
-      <p>If <var>s</var> equals "i32", return <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-numtype" id="ref-for-syntax-numtype②">i32</a>.</p>
+      <p>If <var>s</var> equals "i32", return <a data-link-type="dfn" data-refhint-key="1eccdce5" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-numtype" id="ref-for-syntax-numtype②">i32</a>.</p>
      <li data-md>
       <p>If <var>s</var> equals "i64", return <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-numtype" id="ref-for-syntax-numtype③">i64</a>.</p>
      <li data-md>
-      <p>If <var>s</var> equals "f32", return <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-numtype" id="ref-for-syntax-numtype④">f32</a>.</p>
+      <p>If <var>s</var> equals "f32", return <a data-link-type="dfn" data-refhint-key="a4646532" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-numtype" id="ref-for-syntax-numtype④">f32</a>.</p>
      <li data-md>
-      <p>If <var>s</var> equals "f64", return <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-numtype" id="ref-for-syntax-numtype⑤">f64</a>.</p>
+      <p>If <var>s</var> equals "f64", return <a data-link-type="dfn" data-refhint-key="487b76fe" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-numtype" id="ref-for-syntax-numtype⑤">f64</a>.</p>
      <li data-md>
       <p>If <var>s</var> equals "v128", return <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#vector-types" id="ref-for-vector-types①">v128</a>.</p>
      <li data-md>
-      <p>If <var>s</var> equals "anyfunc", return <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-reftype" id="ref-for-syntax-reftype①">funcref</a>.</p>
+      <p>If <var>s</var> equals "anyfunc", return <a data-link-type="dfn" data-refhint-key="706a103c" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-reftype" id="ref-for-syntax-reftype①">funcref</a>.</p>
      <li data-md>
-      <p>If <var>s</var> equals "externref", return <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-reftype" id="ref-for-syntax-reftype②">externref</a>.</p>
+      <p>If <var>s</var> equals "externref", return <a data-link-type="dfn" data-refhint-key="92193adb" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-reftype" id="ref-for-syntax-reftype②">externref</a>.</p>
      <li data-md>
       <p class="assertion">Assert: This step is not reached.</p>
     </ol>
@@ -2041,17 +2041,17 @@ Each <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table�
      The algorithm <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="defaultvalue">DefaultValue</dfn>(<var>valuetype</var>) performs the following steps: 
     <ol>
      <li data-md>
-      <p>If <var>valuetype</var> equals <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-numtype" id="ref-for-syntax-numtype⑥">i32</a>, return <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values①">i32.const</a> 0.</p>
+      <p>If <var>valuetype</var> equals <a data-link-type="dfn" data-refhint-key="1eccdce5" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-numtype" id="ref-for-syntax-numtype⑥">i32</a>, return <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values①">i32.const</a> 0.</p>
      <li data-md>
-      <p>If <var>valuetype</var> equals <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-numtype" id="ref-for-syntax-numtype⑦">i64</a>, return <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values②">i64.const</a> 0.</p>
+      <p>If <var>valuetype</var> equals <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-numtype" id="ref-for-syntax-numtype⑦">i64</a>, return <a data-link-type="dfn" data-refhint-key="74913b16" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values②">i64.const</a> 0.</p>
      <li data-md>
-      <p>If <var>valuetype</var> equals <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-numtype" id="ref-for-syntax-numtype⑧">f32</a>, return <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values③">f32.const</a> 0.</p>
+      <p>If <var>valuetype</var> equals <a data-link-type="dfn" data-refhint-key="a4646532" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-numtype" id="ref-for-syntax-numtype⑧">f32</a>, return <a data-link-type="dfn" data-refhint-key="dfe8fce9" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values③">f32.const</a> 0.</p>
      <li data-md>
-      <p>If <var>valuetype</var> equals <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-numtype" id="ref-for-syntax-numtype⑨">f64</a>, return <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values④">f64.const</a> 0.</p>
+      <p>If <var>valuetype</var> equals <a data-link-type="dfn" data-refhint-key="487b76fe" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-numtype" id="ref-for-syntax-numtype⑨">f64</a>, return <a data-link-type="dfn" data-refhint-key="f2c8868c" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values④">f64.const</a> 0.</p>
      <li data-md>
-      <p>If <var>valuetype</var> equals <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-reftype" id="ref-for-syntax-reftype③">funcref</a>, return <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values⑤">ref.null</a> <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-reftype" id="ref-for-syntax-reftype④">funcref</a>.</p>
+      <p>If <var>valuetype</var> equals <a data-link-type="dfn" data-refhint-key="706a103c" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-reftype" id="ref-for-syntax-reftype③">funcref</a>, return <a data-link-type="dfn" data-refhint-key="6b9f083b" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values⑤">ref.null</a> <a data-link-type="dfn" data-refhint-key="706a103c" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-reftype" id="ref-for-syntax-reftype④">funcref</a>.</p>
      <li data-md>
-      <p>If <var>valuetype</var> equals <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-reftype" id="ref-for-syntax-reftype⑤">externref</a>, return <a data-link-type="dfn" href="#towebassemblyvalue" id="ref-for-towebassemblyvalue④">ToWebAssemblyValue</a>(undefined, <var>valuetype</var>).</p>
+      <p>If <var>valuetype</var> equals <a data-link-type="dfn" data-refhint-key="92193adb" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-reftype" id="ref-for-syntax-reftype⑤">externref</a>, return <a data-link-type="dfn" href="#towebassemblyvalue" id="ref-for-towebassemblyvalue④">ToWebAssemblyValue</a>(undefined, <var>valuetype</var>).</p>
      <li data-md>
       <p class="assertion">Assert: This step is not reached.</p>
     </ol>
@@ -2082,7 +2082,7 @@ Each <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table�
         <p>Let <var>value</var> be <a data-link-type="dfn" href="#towebassemblyvalue" id="ref-for-towebassemblyvalue⑤">ToWebAssemblyValue</a>(<var>v</var>, <var>valuetype</var>).</p>
       </ol>
      <li data-md>
-      <p>If <var>mutable</var> is true, let <var>globaltype</var> be <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-mut" id="ref-for-syntax-mut①">var</a> <var>valuetype</var>; otherwise, let <var>globaltype</var> be <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-mut" id="ref-for-syntax-mut②">const</a> <var>valuetype</var>.</p>
+      <p>If <var>mutable</var> is true, let <var>globaltype</var> be <a data-link-type="dfn" data-refhint-key="e638887d" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-mut" id="ref-for-syntax-mut①">var</a> <var>valuetype</var>; otherwise, let <var>globaltype</var> be <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-mut" id="ref-for-syntax-mut②">const</a> <var>valuetype</var>.</p>
      <li data-md>
       <p>Let <var>store</var> be the current agent’s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store①⑦">associated store</a>.</p>
      <li data-md>
@@ -2175,7 +2175,7 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
         <p>Let <var>index</var> be the index of <var>moduleinst</var>.funcaddrs where <var>funcaddr</var> is found.</p>
       </ol>
      <li data-md>
-      <p>Return <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands①①">!</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-tostring" id="ref-for-sec-tostring">ToString</a>(<var>index</var>).</p>
+      <p>Return <a data-link-type="dfn" data-refhint-key="f4fa6c3b" href="https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands①①">!</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-tostring" id="ref-for-sec-tostring">ToString</a>(<var>index</var>).</p>
     </ol>
    </div>
    <div class="algorithm" data-algorithm="a new Exported Function">
@@ -2204,7 +2204,7 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
      <li data-md>
       <p>Let <var>name</var> be the <a data-link-type="dfn" href="#name-of-the-webassembly-function" id="ref-for-name-of-the-webassembly-function">name of the WebAssembly function</a> <var>funcaddr</var>.</p>
      <li data-md>
-      <p>Let <var>function</var> be <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands①②">!</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/ordinary-and-exotic-objects-behaviours.html#sec-createbuiltinfunction" id="ref-for-sec-createbuiltinfunction">CreateBuiltinFunction</a>(<var>steps</var>, <var>arity</var>, <var>name</var>, « [[FunctionAddress]] », <var>realm</var>).</p>
+      <p>Let <var>function</var> be <a data-link-type="dfn" data-refhint-key="f4fa6c3b" href="https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands①②">!</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/ordinary-and-exotic-objects-behaviours.html#sec-createbuiltinfunction" id="ref-for-sec-createbuiltinfunction">CreateBuiltinFunction</a>(<var>steps</var>, <var>arity</var>, <var>name</var>, « [[FunctionAddress]] », <var>realm</var>).</p>
      <li data-md>
       <p>Set <var>function</var>.[[FunctionAddress]] to <var>funcaddr</var>.</p>
      <li data-md>
@@ -2272,7 +2272,7 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
    <p class="note" role="note"><span class="marker">Note:</span> <a data-link-type="dfn" href="#call-an-exported-function" id="ref-for-call-an-exported-function①">Calling an Exported Function</a> executes in the [[Realm]] of the callee Exported Function, as per the definition of <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-built-in-function-objects" id="ref-for-sec-built-in-function-objects①">built-in function objects</a>.</p>
    <p class="note" role="note"><span class="marker">Note:</span> Exported Functions do not have a [[Construct]] method and thus it is not possible to call one with the <code>new</code> operator.</p>
    <div class="algorithm" data-algorithm="run a host function">
-     To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="run-a-host-function">run a host function</dfn> from the JavaScript object <var>func</var>, type <var>functype</var>, and <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list②">list</a> of <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values⑥">WebAssembly values</a> <var>arguments</var>, perform the following steps: 
+     To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="run-a-host-function">run a host function</dfn> from the JavaScript object <var>func</var>, type <var>functype</var>, and <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list②">list</a> of <a data-link-type="dfn" data-refhint-key="8390efce" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values⑥">WebAssembly values</a> <var>arguments</var>, perform the following steps: 
     <ol>
      <li data-md>
       <p>Let [<var>parameters</var>] → [<var>results</var>] be <var>functype</var>.</p>
@@ -2284,7 +2284,7 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
       <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate⑦">For each</a> <var>arg</var> of <var>arguments</var>,</p>
       <ol>
        <li data-md>
-        <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-append" id="ref-for-list-append⑨">Append</a> <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands①③">!</a> <a data-link-type="dfn" href="#tojsvalue" id="ref-for-tojsvalue④">ToJSValue</a>(<var>arg</var>) to <var>jsArguments</var>.</p>
+        <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-append" id="ref-for-list-append⑨">Append</a> <a data-link-type="dfn" data-refhint-key="f4fa6c3b" href="https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands①③">!</a> <a data-link-type="dfn" href="#tojsvalue" id="ref-for-tojsvalue④">ToJSValue</a>(<var>arg</var>) to <var>jsArguments</var>.</p>
       </ol>
      <li data-md>
       <p>Let <var>ret</var> be <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands①④">?</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-call" id="ref-for-sec-call">Call</a>(<var>func</var>, undefined, <var>jsArguments</var>).</p>
@@ -2360,12 +2360,12 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
     </ol>
    </div>
    <div class="algorithm" data-algorithm="ToJSValue">
-     The algorithm <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="tojsvalue">ToJSValue</dfn>(<var>w</var>) coerces a <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values⑦">WebAssembly value</a> to a JavaScript value by performing the following steps: 
+     The algorithm <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="tojsvalue">ToJSValue</dfn>(<var>w</var>) coerces a <a data-link-type="dfn" data-refhint-key="8390efce" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values⑦">WebAssembly value</a> to a JavaScript value by performing the following steps: 
     <ol>
      <li data-md>
-      <p class="assertion">Assert: <var>w</var> is not of  the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values⑧">v128.const</a> <var>v128</var>.</p>
+      <p class="assertion">Assert: <var>w</var> is not of  the form <a data-link-type="dfn" data-refhint-key="5e745a1a" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values⑧">v128.const</a> <var>v128</var>.</p>
      <li data-md>
-      <p>If <var>w</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values⑨">i64.const</a> <var>i64</var>,</p>
+      <p>If <var>w</var> is of the form <a data-link-type="dfn" data-refhint-key="74913b16" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values⑨">i64.const</a> <var>i64</var>,</p>
       <ol>
        <li data-md>
         <p>Let <var>v</var> be <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/numerics.html#aux-signed" id="ref-for-aux-signed">signed_64</a>(<var>i64</var>).</p>
@@ -2373,33 +2373,33 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
         <p>Return <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#ℤ" id="ref-for-ℤ">ℤ</a>(<var>v</var> interpreted as a mathematical value).</p>
       </ol>
      <li data-md>
-      <p>If <var>w</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values①⓪">i32.const</a> <var>i32</var>, return <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#𝔽" id="ref-for-𝔽">𝔽</a>(<a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/numerics.html#aux-signed" id="ref-for-aux-signed①">signed_32</a>(<var>i32</var> interpreted as a mathematical value)).</p>
+      <p>If <var>w</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values①⓪">i32.const</a> <var>i32</var>, return <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#𝔽" id="ref-for-𝔽">𝔽</a>(<a data-link-type="dfn" data-refhint-key="71830f3f" href="https://webassembly.github.io/spec/core/exec/numerics.html#aux-signed" id="ref-for-aux-signed①">signed_32</a>(<var>i32</var> interpreted as a mathematical value)).</p>
      <li data-md>
-      <p>If <var>w</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values①①">f32.const</a> <var>f32</var>,</p>
+      <p>If <var>w</var> is of the form <a data-link-type="dfn" data-refhint-key="dfe8fce9" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values①①">f32.const</a> <var>f32</var>,</p>
       <ol>
        <li data-md>
-        <p>If <var>f32</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/values.html#syntax-float" id="ref-for-syntax-float">+∞</a> or <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/values.html#syntax-float" id="ref-for-syntax-float①">−∞</a>, return <strong>+∞</strong><sub>𝔽</sub> or <strong>-∞</strong><sub>𝔽</sub>, respectively.</p>
+        <p>If <var>f32</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/values.html#syntax-float" id="ref-for-syntax-float">+∞</a> or <a data-link-type="dfn" data-refhint-key="fd8a763c" href="https://webassembly.github.io/spec/core/syntax/values.html#syntax-float" id="ref-for-syntax-float①">−∞</a>, return <strong>+∞</strong><sub>𝔽</sub> or <strong>-∞</strong><sub>𝔽</sub>, respectively.</p>
        <li data-md>
-        <p>If <var>f32</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/values.html#syntax-float" id="ref-for-syntax-float②">nan</a>, return <strong>NaN</strong>.</p>
+        <p>If <var>f32</var> is <a data-link-type="dfn" data-refhint-key="8b33b0c0" href="https://webassembly.github.io/spec/core/syntax/values.html#syntax-float" id="ref-for-syntax-float②">nan</a>, return <strong>NaN</strong>.</p>
        <li data-md>
         <p>Return <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#𝔽" id="ref-for-𝔽①">𝔽</a>(<var>f32</var> interpreted as a mathematical value).</p>
       </ol>
      <li data-md>
-      <p>If <var>w</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values①②">f64.const</a> <var>f64</var>,</p>
+      <p>If <var>w</var> is of the form <a data-link-type="dfn" data-refhint-key="f2c8868c" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values①②">f64.const</a> <var>f64</var>,</p>
       <ol>
        <li data-md>
-        <p>If <var>f64</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/values.html#syntax-float" id="ref-for-syntax-float③">+∞</a> or <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/values.html#syntax-float" id="ref-for-syntax-float④">−∞</a>, return <strong>+∞</strong><sub>𝔽</sub> or <strong>-∞</strong><sub>𝔽</sub>, respectively.</p>
+        <p>If <var>f64</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/values.html#syntax-float" id="ref-for-syntax-float③">+∞</a> or <a data-link-type="dfn" data-refhint-key="fd8a763c" href="https://webassembly.github.io/spec/core/syntax/values.html#syntax-float" id="ref-for-syntax-float④">−∞</a>, return <strong>+∞</strong><sub>𝔽</sub> or <strong>-∞</strong><sub>𝔽</sub>, respectively.</p>
        <li data-md>
-        <p>If <var>f64</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/values.html#syntax-float" id="ref-for-syntax-float⑤">nan</a>, return <strong>NaN</strong>.</p>
+        <p>If <var>f64</var> is <a data-link-type="dfn" data-refhint-key="8b33b0c0" href="https://webassembly.github.io/spec/core/syntax/values.html#syntax-float" id="ref-for-syntax-float⑤">nan</a>, return <strong>NaN</strong>.</p>
        <li data-md>
         <p>Return <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#𝔽" id="ref-for-𝔽②">𝔽</a>(<var>f64</var> interpreted as a mathematical value).</p>
       </ol>
      <li data-md>
-      <p>If <var>w</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values①③">ref.null</a> <var>t</var>, return null.</p>
+      <p>If <var>w</var> is of the form <a data-link-type="dfn" data-refhint-key="6b9f083b" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values①③">ref.null</a> <var>t</var>, return null.</p>
      <li data-md>
-      <p>If <var>w</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values①④">ref.func</a> <var>funcaddr</var>, return the result of creating <a data-link-type="dfn" href="#a-new-exported-function" id="ref-for-a-new-exported-function①">a new Exported Function</a> from <var>funcaddr</var>.</p>
+      <p>If <var>w</var> is of the form <a data-link-type="dfn" data-refhint-key="e4a6ca14" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values①④">ref.func</a> <var>funcaddr</var>, return the result of creating <a data-link-type="dfn" href="#a-new-exported-function" id="ref-for-a-new-exported-function①">a new Exported Function</a> from <var>funcaddr</var>.</p>
      <li data-md>
-      <p>If <var>w</var> is of the form <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values①⑤">ref.extern</a> <var>externaddr</var>, return the result of <a data-link-type="dfn" href="#retrieving-an-extern-value" id="ref-for-retrieving-an-extern-value">retrieving an extern value</a> from <var>externaddr</var>.</p>
+      <p>If <var>w</var> is of the form <a data-link-type="dfn" data-refhint-key="f3505c41" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values①⑤">ref.extern</a> <var>externaddr</var>, return the result of <a data-link-type="dfn" href="#retrieving-an-extern-value" id="ref-for-retrieving-an-extern-value">retrieving an extern value</a> from <var>externaddr</var>.</p>
     </ol>
     <p class="note" role="note"><span class="marker">Note:</span> Number values which are equal to NaN may have various observable NaN payloads; see <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/structured-data.html#sec-numerictorawbytes" id="ref-for-sec-numerictorawbytes">NumericToRawBytes</a> for details.</p>
    </div>
@@ -2415,7 +2415,7 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
     </ol>
    </div>
    <div class="algorithm" data-algorithm="ToWebAssemblyValue">
-     The algorithm <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="towebassemblyvalue">ToWebAssemblyValue</dfn>(<var>v</var>, <var>type</var>) coerces a JavaScript value to a <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values①⑥">WebAssembly value</a> by performing the following steps: 
+     The algorithm <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="towebassemblyvalue">ToWebAssemblyValue</dfn>(<var>v</var>, <var>type</var>) coerces a JavaScript value to a <a data-link-type="dfn" data-refhint-key="8390efce" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values①⑥">WebAssembly value</a> by performing the following steps: 
     <ol>
      <li data-md>
       <p class="assertion">Assert: <var>type</var> is not <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#vector-types" id="ref-for-vector-types⑦">v128</a>.</p>
@@ -2425,10 +2425,10 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
        <li data-md>
         <p>Let <var>i64</var> be <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands①⑨">?</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-tobigint64" id="ref-for-sec-tobigint64">ToBigInt64</a>(<var>v</var>).</p>
        <li data-md>
-        <p>Return <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values①⑦">i64.const</a> <var>i64</var>.</p>
+        <p>Return <a data-link-type="dfn" data-refhint-key="74913b16" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values①⑦">i64.const</a> <var>i64</var>.</p>
       </ol>
      <li data-md>
-      <p>If <var>type</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-numtype" id="ref-for-syntax-numtype①①">i32</a>,</p>
+      <p>If <var>type</var> is <a data-link-type="dfn" data-refhint-key="1eccdce5" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-numtype" id="ref-for-syntax-numtype①①">i32</a>,</p>
       <ol>
        <li data-md>
         <p>Let <var>i32</var> be <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands②⓪">?</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-toint32" id="ref-for-sec-toint32">ToInt32</a>(<var>v</var>).</p>
@@ -2436,7 +2436,7 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
         <p>Return <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values①⑧">i32.const</a> <var>i32</var>.</p>
       </ol>
      <li data-md>
-      <p>If <var>type</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-numtype" id="ref-for-syntax-numtype①②">f32</a>,</p>
+      <p>If <var>type</var> is <a data-link-type="dfn" data-refhint-key="a4646532" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-numtype" id="ref-for-syntax-numtype①②">f32</a>,</p>
       <ol>
        <li data-md>
         <p>Let <var>number</var> be <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands②①">?</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-tonumber" id="ref-for-sec-tonumber">ToNumber</a>(<var>v</var>).</p>
@@ -2444,9 +2444,9 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
         <p>If <var>number</var> is <strong>NaN</strong>,</p>
         <ol>
          <li data-md>
-          <p>Let <var>n</var> be an implementation-defined integer such that <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/values.html#syntax-float" id="ref-for-syntax-float⑥">canon</a><sub>32</sub> ≤ <var>n</var> &lt; 2<sup><a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/values.html#syntax-float" id="ref-for-syntax-float⑦">signif</a>(32)</sup>.</p>
+          <p>Let <var>n</var> be an implementation-defined integer such that <a data-link-type="dfn" data-refhint-key="00c2566d" href="https://webassembly.github.io/spec/core/syntax/values.html#syntax-float" id="ref-for-syntax-float⑥">canon</a><sub>32</sub> ≤ <var>n</var> &lt; 2<sup><a data-link-type="dfn" data-refhint-key="e4515620" href="https://webassembly.github.io/spec/core/syntax/values.html#syntax-float" id="ref-for-syntax-float⑦">signif</a>(32)</sup>.</p>
          <li data-md>
-          <p>Let <var>f32</var> be <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/values.html#syntax-float" id="ref-for-syntax-float⑧">nan</a>(n).</p>
+          <p>Let <var>f32</var> be <a data-link-type="dfn" data-refhint-key="8b33b0c0" href="https://webassembly.github.io/spec/core/syntax/values.html#syntax-float" id="ref-for-syntax-float⑧">nan</a>(n).</p>
         </ol>
        <li data-md>
         <p>Otherwise,</p>
@@ -2455,10 +2455,10 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
           <p>Let <var>f32</var> be <var>number</var> rounded to the nearest representable value using IEEE 754-2019 round to nearest, ties to even mode. <a data-link-type="biblio" href="#biblio-ieee-754" title="IEEE Standard for Floating-Point Arithmetic">[IEEE-754]</a></p>
         </ol>
        <li data-md>
-        <p>Return <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values①⑨">f32.const</a> <var>f32</var>.</p>
+        <p>Return <a data-link-type="dfn" data-refhint-key="dfe8fce9" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values①⑨">f32.const</a> <var>f32</var>.</p>
       </ol>
      <li data-md>
-      <p>If <var>type</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-numtype" id="ref-for-syntax-numtype①③">f64</a>,</p>
+      <p>If <var>type</var> is <a data-link-type="dfn" data-refhint-key="487b76fe" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-numtype" id="ref-for-syntax-numtype①③">f64</a>,</p>
       <ol>
        <li data-md>
         <p>Let <var>number</var> be <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands②②">?</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-tonumber" id="ref-for-sec-tonumber①">ToNumber</a>(<var>v</var>).</p>
@@ -2466,9 +2466,9 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
         <p>If <var>number</var> is <strong>NaN</strong>,</p>
         <ol>
          <li data-md>
-          <p>Let <var>n</var> be an implementation-defined integer such that <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/values.html#syntax-float" id="ref-for-syntax-float⑨">canon</a><sub>64</sub> ≤ <var>n</var> &lt; 2<sup><a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/values.html#syntax-float" id="ref-for-syntax-float①⓪">signif</a>(64)</sup>.</p>
+          <p>Let <var>n</var> be an implementation-defined integer such that <a data-link-type="dfn" data-refhint-key="00c2566d" href="https://webassembly.github.io/spec/core/syntax/values.html#syntax-float" id="ref-for-syntax-float⑨">canon</a><sub>64</sub> ≤ <var>n</var> &lt; 2<sup><a data-link-type="dfn" data-refhint-key="e4515620" href="https://webassembly.github.io/spec/core/syntax/values.html#syntax-float" id="ref-for-syntax-float①⓪">signif</a>(64)</sup>.</p>
          <li data-md>
-          <p>Let <var>f64</var> be <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/values.html#syntax-float" id="ref-for-syntax-float①①">nan</a>(n).</p>
+          <p>Let <var>f64</var> be <a data-link-type="dfn" data-refhint-key="8b33b0c0" href="https://webassembly.github.io/spec/core/syntax/values.html#syntax-float" id="ref-for-syntax-float①①">nan</a>(n).</p>
         </ol>
        <li data-md>
         <p>Otherwise,</p>
@@ -2477,16 +2477,16 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
           <p>Let <var>f64</var> be <var>number</var>.</p>
         </ol>
        <li data-md>
-        <p>Return <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values②⓪">f64.const</a> <var>f64</var>.</p>
+        <p>Return <a data-link-type="dfn" data-refhint-key="f2c8868c" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values②⓪">f64.const</a> <var>f64</var>.</p>
       </ol>
      <li data-md>
-      <p>If <var>type</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-reftype" id="ref-for-syntax-reftype⑥">funcref</a>,</p>
+      <p>If <var>type</var> is <a data-link-type="dfn" data-refhint-key="706a103c" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-reftype" id="ref-for-syntax-reftype⑥">funcref</a>,</p>
       <ol>
        <li data-md>
         <p>If <var>v</var> is null,</p>
         <ol>
          <li data-md>
-          <p>Return <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values②①">ref.null</a> <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-reftype" id="ref-for-syntax-reftype⑦">funcref</a>.</p>
+          <p>Return <a data-link-type="dfn" data-refhint-key="6b9f083b" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values②①">ref.null</a> <a data-link-type="dfn" data-refhint-key="706a103c" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-reftype" id="ref-for-syntax-reftype⑦">funcref</a>.</p>
         </ol>
        <li data-md>
         <p>If <var>v</var> is an <a data-link-type="dfn" href="#exported-function" id="ref-for-exported-function②">Exported Function</a>,</p>
@@ -2494,19 +2494,19 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
          <li data-md>
           <p>Let <var>funcaddr</var> be the value of <var>v</var>’s [[FunctionAddress]] internal slot.</p>
          <li data-md>
-          <p>Return <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values②②">ref.func</a> <var>funcaddr</var>.</p>
+          <p>Return <a data-link-type="dfn" data-refhint-key="e4a6ca14" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values②②">ref.func</a> <var>funcaddr</var>.</p>
         </ol>
        <li data-md>
         <p>Throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror①①">TypeError</a></code>.</p>
       </ol>
      <li data-md>
-      <p>If <var>type</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-reftype" id="ref-for-syntax-reftype⑧">externref</a>,</p>
+      <p>If <var>type</var> is <a data-link-type="dfn" data-refhint-key="92193adb" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-reftype" id="ref-for-syntax-reftype⑧">externref</a>,</p>
       <ol>
        <li data-md>
         <p>If <var>v</var> is null,</p>
         <ol>
          <li data-md>
-          <p>Return <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values②③">ref.null</a> <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-reftype" id="ref-for-syntax-reftype⑨">externref</a>.</p>
+          <p>Return <a data-link-type="dfn" data-refhint-key="6b9f083b" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values②③">ref.null</a> <a data-link-type="dfn" data-refhint-key="92193adb" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-reftype" id="ref-for-syntax-reftype⑨">externref</a>.</p>
         </ol>
        <li data-md>
         <p>Let <var>map</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent③④">surrounding agent</a>’s associated <a data-link-type="dfn" href="#extern-value-cache" id="ref-for-extern-value-cache①">extern value cache</a>.</p>
@@ -2514,14 +2514,14 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
         <p>If a <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-externaddr" id="ref-for-syntax-externaddr②">extern address</a> <var>externaddr</var> exists such that <var>map</var>[<var>externaddr</var>] is the same as <var>v</var>,</p>
         <ol>
          <li data-md>
-          <p>Return <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values②④">ref.extern</a> <var>externaddr</var>.</p>
+          <p>Return <a data-link-type="dfn" data-refhint-key="f3505c41" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values②④">ref.extern</a> <var>externaddr</var>.</p>
         </ol>
        <li data-md>
         <p>Let <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-externaddr" id="ref-for-syntax-externaddr③">extern address</a> <var>externaddr</var> be the smallest address such that <var>map</var>[<var>externaddr</var>] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists①①">exists</a> is false.</p>
        <li data-md>
         <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-set" id="ref-for-map-set④">Set</a> <var>map</var>[<var>externaddr</var>] to <var>v</var>.</p>
        <li data-md>
-        <p>Return <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values②⑤">ref.extern</a> <var>externaddr</var>.</p>
+        <p>Return <a data-link-type="dfn" data-refhint-key="f3505c41" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values②⑤">ref.extern</a> <var>externaddr</var>.</p>
       </ol>
      <li data-md>
       <p class="assertion">Assert: This step is not reached.</p>
@@ -2540,7 +2540,7 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
        <li data-md>
         <p>Let <var>constructor</var> be a new object, implementing the <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-nativeerror-object-structure" id="ref-for-sec-nativeerror-object-structure">NativeError Object Structure</a>, with <var>NativeError</var> set to <var>error</var>.</p>
        <li data-md>
-        <p><a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands②③">!</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/ordinary-and-exotic-objects-behaviours.html#sec-definemethodproperty" id="ref-for-sec-definemethodproperty">DefineMethodProperty</a>(<var>namespaceObject</var>, <var>error</var>, <var>constructor</var>, false).</p>
+        <p><a data-link-type="dfn" data-refhint-key="f4fa6c3b" href="https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands②③">!</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/ordinary-and-exotic-objects-behaviours.html#sec-definemethodproperty" id="ref-for-sec-definemethodproperty">DefineMethodProperty</a>(<var>namespaceObject</var>, <var>error</var>, <var>constructor</var>, false).</p>
       </ol>
     </ol>
    </div>
@@ -2621,9 +2621,9 @@ The following sections provide an overview of what has changed.</p>
    <h4 class="no-toc heading settled" id="changes-multivalue">Multiple Values<a class="self-link" href="#changes-multivalue"></a></h4>
     Multiple values can be returned from WebAssembly functions into JavaScript as an <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-array-exotic-objects" id="ref-for-sec-array-exotic-objects">Array</a> object. 
    <h4 class="no-toc heading settled" id="changes-bigint">BigInt Integration<a class="self-link" href="#changes-bigint"></a></h4>
-    WebAssembly <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-numtype" id="ref-for-syntax-numtype①④">i64</a> values can be passed to and from JavaScript (via imported or exported globals, table get or set operations, function return values or arguments) as <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-ecmascript-language-types-bigint-type" id="ref-for-sec-ecmascript-language-types-bigint-type②">BigInt</a> objects. 
+    WebAssembly <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-numtype" id="ref-for-syntax-numtype①④">i64</a> values can be passed to and from JavaScript (via imported or exported globals, table get or set operations, function return values or arguments) as <a data-link-type="dfn" data-refhint-key="55e2e3f1" href="https://tc39.github.io/ecma262/#sec-ecmascript-language-types-bigint-type" id="ref-for-sec-ecmascript-language-types-bigint-type②">BigInt</a> objects. 
    <h4 class="no-toc heading settled" id="changes-reftypes">Reference types<a class="self-link" href="#changes-reftypes"></a></h4>
-    JavaScript values can be passed to and from WebAssembly (via imported or exported globals, table set or get operations, and function arguments or return values) as <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-reftype" id="ref-for-syntax-reftype①⓪">externref</a> values.
+    JavaScript values can be passed to and from WebAssembly (via imported or exported globals, table set or get operations, and function arguments or return values) as <a data-link-type="dfn" data-refhint-key="92193adb" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-reftype" id="ref-for-syntax-reftype①⓪">externref</a> values.
 Multiple tables can be exported and imported to and from JavaScript. 
   </main>
   <div data-fill-with="conformance">
@@ -4176,6 +4176,32 @@ let refsData = {
 "#tojsvalue": {"displayText":"tojsvalue","export":true,"for_":[],"level":"2","normative":true,"shortname":"wasm-js-api","spec":"wasm-js-api-2","status":"local","text":"tojsvalue","type":"dfn","url":"#tojsvalue"},
 "#tovaluetype": {"displayText":"tovaluetype","export":true,"for_":[],"level":"2","normative":true,"shortname":"wasm-js-api","spec":"wasm-js-api-2","status":"local","text":"tovaluetype","type":"dfn","url":"#tovaluetype"},
 "#towebassemblyvalue": {"displayText":"towebassemblyvalue","export":true,"for_":[],"level":"2","normative":true,"shortname":"wasm-js-api","spec":"wasm-js-api-2","status":"local","text":"towebassemblyvalue","type":"dfn","url":"#towebassemblyvalue"},
+"00c2566d_https://webassembly.github.io/spec/core/syntax/values.html#syntax-float": {"displayText":"canon","export":true,"for_":[],"level":"","normative":true,"shortname":"webassembly","spec":"webassembly","status":"anchor-block","text":"canon","type":"dfn","url":"https://webassembly.github.io/spec/core/syntax/values.html#syntax-float"},
+"1eccdce5_https://webassembly.github.io/spec/core/syntax/types.html#syntax-numtype": {"displayText":"i32","export":true,"for_":[],"level":"","normative":true,"shortname":"webassembly","spec":"webassembly","status":"anchor-block","text":"i32","type":"dfn","url":"https://webassembly.github.io/spec/core/syntax/types.html#syntax-numtype"},
+"32e497d6_https://webassembly.github.io/spec/core/syntax/modules.html#syntax-module": {"displayText":"imports","export":true,"for_":[],"level":"","normative":true,"shortname":"webassembly","spec":"webassembly","status":"anchor-block","text":"imports","type":"dfn","url":"https://webassembly.github.io/spec/core/syntax/modules.html#syntax-module"},
+"4581e593_https://webassembly.github.io/spec/core/syntax/types.html#external-types": {"displayText":"global","export":true,"for_":[],"level":"","normative":true,"shortname":"webassembly","spec":"webassembly","status":"anchor-block","text":"global","type":"dfn","url":"https://webassembly.github.io/spec/core/syntax/types.html#external-types"},
+"487b76fe_https://webassembly.github.io/spec/core/syntax/types.html#syntax-numtype": {"displayText":"f64","export":true,"for_":[],"level":"","normative":true,"shortname":"webassembly","spec":"webassembly","status":"anchor-block","text":"f64","type":"dfn","url":"https://webassembly.github.io/spec/core/syntax/types.html#syntax-numtype"},
+"55e2e3f1_https://tc39.github.io/ecma262/#sec-ecmascript-language-types-bigint-type": {"displayText":"BigInt","export":true,"for_":[],"level":"","normative":true,"shortname":"ecmascript","spec":"ecmascript","status":"anchor-block","text":"bigint","type":"dfn","url":"https://tc39.github.io/ecma262/#sec-ecmascript-language-types-bigint-type"},
+"5e745a1a_https://webassembly.github.io/spec/core/exec/runtime.html#values": {"displayText":"v128.const","export":true,"for_":[],"level":"","normative":true,"shortname":"webassembly","spec":"webassembly","status":"anchor-block","text":"v128.const","type":"dfn","url":"https://webassembly.github.io/spec/core/exec/runtime.html#values"},
+"6b9f083b_https://webassembly.github.io/spec/core/exec/runtime.html#values": {"displayText":"ref.null","export":true,"for_":[],"level":"","normative":true,"shortname":"webassembly","spec":"webassembly","status":"anchor-block","text":"ref.null","type":"dfn","url":"https://webassembly.github.io/spec/core/exec/runtime.html#values"},
+"706a103c_https://webassembly.github.io/spec/core/syntax/types.html#syntax-reftype": {"displayText":"funcref","export":true,"for_":[],"level":"","normative":true,"shortname":"webassembly","spec":"webassembly","status":"anchor-block","text":"funcref","type":"dfn","url":"https://webassembly.github.io/spec/core/syntax/types.html#syntax-reftype"},
+"71830f3f_https://webassembly.github.io/spec/core/exec/numerics.html#aux-signed": {"displayText":"signed_32","export":true,"for_":[],"level":"","normative":true,"shortname":"webassembly","spec":"webassembly","status":"anchor-block","text":"signed_32","type":"dfn","url":"https://webassembly.github.io/spec/core/exec/numerics.html#aux-signed"},
+"74913b16_https://webassembly.github.io/spec/core/exec/runtime.html#values": {"displayText":"i64.const","export":true,"for_":[],"level":"","normative":true,"shortname":"webassembly","spec":"webassembly","status":"anchor-block","text":"i64.const","type":"dfn","url":"https://webassembly.github.io/spec/core/exec/runtime.html#values"},
+"80a23595_https://webassembly.github.io/spec/core/syntax/types.html#external-types": {"displayText":"mem","export":true,"for_":[],"level":"","normative":true,"shortname":"webassembly","spec":"webassembly","status":"anchor-block","text":"mem","type":"dfn","url":"https://webassembly.github.io/spec/core/syntax/types.html#external-types"},
+"8390efce_https://webassembly.github.io/spec/core/exec/runtime.html#values": {"displayText":"WebAssembly value","export":true,"for_":[],"level":"","normative":true,"shortname":"webassembly","spec":"webassembly","status":"anchor-block","text":"webassembly value","type":"dfn","url":"https://webassembly.github.io/spec/core/exec/runtime.html#values"},
+"8b33b0c0_https://webassembly.github.io/spec/core/syntax/values.html#syntax-float": {"displayText":"nan","export":true,"for_":[],"level":"","normative":true,"shortname":"webassembly","spec":"webassembly","status":"anchor-block","text":"nan","type":"dfn","url":"https://webassembly.github.io/spec/core/syntax/values.html#syntax-float"},
+"92193adb_https://webassembly.github.io/spec/core/syntax/types.html#syntax-reftype": {"displayText":"externref","export":true,"for_":[],"level":"","normative":true,"shortname":"webassembly","spec":"webassembly","status":"anchor-block","text":"externref","type":"dfn","url":"https://webassembly.github.io/spec/core/syntax/types.html#syntax-reftype"},
+"a4646532_https://webassembly.github.io/spec/core/syntax/types.html#syntax-numtype": {"displayText":"f32","export":true,"for_":[],"level":"","normative":true,"shortname":"webassembly","spec":"webassembly","status":"anchor-block","text":"f32","type":"dfn","url":"https://webassembly.github.io/spec/core/syntax/types.html#syntax-numtype"},
+"d7f31bd6_https://webassembly.github.io/spec/core/syntax/types.html#external-types": {"displayText":"table","export":true,"for_":[],"level":"","normative":true,"shortname":"webassembly","spec":"webassembly","status":"anchor-block","text":"table","type":"dfn","url":"https://webassembly.github.io/spec/core/syntax/types.html#external-types"},
+"db25377b_https://webassembly.github.io/spec/core/valid/modules.html#valid-module": {"displayText":"valid","export":true,"for_":[],"level":"","normative":true,"shortname":"webassembly","spec":"webassembly","status":"anchor-block","text":"valid","type":"dfn","url":"https://webassembly.github.io/spec/core/valid/modules.html#valid-module"},
+"dfe8fce9_https://webassembly.github.io/spec/core/exec/runtime.html#values": {"displayText":"f32.const","export":true,"for_":[],"level":"","normative":true,"shortname":"webassembly","spec":"webassembly","status":"anchor-block","text":"f32.const","type":"dfn","url":"https://webassembly.github.io/spec/core/exec/runtime.html#values"},
+"e4515620_https://webassembly.github.io/spec/core/syntax/values.html#syntax-float": {"displayText":"signif","export":true,"for_":[],"level":"","normative":true,"shortname":"webassembly","spec":"webassembly","status":"anchor-block","text":"signif","type":"dfn","url":"https://webassembly.github.io/spec/core/syntax/values.html#syntax-float"},
+"e4a6ca14_https://webassembly.github.io/spec/core/exec/runtime.html#values": {"displayText":"ref.func","export":true,"for_":[],"level":"","normative":true,"shortname":"webassembly","spec":"webassembly","status":"anchor-block","text":"ref.func","type":"dfn","url":"https://webassembly.github.io/spec/core/exec/runtime.html#values"},
+"e638887d_https://webassembly.github.io/spec/core/syntax/types.html#syntax-mut": {"displayText":"var","export":true,"for_":[],"level":"","normative":true,"shortname":"webassembly","spec":"webassembly","status":"anchor-block","text":"var","type":"dfn","url":"https://webassembly.github.io/spec/core/syntax/types.html#syntax-mut"},
+"f2c8868c_https://webassembly.github.io/spec/core/exec/runtime.html#values": {"displayText":"f64.const","export":true,"for_":[],"level":"","normative":true,"shortname":"webassembly","spec":"webassembly","status":"anchor-block","text":"f64.const","type":"dfn","url":"https://webassembly.github.io/spec/core/exec/runtime.html#values"},
+"f3505c41_https://webassembly.github.io/spec/core/exec/runtime.html#values": {"displayText":"ref.extern","export":true,"for_":[],"level":"","normative":true,"shortname":"webassembly","spec":"webassembly","status":"anchor-block","text":"ref.extern","type":"dfn","url":"https://webassembly.github.io/spec/core/exec/runtime.html#values"},
+"f4fa6c3b_https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands": {"displayText":"!","export":true,"for_":[],"level":"","normative":true,"shortname":"ecmascript","spec":"ecmascript","status":"anchor-block","text":"!","type":"dfn","url":"https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands"},
+"fd8a763c_https://webassembly.github.io/spec/core/syntax/values.html#syntax-float": {"displayText":"\u2212\u221e","export":true,"for_":[],"level":"","normative":true,"shortname":"webassembly","spec":"webassembly","status":"anchor-block","text":"\u2212\u221e","type":"dfn","url":"https://webassembly.github.io/spec/core/syntax/values.html#syntax-float"},
 "https://encoding.spec.whatwg.org/#utf-8-decode-without-bom-or-fail": {"displayText":"UTF-8 decode without BOM or fail","export":true,"for_":[],"level":"1","normative":true,"shortname":"encoding","spec":"encoding","status":"current","text":"utf-8 decode without bom or fail","type":"dfn","url":"https://encoding.spec.whatwg.org/#utf-8-decode-without-bom-or-fail"},
 "https://heycam.github.io/webidl/#create-a-namespace-object": {"displayText":"create a namespace object","export":true,"for_":[],"level":"","normative":true,"shortname":"webidl","spec":"webidl","status":"anchor-block","text":"create a namespace object","type":"dfn","url":"https://heycam.github.io/webidl/#create-a-namespace-object"},
 "https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel": {"displayText":"in parallel","export":true,"for_":[],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"in parallel","type":"dfn","url":"https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel"},
@@ -4404,7 +4430,12 @@ function hideRefHint(refHint) {
 function showRefHint(link) {
     if(link.classList.contains("dfn-link")) return;
     const url = link.getAttribute("href");
-    const ref = refsData[url];
+    const refHintKey = link.getAttribute("data-refhint-key");
+    let key = url;
+    if(refHintKey) {
+        key = refHintKey + "_" + url;
+    }
+    const ref = refsData[key];
     if(!ref) return;
 
     hideAllRefHints(); // Only display one at this time.
