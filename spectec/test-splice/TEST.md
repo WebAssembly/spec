@@ -361,8 +361,7 @@ warning: syntax `global` was never spliced
 warning: syntax `globaladdr` was never spliced
 warning: syntax `globalidx` was never spliced
 warning: syntax `globalinst` was never spliced
-warning: syntax `half__` was never spliced
-warning: syntax `half__` was never spliced
+warning: syntax `half` was never spliced
 warning: syntax `heaptype` was never spliced
 warning: syntax `hostaddr` was never spliced
 warning: syntax `hostfunc` was never spliced
@@ -517,7 +516,7 @@ warning: syntax `vvbinop` was never spliced
 warning: syntax `vvternop` was never spliced
 warning: syntax `vvtestop` was never spliced
 warning: syntax `vvunop` was never spliced
-warning: syntax `zero__` was never spliced
+warning: syntax `zero` was never spliced
 warning: grammar `Babsheaptype` was never spliced
 warning: grammar `Bblocktype` was never spliced
 warning: grammar `Bbyte` was never spliced
@@ -1377,7 +1376,8 @@ warning: definition `globalsxt` was never spliced
 warning: definition `globalsxx` was never spliced
 warning: definition `growmem` was never spliced
 warning: definition `growtable` was never spliced
-warning: definition `half__` was never spliced
+warning: definition `half` was never spliced
+warning: definition `halfop` was never spliced
 warning: definition `iabs_` was never spliced
 warning: definition `iadd_` was never spliced
 warning: definition `iadd_sat_` was never spliced
@@ -1596,6 +1596,7 @@ warning: definition `with_tableinst` was never spliced
 warning: definition `wrap__` was never spliced
 warning: definition `zbytes_` was never spliced
 warning: definition `zero` was never spliced
+warning: definition `zeroop` was never spliced
 warning: definition `zsize` was never spliced
 warning: rule prose `Blocktype_ok` was never spliced
 warning: rule prose `Blocktype_ok/typeidx` was never spliced
@@ -2169,7 +2170,8 @@ warning: definition prose `globalsxt` was never spliced
 warning: definition prose `globalsxx` was never spliced
 warning: definition prose `growmem` was never spliced
 warning: definition prose `growtable` was never spliced
-warning: definition prose `half__` was never spliced
+warning: definition prose `half` was never spliced
+warning: definition prose `halfop` was never spliced
 warning: definition prose `iabs_` was never spliced
 warning: definition prose `iadd_` was never spliced
 warning: definition prose `iadd_sat_` was never spliced
@@ -2351,6 +2353,7 @@ warning: definition prose `with_struct` was never spliced
 warning: definition prose `with_table` was never spliced
 warning: definition prose `with_tableinst` was never spliced
 warning: definition prose `zero` was never spliced
+warning: definition prose `zeroop` was never spliced
 warning: definition prose `zsize` was never spliced
 == Complete.
 ```

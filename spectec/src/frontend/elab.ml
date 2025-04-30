@@ -461,7 +461,7 @@ let as_tup_typ_opt env t : typ list option =
   match expand env t with TupT ts -> Some ts | _ -> None
 
 let as_empty_typ_opt env t : unit option =
-  match expand env t with SeqT [] -> Some () | _ -> None
+  match expand_notation env t with SeqT [] -> Some () | _ -> None
 
 
 let as_x_typ as_t_opt phrase env dir t at shape =
@@ -1575,11 +1575,12 @@ and elab_path' env p t : (Il.path' * typ) attempt =
 
 and cast_empty phrase env t at t' : Il.exp attempt =
   Debug.(log_at "el.elab_exp_cast_empty" at
-    (fun _ -> fmt "%s  >>  (%s)" (el_typ t) (el_typ (expand env t $ t.at)))
+    (fun _ -> fmt "%s  >>  (%s)" (el_typ t) (el_typ (expand_notation env t $ t.at)))
     (function Ok r -> fmt "%s" (il_exp r) | _ -> "fail")
   ) @@ fun _ ->
   nest at t (
-    match expand env t with
+    match expand_notation env t with
+    | SeqT [] -> Ok (Il.ListE [] $$ at % t')
     | IterT (_, Opt) -> Ok (Il.OptE None $$ at % t')
     | IterT (_, List) -> Ok (Il.ListE [] $$ at % t')
     | VarT _ when is_iter_notation_typ env t ->

@@ -138,7 +138,7 @@ and string_of_exp e =
   | CmpE (e1, op, e2) ->
     string_of_exp e1 ^ space string_of_cmpop op ^ string_of_exp e2
   | EpsE -> "eps"
-  | SeqE es -> string_of_exps " " es
+  | SeqE es -> "{" ^ string_of_exps " " es ^ "}"
   | ListE es -> "[" ^ string_of_exps " " es ^ "]"
   | IdxE (e1, e2) -> string_of_exp e1 ^ "[" ^ string_of_exp e2 ^ "]"
   | SliceE (e1, e2, e3) ->

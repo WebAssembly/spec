@@ -735,6 +735,9 @@
 .. |LOW| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{low}}
 .. |HIGH| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{high}}
 .. |ZERO| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{zero}}
+.. |VLOW| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{low}}
+.. |VHIGH| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{high}}
+.. |VZERO| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{zero}}
 
 
 .. Instructions, non-terminals
@@ -1352,6 +1355,8 @@
 .. |unpackshape| mathdef:: \xref{valid/instructions}{aux-unpackshape}{\F{unpack}}
 .. |shlanetype| mathdef:: \xref{syntax/instructions}{aux-lanetype}{\F{lanetype}}
 .. |shdim| mathdef:: \xref{syntax/instructions}{aux-dim}{\F{dim}}
+.. |zeroop| mathdef:: \xref{syntax/instructions}{aux-zeroop}{\F{zeroop}}
+.. |halfop| mathdef:: \xref{syntax/instructions}{aux-halfop}{\F{halfop}}
 
 
 .. Execution
