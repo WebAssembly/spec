@@ -766,8 +766,8 @@ rule Step_pure/vnarrow:
 
 
 rule Step_pure/vcvtop:
-  (VCONST V128 c_1) (VCVTOP sh_2 sh_1 vcvtop half? zero?)  ~>  (VCONST V128 c)
-  -- if c = $vcvtop__(sh_1, sh_2, vcvtop, half?, zero?, c_1)
+  (VCONST V128 c_1) (VCVTOP sh_2 sh_1 vcvtop)  ~>  (VCONST V128 c)
+  -- if c = $vcvtop__(sh_1, sh_2, vcvtop, c_1)
 
 
 ;; Local instructions

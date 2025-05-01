@@ -4984,7 +4984,7 @@ The instruction :math:`({{\mathit{sh}}_1{.}\mathsf{narrow}}{\mathsf{\_}}{{\mathi
 
 
 
-The instruction :math:`({\mathit{sh}}_1 {.} {{\mathit{sh}}_2}{\mathsf{\_}}{{\mathit{vcvtop}}}{\mathsf{\_}}{{{\mathit{hf}}^?}}{\mathsf{\_}}{{{\mathit{zero}}^?}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+The instruction :math:`({\mathit{sh}}_1 {.} {{\mathit{vcvtop}}}{\mathsf{\_}}{{\mathit{sh}}_2})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
 
@@ -6541,15 +6541,37 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
 
-:math:`{{{\mathsf{i}}{n}}_{2'}}{\mathsf{x}}{{M'}} {.} {{{{\mathsf{i}}{n}}_{1'}}{\mathsf{x}}{{M''}}}{\mathsf{\_}}{{\mathit{vcvtop}}}{\mathsf{\_}}{{{\mathit{half}'}^?}}{\mathsf{\_}}{{{\mathit{zero}'}^?}}`
-..........................................................................................................................................................................................................
+:math:`{{{\mathsf{i}}{n}}_{2'}}{\mathsf{x}}{{M'}} {.} {{\mathit{vcvtop}}}{\mathsf{\_}}{{{{\mathsf{i}}{n}}_{1'}}{\mathsf{x}}{{M''}}}`
+....................................................................................................................................
 
 
 1. Assert: Due to validation, a vector type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
-#. If :math:`{{\mathit{half}'}^?}` is not defined and :math:`{{\mathit{zero}'}^?}` is not defined, then:
+#. If :math:`{\mathrm{halfop}}({\mathit{vcvtop}})` is defined, then:
+
+   a. Let :math:`{\mathit{half}}` be :math:`{\mathrm{halfop}}({\mathit{vcvtop}})`.
+
+   #. Let :math:`{{\mathsf{i}}{n}}_1` be the lane type :math:`{{\mathsf{i}}{n}}_{1'}`.
+
+   #. Let :math:`{{\mathsf{i}}{n}}_2` be the lane type :math:`{{\mathsf{i}}{n}}_{2'}`.
+
+   #. Let :math:`M_1` be :math:`{M''}`.
+
+   #. Let :math:`M_2` be :math:`{M'}`.
+
+   #. Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M_1}}(c_1){}[{\mathrm{half}}({\mathit{half}}, 0, M_2) : M_2]`.
+
+   #. Let :math:`{{{\mathit{cj}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{vcvtop}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M_2}}({\mathit{vcvtop}}, {\mathit{ci}})^\ast}`.
+
+   #. If :math:`{|{{{\mathrm{invlanes}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M_2}}({{\mathit{cj}}^\ast})^\ast}|} > 0`, then:
+
+      1) Let :math:`c` be an element of :math:`{{{\mathrm{invlanes}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M_2}}({{\mathit{cj}}^\ast})^\ast}`.
+
+      #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
+
+#. Else if :math:`{\mathrm{zeroop}}({\mathit{vcvtop}})` is not defined, then:
 
    a. Let :math:`{{\mathsf{i}}{n}}_1` be the lane type :math:`{{\mathsf{i}}{n}}_{1'}`.
 
@@ -6569,31 +6591,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
          #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
-#. If :math:`{{\mathit{zero}'}^?}` is not defined, then:
-
-   a. Let :math:`{{\mathsf{i}}{n}}_1` be the lane type :math:`{{\mathsf{i}}{n}}_{1'}`.
-
-   #. Let :math:`{{\mathsf{i}}{n}}_2` be the lane type :math:`{{\mathsf{i}}{n}}_{2'}`.
-
-   #. Let :math:`M_1` be :math:`{M''}`.
-
-   #. Let :math:`M_2` be :math:`{M'}`.
-
-   #. If :math:`{{\mathit{half}'}^?}` is defined, then:
-
-      1) Let :math:`{\mathit{half}}` be :math:`{{\mathit{half}'}^?}`.
-
-      #) Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M_1}}(c_1){}[{\mathrm{half}}({\mathit{half}}, 0, M_2) : M_2]`.
-
-      #) Let :math:`{{{\mathit{cj}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{vcvtop}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M_2}}({\mathit{vcvtop}}, {\mathit{ci}})^\ast}`.
-
-      #) If :math:`{|{{{\mathrm{invlanes}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M_2}}({{\mathit{cj}}^\ast})^\ast}|} > 0`, then:
-
-         a) Let :math:`c` be an element of :math:`{{{\mathrm{invlanes}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M_2}}({{\mathit{cj}}^\ast})^\ast}`.
-
-         #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
-
-#. If :math:`{{\mathit{half}'}^?}` is not defined, then:
+#. If :math:`{\mathrm{zeroop}}({\mathit{vcvtop}}) = \mathsf{zero}`, then:
 
    a. Let :math:`M_1` be :math:`{M''}`.
 
@@ -6607,17 +6605,15 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
          a) Let :math:`{\mathit{nt}}_2` be the lane type :math:`{{\mathsf{i}}{n}}_{2'}`.
 
-         #) If :math:`{{\mathit{zero}'}^?}` is defined, then:
+         #) Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathit{nt}}_1}{\mathsf{x}}{M_1}}(c_1)`.
 
-            1. Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathit{nt}}_1}{\mathsf{x}}{M_1}}(c_1)`.
+         #) Let :math:`{{{\mathit{cj}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{vcvtop}}}_{{{\mathit{nt}}_1}{\mathsf{x}}{M_1}, {{\mathit{nt}}_2}{\mathsf{x}}{M_2}}({\mathit{vcvtop}}, {\mathit{ci}})^\ast}~{{\mathrm{zero}}({\mathit{nt}}_2)^{M_1}}`.
 
-            #. Let :math:`{{{\mathit{cj}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{vcvtop}}}_{{{\mathit{nt}}_1}{\mathsf{x}}{M_1}, {{\mathit{nt}}_2}{\mathsf{x}}{M_2}}({\mathit{vcvtop}}, {\mathit{ci}})^\ast}~{{\mathrm{zero}}({\mathit{nt}}_2)^{M_1}}`.
+         #) If :math:`{|{{{\mathrm{invlanes}}}_{{{\mathit{nt}}_2}{\mathsf{x}}{M_2}}({{\mathit{cj}}^\ast})^\ast}|} > 0`, then:
 
-            #. If :math:`{|{{{\mathrm{invlanes}}}_{{{\mathit{nt}}_2}{\mathsf{x}}{M_2}}({{\mathit{cj}}^\ast})^\ast}|} > 0`, then:
+            1. Let :math:`c` be an element of :math:`{{{\mathrm{invlanes}}}_{{{\mathit{nt}}_2}{\mathsf{x}}{M_2}}({{\mathit{cj}}^\ast})^\ast}`.
 
-               a. Let :math:`c` be an element of :math:`{{{\mathrm{invlanes}}}_{{{\mathit{nt}}_2}{\mathsf{x}}{M_2}}({{\mathit{cj}}^\ast})^\ast}`.
-
-               #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
+            #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
 
 :math:`\mathsf{local{.}tee}~x`
@@ -8618,6 +8614,64 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Return :math:`{\mathit{vc}}`.
 
 
+:math:`{\mathrm{zeroop}}({\mathit{vcvtop}})`
+............................................
+
+
+1. If :math:`{\mathit{vcvtop}}` is some :math:`\mathsf{extend}` :math:`{\mathit{half}}` :math:`{\mathit{sx}}`, then:
+
+   a. Return :math:`\epsilon`.
+
+#. If :math:`{\mathit{vcvtop}}` is some :math:`\mathsf{convert}` :math:`{{\mathit{half}}^?}` :math:`{\mathit{sx}}`, then:
+
+   a. Return :math:`\epsilon`.
+
+#. If :math:`{\mathit{vcvtop}}` is some :math:`\mathsf{trunc\_sat}` :math:`{\mathit{sx}}` :math:`{{\mathit{zero}}^?}`, then:
+
+   a. Let :math:`(\mathsf{trunc\_sat}~{\mathit{sx}}~{{\mathit{zero}}^?})` be the destructuring of :math:`{\mathit{vcvtop}}`.
+
+   #. Return :math:`{{\mathit{zero}}^?}`.
+
+#. If :math:`{\mathit{vcvtop}}` is some :math:`\mathsf{demote}` :math:`{\mathit{zero}}`, then:
+
+   a. Let :math:`(\mathsf{demote}~{\mathit{zero}})` be the destructuring of :math:`{\mathit{vcvtop}}`.
+
+   #. Return :math:`{\mathit{zero}}`.
+
+#. Assert: Due to validation, :math:`{\mathit{vcvtop}} = `.
+
+#. Return :math:`\epsilon`.
+
+
+:math:`{\mathrm{halfop}}({\mathit{vcvtop}})`
+............................................
+
+
+1. If :math:`{\mathit{vcvtop}}` is some :math:`\mathsf{extend}` :math:`{\mathit{half}}` :math:`{\mathit{sx}}`, then:
+
+   a. Let :math:`(\mathsf{extend}~{\mathit{half}}~{\mathit{sx}})` be the destructuring of :math:`{\mathit{vcvtop}}`.
+
+   #. Return :math:`{\mathit{half}}`.
+
+#. If :math:`{\mathit{vcvtop}}` is some :math:`\mathsf{convert}` :math:`{{\mathit{half}}^?}` :math:`{\mathit{sx}}`, then:
+
+   a. Let :math:`(\mathsf{convert}~{{\mathit{half}}^?}~{\mathit{sx}})` be the destructuring of :math:`{\mathit{vcvtop}}`.
+
+   #. Return :math:`{{\mathit{half}}^?}`.
+
+#. If :math:`{\mathit{vcvtop}}` is some :math:`\mathsf{trunc\_sat}` :math:`{\mathit{sx}}` :math:`{{\mathit{zero}}^?}`, then:
+
+   a. Return :math:`\epsilon`.
+
+#. If :math:`{\mathit{vcvtop}}` is some :math:`\mathsf{demote}` :math:`{\mathit{zero}}`, then:
+
+   a. Return :math:`\epsilon`.
+
+#. Assert: Due to validation, :math:`{\mathit{vcvtop}} = `.
+
+#. Return :math:`\mathsf{low}`.
+
+
 :math:`{\mathrm{half}}({\mathit{half}}, i, j)`
 ..............................................
 
@@ -9169,9 +9223,9 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       1) Let :math:`{{\mathsf{i}}{n}}_2` be the lane type :math:`{\mathit{lanetype}}`.
 
-      #) If :math:`{\mathit{vcvtop}}` is some :math:`\mathsf{extend}` :math:`{\mathit{sx}}`, then:
+      #) If :math:`{\mathit{vcvtop}}` is some :math:`\mathsf{extend}` :math:`{\mathit{half}}` :math:`{\mathit{sx}}`, then:
 
-         a) Let :math:`(\mathsf{extend}~{\mathit{sx}})` be the destructuring of :math:`{\mathit{vcvtop}}`.
+         a) Let :math:`(\mathsf{extend}~{\mathit{half}}~{\mathit{sx}})` be the destructuring of :math:`{\mathit{vcvtop}}`.
 
          #) Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{iN}}_{1'}`.
 
@@ -9183,9 +9237,9 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       1) Let :math:`{{\mathsf{f}}{n}}_2` be the lane type :math:`{\mathit{lanetype}}`.
 
-      #) If :math:`{\mathit{vcvtop}}` is some :math:`\mathsf{convert}` :math:`{\mathit{sx}}`, then:
+      #) If :math:`{\mathit{vcvtop}}` is some :math:`\mathsf{convert}` :math:`{{\mathit{half}}^?}` :math:`{\mathit{sx}}`, then:
 
-         a) Let :math:`(\mathsf{convert}~{\mathit{sx}})` be the destructuring of :math:`{\mathit{vcvtop}}`.
+         a) Let :math:`(\mathsf{convert}~{{\mathit{half}}^?}~{\mathit{sx}})` be the destructuring of :math:`{\mathit{vcvtop}}`.
 
          #) Let :math:`{\mathit{iN}}_1` be :math:`{\mathit{iN}}_{1'}`.
 
@@ -9201,9 +9255,9 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    a. Let :math:`{{\mathsf{i}}{n}}_2` be the lane type :math:`{\mathit{lanetype}}`.
 
-   #. If :math:`{\mathit{vcvtop}}` is some :math:`\mathsf{trunc\_sat}` :math:`{\mathit{sx}}`, then:
+   #. If :math:`{\mathit{vcvtop}}` is some :math:`\mathsf{trunc\_sat}` :math:`{\mathit{sx}}` :math:`{{\mathit{zero}}^?}`, then:
 
-      1) Let :math:`(\mathsf{trunc\_sat}~{\mathit{sx}})` be the destructuring of :math:`{\mathit{vcvtop}}`.
+      1) Let :math:`(\mathsf{trunc\_sat}~{\mathit{sx}}~{{\mathit{zero}}^?})` be the destructuring of :math:`{\mathit{vcvtop}}`.
 
       #) Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{iN}}_{1'}`.
 
@@ -9217,13 +9271,13 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{\mathit{fN}}_1` be :math:`{\mathit{iN}}_{1'}`.
 
-#. If :math:`{\mathit{vcvtop}} = \mathsf{demote}`, then:
+#. If :math:`{\mathit{vcvtop}} = (\mathsf{demote}~\mathsf{zero})`, then:
 
    a. Let :math:`{{\mathit{fN}}_2^\ast}` be :math:`{{\mathrm{demote}}}_{N_1, N_2}({\mathit{fN}}_1)`.
 
    #. Return :math:`{{\mathit{fN}}_2^\ast}`.
 
-#. Assert: Due to validation, :math:`{\mathit{vcvtop}} = \mathsf{promote}`.
+#. Assert: Due to validation, :math:`{\mathit{vcvtop}} = `.
 
 #. Let :math:`{{\mathit{fN}}_2^\ast}` be :math:`{{\mathrm{promote}}}_{N_1, N_2}({\mathit{fN}}_1)`.
 
@@ -9247,13 +9301,13 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ...............................................................................................................................................
 
 
-1. If :math:`{\mathit{vextbinop}}` is some :math:`\mathsf{extmul}` :math:`{\mathit{sx}}` :math:`{\mathit{half}}`, then:
+1. If :math:`{\mathit{vextbinop}}` is some :math:`\mathsf{extmul}` :math:`{\mathit{half}}` :math:`{\mathit{sx}}`, then:
 
-   a. Let :math:`({\mathsf{extmul}}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{vextbinop}}`.
+   a. Let :math:`({\mathsf{extmul}}{\mathsf{\_}}{{\mathit{half}}}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{vextbinop}}`.
 
-   #. Let :math:`{{\mathit{ci}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M_2}}(c_1){}[{\mathrm{half}}({\mathit{hf}}, 0, M_1) : M_1]`.
+   #. Let :math:`{{\mathit{ci}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M_2}}(c_1){}[{\mathrm{half}}({\mathit{half}}, 0, M_1) : M_1]`.
 
-   #. Let :math:`{{\mathit{ci}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M_2}}(c_2){}[{\mathrm{half}}({\mathit{hf}}, 0, M_1) : M_1]`.
+   #. Let :math:`{{\mathit{ci}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M_2}}(c_2){}[{\mathrm{half}}({\mathit{half}}, 0, M_1) : M_1]`.
 
    #. Let :math:`c` be :math:`{{\mathrm{invlanes}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M_1}}({{{\mathrm{imul}}}_{N_1}({{{{\mathrm{extend}}}_{N_2, N_1}^{{\mathit{sx}}}}}{({\mathit{ci}}_1)}, {{{{\mathrm{extend}}}_{N_2, N_1}^{{\mathit{sx}}}}}{({\mathit{ci}}_2)})^\ast})`.
 
@@ -10498,7 +10552,7 @@ Instr_ok/vnarrow
 - the instruction (VNARROW sh_1 sh_2 sx) is valid with [V128, V128] -> [V128].
 
 Instr_ok/vcvtop
-- the instruction (VCVTOP sh_1 sh_2 vcvtop hf? zero?) is valid with [V128] -> [V128].
+- the instruction (VCVTOP sh_1 sh_2 vcvtop) is valid with [V128] -> [V128].
 
 Instr_ok/local.get
 - the instruction (LOCAL.GET x) is valid with the function type [] -> [t] if:
@@ -11266,10 +11320,21 @@ Step_pure/vnarrow Jnn_2 X N_2 Jnn_1 X N_1 sx
 9. Let c be $invlanes_(Jnn_2 X N_2, cj_1* :: cj_2*).
 10. Push the value (V128.CONST c) to the stack.
 
-Step_pure/vcvtop Lnn_2' X M' Lnn_1' X M'' vcvtop half'? zero'?
+Step_pure/vcvtop Lnn_2' X M' Lnn_1' X M'' vcvtop
 1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_1) from the stack.
-3. If (half'? is not defined /\ zero'? is not defined), then:
+3. If $halfop(vcvtop) is defined, then:
+  a. Let ?(half) be $halfop(vcvtop).
+  b. Let Lnn_1 be Lnn_1'.
+  c. Let Lnn_2 be Lnn_2'.
+  d. Let M_1 be M''.
+  e. Let M_2 be M'.
+  f. Let ci* be $lanes_(Lnn_1 X M_1, c_1)[$half(half, 0, M_2) : M_2].
+  g. Let cj** be $setproduct_(`lane_(Lnn_2), $vcvtop__(Lnn_1 X M_1, Lnn_2 X M_2, vcvtop, ci)*).
+  h. If (|$invlanes_(Lnn_2 X M_2, cj*)*| > 0), then:
+    1) Let c be an element of $invlanes_(Lnn_2 X M_2, cj*)*.
+    2) Push the value (V128.CONST c) to the stack.
+4. Else if $zeroop(vcvtop) is not defined, then:
   a. Let Lnn_1 be Lnn_1'.
   b. Let Lnn_2 be Lnn_2'.
   c. Let M be M''.
@@ -11279,31 +11344,18 @@ Step_pure/vcvtop Lnn_2' X M' Lnn_1' X M'' vcvtop half'? zero'?
     3) If (|$invlanes_(Lnn_2 X M, cj*)*| > 0), then:
       a) Let c be an element of $invlanes_(Lnn_2 X M, cj*)*.
       b) Push the value (V128.CONST c) to the stack.
-4. If zero'? is not defined, then:
-  a. Let Lnn_1 be Lnn_1'.
-  b. Let Lnn_2 be Lnn_2'.
-  c. Let M_1 be M''.
-  d. Let M_2 be M'.
-  e. If half'? is defined, then:
-    1) Let ?(half) be half'?.
-    2) Let ci* be $lanes_(Lnn_1 X M_1, c_1)[$half(half, 0, M_2) : M_2].
-    3) Let cj** be $setproduct_(`lane_(Lnn_2), $vcvtop__(Lnn_1 X M_1, Lnn_2 X M_2, vcvtop, ci)*).
-    4) If (|$invlanes_(Lnn_2 X M_2, cj*)*| > 0), then:
-      a) Let c be an element of $invlanes_(Lnn_2 X M_2, cj*)*.
-      b) Push the value (V128.CONST c) to the stack.
-5. If half'? is not defined, then:
+5. If ($zeroop(vcvtop) = ?(ZERO)), then:
   a. Let M_1 be M''.
   b. Let M_2 be M'.
   c. If Lnn_1' is numtype, then:
     1) Let nt_1 be Lnn_1'.
     2) If Lnn_2' is numtype, then:
       a) Let nt_2 be Lnn_2'.
-      b) If zero'? is defined, then:
-        1. Let ci* be $lanes_(nt_1 X M_1, c_1).
-        2. Let cj** be $setproduct_(`lane_((nt_2 : numtype <: lanetype)), $vcvtop__(nt_1 X M_1, nt_2 X M_2, vcvtop, ci)* :: [$zero(nt_2)]^M_1).
-        3. If (|$invlanes_(nt_2 X M_2, cj*)*| > 0), then:
-          a. Let c be an element of $invlanes_(nt_2 X M_2, cj*)*.
-          b. Push the value (V128.CONST c) to the stack.
+      b) Let ci* be $lanes_(nt_1 X M_1, c_1).
+      c) Let cj** be $setproduct_(`lane_((nt_2 : numtype <: lanetype)), $vcvtop__(nt_1 X M_1, nt_2 X M_2, vcvtop, ci)* :: [$zero(nt_2)]^M_1).
+      d) If (|$invlanes_(nt_2 X M_2, cj*)*| > 0), then:
+        1. Let c be an element of $invlanes_(nt_2 X M_2, cj*)*.
+        2. Push the value (V128.CONST c) to the stack.
 
 Step_pure/local.tee x
 1. Assert: Due to validation, a value is on the top of the stack.
@@ -12248,6 +12300,34 @@ invlanes_ sh c*
 1. Let vc be $lanes__1^-1(sh, c*).
 2. Return vc.
 
+zeroop vcvtop
+1. If vcvtop is some EXTEND, then:
+  a. Return ?().
+2. If vcvtop is some CONVERT, then:
+  a. Return ?().
+3. If vcvtop is some TRUNC_SAT, then:
+  a. Let (TRUNC_SAT sx zero?) be vcvtop.
+  b. Return zero?.
+4. If vcvtop is some DEMOTE, then:
+  a. Let (DEMOTE zero) be vcvtop.
+  b. Return ?(zero).
+5. Assert: Due to validation, (vcvtop = PROMOTELOW).
+6. Return ?().
+
+halfop vcvtop
+1. If vcvtop is some EXTEND, then:
+  a. Let (EXTEND half sx) be vcvtop.
+  b. Return ?(half).
+2. If vcvtop is some CONVERT, then:
+  a. Let (CONVERT half? sx) be vcvtop.
+  b. Return half?.
+3. If vcvtop is some TRUNC_SAT, then:
+  a. Return ?().
+4. If vcvtop is some DEMOTE, then:
+  a. Return ?().
+5. Assert: Due to validation, (vcvtop = PROMOTELOW).
+6. Return ?(LOW).
+
 half half i j
 1. If (half = LOW), then:
   a. Return i.
@@ -12520,14 +12600,14 @@ vcvtop__ lanetype' X M_1 lanetype X M_2 vcvtop iN_1'
   b. If lanetype is Jnn, then:
     1) Let Jnn_2 be lanetype.
     2) If vcvtop is some EXTEND, then:
-      a) Let (EXTEND sx) be vcvtop.
+      a) Let (EXTEND half sx) be vcvtop.
       b) Let iN_1 be iN_1'.
       c) Let iN_2 be $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), sx, iN_1).
       d) Return [iN_2].
   c. If lanetype is Fnn, then:
     1) Let Fnn_2 be lanetype.
     2) If vcvtop is some CONVERT, then:
-      a) Let (CONVERT sx) be vcvtop.
+      a) Let (CONVERT half? sx) be vcvtop.
       b) Let iN_1 be iN_1'.
       c) Let fN_2 be $convert__($lsizenn1(Jnn_1), $lsizenn2(Fnn_2), sx, iN_1).
       d) Return [fN_2].
@@ -12536,17 +12616,17 @@ vcvtop__ lanetype' X M_1 lanetype X M_2 vcvtop iN_1'
 4. If lanetype is Inn, then:
   a. Let Inn_2 be lanetype.
   b. If vcvtop is some TRUNC_SAT, then:
-    1) Let (TRUNC_SAT sx) be vcvtop.
+    1) Let (TRUNC_SAT sx zero?) be vcvtop.
     2) Let fN_1 be iN_1'.
     3) Let iN_2? be $trunc_sat__($lsizenn1(Fnn_1), $lsizenn2(Inn_2), sx, fN_1).
     4) Return $list_(`lane_((Inn_2 : Inn <: lanetype)), iN_2?).
 5. Assert: Due to validation, lanetype is Fnn.
 6. Let Fnn_2 be lanetype.
 7. Let fN_1 be iN_1'.
-8. If (vcvtop = DEMOTE), then:
+8. If (vcvtop = (DEMOTE ZERO)), then:
   a. Let fN_2* be $demote__($lsizenn1(Fnn_1), $lsizenn2(Fnn_2), fN_1).
   b. Return fN_2*.
-9. Assert: Due to validation, (vcvtop = PROMOTE).
+9. Assert: Due to validation, (vcvtop = PROMOTELOW).
 10. Let fN_2* be $promote__($lsizenn1(Fnn_1), $lsizenn2(Fnn_2), fN_1).
 11. Return fN_2*.
 
@@ -12558,9 +12638,9 @@ vextunop__ Inn_1 X M_1 Inn_2 X M_2 (EXTADD_PAIRWISE sx) c_1
 
 vextbinop__ Inn_1 X M_1 Inn_2 X M_2 vextbinop_ c_1 c_2
 1. If vextbinop_ is some EXTMUL, then:
-  a. Let (EXTMUL sx hf) be vextbinop_.
-  b. Let ci_1* be $lanes_(Inn_2 X M_2, c_1)[$half(hf, 0, M_1) : M_1].
-  c. Let ci_2* be $lanes_(Inn_2 X M_2, c_2)[$half(hf, 0, M_1) : M_1].
+  a. Let (EXTMUL half sx) be vextbinop_.
+  b. Let ci_1* be $lanes_(Inn_2 X M_2, c_1)[$half(half, 0, M_1) : M_1].
+  c. Let ci_2* be $lanes_(Inn_2 X M_2, c_2)[$half(half, 0, M_1) : M_1].
   d. Let c be $invlanes_(Inn_1 X M_1, $imul_($lsizenn1(Inn_1), $extend__($lsizenn2(Inn_2), $lsizenn1(Inn_1), sx, ci_1), $extend__($lsizenn2(Inn_2), $lsizenn1(Inn_1), sx, ci_2))*).
   e. Return c.
 2. Assert: Due to validation, (vextbinop_ = DOTS).
@@ -15248,7 +15328,7 @@ The instruction :math:`({{\mathit{sh}}_1{.}\mathsf{narrow}}{\mathsf{\_}}{{\mathi
 
 
 
-The instruction :math:`({\mathit{sh}}_1 {.} {{\mathit{vcvtop}}}{\mathsf{\_}}{{{\mathit{zero}}^?}}{\mathsf{\_}}{{\mathit{sh}}_2}{\mathsf{\_}}{{{\mathit{half}}^?}})` is :ref:`valid <valid-val>` with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+The instruction :math:`({\mathit{sh}}_1 {.} {{\mathit{vcvtop}}}{\mathsf{\_}}{{\mathit{sh}}_2})` is :ref:`valid <valid-val>` with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
 
@@ -17802,15 +17882,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
 
-:math:`{\mathit{sh}}_2 {.} {{\mathit{vcvtop}}}{\mathsf{\_}}{{{\mathit{zero}}^?}}{\mathsf{\_}}{{\mathit{sh}}_1}{\mathsf{\_}}{{{\mathit{half}}^?}}`
-.................................................................................................................................................
+:math:`{\mathit{sh}}_2 {.} {{\mathit{vcvtop}}}{\mathsf{\_}}{{\mathit{sh}}_1}`
+.............................................................................
 
 
 1. Assert: Due to validation, a vector type is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
-#. Let :math:`c` be :math:`{{\mathrm{vcvtop}}}_{{\mathit{sh}}_1, {\mathit{sh}}_2}({\mathit{vcvtop}}, {{\mathit{half}}^?}, {{\mathit{zero}}^?}, c_1)`.
+#. Let :math:`c` be :math:`{{\mathrm{vcvtop}}}_{{\mathit{sh}}_1, {\mathit{sh}}_2}({\mathit{vcvtop}}, c_1)`.
 
 #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
@@ -21761,9 +21841,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. Return `$free_shape(ishape_1) ++ $free_shape(ishape_2)`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{vcvtop}` :math:`{\mathit{shape}}_1` :math:`{\mathit{shape}}_2` :math:`{{\mathit{vcvtop}}}_{{\mathit{shape}}_2, {\mathit{shape}}_1}` :math:`{{{\mathit{half}}}_{{\mathit{shape}}_2, {\mathit{shape}}_1}^?}` :math:`{{{\mathit{zero}}}_{{\mathit{shape}}_2, {\mathit{shape}}_1}^?}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{vcvtop}` :math:`{\mathit{shape}}_1` :math:`{\mathit{shape}}_2` :math:`{{\mathit{vcvtop}}}_{{\mathit{shape}}_2, {\mathit{shape}}_1}`, then:
 
-   a. Let :math:`({\mathit{shape}}_1 {.} {{\mathit{vcvtop}}}{\mathsf{\_}}{{{\mathit{zero}}^?}}{\mathsf{\_}}{{\mathit{shape}}_2}{\mathsf{\_}}{{{\mathit{half}}^?}})` be the destructuring of :math:`{\mathit{instr}'}`.
+   a. Let :math:`({\mathit{shape}}_1 {.} {{\mathit{vcvtop}}}{\mathsf{\_}}{{\mathit{shape}}_2})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return `$free_shape(shape_1) ++ $free_shape(shape_2)`.
 
@@ -23109,25 +23189,101 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`{\mathit{vc}}`.
 
 
+:math:`{\mathrm{zeroop}}({{\mathit{lanetype}''}}{\mathsf{x}}{M_1}, {{\mathit{lanetype}}}{\mathsf{x}}{M_2}, {\mathit{vcvtop}})`
+..............................................................................................................................
+
+
+1. If :math:`{\mathit{lanetype}''}` is :math:`{\mathsf{i}}{N}`, then:
+
+   a. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{i}}{N}` and :math:`{\mathit{vcvtop}}` is some :math:`\mathsf{extend}` :math:`{\mathit{half}}` :math:`{\mathit{sx}}`, then:
+
+      1) Return :math:`\epsilon`.
+
+   #. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{f}}{N}` and :math:`{\mathit{vcvtop}}` is some :math:`\mathsf{convert}` :math:`{{\mathit{half}}^?}` :math:`{\mathit{sx}}`, then:
+
+      1) Return :math:`\epsilon`.
+
+#. Assert: Due to validation, :math:`{\mathit{lanetype}''}` is :math:`{\mathsf{f}}{N}`.
+
+#. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{i}}{N}`, then:
+
+   a. If :math:`{\mathit{vcvtop}}` is some :math:`\mathsf{trunc\_sat}` :math:`{\mathit{sx}}` :math:`{{\mathit{zero}}^?}`, then:
+
+      1) Let :math:`({\mathsf{trunc\_sat}}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{vcvtop}}`.
+
+      #) Return :math:`{{\mathit{zero}}^?}`.
+
+   #. If :math:`{\mathit{vcvtop}}` is some :math:`\mathsf{relaxed\_trunc}` :math:`{\mathit{sx}}` :math:`{{\mathit{zero}}^?}`, then:
+
+      1) Let :math:`({\mathsf{relaxed\_trunc}}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{vcvtop}}`.
+
+      #) Return :math:`{{\mathit{zero}}^?}`.
+
+#. Assert: Due to validation, :math:`{\mathit{lanetype}}` is :math:`{\mathsf{f}}{N}`.
+
+#. If :math:`{\mathit{vcvtop}}` is some :math:`{\mathsf{demote}}{\mathsf{\_}}{\mathsf{zero}}` :math:`{\mathit{zero}}`, then:
+
+   a. Let :math:`({\mathsf{demote}}{\mathsf{\_}}{\mathsf{zero}}~{\mathit{zero}})` be the destructuring of :math:`{\mathit{vcvtop}}`.
+
+   #. Return :math:`{\mathit{zero}}`.
+
+#. Assert: Due to validation, :math:`{\mathit{vcvtop}} = `.
+
+#. Return :math:`\epsilon`.
+
+
+:math:`{\mathrm{halfop}}({{\mathit{lanetype}''}}{\mathsf{x}}{M_1}, {{\mathit{lanetype}}}{\mathsf{x}}{M_2}, {\mathit{vcvtop}})`
+..............................................................................................................................
+
+
+1. If :math:`{\mathit{lanetype}''}` is :math:`{\mathsf{i}}{N}`, then:
+
+   a. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{i}}{N}` and :math:`{\mathit{vcvtop}}` is some :math:`\mathsf{extend}` :math:`{\mathit{half}}` :math:`{\mathit{sx}}`, then:
+
+      1) Let :math:`({\mathsf{extend}}{\mathsf{\_}}{{\mathit{half}}}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{vcvtop}}`.
+
+      #) Return :math:`{\mathit{half}}`.
+
+   #. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{f}}{N}` and :math:`{\mathit{vcvtop}}` is some :math:`\mathsf{convert}` :math:`{{\mathit{half}}^?}` :math:`{\mathit{sx}}`, then:
+
+      1) Let :math:`({\mathsf{convert}}{\mathsf{\_}}{{{\mathit{half}}^?}})` be the destructuring of :math:`{\mathit{vcvtop}}`.
+
+      #) Return :math:`{{\mathit{half}}^?}`.
+
+#. Assert: Due to validation, :math:`{\mathit{lanetype}''}` is :math:`{\mathsf{f}}{N}`.
+
+#. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{i}}{N}`, then:
+
+   a. If :math:`{\mathit{vcvtop}}` is some :math:`\mathsf{trunc\_sat}` :math:`{\mathit{sx}}` :math:`{{\mathit{zero}}^?}`, then:
+
+      1) Return :math:`\epsilon`.
+
+   #. If :math:`{\mathit{vcvtop}}` is some :math:`\mathsf{relaxed\_trunc}` :math:`{\mathit{sx}}` :math:`{{\mathit{zero}}^?}`, then:
+
+      1) Return :math:`\epsilon`.
+
+#. Assert: Due to validation, :math:`{\mathit{lanetype}}` is :math:`{\mathsf{f}}{N}`.
+
+#. If :math:`{\mathit{vcvtop}}` is some :math:`{\mathsf{demote}}{\mathsf{\_}}{\mathsf{zero}}` :math:`{\mathit{zero}}`, then:
+
+   a. Return :math:`\epsilon`.
+
+#. Assert: Due to validation, :math:`{\mathit{vcvtop}} = `.
+
+#. Return :math:`\mathsf{low}`.
+
+
 :math:`{\mathrm{half}}({\mathit{half}}, i, j)`
 ..............................................
 
 
-1. If :math:`{{\mathsf{i}}{N}}_{1'}` is :math:`{\mathsf{i}}{N}` and :math:`{\mathit{lanetype}}` is :math:`{\mathsf{i}}{N}`, then:
+1. If :math:`{\mathit{half}} = \mathsf{low}`, then:
 
-   a. If :math:`{\mathit{half}} = \mathsf{low}`, then:
+   a. Return :math:`i`.
 
-      1) Return :math:`i`.
+#. Assert: Due to validation, :math:`{\mathit{half}} = \mathsf{high}`.
 
-   #. If :math:`{\mathit{half}} = \mathsf{high}`, then:
-
-      1) Return :math:`j`.
-
-#. Assert: Due to validation, :math:`{\mathit{lanetype}}` is :math:`{\mathsf{f}}{N}`.
-
-#. Assert: Due to validation, :math:`{\mathit{half}} = \mathsf{low}`.
-
-#. Return :math:`i`.
+#. Return :math:`j`.
 
 
 :math:`{{\mathrm{iswizzle}}_{{\mathit{lane}}}}_{N}({c^\ast}, i)`
@@ -23686,9 +23842,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       1) Let :math:`{{\mathsf{i}}{N}}_2` be the lane type :math:`{\mathit{lanetype}}`.
 
-      #) If :math:`{\mathit{vcvtop}}` is some :math:`\mathsf{extend}` :math:`{\mathit{sx}}`, then:
+      #) If :math:`{\mathit{vcvtop}}` is some :math:`\mathsf{extend}` :math:`{\mathit{half}}` :math:`{\mathit{sx}}`, then:
 
-         a) Let :math:`({\mathsf{extend}}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{vcvtop}}`.
+         a) Let :math:`({\mathsf{extend}}{\mathsf{\_}}{{\mathit{half}}}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{vcvtop}}`.
 
          #) Let :math:`c` be :math:`{{{{\mathrm{extend}}}_{N_1, N_2}^{{\mathit{sx}}}}}{(c_1)}`.
 
@@ -23698,9 +23854,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       1) Let :math:`{{\mathsf{f}}{N}}_2` be the lane type :math:`{\mathit{lanetype}}`.
 
-      #) If :math:`{\mathit{vcvtop}}` is some :math:`\mathsf{convert}` :math:`{\mathit{sx}}`, then:
+      #) If :math:`{\mathit{vcvtop}}` is some :math:`\mathsf{convert}` :math:`{{\mathit{half}}^?}` :math:`{\mathit{sx}}`, then:
 
-         a) Let :math:`({\mathsf{convert}}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{vcvtop}}`.
+         a) Let :math:`({\mathsf{convert}}{\mathsf{\_}}{{{\mathit{half}}^?}})` be the destructuring of :math:`{\mathit{vcvtop}}`.
 
          #) Let :math:`c` be :math:`{{{{\mathrm{convert}}}_{N_1, N_2}^{{\mathit{sx}}}}}{(c_1)}`.
 
@@ -23714,7 +23870,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    a. Let :math:`{{\mathsf{i}}{N}}_2` be the lane type :math:`{\mathit{lanetype}}`.
 
-   #. If :math:`{\mathit{vcvtop}}` is some :math:`\mathsf{trunc\_sat}` :math:`{\mathit{sx}}`, then:
+   #. If :math:`{\mathit{vcvtop}}` is some :math:`\mathsf{trunc\_sat}` :math:`{\mathit{sx}}` :math:`{{\mathit{zero}}^?}`, then:
 
       1) Let :math:`({\mathsf{trunc\_sat}}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{vcvtop}}`.
 
@@ -23722,7 +23878,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       #) Return :math:`{c^?}`.
 
-   #. If :math:`{\mathit{vcvtop}}` is some :math:`\mathsf{relaxed\_trunc}` :math:`{\mathit{sx}}`, then:
+   #. If :math:`{\mathit{vcvtop}}` is some :math:`\mathsf{relaxed\_trunc}` :math:`{\mathit{sx}}` :math:`{{\mathit{zero}}^?}`, then:
 
       1) Let :math:`({\mathsf{relaxed\_trunc}}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{vcvtop}}`.
 
@@ -23734,26 +23890,26 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{{\mathsf{f}}{N}}_2` be the lane type :math:`{\mathit{lanetype}}`.
 
-#. If :math:`{\mathit{vcvtop}} = \mathsf{demote}`, then:
+#. If :math:`{\mathit{vcvtop}} = ({\mathsf{demote}}{\mathsf{\_}}{\mathsf{zero}}~\mathsf{zero})`, then:
 
    a. Let :math:`{c^\ast}` be :math:`{{\mathrm{demote}}}_{N_1, N_2}(c_1)`.
 
    #. Return :math:`{c^\ast}`.
 
-#. Assert: Due to validation, :math:`{\mathit{vcvtop}} = \mathsf{promote}`.
+#. Assert: Due to validation, :math:`{\mathit{vcvtop}} = `.
 
 #. Let :math:`{c^\ast}` be :math:`{{\mathrm{promote}}}_{N_1, N_2}(c_1)`.
 
 #. Return :math:`{c^\ast}`.
 
 
-:math:`{{\mathrm{vcvtop}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{{M'}}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{{M''}}}({\mathit{vcvtop}}, {{\mathit{half}}^?}, {{\mathit{zero}}^?}, v_1)`
-.................................................................................................................................................................................
+:math:`{{\mathrm{vcvtop}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{{M'}}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{{M''}}}({\mathit{vcvtop}}, v_1)`
+.......................................................................................................................................
 
 
 1. Let :math:`M` be :math:`{M''}`.
 
-#. If :math:`{{\mathit{half}}^?}` is not defined and :math:`{{\mathit{zero}}^?}` is not defined and :math:`{M'} = M`, then:
+#. If :math:`{M'} = M` and :math:`{\mathrm{halfop}}({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M}, {\mathit{vcvtop}})` is not defined and :math:`{\mathrm{zeroop}}({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M}, {\mathit{vcvtop}})` is not defined, then:
 
    a. Let :math:`{c_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M}}(v_1)`.
 
@@ -23767,9 +23923,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`M_2` be :math:`{M''}`.
 
-#. If :math:`{{\mathit{zero}}^?}` is not defined and :math:`{{\mathit{half}}^?}` is defined, then:
+#. If :math:`{\mathrm{halfop}}({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}, {\mathit{vcvtop}})` is defined, then:
 
-   a. Let :math:`{\mathit{half}}` be :math:`{{\mathit{half}}^?}`.
+   a. Let :math:`{\mathit{half}}` be :math:`{\mathrm{halfop}}({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}, {\mathit{vcvtop}})`.
 
    #. Let :math:`{c_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}}(v_1){}[{\mathrm{half}}({\mathit{half}}, 0, M_2) : M_2]`.
 
@@ -23779,9 +23935,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. Return :math:`v`.
 
-#. Assert: Due to validation, :math:`{{\mathit{half}}^?}` is not defined.
-
-#. Assert: Due to validation, :math:`{{\mathit{zero}}^?}` is defined.
+#. Assert: Due to validation, :math:`{\mathrm{zeroop}}({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}, {\mathit{vcvtop}}) = \mathsf{zero}`.
 
 #. Let :math:`{c_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}}(v_1)`.
 
@@ -23926,13 +24080,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .............................................................................................................................
 
 
-1. If :math:`{\mathit{vextbinop}}` is some :math:`\mathsf{extmul}` :math:`{\mathit{sx}}` :math:`{{\mathit{half}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}`, then:
+1. If :math:`{\mathit{vextbinop}}` is some :math:`\mathsf{extmul}` :math:`{\mathit{half}}` :math:`{\mathit{sx}}`, then:
 
-   a. Let :math:`({\mathsf{extmul}}{\mathsf{\_}}{{\mathit{sx}}}{\mathsf{\_}}{{\mathit{half}}})` be the destructuring of :math:`{\mathit{vextbinop}}`.
+   a. Let :math:`({\mathsf{extmul}}{\mathsf{\_}}{{\mathit{half}}}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{vextbinop}}`.
 
-   #. Let :math:`i` be :math:`{\mathrm{half}}({\mathit{half}}, 0, M_2)`.
-
-   #. Return :math:`{{\mathrm{ivextbinop}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}({\mathrm{ivmul}}, {\mathit{sx}}, {\mathit{sx}}, i, M_2, v_1, v_2)`.
+   #. Return :math:`{{\mathrm{ivextbinop}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}({\mathrm{ivmul}}, {\mathit{sx}}, {\mathit{sx}}, {\mathrm{half}}({\mathit{half}}, 0, M_2), M_2, v_1, v_2)`.
 
 #. If :math:`{\mathit{vextbinop}} = `, then:
 
@@ -26271,7 +26423,7 @@ Instr_ok/vnarrow
 - the instruction (VNARROW sh_1 sh_2 sx) is valid with [V128, V128] -> [V128].
 
 Instr_ok/vcvtop
-- the instruction (VCVTOP sh_1 sh_2 vcvtop half? zero?) is valid with [V128] -> [V128].
+- the instruction (VCVTOP sh_1 sh_2 vcvtop) is valid with [V128] -> [V128].
 
 Instr_ok/local.get
 - the instruction (LOCAL.GET x) is valid with the instruction type [] -> [t] if:
@@ -27548,10 +27700,10 @@ Step_pure/vnarrow sh_2 sh_1 sx
 5. Let c be $vnarrowop__(sh_1, sh_2, sx, c_1, c_2).
 6. Push the value (V128.CONST c) to the stack.
 
-Step_pure/vcvtop sh_2 sh_1 vcvtop half? zero?
+Step_pure/vcvtop sh_2 sh_1 vcvtop
 1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_1) from the stack.
-3. Let c be $vcvtop__(sh_1, sh_2, vcvtop, half?, zero?, c_1).
+3. Let c be $vcvtop__(sh_1, sh_2, vcvtop, c_1).
 4. Push the value (V128.CONST c) to the stack.
 
 Step_pure/local.tee x
@@ -29408,7 +29560,7 @@ free_instr instr'
   a. Let (VNARROW ishape_1 ishape_2 sx) be instr'.
   b. Return $free_shape(ishape_1) ++ $free_shape(ishape_2).
 45. If instr' is some VCVTOP, then:
-  a. Let (VCVTOP shape_1 shape_2 vcvtop half? zero?) be instr'.
+  a. Let (VCVTOP shape_1 shape_2 vcvtop) be instr'.
   b. Return $free_shape(shape_1) ++ $free_shape(shape_2).
 46. If instr' is some VSPLAT, then:
   a. Let (VSPLAT shape) be instr'.
@@ -30049,15 +30201,52 @@ invlanes_ sh c*
 1. Let vc be $lanes__1^-1(sh, c*).
 2. Return vc.
 
-half__ Lnn_1' X M_1 lanetype X M_2 half__ i j
-1. If (Lnn_1' is Jnn /\ lanetype is Jnn), then:
-  a. If (half__ = LOW), then:
-    1) Return i.
-  b. If (half__ = HIGH), then:
-    1) Return j.
-2. Assert: Due to validation, lanetype is Fnn.
-3. Assert: Due to validation, (half__ = LOW).
-4. Return i.
+zeroop lanetype'' X M_1 lanetype X M_2 vcvtop__
+1. If lanetype'' is Jnn, then:
+  a. If (lanetype is Jnn /\ vcvtop__ is some EXTEND), then:
+    1) Return ?().
+  b. If (lanetype is Fnn /\ vcvtop__ is some CONVERT), then:
+    1) Return ?().
+2. Assert: Due to validation, lanetype'' is Fnn.
+3. If lanetype is Jnn, then:
+  a. If vcvtop__ is some TRUNC_SAT, then:
+    1) Let (TRUNC_SAT sx zero?) be vcvtop__.
+    2) Return zero?.
+  b. If vcvtop__ is some RELAXED_TRUNC, then:
+    1) Let (RELAXED_TRUNC sx zero?) be vcvtop__.
+    2) Return zero?.
+4. Assert: Due to validation, lanetype is Fnn.
+5. If vcvtop__ is some DEMOTE, then:
+  a. Let (DEMOTE zero) be vcvtop__.
+  b. Return ?(zero).
+6. Assert: Due to validation, (vcvtop__ = PROMOTELOW).
+7. Return ?().
+
+halfop lanetype'' X M_1 lanetype X M_2 vcvtop__
+1. If lanetype'' is Jnn, then:
+  a. If (lanetype is Jnn /\ vcvtop__ is some EXTEND), then:
+    1) Let (EXTEND half sx) be vcvtop__.
+    2) Return ?(half).
+  b. If (lanetype is Fnn /\ vcvtop__ is some CONVERT), then:
+    1) Let (CONVERT half? sx) be vcvtop__.
+    2) Return half?.
+2. Assert: Due to validation, lanetype'' is Fnn.
+3. If lanetype is Jnn, then:
+  a. If vcvtop__ is some TRUNC_SAT, then:
+    1) Return ?().
+  b. If vcvtop__ is some RELAXED_TRUNC, then:
+    1) Return ?().
+4. Assert: Due to validation, lanetype is Fnn.
+5. If vcvtop__ is some DEMOTE, then:
+  a. Return ?().
+6. Assert: Due to validation, (vcvtop__ = PROMOTELOW).
+7. Return ?(LOW).
+
+half half i j
+1. If (half = LOW), then:
+  a. Return i.
+2. Assert: Due to validation, (half = HIGH).
+3. Return j.
 
 iswizzle_lane_ N c* i
 1. If (i < |c*|), then:
@@ -30323,13 +30512,13 @@ lcvtop__ lanetype'' X M_1 lanetype X M_2 vcvtop__ c_1
   b. If lanetype is Jnn, then:
     1) Let Jnn_2 be lanetype.
     2) If vcvtop__ is some EXTEND, then:
-      a) Let (EXTEND sx) be vcvtop__.
+      a) Let (EXTEND half sx) be vcvtop__.
       b) Let c be $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), sx, c_1).
       c) Return [c].
   c. If lanetype is Fnn, then:
     1) Let Fnn_2 be lanetype.
     2) If vcvtop__ is some CONVERT, then:
-      a) Let (CONVERT sx) be vcvtop__.
+      a) Let (CONVERT half? sx) be vcvtop__.
       b) Let c be $convert__($lsizenn1(Jnn_1), $lsizenn2(Fnn_2), sx, c_1).
       c) Return [c].
 2. Assert: Due to validation, lanetype'' is Fnn.
@@ -30337,43 +30526,42 @@ lcvtop__ lanetype'' X M_1 lanetype X M_2 vcvtop__ c_1
 4. If lanetype is Inn, then:
   a. Let Inn_2 be lanetype.
   b. If vcvtop__ is some TRUNC_SAT, then:
-    1) Let (TRUNC_SAT sx) be vcvtop__.
+    1) Let (TRUNC_SAT sx zero?) be vcvtop__.
     2) Let c? be $trunc_sat__($lsizenn1(Fnn_1), $lsizenn2(Inn_2), sx, c_1).
     3) Return c?.
   c. If vcvtop__ is some RELAXED_TRUNC, then:
-    1) Let (RELAXED_TRUNC sx) be vcvtop__.
+    1) Let (RELAXED_TRUNC sx zero?) be vcvtop__.
     2) Let c? be $relaxed_trunc__($lsizenn1(Fnn_1), $lsizenn2(Inn_2), sx, c_1).
     3) Return c?.
 5. Assert: Due to validation, lanetype is Fnn.
 6. Let Fnn_2 be lanetype.
-7. If (vcvtop__ = DEMOTE), then:
+7. If (vcvtop__ = (DEMOTE ZERO)), then:
   a. Let c* be $demote__($lsizenn1(Fnn_1), $lsizenn2(Fnn_2), c_1).
   b. Return c*.
-8. Assert: Due to validation, (vcvtop__ = PROMOTE).
+8. Assert: Due to validation, (vcvtop__ = PROMOTELOW).
 9. Let c* be $promote__($lsizenn1(Fnn_1), $lsizenn2(Fnn_2), c_1).
 10. Return c*.
 
-vcvtop__ Lnn_1 X M' Lnn_2 X M'' vcvtop half__? zero__? v_1
+vcvtop__ Lnn_1 X M' Lnn_2 X M'' vcvtop v_1
 1. Let M be M''.
-2. If (half__? is not defined /\ (zero__? is not defined /\ (M' = M))), then:
+2. If ((M' = M) /\ ($halfop(Lnn_1 X M, Lnn_2 X M, vcvtop) is not defined /\ $zeroop(Lnn_1 X M, Lnn_2 X M, vcvtop) is not defined)), then:
   a. Let c_1* be $lanes_(Lnn_1 X M, v_1).
   b. Let c** be $setproduct_(`lane_(Lnn_2), $lcvtop__(Lnn_1 X M, Lnn_2 X M, vcvtop, c_1)*).
   c. Let v be an element of $invlanes_(Lnn_2 X M, c*)*.
   d. Return v.
 3. Let M_1 be M'.
 4. Let M_2 be M''.
-5. If (zero__? is not defined /\ half__? is defined), then:
-  a. Let ?(half) be half__?.
-  b. Let c_1* be $lanes_(Lnn_1 X M_1, v_1)[$half__(Lnn_1 X M_1, Lnn_2 X M_2, half, 0, M_2) : M_2].
+5. If $halfop(Lnn_1 X M_1, Lnn_2 X M_2, vcvtop) is defined, then:
+  a. Let ?(half) be $halfop(Lnn_1 X M_1, Lnn_2 X M_2, vcvtop).
+  b. Let c_1* be $lanes_(Lnn_1 X M_1, v_1)[$half(half, 0, M_2) : M_2].
   c. Let c** be $setproduct_(`lane_(Lnn_2), $lcvtop__(Lnn_1 X M_1, Lnn_2 X M_2, vcvtop, c_1)*).
   d. Let v be an element of $invlanes_(Lnn_2 X M_2, c*)*.
   e. Return v.
-6. Assert: Due to validation, half__? is not defined.
-7. Assert: Due to validation, zero__? is defined.
-8. Let c_1* be $lanes_(Lnn_1 X M_1, v_1).
-9. Let c** be $setproduct_(`lane_(Lnn_2), $lcvtop__(Lnn_1 X M_1, Lnn_2 X M_2, vcvtop, c_1)* :: [$zero(Lnn_2)]^M_1).
-10. Let v be an element of $invlanes_(Lnn_2 X M_2, c*)*.
-11. Return v.
+6. Assert: Due to validation, ($zeroop(Lnn_1 X M_1, Lnn_2 X M_2, vcvtop) = ?(ZERO)).
+7. Let c_1* be $lanes_(Lnn_1 X M_1, v_1).
+8. Let c** be $setproduct_(`lane_(Lnn_2), $lcvtop__(Lnn_1 X M_1, Lnn_2 X M_2, vcvtop, c_1)* :: [$zero(Lnn_2)]^M_1).
+9. Let v be an element of $invlanes_(Lnn_2 X M_2, c*)*.
+10. Return v.
 
 vshiftop_ Jnn X M vshiftop_ v i
 1. If (vshiftop_ = SHL), then:
@@ -30436,9 +30624,8 @@ ivmul_ N i_1* i_2*
 
 vextbinop__ Jnn_1 X M_1 Jnn_2 X M_2 vextbinop__ v_1 v_2
 1. If vextbinop__ is some EXTMUL, then:
-  a. Let (EXTMUL sx half) be vextbinop__.
-  b. Let i be $half__(Jnn_1 X M_1, Jnn_2 X M_2, half, 0, M_2).
-  c. Return $ivextbinop__(Jnn_1 X M_1, Jnn_2 X M_2, $ivmul_, sx, sx, i, M_2, v_1, v_2).
+  a. Let (EXTMUL half sx) be vextbinop__.
+  b. Return $ivextbinop__(Jnn_1 X M_1, Jnn_2 X M_2, $ivmul_, sx, sx, $half(half, 0, M_2), M_2, v_1, v_2).
 2. If (vextbinop__ = DOTS), then:
   a. Return $ivextbinop__(Jnn_1 X M_1, Jnn_2 X M_2, $ivdot_, S, S, 0, M_1, v_1, v_2).
 3. Assert: Due to validation, (vextbinop__ = RELAXED_DOTS).

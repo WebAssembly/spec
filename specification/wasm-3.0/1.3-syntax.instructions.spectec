@@ -91,12 +91,8 @@ syntax bshape hint(desc "byte shape") = shape    -- if $lanetype(shape) = I8
 
 ;; Vector operators
 
-syntax half__(shape_1, shape_2)
-syntax half__(Jnn_1 X M_1, Jnn_2 X M_2) = LOW | HIGH  -- if $(2 * $lsizenn1(Jnn_1)) = $lsizenn2(Jnn_2)
-syntax half__(Lnn_1 X M_1, Fnn_2 X M_2) = LOW         -- if $(2 * $lsizenn1(Lnn_1)) = $sizenn2(Fnn_2) = 64
-
-syntax zero__(shape_1, shape_2)
-syntax zero__(Fnn_1 X M_1, Lnn_2 X M_2) = ZERO -- if $(2 * $lsizenn2(Lnn_2)) = $sizenn1(Fnn_1) = 64
+syntax zero = ZERO
+syntax half = LOW | HIGH
 
 syntax vvunop hint(macro "%" "V%") = NOT
 syntax vvbinop hint(macro "%" "V%") = AND | ANDNOT | OR | XOR
@@ -152,7 +148,7 @@ syntax vextunop__(Jnn_1 X M_1, Jnn_2 X M_2) =
 
 syntax vextbinop__(ishape_1, ishape_2) hint(macro "%" "V%")
 syntax vextbinop__(Jnn_1 X M_1, Jnn_2 X M_2) =
-  | EXTMUL sx half__(Jnn_1 X M_1, Jnn_2 X M_2) hint(show EXTMUL#_#%#_#%)
+  | EXTMUL half sx hint(show EXTMUL#_#%#_#%)
     -- if $(2 * $lsizenn1(Jnn_1)) = $lsizenn2(Jnn_2) >= `16
   | DOT S hint(show DOT#_#%)
     -- if $(2 * $lsizenn1(Jnn_1)) = $lsizenn2(Jnn_2) = `32
@@ -164,22 +160,26 @@ syntax vextternop__(Jnn_1 X M_1, Jnn_2 X M_2) =
   | RELAXED_DOT_ADD S hint(show RELAXED_DOT_ADD#_#%)
     -- if $(4 * $lsizenn1(Jnn_1)) = $lsizenn2(Jnn_2) = `32
 
-;; TODO(3, rossberg): internalise half and zero?
 syntax vcvtop__(shape_1, shape_2) hint(macro "%" "V%")
 syntax vcvtop__(Jnn_1 X M_1, Jnn_2 X M_2) =
-  | EXTEND sx hint(show EXTEND#_#%)
+  | EXTEND half sx hint(show EXTEND#_#%#_#%)
     -- if $lsizenn2(Jnn_2) = $(2 * $lsizenn1(Jnn_1))
 syntax vcvtop__(Jnn_1 X M_1, Fnn_2 X M_2) =
-  | CONVERT sx hint(show CONVERT#_#%)
-    -- if $sizenn2(Fnn_2) >= $lsizenn1(Jnn_1) = `32
+  | CONVERT half? sx hint(show CONVERT#_#%#_#%) hint(show CONVERT#_#%)
+    -- if $sizenn2(Fnn_2) = $lsizenn1(Jnn_1) = `32 /\ half? = eps
+       \/ $sizenn2(Fnn_2) = $(2 * $lsizenn1(Jnn_1)) /\ half? = LOW
 syntax vcvtop__(Fnn_1 X M_1, Jnn_2 X M_2) =
-  | TRUNC_SAT sx hint(show TRUNC_SAT#_#%)
-    -- if $sizenn1(Fnn_1) >= $lsizenn2(Jnn_2) = `32
-  | RELAXED_TRUNC sx hint(show RELAXED_TRUNC#_#%)
-    -- if $sizenn1(Fnn_1) >= $lsizenn2(Jnn_2) = `32
+  | TRUNC_SAT sx zero? hint(show TRUNC_SAT#_#%#_#%) hint(show TRUNC_SAT#_#%)
+    -- if $sizenn1(Fnn_1) = $lsizenn2(Jnn_2) = `32 /\ zero? = eps
+       \/ $sizenn1(Fnn_1) = $(2 * $lsizenn2(Jnn_2)) /\ zero? = ZERO
+  | RELAXED_TRUNC sx zero? hint(show RELAXED_TRUNC#_#%#_#%) hint(show RELAXED_TRUNC#_#%)
+    -- if $sizenn1(Fnn_1) = $lsizenn2(Jnn_2) = `32 /\ zero? = eps
+       \/ $sizenn1(Fnn_1) = $(2 * $lsizenn2(Jnn_2)) /\ zero? = ZERO
 syntax vcvtop__(Fnn_1 X M_1, Fnn_2 X M_2) =
-  | DEMOTE    -- if $sizenn1(Fnn_1) > $sizenn2(Fnn_2)
-  | PROMOTE   -- if $sizenn1(Fnn_1) < $sizenn2(Fnn_2)
+  | DEMOTE zero hint(show DEMOTE#_#ZERO)
+    -- if $sizenn1(Fnn_1) = $(2 * $sizenn2(Fnn_2))
+  | PROMOTE LOW hint(show PROMOTE#_#LOW)
+    -- if $(2 * $sizenn1(Fnn_1)) = $sizenn2(Fnn_2)
 
 
 ;; Memory operators
@@ -292,11 +292,7 @@ syntax instr/vec hint(desc "vector instruction") = ...
     hint(show ##%1.##%3#_# ##%2)
   | VNARROW ishape_1 ishape_2 sx        hint(show ##%.NARROW#_# ##%#_#%) hint(macro "VNARROW")
     -- if $($lsize($lanetype(ishape_2)) = 2*$lsize($lanetype(ishape_1)) <= `32)
-  | VCVTOP shape_1 shape_2 vcvtop__(shape_2, shape_1) half__(shape_2, shape_1)? zero__(shape_2, shape_1)?
-    ;; TODO(1, rossberg): fix overlong line
-    hint(show ##%1.%3#_# ##%2)
-    hint(show ##%1.%3#_# ##%2#_#%4)        ;; TODO(2, rossberg): this is wrong when half is absent
-    hint(show ##%1.%3#_#%5#_# ##%2#_#%4)   ;; TODO(2, rossberg): this is wrong when half is present
+  | VCVTOP shape_1 shape_2 vcvtop__(shape_2, shape_1) hint(show ##%1.%3#_# ##%2)
   | VSPLAT shape                        hint(show ##%.SPLAT) hint(macro "VSPLAT")
   | VEXTRACT_LANE shape sx? laneidx     hint(show ##%.EXTRACT_LANE %) hint(show ##%.EXTRACT_LANE#_#% %) hint(macro "VEXTRACT_LANE")
     -- if sx? = eps <=> $lanetype(shape) <- I32 I64 F32 F64
@@ -489,7 +485,7 @@ def $free_instr(VEXTBINOP ishape_1 ishape_2 vextbinop) =
   $free_shape(ishape_1) ++ $free_shape(ishape_2)
 def $free_instr(VNARROW ishape_1 ishape_2 sx) =
   $free_shape(ishape_1) ++ $free_shape(ishape_2)
-def $free_instr(VCVTOP shape_1 shape_2 vcvtop half? zero?) =
+def $free_instr(VCVTOP shape_1 shape_2 vcvtop) =
   $free_shape(shape_1) ++ $free_shape(shape_2)
 def $free_instr(VSPLAT shape) = $free_shape(shape)
 def $free_instr(VEXTRACT_LANE shape sx? laneidx) = $free_shape(shape)

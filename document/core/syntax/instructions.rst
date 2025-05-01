@@ -117,7 +117,7 @@ Vector Instructions
 
 Vector instructions (also known as *SIMD* instructions, *single instruction multiple data*) provide basic operations over :ref:`values <syntax-value>` of :ref:`vector type <syntax-vectype>`.
 
-$${syntax: {lanetype dim shape ishape bshape} half__ zero__ laneidx instr/vec}
+$${syntax: {lanetype dim shape ishape bshape} half zero laneidx instr/vec}
 
 Vector instructions have a naming convention involving a *shape* prefix that
 determines how their operands will be interpreted,
@@ -162,6 +162,8 @@ For the other vector instructions, the use of two's complement for the signed in
 
 .. _aux-lanetype:
 .. _aux-dim:
+.. _aux-zeroop:
+.. _aux-halfop:
 
 Conventions
 ...........
@@ -169,6 +171,10 @@ Conventions
 * The function ${:$lanetype(shape)} extracts the lane type of a shape.  ${definition-ignore: lanetype}
 
 * The function ${:$dim(shape)} extracts the dimension of a shape.  ${definition-ignore: dim}
+
+* The function ${:$zeroop(vcvtop)} extracts the ${:ZERO} flag from a vector conversion operator, or returns ${:eps} if it does not contain any.  ${definition-ignore: zeroop}
+
+* The function ${:$halfop(vcvtop)} extracts the ${:half} flag from a vector conversion operator, or returns ${:eps} if it does not contain any.  ${definition-ignore: halfop}
 
 
 .. index:: ! reference instruction, reference, null, cast, heap type, reference type
