@@ -739,7 +739,7 @@ def $FUNCREF : reftype
 ;; ../../../../specification/wasm-3.0/1.2-syntax.types.spectec
 def $EXNREF : reftype
   ;; ../../../../specification/wasm-3.0/1.2-syntax.types.spectec
-  def $EXNREF = REF_reftype(?(NULL_NULL), EXTERN_heaptype)
+  def $EXNREF = REF_reftype(?(NULL_NULL), EXN_heaptype)
 
 ;; ../../../../specification/wasm-3.0/1.2-syntax.types.spectec
 def $EXTERNREF : reftype
@@ -9647,7 +9647,7 @@ def $FUNCREF : reftype
 ;; ../../../../specification/wasm-3.0/1.2-syntax.types.spectec
 def $EXNREF : reftype
   ;; ../../../../specification/wasm-3.0/1.2-syntax.types.spectec
-  def $EXNREF = REF_reftype(?(NULL_NULL), EXTERN_heaptype)
+  def $EXNREF = REF_reftype(?(NULL_NULL), EXN_heaptype)
 
 ;; ../../../../specification/wasm-3.0/1.2-syntax.types.spectec
 def $EXTERNREF : reftype
@@ -18560,7 +18560,7 @@ def $FUNCREF : reftype
 ;; ../../../../specification/wasm-3.0/1.2-syntax.types.spectec
 def $EXNREF : reftype
   ;; ../../../../specification/wasm-3.0/1.2-syntax.types.spectec
-  def $EXNREF = REF_reftype(?(NULL_NULL), EXTERN_heaptype)
+  def $EXNREF = REF_reftype(?(NULL_NULL), EXN_heaptype)
 
 ;; ../../../../specification/wasm-3.0/1.2-syntax.types.spectec
 def $EXTERNREF : reftype

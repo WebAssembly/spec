@@ -2847,7 +2847,7 @@ $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-\mathsf{exnref} & = & (\mathsf{ref}~\mathsf{null}~\mathsf{extern}) \\
+\mathsf{exnref} & = & (\mathsf{ref}~\mathsf{null}~\mathsf{exn}) \\
 \end{array}
 $$
 

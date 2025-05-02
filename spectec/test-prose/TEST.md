@@ -20364,7 +20364,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .......................
 
 
-1. Return :math:`(\mathsf{ref}~\mathsf{null}~\mathsf{extern})`.
+1. Return :math:`(\mathsf{ref}~\mathsf{null}~\mathsf{exn})`.
 
 
 :math:`\mathsf{externref}`
@@ -28874,7 +28874,7 @@ FUNCREF
 1. Return (REF ?(NULL) FUNC).
 
 EXNREF
-1. Return (REF ?(NULL) EXTERN).
+1. Return (REF ?(NULL) EXN).
 
 EXTERNREF
 1. Return (REF ?(NULL) EXTERN).
