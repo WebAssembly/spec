@@ -15,12 +15,16 @@ The text format defines modules in S-expression syntax. Moreover, it is generali
 
 ## Building
 
-You'll need OCaml 4.12 or higher. Instructions for installing a recent version of OCaml on multiple platforms are available [here](https://ocaml.org/docs/install.html). On most platforms, the recommended way is through [OPAM](https://ocaml.org/docs/install.html#OPAM).
+You'll need OCaml 4.12 or higher. Instructions for installing a recent version of OCaml on multiple platforms are available [here](https://ocaml.org/docs/installing-ocaml). On most platforms, the recommended way is through [Opam](https://ocaml.org/docs/installing-ocaml#install-opam).
 
 You'll also need to install the dune build system. See the [installation instructions](https://github.com/ocaml/dune#installation-1).
 
-Once you have OCaml, simply do
+And you need to install the [Menhir](https://gallium.inria.fr/~fpottier/menhir/) parser generator:
+```
+opam install menhir
+```
 
+Once you have OCaml, simply do
 ```
 make
 ```
