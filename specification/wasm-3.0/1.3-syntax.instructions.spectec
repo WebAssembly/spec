@@ -483,6 +483,8 @@ def $free_instr(VEXTUNOP ishape_1 ishape_2 vextunop) =
   $free_shape(ishape_1) ++ $free_shape(ishape_2)
 def $free_instr(VEXTBINOP ishape_1 ishape_2 vextbinop) =
   $free_shape(ishape_1) ++ $free_shape(ishape_2)
+def $free_instr(VEXTTERNOP ishape_1 ishape_2 vextternop) =
+  $free_shape(ishape_1) ++ $free_shape(ishape_2)
 def $free_instr(VNARROW ishape_1 ishape_2 sx) =
   $free_shape(ishape_1) ++ $free_shape(ishape_2)
 def $free_instr(VCVTOP shape_1 shape_2 vcvtop) =
