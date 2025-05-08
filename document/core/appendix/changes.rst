@@ -36,7 +36,7 @@ Concretely:
     a prior module may encounter new behaviours,
     e.g., new forms of control flow or side effects when calling into a latter module.
 
-In addition, the :ref:`instruction opcode <binary-instr>` :math:`\hex{FF}` is considered reserved for custom use and will never be allocated to represent an instruction or instruction prefix.
+In addition, future versions of WebAssembly will not allocate the :ref:`opcode <binary-instr>` :math:`\hex{FF}` to represent an instruction or instruction prefix.
 
 
 
