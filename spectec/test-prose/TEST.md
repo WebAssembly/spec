@@ -21835,6 +21835,12 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. Return `$free_shape(ishape_1) ++ $free_shape(ishape_2)`.
 
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{vextternop}` :math:`{\mathit{ishape}}_1` :math:`{\mathit{ishape}}_2` :math:`{{\mathit{vextternop}}}_{{\mathit{ishape}}_2, {\mathit{ishape}}_1}`, then:
+
+   a. Let :math:`({\mathit{ishape}}_1 {.} {{\mathit{vextternop}}}{\mathsf{\_}}{{\mathit{ishape}}_2})` be the destructuring of :math:`{\mathit{instr}'}`.
+
+   #. Return `$free_shape(ishape_1) ++ $free_shape(ishape_2)`.
+
 #. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{vnarrow}` :math:`{\mathit{ishape}}_1` :math:`{\mathit{ishape}}_2` :math:`{\mathit{sx}}`, then:
 
    a. Let :math:`({{\mathit{ishape}}_1{.}\mathsf{narrow}}{\mathsf{\_}}{{\mathit{ishape}}_2}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{instr}'}`.
@@ -29556,168 +29562,171 @@ free_instr instr'
 43. If instr' is some VEXTBINOP, then:
   a. Let (VEXTBINOP ishape_1 ishape_2 vextbinop) be instr'.
   b. Return $free_shape(ishape_1) ++ $free_shape(ishape_2).
-44. If instr' is some VNARROW, then:
+44. If instr' is some VEXTTERNOP, then:
+  a. Let (VEXTTERNOP ishape_1 ishape_2 vextternop) be instr'.
+  b. Return $free_shape(ishape_1) ++ $free_shape(ishape_2).
+45. If instr' is some VNARROW, then:
   a. Let (VNARROW ishape_1 ishape_2 sx) be instr'.
   b. Return $free_shape(ishape_1) ++ $free_shape(ishape_2).
-45. If instr' is some VCVTOP, then:
+46. If instr' is some VCVTOP, then:
   a. Let (VCVTOP shape_1 shape_2 vcvtop) be instr'.
   b. Return $free_shape(shape_1) ++ $free_shape(shape_2).
-46. If instr' is some VSPLAT, then:
+47. If instr' is some VSPLAT, then:
   a. Let (VSPLAT shape) be instr'.
   b. Return $free_shape(shape).
-47. If instr' is some VEXTRACT_LANE, then:
+48. If instr' is some VEXTRACT_LANE, then:
   a. Let (VEXTRACT_LANE shape sx? laneidx) be instr'.
   b. Return $free_shape(shape).
-48. If instr' is some VREPLACE_LANE, then:
+49. If instr' is some VREPLACE_LANE, then:
   a. Let (VREPLACE_LANE shape laneidx) be instr'.
   b. Return $free_shape(shape).
-49. If instr' is some REF.NULL, then:
+50. If instr' is some REF.NULL, then:
   a. Let (REF.NULL heaptype) be instr'.
   b. Return $free_heaptype(heaptype).
-50. If (instr' = REF.IS_NULL), then:
+51. If (instr' = REF.IS_NULL), then:
   a. Return {}.
-51. If (instr' = REF.AS_NON_NULL), then:
+52. If (instr' = REF.AS_NON_NULL), then:
   a. Return {}.
-52. If (instr' = REF.EQ), then:
+53. If (instr' = REF.EQ), then:
   a. Return {}.
-53. If instr' is some REF.TEST, then:
+54. If instr' is some REF.TEST, then:
   a. Let (REF.TEST reftype) be instr'.
   b. Return $free_reftype(reftype).
-54. If instr' is some REF.CAST, then:
+55. If instr' is some REF.CAST, then:
   a. Let (REF.CAST reftype) be instr'.
   b. Return $free_reftype(reftype).
-55. If instr' is some REF.FUNC, then:
+56. If instr' is some REF.FUNC, then:
   a. Let (REF.FUNC funcidx) be instr'.
   b. Return $free_funcidx(funcidx).
-56. If (instr' = REF.I31), then:
+57. If (instr' = REF.I31), then:
   a. Return {}.
-57. If instr' is some I31.GET, then:
+58. If instr' is some I31.GET, then:
   a. Return {}.
-58. If instr' is some STRUCT.NEW, then:
+59. If instr' is some STRUCT.NEW, then:
   a. Return {}.
-59. If instr' is some STRUCT.NEW_DEFAULT, then:
+60. If instr' is some STRUCT.NEW_DEFAULT, then:
   a. Let (STRUCT.NEW_DEFAULT typeidx) be instr'.
   b. Return $free_typeidx(typeidx).
-60. If instr' is some STRUCT.GET, then:
+61. If instr' is some STRUCT.GET, then:
   a. Let (STRUCT.GET sx? typeidx u32) be instr'.
   b. Return $free_typeidx(typeidx).
-61. If instr' is some STRUCT.SET, then:
+62. If instr' is some STRUCT.SET, then:
   a. Let (STRUCT.SET typeidx u32) be instr'.
   b. Return $free_typeidx(typeidx).
-62. If instr' is some ARRAY.NEW, then:
+63. If instr' is some ARRAY.NEW, then:
   a. Let (ARRAY.NEW typeidx) be instr'.
   b. Return $free_typeidx(typeidx).
-63. If instr' is some ARRAY.NEW_DEFAULT, then:
+64. If instr' is some ARRAY.NEW_DEFAULT, then:
   a. Let (ARRAY.NEW_DEFAULT typeidx) be instr'.
   b. Return $free_typeidx(typeidx).
-64. If instr' is some ARRAY.NEW_FIXED, then:
+65. If instr' is some ARRAY.NEW_FIXED, then:
   a. Let (ARRAY.NEW_FIXED typeidx u32) be instr'.
   b. Return $free_typeidx(typeidx).
-65. If instr' is some ARRAY.NEW_DATA, then:
+66. If instr' is some ARRAY.NEW_DATA, then:
   a. Let (ARRAY.NEW_DATA typeidx dataidx) be instr'.
   b. Return $free_typeidx(typeidx) ++ $free_dataidx(dataidx).
-66. If instr' is some ARRAY.NEW_ELEM, then:
+67. If instr' is some ARRAY.NEW_ELEM, then:
   a. Let (ARRAY.NEW_ELEM typeidx elemidx) be instr'.
   b. Return $free_typeidx(typeidx) ++ $free_elemidx(elemidx).
-67. If instr' is some ARRAY.GET, then:
+68. If instr' is some ARRAY.GET, then:
   a. Let (ARRAY.GET sx? typeidx) be instr'.
   b. Return $free_typeidx(typeidx).
-68. If instr' is some ARRAY.SET, then:
+69. If instr' is some ARRAY.SET, then:
   a. Let (ARRAY.SET typeidx) be instr'.
   b. Return $free_typeidx(typeidx).
-69. If (instr' = ARRAY.LEN), then:
+70. If (instr' = ARRAY.LEN), then:
   a. Return {}.
-70. If instr' is some ARRAY.FILL, then:
+71. If instr' is some ARRAY.FILL, then:
   a. Let (ARRAY.FILL typeidx) be instr'.
   b. Return $free_typeidx(typeidx).
-71. If instr' is some ARRAY.COPY, then:
+72. If instr' is some ARRAY.COPY, then:
   a. Let (ARRAY.COPY typeidx_1 typeidx_2) be instr'.
   b. Return $free_typeidx(typeidx_1) ++ $free_typeidx(typeidx_2).
-72. If instr' is some ARRAY.INIT_DATA, then:
+73. If instr' is some ARRAY.INIT_DATA, then:
   a. Let (ARRAY.INIT_DATA typeidx dataidx) be instr'.
   b. Return $free_typeidx(typeidx) ++ $free_dataidx(dataidx).
-73. If instr' is some ARRAY.INIT_ELEM, then:
+74. If instr' is some ARRAY.INIT_ELEM, then:
   a. Let (ARRAY.INIT_ELEM typeidx elemidx) be instr'.
   b. Return $free_typeidx(typeidx) ++ $free_elemidx(elemidx).
-74. If (instr' = EXTERN.CONVERT_ANY), then:
+75. If (instr' = EXTERN.CONVERT_ANY), then:
   a. Return {}.
-75. If (instr' = ANY.CONVERT_EXTERN), then:
+76. If (instr' = ANY.CONVERT_EXTERN), then:
   a. Return {}.
-76. If instr' is some LOCAL.GET, then:
+77. If instr' is some LOCAL.GET, then:
   a. Let (LOCAL.GET localidx) be instr'.
   b. Return $free_localidx(localidx).
-77. If instr' is some LOCAL.SET, then:
+78. If instr' is some LOCAL.SET, then:
   a. Let (LOCAL.SET localidx) be instr'.
   b. Return $free_localidx(localidx).
-78. If instr' is some LOCAL.TEE, then:
+79. If instr' is some LOCAL.TEE, then:
   a. Let (LOCAL.TEE localidx) be instr'.
   b. Return $free_localidx(localidx).
-79. If instr' is some GLOBAL.GET, then:
+80. If instr' is some GLOBAL.GET, then:
   a. Let (GLOBAL.GET globalidx) be instr'.
   b. Return $free_globalidx(globalidx).
-80. If instr' is some GLOBAL.SET, then:
+81. If instr' is some GLOBAL.SET, then:
   a. Let (GLOBAL.SET globalidx) be instr'.
   b. Return $free_globalidx(globalidx).
-81. If instr' is some TABLE.GET, then:
+82. If instr' is some TABLE.GET, then:
   a. Let (TABLE.GET tableidx) be instr'.
   b. Return $free_tableidx(tableidx).
-82. If instr' is some TABLE.SET, then:
+83. If instr' is some TABLE.SET, then:
   a. Let (TABLE.SET tableidx) be instr'.
   b. Return $free_tableidx(tableidx).
-83. If instr' is some TABLE.SIZE, then:
+84. If instr' is some TABLE.SIZE, then:
   a. Let (TABLE.SIZE tableidx) be instr'.
   b. Return $free_tableidx(tableidx).
-84. If instr' is some TABLE.GROW, then:
+85. If instr' is some TABLE.GROW, then:
   a. Let (TABLE.GROW tableidx) be instr'.
   b. Return $free_tableidx(tableidx).
-85. If instr' is some TABLE.FILL, then:
+86. If instr' is some TABLE.FILL, then:
   a. Let (TABLE.FILL tableidx) be instr'.
   b. Return $free_tableidx(tableidx).
-86. If instr' is some TABLE.COPY, then:
+87. If instr' is some TABLE.COPY, then:
   a. Let (TABLE.COPY tableidx_1 tableidx_2) be instr'.
   b. Return $free_tableidx(tableidx_1) ++ $free_tableidx(tableidx_2).
-87. If instr' is some TABLE.INIT, then:
+88. If instr' is some TABLE.INIT, then:
   a. Let (TABLE.INIT tableidx elemidx) be instr'.
   b. Return $free_tableidx(tableidx) ++ $free_elemidx(elemidx).
-88. If instr' is some ELEM.DROP, then:
+89. If instr' is some ELEM.DROP, then:
   a. Let (ELEM.DROP elemidx) be instr'.
   b. Return $free_elemidx(elemidx).
-89. If instr' is some LOAD, then:
+90. If instr' is some LOAD, then:
   a. Let (LOAD numtype loadop? memidx memarg) be instr'.
   b. Return $free_numtype(numtype) ++ $free_memidx(memidx).
-90. If instr' is some STORE, then:
+91. If instr' is some STORE, then:
   a. Let (STORE numtype storeop? memidx memarg) be instr'.
   b. Return $free_numtype(numtype) ++ $free_memidx(memidx).
-91. If instr' is some VLOAD, then:
+92. If instr' is some VLOAD, then:
   a. Let (VLOAD vectype vloadop? memidx memarg) be instr'.
   b. Return $free_vectype(vectype) ++ $free_memidx(memidx).
-92. If instr' is some VLOAD_LANE, then:
+93. If instr' is some VLOAD_LANE, then:
   a. Let (VLOAD_LANE vectype sz memidx memarg laneidx) be instr'.
   b. Return $free_vectype(vectype) ++ $free_memidx(memidx).
-93. If instr' is some VSTORE, then:
+94. If instr' is some VSTORE, then:
   a. Let (VSTORE vectype memidx memarg) be instr'.
   b. Return $free_vectype(vectype) ++ $free_memidx(memidx).
-94. If instr' is some VSTORE_LANE, then:
+95. If instr' is some VSTORE_LANE, then:
   a. Let (VSTORE_LANE vectype sz memidx memarg laneidx) be instr'.
   b. Return $free_vectype(vectype) ++ $free_memidx(memidx).
-95. If instr' is some MEMORY.SIZE, then:
+96. If instr' is some MEMORY.SIZE, then:
   a. Let (MEMORY.SIZE memidx) be instr'.
   b. Return $free_memidx(memidx).
-96. If instr' is some MEMORY.GROW, then:
+97. If instr' is some MEMORY.GROW, then:
   a. Let (MEMORY.GROW memidx) be instr'.
   b. Return $free_memidx(memidx).
-97. If instr' is some MEMORY.FILL, then:
+98. If instr' is some MEMORY.FILL, then:
   a. Let (MEMORY.FILL memidx) be instr'.
   b. Return $free_memidx(memidx).
-98. If instr' is some MEMORY.COPY, then:
+99. If instr' is some MEMORY.COPY, then:
   a. Let (MEMORY.COPY memidx_1 memidx_2) be instr'.
   b. Return $free_memidx(memidx_1) ++ $free_memidx(memidx_2).
-99. If instr' is some MEMORY.INIT, then:
+100. If instr' is some MEMORY.INIT, then:
   a. Let (MEMORY.INIT memidx dataidx) be instr'.
   b. Return $free_memidx(memidx) ++ $free_dataidx(dataidx).
-100. Assert: Due to validation, instr' is some DATA.DROP.
-101. Let (DATA.DROP dataidx) be instr'.
-102. Return $free_dataidx(dataidx).
+101. Assert: Due to validation, instr' is some DATA.DROP.
+102. Let (DATA.DROP dataidx) be instr'.
+103. Return $free_dataidx(dataidx).
 
 free_block instr*
 1. Let free be $free_list($free_instr(instr)*).

@@ -7485,9 +7485,9 @@ grammar Blimits : (addrtype, limits)
   ;; ../../../../specification/wasm-3.0/5.2-binary.types.spectec
   prod{n : n} {0x00 `%`_u64(n):Bu64} => (I32_addrtype, `[%..%]`_limits(`%`_u64(n), `%`_u64(((((2 ^ 64) : nat <:> int) - (1 : nat <:> int)) : int <:> nat))))
   ;; ../../../../specification/wasm-3.0/5.2-binary.types.spectec
-  prod{n : n, m : m} {0x01 `%`_u64(n):Bu64 `%`_u64(m):Bu64} => (I64_addrtype, `[%..%]`_limits(`%`_u64(n), `%`_u64(m)))
+  prod{n : n, m : m} {0x01 `%`_u64(n):Bu64 `%`_u64(m):Bu64} => (I32_addrtype, `[%..%]`_limits(`%`_u64(n), `%`_u64(m)))
   ;; ../../../../specification/wasm-3.0/5.2-binary.types.spectec
-  prod{n : n} {0x04 `%`_u64(n):Bu64} => (I32_addrtype, `[%..%]`_limits(`%`_u64(n), `%`_u64(((((2 ^ 64) : nat <:> int) - (1 : nat <:> int)) : int <:> nat))))
+  prod{n : n} {0x04 `%`_u64(n):Bu64} => (I64_addrtype, `[%..%]`_limits(`%`_u64(n), `%`_u64(((((2 ^ 64) : nat <:> int) - (1 : nat <:> int)) : int <:> nat))))
   ;; ../../../../specification/wasm-3.0/5.2-binary.types.spectec
   prod{n : n, m : m} {0x05 `%`_u64(n):Bu64 `%`_u64(m):Bu64} => (I64_addrtype, `[%..%]`_limits(`%`_u64(n), `%`_u64(m)))
 

@@ -4149,6 +4149,12 @@ $$
 {\mathrm{free}}_{\mathit{shape}}({\mathit{ishape}}_1) \oplus {\mathrm{free}}_{\mathit{shape}}({\mathit{ishape}}_2) \\
 \end{array}
 } \\
+{\mathrm{free}}_{\mathit{instr}}({\mathit{ishape}}_1 {.} {{\mathit{vextternop}}}{\mathsf{\_}}{{\mathit{ishape}}_2}) & = & & \\
+ \multicolumn{4}{@{}l@{}}{\quad
+\begin{array}[t]{@{}l@{}}
+{\mathrm{free}}_{\mathit{shape}}({\mathit{ishape}}_1) \oplus {\mathrm{free}}_{\mathit{shape}}({\mathit{ishape}}_2) \\
+\end{array}
+} \\
 {\mathrm{free}}_{\mathit{instr}}({{\mathit{ishape}}_1{.}\mathsf{narrow}}{\mathsf{\_}}{{\mathit{ishape}}_2}{\mathsf{\_}}{{\mathit{sx}}}) & = & & \\
  \multicolumn{4}{@{}l@{}}{\quad
 \begin{array}[t]{@{}l@{}}
@@ -11376,8 +11382,8 @@ $$
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
 & {\mathtt{limits}} & ::= & \mathtt{0x00}~~n{:}{\mathtt{u64}} & \quad\Rightarrow\quad{} & (\mathsf{i{\scriptstyle 32}}, {}[ n .. {2^{64}} - 1 ]) \\
-& & | & \mathtt{0x01}~~n{:}{\mathtt{u64}}~~m{:}{\mathtt{u64}} & \quad\Rightarrow\quad{} & (\mathsf{i{\scriptstyle 64}}, {}[ n .. m ]) \\
-& & | & \mathtt{0x04}~~n{:}{\mathtt{u64}} & \quad\Rightarrow\quad{} & (\mathsf{i{\scriptstyle 32}}, {}[ n .. {2^{64}} - 1 ]) \\
+& & | & \mathtt{0x01}~~n{:}{\mathtt{u64}}~~m{:}{\mathtt{u64}} & \quad\Rightarrow\quad{} & (\mathsf{i{\scriptstyle 32}}, {}[ n .. m ]) \\
+& & | & \mathtt{0x04}~~n{:}{\mathtt{u64}} & \quad\Rightarrow\quad{} & (\mathsf{i{\scriptstyle 64}}, {}[ n .. {2^{64}} - 1 ]) \\
 & & | & \mathtt{0x05}~~n{:}{\mathtt{u64}}~~m{:}{\mathtt{u64}} & \quad\Rightarrow\quad{} & (\mathsf{i{\scriptstyle 64}}, {}[ n .. m ]) \\
 & {\mathtt{globaltype}} & ::= & t{:}{\mathtt{valtype}}~~{\mathsf{mut}^?}{:}{\mathtt{mut}} & \quad\Rightarrow\quad{} & {\mathsf{mut}^?}~t \\
 & {\mathtt{tabletype}} & ::= & {\mathit{rt}}{:}{\mathtt{reftype}}~~({\mathit{at}}, {\mathit{lim}}){:}{\mathtt{limits}} & \quad\Rightarrow\quad{} & {\mathit{at}}~{\mathit{lim}}~{\mathit{rt}} \\
