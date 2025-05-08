@@ -7,6 +7,39 @@ Change History
 Since the original release 1.0 of the WebAssembly specification, a number of proposals for extensions have been integrated.
 The following sections provide an overview of what has changed.
 
+All present and future versions of WebAssembly are intended to be *backwards-compatible* with all previous versions.
+Concretely:
+
+1. All syntactically :ref:`well-formed <binary>` and :ref:`valid <valid>` modules remain well-formed and valid with an equivalent :ref:`module type <syntax-moduletype>` (or a subtype).
+
+  .. note::
+     This allows previously malformed or invalid modules to become legal,
+     e.g., by adding new features or by relaxing typing rules.
+
+     It also allows reclassifying previously malformed modules as well-formed but invalid,
+     or vice versa.
+
+     And it allows refining the typing of :ref:`imports <syntax-import>` and :ref:`exports <syntax-export>`,
+     such that previously unlinkable modules become linkable.
+
+2. All non-:ref:`trapping <trap>` :ref:`executions <exec>` of a valid program retain their behaviour with an equivalent set of possible :ref:`results <syntax-result>` (or a non-empty subset).
+
+  .. note::
+    This allows previously illegal programs to become executable.
+
+    It also allows program executions that previously trapped to execute successfully.
+
+    And it allows reducing the set of observable behaviours of a program execution,
+    e.g., by reducing non-determinism.
+
+    In a program linking prior modules with modules using new features,
+    a prior module may encounter new behaviours,
+    e.g., new forms of control flow or side effects when calling into a latter module.
+
+In addition, the :ref:`instruction opcode <binary-instr>` :math:`\hex{FF}` is considered reserved for custom use and will never be allocated to represent an instruction or instruction prefix.
+
+
+
 Release 2.0
 ~~~~~~~~~~~
 
