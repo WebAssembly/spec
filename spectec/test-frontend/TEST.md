@@ -4184,12 +4184,12 @@ relation Types_ok: `%|-%:%`(context, type*, deftype*)
 
 ;; ../../../../specification/wasm-3.0/2.4-validation.modules.spectec
 syntax nonfuncs =
-  | `%%%%%`{`global*` : global*, `table*` : table*, `mem*` : mem*, `elem*` : elem*, `data*` : data*}(global*{global <- `global*`} : global*, table*{table <- `table*`} : table*, mem*{mem <- `mem*`} : mem*, elem*{elem <- `elem*`} : elem*, data*{data <- `data*`} : data*)
+  | `%%%%`{`global*` : global*, `table*` : table*, `mem*` : mem*, `elem*` : elem*}(global*{global <- `global*`} : global*, table*{table <- `table*`} : table*, mem*{mem <- `mem*`} : mem*, elem*{elem <- `elem*`} : elem*)
 
 ;; ../../../../specification/wasm-3.0/2.4-validation.modules.spectec
 def $funcidx_nonfuncs(nonfuncs : nonfuncs) : funcidx*
   ;; ../../../../specification/wasm-3.0/2.4-validation.modules.spectec
-  def $funcidx_nonfuncs{`global*` : global*, `table*` : table*, `mem*` : mem*, `elem*` : elem*, `data*` : data*}(`%%%%%`_nonfuncs(global*{global <- `global*`}, table*{table <- `table*`}, mem*{mem <- `mem*`}, elem*{elem <- `elem*`}, data*{data <- `data*`})) = $funcidx_module(MODULE_module([], [], [], global*{global <- `global*`}, table*{table <- `table*`}, mem*{mem <- `mem*`}, [], elem*{elem <- `elem*`}, data*{data <- `data*`}, ?(), []))
+  def $funcidx_nonfuncs{`global*` : global*, `table*` : table*, `mem*` : mem*, `elem*` : elem*}(`%%%%`_nonfuncs(global*{global <- `global*`}, table*{table <- `table*`}, mem*{mem <- `mem*`}, elem*{elem <- `elem*`})) = $funcidx_module(MODULE_module([], [], [], global*{global <- `global*`}, table*{table <- `table*`}, mem*{mem <- `mem*`}, [], elem*{elem <- `elem*`}, [], ?(), []))
 
 ;; ../../../../specification/wasm-3.0/2.4-validation.modules.spectec
 relation Module_ok: `|-%:%`(module, moduletype)
@@ -4210,7 +4210,7 @@ relation Module_ok: `|-%:%`(module, moduletype)
     -- if $disjoint_(syntax name, nm*{nm <- `nm*`})
     -- if (C = C' +++ {TYPES [], RECS [], FUNCS [], GLOBALS gt*{gt <- `gt*`}, TABLES tt_I*{tt_I <- `tt_I*`} ++ tt*{tt <- `tt*`}, MEMS mt_I*{mt_I <- `mt_I*`} ++ mt*{mt <- `mt*`}, TAGS jt_I*{jt_I <- `jt_I*`} ++ jt*{jt <- `jt*`}, ELEMS rt*{rt <- `rt*`}, DATAS ok*{ok <- `ok*`}, LOCALS [], LABELS [], RETURN ?(), REFS []})
     -- if (C' = {TYPES dt'*{dt' <- `dt'*`}, RECS [], FUNCS dt_I*{dt_I <- `dt_I*`} ++ dt*{dt <- `dt*`}, GLOBALS gt_I*{gt_I <- `gt_I*`}, TABLES [], MEMS [], TAGS [], ELEMS [], DATAS [], LOCALS [], LABELS [], RETURN ?(), REFS x*{x <- `x*`}})
-    -- if (x*{x <- `x*`} = $funcidx_nonfuncs(`%%%%%`_nonfuncs(global*{global <- `global*`}, table*{table <- `table*`}, mem*{mem <- `mem*`}, elem*{elem <- `elem*`}, data*{data <- `data*`})))
+    -- if (x*{x <- `x*`} = $funcidx_nonfuncs(`%%%%`_nonfuncs(global*{global <- `global*`}, table*{table <- `table*`}, mem*{mem <- `mem*`}, elem*{elem <- `elem*`})))
     -- if (dt_I*{dt_I <- `dt_I*`} = $funcsxt(xt_I*{xt_I <- `xt_I*`}))
     -- if (gt_I*{gt_I <- `gt_I*`} = $globalsxt(xt_I*{xt_I <- `xt_I*`}))
     -- if (tt_I*{tt_I <- `tt_I*`} = $tablesxt(xt_I*{xt_I <- `xt_I*`}))

@@ -16570,7 +16570,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    * The context :math:`{C'}` is of the form :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{dt}'}^\ast},\; \mathsf{funcs}~{{\mathit{dt}}_{\mathsf{i}}^\ast}~{{\mathit{dt}}^\ast},\; \mathsf{globals}~{{\mathit{gt}}_{\mathsf{i}}^\ast},\; \mathsf{return}~\epsilon,\; \mathsf{refs}~{x^\ast} \}\end{array}`.
 
-   * The function index sequence :math:`{x^\ast}` is of the form :math:`{\mathrm{funcidx}}({{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast})`.
+   * The function index sequence :math:`{x^\ast}` is of the form :math:`{\mathrm{funcidx}}({{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast})`.
 
    * The defined type sequence :math:`{{\mathit{dt}}_{\mathsf{i}}^\ast}` is of the form :math:`{\mathrm{funcs}}({{\mathit{xt}}_{\mathsf{i}}^\ast})`.
 
@@ -22461,11 +22461,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`\epsilon`.
 
 
-:math:`{\mathrm{funcidx}}({{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast})`
-................................................................................................................................................
+:math:`{\mathrm{funcidx}}({{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast})`
+.........................................................................................................................
 
 
-1. Return :math:`{\mathrm{funcidx}}(\mathsf{module}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast})`.
+1. Return :math:`{\mathrm{funcidx}}(\mathsf{module}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast})`.
 
 
 :math:`{{\mathrm{relaxed}}(i)}{{}[ X_1, X_2 ]}`
@@ -27069,7 +27069,7 @@ Module_ok
   - $disjoint_(`name, nm*) is true.
   - C is C' with .GLOBALS appended by gt* with .TABLES appended by tt_I* :: tt* with .MEMS appended by mt_I* :: mt* with .TAGS appended by jt_I* :: jt* with .ELEMS appended by rt* with .DATAS appended by ok*.
   - the context C' is { TYPES: dt'*; FUNCS: dt_I* :: dt*; GLOBALS: gt_I*; RETURN: ?(); REFS: x* }.
-  - the function index sequence x* is $funcidx_nonfuncs((global* table* mem* elem* data*)).
+  - the function index sequence x* is $funcidx_nonfuncs((global* table* mem* elem*)).
   - the defined type sequence dt_I* is $funcsxt(xt_I*).
   - the global type sequence gt_I* is $globalsxt(xt_I*).
   - the table type sequence tt_I* is $tablesxt(xt_I*).
@@ -29862,8 +29862,8 @@ default_ valtype
 7. Assert: Due to validation, NULL_opt_0 is not defined.
 8. Return ?().
 
-funcidx_nonfuncs (global* table* mem* elem* data*)
-1. Return $funcidx_module((MODULE [] [] [] global* table* mem* [] elem* data* ?() [])).
+funcidx_nonfuncs (global* table* mem* elem*)
+1. Return $funcidx_module((MODULE [] [] [] global* table* mem* [] elem* [] ?() [])).
 
 relaxed2 i `X X_1 X_2
 1. If $ND(), then:

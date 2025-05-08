@@ -166,7 +166,7 @@ let rec bin (op : binop) num1 num2 : num option =
     Some (`Rat Q.(of_bigint Z.(num q1 ** to_int (num q2)) / of_bigint Z.(den q1 ** to_int (num q2))))
   | `PowOp, `Rat _, `Rat q2 when Q.(q2 < zero) ->
     (match bin op num1 (`Rat Q.(- q2)) with
-    | Some (`Rat q) -> Some (`Rat Q.(- q))
+    | Some (`Rat q) -> Some (`Rat Q.(one / q))
     | _ -> None
     )
   | `PowOp, `Real r1, `Real r2 -> Some (`Real Float.(pow r1 r2))

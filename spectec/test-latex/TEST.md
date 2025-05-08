@@ -7810,13 +7810,13 @@ $\boxed{{\mathit{context}} \vdash {{\mathit{global}}^\ast} : {{\mathit{globaltyp
 
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}}
-& {\mathit{nonfuncs}} & ::= & {{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast} \\
+& {\mathit{nonfuncs}} & ::= & {{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast} \\
 \end{array}
 $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-{\mathrm{funcidx}}({{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}) & = & {\mathrm{funcidx}}(\mathsf{module}~\epsilon~\epsilon~\epsilon~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~\epsilon~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~\epsilon~\epsilon) \\
+{\mathrm{funcidx}}({{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast}) & = & {\mathrm{funcidx}}(\mathsf{module}~\epsilon~\epsilon~\epsilon~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~\epsilon~{{\mathit{elem}}^\ast}~\epsilon~\epsilon~\epsilon) \\
 \end{array}
 $$
 
@@ -7856,7 +7856,7 @@ C = {C'} \oplus \{ \begin{array}[t]{@{}l@{}}
 {C'} = \{ \begin{array}[t]{@{}l@{}}
 \mathsf{types}~{{\mathit{dt}'}^\ast},\; \mathsf{funcs}~{{\mathit{dt}}_{\mathsf{i}}^\ast}~{{\mathit{dt}}^\ast},\; \mathsf{globals}~{{\mathit{gt}}_{\mathsf{i}}^\ast},\; \mathsf{refs}~{x^\ast} \}\end{array}
  \qquad
-{x^\ast} = {\mathrm{funcidx}}({{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast})
+{x^\ast} = {\mathrm{funcidx}}({{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast})
  \\
 {{\mathit{dt}}_{\mathsf{i}}^\ast} = {\mathrm{funcs}}({{\mathit{xt}}_{\mathsf{i}}^\ast})
  \qquad
