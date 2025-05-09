@@ -29,9 +29,10 @@ Concretely:
 2. All non-:ref:`trapping <trap>` :ref:`executions <exec>` of a valid program retain their behaviour with an equivalent set of possible :ref:`results <syntax-result>` (or a non-empty subset).
 
   .. note::
-    This allows previously illegal programs to become executable.
+    This allows previously malformed or invalid programs to become executable.
 
-    It also allows program executions that previously trapped to execute successfully.
+    It also allows program executions that previously trapped to execute successfully,
+    although the intention is to only exercise this where the possibility of such an extension has been previously noted.
 
     And it allows reducing the set of observable behaviours of a program execution,
     e.g., by reducing non-determinism.
