@@ -459,7 +459,8 @@ Instructions in this group can operate on operands of any :ref:`value type <synt
 The |DROP| instruction simply throws away a single operand.
 
 The |SELECT| instruction selects one of its first two operands based on whether its third operand is zero or not.
-It may include a :ref:`value type <syntax-valtype>` determining the type of these operands. If missing, the operands must be of :ref:`numeric type <syntax-numtype>`.
+It may include a :ref:`value type <syntax-valtype>` determining the type of these operands.
+If missing, the operands must be of :ref:`numeric <syntax-numtype>` or :ref:`vector <syntax-vectype>` type.
 
 .. note::
    In future versions of WebAssembly, the type annotation on |SELECT| may allow for more than a single value being selected at the same time.
