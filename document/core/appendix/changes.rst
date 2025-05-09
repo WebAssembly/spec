@@ -10,7 +10,7 @@ The following sections provide an overview of what has changed.
 All present and future versions of WebAssembly are intended to be *backwards-compatible* with all previous versions.
 Concretely:
 
-1. All syntactically :ref:`well-formed <binary>` and :ref:`valid <valid>` modules remain well-formed and valid with an equivalent :ref:`module type <syntax-moduletype>` (or a subtype).
+1. All syntactically well-formed (in :ref:`binary <binary>` or :ref:`text <text>` format) and :ref:`valid <valid>` modules remain well-formed and valid with an equivalent :ref:`module type <syntax-moduletype>` (or a subtype).
 
   .. note::
      This allows previously malformed or invalid modules to become legal,
@@ -21,6 +21,10 @@ Concretely:
 
      And it allows refining the typing of :ref:`imports <syntax-import>` and :ref:`exports <syntax-export>`,
      such that previously unlinkable modules become linkable.
+
+     Historically, minor breaking changes to the *text format* have been allowed
+     that turned previously possible valid modules invalid,
+     as long as they were unlikely to occur in practice.
 
 2. All non-:ref:`trapping <trap>` :ref:`executions <exec>` of a valid program retain their behaviour with an equivalent set of possible :ref:`results <syntax-result>` (or a non-empty subset).
 
