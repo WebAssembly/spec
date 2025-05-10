@@ -276,6 +276,92 @@ let lookup_export (env : env) x_opt name at =
       string_of_name name ^ "\" within module isntance"))
 
 
+(* Transitively unsubstitute deftype into list of unrolled recursive types *)
+
+let rec statify_list f rts = function
+  | [] -> rts, []
+  | x::xs ->
+    let rts', x' = f rts x in
+    let rts'', xs' = statify_list f rts' xs in
+    rts'', x'::xs'
+
+let rec statify_heap_type rts = function
+  | DefHT dt ->
+    let rts', i = statify_def_type rts dt in
+    rts', VarHT (StatX i)
+  | ht -> rts, ht
+
+and statify_ref_type rts = function
+  | (nul, ht) ->
+    let rts', ht' = statify_heap_type rts ht in
+    rts', (nul, ht')
+
+and statify_val_type rts = function
+  | RefT rt ->
+    let rts', rt' = statify_ref_type rts rt in
+    rts', RefT rt'
+  | t -> rts, t
+
+and statify_storage_type rts = function
+  | ValStorageT t ->
+    let rts', t' = statify_val_type rts t in
+    rts', ValStorageT t'
+  | st -> rts, st
+
+and statify_field_type rts (FieldT (mut, st)) =
+    let rts', st' = statify_storage_type rts st in
+    rts', FieldT (mut, st')
+
+and statify_struct_type rts (StructT fts) =
+    let rts', fts' = statify_list statify_field_type rts fts in
+    rts', StructT fts'
+
+and statify_array_type rts (ArrayT ft) =
+    let rts', ft' = statify_field_type rts ft in
+    rts', ArrayT ft'
+
+and statify_func_type rts (FuncT (ts1, ts2)) =
+    let rts', ts1' = statify_list statify_val_type rts ts1 in
+    let rts'', ts2' = statify_list statify_val_type rts' ts2 in
+    rts'', FuncT (ts1', ts2')
+
+and statify_str_type rts = function
+  | DefStructT st ->
+    let rts', st' = statify_struct_type rts st in
+    rts', DefStructT st'
+  | DefArrayT at ->
+    let rts', at' = statify_array_type rts at in
+    rts', DefArrayT at'
+  | DefFuncT ft ->
+    let rts', ft' = statify_func_type rts ft in
+    rts', DefFuncT ft'
+
+and statify_sub_type rts (SubT (fin, hts, st)) =
+    let rts', hts' = statify_list statify_heap_type rts hts in
+    let rts'', st' = statify_str_type rts' st in
+    rts'', SubT (fin, hts', st')
+
+and statify_rec_type rts (RecT sts) =
+    let rts', sts' = statify_list statify_sub_type rts sts in
+    rts', RecT sts'
+
+and statify_def_type rts (DefT (rt, i)) =
+    match List.find_opt (fun (rt', _) -> rt = rt') rts with
+    | Some (_, (rt', self)) -> rts, Int32.add self i
+    | None ->
+      let rts', rt' = statify_rec_type rts rt in
+      let self =
+        if rts' = [] then 0l else
+        let _, (RecT sts, self) = Lib.List.last rts' in
+        Int32.add self (Lib.List32.length sts)
+      in
+      let s = function
+        | RecX j -> VarHT (StatX (Int32.add self j))
+        | x -> VarHT x
+      in
+      rts' @ [rt, (subst_rec_type s rt', self)], Int32.add self i
+
+
 (* Wrappers *)
 
 let subject_idx = 0l
@@ -323,9 +409,12 @@ let value v =
     ]
   | Ref _ -> assert false
 
-let invoke ft vs at =
-  let dt = RecT [SubT (Final, [], DefFuncT ft)] in
-  [dt @@ at], FuncImport (subject_type_idx @@ at) @@ at,
+let invoke dt vs at =
+  let dummy = RecT [SubT (Final, [], DefFuncT (FuncT ([], [])))] in
+  let rts0 = Lib.List32.init subject_type_idx (fun i -> dummy, (dummy, i)) in
+  let rts, i = statify_def_type rts0 dt in
+  List.map (fun (_, (rt, _)) -> rt @@ at) (Lib.List32.drop subject_type_idx rts),
+  FuncImport (i @@ at) @@ at,
   List.concat (List.map value vs) @ [Call (subject_idx @@ at) @@ at]
 
 let get t at =
@@ -531,7 +620,7 @@ let wrap item_name wrap_action wrap_assertion at =
   with Valid.Invalid _ as exn ->
     prerr_endline (string_of_region at ^
       ": internal error in JS converter, invalid wrapper module generated:");
-    Sexpr.output stderr 80 (Arrange.module_ m);
+    Print.module_ stderr 80 m;
     raise exn
   );
   Encode.encode m
@@ -674,7 +763,7 @@ let of_action env act =
       if is_js_func_type ft then
         None
       else
-        Some (of_wrapper env x_opt name (invoke ft vs), out)
+        Some (of_wrapper env x_opt name (invoke dt vs), out)
     | _ -> None
     )
   | Get (x_opt, name) ->
