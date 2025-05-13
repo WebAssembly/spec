@@ -31,7 +31,7 @@
   (data $d11 (memory $m) (offset (i32.const 0)))
   (data $d12 (memory $m) (offset (i32.const 0)) "" "a" "bc" "")
   (data $d13)
-  (data $d14 "a" "bc" "")
+  (data $d14 "a" "" "bcd")
 )
 
 ;; Basic use
