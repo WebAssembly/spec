@@ -1,7 +1,10 @@
 ;; segment syntax
 (module
   (memory 1)
-  (data "foo"))
+  (data)
+  (data "foo")
+  (data $d1)
+  (data $d2 "foo"))
 
 (module
   (table 3 funcref)
