@@ -450,14 +450,14 @@ For non-deterministic operators this definition is generalized to sets:
 .. math::
    \begin{array}{lll}
    \X{op}_{t\K{x}N}(n_1,\dots,n_k) &=&
-     \{ \lanes^{-1}_{t\K{x}N}(i^\ast) ~|~ i^\ast \in \Large\times\xref{Step_pure/instructions}{exec-instr-numeric}{\X{op}}_t(i_1,\dots,i_k)^\ast \land i_1^\ast = \lanes_{t\K{x}N}(n_1) \land \dots \land i_k^\ast = \lanes_{t\K{x}N}(n_k) \} \\
+     \{ \lanes^{-1}_{t\K{x}N}(i^\ast) ~|~ i^\ast \in {\Large\times}(\xref{Step_pure/instructions}{exec-instr-numeric}{\X{op}}_t(i_1,\dots,i_k)^\ast) \land i_1^\ast = \lanes_{t\K{x}N}(n_1) \land \dots \land i_k^\ast = \lanes_{t\K{x}N}(n_k) \} \\
    \end{array}
 
-where :math:`\Large\times \{x^\ast\}^N` transforms a sequence of :math:`N` sets of values into a set of sequences of :math:`N` values by computing the set product:
+where :math:`{\Large\times} \{x^\ast\}^N` transforms a sequence of :math:`N` sets of values into a set of sequences of :math:`N` values by computing the set product:
 
 .. math::
    \begin{array}{lll}
-   \Large\times (S_1 \dots S_N) &=& \{ x_1 \dots x_N ~|~ x_1 \in S_1 \land \dots \land x_N \in S_N \}
+   {\Large\times} (S_1 \dots S_N) &=& \{ x_1 \dots x_N ~|~ x_1 \in S_1 \land \dots \land x_N \in S_N \}
    \end{array}
 
 The remaining vector operators use :ref:`individual definitions <op-vec>`.

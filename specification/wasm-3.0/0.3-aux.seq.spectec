@@ -36,7 +36,7 @@ def $setminus1_(syntax X, w, w_1 w'*) = eps                     -- if w = w_1
 def $setminus1_(syntax X, w, w_1 w'*) = $setminus1_(X, w, w'*)  -- otherwise
 
 ;; [{1, 2}, {a, b, c}] -> {[1, a], [1, b], [1, c], [2, a], [2, b], [2, c]}
-def $setproduct_(syntax X, (X*)*) : (X*)*  hint(show %latex("\\Large\\times") %2)
+def $setproduct_(syntax X, (X*)*) : (X*)*  hint(show %latex("{\\Large\\times}") %2)
 def $setproduct1_(syntax X, X*, (X*)*) : (X*)*
 def $setproduct2_(syntax X, X, (X*)*) : (X*)*
 
