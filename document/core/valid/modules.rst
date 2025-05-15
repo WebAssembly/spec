@@ -740,9 +740,6 @@ that is, its components can only refer to definitions that appear in the module 
 Consequently, no initial :ref:`context <context>` is required.
 Instead, the context :math:`C` for validation of the module's content is constructed from the definitions in the module.
 
-The :ref:`external types <syntax-externtype>` classifying a module may contain free :ref:`type indices <syntax-typeidx>` that refer to types defined within the module.
-
-
 * Let :math:`\module` be the module to validate.
 
 * The :ref:`types <syntax-type>` :math:`\module.\MTYPES` must be :ref:`valid <valid-type>` yielding a :ref:`context <context>` :math:`C_0`.
@@ -845,7 +842,7 @@ The :ref:`external types <syntax-externtype>` classifying a module may contain f
 
 * All export names :math:`\export_i.\ENAME` must be different.
 
-* Then the module is valid with :ref:`external types <syntax-externtype>` :math:`\X{it}^\ast \to \X{et}^\ast`.
+* Then the module is valid with :ref:`external types <syntax-externtype>` :math:`\clostype_C(\X{it}^\ast \to \X{et}^\ast)`.
 
 .. math::
    \frac{
@@ -913,7 +910,7 @@ The :ref:`external types <syntax-externtype>` classifying a module may contain f
        \end{array}
      \end{array}
    }{
-     \vdashmodule \module : \X{it}^\ast \to \X{et}^\ast
+     \vdashmodule \module : \clostype_C(\X{it}^\ast \to \X{et}^\ast)
    }
 
 .. note::
