@@ -154,7 +154,7 @@ def $setproduct1_(syntax X, X*, X**) : X**
 ;; ../../../../specification/wasm-3.0/0.3-aux.seq.spectec
 rec {
 
-;; ../../../../specification/wasm-3.0/0.3-aux.seq.spectec:39.1-39.82
+;; ../../../../specification/wasm-3.0/0.3-aux.seq.spectec:39.1-39.84
 def $setproduct_(syntax X, X**) : X**
   ;; ../../../../specification/wasm-3.0/0.3-aux.seq.spectec:43.1-43.40
   def $setproduct_{syntax X}(syntax X, []) = [[]]
@@ -9064,7 +9064,7 @@ def $setproduct1_(syntax X, X*, X**) : X**
 ;; ../../../../specification/wasm-3.0/0.3-aux.seq.spectec
 rec {
 
-;; ../../../../specification/wasm-3.0/0.3-aux.seq.spectec:39.1-39.82
+;; ../../../../specification/wasm-3.0/0.3-aux.seq.spectec:39.1-39.84
 def $setproduct_(syntax X, X**) : X**
   ;; ../../../../specification/wasm-3.0/0.3-aux.seq.spectec:43.1-43.40
   def $setproduct_{syntax X}(syntax X, []) = [[]]
@@ -17979,7 +17979,7 @@ def $setproduct1_(syntax X, X*, X**) : X**
 ;; ../../../../specification/wasm-3.0/0.3-aux.seq.spectec
 rec {
 
-;; ../../../../specification/wasm-3.0/0.3-aux.seq.spectec:39.1-39.82
+;; ../../../../specification/wasm-3.0/0.3-aux.seq.spectec:39.1-39.84
 def $setproduct_(syntax X, X**) : X**
   ;; ../../../../specification/wasm-3.0/0.3-aux.seq.spectec:43.1-43.40
   def $setproduct_{syntax X}(syntax X, []) = [[]]

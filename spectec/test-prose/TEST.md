@@ -6563,7 +6563,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M_1}}(c_1){}[{\mathrm{half}}({\mathit{half}}, 0, M_2) : M_2]`.
 
-   #. Let :math:`{{{\mathit{cj}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{vcvtop}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M_2}}({\mathit{vcvtop}}, {\mathit{ci}})^\ast}`.
+   #. Let :math:`{{{\mathit{cj}}^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{vcvtop}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M_2}}({\mathit{vcvtop}}, {\mathit{ci}})^\ast}`.
 
    #. If :math:`{|{{{\mathrm{invlanes}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M_2}}({{\mathit{cj}}^\ast})^\ast}|} > 0`, then:
 
@@ -6583,7 +6583,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       1) Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M}}(c_1)`.
 
-      #) Let :math:`{{{\mathit{cj}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{vcvtop}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M}, {{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M}}({\mathit{vcvtop}}, {\mathit{ci}})^\ast}`.
+      #) Let :math:`{{{\mathit{cj}}^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{vcvtop}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M}, {{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M}}({\mathit{vcvtop}}, {\mathit{ci}})^\ast}`.
 
       #) If :math:`{|{{{\mathrm{invlanes}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M}}({{\mathit{cj}}^\ast})^\ast}|} > 0`, then:
 
@@ -6607,7 +6607,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
          #) Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathit{nt}}_1}{\mathsf{x}}{M_1}}(c_1)`.
 
-         #) Let :math:`{{{\mathit{cj}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{vcvtop}}}_{{{\mathit{nt}}_1}{\mathsf{x}}{M_1}, {{\mathit{nt}}_2}{\mathsf{x}}{M_2}}({\mathit{vcvtop}}, {\mathit{ci}})^\ast}~{{\mathrm{zero}}({\mathit{nt}}_2)^{M_1}}`.
+         #) Let :math:`{{{\mathit{cj}}^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{vcvtop}}}_{{{\mathit{nt}}_1}{\mathsf{x}}{M_1}, {{\mathit{nt}}_2}{\mathsf{x}}{M_2}}({\mathit{vcvtop}}, {\mathit{ci}})^\ast}~{{\mathrm{zero}}({\mathit{nt}}_2)^{M_1}}`.
 
          #) If :math:`{|{{{\mathrm{invlanes}}}_{{{\mathit{nt}}_2}{\mathsf{x}}{M_2}}({{\mathit{cj}}^\ast})^\ast}|} > 0`, then:
 
@@ -7579,8 +7579,8 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Return :math:`{{\mathrm{setproduct{\kern-0.1em\scriptstyle 2}}}}_{X}(w_1, {{w^\ast}^\ast})~{{\mathrm{setproduct{\kern-0.1em\scriptstyle 1}}}}_{X}({{w'}^\ast}, {{w^\ast}^\ast})`.
 
 
-:math:`\Large\times~{X^\ast}`
-.............................
+:math:`{\Large\times}~{X^\ast}`
+...............................
 
 
 1. If :math:`{X^\ast} = \epsilon`, then:
@@ -7589,7 +7589,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{w_1^\ast}~{{w^\ast}^\ast}` be :math:`{X^\ast}`.
 
-#. Return :math:`{{\mathrm{setproduct{\kern-0.1em\scriptstyle 1}}}}_{X}({w_1^\ast}, \Large\times~{{w^\ast}^\ast})`.
+#. Return :math:`{{\mathrm{setproduct{\kern-0.1em\scriptstyle 1}}}}_{X}({w_1^\ast}, {\Large\times}~{{w^\ast}^\ast})`.
 
 
 :math:`{\mathrm{signif}}(N)`
@@ -8760,7 +8760,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    a. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-   #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{fabs}}}_{N}({\mathit{lane}}_1)^\ast}`.
+   #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{fabs}}}_{N}({\mathit{lane}}_1)^\ast}`.
 
    #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
 
@@ -8770,7 +8770,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    a. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-   #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{fneg}}}_{N}({\mathit{lane}}_1)^\ast}`.
+   #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{fneg}}}_{N}({\mathit{lane}}_1)^\ast}`.
 
    #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
 
@@ -8780,7 +8780,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    a. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-   #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{fsqrt}}}_{N}({\mathit{lane}}_1)^\ast}`.
+   #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{fsqrt}}}_{N}({\mathit{lane}}_1)^\ast}`.
 
    #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
 
@@ -8790,7 +8790,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    a. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-   #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{fceil}}}_{N}({\mathit{lane}}_1)^\ast}`.
+   #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{fceil}}}_{N}({\mathit{lane}}_1)^\ast}`.
 
    #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
 
@@ -8800,7 +8800,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    a. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-   #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{ffloor}}}_{N}({\mathit{lane}}_1)^\ast}`.
+   #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{ffloor}}}_{N}({\mathit{lane}}_1)^\ast}`.
 
    #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
 
@@ -8810,7 +8810,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    a. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-   #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{ftrunc}}}_{N}({\mathit{lane}}_1)^\ast}`.
+   #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{ftrunc}}}_{N}({\mathit{lane}}_1)^\ast}`.
 
    #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
 
@@ -8820,7 +8820,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-#. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{fnearest}}}_{N}({\mathit{lane}}_1)^\ast}`.
+#. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{fnearest}}}_{N}({\mathit{lane}}_1)^\ast}`.
 
 #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
 
@@ -8943,7 +8943,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
-   #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{fadd}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast}`.
+   #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{fadd}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast}`.
 
    #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
 
@@ -8955,7 +8955,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
-   #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{fsub}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast}`.
+   #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{fsub}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast}`.
 
    #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
 
@@ -8967,7 +8967,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
-   #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{fmul}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast}`.
+   #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{fmul}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast}`.
 
    #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
 
@@ -8979,7 +8979,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
-   #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{fdiv}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast}`.
+   #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{fdiv}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast}`.
 
    #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
 
@@ -8991,7 +8991,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
-   #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{fmin}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast}`.
+   #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{fmin}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast}`.
 
    #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
 
@@ -9003,7 +9003,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
-   #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{fmax}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast}`.
+   #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{fmax}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast}`.
 
    #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
 
@@ -9015,7 +9015,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
-   #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{fpmin}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast}`.
+   #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{fpmin}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast}`.
 
    #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
 
@@ -9027,7 +9027,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
-#. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{fpmax}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast}`.
+#. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{fpmax}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast}`.
 
 #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{{{\mathsf{f}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
 
@@ -20003,8 +20003,8 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`{{\mathrm{setproduct{\kern-0.1em\scriptstyle 2}}}}_{X}(w_1, {{w^\ast}^\ast})~{{\mathrm{setproduct{\kern-0.1em\scriptstyle 1}}}}_{X}({{w'}^\ast}, {{w^\ast}^\ast})`.
 
 
-:math:`\Large\times~{X^\ast}`
-.............................
+:math:`{\Large\times}~{X^\ast}`
+...............................
 
 
 1. If :math:`{X^\ast} = \epsilon`, then:
@@ -20013,7 +20013,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{w_1^\ast}~{{w^\ast}^\ast}` be :math:`{X^\ast}`.
 
-#. Return :math:`{{\mathrm{setproduct{\kern-0.1em\scriptstyle 1}}}}_{X}({w_1^\ast}, \Large\times~{{w^\ast}^\ast})`.
+#. Return :math:`{{\mathrm{setproduct{\kern-0.1em\scriptstyle 1}}}}_{X}({w_1^\ast}, {\Large\times}~{{w^\ast}^\ast})`.
 
 
 :math:`{\mathrm{signif}}(N)`
@@ -23335,7 +23335,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`{c_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}(v_1)`.
 
-#. Let :math:`{{c^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{f}}}_{N}(c_1)^\ast}`.
+#. Let :math:`{{c^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{f}}}_{N}(c_1)^\ast}`.
 
 #. Return :math:`{{{{{\mathrm{lanes}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}^{{-1}}}}{({c^\ast})}^\ast}`.
 
@@ -23374,7 +23374,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{c_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}(v_2)`.
 
-#. Let :math:`{{c^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{f}}}_{N}({\mathit{sx}}, c_1, c_2)^\ast}`.
+#. Let :math:`{{c^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{f}}}_{N}({\mathit{sx}}, c_1, c_2)^\ast}`.
 
 #. Return :math:`{{{{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}^{{-1}}}}{({c^\ast})}^\ast}`.
 
@@ -23387,7 +23387,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{c_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}(v_2)`.
 
-#. Let :math:`{{c^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{f}}}_{N}(c_1, c_2)^\ast}`.
+#. Let :math:`{{c^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{f}}}_{N}(c_1, c_2)^\ast}`.
 
 #. Return :math:`{{{{{\mathrm{lanes}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}^{{-1}}}}{({c^\ast})}^\ast}`.
 
@@ -23402,7 +23402,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{c_3^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}(v_3)`.
 
-#. Let :math:`{{c^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{f}}}_{N}(c_1, c_2, c_3)^\ast}`.
+#. Let :math:`{{c^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{f}}}_{N}(c_1, c_2, c_3)^\ast}`.
 
 #. Return :math:`{{{{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}^{{-1}}}}{({c^\ast})}^\ast}`.
 
@@ -23417,7 +23417,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{c_3^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}(v_3)`.
 
-#. Let :math:`{{c^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{f}}}_{N}(c_1, c_2, c_3)^\ast}`.
+#. Let :math:`{{c^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{f}}}_{N}(c_1, c_2, c_3)^\ast}`.
 
 #. Return :math:`{{{{{\mathrm{lanes}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}^{{-1}}}}{({c^\ast})}^\ast}`.
 
@@ -23919,7 +23919,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    a. Let :math:`{c_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M}}(v_1)`.
 
-   #. Let :math:`{{c^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{lcvtop}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M}}({\mathit{vcvtop}}, c_1)^\ast}`.
+   #. Let :math:`{{c^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{lcvtop}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M}}({\mathit{vcvtop}}, c_1)^\ast}`.
 
    #. Let :math:`v` be an element of :math:`{{{{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M}}^{{-1}}}}{({c^\ast})}^\ast}`.
 
@@ -23935,7 +23935,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. Let :math:`{c_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}}(v_1){}[{\mathrm{half}}({\mathit{half}}, 0, M_2) : M_2]`.
 
-   #. Let :math:`{{c^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{lcvtop}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}({\mathit{vcvtop}}, c_1)^\ast}`.
+   #. Let :math:`{{c^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{lcvtop}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}({\mathit{vcvtop}}, c_1)^\ast}`.
 
    #. Let :math:`v` be an element of :math:`{{{{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}^{{-1}}}}{({c^\ast})}^\ast}`.
 
@@ -23945,7 +23945,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{c_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}}(v_1)`.
 
-#. Let :math:`{{c^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{lcvtop}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}({\mathit{vcvtop}}, c_1)^\ast}~{0^{M_1}}`.
+#. Let :math:`{{c^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{lcvtop}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}({\mathit{vcvtop}}, c_1)^\ast}~{0^{M_1}}`.
 
 #. Let :math:`v` be an element of :math:`{{{{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}^{{-1}}}}{({c^\ast})}^\ast}`.
 

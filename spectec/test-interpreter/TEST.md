@@ -941,7 +941,7 @@ spectec 0.5 generator
 - 35/35 (100.00%)
 
 ===== ../test-interpreter/spec-test-3/gc/type-subtyping.wast =====
-- 143/143 (100.00%)
+- 151/151 (100.00%)
 
 ===== ../test-interpreter/spec-test-3/global.wast =====
 - 125/125 (100.00%)
@@ -1384,6 +1384,9 @@ spectec 0.5 generator
 ===== ../test-interpreter/spec-test-3/simd/simd_memory-multi.wast =====
 - 2/2 (100.00%)
 
+===== ../test-interpreter/spec-test-3/simd/simd_select.wast =====
+- 8/8 (100.00%)
+
 ===== ../test-interpreter/spec-test-3/simd/simd_splat.wast =====
 - 188/188 (100.00%)
 
@@ -1504,7 +1507,7 @@ spectec 0.5 generator
 ===== ../test-interpreter/spec-test-3/utf8-invalid-encoding.wast =====
 - 0/0 (100.00%)
 
-Total [53006/53006] (100.00%)
+Total [53022/53022] (100.00%)
 
 == Complete.
 ```

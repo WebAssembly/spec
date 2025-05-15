@@ -2457,8 +2457,8 @@ $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-\Large\times~\epsilon & = & (\epsilon) \\
-\Large\times~({w_1^\ast})~{({w^\ast})^\ast} & = & {{\mathrm{setproduct{\kern-0.1em\scriptstyle 1}}}}_{X}({w_1^\ast}, \Large\times~{({w^\ast})^\ast}) \\
+{\Large\times}~\epsilon & = & (\epsilon) \\
+{\Large\times}~({w_1^\ast})~{({w^\ast})^\ast} & = & {{\mathrm{setproduct{\kern-0.1em\scriptstyle 1}}}}_{X}({w_1^\ast}, {\Large\times}~{({w^\ast})^\ast}) \\
 \end{array}
 $$
 
@@ -8381,7 +8381,7 @@ $$
 {{\mathrm{fvunop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{f}}, v_1) & = & {{{{{\mathrm{lanes}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}^{{-1}}}}{({c^\ast})}^\ast} & \quad
 \begin{array}[t]{@{}l@{}}
 \mbox{if}~ {c_1^\ast} = {{\mathrm{lanes}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}(v_1) \\
-{\land}~ {{c^\ast}^\ast} = \Large\times~{{{\mathrm{f}}}_{N}(c_1)^\ast} \\
+{\land}~ {{c^\ast}^\ast} = {\Large\times}~{{{\mathrm{f}}}_{N}(c_1)^\ast} \\
 \end{array} \\
 \end{array}
 $$
@@ -8416,7 +8416,7 @@ $$
 \begin{array}[t]{@{}l@{}}
 \mbox{if}~ {c_1^\ast} = {{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}(v_1) \\
 {\land}~ {c_2^\ast} = {{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}(v_2) \\
-{\land}~ {{c^\ast}^\ast} = \Large\times~{{{\mathrm{f}}}_{N}({\mathit{sx}}, c_1, c_2)^\ast} \\
+{\land}~ {{c^\ast}^\ast} = {\Large\times}~{{{\mathrm{f}}}_{N}({\mathit{sx}}, c_1, c_2)^\ast} \\
 \end{array} \\
 \end{array}
 $$
@@ -8427,7 +8427,7 @@ $$
 \begin{array}[t]{@{}l@{}}
 \mbox{if}~ {c_1^\ast} = {{\mathrm{lanes}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}(v_1) \\
 {\land}~ {c_2^\ast} = {{\mathrm{lanes}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}(v_2) \\
-{\land}~ {{c^\ast}^\ast} = \Large\times~{{{\mathrm{f}}}_{N}(c_1, c_2)^\ast} \\
+{\land}~ {{c^\ast}^\ast} = {\Large\times}~{{{\mathrm{f}}}_{N}(c_1, c_2)^\ast} \\
 \end{array} \\
 \end{array}
 $$
@@ -8441,7 +8441,7 @@ $$
 \mbox{if}~ {c_1^\ast} = {{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}(v_1) \\
 {\land}~ {c_2^\ast} = {{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}(v_2) \\
 {\land}~ {c_3^\ast} = {{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}(v_3) \\
-{\land}~ {{c^\ast}^\ast} = \Large\times~{{{\mathrm{f}}}_{N}(c_1, c_2, c_3)^\ast} \\
+{\land}~ {{c^\ast}^\ast} = {\Large\times}~{{{\mathrm{f}}}_{N}(c_1, c_2, c_3)^\ast} \\
 \end{array} \\
 \end{array}
 $$
@@ -8453,7 +8453,7 @@ $$
 \mbox{if}~ {c_1^\ast} = {{\mathrm{lanes}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}(v_1) \\
 {\land}~ {c_2^\ast} = {{\mathrm{lanes}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}(v_2) \\
 {\land}~ {c_3^\ast} = {{\mathrm{lanes}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}(v_3) \\
-{\land}~ {{c^\ast}^\ast} = \Large\times~{{{\mathrm{f}}}_{N}(c_1, c_2, c_3)^\ast} \\
+{\land}~ {{c^\ast}^\ast} = {\Large\times}~{{{\mathrm{f}}}_{N}(c_1, c_2, c_3)^\ast} \\
 \end{array} \\
 \end{array}
 $$
@@ -8715,21 +8715,21 @@ $$
 \begin{array}[t]{@{}l@{}}
 \mbox{if}~ {\mathrm{halfop}}({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M}, {\mathit{vcvtop}}) = \epsilon \land {\mathrm{zeroop}}({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M}, {\mathit{vcvtop}}) = \epsilon \\
 {\land}~ {c_1^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M}}(v_1) \\
-{\land}~ {{c^\ast}^\ast} = \Large\times~{{{\mathrm{lcvtop}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M}}({\mathit{vcvtop}}, c_1)^\ast} \\
+{\land}~ {{c^\ast}^\ast} = {\Large\times}~{{{\mathrm{lcvtop}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M}}({\mathit{vcvtop}}, c_1)^\ast} \\
 {\land}~ v \in {{{{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M}}^{{-1}}}}{({c^\ast})}^\ast} \\
 \end{array} \\
 {{\mathrm{vcvtop}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}({\mathit{vcvtop}}, v_1) & = & v & \quad
 \begin{array}[t]{@{}l@{}}
 \mbox{if}~ {\mathrm{halfop}}({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}, {\mathit{vcvtop}}) = {\mathit{half}} \\
 {\land}~ {c_1^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}}(v_1){}[{\mathrm{half}}({\mathit{half}}, 0, M_2) : M_2] \\
-{\land}~ {{c^\ast}^\ast} = \Large\times~{{{\mathrm{lcvtop}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}({\mathit{vcvtop}}, c_1)^\ast} \\
+{\land}~ {{c^\ast}^\ast} = {\Large\times}~{{{\mathrm{lcvtop}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}({\mathit{vcvtop}}, c_1)^\ast} \\
 {\land}~ v \in {{{{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}^{{-1}}}}{({c^\ast})}^\ast} \\
 \end{array} \\
 {{\mathrm{vcvtop}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}({\mathit{vcvtop}}, v_1) & = & v & \quad
 \begin{array}[t]{@{}l@{}}
 \mbox{if}~ {\mathrm{zeroop}}({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}, {\mathit{vcvtop}}) = \mathsf{zero} \\
 {\land}~ {c_1^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}}(v_1) \\
-{\land}~ {{c^\ast}^\ast} = \Large\times~({{{\mathrm{lcvtop}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}({\mathit{vcvtop}}, c_1)^\ast} \oplus {{}[0]^{M_1}}) \\
+{\land}~ {{c^\ast}^\ast} = {\Large\times}~({{{\mathrm{lcvtop}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}({\mathit{vcvtop}}, c_1)^\ast} \oplus {{}[0]^{M_1}}) \\
 {\land}~ v \in {{{{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}^{{-1}}}}{({c^\ast})}^\ast} \\
 \end{array} \\
 \end{array}
