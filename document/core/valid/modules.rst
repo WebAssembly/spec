@@ -729,6 +729,7 @@ Imports :math:`\import` and import descriptions :math:`\importdesc` are classifi
    pair: validation; module
    single: abstract syntax; module
 .. _valid-module:
+.. _syntax-moduletype:
 
 Modules
 ~~~~~~~
