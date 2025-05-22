@@ -99,6 +99,9 @@ urlPrefix: https://webassembly.github.io/spec/core/; spec: WebAssembly; type: df
     text: valid limits; url: valid/types.html#valid-limits
     text: valid memtype; url: valid/types.html#valid-memtype
     text: valid tabletype; url: valid/types.html#valid-tabletype
+    urlPrefix: valid/matching.html; for: matches
+        text: valtype; url: #match-valtype
+        text: reftype; url: #match-reftype
     text: module grammar; url: binary/modules.html#binary-module
     text: custom section; url: binary/modules.html#custom-section
     text: customsec; url: binary/modules.html#binary-customsec
@@ -1005,7 +1008,7 @@ Each {{Table}} object has a \[[Table]] internal slot, which is a [=table address
     1. Let |tableaddr| be **this**.\[[Table]].
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
     1. Let (|addrtype|, <var ignore>limits</var>, |elementtype|) be [=table_type=](|store|, |tableaddr|).
-    1. If |elementtype| is [=exnref=],
+    1. If |elementtype| [=matches/reftype|matches=] [=exnref=],
         1. Throw a {{TypeError}} exception.
     1. Let |index64| be [=?=] [=AddressValueToU64=](|index|, |addrtype|).
     1. Let |result| be [=table_read=](|store|, |tableaddr|, |index64|).
@@ -1018,7 +1021,7 @@ Each {{Table}} object has a \[[Table]] internal slot, which is a [=table address
     1. Let |tableaddr| be **this**.\[[Table]].
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
     1. Let (|addrtype|, <var ignore>limits</var>, |elementtype|) be [=table_type=](|store|, |tableaddr|).
-    1. If |elementtype| is [=exnref=],
+    1. If |elementtype| [=matches/reftype|matches=] [=exnref=],
         1. Throw a {{TypeError}} exception.
     1. Let |index64| be [=?=] [=AddressValueToU64=](|index|, |addrtype|).
     1. If |value| is missing,
@@ -1107,7 +1110,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
     The <dfn constructor for="Global">Global(|descriptor|, |v|)</dfn> constructor, when invoked, performs the following steps:
     1. Let |mutable| be |descriptor|["mutable"].
     1. Let |valuetype| be [=ToValueType=](|descriptor|["value"]).
-    1. If |valuetype| is [=v128=] or [=exnref=],
+    1. If |valuetype| [=matches/valtype|matches=] [=v128=] or [=exnref=],
         1. Throw a {{TypeError}} exception.
     1. If |v| is missing,
         1. Let |value| be [=DefaultValue=](|valuetype|).
@@ -1126,7 +1129,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
     1. Let |store| be the current agent's [=associated store=].
     1. Let |globaladdr| be |global|.\[[Global]].
     1. Let |globaltype| be [=global_type=](|store|, |globaladdr|).
-    1. If |globaltype| is of the form <var ignore>mut</var> |valuetype| where |valuetype| is [=v128=] or [=exnref=], throw a {{TypeError}}.
+    1. If |globaltype| is of the form <var ignore>mut</var> |valuetype| where |valuetype| [=matches/valtype|matches=] [=v128=] or [=exnref=], throw a {{TypeError}}.
     1. Let |value| be [=global_read=](|store|, |globaladdr|).
     1. Return [=ToJSValue=](|value|).
 </div>
@@ -1139,7 +1142,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
     1. Let |store| be the current agent's [=associated store=].
     1. Let |globaladdr| be **this**.\[[Global]].
     1. Let |mut| |valuetype| be [=global_type=](|store|, |globaladdr|).
-    1. If |valuetype| is [=v128=] or [=exnref=], throw a {{TypeError}}.
+    1. If |valuetype| [=matches/valtype|matches=] [=v128=] or [=exnref=], throw a {{TypeError}}.
     1. If |mut| is [=const=], throw a {{TypeError}}.
     1. Let |value| be [=ToWebAssemblyValue=](**the given value**, |valuetype|).
     1. Let |store| be [=global_write=](|store|, |globaladdr|, |value|).
@@ -1198,7 +1201,7 @@ This slot holds a [=function address=] relative to the [=surrounding agent=]'s [
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
     1. Let |functype| be [=func_type=](|store|, |funcaddr|).
     1. Let [|parameters|] → [|results|] be |functype|.
-    1. If |parameters| or |results| contain [=v128=] or [=exnref=], throw a {{TypeError}}.
+    1. If any type in |parameters| or |results| [=matches/valtype|matches=] [=v128=] or [=exnref=], throw a {{TypeError}}.
 
         Note: the above error is thrown each time the \[[Call]] method is invoked.
     1. Let |args| be « ».
@@ -1238,7 +1241,7 @@ Note: Exported Functions do not have a \[[Construct]] method and thus it is not 
   To <dfn>run a host function</dfn> from the JavaScript object |func|, type |functype|, and [=list=] of [=WebAssembly values=] |arguments|, perform the following steps:
 
     1. Let [|parameters|] → [|results|] be |functype|.
-    1. If |parameters| or |results| contain [=v128=] or [=exnref=], throw a {{TypeError}}.
+    1. If any type in |parameters| or |results| [=matches/valtype|matches=] [=v128=] or [=exnref=], throw a {{TypeError}}.
     1. Let |jsArguments| be « ».
     1. [=list/iterate|For each=] |arg| of |arguments|,
         1. [=list/Append=] [=!=] [=ToJSValue=](|arg|) to |jsArguments|.
@@ -1335,7 +1338,7 @@ For <dfn>retrieving a host value</dfn> from an [=host address=] |hostaddr|, perf
 The algorithm <dfn>ToWebAssemblyValue</dfn>(|v|, |type|) coerces a JavaScript value to a [=WebAssembly value=] by performing the following steps:
 
 1. Assert: |type| is not [=v128=].
-1. Assert: |type| is not [=exnref=].
+1. Assert: |type| does not [=matches/valtype|match=] [=exnref=].
 1. If |type| is [=i64=],
     1. Let |i64| be [=?=] [$ToBigInt64$](|v|).
     1. Let |u64| be the unsigned integer such that |i64| is [=signed_64=](|u64|).
@@ -1650,7 +1653,7 @@ constructor steps are:
     1. Throw a {{TypeError}}.
 1. Let |wasmPayload| be « ».
 1. [=list/iterate|For each=] |value| and |resultType| of |payload| and |types|, paired linearly,
-    1. If |resultType| is [=v128=] or [=exnref=],
+    1. If |resultType| [=matches/valtype|matches=] [=v128=] or [=exnref=],
         1. Throw a {{TypeError}}.
     1. [=list/Append=] [=?=] [=ToWebAssemblyValue=](|value|, |resultType|) to |wasmPayload|.
 1. Let (|store|, |exceptionAddr|) be [=exn_alloc=](|store|, |exceptionTag|.\[[Address]], |wasmPayload|)
@@ -1673,7 +1676,7 @@ The <dfn method for="Exception">getArg(|index|)</dfn> method steps are:
 1. If |index| ≥ |payload|'s [=list/size=],
     1. Throw a {{RangeError}}.
 1. Let [|types|] → [] be [=tag_type=](|store|, |tagaddr|).
-1. If |types|[|index|] is [=v128=] or [=exnref=],
+1. If |types|[|index|] [=matches/valtype|matches=] [=v128=] or [=exnref=],
     1. Throw a {{TypeError}}.
 1. Return [=ToJSValue=](|payload|[|index|]).
 
