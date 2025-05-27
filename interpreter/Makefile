@@ -97,18 +97,22 @@ quiettest/%: $(NAME)
 .PHONY: install
 
 install:
+	rm -f $(NAME).exe
 	dune build -p $(NAME) @install
 	dune install
 
 opam-release/%:
-	git tag opam-$*
+	git tag -f opam-$*
 	git push --tags
 	rm -f opam-$*.zip
 	wget https://github.com/WebAssembly/spec/archive/opam-$*.zip
 	cp wasm.opam opam
 	echo "url {" >> opam
 	echo "  src: \"https://github.com/WebAssembly/spec/archive/opam-$*.zip\"" >> opam
-	echo "  checksum: \"md5=`md5 -q opam-$*.zip`\"" >> opam
+	echo "  checksum: [" >> opam
+	echo "    \"md5=`md5 -q opam-$*.zip`\"" >> opam
+	echo "    \"sha256=`sha256 -q opam-$*.zip`\"" >> opam
+	echo "  ]" >> opam
 	echo "}" >> opam
 	rm opam-$*.zip
 	@echo Created file ./opam, submit to github opam-repository/packages/wasm/wasm.$*/opam
