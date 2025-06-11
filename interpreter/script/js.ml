@@ -749,7 +749,9 @@ let rec of_definition def =
 let of_wrapper env x_opt name wrap_action wrap_assertion at =
   let x = of_inst_opt env x_opt in
   let bs = wrap name wrap_action wrap_assertion at in
-  "call(instance(module(" ^ of_bytes bs ^ "), " ^
+  let source_str_as_arg = ", \"(wrapper)\"" in(*", \"" ^ Filename.basename ass.at.left.file ^
+    ":" ^ string_of_int ass.at.left.line ^ "\"" in *)
+  "call(instance(module(" ^ of_bytes bs ^ source_str_as_arg ^ "), " ^
     "exports(" ^ x ^ ")), " ^ " \"run\", [])"
 
 let of_action env act =
@@ -775,9 +777,9 @@ let of_action env act =
     | _ -> None
     )
 
-let of_assertion' env act name args wrapper_opt =
+let of_assertion' env act source name args wrapper_opt =
   let act_js, act_wrapper_opt = of_action env act in
-  let js = name ^ "(() => " ^ act_js ^ String.concat ", " ("" :: args) ^ ")" in
+  let js = name ^ "(() => " ^ act_js ^ source ^ String.concat ", " ("" :: args) ^ ")" in
   match act_wrapper_opt with
   | None -> js ^ ";"
   | Some (act_wrapper, out) ->
@@ -785,35 +787,41 @@ let of_assertion' env act name args wrapper_opt =
       match wrapper_opt with
       | None -> name, run
       | Some wrapper -> "run", wrapper
-    in run_name ^ "(() => " ^ act_wrapper (wrapper out) act.at ^ ");  // " ^ js
+    in run_name ^ "(() => " ^ act_wrapper (wrapper out) act.at ^ source ^ ");  // " ^ js
 
 let of_assertion env ass =
+  let source_str = Filename.basename ass.at.left.file ^
+    ":" ^ string_of_int ass.at.left.line in
+  let source_str_as_arg = ", \"" ^ source_str ^ "\"" in  
   match ass.it with
   | AssertMalformed (def, _) ->
-    "assert_malformed(" ^ of_definition def ^ ");"
+    "assert_malformed(" ^ of_definition def ^ source_str_as_arg ^ ");"
   | AssertMalformedCustom (def, _) ->
-    "assert_malformed_custom(" ^ of_definition def ^ ");"
+    "assert_malformed_custom(" ^ of_definition def ^ source_str_as_arg ^ ");"
   | AssertInvalid (def, _) ->
-    "assert_invalid(" ^ of_definition def ^ ");"
+    "assert_invalid(" ^ of_definition def ^ source_str_as_arg ^ ");"
   | AssertInvalidCustom (def, _) ->
-    "assert_invalid_custom(" ^ of_definition def ^ ");"
+    "assert_invalid_custom(" ^ of_definition def ^ source_str_as_arg ^ ");"
   | AssertUnlinkable (x_opt, _) ->
     "assert_unlinkable(" ^ of_mod_opt env x_opt ^ ");"
   | AssertUninstantiable (x_opt, _) ->
     "assert_uninstantiable(" ^ of_mod_opt env x_opt ^ ");"
   | AssertReturn (act, ress) ->
-    of_assertion' env act "assert_return" (List.map of_result ress)
+    of_assertion' env act source_str_as_arg "assert_return" (List.map of_result ress)
       (Some (assert_return ress))
   | AssertTrap (act, _) ->
-    of_assertion' env act "assert_trap" [] None
+    of_assertion' env act source_str_as_arg "assert_trap" [] None
   | AssertExhaustion (act, _) ->
-    of_assertion' env act "assert_exhaustion" [] None
+    of_assertion' env act source_str_as_arg "assert_exhaustion" [] None
   | AssertException act ->
-    of_assertion' env act "assert_exception" [] None
+    of_assertion' env act source_str_as_arg "assert_exception" [] None
 
 let of_command env cmd =
-  "\n// " ^ Filename.basename cmd.at.left.file ^
-    ":" ^ string_of_int cmd.at.left.line ^ "\n" ^
+  let source_str = Filename.basename cmd.at.left.file ^
+    ":" ^ string_of_int cmd.at.left.line in
+  let source_str_quoted = "\"" ^ source_str ^ "\"" in
+  let source_str_as_arg = ", " ^ source_str in
+  "\n// " ^ source_str ^ "\n" ^
   match cmd.it with
   | Module (x_opt, def) ->
     let rec unquote def =
@@ -823,7 +831,7 @@ let of_command env cmd =
       | Quoted (_, s) ->
         unquote (snd (Parse.Module.parse_string ~offset:s.at s.it))
     in bind_mod env x_opt (unquote def);
-    "let " ^ current_mod env ^ " = module(" ^ of_definition def ^ ");\n" ^
+    "let " ^ current_mod env ^ " = module(" ^ of_definition def ^ ", " ^ source_str_quoted ^ ");\n" ^
     (if x_opt = None then "" else
     "let " ^ of_mod_opt env x_opt ^ " = " ^ current_mod env ^ ";\n")
   | Instance (x1_opt, x2_opt) ->
@@ -835,7 +843,7 @@ let of_command env cmd =
   | Register (name, x_opt) ->
     "register(" ^ of_name name ^ ", " ^ of_inst_opt env x_opt ^ ")\n"
   | Action act ->
-    of_assertion' env act "run" [] None ^ "\n"
+    of_assertion' env act source_str_as_arg "run" [] None ^ "\n"
   | Assertion ass ->
     of_assertion env ass ^ "\n"
   | Meta _ -> assert false
