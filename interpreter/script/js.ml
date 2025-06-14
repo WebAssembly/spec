@@ -53,7 +53,7 @@ function register(name, instance) {
   registry[name] = instance.exports;
 }
 
-function module(bytes, valid = true) {
+function module(bytes, source, valid = true) {
   let buffer = new ArrayBuffer(bytes.length);
   let view = new Uint8Array(buffer);
   for (let i = 0; i < bytes.length; ++i) {
@@ -92,8 +92,8 @@ function run(action) {
   action();
 }
 
-function assert_malformed(bytes) {
-  try { module(bytes, false) } catch (e) {
+function assert_malformed(bytes, source) {
+  try { module(bytes, source, false) } catch (e) {
     if (e instanceof WebAssembly.CompileError) return;
   }
   throw new Error("Wasm decoding failure expected");
@@ -103,8 +103,8 @@ function assert_malformed_custom(bytes) {
   return;
 }
 
-function assert_invalid(bytes) {
-  try { module(bytes, false) } catch (e) {
+function assert_invalid(bytes, source) {
+  try { module(bytes, source, false) } catch (e) {
     if (e instanceof WebAssembly.CompileError) return;
   }
   throw new Error("Wasm validation failure expected");
@@ -128,7 +128,7 @@ function assert_uninstantiable(mod) {
   throw new Error("Wasm trap expected");
 }
 
-function assert_trap(action) {
+function assert_trap(action, source) {
   try { action() } catch (e) {
     if (e instanceof WebAssembly.RuntimeError) return;
   }
@@ -150,7 +150,7 @@ function assert_exhaustion(action) {
   throw new Error("Wasm resource exhaustion expected");
 }
 
-function assert_return(action, ...expected) {
+function assert_return(action, source, ...expected) {
   let actual = action();
   if (actual === undefined) {
     actual = [];
@@ -820,7 +820,7 @@ let of_command env cmd =
   let source_str = Filename.basename cmd.at.left.file ^
     ":" ^ string_of_int cmd.at.left.line in
   let source_str_quoted = "\"" ^ source_str ^ "\"" in
-  let source_str_as_arg = ", " ^ source_str in
+  let source_str_as_arg = ", " ^ source_str_quoted in
   "\n// " ^ source_str ^ "\n" ^
   match cmd.it with
   | Module (x_opt, def) ->
