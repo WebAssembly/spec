@@ -151,10 +151,9 @@ function binary(bytes) {
  * Returns a compiled module, or throws if there was an error at compilation.
  */
 function module(bytes, source, valid = true) {
-  let test = valid
-    ? "Test that WebAssembly compilation succeeds"
-    : "Test that WebAssembly compilation fails";
-  test += ` (${source})`;
+  const test = `${ valid ? "Test that WebAssembly compilation succeeds" :
+                "Test that WebAssembly compilation fails"} (${source})`;
+
   const loc = new Error().stack.toString().replace("Error", "");
   let buffer = binary(bytes);
   let validated = WebAssembly.validate(buffer);
