@@ -102,13 +102,15 @@ install:
 	dune install
 
 opam-release/%:
-	git tag -f opam-$*
-	git push --tags
+	#git tag -f opam-$*
+	#git push -f --tags
 	rm -f opam-$*.zip
-	wget https://github.com/WebAssembly/spec/archive/opam-$*.zip
+	#wget https://github.com/WebAssembly/spec/archive/opam-$*.zip
+	wget 'https://download-directory.github.io?url=https://github.com/WebAssembly/spec/tree/opam-$*/interpreter&filename=opam-$*.zip'
 	cp wasm.opam opam
 	echo "url {" >> opam
-	echo "  src: \"https://github.com/WebAssembly/spec/archive/opam-$*.zip\"" >> opam
+	#echo "  src: \"https://github.com/WebAssembly/spec/archive/opam-$*.zip\"" >> opam
+	echo "  src: \"https://download-directory.github.io?url=https://github.com/WebAssembly/spec/tree/opam-$*/interpreter&filename=opam-$*.zip\"" >> opam
 	echo "  checksum: [" >> opam
 	echo "    \"md5=`md5 -q opam-$*.zip`\"" >> opam
 	echo "    \"sha256=`sha256 -q opam-$*.zip`\"" >> opam
