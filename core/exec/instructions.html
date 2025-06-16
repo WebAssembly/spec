@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>Instructions &#8212; WebAssembly 2.0 (Draft 2025-05-15)</title>
+    <title>Instructions &#8212; WebAssembly 2.0 (Draft 2025-06-16)</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
@@ -2092,7 +2092,7 @@ S; F; (\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{data.drop}
 <li><p>Let <span class="math notranslate nohighlight">\(L\)</span> be the label whose arity is <span class="math notranslate nohighlight">\(n\)</span> and whose continuation is the end of the block.</p></li>
 <li><p>Assert: due to <a class="reference internal" href="../valid/instructions.html#valid-block"><span class="std std-ref">validation</span></a>, there are at least <span class="math notranslate nohighlight">\(m\)</span> values on the top of the stack.</p></li>
 <li><p>Pop the values <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-val}{\mathit{val}}^m\)</span> from the stack.</p></li>
-<li><p><a class="reference internal" href="#exec-instr-seq-enter"><span class="std std-ref">Enter</span></a> the block <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-val}{\mathit{val}}^m~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast\)</span> with label <span class="math notranslate nohighlight">\(L\)</span>.</p></li>
+<li><p><a class="reference internal" href="#exec-instr-seq-enter"><span class="std std-ref">Enter</span></a> the block <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast\)</span> with label <span class="math notranslate nohighlight">\(L\)</span> and values <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-val}{\mathit{val}}^m\)</span>.</p></li>
 </ol>
 <div class="math notranslate nohighlight">
 \[\begin{split}~\\[-1ex]
@@ -2111,7 +2111,7 @@ F; \href{../exec/runtime.html#syntax-val}{\mathit{val}}^m~\href{../syntax/instru
 <li><p>Let <span class="math notranslate nohighlight">\(L\)</span> be the label whose arity is <span class="math notranslate nohighlight">\(m\)</span> and whose continuation is the start of the loop.</p></li>
 <li><p>Assert: due to <a class="reference internal" href="../valid/instructions.html#valid-loop"><span class="std std-ref">validation</span></a>, there are at least <span class="math notranslate nohighlight">\(m\)</span> values on the top of the stack.</p></li>
 <li><p>Pop the values <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-val}{\mathit{val}}^m\)</span> from the stack.</p></li>
-<li><p><a class="reference internal" href="#exec-instr-seq-enter"><span class="std std-ref">Enter</span></a> the block <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-val}{\mathit{val}}^m~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast\)</span> with label <span class="math notranslate nohighlight">\(L\)</span>.</p></li>
+<li><p><a class="reference internal" href="#exec-instr-seq-enter"><span class="std std-ref">Enter</span></a> the block <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast\)</span> with label <span class="math notranslate nohighlight">\(L\)</span> and values <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-val}{\mathit{val}}^m\)</span>.</p></li>
 </ol>
 <div class="math notranslate nohighlight">
 \[\begin{split}~\\[-1ex]
@@ -2325,10 +2325,11 @@ S; F; (\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/
 <span id="exec-instr-seq"></span><span id="index-9"></span><h2>Blocks<a class="headerlink" href="#blocks" title="Permalink to this heading">¶</a></h2>
 <p>The following auxiliary rules define the semantics of executing an <a class="reference internal" href="../syntax/instructions.html#syntax-instr-seq"><span class="std std-ref">instruction sequence</span></a>
 that forms a <a class="reference internal" href="#exec-instr-control"><span class="std std-ref">block</span></a>.</p>
-<section id="entering-xref-syntax-instructions-syntax-instr-mathit-instr-ast-with-label-l">
-<span id="exec-instr-seq-enter"></span><h3>Entering <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast\)</span> with label <span class="math notranslate nohighlight">\(L\)</span><a class="headerlink" href="#entering-xref-syntax-instructions-syntax-instr-mathit-instr-ast-with-label-l" title="Permalink to this heading">¶</a></h3>
+<section id="entering-xref-syntax-instructions-syntax-instr-mathit-instr-ast-with-label-l-and-values-xref-exec-runtime-syntax-val-mathit-val-ast">
+<span id="exec-instr-seq-enter"></span><h3>Entering <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast\)</span> with label <span class="math notranslate nohighlight">\(L\)</span> and values <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-val}{\mathit{val}}^\ast\)</span><a class="headerlink" href="#entering-xref-syntax-instructions-syntax-instr-mathit-instr-ast-with-label-l-and-values-xref-exec-runtime-syntax-val-mathit-val-ast" title="Permalink to this heading">¶</a></h3>
 <ol class="arabic simple">
 <li><p>Push <span class="math notranslate nohighlight">\(L\)</span> to the stack.</p></li>
+<li><p>Push the values <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-val}{\mathit{val}}^\ast\)</span> to the stack.</p></li>
 <li><p>Jump to the start of the instruction sequence <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast\)</span>.</p></li>
 </ol>
 <div class="admonition note">
@@ -2377,7 +2378,7 @@ and returning from it.</p>
 <li><p>Let <span class="math notranslate nohighlight">\(F\)</span> be the <a class="reference internal" href="runtime.html#syntax-frame"><span class="std std-ref">frame</span></a> <span class="math notranslate nohighlight">\(\{ \href{../exec/runtime.html#syntax-frame}{\mathsf{module}}~f.\href{../exec/runtime.html#syntax-funcinst}{\mathsf{module}}, \href{../exec/runtime.html#syntax-frame}{\mathsf{locals}}~\href{../exec/runtime.html#syntax-val}{\mathit{val}}^n~(\href{../exec/runtime.html#default-val}{\mathrm{default}}_t)^\ast \}\)</span>.</p></li>
 <li><p>Push the activation of <span class="math notranslate nohighlight">\(F\)</span> with arity <span class="math notranslate nohighlight">\(m\)</span> to the stack.</p></li>
 <li><p>Let <span class="math notranslate nohighlight">\(L\)</span> be the <a class="reference internal" href="runtime.html#syntax-label"><span class="std std-ref">label</span></a> whose arity is <span class="math notranslate nohighlight">\(m\)</span> and whose continuation is the end of the function.</p></li>
-<li><p><a class="reference internal" href="#exec-instr-seq-enter"><span class="std std-ref">Enter</span></a> the instruction sequence <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast\)</span> with label <span class="math notranslate nohighlight">\(L\)</span>.</p></li>
+<li><p><a class="reference internal" href="#exec-instr-seq-enter"><span class="std std-ref">Enter</span></a> the instruction sequence <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast\)</span> with label <span class="math notranslate nohighlight">\(L\)</span> and no values.</p></li>
 </ol>
 <div class="math notranslate nohighlight">
 \[\begin{split}~\\[-1ex]
