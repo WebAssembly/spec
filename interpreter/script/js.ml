@@ -53,7 +53,7 @@ function register(name, instance) {
   registry[name] = instance.exports;
 }
 
-function module(bytes, source, valid = true) {
+function module(bytes, loc, valid = true) {
   let buffer = new ArrayBuffer(bytes.length);
   let view = new Uint8Array(buffer);
   for (let i = 0; i < bytes.length; ++i) {
@@ -92,8 +92,8 @@ function run(action) {
   action();
 }
 
-function assert_malformed(bytes, source) {
-  try { module(bytes, source, false) } catch (e) {
+function assert_malformed(bytes, loc) {
+  try { module(bytes, loc, false) } catch (e) {
     if (e instanceof WebAssembly.CompileError) return;
   }
   throw new Error("Wasm decoding failure expected");
@@ -103,8 +103,8 @@ function assert_malformed_custom(bytes) {
   return;
 }
 
-function assert_invalid(bytes, source) {
-  try { module(bytes, source, false) } catch (e) {
+function assert_invalid(bytes, loc) {
+  try { module(bytes, loc, false) } catch (e) {
     if (e instanceof WebAssembly.CompileError) return;
   }
   throw new Error("Wasm validation failure expected");
@@ -128,7 +128,7 @@ function assert_uninstantiable(mod) {
   throw new Error("Wasm trap expected");
 }
 
-function assert_trap(action, source) {
+function assert_trap(action, loc) {
   try { action() } catch (e) {
     if (e instanceof WebAssembly.RuntimeError) return;
   }
@@ -150,7 +150,7 @@ function assert_exhaustion(action) {
   throw new Error("Wasm resource exhaustion expected");
 }
 
-function assert_return(action, source, ...expected) {
+function assert_return(action, loc, ...expected) {
   let actual = action();
   if (actual === undefined) {
     actual = [];
@@ -775,9 +775,9 @@ let of_action env act =
     | _ -> None
     )
 
-let of_assertion' env act source name args wrapper_opt =
+let of_assertion' env act loc name args wrapper_opt =
   let act_js, act_wrapper_opt = of_action env act in
-  let js = name ^ "(() => " ^ act_js ^ source ^ String.concat ", " ("" :: args) ^ ")" in
+  let js = name ^ "(() => " ^ act_js ^ loc ^ String.concat ", " ("" :: args) ^ ")" in
   match act_wrapper_opt with
   | None -> js ^ ";"
   | Some (act_wrapper, out) ->
@@ -785,40 +785,40 @@ let of_assertion' env act source name args wrapper_opt =
       match wrapper_opt with
       | None -> name, run
       | Some wrapper -> "run", wrapper
-    in run_name ^ "(() => " ^ act_wrapper (wrapper out) act.at ^ source ^ ");  // " ^ js
+    in run_name ^ "(() => " ^ act_wrapper (wrapper out) act.at ^ loc ^ ");  // " ^ js
 
 let of_assertion env ass =
-  let source = Filename.basename ass.at.left.file ^
+  let loc = Filename.basename ass.at.left.file ^
     ":" ^ string_of_int ass.at.left.line in
-  let source_as_arg = ", \"" ^ source ^ "\"" in
+  let loc_as_arg = ", \"" ^ String.escaped loc ^ "\"" in
   match ass.it with
   | AssertMalformed (def, _) ->
-    "assert_malformed(" ^ of_definition def ^ source_as_arg ^ ");"
+    "assert_malformed(" ^ of_definition def ^ loc_as_arg ^ ");"
   | AssertMalformedCustom (def, _) ->
-    "assert_malformed_custom(" ^ of_definition def ^ source_as_arg ^ ");"
+    "assert_malformed_custom(" ^ of_definition def ^ loc_as_arg ^ ");"
   | AssertInvalid (def, _) ->
-    "assert_invalid(" ^ of_definition def ^ source_as_arg ^ ");"
+    "assert_invalid(" ^ of_definition def ^ loc_as_arg ^ ");"
   | AssertInvalidCustom (def, _) ->
-    "assert_invalid_custom(" ^ of_definition def ^ source_as_arg ^ ");"
+    "assert_invalid_custom(" ^ of_definition def ^ loc_as_arg ^ ");"
   | AssertUnlinkable (x_opt, _) ->
     "assert_unlinkable(" ^ of_mod_opt env x_opt ^ ");"
   | AssertUninstantiable (x_opt, _) ->
     "assert_uninstantiable(" ^ of_mod_opt env x_opt ^ ");"
   | AssertReturn (act, ress) ->
-    of_assertion' env act source_as_arg "assert_return" (List.map of_result ress)
+    of_assertion' env act loc_as_arg "assert_return" (List.map of_result ress)
       (Some (assert_return ress))
   | AssertTrap (act, _) ->
-    of_assertion' env act source_as_arg "assert_trap" [] None
+    of_assertion' env act loc_as_arg "assert_trap" [] None
   | AssertExhaustion (act, _) ->
-    of_assertion' env act source_as_arg "assert_exhaustion" [] None
+    of_assertion' env act loc_as_arg "assert_exhaustion" [] None
   | AssertException act ->
-    of_assertion' env act source_as_arg "assert_exception" [] None
+    of_assertion' env act loc_as_arg "assert_exception" [] None
 
 let of_command env cmd =
-  let source = Filename.basename cmd.at.left.file ^
-    ":" ^ string_of_int cmd.at.left.line in
-  let source_as_arg = ", \"" ^ source ^ "\"" in
-  "\n// " ^ source ^ "\n" ^
+  let loc = String.escaped (Filename.basename cmd.at.left.file ^
+    ":" ^ string_of_int cmd.at.left.line) in
+  let loc_as_arg = ", \"" ^ loc ^ "\"" in
+  "\n// " ^ loc ^ "\n" ^
   match cmd.it with
   | Module (x_opt, def) ->
     let rec unquote def =
@@ -828,7 +828,7 @@ let of_command env cmd =
       | Quoted (_, s) ->
         unquote (snd (Parse.Module.parse_string ~offset:s.at s.it))
     in bind_mod env x_opt (unquote def);
-    "let " ^ current_mod env ^ " = module(" ^ of_definition def ^ source_as_arg ^ ");\n" ^
+    "let " ^ current_mod env ^ " = module(" ^ of_definition def ^ loc_as_arg ^ ");\n" ^
     (if x_opt = None then "" else
     "let " ^ of_mod_opt env x_opt ^ " = " ^ current_mod env ^ ";\n")
   | Instance (x1_opt, x2_opt) ->
@@ -840,7 +840,7 @@ let of_command env cmd =
   | Register (name, x_opt) ->
     "register(" ^ of_name name ^ ", " ^ of_inst_opt env x_opt ^ ")\n"
   | Action act ->
-    of_assertion' env act source_as_arg "run" [] None ^ "\n"
+    of_assertion' env act loc_as_arg "run" [] None ^ "\n"
   | Assertion ass ->
     of_assertion env ass ^ "\n"
   | Meta _ -> assert false
