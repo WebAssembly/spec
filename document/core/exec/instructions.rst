@@ -4149,7 +4149,7 @@ Control Instructions
 
 6. Pop the values :math:`\val^m` from the stack.
 
-7. :ref:`Enter <exec-instr-seq-enter>` the block :math:`\val^m~\instr^\ast` with label :math:`L`.
+7. :ref:`Enter <exec-instr-seq-enter>` the block :math:`\instr^\ast` with label :math:`L` and values :math:`\val^m`.
 
 .. math::
    ~\\[-1ex]
@@ -4177,7 +4177,7 @@ Control Instructions
 
 6. Pop the values :math:`\val^m` from the stack.
 
-7. :ref:`Enter <exec-instr-seq-enter>` the block :math:`\val^m~\instr^\ast` with label :math:`L`.
+7. :ref:`Enter <exec-instr-seq-enter>` the block :math:`\instr^\ast` with label :math:`L` and values :math:`\val^m`.
 
 .. math::
    ~\\[-1ex]
@@ -4881,12 +4881,14 @@ that forms a :ref:`block <exec-instr-control>`.
 
 .. _exec-instr-seq-enter:
 
-Entering :math:`\instr^\ast` with label :math:`L`
-.................................................
+Entering :math:`\instr^\ast` with label :math:`L` and values :math:`\val^\ast`
+..............................................................................
 
 1. Push :math:`L` to the stack.
 
-2. Jump to the start of the instruction sequence :math:`\instr^\ast`.
+2. Push the values :math:`\val^\ast` to the stack.
+
+3. Jump to the start of the instruction sequence :math:`\instr^\ast`.
 
 .. note::
    No formal reduction rule is needed for entering an instruction sequence,
@@ -5010,7 +5012,7 @@ Invocation of :ref:`function address <syntax-funcaddr>` :math:`a`
 
 10. Let :math:`L` be the :ref:`label <syntax-label>` whose arity is :math:`m` and whose continuation is the end of the function.
 
-11. :ref:`Enter <exec-instr-seq-enter>` the instruction sequence :math:`\instr^\ast` with label :math:`L`.
+11. :ref:`Enter <exec-instr-seq-enter>` the instruction sequence :math:`\instr^\ast` with label :math:`L` and no values.
 
 .. math::
    ~\\[-1ex]

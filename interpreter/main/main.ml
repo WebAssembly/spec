@@ -29,7 +29,7 @@ let add_custom name =
     prerr_endline ("option -c: unknown custom section \"" ^ name ^ "\"");
     exit 1
 
-let quote s = "\"" ^ String.escaped s ^ "\""
+let quote = Arrange.string
 
 let argspec = Arg.align
 [
