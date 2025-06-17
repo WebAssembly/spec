@@ -13,7 +13,7 @@ let usage = "Usage: " ^ name ^ " [option] [file ...]"
 let args = ref []
 let add_arg source = args := !args @ [source]
 
-let quote s = "\"" ^ String.escaped s ^ "\""
+let quote = Arrange.string
 
 let argspec = Arg.align
 [
