@@ -112,7 +112,7 @@
 .. Profile Annotations
 .. -------------------
 
-.. |exprofiles#1| mathdef:: {^{\small{[!#1]}}}
+.. |exprofiles#1| mathdef:: {^{\small{[{}!#1]}}}
 .. |profilename#1| mathdef:: {\small{\mathrm{#1}}}
 .. |profile| mathdef:: \mathrm
 
