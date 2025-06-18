@@ -460,7 +460,7 @@ A :ref:`defined type <syntax-deftype>` :math:`\deftype_1` matches a type :math:`
    }
 
 .. note::
-   Note that there is no explicit definition of type _equivalence_,
+   Note that there is no explicit definition of type *equivalence*,
    since it coincides with syntactic equality,
    as used in the premise of the former rule above.
 
