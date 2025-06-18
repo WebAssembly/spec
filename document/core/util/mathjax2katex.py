@@ -108,12 +108,17 @@ def ReplaceMath(cache, data):
       data = data[:start] + v.replace('#1', data[start+len(k):end]) + data[end:]
   p = subprocess.Popen(
       ['node', os.path.join(SCRIPT_DIR, 'katex/cli.js'), '--display-mode', '--trust'],
-      stdin=subprocess.PIPE, stdout=subprocess.PIPE, text=True)
-  ret = p.communicate(input=data)[0]
-  if p.returncode != 0:
+      stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+  ret, err = p.communicate(input=data)
+  if p.returncode != 0 or err != "":
+    if err != "":
+      sys.stderr.write(err + '\n')
     sys.stderr.write('BEFORE:\n' + old + '\n')
     sys.stderr.write('AFTER:\n' + data + '\n')
-    raise Exception()
+    if p.returncode != 0:
+      raise Exception()
+    else:
+      sys.stderr.write('RESULT:\n' + ret + '\n')
   ret = ret.strip()
   ret = ret[ret.find('<span class="katex-html"'):]
   ret = '<span class="katex-display"><span class="katex">' + ret
