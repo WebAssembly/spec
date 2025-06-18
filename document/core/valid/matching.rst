@@ -335,7 +335,7 @@ A :ref:`composite type <syntax-comptype>` :math:`\comptype_1` matches a type :ma
 
   * The :ref:`function type <syntax-functype>` :math:`\functype_1` :ref:`matches <match-functype>` :math:`\functype_2`.
 
-* Or the composite type :math:`\comptype_1` is :math:`\TSTRUCT~\fieldtype_1^{n_1}` and :math:`\comptype_2` is :math:`\TSTRUCT~\fieldtype_2` and:
+* Or the composite type :math:`\comptype_1` is :math:`\TSTRUCT~\fieldtype_1^{n_1}` and :math:`\comptype_2` is :math:`\TSTRUCT~\fieldtype_2^{n_2}` and:
 
   * The arity :math:`n_1` is greater than or equal to :math:`n_2`.
 
