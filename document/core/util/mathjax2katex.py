@@ -64,18 +64,18 @@ def ReplaceMath(cache, data):
   data = data.replace('\\\\', '\\DOUBLESLASH')
   data = data.replace('\\(', '')
   data = data.replace('\\)', '')
+  data = data.replace('\\[([-0-9])', '\\DOUBLSLASH[\\1')  # Messed up by Bikeshed
   data = data.replace('\\[', '')
   data = data.replace('\\]', '')
   data = data.replace('\\DOUBLESLASH', '\\\\')
-  data = data.replace('’', '\\text{’}')
-  data = data.replace('‘', '\\text{‘}')
+  data = data.replace('’', '\'')       # Messed up by Bikeshed
   data = data.replace('\\hfill', '')
   data = data.replace('\\mbox', '\\text')
   data = data.replace('\\begin{split}', '\\begin{aligned}')
   data = data.replace('\\end{split}', '\\end{aligned}')
-  data = data.replace('&amp;', '&')
-  data = data.replace('&lt;', '<')
-  data = data.replace('&gt;', '>')
+  data = data.replace('&amp;', '&')    # Messed up by Bikeshed
+  data = data.replace('&lt;', '<')     # Messed up by Bikeshed
+  data = data.replace('&gt;', '>')     # Messed up by Bikeshed
   data = data.replace('{array}[t]', '{array}')
   data = data.replace('{array}[b]', '{array}')
   data = data.replace('@{~}', '')
@@ -112,7 +112,7 @@ def ReplaceMath(cache, data):
   ret, err = p.communicate(input=data)
   if p.returncode != 0 or err != "":
     if err != "":
-      sys.stderr.write(err + '\n')
+      sys.stderr.write('\n\n' + err + '\n')
     sys.stderr.write('BEFORE:\n' + old + '\n')
     sys.stderr.write('AFTER:\n' + data + '\n')
     if p.returncode != 0:
