@@ -212,7 +212,7 @@ def Main():
   # Pull out math fragments.
   data = re.sub(
       'class="([^"]*)math([^"]*)"[^>]*>'
-      '((?:[ ]*<span[^>]*>[^<]*</span>)*)([^<]*)<',
+      '((?:[ \n]*<span[^>]*>[^<]*</span>)*)([^<]*)<',
       ExtractMath, data)
 
   sys.stderr.write('Processing %d fragments.\n' % len(fixups))
