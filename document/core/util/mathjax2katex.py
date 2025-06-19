@@ -61,15 +61,15 @@ def HasBalancedTags(s):
 
 def ReplaceMath(cache, data):
   old = data
+  data = re.sub('[\\][\\][([-0-9])', '\\DOUBLESLASH[\\1', data)  # Messed up by Bikeshed
   data = data.replace('\\\\', '\\DOUBLESLASH')
   data = data.replace('\\(', '')
   data = data.replace('\\)', '')
-  data = data.replace('\\[([-0-9])', '\\DOUBLSLASH[\\1')  # Messed up by Bikeshed
   data = data.replace('\\[', '')
   data = data.replace('\\]', '')
   data = data.replace('\\DOUBLESLASH', '\\\\')
-  data = data.replace('’', '\'')       # Messed up by Bikeshed
-  data = data.replace('\\hfill', '')
+  data = data.replace('\u2019', '\'')       # Messed up by Bikeshed
+  data = data.replace('\\hfill', ' ')
   data = data.replace('\\mbox', '\\text')
   data = data.replace('\\begin{split}', '\\begin{aligned}')
   data = data.replace('\\end{split}', '\\end{aligned}')
