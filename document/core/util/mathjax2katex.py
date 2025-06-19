@@ -229,7 +229,7 @@ def Main():
                  spans + ReplaceMath(cache, mth) + '<')
         done_fixups.append((start, end, fixed))
       except Exception as inst:
-        sys.stderr.write('\nException: ' + inst + '\n')
+        sys.stderr.write('\nException: ' + inst.__str__() + '\n')
         success = False
 
       q.task_done()
