@@ -228,7 +228,8 @@ def Main():
         fixed = ('class="' + cls_before + ' ' + cls_after + '">' +
                  spans + ReplaceMath(cache, mth) + '<')
         done_fixups.append((start, end, fixed))
-      except Exception:
+      except Exception as inst:
+        sys.stderr.write('\nException: ' + inst + '\n')
         success = False
 
       q.task_done()
