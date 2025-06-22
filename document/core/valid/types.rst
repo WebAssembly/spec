@@ -539,7 +539,7 @@ Memory Types
    \frac{
      C \vdashlimits \limits : 2^{|\addrtype|-16}
    }{
-     C \vdashmemtype \limits \ok
+     C \vdashmemtype \addrtype~\limits \ok
    }
 
 
