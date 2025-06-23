@@ -1196,7 +1196,7 @@ spectec 0.5 generator
 - 4/4 (100.00%)
 
 ===== ../test-interpreter/spec-test-3/relaxed-simd/i32x4_relaxed_trunc.wast =====
-- 18/18 (100.00%)
+- 2/2 (100.00%)
 
 ===== ../test-interpreter/spec-test-3/relaxed-simd/i8x16_relaxed_swizzle.wast =====
 - 7/7 (100.00%)
@@ -1507,7 +1507,7 @@ spectec 0.5 generator
 ===== ../test-interpreter/spec-test-3/utf8-invalid-encoding.wast =====
 - 0/0 (100.00%)
 
-Total [53022/53022] (100.00%)
+Total [53006/53006] (100.00%)
 
 == Complete.
 ```

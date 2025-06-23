@@ -659,7 +659,7 @@ The data is written as a :ref:`string <text-string>`, which may be split up into
      \text{(}~\text{data}~~\Tid^?~~b^\ast{:}\Tdatastring~\text{)} \\ &&& \qquad
        \Rightarrow\quad \{ \DINIT~b^\ast, \DMODE~\DPASSIVE \} \\ &&|&
      \text{(}~\text{data}~~\Tid^?~~x{:}\Tmemuse_I~~\text{(}~\text{offset}~~e{:}\Texpr_I~\text{)}~~b^\ast{:}\Tdatastring~\text{)} \\ &&& \qquad
-       \Rightarrow\quad \{ \DINIT~b^\ast, \DMODE~\DACTIVE~\{ \DMEM~x', \DOFFSET~e \} \} \\
+       \Rightarrow\quad \{ \DINIT~b^\ast, \DMODE~\DACTIVE~\{ \DMEM~x, \DOFFSET~e \} \} \\
    \production{data string} & \Tdatastring &::=&
      (b^\ast{:}\Tstring)^\ast \quad\Rightarrow\quad \concat((b^\ast)^\ast) \\
    \production{memory use} & \Tmemuse_I &::=&
