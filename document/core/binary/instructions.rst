@@ -82,8 +82,8 @@ Control Instructions
      \hex{13}~~y{:}\Btypeidx~~x{:}\Btableidx &\Rightarrow& \RETURNCALLINDIRECT~x~y \\ &&|&
      \hex{14}~~x{:}\Btypeidx &\Rightarrow& \CALLREF~x \\ &&|&
      \hex{15}~~x{:}\Btypeidx &\Rightarrow& \RETURNCALLREF~x \\ &&|&
-     \hex{1F}~~\X{bt}{:}\Bblocktype~~c^\ast{:}\Bvec(\Bcatch)~~(\X{in}{:}\Binstr)^\ast~~\hex{0B}
-       &\Rightarrow& \TRYTABLE~\X{bt}~c^\ast~\X{in}^\ast~\END \\
+     \hex{1F}~~\X{bt}{:}\Bblocktype~~c^\ast{:}\Bvec(\Bcatch)~~\\&&&~~~~(\X{in}{:}\Binstr)^\ast~~\hex{0B}
+       &\Rightarrow& \TRYTABLE~\X{bt}~c^\ast~\X{in}^\ast~\END \\ &&|&
      \hex{D5}~~l{:}\Blabelidx &\Rightarrow& \BRONNULL~l \\ &&|&
      \hex{D6}~~l{:}\Blabelidx &\Rightarrow& \BRONNONNULL~l \\ &&|&
      \hex{FB}~~24{:}\Bu32~~(\NULL_1^?,\NULL_2^?){:}\Bcastflags\\&&&~~~~l{:}\Blabelidx~~\X{ht}_1{:}\Bheaptype~~\X{ht}_2{:}\Bheaptype &\Rightarrow& \BRONCAST~l~(\REF~\NULL_1^?~\X{ht}_1)~(\REF~\NULL_2^?~\X{ht}_2) \\ &&|&

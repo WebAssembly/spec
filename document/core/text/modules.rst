@@ -631,9 +631,11 @@ Furthermore, for backwards compatibility with earlier versions of WebAssembly, i
    \production{table use} &
      \epsilon &\equiv& \text{(}~\text{table}~~\text{0}~\text{)} \\
    \production{element segment} &
-     \text{(}~\text{elem}~~\Tid^?~~\text{(}~\text{offset}~~\Texpr_I~\text{)}~~\Tvec(\Tfuncidx_I)~\text{)}
+     \text{(}~\text{elem}~~\Tid^?~~\text{(}~\text{offset}~~\Texpr_I~\text{)}~~\\ &
+     \qquad \Tvec(\Tfuncidx_I)~\text{)}
        &\equiv&
-     \text{(}~\text{elem}~~\Tid^?~~\text{(}~\text{table}~~\text{0}~\text{)}~~\text{(}~\text{offset}~~\Texpr_I~\text{)}~~\text{func}~~\Tvec(\Tfuncidx_I)~\text{)}
+     \text{(}~\text{elem}~~\Tid^?~~\text{(}~\text{table}~~\text{0}~\text{)}~~\text{(}~\text{offset}~~\Texpr_I~\text{)}~~\\ &
+     &&\qquad \text{func}~~\Tvec(\Tfuncidx_I)~\text{)}
    \end{array}
 
 As another abbreviation, element segments may also be specified inline with :ref:`table <text-table>` definitions; see the respective section.
