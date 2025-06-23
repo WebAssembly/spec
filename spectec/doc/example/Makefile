@@ -9,7 +9,8 @@ BUILDDIR = _build
 
 default:
 	@echo "Targets available:"
-	@echo "make rst      (run SpecTec)"
+	@echo "make check    (run SpecTec)"
+	@echo "make rst      (run SpecTec splicing)"
 	@echo "make html     (run SpecTec + Sphinx)"
 	@echo "make latex    (run SpecTec + Sphinx)"
 	@echo "make pdf      (run SpecTec + Sphinx + Latex)"
@@ -27,6 +28,12 @@ spectec:
 
 
 # Running SpecTec
+
+check: $(NAME).spectec
+	$(SPECTEC) $(NAME).spectec
+
+
+# Running SpecTec splicing
 
 RSTFILE = $(NAME).rst
 

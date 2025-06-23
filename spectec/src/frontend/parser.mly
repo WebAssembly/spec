@@ -477,8 +477,8 @@ casetyp :
   | exp_lit { $1 }
   | PLUS arith_un { UnE (`PlusOp, $2) $ $sloc }
   | MINUS arith_un { UnE (`MinusOp, $2) $ $sloc }
-  | DOLLAR LPAREN exp RPAREN { $3 }
-  | DOLLAR numtyp DOLLAR LPAREN exp RPAREN { CvtE ($5, $2) $ $sloc }
+  | DOLLAR LPAREN arith RPAREN { $3 }
+  | DOLLAR numtyp DOLLAR LPAREN arith RPAREN { CvtE ($5, $2) $ $sloc }
 
 
 (* Expressions *)
