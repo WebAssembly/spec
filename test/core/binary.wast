@@ -815,7 +815,7 @@
       "\00asm" "\01\00\00\00"
       "\04\04\01"                           ;; table section with one entry
       "\70"                                 ;; anyfunc
-      "\02"                                 ;; malformed table limits flag
+      "\08"                                 ;; malformed table limits flag
       "\00"                                 ;; dummy byte
   )
   "integer too large"
@@ -860,7 +860,7 @@
   (module binary
       "\00asm" "\01\00\00\00"
       "\05\03\01"                           ;; memory section with one entry
-      "\02"                                 ;; malformed memory limits flag
+      "\10"                                 ;; malformed memory limits flag
       "\00"                                 ;; dummy byte
   )
   "integer too large"
