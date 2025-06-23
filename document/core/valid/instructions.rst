@@ -2703,7 +2703,7 @@ Subsumption for :math:`\instr^\ast`
 .. math::
    \frac{
      \begin{array}{@{}c@{}}
-     C \vdashinstr \instr : \instrtype
+     C \vdashinstr \instr^\ast : \instrtype
      \qquad
      C \vdashinstrtype \instrtype' \ok
      \qquad
