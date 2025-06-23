@@ -68,7 +68,7 @@ def ReplaceMath(cache, data):
   data = data.replace('\\[', '')
   data = data.replace('\\]', '')
   data = data.replace('\\DOUBLESLASH', '\\\\')
-  data = data.replace('\u2019', '\'')       # Messed up by Bikeshed
+  data = data.replace('\u2019', '\'')       # "Right Single Quotation Mark" messed up by Bikeshed
   data = data.replace('\\hfill', ' ')
   data = data.replace('\\mbox', '\\text')
   data = data.replace('\\begin{split}', '\\begin{aligned}')
