@@ -563,7 +563,7 @@ let assert_return ress ts at =
         BrIf (0l @@ at) @@ at ]
     | EitherResult ress ->
       let idx = Lib.List32.length !locals in
-      locals := !locals @ [{ltype = t} @@ res.at];
+      locals := !locals @ [Local t @@ res.at];
       [ LocalSet (idx @@ res.at) @@ res.at;
         Block (ValBlockType None,
           List.map (fun resI ->
@@ -594,26 +594,26 @@ let wrap item_name wrap_action wrap_assertion at =
     itypes
   in
   let imports =
-    [ {module_name = Utf8.decode "module"; item_name; idesc} @@ at;
-      {module_name = Utf8.decode "spectest"; item_name = Utf8.decode "hostref";
-       idesc = FuncImport (1l @@ at) @@ at} @@ at;
-      {module_name = Utf8.decode "spectest"; item_name = Utf8.decode "eq_ref";
-       idesc = FuncImport (2l @@ at) @@ at} @@ at;
+    [ Import (Utf8.decode "module", item_name, idesc) @@ at;
+      Import (Utf8.decode "spectest", Utf8.decode "hostref",
+        FuncImport (1l @@ at) @@ at) @@ at;
+      Import (Utf8.decode "spectest", Utf8.decode "eq_ref",
+        FuncImport (2l @@ at) @@ at) @@ at;
     ]
   in
   let item =
     List.fold_left
-      (fun i im ->
-        match im.it.idesc.it with FuncImport _ -> Int32.add i 1l | _ -> i
+      (fun i {it = Import (_, _, desc); _} ->
+        match desc.it with FuncImport _ -> Int32.add i 1l | _ -> i
       ) 0l imports @@ at
   in
   let edesc = FuncExport item @@ at in
-  let exports = [{name = Utf8.decode "run"; edesc} @@ at] in
+  let exports = [Export (Utf8.decode "run", edesc) @@ at] in
   let body =
     [ Block (ValBlockType None, action @ assertion @ [Return @@ at]) @@ at;
       Unreachable @@ at ]
   in
-  let funcs = [{ftype = 0l @@ at; locals; body} @@ at] in
+  let funcs = [Func (0l @@ at, locals, body) @@ at] in
   let m = {empty_module with types; funcs; imports; exports} @@ at in
   (try
     Valid.check_module m;  (* sanity check *)

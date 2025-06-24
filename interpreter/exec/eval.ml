@@ -1116,13 +1116,13 @@ let rec step (c : config) : config =
       let args, vs' = split n1 vs e.at in
       (match f with
       | Func.AstFunc (_, inst', func) ->
-        let {locals; body; _} = func.it in
+        let Func (_x, ls, es) = func.it in
         let m = Lib.Promise.value inst' in
         let s = subst_of m in
-        let ts = List.map (fun loc -> subst_val_type s loc.it.ltype) locals in
-        let locs' = List.(rev (map Option.some args) @ map default_value ts) in
-        let frame' = {inst = m; locals = List.map ref locs'} in
-        let instr' = [Label (n2, [], ([], List.map plain body)) @@ func.at] in
+        let ts = List.map (fun {it = Local t; _} -> subst_val_type s t) ls in
+        let lvs = List.(rev (map Option.some args) @ map default_value ts) in
+        let frame' = {inst = m; locals = List.map ref lvs} in
+        let instr' = [Label (n2, [], ([], List.map plain es)) @@ func.at] in
         vs', [Frame (n2, frame', ([], instr')) @@ e.at]
 
       | Func.HostFunc (_, f) ->
@@ -1179,7 +1179,7 @@ let init_type (inst : module_inst) (type_ : type_) : module_inst =
   {inst with types = inst.types @ roll_def_types x rt}
 
 let init_import (inst : module_inst) (ex : extern) (im : import) : module_inst =
-  let {idesc; _} = im.it in
+  let Import (module_name, item_name, idesc) = im.it in
   let it =
     match idesc.it with
     | FuncImport x -> ExternFuncT (type_ inst x)
@@ -1192,8 +1192,8 @@ let init_import (inst : module_inst) (ex : extern) (im : import) : module_inst =
   let et' = extern_type_of inst.types ex in
   if not (Match.match_extern_type [] et' et) then
     Link.error im.at ("incompatible import type for " ^
-      "\"" ^ Utf8.encode im.it.module_name ^ "\" " ^
-      "\"" ^ Utf8.encode im.it.item_name ^ "\": " ^
+      "\"" ^ Utf8.encode module_name ^ "\" " ^
+      "\"" ^ Utf8.encode item_name ^ "\": " ^
       "expected " ^ Types.string_of_extern_type et ^
       ", got " ^ Types.string_of_extern_type et');
   match ex with
@@ -1204,49 +1204,51 @@ let init_import (inst : module_inst) (ex : extern) (im : import) : module_inst =
   | ExternTag tag -> {inst with tags = inst.tags @ [tag]}
 
 let init_func (inst : module_inst) (f : func) : module_inst =
-  let func = Func.alloc (type_ inst f.it.ftype) (Lib.Promise.make ()) f in
+  let Func (x, _, _) = f.it in
+  let func = Func.alloc (type_ inst x) (Lib.Promise.make ()) f in
   {inst with funcs = inst.funcs @ [func]}
 
-let init_tag (inst : module_inst) (t : tag) : module_inst =
-  let tag = Tag.alloc (TagT (type_ inst t.it.tgtype)) in
+let init_tag (inst : module_inst) (tag : tag) : module_inst =
+  let Tag x = tag.it in
+  let tag = Tag.alloc (TagT (type_ inst x)) in
   {inst with tags = inst.tags @ [tag]}
 
 let init_global (inst : module_inst) (glob : global) : module_inst =
-  let {gtype; ginit} = glob.it in
-  let gt = subst_global_type (subst_of inst) gtype in
-  let v = eval_const inst ginit in
-  let glob = Global.alloc gt v in
+  let Global (gt, c) = glob.it in
+  let gt' = subst_global_type (subst_of inst) gt in
+  let v = eval_const inst c in
+  let glob = Global.alloc gt' v in
   {inst with globals = inst.globals @ [glob]}
 
 let init_table (inst : module_inst) (tab : table) : module_inst =
-  let {ttype; tinit} = tab.it in
-  let tt = subst_table_type (subst_of inst) ttype in
+  let Table (tt, c) = tab.it in
+  let tt' = subst_table_type (subst_of inst) tt in
   let r =
-    match eval_const inst tinit with
+    match eval_const inst c with
     | Ref r -> r
-    | _ -> Crash.error tinit.at "non-reference table initializer"
+    | _ -> Crash.error c.at "non-reference table initializer"
   in
-  let tab = Table.alloc tt r in
+  let tab = Table.alloc tt' r in
   {inst with tables = inst.tables @ [tab]}
 
 let init_memory (inst : module_inst) (mem : memory) : module_inst =
-  let {mtype} = mem.it in
-  let mt = subst_memory_type (subst_of inst) mtype in
-  let mem = Memory.alloc mt in
+  let Memory mt = mem.it in
+  let mt' = subst_memory_type (subst_of inst) mt in
+  let mem = Memory.alloc mt' in
   {inst with memories = inst.memories @ [mem]}
 
-let init_elem (inst : module_inst) (seg : elem_segment) : module_inst =
-  let {etype; einit; _} = seg.it in
-  let elem = Elem.alloc (List.map (fun c -> as_ref (eval_const inst c)) einit) in
+let init_elem (inst : module_inst) (elem : elem) : module_inst =
+  let Elem (rt, cs, _emode) = elem.it in
+  let elem = Elem.alloc (List.map (fun c -> as_ref (eval_const inst c)) cs) in
   {inst with elems = inst.elems @ [elem]}
 
-let init_data (inst : module_inst) (seg : data_segment) : module_inst =
-  let {dinit; _} = seg.it in
-  let data = Data.alloc dinit in
+let init_data (inst : module_inst) (data : data) : module_inst =
+  let Data (bs, _dmode) = data.it in
+  let data = Data.alloc bs in
   {inst with datas = inst.datas @ [data]}
 
 let init_export (inst : module_inst) (ex : export) : module_inst =
-  let {name; edesc} = ex.it in
+  let Export (name, edesc) = ex.it in
   let ext =
     match edesc.it with
     | FuncExport x -> ExternFunc (func inst x)
@@ -1265,36 +1267,38 @@ let init_func_inst (inst : module_inst) (func : func_inst) =
   | _ -> ()
 
 let run_elem i elem =
-  let at = elem.it.emode.at in
+  let Elem (_rt, cs, emode) = elem.it in
+  let at = emode.at in
   let x = i @@ at in
-  match elem.it.emode.it with
+  match emode.it with
   | Passive -> []
-  | Active {index; offset} ->
-    offset.it @ [
+  | Active (y, c) ->
+    c.it @ [
       Const (I32 0l @@ at) @@ at;
-      Const (I32 (Lib.List32.length elem.it.einit) @@ at) @@ at;
-      TableInit (index, x) @@ at;
+      Const (I32 (Lib.List32.length cs) @@ at) @@ at;
+      TableInit (y, x) @@ at;
       ElemDrop x @@ at
     ]
-  | Declarative ->
-    [ElemDrop x @@ at]
+  | Declarative -> [ElemDrop x @@ at]
 
 let run_data i data =
-  let at = data.it.dmode.at in
+  let Data (bs, dmode) = data.it in
+  let at = dmode.at in
   let x = i @@ at in
-  match data.it.dmode.it with
+  match dmode.it with
   | Passive -> []
-  | Active {index; offset} ->
-    offset.it @ [
+  | Active (y, c) ->
+    c.it @ [
       Const (I32 0l @@ at) @@ at;
-      Const (I32 (Int32.of_int (String.length data.it.dinit)) @@ at) @@ at;
-      MemoryInit (index, x) @@ at;
+      Const (I32 (Int32.of_int (String.length bs)) @@ at) @@ at;
+      MemoryInit (y, x) @@ at;
       DataDrop x @@ at
     ]
   | Declarative -> assert false
 
 let run_start start =
-  [Call start.it.sfunc @@ start.at]
+  let Start x = start.it in
+  [Call x @@ start.at]
 
 
 let init_list f xs (inst : module_inst) : module_inst =

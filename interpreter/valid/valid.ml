@@ -985,26 +985,27 @@ and check_catch (c : context) (cc : catch) (ts : val_type list) at =
  *)
 
 let check_local (c : context) (loc : local) : local_type =
-  check_val_type c loc.it.ltype loc.at;
-  let init = if defaultable loc.it.ltype then Set else Unset in
-  LocalT (init, loc.it.ltype)
+  let Local t = loc.it in
+  check_val_type c t loc.at;
+  let init = if defaultable t then Set else Unset in
+  LocalT (init, t)
 
 let check_func (c : context) (f : func) : context =
-  let {ftype; locals; body} = f.it in
-  let _ft = func_type c ftype in
-  {c with funcs = c.funcs @ [type_ c ftype]}
+  let Func (x, _ls, _es) = f.it in
+  let _ft = func_type c x in
+  {c with funcs = c.funcs @ [type_ c x]}
 
 let check_func_body (c : context) (f : func) =
-  let {ftype; locals; body} = f.it in
-  let FuncT (ts1, ts2) = func_type c ftype in
-  let lts = List.map (check_local c) locals in
+  let Func (x, ls, es) = f.it in
+  let FuncT (ts1, ts2) = func_type c x in
+  let lts = List.map (check_local c) ls in
   let c' =
     { c with
       locals = List.map (fun t -> LocalT (Set, t)) ts1 @ lts;
       results = ts2;
       labels = [ts2]
     }
-  in check_block c' body (InstrT ([], ts2, [])) f.at
+  in check_block c' es (InstrT ([], ts2, [])) f.at
 
 let is_const (c : context) (e : instr) =
   match e.it with
@@ -1026,57 +1027,58 @@ let check_const (c : context) (const : const) (t : val_type) =
 (* Globals, Tables, Memories, Tags *)
 
 let check_global (c : context) (glob : global) : context =
-  let {gtype; ginit} = glob.it in
-  let GlobalT (_mut, t) = gtype in
-  check_global_type c gtype glob.at;
-  check_const c ginit t;
-  {c with globals = c.globals @ [gtype]}
+  let Global (gt, const) = glob.it in
+  let GlobalT (_mut, t) = gt in
+  check_global_type c gt glob.at;
+  check_const c const t;
+  {c with globals = c.globals @ [gt]}
 
 let check_table (c : context) (tab : table) : context =
-  let {ttype; tinit} = tab.it in
-  let TableT (_at, _lim, rt) = ttype in
-  check_table_type c ttype tab.at;
-  check_const c tinit (RefT rt);
-  {c with tables = c.tables @ [ttype]}
+  let Table (tt, const) = tab.it in
+  let TableT (_at, _lim, rt) = tt in
+  check_table_type c tt tab.at;
+  check_const c const (RefT rt);
+  {c with tables = c.tables @ [tt]}
 
 let check_memory (c : context) (mem : memory) : context =
-  let {mtype} = mem.it in
-  check_memory_type c mtype mem.at;
-  {c with memories = c.memories @ [mtype]}
+  let Memory mt = mem.it in
+  check_memory_type c mt mem.at;
+  {c with memories = c.memories @ [mt]}
 
-let check_tag (c : context) (t : tag) : context =
-  let FuncT (_, ts2) = func_type c t.it.tgtype in
-  require (ts2 = []) t.it.tgtype.at "non-empty tag result type";
-  {c with tags = c.tags @ [TagT (type_ c t.it.tgtype)]}
+let check_tag (c : context) (tag : tag) : context =
+  let Tag x = tag.it in
+  let FuncT (_, ts2) = func_type c x in
+  require (ts2 = []) x.at "non-empty tag result type";
+  {c with tags = c.tags @ [TagT (type_ c x)]}
 
 let check_elem_mode (c : context) (t : ref_type) (mode : segment_mode) =
   match mode.it with
   | Passive -> ()
-  | Active {index; offset} ->
-    let TableT (at, _lim, et) = table c index in
-    require (match_ref_type c.types t et) mode.at
+  | Active (x, offset) ->
+    let TableT (at, _lim, rt) = table c x in
+    require (match_ref_type c.types t rt) mode.at
       ("type mismatch: element segment's type " ^ string_of_ref_type t ^
-       " does not match table's element type " ^ string_of_ref_type et);
+       " does not match table's element type " ^ string_of_ref_type rt);
     check_const c offset (NumT (num_type_of_addr_type at))
   | Declarative -> ()
 
-let check_elem (c : context) (seg : elem_segment) : context =
-  let {etype; einit; emode} = seg.it in
-  check_ref_type c etype seg.at;
-  List.iter (fun const -> check_const c const (RefT etype)) einit;
-  check_elem_mode c etype emode;
-  {c with elems = c.elems @ [etype]}
+let check_elem (c : context) (elem : elem) : context =
+  let Elem (rt, cs, emode) = elem.it in
+  check_ref_type c rt elem.at;
+  List.iter (fun const -> check_const c const (RefT rt)) cs;
+  check_elem_mode c rt emode;
+  {c with elems = c.elems @ [rt]}
 
 let check_data_mode (c : context) (mode : segment_mode) =
   match mode.it with
   | Passive -> ()
-  | Active {index; offset} ->
-    let MemoryT (at, _) = memory c index in
+  | Active (x, offset) ->
+    let MemoryT (at, _) = memory c x in
     check_const c offset (NumT (num_type_of_addr_type at))
   | Declarative -> assert false
 
-let check_data (c : context) (seg : data_segment) : context =
-  let {dinit; dmode} = seg.it in
+let check_data (c : context) (data : data) : context =
+  let Data (_bs, dmode) = data.it in
   check_data_mode c dmode;
   {c with datas = c.datas @ [()]}
 
@@ -1084,13 +1086,13 @@ let check_data (c : context) (seg : data_segment) : context =
 (* Modules *)
 
 let check_start (c : context) (start : start) =
-  let {sfunc} = start.it in
-  let ft = as_func_str_type (expand_def_type (func c sfunc)) in
+  let Start x = start.it in
+  let ft = as_func_str_type (expand_def_type (func c x)) in
   require (ft = FuncT ([], [])) start.at
     "start function must not have parameters or results"
 
 let check_import (c : context) (im : import) : context =
-  let {module_name = _; item_name = _; idesc} = im.it in
+  let Import (_module_name, _item_name, idesc) = im.it in
   match idesc.it with
   | FuncImport x ->
     let _ = func_type c x in
@@ -1111,7 +1113,7 @@ let check_import (c : context) (im : import) : context =
 module NameSet = Set.Make(struct type t = Ast.name let compare = compare end)
 
 let check_export (c : context) (set : NameSet.t) (ex : export) : NameSet.t =
-  let {name; edesc} = ex.it in
+  let Export (name, edesc) = ex.it in
   (match edesc.it with
   | FuncExport x -> ignore (func c x)
   | GlobalExport x -> ignore (global c x)

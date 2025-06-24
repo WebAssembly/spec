@@ -635,11 +635,11 @@ let const head c =
 (* Functions *)
 
 let func_with_name name f =
-  let {ftype; locals; body} = f.it in
+  let Func (x, ls, es) = f.it in
   Node ("func" ^ name,
-    [Node ("type " ^ var ftype, [])] @
-    decls "local" (List.map (fun loc -> loc.it.ltype) locals) @
-    list instr body
+    [Node ("type " ^ var x, [])] @
+    decls "local" (List.map (fun {it = Local t; _} -> t) ls) @
+    list instr es
   )
 
 let func_with_index off i f =
@@ -652,18 +652,21 @@ let func f =
 (* Tags, tables, memories *)
 
 let tag off i tag =
+  let Tag x = tag.it in
   Node ("tag $" ^ nat (off + i),
-    [Node ("type " ^ var (tag.it.tgtype), [])]
+    [Node ("type " ^ var x, [])]
   )
 
 let table off i tab =
-  let {ttype = TableT (at, lim, t); tinit} = tab.it in
+  let Table (tt, c) = tab.it in
+  let TableT (at, lim, t) = tt in
   Node ("table $" ^ nat (off + i) ^ " " ^ addr_type at ^ " " ^ limits nat64 lim,
-    atom ref_type t :: list instr tinit.it
+    atom ref_type t :: list instr c.it
   )
 
 let memory off i mem =
-  let {mtype = MemoryT (at, lim)} = mem.it in
+  let Memory mt = mem.it in
+  let MemoryT (at, lim) = mt in
   Node ("memory $" ^ nat (off + i) ^ " " ^ addr_type at ^ " " ^ limits nat64 lim, [])
 
 let is_elem_kind = function
@@ -687,24 +690,24 @@ let elem_index e =
 let segment_mode category mode =
   match mode.it with
   | Passive -> []
-  | Active {index; offset} ->
-    (if index.it = 0l then [] else [Node (category, [atom var index])]) @
-    [const "offset" offset]
+  | Active (x, c) ->
+    (if x.it = 0l then [] else [Node (category, [atom var x])]) @
+    [const "offset" c]
   | Declarative -> [Atom "declare"]
 
 let elem i seg =
-  let {etype; einit; emode} = seg.it in
+  let Elem (rt, cs, mode) = seg.it in
   Node ("elem $" ^ nat i,
-    segment_mode "table" emode @
-    if is_elem_kind etype && List.for_all is_elem_index einit then
-      atom elem_kind etype :: list elem_index einit
+    segment_mode "table" mode @
+    if is_elem_kind rt && List.for_all is_elem_index cs then
+      atom elem_kind rt :: list elem_index cs
     else
-      atom ref_type etype :: list (const "item") einit
+      atom ref_type rt :: list (const "item") cs
   )
 
 let data i seg =
-  let {dinit; dmode} = seg.it in
-  Node ("data $" ^ nat i, segment_mode "memory" dmode @ break_bytes dinit)
+  let Data (bs, mode) = seg.it in
+  Node ("data $" ^ nat i, segment_mode "memory" mode @ break_bytes bs)
 
 
 (* Modules *)
@@ -721,16 +724,16 @@ let import_desc fx tx mx tgx gx d =
   | FuncImport x ->
     incr fx; Node ("func $" ^ nat (!fx - 1), [Node ("type", [atom var x])])
   | TableImport t ->
-    incr tx; table 0 (!tx - 1) ({ttype = t; tinit = [] @@ d.at} @@ d.at)
+    incr tx; table 0 (!tx - 1) (Table (t, [] @@ d.at) @@ d.at)
   | MemoryImport t ->
-    incr mx; memory 0 (!mx - 1) ({mtype = t} @@ d.at)
+    incr mx; memory 0 (!mx - 1) (Memory t @@ d.at)
   | GlobalImport t ->
     incr gx; Node ("global $" ^ nat (!gx - 1), [global_type t])
   | TagImport x ->
     incr tgx; Node ("tag $" ^ nat (!tgx - 1), [Node ("type", [atom var x])])
 
 let import fx tx mx ex gx im =
-  let {module_name; item_name; idesc} = im.it in
+  let Import (module_name, item_name, idesc) = im.it in
   Node ("import",
     [atom name module_name; atom name item_name; import_desc fx tx mx ex gx idesc]
   )
@@ -744,15 +747,16 @@ let export_desc d =
   | GlobalExport x -> Node ("global", [atom var x])
 
 let export ex =
-  let {name = n; edesc} = ex.it in
+  let Export (n, edesc) = ex.it in
   Node ("export", [atom name n; export_desc edesc])
 
 let global off i g =
-  let {gtype; ginit} = g.it in
-  Node ("global $" ^ nat (off + i), global_type gtype :: list instr ginit.it)
+  let Global (gt, c) = g.it in
+  Node ("global $" ^ nat (off + i), global_type gt :: list instr c.it)
 
 let start s =
-  Node ("start " ^ var s.it.sfunc, [])
+  let Start x = s.it in
+  Node ("start " ^ var x, [])
 
 let custom m mnode (module S : Custom.Section) =
   S.Handler.arrange m mnode S.it

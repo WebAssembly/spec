@@ -979,24 +979,24 @@ func_fields :
     { fun c x loc ->
       let c' = enter_func c loc in
       let y = inline_func_type_explicit c' ($1 c') (fst $2 c') $loc($1) in
-      [{(snd $2 c') with ftype = y} @@ loc], [], [] }
+      let Func (_, ls, es) = snd $2 c' in
+      [Func (y, ls, es) @@ loc], [], [] }
   | func_fields_body  /* Sugar */
     { fun c x loc ->
       let c' = enter_func c loc in
       let y = inline_func_type c' (fst $1 c') loc in
-      [{(snd $1 c') with ftype = y} @@ loc], [], [] }
+      let Func (_, ls, es) = snd $1 c' in
+      [Func (y, ls, es) @@ loc], [], [] }
   | inline_import type_use func_fields_import  /* Sugar */
     { fun c x loc ->
       let y = inline_func_type_explicit c ($2 c) ($3 c) $loc($2) in
       [],
-      [{ module_name = fst $1; item_name = snd $1;
-         idesc = FuncImport y @@ loc } @@ loc ], [] }
+      [Import (fst $1, snd $1, FuncImport y @@ loc) @@ loc ], [] }
   | inline_import func_fields_import  /* Sugar */
     { fun c x loc ->
       let y = inline_func_type c ($2 c) loc in
       [],
-      [{ module_name = fst $1; item_name = snd $1;
-         idesc = FuncImport y @@ loc } @@ loc ], [] }
+      [Import (fst $1, snd $1, FuncImport y @@ loc) @@ loc ], [] }
   | inline_export func_fields  /* Sugar */
     { fun c x loc ->
       let fns, ims, exs = $2 c x loc in fns, ims, $1 (FuncExport x) c :: exs }
@@ -1016,34 +1016,33 @@ func_fields_import_result :  /* Sugar */
 func_fields_body :
   | func_result_body { $1 }
   | LPAR PARAM val_type_list RPAR func_fields_body
-    { (fun c -> let FuncT (ts1, ts2) = fst $5 c in
-        FuncT (snd $3 c @ ts1, ts2)),
+    { (fun c -> let FuncT (ts1, ts2) = fst $5 c in FuncT (snd $3 c @ ts1, ts2)),
       (fun c -> anon_locals c (fst $3) $loc($3); snd $5 c) }
   | LPAR PARAM bind_var val_type RPAR func_fields_body  /* Sugar */
-    { (fun c -> let FuncT (ts1, ts2) = fst $6 c in
-        FuncT ($4 c :: ts1, ts2)),
+    { (fun c -> let FuncT (ts1, ts2) = fst $6 c in FuncT ($4 c :: ts1, ts2)),
       (fun c -> ignore (bind_local c $3); snd $6 c) }
 
 func_result_body :
   | func_body { (fun c -> FuncT ([], [])), $1 }
   | LPAR RESULT val_type_list RPAR func_result_body
-    { (fun c -> let FuncT (ts1, ts2) = fst $5 c in
-        FuncT (ts1, snd $3 c @ ts2)),
+    { (fun c -> let FuncT (ts1, ts2) = fst $5 c in FuncT (ts1, snd $3 c @ ts2)),
       snd $5 }
 
 func_body :
   | instr_list
     { fun c -> ignore (anon_label c $sloc);
-      {ftype = -1l @@ $sloc; locals = []; body = $1 c} }
+      Func (-1l @@ $sloc, [], $1 c) }
   | LPAR LOCAL local_type_list RPAR func_body
-    { fun c -> anon_locals c (fst $3) $loc($3); let f = $5 c in
-      {f with locals = snd $3 c @ f.Ast.locals} }
+    { fun c -> anon_locals c (fst $3) $loc($3);
+      let Func (x, ls, es) = $5 c in
+      Func (x, snd $3 c @ ls, es) }
   | LPAR LOCAL bind_var local_type RPAR func_body  /* Sugar */
-    { fun c -> ignore (bind_local c $3); let f = $6 c in
-      {f with locals = $4 c :: f.Ast.locals} }
+    { fun c -> ignore (bind_local c $3);
+      let Func (x, ls, es) = $6 c in
+      Func (x, $4 c :: ls, es) }
 
 local_type :
-  | val_type { fun c -> {ltype = $1 c} @@ $sloc }
+  | val_type { fun c -> Local ($1 c) @@ $sloc }
 
 local_type_list :
   | list(local_type)
@@ -1088,27 +1087,25 @@ elem_list :
 elem :
   | LPAR ELEM bind_var_opt elem_list RPAR
     { fun c -> ignore ($3 c anon_elem bind_elem);
-      fun () -> let etype, einit = $4 c in
-      { etype; einit; emode = Passive @@ $sloc } @@ $sloc }
+      fun () -> let rt, cs = $4 c in
+      Elem (rt, cs, Passive @@ $sloc) @@ $sloc }
   | LPAR ELEM bind_var_opt table_use offset elem_list RPAR
     { fun c -> ignore ($3 c anon_elem bind_elem);
-      fun () -> let etype, einit = $6 c in
-      { etype; einit;
-        emode = Active {index = $4 c table; offset = $5 c} @@ $sloc } @@ $sloc }
+      fun () -> let rt, cs = $6 c in
+      Elem (rt, cs, Active ($4 c table, $5 c) @@ $sloc) @@ $sloc }
   | LPAR ELEM bind_var_opt DECLARE elem_list RPAR
     { fun c -> ignore ($3 c anon_elem bind_elem);
-      fun () -> let etype, einit = $5 c in
-      { etype; einit; emode = Declarative @@ $sloc } @@ $sloc }
+      fun () -> let rt, cs = $5 c in
+      Elem (rt, cs, Declarative @@ $sloc) @@ $sloc }
   | LPAR ELEM bind_var_opt offset elem_list RPAR  /* Sugar */
     { fun c -> ignore ($3 c anon_elem bind_elem);
-      fun () -> let etype, einit = $5 c in
-      { etype; einit;
-        emode = Active {index = 0l @@ $sloc; offset = $4 c} @@ $sloc } @@ $sloc }
+      fun () -> let rt, cs = $5 c in
+      Elem (rt, cs, Active (0l @@ $sloc, $4 c) @@ $sloc) @@ $sloc }
   | LPAR ELEM bind_var_opt offset elem_var_list RPAR  /* Sugar */
     { fun c -> ignore ($3 c anon_elem bind_elem);
       fun () ->
-      { etype = (NoNull, FuncHT); einit = $5 c;
-        emode = Active {index = 0l @@ $sloc; offset = $4 c} @@ $sloc } @@ $sloc }
+      let rt = (NoNull, FuncHT) in
+      Elem (rt, $5 c, Active (0l @@ $sloc, $4 c) @@ $sloc) @@ $sloc }
 
 table :
   | LPAR TABLE bind_var_opt table_fields RPAR
@@ -1117,15 +1114,14 @@ table :
 
 table_fields :
   | table_type const_expr1
-    { fun c x loc -> [{ttype = $1 c; tinit = $2 c} @@ loc], [], [], [] }
+    { fun c x loc -> [Table ($1 c, $2 c) @@ loc], [], [], [] }
   | table_type  /* Sugar */
-    { fun c x loc -> let TableT (_, _, (_, ht)) as ttype = $1 c in
-      [{ttype; tinit = [RefNull ht @@ loc] @@ loc} @@ loc], [], [], [] }
+    { fun c x loc -> let TableT (_, _, (_, ht)) as tt = $1 c in
+      [Table (tt, [RefNull ht @@ loc] @@ loc) @@ loc], [], [], [] }
   | inline_import table_type  /* Sugar */
     { fun c x loc ->
       [], [],
-      [{ module_name = fst $1; item_name = snd $1;
-        idesc = TableImport ($2 c) @@ loc } @@ loc], [] }
+      [Import (fst $1, snd $1, TableImport ($2 c) @@ loc) @@ loc], [] }
   | inline_export table_fields  /* Sugar */
     { fun c x loc -> let tabs, elems, ims, exs = $2 c x loc in
       tabs, elems, ims, $1 (TableExport x) c :: exs }
@@ -1134,36 +1130,34 @@ table_fields :
       let offset = [at_const $1 (0L @@ loc) @@ loc] @@ loc in
       let einit = $5 c :: $6 c in
       let size = Lib.List64.length einit in
-      let emode = Active {index = x; offset} @@ loc in
-      let (_, ht) as etype = $2 c in
+      let (_, ht) as rt = $2 c in
       let tinit = [RefNull ht @@ loc] @@ loc in
-      [{ttype = TableT ($1, {min = size; max = Some size}, etype); tinit} @@ loc],
-      [{etype; einit; emode} @@ loc],
+      [Table (TableT ($1, {min = size; max = Some size}, rt), tinit) @@ loc],
+      [Elem (rt, einit, Active (x, offset) @@ loc) @@ loc],
       [], [] }
   | addr_type ref_type LPAR ELEM elem_var_list RPAR  /* Sugar */
     { fun c x loc ->
-      let (_, ht) as etype = $2 c in
+      let (_, ht) as rt = $2 c in
       let tinit = [RefNull ht @@ loc] @@ loc in
       let offset = [at_const $1 (0L @@ loc) @@ loc] @@ loc in
       let einit = $5 c in
       let size = Lib.List64.length einit in
-      let emode = Active {index = x; offset} @@ loc in
-      [{ttype = TableT ($1, {min = size; max = Some size}, etype); tinit} @@ loc],
-      [{etype; einit; emode} @@ loc],
+      [Table (TableT ($1, {min = size; max = Some size}, rt), tinit) @@ loc],
+      [Elem (rt, einit, Active (x, offset) @@ loc) @@ loc],
       [], [] }
 
 data :
   | LPAR DATA bind_var_opt string_list RPAR
     { fun c -> ignore ($3 c anon_data bind_data);
-      fun () -> {dinit = $4; dmode = Passive @@ $sloc} @@ $sloc }
+      fun () -> Data ($4, Passive @@ $sloc) @@ $sloc }
   | LPAR DATA bind_var_opt memory_use offset string_list RPAR
     { fun c -> ignore ($3 c anon_data bind_data);
       fun () ->
-      {dinit = $6; dmode = Active {index = $4 c memory; offset = $5 c} @@ $sloc} @@ $sloc }
+      Data ($6, Active ($4 c memory, $5 c) @@ $sloc) @@ $sloc }
   | LPAR DATA bind_var_opt offset string_list RPAR  /* Sugar */
     { fun c -> ignore ($3 c anon_data bind_data);
       fun () ->
-      {dinit = $5; dmode = Active {index = 0l @@ $sloc; offset = $4 c} @@ $sloc} @@ $sloc }
+      Data ($5, Active (0l @@ $sloc, $4 c) @@ $sloc) @@ $sloc }
 
 memory :
   | LPAR MEMORY bind_var_opt memory_fields RPAR
@@ -1172,12 +1166,11 @@ memory :
 
 memory_fields :
   | memory_type
-    { fun c x loc -> [{mtype = $1 c} @@ loc], [], [], [] }
+    { fun c x loc -> [Memory ($1 c) @@ loc], [], [], [] }
   | inline_import memory_type  /* Sugar */
     { fun c x loc ->
       [], [],
-      [{ module_name = fst $1; item_name = snd $1;
-         idesc = MemoryImport ($2 c) @@ loc } @@ loc], [] }
+      [Import (fst $1, snd $1, MemoryImport ($2 c) @@ loc) @@ loc], [] }
   | inline_export memory_fields  /* Sugar */
     { fun c x loc -> let mems, data, ims, exs = $2 c x loc in
       mems, data, ims, $1 (MemoryExport x) c :: exs }
@@ -1185,8 +1178,8 @@ memory_fields :
     { fun c x loc ->
       let size = Int64.(div (add (of_int (String.length $4)) 65535L) 65536L) in
       let offset = [at_const $1 (0L @@ loc) @@ loc] @@ loc in
-      [{mtype = MemoryT ($1, {min = size; max = Some size})} @@ loc],
-      [{dinit = $4; dmode = Active {index = x; offset} @@ loc} @@ loc],
+      [Memory (MemoryT ($1, {min = size; max = Some size})) @@ loc],
+      [Data ($4, Active (x, offset) @@ loc) @@ loc],
       [], [] }
 
 tag :
@@ -1196,24 +1189,22 @@ tag :
 tag_fields :
   | type_use func_type
     { fun c x loc ->
-      let tgtype = inline_func_type_explicit c ($1 c) ($2 c) $loc($1) in
-      [{tgtype} @@ loc], [], [] }
+      let tt = inline_func_type_explicit c ($1 c) ($2 c) $loc($1) in
+      [Tag tt @@ loc], [], [] }
   | func_type  /* Sugar */
     { fun c x loc ->
-      let tgtype = inline_func_type c ($1 c) $sloc in
-      [{tgtype} @@ loc], [], [] }
+      let tt = inline_func_type c ($1 c) $sloc in
+      [Tag tt @@ loc], [], [] }
   | inline_import type_use func_type  /* Sugar */
     { fun c x loc ->
       let y = inline_func_type_explicit c ($2 c) ($3 c) $loc($2) in
       [],
-      [{ module_name = fst $1; item_name = snd $1;
-         idesc = TagImport y @@ loc } @@ loc ], [] }
+      [Import (fst $1, snd $1, TagImport y @@ loc) @@ loc ], [] }
   | inline_import func_type  /* Sugar */
     { fun c x loc ->
       let y = inline_func_type c ($2 c) $loc($2) in
       [],
-      [{ module_name = fst $1; item_name = snd $1;
-         idesc = TagImport y @@ loc } @@ loc ], [] }
+      [Import (fst $1, snd $1, TagImport y @@ loc) @@ loc ], [] }
   | inline_export tag_fields  /* Sugar */
     { fun c x loc ->
       let tgs, ims, exs = $2 c x loc in tgs, ims, $1 (TagExport x) c :: exs }
@@ -1226,12 +1217,11 @@ global :
 
 global_fields :
   | global_type const_expr
-    { fun c x loc -> [{gtype = $1 c; ginit = $2 c} @@ loc], [], [] }
+    { fun c x loc -> [Global ($1 c, $2 c) @@ loc], [], [] }
   | inline_import global_type  /* Sugar */
     { fun c x loc ->
       [],
-      [{ module_name = fst $1; item_name = snd $1;
-         idesc = GlobalImport ($2 c) @@ loc } @@ loc], [] }
+      [Import (fst $1, snd $1, GlobalImport ($2 c) @@ loc) @@ loc], [] }
   | inline_export global_fields  /* Sugar */
     { fun c x loc -> let globs, ims, exs = $2 c x loc in
       globs, ims, $1 (GlobalExport x) c :: exs }
@@ -1265,7 +1255,7 @@ import_desc :
 import :
   | LPAR IMPORT name name import_desc RPAR
     { fun c -> let df = $5 c in
-      fun () -> {module_name = $3; item_name = $4; idesc = df () @@ $loc($5)} @@ $sloc }
+      fun () -> Import ($3, $4, df () @@ $loc($5)) @@ $sloc }
 
 inline_import :
   | LPAR IMPORT name name RPAR { $3, $4 }
@@ -1279,11 +1269,11 @@ export_desc :
 
 export :
   | LPAR EXPORT name export_desc RPAR
-    { fun c -> {name = $3; edesc = $4 c @@ $loc($4)} @@ $sloc }
+    { fun c -> Export ($3, $4 c @@ $loc($4)) @@ $sloc }
 
 inline_export :
   | LPAR EXPORT name RPAR
-    { fun d c -> {name = $3; edesc = d @@ $sloc} @@ $sloc }
+    { fun d c -> Export ($3, d @@ $sloc) @@ $sloc }
 
 
 /* Modules */
@@ -1318,7 +1308,7 @@ type_ :
 
 start :
   | LPAR START var RPAR
-    { fun c -> {sfunc = $3 c func} @@ $sloc }
+    { fun c -> Start ($3 c func) @@ $sloc }
 
 module_fields :
   | /* empty */

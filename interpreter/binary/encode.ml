@@ -237,12 +237,13 @@ struct
     | ValBlockType None -> s33 (-0x40l)
     | ValBlockType (Some t) -> val_type t
 
-  let local (n, loc) = len n; val_type loc.it.ltype
+  let local (n, loc) =
+    let Local t = loc.it in
+    len n; val_type t
 
   let locals locs =
     let combine loc = function
-      | (n, loc') :: nlocs' when loc.it.ltype = loc'.it.ltype ->
-        (n + 1, loc') :: nlocs'
+      | (n, loc') :: nlocs' when loc.it = loc'.it -> (n + 1, loc') :: nlocs'
       | nlocs -> (1, loc) :: nlocs
     in vec local (List.fold_right combine locs [])
 
@@ -952,7 +953,7 @@ struct
     | TagImport t -> byte 0x04; tag_type t
 
   let import im =
-    let {module_name; item_name; idesc} = im.it in
+    let Import (module_name, item_name, idesc) = im.it in
     name module_name; name item_name; import_desc idesc
 
   let import_section ims =
@@ -961,7 +962,9 @@ struct
 
   (* Function section *)
 
-  let func f = var f.it.ftype
+  let func f =
+    let Func (x, _, _) = f.it in
+    var x
 
   let func_section fs =
     section 3 (vec func) fs (fs <> [])
@@ -970,11 +973,11 @@ struct
   (* Table section *)
 
   let table tab =
-    let {ttype; tinit} = tab.it in
-    match ttype, tinit.it with
+    let Table (tt, c) = tab.it in
+    match tt, c.it with
     | TableT (_, _at, (_, ht1)), [{it = RefNull ht2; _}] when ht1 = ht2 ->
-      table_type ttype
-    | _ -> op 0x40; op 0x00; table_type ttype; const tinit
+      table_type tt
+    | _ -> op 0x40; op 0x00; table_type tt; const c
 
   let table_section tabs =
     section 4 (vec table) tabs (tabs <> [])
@@ -983,8 +986,8 @@ struct
   (* Memory section *)
 
   let memory mem =
-    let {mtype} = mem.it in
-    memory_type mtype
+    let Memory mt = mem.it in
+    memory_type mt
 
   let memory_section mems =
     section 5 (vec memory) mems (mems <> [])
@@ -992,7 +995,9 @@ struct
 
   (* Tag section *)
 
-  let tag (t : tag) = byte 0x00; var t.it.tgtype
+  let tag tag =
+    let Tag x = tag.it in
+    byte 0x00; var x
 
   let tag_section ts =
     section 13 (vec tag) ts (ts <> [])
@@ -1001,8 +1006,8 @@ struct
   (* Global section *)
 
   let global g =
-    let {gtype; ginit} = g.it in
-    global_type gtype; const ginit
+    let Global (gt, c) = g.it in
+    global_type gt; const c
 
   let global_section gs =
     section 6 (vec global) gs (gs <> [])
@@ -1019,7 +1024,7 @@ struct
     | TagExport x -> byte 4; var x
 
   let export ex =
-    let {name = n; edesc} = ex.it in
+    let Export (n, edesc) = ex.it in
     name n; export_desc edesc
 
   let export_section exs =
@@ -1029,8 +1034,8 @@ struct
   (* Start section *)
 
   let start st =
-    let {sfunc} = st.it in
-    var sfunc
+    let Start x = st.it in
+    var x
 
   let start_section xo =
     section 8 (opt start) xo (xo <> None)
@@ -1039,11 +1044,11 @@ struct
   (* Code section *)
 
   let code f =
-    let {locals = locs; body; _} = f.it in
+    let Func (_x, ls, es) = f.it in
     let g = gap32 () in
     let p = pos s in
-    locals locs;
-    list instr body;
+    locals ls;
+    list instr es;
     end_ ();
     patch_gap32 g (pos s - p)
 
@@ -1072,28 +1077,28 @@ struct
     | _ -> assert false
 
   let elem seg =
-    let {etype; einit; emode} = seg.it in
-    if is_elem_kind etype && List.for_all is_elem_index einit then
+    let Elem (rt, cs, emode) = seg.it in
+    if is_elem_kind rt && List.for_all is_elem_index cs then
       match emode.it with
       | Passive ->
-        u32 0x01l; elem_kind etype; vec elem_index einit
-      | Active {index; offset} when index.it = 0l ->
-        u32 0x00l; const offset; vec elem_index einit
-      | Active {index; offset} ->
+        u32 0x01l; elem_kind rt; vec elem_index cs
+      | Active ({it = 0l; _}, c) ->
+        u32 0x00l; const c; vec elem_index cs
+      | Active (x, c) ->
         u32 0x02l;
-        var index; const offset; elem_kind etype; vec elem_index einit
+        var x; const c; elem_kind rt; vec elem_index cs
       | Declarative ->
-        u32 0x03l; elem_kind etype; vec elem_index einit
+        u32 0x03l; elem_kind rt; vec elem_index cs
     else
       match emode.it with
       | Passive ->
-        u32 0x05l; ref_type etype; vec const einit
-      | Active {index; offset} when index.it = 0l && etype = (Null, FuncHT) ->
-        u32 0x04l; const offset; vec const einit
-      | Active {index; offset} ->
-        u32 0x06l; var index; const offset; ref_type etype; vec const einit
+        u32 0x05l; ref_type rt; vec const cs
+      | Active ({it = 0l; _}, c) when rt = (Null, FuncHT) ->
+        u32 0x04l; const c; vec const cs
+      | Active (x, c) ->
+        u32 0x06l; var x; const c; ref_type rt; vec const cs
       | Declarative ->
-        u32 0x07l; ref_type etype; vec const einit
+        u32 0x07l; ref_type rt; vec const cs
 
   let elem_section elems =
     section 9 (vec elem) elems (elems <> [])
@@ -1102,14 +1107,14 @@ struct
   (* Data section *)
 
   let data seg =
-    let {dinit; dmode} = seg.it in
+    let Data (bs, dmode) = seg.it in
     match dmode.it with
     | Passive ->
-      u32 0x01l; string dinit
-    | Active {index; offset} when index.it = 0l ->
-      u32 0x00l; const offset; string dinit
-    | Active {index; offset} ->
-      u32 0x02l; var index; const offset; string dinit
+      u32 0x01l; string bs
+    | Active ({it = 0l; _}, c) ->
+      u32 0x00l; const c; string bs
+    | Active (x, c) ->
+      u32 0x02l; var x; const c; string bs
     | Declarative ->
       error dmode.at "illegal declarative data segment"
 

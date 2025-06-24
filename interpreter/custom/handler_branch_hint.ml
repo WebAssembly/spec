@@ -147,8 +147,9 @@ let decode_func_hints locs foff = decode_vec (decode_hint locs foff)
 let decode_func m s =
   let fidx = decode_u32 s in
   let f = get_func m fidx in
+  let Func (_, _, body) = f.it in
   let foff = Int32.of_int f.at.left.column in
-  let locs = flatten_instr_locs f.it.body in
+  let locs = flatten_instr_locs body in
   let hs = decode_func_hints locs foff s in
   (fidx, List.rev hs)
 
@@ -204,8 +205,9 @@ let encode_func m buf t =
   let fidx, hs = t in
   encode_u32 buf fidx;
   let f = get_func m fidx in
+  let Func (_, _, body) = f.it in
   let foff = f.at.left.column in
-  let locs = flatten_instr_locs f.it.body in
+  let locs = flatten_instr_locs body in
   encode_func_hints buf locs foff hs
 
 let encode_funcs buf m fhs =
@@ -280,7 +282,8 @@ and parse_annot m annot =
   let at_last = (List.hd (List.rev items)).at in
   let fidx = find_func_idx m annot in
   let f = get_func m fidx in
-  let locs = flatten_instr_locs f.it.body in
+  let Func (_, _, body) = f.it in
+  let locs = flatten_instr_locs body in
   let hint =
     match p with
     | "\x00" -> Unlikely
@@ -446,8 +449,8 @@ let check_one locs prev_hidx h =
             "@metadata.code.branch_hint annotation: invalid target")
 
 let check_func m fidx hs =
-  let f = get_func m fidx in
-  let locs = flatten_instr_locs f.it.body in
+  let Func (_, _, body) = (get_func m fidx).it in
+  let locs = flatten_instr_locs body in
   let prev_hidx = ref 0 in
   List.iter (check_one locs prev_hidx) hs
 

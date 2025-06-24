@@ -44,8 +44,8 @@ val func : Ast.func -> t
 val table : Ast.table -> t
 val memory : Ast.memory -> t
 val tag : Ast.tag -> t
-val elem : Ast.elem_segment -> t
-val data : Ast.data_segment -> t
+val elem : Ast.elem -> t
+val data : Ast.data -> t
 val export : Ast.export -> t
 val import : Ast.import -> t
 val start : Ast.start -> t

@@ -260,68 +260,45 @@ type const = instr list Source.phrase
 
 type local = local' Source.phrase
 and local' =
-{
-  ltype : val_type;
-}
+  | Local of val_type
 
 type global = global' Source.phrase
 and global' =
-{
-  gtype : global_type;
-  ginit : const;
-}
+  | Global of global_type * const
 
 type func = func' Source.phrase
 and func' =
-{
-  ftype : idx;
-  locals : local list;
-  body : instr list;
-}
+  | Func of idx * local list * instr list
 
 
 (* Tables & Memories *)
 
 type table = table' Source.phrase
 and table' =
-{
-  ttype : table_type;
-  tinit : const;
-}
+  | Table of table_type * const
 
 type memory = memory' Source.phrase
 and memory' =
-{
-  mtype : memory_type;
-}
+  | Memory of memory_type
 
 type tag = tag' Source.phrase
 and tag' =
-{
-  tgtype : idx;
-}
+  | Tag of idx
 
 
 type segment_mode = segment_mode' Source.phrase
 and segment_mode' =
   | Passive
-  | Active of {index : idx; offset : const}
+  | Active of idx * const
   | Declarative
 
-type elem_segment = elem_segment' Source.phrase
-and elem_segment' =
-{
-  etype : ref_type;
-  einit : const list;
-  emode : segment_mode;
-}
+type elem = elem' Source.phrase
+and elem' =
+  | Elem of ref_type * const list * segment_mode
 
-type data_segment = data_segment' Source.phrase
-and data_segment' =
-{
-  dinit : string;
-  dmode : segment_mode;
-}
+type data = data' Source.phrase
+and data' =
+  | Data of string * segment_mode
 
 
 (* Modules *)
@@ -338,10 +315,7 @@ and export_desc' =
 
 type export = export' Source.phrase
 and export' =
-{
-  name : name;
-  edesc : export_desc;
-}
+  | Export of name * export_desc
 
 type import_desc = import_desc' Source.phrase
 and import_desc' =
@@ -353,17 +327,11 @@ and import_desc' =
 
 type import = import' Source.phrase
 and import' =
-{
-  module_name : name;
-  item_name : name;
-  idesc : import_desc;
-}
+  | Import of name * name * import_desc
 
 type start = start' Source.phrase
 and start' =
-{
-  sfunc : idx;
-}
+  | Start of idx
 
 type module_ = module_' Source.phrase
 and module_' =
@@ -375,8 +343,8 @@ and module_' =
   tags : tag list;
   funcs : func list;
   start : start option;
-  elems : elem_segment list;
-  datas : data_segment list;
+  elems : elem list;
+  datas : data list;
   imports : import list;
   exports : export list;
 }
@@ -409,7 +377,7 @@ let def_types_of (m : module_) : def_type list =
   ) [] rts
 
 let import_type_of (m : module_) (im : import) : import_type =
-  let {idesc; module_name; item_name} = im.it in
+  let Import (module_name, item_name, idesc) = im.it in
   let dts = def_types_of m in
   let et =
     match idesc.it with
@@ -421,7 +389,7 @@ let import_type_of (m : module_) (im : import) : import_type =
   in ImportT (subst_extern_type (subst_of dts) et, module_name, item_name)
 
 let export_type_of (m : module_) (ex : export) : export_type =
-  let {edesc; name} = ex.it in
+  let Export (name, edesc) = ex.it in
   let dts = def_types_of m in
   let its = List.map (import_type_of m) m.it.imports in
   let ets = List.map extern_type_of_import_type its in
@@ -429,20 +397,23 @@ let export_type_of (m : module_) (ex : export) : export_type =
     match edesc.it with
     | FuncExport x ->
       let dts = funcs ets @ List.map (fun f ->
-        Lib.List32.nth dts f.it.ftype.it) m.it.funcs in
+        let Func (y, _, _) = f.it in Lib.List32.nth dts y.it) m.it.funcs in
       ExternFuncT (Lib.List32.nth dts x.it)
     | TableExport x ->
-      let tts = tables ets @ List.map (fun t -> t.it.ttype) m.it.tables in
+      let tts = tables ets @ List.map (fun t ->
+        let Table (tt, _) = t.it in tt) m.it.tables in
       ExternTableT (Lib.List32.nth tts x.it)
     | MemoryExport x ->
-      let mts = memories ets @ List.map (fun m -> m.it.mtype) m.it.memories in
+      let mts = memories ets @ List.map (fun m ->
+        let Memory mt = m.it in mt) m.it.memories in
       ExternMemoryT (Lib.List32.nth mts x.it)
     | GlobalExport x ->
-      let gts = globals ets @ List.map (fun g -> g.it.gtype) m.it.globals in
+      let gts = globals ets @ List.map (fun g ->
+        let Global (gt, _) = g.it in gt) m.it.globals in
       ExternGlobalT (Lib.List32.nth gts x.it)
     | TagExport x ->
       let tts = tags ets @ List.map (fun t ->
-        TagT (Lib.List32.nth dts t.it.tgtype.it)) m.it.tags in
+        let Tag y = t.it in TagT (Lib.List32.nth dts y.it)) m.it.tags in
       ExternTagT (Lib.List32.nth tts x.it)
   in ExportT (subst_extern_type (subst_of dts) et, name)
 

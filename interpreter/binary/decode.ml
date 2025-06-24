@@ -332,7 +332,7 @@ let block_type s =
 let local s =
   let n = u32 s in
   let t = at val_type s in
-  n, {ltype = t.it} @@ t.at
+  n, Local t.it @@ t.at
 
 let locals s =
   let pos = pos s in
@@ -1074,7 +1074,7 @@ let import s =
   let module_name = name s in
   let item_name = name s in
   let idesc = at import_desc s in
-  {module_name; item_name; idesc}
+  Import (module_name, item_name, idesc)
 
 let import_section s =
   section Custom.Import (vec (at import)) [] s
@@ -1093,14 +1093,15 @@ let table s =
     (fun s ->
       expect 0x40 s "";
       zero s;
-      let ttype = table_type s in
-      let tinit = const s in
-      {ttype; tinit}
+      let tt = table_type s in
+      let c = const s in
+      Table (tt, c)
     );
     (fun s ->
       let at = region s (pos s) (pos s) in
-      let TableT (_, _at, (_, ht)) as ttype = table_type s in
-      {ttype; tinit = [RefNull ht @@ at] @@ at}
+      let TableT (_, _at, (_, ht)) as tt = table_type s in
+      let c = [RefNull ht @@ at] @@ at in
+      Table (tt, c)
     );
   ] s
 
@@ -1111,8 +1112,8 @@ let table_section s =
 (* Memory section *)
 
 let memory s =
-  let mtype = memory_type s in
-  {mtype}
+  let mt = memory_type s in
+  Memory mt
 
 let memory_section s =
   section Custom.Memory (vec (at memory)) [] s
@@ -1121,8 +1122,8 @@ let memory_section s =
 (* Tag section *)
 
 let tag s =
-  let tgtype = tag_type s in
-  {tgtype}
+  let tt = tag_type s in
+  Tag tt
 
 let tag_section s =
   section Custom.Tag (vec (at tag)) [] s
@@ -1131,9 +1132,9 @@ let tag_section s =
 (* Global section *)
 
 let global s =
-  let gtype = global_type s in
-  let ginit = const s in
-  {gtype; ginit}
+  let gt = global_type s in
+  let c = const s in
+  Global (gt, c)
 
 let global_section s =
   section Custom.Global (vec (at global)) [] s
@@ -1153,7 +1154,7 @@ let export_desc s =
 let export s =
   let name = name s in
   let edesc = at export_desc s in
-  {name; edesc}
+  Export (name, edesc)
 
 let export_section s =
   section Custom.Export (vec (at export)) [] s
@@ -1162,8 +1163,8 @@ let export_section s =
 (* Start section *)
 
 let start s =
-  let sfunc = at var s in
-  {sfunc}
+  let x = at var s in
+  Start x
 
 let start_section s =
   section Custom.Start (opt (at start) true) None s
@@ -1172,10 +1173,10 @@ let start_section s =
 (* Code section *)
 
 let code _ s =
-  let locals = locals s in
-  let body = instr_block s in
+  let ls = locals s in
+  let es = instr_block s in
   end_ s;
-  {locals; body; ftype = -1l @@ no_region}
+  Func (-1l @@ no_region, ls, es)
 
 let code_section s =
   section Custom.Code (vec (at (sized code))) [] s
@@ -1187,14 +1188,14 @@ let passive s =
   Passive
 
 let active s =
-  let index = at var s in
-  let offset = const s in
-  Active {index; offset}
+  let x = at var s in
+  let c = const s in
+  Active (x, c)
 
 let active_zero s =
-  let index = 0l @@ no_region in
-  let offset = const s in
-  Active {index; offset}
+  let x = 0l @@ no_region in
+  let c = const s in
+  Active (x, c)
 
 let declarative s =
   Declarative
@@ -1212,42 +1213,44 @@ let elem s =
   match u32 s with
   | 0x00l ->
     let emode = at active_zero s in
-    let einit = vec (at elem_index) s in
-    {etype = (NoNull, FuncHT); einit; emode}
+    let rt = (NoNull, FuncHT) in
+    let cs = vec (at elem_index) s in
+    Elem (rt, cs, emode)
   | 0x01l ->
     let emode = at passive s in
-    let etype = elem_kind s in
-    let einit = vec (at elem_index) s in
-    {etype; einit; emode}
+    let rt = elem_kind s in
+    let cs = vec (at elem_index) s in
+    Elem (rt, cs, emode)
   | 0x02l ->
     let emode = at active s in
-    let etype = elem_kind s in
-    let einit = vec (at elem_index) s in
-    {etype; einit; emode}
+    let rt = elem_kind s in
+    let cs = vec (at elem_index) s in
+    Elem (rt, cs, emode)
   | 0x03l ->
     let emode = at declarative s in
-    let etype = elem_kind s in
-    let einit = vec (at elem_index) s in
-    {etype; einit; emode}
+    let rt = elem_kind s in
+    let cs = vec (at elem_index) s in
+    Elem (rt, cs, emode)
   | 0x04l ->
     let emode = at active_zero s in
-    let einit = vec const s in
-    {etype = (Null, FuncHT); einit; emode}
+    let rt = (Null, FuncHT) in
+    let cs = vec const s in
+    Elem (rt, cs, emode)
   | 0x05l ->
     let emode = at passive s in
-    let etype = ref_type s in
-    let einit = vec const s in
-    {etype; einit; emode}
+    let rt = ref_type s in
+    let cs = vec const s in
+    Elem (rt, cs, emode)
   | 0x06l ->
     let emode = at active s in
-    let etype = ref_type s in
-    let einit = vec const s in
-    {etype; einit; emode}
+    let rt = ref_type s in
+    let cs = vec const s in
+    Elem (rt, cs, emode)
   | 0x07l ->
     let emode = at declarative s in
-    let etype = ref_type s in
-    let einit = vec const s in
-    {etype; einit; emode}
+    let rt = ref_type s in
+    let cs = vec const s in
+    Elem (rt, cs, emode)
   | _ -> error s (pos s - 1) "malformed elements segment kind"
 
 let elem_section s =
@@ -1260,16 +1263,16 @@ let data s =
   match u32 s with
   | 0x00l ->
     let dmode = at active_zero s in
-    let dinit = string s in
-    {dinit; dmode}
+    let bs = string s in
+    Data (bs, dmode)
   | 0x01l ->
     let dmode = at passive s in
-    let dinit = string s in
-    {dinit; dmode}
+    let bs = string s in
+    Data (bs, dmode)
   | 0x02l ->
     let dmode = at active s in
-    let dinit = string s in
-    {dinit; dmode}
+    let bs = string s in
+    Data (bs, dmode)
   | _ -> error s (pos s - 1) "malformed data segment kind"
 
 let data_section s =
@@ -1310,38 +1313,37 @@ let rec iterate f s =
 let magic = 0x6d736100l
 
 let module_ s =
-  let open Custom in
   let header = word32 s in
   require (header = magic) s 0 "magic header not detected";
   let version = word32 s in
   require (version = Encode.version) s 4 "unknown binary version";
-  let customs = iterate (custom_section (Before Type)) s in
+  let customs = iterate (custom_section Custom.(Before Type)) s in
   let types = type_section s in
-  let customs = customs @ iterate (custom_section (After Type)) s in
+  let customs = customs @ iterate (custom_section Custom.(After Type)) s in
   let imports = import_section s in
-  let customs = customs @ iterate (custom_section (After Import)) s in
+  let customs = customs @ iterate (custom_section Custom.(After Import)) s in
   let func_types = func_section s in
-  let customs = customs @ iterate (custom_section (After Func)) s in
+  let customs = customs @ iterate (custom_section Custom.(After Func)) s in
   let tables = table_section s in
-  let customs = customs @ iterate (custom_section (After Table)) s in
+  let customs = customs @ iterate (custom_section Custom.(After Table)) s in
   let memories = memory_section s in
-  let customs = customs @ iterate (custom_section (After Memory)) s in
+  let customs = customs @ iterate (custom_section Custom.(After Memory)) s in
   let tags = tag_section s in
-  let customs = customs @ iterate (custom_section (After Tag)) s in
+  let customs = customs @ iterate (custom_section Custom.(After Tag)) s in
   let globals = global_section s in
-  let customs = customs @ iterate (custom_section (After Global)) s in
+  let customs = customs @ iterate (custom_section Custom.(After Global)) s in
   let exports = export_section s in
-  let customs = customs @ iterate (custom_section (After Export)) s in
+  let customs = customs @ iterate (custom_section Custom.(After Export)) s in
   let start = start_section s in
-  let customs = customs @ iterate (custom_section (After Start)) s in
+  let customs = customs @ iterate (custom_section Custom.(After Start)) s in
   let elems = elem_section s in
-  let customs = customs @ iterate (custom_section (After Elem)) s in
+  let customs = customs @ iterate (custom_section Custom.(After Elem)) s in
   let data_count = data_count_section s in
-  let customs = customs @ iterate (custom_section (After DataCount)) s in
+  let customs = customs @ iterate (custom_section Custom.(After DataCount)) s in
   let func_bodies = code_section s in
-  let customs = customs @ iterate (custom_section (After Code)) s in
+  let customs = customs @ iterate (custom_section Custom.(After Code)) s in
   let datas = data_section s in
-  let customs = customs @ iterate (custom_section (After Data)) s in
+  let customs = customs @ iterate (custom_section Custom.(After Data)) s in
   require (pos s = len s) s (len s) "unexpected content after last section";
   require (List.length func_types = List.length func_bodies)
     s (len s) "function and code section have inconsistent lengths";
@@ -1351,8 +1353,9 @@ let module_ s =
     List.for_all Free.(fun f -> (func f).datas = Set.empty) func_bodies)
     s (len s) "data count section required";
   let funcs =
-    List.map2 Source.(fun t f -> {f.it with ftype = t} @@ f.at)
-      func_types func_bodies
+    List.map2 Source.(fun x f ->
+      let Func (_, ls, es) = f.it in Func (x, ls, es) @@ f.at
+    ) func_types func_bodies
   in
   { types; tables; memories; tags; globals; funcs;
     imports; exports; elems; datas; start },

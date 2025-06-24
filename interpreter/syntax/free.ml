@@ -204,23 +204,26 @@ and catch (c : catch) =
 
 let const (c : const) = block c.it
 
-let global (g : global) = global_type g.it.gtype ++ const g.it.ginit
-let func (f : func) =
-  {(types (idx f.it.ftype) ++ block f.it.body) with locals = Set.empty}
-let table (t : table) = table_type t.it.ttype ++ const t.it.tinit
-let memory (m : memory) = memory_type m.it.mtype
-let tag (t : tag) = empty
+let global g = match g.it with Global (gt, c) -> global_type gt ++ const c
+let local l = match l.it with Local t -> val_type t
+let func f = match f.it with Func (x, ls, es) ->
+  {(types (idx x) ++ list local ls ++ block es) with locals = Set.empty}
+let table t = match t.it with Table (tt, c) -> table_type tt ++ const c
+let memory m = match m.it with Memory mt -> memory_type mt
+let tag t = match t.it with Tag x -> types (idx x)
 
 let segment_mode f (m : segment_mode) =
   match m.it with
   | Passive | Declarative -> empty
-  | Active {index; offset} -> f (idx index) ++ const offset
+  | Active (x, c) -> f (idx x) ++ const c
 
-let elem (s : elem_segment) =
-  list const s.it.einit ++ segment_mode tables s.it.emode
+let elem (s : elem) =
+  let Elem (_rt, es, mode) = s.it in
+  list const es ++ segment_mode tables mode
 
-let data (s : data_segment) =
-  segment_mode memories s.it.dmode
+let data (s : data) =
+  let Data (_bs, mode) = s.it in
+  segment_mode memories mode
 
 let type_ (t : type_) = rec_type t.it
 
@@ -240,10 +243,17 @@ let import_desc (d : import_desc) =
   | GlobalImport gt -> global_type gt
   | TagImport x -> types (idx x)
 
-let export (e : export) = export_desc e.it.edesc
-let import (i : import) = import_desc i.it.idesc
+let export (e : export) =
+  let Export (_name, edesc) = e.it in
+  export_desc edesc
 
-let start (s : start) = funcs (idx s.it.sfunc)
+let import (i : import) =
+  let Import (_module_name, _item_name, idesc) = i.it in
+  import_desc idesc
+
+let start (s : start) =
+  let Start x = s.it in
+  funcs (idx x)
 
 let module_ (m : module_) =
   list type_ m.it.types ++
