@@ -87,6 +87,22 @@ is converted to the following:
 ### Remove store only for interpreter
 When translating IL to AL, the store is processed globally through `remove_store`, but the store information is needed again when rendering prose. For this reason, state information is not deleted in cases other than interpreter and test; this is managed using the `for_interp` variable in ([transpile.ml](https://github.com/Wasm-DSL/spectec/blob/965415756005b74ecaa39fe81aec1986ba79a210/spectec/src/il2al/transpile.ml)).
 
+### Updating state
+Some reduction rules update the state (frame/stroe) as a side effect.
+The translation is done based on the syntactic pattern matching on the result of reduction,
+and therfore, generation for updating the state would not work properly, if the temporary variable is used for representing the updated state.
+Ex:
+```
+;; Works
+z; instr -> $update(z); value
+
+;; Does not work
+z; instr1 -> z'; value
+-- if z' = $update(z)
+```
+
+
+
 ## Interpreter ([src/backend-interpreter](https://github.com/Wasm-DSL/spectec/blob/965415756005b74ecaa39fe81aec1986ba79a210/spectec/src/backend-interpreter))
 
 - The AL interpreter has two main entry points: instantiation and invocation.

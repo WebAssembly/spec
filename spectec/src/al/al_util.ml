@@ -197,6 +197,12 @@ let context_names = [
   "HANDLER_";
 ]
 
+let rec mk_access ps base =
+  match ps with
+  (* TODO: type *)
+  | h :: t -> accE (base, h) ~note:no_note |> mk_access t
+  | [] -> base
+
 (* Destruct *)
 
 let unwrap_optv: value -> value option = function

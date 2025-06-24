@@ -371,6 +371,38 @@ let insert_pop e e_n =
   in
   post_process_of_pop pop
 
+let translate_as_side_effect exp =
+  let at = exp.at in
+  match exp.it with
+  | Il.CallE (f, ae) -> [performI (f.it, translate_args ae) ~at]
+  | Il.UpdE (e1, p, e2) ->
+    let base = translate_exp e1 in
+    let path = translate_path p in
+    let v = translate_exp e2 in
+    let note = exp.note in
+
+    let hs, t = Lib.List.split_last path in
+    let access = { (mk_access hs base) with note } in
+    [ replaceI (access, t, v) ~at ]
+  | Il.ExtE (e1, p, e2) ->
+    let base = translate_exp e1 in
+    let path = translate_path p in
+    let v = translate_exp e2 in
+    let note = exp.note in
+
+    let access = { (mk_access path base) with note } in
+    [ appendI (access, v) ~at ]
+  | _ -> []
+
+let translate_state state =
+  match state.it with
+  | Il.CaseE _ ->
+    let frame, store = split_state state in
+    translate_as_side_effect frame @ translate_as_side_effect store
+  | _ ->
+    translate_as_side_effect state
+
+
 let rec translate_rhs exp =
   let at = exp.at in
   match exp.it with
@@ -380,17 +412,15 @@ let rec translate_rhs exp =
   | _ when is_context exp -> translate_context_rhs exp
   (* Config *)
   | _ when is_config exp ->
-    let state, rhs = split_config exp in
-    (match state.it with
-    | Il.CallE (f, ae) ->
-      let perform_instr       = performI (f.it, translate_args ae) ~at:state.at in
-      let push_or_exec_instrs = translate_rhs rhs in
-      (match Lib.List.last_opt push_or_exec_instrs with
+    let state, stack = split_config exp in
+    let is1 = translate_state state in
+    let is2 = translate_rhs stack in
+    (
+      match Lib.List.last_opt is2 with
       | Some { it = ExecuteI _; _ } ->
-        [ perform_instr ] @ push_or_exec_instrs
+        is1 @ is2
       | _ -> (* HARDCODE: TABLE.GROW *)
-        push_or_exec_instrs @ [ perform_instr ])
-    | _ -> translate_rhs rhs
+        is2 @ is1
     )
   (* Recursive case *)
   | Il.LiftE inner_exp -> translate_rhs inner_exp

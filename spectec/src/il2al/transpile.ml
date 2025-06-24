@@ -596,12 +596,6 @@ let flatten_if instrs =
   let walker = { base_walker with walk_instr = walk_instr } in
   List.concat_map (walker.walk_instr walker) instrs
 
-let rec mk_access ps base =
-  match ps with
-  (* TODO: type *)
-  | h :: t -> accE (base, h) ~note:Al.Al_util.no_note |> mk_access t
-  | [] -> base
-
 let is_store expr = match expr.note.it with
   | Il.Ast.VarT (id, _) when id.it = "store" -> true
   | _ -> false
