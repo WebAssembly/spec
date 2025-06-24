@@ -92,7 +92,7 @@ rule Instr_ok/br_on_null:
 
 rule Instr_ok/br_on_non_null:
   C |- BR_ON_NON_NULL l : t* (REF NULL ht) -> t*
-  -- if C.LABELS[l] = t* (REF ht)
+  -- if C.LABELS[l] = t* (REF NULL? ht)
 
 rule Instr_ok/br_on_cast:
   C |- BR_ON_CAST l rt_1 rt_2 : t* rt_1 -> t* ($diffrt(rt_1, rt_2))
