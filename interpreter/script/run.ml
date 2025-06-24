@@ -223,12 +223,12 @@ let indent s =
 let print_module x_opt m =
   Printf.printf "module%s :\n%s%!"
     (match x_opt with None -> "" | Some x -> " " ^ x.it)
-    (indent (Types.string_of_module_type (Ast.module_type_of m)))
+    (indent (Types.string_of_moduletype (Ast.moduletype_of m)))
 
 let print_values vs =
   let ts = List.map Value.type_of_value vs in
   Printf.printf "%s : %s\n%!"
-    (Value.string_of_values vs) (Types.string_of_result_type ts)
+    (Value.string_of_values vs) (Types.string_of_resulttype ts)
 
 let string_of_nan = function
   | CanonicalNan -> "nan:canonical"
@@ -250,7 +250,7 @@ let string_of_vec_pat (p : vec_pat) =
 let string_of_ref_pat (p : ref_pat) =
   match p with
   | RefPat r -> Value.string_of_ref r.it
-  | RefTypePat t -> Types.string_of_heap_type t
+  | RefTypePat t -> Types.string_of_heaptype t
   | NullPat -> "null"
 
 let rec string_of_result r =
@@ -277,10 +277,10 @@ let rec type_of_result r =
   | EitherResult rs ->
     let ts = List.map type_of_result rs in
     List.fold_left (fun t1 t2 ->
-      if Match.match_val_type [] t1 t2 then t2 else
-      if Match.match_val_type [] t2 t1 then t1 else
-      if Match.(top_of_val_type [] t1 = top_of_val_type [] t2) then
-        Match.top_of_val_type [] t1
+      if Match.match_valtype [] t1 t2 then t2 else
+      if Match.match_valtype [] t2 t1 then t1 else
+      if Match.(top_of_valtype [] t1 = top_of_valtype [] t2) then
+        Match.top_of_valtype [] t1
       else
         BotT  (* should really be Top, but we don't have that :) *)
     ) (List.hd ts) ts
@@ -288,7 +288,7 @@ let rec type_of_result r =
 let print_results rs =
   let ts = List.map type_of_result rs in
   Printf.printf "%s : %s\n%!"
-    (string_of_results rs) (Types.string_of_result_type ts)
+    (string_of_results rs) (Types.string_of_resulttype ts)
 
 
 (* Configuration *)
@@ -298,8 +298,8 @@ module Map = Map.Make(String)
 let quote : script ref = ref []
 let scripts : script Map.t ref = ref Map.empty
 let modules : (Ast.module_ * Custom.section list) Map.t ref = ref Map.empty
-let instances : Instance.module_inst Map.t ref = ref Map.empty
-let registry : Instance.module_inst Map.t ref = ref Map.empty
+let instances : Instance.moduleinst Map.t ref = ref Map.empty
+let registry : Instance.moduleinst Map.t ref = ref Map.empty
 
 let bind category map x_opt y =
   let map' =
@@ -349,11 +349,11 @@ let run_action act : Value.t list =
     (match Instance.export inst name with
     | Some (Instance.ExternFunc f) ->
       let Types.FuncT (ts1, _ts2) =
-        Types.(as_func_str_type (expand_def_type (Func.type_of f))) in
+        Types.(as_func_comptype (expand_deftype (Func.type_of f))) in
       if List.length vs <> List.length ts1 then
         Script.error act.at "wrong number of arguments";
       List.iter2 (fun v t ->
-        if not (Match.match_val_type [] (Value.type_of_value v.it) t) then
+        if not (Match.match_valtype [] (Value.type_of_value v.it) t) then
           Script.error v.at "wrong type of argument"
       ) vs ts1;
       Eval.invoke f (List.map (fun v -> v.it) vs)

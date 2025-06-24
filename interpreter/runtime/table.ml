@@ -4,7 +4,7 @@ open Value
 type size = address
 type offset = address
 
-type table = {mutable ty : table_type; mutable content : ref_ array}
+type table = {mutable ty : tabletype; mutable content : ref_ array}
 type t = table
 
 exception Type
@@ -28,7 +28,7 @@ let create size r =
   with Out_of_memory | Invalid_argument _ -> raise OutOfMemory
 
 let alloc (TableT (at, lim, t) as ty) r =
-  assert Free.((ref_type t).types = Set.empty);
+  assert Free.((reftype t).types = Set.empty);
   if not (valid_size at lim.min) then raise SizeOverflow;
   if not (valid_limits lim) then raise Type;
   {ty; content = create lim.min r}
@@ -39,7 +39,7 @@ let size tab =
 let type_of tab =
   tab.ty
 
-let addr_type_of tab =
+let addrtype_of tab =
   let TableT (at, _, _) = type_of tab in at
 
 let addr_of_num x =
@@ -68,7 +68,7 @@ let load tab i =
 
 let store tab i r =
   let TableT (_at, _lim, t) = tab.ty in
-  if not (Match.match_ref_type [] (type_of_ref r) t) then raise Type;
+  if not (Match.match_reftype [] (type_of_ref r) t) then raise Type;
   if i < 0L || i >= Lib.Array64.length tab.content then raise Bounds;
   Lib.Array64.set tab.content i r
 

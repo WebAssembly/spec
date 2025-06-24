@@ -98,26 +98,26 @@ struct
   open Types
   open Source
 
-  let var x = u32 x.it
+  let idx x = u32 x.it
 
   let mutability = function
     | Cons -> byte 0
     | Var -> byte 1
 
-  let var_type var = function
-    | StatX x -> var x
+  let var idx = function
+    | IdxX x -> idx x
     | RecX _ -> assert false
 
-  let num_type = function
+  let numtype = function
     | I32T -> s7 (-0x01)
     | I64T -> s7 (-0x02)
     | F32T -> s7 (-0x03)
     | F64T -> s7 (-0x04)
 
-  let vec_type = function
+  let vectype = function
     | V128T -> s7 (-0x05)
 
-  let heap_type = function
+  let heaptype = function
     | AnyHT -> s7 (-0x12)
     | EqHT -> s7 (-0x13)
     | I31HT -> s7 (-0x14)
@@ -130,14 +130,14 @@ struct
     | NoExnHT -> s7 (-0x0c)
     | ExternHT -> s7 (-0x11)
     | NoExternHT -> s7 (-0x0e)
-    | VarHT x -> var_type s33 x
+    | VarHT x -> var s33 x
     | DefHT _ | BotHT -> assert false
 
-  let var_heap_type = function
-    | VarHT x -> var_type u32 x
+  let var_heaptype = function
+    | VarHT x -> var u32 x
     | _ -> assert false
 
-  let ref_type = function
+  let reftype = function
     | (Null, AnyHT) -> s7 (-0x12)
     | (Null, EqHT) -> s7 (-0x13)
     | (Null, I31HT) -> s7 (-0x14)
@@ -150,65 +150,66 @@ struct
     | (Null, NoExnHT) -> s7 (-0x0c)
     | (Null, ExternHT) -> s7 (-0x11)
     | (Null, NoExternHT) -> s7 (-0x0e)
-    | (Null, t) -> s7 (-0x1d); heap_type t
-    | (NoNull, t) -> s7 (-0x1c); heap_type t
+    | (Null, t) -> s7 (-0x1d); heaptype t
+    | (NoNull, t) -> s7 (-0x1c); heaptype t
 
-  let val_type = function
-    | NumT t -> num_type t
-    | VecT t -> vec_type t
-    | RefT t -> ref_type t
+  let valtype = function
+    | NumT t -> numtype t
+    | VecT t -> vectype t
+    | RefT t -> reftype t
     | BotT -> assert false
 
-  let pack_type = function
-    | Pack.Pack8 -> s7 (-0x08)
-    | Pack.Pack16 -> s7 (-0x09)
-    | Pack.Pack32 | Pack.Pack64 -> assert false
+  let packtype = function
+    | I8T -> s7 (-0x08)
+    | I16T -> s7 (-0x09)
 
-  let storage_type = function
-    | ValStorageT t -> val_type t
-    | PackStorageT t -> pack_type t
+  let storagetype = function
+    | ValStorageT t -> valtype t
+    | PackStorageT t -> packtype t
 
-  let field_type = function
-    | FieldT (mut, t) -> storage_type t; mutability mut
+  let fieldtype = function
+    | FieldT (mut, t) -> storagetype t; mutability mut
 
-  let struct_type = function
-    | StructT fts -> vec field_type fts
+  let structtype = function
+    | StructT fts -> vec fieldtype fts
 
-  let array_type = function
-    | ArrayT ft -> field_type ft
+  let arraytype = function
+    | ArrayT ft -> fieldtype ft
 
-  let func_type = function
-    | FuncT (ts1, ts2) -> vec val_type ts1; vec val_type ts2
+  let resulttype = vec valtype
 
-  let str_type = function
-    | DefStructT st -> s7 (-0x21); struct_type st
-    | DefArrayT at -> s7 (-0x22); array_type at
-    | DefFuncT ft -> s7 (-0x20); func_type ft
+  let functype = function
+    | FuncT (ts1, ts2) -> resulttype ts1; resulttype ts2
 
-  let sub_type = function
-    | SubT (Final, [], st) -> str_type st
-    | SubT (Final, hts, st) -> s7 (-0x31); vec var_heap_type hts; str_type st
-    | SubT (NoFinal, hts, st) -> s7 (-0x30); vec var_heap_type hts; str_type st
+  let comptype = function
+    | StructCT st -> s7 (-0x21); structtype st
+    | ArrayCT at -> s7 (-0x22); arraytype at
+    | FuncCT ft -> s7 (-0x20); functype ft
 
-  let rec_type = function
-    | RecT [st] -> sub_type st
-    | RecT sts -> s7 (-0x32); vec sub_type sts
+  let subtype = function
+    | SubT (Final, [], ct) -> comptype ct
+    | SubT (Final, hts, ct) -> s7 (-0x31); vec var_heaptype hts; comptype ct
+    | SubT (NoFinal, hts, ct) -> s7 (-0x30); vec var_heaptype hts; comptype ct
+
+  let rectype = function
+    | RecT [st] -> subtype st
+    | RecT sts -> s7 (-0x32); vec subtype sts
 
   let limits at {min; max} =
     let flags = flag (max <> None) 0 + flag (at = I64AT) 2 in
     byte flags; u64 min; opt u64 max
 
-  let table_type = function
-    | TableT (at, lim, t) -> ref_type t; limits at lim
+  let tabletype = function
+    | TableT (at, lim, t) -> reftype t; limits at lim
 
-  let memory_type = function
+  let memorytype = function
     | MemoryT (at, lim) -> limits at lim
 
-  let global_type = function
-    | GlobalT (mut, t) -> val_type t; mutability mut
+  let globaltype = function
+    | GlobalT (mut, t) -> valtype t; mutability mut
 
-  let tag_type x =
-    u32 0x00l; var x
+  let tagtype x =
+    u32 0x00l; idx x
 
 
   (* Expressions *)
@@ -222,24 +223,22 @@ struct
   let vecop n = op 0xfd; u32 n
   let end_ () = op 0x0b
 
-  let var x = u32 x.it
-
   let memop x {align; offset; _} =
-    let has_var = x.it <> 0l in
+    let has_idx = x.it <> 0l in
     let flags =
-      Int32.(logor (of_int align) (if has_var then 0x40l else 0x00l)) in
+      Int32.(logor (of_int align) (if has_idx then 0x40l else 0x00l)) in
     u32 flags;
-    if has_var then var x;
+    if has_idx then idx x;
     u64 offset
 
-  let block_type = function
-    | VarBlockType x -> var_type s33 (StatX x.it)
+  let blocktype = function
+    | VarBlockType x -> var s33 (IdxX x.it)
     | ValBlockType None -> s33 (-0x40l)
-    | ValBlockType (Some t) -> val_type t
+    | ValBlockType (Some t) -> valtype t
 
   let local (n, loc) =
     let Local t = loc.it in
-    len n; val_type t
+    len n; valtype t
 
   let locals locs =
     let combine loc = function
@@ -252,55 +251,55 @@ struct
     | Unreachable -> op 0x00
     | Nop -> op 0x01
 
-    | Block (bt, es) -> op 0x02; block_type bt; list instr es; end_ ()
-    | Loop (bt, es) -> op 0x03; block_type bt; list instr es; end_ ()
+    | Block (bt, es) -> op 0x02; blocktype bt; list instr es; end_ ()
+    | Loop (bt, es) -> op 0x03; blocktype bt; list instr es; end_ ()
     | If (bt, es1, es2) ->
-      op 0x04; block_type bt; list instr es1;
+      op 0x04; blocktype bt; list instr es1;
       if es2 <> [] then op 0x05;
       list instr es2; end_ ()
     | TryTable (bt, cs, es) ->
-      op 0x1f; block_type bt; vec catch cs; list instr es; end_ ()
+      op 0x1f; blocktype bt; vec catch cs; list instr es; end_ ()
 
-    | Br x -> op 0x0c; var x
-    | BrIf x -> op 0x0d; var x
-    | BrTable (xs, x) -> op 0x0e; vec var xs; var x
-    | BrOnNull x -> op 0xd5; var x
-    | BrOnNonNull x -> op 0xd6; var x
+    | Br x -> op 0x0c; idx x
+    | BrIf x -> op 0x0d; idx x
+    | BrTable (xs, x) -> op 0x0e; vec idx xs; idx x
+    | BrOnNull x -> op 0xd5; idx x
+    | BrOnNonNull x -> op 0xd6; idx x
     | BrOnCast (x, (nul1, t1), (nul2, t2)) ->
       let flags = bit 0 (nul1 = Null) + bit 1 (nul2 = Null) in
-      op 0xfb; op 0x18; byte flags; var x; heap_type t1; heap_type t2
+      op 0xfb; op 0x18; byte flags; idx x; heaptype t1; heaptype t2
     | BrOnCastFail (x, (nul1, t1), (nul2, t2)) ->
       let flags = bit 0 (nul1 = Null) + bit 1 (nul2 = Null) in
-      op 0xfb; op 0x19; byte flags; var x; heap_type t1; heap_type t2
+      op 0xfb; op 0x19; byte flags; idx x; heaptype t1; heaptype t2
     | Return -> op 0x0f
-    | Call x -> op 0x10; var x
-    | CallRef x -> op 0x14; var x
-    | CallIndirect (x, y) -> op 0x11; var y; var x
-    | ReturnCall x -> op 0x12; var x
-    | ReturnCallRef x -> op 0x15; var x
-    | ReturnCallIndirect (x, y) -> op 0x13; var y; var x
+    | Call x -> op 0x10; idx x
+    | CallRef x -> op 0x14; idx x
+    | CallIndirect (x, y) -> op 0x11; idx y; idx x
+    | ReturnCall x -> op 0x12; idx x
+    | ReturnCallRef x -> op 0x15; idx x
+    | ReturnCallIndirect (x, y) -> op 0x13; idx y; idx x
 
-    | Throw x -> op 0x08; var x
+    | Throw x -> op 0x08; idx x
     | ThrowRef -> op 0x0a
 
     | Drop -> op 0x1a
     | Select None -> op 0x1b
-    | Select (Some ts) -> op 0x1c; vec val_type ts
+    | Select (Some ts) -> op 0x1c; vec valtype ts
 
-    | LocalGet x -> op 0x20; var x
-    | LocalSet x -> op 0x21; var x
-    | LocalTee x -> op 0x22; var x
-    | GlobalGet x -> op 0x23; var x
-    | GlobalSet x -> op 0x24; var x
+    | LocalGet x -> op 0x20; idx x
+    | LocalSet x -> op 0x21; idx x
+    | LocalTee x -> op 0x22; idx x
+    | GlobalGet x -> op 0x23; idx x
+    | GlobalSet x -> op 0x24; idx x
 
-    | TableGet x -> op 0x25; var x
-    | TableSet x -> op 0x26; var x
-    | TableSize x -> op 0xfc; u32 0x10l; var x
-    | TableGrow x -> op 0xfc; u32 0x0fl; var x
-    | TableFill x -> op 0xfc; u32 0x11l; var x
-    | TableCopy (x, y) -> op 0xfc; u32 0x0el; var x; var y
-    | TableInit (x, y) -> op 0xfc; u32 0x0cl; var y; var x
-    | ElemDrop x -> op 0xfc; u32 0x0dl; var x
+    | TableGet x -> op 0x25; idx x
+    | TableSet x -> op 0x26; idx x
+    | TableSize x -> op 0xfc; u32 0x10l; idx x
+    | TableGrow x -> op 0xfc; u32 0x0fl; idx x
+    | TableFill x -> op 0xfc; u32 0x11l; idx x
+    | TableCopy (x, y) -> op 0xfc; u32 0x0el; idx x; idx y
+    | TableInit (x, y) -> op 0xfc; u32 0x0cl; idx y; idx x
+    | ElemDrop x -> op 0xfc; u32 0x0dl; idx x
 
     | Load (x, ({ty = I32T; pack = None; _} as mo)) ->
       op 0x28; memop x mo
@@ -412,50 +411,50 @@ struct
     | VecStoreLane (x, ({ty = V128T; pack = Pack64; _} as mo), i) ->
       vecop 0x5bl; memop x mo; byte i;
 
-    | MemorySize x -> op 0x3f; var x
-    | MemoryGrow x -> op 0x40; var x
-    | MemoryFill x -> op 0xfc; u32 0x0bl; var x
-    | MemoryCopy (x, y) -> op 0xfc; u32 0x0al; var x; var y
-    | MemoryInit (x, y) -> op 0xfc; u32 0x08l; var y; var x
-    | DataDrop x -> op 0xfc; u32 0x09l; var x
+    | MemorySize x -> op 0x3f; idx x
+    | MemoryGrow x -> op 0x40; idx x
+    | MemoryFill x -> op 0xfc; u32 0x0bl; idx x
+    | MemoryCopy (x, y) -> op 0xfc; u32 0x0al; idx x; idx y
+    | MemoryInit (x, y) -> op 0xfc; u32 0x08l; idx y; idx x
+    | DataDrop x -> op 0xfc; u32 0x09l; idx x
 
-    | RefNull t -> op 0xd0; heap_type t
-    | RefFunc x -> op 0xd2; var x
+    | RefNull t -> op 0xd0; heaptype t
+    | RefFunc x -> op 0xd2; idx x
 
     | RefEq -> op 0xd3
 
     | RefIsNull -> op 0xd1
     | RefAsNonNull -> op 0xd4
-    | RefTest (NoNull, t) -> op 0xfb; op 0x14; heap_type t
-    | RefTest (Null, t) -> op 0xfb; op 0x15; heap_type t
-    | RefCast (NoNull, t) -> op 0xfb; op 0x16; heap_type t
-    | RefCast (Null, t) -> op 0xfb; op 0x17; heap_type t
+    | RefTest (NoNull, t) -> op 0xfb; op 0x14; heaptype t
+    | RefTest (Null, t) -> op 0xfb; op 0x15; heaptype t
+    | RefCast (NoNull, t) -> op 0xfb; op 0x16; heaptype t
+    | RefCast (Null, t) -> op 0xfb; op 0x17; heaptype t
 
     | RefI31 -> op 0xfb; op 0x1c
     | I31Get SX -> op 0xfb; op 0x1d
     | I31Get ZX -> op 0xfb; op 0x1e
 
-    | StructNew (x, Explicit) -> op 0xfb; op 0x00; var x
-    | StructNew (x, Implicit) -> op 0xfb; op 0x01; var x
-    | StructGet (x, y, None) -> op 0xfb; op 0x02; var x; var y
-    | StructGet (x, y, Some SX) -> op 0xfb; op 0x03; var x; var y
-    | StructGet (x, y, Some ZX) -> op 0xfb; op 0x04; var x; var y
-    | StructSet (x, y) -> op 0xfb; op 0x05; var x; var y
+    | StructNew (x, Explicit) -> op 0xfb; op 0x00; idx x
+    | StructNew (x, Implicit) -> op 0xfb; op 0x01; idx x
+    | StructGet (x, y, None) -> op 0xfb; op 0x02; idx x; idx y
+    | StructGet (x, y, Some SX) -> op 0xfb; op 0x03; idx x; idx y
+    | StructGet (x, y, Some ZX) -> op 0xfb; op 0x04; idx x; idx y
+    | StructSet (x, y) -> op 0xfb; op 0x05; idx x; idx y
 
-    | ArrayNew (x, Explicit) -> op 0xfb; op 0x06; var x
-    | ArrayNew (x, Implicit) -> op 0xfb; op 0x07; var x
-    | ArrayNewFixed (x, n) -> op 0xfb; op 0x08; var x; u32 n
-    | ArrayNewElem (x, y) -> op 0xfb; op 0x0a; var x; var y
-    | ArrayNewData (x, y) -> op 0xfb; op 0x09; var x; var y
-    | ArrayGet (x, None) -> op 0xfb; op 0x0b; var x
-    | ArrayGet (x, Some SX) -> op 0xfb; op 0x0c; var x
-    | ArrayGet (x, Some ZX) -> op 0xfb; op 0x0d; var x
-    | ArraySet x -> op 0xfb; op 0x0e; var x
+    | ArrayNew (x, Explicit) -> op 0xfb; op 0x06; idx x
+    | ArrayNew (x, Implicit) -> op 0xfb; op 0x07; idx x
+    | ArrayNewFixed (x, n) -> op 0xfb; op 0x08; idx x; u32 n
+    | ArrayNewElem (x, y) -> op 0xfb; op 0x0a; idx x; idx y
+    | ArrayNewData (x, y) -> op 0xfb; op 0x09; idx x; idx y
+    | ArrayGet (x, None) -> op 0xfb; op 0x0b; idx x
+    | ArrayGet (x, Some SX) -> op 0xfb; op 0x0c; idx x
+    | ArrayGet (x, Some ZX) -> op 0xfb; op 0x0d; idx x
+    | ArraySet x -> op 0xfb; op 0x0e; idx x
     | ArrayLen -> op 0xfb; op 0x0f
-    | ArrayFill x -> op 0xfb; op 0x10; var x
-    | ArrayCopy (x, y) -> op 0xfb; op 0x11; var x; var y
-    | ArrayInitData (x, y) -> op 0xfb; op 0x12; var x; var y
-    | ArrayInitElem (x, y) -> op 0xfb; op 0x13; var x; var y
+    | ArrayFill x -> op 0xfb; op 0x10; idx x
+    | ArrayCopy (x, y) -> op 0xfb; op 0x11; idx x; idx y
+    | ArrayInitData (x, y) -> op 0xfb; op 0x12; idx x; idx y
+    | ArrayInitElem (x, y) -> op 0xfb; op 0x13; idx x; idx y
 
     | ExternConvert Internalize -> op 0xfb; op 0x1a
     | ExternConvert Externalize -> op 0xfb; op 0x1b
@@ -913,10 +912,10 @@ struct
 
   and catch c =
     match c.it with
-    | Catch (x1, x2) -> byte 0x00; var x1; var x2
-    | CatchRef (x1, x2) -> byte 0x01; var x1; var x2
-    | CatchAll x -> byte 0x02; var x
-    | CatchAllRef x -> byte 0x03; var x
+    | Catch (x1, x2) -> byte 0x00; idx x1; idx x2
+    | CatchRef (x1, x2) -> byte 0x01; idx x1; idx x2
+    | CatchAll x -> byte 0x02; idx x
+    | CatchAllRef x -> byte 0x03; idx x
 
   let const c =
     list instr c.it; end_ ()
@@ -936,7 +935,7 @@ struct
 
   (* Type section *)
 
-  let type_ t = rec_type t.it
+  let type_ t = rectype t.it
 
   let type_section ts =
     section 1 (vec type_) ts (ts <> [])
@@ -944,17 +943,17 @@ struct
 
   (* Import section *)
 
-  let import_desc d =
+  let importdesc d =
     match d.it with
-    | FuncImport x -> byte 0x00; var x
-    | TableImport t -> byte 0x01; table_type t
-    | MemoryImport t -> byte 0x02; memory_type t
-    | GlobalImport t -> byte 0x03; global_type t
-    | TagImport t -> byte 0x04; tag_type t
+    | FuncImport x -> byte 0x00; idx x
+    | TableImport t -> byte 0x01; tabletype t
+    | MemoryImport t -> byte 0x02; memorytype t
+    | GlobalImport t -> byte 0x03; globaltype t
+    | TagImport t -> byte 0x04; tagtype t
 
   let import im =
     let Import (module_name, item_name, idesc) = im.it in
-    name module_name; name item_name; import_desc idesc
+    name module_name; name item_name; importdesc idesc
 
   let import_section ims =
     section 2 (vec import) ims (ims <> [])
@@ -964,7 +963,7 @@ struct
 
   let func f =
     let Func (x, _, _) = f.it in
-    var x
+    idx x
 
   let func_section fs =
     section 3 (vec func) fs (fs <> [])
@@ -976,8 +975,8 @@ struct
     let Table (tt, c) = tab.it in
     match tt, c.it with
     | TableT (_, _at, (_, ht1)), [{it = RefNull ht2; _}] when ht1 = ht2 ->
-      table_type tt
-    | _ -> op 0x40; op 0x00; table_type tt; const c
+      tabletype tt
+    | _ -> op 0x40; op 0x00; tabletype tt; const c
 
   let table_section tabs =
     section 4 (vec table) tabs (tabs <> [])
@@ -987,7 +986,7 @@ struct
 
   let memory mem =
     let Memory mt = mem.it in
-    memory_type mt
+    memorytype mt
 
   let memory_section mems =
     section 5 (vec memory) mems (mems <> [])
@@ -997,7 +996,7 @@ struct
 
   let tag tag =
     let Tag x = tag.it in
-    byte 0x00; var x
+    byte 0x00; idx x
 
   let tag_section ts =
     section 13 (vec tag) ts (ts <> [])
@@ -1007,7 +1006,7 @@ struct
 
   let global g =
     let Global (gt, c) = g.it in
-    global_type gt; const c
+    globaltype gt; const c
 
   let global_section gs =
     section 6 (vec global) gs (gs <> [])
@@ -1015,17 +1014,17 @@ struct
 
   (* Export section *)
 
-  let export_desc d =
+  let exportdesc d =
     match d.it with
-    | FuncExport x -> byte 0; var x
-    | TableExport x -> byte 1; var x
-    | MemoryExport x -> byte 2; var x
-    | GlobalExport x -> byte 3; var x
-    | TagExport x -> byte 4; var x
+    | FuncExport x -> byte 0; idx x
+    | TableExport x -> byte 1; idx x
+    | MemoryExport x -> byte 2; idx x
+    | GlobalExport x -> byte 3; idx x
+    | TagExport x -> byte 4; idx x
 
   let export ex =
     let Export (n, edesc) = ex.it in
-    name n; export_desc edesc
+    name n; exportdesc edesc
 
   let export_section exs =
     section 7 (vec export) exs (exs <> [])
@@ -1035,7 +1034,7 @@ struct
 
   let start st =
     let Start x = st.it in
-    var x
+    idx x
 
   let start_section xo =
     section 8 (opt start) xo (xo <> None)
@@ -1073,7 +1072,7 @@ struct
 
   let elem_index e =
     match e.it with
-    | [{it = RefFunc x; _}] -> var x
+    | [{it = RefFunc x; _}] -> idx x
     | _ -> assert false
 
   let elem seg =
@@ -1086,19 +1085,19 @@ struct
         u32 0x00l; const c; vec elem_index cs
       | Active (x, c) ->
         u32 0x02l;
-        var x; const c; elem_kind rt; vec elem_index cs
+        idx x; const c; elem_kind rt; vec elem_index cs
       | Declarative ->
         u32 0x03l; elem_kind rt; vec elem_index cs
     else
       match emode.it with
       | Passive ->
-        u32 0x05l; ref_type rt; vec const cs
+        u32 0x05l; reftype rt; vec const cs
       | Active ({it = 0l; _}, c) when rt = (Null, FuncHT) ->
         u32 0x04l; const c; vec const cs
       | Active (x, c) ->
-        u32 0x06l; var x; const c; ref_type rt; vec const cs
+        u32 0x06l; idx x; const c; reftype rt; vec const cs
       | Declarative ->
-        u32 0x07l; ref_type rt; vec const cs
+        u32 0x07l; reftype rt; vec const cs
 
   let elem_section elems =
     section 9 (vec elem) elems (elems <> [])
@@ -1114,7 +1113,7 @@ struct
     | Active ({it = 0l; _}, c) ->
       u32 0x00l; const c; string bs
     | Active (x, c) ->
-      u32 0x02l; var x; const c; string bs
+      u32 0x02l; idx x; const c; string bs
     | Declarative ->
       error dmode.at "illegal declarative data segment"
 

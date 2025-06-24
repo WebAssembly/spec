@@ -13,8 +13,8 @@ let error msg = raise (Eval.Crash (Source.no_region, msg))
 
 let type_error v t =
   error
-    ("type error, expected " ^ string_of_val_type t ^
-     ", got " ^ string_of_val_type (type_of_value v))
+    ("type error, expected " ^ string_of_valtype t ^
+     ", got " ^ string_of_valtype (type_of_value v))
 
 let empty = function
   | [] -> ()

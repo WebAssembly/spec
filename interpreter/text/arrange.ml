@@ -64,10 +64,10 @@ let mutability node = function
   | Cons -> node
   | Var -> Node ("mut", [node])
 
-let addr_type t = string_of_addr_type t
-let num_type t = string_of_num_type t
-let vec_type t = string_of_vec_type t
-let ref_type t =
+let addrtype t = string_of_addrtype t
+let numtype t = string_of_numtype t
+let vectype t = string_of_vectype t
+let reftype t =
   match t with
   | (Null, AnyHT) -> "anyref"
   | (Null, EqHT) -> "eqref"
@@ -76,50 +76,49 @@ let ref_type t =
   | (Null, ArrayHT) -> "arrayref"
   | (Null, FuncHT) -> "funcref"
   | (Null, ExnHT) -> "exnref"
-  | t -> string_of_ref_type t
+  | t -> string_of_reftype t
 
-let heap_type t = string_of_heap_type t
-let val_type t = string_of_val_type t
-let storage_type t = string_of_storage_type t
+let heaptype t = string_of_heaptype t
+let valtype t = string_of_valtype t
+let storagetype t = string_of_storagetype t
 
 let final = function
   | NoFinal -> ""
   | Final -> " final"
 
-let decls kind ts = tab kind (atom val_type) ts
+let decls kind ts = tab kind (atom valtype) ts
 
-let field_type (FieldT (mut, t)) =
-  mutability (atom storage_type t) mut
+let fieldtype (FieldT (mut, t)) =
+  mutability (atom storagetype t) mut
 
-let struct_type (StructT fts) =
-  Node ("struct", list (fun ft -> Node ("field", [field_type ft])) fts)
+let structtype (StructT fts) =
+  Node ("struct", list (fun ft -> Node ("field", [fieldtype ft])) fts)
 
-let array_type (ArrayT ft) =
-  Node ("array", [field_type ft])
+let arraytype (ArrayT ft) =
+  Node ("array", [fieldtype ft])
 
-let func_type (FuncT (ts1, ts2)) =
+let functype (FuncT (ts1, ts2)) =
   Node ("func", decls "param" ts1 @ decls "result" ts2)
 
-let str_type st =
-  match st with
-  | DefStructT st -> struct_type st
-  | DefArrayT at -> array_type at
-  | DefFuncT ft -> func_type ft
+let comptype = function
+  | StructCT st -> structtype st
+  | ArrayCT at -> arraytype at
+  | FuncCT ft -> functype ft
 
-let sub_type = function
-  | SubT (Final, [], st) -> str_type st
-  | SubT (fin, xs, st) ->
+let subtype = function
+  | SubT (Final, [], ct) -> comptype ct
+  | SubT (fin, xs, ct) ->
     Node (String.concat " "
-      (("sub" ^ final fin ):: List.map heap_type xs), [str_type st])
+      (("sub" ^ final fin ):: List.map heaptype xs), [comptype ct])
 
-let rec_type i j st =
-  Node ("type $" ^ nat (i + j), [sub_type st])
+let rectype i j st =
+  Node ("type $" ^ nat (i + j), [subtype st])
 
 let limits nat {min; max} =
   String.concat " " (nat min :: opt nat max)
 
-let global_type (GlobalT (mut, t)) =
-  mutability (atom string_of_val_type t) mut
+let globaltype (GlobalT (mut, t)) =
+  mutability (atom string_of_valtype t) mut
 
 let pack_size = function
   | Pack8 -> "8"
@@ -419,7 +418,7 @@ struct
 end
 
 let oper (iop, fop) op =
-  string_of_num_type (type_of_num op) ^ "." ^
+  string_of_numtype (type_of_num op) ^ "." ^
   (match op with
   | I32 o -> iop "32" o
   | I64 o -> iop "64" o
@@ -457,45 +456,45 @@ let vec_splatop = vec_shape_oper (V128Op.splatop, V128Op.splatop, V128Op.splatop
 let vec_extractop = vec_shape_oper (V128Op.pextractop, V128Op.extractop, V128Op.extractop)
 let vec_replaceop = vec_shape_oper (V128Op.replaceop, V128Op.replaceop, V128Op.replaceop)
 
-let var x = nat32 x.it
+let idx x = nat32 x.it
 let num v = string_of_num v.it
 let vec v = string_of_vec v.it
 
 let memop name x typ {ty; align; offset; _} sz =
-  typ ty ^ "." ^ name ^ " " ^ var x ^
+  typ ty ^ "." ^ name ^ " " ^ idx x ^
   (if offset = 0L then "" else " offset=" ^ nat64 offset) ^
   (if 1 lsl align = sz then "" else " align=" ^ nat64 (Int64.shift_left 1L align))
 
 let loadop x op =
   match op.pack with
-  | None -> memop "load" x num_type op (num_size op.ty)
+  | None -> memop "load" x numtype op (num_size op.ty)
   | Some (sz, ext) ->
-    memop ("load" ^ pack_size sz ^ extension ext) x num_type op (packed_size sz)
+    memop ("load" ^ pack_size sz ^ extension ext) x numtype op (packed_size sz)
 
 let storeop x op =
   match op.pack with
-  | None -> memop "store" x num_type op (num_size op.ty)
-  | Some sz -> memop ("store" ^ pack_size sz) x num_type op (packed_size sz)
+  | None -> memop "store" x numtype op (num_size op.ty)
+  | Some sz -> memop ("store" ^ pack_size sz) x numtype op (packed_size sz)
 
-let vec_loadop x (op : vec_loadop) =
+let vecloadop x (op : vec_loadop) =
   match op.pack with
-  | None -> memop "load" x vec_type op (vec_size op.ty)
+  | None -> memop "load" x vectype op (vec_size op.ty)
   | Some (sz, ext) ->
-    memop ("load" ^ vec_extension sz ext) x vec_type op (packed_size sz)
+    memop ("load" ^ vec_extension sz ext) x vectype op (packed_size sz)
 
-let vec_storeop x op =
-  memop "store" x vec_type op (vec_size op.ty)
+let vecstoreop x op =
+  memop "store" x vectype op (vec_size op.ty)
 
-let vec_laneop instr x op i =
-  memop (instr ^ pack_size op.pack ^ "_lane") x vec_type op
+let veclaneop instr x op i =
+  memop (instr ^ pack_size op.pack ^ "_lane") x vectype op
     (packed_size op.pack) ^ " " ^ nat i
 
 let initop = function
   | Explicit -> ""
   | Implicit -> "_default"
 
-let constop v = string_of_num_type (type_of_num v) ^ ".const"
-let vec_constop v = string_of_vec_type (type_of_vec v) ^ ".const i32x4"
+let constop v = string_of_numtype (type_of_num v) ^ ".const"
+let vec_constop v = string_of_vectype (type_of_vec v) ^ ".const i32x4"
 
 let externop = function
   | Internalize -> "any.convert_extern"
@@ -504,8 +503,8 @@ let externop = function
 
 (* Expressions *)
 
-let block_type = function
-  | VarBlockType x -> [Node ("type " ^ var x, [])]
+let blocktype = function
+  | VarBlockType x -> [Node ("type " ^ idx x, [])]
   | ValBlockType ts -> decls "result" (list_of_opt ts)
 
 let rec instr e =
@@ -517,83 +516,83 @@ let rec instr e =
     | Select None -> "select", []
     | Select (Some []) -> "select", [Node ("result", [])]
     | Select (Some ts) -> "select", decls "result" ts
-    | Block (bt, es) -> "block", block_type bt @ list instr es
-    | Loop (bt, es) -> "loop", block_type bt @ list instr es
+    | Block (bt, es) -> "block", blocktype bt @ list instr es
+    | Loop (bt, es) -> "loop", blocktype bt @ list instr es
     | If (bt, es1, es2) ->
-      "if", block_type bt @
+      "if", blocktype bt @
         [Node ("then", list instr es1); Node ("else", list instr es2)]
-    | Br x -> "br " ^ var x, []
-    | BrIf x -> "br_if " ^ var x, []
+    | Br x -> "br " ^ idx x, []
+    | BrIf x -> "br_if " ^ idx x, []
     | BrTable (xs, x) ->
-      "br_table " ^ String.concat " " (list var (xs @ [x])), []
-    | BrOnNull x -> "br_on_null " ^ var x, []
-    | BrOnNonNull x -> "br_on_non_null " ^ var x, []
+      "br_table " ^ String.concat " " (list idx (xs @ [x])), []
+    | BrOnNull x -> "br_on_null " ^ idx x, []
+    | BrOnNonNull x -> "br_on_non_null " ^ idx x, []
     | BrOnCast (x, t1, t2) ->
-      "br_on_cast " ^ var x, [Atom (ref_type t1); Atom (ref_type t2)]
+      "br_on_cast " ^ idx x, [Atom (reftype t1); Atom (reftype t2)]
     | BrOnCastFail (x, t1, t2) ->
-      "br_on_cast_fail " ^ var x, [Atom (ref_type t1); Atom (ref_type t2)]
+      "br_on_cast_fail " ^ idx x, [Atom (reftype t1); Atom (reftype t2)]
     | Return -> "return", []
-    | Call x -> "call " ^ var x, []
-    | CallRef x -> "call_ref " ^ var x, []
+    | Call x -> "call " ^ idx x, []
+    | CallRef x -> "call_ref " ^ idx x, []
     | CallIndirect (x, y) ->
-      "call_indirect " ^ var x, [Node ("type " ^ var y, [])]
-    | ReturnCall x -> "return_call " ^ var x, []
-    | ReturnCallRef x -> "return_call_ref " ^ var x, []
+      "call_indirect " ^ idx x, [Node ("type " ^ idx y, [])]
+    | ReturnCall x -> "return_call " ^ idx x, []
+    | ReturnCallRef x -> "return_call_ref " ^ idx x, []
     | ReturnCallIndirect (x, y) ->
-      "return_call_indirect " ^ var x, [Node ("type " ^ var y, [])]
-    | Throw x -> "throw " ^ var x, []
+      "return_call_indirect " ^ idx x, [Node ("type " ^ idx y, [])]
+    | Throw x -> "throw " ^ idx x, []
     | ThrowRef -> "throw_ref", []
     | TryTable (bt, cs, es) ->
-      "try_table", block_type bt @ list catch cs @ list instr es
-    | LocalGet x -> "local.get " ^ var x, []
-    | LocalSet x -> "local.set " ^ var x, []
-    | LocalTee x -> "local.tee " ^ var x, []
-    | GlobalGet x -> "global.get " ^ var x, []
-    | GlobalSet x -> "global.set " ^ var x, []
-    | TableGet x -> "table.get " ^ var x, []
-    | TableSet x -> "table.set " ^ var x, []
-    | TableSize x -> "table.size " ^ var x, []
-    | TableGrow x -> "table.grow " ^ var x, []
-    | TableFill x -> "table.fill " ^ var x, []
-    | TableCopy (x, y) -> "table.copy " ^ var x ^ " " ^ var y, []
-    | TableInit (x, y) -> "table.init " ^ var x ^ " " ^ var y, []
-    | ElemDrop x -> "elem.drop " ^ var x, []
+      "try_table", blocktype bt @ list catch cs @ list instr es
+    | LocalGet x -> "local.get " ^ idx x, []
+    | LocalSet x -> "local.set " ^ idx x, []
+    | LocalTee x -> "local.tee " ^ idx x, []
+    | GlobalGet x -> "global.get " ^ idx x, []
+    | GlobalSet x -> "global.set " ^ idx x, []
+    | TableGet x -> "table.get " ^ idx x, []
+    | TableSet x -> "table.set " ^ idx x, []
+    | TableSize x -> "table.size " ^ idx x, []
+    | TableGrow x -> "table.grow " ^ idx x, []
+    | TableFill x -> "table.fill " ^ idx x, []
+    | TableCopy (x, y) -> "table.copy " ^ idx x ^ " " ^ idx y, []
+    | TableInit (x, y) -> "table.init " ^ idx x ^ " " ^ idx y, []
+    | ElemDrop x -> "elem.drop " ^ idx x, []
     | Load (x, op) -> loadop x op, []
     | Store (x, op) -> storeop x op, []
-    | VecLoad (x, op) -> vec_loadop x op, []
-    | VecStore (x, op) -> vec_storeop x op, []
-    | VecLoadLane (x, op, i) -> vec_laneop "load" x op i, []
-    | VecStoreLane (x, op, i) -> vec_laneop "store" x op i, []
-    | MemorySize x -> "memory.size " ^ var x, []
-    | MemoryGrow x -> "memory.grow " ^ var x, []
-    | MemoryFill x -> "memory.fill " ^ var x, []
-    | MemoryCopy (x, y) -> "memory.copy " ^ var x ^ " " ^ var y, []
-    | MemoryInit (x, y) -> "memory.init " ^ var x ^ " " ^ var y, []
-    | DataDrop x -> "data.drop " ^ var x, []
-    | RefNull t -> "ref.null", [Atom (heap_type t)]
-    | RefFunc x -> "ref.func " ^ var x, []
+    | VecLoad (x, op) -> vecloadop x op, []
+    | VecStore (x, op) -> vecstoreop x op, []
+    | VecLoadLane (x, op, i) -> veclaneop "load" x op i, []
+    | VecStoreLane (x, op, i) -> veclaneop "store" x op i, []
+    | MemorySize x -> "memory.size " ^ idx x, []
+    | MemoryGrow x -> "memory.grow " ^ idx x, []
+    | MemoryFill x -> "memory.fill " ^ idx x, []
+    | MemoryCopy (x, y) -> "memory.copy " ^ idx x ^ " " ^ idx y, []
+    | MemoryInit (x, y) -> "memory.init " ^ idx x ^ " " ^ idx y, []
+    | DataDrop x -> "data.drop " ^ idx x, []
+    | RefNull t -> "ref.null", [Atom (heaptype t)]
+    | RefFunc x -> "ref.func " ^ idx x, []
     | RefIsNull -> "ref.is_null", []
     | RefAsNonNull -> "ref.as_non_null", []
-    | RefTest t -> "ref.test", [Atom (ref_type t)]
-    | RefCast t -> "ref.cast", [Atom (ref_type t)]
+    | RefTest t -> "ref.test", [Atom (reftype t)]
+    | RefCast t -> "ref.cast", [Atom (reftype t)]
     | RefEq -> "ref.eq", []
     | RefI31 -> "ref.i31", []
     | I31Get ext -> "i31.get" ^ extension ext, []
-    | StructNew (x, op) -> "struct.new" ^ initop op ^ " " ^ var x, []
+    | StructNew (x, op) -> "struct.new" ^ initop op ^ " " ^ idx x, []
     | StructGet (x, y, exto) ->
-      "struct.get" ^ opt_s extension exto ^ " " ^ var x ^ " " ^ var y, []
-    | StructSet (x, y) -> "struct.set " ^ var x ^ " " ^ var y, []
-    | ArrayNew (x, op) -> "array.new" ^ initop op ^ " " ^ var x, []
-    | ArrayNewFixed (x, n) -> "array.new_fixed " ^ var x ^ " " ^ nat32 n, []
-    | ArrayNewElem (x, y) -> "array.new_elem " ^ var x ^ " " ^ var y, []
-    | ArrayNewData (x, y) -> "array.new_data " ^ var x ^ " " ^ var y, []
-    | ArrayGet (x, exto) -> "array.get" ^ opt_s extension exto ^ " " ^ var x, []
-    | ArraySet x -> "array.set " ^ var x, []
+      "struct.get" ^ opt_s extension exto ^ " " ^ idx x ^ " " ^ idx y, []
+    | StructSet (x, y) -> "struct.set " ^ idx x ^ " " ^ idx y, []
+    | ArrayNew (x, op) -> "array.new" ^ initop op ^ " " ^ idx x, []
+    | ArrayNewFixed (x, n) -> "array.new_fixed " ^ idx x ^ " " ^ nat32 n, []
+    | ArrayNewElem (x, y) -> "array.new_elem " ^ idx x ^ " " ^ idx y, []
+    | ArrayNewData (x, y) -> "array.new_data " ^ idx x ^ " " ^ idx y, []
+    | ArrayGet (x, exto) -> "array.get" ^ opt_s extension exto ^ " " ^ idx x, []
+    | ArraySet x -> "array.set " ^ idx x, []
     | ArrayLen -> "array.len", []
-    | ArrayCopy (x, y) -> "array.copy " ^ var x ^ " " ^ var y, []
-    | ArrayFill x -> "array.fill " ^ var x, []
-    | ArrayInitData (x, y) -> "array.init_data " ^ var x ^ " " ^ var y, []
-    | ArrayInitElem (x, y) -> "array.init_elem " ^ var x ^ " " ^ var y, []
+    | ArrayCopy (x, y) -> "array.copy " ^ idx x ^ " " ^ idx y, []
+    | ArrayFill x -> "array.fill " ^ idx x, []
+    | ArrayInitData (x, y) -> "array.init_data " ^ idx x ^ " " ^ idx y, []
+    | ArrayInitElem (x, y) -> "array.init_elem " ^ idx x ^ " " ^ idx y, []
     | ExternConvert op -> externop op, []
     | Const n -> constop n.it ^ " " ^ num n, []
     | Test op -> testop op, []
@@ -621,10 +620,10 @@ let rec instr e =
 
 and catch c =
   match c.it with
-  | Catch (x1, x2) -> Node ("catch " ^ var x1 ^ " " ^ var x2, [])
-  | CatchRef (x1, x2) -> Node ("catch_ref " ^ var x1 ^ " " ^ var x2, [])
-  | CatchAll x -> Node ("catch_all " ^ var x, [])
-  | CatchAllRef x -> Node ("catch_all_ref " ^ var x, [])
+  | Catch (x1, x2) -> Node ("catch " ^ idx x1 ^ " " ^ idx x2, [])
+  | CatchRef (x1, x2) -> Node ("catch_ref " ^ idx x1 ^ " " ^ idx x2, [])
+  | CatchAll x -> Node ("catch_all " ^ idx x, [])
+  | CatchAllRef x -> Node ("catch_all_ref " ^ idx x, [])
 
 let const head c =
   match c.it with
@@ -637,7 +636,7 @@ let const head c =
 let func_with_name name f =
   let Func (x, ls, es) = f.it in
   Node ("func" ^ name,
-    [Node ("type " ^ var x, [])] @
+    [Node ("type " ^ idx x, [])] @
     decls "local" (List.map (fun {it = Local t; _} -> t) ls) @
     list instr es
   )
@@ -654,60 +653,60 @@ let func f =
 let tag off i tag =
   let Tag x = tag.it in
   Node ("tag $" ^ nat (off + i),
-    [Node ("type " ^ var x, [])]
+    [Node ("type " ^ idx x, [])]
   )
 
 let table off i tab =
   let Table (tt, c) = tab.it in
   let TableT (at, lim, t) = tt in
-  Node ("table $" ^ nat (off + i) ^ " " ^ addr_type at ^ " " ^ limits nat64 lim,
-    atom ref_type t :: list instr c.it
+  Node ("table $" ^ nat (off + i) ^ " " ^ addrtype at ^ " " ^ limits nat64 lim,
+    atom reftype t :: list instr c.it
   )
 
 let memory off i mem =
   let Memory mt = mem.it in
   let MemoryT (at, lim) = mt in
-  Node ("memory $" ^ nat (off + i) ^ " " ^ addr_type at ^ " " ^ limits nat64 lim, [])
+  Node ("memory $" ^ nat (off + i) ^ " " ^ addrtype at ^ " " ^ limits nat64 lim, [])
 
-let is_elem_kind = function
+let is_elemkind = function
   | (NoNull, FuncHT) -> true
   | _ -> false
 
-let elem_kind = function
+let elemkind = function
   | (NoNull, FuncHT) -> "func"
   | _ -> assert false
 
-let is_elem_index e =
+let is_elemidx e =
   match e.it with
   | [{it = RefFunc _; _}] -> true
   | _ -> false
 
-let elem_index e =
+let elemidx e =
   match e.it with
-  | [{it = RefFunc x; _}] -> atom var x
+  | [{it = RefFunc x; _}] -> atom idx x
   | _ -> assert false
 
-let segment_mode category mode =
+let segmentmode category mode =
   match mode.it with
   | Passive -> []
   | Active (x, c) ->
-    (if x.it = 0l then [] else [Node (category, [atom var x])]) @
+    (if x.it = 0l then [] else [Node (category, [atom idx x])]) @
     [const "offset" c]
   | Declarative -> [Atom "declare"]
 
 let elem i seg =
   let Elem (rt, cs, mode) = seg.it in
   Node ("elem $" ^ nat i,
-    segment_mode "table" mode @
-    if is_elem_kind rt && List.for_all is_elem_index cs then
-      atom elem_kind rt :: list elem_index cs
+    segmentmode "table" mode @
+    if is_elemkind rt && List.for_all is_elemidx cs then
+      atom elemkind rt :: list elemidx cs
     else
-      atom ref_type rt :: list (const "item") cs
+      atom reftype rt :: list (const "item") cs
   )
 
 let data i seg =
   let Data (bs, mode) = seg.it in
-  Node ("data $" ^ nat i, segment_mode "memory" mode @ break_bytes bs)
+  Node ("data $" ^ nat i, segmentmode "memory" mode @ break_bytes bs)
 
 
 (* Modules *)
@@ -715,54 +714,54 @@ let data i seg =
 let type_ (ns, i) ty =
   match ty.it with
   | RecT [st] when not Free.(Set.mem (Int32.of_int i) (type_ ty).types) ->
-    rec_type i 0 st :: ns, i + 1
+    rectype i 0 st :: ns, i + 1
   | RecT sts ->
-    Node ("rec", List.mapi (rec_type i) sts) :: ns, i + List.length sts
+    Node ("rec", List.mapi (rectype i) sts) :: ns, i + List.length sts
 
-let import_desc fx tx mx tgx gx d =
+let importdesc fx tx mx tgx gx d =
   match d.it with
   | FuncImport x ->
-    incr fx; Node ("func $" ^ nat (!fx - 1), [Node ("type", [atom var x])])
+    incr fx; Node ("func $" ^ nat (!fx - 1), [Node ("type", [atom idx x])])
   | TableImport t ->
     incr tx; table 0 (!tx - 1) (Table (t, [] @@ d.at) @@ d.at)
   | MemoryImport t ->
     incr mx; memory 0 (!mx - 1) (Memory t @@ d.at)
   | GlobalImport t ->
-    incr gx; Node ("global $" ^ nat (!gx - 1), [global_type t])
+    incr gx; Node ("global $" ^ nat (!gx - 1), [globaltype t])
   | TagImport x ->
-    incr tgx; Node ("tag $" ^ nat (!tgx - 1), [Node ("type", [atom var x])])
+    incr tgx; Node ("tag $" ^ nat (!tgx - 1), [Node ("type", [atom idx x])])
 
 let import fx tx mx ex gx im =
   let Import (module_name, item_name, idesc) = im.it in
   Node ("import",
-    [atom name module_name; atom name item_name; import_desc fx tx mx ex gx idesc]
+    [atom name module_name; atom name item_name; importdesc fx tx mx ex gx idesc]
   )
 
-let export_desc d =
+let exportdesc d =
   match d.it with
-  | FuncExport x -> Node ("func", [atom var x])
-  | TableExport x -> Node ("table", [atom var x])
-  | MemoryExport x -> Node ("memory", [atom var x])
-  | TagExport x -> Node ("tag", [atom var x])
-  | GlobalExport x -> Node ("global", [atom var x])
+  | FuncExport x -> Node ("func", [atom idx x])
+  | TableExport x -> Node ("table", [atom idx x])
+  | MemoryExport x -> Node ("memory", [atom idx x])
+  | TagExport x -> Node ("tag", [atom idx x])
+  | GlobalExport x -> Node ("global", [atom idx x])
 
 let export ex =
   let Export (n, edesc) = ex.it in
-  Node ("export", [atom name n; export_desc edesc])
+  Node ("export", [atom name n; exportdesc edesc])
 
 let global off i g =
   let Global (gt, c) = g.it in
-  Node ("global $" ^ nat (off + i), global_type gt :: list instr c.it)
+  Node ("global $" ^ nat (off + i), globaltype gt :: list instr c.it)
 
 let start s =
   let Start x = s.it in
-  Node ("start " ^ var x, [])
+  Node ("start " ^ idx x, [])
 
 let custom m mnode (module S : Custom.Section) =
   S.Handler.arrange m mnode S.it
 
 
-let var x =
+let idx x =
   if String.for_all (fun c -> Lib.Char.is_alphanum_ascii c || c = '_') x.it then
     "$" ^ x.it
   else
@@ -770,7 +769,7 @@ let var x =
 
 let var_opt = function
   | None -> ""
-  | Some x -> " " ^ var x
+  | Some x -> " " ^ idx x
 
 let module_with_var_opt isdef x_opt (m, cs) =
   let fx = ref 0 in
@@ -814,7 +813,7 @@ let num mode = if mode = `Binary then hex_string_of_num else string_of_num
 let vec mode = if mode = `Binary then hex_string_of_vec else string_of_vec
 
 let ref_ = function
-  | NullRef t -> Node ("ref.null " ^ heap_type t, [])
+  | NullRef t -> Node ("ref.null " ^ heaptype t, [])
   | Script.HostRef n -> Node ("ref.host " ^ nat32 n, [])
   | Extern.ExternRef (Script.HostRef n) -> Node ("ref.extern " ^ nat32 n, [])
   | _ -> assert false
@@ -893,7 +892,7 @@ let vec_pat mode = function
 
 let ref_pat = function
   | RefPat r -> ref_ r.it
-  | RefTypePat t -> Node ("ref." ^ heap_type t, [])
+  | RefTypePat t -> Node ("ref." ^ heaptype t, [])
   | NullPat -> Node ("ref.null", [])
 
 let rec result mode res =

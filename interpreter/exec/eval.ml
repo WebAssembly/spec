@@ -40,8 +40,8 @@ let numeric_error at = function
   | Ixx.InvalidConversion -> "invalid conversion to integer"
   | Value.TypeError (i, v, t) ->
     Crash.error at
-      ("type error, expected " ^ string_of_num_type t ^ " as operand " ^
-       string_of_int i ^ ", got " ^ string_of_num_type (type_of_num v))
+      ("type error, expected " ^ string_of_numtype t ^ " as operand " ^
+       string_of_int i ^ ", got " ^ string_of_numtype (type_of_num v))
   | exn -> raise exn
 
 
@@ -51,20 +51,20 @@ type 'a stack = 'a list
 
 type frame =
 {
-  inst : module_inst;
+  inst : moduleinst;
   locals : value option ref list;
 }
 
-type code = value stack * admin_instr list
+type code = value stack * admininstr list
 
-and admin_instr = admin_instr' phrase
-and admin_instr' =
+and admininstr = admininstr' phrase
+and admininstr' =
   | Plain of instr'
   | Refer of ref_
-  | Invoke of func_inst
+  | Invoke of funcinst
   | Breaking of int32 * value stack
   | Returning of value stack
-  | ReturningInvoke of value stack * func_inst
+  | ReturningInvoke of value stack * funcinst
   | Throwing of Tag.t * value stack
   | Trapping of string
   | Label of int * instr list * code
@@ -84,7 +84,7 @@ let config inst vs es =
 
 let plain e = Plain e.it @@ e.at
 
-let admin_instr_of_value (v : value) at : admin_instr' =
+let admininstr_of_value (v : value) at : admininstr' =
   match v with
   | Num n -> Plain (Const (n @@ at))
   | Vec v -> Plain (VecConst (v @@ at))
@@ -100,40 +100,40 @@ let lookup category list x =
   try Lib.List32.nth list x.it with Failure _ ->
     Crash.error x.at ("undefined " ^ category ^ " " ^ Int32.to_string x.it)
 
-let type_ (inst : module_inst) x = lookup "type" inst.types x
-let func (inst : module_inst) x = lookup "function" inst.funcs x
-let table (inst : module_inst) x = lookup "table" inst.tables x
-let memory (inst : module_inst) x = lookup "memory" inst.memories x
-let tag (inst : module_inst) x = lookup "tag" inst.tags x
-let global (inst : module_inst) x = lookup "global" inst.globals x
-let elem (inst : module_inst) x = lookup "element segment" inst.elems x
-let data (inst : module_inst) x = lookup "data segment" inst.datas x
+let type_ (inst : moduleinst) x = lookup "type" inst.types x
+let func (inst : moduleinst) x = lookup "function" inst.funcs x
+let table (inst : moduleinst) x = lookup "table" inst.tables x
+let memory (inst : moduleinst) x = lookup "memory" inst.memories x
+let tag (inst : moduleinst) x = lookup "tag" inst.tags x
+let global (inst : moduleinst) x = lookup "global" inst.globals x
+let elem (inst : moduleinst) x = lookup "element segment" inst.elems x
+let data (inst : moduleinst) x = lookup "data segment" inst.datas x
 let local (frame : frame) x = lookup "local" frame.locals x
 
-let str_type (inst : module_inst) x = expand_def_type (type_ inst x)
-let func_type (inst : module_inst) x = as_func_str_type (str_type inst x)
-let struct_type (inst : module_inst) x = as_struct_str_type  (str_type inst x)
-let array_type (inst : module_inst) x = as_array_str_type (str_type inst x)
+let comp_type (inst : moduleinst) x = expand_deftype (type_ inst x)
+let func_type (inst : moduleinst) x = as_func_comptype (comp_type inst x)
+let struct_type (inst : moduleinst) x = as_struct_comptype  (comp_type inst x)
+let array_type (inst : moduleinst) x = as_array_comptype (comp_type inst x)
 
-let subst_of (inst : module_inst) = function
-  | StatX x when x < Lib.List32.length inst.types ->
+let subst_of (inst : moduleinst) = function
+  | IdxX x when x < Lib.List32.length inst.types ->
     DefHT (type_ inst (x @@ Source.no_region))
   | x -> VarHT x
 
-let any_ref (inst : module_inst) x i at =
+let any_ref (inst : moduleinst) x i at =
   try Table.load (table inst x) i with Table.Bounds ->
     Trap.error at ("undefined element " ^ Int64.to_string i)
 
-let func_ref (inst : module_inst) x i at =
+let func_ref (inst : moduleinst) x i at =
   match any_ref inst x i at with
   | FuncRef f -> f
   | NullRef _ -> Trap.error at ("uninitialized element " ^ Int64.to_string i)
   | _ -> Crash.error at ("type mismatch for element " ^ Int64.to_string i)
 
-let block_type (inst : module_inst) bt at =
+let blocktype (inst : moduleinst) bt at =
   match bt with
   | ValBlockType None -> InstrT ([], [], [])
-  | ValBlockType (Some t) -> InstrT ([], [subst_val_type (subst_of inst) t], [])
+  | ValBlockType (Some t) -> InstrT ([], [subst_valtype (subst_of inst) t], [])
   | VarBlockType x ->
     let FuncT (ts1, ts2) = func_type inst x in InstrT (ts1, ts2, [])
 
@@ -192,14 +192,14 @@ let rec step (c : config) : config =
         vs, []
 
       | Block (bt, es'), vs ->
-        let InstrT (ts1, ts2, _xs) = block_type c.frame.inst bt e.at in
+        let InstrT (ts1, ts2, _xs) = blocktype c.frame.inst bt e.at in
         let n1 = List.length ts1 in
         let n2 = List.length ts2 in
         let args, vs' = split n1 vs e.at in
         vs', [Label (n2, [], (args, List.map plain es')) @@ e.at]
 
       | Loop (bt, es'), vs ->
-        let InstrT (ts1, ts2, _xs) = block_type c.frame.inst bt e.at in
+        let InstrT (ts1, ts2, _xs) = blocktype c.frame.inst bt e.at in
         let n1 = List.length ts1 in
         let args, vs' = split n1 vs e.at in
         vs', [Label (n1, [e' @@ e.at], (args, List.map plain es')) @@ e.at]
@@ -238,15 +238,15 @@ let rec step (c : config) : config =
         Ref r :: vs', [Plain (Br x) @@ e.at]
 
       | BrOnCast (x, _rt1, rt2), Ref r :: vs' ->
-        let rt2' = subst_ref_type (subst_of c.frame.inst) rt2 in
-        if Match.match_ref_type [] (type_of_ref r) rt2' then
+        let rt2' = subst_reftype (subst_of c.frame.inst) rt2 in
+        if Match.match_reftype [] (type_of_ref r) rt2' then
           Ref r :: vs', [Plain (Br x) @@ e.at]
         else
           Ref r :: vs', []
 
       | BrOnCastFail (x, _rt1, rt2), Ref r :: vs' ->
-        let rt2' = subst_ref_type (subst_of c.frame.inst) rt2 in
-        if Match.match_ref_type [] (type_of_ref r) rt2' then
+        let rt2' = subst_reftype (subst_of c.frame.inst) rt2 in
+        if Match.match_reftype [] (type_of_ref r) rt2' then
           Ref r :: vs', []
         else
           Ref r :: vs', [Plain (Br x) @@ e.at]
@@ -266,12 +266,12 @@ let rec step (c : config) : config =
       | CallIndirect (x, y), Num i :: vs ->
         let i_64 = addr_of_num i in
         let f = func_ref c.frame.inst x i_64 e.at in
-        if Match.match_def_type [] (Func.type_of f) (type_ c.frame.inst y) then
+        if Match.match_deftype [] (Func.type_of f) (type_ c.frame.inst y) then
           vs, [Invoke f @@ e.at]
         else
           vs, [Trapping ("indirect call type mismatch, expected " ^
-            string_of_def_type (type_ c.frame.inst y) ^ " but got " ^
-            string_of_def_type (Func.type_of f)) @@ e.at]
+            string_of_deftype (type_ c.frame.inst y) ^ " but got " ^
+            string_of_deftype (Func.type_of f)) @@ e.at]
 
       | ReturnCall x, vs ->
         (match (step {c with code = (vs, [Plain (Call x) @@ e.at])}).code with
@@ -301,7 +301,7 @@ let rec step (c : config) : config =
       | Throw x, vs ->
         let t = tag c.frame.inst x in
         let TagT dt = Tag.type_of t in
-        let FuncT (ts, _) = as_func_str_type (expand_def_type dt) in
+        let FuncT (ts, _) = as_func_comptype (expand_deftype dt) in
         let n = List.length ts in
         let args, vs' = split n vs e.at in
         vs', [Throwing (t, args) @@ e.at]
@@ -313,7 +313,7 @@ let rec step (c : config) : config =
         vs, [Throwing (t, args) @@ e.at]
 
       | TryTable (bt, cs, es'), vs ->
-        let InstrT (ts1, ts2, _xs) = block_type c.frame.inst bt e.at in
+        let InstrT (ts1, ts2, _xs) = blocktype c.frame.inst bt e.at in
         let n1 = List.length ts1 in
         let n2 = List.length ts2 in
         let args, vs' = split n1 vs e.at in
@@ -364,7 +364,7 @@ let rec step (c : config) : config =
 
       | TableSize x, vs ->
         let tab = table c.frame.inst x in
-        Num (num_of_addr (Table.addr_type_of tab) (Table.size tab)) :: vs, []
+        Num (num_of_addr (Table.addrtype_of tab) (Table.size tab)) :: vs, []
 
       | TableGrow x, Num n :: Ref r :: vs' ->
         let n_64 = addr_of_num n in
@@ -373,7 +373,7 @@ let rec step (c : config) : config =
         let result =
           try Table.grow tab n_64 r; old_size
           with Table.SizeOverflow | Table.SizeLimit | Table.OutOfMemory -> -1L
-        in Num (num_of_addr (Table.addr_type_of tab) result) :: vs', []
+        in Num (num_of_addr (Table.addrtype_of tab) result) :: vs', []
 
       | TableFill x, Num n :: Ref r :: Num i :: vs' ->
         let n_64 = addr_of_num n in
@@ -531,7 +531,7 @@ let rec step (c : config) : config =
 
       | MemorySize x, vs ->
         let mem = memory c.frame.inst x in
-        Num (num_of_addr (Memory.addr_type_of mem) (Memory.size mem)) :: vs, []
+        Num (num_of_addr (Memory.addrtype_of mem) (Memory.size mem)) :: vs, []
 
       | MemoryGrow x, Num n :: vs' ->
         let n_64 = addr_of_num n in
@@ -540,7 +540,7 @@ let rec step (c : config) : config =
         let result =
           try Memory.grow mem n_64; old_size
           with Memory.SizeOverflow | Memory.SizeLimit | Memory.OutOfMemory -> -1L
-        in Num (num_of_addr (Memory.addr_type_of mem) result) :: vs', []
+        in Num (num_of_addr (Memory.addrtype_of mem) result) :: vs', []
 
       | MemoryFill x, Num n :: Num k :: Num i :: vs' ->
         let n_64 = addr_of_num n in
@@ -623,7 +623,7 @@ let rec step (c : config) : config =
         vs, []
 
       | RefNull t, vs' ->
-        Ref (NullRef (subst_heap_type (subst_of c.frame.inst) t)) :: vs', []
+        Ref (NullRef (subst_heaptype (subst_of c.frame.inst) t)) :: vs', []
 
       | RefFunc x, vs' ->
         let f = func c.frame.inst x in
@@ -642,17 +642,17 @@ let rec step (c : config) : config =
         Ref r :: vs', []
 
       | RefTest rt, Ref r :: vs' ->
-        let rt' = subst_ref_type (subst_of c.frame.inst) rt in
-        value_of_bool (Match.match_ref_type [] (type_of_ref r) rt') :: vs', []
+        let rt' = subst_reftype (subst_of c.frame.inst) rt in
+        value_of_bool (Match.match_reftype [] (type_of_ref r) rt') :: vs', []
 
       | RefCast rt, Ref r :: vs' ->
-        let rt' = subst_ref_type (subst_of c.frame.inst) rt in
-        if Match.match_ref_type [] (type_of_ref r) rt' then
+        let rt' = subst_reftype (subst_of c.frame.inst) rt in
+        if Match.match_reftype [] (type_of_ref r) rt' then
           Ref r :: vs', []
         else
           vs', [Trapping ("cast failure, expected " ^
-            string_of_ref_type rt ^ " but got " ^
-            string_of_ref_type (type_of_ref r)) @@ e.at]
+            string_of_reftype rt ^ " but got " ^
+            string_of_reftype (type_of_ref r)) @@ e.at]
 
       | RefEq, Ref r1 :: Ref r2 :: vs' ->
         value_of_bool (eq_ref r1 r2) :: vs', []
@@ -674,7 +674,7 @@ let rec step (c : config) : config =
             let args, vs'' = split (List.length fts) vs' e.at in
             List.rev args, vs''
           | Implicit ->
-            let ts = List.map unpacked_field_type fts in
+            let ts = List.map unpacked_fieldtype fts in
             try List.map Option.get (List.map default_value ts), vs'
             with Invalid_argument _ -> Crash.error e.at "non-defaultable type"
         in
@@ -711,7 +711,7 @@ let rec step (c : config) : config =
           match initop with
           | Explicit -> List.hd vs', List.tl vs'
           | Implicit ->
-            try Option.get (default_value (unpacked_storage_type st)), vs'
+            try Option.get (default_value (unpacked_storagetype st)), vs'
             with Invalid_argument _ -> Crash.error e.at "non-defaultable type"
         in
         let array =
@@ -807,7 +807,7 @@ let rec step (c : config) : config =
           vs', []
         else
         let exto =
-          match as_array_str_type (expand_def_type (Aggr.type_of_array sa)) with
+          match as_array_comptype (expand_deftype (Aggr.type_of_array sa)) with
           | ArrayT (FieldT (_, PackStorageT _)) -> Some ZX
           | _ -> None
         in
@@ -854,11 +854,11 @@ let rec step (c : config) : config =
           vs', List.map (Lib.Fun.flip (@@) e.at) [
             Refer (Aggr.ArrayRef a);
             Plain (Const (I32 i @@ e.at));
-            admin_instr_of_value v e.at;
+            admininstr_of_value v e.at;
             Plain (ArraySet x);
             Refer (Aggr.ArrayRef a);
             Plain (Const (I32 (I32.add i 1l) @@ e.at));
-            admin_instr_of_value v e.at;
+            admininstr_of_value v e.at;
             Plain (Const (I32 (I32.sub n 1l) @@ e.at));
             Plain (ArrayFill x);
           ]
@@ -885,7 +885,7 @@ let rec step (c : config) : config =
           vs', List.map (Lib.Fun.flip (@@) e.at) [
             Refer (Aggr.ArrayRef a);
             Plain (Const (I32 d @@ e.at));
-            admin_instr_of_value v e.at;
+            admininstr_of_value v e.at;
             Plain (ArraySet x);
             Refer (Aggr.ArrayRef a);
             Plain (Const (I32 (I32.add d 1l) @@ e.at));
@@ -913,7 +913,7 @@ let rec step (c : config) : config =
           vs', List.map (Lib.Fun.flip (@@) e.at) [
             Refer (Aggr.ArrayRef a);
             Plain (Const (I32 d @@ e.at));
-            admin_instr_of_value v e.at;
+            admininstr_of_value v e.at;
             Plain (ArraySet x);
             Refer (Aggr.ArrayRef a);
             Plain (Const (I32 (I32.add d 1l) @@ e.at));
@@ -1022,7 +1022,7 @@ let rec step (c : config) : config =
 
       | _ ->
         let s1 = string_of_values (List.rev vs) in
-        let s2 = string_of_result_type (List.map type_of_value (List.rev vs)) in
+        let s2 = string_of_resulttype (List.map type_of_value (List.rev vs)) in
         Crash.error e.at
           ("missing or ill-typed operand on stack (" ^ s1 ^ " : " ^ s2 ^ ")")
       )
@@ -1066,7 +1066,7 @@ let rec step (c : config) : config =
       take n vs0 e.at @ vs, []
 
     | Frame (n, frame', (vs', {it = ReturningInvoke (vs0, f); at} :: es')), vs ->
-      let FuncT (ts1, _ts2) = as_func_str_type (expand_def_type (Func.type_of f)) in
+      let FuncT (ts1, _ts2) = as_func_comptype (expand_deftype (Func.type_of f)) in
       take (List.length ts1) vs0 e.at @ vs, [Invoke f @@ at]
 
     | Frame (n, frame', (vs', e' :: es')), vs when is_jumping e' ->
@@ -1111,7 +1111,7 @@ let rec step (c : config) : config =
       Exhaustion.error e.at "call stack exhausted"
 
     | Invoke f, vs ->
-      let FuncT (ts1, ts2) = as_func_str_type (expand_def_type (Func.type_of f)) in
+      let FuncT (ts1, ts2) = as_func_comptype (expand_deftype (Func.type_of f)) in
       let n1, n2 = List.length ts1, List.length ts2 in
       let args, vs' = split n1 vs e.at in
       (match f with
@@ -1119,7 +1119,7 @@ let rec step (c : config) : config =
         let Func (_x, ls, es) = func.it in
         let m = Lib.Promise.value inst' in
         let s = subst_of m in
-        let ts = List.map (fun {it = Local t; _} -> subst_val_type s t) ls in
+        let ts = List.map (fun {it = Local t; _} -> subst_valtype s t) ls in
         let lvs = List.(rev (map Option.some args) @ map default_value ts) in
         let frame' = {inst = m; locals = List.map ref lvs} in
         let instr' = [Label (n2, [], ([], List.map plain es)) @@ func.at] in
@@ -1154,18 +1154,18 @@ let at_func = function
  | Func.AstFunc (_, _, f) -> f.at
  | Func.HostFunc _ -> no_region
 
-let invoke (func : func_inst) (vs : value list) : value list =
+let invoke (func : funcinst) (vs : value list) : value list =
   let at = at_func func in
-  let FuncT (ts1, _ts2) = as_func_str_type (expand_def_type (Func.type_of func)) in
+  let FuncT (ts1, _ts2) = as_func_comptype (expand_deftype (Func.type_of func)) in
   if List.length vs <> List.length ts1 then
     Crash.error at "wrong number of arguments";
-  if not (List.for_all2 (fun v -> Match.match_val_type [] (type_of_value v)) vs ts1) then
+  if not (List.for_all2 (fun v -> Match.match_valtype [] (type_of_value v)) vs ts1) then
     Crash.error at "wrong types of arguments";
-  let c = config empty_module_inst (List.rev vs) [Invoke func @@ at] in
+  let c = config empty_moduleinst (List.rev vs) [Invoke func @@ at] in
   try List.rev (eval c) with Stack_overflow ->
     Exhaustion.error at "call stack exhausted"
 
-let eval_const (inst : module_inst) (const : const) : value =
+let eval_const (inst : moduleinst) (const : const) : value =
   let c = config inst [] (List.map plain const.it) in
   match eval c with
   | [v] -> v
@@ -1173,12 +1173,12 @@ let eval_const (inst : module_inst) (const : const) : value =
 
 (* Modules *)
 
-let init_type (inst : module_inst) (type_ : type_) : module_inst =
-  let rt = subst_rec_type (subst_of inst) type_.it in
+let init_type (inst : moduleinst) (type_ : type_) : moduleinst =
+  let rt = subst_rectype (subst_of inst) type_.it in
   let x = Lib.List32.length inst.types in
-  {inst with types = inst.types @ roll_def_types x rt}
+  {inst with types = inst.types @ roll_deftypes x rt}
 
-let init_import (inst : module_inst) (ex : extern) (im : import) : module_inst =
+let init_import (inst : moduleinst) (ex : extern) (im : import) : moduleinst =
   let Import (module_name, item_name, idesc) = im.it in
   let it =
     match idesc.it with
@@ -1188,14 +1188,14 @@ let init_import (inst : module_inst) (ex : extern) (im : import) : module_inst =
     | GlobalImport gt -> ExternGlobalT gt
     | TagImport x -> ExternTagT (TagT (type_ inst x))
   in
-  let et = subst_extern_type (subst_of inst) it in
-  let et' = extern_type_of inst.types ex in
-  if not (Match.match_extern_type [] et' et) then
+  let xt = subst_externtype (subst_of inst) it in
+  let xt' = externtype_of inst.types ex in
+  if not (Match.match_externtype [] xt' xt) then
     Link.error im.at ("incompatible import type for " ^
       "\"" ^ Utf8.encode module_name ^ "\" " ^
       "\"" ^ Utf8.encode item_name ^ "\": " ^
-      "expected " ^ Types.string_of_extern_type et ^
-      ", got " ^ Types.string_of_extern_type et');
+      "expected " ^ Types.string_of_externtype xt ^
+      ", got " ^ Types.string_of_externtype xt');
   match ex with
   | ExternFunc func -> {inst with funcs = inst.funcs @ [func]}
   | ExternTable tab -> {inst with tables = inst.tables @ [tab]}
@@ -1203,26 +1203,26 @@ let init_import (inst : module_inst) (ex : extern) (im : import) : module_inst =
   | ExternGlobal glob -> {inst with globals = inst.globals @ [glob]}
   | ExternTag tag -> {inst with tags = inst.tags @ [tag]}
 
-let init_func (inst : module_inst) (f : func) : module_inst =
+let init_func (inst : moduleinst) (f : func) : moduleinst =
   let Func (x, _, _) = f.it in
   let func = Func.alloc (type_ inst x) (Lib.Promise.make ()) f in
   {inst with funcs = inst.funcs @ [func]}
 
-let init_tag (inst : module_inst) (tag : tag) : module_inst =
+let init_tag (inst : moduleinst) (tag : tag) : moduleinst =
   let Tag x = tag.it in
   let tag = Tag.alloc (TagT (type_ inst x)) in
   {inst with tags = inst.tags @ [tag]}
 
-let init_global (inst : module_inst) (glob : global) : module_inst =
+let init_global (inst : moduleinst) (glob : global) : moduleinst =
   let Global (gt, c) = glob.it in
-  let gt' = subst_global_type (subst_of inst) gt in
+  let gt' = subst_globaltype (subst_of inst) gt in
   let v = eval_const inst c in
   let glob = Global.alloc gt' v in
   {inst with globals = inst.globals @ [glob]}
 
-let init_table (inst : module_inst) (tab : table) : module_inst =
+let init_table (inst : moduleinst) (tab : table) : moduleinst =
   let Table (tt, c) = tab.it in
-  let tt' = subst_table_type (subst_of inst) tt in
+  let tt' = subst_tabletype (subst_of inst) tt in
   let r =
     match eval_const inst c with
     | Ref r -> r
@@ -1231,23 +1231,23 @@ let init_table (inst : module_inst) (tab : table) : module_inst =
   let tab = Table.alloc tt' r in
   {inst with tables = inst.tables @ [tab]}
 
-let init_memory (inst : module_inst) (mem : memory) : module_inst =
+let init_memory (inst : moduleinst) (mem : memory) : moduleinst =
   let Memory mt = mem.it in
-  let mt' = subst_memory_type (subst_of inst) mt in
+  let mt' = subst_memorytype (subst_of inst) mt in
   let mem = Memory.alloc mt' in
   {inst with memories = inst.memories @ [mem]}
 
-let init_elem (inst : module_inst) (elem : elem) : module_inst =
+let init_elem (inst : moduleinst) (elem : elem) : moduleinst =
   let Elem (rt, cs, _emode) = elem.it in
   let elem = Elem.alloc (List.map (fun c -> as_ref (eval_const inst c)) cs) in
   {inst with elems = inst.elems @ [elem]}
 
-let init_data (inst : module_inst) (data : data) : module_inst =
+let init_data (inst : moduleinst) (data : data) : moduleinst =
   let Data (bs, _dmode) = data.it in
   let data = Data.alloc bs in
   {inst with datas = inst.datas @ [data]}
 
-let init_export (inst : module_inst) (ex : export) : module_inst =
+let init_export (inst : moduleinst) (ex : export) : moduleinst =
   let Export (name, edesc) = ex.it in
   let ext =
     match edesc.it with
@@ -1260,7 +1260,7 @@ let init_export (inst : module_inst) (ex : export) : module_inst =
   {inst with exports = inst.exports @ [(name, ext)]}
 
 
-let init_func_inst (inst : module_inst) (func : func_inst) =
+let init_funcinst (inst : moduleinst) (func : funcinst) =
   match func with
   | Func.AstFunc (_, prom, _) when Lib.Promise.value_opt prom = None ->
     Lib.Promise.fulfill prom inst
@@ -1301,17 +1301,17 @@ let run_start start =
   [Call x @@ start.at]
 
 
-let init_list f xs (inst : module_inst) : module_inst =
+let init_list f xs (inst : moduleinst) : moduleinst =
   List.fold_left f inst xs
 
-let init_list2 f xs ys (inst : module_inst) : module_inst =
+let init_list2 f xs ys (inst : moduleinst) : moduleinst =
   List.fold_left2 f inst xs ys
 
-let init (m : module_) (exts : extern list) : module_inst =
+let init (m : module_) (exts : extern list) : moduleinst =
   if List.length exts <> List.length m.it.imports then
     Link.error m.at "wrong number of imports provided for initialisation";
   let inst =
-    empty_module_inst
+    empty_moduleinst
     |> init_list init_type m.it.types
     |> init_list2 init_import exts m.it.imports
     |> init_list init_func m.it.funcs
@@ -1323,7 +1323,7 @@ let init (m : module_) (exts : extern list) : module_inst =
     |> init_list init_data m.it.datas
     |> init_list init_export m.it.exports
   in
-  List.iter (init_func_inst inst) inst.funcs;
+  List.iter (init_funcinst inst) inst.funcs;
   let es_elem = List.concat (Lib.List32.mapi run_elem m.it.elems) in
   let es_data = List.concat (Lib.List32.mapi run_data m.it.datas) in
   let es_start = Lib.Option.get (Lib.Option.map run_start m.it.start) [] in

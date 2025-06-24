@@ -7,8 +7,8 @@ type ref_ += ExnRef of exn_
 
 let alloc_exn tag vs =
   let TagT dt = Tag.type_of tag in
-  assert Free.((def_type dt).types = Set.empty);
-  let FuncT (ts1, ts2) = as_func_str_type (expand_def_type dt) in
+  assert Free.((deftype dt).types = Set.empty);
+  let FuncT (ts1, ts2) = as_func_comptype (expand_deftype dt) in
   assert (List.length vs = List.length ts1);
   assert (ts2 = []);
   Exn (tag, vs)

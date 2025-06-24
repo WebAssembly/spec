@@ -17,7 +17,7 @@ type ref_ = ..
 type value = Num of num | Vec of vec | Ref of ref_
 type t = value
 
-type ref_ += NullRef of heap_type
+type ref_ += NullRef of heaptype
 
 type address = I64.t
 
@@ -37,7 +37,7 @@ let as_ref = function
   | _ -> failwith "as_ref"
 
 
-exception TypeError of int * num * num_type
+exception TypeError of int * num * numtype
 
 module type NumType =
 sig
@@ -109,7 +109,7 @@ let type_of_vec = type_of_vecop
 
 let type_of_ref' = ref (function _ -> assert false)
 let type_of_ref = function
-  | NullRef t -> (Null, Match.bot_of_heap_type [] t)
+  | NullRef t -> (Null, Match.bot_of_heaptype [] t)
   | r -> (NoNull, !type_of_ref' r)
 
 let type_of_value = function
@@ -166,6 +166,10 @@ let default_value = function
 
 exception Type
 
+let packsize_of_packtype = function
+  | I8T -> Pack.Pack8
+  | I16T -> Pack.Pack16
+
 let rec i64_of_bits bs =
   if bs = "" then 0L else
   let bs' = String.sub bs 1 (String.length bs - 1) in
@@ -196,9 +200,8 @@ let extend n ext x =
   | Pack.SX -> let sh = 64 - 8 * n in Int64.(shift_right (shift_left x sh) sh)
 
 let num_of_packed_bits t sz ext bs =
-  assert (Pack.packed_size sz <= num_size t);
-  let n = Pack.packed_size sz in
-  let x = extend n ext (i64_of_bits bs) in
+  let w = Pack.packed_size sz in
+  let x = extend w ext (i64_of_bits bs) in
   match t with
   | I32T -> I32 (Int64.to_int32 x)
   | I64T -> I64 x
@@ -207,7 +210,8 @@ let num_of_packed_bits t sz ext bs =
 let val_of_storage_bits st bs =
   match st with
   | ValStorageT t -> val_of_bits t bs
-  | PackStorageT sz -> Num (num_of_packed_bits I32T sz Pack.ZX bs)
+  | PackStorageT pt ->
+    Num (num_of_packed_bits I32T (packsize_of_packtype pt) Pack.ZX bs)
 
 
 let vec_of_packed_bits t sz ext bs =
@@ -263,7 +267,6 @@ let wrap n x =
   let sh = 64 - 8 * n in Int64.(shift_right_logical (shift_left x sh) sh)
 
 let packed_bits_of_num sz n =
-  assert (Pack.packed_size sz <= num_size (type_of_num n));
   let w = Pack.packed_size sz in
   match n with
   | I32 x -> bits_of_i64 w (wrap w (Int64.of_int32 x))
@@ -273,9 +276,9 @@ let packed_bits_of_num sz n =
 let storage_bits_of_val st v =
   match st with
   | ValStorageT t -> assert (t = type_of_value v); bits_of_val v
-  | PackStorageT sz ->
+  | PackStorageT pt ->
     match v with
-    | Num n -> packed_bits_of_num sz n
+    | Num n -> packed_bits_of_num (packsize_of_packtype pt) n
     | _ -> raise Type
 
 
@@ -295,9 +298,9 @@ let addr_of_num x =
   | _ -> raise Type
 
 let addr_add n i =
-  num_of_addr (addr_type_of_num_type (type_of_num n)) (I64.add (addr_of_num n) i)
+  num_of_addr (addrtype_of_numtype (type_of_num n)) (I64.add (addr_of_num n) i)
 let addr_sub n i =
-  num_of_addr (addr_type_of_num_type (type_of_num n)) (I64.sub (addr_of_num n) i)
+  num_of_addr (addrtype_of_numtype (type_of_num n)) (I64.sub (addr_of_num n) i)
 
 
 let string_of_num = function

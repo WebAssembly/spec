@@ -3,19 +3,19 @@ open Value
 
 type field =
   | ValField of value ref
-  | PackField of Pack.pack_size * int ref
+  | PackField of packtype * int ref
 
-type struct_ = Struct of def_type * field list
-type array = Array of def_type * field list
+type struct_ = Struct of deftype * field list
+type array = Array of deftype * field list
 
 type ref_ += StructRef of struct_
 type ref_ += ArrayRef of array
 
 
-let gap sz = 32 - 8 * Pack.packed_size sz
-let wrap sz i = Int32.(to_int (logand i (shift_right_logical (-1l) (gap sz))))
-let extend_u sz i = Int32.of_int i
-let extend_s sz i = Int32.(shift_right (shift_left (of_int i) (gap sz)) (gap sz))
+let gap pt = 32 - 8 * pack_size pt
+let wrap pt i = Int32.(to_int (logand i (shift_right_logical (-1l) (gap pt))))
+let extend_u _pt i = Int32.of_int i
+let extend_s pt i = Int32.(shift_right (shift_left (of_int i) (gap pt)) (gap pt))
 
 let alloc_field ft v =
   let FieldT (_mut, st) = ft in
@@ -41,13 +41,13 @@ let array_length (Array (_, fs)) = Lib.List32.length fs
 
 
 let alloc_struct dt vs =
-  assert Free.((def_type dt).types = Set.empty);
-  let StructT fts = as_struct_str_type (expand_def_type dt) in
+  assert Free.((deftype dt).types = Set.empty);
+  let StructT fts = as_struct_comptype (expand_deftype dt) in
   Struct (dt, List.map2 alloc_field fts vs)
 
 let alloc_array dt vs =
-  assert Free.((def_type dt).types = Set.empty);
-  let ArrayT ft = as_array_str_type (expand_def_type dt) in
+  assert Free.((deftype dt).types = Set.empty);
+  let ArrayT ft = as_array_comptype (expand_deftype dt) in
   Array (dt, List.map (alloc_field ft) vs)
 
 

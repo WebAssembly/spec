@@ -18,15 +18,15 @@ val load_bytes : data -> address -> int -> string (* raises Bounds *)
 open Types
 open Value
 
-val load_num : data -> address -> num_type -> num (* raises Bounds *)
-val load_vec : data -> address -> vec_type -> vec (* raises Bounds *)
-val load_val : data -> address -> val_type -> value (* raises Type, Bounds *)
+val load_num : data -> address -> numtype -> num (* raises Bounds *)
+val load_vec : data -> address -> vectype -> vec (* raises Bounds *)
+val load_val : data -> address -> valtype -> value (* raises Type, Bounds *)
 
 val load_num_packed :
-  Pack.pack_size -> Pack.extension -> data -> address -> num_type -> num
+  Pack.packsize -> Pack.extension -> data -> address -> numtype -> num
     (* raises Type, Bounds *)
 val load_vec_packed :
-  Pack.pack_size -> Pack.vec_extension -> data -> address -> vec_type -> vec
+  Pack.packsize -> Pack.vec_extension -> data -> address -> vectype -> vec
     (* raises Type, Bounds *)
 val load_val_storage :
-  data -> address -> storage_type -> value (* raises Type, Bounds *)
+  data -> address -> storagetype -> value (* raises Type, Bounds *)

@@ -1,9 +1,9 @@
-type pack_size = Pack8 | Pack16 | Pack32 | Pack64
+type packsize = Pack8 | Pack16 | Pack32 | Pack64
 type extension = SX | ZX
 
-type pack_shape = Pack8x8 | Pack16x4 | Pack32x2
+type packshape = Pack8x8 | Pack16x4 | Pack32x2
 type vec_extension =
-  | ExtLane of pack_shape * extension
+  | ExtLane of packshape * extension
   | ExtSplat
   | ExtZero
 

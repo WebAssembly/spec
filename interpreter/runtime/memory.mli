@@ -16,9 +16,9 @@ exception OutOfMemory
 
 val page_size : int64
 
-val alloc : memory_type -> memory (* raises Type, SizeOverflow, OutOfMemory *)
-val type_of : memory -> memory_type
-val addr_type_of : memory -> addr_type
+val alloc : memorytype -> memory (* raises Type, SizeOverflow, OutOfMemory *)
+val type_of : memory -> memorytype
+val addrtype_of : memory -> addrtype
 val size : memory -> size
 val bound : memory -> address
 val grow : memory -> size -> unit
@@ -33,30 +33,30 @@ val store_bytes : memory -> address -> string -> unit (* raises Bounds *)
 (* Typed accessors *)
 
 val load_num :
-  memory -> address -> offset -> num_type -> num (* raises Bounds *)
+  memory -> address -> offset -> numtype -> num (* raises Bounds *)
 val store_num :
   memory -> address -> offset -> num -> unit (* raises Bounds *)
 val load_num_packed :
-  Pack.pack_size -> Pack.extension -> memory -> address -> offset -> num_type -> num
+  Pack.packsize -> Pack.extension -> memory -> address -> offset -> numtype -> num
     (* raises Type, Bounds *)
 val store_num_packed :
-  Pack.pack_size -> memory -> address -> offset -> num -> unit
+  Pack.packsize -> memory -> address -> offset -> num -> unit
     (* raises Type, Bounds *)
 
 val load_vec :
-  memory -> address -> offset -> vec_type -> vec (* raises Bounds *)
+  memory -> address -> offset -> vectype -> vec (* raises Bounds *)
 val store_vec :
   memory -> address -> offset -> vec -> unit
     (* raises Type, Bounds *)
 val load_vec_packed :
-  Pack.pack_size -> Pack.vec_extension -> memory -> address -> offset -> vec_type -> vec
+  Pack.packsize -> Pack.vec_extension -> memory -> address -> offset -> vectype -> vec
     (* raises Type, Bounds *)
 
 val load_val :
-  memory -> address -> offset -> val_type -> value (* raises Type, Bounds *)
+  memory -> address -> offset -> valtype -> value (* raises Type, Bounds *)
 val store_val :
   memory -> address -> offset -> value -> unit (* raises Type, Bounds *)
 val load_val_storage :
-  memory -> address -> offset -> storage_type -> value (* raises Type, Bounds *)
+  memory -> address -> offset -> storagetype -> value (* raises Type, Bounds *)
 val store_val_storage :
-  memory -> address -> offset -> storage_type -> value -> unit (* raises Type, Bounds *)
+  memory -> address -> offset -> storagetype -> value -> unit (* raises Type, Bounds *)

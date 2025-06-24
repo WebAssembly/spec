@@ -142,19 +142,19 @@ rule token = parse
 
   | keyword as s
     { match s with
-      | "i8" -> PACK_TYPE Pack.Pack8
-      | "i16" -> PACK_TYPE Pack.Pack16
-      | "i32" -> NUM_TYPE Types.I32T
-      | "i64" -> NUM_TYPE Types.I64T
-      | "f32" -> NUM_TYPE Types.F32T
-      | "f64" -> NUM_TYPE Types.F64T
-      | "v128" -> VEC_TYPE Types.V128T
-      | "i8x16" -> VEC_SHAPE (V128.I8x16 ())
-      | "i16x8" -> VEC_SHAPE (V128.I16x8 ())
-      | "i32x4" -> VEC_SHAPE (V128.I32x4 ())
-      | "i64x2" -> VEC_SHAPE (V128.I64x2 ())
-      | "f32x4" -> VEC_SHAPE (V128.F32x4 ())
-      | "f64x2" -> VEC_SHAPE (V128.F64x2 ())
+      | "i8" -> PACKTYPE Types.I8T
+      | "i16" -> PACKTYPE Types.I16T
+      | "i32" -> NUMTYPE Types.I32T
+      | "i64" -> NUMTYPE Types.I64T
+      | "f32" -> NUMTYPE Types.F32T
+      | "f64" -> NUMTYPE Types.F64T
+      | "v128" -> VECTYPE Types.V128T
+      | "i8x16" -> VECSHAPE (V128.I8x16 ())
+      | "i16x8" -> VECSHAPE (V128.I16x8 ())
+      | "i32x4" -> VECSHAPE (V128.I32x4 ())
+      | "i64x2" -> VECSHAPE (V128.I64x2 ())
+      | "f32x4" -> VECSHAPE (V128.F32x4 ())
+      | "f64x2" -> VECSHAPE (V128.F64x2 ())
 
       | "any" -> ANY
       | "anyref" -> ANYREF

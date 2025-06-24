@@ -9,8 +9,8 @@
  *   f : func
  *   m : module_
  *
- *   t : val_type
- *   s : func_type
+ *   t : valtype
+ *   s : functype
  *   c : context / config
  *
  * These conventions mostly follow standard practice in language semantics.
@@ -28,7 +28,7 @@ type void = Lib.void
 
 module IntOp =
 struct
-  type unop = Clz | Ctz | Popcnt | ExtendS of pack_size
+  type unop = Clz | Ctz | Popcnt | ExtendS of packsize
   type binop = Add | Sub | Mul | DivS | DivU | RemS | RemU
              | And | Or | Xor | Shl | ShrS | ShrU | Rotl | Rotr
   type testop = Eqz
@@ -128,12 +128,12 @@ type vec_extractop = (V128Op.extractop) Value.vecop
 type vec_replaceop = (V128Op.replaceop) Value.vecop
 
 type ('t, 'p) memop = {ty : 't; align : int; offset : int64; pack : 'p}
-type loadop = (num_type, (pack_size * extension) option) memop
-type storeop = (num_type, pack_size option) memop
+type loadop = (numtype, (packsize * extension) option) memop
+type storeop = (numtype, packsize option) memop
 
-type vec_loadop = (vec_type, (pack_size * vec_extension) option) memop
-type vec_storeop = (vec_type, unit) memop
-type vec_laneop = (vec_type, pack_size) memop
+type vec_loadop = (vectype, (packsize * vec_extension) option) memop
+type vec_storeop = (vectype, unit) memop
+type vec_laneop = (vectype, packsize) memop
 
 type initop = Explicit | Implicit
 type externop = Internalize | Externalize
@@ -146,24 +146,24 @@ type num = Value.num Source.phrase
 type vec = Value.vec Source.phrase
 type name = Utf8.unicode
 
-type block_type = VarBlockType of idx | ValBlockType of val_type option
+type blocktype = VarBlockType of idx | ValBlockType of valtype option
 
 type instr = instr' Source.phrase
 and instr' =
   | Unreachable                       (* trap unconditionally *)
   | Nop                               (* do nothing *)
   | Drop                              (* forget a value *)
-  | Select of val_type list option    (* branchless conditional *)
-  | Block of block_type * instr list  (* execute in sequence *)
-  | Loop of block_type * instr list   (* loop header *)
-  | If of block_type * instr list * instr list   (* conditional *)
+  | Select of valtype list option     (* branchless conditional *)
+  | Block of blocktype * instr list   (* execute in sequence *)
+  | Loop of blocktype * instr list    (* loop header *)
+  | If of blocktype * instr list * instr list   (* conditional *)
   | Br of idx                         (* break to n-th surrounding label *)
   | BrIf of idx                       (* conditional break *)
   | BrTable of idx list * idx         (* indexed break *)
   | BrOnNull of idx                   (* break on type *)
   | BrOnNonNull of idx                (* break on type inverted *)
-  | BrOnCast of idx * ref_type * ref_type     (* break on type *)
-  | BrOnCastFail of idx * ref_type * ref_type (* break on type inverted *)
+  | BrOnCast of idx * reftype * reftype     (* break on type *)
+  | BrOnCastFail of idx * reftype * reftype (* break on type inverted *)
   | Return                            (* break from function body *)
   | Call of idx                       (* call function *)
   | CallRef of idx                    (* call function through reference *)
@@ -173,7 +173,7 @@ and instr' =
   | ReturnCallIndirect of idx * idx   (* tail-call function through table *)
   | Throw of idx                      (* throw exception *)
   | ThrowRef                          (* rethrow exception *)
-  | TryTable of block_type * catch list * instr list  (* handle exceptions *)
+  | TryTable of blocktype * catch list * instr list  (* handle exceptions *)
   | LocalGet of idx                   (* read local idxiable *)
   | LocalSet of idx                   (* write local idxiable *)
   | LocalTee of idx                   (* write local idxiable and keep value *)
@@ -205,12 +205,12 @@ and instr' =
   | Unary of unop                     (* unary numeric operator *)
   | Binary of binop                   (* binary numeric operator *)
   | Convert of cvtop                  (* conversion *)
-  | RefNull of heap_type              (* null reference *)
+  | RefNull of heaptype               (* null reference *)
   | RefFunc of idx                    (* function reference *)
   | RefIsNull                         (* type test *)
   | RefAsNonNull                      (* type cast *)
-  | RefTest of ref_type               (* type test *)
-  | RefCast of ref_type               (* type cast *)
+  | RefTest of reftype                (* type test *)
+  | RefCast of reftype                (* type cast *)
   | RefEq                             (* reference equality *)
   | RefI31                            (* scalar reference *)
   | I31Get of extension               (* read scalar *)
@@ -260,11 +260,11 @@ type const = instr list Source.phrase
 
 type local = local' Source.phrase
 and local' =
-  | Local of val_type
+  | Local of valtype
 
 type global = global' Source.phrase
 and global' =
-  | Global of global_type * const
+  | Global of globaltype * const
 
 type func = func' Source.phrase
 and func' =
@@ -275,38 +275,38 @@ and func' =
 
 type table = table' Source.phrase
 and table' =
-  | Table of table_type * const
+  | Table of tabletype * const
 
 type memory = memory' Source.phrase
 and memory' =
-  | Memory of memory_type
+  | Memory of memorytype
 
 type tag = tag' Source.phrase
 and tag' =
   | Tag of idx
 
 
-type segment_mode = segment_mode' Source.phrase
-and segment_mode' =
+type segmentmode = segmentmode' Source.phrase
+and segmentmode' =
   | Passive
   | Active of idx * const
   | Declarative
 
 type elem = elem' Source.phrase
 and elem' =
-  | Elem of ref_type * const list * segment_mode
+  | Elem of reftype * const list * segmentmode
 
 type data = data' Source.phrase
 and data' =
-  | Data of string * segment_mode
+  | Data of string * segmentmode
 
 
 (* Modules *)
 
-type type_ = rec_type Source.phrase
+type type_ = rectype Source.phrase
 
-type export_desc = export_desc' Source.phrase
-and export_desc' =
+type exportdesc = exportdesc' Source.phrase
+and exportdesc' =
   | FuncExport of idx
   | TableExport of idx
   | MemoryExport of idx
@@ -315,19 +315,19 @@ and export_desc' =
 
 type export = export' Source.phrase
 and export' =
-  | Export of name * export_desc
+  | Export of name * exportdesc
 
-type import_desc = import_desc' Source.phrase
-and import_desc' =
+type importdesc = importdesc' Source.phrase
+and importdesc' =
   | FuncImport of idx
-  | TableImport of table_type
-  | MemoryImport of memory_type
-  | GlobalImport of global_type
+  | TableImport of tabletype
+  | MemoryImport of memorytype
+  | GlobalImport of globaltype
   | TagImport of idx
 
 type import = import' Source.phrase
 and import' =
-  | Import of name * name * import_desc
+  | Import of name * name * importdesc
 
 type start = start' Source.phrase
 and start' =
@@ -369,55 +369,55 @@ let empty_module =
 
 open Source
 
-let def_types_of (m : module_) : def_type list =
+let deftypes_of (m : module_) : deftype list =
   let rts = List.map Source.it m.it.types in
   List.fold_left (fun dts rt ->
     let x = Lib.List32.length dts in
-    dts @ List.map (subst_def_type (subst_of dts)) (roll_def_types x rt)
+    dts @ List.map (subst_deftype (subst_of dts)) (roll_deftypes x rt)
   ) [] rts
 
-let import_type_of (m : module_) (im : import) : import_type =
+let importtype_of (m : module_) (im : import) : importtype =
   let Import (module_name, item_name, idesc) = im.it in
-  let dts = def_types_of m in
-  let et =
+  let dts = deftypes_of m in
+  let xt =
     match idesc.it with
     | FuncImport x -> ExternFuncT (Lib.List32.nth dts x.it)
     | TableImport tt -> ExternTableT tt
     | MemoryImport mt -> ExternMemoryT mt
     | GlobalImport gt -> ExternGlobalT gt
     | TagImport x -> ExternTagT (TagT (Lib.List32.nth dts x.it))
-  in ImportT (subst_extern_type (subst_of dts) et, module_name, item_name)
+  in ImportT (subst_externtype (subst_of dts) xt, module_name, item_name)
 
-let export_type_of (m : module_) (ex : export) : export_type =
+let exporttype_of (m : module_) (ex : export) : exporttype =
   let Export (name, edesc) = ex.it in
-  let dts = def_types_of m in
-  let its = List.map (import_type_of m) m.it.imports in
-  let ets = List.map extern_type_of_import_type its in
-  let et =
+  let dts = deftypes_of m in
+  let its = List.map (importtype_of m) m.it.imports in
+  let xts = List.map externtype_of_importtype its in
+  let xt =
     match edesc.it with
     | FuncExport x ->
-      let dts = funcs ets @ List.map (fun f ->
+      let dts = funcs xts @ List.map (fun f ->
         let Func (y, _, _) = f.it in Lib.List32.nth dts y.it) m.it.funcs in
       ExternFuncT (Lib.List32.nth dts x.it)
     | TableExport x ->
-      let tts = tables ets @ List.map (fun t ->
+      let tts = tables xts @ List.map (fun t ->
         let Table (tt, _) = t.it in tt) m.it.tables in
       ExternTableT (Lib.List32.nth tts x.it)
     | MemoryExport x ->
-      let mts = memories ets @ List.map (fun m ->
+      let mts = memories xts @ List.map (fun m ->
         let Memory mt = m.it in mt) m.it.memories in
       ExternMemoryT (Lib.List32.nth mts x.it)
     | GlobalExport x ->
-      let gts = globals ets @ List.map (fun g ->
+      let gts = globals xts @ List.map (fun g ->
         let Global (gt, _) = g.it in gt) m.it.globals in
       ExternGlobalT (Lib.List32.nth gts x.it)
     | TagExport x ->
-      let tts = tags ets @ List.map (fun t ->
+      let tts = tags xts @ List.map (fun t ->
         let Tag y = t.it in TagT (Lib.List32.nth dts y.it)) m.it.tags in
       ExternTagT (Lib.List32.nth tts x.it)
-  in ExportT (subst_extern_type (subst_of dts) et, name)
+  in ExportT (subst_externtype (subst_of dts) xt, name)
 
-let module_type_of (m : module_) : module_type =
-  let its = List.map (import_type_of m) m.it.imports in
-  let ets = List.map (export_type_of m) m.it.exports in
+let moduletype_of (m : module_) : moduletype =
+  let its = List.map (importtype_of m) m.it.imports in
+  let ets = List.map (exporttype_of m) m.it.exports in
   ModuleT (its, ets)

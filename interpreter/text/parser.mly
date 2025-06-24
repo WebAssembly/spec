@@ -92,7 +92,7 @@ let var s loc =
   with Utf8.Utf8 -> error r "malformed UTF-8 encoding"
 
 
-(* Symbolic variables *)
+(* Symbolic indices *)
 
 module VarMap = Map.Make(String)
 
@@ -118,7 +118,7 @@ type types =
   { space : space;
     mutable fields : space list;
     mutable list : type_ list;
-    mutable ctx : def_type list;
+    mutable ctx : deftype list;
   }
 let empty_types () = {space = empty (); fields = []; list = []; ctx = []}
 
@@ -181,8 +181,8 @@ let field x (c : context) y =
   lookup "field " (Lib.List32.nth c.types.fields x) y
 
 let func_type (c : context) x =
-  match expand_def_type (Lib.List32.nth c.types.ctx x.it) with
-  | DefFuncT ft -> ft
+  match expand_deftype (Lib.List32.nth c.types.ctx x.it) with
+  | FuncCT ft -> ft
   | _ -> error x.at ("non-function type " ^ Int32.to_string x.it)
   | exception Failure _ -> error x.at ("unknown type " ^ Int32.to_string x.it)
 
@@ -218,7 +218,7 @@ let bind_field (c : context) x y =
 let define_type (c : context) (ty : type_) =
   c.types.list <- c.types.list @ [ty]
 
-let define_def_type (c : context) (dt : def_type) =
+let define_deftype (c : context) (dt : deftype) =
   assert (c.types.space.count > Lib.List32.length c.types.ctx);
   c.types.ctx <- c.types.ctx @ [dt]
 
@@ -237,8 +237,8 @@ let anon_fields (c : context) x n loc =
   bind "field" (Lib.List32.nth c.types.fields x) n (at loc)
 
 
-let inline_func_type (c : context) ft loc =
-  let st = SubT (Final, [], DefFuncT ft) in
+let inline_functype (c : context) ft loc =
+  let st = SubT (Final, [], FuncCT ft) in
   match
     Lib.List.index_where (function
       | DefT (RecT [st'], 0l) -> st = st'
@@ -249,10 +249,10 @@ let inline_func_type (c : context) ft loc =
   | None ->
     let i = anon_type c loc in
     define_type c (RecT [st] @@ loc);
-    define_def_type c (DefT (RecT [st], 0l));
+    define_deftype c (DefT (RecT [st], 0l));
     i @@ loc
 
-let inline_func_type_explicit (c : context) x ft loc =
+let inline_functype_explicit (c : context) x ft loc =
   if ft = FuncT ([], []) then
     (* Deferring ensures that type lookup is only triggered when
        symbolic identifiers are used, and not for desugared functions *)
@@ -292,10 +292,10 @@ let parse_annots (m : module_) : Custom.section list =
 
 %token LPAR RPAR
 %token<string> NAT INT FLOAT STRING VAR
-%token<Types.num_type> NUM_TYPE
-%token<Types.vec_type> VEC_TYPE
-%token<Pack.pack_size> PACK_TYPE
-%token<V128.shape> VEC_SHAPE
+%token<Types.numtype> NUMTYPE
+%token<Types.vectype> VECTYPE
+%token<Types.packtype> PACKTYPE
+%token<V128.shape> VECSHAPE
 %token ANYREF NULLREF EQREF I31REF STRUCTREF ARRAYREF
 %token FUNCREF NULLFUNCREF EXNREF NULLEXNREF EXTERNREF NULLEXTERNREF
 %token ANY NONE EQ I31 REF NOFUNC EXN NOEXN EXTERN NOEXTERN NULL
@@ -304,7 +304,7 @@ let parse_annots (m : module_) : Custom.section list =
 %token BLOCK END IF THEN ELSE LOOP
 %token BR BR_IF BR_TABLE
 %token<Ast.idx -> Ast.instr'> BR_ON_NULL
-%token<Ast.idx -> Types.ref_type -> Types.ref_type -> Ast.instr'> BR_ON_CAST
+%token<Ast.idx -> Types.reftype -> Types.reftype -> Ast.instr'> BR_ON_CAST
 %token CALL CALL_REF CALL_INDIRECT
 %token RETURN RETURN_CALL RETURN_CALL_REF RETURN_CALL_INDIRECT
 %token THROW THROW_REF TRY_TABLE CATCH CATCH_REF CATCH_ALL CATCH_ALL_REF
@@ -364,8 +364,8 @@ string_list :
 
 /* Types */
 
-%inline addr_type :
-  | NUM_TYPE
+%inline addrtype :
+  | NUMTYPE
     { match $1 with
       | I32T -> I32AT
       | I64T -> I64AT
@@ -376,7 +376,7 @@ null_opt :
   | /* empty */ { NoNull }
   | NULL { Null }
 
-heap_type :
+heaptype :
   | ANY { fun c -> AnyHT }
   | NONE { fun c -> NoneHT }
   | EQ { fun c -> EqHT }
@@ -389,10 +389,10 @@ heap_type :
   | NOEXN { fun c -> NoExnHT }
   | EXTERN { fun c -> ExternHT }
   | NOEXTERN { fun c -> NoExternHT }
-  | var { fun c -> VarHT (StatX ($1 c type_).it) }
+  | idx { fun c -> VarHT (IdxX ($1 c type_).it) }
 
-ref_type :
-  | LPAR REF null_opt heap_type RPAR { fun c -> ($3, $4 c) }
+reftype :
+  | LPAR REF null_opt heaptype RPAR { fun c -> ($3, $4 c) }
   | ANYREF { fun c -> (Null, AnyHT) }  /* Sugar */
   | NULLREF { fun c -> (Null, NoneHT) }  /* Sugar */
   | EQREF { fun c -> (Null, EqHT) }  /* Sugar */
@@ -406,87 +406,87 @@ ref_type :
   | EXTERNREF { fun c -> (Null, ExternHT) }  /* Sugar */
   | NULLEXTERNREF { fun c -> (Null, NoExternHT) }  /* Sugar */
 
-val_type :
-  | NUM_TYPE { fun c -> NumT $1 }
-  | VEC_TYPE { fun c -> VecT $1 }
-  | ref_type { fun c -> RefT ($1 c) }
+valtype :
+  | NUMTYPE { fun c -> NumT $1 }
+  | VECTYPE { fun c -> VecT $1 }
+  | reftype { fun c -> RefT ($1 c) }
 
-val_type_list :
-  | list(val_type)
+valtype_list :
+  | list(valtype)
     { Lib.List32.length $1, fun c -> List.map (fun f -> f c) $1 }
 
-global_type :
-  | val_type { fun c -> GlobalT (Cons, $1 c) }
-  | LPAR MUT val_type RPAR { fun c -> GlobalT (Var, $3 c) }
+globaltype :
+  | valtype { fun c -> GlobalT (Cons, $1 c) }
+  | LPAR MUT valtype RPAR { fun c -> GlobalT (Var, $3 c) }
 
-storage_type :
-  | val_type { fun c -> ValStorageT ($1 c) }
-  | PACK_TYPE { fun c -> PackStorageT $1 }
+storagetype :
+  | valtype { fun c -> ValStorageT ($1 c) }
+  | PACKTYPE { fun c -> PackStorageT $1 }
 
-field_type :
-  | storage_type { fun c -> FieldT (Cons, $1 c) }
-  | LPAR MUT storage_type RPAR { fun c -> FieldT (Var, $3 c) }
+fieldtype :
+  | storagetype { fun c -> FieldT (Cons, $1 c) }
+  | LPAR MUT storagetype RPAR { fun c -> FieldT (Var, $3 c) }
 
-field_type_list :
+fieldtype_list :
   | /* empty */ { fun c -> [] }
-  | field_type field_type_list { fun c -> $1 c :: $2 c }
+  | fieldtype fieldtype_list { fun c -> $1 c :: $2 c }
 
 struct_field_list :
   | /* empty */ { fun c x -> [] }
-  | LPAR FIELD field_type_list RPAR struct_field_list
+  | LPAR FIELD fieldtype_list RPAR struct_field_list
     { fun c x -> let fts = $3 c in
       ignore (anon_fields c x (Lib.List32.length fts) $loc($3)); fts @ $5 c x }
-  | LPAR FIELD bind_var field_type RPAR struct_field_list
+  | LPAR FIELD bind_idx fieldtype RPAR struct_field_list
     { fun c x -> ignore (bind_field c x $3); $4 c :: $6 c x }
 
-struct_type :
+structtype :
   | struct_field_list { fun c x -> StructT ($1 c x) }
 
-array_type :
-  | field_type { fun c -> ArrayT ($1 c) }
+arraytype :
+  | fieldtype { fun c -> ArrayT ($1 c) }
 
-func_type :
-  | func_type_result
+functype :
+  | functype_result
     { fun c -> FuncT ([], $1 c) }
-  | LPAR PARAM val_type_list RPAR func_type
+  | LPAR PARAM valtype_list RPAR functype
     { fun c -> let FuncT (ts1, ts2) = $5 c in
       FuncT (snd $3 c @ ts1, ts2) }
-  | LPAR PARAM bind_var val_type RPAR func_type  /* Sugar */
+  | LPAR PARAM bind_idx valtype RPAR functype  /* Sugar */
     { fun c -> let FuncT (ts1, ts2) = $6 c in
       FuncT ($4 c :: ts1, ts2) }
 
-func_type_result :
+functype_result :
   | /* empty */
     { fun c -> [] }
-  | LPAR RESULT val_type_list RPAR func_type_result
+  | LPAR RESULT valtype_list RPAR functype_result
     { fun c -> snd $3 c @ $5 c }
 
-str_type :
-  | LPAR STRUCT struct_type RPAR { fun c x -> DefStructT ($3 c x) }
-  | LPAR ARRAY array_type RPAR { fun c x -> DefArrayT ($3 c) }
-  | LPAR FUNC func_type RPAR { fun c x -> DefFuncT ($3 c) }
+comptype :
+  | LPAR STRUCT structtype RPAR { fun c x -> StructCT ($3 c x) }
+  | LPAR ARRAY arraytype RPAR { fun c x -> ArrayCT ($3 c) }
+  | LPAR FUNC functype RPAR { fun c x -> FuncCT ($3 c) }
 
-sub_type :
-  | str_type { fun c x -> SubT (Final, [], $1 c x) }
-  | LPAR SUB var_list str_type RPAR
+subtype :
+  | comptype { fun c x -> SubT (Final, [], $1 c x) }
+  | LPAR SUB idx_list comptype RPAR
     { fun c x -> SubT (NoFinal,
-        List.map (fun y -> VarHT (StatX y.it)) ($3 c type_), $4 c x) }
-  | LPAR SUB FINAL var_list str_type RPAR
+        List.map (fun y -> VarHT (IdxX y.it)) ($3 c type_), $4 c x) }
+  | LPAR SUB FINAL idx_list comptype RPAR
     { fun c x -> SubT (Final,
-        List.map (fun y -> VarHT (StatX y.it)) ($4 c type_), $5 c x) }
+        List.map (fun y -> VarHT (IdxX y.it)) ($4 c type_), $5 c x) }
 
-table_type :
-  | addr_type limits ref_type { fun c -> TableT ($1, $2, $3 c) }
+tabletype :
+  | addrtype limits reftype { fun c -> TableT ($1, $2, $3 c) }
 
-memory_type :
-  | addr_type limits { fun c -> MemoryT ($1, $2) }
+memorytype :
+  | addrtype limits { fun c -> MemoryT ($1, $2) }
 
 limits :
   | NAT { {min = nat64 $1 $loc($1); max = None} }
   | NAT NAT { {min = nat64 $1 $loc($1); max = Some (nat64 $2 $loc($2))} }
 
 type_use :
-  | LPAR TYPE var RPAR { fun c -> $3 c type_ }
+  | LPAR TYPE idx RPAR { fun c -> $3 c type_ }
 
 
 /* Immediates */
@@ -499,27 +499,27 @@ num :
   | INT { $1 @@ $sloc }
   | FLOAT { $1 @@ $sloc }
 
-var :
+idx :
   | NAT { fun c lookup -> nat32 $1 $sloc @@ $sloc }
   | VAR { fun c lookup -> lookup c (var $1 $sloc) @@ $sloc }
 
-var_opt :
+idx_opt :
   | /* empty */ { fun c lookup at -> 0l @@ at }
-  | var { fun c lookup at -> $1 c lookup }
+  | idx { fun c lookup at -> $1 c lookup }
 
-var_var_opt :
+idx_idx_opt :
   | /* empty */ { fun c lookup at -> 0l @@ at, 0l @@ at }
-  | var var { fun c lookup at -> $1 c lookup, $2 c lookup }
+  | idx idx { fun c lookup at -> $1 c lookup, $2 c lookup }
 
-var_list :
+idx_list :
   | /* empty */ { fun c lookup -> [] }
-  | var var_list { fun c lookup -> $1 c lookup :: $2 c lookup }
+  | idx idx_list { fun c lookup -> $1 c lookup :: $2 c lookup }
 
-bind_var_opt :
+bind_idx_opt :
   | /* empty */ { fun c anon bind -> anon c $sloc }
-  | bind_var { fun c anon bind -> bind c $1 }  /* Sugar */
+  | bind_idx { fun c anon bind -> bind c $1 }  /* Sugar */
 
-bind_var :
+bind_idx :
   | VAR { var $1 $sloc }
 
 labeling_opt :
@@ -527,7 +527,7 @@ labeling_opt :
     { fun c xs ->
       List.iter (fun x -> error x.at "mismatching label") xs;
       let c' = enter_block c $sloc in ignore (anon_label c' $sloc); c' }
-  | bind_var
+  | bind_idx
     { fun c xs ->
       List.iter
         (fun x -> if x.it <> $1.it then error x.at "mismatching label") xs;
@@ -535,7 +535,7 @@ labeling_opt :
 
 labeling_end_opt :
   | /* empty */ { [] }
-  | bind_var { [$1] }
+  | bind_idx { [$1] }
 
 offset_ :
   | OFFSET_EQ_NAT { nat64 $1 $sloc }
@@ -573,80 +573,80 @@ plain_instr :
   | UNREACHABLE { fun c -> unreachable }
   | NOP { fun c -> nop }
   | DROP { fun c -> drop }
-  | BR var { fun c -> br ($2 c label) }
-  | BR_IF var { fun c -> br_if ($2 c label) }
-  | BR_TABLE var var_list
+  | BR idx { fun c -> br ($2 c label) }
+  | BR_IF idx { fun c -> br_if ($2 c label) }
+  | BR_TABLE idx idx_list
     { fun c -> let xs, x = Lib.List.split_last ($2 c label :: $3 c label) in
       br_table xs x }
-  | BR_ON_NULL var { fun c -> $1 ($2 c label) }
-  | BR_ON_CAST var ref_type ref_type { fun c -> $1 ($2 c label) ($3 c) ($4 c) }
+  | BR_ON_NULL idx { fun c -> $1 ($2 c label) }
+  | BR_ON_CAST idx reftype reftype { fun c -> $1 ($2 c label) ($3 c) ($4 c) }
   | RETURN { fun c -> return }
-  | CALL var { fun c -> call ($2 c func) }
-  | CALL_REF var { fun c -> call_ref ($2 c type_) }
-  | RETURN_CALL var { fun c -> return_call ($2 c func) }
-  | RETURN_CALL_REF var { fun c -> return_call_ref ($2 c type_) }
-  | THROW var { fun c -> throw ($2 c tag) }
+  | CALL idx { fun c -> call ($2 c func) }
+  | CALL_REF idx { fun c -> call_ref ($2 c type_) }
+  | RETURN_CALL idx { fun c -> return_call ($2 c func) }
+  | RETURN_CALL_REF idx { fun c -> return_call_ref ($2 c type_) }
+  | THROW idx { fun c -> throw ($2 c tag) }
   | THROW_REF { fun c -> throw_ref }
-  | LOCAL_GET var { fun c -> local_get ($2 c local) }
-  | LOCAL_SET var { fun c -> local_set ($2 c local) }
-  | LOCAL_TEE var { fun c -> local_tee ($2 c local) }
-  | GLOBAL_GET var { fun c -> global_get ($2 c global) }
-  | GLOBAL_SET var { fun c -> global_set ($2 c global) }
-  | TABLE_GET var_opt { fun c -> table_get ($2 c table $loc($1)) }
-  | TABLE_SET var_opt { fun c -> table_set ($2 c table $loc($1)) }
-  | TABLE_SIZE var_opt { fun c -> table_size ($2 c table $loc($1)) }
-  | TABLE_GROW var_opt { fun c -> table_grow ($2 c table $loc($1)) }
-  | TABLE_FILL var_opt { fun c -> table_fill ($2 c table $loc($1)) }
-  | TABLE_COPY var_var_opt
+  | LOCAL_GET idx { fun c -> local_get ($2 c local) }
+  | LOCAL_SET idx { fun c -> local_set ($2 c local) }
+  | LOCAL_TEE idx { fun c -> local_tee ($2 c local) }
+  | GLOBAL_GET idx { fun c -> global_get ($2 c global) }
+  | GLOBAL_SET idx { fun c -> global_set ($2 c global) }
+  | TABLE_GET idx_opt { fun c -> table_get ($2 c table $loc($1)) }
+  | TABLE_SET idx_opt { fun c -> table_set ($2 c table $loc($1)) }
+  | TABLE_SIZE idx_opt { fun c -> table_size ($2 c table $loc($1)) }
+  | TABLE_GROW idx_opt { fun c -> table_grow ($2 c table $loc($1)) }
+  | TABLE_FILL idx_opt { fun c -> table_fill ($2 c table $loc($1)) }
+  | TABLE_COPY idx_idx_opt
     { fun c -> let x, y = $2 c table $loc($1) in table_copy x y }
-  | TABLE_INIT var var
+  | TABLE_INIT idx idx
     { fun c -> table_init ($2 c table) ($3 c elem) }
-  | TABLE_INIT var  /* Sugar */
+  | TABLE_INIT idx  /* Sugar */
     { fun c -> table_init (0l @@ $loc($1)) ($2 c elem) }
-  | ELEM_DROP var { fun c -> elem_drop ($2 c elem) }
-  | LOAD var_opt offset_opt align_opt
+  | ELEM_DROP idx { fun c -> elem_drop ($2 c elem) }
+  | LOAD idx_opt offset_opt align_opt
     { fun c -> $1 ($2 c memory $loc($1)) $4 $3 }
-  | STORE var_opt offset_opt align_opt
+  | STORE idx_opt offset_opt align_opt
     { fun c -> $1 ($2 c memory $loc($1)) $4 $3 }
-  | VEC_LOAD var_opt offset_opt align_opt
+  | VEC_LOAD idx_opt offset_opt align_opt
     { fun c -> $1 ($2 c memory $loc($1)) $4 $3 }
-  | VEC_STORE var_opt offset_opt align_opt
+  | VEC_STORE idx_opt offset_opt align_opt
     { fun c -> $1 ($2 c memory $loc($1)) $4 $3 }
   | VEC_LOAD_LANE lane_imms { fun c -> $2 $1 $loc($1) c }
   | VEC_STORE_LANE lane_imms { fun c -> $2 $1 $loc($1) c }
-  | MEMORY_SIZE var_opt { fun c -> memory_size ($2 c memory $loc($1)) }
-  | MEMORY_GROW var_opt { fun c -> memory_grow ($2 c memory $loc($1)) }
-  | MEMORY_FILL var_opt { fun c -> memory_fill ($2 c memory $loc($1)) }
-  | MEMORY_COPY var_var_opt
+  | MEMORY_SIZE idx_opt { fun c -> memory_size ($2 c memory $loc($1)) }
+  | MEMORY_GROW idx_opt { fun c -> memory_grow ($2 c memory $loc($1)) }
+  | MEMORY_FILL idx_opt { fun c -> memory_fill ($2 c memory $loc($1)) }
+  | MEMORY_COPY idx_idx_opt
     { fun c -> let x, y = $2 c memory $loc($1) in memory_copy x y }
-  | MEMORY_INIT var var
+  | MEMORY_INIT idx idx
     { fun c -> memory_init ($2 c memory) ($3 c data) }
-  | MEMORY_INIT var  /* Sugar */
+  | MEMORY_INIT idx  /* Sugar */
     { fun c -> memory_init (0l @@ $loc($1)) ($2 c data) }
-  | DATA_DROP var { fun c -> data_drop ($2 c data) }
-  | REF_NULL heap_type { fun c -> ref_null ($2 c) }
-  | REF_FUNC var { fun c -> ref_func ($2 c func) }
+  | DATA_DROP idx { fun c -> data_drop ($2 c data) }
+  | REF_NULL heaptype { fun c -> ref_null ($2 c) }
+  | REF_FUNC idx { fun c -> ref_func ($2 c func) }
   | REF_IS_NULL { fun c -> ref_is_null }
   | REF_AS_NON_NULL { fun c -> ref_as_non_null }
-  | REF_TEST ref_type { fun c -> ref_test ($2 c) }
-  | REF_CAST ref_type { fun c -> ref_cast ($2 c) }
+  | REF_TEST reftype { fun c -> ref_test ($2 c) }
+  | REF_CAST reftype { fun c -> ref_cast ($2 c) }
   | REF_EQ { fun c -> ref_eq }
   | REF_I31 { fun c -> ref_i31 }
   | I31_GET { fun c -> $1 }
-  | STRUCT_NEW var { fun c -> $1 ($2 c type_) }
-  | STRUCT_GET var var { fun c -> let x = $2 c type_ in $1 x ($3 c (field x.it)) }
-  | STRUCT_SET var var { fun c -> let x = $2 c type_ in struct_set x ($3 c (field x.it)) }
-  | ARRAY_NEW var { fun c -> $1 ($2 c type_) }
-  | ARRAY_NEW_FIXED var nat32 { fun c -> array_new_fixed ($2 c type_) $3 }
-  | ARRAY_NEW_ELEM var var { fun c -> array_new_elem ($2 c type_) ($3 c elem) }
-  | ARRAY_NEW_DATA var var { fun c -> array_new_data ($2 c type_) ($3 c data) }
-  | ARRAY_GET var { fun c -> $1 ($2 c type_) }
-  | ARRAY_SET var { fun c -> array_set ($2 c type_) }
+  | STRUCT_NEW idx { fun c -> $1 ($2 c type_) }
+  | STRUCT_GET idx idx { fun c -> let x = $2 c type_ in $1 x ($3 c (field x.it)) }
+  | STRUCT_SET idx idx { fun c -> let x = $2 c type_ in struct_set x ($3 c (field x.it)) }
+  | ARRAY_NEW idx { fun c -> $1 ($2 c type_) }
+  | ARRAY_NEW_FIXED idx nat32 { fun c -> array_new_fixed ($2 c type_) $3 }
+  | ARRAY_NEW_ELEM idx idx { fun c -> array_new_elem ($2 c type_) ($3 c elem) }
+  | ARRAY_NEW_DATA idx idx { fun c -> array_new_data ($2 c type_) ($3 c data) }
+  | ARRAY_GET idx { fun c -> $1 ($2 c type_) }
+  | ARRAY_SET idx { fun c -> array_set ($2 c type_) }
   | ARRAY_LEN { fun c -> array_len }
-  | ARRAY_COPY var var { fun c -> array_copy ($2 c type_) ($3 c type_) }
-  | ARRAY_FILL var { fun c -> array_fill ($2 c type_) }
-  | ARRAY_INIT_DATA var var { fun c -> array_init_data ($2 c type_) ($3 c data) }
-  | ARRAY_INIT_ELEM var var { fun c -> array_init_elem ($2 c type_) ($3 c elem) }
+  | ARRAY_COPY idx idx { fun c -> array_copy ($2 c type_) ($3 c type_) }
+  | ARRAY_FILL idx { fun c -> array_fill ($2 c type_) }
+  | ARRAY_INIT_DATA idx idx { fun c -> array_init_data ($2 c type_) ($3 c data) }
+  | ARRAY_INIT_ELEM idx idx { fun c -> array_init_elem ($2 c type_) ($3 c elem) }
   | EXTERN_CONVERT { fun c -> $1 }
   | CONST num { fun c -> fst (num $1 $2) }
   | TEST { fun c -> $1 }
@@ -654,7 +654,7 @@ plain_instr :
   | UNARY { fun c -> $1 }
   | BINARY { fun c -> $1 }
   | CONVERT { fun c -> $1 }
-  | VEC_CONST VEC_SHAPE list(num) { fun c -> fst (vec $1 $2 $3 $sloc) }
+  | VEC_CONST VECSHAPE list(num) { fun c -> fst (vec $1 $2 $3 $sloc) }
   | VEC_UNARY { fun c -> $1 }
   | VEC_BINARY { fun c -> $1 }
   | VEC_TERNARY { fun c -> $1 }
@@ -668,7 +668,7 @@ plain_instr :
 
 
 lane_imms :
-  /* Need to multiply out options and var to avoid spurious conflicts */
+  /* Need to multiply out options and indices to avoid spurious conflicts */
   | NAT offset_opt align_opt NAT
     { fun instr at0 c ->
       instr (nat32 $1 $loc($1) @@ $loc($1)) $3 $2
@@ -693,20 +693,20 @@ select_instr_instr_list :
       (select (if b then (Some ts) else None) @@ $loc($1)) :: es }
 
 select_instr_results_instr_list :
-  | LPAR RESULT val_type_list RPAR select_instr_results_instr_list
+  | LPAR RESULT valtype_list RPAR select_instr_results_instr_list
     { fun c -> let _, ts, es = $5 c in true, snd $3 c @ ts, es }
   | instr_list
     { fun c -> false, [], $1 c }
 
 
 call_instr_instr_list :
-  | CALL_INDIRECT var call_instr_type_instr_list
+  | CALL_INDIRECT idx call_instr_type_instr_list
     { fun c -> let x, es = $3 c in
       (call_indirect ($2 c table) x @@ $loc($1)) :: es }
   | CALL_INDIRECT call_instr_type_instr_list  /* Sugar */
     { fun c -> let x, es = $2 c in
       (call_indirect (0l @@ $loc($1)) x @@ $loc($1)) :: es }
-  | RETURN_CALL_INDIRECT var call_instr_type_instr_list
+  | RETURN_CALL_INDIRECT idx call_instr_type_instr_list
     { fun c -> let x, es = $3 c in
       (return_call_indirect ($2 c table) x @@ $loc($1)) :: es }
   | RETURN_CALL_INDIRECT call_instr_type_instr_list  /* Sugar */
@@ -718,19 +718,19 @@ call_instr_type_instr_list :
     { fun c ->
       match $2 c with
       | FuncT ([], []), es -> $1 c, es
-      | ft, es -> inline_func_type_explicit c ($1 c) ft $loc($1), es }
+      | ft, es -> inline_functype_explicit c ($1 c) ft $loc($1), es }
   | call_instr_params_instr_list
-    { fun c -> let ft, es = $1 c in inline_func_type c ft $sloc, es }
+    { fun c -> let ft, es = $1 c in inline_functype c ft $sloc, es }
 
 call_instr_params_instr_list :
-  | LPAR PARAM val_type_list RPAR call_instr_params_instr_list
+  | LPAR PARAM valtype_list RPAR call_instr_params_instr_list
     { fun c -> let FuncT (ts1, ts2), es = $5 c in
       FuncT (snd $3 c @ ts1, ts2), es }
   | call_instr_results_instr_list
     { fun c -> let ts, es = $1 c in FuncT ([], ts), es }
 
 call_instr_results_instr_list :
-  | LPAR RESULT val_type_list RPAR call_instr_results_instr_list
+  | LPAR RESULT valtype_list RPAR call_instr_results_instr_list
     { fun c -> let ts, es = $5 c in snd $3 c @ ts, es }
   | instr_list
     { fun c -> [], $1 c }
@@ -753,7 +753,7 @@ block_instr :
 block :
   | type_use block_param_body
     { fun c -> let ft, es = $2 c in
-      let x = inline_func_type_explicit c ($1 c) ft $loc($1) in
+      let x = inline_functype_explicit c ($1 c) ft $loc($1) in
       VarBlockType x, es }
   | block_param_body  /* Sugar */
     { fun c -> let ft, es = $1 c in
@@ -761,18 +761,18 @@ block :
         match ft with
         | FuncT ([], []) -> ValBlockType None
         | FuncT ([], [t]) -> ValBlockType (Some t)
-        | ft ->  VarBlockType (inline_func_type c ft $sloc)
+        | ft ->  VarBlockType (inline_functype c ft $sloc)
       in bt, es }
 
 block_param_body :
   | block_result_body { $1 }
-  | LPAR PARAM val_type_list RPAR block_param_body
+  | LPAR PARAM valtype_list RPAR block_param_body
     { fun c -> let FuncT (ts1, ts2), es = $5 c in
       FuncT (snd $3 c @ ts1, ts2), es }
 
 block_result_body :
   | instr_list { fun c -> FuncT ([], []), $1 c }
-  | LPAR RESULT val_type_list RPAR block_result_body
+  | LPAR RESULT valtype_list RPAR block_result_body
     { fun c -> let FuncT (ts1, ts2), es = $5 c in
       FuncT (ts1, snd $3 c @ ts2), es }
 
@@ -780,41 +780,41 @@ block_result_body :
 handler_block :
   | type_use handler_block_param_body
     { fun c c' -> let ft, esh = $2 c c' in
-      VarBlockType (inline_func_type_explicit c ($1 c) ft $loc($1)), esh }
+      VarBlockType (inline_functype_explicit c ($1 c) ft $loc($1)), esh }
   | handler_block_param_body  /* Sugar */
     { fun c c' -> let ft, esh = $1 c c' in
       let bt =
         match ft with
         | FuncT ([], []) -> ValBlockType None
         | FuncT ([], [t]) -> ValBlockType (Some t)
-        | ft ->  VarBlockType (inline_func_type c ft $sloc)
+        | ft ->  VarBlockType (inline_functype c ft $sloc)
       in bt, esh }
 
 handler_block_param_body :
   | handler_block_result_body { $1 }
-  | LPAR PARAM val_type_list RPAR handler_block_param_body
+  | LPAR PARAM valtype_list RPAR handler_block_param_body
     { fun c c' -> let FuncT (ts1, ts2), esh = $5 c c' in
       FuncT (snd $3 c @ ts1, ts2), esh }
 
 handler_block_result_body :
   | handler_block_body { fun c c' -> FuncT ([], []), $1 c c' }
-  | LPAR RESULT val_type_list RPAR handler_block_result_body
+  | LPAR RESULT valtype_list RPAR handler_block_result_body
     { fun c c' -> let FuncT (ts1, ts2), esh = $5 c c' in
       FuncT (ts1, snd $3 c @ ts2), esh }
 
 handler_block_body :
   | instr_list
     { fun c c' -> [], $1 c' }
-  | LPAR CATCH var var RPAR handler_block_body
+  | LPAR CATCH idx idx RPAR handler_block_body
     { fun c c' -> let cs, es = $6 c c' in
       (catch ($3 c tag) ($4 c label) @@ $loc($2)) :: cs, es }
-  | LPAR CATCH_REF var var RPAR handler_block_body
+  | LPAR CATCH_REF idx idx RPAR handler_block_body
     { fun c c' -> let cs, es = $6 c c' in
       (catch_ref ($3 c tag) ($4 c label) @@ $loc($2)) :: cs, es }
-  | LPAR CATCH_ALL var RPAR handler_block_body
+  | LPAR CATCH_ALL idx RPAR handler_block_body
     { fun c c' -> let cs, es = $5 c c' in
       (catch_all ($3 c label) @@ $loc($2)) :: cs, es }
-  | LPAR CATCH_ALL_REF var RPAR handler_block_body
+  | LPAR CATCH_ALL_REF idx RPAR handler_block_body
     { fun c c' -> let cs, es = $5 c c' in
       (catch_all_ref ($3 c label) @@ $loc($2)) :: cs, es }
 
@@ -827,11 +827,11 @@ expr1 :  /* Sugar */
   | plain_instr expr_list { fun c -> $2 c, $1 c }
   | SELECT select_expr_results
     { fun c -> let b, ts, es = $2 c in es, select (if b then (Some ts) else None) }
-  | CALL_INDIRECT var call_expr_type
+  | CALL_INDIRECT idx call_expr_type
     { fun c -> let x, es = $3 c in es, call_indirect ($2 c table) x }
   | CALL_INDIRECT call_expr_type  /* Sugar */
     { fun c -> let x, es = $2 c in es, call_indirect (0l @@ $loc($1)) x }
-  | RETURN_CALL_INDIRECT var call_expr_type
+  | RETURN_CALL_INDIRECT idx call_expr_type
     { fun c -> let x, es = $3 c in es, return_call_indirect ($2 c table) x }
   | RETURN_CALL_INDIRECT call_expr_type  /* Sugar */
     { fun c -> let x, es = $2 c in es, return_call_indirect (0l @@ $loc($1)) x }
@@ -847,7 +847,7 @@ expr1 :  /* Sugar */
       let bt, (cs, es) = $3 c c' in [], try_table bt cs es }
 
 select_expr_results :
-  | LPAR RESULT val_type_list RPAR select_expr_results
+  | LPAR RESULT valtype_list RPAR select_expr_results
     { fun c -> let _, ts, es = $5 c in true, snd $3 c @ ts, es }
   | expr_list
     { fun c -> false, [], $1 c }
@@ -857,19 +857,19 @@ call_expr_type :
     { fun c ->
       match $2 c with
       | FuncT ([], []), es -> $1 c, es
-      | ft, es -> inline_func_type_explicit c ($1 c) ft $loc($1), es }
+      | ft, es -> inline_functype_explicit c ($1 c) ft $loc($1), es }
   | call_expr_params
-    { fun c -> let ft, es = $1 c in inline_func_type c ft $loc($1), es }
+    { fun c -> let ft, es = $1 c in inline_functype c ft $loc($1), es }
 
 call_expr_params :
-  | LPAR PARAM val_type_list RPAR call_expr_params
+  | LPAR PARAM valtype_list RPAR call_expr_params
     { fun c -> let FuncT (ts1, ts2), es = $5 c in
       FuncT (snd $3 c @ ts1, ts2), es }
   | call_expr_results
     { fun c -> let ts, es = $1 c in FuncT ([], ts), es }
 
 call_expr_results :
-  | LPAR RESULT val_type_list RPAR call_expr_results
+  | LPAR RESULT valtype_list RPAR call_expr_results
     { fun c -> let ts, es = $5 c in snd $3 c @ ts, es }
   | expr_list
     { fun c -> [], $1 c }
@@ -878,7 +878,7 @@ call_expr_results :
 if_block :
   | type_use if_block_param_body
     { fun c c' -> let ft, es = $2 c c' in
-      let x = inline_func_type_explicit c ($1 c) ft $sloc in
+      let x = inline_functype_explicit c ($1 c) ft $sloc in
       VarBlockType x, es }
   | if_block_param_body  /* Sugar */
     { fun c c' -> let ft, es = $1 c c' in
@@ -886,18 +886,18 @@ if_block :
         match ft with
         | FuncT ([], []) -> ValBlockType None
         | FuncT ([], [t]) -> ValBlockType (Some t)
-        | ft ->  VarBlockType (inline_func_type c ft $sloc)
+        | ft ->  VarBlockType (inline_functype c ft $sloc)
       in bt, es }
 
 if_block_param_body :
   | if_block_result_body { $1 }
-  | LPAR PARAM val_type_list RPAR if_block_param_body
+  | LPAR PARAM valtype_list RPAR if_block_param_body
     { fun c c' -> let FuncT (ts1, ts2), es = $5 c c' in
       FuncT (snd $3 c @ ts1, ts2), es }
 
 if_block_result_body :
   | if_ { fun c c' -> FuncT ([], []), $1 c c' }
-  | LPAR RESULT val_type_list RPAR if_block_result_body
+  | LPAR RESULT valtype_list RPAR if_block_result_body
     { fun c c' -> let FuncT (ts1, ts2), es = $5 c c' in
       FuncT (ts1, snd $3 c @ ts2), es }
 
@@ -915,7 +915,7 @@ try_block :
   | type_use try_block_param_body
     { fun c c' ->
       let ft, esh = $2 c c' in
-      let bt = VarBlockType (inline_func_type_explicit c' ($1 c') ft $sloc) in
+      let bt = VarBlockType (inline_functype_explicit c' ($1 c') ft $sloc) in
       bt, esh }
   | try_block_param_body  /* Sugar */
     { fun c c' ->
@@ -924,34 +924,34 @@ try_block :
         match ft with
         | FuncT ([], []) -> ValBlockType None
         | FuncT ([], [t]) -> ValBlockType (Some t)
-        | _ ->  VarBlockType (inline_func_type c' ft $sloc)
+        | _ ->  VarBlockType (inline_functype c' ft $sloc)
       in bt, esh }
 
 try_block_param_body :
   | try_block_result_body { $1 }
-  | LPAR PARAM val_type_list RPAR try_block_param_body
+  | LPAR PARAM valtype_list RPAR try_block_param_body
     { fun c c' -> let FuncT (ts1, ts2), esh = $5 c c' in
       FuncT (snd $3 c @ ts1, ts2), esh }
 
 try_block_result_body :
   | try_block_handler_body { fun c c' -> FuncT ([], []), $1 c c' }
-  | LPAR RESULT val_type_list RPAR try_block_result_body
+  | LPAR RESULT valtype_list RPAR try_block_result_body
     { fun c c' -> let FuncT (ts1, ts2), esh = $5 c c' in
       FuncT (ts1, snd $3 c @ ts2), esh }
 
 try_block_handler_body :
   | instr_list
     { fun c c' -> [], $1 c' }
-  | LPAR CATCH var var RPAR try_block_handler_body
+  | LPAR CATCH idx idx RPAR try_block_handler_body
     { fun c c' -> let cs, es = $6 c c' in
       (catch ($3 c tag) ($4 c label) @@ $loc($2)) :: cs, es }
-  | LPAR CATCH_REF var var RPAR try_block_handler_body
+  | LPAR CATCH_REF idx idx RPAR try_block_handler_body
     { fun c c' -> let cs, es = $6 c c' in
       (catch_ref ($3 c tag) ($4 c label) @@ $loc($2)) :: cs, es }
-  | LPAR CATCH_ALL var RPAR try_block_handler_body
+  | LPAR CATCH_ALL idx RPAR try_block_handler_body
     { fun c c' -> let cs, es = $5 c c' in
       (catch_all ($3 c label) @@ $loc($2)) :: cs, es }
-  | LPAR CATCH_ALL_REF var RPAR try_block_handler_body
+  | LPAR CATCH_ALL_REF idx RPAR try_block_handler_body
     { fun c c' -> let cs, es = $5 c c' in
       (catch_all_ref ($3 c label) @@ $loc($2)) :: cs, es }
 
@@ -970,7 +970,7 @@ const_expr1 :
 /* Functions */
 
 func :
-  | LPAR FUNC bind_var_opt func_fields RPAR
+  | LPAR FUNC bind_idx_opt func_fields RPAR
     { fun c -> let x = $3 c anon_func bind_func @@ $sloc in
       fun () -> $4 c x $sloc }
 
@@ -978,23 +978,23 @@ func_fields :
   | type_use func_fields_body
     { fun c x loc ->
       let c' = enter_func c loc in
-      let y = inline_func_type_explicit c' ($1 c') (fst $2 c') $loc($1) in
+      let y = inline_functype_explicit c' ($1 c') (fst $2 c') $loc($1) in
       let Func (_, ls, es) = snd $2 c' in
       [Func (y, ls, es) @@ loc], [], [] }
   | func_fields_body  /* Sugar */
     { fun c x loc ->
       let c' = enter_func c loc in
-      let y = inline_func_type c' (fst $1 c') loc in
+      let y = inline_functype c' (fst $1 c') loc in
       let Func (_, ls, es) = snd $1 c' in
       [Func (y, ls, es) @@ loc], [], [] }
   | inline_import type_use func_fields_import  /* Sugar */
     { fun c x loc ->
-      let y = inline_func_type_explicit c ($2 c) ($3 c) $loc($2) in
+      let y = inline_functype_explicit c ($2 c) ($3 c) $loc($2) in
       [],
       [Import (fst $1, snd $1, FuncImport y @@ loc) @@ loc ], [] }
   | inline_import func_fields_import  /* Sugar */
     { fun c x loc ->
-      let y = inline_func_type c ($2 c) loc in
+      let y = inline_functype c ($2 c) loc in
       [],
       [Import (fst $1, snd $1, FuncImport y @@ loc) @@ loc ], [] }
   | inline_export func_fields  /* Sugar */
@@ -1003,28 +1003,28 @@ func_fields :
 
 func_fields_import :  /* Sugar */
   | func_fields_import_result { $1 }
-  | LPAR PARAM val_type_list RPAR func_fields_import
+  | LPAR PARAM valtype_list RPAR func_fields_import
     { fun c -> let FuncT (ts1, ts2) = $5 c in FuncT (snd $3 c @ ts1, ts2) }
-  | LPAR PARAM bind_var val_type RPAR func_fields_import  /* Sugar */
+  | LPAR PARAM bind_idx valtype RPAR func_fields_import  /* Sugar */
     { fun c -> let FuncT (ts1, ts2) = $6 c in FuncT ($4 c :: ts1, ts2) }
 
 func_fields_import_result :  /* Sugar */
   | /* empty */ { fun c -> FuncT ([], []) }
-  | LPAR RESULT val_type_list RPAR func_fields_import_result
+  | LPAR RESULT valtype_list RPAR func_fields_import_result
     { fun c -> let FuncT (ts1, ts2) = $5 c in FuncT (ts1, snd $3 c @ ts2) }
 
 func_fields_body :
   | func_result_body { $1 }
-  | LPAR PARAM val_type_list RPAR func_fields_body
+  | LPAR PARAM valtype_list RPAR func_fields_body
     { (fun c -> let FuncT (ts1, ts2) = fst $5 c in FuncT (snd $3 c @ ts1, ts2)),
       (fun c -> anon_locals c (fst $3) $loc($3); snd $5 c) }
-  | LPAR PARAM bind_var val_type RPAR func_fields_body  /* Sugar */
+  | LPAR PARAM bind_idx valtype RPAR func_fields_body  /* Sugar */
     { (fun c -> let FuncT (ts1, ts2) = fst $6 c in FuncT ($4 c :: ts1, ts2)),
       (fun c -> ignore (bind_local c $3); snd $6 c) }
 
 func_result_body :
   | func_body { (fun c -> FuncT ([], [])), $1 }
-  | LPAR RESULT val_type_list RPAR func_result_body
+  | LPAR RESULT valtype_list RPAR func_result_body
     { (fun c -> let FuncT (ts1, ts2) = fst $5 c in FuncT (ts1, snd $3 c @ ts2)),
       snd $5 }
 
@@ -1032,30 +1032,30 @@ func_body :
   | instr_list
     { fun c -> ignore (anon_label c $sloc);
       Func (-1l @@ $sloc, [], $1 c) }
-  | LPAR LOCAL local_type_list RPAR func_body
+  | LPAR LOCAL localtype_list RPAR func_body
     { fun c -> anon_locals c (fst $3) $loc($3);
       let Func (x, ls, es) = $5 c in
       Func (x, snd $3 c @ ls, es) }
-  | LPAR LOCAL bind_var local_type RPAR func_body  /* Sugar */
+  | LPAR LOCAL bind_idx localtype RPAR func_body  /* Sugar */
     { fun c -> ignore (bind_local c $3);
       let Func (x, ls, es) = $6 c in
       Func (x, $4 c :: ls, es) }
 
-local_type :
-  | val_type { fun c -> Local ($1 c) @@ $sloc }
+localtype :
+  | valtype { fun c -> Local ($1 c) @@ $sloc }
 
-local_type_list :
-  | list(local_type)
+localtype_list :
+  | list(localtype)
     { Lib.List32.length $1, fun c -> List.map (fun f -> f c) $1 }
 
 
 /* Tables, Memories & Globals */
 
 table_use :
-  | LPAR TABLE var RPAR { fun c -> $3 c }
+  | LPAR TABLE idx RPAR { fun c -> $3 c }
 
 memory_use :
-  | LPAR MEMORY var RPAR { fun c -> $3 c }
+  | LPAR MEMORY idx RPAR { fun c -> $3 c }
 
 offset :
   | LPAR OFFSET const_expr RPAR { $3 }
@@ -1072,60 +1072,60 @@ elem_expr_list :
   | /* empty */ { fun c -> [] }
   | elem_expr elem_expr_list { fun c -> $1 c :: $2 c }
 
-elem_var_list :
-  | var_list
+elem_idx_list :
+  | idx_list
     { let f = function {at; _} as x -> [ref_func x @@@ at] @@@ at in
       fun c -> List.map f ($1 c func) }
 
 elem_list :
-  | elem_kind elem_var_list
+  | elem_kind elem_idx_list
     { fun c -> $1, $2 c }
-  | ref_type elem_expr_list
+  | reftype elem_expr_list
     { fun c -> $1 c, $2 c }
 
 
 elem :
-  | LPAR ELEM bind_var_opt elem_list RPAR
+  | LPAR ELEM bind_idx_opt elem_list RPAR
     { fun c -> ignore ($3 c anon_elem bind_elem);
       fun () -> let rt, cs = $4 c in
       Elem (rt, cs, Passive @@ $sloc) @@ $sloc }
-  | LPAR ELEM bind_var_opt table_use offset elem_list RPAR
+  | LPAR ELEM bind_idx_opt table_use offset elem_list RPAR
     { fun c -> ignore ($3 c anon_elem bind_elem);
       fun () -> let rt, cs = $6 c in
       Elem (rt, cs, Active ($4 c table, $5 c) @@ $sloc) @@ $sloc }
-  | LPAR ELEM bind_var_opt DECLARE elem_list RPAR
+  | LPAR ELEM bind_idx_opt DECLARE elem_list RPAR
     { fun c -> ignore ($3 c anon_elem bind_elem);
       fun () -> let rt, cs = $5 c in
       Elem (rt, cs, Declarative @@ $sloc) @@ $sloc }
-  | LPAR ELEM bind_var_opt offset elem_list RPAR  /* Sugar */
+  | LPAR ELEM bind_idx_opt offset elem_list RPAR  /* Sugar */
     { fun c -> ignore ($3 c anon_elem bind_elem);
       fun () -> let rt, cs = $5 c in
       Elem (rt, cs, Active (0l @@ $sloc, $4 c) @@ $sloc) @@ $sloc }
-  | LPAR ELEM bind_var_opt offset elem_var_list RPAR  /* Sugar */
+  | LPAR ELEM bind_idx_opt offset elem_idx_list RPAR  /* Sugar */
     { fun c -> ignore ($3 c anon_elem bind_elem);
       fun () ->
       let rt = (NoNull, FuncHT) in
       Elem (rt, $5 c, Active (0l @@ $sloc, $4 c) @@ $sloc) @@ $sloc }
 
 table :
-  | LPAR TABLE bind_var_opt table_fields RPAR
+  | LPAR TABLE bind_idx_opt table_fields RPAR
     { fun c -> let x = $3 c anon_table bind_table @@ $sloc in
       fun () -> $4 c x $sloc }
 
 table_fields :
-  | table_type const_expr1
+  | tabletype const_expr1
     { fun c x loc -> [Table ($1 c, $2 c) @@ loc], [], [], [] }
-  | table_type  /* Sugar */
+  | tabletype  /* Sugar */
     { fun c x loc -> let TableT (_, _, (_, ht)) as tt = $1 c in
       [Table (tt, [RefNull ht @@ loc] @@ loc) @@ loc], [], [], [] }
-  | inline_import table_type  /* Sugar */
+  | inline_import tabletype  /* Sugar */
     { fun c x loc ->
       [], [],
       [Import (fst $1, snd $1, TableImport ($2 c) @@ loc) @@ loc], [] }
   | inline_export table_fields  /* Sugar */
     { fun c x loc -> let tabs, elems, ims, exs = $2 c x loc in
       tabs, elems, ims, $1 (TableExport x) c :: exs }
-  | addr_type ref_type LPAR ELEM elem_expr elem_expr_list RPAR  /* Sugar */
+  | addrtype reftype LPAR ELEM elem_expr elem_expr_list RPAR  /* Sugar */
     { fun c x loc ->
       let offset = [at_const $1 (0L @@ loc) @@ loc] @@ loc in
       let einit = $5 c :: $6 c in
@@ -1135,7 +1135,7 @@ table_fields :
       [Table (TableT ($1, {min = size; max = Some size}, rt), tinit) @@ loc],
       [Elem (rt, einit, Active (x, offset) @@ loc) @@ loc],
       [], [] }
-  | addr_type ref_type LPAR ELEM elem_var_list RPAR  /* Sugar */
+  | addrtype reftype LPAR ELEM elem_idx_list RPAR  /* Sugar */
     { fun c x loc ->
       let (_, ht) as rt = $2 c in
       let tinit = [RefNull ht @@ loc] @@ loc in
@@ -1147,34 +1147,34 @@ table_fields :
       [], [] }
 
 data :
-  | LPAR DATA bind_var_opt string_list RPAR
+  | LPAR DATA bind_idx_opt string_list RPAR
     { fun c -> ignore ($3 c anon_data bind_data);
       fun () -> Data ($4, Passive @@ $sloc) @@ $sloc }
-  | LPAR DATA bind_var_opt memory_use offset string_list RPAR
+  | LPAR DATA bind_idx_opt memory_use offset string_list RPAR
     { fun c -> ignore ($3 c anon_data bind_data);
       fun () ->
       Data ($6, Active ($4 c memory, $5 c) @@ $sloc) @@ $sloc }
-  | LPAR DATA bind_var_opt offset string_list RPAR  /* Sugar */
+  | LPAR DATA bind_idx_opt offset string_list RPAR  /* Sugar */
     { fun c -> ignore ($3 c anon_data bind_data);
       fun () ->
       Data ($5, Active (0l @@ $sloc, $4 c) @@ $sloc) @@ $sloc }
 
 memory :
-  | LPAR MEMORY bind_var_opt memory_fields RPAR
+  | LPAR MEMORY bind_idx_opt memory_fields RPAR
     { fun c -> let x = $3 c anon_memory bind_memory @@ $sloc in
       fun () -> $4 c x $sloc }
 
 memory_fields :
-  | memory_type
+  | memorytype
     { fun c x loc -> [Memory ($1 c) @@ loc], [], [], [] }
-  | inline_import memory_type  /* Sugar */
+  | inline_import memorytype  /* Sugar */
     { fun c x loc ->
       [], [],
       [Import (fst $1, snd $1, MemoryImport ($2 c) @@ loc) @@ loc], [] }
   | inline_export memory_fields  /* Sugar */
     { fun c x loc -> let mems, data, ims, exs = $2 c x loc in
       mems, data, ims, $1 (MemoryExport x) c :: exs }
-  | addr_type LPAR DATA string_list RPAR  /* Sugar */
+  | addrtype LPAR DATA string_list RPAR  /* Sugar */
     { fun c x loc ->
       let size = Int64.(div (add (of_int (String.length $4)) 65535L) 65536L) in
       let offset = [at_const $1 (0L @@ loc) @@ loc] @@ loc in
@@ -1183,26 +1183,26 @@ memory_fields :
       [], [] }
 
 tag :
-  | LPAR TAG bind_var_opt tag_fields RPAR
+  | LPAR TAG bind_idx_opt tag_fields RPAR
     { fun c -> let x = $3 c anon_tag bind_tag @@ $sloc in fun () -> $4 c x $sloc }
 
 tag_fields :
-  | type_use func_type
+  | type_use functype
     { fun c x loc ->
-      let tt = inline_func_type_explicit c ($1 c) ($2 c) $loc($1) in
+      let tt = inline_functype_explicit c ($1 c) ($2 c) $loc($1) in
       [Tag tt @@ loc], [], [] }
-  | func_type  /* Sugar */
+  | functype  /* Sugar */
     { fun c x loc ->
-      let tt = inline_func_type c ($1 c) $sloc in
+      let tt = inline_functype c ($1 c) $sloc in
       [Tag tt @@ loc], [], [] }
-  | inline_import type_use func_type  /* Sugar */
+  | inline_import type_use functype  /* Sugar */
     { fun c x loc ->
-      let y = inline_func_type_explicit c ($2 c) ($3 c) $loc($2) in
+      let y = inline_functype_explicit c ($2 c) ($3 c) $loc($2) in
       [],
       [Import (fst $1, snd $1, TagImport y @@ loc) @@ loc ], [] }
-  | inline_import func_type  /* Sugar */
+  | inline_import functype  /* Sugar */
     { fun c x loc ->
-      let y = inline_func_type c ($2 c) $loc($2) in
+      let y = inline_functype c ($2 c) $loc($2) in
       [],
       [Import (fst $1, snd $1, TagImport y @@ loc) @@ loc ], [] }
   | inline_export tag_fields  /* Sugar */
@@ -1211,14 +1211,14 @@ tag_fields :
 
 
 global :
-  | LPAR GLOBAL bind_var_opt global_fields RPAR
+  | LPAR GLOBAL bind_idx_opt global_fields RPAR
     { fun c -> let x = $3 c anon_global bind_global @@ $sloc in
       fun () -> $4 c x $sloc }
 
 global_fields :
-  | global_type const_expr
+  | globaltype const_expr
     { fun c x loc -> [Global ($1 c, $2 c) @@ loc], [], [] }
-  | inline_import global_type  /* Sugar */
+  | inline_import globaltype  /* Sugar */
     { fun c x loc ->
       [],
       [Import (fst $1, snd $1, GlobalImport ($2 c) @@ loc) @@ loc], [] }
@@ -1229,46 +1229,46 @@ global_fields :
 
 /* Imports & Exports */
 
-import_desc :
-  | LPAR FUNC bind_var_opt type_use RPAR
+importdesc :
+  | LPAR FUNC bind_idx_opt type_use RPAR
     { fun c -> ignore ($3 c anon_func bind_func);
       fun () -> FuncImport ($4 c) }
-  | LPAR FUNC bind_var_opt func_type RPAR  /* Sugar */
+  | LPAR FUNC bind_idx_opt functype RPAR  /* Sugar */
     { fun c -> ignore ($3 c anon_func bind_func);
-      fun () -> FuncImport (inline_func_type c ($4 c) $loc($4)) }
-  | LPAR TABLE bind_var_opt table_type RPAR
+      fun () -> FuncImport (inline_functype c ($4 c) $loc($4)) }
+  | LPAR TABLE bind_idx_opt tabletype RPAR
     { fun c -> ignore ($3 c anon_table bind_table);
       fun () -> TableImport ($4 c) }
-  | LPAR MEMORY bind_var_opt memory_type RPAR
+  | LPAR MEMORY bind_idx_opt memorytype RPAR
     { fun c -> ignore ($3 c anon_memory bind_memory);
       fun () -> MemoryImport ($4 c) }
-  | LPAR GLOBAL bind_var_opt global_type RPAR
+  | LPAR GLOBAL bind_idx_opt globaltype RPAR
     { fun c -> ignore ($3 c anon_global bind_global);
       fun () -> GlobalImport ($4 c) }
-  | LPAR TAG bind_var_opt type_use RPAR
+  | LPAR TAG bind_idx_opt type_use RPAR
     { fun c -> ignore ($3 c anon_tag bind_tag);
       fun () -> TagImport ($4 c) }
-  | LPAR TAG bind_var_opt func_type RPAR  /* Sugar */
+  | LPAR TAG bind_idx_opt functype RPAR  /* Sugar */
     { fun c -> ignore ($3 c anon_tag bind_tag);
-      fun () -> TagImport (inline_func_type c ($4 c) $loc($4)) }
+      fun () -> TagImport (inline_functype c ($4 c) $loc($4)) }
 
 import :
-  | LPAR IMPORT name name import_desc RPAR
+  | LPAR IMPORT name name importdesc RPAR
     { fun c -> let df = $5 c in
       fun () -> Import ($3, $4, df () @@ $loc($5)) @@ $sloc }
 
 inline_import :
   | LPAR IMPORT name name RPAR { $3, $4 }
 
-export_desc :
-  | LPAR FUNC var RPAR { fun c -> FuncExport ($3 c func) }
-  | LPAR TABLE var RPAR { fun c -> TableExport ($3 c table) }
-  | LPAR MEMORY var RPAR { fun c -> MemoryExport ($3 c memory) }
-  | LPAR TAG var RPAR { fun c -> TagExport ($3 c tag) }
-  | LPAR GLOBAL var RPAR { fun c -> GlobalExport ($3 c global) }
+exportdesc :
+  | LPAR FUNC idx RPAR { fun c -> FuncExport ($3 c func) }
+  | LPAR TABLE idx RPAR { fun c -> TableExport ($3 c table) }
+  | LPAR MEMORY idx RPAR { fun c -> MemoryExport ($3 c memory) }
+  | LPAR TAG idx RPAR { fun c -> TagExport ($3 c tag) }
+  | LPAR GLOBAL idx RPAR { fun c -> GlobalExport ($3 c global) }
 
 export :
-  | LPAR EXPORT name export_desc RPAR
+  | LPAR EXPORT name exportdesc RPAR
     { fun c -> Export ($3, $4 c @@ $loc($4)) @@ $sloc }
 
 inline_export :
@@ -1279,9 +1279,9 @@ inline_export :
 /* Modules */
 
 type_def :
-  | LPAR TYPE sub_type RPAR
+  | LPAR TYPE subtype RPAR
     { fun c -> let x = anon_type c $sloc in fun () -> $3 c x }
-  | LPAR TYPE bind_var sub_type RPAR  /* Sugar */
+  | LPAR TYPE bind_idx subtype RPAR  /* Sugar */
     { fun c -> let x = bind_type c $3 in fun () -> $4 c x }
 
 type_def_list :
@@ -1290,24 +1290,24 @@ type_def_list :
     { fun c -> let tf = $1 c in let tsf = $2 c in fun () ->
       let st = tf () and sts = tsf () in st::sts }
 
-rec_type :
+rectype :
   | type_def
     { fun c -> let tf = $1 c in fun () ->
       let st = tf () in
-      define_def_type c (DefT (RecT [st], 0l));
+      define_deftype c (DefT (RecT [st], 0l));
       RecT [st] }
   | LPAR REC type_def_list RPAR
     { fun c -> let tf = $3 c in fun () ->
       let sts = tf () in
-      Lib.List32.iteri (fun i _ -> define_def_type c (DefT (RecT sts, i))) sts;
+      Lib.List32.iteri (fun i _ -> define_deftype c (DefT (RecT sts, i))) sts;
       RecT sts }
 
 type_ :
-  | rec_type
+  | rectype
     { fun c -> let tf = $1 c in fun () -> define_type c (tf () @@ $sloc) }
 
 start :
-  | LPAR START var RPAR
+  | LPAR START idx RPAR
     { fun c -> Start ($3 c func) @@ $sloc }
 
 module_fields :
@@ -1500,10 +1500,10 @@ literal_num :
   | LPAR CONST num RPAR { snd (num $2 $3) }
 
 literal_vec :
-  | LPAR VEC_CONST VEC_SHAPE list(num) RPAR { snd (vec $2 $3 $4 $sloc) }
+  | LPAR VEC_CONST VECSHAPE list(num) RPAR { snd (vec $2 $3 $4 $sloc) }
 
 literal_ref :
-  | LPAR REF_NULL heap_type RPAR { Value.NullRef ($3 (empty_context ())) }
+  | LPAR REF_NULL heaptype RPAR { Value.NullRef ($3 (empty_context ())) }
   | LPAR REF_HOST NAT RPAR { Script.HostRef (nat32 $3 $loc($3)) }
   | LPAR REF_EXTERN NAT RPAR { Extern.ExternRef (Script.HostRef (nat32 $3 $loc($3))) }
 
@@ -1529,7 +1529,7 @@ result :
   | LPAR REF_EXN RPAR { RefResult (RefTypePat ExnHT) @@ $sloc }
   | LPAR REF_EXTERN RPAR { RefResult (RefTypePat ExternHT) @@ $sloc }
   | LPAR REF_NULL RPAR { RefResult NullPat @@ $sloc }
-  | LPAR VEC_CONST VEC_SHAPE list(numpat) RPAR
+  | LPAR VEC_CONST VECSHAPE list(numpat) RPAR
     { if V128.num_lanes $3 <> List.length $4 then
         error (at $sloc) "wrong number of lane literals";
       VecResult (VecPat

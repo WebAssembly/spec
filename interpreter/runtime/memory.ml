@@ -8,7 +8,7 @@ type offset = address
 type count = int32
 
 type memory' = (int, int8_unsigned_elt, c_layout) Array1.t
-type memory = {mutable ty : memory_type; mutable content : memory'}
+type memory = {mutable ty : memorytype; mutable content : memory'}
 type t = memory
 
 exception Type = Value.Type
@@ -38,7 +38,7 @@ let create n =
   with Out_of_memory -> raise OutOfMemory
 
 let alloc (MemoryT (at, lim) as ty) =
-  assert Free.((memory_type ty).types = Set.empty);
+  assert Free.((memorytype ty).types = Set.empty);
   if not (valid_size at lim.min) then raise SizeOverflow;
   if not (valid_limits lim) then raise Type;
   {ty; content = create lim.min}
@@ -52,7 +52,7 @@ let size mem =
 let type_of mem =
   mem.ty
 
-let addr_type_of mem =
+let addrtype_of mem =
   let MemoryT (at, _) = type_of mem in at
 
 let grow mem delta =
