@@ -1082,9 +1082,9 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ......................
 
 
-1. Let F be the topmost :math:`\mathsf{frame}`.
+1. Let f be the topmost :math:`\mathsf{frame}`.
 
-#. Let :math:`n` be the arity of F
+#. Let :math:`n` be the arity of f
 
 #. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
 
@@ -1105,9 +1105,9 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. If the first non-value entry of the stack is a :math:`\mathsf{frame}`, then:
 
-   a. Let F be the topmost :math:`\mathsf{frame}`.
+   a. Let f be the topmost :math:`\mathsf{frame}`.
 
-   #. Let :math:`n` be the arity of F
+   #. Let :math:`n` be the arity of f
 
    #. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
 
@@ -1322,7 +1322,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`f` be the frame :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~{{\mathit{val}}^{k}}~{{{\mathrm{default}}}_{t}^\ast},\; \mathsf{module}~{\mathit{mm}} \}\end{array}`.
 
-#. Let F be the :math:`\mathsf{frame}` :math:`f` whose arity is :math:`n`.
+#. Let f be the :math:`\mathsf{frame}` :math:`f` whose arity is :math:`n`.
 
 #. Push the :math:`\mathsf{frame}` F.
 
@@ -2902,7 +2902,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Perform :math:`{\mathrm{initdata}}(s, {\mathit{moduleinst}}, {i_{\mathsf{d}}^\ast}, {{b^\ast}^\ast})`.
 
-#. Let F be the :math:`\mathsf{frame}` :math:`f`.
+#. Let f be the :math:`\mathsf{frame}` :math:`f`.
 
 #. Push the :math:`\mathsf{frame}` F.
 
@@ -2912,7 +2912,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Execute the instruction :math:`{\mathit{instr}}_0`.
 
-#. Pop the :math:`\mathsf{frame}` F from the stack.
+#. Pop the :math:`\mathsf{frame}` f from the stack.
 
 #. Return :math:`f{.}\mathsf{module}`.
 
@@ -2929,11 +2929,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{t_1^{n}}~\rightarrow~{t_2^\ast}` be the destructuring of :math:`(s, f){.}\mathsf{funcs}{}[{\mathit{fa}}]{.}\mathsf{type}`.
 
-#. Pop the :math:`\mathsf{frame}` F from the stack.
+#. Pop the :math:`\mathsf{frame}` _f from the stack.
 
 #. Let :math:`k` be the length of :math:`{t_2^\ast}`.
 
-#. Let F be the :math:`\mathsf{frame}` :math:`f` whose arity is :math:`k`.
+#. Let f be the :math:`\mathsf{frame}` :math:`f` whose arity is :math:`k`.
 
 #. Push the :math:`\mathsf{frame}` F.
 
@@ -2943,7 +2943,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Pop the values :math:`{{\mathit{val}'}^{k}}` from the stack.
 
-#. Pop the :math:`\mathsf{frame}` F from the stack.
+#. Pop the :math:`\mathsf{frame}` f from the stack.
 
 #. Return :math:`{{\mathit{val}'}^{k}}`.
 
@@ -6049,9 +6049,9 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ......................
 
 
-1. Let F be the topmost :math:`\mathsf{frame}`.
+1. Let f be the topmost :math:`\mathsf{frame}`.
 
-#. Let :math:`n` be the arity of F
+#. Let :math:`n` be the arity of f
 
 #. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
 
@@ -6072,9 +6072,9 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. If the first non-value entry of the stack is a :math:`\mathsf{frame}`, then:
 
-   a. Let F be the topmost :math:`\mathsf{frame}`.
+   a. Let f be the topmost :math:`\mathsf{frame}`.
 
-   #. Let :math:`n` be the arity of F
+   #. Let :math:`n` be the arity of f
 
    #. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
 
@@ -6727,7 +6727,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`f` be the frame :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~{{\mathit{val}}^{k}}~{{{\mathrm{default}}}_{t}^\ast},\; \mathsf{module}~{\mathit{mm}} \}\end{array}`.
 
-#. Let F be the :math:`\mathsf{frame}` :math:`f` whose arity is :math:`n`.
+#. Let f be the :math:`\mathsf{frame}` :math:`f` whose arity is :math:`n`.
 
 #. Push the :math:`\mathsf{frame}` F.
 
@@ -10167,7 +10167,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`f` be the frame :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{module}~{\mathit{moduleinst}} \}\end{array}`.
 
-#. Let F be the :math:`\mathsf{frame}` :math:`f`.
+#. Let f be the :math:`\mathsf{frame}` :math:`f`.
 
 #. Push the :math:`\mathsf{frame}` F.
 
@@ -10181,7 +10181,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Execute the instruction :math:`{\mathit{instr}}_0`.
 
-#. Pop the :math:`\mathsf{frame}` F from the stack.
+#. Pop the :math:`\mathsf{frame}` f from the stack.
 
 #. Return :math:`f{.}\mathsf{module}`.
 
@@ -10198,11 +10198,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{t_1^{n}}~\rightarrow~{t_2^\ast}` be the destructuring of :math:`(s, f){.}\mathsf{funcs}{}[{\mathit{fa}}]{.}\mathsf{type}`.
 
-#. Pop the :math:`\mathsf{frame}` F from the stack.
+#. Pop the :math:`\mathsf{frame}` _f from the stack.
 
 #. Let :math:`k` be the length of :math:`{t_2^\ast}`.
 
-#. Let F be the :math:`\mathsf{frame}` :math:`f` whose arity is :math:`k`.
+#. Let f be the :math:`\mathsf{frame}` :math:`f` whose arity is :math:`k`.
 
 #. Push the :math:`\mathsf{frame}` F.
 
@@ -10212,7 +10212,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Pop the values :math:`{{\mathit{val}'}^{k}}` from the stack.
 
-#. Pop the :math:`\mathsf{frame}` F from the stack.
+#. Pop the :math:`\mathsf{frame}` f from the stack.
 
 #. Return :math:`{{\mathit{val}'}^{k}}`.
 
@@ -17210,9 +17210,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ......................
 
 
-1. Let F be the topmost :math:`\mathsf{frame}`.
+1. Let f be the topmost :math:`\mathsf{frame}`.
 
-#. Let :math:`n` be the arity of F
+#. Let :math:`n` be the arity of f
 
 #. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
 
@@ -17233,9 +17233,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. If the first non-value entry of the stack is a :math:`\mathsf{frame}`, then:
 
-   a. Let F be the topmost :math:`\mathsf{frame}`.
+   a. Let f be the topmost :math:`\mathsf{frame}`.
 
-   #. Let :math:`n` be the arity of F
+   #. Let :math:`n` be the arity of f
 
    #. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
 
@@ -17948,7 +17948,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ...............................................................
 
 
-1. Let F be the topmost :math:`\mathsf{frame}`.
+1. Let f be the topmost :math:`\mathsf{frame}`.
 
 #. Assert: Due to validation, a reference value is on the top of the stack.
 
@@ -17971,7 +17971,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .....................................................................
 
 
-1. Let F be the topmost :math:`\mathsf{frame}`.
+1. Let f be the topmost :math:`\mathsf{frame}`.
 
 #. Assert: Due to validation, a reference value is on the top of the stack.
 
@@ -18047,7 +18047,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       #) Let :math:`f` be the frame :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~{{\mathit{val}}^{n}}~{{{\mathrm{default}}}_{t}^\ast},\; \mathsf{module}~{\mathit{fi}}{.}\mathsf{module} \}\end{array}`.
 
-      #) Let F be the :math:`\mathsf{frame}` :math:`f` whose arity is :math:`m`.
+      #) Let f be the :math:`\mathsf{frame}` :math:`f` whose arity is :math:`m`.
 
       #) Push the :math:`\mathsf{frame}` F.
 
@@ -18400,7 +18400,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .........................................
 
 
-1. Let F be the topmost :math:`\mathsf{frame}`.
+1. Let f be the topmost :math:`\mathsf{frame}`.
 
 #. Assert: Due to validation, a reference value is on the top of the stack.
 
@@ -18421,7 +18421,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .........................................
 
 
-1. Let F be the topmost :math:`\mathsf{frame}`.
+1. Let f be the topmost :math:`\mathsf{frame}`.
 
 #. Assert: Due to validation, a reference value is on the top of the stack.
 
@@ -25135,23 +25135,23 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{{\mathit{val}}_{\mathsf{g}}^\ast}` be :math:`{{{\mathrm{evalglobal}}^\ast}}{(z, {{\mathit{globaltype}}^\ast}, {{\mathit{expr}}_{\mathsf{g}}^\ast})}`.
 
-#. Pop the :math:`\mathsf{frame}` F from the stack.
+#. Pop the :math:`\mathsf{frame}` f from the stack.
 
-#. Let F be the :math:`\mathsf{frame}` :math:`f`.
+#. Let f be the :math:`\mathsf{frame}` :math:`f`.
 
 #. Push the :math:`\mathsf{frame}` F.
 
 #. Let :math:`{{\mathit{ref}}_{\mathsf{t}}^\ast}` be the result of :ref:`evaluating <exec-expr>` :math:`{{\mathit{expr}}_{\mathsf{t}}^\ast}` with state :math:`z`.
 
-#. Pop the :math:`\mathsf{frame}` F from the stack.
+#. Pop the :math:`\mathsf{frame}` f from the stack.
 
-#. Let F be the :math:`\mathsf{frame}` :math:`f`.
+#. Let f be the :math:`\mathsf{frame}` :math:`f`.
 
 #. Push the :math:`\mathsf{frame}` F.
 
 #. Let :math:`{{{\mathit{ref}}_{\mathsf{e}}^\ast}^\ast}` be the result of :ref:`evaluating <exec-expr>` :math:`{{{\mathit{expr}}_{\mathsf{e}}^\ast}^\ast}` with state :math:`z`.
 
-#. Pop the :math:`\mathsf{frame}` F from the stack.
+#. Pop the :math:`\mathsf{frame}` f from the stack.
 
 #. Let :math:`{\mathit{moduleinst}}` be :math:`{\mathrm{allocmodule}}(s, {\mathit{module}}, {{\mathit{externaddr}}^\ast}, {{\mathit{val}}_{\mathsf{g}}^\ast}, {{\mathit{ref}}_{\mathsf{t}}^\ast}, {{{\mathit{ref}}_{\mathsf{e}}^\ast}^\ast})`.
 

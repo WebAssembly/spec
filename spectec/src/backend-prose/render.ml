@@ -114,6 +114,12 @@ let match_link env e =
   | Some ref -> ref
   | None -> inject_link text "match"
 
+let get_context_var e =
+  match e.it with
+  | Al.Ast.CaseE (_, [_; {it = Al.Ast.VarE x; _}]) when x <> "_" -> x (* HARDCODE for frame *)
+  | Al.Ast.CaseE (mixop, _) -> mixop |> List.hd |> List.hd |> Atom.to_string |> (fun s -> String.sub s 0 1)
+  | _ -> assert false (* It is expected that the context is a CaseE *)
+
 (* Translation from Al inverse call exp to Al binary exp *)
 let e2a e = Al.Ast.ExpA e $ e.at
 let a2e a =
@@ -687,7 +693,7 @@ and render_expr' env expr =
       (render_expr env erhs)
   | Al.Ast.CaseE (mixop, [ arity; arg ]) when Al.Valid.sub_typ expr.note Al.Al_util.evalctxT ->
     let atom_name = mixop |> List.hd |> List.hd |> Atom.to_string in
-    let control_frame_var = String.sub atom_name 0 1 in
+    let context_var = get_context_var expr in
     let rendered_arity =
       match arity.it with
       | NumE (`Nat z) when z = Z.zero -> ""
@@ -713,7 +719,7 @@ and render_expr' env expr =
     let space_opt = if (rendered_arg ^ rendered_arity) = "" then "" else " " in
     let and_opt = if rendered_arg <> "" && rendered_arity <> "" then " and " else "" in
     sprintf "%s%s%s%s%s"
-      control_frame_var
+      context_var
       space_opt
       rendered_arity
       and_opt
@@ -756,7 +762,7 @@ and render_expr' env expr =
       let render_iters env iters = List.map (render_iter env) iters |> String.concat ", and corresponding " in
       sprintf "for all %s, %s" (render_iters env iters) se)
   | Al.Ast.GetCurStateE -> "the current state"
-  | Al.Ast.GetCurContextE None -> "the topmost control frame"
+  | Al.Ast.GetCurContextE None -> failwith "Unreachable" (*TODO: Refactor*)
   | Al.Ast.GetCurContextE (Some a) ->
     sprintf "the topmost %s" (render_atom env a)
   | Al.Ast.ChooseE e ->
@@ -1005,7 +1011,7 @@ let render_control_frame_binding env expr =
   | Ast.CaseE (mixop, [ arity; arg ]) ->
     let atom = mixop |> List.hd |> List.hd in
     let atom_name = Atom.to_string atom in
-    let control_frame_var = String.sub atom_name 0 1 in
+    let context_var = get_context_var expr in
     let control_frame_name, rendered_arg =
       match atom_name with
       | "LABEL_" ->
@@ -1034,7 +1040,7 @@ let render_control_frame_binding env expr =
     let space_opt = if (rendered_arg ^ rendered_arity) = "" then "" else " " in
     let and_opt = if rendered_arg <> "" && rendered_arity <> "" then " and " else "" in
     sprintf "Let %s be %s%s%s%s%s."
-      control_frame_var
+      context_var
       control_frame_name
       space_opt
       rendered_arity
@@ -1190,13 +1196,12 @@ let rec render_instr env algoname index depth instr =
   | Al.Ast.PopI ({ it = Al.Ast.CaseE (mixop, _); _ } as expr)
   when Al.Valid.sub_typ expr.note Al.Al_util.evalctxT ->
     let atom = mixop |> List.hd |> List.hd in
-    let atom_name = Atom.to_string atom in
     let control_frame_kind = render_atom env atom in
-    let control_frame_var = String.sub atom_name 0 1 in
+    let context_var = get_context_var expr in
     sprintf "%s Pop the %s %s from the stack."
       (render_order index depth)
       control_frame_kind
-      control_frame_var
+      context_var
   | Al.Ast.PopI e ->
     sprintf "%s Pop %s %s from the stack." (render_order index depth)
       (render_stack_prefix e) (render_expr env e)
@@ -1208,11 +1213,11 @@ let rec render_instr env algoname index depth instr =
     (* NOTE: This assumes that the first argument of control frame is arity *)
     | Al.Ast.CaseE (mixop, [ arity; arg ] ) when Al.Valid.sub_typ e1.note Al.Al_util.evalctxT ->
       let atom_name = mixop |> List.hd |> List.hd |> Atom.to_string in
-      let control_frame_var = String.sub atom_name 0 1 in
+      let context_var = get_context_var e1 in
       let rendered_let =
         sprintf "%s Let %s be %s."
           (render_order index depth)
-          control_frame_var
+          context_var
           (render_expr env e2) in
       (* XXX: It could introduce dead assignment *)
       let rendered_arity =
@@ -1223,7 +1228,7 @@ let rec render_instr env algoname index depth instr =
             (repeat indent depth)
             (render_order index depth)
             s
-            control_frame_var in
+            context_var in
       (* XXX: It could introduce dead assignment *)
       let rendered_arg =
         match atom_name with
@@ -1232,7 +1237,7 @@ let rec render_instr env algoname index depth instr =
             (repeat indent depth)
             (render_order index depth)
             (render_expr env arg)
-            control_frame_var
+            context_var
         | _ -> "" in
       rendered_let ^ rendered_arity ^ rendered_arg
     | _ ->
