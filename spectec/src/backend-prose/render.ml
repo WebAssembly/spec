@@ -75,7 +75,7 @@ and is_bine expr = match expr.it with
   | _ -> false
 
 let (let*) = Option.bind
-  
+
 let find_section env link =
   let ans = Macro.find_section env.macro link in
   ans
@@ -369,12 +369,12 @@ and al_to_el_expr expr =
           (* Split braces of el expressions *)
           let _, eles = Util.Lib.List.split_hd eles in
           let eles, _ = Util.Lib.List.split_last eles in
-          let eles = 
+          let eles =
             (match eles with
             | [e1; { it = El.Ast.AtomE atom; _ }; e2] when atom.it = Xl.Atom.Dot2 ->
               (* HARDCODE: postprocess limits to infix notation *)
               El.Ast.InfixE (e1, atom, e2)
-            | _ -> El.Ast.SeqE eles 
+            | _ -> El.Ast.SeqE eles
             ) in
           Some (El.Ast.BrackE (lbr, eles $ no_region, rbr))
         | None -> Some (El.Ast.ParenE (ele $ no_region))
@@ -789,16 +789,20 @@ and render_expr' env expr =
     let se = render_expr env e in
     sprintf "%s is %s" se vref
   | Al.Ast.TopValueE (Some e) ->
-    let value =
-      (
+    let ty =
       match type_with_link env e with
-      | Some vtref when String.ends_with ~suffix:"type>`" vtref ->
-        let se = render_expr env e in
-        sprintf "a value of %s %s" vtref se
-      | Some vtref -> sprintf "a %s" vtref
-      | None -> "value type"
-      )
+      | Some tyref -> tyref
+      | None -> Il.Print.string_of_typ_name e.note
     in
+
+    let value =
+      if String.ends_with ~suffix:"type" ty || String.ends_with ~suffix:"type>`" ty then
+        let se = render_expr env e in
+        sprintf "a value of %s %s" ty se
+      else
+        sprintf "a %s" ty
+    in
+
     sprintf "%s is on the top of the stack" value
   | Al.Ast.TopValueE None -> "a value is on the top of the stack"
   | Al.Ast.TopValuesE e ->
@@ -1267,7 +1271,7 @@ let rec render_instr env algoname index depth instr =
         (match elhs.it with
         | CallE (_, [_; { it = Al.Ast.ExpA e'; _}; n]) ->
           (match e'.it with
-          | Al.Ast.IterE (e'', _) -> 
+          | Al.Ast.IterE (e'', _) ->
             "", sprintf "the result for which each %s has length %s, and %s is %s"
               (render_expr env e'')
               (render_arg env n)
@@ -1333,7 +1337,7 @@ let rec render_instr env algoname index depth instr =
       let type_desc = (
         if String.starts_with ~prefix:":math:" rhs then (
           match type_with_link env e1 with
-          | Some s -> 
+          | Some s ->
             "the " ^ s ^ " "
           | None -> ""
         )
