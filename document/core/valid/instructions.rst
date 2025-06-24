@@ -2317,7 +2317,7 @@ Control Instructions
 
 .. math::
    \frac{
-     C.\CLABELS[l] = [t^\ast~(\REF~\X{ht})]
+     C.\CLABELS[l] = [t^\ast~(\REF~\NULL^?~\X{ht})]
    }{
      C \vdashinstr \BRONNONNULL~l : [t^\ast~(\REF~\NULL~\X{ht})] \to [t^\ast]
    }

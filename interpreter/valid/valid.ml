@@ -461,15 +461,14 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : infer_in
     (label c x @ [RefT (Null, ht)]) --> (label c x @ [RefT (NoNull, ht)]), []
 
   | BrOnNonNull x ->
-    let (_nul, ht) = peek_ref 0 s e.at in
-    let t' = RefT (NoNull, ht) in
     require (label c x <> []) e.at
-      ("type mismatch: instruction requires type " ^ string_of_val_type t' ^
+      ("type mismatch: instruction requires reference type" ^
        " but label has " ^ string_of_result_type (label c x));
     let ts0, t1 = Lib.List.split_last (label c x) in
-    require (match_val_type c.types t' t1) e.at
-      ("type mismatch: instruction requires type " ^ string_of_val_type t' ^
-       " but label has " ^ string_of_result_type (label c x));
+    require (is_ref_type t1) e.at
+      ("type mismatch: instruction requires reference type" ^
+       " but label has " ^ string_of_val_type t1);
+    let ht = match t1 with RefT (_nul, ht) -> ht | _ -> assert false in
     (ts0 @ [RefT (Null, ht)]) --> ts0, []
 
   | BrOnCast (x, rt1, rt2) ->
