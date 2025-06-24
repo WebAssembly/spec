@@ -118,7 +118,8 @@ All other control instruction are represented verbatim.
      \text{return} &\Rightarrow& \RETURN \\ &&|&
      \text{call}~~x{:}\Tfuncidx_I &\Rightarrow& \CALL~x \\ &&|&
      \text{call\_indirect}~~x{:}\Ttableidx~~y,I'{:}\Ttypeuse_I &\Rightarrow& \CALLINDIRECT~x~y
-       & (\iff I' = \{\ILOCALS~(\epsilon)^\ast\}) \\
+       & (\iff I' = \{\ILOCALS~(\epsilon)^\ast\}) \\ &&|&
+     \dots
    \end{array}
 
 .. note::
