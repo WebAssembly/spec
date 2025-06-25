@@ -434,7 +434,6 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
 To <dfn>instantiate imported strings</dfn> with module |module| and |importedStringModule|, perform the following steps:
 1. Assert: |importedStringModule| is not null.
 1. Let |exportsObject| be [=!=] [$OrdinaryObjectCreate$](null).
-        1. If |externtype| is of the form [=external-type/func=] <var ignore>functype</var>,
 1. [=list/iterate|For each=] (|moduleName|, |componentName|, |externtype|) of [=module_imports=](|module|),
     1. If |moduleName| does not equal |importedStringModule|, then [=iteration/continue=].
     1. Let |stringConstant| be |componentName|.
@@ -1797,7 +1796,6 @@ To <dfn>instantiate a builtin set</dfn> with name |builtinSetName|, perform the 
 
 1. Let |builtins| be the result of [=get the builtins for a builtin set=] |builtinSetName|
 1. Let |exportsObject| be [=!=] [$OrdinaryObjectCreate$](null).
-        1. If |externtype| is of the form [=external-type/func=] <var ignore>functype</var>,
 1. [=list/iterate|For each=] (|name|, |funcType|, |steps|) of |builtins|,
     1. Let |funcaddr| be the result fo [=create a builtin function=] with |funcType| and |steps|
     1. Let |func| be the result of creating [=a new Exported Function=] from |funcaddr|.
