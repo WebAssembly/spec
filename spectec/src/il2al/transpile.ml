@@ -109,6 +109,23 @@ let atom_of_case e =
   | CaseE ((atom :: _) :: _, _) -> atom
   | _ -> Error.error e.at "prose transformation" "expected a CaseE"
 
+let replace_name new_name old_name =
+  let replace_name' walker e =
+    match e.it with
+    | VarE x when x = new_name -> {e with it = VarE old_name}
+    | _ -> Walk.base_walker.walk_expr walker e
+  in
+  let walker = {Walk.base_walker with walk_expr = replace_name'} in
+  walker.walk_instr walker
+
+let rec replace_names binds instr =
+  match binds with
+  | [] -> instr
+  | (new_name, old_name) :: binds' ->
+    let instrs = replace_name new_name old_name instr in
+    assert (List.length instrs = 1);
+    replace_names binds' (List.hd instrs)
+
 (* AL -> AL transpilers *)
 
 (* Append `Else: Fail` block to the given blocks *)
@@ -374,6 +391,28 @@ let remove_redundant_assignment il =
   in
   remove_redundant_assignment' [] il
 
+(* Remove trivial assignment(a simple variable renaming) happens *)
+let remove_trivial_assignment il =
+  let rec remove_trivial_assignment' binds il =
+    List.fold_left_map
+      (fun acc instr ->
+        let instr = replace_names acc instr in
+        let at = instr.at in
+        match instr.it with
+        | IfI (e, il1, il2) ->
+          let il1' = remove_trivial_assignment' acc il1 in
+          let il2' = remove_trivial_assignment' acc il2 in
+          acc, [ifI (e, il1', il2') ~at:at]
+        | LetI ({it = VarE x1; _}, {it = VarE x2; _}) ->
+            (x1, x2) :: acc, []
+        | _ ->
+          acc, [instr]
+      ) binds il
+    |> snd
+    |> List.concat
+  in
+  remove_trivial_assignment' [] il
+
 let remove_sub e =
   let e' =
     match e.it with
@@ -563,6 +602,7 @@ let rec enhance_readability instrs =
     instrs
     |> remove_dead_assignment
     |> remove_redundant_assignment
+    |> remove_trivial_assignment
     |> unify_if
     |> infer_else
     |> List.concat_map remove_unnecessary_branch
