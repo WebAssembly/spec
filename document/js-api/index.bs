@@ -1777,7 +1777,7 @@ To <dfn>find a builtin</dfn> with |import| and enabled builtins |builtinSetNames
 To <dfn>validate builtin set names</dfn> with |builtinSetNames|, perform the following steps:
 
 1. If |builtinSetNames| contains any duplicates, return false.
-1. Return false.
+1. Return true.
 
 </div>
 
