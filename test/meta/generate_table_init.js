@@ -153,6 +153,7 @@ let tab1_len = 28;
 function do_test(insn1, insn2, table, errText)
 {
     print(`
+(script
 (module
   (table $t0 ${tab0_len} ${tab0_len} funcref)
   (table $t1 ${tab1_len} ${tab1_len} funcref)
@@ -181,6 +182,7 @@ function do_test(insn1, insn2, table, errText)
     } else {
         print(`(invoke "test")`);
     }
+    print(')');
 }
 
 function tab_test1(insn1, table, errText) {
@@ -303,6 +305,7 @@ const tbl_init_len = 16;
 function tbl_init(min, max, backup, write, segoffs=0) {
     print(
         `
+(script
 (module
   (type (func (result i32)))
   (table ${min} ${max} funcref)
@@ -342,6 +345,7 @@ function tbl_init(min, max, backup, write, segoffs=0) {
     for (let i=0; i < min; i++) {
         print(`(assert_trap (invoke "test" (i32.const ${i})) "uninitialized element")`);
     }
+    print(')');
 }
 
 // We exceed the bounds of the table but not of the element segment
