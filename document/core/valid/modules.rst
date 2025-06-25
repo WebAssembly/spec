@@ -385,9 +385,9 @@ Element segments :math:`\elem` are classified by the :ref:`reference type <synta
 
 * The table :math:`C.\CTABLES[x]` must be defined in the context.
 
-* Let :math:`\limits~t` be the :ref:`table type <syntax-tabletype>` :math:`C.\CTABLES[x]`.
+* Let :math:`\X{at}~\limits~t` be the :ref:`table type <syntax-tabletype>` :math:`C.\CTABLES[x]`.
 
-* The expression :math:`\expr` must be :ref:`valid <valid-expr>` with :ref:`result type <syntax-resulttype>` :math:`[\I32]`.
+* The expression :math:`\expr` must be :ref:`valid <valid-expr>` with :ref:`result type <syntax-resulttype>` :math:`[\X{at}]`.
 
 * The expression :math:`\expr` must be :ref:`constant <valid-constant>`.
 
@@ -396,9 +396,9 @@ Element segments :math:`\elem` are classified by the :ref:`reference type <synta
 .. math::
    \frac{
      \begin{array}{@{}c@{}}
-     C.\CTABLES[x] = \limits~t
+     C.\CTABLES[x] = \X{at}~\limits~t
      \\
-     C \vdashexpr \expr : [\I32]
+     C \vdashexpr \expr : [\X{at}]
      \qquad
      C \vdashexprconst \expr \const
      \end{array}
@@ -466,7 +466,9 @@ Data segments :math:`\data` are not classified by any type but merely checked fo
 
 * The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
-* The expression :math:`\expr` must be :ref:`valid <valid-expr>` with :ref:`result type <syntax-resulttype>` :math:`[\I32]`.
+* Let :math:`\X{at}~\limits` be the :ref:`memory type <syntax-memtype>` :math:`C.\CMEMS[x]`.
+
+* The expression :math:`\expr` must be :ref:`valid <valid-expr>` with :ref:`result type <syntax-resulttype>` :math:`[\X{at}]`.
 
 * The expression :math:`\expr` must be :ref:`constant <valid-constant>`.
 
@@ -474,9 +476,9 @@ Data segments :math:`\data` are not classified by any type but merely checked fo
 
 .. math::
    \frac{
-     C.\CMEMS[x] = \limits
+     C.\CMEMS[x] = \X{at}~\limits
      \qquad
-     C \vdashexpr \expr : [\I32]
+     C \vdashexpr \expr : [\X{at}]
      \qquad
      C \vdashexprconst \expr \const
    }{
@@ -727,6 +729,7 @@ Imports :math:`\import` and import descriptions :math:`\importdesc` are classifi
    pair: validation; module
    single: abstract syntax; module
 .. _valid-module:
+.. _syntax-moduletype:
 
 Modules
 ~~~~~~~
@@ -737,9 +740,6 @@ A module is entirely *closed*,
 that is, its components can only refer to definitions that appear in the module itself.
 Consequently, no initial :ref:`context <context>` is required.
 Instead, the context :math:`C` for validation of the module's content is constructed from the definitions in the module.
-
-The :ref:`external types <syntax-externtype>` classifying a module may contain free :ref:`type indices <syntax-typeidx>` that refer to types defined within the module.
-
 
 * Let :math:`\module` be the module to validate.
 
@@ -841,11 +841,9 @@ The :ref:`external types <syntax-externtype>` classifying a module may contain f
 
 * Let :math:`\X{et}^\ast` be the concatenation of :ref:`external types <syntax-externtype>` :math:`\X{et}_i` of the exports, in index order.
 
-* The length of :math:`C.\CMEMS` must not be larger than :math:`1`.
-
 * All export names :math:`\export_i.\ENAME` must be different.
 
-* Then the module is valid with :ref:`external types <syntax-externtype>` :math:`\X{it}^\ast \to \X{et}^\ast`.
+* Then the module is valid with :ref:`external types <syntax-externtype>` :math:`\clostype_C(\X{it}^\ast \to \X{et}^\ast)`.
 
 .. math::
    \frac{
@@ -913,7 +911,7 @@ The :ref:`external types <syntax-externtype>` classifying a module may contain f
        \end{array}
      \end{array}
    }{
-     \vdashmodule \module : \X{it}^\ast \to \X{et}^\ast
+     \vdashmodule \module : \clostype_C(\X{it}^\ast \to \X{et}^\ast)
    }
 
 .. note::

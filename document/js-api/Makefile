@@ -1,14 +1,17 @@
+W3C_STATUS    = ED
 BUILDDIR      = _build
 STATICDIR     = _static
 DOWNLOADDIR   = _download
 NAME          = WebAssembly
-DECISION_URL  = https://github.com/WebAssembly/meetings/blob/main/main/2017/WG-12-06.md
+DECISION_URL  = https://github.com/WebAssembly/meetings/blob/main/main/2024/WG-06-12.md
 TAR           = tar
+DEADLINE      = $(shell date -d "+30 days" +%Y-%m-%d 2>/dev/null || date -v +30d +%Y-%m-%d)
+ECHIDNA_DRYRUN = true
 
 .PHONY: all
 all:
 	mkdir -p $(BUILDDIR)/html
-	bikeshed spec index.bs $(BUILDDIR)/html/index.html
+	bikeshed spec --md-status=$(W3C_STATUS) --md-deadline=$(DEADLINE)  index.bs $(BUILDDIR)/html/index.html
 	@echo "Build finished. The HTML pages are in `pwd`/$(BUILDDIR)/html."
 
 .PHONY: publish
@@ -33,7 +36,6 @@ diff: all
 # macOS tar has no “--transform” option (only GNU tar does), so on macOS,
 # do “brew install tar” & run “make” like this: “TAR=gtar make -e WD-tar”
 WD-tar: all
-	bikeshed spec --md-status=WD index.bs $(BUILDDIR)/html/index.html
 	$(TAR) -C $(BUILDDIR)/html --transform="s/index.html/Overview.html/" -cf $(BUILDDIR)/WD.tar index.html
 	@echo "Built $(BUILDDIR)/WD.tar."
 
@@ -48,7 +50,11 @@ WD-echidna: WD-tar
 	curl 'https://labs.w3.org/echidna/api/request' \
 		--user '$(W3C_USERNAME):$(W3C_PASSWORD)' \
 		-F "tar=@$(BUILDDIR)/WD.tar" \
-		-F "decision=$(DECISION_URL)" | tee $(BUILDDIR)/WD-echidna-id.txt
+		-F "decision=$(DECISION_URL)" \
+		-F "dry-run=$(ECHIDNA_DRYRUN)" | tee $(BUILDDIR)/WD-echidna-id.txt
+	python3 ../util/check-echidna-status.py $(BUILDDIR)
+	@echo
+	@echo "Uploaded $(W3C_STATUS). Check its status at https://labs.w3.org/echidna/api/status?id=`cat $(BUILDDIR)/WD-echidna-id.txt`"
 
 .PHONY: WD-echidna-CI
 WD-echidna-CI: WD-tar
@@ -60,6 +66,8 @@ WD-echidna-CI: WD-tar
 	curl 'https://labs.w3.org/echidna/api/request' \
 		-F "tar=@$(BUILDDIR)/WD.tar" \
 		-F "token=$(W3C_ECHIDNA_TOKEN_JSAPI)" \
-		-F "decision=$(DECISION_URL)" | tee $(BUILDDIR)/WD-echidna-id.txt
+		-F "decision=$(DECISION_URL)" \
+		-F "dry-run=$(ECHIDNA_DRYRUN)" | tee $(BUILDDIR)/WD-echidna-id.txt
+	python3 ../util/check-echidna-status.py $(BUILDDIR)
 	@echo
-	@echo "Published working draft. Check its status at https://labs.w3.org/echidna/api/status?id=`cat $(BUILDDIR)/WD-echidna-id.txt`"
+	@echo "Uploaded $(W3C_STATUS). Check its status at https://labs.w3.org/echidna/api/status?id=`cat $(BUILDDIR)/WD-echidna-id.txt`"

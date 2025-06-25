@@ -10,6 +10,8 @@ open Script
 
 let error at msg = raise (Parse_error.Syntax (at, msg))
 
+let thd (_, _, x) = x
+
 
 (* Position handling *)
 
@@ -75,14 +77,11 @@ let nanop f nan =
   | F64 _ -> F64 nan.it @@ nan.at
   | I32 _ | I64 _ -> error nan.at "NaN pattern with non-float type"
 
-let nat s loc =
-  try
-    let n = int_of_string s in
-    if n >= 0 then n else raise (Failure "")
-  with Failure _ -> error (at loc) "integer constant out of range"
-
 let nat32 s loc =
   try I32.of_string_u s with Failure _ -> error (at loc) "i32 constant out of range"
+
+let nat64 s loc =
+  try I64.of_string_u s with Failure _ -> error (at loc) "i64 constant out of range"
 
 let name s loc =
   try Utf8.decode s with Utf8.Utf8 -> error (at loc) "malformed UTF-8 encoding"
@@ -336,12 +335,13 @@ let parse_annots (m : module_) : Custom.section list =
 %token<int -> Ast.instr'> VEC_EXTRACT VEC_REPLACE
 %token FUNC START TYPE PARAM RESULT LOCAL GLOBAL
 %token TABLE ELEM MEMORY TAG DATA DECLARE OFFSET ITEM IMPORT EXPORT
-%token MODULE BIN QUOTE
+%token MODULE BIN QUOTE DEFINITION INSTANCE
 %token SCRIPT REGISTER INVOKE GET
 %token ASSERT_MALFORMED ASSERT_INVALID ASSERT_UNLINKABLE
 %token ASSERT_RETURN ASSERT_TRAP ASSERT_EXCEPTION ASSERT_EXHAUSTION
 %token ASSERT_MALFORMED_CUSTOM ASSERT_INVALID_CUSTOM
 %token<Script.nan> NAN
+%token EITHER
 %token INPUT OUTPUT
 %token EOF
 
@@ -363,6 +363,14 @@ string_list :
 
 
 /* Types */
+
+%inline addr_type :
+  | NUM_TYPE
+    { match $1 with
+      | I32T -> I32AT
+      | I64T -> I64AT
+      | _ -> error (at $sloc) "malformed address type" }
+  | /* empty */ { I32AT }  /* Sugar */
 
 null_opt :
   | /* empty */ { NoNull }
@@ -468,14 +476,14 @@ sub_type :
         List.map (fun y -> VarHT (StatX y.it)) ($4 c type_), $5 c x) }
 
 table_type :
-  | limits ref_type { fun c -> TableT ($1, $2 c) }
+  | addr_type limits ref_type { fun c -> TableT ($1, $2, $3 c) }
 
 memory_type :
-  | limits { fun c -> MemoryT $1 }
+  | addr_type limits { fun c -> MemoryT ($1, $2) }
 
 limits :
-  | NAT { {min = nat32 $1 $loc($1); max = None} }
-  | NAT NAT { {min = nat32 $1 $loc($1); max = Some (nat32 $2 $loc($2))} }
+  | NAT { {min = nat64 $1 $loc($1); max = None} }
+  | NAT NAT { {min = nat64 $1 $loc($1); max = Some (nat64 $2 $loc($2))} }
 
 type_use :
   | LPAR TYPE var RPAR { fun c -> $3 c type_ }
@@ -530,18 +538,18 @@ labeling_end_opt :
   | bind_var { [$1] }
 
 offset_ :
-  | OFFSET_EQ_NAT { nat32 $1 $sloc }
+  | OFFSET_EQ_NAT { nat64 $1 $sloc }
 
 offset_opt :
-  | /* empty */ { 0l }
+  | /* empty */ { 0L }
   | offset_ { $1 }
 
 align :
   | ALIGN_EQ_NAT
-    { let n = nat $1 $sloc in
-      if not (Lib.Int.is_power_of_two n) then
+    { let n = nat64 $1 $sloc in
+      if not (Lib.Int64.is_power_of_two_unsigned n) then
         error (at $sloc) "alignment must be a power of two";
-      Some (Lib.Int.log2 n) }
+      Some (Int64.to_int (Lib.Int64.log2_unsigned n)) }
 
 align_opt :
   | /* empty */ { None }
@@ -672,10 +680,10 @@ lane_imms :
     { fun instr at0 c -> instr (0l @@ at0) $2 $1
         (vec_lane_index $3 (at $loc($3))) }
   | align NAT  /* Sugar */
-    { fun instr at0 c -> instr (0l @@ at0) $1 0l
+    { fun instr at0 c -> instr (0l @@ at0) $1 0L
        (vec_lane_index $2 (at $loc($2))) }
   | NAT  /* Sugar */
-    { fun instr at0 c -> instr (0l @@ at0) None 0l
+    { fun instr at0 c -> instr (0l @@ at0) None 0L
         (vec_lane_index $1 (at $loc($1))) }
 
 
@@ -1111,7 +1119,7 @@ table_fields :
   | table_type const_expr1
     { fun c x loc -> [{ttype = $1 c; tinit = $2 c} @@ loc], [], [], [] }
   | table_type  /* Sugar */
-    { fun c x loc -> let TableT (_, (_, ht)) as ttype = $1 c in
+    { fun c x loc -> let TableT (_, _, (_, ht)) as ttype = $1 c in
       [{ttype; tinit = [RefNull ht @@ loc] @@ loc} @@ loc], [], [], [] }
   | inline_import table_type  /* Sugar */
     { fun c x loc ->
@@ -1121,26 +1129,26 @@ table_fields :
   | inline_export table_fields  /* Sugar */
     { fun c x loc -> let tabs, elems, ims, exs = $2 c x loc in
       tabs, elems, ims, $1 (TableExport x) c :: exs }
-  | ref_type LPAR ELEM elem_expr elem_expr_list RPAR  /* Sugar */
+  | addr_type ref_type LPAR ELEM elem_expr elem_expr_list RPAR  /* Sugar */
     { fun c x loc ->
-      let offset = [i32_const (0l @@ loc) @@ loc] @@ loc in
-      let einit = $4 c :: $5 c in
-      let size = Lib.List32.length einit in
+      let offset = [at_const $1 (0L @@ loc) @@ loc] @@ loc in
+      let einit = $5 c :: $6 c in
+      let size = Lib.List64.length einit in
       let emode = Active {index = x; offset} @@ loc in
-      let (_, ht) as etype = $1 c in
+      let (_, ht) as etype = $2 c in
       let tinit = [RefNull ht @@ loc] @@ loc in
-      [{ttype = TableT ({min = size; max = Some size}, etype); tinit} @@ loc],
+      [{ttype = TableT ($1, {min = size; max = Some size}, etype); tinit} @@ loc],
       [{etype; einit; emode} @@ loc],
       [], [] }
-  | ref_type LPAR ELEM elem_var_list RPAR  /* Sugar */
+  | addr_type ref_type LPAR ELEM elem_var_list RPAR  /* Sugar */
     { fun c x loc ->
-      let offset = [i32_const (0l @@ loc) @@ loc] @@ loc in
-      let einit = $4 c in
-      let size = Lib.List32.length einit in
-      let emode = Active {index = x; offset} @@ loc in
-      let (_, ht) as etype = $1 c in
+      let (_, ht) as etype = $2 c in
       let tinit = [RefNull ht @@ loc] @@ loc in
-      [{ttype = TableT ({min = size; max = Some size}, etype); tinit} @@ loc],
+      let offset = [at_const $1 (0L @@ loc) @@ loc] @@ loc in
+      let einit = $5 c in
+      let size = Lib.List64.length einit in
+      let emode = Active {index = x; offset} @@ loc in
+      [{ttype = TableT ($1, {min = size; max = Some size}, etype); tinit} @@ loc],
       [{etype; einit; emode} @@ loc],
       [], [] }
 
@@ -1173,12 +1181,12 @@ memory_fields :
   | inline_export memory_fields  /* Sugar */
     { fun c x loc -> let mems, data, ims, exs = $2 c x loc in
       mems, data, ims, $1 (MemoryExport x) c :: exs }
-  | LPAR DATA string_list RPAR  /* Sugar */
+  | addr_type LPAR DATA string_list RPAR  /* Sugar */
     { fun c x loc ->
-      let offset = [i32_const (0l @@ loc) @@ loc] @@ loc in
-      let size = Int32.(div (add (of_int (String.length $3)) 65535l) 65536l) in
-      [{mtype = MemoryT {min = size; max = Some size}} @@ loc],
-      [{dinit = $3; dmode = Active {index = x; offset} @@ loc} @@ loc],
+      let size = Int64.(div (add (of_int (String.length $4)) 65535L) 65536L) in
+      let offset = [at_const $1 (0L @@ loc) @@ loc] @@ loc in
+      [{mtype = MemoryT ($1, {min = size; max = Some size})} @@ loc],
+      [{dinit = $4; dmode = Active {index = x; offset} @@ loc} @@ loc],
       [], [] }
 
 tag :
@@ -1418,49 +1426,82 @@ inline_module1 :  /* Sugar */
 script_var :
   | VAR { var $1 $sloc }  /* Sugar */
 
+instance_var :
+  | VAR { var $1 $sloc }  /* Sugar */
+
+definition_opt :
+  | DEFINITION { true }
+  | /* empty */ { false }
+
 script_module :
-  | module_ { $1 }
-  | LPAR MODULE option(module_var) BIN string_list RPAR
-    { let s = $5 @@ $loc($5) in
-      $3, Encoded ("binary:" ^ string_of_pos (at $sloc).left, s) @@ $sloc }
-  | LPAR MODULE option(module_var) QUOTE string_list RPAR
-    { let s = $5 @@ $loc($5) in
-      $3, Quoted ("quote:" ^ string_of_pos (at $sloc).left, s) @@ $sloc }
+  | LPAR MODULE definition_opt option(module_var) module_fields RPAR
+    { let m = $5 (empty_context ()) () () @@ $sloc in
+      $3, $4, Textual (m, parse_annots m) @@ $sloc }
+  | LPAR MODULE definition_opt option(module_var) BIN string_list RPAR
+    { let s = $6 @@ $loc($5) in
+      $3, $4, Encoded ("binary:" ^ string_of_pos (at $sloc).left, s) @@ $sloc }
+  | LPAR MODULE definition_opt option(module_var) QUOTE string_list RPAR
+    { let s = $6 @@ $loc($5) in
+      $3, $4, Quoted ("quote:" ^ string_of_pos (at $sloc).left, s) @@ $sloc }
+
+script_instance :
+  | instance { [], $1 }
+  | script_module  /* sugar */
+    { let isdef, var_opt, m = $1 in
+      if isdef then error (at $sloc) "misplaced module definition";
+      [Module (None, m) @@ $sloc], (var_opt, None) }
+
+instance :
+  | LPAR MODULE INSTANCE instance_var module_var RPAR
+    { Some $4, Some $5 }
+  | LPAR MODULE INSTANCE module_var RPAR
+    { None, Some $4 }
+  | LPAR MODULE INSTANCE RPAR
+    { None, None }
 
 action :
-  | LPAR INVOKE option(module_var) name list(literal) RPAR
+  | LPAR INVOKE option(instance_var) name list(literal) RPAR
     { Invoke ($3, $4, $5) @@ $sloc }
-  | LPAR GET option(module_var) name RPAR
+  | LPAR GET option(instance_var) name RPAR
     { Get ($3, $4) @@ $sloc }
 
 assertion :
   | LPAR ASSERT_MALFORMED script_module STRING RPAR
-    { AssertMalformed (snd $3, $4) @@ $sloc }
+    { [], AssertMalformed (thd $3, $4) @@ $sloc }
   | LPAR ASSERT_INVALID script_module STRING RPAR
-    { AssertInvalid (snd $3, $4) @@ $sloc }
+    { [], AssertInvalid (thd $3, $4) @@ $sloc }
   | LPAR ASSERT_MALFORMED_CUSTOM script_module STRING RPAR
-    { AssertMalformedCustom (snd $3, $4) @@ $sloc }
+    { [], AssertMalformedCustom (thd $3, $4) @@ $sloc }
   | LPAR ASSERT_INVALID_CUSTOM script_module STRING RPAR
-    { AssertInvalidCustom (snd $3, $4) @@ $sloc }
-  | LPAR ASSERT_UNLINKABLE script_module STRING RPAR
-    { AssertUnlinkable (snd $3, $4) @@ $sloc }
-  | LPAR ASSERT_TRAP script_module STRING RPAR
-    { AssertUninstantiable (snd $3, $4) @@ $sloc }
-  | LPAR ASSERT_RETURN action list(result) RPAR { AssertReturn ($3, $4) @@ $sloc }
+    { [], AssertInvalidCustom (thd $3, $4) @@ $sloc }
+  | LPAR ASSERT_UNLINKABLE script_instance STRING RPAR
+    { fst $3, AssertUnlinkable (snd (snd $3), $4) @@ $sloc }
+  | LPAR ASSERT_TRAP script_instance STRING RPAR
+    { fst $3, AssertUninstantiable (snd (snd $3), $4) @@ $sloc }
+  | LPAR ASSERT_RETURN action list(result) RPAR
+    { [], AssertReturn ($3, $4) @@ $sloc }
   | LPAR ASSERT_EXCEPTION action RPAR
-    { AssertException $3 @@ $sloc }
-  | LPAR ASSERT_TRAP action STRING RPAR { AssertTrap ($3, $4) @@ $sloc }
-  | LPAR ASSERT_EXHAUSTION action STRING RPAR { AssertExhaustion ($3, $4) @@ $sloc }
+    { [], AssertException $3 @@ $sloc }
+  | LPAR ASSERT_TRAP action STRING RPAR
+    { [], AssertTrap ($3, $4) @@ $sloc }
+  | LPAR ASSERT_EXHAUSTION action STRING RPAR
+    { [], AssertExhaustion ($3, $4) @@ $sloc }
 
 cmd :
-  | action { Action $1 @@ $sloc }
-  | assertion { Assertion $1 @@ $sloc }
-  | script_module { Module (fst $1, snd $1) @@ $sloc }
-  | LPAR REGISTER name option(module_var) RPAR { Register ($3, $4) @@ $sloc }
-  | meta { Meta $1 @@ $sloc }
+  | action { [Action $1 @@ $sloc] }
+  | assertion { fst $1 @ [Assertion (snd $1) @@ $sloc] }
+  | script_module
+    { let isdef, var_opt, m = $1 in
+      if isdef then
+        [Module (var_opt, m) @@ $sloc]
+      else (* sugar *)
+        [Module (var_opt, m) @@ $sloc; Instance (var_opt, var_opt) @@ $sloc] }
+  | instance { [Instance (fst $1, snd $1) @@ $sloc] }
+  | LPAR REGISTER name option(instance_var) RPAR { [Register ($3, $4) @@ $sloc] }
+  | meta { [Meta $1 @@ $sloc] }
 
 meta :
-  | LPAR SCRIPT option(script_var) list(cmd) RPAR { Script ($3, $4) @@ $sloc }
+  | LPAR SCRIPT option(script_var) list(cmd) RPAR { Script ($3, List.concat $4) @@ $sloc }
   | LPAR INPUT option(script_var) STRING RPAR { Input ($3, $4) @@ $sloc }
   | LPAR OUTPUT option(script_var) STRING RPAR { Output ($3, Some $4) @@ $sloc }
   | LPAR OUTPUT option(script_var) RPAR { Output ($3, None) @@ $sloc }
@@ -1503,13 +1544,14 @@ result :
         error (at $sloc) "wrong number of lane literals";
       VecResult (VecPat
         (Value.V128 ($3, List.map (fun lit -> lit $3) $4))) @@ $sloc }
+  | LPAR EITHER result list(result) RPAR { EitherResult ($3 :: $4) @@ $sloc }
 
 script :
-  | list(cmd) EOF { $1 }
+  | list(cmd) EOF { List.concat $1 }
   | inline_module1 EOF { [Module (None, $1) @@ $sloc] }  /* Sugar */
 
 script1 :
-  | cmd { [$1] }
+  | cmd { $1 }
 
 module1 :
   | module_ EOF { $1 }

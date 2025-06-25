@@ -94,11 +94,11 @@ are *allocated* in a :ref:`store <syntax-store>` :math:`S`, as defined by the fo
 
 1. Let :math:`\tabletype` be the :ref:`table type <syntax-tabletype>` of the table to allocate and :math:`\reff` the initialization value.
 
-2. Let :math:`(\{\LMIN~n, \LMAX~m^?\}~\reftype)` be the structure of :ref:`table type <syntax-tabletype>` :math:`\tabletype`.
+2. Let :math:`(\addrtype~\{\LMIN~n, \LMAX~m^?\}~\reftype)` be the structure of :ref:`table type <syntax-tabletype>` :math:`\tabletype`.
 
 3. Let :math:`a` be the first free :ref:`table address <syntax-tableaddr>` in :math:`S`.
 
-4. Let :math:`\tableinst` be the :ref:`table instance <syntax-tableinst>` :math:`\{ \TITYPE~\tabletype', \TIELEM~\reff^n \}` with :math:`n` elements set to :math:`\reff`.
+4. Let :math:`\tableinst` be the :ref:`table instance <syntax-tableinst>` :math:`\{ \TITYPE~\tabletype, \TIELEM~\reff^n \}` with :math:`n` elements set to :math:`\reff`.
 
 5. Append :math:`\tableinst` to the |STABLES| of :math:`S`.
 
@@ -108,7 +108,7 @@ are *allocated* in a :ref:`store <syntax-store>` :math:`S`, as defined by the fo
    \begin{array}{rlll}
    \alloctable(S, \tabletype, \reff) &=& S', \tableaddr \\[1ex]
    \mbox{where:} \hfill \\
-   \tabletype &=& \{\LMIN~n, \LMAX~m^?\}~\reftype \\
+   \tabletype &=& \addrtype~\{\LMIN~n, \LMAX~m^?\}~\reftype \\
    \tableaddr &=& |S.\STABLES| \\
    \tableinst &=& \{ \TITYPE~\tabletype, \TIELEM~\reff^n \} \\
    S' &=& S \compose \{\STABLES~\tableinst\} \\
@@ -123,7 +123,7 @@ are *allocated* in a :ref:`store <syntax-store>` :math:`S`, as defined by the fo
 
 1. Let :math:`\memtype` be the :ref:`memory type <syntax-memtype>` of the memory to allocate.
 
-2. Let :math:`\{\LMIN~n, \LMAX~m^?\}` be the structure of :ref:`memory type <syntax-memtype>` :math:`\memtype`.
+2. Let :math:`(\addrtype~\{\LMIN~n, \LMAX~m^?\})` be the structure of :ref:`memory type <syntax-memtype>` :math:`\memtype`.
 
 3. Let :math:`a` be the first free :ref:`memory address <syntax-memaddr>` in :math:`S`.
 
@@ -137,7 +137,7 @@ are *allocated* in a :ref:`store <syntax-store>` :math:`S`, as defined by the fo
    \begin{array}{rlll}
    \allocmem(S, \memtype) &=& S', \memaddr \\[1ex]
    \mbox{where:} \hfill \\
-   \memtype &=& \{\LMIN~n, \LMAX~m^?\} \\
+   \memtype &=& \addrtype~\{\LMIN~n, \LMAX~m^?\} \\
    \memaddr &=& |S.\SMEMS| \\
    \meminst &=& \{ \MITYPE~\memtype, \MIDATA~(\hex{00})^{n \cdot 64\,\F{Ki}} \} \\
    S' &=& S \compose \{\SMEMS~\meminst\} \\
@@ -167,32 +167,6 @@ are *allocated* in a :ref:`store <syntax-store>` :math:`S`, as defined by the fo
    \tagaddr &=& |S.\STAGS| \\
    \taginst &=& \{ \TAGITYPE~\tagtype \} \\
    S' &=& S \compose \{\STAGS~\taginst\} \\
-   \end{array}
-
-
-.. index:: exception, exception instance, exception address, tag address
-.. _alloc-exception:
-
-:ref:`Exceptions <syntax-exninst>`
-..................................
-
-1. Let :math:`ta` be the :ref:`tag address <syntax-tagaddr>` associated with the exception to allocate and :math:`\EIFIELDS~\val^\ast` be the values to initialize the exception with.
-
-2. Let :math:`a` be the first free :ref:`exception address <syntax-exnaddr>` in :math:`S`.
-
-3. Let :math:`\exninst` be the :ref:`exception instance <syntax-exninst>` :math:`\{ \EITAG~ta, \EIFIELDS~\val^\ast \}`.
-
-4. Append :math:`\exninst` to the |SEXNS| of :math:`S`.
-
-5. Return :math:`a`.
-
-.. math::
-   \begin{array}{rlll}
-   \allocexn(S, \tagaddr, \val^\ast) &=& S', \exnaddr \\[1ex]
-   \mbox{where:} \hfill \\
-   \exnaddr &=& |S.\SEXNS| \\
-   \exninst &=& \{ \EITAG~\tagaddr, \EIFIELDS~\val^\ast \} \\
-   S' &=& S \compose \{\SEXNS~\exninst\} \\
    \end{array}
 
 
@@ -284,28 +258,25 @@ Growing :ref:`tables <syntax-tableinst>`
 
 2. Let :math:`\X{len}` be :math:`n` added to the length of :math:`\tableinst.\TIELEM`.
 
-3. If :math:`\X{len}` is larger than or equal to :math:`2^{32}`, then fail.
+3. Let :math:`(\addrtype~\limits~\reftype)` be the structure of :ref:`table type <syntax-tabletype>` :math:`\tableinst.\TITYPE`.
 
-4. Let :math:`\limits~t` be the structure of :ref:`table type <syntax-tabletype>` :math:`\tableinst.\TITYPE`.
+4. Let :math:`\limits'` be :math:`\limits` with :math:`\LMIN` updated to :math:`\X{len}`.
 
-5. Let :math:`\limits'` be :math:`\limits` with :math:`\LMIN` updated to :math:`\X{len}`.
+5. If the :ref:`table type <syntax-tabletype>` :math:`(\addrtype~\limits'~\reftype)` is not :ref:`valid <valid-tabletype>`, then fail.
 
-6. If :math:`\limits'` is not :ref:`valid <valid-limits>`, then fail.
+6. Append :math:`\reff^n` to :math:`\tableinst.\TIELEM`.
 
-7. Append :math:`\reff^n` to :math:`\tableinst.\TIELEM`.
-
-8. Set :math:`\tableinst.\TITYPE` to the :ref:`table type <syntax-tabletype>` :math:`\limits'~t`.
+7. Set :math:`\tableinst.\TITYPE` to the :ref:`table type <syntax-tabletype>` :math:`(\addrtype~\limits'~\reftype)`.
 
 .. math::
    \begin{array}{rllll}
-   \growtable(\tableinst, n, \reff) &=& \tableinst \with \TITYPE = \limits'~t \with \TIELEM = \tableinst.\TIELEM~\reff^n \\
+   \growtable(\tableinst, n, \reff) &=& \tableinst \with \TITYPE = \addrtype~\limits'~\reftype \with \TIELEM = \tableinst.\TIELEM~\reff^n \\
      && (
        \begin{array}[t]{@{}r@{~}l@{}}
        \iff & \X{len} = n + |\tableinst.\TIELEM| \\
-       \wedge & \X{len} < 2^{32} \\
-       \wedge & \limits~t = \tableinst.\TITYPE \\
+       \wedge & \addrtype~\limits~\reftype = \tableinst.\TITYPE \\
        \wedge & \limits' = \limits \with \LMIN = \X{len} \\
-       \wedge & \vdashlimits \limits' \ok) \\
+       \wedge & \vdashtabletype \addrtype~\limits'~\reftype \ok) \\
        \end{array} \\
    \end{array}
 
@@ -322,28 +293,25 @@ Growing :ref:`memories <syntax-meminst>`
 
 3. Let :math:`\X{len}` be :math:`n` added to the length of :math:`\meminst.\MIDATA` divided by the :ref:`page size <page-size>` :math:`64\,\F{Ki}`.
 
-4. If :math:`\X{len}` is larger than :math:`2^{16}`, then fail.
+4. Let :math:`(\addrtype~\limits)` be the structure of :ref:`memory type <syntax-memtype>` :math:`\meminst.\MITYPE`.
 
-5. Let :math:`\limits` be the structure of :ref:`memory type <syntax-memtype>` :math:`\meminst.\MITYPE`.
+5. Let :math:`\limits'` be :math:`\limits` with :math:`\LMIN` updated to :math:`\X{len}`.
 
-6. Let :math:`\limits'` be :math:`\limits` with :math:`\LMIN` updated to :math:`\X{len}`.
+6. If the :ref:`memory type <syntax-memtype>` :math:`(\addrtype~\limits')` is not :ref:`valid <valid-memtype>`, then fail.
 
-7. If :math:`\limits'` is not :ref:`valid <valid-limits>`, then fail.
+7. Append :math:`n` times :math:`64\,\F{Ki}` :ref:`bytes <syntax-byte>` with value :math:`\hex{00}` to :math:`\meminst.\MIDATA`.
 
-8. Append :math:`n` times :math:`64\,\F{Ki}` :ref:`bytes <syntax-byte>` with value :math:`\hex{00}` to :math:`\meminst.\MIDATA`.
-
-9. Set :math:`\meminst.\MITYPE` to the :ref:`memory type <syntax-memtype>` :math:`\limits'`.
+8. Set :math:`\meminst.\MITYPE` to the :ref:`memory type <syntax-memtype>` :math:`(\addrtype~\limits')`.
 
 .. math::
    \begin{array}{rllll}
-   \growmem(\meminst, n) &=& \meminst \with \MITYPE = \limits' \with \MIDATA = \meminst.\MIDATA~(\hex{00})^{n \cdot 64\,\F{Ki}} \\
+   \growmem(\meminst, n) &=& \meminst \with \MITYPE = \addrtype~\limits' \with \MIDATA = \meminst.\MIDATA~(\hex{00})^{n \cdot 64\,\F{Ki}} \\
      && (
        \begin{array}[t]{@{}r@{~}l@{}}
        \iff & \X{len} = n + |\meminst.\MIDATA| / 64\,\F{Ki} \\
-       \wedge & \X{len} \leq 2^{16} \\
-       \wedge & \limits = \meminst.\MITYPE \\
+       \wedge & \addrtype~\limits = \meminst.\MITYPE \\
        \wedge & \limits' = \limits \with \LMIN = \X{len} \\
-       \wedge & \vdashlimits \limits' \ok) \\
+       \wedge & \vdashmemtype \addrtype~\limits' \ok) \\
        \end{array} \\
    \end{array}
 
@@ -396,7 +364,7 @@ and list of :ref:`reference <syntax-ref>` vectors for the module's :ref:`element
 
 8. For each :ref:`element segment <syntax-elem>` :math:`\elem_i` in :math:`\module.\MELEMS`, do:
 
-   a. Let :math:`\reftype_i` be the element :ref:`reference type <syntax-reftype>` obtained by `instantiating <type-inst>` :math:`\elem_i.\ETYPE` in :math:`\moduleinst` defined below.
+   a. Let :math:`\reftype_i` be the element :ref:`reference type <syntax-reftype>` obtained by :ref:`instantiating <type-inst>` :math:`\elem_i.\ETYPE` in :math:`\moduleinst` defined below.
 
    b. Let :math:`\elemaddr_i` be the :ref:`element address <syntax-elemaddr>` resulting from :ref:`allocating <alloc-elem>` a :ref:`element instance <syntax-eleminst>` of :ref:`reference type <syntax-reftype>` :math:`\reftype_i` with contents :math:`(\reff_{\F{e}}^\ast)^\ast[i]`.
 
@@ -447,7 +415,7 @@ and list of :ref:`reference <syntax-ref>` vectors for the module's :ref:`element
 
 24. Let :math:`\exportinst^\ast` be the concatenation of the :ref:`export instances <syntax-exportinst>` :math:`\exportinst_i` in index order.
 
-25. Let :math:`\moduleinst` be the :ref:`module instance <syntax-moduleinst>` :math:`\{\MITYPES~\deftype^\ast,` :math:`\MIFUNCS~\funcaddr_{\F{mod}}^\ast,` :math:`\MITABLES~\tableaddr_{\F{mod}}^\ast,` :math:`\MIMEMS~\memaddr_{\F{mod}}^\ast,` :math:`\MIGLOBALS~\globaladdr_{\F{mod}}^\ast,` :math:`\MITAGS~\tagaddr_{\F{mod}}^\ast`, :math:`\MIEXPORTS~\exportinst^\ast\}`.
+25. Let :math:`\moduleinst` be the :ref:`module instance <syntax-moduleinst>` :math:`\{\MITYPES~\deftype^\ast,` :math:`\MIFUNCS~\funcaddr_{\F{mod}}^\ast,` :math:`\MITABLES~\tableaddr_{\F{mod}}^\ast,` :math:`\MIMEMS~\memaddr_{\F{mod}}^\ast,` :math:`\MIGLOBALS~\globaladdr_{\F{mod}}^\ast,` :math:`\MITAGS~\tagaddr_{\F{mod}}^\ast`, :math:`\MIELEMS~\elemaddr^\ast,` :math:`\MIDATAS~\dataaddr^\ast,` :math:`\MIEXPORTS~\exportinst^\ast\}`.
 
 26. Return :math:`\moduleinst`.
 
@@ -702,7 +670,7 @@ It is up to the :ref:`embedder <embedder>` to define how such conditions are rep
      &\wedge& (\expr_{\F{g}} = \global.\GINIT)^\ast \\
      &\wedge& (\expr_{\F{t}} = \table.\GINIT)^\ast \\
      &\wedge& (\expr_{\F{e}}^\ast = \elem.\EINIT)^n \\[1ex]
-     &\wedge& S', \moduleinst = \allocmodule(S, \module, \externval^k, \val^\ast, (\reff^\ast)^n) \\
+     &\wedge& S', \moduleinst = \allocmodule(S, \module, \externval^k, \val_{\F{g}}^\ast, \reff_{\F{t}}^\ast, (\reff_{\F{e}}^\ast)^n) \\
      &\wedge& F = \{ \AMODULE~\moduleinst, \ALOCALS~\epsilon \} \\[1ex]
      &\wedge& (S'; F; \expr_{\F{g}} \stepto^\ast S'; F; \val_{\F{g}}~\END)^\ast \\
      &\wedge& (S'; F; \expr_{\F{t}} \stepto^\ast S'; F; \reff_{\F{t}}~\END)^\ast \\

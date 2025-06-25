@@ -190,7 +190,10 @@ Occasionally, it is convenient to group operators together according to the foll
 .. _syntax-visatbinop:
 .. _syntax-vfunop:
 .. _syntax-vfbinop:
+.. _syntax-rvfbinop:
+.. _syntax-rvfternop:
 .. _syntax-instr-vec:
+.. _syntax-instr-relaxed:
 
 Vector Instructions
 ~~~~~~~~~~~~~~~~~~~
@@ -273,8 +276,16 @@ Vector instructions (also known as *SIMD* instructions, *single instruction mult
      \K{f32x4.}\VCONVERT\K{\_i32x4\_}\sx ~|~
      \K{f32x4.}\VDEMOTE\K{\_f64x2\_zero} \\&&|&
      \K{f64x2.}\VCONVERT\K{\_low\_i32x4\_}\sx ~|~
-     \K{f64x2.}\VPROMOTE\K{\_low\_f32x4} \\&&|&
-     \dots \\
+     \K{f64x2.}\VPROMOTE\K{\_low\_f32x4} \\
+     & &|& \K{i8x16.}\RELAXEDSWIZZLE \\
+     & &|& \K{i16x8.}\RELAXEDQ15MULRS \\
+     & &|& \K{i32x4.}\RELAXEDTRUNC\K{\_f32x4\_}\sx \\
+     & &|& \K{i16x8.}\RELAXEDDOT\K{\_i8x16\_i7x16\_s} \\
+     & &|& \K{i32x4.}\RELAXEDDOT\K{\_i8x16\_i7x16\_add\_s} \\
+     & &|& \ishape\K{.}\RELAXEDLANESELECT \\
+     & &|& \fshape\K{.}\rvfternop \\
+     & &|& \fshape\K{.}\rvfbinop \\
+     & &|& \dots \\
    \end{array}
 
 .. math::
@@ -338,6 +349,12 @@ Vector instructions (also known as *SIMD* instructions, *single instruction mult
      \K{max} ~|~
      \K{pmin} ~|~
      \K{pmax} \\
+   \production{relaxed vector floating-point binary operator} & \rvfbinop &::=&
+     \K{relaxed\_min} ~|~
+     \K{relaxed\_max} \\
+   \production{relaxed vector floating-point ternary operator} & \rvfternop &::=&
+     \K{relaxed\_madd} ~|~
+     \K{relaxed\_nmadd} \\
    \end{array}
 
 .. _syntax-vec-shape:
@@ -382,6 +399,7 @@ For the other vector instructions, the use of two's complement for the signed in
 .. _syntax-vunop:
 .. _syntax-vbinop:
 .. _syntax-vrelop:
+.. _syntax-vternop:
 .. _syntax-vtestop:
 .. _syntax-vcvtop:
 
@@ -399,9 +417,14 @@ Occasionally, it is convenient to group operators together according to the foll
    \production{binary operator} & \vbinop &::=&
      \vibinop ~|~ \vfbinop \\&&|&
      \viminmaxop ~|~ \visatbinop \\&&|&
+     \rvfbinop \\&&|&
      \VMUL ~|~
      \AVGR\K{\_u} ~|~
-     \Q15MULRSAT\K{\_s} \\
+     \Q15MULRSAT\K{\_s} \\&&|&
+     \RELAXEDQ15MULRS\K{\_s} \\
+   \production{ternary operator} & \vternop &::=&
+     \vvternop ~|~
+     \rvfternop \\
    \production{test operator} & \vtestop &::=&
      \vitestop \\
    \production{relational operator} & \vrelop &::=&
@@ -411,7 +434,8 @@ Occasionally, it is convenient to group operators together according to the foll
      \VTRUNC\K{\_sat} ~|~
      \VCONVERT ~|~
      \VDEMOTE ~|~
-     \VPROMOTE \\
+     \VPROMOTE ~|~
+     \RELAXEDTRUNC \\
    \end{array}
 
 
@@ -561,7 +585,8 @@ Instructions in this group can operate on operands of any :ref:`value type <synt
 The |DROP| instruction simply throws away a single operand.
 
 The |SELECT| instruction selects one of its first two operands based on whether its third operand is zero or not.
-It may include a :ref:`value type <syntax-valtype>` determining the type of these operands. If missing, the operands must be of :ref:`numeric type <syntax-numtype>`.
+It may include a :ref:`value type <syntax-valtype>` determining the type of these operands.
+If missing, the operands must be of :ref:`numeric <syntax-numtype>` or :ref:`vector <syntax-vectype>` type.
 
 .. note::
    In future versions of WebAssembly, the type annotation on |SELECT| may allow for more than a single value being selected at the same time.
@@ -650,9 +675,11 @@ Instructions in this group are concerned with linear :ref:`memory <syntax-mem>`.
 .. math::
    \begin{array}{llrl}
    \production{memory immediate} & \memarg &::=&
-     \{ \OFFSET~\u32, \ALIGN~\u32 \} \\
+     \{ \OFFSET~\u64, \ALIGN~\u32 \} \\
+   \production{type width} & \X{nn} &::=&
+     \K{32} ~|~ \K{64} \\
    \production{lane width} & \X{ww} &::=&
-     8 ~|~ 16 ~|~ 32 ~|~ 64 \\
+     \K{8} ~|~ \K{16} ~|~ \K{32} ~|~ \K{64} \\
    \production{instruction} & \instr &::=&
      \dots \\&&|&
      \K{i}\X{nn}\K{.}\LOAD~\memidx~\memarg ~|~
@@ -683,7 +710,7 @@ Instructions in this group are concerned with linear :ref:`memory <syntax-mem>`.
      \DATADROP~\dataidx \\
    \end{array}
 
-Memory is accessed with |LOAD| and |STORE| instructions for the different :ref:`number types <syntax-numtype>` and `vector types <syntax-vectype>`.
+Memory is accessed with |LOAD| and |STORE| instructions for the different :ref:`number types <syntax-numtype>` and :ref:`vector types <syntax-vectype>`.
 They all take a :ref:`memory index <syntax-memidx>` and a *memory immediate* |memarg| that contains an address *offset* and the expected *alignment* (expressed as the exponent of a power of 2).
 
 Integer loads and stores can optionally specify a *storage size* that is smaller than the :ref:`bit width <syntax-numtype>` of the respective value type.
@@ -692,12 +719,9 @@ In the case of loads, a sign extension mode |sx| is then required to select appr
 Vector loads can specify a shape that is half the :ref:`bit width <syntax-valtype>` of |V128|. Each lane is half its usual size, and the sign extension mode |sx| then specifies how the smaller lane is extended to the larger lane.
 Alternatively, vector loads can perform a *splat*, such that only a single lane of the specified storage size is loaded, and the result is duplicated to all lanes.
 
-The static address offset is added to the dynamic address operand, yielding a 33 bit *effective address* that is the zero-based index at which the memory is accessed.
+The static address offset is added to the dynamic address operand, yielding a 33-bit or 65-bit *effective address* that is the zero-based index at which the memory is accessed.
 All values are read and written in |LittleEndian|_ byte order.
 A :ref:`trap <trap>` results if any of the accessed memory bytes lies outside the address range implied by the memory's current size.
-
-.. note::
-   Future versions of WebAssembly might provide memory instructions with 64 bit address ranges.
 
 The |MEMORYSIZE| instruction returns the current size of a memory.
 The |MEMORYGROW| instruction grows a memory by a given delta and returns the previous size, or :math:`-1` if enough memory cannot be allocated.

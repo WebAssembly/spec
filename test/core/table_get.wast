@@ -1,6 +1,7 @@
 (module
   (table $t2 2 externref)
   (table $t3 3 funcref)
+  (table $t64 i64 3 funcref)
   (elem (table $t3) (i32.const 1) func $dummy)
   (func $dummy)
 
@@ -15,6 +16,9 @@
   (func $f3 (export "get-funcref") (param $i i32) (result funcref)
     (table.get $t3 (local.get $i))
   )
+  (func $f4 (export "get-funcref-t64") (param $i i64) (result funcref)
+    (table.get $t64 (local.get $i))
+  )
 
   (func (export "is_null-funcref") (param $i i32) (result i32)
     (ref.is_null (call $f3 (local.get $i)))
@@ -27,6 +31,7 @@
 (assert_return (invoke "get-externref" (i32.const 1)) (ref.extern 1))
 
 (assert_return (invoke "get-funcref" (i32.const 0)) (ref.null func))
+(assert_return (invoke "get-funcref-t64" (i64.const 0)) (ref.null func))
 (assert_return (invoke "is_null-funcref" (i32.const 1)) (i32.const 0))
 (assert_return (invoke "is_null-funcref" (i32.const 2)) (i32.const 0))
 

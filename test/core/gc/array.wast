@@ -158,6 +158,10 @@
     (array.new_data $vec $d (i32.const 1) (i32.const 3))
   )
 
+  (func $new-overflow (export "new-overflow") (result (ref $vec))
+    (array.new_data $vec $d (i32.const 0x8000_0000) (i32.const 0x8000_0000))
+  )
+
   (func $get_u (param $i i32) (param $v (ref $vec)) (result i32)
     (array.get_u $vec (local.get $v) (local.get $i))
   )
@@ -189,6 +193,10 @@
   (func (export "len") (result i32)
     (call $len (call $new))
   )
+
+  (func (export "drop_segs")
+    (data.drop $d)
+  )
 )
 
 (assert_return (invoke "new") (ref.array))
@@ -198,9 +206,15 @@
 (assert_return (invoke "set_get" (i32.const 1) (i32.const 7)) (i32.const 7))
 (assert_return (invoke "len") (i32.const 3))
 
+(assert_trap (invoke "new-overflow") "out of bounds memory access")
 (assert_trap (invoke "get_u" (i32.const 10)) "out of bounds array access")
 (assert_trap (invoke "get_s" (i32.const 10)) "out of bounds array access")
 (assert_trap (invoke "set_get" (i32.const 10) (i32.const 7)) "out of bounds array access")
+
+(assert_return (invoke "drop_segs"))
+
+(assert_trap (invoke "new") "out of bounds memory access")
+(assert_trap (invoke "new-overflow") "out of bounds memory access")
 
 (module
   (type $bvec (array i8))
@@ -216,6 +230,10 @@
 
   (func $new (export "new") (result (ref $vec))
     (array.new_elem $vec $e (i32.const 0) (i32.const 2))
+  )
+
+  (func $new-overflow (export "new-overflow") (result (ref $vec))
+    (array.new_elem $vec $e (i32.const 0x8000_0000) (i32.const 0x8000_0000))
   )
 
   (func $sub1 (result (ref $nvec))
@@ -249,6 +267,10 @@
   (func (export "len") (result i32)
     (call $len (call $new))
   )
+
+  (func (export "drop_segs")
+    (elem.drop $e)
+  )
 )
 
 (assert_return (invoke "new") (ref.array))
@@ -258,8 +280,14 @@
 (assert_return (invoke "set_get" (i32.const 0) (i32.const 1) (i32.const 1)) (i32.const 2))
 (assert_return (invoke "len") (i32.const 2))
 
+(assert_trap (invoke "new-overflow") "out of bounds table access")
 (assert_trap (invoke "get" (i32.const 10) (i32.const 0)) "out of bounds array access")
 (assert_trap (invoke "set_get" (i32.const 10) (i32.const 0) (i32.const 0)) "out of bounds array access")
+
+(assert_return (invoke "drop_segs"))
+
+(assert_trap (invoke "new") "out of bounds table access")
+(assert_trap (invoke "new-overflow") "out of bounds table access")
 
 (assert_invalid
   (module

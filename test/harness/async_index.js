@@ -52,6 +52,15 @@ const EXPECT_INVALID = false;
 
 /* DATA **********************************************************************/
 
+let hostrefs = {};
+let hostsym = Symbol("hostref");
+function hostref(s) {
+  if (! (s in hostrefs)) hostrefs[s] = {[hostsym]: s};
+  return hostrefs[s];
+}
+function eq_ref(x, y) {
+  return x === y ? 1 : 0;
+}
 let externrefs = {};
 let externsym = Symbol("externref");
 function externref(s) {
@@ -86,6 +95,8 @@ function reinitializeRegistry() {
 
   chain = chain.then(_ => {
     let spectest = {
+      hostref: hostref,
+      eq_ref: eq_ref,
       externref: externref,
       is_externref: is_externref,
       is_funcref: is_funcref,
@@ -182,22 +193,22 @@ function assert_invalid_custom(bytes) {
 
 const assert_malformed_custom = assert_invalid_custom;
 
-function instance(bytes, imports, valid = true) {
+function instance(module, imports, valid = true) {
   const test = valid
     ? "Test that WebAssembly instantiation succeeds"
     : "Test that WebAssembly instantiation fails";
   const loc = new Error().stack.toString().replace("Error", "");
-  chain = Promise.all([imports, chain])
+  chain = Promise.all([module, imports, chain])
     .then(values => {
-      let imports = values[0] ? values[0] : registry;
-      return WebAssembly.instantiate(binary(bytes), imports);
+      let imports = values[1] ? values[1] : registry;
+      return WebAssembly.instantiate(values[0], imports);
     })
     .then(
-      pair => {
+      inst => {
         uniqueTest(_ => {
           assert_true(valid, loc);
         }, test);
-        return pair.instance;
+        return inst;
       },
       error => {
         uniqueTest(_ => {
@@ -293,11 +304,25 @@ function assert_return(action, ...expected) {
                 // so there's no good way to test that it's a canonical NaN.
                 assert_true(Number.isNaN(actual[i]), `expected NaN, observed ${actual[i]}.`);
                 return;
+              case "ref.i31":
+                assert_true(typeof actual[i] === "number" && (actual[i] & 0x7fffffff) === actual[i], `expected Wasm i31, got ${actual[i]}`);
+                return;
+              case "ref.any":
+              case "ref.eq":
+              case "ref.struct":
+              case "ref.array":
+                // For now, JS can't distinguish exported Wasm GC values,
+                // so we only test for object.
+                assert_true(typeof actual[i] === "object", `expected Wasm GC object, got ${actual[i]}`);
+                return;
               case "ref.func":
                 assert_true(typeof actual[i] === "function", `expected Wasm function, got ${actual[i]}`);
                 return;
               case "ref.extern":
                 assert_true(actual[i] !== null, `expected Wasm reference, got ${actual[i]}`);
+                return;
+              case "ref.null":
+                assert_true(actual[i] === null, `expected Wasm null reference, got ${actual[i]}`);
                 return;
               default:
                 assert_equals(actual[i], expected[i], loc);

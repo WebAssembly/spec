@@ -56,9 +56,9 @@ A :ref:`heap type <syntax-heaptype>` :math:`\heaptype_1` matches a :ref:`heap ty
 
 * Or there exists a :ref:`valid <valid-heaptype>` :ref:`heap type <syntax-heaptype>` :math:`\heaptype'`, such that :math:`\heaptype_1` :ref:`matches <match-heaptype>` :math:`\heaptype'` and :math:`\heaptype'` :ref:`matches <match-heaptype>` :math:`\heaptype_2`.
 
-* Or :math:`heaptype_1` is :math:`\EQT` and :math:`\heaptype_2` is :math:`\ANY`.
+* Or :math:`\heaptype_1` is :math:`\EQT` and :math:`\heaptype_2` is :math:`\ANY`.
 
-* Or :math:`\heaptype_1` is one of :math:`\I31`, :math:`\STRUCT`, or :math:`\ARRAY` and :math:`heaptype_2` is :math:`\EQT`.
+* Or :math:`\heaptype_1` is one of :math:`\I31`, :math:`\STRUCT`, or :math:`\ARRAY` and :math:`\heaptype_2` is :math:`\EQT`.
 
 * Or :math:`\heaptype_1` is a :ref:`defined type <syntax-deftype>` which :ref:`expands <aux-expand-deftype>` to a :ref:`structure type <syntax-structtype>` and :math:`\heaptype_2` is :math:`\STRUCT`.
 
@@ -76,7 +76,9 @@ A :ref:`heap type <syntax-heaptype>` :math:`\heaptype_1` matches a :ref:`heap ty
 
 * Or :math:`\heaptype_1` is :math:`\NOFUNC` and :math:`\heaptype_2` :ref:`matches <match-heaptype>` :math:`\FUNC`.
 
-* Or :math:`\heaptype_1` is :math:`\NOEXTERN` and :math:`\heaptype_2` :ref:`matches <match-heaptype>` :math:`\EXTERN`.
+* Or :math:`\heaptype_1` is :math:`\NOEXN` and :math:`\heaptype_2` is :math:`\EXN`.
+
+* Or :math:`\heaptype_1` is :math:`\NOEXTERN` and :math:`\heaptype_2` is :math:`\EXTERN`.
 
 * Or :math:`\heaptype_1` is :math:`\BOTH`.
 
@@ -168,9 +170,13 @@ A :ref:`heap type <syntax-heaptype>` :math:`\heaptype_1` matches a :ref:`heap ty
    }
    \qquad
    \frac{
-     C \vdashheaptypematch \X{ht} \matchesheaptype \EXTERN
    }{
-     C \vdashheaptypematch \NOEXTERN \matchesheaptype \X{ht}
+     C \vdashheaptypematch \NOEXN \matchesheaptype \EXN
+   }
+   \qquad
+   \frac{
+   }{
+     C \vdashheaptypematch \NOEXTERN \matchesheaptype \EXTERN
    }
 
 .. math::
@@ -188,7 +194,7 @@ A :ref:`heap type <syntax-heaptype>` :math:`\heaptype_1` matches a :ref:`heap ty
 Reference Types
 ~~~~~~~~~~~~~~~
 
-A :ref:`reference type <syntax-reftype>` :math:`\REF~\NULL_1^?~heaptype_1` matches a :ref:`reference type <syntax-reftype>` :math:`\REF~\NULL_2^?~heaptype_2` if and only if:
+A :ref:`reference type <syntax-reftype>` :math:`\REF~\NULL_1^?~\heaptype_1` matches a :ref:`reference type <syntax-reftype>` :math:`\REF~\NULL_2^?~\heaptype_2` if and only if:
 
 * The :ref:`heap type <syntax-heaptype>` :math:`\heaptype_1` :ref:`matches <match-heaptype>` :math:`\heaptype_2`.
 
@@ -258,7 +264,7 @@ Instruction Types
 ~~~~~~~~~~~~~~~~~
 
 Subtyping is further lifted to :ref:`instruction types <syntax-instrtype>`.
-An :ref:`instruction type <syntax-instrtype>` :math:`[t_{11}^\ast] \to_{x_1^\ast} [t_{12}^\ast]` matches a type :math:`[t_{21}^ast] \to_{x_2^\ast} [t_{22}^\ast]` if and only if:
+An :ref:`instruction type <syntax-instrtype>` :math:`[t_{11}^\ast] \to_{x_1^\ast} [t_{12}^\ast]` matches a type :math:`[t_{21}^\ast] \to_{x_2^\ast} [t_{22}^\ast]` if and only if:
 
 * There is a common sequence of :ref:`value types <syntax-valtype>` :math:`t^\ast` such that :math:`t_{21}^\ast` equals :math:`t^\ast~{t'_{21}}^\ast` and :math:`t_{22}^\ast` equals :math:`t^\ast~{t'_{22}}^\ast`.
 
@@ -298,7 +304,7 @@ An :ref:`instruction type <syntax-instrtype>` :math:`[t_{11}^\ast] \to_{x_1^\ast
 Function Types
 ~~~~~~~~~~~~~~
 
-A :ref:`function type <syntax-functype>` :math:`[t_{11}^\ast] \toF [t_{12}^\ast]` matches a type :math:`[t_{21}^ast] \toF [t_{22}^\ast]` if and only if:
+A :ref:`function type <syntax-functype>` :math:`[t_{11}^\ast] \toF [t_{12}^\ast]` matches a type :math:`[t_{21}^\ast] \toF [t_{22}^\ast]` if and only if:
 
 * The :ref:`result type <syntax-resulttype>` :math:`[t_{21}^\ast]` :ref:`matches <match-resulttype>` :math:`[t_{11}^\ast]`.
 
@@ -329,7 +335,7 @@ A :ref:`composite type <syntax-comptype>` :math:`\comptype_1` matches a type :ma
 
   * The :ref:`function type <syntax-functype>` :math:`\functype_1` :ref:`matches <match-functype>` :math:`\functype_2`.
 
-* Or the composite type :math:`\comptype_1` is :math:`\TSTRUCT~\fieldtype_1^{n_1}` and :math:`\comptype_2` is :math:`\TSTRUCT~\fieldtype_2` and:
+* Or the composite type :math:`\comptype_1` is :math:`\TSTRUCT~\fieldtype_1^{n_1}` and :math:`\comptype_2` is :math:`\TSTRUCT~\fieldtype_2^{n_2}` and:
 
   * The arity :math:`n_1` is greater than or equal to :math:`n_2`.
 
@@ -454,7 +460,7 @@ A :ref:`defined type <syntax-deftype>` :math:`\deftype_1` matches a type :math:`
    }
 
 .. note::
-   Note that there is no explicit definition of type _equivalence_,
+   Note that there is no explicit definition of type *equivalence*,
    since it coincides with syntactic equality,
    as used in the premise of the former rule above.
 
@@ -502,7 +508,9 @@ Limits
 Table Types
 ~~~~~~~~~~~
 
-A :ref:`table type <syntax-tabletype>` :math:`(\limits_1~\reftype_1)` matches :math:`(\limits_2~\reftype_2)` if and only if:
+A :ref:`table type <syntax-tabletype>` :math:`(\addrtype_1~\limits_1~\reftype_1)` matches :math:`(\addrtype_2~\limits_2~\reftype_2)` if and only if:
+
+* Address types :math:`\addrtype_1` and :math:`\addrtype_2` are the same.
 
 * Limits :math:`\limits_1` :ref:`match <match-limits>` :math:`\limits_2`.
 
@@ -517,7 +525,7 @@ A :ref:`table type <syntax-tabletype>` :math:`(\limits_1~\reftype_1)` matches :m
      \qquad
      C \vdashreftypematch \reftype_2 \matchesreftype \reftype_1
    }{
-     C \vdashtabletypematch \limits_1~\reftype_1 \matchestabletype \limits_2~\reftype_2
+     C \vdashtabletypematch \addrtype~\limits_1~\reftype_1 \matchestabletype \addrtype~\limits_2~\reftype_2
    }
 
 
@@ -527,7 +535,9 @@ A :ref:`table type <syntax-tabletype>` :math:`(\limits_1~\reftype_1)` matches :m
 Memory Types
 ~~~~~~~~~~~~
 
-A :ref:`memory type <syntax-memtype>` :math:`\limits_1` matches :math:`\limits_2` if and only if:
+A :ref:`memory type <syntax-memtype>` :math:`(\addrtype_1~\limits_1)` matches :math:`(\addrtype_2~\limits_2)` if and only if:
+
+* Address types :math:`\addrtype_1` and :math:`\addrtype_2` are the same.
 
 * Limits :math:`\limits_1` :ref:`match <match-limits>` :math:`\limits_2`.
 
@@ -537,7 +547,7 @@ A :ref:`memory type <syntax-memtype>` :math:`\limits_1` matches :math:`\limits_2
    \frac{
      C \vdashlimitsmatch \limits_1 \matcheslimits \limits_2
    }{
-     C \vdashmemtypematch \limits_1 \matchesmemtype \limits_2
+     C \vdashmemtypematch \addrtype~\limits_1 \matchesmemtype \addrtype~\limits_2
    }
 
 
@@ -576,14 +586,22 @@ A :ref:`global type <syntax-globaltype>` :math:`(\mut_1~t_1)` matches :math:`(\m
 Tag Types
 ~~~~~~~~~
 
-A :ref:`tag type <syntax-tagtype>` :math:`\tagtype_1` matches :math:`\tagtype_2` if and only if they are the same.
+A :ref:`tag type <syntax-tagtype>` :math:`\deftype_1` matches :math:`\deftype_2` if and only if the :ref:`defined type <syntax-deftype>` :math:`\deftype_1` :ref:`matches <match-deftype>` :math:`\deftype_2`, and vice versa.
 
 .. math::
    \frac{
+     C \vdashdeftypematch \deftype_1 \matchesdeftype \deftype_2
+     \qquad
+     C \vdashdeftypematch \deftype_2 \matchesdeftype \deftype_1
    }{
-     C \vdashtagtypematch \tagtype \matchestagtype \tagtype
+     C \vdashtagtypematch \deftype_1 \matchestagtype \deftype_2
    }
 
+.. note::
+   Although the conclusion of this rule looks identical to its premise,
+   they in fact describe different relations:
+   the premise invokes subtyping on defined types,
+   while the conclusion defines it on tag types that happen to be expressed as defined types.
 
 .. index:: external type, function type, table type, memory type, global type
 .. _match-externtype:

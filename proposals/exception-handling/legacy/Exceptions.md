@@ -703,9 +703,9 @@ throws, and rethrows as follows:
 | `try` | `0x06` | sig : `blocktype` | begins a block which can handle thrown exceptions |
 | `catch` | `0x07` | index : `varint32` | begins the catch block of the try block |
 | `catch_all` | `0x19` | | begins the catch_all block of the try block |
-| `delegate` | `0x18` | relative_depth : `varuint32` | begins the delegate block of the try block |
-| `throw` | `0x08` | index : `varint32` | Creates an exception defined by the tag and then throws it |
-| `rethrow` | `0x09` | relative_depth : `varuint32` | Pops the `exnref` on top of the stack and throws it |
+| `delegate` | `0x18` | relative_depth : `varuint32` | ends the current try block and delegates any exceptions to the block at `relative_depth` |
+| `throw` | `0x08` | index : `varint32` | creates an exception defined by the tag and then throws it |
+| `rethrow` | `0x09` | relative_depth : `varuint32` | throws the exception caught by the catch block at `relative_depth` |
 
 The *sig* fields of `block`, `if`, and `try` operators are block signatures
 which describe their use of the operand stack.

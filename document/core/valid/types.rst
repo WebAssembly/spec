@@ -501,10 +501,10 @@ Limits
 Table Types
 ~~~~~~~~~~~
 
-:math:`\limits~\reftype`
-........................
+:math:`\addrtype~\limits~\reftype`
+..................................
 
-* The limits :math:`\limits` must be :ref:`valid <valid-limits>` within range :math:`2^{32}-1`.
+* The limits :math:`\limits` must be :ref:`valid <valid-limits>` within range :math:`2^{|\addrtype|}-1`.
 
 * The reference type :math:`\reftype` must be :ref:`valid <valid-reftype>`.
 
@@ -512,11 +512,11 @@ Table Types
 
 .. math::
    \frac{
-     C \vdashlimits \limits : 2^{32} - 1
+     C \vdashlimits \limits : 2^{|\addrtype|}-1
      \qquad
      C \vdashreftype \reftype \ok
    }{
-     C \vdashtabletype \limits~\reftype \ok
+     C \vdashtabletype \addrtype~\limits~\reftype \ok
    }
 
 
@@ -528,18 +528,18 @@ Table Types
 Memory Types
 ~~~~~~~~~~~~
 
-:math:`\limits`
-...............
+:math:`\addrtype~\limits`
+.........................
 
-* The limits :math:`\limits` must be :ref:`valid <valid-limits>` within range :math:`2^{16}`.
+* The limits :math:`\limits` must be :ref:`valid <valid-limits>` within range :math:`2^{|\addrtype|-16}`.
 
 * Then the memory type is valid.
 
 .. math::
    \frac{
-     C \vdashlimits \limits : 2^{16}
+     C \vdashlimits \limits : 2^{|\addrtype|-16}
    }{
-     C \vdashmemtype \limits \ok
+     C \vdashmemtype \addrtype~\limits \ok
    }
 
 
@@ -551,10 +551,13 @@ Memory Types
 Tag Types
 ~~~~~~~~~
 
-:math:`[t_1^n] \to [t_2^m]`
-...........................
+:math:`\deftype`
+................
 
-* The :ref:`function type <syntax-functype>` :math:`[t_1^n] \to [t_2^m]` must be :ref:`valid <valid-functype>`.
+
+* The :ref:`defined type <syntax-deftype>` :math:`\deftype` must be :ref:`valid <valid-deftype>`.
+
+* The :ref:`expansion <aux-expand-deftype>` of :math:`\deftype` must be a :ref:`function type <syntax-functype>` :math:`\TFUNC~[t_1^n] \toF [t_2^m]`.
 
 * The type sequence :math:`t_2^m` must be empty.
 
@@ -562,8 +565,11 @@ Tag Types
 
 .. math::
    \frac{
+     C \vdashdeftype \deftype \ok
+     \qquad
+     \expanddt(\deftype) = \TFUNC~[t^\ast] \to []
    }{
-     \vdashtagtype [t^\ast] \to [] \ok
+     C \vdashtagtype \deftype \ok
    }
 
 

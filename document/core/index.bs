@@ -7,6 +7,7 @@ Issue Tracking: GitHub https://github.com/WebAssembly/spec/issues
 Level: 2
 TR: https://www.w3.org/TR/wasm-core-2/
 ED: https://webassembly.github.io/spec/core/bikeshed/
+Implementation Report: https://webassembly.org/features/
 Editor: Andreas Rossberg, w3cid 82328
 Repository: WebAssembly/spec
 Markup Shorthands: css no, markdown no, algorithm no, idl no

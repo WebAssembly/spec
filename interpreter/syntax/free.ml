@@ -121,8 +121,8 @@ let def_type = function
   | DefT (rt, _i) -> rec_type rt
 
 let global_type (GlobalT (_mut, t)) = val_type t
-let table_type (TableT (_lim, t)) = ref_type t
-let memory_type (MemoryT (_lim)) = empty
+let table_type (TableT (_at, _lim, t)) = ref_type t
+let memory_type (MemoryT (_at, _lim)) = empty
 let tag_type (TagT dt) = def_type dt
 
 let extern_type = function
@@ -187,7 +187,8 @@ let rec instr (e : instr) =
   | MemoryCopy (x, y) -> memories (idx x) ++ memories (idx y)
   | MemoryInit (x, y) -> memories (idx x) ++ datas (idx y)
   | DataDrop x -> datas (idx x)
-  | VecConst _ | VecTest _ | VecUnary _ | VecBinary _ | VecCompare _
+  | VecConst _ | VecTest _
+  | VecUnary _ | VecBinary _ | VecTernary _ | VecCompare _
   | VecConvert _ | VecShift _ | VecBitmask _
   | VecTestBits _ | VecUnaryBits _ | VecBinaryBits _ | VecTernaryBits _
   | VecSplat _ | VecExtract _ | VecReplace _ ->

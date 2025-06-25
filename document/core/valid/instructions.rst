@@ -456,7 +456,7 @@ Aggregate Reference Instructions
      \qquad
      C \vdashvaltypedefaultable \unpacktype(\X{st}) \defaultable
    }{
-     C \vdashinstr \ARRAYNEW~x : [\I32] \to [(\REF~x)]
+     C \vdashinstr \ARRAYNEWDEFAULT~x : [\I32] \to [(\REF~x)]
    }
 
 .. _valid-array.new_fixed:
@@ -913,6 +913,20 @@ The following auxiliary function denotes the number of lanes in a vector shape, 
    }
 
 
+.. _valid-relaxed_swizzle:
+
+:math:`\K{i8x16.}\RELAXEDSWIZZLE`
+.................................
+
+* The instruction is valid with type :math:`[\V128~\V128] \to [\V128]`.
+
+.. math::
+   \frac{
+   }{
+     C \vdashinstr \K{i8x16.}\RELAXEDSWIZZLE : [\V128~\V128] \to [\V128]
+   }
+
+
 .. _valid-vec-shuffle:
 
 :math:`\K{i8x16.}\SHUFFLE~\laneidx^{16}`
@@ -1007,6 +1021,34 @@ The following auxiliary function denotes the number of lanes in a vector shape, 
    \frac{
    }{
      C \vdashinstr \shape\K{.}\vbinop : [\V128~\V128] \to [\V128]
+   }
+
+
+.. _valid-vternop:
+
+:math:`\shape\K{.}\vternop`
+...........................
+
+* The instruction is valid with type :math:`[\V128~\V128~\V128] \to [\V128]`.
+
+.. math::
+   \frac{
+   }{
+     C \vdashinstr \shape\K{.}\vternop : [\V128~\V128~\V128] \to [\V128]
+   }
+
+
+.. _valid-relaxed_laneselect:
+
+:math:`\shape\K{.}\RELAXEDLANESELECT`
+.....................................
+
+* The instruction is valid with type :math:`[\V128~\V128~\V128] \to [\V128]`.
+
+.. math::
+   \frac{
+   }{
+     C \vdashinstr \shape\K{.}\RELAXEDLANESELECT : [\V128~\V128~\V128] \to [\V128]
    }
 
 
@@ -1105,6 +1147,31 @@ The following auxiliary function denotes the number of lanes in a vector shape, 
    \frac{
    }{
      C \vdashinstr \ishape_1\K{.}\DOT\K{\_}\ishape_2\K{\_s} : [\V128~\V128] \to [\V128]
+   }
+
+
+.. _valid-relaxed_dot:
+
+:math:`\ishape_1\K{.}\DOT\K{\_}\ishape_2\_\K{i7x16\_s}`
+.......................................................
+
+* The instruction is valid with type :math:`[\V128~\V128] \to [\V128]`.
+
+.. math::
+   \frac{
+   }{
+     C \vdashinstr \ishape_1\K{.}\DOT\K{\_}\ishape_2\_\K{i7x16\_s} : [\V128~\V128] \to [\V128]
+   }
+
+:math:`\ishape_1\K{.}\DOT\K{\_}\ishape_2\_\K{i7x16\_add\_\_s}`
+..............................................................
+
+* The instruction is valid with type :math:`[\V128~\V128~\V128] \to [\V128]`.
+
+.. math::
+   \frac{
+   }{
+     C \vdashinstr \ishape_1\K{.}\DOT\K{\_}\ishape_2\_\K{i7x16\_add\_\_s} : [\V128~\V128~\V128] \to [\V128]
    }
 
 
@@ -1328,15 +1395,15 @@ Table Instructions
 
 * The table :math:`C.\CTABLES[x]` must be defined in the context.
 
-* Let :math:`\limits~t` be the :ref:`table type <syntax-tabletype>` :math:`C.\CTABLES[x]`.
+* Let :math:`\X{at}~\limits~t` be the :ref:`table type <syntax-tabletype>` :math:`C.\CTABLES[x]`.
 
-* Then the instruction is valid with type :math:`[\I32] \to [t]`.
+* Then the instruction is valid with type :math:`[\X{at}] \to [t]`.
 
 .. math::
    \frac{
-     C.\CTABLES[x] = \limits~t
+     C.\CTABLES[x] = \X{at}~\limits~t
    }{
-     C \vdashinstr \TABLEGET~x : [\I32] \to [t]
+     C \vdashinstr \TABLEGET~x : [\X{at}] \to [t]
    }
 
 
@@ -1347,15 +1414,15 @@ Table Instructions
 
 * The table :math:`C.\CTABLES[x]` must be defined in the context.
 
-* Let :math:`\limits~t` be the :ref:`table type <syntax-tabletype>` :math:`C.\CTABLES[x]`.
+* Let :math:`\X{at}~\limits~t` be the :ref:`table type <syntax-tabletype>` :math:`C.\CTABLES[x]`.
 
-* Then the instruction is valid with type :math:`[\I32~t] \to []`.
+* Then the instruction is valid with type :math:`[\X{at}~t] \to []`.
 
 .. math::
    \frac{
-     C.\CTABLES[x] = \limits~t
+     C.\CTABLES[x] = \X{at}~\limits~t
    }{
-     C \vdashinstr \TABLESET~x : [\I32~t] \to []
+     C \vdashinstr \TABLESET~x : [\X{at}~t] \to []
    }
 
 
@@ -1366,13 +1433,15 @@ Table Instructions
 
 * The table :math:`C.\CTABLES[x]` must be defined in the context.
 
-* Then the instruction is valid with type :math:`[] \to [\I32]`.
+* Let :math:`\X{at}~\limits~t` be the :ref:`table type <syntax-tabletype>` :math:`C.\CTABLES[x]`.
+
+* Then the instruction is valid with type :math:`[] \to [\X{at}]`.
 
 .. math::
    \frac{
-     C.\CTABLES[x] = \tabletype
+     C.\CTABLES[x] = \X{at}~\limits~t
    }{
-     C \vdashinstr \TABLESIZE~x : [] \to [\I32]
+     C \vdashinstr \TABLESIZE~x : [] \to [\X{at}]
    }
 
 
@@ -1383,15 +1452,15 @@ Table Instructions
 
 * The table :math:`C.\CTABLES[x]` must be defined in the context.
 
-* Let :math:`\limits~t` be the :ref:`table type <syntax-tabletype>` :math:`C.\CTABLES[x]`.
+* Let :math:`\X{at}~\limits~t` be the :ref:`table type <syntax-tabletype>` :math:`C.\CTABLES[x]`.
 
-* Then the instruction is valid with type :math:`[t~\I32] \to [\I32]`.
+* Then the instruction is valid with type :math:`[t~\X{at}] \to [\X{at}]`.
 
 .. math::
    \frac{
-     C.\CTABLES[x] = \limits~t
+     C.\CTABLES[x] = \X{at}~\limits~t
    }{
-     C \vdashinstr \TABLEGROW~x : [t~\I32] \to [\I32]
+     C \vdashinstr \TABLEGROW~x : [t~\X{at}] \to [\X{at}]
    }
 
 
@@ -1402,15 +1471,15 @@ Table Instructions
 
 * The table :math:`C.\CTABLES[x]` must be defined in the context.
 
-* Let :math:`\limits~t` be the :ref:`table type <syntax-tabletype>` :math:`C.\CTABLES[x]`.
+* Let :math:`\X{at}~\limits~t` be the :ref:`table type <syntax-tabletype>` :math:`C.\CTABLES[x]`.
 
-* Then the instruction is valid with type :math:`[\I32~t~\I32] \to []`.
+* Then the instruction is valid with type :math:`[\X{at}~t~\X{at}] \to []`.
 
 .. math::
    \frac{
-     C.\CTABLES[x] = \limits~t
+     C.\CTABLES[x] = \X{at}~\limits~t
    }{
-     C \vdashinstr \TABLEFILL~x : [\I32~t~\I32] \to []
+     C \vdashinstr \TABLEFILL~x : [\X{at}~t~\X{at}] \to []
    }
 
 
@@ -1421,25 +1490,27 @@ Table Instructions
 
 * The table :math:`C.\CTABLES[x]` must be defined in the context.
 
-* Let :math:`\limits_1~t_1` be the :ref:`table type <syntax-tabletype>` :math:`C.\CTABLES[x]`.
+* Let :math:`\X{at}_1~\limits_1~t_1` be the :ref:`table type <syntax-tabletype>` :math:`C.\CTABLES[x]`.
 
 * The table :math:`C.\CTABLES[y]` must be defined in the context.
 
-* Let :math:`\limits_2~t_2` be the :ref:`table type <syntax-tabletype>` :math:`C.\CTABLES[y]`.
+* Let :math:`\X{at}_2~\limits_2~t_2` be the :ref:`table type <syntax-tabletype>` :math:`C.\CTABLES[y]`.
 
 * The :ref:`reference type <syntax-reftype>` :math:`t_2` must :ref:`match <match-reftype>` :math:`t_1`.
 
-* Then the instruction is valid with type :math:`[\I32~\I32~\I32] \to []`.
+* Let :math:`\X{at}` be the :ref:`minimum <aux-addrtype-min>` of :math:`\X{at}_1` and :math:`\X{at}_2`
+
+* Then the instruction is valid with type :math:`[\X{at}_1~\X{at}_2~\X{at}] \to []`.
 
 .. math::
    \frac{
-     C.\CTABLES[x] = \limits_1~t_1
+     C.\CTABLES[x] = \X{at}~\limits_1~t_1
      \qquad
-     C.\CTABLES[y] = \limits_2~t_2
+     C.\CTABLES[y] = \X{at}~\limits_2~t_2
      \qquad
      C \vdashreftypematch t_2 \matchesvaltype t_1
    }{
-     C \vdashinstr \TABLECOPY~x~y : [\I32~\I32~\I32] \to []
+     C \vdashinstr \TABLECOPY~x~y : [\X{at}_1~\X{at}_2~\addrtypemin(\X{at}_1, \X{at}_2)] \to []
    }
 
 
@@ -1450,7 +1521,7 @@ Table Instructions
 
 * The table :math:`C.\CTABLES[x]` must be defined in the context.
 
-* Let :math:`\limits~t_1` be the :ref:`table type <syntax-tabletype>` :math:`C.\CTABLES[x]`.
+* Let :math:`\X{at}~\limits~t_1` be the :ref:`table type <syntax-tabletype>` :math:`C.\CTABLES[x]`.
 
 * The element segment :math:`C.\CELEMS[y]` must be defined in the context.
 
@@ -1458,17 +1529,17 @@ Table Instructions
 
 * The :ref:`reference type <syntax-reftype>` :math:`t_2` must :ref:`match <match-reftype>` :math:`t_1`.
 
-* Then the instruction is valid with type :math:`[\I32~\I32~\I32] \to []`.
+* Then the instruction is valid with type :math:`[\X{at}~\I32~\I32] \to []`.
 
 .. math::
    \frac{
-     C.\CTABLES[x] = \limits~t_1
+     C.\CTABLES[x] = \X{at}~\limits~t_1
      \qquad
      C.\CELEMS[y] = t_2
      \qquad
      C \vdashreftypematch t_2 \matchesvaltype t_1
    }{
-     C \vdashinstr \TABLEINIT~x~y : [\I32~\I32~\I32] \to []
+     C \vdashinstr \TABLEINIT~x~y : [\X{at}~\I32~\I32] \to []
    }
 
 
@@ -1505,17 +1576,23 @@ Memory Instructions
 
 * The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
+* Let :math:`\X{at}~\limits` be the :ref:`memory type <syntax-memtype>` :math:`C.\CMEMS[x]`.
+
+* The offset :math:`\memarg.\OFFSET` must be less than :math:`2^{|\X{at}|}`.
+
 * The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than the :ref:`bit width <syntax-numtype>` of :math:`t` divided by :math:`8`.
 
-* Then the instruction is valid with type :math:`[\I32] \to [t]`.
+* Then the instruction is valid with type :math:`[\X{at}] \to [t]`.
 
 .. math::
    \frac{
-     C.\CMEMS[x] = \memtype
+     C.\CMEMS[x] = \X{at}~\limits
+     \qquad
+     \memarg.\OFFSET < 2^{|\X{at}|}
      \qquad
      2^{\memarg.\ALIGN} \leq |t|/8
    }{
-     C \vdashinstr t\K{.load}~x~\memarg : [\I32] \to [t]
+     C \vdashinstr t\K{.load}~x~\memarg : [\X{at}] \to [t]
    }
 
 
@@ -1526,17 +1603,23 @@ Memory Instructions
 
 * The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
+* Let :math:`\X{at}~\limits` be the :ref:`memory type <syntax-memtype>` :math:`C.\CMEMS[x]`.
+
+* The offset :math:`\memarg.\OFFSET` must be less than :math:`2^{|\X{at}|}`.
+
 * The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than :math:`N/8`.
 
-* Then the instruction is valid with type :math:`[\I32] \to [t]`.
+* Then the instruction is valid with type :math:`[\X{at}] \to [t]`.
 
 .. math::
    \frac{
-     C.\CMEMS[x] = \memtype
+     C.\CMEMS[x] = \X{at}~\limits
+     \qquad
+     \memarg.\OFFSET < 2^{|\X{at}|}
      \qquad
      2^{\memarg.\ALIGN} \leq N/8
    }{
-     C \vdashinstr t\K{.load}N\K{\_}\sx~x~\memarg : [\I32] \to [t]
+     C \vdashinstr t\K{.load}N\K{\_}\sx~x~\memarg : [\X{at}] \to [t]
    }
 
 
@@ -1545,17 +1628,23 @@ Memory Instructions
 
 * The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
+* Let :math:`\X{at}~\limits` be the :ref:`memory type <syntax-memtype>` :math:`C.\CMEMS[x]`.
+
+* The offset :math:`\memarg.\OFFSET` must be less than :math:`2^{|\X{at}|}`.
+
 * The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than the :ref:`bit width <syntax-numtype>` of :math:`t` divided by :math:`8`.
 
-* Then the instruction is valid with type :math:`[\I32~t] \to []`.
+* Then the instruction is valid with type :math:`[\X{at}~t] \to []`.
 
 .. math::
    \frac{
-     C.\CMEMS[x] = \memtype
+     C.\CMEMS[x] = \X{at}~\limits
+     \qquad
+     \memarg.\OFFSET < 2^{|\X{at}|}
      \qquad
      2^{\memarg.\ALIGN} \leq |t|/8
    }{
-     C \vdashinstr t\K{.store}~x~\memarg : [\I32~t] \to []
+     C \vdashinstr t\K{.store}~x~\memarg : [\X{at}~t] \to []
    }
 
 
@@ -1566,17 +1655,23 @@ Memory Instructions
 
 * The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
+* Let :math:`\X{at}~\limits` be the :ref:`memory type <syntax-memtype>` :math:`C.\CMEMS[x]`.
+
+* The offset :math:`\memarg.\OFFSET` must be less than :math:`2^{|\X{at}|}`.
+
 * The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than :math:`N/8`.
 
-* Then the instruction is valid with type :math:`[\I32~t] \to []`.
+* Then the instruction is valid with type :math:`[\X{at}~t] \to []`.
 
 .. math::
    \frac{
-     C.\CMEMS[x] = \memtype
+     C.\CMEMS[x] = \X{at}~\limits
+     \qquad
+     \memarg.\OFFSET < 2^{|\X{at}|}
      \qquad
      2^{\memarg.\ALIGN} \leq N/8
    }{
-     C \vdashinstr t\K{.store}N~x~\memarg : [\I32~t] \to []
+     C \vdashinstr t\K{.store}N~x~\memarg : [\X{at}~t] \to []
    }
 
 
@@ -1587,17 +1682,23 @@ Memory Instructions
 
 * The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
+* Let :math:`\X{at}~\limits` be the :ref:`memory type <syntax-memtype>` :math:`C.\CMEMS[x]`.
+
+* The offset :math:`\memarg.\OFFSET` must be less than :math:`2^{|\X{at}|}`.
+
 * The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than :math:`N/8 \cdot M`.
 
-* Then the instruction is valid with type :math:`[\I32] \to [\V128]`.
+* Then the instruction is valid with type :math:`[\X{at}] \to [\V128]`.
 
 .. math::
    \frac{
-     C.\CMEMS[x] = \memtype
+     C.\CMEMS[x] = \X{at}~\limits
+     \qquad
+     \memarg.\OFFSET < 2^{|\X{at}|}
      \qquad
      2^{\memarg.\ALIGN} \leq N/8 \cdot M
    }{
-     C \vdashinstr \K{v128.}\LOAD{N}\K{x}M\_\sx~x~\memarg : [\I32] \to [\V128]
+     C \vdashinstr \K{v128.}\LOAD{N}\K{x}M\_\sx~x~\memarg : [\X{at}] \to [\V128]
    }
 
 
@@ -1608,17 +1709,23 @@ Memory Instructions
 
 * The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
+* Let :math:`\X{at}~\limits` be the :ref:`memory type <syntax-memtype>` :math:`C.\CMEMS[x]`.
+
+* The offset :math:`\memarg.\OFFSET` must be less than :math:`2^{|\X{at}|}`.
+
 * The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than :math:`N/8`.
 
-* Then the instruction is valid with type :math:`[\I32] \to [\V128]`.
+* Then the instruction is valid with type :math:`[\X{at}] \to [\V128]`.
 
 .. math::
    \frac{
-     C.\CMEMS[x] = \memtype
+     C.\CMEMS[x] = \X{at}~\limits
+     \qquad
+     \memarg.\OFFSET < 2^{|\X{at}|}
      \qquad
      2^{\memarg.\ALIGN} \leq N/8
    }{
-     C \vdashinstr \K{v128.}\LOAD{N}\K{\_splat}~x~\memarg : [\I32] \to [\V128]
+     C \vdashinstr \K{v128.}\LOAD{N}\K{\_splat}~x~\memarg : [\X{at}] \to [\V128]
    }
 
 
@@ -1629,17 +1736,23 @@ Memory Instructions
 
 * The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
+* Let :math:`\X{at}~\limits` be the :ref:`memory type <syntax-memtype>` :math:`C.\CMEMS[x]`.
+
+* The offset :math:`\memarg.\OFFSET` must be less than :math:`2^{|\X{at}|}`.
+
 * The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than :math:`N/8`.
 
-* Then the instruction is valid with type :math:`[\I32] \to [\V128]`.
+* Then the instruction is valid with type :math:`[\X{at}] \to [\V128]`.
 
 .. math::
    \frac{
-     C.\CMEMS[x] = \memtype
+     C.\CMEMS[x] = \X{at}~\limits
+     \qquad
+     \memarg.\OFFSET < 2^{|\X{at}|}
      \qquad
      2^{\memarg.\ALIGN} \leq N/8
    }{
-     C \vdashinstr \K{v128.}\LOAD{N}\K{\_zero}~x~\memarg : [\I32] \to [\V128]
+     C \vdashinstr \K{v128.}\LOAD{N}\K{\_zero}~x~\memarg : [\X{at}] \to [\V128]
    }
 
 
@@ -1650,21 +1763,27 @@ Memory Instructions
 
 * The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
+* Let :math:`\X{at}~\limits` be the :ref:`memory type <syntax-memtype>` :math:`C.\CMEMS[x]`.
+
+* The offset :math:`\memarg.\OFFSET` must be less than :math:`2^{|\X{at}|}`.
+
 * The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than :math:`N/8`.
 
 * The lane index :math:`\laneidx` must be smaller than :math:`128/N`.
 
-* Then the instruction is valid with type :math:`[\I32~\V128] \to [\V128]`.
+* Then the instruction is valid with type :math:`[\X{at}~\V128] \to [\V128]`.
 
 .. math::
    \frac{
-     C.\CMEMS[x] = \memtype
+     C.\CMEMS[x] = \X{at}~\limits
+     \qquad
+     \memarg.\OFFSET < 2^{|\X{at}|}
      \qquad
      2^{\memarg.\ALIGN} \leq N/8
      \qquad
      \laneidx < 128/N
    }{
-     C \vdashinstr \K{v128.}\LOAD{N}\K{\_lane}~x~\memarg~\laneidx : [\I32~\V128] \to [\V128]
+     C \vdashinstr \K{v128.}\LOAD{N}\K{\_lane}~x~\memarg~\laneidx : [\X{at}~\V128] \to [\V128]
    }
 
 
@@ -1675,21 +1794,27 @@ Memory Instructions
 
 * The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
+* Let :math:`\X{at}~\limits` be the :ref:`memory type <syntax-memtype>` :math:`C.\CMEMS[x]`.
+
+* The offset :math:`\memarg.\OFFSET` must be less than :math:`2^{|\X{at}|}`.
+
 * The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than :math:`N/8`.
 
 * The lane index :math:`\laneidx` must be smaller than :math:`128/N`.
 
-* Then the instruction is valid with type :math:`[\I32~\V128] \to [\V128]`.
+* Then the instruction is valid with type :math:`[\X{at}~\V128] \to []`.
 
 .. math::
    \frac{
-     C.\CMEMS[x] = \memtype
+     C.\CMEMS[x] = \X{at}~\limits
+     \qquad
+     \memarg.\OFFSET < 2^{|\X{at}|}
      \qquad
      2^{\memarg.\ALIGN} \leq N/8
      \qquad
      \laneidx < 128/N
    }{
-     C \vdashinstr \K{v128.}\STORE{N}\K{\_lane}~x~\memarg~\laneidx : [\I32~\V128] \to []
+     C \vdashinstr \K{v128.}\STORE{N}\K{\_lane}~x~\memarg~\laneidx : [\X{at}~\V128] \to []
    }
 
 
@@ -1700,13 +1825,15 @@ Memory Instructions
 
 * The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
-* Then the instruction is valid with type :math:`[] \to [\I32]`.
+* Let :math:`\X{at}~\limits` be the :ref:`memory type <syntax-memtype>` :math:`C.\CMEMS[x]`.
+
+* Then the instruction is valid with type :math:`[] \to [\X{at}]`.
 
 .. math::
    \frac{
-     C.\CMEMS[x] = \memtype
+     C.\CMEMS[x] = \X{at}~\limits
    }{
-     C \vdashinstr \MEMORYSIZE~x : [] \to [\I32]
+     C \vdashinstr \MEMORYSIZE~x : [] \to [\X{at}]
    }
 
 
@@ -1717,13 +1844,15 @@ Memory Instructions
 
 * The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
-* Then the instruction is valid with type :math:`[\I32] \to [\I32]`.
+* Let :math:`\X{at}~\limits` be the :ref:`memory type <syntax-memtype>` :math:`C.\CMEMS[x]`.
+
+* Then the instruction is valid with type :math:`[\X{at}] \to [\X{at}]`.
 
 .. math::
    \frac{
-     C.\CMEMS[x] = \memtype
+     C.\CMEMS[x] = \X{at}~\limits
    }{
-     C \vdashinstr \MEMORYGROW~x : [\I32] \to [\I32]
+     C \vdashinstr \MEMORYGROW~x : [\X{at}] \to [\X{at}]
    }
 
 
@@ -1734,13 +1863,15 @@ Memory Instructions
 
 * The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
-* Then the instruction is valid with type :math:`[\I32~\I32~\I32] \to []`.
+* Let :math:`\X{at}~\limits` be the :ref:`memory type <syntax-memtype>` :math:`C.\CMEMS[x]`.
+
+* Then the instruction is valid with type :math:`[\X{at}~\I32~\X{at}] \to []`.
 
 .. math::
    \frac{
-     C.\CMEMS[x] = \memtype
+     C.\CMEMS[x] = \X{at}~\limits
    }{
-     C \vdashinstr \MEMORYFILL~x : [\I32~\I32~\I32] \to []
+     C \vdashinstr \MEMORYFILL~x : [\X{at}~\I32~\X{at}] \to []
    }
 
 
@@ -1753,15 +1884,21 @@ Memory Instructions
 
 * The memory :math:`C.\CMEMS[y]` must be defined in the context.
 
-* Then the instruction is valid with type :math:`[\I32~\I32~\I32] \to []`.
+* Let :math:`\X{at}_x~\limits_x` be the :ref:`memory type <syntax-memtype>` :math:`C.\CMEMS[x]`.
+
+* Let :math:`\X{at}_y~\limits_y` be the :ref:`memory type <syntax-memtype>` :math:`C.\CMEMS[y]`.
+
+* Let :math:`\X{at}` be the :ref:`minimum <aux-addrtype-min>` of :math:`\X{at}_x` and :math:`\X{at}_y`
+
+* Then the instruction is valid with type :math:`[\X{at}_x~\X{at}_y~\X{at}] \to []`.
 
 .. math::
    \frac{
-     C.\CMEMS[x] = \memtype
+     C.\CMEMS[x] = \X{at}_x~\limits_y
      \qquad
-     C.\CMEMS[x] = \memtype
+     C.\CMEMS[y] = \X{at}_y~\limits_y
    }{
-     C \vdashinstr \MEMORYCOPY~x~y : [\I32~\I32~\I32] \to []
+     C \vdashinstr \MEMORYCOPY~x~y : [\X{at}_x~\X{at}_y~\addrtypemin(\X{at}_x, \X{at}_y)] \to []
    }
 
 
@@ -1772,17 +1909,19 @@ Memory Instructions
 
 * The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
+* Let :math:`\X{at}~\limits` be the :ref:`memory type <syntax-memtype>` :math:`C.\CMEMS[x]`.
+
 * The data segment :math:`C.\CDATAS[y]` must be defined in the context.
 
-* Then the instruction is valid with type :math:`[\I32~\I32~\I32] \to []`.
+* Then the instruction is valid with type :math:`[\X{at}~\I32~\I32] \to []`.
 
 .. math::
    \frac{
-     C.\CMEMS[x] = \memtype
+     C.\CMEMS[x] = \X{at}~\limits
      \qquad
      C.\CDATAS[y] = {\ok}
    }{
-     C \vdashinstr \MEMORYINIT~x~y : [\I32~\I32~\I32] \to []
+     C \vdashinstr \MEMORYINIT~x~y : [\X{at}~\I32~\I32] \to []
    }
 
 
@@ -1876,7 +2015,7 @@ Control Instructions
 :math:`\LOOP~\blocktype~\instr^\ast~\END`
 .........................................
 
-* The :ref:`block type <syntax-blocktype>` must be :ref:`valid <valid-blocktype>` as some :ref:`instruction type <syntax-functype>` :math:`[t_1^\ast] \to_{x^\ast} [t_2^\ast]`.
+* The :ref:`block type <syntax-blocktype>` must be :ref:`valid <valid-blocktype>` as some :ref:`instruction type <syntax-instrtype>` :math:`[t_1^\ast] \to [t_2^\ast]`.
 
 * Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with the :ref:`result type <syntax-resulttype>` :math:`[t_1^\ast]` prepended to the |CLABELS| vector.
 
@@ -1936,7 +2075,7 @@ Control Instructions
 :math:`\TRYTABLE~\blocktype~\catch^\ast~\instr^\ast~\END`
 .........................................................
 
-* The :ref:`block type <syntax-blocktype>` must be :ref:`valid <valid-blocktype>` as some :ref:`function type <syntax-functype>` :math:`[t_1^\ast] \to [t_2^\ast]`.
+* The :ref:`block type <syntax-blocktype>` must be :ref:`valid <valid-blocktype>` as some :ref:`instruction type <syntax-instrtype>` :math:`[t_1^\ast] \to [t_2^\ast]`.
 
 * For every :ref:`catch clause <syntax-catch>` :math:`\catch_i` in :math:`\catch^\ast`, :math:`\catch_i` must be :ref:`valid <valid-catch>`.
 
@@ -1972,21 +2111,21 @@ Control Instructions
 
 * The tag :math:`C.\CTAGS[x]` must be defined in the context.
 
-* Let :math:`[t^\ast] \to [{t'}^\ast]` be the :ref:`tag type <syntax-tagtype>` :math:`C.\CTAGS[x]`.
+* Let :math:`[t^\ast] \to [{t'}^\ast]` be the :ref:`expansion <aux-expand-deftype>` of the :ref:`tag type <syntax-tagtype>` :math:`C.\CTAGS[x]`.
 
 * The :ref:`result type <syntax-resulttype>` :math:`[{t'}^\ast]` must be empty.
 
 * The label :math:`C.\CLABELS[l]` must be defined in the context.
 
-* The :ref:`result type <syntax-resulttype>` :math:`[t^\ast]` must be the same as :math:`C.\CLABELS[l]`.
+* The :ref:`result type <syntax-resulttype>` :math:`[t^\ast]` must :ref:`match <match-resulttype>` :math:`C.\CLABELS[l]`.
 
 * Then the catch clause is valid.
 
 .. math::
    \frac{
-     C.\CTAGS[x] = [t^\ast] \toF []
+     \expanddt(C.\CTAGS[x]) = [t^\ast] \toF []
      \qquad
-     C.\CLABELS[l] = [t^\ast]
+     C \vdashresulttypematch [t^\ast] \matchesresulttype C.\CLABELS[l]
    }{
      C \vdashcatch \CATCH~x~l \ok
    }
@@ -1996,21 +2135,21 @@ Control Instructions
 
 * The tag :math:`C.\CTAGS[x]` must be defined in the context.
 
-* Let :math:`[t^\ast] \to [{t'}^\ast]` be the :ref:`tag type <syntax-tagtype>` :math:`C.\CTAGS[x]`.
+* Let :math:`[t^\ast] \to [{t'}^\ast]` be the :ref:`expansion <aux-expand-deftype>` of the :ref:`tag type <syntax-tagtype>` :math:`C.\CTAGS[x]`.
 
 * The :ref:`result type <syntax-resulttype>` :math:`[{t'}^\ast]` must be empty.
 
 * The label :math:`C.\CLABELS[l]` must be defined in the context.
 
-* The :ref:`result type <syntax-resulttype>` :math:`[t^\ast]` must be the same as :math:`C.\CLABELS[l]` with |EXNREF| appended.
+* The :ref:`result type <syntax-resulttype>` :math:`[t^\ast~(\REF~\EXN)]` must :ref:`match <match-resulttype>` :math:`C.\CLABELS[l]`.
 
 * Then the catch clause is valid.
 
 .. math::
    \frac{
-     C.\CTAGS[x] = [t^\ast] \toF []
+     \expanddt(C.\CTAGS[x]) = [t^\ast] \toF []
      \qquad
-     C.\CLABELS[l] = [t^\ast~\EXNREF]
+     C \vdashresulttypematch [t^\ast~(\REF~\EXN)] \matchesresulttype C.\CLABELS[l]
    }{
      C \vdashcatch \CATCHREF~x~l \ok
    }
@@ -2020,13 +2159,13 @@ Control Instructions
 
 * The label :math:`C.\CLABELS[l]` must be defined in the context.
 
-* The :ref:`result type <syntax-resulttype>` :math:`C.\CLABELS[l]` must be empty.
+* The :ref:`result type <syntax-resulttype>` :math:`[]` must :ref:`match <match-resulttype>` :math:`C.\CLABELS[l]`.
 
 * Then the catch clause is valid.
 
 .. math::
    \frac{
-     C.\CLABELS[l] = []
+     C \vdashresulttypematch [] \matchesresulttype C.\CLABELS[l]
    }{
      C \vdashcatch \CATCHALL~l \ok
    }
@@ -2036,13 +2175,13 @@ Control Instructions
 
 * The label :math:`C.\CLABELS[l]` must be defined in the context.
 
-* The :ref:`result type <syntax-resulttype>` :math:`C.\CLABELS[l] must be :math:`[\EXNREF]`.
+* The :ref:`result type <syntax-resulttype>` :math:`[(\REF~\EXN)]` must :ref:`match <match-resulttype>` :math:`C.\CLABELS[l]`.
 
 * Then the catch clause is valid.
 
 .. math::
    \frac{
-     C.\CLABELS[l] = [\EXNREF]
+     C \vdashresulttypematch [(\REF~\EXN)] \matchesresulttype C.\CLABELS[l]
    }{
      C \vdashcatch \CATCHALLREF~l \ok
    }
@@ -2178,7 +2317,7 @@ Control Instructions
 
 .. math::
    \frac{
-     C.\CLABELS[l] = [t^\ast~(\REF~\X{ht})]
+     C.\CLABELS[l] = [t^\ast~(\REF~\NULL^?~\X{ht})]
    }{
      C \vdashinstr \BRONNONNULL~l : [t^\ast~(\REF~\NULL~\X{ht})] \to [t^\ast]
    }
@@ -2271,7 +2410,7 @@ Control Instructions
 
 * Let :math:`[t^\ast]` be the :ref:`result type <syntax-resulttype>` of :math:`C.\CRETURN`.
 
-* Then the instruction is valid with any :ref:`valid <valid-instrtype>` type of the form :math:`[t_1^\ast] \to [t_2^\ast]`.
+* Then the instruction is valid with any :ref:`valid <valid-instrtype>` type of the form :math:`[t_1^\ast~t^\ast] \to [t_2^\ast]`.
 
 .. math::
    \frac{
@@ -2316,7 +2455,7 @@ Control Instructions
 
 * The type :math:`C.\CTYPES[x]` must be defined in the context.
 
-* The :ref:`expansion <aux-expand-deftype>` of :math:`C.\CFUNCS[x]` must be a :ref:`function type <syntax-functype>` :math:`\TFUNC~[t_1^\ast] \toF [t_2^\ast]`.
+* The :ref:`expansion <aux-expand-deftype>` of :math:`C.\CTYPES[x]` must be a :ref:`function type <syntax-functype>` :math:`\TFUNC~[t_1^\ast] \toF [t_2^\ast]`.
 
 * Then the instruction is valid with type :math:`[t_1^\ast~(\REF~\NULL~x)] \to [t_2^\ast]`.
 
@@ -2335,7 +2474,7 @@ Control Instructions
 
 * The table :math:`C.\CTABLES[x]` must be defined in the context.
 
-* Let :math:`\limits~t` be the :ref:`table type <syntax-tabletype>` :math:`C.\CTABLES[x]`.
+* Let :math:`\X{at}~\limits~t` be the :ref:`table type <syntax-tabletype>` :math:`C.\CTABLES[x]`.
 
 * The :ref:`reference type <syntax-reftype>` :math:`t` must :ref:`match <match-reftype>` type :math:`\REF~\NULL~\FUNC`.
 
@@ -2343,17 +2482,17 @@ Control Instructions
 
 * The :ref:`expansion <aux-expand-deftype>` of :math:`C.\CTYPES[y]` must be a :ref:`function type <syntax-functype>` :math:`\TFUNC~[t_1^\ast] \toF [t_2^\ast]`.
 
-* Then the instruction is valid with type :math:`[t_1^\ast~\I32] \to [t_2^\ast]`.
+* Then the instruction is valid with type :math:`[t_1^\ast~\X{at}] \to [t_2^\ast]`.
 
 .. math::
    \frac{
-     C.\CTABLES[x] = \limits~t
+     C.\CTABLES[x] = \X{at}~\limits~t
      \qquad
      C \vdashvaltypematch t \matchesreftype \REF~\NULL~\FUNC
      \qquad
      \expanddt(C.\CTYPES[y]) = \TFUNC~[t_1^\ast] \toF [t_2^\ast]
    }{
-     C \vdashinstr \CALLINDIRECT~x~y : [t_1^\ast~\I32] \to [t_2^\ast]
+     C \vdashinstr \CALLINDIRECT~x~y : [t_1^\ast~\X{at}] \to [t_2^\ast]
    }
 
 
@@ -2424,7 +2563,7 @@ Control Instructions
 
 * The table :math:`C.\CTABLES[x]` must be defined in the context.
 
-* Let :math:`\limits~t` be the :ref:`table type <syntax-tabletype>` :math:`C.\CTABLES[x]`.
+* Let :math:`\X{at}~\limits~t` be the :ref:`table type <syntax-tabletype>` :math:`C.\CTABLES[x]`.
 
 * The :ref:`reference type <syntax-reftype>` :math:`t` must :ref:`match <match-reftype>` type :math:`\REF~\NULL~\FUNC`.
 
@@ -2434,11 +2573,11 @@ Control Instructions
 
 * The :ref:`result type <syntax-resulttype>` :math:`[t_2^\ast]` must :ref:`match <match-resulttype>` :math:`C.\CRETURN`.
 
-* Then the instruction is valid with type :math:`[t_3^\ast~t_1^\ast~\I32] \to [t_4^\ast]`, for any sequences of :ref:`value types <syntax-valtype>` :math:`t_3^\ast` and :math:`t_4^\ast`.
+* Then the instruction is valid with type :math:`[t_3^\ast~t_1^\ast~\X{at}] \to [t_4^\ast]`, for any sequences of :ref:`value types <syntax-valtype>` :math:`t_3^\ast` and :math:`t_4^\ast`.
 
 .. math::
    \frac{
-     C.\CTABLES[x] = \limits~t
+     C.\CTABLES[x] = \X{at}~\limits~t
      \qquad
      C \vdashvaltypematch t \matchesreftype \REF~\NULL~\FUNC
      \qquad
@@ -2448,7 +2587,7 @@ Control Instructions
      \qquad
      C \vdashinstrtype [t_3^\ast~t_1^\ast~\I32] \to [t_4^\ast] \ok
    }{
-     C \vdashinstr \RETURNCALLINDIRECT~x~y : [t_3^\ast~t_1^\ast~\I32] \to [t_4^\ast]
+     C \vdashinstr \RETURNCALLINDIRECT~x~y : [t_3^\ast~t_1^\ast~\X{at}] \to [t_4^\ast]
    }
 
 .. note::
@@ -2462,15 +2601,15 @@ Control Instructions
 
 * The tag :math:`C.\CTAGS[x]` must be defined in the context.
 
-* Let :math:`[t^\ast] \to [{t'}^\ast]` be the :ref:`tag type <syntax-tagtype>` :math:`C.\CTAGS[x]`.
+* Let :math:`[t^\ast] \to [{t'}^\ast]` be the :ref:`expansion <aux-expand-deftype>` of the :ref:`tag type <syntax-tagtype>` :math:`C.\CTAGS[x]`.
 
 * The :ref:`result type <syntax-resulttype>` :math:`[{t'}^\ast]` must be empty.
 
-* Then the instruction is valid with type :math:`[t_1^\ast t^\ast] \to [t_2^\ast]`, for any sequences of  :ref:`value types <syntax-valtype>` :math:`t_1^\ast` and :math:`t_2^\ast`.
+* Then the instruction is valid with type :math:`[t_1^\ast t^\ast] \to [t_2^\ast]`, for any sequences of :ref:`value types <syntax-valtype>` :math:`t_1^\ast` and :math:`t_2^\ast`.
 
 .. math::
    \frac{
-     C.\CTAGS[x] = [t^\ast] \to []
+     \expanddt(C.\CTAGS[x]) = [t^\ast] \to []
    }{
      C \vdashinstr \THROW~x : [t_1^\ast~t^\ast] \to [t_2^\ast]
    }
@@ -2564,7 +2703,7 @@ Subsumption for :math:`\instr^\ast`
 .. math::
    \frac{
      \begin{array}{@{}c@{}}
-     C \vdashinstr \instr : \instrtype
+     C \vdashinstr \instr^\ast : \instrtype
      \qquad
      C \vdashinstrtype \instrtype' \ok
      \qquad

@@ -357,6 +357,38 @@ In a :ref:`module <syntax-module>`, each member of a recursive type is assigned 
 The syntax of sub types is :ref:`generalized <syntax-heaptype-ext>` for the purpose of specifying :ref:`validation <valid>` and :ref:`execution <exec>`.
 
 
+.. _index:: ! address type
+   pair: abstract syntax; address type
+   single: memory; address type
+   single: table; address type
+.. _syntax-addrtype:
+
+Address Type
+~~~~~~~~~~~~
+
+*Address types* are a subset of :ref:`number types <syntax-numtype>` that classify the values that can be used as offsets into
+:ref:`memories <syntax-mem>` and :ref:`tables <syntax-table>`.
+
+.. math::
+   \begin{array}{llll}
+   \production{address type} & \addrtype &::=&
+     \I32 ~|~ \I64 \\
+   \end{array}
+
+.. _aux-addrtype-min:
+
+Conventions
+...........
+
+The *minimum* of two address types is defined as the address type whose :ref:`bit width <bitwidth-numtype>` is the minimum of the two.
+
+.. math::
+   \begin{array}{llll}
+   \addrtypemin(\X{at}_1, \X{at}_2) &=& \X{at}_1 & (\iff |\X{at}_1| \leq |\X{at}_2|) \\
+   \addrtypemin(\X{at}_1, \X{at}_2) &=& \X{at}_2 & (\otherwise) \\
+   \end{array}
+
+
 .. index:: ! limits, memory type, table type
    pair: abstract syntax; limits
    single: memory; limits
@@ -371,7 +403,7 @@ Limits
 .. math::
    \begin{array}{llrl}
    \production{limits} & \limits &::=&
-     \{ \LMIN~\u32, \LMAX~\u32^? \} \\
+     \{ \LMIN~\u64, \LMAX~\u64^? \} \\
    \end{array}
 
 If no maximum is given, the respective storage can grow to any size.
@@ -391,7 +423,7 @@ Memory Types
 .. math::
    \begin{array}{llrl}
    \production{memory type} & \memtype &::=&
-     \limits \\
+     \addrtype~\limits \\
    \end{array}
 
 The limits constrain the minimum and optionally the maximum size of a memory.
@@ -412,7 +444,7 @@ Table Types
 .. math::
    \begin{array}{llrl}
    \production{table type} & \tabletype &::=&
-     \limits~\reftype \\
+     \addrtype~\limits~\reftype \\
    \end{array}
 
 Like memories, tables are constrained by limits for their minimum and optionally maximum size.
@@ -451,11 +483,11 @@ Global Types
 Tag Types
 ~~~~~~~~~
 
-*Tag types* classify the signature of :ref:`tags <syntax-tag>` with a function type.
+*Tag types* classify the signature of :ref:`tags <syntax-tag>` with a defined type |deftype|, which expands to a function type |functype|.
 
 .. math::
    \begin{array}{llll}
-   \production{tag type} &\tagtype &::=& \functype \\
+   \production{tag type} &\tagtype &::=& \deftype \\
    \end{array}
 
 Currently tags are only used for categorizing exceptions.

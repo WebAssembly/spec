@@ -183,7 +183,7 @@ Also, for backwards compatibility, the table index to :math:`\text{call\_indirec
    \production{plain instruction} &
      \text{call\_indirect}~~\Ttypeuse
        &\equiv&
-     \text{call\_indirect}~~0~~\Ttypeuse \\
+     \text{call\_indirect}~~0~~\Ttypeuse \\ &
      \text{return\_call\_indirect}~~\Ttypeuse
        &\equiv&
      \text{return\_call\_indirect}~~0~~\Ttypeuse \\
@@ -385,10 +385,10 @@ Lexically, an |Toffset| or |Talign| phrase is considered a single :ref:`keyword 
    \production{memory argument} & \Tmemarg_N &::=&
      o{:}\Toffset~~a{:}\Talign_N &\Rightarrow& \{ \ALIGN~n,~\OFFSET~o \} & (\iff a = 2^n) \\
    \production{memory offset} & \Toffset &::=&
-     \text{offset{=}}o{:}\Tu32 &\Rightarrow& o \\ &&|&
+     \text{offset{=}}o{:}\Tu64 &\Rightarrow& o \\ &&|&
      \epsilon &\Rightarrow& 0 \\
    \production{memory alignment} & \Talign_N &::=&
-     \text{align{=}}a{:}\Tu32 &\Rightarrow& a \\ &&|&
+     \text{align{=}}a{:}\Tu64 &\Rightarrow& a \\ &&|&
      \epsilon &\Rightarrow& N \\
    \production{instruction} & \Tplaininstr_I &::=& \dots \phantom{averylonginstructionnameforvectext} && \phantom{vechasreallylonginstructionnames} \\ &&|&
      \text{i32.load}~~x{:}\Tmemidx~~m{:}\Tmemarg_4 &\Rightarrow& \I32.\LOAD~x~m \\ &&|&
@@ -435,7 +435,7 @@ Lexically, an |Toffset| or |Talign| phrase is considered a single :ref:`keyword 
      \text{v128.store8\_lane}~~x{:}\Tmemidx~~m{:}\Tmemarg_1~~y{:}\Tu8 &\Rightarrow& \V128.\STORE\K{8\_lane}~x~m~y \\ &&|&
      \text{v128.store16\_lane}~~x{:}\Tmemidx~~m{:}\Tmemarg_2~~y{:}\Tu8 &\Rightarrow& \V128.\STORE\K{16\_lane}~x~m~y \\ &&|&
      \text{v128.store32\_lane}~~x{:}\Tmemidx~~m{:}\Tmemarg_4~~y{:}\Tu8 &\Rightarrow& \V128.\STORE\K{32\_lane}~x~m~y \\ &&|&
-     \text{v128.store64\_lane}~~x{:}\Tmemidx~~m{:}\Tmemarg_8~~y{:}\Tu8 &\Rightarrow& \V128.\STORE\K{64\_lane}~x~m~y \\
+     \text{v128.store64\_lane}~~x{:}\Tmemidx~~m{:}\Tmemarg_8~~y{:}\Tu8 &\Rightarrow& \V128.\STORE\K{64\_lane}~x~m~y \\ &&|&
      \text{memory.size}~~x{:}\Tmemidx &\Rightarrow& \MEMORYSIZE~x \\ &&|&
      \text{memory.grow}~~x{:}\Tmemidx &\Rightarrow& \MEMORYGROW~x \\ &&|&
      \text{memory.fill}~~x{:}\Tmemidx &\Rightarrow& \MEMORYFILL~x \\ &&|&
@@ -950,6 +950,7 @@ Vector constant instructions have a mandatory :ref:`shape <syntax-vec-shape>` de
      \text{i32x4.all\_true} &\Rightarrow& \I32X4.\ALLTRUE\\ &&|&
      \text{i32x4.bitmask} &\Rightarrow& \I32X4.\BITMASK\\ &&|&
      \text{i32x4.extadd\_pairwise\_i16x8\_s} &\Rightarrow& \I32X4.\EXTADDPAIRWISE\K{\_i16x8\_s}\\ &&|&
+     \text{i32x4.extadd\_pairwise\_i16x8\_u} &\Rightarrow& \I32X4.\EXTADDPAIRWISE\K{\_i16x8\_u}\\ &&|&
      \text{i32x4.extend\_low\_i16x8\_s} &\Rightarrow& \I32X4.\VEXTEND\K{\_low\_i16x8\_s}\\ &&|&
      \text{i32x4.extend\_high\_i16x8\_s} &\Rightarrow& \I32X4.\VEXTEND\K{\_high\_i16x8\_s}\\ &&|&
      \text{i32x4.extend\_low\_i16x8\_u} &\Rightarrow& \I32X4.\VEXTEND\K{\_low\_i16x8\_u}\\ &&|&
@@ -1052,6 +1053,31 @@ Vector constant instructions have a mandatory :ref:`shape <syntax-vec-shape>` de
      \text{f64x2.promote\_low\_f32x4} &\Rightarrow& \F64X2.\VPROMOTE\K{\_low\_f32x4}\\
    \end{array}
 
+.. math::
+   \begin{array}{llclll}
+   \phantom{\production{instruction}} & \phantom{\Tplaininstr_I} &\phantom{::=}& \phantom{averylonginstructionnameforvectext} && \phantom{vechasreallyreallyreallylonginstructionnames} \\[-2ex] &&|&
+     \text{i16x8.relaxed\_swizzle} &\Rightarrow& \I16X8.\RELAXEDSWIZZLE \\ &&|&
+     \text{i32x4.relaxed\_trunc\_f32x4\_s} &\Rightarrow& \I32X4.\RELAXEDTRUNC\K{\_f32x4\_s} \\ &&|&
+     \text{i32x4.relaxed\_trunc\_f32x4\_u} &\Rightarrow& \I32X4.\RELAXEDTRUNC\K{\_f32x4\_u} \\ &&|&
+     \text{i32x4.relaxed\_trunc\_f32x4\_s\_zero} &\Rightarrow& \I32X4.\RELAXEDTRUNC\K{\_f32x4\_s\_zero} \\ &&|&
+     \text{i32x4.relaxed\_trunc\_f32x4\_u\_zero} &\Rightarrow& \I32X4.\RELAXEDTRUNC\K{\_f32x4\_u\_zero} \\ &&|&
+     \text{f32x4.relaxed\_madd} &\Rightarrow& \F32X4.\RELAXEDMADD \\ &&|&
+     \text{f32x4.relaxed\_nmadd} &\Rightarrow& \F32X4.\RELAXEDNMADD \\ &&|&
+     \text{f64x2.relaxed\_madd} &\Rightarrow& \F64X2.\RELAXEDMADD \\ &&|&
+     \text{f64x2.relaxed\_nmadd} &\Rightarrow& \F64X2.\RELAXEDNMADD \\ &&|&
+     \text{i8x16.relaxed\_laneselect} &\Rightarrow& \I8X16.\RELAXEDLANESELECT \\ &&|&
+     \text{i16x8.relaxed\_laneselect} &\Rightarrow& \I16X8.\RELAXEDLANESELECT \\ &&|&
+     \text{i32x4.relaxed\_laneselect} &\Rightarrow& \I32X4.\RELAXEDLANESELECT \\ &&|&
+     \text{i64x2.relaxed\_laneselect} &\Rightarrow& \I64X2.\RELAXEDLANESELECT \\ &&|&
+     \text{f32x4.relaxed\_min} &\Rightarrow& \F32X4.\RELAXEDMIN \\ &&|&
+     \text{f32x4.relaxed\_max} &\Rightarrow& \F32X4.\RELAXEDMAX \\ &&|&
+     \text{f64x2.relaxed\_min} &\Rightarrow& \F64X2.\RELAXEDMIN \\ &&|&
+     \text{f64x2.relaxed\_max} &\Rightarrow& \F64X2.\RELAXEDMAX \\ &&|&
+     \text{i16x8.relaxed\_q15mulr\_s} &\Rightarrow& \I16X8.\RELAXEDQ15MULRS \\ &&|&
+     \text{i16x8.relaxed\_dot\_i8x16\_i7x16\_s} &\Rightarrow& \I16X8.\RELAXEDDOT\K{\_i8x16\_i7x16\_s} \\ &&|&
+     \text{i16x8.relaxed\_dot\_i8x16\_i7x16\_add\_s} &\Rightarrow& \I16X8.\RELAXEDDOT\K{\_i8x16\_i7x16\_add\_s}
+   \end{array}
+
 
 .. index:: ! folded instruction, S-expression
 .. _text-foldedinstr:
@@ -1078,14 +1104,15 @@ Such a folded instruction can appear anywhere a regular instruction can.
        &\equiv\quad \text{block}~~\Tlabel~~\Tblocktype~~\Tinstr^\ast~~\text{end} \\ &
      \text{(}~\text{loop}~~\Tlabel~~\Tblocktype~~\Tinstr^\ast~\text{)}
        &\equiv\quad \text{loop}~~\Tlabel~~\Tblocktype~~\Tinstr^\ast~~\text{end} \\ &
-     \text{(}~\text{if}~~\Tlabel~~\Tblocktype~~\Tfoldedinstr^\ast
-       &\hspace{-3ex} \text{(}~\text{then}~~\Tinstr_1^\ast~\text{)}~~(\text{(}~\text{else}~~\Tinstr_2^\ast~\text{)})^?~~\text{)}
-       \quad\equiv \\ &\qquad
-       \Tfoldedinstr^\ast~~\text{if}~~\Tlabel
-       &\hspace{-12ex} \Tblocktype~~\Tinstr_1^\ast~~\text{else}~~(\Tinstr_2^\ast)^?~\text{end} \\ &
+     \text{(}~\text{if}~~\Tlabel~~\Tblocktype~~\Tfoldedinstr^\ast \\ &
+       \qquad \text{(}~\text{then}~~\Tinstr_1^\ast~\text{)}~~(\text{(}~\text{else}~~\Tinstr_2^\ast~\text{)})^?~~\text{)}
+       &\equiv\quad
+       \Tfoldedinstr^\ast~~\text{if}~~\Tlabel~~\Tblocktype~~\Tinstr_1^\ast~~\\ &
+       &\qquad\qquad \text{else}~~(\Tinstr_2^\ast)^?~\text{end} \\ &
      \text{(}~\text{try\_table}~~\Tlabel~~\Tblocktype~~\Tcatch^\ast~~\Tinstr^\ast~\text{)}
-       \quad\equiv \\ &\qquad
-       \text{try\_table}~~\Tlabel~~\Tblocktype~~\Tcatch^\ast~~\Tinstr^\ast~~\text{end} \\
+       &\equiv\quad
+       \text{try\_table}~~\Tlabel~~\Tblocktype~~\\ &
+       &\qquad\qquad \Tcatch^\ast~~\Tinstr^\ast~~\text{end} \\
    \end{array}
 
 

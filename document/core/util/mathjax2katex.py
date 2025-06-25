@@ -61,21 +61,21 @@ def HasBalancedTags(s):
 
 def ReplaceMath(cache, data):
   old = data
+  data = re.sub('[\\\\]\\[([0-9]|-)', '\\\\DOUBLESLASH\\[\\1', data)  # Messed up by Bikeshed
   data = data.replace('\\\\', '\\DOUBLESLASH')
   data = data.replace('\\(', '')
   data = data.replace('\\)', '')
   data = data.replace('\\[', '')
   data = data.replace('\\]', '')
   data = data.replace('\\DOUBLESLASH', '\\\\')
-  data = data.replace('’', '\\text{’}')
-  data = data.replace('‘', '\\text{‘}')
-  data = data.replace('\\hfill', '')
+  data = data.replace('\u2019', '\'')       # "Right Single Quotation Mark" messed up by Bikeshed
+  data = data.replace('\\hfill', ' ')
   data = data.replace('\\mbox', '\\text')
   data = data.replace('\\begin{split}', '\\begin{aligned}')
   data = data.replace('\\end{split}', '\\end{aligned}')
-  data = data.replace('&amp;', '&')
-  data = data.replace('&lt;', '<')
-  data = data.replace('&gt;', '>')
+  data = data.replace('&amp;', '&')    # Messed up by Bikeshed
+  data = data.replace('&lt;', '<')     # Messed up by Bikeshed
+  data = data.replace('&gt;', '>')     # Messed up by Bikeshed
   data = data.replace('{array}[t]', '{array}')
   data = data.replace('{array}[b]', '{array}')
   data = data.replace('@{~}', '')
@@ -108,12 +108,17 @@ def ReplaceMath(cache, data):
       data = data[:start] + v.replace('#1', data[start+len(k):end]) + data[end:]
   p = subprocess.Popen(
       ['node', os.path.join(SCRIPT_DIR, 'katex/cli.js'), '--display-mode', '--trust'],
-      stdin=subprocess.PIPE, stdout=subprocess.PIPE, text=True)
-  ret = p.communicate(input=data)[0]
-  if p.returncode != 0:
+      stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+  ret, err = p.communicate(input=data)
+  if p.returncode != 0 or err != "":
+    if err != "":
+      sys.stderr.write('\n\n' + err + '\n')
     sys.stderr.write('BEFORE:\n' + old + '\n')
     sys.stderr.write('AFTER:\n' + data + '\n')
-    raise Exception()
+    if p.returncode != 0:
+      raise Exception()
+    else:
+      sys.stderr.write('RESULT:\n' + ret + '\n')
   ret = ret.strip()
   ret = ret[ret.find('<span class="katex-html"'):]
   ret = '<span class="katex-display"><span class="katex">' + ret
@@ -207,7 +212,7 @@ def Main():
   # Pull out math fragments.
   data = re.sub(
       'class="([^"]*)math([^"]*)"[^>]*>'
-      '((?:[ ]*<span[^>]*>[^<]*</span>)*)([^<]*)<',
+      '((?:[ \n]*<span[^>]*>[^<]*</span>)*)([^<]*)<',
       ExtractMath, data)
 
   sys.stderr.write('Processing %d fragments.\n' % len(fixups))
@@ -223,7 +228,8 @@ def Main():
         fixed = ('class="' + cls_before + ' ' + cls_after + '">' +
                  spans + ReplaceMath(cache, mth) + '<')
         done_fixups.append((start, end, fixed))
-      except Exception:
+      except Exception as inst:
+        sys.stderr.write('\nException: ' + inst.__str__() + '\n')
         success = False
 
       q.task_done()

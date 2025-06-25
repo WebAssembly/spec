@@ -82,8 +82,8 @@ Control Instructions
      \hex{13}~~y{:}\Btypeidx~~x{:}\Btableidx &\Rightarrow& \RETURNCALLINDIRECT~x~y \\ &&|&
      \hex{14}~~x{:}\Btypeidx &\Rightarrow& \CALLREF~x \\ &&|&
      \hex{15}~~x{:}\Btypeidx &\Rightarrow& \RETURNCALLREF~x \\ &&|&
-     \hex{1F}~~\X{bt}{:}\Bblocktype~~c^\ast{:}\Bvec(\Bcatch)~~(\X{in}{:}\Binstr)^\ast~~\hex{0B}
-       &\Rightarrow& \TRYTABLE~\X{bt}~c^\ast~\X{in}^\ast~\END \\
+     \hex{1F}~~\X{bt}{:}\Bblocktype~~c^\ast{:}\Bvec(\Bcatch)~~\\&&&~~~~(\X{in}{:}\Binstr)^\ast~~\hex{0B}
+       &\Rightarrow& \TRYTABLE~\X{bt}~c^\ast~\X{in}^\ast~\END \\ &&|&
      \hex{D5}~~l{:}\Blabelidx &\Rightarrow& \BRONNULL~l \\ &&|&
      \hex{D6}~~l{:}\Blabelidx &\Rightarrow& \BRONNONNULL~l \\ &&|&
      \hex{FB}~~24{:}\Bu32~~(\NULL_1^?,\NULL_2^?){:}\Bcastflags\\&&&~~~~l{:}\Blabelidx~~\X{ht}_1{:}\Bheaptype~~\X{ht}_2{:}\Bheaptype &\Rightarrow& \BRONCAST~l~(\REF~\NULL_1^?~\X{ht}_1)~(\REF~\NULL_2^?~\X{ht}_2) \\ &&|&
@@ -290,9 +290,9 @@ Each variant of :ref:`memory instruction <syntax-instr-memory>` is encoded with 
 .. math::
    \begin{array}{llcllll}
    \production{memory argument} & \Bmemarg &::=&
-     a{:}\Bu32~~o{:}\Bu32 &\Rightarrow& 0~\{ \ALIGN~a,~\OFFSET~o \}
+     a{:}\Bu32~~o{:}\Bu64 &\Rightarrow& 0~\{ \ALIGN~a,~\OFFSET~o \}
        & (\iff a < 2^6) \\ &&|&
-     a{:}\Bu32~~x{:}\memidx~~o{:}\Bu32 &\Rightarrow& x~\{ \ALIGN~(a - 2^6),~\OFFSET~o \}
+     a{:}\Bu32~~x{:}\memidx~~o{:}\Bu64 &\Rightarrow& x~\{ \ALIGN~(a - 2^6),~\OFFSET~o \}
        & (\iff 2^6 \leq a < 2^7) \\
    \production{instruction} & \Binstr &::=& \dots \\ &&|&
      \hex{28}~~m{:}\Bmemarg &\Rightarrow& \I32.\LOAD~m \\ &&|&
@@ -929,6 +929,31 @@ All other vector instructions are plain opcodes without any immediates.
      \hex{FD}~~255{:}\Bu32 &\Rightarrow& \F64X2.\VCONVERT\K{\_low\_i32x4\_u}\\ &&|&
      \hex{FD}~~94{:}\Bu32 &\Rightarrow& \F32X4.\VDEMOTE\K{\_f64x2\_zero}\\ &&|&
      \hex{FD}~~95{:}\Bu32 &\Rightarrow& \F64X2.\VPROMOTE\K{\_low\_f32x4}\\
+   \end{array}
+
+.. math::
+   \begin{array}{llclll}
+   \phantom{\production{instruction}} & \phantom{\Binstr} &\phantom{::=}& \phantom{\dots} && \phantom{vechaslongerinstructionnames} \\[-2ex] &&|&
+     \hex{FD}~~256{:}\Bu32 &\Rightarrow& \I16X8.\RELAXEDSWIZZLE \\ &&|&
+     \hex{FD}~~257{:}\Bu32 &\Rightarrow& \I32X4.\RELAXEDTRUNC\K{\_f32x4\_s} \\ &&|&
+     \hex{FD}~~258{:}\Bu32 &\Rightarrow& \I32X4.\RELAXEDTRUNC\K{\_f32x4\_u} \\ &&|&
+     \hex{FD}~~259{:}\Bu32 &\Rightarrow& \I32X4.\RELAXEDTRUNC\K{\_f32x4\_s\_zero} \\ &&|&
+     \hex{FD}~~260{:}\Bu32 &\Rightarrow& \I32X4.\RELAXEDTRUNC\K{\_f32x4\_u\_zero} \\ &&|&
+     \hex{FD}~~261{:}\Bu32 &\Rightarrow& \F32X4.\RELAXEDMADD \\ &&|&
+     \hex{FD}~~262{:}\Bu32 &\Rightarrow& \F32X4.\RELAXEDNMADD \\ &&|&
+     \hex{FD}~~263{:}\Bu32 &\Rightarrow& \F64X2.\RELAXEDMADD \\ &&|&
+     \hex{FD}~~264{:}\Bu32 &\Rightarrow& \F64X2.\RELAXEDNMADD \\ &&|&
+     \hex{FD}~~265{:}\Bu32 &\Rightarrow& \I8X16.\RELAXEDLANESELECT \\ &&|&
+     \hex{FD}~~266{:}\Bu32 &\Rightarrow& \I16X8.\RELAXEDLANESELECT \\ &&|&
+     \hex{FD}~~267{:}\Bu32 &\Rightarrow& \I32X4.\RELAXEDLANESELECT \\ &&|&
+     \hex{FD}~~268{:}\Bu32 &\Rightarrow& \I64X2.\RELAXEDLANESELECT \\ &&|&
+     \hex{FD}~~269{:}\Bu32 &\Rightarrow& \F32X4.\RELAXEDMIN \\ &&|&
+     \hex{FD}~~270{:}\Bu32 &\Rightarrow& \F32X4.\RELAXEDMAX \\ &&|&
+     \hex{FD}~~271{:}\Bu32 &\Rightarrow& \F64X2.\RELAXEDMIN \\ &&|&
+     \hex{FD}~~272{:}\Bu32 &\Rightarrow& \F64X2.\RELAXEDMAX \\ &&|&
+     \hex{FD}~~273{:}\Bu32 &\Rightarrow& \I16X8.\RELAXEDQ15MULRS \\ &&|&
+     \hex{FD}~~274{:}\Bu32 &\Rightarrow& \I16X8.\RELAXEDDOT\K{\_i8x16\_i7x16\_s} \\ &&|&
+     \hex{FD}~~275{:}\Bu32 &\Rightarrow& \I16X8.\RELAXEDDOT\K{\_i8x16\_i7x16\_add\_s} \\
    \end{array}
 
 

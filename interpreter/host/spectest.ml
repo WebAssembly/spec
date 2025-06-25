@@ -20,11 +20,15 @@ let global (GlobalT (_, t) as gt) =
   in ExternGlobal (Global.alloc gt v)
 
 let table =
-  let tt = TableT ({min = 10l; max = Some 20l}, (Null, FuncHT)) in
+  let tt = TableT (I32AT, {min = 10L; max = Some 20L}, (Null, FuncHT)) in
+  ExternTable (Table.alloc tt (NullRef FuncHT))
+
+let table64 =
+  let tt = TableT (I64AT, {min = 10L; max = Some 20L}, (Null, FuncHT)) in
   ExternTable (Table.alloc tt (NullRef FuncHT))
 
 let memory =
-  let mt = MemoryT {min = 1l; max = Some 2l} in
+  let mt = MemoryT (I32AT, {min = 1L; max = Some 2L}) in
   ExternMemory (Memory.alloc mt)
 
 let func f ft =
@@ -55,5 +59,6 @@ let lookup name t =
   | "global_f32", _ -> global (GlobalT (Cons, NumT F32T))
   | "global_f64", _ -> global (GlobalT (Cons, NumT F64T))
   | "table", _ -> table
+  | "table64", _ -> table64
   | "memory", _ -> memory
   | _ -> raise Not_found

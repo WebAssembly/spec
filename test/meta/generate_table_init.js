@@ -27,6 +27,7 @@ function emit_a() {
 // the table entry is empty.
 
 function emit_b(insn, table) {
+    let tt = table == 2 ? 'i64' : 'i32';
     print(
 `
 (module
@@ -38,10 +39,11 @@ function emit_b(insn, table) {
   (import "a" "ef4" (func (result i32)))    ;; index 4
   (table $t0 30 30 funcref)
   (table $t1 30 30 funcref)
-  (elem (table $t${table}) (i32.const 2) func 3 1 4 1)
+  (table $t2 i64 30 30 funcref)
+  (elem (table $t${table}) (${tt}.const 2) func 3 1 4 1)
   (elem funcref
     (ref.func 2) (ref.func 7) (ref.func 1) (ref.func 8))
-  (elem (table $t${table}) (i32.const 12) func 7 5 2 3 6)
+  (elem (table $t${table}) (${tt}.const 12) func 7 5 2 3 6)
   (elem funcref
     (ref.func 5) (ref.func 9) (ref.func 2) (ref.func 7) (ref.func 6))
   (func (result i32) (i32.const 5))  ;; index 5
@@ -51,7 +53,7 @@ function emit_b(insn, table) {
   (func (result i32) (i32.const 9))  ;; index 9
   (func (export "test")
     ${insn})
-  (func (export "check") (param i32) (result i32)
+  (func (export "check") (param ${tt}) (result i32)
     (call_indirect $t${table} (type 0) (local.get 0)))
 )
 `);
@@ -65,12 +67,13 @@ function emit_b(insn, table) {
 function tab_test(instruction, table, expected_result_vector) {
     emit_b(instruction, table);
     print(`(invoke "test")`);
+    let tt = table == 2 ? 'i64' : 'i32';
     for (let i = 0; i < expected_result_vector.length; i++) {
         let expected = expected_result_vector[i];
         if (expected === undefined) {
-            print(`(assert_trap (invoke "check" (i32.const ${i})) "uninitialized element")`);
+            print(`(assert_trap (invoke "check" (${tt}.const ${i})) "uninitialized element")`);
         } else {
-            print(`(assert_return (invoke "check" (i32.const ${i})) (i32.const ${expected}))`);
+            print(`(assert_return (invoke "check" (${tt}.const ${i})) (i32.const ${expected}))`);
         }
     }
 }
@@ -81,28 +84,29 @@ emit_a();
 // to count through the vector entries when debugging.
 let e = undefined;
 
-for ( let table of [0, 1] ) {
+for ( let table of [0, 1, 2] ) {
+    let tt = table == 2 ? 'i64' : 'i32';
     // Passive init that overwrites all-null entries
-    tab_test(`(table.init $t${table} 1 (i32.const 7) (i32.const 0) (i32.const 4))`,
+    tab_test(`(table.init $t${table} 1 (${tt}.const 7) (i32.const 0) (i32.const 4))`,
              table,
              [e,e,3,1,4, 1,e,2,7,1, 8,e,7,5,2, 3,6,e,e,e, e,e,e,e,e, e,e,e,e,e]);
 
     // Passive init that overwrites existing active-init-created entries
-    tab_test(`(table.init $t${table} 3 (i32.const 15) (i32.const 1) (i32.const 3))`,
+    tab_test(`(table.init $t${table} 3 (${tt}.const 15) (i32.const 1) (i32.const 3))`,
              table,
              [e,e,3,1,4, 1,e,e,e,e, e,e,7,5,2, 9,2,7,e,e, e,e,e,e,e, e,e,e,e,e]);
 
     // Perform active and passive initialisation and then multiple copies
     tab_test(
-        `(table.init $t${table} 1 (i32.const 7) (i32.const 0) (i32.const 4))
+        `(table.init $t${table} 1 (${tt}.const 7) (i32.const 0) (i32.const 4))
          (elem.drop 1)
-         (table.init $t${table} 3 (i32.const 15) (i32.const 1) (i32.const 3))
+         (table.init $t${table} 3 (${tt}.const 15) (i32.const 1) (i32.const 3))
          (elem.drop 3)
-         (table.copy $t${table} ${table} (i32.const 20) (i32.const 15) (i32.const 5))
-         (table.copy $t${table} ${table} (i32.const 21) (i32.const 29) (i32.const 1))
-         (table.copy $t${table} ${table} (i32.const 24) (i32.const 10) (i32.const 1))
-         (table.copy $t${table} ${table} (i32.const 13) (i32.const 11) (i32.const 4))
-         (table.copy $t${table} ${table} (i32.const 19) (i32.const 20) (i32.const 5))`,
+         (table.copy $t${table} ${table} (${tt}.const 20) (${tt}.const 15) (${tt}.const 5))
+         (table.copy $t${table} ${table} (${tt}.const 21) (${tt}.const 29) (${tt}.const 1))
+         (table.copy $t${table} ${table} (${tt}.const 24) (${tt}.const 10) (${tt}.const 1))
+         (table.copy $t${table} ${table} (${tt}.const 13) (${tt}.const 11) (${tt}.const 4))
+         (table.copy $t${table} ${table} (${tt}.const 19) (${tt}.const 20) (${tt}.const 5))`,
         table,
         [e,e,3,1,4, 1,e,2,7,1, 8,e,7,e,7, 5,2,7,e,9, e,7,e,8,8, e,e,e,e,e]);
 }

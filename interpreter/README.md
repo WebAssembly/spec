@@ -15,12 +15,16 @@ The text format defines modules in S-expression syntax. Moreover, it is generali
 
 ## Building
 
-You'll need OCaml 4.12 or higher. Instructions for installing a recent version of OCaml on multiple platforms are available [here](https://ocaml.org/docs/install.html). On most platforms, the recommended way is through [OPAM](https://ocaml.org/docs/install.html#OPAM).
+You'll need OCaml 4.12 or higher. Instructions for installing a recent version of OCaml on multiple platforms are available [here](https://ocaml.org/docs/installing-ocaml). On most platforms, the recommended way is through [Opam](https://ocaml.org/docs/installing-ocaml#install-opam).
 
 You'll also need to install the dune build system. See the [installation instructions](https://github.com/ocaml/dune#installation-1).
 
-Once you have OCaml, simply do
+And you need to install the [Menhir](https://gallium.inria.fr/~fpottier/menhir/) parser generator:
+```
+opam install menhir
+```
 
+Once you have OCaml, simply do
 ```
 make
 ```
@@ -426,8 +430,9 @@ In order to be able to check and run modules for testing purposes, the S-express
 script: <cmd>*
 
 cmd:
-  <module>                                   ;; define, validate, and initialize module
-  ( register <string> <name>? )              ;; register module for imports
+  <module>                                   ;; define, validate, and possibly instantiate module
+  <instance>
+  ( register <string> <name>? )              ;; register module instance for imports
   <action>                                   ;; perform action and print results
   <assertion>                                ;; assert result of an action
   <meta>                                     ;; meta command
@@ -436,6 +441,10 @@ module:
   ...
   ( module <name>? binary <string>* )        ;; module in binary format (may be malformed)
   ( module <name>? quote <string>* )         ;; module quoted in text (may be malformed)
+  ( module definition <name>? binary ... )   ;; uninstantiated module
+
+instance:
+  ( module instance <name>? <name>? )        ;; instantiate latter module to former instance
 
 action:
   ( invoke <name>? <string> <const>* )       ;; invoke function export
@@ -455,8 +464,8 @@ assertion:
   ( assert_exhaustion <action> <failure> )   ;; assert action exhausts system resources
   ( assert_malformed <module> <failure> )    ;; assert module cannot be decoded with given failure string
   ( assert_invalid <module> <failure> )      ;; assert module is invalid with given failure string
-  ( assert_unlinkable <module> <failure> )   ;; assert module fails to link
-  ( assert_trap <module> <failure> )         ;; assert module traps on instantiation
+  ( assert_unlinkable <instance> <failure> ) ;; assert module fails to link
+  ( assert_trap <instance> <failure> )       ;; assert module traps on instantiation
 
 result_pat:
   ( <num_type>.const <num_pat> )
@@ -466,6 +475,7 @@ result_pat:
   ( ref.func )
   ( ref.extern )
   ( ref.<castop> )
+  ( either <result_pat>+ )                   ;; alternative results
 
 num_pat:
   <num>                                      ;; literal result
@@ -481,9 +491,17 @@ Commands are executed in sequence. Commands taking an optional module name refer
 
 After a module is _registered_ under a string name it is available for importing in other modules.
 
+The failure string in assertions exists for documentation purposes.
+The reference interpreter itself checks that the string is a prefix of the actual error message it generates.
+
 The script format supports additional syntax for defining modules.
 A module of the form `(module binary <string>*)` is given in binary form and will be decoded from the (concatenation of the) strings.
 A module of the form `(module quote <string>*)` is given in textual form and will be parsed from the (concatenation of the) strings. In both cases, decoding/parsing happens when the command is executed, not when the script is parsed, so that meta commands like `assert_malformed` can be used to check expected errors.
+
+Usually, a module declaration implicitly instantiates the module,
+that is, it defines both a module and an instance (of the same name).
+Instantiation can be suppressed by adding the keyword `definition`.
+A module declared as a definition only can then be instantiated explicitly, and multiple times, using the separate form `(module instance <inst_var> <module_name>)`.
 
 There are also a number of meta commands.
 The `script` command is a simple mechanism to name sub-scripts themselves. This is mainly useful for converting scripts with the `output` command. Commands inside a `script` will be executed normally, but nested meta are expanded in place (`input`, recursively) or elided (`output`) in the named script.
@@ -492,6 +510,7 @@ The `input` and `output` meta commands determine the requested file format from 
 
 The interpreter supports a "dry" mode (flag `-d`), in which modules are only validated. In this mode, all actions and assertions are ignored.
 It also supports an "unchecked" mode (flag `-u`), in which module definitions are not validated before use.
+In that mode, execution may fail with a "crash" error message.
 
 
 ### Spectest host module
@@ -499,14 +518,14 @@ It also supports an "unchecked" mode (flag `-u`), in which module definitions ar
 When running scripts, the interpreter predefines a simple host module named `"spectest"` that has the following module type:
 ```
 (module
-  (global (export "global_i32") i32)
-  (global (export "global_i64") i64)
-  (global (export "global_f32") f32)
-  (global (export "global_f64") f64)
+  (global (export "global_i32") i32)      ;; value 666
+  (global (export "global_i64") i64)      ;; value 666
+  (global (export "global_f32") f32)      ;; value 666.6
+  (global (export "global_f64") f64)      ;; value 666.6
 
-  (table (export "table") 10 20 funcref)
+  (table (export "table") 10 20 funcref)  ;; null-initialized
 
-  (memory (export "memory") 1 2)
+  (memory (export "memory") 1 2)          ;; zero-initialized
 
   (func (export "print"))
   (func (export "print_i32") (param i32))
@@ -537,6 +556,10 @@ cmd:
 
 module:
   ( module <name>? binary <string>* )        ;; module in binary format (may be malformed)
+  ( module definition <name>? binary ... )   ;; uninstantiated module
+
+instance:
+  ( module instance <name>? <name>? )        ;; instantiate latter module to former instance
 
 action:
   ( invoke <name>? <string> <const>* )       ;; invoke function export
@@ -549,8 +572,8 @@ assertion:
   ( assert_exhaustion <action> <failure> )   ;; assert action exhausts system resources
   ( assert_malformed <module> <failure> )    ;; assert module cannot be decoded with given failure string
   ( assert_invalid <module> <failure> )      ;; assert module is invalid with given failure string
-  ( assert_unlinkable <module> <failure> )   ;; assert module fails to link
-  ( assert_trap <module> <failure> )         ;; assert module traps on instantiation
+  ( assert_unlinkable <instance> <failure> ) ;; assert module fails to link
+  ( assert_trap <instance> <failure> )       ;; assert module traps on instantiation
 
 result_pat:
   ( <num_type>.const <num_pat> )
@@ -559,6 +582,7 @@ result_pat:
   ( ref.func )
   ( ref.extern )
   ( ref.<castop> )
+  ( either <result_pat>+ )                   ;; alternative results
 
 num_pat:
   <value>                                    ;; literal result

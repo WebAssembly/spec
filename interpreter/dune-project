@@ -16,7 +16,7 @@
   (synopsis "Library to read and write WebAssembly (Wasm) files and manipulate their AST")
   (tags (wasm webassembly spec interpreter))
   (depends
-    (ocaml (>= 4.12))
+    (ocaml (>= 4.14))
     (menhir (>= 20220210))
   )
 )

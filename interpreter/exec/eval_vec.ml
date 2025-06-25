@@ -61,6 +61,7 @@ struct
       | I8x16 MaxS -> V128.I8x16.max_s
       | I8x16 MaxU -> V128.I8x16.max_u
       | I8x16 AvgrU -> V128.I8x16.avgr_u
+      | I8x16 RelaxedSwizzle -> V128.V8x16.swizzle
       | I16x8 NarrowS -> V128.I16x8_convert.narrow_s
       | I16x8 NarrowU -> V128.I16x8_convert.narrow_u
       | I16x8 Add -> V128.I16x8.add
@@ -80,6 +81,8 @@ struct
       | I16x8 ExtMulLowU -> V128.I16x8_convert.extmul_low_u
       | I16x8 ExtMulHighU -> V128.I16x8_convert.extmul_high_u
       | I16x8 Q15MulRSatS -> V128.I16x8.q15mulr_sat_s
+      | I16x8 RelaxedQ15MulRS -> V128.I16x8.q15mulr_sat_s
+      | I16x8 RelaxedDot -> V128.I16x8_convert.dot_s
       | I32x4 Add -> V128.I32x4.add
       | I32x4 Sub -> V128.I32x4.sub
       | I32x4 MinS -> V128.I32x4.min_s
@@ -107,6 +110,8 @@ struct
       | F32x4 Max -> V128.F32x4.max
       | F32x4 Pmin -> V128.F32x4.pmin
       | F32x4 Pmax -> V128.F32x4.pmax
+      | F32x4 RelaxedMin -> V128.F32x4.min
+      | F32x4 RelaxedMax -> V128.F32x4.max
       | F64x2 Add -> V128.F64x2.add
       | F64x2 Sub -> V128.F64x2.sub
       | F64x2 Mul -> V128.F64x2.mul
@@ -115,8 +120,24 @@ struct
       | F64x2 Max -> V128.F64x2.max
       | F64x2 Pmin -> V128.F64x2.pmin
       | F64x2 Pmax -> V128.F64x2.pmax
+      | F64x2 RelaxedMin -> V128.F64x2.min
+      | F64x2 RelaxedMax -> V128.F64x2.max
       | _ -> assert false
     in fun v1 v2 -> to_vec (f (of_vec 1 v1) (of_vec 2 v2))
+
+  let ternop (op : ternop) =
+    let f = match op with
+      | F32x4 RelaxedMadd -> V128.F32x4.fma
+      | F32x4 RelaxedNmadd -> V128.F32x4.fnma
+      | F64x2 RelaxedMadd -> V128.F64x2.fma
+      | F64x2 RelaxedNmadd -> V128.F64x2.fnma
+      | I8x16 RelaxedLaneselect -> V128.V1x128.bitselect
+      | I16x8 RelaxedLaneselect -> V128.V1x128.bitselect
+      | I32x4 RelaxedLaneselect -> V128.V1x128.bitselect
+      | I64x2 RelaxedLaneselect -> V128.V1x128.bitselect
+      | I32x4 RelaxedDotAccum -> V128.I32x4_convert.dot_s_accum
+      | _ -> assert false
+    in fun v1 v2 v3 -> to_vec (f (of_vec 1 v1) (of_vec 2 v2) (of_vec 3 v3))
 
   let relop (op : relop) =
     let f = match op with
@@ -187,6 +208,10 @@ struct
       | I32x4 TruncSatUF32x4 -> V128.I32x4_convert.trunc_sat_f32x4_u
       | I32x4 TruncSatSZeroF64x2 -> V128.I32x4_convert.trunc_sat_f64x2_s_zero
       | I32x4 TruncSatUZeroF64x2 -> V128.I32x4_convert.trunc_sat_f64x2_u_zero
+      | I32x4 RelaxedTruncSF32x4 -> V128.I32x4_convert.trunc_sat_f32x4_s
+      | I32x4 RelaxedTruncUF32x4 -> V128.I32x4_convert.trunc_sat_f32x4_u
+      | I32x4 RelaxedTruncSZeroF64x2 -> V128.I32x4_convert.trunc_sat_f64x2_s_zero
+      | I32x4 RelaxedTruncUZeroF64x2 -> V128.I32x4_convert.trunc_sat_f64x2_u_zero
       | I32x4 ExtAddPairwiseS -> V128.I32x4_convert.extadd_pairwise_s
       | I32x4 ExtAddPairwiseU -> V128.I32x4_convert.extadd_pairwise_u
       | I64x2 ExtendLowS -> V128.I64x2_convert.extend_low_s
@@ -301,6 +326,7 @@ let op v128 = function
 let eval_testop = op V128Op.testop
 let eval_unop = op V128Op.unop
 let eval_binop = op V128Op.binop
+let eval_ternop = op V128Op.ternop
 let eval_relop = op V128Op.relop
 let eval_cvtop = op V128Op.cvtop
 let eval_shiftop = op V128Op.shiftop

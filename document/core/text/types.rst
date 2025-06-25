@@ -286,6 +286,32 @@ Similarly, final sub types with no super-types can omit the |Tsub| keyword and a
    \end{array}
 
 
+.. index:: address type
+   pair: text format; address type
+.. _text-addrtype:
+
+Address Types
+~~~~~~~~~~~~~
+
+.. math::
+   \begin{array}{llclll}
+   \production{address type} & \Taddrtype &::=&
+     \text{i32} &\Rightarrow& \I32 \\ &&|&
+     \text{i64} &\Rightarrow& \I64 \\
+   \end{array}
+
+Abbreviations
+.............
+
+The address type can be omitted, in which case it defaults :math:`\I32`:
+
+.. math::
+   \begin{array}{llclll}
+   \production{address type} &
+     \text{} &\equiv& \text{i32}
+   \end{array}
+
+
 .. index:: limits
    pair: text format; limits
 .. _text-limits:
@@ -296,8 +322,8 @@ Limits
 .. math::
     \begin{array}{llclll}
     \production{limits} & \Tlimits &::=&
-      n{:}\Tu32 &\Rightarrow& \{ \LMIN~n, \LMAX~\epsilon \} \\ &&|&
-      n{:}\Tu32~~m{:}\Tu32 &\Rightarrow& \{ \LMIN~n, \LMAX~m \} \\
+      n{:}\Tu64 &\Rightarrow& \{ \LMIN~n, \LMAX~\epsilon \} \\ &&|&
+      n{:}\Tu64~~m{:}\Tu64 &\Rightarrow& \{ \LMIN~n, \LMAX~m \} \\
     \end{array}
 
 
@@ -311,7 +337,7 @@ Memory Types
 .. math::
    \begin{array}{llclll@{\qquad\qquad}l}
    \production{memory type} & \Tmemtype_I &::=&
-     \X{lim}{:}\Tlimits &\Rightarrow& \X{lim} \\
+     \X{at}{:}\Taddrtype~~\X{lim}{:}\Tlimits &\Rightarrow& \X{at}~\X{lim} \\
    \end{array}
 
 
@@ -325,7 +351,7 @@ Table Types
 .. math::
    \begin{array}{llclll}
    \production{table type} & \Ttabletype_I &::=&
-     \X{lim}{:}\Tlimits~~\X{et}{:}\Treftype_I &\Rightarrow& \X{lim}~\X{et} \\
+     \X{at}{:}\Taddrtype~~\X{lim}{:}\Tlimits~~\X{et}{:}\Treftype_I &\Rightarrow& \X{at}~\X{lim}~\X{et} \\
    \end{array}
 
 
