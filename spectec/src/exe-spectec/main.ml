@@ -114,6 +114,8 @@ let argspec = Arg.align (
   "-o", Arg.Unit (fun () -> file_kind := Output), " Output files";
   "-l", Arg.Set logging, " Log execution steps";
   "-ll", Arg.Set Backend_interpreter.Runner.logging, " Log interpreter execution";
+  "-dl", Arg.String (fun s -> Util.Debug_log.(active := s :: !active)),
+    " Debug-log function";
   "-w", Arg.Unit (fun () -> warn_math := true; warn_prose := true),
     " Warn about unused or multiply used splices";
   "--warn-math", Arg.Set warn_math,

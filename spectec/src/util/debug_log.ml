@@ -1,15 +1,15 @@
 (* List of actively logged functions' labels *)
-let active : string list = []
+let active : string list ref = ref []
 
 let fmt = Printf.sprintf
 let loc = Source.string_of_region
 
 let log_exn _exn =
-  if active <> [] then
+  if !active <> [] then
     Printf.eprintf "\n%s\n%!" (Printexc.get_backtrace ())
 
 let log_at (type a) label at (arg_f : unit -> string) (res_f : a -> string) (f : unit -> a) : a =
-  if not (label = "" || List.exists (fun s -> String.starts_with ~prefix: s label) active) then f () else
+  if not (label = "" || List.exists (fun s -> String.starts_with ~prefix: s label) !active) then f () else
   let ats = if at = Source.no_region then "" else " " ^ Source.string_of_region at in
   let arg = arg_f () in
   Printf.eprintf "[%s%s] %s\n%!" label ats arg;
