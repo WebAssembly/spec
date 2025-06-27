@@ -26,9 +26,9 @@ let load_num seg a nt =
   let bs = load_bytes seg a (Types.num_size nt) in
   Value.num_of_bits nt bs
 
-let load_num_packed sz ext seg a nt =
+let load_num_packed sz sx seg a nt =
   let bs = load_bytes seg a (Pack.packed_size sz) in
-  Value.num_of_packed_bits nt sz ext bs
+  Value.num_of_packed_bits nt sz sx bs
 
 let load_vec seg a vt =
   let bs = load_bytes seg a (Types.vec_size vt) in

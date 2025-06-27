@@ -194,10 +194,10 @@ let val_of_bits t bs =
   | RefT _ -> raise Type
   | BotT -> assert false
 
-let extend n ext x =
-  match ext with
-  | Pack.ZX -> x
-  | Pack.SX -> let sh = 64 - 8 * n in Int64.(shift_right (shift_left x sh) sh)
+let extend n sx x =
+  match sx with
+  | Pack.U -> x
+  | Pack.S -> let sh = 64 - 8 * n in Int64.(shift_right (shift_left x sh) sh)
 
 let num_of_packed_bits t sz ext bs =
   let w = Pack.packed_size sz in
@@ -211,7 +211,7 @@ let val_of_storage_bits st bs =
   match st with
   | ValStorageT t -> val_of_bits t bs
   | PackStorageT pt ->
-    Num (num_of_packed_bits I32T (packsize_of_packtype pt) Pack.ZX bs)
+    Num (num_of_packed_bits I32T (packsize_of_packtype pt) Pack.U bs)
 
 
 let vec_of_packed_bits t sz ext bs =
@@ -223,12 +223,12 @@ let vec_of_packed_bits t sz ext bs =
   let v = V128.of_bits (Bytes.to_string b) in
   let r =
     match sz, ext with
-    | Pack64, ExtLane (Pack8x8, SX) -> V128.I16x8_convert.extend_low_s v
-    | Pack64, ExtLane (Pack8x8, ZX) -> V128.I16x8_convert.extend_low_u v
-    | Pack64, ExtLane (Pack16x4, SX) -> V128.I32x4_convert.extend_low_s v
-    | Pack64, ExtLane (Pack16x4, ZX) -> V128.I32x4_convert.extend_low_u v
-    | Pack64, ExtLane (Pack32x2, SX) -> V128.I64x2_convert.extend_low_s v
-    | Pack64, ExtLane (Pack32x2, ZX) -> V128.I64x2_convert.extend_low_u v
+    | Pack64, ExtLane (Pack8x8, S) -> V128.I16x8_convert.extend_low_s v
+    | Pack64, ExtLane (Pack8x8, U) -> V128.I16x8_convert.extend_low_u v
+    | Pack64, ExtLane (Pack16x4, S) -> V128.I32x4_convert.extend_low_s v
+    | Pack64, ExtLane (Pack16x4, U) -> V128.I32x4_convert.extend_low_u v
+    | Pack64, ExtLane (Pack32x2, S) -> V128.I64x2_convert.extend_low_s v
+    | Pack64, ExtLane (Pack32x2, U) -> V128.I64x2_convert.extend_low_u v
     | _, ExtLane _ -> assert false
     | Pack8, ExtSplat -> V128.I8x16.splat (I8.of_int_s (Int64.to_int x))
     | Pack16, ExtSplat -> V128.I16x8.splat (I16.of_int_s (Int64.to_int x))

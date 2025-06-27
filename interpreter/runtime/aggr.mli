@@ -17,7 +17,7 @@ val alloc_array : deftype -> value list -> array
 val type_of_struct : struct_ -> deftype
 val type_of_array : array -> deftype
 
-val read_field : field -> Pack.extension option -> value  (* raises Failure *)
+val read_field : field -> Pack.sx option -> value  (* raises Failure *)
 val write_field : field -> value -> unit  (* raises Falure *)
 
 val array_length : array -> int32

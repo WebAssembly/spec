@@ -284,34 +284,32 @@ let type_cvtop at = function
   | Value.I32 cvtop ->
     let open I32Op in
     (match cvtop with
-    | ExtendSI32 | ExtendUI32 -> error at "invalid conversion"
+    | ExtendI32 _ -> error at "invalid conversion"
     | WrapI64 -> I64T
-    | TruncSF32 | TruncUF32 | TruncSatSF32 | TruncSatUF32
-    | ReinterpretFloat -> F32T
-    | TruncSF64 | TruncUF64 | TruncSatSF64 | TruncSatUF64 -> F64T
+    | TruncF32 _ | TruncSatF32 _ | ReinterpretFloat -> F32T
+    | TruncF64 _ | TruncSatF64 _ -> F64T
     ), I32T
   | Value.I64 cvtop ->
     let open I64Op in
     (match cvtop with
-    | ExtendSI32 | ExtendUI32 -> I32T
+    | ExtendI32 _ -> I32T
     | WrapI64 -> error at "invalid conversion"
-    | TruncSF32 | TruncUF32 | TruncSatSF32 | TruncSatUF32 -> F32T
-    | TruncSF64 | TruncUF64 | TruncSatSF64 | TruncSatUF64
-    | ReinterpretFloat -> F64T
+    | TruncF32 _ | TruncSatF32 _ -> F32T
+    | TruncF64 _ | TruncSatF64 _ | ReinterpretFloat -> F64T
     ), I64T
   | Value.F32 cvtop ->
     let open F32Op in
     (match cvtop with
-    | ConvertSI32 | ConvertUI32 | ReinterpretInt -> I32T
-    | ConvertSI64 | ConvertUI64 -> I64T
+    | ConvertI32 _ | ReinterpretInt -> I32T
+    | ConvertI64 _ -> I64T
     | PromoteF32 -> error at "invalid conversion"
     | DemoteF64 -> F64T
     ), F32T
   | Value.F64 cvtop ->
     let open F64Op in
     (match cvtop with
-    | ConvertSI32 | ConvertUI32 -> I32T
-    | ConvertSI64 | ConvertUI64 | ReinterpretInt -> I64T
+    | ConvertI32 _ -> I32T
+    | ConvertI64 _ | ReinterpretInt -> I64T
     | PromoteF32 -> F32T
     | DemoteF64 -> error at "invalid conversion"
     ), F64T

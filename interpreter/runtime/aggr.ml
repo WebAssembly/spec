@@ -33,8 +33,8 @@ let write_field fld v =
 let read_field fld exto =
   match fld, exto with
   | ValField vr, None -> !vr
-  | PackField (sz, ir), Some Pack.ZX -> Num (I32 (extend_u sz !ir))
-  | PackField (sz, ir), Some Pack.SX -> Num (I32 (extend_s sz !ir))
+  | PackField (sz, ir), Some Pack.U -> Num (I32 (extend_u sz !ir))
+  | PackField (sz, ir), Some Pack.S -> Num (I32 (extend_s sz !ir))
   | _, _ -> failwith "read_field"
 
 let array_length (Array (_, fs)) = Lib.List32.length fs

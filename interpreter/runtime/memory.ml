@@ -107,9 +107,9 @@ let store_num mem a o n =
   let bs = Value.bits_of_num n in
   store_bytes mem (effective_address a o) bs
 
-let load_num_packed sz ext mem a o nt =
+let load_num_packed sz sx mem a o nt =
   let bs = load_bytes mem (effective_address a o) (Pack.packed_size sz) in
-  Value.num_of_packed_bits nt sz ext bs
+  Value.num_of_packed_bits nt sz sx bs
 
 let store_num_packed sz mem a o n =
   let bs = Value.packed_bits_of_num sz n in
@@ -123,9 +123,9 @@ let store_vec mem a o v =
   let bs = Value.bits_of_vec v in
   store_bytes mem (effective_address a o) bs
 
-let load_vec_packed sz ext mem a o t =
+let load_vec_packed sz vext mem a o t =
   let bs = load_bytes mem (effective_address a o) (Pack.packed_size sz) in
-  Value.vec_of_packed_bits t sz ext bs
+  Value.vec_of_packed_bits t sz vext bs
 
 let load_val mem a o t =
   let bs = load_bytes mem (effective_address a o) (Types.val_size t) in

@@ -309,27 +309,27 @@ struct
       op 0x2a; memop x mo
     | Load (x, ({ty = F64T; pack = None; _} as mo)) ->
       op 0x2b; memop x mo
-    | Load (x, ({ty = I32T; pack = Some (Pack8, SX); _} as mo)) ->
+    | Load (x, ({ty = I32T; pack = Some (Pack8, S); _} as mo)) ->
       op 0x2c; memop x mo
-    | Load (x, ({ty = I32T; pack = Some (Pack8, ZX); _} as mo)) ->
+    | Load (x, ({ty = I32T; pack = Some (Pack8, U); _} as mo)) ->
       op 0x2d; memop x mo
-    | Load (x, ({ty = I32T; pack = Some (Pack16, SX); _} as mo)) ->
+    | Load (x, ({ty = I32T; pack = Some (Pack16, S); _} as mo)) ->
       op 0x2e; memop x mo
-    | Load (x, ({ty = I32T; pack = Some (Pack16, ZX); _} as mo)) ->
+    | Load (x, ({ty = I32T; pack = Some (Pack16, U); _} as mo)) ->
       op 0x2f; memop x mo
     | Load (x, ({ty = I32T; pack = Some (Pack32, _); _})) ->
       error e.at "illegal instruction i32.load32"
-    | Load (x, ({ty = I64T; pack = Some (Pack8, SX); _} as mo)) ->
+    | Load (x, ({ty = I64T; pack = Some (Pack8, S); _} as mo)) ->
       op 0x30; memop x mo
-    | Load (x, ({ty = I64T; pack = Some (Pack8, ZX); _} as mo)) ->
+    | Load (x, ({ty = I64T; pack = Some (Pack8, U); _} as mo)) ->
       op 0x31; memop x mo
-    | Load (x, ({ty = I64T; pack = Some (Pack16, SX); _} as mo)) ->
+    | Load (x, ({ty = I64T; pack = Some (Pack16, S); _} as mo)) ->
       op 0x32; memop x mo
-    | Load (x, ({ty = I64T; pack = Some (Pack16, ZX); _} as mo)) ->
+    | Load (x, ({ty = I64T; pack = Some (Pack16, U); _} as mo)) ->
       op 0x33; memop x mo
-    | Load (x, ({ty = I64T; pack = Some (Pack32, SX); _} as mo)) ->
+    | Load (x, ({ty = I64T; pack = Some (Pack32, S); _} as mo)) ->
       op 0x34; memop x mo
-    | Load (x, ({ty = I64T; pack = Some (Pack32, ZX); _} as mo)) ->
+    | Load (x, ({ty = I64T; pack = Some (Pack32, U); _} as mo)) ->
       op 0x35; memop x mo
     | Load (x, ({ty = I32T | I64T; pack = Some (Pack64, _); _})) ->
       error e.at "illegal instruction ixx.load64"
@@ -363,17 +363,17 @@ struct
 
     | VecLoad (x, ({ty = V128T; pack = None; _} as mo)) ->
       vecop 0x00l; memop x mo
-    | VecLoad (x, ({ty = V128T; pack = Some (Pack64, ExtLane (Pack8x8, SX)); _} as mo)) ->
+    | VecLoad (x, ({ty = V128T; pack = Some (Pack64, ExtLane (Pack8x8, S)); _} as mo)) ->
       vecop 0x01l; memop x mo
-    | VecLoad (x, ({ty = V128T; pack = Some (Pack64, ExtLane (Pack8x8, ZX)); _} as mo)) ->
+    | VecLoad (x, ({ty = V128T; pack = Some (Pack64, ExtLane (Pack8x8, U)); _} as mo)) ->
       vecop 0x02l; memop x mo
-    | VecLoad (x, ({ty = V128T; pack = Some (Pack64, ExtLane (Pack16x4, SX)); _} as mo)) ->
+    | VecLoad (x, ({ty = V128T; pack = Some (Pack64, ExtLane (Pack16x4, S)); _} as mo)) ->
       vecop 0x03l; memop x mo
-    | VecLoad (x, ({ty = V128T; pack = Some (Pack64, ExtLane (Pack16x4, ZX)); _} as mo)) ->
+    | VecLoad (x, ({ty = V128T; pack = Some (Pack64, ExtLane (Pack16x4, U)); _} as mo)) ->
       vecop 0x04l; memop x mo
-    | VecLoad (x, ({ty = V128T; pack = Some (Pack64, ExtLane (Pack32x2, SX)); _} as mo)) ->
+    | VecLoad (x, ({ty = V128T; pack = Some (Pack64, ExtLane (Pack32x2, S)); _} as mo)) ->
       vecop 0x05l; memop x mo
-    | VecLoad (x, ({ty = V128T; pack = Some (Pack64, ExtLane (Pack32x2, ZX)); _} as mo)) ->
+    | VecLoad (x, ({ty = V128T; pack = Some (Pack64, ExtLane (Pack32x2, U)); _} as mo)) ->
       vecop 0x06l; memop x mo
     | VecLoad (x, ({ty = V128T; pack = Some (Pack8, ExtSplat); _} as mo)) ->
       vecop 0x07l; memop x mo
@@ -431,14 +431,14 @@ struct
     | RefCast (Null, t) -> op 0xfb; op 0x17; heaptype t
 
     | RefI31 -> op 0xfb; op 0x1c
-    | I31Get SX -> op 0xfb; op 0x1d
-    | I31Get ZX -> op 0xfb; op 0x1e
+    | I31Get S -> op 0xfb; op 0x1d
+    | I31Get U -> op 0xfb; op 0x1e
 
     | StructNew (x, Explicit) -> op 0xfb; op 0x00; idx x
     | StructNew (x, Implicit) -> op 0xfb; op 0x01; idx x
     | StructGet (x, y, None) -> op 0xfb; op 0x02; idx x; idx y
-    | StructGet (x, y, Some SX) -> op 0xfb; op 0x03; idx x; idx y
-    | StructGet (x, y, Some ZX) -> op 0xfb; op 0x04; idx x; idx y
+    | StructGet (x, y, Some S) -> op 0xfb; op 0x03; idx x; idx y
+    | StructGet (x, y, Some U) -> op 0xfb; op 0x04; idx x; idx y
     | StructSet (x, y) -> op 0xfb; op 0x05; idx x; idx y
 
     | ArrayNew (x, Explicit) -> op 0xfb; op 0x06; idx x
@@ -447,8 +447,8 @@ struct
     | ArrayNewElem (x, y) -> op 0xfb; op 0x0a; idx x; idx y
     | ArrayNewData (x, y) -> op 0xfb; op 0x09; idx x; idx y
     | ArrayGet (x, None) -> op 0xfb; op 0x0b; idx x
-    | ArrayGet (x, Some SX) -> op 0xfb; op 0x0c; idx x
-    | ArrayGet (x, Some ZX) -> op 0xfb; op 0x0d; idx x
+    | ArrayGet (x, Some S) -> op 0xfb; op 0x0c; idx x
+    | ArrayGet (x, Some U) -> op 0xfb; op 0x0d; idx x
     | ArraySet x -> op 0xfb; op 0x0e; idx x
     | ArrayLen -> op 0xfb; op 0x0f
     | ArrayFill x -> op 0xfb; op 0x10; idx x
@@ -470,25 +470,25 @@ struct
 
     | Compare (I32 I32Op.Eq) -> op 0x46
     | Compare (I32 I32Op.Ne) -> op 0x47
-    | Compare (I32 I32Op.LtS) -> op 0x48
-    | Compare (I32 I32Op.LtU) -> op 0x49
-    | Compare (I32 I32Op.GtS) -> op 0x4a
-    | Compare (I32 I32Op.GtU) -> op 0x4b
-    | Compare (I32 I32Op.LeS) -> op 0x4c
-    | Compare (I32 I32Op.LeU) -> op 0x4d
-    | Compare (I32 I32Op.GeS) -> op 0x4e
-    | Compare (I32 I32Op.GeU) -> op 0x4f
+    | Compare (I32 I32Op.(Lt S)) -> op 0x48
+    | Compare (I32 I32Op.(Lt U)) -> op 0x49
+    | Compare (I32 I32Op.(Gt S)) -> op 0x4a
+    | Compare (I32 I32Op.(Gt U)) -> op 0x4b
+    | Compare (I32 I32Op.(Le S)) -> op 0x4c
+    | Compare (I32 I32Op.(Le U)) -> op 0x4d
+    | Compare (I32 I32Op.(Ge S)) -> op 0x4e
+    | Compare (I32 I32Op.(Ge U)) -> op 0x4f
 
     | Compare (I64 I64Op.Eq) -> op 0x51
     | Compare (I64 I64Op.Ne) -> op 0x52
-    | Compare (I64 I64Op.LtS) -> op 0x53
-    | Compare (I64 I64Op.LtU) -> op 0x54
-    | Compare (I64 I64Op.GtS) -> op 0x55
-    | Compare (I64 I64Op.GtU) -> op 0x56
-    | Compare (I64 I64Op.LeS) -> op 0x57
-    | Compare (I64 I64Op.LeU) -> op 0x58
-    | Compare (I64 I64Op.GeS) -> op 0x59
-    | Compare (I64 I64Op.GeU) -> op 0x5a
+    | Compare (I64 I64Op.(Lt S)) -> op 0x53
+    | Compare (I64 I64Op.(Lt U)) -> op 0x54
+    | Compare (I64 I64Op.(Gt S)) -> op 0x55
+    | Compare (I64 I64Op.(Gt U)) -> op 0x56
+    | Compare (I64 I64Op.(Le S)) -> op 0x57
+    | Compare (I64 I64Op.(Le U)) -> op 0x58
+    | Compare (I64 I64Op.(Ge S)) -> op 0x59
+    | Compare (I64 I64Op.(Ge U)) -> op 0x5a
 
     | Compare (F32 F32Op.Eq) -> op 0x5b
     | Compare (F32 F32Op.Ne) -> op 0x5c
@@ -507,18 +507,18 @@ struct
     | Unary (I32 I32Op.Clz) -> op 0x67
     | Unary (I32 I32Op.Ctz) -> op 0x68
     | Unary (I32 I32Op.Popcnt) -> op 0x69
-    | Unary (I32 (I32Op.ExtendS Pack8)) -> op 0xc0
-    | Unary (I32 (I32Op.ExtendS Pack16)) -> op 0xc1
-    | Unary (I32 (I32Op.ExtendS (Pack32 | Pack64))) ->
+    | Unary (I32 I32Op.(ExtendS Pack8)) -> op 0xc0
+    | Unary (I32 I32Op.(ExtendS Pack16)) -> op 0xc1
+    | Unary (I32 I32Op.(ExtendS (Pack32 | Pack64))) ->
       error e.at "illegal instruction i32.extendN_s"
 
     | Unary (I64 I64Op.Clz) -> op 0x79
     | Unary (I64 I64Op.Ctz) -> op 0x7a
     | Unary (I64 I64Op.Popcnt) -> op 0x7b
-    | Unary (I64 (I64Op.ExtendS Pack8)) -> op 0xc2
-    | Unary (I64 (I64Op.ExtendS Pack16)) -> op 0xc3
-    | Unary (I64 (I64Op.ExtendS Pack32)) -> op 0xc4
-    | Unary (I64 (I64Op.ExtendS Pack64)) ->
+    | Unary (I64 I64Op.(ExtendS Pack8)) -> op 0xc2
+    | Unary (I64 I64Op.(ExtendS Pack16)) -> op 0xc3
+    | Unary (I64 I64Op.(ExtendS Pack32)) -> op 0xc4
+    | Unary (I64 I64Op.(ExtendS Pack64)) ->
       error e.at "illegal instruction i64.extend64_s"
 
     | Unary (F32 F32Op.Abs) -> op 0x8b
@@ -540,32 +540,32 @@ struct
     | Binary (I32 I32Op.Add) -> op 0x6a
     | Binary (I32 I32Op.Sub) -> op 0x6b
     | Binary (I32 I32Op.Mul) -> op 0x6c
-    | Binary (I32 I32Op.DivS) -> op 0x6d
-    | Binary (I32 I32Op.DivU) -> op 0x6e
-    | Binary (I32 I32Op.RemS) -> op 0x6f
-    | Binary (I32 I32Op.RemU) -> op 0x70
+    | Binary (I32 I32Op.(Div S)) -> op 0x6d
+    | Binary (I32 I32Op.(Div U)) -> op 0x6e
+    | Binary (I32 I32Op.(Rem S)) -> op 0x6f
+    | Binary (I32 I32Op.(Rem U)) -> op 0x70
     | Binary (I32 I32Op.And) -> op 0x71
     | Binary (I32 I32Op.Or) -> op 0x72
     | Binary (I32 I32Op.Xor) -> op 0x73
     | Binary (I32 I32Op.Shl) -> op 0x74
-    | Binary (I32 I32Op.ShrS) -> op 0x75
-    | Binary (I32 I32Op.ShrU) -> op 0x76
+    | Binary (I32 I32Op.(Shr S)) -> op 0x75
+    | Binary (I32 I32Op.(Shr U)) -> op 0x76
     | Binary (I32 I32Op.Rotl) -> op 0x77
     | Binary (I32 I32Op.Rotr) -> op 0x78
 
     | Binary (I64 I64Op.Add) -> op 0x7c
     | Binary (I64 I64Op.Sub) -> op 0x7d
     | Binary (I64 I64Op.Mul) -> op 0x7e
-    | Binary (I64 I64Op.DivS) -> op 0x7f
-    | Binary (I64 I64Op.DivU) -> op 0x80
-    | Binary (I64 I64Op.RemS) -> op 0x81
-    | Binary (I64 I64Op.RemU) -> op 0x82
+    | Binary (I64 I64Op.(Div S)) -> op 0x7f
+    | Binary (I64 I64Op.(Div U)) -> op 0x80
+    | Binary (I64 I64Op.(Rem S)) -> op 0x81
+    | Binary (I64 I64Op.(Rem U)) -> op 0x82
     | Binary (I64 I64Op.And) -> op 0x83
     | Binary (I64 I64Op.Or) -> op 0x84
     | Binary (I64 I64Op.Xor) -> op 0x85
     | Binary (I64 I64Op.Shl) -> op 0x86
-    | Binary (I64 I64Op.ShrS) -> op 0x87
-    | Binary (I64 I64Op.ShrU) -> op 0x88
+    | Binary (I64 I64Op.(Shr S)) -> op 0x87
+    | Binary (I64 I64Op.(Shr U)) -> op 0x88
     | Binary (I64 I64Op.Rotl) -> op 0x89
     | Binary (I64 I64Op.Rotr) -> op 0x8a
 
@@ -585,48 +585,46 @@ struct
     | Binary (F64 F64Op.Max) -> op 0xa5
     | Binary (F64 F64Op.CopySign) -> op 0xa6
 
-    | Convert (I32 I32Op.ExtendSI32) ->
-      error e.at "illegal instruction i32.extend_i32_s"
-    | Convert (I32 I32Op.ExtendUI32) ->
-      error e.at "illegal instruction i32.extend_i32_u"
+    | Convert (I32 I32Op.(ExtendI32 _)) ->
+      error e.at "illegal instruction i32.extend_i32_s/u"
     | Convert (I32 I32Op.WrapI64) -> op 0xa7
-    | Convert (I32 I32Op.TruncSF32) -> op 0xa8
-    | Convert (I32 I32Op.TruncUF32) -> op 0xa9
-    | Convert (I32 I32Op.TruncSF64) -> op 0xaa
-    | Convert (I32 I32Op.TruncUF64) -> op 0xab
-    | Convert (I32 I32Op.TruncSatSF32) -> op 0xfc; u32 0x00l
-    | Convert (I32 I32Op.TruncSatUF32) -> op 0xfc; u32 0x01l
-    | Convert (I32 I32Op.TruncSatSF64) -> op 0xfc; u32 0x02l
-    | Convert (I32 I32Op.TruncSatUF64) -> op 0xfc; u32 0x03l
+    | Convert (I32 I32Op.(TruncF32 S)) -> op 0xa8
+    | Convert (I32 I32Op.(TruncF32 U)) -> op 0xa9
+    | Convert (I32 I32Op.(TruncF64 S)) -> op 0xaa
+    | Convert (I32 I32Op.(TruncF64 U)) -> op 0xab
+    | Convert (I32 I32Op.(TruncSatF32 S)) -> op 0xfc; u32 0x00l
+    | Convert (I32 I32Op.(TruncSatF32 U)) -> op 0xfc; u32 0x01l
+    | Convert (I32 I32Op.(TruncSatF64 S)) -> op 0xfc; u32 0x02l
+    | Convert (I32 I32Op.(TruncSatF64 U)) -> op 0xfc; u32 0x03l
     | Convert (I32 I32Op.ReinterpretFloat) -> op 0xbc
 
-    | Convert (I64 I64Op.ExtendSI32) -> op 0xac
-    | Convert (I64 I64Op.ExtendUI32) -> op 0xad
+    | Convert (I64 I64Op.(ExtendI32 S)) -> op 0xac
+    | Convert (I64 I64Op.(ExtendI32 U)) -> op 0xad
     | Convert (I64 I64Op.WrapI64) ->
       error e.at "illegal instruction i64.wrap_i64"
-    | Convert (I64 I64Op.TruncSF32) -> op 0xae
-    | Convert (I64 I64Op.TruncUF32) -> op 0xaf
-    | Convert (I64 I64Op.TruncSF64) -> op 0xb0
-    | Convert (I64 I64Op.TruncUF64) -> op 0xb1
-    | Convert (I64 I64Op.TruncSatSF32) -> op 0xfc; u32 0x04l
-    | Convert (I64 I64Op.TruncSatUF32) -> op 0xfc; u32 0x05l
-    | Convert (I64 I64Op.TruncSatSF64) -> op 0xfc; u32 0x06l
-    | Convert (I64 I64Op.TruncSatUF64) -> op 0xfc; u32 0x07l
+    | Convert (I64 I64Op.(TruncF32 S)) -> op 0xae
+    | Convert (I64 I64Op.(TruncF32 U)) -> op 0xaf
+    | Convert (I64 I64Op.(TruncF64 S)) -> op 0xb0
+    | Convert (I64 I64Op.(TruncF64 U)) -> op 0xb1
+    | Convert (I64 I64Op.(TruncSatF32 S)) -> op 0xfc; u32 0x04l
+    | Convert (I64 I64Op.(TruncSatF32 U)) -> op 0xfc; u32 0x05l
+    | Convert (I64 I64Op.(TruncSatF64 S)) -> op 0xfc; u32 0x06l
+    | Convert (I64 I64Op.(TruncSatF64 U)) -> op 0xfc; u32 0x07l
     | Convert (I64 I64Op.ReinterpretFloat) -> op 0xbd
 
-    | Convert (F32 F32Op.ConvertSI32) -> op 0xb2
-    | Convert (F32 F32Op.ConvertUI32) -> op 0xb3
-    | Convert (F32 F32Op.ConvertSI64) -> op 0xb4
-    | Convert (F32 F32Op.ConvertUI64) -> op 0xb5
+    | Convert (F32 F32Op.(ConvertI32 S)) -> op 0xb2
+    | Convert (F32 F32Op.(ConvertI32 U)) -> op 0xb3
+    | Convert (F32 F32Op.(ConvertI64 S)) -> op 0xb4
+    | Convert (F32 F32Op.(ConvertI64 U)) -> op 0xb5
     | Convert (F32 F32Op.PromoteF32) ->
       error e.at "illegal instruction f32.promote_f32"
     | Convert (F32 F32Op.DemoteF64) -> op 0xb6
     | Convert (F32 F32Op.ReinterpretInt) -> op 0xbe
 
-    | Convert (F64 F64Op.ConvertSI32) -> op 0xb7
-    | Convert (F64 F64Op.ConvertUI32) -> op 0xb8
-    | Convert (F64 F64Op.ConvertSI64) -> op 0xb9
-    | Convert (F64 F64Op.ConvertUI64) -> op 0xba
+    | Convert (F64 F64Op.(ConvertI32 S)) -> op 0xb7
+    | Convert (F64 F64Op.(ConvertI32 U)) -> op 0xb8
+    | Convert (F64 F64Op.(ConvertI64 S)) -> op 0xb9
+    | Convert (F64 F64Op.(ConvertI64 U)) -> op 0xba
     | Convert (F64 F64Op.PromoteF32) -> op 0xbb
     | Convert (F64 F64Op.DemoteF64) ->
       error e.at "illegal instruction f64.demote_f64"
@@ -672,47 +670,47 @@ struct
 
     | VecCompare (V128 (I8x16 V128Op.Eq)) -> vecop 0x23l
     | VecCompare (V128 (I8x16 V128Op.Ne)) -> vecop 0x24l
-    | VecCompare (V128 (I8x16 V128Op.LtS)) -> vecop 0x25l
-    | VecCompare (V128 (I8x16 V128Op.LtU)) -> vecop 0x26l
-    | VecCompare (V128 (I8x16 V128Op.GtS)) -> vecop 0x27l
-    | VecCompare (V128 (I8x16 V128Op.GtU)) -> vecop 0x28l
-    | VecCompare (V128 (I8x16 V128Op.LeS)) -> vecop 0x29l
-    | VecCompare (V128 (I8x16 V128Op.LeU)) -> vecop 0x2al
-    | VecCompare (V128 (I8x16 V128Op.GeS)) -> vecop 0x2bl
-    | VecCompare (V128 (I8x16 V128Op.GeU)) -> vecop 0x2cl
+    | VecCompare (V128 (I8x16 V128Op.(Lt S))) -> vecop 0x25l
+    | VecCompare (V128 (I8x16 V128Op.(Lt U))) -> vecop 0x26l
+    | VecCompare (V128 (I8x16 V128Op.(Gt S))) -> vecop 0x27l
+    | VecCompare (V128 (I8x16 V128Op.(Gt U))) -> vecop 0x28l
+    | VecCompare (V128 (I8x16 V128Op.(Le S))) -> vecop 0x29l
+    | VecCompare (V128 (I8x16 V128Op.(Le U))) -> vecop 0x2al
+    | VecCompare (V128 (I8x16 V128Op.(Ge S))) -> vecop 0x2bl
+    | VecCompare (V128 (I8x16 V128Op.(Ge U))) -> vecop 0x2cl
     | VecCompare (V128 (I16x8 V128Op.Eq)) -> vecop 0x2dl
     | VecCompare (V128 (I16x8 V128Op.Ne)) -> vecop 0x2el
-    | VecCompare (V128 (I16x8 V128Op.LtS)) -> vecop 0x2fl
-    | VecCompare (V128 (I16x8 V128Op.LtU)) -> vecop 0x30l
-    | VecCompare (V128 (I16x8 V128Op.GtS)) -> vecop 0x31l
-    | VecCompare (V128 (I16x8 V128Op.GtU)) -> vecop 0x32l
-    | VecCompare (V128 (I16x8 V128Op.LeS)) -> vecop 0x33l
-    | VecCompare (V128 (I16x8 V128Op.LeU)) -> vecop 0x34l
-    | VecCompare (V128 (I16x8 V128Op.GeS)) -> vecop 0x35l
-    | VecCompare (V128 (I16x8 V128Op.GeU)) -> vecop 0x36l
+    | VecCompare (V128 (I16x8 V128Op.(Lt S))) -> vecop 0x2fl
+    | VecCompare (V128 (I16x8 V128Op.(Lt U))) -> vecop 0x30l
+    | VecCompare (V128 (I16x8 V128Op.(Gt S))) -> vecop 0x31l
+    | VecCompare (V128 (I16x8 V128Op.(Gt U))) -> vecop 0x32l
+    | VecCompare (V128 (I16x8 V128Op.(Le S))) -> vecop 0x33l
+    | VecCompare (V128 (I16x8 V128Op.(Le U))) -> vecop 0x34l
+    | VecCompare (V128 (I16x8 V128Op.(Ge S))) -> vecop 0x35l
+    | VecCompare (V128 (I16x8 V128Op.(Ge U))) -> vecop 0x36l
     | VecCompare (V128 (I32x4 V128Op.Eq)) -> vecop 0x37l
     | VecCompare (V128 (I32x4 V128Op.Ne)) -> vecop 0x38l
-    | VecCompare (V128 (I32x4 V128Op.LtS)) -> vecop 0x39l
-    | VecCompare (V128 (I32x4 V128Op.LtU)) -> vecop 0x3al
-    | VecCompare (V128 (I32x4 V128Op.GtS)) -> vecop 0x3bl
-    | VecCompare (V128 (I32x4 V128Op.GtU)) -> vecop 0x3cl
-    | VecCompare (V128 (I32x4 V128Op.LeS)) -> vecop 0x3dl
-    | VecCompare (V128 (I32x4 V128Op.LeU)) -> vecop 0x3el
-    | VecCompare (V128 (I32x4 V128Op.GeS)) -> vecop 0x3fl
-    | VecCompare (V128 (I32x4 V128Op.GeU)) -> vecop 0x40l
+    | VecCompare (V128 (I32x4 V128Op.(Lt S))) -> vecop 0x39l
+    | VecCompare (V128 (I32x4 V128Op.(Lt U))) -> vecop 0x3al
+    | VecCompare (V128 (I32x4 V128Op.(Gt S))) -> vecop 0x3bl
+    | VecCompare (V128 (I32x4 V128Op.(Gt U))) -> vecop 0x3cl
+    | VecCompare (V128 (I32x4 V128Op.(Le S))) -> vecop 0x3dl
+    | VecCompare (V128 (I32x4 V128Op.(Le U))) -> vecop 0x3el
+    | VecCompare (V128 (I32x4 V128Op.(Ge S))) -> vecop 0x3fl
+    | VecCompare (V128 (I32x4 V128Op.(Ge U))) -> vecop 0x40l
     | VecCompare (V128 (I64x2 V128Op.Eq)) -> vecop 0xd6l
     | VecCompare (V128 (I64x2 V128Op.Ne)) -> vecop 0xd7l
-    | VecCompare (V128 (I64x2 V128Op.LtS)) -> vecop 0xd8l
-    | VecCompare (V128 (I64x2 V128Op.LtU)) ->
+    | VecCompare (V128 (I64x2 V128Op.(Lt S))) -> vecop 0xd8l
+    | VecCompare (V128 (I64x2 V128Op.(Lt U))) ->
       error e.at "illegal instruction i64x2.lt_u"
-    | VecCompare (V128 (I64x2 V128Op.GtS)) -> vecop 0xd9l
-    | VecCompare (V128 (I64x2 V128Op.GtU)) ->
+    | VecCompare (V128 (I64x2 V128Op.(Gt S))) -> vecop 0xd9l
+    | VecCompare (V128 (I64x2 V128Op.(Gt U))) ->
       error e.at "illegal instruction i64x2.gt_u"
-    | VecCompare (V128 (I64x2 V128Op.LeS)) -> vecop 0xdal
-    | VecCompare (V128 (I64x2 V128Op.LeU)) ->
+    | VecCompare (V128 (I64x2 V128Op.(Le S))) -> vecop 0xdal
+    | VecCompare (V128 (I64x2 V128Op.(Le U))) ->
       error e.at "illegal instruction i64x2.le_u"
-    | VecCompare (V128 (I64x2 V128Op.GeS)) -> vecop 0xdbl
-    | VecCompare (V128 (I64x2 V128Op.GeU)) ->
+    | VecCompare (V128 (I64x2 V128Op.(Ge S))) -> vecop 0xdbl
+    | VecCompare (V128 (I64x2 V128Op.(Ge U))) ->
       error e.at "illegal instruction i64x2.ge_u"
     | VecCompare (V128 (F32x4 V128Op.Eq)) -> vecop 0x41l
     | VecCompare (V128 (F32x4 V128Op.Ne)) -> vecop 0x42l
@@ -729,60 +727,60 @@ struct
 
     | VecBinary (V128 (I8x16 (V128Op.Shuffle is))) -> vecop 0x0dl; List.iter byte is
     | VecBinary (V128 (I8x16 V128Op.Swizzle)) -> vecop 0x0el
-    | VecBinary (V128 (I8x16 V128Op.NarrowS)) -> vecop 0x65l
-    | VecBinary (V128 (I8x16 V128Op.NarrowU)) -> vecop 0x66l
+    | VecBinary (V128 (I8x16 V128Op.(Narrow S))) -> vecop 0x65l
+    | VecBinary (V128 (I8x16 V128Op.(Narrow U))) -> vecop 0x66l
     | VecBinary (V128 (I8x16 V128Op.Add)) -> vecop 0x6el
-    | VecBinary (V128 (I8x16 V128Op.AddSatS)) -> vecop 0x6fl
-    | VecBinary (V128 (I8x16 V128Op.AddSatU)) -> vecop 0x70l
+    | VecBinary (V128 (I8x16 V128Op.(AddSat S))) -> vecop 0x6fl
+    | VecBinary (V128 (I8x16 V128Op.(AddSat U))) -> vecop 0x70l
     | VecBinary (V128 (I8x16 V128Op.Sub)) -> vecop 0x71l
-    | VecBinary (V128 (I8x16 V128Op.SubSatS)) -> vecop 0x72l
-    | VecBinary (V128 (I8x16 V128Op.SubSatU)) -> vecop 0x73l
-    | VecBinary (V128 (I8x16 V128Op.MinS)) -> vecop 0x76l
-    | VecBinary (V128 (I8x16 V128Op.MinU)) -> vecop 0x77l
-    | VecBinary (V128 (I8x16 V128Op.MaxS)) -> vecop 0x78l
-    | VecBinary (V128 (I8x16 V128Op.MaxU)) -> vecop 0x79l
+    | VecBinary (V128 (I8x16 V128Op.(SubSat S))) -> vecop 0x72l
+    | VecBinary (V128 (I8x16 V128Op.(SubSat U))) -> vecop 0x73l
+    | VecBinary (V128 (I8x16 V128Op.(Min S))) -> vecop 0x76l
+    | VecBinary (V128 (I8x16 V128Op.(Min U))) -> vecop 0x77l
+    | VecBinary (V128 (I8x16 V128Op.(Max S))) -> vecop 0x78l
+    | VecBinary (V128 (I8x16 V128Op.(Max U))) -> vecop 0x79l
     | VecBinary (V128 (I8x16 V128Op.AvgrU)) -> vecop 0x7bl
     | VecBinary (V128 (I8x16 V128Op.RelaxedSwizzle)) -> vecop 0x100l
-    | VecBinary (V128 (I16x8 V128Op.NarrowS)) -> vecop 0x85l
-    | VecBinary (V128 (I16x8 V128Op.NarrowU)) -> vecop 0x86l
+    | VecBinary (V128 (I16x8 V128Op.(Narrow S))) -> vecop 0x85l
+    | VecBinary (V128 (I16x8 V128Op.(Narrow U))) -> vecop 0x86l
     | VecBinary (V128 (I16x8 V128Op.Add)) -> vecop 0x8el
-    | VecBinary (V128 (I16x8 V128Op.AddSatS)) -> vecop 0x8fl
-    | VecBinary (V128 (I16x8 V128Op.AddSatU)) -> vecop 0x90l
+    | VecBinary (V128 (I16x8 V128Op.(AddSat S))) -> vecop 0x8fl
+    | VecBinary (V128 (I16x8 V128Op.(AddSat U))) -> vecop 0x90l
     | VecBinary (V128 (I16x8 V128Op.Sub)) -> vecop 0x91l
-    | VecBinary (V128 (I16x8 V128Op.SubSatS)) -> vecop 0x92l
-    | VecBinary (V128 (I16x8 V128Op.SubSatU)) -> vecop 0x93l
+    | VecBinary (V128 (I16x8 V128Op.(SubSat S))) -> vecop 0x92l
+    | VecBinary (V128 (I16x8 V128Op.(SubSat U))) -> vecop 0x93l
     | VecBinary (V128 (I16x8 V128Op.Mul)) -> vecop 0x95l
-    | VecBinary (V128 (I16x8 V128Op.MinS)) -> vecop 0x96l
-    | VecBinary (V128 (I16x8 V128Op.MinU)) -> vecop 0x97l
-    | VecBinary (V128 (I16x8 V128Op.MaxS)) -> vecop 0x98l
-    | VecBinary (V128 (I16x8 V128Op.MaxU)) -> vecop 0x99l
+    | VecBinary (V128 (I16x8 V128Op.(Min S))) -> vecop 0x96l
+    | VecBinary (V128 (I16x8 V128Op.(Min U))) -> vecop 0x97l
+    | VecBinary (V128 (I16x8 V128Op.(Max S))) -> vecop 0x98l
+    | VecBinary (V128 (I16x8 V128Op.(Max U))) -> vecop 0x99l
     | VecBinary (V128 (I16x8 V128Op.AvgrU)) -> vecop 0x9bl
-    | VecBinary (V128 (I16x8 V128Op.ExtMulLowS)) -> vecop 0x9cl
-    | VecBinary (V128 (I16x8 V128Op.ExtMulHighS)) -> vecop 0x9dl
-    | VecBinary (V128 (I16x8 V128Op.ExtMulLowU)) -> vecop 0x9el
-    | VecBinary (V128 (I16x8 V128Op.ExtMulHighU)) -> vecop 0x9fl
+    | VecBinary (V128 (I16x8 V128Op.(ExtMul (Low, S)))) -> vecop 0x9cl
+    | VecBinary (V128 (I16x8 V128Op.(ExtMul (High, S)))) -> vecop 0x9dl
+    | VecBinary (V128 (I16x8 V128Op.(ExtMul (Low, U)))) -> vecop 0x9el
+    | VecBinary (V128 (I16x8 V128Op.(ExtMul (High, U)))) -> vecop 0x9fl
     | VecBinary (V128 (I16x8 V128Op.Q15MulRSatS)) -> vecop 0x82l
     | VecBinary (V128 (I16x8 V128Op.RelaxedQ15MulRS)) -> vecop 0x111l
     | VecBinary (V128 (I16x8 V128Op.RelaxedDot)) -> vecop 0x112l
     | VecBinary (V128 (I32x4 V128Op.Add)) -> vecop 0xael
     | VecBinary (V128 (I32x4 V128Op.Sub)) -> vecop 0xb1l
-    | VecBinary (V128 (I32x4 V128Op.MinS)) -> vecop 0xb6l
-    | VecBinary (V128 (I32x4 V128Op.MinU)) -> vecop 0xb7l
-    | VecBinary (V128 (I32x4 V128Op.MaxS)) -> vecop 0xb8l
-    | VecBinary (V128 (I32x4 V128Op.MaxU)) -> vecop 0xb9l
+    | VecBinary (V128 (I32x4 V128Op.(Min S))) -> vecop 0xb6l
+    | VecBinary (V128 (I32x4 V128Op.(Min U))) -> vecop 0xb7l
+    | VecBinary (V128 (I32x4 V128Op.(Max S))) -> vecop 0xb8l
+    | VecBinary (V128 (I32x4 V128Op.(Max U))) -> vecop 0xb9l
     | VecBinary (V128 (I32x4 V128Op.DotS)) -> vecop 0xbal
     | VecBinary (V128 (I32x4 V128Op.Mul)) -> vecop 0xb5l
-    | VecBinary (V128 (I32x4 V128Op.ExtMulLowS)) -> vecop 0xbcl
-    | VecBinary (V128 (I32x4 V128Op.ExtMulHighS)) -> vecop 0xbdl
-    | VecBinary (V128 (I32x4 V128Op.ExtMulLowU)) -> vecop 0xbel
-    | VecBinary (V128 (I32x4 V128Op.ExtMulHighU)) -> vecop 0xbfl
+    | VecBinary (V128 (I32x4 V128Op.(ExtMul (Low, S)))) -> vecop 0xbcl
+    | VecBinary (V128 (I32x4 V128Op.(ExtMul (High, S)))) -> vecop 0xbdl
+    | VecBinary (V128 (I32x4 V128Op.(ExtMul (Low, U)))) -> vecop 0xbel
+    | VecBinary (V128 (I32x4 V128Op.(ExtMul (High, U)))) -> vecop 0xbfl
     | VecBinary (V128 (I64x2 V128Op.Add)) -> vecop 0xcel
     | VecBinary (V128 (I64x2 V128Op.Sub)) -> vecop 0xd1l
     | VecBinary (V128 (I64x2 V128Op.Mul)) -> vecop 0xd5l
-    | VecBinary (V128 (I64x2 V128Op.ExtMulLowS)) -> vecop 0xdcl
-    | VecBinary (V128 (I64x2 V128Op.ExtMulHighS)) -> vecop 0xddl
-    | VecBinary (V128 (I64x2 V128Op.ExtMulLowU)) -> vecop 0xdel
-    | VecBinary (V128 (I64x2 V128Op.ExtMulHighU)) -> vecop 0xdfl
+    | VecBinary (V128 (I64x2 V128Op.(ExtMul (Low, S)))) -> vecop 0xdcl
+    | VecBinary (V128 (I64x2 V128Op.(ExtMul (High, S)))) -> vecop 0xddl
+    | VecBinary (V128 (I64x2 V128Op.(ExtMul (Low, U)))) -> vecop 0xdel
+    | VecBinary (V128 (I64x2 V128Op.(ExtMul (High, U)))) -> vecop 0xdfl
     | VecBinary (V128 (F32x4 V128Op.Add)) -> vecop 0xe4l
     | VecBinary (V128 (F32x4 V128Op.Sub)) -> vecop 0xe5l
     | VecBinary (V128 (F32x4 V128Op.Mul)) -> vecop 0xe6l
@@ -820,57 +818,57 @@ struct
 
     | VecConvert (V128 (I8x16 _)) ->
       error e.at "illegal i8x16 conversion instruction"
-    | VecConvert (V128 (I16x8 V128Op.ExtendLowS)) -> vecop 0x87l
-    | VecConvert (V128 (I16x8 V128Op.ExtendHighS)) -> vecop 0x88l
-    | VecConvert (V128 (I16x8 V128Op.ExtendLowU)) -> vecop 0x89l
-    | VecConvert (V128 (I16x8 V128Op.ExtendHighU)) -> vecop 0x8al
-    | VecConvert (V128 (I16x8 V128Op.ExtAddPairwiseS)) -> vecop 0x7cl
-    | VecConvert (V128 (I16x8 V128Op.ExtAddPairwiseU)) -> vecop 0x7dl
+    | VecConvert (V128 (I16x8 V128Op.(Extend (Low, S)))) -> vecop 0x87l
+    | VecConvert (V128 (I16x8 V128Op.(Extend (High, S)))) -> vecop 0x88l
+    | VecConvert (V128 (I16x8 V128Op.(Extend (Low, U)))) -> vecop 0x89l
+    | VecConvert (V128 (I16x8 V128Op.(Extend (High, U)))) -> vecop 0x8al
+    | VecConvert (V128 (I16x8 V128Op.(ExtAddPairwise S))) -> vecop 0x7cl
+    | VecConvert (V128 (I16x8 V128Op.(ExtAddPairwise U))) -> vecop 0x7dl
     | VecConvert (V128 (I16x8 _)) ->
       error e.at "illegal i16x8 conversion instruction"
-    | VecConvert (V128 (I32x4 V128Op.ExtendLowS)) -> vecop 0xa7l
-    | VecConvert (V128 (I32x4 V128Op.ExtendHighS)) -> vecop 0xa8l
-    | VecConvert (V128 (I32x4 V128Op.ExtendLowU)) -> vecop 0xa9l
-    | VecConvert (V128 (I32x4 V128Op.ExtendHighU)) -> vecop 0xaal
-    | VecConvert (V128 (I32x4 V128Op.ExtAddPairwiseS)) -> vecop 0x7el
-    | VecConvert (V128 (I32x4 V128Op.ExtAddPairwiseU)) -> vecop 0x7fl
-    | VecConvert (V128 (I32x4 V128Op.TruncSatSF32x4)) -> vecop 0xf8l
-    | VecConvert (V128 (I32x4 V128Op.TruncSatUF32x4)) -> vecop 0xf9l
-    | VecConvert (V128 (I32x4 V128Op.TruncSatSZeroF64x2)) -> vecop 0xfcl
-    | VecConvert (V128 (I32x4 V128Op.TruncSatUZeroF64x2)) -> vecop 0xfdl
-    | VecConvert (V128 (I32x4 V128Op.RelaxedTruncSF32x4)) -> vecop 0x101l
-    | VecConvert (V128 (I32x4 V128Op.RelaxedTruncUF32x4)) -> vecop 0x102l
-    | VecConvert (V128 (I32x4 V128Op.RelaxedTruncSZeroF64x2)) -> vecop 0x103l
-    | VecConvert (V128 (I32x4 V128Op.RelaxedTruncUZeroF64x2)) -> vecop 0x104l
-    | VecConvert (V128 (I64x2 V128Op.ExtendLowS)) -> vecop 0xc7l
-    | VecConvert (V128 (I64x2 V128Op.ExtendHighS)) -> vecop 0xc8l
-    | VecConvert (V128 (I64x2 V128Op.ExtendLowU)) -> vecop 0xc9l
-    | VecConvert (V128 (I64x2 V128Op.ExtendHighU)) -> vecop 0xcal
+    | VecConvert (V128 (I32x4 V128Op.(Extend (Low, S)))) -> vecop 0xa7l
+    | VecConvert (V128 (I32x4 V128Op.(Extend (High, S)))) -> vecop 0xa8l
+    | VecConvert (V128 (I32x4 V128Op.(Extend (Low, U)))) -> vecop 0xa9l
+    | VecConvert (V128 (I32x4 V128Op.(Extend (High, U)))) -> vecop 0xaal
+    | VecConvert (V128 (I32x4 V128Op.(ExtAddPairwise S))) -> vecop 0x7el
+    | VecConvert (V128 (I32x4 V128Op.(ExtAddPairwise U))) -> vecop 0x7fl
+    | VecConvert (V128 (I32x4 V128Op.(TruncSatF32x4 S))) -> vecop 0xf8l
+    | VecConvert (V128 (I32x4 V128Op.(TruncSatF32x4 U))) -> vecop 0xf9l
+    | VecConvert (V128 (I32x4 V128Op.(TruncSatZeroF64x2 S))) -> vecop 0xfcl
+    | VecConvert (V128 (I32x4 V128Op.(TruncSatZeroF64x2 U))) -> vecop 0xfdl
+    | VecConvert (V128 (I32x4 V128Op.(RelaxedTruncF32x4 S))) -> vecop 0x101l
+    | VecConvert (V128 (I32x4 V128Op.(RelaxedTruncF32x4 U))) -> vecop 0x102l
+    | VecConvert (V128 (I32x4 V128Op.(RelaxedTruncZeroF64x2 S))) -> vecop 0x103l
+    | VecConvert (V128 (I32x4 V128Op.(RelaxedTruncZeroF64x2 U))) -> vecop 0x104l
+    | VecConvert (V128 (I64x2 V128Op.(Extend (Low, S)))) -> vecop 0xc7l
+    | VecConvert (V128 (I64x2 V128Op.(Extend (High, S)))) -> vecop 0xc8l
+    | VecConvert (V128 (I64x2 V128Op.(Extend (Low, U)))) -> vecop 0xc9l
+    | VecConvert (V128 (I64x2 V128Op.(Extend (High, U)))) -> vecop 0xcal
     | VecConvert (V128 (I64x2 _)) ->
       error e.at "illegal i64x2 conversion instruction"
     | VecConvert (V128 (F32x4 V128Op.DemoteZeroF64x2)) -> vecop 0x5el
     | VecConvert (V128 (F32x4 V128Op.PromoteLowF32x4)) ->
       error e.at "illegal instruction f32x4.promote_low_f32x4"
-    | VecConvert (V128 (F32x4 V128Op.ConvertSI32x4)) -> vecop 0xfal
-    | VecConvert (V128 (F32x4 V128Op.ConvertUI32x4)) -> vecop 0xfbl
+    | VecConvert (V128 (F32x4 V128Op.(ConvertI32x4 S))) -> vecop 0xfal
+    | VecConvert (V128 (F32x4 V128Op.(ConvertI32x4 U))) -> vecop 0xfbl
     | VecConvert (V128 (F64x2 V128Op.DemoteZeroF64x2)) ->
       error e.at "illegal instruction f64x2.demote_zero_f64x2"
     | VecConvert (V128 (F64x2 V128Op.PromoteLowF32x4)) -> vecop 0x5fl
-    | VecConvert (V128 (F64x2 V128Op.ConvertSI32x4)) -> vecop 0xfel
-    | VecConvert (V128 (F64x2 V128Op.ConvertUI32x4)) -> vecop 0xffl
+    | VecConvert (V128 (F64x2 V128Op.(ConvertI32x4 S))) -> vecop 0xfel
+    | VecConvert (V128 (F64x2 V128Op.(ConvertI32x4 U))) -> vecop 0xffl
 
     | VecShift (V128 (I8x16 V128Op.Shl)) -> vecop 0x6bl
-    | VecShift (V128 (I8x16 V128Op.ShrS)) -> vecop 0x6cl
-    | VecShift (V128 (I8x16 V128Op.ShrU)) -> vecop 0x6dl
+    | VecShift (V128 (I8x16 V128Op.(Shr S))) -> vecop 0x6cl
+    | VecShift (V128 (I8x16 V128Op.(Shr U))) -> vecop 0x6dl
     | VecShift (V128 (I16x8 V128Op.Shl)) -> vecop 0x8bl
-    | VecShift (V128 (I16x8 V128Op.ShrS)) -> vecop 0x8cl
-    | VecShift (V128 (I16x8 V128Op.ShrU)) -> vecop 0x8dl
+    | VecShift (V128 (I16x8 V128Op.(Shr S))) -> vecop 0x8cl
+    | VecShift (V128 (I16x8 V128Op.(Shr U))) -> vecop 0x8dl
     | VecShift (V128 (I32x4 V128Op.Shl)) -> vecop 0xabl
-    | VecShift (V128 (I32x4 V128Op.ShrS)) -> vecop 0xacl
-    | VecShift (V128 (I32x4 V128Op.ShrU)) -> vecop 0xadl
+    | VecShift (V128 (I32x4 V128Op.(Shr S))) -> vecop 0xacl
+    | VecShift (V128 (I32x4 V128Op.(Shr U))) -> vecop 0xadl
     | VecShift (V128 (I64x2 V128Op.Shl)) -> vecop 0xcbl
-    | VecShift (V128 (I64x2 V128Op.ShrS)) -> vecop 0xccl
-    | VecShift (V128 (I64x2 V128Op.ShrU)) -> vecop 0xcdl
+    | VecShift (V128 (I64x2 V128Op.(Shr S))) -> vecop 0xccl
+    | VecShift (V128 (I64x2 V128Op.(Shr U))) -> vecop 0xcdl
     | VecShift (V128 _) -> .
 
     | VecBitmask (V128 (I8x16 V128Op.Bitmask)) -> vecop 0x64l
@@ -894,21 +892,21 @@ struct
     | VecSplat (V128 ((F32x4 V128Op.Splat))) -> vecop 0x13l
     | VecSplat (V128 ((F64x2 V128Op.Splat))) -> vecop 0x14l
 
-    | VecExtract (V128 (I8x16 (V128Op.Extract (i, SX)))) -> vecop 0x15l; byte i
-    | VecExtract (V128 (I8x16 (V128Op.Extract (i, ZX)))) -> vecop 0x16l; byte i
-    | VecExtract (V128 (I16x8 (V128Op.Extract (i, SX)))) -> vecop 0x18l; byte i
-    | VecExtract (V128 (I16x8 (V128Op.Extract (i, ZX)))) -> vecop 0x19l; byte i
-    | VecExtract (V128 (I32x4 (V128Op.Extract (i, ())))) -> vecop 0x1bl; byte i
-    | VecExtract (V128 (I64x2 (V128Op.Extract (i, ())))) -> vecop 0x1dl; byte i
-    | VecExtract (V128 (F32x4 (V128Op.Extract (i, ())))) -> vecop 0x1fl; byte i
-    | VecExtract (V128 (F64x2 (V128Op.Extract (i, ())))) -> vecop 0x21l; byte i
+    | VecExtract (V128 (I8x16 V128Op.(Extract (i, S)))) -> vecop 0x15l; byte i
+    | VecExtract (V128 (I8x16 V128Op.(Extract (i, U)))) -> vecop 0x16l; byte i
+    | VecExtract (V128 (I16x8 V128Op.(Extract (i, S)))) -> vecop 0x18l; byte i
+    | VecExtract (V128 (I16x8 V128Op.(Extract (i, U)))) -> vecop 0x19l; byte i
+    | VecExtract (V128 (I32x4 V128Op.(Extract (i, ())))) -> vecop 0x1bl; byte i
+    | VecExtract (V128 (I64x2 V128Op.(Extract (i, ())))) -> vecop 0x1dl; byte i
+    | VecExtract (V128 (F32x4 V128Op.(Extract (i, ())))) -> vecop 0x1fl; byte i
+    | VecExtract (V128 (F64x2 V128Op.(Extract (i, ())))) -> vecop 0x21l; byte i
 
-    | VecReplace (V128 (I8x16 (V128Op.Replace i))) -> vecop 0x17l; byte i
-    | VecReplace (V128 (I16x8 (V128Op.Replace i))) -> vecop 0x1al; byte i
-    | VecReplace (V128 (I32x4 (V128Op.Replace i))) -> vecop 0x1cl; byte i
-    | VecReplace (V128 (I64x2 (V128Op.Replace i))) -> vecop 0x1el; byte i
-    | VecReplace (V128 (F32x4 (V128Op.Replace i))) -> vecop 0x20l; byte i
-    | VecReplace (V128 (F64x2 (V128Op.Replace i))) -> vecop 0x22l; byte i
+    | VecReplace (V128 (I8x16 V128Op.(Replace i))) -> vecop 0x17l; byte i
+    | VecReplace (V128 (I16x8 V128Op.(Replace i))) -> vecop 0x1al; byte i
+    | VecReplace (V128 (I32x4 V128Op.(Replace i))) -> vecop 0x1cl; byte i
+    | VecReplace (V128 (I64x2 V128Op.(Replace i))) -> vecop 0x1el; byte i
+    | VecReplace (V128 (F32x4 V128Op.(Replace i))) -> vecop 0x20l; byte i
+    | VecReplace (V128 (F64x2 V128Op.(Replace i))) -> vecop 0x22l; byte i
 
   and catch c =
     match c.it with

@@ -120,25 +120,25 @@ let limits nat {min; max} =
 let globaltype (GlobalT (mut, t)) =
   mutability (atom string_of_valtype t) mut
 
-let pack_size = function
+let packsize = function
   | Pack8 -> "8"
   | Pack16 -> "16"
   | Pack32 -> "32"
   | Pack64 -> "64"
 
-let extension = function
-  | SX -> "_s"
-  | ZX -> "_u"
+let ext = function
+  | S -> "_s"
+  | U -> "_u"
 
-let pack_shape = function
+let packshape = function
   | Pack8x8 -> "8x8"
   | Pack16x4 -> "16x4"
   | Pack32x2 -> "32x2"
 
-let vec_extension sz = function
-  | ExtLane (sh, ext) -> pack_shape sh ^ extension ext
-  | ExtSplat -> pack_size sz ^ "_splat"
-  | ExtZero -> pack_size sz ^ "_zero"
+let vext sz = function
+  | ExtLane (sh, sx) -> packshape sh ^ ext sx
+  | ExtSplat -> packsize sz ^ "_splat"
+  | ExtZero -> packsize sz ^ "_zero"
 
 
 (* Operators *)
@@ -153,50 +153,38 @@ struct
   let relop xx = function
     | Eq -> "eq"
     | Ne -> "ne"
-    | LtS -> "lt_s"
-    | LtU -> "lt_u"
-    | GtS -> "gt_s"
-    | GtU -> "gt_u"
-    | LeS -> "le_s"
-    | LeU -> "le_u"
-    | GeS -> "ge_s"
-    | GeU -> "ge_u"
+    | Lt sx -> "lt" ^ ext sx
+    | Gt sx -> "gt" ^ ext sx
+    | Le sx -> "le" ^ ext sx
+    | Ge sx -> "ge" ^ ext sx
 
   let unop xx = function
     | Clz -> "clz"
     | Ctz -> "ctz"
     | Popcnt -> "popcnt"
-    | ExtendS sz -> "extend" ^ pack_size sz ^ "_s"
+    | ExtendS sz -> "extend" ^ packsize sz ^ ext S
 
   let binop xx = function
     | Add -> "add"
     | Sub -> "sub"
     | Mul -> "mul"
-    | DivS -> "div_s"
-    | DivU -> "div_u"
-    | RemS -> "rem_s"
-    | RemU -> "rem_u"
+    | Div sx -> "div" ^ ext sx
+    | Rem sx -> "rem" ^ ext sx
     | And -> "and"
     | Or -> "or"
     | Xor -> "xor"
     | Shl -> "shl"
-    | ShrS -> "shr_s"
-    | ShrU -> "shr_u"
+    | Shr sx -> "shr" ^ ext sx
     | Rotl -> "rotl"
     | Rotr -> "rotr"
 
   let cvtop xx = function
-    | ExtendSI32 -> "extend_i32_s"
-    | ExtendUI32 -> "extend_i32_u"
+    | ExtendI32 sx -> "extend_i32" ^ ext sx
     | WrapI64 -> "wrap_i64"
-    | TruncSF32 -> "trunc_f32_s"
-    | TruncUF32 -> "trunc_f32_u"
-    | TruncSF64 -> "trunc_f64_s"
-    | TruncUF64 -> "trunc_f64_u"
-    | TruncSatSF32 -> "trunc_sat_f32_s"
-    | TruncSatUF32 -> "trunc_sat_f32_u"
-    | TruncSatSF64 -> "trunc_sat_f64_s"
-    | TruncSatUF64 -> "trunc_sat_f64_u"
+    | TruncF32 sx -> "trunc_f32" ^ ext sx
+    | TruncF64 sx -> "trunc_f64" ^ ext sx
+    | TruncSatF32 sx -> "trunc_sat_f32" ^ ext sx
+    | TruncSatF64 sx -> "trunc_sat_f64" ^ ext sx
     | ReinterpretFloat -> "reinterpret_f" ^ xx
 end
 
@@ -233,10 +221,8 @@ struct
     | CopySign -> "copysign"
 
   let cvtop xx = function
-    | ConvertSI32 -> "convert_i32_s"
-    | ConvertUI32 -> "convert_i32_u"
-    | ConvertSI64 -> "convert_i64_s"
-    | ConvertUI64 -> "convert_i64_u"
+    | ConvertI32 sx -> "convert_i32" ^ ext sx
+    | ConvertI64 sx -> "convert_i64" ^ ext sx
     | PromoteF32 -> "promote_f32"
     | DemoteF64 -> "demote_f64"
     | ReinterpretInt -> "reinterpret_i" ^ xx
@@ -247,6 +233,10 @@ struct
   open Ast.V128Op
 
   let half = function
+    | Low -> "_low"
+    | High -> "_high"
+
+  let halve = function
     | "16x8" -> "8x16"
     | "32x4" -> "16x8"
     | "64x2" -> "32x4"
@@ -283,34 +273,29 @@ struct
 
   let ibinop xxxx (op : ibinop) = match op with
     | Add -> "add"
-    | AddSatS -> "add_sat_s"
-    | AddSatU -> "add_sat_u"
+    | AddSat sx -> "add_sat" ^ ext sx
     | Sub -> "sub"
-    | SubSatS -> "sub_sat_s"
-    | SubSatU -> "sub_sat_u"
+    | SubSat sx -> "sub_sat" ^ ext sx
     | Mul -> "mul"
-    | DotS -> "dot_i" ^ half xxxx ^ "_s"
-    | ExtMulLowS -> "extmul_low_i" ^ half xxxx ^ "_s"
-    | ExtMulHighS -> "extmul_high_i" ^ half xxxx ^ "_s"
-    | ExtMulLowU -> "extmul_low_i" ^ half xxxx ^ "_u"
-    | ExtMulHighU -> "extmul_high_i" ^ half xxxx ^ "_u"
-    | Q15MulRSatS -> "q15mulr_sat_s"
-    | MinS -> "min_s"
-    | MinU -> "min_u"
-    | MaxS -> "max_s"
-    | MaxU -> "max_u"
-    | AvgrU -> "avgr_u"
-    | NarrowS -> "narrow_i" ^ double xxxx ^ "_s"
-    | NarrowU -> "narrow_i" ^ double xxxx ^ "_u"
+    | DotS -> "dot_i" ^ halve xxxx ^ "_s"
+    | ExtMul (hf, sx) -> "extmul" ^ half hf ^ "_i" ^ halve xxxx ^ ext sx
+    | Q15MulRSatS -> "q15mulr_sat" ^ ext S
+    | Min sx -> "min" ^ ext sx
+    | Max sx -> "max" ^ ext sx
+    | AvgrU -> "avgr" ^ ext U
+    | Narrow sx -> "narrow_i" ^ double xxxx ^ ext sx
     | Shuffle is -> "shuffle " ^ String.concat " " (List.map nat is)
     | Swizzle -> "swizzle"
     | RelaxedSwizzle -> "relaxed_swizzle"
-    | RelaxedQ15MulRS -> "relaxed_q15mulr_s"
-    | RelaxedDot -> "relaxed_dot_i" ^ half xxxx ^ "_i" ^ without_high_bit (half xxxx) ^ "_s"
+    | RelaxedQ15MulRS -> "relaxed_q15mulr" ^ ext S
+    | RelaxedDot ->
+      "relaxed_dot_i" ^ halve xxxx ^ "_i" ^ without_high_bit (halve xxxx) ^ "_s"
 
   let iternop xxxx (op : iternop) = match op with
     | RelaxedLaneselect -> "relaxed_laneselect"
-    | RelaxedDotAddS -> "relaxed_dot_i" ^ half (half xxxx) ^ "_i" ^ without_high_bit (half (half xxxx)) ^ "_add_s"
+    | RelaxedDotAddS ->
+      "relaxed_dot_i" ^ halve (halve xxxx) ^ "_i" ^
+        without_high_bit (halve (halve xxxx)) ^ "_add" ^ ext S
 
   let fbinop xxxx (op : fbinop) = match op with
     | Add -> "add"
@@ -331,14 +316,10 @@ struct
   let irelop xxxx (op : irelop) = match op with
     | Eq -> "eq"
     | Ne -> "ne"
-    | LtS -> "lt_s"
-    | LtU -> "lt_u"
-    | GtS -> "gt_s"
-    | GtU -> "gt_u"
-    | LeS -> "le_s"
-    | LeU -> "le_u"
-    | GeS -> "ge_s"
-    | GeU -> "ge_u"
+    | Lt sx -> "lt" ^ ext sx
+    | Gt sx -> "gt" ^ ext sx
+    | Le sx -> "le" ^ ext sx
+    | Ge sx -> "ge" ^ ext sx
 
   let frelop xxxx (op : frelop) = match op with
     | Eq -> "eq"
@@ -349,33 +330,22 @@ struct
     | Ge -> "ge"
 
   let icvtop xxxx (op : icvtop) = match op with
-    | ExtendLowS -> "extend_low_i" ^ half xxxx ^ "_s"
-    | ExtendLowU -> "extend_low_i" ^ half xxxx ^ "_u"
-    | ExtendHighS -> "extend_high_i" ^ half xxxx ^ "_s"
-    | ExtendHighU -> "extend_high_i" ^ half xxxx ^ "_u"
-    | ExtAddPairwiseS -> "extadd_pairwise_i" ^ half xxxx ^ "_s"
-    | ExtAddPairwiseU -> "extadd_pairwise_i" ^ half xxxx ^ "_u"
-    | TruncSatSF32x4 -> "trunc_sat_f32x4_s"
-    | TruncSatUF32x4 -> "trunc_sat_f32x4_u"
-    | TruncSatSZeroF64x2 -> "trunc_sat_f64x2_s_zero"
-    | TruncSatUZeroF64x2 -> "trunc_sat_f64x2_u_zero"
-    | RelaxedTruncSF32x4 -> "relaxed_trunc_f32x4_s"
-    | RelaxedTruncUF32x4 -> "relaxed_trunc_f32x4_u"
-    | RelaxedTruncSZeroF64x2 -> "relaxed_trunc_f64x2_s_zero"
-    | RelaxedTruncUZeroF64x2 -> "relaxed_trunc_f64x2_u_zero"
+    | Extend (hf, sx) -> "extend" ^ half hf ^ "_i" ^ halve xxxx ^ ext sx
+    | ExtAddPairwise sx -> "extadd_pairwise_i" ^ halve xxxx ^ ext sx
+    | TruncSatF32x4 sx -> "trunc_sat_f32x4" ^ ext sx
+    | TruncSatZeroF64x2 sx -> "trunc_sat_f64x2" ^ ext sx ^ "_zero"
+    | RelaxedTruncF32x4 sx -> "relaxed_trunc_f32x4" ^ ext sx
+    | RelaxedTruncZeroF64x2 sx -> "relaxed_trunc_f64x2" ^ ext sx ^ "_zero"
 
   let fcvtop xxxx (op : fcvtop) = match op with
     | DemoteZeroF64x2  -> "demote_f64x2_zero"
     | PromoteLowF32x4  -> "promote_low_f32x4"
-    | ConvertSI32x4 ->
-      "convert_" ^ (if xxxx = "32x4" then "" else "low_") ^ "i32x4_s"
-    | ConvertUI32x4 ->
-      "convert_" ^ (if xxxx = "32x4" then "" else "low_") ^ "i32x4_u"
+    | ConvertI32x4 sx ->
+      "convert_" ^ (if xxxx = "32x4" then "" else "low_") ^ "i32x4" ^ ext sx
 
   let ishiftop xxxx (op : ishiftop) = match op with
     | Shl -> "shl"
-    | ShrS -> "shr_s"
-    | ShrU -> "shr_u"
+    | Shr sx -> "shr" ^ ext sx
 
   let ibitmaskop xxxx (op : ibitmaskop) = match op with
     | Bitmask -> "bitmask"
@@ -398,8 +368,8 @@ struct
   let splatop xxxx (op : nsplatop) = match op with
     | Splat -> "splat"
 
-  let pextractop xxxx (op : extension nextractop) = match op with
-    | Extract (i, ext) -> "extract_lane" ^ extension ext ^ " " ^ nat i
+  let pextractop xxxx (op : sx nextractop) = match op with
+    | Extract (i, sx) -> "extract_lane" ^ ext sx ^ " " ^ nat i
 
   let extractop xxxx (op : unit nextractop) = match op with
     | Extract (i, ()) -> "extract_lane " ^ nat i
@@ -468,25 +438,25 @@ let memop name x typ {ty; align; offset; _} sz =
 let loadop x op =
   match op.pack with
   | None -> memop "load" x numtype op (num_size op.ty)
-  | Some (sz, ext) ->
-    memop ("load" ^ pack_size sz ^ extension ext) x numtype op (packed_size sz)
+  | Some (sz, sx) ->
+    memop ("load" ^ packsize sz ^ ext sx) x numtype op (packed_size sz)
 
 let storeop x op =
   match op.pack with
   | None -> memop "store" x numtype op (num_size op.ty)
-  | Some sz -> memop ("store" ^ pack_size sz) x numtype op (packed_size sz)
+  | Some sz -> memop ("store" ^ packsize sz) x numtype op (packed_size sz)
 
-let vecloadop x (op : vloadop) =
+let vloadop x (op : vloadop) =
   match op.pack with
   | None -> memop "load" x vectype op (vec_size op.ty)
   | Some (sz, ext) ->
-    memop ("load" ^ vec_extension sz ext) x vectype op (packed_size sz)
+    memop ("load" ^ vext sz ext) x vectype op (packed_size sz)
 
-let vecstoreop x op =
+let vstoreop x op =
   memop "store" x vectype op (vec_size op.ty)
 
-let veclaneop instr x op i =
-  memop (instr ^ pack_size op.pack ^ "_lane") x vectype op
+let vlaneop instr x op i =
+  memop (instr ^ packsize op.pack ^ "_lane") x vectype op
     (packed_size op.pack) ^ " " ^ nat i
 
 let initop = function
@@ -559,10 +529,10 @@ let rec instr e =
     | ElemDrop x -> "elem.drop " ^ idx x, []
     | Load (x, op) -> loadop x op, []
     | Store (x, op) -> storeop x op, []
-    | VecLoad (x, op) -> vecloadop x op, []
-    | VecStore (x, op) -> vecstoreop x op, []
-    | VecLoadLane (x, op, i) -> veclaneop "load" x op i, []
-    | VecStoreLane (x, op, i) -> veclaneop "store" x op i, []
+    | VecLoad (x, op) -> vloadop x op, []
+    | VecStore (x, op) -> vstoreop x op, []
+    | VecLoadLane (x, op, i) -> vlaneop "load" x op i, []
+    | VecStoreLane (x, op, i) -> vlaneop "store" x op i, []
     | MemorySize x -> "memory.size " ^ idx x, []
     | MemoryGrow x -> "memory.grow " ^ idx x, []
     | MemoryFill x -> "memory.fill " ^ idx x, []
@@ -577,16 +547,16 @@ let rec instr e =
     | RefCast t -> "ref.cast", [Atom (reftype t)]
     | RefEq -> "ref.eq", []
     | RefI31 -> "ref.i31", []
-    | I31Get ext -> "i31.get" ^ extension ext, []
+    | I31Get sx -> "i31.get" ^ ext sx, []
     | StructNew (x, op) -> "struct.new" ^ initop op ^ " " ^ idx x, []
-    | StructGet (x, y, exto) ->
-      "struct.get" ^ opt_s extension exto ^ " " ^ idx x ^ " " ^ idx y, []
+    | StructGet (x, y, sxo) ->
+      "struct.get" ^ opt_s ext sxo ^ " " ^ idx x ^ " " ^ idx y, []
     | StructSet (x, y) -> "struct.set " ^ idx x ^ " " ^ idx y, []
     | ArrayNew (x, op) -> "array.new" ^ initop op ^ " " ^ idx x, []
     | ArrayNewFixed (x, n) -> "array.new_fixed " ^ idx x ^ " " ^ nat32 n, []
     | ArrayNewElem (x, y) -> "array.new_elem " ^ idx x ^ " " ^ idx y, []
     | ArrayNewData (x, y) -> "array.new_data " ^ idx x ^ " " ^ idx y, []
-    | ArrayGet (x, exto) -> "array.get" ^ opt_s extension exto ^ " " ^ idx x, []
+    | ArrayGet (x, sxo) -> "array.get" ^ opt_s ext sxo ^ " " ^ idx x, []
     | ArraySet x -> "array.set " ^ idx x, []
     | ArrayLen -> "array.len", []
     | ArrayCopy (x, y) -> "array.copy " ^ idx x ^ " " ^ idx y, []

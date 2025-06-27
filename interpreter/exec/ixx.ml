@@ -37,7 +37,7 @@ sig
   val bitwidth : int
 end
 
-module type S =
+module type T =
 sig
   type t
   type bits
@@ -105,7 +105,7 @@ sig
   val to_hex_string : t -> string
 end
 
-module Make (Rep : RepType) : S with type bits = Rep.t and type t = Rep.t =
+module Make (Rep : RepType) : T with type bits = Rep.t and type t = Rep.t =
 struct
   (*
    * Unsigned comparison in terms of signed comparison.

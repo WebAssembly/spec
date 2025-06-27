@@ -39,7 +39,7 @@ let type_of_lane = function
 
 module Conversion (Lane : sig type t end) =
 struct
-  module type S =
+  module type T =
   sig
     val shape : shape
     val to_lanes : t -> Lane.t list
@@ -94,7 +94,7 @@ sig
   val q15mulr_sat_s : t -> t -> t
 end
 
-module MakeIntShape (IXX : Ixx.S) (Cvt : Conversion(IXX).S) :
+module MakeIntShape (IXX : Ixx.T) (Cvt : Conversion(IXX).T) :
   IntShape with type lane = IXX.t =
 struct
   type lane = IXX.t
@@ -199,7 +199,7 @@ sig
   val pmax : t -> t -> t
 end
 
-module MakeFloatShape (FXX : Fxx.S) (Cvt : Conversion(FXX).S) :
+module MakeFloatShape (FXX : Fxx.T) (Cvt : Conversion(FXX).T) :
   FloatShape with type lane = FXX.t =
 struct
   type lane = FXX.t

@@ -37,7 +37,7 @@ val load_num :
 val store_num :
   memory -> address -> offset -> num -> unit (* raises Bounds *)
 val load_num_packed :
-  Pack.packsize -> Pack.extension -> memory -> address -> offset -> numtype -> num
+  Pack.packsize -> Pack.sx -> memory -> address -> offset -> numtype -> num
     (* raises Type, Bounds *)
 val store_num_packed :
   Pack.packsize -> memory -> address -> offset -> num -> unit
@@ -49,7 +49,7 @@ val store_vec :
   memory -> address -> offset -> vec -> unit
     (* raises Type, Bounds *)
 val load_vec_packed :
-  Pack.packsize -> Pack.vec_extension -> memory -> address -> offset -> vectype -> vec
+  Pack.packsize -> Pack.vext -> memory -> address -> offset -> vectype -> vec
     (* raises Type, Bounds *)
 
 val load_val :

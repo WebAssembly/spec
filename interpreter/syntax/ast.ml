@@ -28,24 +28,28 @@ type void = Lib.void
 
 module IntOp =
 struct
+  type sx = Pack.sx = S | U
+
   type unop = Clz | Ctz | Popcnt | ExtendS of packsize
-  type binop = Add | Sub | Mul | DivS | DivU | RemS | RemU
-             | And | Or | Xor | Shl | ShrS | ShrU | Rotl | Rotr
+  type binop = Add | Sub | Mul | Div of sx | Rem of sx
+             | And | Or | Xor | Shl | Shr of sx | Rotl | Rotr
   type testop = Eqz
-  type relop = Eq | Ne | LtS | LtU | GtS | GtU | LeS | LeU | GeS | GeU
-  type cvtop = ExtendSI32 | ExtendUI32 | WrapI64
-             | TruncSF32 | TruncUF32 | TruncSF64 | TruncUF64
-             | TruncSatSF32 | TruncSatUF32 | TruncSatSF64 | TruncSatUF64
+  type relop = Eq | Ne | Lt of sx | Gt of sx | Le of sx | Ge of sx
+  type cvtop = ExtendI32 of sx | WrapI64
+             | TruncF32 of sx | TruncF64 of sx
+             | TruncSatF32 of sx | TruncSatF64 of sx
              | ReinterpretFloat
 end
 
 module FloatOp =
 struct
+  type sx = Pack.sx = S | U
+
   type unop = Neg | Abs | Ceil | Floor | Trunc | Nearest | Sqrt
   type binop = Add | Sub | Mul | Div | Min | Max | CopySign
   type testop = |
   type relop = Eq | Ne | Lt | Gt | Le | Ge
-  type cvtop = ConvertSI32 | ConvertUI32 | ConvertSI64 | ConvertUI64
+  type cvtop = ConvertI32 of sx | ConvertI64 of sx
              | PromoteF32 | DemoteF64
              | ReinterpretInt
 end
@@ -55,32 +59,30 @@ module I64Op = IntOp
 module F32Op = FloatOp
 module F64Op = FloatOp
 
-(* split off sx *)
 module V128Op =
 struct
+  type half = Low | High
+
   type iunop = Abs | Neg | Popcnt
   type funop = Abs | Neg | Sqrt | Ceil | Floor | Trunc | Nearest
-  type ibinop = Add | Sub | Mul | MinS | MinU | MaxS | MaxU | AvgrU
-              | AddSatS | AddSatU | SubSatS | SubSatU | DotS | Q15MulRSatS
-              | ExtMulLowS | ExtMulHighS | ExtMulLowU | ExtMulHighU
-              | Swizzle | Shuffle of int list | NarrowS | NarrowU
+  type ibinop = Add | Sub | Mul | Min of sx | Max of sx | AvgrU
+              | AddSat of sx | SubSat of sx | DotS | Q15MulRSatS
+              | ExtMul of half * sx
+              | Swizzle | Shuffle of int list | Narrow of sx
               | RelaxedSwizzle | RelaxedQ15MulRS | RelaxedDot
   type fbinop = Add | Sub | Mul | Div | Min | Max | Pmin | Pmax
               | RelaxedMin | RelaxedMax
   type iternop = RelaxedLaneselect | RelaxedDotAddS
   type fternop = RelaxedMadd | RelaxedNmadd
   type itestop = AllTrue
-  type irelop = Eq | Ne | LtS | LtU | LeS | LeU | GtS | GtU | GeS | GeU
+  type irelop = Eq | Ne | Lt of sx | Le of sx | Gt of sx | Ge of sx
   type frelop = Eq | Ne | Lt | Le | Gt | Ge
-  type icvtop = ExtendLowS | ExtendLowU | ExtendHighS | ExtendHighU
-              | ExtAddPairwiseS | ExtAddPairwiseU
-              | TruncSatSF32x4 | TruncSatUF32x4
-              | TruncSatSZeroF64x2 | TruncSatUZeroF64x2
-              | RelaxedTruncSF32x4 | RelaxedTruncUF32x4
-              | RelaxedTruncSZeroF64x2 | RelaxedTruncUZeroF64x2
+  type icvtop = Extend of half * sx | ExtAddPairwise of sx
+              | TruncSatF32x4 of sx | TruncSatZeroF64x2 of sx
+              | RelaxedTruncF32x4 of sx | RelaxedTruncZeroF64x2 of sx
   type fcvtop = DemoteZeroF64x2 | PromoteLowF32x4
-              | ConvertSI32x4 | ConvertUI32x4
-  type ishiftop = Shl | ShrS | ShrU
+              | ConvertI32x4 of sx
+  type ishiftop = Shl | Shr of sx
   type ibitmaskop = Bitmask
 
   type vtestop = AnyTrue
@@ -102,7 +104,7 @@ struct
   type nreplaceop = Replace of int
 
   type splatop = (nsplatop, nsplatop, nsplatop, nsplatop, nsplatop, nsplatop) V128.laneop
-  type extractop = (extension nextractop, extension nextractop, unit nextractop, unit nextractop, unit nextractop, unit nextractop) V128.laneop
+  type extractop = (sx nextractop, sx nextractop, unit nextractop, unit nextractop, unit nextractop, unit nextractop) V128.laneop
   type replaceop = (nreplaceop, nreplaceop, nreplaceop, nreplaceop, nreplaceop, nreplaceop) V128.laneop
 end
 
@@ -129,10 +131,10 @@ type vextractop = (V128Op.extractop) Value.vecop
 type vreplaceop = (V128Op.replaceop) Value.vecop
 
 type ('t, 'p) memop = {ty : 't; align : int; offset : int64; pack : 'p}
-type loadop = (numtype, (packsize * extension) option) memop
+type loadop = (numtype, (packsize * sx) option) memop
 type storeop = (numtype, packsize option) memop
 
-type vloadop = (vectype, (packsize * vec_extension) option) memop
+type vloadop = (vectype, (packsize * vext) option) memop
 type vstoreop = (vectype, unit) memop
 type vlaneop = (vectype, packsize) memop
 
@@ -214,15 +216,15 @@ and instr' =
   | RefCast of reftype                (* type cast *)
   | RefEq                             (* reference equality *)
   | RefI31                            (* scalar reference *)
-  | I31Get of extension               (* read scalar *)
+  | I31Get of sx                      (* read scalar *)
   | StructNew of idx * initop         (* allocate structure *)
-  | StructGet of idx * idx * extension option  (* read structure field *)
+  | StructGet of idx * idx * sx option  (* read structure field *)
   | StructSet of idx * idx            (* write structure field *)
   | ArrayNew of idx * initop          (* allocate array *)
   | ArrayNewFixed of idx * int32      (* allocate fixed array *)
   | ArrayNewElem of idx * idx         (* allocate array from element segment *)
   | ArrayNewData of idx * idx         (* allocate array from data segment *)
-  | ArrayGet of idx * extension option  (* read array slot *)
+  | ArrayGet of idx * sx option       (* read array slot *)
   | ArraySet of idx                   (* write array slot *)
   | ArrayLen                          (* read array length *)
   | ArrayCopy of idx * idx            (* copy between two arrays *)

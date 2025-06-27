@@ -499,10 +499,10 @@ let rec step (c : config) : config =
             match pack with
             | Pack8 ->
               V128.I8x16.replace_lane j v
-                (I32Num.of_num 0 (Memory.load_num_packed Pack8 SX mem i_64 offset I32T))
+                (I32Num.of_num 0 (Memory.load_num_packed Pack8 S mem i_64 offset I32T))
             | Pack16 ->
               V128.I16x8.replace_lane j v
-                (I32Num.of_num 0 (Memory.load_num_packed Pack16 SX mem i_64 offset I32T))
+                (I32Num.of_num 0 (Memory.load_num_packed Pack16 S mem i_64 offset I32T))
             | Pack32 ->
               V128.I32x4.replace_lane j v
                 (I32Num.of_num 0 (Memory.load_num mem i_64 offset I32T))
@@ -573,7 +573,7 @@ let rec step (c : config) : config =
             Plain (Const (d @@ e.at));
             Plain (Const (s @@ e.at));
             Plain (Load
-              (y, {ty = I32T; align = 0; offset = 0L; pack = Some (Pack8, ZX)}));
+              (y, {ty = I32T; align = 0; offset = 0L; pack = Some (Pack8, U)}));
             Plain (Store
               (x, {ty = I32T; align = 0; offset = 0L; pack = Some Pack8}));
             Plain (Const (addr_add d 1L @@ e.at));
@@ -587,7 +587,7 @@ let rec step (c : config) : config =
             Plain (Const (addr_add d n' @@ e.at));
             Plain (Const (addr_add s n' @@ e.at));
             Plain (Load
-              (y, {ty = I32T; align = 0; offset = 0L; pack = Some (Pack8, ZX)}));
+              (y, {ty = I32T; align = 0; offset = 0L; pack = Some (Pack8, U)}));
             Plain (Store
               (x, {ty = I32T; align = 0; offset = 0L; pack = Some Pack8}));
             Plain (Const (d @@ e.at));
@@ -808,7 +808,7 @@ let rec step (c : config) : config =
         else
         let exto =
           match as_array_comptype (expand_deftype (Aggr.type_of_array sa)) with
-          | ArrayT (FieldT (_, PackStorageT _)) -> Some ZX
+          | ArrayT (FieldT (_, PackStorageT _)) -> Some U
           | _ -> None
         in
         if I32.le_u d s then

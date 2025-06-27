@@ -24,7 +24,7 @@ sig
   val logxor : t -> t -> t
 end
 
-module type S =
+module type T =
 sig
   type t
   type bits
@@ -63,7 +63,7 @@ sig
   val zero : t
 end
 
-module Make (Rep : RepType) : S with type bits = Rep.t =
+module Make (Rep : RepType) : T with type bits = Rep.t =
 struct
   let _ = assert (Rep.mantissa <= 52)
 

@@ -23,10 +23,10 @@ val load_vec : data -> address -> vectype -> vec (* raises Bounds *)
 val load_val : data -> address -> valtype -> value (* raises Type, Bounds *)
 
 val load_num_packed :
-  Pack.packsize -> Pack.extension -> data -> address -> numtype -> num
+  Pack.packsize -> Pack.sx -> data -> address -> numtype -> num
     (* raises Type, Bounds *)
 val load_vec_packed :
-  Pack.packsize -> Pack.vec_extension -> data -> address -> vectype -> vec
+  Pack.packsize -> Pack.vext -> data -> address -> vectype -> vec
     (* raises Type, Bounds *)
 val load_val_storage :
   data -> address -> storagetype -> value (* raises Type, Bounds *)
