@@ -78,8 +78,8 @@ let word32 s =
   Int32.(add lo (shift_left hi 16))
 
 let word64 s =
-  let lo = I64_convert.extend_i32_u (word32 s) in
-  let hi = I64_convert.extend_i32_u (word32 s) in
+  let lo = Convert.I64_.extend_i32_u (word32 s) in
+  let hi = Convert.I64_.extend_i32_u (word32 s) in
   Int64.(add lo (shift_left hi 32))
 
 let rec uN n s =
@@ -104,7 +104,7 @@ let u32 s = Int64.to_int32 (uN 32 s)
 let u64 s = uN 64 s
 let s7 s = Int64.to_int (sN 7 s)
 let s32 s = Int64.to_int32 (sN 32 s)
-let s33 s = I32_convert.wrap_i64 (sN 33 s)
+let s33 s = Convert.I32_.wrap_i64 (sN 33 s)
 let s64 s = sN 64 s
 let f32 s = F32.of_bits (word32 s)
 let f64 s = F64.of_bits (word64 s)
@@ -337,7 +337,7 @@ let local s =
 let locals s =
   let pos = pos s in
   let nts = vec local s in
-  let ns = List.map (fun (n, _) -> I64_convert.extend_i32_u n) nts in
+  let ns = List.map (fun (n, _) -> Convert.I64_.extend_i32_u n) nts in
   require (I64.lt_u (List.fold_left I64.add 0L ns) 0x1_0000_0000L)
     s pos "too many locals";
   List.flatten (List.map (Lib.Fun.uncurry Lib.List32.make) nts)

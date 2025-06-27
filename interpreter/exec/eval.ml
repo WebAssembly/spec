@@ -37,7 +37,7 @@ let memory_error at = function
 let numeric_error at = function
   | Ixx.Overflow -> "integer overflow"
   | Ixx.DivideByZero -> "integer divide by zero"
-  | Ixx.InvalidConversion -> "invalid conversion to integer"
+  | Convert.InvalidConversion -> "invalid conversion to integer"
   | Value.TypeError (i, v, t) ->
     Crash.error at
       ("type error, expected " ^ string_of_numtype t ^ " as operand " ^
@@ -175,8 +175,8 @@ let elem_oob frame x i n =
     (Elem.size (elem frame.inst x))
 
 let array_oob a i n =
-  I64.gt_u (I64.add (I64_convert.extend_i32_u i) (I64_convert.extend_i32_u n))
-    (I64_convert.extend_i32_u (Aggr.array_length a))
+  I64.gt_u (I64.add (Convert.I64_.extend_i32_u i) (Convert.I64_.extend_i32_u n))
+    (Convert.I64_.extend_i32_u (Aggr.array_length a))
 
 let rec step (c : config) : config =
   let vs, es = c.code in
@@ -870,7 +870,7 @@ let rec step (c : config) : config =
       | ArrayInitData (x, y),
         Num (I32 n) :: Num s :: Num (I32 d) :: Ref (Aggr.ArrayRef a) :: vs' ->
         let s_64 = addr_of_num s in
-        let n_64 = I64_convert.extend_i32_u n in
+        let n_64 = Convert.I64_.extend_i32_u n in
         let ArrayT (FieldT (_mut, st)) = array_type c.frame.inst x in
         let m_64 = I64.mul n_64 (I64.of_int_u (storage_size st)) in
         if array_oob a d n then
@@ -903,7 +903,7 @@ let rec step (c : config) : config =
         let s_64 = addr_of_num s in
         if array_oob a d n then
           vs', [Trapping "out of bounds array access" @@ e.at]
-        else if elem_oob c.frame y s (I64 (I64_convert.extend_i32_u n)) then
+        else if elem_oob c.frame y s (I64 (Convert.I64_.extend_i32_u n)) then
           vs', [Trapping (table_error e.at Table.Bounds) @@ e.at]
         else if n = 0l then
           vs', []

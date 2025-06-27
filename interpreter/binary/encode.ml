@@ -64,7 +64,7 @@ struct
   let u32 i = u64 Int64.(logand (of_int32 i) 0xffffffffL)
   let s7 i = s64 (Int64.of_int i)
   let s32 i = s64 (Int64.of_int32 i)
-  let s33 i = s64 (I64_convert.extend_i32_s i)
+  let s33 i = s64 (Convert.I64_.extend_i32_s i)
   let f32 x = word32 (F32.to_bits x)
   let f64 x = word64 (F64.to_bits x)
   let v128 v = String.iter (put s) (V128.to_bits v)

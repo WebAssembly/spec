@@ -45,7 +45,7 @@ let addrtype_of tab =
 let addr_of_num x =
   match x with
   | I64 i -> i
-  | I32 i -> I64_convert.extend_i32_u i
+  | I32 i -> Convert.I64_.extend_i32_u i
   | _ -> raise Type
 
 let grow tab delta r =

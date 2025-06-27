@@ -495,9 +495,9 @@ let assert_return ress ts at =
         | NumPat {it = I32 _ as i; _} -> I32 (Int32.minus_one), i
         | NumPat {it = I64 _ as i; _} -> I64 (Int64.minus_one), i
         | NumPat {it = F32 f; _} ->
-          I32 (Int32.minus_one), I32 (I32_convert.reinterpret_f32 f)
+          I32 (Int32.minus_one), I32 (Convert.I32_.reinterpret_f32 f)
         | NumPat {it = F64 f; _} ->
-          I64 (Int64.minus_one), I64 (I64_convert.reinterpret_f64 f)
+          I64 (Int64.minus_one), I64 (Convert.I64_.reinterpret_f64 f)
         | NanPat {it = F32 nan; _} ->
           nan_bitmask_of nan I32T, canonical_nan_of I32T
         | NanPat {it = F64 nan; _} ->

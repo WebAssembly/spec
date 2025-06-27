@@ -16,7 +16,7 @@ let ref_null t = RefNull t
 let ref_func x = RefFunc x
 
 let at_const = function
-  | I32AT -> fun n -> i32_const (I32_convert.wrap_i64 n.it @@ n.at)
+  | I32AT -> fun n -> i32_const (Convert.I32_.wrap_i64 n.it @@ n.at)
   | I64AT -> i64_const
 
 let unreachable = Unreachable

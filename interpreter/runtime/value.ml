@@ -289,11 +289,11 @@ let value_of_bool b = Num (I32 (if b then 1l else 0l))
 let num_of_addr at i =
   match at with
   | I64AT -> I64 i
-  | I32AT -> I32 (I32_convert.wrap_i64 i)
+  | I32AT -> I32 (Convert.I32_.wrap_i64 i)
 
 let addr_of_num x =
   match x with
-  | I32 i -> I64_convert.extend_i32_u i
+  | I32 i -> Convert.I64_.extend_i32_u i
   | I64 i -> i
   | _ -> raise Type
 
