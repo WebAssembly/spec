@@ -307,7 +307,7 @@ let tagtype s =
 (* Instructions *)
 
 open Ast
-open Operators
+open Mnemonics
 
 let op s = byte s
 let end_ s = expect 0x0b s "END opcode expected"
@@ -1004,7 +1004,7 @@ and catch s =
   | 0x00 ->
     let x1 = at idx s in
     let x2 = at idx s in
-    Operators.catch x1 x2
+    Mnemonics.catch x1 x2
   | 0x01 ->
     let x1 = at idx s in
     let x2 = at idx s in

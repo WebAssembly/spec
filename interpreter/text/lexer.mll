@@ -1,6 +1,6 @@
 {
 open Parser
-open Operators
+open Mnemonics
 open Source
 
 let loc_of_pos pos =
