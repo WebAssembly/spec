@@ -428,7 +428,7 @@ struct
       | _, _ -> assert false
     in I32x4.of_lanes (dot xs ys)
 
-  let dot_s_accum x y z =
+  let dot_add_s x y z =
     let xs = I8x16.to_lanes x in
     let ys = I8x16.to_lanes y in
     let rec dot xs ys =
@@ -436,8 +436,8 @@ struct
       | x1::x2::x3::x4::xs', y1::y2::y3::y4::ys' ->
         Int32.(add
           (add (mul x1 y1) (mul x2 y2))
-          (add (mul x3 y3) (mul x4 y4)))
-        :: dot xs' ys'
+          (add (mul x3 y3) (mul x4 y4))
+        ) :: dot xs' ys'
       | [], [] -> []
       | _, _ -> assert false
     in I32x4.add (I32x4.of_lanes (dot xs ys)) z
@@ -463,7 +463,8 @@ struct
     I64x2.of_lanes
       (List.map
         (fun i32 -> ext (Int64.of_int32 i32))
-        (take_or_drop 2 (I32x4.to_lanes x)))
+        (take_or_drop 2 (I32x4.to_lanes x))
+      )
   let extend_low_s = extend Lib.List.take ext_s
   let extend_high_s = extend Lib.List.drop ext_s
   let extend_low_u = extend Lib.List.take ext_u

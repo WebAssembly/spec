@@ -135,7 +135,7 @@ struct
       | I16x8 RelaxedLaneselect -> V128.V1x128.bitselect
       | I32x4 RelaxedLaneselect -> V128.V1x128.bitselect
       | I64x2 RelaxedLaneselect -> V128.V1x128.bitselect
-      | I32x4 RelaxedDotAccum -> V128.I32x4_convert.dot_s_accum
+      | I32x4 RelaxedDotAddS -> V128.I32x4_convert.dot_add_s
       | _ -> assert false
     in fun v1 v2 v3 -> to_vec (f (of_vec 1 v1) (of_vec 2 v2) (of_vec 3 v3))
 
@@ -323,18 +323,18 @@ end
 let op v128 = function
   | V128 x -> v128 x
 
-let eval_testop = op V128Op.testop
-let eval_unop = op V128Op.unop
-let eval_binop = op V128Op.binop
-let eval_ternop = op V128Op.ternop
-let eval_relop = op V128Op.relop
-let eval_cvtop = op V128Op.cvtop
-let eval_shiftop = op V128Op.shiftop
-let eval_bitmaskop = op V128Op.bitmaskop
-let eval_vtestop = op V128Op.vtestop
-let eval_vunop = op V128Op.vunop
-let eval_vbinop = op V128Op.vbinop
-let eval_vternop = op V128Op.vternop
-let eval_splatop = op V128CvtOp.splatop
-let eval_extractop = op V128CvtOp.extractop
-let eval_replaceop = op V128CvtOp.replaceop
+let eval_vtestop = op V128Op.testop
+let eval_vunop = op V128Op.unop
+let eval_vbinop = op V128Op.binop
+let eval_vternop = op V128Op.ternop
+let eval_vrelop = op V128Op.relop
+let eval_vcvtop = op V128Op.cvtop
+let eval_vshiftop = op V128Op.shiftop
+let eval_vbitmaskop = op V128Op.bitmaskop
+let eval_vvtestop = op V128Op.vtestop
+let eval_vvunop = op V128Op.vunop
+let eval_vvbinop = op V128Op.vbinop
+let eval_vvternop = op V128Op.vternop
+let eval_vsplatop = op V128CvtOp.splatop
+let eval_vextractop = op V128CvtOp.extractop
+let eval_vreplaceop = op V128CvtOp.replaceop

@@ -961,63 +961,63 @@ let rec step (c : config) : config =
         Vec v.it :: vs, []
 
       | VecTest testop, Vec n :: vs' ->
-        (try value_of_bool (Eval_vec.eval_testop testop n) :: vs', []
+        (try value_of_bool (Eval_vec.eval_vtestop testop n) :: vs', []
         with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
 
       | VecUnary unop, Vec n :: vs' ->
-        (try Vec (Eval_vec.eval_unop unop n) :: vs', []
+        (try Vec (Eval_vec.eval_vunop unop n) :: vs', []
         with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
 
       | VecBinary binop, Vec n2 :: Vec n1 :: vs' ->
-        (try Vec (Eval_vec.eval_binop binop n1 n2) :: vs', []
+        (try Vec (Eval_vec.eval_vbinop binop n1 n2) :: vs', []
         with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
 
       | VecTernary ternop, Vec v3 :: Vec v2 :: Vec v1 :: vs' ->
-        (try Vec (Eval_vec.eval_ternop ternop v1 v2 v3) :: vs', []
+        (try Vec (Eval_vec.eval_vternop ternop v1 v2 v3) :: vs', []
         with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
 
       | VecCompare relop, Vec n2 :: Vec n1 :: vs' ->
-        (try Vec (Eval_vec.eval_relop relop n1 n2) :: vs', []
+        (try Vec (Eval_vec.eval_vrelop relop n1 n2) :: vs', []
         with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
 
       | VecConvert cvtop, Vec n :: vs' ->
-        (try Vec (Eval_vec.eval_cvtop cvtop n) :: vs', []
+        (try Vec (Eval_vec.eval_vcvtop cvtop n) :: vs', []
         with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
 
       | VecShift shiftop, Num s :: Vec v :: vs' ->
-        (try Vec (Eval_vec.eval_shiftop shiftop v s) :: vs', []
+        (try Vec (Eval_vec.eval_vshiftop shiftop v s) :: vs', []
         with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
 
       | VecBitmask bitmaskop, Vec v :: vs' ->
-        (try Num (Eval_vec.eval_bitmaskop bitmaskop v) :: vs', []
+        (try Num (Eval_vec.eval_vbitmaskop bitmaskop v) :: vs', []
         with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
 
       | VecTestBits vtestop, Vec n :: vs' ->
-        (try value_of_bool (Eval_vec.eval_vtestop vtestop n) :: vs', []
+        (try value_of_bool (Eval_vec.eval_vvtestop vtestop n) :: vs', []
         with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
 
       | VecUnaryBits vunop, Vec n :: vs' ->
-        (try Vec (Eval_vec.eval_vunop vunop n) :: vs', []
+        (try Vec (Eval_vec.eval_vvunop vunop n) :: vs', []
         with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
 
       | VecBinaryBits vbinop, Vec n2 :: Vec n1 :: vs' ->
-        (try Vec (Eval_vec.eval_vbinop vbinop n1 n2) :: vs', []
+        (try Vec (Eval_vec.eval_vvbinop vbinop n1 n2) :: vs', []
         with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
 
       | VecTernaryBits vternop, Vec v3 :: Vec v2 :: Vec v1 :: vs' ->
-        (try Vec (Eval_vec.eval_vternop vternop v1 v2 v3) :: vs', []
+        (try Vec (Eval_vec.eval_vvternop vternop v1 v2 v3) :: vs', []
         with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
 
       | VecSplat splatop, Num n :: vs' ->
-        (try Vec (Eval_vec.eval_splatop splatop n) :: vs', []
+        (try Vec (Eval_vec.eval_vsplatop splatop n) :: vs', []
         with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
 
       | VecExtract extractop, Vec v :: vs' ->
-        (try Num (Eval_vec.eval_extractop extractop v) :: vs', []
+        (try Num (Eval_vec.eval_vextractop extractop v) :: vs', []
         with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
 
       | VecReplace replaceop, Num r :: Vec v :: vs' ->
-        (try Vec (Eval_vec.eval_replaceop replaceop v r) :: vs', []
+        (try Vec (Eval_vec.eval_vreplaceop replaceop v r) :: vs', []
         with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
 
       | _ ->

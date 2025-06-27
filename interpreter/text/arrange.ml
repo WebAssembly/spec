@@ -310,7 +310,7 @@ struct
 
   let iternop xxxx (op : iternop) = match op with
     | RelaxedLaneselect -> "relaxed_laneselect"
-    | RelaxedDotAccum -> "relaxed_dot_i" ^ half (half xxxx) ^ "_i" ^ without_high_bit (half (half xxxx)) ^ "_add_s"
+    | RelaxedDotAddS -> "relaxed_dot_i" ^ half (half xxxx) ^ "_i" ^ without_high_bit (half (half xxxx)) ^ "_add_s"
 
   let fbinop xxxx (op : fbinop) = match op with
     | Add -> "add"
@@ -426,11 +426,11 @@ let oper (iop, fop) op =
   | F64 o -> fop "64" o
   )
 
-let vec_oper (vop) op =
+let voper (vop) op =
   match op with
   | V128 o -> "v128." ^ vop o
 
-let vec_shape_oper (pop, iop, fop) op =
+let shoper (pop, iop, fop) op =
   match op with
   | V128 o -> V128.string_of_shape o ^ "." ^ V128Op.lane_oper (pop, iop, fop) o
 
@@ -440,21 +440,21 @@ let testop = oper (IntOp.testop, FloatOp.testop)
 let relop = oper (IntOp.relop, FloatOp.relop)
 let cvtop = oper (IntOp.cvtop, FloatOp.cvtop)
 
-let vec_unop = vec_shape_oper (V128Op.iunop, V128Op.iunop, V128Op.funop)
-let vec_binop = vec_shape_oper (V128Op.ibinop, V128Op.ibinop, V128Op.fbinop)
-let vec_ternop = vec_shape_oper (V128Op.iternop, V128Op.iternop, V128Op.fternop)
-let vec_testop = vec_shape_oper (V128Op.itestop, V128Op.itestop, V128Op.voidop)
-let vec_relop = vec_shape_oper (V128Op.irelop, V128Op.irelop, V128Op.frelop)
-let vec_cvtop = vec_shape_oper (V128Op.icvtop, V128Op.icvtop, V128Op.fcvtop)
-let vec_shiftop = vec_shape_oper (V128Op.ishiftop, V128Op.ishiftop, V128Op.voidop)
-let vec_bitmaskop = vec_shape_oper (V128Op.ibitmaskop, V128Op.ibitmaskop, V128Op.voidop)
-let vec_vunop = vec_oper (V128Op.vunop)
-let vec_vbinop = vec_oper (V128Op.vbinop)
-let vec_vternop = vec_oper (V128Op.vternop)
-let vec_vtestop = vec_oper (V128Op.vtestop)
-let vec_splatop = vec_shape_oper (V128Op.splatop, V128Op.splatop, V128Op.splatop)
-let vec_extractop = vec_shape_oper (V128Op.pextractop, V128Op.extractop, V128Op.extractop)
-let vec_replaceop = vec_shape_oper (V128Op.replaceop, V128Op.replaceop, V128Op.replaceop)
+let vunop = shoper (V128Op.iunop, V128Op.iunop, V128Op.funop)
+let vbinop = shoper (V128Op.ibinop, V128Op.ibinop, V128Op.fbinop)
+let vternop = shoper (V128Op.iternop, V128Op.iternop, V128Op.fternop)
+let vtestop = shoper (V128Op.itestop, V128Op.itestop, V128Op.voidop)
+let vrelop = shoper (V128Op.irelop, V128Op.irelop, V128Op.frelop)
+let vcvtop = shoper (V128Op.icvtop, V128Op.icvtop, V128Op.fcvtop)
+let vshiftop = shoper (V128Op.ishiftop, V128Op.ishiftop, V128Op.voidop)
+let vbitmaskop = shoper (V128Op.ibitmaskop, V128Op.ibitmaskop, V128Op.voidop)
+let vvunop = voper (V128Op.vunop)
+let vvbinop = voper (V128Op.vbinop)
+let vvternop = voper (V128Op.vternop)
+let vvtestop = voper (V128Op.vtestop)
+let vsplatop = shoper (V128Op.splatop, V128Op.splatop, V128Op.splatop)
+let vextractop = shoper (V128Op.pextractop, V128Op.extractop, V128Op.extractop)
+let vreplaceop = shoper (V128Op.replaceop, V128Op.replaceop, V128Op.replaceop)
 
 let idx x = nat32 x.it
 let num v = string_of_num v.it
@@ -476,7 +476,7 @@ let storeop x op =
   | None -> memop "store" x numtype op (num_size op.ty)
   | Some sz -> memop ("store" ^ pack_size sz) x numtype op (packed_size sz)
 
-let vecloadop x (op : vec_loadop) =
+let vecloadop x (op : vloadop) =
   match op.pack with
   | None -> memop "load" x vectype op (vec_size op.ty)
   | Some (sz, ext) ->
@@ -494,7 +494,7 @@ let initop = function
   | Implicit -> "_default"
 
 let constop v = string_of_numtype (type_of_num v) ^ ".const"
-let vec_constop v = string_of_vectype (type_of_vec v) ^ ".const i32x4"
+let vconstop v = string_of_vectype (type_of_vec v) ^ ".const i32x4"
 
 let externop = function
   | Internalize -> "any.convert_extern"
@@ -600,22 +600,22 @@ let rec instr e =
     | Unary op -> unop op, []
     | Binary op -> binop op, []
     | Convert op -> cvtop op, []
-    | VecConst v -> vec_constop v.it ^ " " ^ vec v, []
-    | VecTest op -> vec_testop op, []
-    | VecUnary op -> vec_unop op, []
-    | VecBinary op -> vec_binop op, []
-    | VecTernary op -> vec_ternop op, []
-    | VecCompare op -> vec_relop op, []
-    | VecConvert op -> vec_cvtop op, []
-    | VecShift op -> vec_shiftop op, []
-    | VecBitmask op -> vec_bitmaskop op, []
-    | VecTestBits op -> vec_vtestop op, []
-    | VecUnaryBits op -> vec_vunop op, []
-    | VecBinaryBits op -> vec_vbinop op, []
-    | VecTernaryBits op -> vec_vternop op, []
-    | VecSplat op -> vec_splatop op, []
-    | VecExtract op -> vec_extractop op, []
-    | VecReplace op -> vec_replaceop op, []
+    | VecConst v -> vconstop v.it ^ " " ^ vec v, []
+    | VecTest op -> vtestop op, []
+    | VecUnary op -> vunop op, []
+    | VecBinary op -> vbinop op, []
+    | VecTernary op -> vternop op, []
+    | VecCompare op -> vrelop op, []
+    | VecConvert op -> vcvtop op, []
+    | VecShift op -> vshiftop op, []
+    | VecBitmask op -> vbitmaskop op, []
+    | VecTestBits op -> vvtestop op, []
+    | VecUnaryBits op -> vvunop op, []
+    | VecBinaryBits op -> vvbinop op, []
+    | VecTernaryBits op -> vvternop op, []
+    | VecSplat op -> vsplatop op, []
+    | VecExtract op -> vextractop op, []
+    | VecReplace op -> vreplaceop op, []
   in Node (head, inner)
 
 and catch c =
@@ -821,7 +821,7 @@ let ref_ = function
 let literal mode lit =
   match lit.it with
   | Num n -> Node (constop n ^ " " ^ num mode n, [])
-  | Vec v -> Node (vec_constop v ^ " " ^ vec mode v, [])
+  | Vec v -> Node (vconstop v ^ " " ^ vec mode v, [])
   | Ref r -> ref_ r
 
 let definition mode isdef x_opt def =

@@ -55,9 +55,9 @@ module I64Op = IntOp
 module F32Op = FloatOp
 module F64Op = FloatOp
 
+(* split off sx *)
 module V128Op =
 struct
-  type itestop = AllTrue
   type iunop = Abs | Neg | Popcnt
   type funop = Abs | Neg | Sqrt | Ceil | Floor | Trunc | Nearest
   type ibinop = Add | Sub | Mul | MinS | MinU | MaxS | MaxU | AvgrU
@@ -67,8 +67,9 @@ struct
               | RelaxedSwizzle | RelaxedQ15MulRS | RelaxedDot
   type fbinop = Add | Sub | Mul | Div | Min | Max | Pmin | Pmax
               | RelaxedMin | RelaxedMax
-  type iternop = RelaxedLaneselect | RelaxedDotAccum
+  type iternop = RelaxedLaneselect | RelaxedDotAddS
   type fternop = RelaxedMadd | RelaxedNmadd
+  type itestop = AllTrue
   type irelop = Eq | Ne | LtS | LtU | LeS | LeU | GtS | GtU | GeS | GeU
   type frelop = Eq | Ne | Lt | Le | Gt | Ge
   type icvtop = ExtendLowS | ExtendLowU | ExtendHighS | ExtendHighU
@@ -111,29 +112,29 @@ type binop = (I32Op.binop, I64Op.binop, F32Op.binop, F64Op.binop) Value.op
 type relop = (I32Op.relop, I64Op.relop, F32Op.relop, F64Op.relop) Value.op
 type cvtop = (I32Op.cvtop, I64Op.cvtop, F32Op.cvtop, F64Op.cvtop) Value.op
 
-type vec_testop = (V128Op.testop) Value.vecop
-type vec_relop = (V128Op.relop) Value.vecop
-type vec_unop = (V128Op.unop) Value.vecop
-type vec_binop = (V128Op.binop) Value.vecop
-type vec_ternop = (V128Op.ternop) Value.vecop
-type vec_cvtop = (V128Op.cvtop) Value.vecop
-type vec_shiftop = (V128Op.shiftop) Value.vecop
-type vec_bitmaskop = (V128Op.bitmaskop) Value.vecop
-type vec_vtestop = (V128Op.vtestop) Value.vecop
-type vec_vunop = (V128Op.vunop) Value.vecop
-type vec_vbinop = (V128Op.vbinop) Value.vecop
-type vec_vternop = (V128Op.vternop) Value.vecop
-type vec_splatop = (V128Op.splatop) Value.vecop
-type vec_extractop = (V128Op.extractop) Value.vecop
-type vec_replaceop = (V128Op.replaceop) Value.vecop
+type vtestop = (V128Op.testop) Value.vecop
+type vrelop = (V128Op.relop) Value.vecop
+type vunop = (V128Op.unop) Value.vecop
+type vbinop = (V128Op.binop) Value.vecop
+type vternop = (V128Op.ternop) Value.vecop
+type vcvtop = (V128Op.cvtop) Value.vecop
+type vshiftop = (V128Op.shiftop) Value.vecop
+type vbitmaskop = (V128Op.bitmaskop) Value.vecop
+type vvtestop = (V128Op.vtestop) Value.vecop
+type vvunop = (V128Op.vunop) Value.vecop
+type vvbinop = (V128Op.vbinop) Value.vecop
+type vvternop = (V128Op.vternop) Value.vecop
+type vsplatop = (V128Op.splatop) Value.vecop
+type vextractop = (V128Op.extractop) Value.vecop
+type vreplaceop = (V128Op.replaceop) Value.vecop
 
 type ('t, 'p) memop = {ty : 't; align : int; offset : int64; pack : 'p}
 type loadop = (numtype, (packsize * extension) option) memop
 type storeop = (numtype, packsize option) memop
 
-type vec_loadop = (vectype, (packsize * vec_extension) option) memop
-type vec_storeop = (vectype, unit) memop
-type vec_laneop = (vectype, packsize) memop
+type vloadop = (vectype, (packsize * vec_extension) option) memop
+type vstoreop = (vectype, unit) memop
+type vlaneop = (vectype, packsize) memop
 
 type initop = Explicit | Implicit
 type externop = Internalize | Externalize
@@ -189,10 +190,10 @@ and instr' =
   | ElemDrop of idx                   (* drop passive element segment *)
   | Load of idx * loadop              (* read memory at address *)
   | Store of idx * storeop            (* write memory at address *)
-  | VecLoad of idx * vec_loadop       (* read memory at address *)
-  | VecStore of idx * vec_storeop     (* write memory at address *)
-  | VecLoadLane of idx * vec_laneop * int  (* read single lane at address *)
-  | VecStoreLane of idx * vec_laneop * int (* write single lane to address *)
+  | VecLoad of idx * vloadop          (* read memory at address *)
+  | VecStore of idx * vstoreop        (* write memory at address *)
+  | VecLoadLane of idx * vlaneop * int  (* read single lane at address *)
+  | VecStoreLane of idx * vlaneop * int (* write single lane to address *)
   | MemorySize of idx                 (* size of memory *)
   | MemoryGrow of idx                 (* grow memory *)
   | MemoryFill of idx                 (* fill memory range with value *)
@@ -230,21 +231,21 @@ and instr' =
   | ArrayInitElem of idx * idx        (* fill array from elem segment *)
   | ExternConvert of externop         (* extern conversion *)
   | VecConst of vec                   (* constant *)
-  | VecTest of vec_testop             (* vector test *)
-  | VecCompare of vec_relop           (* vector comparison *)
-  | VecUnary of vec_unop              (* unary vector operator *)
-  | VecBinary of vec_binop            (* binary vector operator *)
-  | VecTernary of vec_ternop          (* ternary vector operator *)
-  | VecConvert of vec_cvtop           (* vector conversion *)
-  | VecShift of vec_shiftop           (* vector shifts *)
-  | VecBitmask of vec_bitmaskop       (* vector masking *)
-  | VecTestBits of vec_vtestop        (* vector bit test *)
-  | VecUnaryBits of vec_vunop         (* unary bit vector operator *)
-  | VecBinaryBits of vec_vbinop       (* binary bit vector operator *)
-  | VecTernaryBits of vec_vternop     (* ternary bit vector operator *)
-  | VecSplat of vec_splatop           (* number to vector conversion *)
-  | VecExtract of vec_extractop       (* extract lane from vector *)
-  | VecReplace of vec_replaceop       (* replace lane in vector *)
+  | VecTest of vtestop                (* vector test *)
+  | VecCompare of vrelop              (* vector comparison *)
+  | VecUnary of vunop                 (* unary vector operator *)
+  | VecBinary of vbinop               (* binary vector operator *)
+  | VecTernary of vternop             (* ternary vector operator *)
+  | VecConvert of vcvtop              (* vector conversion *)
+  | VecShift of vshiftop              (* vector shifts *)
+  | VecBitmask of vbitmaskop          (* vector masking *)
+  | VecTestBits of vvtestop           (* vector bit test *)
+  | VecUnaryBits of vvunop            (* unary bit vector operator *)
+  | VecBinaryBits of vvbinop          (* binary bit vector operator *)
+  | VecTernaryBits of vvternop        (* ternary bit vector operator *)
+  | VecSplat of vsplatop              (* number to vector conversion *)
+  | VecExtract of vextractop          (* extract lane from vector *)
+  | VecReplace of vreplaceop          (* replace lane in vector *)
 
 and catch = catch' Source.phrase
 and catch' =
