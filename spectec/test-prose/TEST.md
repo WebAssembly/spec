@@ -14291,7 +14291,7 @@ The instruction :math:`(\mathsf{br\_on\_non\_null}~l)` is :ref:`valid <valid-val
 
    * The label :math:`C{.}\mathsf{labels}{}[l]` exists.
 
-   * The label :math:`C{.}\mathsf{labels}{}[l]` is of the form :math:`{t^\ast}~(\mathsf{ref}~{\mathit{ht}})`.
+   * The label :math:`C{.}\mathsf{labels}{}[l]` is of the form :math:`{t^\ast}~(\mathsf{ref}~{\mathsf{null}^?}~{\mathit{ht}})`.
 
 
 
@@ -25439,7 +25439,7 @@ Instr_ok/br_on_null
 Instr_ok/br_on_non_null
 - the instruction (BR_ON_NON_NULL l) is valid with the instruction type t* :: [(REF ?(NULL) ht)] -> t* if:
   - the label C.LABELS[l] exists.
-  - C.LABELS[l] is t* :: [(REF ?() ht)].
+  - C.LABELS[l] is t* :: [(REF NULL? ht)].
 
 Instr_ok/br_on_cast
 - the instruction (BR_ON_CAST l rt_1 rt_2) is valid with the instruction type t* :: [rt_1] -> t* :: [t'] if:

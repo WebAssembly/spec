@@ -49,5 +49,7 @@ let it {it; _} = it
 let at {at; _} = at
 let note {note; _} = note
 
-(* Utils *)
+
+(* Utilities *)
+
 let map f {it; at; note} = {it = f it; at; note}
