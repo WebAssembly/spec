@@ -15,18 +15,18 @@ let thd (_, _, x) = x
 
 (* Position handling *)
 
-let position_to_pos position =
+let loc_of_pos position =
   { file = position.Lexing.pos_fname;
     line = position.Lexing.pos_lnum;
     column = position.Lexing.pos_cnum - position.Lexing.pos_bol
   }
 
-let positions_to_region position1 position2 =
-  { left = position_to_pos position1;
-    right = position_to_pos position2
+let region_of_pos position1 position2 =
+  { left = loc_of_pos position1;
+    right = loc_of_pos position2
   }
 
-let at (l, r) = positions_to_region l r
+let at (l, r) = region_of_pos l r
 
 let (@@@) = Source.(@@)
 let (@@) x loc = x @@@ at loc
@@ -1429,10 +1429,10 @@ script_module :
       $3, $4, Textual (m, parse_annots m) @@ $sloc }
   | LPAR MODULE definition_opt option(module_var) BIN string_list RPAR
     { let s = $6 @@ $loc($5) in
-      $3, $4, Encoded ("binary:" ^ string_of_pos (at $sloc).left, s) @@ $sloc }
+      $3, $4, Encoded ("binary:" ^ string_of_loc (at $sloc).left, s) @@ $sloc }
   | LPAR MODULE definition_opt option(module_var) QUOTE string_list RPAR
     { let s = $6 @@ $loc($5) in
-      $3, $4, Quoted ("quote:" ^ string_of_pos (at $sloc).left, s) @@ $sloc }
+      $3, $4, Quoted ("quote:" ^ string_of_loc (at $sloc).left, s) @@ $sloc }
 
 script_instance :
   | instance { [], $1 }

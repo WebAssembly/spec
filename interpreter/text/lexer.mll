@@ -3,15 +3,15 @@ open Parser
 open Operators
 open Source
 
-let convert_pos pos =
+let loc_of_pos pos =
   { file = pos.Lexing.pos_fname;
     line = pos.Lexing.pos_lnum;
     column = pos.Lexing.pos_cnum - pos.Lexing.pos_bol
   }
 
 let region lexbuf =
-  let left = convert_pos (Lexing.lexeme_start_p lexbuf) in
-  let right = convert_pos (Lexing.lexeme_end_p lexbuf) in
+  let left = loc_of_pos (Lexing.lexeme_start_p lexbuf) in
+  let right = loc_of_pos (Lexing.lexeme_end_p lexbuf) in
   {left = left; right = right}
 
 let error lexbuf msg = raise (Parse_error.Syntax (region lexbuf, msg))

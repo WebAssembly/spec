@@ -90,15 +90,15 @@ let get s =
   skip 1 s;
   b
 
-let position file pos = Source.{ file; line = -1; column = pos }
+let loc file pos = Source.{ file; line = -1; column = pos }
 
 let region file left right =
-  Source.{ left = position file left; right = position file right }
+  Source.{ left = loc file left; right = loc file right }
 
 let decode_error pos msg =
   raise (Custom.Code (region "@metadata.code.branch_hint section" pos pos, msg))
 
-let require b pos msg = if not b then decode_error pos msg
+let require b loc msg = if not b then decode_error loc msg
 let decode_byte s = get s
 
 let rec decode_uN n s =

@@ -59,8 +59,8 @@ let peek s = if eos s then None else Some (read s)
 let get s = check 1 s; let b = read s in skip 1 s; b
 let get_string n s = let i = pos s in skip n s; String.sub s.bytes i n
 
-let position pos = Source.{file = "@name section"; line = -1; column = pos}
-let region left right = Source.{left = position left; right = position right}
+let loc pos = Source.{file = "@name section"; line = -1; column = pos}
+let region left right = Source.{left = loc left; right = loc right}
 
 let at f s =
   let left = pos s in

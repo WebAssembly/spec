@@ -24,9 +24,9 @@ let wrap_lexbuf lexbuf =
   Annot.extend_source (Bytes.sub_string lexbuf.lex_buffer lexbuf.lex_start_pos n);
   {lexbuf with refill_buff}
 
-let convert_pos lexbuf =
-  { Source.left = Lexer.convert_pos lexbuf.Lexing.lex_start_p;
-    Source.right = Lexer.convert_pos lexbuf.Lexing.lex_curr_p
+let region_of_pos lexbuf =
+  { Source.left = Lexer.loc_of_pos lexbuf.Lexing.lex_start_p;
+    Source.right = Lexer.loc_of_pos lexbuf.Lexing.lex_curr_p
   }
 
 let make (type a) (start : _ -> _ -> a) : (module S with type t = a) =
@@ -39,7 +39,7 @@ let make (type a) (start : _ -> _ -> a) : (module S with type t = a) =
       let lexbuf = wrap_lexbuf lexbuf in
       let result =
         try start Lexer.token lexbuf with Parser.Error ->
-          raise (Syntax (convert_pos lexbuf, "unexpected token"))
+          raise (Syntax (region_of_pos lexbuf, "unexpected token"))
       in
       let annots = Annot.get_all () in
       if not (Annot.NameMap.is_empty annots) then
