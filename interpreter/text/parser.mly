@@ -120,7 +120,6 @@ type types =
     mutable list : type_ list;
     mutable ctx : deftype list;
   }
-let empty_types () = {space = empty (); fields = []; list = []; ctx = []}
 
 type context =
   { types : types; tables : space; memories : space; tags : space;
@@ -129,6 +128,7 @@ type context =
     deferred_locals : (unit -> unit) list ref
   }
 
+let empty_types () = {space = empty (); fields = []; list = []; ctx = []}
 let empty_context () =
   { types = empty_types (); tables = empty (); memories = empty ();
     tags = empty (); funcs = empty (); locals = empty (); globals = empty ();
@@ -148,20 +148,9 @@ let force_locals (c : context) =
   c.deferred_locals := []
 
 
-let print_char = function
-  | 0x09 -> "\\t"
-  | 0x0a -> "\\n"
-  | 0x22 -> "\\\""
-  | 0x5c -> "\\\\"
-  | c when 0x20 <= c && c < 0x7f -> String.make 1 (Char.chr c)
-  | c -> Printf.sprintf "\\u{%02x}" c
-
 let print x =
-  "$" ^
-  if String.for_all (fun c -> Lib.Char.is_alphanum_ascii c || c = '_') x.it
-  then x.it
-  else "\"" ^ String.concat "" (List.map print_char (Utf8.decode x.it)) ^ "\""
-
+  let s = Types.string_of_name (Utf8.decode x.it) in
+  "$" ^ if s = x.it then s else "\"" ^ s ^ "\""
 
 let lookup category space x =
   try VarMap.find x.it space.map

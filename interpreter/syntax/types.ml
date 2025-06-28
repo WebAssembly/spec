@@ -327,7 +327,7 @@ let string_of_name n =
   Buffer.contents b
 
 let string_of_var = function
-  | IdxX x -> I32.to_string_u x
+  | IdxX x -> string_of_idx x
   | RecX x -> "rec." ^ I32.to_string_u x
 
 let string_of_null = function
