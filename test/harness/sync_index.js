@@ -150,7 +150,7 @@ function binary(bytes) {
 /**
  * Returns a compiled module, or throws if there was an error at compilation.
  */
-function module(bytes, valid = true) {
+function module(bytes, source, valid = true) {
     let buffer = binary(bytes);
     let validated;
 
@@ -176,6 +176,7 @@ function module(bytes, valid = true) {
     let module;
     try {
         module = new WebAssembly.Module(buffer);
+        module.source = source;
     } catch(e) {
         if (valid)
             throw new Error('WebAssembly.Module ctor unexpectedly throws ${typeof e}: ${e}${e.stack}');
@@ -189,32 +190,32 @@ function uniqueTest(func, desc) {
     test(func, testNum() + desc);
 }
 
-function assert_invalid(bytes) {
+function assert_invalid(bytes, source) {
     uniqueTest(() => {
         try {
-            module(bytes, /* valid */ false);
+            module(bytes, source, /* valid */ false);
             throw new Error('did not fail');
         } catch(e) {
             assert_true(e instanceof WebAssembly.CompileError, "expected invalid failure:");
         }
-    }, "A wast module that should be invalid or malformed.");
+    }, `A wast module that should be invalid or malformed. (${source})`);
 }
 
 const assert_malformed = assert_invalid;
 
-function assert_invalid_custom(bytes) {
+function assert_invalid_custom(bytes, source) {
     uniqueTest(() => {
         try {
-            module(bytes, /* valid */ true);
+            module(bytes, source, /* valid */ true);
         } catch(e) {
             throw new Error('failed on custom section error');
         }
-    }, "A wast module that should have an invalid or malformed custom section.");
+    }, `A wast module that should have an invalid or malformed custom section. (${source})`);
 }
 
 const assert_malformed_custom = assert_invalid_custom;
 
-function instance(mod, imports = registry, valid = true) {
+function instance(module, imports = registry, valid = true) {
     if (imports instanceof Result) {
         if (imports.isError())
             return imports;
@@ -225,7 +226,7 @@ function instance(mod, imports = registry, valid = true) {
 
     let i;
     try {
-        i = new WebAssembly.Instance(mod, imports);
+        i = new WebAssembly.Instance(module, imports);
     } catch(e) {
         err = e;
     }
@@ -234,7 +235,7 @@ function instance(mod, imports = registry, valid = true) {
         uniqueTest(() => {
             let instantiated = err === null;
             assert_true(instantiated, err);
-        }, "module successfully instantiated");
+        }, `module successfully instantiated (${module.source})`);
     }
 
     return err !== null ? ErrorResult(err) : ValueResult(i);
@@ -285,7 +286,7 @@ function exports(instance) {
     return ValueResult({ module: instance.value.exports, spectest: registry.spectest });
 }
 
-function run(action) {
+function run(action, source) {
     let result = action();
 
     _assert(result instanceof Result);
@@ -293,7 +294,7 @@ function run(action) {
     uniqueTest(() => {
         if (result.isError())
             throw result.value;
-    }, "A wast test that runs without any special assertion.");
+    }, `A wast test that runs without any special assertion. (${source})`);
 }
 
 function assert_unlinkable(bytes) {
@@ -324,7 +325,7 @@ function assert_uninstantiable(bytes) {
     }, "A wast module that is uninstantiable.");
 }
 
-function assert_trap(action) {
+function assert_trap(action, source) {
     let result = action();
 
     _assert(result instanceof Result);
@@ -335,7 +336,7 @@ function assert_trap(action) {
             let e = result.value;
             assert_true(e instanceof WebAssembly.RuntimeError, `expected runtime error, observed ${e}:`);
         }
-    }, "A wast module that must trap at runtime.");
+    }, `A wast module that must trap at runtime. (${source})`);
 }
 
 let StackOverflow;
@@ -355,7 +356,7 @@ function assert_exhaustion(action) {
     }, "A wast module that must exhaust the stack space.");
 }
 
-function assert_return(action, ...expected) {
+function assert_return(action, source, ...expected) {
     let result = action();
     _assert(result instanceof Result);
 
@@ -408,7 +409,7 @@ function assert_return(action, ...expected) {
                     assert_equals(actual[i], expected[i]);
             }
         }
-    }, "A wast module that must return a particular value.");
+    }, `A wast module that must return a particular value. (${source})`);
 }
 
 function assert_return_nan(action) {
