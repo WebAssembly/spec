@@ -42,8 +42,8 @@ let flatten_instr_locs is =
     | i :: rest ->
         let group =
           match i.it with
-          | Block (_, inner) -> [ i ] @ flatten inner
-          | Loop (_, inner) -> [ i ] @ flatten inner
+          | Block (_, inner) | Loop (_, inner)
+          | TryTable (_, _, inner) -> [ i ] @ flatten inner
           | If (_, inner1, inner2) -> [ i ] @ flatten inner1 @ flatten inner2
           | _ -> [ i ]
         in
@@ -445,12 +445,12 @@ let check_one locs prev_hidx h =
           check_error h.at
             "@metadata.code.branch_hint annotation: invalid target")
 
-let check_fun m fidx hs =
+let check_func m fidx hs =
   let f = get_func m fidx in
   let locs = flatten_instr_locs f.it.body in
   let prev_hidx = ref 0 in
   List.iter (check_one locs prev_hidx) hs
 
 let check (m : module_) (fmt : format) =
-  IdxMap.iter (check_fun m) fmt.it.func_hints;
+  IdxMap.iter (check_func m) fmt.it.func_hints;
   ()
