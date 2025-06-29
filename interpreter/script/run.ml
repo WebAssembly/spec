@@ -220,10 +220,10 @@ let indent s =
   let lines = List.filter ((<>) "") (String.split_on_char '\n' s) in
   String.concat "\n" (List.map ((^) "  ") lines) ^ "\n"
 
-let print_module x_opt m =
+let print_moduletype x_opt mt =
   Printf.printf "module%s :\n%s%!"
     (match x_opt with None -> "" | Some x -> " " ^ x.it)
-    (indent (Types.string_of_moduletype (Ast.moduletype_of m)))
+    (indent (Types.string_of_moduletype mt))
 
 let print_values vs =
   let ts = List.map Value.type_of_value vs in
@@ -469,7 +469,7 @@ let run_assertion ass =
     trace "Asserting invalid...";
     (match
       let m, cs = run_definition def in
-      Valid.check_module_with_custom (m, cs)
+      ignore (Valid.check_module_with_custom (m, cs))
     with
     | exception Valid.Invalid (_, msg) ->
       assert_message ass.at "validation" msg re
@@ -480,7 +480,7 @@ let run_assertion ass =
     trace "Asserting invalid custom...";
     (match
       let m, cs = run_definition def in
-      Valid.check_module_with_custom (m, cs)
+      ignore (Valid.check_module_with_custom (m, cs))
     with
     | exception Custom.Invalid (_, msg) ->
       assert_message ass.at "custom validation" msg re
@@ -490,7 +490,7 @@ let run_assertion ass =
   | AssertUnlinkable (x_opt, re) ->
     trace "Asserting unlinkable...";
     let m, cs = lookup_module x_opt ass.at in
-    if not !Flags.unchecked then Valid.check_module_with_custom (m, cs);
+    if not !Flags.unchecked then ignore (Valid.check_module_with_custom (m, cs));
     (match
       let imports = Import.link m in
       ignore (Eval.init m imports)
@@ -503,7 +503,7 @@ let run_assertion ass =
   | AssertUninstantiable (x_opt, re) ->
     trace "Asserting trap...";
     let m, cs = lookup_module x_opt ass.at in
-    if not !Flags.unchecked then Valid.check_module_with_custom (m, cs);
+    if not !Flags.unchecked then ignore (Valid.check_module_with_custom (m, cs));
     (match
       let imports = Import.link m in
       ignore (Eval.init m imports)
@@ -547,10 +547,10 @@ let rec run_command cmd =
     let m, cs = run_definition def in
     if not !Flags.unchecked then begin
       trace "Checking...";
-      Valid.check_module_with_custom (m, cs);
+      let mt = Valid.check_module_with_custom (m, cs) in
       if !Flags.print_sig then begin
         trace "Signature:";
-        print_module x_opt m
+        print_moduletype x_opt mt
       end
     end;
     bind "module" modules x_opt (m, cs);

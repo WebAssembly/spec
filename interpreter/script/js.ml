@@ -226,7 +226,7 @@ type env =
 
 let exports m : exports =
   let ModuleT (_, ets) = moduletype_of m in
-  List.fold_left (fun map (ExportT (et, name)) -> NameMap.add name et map)
+  List.fold_left (fun map (ExportT (name, xt)) -> NameMap.add name xt map)
     NameMap.empty ets
 
 let env () : env =
@@ -622,7 +622,7 @@ let wrap item_name wrap_action wrap_assertion at =
   let funcs = [Func (0l @@ at, locals, body) @@ at] in
   let m = {empty_module with types; funcs; imports; exports} @@ at in
   (try
-    Valid.check_module m;  (* sanity check *)
+    ignore (Valid.check_module m);  (* sanity check *)
   with Valid.Invalid _ as exn ->
     prerr_endline (string_of_region at ^
       ": internal error in JS converter, invalid wrapper module generated:");

@@ -10,8 +10,8 @@ let registry = ref Registry.empty
 
 let register name lookup = registry := Registry.add name lookup !registry
 
-let lookup (ImportT (et, module_name, item_name)) at : Instance.extern =
-  try Registry.find module_name !registry item_name et with Not_found ->
+let lookup (ImportT (module_name, item_name, xt)) at : Instance.extern =
+  try Registry.find module_name !registry item_name xt with Not_found ->
     Unknown.error at
       ("unknown import \"" ^ Types.string_of_name module_name ^
         "\".\"" ^ Types.string_of_name item_name ^ "\"")

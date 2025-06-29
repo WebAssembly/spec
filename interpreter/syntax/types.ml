@@ -57,8 +57,8 @@ type externtype =
   | ExternGlobalT of globaltype
   | ExternTagT of tagtype
 
-type exporttype = ExportT of externtype * name
-type importtype = ImportT of externtype * name * name
+type exporttype = ExportT of name * externtype
+type importtype = ImportT of name * name * externtype
 type moduletype = ModuleT of importtype list * exporttype list
 
 
@@ -135,8 +135,8 @@ let structtype_of_comptype = function StructCT st -> st | _ -> assert false
 let arraytype_of_comptype = function ArrayCT at -> at | _ -> assert false
 let functype_of_comptype = function FuncCT ft -> ft | _ -> assert false
 
-let externtype_of_importtype = function ImportT (et, _, _) -> et
-let externtype_of_exporttype = function ExportT (et, _) -> et
+let externtype_of_importtype = function ImportT (_, _, xt) -> xt
+let externtype_of_exporttype = function ExportT (_, xt) -> xt
 
 
 (* Filters *)
@@ -247,11 +247,11 @@ let subst_externtype s = function
 
 
 let subst_exporttype s = function
-  | ExportT (xt, name) -> ExportT (subst_externtype s xt, name)
+  | ExportT (name, xt) -> ExportT (name, subst_externtype s xt)
 
 let subst_importtype s = function
-  | ImportT (xt, module_name, name) ->
-    ImportT (subst_externtype s xt, module_name, name)
+  | ImportT (module_name, name, xt) ->
+    ImportT (module_name, name, subst_externtype s xt)
 
 let subst_moduletype s = function
   | ModuleT (its, ets) ->
@@ -447,11 +447,11 @@ let string_of_externtype = function
 
 
 let string_of_exporttype = function
-  | ExportT (xt, name) ->
+  | ExportT (name, xt) ->
     "\"" ^ string_of_name name ^ "\" : " ^ string_of_externtype xt
 
 let string_of_importtype = function
-  | ImportT (xt, module_name, name) ->
+  | ImportT (module_name, name, xt) ->
     "\"" ^ string_of_name module_name ^ "\" \"" ^
       string_of_name name ^ "\" : " ^ string_of_externtype xt
 

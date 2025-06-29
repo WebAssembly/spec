@@ -345,8 +345,6 @@ and module_' =
 }
 
 
-(* Auxiliary functions *)
-
 let empty_module =
 {
   types = [];
@@ -362,6 +360,9 @@ let empty_module =
   exports = [];
 }
 
+
+(* Extract module type (unchecked) *)
+
 open Source
 
 let deftypes_of (m : module_) : deftype list =
@@ -374,7 +375,7 @@ let deftypes_of (m : module_) : deftype list =
 let importtype_of (m : module_) (im : import) : importtype =
   let Import (module_name, item_name, xt) = im.it in
   let dts = deftypes_of m in
-  ImportT (subst_externtype (subst_of dts) xt, module_name, item_name)
+  ImportT (module_name, item_name, subst_externtype (subst_of dts) xt)
 
 let exporttype_of (m : module_) (ex : export) : exporttype =
   let Export (name, xx) = ex.it in
@@ -403,7 +404,7 @@ let exporttype_of (m : module_) (ex : export) : exporttype =
       let tts = tags xts @ List.map (fun t ->
         let Tag tt = t.it in tt) m.it.tags in
       ExternTagT (Lib.List32.nth tts x.it)
-  in ExportT (subst_externtype (subst_of dts) xt, name)
+  in ExportT (name, subst_externtype (subst_of dts) xt)
 
 let moduletype_of (m : module_) : moduletype =
   let its = List.map (importtype_of m) m.it.imports in

@@ -1125,23 +1125,30 @@ let check_import (c : context) (im : import) : context =
 
 module NameSet = Set.Make(struct type t = Ast.name let compare = compare end)
 
-let check_export (c : context) (set : NameSet.t) (ex : export) : NameSet.t =
+let check_export (c : context) (ex : export) : exporttype =
   let Export (name, xx) = ex.it in
-  (match xx.it with
-  | FuncX x -> ignore (func c x)
-  | GlobalX x -> ignore (global c x)
-  | TableX x -> ignore (table c x)
-  | MemoryX x -> ignore (memory c x)
-  | TagX x -> ignore (tag c x)
-  );
-  require (not (NameSet.mem name set)) ex.at "duplicate export name";
-  NameSet.add name set
-
+  let xt =
+    match xx.it with
+    | FuncX x -> ExternFuncT (Def (func c x))
+    | GlobalX x -> ExternGlobalT (global c x)
+    | TableX x -> ExternTableT (table c x)
+    | MemoryX x -> ExternMemoryT (memory c x)
+    | TagX x -> ExternTagT (tag c x)
+  in ExportT (name, xt)
 
 let check_list f xs (c : context) : context =
   List.fold_left f c xs
 
-let check_module (m : module_) =
+let check_names (names : name list) at =
+  ignore (
+    List.fold_left (fun set name ->
+      require (not (NameSet.mem name set)) at
+        ("duplicate export name \"" ^ string_of_name name ^ "\"");
+      NameSet.add name set
+    ) NameSet.empty names
+  )
+
+let check_module (m : module_) : moduletype =
   let refs = Free.module_ ({m.it with funcs = []; start = None} @@ m.at) in
   let c =
     {empty_context with refs}
@@ -1157,8 +1164,14 @@ let check_module (m : module_) =
   in
   List.iter (check_func_body c) m.it.funcs;
   Option.iter (check_start c) m.it.start;
-  ignore (List.fold_left (check_export c) NameSet.empty m.it.exports)
+  let its = List.map (fun {it = Import (mnm, nm, xt); _} -> ImportT (mnm, nm, xt)) m.it.imports in
+  let ets = List.map (check_export c) m.it.exports in
+  check_names (List.map (fun (ExportT (nm, _xt)) -> nm) ets) m.at;
+  subst_moduletype (subst_of c.types) (ModuleT (its, ets))
 
-let check_module_with_custom ((m : module_), (cs : Custom.section list)) =
-  check_module m;
-  List.iter (fun (module S : Custom.Section) -> S.Handler.check m S.it) cs
+
+let check_module_with_custom ((m : module_), (cs : Custom.section list))
+  : moduletype =
+  let mt = check_module m in
+  List.iter (fun (module S : Custom.Section) -> S.Handler.check m S.it) cs;
+  mt
