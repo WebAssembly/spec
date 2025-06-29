@@ -42,12 +42,12 @@ let array_length (Array (_, fs)) = Lib.List32.length fs
 
 let alloc_struct dt vs =
   assert Free.((deftype dt).types = Set.empty);
-  let StructT fts = as_struct_comptype (expand_deftype dt) in
+  let StructT fts = structtype_of_comptype (expand_deftype dt) in
   Struct (dt, List.map2 alloc_field fts vs)
 
 let alloc_array dt vs =
   assert Free.((deftype dt).types = Set.empty);
-  let ArrayT ft = as_array_comptype (expand_deftype dt) in
+  let ArrayT ft = arraytype_of_comptype (expand_deftype dt) in
   Array (dt, List.map (alloc_field ft) vs)
 
 
@@ -58,8 +58,8 @@ let type_of_array (Array (dt, _)) = dt
 let () =
   let type_of_ref' = !Value.type_of_ref' in
   Value.type_of_ref' := function
-    | StructRef s -> DefHT (type_of_struct s)
-    | ArrayRef a -> DefHT (type_of_array a)
+    | StructRef s -> UseHT (Def (type_of_struct s))
+    | ArrayRef a -> UseHT (Def (type_of_array a))
     | r -> type_of_ref' r
 
 let string_of_field = function

@@ -45,7 +45,7 @@ let () =
 let () =
   let type_of_ref' = !Value.type_of_ref' in
   Value.type_of_ref' := function
-    | FuncRef f -> DefHT (Func.type_of f)
+    | FuncRef f -> UseHT (Def (Func.type_of f))
     | r -> type_of_ref' r
 
 let () =
@@ -71,7 +71,7 @@ let empty_moduleinst =
     tags = []; elems = []; datas = []; exports = [] }
 
 let externtype_of c = function
-  | ExternFunc func -> ExternFuncT (Func.type_of func)
+  | ExternFunc func -> ExternFuncT (Def (Func.type_of func))
   | ExternTable tab -> ExternTableT (Table.type_of tab)
   | ExternMemory mem -> ExternMemoryT (Memory.type_of mem)
   | ExternGlobal glob -> ExternGlobalT (Global.type_of glob)

@@ -6,16 +6,17 @@ type exn_ = Exn of Tag.t * value list
 type ref_ += ExnRef of exn_
 
 let alloc_exn tag vs =
-  let TagT dt = Tag.type_of tag in
-  assert Free.((deftype dt).types = Set.empty);
-  let FuncT (ts1, ts2) = as_func_comptype (expand_deftype dt) in
+  let TagT ut = Tag.type_of tag in
+  assert Free.((typeuse ut).types = Set.empty);
+  let dt = deftype_of_typeuse ut in
+  let FuncT (ts1, ts2) = functype_of_comptype (expand_deftype dt) in
   assert (List.length vs = List.length ts1);
   assert (ts2 = []);
   Exn (tag, vs)
 
 let type_of (Exn (tag, _)) =
-  let TagT dt = Tag.type_of tag in
-  dt
+  let TagT ut = Tag.type_of tag in
+  deftype_of_typeuse ut
 
 let () =
   let eq_ref' = !Value.eq_ref' in
@@ -27,7 +28,7 @@ let () =
 let () =
   let type_of_ref' = !Value.type_of_ref' in
   Value.type_of_ref' := function
-    | ExnRef e -> DefHT (type_of e)
+    | ExnRef e -> UseHT (Def (type_of e))
     | r -> type_of_ref' r
 
 let () =

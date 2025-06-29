@@ -104,9 +104,9 @@ struct
     | Cons -> byte 0
     | Var -> byte 1
 
-  let var idx = function
-    | IdxX x -> idx x
-    | RecX _ -> assert false
+  let typeuse idx = function
+    | Idx x -> idx x
+    | Rec _ | Def _ -> assert false
 
   let numtype = function
     | I32T -> s7 (-0x01)
@@ -130,12 +130,8 @@ struct
     | NoExnHT -> s7 (-0x0c)
     | ExternHT -> s7 (-0x11)
     | NoExternHT -> s7 (-0x0e)
-    | VarHT x -> var s33 x
-    | DefHT _ | BotHT -> assert false
-
-  let var_heaptype = function
-    | VarHT x -> var u32 x
-    | _ -> assert false
+    | UseHT ut -> typeuse s33 ut
+    | BotHT -> assert false
 
   let reftype = function
     | (Null, AnyHT) -> s7 (-0x12)
@@ -188,8 +184,8 @@ struct
 
   let subtype = function
     | SubT (Final, [], ct) -> comptype ct
-    | SubT (Final, hts, ct) -> s7 (-0x31); vec var_heaptype hts; comptype ct
-    | SubT (NoFinal, hts, ct) -> s7 (-0x30); vec var_heaptype hts; comptype ct
+    | SubT (Final, uts, ct) -> s7 (-0x31); vec (typeuse u32) uts; comptype ct
+    | SubT (NoFinal, uts, ct) -> s7 (-0x30); vec (typeuse u32) uts; comptype ct
 
   let rectype = function
     | RecT [st] -> subtype st
@@ -208,8 +204,15 @@ struct
   let globaltype = function
     | GlobalT (mut, t) -> valtype t; mutability mut
 
-  let tagtype x =
-    u32 0x00l; idx x
+  let tagtype = function
+    | TagT ut -> u32 0x00l; typeuse u32 ut
+
+  let externtype = function
+    | ExternFuncT ut -> byte 0x00; typeuse u32 ut
+    | ExternTableT tt -> byte 0x01; tabletype tt
+    | ExternMemoryT mt -> byte 0x02; memorytype mt
+    | ExternGlobalT gt -> byte 0x03; globaltype gt
+    | ExternTagT tt -> byte 0x04; tagtype tt
 
 
   (* Expressions *)
@@ -232,7 +235,7 @@ struct
     u64 offset
 
   let blocktype = function
-    | VarBlockType x -> var s33 (IdxX x.it)
+    | VarBlockType x -> typeuse s33 (Idx x.it)
     | ValBlockType None -> s33 (-0x40l)
     | ValBlockType (Some t) -> valtype t
 
@@ -941,17 +944,9 @@ struct
 
   (* Import section *)
 
-  let importdesc d =
-    match d.it with
-    | FuncImport x -> byte 0x00; idx x
-    | TableImport t -> byte 0x01; tabletype t
-    | MemoryImport t -> byte 0x02; memorytype t
-    | GlobalImport t -> byte 0x03; globaltype t
-    | TagImport t -> byte 0x04; tagtype t
-
   let import im =
-    let Import (module_name, item_name, idesc) = im.it in
-    name module_name; name item_name; importdesc idesc
+    let Import (module_name, item_name, xt) = im.it in
+    name module_name; name item_name; externtype xt
 
   let import_section ims =
     section 2 (vec import) ims (ims <> [])
@@ -993,8 +988,8 @@ struct
   (* Tag section *)
 
   let tag tag =
-    let Tag x = tag.it in
-    byte 0x00; idx x
+    let Tag tt = tag.it in
+    tagtype tt
 
   let tag_section ts =
     section 13 (vec tag) ts (ts <> [])
@@ -1012,17 +1007,17 @@ struct
 
   (* Export section *)
 
-  let exportdesc d =
-    match d.it with
-    | FuncExport x -> byte 0; idx x
-    | TableExport x -> byte 1; idx x
-    | MemoryExport x -> byte 2; idx x
-    | GlobalExport x -> byte 3; idx x
-    | TagExport x -> byte 4; idx x
+  let externidx xx =
+    match xx.it with
+    | FuncX x -> byte 0x00; idx x
+    | TableX x -> byte 0x01; idx x
+    | MemoryX x -> byte 0x02; idx x
+    | GlobalX x -> byte 0x03; idx x
+    | TagX x -> byte 0x04; idx x
 
   let export ex =
-    let Export (n, edesc) = ex.it in
-    name n; exportdesc edesc
+    let Export (n, xx) = ex.it in
+    name n; externidx xx
 
   let export_section exs =
     section 7 (vec export) exs (exs <> [])

@@ -17,6 +17,8 @@ type t =
 val empty : t
 val union : t -> t -> t
 
+val typeuse : Types.typeuse -> t
+
 val numtype : Types.numtype -> t
 val vectype : Types.vectype -> t
 val reftype : Types.reftype -> t

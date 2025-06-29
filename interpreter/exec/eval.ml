@@ -111,14 +111,14 @@ let data (inst : moduleinst) x = lookup "data segment" inst.datas x
 let local (frame : frame) x = lookup "local" frame.locals x
 
 let comp_type (inst : moduleinst) x = expand_deftype (type_ inst x)
-let func_type (inst : moduleinst) x = as_func_comptype (comp_type inst x)
-let struct_type (inst : moduleinst) x = as_struct_comptype  (comp_type inst x)
-let array_type (inst : moduleinst) x = as_array_comptype (comp_type inst x)
+let func_type (inst : moduleinst) x = functype_of_comptype (comp_type inst x)
+let struct_type (inst : moduleinst) x = structtype_of_comptype  (comp_type inst x)
+let array_type (inst : moduleinst) x = arraytype_of_comptype (comp_type inst x)
 
 let subst_of (inst : moduleinst) = function
-  | IdxX x when x < Lib.List32.length inst.types ->
-    DefHT (type_ inst (x @@ Source.no_region))
-  | x -> VarHT x
+  | Idx x when x < Lib.List32.length inst.types ->
+    Def (type_ inst (x @@ Source.no_region))
+  | ut -> ut
 
 let any_ref (inst : moduleinst) x i at =
   try Table.load (table inst x) i with Table.Bounds ->
@@ -300,8 +300,9 @@ let rec step (c : config) : config =
 
       | Throw x, vs ->
         let t = tag c.frame.inst x in
-        let TagT dt = Tag.type_of t in
-        let FuncT (ts, _) = as_func_comptype (expand_deftype dt) in
+        let TagT ut = Tag.type_of t in
+        let dt = deftype_of_typeuse ut in
+        let FuncT (ts, _) = functype_of_comptype (expand_deftype dt) in
         let n = List.length ts in
         let args, vs' = split n vs e.at in
         vs', [Throwing (t, args) @@ e.at]
@@ -807,7 +808,7 @@ let rec step (c : config) : config =
           vs', []
         else
         let exto =
-          match as_array_comptype (expand_deftype (Aggr.type_of_array sa)) with
+          match arraytype_of_comptype (expand_deftype (Aggr.type_of_array sa)) with
           | ArrayT (FieldT (_, PackStorageT _)) -> Some U
           | _ -> None
         in
@@ -1066,7 +1067,7 @@ let rec step (c : config) : config =
       take n vs0 e.at @ vs, []
 
     | Frame (n, frame', (vs', {it = ReturningInvoke (vs0, f); at} :: es')), vs ->
-      let FuncT (ts1, _ts2) = as_func_comptype (expand_deftype (Func.type_of f)) in
+      let FuncT (ts1, _ts2) = functype_of_comptype (expand_deftype (Func.type_of f)) in
       take (List.length ts1) vs0 e.at @ vs, [Invoke f @@ at]
 
     | Frame (n, frame', (vs', e' :: es')), vs when is_jumping e' ->
@@ -1111,7 +1112,7 @@ let rec step (c : config) : config =
       Exhaustion.error e.at "call stack exhausted"
 
     | Invoke f, vs ->
-      let FuncT (ts1, ts2) = as_func_comptype (expand_deftype (Func.type_of f)) in
+      let FuncT (ts1, ts2) = functype_of_comptype (expand_deftype (Func.type_of f)) in
       let n1, n2 = List.length ts1, List.length ts2 in
       let args, vs' = split n1 vs e.at in
       (match f with
@@ -1156,7 +1157,7 @@ let at_func = function
 
 let invoke (func : funcinst) (vs : value list) : value list =
   let at = at_func func in
-  let FuncT (ts1, _ts2) = as_func_comptype (expand_deftype (Func.type_of func)) in
+  let FuncT (ts1, _ts2) = functype_of_comptype (expand_deftype (Func.type_of func)) in
   if List.length vs <> List.length ts1 then
     Crash.error at "wrong number of arguments";
   if not (List.for_all2 (fun v -> Match.match_valtype [] (type_of_value v)) vs ts1) then
@@ -1179,16 +1180,8 @@ let init_type (inst : moduleinst) (type_ : type_) : moduleinst =
   {inst with types = inst.types @ roll_deftypes x rt}
 
 let init_import (inst : moduleinst) (ex : extern) (im : import) : moduleinst =
-  let Import (module_name, item_name, idesc) = im.it in
-  let it =
-    match idesc.it with
-    | FuncImport x -> ExternFuncT (type_ inst x)
-    | TableImport tt -> ExternTableT tt
-    | MemoryImport mt -> ExternMemoryT mt
-    | GlobalImport gt -> ExternGlobalT gt
-    | TagImport x -> ExternTagT (TagT (type_ inst x))
-  in
-  let xt = subst_externtype (subst_of inst) it in
+  let Import (module_name, item_name, xt) = im.it in
+  let xt = subst_externtype (subst_of inst) xt in
   let xt' = externtype_of inst.types ex in
   if not (Match.match_externtype [] xt' xt) then
     Link.error im.at ("incompatible import type for " ^
@@ -1209,8 +1202,9 @@ let init_func (inst : moduleinst) (f : func) : moduleinst =
   {inst with funcs = inst.funcs @ [func]}
 
 let init_tag (inst : moduleinst) (tag : tag) : moduleinst =
-  let Tag x = tag.it in
-  let tag = Tag.alloc (TagT (type_ inst x)) in
+  let Tag tt = tag.it in
+  let tt' = subst_tagtype (subst_of inst) tt in
+  let tag = Tag.alloc tt' in
   {inst with tags = inst.tags @ [tag]}
 
 let init_global (inst : moduleinst) (glob : global) : moduleinst =
@@ -1248,14 +1242,14 @@ let init_data (inst : moduleinst) (data : data) : moduleinst =
   {inst with datas = inst.datas @ [data]}
 
 let init_export (inst : moduleinst) (ex : export) : moduleinst =
-  let Export (name, edesc) = ex.it in
+  let Export (name, xx) = ex.it in
   let ext =
-    match edesc.it with
-    | FuncExport x -> ExternFunc (func inst x)
-    | TableExport x -> ExternTable (table inst x)
-    | MemoryExport x -> ExternMemory (memory inst x)
-    | GlobalExport x -> ExternGlobal (global inst x)
-    | TagExport x -> ExternTag (tag inst x)
+    match xx.it with
+    | FuncX x -> ExternFunc (func inst x)
+    | TableX x -> ExternTable (table inst x)
+    | MemoryX x -> ExternMemory (memory inst x)
+    | GlobalX x -> ExternGlobal (global inst x)
+    | TagX x -> ExternTag (tag inst x)
   in
   {inst with exports = inst.exports @ [(name, ext)]}
 

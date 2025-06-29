@@ -65,15 +65,16 @@ let (++) = union
 let opt free xo = Lib.Option.get (Option.map free xo) empty
 let list free xs = List.fold_left union empty (List.map free xs)
 
-let var = function
-  | IdxX x -> types (idx' x)
-  | RecX _ -> empty
-
 let numtype = function
   | I32T | I64T | F32T | F64T -> empty
 
 let vectype = function
   | V128T -> empty
+
+let typeuse = function
+  | Idx x -> types (idx' x)
+  | Rec _ -> empty
+  | Def _ -> empty  (* assume closed *)
 
 let heaptype = function
   | AnyHT | NoneHT | EqHT
@@ -81,8 +82,7 @@ let heaptype = function
   | FuncHT | NoFuncHT -> empty
   | ExnHT | NoExnHT -> empty
   | ExternHT | NoExternHT -> empty
-  | VarHT x -> var x
-  | DefHT _ct -> empty  (* assume closed *)
+  | UseHT x -> typeuse x
   | BotHT -> empty
 
 let reftype = function
@@ -112,7 +112,7 @@ let comptype = function
   | FuncCT ft -> functype ft
 
 let subtype = function
-  | SubT (_fin, hts, ct) -> list heaptype hts ++ comptype ct
+  | SubT (_fin, uts, ct) -> list typeuse uts ++ comptype ct
 
 let rectype = function
   | RecT sts -> list subtype sts
@@ -123,10 +123,10 @@ let deftype = function
 let globaltype (GlobalT (_mut, t)) = valtype t
 let tabletype (TableT (_at, _lim, t)) = reftype t
 let memorytype (MemoryT (_at, _lim)) = empty
-let tagtype (TagT dt) = deftype dt
+let tagtype (TagT ut) = typeuse ut
 
 let externtype = function
-  | ExternFuncT dt -> deftype dt
+  | ExternFuncT ut -> typeuse ut
   | ExternTableT tt -> tabletype tt
   | ExternMemoryT mt -> memorytype mt
   | ExternGlobalT gt -> globaltype gt
@@ -209,7 +209,7 @@ let func f = match f.it with Func (x, ls, es) ->
   {(types (idx x) ++ list local ls ++ block es) with locals = Set.empty}
 let table t = match t.it with Table (tt, c) -> tabletype tt ++ const c
 let memory m = match m.it with Memory mt -> memorytype mt
-let tag t = match t.it with Tag x -> types (idx x)
+let tag t = match t.it with Tag tt -> tagtype tt
 
 let segmentmode f (m : segmentmode) =
   match m.it with
@@ -226,29 +226,21 @@ let data (s : data) =
 
 let type_ (t : type_) = rectype t.it
 
-let exportdesc (d : exportdesc) =
-  match d.it with
-  | FuncExport x -> funcs (idx x)
-  | TableExport x -> tables (idx x)
-  | MemoryExport x -> memories (idx x)
-  | GlobalExport x -> globals (idx x)
-  | TagExport x -> tags (idx x)
-
-let importdesc (d : importdesc) =
-  match d.it with
-  | FuncImport x -> types (idx x)
-  | TableImport tt -> tabletype tt
-  | MemoryImport mt -> memorytype mt
-  | GlobalImport gt -> globaltype gt
-  | TagImport x -> types (idx x)
+let externidx (xx : externidx) =
+  match xx.it with
+  | FuncX x -> funcs (idx x)
+  | TableX x -> tables (idx x)
+  | MemoryX x -> memories (idx x)
+  | GlobalX x -> globals (idx x)
+  | TagX x -> tags (idx x)
 
 let export (e : export) =
-  let Export (_name, edesc) = e.it in
-  exportdesc edesc
+  let Export (_name, xx) = e.it in
+  externidx xx
 
 let import (i : import) =
-  let Import (_module_name, _item_name, idesc) = i.it in
-  importdesc idesc
+  let Import (_module_name, _item_name, xt) = i.it in
+  externtype xt
 
 let start (s : start) =
   let Start x = s.it in

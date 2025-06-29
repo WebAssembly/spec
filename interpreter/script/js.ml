@@ -285,10 +285,16 @@ let rec statify_list f rts = function
     let rts'', xs' = statify_list f rts' xs in
     rts'', x'::xs'
 
-let rec statify_heaptype rts = function
-  | DefHT dt ->
+let rec statify_typeuse rts = function
+  | Def dt ->
     let rts', i = statify_deftype rts dt in
-    rts', VarHT (IdxX i)
+    rts', Idx i
+  | ht -> rts, ht
+
+and statify_heaptype rts = function
+  | UseHT ut ->
+    let rts', ut' = statify_typeuse rts ut in
+    rts', UseHT ut'
   | ht -> rts, ht
 
 and statify_reftype rts = function
@@ -336,10 +342,10 @@ and statify_comptype rts = function
     let rts', ft' = statify_functype rts ft in
     rts', FuncCT ft'
 
-and statify_subtype rts (SubT (fin, hts, ct)) =
-    let rts', hts' = statify_list statify_heaptype rts hts in
+and statify_subtype rts (SubT (fin, uts, ct)) =
+    let rts', uts' = statify_list statify_typeuse rts uts in
     let rts'', ct' = statify_comptype rts' ct in
-    rts'', SubT (fin, hts', ct')
+    rts'', SubT (fin, uts', ct')
 
 and statify_rectype rts (RecT sts) =
     let rts', sts' = statify_list statify_subtype rts sts in
@@ -356,8 +362,8 @@ and statify_deftype rts (DefT (rt, i)) =
         Int32.add self (Lib.List32.length sts)
       in
       let s = function
-        | RecX j -> VarHT (IdxX (Int32.add self j))
-        | x -> VarHT x
+        | Rec j -> Idx (Int32.add self j)
+        | ut -> ut
       in
       rts' @ [rt, (subst_rectype s rt', self)], Int32.add self i
 
@@ -414,11 +420,11 @@ let invoke dt vs at =
   let rts0 = Lib.List32.init subject_type_idx (fun i -> dummy, (dummy, i)) in
   let rts, i = statify_deftype rts0 dt in
   List.map (fun (_, (rt, _)) -> rt @@ at) (Lib.List32.drop subject_type_idx rts),
-  FuncImport (i @@ at) @@ at,
+  ExternFuncT (Idx i),
   List.concat (List.map value vs) @ [Call (subject_idx @@ at) @@ at]
 
 let get t at =
-  [], GlobalImport t @@ at, [GlobalGet (subject_idx @@ at) @@ at]
+  [], ExternGlobalT t, [GlobalGet (subject_idx @@ at) @@ at]
 
 let run ts at =
   [], []
@@ -596,18 +602,18 @@ let wrap item_name wrap_action wrap_assertion at =
   let imports =
     [ Import (Utf8.decode "module", item_name, idesc) @@ at;
       Import (Utf8.decode "spectest", Utf8.decode "hostref",
-        FuncImport (1l @@ at) @@ at) @@ at;
+        ExternFuncT (Idx 1l)) @@ at;
       Import (Utf8.decode "spectest", Utf8.decode "eq_ref",
-        FuncImport (2l @@ at) @@ at) @@ at;
+        ExternFuncT (Idx 2l)) @@ at;
     ]
   in
   let item =
     List.fold_left
-      (fun i {it = Import (_, _, desc); _} ->
-        match desc.it with FuncImport _ -> Int32.add i 1l | _ -> i
+      (fun i {it = Import (_, _, xt); _} ->
+        match xt with ExternFuncT _ -> Int32.add i 1l | _ -> i
       ) 0l imports @@ at
   in
-  let edesc = FuncExport item @@ at in
+  let edesc = FuncX item @@ at in
   let exports = [Export (Utf8.decode "run", edesc) @@ at] in
   let body =
     [ Block (ValBlockType None, action @ assertion @ [Return @@ at]) @@ at;
@@ -758,8 +764,8 @@ let of_action env act =
     "call(" ^ of_inst_opt env x_opt ^ ", " ^ of_name name ^ ", " ^
       "[" ^ String.concat ", " (List.map of_value vs) ^ "])",
     (match lookup_export env x_opt name act.at with
-    | ExternFuncT dt ->
-      let FuncT (_, out) as ft = as_func_comptype (expand_deftype dt) in
+    | ExternFuncT (Def dt) ->
+      let FuncT (_, out) as ft = functype_of_comptype (expand_deftype dt) in
       if is_js_functype ft then
         None
       else

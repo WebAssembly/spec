@@ -17,14 +17,18 @@ let abs_of_comptype _c = function
 let rec top_of_comptype c ct =
   top_of_heaptype c (abs_of_comptype c ct)
 
+and top_of_typeuse c = function
+  | Idx x -> top_of_comptype c (expand_deftype (lookup c x))
+  | Rec _ -> assert false
+  | Def dt -> top_of_comptype c (expand_deftype dt)
+
 and top_of_heaptype c = function
   | AnyHT | NoneHT | EqHT | StructHT | ArrayHT | I31HT -> AnyHT
   | FuncHT | NoFuncHT -> FuncHT
   | ExnHT | NoExnHT -> ExnHT
   | ExternHT | NoExternHT -> ExternHT
-  | DefHT dt -> top_of_comptype c (expand_deftype dt)
-  | VarHT (IdxX x) -> top_of_comptype c (expand_deftype (lookup c x))
-  | VarHT (RecX _) | BotHT -> assert false
+  | UseHT ut -> top_of_typeuse c ut
+  | BotHT -> assert false
 
 let top_of_valtype c = function
   | NumT _ as t -> t
@@ -35,14 +39,18 @@ let top_of_valtype c = function
 let rec bot_of_comptype c ct =
   bot_of_heaptype c (abs_of_comptype c ct)
 
+and bot_of_typeuse c = function
+  | Idx x -> bot_of_comptype c (expand_deftype (lookup c x))
+  | Rec _ -> assert false
+  | Def dt -> bot_of_comptype c (expand_deftype dt)
+
 and bot_of_heaptype c = function
   | AnyHT | NoneHT | EqHT | StructHT | ArrayHT | I31HT -> NoneHT
   | FuncHT | NoFuncHT -> NoFuncHT
   | ExnHT | NoExnHT -> NoExnHT
   | ExternHT | NoExternHT -> NoExternHT
-  | DefHT dt -> bot_of_comptype c (expand_deftype dt)
-  | VarHT (IdxX x) -> bot_of_comptype c (expand_deftype (lookup c x))
-  | VarHT (RecX _) | BotHT -> assert false
+  | UseHT ut -> bot_of_typeuse c ut
+  | BotHT -> assert false
 
 
 (* Subtyping *)
@@ -79,10 +87,10 @@ let rec match_heaptype c t1 t2 =
   | NoFuncHT, t -> match_heaptype c t FuncHT
   | NoExnHT, t -> match_heaptype c t ExnHT
   | NoExternHT, t -> match_heaptype c t ExternHT
-  | VarHT (IdxX x1), _ -> match_heaptype c (DefHT (lookup c x1)) t2
-  | _, VarHT (IdxX x2) -> match_heaptype c t1 (DefHT (lookup c x2))
-  | DefHT dt1, DefHT dt2 -> match_deftype c dt1 dt2
-  | DefHT dt, t ->
+  | UseHT (Idx x1), _ -> match_heaptype c (UseHT (Def (lookup c x1))) t2
+  | _, UseHT (Idx x2) -> match_heaptype c t1 (UseHT (Def (lookup c x2)))
+  | UseHT (Def dt1), UseHT (Def dt2) -> match_deftype c dt1 dt2
+  | UseHT (Def dt), t ->
     (match expand_deftype dt, t with
     | StructCT _, AnyHT -> true
     | StructCT _, EqHT -> true
@@ -151,8 +159,8 @@ and match_comptype c ct1 ct2 =
 and match_deftype c dt1 dt2 =
   dt1 == dt2 ||  (* optimisation *)
   let s = subst_of c in subst_deftype s dt1 = subst_deftype s dt2 ||
-  let SubT (_fin, hts1, _st) = unroll_deftype dt1 in
-  List.exists (fun ht1 -> match_heaptype c ht1 (DefHT dt2)) hts1
+  let SubT (_fin, uts1, _st) = unroll_deftype dt1 in
+  List.exists (fun ut1 -> match_heaptype c (UseHT ut1) (UseHT (Def dt2))) uts1
 
 
 let match_globaltype c (GlobalT (mut1, t1)) (GlobalT (mut2, t2)) =
@@ -168,13 +176,14 @@ let match_tabletype c (TableT (at1, lim1, t1)) (TableT (at2, lim2, t2)) =
 let match_memorytype c (MemoryT (at1, lim1)) (MemoryT (at2, lim2)) =
   at1 = at2 && match_limits c lim1 lim2
 
-let match_tagtype c (TagT dt1) (TagT dt2) =
-  match_deftype c dt1 dt2 && match_deftype c dt2 dt1
-
+let match_tagtype c (TagT ut1) (TagT ut2) =
+  match ut1, ut2 with
+  | Def dt1, Def dt2 -> match_deftype c dt1 dt2 && match_deftype c dt2 dt1
+  | _, _ -> assert false
 
 let match_externtype c xt1 xt2 =
   match xt1, xt2 with
-  | ExternFuncT dt1, ExternFuncT dt2 -> match_deftype c dt1 dt2
+  | ExternFuncT (Def dt1), ExternFuncT (Def dt2) -> match_deftype c dt1 dt2
   | ExternTableT tt1, ExternTableT tt2 -> match_tabletype c tt1 tt2
   | ExternMemoryT mt1, ExternMemoryT mt2 -> match_memorytype c mt1 mt2
   | ExternGlobalT gt1, ExternGlobalT gt2 -> match_globaltype c gt1 gt2

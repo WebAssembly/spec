@@ -154,10 +154,10 @@ let mutability s =
   | 1 -> Var
   | _ -> error s (pos s - 1) "malformed mutability"
 
-let var idx s =
+let typeuse idx s =
   let pos = pos s in
   match idx s with
-  | i when i >= 0l -> IdxX i
+  | i when i >= 0l -> Idx i
   | _ -> error s pos "malformed type index"
 
 let numtype s =
@@ -176,7 +176,7 @@ let vectype s =
 let heaptype s =
   let pos = pos s in
   either [
-    (fun s -> VarHT (var s33 s));
+    (fun s -> UseHT (typeuse s33 s));
     (fun s ->
       match s7 s with
       | -0x0c -> NoExnHT
@@ -263,12 +263,12 @@ let subtype s =
   match peek s with
   | Some i when i = -0x30 land 0x7f ->
     skip 1 s;
-    let xs = vec (var u32) s in
-    SubT (NoFinal, List.map (fun x -> VarHT x) xs, comptype s)
+    let uts = vec (typeuse u32) s in
+    SubT (NoFinal, uts, comptype s)
   | Some i when i = -0x31 land 0x7f ->
     skip 1 s;
-    let xs = vec (var u32) s in
-    SubT (Final, List.map (fun x -> VarHT x) xs, comptype s)
+    let uts = vec (typeuse u32) s in
+    SubT (Final, uts, comptype s)
   | _ -> SubT (Final, [], comptype s)
 
 let rectype s =
@@ -301,7 +301,17 @@ let globaltype s =
   GlobalT (mut, t)
 
 let tagtype s =
-  zero s; at idx s
+  zero s;
+  TagT (typeuse idx s)
+
+let externtype s =
+  match byte s with
+  | 0x00 -> ExternFuncT (typeuse idx s)
+  | 0x01 -> ExternTableT (tabletype s)
+  | 0x02 -> ExternMemoryT (memorytype s)
+  | 0x03 -> ExternGlobalT (globaltype s)
+  | 0x04 -> ExternTagT (tagtype s)
+  | _ -> error s (pos s - 1) "malformed import kind"
 
 
 (* Instructions *)
@@ -324,7 +334,7 @@ let memop s =
 
 let blocktype s =
   either [
-    (fun s -> VarBlockType (at (fun s -> as_idx_var (var s33 s)) s));
+    (fun s -> VarBlockType (at (fun s -> idx_of_typeuse (typeuse s33 s)) s));
     (fun s -> expect 0x40 s ""; ValBlockType None);
     (fun s -> ValBlockType (Some (valtype s)));
   ] s
@@ -1061,20 +1071,11 @@ let type_section s =
 
 (* Import section *)
 
-let importdesc s =
-  match byte s with
-  | 0x00 -> FuncImport (at idx s)
-  | 0x01 -> TableImport (tabletype s)
-  | 0x02 -> MemoryImport (memorytype s)
-  | 0x03 -> GlobalImport (globaltype s)
-  | 0x04 -> TagImport (tagtype s)
-  | _ -> error s (pos s - 1) "malformed import kind"
-
 let import s =
   let module_name = name s in
   let item_name = name s in
-  let idesc = at importdesc s in
-  Import (module_name, item_name, idesc)
+  let xt = externtype s in
+  Import (module_name, item_name, xt)
 
 let import_section s =
   section Custom.Import (vec (at import)) [] s
@@ -1142,19 +1143,19 @@ let global_section s =
 
 (* Export section *)
 
-let exportdesc s =
+let externidx s =
   match byte s with
-  | 0x00 -> FuncExport (at idx s)
-  | 0x01 -> TableExport (at idx s)
-  | 0x02 -> MemoryExport (at idx s)
-  | 0x03 -> GlobalExport (at idx s)
-  | 0x04 -> TagExport (at idx s)
+  | 0x00 -> FuncX (at idx s)
+  | 0x01 -> TableX (at idx s)
+  | 0x02 -> MemoryX (at idx s)
+  | 0x03 -> GlobalX (at idx s)
+  | 0x04 -> TagX (at idx s)
   | _ -> error s (pos s - 1) "malformed export kind"
 
 let export s =
   let name = name s in
-  let edesc = at exportdesc s in
-  Export (name, edesc)
+  let xx = at externidx s in
+  Export (name, xx)
 
 let export_section s =
   section Custom.Export (vec (at export)) [] s

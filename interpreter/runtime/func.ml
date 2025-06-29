@@ -7,12 +7,12 @@ and 'inst func =
   | HostFunc of deftype * (value list -> value list)
 
 let alloc dt inst f =
-  ignore (as_func_comptype (expand_deftype dt));
+  ignore (functype_of_comptype (expand_deftype dt));
   assert Free.((deftype dt).types = Set.empty);
   AstFunc (dt, inst, f)
 
 let alloc_host dt f =
-  ignore (as_func_comptype (expand_deftype dt));
+  ignore (functype_of_comptype (expand_deftype dt));
   HostFunc (dt, f)
 
 let type_of = function

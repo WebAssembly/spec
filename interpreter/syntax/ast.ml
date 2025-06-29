@@ -286,7 +286,7 @@ and memory' =
 
 type tag = tag' Source.phrase
 and tag' =
-  | Tag of idx
+  | Tag of tagtype
 
 
 type segmentmode = segmentmode' Source.phrase
@@ -308,29 +308,21 @@ and data' =
 
 type type_ = rectype Source.phrase
 
-type exportdesc = exportdesc' Source.phrase
-and exportdesc' =
-  | FuncExport of idx
-  | TableExport of idx
-  | MemoryExport of idx
-  | GlobalExport of idx
-  | TagExport of idx
+type externidx = externidx' Source.phrase
+and externidx' =
+  | FuncX of idx
+  | TableX of idx
+  | MemoryX of idx
+  | GlobalX of idx
+  | TagX of idx
 
 type export = export' Source.phrase
 and export' =
-  | Export of name * exportdesc
-
-type importdesc = importdesc' Source.phrase
-and importdesc' =
-  | FuncImport of idx
-  | TableImport of tabletype
-  | MemoryImport of memorytype
-  | GlobalImport of globaltype
-  | TagImport of idx
+  | Export of name * externidx
 
 type import = import' Source.phrase
 and import' =
-  | Import of name * name * importdesc
+  | Import of name * name * externtype
 
 type start = start' Source.phrase
 and start' =
@@ -380,43 +372,36 @@ let deftypes_of (m : module_) : deftype list =
   ) [] rts
 
 let importtype_of (m : module_) (im : import) : importtype =
-  let Import (module_name, item_name, idesc) = im.it in
+  let Import (module_name, item_name, xt) = im.it in
   let dts = deftypes_of m in
-  let xt =
-    match idesc.it with
-    | FuncImport x -> ExternFuncT (Lib.List32.nth dts x.it)
-    | TableImport tt -> ExternTableT tt
-    | MemoryImport mt -> ExternMemoryT mt
-    | GlobalImport gt -> ExternGlobalT gt
-    | TagImport x -> ExternTagT (TagT (Lib.List32.nth dts x.it))
-  in ImportT (subst_externtype (subst_of dts) xt, module_name, item_name)
+  ImportT (subst_externtype (subst_of dts) xt, module_name, item_name)
 
 let exporttype_of (m : module_) (ex : export) : exporttype =
-  let Export (name, edesc) = ex.it in
+  let Export (name, xx) = ex.it in
   let dts = deftypes_of m in
   let its = List.map (importtype_of m) m.it.imports in
   let xts = List.map externtype_of_importtype its in
   let xt =
-    match edesc.it with
-    | FuncExport x ->
+    match xx.it with
+    | FuncX x ->
       let dts = funcs xts @ List.map (fun f ->
-        let Func (y, _, _) = f.it in Lib.List32.nth dts y.it) m.it.funcs in
+        let Func (y, _, _) = f.it in Def (Lib.List32.nth dts y.it)) m.it.funcs in
       ExternFuncT (Lib.List32.nth dts x.it)
-    | TableExport x ->
+    | TableX x ->
       let tts = tables xts @ List.map (fun t ->
         let Table (tt, _) = t.it in tt) m.it.tables in
       ExternTableT (Lib.List32.nth tts x.it)
-    | MemoryExport x ->
+    | MemoryX x ->
       let mts = memories xts @ List.map (fun m ->
         let Memory mt = m.it in mt) m.it.memories in
       ExternMemoryT (Lib.List32.nth mts x.it)
-    | GlobalExport x ->
+    | GlobalX x ->
       let gts = globals xts @ List.map (fun g ->
         let Global (gt, _) = g.it in gt) m.it.globals in
       ExternGlobalT (Lib.List32.nth gts x.it)
-    | TagExport x ->
+    | TagX x ->
       let tts = tags xts @ List.map (fun t ->
-        let Tag y = t.it in TagT (Lib.List32.nth dts y.it)) m.it.tags in
+        let Tag tt = t.it in tt) m.it.tags in
       ExternTagT (Lib.List32.nth tts x.it)
   in ExportT (subst_externtype (subst_of dts) xt, name)
 

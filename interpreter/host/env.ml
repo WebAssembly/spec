@@ -12,9 +12,10 @@ open Instance
 let error msg = raise (Eval.Crash (Source.no_region, msg))
 
 let type_error v t =
-  error
-    ("type error, expected " ^ string_of_valtype t ^
-     ", got " ^ string_of_valtype (type_of_value v))
+  error (
+    "type error, expected " ^ string_of_valtype t ^
+    ", got " ^ string_of_valtype (type_of_value v)
+  )
 
 let empty = function
   | [] -> ()
@@ -41,6 +42,8 @@ let exit vs =
 
 let lookup name et =
   match Utf8.encode name, et with
-  | "abort", ExternFuncT ct -> ExternFunc (Func.alloc_host ct abort)
-  | "exit", ExternFuncT ct -> ExternFunc (Func.alloc_host ct exit)
+  | "abort", ExternFuncT ut ->
+    ExternFunc (Func.alloc_host (deftype_of_typeuse ut) abort)
+  | "exit", ExternFuncT ut ->
+    ExternFunc (Func.alloc_host (deftype_of_typeuse ut) exit)
   | _ -> raise Not_found

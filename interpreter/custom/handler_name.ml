@@ -320,8 +320,8 @@ let locate_func bs x name at (f : func) =
     parse_error at "@name annotation: misplaced annotation"
 
 let locate_tag bs x name at (tag : tag) =
-  let Tag y = tag.it in
-  if is_left at y.at then
+  let Tag _ = tag.it in
+  if is_left at {tag.at with left = tag.at.right} then
     {empty with tags = IdxMap.singleton x name}
   else
     parse_error at "@name annotation: misplaced annotation"

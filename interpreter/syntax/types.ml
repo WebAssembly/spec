@@ -10,18 +10,17 @@ type init = Set | Unset
 type final = NoFinal | Final
 type limits = {min : int64; max : int64 option}
 
-type var = IdxX of typeidx | RecX of int32
+type typeuse = Idx of typeidx | Rec of int32 | Def of deftype
 
-type addrtype = I32AT | I64AT
-type numtype = I32T | I64T | F32T | F64T
-type vectype = V128T
-type heaptype =
+and addrtype = I32AT | I64AT
+and numtype = I32T | I64T | F32T | F64T
+and vectype = V128T
+and heaptype =
   | AnyHT | NoneHT | EqHT | I31HT | StructHT | ArrayHT
   | FuncHT | NoFuncHT
   | ExnHT | NoExnHT
   | ExternHT | NoExternHT
-  | VarHT of var
-  | DefHT of deftype
+  | UseHT of typeuse
   | BotHT
 and reftype = null * heaptype
 and valtype = NumT of numtype | VecT of vectype | RefT of reftype | BotT
@@ -42,17 +41,17 @@ and comptype =
   | ArrayCT of arraytype
   | FuncCT of functype
 
-and subtype = SubT of final * heaptype list * comptype
+and subtype = SubT of final * typeuse list * comptype
 and rectype = RecT of subtype list
 and deftype = DefT of rectype * int32
 
 type tabletype = TableT of addrtype * limits * reftype
 type memorytype = MemoryT of addrtype * limits
 type globaltype = GlobalT of mut * valtype
-type tagtype = TagT of deftype
+type tagtype = TagT of typeuse
 type localtype = LocalT of init * valtype
 type externtype =
-  | ExternFuncT of deftype
+  | ExternFuncT of typeuse
   | ExternTableT of tabletype
   | ExternMemoryT of memorytype
   | ExternGlobalT of globaltype
@@ -84,12 +83,6 @@ let pack_size = function
 let storage_size = function
   | ValStorageT t -> val_size t
   | PackStorageT t -> pack_size t
-
-let is_idx_var = function IdxX _ -> true | _ -> false
-let is_rec_var = function RecX _ -> true | _ -> false
-
-let as_idx_var = function IdxX x -> x | _ -> assert false
-let as_rec_var = function RecX x -> x | _ -> assert false
 
 
 let is_numtype = function
@@ -135,23 +128,15 @@ let unpacked_storagetype = function
 let unpacked_fieldtype (FieldT (_mut, t)) = unpacked_storagetype t
 
 
-let as_func_comptype (ct : comptype) : functype =
-  match ct with
-  | FuncCT ft -> ft
-  | _ -> assert false
+let idx_of_typeuse = function Idx x -> x | _ -> assert false
+let deftype_of_typeuse = function Def dt -> dt | _ -> assert false
 
-let as_struct_comptype (ct : comptype) : structtype =
-  match ct with
-  | StructCT st -> st
-  | _ -> assert false
+let structtype_of_comptype = function StructCT st -> st | _ -> assert false
+let arraytype_of_comptype = function ArrayCT at -> at | _ -> assert false
+let functype_of_comptype = function FuncCT ft -> ft | _ -> assert false
 
-let as_array_comptype (ct : comptype) : arraytype =
-  match ct with
-  | ArrayCT at -> at
-  | _ -> assert false
-
-let externtype_of_importtype (ImportT (et, _, _)) = et
-let externtype_of_exporttype (ExportT (et, _)) = et
+let externtype_of_importtype = function ImportT (et, _, _) -> et
+let externtype_of_exporttype = function ExportT (et, _) -> et
 
 
 (* Filters *)
@@ -165,11 +150,14 @@ let tags = List.filter_map (function ExternTagT tt -> Some tt | _ -> None)
 
 (* Substitution *)
 
-type subst = var -> heaptype
+type subst = typeuse -> heaptype
 
 let subst_of dts = function
-  | IdxX x -> DefHT (Lib.List32.nth dts x)
-  | RecX i -> VarHT (RecX i)
+  | Idx x -> Def (Lib.List32.nth dts x)
+  | Rec i -> Rec i
+  | Def dt -> Def dt  (* assume closed *)
+
+let subst_typeuse s t = s t
 
 let subst_addrtype s t = t
 
@@ -190,8 +178,7 @@ let subst_heaptype s = function
   | NoExnHT -> NoExnHT
   | ExternHT -> ExternHT
   | NoExternHT -> NoExternHT
-  | VarHT x -> s x
-  | DefHT dt -> DefHT dt  (* assume closed *)
+  | UseHT x -> UseHT (s x)
   | BotHT -> BotHT
 
 let subst_reftype s = function
@@ -229,8 +216,8 @@ let subst_comptype s = function
   | FuncCT ft -> FuncCT (subst_functype s ft)
 
 let subst_subtype s = function
-  | SubT (fin, hts, ct) ->
-    SubT (fin, List.map (subst_heaptype s) hts, subst_comptype s ct)
+  | SubT (fin, uts, ct) ->
+    SubT (fin, List.map (subst_typeuse s) uts, subst_comptype s ct)
 
 let subst_rectype s = function
   | RecT sts -> RecT (List.map (subst_subtype s) sts)
@@ -249,10 +236,10 @@ let subst_globaltype s = function
   | GlobalT (mut, t) ->  GlobalT (mut, subst_valtype s t)
 
 let subst_tagtype s = function
-  | TagT dt -> TagT (subst_deftype s dt)
+  | TagT ut -> TagT (subst_typeuse s ut)
 
 let subst_externtype s = function
-  | ExternFuncT dt -> ExternFuncT (subst_deftype s dt)
+  | ExternFuncT ut -> ExternFuncT (subst_typeuse s ut)
   | ExternTableT tt -> ExternTableT (subst_tabletype s tt)
   | ExternMemoryT mt -> ExternMemoryT (subst_memorytype s mt)
   | ExternGlobalT gt -> ExternGlobalT (subst_globaltype s gt)
@@ -280,8 +267,8 @@ let roll_rectype x (rt : rectype) : rectype =
   let RecT sts = rt in
   let y = Int32.add x (Lib.List32.length sts) in
   let s = function
-    | IdxX x' when x <= x' && x' < y -> VarHT (RecX (Int32.sub x' x))
-    | var -> VarHT var
+    | Idx x' when x <= x' && x' < y -> Rec (Int32.sub x' x)
+    | ut -> ut
   in
   subst_rectype s rt
 
@@ -292,8 +279,8 @@ let roll_deftypes x (rt : rectype) : deftype list =
 
 let unroll_rectype (rt : rectype) : rectype =
   let s = function
-    | RecX i -> DefHT (DefT (rt, i))
-    | var -> VarHT var
+    | Rec i -> Def (DefT (rt, i))
+    | ut -> ut
   in
   subst_rectype s rt
 
@@ -326,10 +313,6 @@ let string_of_name n =
   List.iter escape n;
   Buffer.contents b
 
-let string_of_var = function
-  | IdxX x -> string_of_idx x
-  | RecX x -> "rec." ^ I32.to_string_u x
-
 let string_of_null = function
   | NoNull -> ""
   | Null -> "null "
@@ -355,7 +338,12 @@ let string_of_addrtype at =
 let string_of_vectype = function
   | V128T -> "v128"
 
-let rec string_of_heaptype = function
+let rec string_of_typeuse = function
+  | Idx x -> string_of_idx x
+  | Rec x -> "rec." ^ I32.to_string_u x
+  | Def dt -> "(" ^ string_of_deftype dt ^ ")"
+
+and string_of_heaptype = function
   | AnyHT -> "any"
   | NoneHT -> "none"
   | EqHT -> "eq"
@@ -368,8 +356,7 @@ let rec string_of_heaptype = function
   | NoExnHT -> "noexn"
   | ExternHT -> "extern"
   | NoExternHT -> "noextern"
-  | VarHT x -> string_of_var x
-  | DefHT dt -> "(" ^ string_of_deftype dt ^ ")"
+  | UseHT ut -> string_of_typeuse ut
   | BotHT -> "something"
 
 and string_of_reftype = function
@@ -414,9 +401,9 @@ and string_of_comptype = function
 
 and string_of_subtype = function
   | SubT (Final, [], ct) -> string_of_comptype ct
-  | SubT (fin, hts, ct) ->
+  | SubT (fin, uts, ct) ->
     String.concat " "
-      (("sub" ^ string_of_final fin) :: List.map string_of_heaptype hts) ^
+      (("sub" ^ string_of_final fin) :: List.map string_of_typeuse uts) ^
     " (" ^ string_of_comptype ct ^ ")"
 
 and string_of_rectype = function
@@ -445,14 +432,14 @@ let string_of_globaltype = function
   | GlobalT (mut, t) -> string_of_mut (string_of_valtype t) mut
 
 let string_of_tagtype = function
-  | TagT dt -> string_of_deftype dt
+  | TagT ut -> string_of_typeuse ut
 
 let string_of_localtype = function
   | LocalT (Set, t) -> string_of_valtype t
   | LocalT (Unset, t) -> "(unset " ^ string_of_valtype t ^ ")"
 
 let string_of_externtype = function
-  | ExternFuncT dt -> "func " ^ string_of_deftype dt
+  | ExternFuncT ut -> "func " ^ string_of_typeuse ut
   | ExternTableT tt -> "table " ^ string_of_tabletype tt
   | ExternMemoryT mt -> "memory " ^ string_of_memorytype mt
   | ExternGlobalT gt -> "global " ^ string_of_globaltype gt

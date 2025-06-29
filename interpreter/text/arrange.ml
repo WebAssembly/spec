@@ -77,6 +77,8 @@ let reftype t =
   | (Null, ExnHT) -> "exnref"
   | t -> string_of_reftype t
 
+let typeidx t = string_of_typeuse t
+let typeuse t = Node ("type " ^ typeidx t, [])
 let heaptype t = string_of_heaptype t
 let valtype t = string_of_valtype t
 let storagetype t = string_of_storagetype t
@@ -106,9 +108,9 @@ let comptype = function
 
 let subtype = function
   | SubT (Final, [], ct) -> comptype ct
-  | SubT (fin, xs, ct) ->
+  | SubT (fin, uts, ct) ->
     Node (String.concat " "
-      (("sub" ^ final fin ):: List.map heaptype xs), [comptype ct])
+      (("sub" ^ final fin) :: List.map typeidx uts), [comptype ct])
 
 let rectype i j st =
   Node ("type $" ^ nat (i + j), [subtype st])
@@ -117,7 +119,16 @@ let limits nat {min; max} =
   String.concat " " (nat min :: opt nat max)
 
 let globaltype (GlobalT (mut, t)) =
-  mutability (atom string_of_valtype t) mut
+  [mutability (atom string_of_valtype t) mut]
+
+let tabletype (TableT (at, lim, t)) =
+  [Atom (addrtype at ^ " " ^ limits nat64 lim); atom reftype t]
+
+let memorytype (MemoryT (at, lim)) =
+  [Atom (addrtype at ^ " " ^ limits nat64 lim)]
+
+let tagtype (TagT ut) =
+  [typeuse ut]
 
 let packsize = function
   | Pack8 -> "8"
@@ -620,22 +631,16 @@ let func f =
 (* Tags, tables, memories *)
 
 let tag off i tag =
-  let Tag x = tag.it in
-  Node ("tag $" ^ nat (off + i),
-    [Node ("type " ^ idx x, [])]
-  )
+  let Tag tt = tag.it in
+  Node ("tag $" ^ nat (off + i), tagtype tt)
 
 let table off i tab =
   let Table (tt, c) = tab.it in
-  let TableT (at, lim, t) = tt in
-  Node ("table $" ^ nat (off + i) ^ " " ^ addrtype at ^ " " ^ limits nat64 lim,
-    atom reftype t :: list instr c.it
-  )
+  Node ("table $" ^ nat (off + i), tabletype tt @ list instr c.it)
 
 let memory off i mem =
   let Memory mt = mem.it in
-  let MemoryT (at, lim) = mt in
-  Node ("memory $" ^ nat (off + i) ^ " " ^ addrtype at ^ " " ^ limits nat64 lim, [])
+  Node ("memory $" ^ nat (off + i), memorytype mt)
 
 let is_elemkind = function
   | (NoNull, FuncHT) -> true
@@ -687,40 +692,34 @@ let type_ (ns, i) ty =
   | RecT sts ->
     Node ("rec", List.mapi (rectype i) sts) :: ns, i + List.length sts
 
-let importdesc fx tx mx tgx gx d =
-  match d.it with
-  | FuncImport x ->
-    incr fx; Node ("func $" ^ nat (!fx - 1), [Node ("type", [atom idx x])])
-  | TableImport t ->
-    incr tx; table 0 (!tx - 1) (Table (t, [] @@ d.at) @@ d.at)
-  | MemoryImport t ->
-    incr mx; memory 0 (!mx - 1) (Memory t @@ d.at)
-  | GlobalImport t ->
-    incr gx; Node ("global $" ^ nat (!gx - 1), [globaltype t])
-  | TagImport x ->
-    incr tgx; Node ("tag $" ^ nat (!tgx - 1), [Node ("type", [atom idx x])])
+let importtype fx tx mx tgx gx = function
+  | ExternFuncT ut -> incr fx; Node ("func $" ^ nat (!fx - 1), [typeuse ut])
+  | ExternTableT tt -> incr tx; Node ("table $" ^ nat (!tx - 1), tabletype tt)
+  | ExternMemoryT mt -> incr mx; Node ("memory $" ^ nat (!mx - 1), memorytype mt)
+  | ExternGlobalT gt -> incr gx; Node ("global $" ^ nat (!gx - 1), globaltype gt)
+  | ExternTagT tt -> incr tgx; Node ("tag $" ^ nat (!tgx - 1), tagtype tt)
 
 let import fx tx mx ex gx im =
-  let Import (module_name, item_name, idesc) = im.it in
+  let Import (module_name, item_name, xt) = im.it in
   Node ("import",
-    [atom name module_name; atom name item_name; importdesc fx tx mx ex gx idesc]
+    [atom name module_name; atom name item_name; importtype fx tx mx ex gx xt]
   )
 
-let exportdesc d =
-  match d.it with
-  | FuncExport x -> Node ("func", [atom idx x])
-  | TableExport x -> Node ("table", [atom idx x])
-  | MemoryExport x -> Node ("memory", [atom idx x])
-  | TagExport x -> Node ("tag", [atom idx x])
-  | GlobalExport x -> Node ("global", [atom idx x])
+let externidx xx =
+  match xx.it with
+  | FuncX x -> Node ("func", [atom idx x])
+  | TableX x -> Node ("table", [atom idx x])
+  | MemoryX x -> Node ("memory", [atom idx x])
+  | TagX x -> Node ("tag", [atom idx x])
+  | GlobalX x -> Node ("global", [atom idx x])
 
 let export ex =
-  let Export (n, edesc) = ex.it in
-  Node ("export", [atom name n; exportdesc edesc])
+  let Export (n, xx) = ex.it in
+  Node ("export", [atom name n; externidx xx])
 
 let global off i g =
   let Global (gt, c) = g.it in
-  Node ("global $" ^ nat (off + i), globaltype gt :: list instr c.it)
+  Node ("global $" ^ nat (off + i), globaltype gt @ list instr c.it)
 
 let start s =
   let Start x = s.it in
