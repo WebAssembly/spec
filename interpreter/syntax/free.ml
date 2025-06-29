@@ -7,13 +7,13 @@ module Set = Set.Make(Int32)
 type t =
 {
   types : Set.t;
-  globals : Set.t;
-  tables : Set.t;
-  memories : Set.t;
   tags : Set.t;
+  globals : Set.t;
+  memories : Set.t;
+  tables : Set.t;
   funcs : Set.t;
-  elems : Set.t;
   datas : Set.t;
+  elems : Set.t;
   locals : Set.t;
   labels : Set.t;
 }
@@ -21,13 +21,13 @@ type t =
 let empty : t =
 {
   types = Set.empty;
-  globals = Set.empty;
-  tables = Set.empty;
-  memories = Set.empty;
   tags = Set.empty;
+  globals = Set.empty;
+  memories = Set.empty;
+  tables = Set.empty;
   funcs = Set.empty;
-  elems = Set.empty;
   datas = Set.empty;
+  elems = Set.empty;
   locals = Set.empty;
   labels = Set.empty;
 }
@@ -35,25 +35,25 @@ let empty : t =
 let union (s1 : t) (s2 : t) : t =
 {
   types = Set.union s1.types s2.types;
-  globals = Set.union s1.globals s2.globals;
-  tables = Set.union s1.tables s2.tables;
-  memories = Set.union s1.memories s2.memories;
   tags = Set.union s1.tags s2.tags;
+  globals = Set.union s1.globals s2.globals;
+  memories = Set.union s1.memories s2.memories;
+  tables = Set.union s1.tables s2.tables;
   funcs = Set.union s1.funcs s2.funcs;
-  elems = Set.union s1.elems s2.elems;
   datas = Set.union s1.datas s2.datas;
+  elems = Set.union s1.elems s2.elems;
   locals = Set.union s1.locals s2.locals;
   labels = Set.union s1.labels s2.labels;
 }
 
 let types s = {empty with types = s}
-let globals s = {empty with globals = s}
-let tables s = {empty with tables = s}
-let memories s = {empty with memories = s}
 let tags s = {empty with tags = s}
+let globals s = {empty with globals = s}
+let memories s = {empty with memories = s}
+let tables s = {empty with tables = s}
 let funcs s = {empty with funcs = s}
-let elems s = {empty with elems = s}
 let datas s = {empty with datas = s}
+let elems s = {empty with elems = s}
 let locals s = {empty with locals = s}
 let labels s = {empty with labels = s}
 
@@ -120,17 +120,17 @@ let rectype = function
 let deftype = function
   | DefT (rt, _i) -> rectype rt
 
-let globaltype (GlobalT (_mut, t)) = valtype t
-let tabletype (TableT (_at, _lim, t)) = reftype t
-let memorytype (MemoryT (_at, _lim)) = empty
 let tagtype (TagT ut) = typeuse ut
+let globaltype (GlobalT (_mut, t)) = valtype t
+let memorytype (MemoryT (_at, _lim)) = empty
+let tabletype (TableT (_at, _lim, t)) = reftype t
 
 let externtype = function
-  | ExternFuncT ut -> typeuse ut
-  | ExternTableT tt -> tabletype tt
-  | ExternMemoryT mt -> memorytype mt
-  | ExternGlobalT gt -> globaltype gt
   | ExternTagT tt -> tagtype tt
+  | ExternGlobalT gt -> globaltype gt
+  | ExternMemoryT mt -> memorytype mt
+  | ExternTableT tt -> tabletype tt
+  | ExternFuncT ut -> typeuse ut
 
 let blocktype = function
   | VarBlockType x -> types (idx x)
@@ -203,57 +203,47 @@ and catch (c : catch) =
 
 let const (c : const) = block c.it
 
-let global g = match g.it with Global (gt, c) -> globaltype gt ++ const c
-let local l = match l.it with Local t -> valtype t
-let func f = match f.it with Func (x, ls, es) ->
+let type_ t = rectype t.it
+let tag t = let Tag tt = t.it in tagtype tt
+let global g = let Global (gt, c) = g.it in globaltype gt ++ const c
+let memory m = let Memory mt = m.it in memorytype mt
+let table t = let Table (tt, c) = t.it in tabletype tt ++ const c
+let local l = let Local t = l.it in valtype t
+let func f =
+  let Func (x, ls, es) = f.it in
   {(types (idx x) ++ list local ls ++ block es) with locals = Set.empty}
-let table t = match t.it with Table (tt, c) -> tabletype tt ++ const c
-let memory m = match m.it with Memory mt -> memorytype mt
-let tag t = match t.it with Tag tt -> tagtype tt
 
-let segmentmode f (m : segmentmode) =
+let segmentmode f m =
   match m.it with
   | Passive | Declarative -> empty
   | Active (x, c) -> f (idx x) ++ const c
 
-let elem (s : elem) =
-  let Elem (rt, cs, mode) = s.it in
+let data d = let Data (_bs, mode) = d.it in segmentmode memories mode
+let elem e =
+  let Elem (rt, cs, mode) = e.it in
   reftype rt ++ list const cs ++ segmentmode tables mode
 
-let data (s : data) =
-  let Data (_bs, mode) = s.it in
-  segmentmode memories mode
-
-let type_ (t : type_) = rectype t.it
+let start s = let Start x = s.it in funcs (idx x)
 
 let externidx (xx : externidx) =
   match xx.it with
-  | FuncX x -> funcs (idx x)
-  | TableX x -> tables (idx x)
-  | MemoryX x -> memories (idx x)
-  | GlobalX x -> globals (idx x)
   | TagX x -> tags (idx x)
+  | GlobalX x -> globals (idx x)
+  | MemoryX x -> memories (idx x)
+  | TableX x -> tables (idx x)
+  | FuncX x -> funcs (idx x)
 
-let export (e : export) =
-  let Export (_name, xx) = e.it in
-  externidx xx
-
-let import (i : import) =
-  let Import (_module_name, _item_name, xt) = i.it in
-  externtype xt
-
-let start (s : start) =
-  let Start x = s.it in
-  funcs (idx x)
+let export e = let Export (_name, xx) = e.it in externidx xx
+let import i = let Import (_module_name, _item_name, xt) = i.it in externtype xt
 
 let module_ (m : module_) =
   list type_ m.it.types ++
   list global m.it.globals ++
-  list table m.it.tables ++
   list memory m.it.memories ++
+  list table m.it.tables ++
   list func m.it.funcs ++
-  opt start m.it.start ++
-  list elem m.it.elems ++
   list data m.it.datas ++
+  list elem m.it.elems ++
+  opt start m.it.start ++
   list import m.it.imports ++
   list export m.it.exports

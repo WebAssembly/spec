@@ -286,23 +286,23 @@ let limits uN s =
   let max = opt uN has_max s in
   at, {min; max}
 
-let tabletype s =
-  let t = reftype s in
-  let at, lim = limits u64 s in
-  TableT (at, lim, t)
-
-let memorytype s =
-  let at, lim = limits u64 s in
-  MemoryT (at, lim)
+let tagtype s =
+  zero s;
+  TagT (typeuse idx s)
 
 let globaltype s =
   let t = valtype s in
   let mut = mutability s in
   GlobalT (mut, t)
 
-let tagtype s =
-  zero s;
-  TagT (typeuse idx s)
+let memorytype s =
+  let at, lim = limits u64 s in
+  MemoryT (at, lim)
+
+let tabletype s =
+  let t = reftype s in
+  let at, lim = limits u64 s in
+  TableT (at, lim, t)
 
 let externtype s =
   match byte s with
@@ -1052,13 +1052,13 @@ let id s =
     | _ -> error s (pos s) "malformed section id"
     ) bo
 
-let section_with_size tag f default s =
+let section_with_size kind f default s =
   match id s with
-  | Some tag' when tag' = tag -> skip 1 s; sized f s
+  | Some kind' when kind' = kind -> skip 1 s; sized f s
   | _ -> default
 
-let section tag f default s =
-  section_with_size tag (fun _ -> f) default s
+let section kind f default s =
+  section_with_size kind (fun _ -> f) default s
 
 
 (* Type section *)

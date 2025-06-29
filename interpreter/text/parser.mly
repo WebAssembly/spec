@@ -122,17 +122,17 @@ type types =
   }
 
 type context =
-  { types : types; tables : space; memories : space; tags : space;
-    funcs : space; locals : space; globals : space;
-    datas : space; elems : space; labels : space;
+  { types : types; tags : space; globals : space;
+    memories : space; tables : space; funcs : space;
+    datas : space; elems : space; locals : space; labels : space;
     deferred_locals : (unit -> unit) list ref
   }
 
 let empty_types () = {space = empty (); fields = []; list = []; ctx = []}
 let empty_context () =
-  { types = empty_types (); tables = empty (); memories = empty ();
-    tags = empty (); funcs = empty (); locals = empty (); globals = empty ();
-    datas = empty (); elems = empty (); labels = empty ();
+  { types = empty_types (); tags = empty (); globals = empty ();
+    memories = empty (); tables = empty (); funcs = empty ();
+    datas = empty (); elems = empty (); locals = empty (); labels = empty ();
     deferred_locals = ref []
   }
 
@@ -157,14 +157,14 @@ let lookup category space x =
   with Not_found -> error x.at ("unknown " ^ category ^ " " ^ print x)
 
 let type_ (c : context) x = lookup "type" c.types.space x
-let func (c : context) x = lookup "function" c.funcs x
-let local (c : context) x = lookup "local" c.locals x
-let global (c : context) x = lookup "global" c.globals x
-let table (c : context) x = lookup "table" c.tables x
-let memory (c : context) x = lookup "memory" c.memories x
 let tag (c : context) x = lookup "tag" c.tags x
-let elem (c : context) x = lookup "elem segment" c.elems x
+let global (c : context) x = lookup "global" c.globals x
+let memory (c : context) x = lookup "memory" c.memories x
+let table (c : context) x = lookup "table" c.tables x
+let func (c : context) x = lookup "function" c.funcs x
 let data (c : context) x = lookup "data segment" c.datas x
+let elem (c : context) x = lookup "elem segment" c.elems x
+let local (c : context) x = lookup "local" c.locals x
 let label (c : context) x = lookup "label " c.labels x
 let field x (c : context) y =
   lookup "field " (Lib.List32.nth c.types.fields x) y
@@ -192,14 +192,14 @@ let new_fields (c : context) =
   c.types.fields <- c.types.fields @ [empty ()]
 
 let bind_type (c : context) x = new_fields c; bind_abs "type" c.types.space x
-let bind_func (c : context) x = bind_abs "function" c.funcs x
-let bind_local (c : context) x = force_locals c; bind_abs "local" c.locals x
-let bind_global (c : context) x = bind_abs "global" c.globals x
-let bind_table (c : context) x = bind_abs "table" c.tables x
-let bind_memory (c : context) x = bind_abs "memory" c.memories x
 let bind_tag (c : context) x = bind_abs "tag" c.tags x
-let bind_elem (c : context) x = bind_abs "elem segment" c.elems x
+let bind_global (c : context) x = bind_abs "global" c.globals x
+let bind_memory (c : context) x = bind_abs "memory" c.memories x
+let bind_table (c : context) x = bind_abs "table" c.tables x
+let bind_func (c : context) x = bind_abs "function" c.funcs x
 let bind_data (c : context) x = bind_abs "data segment" c.datas x
+let bind_elem (c : context) x = bind_abs "elem segment" c.elems x
+let bind_local (c : context) x = force_locals c; bind_abs "local" c.locals x
 let bind_label (c : context) x = bind_rel "label" c.labels x
 let bind_field (c : context) x y =
   bind_abs "field" (Lib.List32.nth c.types.fields x) y
@@ -212,15 +212,15 @@ let define_deftype (c : context) (dt : deftype) =
   c.types.ctx <- c.types.ctx @ [dt]
 
 let anon_type (c : context) loc = new_fields c; bind "type" c.types.space 1l (at loc)
+let anon_tag (c : context) loc = bind "tag" c.tags 1l (at loc)
+let anon_global (c : context) loc = bind "global" c.globals 1l (at loc)
+let anon_memory (c : context) loc = bind "memory" c.memories 1l (at loc)
+let anon_table (c : context) loc = bind "table" c.tables 1l (at loc)
 let anon_func (c : context) loc = bind "function" c.funcs 1l (at loc)
+let anon_data (c : context) loc = bind "data segment" c.datas 1l (at loc)
+let anon_elem (c : context) loc = bind "elem segment" c.elems 1l (at loc)
 let anon_locals (c : context) n loc =
   defer_locals c (fun () -> bind "local" c.locals n (at loc))
-let anon_global (c : context) loc = bind "global" c.globals 1l (at loc)
-let anon_table (c : context) loc = bind "table" c.tables 1l (at loc)
-let anon_memory (c : context) loc = bind "memory" c.memories 1l (at loc)
-let anon_tag (c : context) loc = bind "tag" c.tags 1l (at loc)
-let anon_elem (c : context) loc = bind "elem segment" c.elems 1l (at loc)
-let anon_data (c : context) loc = bind "data segment" c.datas 1l (at loc)
 let anon_label (c : context) loc = bind "label" c.labels 1l (at loc)
 let anon_fields (c : context) x n loc =
   bind "field" (Lib.List32.nth c.types.fields x) n (at loc)
@@ -1030,6 +1030,7 @@ func_body :
       let Func (x, ls, es) = $6 c in
       Func (x, $4 c :: ls, es) }
 
+
 localtype :
   | valtype { fun c -> Local ($1 c) @@ $sloc }
 
@@ -1038,138 +1039,7 @@ localtype_list :
     { Lib.List32.length $1, fun c -> List.map (fun f -> f c) $1 }
 
 
-/* Tables, Memories & Globals */
-
-tableuse :
-  | LPAR TABLE idx RPAR { fun c -> $3 c }
-
-memoryuse :
-  | LPAR MEMORY idx RPAR { fun c -> $3 c }
-
-offset :
-  | LPAR OFFSET const_expr RPAR { $3 }
-  | expr { fun c -> $1 c @@ $sloc }  /* Sugar */
-
-elem_kind :
-  | FUNC { (NoNull, FuncHT) }
-
-elem_expr :
-  | LPAR ITEM const_expr RPAR { $3 }
-  | expr { fun c -> $1 c @@ $sloc }  /* Sugar */
-
-elem_expr_list :
-  | /* empty */ { fun c -> [] }
-  | elem_expr elem_expr_list { fun c -> $1 c :: $2 c }
-
-elem_idx_list :
-  | idx_list
-    { let f = function {at; _} as x -> [ref_func x @@@ at] @@@ at in
-      fun c -> List.map f ($1 c func) }
-
-elem_list :
-  | elem_kind elem_idx_list
-    { fun c -> $1, $2 c }
-  | reftype elem_expr_list
-    { fun c -> $1 c, $2 c }
-
-
-elem :
-  | LPAR ELEM bind_idx_opt elem_list RPAR
-    { fun c -> ignore ($3 c anon_elem bind_elem);
-      fun () -> let rt, cs = $4 c in
-      Elem (rt, cs, Passive @@ $sloc) @@ $sloc }
-  | LPAR ELEM bind_idx_opt tableuse offset elem_list RPAR
-    { fun c -> ignore ($3 c anon_elem bind_elem);
-      fun () -> let rt, cs = $6 c in
-      Elem (rt, cs, Active ($4 c table, $5 c) @@ $sloc) @@ $sloc }
-  | LPAR ELEM bind_idx_opt DECLARE elem_list RPAR
-    { fun c -> ignore ($3 c anon_elem bind_elem);
-      fun () -> let rt, cs = $5 c in
-      Elem (rt, cs, Declarative @@ $sloc) @@ $sloc }
-  | LPAR ELEM bind_idx_opt offset elem_list RPAR  /* Sugar */
-    { fun c -> ignore ($3 c anon_elem bind_elem);
-      fun () -> let rt, cs = $5 c in
-      Elem (rt, cs, Active (0l @@ $sloc, $4 c) @@ $sloc) @@ $sloc }
-  | LPAR ELEM bind_idx_opt offset elem_idx_list RPAR  /* Sugar */
-    { fun c -> ignore ($3 c anon_elem bind_elem);
-      fun () ->
-      let rt = (NoNull, FuncHT) in
-      Elem (rt, $5 c, Active (0l @@ $sloc, $4 c) @@ $sloc) @@ $sloc }
-
-table :
-  | LPAR TABLE bind_idx_opt table_fields RPAR
-    { fun c -> let x = $3 c anon_table bind_table @@ $sloc in
-      fun () -> $4 c x $sloc }
-
-table_fields :
-  | tabletype const_expr1
-    { fun c x loc -> [Table ($1 c, $2 c) @@ loc], [], [], [] }
-  | tabletype  /* Sugar */
-    { fun c x loc -> let TableT (_, _, (_, ht)) as tt = $1 c in
-      [Table (tt, [RefNull ht @@ loc] @@ loc) @@ loc], [], [], [] }
-  | inline_import tabletype  /* Sugar */
-    { fun c x loc ->
-      [], [],
-      [Import (fst $1, snd $1, ExternTableT ($2 c)) @@ loc], [] }
-  | inline_export table_fields  /* Sugar */
-    { fun c x loc -> let tabs, elems, ims, exs = $2 c x loc in
-      tabs, elems, ims, $1 (TableX x) c :: exs }
-  | addrtype reftype LPAR ELEM elem_expr elem_expr_list RPAR  /* Sugar */
-    { fun c x loc ->
-      let offset = [at_const $1 (0L @@ loc) @@ loc] @@ loc in
-      let einit = $5 c :: $6 c in
-      let size = Lib.List64.length einit in
-      let (_, ht) as rt = $2 c in
-      let tinit = [RefNull ht @@ loc] @@ loc in
-      [Table (TableT ($1, {min = size; max = Some size}, rt), tinit) @@ loc],
-      [Elem (rt, einit, Active (x, offset) @@ loc) @@ loc],
-      [], [] }
-  | addrtype reftype LPAR ELEM elem_idx_list RPAR  /* Sugar */
-    { fun c x loc ->
-      let (_, ht) as rt = $2 c in
-      let tinit = [RefNull ht @@ loc] @@ loc in
-      let offset = [at_const $1 (0L @@ loc) @@ loc] @@ loc in
-      let einit = $5 c in
-      let size = Lib.List64.length einit in
-      [Table (TableT ($1, {min = size; max = Some size}, rt), tinit) @@ loc],
-      [Elem (rt, einit, Active (x, offset) @@ loc) @@ loc],
-      [], [] }
-
-data :
-  | LPAR DATA bind_idx_opt string_list RPAR
-    { fun c -> ignore ($3 c anon_data bind_data);
-      fun () -> Data ($4, Passive @@ $sloc) @@ $sloc }
-  | LPAR DATA bind_idx_opt memoryuse offset string_list RPAR
-    { fun c -> ignore ($3 c anon_data bind_data);
-      fun () ->
-      Data ($6, Active ($4 c memory, $5 c) @@ $sloc) @@ $sloc }
-  | LPAR DATA bind_idx_opt offset string_list RPAR  /* Sugar */
-    { fun c -> ignore ($3 c anon_data bind_data);
-      fun () ->
-      Data ($5, Active (0l @@ $sloc, $4 c) @@ $sloc) @@ $sloc }
-
-memory :
-  | LPAR MEMORY bind_idx_opt memory_fields RPAR
-    { fun c -> let x = $3 c anon_memory bind_memory @@ $sloc in
-      fun () -> $4 c x $sloc }
-
-memory_fields :
-  | memorytype
-    { fun c x loc -> [Memory ($1 c) @@ loc], [], [], [] }
-  | inline_import memorytype  /* Sugar */
-    { fun c x loc ->
-      [], [],
-      [Import (fst $1, snd $1, ExternMemoryT ($2 c)) @@ loc], [] }
-  | inline_export memory_fields  /* Sugar */
-    { fun c x loc -> let mems, data, ims, exs = $2 c x loc in
-      mems, data, ims, $1 (MemoryX x) c :: exs }
-  | addrtype LPAR DATA string_list RPAR  /* Sugar */
-    { fun c x loc ->
-      let size = Int64.(div (add (of_int (String.length $4)) 65535L) 65536L) in
-      let offset = [at_const $1 (0L @@ loc) @@ loc] @@ loc in
-      [Memory (MemoryT ($1, {min = size; max = Some size})) @@ loc],
-      [Data ($4, Active (x, offset) @@ loc) @@ loc],
-      [], [] }
+/* Tags, Globals, Memories, Tables */
 
 tag :
   | LPAR TAG bind_idx_opt tag_fields RPAR
@@ -1220,30 +1090,164 @@ global_fields :
       globs, ims, $1 (GlobalX x) c :: exs }
 
 
+offset :
+  | LPAR OFFSET const_expr RPAR { $3 }
+  | expr { fun c -> $1 c @@ $sloc }  /* Sugar */
+
+data :
+  | LPAR DATA bind_idx_opt string_list RPAR
+    { fun c -> ignore ($3 c anon_data bind_data);
+      fun () -> Data ($4, Passive @@ $sloc) @@ $sloc }
+  | LPAR DATA bind_idx_opt memoryuse offset string_list RPAR
+    { fun c -> ignore ($3 c anon_data bind_data);
+      fun () ->
+      Data ($6, Active ($4 c memory, $5 c) @@ $sloc) @@ $sloc }
+  | LPAR DATA bind_idx_opt offset string_list RPAR  /* Sugar */
+    { fun c -> ignore ($3 c anon_data bind_data);
+      fun () ->
+      Data ($5, Active (0l @@ $sloc, $4 c) @@ $sloc) @@ $sloc }
+
+
+memoryuse :
+  | LPAR MEMORY idx RPAR { fun c -> $3 c }
+
+memory :
+  | LPAR MEMORY bind_idx_opt memory_fields RPAR
+    { fun c -> let x = $3 c anon_memory bind_memory @@ $sloc in
+      fun () -> $4 c x $sloc }
+
+memory_fields :
+  | memorytype
+    { fun c x loc -> [Memory ($1 c) @@ loc], [], [], [] }
+  | inline_import memorytype  /* Sugar */
+    { fun c x loc ->
+      [], [],
+      [Import (fst $1, snd $1, ExternMemoryT ($2 c)) @@ loc], [] }
+  | inline_export memory_fields  /* Sugar */
+    { fun c x loc -> let mems, data, ims, exs = $2 c x loc in
+      mems, data, ims, $1 (MemoryX x) c :: exs }
+  | addrtype LPAR DATA string_list RPAR  /* Sugar */
+    { fun c x loc ->
+      let size = Int64.(div (add (of_int (String.length $4)) 65535L) 65536L) in
+      let offset = [at_const $1 (0L @@ loc) @@ loc] @@ loc in
+      [Memory (MemoryT ($1, {min = size; max = Some size})) @@ loc],
+      [Data ($4, Active (x, offset) @@ loc) @@ loc],
+      [], [] }
+
+
+elem_kind :
+  | FUNC { (NoNull, FuncHT) }
+
+elem_expr :
+  | LPAR ITEM const_expr RPAR { $3 }
+  | expr { fun c -> $1 c @@ $sloc }  /* Sugar */
+
+elem_expr_list :
+  | /* empty */ { fun c -> [] }
+  | elem_expr elem_expr_list { fun c -> $1 c :: $2 c }
+
+elem_idx_list :
+  | idx_list
+    { let f = function {at; _} as x -> [ref_func x @@@ at] @@@ at in
+      fun c -> List.map f ($1 c func) }
+
+elem_list :
+  | elem_kind elem_idx_list
+    { fun c -> $1, $2 c }
+  | reftype elem_expr_list
+    { fun c -> $1 c, $2 c }
+
+elem :
+  | LPAR ELEM bind_idx_opt elem_list RPAR
+    { fun c -> ignore ($3 c anon_elem bind_elem);
+      fun () -> let rt, cs = $4 c in
+      Elem (rt, cs, Passive @@ $sloc) @@ $sloc }
+  | LPAR ELEM bind_idx_opt tableuse offset elem_list RPAR
+    { fun c -> ignore ($3 c anon_elem bind_elem);
+      fun () -> let rt, cs = $6 c in
+      Elem (rt, cs, Active ($4 c table, $5 c) @@ $sloc) @@ $sloc }
+  | LPAR ELEM bind_idx_opt DECLARE elem_list RPAR
+    { fun c -> ignore ($3 c anon_elem bind_elem);
+      fun () -> let rt, cs = $5 c in
+      Elem (rt, cs, Declarative @@ $sloc) @@ $sloc }
+  | LPAR ELEM bind_idx_opt offset elem_list RPAR  /* Sugar */
+    { fun c -> ignore ($3 c anon_elem bind_elem);
+      fun () -> let rt, cs = $5 c in
+      Elem (rt, cs, Active (0l @@ $sloc, $4 c) @@ $sloc) @@ $sloc }
+  | LPAR ELEM bind_idx_opt offset elem_idx_list RPAR  /* Sugar */
+    { fun c -> ignore ($3 c anon_elem bind_elem);
+      fun () ->
+      let rt = (NoNull, FuncHT) in
+      Elem (rt, $5 c, Active (0l @@ $sloc, $4 c) @@ $sloc) @@ $sloc }
+
+
+tableuse :
+  | LPAR TABLE idx RPAR { fun c -> $3 c }
+
+table :
+  | LPAR TABLE bind_idx_opt table_fields RPAR
+    { fun c -> let x = $3 c anon_table bind_table @@ $sloc in
+      fun () -> $4 c x $sloc }
+
+table_fields :
+  | tabletype const_expr1
+    { fun c x loc -> [Table ($1 c, $2 c) @@ loc], [], [], [] }
+  | tabletype  /* Sugar */
+    { fun c x loc -> let TableT (_, _, (_, ht)) as tt = $1 c in
+      [Table (tt, [RefNull ht @@ loc] @@ loc) @@ loc], [], [], [] }
+  | inline_import tabletype  /* Sugar */
+    { fun c x loc ->
+      [], [],
+      [Import (fst $1, snd $1, ExternTableT ($2 c)) @@ loc], [] }
+  | inline_export table_fields  /* Sugar */
+    { fun c x loc -> let tabs, elems, ims, exs = $2 c x loc in
+      tabs, elems, ims, $1 (TableX x) c :: exs }
+  | addrtype reftype LPAR ELEM elem_expr elem_expr_list RPAR  /* Sugar */
+    { fun c x loc ->
+      let offset = [at_const $1 (0L @@ loc) @@ loc] @@ loc in
+      let einit = $5 c :: $6 c in
+      let size = Lib.List64.length einit in
+      let (_, ht) as rt = $2 c in
+      let tinit = [RefNull ht @@ loc] @@ loc in
+      [Table (TableT ($1, {min = size; max = Some size}, rt), tinit) @@ loc],
+      [Elem (rt, einit, Active (x, offset) @@ loc) @@ loc],
+      [], [] }
+  | addrtype reftype LPAR ELEM elem_idx_list RPAR  /* Sugar */
+    { fun c x loc ->
+      let (_, ht) as rt = $2 c in
+      let tinit = [RefNull ht @@ loc] @@ loc in
+      let offset = [at_const $1 (0L @@ loc) @@ loc] @@ loc in
+      let einit = $5 c in
+      let size = Lib.List64.length einit in
+      [Table (TableT ($1, {min = size; max = Some size}, rt), tinit) @@ loc],
+      [Elem (rt, einit, Active (x, offset) @@ loc) @@ loc],
+      [], [] }
+
+
 /* Imports & Exports */
 
 externtype :
   | LPAR FUNC bind_idx_opt typeuse RPAR
     { fun c -> ignore ($3 c anon_func bind_func);
       fun () -> ExternFuncT (Idx ($4 c).it) }
-  | LPAR FUNC bind_idx_opt functype RPAR  /* Sugar */
-    { fun c -> ignore ($3 c anon_func bind_func);
-      fun () -> ExternFuncT (Idx (inline_functype c ($4 c) $loc($4)).it) }
-  | LPAR TABLE bind_idx_opt tabletype RPAR
-    { fun c -> ignore ($3 c anon_table bind_table);
-      fun () -> ExternTableT ($4 c) }
-  | LPAR MEMORY bind_idx_opt memorytype RPAR
-    { fun c -> ignore ($3 c anon_memory bind_memory);
-      fun () -> ExternMemoryT ($4 c) }
-  | LPAR GLOBAL bind_idx_opt globaltype RPAR
-    { fun c -> ignore ($3 c anon_global bind_global);
-      fun () -> ExternGlobalT ($4 c) }
   | LPAR TAG bind_idx_opt typeuse RPAR
     { fun c -> ignore ($3 c anon_tag bind_tag);
       fun () -> ExternTagT (TagT (Idx ($4 c).it)) }
   | LPAR TAG bind_idx_opt functype RPAR  /* Sugar */
     { fun c -> ignore ($3 c anon_tag bind_tag);
       fun () -> ExternTagT (TagT (Idx (inline_functype c ($4 c) $loc($4)).it)) }
+  | LPAR GLOBAL bind_idx_opt globaltype RPAR
+    { fun c -> ignore ($3 c anon_global bind_global);
+      fun () -> ExternGlobalT ($4 c) }
+  | LPAR MEMORY bind_idx_opt memorytype RPAR
+    { fun c -> ignore ($3 c anon_memory bind_memory);
+      fun () -> ExternMemoryT ($4 c) }
+  | LPAR TABLE bind_idx_opt tabletype RPAR
+    { fun c -> ignore ($3 c anon_table bind_table);
+      fun () -> ExternTableT ($4 c) }
+  | LPAR FUNC bind_idx_opt functype RPAR  /* Sugar */
+    { fun c -> ignore ($3 c anon_func bind_func);
+      fun () -> ExternFuncT (Idx (inline_functype c ($4 c) $loc($4)).it) }
 
 import :
   | LPAR IMPORT name name externtype RPAR
@@ -1254,11 +1258,11 @@ inline_import :
   | LPAR IMPORT name name RPAR { $3, $4 }
 
 externidx :
-  | LPAR FUNC idx RPAR { fun c -> FuncX ($3 c func) }
-  | LPAR TABLE idx RPAR { fun c -> TableX ($3 c table) }
-  | LPAR MEMORY idx RPAR { fun c -> MemoryX ($3 c memory) }
   | LPAR TAG idx RPAR { fun c -> TagX ($3 c tag) }
   | LPAR GLOBAL idx RPAR { fun c -> GlobalX ($3 c global) }
+  | LPAR MEMORY idx RPAR { fun c -> MemoryX ($3 c memory) }
+  | LPAR TABLE idx RPAR { fun c -> TableX ($3 c table) }
+  | LPAR FUNC idx RPAR { fun c -> FuncX ($3 c func) }
 
 export :
   | LPAR EXPORT name externidx RPAR
@@ -1312,6 +1316,14 @@ module_fields1 :
   | type_ module_fields
     { fun c -> let tf = $1 c in let mff = $2 c in
       fun () -> tf (); mff () }
+  | tag module_fields
+    { fun c -> let ef = $1 c in let mff = $2 c in
+      fun () -> let mf = mff () in
+      fun () -> let tags, ims, exs = ef () in let m = mf () in
+      if tags <> [] && m.imports <> [] then
+        error (List.hd m.imports).at "import after tag definition";
+      { m with tags = tags @ m.tags;
+        imports = ims @ m.imports; exports = exs @ m.exports } }
   | global module_fields
     { fun c -> let gf = $1 c in let mff = $2 c in
       fun () -> let mf = mff () in
@@ -1319,14 +1331,6 @@ module_fields1 :
       if globs <> [] && m.imports <> [] then
         error (List.hd m.imports).at "import after global definition";
       { m with globals = globs @ m.globals;
-        imports = ims @ m.imports; exports = exs @ m.exports } }
-  | table module_fields
-    { fun c -> let tf = $1 c in let mff = $2 c in
-      fun () -> let mf = mff () in
-      fun () -> let tabs, elems, ims, exs = tf () in let m = mf () in
-      if tabs <> [] && m.imports <> [] then
-        error (List.hd m.imports).at "import after table definition";
-      { m with tables = tabs @ m.tables; elems = elems @ m.elems;
         imports = ims @ m.imports; exports = exs @ m.exports } }
   | memory module_fields
     { fun c -> let mmf = $1 c in let mff = $2 c in
@@ -1336,13 +1340,13 @@ module_fields1 :
         error (List.hd m.imports).at "import after memory definition";
       { m with memories = mems @ m.memories; datas = data @ m.datas;
         imports = ims @ m.imports; exports = exs @ m.exports } }
-  | tag module_fields
-    { fun c -> let ef = $1 c in let mff = $2 c in
+  | table module_fields
+    { fun c -> let tf = $1 c in let mff = $2 c in
       fun () -> let mf = mff () in
-      fun () -> let tags, ims, exs = ef () in let m = mf () in
-      if tags <> [] && m.imports <> [] then
-        error (List.hd m.imports).at "import after tag definition";
-      { m with tags = tags @ m.tags;
+      fun () -> let tabs, elems, ims, exs = tf () in let m = mf () in
+      if tabs <> [] && m.imports <> [] then
+        error (List.hd m.imports).at "import after table definition";
+      { m with tables = tabs @ m.tables; elems = elems @ m.elems;
         imports = ims @ m.imports; exports = exs @ m.exports } }
   | func module_fields
     { fun c -> let ff = $1 c in let mff = $2 c in
@@ -1352,16 +1356,16 @@ module_fields1 :
         error (List.hd m.imports).at "import after function definition";
       { m with funcs = funcs @ m.funcs;
         imports = ims @ m.imports; exports = exs @ m.exports } }
-  | elem module_fields
-    { fun c -> let ef = $1 c in let mff = $2 c in
-      fun () -> let mf = mff () in
-      fun () -> let elems = ef () in let m = mf () in
-      {m with elems = elems :: m.Ast.elems} }
   | data module_fields
     { fun c -> let df = $1 c in let mff = $2 c in
       fun () -> let mf = mff () in
       fun () -> let data = df () in let m = mf () in
       {m with datas = data :: m.Ast.datas} }
+  | elem module_fields
+    { fun c -> let ef = $1 c in let mff = $2 c in
+      fun () -> let mf = mff () in
+      fun () -> let elems = ef () in let m = mf () in
+      {m with elems = elems :: m.Ast.elems} }
   | start module_fields
     { fun c -> let mff = $2 c in
       fun () -> let mf = mff () in

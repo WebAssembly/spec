@@ -17,11 +17,8 @@ and numtype = I32T | I64T | F32T | F64T
 and vectype = V128T
 and heaptype =
   | AnyHT | NoneHT | EqHT | I31HT | StructHT | ArrayHT
-  | FuncHT | NoFuncHT
-  | ExnHT | NoExnHT
-  | ExternHT | NoExternHT
-  | UseHT of typeuse
-  | BotHT
+  | FuncHT | NoFuncHT | ExnHT | NoExnHT | ExternHT | NoExternHT
+  | UseHT of typeuse | BotHT
 and reftype = null * heaptype
 and valtype = NumT of numtype | VecT of vectype | RefT of reftype | BotT
 
@@ -45,17 +42,17 @@ and subtype = SubT of final * typeuse list * comptype
 and rectype = RecT of subtype list
 and deftype = DefT of rectype * int32
 
-type tabletype = TableT of addrtype * limits * reftype
-type memorytype = MemoryT of addrtype * limits
-type globaltype = GlobalT of mut * valtype
 type tagtype = TagT of typeuse
+type globaltype = GlobalT of mut * valtype
+type memorytype = MemoryT of addrtype * limits
+type tabletype = TableT of addrtype * limits * reftype
 type localtype = LocalT of init * valtype
 type externtype =
-  | ExternFuncT of typeuse
-  | ExternTableT of tabletype
-  | ExternMemoryT of memorytype
-  | ExternGlobalT of globaltype
   | ExternTagT of tagtype
+  | ExternGlobalT of globaltype
+  | ExternMemoryT of memorytype
+  | ExternTableT of tabletype
+  | ExternFuncT of typeuse
 
 type exporttype = ExportT of name * externtype
 type importtype = ImportT of name * name * externtype
@@ -141,11 +138,11 @@ let externtype_of_exporttype = function ExportT (_, xt) -> xt
 
 (* Filters *)
 
-let funcs = List.filter_map (function ExternFuncT ft -> Some ft | _ -> None)
-let tables = List.filter_map (function ExternTableT tt -> Some tt | _ -> None)
-let memories = List.filter_map (function ExternMemoryT mt -> Some mt | _ -> None)
-let globals = List.filter_map (function ExternGlobalT gt -> Some gt | _ -> None)
 let tags = List.filter_map (function ExternTagT tt -> Some tt | _ -> None)
+let globals = List.filter_map (function ExternGlobalT gt -> Some gt | _ -> None)
+let memories = List.filter_map (function ExternMemoryT mt -> Some mt | _ -> None)
+let tables = List.filter_map (function ExternTableT tt -> Some tt | _ -> None)
+let funcs = List.filter_map (function ExternFuncT ft -> Some ft | _ -> None)
 
 
 (* Substitution *)
@@ -226,24 +223,24 @@ let subst_deftype s = function
   | DefT (rt, i) -> DefT (subst_rectype s rt, i)
 
 
+let subst_tagtype s = function
+  | TagT ut -> TagT (subst_typeuse s ut)
+
+let subst_globaltype s = function
+  | GlobalT (mut, t) ->  GlobalT (mut, subst_valtype s t)
+
 let subst_memorytype s = function
   | MemoryT (at, lim) -> MemoryT (subst_addrtype s at, lim)
 
 let subst_tabletype s = function
   | TableT (at, lim, t) -> TableT (subst_addrtype s at, lim, subst_reftype s t)
 
-let subst_globaltype s = function
-  | GlobalT (mut, t) ->  GlobalT (mut, subst_valtype s t)
-
-let subst_tagtype s = function
-  | TagT ut -> TagT (subst_typeuse s ut)
-
 let subst_externtype s = function
-  | ExternFuncT ut -> ExternFuncT (subst_typeuse s ut)
-  | ExternTableT tt -> ExternTableT (subst_tabletype s tt)
-  | ExternMemoryT mt -> ExternMemoryT (subst_memorytype s mt)
-  | ExternGlobalT gt -> ExternGlobalT (subst_globaltype s gt)
   | ExternTagT tt -> ExternTagT (subst_tagtype s tt)
+  | ExternGlobalT gt -> ExternGlobalT (subst_globaltype s gt)
+  | ExternMemoryT mt -> ExternMemoryT (subst_memorytype s mt)
+  | ExternTableT tt -> ExternTableT (subst_tabletype s tt)
+  | ExternFuncT ut -> ExternFuncT (subst_typeuse s ut)
 
 
 let subst_exporttype s = function
@@ -421,6 +418,12 @@ let string_of_limits = function
     I64.to_string_u min ^
     (match max with None -> "" | Some n -> " " ^ I64.to_string_u n)
 
+let string_of_tagtype = function
+  | TagT ut -> string_of_typeuse ut
+
+let string_of_globaltype = function
+  | GlobalT (mut, t) -> string_of_mut (string_of_valtype t) mut
+
 let string_of_memorytype = function
   | MemoryT (at, lim) -> string_of_addrtype at ^ " " ^ string_of_limits lim
 
@@ -428,22 +431,16 @@ let string_of_tabletype = function
   | TableT (at, lim, t) ->
     string_of_addrtype at ^ " " ^ string_of_limits lim ^ " " ^ string_of_reftype t
 
-let string_of_globaltype = function
-  | GlobalT (mut, t) -> string_of_mut (string_of_valtype t) mut
-
-let string_of_tagtype = function
-  | TagT ut -> string_of_typeuse ut
-
 let string_of_localtype = function
   | LocalT (Set, t) -> string_of_valtype t
   | LocalT (Unset, t) -> "(unset " ^ string_of_valtype t ^ ")"
 
 let string_of_externtype = function
-  | ExternFuncT ut -> "func " ^ string_of_typeuse ut
-  | ExternTableT tt -> "table " ^ string_of_tabletype tt
-  | ExternMemoryT mt -> "memory " ^ string_of_memorytype mt
-  | ExternGlobalT gt -> "global " ^ string_of_globaltype gt
   | ExternTagT tt -> "tag " ^ string_of_tagtype tt
+  | ExternGlobalT gt -> "global " ^ string_of_globaltype gt
+  | ExternMemoryT mt -> "memory " ^ string_of_memorytype mt
+  | ExternTableT tt -> "table " ^ string_of_tabletype tt
+  | ExternFuncT ut -> "func " ^ string_of_typeuse ut
 
 
 let string_of_exporttype = function

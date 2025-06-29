@@ -195,17 +195,17 @@ struct
     let flags = flag (max <> None) 0 + flag (at = I64AT) 2 in
     byte flags; u64 min; opt u64 max
 
-  let tabletype = function
-    | TableT (at, lim, t) -> reftype t; limits at lim
-
-  let memorytype = function
-    | MemoryT (at, lim) -> limits at lim
+  let tagtype = function
+    | TagT ut -> u32 0x00l; typeuse u32 ut
 
   let globaltype = function
     | GlobalT (mut, t) -> valtype t; mutability mut
 
-  let tagtype = function
-    | TagT ut -> u32 0x00l; typeuse u32 ut
+  let memorytype = function
+    | MemoryT (at, lim) -> limits at lim
+
+  let tabletype = function
+    | TableT (at, lim, t) -> reftype t; limits at lim
 
   let externtype = function
     | ExternFuncT ut -> byte 0x00; typeuse u32 ut

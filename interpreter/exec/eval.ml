@@ -101,19 +101,19 @@ let lookup category list x =
     Crash.error x.at ("undefined " ^ category ^ " " ^ Int32.to_string x.it)
 
 let type_ (inst : moduleinst) x = lookup "type" inst.types x
-let func (inst : moduleinst) x = lookup "function" inst.funcs x
-let table (inst : moduleinst) x = lookup "table" inst.tables x
-let memory (inst : moduleinst) x = lookup "memory" inst.memories x
 let tag (inst : moduleinst) x = lookup "tag" inst.tags x
 let global (inst : moduleinst) x = lookup "global" inst.globals x
-let elem (inst : moduleinst) x = lookup "element segment" inst.elems x
+let memory (inst : moduleinst) x = lookup "memory" inst.memories x
+let table (inst : moduleinst) x = lookup "table" inst.tables x
+let func (inst : moduleinst) x = lookup "function" inst.funcs x
 let data (inst : moduleinst) x = lookup "data segment" inst.datas x
+let elem (inst : moduleinst) x = lookup "element segment" inst.elems x
 let local (frame : frame) x = lookup "local" frame.locals x
 
 let comp_type (inst : moduleinst) x = expand_deftype (type_ inst x)
-let func_type (inst : moduleinst) x = functype_of_comptype (comp_type inst x)
 let struct_type (inst : moduleinst) x = structtype_of_comptype  (comp_type inst x)
 let array_type (inst : moduleinst) x = arraytype_of_comptype (comp_type inst x)
+let func_type (inst : moduleinst) x = functype_of_comptype (comp_type inst x)
 
 let subst_of (inst : moduleinst) = function
   | Idx x when x < Lib.List32.length inst.types ->
@@ -1190,16 +1190,11 @@ let init_import (inst : moduleinst) (ex : extern) (im : import) : moduleinst =
       "expected " ^ Types.string_of_externtype xt ^
       ", got " ^ Types.string_of_externtype xt');
   match ex with
-  | ExternFunc func -> {inst with funcs = inst.funcs @ [func]}
-  | ExternTable tab -> {inst with tables = inst.tables @ [tab]}
-  | ExternMemory mem -> {inst with memories = inst.memories @ [mem]}
-  | ExternGlobal glob -> {inst with globals = inst.globals @ [glob]}
   | ExternTag tag -> {inst with tags = inst.tags @ [tag]}
-
-let init_func (inst : moduleinst) (f : func) : moduleinst =
-  let Func (x, _, _) = f.it in
-  let func = Func.alloc (type_ inst x) (Lib.Promise.make ()) f in
-  {inst with funcs = inst.funcs @ [func]}
+  | ExternGlobal glob -> {inst with globals = inst.globals @ [glob]}
+  | ExternMemory mem -> {inst with memories = inst.memories @ [mem]}
+  | ExternTable tab -> {inst with tables = inst.tables @ [tab]}
+  | ExternFunc func -> {inst with funcs = inst.funcs @ [func]}
 
 let init_tag (inst : moduleinst) (tag : tag) : moduleinst =
   let Tag tt = tag.it in
@@ -1214,6 +1209,12 @@ let init_global (inst : moduleinst) (glob : global) : moduleinst =
   let glob = Global.alloc gt' v in
   {inst with globals = inst.globals @ [glob]}
 
+let init_memory (inst : moduleinst) (mem : memory) : moduleinst =
+  let Memory mt = mem.it in
+  let mt' = subst_memorytype (subst_of inst) mt in
+  let mem = Memory.alloc mt' in
+  {inst with memories = inst.memories @ [mem]}
+
 let init_table (inst : moduleinst) (tab : table) : moduleinst =
   let Table (tt, c) = tab.it in
   let tt' = subst_tabletype (subst_of inst) tt in
@@ -1225,31 +1226,30 @@ let init_table (inst : moduleinst) (tab : table) : moduleinst =
   let tab = Table.alloc tt' r in
   {inst with tables = inst.tables @ [tab]}
 
-let init_memory (inst : moduleinst) (mem : memory) : moduleinst =
-  let Memory mt = mem.it in
-  let mt' = subst_memorytype (subst_of inst) mt in
-  let mem = Memory.alloc mt' in
-  {inst with memories = inst.memories @ [mem]}
-
-let init_elem (inst : moduleinst) (elem : elem) : moduleinst =
-  let Elem (rt, cs, _emode) = elem.it in
-  let elem = Elem.alloc (List.map (fun c -> as_ref (eval_const inst c)) cs) in
-  {inst with elems = inst.elems @ [elem]}
+let init_func (inst : moduleinst) (f : func) : moduleinst =
+  let Func (x, _, _) = f.it in
+  let func = Func.alloc (type_ inst x) (Lib.Promise.make ()) f in
+  {inst with funcs = inst.funcs @ [func]}
 
 let init_data (inst : moduleinst) (data : data) : moduleinst =
   let Data (bs, _dmode) = data.it in
   let data = Data.alloc bs in
   {inst with datas = inst.datas @ [data]}
 
+let init_elem (inst : moduleinst) (elem : elem) : moduleinst =
+  let Elem (rt, cs, _emode) = elem.it in
+  let elem = Elem.alloc (List.map (fun c -> as_ref (eval_const inst c)) cs) in
+  {inst with elems = inst.elems @ [elem]}
+
 let init_export (inst : moduleinst) (ex : export) : moduleinst =
   let Export (name, xx) = ex.it in
   let ext =
     match xx.it with
-    | FuncX x -> ExternFunc (func inst x)
-    | TableX x -> ExternTable (table inst x)
-    | MemoryX x -> ExternMemory (memory inst x)
-    | GlobalX x -> ExternGlobal (global inst x)
     | TagX x -> ExternTag (tag inst x)
+    | GlobalX x -> ExternGlobal (global inst x)
+    | MemoryX x -> ExternMemory (memory inst x)
+    | TableX x -> ExternTable (table inst x)
+    | FuncX x -> ExternFunc (func inst x)
   in
   {inst with exports = inst.exports @ [(name, ext)]}
 
@@ -1308,18 +1308,18 @@ let init (m : module_) (exts : extern list) : moduleinst =
     empty_moduleinst
     |> init_list init_type m.it.types
     |> init_list2 init_import exts m.it.imports
+    |> init_list init_tag m.it.tags
     |> init_list init_func m.it.funcs
     |> init_list init_global m.it.globals
     |> init_list init_table m.it.tables
     |> init_list init_memory m.it.memories
-    |> init_list init_tag m.it.tags
-    |> init_list init_elem m.it.elems
     |> init_list init_data m.it.datas
+    |> init_list init_elem m.it.elems
     |> init_list init_export m.it.exports
   in
   List.iter (init_funcinst inst) inst.funcs;
-  let es_elem = List.concat (Lib.List32.mapi run_elem m.it.elems) in
   let es_data = List.concat (Lib.List32.mapi run_data m.it.datas) in
+  let es_elem = List.concat (Lib.List32.mapi run_elem m.it.elems) in
   let es_start = Lib.Option.get (Lib.Option.map run_start m.it.start) [] in
   ignore (eval (config inst [] (List.map plain (es_elem @ es_data @ es_start))));
   inst

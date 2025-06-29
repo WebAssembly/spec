@@ -18,23 +18,22 @@ let require b at s = if not b then error at s
 type context =
 {
   types : deftype list;
-  funcs : deftype list;
-  tables : tabletype list;
-  memories : memorytype list;
   tags : tagtype list;
   globals : globaltype list;
-  elems : reftype list;
+  memories : memorytype list;
+  tables : tabletype list;
+  funcs : deftype list;
   datas : unit list;
+  elems : reftype list;
   locals : localtype list;
-  results : valtype list;
   labels : resulttype list;
+  results : valtype list;
   refs : Free.t;
 }
 
 let empty_context =
-  { types = []; funcs = []; globals = []; tables = [];
-    memories = []; tags = []; elems = []; datas = [];
-    locals = []; results = []; labels = [];
+  { types = []; tags = []; globals = []; memories = []; tables = [];
+    funcs = []; datas = []; elems = []; locals = []; labels = []; results = [];
     refs = Free.empty
   }
 
@@ -43,13 +42,13 @@ let lookup category list x =
     error x.at ("unknown " ^ category ^ " " ^ I32.to_string_u x.it)
 
 let type_ (c : context) x = lookup "type" c.types x
-let func (c : context) x = lookup "function" c.funcs x
-let table (c : context) x = lookup "table" c.tables x
-let memory (c : context) x = lookup "memory" c.memories x
 let tag (c : context) x = lookup "tag" c.tags x
 let global (c : context) x = lookup "global" c.globals x
-let elem (c : context) x = lookup "elem segment" c.elems x
+let memory (c : context) x = lookup "memory" c.memories x
+let table (c : context) x = lookup "table" c.tables x
+let func (c : context) x = lookup "function" c.funcs x
 let data (c : context) x = lookup "data segment" c.datas x
+let elem (c : context) x = lookup "elem segment" c.elems x
 let local (c : context) x = lookup "local" c.locals x
 let label (c : context) x = lookup "label" c.labels x
 
@@ -154,15 +153,16 @@ let check_functype (c : context) (ft : functype) at =
   check_resulttype c ts1 at;
   check_resulttype c ts2 at
 
-let check_tabletype (c : context) (tt : tabletype) at =
-  let TableT (at_, lim, t) = tt in
-  check_reftype c t at;
-  let sz, s =
-    match at_ with
-    | I32AT -> 0xffff_ffffL, "2^32-1 for i32"
-    | I64AT -> 0xffff_ffff_ffff_ffffL, "2^64-1 for i64"
-  in
-  check_limits lim sz at ("table size must be at most " ^ s)
+
+let check_tagtype (c : context) (tt : tagtype) at =
+  let TagT ut = tt in
+  let FuncT (ts1, ts2) = func_type c (idx_of_typeuse ut @@ at) in
+  require (ts2 = []) at "non-empty tag result type";
+  ()
+
+let check_globaltype (c : context) (gt : globaltype) at =
+  let GlobalT (_mut, t) = gt in
+  check_valtype c t at
 
 let check_memorytype (c : context) (mt : memorytype) at =
   let MemoryT (at_, lim) = mt in
@@ -173,28 +173,28 @@ let check_memorytype (c : context) (mt : memorytype) at =
   in
   check_limits lim sz at ("memory size must be at most " ^ s)
 
-let check_globaltype (c : context) (gt : globaltype) at =
-  let GlobalT (_mut, t) = gt in
-  check_valtype c t at
-
-let check_tagtype (c : context) (tt : tagtype) at =
-  let TagT ut = tt in
-  let FuncT (ts1, ts2) = func_type c (idx_of_typeuse ut @@ at) in
-  require (ts2 = []) at "non-empty tag result type";
-  ()
+let check_tabletype (c : context) (tt : tabletype) at =
+  let TableT (at_, lim, t) = tt in
+  check_reftype c t at;
+  let sz, s =
+    match at_ with
+    | I32AT -> 0xffff_ffffL, "2^32-1 for i32"
+    | I64AT -> 0xffff_ffff_ffff_ffffL, "2^64-1 for i64"
+  in
+  check_limits lim sz at ("table size must be at most " ^ s)
 
 let check_externtype (c : context) (xt : externtype) at =
   match xt with
-  | ExternFuncT ut ->
-    let _ft = func_type c (idx_of_typeuse ut @@ at) in ()
-  | ExternGlobalT gt ->
-    check_globaltype c gt at
-  | ExternTableT tt ->
-    check_tabletype c tt at
-  | ExternMemoryT mt ->
-    check_memorytype c mt at
   | ExternTagT tt ->
     check_tagtype c tt at
+  | ExternGlobalT gt ->
+    check_globaltype c gt at
+  | ExternMemoryT mt ->
+    check_memorytype c mt at
+  | ExternTableT tt ->
+    check_tabletype c tt at
+  | ExternFuncT ut ->
+    let _ft = func_type c (idx_of_typeuse ut @@ at) in ()
 
 
 let check_comptype (c : context) (ct : comptype) at =
@@ -1047,7 +1047,12 @@ let check_const (c : context) (const : const) (t : valtype) =
   check_block c const.it (InstrT ([], [t], [])) const.at
 
 
-(* Globals, Tables, Memories, Tags *)
+(* Tags, Globals, Memories, Tables *)
+
+let check_tag (c : context) (tag : tag) : context =
+  let Tag tt = tag.it in
+  check_tagtype c tt tag.at;
+  {c with tags = c.tags @ [subst_tagtype (subst_of c.types) tt]}
 
 let check_global (c : context) (glob : global) : context =
   let Global (gt, const) = glob.it in
@@ -1056,6 +1061,11 @@ let check_global (c : context) (glob : global) : context =
   check_const c const t;
   {c with globals = c.globals @ [gt]}
 
+let check_memory (c : context) (mem : memory) : context =
+  let Memory mt = mem.it in
+  check_memorytype c mt mem.at;
+  {c with memories = c.memories @ [mt]}
+
 let check_table (c : context) (tab : table) : context =
   let Table (tt, const) = tab.it in
   let TableT (_at, _lim, rt) = tt in
@@ -1063,15 +1073,18 @@ let check_table (c : context) (tab : table) : context =
   check_const c const (RefT rt);
   {c with tables = c.tables @ [tt]}
 
-let check_memory (c : context) (mem : memory) : context =
-  let Memory mt = mem.it in
-  check_memorytype c mt mem.at;
-  {c with memories = c.memories @ [mt]}
+let check_datamode (c : context) (mode : segmentmode) =
+  match mode.it with
+  | Passive -> ()
+  | Active (x, offset) ->
+    let MemoryT (at, _) = memory c x in
+    check_const c offset (NumT (numtype_of_addrtype at))
+  | Declarative -> assert false
 
-let check_tag (c : context) (tag : tag) : context =
-  let Tag tt = tag.it in
-  check_tagtype c tt tag.at;
-  {c with tags = c.tags @ [subst_tagtype (subst_of c.types) tt]}
+let check_data (c : context) (data : data) : context =
+  let Data (_bs, dmode) = data.it in
+  check_datamode c dmode;
+  {c with datas = c.datas @ [()]}
 
 let check_elemmode (c : context) (t : reftype) (mode : segmentmode) =
   match mode.it with
@@ -1091,19 +1104,6 @@ let check_elem (c : context) (elem : elem) : context =
   check_elemmode c rt emode;
   {c with elems = c.elems @ [rt]}
 
-let check_datamode (c : context) (mode : segmentmode) =
-  match mode.it with
-  | Passive -> ()
-  | Active (x, offset) ->
-    let MemoryT (at, _) = memory c x in
-    check_const c offset (NumT (numtype_of_addrtype at))
-  | Declarative -> assert false
-
-let check_data (c : context) (data : data) : context =
-  let Data (_bs, dmode) = data.it in
-  check_datamode c dmode;
-  {c with datas = c.datas @ [()]}
-
 
 (* Modules *)
 
@@ -1117,11 +1117,11 @@ let check_import (c : context) (im : import) : context =
   let Import (_module_name, _item_name, xt) = im.it in
   check_externtype c xt im.at;
   match subst_externtype (subst_of c.types) xt with
-  | ExternFuncT ut -> {c with funcs = c.funcs @ [deftype_of_typeuse ut]}
-  | ExternGlobalT gt -> {c with globals = c.globals @ [gt]}
-  | ExternTableT tt -> {c with tables = c.tables @ [tt]}
-  | ExternMemoryT mt -> {c with memories = c.memories @ [mt]}
   | ExternTagT tt -> {c with tags = c.tags @ [tt]}
+  | ExternGlobalT gt -> {c with globals = c.globals @ [gt]}
+  | ExternMemoryT mt -> {c with memories = c.memories @ [mt]}
+  | ExternTableT tt -> {c with tables = c.tables @ [tt]}
+  | ExternFuncT ut -> {c with funcs = c.funcs @ [deftype_of_typeuse ut]}
 
 module NameSet = Set.Make(struct type t = Ast.name let compare = compare end)
 
@@ -1129,11 +1129,11 @@ let check_export (c : context) (ex : export) : exporttype =
   let Export (name, xx) = ex.it in
   let xt =
     match xx.it with
-    | FuncX x -> ExternFuncT (Def (func c x))
-    | GlobalX x -> ExternGlobalT (global c x)
-    | TableX x -> ExternTableT (table c x)
-    | MemoryX x -> ExternMemoryT (memory c x)
     | TagX x -> ExternTagT (tag c x)
+    | GlobalX x -> ExternGlobalT (global c x)
+    | MemoryX x -> ExternMemoryT (memory c x)
+    | TableX x -> ExternTableT (table c x)
+    | FuncX x -> ExternFuncT (Def (func c x))
   in ExportT (name, xt)
 
 let check_list f xs (c : context) : context =
@@ -1154,13 +1154,13 @@ let check_module (m : module_) : moduletype =
     {empty_context with refs}
     |> check_list check_type m.it.types
     |> check_list check_import m.it.imports
-    |> check_list check_func m.it.funcs
-    |> check_list check_table m.it.tables
-    |> check_list check_memory m.it.memories
-    |> check_list check_global m.it.globals
     |> check_list check_tag m.it.tags
-    |> check_list check_elem m.it.elems
+    |> check_list check_func m.it.funcs
+    |> check_list check_memory m.it.memories
+    |> check_list check_table m.it.tables
+    |> check_list check_global m.it.globals
     |> check_list check_data m.it.datas
+    |> check_list check_elem m.it.elems
   in
   List.iter (check_func_body c) m.it.funcs;
   Option.iter (check_start c) m.it.start;

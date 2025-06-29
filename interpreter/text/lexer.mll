@@ -764,20 +764,20 @@ rule token = parse
       | "i32x4.relaxed_dot_i8x16_i7x16_add_s" -> VEC_BINARY i32x4_relaxed_dot_i8x16_i7x16_add_s
 
       | "type" -> TYPE
+      | "tag" -> TAG
+      | "global" -> GLOBAL
+      | "memory" -> MEMORY
+      | "table" -> TABLE
       | "func" -> FUNC
       | "param" -> PARAM
       | "result" -> RESULT
-      | "start" -> START
       | "local" -> LOCAL
-      | "global" -> GLOBAL
-      | "table" -> TABLE
-      | "memory" -> MEMORY
-      | "tag" -> TAG
-      | "elem" -> ELEM
       | "data" -> DATA
+      | "elem" -> ELEM
       | "declare" -> DECLARE
       | "offset" -> OFFSET
       | "item" -> ITEM
+      | "start" -> START
       | "import" -> IMPORT
       | "export" -> EXPORT
 

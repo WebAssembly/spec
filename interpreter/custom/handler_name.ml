@@ -333,18 +333,18 @@ let locate_type bs x name at (ty : type_) =
 let locate_module bs name at (m : module_) =
   if not (is_contained at m.at) then
     parse_error at "misplaced @name annotation";
-  let {types; tags; globals; tables; memories; funcs; start;
-    elems; datas; imports; exports} = m.it in
+  let {types; tags; globals; memories; tables; funcs; start;
+    datas; elems; imports; exports} = m.it in
   let ats =
     List.map (fun p -> p.at) types @
     List.map (fun p -> p.at) tags @
     List.map (fun p -> p.at) globals @
-    List.map (fun p -> p.at) tables @
     List.map (fun p -> p.at) memories @
+    List.map (fun p -> p.at) tables @
     List.map (fun p -> p.at) funcs @
     List.map (fun p -> p.at) (Option.to_list start) @
-    List.map (fun p -> p.at) elems @
     List.map (fun p -> p.at) datas @
+    List.map (fun p -> p.at) elems @
     List.map (fun p -> p.at) imports @
     List.map (fun p -> p.at) exports |> List.sort compare
   in

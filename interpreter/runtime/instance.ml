@@ -3,32 +3,32 @@ open Types
 type moduleinst =
 {
   types : typeinst list;
-  funcs : funcinst list;
-  tables : tableinst list;
-  memories : memoryinst list;
-  globals : globalinst list;
   tags : taginst list;
-  elems : eleminst list;
+  globals : globalinst list;
+  memories : memoryinst list;
+  tables : tableinst list;
+  funcs : funcinst list;
   datas : datainst list;
+  elems : eleminst list;
   exports : exportinst list;
 }
 
 and typeinst = deftype
-and funcinst = moduleinst Lib.Promise.t Func.t
-and tableinst = Table.t
-and memoryinst = Memory.t
-and globalinst = Global.t
 and taginst = Tag.t
-and eleminst = Elem.t
+and globalinst = Global.t
+and memoryinst = Memory.t
+and tableinst = Table.t
+and funcinst = moduleinst Lib.Promise.t Func.t
 and datainst = Data.t
+and eleminst = Elem.t
 and exportinst = Ast.name * extern
 
 and extern =
-  | ExternFunc of funcinst
-  | ExternTable of tableinst
-  | ExternMemory of memoryinst
-  | ExternGlobal of globalinst
   | ExternTag of taginst
+  | ExternGlobal of globalinst
+  | ExternMemory of memoryinst
+  | ExternTable of tableinst
+  | ExternFunc of funcinst
 
 
 (* Reference types *)
@@ -57,25 +57,25 @@ let () =
 
 (* Projections *)
 
-let funcinst_of_extern = function ExternFunc f -> f | _ -> failwith "funcinst_of_extern"
-let tableinst_of_extern = function ExternTable t -> t | _ -> failwith "tableinst_of_extern"
-let memoryinst_of_extern = function ExternMemory m -> m | _ -> failwith "memoryinst_of_extern"
-let globalinst_of_extern = function ExternGlobal g -> g | _ -> failwith "globalinst_of_extern"
 let taginst_of_extern = function ExternTag t -> t | _ -> failwith "taginst_of_extern"
+let globalinst_of_extern = function ExternGlobal g -> g | _ -> failwith "globalinst_of_extern"
+let memoryinst_of_extern = function ExternMemory m -> m | _ -> failwith "memoryinst_of_extern"
+let tableinst_of_extern = function ExternTable t -> t | _ -> failwith "tableinst_of_extern"
+let funcinst_of_extern = function ExternFunc f -> f | _ -> failwith "funcinst_of_extern"
 
 
 (* Auxiliary functions *)
 
 let empty_moduleinst =
-  { types = []; funcs = []; tables = []; memories = []; globals = [];
-    tags = []; elems = []; datas = []; exports = [] }
+  { types = []; tags = []; globals = []; memories = []; tables = []; funcs = [];
+    datas = []; elems = []; exports = [] }
 
 let externtype_of c = function
-  | ExternFunc func -> ExternFuncT (Def (Func.type_of func))
-  | ExternTable tab -> ExternTableT (Table.type_of tab)
-  | ExternMemory mem -> ExternMemoryT (Memory.type_of mem)
-  | ExternGlobal glob -> ExternGlobalT (Global.type_of glob)
   | ExternTag tag -> ExternTagT (Tag.type_of tag)
+  | ExternGlobal glob -> ExternGlobalT (Global.type_of glob)
+  | ExternMemory mem -> ExternMemoryT (Memory.type_of mem)
+  | ExternTable tab -> ExternTableT (Table.type_of tab)
+  | ExternFunc func -> ExternFuncT (Def (Func.type_of func))
 
 let export inst name =
   try Some (List.assoc name inst.exports) with Not_found -> None

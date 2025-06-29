@@ -163,29 +163,29 @@ and match_deftype c dt1 dt2 =
   List.exists (fun ut1 -> match_heaptype c (UseHT ut1) (UseHT (Def dt2))) uts1
 
 
+let match_tagtype c (TagT ut1) (TagT ut2) =
+  match ut1, ut2 with
+  | Def dt1, Def dt2 -> match_deftype c dt1 dt2 && match_deftype c dt2 dt1
+  | _, _ -> assert false
+
 let match_globaltype c (GlobalT (mut1, t1)) (GlobalT (mut2, t2)) =
   mut1 = mut2 && match_valtype c t1 t2 &&
   match mut1 with
   | Cons -> true
   | Var -> match_valtype c t2 t1
 
+let match_memorytype c (MemoryT (at1, lim1)) (MemoryT (at2, lim2)) =
+  at1 = at2 && match_limits c lim1 lim2
+
 let match_tabletype c (TableT (at1, lim1, t1)) (TableT (at2, lim2, t2)) =
   at1 = at2 && match_limits c lim1 lim2 &&
   match_reftype c t1 t2 && match_reftype c t2 t1
 
-let match_memorytype c (MemoryT (at1, lim1)) (MemoryT (at2, lim2)) =
-  at1 = at2 && match_limits c lim1 lim2
-
-let match_tagtype c (TagT ut1) (TagT ut2) =
-  match ut1, ut2 with
-  | Def dt1, Def dt2 -> match_deftype c dt1 dt2 && match_deftype c dt2 dt1
-  | _, _ -> assert false
-
 let match_externtype c xt1 xt2 =
   match xt1, xt2 with
-  | ExternFuncT (Def dt1), ExternFuncT (Def dt2) -> match_deftype c dt1 dt2
-  | ExternTableT tt1, ExternTableT tt2 -> match_tabletype c tt1 tt2
-  | ExternMemoryT mt1, ExternMemoryT mt2 -> match_memorytype c mt1 mt2
-  | ExternGlobalT gt1, ExternGlobalT gt2 -> match_globaltype c gt1 gt2
   | ExternTagT tt1, ExternTagT tt2 -> match_tagtype c tt1 tt2
+  | ExternGlobalT gt1, ExternGlobalT gt2 -> match_globaltype c gt1 gt2
+  | ExternMemoryT mt1, ExternMemoryT mt2 -> match_memorytype c mt1 mt2
+  | ExternTableT tt1, ExternTableT tt2 -> match_tabletype c tt1 tt2
+  | ExternFuncT (Def dt1), ExternFuncT (Def dt2) -> match_deftype c dt1 dt2
   | _, _ -> false
