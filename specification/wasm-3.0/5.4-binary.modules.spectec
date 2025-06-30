@@ -162,7 +162,7 @@ grammar Bdatacntsec : u32? hint(desc "data count section") =
 ;; Tag section
 
 grammar Btag : tag =
-  | x:Btypeidx => TAG x
+  | jt:Btagtype => TAG jt
 
 grammar Btagsec : tag* hint(desc "tag section") =
   | tag*:Bsection_(13, Blist(Btag)) => tag*
@@ -188,7 +188,7 @@ grammar Bmodule : module =
     Bcustomsec* (local*, expr)*:Bcodesec
     Bcustomsec* data*:Bdatasec
     Bcustomsec* =>
-      MODULE type* import* func* global* table* mem* tag* elem* data* start? export*
+      MODULE type* import* tag* global* mem* table* func* data* elem* start? export*
     ----
     -- (if n = |data*|)?
     -- if (n? =/= eps \/ $dataidx_funcs(func*) = eps)

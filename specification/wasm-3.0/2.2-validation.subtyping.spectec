@@ -189,10 +189,10 @@ rule Deftype_sub/super:
 ;; External types
 
 relation Limits_sub: context |- limits <: limits             hint(name "S-limits") hint(macro "%limitsmatch")
-relation Globaltype_sub: context |- globaltype <: globaltype hint(name "S-global") hint(macro "%globaltypematch")
-relation Tabletype_sub: context |- tabletype <: tabletype    hint(name "S-table")  hint(macro "%tabletypematch")
-relation Memtype_sub: context |- memtype <: memtype          hint(name "S-mem")    hint(macro "%memtypematch")
 relation Tagtype_sub: context |- tagtype <: tagtype          hint(name "S-tag")    hint(macro "%tagtypematch")
+relation Globaltype_sub: context |- globaltype <: globaltype hint(name "S-global") hint(macro "%globaltypematch")
+relation Memtype_sub: context |- memtype <: memtype          hint(name "S-mem")    hint(macro "%memtypematch")
+relation Tabletype_sub: context |- tabletype <: tabletype    hint(name "S-table")  hint(macro "%tabletypematch")
 relation Externtype_sub: context |- externtype <: externtype hint(name "S-extern") hint(macro "%externtypematch")
 
 
@@ -201,10 +201,10 @@ rule Limits_sub:
   -- if n_1 >= n_2
   -- if m_1 <= m_2
 
-rule Functype_sub:
-  C |- t_11* -> t_12* <: t_21* -> t_22*
-  -- Resulttype_sub: C |- t_21* <: t_11*
-  -- Resulttype_sub: C |- t_12* <: t_22*
+rule Tagtype_sub:
+  C |- deftype_1 <: deftype_2
+  -- Deftype_sub: C |- deftype_1 <: deftype_2
+  -- Deftype_sub: C |- deftype_2 <: deftype_1
 
 rule Globaltype_sub/const:
   C |- valtype_1 <: valtype_2
@@ -215,38 +215,38 @@ rule Globaltype_sub/var:
   -- Valtype_sub: C |- valtype_1 <: valtype_2
   -- Valtype_sub: C |- valtype_2 <: valtype_1
 
+rule Memtype_sub:
+  C |- addrtype limits_1 PAGE <: addrtype limits_2 PAGE
+  -- Limits_sub: C |- limits_1 <: limits_2
+
 rule Tabletype_sub:
   C |- addrtype limits_1 reftype_1 <: addrtype limits_2 reftype_2
   -- Limits_sub: C |- limits_1 <: limits_2
   -- Reftype_sub: C |- reftype_1 <: reftype_2
   -- Reftype_sub: C |- reftype_2 <: reftype_1
 
-rule Memtype_sub:
-  C |- addrtype limits_1 PAGE <: addrtype limits_2 PAGE
-  -- Limits_sub: C |- limits_1 <: limits_2
-
-rule Tagtype_sub:
-  C |- deftype_1 <: deftype_2
-  -- Deftype_sub: C |- deftype_1 <: deftype_2
-  -- Deftype_sub: C |- deftype_2 <: deftype_1
+rule Functype_sub:
+  C |- t_11* -> t_12* <: t_21* -> t_22*
+  -- Resulttype_sub: C |- t_21* <: t_11*
+  -- Resulttype_sub: C |- t_12* <: t_22*
 
 
-rule Externtype_sub/func:
-  C |- FUNC deftype_1 <: FUNC deftype_2
-  -- Deftype_sub: C |- deftype_1 <: deftype_2
+rule Externtype_sub/tag:
+  C |- TAG tagtype_1 <: TAG tagtype_2
+  -- Tagtype_sub: C |- tagtype_1 <: tagtype_2
 
 rule Externtype_sub/global:
   C |- GLOBAL globaltype_1 <: GLOBAL globaltype_2
   -- Globaltype_sub: C |- globaltype_1 <: globaltype_2
 
-rule Externtype_sub/table:
-  C |- TABLE tabletype_1 <: TABLE tabletype_2
-  -- Tabletype_sub: C |- tabletype_1 <: tabletype_2
-
 rule Externtype_sub/mem:
   C |- MEM memtype_1 <: MEM memtype_2
   -- Memtype_sub: C |- memtype_1 <: memtype_2
 
-rule Externtype_sub/tag:
-  C |- TAG tagtype_1 <: TAG tagtype_2
-  -- Tagtype_sub: C |- tagtype_1 <: tagtype_2
+rule Externtype_sub/table:
+  C |- TABLE tabletype_1 <: TABLE tabletype_2
+  -- Tabletype_sub: C |- tabletype_1 <: tabletype_2
+
+rule Externtype_sub/func:
+  C |- FUNC deftype_1 <: FUNC deftype_2
+  -- Deftype_sub: C |- deftype_1 <: deftype_2

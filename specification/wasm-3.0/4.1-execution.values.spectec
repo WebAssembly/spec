@@ -85,25 +85,25 @@ rule Val_ok/ref:
 
 relation Externaddr_ok: store |- externaddr : externtype  hint(macro "%externaddr")
 
-rule Externaddr_ok/func:
-  s |- FUNC a : FUNC funcinst.TYPE
-  -- if s.FUNCS[a] = funcinst
+rule Externaddr_ok/tag:
+  s |- TAG a : TAG taginst.TYPE
+  -- if s.TAGS[a] = taginst
 
 rule Externaddr_ok/global:
   s |- GLOBAL a : GLOBAL globalinst.TYPE
   -- if s.GLOBALS[a] = globalinst
 
-rule Externaddr_ok/table:
-  s |- TABLE a : TABLE tableinst.TYPE
-  -- if s.TABLES[a] = tableinst
-
 rule Externaddr_ok/mem:
   s |- MEM a : MEM meminst.TYPE
   -- if s.MEMS[a] = meminst
 
-rule Externaddr_ok/tag:
-  s |- TAG a : TAG taginst.TYPE
-  -- if s.TAGS[a] = taginst
+rule Externaddr_ok/table:
+  s |- TABLE a : TABLE tableinst.TYPE
+  -- if s.TABLES[a] = tableinst
+
+rule Externaddr_ok/func:
+  s |- FUNC a : FUNC funcinst.TYPE
+  -- if s.FUNCS[a] = funcinst
 
 rule Externaddr_ok/sub:
   s |- externaddr : xt

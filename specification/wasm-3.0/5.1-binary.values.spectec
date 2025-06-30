@@ -66,13 +66,13 @@ grammar Bname : name =
 ;; Indices
 
 grammar Btypeidx : typeidx = x:Bu32 => x
-grammar Bfuncidx : funcidx = x:Bu32 => x
-grammar Bglobalidx : globalidx = x:Bu32 => x
-grammar Btableidx : tableidx = x:Bu32 => x
-grammar Bmemidx : memidx = x:Bu32 => x
 grammar Btagidx : tagidx = x:Bu32 => x
-grammar Belemidx : elemidx = x:Bu32 => x
+grammar Bglobalidx : globalidx = x:Bu32 => x
+grammar Bmemidx : memidx = x:Bu32 => x
+grammar Btableidx : tableidx = x:Bu32 => x
+grammar Bfuncidx : funcidx = x:Bu32 => x
 grammar Bdataidx : dataidx = x:Bu32 => x
+grammar Belemidx : elemidx = x:Bu32 => x
 grammar Blocalidx : localidx = x:Bu32 => x
 grammar Blabelidx : labelidx = l:Bu32 => l
 

@@ -1049,24 +1049,24 @@ let al_to_export: value -> export = al_to_phrase al_to_export'
 
 let rec al_to_module': value -> module_' = function
   | CaseV ("MODULE", [
-      types; _imports; funcs; globals; tables; memories; elems; datas; start; exports
+      types; imports; funcs; globals; tables; memories; elems; datas; start; exports
     ]) when !version < 3 ->
     al_to_module' (CaseV ("MODULE", [
-      types; _imports; funcs; globals; tables; memories; listV [||]; elems; datas; start; exports
+      types; imports; listV [||]; globals; memories; tables; funcs; datas; elems; start; exports
     ]))
   | CaseV ("MODULE", [
-      types; imports; funcs; globals; tables; memories; tags; elems; datas; start; exports
+      types; imports; tags; globals; memories; tables; funcs; datas; elems; start; exports
     ]) ->
     {
       types = al_to_list al_to_type types;
       imports = al_to_list (al_to_import (al_to_list al_to_type types)) imports;
-      funcs = al_to_list al_to_func funcs;
-      globals = al_to_list al_to_global globals;
-      tables = al_to_list al_to_table tables;
-      memories = al_to_list al_to_memory memories;
       tags = al_to_list al_to_tag tags;
-      elems = al_to_list al_to_elem elems;
+      globals = al_to_list al_to_global globals;
+      memories = al_to_list al_to_memory memories;
+      tables = al_to_list al_to_table tables;
+      funcs = al_to_list al_to_func funcs;
       datas = al_to_list al_to_data datas;
+      elems = al_to_list al_to_elem elems;
       start = al_to_opt al_to_start start;
       exports = al_to_list al_to_export exports;
     }
@@ -2166,18 +2166,29 @@ let al_of_export export =
   CaseV ("EXPORT", [ al_of_name export.it.name; al_of_export_desc export.it.edesc ])
 
 let al_of_module module_ =
-  CaseV ("MODULE", [
-    al_of_list al_of_type module_.it.types;
-    al_of_list (al_of_import module_) module_.it.imports;
-    al_of_list al_of_func module_.it.funcs;
-    al_of_list al_of_global module_.it.globals;
-    al_of_list al_of_table module_.it.tables;
-    al_of_list al_of_memory module_.it.memories;
-  ] @
-    (if !version < 3 then [] else [al_of_list al_of_tag module_.it.tags])
-  @ [
-    al_of_list al_of_elem module_.it.elems;
-    al_of_list al_of_data module_.it.datas;
-    al_of_opt al_of_start module_.it.start;
-    al_of_list al_of_export module_.it.exports;
-  ])
+  CaseV ("MODULE",
+    if !version < 3 then [
+      al_of_list al_of_type module_.it.types;
+      al_of_list (al_of_import module_) module_.it.imports;
+      al_of_list al_of_func module_.it.funcs;
+      al_of_list al_of_global module_.it.globals;
+      al_of_list al_of_table module_.it.tables;
+      al_of_list al_of_memory module_.it.memories;
+      al_of_list al_of_elem module_.it.elems;
+      al_of_list al_of_data module_.it.datas;
+      al_of_opt al_of_start module_.it.start;
+      al_of_list al_of_export module_.it.exports;
+    ] else [
+      al_of_list al_of_type module_.it.types;
+      al_of_list (al_of_import module_) module_.it.imports;
+      al_of_list al_of_tag module_.it.tags;
+      al_of_list al_of_global module_.it.globals;
+      al_of_list al_of_memory module_.it.memories;
+      al_of_list al_of_table module_.it.tables;
+      al_of_list al_of_func module_.it.funcs;
+      al_of_list al_of_data module_.it.datas;
+      al_of_list al_of_elem module_.it.elems;
+      al_of_opt al_of_start module_.it.start;
+      al_of_list al_of_export module_.it.exports;
+    ]
+  )

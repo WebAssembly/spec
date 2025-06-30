@@ -226,7 +226,7 @@ rule Step_pure/return-handler:
 
 rule Step/throw:
   z; val^n (THROW x)  ~>  $add_exninst(z, exn); (REF.EXN_ADDR a) THROW_REF
-  -- Expand: $tag(z, x).TYPE ~~ FUNC (t^n -> eps)
+  -- Expand: $as_deftype($tag(z, x).TYPE) ~~ FUNC (t^n -> eps)
   -- if a = |$exninst(z)|
   -- if exn = {TAG $tagaddr(z)[x], FIELDS val^n}
 

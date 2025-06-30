@@ -24,16 +24,16 @@ var it : instrtype
 syntax context hint(desc "context") hint(macro "%" "C%") =
   { TYPES deftype*          hint(desc "type"),
     RECS subtype*           hint(desc "recursive type"),
-    FUNCS deftype*          hint(desc "function"),
-    GLOBALS globaltype*     hint(desc "global"),
-    TABLES tabletype*       hint(desc "table"),
-    MEMS memtype*           hint(desc "memory"),
     TAGS tagtype*           hint(desc "tag"),
-    ELEMS elemtype*         hint(desc "element segment"),
+    GLOBALS globaltype*     hint(desc "global"),
+    MEMS memtype*           hint(desc "memory"),
+    TABLES tabletype*       hint(desc "table"),
+    FUNCS deftype*          hint(desc "function"),
     DATAS datatype*         hint(desc "data segment"),
+    ELEMS elemtype*         hint(desc "element segment"),
     LOCALS localtype*       hint(desc "local"),
     LABELS resulttype*      hint(desc "label"),
-    RETURN resulttype?,
+    RETURN resulttype?      hint(desc "result"),
     REFS funcidx*
   }
 
@@ -53,12 +53,16 @@ def $with_locals(C, x_1 x*, lct_1 lct*) = $with_locals(C[.LOCALS[x_1] = lct_1], 
 
 def $clos_valtype(context, valtype) : valtype  hint(show $clos_(%,%)) hint(macro "clostype")
 def $clos_deftype(context, deftype) : deftype  hint(show $clos_(%,%)) hint(macro "clostype")
+def $clos_tagtype(context, tagtype) : tagtype  hint(show $clos_(%,%)) hint(macro "clostype")
+def $clos_externtype(context, externtype) : externtype  hint(show $clos_(%,%)) hint(macro "clostype")
 def $clos_moduletype(context, moduletype) : moduletype  hint(show $clos_(%,%)) hint(macro "clostype")
 def $clos_deftypes(deftype*) : deftype*        hint(show $clos*#((%))) hint(macro "clostype")
 
 ;; TODO(3, rossberg): enable inlining dt*
 def $clos_valtype(C, t) = $subst_all_valtype(t, dt*) -- if dt* = $clos_deftypes(C.TYPES)
 def $clos_deftype(C, dt) = $subst_all_deftype(dt, dt'*) -- if dt'* = $clos_deftypes(C.TYPES)
+def $clos_tagtype(C, jt) = $subst_all_tagtype(jt, dt*) -- if dt* = $clos_deftypes(C.TYPES)
+def $clos_externtype(C, xt) = $subst_all_externtype(xt, dt*) -- if dt* = $clos_deftypes(C.TYPES)
 def $clos_moduletype(C, mmt) = $subst_all_moduletype(mmt, dt*) -- if dt* = $clos_deftypes(C.TYPES)
 
 def $clos_deftypes(eps) = eps
