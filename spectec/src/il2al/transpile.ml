@@ -223,6 +223,11 @@ let rec infer_else instrs =
         when eq_cond c1 (neg c2) ->
         let at = over_region [ at1; at2 ] in
         ifI (c1, then_body1 @ then_body2, else_body1 @ else_body2) ~at:at :: rest
+      | { it = IfI (c1, body1, []); at = at1; _ }, { it = IfI (c3 ,[{it = IfI (c2, body2, []); at = at2; _ }], []); _} :: rest
+        when eq_cond c1 (neg c2) ->
+        let at = over_region [ at1; at2 ] in
+        let body3 = [ifI (c3, body2, []) ~at:at2] in
+        ifI (c1, body1, body3) ~at :: rest
       | _ -> new_i :: il)
     instrs []
 
