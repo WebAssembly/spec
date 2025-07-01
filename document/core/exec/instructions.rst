@@ -188,62 +188,12 @@ $${rule: {Step_pure/ref.eq-*}}
 
 $${rule-prose: Step_read/ref.test}
 
-.. todo:: (9) Need to handle RulePr s \|- ref : rt properly in prose instead of $ref_type_of
-   below is the official specification
-
-1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
-
-2. Let :math:`\X{rt}_1` be the :ref:`reference type <syntax-reftype>` :math:`\insttype_{F.\AMODULE}(\X{rt})`.
-
-3. Assert: due to :ref:`validation <valid-ref.test>`, :math:`\X{rt}_1` is :ref:`closed <type-closed>`.
-
-4. Assert: due to :ref:`validation <valid-ref.test>`, a :ref:`reference value <syntax-ref>` is on the top of the stack.
-
-5. Pop the value :math:`\reff` from the stack.
-
-6. Assert: due to validation, the :ref:`reference value <syntax-ref>` is :ref:`valid <valid-ref>` with some :ref:`reference type <syntax-reftype>`.
-
-7. Let :math:`\X{rt}_2` be the :ref:`reference type <syntax-reftype>` of :math:`\reff`.
-
-8. If the :ref:`reference type <syntax-reftype>` :math:`\X{rt}_2` :ref:`matches <match-reftype>` :math:`\X{rt}_1`, then:
-
-   a. Push the value :math:`\I32.\CONST~1` to the stack.
-
-9. Else:
-
-   a. Push the value :math:`\I32.\CONST~0` to the stack.
-
 $${rule: {Step_read/ref.test-*}}
 
 
 .. _exec-ref.cast:
 
 $${rule-prose: Step_read/ref.cast}
-
-.. todo:: (9) Need to handle RulePr s \|- ref : rt properly in prose instead of $ref_type_of
-   below is the official specification 
-
-1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
-
-2. Let :math:`\X{rt}_1` be the :ref:`reference type <syntax-reftype>` :math:`\insttype_{F.\AMODULE}(\X{rt})`.
-
-3. Assert: due to :ref:`validation <valid-ref.test>`, :math:`\X{rt}_1` is :ref:`closed <type-closed>`.
-
-4. Assert: due to :ref:`validation <valid-ref.test>`, a :ref:`reference value <syntax-ref>` is on the top of the stack.
-
-5. Pop the value :math:`\reff` from the stack.
-
-6. Assert: due to validation, the :ref:`reference value <syntax-ref>` is :ref:`valid <valid-ref>` with some :ref:`reference type <syntax-reftype>`.
-
-7. Let :math:`\X{rt}_2` be the :ref:`reference type <syntax-reftype>` of :math:`\reff`.
-
-8. If the :ref:`reference type <syntax-reftype>` :math:`\X{rt}_2` :ref:`matches <match-reftype>` :math:`\X{rt}_1`, then:
-
-   a. Push the value :math:`\reff` back to the stack.
-
-9. Else:
-
-   a. Trap.
 
 $${rule: {Step_read/ref.cast-*}}
 
@@ -258,25 +208,6 @@ $${rule: {Step_pure/ref.i31}}
 .. _exec-i31.get:
 
 $${rule-prose: Step_pure/i31.get}
-
-.. todo:: (4) Guarantees from validation can help simplify the prose.
-   below is the official specification
-
-1. Assert: due to :ref:`validation <valid-i31.get>`, a :ref:`value <syntax-val>` of :ref:`type <syntax-valtype>` :math:`(\REF~\NULL~\I31)` is on the top of the stack.
-
-2. Pop the value :math:`\reff` from the stack.
-
-3. If :math:`\reff` is :math:`\REFNULL~t`, then:
-
-   a. Trap.
-
-4. Assert: due to :ref:`validation <valid-i31.get>`, a :math:`\reff` is a :ref:`scalar reference <syntax-ref.i31>`.
-
-5. Let :math:`\REFI31NUM~i` be the reference value :math:`\reff`.
-
-6. Let :math:`j` be the result of computing :math:`\extend^{\sx}_{31,32}(i)`.
-
-7. Push the value :math:`\I32.\CONST~j` to the stack.
 
 $${rule: {Step_pure/i31.get-*}}
 
@@ -1208,58 +1139,12 @@ $${rule: {Step_pure/br_on_non_null-*}}
 
 $${rule-prose: Step_read/br_on_cast}
 
-.. todo:: (9) Need to handle RulePr s \|- ref : rt properly in prose instead of $ref_type_of
-   below is the official specification
-
-1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
-
-2. Let :math:`\X{rt}'_2` be the :ref:`reference type <syntax-reftype>` :math:`\insttype_{F.\AMODULE}(\X{rt}_2)`.
-
-3. Assert: due to :ref:`validation <valid-ref.test>`, :math:`\X{rt}'_2` is :ref:`closed <type-closed>`.
-
-4. Assert: due to :ref:`validation <valid-ref.test>`, a :ref:`reference value <syntax-ref>` is on the top of the stack.
-
-5. Pop the value :math:`\reff` from the stack.
-
-6. Assert: due to validation, the :ref:`reference value <syntax-ref>` is :ref:`valid <valid-ref>` with some :ref:`reference type <syntax-reftype>`.
-
-7. Let :math:`\X{rt}` be the :ref:`reference type <syntax-reftype>` of :math:`\reff`.
-
-8. Push the value :math:`\reff` back to the stack.
-
-9. If the :ref:`reference type <syntax-reftype>` :math:`\X{rt}` :ref:`matches <match-reftype>` :math:`\X{rt}'_2`, then:
-
-   a. :ref:`Execute <exec-br>` the instruction :math:`(\BR~l)`.
-
 $${rule: {Step_read/br_on_cast-*}}
 
 
 .. _exec-br_on_cast_fail:
 
 $${rule-prose: Step_read/br_on_cast_fail}
-
-.. todo:: (9) Need to handle RulePr s \|- ref : rt properly in prose instead of $ref_type_of
-   below is the official specification
-
-1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
-
-2. Let :math:`\X{rt}'_2` be the :ref:`reference type <syntax-reftype>` :math:`\insttype_{F.\AMODULE}(\X{rt}_2)`.
-
-3. Assert: due to :ref:`validation <valid-ref.test>`, :math:`\X{rt}'_2` is :ref:`closed <type-closed>`.
-
-4. Assert: due to :ref:`validation <valid-ref.test>`, a :ref:`reference value <syntax-ref>` is on the top of the stack.
-
-5. Pop the value :math:`\reff` from the stack.
-
-6. Assert: due to validation, the :ref:`reference value <syntax-ref>` is :ref:`valid <valid-ref>` with some :ref:`reference type <syntax-reftype>`.
-
-7. Let :math:`\X{rt}` be the :ref:`reference type <syntax-reftype>` of :math:`\reff`.
-
-8. Push the value :math:`\reff` back to the stack.
-
-9. If the :ref:`reference type <syntax-reftype>` :math:`\X{rt}` does not :ref:`match <match-reftype>` :math:`\X{rt}'_2`, then:
-
-   a. :ref:`Execute <exec-br>` the instruction :math:`(\BR~l)`.
 
 $${rule: {Step_read/br_on_cast_fail-*}}
 
