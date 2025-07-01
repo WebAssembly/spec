@@ -183,6 +183,71 @@ let merge instrs1 instrs2 =
 
 let merge_blocks blocks = List.fold_right merge blocks []
 
+let is_single_if block =
+  match block with
+  | [{it = IfI (_, _, []); _}] -> true
+  | _ -> false
+
+let rec extract_cond block =
+  match block with
+  | [{it = IfI (c, b, []); _}] -> c :: extract_cond b
+  | _ -> []
+
+let extract_common_cond conds =
+  let first_cond = List.hd conds in
+  List.find_opt (fun c ->
+    List.for_all (List.exists (eq_cond c)) (List.tl conds)
+  ) first_cond
+
+let rec remove_cond c block =
+  match block with
+  | [{it = IfI (c', b, []); at; _}] ->
+    if eq_cond c c' then
+      b
+    else
+      [ifI (c', remove_cond c b, []) ~at]
+  | _ -> assert false
+
+let extract_common_cond_allow_neg conds =
+  let first_cond = List.hd conds in
+  List.find_opt (fun c ->
+    List.for_all (List.exists (fun c' -> eq_cond c c' || eq_cond c (neg c'))) (List.tl conds)
+  ) first_cond
+
+let rec remove_cond_allow_neg c block =
+  match block with
+  | [{it = IfI (c', b, []); at; _}] ->
+    if eq_cond c c' then
+      Either.Left b
+    else if eq_cond c (neg c') then
+      Either.Right b
+    else
+      let f b = [ifI (c', b, []) ~at] in
+      remove_cond_allow_neg c b
+      |> Either.map ~left:f ~right:f
+  | _ -> assert false
+
+
+(* Merge disjoint blocks, automatically inferring and inserting the appropriate else branch *)
+let rec merge_disjoint_ifs blocks =
+  if List.length blocks > 1 && List.for_all is_single_if blocks then
+    let conds = List.map extract_cond blocks in
+    let at = List.map (fun b -> List.map (fun i -> i.at) b |> over_region) blocks |> over_region in
+    (* If there is a condition that appear in all if-blocks, extract it as the first cond *)
+    match extract_common_cond conds with
+    | Some c ->
+      [ifI (c, merge_disjoint_ifs (List.map (remove_cond c) blocks), []) ~at]
+    | None ->
+      (* If there is a condition whose own version or negated version appear in all if-blocks, extract it as the first cond *)
+      match extract_common_cond_allow_neg conds with
+      | Some c ->
+        let then_blocks, else_blocks = List.partition_map (remove_cond_allow_neg c) blocks in
+        [ifI (c, merge_disjoint_ifs then_blocks, merge_disjoint_ifs else_blocks) ~at]
+      | None ->
+        List.concat blocks
+  else
+    List.concat blocks
+
 (* Enhance readability of AL *)
 
 let rec unify_if instrs =
@@ -204,8 +269,30 @@ let rec unify_if instrs =
         let body = unify_if (common @ own_body1 @ own_body2) in
         let at = over_region [ at1; at2 ] in
         ifI (c1, body, []) ~at:at :: rest
+      | { it = IfI (c', [{it = IfI (c1, body1, []); _}], []); at = at1; _ }, { it = IfI (c2, body2, []); at = at2; _ } :: rest
+        when Eq.eq_expr c1 c2 ->
+        let i = ifI (c', body1, []) ~at:at1 in
+        let body = unify_if (i :: body2) in
+        let at = over_region [ at1; at2 ] in
+        ifI (c1, body, []) ~at:at :: rest
       | _ -> new_i :: il)
     instrs []
+
+let extract_last_ifs il =
+  let rec extract_first_ifs acc il =
+    match il with
+    | [] -> List.rev il, acc
+    | hd :: tl ->
+      match hd.it with
+      | IfI _ -> extract_first_ifs ([hd] :: acc) tl
+      | _ -> List.rev il, acc
+  in
+  extract_first_ifs [] (List.rev il)
+
+(* Unify more than 3 ifs at once, by extracting the common conditions *)
+let unify_multi_if instrs =
+  let hd, ifs = extract_last_ifs instrs in
+  hd @ merge_disjoint_ifs ifs
 
 let rec infer_else instrs =
   List.fold_right
@@ -609,6 +696,7 @@ let rec enhance_readability instrs =
     |> remove_redundant_assignment
     |> remove_trivial_assignment
     |> unify_if
+    |> unify_multi_if
     |> infer_else
     |> List.concat_map remove_unnecessary_branch
     |> remove_nop []
@@ -1017,17 +1105,19 @@ let handle_frame params instrs =
   | None   -> handle_unframed_algo instrs
 
 (* Applied for reduction rules: infer assert from if *)
-let count_if instrs =
+let count_non_trapping_if instrs =
   let f instr =
     match instr.it with
+    | IfI (_, [{it = TrapI; _}], _) -> false
     | IfI _ -> true
     | _ -> false in
   List.filter f instrs |> List.length
 let rec infer_assert instrs =
-  if count_if instrs = 1 then
+  if count_non_trapping_if instrs = 1 then
     let hd, tl = Lib.List.split_last instrs in
     match tl.it with
     | IfI (c, il1, []) -> hd @ assertI c ~at:c.at :: infer_assert il1
+    | IfI (c, il1, il2) -> hd @ [ifI (c, infer_assert il1, infer_assert il2) ~at:c.at]
     | _ -> instrs
   else instrs
 
