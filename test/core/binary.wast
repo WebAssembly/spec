@@ -669,7 +669,7 @@
   (module binary
       "\00asm" "\01\00\00\00"
       "\05\03\01"                           ;; memory section with one entry
-      "\08"                                 ;; malformed memory limits flag
+      "\10"                                 ;; malformed memory limits flag
       "\00"                                 ;; dummy byte
   )
   "malformed limits flags"

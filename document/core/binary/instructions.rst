@@ -97,7 +97,8 @@ Control Instructions
      0{:}\Bu8 &\Rightarrow& (\epsilon, \epsilon) \\ &&|&
      1{:}\Bu8 &\Rightarrow& (\NULL, \epsilon) \\ &&|&
      2{:}\Bu8 &\Rightarrow& (\epsilon, \NULL) \\ &&|&
-     3{:}\Bu8 &\Rightarrow& (\NULL, \NULL) \\
+     3{:}\Bu8 &\Rightarrow& (\NULL, \NULL) \\ &&|&
+     \dots
    \end{array}
 
 .. note::
