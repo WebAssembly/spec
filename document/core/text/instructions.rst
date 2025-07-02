@@ -156,7 +156,8 @@ All other control instruction are represented verbatim.
      \text{return\_call\_indirect}~~x{:}\Ttableidx~~y,I'{:}\Ttypeuse_I &\Rightarrow& \RETURNCALLINDIRECT~x~y
        & (\iff I' = \{\ILOCALS~(\epsilon)^\ast\}) \\ &&|&
      \text{throw}~~x{:}\Ttagidx_I &\Rightarrow& \THROW~x \\ &&|&
-     \text{throw\_ref} &\Rightarrow& \THROWREF \\
+     \text{throw\_ref} &\Rightarrow& \THROWREF \\ &&|&
+     \dots
    \end{array}
 
 .. note::
