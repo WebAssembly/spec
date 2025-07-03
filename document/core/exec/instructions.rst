@@ -925,26 +925,7 @@ $${rule: {Step_read/return_call}}
 
 .. _exec-return_call_ref:
 
-:math:`\RETURNCALLREF~x`
-........................
-
 $${rule-prose: Step_read/return_call_ref}
-
-.. todo:: (*) Prose not spliced, Sphinx cannot build the document with deeply nested ordered list. (mainly caused by spurious conditions that should be assertions)
-
-1. Assert: due to :ref:`validation <valid-return_call_ref>`, a :ref:`function reference <syntax-ref>` is on the top of the stack.
-
-2. Pop the reference value :math:`r` from the stack.
-
-3. If :math:`r` is :math:`\REFNULL~\X{ht}`, then:
-
-    a. Trap.
-
-4. Assert: due to :ref:`validation <valid-call_ref>`, :math:`r` is a :ref:`function reference <syntax-ref>`.
-
-5. Let :math:`\REFFUNCADDR~a` be the reference :math:`r`.
-
-6. :ref:`Tail-invoke <exec-invoke>` the function instance at address :math:`a`.
 
 $${rule: {Step_read/return_call_ref-*}}
 
