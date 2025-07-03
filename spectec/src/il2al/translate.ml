@@ -35,19 +35,37 @@ let is_store: Il.exp -> bool = check_typ_of_exp "store"
 let is_frame: Il.exp -> bool = check_typ_of_exp "frame"
 let is_config: Il.exp -> bool = check_typ_of_exp "config"
 
+let field t = Il.VarE ("_" $ Source.no_region) $$ Source.no_region % t, t
+let typ_store = Il.VarT ("store" $ Source.no_region, []) $ Source.no_region
+let typ_frame = Il.VarT ("frame" $ Source.no_region, []) $ Source.no_region
+let typ_state = Il.VarT ("state" $ Source.no_region, []) $ Source.no_region
+let typ_state_arg = Il.TupT [field typ_store; field typ_frame] $ Source.no_region
+
 let split_config (exp: Il.exp): Il.exp * Il.exp =
   assert(is_config exp);
   match exp.it with
   | Il.CaseE ([[]; [{it = Atom.Semicolon; _}]; []], {it = TupE [ e1; e2 ]; _})
   when is_state e1 -> e1, e2
-  | _ -> assert(false)
+  | Il.CaseE ([[]; [{it = Atom.Semicolon; _}]; []], {it = TupE [ e1; e2 ]; _})
+  when is_frame e1 ->
+    let store = Il.StrE [] $$ e1.at % typ_store in
+    let state = Il.CaseE ([[]; [Atom.Semicolon $$ e1.at % Atom.info ""]; []], Il.TupE [ store; e1 ] $$ e1.at % typ_state_arg) $$ e1.at % typ_state in
+    state, e2
+  | Il.CaseE ([[]; [{it = Atom.Semicolon; _}]; []], {it = TupE [ e1; e2 ]; _})
+  when is_store e1 ->
+    let frame = Il.StrE [] $$ e1.at % typ_frame in
+    let state = Il.CaseE ([[]; [Atom.Semicolon $$ e1.at % Atom.info ""]; []], Il.TupE [ e1; frame ] $$ e1.at % typ_state_arg) $$ e1.at % typ_state in
+    state, e2
+  | _ -> error exp.at
+    (sprintf "can not recognize `%s` as a `config` expression" (Il.Print.string_of_exp exp))
 
 let split_state (exp: Il.exp): Il.exp * Il.exp =
   assert(is_state exp);
   match exp.it with
   | Il.CaseE ([[]; [{it = Atom.Semicolon; _}]; []], {it = TupE [ e1; e2 ]; _})
   when is_store e1 && is_frame e2 -> e1, e2
-  | _ -> assert(false)
+  | _ -> error exp.at
+    (sprintf "can not recognize `%s` as a `state` expression" (Il.Print.string_of_exp exp))
 
 let args_of_call e =
   match e.it with
