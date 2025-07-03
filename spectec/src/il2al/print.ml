@@ -5,8 +5,9 @@ let concat = String.concat
 let prefix s f x = s ^ f x
 
 let string_of_rule_clause rc =
-  let e1, e2, prems = rc in
-  Printf.sprintf "%s --> %s%s"
+  let id, e1, e2, prems = rc in
+  Printf.sprintf "%s: %s ~> %s%s"
+    (Il.Print.string_of_id  id)
     (Il.Print.string_of_exp e1)
     (Il.Print.string_of_exp e2)
     (concat "" (List.map (prefix "\n    -- " Il.Print.string_of_prem) prems))

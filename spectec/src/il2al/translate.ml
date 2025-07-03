@@ -1019,7 +1019,7 @@ let translate_helper helper =
 
 
 let extract_winstr r at =
-  let _l, _, prems = r in
+  let _id, _l, _r, prems = r in
   match List.find_opt is_winstr_prem prems with
   | Some p -> lhs_of_prem p (* TODO: Collect helper functions into one place *)
   | None -> error at "Failed to extract the target wasm instruction"
@@ -1031,7 +1031,7 @@ let exit_context context_opt instrs =
 
 (* `reduction` -> `instr list` *)
 let translate_reduction ?(context_opt=None) reduction =
-  let _, rhs, prems = reduction in
+  let _, _, rhs, prems = reduction in
 
   (* Translate rhs *)
   translate_rhs rhs
@@ -1201,7 +1201,6 @@ and translate_rgroup (rule: rule_def) =
   in
 
   RuleA (name, anchor, al_params', body) $ rule.at
-
 
 (* Entry *)
 let translate il interp =

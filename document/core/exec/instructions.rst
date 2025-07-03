@@ -696,6 +696,8 @@ $${rule: {Step_read/load-*}}
 
 .. _exec-vload-pack:
 
+$${rule-prose: Step_read/vload-pack-*}
+
 :math:`\V128\K{.}\VLOAD{M}\K{x}N\_\sx~x~\memarg`
 ................................................
 
@@ -761,6 +763,8 @@ $${rule: {Step_read/vload-pack-*}}
 
 .. _exec-vload-splat:
 
+$${rule-prose: Step_read/vload-splat-*}
+
 :math:`\V128\K{.}\VLOAD{N}\K{\_splat}~x~\memarg`
 ................................................
 
@@ -822,6 +826,8 @@ $${rule: {Step_read/vload-splat-*}}
 
 .. _exec-vload-zero:
 
+$${rule-prose: Step_read/vload-zero-*}
+
 :math:`\V128\K{.}\VLOAD{N}\K{\_zero}~x~\memarg`
 ...............................................
 
@@ -880,6 +886,8 @@ $${rule: {Step_read/vload-zero-*}}
 
 
 .. _exec-vload_lane:
+
+$${rule-prose: Step_read/vload_lane}
 
 :math:`\V128\K{.}\VLOAD{N}\K{\_lane}~x~\memarg~y`
 .................................................
@@ -957,6 +965,8 @@ $${rule: {Step/store-* Step/vstore-*}}
 
 
 .. _exec-vstore_lane:
+
+$${rule-prose: Step/vstore_lane}
 
 :math:`\V128\K{.}\VSTORE{N}\K{\_lane}~x~\memarg~y`
 ..................................................
