@@ -6032,7 +6032,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Assert: Due to validation, :math:`({\mathit{lanetype}})` for which :math:`{|{\mathit{lanetype}}|}` :math:`=` :math:`M \cdot 2` is :math:`{\mathsf{i}}{n}`.
 
-#. Let :math:`{\mathsf{i}}{n}` be the result for which :math:`{|{\mathsf{i}}{n}|}` :math:`=` :math:`M \cdot 2`.
+#. Let :math:`{|{\mathsf{i}}{n}|}` be :math:`M \cdot 2`.
 
 #. Let :math:`c` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{N}}({{{{{\mathrm{extend}}}_{M, {|{\mathsf{i}}{n}|}}^{{\mathit{sx}}}}}{(j)}^{N}})`.
 
@@ -6057,7 +6057,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Assert: Due to validation, :math:`({\mathit{lanetype}})` for which :math:`{|{\mathit{lanetype}}|}` :math:`=` :math:`N` is :math:`{\mathsf{i}}{n}`.
 
-#. Let :math:`{\mathsf{i}}{n}` be the result for which :math:`{|{\mathsf{i}}{n}|}` :math:`=` :math:`N`.
+#. Let :math:`{|{\mathsf{i}}{n}|}` be :math:`N`.
 
 #. Let :math:`j` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{N}}(j)` :math:`=` :math:`z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : N / 8]`.
 
@@ -7288,7 +7288,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       #) If :math:`({\mathit{lanetype}})` for which :math:`{|{\mathit{lanetype}}|}` :math:`=` :math:`M \cdot 2` is :math:`{\mathsf{i}}{n}`, then:
 
-         a) Let :math:`{\mathsf{i}}{n}` be the result for which :math:`{|{\mathsf{i}}{n}|}` :math:`=` :math:`M \cdot 2`.
+         a) Let :math:`{|{\mathsf{i}}{n}|}` be :math:`M \cdot 2`.
 
          #) Let :math:`c` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{N}}({{{{{\mathrm{extend}}}_{M, {|{\mathsf{i}}{n}|}}^{{\mathit{sx}}}}}{(j)}^{N}})`.
 
@@ -7306,7 +7306,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       #) If :math:`({\mathit{lanetype}})` for which :math:`{|{\mathit{lanetype}}|}` :math:`=` :math:`N` is :math:`{\mathsf{i}}{n}`, then:
 
-         a) Let :math:`{\mathsf{i}}{n}` be the result for which :math:`{|{\mathsf{i}}{n}|}` :math:`=` :math:`N`.
+         a) Let :math:`{|{\mathsf{i}}{n}|}` be :math:`N`.
 
          #) Let :math:`j` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{N}}(j)` :math:`=` :math:`z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : N / 8]`.
 
@@ -7351,7 +7351,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Assert: Due to validation, :math:`({\mathit{lanetype}})` for which :math:`{|{\mathit{lanetype}}|}` :math:`=` :math:`N` is :math:`{\mathsf{i}}{n}`.
 
-#. Let :math:`{\mathsf{i}}{n}` be the result for which :math:`{|{\mathsf{i}}{n}|}` :math:`=` :math:`N`.
+#. Let :math:`{|{\mathsf{i}}{n}|}` be :math:`N`.
 
 #. Let :math:`k` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{N}}(k)` :math:`=` :math:`z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : N / 8]`.
 
@@ -7697,7 +7697,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Assert: Due to validation, :math:`({\mathit{lanetype}})` for which :math:`{|{\mathit{lanetype}}|}` :math:`=` :math:`N` is :math:`{\mathsf{i}}{n}`.
 
-#. Let :math:`{\mathsf{i}}{n}` be the result for which :math:`{|{\mathsf{i}}{n}|}` :math:`=` :math:`N`.
+#. Let :math:`{|{\mathsf{i}}{n}|}` be :math:`N`.
 
 #. Assert: Due to validation, :math:`j < {|{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}(c)|}`.
 
@@ -17536,7 +17536,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Assert: Due to validation, :math:`N` for which :math:`N` :math:`=` :math:`M \cdot 2` is :math:`{\mathsf{i}}{N}`.
 
-#. Let :math:`{\mathsf{i}}{N}` be the result for which :math:`N` :math:`=` :math:`M \cdot 2`.
+#. Let :math:`N` be :math:`M \cdot 2`.
 
 #. Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{K}}^{{-1}}}}{({{{{{\mathrm{extend}}}_{M, N}^{{\mathit{sx}}}}}{(j)}^{K}})}`.
 
@@ -17561,7 +17561,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Assert: Due to validation, :math:`({\mathit{lanetype}})` for which :math:`{|{\mathit{lanetype}}|}` :math:`=` :math:`N` is :math:`{\mathsf{i}}{N}`.
 
-#. Let :math:`{\mathsf{i}}{N}` be the result for which :math:`{|{\mathsf{i}}{N}|}` :math:`=` :math:`N`.
+#. Let :math:`{|{\mathsf{i}}{N}|}` be :math:`N`.
 
 #. Let :math:`j` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{N}}(j)` :math:`=` :math:`z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : N / 8]`.
 
@@ -19943,7 +19943,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       #) If :math:`N` for which :math:`N` :math:`=` :math:`M \cdot 2` is :math:`{\mathsf{i}}{N}`, then:
 
-         a) Let :math:`{\mathsf{i}}{N}` be the result for which :math:`N` :math:`=` :math:`M \cdot 2`.
+         a) Let :math:`N` be :math:`M \cdot 2`.
 
          #) Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{K}}^{{-1}}}}{({{{{{\mathrm{extend}}}_{M, N}^{{\mathit{sx}}}}}{(j)}^{K}})}`.
 
@@ -19961,7 +19961,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       #) If :math:`({\mathit{lanetype}})` for which :math:`{|{\mathit{lanetype}}|}` :math:`=` :math:`N` is :math:`{\mathsf{i}}{N}`, then:
 
-         a) Let :math:`{\mathsf{i}}{N}` be the result for which :math:`{|{\mathsf{i}}{N}|}` :math:`=` :math:`N`.
+         a) Let :math:`{|{\mathsf{i}}{N}|}` be :math:`N`.
 
          #) Let :math:`j` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{N}}(j)` :math:`=` :math:`z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : N / 8]`.
 
@@ -20006,7 +20006,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Assert: Due to validation, :math:`({\mathit{lanetype}})` for which :math:`{|{\mathit{lanetype}}|}` :math:`=` :math:`N` is :math:`{\mathsf{i}}{N}`.
 
-#. Let :math:`{\mathsf{i}}{N}` be the result for which :math:`{|{\mathsf{i}}{N}|}` :math:`=` :math:`N`.
+#. Let :math:`{|{\mathsf{i}}{N}|}` be :math:`N`.
 
 #. Let :math:`k` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{N}}(k)` :math:`=` :math:`z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : N / 8]`.
 
@@ -20507,7 +20507,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Assert: Due to validation, :math:`({\mathit{lanetype}})` for which :math:`{|{\mathit{lanetype}}|}` :math:`=` :math:`N` is :math:`{\mathsf{i}}{N}`.
 
-#. Let :math:`{\mathsf{i}}{N}` be the result for which :math:`{|{\mathsf{i}}{N}|}` :math:`=` :math:`N`.
+#. Let :math:`{|{\mathsf{i}}{N}|}` be :math:`N`.
 
 #. Assert: Due to validation, :math:`j < {|{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}(c)|}`.
 
@@ -24591,7 +24591,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Assert: Due to validation, :math:`N` for which :math:`N` :math:`=` :math:`2 \cdot N_1` is :math:`{\mathsf{i}}{N}`.
 
-#. Let :math:`{\mathsf{i}}{N}` be the result for which :math:`N` :math:`=` :math:`2 \cdot N_1`.
+#. Let :math:`N` be :math:`2 \cdot N_1`.
 
 #. Let :math:`{c'}` be :math:`{}{{}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}, {{\mathsf{i}}{N}}{\mathsf{x}}{M}}(c_1, c_2)}`.
 

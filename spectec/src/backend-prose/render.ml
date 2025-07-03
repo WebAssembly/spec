@@ -1208,6 +1208,10 @@ let rec render_instr env algoname index depth instr =
   | Al.Ast.PopAllI e ->
     sprintf "%s Pop all values %s from the top of the stack." (render_order index depth)
       (render_expr env e)
+  (* HARDCODE: lsize *)
+  | Al.Ast.LetI (e1, {it = Al.Ast.InvCallE (id, _, [{it = ExpA a; _}]); _}) when String.starts_with ~prefix:"lsize" id  ->
+    let instr' = Al.Ast.LetI ({a with it = Al.Ast.CallE (id, [Al.Ast.ExpA e1 $ e1.at])}, a) in
+    render_instr env algoname index depth {instr with it = instr'}
   | Al.Ast.LetI (e1, e2) ->
     (match e1.it with
     (* NOTE: This assumes that the first argument of control frame is arity *)
