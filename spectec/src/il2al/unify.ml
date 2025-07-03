@@ -369,11 +369,11 @@ let rec filter_unifiable encss =
         filter_unifiable (tl :: snds)
 
 let replace_prems r prems =
-  let lhs, rhs, _ = r in
-  lhs, rhs, prems
+  let id, lhs, rhs, _ = r in
+  id, lhs, rhs, prems
 
 let unify_rule_clauses env pred input_vars (clauses: rule_clause list) =
-  let premss = List.map (fun g -> let _, _, prems = g in prems) clauses in
+  let premss = List.map (fun (_, _, _, prems) -> prems) clauses in
   let encss = List.map (extract_encs pred) premss in
   let unifiable_encss = filter_unifiable encss in
   let new_premss = List.fold_left (unify_enc env) (lift premss) unifiable_encss |> unlift in
@@ -383,9 +383,9 @@ let unify_rule_clauses env pred input_vars (clauses: rule_clause list) =
 
 let rule_to_tup rule =
   match rule.it with
-  | RuleD (_, _, _, exp, prems) ->
+  | RuleD (id, _, _, exp, prems) ->
     match exp.it with
-    | TupE [ lhs; rhs ] -> (lhs, rhs, prems)
+    | TupE [ lhs; rhs ] -> (id, lhs, rhs, prems)
     | _ -> error exp.at "form of reduction rule"
 
 (* group reduction rules that have same name *)
@@ -427,7 +427,7 @@ let unify_rule_def (env: env) (rule: rule_def) : rule_def =
     List.concat_map
       (function
         | None, subgroup ->
-          List.map (fun (lhs, rhs, prems) -> lhs, rhs, pops @ prems) subgroup
+          List.map (fun (id, lhs, rhs, prems) -> id, lhs, rhs, pops @ prems) subgroup
         | _, subgroup ->
           let popped_vars =
             List.concat_map
@@ -441,7 +441,7 @@ let unify_rule_def (env: env) (rule: rule_def) : rule_def =
           let sub_env = { idxs = env.idxs; frees = env.frees } in
           subgroup
           |> unify_ctxt sub_env popped_vars
-          |> List.map (fun (lhs, rhs, prems) -> lhs, rhs, pops @ prems)
+          |> List.map (fun (id, lhs, rhs, prems) -> id, lhs, rhs, pops @ prems)
       )
       subgroups
   in
@@ -507,11 +507,54 @@ let extract_helpers partial_funcs def =
     Some ((id, clauses, partial) $ def.at)
   | _ -> None
 
+let remove_last_phrase r =
+  let (id, lhs, rhs, prems) = r in
+  match List.rev (String.split_on_char '-' id.it) with
+  | [] | [_] | [_; _] ->
+    None
+  | _ :: hds ->
+    let id' = {id with it = List.rev ("*" :: hds) |> String.concat "-"} in
+    Some (id', lhs, rhs, prems)
+
+let rec group_by_id acc rs =
+  match rs with
+  | [] -> List.rev acc
+  | hd :: tl ->
+    let (id, _, _, _) = hd in
+    let same, diff = List.partition (fun g ->
+      let (id', _, _, _) = List.hd g in
+      Il.Eq.eq_id id id'
+    ) acc in
+    match same with
+    | [group] -> group_by_id ((group @ [hd]) :: diff) tl
+    | _ -> group_by_id ([hd] :: acc) tl
+let group_by_id = group_by_id []
+
+let group_by_prefix rule_def =
+  let (_instr_name, rel_id, rules) = rule_def.it in
+
+  rules
+  |> List.filter_map remove_last_phrase
+  |> group_by_id
+  |> List.map (fun rules ->
+    let (id, _, _, _) = List.hd rules in
+    let instr_name' = id.it in
+    {rule_def with it = (instr_name', rel_id, rules)})
+
 let unify (il: script) : rule_def list * helper_def list =
-  let rule_defs =
+  let groups =
     il
     |> List.concat_map extract_rules
     |> group_rules
+  in
+
+  let subgroups =
+    groups
+    |> List.concat_map group_by_prefix
+  in
+
+  let rule_defs =
+    (subgroups @ groups)
     |> List.map (
       fun rd ->
         let frees = (Free.free_rule_def rd).varid in
