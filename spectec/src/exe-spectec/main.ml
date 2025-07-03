@@ -94,6 +94,11 @@ let banner () =
 
 let usage = "Usage: " ^ name ^ " [option] [file ...] [-p file ...] [-o file ...]"
 
+let cmd_error msg =
+  flush_all ();
+  prerr_endline (Sys.argv.(0) ^ ": " ^ msg);
+  exit 2
+
 let add_arg source =
   let args =
     match !file_kind with
@@ -250,9 +255,7 @@ let () =
           Backend_ast.Print.output_script oc config il;
           Out_channel.output_string oc "\n"
         )
-      | _ ->
-        prerr_endline "too many output file names";
-        exit 2
+      | _ -> cmd_error "too many output file names"
       )
 
     | Latex ->
@@ -262,9 +265,7 @@ let () =
       (match !odsts with
       | [] -> print_endline (Backend_latex.Gen.gen_string config el)
       | [odst] -> Backend_latex.Gen.gen_file config odst el
-      | _ ->
-        prerr_endline "too many output file names";
-        exit 2
+      | _ -> cmd_error "too many output file names"
       )
 
     | Prose as_plaintext ->
@@ -285,9 +286,7 @@ let () =
             |> Backend_prose.Print.file_of_prose odst
           else
             Backend_prose.Gen.gen_file config_latex config_prose odst el il al
-      | _ ->
-        prerr_endline "too many output file names";
-        exit 2
+      | _ -> cmd_error "too many output file names"
       )
 
     | Splice config ->
@@ -300,9 +299,7 @@ let () =
         | [odst] when Sys.file_exists odst && Sys.is_directory odst ->
           odsts := List.map (fun pdst -> Filename.concat odst pdst) !pdsts
         | _ when List.length !odsts = List.length !pdsts -> ()
-        | _ ->
-          prerr_endline "inconsistent number of input and output file names";
-          exit 2
+        | _ -> cmd_error "inconsistent number of input and output file names"
       );
       log "Prose Generation...";
       let prose = Backend_prose.Gen.gen_prose el il al in
@@ -335,9 +332,14 @@ let () =
     Util.Error.print_error at msg';
     Util.Debug_log.log_exn exn;
     exit 1
+  | Sys_error msg ->
+    flush_all ();
+    prerr_endline msg;
+    exit 2
   | exn ->
     flush_all ();
     prerr_endline
       (Sys.argv.(0) ^ ": uncaught exception " ^ Printexc.to_string exn);
+    prerr_endline "\nBacktrace:";
     Printexc.print_backtrace stderr;
     exit 2

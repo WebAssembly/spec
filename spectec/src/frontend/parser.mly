@@ -211,9 +211,15 @@ ruleid_ :
   | id { $1 }
   | NATLIT { Z.to_string $1 }
   | BOOLLIT { Bool.to_string $1 }
+  | INFINITY { "infinity" }
+  | EPS { "eps" }
   | IF { "if" }
   | VAR { "var" }
   | DEF { "def" }
+  | RULE { "rule" }
+  | RELATION { "relation" }
+  | SYNTAX { "syntax" }
+  | GRAMMAR { "grammar" }
   | ruleid_ DOTID { $1 ^ "." ^ $2 }
 atomid : atomid_ { $1 } | atomid DOTID { $1 ^ "." ^ $2 }
 
