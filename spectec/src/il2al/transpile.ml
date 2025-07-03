@@ -505,6 +505,23 @@ let remove_trivial_assignment il =
   in
   remove_trivial_assignment' [] il
 
+(* Remove all instructions before the `trap` instruction. *)
+let rec remove_pre_trap il =
+  let il =
+    match (List.rev il) with
+    | {it = TrapI; _} as hd :: _ -> [hd]
+    | _ -> il
+  in
+
+  il
+  |> List.map (fun i ->
+    match i.it with
+    | IfI (c, il1, il2) ->
+      let i' = IfI (c, remove_pre_trap il1, remove_pre_trap il2) in
+      {i with it = i'}
+    | _ -> i
+  )
+
 let remove_sub e =
   let e' =
     match e.it with
@@ -695,6 +712,7 @@ let rec enhance_readability instrs =
     |> remove_dead_assignment
     |> remove_redundant_assignment
     |> remove_trivial_assignment
+    |> remove_pre_trap
     |> unify_if
     |> unify_multi_if
     |> infer_else

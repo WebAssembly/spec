@@ -17205,37 +17205,33 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. If :math:`{\mathit{val}''}` is some :math:`\mathsf{ref{.}null}` :math:`{\mathit{heaptype}}`, then:
 
-   a. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
+   a. Trap.
 
-   #. Pop the :math:`\mathsf{frame}` F from the stack.
+#. Assert: Due to validation, :math:`{\mathit{val}''}` is some :math:`\mathsf{ref{.}func}` :math:`{\mathit{funcaddr}}`.
 
-   #. Trap.
+#. Let :math:`(\mathsf{ref{.}func}~a)` be the destructuring of :math:`{\mathit{val}''}`.
 
-#. If :math:`{\mathit{val}''}` is some :math:`\mathsf{ref{.}func}` :math:`{\mathit{funcaddr}}`, then:
+#. Assert: Due to validation, :math:`a < {|z{.}\mathsf{funcs}|}`.
 
-   a. Let :math:`(\mathsf{ref{.}func}~a)` be the destructuring of :math:`{\mathit{val}''}`.
+#. Assert: Due to validation, the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{funcs}{}[a]{.}\mathsf{type}` is some :math:`\mathsf{func}` :math:`{\mathit{functype}}`.
 
-   #. If :math:`a < {|z{.}\mathsf{funcs}|}`, then:
+#. Let :math:`(\mathsf{func}~{\mathit{functype}}_0)` be the destructuring of the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{funcs}{}[a]{.}\mathsf{type}`.
 
-      1) Assert: Due to validation, the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{funcs}{}[a]{.}\mathsf{type}` is some :math:`\mathsf{func}` :math:`{\mathit{functype}}`.
+#. Let :math:`{t_1^{n}}~\rightarrow~{t_2^{m}}` be the destructuring of :math:`{\mathit{functype}}_0`.
 
-      #) Let :math:`(\mathsf{func}~{\mathit{functype}}_0)` be the destructuring of the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{funcs}{}[a]{.}\mathsf{type}`.
+#. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
 
-      #) Let :math:`{t_1^{n}}~\rightarrow~{t_2^{m}}` be the destructuring of :math:`{\mathit{functype}}_0`.
+#. Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
 
-      #) Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
+#. Pop all values :math:`{{\mathit{val}'}^\ast}` from the top of the stack.
 
-      #) Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
+#. Pop the :math:`\mathsf{frame}` F from the stack.
 
-      #) Pop all values :math:`{{\mathit{val}'}^\ast}` from the top of the stack.
+#. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
 
-      #) Pop the :math:`\mathsf{frame}` F from the stack.
+#. Push the value :math:`(\mathsf{ref{.}func}~a)` to the stack.
 
-      #) Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
-
-      #) Push the value :math:`(\mathsf{ref{.}func}~a)` to the stack.
-
-      #) Execute the instruction :math:`(\mathsf{call\_ref}~y)`.
+#. Execute the instruction :math:`(\mathsf{call\_ref}~y)`.
 
 
 :math:`\mathsf{throw\_ref}`
@@ -18809,37 +18805,33 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. If :math:`{\mathit{val}''}` is some :math:`\mathsf{ref{.}null}` :math:`{\mathit{heaptype}}`, then:
 
-      1) Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
+      1) Trap.
 
-      #) Pop the :math:`\mathsf{frame}` F from the stack.
+   #. Assert: Due to validation, :math:`{\mathit{val}''}` is some :math:`\mathsf{ref{.}func}` :math:`{\mathit{funcaddr}}`.
 
-      #) Trap.
+   #. Let :math:`(\mathsf{ref{.}func}~a)` be the destructuring of :math:`{\mathit{val}''}`.
 
-   #. If :math:`{\mathit{val}''}` is some :math:`\mathsf{ref{.}func}` :math:`{\mathit{funcaddr}}`, then:
+   #. Assert: Due to validation, :math:`a < {|z{.}\mathsf{funcs}|}`.
 
-      1) Let :math:`(\mathsf{ref{.}func}~a)` be the destructuring of :math:`{\mathit{val}''}`.
+   #. Assert: Due to validation, the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{funcs}{}[a]{.}\mathsf{type}` is some :math:`\mathsf{func}` :math:`{\mathit{functype}}`.
 
-      #) If :math:`a < {|z{.}\mathsf{funcs}|}`, then:
+   #. Let :math:`(\mathsf{func}~{\mathit{functype}}_0)` be the destructuring of the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{funcs}{}[a]{.}\mathsf{type}`.
 
-         a) Assert: Due to validation, the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{funcs}{}[a]{.}\mathsf{type}` is some :math:`\mathsf{func}` :math:`{\mathit{functype}}`.
+   #. Let :math:`{t_1^{n}}~\rightarrow~{t_2^{m}}` be the destructuring of :math:`{\mathit{functype}}_0`.
 
-         #) Let :math:`(\mathsf{func}~{\mathit{functype}}_0)` be the destructuring of the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{funcs}{}[a]{.}\mathsf{type}`.
+   #. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
 
-         #) Let :math:`{t_1^{n}}~\rightarrow~{t_2^{m}}` be the destructuring of :math:`{\mathit{functype}}_0`.
+   #. Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
 
-         #) Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
+   #. Pop all values :math:`{{\mathit{val}'}^\ast}` from the top of the stack.
 
-         #) Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
+   #. Pop the :math:`\mathsf{frame}` F from the stack.
 
-         #) Pop all values :math:`{{\mathit{val}'}^\ast}` from the top of the stack.
+   #. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
 
-         #) Pop the :math:`\mathsf{frame}` F from the stack.
+   #. Push the value :math:`(\mathsf{ref{.}func}~a)` to the stack.
 
-         #) Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
-
-         #) Push the value :math:`(\mathsf{ref{.}func}~a)` to the stack.
-
-         #) Execute the instruction :math:`(\mathsf{call\_ref}~y)`.
+   #. Execute the instruction :math:`(\mathsf{call\_ref}~y)`.
 
 
 :math:`\mathsf{throw\_ref}`
@@ -27793,22 +27785,20 @@ Step_read/return_call_ref-frame-* yy
 3. Pop the value val'' from the stack.
 4. Assert: Due to validation, the first non-value entry of the stack is a FRAME_.
 5. If val'' is some REF.NULL, then:
-  a. Pop all values val* from the top of the stack.
-  b. Pop the frame (FRAME_ _ { _ }) from the stack.
-  c. Trap.
-6. If val'' is some REF.FUNC_ADDR, then:
-  a. Let (REF.FUNC_ADDR a) be val''.
-  b. If (a < |$funcinst(z)|), then:
-    1) Assert: Due to validation, $Expand($funcinst(z)[a].TYPE) is some FUNC.
-    2) Let (FUNC functype_0) be $Expand($funcinst(z)[a].TYPE).
-    3) Let t_1^n -> t_2^m be functype_0.
-    4) Assert: Due to validation, there are at least n values on the top of the stack.
-    5) Pop the values val^n from the stack.
-    6) Pop all values val'* from the top of the stack.
-    7) Pop the frame (FRAME_ _ { _ }) from the stack.
-    8) Push the values val^n to the stack.
-    9) Push the value (REF.FUNC_ADDR a) to the stack.
-    10) Execute the instruction (CALL_REF yy).
+  a. Trap.
+6. Assert: Due to validation, val'' is some REF.FUNC_ADDR.
+7. Let (REF.FUNC_ADDR a) be val''.
+8. Assert: Due to validation, (a < |$funcinst(z)|).
+9. Assert: Due to validation, $Expand($funcinst(z)[a].TYPE) is some FUNC.
+10. Let (FUNC functype_0) be $Expand($funcinst(z)[a].TYPE).
+11. Let t_1^n -> t_2^m be functype_0.
+12. Assert: Due to validation, there are at least n values on the top of the stack.
+13. Pop the values val^n from the stack.
+14. Pop all values val'* from the top of the stack.
+15. Pop the frame (FRAME_ _ { _ }) from the stack.
+16. Push the values val^n to the stack.
+17. Push the value (REF.FUNC_ADDR a) to the stack.
+18. Execute the instruction (CALL_REF yy).
 
 Step_read/throw_ref-instrs-*
 1. Assert: Due to validation, a value is on the top of the stack.
@@ -28544,22 +28534,20 @@ Step_read/return_call_ref yy
   b. Assert: Due to validation, a value is on the top of the stack.
   c. Pop the value val'' from the stack.
   d. If val'' is some REF.NULL, then:
-    1) Pop all values val* from the top of the stack.
-    2) Pop the frame (FRAME_ _ { _ }) from the stack.
-    3) Trap.
-  e. If val'' is some REF.FUNC_ADDR, then:
-    1) Let (REF.FUNC_ADDR a) be val''.
-    2) If (a < |$funcinst(z)|), then:
-      a) Assert: Due to validation, $Expand($funcinst(z)[a].TYPE) is some FUNC.
-      b) Let (FUNC functype_0) be $Expand($funcinst(z)[a].TYPE).
-      c) Let t_1^n -> t_2^m be functype_0.
-      d) Assert: Due to validation, there are at least n values on the top of the stack.
-      e) Pop the values val^n from the stack.
-      f) Pop all values val'* from the top of the stack.
-      g) Pop the frame (FRAME_ _ { _ }) from the stack.
-      h) Push the values val^n to the stack.
-      i) Push the value (REF.FUNC_ADDR a) to the stack.
-      j) Execute the instruction (CALL_REF yy).
+    1) Trap.
+  e. Assert: Due to validation, val'' is some REF.FUNC_ADDR.
+  f. Let (REF.FUNC_ADDR a) be val''.
+  g. Assert: Due to validation, (a < |$funcinst(z)|).
+  h. Assert: Due to validation, $Expand($funcinst(z)[a].TYPE) is some FUNC.
+  i. Let (FUNC functype_0) be $Expand($funcinst(z)[a].TYPE).
+  j. Let t_1^n -> t_2^m be functype_0.
+  k. Assert: Due to validation, there are at least n values on the top of the stack.
+  l. Pop the values val^n from the stack.
+  m. Pop all values val'* from the top of the stack.
+  n. Pop the frame (FRAME_ _ { _ }) from the stack.
+  o. Push the values val^n to the stack.
+  p. Push the value (REF.FUNC_ADDR a) to the stack.
+  q. Execute the instruction (CALL_REF yy).
 
 Step_read/throw_ref
 1. Let z be the current state.
