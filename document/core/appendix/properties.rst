@@ -253,6 +253,15 @@ Results
 
 * Then the result is valid with :ref:`result type <syntax-resulttype>` :math:`[t^\ast]`, for any sequence :math:`{t'}^\ast` of :ref:`value types <syntax-valtype>`.
 
+.. math::
+   \frac{
+     S \vdashexternval \EVTAG~\tagaddr : \ETTAG~[t^\ast] \to []
+     \qquad
+     (S \vdashval \val : t)^\ast
+   }{
+     S \vdashresult \XT[(\REFEXNADDR~a)~\THROWREF] : [{t'}^\ast]
+   }
+
 
 :ref:`Results <syntax-result>` :math:`\TRAP`
 ............................................
@@ -264,16 +273,6 @@ Results
      \vdashresulttype [t^\ast] \ok
    }{
      S \vdashresult \TRAP : [t^\ast]
-   }
-
-
-.. math::
-   \frac{
-     S \vdashexternval \EVTAG~\tagaddr : \ETTAG~[t^\ast] \to []
-     \qquad
-     (S \vdashval \val : t)^\ast
-   }{
-     S \vdashresult \XT[(\REFEXNADDR~a)~\THROWREF] : [{t'}^\ast]
    }
 
 
