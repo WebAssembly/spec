@@ -175,7 +175,7 @@ and check_type ty v expr =
   | CaseV (aht, []) when List.mem aht abs_heap_types ->
     boolV (ty = "absheaptype" || ty = "heaptype")
   (* deftype *)
-  | CaseV ("DEF", [ _; _ ]) ->
+  | CaseV ("_DEF", [ _; _ ]) ->
     boolV (ty = "deftype" || ty = "heaptype")
   (* typevar *)
   | CaseV ("_IDX", [ _ ]) ->

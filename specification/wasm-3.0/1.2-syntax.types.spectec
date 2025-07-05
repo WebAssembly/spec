@@ -32,7 +32,7 @@ syntax absheaptype/sem =
 
 syntax rectype hint(desc "recursive type")  ;; forward decl
 syntax deftype hint(desc "defined type") =
-  | DEF rectype n hint(show %.%)
+  | _DEF rectype n hint(show %.%)
 
 syntax typeuse/syn hint(desc "type use") =
   | _IDX typeidx | ...
@@ -387,9 +387,9 @@ def $subst_subtype((SUB fin tu'* ct), tv*, tu*) =
 
 def $subst_rectype((REC st*), tv*, tu*) = REC $subst_subtype(st, tv*, tu*)*
 
-def $subst_deftype((DEF qt i), tv*, tu*) = DEF $subst_rectype(qt, tv*, tu*) i
+def $subst_deftype((_DEF qt i), tv*, tu*) = _DEF $subst_rectype(qt, tv*, tu*) i
 
-def $subst_tagtype(dt, tv*, tu*) = $subst_deftype(dt, tv*, tu*)
+def $subst_tagtype(tu', tv*, tu*) = $subst_typeuse(tu', tv*, tu*)
 def $subst_globaltype((mut t), tv*, tu*) = mut $subst_valtype(t, tv*, tu*)
 def $subst_memtype((at lim PAGE), tv*, tu*) = at lim PAGE
 def $subst_tabletype((at lim rt), tv*, tu*) = at lim $subst_reftype(rt, tv*, tu*)
@@ -441,11 +441,11 @@ def $expanddt(deftype) : comptype        hint(show $expand(%))     hint(macro "e
 
 def $rollrt(x, rectype) = REC ($subst_subtype(subtype, ((_IDX $(x + i)))^(i<n), (REC i)^(i<n)))^n
   -- if rectype = REC subtype^n
-def $unrollrt(rectype) = REC ($subst_subtype(subtype, (REC i)^(i<n), (DEF rectype i)^(i<n)))^n
+def $unrollrt(rectype) = REC ($subst_subtype(subtype, (REC i)^(i<n), (_DEF rectype i)^(i<n)))^n
   -- if rectype = REC subtype^n
 
-def $rolldt(x, rectype) = (DEF (REC subtype^n) i)^(i<n)  -- if $rollrt(x, rectype) = REC subtype^n
-def $unrolldt(DEF rectype i) = subtype*[i]               -- if $unrollrt(rectype) = REC subtype*
+def $rolldt(x, rectype) = (_DEF (REC subtype^n) i)^(i<n)  -- if $rollrt(x, rectype) = REC subtype^n
+def $unrolldt(_DEF rectype i) = subtype*[i]               -- if $unrollrt(rectype) = REC subtype*
 
 def $expanddt(deftype) = comptype                        -- if $unrolldt(deftype) = SUB fin typeuse* comptype
 
@@ -502,7 +502,7 @@ def $free_consttype(vectype) = $free_vectype(vectype)
 def $free_absheaptype(absheaptype) = {}
 
 def $free_deftype(deftype) : free
-def $free_deftype(DEF rectype n) = $free_rectype(rectype)
+def $free_deftype(_DEF rectype n) = $free_rectype(rectype)
 
 def $free_typevar(_IDX typeidx) = $free_typeidx(typeidx)
 def $free_typevar(REC n) = {}

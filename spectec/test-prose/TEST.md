@@ -20524,11 +20524,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return :math:`{\mathit{at}}`.
 
 
-:math:`{{\mathit{dt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`
-...........................................................................
+:math:`{{\mathit{tu}'}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`
+............................................................................
 
 
-1. Return :math:`{{\mathit{dt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`.
+1. Return :math:`{{\mathit{tu}'}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`.
 
 
 :math:`{{\mathsf{mut}^?}~t}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`
@@ -24353,10 +24353,6 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{{\mathit{fa}}^\ast}` be :math:`{|s{.}\mathsf{funcs}|} + i_{\mathsf{f}}` for all :math:`i_{\mathsf{f}}` from :math:`0` to :math:`{|{{\mathit{func}}^\ast}|} - 1`.
 
-#. Let :math:`{{\mathit{da}}^\ast}` be :math:`{|s{.}\mathsf{datas}|} + i_{\mathsf{d}}` for all :math:`i_{\mathsf{d}}` from :math:`0` to :math:`{|{{\mathit{data}}^\ast}|} - 1`.
-
-#. Let :math:`{{\mathit{ea}}^\ast}` be :math:`{|s{.}\mathsf{elems}|} + i_{\mathsf{e}}` for all :math:`i_{\mathsf{e}}` from :math:`0` to :math:`{|{{\mathit{elem}}^\ast}|} - 1`.
-
 #. Let :math:`{(\mathsf{tag}~{\mathit{tagtype}})^\ast}` be :math:`{{\mathit{tag}}^\ast}`.
 
 #. Let :math:`{(\mathsf{data}~{{\mathit{byte}}^\ast}~{\mathit{datamode}})^\ast}` be :math:`{{\mathit{data}}^\ast}`.
@@ -24375,35 +24371,23 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{{\mathit{aa}}^\ast}` be :math:`{{{\mathrm{alloctag}}^\ast}}{(s, {{{\mathit{tagtype}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}^\ast})}`.
 
-#. Assert: Due to validation, :math:`{{\mathit{aa}}^\ast} = {({|s{.}\mathsf{tags}|} + i_{\mathsf{a}})^{i_{\mathsf{a}}<{|{{\mathit{tag}}^\ast}|}}}`.
-
 #. Let :math:`{{\mathit{ga}}^\ast}` be :math:`{{{\mathrm{allocglobal}}^\ast}}{(s, {{{\mathit{globaltype}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}^\ast}, {{\mathit{val}}_{\mathsf{g}}^\ast})}`.
-
-#. Assert: Due to validation, :math:`{{\mathit{ga}}^\ast} = {({|s{.}\mathsf{globals}|} + i_{\mathsf{g}})^{i_{\mathsf{g}}<{|{{\mathit{global}}^\ast}|}}}`.
 
 #. Let :math:`{{\mathit{ma}}^\ast}` be :math:`{{{\mathrm{allocmem}}^\ast}}{(s, {{{\mathit{memtype}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}^\ast})}`.
 
-#. Assert: Due to validation, :math:`{{\mathit{ma}}^\ast} = {({|s{.}\mathsf{mems}|} + i_{\mathsf{m}})^{i_{\mathsf{m}}<{|{{\mathit{mem}}^\ast}|}}}`.
-
 #. Let :math:`{{\mathit{ta}}^\ast}` be :math:`{{{\mathrm{alloctable}}^\ast}}{(s, {{{\mathit{tabletype}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}^\ast}, {{\mathit{ref}}_{\mathsf{t}}^\ast})}`.
 
-#. Assert: Due to validation, :math:`{{\mathit{ta}}^\ast} = {({|s{.}\mathsf{tables}|} + i_{\mathsf{t}})^{i_{\mathsf{t}}<{|{{\mathit{table}}^\ast}|}}}`.
-
 #. Let :math:`{{\mathit{xi}}^\ast}` be :math:`{{{\mathrm{allocexport}}^\ast}}{(\{ \begin{array}[t]{@{}l@{}}\mathsf{tags}~{{\mathit{aa}}_{\mathsf{i}}^\ast}~{{\mathit{aa}}^\ast},\; \mathsf{globals}~{{\mathit{ga}}_{\mathsf{i}}^\ast}~{{\mathit{ga}}^\ast},\; \mathsf{mems}~{{\mathit{ma}}_{\mathsf{i}}^\ast}~{{\mathit{ma}}^\ast},\; \mathsf{tables}~{{\mathit{ta}}_{\mathsf{i}}^\ast}~{{\mathit{ta}}^\ast},\; \mathsf{funcs}~{{\mathit{fa}}_{\mathsf{i}}^\ast}~{{\mathit{fa}}^\ast} \}\end{array}, {{\mathit{export}}^\ast})}`.
+
+#. Let :math:`{{\mathit{da}}^\ast}` be :math:`{{{\mathrm{allocdata}}^\ast}}{(s, {\mathsf{ok}^{{|{{\mathit{data}}^\ast}|}}}, {{{\mathit{byte}}^\ast}^\ast})}`.
+
+#. Let :math:`{{\mathit{ea}}^\ast}` be :math:`{{{\mathrm{allocelem}}^\ast}}{(s, {{{\mathit{elemtype}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}^\ast}, {{{\mathit{ref}}_{\mathsf{e}}^\ast}^\ast})}`.
 
 #. Let :math:`{\mathit{moduleinst}}` be the module instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{dt}}^\ast},\; \mathsf{tags}~{{\mathit{aa}}_{\mathsf{i}}^\ast}~{{\mathit{aa}}^\ast},\; \mathsf{globals}~{{\mathit{ga}}_{\mathsf{i}}^\ast}~{{\mathit{ga}}^\ast},\; \mathsf{mems}~{{\mathit{ma}}_{\mathsf{i}}^\ast}~{{\mathit{ma}}^\ast},\; \mathsf{tables}~{{\mathit{ta}}_{\mathsf{i}}^\ast}~{{\mathit{ta}}^\ast},\; \mathsf{funcs}~{{\mathit{fa}}_{\mathsf{i}}^\ast}~{{\mathit{fa}}^\ast},\; \mathsf{datas}~{{\mathit{da}}^\ast},\; \mathsf{elems}~{{\mathit{ea}}^\ast},\; \mathsf{exports}~{{\mathit{xi}}^\ast} \}\end{array}`.
 
 #. Let :math:`{{\mathit{funcaddr}}_0^\ast}` be :math:`{{{\mathrm{allocfunc}}^\ast}}{(s, {{{\mathit{dt}}^\ast}{}[x]^\ast}, {(\mathsf{func}~x~{{\mathit{local}}^\ast}~{\mathit{expr}}_{\mathsf{f}})^\ast}, {{\mathit{moduleinst}}^{{|{{\mathit{func}}^\ast}|}}})}`.
 
 #. Assert: Due to validation, :math:`{{\mathit{funcaddr}}_0^\ast} = {{\mathit{fa}}^\ast}`.
-
-#. Let :math:`{{\mathit{dataaddr}}_0^\ast}` be :math:`{{{\mathrm{allocdata}}^\ast}}{(s, {\mathsf{ok}^{{|{{\mathit{data}}^\ast}|}}}, {{{\mathit{byte}}^\ast}^\ast})}`.
-
-#. Assert: Due to validation, :math:`{{\mathit{dataaddr}}_0^\ast} = {{\mathit{da}}^\ast}`.
-
-#. Let :math:`{{\mathit{elemaddr}}_0^\ast}` be :math:`{{{\mathrm{allocelem}}^\ast}}{(s, {{{\mathit{elemtype}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}^\ast}, {{{\mathit{ref}}_{\mathsf{e}}^\ast}^\ast})}`.
-
-#. Assert: Due to validation, :math:`{{\mathit{elemaddr}}_0^\ast} = {{\mathit{ea}}^\ast}`.
 
 #. Return :math:`{\mathit{moduleinst}}`.
 
@@ -24863,7 +24847,7 @@ Rectype_ok2/cons
   - the recursive type (REC subtype*) is valid for (OK (x + 1) (i + 1)).
 
 Deftype_ok
-- the defined type (DEF rectype i) is valid if:
+- the defined type (_DEF rectype i) is valid if:
   - the recursive type rectype is valid for (OK x).
   - rectype is (REC subtype^n).
   - i is less than n.
@@ -28508,8 +28492,8 @@ subst_subtype (SUB fin tu'* ct) tv* tu*
 subst_rectype (REC st*) tv* tu*
 1. Return (REC $subst_subtype(st, tv*, tu*)*).
 
-subst_deftype (DEF qt i) tv* tu*
-1. Return (DEF $subst_rectype(qt, tv*, tu*) i).
+subst_deftype (_DEF qt i) tv* tu*
+1. Return (_DEF $subst_rectype(qt, tv*, tu*) i).
 
 subst_functype t_1* -> t_2* tv* tu*
 1. Return $subst_valtype(t_1, tv*, tu*)* -> $subst_valtype(t_2, tv*, tu*)*.
@@ -28517,8 +28501,8 @@ subst_functype t_1* -> t_2* tv* tu*
 subst_addrtype at tv* tu*
 1. Return at.
 
-subst_tagtype dt tv* tu*
-1. Return $subst_deftype(dt, tv*, tu*).
+subst_tagtype tu' tv* tu*
+1. Return $subst_typeuse(tu', tv*, tu*).
 
 subst_globaltype (mut t) tv* tu*
 1. Return (mut $subst_valtype(t, tv*, tu*)).
@@ -28588,13 +28572,13 @@ rollrt x rectype
 
 unrollrt rectype
 1. Let (REC subtype^n) be rectype.
-2. Return (REC $subst_subtype(subtype, (REC i)^(i<n), (DEF rectype i)^(i<n))^n).
+2. Return (REC $subst_subtype(subtype, (REC i)^(i<n), (_DEF rectype i)^(i<n))^n).
 
 rolldt x rectype
 1. Let (REC subtype^n) be $rollrt(x, rectype).
-2. Return (DEF (REC subtype^n) i)^(i<n).
+2. Return (_DEF (REC subtype^n) i)^(i<n).
 
-unrolldt (DEF rectype i)
+unrolldt (_DEF rectype i)
 1. Let (REC subtype*) be $unrollrt(rectype).
 2. Return subtype*[i].
 
@@ -28699,7 +28683,7 @@ free_subtype (SUB fin typeuse* comptype)
 free_rectype (REC subtype*)
 1. Return $free_list($free_subtype(subtype)*).
 
-free_deftype (DEF rectype n)
+free_deftype (_DEF rectype n)
 1. Return $free_rectype(rectype).
 
 free_tagtype deftype
@@ -30309,33 +30293,25 @@ allocmodule s module externaddr* val_G* ref_T* ref_E**
 5. Let ma_I* be $memsxa(externaddr*).
 6. Let ta_I* be $tablesxa(externaddr*).
 7. Let fa* be (|s.FUNCS| + i_F)^(i_F<|func*|).
-8. Let da* be (|s.DATAS| + i_D)^(i_D<|data*|).
-9. Let ea* be (|s.ELEMS| + i_E)^(i_E<|elem*|).
-10. Let (TAG tagtype)* be tag*.
-11. Let (DATA byte* datamode)* be data*.
-12. Let (GLOBAL globaltype expr_G)* be global*.
-13. Let (TABLE tabletype expr_T)* be table*.
-14. Let (MEMORY memtype)* be mem*.
-15. Let dt* be $alloctypes(type*).
-16. Let (ELEM elemtype expr_E* elemmode)* be elem*.
-17. Let (FUNC x local* expr_F)* be func*.
-18. Let aa* be $alloctags(s, $subst_all_tagtype(tagtype, dt*)*).
-19. Assert: Due to validation, (aa* = (|s.TAGS| + i_A)^(i_A<|tag*|)).
-20. Let ga* be $allocglobals(s, $subst_all_globaltype(globaltype, dt*)*, val_G*).
-21. Assert: Due to validation, (ga* = (|s.GLOBALS| + i_G)^(i_G<|global*|)).
-22. Let ma* be $allocmems(s, $subst_all_memtype(memtype, dt*)*).
-23. Assert: Due to validation, (ma* = (|s.MEMS| + i_M)^(i_M<|mem*|)).
-24. Let ta* be $alloctables(s, $subst_all_tabletype(tabletype, dt*)*, ref_T*).
-25. Assert: Due to validation, (ta* = (|s.TABLES| + i_T)^(i_T<|table*|)).
-26. Let xi* be $allocexports({ TAGS: aa_I* :: aa*; GLOBALS: ga_I* :: ga*; MEMS: ma_I* :: ma*; TABLES: ta_I* :: ta*; FUNCS: fa_I* :: fa* }, export*).
-27. Let moduleinst be { TYPES: dt*; TAGS: aa_I* :: aa*; GLOBALS: ga_I* :: ga*; MEMS: ma_I* :: ma*; TABLES: ta_I* :: ta*; FUNCS: fa_I* :: fa*; DATAS: da*; ELEMS: ea*; EXPORTS: xi* }.
-28. Let funcaddr_0* be $allocfuncs(s, dt*[x]*, (FUNC x local* expr_F)*, moduleinst^|func*|).
-29. Assert: Due to validation, (funcaddr_0* = fa*).
-30. Let dataaddr_0* be $allocdatas(s, OK^|data*|, byte**).
-31. Assert: Due to validation, (dataaddr_0* = da*).
-32. Let elemaddr_0* be $allocelems(s, $subst_all_reftype(elemtype, dt*)*, ref_E**).
-33. Assert: Due to validation, (elemaddr_0* = ea*).
-34. Return moduleinst.
+8. Let (TAG tagtype)* be tag*.
+9. Let (DATA byte* datamode)* be data*.
+10. Let (GLOBAL globaltype expr_G)* be global*.
+11. Let (TABLE tabletype expr_T)* be table*.
+12. Let (MEMORY memtype)* be mem*.
+13. Let dt* be $alloctypes(type*).
+14. Let (ELEM elemtype expr_E* elemmode)* be elem*.
+15. Let (FUNC x local* expr_F)* be func*.
+16. Let aa* be $alloctags(s, $subst_all_tagtype(tagtype, dt*)*).
+17. Let ga* be $allocglobals(s, $subst_all_globaltype(globaltype, dt*)*, val_G*).
+18. Let ma* be $allocmems(s, $subst_all_memtype(memtype, dt*)*).
+19. Let ta* be $alloctables(s, $subst_all_tabletype(tabletype, dt*)*, ref_T*).
+20. Let xi* be $allocexports({ TAGS: aa_I* :: aa*; GLOBALS: ga_I* :: ga*; MEMS: ma_I* :: ma*; TABLES: ta_I* :: ta*; FUNCS: fa_I* :: fa* }, export*).
+21. Let da* be $allocdatas(s, OK^|data*|, byte**).
+22. Let ea* be $allocelems(s, $subst_all_reftype(elemtype, dt*)*, ref_E**).
+23. Let moduleinst be { TYPES: dt*; TAGS: aa_I* :: aa*; GLOBALS: ga_I* :: ga*; MEMS: ma_I* :: ma*; TABLES: ta_I* :: ta*; FUNCS: fa_I* :: fa*; DATAS: da*; ELEMS: ea*; EXPORTS: xi* }.
+24. Let funcaddr_0* be $allocfuncs(s, dt*[x]*, (FUNC x local* expr_F)*, moduleinst^|func*|).
+25. Assert: Due to validation, (funcaddr_0* = fa*).
+26. Return moduleinst.
 
 rundata_ x (DATA b^n datamode)
 1. If (datamode = PASSIVE), then:

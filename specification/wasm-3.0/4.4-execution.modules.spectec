@@ -117,10 +117,10 @@ def $allocmodule(s, module, externaddr*, val_G*, ref_T*, (ref_E*)*) = (s_7, modu
   -- if ma_I* = $memsxa(externaddr*)
   -- if ta_I* = $tablesxa(externaddr*)
   -- if fa_I* = $funcsxa(externaddr*)
-  ;; TODO(2, rossberg): get rid of these forward guesses
-  -- if fa* = ($(|s.FUNCS|+i_F))^(i_F<|func*|)
   -- if dt* = $alloctypes(type*)
-  ;; TODO(2, rossberg): use $inst_type(_, moduleinst) instead of $subst_all_type(_, dt*) below
+  ;; TODO(3, rossberg): get rid of this forward guess?
+  -- if fa* = ($(|s.FUNCS|+i_F))^(i_F<|func*|)
+  ;; TODO(3, rossberg): use $inst_type(_, moduleinst) instead of $subst_all_type(_, dt*) below
   -- if (s_1, aa*) = $alloctags(s, $subst_all_tagtype(tagtype, dt*)*)
   -- if (s_2, ga*) = $allocglobals(s_1, $subst_all_globaltype(globaltype, dt*)*, val_G*)
   -- if (s_3, ma*) = $allocmems(s_2, $subst_all_memtype(memtype, dt*)*)
@@ -128,7 +128,7 @@ def $allocmodule(s, module, externaddr*, val_G*, ref_T*, (ref_E*)*) = (s_7, modu
   -- if (s_5, da*) = $allocdatas(s_4, OK^(|data*|), (byte*)*)
   -- if (s_6, ea*) = $allocelems(s_5, $subst_all_reftype(elemtype, dt*)*, (ref_E*)*)
   -- if (s_7, fa*) = $allocfuncs(s_6, dt*[x]*, (FUNC x local* expr_F)*, moduleinst^(|func*|))
-  ;; TODO(2, rossberg): use moduleinst here and remove hack above
+  ;; TODO(3, rossberg): use moduleinst here and remove hack above
   -- if xi* = $allocexports({TAGS aa_I* aa*, GLOBALS ga_I* ga*, MEMS ma_I* ma*, TABLES ta_I* ta*, FUNCS fa_I* fa*}, export*)
   -- if moduleinst = {
       TYPES dt*,

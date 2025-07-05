@@ -188,7 +188,7 @@ rule Rectype_ok2/cons:
 
 
 rule Deftype_ok:
-  C |- DEF rectype i : OK
+  C |- _DEF rectype i : OK
   -- Rectype_ok: C |- rectype : OK(x)
   -- if rectype = REC subtype^n
   -- if i < n
