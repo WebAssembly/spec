@@ -137,20 +137,20 @@ and al_to_rec_type: value -> rec_type = function
   | v -> error_value "rec type" v
 
 and al_to_def_type: value -> def_type = function
-  | CaseV ("DEF", [ rt; i32 ]) -> DefT (al_to_rec_type rt, al_to_nat32 i32)
+  | CaseV ("_DEF", [ rt; i32 ]) -> DefT (al_to_rec_type rt, al_to_nat32 i32)
   | v -> error_value "def type" v
 
 and al_to_typeuse: value -> idx = function
   | v when !version <= 2 -> al_to_idx v
   | CaseV ("_IDX", [ i32 ]) -> al_to_idx i32
   | CaseV ("REC", _) -> 0l @@ no_region   (* dummy *)
-  | CaseV ("DEF", _) -> 0l @@ no_region   (* dummy *)
+  | CaseV ("_DEF", _) -> 0l @@ no_region   (* dummy *)
   | v -> error_value "type use" v
 
 and al_to_heap_type: value -> heap_type = function
   | CaseV ("_IDX", [ i32 ]) -> VarHT (StatX (al_to_nat32 i32))
   | CaseV ("REC", [ i32 ]) -> VarHT (RecX (al_to_nat32 i32))
-  | CaseV ("DEF", _) as v -> DefHT (al_to_def_type v)
+  | CaseV ("_DEF", _) as v -> DefHT (al_to_def_type v)
   | CaseV (tag, []) as v ->
     (match tag with
     | "BOT" -> BotHT
@@ -956,7 +956,7 @@ let al_to_memory': value -> memory' = function
 let al_to_memory: value -> memory = al_to_phrase al_to_memory'
 
 let al_to_tag': value -> tag' = function
-  | CaseV ("TAG", [ idx ]) -> { tgtype = al_to_idx idx }
+  | CaseV ("TAG", [ CaseV ("_IDX", [ idx ]) ]) -> { tgtype = al_to_idx idx }
   | v -> error_value "tag" v
 let al_to_tag: value -> tag = al_to_phrase al_to_tag'
 
@@ -984,16 +984,19 @@ let al_to_data': value -> data_segment' = function
   | v -> error_value "data segment" v
 let al_to_data: value -> data_segment = al_to_phrase al_to_data'
 
-let al_to_extern_type = function
-  | CaseV ("FUNC", [typeuse]) -> ExternFuncT (al_to_def_type typeuse)
+let al_to_extern_type types = function
+  | CaseV ("FUNC", [ CaseV ("_DEF", _) as dt ]) -> ExternFuncT (al_to_def_type dt)
+  | CaseV ("FUNC", [ CaseV ("_IDX", [ idx ]) ]) -> ExternFuncT (List.nth types (Int32.to_int (al_to_idx idx).it))
   | CaseV ("GLOBAL", [globaltype]) -> ExternGlobalT (al_to_global_type globaltype)
   | CaseV ("TABLE", [tabletype]) -> ExternTableT (al_to_table_type tabletype)
   | CaseV ("MEM", [memtype]) -> ExternMemoryT (al_to_memory_type memtype)
-  | CaseV ("TAG", [typeuse]) -> ExternTagT (TagT (al_to_def_type typeuse))
+  | CaseV ("TAG", [ CaseV ("_DEF", _) as dt ]) -> ExternTagT (TagT (al_to_def_type dt))
+  | CaseV ("TAG", [ CaseV ("_IDX", [ idx ]) ]) -> ExternTagT (TagT (List.nth types (Int32.to_int (al_to_idx idx).it)))
   | v -> error_value "extern_type" v
 
 let al_to_import_desc' types = function
-  | CaseV ("FUNC", [ dt ]) ->
+  | CaseV ("FUNC", [ CaseV ("_IDX", [ idx ]) ]) -> FuncImport (al_to_idx idx)
+  | CaseV ("FUNC", [ CaseV ("_DEF", _) as dt ]) ->
     let x =
       { empty_module with types } @@ no_region
       |> def_types_of
@@ -1006,7 +1009,8 @@ let al_to_import_desc' types = function
   | CaseV ("TABLE", [ tt ]) -> TableImport (al_to_table_type tt)
   | CaseV ("MEM", [ mt ]) -> MemoryImport (al_to_memory_type mt)
   | CaseV ("GLOBAL", [ gt ]) -> GlobalImport (al_to_global_type gt)
-  | CaseV ("TAG", [ dt ]) ->
+  | CaseV ("TAG", [ CaseV ("_IDX", [ idx ]) ]) -> TagImport (al_to_idx idx)
+  | CaseV ("TAG", [ CaseV ("_DEF", _) as dt ]) ->
     let x =
       { empty_module with types } @@ no_region
       |> def_types_of
@@ -1049,24 +1053,24 @@ let al_to_export: value -> export = al_to_phrase al_to_export'
 
 let rec al_to_module': value -> module_' = function
   | CaseV ("MODULE", [
-      types; _imports; funcs; globals; tables; memories; elems; datas; start; exports
+      types; imports; funcs; globals; tables; memories; elems; datas; start; exports
     ]) when !version < 3 ->
     al_to_module' (CaseV ("MODULE", [
-      types; _imports; funcs; globals; tables; memories; listV [||]; elems; datas; start; exports
+      types; imports; listV [||]; globals; memories; tables; funcs; datas; elems; start; exports
     ]))
   | CaseV ("MODULE", [
-      types; imports; funcs; globals; tables; memories; tags; elems; datas; start; exports
+      types; imports; tags; globals; memories; tables; funcs; datas; elems; start; exports
     ]) ->
     {
       types = al_to_list al_to_type types;
       imports = al_to_list (al_to_import (al_to_list al_to_type types)) imports;
-      funcs = al_to_list al_to_func funcs;
-      globals = al_to_list al_to_global globals;
-      tables = al_to_list al_to_table tables;
-      memories = al_to_list al_to_memory memories;
       tags = al_to_list al_to_tag tags;
-      elems = al_to_list al_to_elem elems;
+      globals = al_to_list al_to_global globals;
+      memories = al_to_list al_to_memory memories;
+      tables = al_to_list al_to_table tables;
+      funcs = al_to_list al_to_func funcs;
       datas = al_to_list al_to_data datas;
+      elems = al_to_list al_to_elem elems;
       start = al_to_opt al_to_start start;
       exports = al_to_list al_to_export exports;
     }
@@ -1263,7 +1267,7 @@ and al_of_rec_type = function
   | RecT stl -> CaseV ("REC", [ al_of_list al_of_sub_type stl ])
 
 and al_of_def_type = function
-  | DefT (rt, i) -> CaseV ("DEF", [al_of_rec_type rt; al_of_nat32 i])
+  | DefT (rt, i) -> CaseV ("_DEF", [al_of_rec_type rt; al_of_nat32 i])
 
 and al_of_typeuse = function
   | idx when !version <= 2 -> al_of_idx idx
@@ -1312,6 +1316,9 @@ let al_of_limits default limits =
   in
 
   CaseV ("[", [ al_of_nat64 limits.min; max ]) (* TODO: Something better tan this is needed *)
+
+let al_of_tag_type = function
+  | TagT dt -> al_of_def_type dt
 
 let al_of_global_type = function
   | GlobalT (mut, vt) -> CaseV ("", [ al_of_mut mut; al_of_val_type vt ])
@@ -2091,7 +2098,7 @@ let al_of_memory memory =
   CaseV ("MEMORY", [ arg' ])
 
 let al_of_tag tag =
-  CaseV ("TAG", [ al_of_idx tag.it.tgtype ])
+  CaseV ("TAG", [ CaseV ("_IDX", [ al_of_idx tag.it.tgtype ]) ])
 
 let al_of_segment segment =
   match segment.it with
@@ -2126,31 +2133,25 @@ let al_of_data data =
 
 
 let al_of_extern_type = function
-  | ExternFuncT (typeuse) -> CaseV ("FUNC", [al_of_def_type typeuse])
+  | ExternFuncT (dt) -> CaseV ("FUNC", [al_of_def_type dt])
   | ExternGlobalT (globaltype) -> CaseV ("GLOBAL", [al_of_global_type globaltype])
   | ExternTableT (tabletype) -> CaseV ("TABLE", [al_of_table_type tabletype])
   | ExternMemoryT (memtype) -> CaseV ("MEM", [al_of_memory_type memtype])
-  | ExternTagT (TagT (typeuse)) -> CaseV ("TAG", [al_of_def_type typeuse])
+  | ExternTagT (tagtype) -> CaseV ("TAG", [al_of_tag_type tagtype])
 
-let al_of_import_desc module_ idesc =
+let al_of_import_desc idesc =
   match idesc.it with
-  | FuncImport x ->
-    let dts = def_types_of module_ in
-    let dt = x.it |> Int32.to_int |> List.nth dts |> al_of_def_type in
-    CaseV ("FUNC", [ dt ])
+  | FuncImport x -> CaseV ("FUNC", [ al_of_typeuse x ])
   | TableImport tt -> CaseV ("TABLE", [ al_of_table_type tt ])
   | MemoryImport mt -> CaseV ("MEM", [ al_of_memory_type mt ])
   | GlobalImport gt -> CaseV ("GLOBAL", [ al_of_global_type gt ])
-  | TagImport x ->
-    let dts = def_types_of module_ in
-    let dt = x.it |> Int32.to_int |> List.nth dts |> al_of_def_type in
-    CaseV ("TAG", [ dt ])
+  | TagImport x -> CaseV ("TAG", [ al_of_typeuse x ])
 
-let al_of_import module_ import =
+let al_of_import import =
   CaseV ("IMPORT", [
     al_of_name import.it.module_name;
     al_of_name import.it.item_name;
-    al_of_import_desc module_ import.it.idesc;
+    al_of_import_desc import.it.idesc;
   ])
 
 let al_of_export_desc export_desc = match export_desc.it with
@@ -2166,18 +2167,29 @@ let al_of_export export =
   CaseV ("EXPORT", [ al_of_name export.it.name; al_of_export_desc export.it.edesc ])
 
 let al_of_module module_ =
-  CaseV ("MODULE", [
-    al_of_list al_of_type module_.it.types;
-    al_of_list (al_of_import module_) module_.it.imports;
-    al_of_list al_of_func module_.it.funcs;
-    al_of_list al_of_global module_.it.globals;
-    al_of_list al_of_table module_.it.tables;
-    al_of_list al_of_memory module_.it.memories;
-  ] @
-    (if !version < 3 then [] else [al_of_list al_of_tag module_.it.tags])
-  @ [
-    al_of_list al_of_elem module_.it.elems;
-    al_of_list al_of_data module_.it.datas;
-    al_of_opt al_of_start module_.it.start;
-    al_of_list al_of_export module_.it.exports;
-  ])
+  CaseV ("MODULE",
+    if !version < 3 then [
+      al_of_list al_of_type module_.it.types;
+      al_of_list al_of_import module_.it.imports;
+      al_of_list al_of_func module_.it.funcs;
+      al_of_list al_of_global module_.it.globals;
+      al_of_list al_of_table module_.it.tables;
+      al_of_list al_of_memory module_.it.memories;
+      al_of_list al_of_elem module_.it.elems;
+      al_of_list al_of_data module_.it.datas;
+      al_of_opt al_of_start module_.it.start;
+      al_of_list al_of_export module_.it.exports;
+    ] else [
+      al_of_list al_of_type module_.it.types;
+      al_of_list al_of_import module_.it.imports;
+      al_of_list al_of_tag module_.it.tags;
+      al_of_list al_of_global module_.it.globals;
+      al_of_list al_of_memory module_.it.memories;
+      al_of_list al_of_table module_.it.tables;
+      al_of_list al_of_func module_.it.funcs;
+      al_of_list al_of_data module_.it.datas;
+      al_of_list al_of_elem module_.it.elems;
+      al_of_opt al_of_start module_.it.start;
+      al_of_list al_of_export module_.it.exports;
+    ]
+  )

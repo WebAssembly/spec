@@ -188,7 +188,7 @@ rule Rectype_ok2/cons:
 
 
 rule Deftype_ok:
-  C |- DEF rectype i : OK
+  C |- _DEF rectype i : OK
   -- Rectype_ok: C |- rectype : OK(x)
   -- if rectype = REC subtype^n
   -- if i < n
@@ -197,10 +197,10 @@ rule Deftype_ok:
 ;; External types
 
 relation Limits_ok: context |- limits : nat         hint(name "K-limits") hint(macro "%limits")  hint(prosepp "within")
-relation Globaltype_ok: context |- globaltype : OK  hint(name "K-global") hint(macro "%globaltype")
-relation Tabletype_ok: context |- tabletype : OK    hint(name "K-table")  hint(macro "%tabletype")
-relation Memtype_ok: context |- memtype : OK        hint(name "K-mem")    hint(macro "%memtype")
 relation Tagtype_ok: context |- tagtype : OK        hint(name "K-tag")    hint(macro "%tagtype")
+relation Globaltype_ok: context |- globaltype : OK  hint(name "K-global") hint(macro "%globaltype")
+relation Memtype_ok: context |- memtype : OK        hint(name "K-mem")    hint(macro "%memtype")
+relation Tabletype_ok: context |- tabletype : OK    hint(name "K-table")  hint(macro "%tabletype")
 relation Externtype_ok: context |- externtype : OK  hint(name "K-extern") hint(macro "%externtype")
 
 
@@ -208,32 +208,32 @@ rule Limits_ok:
   C |- `[n .. m] : k
   -- if n <= m <= k
 
-rule Functype_ok:
-  C |- t_1* -> t_2* : OK
-  -- Resulttype_ok: C |- t_1* : OK
-  -- Resulttype_ok: C |- t_2* : OK
+rule Tagtype_ok:
+  C |- deftype : OK
+  -- Deftype_ok: C |- deftype : OK
+  -- Expand: deftype ~~ FUNC (t* -> eps)
 
 rule Globaltype_ok:
   C |- MUT? t : OK
   -- Valtype_ok: C |- t : OK
+
+rule Memtype_ok:
+  C |- addrtype limits PAGE : OK
+  -- Limits_ok: C |- limits : $(2^16)
 
 rule Tabletype_ok:
   C |- addrtype limits reftype : OK
   -- Limits_ok: C |- limits : $(2^32 - 1)
   -- Reftype_ok: C |- reftype : OK
 
-rule Memtype_ok:
-  C |- addrtype limits PAGE : OK
-  -- Limits_ok: C |- limits : $(2^16)
-
-rule Tagtype_ok:
-  C |- deftype : OK
-  -- Deftype_ok: C |- deftype : OK
-  -- Expand: deftype ~~ FUNC functype
+rule Functype_ok:
+  C |- t_1* -> t_2* : OK
+  -- Resulttype_ok: C |- t_1* : OK
+  -- Resulttype_ok: C |- t_2* : OK
 
 
-rule Externtype_ok/func:
-  C |- FUNC typeuse : OK
+rule Externtype_ok/tag:
+  C |- TAG typeuse : OK
   -- Typeuse_ok: C |- typeuse : OK
   -- Expand_use: typeuse ~~_C FUNC functype
 
@@ -241,15 +241,15 @@ rule Externtype_ok/global:
   C |- GLOBAL globaltype : OK
   -- Globaltype_ok: C |- globaltype : OK
 
-rule Externtype_ok/table:
-  C |- TABLE tabletype : OK
-  -- Tabletype_ok: C |- tabletype : OK
-
 rule Externtype_ok/mem:
   C |- MEM memtype : OK
   -- Memtype_ok: C |- memtype : OK
 
-rule Externtype_ok/tag:
-  C |- TAG typeuse : OK
+rule Externtype_ok/table:
+  C |- TABLE tabletype : OK
+  -- Tabletype_ok: C |- tabletype : OK
+
+rule Externtype_ok/func:
+  C |- FUNC typeuse : OK
   -- Typeuse_ok: C |- typeuse : OK
   -- Expand_use: typeuse ~~_C FUNC functype

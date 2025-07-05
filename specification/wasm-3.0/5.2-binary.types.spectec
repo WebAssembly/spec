@@ -86,17 +86,17 @@ grammar Blimits : (addrtype, limits) =
   | 0x04 n:Bu64 => (I64, `[n .. $(2^64-1)])
   | 0x05 n:Bu64 m:Bu64 => (I64, `[n .. m])
 
+grammar Btagtype : tagtype =
+  | 0x00 x:Btypeidx => _IDX x
+
 grammar Bglobaltype : globaltype =
   | t:Bvaltype mut:Bmut => mut t
-
-grammar Btabletype : tabletype =
-  | rt:Breftype (at,lim):Blimits => at lim rt
 
 grammar Bmemtype : memtype =
   | (at,lim):Blimits => at lim PAGE
 
-grammar Btagtype : typeidx =
-  | 0x00 x:Btypeidx => x
+grammar Btabletype : tabletype =
+  | rt:Breftype (at,lim):Blimits => at lim rt
 
 
 grammar Bexterntype : externtype =
@@ -104,4 +104,4 @@ grammar Bexterntype : externtype =
   | 0x01 tt:Btabletype => TABLE tt
   | 0x02 mt:Bmemtype => MEM mt
   | 0x03 gt:Bglobaltype => GLOBAL gt
-  | 0x04 x:Btagtype => TAG (_IDX x)
+  | 0x04 jt:Btagtype => TAG jt

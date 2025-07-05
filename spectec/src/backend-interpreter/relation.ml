@@ -89,7 +89,7 @@ let module_ok v =
             | x -> Types.VarHT x
           in
           externtype
-          |> Construct.al_to_extern_type
+          |> Construct.al_to_extern_type tys
           |> Types.subst_extern_type s
           |> Construct.al_of_extern_type
         | _ -> Numerics.error_values "$Module_ok" [ m ]
@@ -127,9 +127,9 @@ let externaddr_ok = function
         |> fun arr -> Array.get arr addr
         |> strv_access "TYPE"
         |> fun type_ -> CaseV (name, [type_])
-        |> Construct.al_to_extern_type
+        |> Construct.al_to_extern_type []
       in
-      let extern_type = Construct.al_to_extern_type t in
+      let extern_type = Construct.al_to_extern_type [] t in
       boolV (Match.match_extern_type [] externaddr_type extern_type)
     with exn -> raise (Exception.Invalid (exn, Printexc.get_raw_backtrace ())))
   | vs -> Numerics.error_values "$Externaddr_ok" vs

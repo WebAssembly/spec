@@ -5,20 +5,20 @@
 ;; Addresses
 
 syntax addr hint(desc "address") = nat
-syntax funcaddr hint(desc "function address") = addr
-syntax globaladdr hint(desc "global address") = addr
-syntax tableaddr hint(desc "table address") = addr
-syntax memaddr hint(desc "memory address") = addr
 syntax tagaddr hint(desc "tag address") = addr
-syntax elemaddr hint(desc "elem address") = addr
+syntax globaladdr hint(desc "global address") = addr
+syntax memaddr hint(desc "memory address") = addr
+syntax tableaddr hint(desc "table address") = addr
+syntax funcaddr hint(desc "function address") = addr
 syntax dataaddr hint(desc "data address") = addr
-syntax hostaddr hint(desc "host address") = addr
+syntax elemaddr hint(desc "elem address") = addr
 syntax structaddr hint(desc "structure address") = addr
 syntax arrayaddr hint(desc "array address") = addr
 syntax exnaddr hint(desc "exception address") = addr
+syntax hostaddr hint(desc "host address") = addr
 
 syntax externaddr hint(desc "external address") hint(macro "%" "XA%") =
-  | FUNC funcaddr | GLOBAL globaladdr | TABLE tableaddr | MEM memaddr | TAG tagaddr
+  | TAG tagaddr | GLOBAL globaladdr | MEM memaddr | TABLE tableaddr | FUNC funcaddr
 
 var a : addr
 var xa : externaddr
@@ -60,26 +60,26 @@ var res : result
 syntax hostfunc hint(desc "host function") hint(macro "%" "FI%") = `...
 syntax funccode hint(show code) hint(macro "funccode") = func | hostfunc
 
-syntax funcinst hint(desc "function instance") hint(macro "%" "FI%") =
-  { TYPE deftype, MODULE moduleinst, CODE funccode }
+syntax taginst hint(desc "tag instance") hint(macro "%" "HI%") =
+  { TYPE tagtype }
 
 syntax globalinst hint(desc "global instance") hint(macro "%" "GI%") =
   { TYPE globaltype, VALUE val }
 
-syntax tableinst hint(desc "table instance") hint(macro "%" "TI%") =
-  { TYPE tabletype, REFS ref* }
-
 syntax meminst hint(desc "memory instance") hint(macro "%" "MI%") =
   { TYPE memtype, BYTES byte* }
 
-syntax taginst hint(desc "tag instance") hint(macro "%" "HI%") =
-  { TYPE tagtype }
+syntax tableinst hint(desc "table instance") hint(macro "%" "TI%") =
+  { TYPE tabletype, REFS ref* }
 
-syntax eleminst hint(desc "element instance") hint(macro "%" "EI%") =
-  { TYPE elemtype, REFS ref* }
+syntax funcinst hint(desc "function instance") hint(macro "%" "FI%") =
+  { TYPE deftype, MODULE moduleinst, CODE funccode }
 
 syntax datainst hint(desc "data instance") hint(macro "%" "DI%") =
   { BYTES byte* }
+
+syntax eleminst hint(desc "element instance") hint(macro "%" "EI%") =
+  { TYPE elemtype, REFS ref* }
 
 syntax exportinst hint(desc "export instance") hint(macro "%" "XI%") =
   { NAME name, ADDR externaddr }
@@ -103,26 +103,26 @@ syntax exninst hint(desc "exception instance") hint(macro "%" "EI%") =
 
 syntax moduleinst hint(desc "module instance") hint(macro "%" "MI%") =
   { TYPES deftype*,
-    FUNCS funcaddr*,
-    GLOBALS globaladdr*,
-    TABLES tableaddr*,
-    MEMS memaddr*,
     TAGS tagaddr*,
-    ELEMS elemaddr*,
+    GLOBALS globaladdr*,
+    MEMS memaddr*,
+    TABLES tableaddr*,
+    FUNCS funcaddr*,
     DATAS dataaddr*,
+    ELEMS elemaddr*,
     EXPORTS exportinst* }
 
 
 ;; State
 
 syntax store hint(desc "store") hint(macro "%" "S%") =
-  { FUNCS funcinst*,
+  { TAGS taginst*,
     GLOBALS globalinst*,
-    TABLES tableinst*,
     MEMS meminst*,
-    TAGS taginst*,
-    ELEMS eleminst*,
+    TABLES tableinst*,
+    FUNCS funcinst*,
     DATAS datainst*,
+    ELEMS eleminst*,
     STRUCTS structinst*,
     ARRAYS arrayinst*,
     EXNS exninst* }
@@ -151,13 +151,13 @@ syntax config hint(desc "configuration") = state; instr*
 ;; Meta variables
 
 var mm : moduleinst
-var fi : funcinst
-var gi : globalinst
-var ti : tableinst
-var mi : meminst
 var hi : taginst
-var ei : eleminst
+var gi : globalinst
+var mi : meminst
+var ti : tableinst
+var fi : funcinst
 var di : datainst
+var ei : eleminst
 var xi : exportinst
 var exn : exninst
 
@@ -190,31 +190,31 @@ def $unpackfield_(packtype, sx, PACK packtype i) = CONST I32 $extend__($psize(pa
 
 ;; Address filtering
 
-def $funcsxa(externaddr*) : funcaddr*     hint(show $funcs(%))   hint(macro "funcsxa")
-def $globalsxa(externaddr*) : globaladdr* hint(show $globals(%)) hint(macro "globalsxa")
-def $tablesxa(externaddr*) : tableaddr*   hint(show $tables(%))  hint(macro "tablesxa")
-def $memsxa(externaddr*) : memaddr*       hint(show $mems(%))    hint(macro "memsxa")
 def $tagsxa(externaddr*) : tagaddr*       hint(show $tags(%))    hint(macro "tagsxa")
+def $globalsxa(externaddr*) : globaladdr* hint(show $globals(%)) hint(macro "globalsxa")
+def $memsxa(externaddr*) : memaddr*       hint(show $mems(%))    hint(macro "memsxa")
+def $tablesxa(externaddr*) : tableaddr*   hint(show $tables(%))  hint(macro "tablesxa")
+def $funcsxa(externaddr*) : funcaddr*     hint(show $funcs(%))   hint(macro "funcsxa")
 
-def $funcsxa(eps) = eps
-def $funcsxa((FUNC a) xa*) = a $funcsxa(xa*)
-def $funcsxa(externaddr xa*) = $funcsxa(xa*)  -- otherwise
+def $tagsxa(eps) = eps
+def $tagsxa((TAG a) xa*) = a $tagsxa(xa*)
+def $tagsxa(externaddr xa*) = $tagsxa(xa*)  -- otherwise
 
 def $globalsxa(eps) = eps
 def $globalsxa((GLOBAL a) xa*) = a $globalsxa(xa*)
 def $globalsxa(externaddr xa*) = $globalsxa(xa*)  -- otherwise
 
-def $tablesxa(eps) = eps
-def $tablesxa((TABLE a) xa*) = a $tablesxa(xa*)
-def $tablesxa(externaddr xa*) = $tablesxa(xa*)  -- otherwise
-
 def $memsxa(eps) = eps
 def $memsxa((MEM a) xa*) = a $memsxa(xa*)
 def $memsxa(externaddr xa*) = $memsxa(xa*)  -- otherwise
 
-def $tagsxa(eps) = eps
-def $tagsxa((TAG a) xa*) = a $tagsxa(xa*)
-def $tagsxa(externaddr xa*) = $tagsxa(xa*)  -- otherwise
+def $tablesxa(eps) = eps
+def $tablesxa((TABLE a) xa*) = a $tablesxa(xa*)
+def $tablesxa(externaddr xa*) = $tablesxa(xa*)  -- otherwise
+
+def $funcsxa(eps) = eps
+def $funcsxa((FUNC a) xa*) = a $funcsxa(xa*)
+def $funcsxa(externaddr xa*) = $funcsxa(xa*)  -- otherwise
 
 
 ;; State access
@@ -229,48 +229,48 @@ def $tagaddr(state) : tagaddr*        hint(show %.TAGS)    hint(macro "Z%")
 def $tagaddr((s; f)) = f.MODULE.TAGS
 
 def $moduleinst(state) : moduleinst   hint(show %.MODULE)  hint(macro "Z%")
-def $funcinst(state) : funcinst*      hint(show %.FUNCS)   hint(macro "Z%")
-def $globalinst(state) : globalinst*  hint(show %.GLOBALS) hint(macro "Z%")
-def $tableinst(state) : tableinst*    hint(show %.TABLES)  hint(macro "Z%")
-def $meminst(state) : meminst*        hint(show %.MEMS)    hint(macro "Z%")
 def $taginst(state) : taginst*        hint(show %.TAGS)    hint(macro "Z%")
-def $eleminst(state) : eleminst*      hint(show %.ELEMS)   hint(macro "Z%")
+def $globalinst(state) : globalinst*  hint(show %.GLOBALS) hint(macro "Z%")
+def $meminst(state) : meminst*        hint(show %.MEMS)    hint(macro "Z%")
+def $tableinst(state) : tableinst*    hint(show %.TABLES)  hint(macro "Z%")
+def $funcinst(state) : funcinst*      hint(show %.FUNCS)   hint(macro "Z%")
 def $datainst(state) : datainst*      hint(show %.DATAS)   hint(macro "Z%")
+def $eleminst(state) : eleminst*      hint(show %.ELEMS)   hint(macro "Z%")
 def $structinst(state) : structinst*  hint(show %.STRUCTS) hint(macro "Z%")
 def $arrayinst(state) : arrayinst*    hint(show %.ARRAYS)  hint(macro "Z%")
 def $exninst(state) : exninst*        hint(show %.EXNS)    hint(macro "Z%")
 
 def $moduleinst((s; f)) = f.MODULE
-def $funcinst((s; f)) = s.FUNCS
-def $globalinst((s; f)) = s.GLOBALS
-def $tableinst((s; f)) = s.TABLES
-def $meminst((s; f)) = s.MEMS
 def $taginst((s; f)) = s.TAGS
-def $eleminst((s; f)) = s.ELEMS
+def $globalinst((s; f)) = s.GLOBALS
+def $meminst((s; f)) = s.MEMS
+def $tableinst((s; f)) = s.TABLES
+def $funcinst((s; f)) = s.FUNCS
 def $datainst((s; f)) = s.DATAS
+def $eleminst((s; f)) = s.ELEMS
 def $structinst((s; f)) = s.STRUCTS
 def $arrayinst((s; f)) = s.ARRAYS
 def $exninst((s; f)) = s.EXNS
 
 
 def $type(state, typeidx) : deftype         hint(show %.TYPES[%])   hint(macro "Z%")
-def $func(state, funcidx) : funcinst        hint(show %.FUNCS[%])   hint(macro "Z%")
-def $global(state, globalidx) : globalinst  hint(show %.GLOBALS[%]) hint(macro "Z%")
-def $table(state, tableidx) : tableinst     hint(show %.TABLES[%])  hint(macro "Z%")
-def $mem(state, memidx) : meminst           hint(show %.MEMS[%])    hint(macro "Z%")
 def $tag(state, tagidx) : taginst           hint(show %.TAGS[%])    hint(macro "Z%")
-def $elem(state, tableidx) : eleminst       hint(show %.ELEMS[%])   hint(macro "Z%")
+def $global(state, globalidx) : globalinst  hint(show %.GLOBALS[%]) hint(macro "Z%")
+def $mem(state, memidx) : meminst           hint(show %.MEMS[%])    hint(macro "Z%")
+def $table(state, tableidx) : tableinst     hint(show %.TABLES[%])  hint(macro "Z%")
+def $func(state, funcidx) : funcinst        hint(show %.FUNCS[%])   hint(macro "Z%")
 def $data(state, dataidx) : datainst        hint(show %.DATAS[%])   hint(macro "Z%")
+def $elem(state, tableidx) : eleminst       hint(show %.ELEMS[%])   hint(macro "Z%")
 def $local(state, localidx) : val?          hint(show %.LOCALS[%])  hint(macro "Z%")
 
 def $type((s; f), x) = f.MODULE.TYPES[x]
-def $func((s; f), x) = s.FUNCS[f.MODULE.FUNCS[x]]
-def $global((s; f), x) = s.GLOBALS[f.MODULE.GLOBALS[x]]
-def $table((s; f), x) = s.TABLES[f.MODULE.TABLES[x]]
-def $mem((s; f), x) = s.MEMS[f.MODULE.MEMS[x]]
 def $tag((s; f), x) = s.TAGS[f.MODULE.TAGS[x]]
-def $elem((s; f), x) = s.ELEMS[f.MODULE.ELEMS[x]]
+def $global((s; f), x) = s.GLOBALS[f.MODULE.GLOBALS[x]]
+def $mem((s; f), x) = s.MEMS[f.MODULE.MEMS[x]]
+def $table((s; f), x) = s.TABLES[f.MODULE.TABLES[x]]
+def $func((s; f), x) = s.FUNCS[f.MODULE.FUNCS[x]]
 def $data((s; f), x) = s.DATAS[f.MODULE.DATAS[x]]
+def $elem((s; f), x) = s.ELEMS[f.MODULE.ELEMS[x]]
 def $local((s; f), x) = f.LOCALS[x]
 
 

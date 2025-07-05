@@ -166,7 +166,7 @@ relation Catch_ok: context |- catch : OK hint(name "T") hint(macro "%catch")
 
 rule Instr_ok/throw:
   C |- THROW x : t_1* t* -> t_2*
-  -- Expand: C.TAGS[x] ~~ FUNC (t* -> eps)
+  -- Expand: $as_deftype(C.TAGS[x]) ~~ FUNC (t* -> eps)
   -- Instrtype_ok: C |- t_1* -> t_2* : OK
 
 rule Instr_ok/throw_ref:
@@ -181,12 +181,12 @@ rule Instr_ok/try_table:
 
 rule Catch_ok/catch:
   C |- CATCH x l : OK
-  -- Expand: C.TAGS[x] ~~ FUNC (t* -> eps)
+  -- Expand: $as_deftype(C.TAGS[x]) ~~ FUNC (t* -> eps)
   -- Resulttype_sub: C |- t* <: C.LABELS[l]
 
 rule Catch_ok/catch_ref:
   C |- CATCH_REF x l : OK
-  -- Expand: C.TAGS[x] ~~ FUNC (t* -> eps)
+  -- Expand: $as_deftype(C.TAGS[x]) ~~ FUNC (t* -> eps)
   -- Resulttype_sub: C |- t* (REF EXN) <: C.LABELS[l]
 
 rule Catch_ok/catch_all:

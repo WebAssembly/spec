@@ -24,7 +24,7 @@ let builtin () =
     let arrow = CaseV ("->", [ listV ptype; listV [||] ]) in
     let ftype = CaseV ("FUNC", [ arrow ]) in
     let dt =
-      CaseV ("DEF", [
+      CaseV ("_DEF", [
         CaseV ("REC", [
           [| CaseV ("SUB", [some "FINAL"; listV [||]; ftype]) |] |> listV
         ]); natV Z.zero

@@ -13387,7 +13387,7 @@ The type use :math:`{\mathit{typeuse}}` is :ref:`valid <valid-val>` if:
       * The defined type :math:`{\mathit{deftype}}` is :ref:`valid <valid-val>`.
    * Or:
 
-      * The type use :math:`{\mathit{typeuse}}` is of the form :math:`(\mathsf{rec}~i)`.
+      * The type use :math:`{\mathit{typeuse}}` is of the form :math:`(\mathsf{rec} {.} i)`.
 
       * The recursive type :math:`C{.}\mathsf{recs}{}[i]` exists.
 
@@ -13414,7 +13414,7 @@ The type use :math:`{\mathit{deftype}}` is :ref:`valid <valid-val>` if:
 
 
 
-The type use :math:`(\mathsf{rec}~i)` is :ref:`valid <valid-val>` if:
+The type use :math:`(\mathsf{rec} {.} i)` is :ref:`valid <valid-val>` if:
 
 
    * The recursive type :math:`C{.}\mathsf{recs}{}[i]` exists.
@@ -13858,7 +13858,7 @@ The heap type :math:`{\mathit{heaptype}''}` :ref:`matches <match>` the heap type
       * The heap type :math:`{\mathit{heaptype}}` :ref:`matches <match>` the type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]`.
    * Or:
 
-      * The heap type :math:`{\mathit{heaptype}''}` is of the form :math:`(\mathsf{rec}~i)`.
+      * The heap type :math:`{\mathit{heaptype}''}` is of the form :math:`(\mathsf{rec} {.} i)`.
 
       * The heap type :math:`{\mathit{heaptype}'''}` is of the form :math:`{{\mathit{typeuse}}^\ast}{}[j]`.
 
@@ -13993,7 +13993,7 @@ The heap type :math:`{\mathit{heaptype}}` :ref:`matches <match>` the heap type :
 
 
 
-The heap type :math:`(\mathsf{rec}~i)` :ref:`matches <match>` the type use :math:`{{\mathit{typeuse}}^\ast}{}[j]` if:
+The heap type :math:`(\mathsf{rec} {.} i)` :ref:`matches <match>` the type use :math:`{{\mathit{typeuse}}^\ast}{}[j]` if:
 
 
    * The length of :math:`{{\mathit{typeuse}}^\ast}` is greater than :math:`j`.
@@ -14271,10 +14271,28 @@ The limits range :math:`{}[ n .. m ]` is :ref:`valid <valid-val>` within :math:`
 
 
 
+The tag type :math:`{\mathit{deftype}}` is :ref:`valid <valid-val>` if:
+
+
+   * The defined type :math:`{\mathit{deftype}}` is :ref:`valid <valid-val>`.
+
+   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`{\mathit{deftype}}` is the composite type :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`.
+
+
+
+
 The global type :math:`({\mathsf{mut}^?}~t)` is :ref:`valid <valid-val>` if:
 
 
    * The value type :math:`t` is :ref:`valid <valid-val>`.
+
+
+
+
+The memory type :math:`({\mathit{addrtype}}~{\mathit{limits}}~\mathsf{page})` is :ref:`valid <valid-val>` if:
+
+
+   * The limits range :math:`{\mathit{limits}}` is :ref:`valid <valid-val>` within :math:`{2^{16}}`.
 
 
 
@@ -14289,30 +14307,12 @@ The table type :math:`({\mathit{addrtype}}~{\mathit{limits}}~{\mathit{reftype}})
 
 
 
-The memory type :math:`({\mathit{addrtype}}~{\mathit{limits}}~\mathsf{page})` is :ref:`valid <valid-val>` if:
-
-
-   * The limits range :math:`{\mathit{limits}}` is :ref:`valid <valid-val>` within :math:`{2^{16}}`.
-
-
-
-
-The tag type :math:`{\mathit{deftype}}` is :ref:`valid <valid-val>` if:
-
-
-   * The defined type :math:`{\mathit{deftype}}` is :ref:`valid <valid-val>`.
-
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`{\mathit{deftype}}` is the composite type :math:`(\mathsf{func}~{\mathit{functype}})`.
-
-
-
-
 The external type :math:`{\mathit{externtype}}` is :ref:`valid <valid-val>` if:
 
 
    * Either:
 
-      * The external type :math:`{\mathit{externtype}}` is of the form :math:`(\mathsf{func}~{\mathit{typeuse}})`.
+      * The external type :math:`{\mathit{externtype}}` is of the form :math:`(\mathsf{tag}~{\mathit{typeuse}})`.
 
       * The type use :math:`{\mathit{typeuse}}` is :ref:`valid <valid-val>`.
 
@@ -14325,17 +14325,17 @@ The external type :math:`{\mathit{externtype}}` is :ref:`valid <valid-val>` if:
       * The global type :math:`{\mathit{globaltype}}` is :ref:`valid <valid-val>`.
    * Or:
 
-      * The external type :math:`{\mathit{externtype}}` is of the form :math:`(\mathsf{table}~{\mathit{tabletype}})`.
-
-      * The table type :math:`{\mathit{tabletype}}` is :ref:`valid <valid-val>`.
-   * Or:
-
       * The external type :math:`{\mathit{externtype}}` is of the form :math:`(\mathsf{mem}~{\mathit{memtype}})`.
 
       * The memory type :math:`{\mathit{memtype}}` is :ref:`valid <valid-val>`.
    * Or:
 
-      * The external type :math:`{\mathit{externtype}}` is of the form :math:`(\mathsf{tag}~{\mathit{typeuse}})`.
+      * The external type :math:`{\mathit{externtype}}` is of the form :math:`(\mathsf{table}~{\mathit{tabletype}})`.
+
+      * The table type :math:`{\mathit{tabletype}}` is :ref:`valid <valid-val>`.
+   * Or:
+
+      * The external type :math:`{\mathit{externtype}}` is of the form :math:`(\mathsf{func}~{\mathit{typeuse}})`.
 
       * The type use :math:`{\mathit{typeuse}}` is :ref:`valid <valid-val>`.
 
@@ -14344,7 +14344,7 @@ The external type :math:`{\mathit{externtype}}` is :ref:`valid <valid-val>` if:
 
 
 
-The external type :math:`(\mathsf{func}~{\mathit{typeuse}})` is :ref:`valid <valid-val>` if:
+The external type :math:`(\mathsf{tag}~{\mathit{typeuse}})` is :ref:`valid <valid-val>` if:
 
 
    * The type use :math:`{\mathit{typeuse}}` is :ref:`valid <valid-val>`.
@@ -14362,14 +14362,6 @@ The external type :math:`(\mathsf{global}~{\mathit{globaltype}})` is :ref:`valid
 
 
 
-The external type :math:`(\mathsf{table}~{\mathit{tabletype}})` is :ref:`valid <valid-val>` if:
-
-
-   * The table type :math:`{\mathit{tabletype}}` is :ref:`valid <valid-val>`.
-
-
-
-
 The external type :math:`(\mathsf{mem}~{\mathit{memtype}})` is :ref:`valid <valid-val>` if:
 
 
@@ -14378,7 +14370,15 @@ The external type :math:`(\mathsf{mem}~{\mathit{memtype}})` is :ref:`valid <vali
 
 
 
-The external type :math:`(\mathsf{tag}~{\mathit{typeuse}})` is :ref:`valid <valid-val>` if:
+The external type :math:`(\mathsf{table}~{\mathit{tabletype}})` is :ref:`valid <valid-val>` if:
+
+
+   * The table type :math:`{\mathit{tabletype}}` is :ref:`valid <valid-val>`.
+
+
+
+
+The external type :math:`(\mathsf{func}~{\mathit{typeuse}})` is :ref:`valid <valid-val>` if:
 
 
    * The type use :math:`{\mathit{typeuse}}` is :ref:`valid <valid-val>`.
@@ -14416,6 +14416,16 @@ The limits range :math:`{}[ n_1 .. m_1 ]` :ref:`matches <match>` the limits rang
    * :math:`n_1` is greater than or equal to :math:`n_2`.
 
    * :math:`m_1` is less than or equal to :math:`m_2`.
+
+
+
+
+The tag type :math:`{\mathit{deftype}}_1` :ref:`matches <match>` the tag type :math:`{\mathit{deftype}}_2` if:
+
+
+   * The defined type :math:`{\mathit{deftype}}_1` :ref:`matches <match>` the defined type :math:`{\mathit{deftype}}_2`.
+
+   * The defined type :math:`{\mathit{deftype}}_2` :ref:`matches <match>` the defined type :math:`{\mathit{deftype}}_1`.
 
 
 
@@ -14460,6 +14470,14 @@ The global type :math:`(\mathsf{mut}~{\mathit{valtype}}_1)` :ref:`matches <match
 
 
 
+The memory type :math:`({\mathit{addrtype}}~{\mathit{limits}}_1~\mathsf{page})` :ref:`matches <match>` the memory type :math:`({\mathit{addrtype}}~{\mathit{limits}}_2~\mathsf{page})` if:
+
+
+   * The limits range :math:`{\mathit{limits}}_1` :ref:`matches <match>` the limits range :math:`{\mathit{limits}}_2`.
+
+
+
+
 The table type :math:`({\mathit{addrtype}}~{\mathit{limits}}_1~{\mathit{reftype}}_1)` :ref:`matches <match>` the table type :math:`({\mathit{addrtype}}~{\mathit{limits}}_2~{\mathit{reftype}}_2)` if:
 
 
@@ -14472,34 +14490,16 @@ The table type :math:`({\mathit{addrtype}}~{\mathit{limits}}_1~{\mathit{reftype}
 
 
 
-The memory type :math:`({\mathit{addrtype}}~{\mathit{limits}}_1~\mathsf{page})` :ref:`matches <match>` the memory type :math:`({\mathit{addrtype}}~{\mathit{limits}}_2~\mathsf{page})` if:
-
-
-   * The limits range :math:`{\mathit{limits}}_1` :ref:`matches <match>` the limits range :math:`{\mathit{limits}}_2`.
-
-
-
-
-The tag type :math:`{\mathit{deftype}}_1` :ref:`matches <match>` the tag type :math:`{\mathit{deftype}}_2` if:
-
-
-   * The defined type :math:`{\mathit{deftype}}_1` :ref:`matches <match>` the defined type :math:`{\mathit{deftype}}_2`.
-
-   * The defined type :math:`{\mathit{deftype}}_2` :ref:`matches <match>` the defined type :math:`{\mathit{deftype}}_1`.
-
-
-
-
 The external type :math:`{\mathit{externtype}}` :ref:`matches <match>` the external type :math:`{\mathit{externtype}'}` if:
 
 
    * Either:
 
-      * The external type :math:`{\mathit{externtype}}` is of the form :math:`(\mathsf{func}~{\mathit{deftype}}_1)`.
+      * The external type :math:`{\mathit{externtype}}` is of the form :math:`(\mathsf{tag}~{\mathit{tagtype}}_1)`.
 
-      * The external type :math:`{\mathit{externtype}'}` is of the form :math:`(\mathsf{func}~{\mathit{deftype}}_2)`.
+      * The external type :math:`{\mathit{externtype}'}` is of the form :math:`(\mathsf{tag}~{\mathit{tagtype}}_2)`.
 
-      * The defined type :math:`{\mathit{deftype}}_1` :ref:`matches <match>` the defined type :math:`{\mathit{deftype}}_2`.
+      * The tag type :math:`{\mathit{tagtype}}_1` :ref:`matches <match>` the tag type :math:`{\mathit{tagtype}}_2`.
 
    * Or:
 
@@ -14510,13 +14510,6 @@ The external type :math:`{\mathit{externtype}}` :ref:`matches <match>` the exter
       * The global type :math:`{\mathit{globaltype}}_1` :ref:`matches <match>` the global type :math:`{\mathit{globaltype}}_2`.
    * Or:
 
-      * The external type :math:`{\mathit{externtype}}` is of the form :math:`(\mathsf{table}~{\mathit{tabletype}}_1)`.
-
-      * The external type :math:`{\mathit{externtype}'}` is of the form :math:`(\mathsf{table}~{\mathit{tabletype}}_2)`.
-
-      * The table type :math:`{\mathit{tabletype}}_1` :ref:`matches <match>` the table type :math:`{\mathit{tabletype}}_2`.
-   * Or:
-
       * The external type :math:`{\mathit{externtype}}` is of the form :math:`(\mathsf{mem}~{\mathit{memtype}}_1)`.
 
       * The external type :math:`{\mathit{externtype}'}` is of the form :math:`(\mathsf{mem}~{\mathit{memtype}}_2)`.
@@ -14524,19 +14517,26 @@ The external type :math:`{\mathit{externtype}}` :ref:`matches <match>` the exter
       * The memory type :math:`{\mathit{memtype}}_1` :ref:`matches <match>` the memory type :math:`{\mathit{memtype}}_2`.
    * Or:
 
-      * The external type :math:`{\mathit{externtype}}` is of the form :math:`(\mathsf{tag}~{\mathit{tagtype}}_1)`.
+      * The external type :math:`{\mathit{externtype}}` is of the form :math:`(\mathsf{table}~{\mathit{tabletype}}_1)`.
 
-      * The external type :math:`{\mathit{externtype}'}` is of the form :math:`(\mathsf{tag}~{\mathit{tagtype}}_2)`.
+      * The external type :math:`{\mathit{externtype}'}` is of the form :math:`(\mathsf{table}~{\mathit{tabletype}}_2)`.
 
-      * The tag type :math:`{\mathit{tagtype}}_1` :ref:`matches <match>` the tag type :math:`{\mathit{tagtype}}_2`.
+      * The table type :math:`{\mathit{tabletype}}_1` :ref:`matches <match>` the table type :math:`{\mathit{tabletype}}_2`.
+   * Or:
+
+      * The external type :math:`{\mathit{externtype}}` is of the form :math:`(\mathsf{func}~{\mathit{deftype}}_1)`.
+
+      * The external type :math:`{\mathit{externtype}'}` is of the form :math:`(\mathsf{func}~{\mathit{deftype}}_2)`.
+
+      * The defined type :math:`{\mathit{deftype}}_1` :ref:`matches <match>` the defined type :math:`{\mathit{deftype}}_2`.
 
 
 
 
-The external type :math:`(\mathsf{func}~{\mathit{deftype}}_1)` :ref:`matches <match>` the external type :math:`(\mathsf{func}~{\mathit{deftype}}_2)` if:
+The external type :math:`(\mathsf{tag}~{\mathit{tagtype}}_1)` :ref:`matches <match>` the external type :math:`(\mathsf{tag}~{\mathit{tagtype}}_2)` if:
 
 
-   * The defined type :math:`{\mathit{deftype}}_1` :ref:`matches <match>` the defined type :math:`{\mathit{deftype}}_2`.
+   * The tag type :math:`{\mathit{tagtype}}_1` :ref:`matches <match>` the tag type :math:`{\mathit{tagtype}}_2`.
 
 
 
@@ -14549,14 +14549,6 @@ The external type :math:`(\mathsf{global}~{\mathit{globaltype}}_1)` :ref:`matche
 
 
 
-The external type :math:`(\mathsf{table}~{\mathit{tabletype}}_1)` :ref:`matches <match>` the external type :math:`(\mathsf{table}~{\mathit{tabletype}}_2)` if:
-
-
-   * The table type :math:`{\mathit{tabletype}}_1` :ref:`matches <match>` the table type :math:`{\mathit{tabletype}}_2`.
-
-
-
-
 The external type :math:`(\mathsf{mem}~{\mathit{memtype}}_1)` :ref:`matches <match>` the external type :math:`(\mathsf{mem}~{\mathit{memtype}}_2)` if:
 
 
@@ -14565,10 +14557,18 @@ The external type :math:`(\mathsf{mem}~{\mathit{memtype}}_1)` :ref:`matches <mat
 
 
 
-The external type :math:`(\mathsf{tag}~{\mathit{tagtype}}_1)` :ref:`matches <match>` the external type :math:`(\mathsf{tag}~{\mathit{tagtype}}_2)` if:
+The external type :math:`(\mathsf{table}~{\mathit{tabletype}}_1)` :ref:`matches <match>` the external type :math:`(\mathsf{table}~{\mathit{tabletype}}_2)` if:
 
 
-   * The tag type :math:`{\mathit{tagtype}}_1` :ref:`matches <match>` the tag type :math:`{\mathit{tagtype}}_2`.
+   * The table type :math:`{\mathit{tabletype}}_1` :ref:`matches <match>` the table type :math:`{\mathit{tabletype}}_2`.
+
+
+
+
+The external type :math:`(\mathsf{func}~{\mathit{deftype}}_1)` :ref:`matches <match>` the external type :math:`(\mathsf{func}~{\mathit{deftype}}_2)` if:
+
+
+   * The defined type :math:`{\mathit{deftype}}_1` :ref:`matches <match>` the defined type :math:`{\mathit{deftype}}_2`.
 
 
 
@@ -14634,7 +14634,7 @@ The catch clause :math:`{\mathit{catch}}` is :ref:`valid <valid-val>` if:
 
       * The tag :math:`C{.}\mathsf{tags}{}[x]` exists.
 
-      * The :ref:`expansion <aux-expand-deftype>` of the tag :math:`C{.}\mathsf{tags}{}[x]` is the composite type :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`.
+      * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{tags}{}[x]` is the composite type :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`.
 
       * The result type :math:`{t^\ast}` :ref:`matches <match>` the label :math:`C{.}\mathsf{labels}{}[l]`.
 
@@ -14644,7 +14644,7 @@ The catch clause :math:`{\mathit{catch}}` is :ref:`valid <valid-val>` if:
 
       * The tag :math:`C{.}\mathsf{tags}{}[x]` exists.
 
-      * The :ref:`expansion <aux-expand-deftype>` of the tag :math:`C{.}\mathsf{tags}{}[x]` is the composite type :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`.
+      * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{tags}{}[x]` is the composite type :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`.
 
       * The result type :math:`{t^\ast}~(\mathsf{ref}~\mathsf{exn})` :ref:`matches <match>` the label :math:`C{.}\mathsf{labels}{}[l]`.
    * Or:
@@ -14666,7 +14666,7 @@ The catch clause :math:`(\mathsf{catch}~x~l)` is :ref:`valid <valid-val>` if:
 
    * The tag :math:`C{.}\mathsf{tags}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the tag :math:`C{.}\mathsf{tags}{}[x]` is the composite type :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`.
+   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{tags}{}[x]` is the composite type :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`.
 
    * The label :math:`C{.}\mathsf{labels}{}[l]` exists.
 
@@ -14680,7 +14680,7 @@ The catch clause :math:`(\mathsf{catch\_ref}~x~l)` is :ref:`valid <valid-val>` i
 
    * The tag :math:`C{.}\mathsf{tags}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the tag :math:`C{.}\mathsf{tags}{}[x]` is the composite type :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`.
+   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{tags}{}[x]` is the composite type :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`.
 
    * The label :math:`C{.}\mathsf{labels}{}[l]` exists.
 
@@ -15003,7 +15003,7 @@ The instruction :math:`(\mathsf{throw}~x)` is :ref:`valid <valid-val>` with the 
 
    * The tag :math:`C{.}\mathsf{tags}{}[x]` exists.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the tag :math:`C{.}\mathsf{tags}{}[x]` is the composite type :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`.
+   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`C{.}\mathsf{tags}{}[x]` is the composite type :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`.
 
    * The instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is :ref:`valid <valid-val>`.
 
@@ -16241,6 +16241,52 @@ The type definition :math:`(\mathsf{type}~{\mathit{rectype}})` is :ref:`valid <v
 
 
 
+The tag :math:`(\mathsf{tag}~{\mathit{tagtype}})` is :ref:`valid <valid-val>` with the tag type :math:`t` if:
+
+
+   * The tag type :math:`{\mathit{tagtype}}` is :ref:`valid <valid-val>`.
+
+   * Let :math:`t` be the tag type :math:`{{\mathrm{clos}}}_{C}({\mathit{tagtype}})`.
+
+
+
+
+The global :math:`(\mathsf{global}~{\mathit{globaltype}}~{\mathit{expr}})` is :ref:`valid <valid-val>` with the global type :math:`{\mathit{globaltype}}` if:
+
+
+   * The global type :math:`{\mathit{globaltype}}` is :ref:`valid <valid-val>`.
+
+   * The global type :math:`{\mathit{globaltype}}` is of the form :math:`({\mathsf{mut}^?}~t)`.
+
+   * The expression :math:`{\mathit{expr}}` is :ref:`valid <valid-val>` with the value type :math:`t`.
+
+   * :math:`{\mathit{expr}}` is constant.
+
+
+
+
+The memory :math:`(\mathsf{memory}~{\mathit{memtype}})` is :ref:`valid <valid-val>` with the memory type :math:`{\mathit{memtype}}` if:
+
+
+   * The memory type :math:`{\mathit{memtype}}` is :ref:`valid <valid-val>`.
+
+
+
+
+The table :math:`(\mathsf{table}~{\mathit{tabletype}}~{\mathit{expr}})` is :ref:`valid <valid-val>` with the table type :math:`{\mathit{tabletype}}` if:
+
+
+   * The table type :math:`{\mathit{tabletype}}` is :ref:`valid <valid-val>`.
+
+   * The table type :math:`{\mathit{tabletype}}` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~{\mathit{rt}})`.
+
+   * The expression :math:`{\mathit{expr}}` is :ref:`valid <valid-val>` with the value type :math:`{\mathit{rt}}`.
+
+   * :math:`{\mathit{expr}}` is constant.
+
+
+
+
 The local :math:`(\mathsf{local}~t)` is :ref:`valid <valid-val>` with the local type :math:`({\mathit{init}}~t)` if:
 
 
@@ -16293,48 +16339,51 @@ The function :math:`(\mathsf{func}~x~{{\mathit{local}}^\ast}~{\mathit{expr}})` i
 
 
 
-The global :math:`(\mathsf{global}~{\mathit{globaltype}}~{\mathit{expr}})` is :ref:`valid <valid-val>` with the global type :math:`{\mathit{globaltype}}` if:
+The data mode :math:`{\mathit{datamode}}` is :ref:`valid <valid-val>` with the data type :math:`\mathsf{ok}` if:
 
 
-   * The global type :math:`{\mathit{gt}}` is :ref:`valid <valid-val>`.
+   * Either:
 
-   * The global type :math:`{\mathit{globaltype}}` is of the form :math:`({\mathsf{mut}^?}~t)`.
+      * The data mode :math:`{\mathit{datamode}}` is of the form :math:`(\mathsf{active}~x~{\mathit{expr}})`.
 
-   * The expression :math:`{\mathit{expr}}` is :ref:`valid <valid-val>` with the value type :math:`t`.
+      * The memory :math:`C{.}\mathsf{mems}{}[x]` exists.
+
+      * The memory :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
+
+      * The expression :math:`{\mathit{expr}}` is :ref:`valid <valid-val>` with the value type :math:`{\mathit{at}}`.
+
+      * :math:`{\mathit{expr}}` is constant.
+
+   * Or:
+
+      * The data mode :math:`{\mathit{datamode}}` is of the form :math:`\mathsf{passive}`.
+
+
+
+
+The data mode :math:`(\mathsf{active}~x~{\mathit{expr}})` is :ref:`valid <valid-val>` with the data type :math:`\mathsf{ok}` if:
+
+
+   * The memory :math:`C{.}\mathsf{mems}{}[x]` exists.
+
+   * The memory :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
+
+   * The expression :math:`{\mathit{expr}}` is :ref:`valid <valid-val>` with the value type :math:`{\mathit{at}}`.
 
    * :math:`{\mathit{expr}}` is constant.
 
 
 
 
-The table :math:`(\mathsf{table}~{\mathit{tabletype}}~{\mathit{expr}})` is :ref:`valid <valid-val>` with the table type :math:`{\mathit{tabletype}}` if:
-
-
-   * The table type :math:`{\mathit{tabletype}}` is :ref:`valid <valid-val>`.
-
-   * The table type :math:`{\mathit{tabletype}}` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~{\mathit{rt}})`.
-
-   * The expression :math:`{\mathit{expr}}` is :ref:`valid <valid-val>` with the value type :math:`{\mathit{rt}}`.
-
-   * :math:`{\mathit{expr}}` is constant.
+The data mode :math:`\mathsf{passive}` is :ref:`valid <valid-val>` with the data type :math:`\mathsf{ok}`.
 
 
 
 
-The memory :math:`(\mathsf{memory}~{\mathit{memtype}})` is :ref:`valid <valid-val>` with the memory type :math:`{\mathit{memtype}}` if:
+The memory segment :math:`(\mathsf{data}~{b^\ast}~{\mathit{datamode}})` is :ref:`valid <valid-val>` with the data type :math:`\mathsf{ok}` if:
 
 
-   * The memory type :math:`{\mathit{memtype}}` is :ref:`valid <valid-val>`.
-
-
-
-
-The tag :math:`(\mathsf{tag}~x)` is :ref:`valid <valid-val>` with the type :math:`C{.}\mathsf{types}{}[x]` if:
-
-
-   * The type :math:`C{.}\mathsf{types}{}[x]` exists.
-
-   * The :ref:`expansion <aux-expand-deftype>` of the type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{func}~{\mathit{functype}})`.
+   * The data mode :math:`{\mathit{datamode}}` is :ref:`valid <valid-val>` with the data type :math:`\mathsf{ok}`.
 
 
 
@@ -16408,55 +16457,6 @@ The table segment :math:`(\mathsf{elem}~{\mathit{elemtype}}~{{\mathit{expr}}^\as
 
 
 
-The data mode :math:`{\mathit{datamode}}` is :ref:`valid <valid-val>` with the data type :math:`\mathsf{ok}` if:
-
-
-   * Either:
-
-      * The data mode :math:`{\mathit{datamode}}` is of the form :math:`(\mathsf{active}~x~{\mathit{expr}})`.
-
-      * The memory :math:`C{.}\mathsf{mems}{}[x]` exists.
-
-      * The memory :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
-
-      * The expression :math:`{\mathit{expr}}` is :ref:`valid <valid-val>` with the value type :math:`{\mathit{at}}`.
-
-      * :math:`{\mathit{expr}}` is constant.
-
-   * Or:
-
-      * The data mode :math:`{\mathit{datamode}}` is of the form :math:`\mathsf{passive}`.
-
-
-
-
-The data mode :math:`(\mathsf{active}~x~{\mathit{expr}})` is :ref:`valid <valid-val>` with the data type :math:`\mathsf{ok}` if:
-
-
-   * The memory :math:`C{.}\mathsf{mems}{}[x]` exists.
-
-   * The memory :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
-
-   * The expression :math:`{\mathit{expr}}` is :ref:`valid <valid-val>` with the value type :math:`{\mathit{at}}`.
-
-   * :math:`{\mathit{expr}}` is constant.
-
-
-
-
-The data mode :math:`\mathsf{passive}` is :ref:`valid <valid-val>` with the data type :math:`\mathsf{ok}`.
-
-
-
-
-The memory segment :math:`(\mathsf{data}~{b^\ast}~{\mathit{datamode}})` is :ref:`valid <valid-val>` with the data type :math:`\mathsf{ok}` if:
-
-
-   * The data mode :math:`{\mathit{datamode}}` is :ref:`valid <valid-val>` with the data type :math:`\mathsf{ok}`.
-
-
-
-
 The start function :math:`(\mathsf{start}~x)` is :ref:`valid <valid-val>` if:
 
 
@@ -16467,10 +16467,12 @@ The start function :math:`(\mathsf{start}~x)` is :ref:`valid <valid-val>` if:
 
 
 
-The import :math:`(\mathsf{import}~{\mathit{name}}_1~{\mathit{name}}_2~{\mathit{xt}})` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{xt}}` if:
+The import :math:`(\mathsf{import}~{\mathit{name}}_1~{\mathit{name}}_2~{\mathit{xt}})` is :ref:`valid <valid-val>` with the external type :math:`t` if:
 
 
    * The external type :math:`{\mathit{xt}}` is :ref:`valid <valid-val>`.
+
+   * Let :math:`t` be the external type :math:`{{\mathrm{clos}}}_{C}({\mathit{xt}})`.
 
 
 
@@ -16480,13 +16482,13 @@ The external index :math:`{\mathit{externidx}}` is :ref:`valid <valid-val>` with
 
    * Either:
 
-      * The external index :math:`{\mathit{externidx}}` is of the form :math:`(\mathsf{func}~x)`.
+      * The external index :math:`{\mathit{externidx}}` is of the form :math:`(\mathsf{tag}~x)`.
 
-      * The external type :math:`{\mathit{externtype}}` is of the form :math:`(\mathsf{func}~{\mathit{dt}})`.
+      * The external type :math:`{\mathit{externtype}}` is of the form :math:`(\mathsf{tag}~{\mathit{jt}})`.
 
-      * The function :math:`C{.}\mathsf{funcs}{}[x]` exists.
+      * The tag :math:`C{.}\mathsf{tags}{}[x]` exists.
 
-      * The function :math:`C{.}\mathsf{funcs}{}[x]` is of the form :math:`{\mathit{dt}}`.
+      * The tag :math:`C{.}\mathsf{tags}{}[x]` is of the form :math:`{\mathit{jt}}`.
 
    * Or:
 
@@ -16499,15 +16501,6 @@ The external index :math:`{\mathit{externidx}}` is :ref:`valid <valid-val>` with
       * The global :math:`C{.}\mathsf{globals}{}[x]` is of the form :math:`{\mathit{gt}}`.
    * Or:
 
-      * The external index :math:`{\mathit{externidx}}` is of the form :math:`(\mathsf{table}~x)`.
-
-      * The external type :math:`{\mathit{externtype}}` is of the form :math:`(\mathsf{table}~{\mathit{tt}})`.
-
-      * The table :math:`C{.}\mathsf{tables}{}[x]` exists.
-
-      * The table :math:`C{.}\mathsf{tables}{}[x]` is of the form :math:`{\mathit{tt}}`.
-   * Or:
-
       * The external index :math:`{\mathit{externidx}}` is of the form :math:`(\mathsf{mem}~x)`.
 
       * The external type :math:`{\mathit{externtype}}` is of the form :math:`(\mathsf{mem}~{\mathit{mt}})`.
@@ -16517,23 +16510,32 @@ The external index :math:`{\mathit{externidx}}` is :ref:`valid <valid-val>` with
       * The memory :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`{\mathit{mt}}`.
    * Or:
 
-      * The external index :math:`{\mathit{externidx}}` is of the form :math:`(\mathsf{tag}~x)`.
+      * The external index :math:`{\mathit{externidx}}` is of the form :math:`(\mathsf{table}~x)`.
 
-      * The external type :math:`{\mathit{externtype}}` is of the form :math:`(\mathsf{tag}~{\mathit{jt}})`.
+      * The external type :math:`{\mathit{externtype}}` is of the form :math:`(\mathsf{table}~{\mathit{tt}})`.
 
-      * The tag :math:`C{.}\mathsf{tags}{}[x]` exists.
+      * The table :math:`C{.}\mathsf{tables}{}[x]` exists.
 
-      * The tag :math:`C{.}\mathsf{tags}{}[x]` is of the form :math:`{\mathit{jt}}`.
+      * The table :math:`C{.}\mathsf{tables}{}[x]` is of the form :math:`{\mathit{tt}}`.
+   * Or:
+
+      * The external index :math:`{\mathit{externidx}}` is of the form :math:`(\mathsf{func}~x)`.
+
+      * The external type :math:`{\mathit{externtype}}` is of the form :math:`(\mathsf{func}~{\mathit{dt}})`.
+
+      * The function :math:`C{.}\mathsf{funcs}{}[x]` exists.
+
+      * The function :math:`C{.}\mathsf{funcs}{}[x]` is of the form :math:`{\mathit{dt}}`.
 
 
 
 
-The external index :math:`(\mathsf{func}~x)` is :ref:`valid <valid-val>` with the external type :math:`(\mathsf{func}~{\mathit{dt}})` if:
+The external index :math:`(\mathsf{tag}~x)` is :ref:`valid <valid-val>` with the external type :math:`(\mathsf{tag}~{\mathit{jt}})` if:
 
 
-   * The function :math:`C{.}\mathsf{funcs}{}[x]` exists.
+   * The tag :math:`C{.}\mathsf{tags}{}[x]` exists.
 
-   * The function :math:`C{.}\mathsf{funcs}{}[x]` is of the form :math:`{\mathit{dt}}`.
+   * The tag :math:`C{.}\mathsf{tags}{}[x]` is of the form :math:`{\mathit{jt}}`.
 
 
 
@@ -16548,16 +16550,6 @@ The external index :math:`(\mathsf{global}~x)` is :ref:`valid <valid-val>` with 
 
 
 
-The external index :math:`(\mathsf{table}~x)` is :ref:`valid <valid-val>` with the external type :math:`(\mathsf{table}~{\mathit{tt}})` if:
-
-
-   * The table :math:`C{.}\mathsf{tables}{}[x]` exists.
-
-   * The table :math:`C{.}\mathsf{tables}{}[x]` is of the form :math:`{\mathit{tt}}`.
-
-
-
-
 The external index :math:`(\mathsf{mem}~x)` is :ref:`valid <valid-val>` with the external type :math:`(\mathsf{mem}~{\mathit{mt}})` if:
 
 
@@ -16568,12 +16560,22 @@ The external index :math:`(\mathsf{mem}~x)` is :ref:`valid <valid-val>` with the
 
 
 
-The external index :math:`(\mathsf{tag}~x)` is :ref:`valid <valid-val>` with the external type :math:`(\mathsf{tag}~{\mathit{jt}})` if:
+The external index :math:`(\mathsf{table}~x)` is :ref:`valid <valid-val>` with the external type :math:`(\mathsf{table}~{\mathit{tt}})` if:
 
 
-   * The tag :math:`C{.}\mathsf{tags}{}[x]` exists.
+   * The table :math:`C{.}\mathsf{tables}{}[x]` exists.
 
-   * The tag :math:`C{.}\mathsf{tags}{}[x]` is of the form :math:`{\mathit{jt}}`.
+   * The table :math:`C{.}\mathsf{tables}{}[x]` is of the form :math:`{\mathit{tt}}`.
+
+
+
+
+The external index :math:`(\mathsf{func}~x)` is :ref:`valid <valid-val>` with the external type :math:`(\mathsf{func}~{\mathit{dt}})` if:
+
+
+   * The function :math:`C{.}\mathsf{funcs}{}[x]` exists.
+
+   * The function :math:`C{.}\mathsf{funcs}{}[x]` is of the form :math:`{\mathit{dt}}`.
 
 
 
@@ -16668,7 +16670,7 @@ The type definition sequence :math:`{\mathit{type}}_1~{{\mathit{type}}^\ast}` is
 
 
 
-The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{tag}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` is :ref:`valid <valid-val>` with the module type :math:`t` if:
+The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{tag}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` is :ref:`valid <valid-val>` with the module type :math:`t` if:
 
 
    * Under the context :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{return}~\epsilon \}\end{array}`, the type definition sequence :math:`{{\mathit{type}}^\ast}` is :ref:`valid <valid-val>` with the defined type sequence :math:`{{\mathit{dt}'}^\ast}`.
@@ -16679,13 +16681,13 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       * Under the context :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{dt}'}^\ast},\; \mathsf{return}~\epsilon \}\end{array}`, the import :math:`{\mathit{import}}` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{xt}}_{\mathsf{i}}`.
 
+   * The length of :math:`{{\mathit{jt}}^\ast}` is equal to the length of :math:`{{\mathit{tag}}^\ast}`.
+
+   * For all :math:`{\mathit{jt}}` in :math:`{{\mathit{jt}}^\ast}`, and corresponding :math:`{\mathit{tag}}` in :math:`{{\mathit{tag}}^\ast}`:
+
+      * Under the context :math:`{C'}`, the tag :math:`{\mathit{tag}}` is :ref:`valid <valid-val>` with the tag type :math:`{\mathit{jt}}`.
+
    * Under the context :math:`{C'}`, the global sequence :math:`{{\mathit{global}}^\ast}` is :ref:`valid <valid-val>` with the global type sequence :math:`{{\mathit{gt}}^\ast}`.
-
-   * The length of :math:`{{\mathit{table}}^\ast}` is equal to the length of :math:`{{\mathit{tt}}^\ast}`.
-
-   * For all :math:`{\mathit{table}}` in :math:`{{\mathit{table}}^\ast}`, and corresponding :math:`{\mathit{tt}}` in :math:`{{\mathit{tt}}^\ast}`:
-
-      * Under the context :math:`{C'}`, the table :math:`{\mathit{table}}` is :ref:`valid <valid-val>` with the table type :math:`{\mathit{tt}}`.
 
    * The length of :math:`{{\mathit{mem}}^\ast}` is equal to the length of :math:`{{\mathit{mt}}^\ast}`.
 
@@ -16693,11 +16695,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       * Under the context :math:`{C'}`, the memory :math:`{\mathit{mem}}` is :ref:`valid <valid-val>` with the memory type :math:`{\mathit{mt}}`.
 
-   * The length of :math:`{{\mathit{jt}}^\ast}` is equal to the length of :math:`{{\mathit{tag}}^\ast}`.
+   * The length of :math:`{{\mathit{table}}^\ast}` is equal to the length of :math:`{{\mathit{tt}}^\ast}`.
 
-   * For all :math:`{\mathit{jt}}` in :math:`{{\mathit{jt}}^\ast}`, and corresponding :math:`{\mathit{tag}}` in :math:`{{\mathit{tag}}^\ast}`:
+   * For all :math:`{\mathit{table}}` in :math:`{{\mathit{table}}^\ast}`, and corresponding :math:`{\mathit{tt}}` in :math:`{{\mathit{tt}}^\ast}`:
 
-      * Under the context :math:`{C'}`, the tag :math:`{\mathit{tag}}` is :ref:`valid <valid-val>` with the tag type :math:`{\mathit{jt}}`.
+      * Under the context :math:`{C'}`, the table :math:`{\mathit{table}}` is :ref:`valid <valid-val>` with the table type :math:`{\mathit{tt}}`.
 
    * The length of :math:`{{\mathit{dt}}^\ast}` is equal to the length of :math:`{{\mathit{func}}^\ast}`.
 
@@ -16705,17 +16707,17 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       * The function :math:`{\mathit{func}}` is :ref:`valid <valid-val>` with the defined type :math:`{\mathit{dt}}`.
 
-   * The length of :math:`{{\mathit{elem}}^\ast}` is equal to the length of :math:`{{\mathit{rt}}^\ast}`.
-
-   * For all :math:`{\mathit{elem}}` in :math:`{{\mathit{elem}}^\ast}`, and corresponding :math:`{\mathit{rt}}` in :math:`{{\mathit{rt}}^\ast}`:
-
-      * The table segment :math:`{\mathit{elem}}` is :ref:`valid <valid-val>` with the element type :math:`{\mathit{rt}}`.
-
    * The length of :math:`{{\mathit{data}}^\ast}` is equal to the length of :math:`{{\mathit{ok}}^\ast}`.
 
    * For all :math:`{\mathit{data}}` in :math:`{{\mathit{data}}^\ast}`, and corresponding :math:`{\mathit{ok}}` in :math:`{{\mathit{ok}}^\ast}`:
 
       * The memory segment :math:`{\mathit{data}}` is valid.
+
+   * The length of :math:`{{\mathit{elem}}^\ast}` is equal to the length of :math:`{{\mathit{rt}}^\ast}`.
+
+   * For all :math:`{\mathit{elem}}` in :math:`{{\mathit{elem}}^\ast}`, and corresponding :math:`{\mathit{rt}}` in :math:`{{\mathit{rt}}^\ast}`:
+
+      * The table segment :math:`{\mathit{elem}}` is :ref:`valid <valid-val>` with the element type :math:`{\mathit{rt}}`.
 
    * If :math:`{\mathit{start}}` is defined, then:
 
@@ -16731,21 +16733,21 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    * :math:`{{\mathit{nm}}^\ast}~{\mathrm{disjoint}}` is of the form true.
 
-   * The context :math:`C` is of the form :math:`{C'}{}[{.}\mathsf{globals} \mathrel{{=}{\oplus}} {{\mathit{gt}}^\ast}]{}[{.}\mathsf{tables} \mathrel{{=}{\oplus}} {{\mathit{tt}}_{\mathsf{i}}^\ast}~{{\mathit{tt}}^\ast}]{}[{.}\mathsf{mems} \mathrel{{=}{\oplus}} {{\mathit{mt}}_{\mathsf{i}}^\ast}~{{\mathit{mt}}^\ast}]{}[{.}\mathsf{tags} \mathrel{{=}{\oplus}} {{\mathit{jt}}_{\mathsf{i}}^\ast}~{{\mathit{jt}}^\ast}]{}[{.}\mathsf{elems} \mathrel{{=}{\oplus}} {{\mathit{rt}}^\ast}]{}[{.}\mathsf{datas} \mathrel{{=}{\oplus}} {{\mathit{ok}}^\ast}]`.
+   * The context :math:`C` is of the form :math:`{C'}{}[{.}\mathsf{tags} \mathrel{{=}{\oplus}} {{\mathit{jt}}_{\mathsf{i}}^\ast}~{{\mathit{jt}}^\ast}]{}[{.}\mathsf{globals} \mathrel{{=}{\oplus}} {{\mathit{gt}}^\ast}]{}[{.}\mathsf{mems} \mathrel{{=}{\oplus}} {{\mathit{mt}}_{\mathsf{i}}^\ast}~{{\mathit{mt}}^\ast}]{}[{.}\mathsf{tables} \mathrel{{=}{\oplus}} {{\mathit{tt}}_{\mathsf{i}}^\ast}~{{\mathit{tt}}^\ast}]{}[{.}\mathsf{datas} \mathrel{{=}{\oplus}} {{\mathit{ok}}^\ast}]{}[{.}\mathsf{elems} \mathrel{{=}{\oplus}} {{\mathit{rt}}^\ast}]`.
 
-   * The context :math:`{C'}` is of the form :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{dt}'}^\ast},\; \mathsf{funcs}~{{\mathit{dt}}_{\mathsf{i}}^\ast}~{{\mathit{dt}}^\ast},\; \mathsf{globals}~{{\mathit{gt}}_{\mathsf{i}}^\ast},\; \mathsf{return}~\epsilon,\; \mathsf{refs}~{x^\ast} \}\end{array}`.
+   * The context :math:`{C'}` is of the form :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{dt}'}^\ast},\; \mathsf{globals}~{{\mathit{gt}}_{\mathsf{i}}^\ast},\; \mathsf{funcs}~{{\mathit{dt}}_{\mathsf{i}}^\ast}~{{\mathit{dt}}^\ast},\; \mathsf{return}~\epsilon,\; \mathsf{refs}~{x^\ast} \}\end{array}`.
 
-   * The function index sequence :math:`{x^\ast}` is of the form :math:`{\mathrm{funcidx}}({{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast})`.
+   * The function index sequence :math:`{x^\ast}` is of the form :math:`{\mathrm{funcidx}}({{\mathit{global}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{elem}}^\ast})`.
 
-   * The defined type sequence :math:`{{\mathit{dt}}_{\mathsf{i}}^\ast}` is of the form :math:`{\mathrm{funcs}}({{\mathit{xt}}_{\mathsf{i}}^\ast})`.
+   * The tag type sequence :math:`{{\mathit{jt}}_{\mathsf{i}}^\ast}` is of the form :math:`{\mathrm{tags}}({{\mathit{xt}}_{\mathsf{i}}^\ast})`.
 
    * The global type sequence :math:`{{\mathit{gt}}_{\mathsf{i}}^\ast}` is of the form :math:`{\mathrm{globals}}({{\mathit{xt}}_{\mathsf{i}}^\ast})`.
 
-   * The table type sequence :math:`{{\mathit{tt}}_{\mathsf{i}}^\ast}` is of the form :math:`{\mathrm{tables}}({{\mathit{xt}}_{\mathsf{i}}^\ast})`.
-
    * The memory type sequence :math:`{{\mathit{mt}}_{\mathsf{i}}^\ast}` is of the form :math:`{\mathrm{mems}}({{\mathit{xt}}_{\mathsf{i}}^\ast})`.
 
-   * The tag type sequence :math:`{{\mathit{jt}}_{\mathsf{i}}^\ast}` is of the form :math:`{\mathrm{tags}}({{\mathit{xt}}_{\mathsf{i}}^\ast})`.
+   * The table type sequence :math:`{{\mathit{tt}}_{\mathsf{i}}^\ast}` is of the form :math:`{\mathrm{tables}}({{\mathit{xt}}_{\mathsf{i}}^\ast})`.
+
+   * The defined type sequence :math:`{{\mathit{dt}}_{\mathsf{i}}^\ast}` is of the form :math:`{\mathrm{funcs}}({{\mathit{xt}}_{\mathsf{i}}^\ast})`.
 
    * Let :math:`t` be the module type :math:`{{\mathrm{clos}}}_{C}({{\mathit{xt}}_{\mathsf{i}}^\ast}~\rightarrow~{{\mathit{xt}}_{\mathsf{e}}^\ast})`.
 
@@ -16973,13 +16975,13 @@ The external address :math:`{\mathit{externaddr}'}` is :ref:`valid <valid-val>` 
 
    * Either:
 
-      * The external address :math:`{\mathit{externaddr}'}` is of the form :math:`(\mathsf{func}~a)`.
+      * The external address :math:`{\mathit{externaddr}'}` is of the form :math:`(\mathsf{tag}~a)`.
 
-      * The external type :math:`{\mathit{externtype}}` is of the form :math:`(\mathsf{func}~{\mathit{funcinst}}{.}\mathsf{type})`.
+      * The external type :math:`{\mathit{externtype}}` is of the form :math:`(\mathsf{tag}~{\mathit{taginst}}{.}\mathsf{type})`.
 
-      * The function instance :math:`s{.}\mathsf{funcs}{}[a]` exists.
+      * The tag instance :math:`s{.}\mathsf{tags}{}[a]` exists.
 
-      * The function instance :math:`s{.}\mathsf{funcs}{}[a]` is of the form :math:`{\mathit{funcinst}}`.
+      * The tag instance :math:`s{.}\mathsf{tags}{}[a]` is of the form :math:`{\mathit{taginst}}`.
 
    * Or:
 
@@ -16992,15 +16994,6 @@ The external address :math:`{\mathit{externaddr}'}` is :ref:`valid <valid-val>` 
       * The global instance :math:`s{.}\mathsf{globals}{}[a]` is of the form :math:`{\mathit{globalinst}}`.
    * Or:
 
-      * The external address :math:`{\mathit{externaddr}'}` is of the form :math:`(\mathsf{table}~a)`.
-
-      * The external type :math:`{\mathit{externtype}}` is of the form :math:`(\mathsf{table}~{\mathit{tableinst}}{.}\mathsf{type})`.
-
-      * The table instance :math:`s{.}\mathsf{tables}{}[a]` exists.
-
-      * The table instance :math:`s{.}\mathsf{tables}{}[a]` is of the form :math:`{\mathit{tableinst}}`.
-   * Or:
-
       * The external address :math:`{\mathit{externaddr}'}` is of the form :math:`(\mathsf{mem}~a)`.
 
       * The external type :math:`{\mathit{externtype}}` is of the form :math:`(\mathsf{mem}~{\mathit{meminst}}{.}\mathsf{type})`.
@@ -17010,13 +17003,22 @@ The external address :math:`{\mathit{externaddr}'}` is :ref:`valid <valid-val>` 
       * The memory instance :math:`s{.}\mathsf{mems}{}[a]` is of the form :math:`{\mathit{meminst}}`.
    * Or:
 
-      * The external address :math:`{\mathit{externaddr}'}` is of the form :math:`(\mathsf{tag}~a)`.
+      * The external address :math:`{\mathit{externaddr}'}` is of the form :math:`(\mathsf{table}~a)`.
 
-      * The external type :math:`{\mathit{externtype}}` is of the form :math:`(\mathsf{tag}~{\mathit{taginst}}{.}\mathsf{type})`.
+      * The external type :math:`{\mathit{externtype}}` is of the form :math:`(\mathsf{table}~{\mathit{tableinst}}{.}\mathsf{type})`.
 
-      * The tag instance :math:`s{.}\mathsf{tags}{}[a]` exists.
+      * The table instance :math:`s{.}\mathsf{tables}{}[a]` exists.
 
-      * The tag instance :math:`s{.}\mathsf{tags}{}[a]` is of the form :math:`{\mathit{taginst}}`.
+      * The table instance :math:`s{.}\mathsf{tables}{}[a]` is of the form :math:`{\mathit{tableinst}}`.
+   * Or:
+
+      * The external address :math:`{\mathit{externaddr}'}` is of the form :math:`(\mathsf{func}~a)`.
+
+      * The external type :math:`{\mathit{externtype}}` is of the form :math:`(\mathsf{func}~{\mathit{funcinst}}{.}\mathsf{type})`.
+
+      * The function instance :math:`s{.}\mathsf{funcs}{}[a]` exists.
+
+      * The function instance :math:`s{.}\mathsf{funcs}{}[a]` is of the form :math:`{\mathit{funcinst}}`.
    * Or:
 
       * The external address :math:`{\mathit{externaddr}'}` is of the form :math:`{\mathit{externaddr}}`.
@@ -17030,12 +17032,12 @@ The external address :math:`{\mathit{externaddr}'}` is :ref:`valid <valid-val>` 
 
 
 
-The external address :math:`(\mathsf{func}~a)` is :ref:`valid <valid-val>` with the external type :math:`(\mathsf{func}~{\mathit{funcinst}}{.}\mathsf{type})` if:
+The external address :math:`(\mathsf{tag}~a)` is :ref:`valid <valid-val>` with the external type :math:`(\mathsf{tag}~{\mathit{taginst}}{.}\mathsf{type})` if:
 
 
-   * The function instance :math:`s{.}\mathsf{funcs}{}[a]` exists.
+   * The tag instance :math:`s{.}\mathsf{tags}{}[a]` exists.
 
-   * The function instance :math:`s{.}\mathsf{funcs}{}[a]` is of the form :math:`{\mathit{funcinst}}`.
+   * The tag instance :math:`s{.}\mathsf{tags}{}[a]` is of the form :math:`{\mathit{taginst}}`.
 
 
 
@@ -17050,16 +17052,6 @@ The external address :math:`(\mathsf{global}~a)` is :ref:`valid <valid-val>` wit
 
 
 
-The external address :math:`(\mathsf{table}~a)` is :ref:`valid <valid-val>` with the external type :math:`(\mathsf{table}~{\mathit{tableinst}}{.}\mathsf{type})` if:
-
-
-   * The table instance :math:`s{.}\mathsf{tables}{}[a]` exists.
-
-   * The table instance :math:`s{.}\mathsf{tables}{}[a]` is of the form :math:`{\mathit{tableinst}}`.
-
-
-
-
 The external address :math:`(\mathsf{mem}~a)` is :ref:`valid <valid-val>` with the external type :math:`(\mathsf{mem}~{\mathit{meminst}}{.}\mathsf{type})` if:
 
 
@@ -17070,12 +17062,22 @@ The external address :math:`(\mathsf{mem}~a)` is :ref:`valid <valid-val>` with t
 
 
 
-The external address :math:`(\mathsf{tag}~a)` is :ref:`valid <valid-val>` with the external type :math:`(\mathsf{tag}~{\mathit{taginst}}{.}\mathsf{type})` if:
+The external address :math:`(\mathsf{table}~a)` is :ref:`valid <valid-val>` with the external type :math:`(\mathsf{table}~{\mathit{tableinst}}{.}\mathsf{type})` if:
 
 
-   * The tag instance :math:`s{.}\mathsf{tags}{}[a]` exists.
+   * The table instance :math:`s{.}\mathsf{tables}{}[a]` exists.
 
-   * The tag instance :math:`s{.}\mathsf{tags}{}[a]` is of the form :math:`{\mathit{taginst}}`.
+   * The table instance :math:`s{.}\mathsf{tables}{}[a]` is of the form :math:`{\mathit{tableinst}}`.
+
+
+
+
+The external address :math:`(\mathsf{func}~a)` is :ref:`valid <valid-val>` with the external type :math:`(\mathsf{func}~{\mathit{funcinst}}{.}\mathsf{type})` if:
+
+
+   * The function instance :math:`s{.}\mathsf{funcs}{}[a]` exists.
+
+   * The function instance :math:`s{.}\mathsf{funcs}{}[a]` is of the form :math:`{\mathit{funcinst}}`.
 
 
 
@@ -21351,8 +21353,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`(\mathsf{ref}~{\mathsf{null}}{{{}_{1}^?}}~{\mathit{ht}}_1)`.
 
 
-:math:`{\mathrm{funcs}}({{\mathit{externtype}'}^\ast})`
-.......................................................
+:math:`{\mathit{dt}}`
+.....................
+
+
+1. Return :math:`{\mathit{dt}}`.
+
+
+:math:`{\mathrm{tags}}({{\mathit{externtype}'}^\ast})`
+......................................................
 
 
 1. If :math:`{{\mathit{externtype}'}^\ast} = \epsilon`, then:
@@ -21361,15 +21370,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{\mathit{externtype}}_0~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}'}^\ast}`.
 
-#. If :math:`{\mathit{externtype}}_0` is some :math:`\mathsf{func}` :math:`{\mathit{typeuse}}`, then:
+#. If :math:`{\mathit{externtype}}_0` is some :math:`\mathsf{tag}` :math:`{\mathit{typeuse}}`, then:
 
-   a. Let :math:`(\mathsf{func}~{\mathit{dt}})` be the destructuring of :math:`{\mathit{externtype}}_0`.
+   a. Let :math:`(\mathsf{tag}~{\mathit{jt}})` be the destructuring of :math:`{\mathit{externtype}}_0`.
 
-   #. Return :math:`{\mathit{dt}}~{\mathrm{funcs}}({{\mathit{xt}}^\ast})`.
+   #. Return :math:`{\mathit{jt}}~{\mathrm{tags}}({{\mathit{xt}}^\ast})`.
 
 #. Let :math:`{\mathit{externtype}}~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}'}^\ast}`.
 
-#. Return :math:`{\mathrm{funcs}}({{\mathit{xt}}^\ast})`.
+#. Return :math:`{\mathrm{tags}}({{\mathit{xt}}^\ast})`.
 
 
 :math:`{\mathrm{globals}}({{\mathit{externtype}'}^\ast})`
@@ -21393,27 +21402,6 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`{\mathrm{globals}}({{\mathit{xt}}^\ast})`.
 
 
-:math:`{\mathrm{tables}}({{\mathit{externtype}'}^\ast})`
-........................................................
-
-
-1. If :math:`{{\mathit{externtype}'}^\ast} = \epsilon`, then:
-
-   a. Return :math:`\epsilon`.
-
-#. Let :math:`{\mathit{externtype}}_0~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}'}^\ast}`.
-
-#. If :math:`{\mathit{externtype}}_0` is some :math:`\mathsf{table}` :math:`{\mathit{tabletype}}`, then:
-
-   a. Let :math:`(\mathsf{table}~{\mathit{tt}})` be the destructuring of :math:`{\mathit{externtype}}_0`.
-
-   #. Return :math:`{\mathit{tt}}~{\mathrm{tables}}({{\mathit{xt}}^\ast})`.
-
-#. Let :math:`{\mathit{externtype}}~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}'}^\ast}`.
-
-#. Return :math:`{\mathrm{tables}}({{\mathit{xt}}^\ast})`.
-
-
 :math:`{\mathrm{mems}}({{\mathit{externtype}'}^\ast})`
 ......................................................
 
@@ -21435,8 +21423,8 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`{\mathrm{mems}}({{\mathit{xt}}^\ast})`.
 
 
-:math:`{\mathrm{tags}}({{\mathit{externtype}'}^\ast})`
-......................................................
+:math:`{\mathrm{tables}}({{\mathit{externtype}'}^\ast})`
+........................................................
 
 
 1. If :math:`{{\mathit{externtype}'}^\ast} = \epsilon`, then:
@@ -21445,15 +21433,36 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{\mathit{externtype}}_0~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}'}^\ast}`.
 
-#. If :math:`{\mathit{externtype}}_0` is some :math:`\mathsf{tag}` :math:`{\mathit{typeuse}}`, then:
+#. If :math:`{\mathit{externtype}}_0` is some :math:`\mathsf{table}` :math:`{\mathit{tabletype}}`, then:
 
-   a. Let :math:`(\mathsf{tag}~{\mathit{jt}})` be the destructuring of :math:`{\mathit{externtype}}_0`.
+   a. Let :math:`(\mathsf{table}~{\mathit{tt}})` be the destructuring of :math:`{\mathit{externtype}}_0`.
 
-   #. Return :math:`{\mathit{jt}}~{\mathrm{tags}}({{\mathit{xt}}^\ast})`.
+   #. Return :math:`{\mathit{tt}}~{\mathrm{tables}}({{\mathit{xt}}^\ast})`.
 
 #. Let :math:`{\mathit{externtype}}~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}'}^\ast}`.
 
-#. Return :math:`{\mathrm{tags}}({{\mathit{xt}}^\ast})`.
+#. Return :math:`{\mathrm{tables}}({{\mathit{xt}}^\ast})`.
+
+
+:math:`{\mathrm{funcs}}({{\mathit{externtype}'}^\ast})`
+.......................................................
+
+
+1. If :math:`{{\mathit{externtype}'}^\ast} = \epsilon`, then:
+
+   a. Return :math:`\epsilon`.
+
+#. Let :math:`{\mathit{externtype}}_0~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}'}^\ast}`.
+
+#. If :math:`{\mathit{externtype}}_0` is some :math:`\mathsf{func}` :math:`{\mathit{typeuse}}`, then:
+
+   a. Let :math:`(\mathsf{func}~{\mathit{dt}})` be the destructuring of :math:`{\mathit{externtype}}_0`.
+
+   #. Return :math:`{\mathit{dt}}~{\mathrm{funcs}}({{\mathit{xt}}^\ast})`.
+
+#. Let :math:`{\mathit{externtype}}~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}'}^\ast}`.
+
+#. Return :math:`{\mathrm{funcs}}({{\mathit{xt}}^\ast})`.
 
 
 :math:`{{\mathit{tv}}}{{}[ {{\mathit{typevar}}^\ast} := {{\mathit{typeuse}}^\ast} ]}`
@@ -21636,18 +21645,18 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return :math:`{\mathit{at}}`.
 
 
+:math:`{{\mathit{tu}'}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`
+............................................................................
+
+
+1. Return :math:`{{\mathit{tu}'}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`.
+
+
 :math:`{{\mathsf{mut}^?}~t}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`
 ................................................................................
 
 
 1. Return :math:`({\mathsf{mut}^?}~{t}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]})`.
-
-
-:math:`{{\mathit{at}}~{\mathit{lim}}~{\mathit{rt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`
-........................................................................................................
-
-
-1. Return :math:`({\mathit{at}}~{\mathit{lim}}~{{\mathit{rt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]})`.
 
 
 :math:`{{\mathit{at}}~{\mathit{lim}}~\mathsf{page}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`
@@ -21657,22 +21666,22 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
 
 
-:math:`{{\mathit{dt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`
-...........................................................................
+:math:`{{\mathit{at}}~{\mathit{lim}}~{\mathit{rt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`
+........................................................................................................
 
 
-1. Return :math:`{{\mathit{dt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`.
+1. Return :math:`({\mathit{at}}~{\mathit{lim}}~{{\mathit{rt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]})`.
 
 
 :math:`{{\mathit{externtype}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`
 ...................................................................................
 
 
-1. If :math:`{\mathit{externtype}}` is some :math:`\mathsf{func}` :math:`{\mathit{typeuse}}`, then:
+1. If :math:`{\mathit{externtype}}` is some :math:`\mathsf{tag}` :math:`{\mathit{typeuse}}`, then:
 
-   a. Let :math:`(\mathsf{func}~{\mathit{dt}})` be the destructuring of :math:`{\mathit{externtype}}`.
+   a. Let :math:`(\mathsf{tag}~{\mathit{jt}})` be the destructuring of :math:`{\mathit{externtype}}`.
 
-   #. Return :math:`(\mathsf{func}~{{\mathit{dt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]})`.
+   #. Return :math:`(\mathsf{tag}~{{\mathit{jt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]})`.
 
 #. If :math:`{\mathit{externtype}}` is some :math:`\mathsf{global}` :math:`{\mathit{globaltype}}`, then:
 
@@ -21692,11 +21701,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. Return :math:`(\mathsf{mem}~{{\mathit{mt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]})`.
 
-#. Assert: Due to validation, :math:`{\mathit{externtype}}` is some :math:`\mathsf{tag}` :math:`{\mathit{typeuse}}`.
+#. Assert: Due to validation, :math:`{\mathit{externtype}}` is some :math:`\mathsf{func}` :math:`{\mathit{typeuse}}`.
 
-#. Let :math:`(\mathsf{tag}~{\mathit{jt}})` be the destructuring of :math:`{\mathit{externtype}}`.
+#. Let :math:`(\mathsf{func}~{\mathit{dt}})` be the destructuring of :math:`{\mathit{externtype}}`.
 
-#. Return :math:`(\mathsf{tag}~{{\mathit{jt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]})`.
+#. Return :math:`(\mathsf{func}~{{\mathit{dt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]})`.
 
 
 :math:`{{{\mathit{xt}}_1^\ast}~\rightarrow~{{\mathit{xt}}_2^\ast}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`
@@ -21727,11 +21736,25 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return :math:`{{\mathit{dt}}}{{}[ {i^{i<n}} := {{\mathit{tu}}^{n}} ]}`.
 
 
+:math:`{{\mathit{jt}}}{{}[ {:=}\, {{\mathit{tu}}^{n}} ]}`
+.........................................................
+
+
+1. Return :math:`{{\mathit{jt}}}{{}[ {i^{i<n}} := {{\mathit{tu}}^{n}} ]}`.
+
+
 :math:`{{\mathit{gt}}}{{}[ {:=}\, {{\mathit{tu}}^{n}} ]}`
 .........................................................
 
 
 1. Return :math:`{{\mathit{gt}}}{{}[ {i^{i<n}} := {{\mathit{tu}}^{n}} ]}`.
+
+
+:math:`{{\mathit{mt}}}{{}[ {:=}\, {{\mathit{tu}}^{n}} ]}`
+.........................................................
+
+
+1. Return :math:`{{\mathit{mt}}}{{}[ {i^{i<n}} := {{\mathit{tu}}^{n}} ]}`.
 
 
 :math:`{{\mathit{tt}}}{{}[ {:=}\, {{\mathit{tu}}^{n}} ]}`
@@ -21741,11 +21764,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return :math:`{{\mathit{tt}}}{{}[ {i^{i<n}} := {{\mathit{tu}}^{n}} ]}`.
 
 
-:math:`{{\mathit{mt}}}{{}[ {:=}\, {{\mathit{tu}}^{n}} ]}`
+:math:`{{\mathit{xt}}}{{}[ {:=}\, {{\mathit{tu}}^{n}} ]}`
 .........................................................
 
 
-1. Return :math:`{{\mathit{mt}}}{{}[ {i^{i<n}} := {{\mathit{tu}}^{n}} ]}`.
+1. Return :math:`{{\mathit{xt}}}{{}[ {i^{i<n}} := {{\mathit{tu}}^{n}} ]}`.
 
 
 :math:`{{\mathit{mmt}}}{{}[ {:=}\, {{\mathit{tu}}^{n}} ]}`
@@ -21774,7 +21797,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`(\mathsf{rec}~{{\mathit{subtype}}^{n}})` be the destructuring of :math:`{\mathit{rectype}}`.
 
-#. Return :math:`(\mathsf{rec}~{{{\mathit{subtype}}}{{}[ {x + i^{i<n}} := {(\mathsf{rec}~i)^{i<n}} ]}^{n}})`.
+#. Return :math:`(\mathsf{rec}~{{{\mathit{subtype}}}{{}[ {x + i^{i<n}} := {(\mathsf{rec} {.} i)^{i<n}} ]}^{n}})`.
 
 
 :math:`{\mathrm{unroll}}({\mathit{rectype}})`
@@ -21783,7 +21806,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`(\mathsf{rec}~{{\mathit{subtype}}^{n}})` be the destructuring of :math:`{\mathit{rectype}}`.
 
-#. Return :math:`(\mathsf{rec}~{{{\mathit{subtype}}}{{}[ {(\mathsf{rec}~i)^{i<n}} := {({\mathit{rectype}} {.} i)^{i<n}} ]}^{n}})`.
+#. Return :math:`(\mathsf{rec}~{{{\mathit{subtype}}}{{}[ {(\mathsf{rec} {.} i)^{i<n}} := {({\mathit{rectype}} {.} i)^{i<n}} ]}^{n}})`.
 
 
 :math:`{{{{\mathrm{roll}}}_{x}^\ast}}{({\mathit{rectype}})}`
@@ -22035,18 +22058,18 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return :math:`{\mathrm{free}}_{\mathit{rectype}}({\mathit{rectype}})`.
 
 
+:math:`{\mathrm{free}}_{\mathit{tagtype}}({\mathit{deftype}})`
+..............................................................
+
+
+1. Return :math:`{\mathrm{free}}_{\mathit{deftype}}({\mathit{deftype}})`.
+
+
 :math:`{\mathrm{free}}_{\mathit{globaltype}}({\mathsf{mut}^?}~{\mathit{valtype}})`
 ..................................................................................
 
 
 1. Return :math:`{\mathrm{free}}_{\mathit{valtype}}({\mathit{valtype}})`.
-
-
-:math:`{\mathrm{free}}_{\mathit{tabletype}}({\mathit{addrtype}}~{\mathit{limits}}~{\mathit{reftype}})`
-......................................................................................................
-
-
-1. Return `$free_addrtype(addrtype) ++ $free_reftype(reftype)`.
 
 
 :math:`{\mathrm{free}}_{\mathit{memtype}}({\mathit{addrtype}}~{\mathit{limits}}~\mathsf{page})`
@@ -22056,18 +22079,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return :math:`{\mathrm{free}}_{\mathit{addrtype}}({\mathit{addrtype}})`.
 
 
-:math:`{\mathrm{free}}_{\mathit{tagtype}}({\mathit{deftype}})`
-..............................................................
+:math:`{\mathrm{free}}_{\mathit{tabletype}}({\mathit{addrtype}}~{\mathit{limits}}~{\mathit{reftype}})`
+......................................................................................................
 
 
-1. Return :math:`{\mathrm{free}}_{\mathit{deftype}}({\mathit{deftype}})`.
-
-
-:math:`{\mathrm{free}}_{\mathit{elemtype}}({\mathit{reftype}})`
-...............................................................
-
-
-1. Return :math:`{\mathrm{free}}_{\mathit{reftype}}({\mathit{reftype}})`.
+1. Return `$free_addrtype(addrtype) ++ $free_reftype(reftype)`.
 
 
 :math:`{\mathrm{free}}_{\mathit{datatype}}(\mathsf{ok})`
@@ -22077,15 +22093,22 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
 
 
+:math:`{\mathrm{free}}_{\mathit{elemtype}}({\mathit{reftype}})`
+...............................................................
+
+
+1. Return :math:`{\mathrm{free}}_{\mathit{reftype}}({\mathit{reftype}})`.
+
+
 :math:`{\mathrm{free}}_{\mathit{externtype}}({\mathit{externtype}})`
 ....................................................................
 
 
-1. If :math:`{\mathit{externtype}}` is some :math:`\mathsf{func}` :math:`{\mathit{typeuse}}`, then:
+1. If :math:`{\mathit{externtype}}` is some :math:`\mathsf{tag}` :math:`{\mathit{typeuse}}`, then:
 
-   a. Let :math:`(\mathsf{func}~{\mathit{typeuse}})` be the destructuring of :math:`{\mathit{externtype}}`.
+   a. Let :math:`(\mathsf{tag}~{\mathit{tagtype}})` be the destructuring of :math:`{\mathit{externtype}}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{typeuse}}({\mathit{typeuse}})`.
+   #. Return :math:`{\mathrm{free}}_{\mathit{tagtype}}({\mathit{tagtype}})`.
 
 #. If :math:`{\mathit{externtype}}` is some :math:`\mathsf{global}` :math:`{\mathit{globaltype}}`, then:
 
@@ -22093,17 +22116,23 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. Return :math:`{\mathrm{free}}_{\mathit{globaltype}}({\mathit{globaltype}})`.
 
+#. If :math:`{\mathit{externtype}}` is some :math:`\mathsf{mem}` :math:`{\mathit{memtype}}`, then:
+
+   a. Let :math:`(\mathsf{mem}~{\mathit{memtype}})` be the destructuring of :math:`{\mathit{externtype}}`.
+
+   #. Return :math:`{\mathrm{free}}_{\mathit{memtype}}({\mathit{memtype}})`.
+
 #. If :math:`{\mathit{externtype}}` is some :math:`\mathsf{table}` :math:`{\mathit{tabletype}}`, then:
 
    a. Let :math:`(\mathsf{table}~{\mathit{tabletype}})` be the destructuring of :math:`{\mathit{externtype}}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{tabletype}}({\mathit{tabletype}})`.
 
-#. Assert: Due to validation, :math:`{\mathit{externtype}}` is some :math:`\mathsf{mem}` :math:`{\mathit{memtype}}`.
+#. Assert: Due to validation, :math:`{\mathit{externtype}}` is some :math:`\mathsf{func}` :math:`{\mathit{typeuse}}`.
 
-#. Let :math:`(\mathsf{mem}~{\mathit{memtype}})` be the destructuring of :math:`{\mathit{externtype}}`.
+#. Let :math:`(\mathsf{func}~{\mathit{typeuse}})` be the destructuring of :math:`{\mathit{externtype}}`.
 
-#. Return :math:`{\mathrm{free}}_{\mathit{memtype}}({\mathit{memtype}})`.
+#. Return :math:`{\mathrm{free}}_{\mathit{typeuse}}({\mathit{typeuse}})`.
 
 
 :math:`{\mathrm{free}}_{\mathit{moduletype}}({{\mathit{externtype}}_1^\ast}~\rightarrow~{{\mathit{externtype}}_2^\ast})`
@@ -22805,6 +22834,34 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return :math:`{\mathrm{free}}_{\mathit{rectype}}({\mathit{rectype}})`.
 
 
+:math:`{\mathrm{free}}_{\mathit{tag}}(\mathsf{tag}~{\mathit{tagtype}})`
+.......................................................................
+
+
+1. Return :math:`{\mathrm{free}}_{\mathit{tagtype}}({\mathit{tagtype}})`.
+
+
+:math:`{\mathrm{free}}_{\mathit{global}}(\mathsf{global}~{\mathit{globaltype}}~{\mathit{expr}})`
+................................................................................................
+
+
+1. Return `$free_globaltype(globaltype) ++ $free_expr(expr)`.
+
+
+:math:`{\mathrm{free}}_{\mathit{mem}}(\mathsf{memory}~{\mathit{memtype}})`
+..........................................................................
+
+
+1. Return :math:`{\mathrm{free}}_{\mathit{memtype}}({\mathit{memtype}})`.
+
+
+:math:`{\mathrm{free}}_{\mathit{table}}(\mathsf{table}~{\mathit{tabletype}}~{\mathit{expr}})`
+.............................................................................................
+
+
+1. Return `$free_tabletype(tabletype) ++ $free_expr(expr)`.
+
+
 :math:`{\mathrm{free}}_{\mathit{local}}(\mathsf{local}~t)`
 ..........................................................
 
@@ -22819,32 +22876,26 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return `$free_typeidx(typeidx) ++ $free_list($free_local(local)*{local <- local*}) ++ update($free_block(expr).LOCALS, [])`.
 
 
-:math:`{\mathrm{free}}_{\mathit{global}}(\mathsf{global}~{\mathit{globaltype}}~{\mathit{expr}})`
-................................................................................................
+:math:`{\mathrm{free}}_{\mathit{datamode}}({\mathit{datamode}})`
+................................................................
 
 
-1. Return `$free_globaltype(globaltype) ++ $free_expr(expr)`.
+1. If :math:`{\mathit{datamode}}` is some :math:`\mathsf{active}` :math:`{\mathit{memidx}}` :math:`{\mathit{expr}}`, then:
+
+   a. Let :math:`(\mathsf{active}~{\mathit{memidx}}~{\mathit{expr}})` be the destructuring of :math:`{\mathit{datamode}}`.
+
+   #. Return `$free_memidx(memidx) ++ $free_expr(expr)`.
+
+#. Assert: Due to validation, :math:`{\mathit{datamode}} = \mathsf{passive}`.
+
+#. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
 
 
-:math:`{\mathrm{free}}_{\mathit{table}}(\mathsf{table}~{\mathit{tabletype}}~{\mathit{expr}})`
-.............................................................................................
+:math:`{\mathrm{free}}_{\mathit{data}}(\mathsf{data}~{{\mathit{byte}}^\ast}~{\mathit{datamode}})`
+.................................................................................................
 
 
-1. Return `$free_tabletype(tabletype) ++ $free_expr(expr)`.
-
-
-:math:`{\mathrm{free}}_{\mathit{mem}}(\mathsf{memory}~{\mathit{memtype}})`
-..........................................................................
-
-
-1. Return :math:`{\mathrm{free}}_{\mathit{memtype}}({\mathit{memtype}})`.
-
-
-:math:`{\mathrm{free}}_{\mathit{tag}}(\mathsf{tag}~{\mathit{typeidx}})`
-.......................................................................
-
-
-1. Return :math:`{\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}})`.
+1. Return :math:`{\mathrm{free}}_{\mathit{datamode}}({\mathit{datamode}})`.
 
 
 :math:`{\mathrm{free}}_{\mathit{elemmode}}({\mathit{elemmode}})`
@@ -22873,40 +22924,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return `$free_reftype(reftype) ++ $free_list($free_expr(expr)*{expr <- expr*}) ++ $free_elemmode(elemmode)`.
 
 
-:math:`{\mathrm{free}}_{\mathit{datamode}}({\mathit{datamode}})`
-................................................................
-
-
-1. If :math:`{\mathit{datamode}}` is some :math:`\mathsf{active}` :math:`{\mathit{memidx}}` :math:`{\mathit{expr}}`, then:
-
-   a. Let :math:`(\mathsf{active}~{\mathit{memidx}}~{\mathit{expr}})` be the destructuring of :math:`{\mathit{datamode}}`.
-
-   #. Return `$free_memidx(memidx) ++ $free_expr(expr)`.
-
-#. Assert: Due to validation, :math:`{\mathit{datamode}} = \mathsf{passive}`.
-
-#. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
-
-
-:math:`{\mathrm{free}}_{\mathit{data}}(\mathsf{data}~{{\mathit{byte}}^\ast}~{\mathit{datamode}})`
-.................................................................................................
-
-
-1. Return :math:`{\mathrm{free}}_{\mathit{datamode}}({\mathit{datamode}})`.
-
-
 :math:`{\mathrm{free}}_{\mathit{start}}(\mathsf{start}~{\mathit{funcidx}})`
 ...........................................................................
 
 
 1. Return :math:`{\mathrm{free}}_{\mathit{funcidx}}({\mathit{funcidx}})`.
-
-
-:math:`{\mathrm{free}}_{\mathit{export}}(\mathsf{export}~{\mathit{name}}~{\mathit{externidx}})`
-...............................................................................................
-
-
-1. Return :math:`{\mathrm{free}}_{\mathit{externidx}}({\mathit{externidx}})`.
 
 
 :math:`{\mathrm{free}}_{\mathit{import}}(\mathsf{import}~{\mathit{name}}_1~{\mathit{name}}_2~{\mathit{externtype}})`
@@ -22916,11 +22938,18 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return :math:`{\mathrm{free}}_{\mathit{externtype}}({\mathit{externtype}})`.
 
 
-:math:`{\mathrm{free}}_{\mathit{module}}(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{tag}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})`
+:math:`{\mathrm{free}}_{\mathit{export}}(\mathsf{export}~{\mathit{name}}~{\mathit{externidx}})`
+...............................................................................................
+
+
+1. Return :math:`{\mathrm{free}}_{\mathit{externidx}}({\mathit{externidx}})`.
+
+
+:math:`{\mathrm{free}}_{\mathit{module}}(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{tag}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})`
 ..........................................................................................................................................................................................................................................................................................................................
 
 
-1. Return `$free_list($free_type(type)*{type <- type*}) ++ $free_list($free_import(import)*{import <- import*}) ++ $free_list($free_func(func)*{func <- func*}) ++ $free_list($free_global(global)*{global <- global*}) ++ $free_list($free_table(table)*{table <- table*}) ++ $free_list($free_mem(mem)*{mem <- mem*}) ++ $free_list($free_tag(tag)*{tag <- tag*}) ++ $free_list($free_elem(elem)*{elem <- elem*}) ++ $free_list($free_data(data)*{data <- data*}) ++ $free_opt($free_start(start)?{start <- start?}) ++ $free_list($free_export(export)*{export <- export*})`.
+1. Return `$free_list($free_type(type)*{type <- type*}) ++ $free_list($free_tag(tag)*{tag <- tag*}) ++ $free_list($free_global(global)*{global <- global*}) ++ $free_list($free_mem(mem)*{mem <- mem*}) ++ $free_list($free_table(table)*{table <- table*}) ++ $free_list($free_func(func)*{func <- func*}) ++ $free_list($free_data(data)*{data <- data*}) ++ $free_list($free_elem(elem)*{elem <- elem*}) ++ $free_opt($free_start(start)?{start <- start?}) ++ $free_list($free_import(import)*{import <- import*}) ++ $free_list($free_export(export)*{export <- export*})`.
 
 
 :math:`{\mathrm{funcidx}}({\mathit{module}})`
@@ -22991,6 +23020,24 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`{{\mathit{dt}}}{{}[ {:=}\, {{\mathit{dt}'}^\ast} ]}`.
 
 
+:math:`{{\mathrm{clos}}}_{C}({\mathit{jt}})`
+............................................
+
+
+1. Let :math:`{{\mathit{dt}}^\ast}` be :math:`{{{\mathrm{clos}}^\ast}}{(C{.}\mathsf{types})}`.
+
+#. Return :math:`{{\mathit{jt}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}`.
+
+
+:math:`{{\mathrm{clos}}}_{C}({\mathit{xt}})`
+............................................
+
+
+1. Let :math:`{{\mathit{dt}}^\ast}` be :math:`{{{\mathrm{clos}}^\ast}}{(C{.}\mathsf{types})}`.
+
+#. Return :math:`{{\mathit{xt}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}`.
+
+
 :math:`{{\mathrm{clos}}}_{C}({\mathit{mmt}})`
 .............................................
 
@@ -23016,7 +23063,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Assert: Due to validation, :math:`{\mathit{typeuse}}` is some :math:`\mathsf{rec}` :math:`\mathbb{N}`.
 
-#. Let :math:`(\mathsf{rec}~j)` be the destructuring of :math:`{\mathit{typeuse}}`.
+#. Let :math:`(\mathsf{rec} {.} j)` be the destructuring of :math:`{\mathit{typeuse}}`.
 
 #. Return :math:`j < i`.
 
@@ -23037,7 +23084,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Assert: Due to validation, :math:`{\mathit{heaptype}}` is some :math:`\mathsf{rec}` :math:`\mathbb{N}`.
 
-#. Let :math:`(\mathsf{rec}~i)` be the destructuring of :math:`{\mathit{heaptype}}`.
+#. Let :math:`(\mathsf{rec} {.} i)` be the destructuring of :math:`{\mathit{heaptype}}`.
 
 #. Return :math:`C{.}\mathsf{recs}{}[i]`.
 
@@ -23071,11 +23118,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`\epsilon`.
 
 
-:math:`{\mathrm{funcidx}}({{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast})`
+:math:`{\mathrm{funcidx}}({{\mathit{global}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{elem}}^\ast})`
 .........................................................................................................................
 
 
-1. Return :math:`{\mathrm{funcidx}}(\mathsf{module}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast})`.
+1. Return :math:`{\mathrm{funcidx}}(\mathsf{module}~{{\mathit{global}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{elem}}^\ast})`.
 
 
 :math:`{{\mathrm{relaxed}}(i)}{{}[ X_1, X_2 ]}`
@@ -24641,8 +24688,8 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{{{{\mathrm{extend}}}_{{|{\mathit{packtype}}|}, 32}^{{\mathit{sx}}}}}{(i)})`.
 
 
-:math:`{\mathrm{funcs}}({{\mathit{externaddr}'}^\ast})`
-.......................................................
+:math:`{\mathrm{tags}}({{\mathit{externaddr}'}^\ast})`
+......................................................
 
 
 1. If :math:`{{\mathit{externaddr}'}^\ast} = \epsilon`, then:
@@ -24651,15 +24698,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xa}}^\ast}` be :math:`{{\mathit{externaddr}'}^\ast}`.
 
-#. If :math:`{\mathit{externaddr}}_0` is some :math:`\mathsf{func}` :math:`{\mathit{funcaddr}}`, then:
+#. If :math:`{\mathit{externaddr}}_0` is some :math:`\mathsf{tag}` :math:`{\mathit{tagaddr}}`, then:
 
-   a. Let :math:`(\mathsf{func}~a)` be the destructuring of :math:`{\mathit{externaddr}}_0`.
+   a. Let :math:`(\mathsf{tag}~a)` be the destructuring of :math:`{\mathit{externaddr}}_0`.
 
-   #. Return :math:`a~{\mathrm{funcs}}({{\mathit{xa}}^\ast})`.
+   #. Return :math:`a~{\mathrm{tags}}({{\mathit{xa}}^\ast})`.
 
 #. Let :math:`{\mathit{externaddr}}~{{\mathit{xa}}^\ast}` be :math:`{{\mathit{externaddr}'}^\ast}`.
 
-#. Return :math:`{\mathrm{funcs}}({{\mathit{xa}}^\ast})`.
+#. Return :math:`{\mathrm{tags}}({{\mathit{xa}}^\ast})`.
 
 
 :math:`{\mathrm{globals}}({{\mathit{externaddr}'}^\ast})`
@@ -24683,27 +24730,6 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`{\mathrm{globals}}({{\mathit{xa}}^\ast})`.
 
 
-:math:`{\mathrm{tables}}({{\mathit{externaddr}'}^\ast})`
-........................................................
-
-
-1. If :math:`{{\mathit{externaddr}'}^\ast} = \epsilon`, then:
-
-   a. Return :math:`\epsilon`.
-
-#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xa}}^\ast}` be :math:`{{\mathit{externaddr}'}^\ast}`.
-
-#. If :math:`{\mathit{externaddr}}_0` is some :math:`\mathsf{table}` :math:`{\mathit{tableaddr}}`, then:
-
-   a. Let :math:`(\mathsf{table}~a)` be the destructuring of :math:`{\mathit{externaddr}}_0`.
-
-   #. Return :math:`a~{\mathrm{tables}}({{\mathit{xa}}^\ast})`.
-
-#. Let :math:`{\mathit{externaddr}}~{{\mathit{xa}}^\ast}` be :math:`{{\mathit{externaddr}'}^\ast}`.
-
-#. Return :math:`{\mathrm{tables}}({{\mathit{xa}}^\ast})`.
-
-
 :math:`{\mathrm{mems}}({{\mathit{externaddr}'}^\ast})`
 ......................................................
 
@@ -24725,8 +24751,8 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`{\mathrm{mems}}({{\mathit{xa}}^\ast})`.
 
 
-:math:`{\mathrm{tags}}({{\mathit{externaddr}'}^\ast})`
-......................................................
+:math:`{\mathrm{tables}}({{\mathit{externaddr}'}^\ast})`
+........................................................
 
 
 1. If :math:`{{\mathit{externaddr}'}^\ast} = \epsilon`, then:
@@ -24735,15 +24761,36 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xa}}^\ast}` be :math:`{{\mathit{externaddr}'}^\ast}`.
 
-#. If :math:`{\mathit{externaddr}}_0` is some :math:`\mathsf{tag}` :math:`{\mathit{tagaddr}}`, then:
+#. If :math:`{\mathit{externaddr}}_0` is some :math:`\mathsf{table}` :math:`{\mathit{tableaddr}}`, then:
 
-   a. Let :math:`(\mathsf{tag}~a)` be the destructuring of :math:`{\mathit{externaddr}}_0`.
+   a. Let :math:`(\mathsf{table}~a)` be the destructuring of :math:`{\mathit{externaddr}}_0`.
 
-   #. Return :math:`a~{\mathrm{tags}}({{\mathit{xa}}^\ast})`.
+   #. Return :math:`a~{\mathrm{tables}}({{\mathit{xa}}^\ast})`.
 
 #. Let :math:`{\mathit{externaddr}}~{{\mathit{xa}}^\ast}` be :math:`{{\mathit{externaddr}'}^\ast}`.
 
-#. Return :math:`{\mathrm{tags}}({{\mathit{xa}}^\ast})`.
+#. Return :math:`{\mathrm{tables}}({{\mathit{xa}}^\ast})`.
+
+
+:math:`{\mathrm{funcs}}({{\mathit{externaddr}'}^\ast})`
+.......................................................
+
+
+1. If :math:`{{\mathit{externaddr}'}^\ast} = \epsilon`, then:
+
+   a. Return :math:`\epsilon`.
+
+#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xa}}^\ast}` be :math:`{{\mathit{externaddr}'}^\ast}`.
+
+#. If :math:`{\mathit{externaddr}}_0` is some :math:`\mathsf{func}` :math:`{\mathit{funcaddr}}`, then:
+
+   a. Let :math:`(\mathsf{func}~a)` be the destructuring of :math:`{\mathit{externaddr}}_0`.
+
+   #. Return :math:`a~{\mathrm{funcs}}({{\mathit{xa}}^\ast})`.
+
+#. Let :math:`{\mathit{externaddr}}~{{\mathit{xa}}^\ast}` be :math:`{{\mathit{externaddr}'}^\ast}`.
+
+#. Return :math:`{\mathrm{funcs}}({{\mathit{xa}}^\ast})`.
 
 
 :math:`(s, f){.}\mathsf{store}`
@@ -24774,11 +24821,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return :math:`f{.}\mathsf{module}`.
 
 
-:math:`(s, f){.}\mathsf{funcs}`
-...............................
+:math:`(s, f){.}\mathsf{tags}`
+..............................
 
 
-1. Return :math:`s{.}\mathsf{funcs}`.
+1. Return :math:`s{.}\mathsf{tags}`.
 
 
 :math:`(s, f){.}\mathsf{globals}`
@@ -24788,13 +24835,6 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return :math:`s{.}\mathsf{globals}`.
 
 
-:math:`(s, f){.}\mathsf{tables}`
-................................
-
-
-1. Return :math:`s{.}\mathsf{tables}`.
-
-
 :math:`(s, f){.}\mathsf{mems}`
 ..............................
 
@@ -24802,18 +24842,18 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return :math:`s{.}\mathsf{mems}`.
 
 
-:math:`(s, f){.}\mathsf{tags}`
-..............................
+:math:`(s, f){.}\mathsf{tables}`
+................................
 
 
-1. Return :math:`s{.}\mathsf{tags}`.
+1. Return :math:`s{.}\mathsf{tables}`.
 
 
-:math:`(s, f){.}\mathsf{elems}`
+:math:`(s, f){.}\mathsf{funcs}`
 ...............................
 
 
-1. Return :math:`s{.}\mathsf{elems}`.
+1. Return :math:`s{.}\mathsf{funcs}`.
 
 
 :math:`(s, f){.}\mathsf{datas}`
@@ -24821,6 +24861,13 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 
 1. Return :math:`s{.}\mathsf{datas}`.
+
+
+:math:`(s, f){.}\mathsf{elems}`
+...............................
+
+
+1. Return :math:`s{.}\mathsf{elems}`.
 
 
 :math:`(s, f){.}\mathsf{structs}`
@@ -24851,11 +24898,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return :math:`f{.}\mathsf{module}{.}\mathsf{types}{}[x]`.
 
 
-:math:`(s, f){.}\mathsf{funcs}{}[x]`
-....................................
+:math:`(s, f){.}\mathsf{tags}{}[x]`
+...................................
 
 
-1. Return :math:`s{.}\mathsf{funcs}{}[f{.}\mathsf{module}{.}\mathsf{funcs}{}[x]]`.
+1. Return :math:`s{.}\mathsf{tags}{}[f{.}\mathsf{module}{.}\mathsf{tags}{}[x]]`.
 
 
 :math:`(s, f){.}\mathsf{globals}{}[x]`
@@ -24865,13 +24912,6 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return :math:`s{.}\mathsf{globals}{}[f{.}\mathsf{module}{.}\mathsf{globals}{}[x]]`.
 
 
-:math:`(s, f){.}\mathsf{tables}{}[x]`
-.....................................
-
-
-1. Return :math:`s{.}\mathsf{tables}{}[f{.}\mathsf{module}{.}\mathsf{tables}{}[x]]`.
-
-
 :math:`(s, f){.}\mathsf{mems}{}[x]`
 ...................................
 
@@ -24879,18 +24919,18 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return :math:`s{.}\mathsf{mems}{}[f{.}\mathsf{module}{.}\mathsf{mems}{}[x]]`.
 
 
-:math:`(s, f){.}\mathsf{tags}{}[x]`
-...................................
+:math:`(s, f){.}\mathsf{tables}{}[x]`
+.....................................
 
 
-1. Return :math:`s{.}\mathsf{tags}{}[f{.}\mathsf{module}{.}\mathsf{tags}{}[x]]`.
+1. Return :math:`s{.}\mathsf{tables}{}[f{.}\mathsf{module}{.}\mathsf{tables}{}[x]]`.
 
 
-:math:`(s, f){.}\mathsf{elems}{}[x]`
+:math:`(s, f){.}\mathsf{funcs}{}[x]`
 ....................................
 
 
-1. Return :math:`s{.}\mathsf{elems}{}[f{.}\mathsf{module}{.}\mathsf{elems}{}[x]]`.
+1. Return :math:`s{.}\mathsf{funcs}{}[f{.}\mathsf{module}{.}\mathsf{funcs}{}[x]]`.
 
 
 :math:`(s, f){.}\mathsf{datas}{}[x]`
@@ -24898,6 +24938,13 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 
 1. Return :math:`s{.}\mathsf{datas}{}[f{.}\mathsf{module}{.}\mathsf{datas}{}[x]]`.
+
+
+:math:`(s, f){.}\mathsf{elems}{}[x]`
+....................................
+
+
+1. Return :math:`s{.}\mathsf{elems}{}[f{.}\mathsf{module}{.}\mathsf{elems}{}[x]]`.
 
 
 :math:`(s, f){.}\mathsf{locals}{}[x]`
@@ -25059,15 +25106,6 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`{{\mathit{gt}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}`.
 
 
-:math:`{{\mathrm{inst}}}_{{\mathit{moduleinst}}}({\mathit{tt}})`
-................................................................
-
-
-1. Let :math:`{{\mathit{dt}}^\ast}` be :math:`{\mathit{moduleinst}}{.}\mathsf{types}`.
-
-#. Return :math:`{{\mathit{tt}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}`.
-
-
 :math:`{{\mathrm{inst}}}_{{\mathit{moduleinst}}}({\mathit{mt}})`
 ................................................................
 
@@ -25075,6 +25113,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Let :math:`{{\mathit{dt}}^\ast}` be :math:`{\mathit{moduleinst}}{.}\mathsf{types}`.
 
 #. Return :math:`{{\mathit{mt}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}`.
+
+
+:math:`{{\mathrm{inst}}}_{{\mathit{moduleinst}}}({\mathit{tt}})`
+................................................................
+
+
+1. Let :math:`{{\mathit{dt}}^\ast}` be :math:`{\mathit{moduleinst}}{.}\mathsf{types}`.
+
+#. Return :math:`{{\mathit{tt}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}`.
 
 
 :math:`{{\mathrm{blocktype}}}_{z}({\mathit{blocktype}})`
@@ -25117,6 +25164,142 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Let :math:`{{\mathit{deftype}}^\ast}` be :math:`{{{{{\mathrm{roll}}}_{x}^\ast}}{({\mathit{rectype}})}}{{}[ {:=}\, {{\mathit{deftype}'}^\ast} ]}`.
 
 #. Return :math:`{{\mathit{deftype}'}^\ast}~{{\mathit{deftype}}^\ast}`.
+
+
+:math:`{\mathrm{alloctag}}(s, {\mathit{tagtype}})`
+..................................................
+
+
+1. Let :math:`{\mathit{taginst}}` be the tag instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{\mathit{tagtype}} \}\end{array}`.
+
+#. Let :math:`a` be the length of :math:`s{.}\mathsf{tags}`.
+
+#. Append :math:`{\mathit{taginst}}` to :math:`s{.}\mathsf{tags}`.
+
+#. Return :math:`a`.
+
+
+:math:`{{{\mathrm{alloctag}}^\ast}}{(s, {{\mathit{tagtype}''}^\ast})}`
+......................................................................
+
+
+1. If :math:`{{\mathit{tagtype}''}^\ast} = \epsilon`, then:
+
+   a. Return :math:`\epsilon`.
+
+#. Let :math:`{\mathit{tagtype}}~{{\mathit{tagtype}'}^\ast}` be :math:`{{\mathit{tagtype}''}^\ast}`.
+
+#. Let :math:`{\mathit{ja}}` be :math:`{\mathrm{alloctag}}(s, {\mathit{tagtype}})`.
+
+#. Let :math:`{{\mathit{ja}'}^\ast}` be :math:`{{{\mathrm{alloctag}}^\ast}}{(s, {{\mathit{tagtype}'}^\ast})}`.
+
+#. Return :math:`{\mathit{ja}}~{{\mathit{ja}'}^\ast}`.
+
+
+:math:`{\mathrm{allocglobal}}(s, {\mathit{globaltype}}, {\mathit{val}})`
+........................................................................
+
+
+1. Let :math:`{\mathit{globalinst}}` be the global instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{\mathit{globaltype}},\; \mathsf{value}~{\mathit{val}} \}\end{array}`.
+
+#. Let :math:`a` be the length of :math:`s{.}\mathsf{globals}`.
+
+#. Append :math:`{\mathit{globalinst}}` to :math:`s{.}\mathsf{globals}`.
+
+#. Return :math:`a`.
+
+
+:math:`{{{\mathrm{allocglobal}}^\ast}}{(s, {{\mathit{globaltype}''}^\ast}, {{\mathit{val}''}^\ast})}`
+.....................................................................................................
+
+
+1. If :math:`{{\mathit{globaltype}''}^\ast} = \epsilon`, then:
+
+   a. Assert: Due to validation, :math:`{{\mathit{val}''}^\ast} = \epsilon`.
+
+   #. Return :math:`\epsilon`.
+
+#. Else:
+
+   a. Let :math:`{\mathit{globaltype}}~{{\mathit{globaltype}'}^\ast}` be :math:`{{\mathit{globaltype}''}^\ast}`.
+
+   #. Assert: Due to validation, :math:`{|{{\mathit{val}''}^\ast}|} \geq 1`.
+
+   #. Let :math:`{\mathit{val}}~{{\mathit{val}'}^\ast}` be :math:`{{\mathit{val}''}^\ast}`.
+
+   #. Let :math:`{\mathit{ga}}` be :math:`{\mathrm{allocglobal}}(s, {\mathit{globaltype}}, {\mathit{val}})`.
+
+   #. Let :math:`{{\mathit{ga}'}^\ast}` be :math:`{{{\mathrm{allocglobal}}^\ast}}{(s, {{\mathit{globaltype}'}^\ast}, {{\mathit{val}'}^\ast})}`.
+
+   #. Return :math:`{\mathit{ga}}~{{\mathit{ga}'}^\ast}`.
+
+
+:math:`{\mathrm{allocmem}}(s, {\mathit{at}}~{}[ i .. j ]~\mathsf{page})`
+........................................................................
+
+
+1. Let :math:`{\mathit{meminst}}` be the memory instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({\mathit{at}}~{}[ i .. j ]~\mathsf{page}),\; \mathsf{bytes}~{\mathtt{0x00}^{i \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
+
+#. Let :math:`a` be the length of :math:`s{.}\mathsf{mems}`.
+
+#. Append :math:`{\mathit{meminst}}` to :math:`s{.}\mathsf{mems}`.
+
+#. Return :math:`a`.
+
+
+:math:`{{{\mathrm{allocmem}}^\ast}}{(s, {{\mathit{memtype}''}^\ast})}`
+......................................................................
+
+
+1. If :math:`{{\mathit{memtype}''}^\ast} = \epsilon`, then:
+
+   a. Return :math:`\epsilon`.
+
+#. Let :math:`{\mathit{memtype}}~{{\mathit{memtype}'}^\ast}` be :math:`{{\mathit{memtype}''}^\ast}`.
+
+#. Let :math:`{\mathit{ma}}` be :math:`{\mathrm{allocmem}}(s, {\mathit{memtype}})`.
+
+#. Let :math:`{{\mathit{ma}'}^\ast}` be :math:`{{{\mathrm{allocmem}}^\ast}}{(s, {{\mathit{memtype}'}^\ast})}`.
+
+#. Return :math:`{\mathit{ma}}~{{\mathit{ma}'}^\ast}`.
+
+
+:math:`{\mathrm{alloctable}}(s, {\mathit{at}}~{}[ i .. j ]~{\mathit{rt}}, {\mathit{ref}})`
+..........................................................................................
+
+
+1. Let :math:`{\mathit{tableinst}}` be the table instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({\mathit{at}}~{}[ i .. j ]~{\mathit{rt}}),\; \mathsf{refs}~{{\mathit{ref}}^{i}} \}\end{array}`.
+
+#. Let :math:`a` be the length of :math:`s{.}\mathsf{tables}`.
+
+#. Append :math:`{\mathit{tableinst}}` to :math:`s{.}\mathsf{tables}`.
+
+#. Return :math:`a`.
+
+
+:math:`{{{\mathrm{alloctable}}^\ast}}{(s, {{\mathit{tabletype}''}^\ast}, {{\mathit{ref}''}^\ast})}`
+...................................................................................................
+
+
+1. If :math:`{{\mathit{ref}''}^\ast} = \epsilon`, then:
+
+   a. Assert: Due to validation, :math:`{{\mathit{tabletype}''}^\ast} = \epsilon`.
+
+   #. Return :math:`\epsilon`.
+
+#. Else:
+
+   a. Let :math:`{\mathit{ref}}~{{\mathit{ref}'}^\ast}` be :math:`{{\mathit{ref}''}^\ast}`.
+
+   #. Assert: Due to validation, :math:`{|{{\mathit{tabletype}''}^\ast}|} \geq 1`.
+
+   #. Let :math:`{\mathit{tabletype}}~{{\mathit{tabletype}'}^\ast}` be :math:`{{\mathit{tabletype}''}^\ast}`.
+
+   #. Let :math:`{\mathit{ta}}` be :math:`{\mathrm{alloctable}}(s, {\mathit{tabletype}}, {\mathit{ref}})`.
+
+   #. Let :math:`{{\mathit{ta}'}^\ast}` be :math:`{{{\mathrm{alloctable}}^\ast}}{(s, {{\mathit{tabletype}'}^\ast}, {{\mathit{ref}'}^\ast})}`.
+
+   #. Return :math:`{\mathit{ta}}~{{\mathit{ta}'}^\ast}`.
 
 
 :math:`{\mathrm{allocfunc}}(s, {\mathit{deftype}}, {\mathit{code}}, {\mathit{moduleinst}})`
@@ -25163,140 +25346,42 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
    #. Return :math:`{\mathit{fa}}~{{\mathit{fa}'}^\ast}`.
 
 
-:math:`{\mathrm{allocglobal}}(s, {\mathit{globaltype}}, {\mathit{val}})`
-........................................................................
+:math:`{\mathrm{allocdata}}(s, \mathsf{ok}, {{\mathit{byte}}^\ast})`
+....................................................................
 
 
-1. Let :math:`{\mathit{globalinst}}` be the global instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{\mathit{globaltype}},\; \mathsf{value}~{\mathit{val}} \}\end{array}`.
+1. Let :math:`{\mathit{datainst}}` be the data instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{bytes}~{{\mathit{byte}}^\ast} \}\end{array}`.
 
-#. Let :math:`a` be the length of :math:`s{.}\mathsf{globals}`.
+#. Let :math:`a` be the length of :math:`s{.}\mathsf{datas}`.
 
-#. Append :math:`{\mathit{globalinst}}` to :math:`s{.}\mathsf{globals}`.
+#. Append :math:`{\mathit{datainst}}` to :math:`s{.}\mathsf{datas}`.
 
 #. Return :math:`a`.
 
 
-:math:`{{{\mathrm{allocglobal}}^\ast}}{(s, {{\mathit{globaltype}''}^\ast}, {{\mathit{val}''}^\ast})}`
-.....................................................................................................
+:math:`{{{\mathrm{allocdata}}^\ast}}{(s, {{\mathit{datatype}}^\ast}, {{\mathit{byte}}^\ast})}`
+..............................................................................................
 
 
-1. If :math:`{{\mathit{globaltype}''}^\ast} = \epsilon`, then:
+1. If :math:`{{\mathit{byte}}^\ast} = \epsilon`, then:
 
-   a. Assert: Due to validation, :math:`{{\mathit{val}''}^\ast} = \epsilon`.
+   a. Assert: Due to validation, :math:`{{\mathit{datatype}}^\ast} = \epsilon`.
 
    #. Return :math:`\epsilon`.
 
 #. Else:
 
-   a. Let :math:`{\mathit{globaltype}}~{{\mathit{globaltype}'}^\ast}` be :math:`{{\mathit{globaltype}''}^\ast}`.
+   a. Let :math:`{b^\ast}~{{{b'}^\ast}^\ast}` be :math:`{{\mathit{byte}}^\ast}`.
 
-   #. Assert: Due to validation, :math:`{|{{\mathit{val}''}^\ast}|} \geq 1`.
+   #. Assert: Due to validation, :math:`{|{{\mathit{datatype}}^\ast}|} \geq 1`.
 
-   #. Let :math:`{\mathit{val}}~{{\mathit{val}'}^\ast}` be :math:`{{\mathit{val}''}^\ast}`.
+   #. Let :math:`{\mathit{ok}}~{{\mathit{ok}'}^\ast}` be :math:`{{\mathit{datatype}}^\ast}`.
 
-   #. Let :math:`{\mathit{ga}}` be :math:`{\mathrm{allocglobal}}(s, {\mathit{globaltype}}, {\mathit{val}})`.
+   #. Let :math:`{\mathit{da}}` be :math:`{\mathrm{allocdata}}(s, {\mathit{ok}}, {b^\ast})`.
 
-   #. Let :math:`{{\mathit{ga}'}^\ast}` be :math:`{{{\mathrm{allocglobal}}^\ast}}{(s, {{\mathit{globaltype}'}^\ast}, {{\mathit{val}'}^\ast})}`.
+   #. Let :math:`{{\mathit{da}'}^\ast}` be :math:`{{{\mathrm{allocdata}}^\ast}}{(s, {{\mathit{ok}'}^\ast}, {{{b'}^\ast}^\ast})}`.
 
-   #. Return :math:`{\mathit{ga}}~{{\mathit{ga}'}^\ast}`.
-
-
-:math:`{\mathrm{alloctable}}(s, {\mathit{at}}~{}[ i .. j ]~{\mathit{rt}}, {\mathit{ref}})`
-..........................................................................................
-
-
-1. Let :math:`{\mathit{tableinst}}` be the table instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({\mathit{at}}~{}[ i .. j ]~{\mathit{rt}}),\; \mathsf{refs}~{{\mathit{ref}}^{i}} \}\end{array}`.
-
-#. Let :math:`a` be the length of :math:`s{.}\mathsf{tables}`.
-
-#. Append :math:`{\mathit{tableinst}}` to :math:`s{.}\mathsf{tables}`.
-
-#. Return :math:`a`.
-
-
-:math:`{{{\mathrm{alloctable}}^\ast}}{(s, {{\mathit{tabletype}''}^\ast}, {{\mathit{ref}''}^\ast})}`
-...................................................................................................
-
-
-1. If :math:`{{\mathit{ref}''}^\ast} = \epsilon`, then:
-
-   a. Assert: Due to validation, :math:`{{\mathit{tabletype}''}^\ast} = \epsilon`.
-
-   #. Return :math:`\epsilon`.
-
-#. Else:
-
-   a. Let :math:`{\mathit{ref}}~{{\mathit{ref}'}^\ast}` be :math:`{{\mathit{ref}''}^\ast}`.
-
-   #. Assert: Due to validation, :math:`{|{{\mathit{tabletype}''}^\ast}|} \geq 1`.
-
-   #. Let :math:`{\mathit{tabletype}}~{{\mathit{tabletype}'}^\ast}` be :math:`{{\mathit{tabletype}''}^\ast}`.
-
-   #. Let :math:`{\mathit{ta}}` be :math:`{\mathrm{alloctable}}(s, {\mathit{tabletype}}, {\mathit{ref}})`.
-
-   #. Let :math:`{{\mathit{ta}'}^\ast}` be :math:`{{{\mathrm{alloctable}}^\ast}}{(s, {{\mathit{tabletype}'}^\ast}, {{\mathit{ref}'}^\ast})}`.
-
-   #. Return :math:`{\mathit{ta}}~{{\mathit{ta}'}^\ast}`.
-
-
-:math:`{\mathrm{allocmem}}(s, {\mathit{at}}~{}[ i .. j ]~\mathsf{page})`
-........................................................................
-
-
-1. Let :math:`{\mathit{meminst}}` be the memory instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({\mathit{at}}~{}[ i .. j ]~\mathsf{page}),\; \mathsf{bytes}~{\mathtt{0x00}^{i \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
-
-#. Let :math:`a` be the length of :math:`s{.}\mathsf{mems}`.
-
-#. Append :math:`{\mathit{meminst}}` to :math:`s{.}\mathsf{mems}`.
-
-#. Return :math:`a`.
-
-
-:math:`{{{\mathrm{allocmem}}^\ast}}{(s, {{\mathit{memtype}''}^\ast})}`
-......................................................................
-
-
-1. If :math:`{{\mathit{memtype}''}^\ast} = \epsilon`, then:
-
-   a. Return :math:`\epsilon`.
-
-#. Let :math:`{\mathit{memtype}}~{{\mathit{memtype}'}^\ast}` be :math:`{{\mathit{memtype}''}^\ast}`.
-
-#. Let :math:`{\mathit{ma}}` be :math:`{\mathrm{allocmem}}(s, {\mathit{memtype}})`.
-
-#. Let :math:`{{\mathit{ma}'}^\ast}` be :math:`{{{\mathrm{allocmem}}^\ast}}{(s, {{\mathit{memtype}'}^\ast})}`.
-
-#. Return :math:`{\mathit{ma}}~{{\mathit{ma}'}^\ast}`.
-
-
-:math:`{\mathrm{alloctag}}(s, {\mathit{tagtype}})`
-..................................................
-
-
-1. Let :math:`{\mathit{taginst}}` be the tag instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{\mathit{tagtype}} \}\end{array}`.
-
-#. Let :math:`a` be the length of :math:`s{.}\mathsf{tags}`.
-
-#. Append :math:`{\mathit{taginst}}` to :math:`s{.}\mathsf{tags}`.
-
-#. Return :math:`a`.
-
-
-:math:`{{{\mathrm{alloctag}}^\ast}}{(s, {{\mathit{tagtype}''}^\ast})}`
-......................................................................
-
-
-1. If :math:`{{\mathit{tagtype}''}^\ast} = \epsilon`, then:
-
-   a. Return :math:`\epsilon`.
-
-#. Let :math:`{\mathit{tagtype}}~{{\mathit{tagtype}'}^\ast}` be :math:`{{\mathit{tagtype}''}^\ast}`.
-
-#. Let :math:`{\mathit{ja}}` be :math:`{\mathrm{alloctag}}(s, {\mathit{tagtype}})`.
-
-#. Let :math:`{{\mathit{ja}'}^\ast}` be :math:`{{{\mathrm{alloctag}}^\ast}}{(s, {{\mathit{tagtype}'}^\ast})}`.
-
-#. Return :math:`{\mathit{ja}}~{{\mathit{ja}'}^\ast}`.
+   #. Return :math:`{\mathit{da}}~{{\mathit{da}'}^\ast}`.
 
 
 :math:`{\mathrm{allocelem}}(s, {\mathit{elemtype}}, {{\mathit{ref}}^\ast})`
@@ -25337,53 +25422,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
    #. Return :math:`{\mathit{ea}}~{{\mathit{ea}'}^\ast}`.
 
 
-:math:`{\mathrm{allocdata}}(s, \mathsf{ok}, {{\mathit{byte}}^\ast})`
-....................................................................
-
-
-1. Let :math:`{\mathit{datainst}}` be the data instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{bytes}~{{\mathit{byte}}^\ast} \}\end{array}`.
-
-#. Let :math:`a` be the length of :math:`s{.}\mathsf{datas}`.
-
-#. Append :math:`{\mathit{datainst}}` to :math:`s{.}\mathsf{datas}`.
-
-#. Return :math:`a`.
-
-
-:math:`{{{\mathrm{allocdata}}^\ast}}{(s, {{\mathit{datatype}}^\ast}, {{\mathit{byte}}^\ast})}`
-..............................................................................................
-
-
-1. If :math:`{{\mathit{byte}}^\ast} = \epsilon`, then:
-
-   a. Assert: Due to validation, :math:`{{\mathit{datatype}}^\ast} = \epsilon`.
-
-   #. Return :math:`\epsilon`.
-
-#. Else:
-
-   a. Let :math:`{b^\ast}~{{{b'}^\ast}^\ast}` be :math:`{{\mathit{byte}}^\ast}`.
-
-   #. Assert: Due to validation, :math:`{|{{\mathit{datatype}}^\ast}|} \geq 1`.
-
-   #. Let :math:`{\mathit{ok}}~{{\mathit{ok}'}^\ast}` be :math:`{{\mathit{datatype}}^\ast}`.
-
-   #. Let :math:`{\mathit{da}}` be :math:`{\mathrm{allocdata}}(s, {\mathit{ok}}, {b^\ast})`.
-
-   #. Let :math:`{{\mathit{da}'}^\ast}` be :math:`{{{\mathrm{allocdata}}^\ast}}{(s, {{\mathit{ok}'}^\ast}, {{{b'}^\ast}^\ast})}`.
-
-   #. Return :math:`{\mathit{da}}~{{\mathit{da}'}^\ast}`.
-
-
 :math:`{\mathrm{allocexport}}({\mathit{moduleinst}}, \mathsf{export}~{\mathit{name}}~{\mathit{externidx}})`
 ...........................................................................................................
 
 
-1. If :math:`{\mathit{externidx}}` is some :math:`\mathsf{func}` :math:`{\mathit{funcidx}}`, then:
+1. If :math:`{\mathit{externidx}}` is some :math:`\mathsf{tag}` :math:`{\mathit{tagidx}}`, then:
 
-   a. Let :math:`(\mathsf{func}~x)` be the destructuring of :math:`{\mathit{externidx}}`.
+   a. Let :math:`(\mathsf{tag}~x)` be the destructuring of :math:`{\mathit{externidx}}`.
 
-   #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{func}~{\mathit{moduleinst}}{.}\mathsf{funcs}{}[x]) \}\end{array}`.
+   #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{tag}~{\mathit{moduleinst}}{.}\mathsf{tags}{}[x]) \}\end{array}`.
 
 #. If :math:`{\mathit{externidx}}` is some :math:`\mathsf{global}` :math:`{\mathit{globalidx}}`, then:
 
@@ -25391,23 +25438,23 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{global}~{\mathit{moduleinst}}{.}\mathsf{globals}{}[x]) \}\end{array}`.
 
-#. If :math:`{\mathit{externidx}}` is some :math:`\mathsf{table}` :math:`{\mathit{tableidx}}`, then:
-
-   a. Let :math:`(\mathsf{table}~x)` be the destructuring of :math:`{\mathit{externidx}}`.
-
-   #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{table}~{\mathit{moduleinst}}{.}\mathsf{tables}{}[x]) \}\end{array}`.
-
 #. If :math:`{\mathit{externidx}}` is some :math:`\mathsf{mem}` :math:`{\mathit{memidx}}`, then:
 
    a. Let :math:`(\mathsf{mem}~x)` be the destructuring of :math:`{\mathit{externidx}}`.
 
    #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{mem}~{\mathit{moduleinst}}{.}\mathsf{mems}{}[x]) \}\end{array}`.
 
-#. Assert: Due to validation, :math:`{\mathit{externidx}}` is some :math:`\mathsf{tag}` :math:`{\mathit{tagidx}}`.
+#. If :math:`{\mathit{externidx}}` is some :math:`\mathsf{table}` :math:`{\mathit{tableidx}}`, then:
 
-#. Let :math:`(\mathsf{tag}~x)` be the destructuring of :math:`{\mathit{externidx}}`.
+   a. Let :math:`(\mathsf{table}~x)` be the destructuring of :math:`{\mathit{externidx}}`.
 
-#. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{tag}~{\mathit{moduleinst}}{.}\mathsf{tags}{}[x]) \}\end{array}`.
+   #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{table}~{\mathit{moduleinst}}{.}\mathsf{tables}{}[x]) \}\end{array}`.
+
+#. Assert: Due to validation, :math:`{\mathit{externidx}}` is some :math:`\mathsf{func}` :math:`{\mathit{funcidx}}`.
+
+#. Let :math:`(\mathsf{func}~x)` be the destructuring of :math:`{\mathit{externidx}}`.
+
+#. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{func}~{\mathit{moduleinst}}{.}\mathsf{funcs}{}[x]) \}\end{array}`.
 
 
 :math:`{{{\mathrm{allocexport}}^\ast}}{({\mathit{moduleinst}}, {{\mathit{export}}^\ast})}`
@@ -25421,13 +25468,13 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .....................................................................................................................................................................................................
 
 
-1. Let :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{tag}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` be the destructuring of :math:`{\mathit{module}}`.
+1. Let :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{tag}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` be the destructuring of :math:`{\mathit{module}}`.
 
-#. Let :math:`{{\mathit{fa}}_{\mathsf{i}}^\ast}` be :math:`{\mathrm{funcs}}({{\mathit{externaddr}}^\ast})`.
+#. Let :math:`{{\mathit{aa}}_{\mathsf{i}}^\ast}` be :math:`{\mathrm{tags}}({{\mathit{externaddr}}^\ast})`.
 
 #. Let :math:`{{\mathit{ga}}_{\mathsf{i}}^\ast}` be :math:`{\mathrm{globals}}({{\mathit{externaddr}}^\ast})`.
 
-#. Let :math:`{{\mathit{aa}}_{\mathsf{i}}^\ast}` be :math:`{\mathrm{tags}}({{\mathit{externaddr}}^\ast})`.
+#. Let :math:`{{\mathit{fa}}_{\mathsf{i}}^\ast}` be :math:`{\mathrm{funcs}}({{\mathit{externaddr}}^\ast})`.
 
 #. Let :math:`{{\mathit{ma}}_{\mathsf{i}}^\ast}` be :math:`{\mathrm{mems}}({{\mathit{externaddr}}^\ast})`.
 
@@ -25435,23 +25482,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{{\mathit{fa}}^\ast}` be :math:`{|s{.}\mathsf{funcs}|} + i_{\mathsf{f}}` for all :math:`i_{\mathsf{f}}` from :math:`0` to :math:`{|{{\mathit{func}}^\ast}|} - 1`.
 
-#. Let :math:`{{\mathit{ga}}^\ast}` be :math:`{|s{.}\mathsf{globals}|} + i_{\mathsf{g}}` for all :math:`i_{\mathsf{g}}` from :math:`0` to :math:`{|{{\mathit{global}}^\ast}|} - 1`.
-
-#. Let :math:`{{\mathit{ta}}^\ast}` be :math:`{|s{.}\mathsf{tables}|} + i_{\mathsf{t}}` for all :math:`i_{\mathsf{t}}` from :math:`0` to :math:`{|{{\mathit{table}}^\ast}|} - 1`.
-
-#. Let :math:`{{\mathit{aa}}^\ast}` be :math:`{|s{.}\mathsf{tags}|} + i_{\mathsf{a}}` for all :math:`i_{\mathsf{a}}` from :math:`0` to :math:`{|{{\mathit{tag}}^\ast}|} - 1`.
-
-#. Let :math:`{{\mathit{ma}}^\ast}` be :math:`{|s{.}\mathsf{mems}|} + i_{\mathsf{m}}` for all :math:`i_{\mathsf{m}}` from :math:`0` to :math:`{|{{\mathit{mem}}^\ast}|} - 1`.
-
-#. Let :math:`{{\mathit{ea}}^\ast}` be :math:`{|s{.}\mathsf{elems}|} + i_{\mathsf{e}}` for all :math:`i_{\mathsf{e}}` from :math:`0` to :math:`{|{{\mathit{elem}}^\ast}|} - 1`.
-
-#. Let :math:`{{\mathit{da}}^\ast}` be :math:`{|s{.}\mathsf{datas}|} + i_{\mathsf{d}}` for all :math:`i_{\mathsf{d}}` from :math:`0` to :math:`{|{{\mathit{data}}^\ast}|} - 1`.
-
-#. Let :math:`{(\mathsf{memory}~{\mathit{memtype}})^\ast}` be :math:`{{\mathit{mem}}^\ast}`.
-
-#. Let :math:`{{\mathit{dt}}^\ast}` be :math:`{{{\mathrm{alloctype}}^\ast}}{({{\mathit{type}}^\ast})}`.
-
-#. Let :math:`{(\mathsf{tag}~y)^\ast}` be :math:`{{\mathit{tag}}^\ast}`.
+#. Let :math:`{(\mathsf{tag}~{\mathit{tagtype}})^\ast}` be :math:`{{\mathit{tag}}^\ast}`.
 
 #. Let :math:`{(\mathsf{data}~{{\mathit{byte}}^\ast}~{\mathit{datamode}})^\ast}` be :math:`{{\mathit{data}}^\ast}`.
 
@@ -25459,43 +25490,50 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{(\mathsf{table}~{\mathit{tabletype}}~{\mathit{expr}}_{\mathsf{t}})^\ast}` be :math:`{{\mathit{table}}^\ast}`.
 
+#. Let :math:`{(\mathsf{memory}~{\mathit{memtype}})^\ast}` be :math:`{{\mathit{mem}}^\ast}`.
+
+#. Let :math:`{{\mathit{dt}}^\ast}` be :math:`{{{\mathrm{alloctype}}^\ast}}{({{\mathit{type}}^\ast})}`.
+
 #. Let :math:`{(\mathsf{elem}~{\mathit{elemtype}}~{{\mathit{expr}}_{\mathsf{e}}^\ast}~{\mathit{elemmode}})^\ast}` be :math:`{{\mathit{elem}}^\ast}`.
 
 #. Let :math:`{(\mathsf{func}~x~{{\mathit{local}}^\ast}~{\mathit{expr}}_{\mathsf{f}})^\ast}` be :math:`{{\mathit{func}}^\ast}`.
 
-#. Let :math:`{{\mathit{xi}}^\ast}` be :math:`{{{\mathrm{allocexport}}^\ast}}{(\{ \begin{array}[t]{@{}l@{}}\mathsf{funcs}~{{\mathit{fa}}_{\mathsf{i}}^\ast}~{{\mathit{fa}}^\ast},\; \mathsf{globals}~{{\mathit{ga}}_{\mathsf{i}}^\ast}~{{\mathit{ga}}^\ast},\; \mathsf{tables}~{{\mathit{ta}}_{\mathsf{i}}^\ast}~{{\mathit{ta}}^\ast},\; \mathsf{mems}~{{\mathit{ma}}_{\mathsf{i}}^\ast}~{{\mathit{ma}}^\ast},\; \mathsf{tags}~{{\mathit{aa}}_{\mathsf{i}}^\ast}~{{\mathit{aa}}^\ast} \}\end{array}, {{\mathit{export}}^\ast})}`.
+#. Let :math:`{{\mathit{aa}}^\ast}` be :math:`{{{\mathrm{alloctag}}^\ast}}{(s, {{{\mathit{tagtype}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}^\ast})}`.
 
-#. Let :math:`{\mathit{moduleinst}}` be the module instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{dt}}^\ast},\; \mathsf{funcs}~{{\mathit{fa}}_{\mathsf{i}}^\ast}~{{\mathit{fa}}^\ast},\; \mathsf{globals}~{{\mathit{ga}}_{\mathsf{i}}^\ast}~{{\mathit{ga}}^\ast},\; \mathsf{tables}~{{\mathit{ta}}_{\mathsf{i}}^\ast}~{{\mathit{ta}}^\ast},\; \mathsf{mems}~{{\mathit{ma}}_{\mathsf{i}}^\ast}~{{\mathit{ma}}^\ast},\; \mathsf{tags}~{{\mathit{aa}}_{\mathsf{i}}^\ast}~{{\mathit{aa}}^\ast},\; \mathsf{elems}~{{\mathit{ea}}^\ast},\; \mathsf{datas}~{{\mathit{da}}^\ast},\; \mathsf{exports}~{{\mathit{xi}}^\ast} \}\end{array}`.
+#. Let :math:`{{\mathit{ga}}^\ast}` be :math:`{{{\mathrm{allocglobal}}^\ast}}{(s, {{{\mathit{globaltype}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}^\ast}, {{\mathit{val}}_{\mathsf{g}}^\ast})}`.
+
+#. Let :math:`{{\mathit{ma}}^\ast}` be :math:`{{{\mathrm{allocmem}}^\ast}}{(s, {{{\mathit{memtype}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}^\ast})}`.
+
+#. Let :math:`{{\mathit{ta}}^\ast}` be :math:`{{{\mathrm{alloctable}}^\ast}}{(s, {{{\mathit{tabletype}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}^\ast}, {{\mathit{ref}}_{\mathsf{t}}^\ast})}`.
+
+#. Let :math:`{{\mathit{xi}}^\ast}` be :math:`{{{\mathrm{allocexport}}^\ast}}{(\{ \begin{array}[t]{@{}l@{}}\mathsf{tags}~{{\mathit{aa}}_{\mathsf{i}}^\ast}~{{\mathit{aa}}^\ast},\; \mathsf{globals}~{{\mathit{ga}}_{\mathsf{i}}^\ast}~{{\mathit{ga}}^\ast},\; \mathsf{mems}~{{\mathit{ma}}_{\mathsf{i}}^\ast}~{{\mathit{ma}}^\ast},\; \mathsf{tables}~{{\mathit{ta}}_{\mathsf{i}}^\ast}~{{\mathit{ta}}^\ast},\; \mathsf{funcs}~{{\mathit{fa}}_{\mathsf{i}}^\ast}~{{\mathit{fa}}^\ast} \}\end{array}, {{\mathit{export}}^\ast})}`.
+
+#. Let :math:`{{\mathit{da}}^\ast}` be :math:`{{{\mathrm{allocdata}}^\ast}}{(s, {\mathsf{ok}^{{|{{\mathit{data}}^\ast}|}}}, {{{\mathit{byte}}^\ast}^\ast})}`.
+
+#. Let :math:`{{\mathit{ea}}^\ast}` be :math:`{{{\mathrm{allocelem}}^\ast}}{(s, {{{\mathit{elemtype}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}^\ast}, {{{\mathit{ref}}_{\mathsf{e}}^\ast}^\ast})}`.
+
+#. Let :math:`{\mathit{moduleinst}}` be the module instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{dt}}^\ast},\; \mathsf{tags}~{{\mathit{aa}}_{\mathsf{i}}^\ast}~{{\mathit{aa}}^\ast},\; \mathsf{globals}~{{\mathit{ga}}_{\mathsf{i}}^\ast}~{{\mathit{ga}}^\ast},\; \mathsf{mems}~{{\mathit{ma}}_{\mathsf{i}}^\ast}~{{\mathit{ma}}^\ast},\; \mathsf{tables}~{{\mathit{ta}}_{\mathsf{i}}^\ast}~{{\mathit{ta}}^\ast},\; \mathsf{funcs}~{{\mathit{fa}}_{\mathsf{i}}^\ast}~{{\mathit{fa}}^\ast},\; \mathsf{datas}~{{\mathit{da}}^\ast},\; \mathsf{elems}~{{\mathit{ea}}^\ast},\; \mathsf{exports}~{{\mathit{xi}}^\ast} \}\end{array}`.
 
 #. Let :math:`{{\mathit{funcaddr}}_0^\ast}` be :math:`{{{\mathrm{allocfunc}}^\ast}}{(s, {{{\mathit{dt}}^\ast}{}[x]^\ast}, {(\mathsf{func}~x~{{\mathit{local}}^\ast}~{\mathit{expr}}_{\mathsf{f}})^\ast}, {{\mathit{moduleinst}}^{{|{{\mathit{func}}^\ast}|}}})}`.
 
 #. Assert: Due to validation, :math:`{{\mathit{funcaddr}}_0^\ast} = {{\mathit{fa}}^\ast}`.
 
-#. Let :math:`{{\mathit{globaladdr}}_0^\ast}` be :math:`{{{\mathrm{allocglobal}}^\ast}}{(s, {{{\mathit{globaltype}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}^\ast}, {{\mathit{val}}_{\mathsf{g}}^\ast})}`.
-
-#. Assert: Due to validation, :math:`{{\mathit{globaladdr}}_0^\ast} = {{\mathit{ga}}^\ast}`.
-
-#. Let :math:`{{\mathit{tableaddr}}_0^\ast}` be :math:`{{{\mathrm{alloctable}}^\ast}}{(s, {{{\mathit{tabletype}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}^\ast}, {{\mathit{ref}}_{\mathsf{t}}^\ast})}`.
-
-#. Assert: Due to validation, :math:`{{\mathit{tableaddr}}_0^\ast} = {{\mathit{ta}}^\ast}`.
-
-#. Let :math:`{{\mathit{memaddr}}_0^\ast}` be :math:`{{{\mathrm{allocmem}}^\ast}}{(s, {{{\mathit{memtype}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}^\ast})}`.
-
-#. Assert: Due to validation, :math:`{{\mathit{memaddr}}_0^\ast} = {{\mathit{ma}}^\ast}`.
-
-#. Let :math:`{{\mathit{tagaddr}}_0^\ast}` be :math:`{{{\mathrm{alloctag}}^\ast}}{(s, {{{\mathit{dt}}^\ast}{}[y]^\ast})}`.
-
-#. Assert: Due to validation, :math:`{{\mathit{tagaddr}}_0^\ast} = {{\mathit{aa}}^\ast}`.
-
-#. Let :math:`{{\mathit{elemaddr}}_0^\ast}` be :math:`{{{\mathrm{allocelem}}^\ast}}{(s, {{{\mathit{elemtype}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}^\ast}, {{{\mathit{ref}}_{\mathsf{e}}^\ast}^\ast})}`.
-
-#. Assert: Due to validation, :math:`{{\mathit{elemaddr}}_0^\ast} = {{\mathit{ea}}^\ast}`.
-
-#. Let :math:`{{\mathit{dataaddr}}_0^\ast}` be :math:`{{{\mathrm{allocdata}}^\ast}}{(s, {\mathsf{ok}^{{|{{\mathit{data}}^\ast}|}}}, {{{\mathit{byte}}^\ast}^\ast})}`.
-
-#. Assert: Due to validation, :math:`{{\mathit{dataaddr}}_0^\ast} = {{\mathit{da}}^\ast}`.
-
 #. Return :math:`{\mathit{moduleinst}}`.
+
+
+:math:`{{\mathrm{rundata}}}_{x}(\mathsf{data}~{b^{n}}~{\mathit{datamode}})`
+...........................................................................
+
+
+1. If :math:`{\mathit{datamode}} = \mathsf{passive}`, then:
+
+   a. Return :math:`\epsilon`.
+
+#. Assert: Due to validation, :math:`{\mathit{datamode}}` is some :math:`\mathsf{active}` :math:`{\mathit{memidx}}` :math:`{\mathit{expr}}`.
+
+#. Let :math:`(\mathsf{active}~y~{{\mathit{instr}}^\ast})` be the destructuring of :math:`{\mathit{datamode}}`.
+
+#. Return :math:`{{\mathit{instr}}^\ast}~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~0)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)~(\mathsf{memory{.}init}~y~x)~(\mathsf{data{.}drop}~x)`.
 
 
 :math:`{{\mathrm{runelem}}}_{x}(\mathsf{elem}~{\mathit{rt}}~{e^{n}}~{\mathit{elemmode}})`
@@ -25515,21 +25553,6 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Let :math:`(\mathsf{active}~y~{{\mathit{instr}}^\ast})` be the destructuring of :math:`{\mathit{elemmode}}`.
 
 #. Return :math:`{{\mathit{instr}}^\ast}~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~0)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)~(\mathsf{table{.}init}~y~x)~(\mathsf{elem{.}drop}~x)`.
-
-
-:math:`{{\mathrm{rundata}}}_{x}(\mathsf{data}~{b^{n}}~{\mathit{datamode}})`
-...........................................................................
-
-
-1. If :math:`{\mathit{datamode}} = \mathsf{passive}`, then:
-
-   a. Return :math:`\epsilon`.
-
-#. Assert: Due to validation, :math:`{\mathit{datamode}}` is some :math:`\mathsf{active}` :math:`{\mathit{memidx}}` :math:`{\mathit{expr}}`.
-
-#. Let :math:`(\mathsf{active}~y~{{\mathit{instr}}^\ast})` be the destructuring of :math:`{\mathit{datamode}}`.
-
-#. Return :math:`{{\mathit{instr}}^\ast}~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~0)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)~(\mathsf{memory{.}init}~y~x)~(\mathsf{data{.}drop}~x)`.
 
 
 :math:`{{{\mathrm{evalglobal}}^\ast}}{(z, {{\mathit{globaltype}}^\ast}, {{\mathit{expr}''}^\ast})}`
@@ -25573,7 +25596,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{{\mathit{xt}}_{\mathsf{i}}^\ast}~\rightarrow~{{\mathit{xt}}_{\mathsf{e}}^\ast}` be the destructuring of the type of :math:`{\mathit{module}}`.
 
-#. Let :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{tag}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` be the destructuring of :math:`{\mathit{module}}`.
+#. Let :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{tag}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` be the destructuring of :math:`{\mathit{module}}`.
 
 #. If :math:`{|{{\mathit{externaddr}}^\ast}|} \neq {|{{\mathit{xt}}_{\mathsf{i}}^\ast}|}`, then:
 
@@ -25591,7 +25614,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{(\mathsf{start}~x)^?}` be :math:`{{\mathit{start}}^?}`.
 
-#. Let :math:`{\mathit{moduleinst}}_0` be the module instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{{\mathrm{alloctype}}^\ast}}{({{\mathit{type}}^\ast})},\; \mathsf{funcs}~{\mathrm{funcs}}({{\mathit{externaddr}}^\ast})~{({|s{.}\mathsf{funcs}|} + i_{\mathsf{f}})^{i_{\mathsf{f}}<{|{{\mathit{func}}^\ast}|}}},\; \mathsf{globals}~{\mathrm{globals}}({{\mathit{externaddr}}^\ast}) \}\end{array}`.
+#. Let :math:`{\mathit{moduleinst}}_0` be the module instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{{\mathrm{alloctype}}^\ast}}{({{\mathit{type}}^\ast})},\; \mathsf{globals}~{\mathrm{globals}}({{\mathit{externaddr}}^\ast}),\; \mathsf{funcs}~{\mathrm{funcs}}({{\mathit{externaddr}}^\ast})~{({|s{.}\mathsf{funcs}|} + i_{\mathsf{f}})^{i_{\mathsf{f}}<{|{{\mathit{func}}^\ast}|}}} \}\end{array}`.
 
 #. Let :math:`{(\mathsf{table}~{\mathit{tabletype}}~{\mathit{expr}}_{\mathsf{t}})^\ast}` be :math:`{{\mathit{table}}^\ast}`.
 
@@ -25955,7 +25978,7 @@ Rectype_ok2/cons
   - the recursive type (REC subtype*) is valid for (OK (x + 1) (i + 1)).
 
 Deftype_ok
-- the defined type (DEF rectype i) is valid if:
+- the defined type (_DEF rectype i) is valid if:
   - the recursive type rectype is valid for (OK x).
   - rectype is (REC subtype^n).
   - i is less than n.
@@ -26273,46 +26296,46 @@ Limits_ok
   - n is less than or equal to m.
   - m is less than or equal to k.
 
+Tagtype_ok
+- the tag type deftype is valid if:
+  - deftype is valid.
+  - The :ref:`expansion <aux-expand-deftype>` of deftype is the composite type (FUNC t* -> []).
+
 Globaltype_ok
 - the global type (MUT? t) is valid if:
   - the value type t is valid.
+
+Memtype_ok
+- the memory type addrtype limits PAGE is valid if:
+  - the limits range limits is valid within (2 ^ 16).
 
 Tabletype_ok
 - the table type (addrtype limits reftype) is valid if:
   - the limits range limits is valid within ((2 ^ 32) - 1).
   - the reference type reftype is valid.
 
-Memtype_ok
-- the memory type addrtype limits PAGE is valid if:
-  - the limits range limits is valid within (2 ^ 16).
-
-Tagtype_ok
-- the tag type deftype is valid if:
-  - deftype is valid.
-  - The :ref:`expansion <aux-expand-deftype>` of deftype is the composite type (FUNC functype).
-
 Externtype_ok
 - the external type externtype is valid if:
   - Either:
-    - externtype is (FUNC typeuse).
+    - externtype is (TAG typeuse).
     - the type use typeuse is valid.
     - The :ref:`expansion <aux-expand-typeuse>` of the context C is the composite type (FUNC functype).
   - Or:
     - externtype is (GLOBAL globaltype).
     - the global type globaltype is valid.
   - Or:
-    - externtype is (TABLE tabletype).
-    - the table type tabletype is valid.
-  - Or:
     - externtype is (MEM memtype).
     - the memory type memtype is valid.
   - Or:
-    - externtype is (TAG typeuse).
+    - externtype is (TABLE tabletype).
+    - the table type tabletype is valid.
+  - Or:
+    - externtype is (FUNC typeuse).
     - typeuse is valid.
     - The :ref:`expansion <aux-expand-typeuse>` of C is (FUNC functype).
 
-Externtype_ok/func
-- the external type (FUNC typeuse) is valid if:
+Externtype_ok/tag
+- the external type (TAG typeuse) is valid if:
   - the type use typeuse is valid.
   - The :ref:`expansion <aux-expand-typeuse>` of the context C is the composite type (FUNC functype).
 
@@ -26320,16 +26343,16 @@ Externtype_ok/global
 - the external type (GLOBAL globaltype) is valid if:
   - the global type globaltype is valid.
 
-Externtype_ok/table
-- the external type (TABLE tabletype) is valid if:
-  - the table type tabletype is valid.
-
 Externtype_ok/mem
 - the external type (MEM memtype) is valid if:
   - the memory type memtype is valid.
 
-Externtype_ok/tag
-- the external type (TAG typeuse) is valid if:
+Externtype_ok/table
+- the external type (TABLE tabletype) is valid if:
+  - the table type tabletype is valid.
+
+Externtype_ok/func
+- the external type (FUNC typeuse) is valid if:
   - the type use typeuse is valid.
   - The :ref:`expansion <aux-expand-typeuse>` of the context C is the composite type (FUNC functype).
 
@@ -26348,6 +26371,11 @@ Limits_sub
 - the limits range ([ n_1 .. m_1 ]) matches the limits range ([ n_2 .. m_2 ]) if:
   - n_1 is greater than or equal to n_2.
   - m_1 is less than or equal to m_2.
+
+Tagtype_sub
+- the tag type deftype_1 matches the tag type deftype_2 if:
+  - deftype_1 matches deftype_2.
+  - deftype_2 matches deftype_1.
 
 Globaltype_sub
 - the global type (mut valtype_1) matches the global type (mut' valtype_2) if:
@@ -26369,63 +26397,58 @@ Globaltype_sub/var
   - the value type valtype_1 matches the value type valtype_2.
   - valtype_2 matches valtype_1.
 
+Memtype_sub
+- the memory type addrtype limits_1 PAGE matches the memory type addrtype limits_2 PAGE if:
+  - the limits range limits_1 matches the limits range limits_2.
+
 Tabletype_sub
 - the table type (addrtype limits_1 reftype_1) matches the table type (addrtype limits_2 reftype_2) if:
   - the limits range limits_1 matches the limits range limits_2.
   - the reference type reftype_1 matches the reference type reftype_2.
   - reftype_2 matches reftype_1.
 
-Memtype_sub
-- the memory type addrtype limits_1 PAGE matches the memory type addrtype limits_2 PAGE if:
-  - the limits range limits_1 matches the limits range limits_2.
-
-Tagtype_sub
-- the tag type deftype_1 matches the tag type deftype_2 if:
-  - deftype_1 matches deftype_2.
-  - deftype_2 matches deftype_1.
-
 Externtype_sub
 - the external type externtype matches the external type externtype' if:
   - Either:
-    - externtype is (FUNC deftype_1).
-    - externtype' is (FUNC deftype_2).
-    - the defined type deftype_1 matches the defined type deftype_2.
+    - externtype is (TAG tagtype_1).
+    - externtype' is (TAG tagtype_2).
+    - the tag type tagtype_1 matches the tag type tagtype_2.
   - Or:
     - externtype is (GLOBAL globaltype_1).
     - externtype' is (GLOBAL globaltype_2).
     - the global type globaltype_1 matches the global type globaltype_2.
   - Or:
-    - externtype is (TABLE tabletype_1).
-    - externtype' is (TABLE tabletype_2).
-    - the table type tabletype_1 matches the table type tabletype_2.
-  - Or:
     - externtype is (MEM memtype_1).
     - externtype' is (MEM memtype_2).
     - the memory type memtype_1 matches the memory type memtype_2.
   - Or:
-    - externtype is (TAG tagtype_1).
-    - externtype' is (TAG tagtype_2).
-    - the tag type tagtype_1 matches the tag type tagtype_2.
+    - externtype is (TABLE tabletype_1).
+    - externtype' is (TABLE tabletype_2).
+    - the table type tabletype_1 matches the table type tabletype_2.
+  - Or:
+    - externtype is (FUNC deftype_1).
+    - externtype' is (FUNC deftype_2).
+    - the defined type deftype_1 matches the defined type deftype_2.
 
-Externtype_sub/func
-- the external type (FUNC deftype_1) matches the external type (FUNC deftype_2) if:
-  - the defined type deftype_1 matches the defined type deftype_2.
+Externtype_sub/tag
+- the external type (TAG tagtype_1) matches the external type (TAG tagtype_2) if:
+  - the tag type tagtype_1 matches the tag type tagtype_2.
 
 Externtype_sub/global
 - the external type (GLOBAL globaltype_1) matches the external type (GLOBAL globaltype_2) if:
   - the global type globaltype_1 matches the global type globaltype_2.
 
-Externtype_sub/table
-- the external type (TABLE tabletype_1) matches the external type (TABLE tabletype_2) if:
-  - the table type tabletype_1 matches the table type tabletype_2.
-
 Externtype_sub/mem
 - the external type (MEM memtype_1) matches the external type (MEM memtype_2) if:
   - the memory type memtype_1 matches the memory type memtype_2.
 
-Externtype_sub/tag
-- the external type (TAG tagtype_1) matches the external type (TAG tagtype_2) if:
-  - the tag type tagtype_1 matches the tag type tagtype_2.
+Externtype_sub/table
+- the external type (TABLE tabletype_1) matches the external type (TABLE tabletype_2) if:
+  - the table type tabletype_1 matches the table type tabletype_2.
+
+Externtype_sub/func
+- the external type (FUNC deftype_1) matches the external type (FUNC deftype_2) if:
+  - the defined type deftype_1 matches the defined type deftype_2.
 
 Blocktype_ok
 - the block type blocktype is valid as the instruction type valtype'* -> valtype''* if:
@@ -26458,12 +26481,12 @@ Catch_ok
   - Either:
     - catch is (CATCH x l).
     - the tag C.TAGS[x] exists.
-    - The :ref:`expansion <aux-expand-deftype>` of C.TAGS[x] is the composite type (FUNC t* -> []).
+    - The :ref:`expansion <aux-expand-deftype>` of the defined type $as_deftype(C.TAGS[x]) is the composite type (FUNC t* -> []).
     - the result type t* matches C.LABELS[l].
   - Or:
     - catch is (CATCH_REF x l).
     - C.TAGS[x] exists.
-    - The :ref:`expansion <aux-expand-deftype>` of C.TAGS[x] is (FUNC t* -> []).
+    - The :ref:`expansion <aux-expand-deftype>` of $as_deftype(C.TAGS[x]) is (FUNC t* -> []).
     - the result type t* :: [(REF ?() EXN)] matches C.LABELS[l].
   - Or:
     - catch is (CATCH_ALL l).
@@ -26475,14 +26498,14 @@ Catch_ok
 Catch_ok/catch
 - the catch clause (CATCH x l) is valid if:
   - the tag C.TAGS[x] exists.
-  - The :ref:`expansion <aux-expand-deftype>` of C.TAGS[x] is the composite type (FUNC t* -> []).
+  - The :ref:`expansion <aux-expand-deftype>` of the defined type $as_deftype(C.TAGS[x]) is the composite type (FUNC t* -> []).
   - the label C.LABELS[l] exists.
   - the result type t* matches C.LABELS[l].
 
 Catch_ok/catch_ref
 - the catch clause (CATCH_REF x l) is valid if:
   - the tag C.TAGS[x] exists.
-  - The :ref:`expansion <aux-expand-deftype>` of C.TAGS[x] is the composite type (FUNC t* -> []).
+  - The :ref:`expansion <aux-expand-deftype>` of the defined type $as_deftype(C.TAGS[x]) is the composite type (FUNC t* -> []).
   - the label C.LABELS[l] exists.
   - the result type t* :: [(REF ?() EXN)] matches C.LABELS[l].
 
@@ -26644,7 +26667,7 @@ Instr_ok/return_call_indirect
 Instr_ok/throw
 - the instruction (THROW x) is valid with the instruction type t_1* :: t* -> t_2* if:
   - the tag C.TAGS[x] exists.
-  - The :ref:`expansion <aux-expand-deftype>` of C.TAGS[x] is the composite type (FUNC t* -> []).
+  - The :ref:`expansion <aux-expand-deftype>` of the defined type $as_deftype(C.TAGS[x]) is the composite type (FUNC t* -> []).
   - the instruction type t_1* -> t_2* is valid.
 
 Instr_ok/throw_ref
@@ -27291,6 +27314,29 @@ Type_ok
   - the context C' is the context C with .TYPES appended by dt*.
   - Under the context C', the recursive type rectype is valid for (OK x).
 
+Tag_ok
+- the tag (TAG tagtype) is valid with the tag type t if:
+  - the tag type tagtype is valid.
+  - Let t be the tag type $clos_tagtype(C, tagtype).
+
+Global_ok
+- the global (GLOBAL globaltype expr) is valid with the global type globaltype if:
+  - globaltype is valid.
+  - globaltype is (mut t).
+  - the expression expr is valid with the value type t.
+  - expr is constant.
+
+Mem_ok
+- the memory (MEMORY memtype) is valid with the memory type memtype if:
+  - memtype is valid.
+
+Table_ok
+- the table (TABLE tabletype expr) is valid with the table type tabletype if:
+  - tabletype is valid.
+  - tabletype is (at lim rt).
+  - the expression expr is valid with the value type rt.
+  - expr is constant.
+
 Local_ok
 - the local (LOCAL t) is valid with the local type (init t) if:
   - Either:
@@ -27317,28 +27363,30 @@ Func_ok
     - the local local is valid with the local type lct.
   - Under the context C with .LOCALS appended by (SET t_1)* :: lct* with .LABELS appended by [t_2*] with .RETURN appended by ?(t_2*), the expression expr is valid with the result type t_2*.
 
-Global_ok
-- the global (GLOBAL globaltype expr) is valid with the global type globaltype if:
-  - the global type gt is valid.
-  - globaltype is (mut t).
-  - the expression expr is valid with the value type t.
+Datamode_ok
+- the data mode datamode is valid with the data type OK if:
+  - Either:
+    - datamode is (ACTIVE x expr).
+    - the memory C.MEMS[x] exists.
+    - C.MEMS[x] is at lim PAGE.
+    - the expression expr is valid with the value type at.
+    - expr is constant.
+  - Or:
+    - datamode is PASSIVE.
+
+Datamode_ok/active
+- the data mode (ACTIVE x expr) is valid with the data type OK if:
+  - the memory C.MEMS[x] exists.
+  - C.MEMS[x] is at lim PAGE.
+  - the expression expr is valid with the value type at.
   - expr is constant.
 
-Table_ok
-- the table (TABLE tabletype expr) is valid with the table type tabletype if:
-  - tabletype is valid.
-  - tabletype is (at lim rt).
-  - the expression expr is valid with the value type rt.
-  - expr is constant.
+Datamode_ok/passive
+- the data mode PASSIVE is valid with OK.
 
-Mem_ok
-- the memory (MEMORY memtype) is valid with the memory type memtype if:
-  - memtype is valid.
-
-Tag_ok
-- the tag (TAG x) is valid with the type C.TYPES[x] if:
-  - C.TYPES[x] exists.
-  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (FUNC functype).
+Data_ok
+- the memory segment (DATA b* datamode) is valid with the data type OK if:
+  - the data mode datamode is valid with OK.
 
 Elemmode_ok
 - the element mode elemmode is valid with the element type rt if:
@@ -27376,92 +27424,68 @@ Elem_ok
     - expr is constant.
   - the element mode elemmode is valid with elemtype.
 
-Datamode_ok
-- the data mode datamode is valid with the data type OK if:
-  - Either:
-    - datamode is (ACTIVE x expr).
-    - the memory C.MEMS[x] exists.
-    - C.MEMS[x] is at lim PAGE.
-    - the expression expr is valid with the value type at.
-    - expr is constant.
-  - Or:
-    - datamode is PASSIVE.
-
-Datamode_ok/active
-- the data mode (ACTIVE x expr) is valid with the data type OK if:
-  - the memory C.MEMS[x] exists.
-  - C.MEMS[x] is at lim PAGE.
-  - the expression expr is valid with the value type at.
-  - expr is constant.
-
-Datamode_ok/passive
-- the data mode PASSIVE is valid with OK.
-
-Data_ok
-- the memory segment (DATA b* datamode) is valid with the data type OK if:
-  - the data mode datamode is valid with OK.
-
 Start_ok
 - the start function (START x) is valid if:
   - the function C.FUNCS[x] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.FUNCS[x] is the composite type (FUNC [] -> []).
 
 Import_ok
-- the import (IMPORT name_1 name_2 xt) is valid with the external type xt if:
-  - xt is valid.
+- the import (IMPORT name_1 name_2 xt) is valid with the external type t if:
+  - the external type xt is valid.
+  - Let t be the external type $clos_externtype(C, xt).
 
 Externidx_ok
 - the external index externidx is valid with the external type externtype if:
   - Either:
-    - externidx is (FUNC x).
-    - externtype is (FUNC dt).
-    - the function C.FUNCS[x] exists.
-    - C.FUNCS[x] is dt.
+    - externidx is (TAG x).
+    - externtype is (TAG jt).
+    - the tag C.TAGS[x] exists.
+    - C.TAGS[x] is jt.
   - Or:
     - externidx is (GLOBAL x).
     - externtype is (GLOBAL gt).
     - the global C.GLOBALS[x] exists.
     - C.GLOBALS[x] is gt.
   - Or:
-    - externidx is (TABLE x).
-    - externtype is (TABLE tt).
-    - the table C.TABLES[x] exists.
-    - C.TABLES[x] is tt.
-  - Or:
     - externidx is (MEM x).
     - externtype is (MEM mt).
     - the memory C.MEMS[x] exists.
     - C.MEMS[x] is mt.
   - Or:
-    - externidx is (TAG x).
-    - externtype is (TAG jt).
-    - the tag C.TAGS[x] exists.
-    - C.TAGS[x] is jt.
+    - externidx is (TABLE x).
+    - externtype is (TABLE tt).
+    - the table C.TABLES[x] exists.
+    - C.TABLES[x] is tt.
+  - Or:
+    - externidx is (FUNC x).
+    - externtype is (FUNC dt).
+    - the function C.FUNCS[x] exists.
+    - C.FUNCS[x] is dt.
 
-Externidx_ok/func
-- the external index (FUNC x) is valid with the external type (FUNC dt) if:
-  - the function C.FUNCS[x] exists.
-  - C.FUNCS[x] is dt.
+Externidx_ok/tag
+- the external index (TAG x) is valid with the external type (TAG jt) if:
+  - the tag C.TAGS[x] exists.
+  - C.TAGS[x] is jt.
 
 Externidx_ok/global
 - the external index (GLOBAL x) is valid with the external type (GLOBAL gt) if:
   - the global C.GLOBALS[x] exists.
   - C.GLOBALS[x] is gt.
 
-Externidx_ok/table
-- the external index (TABLE x) is valid with the external type (TABLE tt) if:
-  - the table C.TABLES[x] exists.
-  - C.TABLES[x] is tt.
-
 Externidx_ok/mem
 - the external index (MEM x) is valid with the external type (MEM mt) if:
   - the memory C.MEMS[x] exists.
   - C.MEMS[x] is mt.
 
-Externidx_ok/tag
-- the external index (TAG x) is valid with the external type (TAG jt) if:
-  - the tag C.TAGS[x] exists.
-  - C.TAGS[x] is jt.
+Externidx_ok/table
+- the external index (TABLE x) is valid with the external type (TABLE tt) if:
+  - the table C.TABLES[x] exists.
+  - C.TABLES[x] is tt.
+
+Externidx_ok/func
+- the external index (FUNC x) is valid with the external type (FUNC dt) if:
+  - the function C.FUNCS[x] exists.
+  - C.FUNCS[x] is dt.
 
 Export_ok
 - the export (EXPORT name externidx) is valid with the name name and the external type xt if:
@@ -27510,30 +27534,30 @@ Types_ok/cons
   - Under the context C', the type definition sequence type* is valid with the defined type sequence dt*.
 
 Module_ok
-- the module (MODULE type* import* func* global* table* mem* tag* elem* data* start? export*) is valid with the module type t if:
+- the module (MODULE type* import* tag* global* mem* table* func* data* elem* start? export*) is valid with the module type t if:
   - Under the context { RETURN: ?() }, the type definition sequence type* is valid with the defined type sequence dt'*.
   - |import*| is |xt_I*|.
   - For all import in import*, and corresponding xt_I in xt_I*:
     - Under the context { TYPES: dt'*; RETURN: ?() }, the import import is valid with the external type xt_I.
-  - Under the context C', the global sequence global* is valid with the global type sequence gt*.
-  - |table*| is |tt*|.
-  - For all table in table*, and corresponding tt in tt*:
-    - Under the context C', the table table is valid with the table type tt.
-  - |mem*| is |mt*|.
-  - For all mem in mem*, and corresponding mt in mt*:
-    - Under the context C', the memory mem is valid with the memory type mt.
   - |jt*| is |tag*|.
   - For all jt in jt*, and corresponding tag in tag*:
     - Under the context C', the tag tag is valid with the tag type jt.
+  - Under the context C', the global sequence global* is valid with the global type sequence gt*.
+  - |mem*| is |mt*|.
+  - For all mem in mem*, and corresponding mt in mt*:
+    - Under the context C', the memory mem is valid with the memory type mt.
+  - |table*| is |tt*|.
+  - For all table in table*, and corresponding tt in tt*:
+    - Under the context C', the table table is valid with the table type tt.
   - |dt*| is |func*|.
   - For all dt in dt*, and corresponding func in func*:
     - the function func is valid with the defined type dt.
-  - |elem*| is |rt*|.
-  - For all elem in elem*, and corresponding rt in rt*:
-    - the table segment elem is valid with the element type rt.
   - |data*| is |ok*|.
   - For all data in data*, and corresponding ok in ok*:
     - the memory segment data is valid.
+  - |elem*| is |rt*|.
+  - For all elem in elem*, and corresponding rt in rt*:
+    - the table segment elem is valid with the element type rt.
   - If start is defined, then:
     - the start function start is valid.
   - |export*| is |nm*|.
@@ -27541,14 +27565,14 @@ Module_ok
   - For all export in export*, and corresponding nm in nm*, and corresponding xt_E in xt_E*:
     - the export export is valid with the name nm and the external type xt_E.
   - $disjoint_(`name, nm*) is true.
-  - C is C' with .GLOBALS appended by gt* with .TABLES appended by tt_I* :: tt* with .MEMS appended by mt_I* :: mt* with .TAGS appended by jt_I* :: jt* with .ELEMS appended by rt* with .DATAS appended by ok*.
-  - the context C' is { TYPES: dt'*; FUNCS: dt_I* :: dt*; GLOBALS: gt_I*; RETURN: ?(); REFS: x* }.
-  - the function index sequence x* is $funcidx_nonfuncs((global* table* mem* elem*)).
-  - the defined type sequence dt_I* is $funcsxt(xt_I*).
-  - the global type sequence gt_I* is $globalsxt(xt_I*).
-  - the table type sequence tt_I* is $tablesxt(xt_I*).
-  - the memory type sequence mt_I* is $memsxt(xt_I*).
+  - C is C' with .TAGS appended by jt_I* :: jt* with .GLOBALS appended by gt* with .MEMS appended by mt_I* :: mt* with .TABLES appended by tt_I* :: tt* with .DATAS appended by ok* with .ELEMS appended by rt*.
+  - the context C' is { TYPES: dt'*; GLOBALS: gt_I*; FUNCS: dt_I* :: dt*; RETURN: ?(); REFS: x* }.
+  - the function index sequence x* is $funcidx_nonfuncs((global* mem* table* elem*)).
   - the tag type sequence jt_I* is $tagsxt(xt_I*).
+  - the global type sequence gt_I* is $globalsxt(xt_I*).
+  - the memory type sequence mt_I* is $memsxt(xt_I*).
+  - the table type sequence tt_I* is $tablesxt(xt_I*).
+  - the defined type sequence dt_I* is $funcsxt(xt_I*).
   - Let t be the module type $clos_moduletype(C, xt_I* -> xt_E*).
 
 Num_ok
@@ -27668,60 +27692,60 @@ Val_ok/ref
 Externaddr_ok
 - the external address externaddr' is valid with the external type externtype if:
   - Either:
-    - externaddr' is (FUNC a).
-    - externtype is (FUNC funcinst.TYPE).
-    - the function instance s.FUNCS[a] exists.
-    - s.FUNCS[a] is funcinst.
+    - externaddr' is (TAG a).
+    - externtype is (TAG taginst.TYPE).
+    - the tag instance s.TAGS[a] exists.
+    - s.TAGS[a] is taginst.
   - Or:
     - externaddr' is (GLOBAL a).
     - externtype is (GLOBAL globalinst.TYPE).
     - the global instance s.GLOBALS[a] exists.
     - s.GLOBALS[a] is globalinst.
   - Or:
-    - externaddr' is (TABLE a).
-    - externtype is (TABLE tableinst.TYPE).
-    - the table instance s.TABLES[a] exists.
-    - s.TABLES[a] is tableinst.
-  - Or:
     - externaddr' is (MEM a).
     - externtype is (MEM meminst.TYPE).
     - the memory instance s.MEMS[a] exists.
     - s.MEMS[a] is meminst.
   - Or:
-    - externaddr' is (TAG a).
-    - externtype is (TAG taginst.TYPE).
-    - the tag instance s.TAGS[a] exists.
-    - s.TAGS[a] is taginst.
+    - externaddr' is (TABLE a).
+    - externtype is (TABLE tableinst.TYPE).
+    - the table instance s.TABLES[a] exists.
+    - s.TABLES[a] is tableinst.
+  - Or:
+    - externaddr' is (FUNC a).
+    - externtype is (FUNC funcinst.TYPE).
+    - the function instance s.FUNCS[a] exists.
+    - s.FUNCS[a] is funcinst.
   - Or:
     - externaddr' is externaddr.
     - externtype is xt.
     - Under the context s, the external address externaddr is valid with the external type xt'.
     - xt' matches the external type xt.
 
-Externaddr_ok/func
-- the external address (FUNC a) is valid with the external type (FUNC funcinst.TYPE) if:
-  - the function instance s.FUNCS[a] exists.
-  - s.FUNCS[a] is funcinst.
+Externaddr_ok/tag
+- the external address (TAG a) is valid with the external type (TAG taginst.TYPE) if:
+  - the tag instance s.TAGS[a] exists.
+  - s.TAGS[a] is taginst.
 
 Externaddr_ok/global
 - the external address (GLOBAL a) is valid with the external type (GLOBAL globalinst.TYPE) if:
   - the global instance s.GLOBALS[a] exists.
   - s.GLOBALS[a] is globalinst.
 
-Externaddr_ok/table
-- the external address (TABLE a) is valid with the external type (TABLE tableinst.TYPE) if:
-  - the table instance s.TABLES[a] exists.
-  - s.TABLES[a] is tableinst.
-
 Externaddr_ok/mem
 - the external address (MEM a) is valid with the external type (MEM meminst.TYPE) if:
   - the memory instance s.MEMS[a] exists.
   - s.MEMS[a] is meminst.
 
-Externaddr_ok/tag
-- the external address (TAG a) is valid with the external type (TAG taginst.TYPE) if:
-  - the tag instance s.TAGS[a] exists.
-  - s.TAGS[a] is taginst.
+Externaddr_ok/table
+- the external address (TABLE a) is valid with the external type (TABLE tableinst.TYPE) if:
+  - the table instance s.TABLES[a] exists.
+  - s.TABLES[a] is tableinst.
+
+Externaddr_ok/func
+- the external address (FUNC a) is valid with the external type (FUNC funcinst.TYPE) if:
+  - the function instance s.FUNCS[a] exists.
+  - s.FUNCS[a] is funcinst.
 
 Externaddr_ok/sub
 - the external address externaddr is valid with the external type xt if:
@@ -29197,8 +29221,8 @@ Step_read/memory.init x y
 Step/throw x
 1. Let z be the current state.
 2. Assert: Due to validation, (x < |$tagaddr(z)|).
-3. Assert: Due to validation, $Expand($tag(z, x).TYPE) is some FUNC.
-4. Let (FUNC functype_0) be $Expand($tag(z, x).TYPE).
+3. Assert: Due to validation, $Expand($as_deftype($tag(z, x).TYPE)) is some FUNC.
+4. Let (FUNC functype_0) be $Expand($as_deftype($tag(z, x).TYPE)).
 5. Let t^n -> resulttype_1 be functype_0.
 6. Assert: Due to validation, (resulttype_1 = []).
 7. Let a be |$exninst(z)|.
@@ -29737,15 +29761,18 @@ diffrt (REF nul1 ht_1) (REF nul ht_2)
 2. Assert: Due to validation, nul is not defined.
 3. Return (REF nul1 ht_1).
 
-funcsxt externtype'*
+as_deftype dt
+1. Return dt.
+
+tagsxt externtype'*
 1. If (externtype'* = []), then:
   a. Return [].
 2. Let [externtype_0] :: xt* be externtype'*.
-3. If externtype_0 is some FUNC, then:
-  a. Let (FUNC dt) be externtype_0.
-  b. Return [dt] :: $funcsxt(xt*).
+3. If externtype_0 is some TAG, then:
+  a. Let (TAG jt) be externtype_0.
+  b. Return [jt] :: $tagsxt(xt*).
 4. Let [externtype] :: xt* be externtype'*.
-5. Return $funcsxt(xt*).
+5. Return $tagsxt(xt*).
 
 globalsxt externtype'*
 1. If (externtype'* = []), then:
@@ -29757,16 +29784,6 @@ globalsxt externtype'*
 4. Let [externtype] :: xt* be externtype'*.
 5. Return $globalsxt(xt*).
 
-tablesxt externtype'*
-1. If (externtype'* = []), then:
-  a. Return [].
-2. Let [externtype_0] :: xt* be externtype'*.
-3. If externtype_0 is some TABLE, then:
-  a. Let (TABLE tt) be externtype_0.
-  b. Return [tt] :: $tablesxt(xt*).
-4. Let [externtype] :: xt* be externtype'*.
-5. Return $tablesxt(xt*).
-
 memsxt externtype'*
 1. If (externtype'* = []), then:
   a. Return [].
@@ -29777,15 +29794,25 @@ memsxt externtype'*
 4. Let [externtype] :: xt* be externtype'*.
 5. Return $memsxt(xt*).
 
-tagsxt externtype'*
+tablesxt externtype'*
 1. If (externtype'* = []), then:
   a. Return [].
 2. Let [externtype_0] :: xt* be externtype'*.
-3. If externtype_0 is some TAG, then:
-  a. Let (TAG jt) be externtype_0.
-  b. Return [jt] :: $tagsxt(xt*).
+3. If externtype_0 is some TABLE, then:
+  a. Let (TABLE tt) be externtype_0.
+  b. Return [tt] :: $tablesxt(xt*).
 4. Let [externtype] :: xt* be externtype'*.
-5. Return $tagsxt(xt*).
+5. Return $tablesxt(xt*).
+
+funcsxt externtype'*
+1. If (externtype'* = []), then:
+  a. Return [].
+2. Let [externtype_0] :: xt* be externtype'*.
+3. If externtype_0 is some FUNC, then:
+  a. Let (FUNC dt) be externtype_0.
+  b. Return [dt] :: $funcsxt(xt*).
+4. Let [externtype] :: xt* be externtype'*.
+5. Return $funcsxt(xt*).
 
 subst_typevar tv typevar* typeuse*
 1. If (typeuse* = []), then:
@@ -29860,8 +29887,8 @@ subst_subtype (SUB fin tu'* ct) tv* tu*
 subst_rectype (REC st*) tv* tu*
 1. Return (REC $subst_subtype(st, tv*, tu*)*).
 
-subst_deftype (DEF qt i) tv* tu*
-1. Return (DEF $subst_rectype(qt, tv*, tu*) i).
+subst_deftype (_DEF qt i) tv* tu*
+1. Return (_DEF $subst_rectype(qt, tv*, tu*) i).
 
 subst_functype t_1* -> t_2* tv* tu*
 1. Return $subst_valtype(t_1, tv*, tu*)* -> $subst_valtype(t_2, tv*, tu*)*.
@@ -29869,22 +29896,22 @@ subst_functype t_1* -> t_2* tv* tu*
 subst_addrtype at tv* tu*
 1. Return at.
 
+subst_tagtype tu' tv* tu*
+1. Return $subst_typeuse(tu', tv*, tu*).
+
 subst_globaltype (mut t) tv* tu*
 1. Return (mut $subst_valtype(t, tv*, tu*)).
-
-subst_tabletype (at lim rt) tv* tu*
-1. Return (at lim $subst_reftype(rt, tv*, tu*)).
 
 subst_memtype at lim PAGE tv* tu*
 1. Return at lim PAGE.
 
-subst_tagtype dt tv* tu*
-1. Return $subst_deftype(dt, tv*, tu*).
+subst_tabletype (at lim rt) tv* tu*
+1. Return (at lim $subst_reftype(rt, tv*, tu*)).
 
 subst_externtype externtype tv* tu*
-1. If externtype is some FUNC, then:
-  a. Let (FUNC dt) be externtype.
-  b. Return (FUNC $subst_deftype(dt, tv*, tu*)).
+1. If externtype is some TAG, then:
+  a. Let (TAG jt) be externtype.
+  b. Return (TAG $subst_tagtype(jt, tv*, tu*)).
 2. If externtype is some GLOBAL, then:
   a. Let (GLOBAL gt) be externtype.
   b. Return (GLOBAL $subst_globaltype(gt, tv*, tu*)).
@@ -29894,9 +29921,9 @@ subst_externtype externtype tv* tu*
 4. If externtype is some MEM, then:
   a. Let (MEM mt) be externtype.
   b. Return (MEM $subst_memtype(mt, tv*, tu*)).
-5. Assert: Due to validation, externtype is some TAG.
-6. Let (TAG jt) be externtype.
-7. Return (TAG $subst_tagtype(jt, tv*, tu*)).
+5. Assert: Due to validation, externtype is some FUNC.
+6. Let (FUNC dt) be externtype.
+7. Return (FUNC $subst_deftype(dt, tv*, tu*)).
 
 subst_moduletype xt_1* -> xt_2* tv* tu*
 1. Return $subst_externtype(xt_1, tv*, tu*)* -> $subst_externtype(xt_2, tv*, tu*)*.
@@ -29910,14 +29937,20 @@ subst_all_reftype rt tu^n
 subst_all_deftype dt tu^n
 1. Return $subst_deftype(dt, (_IDX i)^(i<n), tu^n).
 
+subst_all_tagtype jt tu^n
+1. Return $subst_tagtype(jt, (_IDX i)^(i<n), tu^n).
+
 subst_all_globaltype gt tu^n
 1. Return $subst_globaltype(gt, (_IDX i)^(i<n), tu^n).
+
+subst_all_memtype mt tu^n
+1. Return $subst_memtype(mt, (_IDX i)^(i<n), tu^n).
 
 subst_all_tabletype tt tu^n
 1. Return $subst_tabletype(tt, (_IDX i)^(i<n), tu^n).
 
-subst_all_memtype mt tu^n
-1. Return $subst_memtype(mt, (_IDX i)^(i<n), tu^n).
+subst_all_externtype xt tu^n
+1. Return $subst_externtype(xt, (_IDX i)^(i<n), tu^n).
 
 subst_all_moduletype mmt tu^n
 1. Return $subst_moduletype(mmt, (_IDX i)^(i<n), tu^n).
@@ -29934,13 +29967,13 @@ rollrt x rectype
 
 unrollrt rectype
 1. Let (REC subtype^n) be rectype.
-2. Return (REC $subst_subtype(subtype, (REC i)^(i<n), (DEF rectype i)^(i<n))^n).
+2. Return (REC $subst_subtype(subtype, (REC i)^(i<n), (_DEF rectype i)^(i<n))^n).
 
 rolldt x rectype
 1. Let (REC subtype^n) be $rollrt(x, rectype).
-2. Return (DEF (REC subtype^n) i)^(i<n).
+2. Return (_DEF (REC subtype^n) i)^(i<n).
 
-unrolldt (DEF rectype i)
+unrolldt (_DEF rectype i)
 1. Let (REC subtype*) be $unrollrt(rectype).
 2. Return subtype*[i].
 
@@ -30045,40 +30078,43 @@ free_subtype (SUB fin typeuse* comptype)
 free_rectype (REC subtype*)
 1. Return $free_list($free_subtype(subtype)*).
 
-free_deftype (DEF rectype n)
+free_deftype (_DEF rectype n)
 1. Return $free_rectype(rectype).
-
-free_globaltype (mut valtype)
-1. Return $free_valtype(valtype).
-
-free_tabletype (addrtype limits reftype)
-1. Return $free_addrtype(addrtype) ++ $free_reftype(reftype).
-
-free_memtype addrtype limits PAGE
-1. Return $free_addrtype(addrtype).
 
 free_tagtype deftype
 1. Return $free_deftype(deftype).
 
-free_elemtype reftype
-1. Return $free_reftype(reftype).
+free_globaltype (mut valtype)
+1. Return $free_valtype(valtype).
+
+free_memtype addrtype limits PAGE
+1. Return $free_addrtype(addrtype).
+
+free_tabletype (addrtype limits reftype)
+1. Return $free_addrtype(addrtype) ++ $free_reftype(reftype).
 
 free_datatype OK
 1. Return {}.
 
+free_elemtype reftype
+1. Return $free_reftype(reftype).
+
 free_externtype externtype
-1. If externtype is some FUNC, then:
-  a. Let (FUNC typeuse) be externtype.
-  b. Return $free_typeuse(typeuse).
+1. If externtype is some TAG, then:
+  a. Let (TAG tagtype) be externtype.
+  b. Return $free_tagtype(tagtype).
 2. If externtype is some GLOBAL, then:
   a. Let (GLOBAL globaltype) be externtype.
   b. Return $free_globaltype(globaltype).
-3. If externtype is some TABLE, then:
+3. If externtype is some MEM, then:
+  a. Let (MEM memtype) be externtype.
+  b. Return $free_memtype(memtype).
+4. If externtype is some TABLE, then:
   a. Let (TABLE tabletype) be externtype.
   b. Return $free_tabletype(tabletype).
-4. Assert: Due to validation, externtype is some MEM.
-5. Let (MEM memtype) be externtype.
-6. Return $free_memtype(memtype).
+5. Assert: Due to validation, externtype is some FUNC.
+6. Let (FUNC typeuse) be externtype.
+7. Return $free_typeuse(typeuse).
 
 free_moduletype externtype_1* -> externtype_2*
 1. Return $free_list($free_externtype(externtype_1)*) ++ $free_list($free_externtype(externtype_2)*).
@@ -30423,23 +30459,33 @@ free_expr instr*
 free_type (TYPE rectype)
 1. Return $free_rectype(rectype).
 
+free_tag (TAG tagtype)
+1. Return $free_tagtype(tagtype).
+
+free_global (GLOBAL globaltype expr)
+1. Return $free_globaltype(globaltype) ++ $free_expr(expr).
+
+free_mem (MEMORY memtype)
+1. Return $free_memtype(memtype).
+
+free_table (TABLE tabletype expr)
+1. Return $free_tabletype(tabletype) ++ $free_expr(expr).
+
 free_local (LOCAL t)
 1. Return $free_valtype(t).
 
 free_func (FUNC typeidx local* expr)
 1. Return $free_typeidx(typeidx) ++ $free_list($free_local(local)*) ++ $free_block(expr) with .LOCALS replaced by [].
 
-free_global (GLOBAL globaltype expr)
-1. Return $free_globaltype(globaltype) ++ $free_expr(expr).
+free_datamode datamode
+1. If datamode is some ACTIVE, then:
+  a. Let (ACTIVE memidx expr) be datamode.
+  b. Return $free_memidx(memidx) ++ $free_expr(expr).
+2. Assert: Due to validation, (datamode = PASSIVE).
+3. Return {}.
 
-free_table (TABLE tabletype expr)
-1. Return $free_tabletype(tabletype) ++ $free_expr(expr).
-
-free_mem (MEMORY memtype)
-1. Return $free_memtype(memtype).
-
-free_tag (TAG typeidx)
-1. Return $free_typeidx(typeidx).
+free_data (DATA byte* datamode)
+1. Return $free_datamode(datamode).
 
 free_elemmode elemmode
 1. If elemmode is some ACTIVE, then:
@@ -30453,27 +30499,17 @@ free_elemmode elemmode
 free_elem (ELEM reftype expr* elemmode)
 1. Return $free_reftype(reftype) ++ $free_list($free_expr(expr)*) ++ $free_elemmode(elemmode).
 
-free_datamode datamode
-1. If datamode is some ACTIVE, then:
-  a. Let (ACTIVE memidx expr) be datamode.
-  b. Return $free_memidx(memidx) ++ $free_expr(expr).
-2. Assert: Due to validation, (datamode = PASSIVE).
-3. Return {}.
-
-free_data (DATA byte* datamode)
-1. Return $free_datamode(datamode).
-
 free_start (START funcidx)
 1. Return $free_funcidx(funcidx).
-
-free_export (EXPORT name externidx)
-1. Return $free_externidx(externidx).
 
 free_import (IMPORT name_1 name_2 externtype)
 1. Return $free_externtype(externtype).
 
-free_module (MODULE type* import* func* global* table* mem* tag* elem* data* start? export*)
-1. Return $free_list($free_type(type)*) ++ $free_list($free_import(import)*) ++ $free_list($free_func(func)*) ++ $free_list($free_global(global)*) ++ $free_list($free_table(table)*) ++ $free_list($free_mem(mem)*) ++ $free_list($free_tag(tag)*) ++ $free_list($free_elem(elem)*) ++ $free_list($free_data(data)*) ++ $free_opt($free_start(start)?) ++ $free_list($free_export(export)*).
+free_export (EXPORT name externidx)
+1. Return $free_externidx(externidx).
+
+free_module (MODULE type* import* tag* global* mem* table* func* data* elem* start? export*)
+1. Return $free_list($free_type(type)*) ++ $free_list($free_tag(tag)*) ++ $free_list($free_global(global)*) ++ $free_list($free_mem(mem)*) ++ $free_list($free_table(table)*) ++ $free_list($free_func(func)*) ++ $free_list($free_data(data)*) ++ $free_list($free_elem(elem)*) ++ $free_opt($free_start(start)?) ++ $free_list($free_import(import)*) ++ $free_list($free_export(export)*).
 
 funcidx_module module
 1. Return $free_module(module).FUNCS.
@@ -30505,6 +30541,14 @@ clos_valtype C t
 clos_deftype C dt
 1. Let dt'* be $clos_deftypes(C.TYPES).
 2. Return $subst_all_deftype(dt, dt'*).
+
+clos_tagtype C jt
+1. Let dt* be $clos_deftypes(C.TYPES).
+2. Return $subst_all_tagtype(jt, dt*).
+
+clos_externtype C xt
+1. Let dt* be $clos_deftypes(C.TYPES).
+2. Return $subst_all_externtype(xt, dt*).
 
 clos_moduletype C mmt
 1. Let dt* be $clos_deftypes(C.TYPES).
@@ -30544,8 +30588,8 @@ default_ valtype
 7. Assert: Due to validation, NULL_opt_0 is not defined.
 8. Return ?().
 
-funcidx_nonfuncs (global* table* mem* elem*)
-1. Return $funcidx_module((MODULE [] [] [] global* table* mem* [] elem* [] ?() [])).
+funcidx_nonfuncs (global* mem* table* elem*)
+1. Return $funcidx_module((MODULE [] [] [] global* mem* table* [] [] elem* ?() [])).
 
 relaxed2 i `X X_1 X_2
 1. If $ND(), then:
@@ -31285,15 +31329,15 @@ unpackfield_ storagetype sx'? fieldval
 6. Assert: Due to validation, (storagetype = packtype).
 7. Return (I32.CONST $extend__($psize(packtype), 32, sx, i)).
 
-funcsxa externaddr'*
+tagsxa externaddr'*
 1. If (externaddr'* = []), then:
   a. Return [].
 2. Let [externaddr_0] :: xa* be externaddr'*.
-3. If externaddr_0 is some FUNC, then:
-  a. Let (FUNC a) be externaddr_0.
-  b. Return [a] :: $funcsxa(xa*).
+3. If externaddr_0 is some TAG, then:
+  a. Let (TAG a) be externaddr_0.
+  b. Return [a] :: $tagsxa(xa*).
 4. Let [externaddr] :: xa* be externaddr'*.
-5. Return $funcsxa(xa*).
+5. Return $tagsxa(xa*).
 
 globalsxa externaddr'*
 1. If (externaddr'* = []), then:
@@ -31305,16 +31349,6 @@ globalsxa externaddr'*
 4. Let [externaddr] :: xa* be externaddr'*.
 5. Return $globalsxa(xa*).
 
-tablesxa externaddr'*
-1. If (externaddr'* = []), then:
-  a. Return [].
-2. Let [externaddr_0] :: xa* be externaddr'*.
-3. If externaddr_0 is some TABLE, then:
-  a. Let (TABLE a) be externaddr_0.
-  b. Return [a] :: $tablesxa(xa*).
-4. Let [externaddr] :: xa* be externaddr'*.
-5. Return $tablesxa(xa*).
-
 memsxa externaddr'*
 1. If (externaddr'* = []), then:
   a. Return [].
@@ -31325,15 +31359,25 @@ memsxa externaddr'*
 4. Let [externaddr] :: xa* be externaddr'*.
 5. Return $memsxa(xa*).
 
-tagsxa externaddr'*
+tablesxa externaddr'*
 1. If (externaddr'* = []), then:
   a. Return [].
 2. Let [externaddr_0] :: xa* be externaddr'*.
-3. If externaddr_0 is some TAG, then:
-  a. Let (TAG a) be externaddr_0.
-  b. Return [a] :: $tagsxa(xa*).
+3. If externaddr_0 is some TABLE, then:
+  a. Let (TABLE a) be externaddr_0.
+  b. Return [a] :: $tablesxa(xa*).
 4. Let [externaddr] :: xa* be externaddr'*.
-5. Return $tagsxa(xa*).
+5. Return $tablesxa(xa*).
+
+funcsxa externaddr'*
+1. If (externaddr'* = []), then:
+  a. Return [].
+2. Let [externaddr_0] :: xa* be externaddr'*.
+3. If externaddr_0 is some FUNC, then:
+  a. Let (FUNC a) be externaddr_0.
+  b. Return [a] :: $funcsxa(xa*).
+4. Let [externaddr] :: xa* be externaddr'*.
+5. Return $funcsxa(xa*).
 
 store (s, f)
 1. Return.
@@ -31347,26 +31391,26 @@ tagaddr (s, f)
 moduleinst (s, f)
 1. Return f.MODULE.
 
-funcinst (s, f)
-1. Return s.FUNCS.
+taginst (s, f)
+1. Return s.TAGS.
 
 globalinst (s, f)
 1. Return s.GLOBALS.
 
-tableinst (s, f)
-1. Return s.TABLES.
-
 meminst (s, f)
 1. Return s.MEMS.
 
-taginst (s, f)
-1. Return s.TAGS.
+tableinst (s, f)
+1. Return s.TABLES.
 
-eleminst (s, f)
-1. Return s.ELEMS.
+funcinst (s, f)
+1. Return s.FUNCS.
 
 datainst (s, f)
 1. Return s.DATAS.
+
+eleminst (s, f)
+1. Return s.ELEMS.
 
 structinst (s, f)
 1. Return s.STRUCTS.
@@ -31380,26 +31424,26 @@ exninst (s, f)
 type (s, f) x
 1. Return f.MODULE.TYPES[x].
 
-func (s, f) x
-1. Return s.FUNCS[f.MODULE.FUNCS[x]].
+tag (s, f) x
+1. Return s.TAGS[f.MODULE.TAGS[x]].
 
 global (s, f) x
 1. Return s.GLOBALS[f.MODULE.GLOBALS[x]].
 
-table (s, f) x
-1. Return s.TABLES[f.MODULE.TABLES[x]].
-
 mem (s, f) x
 1. Return s.MEMS[f.MODULE.MEMS[x]].
 
-tag (s, f) x
-1. Return s.TAGS[f.MODULE.TAGS[x]].
+table (s, f) x
+1. Return s.TABLES[f.MODULE.TABLES[x]].
 
-elem (s, f) x
-1. Return s.ELEMS[f.MODULE.ELEMS[x]].
+func (s, f) x
+1. Return s.FUNCS[f.MODULE.FUNCS[x]].
 
 data (s, f) x
 1. Return s.DATAS[f.MODULE.DATAS[x]].
+
+elem (s, f) x
+1. Return s.ELEMS[f.MODULE.ELEMS[x]].
 
 local (s, f) x
 1. Return f.LOCALS[x].
@@ -31471,13 +31515,13 @@ inst_globaltype moduleinst gt
 1. Let dt* be moduleinst.TYPES.
 2. Return $subst_all_globaltype(gt, dt*).
 
-inst_tabletype moduleinst tt
-1. Let dt* be moduleinst.TYPES.
-2. Return $subst_all_tabletype(tt, dt*).
-
 inst_memtype moduleinst mt
 1. Let dt* be moduleinst.TYPES.
 2. Return $subst_all_memtype(mt, dt*).
+
+inst_tabletype moduleinst tt
+1. Let dt* be moduleinst.TYPES.
+2. Return $subst_all_tabletype(tt, dt*).
 
 blocktype_ z blocktype
 1. If blocktype is some _IDX, then:
@@ -31498,6 +31542,70 @@ alloctypes type''*
 5. Let x be |deftype'*|.
 6. Let deftype* be $subst_all_deftypes($rolldt(x, rectype), deftype'*).
 7. Return deftype'* :: deftype*.
+
+alloctag s tagtype
+1. Let taginst be { TYPE: tagtype }.
+2. Let a be |s.TAGS|.
+3. Append taginst to the s.TAGS.
+4. Return a.
+
+alloctags s tagtype''*
+1. If (tagtype''* = []), then:
+  a. Return [].
+2. Let [tagtype] :: tagtype'* be tagtype''*.
+3. Let ja be $alloctag(s, tagtype).
+4. Let ja'* be $alloctags(s, tagtype'*).
+5. Return [ja] :: ja'*.
+
+allocglobal s globaltype val
+1. Let globalinst be { TYPE: globaltype; VALUE: val }.
+2. Let a be |s.GLOBALS|.
+3. Append globalinst to the s.GLOBALS.
+4. Return a.
+
+allocglobals s globaltype''* val''*
+1. If (globaltype''* = []), then:
+  a. Assert: Due to validation, (val''* = []).
+  b. Return [].
+2. Else:
+  a. Let [globaltype] :: globaltype'* be globaltype''*.
+  b. Assert: Due to validation, (|val''*| >= 1).
+  c. Let [val] :: val'* be val''*.
+  d. Let ga be $allocglobal(s, globaltype, val).
+  e. Let ga'* be $allocglobals(s, globaltype'*, val'*).
+  f. Return [ga] :: ga'*.
+
+allocmem s at ([ i .. j ]) PAGE
+1. Let meminst be { TYPE: at ([ i .. j ]) PAGE; BYTES: 0^(i * (64 * $Ki())) }.
+2. Let a be |s.MEMS|.
+3. Append meminst to the s.MEMS.
+4. Return a.
+
+allocmems s memtype''*
+1. If (memtype''* = []), then:
+  a. Return [].
+2. Let [memtype] :: memtype'* be memtype''*.
+3. Let ma be $allocmem(s, memtype).
+4. Let ma'* be $allocmems(s, memtype'*).
+5. Return [ma] :: ma'*.
+
+alloctable s (at ([ i .. j ]) rt) ref
+1. Let tableinst be { TYPE: (at ([ i .. j ]) rt); REFS: ref^i }.
+2. Let a be |s.TABLES|.
+3. Append tableinst to the s.TABLES.
+4. Return a.
+
+alloctables s tabletype''* ref''*
+1. If (ref''* = []), then:
+  a. Assert: Due to validation, (tabletype''* = []).
+  b. Return [].
+2. Else:
+  a. Let [ref] :: ref'* be ref''*.
+  b. Assert: Due to validation, (|tabletype''*| >= 1).
+  c. Let [tabletype] :: tabletype'* be tabletype''*.
+  d. Let ta be $alloctable(s, tabletype, ref).
+  e. Let ta'* be $alloctables(s, tabletype'*, ref'*).
+  f. Return [ta] :: ta'*.
 
 allocfunc s deftype funccode moduleinst
 1. Let funcinst be { TYPE: deftype; MODULE: moduleinst; CODE: funccode }.
@@ -31520,69 +31628,23 @@ allocfuncs s deftype* funccode''* moduleinst''*
   g. Let fa'* be $allocfuncs(s, dt'*, funccode'*, moduleinst'*).
   h. Return [fa] :: fa'*.
 
-allocglobal s globaltype val
-1. Let globalinst be { TYPE: globaltype; VALUE: val }.
-2. Let a be |s.GLOBALS|.
-3. Append globalinst to the s.GLOBALS.
+allocdata s OK byte*
+1. Let datainst be { BYTES: byte* }.
+2. Let a be |s.DATAS|.
+3. Append datainst to the s.DATAS.
 4. Return a.
 
-allocglobals s globaltype''* val''*
-1. If (globaltype''* = []), then:
-  a. Assert: Due to validation, (val''* = []).
+allocdatas s datatype* byte*
+1. If (byte* = []), then:
+  a. Assert: Due to validation, (datatype* = []).
   b. Return [].
 2. Else:
-  a. Let [globaltype] :: globaltype'* be globaltype''*.
-  b. Assert: Due to validation, (|val''*| >= 1).
-  c. Let [val] :: val'* be val''*.
-  d. Let ga be $allocglobal(s, globaltype, val).
-  e. Let ga'* be $allocglobals(s, globaltype'*, val'*).
-  f. Return [ga] :: ga'*.
-
-alloctable s (at ([ i .. j ]) rt) ref
-1. Let tableinst be { TYPE: (at ([ i .. j ]) rt); REFS: ref^i }.
-2. Let a be |s.TABLES|.
-3. Append tableinst to the s.TABLES.
-4. Return a.
-
-alloctables s tabletype''* ref''*
-1. If (ref''* = []), then:
-  a. Assert: Due to validation, (tabletype''* = []).
-  b. Return [].
-2. Else:
-  a. Let [ref] :: ref'* be ref''*.
-  b. Assert: Due to validation, (|tabletype''*| >= 1).
-  c. Let [tabletype] :: tabletype'* be tabletype''*.
-  d. Let ta be $alloctable(s, tabletype, ref).
-  e. Let ta'* be $alloctables(s, tabletype'*, ref'*).
-  f. Return [ta] :: ta'*.
-
-allocmem s at ([ i .. j ]) PAGE
-1. Let meminst be { TYPE: at ([ i .. j ]) PAGE; BYTES: 0^(i * (64 * $Ki())) }.
-2. Let a be |s.MEMS|.
-3. Append meminst to the s.MEMS.
-4. Return a.
-
-allocmems s memtype''*
-1. If (memtype''* = []), then:
-  a. Return [].
-2. Let [memtype] :: memtype'* be memtype''*.
-3. Let ma be $allocmem(s, memtype).
-4. Let ma'* be $allocmems(s, memtype'*).
-5. Return [ma] :: ma'*.
-
-alloctag s tagtype
-1. Let taginst be { TYPE: tagtype }.
-2. Let a be |s.TAGS|.
-3. Append taginst to the s.TAGS.
-4. Return a.
-
-alloctags s tagtype''*
-1. If (tagtype''* = []), then:
-  a. Return [].
-2. Let [tagtype] :: tagtype'* be tagtype''*.
-3. Let ja be $alloctag(s, tagtype).
-4. Let ja'* be $alloctags(s, tagtype'*).
-5. Return [ja] :: ja'*.
+  a. Let [b*] :: b'** be byte*.
+  b. Assert: Due to validation, (|datatype*| >= 1).
+  c. Let [ok] :: ok'* be datatype*.
+  d. Let da be $allocdata(s, ok, b*).
+  e. Let da'* be $allocdatas(s, ok'*, b'**).
+  f. Return [da] :: da'*.
 
 allocelem s elemtype ref*
 1. Let eleminst be { TYPE: elemtype; REFS: ref* }.
@@ -31602,83 +31664,60 @@ allocelems s elemtype* ref''*
   e. Let ea'* be $allocelems(s, rt'*, ref'**).
   f. Return [ea] :: ea'*.
 
-allocdata s OK byte*
-1. Let datainst be { BYTES: byte* }.
-2. Let a be |s.DATAS|.
-3. Append datainst to the s.DATAS.
-4. Return a.
-
-allocdatas s datatype* byte*
-1. If (byte* = []), then:
-  a. Assert: Due to validation, (datatype* = []).
-  b. Return [].
-2. Else:
-  a. Let [b*] :: b'** be byte*.
-  b. Assert: Due to validation, (|datatype*| >= 1).
-  c. Let [ok] :: ok'* be datatype*.
-  d. Let da be $allocdata(s, ok, b*).
-  e. Let da'* be $allocdatas(s, ok'*, b'**).
-  f. Return [da] :: da'*.
-
 allocexport moduleinst (EXPORT name externidx)
-1. If externidx is some FUNC, then:
-  a. Let (FUNC x) be externidx.
-  b. Return { NAME: name; ADDR: (FUNC moduleinst.FUNCS[x]) }.
+1. If externidx is some TAG, then:
+  a. Let (TAG x) be externidx.
+  b. Return { NAME: name; ADDR: (TAG moduleinst.TAGS[x]) }.
 2. If externidx is some GLOBAL, then:
   a. Let (GLOBAL x) be externidx.
   b. Return { NAME: name; ADDR: (GLOBAL moduleinst.GLOBALS[x]) }.
-3. If externidx is some TABLE, then:
-  a. Let (TABLE x) be externidx.
-  b. Return { NAME: name; ADDR: (TABLE moduleinst.TABLES[x]) }.
-4. If externidx is some MEM, then:
+3. If externidx is some MEM, then:
   a. Let (MEM x) be externidx.
   b. Return { NAME: name; ADDR: (MEM moduleinst.MEMS[x]) }.
-5. Assert: Due to validation, externidx is some TAG.
-6. Let (TAG x) be externidx.
-7. Return { NAME: name; ADDR: (TAG moduleinst.TAGS[x]) }.
+4. If externidx is some TABLE, then:
+  a. Let (TABLE x) be externidx.
+  b. Return { NAME: name; ADDR: (TABLE moduleinst.TABLES[x]) }.
+5. Assert: Due to validation, externidx is some FUNC.
+6. Let (FUNC x) be externidx.
+7. Return { NAME: name; ADDR: (FUNC moduleinst.FUNCS[x]) }.
 
 allocexports moduleinst export*
 1. Return $allocexport(moduleinst, export)*.
 
 allocmodule s module externaddr* val_G* ref_T* ref_E**
-1. Let (MODULE type* import* func* global* table* mem* tag* elem* data* start? export*) be module.
-2. Let fa_I* be $funcsxa(externaddr*).
+1. Let (MODULE type* import* tag* global* mem* table* func* data* elem* start? export*) be module.
+2. Let aa_I* be $tagsxa(externaddr*).
 3. Let ga_I* be $globalsxa(externaddr*).
-4. Let aa_I* be $tagsxa(externaddr*).
+4. Let fa_I* be $funcsxa(externaddr*).
 5. Let ma_I* be $memsxa(externaddr*).
 6. Let ta_I* be $tablesxa(externaddr*).
 7. Let fa* be (|s.FUNCS| + i_F)^(i_F<|func*|).
-8. Let ga* be (|s.GLOBALS| + i_G)^(i_G<|global*|).
-9. Let ta* be (|s.TABLES| + i_T)^(i_T<|table*|).
-10. Let aa* be (|s.TAGS| + i_A)^(i_A<|tag*|).
-11. Let ma* be (|s.MEMS| + i_M)^(i_M<|mem*|).
-12. Let ea* be (|s.ELEMS| + i_E)^(i_E<|elem*|).
-13. Let da* be (|s.DATAS| + i_D)^(i_D<|data*|).
-14. Let (MEMORY memtype)* be mem*.
-15. Let dt* be $alloctypes(type*).
-16. Let (TAG y)* be tag*.
-17. Let (DATA byte* datamode)* be data*.
-18. Let (GLOBAL globaltype expr_G)* be global*.
-19. Let (TABLE tabletype expr_T)* be table*.
-20. Let (ELEM elemtype expr_E* elemmode)* be elem*.
-21. Let (FUNC x local* expr_F)* be func*.
-22. Let xi* be $allocexports({ FUNCS: fa_I* :: fa*; GLOBALS: ga_I* :: ga*; TABLES: ta_I* :: ta*; MEMS: ma_I* :: ma*; TAGS: aa_I* :: aa* }, export*).
-23. Let moduleinst be { TYPES: dt*; FUNCS: fa_I* :: fa*; GLOBALS: ga_I* :: ga*; TABLES: ta_I* :: ta*; MEMS: ma_I* :: ma*; TAGS: aa_I* :: aa*; ELEMS: ea*; DATAS: da*; EXPORTS: xi* }.
+8. Let (TAG tagtype)* be tag*.
+9. Let (DATA byte* datamode)* be data*.
+10. Let (GLOBAL globaltype expr_G)* be global*.
+11. Let (TABLE tabletype expr_T)* be table*.
+12. Let (MEMORY memtype)* be mem*.
+13. Let dt* be $alloctypes(type*).
+14. Let (ELEM elemtype expr_E* elemmode)* be elem*.
+15. Let (FUNC x local* expr_F)* be func*.
+16. Let aa* be $alloctags(s, $subst_all_tagtype(tagtype, dt*)*).
+17. Let ga* be $allocglobals(s, $subst_all_globaltype(globaltype, dt*)*, val_G*).
+18. Let ma* be $allocmems(s, $subst_all_memtype(memtype, dt*)*).
+19. Let ta* be $alloctables(s, $subst_all_tabletype(tabletype, dt*)*, ref_T*).
+20. Let xi* be $allocexports({ TAGS: aa_I* :: aa*; GLOBALS: ga_I* :: ga*; MEMS: ma_I* :: ma*; TABLES: ta_I* :: ta*; FUNCS: fa_I* :: fa* }, export*).
+21. Let da* be $allocdatas(s, OK^|data*|, byte**).
+22. Let ea* be $allocelems(s, $subst_all_reftype(elemtype, dt*)*, ref_E**).
+23. Let moduleinst be { TYPES: dt*; TAGS: aa_I* :: aa*; GLOBALS: ga_I* :: ga*; MEMS: ma_I* :: ma*; TABLES: ta_I* :: ta*; FUNCS: fa_I* :: fa*; DATAS: da*; ELEMS: ea*; EXPORTS: xi* }.
 24. Let funcaddr_0* be $allocfuncs(s, dt*[x]*, (FUNC x local* expr_F)*, moduleinst^|func*|).
 25. Assert: Due to validation, (funcaddr_0* = fa*).
-26. Let globaladdr_0* be $allocglobals(s, $subst_all_globaltype(globaltype, dt*)*, val_G*).
-27. Assert: Due to validation, (globaladdr_0* = ga*).
-28. Let tableaddr_0* be $alloctables(s, $subst_all_tabletype(tabletype, dt*)*, ref_T*).
-29. Assert: Due to validation, (tableaddr_0* = ta*).
-30. Let memaddr_0* be $allocmems(s, $subst_all_memtype(memtype, dt*)*).
-31. Assert: Due to validation, (memaddr_0* = ma*).
-32. Let tagaddr_0* be $alloctags(s, dt*[y]*).
-33. Assert: Due to validation, (tagaddr_0* = aa*).
-34. Let elemaddr_0* be $allocelems(s, $subst_all_reftype(elemtype, dt*)*, ref_E**).
-35. Assert: Due to validation, (elemaddr_0* = ea*).
-36. Let dataaddr_0* be $allocdatas(s, OK^|data*|, byte**).
-37. Assert: Due to validation, (dataaddr_0* = da*).
-38. Return moduleinst.
+26. Return moduleinst.
+
+rundata_ x (DATA b^n datamode)
+1. If (datamode = PASSIVE), then:
+  a. Return [].
+2. Assert: Due to validation, datamode is some ACTIVE.
+3. Let (ACTIVE y instr*) be datamode.
+4. Return instr* :: [(I32.CONST 0), (I32.CONST n), (MEMORY.INIT y x), (DATA.DROP x)].
 
 runelem_ x (ELEM rt e^n elemmode)
 1. If (elemmode = PASSIVE), then:
@@ -31688,13 +31727,6 @@ runelem_ x (ELEM rt e^n elemmode)
 3. Assert: Due to validation, elemmode is some ACTIVE.
 4. Let (ACTIVE y instr*) be elemmode.
 5. Return instr* :: [(I32.CONST 0), (I32.CONST n), (TABLE.INIT y x), (ELEM.DROP x)].
-
-rundata_ x (DATA b^n datamode)
-1. If (datamode = PASSIVE), then:
-  a. Return [].
-2. Assert: Due to validation, datamode is some ACTIVE.
-3. Let (ACTIVE y instr*) be datamode.
-4. Return instr* :: [(I32.CONST 0), (I32.CONST n), (MEMORY.INIT y x), (DATA.DROP x)].
 
 evalglobals z globaltype* expr''*
 1. If (expr''* = []), then:
@@ -31713,13 +31745,13 @@ evalglobals z globaltype* expr''*
 
 instantiate s module externaddr*
 1. Let xt_I* -> xt_E* be $Module_ok(module).
-2. Let (MODULE type* import* func* global* table* mem* tag* elem* data* start? export*) be module.
+2. Let (MODULE type* import* tag* global* mem* table* func* data* elem* start? export*) be module.
 3. If not $Externaddr_ok(externaddr, xt_I)*, then:
   a. Fail.
 4. Let instr_D* be $concat_(`instr, $rundata_(i_D, data*[i_D])^(i_D<|data*|)).
 5. Let instr_E* be $concat_(`instr, $runelem_(i_E, elem*[i_E])^(i_E<|elem*|)).
 6. Let (START x)? be start?.
-7. Let moduleinst_0 be { TYPES: $alloctypes(type*); FUNCS: $funcsxa(externaddr*) :: (|s.FUNCS| + i_F)^(i_F<|func*|); GLOBALS: $globalsxa(externaddr*) }.
+7. Let moduleinst_0 be { TYPES: $alloctypes(type*); GLOBALS: $globalsxa(externaddr*); FUNCS: $funcsxa(externaddr*) :: (|s.FUNCS| + i_F)^(i_F<|func*|) }.
 8. Let (TABLE tabletype expr_T)* be table*.
 9. Let (GLOBAL globaltype expr_G)* be global*.
 10. Let (ELEM reftype expr_E* elemmode)* be elem*.
