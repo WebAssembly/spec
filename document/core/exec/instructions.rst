@@ -188,62 +188,12 @@ $${rule: {Step_pure/ref.eq-*}}
 
 $${rule-prose: Step_read/ref.test}
 
-.. todo:: (9) Need to handle RulePr s \|- ref : rt properly in prose instead of $ref_type_of
-   below is the official specification
-
-1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
-
-2. Let :math:`\X{rt}_1` be the :ref:`reference type <syntax-reftype>` :math:`\insttype_{F.\AMODULE}(\X{rt})`.
-
-3. Assert: due to :ref:`validation <valid-ref.test>`, :math:`\X{rt}_1` is :ref:`closed <type-closed>`.
-
-4. Assert: due to :ref:`validation <valid-ref.test>`, a :ref:`reference value <syntax-ref>` is on the top of the stack.
-
-5. Pop the value :math:`\reff` from the stack.
-
-6. Assert: due to validation, the :ref:`reference value <syntax-ref>` is :ref:`valid <valid-ref>` with some :ref:`reference type <syntax-reftype>`.
-
-7. Let :math:`\X{rt}_2` be the :ref:`reference type <syntax-reftype>` of :math:`\reff`.
-
-8. If the :ref:`reference type <syntax-reftype>` :math:`\X{rt}_2` :ref:`matches <match-reftype>` :math:`\X{rt}_1`, then:
-
-   a. Push the value :math:`\I32.\CONST~1` to the stack.
-
-9. Else:
-
-   a. Push the value :math:`\I32.\CONST~0` to the stack.
-
 $${rule: {Step_read/ref.test-*}}
 
 
 .. _exec-ref.cast:
 
 $${rule-prose: Step_read/ref.cast}
-
-.. todo:: (9) Need to handle RulePr s \|- ref : rt properly in prose instead of $ref_type_of
-   below is the official specification 
-
-1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
-
-2. Let :math:`\X{rt}_1` be the :ref:`reference type <syntax-reftype>` :math:`\insttype_{F.\AMODULE}(\X{rt})`.
-
-3. Assert: due to :ref:`validation <valid-ref.test>`, :math:`\X{rt}_1` is :ref:`closed <type-closed>`.
-
-4. Assert: due to :ref:`validation <valid-ref.test>`, a :ref:`reference value <syntax-ref>` is on the top of the stack.
-
-5. Pop the value :math:`\reff` from the stack.
-
-6. Assert: due to validation, the :ref:`reference value <syntax-ref>` is :ref:`valid <valid-ref>` with some :ref:`reference type <syntax-reftype>`.
-
-7. Let :math:`\X{rt}_2` be the :ref:`reference type <syntax-reftype>` of :math:`\reff`.
-
-8. If the :ref:`reference type <syntax-reftype>` :math:`\X{rt}_2` :ref:`matches <match-reftype>` :math:`\X{rt}_1`, then:
-
-   a. Push the value :math:`\reff` back to the stack.
-
-9. Else:
-
-   a. Trap.
 
 $${rule: {Step_read/ref.cast-*}}
 
@@ -258,25 +208,6 @@ $${rule: {Step_pure/ref.i31}}
 .. _exec-i31.get:
 
 $${rule-prose: Step_pure/i31.get}
-
-.. todo:: (4) Guarantees from validation can help simplify the prose.
-   below is the official specification
-
-1. Assert: due to :ref:`validation <valid-i31.get>`, a :ref:`value <syntax-val>` of :ref:`type <syntax-valtype>` :math:`(\REF~\NULL~\I31)` is on the top of the stack.
-
-2. Pop the value :math:`\reff` from the stack.
-
-3. If :math:`\reff` is :math:`\REFNULL~t`, then:
-
-   a. Trap.
-
-4. Assert: due to :ref:`validation <valid-i31.get>`, a :math:`\reff` is a :ref:`scalar reference <syntax-ref.i31>`.
-
-5. Let :math:`\REFI31NUM~i` be the reference value :math:`\reff`.
-
-6. Let :math:`j` be the result of computing :math:`\extend^{\sx}_{31,32}(i)`.
-
-7. Push the value :math:`\I32.\CONST~j` to the stack.
 
 $${rule: {Step_pure/i31.get-*}}
 
@@ -765,253 +696,28 @@ $${rule: {Step_read/load-*}}
 
 .. _exec-vload-pack:
 
-:math:`\V128\K{.}\VLOAD{M}\K{x}N\_\sx~x~\memarg`
-................................................
-
-.. todo:: (*) Rule and prose both not spliced.
-
-1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
-
-2. Assert: due to :ref:`validation <valid-vload-pack>`, :math:`F.\AMODULE.\MIMEMS[x]` exists.
-
-3. Let :math:`a` be the :ref:`memory address <syntax-memaddr>` :math:`F.\AMODULE.\MIMEMS[x]`.
-
-4. Assert: due to :ref:`validation <valid-vload-pack>`, :math:`S.\SMEMS[a]` exists.
-
-5. Let :math:`\X{mem}` be the :ref:`memory instance <syntax-meminst>` :math:`S.\SMEMS[a]`.
-
-6. Assert: due to :ref:`validation <valid-vload-pack>`, a value of some :ref:`address type <syntax-addrtype>` :math:`\X{at}` is on the top of the stack.
-
-7. Pop the value :math:`\X{at}.\CONST~i` from the stack.
-
-8. Let :math:`\X{ea}` be the integer :math:`i + \memarg.\OFFSET`.
-
-9. If :math:`\X{ea} + M \cdot N /8` is larger than the length of :math:`\X{mem}.\MIBYTES`, then:
-
-    a. Trap.
-
-10. Let :math:`b^\ast` be the byte sequence :math:`\X{mem}.\MIBYTES[\X{ea} \slice M \cdot N /8]`.
-
-11. Let :math:`m_k` be the integer for which :math:`\bytes_{\iM}(m_k) = b^\ast[k \cdot M/8 \slice M/8]`.
-
-12. Let :math:`W` be the integer :math:`M \cdot 2`.
-
-13. Let :math:`n_k` be the result of computing :math:`\extend^{\sx}_{M,W}(m_k)`.
-
-14. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{\K{i}W\K{x}N}(n_0 \dots n_{N-1})`.
-
-15. Push the value :math:`\V128.\CONST~c` to the stack.
-
-.. math::
-   ~\\[-1ex]
-   \begin{array}{l}
-   \begin{array}{lcl@{\qquad}l}
-   S; F; (\X{at}.\CONST~i)~(\V128.\LOAD{M}\K{x}N\_\sx~x~\memarg) &\stepto&
-     S; F; (\V128.\CONST~c)
-   \end{array}
-   \\ \qquad
-     \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & \X{ea} = i + \memarg.\OFFSET \\
-     \wedge & \X{ea} + M \cdot N / 8 \leq |S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\MIBYTES| \\
-     \wedge & \bytes_{\iM}(m_k) = S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\MIBYTES[\X{ea} + k \cdot M/8 \slice M/8]) \\
-     \wedge & W = M \cdot 2 \\
-     \wedge & c = \lanes^{-1}_{\K{i}W\K{x}N}(\extend^{\sx}_{M,W}(m_0) \dots \extend^{\sx}_{M,W}(m_{N-1})))
-     \end{array}
-   \\[1ex]
-   \begin{array}{lcl@{\qquad}l}
-   S; F; (\X{at}.\CONST~i)~(\V128.\LOAD{M}\K{x}N\K{\_}\sx~x~\memarg) &\stepto& S; F; \TRAP
-   \end{array}
-   \\ \qquad
-     (\otherwise) \\
-   \end{array}
+$${rule-prose: Step_read/vload-pack-*}
 
 $${rule: {Step_read/vload-pack-*}}
 
 
 .. _exec-vload-splat:
 
-:math:`\V128\K{.}\VLOAD{N}\K{\_splat}~x~\memarg`
-................................................
-
-.. todo:: (*) Rule and prose both not spliced.
-
-1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
-
-2. Assert: due to :ref:`validation <valid-vload-splat>`, :math:`F.\AMODULE.\MIMEMS[x]` exists.
-
-3. Let :math:`a` be the :ref:`memory address <syntax-memaddr>` :math:`F.\AMODULE.\MIMEMS[x]`.
-
-4. Assert: due to :ref:`validation <valid-vload-splat>`, :math:`S.\SMEMS[a]` exists.
-
-5. Let :math:`\X{mem}` be the :ref:`memory instance <syntax-meminst>` :math:`S.\SMEMS[a]`.
-
-6. Assert: due to :ref:`validation <valid-vload-splat>`, a value of some :ref:`address type <syntax-addrtype>` :math:`\X{at}` is on the top of the stack.
-
-7. Pop the value :math:`\X{at}.\CONST~i` from the stack.
-
-8. Let :math:`\X{ea}` be the integer :math:`i + \memarg.\OFFSET`.
-
-9. If :math:`\X{ea} + N/8` is larger than the length of :math:`\X{mem}.\MIBYTES`, then:
-
-    a. Trap.
-
-10. Let :math:`b^\ast` be the byte sequence :math:`\X{mem}.\MIBYTES[\X{ea} \slice N/8]`.
-
-11. Let :math:`n` be the integer for which :math:`\bytes_{\iN}(n) = b^\ast`.
-
-12. Let :math:`L` be the integer :math:`128 / N`.
-
-13. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{\IN\K{x}L}(n^L)`.
-
-14. Push the value :math:`\V128.\CONST~c` to the stack.
-
-.. math::
-   ~\\[-1ex]
-   \begin{array}{l}
-   \begin{array}{lcl@{\qquad}l}
-   S; F; (\X{at}.\CONST~i)~(\V128\K{.}\LOAD{N}\K{\_splat}~x~\memarg) &\stepto& S; F; (\V128.\CONST~c)
-   \end{array}
-   \\ \qquad
-     \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & \X{ea} = i + \memarg.\OFFSET \\
-     \wedge & \X{ea} + N/8 \leq |S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\MIBYTES| \\
-     \wedge & \bytes_{\iN}(n) = S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\MIBYTES[\X{ea} \slice N/8] \\
-     \wedge & c = \lanes^{-1}_{\IN\K{x}L}(n^L))
-     \end{array}
-   \\[1ex]
-   \begin{array}{lcl@{\qquad}l}
-   S; F; (\X{at}.\CONST~i)~(\V128.\LOAD{N}\K{\_splat}~x~\memarg) &\stepto& S; F; \TRAP
-   \end{array}
-   \\ \qquad
-     (\otherwise) \\
-   \end{array}
+$${rule-prose: Step_read/vload-splat-*}
 
 $${rule: {Step_read/vload-splat-*}}
 
 
 .. _exec-vload-zero:
 
-:math:`\V128\K{.}\VLOAD{N}\K{\_zero}~x~\memarg`
-...............................................
-
-.. todo:: (*) Rule and prose both not spliced.
-
-1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
-
-2. Assert: due to :ref:`validation <valid-vload-zero>`, :math:`F.\AMODULE.\MIMEMS[x]` exists.
-
-3. Let :math:`a` be the :ref:`memory address <syntax-memaddr>` :math:`F.\AMODULE.\MIMEMS[x]`.
-
-4. Assert: due to :ref:`validation <valid-vload-zero>`, :math:`S.\SMEMS[a]` exists.
-
-5. Let :math:`\X{mem}` be the :ref:`memory instance <syntax-meminst>` :math:`S.\SMEMS[a]`.
-
-6. Assert: due to :ref:`validation <valid-vload-zero>`, a value of some :ref:`address type <syntax-addrtype>` :math:`\X{at}` is on the top of the stack.
-
-7. Pop the value :math:`\X{at}.\CONST~i` from the stack.
-
-8. Let :math:`\X{ea}` be the integer :math:`i + \memarg.\OFFSET`.
-
-9. If :math:`\X{ea} + N/8` is larger than the length of :math:`\X{mem}.\MIBYTES`, then:
-
-    a. Trap.
-
-10. Let :math:`b^\ast` be the byte sequence :math:`\X{mem}.\MIBYTES[\X{ea} \slice N/8]`.
-
-11. Let :math:`n` be the integer for which :math:`\bytes_{\iN}(n) = b^\ast`.
-
-12. Let :math:`c` be the result of computing :math:`\extendu_{N,128}(n)`.
-
-13. Push the value :math:`\V128.\CONST~c` to the stack.
-
-.. math::
-   ~\\[-1ex]
-   \begin{array}{l}
-   \begin{array}{lcl@{\qquad}l}
-   S; F; (\X{at}.\CONST~i)~(\V128\K{.}\LOAD{N}\K{\_zero}~x~\memarg) &\stepto& S; F; (\V128.\CONST~c)
-   \end{array}
-   \\ \qquad
-     \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & \X{ea} = i + \memarg.\OFFSET \\
-     \wedge & \X{ea} + N/8 \leq |S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\MIBYTES| \\
-     \wedge & \bytes_{\iN}(n) = S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\MIBYTES[\X{ea} \slice N/8]) \\
-     \wedge & c = \extendu_{N,128}(n)
-     \end{array}
-   \\[1ex]
-   \begin{array}{lcl@{\qquad}l}
-   S; F; (\X{at}.\CONST~i)~(\V128.\LOAD{N}\K{\_zero}~x~\memarg) &\stepto& S; F; \TRAP
-   \end{array}
-   \\ \qquad
-     (\otherwise) \\
-   \end{array}
+$${rule-prose: Step_read/vload-zero-*}
 
 $${rule: {Step_read/vload-zero-*}}
 
 
 .. _exec-vload_lane:
 
-:math:`\V128\K{.}\VLOAD{N}\K{\_lane}~x~\memarg~y`
-.................................................
-
-.. todo:: (*) Rule and prose both not spliced.
-
-1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
-
-2. Assert: due to :ref:`validation <valid-vload_lane>`, :math:`F.\AMODULE.\MIMEMS[x]` exists.
-
-3. Let :math:`a` be the :ref:`memory address <syntax-memaddr>` :math:`F.\AMODULE.\MIMEMS[x]`.
-
-4. Assert: due to :ref:`validation <valid-vload_lane>`, :math:`S.\SMEMS[a]` exists.
-
-5. Let :math:`\X{mem}` be the :ref:`memory instance <syntax-meminst>` :math:`S.\SMEMS[a]`.
-
-6. Assert: due to :ref:`validation <valid-vload_lane>`, a value of :ref:`value type <syntax-valtype>` |V128| is on the top of the stack.
-
-7. Pop the value :math:`\V128.\CONST~v` from the stack.
-
-8. Assert: due to :ref:`validation <valid-vload_lane>`, a value of some :ref:`address type <syntax-addrtype>` :math:`\X{at}` is on the top of the stack.
-
-9. Pop the value :math:`\X{at}.\CONST~i` from the stack.
-
-10. Let :math:`\X{ea}` be the integer :math:`i + \memarg.\OFFSET`.
-
-11. If :math:`\X{ea} + N/8` is larger than the length of :math:`\X{mem}.\MIBYTES`, then:
-
-    a. Trap.
-
-12. Let :math:`b^\ast` be the byte sequence :math:`\X{mem}.\MIBYTES[\X{ea} \slice N/8]`.
-
-13. Let :math:`r` be the constant for which :math:`\bytes_{\iN}(r) = b^\ast`.
-
-14. Let :math:`L` be :math:`128 / N`.
-
-15. Let :math:`j^\ast` be the result of computing :math:`\lanes_{\IN\K{x}L}(v)`.
-
-16. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{\IN\K{x}L}(j^\ast \with [y] = r)`.
-
-17. Push the value :math:`\V128.\CONST~c` to the stack.
-
-.. math::
-   ~\\[-1ex]
-   \begin{array}{l}
-   \begin{array}{lcl@{\qquad}l}
-   S; F; (\X{at}.\CONST~i)~(\V128.\CONST~v)~(\V128\K{.}\LOAD{N}\K{\_lane}~x~\memarg~y) &\stepto& S; F; (\V128.\CONST~c)
-   \end{array}
-   \\ \qquad
-     \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & \X{ea} = i + \memarg.\OFFSET \\
-     \wedge & \X{ea} + N/8 \leq |S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\MIBYTES| \\
-     \wedge & \bytes_{\iN}(r) = S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\MIBYTES[\X{ea} \slice N/8]) \\
-     \wedge & L = 128/N \\
-     \wedge & c = \lanes^{-1}_{\IN\K{x}L}(\lanes_{\IN\K{x}L}(v) \with [y] = r))
-     \end{array}
-   \\[1ex]
-   \begin{array}{lcl@{\qquad}l}
-   S; F; (\X{at}.\CONST~i)~(\V128.\CONST~v)~(\V128.\LOAD{N}\K{\_lane}~x~\memarg~y) &\stepto& S; F; \TRAP
-   \end{array}
-   \\ \qquad
-     (\otherwise) \\
-   \end{array}
+$${rule-prose: Step_read/vload_lane}
 
 $${rule: {Step_read/vload_lane-*}}
 
@@ -1027,63 +733,7 @@ $${rule: {Step/store-* Step/vstore-*}}
 
 .. _exec-vstore_lane:
 
-:math:`\V128\K{.}\VSTORE{N}\K{\_lane}~x~\memarg~y`
-..................................................
-
-.. todo:: (*) Rule and prose both not spliced.
-
-1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
-
-2. Assert: due to :ref:`validation <valid-vstore_lane>`, :math:`F.\AMODULE.\MIMEMS[x]` exists.
-
-3. Let :math:`a` be the :ref:`memory address <syntax-memaddr>` :math:`F.\AMODULE.\MIMEMS[x]`.
-
-4. Assert: due to :ref:`validation <valid-vstore_lane>`, :math:`S.\SMEMS[a]` exists.
-
-5. Let :math:`\X{mem}` be the :ref:`memory instance <syntax-meminst>` :math:`S.\SMEMS[a]`.
-
-6. Assert: due to :ref:`validation <valid-vstore_lane>`, a value of :ref:`value type <syntax-valtype>` :math:`\V128` is on the top of the stack.
-
-7. Pop the value :math:`\V128.\CONST~c` from the stack.
-
-8. Assert: due to :ref:`validation <valid-vstore_lane>`, a value of some :ref:`address type <syntax-addrtype>` :math:`\X{at}` is on the top of the stack.
-
-9. Pop the value :math:`\X{at}.\CONST~i` from the stack.
-
-10. Let :math:`\X{ea}` be the integer :math:`i + \memarg.\OFFSET`.
-
-11. If :math:`\X{ea} + N/8` is larger than the length of :math:`\X{mem}.\MIBYTES`, then:
-
-    a. Trap.
-
-12. Let :math:`L` be :math:`128/N`.
-
-13. Let :math:`j^\ast` be the result of computing :math:`\lanes_{\IN\K{x}L}(c)`.
-
-14. Let :math:`b^\ast` be the result of computing :math:`\bytes_{\iN}(j^\ast[y])`.
-
-15. Replace the bytes :math:`\X{mem}.\MIBYTES[\X{ea} \slice N/8]` with :math:`b^\ast`.
-
-.. math::
-   ~\\[-1ex]
-   \begin{array}{l}
-   \begin{array}{lcl@{\qquad}l}
-   S; F; (\X{at}.\CONST~i)~(\V128.\CONST~c)~(\V128.\STORE{N}\K{\_lane}~x~\memarg~y) &\stepto& S'; F; \epsilon
-   \end{array}
-   \\ \qquad
-     \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & \X{ea} = i + \memarg.\OFFSET \\
-     \wedge & \X{ea} + N \leq |S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\MIBYTES| \\
-     \wedge & L = 128/N \\
-     \wedge & S' = S \with \SMEMS[F.\AMODULE.\MIMEMS[x]].\MIBYTES[\X{ea} \slice N/8] = \bytes_{\iN}(\lanes_{\IN\K{x}L}(c)[y]))
-     \end{array}
-   \\[1ex]
-   \begin{array}{lcl@{\qquad}l}
-   S; F; (\X{at}.\CONST~i)~(\V128.\CONST~c)~(\V128.\STORE{N}\K{\_lane}~x~\memarg~y) &\stepto& S; F; \TRAP
-   \end{array}
-   \\ \qquad
-     (\otherwise) \\
-   \end{array}
+$${rule-prose: Step/vstore_lane}
 
 $${rule: {Step/vstore_lane-*}}
 
@@ -1208,58 +858,12 @@ $${rule: {Step_pure/br_on_non_null-*}}
 
 $${rule-prose: Step_read/br_on_cast}
 
-.. todo:: (9) Need to handle RulePr s \|- ref : rt properly in prose instead of $ref_type_of
-   below is the official specification
-
-1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
-
-2. Let :math:`\X{rt}'_2` be the :ref:`reference type <syntax-reftype>` :math:`\insttype_{F.\AMODULE}(\X{rt}_2)`.
-
-3. Assert: due to :ref:`validation <valid-ref.test>`, :math:`\X{rt}'_2` is :ref:`closed <type-closed>`.
-
-4. Assert: due to :ref:`validation <valid-ref.test>`, a :ref:`reference value <syntax-ref>` is on the top of the stack.
-
-5. Pop the value :math:`\reff` from the stack.
-
-6. Assert: due to validation, the :ref:`reference value <syntax-ref>` is :ref:`valid <valid-ref>` with some :ref:`reference type <syntax-reftype>`.
-
-7. Let :math:`\X{rt}` be the :ref:`reference type <syntax-reftype>` of :math:`\reff`.
-
-8. Push the value :math:`\reff` back to the stack.
-
-9. If the :ref:`reference type <syntax-reftype>` :math:`\X{rt}` :ref:`matches <match-reftype>` :math:`\X{rt}'_2`, then:
-
-   a. :ref:`Execute <exec-br>` the instruction :math:`(\BR~l)`.
-
 $${rule: {Step_read/br_on_cast-*}}
 
 
 .. _exec-br_on_cast_fail:
 
 $${rule-prose: Step_read/br_on_cast_fail}
-
-.. todo:: (9) Need to handle RulePr s \|- ref : rt properly in prose instead of $ref_type_of
-   below is the official specification
-
-1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
-
-2. Let :math:`\X{rt}'_2` be the :ref:`reference type <syntax-reftype>` :math:`\insttype_{F.\AMODULE}(\X{rt}_2)`.
-
-3. Assert: due to :ref:`validation <valid-ref.test>`, :math:`\X{rt}'_2` is :ref:`closed <type-closed>`.
-
-4. Assert: due to :ref:`validation <valid-ref.test>`, a :ref:`reference value <syntax-ref>` is on the top of the stack.
-
-5. Pop the value :math:`\reff` from the stack.
-
-6. Assert: due to validation, the :ref:`reference value <syntax-ref>` is :ref:`valid <valid-ref>` with some :ref:`reference type <syntax-reftype>`.
-
-7. Let :math:`\X{rt}` be the :ref:`reference type <syntax-reftype>` of :math:`\reff`.
-
-8. Push the value :math:`\reff` back to the stack.
-
-9. If the :ref:`reference type <syntax-reftype>` :math:`\X{rt}` does not :ref:`match <match-reftype>` :math:`\X{rt}'_2`, then:
-
-   a. :ref:`Execute <exec-br>` the instruction :math:`(\BR~l)`.
 
 $${rule: {Step_read/br_on_cast_fail-*}}
 
@@ -1321,26 +925,7 @@ $${rule: {Step_read/return_call}}
 
 .. _exec-return_call_ref:
 
-:math:`\RETURNCALLREF~x`
-........................
-
 $${rule-prose: Step_read/return_call_ref}
-
-.. todo:: (*) Prose not spliced, Sphinx cannot build the document with deeply nested ordered list. (mainly caused by spurious conditions that should be assertions)
-
-1. Assert: due to :ref:`validation <valid-return_call_ref>`, a :ref:`function reference <syntax-ref>` is on the top of the stack.
-
-2. Pop the reference value :math:`r` from the stack.
-
-3. If :math:`r` is :math:`\REFNULL~\X{ht}`, then:
-
-    a. Trap.
-
-4. Assert: due to :ref:`validation <valid-call_ref>`, :math:`r` is a :ref:`function reference <syntax-ref>`.
-
-5. Let :math:`\REFFUNCADDR~a` be the reference :math:`r`.
-
-6. :ref:`Tail-invoke <exec-invoke>` the function instance at address :math:`a`.
 
 $${rule: {Step_read/return_call_ref-*}}
 

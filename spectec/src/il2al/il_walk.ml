@@ -98,7 +98,7 @@ and transform_clause t c =
 
 and transform_rule_clause t rc =
   match rc with
-  | (e1, e2, ps) -> (transform_exp t e1, transform_exp t e2, List.map (transform_prem t) ps)
+  | (id, e1, e2, ps) -> (id, transform_exp t e1, transform_exp t e2, List.map (transform_prem t) ps)
 
 and transform_rule_def t rd =
   { rd with it = match rd.it with

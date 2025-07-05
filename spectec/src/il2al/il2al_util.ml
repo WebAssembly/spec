@@ -68,7 +68,7 @@ let is_pop : prem -> bool = is_let_prem_with_rhs_type "stackT"
 let is_ctxt_prem : prem -> bool = is_let_prem_with_rhs_type "contextT"
 
 let extract_context r =
-  let _, _, prems = r in
+  let _, _, _, prems = r in
   prems
   |> List.find_opt is_ctxt_prem
   |> Option.map lhs_of_prem (* TODO: Collect helper functions into one place *)
@@ -89,10 +89,10 @@ let extract_pops rgroup =
     | _ -> List.rev acc, prems :: premss
   in
 
-  let get_prems r = let _, _, prems = r in prems in
+  let get_prems r = let _, _, _, prems = r in prems in
   let set_prems r prems =
-    let lhs, rhs, _ = r in
-    lhs, rhs, prems
+    let id, lhs, rhs, _ = r in
+    id, lhs, rhs, prems
   in
   (* End of helpers *)
 

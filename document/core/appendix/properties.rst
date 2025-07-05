@@ -255,7 +255,7 @@ Results
 
 .. math::
    \frac{
-     S \vdashval REFEXNADDR~a : REF~EXN
+     S \vdashval \REFEXNADDR~a : \REF~\EXN
      \qquad
      \vdashresulttype [t^\ast] : \OKresulttype
    }{

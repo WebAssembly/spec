@@ -121,7 +121,7 @@ let free_rules rules =
 let free_rule_def rd =
   let (_, _, clauses) = rd.it in
   List.fold_left (fun s c ->
-    let lhs, rhs, prems = c in
+    let _, lhs, rhs, prems = c in
     List.fold_left (fun s p -> s + Il.Free.free_prem p) s prems
     |> union (Il.Free.free_exp lhs)
     |> union (Il.Free.free_exp rhs)
