@@ -262,15 +262,6 @@ Results
      S \vdashresult (\REFEXNADDR~a)~\THROWREF : [{t'}^\ast]
    }
 
-.. math::
-   \frac{
-     S \vdashexternval \EVTAG~\tagaddr : \ETTAG~[t^\ast] \to []
-     \qquad
-     (S \vdashval \val : t)^\ast
-   }{
-     S \vdashresult \XT[(\REFEXNADDR~a)~\THROWREF] : [{t'}^\ast]
-   }
-
 
 :ref:`Results <syntax-result>` :math:`\TRAP`
 ............................................

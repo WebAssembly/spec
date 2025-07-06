@@ -393,6 +393,7 @@ def $minus_recs((_IDX x) tv*, tu_1 tu*) = ((_IDX x) tv'*, tu_1 tu'*)
 
 def $subst_rectype((REC st*), tv*, tu*) = REC $subst_subtype(st, tv'*, tu'*)*
   -- if (tv'*, tu'*) = $minus_recs(tv*, tu*)
+;; TODO(4, rossberg): animation cannot handle this declarative formulation:
 ;;  -- if tv'* = $setminus_(typevar, tv*, (REC i)^(i<|st*|))
 ;;  -- (if (tv', tu') <- (tv, tu)*)*
 
