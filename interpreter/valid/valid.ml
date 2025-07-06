@@ -86,6 +86,13 @@ let refer category (s : Free.Set.t) x =
 let refer_func (c : context) x = refer "function" c.refs.Free.funcs x
 
 
+let clos (c : context) subst t =
+  let dts =
+    List.fold_left (fun dts dt -> dts @ [subst_deftype (subst_of dts) dt])
+      [] c.types
+  in subst (subst_of dts) t
+
+
 (* Types *)
 
 let check_limits {min; max} range at msg =
@@ -229,9 +236,6 @@ let check_rectype (c : context) (rt : rectype) at : context =
   Lib.List32.iteri
     (fun i st -> check_subtype_sub c' st (Int32.add x i) at) sts;
   c'
-
-let check_type (c : context) (t : type_) : context =
-  check_rectype c t.it t.at
 
 
 let diff_reftype (nul1, ht1) (nul2, ht2) =
@@ -1107,6 +1111,9 @@ let check_elem (c : context) (elem : elem) : context =
 
 (* Modules *)
 
+let check_type (c : context) (t : type_) : context =
+  check_rectype c t.it t.at
+
 let check_start (c : context) (start : start) =
   let Start x = start.it in
   let ft = functype_of_comptype (expand_deftype (func c x)) in
@@ -1167,7 +1174,7 @@ let check_module (m : module_) : moduletype =
   let its = List.map (fun {it = Import (mnm, nm, xt); _} -> ImportT (mnm, nm, xt)) m.it.imports in
   let ets = List.map (check_export c) m.it.exports in
   check_names (List.map (fun (ExportT (nm, _xt)) -> nm) ets) m.at;
-  subst_moduletype (subst_of c.types) (ModuleT (its, ets))
+  clos c subst_moduletype (ModuleT (its, ets))
 
 
 let check_module_with_custom ((m : module_), (cs : Custom.section list))

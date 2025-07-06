@@ -355,7 +355,7 @@ and statify_deftype rts (DefT (rt, i)) =
     match List.find_opt (fun (rt', _) -> rt = rt') rts with
     | Some (_, (rt', self)) -> rts, Int32.add self i
     | None ->
-      let rts', rt' = statify_rectype rts rt in
+      let rts', RecT sts' = statify_rectype rts rt in
       let self =
         if rts' = [] then 0l else
         let _, (RecT sts, self) = Lib.List.last rts' in
@@ -365,7 +365,8 @@ and statify_deftype rts (DefT (rt, i)) =
         | Rec j -> Idx (Int32.add self j)
         | ut -> ut
       in
-      rts' @ [rt, (subst_rectype s rt', self)], Int32.add self i
+      let rt' = RecT (List.map (subst_subtype s) sts') in
+      rts' @ [rt, (rt', self)], Int32.add self i
 
 
 (* Wrappers *)

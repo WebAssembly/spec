@@ -162,7 +162,6 @@ and match_deftype c dt1 dt2 =
   let SubT (_fin, uts1, _st) = unroll_deftype dt1 in
   List.exists (fun ut1 -> match_heaptype c (UseHT ut1) (UseHT (Def dt2))) uts1
 
-
 let match_tagtype c (TagT ut1) (TagT ut2) =
   match ut1, ut2 with
   | Def dt1, Def dt2 -> match_deftype c dt1 dt2 && match_deftype c dt2 dt1

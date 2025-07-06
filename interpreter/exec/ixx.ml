@@ -5,6 +5,8 @@ module type RepType =
 sig
   type t
 
+  val bitwidth : int
+
   val zero : t
   val one : t
   val minus_one : t
@@ -33,14 +35,14 @@ sig
   val to_int64 : t -> int64
   val to_string : t -> string
   val to_hex_string : t -> string
-
-  val bitwidth : int
 end
 
 module type T =
 sig
   type t
   type bits
+
+  val bitwidth : int
 
   val of_bits : bits -> t
   val to_bits : t -> bits
@@ -131,6 +133,8 @@ struct
 
   type t = Rep.t
   type bits = Rep.t
+
+  let bitwidth = Rep.bitwidth
 
   let of_bits x = x
   let to_bits x = x

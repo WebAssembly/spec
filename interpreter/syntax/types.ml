@@ -147,22 +147,24 @@ let funcs = List.filter_map (function ExternFuncT ft -> Some ft | _ -> None)
 
 (* Substitution *)
 
-type subst = typeuse -> heaptype
+type subst = typeuse -> typeuse
 
 let subst_of dts = function
   | Idx x -> Def (Lib.List32.nth dts x)
   | Rec i -> Rec i
-  | Def dt -> Def dt  (* assume closed *)
+  | Def _ -> assert false
 
-let subst_typeuse s t = s t
+let rec subst_typeuse s = function
+  | Def dt -> Def (subst_deftype s dt)
+  | tv -> s tv
 
-let subst_addrtype s t = t
+and subst_addrtype s t = t
 
-let subst_numtype s t = t
+and subst_numtype s t = t
 
-let subst_vectype s t = t
+and subst_vectype s t = t
 
-let subst_heaptype s = function
+and subst_heaptype s = function
   | AnyHT -> AnyHT
   | NoneHT -> NoneHT
   | EqHT -> EqHT
@@ -175,51 +177,52 @@ let subst_heaptype s = function
   | NoExnHT -> NoExnHT
   | ExternHT -> ExternHT
   | NoExternHT -> NoExternHT
-  | UseHT x -> UseHT (s x)
+  | UseHT t -> UseHT (subst_typeuse s t)
   | BotHT -> BotHT
 
-let subst_reftype s = function
+and subst_reftype s = function
   | (nul, t) -> (nul, subst_heaptype s t)
 
-let subst_valtype s = function
+and subst_valtype s = function
   | NumT t -> NumT (subst_numtype s t)
   | VecT t -> VecT (subst_vectype s t)
   | RefT t -> RefT (subst_reftype s t)
   | BotT -> BotT
 
-let subst_resulttype s = function
+and subst_resulttype s = function
   | ts -> List.map (subst_valtype s) ts
 
 
-let subst_storagetype s = function
+and subst_storagetype s = function
   | ValStorageT t -> ValStorageT (subst_valtype s t)
   | PackStorageT p -> PackStorageT p
 
-let subst_fieldtype s = function
+and subst_fieldtype s = function
   | FieldT (mut, t) -> FieldT (mut, subst_storagetype s t)
 
-let subst_structtype s = function
+and subst_structtype s = function
   | StructT ts -> StructT (List.map (subst_fieldtype s) ts)
 
-let subst_arraytype s = function
+and subst_arraytype s = function
   | ArrayT t -> ArrayT (subst_fieldtype s t)
 
-let subst_functype s = function
+and subst_functype s = function
   | FuncT (ts1, ts2) -> FuncT (subst_resulttype s ts1, subst_resulttype s ts2)
 
-let subst_comptype s = function
+and subst_comptype s = function
   | StructCT st -> StructCT (subst_structtype s st)
   | ArrayCT at -> ArrayCT (subst_arraytype s at)
   | FuncCT ft -> FuncCT (subst_functype s ft)
 
-let subst_subtype s = function
+and subst_subtype s = function
   | SubT (fin, uts, ct) ->
     SubT (fin, List.map (subst_typeuse s) uts, subst_comptype s ct)
 
-let subst_rectype s = function
-  | RecT sts -> RecT (List.map (subst_subtype s) sts)
+and subst_rectype s = function
+  | RecT sts ->
+    RecT (List.map (subst_subtype (function Rec i -> Rec i | tv -> s tv)) sts)
 
-let subst_deftype s = function
+and subst_deftype s = function
   | DefT (rt, i) -> DefT (subst_rectype s rt, i)
 
 
@@ -267,7 +270,7 @@ let roll_rectype x (rt : rectype) : rectype =
     | Idx x' when x <= x' && x' < y -> Rec (Int32.sub x' x)
     | ut -> ut
   in
-  subst_rectype s rt
+  RecT (List.map (subst_subtype s) sts)
 
 let roll_deftypes x (rt : rectype) : deftype list =
   let RecT sts as rt' = roll_rectype x rt in
@@ -275,11 +278,12 @@ let roll_deftypes x (rt : rectype) : deftype list =
 
 
 let unroll_rectype (rt : rectype) : rectype =
+  let RecT sts = rt in
   let s = function
     | Rec i -> Def (DefT (rt, i))
     | ut -> ut
   in
-  subst_rectype s rt
+  RecT (List.map (subst_subtype s) sts)
 
 let unroll_deftype (dt : deftype) : subtype =
   let DefT (rt, i) = dt in
@@ -392,6 +396,7 @@ and string_of_functype = function
     string_of_resulttype ts1 ^ " -> " ^ string_of_resulttype ts2
 
 and string_of_comptype = function
+  | StructCT (StructT []) -> "struct"
   | StructCT st -> "struct " ^ string_of_structtype st
   | ArrayCT at -> "array " ^ string_of_arraytype at
   | FuncCT ft -> "func " ^ string_of_functype ft

@@ -71,12 +71,12 @@ let numtype = function
 let vectype = function
   | V128T -> empty
 
-let typeuse = function
+let rec typeuse = function
   | Idx x -> types (idx' x)
   | Rec _ -> empty
-  | Def _ -> empty  (* assume closed *)
+  | Def dt -> deftype dt
 
-let heaptype = function
+and heaptype = function
   | AnyHT | NoneHT | EqHT
   | I31HT | StructHT | ArrayHT -> empty
   | FuncHT | NoFuncHT -> empty
@@ -85,39 +85,39 @@ let heaptype = function
   | UseHT x -> typeuse x
   | BotHT -> empty
 
-let reftype = function
+and reftype = function
   | (_, t) -> heaptype t
 
-let valtype = function
+and valtype = function
   | NumT t -> numtype t
   | VecT t -> vectype t
   | RefT t -> reftype t
   | BotT -> empty
 
-let packtype t = empty
+and packtype t = empty
 
-let storagetype = function
+and storagetype = function
   | ValStorageT t -> valtype t
   | PackStorageT t -> packtype t
 
-let fieldtype (FieldT (_mut, st)) = storagetype st
+and fieldtype (FieldT (_mut, st)) = storagetype st
 
-let structtype (StructT fts) = list fieldtype fts
-let arraytype (ArrayT ft) = fieldtype ft
-let functype (FuncT (ts1, ts2)) = list valtype ts1 ++ list valtype ts2
+and structtype (StructT fts) = list fieldtype fts
+and arraytype (ArrayT ft) = fieldtype ft
+and functype (FuncT (ts1, ts2)) = list valtype ts1 ++ list valtype ts2
 
-let comptype = function
+and comptype = function
   | StructCT st -> structtype st
   | ArrayCT at -> arraytype at
   | FuncCT ft -> functype ft
 
-let subtype = function
+and subtype = function
   | SubT (_fin, uts, ct) -> list typeuse uts ++ comptype ct
 
-let rectype = function
+and rectype = function
   | RecT sts -> list subtype sts
 
-let deftype = function
+and deftype = function
   | DefT (rt, _i) -> rectype rt
 
 let tagtype (TagT ut) = typeuse ut

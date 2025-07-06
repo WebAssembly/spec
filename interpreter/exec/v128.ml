@@ -250,6 +250,7 @@ module I8x16 = MakeIntShape (I8)
     let to_lanes s =
       List.init 16 (fun i -> Int32.of_int (Bytes.get_int8 (Bytes.of_string s) i))
     let of_lanes fs =
+      assert (List.length fs = 16);
       let b = Bytes.create bytewidth in
       List.iteri (fun i f -> Bytes.set_int8 b i (Int32.to_int f)) fs;
       Bytes.to_string b
@@ -261,6 +262,7 @@ module I16x8 = MakeIntShape (I16)
     let to_lanes s =
       List.init 8 (fun i -> Int32.of_int (Bytes.get_int16_le (Bytes.of_string s) (i*2)))
     let of_lanes fs =
+      assert (List.length fs = 8);
       let b = Bytes.create bytewidth in
       List.iteri (fun i f -> Bytes.set_int16_le b (i*2) (Int32.to_int f)) fs;
       Bytes.to_string b
@@ -272,6 +274,7 @@ module I32x4 = MakeIntShape (I32)
     let to_lanes s =
       List.init 4 (fun i -> I32.of_bits (Bytes.get_int32_le (Bytes.of_string s) (i*4)))
     let of_lanes fs =
+      assert (List.length fs = 4);
       let b = Bytes.create bytewidth in
       List.iteri (fun i f -> Bytes.set_int32_le b (i*4) (I32.to_bits f)) fs;
       Bytes.to_string b
@@ -283,6 +286,7 @@ module I64x2 = MakeIntShape (I64)
     let to_lanes s =
       List.init 2 (fun i -> I64.of_bits (Bytes.get_int64_le (Bytes.of_string s) (i*8)))
     let of_lanes fs =
+      assert (List.length fs = 2);
       let b = Bytes.create bytewidth in
       List.iteri (fun i f -> Bytes.set_int64_le b (i*8) (I64.to_bits f)) fs;
       Bytes.to_string b
@@ -294,6 +298,7 @@ module F32x4 = MakeFloatShape (F32)
     let to_lanes s =
       List.init 4 (fun i -> F32.of_bits (Bytes.get_int32_le (Bytes.of_string s) (i*4)))
     let of_lanes fs =
+      assert (List.length fs = 4);
       let b = Bytes.create bytewidth in
       List.iteri (fun i f -> Bytes.set_int32_le b (i*4) (F32.to_bits f)) fs;
       Bytes.to_string b
@@ -305,6 +310,7 @@ module F64x2 = MakeFloatShape (F64)
     let to_lanes s =
       List.init 2 (fun i -> F64.of_bits (Bytes.get_int64_le (Bytes.of_string s) (i*8)))
     let of_lanes fs =
+      assert (List.length fs = 2);
       let b = Bytes.create bytewidth in
       List.iteri (fun i f -> Bytes.set_int64_le b (i*8) (F64.to_bits f)) fs;
       Bytes.to_string b

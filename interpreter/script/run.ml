@@ -515,8 +515,8 @@ let run_assertion ass =
 
   | AssertReturn (act, rs) ->
     trace ("Asserting return...");
-    let got_vs = run_action act in
-    assert_results ass.at got_vs rs
+    let vs = run_action act in
+    assert_results ass.at vs rs
 
   | AssertException act ->
     trace ("Asserting exception...");
