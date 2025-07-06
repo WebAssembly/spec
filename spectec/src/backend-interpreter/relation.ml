@@ -15,25 +15,25 @@ let ref_ok =
   let noexn = nullary "NOEXN" in
   let noextern = nullary "NOEXTERN" in
 
-  let match_heap_type v1 v2 =
-    let ht1 = Construct.al_to_heap_type v1 in
-    let ht2 = Construct.al_to_heap_type v2 in
-    Match.match_ref_type [] (Types.Null, ht1) (Types.Null, ht2)
+  let match_heaptype v1 v2 =
+    let ht1 = Construct.al_to_heaptype v1 in
+    let ht2 = Construct.al_to_heaptype v2 in
+    Match.match_reftype [] (Types.Null, ht1) (Types.Null, ht2)
   in
 
   function
   (* null *)
   | [CaseV ("REF.NULL", [ ht ]) as v] ->
-    if match_heap_type none ht then
+    if match_heaptype none ht then
       CaseV ("REF", [ null; none])
-    else if match_heap_type nofunc ht then
+    else if match_heaptype nofunc ht then
       CaseV ("REF", [ null; nofunc])
-    else if match_heap_type noexn ht then
+    else if match_heaptype noexn ht then
       CaseV ("REF", [ null; noexn])
-    else if match_heap_type noextern ht then
+    else if match_heaptype noextern ht then
       CaseV ("REF", [ null; noextern])
     else
-      Numerics.error_typ_value "$Ref_type" "null reference" v
+      Numerics.error_typ_value "$Reftype" "null reference" v
   (* i31 *)
   | [CaseV ("REF.I31_NUM", [ _ ])] -> CaseV ("REF", [ nonull; nullary "I31"])
   (* host *)
@@ -50,67 +50,18 @@ let ref_ok =
   (* extern *)
   (* TODO: check null *)
   | [CaseV ("REF.EXTERN", [ _ ])] -> CaseV ("REF", [ nonull; nullary "EXTERN"])
-  | vs -> Numerics.error_values "$Ref_type" vs
+  | vs -> Numerics.error_values "$Reftype" vs
 
 let module_ok v =
   if !Construct.version <> 3 then failwith "This hardcoded function ($Module_ok) should be only called with test version 3.0";
   match v with
-  | [
-    CaseV (
-      "MODULE",
-      [
-        ListV _types;
-        ListV imports;
-        _funcs;
-        _globals;
-        _tables;
-        _mems;
-        _tags;
-        _elems;
-        _datas;
-        _start_opt;
-        ListV exports;
-      ]
-    ) as m
-  ] ->
+  | [ m ] ->
     (try
       let module_ = Construct.al_to_module m in
-      Reference_interpreter.Valid.check_module module_;
-
-      let tys = Reference_interpreter.Ast.def_types_of module_ in
-
-
-      let get_clos_externtype = function
-        | CaseV ("IMPORT", [ _name1; _name2; externtype ]) ->
-          let s = function
-            | Types.StatX x when Int32.to_int x < List.length tys ->
-              let dt = List.nth tys (Int32.to_int x) in
-              Types.DefHT dt
-            | x -> Types.VarHT x
-          in
-          externtype
-          |> Construct.al_to_extern_type tys
-          |> Types.subst_extern_type s
-          |> Construct.al_of_extern_type
-        | _ -> Numerics.error_values "$Module_ok" [ m ]
-      in
-      let get_externidx = function
-        | CaseV ("EXPORT", [ _name; externidx ]) -> externidx
-        | _ -> Numerics.error_values "$Module_ok" [ m ]
-      in
-
-      let externtypes =
-        !imports
-        |> Array.map get_clos_externtype
-        |> listV
-      in
-      let externidxs =
-        !exports
-        |> Array.map get_externidx
-        |> listV
-      in
-
-      CaseV ("->", [ externtypes; externidxs ])
+      let ModuleT (its, ets) = Reference_interpreter.Valid.check_module module_ in
+      let importtypes = List.map (fun (Types.ImportT (_, _, xt)) -> Construct.al_of_externtype xt) its in
+      let exporttypes = List.map (fun (Types.ExportT (_, xt)) -> Construct.al_of_externtype xt) ets in
+      CaseV ("->", [ listV_of_list importtypes; listV_of_list exporttypes ])
     with exn -> raise (Exception.Invalid (exn, Printexc.get_raw_backtrace ()))
     )
 
@@ -127,19 +78,19 @@ let externaddr_ok = function
         |> fun arr -> Array.get arr addr
         |> strv_access "TYPE"
         |> fun type_ -> CaseV (name, [type_])
-        |> Construct.al_to_extern_type []
+        |> Construct.al_to_externtype
       in
-      let extern_type = Construct.al_to_extern_type [] t in
-      boolV (Match.match_extern_type [] externaddr_type extern_type)
+      let externtype = Construct.al_to_externtype t in
+      boolV (Match.match_externtype [] externaddr_type externtype)
     with exn -> raise (Exception.Invalid (exn, Printexc.get_raw_backtrace ())))
   | vs -> Numerics.error_values "$Externaddr_ok" vs
 
 let val_ok = function
   | [ v; t ] ->
     let value = Construct.al_to_value v in
-    let val_type = Construct.al_to_val_type t in
+    let valtype = Construct.al_to_valtype t in
     (try
-      boolV (Match.match_val_type [] (Value.type_of_value value) val_type)
+      boolV (Match.match_valtype [] (Value.type_of_value value) valtype)
     with exn -> raise (Exception.Invalid (exn, Printexc.get_raw_backtrace ())))
   | vs -> Numerics.error_values "$Val_ok" vs
 
@@ -147,9 +98,9 @@ let expand = function
   | [ v ] ->
     (try
       v
-      |> Construct.al_to_def_type
-      |> Types.expand_def_type
-      |> Construct.al_of_str_type
+      |> Construct.al_to_deftype
+      |> Types.expand_deftype
+      |> Construct.al_of_comptype
     with exn -> raise (Exception.Invalid (exn, Printexc.get_raw_backtrace ())))
   | vs -> Numerics.error_values "$Expand" vs
 

@@ -64,7 +64,7 @@ struct
   let u32 i = u64 Int64.(logand (of_int32 i) 0xffffffffL)
   let s7 i = s64 (Int64.of_int i)
   let s32 i = s64 (Int64.of_int32 i)
-  let s33 i = s64 (I64_convert.extend_i32_s i)
+  let s33 i = s64 (Convert.I64_.extend_i32_s i)
   let f32 x = word32 (F32.to_bits x)
   let f64 x = word64 (F64.to_bits x)
   let v128 v = String.iter (put s) (V128.to_bits v)
@@ -98,26 +98,26 @@ struct
   open Types
   open Source
 
-  let var x = u32 x.it
+  let idx x = u32 x.it
 
   let mutability = function
     | Cons -> byte 0
     | Var -> byte 1
 
-  let var_type var = function
-    | StatX x -> var x
-    | RecX _ -> assert false
+  let typeuse idx = function
+    | Idx x -> idx x
+    | Rec _ | Def _ -> assert false
 
-  let num_type = function
+  let numtype = function
     | I32T -> s7 (-0x01)
     | I64T -> s7 (-0x02)
     | F32T -> s7 (-0x03)
     | F64T -> s7 (-0x04)
 
-  let vec_type = function
+  let vectype = function
     | V128T -> s7 (-0x05)
 
-  let heap_type = function
+  let heaptype = function
     | AnyHT -> s7 (-0x12)
     | EqHT -> s7 (-0x13)
     | I31HT -> s7 (-0x14)
@@ -130,14 +130,10 @@ struct
     | NoExnHT -> s7 (-0x0c)
     | ExternHT -> s7 (-0x11)
     | NoExternHT -> s7 (-0x0e)
-    | VarHT x -> var_type s33 x
-    | DefHT _ | BotHT -> assert false
+    | UseHT ut -> typeuse s33 ut
+    | BotHT -> assert false
 
-  let var_heap_type = function
-    | VarHT x -> var_type u32 x
-    | _ -> assert false
-
-  let ref_type = function
+  let reftype = function
     | (Null, AnyHT) -> s7 (-0x12)
     | (Null, EqHT) -> s7 (-0x13)
     | (Null, I31HT) -> s7 (-0x14)
@@ -150,65 +146,73 @@ struct
     | (Null, NoExnHT) -> s7 (-0x0c)
     | (Null, ExternHT) -> s7 (-0x11)
     | (Null, NoExternHT) -> s7 (-0x0e)
-    | (Null, t) -> s7 (-0x1d); heap_type t
-    | (NoNull, t) -> s7 (-0x1c); heap_type t
+    | (Null, t) -> s7 (-0x1d); heaptype t
+    | (NoNull, t) -> s7 (-0x1c); heaptype t
 
-  let val_type = function
-    | NumT t -> num_type t
-    | VecT t -> vec_type t
-    | RefT t -> ref_type t
+  let valtype = function
+    | NumT t -> numtype t
+    | VecT t -> vectype t
+    | RefT t -> reftype t
     | BotT -> assert false
 
-  let pack_type = function
-    | Pack.Pack8 -> s7 (-0x08)
-    | Pack.Pack16 -> s7 (-0x09)
-    | Pack.Pack32 | Pack.Pack64 -> assert false
+  let packtype = function
+    | I8T -> s7 (-0x08)
+    | I16T -> s7 (-0x09)
 
-  let storage_type = function
-    | ValStorageT t -> val_type t
-    | PackStorageT t -> pack_type t
+  let storagetype = function
+    | ValStorageT t -> valtype t
+    | PackStorageT t -> packtype t
 
-  let field_type = function
-    | FieldT (mut, t) -> storage_type t; mutability mut
+  let fieldtype = function
+    | FieldT (mut, t) -> storagetype t; mutability mut
 
-  let struct_type = function
-    | StructT fts -> vec field_type fts
+  let structtype = function
+    | StructT fts -> vec fieldtype fts
 
-  let array_type = function
-    | ArrayT ft -> field_type ft
+  let arraytype = function
+    | ArrayT ft -> fieldtype ft
 
-  let func_type = function
-    | FuncT (ts1, ts2) -> vec val_type ts1; vec val_type ts2
+  let resulttype = vec valtype
 
-  let str_type = function
-    | DefStructT st -> s7 (-0x21); struct_type st
-    | DefArrayT at -> s7 (-0x22); array_type at
-    | DefFuncT ft -> s7 (-0x20); func_type ft
+  let functype = function
+    | FuncT (ts1, ts2) -> resulttype ts1; resulttype ts2
 
-  let sub_type = function
-    | SubT (Final, [], st) -> str_type st
-    | SubT (Final, hts, st) -> s7 (-0x31); vec var_heap_type hts; str_type st
-    | SubT (NoFinal, hts, st) -> s7 (-0x30); vec var_heap_type hts; str_type st
+  let comptype = function
+    | StructCT st -> s7 (-0x21); structtype st
+    | ArrayCT at -> s7 (-0x22); arraytype at
+    | FuncCT ft -> s7 (-0x20); functype ft
 
-  let rec_type = function
-    | RecT [st] -> sub_type st
-    | RecT sts -> s7 (-0x32); vec sub_type sts
+  let subtype = function
+    | SubT (Final, [], ct) -> comptype ct
+    | SubT (Final, uts, ct) -> s7 (-0x31); vec (typeuse u32) uts; comptype ct
+    | SubT (NoFinal, uts, ct) -> s7 (-0x30); vec (typeuse u32) uts; comptype ct
+
+  let rectype = function
+    | RecT [st] -> subtype st
+    | RecT sts -> s7 (-0x32); vec subtype sts
 
   let limits at {min; max} =
     let flags = flag (max <> None) 0 + flag (at = I64AT) 2 in
     byte flags; u64 min; opt u64 max
 
-  let table_type = function
-    | TableT (at, lim, t) -> ref_type t; limits at lim
+  let tagtype = function
+    | TagT ut -> u32 0x00l; typeuse u32 ut
 
-  let memory_type = function
+  let globaltype = function
+    | GlobalT (mut, t) -> valtype t; mutability mut
+
+  let memorytype = function
     | MemoryT (at, lim) -> limits at lim
 
-  let global_type = function
-    | GlobalT (mut, t) -> val_type t; mutability mut
+  let tabletype = function
+    | TableT (at, lim, t) -> reftype t; limits at lim
 
-  let tag_type x =
-    u32 0x00l; var x
+  let externtype = function
+    | ExternFuncT ut -> byte 0x00; typeuse u32 ut
+    | ExternTableT tt -> byte 0x01; tabletype tt
+    | ExternMemoryT mt -> byte 0x02; memorytype mt
+    | ExternGlobalT gt -> byte 0x03; globaltype gt
+    | ExternTagT tt -> byte 0x04; tagtype tt
 
 
   (* Expressions *)
@@ -222,27 +226,26 @@ struct
   let vecop n = op 0xfd; u32 n
   let end_ () = op 0x0b
 
-  let var x = u32 x.it
-
   let memop x {align; offset; _} =
-    let has_var = x.it <> 0l in
+    let has_idx = x.it <> 0l in
     let flags =
-      Int32.(logor (of_int align) (if has_var then 0x40l else 0x00l)) in
+      Int32.(logor (of_int align) (if has_idx then 0x40l else 0x00l)) in
     u32 flags;
-    if has_var then var x;
+    if has_idx then idx x;
     u64 offset
 
-  let block_type = function
-    | VarBlockType x -> var_type s33 (StatX x.it)
+  let blocktype = function
+    | VarBlockType x -> typeuse s33 (Idx x.it)
     | ValBlockType None -> s33 (-0x40l)
-    | ValBlockType (Some t) -> val_type t
+    | ValBlockType (Some t) -> valtype t
 
-  let local (n, loc) = len n; val_type loc.it.ltype
+  let local (n, loc) =
+    let Local t = loc.it in
+    len n; valtype t
 
   let locals locs =
     let combine loc = function
-      | (n, loc') :: nlocs' when loc.it.ltype = loc'.it.ltype ->
-        (n + 1, loc') :: nlocs'
+      | (n, loc') :: nlocs' when loc.it = loc'.it -> (n + 1, loc') :: nlocs'
       | nlocs -> (1, loc) :: nlocs
     in vec local (List.fold_right combine locs [])
 
@@ -251,55 +254,55 @@ struct
     | Unreachable -> op 0x00
     | Nop -> op 0x01
 
-    | Block (bt, es) -> op 0x02; block_type bt; list instr es; end_ ()
-    | Loop (bt, es) -> op 0x03; block_type bt; list instr es; end_ ()
+    | Block (bt, es) -> op 0x02; blocktype bt; list instr es; end_ ()
+    | Loop (bt, es) -> op 0x03; blocktype bt; list instr es; end_ ()
     | If (bt, es1, es2) ->
-      op 0x04; block_type bt; list instr es1;
+      op 0x04; blocktype bt; list instr es1;
       if es2 <> [] then op 0x05;
       list instr es2; end_ ()
     | TryTable (bt, cs, es) ->
-      op 0x1f; block_type bt; vec catch cs; list instr es; end_ ()
+      op 0x1f; blocktype bt; vec catch cs; list instr es; end_ ()
 
-    | Br x -> op 0x0c; var x
-    | BrIf x -> op 0x0d; var x
-    | BrTable (xs, x) -> op 0x0e; vec var xs; var x
-    | BrOnNull x -> op 0xd5; var x
-    | BrOnNonNull x -> op 0xd6; var x
+    | Br x -> op 0x0c; idx x
+    | BrIf x -> op 0x0d; idx x
+    | BrTable (xs, x) -> op 0x0e; vec idx xs; idx x
+    | BrOnNull x -> op 0xd5; idx x
+    | BrOnNonNull x -> op 0xd6; idx x
     | BrOnCast (x, (nul1, t1), (nul2, t2)) ->
       let flags = bit 0 (nul1 = Null) + bit 1 (nul2 = Null) in
-      op 0xfb; op 0x18; byte flags; var x; heap_type t1; heap_type t2
+      op 0xfb; op 0x18; byte flags; idx x; heaptype t1; heaptype t2
     | BrOnCastFail (x, (nul1, t1), (nul2, t2)) ->
       let flags = bit 0 (nul1 = Null) + bit 1 (nul2 = Null) in
-      op 0xfb; op 0x19; byte flags; var x; heap_type t1; heap_type t2
+      op 0xfb; op 0x19; byte flags; idx x; heaptype t1; heaptype t2
     | Return -> op 0x0f
-    | Call x -> op 0x10; var x
-    | CallRef x -> op 0x14; var x
-    | CallIndirect (x, y) -> op 0x11; var y; var x
-    | ReturnCall x -> op 0x12; var x
-    | ReturnCallRef x -> op 0x15; var x
-    | ReturnCallIndirect (x, y) -> op 0x13; var y; var x
+    | Call x -> op 0x10; idx x
+    | CallRef x -> op 0x14; idx x
+    | CallIndirect (x, y) -> op 0x11; idx y; idx x
+    | ReturnCall x -> op 0x12; idx x
+    | ReturnCallRef x -> op 0x15; idx x
+    | ReturnCallIndirect (x, y) -> op 0x13; idx y; idx x
 
-    | Throw x -> op 0x08; var x
+    | Throw x -> op 0x08; idx x
     | ThrowRef -> op 0x0a
 
     | Drop -> op 0x1a
     | Select None -> op 0x1b
-    | Select (Some ts) -> op 0x1c; vec val_type ts
+    | Select (Some ts) -> op 0x1c; vec valtype ts
 
-    | LocalGet x -> op 0x20; var x
-    | LocalSet x -> op 0x21; var x
-    | LocalTee x -> op 0x22; var x
-    | GlobalGet x -> op 0x23; var x
-    | GlobalSet x -> op 0x24; var x
+    | LocalGet x -> op 0x20; idx x
+    | LocalSet x -> op 0x21; idx x
+    | LocalTee x -> op 0x22; idx x
+    | GlobalGet x -> op 0x23; idx x
+    | GlobalSet x -> op 0x24; idx x
 
-    | TableGet x -> op 0x25; var x
-    | TableSet x -> op 0x26; var x
-    | TableSize x -> op 0xfc; u32 0x10l; var x
-    | TableGrow x -> op 0xfc; u32 0x0fl; var x
-    | TableFill x -> op 0xfc; u32 0x11l; var x
-    | TableCopy (x, y) -> op 0xfc; u32 0x0el; var x; var y
-    | TableInit (x, y) -> op 0xfc; u32 0x0cl; var y; var x
-    | ElemDrop x -> op 0xfc; u32 0x0dl; var x
+    | TableGet x -> op 0x25; idx x
+    | TableSet x -> op 0x26; idx x
+    | TableSize x -> op 0xfc; u32 0x10l; idx x
+    | TableGrow x -> op 0xfc; u32 0x0fl; idx x
+    | TableFill x -> op 0xfc; u32 0x11l; idx x
+    | TableCopy (x, y) -> op 0xfc; u32 0x0el; idx x; idx y
+    | TableInit (x, y) -> op 0xfc; u32 0x0cl; idx y; idx x
+    | ElemDrop x -> op 0xfc; u32 0x0dl; idx x
 
     | Load (x, ({ty = I32T; pack = None; _} as mo)) ->
       op 0x28; memop x mo
@@ -309,27 +312,27 @@ struct
       op 0x2a; memop x mo
     | Load (x, ({ty = F64T; pack = None; _} as mo)) ->
       op 0x2b; memop x mo
-    | Load (x, ({ty = I32T; pack = Some (Pack8, SX); _} as mo)) ->
+    | Load (x, ({ty = I32T; pack = Some (Pack8, S); _} as mo)) ->
       op 0x2c; memop x mo
-    | Load (x, ({ty = I32T; pack = Some (Pack8, ZX); _} as mo)) ->
+    | Load (x, ({ty = I32T; pack = Some (Pack8, U); _} as mo)) ->
       op 0x2d; memop x mo
-    | Load (x, ({ty = I32T; pack = Some (Pack16, SX); _} as mo)) ->
+    | Load (x, ({ty = I32T; pack = Some (Pack16, S); _} as mo)) ->
       op 0x2e; memop x mo
-    | Load (x, ({ty = I32T; pack = Some (Pack16, ZX); _} as mo)) ->
+    | Load (x, ({ty = I32T; pack = Some (Pack16, U); _} as mo)) ->
       op 0x2f; memop x mo
     | Load (x, ({ty = I32T; pack = Some (Pack32, _); _})) ->
       error e.at "illegal instruction i32.load32"
-    | Load (x, ({ty = I64T; pack = Some (Pack8, SX); _} as mo)) ->
+    | Load (x, ({ty = I64T; pack = Some (Pack8, S); _} as mo)) ->
       op 0x30; memop x mo
-    | Load (x, ({ty = I64T; pack = Some (Pack8, ZX); _} as mo)) ->
+    | Load (x, ({ty = I64T; pack = Some (Pack8, U); _} as mo)) ->
       op 0x31; memop x mo
-    | Load (x, ({ty = I64T; pack = Some (Pack16, SX); _} as mo)) ->
+    | Load (x, ({ty = I64T; pack = Some (Pack16, S); _} as mo)) ->
       op 0x32; memop x mo
-    | Load (x, ({ty = I64T; pack = Some (Pack16, ZX); _} as mo)) ->
+    | Load (x, ({ty = I64T; pack = Some (Pack16, U); _} as mo)) ->
       op 0x33; memop x mo
-    | Load (x, ({ty = I64T; pack = Some (Pack32, SX); _} as mo)) ->
+    | Load (x, ({ty = I64T; pack = Some (Pack32, S); _} as mo)) ->
       op 0x34; memop x mo
-    | Load (x, ({ty = I64T; pack = Some (Pack32, ZX); _} as mo)) ->
+    | Load (x, ({ty = I64T; pack = Some (Pack32, U); _} as mo)) ->
       op 0x35; memop x mo
     | Load (x, ({ty = I32T | I64T; pack = Some (Pack64, _); _})) ->
       error e.at "illegal instruction ixx.load64"
@@ -363,17 +366,17 @@ struct
 
     | VecLoad (x, ({ty = V128T; pack = None; _} as mo)) ->
       vecop 0x00l; memop x mo
-    | VecLoad (x, ({ty = V128T; pack = Some (Pack64, ExtLane (Pack8x8, SX)); _} as mo)) ->
+    | VecLoad (x, ({ty = V128T; pack = Some (Pack64, ExtLane (Pack8x8, S)); _} as mo)) ->
       vecop 0x01l; memop x mo
-    | VecLoad (x, ({ty = V128T; pack = Some (Pack64, ExtLane (Pack8x8, ZX)); _} as mo)) ->
+    | VecLoad (x, ({ty = V128T; pack = Some (Pack64, ExtLane (Pack8x8, U)); _} as mo)) ->
       vecop 0x02l; memop x mo
-    | VecLoad (x, ({ty = V128T; pack = Some (Pack64, ExtLane (Pack16x4, SX)); _} as mo)) ->
+    | VecLoad (x, ({ty = V128T; pack = Some (Pack64, ExtLane (Pack16x4, S)); _} as mo)) ->
       vecop 0x03l; memop x mo
-    | VecLoad (x, ({ty = V128T; pack = Some (Pack64, ExtLane (Pack16x4, ZX)); _} as mo)) ->
+    | VecLoad (x, ({ty = V128T; pack = Some (Pack64, ExtLane (Pack16x4, U)); _} as mo)) ->
       vecop 0x04l; memop x mo
-    | VecLoad (x, ({ty = V128T; pack = Some (Pack64, ExtLane (Pack32x2, SX)); _} as mo)) ->
+    | VecLoad (x, ({ty = V128T; pack = Some (Pack64, ExtLane (Pack32x2, S)); _} as mo)) ->
       vecop 0x05l; memop x mo
-    | VecLoad (x, ({ty = V128T; pack = Some (Pack64, ExtLane (Pack32x2, ZX)); _} as mo)) ->
+    | VecLoad (x, ({ty = V128T; pack = Some (Pack64, ExtLane (Pack32x2, U)); _} as mo)) ->
       vecop 0x06l; memop x mo
     | VecLoad (x, ({ty = V128T; pack = Some (Pack8, ExtSplat); _} as mo)) ->
       vecop 0x07l; memop x mo
@@ -411,50 +414,50 @@ struct
     | VecStoreLane (x, ({ty = V128T; pack = Pack64; _} as mo), i) ->
       vecop 0x5bl; memop x mo; byte i;
 
-    | MemorySize x -> op 0x3f; var x
-    | MemoryGrow x -> op 0x40; var x
-    | MemoryFill x -> op 0xfc; u32 0x0bl; var x
-    | MemoryCopy (x, y) -> op 0xfc; u32 0x0al; var x; var y
-    | MemoryInit (x, y) -> op 0xfc; u32 0x08l; var y; var x
-    | DataDrop x -> op 0xfc; u32 0x09l; var x
+    | MemorySize x -> op 0x3f; idx x
+    | MemoryGrow x -> op 0x40; idx x
+    | MemoryFill x -> op 0xfc; u32 0x0bl; idx x
+    | MemoryCopy (x, y) -> op 0xfc; u32 0x0al; idx x; idx y
+    | MemoryInit (x, y) -> op 0xfc; u32 0x08l; idx y; idx x
+    | DataDrop x -> op 0xfc; u32 0x09l; idx x
 
-    | RefNull t -> op 0xd0; heap_type t
-    | RefFunc x -> op 0xd2; var x
+    | RefNull t -> op 0xd0; heaptype t
+    | RefFunc x -> op 0xd2; idx x
 
     | RefEq -> op 0xd3
 
     | RefIsNull -> op 0xd1
     | RefAsNonNull -> op 0xd4
-    | RefTest (NoNull, t) -> op 0xfb; op 0x14; heap_type t
-    | RefTest (Null, t) -> op 0xfb; op 0x15; heap_type t
-    | RefCast (NoNull, t) -> op 0xfb; op 0x16; heap_type t
-    | RefCast (Null, t) -> op 0xfb; op 0x17; heap_type t
+    | RefTest (NoNull, t) -> op 0xfb; op 0x14; heaptype t
+    | RefTest (Null, t) -> op 0xfb; op 0x15; heaptype t
+    | RefCast (NoNull, t) -> op 0xfb; op 0x16; heaptype t
+    | RefCast (Null, t) -> op 0xfb; op 0x17; heaptype t
 
     | RefI31 -> op 0xfb; op 0x1c
-    | I31Get SX -> op 0xfb; op 0x1d
-    | I31Get ZX -> op 0xfb; op 0x1e
+    | I31Get S -> op 0xfb; op 0x1d
+    | I31Get U -> op 0xfb; op 0x1e
 
-    | StructNew (x, Explicit) -> op 0xfb; op 0x00; var x
-    | StructNew (x, Implicit) -> op 0xfb; op 0x01; var x
-    | StructGet (x, y, None) -> op 0xfb; op 0x02; var x; var y
-    | StructGet (x, y, Some SX) -> op 0xfb; op 0x03; var x; var y
-    | StructGet (x, y, Some ZX) -> op 0xfb; op 0x04; var x; var y
-    | StructSet (x, y) -> op 0xfb; op 0x05; var x; var y
+    | StructNew (x, Explicit) -> op 0xfb; op 0x00; idx x
+    | StructNew (x, Implicit) -> op 0xfb; op 0x01; idx x
+    | StructGet (x, y, None) -> op 0xfb; op 0x02; idx x; idx y
+    | StructGet (x, y, Some S) -> op 0xfb; op 0x03; idx x; idx y
+    | StructGet (x, y, Some U) -> op 0xfb; op 0x04; idx x; idx y
+    | StructSet (x, y) -> op 0xfb; op 0x05; idx x; idx y
 
-    | ArrayNew (x, Explicit) -> op 0xfb; op 0x06; var x
-    | ArrayNew (x, Implicit) -> op 0xfb; op 0x07; var x
-    | ArrayNewFixed (x, n) -> op 0xfb; op 0x08; var x; u32 n
-    | ArrayNewElem (x, y) -> op 0xfb; op 0x0a; var x; var y
-    | ArrayNewData (x, y) -> op 0xfb; op 0x09; var x; var y
-    | ArrayGet (x, None) -> op 0xfb; op 0x0b; var x
-    | ArrayGet (x, Some SX) -> op 0xfb; op 0x0c; var x
-    | ArrayGet (x, Some ZX) -> op 0xfb; op 0x0d; var x
-    | ArraySet x -> op 0xfb; op 0x0e; var x
+    | ArrayNew (x, Explicit) -> op 0xfb; op 0x06; idx x
+    | ArrayNew (x, Implicit) -> op 0xfb; op 0x07; idx x
+    | ArrayNewFixed (x, n) -> op 0xfb; op 0x08; idx x; u32 n
+    | ArrayNewElem (x, y) -> op 0xfb; op 0x0a; idx x; idx y
+    | ArrayNewData (x, y) -> op 0xfb; op 0x09; idx x; idx y
+    | ArrayGet (x, None) -> op 0xfb; op 0x0b; idx x
+    | ArrayGet (x, Some S) -> op 0xfb; op 0x0c; idx x
+    | ArrayGet (x, Some U) -> op 0xfb; op 0x0d; idx x
+    | ArraySet x -> op 0xfb; op 0x0e; idx x
     | ArrayLen -> op 0xfb; op 0x0f
-    | ArrayFill x -> op 0xfb; op 0x10; var x
-    | ArrayCopy (x, y) -> op 0xfb; op 0x11; var x; var y
-    | ArrayInitData (x, y) -> op 0xfb; op 0x12; var x; var y
-    | ArrayInitElem (x, y) -> op 0xfb; op 0x13; var x; var y
+    | ArrayFill x -> op 0xfb; op 0x10; idx x
+    | ArrayCopy (x, y) -> op 0xfb; op 0x11; idx x; idx y
+    | ArrayInitData (x, y) -> op 0xfb; op 0x12; idx x; idx y
+    | ArrayInitElem (x, y) -> op 0xfb; op 0x13; idx x; idx y
 
     | ExternConvert Internalize -> op 0xfb; op 0x1a
     | ExternConvert Externalize -> op 0xfb; op 0x1b
@@ -470,25 +473,25 @@ struct
 
     | Compare (I32 I32Op.Eq) -> op 0x46
     | Compare (I32 I32Op.Ne) -> op 0x47
-    | Compare (I32 I32Op.LtS) -> op 0x48
-    | Compare (I32 I32Op.LtU) -> op 0x49
-    | Compare (I32 I32Op.GtS) -> op 0x4a
-    | Compare (I32 I32Op.GtU) -> op 0x4b
-    | Compare (I32 I32Op.LeS) -> op 0x4c
-    | Compare (I32 I32Op.LeU) -> op 0x4d
-    | Compare (I32 I32Op.GeS) -> op 0x4e
-    | Compare (I32 I32Op.GeU) -> op 0x4f
+    | Compare (I32 I32Op.(Lt S)) -> op 0x48
+    | Compare (I32 I32Op.(Lt U)) -> op 0x49
+    | Compare (I32 I32Op.(Gt S)) -> op 0x4a
+    | Compare (I32 I32Op.(Gt U)) -> op 0x4b
+    | Compare (I32 I32Op.(Le S)) -> op 0x4c
+    | Compare (I32 I32Op.(Le U)) -> op 0x4d
+    | Compare (I32 I32Op.(Ge S)) -> op 0x4e
+    | Compare (I32 I32Op.(Ge U)) -> op 0x4f
 
     | Compare (I64 I64Op.Eq) -> op 0x51
     | Compare (I64 I64Op.Ne) -> op 0x52
-    | Compare (I64 I64Op.LtS) -> op 0x53
-    | Compare (I64 I64Op.LtU) -> op 0x54
-    | Compare (I64 I64Op.GtS) -> op 0x55
-    | Compare (I64 I64Op.GtU) -> op 0x56
-    | Compare (I64 I64Op.LeS) -> op 0x57
-    | Compare (I64 I64Op.LeU) -> op 0x58
-    | Compare (I64 I64Op.GeS) -> op 0x59
-    | Compare (I64 I64Op.GeU) -> op 0x5a
+    | Compare (I64 I64Op.(Lt S)) -> op 0x53
+    | Compare (I64 I64Op.(Lt U)) -> op 0x54
+    | Compare (I64 I64Op.(Gt S)) -> op 0x55
+    | Compare (I64 I64Op.(Gt U)) -> op 0x56
+    | Compare (I64 I64Op.(Le S)) -> op 0x57
+    | Compare (I64 I64Op.(Le U)) -> op 0x58
+    | Compare (I64 I64Op.(Ge S)) -> op 0x59
+    | Compare (I64 I64Op.(Ge U)) -> op 0x5a
 
     | Compare (F32 F32Op.Eq) -> op 0x5b
     | Compare (F32 F32Op.Ne) -> op 0x5c
@@ -507,18 +510,18 @@ struct
     | Unary (I32 I32Op.Clz) -> op 0x67
     | Unary (I32 I32Op.Ctz) -> op 0x68
     | Unary (I32 I32Op.Popcnt) -> op 0x69
-    | Unary (I32 (I32Op.ExtendS Pack8)) -> op 0xc0
-    | Unary (I32 (I32Op.ExtendS Pack16)) -> op 0xc1
-    | Unary (I32 (I32Op.ExtendS (Pack32 | Pack64))) ->
+    | Unary (I32 I32Op.(ExtendS Pack8)) -> op 0xc0
+    | Unary (I32 I32Op.(ExtendS Pack16)) -> op 0xc1
+    | Unary (I32 I32Op.(ExtendS (Pack32 | Pack64))) ->
       error e.at "illegal instruction i32.extendN_s"
 
     | Unary (I64 I64Op.Clz) -> op 0x79
     | Unary (I64 I64Op.Ctz) -> op 0x7a
     | Unary (I64 I64Op.Popcnt) -> op 0x7b
-    | Unary (I64 (I64Op.ExtendS Pack8)) -> op 0xc2
-    | Unary (I64 (I64Op.ExtendS Pack16)) -> op 0xc3
-    | Unary (I64 (I64Op.ExtendS Pack32)) -> op 0xc4
-    | Unary (I64 (I64Op.ExtendS Pack64)) ->
+    | Unary (I64 I64Op.(ExtendS Pack8)) -> op 0xc2
+    | Unary (I64 I64Op.(ExtendS Pack16)) -> op 0xc3
+    | Unary (I64 I64Op.(ExtendS Pack32)) -> op 0xc4
+    | Unary (I64 I64Op.(ExtendS Pack64)) ->
       error e.at "illegal instruction i64.extend64_s"
 
     | Unary (F32 F32Op.Abs) -> op 0x8b
@@ -540,32 +543,32 @@ struct
     | Binary (I32 I32Op.Add) -> op 0x6a
     | Binary (I32 I32Op.Sub) -> op 0x6b
     | Binary (I32 I32Op.Mul) -> op 0x6c
-    | Binary (I32 I32Op.DivS) -> op 0x6d
-    | Binary (I32 I32Op.DivU) -> op 0x6e
-    | Binary (I32 I32Op.RemS) -> op 0x6f
-    | Binary (I32 I32Op.RemU) -> op 0x70
+    | Binary (I32 I32Op.(Div S)) -> op 0x6d
+    | Binary (I32 I32Op.(Div U)) -> op 0x6e
+    | Binary (I32 I32Op.(Rem S)) -> op 0x6f
+    | Binary (I32 I32Op.(Rem U)) -> op 0x70
     | Binary (I32 I32Op.And) -> op 0x71
     | Binary (I32 I32Op.Or) -> op 0x72
     | Binary (I32 I32Op.Xor) -> op 0x73
     | Binary (I32 I32Op.Shl) -> op 0x74
-    | Binary (I32 I32Op.ShrS) -> op 0x75
-    | Binary (I32 I32Op.ShrU) -> op 0x76
+    | Binary (I32 I32Op.(Shr S)) -> op 0x75
+    | Binary (I32 I32Op.(Shr U)) -> op 0x76
     | Binary (I32 I32Op.Rotl) -> op 0x77
     | Binary (I32 I32Op.Rotr) -> op 0x78
 
     | Binary (I64 I64Op.Add) -> op 0x7c
     | Binary (I64 I64Op.Sub) -> op 0x7d
     | Binary (I64 I64Op.Mul) -> op 0x7e
-    | Binary (I64 I64Op.DivS) -> op 0x7f
-    | Binary (I64 I64Op.DivU) -> op 0x80
-    | Binary (I64 I64Op.RemS) -> op 0x81
-    | Binary (I64 I64Op.RemU) -> op 0x82
+    | Binary (I64 I64Op.(Div S)) -> op 0x7f
+    | Binary (I64 I64Op.(Div U)) -> op 0x80
+    | Binary (I64 I64Op.(Rem S)) -> op 0x81
+    | Binary (I64 I64Op.(Rem U)) -> op 0x82
     | Binary (I64 I64Op.And) -> op 0x83
     | Binary (I64 I64Op.Or) -> op 0x84
     | Binary (I64 I64Op.Xor) -> op 0x85
     | Binary (I64 I64Op.Shl) -> op 0x86
-    | Binary (I64 I64Op.ShrS) -> op 0x87
-    | Binary (I64 I64Op.ShrU) -> op 0x88
+    | Binary (I64 I64Op.(Shr S)) -> op 0x87
+    | Binary (I64 I64Op.(Shr U)) -> op 0x88
     | Binary (I64 I64Op.Rotl) -> op 0x89
     | Binary (I64 I64Op.Rotr) -> op 0x8a
 
@@ -585,48 +588,46 @@ struct
     | Binary (F64 F64Op.Max) -> op 0xa5
     | Binary (F64 F64Op.CopySign) -> op 0xa6
 
-    | Convert (I32 I32Op.ExtendSI32) ->
-      error e.at "illegal instruction i32.extend_i32_s"
-    | Convert (I32 I32Op.ExtendUI32) ->
-      error e.at "illegal instruction i32.extend_i32_u"
+    | Convert (I32 I32Op.(ExtendI32 _)) ->
+      error e.at "illegal instruction i32.extend_i32_s/u"
     | Convert (I32 I32Op.WrapI64) -> op 0xa7
-    | Convert (I32 I32Op.TruncSF32) -> op 0xa8
-    | Convert (I32 I32Op.TruncUF32) -> op 0xa9
-    | Convert (I32 I32Op.TruncSF64) -> op 0xaa
-    | Convert (I32 I32Op.TruncUF64) -> op 0xab
-    | Convert (I32 I32Op.TruncSatSF32) -> op 0xfc; u32 0x00l
-    | Convert (I32 I32Op.TruncSatUF32) -> op 0xfc; u32 0x01l
-    | Convert (I32 I32Op.TruncSatSF64) -> op 0xfc; u32 0x02l
-    | Convert (I32 I32Op.TruncSatUF64) -> op 0xfc; u32 0x03l
+    | Convert (I32 I32Op.(TruncF32 S)) -> op 0xa8
+    | Convert (I32 I32Op.(TruncF32 U)) -> op 0xa9
+    | Convert (I32 I32Op.(TruncF64 S)) -> op 0xaa
+    | Convert (I32 I32Op.(TruncF64 U)) -> op 0xab
+    | Convert (I32 I32Op.(TruncSatF32 S)) -> op 0xfc; u32 0x00l
+    | Convert (I32 I32Op.(TruncSatF32 U)) -> op 0xfc; u32 0x01l
+    | Convert (I32 I32Op.(TruncSatF64 S)) -> op 0xfc; u32 0x02l
+    | Convert (I32 I32Op.(TruncSatF64 U)) -> op 0xfc; u32 0x03l
     | Convert (I32 I32Op.ReinterpretFloat) -> op 0xbc
 
-    | Convert (I64 I64Op.ExtendSI32) -> op 0xac
-    | Convert (I64 I64Op.ExtendUI32) -> op 0xad
+    | Convert (I64 I64Op.(ExtendI32 S)) -> op 0xac
+    | Convert (I64 I64Op.(ExtendI32 U)) -> op 0xad
     | Convert (I64 I64Op.WrapI64) ->
       error e.at "illegal instruction i64.wrap_i64"
-    | Convert (I64 I64Op.TruncSF32) -> op 0xae
-    | Convert (I64 I64Op.TruncUF32) -> op 0xaf
-    | Convert (I64 I64Op.TruncSF64) -> op 0xb0
-    | Convert (I64 I64Op.TruncUF64) -> op 0xb1
-    | Convert (I64 I64Op.TruncSatSF32) -> op 0xfc; u32 0x04l
-    | Convert (I64 I64Op.TruncSatUF32) -> op 0xfc; u32 0x05l
-    | Convert (I64 I64Op.TruncSatSF64) -> op 0xfc; u32 0x06l
-    | Convert (I64 I64Op.TruncSatUF64) -> op 0xfc; u32 0x07l
+    | Convert (I64 I64Op.(TruncF32 S)) -> op 0xae
+    | Convert (I64 I64Op.(TruncF32 U)) -> op 0xaf
+    | Convert (I64 I64Op.(TruncF64 S)) -> op 0xb0
+    | Convert (I64 I64Op.(TruncF64 U)) -> op 0xb1
+    | Convert (I64 I64Op.(TruncSatF32 S)) -> op 0xfc; u32 0x04l
+    | Convert (I64 I64Op.(TruncSatF32 U)) -> op 0xfc; u32 0x05l
+    | Convert (I64 I64Op.(TruncSatF64 S)) -> op 0xfc; u32 0x06l
+    | Convert (I64 I64Op.(TruncSatF64 U)) -> op 0xfc; u32 0x07l
     | Convert (I64 I64Op.ReinterpretFloat) -> op 0xbd
 
-    | Convert (F32 F32Op.ConvertSI32) -> op 0xb2
-    | Convert (F32 F32Op.ConvertUI32) -> op 0xb3
-    | Convert (F32 F32Op.ConvertSI64) -> op 0xb4
-    | Convert (F32 F32Op.ConvertUI64) -> op 0xb5
+    | Convert (F32 F32Op.(ConvertI32 S)) -> op 0xb2
+    | Convert (F32 F32Op.(ConvertI32 U)) -> op 0xb3
+    | Convert (F32 F32Op.(ConvertI64 S)) -> op 0xb4
+    | Convert (F32 F32Op.(ConvertI64 U)) -> op 0xb5
     | Convert (F32 F32Op.PromoteF32) ->
       error e.at "illegal instruction f32.promote_f32"
     | Convert (F32 F32Op.DemoteF64) -> op 0xb6
     | Convert (F32 F32Op.ReinterpretInt) -> op 0xbe
 
-    | Convert (F64 F64Op.ConvertSI32) -> op 0xb7
-    | Convert (F64 F64Op.ConvertUI32) -> op 0xb8
-    | Convert (F64 F64Op.ConvertSI64) -> op 0xb9
-    | Convert (F64 F64Op.ConvertUI64) -> op 0xba
+    | Convert (F64 F64Op.(ConvertI32 S)) -> op 0xb7
+    | Convert (F64 F64Op.(ConvertI32 U)) -> op 0xb8
+    | Convert (F64 F64Op.(ConvertI64 S)) -> op 0xb9
+    | Convert (F64 F64Op.(ConvertI64 U)) -> op 0xba
     | Convert (F64 F64Op.PromoteF32) -> op 0xbb
     | Convert (F64 F64Op.DemoteF64) ->
       error e.at "illegal instruction f64.demote_f64"
@@ -672,47 +673,47 @@ struct
 
     | VecCompare (V128 (I8x16 V128Op.Eq)) -> vecop 0x23l
     | VecCompare (V128 (I8x16 V128Op.Ne)) -> vecop 0x24l
-    | VecCompare (V128 (I8x16 V128Op.LtS)) -> vecop 0x25l
-    | VecCompare (V128 (I8x16 V128Op.LtU)) -> vecop 0x26l
-    | VecCompare (V128 (I8x16 V128Op.GtS)) -> vecop 0x27l
-    | VecCompare (V128 (I8x16 V128Op.GtU)) -> vecop 0x28l
-    | VecCompare (V128 (I8x16 V128Op.LeS)) -> vecop 0x29l
-    | VecCompare (V128 (I8x16 V128Op.LeU)) -> vecop 0x2al
-    | VecCompare (V128 (I8x16 V128Op.GeS)) -> vecop 0x2bl
-    | VecCompare (V128 (I8x16 V128Op.GeU)) -> vecop 0x2cl
+    | VecCompare (V128 (I8x16 V128Op.(Lt S))) -> vecop 0x25l
+    | VecCompare (V128 (I8x16 V128Op.(Lt U))) -> vecop 0x26l
+    | VecCompare (V128 (I8x16 V128Op.(Gt S))) -> vecop 0x27l
+    | VecCompare (V128 (I8x16 V128Op.(Gt U))) -> vecop 0x28l
+    | VecCompare (V128 (I8x16 V128Op.(Le S))) -> vecop 0x29l
+    | VecCompare (V128 (I8x16 V128Op.(Le U))) -> vecop 0x2al
+    | VecCompare (V128 (I8x16 V128Op.(Ge S))) -> vecop 0x2bl
+    | VecCompare (V128 (I8x16 V128Op.(Ge U))) -> vecop 0x2cl
     | VecCompare (V128 (I16x8 V128Op.Eq)) -> vecop 0x2dl
     | VecCompare (V128 (I16x8 V128Op.Ne)) -> vecop 0x2el
-    | VecCompare (V128 (I16x8 V128Op.LtS)) -> vecop 0x2fl
-    | VecCompare (V128 (I16x8 V128Op.LtU)) -> vecop 0x30l
-    | VecCompare (V128 (I16x8 V128Op.GtS)) -> vecop 0x31l
-    | VecCompare (V128 (I16x8 V128Op.GtU)) -> vecop 0x32l
-    | VecCompare (V128 (I16x8 V128Op.LeS)) -> vecop 0x33l
-    | VecCompare (V128 (I16x8 V128Op.LeU)) -> vecop 0x34l
-    | VecCompare (V128 (I16x8 V128Op.GeS)) -> vecop 0x35l
-    | VecCompare (V128 (I16x8 V128Op.GeU)) -> vecop 0x36l
+    | VecCompare (V128 (I16x8 V128Op.(Lt S))) -> vecop 0x2fl
+    | VecCompare (V128 (I16x8 V128Op.(Lt U))) -> vecop 0x30l
+    | VecCompare (V128 (I16x8 V128Op.(Gt S))) -> vecop 0x31l
+    | VecCompare (V128 (I16x8 V128Op.(Gt U))) -> vecop 0x32l
+    | VecCompare (V128 (I16x8 V128Op.(Le S))) -> vecop 0x33l
+    | VecCompare (V128 (I16x8 V128Op.(Le U))) -> vecop 0x34l
+    | VecCompare (V128 (I16x8 V128Op.(Ge S))) -> vecop 0x35l
+    | VecCompare (V128 (I16x8 V128Op.(Ge U))) -> vecop 0x36l
     | VecCompare (V128 (I32x4 V128Op.Eq)) -> vecop 0x37l
     | VecCompare (V128 (I32x4 V128Op.Ne)) -> vecop 0x38l
-    | VecCompare (V128 (I32x4 V128Op.LtS)) -> vecop 0x39l
-    | VecCompare (V128 (I32x4 V128Op.LtU)) -> vecop 0x3al
-    | VecCompare (V128 (I32x4 V128Op.GtS)) -> vecop 0x3bl
-    | VecCompare (V128 (I32x4 V128Op.GtU)) -> vecop 0x3cl
-    | VecCompare (V128 (I32x4 V128Op.LeS)) -> vecop 0x3dl
-    | VecCompare (V128 (I32x4 V128Op.LeU)) -> vecop 0x3el
-    | VecCompare (V128 (I32x4 V128Op.GeS)) -> vecop 0x3fl
-    | VecCompare (V128 (I32x4 V128Op.GeU)) -> vecop 0x40l
+    | VecCompare (V128 (I32x4 V128Op.(Lt S))) -> vecop 0x39l
+    | VecCompare (V128 (I32x4 V128Op.(Lt U))) -> vecop 0x3al
+    | VecCompare (V128 (I32x4 V128Op.(Gt S))) -> vecop 0x3bl
+    | VecCompare (V128 (I32x4 V128Op.(Gt U))) -> vecop 0x3cl
+    | VecCompare (V128 (I32x4 V128Op.(Le S))) -> vecop 0x3dl
+    | VecCompare (V128 (I32x4 V128Op.(Le U))) -> vecop 0x3el
+    | VecCompare (V128 (I32x4 V128Op.(Ge S))) -> vecop 0x3fl
+    | VecCompare (V128 (I32x4 V128Op.(Ge U))) -> vecop 0x40l
     | VecCompare (V128 (I64x2 V128Op.Eq)) -> vecop 0xd6l
     | VecCompare (V128 (I64x2 V128Op.Ne)) -> vecop 0xd7l
-    | VecCompare (V128 (I64x2 V128Op.LtS)) -> vecop 0xd8l
-    | VecCompare (V128 (I64x2 V128Op.LtU)) ->
+    | VecCompare (V128 (I64x2 V128Op.(Lt S))) -> vecop 0xd8l
+    | VecCompare (V128 (I64x2 V128Op.(Lt U))) ->
       error e.at "illegal instruction i64x2.lt_u"
-    | VecCompare (V128 (I64x2 V128Op.GtS)) -> vecop 0xd9l
-    | VecCompare (V128 (I64x2 V128Op.GtU)) ->
+    | VecCompare (V128 (I64x2 V128Op.(Gt S))) -> vecop 0xd9l
+    | VecCompare (V128 (I64x2 V128Op.(Gt U))) ->
       error e.at "illegal instruction i64x2.gt_u"
-    | VecCompare (V128 (I64x2 V128Op.LeS)) -> vecop 0xdal
-    | VecCompare (V128 (I64x2 V128Op.LeU)) ->
+    | VecCompare (V128 (I64x2 V128Op.(Le S))) -> vecop 0xdal
+    | VecCompare (V128 (I64x2 V128Op.(Le U))) ->
       error e.at "illegal instruction i64x2.le_u"
-    | VecCompare (V128 (I64x2 V128Op.GeS)) -> vecop 0xdbl
-    | VecCompare (V128 (I64x2 V128Op.GeU)) ->
+    | VecCompare (V128 (I64x2 V128Op.(Ge S))) -> vecop 0xdbl
+    | VecCompare (V128 (I64x2 V128Op.(Ge U))) ->
       error e.at "illegal instruction i64x2.ge_u"
     | VecCompare (V128 (F32x4 V128Op.Eq)) -> vecop 0x41l
     | VecCompare (V128 (F32x4 V128Op.Ne)) -> vecop 0x42l
@@ -729,60 +730,60 @@ struct
 
     | VecBinary (V128 (I8x16 (V128Op.Shuffle is))) -> vecop 0x0dl; List.iter byte is
     | VecBinary (V128 (I8x16 V128Op.Swizzle)) -> vecop 0x0el
-    | VecBinary (V128 (I8x16 V128Op.NarrowS)) -> vecop 0x65l
-    | VecBinary (V128 (I8x16 V128Op.NarrowU)) -> vecop 0x66l
+    | VecBinary (V128 (I8x16 V128Op.(Narrow S))) -> vecop 0x65l
+    | VecBinary (V128 (I8x16 V128Op.(Narrow U))) -> vecop 0x66l
     | VecBinary (V128 (I8x16 V128Op.Add)) -> vecop 0x6el
-    | VecBinary (V128 (I8x16 V128Op.AddSatS)) -> vecop 0x6fl
-    | VecBinary (V128 (I8x16 V128Op.AddSatU)) -> vecop 0x70l
+    | VecBinary (V128 (I8x16 V128Op.(AddSat S))) -> vecop 0x6fl
+    | VecBinary (V128 (I8x16 V128Op.(AddSat U))) -> vecop 0x70l
     | VecBinary (V128 (I8x16 V128Op.Sub)) -> vecop 0x71l
-    | VecBinary (V128 (I8x16 V128Op.SubSatS)) -> vecop 0x72l
-    | VecBinary (V128 (I8x16 V128Op.SubSatU)) -> vecop 0x73l
-    | VecBinary (V128 (I8x16 V128Op.MinS)) -> vecop 0x76l
-    | VecBinary (V128 (I8x16 V128Op.MinU)) -> vecop 0x77l
-    | VecBinary (V128 (I8x16 V128Op.MaxS)) -> vecop 0x78l
-    | VecBinary (V128 (I8x16 V128Op.MaxU)) -> vecop 0x79l
+    | VecBinary (V128 (I8x16 V128Op.(SubSat S))) -> vecop 0x72l
+    | VecBinary (V128 (I8x16 V128Op.(SubSat U))) -> vecop 0x73l
+    | VecBinary (V128 (I8x16 V128Op.(Min S))) -> vecop 0x76l
+    | VecBinary (V128 (I8x16 V128Op.(Min U))) -> vecop 0x77l
+    | VecBinary (V128 (I8x16 V128Op.(Max S))) -> vecop 0x78l
+    | VecBinary (V128 (I8x16 V128Op.(Max U))) -> vecop 0x79l
     | VecBinary (V128 (I8x16 V128Op.AvgrU)) -> vecop 0x7bl
     | VecBinary (V128 (I8x16 V128Op.RelaxedSwizzle)) -> vecop 0x100l
-    | VecBinary (V128 (I16x8 V128Op.NarrowS)) -> vecop 0x85l
-    | VecBinary (V128 (I16x8 V128Op.NarrowU)) -> vecop 0x86l
+    | VecBinary (V128 (I16x8 V128Op.(Narrow S))) -> vecop 0x85l
+    | VecBinary (V128 (I16x8 V128Op.(Narrow U))) -> vecop 0x86l
     | VecBinary (V128 (I16x8 V128Op.Add)) -> vecop 0x8el
-    | VecBinary (V128 (I16x8 V128Op.AddSatS)) -> vecop 0x8fl
-    | VecBinary (V128 (I16x8 V128Op.AddSatU)) -> vecop 0x90l
+    | VecBinary (V128 (I16x8 V128Op.(AddSat S))) -> vecop 0x8fl
+    | VecBinary (V128 (I16x8 V128Op.(AddSat U))) -> vecop 0x90l
     | VecBinary (V128 (I16x8 V128Op.Sub)) -> vecop 0x91l
-    | VecBinary (V128 (I16x8 V128Op.SubSatS)) -> vecop 0x92l
-    | VecBinary (V128 (I16x8 V128Op.SubSatU)) -> vecop 0x93l
+    | VecBinary (V128 (I16x8 V128Op.(SubSat S))) -> vecop 0x92l
+    | VecBinary (V128 (I16x8 V128Op.(SubSat U))) -> vecop 0x93l
     | VecBinary (V128 (I16x8 V128Op.Mul)) -> vecop 0x95l
-    | VecBinary (V128 (I16x8 V128Op.MinS)) -> vecop 0x96l
-    | VecBinary (V128 (I16x8 V128Op.MinU)) -> vecop 0x97l
-    | VecBinary (V128 (I16x8 V128Op.MaxS)) -> vecop 0x98l
-    | VecBinary (V128 (I16x8 V128Op.MaxU)) -> vecop 0x99l
+    | VecBinary (V128 (I16x8 V128Op.(Min S))) -> vecop 0x96l
+    | VecBinary (V128 (I16x8 V128Op.(Min U))) -> vecop 0x97l
+    | VecBinary (V128 (I16x8 V128Op.(Max S))) -> vecop 0x98l
+    | VecBinary (V128 (I16x8 V128Op.(Max U))) -> vecop 0x99l
     | VecBinary (V128 (I16x8 V128Op.AvgrU)) -> vecop 0x9bl
-    | VecBinary (V128 (I16x8 V128Op.ExtMulLowS)) -> vecop 0x9cl
-    | VecBinary (V128 (I16x8 V128Op.ExtMulHighS)) -> vecop 0x9dl
-    | VecBinary (V128 (I16x8 V128Op.ExtMulLowU)) -> vecop 0x9el
-    | VecBinary (V128 (I16x8 V128Op.ExtMulHighU)) -> vecop 0x9fl
+    | VecBinary (V128 (I16x8 V128Op.(ExtMul (Low, S)))) -> vecop 0x9cl
+    | VecBinary (V128 (I16x8 V128Op.(ExtMul (High, S)))) -> vecop 0x9dl
+    | VecBinary (V128 (I16x8 V128Op.(ExtMul (Low, U)))) -> vecop 0x9el
+    | VecBinary (V128 (I16x8 V128Op.(ExtMul (High, U)))) -> vecop 0x9fl
     | VecBinary (V128 (I16x8 V128Op.Q15MulRSatS)) -> vecop 0x82l
     | VecBinary (V128 (I16x8 V128Op.RelaxedQ15MulRS)) -> vecop 0x111l
     | VecBinary (V128 (I16x8 V128Op.RelaxedDot)) -> vecop 0x112l
     | VecBinary (V128 (I32x4 V128Op.Add)) -> vecop 0xael
     | VecBinary (V128 (I32x4 V128Op.Sub)) -> vecop 0xb1l
-    | VecBinary (V128 (I32x4 V128Op.MinS)) -> vecop 0xb6l
-    | VecBinary (V128 (I32x4 V128Op.MinU)) -> vecop 0xb7l
-    | VecBinary (V128 (I32x4 V128Op.MaxS)) -> vecop 0xb8l
-    | VecBinary (V128 (I32x4 V128Op.MaxU)) -> vecop 0xb9l
+    | VecBinary (V128 (I32x4 V128Op.(Min S))) -> vecop 0xb6l
+    | VecBinary (V128 (I32x4 V128Op.(Min U))) -> vecop 0xb7l
+    | VecBinary (V128 (I32x4 V128Op.(Max S))) -> vecop 0xb8l
+    | VecBinary (V128 (I32x4 V128Op.(Max U))) -> vecop 0xb9l
     | VecBinary (V128 (I32x4 V128Op.DotS)) -> vecop 0xbal
     | VecBinary (V128 (I32x4 V128Op.Mul)) -> vecop 0xb5l
-    | VecBinary (V128 (I32x4 V128Op.ExtMulLowS)) -> vecop 0xbcl
-    | VecBinary (V128 (I32x4 V128Op.ExtMulHighS)) -> vecop 0xbdl
-    | VecBinary (V128 (I32x4 V128Op.ExtMulLowU)) -> vecop 0xbel
-    | VecBinary (V128 (I32x4 V128Op.ExtMulHighU)) -> vecop 0xbfl
+    | VecBinary (V128 (I32x4 V128Op.(ExtMul (Low, S)))) -> vecop 0xbcl
+    | VecBinary (V128 (I32x4 V128Op.(ExtMul (High, S)))) -> vecop 0xbdl
+    | VecBinary (V128 (I32x4 V128Op.(ExtMul (Low, U)))) -> vecop 0xbel
+    | VecBinary (V128 (I32x4 V128Op.(ExtMul (High, U)))) -> vecop 0xbfl
     | VecBinary (V128 (I64x2 V128Op.Add)) -> vecop 0xcel
     | VecBinary (V128 (I64x2 V128Op.Sub)) -> vecop 0xd1l
     | VecBinary (V128 (I64x2 V128Op.Mul)) -> vecop 0xd5l
-    | VecBinary (V128 (I64x2 V128Op.ExtMulLowS)) -> vecop 0xdcl
-    | VecBinary (V128 (I64x2 V128Op.ExtMulHighS)) -> vecop 0xddl
-    | VecBinary (V128 (I64x2 V128Op.ExtMulLowU)) -> vecop 0xdel
-    | VecBinary (V128 (I64x2 V128Op.ExtMulHighU)) -> vecop 0xdfl
+    | VecBinary (V128 (I64x2 V128Op.(ExtMul (Low, S)))) -> vecop 0xdcl
+    | VecBinary (V128 (I64x2 V128Op.(ExtMul (High, S)))) -> vecop 0xddl
+    | VecBinary (V128 (I64x2 V128Op.(ExtMul (Low, U)))) -> vecop 0xdel
+    | VecBinary (V128 (I64x2 V128Op.(ExtMul (High, U)))) -> vecop 0xdfl
     | VecBinary (V128 (F32x4 V128Op.Add)) -> vecop 0xe4l
     | VecBinary (V128 (F32x4 V128Op.Sub)) -> vecop 0xe5l
     | VecBinary (V128 (F32x4 V128Op.Mul)) -> vecop 0xe6l
@@ -814,63 +815,63 @@ struct
     | VecTernary (V128 (I16x8 V128Op.RelaxedLaneselect)) -> vecop 0x10al
     | VecTernary (V128 (I32x4 V128Op.RelaxedLaneselect)) -> vecop 0x10bl
     | VecTernary (V128 (I64x2 V128Op.RelaxedLaneselect)) -> vecop 0x10cl
-    | VecTernary (V128 (I32x4 V128Op.RelaxedDotAdd)) -> vecop 0x113l
+    | VecTernary (V128 (I32x4 V128Op.RelaxedDotAddS)) -> vecop 0x113l
     | VecTernary (V128 _) ->
       error e.at "illegal ternary vector instruction"
 
     | VecConvert (V128 (I8x16 _)) ->
       error e.at "illegal i8x16 conversion instruction"
-    | VecConvert (V128 (I16x8 V128Op.ExtendLowS)) -> vecop 0x87l
-    | VecConvert (V128 (I16x8 V128Op.ExtendHighS)) -> vecop 0x88l
-    | VecConvert (V128 (I16x8 V128Op.ExtendLowU)) -> vecop 0x89l
-    | VecConvert (V128 (I16x8 V128Op.ExtendHighU)) -> vecop 0x8al
-    | VecConvert (V128 (I16x8 V128Op.ExtAddPairwiseS)) -> vecop 0x7cl
-    | VecConvert (V128 (I16x8 V128Op.ExtAddPairwiseU)) -> vecop 0x7dl
+    | VecConvert (V128 (I16x8 V128Op.(Extend (Low, S)))) -> vecop 0x87l
+    | VecConvert (V128 (I16x8 V128Op.(Extend (High, S)))) -> vecop 0x88l
+    | VecConvert (V128 (I16x8 V128Op.(Extend (Low, U)))) -> vecop 0x89l
+    | VecConvert (V128 (I16x8 V128Op.(Extend (High, U)))) -> vecop 0x8al
+    | VecConvert (V128 (I16x8 V128Op.(ExtAddPairwise S))) -> vecop 0x7cl
+    | VecConvert (V128 (I16x8 V128Op.(ExtAddPairwise U))) -> vecop 0x7dl
     | VecConvert (V128 (I16x8 _)) ->
       error e.at "illegal i16x8 conversion instruction"
-    | VecConvert (V128 (I32x4 V128Op.ExtendLowS)) -> vecop 0xa7l
-    | VecConvert (V128 (I32x4 V128Op.ExtendHighS)) -> vecop 0xa8l
-    | VecConvert (V128 (I32x4 V128Op.ExtendLowU)) -> vecop 0xa9l
-    | VecConvert (V128 (I32x4 V128Op.ExtendHighU)) -> vecop 0xaal
-    | VecConvert (V128 (I32x4 V128Op.ExtAddPairwiseS)) -> vecop 0x7el
-    | VecConvert (V128 (I32x4 V128Op.ExtAddPairwiseU)) -> vecop 0x7fl
-    | VecConvert (V128 (I32x4 V128Op.TruncSatSF32x4)) -> vecop 0xf8l
-    | VecConvert (V128 (I32x4 V128Op.TruncSatUF32x4)) -> vecop 0xf9l
-    | VecConvert (V128 (I32x4 V128Op.TruncSatSZeroF64x2)) -> vecop 0xfcl
-    | VecConvert (V128 (I32x4 V128Op.TruncSatUZeroF64x2)) -> vecop 0xfdl
-    | VecConvert (V128 (I32x4 V128Op.RelaxedTruncSF32x4)) -> vecop 0x101l
-    | VecConvert (V128 (I32x4 V128Op.RelaxedTruncUF32x4)) -> vecop 0x102l
-    | VecConvert (V128 (I32x4 V128Op.RelaxedTruncSZeroF64x2)) -> vecop 0x103l
-    | VecConvert (V128 (I32x4 V128Op.RelaxedTruncUZeroF64x2)) -> vecop 0x104l
-    | VecConvert (V128 (I64x2 V128Op.ExtendLowS)) -> vecop 0xc7l
-    | VecConvert (V128 (I64x2 V128Op.ExtendHighS)) -> vecop 0xc8l
-    | VecConvert (V128 (I64x2 V128Op.ExtendLowU)) -> vecop 0xc9l
-    | VecConvert (V128 (I64x2 V128Op.ExtendHighU)) -> vecop 0xcal
+    | VecConvert (V128 (I32x4 V128Op.(Extend (Low, S)))) -> vecop 0xa7l
+    | VecConvert (V128 (I32x4 V128Op.(Extend (High, S)))) -> vecop 0xa8l
+    | VecConvert (V128 (I32x4 V128Op.(Extend (Low, U)))) -> vecop 0xa9l
+    | VecConvert (V128 (I32x4 V128Op.(Extend (High, U)))) -> vecop 0xaal
+    | VecConvert (V128 (I32x4 V128Op.(ExtAddPairwise S))) -> vecop 0x7el
+    | VecConvert (V128 (I32x4 V128Op.(ExtAddPairwise U))) -> vecop 0x7fl
+    | VecConvert (V128 (I32x4 V128Op.(TruncSatF32x4 S))) -> vecop 0xf8l
+    | VecConvert (V128 (I32x4 V128Op.(TruncSatF32x4 U))) -> vecop 0xf9l
+    | VecConvert (V128 (I32x4 V128Op.(TruncSatZeroF64x2 S))) -> vecop 0xfcl
+    | VecConvert (V128 (I32x4 V128Op.(TruncSatZeroF64x2 U))) -> vecop 0xfdl
+    | VecConvert (V128 (I32x4 V128Op.(RelaxedTruncF32x4 S))) -> vecop 0x101l
+    | VecConvert (V128 (I32x4 V128Op.(RelaxedTruncF32x4 U))) -> vecop 0x102l
+    | VecConvert (V128 (I32x4 V128Op.(RelaxedTruncZeroF64x2 S))) -> vecop 0x103l
+    | VecConvert (V128 (I32x4 V128Op.(RelaxedTruncZeroF64x2 U))) -> vecop 0x104l
+    | VecConvert (V128 (I64x2 V128Op.(Extend (Low, S)))) -> vecop 0xc7l
+    | VecConvert (V128 (I64x2 V128Op.(Extend (High, S)))) -> vecop 0xc8l
+    | VecConvert (V128 (I64x2 V128Op.(Extend (Low, U)))) -> vecop 0xc9l
+    | VecConvert (V128 (I64x2 V128Op.(Extend (High, U)))) -> vecop 0xcal
     | VecConvert (V128 (I64x2 _)) ->
       error e.at "illegal i64x2 conversion instruction"
     | VecConvert (V128 (F32x4 V128Op.DemoteZeroF64x2)) -> vecop 0x5el
     | VecConvert (V128 (F32x4 V128Op.PromoteLowF32x4)) ->
       error e.at "illegal instruction f32x4.promote_low_f32x4"
-    | VecConvert (V128 (F32x4 V128Op.ConvertSI32x4)) -> vecop 0xfal
-    | VecConvert (V128 (F32x4 V128Op.ConvertUI32x4)) -> vecop 0xfbl
+    | VecConvert (V128 (F32x4 V128Op.(ConvertI32x4 S))) -> vecop 0xfal
+    | VecConvert (V128 (F32x4 V128Op.(ConvertI32x4 U))) -> vecop 0xfbl
     | VecConvert (V128 (F64x2 V128Op.DemoteZeroF64x2)) ->
       error e.at "illegal instruction f64x2.demote_zero_f64x2"
     | VecConvert (V128 (F64x2 V128Op.PromoteLowF32x4)) -> vecop 0x5fl
-    | VecConvert (V128 (F64x2 V128Op.ConvertSI32x4)) -> vecop 0xfel
-    | VecConvert (V128 (F64x2 V128Op.ConvertUI32x4)) -> vecop 0xffl
+    | VecConvert (V128 (F64x2 V128Op.(ConvertI32x4 S))) -> vecop 0xfel
+    | VecConvert (V128 (F64x2 V128Op.(ConvertI32x4 U))) -> vecop 0xffl
 
     | VecShift (V128 (I8x16 V128Op.Shl)) -> vecop 0x6bl
-    | VecShift (V128 (I8x16 V128Op.ShrS)) -> vecop 0x6cl
-    | VecShift (V128 (I8x16 V128Op.ShrU)) -> vecop 0x6dl
+    | VecShift (V128 (I8x16 V128Op.(Shr S))) -> vecop 0x6cl
+    | VecShift (V128 (I8x16 V128Op.(Shr U))) -> vecop 0x6dl
     | VecShift (V128 (I16x8 V128Op.Shl)) -> vecop 0x8bl
-    | VecShift (V128 (I16x8 V128Op.ShrS)) -> vecop 0x8cl
-    | VecShift (V128 (I16x8 V128Op.ShrU)) -> vecop 0x8dl
+    | VecShift (V128 (I16x8 V128Op.(Shr S))) -> vecop 0x8cl
+    | VecShift (V128 (I16x8 V128Op.(Shr U))) -> vecop 0x8dl
     | VecShift (V128 (I32x4 V128Op.Shl)) -> vecop 0xabl
-    | VecShift (V128 (I32x4 V128Op.ShrS)) -> vecop 0xacl
-    | VecShift (V128 (I32x4 V128Op.ShrU)) -> vecop 0xadl
+    | VecShift (V128 (I32x4 V128Op.(Shr S))) -> vecop 0xacl
+    | VecShift (V128 (I32x4 V128Op.(Shr U))) -> vecop 0xadl
     | VecShift (V128 (I64x2 V128Op.Shl)) -> vecop 0xcbl
-    | VecShift (V128 (I64x2 V128Op.ShrS)) -> vecop 0xccl
-    | VecShift (V128 (I64x2 V128Op.ShrU)) -> vecop 0xcdl
+    | VecShift (V128 (I64x2 V128Op.(Shr S))) -> vecop 0xccl
+    | VecShift (V128 (I64x2 V128Op.(Shr U))) -> vecop 0xcdl
     | VecShift (V128 _) -> .
 
     | VecBitmask (V128 (I8x16 V128Op.Bitmask)) -> vecop 0x64l
@@ -894,28 +895,28 @@ struct
     | VecSplat (V128 ((F32x4 V128Op.Splat))) -> vecop 0x13l
     | VecSplat (V128 ((F64x2 V128Op.Splat))) -> vecop 0x14l
 
-    | VecExtract (V128 (I8x16 (V128Op.Extract (i, SX)))) -> vecop 0x15l; byte i
-    | VecExtract (V128 (I8x16 (V128Op.Extract (i, ZX)))) -> vecop 0x16l; byte i
-    | VecExtract (V128 (I16x8 (V128Op.Extract (i, SX)))) -> vecop 0x18l; byte i
-    | VecExtract (V128 (I16x8 (V128Op.Extract (i, ZX)))) -> vecop 0x19l; byte i
-    | VecExtract (V128 (I32x4 (V128Op.Extract (i, ())))) -> vecop 0x1bl; byte i
-    | VecExtract (V128 (I64x2 (V128Op.Extract (i, ())))) -> vecop 0x1dl; byte i
-    | VecExtract (V128 (F32x4 (V128Op.Extract (i, ())))) -> vecop 0x1fl; byte i
-    | VecExtract (V128 (F64x2 (V128Op.Extract (i, ())))) -> vecop 0x21l; byte i
+    | VecExtract (V128 (I8x16 V128Op.(Extract (i, S)))) -> vecop 0x15l; byte i
+    | VecExtract (V128 (I8x16 V128Op.(Extract (i, U)))) -> vecop 0x16l; byte i
+    | VecExtract (V128 (I16x8 V128Op.(Extract (i, S)))) -> vecop 0x18l; byte i
+    | VecExtract (V128 (I16x8 V128Op.(Extract (i, U)))) -> vecop 0x19l; byte i
+    | VecExtract (V128 (I32x4 V128Op.(Extract (i, ())))) -> vecop 0x1bl; byte i
+    | VecExtract (V128 (I64x2 V128Op.(Extract (i, ())))) -> vecop 0x1dl; byte i
+    | VecExtract (V128 (F32x4 V128Op.(Extract (i, ())))) -> vecop 0x1fl; byte i
+    | VecExtract (V128 (F64x2 V128Op.(Extract (i, ())))) -> vecop 0x21l; byte i
 
-    | VecReplace (V128 (I8x16 (V128Op.Replace i))) -> vecop 0x17l; byte i
-    | VecReplace (V128 (I16x8 (V128Op.Replace i))) -> vecop 0x1al; byte i
-    | VecReplace (V128 (I32x4 (V128Op.Replace i))) -> vecop 0x1cl; byte i
-    | VecReplace (V128 (I64x2 (V128Op.Replace i))) -> vecop 0x1el; byte i
-    | VecReplace (V128 (F32x4 (V128Op.Replace i))) -> vecop 0x20l; byte i
-    | VecReplace (V128 (F64x2 (V128Op.Replace i))) -> vecop 0x22l; byte i
+    | VecReplace (V128 (I8x16 V128Op.(Replace i))) -> vecop 0x17l; byte i
+    | VecReplace (V128 (I16x8 V128Op.(Replace i))) -> vecop 0x1al; byte i
+    | VecReplace (V128 (I32x4 V128Op.(Replace i))) -> vecop 0x1cl; byte i
+    | VecReplace (V128 (I64x2 V128Op.(Replace i))) -> vecop 0x1el; byte i
+    | VecReplace (V128 (F32x4 V128Op.(Replace i))) -> vecop 0x20l; byte i
+    | VecReplace (V128 (F64x2 V128Op.(Replace i))) -> vecop 0x22l; byte i
 
   and catch c =
     match c.it with
-    | Catch (x1, x2) -> byte 0x00; var x1; var x2
-    | CatchRef (x1, x2) -> byte 0x01; var x1; var x2
-    | CatchAll x -> byte 0x02; var x
-    | CatchAllRef x -> byte 0x03; var x
+    | Catch (x1, x2) -> byte 0x00; idx x1; idx x2
+    | CatchRef (x1, x2) -> byte 0x01; idx x1; idx x2
+    | CatchAll x -> byte 0x02; idx x
+    | CatchAllRef x -> byte 0x03; idx x
 
   let const c =
     list instr c.it; end_ ()
@@ -935,7 +936,7 @@ struct
 
   (* Type section *)
 
-  let type_ t = rec_type t.it
+  let type_ t = rectype t.it
 
   let type_section ts =
     section 1 (vec type_) ts (ts <> [])
@@ -943,17 +944,9 @@ struct
 
   (* Import section *)
 
-  let import_desc d =
-    match d.it with
-    | FuncImport x -> byte 0x00; var x
-    | TableImport t -> byte 0x01; table_type t
-    | MemoryImport t -> byte 0x02; memory_type t
-    | GlobalImport t -> byte 0x03; global_type t
-    | TagImport t -> byte 0x04; tag_type t
-
   let import im =
-    let {module_name; item_name; idesc} = im.it in
-    name module_name; name item_name; import_desc idesc
+    let Import (module_name, item_name, xt) = im.it in
+    name module_name; name item_name; externtype xt
 
   let import_section ims =
     section 2 (vec import) ims (ims <> [])
@@ -961,7 +954,9 @@ struct
 
   (* Function section *)
 
-  let func f = var f.it.ftype
+  let func f =
+    let Func (x, _, _) = f.it in
+    idx x
 
   let func_section fs =
     section 3 (vec func) fs (fs <> [])
@@ -970,11 +965,11 @@ struct
   (* Table section *)
 
   let table tab =
-    let {ttype; tinit} = tab.it in
-    match ttype, tinit.it with
+    let Table (tt, c) = tab.it in
+    match tt, c.it with
     | TableT (_, _at, (_, ht1)), [{it = RefNull ht2; _}] when ht1 = ht2 ->
-      table_type ttype
-    | _ -> op 0x40; op 0x00; table_type ttype; const tinit
+      tabletype tt
+    | _ -> op 0x40; op 0x00; tabletype tt; const c
 
   let table_section tabs =
     section 4 (vec table) tabs (tabs <> [])
@@ -983,8 +978,8 @@ struct
   (* Memory section *)
 
   let memory mem =
-    let {mtype} = mem.it in
-    memory_type mtype
+    let Memory mt = mem.it in
+    memorytype mt
 
   let memory_section mems =
     section 5 (vec memory) mems (mems <> [])
@@ -992,7 +987,9 @@ struct
 
   (* Tag section *)
 
-  let tag (t : tag) = byte 0x00; var t.it.tgtype
+  let tag tag =
+    let Tag tt = tag.it in
+    tagtype tt
 
   let tag_section ts =
     section 13 (vec tag) ts (ts <> [])
@@ -1001,8 +998,8 @@ struct
   (* Global section *)
 
   let global g =
-    let {gtype; ginit} = g.it in
-    global_type gtype; const ginit
+    let Global (gt, c) = g.it in
+    globaltype gt; const c
 
   let global_section gs =
     section 6 (vec global) gs (gs <> [])
@@ -1010,17 +1007,17 @@ struct
 
   (* Export section *)
 
-  let export_desc d =
-    match d.it with
-    | FuncExport x -> byte 0; var x
-    | TableExport x -> byte 1; var x
-    | MemoryExport x -> byte 2; var x
-    | GlobalExport x -> byte 3; var x
-    | TagExport x -> byte 4; var x
+  let externidx xx =
+    match xx.it with
+    | FuncX x -> byte 0x00; idx x
+    | TableX x -> byte 0x01; idx x
+    | MemoryX x -> byte 0x02; idx x
+    | GlobalX x -> byte 0x03; idx x
+    | TagX x -> byte 0x04; idx x
 
   let export ex =
-    let {name = n; edesc} = ex.it in
-    name n; export_desc edesc
+    let Export (n, xx) = ex.it in
+    name n; externidx xx
 
   let export_section exs =
     section 7 (vec export) exs (exs <> [])
@@ -1029,8 +1026,8 @@ struct
   (* Start section *)
 
   let start st =
-    let {sfunc} = st.it in
-    var sfunc
+    let Start x = st.it in
+    idx x
 
   let start_section xo =
     section 8 (opt start) xo (xo <> None)
@@ -1039,11 +1036,11 @@ struct
   (* Code section *)
 
   let code f =
-    let {locals = locs; body; _} = f.it in
+    let Func (_x, ls, es) = f.it in
     let g = gap32 () in
     let p = pos s in
-    locals locs;
-    list instr body;
+    locals ls;
+    list instr es;
     end_ ();
     patch_gap32 g (pos s - p)
 
@@ -1068,32 +1065,32 @@ struct
 
   let elem_index e =
     match e.it with
-    | [{it = RefFunc x; _}] -> var x
+    | [{it = RefFunc x; _}] -> idx x
     | _ -> assert false
 
   let elem seg =
-    let {etype; einit; emode} = seg.it in
-    if is_elem_kind etype && List.for_all is_elem_index einit then
+    let Elem (rt, cs, emode) = seg.it in
+    if is_elem_kind rt && List.for_all is_elem_index cs then
       match emode.it with
       | Passive ->
-        u32 0x01l; elem_kind etype; vec elem_index einit
-      | Active {index; offset} when index.it = 0l ->
-        u32 0x00l; const offset; vec elem_index einit
-      | Active {index; offset} ->
+        u32 0x01l; elem_kind rt; vec elem_index cs
+      | Active ({it = 0l; _}, c) ->
+        u32 0x00l; const c; vec elem_index cs
+      | Active (x, c) ->
         u32 0x02l;
-        var index; const offset; elem_kind etype; vec elem_index einit
+        idx x; const c; elem_kind rt; vec elem_index cs
       | Declarative ->
-        u32 0x03l; elem_kind etype; vec elem_index einit
+        u32 0x03l; elem_kind rt; vec elem_index cs
     else
       match emode.it with
       | Passive ->
-        u32 0x05l; ref_type etype; vec const einit
-      | Active {index; offset} when index.it = 0l && etype = (Null, FuncHT) ->
-        u32 0x04l; const offset; vec const einit
-      | Active {index; offset} ->
-        u32 0x06l; var index; const offset; ref_type etype; vec const einit
+        u32 0x05l; reftype rt; vec const cs
+      | Active ({it = 0l; _}, c) when rt = (Null, FuncHT) ->
+        u32 0x04l; const c; vec const cs
+      | Active (x, c) ->
+        u32 0x06l; idx x; const c; reftype rt; vec const cs
       | Declarative ->
-        u32 0x07l; ref_type etype; vec const einit
+        u32 0x07l; reftype rt; vec const cs
 
   let elem_section elems =
     section 9 (vec elem) elems (elems <> [])
@@ -1102,14 +1099,14 @@ struct
   (* Data section *)
 
   let data seg =
-    let {dinit; dmode} = seg.it in
+    let Data (bs, dmode) = seg.it in
     match dmode.it with
     | Passive ->
-      u32 0x01l; string dinit
-    | Active {index; offset} when index.it = 0l ->
-      u32 0x00l; const offset; string dinit
-    | Active {index; offset} ->
-      u32 0x02l; var index; const offset; string dinit
+      u32 0x01l; string bs
+    | Active ({it = 0l; _}, c) ->
+      u32 0x00l; const c; string bs
+    | Active (x, c) ->
+      u32 0x02l; idx x; const c; string bs
     | Declarative ->
       error dmode.at "illegal declarative data segment"
 

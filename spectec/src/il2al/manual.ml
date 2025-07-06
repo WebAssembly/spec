@@ -62,7 +62,7 @@ let return_instrs_of_invoke idset config =
     |> introduce_fresh_variable idset in
   let e_vals = iter_var var_name (ListN (arity, None)) valT in
 
-  letI (arity,  len_expr) ::
+  letI (arity, len_expr) ::
     pushI (frameE (arity, frame) ~note:evalctxT) ::
     rhs @
     [ popI e_vals;

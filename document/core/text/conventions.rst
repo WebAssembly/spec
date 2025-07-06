@@ -53,6 +53,8 @@ In order to distinguish symbols of the textual syntax from symbols of the abstra
 
 * Productions are written :math:`\T{sym} ::= T_1 \Rightarrow A_1 ~|~ \dots ~|~ T_n \Rightarrow A_n`, where each :math:`A_i` is the attribute that is synthesized for :math:`\T{sym}` in the given case, usually from attribute variables bound in :math:`T_i`.
 
+* Large productions may be split into multiple definitions, indicated by ending the first one with explicit ellipses, :math:`\T{sym} ::= T_1 \Rightarrow A_1 ~|~ \dots`, and starting continuations with ellipses, :math:`\T{sym} ::= \dots ~|~ T_2 \Rightarrow A_2`.
+
 * Some productions are augmented by side conditions in parentheses, which restrict the applicability of the production. They provide a shorthand for a combinatorial expansion of the production into many separate cases.
 
 * If the same meta variable or non-terminal symbol appears multiple times in a production (in the syntax or in an attribute), then all those occurrences must have the same instantiation.

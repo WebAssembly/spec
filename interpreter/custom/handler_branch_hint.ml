@@ -42,8 +42,8 @@ let flatten_instr_locs is =
     | i :: rest ->
         let group =
           match i.it with
-          | Block (_, inner) -> [ i ] @ flatten inner
-          | Loop (_, inner) -> [ i ] @ flatten inner
+          | Block (_, inner) | Loop (_, inner)
+          | TryTable (_, _, inner) -> [ i ] @ flatten inner
           | If (_, inner1, inner2) -> [ i ] @ flatten inner1 @ flatten inner2
           | _ -> [ i ]
         in
@@ -90,15 +90,15 @@ let get s =
   skip 1 s;
   b
 
-let position file pos = Source.{ file; line = -1; column = pos }
+let loc file pos = Source.{ file; line = -1; column = pos }
 
 let region file left right =
-  Source.{ left = position file left; right = position file right }
+  Source.{ left = loc file left; right = loc file right }
 
 let decode_error pos msg =
   raise (Custom.Code (region "@metadata.code.branch_hint section" pos pos, msg))
 
-let require b pos msg = if not b then decode_error pos msg
+let require b loc msg = if not b then decode_error loc msg
 let decode_byte s = get s
 
 let rec decode_uN n s =
@@ -147,8 +147,9 @@ let decode_func_hints locs foff = decode_vec (decode_hint locs foff)
 let decode_func m s =
   let fidx = decode_u32 s in
   let f = get_func m fidx in
+  let Func (_, _, body) = f.it in
   let foff = Int32.of_int f.at.left.column in
-  let locs = flatten_instr_locs f.it.body in
+  let locs = flatten_instr_locs body in
   let hs = decode_func_hints locs foff s in
   (fidx, List.rev hs)
 
@@ -204,8 +205,9 @@ let encode_func m buf t =
   let fidx, hs = t in
   encode_u32 buf fidx;
   let f = get_func m fidx in
+  let Func (_, _, body) = f.it in
   let foff = f.at.left.column in
-  let locs = flatten_instr_locs f.it.body in
+  let locs = flatten_instr_locs body in
   encode_func_hints buf locs foff hs
 
 let encode_funcs buf m fhs =
@@ -280,7 +282,8 @@ and parse_annot m annot =
   let at_last = (List.hd (List.rev items)).at in
   let fidx = find_func_idx m annot in
   let f = get_func m fidx in
-  let locs = flatten_instr_locs f.it.body in
+  let Func (_, _, body) = f.it in
+  let locs = flatten_instr_locs body in
   let hint =
     match p with
     | "\x00" -> Unlikely
@@ -445,12 +448,12 @@ let check_one locs prev_hidx h =
           check_error h.at
             "@metadata.code.branch_hint annotation: invalid target")
 
-let check_fun m fidx hs =
-  let f = get_func m fidx in
-  let locs = flatten_instr_locs f.it.body in
+let check_func m fidx hs =
+  let Func (_, _, body) = (get_func m fidx).it in
+  let locs = flatten_instr_locs body in
   let prev_hidx = ref 0 in
   List.iter (check_one locs prev_hidx) hs
 
 let check (m : module_) (fmt : format) =
-  IdxMap.iter (check_fun m) fmt.it.func_hints;
+  IdxMap.iter (check_func m) fmt.it.func_hints;
   ()

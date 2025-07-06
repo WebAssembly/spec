@@ -73,7 +73,7 @@ i.e., all :ref:`type indices <syntax-typeidx>` have been :ref:`substituted <nota
    either as "syntactic" types as in a source module, where all supertypes are type indices,
    or as "semantic" types, where all supertypes are resolved to either defined types or recursive type indices.
 
-   Recursive type indices are internal to a recursive type.
+   Recursive type indices are local to a recursive type.
    They are distinguished from regular type indices and represented such that two closed types are syntactically equal if and only if they have the same recursive structure.
 
 .. _aux-reftypediff:
@@ -120,8 +120,16 @@ Conventions
 * ${:$subst_valtype(t, x*, dt*)} denotes the parallel *substitution* of :ref:`type indices <syntax-typeidx>` ${:x*} with corresponding :ref:`defined types <syntax-deftype>` ${:dt*} in type ${:t}, provided ${:|x*| = |dt*|}.
 
 * ${:$subst_valtype(t, (REC i)*, dt*)} denotes the parallel substitution of :ref:`recursive type indices <syntax-rectypeidx>` ${:(REC i)*} with :ref:`defined types <syntax-deftype>` ${:dt*} in type ${:t}, provided ${:|(REC i)*| = |dt*|}.
+  This substitution does not proceed under :ref:`recursive types <syntax-rectype>`,
+  since they are considered local *binders* for all recursive type indices.
 
 * ${:$subst_all_valtype(t, dt*)} is shorthand for the substitution ${:$subst_valtype(t, x*, dt*)}, where ${:x* = 0 `... $((|dt*| - 1))}.
+
+.. note::
+   All recursive types formed by the semantics are closed with respect to recursive type indices that occur inside them.
+   Hence, substitution of recursive type indices never needs to modify the bodies of recursive types.
+   In addition, all types used for substitution are closed with respect to recursive type indices,
+   such that name capture of recursive type indices cannot occur.
 
 
 .. index:: recursive type, defined type, sub type, ! rolling, ! unrolling, ! expansion, type equivalence
@@ -261,6 +269,9 @@ Convention
 A type of any shape can be *closed* to bring it into :ref:`closed <type-closed>` form relative to a :ref:`context <context>` it is :ref:`valid <valid-type>` in, by :ref:`substituting <notation-subst>` each :ref:`type index <syntax-typeidx>` ${:x} occurring in it with its own corresponding :ref:`defined type <syntax-deftype>` ${deftype: C.TYPES[x]}, after first closing the types in ${deftype*: C.TYPES} themselves.
 
 $${definition: clos_valtype clos_deftypes}
+
+.. note::
+   Free type indices referring to types within the same :ref:`recursive type <syntax-rectype>` are handled separately by :ref:`rolling up <aux-roll-rectype>` recursive types before closing them.
 
 
 .. _valid-notation-textual:

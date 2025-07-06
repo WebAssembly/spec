@@ -143,7 +143,7 @@ and check_type ty v expr =
   let inn_types = [ "I32"; "I64" ] in
   let fnn_types = [ "F32"; "F64" ] in
   let vnn_types = [ "V128"; ] in
-  let abs_heap_types = [
+  let abs_heaptypes = [
     "ANY"; "EQ"; "I31"; "STRUCT"; "ARRAY"; "NONE"; "FUNC";
     "NOFUNC"; "EXN"; "NOEXN"; "EXTERN"; "NOEXTERN"
   ] in
@@ -172,17 +172,17 @@ and check_type ty v expr =
   | CaseV ("REF", _) ->
     boolV (ty = "reftype" || ty = "valtype" || ty = "val")
   (* absheaptype *)
-  | CaseV (aht, []) when List.mem aht abs_heap_types ->
+  | CaseV (aht, []) when List.mem aht abs_heaptypes ->
     boolV (ty = "absheaptype" || ty = "heaptype")
   (* deftype *)
   | CaseV ("_DEF", [ _; _ ]) ->
-    boolV (ty = "deftype" || ty = "heaptype")
+    boolV (ty = "heaptype" || ty = "typeuse" || ty = "deftype")
   (* typevar *)
   | CaseV ("_IDX", [ _ ]) ->
-    boolV (ty = "heaptype" || ty = "typevar")
+    boolV (ty = "heaptype" || ty = "typeuse" || ty = "typevar")
   (* heaptype *)
   | CaseV ("REC", [ _ ]) ->
-    boolV (ty = "heaptype" || ty = "typevar")
+    boolV (ty = "heaptype" || ty = "typeuse" || ty = "typevar")
   (* packval *)
   | CaseV ("PACK", CaseV (pt, [])::_) when List.mem pt pnn_types ->
     boolV (ty = "val")
@@ -392,9 +392,9 @@ and eval_expr env expr =
     check_type (string_of_typ t) v expr
   | MatchE (e1, e2) ->
     (* Deferred to reference interpreter *)
-    let rt1 = e1 |> eval_expr env |> Construct.al_to_ref_type in
-    let rt2 = e2 |> eval_expr env |> Construct.al_to_ref_type in
-    boolV (Match.match_ref_type [] rt1 rt2)
+    let rt1 = e1 |> eval_expr env |> Construct.al_to_reftype in
+    let rt2 = e2 |> eval_expr env |> Construct.al_to_reftype in
+    boolV (Match.match_reftype [] rt1 rt2)
   | TopValueE _ ->
     (* TODO: type check *)
     boolV (List.length (WasmContext.get_value_stack ()) > 0)

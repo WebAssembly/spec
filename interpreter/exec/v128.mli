@@ -15,7 +15,7 @@ type shape = (unit, unit, unit, unit, unit, unit) laneop
 val bitwidth : int
 
 val num_lanes : ('a, 'b, 'c, 'd, 'e, 'f) laneop -> int
-val type_of_lane : ('a, 'b, 'c, 'd, 'e, 'f) laneop -> Types.num_type
+val type_of_lane : ('a, 'b, 'c, 'd, 'e, 'f) laneop -> Types.numtype
 val string_of_shape : ('a, 'b, 'c, 'd, 'e, 'f) laneop -> string
 
 val zero : t
@@ -179,7 +179,7 @@ sig
   val extend_low_u : t -> t
   val extend_high_u : t -> t
   val dot_s : t -> t -> t
-  val dot_s_add : t -> t -> t -> t
+  val dot_add_s : t -> t -> t -> t
   val extmul_low_s : t -> t -> t
   val extmul_high_s : t -> t -> t
   val extmul_low_u : t -> t -> t

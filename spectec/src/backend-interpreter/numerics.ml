@@ -38,7 +38,7 @@ let i16_to_i32 i16 =
 let catch_ixx_exception f = try f() |> someV with
   | Ixx.DivideByZero
   | Ixx.Overflow
-  | Ixx.InvalidConversion -> noneV
+  | Convert.InvalidConversion -> noneV
 
 let list_f f x = f x |> singleton
 let unlist_f f x = f x |> listv_singleton
@@ -754,21 +754,21 @@ let trunc : numerics =
     f =
       (function
       | [ NumV (`Nat m); NumV (`Nat n); CaseV ("U", []); CaseV _ as i ] when m = Z.of_int 32 && n = Z.of_int 32 ->
-        (fun _ -> i |> al_to_float32 |> I32_convert.trunc_f32_u |> al_of_nat32) |> catch_ixx_exception
+        (fun _ -> i |> al_to_float32 |> Convert.I32_.trunc_f32_u |> al_of_nat32) |> catch_ixx_exception
       | [ NumV (`Nat m); NumV (`Nat n); CaseV ("U", []); CaseV _ as i ] when m = Z.of_int 64 && n = Z.of_int 32 ->
-        (fun _ -> i |> al_to_float64 |> I32_convert.trunc_f64_u |> al_of_nat32) |> catch_ixx_exception
+        (fun _ -> i |> al_to_float64 |> Convert.I32_.trunc_f64_u |> al_of_nat32) |> catch_ixx_exception
       | [ NumV (`Nat m); NumV (`Nat n); CaseV ("U", []); CaseV _ as i ] when m = Z.of_int 32 && n = Z.of_int 64 ->
-        (fun _ -> i |> al_to_float32 |> I64_convert.trunc_f32_u |> al_of_nat64) |> catch_ixx_exception
+        (fun _ -> i |> al_to_float32 |> Convert.I64_.trunc_f32_u |> al_of_nat64) |> catch_ixx_exception
       | [ NumV (`Nat m); NumV (`Nat n); CaseV ("U", []); CaseV _ as i ] when m = Z.of_int 64 && n = Z.of_int 64 ->
-        (fun _ -> i |> al_to_float64 |> I64_convert.trunc_f64_u |> al_of_nat64) |> catch_ixx_exception
+        (fun _ -> i |> al_to_float64 |> Convert.I64_.trunc_f64_u |> al_of_nat64) |> catch_ixx_exception
       | [ NumV (`Nat m); NumV (`Nat n); CaseV ("S", []); CaseV _ as i ] when m = Z.of_int 32 && n = Z.of_int 32 ->
-        (fun _ -> i |> al_to_float32 |> I32_convert.trunc_f32_s |> al_of_nat32) |> catch_ixx_exception
+        (fun _ -> i |> al_to_float32 |> Convert.I32_.trunc_f32_s |> al_of_nat32) |> catch_ixx_exception
       | [ NumV (`Nat m); NumV (`Nat n); CaseV ("S", []); CaseV _ as i ] when m = Z.of_int 64 && n = Z.of_int 32 ->
-        (fun _ -> i |> al_to_float64 |> I32_convert.trunc_f64_s |> al_of_nat32) |> catch_ixx_exception
+        (fun _ -> i |> al_to_float64 |> Convert.I32_.trunc_f64_s |> al_of_nat32) |> catch_ixx_exception
       | [ NumV (`Nat m); NumV (`Nat n); CaseV ("S", []); CaseV _ as i ] when m = Z.of_int 32 && n = Z.of_int 64 ->
-        (fun _ -> i |> al_to_float32 |> I64_convert.trunc_f32_s |> al_of_nat64) |> catch_ixx_exception
+        (fun _ -> i |> al_to_float32 |> Convert.I64_.trunc_f32_s |> al_of_nat64) |> catch_ixx_exception
       | [ NumV (`Nat m); NumV (`Nat n); CaseV ("S", []); CaseV _ as i ] when m = Z.of_int 64 && n = Z.of_int 64 ->
-        (fun _ -> i |> al_to_float64 |> I64_convert.trunc_f64_s |> al_of_nat64) |> catch_ixx_exception
+        (fun _ -> i |> al_to_float64 |> Convert.I64_.trunc_f64_s |> al_of_nat64) |> catch_ixx_exception
       | vs -> error_values "trunc" vs
       );
   }
@@ -779,21 +779,21 @@ let trunc_sat : numerics =
     f =
       (function
       | [ NumV (`Nat m); NumV (`Nat n); CaseV ("U", []); CaseV _ as i ] when m = Z.of_int 32 && n = Z.of_int 32 ->
-        (fun _ -> i |> al_to_float32 |> I32_convert.trunc_sat_f32_u |> al_of_nat32) |> catch_ixx_exception
+        (fun _ -> i |> al_to_float32 |> Convert.I32_.trunc_sat_f32_u |> al_of_nat32) |> catch_ixx_exception
       | [ NumV (`Nat m); NumV (`Nat n); CaseV ("U", []); CaseV _ as i ] when m = Z.of_int 64 && n = Z.of_int 32 ->
-        (fun _ -> i |> al_to_float64 |> I32_convert.trunc_sat_f64_u |> al_of_nat32) |> catch_ixx_exception
+        (fun _ -> i |> al_to_float64 |> Convert.I32_.trunc_sat_f64_u |> al_of_nat32) |> catch_ixx_exception
       | [ NumV (`Nat m); NumV (`Nat n); CaseV ("U", []); CaseV _ as i ] when m = Z.of_int 32 && n = Z.of_int 64 ->
-        (fun _ -> i |> al_to_float32 |> I64_convert.trunc_sat_f32_u |> al_of_nat64) |> catch_ixx_exception
+        (fun _ -> i |> al_to_float32 |> Convert.I64_.trunc_sat_f32_u |> al_of_nat64) |> catch_ixx_exception
       | [ NumV (`Nat m); NumV (`Nat n); CaseV ("U", []); CaseV _ as i ] when m = Z.of_int 64 && n = Z.of_int 64 ->
-        (fun _ -> i |> al_to_float64 |> I64_convert.trunc_sat_f64_u |> al_of_nat64) |> catch_ixx_exception
+        (fun _ -> i |> al_to_float64 |> Convert.I64_.trunc_sat_f64_u |> al_of_nat64) |> catch_ixx_exception
       | [ NumV (`Nat m); NumV (`Nat n); CaseV ("S", []); CaseV _ as i ] when m = Z.of_int 32 && n = Z.of_int 32 ->
-        (fun _ -> i |> al_to_float32 |> I32_convert.trunc_sat_f32_s |> al_of_nat32) |> catch_ixx_exception
+        (fun _ -> i |> al_to_float32 |> Convert.I32_.trunc_sat_f32_s |> al_of_nat32) |> catch_ixx_exception
       | [ NumV (`Nat m); NumV (`Nat n); CaseV ("S", []); CaseV _ as i ] when m = Z.of_int 64 && n = Z.of_int 32 ->
-        (fun _ -> i |> al_to_float64 |> I32_convert.trunc_sat_f64_s |> al_of_nat32) |> catch_ixx_exception
+        (fun _ -> i |> al_to_float64 |> Convert.I32_.trunc_sat_f64_s |> al_of_nat32) |> catch_ixx_exception
       | [ NumV (`Nat m); NumV (`Nat n); CaseV ("S", []); CaseV _ as i ] when m = Z.of_int 32 && n = Z.of_int 64 ->
-        (fun _ -> i |> al_to_float32 |> I64_convert.trunc_sat_f32_s |> al_of_nat64) |> catch_ixx_exception
+        (fun _ -> i |> al_to_float32 |> Convert.I64_.trunc_sat_f32_s |> al_of_nat64) |> catch_ixx_exception
       | [ NumV (`Nat m); NumV (`Nat n); CaseV ("S", []); CaseV _ as i ] when m = Z.of_int 64 && n = Z.of_int 64 ->
-        (fun _ -> i |> al_to_float64 |> I64_convert.trunc_sat_f64_s |> al_of_nat64) |> catch_ixx_exception
+        (fun _ -> i |> al_to_float64 |> Convert.I64_.trunc_sat_f64_s |> al_of_nat64) |> catch_ixx_exception
       | vs -> error_values "trunc_sat" vs
       );
   }
@@ -815,7 +815,7 @@ let promote : numerics =
     f = list_f
       (function
       | [ NumV (`Nat m); NumV (`Nat n); CaseV _ as i ] when m = Z.of_int 32 && n = Z.of_int 64 ->
-        let ret = i |> al_to_float32 |> F64_convert.promote_f32 |> al_of_float64 in
+        let ret = i |> al_to_float32 |> Convert.F64_.promote_f32 |> al_of_float64 in
         ret
       | vs -> error_values "promote" vs
       );
@@ -827,7 +827,7 @@ let demote : numerics =
     f = list_f
       (function
       | [ NumV (`Nat m); NumV (`Nat n); CaseV _ as i ] when m = Z.of_int 64 && n = Z.of_int 32 ->
-        i |> al_to_float64 |> F32_convert.demote_f64 |> al_of_float32
+        i |> al_to_float64 |> Convert.F32_.demote_f64 |> al_of_float32
       | vs -> error_values "demote" vs
       );
   }
@@ -838,21 +838,21 @@ let convert : numerics =
     f =
       (function
       | [ NumV (`Nat m); NumV (`Nat n); CaseV ("U", []); NumV _ as i ] when m = Z.of_int 32 && n = Z.of_int 32 ->
-        i |> al_to_nat32 |> F32_convert.convert_i32_u |> al_of_float32
+        i |> al_to_nat32 |> Convert.F32_.convert_i32_u |> al_of_float32
       | [ NumV (`Nat m); NumV (`Nat n); CaseV ("U", []); NumV _ as i ] when m = Z.of_int 64 && n = Z.of_int 32 ->
-        i |> al_to_nat64 |> F32_convert.convert_i64_u |> al_of_float32
+        i |> al_to_nat64 |> Convert.F32_.convert_i64_u |> al_of_float32
       | [ NumV (`Nat m); NumV (`Nat n); CaseV ("U", []); NumV _ as i ] when m = Z.of_int 32 && n = Z.of_int 64 ->
-        i |> al_to_nat32 |> F64_convert.convert_i32_u |> al_of_float64
+        i |> al_to_nat32 |> Convert.F64_.convert_i32_u |> al_of_float64
       | [ NumV (`Nat m); NumV (`Nat n); CaseV ("U", []); NumV _ as i ] when m = Z.of_int 64 && n = Z.of_int 64 ->
-        i |> al_to_nat64 |> F64_convert.convert_i64_u |> al_of_float64
+        i |> al_to_nat64 |> Convert.F64_.convert_i64_u |> al_of_float64
       | [ NumV (`Nat m); NumV (`Nat n); CaseV ("S", []); NumV _ as i ] when m = Z.of_int 32 && n = Z.of_int 32 ->
-        i |> al_to_nat32 |> F32_convert.convert_i32_s |> al_of_float32
+        i |> al_to_nat32 |> Convert.F32_.convert_i32_s |> al_of_float32
       | [ NumV (`Nat m); NumV (`Nat n); CaseV ("S", []); NumV _ as i ] when m = Z.of_int 64 && n = Z.of_int 32 ->
-        i |> al_to_nat64 |> F32_convert.convert_i64_s |> al_of_float32
+        i |> al_to_nat64 |> Convert.F32_.convert_i64_s |> al_of_float32
       | [ NumV (`Nat m); NumV (`Nat n); CaseV ("S", []); NumV _ as i ] when m = Z.of_int 32 && n = Z.of_int 64 ->
-        i |> al_to_nat32 |> F64_convert.convert_i32_s |> al_of_float64
+        i |> al_to_nat32 |> Convert.F64_.convert_i32_s |> al_of_float64
       | [ NumV (`Nat m); NumV (`Nat n); CaseV ("S", []); NumV _ as i ] when m = Z.of_int 64 && n = Z.of_int 64 ->
-        i |> al_to_nat64 |> F64_convert.convert_i64_s |> al_of_float64
+        i |> al_to_nat64 |> Convert.F64_.convert_i64_s |> al_of_float64
       | vs -> error_values "convert" vs
       );
   }
@@ -863,13 +863,13 @@ let reinterpret : numerics =
     f =
       (function
       | [ CaseV ("I32", []); CaseV ("F32", []); NumV _ as i ] ->
-        i |> al_to_nat32 |> F32_convert.reinterpret_i32 |> al_of_float32
+        i |> al_to_nat32 |> Convert.F32_.reinterpret_i32 |> al_of_float32
       | [ CaseV ("I64", []); CaseV ("F64", []); NumV _ as i ] ->
-        i |> al_to_nat64 |> F64_convert.reinterpret_i64 |> al_of_float64
+        i |> al_to_nat64 |> Convert.F64_.reinterpret_i64 |> al_of_float64
       | [ CaseV ("F32", []); CaseV ("I32", []); CaseV _ as i ] ->
-        i |> al_to_float32 |> I32_convert.reinterpret_f32 |> al_of_nat32
+        i |> al_to_float32 |> Convert.I32_.reinterpret_f32 |> al_of_nat32
       | [ CaseV ("F64", []); CaseV ("I64", []); CaseV _ as i ] ->
-        i |> al_to_float64 |> I64_convert.reinterpret_f64 |> al_of_nat64
+        i |> al_to_float64 |> Convert.I64_.reinterpret_f64 |> al_of_nat64
       | vs -> error_values "reinterpret" vs
       );
   }

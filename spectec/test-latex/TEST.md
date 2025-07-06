@@ -3264,7 +3264,15 @@ $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-{(\mathsf{rec}~{{\mathit{st}}^\ast})}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]} & = & \mathsf{rec}~{{{\mathit{st}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}^\ast} \\
+{\mathrm{minus}}_{\mathit{recs}}(\epsilon, \epsilon) & = & (\epsilon, \epsilon) \\
+{\mathrm{minus}}_{\mathit{recs}}((\mathsf{rec} {.} n)~{{\mathit{tv}}^\ast}, {\mathit{tu}}_1~{{\mathit{tu}}^\ast}) & = & {\mathrm{minus}}_{\mathit{recs}}({{\mathit{tv}}^\ast}, {{\mathit{tu}}^\ast}) \\
+{\mathrm{minus}}_{\mathit{recs}}(x~{{\mathit{tv}}^\ast}, {\mathit{tu}}_1~{{\mathit{tu}}^\ast}) & = & (x~{{\mathit{tv}'}^\ast}, {\mathit{tu}}_1~{{\mathit{tu}'}^\ast}) & \quad \mbox{if}~ ({{\mathit{tv}'}^\ast}, {{\mathit{tu}'}^\ast}) = {\mathrm{minus}}_{\mathit{recs}}({{\mathit{tv}}^\ast}, {{\mathit{tu}}^\ast}) \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+{(\mathsf{rec}~{{\mathit{st}}^\ast})}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]} & = & \mathsf{rec}~{{{\mathit{st}}}{{}[ {{\mathit{tv}'}^\ast} := {{\mathit{tu}'}^\ast} ]}^\ast} & \quad \mbox{if}~ ({{\mathit{tv}'}^\ast}, {{\mathit{tu}'}^\ast}) = {\mathrm{minus}}_{\mathit{recs}}({{\mathit{tv}}^\ast}, {{\mathit{tu}}^\ast}) \\
 \end{array}
 $$
 

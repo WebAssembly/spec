@@ -13,9 +13,9 @@ exception SizeOverflow
 exception SizeLimit
 exception OutOfMemory
 
-val alloc : table_type -> ref_ -> table (* raises Type, OutOfMemory *)
-val type_of : table -> table_type
-val addr_type_of : table -> addr_type
+val alloc : tabletype -> ref_ -> table (* raises Type, OutOfMemory *)
+val type_of : table -> tabletype
+val addrtype_of : table -> addrtype
 val size : table -> size
 val addr_of_num : num -> address
 val grow : table -> size -> ref_ -> unit

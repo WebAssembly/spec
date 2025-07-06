@@ -32,12 +32,12 @@ let memory =
   ExternMemory (Memory.alloc mt)
 
 let func f ft =
-  let dt = DefT (RecT [SubT (Final, [], DefFuncT ft)], 0l) in
+  let dt = DefT (RecT [SubT (Final, [], FuncCT ft)], 0l) in
   ExternFunc (Func.alloc_host dt (f ft))
 
 let print_value v =
   Printf.printf "%s : %s\n"
-    (string_of_value v) (string_of_val_type (type_of_value v))
+    (string_of_value v) (string_of_valtype (type_of_value v))
 
 let print _ vs =
   List.iter print_value vs;

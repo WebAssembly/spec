@@ -58,7 +58,7 @@ def $clos_externtype(context, externtype) : externtype  hint(show $clos_(%,%)) h
 def $clos_moduletype(context, moduletype) : moduletype  hint(show $clos_(%,%)) hint(macro "clostype")
 def $clos_deftypes(deftype*) : deftype*        hint(show $clos*#((%))) hint(macro "clostype")
 
-;; TODO(3, rossberg): enable inlining dt*
+;; TODO(3, rossberg): enable inlining dt* (requires coercing deftype* to typeuse*)
 def $clos_valtype(C, t) = $subst_all_valtype(t, dt*) -- if dt* = $clos_deftypes(C.TYPES)
 def $clos_deftype(C, dt) = $subst_all_deftype(dt, dt'*) -- if dt'* = $clos_deftypes(C.TYPES)
 def $clos_tagtype(C, jt) = $subst_all_tagtype(jt, dt*) -- if dt* = $clos_deftypes(C.TYPES)

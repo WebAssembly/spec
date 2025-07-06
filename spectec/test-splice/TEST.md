@@ -1474,6 +1474,7 @@ warning: definition `memsxt` was never spliced
 warning: definition `memsxx` was never spliced
 warning: definition `min` was never spliced
 warning: definition `minat` was never spliced
+warning: definition `minus_recs` was never spliced
 warning: definition `moduleinst` was never spliced
 warning: definition `narrow__` was never spliced
 warning: definition `nbytes_` was never spliced
@@ -2261,6 +2262,7 @@ warning: definition prose `memsxt` was never spliced
 warning: definition prose `memsxx` was never spliced
 warning: definition prose `min` was never spliced
 warning: definition prose `minat` was never spliced
+warning: definition prose `minus_recs` was never spliced
 warning: definition prose `moduleinst` was never spliced
 warning: definition prose `nunpack` was never spliced
 warning: definition prose `opt_` was never spliced

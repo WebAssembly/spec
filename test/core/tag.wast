@@ -19,6 +19,10 @@
   (module (tag (result i32)))
   "non-empty tag result type"
 )
+(assert_invalid
+  (module (import "" "" (tag (result i32))))
+  "non-empty tag result type"
+)
 
 
 ;; Link-time typing

@@ -21490,6 +21490,43 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
    #. Return :math:`{{\mathit{tv}}}{{}[ {{\mathit{tv}'}^\ast} := {{\mathit{tu}'}^\ast} ]}`.
 
 
+:math:`{\mathrm{minus}}_{\mathit{recs}}({{\mathit{typevar}}^\ast}, {{\mathit{typeuse}}^\ast})`
+..............................................................................................
+
+
+1. If :math:`{{\mathit{typevar}}^\ast} = \epsilon`, then:
+
+   a. If :math:`{{\mathit{typeuse}}^\ast} = \epsilon`, then:
+
+      1) Return :math:`(\epsilon, \epsilon)`.
+
+#. Else:
+
+   a. Let :math:`{\mathit{typevar}}_0~{{\mathit{tv}}^\ast}` be :math:`{{\mathit{typevar}}^\ast}`.
+
+   #. If :math:`{\mathit{typevar}}_0` is some :math:`\mathsf{rec}` :math:`\mathbb{N}` and :math:`{|{{\mathit{typeuse}}^\ast}|} \geq 1`, then:
+
+      1) Let :math:`{\mathit{tu}}_1~{{\mathit{tu}}^\ast}` be :math:`{{\mathit{typeuse}}^\ast}`.
+
+      #) Return :math:`{\mathrm{minus}}_{\mathit{recs}}({{\mathit{tv}}^\ast}, {{\mathit{tu}}^\ast})`.
+
+#. Assert: Due to validation, :math:`{|{{\mathit{typeuse}}^\ast}|} \geq 1`.
+
+#. Let :math:`{\mathit{tu}}_1~{{\mathit{tu}}^\ast}` be :math:`{{\mathit{typeuse}}^\ast}`.
+
+#. Assert: Due to validation, :math:`{|{{\mathit{typevar}}^\ast}|} \geq 1`.
+
+#. Let :math:`{\mathit{typevar}}_0~{{\mathit{tv}}^\ast}` be :math:`{{\mathit{typevar}}^\ast}`.
+
+#. Assert: Due to validation, :math:`{\mathit{typevar}}_0` is some :math:`{\mathit{typeidx}}`.
+
+#. Let :math:`x` be the type variable :math:`{\mathit{typevar}}_0`.
+
+#. Let :math:`({{\mathit{tv}'}^\ast}, {{\mathit{tu}'}^\ast})` be the destructuring of :math:`{\mathrm{minus}}_{\mathit{recs}}({{\mathit{tv}}^\ast}, {{\mathit{tu}}^\ast})`.
+
+#. Return :math:`(x~{{\mathit{tv}'}^\ast}, {\mathit{tu}}_1~{{\mathit{tu}'}^\ast})`.
+
+
 :math:`{{\mathit{pt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`
 ...........................................................................
 
@@ -21621,7 +21658,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ...............................................................................................
 
 
-1. Return :math:`(\mathsf{rec}~{{{\mathit{st}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}^\ast})`.
+1. Let :math:`({{\mathit{tv}'}^\ast}, {{\mathit{tu}'}^\ast})` be the destructuring of :math:`{\mathrm{minus}}_{\mathit{recs}}({{\mathit{tv}}^\ast}, {{\mathit{tu}}^\ast})`.
+
+#. Return :math:`(\mathsf{rec}~{{{\mathit{st}}}{{}[ {{\mathit{tv}'}^\ast} := {{\mathit{tu}'}^\ast} ]}^\ast})`.
 
 
 :math:`{{\mathit{qt}} {.} i}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`
@@ -29826,6 +29865,24 @@ subst_typevar tv typevar* typeuse*
     1) Return tu_1.
   e. Return $subst_typevar(tv, tv'*, tu'*).
 
+minus_recs typevar* typeuse*
+1. If (typevar* = []), then:
+  a. If (typeuse* = []), then:
+    1) Return ([], []).
+2. Else:
+  a. Let [typevar_0] :: tv* be typevar*.
+  b. If (typevar_0 is some REC /\ (|typeuse*| >= 1)), then:
+    1) Let [tu_1] :: tu* be typeuse*.
+    2) Return $minus_recs(tv*, tu*).
+3. Assert: Due to validation, (|typeuse*| >= 1).
+4. Let [tu_1] :: tu* be typeuse*.
+5. Assert: Due to validation, (|typevar*| >= 1).
+6. Let [typevar_0] :: tv* be typevar*.
+7. Assert: Due to validation, typevar_0 is some _IDX.
+8. Let (_IDX x) be typevar_0.
+9. Let (tv'*, tu'*) be $minus_recs(tv*, tu*).
+10. Return ([(_IDX x)] :: tv'*, [tu_1] :: tu'*).
+
 subst_packtype pt tv* tu*
 1. Return pt.
 
@@ -29885,7 +29942,8 @@ subst_subtype (SUB fin tu'* ct) tv* tu*
 1. Return (SUB fin $subst_typeuse(tu', tv*, tu*)* $subst_comptype(ct, tv*, tu*)).
 
 subst_rectype (REC st*) tv* tu*
-1. Return (REC $subst_subtype(st, tv*, tu*)*).
+1. Let (tv'*, tu'*) be $minus_recs(tv*, tu*).
+2. Return (REC $subst_subtype(st, tv'*, tu'*)*).
 
 subst_deftype (_DEF qt i) tv* tu*
 1. Return (_DEF $subst_rectype(qt, tv*, tu*) i).

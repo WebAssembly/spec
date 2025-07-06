@@ -37,9 +37,9 @@ let type_of_lane = function
 
 (* Shape-based operations *)
 
-module Convert (Lane : sig type t end) =
+module Conversion (Lane : sig type t end) =
 struct
-  module type S =
+  module type T =
   sig
     val shape : shape
     val to_lanes : t -> Lane.t list
@@ -94,7 +94,7 @@ sig
   val q15mulr_sat_s : t -> t -> t
 end
 
-module MakeIntShape (IXX : Ixx.S) (Cvt : Convert(IXX).S) :
+module MakeIntShape (IXX : Ixx.T) (Cvt : Conversion(IXX).T) :
   IntShape with type lane = IXX.t =
 struct
   type lane = IXX.t
@@ -199,7 +199,7 @@ sig
   val pmax : t -> t -> t
 end
 
-module MakeFloatShape (FXX : Fxx.S) (Cvt : Convert(FXX).S) :
+module MakeFloatShape (FXX : Fxx.T) (Cvt : Conversion(FXX).T) :
   FloatShape with type lane = FXX.t =
 struct
   type lane = FXX.t
@@ -405,13 +405,13 @@ end
 module I32x4_convert =
 struct
   let convert f v = I32x4.of_lanes (List.map f (F32x4.to_lanes v))
-  let trunc_sat_f32x4_s = convert I32_convert.trunc_sat_f32_s
-  let trunc_sat_f32x4_u = convert I32_convert.trunc_sat_f32_u
+  let trunc_sat_f32x4_s = convert Convert.I32_.trunc_sat_f32_s
+  let trunc_sat_f32x4_u = convert Convert.I32_.trunc_sat_f32_u
 
   let convert_zero f v =
     I32x4.of_lanes (List.map f (F64x2.to_lanes v) @ I32.[zero; zero])
-  let trunc_sat_f64x2_s_zero = convert_zero I32_convert.trunc_sat_f64_s
-  let trunc_sat_f64x2_u_zero = convert_zero I32_convert.trunc_sat_f64_u
+  let trunc_sat_f64x2_s_zero = convert_zero Convert.I32_.trunc_sat_f64_s
+  let trunc_sat_f64x2_u_zero = convert_zero Convert.I32_.trunc_sat_f64_u
 
   let ext_s = Int32.logand 0xffffffffl
   let ext_u = Int32.logand 0xffffl
@@ -434,7 +434,7 @@ struct
       | _, _ -> assert false
     in I32x4.of_lanes (dot xs ys)
 
-  let dot_s_add x y z =
+  let dot_add_s x y z =
     let xs = I8x16.to_lanes x in
     let ys = I8x16.to_lanes y in
     let rec dot xs ys =
@@ -442,8 +442,8 @@ struct
       | x1::x2::x3::x4::xs', y1::y2::y3::y4::ys' ->
         Int32.(add
           (add (mul x1 y1) (mul x2 y2))
-          (add (mul x3 y3) (mul x4 y4)))
-        :: dot xs' ys'
+          (add (mul x3 y3) (mul x4 y4))
+        ) :: dot xs' ys'
       | [], [] -> []
       | _, _ -> assert false
     in I32x4.add (I32x4.of_lanes (dot xs ys)) z
@@ -469,7 +469,8 @@ struct
     I64x2.of_lanes
       (List.map
         (fun i32 -> ext (Int64.of_int32 i32))
-        (take_or_drop 2 (I32x4.to_lanes x)))
+        (take_or_drop 2 (I32x4.to_lanes x))
+      )
   let extend_low_s = extend Lib.List.take ext_s
   let extend_high_s = extend Lib.List.drop ext_s
   let extend_low_u = extend Lib.List.take ext_u
@@ -484,22 +485,22 @@ end
 module F32x4_convert =
 struct
   let convert f v = F32x4.of_lanes (List.map f (I32x4.to_lanes v))
-  let convert_i32x4_s = convert F32_convert.convert_i32_s
-  let convert_i32x4_u = convert F32_convert.convert_i32_u
+  let convert_i32x4_s = convert Convert.F32_.convert_i32_s
+  let convert_i32x4_u = convert Convert.F32_.convert_i32_u
   let demote_f64x2_zero v =
     F32x4.of_lanes
-      (List.map F32_convert.demote_f64 (F64x2.to_lanes v) @ F32.[zero; zero])
+      (List.map Convert.F32_.demote_f64 (F64x2.to_lanes v) @ F32.[zero; zero])
 end
 
 module F64x2_convert =
 struct
   let convert f v =
     F64x2.of_lanes (List.map f (Lib.List.take 2 (I32x4.to_lanes v)))
-  let convert_i32x4_s = convert F64_convert.convert_i32_s
-  let convert_i32x4_u = convert F64_convert.convert_i32_u
+  let convert_i32x4_s = convert Convert.F64_.convert_i32_s
+  let convert_i32x4_u = convert Convert.F64_.convert_i32_u
   let promote_low_f32x4 v =
     F64x2.of_lanes
-      (List.map F64_convert.promote_f32 (Lib.List.take 2 (F32x4.to_lanes v)))
+      (List.map Convert.F64_.promote_f32 (Lib.List.take 2 (F32x4.to_lanes v)))
 end
 
 

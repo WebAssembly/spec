@@ -137,6 +137,10 @@ let print_yet at category msg =
 
 (* Helper functions *)
 
+let listv_len = function
+  | ListV arr_ref -> Array.length !arr_ref
+  | v -> fail_value "listv_len" v
+
 let listv_map f = function
   | ListV arr_ref -> ListV (ref (Array.map f !arr_ref))
   | v -> fail_value "listv_map" v

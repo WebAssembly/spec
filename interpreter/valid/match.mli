@@ -3,35 +3,35 @@ open Types
 
 (* Context *)
 
-type context = def_type list
+type context = deftype list
 
 
 (* Extremas *)
 
-val top_of_val_type : context -> val_type -> val_type
-val top_of_heap_type : context -> heap_type -> heap_type
-val bot_of_heap_type : context -> heap_type -> heap_type
-val top_of_str_type : context -> str_type -> heap_type
-val bot_of_str_type : context -> str_type -> heap_type
+val top_of_valtype : context -> valtype -> valtype
+val top_of_heaptype : context -> heaptype -> heaptype
+val bot_of_heaptype : context -> heaptype -> heaptype
+val top_of_comptype : context -> comptype -> heaptype
+val bot_of_comptype : context -> comptype -> heaptype
 
 
 (* Subtyping *)
 
-val match_num_type : context -> num_type -> num_type -> bool
-val match_ref_type : context -> ref_type -> ref_type -> bool
-val match_val_type : context -> val_type -> val_type -> bool
+val match_numtype : context -> numtype -> numtype -> bool
+val match_reftype : context -> reftype -> reftype -> bool
+val match_valtype : context -> valtype -> valtype -> bool
 
-val match_result_type : context -> result_type -> result_type -> bool
+val match_resulttype : context -> resulttype -> resulttype -> bool
 
-val match_storage_type : context -> storage_type -> storage_type -> bool
+val match_storagetype : context -> storagetype -> storagetype -> bool
 
-val match_str_type : context -> str_type -> str_type -> bool
-val match_def_type : context -> def_type -> def_type -> bool
+val match_comptype : context -> comptype -> comptype -> bool
+val match_deftype : context -> deftype -> deftype -> bool
 
-val match_func_type : context -> func_type -> func_type -> bool
+val match_functype : context -> functype -> functype -> bool
 
-val match_table_type : context -> table_type -> table_type -> bool
-val match_memory_type : context -> memory_type -> memory_type -> bool
-val match_global_type : context -> global_type -> global_type -> bool
+val match_tabletype : context -> tabletype -> tabletype -> bool
+val match_memorytype : context -> memorytype -> memorytype -> bool
+val match_globaltype : context -> globaltype -> globaltype -> bool
 
-val match_extern_type : context -> extern_type -> extern_type -> bool
+val match_externtype : context -> externtype -> externtype -> bool

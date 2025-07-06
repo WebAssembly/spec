@@ -156,7 +156,8 @@ All other control instruction are represented verbatim.
      \text{return\_call\_indirect}~~x{:}\Ttableidx~~y,I'{:}\Ttypeuse_I &\Rightarrow& \RETURNCALLINDIRECT~x~y
        & (\iff I' = \{\ILOCALS~(\epsilon)^\ast\}) \\ &&|&
      \text{throw}~~x{:}\Ttagidx_I &\Rightarrow& \THROW~x \\ &&|&
-     \text{throw\_ref} &\Rightarrow& \THROWREF \\
+     \text{throw\_ref} &\Rightarrow& \THROWREF \\ &&|&
+     \dots
    \end{array}
 
 .. note::
@@ -183,7 +184,7 @@ Also, for backwards compatibility, the table index to :math:`\text{call\_indirec
    \production{plain instruction} &
      \text{call\_indirect}~~\Ttypeuse
        &\equiv&
-     \text{call\_indirect}~~0~~\Ttypeuse \\
+     \text{call\_indirect}~~0~~\Ttypeuse \\ &
      \text{return\_call\_indirect}~~\Ttypeuse
        &\equiv&
      \text{return\_call\_indirect}~~0~~\Ttypeuse \\
@@ -435,7 +436,7 @@ Lexically, an |Toffset| or |Talign| phrase is considered a single :ref:`keyword 
      \text{v128.store8\_lane}~~x{:}\Tmemidx~~m{:}\Tmemarg_1~~y{:}\Tu8 &\Rightarrow& \V128.\STORE\K{8\_lane}~x~m~y \\ &&|&
      \text{v128.store16\_lane}~~x{:}\Tmemidx~~m{:}\Tmemarg_2~~y{:}\Tu8 &\Rightarrow& \V128.\STORE\K{16\_lane}~x~m~y \\ &&|&
      \text{v128.store32\_lane}~~x{:}\Tmemidx~~m{:}\Tmemarg_4~~y{:}\Tu8 &\Rightarrow& \V128.\STORE\K{32\_lane}~x~m~y \\ &&|&
-     \text{v128.store64\_lane}~~x{:}\Tmemidx~~m{:}\Tmemarg_8~~y{:}\Tu8 &\Rightarrow& \V128.\STORE\K{64\_lane}~x~m~y \\
+     \text{v128.store64\_lane}~~x{:}\Tmemidx~~m{:}\Tmemarg_8~~y{:}\Tu8 &\Rightarrow& \V128.\STORE\K{64\_lane}~x~m~y \\ &&|&
      \text{memory.size}~~x{:}\Tmemidx &\Rightarrow& \MEMORYSIZE~x \\ &&|&
      \text{memory.grow}~~x{:}\Tmemidx &\Rightarrow& \MEMORYGROW~x \\ &&|&
      \text{memory.fill}~~x{:}\Tmemidx &\Rightarrow& \MEMORYFILL~x \\ &&|&
@@ -1104,14 +1105,15 @@ Such a folded instruction can appear anywhere a regular instruction can.
        &\equiv\quad \text{block}~~\Tlabel~~\Tblocktype~~\Tinstr^\ast~~\text{end} \\ &
      \text{(}~\text{loop}~~\Tlabel~~\Tblocktype~~\Tinstr^\ast~\text{)}
        &\equiv\quad \text{loop}~~\Tlabel~~\Tblocktype~~\Tinstr^\ast~~\text{end} \\ &
-     \text{(}~\text{if}~~\Tlabel~~\Tblocktype~~\Tfoldedinstr^\ast
-       &\hspace{-3ex} \text{(}~\text{then}~~\Tinstr_1^\ast~\text{)}~~(\text{(}~\text{else}~~\Tinstr_2^\ast~\text{)})^?~~\text{)}
-       \quad\equiv \\ &\qquad
-       \Tfoldedinstr^\ast~~\text{if}~~\Tlabel
-       &\hspace{-12ex} \Tblocktype~~\Tinstr_1^\ast~~\text{else}~~(\Tinstr_2^\ast)^?~\text{end} \\ &
+     \text{(}~\text{if}~~\Tlabel~~\Tblocktype~~\Tfoldedinstr^\ast \\ &
+       \qquad \text{(}~\text{then}~~\Tinstr_1^\ast~\text{)}~~(\text{(}~\text{else}~~\Tinstr_2^\ast~\text{)})^?~~\text{)}
+       &\equiv\quad
+       \Tfoldedinstr^\ast~~\text{if}~~\Tlabel~~\Tblocktype~~\Tinstr_1^\ast~~\\ &
+       &\qquad\qquad \text{else}~~(\Tinstr_2^\ast)^?~\text{end} \\ &
      \text{(}~\text{try\_table}~~\Tlabel~~\Tblocktype~~\Tcatch^\ast~~\Tinstr^\ast~\text{)}
-       \quad\equiv \\ &\qquad
-       \text{try\_table}~~\Tlabel~~\Tblocktype~~\Tcatch^\ast~~\Tinstr^\ast~~\text{end} \\
+       &\equiv\quad
+       \text{try\_table}~~\Tlabel~~\Tblocktype~~\\ &
+       &\qquad\qquad \Tcatch^\ast~~\Tinstr^\ast~~\text{end} \\
    \end{array}
 
 

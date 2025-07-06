@@ -799,7 +799,7 @@ spectec 0.5 generator
 - 120/120 (100.00%)
 
 ===== ../test-interpreter/spec-test-3/br_on_non_null.wast =====
-- 13/13 (100.00%)
+- 15/15 (100.00%)
 
 ===== ../test-interpreter/spec-test-3/br_on_null.wast =====
 - 13/13 (100.00%)
@@ -1454,7 +1454,7 @@ spectec 0.5 generator
 - 41/41 (100.00%)
 
 ===== ../test-interpreter/spec-test-3/tag.wast =====
-- 11/11 (100.00%)
+- 12/12 (100.00%)
 
 ===== ../test-interpreter/spec-test-3/throw.wast =====
 - 14/14 (100.00%)
@@ -1478,7 +1478,7 @@ spectec 0.5 generator
 - 47/47 (100.00%)
 
 ===== ../test-interpreter/spec-test-3/type-rec.wast =====
-- 27/27 (100.00%)
+- 31/31 (100.00%)
 
 ===== ../test-interpreter/spec-test-3/type.wast =====
 - 2/2 (100.00%)
@@ -1507,7 +1507,7 @@ spectec 0.5 generator
 ===== ../test-interpreter/spec-test-3/utf8-invalid-encoding.wast =====
 - 0/0 (100.00%)
 
-Total [53006/53006] (100.00%)
+Total [53013/53013] (100.00%)
 
 == Complete.
 ```

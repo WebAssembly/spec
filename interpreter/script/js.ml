@@ -216,7 +216,7 @@ function assert_return(action, ...expected) {
 module NameMap = Map.Make(struct type t = Ast.name let compare = compare end)
 module Map = Map.Make(String)
 
-type exports = extern_type NameMap.t
+type exports = externtype NameMap.t
 type env =
   { mutable mods : exports Map.t;
     mutable insts : exports Map.t;
@@ -225,8 +225,8 @@ type env =
   }
 
 let exports m : exports =
-  let ModuleT (_, ets) = module_type_of m in
-  List.fold_left (fun map (ExportT (et, name)) -> NameMap.add name et map)
+  let ModuleT (_, ets) = moduletype_of m in
+  List.fold_left (fun map (ExportT (name, xt)) -> NameMap.add name xt map)
     NameMap.empty ets
 
 let env () : env =
@@ -285,81 +285,88 @@ let rec statify_list f rts = function
     let rts'', xs' = statify_list f rts' xs in
     rts'', x'::xs'
 
-let rec statify_heap_type rts = function
-  | DefHT dt ->
-    let rts', i = statify_def_type rts dt in
-    rts', VarHT (StatX i)
+let rec statify_typeuse rts = function
+  | Def dt ->
+    let rts', i = statify_deftype rts dt in
+    rts', Idx i
   | ht -> rts, ht
 
-and statify_ref_type rts = function
+and statify_heaptype rts = function
+  | UseHT ut ->
+    let rts', ut' = statify_typeuse rts ut in
+    rts', UseHT ut'
+  | ht -> rts, ht
+
+and statify_reftype rts = function
   | (nul, ht) ->
-    let rts', ht' = statify_heap_type rts ht in
+    let rts', ht' = statify_heaptype rts ht in
     rts', (nul, ht')
 
-and statify_val_type rts = function
+and statify_valtype rts = function
   | RefT rt ->
-    let rts', rt' = statify_ref_type rts rt in
+    let rts', rt' = statify_reftype rts rt in
     rts', RefT rt'
   | t -> rts, t
 
-and statify_storage_type rts = function
+and statify_storagetype rts = function
   | ValStorageT t ->
-    let rts', t' = statify_val_type rts t in
+    let rts', t' = statify_valtype rts t in
     rts', ValStorageT t'
   | st -> rts, st
 
-and statify_field_type rts (FieldT (mut, st)) =
-    let rts', st' = statify_storage_type rts st in
+and statify_fieldtype rts (FieldT (mut, st)) =
+    let rts', st' = statify_storagetype rts st in
     rts', FieldT (mut, st')
 
-and statify_struct_type rts (StructT fts) =
-    let rts', fts' = statify_list statify_field_type rts fts in
+and statify_structtype rts (StructT fts) =
+    let rts', fts' = statify_list statify_fieldtype rts fts in
     rts', StructT fts'
 
-and statify_array_type rts (ArrayT ft) =
-    let rts', ft' = statify_field_type rts ft in
+and statify_arraytype rts (ArrayT ft) =
+    let rts', ft' = statify_fieldtype rts ft in
     rts', ArrayT ft'
 
-and statify_func_type rts (FuncT (ts1, ts2)) =
-    let rts', ts1' = statify_list statify_val_type rts ts1 in
-    let rts'', ts2' = statify_list statify_val_type rts' ts2 in
+and statify_functype rts (FuncT (ts1, ts2)) =
+    let rts', ts1' = statify_list statify_valtype rts ts1 in
+    let rts'', ts2' = statify_list statify_valtype rts' ts2 in
     rts'', FuncT (ts1', ts2')
 
-and statify_str_type rts = function
-  | DefStructT st ->
-    let rts', st' = statify_struct_type rts st in
-    rts', DefStructT st'
-  | DefArrayT at ->
-    let rts', at' = statify_array_type rts at in
-    rts', DefArrayT at'
-  | DefFuncT ft ->
-    let rts', ft' = statify_func_type rts ft in
-    rts', DefFuncT ft'
+and statify_comptype rts = function
+  | StructCT st ->
+    let rts', st' = statify_structtype rts st in
+    rts', StructCT st'
+  | ArrayCT at ->
+    let rts', at' = statify_arraytype rts at in
+    rts', ArrayCT at'
+  | FuncCT ft ->
+    let rts', ft' = statify_functype rts ft in
+    rts', FuncCT ft'
 
-and statify_sub_type rts (SubT (fin, hts, st)) =
-    let rts', hts' = statify_list statify_heap_type rts hts in
-    let rts'', st' = statify_str_type rts' st in
-    rts'', SubT (fin, hts', st')
+and statify_subtype rts (SubT (fin, uts, ct)) =
+    let rts', uts' = statify_list statify_typeuse rts uts in
+    let rts'', ct' = statify_comptype rts' ct in
+    rts'', SubT (fin, uts', ct')
 
-and statify_rec_type rts (RecT sts) =
-    let rts', sts' = statify_list statify_sub_type rts sts in
+and statify_rectype rts (RecT sts) =
+    let rts', sts' = statify_list statify_subtype rts sts in
     rts', RecT sts'
 
-and statify_def_type rts (DefT (rt, i)) =
+and statify_deftype rts (DefT (rt, i)) =
     match List.find_opt (fun (rt', _) -> rt = rt') rts with
     | Some (_, (rt', self)) -> rts, Int32.add self i
     | None ->
-      let rts', rt' = statify_rec_type rts rt in
+      let rts', RecT sts' = statify_rectype rts rt in
       let self =
         if rts' = [] then 0l else
         let _, (RecT sts, self) = Lib.List.last rts' in
         Int32.add self (Lib.List32.length sts)
       in
       let s = function
-        | RecX j -> VarHT (StatX (Int32.add self j))
-        | x -> VarHT x
+        | Rec j -> Idx (Int32.add self j)
+        | ut -> ut
       in
-      rts' @ [rt, (subst_rec_type s rt', self)], Int32.add self i
+      let rt' = RecT (List.map (subst_subtype s) sts') in
+      rts' @ [rt, (rt', self)], Int32.add self i
 
 
 (* Wrappers *)
@@ -397,7 +404,7 @@ let value v =
   match v.it with
   | Num n -> [Const (n @@ v.at) @@ v.at]
   | Vec s -> [VecConst (s @@ v.at) @@ v.at]
-  | Ref (NullRef ht) -> [RefNull (Match.bot_of_heap_type [] ht) @@ v.at]
+  | Ref (NullRef ht) -> [RefNull (Match.bot_of_heaptype [] ht) @@ v.at]
   | Ref (HostRef n) ->
     [ Const (I32 n @@ v.at) @@ v.at;
       Call (hostref_idx @@ v.at) @@ v.at;
@@ -410,15 +417,15 @@ let value v =
   | Ref _ -> assert false
 
 let invoke dt vs at =
-  let dummy = RecT [SubT (Final, [], DefFuncT (FuncT ([], [])))] in
+  let dummy = RecT [SubT (Final, [], FuncCT (FuncT ([], [])))] in
   let rts0 = Lib.List32.init subject_type_idx (fun i -> dummy, (dummy, i)) in
-  let rts, i = statify_def_type rts0 dt in
+  let rts, i = statify_deftype rts0 dt in
   List.map (fun (_, (rt, _)) -> rt @@ at) (Lib.List32.drop subject_type_idx rts),
-  FuncImport (i @@ at) @@ at,
+  ExternFuncT (Idx i),
   List.concat (List.map value vs) @ [Call (subject_idx @@ at) @@ at]
 
 let get t at =
-  [], GlobalImport t @@ at, [GlobalGet (subject_idx @@ at) @@ at]
+  [], ExternGlobalT t, [GlobalGet (subject_idx @@ at) @@ at]
 
 let run ts at =
   [], []
@@ -447,10 +454,10 @@ let rec type_of_result res =
   | EitherResult rs ->
     let ts = List.map type_of_result rs in
     List.fold_left (fun t1 t2 ->
-      if Match.match_val_type [] t1 t2 then t2 else
-      if Match.match_val_type [] t2 t1 then t1 else
-      if Match.(top_of_val_type [] t1 = top_of_val_type [] t2) then
-        Match.top_of_val_type [] t1
+      if Match.match_valtype [] t1 t2 then t2 else
+      if Match.match_valtype [] t2 t1 then t1 else
+      if Match.(top_of_valtype [] t1 = top_of_valtype [] t2) then
+        Match.top_of_valtype [] t1
       else
         BotT  (* should really be Top, but we don't have that :) *)
     ) (List.hd ts) ts
@@ -460,8 +467,8 @@ let assert_return ress ts at =
   let rec test (res, t) =
     if
       not (
-        Match.match_val_type [] t (type_of_result res) ||
-        Match.match_val_type [] (type_of_result res) t
+        Match.match_valtype [] t (type_of_result res) ||
+        Match.match_valtype [] (type_of_result res) t
       )
     then
       [ Br (0l @@ at) @@ at ]
@@ -495,9 +502,9 @@ let assert_return ress ts at =
         | NumPat {it = I32 _ as i; _} -> I32 (Int32.minus_one), i
         | NumPat {it = I64 _ as i; _} -> I64 (Int64.minus_one), i
         | NumPat {it = F32 f; _} ->
-          I32 (Int32.minus_one), I32 (I32_convert.reinterpret_f32 f)
+          I32 (Int32.minus_one), I32 (Convert.I32_.reinterpret_f32 f)
         | NumPat {it = F64 f; _} ->
-          I64 (Int64.minus_one), I64 (I64_convert.reinterpret_f64 f)
+          I64 (Int64.minus_one), I64 (Convert.I64_.reinterpret_f64 f)
         | NanPat {it = F32 nan; _} ->
           nan_bitmask_of nan I32T, canonical_nan_of I32T
         | NanPat {it = F64 nan; _} ->
@@ -563,7 +570,7 @@ let assert_return ress ts at =
         BrIf (0l @@ at) @@ at ]
     | EitherResult ress ->
       let idx = Lib.List32.length !locals in
-      locals := !locals @ [{ltype = t} @@ res.at];
+      locals := !locals @ [Local t @@ res.at];
       [ LocalSet (idx @@ res.at) @@ res.at;
         Block (ValBlockType None,
           List.map (fun resI ->
@@ -581,42 +588,42 @@ let assert_return ress ts at =
 let i32 = NumT I32T
 let anyref = RefT (Null, AnyHT)
 let eqref = RefT (Null, EqHT)
-let func_rec_type ts1 ts2 at =
-  RecT [SubT (Final, [], DefFuncT (FuncT (ts1, ts2)))] @@ at
+let func_rectype ts1 ts2 at =
+  RecT [SubT (Final, [], FuncCT (FuncT (ts1, ts2)))] @@ at
 
 let wrap item_name wrap_action wrap_assertion at =
   let itypes, idesc, action = wrap_action at in
   let locals, assertion = wrap_assertion at in
   let types =
-    func_rec_type [] [] at ::
-    func_rec_type [i32] [anyref] at ::
-    func_rec_type [eqref; eqref] [i32] at ::
+    func_rectype [] [] at ::
+    func_rectype [i32] [anyref] at ::
+    func_rectype [eqref; eqref] [i32] at ::
     itypes
   in
   let imports =
-    [ {module_name = Utf8.decode "module"; item_name; idesc} @@ at;
-      {module_name = Utf8.decode "spectest"; item_name = Utf8.decode "hostref";
-       idesc = FuncImport (1l @@ at) @@ at} @@ at;
-      {module_name = Utf8.decode "spectest"; item_name = Utf8.decode "eq_ref";
-       idesc = FuncImport (2l @@ at) @@ at} @@ at;
+    [ Import (Utf8.decode "module", item_name, idesc) @@ at;
+      Import (Utf8.decode "spectest", Utf8.decode "hostref",
+        ExternFuncT (Idx 1l)) @@ at;
+      Import (Utf8.decode "spectest", Utf8.decode "eq_ref",
+        ExternFuncT (Idx 2l)) @@ at;
     ]
   in
   let item =
     List.fold_left
-      (fun i im ->
-        match im.it.idesc.it with FuncImport _ -> Int32.add i 1l | _ -> i
+      (fun i {it = Import (_, _, xt); _} ->
+        match xt with ExternFuncT _ -> Int32.add i 1l | _ -> i
       ) 0l imports @@ at
   in
-  let edesc = FuncExport item @@ at in
-  let exports = [{name = Utf8.decode "run"; edesc} @@ at] in
+  let edesc = FuncX item @@ at in
+  let exports = [Export (Utf8.decode "run", edesc) @@ at] in
   let body =
     [ Block (ValBlockType None, action @ assertion @ [Return @@ at]) @@ at;
       Unreachable @@ at ]
   in
-  let funcs = [{ftype = 0l @@ at; locals; body} @@ at] in
+  let funcs = [Func (0l @@ at, locals, body) @@ at] in
   let m = {empty_module with types; funcs; imports; exports} @@ at in
   (try
-    Valid.check_module m;  (* sanity check *)
+    ignore (Valid.check_module m);  (* sanity check *)
   with Valid.Invalid _ as exn ->
     prerr_endline (string_of_region at ^
       ": internal error in JS converter, invalid wrapper module generated:");
@@ -626,28 +633,28 @@ let wrap item_name wrap_action wrap_assertion at =
   Encode.encode m
 
 
-let is_js_num_type = function
+let is_js_numtype = function
   | I32T | I64T -> true
   | F32T | F64T -> false
 
-let is_js_vec_type = function
+let is_js_vectype = function
   | _ -> false
 
-let is_js_ref_type = function
+let is_js_reftype = function
   | (_, ExnHT) -> false
   | _ -> true
 
-let is_js_val_type = function
-  | NumT t -> is_js_num_type t
-  | VecT t -> is_js_vec_type t
-  | RefT t -> is_js_ref_type t
+let is_js_valtype = function
+  | NumT t -> is_js_numtype t
+  | VecT t -> is_js_vectype t
+  | RefT t -> is_js_reftype t
   | BotT -> assert false
 
-let is_js_global_type = function
-  | GlobalT (mut, t) -> is_js_val_type t && mut = Cons
+let is_js_globaltype = function
+  | GlobalT (mut, t) -> is_js_valtype t && mut = Cons
 
-let is_js_func_type = function
-  | FuncT (ts1, ts2) -> List.for_all is_js_val_type (ts1 @ ts2)
+let is_js_functype = function
+  | FuncT (ts1, ts2) -> List.for_all is_js_valtype (ts1 @ ts2)
 
 
 (* Script conversion *)
@@ -727,7 +734,7 @@ let of_vec_pat = function
 
 let of_ref_pat = function
   | RefPat r -> of_ref r.it
-  | RefTypePat t -> "\"ref." ^ string_of_heap_type t ^ "\""
+  | RefTypePat t -> "\"ref." ^ string_of_heaptype t ^ "\""
   | NullPat -> "\"ref.null\""
 
 let rec of_result res =
@@ -758,9 +765,9 @@ let of_action env act =
     "call(" ^ of_inst_opt env x_opt ^ ", " ^ of_name name ^ ", " ^
       "[" ^ String.concat ", " (List.map of_value vs) ^ "])",
     (match lookup_export env x_opt name act.at with
-    | ExternFuncT dt ->
-      let FuncT (_, out) as ft = as_func_str_type (expand_def_type dt) in
-      if is_js_func_type ft then
+    | ExternFuncT (Def dt) ->
+      let FuncT (_, out) as ft = functype_of_comptype (expand_deftype dt) in
+      if is_js_functype ft then
         None
       else
         Some (of_wrapper env x_opt name (invoke dt vs), out)
@@ -769,7 +776,7 @@ let of_action env act =
   | Get (x_opt, name) ->
     "get(" ^ of_inst_opt env x_opt ^ ", " ^ of_name name ^ ")",
     (match lookup_export env x_opt name act.at with
-    | ExternGlobalT gt when not (is_js_global_type gt) ->
+    | ExternGlobalT gt when not (is_js_globaltype gt) ->
       let GlobalT (_, t) = gt in
       Some (of_wrapper env x_opt name (get gt), [t])
     | _ -> None

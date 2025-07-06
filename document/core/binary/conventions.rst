@@ -58,6 +58,8 @@ In order to distinguish symbols of the binary syntax from symbols of the abstrac
 
 * Productions are written ${grammar: Bsym}, where each ${:A_i} is the attribute that is synthesized for ${grammar-case: Bsym} in the given case, usually from attribute variables bound in ${:B_i}.
 
+* Large productions may be split into multiple definitions, indicated by ending the first one with explicit ellipses, :math:`\B{sym} ::= B_1 \Rightarrow A_1 ~|~ \dots`, and starting continuations with ellipses, :math:`\B{sym} ::= \dots ~|~ B_2 \Rightarrow A_2`.
+
 * Some productions are augmented by side conditions in parentheses, which restrict the applicability of the production. They provide a shorthand for a combinatorial expansion of the production into many separate cases.
 
 * If the same meta variable or non-terminal symbol appears multiple times in a production (in the syntax or in an attribute), then all those occurrences must have the same instantiation.

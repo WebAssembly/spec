@@ -59,8 +59,8 @@ let peek s = if eos s then None else Some (read s)
 let get s = check 1 s; let b = read s in skip 1 s; b
 let get_string n s = let i = pos s in skip n s; String.sub s.bytes i n
 
-let position pos = Source.{file = "@name section"; line = -1; column = pos}
-let region left right = Source.{left = position left; right = position right}
+let loc pos = Source.{file = "@name section"; line = -1; column = pos}
+let region left right = Source.{left = loc left; right = loc right}
 
 let at f s =
   let left = pos s in
@@ -310,16 +310,18 @@ let is_contained r1 r2 = r1.left >= r2.left && r1.right <= r2.right
 let is_left r1 r2 = r1.right <= r2.left
 
 let locate_func bs x name at (f : func) =
-  if is_left at f.it.ftype.at then
+  let Func (y, _, es) = f.it in
+  if is_left at y.at then
     {empty with funcs = IdxMap.singleton x name}
-  else if f.it.body = [] || is_left at (List.hd f.it.body).at then
+  else if es = [] || is_left at (List.hd es).at then
     (* TODO re-parse the function params and locals from bs *)
     parse_error at "@name annotation: local names not yet supported"
   else
     parse_error at "@name annotation: misplaced annotation"
 
 let locate_tag bs x name at (tag : tag) =
-  if is_left at tag.it.tgtype.at then
+  let Tag _ = tag.it in
+  if is_left at {tag.at with left = tag.at.right} then
     {empty with tags = IdxMap.singleton x name}
   else
     parse_error at "@name annotation: misplaced annotation"
@@ -331,18 +333,18 @@ let locate_type bs x name at (ty : type_) =
 let locate_module bs name at (m : module_) =
   if not (is_contained at m.at) then
     parse_error at "misplaced @name annotation";
-  let {types; tags; globals; tables; memories; funcs; start;
-    elems; datas; imports; exports} = m.it in
+  let {types; tags; globals; memories; tables; funcs; start;
+    datas; elems; imports; exports} = m.it in
   let ats =
     List.map (fun p -> p.at) types @
     List.map (fun p -> p.at) tags @
     List.map (fun p -> p.at) globals @
-    List.map (fun p -> p.at) tables @
     List.map (fun p -> p.at) memories @
+    List.map (fun p -> p.at) tables @
     List.map (fun p -> p.at) funcs @
     List.map (fun p -> p.at) (Option.to_list start) @
-    List.map (fun p -> p.at) elems @
     List.map (fun p -> p.at) datas @
+    List.map (fun p -> p.at) elems @
     List.map (fun p -> p.at) imports @
     List.map (fun p -> p.at) exports |> List.sort compare
   in
@@ -413,17 +415,18 @@ let check (m : module_) (fmt : format) =
       check_error map.at ("custom @name: invalid function index " ^
         I32.to_string_u x);
     let f = Lib.List32.nth m.it.funcs x in
-    if I32.ge_u f.it.ftype.it (Lib.List32.length comptypes) then
+    let Func (y, ls, _) = f.it in
+    if I32.ge_u y.it (Lib.List32.length comptypes) then
       check_error map.at ("custom @name: invalid type index " ^
-        I32.to_string_u f.it.ftype.it ^ " for function " ^ I32.to_string_u x);
+        I32.to_string_u y.it ^ " for function " ^ I32.to_string_u x);
     let ts =
-      match Lib.List32.nth comptypes f.it.ftype.it with
-      | DefFuncT (FuncT (ts, _)) -> ts
+      match Lib.List32.nth comptypes y.it with
+      | FuncCT (FuncT (ts, _)) -> ts
       | _ ->
         check_error map.at ("custom @name: non-function type " ^
-          I32.to_string_u f.it.ftype.it ^ " for function " ^ I32.to_string_u x)
+          I32.to_string_u y.it ^ " for function " ^ I32.to_string_u x)
     in
-    let n = I32.add (Lib.List32.length ts) (Lib.List32.length f.it.locals) in
+    let n = I32.add (Lib.List32.length ts) (Lib.List32.length ls) in
     IdxMap.iter (fun y name ->
       if I32.ge_u y n then
         check_error name.at ("custom @name: invalid local index " ^
@@ -441,7 +444,7 @@ let check (m : module_) (fmt : format) =
         I32.to_string_u x);
     let n =
       match Lib.List32.nth comptypes x with
-      | DefStructT (StructT fs) -> Lib.List32.length fs
+      | StructCT (StructT fs) -> Lib.List32.length fs
       | _ ->
         check_error map.at ("custom @name: non-struct type " ^
           I32.to_string_u x)

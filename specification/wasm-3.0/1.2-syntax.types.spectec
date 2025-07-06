@@ -385,7 +385,16 @@ def $subst_comptype((FUNC ft), tv*, tu*) = FUNC $subst_functype(ft, tv*, tu*)
 def $subst_subtype((SUB fin tu'* ct), tv*, tu*) =
   SUB fin $subst_typeuse(tu', tv*, tu*)* $subst_comptype(ct, tv*, tu*)
 
-def $subst_rectype((REC st*), tv*, tu*) = REC $subst_subtype(st, tv*, tu*)*
+def $minus_recs(typevar*, typeuse*) : (typevar*, typeuse*)
+def $minus_recs(eps, eps) = (eps, eps)
+def $minus_recs((REC n) tv*, tu_1 tu*) = $minus_recs(tv*, tu*)
+def $minus_recs((_IDX x) tv*, tu_1 tu*) = ((_IDX x) tv'*, tu_1 tu'*)
+  -- if (tv'*, tu'*) = $minus_recs(tv*, tu*)
+
+def $subst_rectype((REC st*), tv*, tu*) = REC $subst_subtype(st, tv'*, tu'*)*
+  -- if (tv'*, tu'*) = $minus_recs(tv*, tu*)
+;;  -- if tv'* = $setminus_(typevar, tv*, (REC i)^(i<|st*|))
+;;  -- (if (tv', tu') <- (tv, tu)*)*
 
 def $subst_deftype((_DEF qt i), tv*, tu*) = _DEF $subst_rectype(qt, tv*, tu*) i
 
@@ -406,15 +415,15 @@ def $subst_moduletype(xt_1* -> xt_2*, tv*, tu*) = $subst_externtype(xt_1, tv*, t
 
 ;; Complete substitution
 
-def $subst_all_valtype(valtype, heaptype*) : valtype  hint(show %#`[:=%]) hint(macro "%subst")
-def $subst_all_reftype(reftype, heaptype*) : reftype  hint(show %#`[:=%]) hint(macro "%subst")
-def $subst_all_deftype(deftype, heaptype*) : deftype  hint(show %#`[:=%]) hint(macro "%subst")
-def $subst_all_tagtype(tagtype, heaptype*) : tagtype  hint(show %#`[:=%]) hint(macro "%subst")
-def $subst_all_globaltype(globaltype, heaptype*) : globaltype  hint(show %#`[:=%]) hint(macro "%subst")
-def $subst_all_memtype(memtype, heaptype*) : memtype  hint(show %#`[:=%]) hint(macro "%subst")
-def $subst_all_tabletype(tabletype, heaptype*) : tabletype  hint(show %#`[:=%]) hint(macro "%subst")
-def $subst_all_externtype(externtype, heaptype*) : externtype  hint(show %#`[:=%]) hint(macro "%subst")
-def $subst_all_moduletype(moduletype, heaptype*) : moduletype  hint(show %#`[:=%]) hint(macro "%subst")
+def $subst_all_valtype(valtype, typeuse*) : valtype  hint(show %#`[:=%]) hint(macro "%subst")
+def $subst_all_reftype(reftype, typeuse*) : reftype  hint(show %#`[:=%]) hint(macro "%subst")
+def $subst_all_deftype(deftype, typeuse*) : deftype  hint(show %#`[:=%]) hint(macro "%subst")
+def $subst_all_tagtype(tagtype, typeuse*) : tagtype  hint(show %#`[:=%]) hint(macro "%subst")
+def $subst_all_globaltype(globaltype, typeuse*) : globaltype  hint(show %#`[:=%]) hint(macro "%subst")
+def $subst_all_memtype(memtype, typeuse*) : memtype  hint(show %#`[:=%]) hint(macro "%subst")
+def $subst_all_tabletype(tabletype, typeuse*) : tabletype  hint(show %#`[:=%]) hint(macro "%subst")
+def $subst_all_externtype(externtype, typeuse*) : externtype  hint(show %#`[:=%]) hint(macro "%subst")
+def $subst_all_moduletype(moduletype, typeuse*) : moduletype  hint(show %#`[:=%]) hint(macro "%subst")
 
 def $subst_all_valtype(t, tu^n) = $subst_valtype(t, (_IDX i)^(i<n), tu^n)
 def $subst_all_reftype(rt, tu^n) = $subst_reftype(rt, (_IDX i)^(i<n), tu^n)
@@ -426,7 +435,7 @@ def $subst_all_tabletype(tt, tu^n) = $subst_tabletype(tt, (_IDX i)^(i<n), tu^n)
 def $subst_all_externtype(xt, tu^n) = $subst_externtype(xt, (_IDX i)^(i<n), tu^n)
 def $subst_all_moduletype(mmt, tu^n) = $subst_moduletype(mmt, (_IDX i)^(i<n), tu^n)
 
-def $subst_all_deftypes(deftype*, heaptype*) : deftype*  hint(show %#`[:=%]) hint(macro "%subst")
+def $subst_all_deftypes(deftype*, typeuse*) : deftype*  hint(show %#`[:=%]) hint(macro "%subst")
 def $subst_all_deftypes(eps, tu*) = eps
 def $subst_all_deftypes(dt_1 dt*, tu*) = $subst_all_deftype(dt_1, tu*) $subst_all_deftypes(dt*, tu*)
 
@@ -447,7 +456,7 @@ def $unrollrt(rectype) = REC ($subst_subtype(subtype, (REC i)^(i<n), (_DEF recty
 def $rolldt(x, rectype) = (_DEF (REC subtype^n) i)^(i<n)  -- if $rollrt(x, rectype) = REC subtype^n
 def $unrolldt(_DEF rectype i) = subtype*[i]               -- if $unrollrt(rectype) = REC subtype*
 
-def $expanddt(deftype) = comptype                        -- if $unrolldt(deftype) = SUB fin typeuse* comptype
+def $expanddt(deftype) = comptype                         -- if $unrolldt(deftype) = SUB fin typeuse* comptype
 
 
 ;; Free indices
