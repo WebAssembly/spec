@@ -325,11 +325,11 @@ struct
   let binop f x y =
     I64x2.of_lanes (List.map2 f (I64x2.to_lanes x) (I64x2.to_lanes y))
 
-  let lognot = unop I64.lognot
+  let not_ = unop I64.not_
   let and_ = binop I64.and_
   let or_ = binop I64.or_
   let xor = binop I64.xor
-  let andnot = binop (fun x y -> I64.and_ x (I64.lognot y))
+  let andnot = binop (fun x y -> I64.and_ x (I64.not_ y))
 
   let bitselect v1 v2 c =
     let v2_andnot_c = andnot v2 c in
@@ -346,7 +346,7 @@ struct
       Option.value (List.nth_opt ns (I32.to_int_u i)) ~default: I32.zero
     in I8x16.of_lanes (List.map select is)
 
-  let shuffle v1 v2 is =
+  let shuffle is v1 v2 =
     let ns = I8x16.to_lanes v1 @ I8x16.to_lanes v2 in
     I8x16.of_lanes (List.map (List.nth ns) is)
 end

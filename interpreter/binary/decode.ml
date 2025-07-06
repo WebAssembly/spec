@@ -100,10 +100,11 @@ let rec sN n s =
   then (if b land 0x40 = 0 then x else Int64.(logor x (logxor (-1L) 0x7fL)))
   else Int64.(logor x (shift_left (sN (n - 7) s) 7))
 
-let u32 s = Int64.to_int32 (uN 32 s)
+let u8 s = I8.of_int_u (I64.to_int_u (uN 8 s))
+let u32 s = I32.of_int_u (I64.to_int_u (uN 32 s))
 let u64 s = uN 64 s
-let s7 s = Int64.to_int (sN 7 s)
-let s32 s = Int64.to_int32 (sN 32 s)
+let s7 s = I64.to_int_s (sN 7 s)
+let s32 s = I32.of_int_s (I64.to_int_s (sN 32 s))
 let s33 s = Convert.I32_.wrap_i64 (sN 33 s)
 let s64 s = sN 64 s
 let f32 s = F32.of_bits (word32 s)
@@ -120,6 +121,7 @@ let string s = let n = len32 s in get_string n s
 let rec list f n s = if n = 0 then [] else let x = f s in x :: list f (n - 1) s
 let opt f b s = if b then Some (f s) else None
 let vec f s = let n = len32 s in list f n s
+let repeat n f s = List.init n (fun _ -> f s)
 
 let rec either fs s =
   match fs with
@@ -147,6 +149,7 @@ open Types
 
 let zero s = expect 0x00 s "zero byte expected"
 let idx s = u32 s
+let laneidx s = u8 s
 
 let mutability s =
   match byte s with
@@ -384,38 +387,29 @@ let rec instr s =
 
   | 0x05 -> error s pos "misplaced ELSE opcode"
   | 0x06 | 0x07 as b -> illegal s pos b
-  | 0x08 -> throw (at idx s)
+  | 0x08 -> let x = at idx s in throw x
   | 0x09 as b -> illegal s pos b
   | 0x0a -> throw_ref
   | 0x0b -> error s pos "misplaced END opcode"
 
-  | 0x0c -> br (at idx s)
-  | 0x0d -> br_if (at idx s)
-  | 0x0e ->
-    let xs = vec (at idx) s in
-    let x = at idx s in
-    br_table xs x
+  | 0x0c -> let x = at idx s in br x
+  | 0x0d -> let x = at idx s in br_if x
+  | 0x0e -> let xs = vec (at idx) s in let x = at idx s in br_table xs x
   | 0x0f -> return
 
-  | 0x10 -> call (at idx s)
-  | 0x11 ->
-    let y = at idx s in
-    let x = at idx s in
-    call_indirect x y
-  | 0x12 -> return_call (at idx s)
-  | 0x13 ->
-    let y = at idx s in
-    let x = at idx s in
-    return_call_indirect x y
+  | 0x10 -> let x = at idx s in call x
+  | 0x11 -> let y = at idx s in let x = at idx s in call_indirect x y
+  | 0x12 -> let x = at idx s in return_call x
+  | 0x13 -> let y = at idx s in let x = at idx s in return_call_indirect x y
 
-  | 0x14 -> call_ref (at idx s)
-  | 0x15 -> return_call_ref (at idx s)
+  | 0x14 -> let x = at idx s in call_ref x
+  | 0x15 -> let x = at idx s in return_call_ref x
 
   | 0x16 | 0x17 | 0x18 | 0x19 as b -> illegal s pos b
 
   | 0x1a -> drop
   | 0x1b -> select None
-  | 0x1c -> select (Some (vec valtype s))
+  | 0x1c -> let ts = vec valtype s in select (Some ts)
 
   | 0x1d | 0x1e as b -> illegal s pos b
 
@@ -426,13 +420,13 @@ let rec instr s =
     end_ s;
     try_table bt cs es
 
-  | 0x20 -> local_get (at idx s)
-  | 0x21 -> local_set (at idx s)
-  | 0x22 -> local_tee (at idx s)
-  | 0x23 -> global_get (at idx s)
-  | 0x24 -> global_set (at idx s)
-  | 0x25 -> table_get (at idx s)
-  | 0x26 -> table_set (at idx s)
+  | 0x20 -> let x = at idx s in local_get x
+  | 0x21 -> let x = at idx s in local_set x
+  | 0x22 -> let x = at idx s in local_tee x
+  | 0x23 -> let x = at idx s in global_get x
+  | 0x24 -> let x = at idx s in global_set x
+  | 0x25 -> let x = at idx s in table_get x
+  | 0x26 -> let x = at idx s in table_set x
 
   | 0x27 as b -> illegal s pos b
 
@@ -461,13 +455,13 @@ let rec instr s =
   | 0x3d -> let x, a, o = memop s in i64_store16 x a o
   | 0x3e -> let x, a, o = memop s in i64_store32 x a o
 
-  | 0x3f -> memory_size (at idx s)
-  | 0x40 -> memory_grow (at idx s)
+  | 0x3f -> let x = at idx s in memory_size x
+  | 0x40 -> let x = at idx s in memory_grow x
 
-  | 0x41 -> i32_const (at s32 s)
-  | 0x42 -> i64_const (at s64 s)
-  | 0x43 -> f32_const (at f32 s)
-  | 0x44 -> f64_const (at f64 s)
+  | 0x41 -> let c = at s32 s in i32_const c
+  | 0x42 -> let c = at s64 s in i64_const c
+  | 0x43 -> let c = at f32 s in f32_const c
+  | 0x44 -> let c = at f64 s in f64_const c
 
   | 0x45 -> i32_eqz
   | 0x46 -> i32_eq
@@ -611,42 +605,42 @@ let rec instr s =
   | 0xc5 | 0xc6 | 0xc7 | 0xc8 | 0xc9 | 0xca | 0xcb
   | 0xcc | 0xcd | 0xce | 0xcf as b -> illegal s pos b
 
-  | 0xd0 -> ref_null (heaptype s)
+  | 0xd0 -> let ht = heaptype s in ref_null ht
   | 0xd1 -> ref_is_null
-  | 0xd2 -> ref_func (at idx s)
+  | 0xd2 -> let x = at idx s in ref_func x
   | 0xd3 -> ref_eq
   | 0xd4 -> ref_as_non_null
-  | 0xd5 -> br_on_null (at idx s)
-  | 0xd6 -> br_on_non_null (at idx s)
+  | 0xd5 -> let x = at idx s in br_on_null x
+  | 0xd6 -> let x = at idx s in br_on_non_null x
 
   | 0xfb as b ->
     (match u32 s with
-    | 0x00l -> struct_new (at idx s)
-    | 0x01l -> struct_new_default (at idx s)
-    | 0x02l -> let x = at idx s in let y = at idx s in struct_get x y
-    | 0x03l -> let x = at idx s in let y = at idx s in struct_get_s x y
-    | 0x04l -> let x = at idx s in let y = at idx s in struct_get_u x y
-    | 0x05l -> let x = at idx s in let y = at idx s in struct_set x y
+    | 0x00l -> let x = at idx s in struct_new x
+    | 0x01l -> let x = at idx s in struct_new_default x
+    | 0x02l -> let x = at idx s in let i = idx s in struct_get x i
+    | 0x03l -> let x = at idx s in let i = idx s in struct_get_s x i
+    | 0x04l -> let x = at idx s in let i = idx s in struct_get_u x i
+    | 0x05l -> let x = at idx s in let i = idx s in struct_set x i
 
-    | 0x06l -> array_new (at idx s)
-    | 0x07l -> array_new_default (at idx s)
+    | 0x06l -> let x = at idx s in array_new x
+    | 0x07l -> let x = at idx s in array_new_default x
     | 0x08l -> let x = at idx s in let n = u32 s in array_new_fixed x n
     | 0x09l -> let x = at idx s in let y = at idx s in array_new_data x y
     | 0x0al -> let x = at idx s in let y = at idx s in array_new_elem x y
-    | 0x0bl -> array_get (at idx s)
-    | 0x0cl -> array_get_s (at idx s)
-    | 0x0dl -> array_get_u (at idx s)
-    | 0x0el -> array_set (at idx s)
+    | 0x0bl -> let x = at idx s in array_get x
+    | 0x0cl -> let x = at idx s in array_get_s x
+    | 0x0dl -> let x = at idx s in array_get_u x
+    | 0x0el -> let x = at idx s in array_set x
     | 0x0fl -> array_len
-    | 0x10l -> array_fill (at idx s)
+    | 0x10l -> let x = at idx s in array_fill x
     | 0x11l -> let x = at idx s in let y = at idx s in array_copy x y
     | 0x12l -> let x = at idx s in let y = at idx s in array_init_data x y
     | 0x13l -> let x = at idx s in let y = at idx s in array_init_elem x y
 
-    | 0x14l -> ref_test (NoNull, heaptype s)
-    | 0x15l -> ref_test (Null, heaptype s)
-    | 0x16l -> ref_cast (NoNull, heaptype s)
-    | 0x17l -> ref_cast (Null, heaptype s)
+    | 0x14l -> let ht = heaptype s in ref_test (NoNull, ht)
+    | 0x15l -> let ht = heaptype s in ref_test (Null, ht)
+    | 0x16l -> let ht = heaptype s in ref_cast (NoNull, ht)
+    | 0x17l -> let ht = heaptype s in ref_cast (Null, ht)
     | 0x18l | 0x19l as opcode ->
       let flags = byte s in
       require (flags land 0xfc = 0) s (pos + 2) "malformed br_on_cast flags";
@@ -676,29 +670,17 @@ let rec instr s =
     | 0x06l -> i64_trunc_sat_f64_s
     | 0x07l -> i64_trunc_sat_f64_u
 
-    | 0x08l ->
-      let y = at idx s in
-      let x = at idx s in
-      memory_init x y
-    | 0x09l -> data_drop (at idx s)
-    | 0x0al ->
-      let x = at idx s in
-      let y = at idx s in
-      memory_copy x y
-    | 0x0bl -> memory_fill (at idx s)
+    | 0x08l -> let y = at idx s in let x = at idx s in memory_init x y
+    | 0x09l -> let x = at idx s in data_drop x
+    | 0x0al -> let x = at idx s in let y = at idx s in memory_copy x y
+    | 0x0bl -> let x = at idx s in memory_fill x
 
-    | 0x0cl ->
-      let y = at idx s in
-      let x = at idx s in
-      table_init x y
-    | 0x0dl -> elem_drop (at idx s)
-    | 0x0el ->
-      let x = at idx s in
-      let y = at idx s in
-      table_copy x y
-    | 0x0fl -> table_grow (at idx s)
-    | 0x10l -> table_size (at idx s)
-    | 0x11l -> table_fill (at idx s)
+    | 0x0cl -> let y = at idx s in let x = at idx s in table_init x y
+    | 0x0dl -> let x = at idx s in elem_drop x
+    | 0x0el -> let x = at idx s in let y = at idx s in table_copy x y
+    | 0x0fl -> let x = at idx s in table_grow x
+    | 0x10l -> let x = at idx s in table_size x
+    | 0x11l -> let x = at idx s in table_fill x
 
     | n -> illegal2 s pos b n
     )
@@ -717,8 +699,8 @@ let rec instr s =
     | 0x09l -> let x, a, o = memop s in v128_load32_splat x a o
     | 0x0al -> let x, a, o = memop s in v128_load64_splat x a o
     | 0x0bl -> let x, a, o = memop s in v128_store x a o
-    | 0x0cl -> v128_const (at v128 s)
-    | 0x0dl -> i8x16_shuffle (List.init 16 (fun _ -> byte s))
+    | 0x0cl -> let c = at v128 s in v128_const c
+    | 0x0dl -> let is = repeat 16 laneidx s in i8x16_shuffle is
     | 0x0el -> i8x16_swizzle
     | 0x0fl -> i8x16_splat
     | 0x10l -> i16x8_splat
@@ -726,20 +708,20 @@ let rec instr s =
     | 0x12l -> i64x2_splat
     | 0x13l -> f32x4_splat
     | 0x14l -> f64x2_splat
-    | 0x15l -> let i = byte s in i8x16_extract_lane_s i
-    | 0x16l -> let i = byte s in i8x16_extract_lane_u i
-    | 0x17l -> let i = byte s in i8x16_replace_lane i
-    | 0x18l -> let i = byte s in i16x8_extract_lane_s i
-    | 0x19l -> let i = byte s in i16x8_extract_lane_u i
-    | 0x1al -> let i = byte s in i16x8_replace_lane i
-    | 0x1bl -> let i = byte s in i32x4_extract_lane i
-    | 0x1cl -> let i = byte s in i32x4_replace_lane i
-    | 0x1dl -> let i = byte s in i64x2_extract_lane i
-    | 0x1el -> let i = byte s in i64x2_replace_lane i
-    | 0x1fl -> let i = byte s in f32x4_extract_lane i
-    | 0x20l -> let i = byte s in f32x4_replace_lane i
-    | 0x21l -> let i = byte s in f64x2_extract_lane i
-    | 0x22l -> let i = byte s in f64x2_replace_lane i
+    | 0x15l -> let i = laneidx s in i8x16_extract_lane_s i
+    | 0x16l -> let i = laneidx s in i8x16_extract_lane_u i
+    | 0x17l -> let i = laneidx s in i8x16_replace_lane i
+    | 0x18l -> let i = laneidx s in i16x8_extract_lane_s i
+    | 0x19l -> let i = laneidx s in i16x8_extract_lane_u i
+    | 0x1al -> let i = laneidx s in i16x8_replace_lane i
+    | 0x1bl -> let i = laneidx s in i32x4_extract_lane i
+    | 0x1cl -> let i = laneidx s in i32x4_replace_lane i
+    | 0x1dl -> let i = laneidx s in i64x2_extract_lane i
+    | 0x1el -> let i = laneidx s in i64x2_replace_lane i
+    | 0x1fl -> let i = laneidx s in f32x4_extract_lane i
+    | 0x20l -> let i = laneidx s in f32x4_replace_lane i
+    | 0x21l -> let i = laneidx s in f64x2_extract_lane i
+    | 0x22l -> let i = laneidx s in f64x2_replace_lane i
     | 0x23l -> i8x16_eq
     | 0x24l -> i8x16_ne
     | 0x25l -> i8x16_lt_s
@@ -790,37 +772,21 @@ let rec instr s =
     | 0x52l -> v128_bitselect
     | 0x53l -> v128_any_true
     | 0x54l ->
-      let x, a, o = memop s in
-      let lane = byte s in
-      v128_load8_lane x a o lane
+      let x, a, o = memop s in let i = laneidx s in v128_load8_lane x a o i
     | 0x55l ->
-      let x, a, o = memop s in
-      let lane = byte s in
-      v128_load16_lane x a o lane
+      let x, a, o = memop s in let i = laneidx s in v128_load16_lane x a o i
     | 0x56l ->
-      let x, a, o = memop s in
-      let lane = byte s in
-      v128_load32_lane x a o lane
+      let x, a, o = memop s in let i = laneidx s in v128_load32_lane x a o i
     | 0x57l ->
-      let x, a, o = memop s in
-      let lane = byte s in
-      v128_load64_lane x a o lane
+      let x, a, o = memop s in let i = laneidx s in v128_load64_lane x a o i
     | 0x58l ->
-      let x, a, o = memop s in
-      let lane = byte s in
-      v128_store8_lane x a o lane
+      let x, a, o = memop s in let i = laneidx s in v128_store8_lane x a o i
     | 0x59l ->
-      let x, a, o = memop s in
-      let lane = byte s in
-      v128_store16_lane x a o lane
+      let x, a, o = memop s in let i = laneidx s in v128_store16_lane x a o i
     | 0x5al ->
-      let x, a, o = memop s in
-      let lane = byte s in
-      v128_store32_lane x a o lane
+      let x, a, o = memop s in let i = laneidx s in v128_store32_lane x a o i
     | 0x5bl ->
-      let x, a, o = memop s in
-      let lane = byte s in
-      v128_store64_lane x a o lane
+      let x, a, o = memop s in let i = laneidx s in v128_store64_lane x a o i
     | 0x5cl -> let x, a, o = memop s in v128_load32_zero x a o
     | 0x5dl -> let x, a, o = memop s in v128_load64_zero x a o
     | 0x5el -> f32x4_demote_f64x2_zero
@@ -1011,16 +977,10 @@ and instr_block' s es =
 
 and catch s =
   match byte s with
-  | 0x00 ->
-    let x1 = at idx s in
-    let x2 = at idx s in
-    Mnemonics.catch x1 x2
-  | 0x01 ->
-    let x1 = at idx s in
-    let x2 = at idx s in
-    catch_ref x1 x2
-  | 0x02 -> catch_all (at idx s)
-  | 0x03 -> catch_all_ref (at idx s)
+  | 0x00 -> let x = at idx s in let y = at idx s in Mnemonics.catch x y
+  | 0x01 -> let x = at idx s in let y = at idx s in catch_ref x y
+  | 0x02 -> let x = at idx s in catch_all x
+  | 0x03 -> let x = at idx s in catch_all_ref x
   | _ -> error s (pos s - 1) "malformed catch clause"
 
 let const s =
@@ -1145,11 +1105,11 @@ let global_section s =
 
 let externidx s =
   match byte s with
-  | 0x00 -> FuncX (at idx s)
-  | 0x01 -> TableX (at idx s)
-  | 0x02 -> MemoryX (at idx s)
-  | 0x03 -> GlobalX (at idx s)
-  | 0x04 -> TagX (at idx s)
+  | 0x00 -> let x = at idx s in FuncX x
+  | 0x01 -> let x = at idx s in TableX x
+  | 0x02 -> let x = at idx s in MemoryX x
+  | 0x03 -> let x = at idx s in GlobalX x
+  | 0x04 -> let x = at idx s in TagX x
   | _ -> error s (pos s - 1) "malformed export kind"
 
 let export s =
@@ -1185,21 +1145,10 @@ let code_section s =
 
 (* Element section *)
 
-let passive s =
-  Passive
-
-let active s =
-  let x = at idx s in
-  let c = const s in
-  Active (x, c)
-
-let active_zero s =
-  let x = 0l @@ no_region in
-  let c = const s in
-  Active (x, c)
-
-let declarative s =
-  Declarative
+let passive s = Passive
+let active s = let x = at idx s in let c = const s in Active (x, c)
+let active_zero s = let x = 0l @@ no_region in let c = const s in Active (x, c)
+let declarative s = Declarative
 
 let elem_index s =
   let x = at idx s in

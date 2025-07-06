@@ -61,6 +61,7 @@ module F64Op = FloatOp
 
 module V128Op =
 struct
+  type laneidx = I8.t
   type half = Low | High
 
   type iunop = Abs | Neg | Popcnt
@@ -68,7 +69,7 @@ struct
   type ibinop = Add | Sub | Mul | Min of sx | Max of sx | AvgrU
               | AddSat of sx | SubSat of sx | DotS | Q15MulRSatS
               | ExtMul of half * sx
-              | Swizzle | Shuffle of int list | Narrow of sx
+              | Swizzle | Shuffle of laneidx list | Narrow of sx
               | RelaxedSwizzle | RelaxedQ15MulRS | RelaxedDot
   type fbinop = Add | Sub | Mul | Div | Min | Max | Pmin | Pmax
               | RelaxedMin | RelaxedMax
@@ -100,8 +101,8 @@ struct
   type bitmaskop = (ibitmaskop, ibitmaskop, ibitmaskop, ibitmaskop, void, void) V128.laneop
 
   type nsplatop = Splat
-  type 'a nextractop = Extract of int * 'a
-  type nreplaceop = Replace of int
+  type 'a nextractop = Extract of laneidx * 'a
+  type nreplaceop = Replace of laneidx
 
   type splatop = (nsplatop, nsplatop, nsplatop, nsplatop, nsplatop, nsplatop) V128.laneop
   type extractop = (sx nextractop, sx nextractop, unit nextractop, unit nextractop, unit nextractop, unit nextractop) V128.laneop
@@ -144,117 +145,130 @@ type externop = Internalize | Externalize
 
 (* Expressions *)
 
-type idx = int32 Source.phrase
+type idx = I32.t Source.phrase
+type typeidx = idx
+type tagidx = idx
+type globalidx = idx
+type memoryidx = idx
+type tableidx = idx
+type funcidx = idx
+type dataidx = idx
+type elemidx = idx
+type localidx = idx
+type labelidx = idx
+type fieldidx = I32.t
+type laneidx = I8.t
+
 type num = Value.num Source.phrase
 type vec = Value.vec Source.phrase
 type name = Utf8.unicode
 
-type blocktype = VarBlockType of idx | ValBlockType of valtype option
+type blocktype = VarBlockType of typeidx | ValBlockType of valtype option
 
 type instr = instr' Source.phrase
 and instr' =
-  | Unreachable                       (* trap unconditionally *)
-  | Nop                               (* do nothing *)
-  | Drop                              (* forget a value *)
-  | Select of valtype list option     (* branchless conditional *)
-  | Block of blocktype * instr list   (* execute in sequence *)
-  | Loop of blocktype * instr list    (* loop header *)
+  | Unreachable                          (* trap unconditionally *)
+  | Nop                                  (* do nothing *)
+  | Drop                                 (* forget a value *)
+  | Select of valtype list option        (* branchless conditional *)
+  | Block of blocktype * instr list      (* execute in sequence *)
+  | Loop of blocktype * instr list       (* loop header *)
   | If of blocktype * instr list * instr list   (* conditional *)
-  | Br of idx                         (* break to n-th surrounding label *)
-  | BrIf of idx                       (* conditional break *)
-  | BrTable of idx list * idx         (* indexed break *)
-  | BrOnNull of idx                   (* break on type *)
-  | BrOnNonNull of idx                (* break on type inverted *)
-  | BrOnCast of idx * reftype * reftype     (* break on type *)
-  | BrOnCastFail of idx * reftype * reftype (* break on type inverted *)
-  | Return                            (* break from function body *)
-  | Call of idx                       (* call function *)
-  | CallRef of idx                    (* call function through reference *)
-  | CallIndirect of idx * idx         (* call function through table *)
-  | ReturnCall of idx                 (* tail-call function *)
-  | ReturnCallRef of idx              (* tail call through reference *)
-  | ReturnCallIndirect of idx * idx   (* tail-call function through table *)
-  | Throw of idx                      (* throw exception *)
-  | ThrowRef                          (* rethrow exception *)
+  | Br of labelidx                       (* break to n-th surrounding label *)
+  | BrIf of labelidx                     (* conditional break *)
+  | BrTable of labelidx list * labelidx  (* indexed break *)
+  | BrOnNull of labelidx                 (* break on type *)
+  | BrOnNonNull of labelidx              (* break on type inverted *)
+  | BrOnCast of labelidx * reftype * reftype     (* break on type *)
+  | BrOnCastFail of labelidx * reftype * reftype (* break on type inverted *)
+  | Return                               (* break from function body *)
+  | Call of funcidx                      (* call function *)
+  | CallRef of typeidx                   (* call function through reference *)
+  | CallIndirect of tableidx * typeidx   (* call function through table *)
+  | ReturnCall of funcidx                (* tail-call function *)
+  | ReturnCallRef of typeidx             (* tail call through reference *)
+  | ReturnCallIndirect of tableidx * typeidx   (* tail-call function through table *)
+  | Throw of tagidx                      (* throw exception *)
+  | ThrowRef                            (* rethrow exception *)
   | TryTable of blocktype * catch list * instr list  (* handle exceptions *)
-  | LocalGet of idx                   (* read local idxiable *)
-  | LocalSet of idx                   (* write local idxiable *)
-  | LocalTee of idx                   (* write local idxiable and keep value *)
-  | GlobalGet of idx                  (* read global idxiable *)
-  | GlobalSet of idx                  (* write global idxiable *)
-  | TableGet of idx                   (* read table element *)
-  | TableSet of idx                   (* write table element *)
-  | TableSize of idx                  (* size of table *)
-  | TableGrow of idx                  (* grow table *)
-  | TableFill of idx                  (* fill table with unique value *)
-  | TableCopy of idx * idx            (* copy table range *)
-  | TableInit of idx * idx            (* initialize table range from segment *)
-  | ElemDrop of idx                   (* drop passive element segment *)
-  | Load of idx * loadop              (* read memory at address *)
-  | Store of idx * storeop            (* write memory at address *)
-  | VecLoad of idx * vloadop          (* read memory at address *)
-  | VecStore of idx * vstoreop        (* write memory at address *)
-  | VecLoadLane of idx * vlaneop * int  (* read single lane at address *)
-  | VecStoreLane of idx * vlaneop * int (* write single lane to address *)
-  | MemorySize of idx                 (* size of memory *)
-  | MemoryGrow of idx                 (* grow memory *)
-  | MemoryFill of idx                 (* fill memory range with value *)
-  | MemoryCopy of idx * idx           (* copy memory ranges *)
-  | MemoryInit of idx * idx           (* initialize memory range from segment *)
-  | DataDrop of idx                   (* drop passive data segment *)
-  | Const of num                      (* constant *)
-  | Test of testop                    (* numeric test *)
-  | Compare of relop                  (* numeric comparison *)
-  | Unary of unop                     (* unary numeric operator *)
-  | Binary of binop                   (* binary numeric operator *)
-  | Convert of cvtop                  (* conversion *)
-  | RefNull of heaptype               (* null reference *)
-  | RefFunc of idx                    (* function reference *)
-  | RefIsNull                         (* type test *)
-  | RefAsNonNull                      (* type cast *)
-  | RefTest of reftype                (* type test *)
-  | RefCast of reftype                (* type cast *)
-  | RefEq                             (* reference equality *)
-  | RefI31                            (* scalar reference *)
-  | I31Get of sx                      (* read scalar *)
-  | StructNew of idx * initop         (* allocate structure *)
-  | StructGet of idx * idx * sx option  (* read structure field *)
-  | StructSet of idx * idx            (* write structure field *)
-  | ArrayNew of idx * initop          (* allocate array *)
-  | ArrayNewFixed of idx * int32      (* allocate fixed array *)
-  | ArrayNewElem of idx * idx         (* allocate array from element segment *)
-  | ArrayNewData of idx * idx         (* allocate array from data segment *)
-  | ArrayGet of idx * sx option       (* read array slot *)
-  | ArraySet of idx                   (* write array slot *)
-  | ArrayLen                          (* read array length *)
-  | ArrayCopy of idx * idx            (* copy between two arrays *)
-  | ArrayFill of idx                  (* fill array with value *)
-  | ArrayInitData of idx * idx        (* fill array from data segment *)
-  | ArrayInitElem of idx * idx        (* fill array from elem segment *)
-  | ExternConvert of externop         (* extern conversion *)
-  | VecConst of vec                   (* constant *)
-  | VecTest of vtestop                (* vector test *)
-  | VecCompare of vrelop              (* vector comparison *)
-  | VecUnary of vunop                 (* unary vector operator *)
-  | VecBinary of vbinop               (* binary vector operator *)
-  | VecTernary of vternop             (* ternary vector operator *)
-  | VecConvert of vcvtop              (* vector conversion *)
-  | VecShift of vshiftop              (* vector shifts *)
-  | VecBitmask of vbitmaskop          (* vector masking *)
-  | VecTestBits of vvtestop           (* vector bit test *)
-  | VecUnaryBits of vvunop            (* unary bit vector operator *)
-  | VecBinaryBits of vvbinop          (* binary bit vector operator *)
-  | VecTernaryBits of vvternop        (* ternary bit vector operator *)
-  | VecSplat of vsplatop              (* number to vector conversion *)
-  | VecExtract of vextractop          (* extract lane from vector *)
-  | VecReplace of vreplaceop          (* replace lane in vector *)
+  | LocalGet of localidx                 (* read local variable *)
+  | LocalSet of localidx                 (* write local variable *)
+  | LocalTee of localidx                 (* write local variable & keep value *)
+  | GlobalGet of globalidx               (* read global variable *)
+  | GlobalSet of globalidx               (* write global variable *)
+  | TableGet of tableidx                 (* read table element *)
+  | TableSet of tableidx                 (* write table element *)
+  | TableSize of tableidx                (* size of table *)
+  | TableGrow of tableidx                (* grow table *)
+  | TableFill of tableidx                (* fill table with unique value *)
+  | TableCopy of tableidx * tableidx     (* copy table range *)
+  | TableInit of tableidx * elemidx      (* initialize table range from elems *)
+  | ElemDrop of elemidx                  (* drop passive element segment *)
+  | Load of memoryidx * loadop           (* read memory at address *)
+  | Store of memoryidx * storeop         (* write memory at address *)
+  | VecLoad of memoryidx * vloadop       (* read memory at address *)
+  | VecStore of memoryidx * vstoreop     (* write memory at address *)
+  | VecLoadLane of memoryidx * vlaneop * laneidx  (* read single lane at address *)
+  | VecStoreLane of memoryidx * vlaneop * laneidx (* write single lane to address *)
+  | MemorySize of memoryidx              (* size of memory *)
+  | MemoryGrow of memoryidx              (* grow memory *)
+  | MemoryFill of memoryidx              (* fill memory range with value *)
+  | MemoryCopy of memoryidx * memoryidx  (* copy memory ranges *)
+  | MemoryInit of memoryidx * dataidx    (* initialize memory range from data *)
+  | DataDrop of dataidx                  (* drop passive data segment *)
+  | Const of num                         (* constant *)
+  | Test of testop                       (* numeric test *)
+  | Compare of relop                     (* numeric comparison *)
+  | Unary of unop                        (* unary numeric operator *)
+  | Binary of binop                      (* binary numeric operator *)
+  | Convert of cvtop                     (* conversion *)
+  | RefNull of heaptype                  (* null reference *)
+  | RefFunc of funcidx                   (* function reference *)
+  | RefIsNull                            (* type test *)
+  | RefAsNonNull                         (* type cast *)
+  | RefTest of reftype                   (* type test *)
+  | RefCast of reftype                   (* type cast *)
+  | RefEq                                (* reference equality *)
+  | RefI31                               (* scalar reference *)
+  | I31Get of sx                         (* read scalar *)
+  | StructNew of typeidx * initop        (* allocate structure *)
+  | StructGet of typeidx * fieldidx * sx option  (* read structure field *)
+  | StructSet of typeidx * fieldidx      (* write structure field *)
+  | ArrayNew of typeidx * initop         (* allocate array *)
+  | ArrayNewFixed of typeidx * int32     (* allocate fixed array *)
+  | ArrayNewData of typeidx * dataidx    (* allocate array from data *)
+  | ArrayNewElem of typeidx * elemidx    (* allocate array from elements *)
+  | ArrayGet of typeidx * sx option      (* read array slot *)
+  | ArraySet of typeidx                  (* write array slot *)
+  | ArrayLen                             (* read array length *)
+  | ArrayCopy of typeidx * typeidx       (* copy between two arrays *)
+  | ArrayFill of typeidx                 (* fill array with value *)
+  | ArrayInitData of typeidx * dataidx   (* fill array from data segment *)
+  | ArrayInitElem of typeidx * elemidx   (* fill array from elem segment *)
+  | ExternConvert of externop            (* extern conversion *)
+  | VecConst of vec                      (* constant *)
+  | VecTest of vtestop                   (* vector test *)
+  | VecCompare of vrelop                 (* vector comparison *)
+  | VecUnary of vunop                    (* unary vector operator *)
+  | VecBinary of vbinop                  (* binary vector operator *)
+  | VecTernary of vternop                (* ternary vector operator *)
+  | VecConvert of vcvtop                 (* vector conversion *)
+  | VecShift of vshiftop                 (* vector shifts *)
+  | VecBitmask of vbitmaskop             (* vector masking *)
+  | VecTestBits of vvtestop              (* vector bit test *)
+  | VecUnaryBits of vvunop               (* unary bit vector operator *)
+  | VecBinaryBits of vvbinop             (* binary bit vector operator *)
+  | VecTernaryBits of vvternop           (* ternary bit vector operator *)
+  | VecSplat of vsplatop                 (* number to vector conversion *)
+  | VecExtract of vextractop             (* extract lane from vector *)
+  | VecReplace of vreplaceop             (* replace lane in vector *)
 
 and catch = catch' Source.phrase
 and catch' =
-  | Catch of idx * idx
-  | CatchRef of idx * idx
-  | CatchAll of idx
-  | CatchAllRef of idx
+  | Catch of tagidx * labelidx
+  | CatchRef of tagidx * labelidx
+  | CatchAll of tagidx
+  | CatchAllRef of tagidx
 
 
 (* Modules *)
@@ -285,7 +299,7 @@ and local' =
 
 type func = func' Source.phrase
 and func' =
-  | Func of idx * local list * instr list
+  | Func of typeidx * local list * instr list
 
 type segmentmode = segmentmode' Source.phrase
 and segmentmode' =
@@ -303,15 +317,15 @@ and elem' =
 
 type start = start' Source.phrase
 and start' =
-  | Start of idx
+  | Start of funcidx
 
 type externidx = externidx' Source.phrase
 and externidx' =
-  | TagX of idx
-  | GlobalX of idx
-  | MemoryX of idx
-  | TableX of idx
-  | FuncX of idx
+  | TagX of tagidx
+  | GlobalX of globalidx
+  | MemoryX of memoryidx
+  | TableX of tableidx
+  | FuncX of funcidx
 
 type export = export' Source.phrase
 and export' =

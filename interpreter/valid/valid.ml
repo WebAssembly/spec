@@ -380,7 +380,7 @@ let check_unop unop at =
 let check_vec_binop binop at =
   match binop with
   | Value.(V128 (V128.I8x16 (V128Op.Shuffle is))) ->
-    if List.exists ((<=) 32) is then
+    if List.exists (fun i -> I8.to_int_u i >= 32) is then
       error at "invalid lane index"
   | _ -> ()
 
@@ -680,14 +680,14 @@ let rec check_instr (c : context) (e : instr) (s : infer_resulttype) : infer_ins
   | VecLoadLane (x, memop, i) ->
     let MemoryT (at, _lim) = memory c x in
     let t = check_memop c memop vec_size (fun sz -> Some sz) e.at in
-    require (i < vec_size t / Pack.packed_size memop.pack) e.at
+    require (I8.to_int_u i < vec_size t / Pack.packed_size memop.pack) e.at
       "invalid lane index";
     [NumT (numtype_of_addrtype at); VecT t] -->  [VecT t], []
 
   | VecStoreLane (x, memop, i) ->
     let MemoryT (at, _lim) = memory c x in
     let t = check_memop c memop vec_size (fun sz -> Some sz) e.at in
-    require (i < vec_size t / Pack.packed_size memop.pack) e.at
+    require (I8.to_int_u i < vec_size t / Pack.packed_size memop.pack) e.at
       "invalid lane index";
     [NumT (numtype_of_addrtype at); VecT t] -->  [], []
 
@@ -764,22 +764,22 @@ let rec check_instr (c : context) (e : instr) (s : infer_resulttype) : infer_ins
     let ts = if initop = Implicit then [] else List.map unpacked_fieldtype fts in
     ts --> [RefT (NoNull, UseHT (Def (type_ c x)))], []
 
-  | StructGet (x, y, exto) ->
+  | StructGet (x, i, exto) ->
     let StructT fts = struct_type c x in
-    require (y.it < Lib.List32.length fts) y.at
-      ("unknown field " ^ I32.to_string_u y.it);
-    let FieldT (_mut, st) = Lib.List32.nth fts y.it in
-    require ((exto <> None) == is_packed_storagetype st) y.at
+    require (i < Lib.List32.length fts) e.at
+      ("unknown field " ^ I32.to_string_u i);
+    let FieldT (_mut, st) = Lib.List32.nth fts i in
+    require ((exto <> None) == is_packed_storagetype st) e.at
       ("field is " ^ (if exto = None then "packed" else "unpacked"));
     let t = unpacked_storagetype st in
     [RefT (Null, UseHT (Def (type_ c x)))] --> [t], []
 
-  | StructSet (x, y) ->
+  | StructSet (x, i) ->
     let StructT fts = struct_type c x in
-    require (y.it < Lib.List32.length fts) y.at
-      ("unknown field " ^ I32.to_string_u y.it);
-    let FieldT (mut, st) = Lib.List32.nth fts y.it in
-    require (mut == Var) y.at "field is immutable";
+    require (i < Lib.List32.length fts) e.at
+      ("unknown field " ^ I32.to_string_u i);
+    let FieldT (mut, st) = Lib.List32.nth fts i in
+    require (mut == Var) e.at "field is immutable";
     let t = unpacked_storagetype st in
     [RefT (Null, UseHT (Def (type_ c x))); t] --> [], []
 
@@ -950,14 +950,14 @@ let rec check_instr (c : context) (e : instr) (s : infer_resulttype) : infer_ins
   | VecExtract extractop ->
     let t1 = VecT (type_vec extractop) in
     let t2 = NumT (type_vec_lane extractop) in
-    require (lane_extractop extractop < num_lanes extractop) e.at
+    require (I8.to_int_u (lane_extractop extractop) < num_lanes extractop) e.at
       "invalid lane index";
     [t1] --> [t2], []
 
   | VecReplace replaceop ->
     let t1 = VecT (type_vec replaceop) in
     let t2 = NumT (type_vec_lane replaceop) in
-    require (lane_replaceop replaceop < num_lanes replaceop) e.at
+    require (I8.to_int_u (lane_replaceop replaceop) < num_lanes replaceop) e.at
       "invalid lane index";
     [t1; t2] --> [t1], []
 

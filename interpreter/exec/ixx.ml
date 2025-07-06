@@ -49,7 +49,7 @@ sig
 
   val zero : t
 
-  val lognot : t -> t
+  val not_ : t -> t
   val abs : t -> t
   val neg : t -> t
   val add : t -> t -> t
@@ -143,7 +143,7 @@ struct
   let one = Rep.one
   let ten = Rep.of_int 10
 
-  let lognot = Rep.lognot
+  let not_ = Rep.lognot
   let abs = Rep.abs
   let neg = Rep.neg
 

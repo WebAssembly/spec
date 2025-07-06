@@ -10,6 +10,7 @@ open Sexpr
 (* Generic formatting *)
 
 let nat n = I32.to_string_u (I32.of_int_u n)
+let nat8 = I8.to_string_u
 let nat32 = I32.to_string_u
 let nat64 = I64.to_string_u
 
@@ -296,7 +297,7 @@ struct
     | Max sx -> "max" ^ ext sx
     | AvgrU -> "avgr" ^ ext U
     | Narrow sx -> "narrow_i" ^ double xxxx ^ ext sx
-    | Shuffle is -> "shuffle " ^ String.concat " " (List.map nat is)
+    | Shuffle is -> "shuffle " ^ String.concat " " (List.map nat8 is)
     | Swizzle -> "swizzle"
     | RelaxedSwizzle -> "relaxed_swizzle"
     | RelaxedQ15MulRS -> "relaxed_q15mulr" ^ ext S
@@ -381,15 +382,15 @@ struct
     | Splat -> "splat"
 
   let pextractop xxxx (op : sx nextractop) = match op with
-    | Extract (i, sx) -> "extract_lane" ^ ext sx ^ " " ^ nat i
+    | Extract (i, sx) -> "extract_lane" ^ ext sx ^ " " ^ nat8 i
 
   let extractop xxxx (op : unit nextractop) = match op with
-    | Extract (i, ()) -> "extract_lane " ^ nat i
+    | Extract (i, ()) -> "extract_lane " ^ nat8 i
 
   let replaceop xxxx (op : nreplaceop) = match op with
-    | Replace i -> "replace_lane " ^ nat i
+    | Replace i -> "replace_lane " ^ nat8 i
 
-  let lane_oper (pop, iop, fop) op =
+  let laneoper (pop, iop, fop) op =
     match op with
     | V128.I8x16 o -> pop "8x16" o
     | V128.I16x8 o -> pop "16x8" o
@@ -414,7 +415,7 @@ let voper (vop) op =
 
 let shoper (pop, iop, fop) op =
   match op with
-  | V128 o -> V128.string_of_shape o ^ "." ^ V128Op.lane_oper (pop, iop, fop) o
+  | V128 o -> V128.string_of_shape o ^ "." ^ V128Op.laneoper (pop, iop, fop) o
 
 let unop = oper (IntOp.unop, FloatOp.unop)
 let binop = oper (IntOp.binop, FloatOp.binop)
@@ -469,7 +470,7 @@ let vstoreop x op =
 
 let vlaneop instr x op i =
   memop (instr ^ packsize op.pack ^ "_lane") x vectype op
-    (packed_size op.pack) ^ " " ^ nat i
+    (packed_size op.pack) ^ " " ^ nat8 i
 
 let initop = function
   | Explicit -> ""
@@ -561,9 +562,9 @@ let rec instr e =
     | RefI31 -> "ref.i31", []
     | I31Get sx -> "i31.get" ^ ext sx, []
     | StructNew (x, op) -> "struct.new" ^ initop op ^ " " ^ idx x, []
-    | StructGet (x, y, sxo) ->
-      "struct.get" ^ opt_s ext sxo ^ " " ^ idx x ^ " " ^ idx y, []
-    | StructSet (x, y) -> "struct.set " ^ idx x ^ " " ^ idx y, []
+    | StructGet (x, i, sxo) ->
+      "struct.get" ^ opt_s ext sxo ^ " " ^ idx x ^ " " ^ nat32 i, []
+    | StructSet (x, i) -> "struct.set " ^ idx x ^ " " ^ nat32 i, []
     | ArrayNew (x, op) -> "array.new" ^ initop op ^ " " ^ idx x, []
     | ArrayNewFixed (x, n) -> "array.new_fixed " ^ idx x ^ " " ^ nat32 n, []
     | ArrayNewElem (x, y) -> "array.new_elem " ^ idx x ^ " " ^ idx y, []

@@ -493,39 +493,45 @@ let rec step (c : config) : config =
         with exn -> vs', [Trapping (memory_error e.at exn) @@ e.at]);
 
       | VecLoadLane (x, {offset; ty; pack; _}, j), Vec (V128 v) :: Num i :: vs' ->
+        let j = I8.to_int_u j in
         let i_64 = addr_of_num i in
         let mem = memory c.frame.inst x in
         (try
           let v =
             match pack with
             | Pack8 ->
-              V128.I8x16.replace_lane j v
-                (I32Num.of_num 0 (Memory.load_num_packed Pack8 S mem i_64 offset I32T))
+              let num = Memory.load_num_packed Pack8 S mem i_64 offset I32T in
+              V128.I8x16.replace_lane j v (I32Num.of_num 0 num)
             | Pack16 ->
-              V128.I16x8.replace_lane j v
-                (I32Num.of_num 0 (Memory.load_num_packed Pack16 S mem i_64 offset I32T))
+              let num = Memory.load_num_packed Pack16 S mem i_64 offset I32T in
+              V128.I16x8.replace_lane j v (I32Num.of_num 0 num)
             | Pack32 ->
-              V128.I32x4.replace_lane j v
-                (I32Num.of_num 0 (Memory.load_num mem i_64 offset I32T))
+              let num = Memory.load_num mem i_64 offset I32T in
+              V128.I32x4.replace_lane j v (I32Num.of_num 0 num)
             | Pack64 ->
-              V128.I64x2.replace_lane j v
-                (I64Num.of_num 0 (Memory.load_num mem i_64 offset I64T))
+              let num = Memory.load_num mem i_64 offset I64T in
+              V128.I64x2.replace_lane j v (I64Num.of_num 0 num)
           in Vec (V128 v) :: vs', []
         with exn -> vs', [Trapping (memory_error e.at exn) @@ e.at])
 
       | VecStoreLane (x, {offset; ty; pack; _}, j), Vec (V128 v) :: Num i :: vs' ->
+        let j = I8.to_int_u j in
         let i_64 = addr_of_num i in
         let mem = memory c.frame.inst x in
         (try
           (match pack with
           | Pack8 ->
-            Memory.store_num_packed Pack8 mem i_64 offset (I32 (V128.I8x16.extract_lane_s j v))
+            let num = I32 (V128.I8x16.extract_lane_s j v) in
+            Memory.store_num_packed Pack8 mem i_64 offset num
           | Pack16 ->
-            Memory.store_num_packed Pack16 mem i_64 offset (I32 (V128.I16x8.extract_lane_s j v))
+            let num = I32 (V128.I16x8.extract_lane_s j v) in
+            Memory.store_num_packed Pack16 mem i_64 offset num
           | Pack32 ->
-            Memory.store_num mem i_64 offset (I32 (V128.I32x4.extract_lane_s j v))
+            let num = I32 (V128.I32x4.extract_lane_s j v) in
+            Memory.store_num mem i_64 offset num
           | Pack64 ->
-            Memory.store_num mem i_64 offset (I64 (V128.I64x2.extract_lane_s j v))
+            let num = I64 (V128.I64x2.extract_lane_s j v) in
+            Memory.store_num mem i_64 offset num
           );
           vs', []
         with exn -> vs', [Trapping (memory_error e.at exn) @@ e.at])
@@ -684,24 +690,24 @@ let rec step (c : config) : config =
           with Failure _ -> Crash.error e.at "type mismatch packing value"
         in Ref (Aggr.StructRef struct_) :: vs'', []
 
-      | StructGet (x, y, exto), Ref (NullRef _) :: vs' ->
+      | StructGet (x, i, exto), Ref (NullRef _) :: vs' ->
         vs', [Trapping "null structure reference" @@ e.at]
 
-      | StructGet (x, y, exto), Ref Aggr.(StructRef (Struct (_, fs))) :: vs' ->
+      | StructGet (x, i, exto), Ref Aggr.(StructRef (Struct (_, fs))) :: vs' ->
         let f =
-          try Lib.List32.nth fs y.it
-          with Failure _ -> Crash.error y.at "undefined field"
+          try Lib.List32.nth fs i
+          with Failure _ -> Crash.error e.at "undefined field"
         in
         (try Aggr.read_field f exto :: vs', []
         with Failure _ -> Crash.error e.at "type mismatch reading field")
 
-      | StructSet (x, y), v :: Ref (NullRef _) :: vs' ->
+      | StructSet (x, i), v :: Ref (NullRef _) :: vs' ->
         vs', [Trapping "null structure reference" @@ e.at]
 
-      | StructSet (x, y), v :: Ref Aggr.(StructRef (Struct (_, fs))) :: vs' ->
+      | StructSet (x, i), v :: Ref Aggr.(StructRef (Struct (_, fs))) :: vs' ->
         let f =
-          try Lib.List32.nth fs y.it
-          with Failure _ -> Crash.error y.at "undefined field"
+          try Lib.List32.nth fs i
+          with Failure _ -> Crash.error e.at "undefined field"
         in
         (try Aggr.write_field f v; vs', []
         with Failure _ -> Crash.error e.at "type mismatch writing field")

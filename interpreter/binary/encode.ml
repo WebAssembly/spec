@@ -61,6 +61,7 @@ struct
     if -64L <= i && i < 64L then byte b
     else (byte (b lor 0x80); s64 (Int64.shift_right i 7))
 
+  let u8 i = u64 Int64.(logand (of_int (I8.to_int_u i)) 0xffL)
   let u32 i = u64 Int64.(logand (of_int32 i) 0xffffffffL)
   let s7 i = s64 (Int64.of_int i)
   let s32 i = s64 (Int64.of_int32 i)
@@ -394,25 +395,25 @@ struct
       error e.at "illegal instruction v128.loadNxM_x"
 
     | VecLoadLane (x, ({ty = V128T; pack = Pack8; _} as mo), i) ->
-      vecop 0x54l; memop x mo; byte i;
+      vecop 0x54l; memop x mo; u8 i;
     | VecLoadLane (x, ({ty = V128T; pack = Pack16; _} as mo), i) ->
-      vecop 0x55l; memop x mo; byte i;
+      vecop 0x55l; memop x mo; u8 i;
     | VecLoadLane (x, ({ty = V128T; pack = Pack32; _} as mo), i) ->
-      vecop 0x56l; memop x mo; byte i;
+      vecop 0x56l; memop x mo; u8 i;
     | VecLoadLane (x, ({ty = V128T; pack = Pack64; _} as mo), i) ->
-      vecop 0x57l; memop x mo; byte i;
+      vecop 0x57l; memop x mo; u8 i;
 
     | VecStore (x, ({ty = V128T; _} as mo)) ->
       vecop 0x0bl; memop x mo
 
     | VecStoreLane (x, ({ty = V128T; pack = Pack8; _} as mo), i) ->
-      vecop 0x58l; memop x mo; byte i;
+      vecop 0x58l; memop x mo; u8 i;
     | VecStoreLane (x, ({ty = V128T; pack = Pack16; _} as mo), i) ->
-      vecop 0x59l; memop x mo; byte i;
+      vecop 0x59l; memop x mo; u8 i;
     | VecStoreLane (x, ({ty = V128T; pack = Pack32; _} as mo), i) ->
-      vecop 0x5al; memop x mo; byte i;
+      vecop 0x5al; memop x mo; u8 i;
     | VecStoreLane (x, ({ty = V128T; pack = Pack64; _} as mo), i) ->
-      vecop 0x5bl; memop x mo; byte i;
+      vecop 0x5bl; memop x mo; u8 i;
 
     | MemorySize x -> op 0x3f; idx x
     | MemoryGrow x -> op 0x40; idx x
@@ -439,10 +440,10 @@ struct
 
     | StructNew (x, Explicit) -> op 0xfb; op 0x00; idx x
     | StructNew (x, Implicit) -> op 0xfb; op 0x01; idx x
-    | StructGet (x, y, None) -> op 0xfb; op 0x02; idx x; idx y
-    | StructGet (x, y, Some S) -> op 0xfb; op 0x03; idx x; idx y
-    | StructGet (x, y, Some U) -> op 0xfb; op 0x04; idx x; idx y
-    | StructSet (x, y) -> op 0xfb; op 0x05; idx x; idx y
+    | StructGet (x, i, None) -> op 0xfb; op 0x02; idx x; u32 i
+    | StructGet (x, i, Some S) -> op 0xfb; op 0x03; idx x; u32 i
+    | StructGet (x, i, Some U) -> op 0xfb; op 0x04; idx x; u32 i
+    | StructSet (x, i) -> op 0xfb; op 0x05; idx x; u32 i
 
     | ArrayNew (x, Explicit) -> op 0xfb; op 0x06; idx x
     | ArrayNew (x, Implicit) -> op 0xfb; op 0x07; idx x
@@ -728,7 +729,8 @@ struct
     | VecCompare (V128 (F64x2 V128Op.Le)) -> vecop 0x4bl
     | VecCompare (V128 (F64x2 V128Op.Ge)) -> vecop 0x4cl
 
-    | VecBinary (V128 (I8x16 (V128Op.Shuffle is))) -> vecop 0x0dl; List.iter byte is
+    | VecBinary (V128 (I8x16 (V128Op.Shuffle is))) ->
+      vecop 0x0dl; List.iter u8 is
     | VecBinary (V128 (I8x16 V128Op.Swizzle)) -> vecop 0x0el
     | VecBinary (V128 (I8x16 V128Op.(Narrow S))) -> vecop 0x65l
     | VecBinary (V128 (I8x16 V128Op.(Narrow U))) -> vecop 0x66l
@@ -895,21 +897,21 @@ struct
     | VecSplat (V128 ((F32x4 V128Op.Splat))) -> vecop 0x13l
     | VecSplat (V128 ((F64x2 V128Op.Splat))) -> vecop 0x14l
 
-    | VecExtract (V128 (I8x16 V128Op.(Extract (i, S)))) -> vecop 0x15l; byte i
-    | VecExtract (V128 (I8x16 V128Op.(Extract (i, U)))) -> vecop 0x16l; byte i
-    | VecExtract (V128 (I16x8 V128Op.(Extract (i, S)))) -> vecop 0x18l; byte i
-    | VecExtract (V128 (I16x8 V128Op.(Extract (i, U)))) -> vecop 0x19l; byte i
-    | VecExtract (V128 (I32x4 V128Op.(Extract (i, ())))) -> vecop 0x1bl; byte i
-    | VecExtract (V128 (I64x2 V128Op.(Extract (i, ())))) -> vecop 0x1dl; byte i
-    | VecExtract (V128 (F32x4 V128Op.(Extract (i, ())))) -> vecop 0x1fl; byte i
-    | VecExtract (V128 (F64x2 V128Op.(Extract (i, ())))) -> vecop 0x21l; byte i
+    | VecExtract (V128 (I8x16 V128Op.(Extract (i, S)))) -> vecop 0x15l; u8 i
+    | VecExtract (V128 (I8x16 V128Op.(Extract (i, U)))) -> vecop 0x16l; u8 i
+    | VecExtract (V128 (I16x8 V128Op.(Extract (i, S)))) -> vecop 0x18l; u8 i
+    | VecExtract (V128 (I16x8 V128Op.(Extract (i, U)))) -> vecop 0x19l; u8 i
+    | VecExtract (V128 (I32x4 V128Op.(Extract (i, ())))) -> vecop 0x1bl; u8 i
+    | VecExtract (V128 (I64x2 V128Op.(Extract (i, ())))) -> vecop 0x1dl; u8 i
+    | VecExtract (V128 (F32x4 V128Op.(Extract (i, ())))) -> vecop 0x1fl; u8 i
+    | VecExtract (V128 (F64x2 V128Op.(Extract (i, ())))) -> vecop 0x21l; u8 i
 
-    | VecReplace (V128 (I8x16 V128Op.(Replace i))) -> vecop 0x17l; byte i
-    | VecReplace (V128 (I16x8 V128Op.(Replace i))) -> vecop 0x1al; byte i
-    | VecReplace (V128 (I32x4 V128Op.(Replace i))) -> vecop 0x1cl; byte i
-    | VecReplace (V128 (I64x2 V128Op.(Replace i))) -> vecop 0x1el; byte i
-    | VecReplace (V128 (F32x4 V128Op.(Replace i))) -> vecop 0x20l; byte i
-    | VecReplace (V128 (F64x2 V128Op.(Replace i))) -> vecop 0x22l; byte i
+    | VecReplace (V128 (I8x16 V128Op.(Replace i))) -> vecop 0x17l; u8 i
+    | VecReplace (V128 (I16x8 V128Op.(Replace i))) -> vecop 0x1al; u8 i
+    | VecReplace (V128 (I32x4 V128Op.(Replace i))) -> vecop 0x1cl; u8 i
+    | VecReplace (V128 (I64x2 V128Op.(Replace i))) -> vecop 0x1el; u8 i
+    | VecReplace (V128 (F32x4 V128Op.(Replace i))) -> vecop 0x20l; u8 i
+    | VecReplace (V128 (F64x2 V128Op.(Replace i))) -> vecop 0x22l; u8 i
 
   and catch c =
     match c.it with

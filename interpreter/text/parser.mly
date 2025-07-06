@@ -34,6 +34,23 @@ let (@@) x loc = x @@@ at loc
 
 (* Literals *)
 
+let nat8 s loc =
+  try I8.of_string_u s with Failure _ -> error (at loc) "i8 constant out of range"
+
+let nat32 s loc =
+  try I32.of_string_u s with Failure _ -> error (at loc) "i32 constant out of range"
+
+let nat64 s loc =
+  try I64.of_string_u s with Failure _ -> error (at loc) "i64 constant out of range"
+
+let name s loc =
+  try Utf8.decode s with Utf8.Utf8 -> error (at loc) "malformed UTF-8 encoding"
+
+let var s loc =
+  let r = at loc in
+  try ignore (Utf8.decode s); Source.(s @@ r)
+  with Utf8.Utf8 -> error r "malformed UTF-8 encoding"
+
 let num f s =
   try f s with Failure _ -> error s.at "constant out of range"
 
@@ -59,15 +76,10 @@ let vec_lane_lit shape l at =
   | V128.F32x4 () -> NumPat (F32 (F32.of_string l) @@@ at)
   | V128.F64x2 () -> NumPat (F64 (F64.of_string l) @@@ at)
 
-let vec_lane_index s at =
-  match int_of_string s with
-  | n when 0 <= n && n < 256 -> n
-  | _ | exception Failure _ -> error at "malformed lane index"
-
 let shuffle_lit ss loc =
   if not (List.length ss = 16) then
     error (at loc) "invalid lane length";
-  List.map (fun s -> vec_lane_index s.it s.at) ss
+  List.map (fun s -> nat8 s.it loc) ss
 
 let nanop f nan =
   let open Source in
@@ -76,20 +88,6 @@ let nanop f nan =
   | F32 _ -> F32 nan.it @@ nan.at
   | F64 _ -> F64 nan.it @@ nan.at
   | I32 _ | I64 _ -> error nan.at "NaN pattern with non-float type"
-
-let nat32 s loc =
-  try I32.of_string_u s with Failure _ -> error (at loc) "i32 constant out of range"
-
-let nat64 s loc =
-  try I64.of_string_u s with Failure _ -> error (at loc) "i64 constant out of range"
-
-let name s loc =
-  try Utf8.decode s with Utf8.Utf8 -> error (at loc) "malformed UTF-8 encoding"
-
-let var s loc =
-  let r = at loc in
-  try ignore (Utf8.decode s); Source.(s @@ r)
-  with Utf8.Utf8 -> error r "malformed UTF-8 encoding"
 
 
 (* Symbolic indices *)
@@ -310,18 +308,18 @@ let parse_annots (m : module_) : Custom.section list =
 %token<Ast.instr'> I31_GET
 %token<Ast.idx -> Ast.instr'> STRUCT_NEW ARRAY_NEW ARRAY_GET
 %token STRUCT_SET
-%token<Ast.idx -> Ast.idx -> Ast.instr'> STRUCT_GET
+%token<Ast.idx -> int32 -> Ast.instr'> STRUCT_GET
 %token ARRAY_NEW_FIXED ARRAY_NEW_ELEM ARRAY_NEW_DATA
 %token ARRAY_SET ARRAY_LEN
 %token ARRAY_COPY ARRAY_FILL ARRAY_INIT_DATA ARRAY_INIT_ELEM
 %token<Ast.instr'> EXTERN_CONVERT
 %token<Ast.idx -> int option -> Memory.offset -> Ast.instr'> VEC_LOAD VEC_STORE
-%token<Ast.idx -> int option -> Memory.offset -> int -> Ast.instr'> VEC_LOAD_LANE VEC_STORE_LANE
+%token<Ast.idx -> int option -> Memory.offset -> Ast.laneidx -> Ast.instr'> VEC_LOAD_LANE VEC_STORE_LANE
 %token<V128.shape -> string Source.phrase list -> Source.region -> Ast.instr' * Value.vec> VEC_CONST
 %token<Ast.instr'> VEC_UNARY VEC_BINARY VEC_TERNARY VEC_TEST
 %token<Ast.instr'> VEC_SHIFT VEC_BITMASK VEC_SPLAT
 %token VEC_SHUFFLE
-%token<int -> Ast.instr'> VEC_EXTRACT VEC_REPLACE
+%token<Ast.laneidx -> Ast.instr'> VEC_EXTRACT VEC_REPLACE
 %token FUNC START TYPE PARAM RESULT LOCAL GLOBAL
 %token TABLE ELEM MEMORY TAG DATA DECLARE OFFSET ITEM IMPORT EXPORT
 %token MODULE BIN QUOTE DEFINITION INSTANCE
@@ -480,6 +478,9 @@ typeuse :
 
 /* Immediates */
 
+nat8 :
+  | NAT { nat8 $1 $sloc }
+
 nat32 :
   | NAT { nat32 $1 $sloc }
 
@@ -623,8 +624,8 @@ plain_instr :
   | REF_I31 { fun c -> ref_i31 }
   | I31_GET { fun c -> $1 }
   | STRUCT_NEW idx { fun c -> $1 ($2 c type_) }
-  | STRUCT_GET idx idx { fun c -> let x = $2 c type_ in $1 x ($3 c (field x.it)) }
-  | STRUCT_SET idx idx { fun c -> let x = $2 c type_ in struct_set x ($3 c (field x.it)) }
+  | STRUCT_GET idx idx { fun c -> let x = $2 c type_ in $1 x ($3 c (field x.it)).it }
+  | STRUCT_SET idx idx { fun c -> let x = $2 c type_ in struct_set x ($3 c (field x.it)).it }
   | ARRAY_NEW idx { fun c -> $1 ($2 c type_) }
   | ARRAY_NEW_FIXED idx nat32 { fun c -> array_new_fixed ($2 c type_) $3 }
   | ARRAY_NEW_ELEM idx idx { fun c -> array_new_elem ($2 c type_) ($3 c elem) }
@@ -652,28 +653,27 @@ plain_instr :
   | VEC_BITMASK { fun c -> $1 }
   | VEC_SHUFFLE list(num) { fun c -> i8x16_shuffle (shuffle_lit $2 $sloc) }
   | VEC_SPLAT { fun c -> $1 }
-  | VEC_EXTRACT NAT { fun c -> $1 (vec_lane_index $2 (at $sloc)) }
-  | VEC_REPLACE NAT { fun c -> $1 (vec_lane_index $2 (at $sloc)) }
+  | VEC_EXTRACT laneidx { fun c -> $1 $2 }
+  | VEC_REPLACE laneidx { fun c -> $1 $2 }
 
+
+laneidx :
+  | nat8 { $1 }
 
 lane_imms :
   /* Need to multiply out options and indices to avoid spurious conflicts */
-  | NAT offset_opt align_opt NAT
+  | NAT offset_opt align_opt laneidx
     { fun instr at0 c ->
-      instr (nat32 $1 $loc($1) @@ $loc($1)) $3 $2
-        (vec_lane_index $4 (at $loc($4))) }
-  | VAR offset_opt align_opt NAT  /* Sugar */
-    { fun instr at0 c -> instr (memory c ($1 @@ $loc($1)) @@ $loc($1)) $3 $2
-        (vec_lane_index $4 (at $loc($4))) }
-  | offset_ align_opt NAT  /* Sugar */
-    { fun instr at0 c -> instr (0l @@ at0) $2 $1
-        (vec_lane_index $3 (at $loc($3))) }
-  | align NAT  /* Sugar */
-    { fun instr at0 c -> instr (0l @@ at0) $1 0L
-       (vec_lane_index $2 (at $loc($2))) }
-  | NAT  /* Sugar */
-    { fun instr at0 c -> instr (0l @@ at0) None 0L
-        (vec_lane_index $1 (at $loc($1))) }
+      instr (nat32 $1 $loc($1) @@ $loc($1)) $3 $2 $4 }
+  | VAR offset_opt align_opt laneidx  /* Sugar */
+    { fun instr at0 c ->
+      instr (memory c ($1 @@ $loc($1)) @@ $loc($1)) $3 $2 $4 }
+  | offset_ align_opt laneidx  /* Sugar */
+    { fun instr at0 c -> instr (0l @@ at0) $2 $1 $3 }
+  | align laneidx  /* Sugar */
+    { fun instr at0 c -> instr (0l @@ at0) $1 0L $2 }
+  | laneidx  /* Sugar */
+    { fun instr at0 c -> instr (0l @@ at0) None 0L $1 }
 
 
 select_instr_instr_list :
