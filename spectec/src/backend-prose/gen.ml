@@ -265,10 +265,10 @@ let ctx_to_instr frees expr =
     ctxs := Map.add s var !ctxs;
     [ ContextS (var, expr) ], Some var
 
-(* Hardcoded convention: "The rules implicitly assume a given context C" *)
+(* Hardcoded convention: "The rules implicitly assume a given context C or store S" *)
 let extract_context frees c =
   match c.it with
-  | Al.Ast.VarE "C" -> [], None
+  | Al.Ast.VarE ("C" | "s") -> [], None
   | Al.Ast.ExtE ({ it = VarE _; _ }, _ps, _e, _dir) -> ctx_to_instr frees c
   | _ -> [], Some c
 

@@ -16827,14 +16827,14 @@ The reference value :math:`{\mathit{ref}'}` is :ref:`valid <valid-val>` with the
 
       * The reference type :math:`{\mathit{rt}''}` is of the form :math:`(\mathsf{ref}~\mathsf{extern})`.
 
-      * Under the context :math:`s`, the reference value :math:`{\mathit{addrref}}` is :ref:`valid <valid-val>` with the reference type :math:`(\mathsf{ref}~\mathsf{any})`.
+      * The reference value :math:`{\mathit{addrref}}` is :ref:`valid <valid-val>` with the reference type :math:`(\mathsf{ref}~\mathsf{any})`.
    * Or:
 
       * The reference value :math:`{\mathit{ref}'}` is of the form :math:`{\mathit{ref}}`.
 
       * The reference type :math:`{\mathit{rt}''}` is of the form :math:`{\mathit{rt}}`.
 
-      * Under the context :math:`s`, the reference value :math:`{\mathit{ref}}` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{rt}'}`.
+      * The reference value :math:`{\mathit{ref}}` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{rt}'}`.
 
       * The reference type :math:`{\mathit{rt}'}` :ref:`matches <match>` the reference type :math:`{\mathit{rt}}`.
 
@@ -16902,7 +16902,7 @@ The reference value :math:`(\mathsf{ref{.}host}~a)` is :ref:`valid <valid-val>` 
 The reference value :math:`(\mathsf{ref{.}extern}~{\mathit{addrref}})` is :ref:`valid <valid-val>` with the reference type :math:`(\mathsf{ref}~\mathsf{extern})` if:
 
 
-   * Under the context :math:`s`, the reference value :math:`{\mathit{addrref}}` is :ref:`valid <valid-val>` with the reference type :math:`(\mathsf{ref}~\mathsf{any})`.
+   * The reference value :math:`{\mathit{addrref}}` is :ref:`valid <valid-val>` with the reference type :math:`(\mathsf{ref}~\mathsf{any})`.
 
 
 
@@ -16910,7 +16910,7 @@ The reference value :math:`(\mathsf{ref{.}extern}~{\mathit{addrref}})` is :ref:`
 The reference value :math:`{\mathit{ref}}` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{rt}}` if:
 
 
-   * Under the context :math:`s`, the reference value :math:`{\mathit{ref}}` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{rt}'}`.
+   * The reference value :math:`{\mathit{ref}}` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{rt}'}`.
 
    * The reference type :math:`{\mathit{rt}'}` :ref:`matches <match>` the reference type :math:`{\mathit{rt}}`.
 
@@ -16926,7 +16926,7 @@ The value :math:`{\mathit{val}}` is :ref:`valid <valid-val>` with the value type
 
       * The value type :math:`{\mathit{valtype}}` is of the form :math:`{\mathit{nt}}`.
 
-      * Under the context :math:`s`, the number value :math:`{\mathit{num}}` is :ref:`valid <valid-val>` with the number type :math:`{\mathit{nt}}`.
+      * The number value :math:`{\mathit{num}}` is :ref:`valid <valid-val>` with the number type :math:`{\mathit{nt}}`.
 
    * Or:
 
@@ -16934,14 +16934,14 @@ The value :math:`{\mathit{val}}` is :ref:`valid <valid-val>` with the value type
 
       * The value type :math:`{\mathit{valtype}}` is of the form :math:`{\mathit{vt}}`.
 
-      * Under the context :math:`s`, the vector value :math:`{\mathit{vec}}` is :ref:`valid <valid-val>` with the vector type :math:`{\mathit{vt}}`.
+      * The vector value :math:`{\mathit{vec}}` is :ref:`valid <valid-val>` with the vector type :math:`{\mathit{vt}}`.
    * Or:
 
       * The value :math:`{\mathit{val}}` is of the form :math:`{\mathit{ref}}`.
 
       * The value type :math:`{\mathit{valtype}}` is of the form :math:`{\mathit{rt}}`.
 
-      * Under the context :math:`s`, the reference value :math:`{\mathit{ref}}` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{rt}}`.
+      * The reference value :math:`{\mathit{ref}}` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{rt}}`.
 
 
 
@@ -16949,7 +16949,7 @@ The value :math:`{\mathit{val}}` is :ref:`valid <valid-val>` with the value type
 The value :math:`{\mathit{num}}` is :ref:`valid <valid-val>` with the value type :math:`{\mathit{nt}}` if:
 
 
-   * Under the context :math:`s`, the number value :math:`{\mathit{num}}` is :ref:`valid <valid-val>` with the number type :math:`{\mathit{nt}}`.
+   * The number value :math:`{\mathit{num}}` is :ref:`valid <valid-val>` with the number type :math:`{\mathit{nt}}`.
 
 
 
@@ -16957,7 +16957,7 @@ The value :math:`{\mathit{num}}` is :ref:`valid <valid-val>` with the value type
 The value :math:`{\mathit{vec}}` is :ref:`valid <valid-val>` with the value type :math:`{\mathit{vt}}` if:
 
 
-   * Under the context :math:`s`, the vector value :math:`{\mathit{vec}}` is :ref:`valid <valid-val>` with the vector type :math:`{\mathit{vt}}`.
+   * The vector value :math:`{\mathit{vec}}` is :ref:`valid <valid-val>` with the vector type :math:`{\mathit{vt}}`.
 
 
 
@@ -16965,7 +16965,7 @@ The value :math:`{\mathit{vec}}` is :ref:`valid <valid-val>` with the value type
 The value :math:`{\mathit{ref}}` is :ref:`valid <valid-val>` with the value type :math:`{\mathit{rt}}` if:
 
 
-   * Under the context :math:`s`, the reference value :math:`{\mathit{ref}}` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{rt}}`.
+   * The reference value :math:`{\mathit{ref}}` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{rt}}`.
 
 
 
@@ -17025,7 +17025,7 @@ The external address :math:`{\mathit{externaddr}'}` is :ref:`valid <valid-val>` 
 
       * The external type :math:`{\mathit{externtype}}` is of the form :math:`{\mathit{xt}}`.
 
-      * Under the context :math:`s`, the external address :math:`{\mathit{externaddr}}` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{xt}'}`.
+      * The external address :math:`{\mathit{externaddr}}` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{xt}'}`.
 
       * The external type :math:`{\mathit{xt}'}` :ref:`matches <match>` the external type :math:`{\mathit{xt}}`.
 
@@ -17085,7 +17085,7 @@ The external address :math:`(\mathsf{func}~a)` is :ref:`valid <valid-val>` with 
 The external address :math:`{\mathit{externaddr}}` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{xt}}` if:
 
 
-   * Under the context :math:`s`, the external address :math:`{\mathit{externaddr}}` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{xt}'}`.
+   * The external address :math:`{\mathit{externaddr}}` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{xt}'}`.
 
    * The external type :math:`{\mathit{xt}'}` :ref:`matches <match>` the external type :math:`{\mathit{xt}}`.
 
@@ -27655,11 +27655,11 @@ Ref_ok
   - Or:
     - ref' is (REF.EXTERN addrref).
     - rt'' is (REF ?() EXTERN).
-    - Under the context s, the reference value addrref is valid with the reference type (REF ?() ANY).
+    - the reference value addrref is valid with the reference type (REF ?() ANY).
   - Or:
     - ref' is ref.
     - rt'' is rt.
-    - Under the context s, the reference value ref is valid with the reference type rt'.
+    - the reference value ref is valid with the reference type rt'.
     - rt' matches the reference type rt.
 
 Ref_ok/null
@@ -27694,11 +27694,11 @@ Ref_ok/host
 
 Ref_ok/extern
 - the reference value (REF.EXTERN addrref) is valid with the reference type (REF ?() EXTERN) if:
-  - Under the context s, the reference value addrref is valid with the reference type (REF ?() ANY).
+  - the reference value addrref is valid with the reference type (REF ?() ANY).
 
 Ref_ok/sub
 - the reference value ref is valid with the reference type rt if:
-  - Under the context s, ref is valid with the reference type rt'.
+  - ref is valid with the reference type rt'.
   - rt' matches rt.
 
 Val_ok
@@ -27706,27 +27706,27 @@ Val_ok
   - Either:
     - val is num.
     - valtype is nt.
-    - Under the context s, the number value num is valid with the number type nt.
+    - the number value num is valid with the number type nt.
   - Or:
     - val is vec.
     - valtype is vt.
-    - Under the context s, the vector value vec is valid with the vector type vt.
+    - the vector value vec is valid with the vector type vt.
   - Or:
     - val is ref.
     - valtype is rt.
-    - Under the context s, the reference value ref is valid with the reference type rt.
+    - the reference value ref is valid with the reference type rt.
 
 Val_ok/num
 - the value num is valid with the value type nt if:
-  - Under the context s, num is valid with nt.
+  - num is valid with nt.
 
 Val_ok/vec
 - the value vec is valid with the value type vt if:
-  - Under the context s, vec is valid with vt.
+  - vec is valid with vt.
 
 Val_ok/ref
 - the value ref is valid with the value type rt if:
-  - Under the context s, ref is valid with rt.
+  - ref is valid with rt.
 
 Externaddr_ok
 - the external address externaddr' is valid with the external type externtype if:
@@ -27758,7 +27758,7 @@ Externaddr_ok
   - Or:
     - externaddr' is externaddr.
     - externtype is xt.
-    - Under the context s, the external address externaddr is valid with the external type xt'.
+    - the external address externaddr is valid with the external type xt'.
     - xt' matches the external type xt.
 
 Externaddr_ok/tag
@@ -27788,7 +27788,7 @@ Externaddr_ok/func
 
 Externaddr_ok/sub
 - the external address externaddr is valid with the external type xt if:
-  - Under the context s, externaddr is valid with the external type xt'.
+  - externaddr is valid with the external type xt'.
   - xt' matches xt.
 
 NotationTypingInstrScheme
