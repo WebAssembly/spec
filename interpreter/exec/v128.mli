@@ -41,8 +41,7 @@ sig
   val of_lanes : lane list -> t
 
   val splat : lane -> t
-  val extract_lane_s : int -> t -> lane
-  val extract_lane_u : int -> t -> lane
+  val extract_lane : int -> t -> lane
   val replace_lane : int -> t -> lane -> t
 
   val eq : t -> t -> t

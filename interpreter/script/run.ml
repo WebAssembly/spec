@@ -393,10 +393,10 @@ let assert_vec_pat v p =
   match v, p with
   | V128 v, VecPat (V128 (shape, ps)) ->
     let extract = match shape with
-      | V128.I8x16 () -> fun v i -> I32 (V128.I8x16.extract_lane_s i v)
-      | V128.I16x8 () -> fun v i -> I32 (V128.I16x8.extract_lane_s i v)
-      | V128.I32x4 () -> fun v i -> I32 (V128.I32x4.extract_lane_s i v)
-      | V128.I64x2 () -> fun v i -> I64 (V128.I64x2.extract_lane_s i v)
+      | V128.I8x16 () -> fun v i -> I32 (Convert.I32_.extend_i8_s (V128.I8x16.extract_lane i v))
+      | V128.I16x8 () -> fun v i -> I32 (Convert.I32_.extend_i16_s (V128.I16x8.extract_lane i v))
+      | V128.I32x4 () -> fun v i -> I32 (V128.I32x4.extract_lane i v)
+      | V128.I64x2 () -> fun v i -> I64 (V128.I64x2.extract_lane i v)
       | V128.F32x4 () -> fun v i -> F32 (V128.F32x4.extract_lane i v)
       | V128.F64x2 () -> fun v i -> F64 (V128.F64x2.extract_lane i v)
     in

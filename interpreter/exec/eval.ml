@@ -501,10 +501,10 @@ let rec step (c : config) : config =
             match pack with
             | Pack8 ->
               let num = Memory.load_num_packed Pack8 S mem i_64 offset I32T in
-              V128.I8x16.replace_lane j v (I32Num.of_num 0 num)
+              V128.I8x16.replace_lane j v (Convert.I8_.wrap_i32 (I32Num.of_num 0 num))
             | Pack16 ->
               let num = Memory.load_num_packed Pack16 S mem i_64 offset I32T in
-              V128.I16x8.replace_lane j v (I32Num.of_num 0 num)
+              V128.I16x8.replace_lane j v (Convert.I16_.wrap_i32 (I32Num.of_num 0 num))
             | Pack32 ->
               let num = Memory.load_num mem i_64 offset I32T in
               V128.I32x4.replace_lane j v (I32Num.of_num 0 num)
@@ -521,16 +521,16 @@ let rec step (c : config) : config =
         (try
           (match pack with
           | Pack8 ->
-            let num = I32 (V128.I8x16.extract_lane_s j v) in
+            let num = I32 (Convert.I32_.extend_i8_s (V128.I8x16.extract_lane j v)) in
             Memory.store_num_packed Pack8 mem i_64 offset num
           | Pack16 ->
-            let num = I32 (V128.I16x8.extract_lane_s j v) in
+            let num = I32 (Convert.I32_.extend_i16_s (V128.I16x8.extract_lane j v)) in
             Memory.store_num_packed Pack16 mem i_64 offset num
           | Pack32 ->
-            let num = I32 (V128.I32x4.extract_lane_s j v) in
+            let num = I32 (V128.I32x4.extract_lane j v) in
             Memory.store_num mem i_64 offset num
           | Pack64 ->
-            let num = I64 (V128.I64x2.extract_lane_s j v) in
+            let num = I64 (V128.I64x2.extract_lane j v) in
             Memory.store_num mem i_64 offset num
           );
           vs', []

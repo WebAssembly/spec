@@ -56,8 +56,7 @@ sig
   val of_lanes : lane list -> t
 
   val splat : lane -> t
-  val extract_lane_s : int -> t -> lane
-  val extract_lane_u : int -> t -> lane
+  val extract_lane : int -> t -> lane
   val replace_lane : int -> t -> lane -> t
 
   val eq : t -> t -> t
@@ -110,8 +109,7 @@ struct
   let cmp f x y = if f x y then IXX.of_int_s (-1) else IXX.zero
 
   let splat x = of_lanes (List.init num_lanes (fun i -> x))
-  let extract_lane_s i s = List.nth (to_lanes s) i
-  let extract_lane_u i s = IXX.as_unsigned (extract_lane_s i s)
+  let extract_lane i s = List.nth (to_lanes s) i
   let replace_lane i v x = unopi (fun j y -> if j = i then x else y) v
 
   let eq = binop (cmp IXX.eq)
@@ -248,11 +246,11 @@ module I8x16 = MakeIntShape (I8)
   (struct
     let shape = I8x16 ()
     let to_lanes s =
-      List.init 16 (fun i -> Int32.of_int (Bytes.get_int8 (Bytes.of_string s) i))
+      List.init 16 (fun i -> I8.of_int_s (Bytes.get_int8 (Bytes.of_string s) i))
     let of_lanes fs =
       assert (List.length fs = 16);
       let b = Bytes.create bytewidth in
-      List.iteri (fun i f -> Bytes.set_int8 b i (Int32.to_int f)) fs;
+      List.iteri (fun i f -> Bytes.set_int8 b i (I8.to_int_s f)) fs;
       Bytes.to_string b
   end)
 
@@ -260,11 +258,11 @@ module I16x8 = MakeIntShape (I16)
   (struct
     let shape = I16x8 ()
     let to_lanes s =
-      List.init 8 (fun i -> Int32.of_int (Bytes.get_int16_le (Bytes.of_string s) (i*2)))
+      List.init 8 (fun i -> I16.of_int_s (Bytes.get_int16_le (Bytes.of_string s) (i*2)))
     let of_lanes fs =
       assert (List.length fs = 8);
       let b = Bytes.create bytewidth in
-      List.iteri (fun i f -> Bytes.set_int16_le b (i*2) (Int32.to_int f)) fs;
+      List.iteri (fun i f -> Bytes.set_int16_le b (i*2) (I16.to_int_s f)) fs;
       Bytes.to_string b
   end)
 
@@ -272,11 +270,11 @@ module I32x4 = MakeIntShape (I32)
   (struct
     let shape = I32x4 ()
     let to_lanes s =
-      List.init 4 (fun i -> I32.of_bits (Bytes.get_int32_le (Bytes.of_string s) (i*4)))
+      List.init 4 (fun i -> Bytes.get_int32_le (Bytes.of_string s) (i*4))
     let of_lanes fs =
       assert (List.length fs = 4);
       let b = Bytes.create bytewidth in
-      List.iteri (fun i f -> Bytes.set_int32_le b (i*4) (I32.to_bits f)) fs;
+      List.iteri (fun i f -> Bytes.set_int32_le b (i*4) f) fs;
       Bytes.to_string b
   end)
 
@@ -284,11 +282,11 @@ module I64x2 = MakeIntShape (I64)
   (struct
     let shape = I64x2 ()
     let to_lanes s =
-      List.init 2 (fun i -> I64.of_bits (Bytes.get_int64_le (Bytes.of_string s) (i*8)))
+      List.init 2 (fun i -> Bytes.get_int64_le (Bytes.of_string s) (i*8))
     let of_lanes fs =
       assert (List.length fs = 2);
       let b = Bytes.create bytewidth in
-      List.iteri (fun i f -> Bytes.set_int64_le b (i*8) (I64.to_bits f)) fs;
+      List.iteri (fun i f -> Bytes.set_int64_le b (i*8) f) fs;
       Bytes.to_string b
   end)
 
@@ -343,7 +341,7 @@ struct
     let ns = I8x16.to_lanes v1 in
     let is = I8x16.to_lanes v2 in
     let select i =
-      Option.value (List.nth_opt ns (I32.to_int_u i)) ~default: I32.zero
+      Option.value (List.nth_opt ns (I8.to_int_u i)) ~default: I8.zero
     in I8x16.of_lanes (List.map select is)
 
   let shuffle is v1 v2 =
@@ -354,49 +352,45 @@ end
 
 (* Conversions *)
 
-let narrow to_lanes of_lanes sat_op x y =
-  let xy = to_lanes x @ to_lanes y in
-  of_lanes (List.map sat_op xy)
+let narrow to_lanes cvt of_lanes x y =
+  of_lanes (List.map cvt (to_lanes x @ to_lanes y))
 
 module I8x16_convert =
 struct
-  let narrow_s = narrow I16x8.to_lanes I8x16.of_lanes I8.saturate_s
-  let narrow_u = narrow I16x8.to_lanes I8x16.of_lanes I8.saturate_u
+  let narrow_s = narrow I16x8.to_lanes Convert.I8_.narrow_sat_i16_s I8x16.of_lanes
+  let narrow_u = narrow I16x8.to_lanes Convert.I8_.narrow_sat_i16_u I8x16.of_lanes
 end
 
 module I16x8_convert =
 struct
-  let narrow_s = narrow I32x4.to_lanes I16x8.of_lanes I16.saturate_s
-  let narrow_u = narrow I32x4.to_lanes I16x8.of_lanes I16.saturate_u
-
-  let ext_s = Int32.logand 0xffffffffl
-  let ext_u = Int32.logand 0xffl
+  let narrow_s = narrow I32x4.to_lanes Convert.I16_.narrow_sat_i32_s I16x8.of_lanes
+  let narrow_u = narrow I32x4.to_lanes Convert.I16_.narrow_sat_i32_u I16x8.of_lanes
 
   let extend take_or_drop ext x =
     I16x8.of_lanes (List.map ext (take_or_drop 8 (I8x16.to_lanes x)))
-  let extend_low_s = extend Lib.List.take ext_s
-  let extend_high_s = extend Lib.List.drop ext_s
-  let extend_low_u = extend Lib.List.take ext_u
-  let extend_high_u = extend Lib.List.drop ext_u
+  let extend_low_s = extend Lib.List.take Convert.I16_.extend_i8_s
+  let extend_high_s = extend Lib.List.drop Convert.I16_.extend_i8_s
+  let extend_low_u = extend Lib.List.take Convert.I16_.extend_i8_u
+  let extend_high_u = extend Lib.List.drop Convert.I16_.extend_i8_u
 
   let extmul_low_s x y = I16x8.mul (extend_low_s x) (extend_low_s y)
   let extmul_high_s x y = I16x8.mul (extend_high_s x) (extend_high_s y)
   let extmul_low_u x y = I16x8.mul (extend_low_u x) (extend_low_u y)
   let extmul_high_u x y = I16x8.mul (extend_high_u x) (extend_high_u y)
 
-  let extadd ext x y = Int32.add (ext x) (ext y)
+  let extadd ext x y = I16.add (ext x) (ext y)
   let extadd_pairwise_s x =
-    I16x8.of_lanes (Lib.List.map_pairwise (extadd ext_s) (I8x16.to_lanes x))
+    I16x8.of_lanes (Lib.List.map_pairwise (extadd Convert.I16_.extend_i8_s) (I8x16.to_lanes x))
   let extadd_pairwise_u x =
-    I16x8.of_lanes (Lib.List.map_pairwise (extadd ext_u) (I8x16.to_lanes x))
+    I16x8.of_lanes (Lib.List.map_pairwise (extadd Convert.I16_.extend_i8_u) (I8x16.to_lanes x))
 
   let dot_s x y =
-    let xs = I8x16.to_lanes x in
-    let ys = I8x16.to_lanes y in
+    let xs = List.map Convert.I16_.extend_i8_s (I8x16.to_lanes x) in
+    let ys = List.map Convert.I16_.extend_i8_s (I8x16.to_lanes y) in
     let rec dot xs ys =
       match xs, ys with
       | x1::x2::xs', y1::y2::ys' ->
-        Int32.(add (mul x1 y1) (mul x2 y2)) :: dot xs' ys'
+        I16.(add (mul x1 y1) (mul x2 y2)) :: dot xs' ys'
       | [], [] -> []
       | _, _ -> assert false
     in I16x8.of_lanes (dot xs ys)
@@ -413,19 +407,16 @@ struct
   let trunc_sat_f64x2_s_zero = convert_zero Convert.I32_.trunc_sat_f64_s
   let trunc_sat_f64x2_u_zero = convert_zero Convert.I32_.trunc_sat_f64_u
 
-  let ext_s = Int32.logand 0xffffffffl
-  let ext_u = Int32.logand 0xffffl
-
   let extend take_or_drop ext x =
     I32x4.of_lanes (List.map ext (take_or_drop 4 (I16x8.to_lanes x)))
-  let extend_low_s = extend Lib.List.take ext_s
-  let extend_high_s = extend Lib.List.drop ext_s
-  let extend_low_u = extend Lib.List.take ext_u
-  let extend_high_u = extend Lib.List.drop ext_u
+  let extend_low_s = extend Lib.List.take Convert.I32_.extend_i16_s
+  let extend_high_s = extend Lib.List.drop Convert.I32_.extend_i16_s
+  let extend_low_u = extend Lib.List.take Convert.I32_.extend_i16_u
+  let extend_high_u = extend Lib.List.drop Convert.I32_.extend_i16_u
 
   let dot_s x y =
-    let xs = I16x8.to_lanes x in
-    let ys = I16x8.to_lanes y in
+    let xs = List.map Convert.I32_.extend_i16_s (I16x8.to_lanes x) in
+    let ys = List.map Convert.I32_.extend_i16_s (I16x8.to_lanes y) in
     let rec dot xs ys =
       match xs, ys with
       | x1::x2::xss, y1::y2::yss ->
@@ -435,8 +426,8 @@ struct
     in I32x4.of_lanes (dot xs ys)
 
   let dot_add_s x y z =
-    let xs = I8x16.to_lanes x in
-    let ys = I8x16.to_lanes y in
+    let xs = List.map Convert.I32_.extend_i8_s (I8x16.to_lanes x) in
+    let ys = List.map Convert.I32_.extend_i8_s (I8x16.to_lanes y) in
     let rec dot xs ys =
       match xs, ys with
       | x1::x2::x3::x4::xs', y1::y2::y3::y4::ys' ->
@@ -455,26 +446,19 @@ struct
 
   let extadd ext x y = Int32.add (ext x) (ext y)
   let extadd_pairwise_s x =
-    I32x4.of_lanes (Lib.List.map_pairwise (extadd ext_s) (I16x8.to_lanes x))
+    I32x4.of_lanes (Lib.List.map_pairwise (extadd Convert.I32_.extend_i16_s) (I16x8.to_lanes x))
   let extadd_pairwise_u x =
-    I32x4.of_lanes (Lib.List.map_pairwise (extadd ext_u) (I16x8.to_lanes x))
+    I32x4.of_lanes (Lib.List.map_pairwise (extadd Convert.I32_.extend_i16_u) (I16x8.to_lanes x))
 end
 
 module I64x2_convert =
 struct
-  let ext_s = Int64.logand 0xffffffffffffffffL
-  let ext_u = Int64.logand 0xffffffffL
-
   let extend take_or_drop ext x =
-    I64x2.of_lanes
-      (List.map
-        (fun i32 -> ext (Int64.of_int32 i32))
-        (take_or_drop 2 (I32x4.to_lanes x))
-      )
-  let extend_low_s = extend Lib.List.take ext_s
-  let extend_high_s = extend Lib.List.drop ext_s
-  let extend_low_u = extend Lib.List.take ext_u
-  let extend_high_u = extend Lib.List.drop ext_u
+    I64x2.of_lanes (List.map ext (take_or_drop 2 (I32x4.to_lanes x)))
+  let extend_low_s = extend Lib.List.take Convert.I64_.extend_i32_s
+  let extend_high_s = extend Lib.List.drop Convert.I64_.extend_i32_s
+  let extend_low_u = extend Lib.List.take Convert.I64_.extend_i32_u
+  let extend_high_u = extend Lib.List.drop Convert.I64_.extend_i32_u
 
   let extmul_low_s x y = I64x2.mul (extend_low_s x) (extend_low_s y)
   let extmul_high_s x y = I64x2.mul (extend_high_s x) (extend_high_s y)

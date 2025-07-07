@@ -286,8 +286,8 @@ struct
   let splatop (op : splatop) v =
     let i =
       match op with
-      | I8x16 Splat -> V128.I8x16.splat (I32Num.of_num 1 v)
-      | I16x8 Splat -> V128.I16x8.splat (I32Num.of_num 1 v)
+      | I8x16 Splat -> V128.I8x16.splat (Convert.I8_.wrap_i32 (I32Num.of_num 1 v))
+      | I16x8 Splat -> V128.I16x8.splat (Convert.I16_.wrap_i32 (I32Num.of_num 1 v))
       | I32x4 Splat -> V128.I32x4.splat (I32Num.of_num 1 v)
       | I64x2 Splat -> V128.I64x2.splat (I64Num.of_num 1 v)
       | F32x4 Splat -> V128.F32x4.splat (F32Num.of_num 1 v)
@@ -297,20 +297,20 @@ struct
   let extractop (op : extractop) v =
     let v128 = of_vec 1 v in
     match op with
-    | I8x16 (Extract (i, S)) -> I32 (V128.I8x16.extract_lane_s (I8.to_int_u i) v128)
-    | I8x16 (Extract (i, U)) -> I32 (V128.I8x16.extract_lane_u (I8.to_int_u i) v128)
-    | I16x8 (Extract (i, S)) -> I32 (V128.I16x8.extract_lane_s (I8.to_int_u i) v128)
-    | I16x8 (Extract (i, U)) -> I32 (V128.I16x8.extract_lane_u (I8.to_int_u i) v128)
-    | I32x4 (Extract (i, ())) -> I32 (V128.I32x4.extract_lane_u (I8.to_int_u i) v128)
-    | I64x2 (Extract (i, ())) -> I64 (V128.I64x2.extract_lane_u (I8.to_int_u i) v128)
+    | I8x16 (Extract (i, S)) -> I32 (Convert.I32_.extend_i8_s (V128.I8x16.extract_lane (I8.to_int_u i) v128))
+    | I8x16 (Extract (i, U)) -> I32 (Convert.I32_.extend_i8_u (V128.I8x16.extract_lane (I8.to_int_u i) v128))
+    | I16x8 (Extract (i, S)) -> I32 (Convert.I32_.extend_i16_s (V128.I16x8.extract_lane (I8.to_int_u i) v128))
+    | I16x8 (Extract (i, U)) -> I32 (Convert.I32_.extend_i16_u (V128.I16x8.extract_lane (I8.to_int_u i) v128))
+    | I32x4 (Extract (i, ())) -> I32 (V128.I32x4.extract_lane (I8.to_int_u i) v128)
+    | I64x2 (Extract (i, ())) -> I64 (V128.I64x2.extract_lane (I8.to_int_u i) v128)
     | F32x4 (Extract (i, ())) -> F32 (V128.F32x4.extract_lane (I8.to_int_u i) v128)
     | F64x2 (Extract (i, ())) -> F64 (V128.F64x2.extract_lane (I8.to_int_u i) v128)
 
   let replaceop (op : replaceop) v (n : num) =
     let v128 = of_vec 1 v in
     let v128' = match op with
-      | I8x16 (Replace i) -> V128.I8x16.replace_lane (I8.to_int_u i) v128 (I32Num.of_num 1 n)
-      | I16x8 (Replace i) -> V128.I16x8.replace_lane (I8.to_int_u i) v128 (I32Num.of_num 1 n)
+      | I8x16 (Replace i) -> V128.I8x16.replace_lane (I8.to_int_u i) v128 (Convert.I8_.wrap_i32 (I32Num.of_num 1 n))
+      | I16x8 (Replace i) -> V128.I16x8.replace_lane (I8.to_int_u i) v128 (Convert.I16_.wrap_i32 (I32Num.of_num 1 n))
       | I32x4 (Replace i) -> V128.I32x4.replace_lane (I8.to_int_u i) v128 (I32Num.of_num 1 n)
       | I64x2 (Replace i) -> V128.I64x2.replace_lane (I8.to_int_u i) v128 (I64Num.of_num 1 n)
       | F32x4 (Replace i) -> V128.F32x4.replace_lane (I8.to_int_u i) v128 (F32Num.of_num 1 n)

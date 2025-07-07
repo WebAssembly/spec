@@ -69,8 +69,8 @@ let vec_lane_nan shape l at =
 let vec_lane_lit shape l at =
   let open Value in
   match shape with
-  | V128.I8x16 () -> NumPat (I32 (I8.of_string l) @@@ at)
-  | V128.I16x8 () -> NumPat (I32 (I16.of_string l) @@@ at)
+  | V128.I8x16 () -> NumPat (I32 (Convert.I32_.extend_i8_s (I8.of_string l)) @@@ at)
+  | V128.I16x8 () -> NumPat (I32 (Convert.I32_.extend_i16_s (I16.of_string l)) @@@ at)
   | V128.I32x4 () -> NumPat (I32 (I32.of_string l) @@@ at)
   | V128.I64x2 () -> NumPat (I64 (I64.of_string l) @@@ at)
   | V128.F32x4 () -> NumPat (F32 (F32.of_string l) @@@ at)

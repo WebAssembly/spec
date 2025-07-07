@@ -517,9 +517,9 @@ let assert_return ress ts at =
         V128.I32x4.of_lanes (List.init 4 (fun _ -> Int32.minus_one)) in
       let mask, expected = match shape with
         | V128.I8x16 () ->
-          all_ones, V128.I8x16.of_lanes (List.map (I32Num.of_num 0) canons)
+          all_ones, V128.I8x16.of_lanes (List.map Convert.I8_.wrap_i32 (List.map (I32Num.of_num 0) canons))
         | V128.I16x8 () ->
-          all_ones, V128.I16x8.of_lanes (List.map (I32Num.of_num 0) canons)
+          all_ones, V128.I16x8.of_lanes (List.map Convert.I16_.wrap_i32 (List.map (I32Num.of_num 0) canons))
         | V128.I32x4 () ->
           all_ones, V128.I32x4.of_lanes (List.map (I32Num.of_num 0) canons)
         | V128.I64x2 () ->

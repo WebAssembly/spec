@@ -7,9 +7,6 @@ sig
 
   val bitwidth : int
 
-  val zero : t
-  val one : t
-  val minus_one : t
   val max_int : t
   val min_int : t
 
@@ -40,18 +37,18 @@ end
 module type T =
 sig
   type t
-  type bits
 
   val bitwidth : int
-
-  val of_bits : bits -> t
-  val to_bits : t -> bits
 
   val zero : t
 
   val not_ : t -> t
   val abs : t -> t
   val neg : t -> t
+  val clz : t -> t
+  val ctz : t -> t
+  val popcnt : t -> t
+
   val add : t -> t -> t
   val sub : t -> t -> t
   val mul : t -> t -> t
@@ -68,11 +65,11 @@ sig
   val shr_u : t -> t -> t
   val rotl : t -> t -> t
   val rotr : t -> t -> t
-  val clz : t -> t
-  val ctz : t -> t
-  val popcnt : t -> t
+
   val extend_s : int -> t -> t
+
   val eqz : t -> bool
+
   val eq : t -> t -> bool
   val ne : t -> t -> bool
   val lt_s : t -> t -> bool
@@ -84,11 +81,6 @@ sig
   val ge_s : t -> t -> bool
   val ge_u : t -> t -> bool
 
-  val as_unsigned : t -> t
-
-  (* Saturating arithmetic, used for small ints. *)
-  val saturate_s : t -> t
-  val saturate_u : t -> t
   val add_sat_s : t -> t -> t
   val add_sat_u : t -> t -> t
   val sub_sat_s : t -> t -> t
@@ -97,228 +89,202 @@ sig
 
   val of_int_s : int -> t
   val of_int_u : int -> t
+  val to_int_s : t -> int
+  val to_int_u : t -> int
+
   val of_string_s : string -> t
   val of_string_u : string -> t
   val of_string : string -> t
-  val to_int_s : t -> int
-  val to_int_u : t -> int
   val to_string_s : t -> string
   val to_string_u : t -> string
   val to_hex_string : t -> string
 end
 
-module Make (Rep : RepType) : T with type bits = Rep.t and type t = Rep.t =
+module Make (Rep : RepType) : T with type t = Rep.t =
 struct
-  (*
-   * Unsigned comparison in terms of signed comparison.
-   *)
-  let cmp_u x op y =
-    op (Rep.add x Rep.min_int) (Rep.add y Rep.min_int)
-
-  (*
-   * Unsigned division and remainder in terms of signed division; algorithm from
-   * Hacker's Delight, Second Edition, by Henry S. Warren, Jr., section 9-3
-   * "Unsigned Short Division from Signed Division".
-   *)
-  let divrem_u n d =
-    if d = Rep.zero then raise DivideByZero else
-    let t = Rep.shift_right d (Rep.bitwidth - 1) in
-    let n' = Rep.logand n (Rep.lognot t) in
-    let q = Rep.shift_left (Rep.div (Rep.shift_right_logical n' 1) d) 1 in
-    let r = Rep.sub n (Rep.mul q d) in
-    if cmp_u r (<) d then
-      q, r
-    else
-      Rep.add q Rep.one, Rep.sub r d
-
   type t = Rep.t
-  type bits = Rep.t
 
   let bitwidth = Rep.bitwidth
 
-  let of_bits x = x
-  let to_bits x = x
 
-  let zero = Rep.zero
-  let one = Rep.one
+  (* Constants *)
+
+  let zero = Rep.of_int 0
+  let one = Rep.of_int 1
+  let minus_one = Rep.of_int (-1)
   let ten = Rep.of_int 10
 
+  let min_int = Rep.shift_left minus_one (bitwidth - 1)
+  let max_int = Rep.logxor min_int minus_one
+
+
+  (* Sign and zero extension for formats with wider representation *)
+
+  let sx i =
+    let k = 64 - bitwidth in
+    Rep.of_int64 Int64.(shift_right (shift_left (Rep.to_int64 i) k) k)
+ 
+  let zx i =
+    let mask = Int64.shift_right_logical (-1L) (64 - bitwidth) in
+    Rep.of_int64 Int64.(logand (Rep.to_int64 i) mask)
+
+
+  (* Integer conversion *)
+
+  let to_int_s = Rep.to_int
+  let to_int_u i = Rep.to_int (zx i)
+
+  let of_int_s = Rep.of_int
+  let of_int_u i =
+    Rep.(logand (of_int i) (logor (shift_left (of_int Int.max_int) 1) one))
+
+
+  (* Tests and comparisons *)
+
+  let cmp_u op i j = op (Rep.add i Rep.min_int) (Rep.add j Rep.min_int)
+
+  let eqz i = i = zero
+
+  let eq i j = i = j
+  let ne i j = i <> j
+  let lt_s i j = i < j
+  let lt_u i j = cmp_u (<) i j
+  let le_s i j = i <= j
+  let le_u i j = cmp_u (<=) i j
+  let gt_s i j = i > j
+  let gt_u i j = cmp_u (>) i j
+  let ge_s i j = i >= j
+  let ge_u i j = cmp_u (>=) i j
+
+
+  (* Bit operators *)
+
   let not_ = Rep.lognot
-  let abs = Rep.abs
-  let neg = Rep.neg
-
-  (* If bit (bitwidth - 1) is set, sx will sign-extend t to maintain the
-   * invariant that small ints are stored sign-extended inside a wider int. *)
-  let sx x =
-    let i = 64 - Rep.bitwidth in
-    Rep.of_int64 Int64.(shift_right (shift_left (Rep.to_int64 x) i) i)
-
-  (* add, sub, and mul are sign-agnostic and do not trap on overflow. *)
-  let add x y = sx (Rep.add x y)
-  let sub x y = sx (Rep.sub x y)
-
-  let mul x y = sx (Rep.mul x y)
-
-  (* We don't override min_int and max_int since those are used
-   * by other functions (like parsing), and rely on it being
-   * min/max for int32 *)
-  (* The smallest signed |bitwidth|-bits int. *)
-  let low_int = Rep.shift_left Rep.minus_one (Rep.bitwidth - 1)
-  (* The largest signed |bitwidth|-bits int. *)
-  let high_int = Rep.logxor low_int Rep.minus_one
-
-  (* result is truncated toward zero *)
-  let div_s x y =
-    if y = Rep.zero then
-      raise DivideByZero
-    else if x = low_int && y = Rep.minus_one then
-      raise Overflow
-    else
-      Rep.div x y
-
-  (* result is floored (which is the same as truncating for unsigned values) *)
-  let div_u x y =
-    let q, r = divrem_u x y in q
-
-  (* result has the sign of the dividend *)
-  let rem_s x y =
-    if y = Rep.zero then
-      raise DivideByZero
-    else
-      Rep.rem x y
-
-  let rem_u x y =
-    let q, r = divrem_u x y in r
-
-  let avgr_u x y =
-    let open Int64 in
-    (* Mask with bottom #bitwidth bits set *)
-    let mask = shift_right_logical minus_one (64 - Rep.bitwidth) in
-    let x64 = logand mask (Rep.to_int64 x) in
-    let y64 = logand mask (Rep.to_int64 y) in
-    Rep.of_int64 (div (add (add x64 y64) one) (of_int 2))
-
   let and_ = Rep.logand
   let or_ = Rep.logor
   let xor = Rep.logxor
 
-  (* WebAssembly's shifts mask the shift count according to the bitwidth. *)
-  let shift f x y =
-    f x Rep.(to_int (logand y (of_int (bitwidth - 1))))
+  let shift j =  (* Mask shift count according to bitwidth *)
+    Rep.(to_int (logand j (of_int (bitwidth - 1))))
 
-  let shl x y =
-    sx (shift Rep.shift_left x y)
+  let shl i j = sx (Rep.shift_left i (shift j))
+  let shr_s i j = Rep.shift_right i (shift j)
+  let shr_u i j = sx (Rep.shift_right_logical (zx i) (shift j))
 
-  let shr_s x y =
-    shift Rep.shift_right x y
+  let rotl i j =
+    sx (Rep.logor
+      (Rep.shift_left i (shift j))
+      (Rep.shift_right_logical i (bitwidth - shift j))
+    )
 
-  (* Check if we are storing smaller ints. *)
-  let needs_extend = shl one (Rep.of_int (Rep.bitwidth - 1)) <> Rep.min_int
+  let rotr i j =
+    sx (Rep.logor
+      (Rep.shift_right_logical i (shift j))
+      (Rep.shift_left i (bitwidth - shift j))
+    )
 
-  (*
-   * When Int is used to store a smaller int, it is stored in signed extended
-   * form. Some instructions require the unsigned form, which requires masking
-   * away the top 32-bitwidth bits.
-   *)
-  let as_unsigned x =
-    if not needs_extend then x else
-    (* Mask with bottom #bitwidth bits set *)
-    let mask = Rep.(shift_right_logical minus_one (32 - bitwidth)) in
-    Rep.logand x mask
-
-  let shr_u x y =
-    sx (shift Rep.shift_right_logical (as_unsigned x) y)
-
-  (* We must mask the count to implement rotates via shifts. *)
-  let clamp_rotate_count n =
-    Rep.to_int (Rep.logand n (Rep.of_int (Rep.bitwidth - 1)))
-
-  let rotl x y =
-    let n = clamp_rotate_count y in
-    or_ (shl x (Rep.of_int n)) (shr_u x (Rep.of_int (Rep.bitwidth - n)))
-
-  let rotr x y =
-    let n = clamp_rotate_count y in
-    or_ (shr_u x (Rep.of_int n)) (shl x (Rep.of_int (Rep.bitwidth - n)))
-
-  (* clz is defined for all values, including all-zeros. *)
-  let clz x =
-    let rec loop acc n =
-      if n = Rep.zero then
-        Rep.bitwidth
-      else if and_ n (Rep.shift_left Rep.one (Rep.bitwidth - 1)) = zero then
-        loop (1 + acc) (Rep.shift_left n 1)
+  let clz i =
+    let rec loop i acc =
+      if i = zero then
+        bitwidth
+      else if and_ i Rep.(shift_left one (bitwidth - 1)) = zero then
+        loop (Rep.shift_left i 1) (acc + 1)
       else
         acc
-    in Rep.of_int (loop 0 x)
+    in Rep.of_int (loop i 0)
 
-  (* ctz is defined for all values, including all-zeros. *)
-  let ctz x =
-    let rec loop acc n =
-      if n = Rep.zero then
-        Rep.bitwidth
-      else if and_ n Rep.one = Rep.one then
+  let ctz i =
+    let rec loop i acc =
+      if i = zero then
+        bitwidth
+      else if and_ i one = one then
         acc
       else
-        loop (1 + acc) (Rep.shift_right_logical n 1)
-    in Rep.of_int (loop 0 x)
+        loop (Rep.shift_right_logical i 1) (acc + 1)
+    in Rep.of_int (loop i 0)
 
-  let popcnt x =
-    let rec loop acc i n =
-      if i = 0 then
+  let popcnt i =
+    let rec loop n i acc =
+      if n = 0 then
         acc
       else
-        let acc' = if and_ n Rep.one = Rep.one then acc + 1 else acc in
-        loop acc' (i - 1) (Rep.shift_right_logical n 1)
-    in Rep.of_int (loop 0 Rep.bitwidth x)
+        loop (n - 1) (Rep.shift_right_logical i 1)
+          (if and_ i one = one then acc + 1 else acc)
+    in Rep.of_int (loop bitwidth i 0)
 
-  let extend_s n x =
-    let shift = Rep.bitwidth - n in
-    Rep.shift_right (Rep.shift_left x shift) shift
 
-  let eqz x = x = Rep.zero
+  (* Arithmetic operators *)
 
-  let eq x y = x = y
-  let ne x y = x <> y
-  let lt_s x y = x < y
-  let lt_u x y = cmp_u x (<) y
-  let le_s x y = x <= y
-  let le_u x y = cmp_u x (<=) y
-  let gt_s x y = x > y
-  let gt_u x y = cmp_u x (>) y
-  let ge_s x y = x >= y
-  let ge_u x y = cmp_u x (>=) y
+  let abs = Rep.abs
+  let neg = Rep.neg
 
-  let saturate_s x = sx (min (max x low_int) high_int)
-  let saturate_u x = sx (min (max x Rep.zero) (as_unsigned Rep.minus_one))
+  let add i j = sx (Rep.add i j)
+  let sub i j = sx (Rep.sub i j)
+  let mul i j = sx (Rep.mul i j)
 
-  (* add/sub for int, used for higher-precision arithmetic for I8 and I16 *)
-  let add_int x y =
-    assert (Rep.bitwidth < 32);
-    Rep.(of_int ((to_int x) + (to_int y)))
+  let div_s i j =
+    if j = zero then
+      raise DivideByZero
+    else if i = min_int && j = minus_one then
+      raise Overflow
+    else
+      Rep.div i j
 
-  let sub_int x y =
-    assert (Rep.bitwidth < 32);
-    Rep.(of_int ((to_int x) - (to_int y)))
+  let rem_s i j =
+    if j = zero then
+      raise DivideByZero
+    else
+      Rep.rem i j
 
-  let add_sat_s x y = saturate_s (add_int x y)
-  let add_sat_u x y = saturate_u (add_int (as_unsigned x) (as_unsigned y))
-  let sub_sat_s x y = saturate_s (sub_int x y)
-  let sub_sat_u x y = saturate_u (sub_int (as_unsigned x) (as_unsigned y))
+  (* Hacker's Delight, Second Edition, by Henry S. Warren, Jr., section 9-3
+   * "Unsigned Short Division from Signed Division" *)
+  let divrem_u i j =
+    if j = zero then raise DivideByZero else
+    let t = Rep.shift_right j (bitwidth - 1) in
+    let i' = Rep.(logand i (lognot t)) in
+    let q = Rep.(shift_left (div (shift_right_logical i' 1) j) 1) in
+    let r = Rep.(sub i (mul q j)) in
+    if cmp_u (<) r j then
+      q, r
+    else
+      Rep.add q one, Rep.sub r j
 
-  let q15mulr_sat_s x y =
-    (* mul x64 y64 can overflow int64 when both are int32 min, but this is only
-     * used by i16x8, so we are fine for now. *)
-    assert (Rep.bitwidth < 32);
-    let x64 = Rep.to_int64 x in
-    let y64 = Rep.to_int64 y in
-    saturate_s (Rep.of_int64 Int64.((shift_right (add (mul x64 y64) 0x4000L) 15)))
+  let div_u i j = fst (divrem_u i j)
+  let rem_u i j = snd (divrem_u i j)
 
-  let to_int_s = Rep.to_int
-  let to_int_u i = Rep.to_int i land ((Rep.to_int Rep.max_int lsl 1) lor 1)
+  let avgr_u i j =
+    let open Int64 in
+    let mask = shift_right_logical minus_one (64 - bitwidth) in
+    let i64 = logand mask (Rep.to_int64 i) in
+    let j64 = logand mask (Rep.to_int64 j) in
+    Rep.of_int64 (div (add (add i64 j64) one) (of_int 2))
 
-  let of_int_s = Rep.of_int
-  let of_int_u i = and_ (Rep.of_int i) (or_ (shl (Rep.of_int max_int) one) one)
+  let extend_s n i =
+    let k = bitwidth - n in
+    Rep.(shift_right (shift_left i k) k)
+
+
+  (* Saturating arithmetics *)
+
+  let sat_s i = sx (min (max i min_int) max_int)
+  let sat_u i = sx (min (max i zero) (zx minus_one))
+
+  let add_int i j = assert (bitwidth <= 32); Rep.(of_int (to_int i + to_int j))
+  let sub_int i j = assert (bitwidth <= 32); Rep.(of_int (to_int i - to_int j))
+
+  let add_sat_s i j = sat_s (add_int i j)
+  let add_sat_u i j = sat_u (add_int (zx i) (zx j))
+  let sub_sat_s i j = sat_s (sub_int i j)
+  let sub_sat_u i j = sat_u (sub_int (zx i) (zx j))
+
+  let q15mulr_sat_s i j =
+    (* Int64.mul can overflow int64 when both are int32 min,
+     * but this is only used by i16x8, so we are fine for now. *)
+    assert (bitwidth <= 16);
+    let i64 = Rep.to_int64 i in
+    let j64 = Rep.to_int64 j in
+    sat_s (Rep.of_int64 Int64.((shift_right (add (mul i64 j64) 0x4000L) 15)))
+
 
   (* String conversion that allows leading signs and unsigned values *)
 
@@ -334,24 +300,7 @@ struct
     | 'A' .. 'F' as c ->  0xa + Char.code c - Char.code 'A'
     | _ ->  failwith "of_string"
 
-  let max_upper, max_lower = divrem_u Rep.minus_one ten
-
-  let sign_extend i =
-    (* This module is used with I32 and I64, but the bitwidth can be less
-     * than that, e.g. for I16. When used for smaller integers, the stored value
-     * needs to be signed extended, e.g. parsing -1 into a I16 (backed by Int32)
-     * should have all high bits set. We can do that by logor with a mask,
-     * where the mask is minus_one left shifted by bitwidth. But if bitwidth
-     * matches the number of bits of Rep, the shift will be incorrect.
-     *   -1 (Int32) << 32 = -1
-     * Then the logor will be also wrong. So we check and bail out early.
-     * *)
-    if not needs_extend then i else
-    let sign_bit = Rep.logand (Rep.of_int (1 lsl (Rep.bitwidth - 1))) i in
-    if sign_bit = Rep.zero then i else
-    (* Build a sign-extension mask *)
-    let sign_mask = (Rep.shift_left Rep.minus_one Rep.bitwidth) in
-    Rep.logor sign_mask i
+  let max_upper, max_lower = divrem_u minus_one ten
 
   let of_string s =
     let open Rep in
@@ -386,19 +335,22 @@ struct
         Rep.neg n
       | _ -> parse_int 0
     in
-    let n = sign_extend parsed in
-    require (low_int <= n && n <= high_int);
-    n
+    let sign = Rep.(shift_left one (bitwidth - 1)) in
+    let mask = Rep.(shift_left minus_one (bitwidth - 1)) in
+    let upper = Rep.logand parsed mask in
+    require (upper = zero || upper = mask || upper = sign);
+    sx parsed
 
   let of_string_s s =
     let n = of_string s in
-    require (s.[0] = '-' || ge_s n Rep.zero);
+    require (s.[0] = '-' || ge_s n zero);
     n
 
   let of_string_u s =
     let n = of_string s in
     require (s.[0] <> '+' && s.[0] <> '-');
     n
+
 
   (* String conversion that groups digits for readability *)
 
@@ -419,10 +371,10 @@ struct
 
   let to_string_s i = group_digits 3 (Rep.to_string i)
   let to_string_u i =
-    if i >= Rep.zero then
+    if i >= zero then
       group_digits 3 (Rep.to_string i)
     else
       group_digits 3 (Rep.to_string (div_u i ten) ^ Rep.to_string (rem_u i ten))
 
-  let to_hex_string i = "0x" ^ group_digits 4 (Rep.to_hex_string i)
+  let to_hex_string i = "0x" ^ group_digits 4 (Rep.to_hex_string (zx i))
 end

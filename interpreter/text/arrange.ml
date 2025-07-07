@@ -845,9 +845,9 @@ let lane_pat mode pat shape =
   let choose fb ft = if mode = `Binary then fb else ft in
   match pat, shape with
   | NumPat {it = Value.I32 i; _}, V128.I8x16 () ->
-    choose I8.to_hex_string I8.to_string_s i
+    choose I8.to_hex_string I8.to_string_s (Convert.I8_.wrap_i32 i)
   | NumPat {it = Value.I32 i; _}, V128.I16x8 () ->
-    choose I16.to_hex_string I16.to_string_s i
+    choose I16.to_hex_string I16.to_string_s (Convert.I16_.wrap_i32 i)
   | NumPat n, _ -> num mode n.it
   | NanPat nan, _ -> nanop nan
 
