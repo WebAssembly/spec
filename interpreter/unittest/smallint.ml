@@ -20,17 +20,19 @@ let u8min = I8.of_int_u 0
 let s8mone = I8.of_int_s (-1)
 let u8one = I8.of_int_u 1
 
-let assert_equal32 x y =
-  if x <> y then raise (Failure
-  (Printf.sprintf "Expected: %lx, but got %lx." x y))
+let str32 = Printf.sprintf "%lx"
+let str16 = I16.to_hex_string
+let str8 = I8.to_hex_string
 
-let assert_equal16 x y =
-  if x <> y then raise (Failure
-  (Printf.sprintf "Expected: %x, but got %x." (I16.to_int_s x) (I16.to_int_s y)))
+let _ = Printexc.record_backtrace true
+let assert_equal str i j =
+  if i <> j then
+    raise (Failure
+      (Printf.sprintf "expected %s, but got %s" (str i) (str j)))
 
-let assert_equal8 x y =
-  if x <> y then raise (Failure
-  (Printf.sprintf "Expected: %x, but got %x." (I8.to_int_s x) (I8.to_int_s y)))
+let assert_equal32 = assert_equal str32
+let assert_equal16 = assert_equal str16
+let assert_equal8 = assert_equal str8
 
 let () =
   (* test addition wrap around *)

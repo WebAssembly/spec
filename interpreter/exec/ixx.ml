@@ -134,8 +134,8 @@ struct
   let to_int_s = Rep.to_int
   let to_int_u i = Rep.to_int (zx i)
 
-  let of_int_s = Rep.of_int
-  let of_int_u i =
+  let of_int_s i = sx (Rep.of_int i)
+  let of_int_u i = sx
     Rep.(logand (of_int i) (logor (shift_left (of_int Int.max_int) 1) one))
 
 
@@ -174,12 +174,12 @@ struct
   let rotl i j =
     sx (Rep.logor
       (Rep.shift_left i (shift j))
-      (Rep.shift_right_logical i (bitwidth - shift j))
+      (Rep.shift_right_logical (zx i) (bitwidth - shift j))
     )
 
   let rotr i j =
     sx (Rep.logor
-      (Rep.shift_right_logical i (shift j))
+      (Rep.shift_right_logical (zx i) (shift j))
       (Rep.shift_left i (bitwidth - shift j))
     )
 
