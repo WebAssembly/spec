@@ -2940,7 +2940,7 @@ $$
 \mbox{(table type)} & {\mathit{tabletype}} & ::= & {\mathit{addrtype}}~{\mathit{limits}}~{\mathit{reftype}} \\
 \mbox{(data type)} & {\mathit{datatype}} & ::= & \mathsf{ok} \\
 \mbox{(element type)} & {\mathit{elemtype}} & ::= & {\mathit{reftype}} \\
-\mbox{(external type)} & {\mathit{externtype}} & ::= & \mathsf{tag}~{\mathit{typeuse}} ~|~ \mathsf{global}~{\mathit{globaltype}} ~|~ \mathsf{mem}~{\mathit{memtype}} ~|~ \mathsf{table}~{\mathit{tabletype}} ~|~ \mathsf{func}~{\mathit{typeuse}} \\
+\mbox{(external type)} & {\mathit{externtype}} & ::= & \mathsf{tag}~{\mathit{tagtype}} ~|~ \mathsf{global}~{\mathit{globaltype}} ~|~ \mathsf{mem}~{\mathit{memtype}} ~|~ \mathsf{table}~{\mathit{tabletype}} ~|~ \mathsf{func}~{\mathit{typeuse}} \\
 \mbox{(module type)} & {\mathit{moduletype}} & ::= & {{\mathit{externtype}}^\ast} \rightarrow {{\mathit{externtype}}^\ast} \\
 \end{array}
 $$

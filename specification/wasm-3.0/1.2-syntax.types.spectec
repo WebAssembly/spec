@@ -144,7 +144,7 @@ syntax datatype hint(desc "data type") = OK hint(macro "%data")
 syntax elemtype hint(desc "element type") = reftype
 
 syntax externtype hint(desc "external type") hint(macro "%" "XT%") =
-  | TAG typeuse | GLOBAL globaltype | MEM memtype | TABLE tabletype | FUNC typeuse
+  | TAG tagtype | GLOBAL globaltype | MEM memtype | TABLE tabletype | FUNC typeuse
 
 syntax moduletype hint(desc "module type") =
   externtype* -> externtype* hint(macro "toM")

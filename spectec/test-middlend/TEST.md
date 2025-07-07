@@ -835,7 +835,7 @@ syntax elemtype = reftype
 
 ;; ../../../../specification/wasm-3.0/1.2-syntax.types.spectec
 syntax externtype =
-  | TAG{typeuse : typeuse}(typeuse : typeuse)
+  | TAG{tagtype : tagtype}(tagtype : tagtype)
   | GLOBAL{globaltype : globaltype}(globaltype : globaltype)
   | MEM{memtype : memtype}(memtype : memtype)
   | TABLE{tabletype : tabletype}(tabletype : tabletype)
@@ -9783,7 +9783,7 @@ syntax elemtype = reftype
 
 ;; ../../../../specification/wasm-3.0/1.2-syntax.types.spectec
 syntax externtype =
-  | TAG{typeuse : typeuse}(typeuse : typeuse)
+  | TAG{tagtype : tagtype}(tagtype : tagtype)
   | GLOBAL{globaltype : globaltype}(globaltype : globaltype)
   | MEM{memtype : memtype}(memtype : memtype)
   | TABLE{tabletype : tabletype}(tabletype : tabletype)
@@ -18736,7 +18736,7 @@ syntax elemtype = reftype
 
 ;; ../../../../specification/wasm-3.0/1.2-syntax.types.spectec
 syntax externtype =
-  | TAG{typeuse : typeuse}(typeuse : typeuse)
+  | TAG{tagtype : tagtype}(tagtype : tagtype)
   | GLOBAL{globaltype : globaltype}(globaltype : globaltype)
   | MEM{memtype : memtype}(memtype : memtype)
   | TABLE{tabletype : tabletype}(tabletype : tabletype)

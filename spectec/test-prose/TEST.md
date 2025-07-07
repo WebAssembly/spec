@@ -21370,7 +21370,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{\mathit{externtype}}_0~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}'}^\ast}`.
 
-#. If :math:`{\mathit{externtype}}_0` is some :math:`\mathsf{tag}` :math:`{\mathit{typeuse}}`, then:
+#. If :math:`{\mathit{externtype}}_0` is some :math:`\mathsf{tag}` :math:`{\mathit{tagtype}}`, then:
 
    a. Let :math:`(\mathsf{tag}~{\mathit{jt}})` be the destructuring of :math:`{\mathit{externtype}}_0`.
 
@@ -21716,7 +21716,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ...................................................................................
 
 
-1. If :math:`{\mathit{externtype}}` is some :math:`\mathsf{tag}` :math:`{\mathit{typeuse}}`, then:
+1. If :math:`{\mathit{externtype}}` is some :math:`\mathsf{tag}` :math:`{\mathit{tagtype}}`, then:
 
    a. Let :math:`(\mathsf{tag}~{\mathit{jt}})` be the destructuring of :math:`{\mathit{externtype}}`.
 
@@ -22143,7 +22143,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ....................................................................
 
 
-1. If :math:`{\mathit{externtype}}` is some :math:`\mathsf{tag}` :math:`{\mathit{typeuse}}`, then:
+1. If :math:`{\mathit{externtype}}` is some :math:`\mathsf{tag}` :math:`{\mathit{tagtype}}`, then:
 
    a. Let :math:`(\mathsf{tag}~{\mathit{tagtype}})` be the destructuring of :math:`{\mathit{externtype}}`.
 
