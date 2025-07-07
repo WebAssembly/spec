@@ -76,6 +76,9 @@ let z_to_vec128 i =
   V128.I64x2.of_lanes [Z.to_int64_unsigned lo; Z.to_int64_unsigned hi]
 
 let al_to_nat (v: value): int = al_to_z_nat v |> Z.to_int
+let al_to_nat8 (v: value): I8.t = al_to_z_nat v |> Z.to_int |> I8.of_int_u
+let al_to_int8 (v: value): I8.t = al_to_z_nat v |> Z.to_int |> I8.of_int_s
+let al_to_int16 (v: value): I16.t = al_to_z_nat v |> Z.to_int |> I16.of_int_s
 let al_to_nat32 (v: value): I32.t = al_to_z_nat v |> z_to_intN Z.to_int32 Z.to_int32_unsigned
 let al_to_nat64 (v: value): I64.t = al_to_z_nat v |> z_to_intN Z.to_int64 Z.to_int64_unsigned
 let al_to_float32 (v: value): F32.t = al_to_floatN layout32 v |> Z.to_int32_unsigned |> F32.of_bits
@@ -472,7 +475,7 @@ let al_to_special_vbinop = function
     | CaseV ("RELAXED_SWIZZLE", []) -> V128 (V128.I8x16 (V128Op.RelaxedSwizzle))
     | _ ->  error_value "special vbinop" v)
   | CaseV ("VSWIZZLE", [ CaseV ("X", [ CaseV ("I8", []); NumV z ]) ]) when z = sixteen && !version <= 2 -> V128 (V128.I8x16 (V128Op.Swizzle))
-  | CaseV ("VSHUFFLE", [ CaseV ("X", [ CaseV ("I8", []); NumV z ]); l ]) when z = sixteen -> V128 (V128.I8x16 (V128Op.Shuffle (al_to_list al_to_nat l)))
+  | CaseV ("VSHUFFLE", [ CaseV ("X", [ CaseV ("I8", []); NumV z ]); l ]) when z = sixteen -> V128 (V128.I8x16 (V128Op.Shuffle (al_to_list al_to_nat8 l)))
   | CaseV ("VNARROW", [ CaseV ("X", [ CaseV ("I8", []); NumV z1 ]); CaseV ("X", [ CaseV ("I16", []); NumV z2 ]); CaseV ("S", []) ]) when z1 = sixteen && z2 = eight -> V128 (V128.I8x16 V128Op.(Narrow S))
   | CaseV ("VNARROW", [ CaseV ("X", [ CaseV ("I16", []); NumV z1 ]); CaseV ("X", [ CaseV ("I32", []); NumV z2 ]); CaseV ("S", []) ]) when z1 = eight && z2 = four -> V128 (V128.I16x8 V128Op.(Narrow S))
   | CaseV ("VNARROW", [ CaseV ("X", [ CaseV ("I8", []); NumV z1 ]); CaseV ("X", [ CaseV ("I16", []); NumV z2 ]); CaseV ("U", []) ]) when z1 = sixteen && z2 = eight -> V128 (V128.I8x16 V128Op.(Narrow U))
@@ -583,26 +586,26 @@ let al_to_vsplatop : value list -> vsplatop = function
 
 let al_to_vextractop : value list -> vextractop = function
   | [ CaseV ("X", [ CaseV ("I8", []); NumV z ]); OptV (Some sx); n ] when z = sixteen ->
-    V128 (V128.I8x16 (Extract (al_to_nat n, al_to_sx sx)))
+    V128 (V128.I8x16 (Extract (al_to_nat8 n, al_to_sx sx)))
   | [ CaseV ("X", [ CaseV ("I16", []); NumV z ]); OptV (Some sx); n ] when z = eight ->
-    V128 (V128.I16x8 (Extract (al_to_nat n, al_to_sx sx)))
+    V128 (V128.I16x8 (Extract (al_to_nat8 n, al_to_sx sx)))
   | [ CaseV ("X", [ CaseV ("I32", []); NumV z ]); OptV None; n ] when z = four ->
-    V128 (V128.I32x4 (Extract (al_to_nat n, ())))
+    V128 (V128.I32x4 (Extract (al_to_nat8 n, ())))
   | [ CaseV ("X", [ CaseV ("I64", []); NumV z ]); OptV None; n ] when z = two ->
-    V128 (V128.I64x2 (Extract (al_to_nat n, ())))
+    V128 (V128.I64x2 (Extract (al_to_nat8 n, ())))
   | [ CaseV ("X", [ CaseV ("F32", []); NumV z ]); OptV None; n ] when z = four ->
-    V128 (V128.F32x4 (Extract (al_to_nat n, ())))
+    V128 (V128.F32x4 (Extract (al_to_nat8 n, ())))
   | [ CaseV ("X", [ CaseV ("F64", []); NumV z ]); OptV None; n ] when z = two ->
-    V128 (V128.F64x2 (Extract (al_to_nat n, ())))
+    V128 (V128.F64x2 (Extract (al_to_nat8 n, ())))
   | vs -> error_values "vextractop" vs
 
 let al_to_vreplaceop : value list -> vreplaceop = function
-  | [ CaseV ("X", [ CaseV ("I8", []); NumV z ]); n ] when z = sixteen -> V128 (V128.I8x16 (Replace (al_to_nat n)))
-  | [ CaseV ("X", [ CaseV ("I16", []); NumV z ]); n ] when z = eight -> V128 (V128.I16x8 (Replace (al_to_nat n)))
-  | [ CaseV ("X", [ CaseV ("I32", []); NumV z ]); n ] when z = four -> V128 (V128.I32x4 (Replace (al_to_nat n)))
-  | [ CaseV ("X", [ CaseV ("I64", []); NumV z ]); n ] when z = two -> V128 (V128.I64x2 (Replace (al_to_nat n)))
-  | [ CaseV ("X", [ CaseV ("F32", []); NumV z ]); n ] when z = four -> V128 (V128.F32x4 (Replace (al_to_nat n)))
-  | [ CaseV ("X", [ CaseV ("F64", []); NumV z ]); n ] when z = two -> V128 (V128.F64x2 (Replace (al_to_nat n)))
+  | [ CaseV ("X", [ CaseV ("I8", []); NumV z ]); n ] when z = sixteen -> V128 (V128.I8x16 (Replace (al_to_nat8 n)))
+  | [ CaseV ("X", [ CaseV ("I16", []); NumV z ]); n ] when z = eight -> V128 (V128.I16x8 (Replace (al_to_nat8 n)))
+  | [ CaseV ("X", [ CaseV ("I32", []); NumV z ]); n ] when z = four -> V128 (V128.I32x4 (Replace (al_to_nat8 n)))
+  | [ CaseV ("X", [ CaseV ("I64", []); NumV z ]); n ] when z = two -> V128 (V128.I64x2 (Replace (al_to_nat8 n)))
+  | [ CaseV ("X", [ CaseV ("F32", []); NumV z ]); n ] when z = four -> V128 (V128.F32x4 (Replace (al_to_nat8 n)))
+  | [ CaseV ("X", [ CaseV ("F64", []); NumV z ]); n ] when z = two -> V128 (V128.F64x2 (Replace (al_to_nat8 n)))
   | vs -> error_values "vreplaceop" vs
 
 let al_to_packsize : value -> Pack.packsize = function
@@ -696,7 +699,7 @@ let al_to_vstoreop = function
     al_to_vmemop (fun _ -> ()) split vl
   | vs -> error_value "vstoreop" (TupV vs)
 
-let al_to_vlaneop: value list -> idx * vlaneop * int = function
+let al_to_vlaneop: value list -> idx * vlaneop * I8.t = function
   | CaseV ("V128", []) :: vl ->
     let h, t = Util.Lib.List.split_last vl in
     let split vl =
@@ -705,7 +708,7 @@ let al_to_vlaneop: value list -> idx * vlaneop * int = function
       | _ -> error_values "vlaneop" vl
     in
     let idx, op = al_to_vmemop al_to_packsize split h in
-    idx, op, al_to_nat t
+    idx, op, al_to_nat8 t
   | vs -> error_value "vlaneop" (TupV vs)
 
 
@@ -831,8 +834,8 @@ and al_to_instr': value -> Ast.instr' = function
   | CaseV ("STRUCT.NEW", [ idx ]) -> StructNew (al_to_idx idx, Explicit)
   | CaseV ("STRUCT.NEW_DEFAULT", [ idx ]) -> StructNew (al_to_idx idx, Implicit)
   | CaseV ("STRUCT.GET", [ sx_opt; idx1; idx2 ]) ->
-    StructGet (al_to_idx idx1, al_to_idx idx2, al_to_opt al_to_sx sx_opt)
-  | CaseV ("STRUCT.SET", [ idx1; idx2 ]) -> StructSet (al_to_idx idx1, al_to_idx idx2)
+    StructGet (al_to_idx idx1, al_to_nat32 idx2, al_to_opt al_to_sx sx_opt)
+  | CaseV ("STRUCT.SET", [ idx1; idx2 ]) -> StructSet (al_to_idx idx1, al_to_nat32 idx2)
   | CaseV ("ARRAY.NEW", [ idx ]) -> ArrayNew (al_to_idx idx, Explicit)
   | CaseV ("ARRAY.NEW_DEFAULT", [ idx ]) -> ArrayNew (al_to_idx idx, Implicit)
   | CaseV ("ARRAY.NEW_FIXED", [ idx; i32 ]) ->
@@ -1086,10 +1089,10 @@ let vec128_to_z vec =
 let al_of_nat i = Z.of_int i |> al_of_z_nat
 let al_of_nat8 i8 =
   (* NOTE: int8 is considered to be unsigned *)
-  Z.of_int32_unsigned Int32.(logand i8 0x0000_00ffl) |> al_of_z_nat
+  Z.of_int (I8.to_int_u i8) |> al_of_z_nat
 let al_of_nat16 i16 =
   (* NOTE: int32 is considered to be unsigned *)
-  Z.of_int32_unsigned Int32.(logand i16 0x0000_ffffl) |> al_of_z_nat
+  Z.of_int (I16.to_int_u i16) |> al_of_z_nat
 let al_of_nat32 i32 =
   (* NOTE: int32 is considered to be unsigned *)
   Z.of_int32_unsigned i32 |> al_of_z_nat
@@ -1241,8 +1244,8 @@ let al_of_vec = function
 let al_of_vec_shape shape (lanes: int64 list) =
   al_of_vec (V128  (
     match shape with
-    | V128.I8x16() -> V128.I8x16.of_lanes (List.map Int64.to_int32 lanes)
-    | V128.I16x8() -> V128.I16x8.of_lanes (List.map Int64.to_int32 lanes)
+    | V128.I8x16() -> V128.I8x16.of_lanes (List.map I8.of_int_s (List.map Int64.to_int lanes))
+    | V128.I16x8() -> V128.I16x8.of_lanes (List.map I16.of_int_s (List.map Int64.to_int lanes))
     | V128.I32x4() -> V128.I32x4.of_lanes (List.map Int64.to_int32 lanes)
     | V128.I64x2() -> V128.I64x2.of_lanes lanes
     | V128.F32x4() -> V128.F32x4.of_lanes (List.map (fun i -> i |> Int64.to_int32 |> F32.of_bits) lanes)
@@ -1516,7 +1519,7 @@ let al_of_special_vbinop = function
   | V128 (V128.I8x16 (V128Op.Swizzle)) when !version <= 2 -> CaseV ("VSWIZZLE", [ CaseV ("X", [ nullary "I8"; numV sixteen ]); ])
   | V128 (V128.I8x16 (V128Op.Swizzle)) -> CaseV ("VSWIZZLOP", [ CaseV ("X", [ nullary "I8"; numV sixteen ]); nullary "SWIZZLE" ])
   | V128 (V128.I8x16 (V128Op.RelaxedSwizzle)) -> CaseV ("VSWIZZLOP", [ CaseV ("X", [ nullary "I8"; numV sixteen ]); nullary "RELAXED_SWIZZLE" ])
-  | V128 (V128.I8x16 (V128Op.Shuffle l)) -> CaseV ("VSHUFFLE", [ CaseV ("X", [ nullary "I8"; numV sixteen ]); al_of_list al_of_nat l ])
+  | V128 (V128.I8x16 (V128Op.Shuffle l)) -> CaseV ("VSHUFFLE", [ CaseV ("X", [ nullary "I8"; numV sixteen ]); al_of_list al_of_nat8 l ])
   | V128 (V128.I8x16 (V128Op.Narrow sx)) -> CaseV ("VNARROW", [ CaseV ("X", [ nullary "I8"; numV sixteen ]); CaseV ("X", [ nullary "I16"; numV eight ]); al_of_sx sx ])
   | V128 (V128.I16x8 (V128Op.Narrow sx)) -> CaseV ("VNARROW", [ CaseV ("X", [ nullary "I16"; numV eight]); CaseV ("X", [ nullary "I32"; numV four ]); al_of_sx sx ])
   | V128 (V128.I16x8 (V128Op.ExtMul (half, sx))) -> CaseV ("VEXTBINOP", [ CaseV ("X", [ nullary "I16"; numV eight ]); CaseV ("X", [ nullary "I8"; numV sixteen ]); caseV ("EXTMUL", [al_of_half half; al_of_sx sx]) ])
@@ -1647,40 +1650,40 @@ let al_of_vextractop : vextractop -> value list = function
     | V128.I8x16 vop' -> (
       match vop' with
       | Extract (n, sx) ->
-        [ CaseV ("X", [ nullary "I8"; numV sixteen ]); optV (Some (al_of_sx sx)); al_of_nat n; ]
+        [ CaseV ("X", [ nullary "I8"; numV sixteen ]); optV (Some (al_of_sx sx)); al_of_nat8 n; ]
     )
     | V128.I16x8 vop' -> (
       match vop' with
       | Extract (n, sx) ->
-        [ CaseV ("X", [ nullary "I16"; numV eight ]); optV (Some (al_of_sx sx)); al_of_nat n; ]
+        [ CaseV ("X", [ nullary "I16"; numV eight ]); optV (Some (al_of_sx sx)); al_of_nat8 n; ]
     )
     | V128.I32x4 vop' -> (
       match vop' with
-      | Extract (n, _) -> [ CaseV ("X", [ nullary "I32"; numV four ]); optV None; al_of_nat n ]
+      | Extract (n, _) -> [ CaseV ("X", [ nullary "I32"; numV four ]); optV None; al_of_nat8 n ]
     )
     | V128.I64x2 vop' -> (
       match vop' with
-      | Extract (n, _) -> [ CaseV ("X", [ nullary "I64"; numV two ]); optV None; al_of_nat n ]
+      | Extract (n, _) -> [ CaseV ("X", [ nullary "I64"; numV two ]); optV None; al_of_nat8 n ]
     )
     | V128.F32x4 vop' -> (
       match vop' with
-      | Extract (n, _) -> [ CaseV ("X", [ nullary "F32"; numV four ]); optV None; al_of_nat n ]
+      | Extract (n, _) -> [ CaseV ("X", [ nullary "F32"; numV four ]); optV None; al_of_nat8 n ]
     )
     | V128.F64x2 vop' -> (
       match vop' with
-      | Extract (n, _) -> [ CaseV ("X", [ nullary "F64"; numV two ]); optV None; al_of_nat n ]
+      | Extract (n, _) -> [ CaseV ("X", [ nullary "F64"; numV two ]); optV None; al_of_nat8 n ]
     )
   )
 
 let al_of_vreplaceop : vreplaceop -> value list = function
   | V128 vop -> (
     match vop with
-    | V128.I8x16 (Replace n) -> [ CaseV ("X", [ nullary "I8"; numV sixteen ]); al_of_nat n ]
-    | V128.I16x8 (Replace n) -> [ CaseV ("X", [ nullary "I16"; numV eight ]); al_of_nat n ]
-    | V128.I32x4 (Replace n) -> [ CaseV ("X", [ nullary "I32"; numV four ]); al_of_nat n ]
-    | V128.I64x2 (Replace n) -> [ CaseV ("X", [ nullary "I64"; numV two ]); al_of_nat n ]
-    | V128.F32x4 (Replace n) -> [ CaseV ("X", [ nullary "F32"; numV four ]); al_of_nat n ]
-    | V128.F64x2 (Replace n) -> [ CaseV ("X", [ nullary "F64"; numV two ]); al_of_nat n ]
+    | V128.I8x16 (Replace n) -> [ CaseV ("X", [ nullary "I8"; numV sixteen ]); al_of_nat8 n ]
+    | V128.I16x8 (Replace n) -> [ CaseV ("X", [ nullary "I16"; numV eight ]); al_of_nat8 n ]
+    | V128.I32x4 (Replace n) -> [ CaseV ("X", [ nullary "I32"; numV four ]); al_of_nat8 n ]
+    | V128.I64x2 (Replace n) -> [ CaseV ("X", [ nullary "I64"; numV two ]); al_of_nat8 n ]
+    | V128.F32x4 (Replace n) -> [ CaseV ("X", [ nullary "F32"; numV four ]); al_of_nat8 n ]
+    | V128.F64x2 (Replace n) -> [ CaseV ("X", [ nullary "F64"; numV two ]); al_of_nat8 n ]
   )
 
 let al_of_packsize = function
@@ -1746,7 +1749,7 @@ let al_of_vlaneop idx vlaneop laneidx =
     |> Record.add "OFFSET" (al_of_nat64 vlaneop.offset)
   in
 
-  [ al_of_vectype V128T; al_of_packsize packsize ] @ al_of_memidx idx @ [ StrV str; al_of_nat laneidx ]
+  [ al_of_vectype V128T; al_of_packsize packsize ] @ al_of_memidx idx @ [ StrV str; al_of_nat8 laneidx ]
 
 (* Construct instruction *)
 
@@ -1866,9 +1869,9 @@ let rec al_of_instr instr =
     CaseV ("STRUCT.GET", [
       al_of_opt al_of_sx sx_opt;
       al_of_idx idx1;
-      al_of_idx idx2;
+      al_of_nat32 idx2;
     ])
-  | StructSet (idx1, idx2) -> CaseV ("STRUCT.SET", [ al_of_idx idx1; al_of_idx idx2 ])
+  | StructSet (idx1, idx2) -> CaseV ("STRUCT.SET", [ al_of_idx idx1; al_of_nat32 idx2 ])
   | ArrayNew (idx, Explicit) -> CaseV ("ARRAY.NEW", [ al_of_idx idx ])
   | ArrayNew (idx, Implicit) -> CaseV ("ARRAY.NEW_DEFAULT", [ al_of_idx idx ])
   | ArrayNewFixed (idx, i32) ->

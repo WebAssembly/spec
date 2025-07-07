@@ -28,13 +28,6 @@ let maskN n = Z.(pred (shift_left one (to_int n)))
 
 let z_to_int64 z = Z.(to_int64_unsigned (logand mask64 z))
 
-let i8_to_i32 i8 =
-  (* NOTE: This operation extends the sign of i8 to i32 *)
-  I32.shr_s (I32.shl i8 24l) 24l
-let i16_to_i32 i16 =
-  (* NOTE: This operation extends the sign of i16 to i32 *)
-  I32.shr_s (I32.shl i16 16l) 16l
-
 let catch_ixx_exception f = try f() |> someV with
   | Ixx.DivideByZero
   | Ixx.Overflow
@@ -1050,9 +1043,9 @@ let inverse_of_lanes : numerics =
     f =
       (function
       | [ CaseV ("X",[ CaseV ("I8", []); NumV (`Nat z) ]); ListV lanes; ] when z = Z.of_int 16 && Array.length !lanes = 16 ->
-        List.map al_to_nat32 (!lanes |> Array.to_list) |> List.map i8_to_i32 |> V128.I8x16.of_lanes |> al_of_vec128
+        List.map al_to_int8 (!lanes |> Array.to_list) |> V128.I8x16.of_lanes |> al_of_vec128
       | [ CaseV ("X",[ CaseV ("I16", []); NumV (`Nat z) ]); ListV lanes; ] when z = Z.of_int 8 && Array.length !lanes = 8 ->
-        List.map al_to_nat32 (!lanes |> Array.to_list) |> List.map i16_to_i32 |> V128.I16x8.of_lanes |> al_of_vec128
+        List.map al_to_int16 (!lanes |> Array.to_list) |> V128.I16x8.of_lanes |> al_of_vec128
       | [ CaseV ("X",[ CaseV ("I32", []); NumV (`Nat z) ]); ListV lanes; ] when z = Z.of_int 4 && Array.length !lanes = 4 ->
         List.map al_to_nat32 (!lanes |> Array.to_list) |> V128.I32x4.of_lanes |> al_of_vec128
       | [ CaseV ("X",[ CaseV ("I64", []); NumV (`Nat z) ]); ListV lanes; ] when z = Z.of_int 2 && Array.length !lanes = 2 ->
