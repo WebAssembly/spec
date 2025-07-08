@@ -16339,7 +16339,7 @@ The function :math:`(\mathsf{func}~x~{{\mathit{local}}^\ast}~{\mathit{expr}})` i
 
 
 
-The data mode :math:`{\mathit{datamode}}` is :ref:`valid <valid-val>` with the data type :math:`\mathsf{ok}` if:
+The data mode :math:`{\mathit{datamode}}` is :ref:`valid <valid-val>` if:
 
 
    * Either:
@@ -16361,7 +16361,7 @@ The data mode :math:`{\mathit{datamode}}` is :ref:`valid <valid-val>` with the d
 
 
 
-The data mode :math:`(\mathsf{active}~x~{\mathit{expr}})` is :ref:`valid <valid-val>` with the data type :math:`\mathsf{ok}` if:
+The data mode :math:`(\mathsf{active}~x~{\mathit{expr}})` is :ref:`valid <valid-val>` if:
 
 
    * The memory :math:`C{.}\mathsf{mems}{}[x]` exists.
@@ -16375,15 +16375,15 @@ The data mode :math:`(\mathsf{active}~x~{\mathit{expr}})` is :ref:`valid <valid-
 
 
 
-The data mode :math:`\mathsf{passive}` is :ref:`valid <valid-val>` with the data type :math:`\mathsf{ok}`.
+The data mode :math:`\mathsf{passive}` is :ref:`valid <valid-val>`.
 
 
 
 
-The memory segment :math:`(\mathsf{data}~{b^\ast}~{\mathit{datamode}})` is :ref:`valid <valid-val>` with the data type :math:`\mathsf{ok}` if:
+The memory segment :math:`(\mathsf{data}~{b^\ast}~{\mathit{datamode}})` is :ref:`valid <valid-val>` if:
 
 
-   * The data mode :math:`{\mathit{datamode}}` is :ref:`valid <valid-val>` with the data type :math:`\mathsf{ok}`.
+   * The data mode :math:`{\mathit{datamode}}` is :ref:`valid <valid-val>`.
 
 
 
@@ -16711,7 +16711,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    * For all :math:`{\mathit{data}}` in :math:`{{\mathit{data}}^\ast}`, and corresponding :math:`{\mathit{ok}}` in :math:`{{\mathit{ok}}^\ast}`:
 
-      * The memory segment :math:`{\mathit{data}}` is valid.
+      * The memory segment :math:`{\mathit{data}}` is :ref:`valid <valid-val>`.
 
    * The length of :math:`{{\mathit{elem}}^\ast}` is equal to the length of :math:`{{\mathit{rt}}^\ast}`.
 
@@ -27403,7 +27403,7 @@ Func_ok
   - Under the context C with .LOCALS appended by (SET t_1)* :: lct* with .LABELS appended by [t_2*] with .RETURN appended by ?(t_2*), the expression expr is valid with the result type t_2*.
 
 Datamode_ok
-- the data mode datamode is valid with the data type OK if:
+- the data mode datamode is valid if:
   - Either:
     - datamode is (ACTIVE x expr).
     - the memory C.MEMS[x] exists.
@@ -27414,18 +27414,18 @@ Datamode_ok
     - datamode is PASSIVE.
 
 Datamode_ok/active
-- the data mode (ACTIVE x expr) is valid with the data type OK if:
+- the data mode (ACTIVE x expr) is valid if:
   - the memory C.MEMS[x] exists.
   - C.MEMS[x] is at lim PAGE.
   - the expression expr is valid with the value type at.
   - expr is constant.
 
 Datamode_ok/passive
-- the data mode PASSIVE is valid with OK.
+- the data mode PASSIVE is always valid.
 
 Data_ok
-- the memory segment (DATA b* datamode) is valid with the data type OK if:
-  - the data mode datamode is valid with OK.
+- the memory segment (DATA b* datamode) is valid if:
+  - the data mode datamode is valid.
 
 Elemmode_ok
 - the element mode elemmode is valid with the element type rt if:
@@ -27604,7 +27604,7 @@ Module_ok
   - For all export in export*, and corresponding nm in nm*, and corresponding xt_E in xt_E*:
     - the export export is valid with the name nm and the external type xt_E.
   - $disjoint_(`name, nm*) is true.
-  - C is C' with .TAGS appended by jt_I* :: jt* with .GLOBALS appended by gt* with .MEMS appended by mt_I* :: mt* with .TABLES appended by tt_I* :: tt* with .DATAS appended by ok* with .ELEMS appended by rt*.
+  - the context C is C' with .TAGS appended by jt_I* :: jt* with .GLOBALS appended by gt* with .MEMS appended by mt_I* :: mt* with .TABLES appended by tt_I* :: tt* with .DATAS appended by ok* with .ELEMS appended by rt*.
   - the context C' is { TYPES: dt'*; GLOBALS: gt_I*; FUNCS: dt_I* :: dt*; RETURN: ?(); REFS: x* }.
   - the function index sequence x* is $funcidx_nonfuncs((global* mem* table* elem*)).
   - the tag type sequence jt_I* is $tagsxt(xt_I*).

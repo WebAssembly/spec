@@ -871,8 +871,8 @@ let render_context env e1 e2 =
   | _ -> assert false
 
 let render_pp_hint = function
-  | Some text -> " " ^ text ^ " "
-  | None -> " with "
+  | Some text -> text
+  | None -> "with"
 
 let rec render_single_stmt ?(with_type=true) env stmt  =
   let render_hd_expr = if with_type then render_expr_with_type else render_expr in
@@ -922,7 +922,7 @@ let rec render_single_stmt ?(with_type=true) env stmt  =
         (render_hd_expr env e)
         (if always then "always " else "")
         vref
-        (if es = [] then "" else prep ^ render_list (render_expr_with_type env) " and " es)
+        (if es = [] || prep = "" then "" else " " ^ prep ^ " " ^ render_list (render_expr_with_type env) " and " es)
     | MatchesS (e1, e2) when Al.Eq.eq_expr e1 e2 ->
       sprintf "%s %s only itself"
         (render_hd_expr env e1)
