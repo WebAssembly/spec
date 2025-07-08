@@ -13,6 +13,8 @@ sig
   val nub : ('a -> 'a -> bool) -> 'a list -> 'a list
   val filter_not : ('a -> bool) -> 'a list -> 'a list
   val flatten_opt : 'a option list -> 'a list option
+  val fold_lefti : (int -> 'acc -> 'a -> 'acc) -> 'acc -> 'a list -> 'acc
+  val group_by : ('a -> 'a -> bool) -> 'a list -> 'a list list
 end
 
 module Char :

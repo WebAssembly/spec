@@ -48,6 +48,29 @@ struct
       match flatten_opt xos with
       | Some xs -> Some (x::xs)
       | None -> None
+
+  let fold_lefti f init xs =
+    let rec aux i acc xs =
+      match xs with
+      | [] -> acc
+      | hd :: tl -> aux (i+1) (f i acc hd) tl
+    in
+    aux 0 init xs
+
+  let group_by eq xs =
+    let rec aux acc xs =
+      match xs with
+      | [] -> acc
+      | hd :: tl ->
+        let same, diff = List.partition (fun g ->
+          eq hd (List.hd g)
+        ) acc in
+        match same with
+        | [group] -> aux (diff @ [group @ [hd]]) tl
+        | _ -> aux (acc @ [[hd]]) tl
+    in
+    aux [] xs
+
 end
 
 module Char =

@@ -49,7 +49,7 @@ let gen_new_unified ?prefix env ty =
   unified_prefix ^ var $ ty.at
 
 (* Rename unified ids to non-unified ones *)
-(* TODO: Rename t_u1 -> t if there is no t in the prose *)
+(* TODO: Rename __unify:t -> t if there is no t in the prose *)
 let rename_string _env s =
   if String.starts_with ~prefix:unified_prefix s then
     String.sub s 8 (String.length s - 8)
@@ -516,19 +516,7 @@ let remove_last_phrase r =
     let id' = {id with it = List.rev ("*" :: hds) |> String.concat "-"} in
     Some (id', lhs, rhs, prems)
 
-let rec group_by_id acc rs =
-  match rs with
-  | [] -> List.rev acc
-  | hd :: tl ->
-    let (id, _, _, _) = hd in
-    let same, diff = List.partition (fun g ->
-      let (id', _, _, _) = List.hd g in
-      Il.Eq.eq_id id id'
-    ) acc in
-    match same with
-    | [group] -> group_by_id ((group @ [hd]) :: diff) tl
-    | _ -> group_by_id ([hd] :: acc) tl
-let group_by_id = group_by_id []
+let group_by_id = Lib.List.group_by (fun (id2, _, _, _) (id1, _, _, _) -> Il.Eq.eq_id id1 id2)
 
 let group_by_prefix rule_def =
   let (_instr_name, rel_id, rules) = rule_def.it in

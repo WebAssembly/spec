@@ -83,9 +83,63 @@ let merge_pop_assert algo =
   in
   { algo with it }
 
+let split_iter s =
+  let len = String.length s in
+  let rec find_last_non_iter i =
+    if i > 0 && List.mem s.[i - 1] ['*'; '?'; '+'] then find_last_non_iter (i - 1)
+    else i
+  in
+  let last = find_last_non_iter len in
+  String.sub s 0 last, String.sub s last (len - last)
+
+let replace_name old_name new_name algo =
+  let replace_name' walker e =
+    match e.it with
+    | VarE x when x = old_name -> {e with it = VarE new_name}
+    | _ -> Walk.base_walker.walk_expr walker e
+  in
+  let walker = {Walk.base_walker with walk_expr = replace_name'} in
+  walker.walk_algo walker algo
+
+let rewrite_nth_var prefix i algo (name, iter) =
+  let expected_name = prefix ^ String.make i '\'' in
+  if (name = expected_name) then
+    algo
+  else
+    replace_name (name ^ iter) (expected_name ^ iter) algo
+
+let get_prefix s =
+  let len = String.length s in
+  let rec find_last_base_name i =
+    if i > 0 && List.mem s.[i - 1] ['\''; '*'; '?'; '+'] then find_last_base_name (i - 1)
+    else i
+  in
+  let last = find_last_base_name len in
+  String.sub s 0 last
+
+let rewrite_var_group algo group =
+  let prefix = get_prefix (List.hd group) in
+  let splitted = List.map split_iter group in
+  let sorted = List.sort compare splitted in
+
+  match sorted with
+  | [(s1, i1); (s2, i2)] when s1 = s2 && i1 = "" && (List.mem i2 ["*"; "?"; "+"]) ->
+    algo
+  | _ ->
+    Lib.List.fold_lefti (rewrite_nth_var prefix) algo sorted
+
+let same_prefix s1 s2 = get_prefix s1 = get_prefix s2
+let group_by_prefix vars = Lib.List.group_by same_prefix (Al.Free.IdSet.elements vars)
+
+(* Rename all x' into x *)
+let simplify_var_name algo =
+  algo
+  |> Al.Free.free_algo
+  |> group_by_prefix
+  |> List.fold_left rewrite_var_group algo
 
 let postprocess (al: Al.Ast.algorithm list) : Al.Ast.algorithm list =
   al
   |> List.map Transpile.remove_state
   |> List.map merge_pop_assert
-  
+  |> List.map simplify_var_name

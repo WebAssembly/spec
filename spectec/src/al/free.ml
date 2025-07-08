@@ -111,3 +111,9 @@ let rec free_instr instr =
   | AssertI e -> free_expr e
   | PerformI (_, al) -> free_list free_arg al
   | ReplaceI (e1, p, e2) -> free_expr e1 @ free_path p @ free_expr e2
+
+(* Algorithms *)
+let free_algo algo =
+  match algo.it with
+  | RuleA (_, _, args, instrs)
+  | FuncA (_, args, instrs) -> free_list free_arg args @ free_list free_instr instrs

@@ -1435,8 +1435,8 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Push the value :math:`z{.}\mathsf{globals}{}[x]{.}\mathsf{value}` to the stack.
 
 
-:math:`{{t'}{.}\mathsf{load}}{{{\mathit{loadop}}^?}}~{\mathit{ao}}`
-...................................................................
+:math:`{t{.}\mathsf{load}}{{{\mathit{loadop}}^?}}~{\mathit{ao}}`
+................................................................
 
 
 1. Let :math:`z` be the current state.
@@ -1447,17 +1447,17 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. If :math:`{{\mathit{loadop}}^?}` is not defined, then:
 
-   a. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|{t'}|} / 8 > {|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
+   a. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|t|} / 8 > {|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
 
       1) Trap.
 
-   #. Let :math:`c` be the result for which :math:`{{\mathrm{bytes}}}_{{t'}}(c)` :math:`=` :math:`z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|{t'}|} / 8]`.
+   #. Let :math:`c` be the result for which :math:`{{\mathrm{bytes}}}_{t}(c)` :math:`=` :math:`z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|t|} / 8]`.
 
-   #. Push the value :math:`({t'}{.}\mathsf{const}~c)` to the stack.
+   #. Push the value :math:`(t{.}\mathsf{const}~c)` to the stack.
 
 #. Else:
 
-   a. Assert: Due to validation, :math:`{t'}` is :math:`{\mathsf{i}}{n}`.
+   a. Assert: Due to validation, :math:`t` is :math:`{\mathsf{i}}{n}`.
 
    #. Let :math:`{\mathit{loadop\_{\scriptstyle 0}}}` be :math:`{{\mathit{loadop}}^?}`.
 
@@ -1469,7 +1469,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Let :math:`c` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{n}}(c)` :math:`=` :math:`z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : n / 8]`.
 
-   #. Push the value :math:`({t'}{.}\mathsf{const}~{{{{\mathrm{extend}}}_{n, {|{t'}|}}^{{\mathit{sx}}}}}{(c)})` to the stack.
+   #. Push the value :math:`(t{.}\mathsf{const}~{{{{\mathrm{extend}}}_{n, {|t|}}^{{\mathit{sx}}}}}{(c)})` to the stack.
 
 
 :math:`\mathsf{memory{.}size}`
@@ -1509,35 +1509,35 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Perform :math:`z{}[{.}\mathsf{globals}{}[x]{.}\mathsf{value} = {\mathit{val}}]`.
 
 
-:math:`{{t'}{.}\mathsf{store}}{{{\mathit{sz}}^?}}~{\mathit{ao}}`
-................................................................
+:math:`{t{.}\mathsf{store}}{{{\mathit{sz}}^?}}~{\mathit{ao}}`
+.............................................................
 
 
 1. Let :math:`z` be the current state.
 
 #. Assert: Due to validation, a num is on the top of the stack.
 
-#. Pop the value :math:`({t''}{.}\mathsf{const}~c)` from the stack.
+#. Pop the value :math:`({t'}{.}\mathsf{const}~c)` from the stack.
 
 #. Assert: Due to validation, a value is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. Assert: Due to validation, :math:`{t'} = {t''}`.
+#. Assert: Due to validation, :math:`t = {t'}`.
 
 #. If :math:`{{\mathit{sz}}^?}` is not defined, then:
 
-   a. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|{t''}|} / 8 > {|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
+   a. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|{t'}|} / 8 > {|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
 
       1) Trap.
 
-   #. Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{{t''}}(c)`.
+   #. Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{{t'}}(c)`.
 
-   #. Perform :math:`z{}[{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|{t''}|} / 8] = {b^\ast}]`.
+   #. Perform :math:`z{}[{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|{t'}|} / 8] = {b^\ast}]`.
 
 #. Else:
 
-   a. Assert: Due to validation, :math:`{t''}` is :math:`{\mathsf{i}}{n}`.
+   a. Assert: Due to validation, :math:`{t'}` is :math:`{\mathsf{i}}{n}`.
 
    #. Let :math:`n` be :math:`{{\mathit{sz}}^?}`.
 
@@ -1545,7 +1545,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       1) Trap.
 
-   #. Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{n}}({{\mathrm{wrap}}}_{{|{t''}|}, n}(c))`.
+   #. Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{n}}({{\mathrm{wrap}}}_{{|{t'}|}, n}(c))`.
 
    #. Perform :math:`z{}[{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : n / 8] = {b^\ast}]`.
 
@@ -1857,53 +1857,53 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Return :math:`j`.
 
 
-:math:`{{\mathit{unop}}}{{}_{{\mathit{valtype}}}}{({\mathit{iN}'})}`
-....................................................................
+:math:`{{\mathit{unop}}}{{}_{{\mathit{valtype}}}}{({\mathit{iN}})}`
+...................................................................
 
 
 1. If :math:`{\mathit{valtype}}` is :math:`{\mathsf{i}}{n}`, then:
 
    a. If :math:`{\mathit{unop}} = \mathsf{clz}`, then:
 
-      1) Return :math:`{{\mathrm{iclz}}}_{{|{\mathit{valtype}}|}}({\mathit{iN}'})`.
+      1) Return :math:`{{\mathrm{iclz}}}_{{|{\mathit{valtype}}|}}({\mathit{iN}})`.
 
    #. If :math:`{\mathit{unop}} = \mathsf{ctz}`, then:
 
-      1) Return :math:`{{\mathrm{ictz}}}_{{|{\mathit{valtype}}|}}({\mathit{iN}'})`.
+      1) Return :math:`{{\mathrm{ictz}}}_{{|{\mathit{valtype}}|}}({\mathit{iN}})`.
 
    #. If :math:`{\mathit{unop}} = \mathsf{popcnt}`, then:
 
-      1) Return :math:`{{\mathrm{ipopcnt}}}_{{|{\mathit{valtype}}|}}({\mathit{iN}'})`.
+      1) Return :math:`{{\mathrm{ipopcnt}}}_{{|{\mathit{valtype}}|}}({\mathit{iN}})`.
 
 #. Assert: Due to validation, :math:`{\mathit{valtype}}` is :math:`{\mathsf{f}}{n}`.
 
 #. If :math:`{\mathit{unop}} = \mathsf{abs}`, then:
 
-   a. Return :math:`{{\mathrm{fabs}}}_{{|{\mathit{valtype}}|}}({\mathit{iN}'})`.
+   a. Return :math:`{{\mathrm{fabs}}}_{{|{\mathit{valtype}}|}}({\mathit{iN}})`.
 
 #. If :math:`{\mathit{unop}} = \mathsf{neg}`, then:
 
-   a. Return :math:`{{\mathrm{fneg}}}_{{|{\mathit{valtype}}|}}({\mathit{iN}'})`.
+   a. Return :math:`{{\mathrm{fneg}}}_{{|{\mathit{valtype}}|}}({\mathit{iN}})`.
 
 #. If :math:`{\mathit{unop}} = \mathsf{sqrt}`, then:
 
-   a. Return :math:`{{\mathrm{fsqrt}}}_{{|{\mathit{valtype}}|}}({\mathit{iN}'})`.
+   a. Return :math:`{{\mathrm{fsqrt}}}_{{|{\mathit{valtype}}|}}({\mathit{iN}})`.
 
 #. If :math:`{\mathit{unop}} = \mathsf{ceil}`, then:
 
-   a. Return :math:`{{\mathrm{fceil}}}_{{|{\mathit{valtype}}|}}({\mathit{iN}'})`.
+   a. Return :math:`{{\mathrm{fceil}}}_{{|{\mathit{valtype}}|}}({\mathit{iN}})`.
 
 #. If :math:`{\mathit{unop}} = \mathsf{floor}`, then:
 
-   a. Return :math:`{{\mathrm{ffloor}}}_{{|{\mathit{valtype}}|}}({\mathit{iN}'})`.
+   a. Return :math:`{{\mathrm{ffloor}}}_{{|{\mathit{valtype}}|}}({\mathit{iN}})`.
 
 #. If :math:`{\mathit{unop}} = \mathsf{trunc}`, then:
 
-   a. Return :math:`{{\mathrm{ftrunc}}}_{{|{\mathit{valtype}}|}}({\mathit{iN}'})`.
+   a. Return :math:`{{\mathrm{ftrunc}}}_{{|{\mathit{valtype}}|}}({\mathit{iN}})`.
 
 #. Assert: Due to validation, :math:`{\mathit{unop}} = \mathsf{nearest}`.
 
-#. Return :math:`{{\mathrm{fnearest}}}_{{|{\mathit{valtype}}|}}({\mathit{iN}'})`.
+#. Return :math:`{{\mathrm{fnearest}}}_{{|{\mathit{valtype}}|}}({\mathit{iN}})`.
 
 
 :math:`{{\mathrm{iadd}}}_{N}(i_1, i_2)`
@@ -1927,95 +1927,95 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 1. Return :math:`({2^{N}} + i_1 - i_2) \mathbin{\mathrm{mod}} ({2^{N}})`.
 
 
-:math:`{{\mathit{binop}}}{{}_{{\mathit{valtype}}}}{({\mathit{iN}}_{1'}, {\mathit{iN}}_{2'})}`
-.............................................................................................
+:math:`{{\mathit{binop}}}{{}_{{\mathit{valtype}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`
+.......................................................................................
 
 
 1. If :math:`{\mathit{valtype}}` is :math:`{\mathsf{i}}{n}`, then:
 
    a. If :math:`{\mathit{binop}} = \mathsf{add}`, then:
 
-      1) Return :math:`{{\mathrm{iadd}}}_{{|{\mathit{valtype}}|}}({\mathit{iN}}_{1'}, {\mathit{iN}}_{2'})`.
+      1) Return :math:`{{\mathrm{iadd}}}_{{|{\mathit{valtype}}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
    #. If :math:`{\mathit{binop}} = \mathsf{sub}`, then:
 
-      1) Return :math:`{{\mathrm{isub}}}_{{|{\mathit{valtype}}|}}({\mathit{iN}}_{1'}, {\mathit{iN}}_{2'})`.
+      1) Return :math:`{{\mathrm{isub}}}_{{|{\mathit{valtype}}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
    #. If :math:`{\mathit{binop}} = \mathsf{mul}`, then:
 
-      1) Return :math:`{{\mathrm{imul}}}_{{|{\mathit{valtype}}|}}({\mathit{iN}}_{1'}, {\mathit{iN}}_{2'})`.
+      1) Return :math:`{{\mathrm{imul}}}_{{|{\mathit{valtype}}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
    #. If :math:`{\mathit{binop}}` is some :math:`\mathsf{div}` :math:`{\mathit{sx}}`, then:
 
       1) Let :math:`({\mathsf{div}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{binop}}`.
 
-      #) Return :math:`{{{{\mathrm{idiv}}}_{{|{\mathit{valtype}}|}}^{{\mathit{sx}}}}}{({\mathit{iN}}_{1'}, {\mathit{iN}}_{2'})}`.
+      #) Return :math:`{{{{\mathrm{idiv}}}_{{|{\mathit{valtype}}|}}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
 
    #. If :math:`{\mathit{binop}}` is some :math:`\mathsf{rem}` :math:`{\mathit{sx}}`, then:
 
       1) Let :math:`({\mathsf{rem}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{binop}}`.
 
-      #) Return :math:`{{{{\mathrm{irem}}}_{{|{\mathit{valtype}}|}}^{{\mathit{sx}}}}}{({\mathit{iN}}_{1'}, {\mathit{iN}}_{2'})}`.
+      #) Return :math:`{{{{\mathrm{irem}}}_{{|{\mathit{valtype}}|}}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
 
    #. If :math:`{\mathit{binop}} = \mathsf{and}`, then:
 
-      1) Return :math:`{{\mathrm{iand}}}_{{|{\mathit{valtype}}|}}({\mathit{iN}}_{1'}, {\mathit{iN}}_{2'})`.
+      1) Return :math:`{{\mathrm{iand}}}_{{|{\mathit{valtype}}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
    #. If :math:`{\mathit{binop}} = \mathsf{or}`, then:
 
-      1) Return :math:`{{\mathrm{ior}}}_{{|{\mathit{valtype}}|}}({\mathit{iN}}_{1'}, {\mathit{iN}}_{2'})`.
+      1) Return :math:`{{\mathrm{ior}}}_{{|{\mathit{valtype}}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
    #. If :math:`{\mathit{binop}} = \mathsf{xor}`, then:
 
-      1) Return :math:`{{\mathrm{ixor}}}_{{|{\mathit{valtype}}|}}({\mathit{iN}}_{1'}, {\mathit{iN}}_{2'})`.
+      1) Return :math:`{{\mathrm{ixor}}}_{{|{\mathit{valtype}}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
    #. If :math:`{\mathit{binop}} = \mathsf{shl}`, then:
 
-      1) Return :math:`{{\mathrm{ishl}}}_{{|{\mathit{valtype}}|}}({\mathit{iN}}_{1'}, {\mathit{iN}}_{2'})`.
+      1) Return :math:`{{\mathrm{ishl}}}_{{|{\mathit{valtype}}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
    #. If :math:`{\mathit{binop}}` is some :math:`\mathsf{shr}` :math:`{\mathit{sx}}`, then:
 
       1) Let :math:`({\mathsf{shr}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{binop}}`.
 
-      #) Return :math:`{{{{\mathrm{ishr}}}_{{|{\mathit{valtype}}|}}^{{\mathit{sx}}}}}{({\mathit{iN}}_{1'}, {\mathit{iN}}_{2'})}`.
+      #) Return :math:`{{{{\mathrm{ishr}}}_{{|{\mathit{valtype}}|}}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
 
    #. If :math:`{\mathit{binop}} = \mathsf{rotl}`, then:
 
-      1) Return :math:`{{\mathrm{irotl}}}_{{|{\mathit{valtype}}|}}({\mathit{iN}}_{1'}, {\mathit{iN}}_{2'})`.
+      1) Return :math:`{{\mathrm{irotl}}}_{{|{\mathit{valtype}}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
    #. If :math:`{\mathit{binop}} = \mathsf{rotr}`, then:
 
-      1) Return :math:`{{\mathrm{irotr}}}_{{|{\mathit{valtype}}|}}({\mathit{iN}}_{1'}, {\mathit{iN}}_{2'})`.
+      1) Return :math:`{{\mathrm{irotr}}}_{{|{\mathit{valtype}}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
 #. Assert: Due to validation, :math:`{\mathit{valtype}}` is :math:`{\mathsf{f}}{n}`.
 
 #. If :math:`{\mathit{binop}} = \mathsf{add}`, then:
 
-   a. Return :math:`{{\mathrm{fadd}}}_{{|{\mathit{valtype}}|}}({\mathit{iN}}_{1'}, {\mathit{iN}}_{2'})`.
+   a. Return :math:`{{\mathrm{fadd}}}_{{|{\mathit{valtype}}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
 #. If :math:`{\mathit{binop}} = \mathsf{sub}`, then:
 
-   a. Return :math:`{{\mathrm{fsub}}}_{{|{\mathit{valtype}}|}}({\mathit{iN}}_{1'}, {\mathit{iN}}_{2'})`.
+   a. Return :math:`{{\mathrm{fsub}}}_{{|{\mathit{valtype}}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
 #. If :math:`{\mathit{binop}} = \mathsf{mul}`, then:
 
-   a. Return :math:`{{\mathrm{fmul}}}_{{|{\mathit{valtype}}|}}({\mathit{iN}}_{1'}, {\mathit{iN}}_{2'})`.
+   a. Return :math:`{{\mathrm{fmul}}}_{{|{\mathit{valtype}}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
 #. If :math:`{\mathit{binop}} = \mathsf{div}`, then:
 
-   a. Return :math:`{{\mathrm{fdiv}}}_{{|{\mathit{valtype}}|}}({\mathit{iN}}_{1'}, {\mathit{iN}}_{2'})`.
+   a. Return :math:`{{\mathrm{fdiv}}}_{{|{\mathit{valtype}}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
 #. If :math:`{\mathit{binop}} = \mathsf{min}`, then:
 
-   a. Return :math:`{{\mathrm{fmin}}}_{{|{\mathit{valtype}}|}}({\mathit{iN}}_{1'}, {\mathit{iN}}_{2'})`.
+   a. Return :math:`{{\mathrm{fmin}}}_{{|{\mathit{valtype}}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
 #. If :math:`{\mathit{binop}} = \mathsf{max}`, then:
 
-   a. Return :math:`{{\mathrm{fmax}}}_{{|{\mathit{valtype}}|}}({\mathit{iN}}_{1'}, {\mathit{iN}}_{2'})`.
+   a. Return :math:`{{\mathrm{fmax}}}_{{|{\mathit{valtype}}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
 #. Assert: Due to validation, :math:`{\mathit{binop}} = \mathsf{copysign}`.
 
-#. Return :math:`{{\mathrm{fcopysign}}}_{{|{\mathit{valtype}}|}}({\mathit{iN}}_{1'}, {\mathit{iN}}_{2'})`.
+#. Return :math:`{{\mathrm{fcopysign}}}_{{|{\mathit{valtype}}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
 
 :math:`{{\mathrm{ieqz}}}_{N}(i_1)`
@@ -2098,73 +2098,73 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 1. Return :math:`\mathbb{B}(i_1 \neq i_2)`.
 
 
-:math:`{{\mathit{relop}}}{{}_{{\mathit{valtype}}}}{({\mathit{iN}}_{1'}, {\mathit{iN}}_{2'})}`
-.............................................................................................
+:math:`{{\mathit{relop}}}{{}_{{\mathit{valtype}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`
+.......................................................................................
 
 
 1. If :math:`{\mathit{valtype}}` is :math:`{\mathsf{i}}{n}`, then:
 
    a. If :math:`{\mathit{relop}} = \mathsf{eq}`, then:
 
-      1) Return :math:`{{\mathrm{ieq}}}_{{|{\mathit{valtype}}|}}({\mathit{iN}}_{1'}, {\mathit{iN}}_{2'})`.
+      1) Return :math:`{{\mathrm{ieq}}}_{{|{\mathit{valtype}}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
    #. If :math:`{\mathit{relop}} = \mathsf{ne}`, then:
 
-      1) Return :math:`{{\mathrm{ine}}}_{{|{\mathit{valtype}}|}}({\mathit{iN}}_{1'}, {\mathit{iN}}_{2'})`.
+      1) Return :math:`{{\mathrm{ine}}}_{{|{\mathit{valtype}}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
    #. If :math:`{\mathit{relop}}` is some :math:`\mathsf{lt}` :math:`{\mathit{sx}}`, then:
 
       1) Let :math:`({\mathsf{lt}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{relop}}`.
 
-      #) Return :math:`{{{{\mathrm{ilt}}}_{{|{\mathit{valtype}}|}}^{{\mathit{sx}}}}}{({\mathit{iN}}_{1'}, {\mathit{iN}}_{2'})}`.
+      #) Return :math:`{{{{\mathrm{ilt}}}_{{|{\mathit{valtype}}|}}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
 
    #. If :math:`{\mathit{relop}}` is some :math:`\mathsf{gt}` :math:`{\mathit{sx}}`, then:
 
       1) Let :math:`({\mathsf{gt}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{relop}}`.
 
-      #) Return :math:`{{{{\mathrm{igt}}}_{{|{\mathit{valtype}}|}}^{{\mathit{sx}}}}}{({\mathit{iN}}_{1'}, {\mathit{iN}}_{2'})}`.
+      #) Return :math:`{{{{\mathrm{igt}}}_{{|{\mathit{valtype}}|}}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
 
    #. If :math:`{\mathit{relop}}` is some :math:`\mathsf{le}` :math:`{\mathit{sx}}`, then:
 
       1) Let :math:`({\mathsf{le}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{relop}}`.
 
-      #) Return :math:`{{{{\mathrm{ile}}}_{{|{\mathit{valtype}}|}}^{{\mathit{sx}}}}}{({\mathit{iN}}_{1'}, {\mathit{iN}}_{2'})}`.
+      #) Return :math:`{{{{\mathrm{ile}}}_{{|{\mathit{valtype}}|}}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
 
    #. If :math:`{\mathit{relop}}` is some :math:`\mathsf{ge}` :math:`{\mathit{sx}}`, then:
 
       1) Let :math:`({\mathsf{ge}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{relop}}`.
 
-      #) Return :math:`{{{{\mathrm{ige}}}_{{|{\mathit{valtype}}|}}^{{\mathit{sx}}}}}{({\mathit{iN}}_{1'}, {\mathit{iN}}_{2'})}`.
+      #) Return :math:`{{{{\mathrm{ige}}}_{{|{\mathit{valtype}}|}}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
 
 #. Assert: Due to validation, :math:`{\mathit{valtype}}` is :math:`{\mathsf{f}}{n}`.
 
 #. If :math:`{\mathit{relop}} = \mathsf{eq}`, then:
 
-   a. Return :math:`{{\mathrm{feq}}}_{{|{\mathit{valtype}}|}}({\mathit{iN}}_{1'}, {\mathit{iN}}_{2'})`.
+   a. Return :math:`{{\mathrm{feq}}}_{{|{\mathit{valtype}}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
 #. If :math:`{\mathit{relop}} = \mathsf{ne}`, then:
 
-   a. Return :math:`{{\mathrm{fne}}}_{{|{\mathit{valtype}}|}}({\mathit{iN}}_{1'}, {\mathit{iN}}_{2'})`.
+   a. Return :math:`{{\mathrm{fne}}}_{{|{\mathit{valtype}}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
 #. If :math:`{\mathit{relop}} = \mathsf{lt}`, then:
 
-   a. Return :math:`{{\mathrm{flt}}}_{{|{\mathit{valtype}}|}}({\mathit{iN}}_{1'}, {\mathit{iN}}_{2'})`.
+   a. Return :math:`{{\mathrm{flt}}}_{{|{\mathit{valtype}}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
 #. If :math:`{\mathit{relop}} = \mathsf{gt}`, then:
 
-   a. Return :math:`{{\mathrm{fgt}}}_{{|{\mathit{valtype}}|}}({\mathit{iN}}_{1'}, {\mathit{iN}}_{2'})`.
+   a. Return :math:`{{\mathrm{fgt}}}_{{|{\mathit{valtype}}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
 #. If :math:`{\mathit{relop}} = \mathsf{le}`, then:
 
-   a. Return :math:`{{\mathrm{fle}}}_{{|{\mathit{valtype}}|}}({\mathit{iN}}_{1'}, {\mathit{iN}}_{2'})`.
+   a. Return :math:`{{\mathrm{fle}}}_{{|{\mathit{valtype}}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
 #. Assert: Due to validation, :math:`{\mathit{relop}} = \mathsf{ge}`.
 
-#. Return :math:`{{\mathrm{fge}}}_{{|{\mathit{valtype}}|}}({\mathit{iN}}_{1'}, {\mathit{iN}}_{2'})`.
+#. Return :math:`{{\mathrm{fge}}}_{{|{\mathit{valtype}}|}}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
 
-:math:`{{\mathit{cvtop}}}{{}_{{\mathit{valtype}}, {\mathit{valtype}'}}}{({\mathit{iN}'})}`
-..........................................................................................
+:math:`{{\mathit{cvtop}}}{{}_{{\mathit{valtype}}, {\mathit{valtype}'}}}{({\mathit{iN}})}`
+.........................................................................................
 
 
 1. If :math:`{\mathit{cvtop}}` is some :math:`\mathsf{extend}` :math:`{\mathit{sx}}`, then:
@@ -2173,25 +2173,25 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. If :math:`{\mathit{valtype}} = \mathsf{i{\scriptstyle 32}}` and :math:`{\mathit{valtype}'} = \mathsf{i{\scriptstyle 64}}`, then:
 
-      1) Return :math:`{{{{\mathrm{extend}}}_{32, 64}^{{\mathit{sx}}}}}{({\mathit{iN}'})}`.
+      1) Return :math:`{{{{\mathrm{extend}}}_{32, 64}^{{\mathit{sx}}}}}{({\mathit{iN}})}`.
 
 #. If :math:`{\mathit{valtype}} = \mathsf{i{\scriptstyle 64}}` and :math:`{\mathit{valtype}'} = \mathsf{i{\scriptstyle 32}}` and :math:`{\mathit{cvtop}} = \mathsf{wrap}`, then:
 
-   a. Return :math:`{{\mathrm{wrap}}}_{64, 32}({\mathit{iN}'})`.
+   a. Return :math:`{{\mathrm{wrap}}}_{64, 32}({\mathit{iN}})`.
 
 #. If :math:`{\mathit{valtype}}` is :math:`{\mathsf{f}}{n}` and :math:`{\mathit{valtype}'}` is :math:`{\mathsf{i}}{n}` and :math:`{\mathit{cvtop}}` is some :math:`\mathsf{trunc}` :math:`{\mathit{sx}}`, then:
 
    a. Let :math:`(\mathsf{trunc}~{\mathit{sx}})` be the destructuring of :math:`{\mathit{cvtop}}`.
 
-   #. Return :math:`{{{{\mathrm{trunc}}}_{{|{\mathit{valtype}}|}, {|{\mathit{valtype}'}|}}^{{\mathit{sx}}}}}{({\mathit{iN}'})}`.
+   #. Return :math:`{{{{\mathrm{trunc}}}_{{|{\mathit{valtype}}|}, {|{\mathit{valtype}'}|}}^{{\mathit{sx}}}}}{({\mathit{iN}})}`.
 
 #. If :math:`{\mathit{valtype}} = \mathsf{f{\scriptstyle 32}}` and :math:`{\mathit{valtype}'} = \mathsf{f{\scriptstyle 64}}` and :math:`{\mathit{cvtop}} = \mathsf{promote}`, then:
 
-   a. Return :math:`{{\mathrm{promote}}}_{32, 64}({\mathit{iN}'})`.
+   a. Return :math:`{{\mathrm{promote}}}_{32, 64}({\mathit{iN}})`.
 
 #. If :math:`{\mathit{valtype}} = \mathsf{f{\scriptstyle 64}}` and :math:`{\mathit{valtype}'} = \mathsf{f{\scriptstyle 32}}` and :math:`{\mathit{cvtop}} = \mathsf{demote}`, then:
 
-   a. Return :math:`{{\mathrm{demote}}}_{64, 32}({\mathit{iN}'})`.
+   a. Return :math:`{{\mathrm{demote}}}_{64, 32}({\mathit{iN}})`.
 
 #. If :math:`{\mathit{valtype}}` is :math:`{\mathsf{i}}{n}` and :math:`{\mathit{valtype}'}` is :math:`{\mathsf{f}}{n}`, then:
 
@@ -2199,11 +2199,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       1) Let :math:`(\mathsf{convert}~{\mathit{sx}})` be the destructuring of :math:`{\mathit{cvtop}}`.
 
-      #) Return :math:`{{{{\mathrm{convert}}}_{{|{\mathit{valtype}}|}, {|{\mathit{valtype}'}|}}^{{\mathit{sx}}}}}{({\mathit{iN}'})}`.
+      #) Return :math:`{{{{\mathrm{convert}}}_{{|{\mathit{valtype}}|}, {|{\mathit{valtype}'}|}}^{{\mathit{sx}}}}}{({\mathit{iN}})}`.
 
    #. If :math:`{\mathit{cvtop}} = \mathsf{reinterpret}` and :math:`{|{\mathit{valtype}}|} = {|{\mathit{valtype}'}|}`, then:
 
-      1) Return :math:`{{\mathrm{reinterpret}}}_{{\mathit{valtype}}, {\mathit{valtype}'}}({\mathit{iN}'})`.
+      1) Return :math:`{{\mathrm{reinterpret}}}_{{\mathit{valtype}}, {\mathit{valtype}'}}({\mathit{iN}})`.
 
 #. Assert: Due to validation, :math:`{\mathit{valtype}}` is :math:`{\mathsf{f}}{n}`.
 
@@ -2213,7 +2213,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Assert: Due to validation, :math:`{|{\mathit{valtype}'}|} = {|{\mathit{valtype}}|}`.
 
-#. Return :math:`{{\mathrm{reinterpret}}}_{{\mathit{valtype}}, {\mathit{valtype}'}}({\mathit{iN}'})`.
+#. Return :math:`{{\mathrm{reinterpret}}}_{{\mathit{valtype}}, {\mathit{valtype}'}}({\mathit{iN}})`.
 
 
 :math:`{{\mathrm{invibytes}}}_{N}({b^\ast})`
@@ -3687,23 +3687,23 @@ Step_read/global.get x
 1. Let z be the current state.
 2. Push the value $global(z, x).VALUE to the stack.
 
-Step_read/load t' loadop_? ao
+Step_read/load t loadop_? ao
 1. Let z be the current state.
 2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 3. Pop the value (I32.CONST i) from the stack.
 4. If loadop_? is not defined, then:
-  a. If (((i + ao.OFFSET) + ($size(t') / 8)) > |$mem(z, 0).BYTES|), then:
+  a. If (((i + ao.OFFSET) + ($size(t) / 8)) > |$mem(z, 0).BYTES|), then:
     1) Trap.
-  b. Let c be $bytes__1^-1(t', $mem(z, 0).BYTES[(i + ao.OFFSET) : ($size(t') / 8)]).
-  c. Push the value (t'.CONST c) to the stack.
+  b. Let c be $bytes__1^-1(t, $mem(z, 0).BYTES[(i + ao.OFFSET) : ($size(t) / 8)]).
+  c. Push the value (t.CONST c) to the stack.
 5. Else:
-  a. Assert: Due to validation, t' is Inn.
+  a. Assert: Due to validation, t is Inn.
   b. Let ?(loadop__0) be loadop_?.
   c. Let n _ sx be loadop__0.
   d. If (((i + ao.OFFSET) + (n / 8)) > |$mem(z, 0).BYTES|), then:
     1) Trap.
   e. Let c be $ibytes__1^-1(n, $mem(z, 0).BYTES[(i + ao.OFFSET) : (n / 8)]).
-  f. Push the value (t'.CONST $extend__(n, $size(t'), sx, c)) to the stack.
+  f. Push the value (t.CONST $extend__(n, $size(t), sx, c)) to the stack.
 
 Step_read/memory.size
 1. Let z be the current state.
@@ -3722,24 +3722,24 @@ Step/global.set x
 3. Pop the value val from the stack.
 4. Perform $with_global(z, x, val).
 
-Step/store t' sz? ao
+Step/store t sz? ao
 1. Let z be the current state.
 2. Assert: Due to validation, a value of value type num is on the top of the stack.
-3. Pop the value (t''.CONST c) from the stack.
+3. Pop the value (t'.CONST c) from the stack.
 4. Assert: Due to validation, a value is on the top of the stack.
 5. Pop the value (I32.CONST i) from the stack.
-6. Assert: Due to validation, (t' = t'').
+6. Assert: Due to validation, (t = t').
 7. If sz? is not defined, then:
-  a. If (((i + ao.OFFSET) + ($size(t'') / 8)) > |$mem(z, 0).BYTES|), then:
+  a. If (((i + ao.OFFSET) + ($size(t') / 8)) > |$mem(z, 0).BYTES|), then:
     1) Trap.
-  b. Let b* be $bytes_(t'', c).
-  c. Perform $with_mem(z, 0, (i + ao.OFFSET), ($size(t'') / 8), b*).
+  b. Let b* be $bytes_(t', c).
+  c. Perform $with_mem(z, 0, (i + ao.OFFSET), ($size(t') / 8), b*).
 8. Else:
-  a. Assert: Due to validation, t'' is Inn.
+  a. Assert: Due to validation, t' is Inn.
   b. Let ?(n) be sz?.
   c. If (((i + ao.OFFSET) + (n / 8)) > |$mem(z, 0).BYTES|), then:
     1) Trap.
-  d. Let b* be $ibytes_(n, $wrap__($size(t''), n, c)).
+  d. Let b* be $ibytes_(n, $wrap__($size(t'), n, c)).
   e. Perform $with_mem(z, 0, (i + ao.OFFSET), (n / 8), b*).
 
 Step/memory.grow
@@ -3884,29 +3884,29 @@ invsigned_ N i
 1. Let j be $signed__1^-1(N, i).
 2. Return j.
 
-unop_ valtype unop_ iN'
+unop_ valtype unop_ iN
 1. If valtype is Inn, then:
   a. If (unop_ = CLZ), then:
-    1) Return [$iclz_($size(valtype), iN')].
+    1) Return [$iclz_($size(valtype), iN)].
   b. If (unop_ = CTZ), then:
-    1) Return [$ictz_($size(valtype), iN')].
+    1) Return [$ictz_($size(valtype), iN)].
   c. If (unop_ = POPCNT), then:
-    1) Return [$ipopcnt_($size(valtype), iN')].
+    1) Return [$ipopcnt_($size(valtype), iN)].
 2. Assert: Due to validation, valtype is Fnn.
 3. If (unop_ = ABS), then:
-  a. Return $fabs_($size(valtype), iN').
+  a. Return $fabs_($size(valtype), iN).
 4. If (unop_ = NEG), then:
-  a. Return $fneg_($size(valtype), iN').
+  a. Return $fneg_($size(valtype), iN).
 5. If (unop_ = SQRT), then:
-  a. Return $fsqrt_($size(valtype), iN').
+  a. Return $fsqrt_($size(valtype), iN).
 6. If (unop_ = CEIL), then:
-  a. Return $fceil_($size(valtype), iN').
+  a. Return $fceil_($size(valtype), iN).
 7. If (unop_ = FLOOR), then:
-  a. Return $ffloor_($size(valtype), iN').
+  a. Return $ffloor_($size(valtype), iN).
 8. If (unop_ = TRUNC), then:
-  a. Return $ftrunc_($size(valtype), iN').
+  a. Return $ftrunc_($size(valtype), iN).
 9. Assert: Due to validation, (unop_ = NEAREST).
-10. Return $fnearest_($size(valtype), iN').
+10. Return $fnearest_($size(valtype), iN).
 
 iadd_ N i_1 i_2
 1. Return ((i_1 + i_2) \ (2 ^ N)).
@@ -3917,50 +3917,50 @@ imul_ N i_1 i_2
 isub_ N i_1 i_2
 1. Return ((((2 ^ N) + i_1) - i_2) \ (2 ^ N)).
 
-binop_ valtype binop_ iN_1' iN_2'
+binop_ valtype binop_ iN_1 iN_2
 1. If valtype is Inn, then:
   a. If (binop_ = ADD), then:
-    1) Return [$iadd_($size(valtype), iN_1', iN_2')].
+    1) Return [$iadd_($size(valtype), iN_1, iN_2)].
   b. If (binop_ = SUB), then:
-    1) Return [$isub_($size(valtype), iN_1', iN_2')].
+    1) Return [$isub_($size(valtype), iN_1, iN_2)].
   c. If (binop_ = MUL), then:
-    1) Return [$imul_($size(valtype), iN_1', iN_2')].
+    1) Return [$imul_($size(valtype), iN_1, iN_2)].
   d. If binop_ is some DIV, then:
     1) Let (DIV sx) be binop_.
-    2) Return $list_(`val_((Inn : Inn <: valtype)), $idiv_($size(valtype), sx, iN_1', iN_2')).
+    2) Return $list_(`val_((Inn : Inn <: valtype)), $idiv_($size(valtype), sx, iN_1, iN_2)).
   e. If binop_ is some REM, then:
     1) Let (REM sx) be binop_.
-    2) Return $list_(`val_((Inn : Inn <: valtype)), $irem_($size(valtype), sx, iN_1', iN_2')).
+    2) Return $list_(`val_((Inn : Inn <: valtype)), $irem_($size(valtype), sx, iN_1, iN_2)).
   f. If (binop_ = AND), then:
-    1) Return [$iand_($size(valtype), iN_1', iN_2')].
+    1) Return [$iand_($size(valtype), iN_1, iN_2)].
   g. If (binop_ = OR), then:
-    1) Return [$ior_($size(valtype), iN_1', iN_2')].
+    1) Return [$ior_($size(valtype), iN_1, iN_2)].
   h. If (binop_ = XOR), then:
-    1) Return [$ixor_($size(valtype), iN_1', iN_2')].
+    1) Return [$ixor_($size(valtype), iN_1, iN_2)].
   i. If (binop_ = SHL), then:
-    1) Return [$ishl_($size(valtype), iN_1', iN_2')].
+    1) Return [$ishl_($size(valtype), iN_1, iN_2)].
   j. If binop_ is some SHR, then:
     1) Let (SHR sx) be binop_.
-    2) Return [$ishr_($size(valtype), sx, iN_1', iN_2')].
+    2) Return [$ishr_($size(valtype), sx, iN_1, iN_2)].
   k. If (binop_ = ROTL), then:
-    1) Return [$irotl_($size(valtype), iN_1', iN_2')].
+    1) Return [$irotl_($size(valtype), iN_1, iN_2)].
   l. If (binop_ = ROTR), then:
-    1) Return [$irotr_($size(valtype), iN_1', iN_2')].
+    1) Return [$irotr_($size(valtype), iN_1, iN_2)].
 2. Assert: Due to validation, valtype is Fnn.
 3. If (binop_ = ADD), then:
-  a. Return $fadd_($size(valtype), iN_1', iN_2').
+  a. Return $fadd_($size(valtype), iN_1, iN_2).
 4. If (binop_ = SUB), then:
-  a. Return $fsub_($size(valtype), iN_1', iN_2').
+  a. Return $fsub_($size(valtype), iN_1, iN_2).
 5. If (binop_ = MUL), then:
-  a. Return $fmul_($size(valtype), iN_1', iN_2').
+  a. Return $fmul_($size(valtype), iN_1, iN_2).
 6. If (binop_ = DIV), then:
-  a. Return $fdiv_($size(valtype), iN_1', iN_2').
+  a. Return $fdiv_($size(valtype), iN_1, iN_2).
 7. If (binop_ = MIN), then:
-  a. Return $fmin_($size(valtype), iN_1', iN_2').
+  a. Return $fmin_($size(valtype), iN_1, iN_2).
 8. If (binop_ = MAX), then:
-  a. Return $fmax_($size(valtype), iN_1', iN_2').
+  a. Return $fmax_($size(valtype), iN_1, iN_2).
 9. Assert: Due to validation, (binop_ = COPYSIGN).
-10. Return $fcopysign_($size(valtype), iN_1', iN_2').
+10. Return $fcopysign_($size(valtype), iN_1, iN_2).
 
 ieqz_ N i_1
 1. Return $bool((i_1 = 0)).
@@ -3998,63 +3998,63 @@ ilt_ N sx i_1 i_2
 ine_ N i_1 i_2
 1. Return $bool((i_1 =/= i_2)).
 
-relop_ valtype relop_ iN_1' iN_2'
+relop_ valtype relop_ iN_1 iN_2
 1. If valtype is Inn, then:
   a. If (relop_ = EQ), then:
-    1) Return $ieq_($size(valtype), iN_1', iN_2').
+    1) Return $ieq_($size(valtype), iN_1, iN_2).
   b. If (relop_ = NE), then:
-    1) Return $ine_($size(valtype), iN_1', iN_2').
+    1) Return $ine_($size(valtype), iN_1, iN_2).
   c. If relop_ is some LT, then:
     1) Let (LT sx) be relop_.
-    2) Return $ilt_($size(valtype), sx, iN_1', iN_2').
+    2) Return $ilt_($size(valtype), sx, iN_1, iN_2).
   d. If relop_ is some GT, then:
     1) Let (GT sx) be relop_.
-    2) Return $igt_($size(valtype), sx, iN_1', iN_2').
+    2) Return $igt_($size(valtype), sx, iN_1, iN_2).
   e. If relop_ is some LE, then:
     1) Let (LE sx) be relop_.
-    2) Return $ile_($size(valtype), sx, iN_1', iN_2').
+    2) Return $ile_($size(valtype), sx, iN_1, iN_2).
   f. If relop_ is some GE, then:
     1) Let (GE sx) be relop_.
-    2) Return $ige_($size(valtype), sx, iN_1', iN_2').
+    2) Return $ige_($size(valtype), sx, iN_1, iN_2).
 2. Assert: Due to validation, valtype is Fnn.
 3. If (relop_ = EQ), then:
-  a. Return $feq_($size(valtype), iN_1', iN_2').
+  a. Return $feq_($size(valtype), iN_1, iN_2).
 4. If (relop_ = NE), then:
-  a. Return $fne_($size(valtype), iN_1', iN_2').
+  a. Return $fne_($size(valtype), iN_1, iN_2).
 5. If (relop_ = LT), then:
-  a. Return $flt_($size(valtype), iN_1', iN_2').
+  a. Return $flt_($size(valtype), iN_1, iN_2).
 6. If (relop_ = GT), then:
-  a. Return $fgt_($size(valtype), iN_1', iN_2').
+  a. Return $fgt_($size(valtype), iN_1, iN_2).
 7. If (relop_ = LE), then:
-  a. Return $fle_($size(valtype), iN_1', iN_2').
+  a. Return $fle_($size(valtype), iN_1, iN_2).
 8. Assert: Due to validation, (relop_ = GE).
-9. Return $fge_($size(valtype), iN_1', iN_2').
+9. Return $fge_($size(valtype), iN_1, iN_2).
 
-cvtop__ valtype valtype' cvtop iN'
+cvtop__ valtype valtype' cvtop iN
 1. If cvtop is some EXTEND, then:
   a. Let (EXTEND sx) be cvtop.
   b. If ((valtype = I32) /\ (valtype' = I64)), then:
-    1) Return [$extend__(32, 64, sx, iN')].
+    1) Return [$extend__(32, 64, sx, iN)].
 2. If ((valtype = I64) /\ ((valtype' = I32) /\ (cvtop = WRAP))), then:
-  a. Return [$wrap__(64, 32, iN')].
+  a. Return [$wrap__(64, 32, iN)].
 3. If (valtype is Fnn /\ (valtype' is Inn /\ cvtop is some TRUNC)), then:
   a. Let (TRUNC sx) be cvtop.
-  b. Return $list_(`val_((Inn : Inn <: valtype)), $trunc__($size(valtype), $size(valtype'), sx, iN')).
+  b. Return $list_(`val_((Inn : Inn <: valtype)), $trunc__($size(valtype), $size(valtype'), sx, iN)).
 4. If ((valtype = F32) /\ ((valtype' = F64) /\ (cvtop = PROMOTE))), then:
-  a. Return $promote__(32, 64, iN').
+  a. Return $promote__(32, 64, iN).
 5. If ((valtype = F64) /\ ((valtype' = F32) /\ (cvtop = DEMOTE))), then:
-  a. Return $demote__(64, 32, iN').
+  a. Return $demote__(64, 32, iN).
 6. If (valtype is Inn /\ valtype' is Fnn), then:
   a. If cvtop is some CONVERT, then:
     1) Let (CONVERT sx) be cvtop.
-    2) Return [$convert__($size(valtype), $size(valtype'), sx, iN')].
+    2) Return [$convert__($size(valtype), $size(valtype'), sx, iN)].
   b. If ((cvtop = REINTERPRET) /\ ($size(valtype) = $size(valtype'))), then:
-    1) Return [$reinterpret__(valtype, valtype', iN')].
+    1) Return [$reinterpret__(valtype, valtype', iN)].
 7. Assert: Due to validation, valtype is Fnn.
 8. Assert: Due to validation, valtype' is Inn.
 9. Assert: Due to validation, (cvtop = REINTERPRET).
 10. Assert: Due to validation, ($size(valtype') = $size(valtype)).
-11. Return [$reinterpret__(valtype, valtype', iN')].
+11. Return [$reinterpret__(valtype, valtype', iN)].
 
 invibytes_ N b*
 1. Let n be $ibytes__1^-1(N, b*).
@@ -6834,8 +6834,8 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
 
-:math:`{{{\mathsf{i}}{n}}_{2'}}{\mathsf{x}}{{M'}} {.} {{\mathit{vcvtop}}}{\mathsf{\_}}{{{{\mathsf{i}}{n}}_{1'}}{\mathsf{x}}{{M''}}}`
-....................................................................................................................................
+:math:`{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M} {.} {{\mathit{vcvtop}}}{\mathsf{\_}}{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{{M'}}}`
+..........................................................................................................................
 
 
 1. Assert: Due to validation, a value of vector type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
@@ -6846,37 +6846,37 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    a. Let :math:`{\mathit{half}}` be :math:`{\mathrm{halfop}}({\mathit{vcvtop}})`.
 
-   #. Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{n}}_{1'}}{\mathsf{x}}{{M''}}}(c_1){}[{\mathrm{half}}({\mathit{half}}, 0, {M'}) : {M'}]`.
+   #. Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{{M'}}}(c_1){}[{\mathrm{half}}({\mathit{half}}, 0, M) : M]`.
 
-   #. Let :math:`{{{\mathit{cj}}^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{vcvtop}}}_{{{{\mathsf{i}}{n}}_{1'}}{\mathsf{x}}{{M''}}, {{{\mathsf{i}}{n}}_{2'}}{\mathsf{x}}{{M'}}}({\mathit{vcvtop}}, {\mathit{ci}})^\ast}`.
+   #. Let :math:`{{{\mathit{cj}}^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{vcvtop}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{{M'}}, {{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M}}({\mathit{vcvtop}}, {\mathit{ci}})^\ast}`.
 
-   #. If :math:`{|{{{\mathrm{invlanes}}}_{{{{\mathsf{i}}{n}}_{2'}}{\mathsf{x}}{{M'}}}({{\mathit{cj}}^\ast})^\ast}|} > 0`, then:
+   #. If :math:`{|{{{\mathrm{invlanes}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M}}({{\mathit{cj}}^\ast})^\ast}|} > 0`, then:
 
-      1) Let :math:`c` be an element of :math:`{{{\mathrm{invlanes}}}_{{{{\mathsf{i}}{n}}_{2'}}{\mathsf{x}}{{M'}}}({{\mathit{cj}}^\ast})^\ast}`.
-
-      #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
-
-#. Else if :math:`{\mathrm{zeroop}}({\mathit{vcvtop}})` is not defined and :math:`{M'} = {M''}`, then:
-
-   a. Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{n}}_{1'}}{\mathsf{x}}{{M''}}}(c_1)`.
-
-   #. Let :math:`{{{\mathit{cj}}^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{vcvtop}}}_{{{{\mathsf{i}}{n}}_{1'}}{\mathsf{x}}{{M''}}, {{{\mathsf{i}}{n}}_{2'}}{\mathsf{x}}{{M''}}}({\mathit{vcvtop}}, {\mathit{ci}})^\ast}`.
-
-   #. If :math:`{|{{{\mathrm{invlanes}}}_{{{{\mathsf{i}}{n}}_{2'}}{\mathsf{x}}{{M''}}}({{\mathit{cj}}^\ast})^\ast}|} > 0`, then:
-
-      1) Let :math:`c` be an element of :math:`{{{\mathrm{invlanes}}}_{{{{\mathsf{i}}{n}}_{2'}}{\mathsf{x}}{{M''}}}({{\mathit{cj}}^\ast})^\ast}`.
+      1) Let :math:`c` be an element of :math:`{{{\mathrm{invlanes}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M}}({{\mathit{cj}}^\ast})^\ast}`.
 
       #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
-#. If :math:`{\mathrm{zeroop}}({\mathit{vcvtop}}) = \mathsf{zero}` and :math:`{{\mathsf{i}}{n}}_{1'}` is number type and :math:`{{\mathsf{i}}{n}}_{2'}` is number type, then:
+#. Else if :math:`{\mathrm{zeroop}}({\mathit{vcvtop}})` is not defined and :math:`M = {M'}`, then:
 
-   a. Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{n}}_{1'}}{\mathsf{x}}{{M''}}}(c_1)`.
+   a. Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{{M'}}}(c_1)`.
 
-   #. Let :math:`{{{\mathit{cj}}^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{vcvtop}}}_{{{{\mathsf{i}}{n}}_{1'}}{\mathsf{x}}{{M''}}, {{{\mathsf{i}}{n}}_{2'}}{\mathsf{x}}{{M'}}}({\mathit{vcvtop}}, {\mathit{ci}})^\ast}~{{\mathrm{zero}}({{\mathsf{i}}{n}}_{2'})^{{M''}}}`.
+   #. Let :math:`{{{\mathit{cj}}^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{vcvtop}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{{M'}}, {{{\mathsf{i}}{n}}_2}{\mathsf{x}}{{M'}}}({\mathit{vcvtop}}, {\mathit{ci}})^\ast}`.
 
-   #. If :math:`{|{{{\mathrm{invlanes}}}_{{{{\mathsf{i}}{n}}_{2'}}{\mathsf{x}}{{M'}}}({{\mathit{cj}}^\ast})^\ast}|} > 0`, then:
+   #. If :math:`{|{{{\mathrm{invlanes}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{{M'}}}({{\mathit{cj}}^\ast})^\ast}|} > 0`, then:
 
-      1) Let :math:`c` be an element of :math:`{{{\mathrm{invlanes}}}_{{{{\mathsf{i}}{n}}_{2'}}{\mathsf{x}}{{M'}}}({{\mathit{cj}}^\ast})^\ast}`.
+      1) Let :math:`c` be an element of :math:`{{{\mathrm{invlanes}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{{M'}}}({{\mathit{cj}}^\ast})^\ast}`.
+
+      #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
+
+#. If :math:`{\mathrm{zeroop}}({\mathit{vcvtop}}) = \mathsf{zero}` and :math:`{{\mathsf{i}}{n}}_1` is number type and :math:`{{\mathsf{i}}{n}}_2` is number type, then:
+
+   a. Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{{M'}}}(c_1)`.
+
+   #. Let :math:`{{{\mathit{cj}}^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{vcvtop}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{{M'}}, {{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M}}({\mathit{vcvtop}}, {\mathit{ci}})^\ast}~{{\mathrm{zero}}({{\mathsf{i}}{n}}_2)^{{M'}}}`.
+
+   #. If :math:`{|{{{\mathrm{invlanes}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M}}({{\mathit{cj}}^\ast})^\ast}|} > 0`, then:
+
+      1) Let :math:`c` be an element of :math:`{{{\mathrm{invlanes}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M}}({{\mathit{cj}}^\ast})^\ast}`.
 
       #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
@@ -7215,8 +7215,8 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
    #. Execute the instruction :math:`(\mathsf{table{.}init}~x~y)`.
 
 
-:math:`{{\mathit{nt}'}{.}\mathsf{load}}{{{\mathit{loadop}}^?}}~{\mathit{ao}}`
-.............................................................................
+:math:`{{\mathit{nt}}{.}\mathsf{load}}{{{\mathit{loadop}}^?}}~{\mathit{ao}}`
+............................................................................
 
 
 1. Let :math:`z` be the current state.
@@ -7227,17 +7227,17 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. If :math:`{{\mathit{loadop}}^?}` is not defined, then:
 
-   a. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|{\mathit{nt}'}|} / 8 > {|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
+   a. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|{\mathit{nt}}|} / 8 > {|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
 
       1) Trap.
 
-   #. Let :math:`c` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathit{nt}'}}(c)` :math:`=` :math:`z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|{\mathit{nt}'}|} / 8]`.
+   #. Let :math:`c` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathit{nt}}}(c)` :math:`=` :math:`z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|{\mathit{nt}}|} / 8]`.
 
-   #. Push the value :math:`({\mathit{nt}'}{.}\mathsf{const}~c)` to the stack.
+   #. Push the value :math:`({\mathit{nt}}{.}\mathsf{const}~c)` to the stack.
 
 #. Else:
 
-   a. Assert: Due to validation, :math:`{\mathit{nt}'}` is :math:`{\mathsf{i}}{n}`.
+   a. Assert: Due to validation, :math:`{\mathit{nt}}` is :math:`{\mathsf{i}}{n}`.
 
    #. Let :math:`{\mathit{loadop\_{\scriptstyle 0}}}` be :math:`{{\mathit{loadop}}^?}`.
 
@@ -7249,7 +7249,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Let :math:`c` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{n}}(c)` :math:`=` :math:`z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : n / 8]`.
 
-   #. Push the value :math:`({\mathit{nt}'}{.}\mathsf{const}~{{{{\mathrm{extend}}}_{n, {|{\mathit{nt}'}|}}^{{\mathit{sx}}}}}{(c)})` to the stack.
+   #. Push the value :math:`({\mathit{nt}}{.}\mathsf{const}~{{{{\mathrm{extend}}}_{n, {|{\mathit{nt}}|}}^{{\mathit{sx}}}}}{(c)})` to the stack.
 
 
 :math:`\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~{{\mathit{vloadop}}^?}~{\mathit{ao}}`
@@ -7611,35 +7611,35 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Perform :math:`z{}[{.}\mathsf{elems}{}[x]{.}\mathsf{refs} = \epsilon]`.
 
 
-:math:`{{\mathit{nt}'}{.}\mathsf{store}}{{{\mathit{sz}}^?}}~{\mathit{ao}}`
-..........................................................................
+:math:`{{\mathit{nt}}{.}\mathsf{store}}{{{\mathit{sz}}^?}}~{\mathit{ao}}`
+.........................................................................
 
 
 1. Let :math:`z` be the current state.
 
 #. Assert: Due to validation, a number is on the top of the stack.
 
-#. Pop the value :math:`({\mathit{nt}''}{.}\mathsf{const}~c)` from the stack.
+#. Pop the value :math:`({\mathit{nt}'}{.}\mathsf{const}~c)` from the stack.
 
 #. Assert: Due to validation, a value is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. Assert: Due to validation, :math:`{\mathit{nt}'} = {\mathit{nt}''}`.
+#. Assert: Due to validation, :math:`{\mathit{nt}} = {\mathit{nt}'}`.
 
 #. If :math:`{{\mathit{sz}}^?}` is not defined, then:
 
-   a. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|{\mathit{nt}''}|} / 8 > {|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
+   a. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|{\mathit{nt}'}|} / 8 > {|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
 
       1) Trap.
 
-   #. Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{{\mathit{nt}''}}(c)`.
+   #. Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{{\mathit{nt}'}}(c)`.
 
-   #. Perform :math:`z{}[{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|{\mathit{nt}''}|} / 8] = {b^\ast}]`.
+   #. Perform :math:`z{}[{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|{\mathit{nt}'}|} / 8] = {b^\ast}]`.
 
 #. Else:
 
-   a. Assert: Due to validation, :math:`{\mathit{nt}''}` is :math:`{\mathsf{i}}{n}`.
+   a. Assert: Due to validation, :math:`{\mathit{nt}'}` is :math:`{\mathsf{i}}{n}`.
 
    #. Let :math:`n` be :math:`{{\mathit{sz}}^?}`.
 
@@ -7647,7 +7647,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       1) Trap.
 
-   #. Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{n}}({{\mathrm{wrap}}}_{{|{\mathit{nt}''}|}, n}(c))`.
+   #. Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{n}}({{\mathrm{wrap}}}_{{|{\mathit{nt}'}|}, n}(c))`.
 
    #. Perform :math:`z{}[{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : n / 8] = {b^\ast}]`.
 
@@ -8296,59 +8296,59 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Return :math:`i`.
 
 
-:math:`{{\mathit{unop}}}{{}_{{\mathit{numtype}}}}{({\mathit{iN}'})}`
-....................................................................
+:math:`{{\mathit{unop}}}{{}_{{\mathit{numtype}}}}{({\mathit{iN}})}`
+...................................................................
 
 
 1. If :math:`{\mathit{numtype}}` is :math:`{\mathsf{i}}{n}`, then:
 
    a. If :math:`{\mathit{unop}} = \mathsf{clz}`, then:
 
-      1) Return :math:`{{\mathrm{iclz}}}_{N}({\mathit{iN}'})`.
+      1) Return :math:`{{\mathrm{iclz}}}_{N}({\mathit{iN}})`.
 
    #. If :math:`{\mathit{unop}} = \mathsf{ctz}`, then:
 
-      1) Return :math:`{{\mathrm{ictz}}}_{N}({\mathit{iN}'})`.
+      1) Return :math:`{{\mathrm{ictz}}}_{N}({\mathit{iN}})`.
 
    #. If :math:`{\mathit{unop}} = \mathsf{popcnt}`, then:
 
-      1) Return :math:`{{\mathrm{ipopcnt}}}_{N}({\mathit{iN}'})`.
+      1) Return :math:`{{\mathrm{ipopcnt}}}_{N}({\mathit{iN}})`.
 
    #. Assert: Due to validation, :math:`{\mathit{unop}}` is some :math:`\mathsf{extend}` :math:`n`.
 
    #. Let :math:`(\mathsf{extend}~M)` be the destructuring of :math:`{\mathit{unop}}`.
 
-   #. Return :math:`{{{{\mathrm{extend}}}_{M, N}^{\mathsf{s}}}}{({{\mathrm{wrap}}}_{N, M}({\mathit{iN}'}))}`.
+   #. Return :math:`{{{{\mathrm{extend}}}_{M, N}^{\mathsf{s}}}}{({{\mathrm{wrap}}}_{N, M}({\mathit{iN}}))}`.
 
 #. Assert: Due to validation, :math:`{\mathit{numtype}}` is :math:`{\mathsf{f}}{n}`.
 
 #. If :math:`{\mathit{unop}} = \mathsf{abs}`, then:
 
-   a. Return :math:`{{\mathrm{fabs}}}_{N}({\mathit{iN}'})`.
+   a. Return :math:`{{\mathrm{fabs}}}_{N}({\mathit{iN}})`.
 
 #. If :math:`{\mathit{unop}} = \mathsf{neg}`, then:
 
-   a. Return :math:`{{\mathrm{fneg}}}_{N}({\mathit{iN}'})`.
+   a. Return :math:`{{\mathrm{fneg}}}_{N}({\mathit{iN}})`.
 
 #. If :math:`{\mathit{unop}} = \mathsf{sqrt}`, then:
 
-   a. Return :math:`{{\mathrm{fsqrt}}}_{N}({\mathit{iN}'})`.
+   a. Return :math:`{{\mathrm{fsqrt}}}_{N}({\mathit{iN}})`.
 
 #. If :math:`{\mathit{unop}} = \mathsf{ceil}`, then:
 
-   a. Return :math:`{{\mathrm{fceil}}}_{N}({\mathit{iN}'})`.
+   a. Return :math:`{{\mathrm{fceil}}}_{N}({\mathit{iN}})`.
 
 #. If :math:`{\mathit{unop}} = \mathsf{floor}`, then:
 
-   a. Return :math:`{{\mathrm{ffloor}}}_{N}({\mathit{iN}'})`.
+   a. Return :math:`{{\mathrm{ffloor}}}_{N}({\mathit{iN}})`.
 
 #. If :math:`{\mathit{unop}} = \mathsf{trunc}`, then:
 
-   a. Return :math:`{{\mathrm{ftrunc}}}_{N}({\mathit{iN}'})`.
+   a. Return :math:`{{\mathrm{ftrunc}}}_{N}({\mathit{iN}})`.
 
 #. Assert: Due to validation, :math:`{\mathit{unop}} = \mathsf{nearest}`.
 
-#. Return :math:`{{\mathrm{fnearest}}}_{N}({\mathit{iN}'})`.
+#. Return :math:`{{\mathrm{fnearest}}}_{N}({\mathit{iN}})`.
 
 
 :math:`{{\mathrm{iadd}}}_{N}(i_1, i_2)`
@@ -8372,95 +8372,95 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 1. Return :math:`({2^{N}} + i_1 - i_2) \mathbin{\mathrm{mod}} ({2^{N}})`.
 
 
-:math:`{{\mathit{binop}}}{{}_{{\mathit{numtype}}}}{({\mathit{iN}}_{1'}, {\mathit{iN}}_{2'})}`
-.............................................................................................
+:math:`{{\mathit{binop}}}{{}_{{\mathit{numtype}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`
+.......................................................................................
 
 
 1. If :math:`{\mathit{numtype}}` is :math:`{\mathsf{i}}{n}`, then:
 
    a. If :math:`{\mathit{binop}} = \mathsf{add}`, then:
 
-      1) Return :math:`{{\mathrm{iadd}}}_{N}({\mathit{iN}}_{1'}, {\mathit{iN}}_{2'})`.
+      1) Return :math:`{{\mathrm{iadd}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
    #. If :math:`{\mathit{binop}} = \mathsf{sub}`, then:
 
-      1) Return :math:`{{\mathrm{isub}}}_{N}({\mathit{iN}}_{1'}, {\mathit{iN}}_{2'})`.
+      1) Return :math:`{{\mathrm{isub}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
    #. If :math:`{\mathit{binop}} = \mathsf{mul}`, then:
 
-      1) Return :math:`{{\mathrm{imul}}}_{N}({\mathit{iN}}_{1'}, {\mathit{iN}}_{2'})`.
+      1) Return :math:`{{\mathrm{imul}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
    #. If :math:`{\mathit{binop}}` is some :math:`\mathsf{div}` :math:`{\mathit{sx}}`, then:
 
       1) Let :math:`({\mathsf{div}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{binop}}`.
 
-      #) Return :math:`{{{{\mathrm{idiv}}}_{N}^{{\mathit{sx}}}}}{({\mathit{iN}}_{1'}, {\mathit{iN}}_{2'})}`.
+      #) Return :math:`{{{{\mathrm{idiv}}}_{N}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
 
    #. If :math:`{\mathit{binop}}` is some :math:`\mathsf{rem}` :math:`{\mathit{sx}}`, then:
 
       1) Let :math:`({\mathsf{rem}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{binop}}`.
 
-      #) Return :math:`{{{{\mathrm{irem}}}_{N}^{{\mathit{sx}}}}}{({\mathit{iN}}_{1'}, {\mathit{iN}}_{2'})}`.
+      #) Return :math:`{{{{\mathrm{irem}}}_{N}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
 
    #. If :math:`{\mathit{binop}} = \mathsf{and}`, then:
 
-      1) Return :math:`{{\mathrm{iand}}}_{N}({\mathit{iN}}_{1'}, {\mathit{iN}}_{2'})`.
+      1) Return :math:`{{\mathrm{iand}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
    #. If :math:`{\mathit{binop}} = \mathsf{or}`, then:
 
-      1) Return :math:`{{\mathrm{ior}}}_{N}({\mathit{iN}}_{1'}, {\mathit{iN}}_{2'})`.
+      1) Return :math:`{{\mathrm{ior}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
    #. If :math:`{\mathit{binop}} = \mathsf{xor}`, then:
 
-      1) Return :math:`{{\mathrm{ixor}}}_{N}({\mathit{iN}}_{1'}, {\mathit{iN}}_{2'})`.
+      1) Return :math:`{{\mathrm{ixor}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
    #. If :math:`{\mathit{binop}} = \mathsf{shl}`, then:
 
-      1) Return :math:`{{\mathrm{ishl}}}_{N}({\mathit{iN}}_{1'}, {\mathit{iN}}_{2'})`.
+      1) Return :math:`{{\mathrm{ishl}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
    #. If :math:`{\mathit{binop}}` is some :math:`\mathsf{shr}` :math:`{\mathit{sx}}`, then:
 
       1) Let :math:`({\mathsf{shr}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{binop}}`.
 
-      #) Return :math:`{{{{\mathrm{ishr}}}_{N}^{{\mathit{sx}}}}}{({\mathit{iN}}_{1'}, {\mathit{iN}}_{2'})}`.
+      #) Return :math:`{{{{\mathrm{ishr}}}_{N}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
 
    #. If :math:`{\mathit{binop}} = \mathsf{rotl}`, then:
 
-      1) Return :math:`{{\mathrm{irotl}}}_{N}({\mathit{iN}}_{1'}, {\mathit{iN}}_{2'})`.
+      1) Return :math:`{{\mathrm{irotl}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
    #. If :math:`{\mathit{binop}} = \mathsf{rotr}`, then:
 
-      1) Return :math:`{{\mathrm{irotr}}}_{N}({\mathit{iN}}_{1'}, {\mathit{iN}}_{2'})`.
+      1) Return :math:`{{\mathrm{irotr}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
 #. Assert: Due to validation, :math:`{\mathit{numtype}}` is :math:`{\mathsf{f}}{n}`.
 
 #. If :math:`{\mathit{binop}} = \mathsf{add}`, then:
 
-   a. Return :math:`{{\mathrm{fadd}}}_{N}({\mathit{iN}}_{1'}, {\mathit{iN}}_{2'})`.
+   a. Return :math:`{{\mathrm{fadd}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
 #. If :math:`{\mathit{binop}} = \mathsf{sub}`, then:
 
-   a. Return :math:`{{\mathrm{fsub}}}_{N}({\mathit{iN}}_{1'}, {\mathit{iN}}_{2'})`.
+   a. Return :math:`{{\mathrm{fsub}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
 #. If :math:`{\mathit{binop}} = \mathsf{mul}`, then:
 
-   a. Return :math:`{{\mathrm{fmul}}}_{N}({\mathit{iN}}_{1'}, {\mathit{iN}}_{2'})`.
+   a. Return :math:`{{\mathrm{fmul}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
 #. If :math:`{\mathit{binop}} = \mathsf{div}`, then:
 
-   a. Return :math:`{{\mathrm{fdiv}}}_{N}({\mathit{iN}}_{1'}, {\mathit{iN}}_{2'})`.
+   a. Return :math:`{{\mathrm{fdiv}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
 #. If :math:`{\mathit{binop}} = \mathsf{min}`, then:
 
-   a. Return :math:`{{\mathrm{fmin}}}_{N}({\mathit{iN}}_{1'}, {\mathit{iN}}_{2'})`.
+   a. Return :math:`{{\mathrm{fmin}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
 #. If :math:`{\mathit{binop}} = \mathsf{max}`, then:
 
-   a. Return :math:`{{\mathrm{fmax}}}_{N}({\mathit{iN}}_{1'}, {\mathit{iN}}_{2'})`.
+   a. Return :math:`{{\mathrm{fmax}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
 #. Assert: Due to validation, :math:`{\mathit{binop}} = \mathsf{copysign}`.
 
-#. Return :math:`{{\mathrm{fcopysign}}}_{N}({\mathit{iN}}_{1'}, {\mathit{iN}}_{2'})`.
+#. Return :math:`{{\mathrm{fcopysign}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
 
 :math:`{{\mathrm{ieqz}}}_{N}(i_1)`
@@ -8543,130 +8543,130 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 1. Return :math:`\mathbb{B}(i_1 \neq i_2)`.
 
 
-:math:`{{\mathit{relop}}}{{}_{{\mathit{numtype}}}}{({\mathit{iN}}_{1'}, {\mathit{iN}}_{2'})}`
-.............................................................................................
+:math:`{{\mathit{relop}}}{{}_{{\mathit{numtype}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`
+.......................................................................................
 
 
 1. If :math:`{\mathit{numtype}}` is :math:`{\mathsf{i}}{n}`, then:
 
    a. If :math:`{\mathit{relop}} = \mathsf{eq}`, then:
 
-      1) Return :math:`{{\mathrm{ieq}}}_{N}({\mathit{iN}}_{1'}, {\mathit{iN}}_{2'})`.
+      1) Return :math:`{{\mathrm{ieq}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
    #. If :math:`{\mathit{relop}} = \mathsf{ne}`, then:
 
-      1) Return :math:`{{\mathrm{ine}}}_{N}({\mathit{iN}}_{1'}, {\mathit{iN}}_{2'})`.
+      1) Return :math:`{{\mathrm{ine}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
    #. If :math:`{\mathit{relop}}` is some :math:`\mathsf{lt}` :math:`{\mathit{sx}}`, then:
 
       1) Let :math:`({\mathsf{lt}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{relop}}`.
 
-      #) Return :math:`{{{{\mathrm{ilt}}}_{N}^{{\mathit{sx}}}}}{({\mathit{iN}}_{1'}, {\mathit{iN}}_{2'})}`.
+      #) Return :math:`{{{{\mathrm{ilt}}}_{N}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
 
    #. If :math:`{\mathit{relop}}` is some :math:`\mathsf{gt}` :math:`{\mathit{sx}}`, then:
 
       1) Let :math:`({\mathsf{gt}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{relop}}`.
 
-      #) Return :math:`{{{{\mathrm{igt}}}_{N}^{{\mathit{sx}}}}}{({\mathit{iN}}_{1'}, {\mathit{iN}}_{2'})}`.
+      #) Return :math:`{{{{\mathrm{igt}}}_{N}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
 
    #. If :math:`{\mathit{relop}}` is some :math:`\mathsf{le}` :math:`{\mathit{sx}}`, then:
 
       1) Let :math:`({\mathsf{le}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{relop}}`.
 
-      #) Return :math:`{{{{\mathrm{ile}}}_{N}^{{\mathit{sx}}}}}{({\mathit{iN}}_{1'}, {\mathit{iN}}_{2'})}`.
+      #) Return :math:`{{{{\mathrm{ile}}}_{N}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
 
    #. If :math:`{\mathit{relop}}` is some :math:`\mathsf{ge}` :math:`{\mathit{sx}}`, then:
 
       1) Let :math:`({\mathsf{ge}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{relop}}`.
 
-      #) Return :math:`{{{{\mathrm{ige}}}_{N}^{{\mathit{sx}}}}}{({\mathit{iN}}_{1'}, {\mathit{iN}}_{2'})}`.
+      #) Return :math:`{{{{\mathrm{ige}}}_{N}^{{\mathit{sx}}}}}{({\mathit{iN}}_1, {\mathit{iN}}_2)}`.
 
 #. Assert: Due to validation, :math:`{\mathit{numtype}}` is :math:`{\mathsf{f}}{n}`.
 
 #. If :math:`{\mathit{relop}} = \mathsf{eq}`, then:
 
-   a. Return :math:`{{\mathrm{feq}}}_{N}({\mathit{iN}}_{1'}, {\mathit{iN}}_{2'})`.
+   a. Return :math:`{{\mathrm{feq}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
 #. If :math:`{\mathit{relop}} = \mathsf{ne}`, then:
 
-   a. Return :math:`{{\mathrm{fne}}}_{N}({\mathit{iN}}_{1'}, {\mathit{iN}}_{2'})`.
+   a. Return :math:`{{\mathrm{fne}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
 #. If :math:`{\mathit{relop}} = \mathsf{lt}`, then:
 
-   a. Return :math:`{{\mathrm{flt}}}_{N}({\mathit{iN}}_{1'}, {\mathit{iN}}_{2'})`.
+   a. Return :math:`{{\mathrm{flt}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
 #. If :math:`{\mathit{relop}} = \mathsf{gt}`, then:
 
-   a. Return :math:`{{\mathrm{fgt}}}_{N}({\mathit{iN}}_{1'}, {\mathit{iN}}_{2'})`.
+   a. Return :math:`{{\mathrm{fgt}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
 #. If :math:`{\mathit{relop}} = \mathsf{le}`, then:
 
-   a. Return :math:`{{\mathrm{fle}}}_{N}({\mathit{iN}}_{1'}, {\mathit{iN}}_{2'})`.
+   a. Return :math:`{{\mathrm{fle}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
 #. Assert: Due to validation, :math:`{\mathit{relop}} = \mathsf{ge}`.
 
-#. Return :math:`{{\mathrm{fge}}}_{N}({\mathit{iN}}_{1'}, {\mathit{iN}}_{2'})`.
+#. Return :math:`{{\mathrm{fge}}}_{N}({\mathit{iN}}_1, {\mathit{iN}}_2)`.
 
 
-:math:`{{\mathit{cvtop}}}{{}_{{\mathit{numtype}}, {\mathit{numtype}''}}}{({\mathit{iN}}_{1'})}`
-...............................................................................................
+:math:`{{\mathit{cvtop}}}{{}_{{\mathit{numtype}}, {\mathit{numtype}'}}}{({\mathit{iN}}_1)}`
+...........................................................................................
 
 
-1. If :math:`{\mathit{numtype}}` is :math:`{\mathsf{i}}{n}` and :math:`{\mathit{numtype}''}` is :math:`{\mathsf{i}}{n}`, then:
+1. If :math:`{\mathit{numtype}}` is :math:`{\mathsf{i}}{n}` and :math:`{\mathit{numtype}'}` is :math:`{\mathsf{i}}{n}`, then:
 
    a. If :math:`{\mathit{cvtop}}` is some :math:`\mathsf{extend}` :math:`{\mathit{sx}}`, then:
 
       1) Let :math:`(\mathsf{extend}~{\mathit{sx}})` be the destructuring of :math:`{\mathit{cvtop}}`.
 
-      #) Return :math:`{{{{\mathrm{extend}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{iN}}_{1'})}`.
+      #) Return :math:`{{{{\mathrm{extend}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{iN}}_1)}`.
 
    #. If :math:`{\mathit{cvtop}} = \mathsf{wrap}`, then:
 
-      1) Return :math:`{{\mathrm{wrap}}}_{N_1, N_2}({\mathit{iN}}_{1'})`.
+      1) Return :math:`{{\mathrm{wrap}}}_{N_1, N_2}({\mathit{iN}}_1)`.
 
-#. If :math:`{\mathit{numtype}}` is :math:`{\mathsf{f}}{n}` and :math:`{\mathit{numtype}''}` is :math:`{\mathsf{i}}{n}`, then:
+#. If :math:`{\mathit{numtype}}` is :math:`{\mathsf{f}}{n}` and :math:`{\mathit{numtype}'}` is :math:`{\mathsf{i}}{n}`, then:
 
    a. If :math:`{\mathit{cvtop}}` is some :math:`\mathsf{trunc}` :math:`{\mathit{sx}}`, then:
 
       1) Let :math:`(\mathsf{trunc}~{\mathit{sx}})` be the destructuring of :math:`{\mathit{cvtop}}`.
 
-      #) Return :math:`{{{{\mathrm{trunc}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{iN}}_{1'})}`.
+      #) Return :math:`{{{{\mathrm{trunc}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{iN}}_1)}`.
 
    #. If :math:`{\mathit{cvtop}}` is some :math:`\mathsf{trunc\_sat}` :math:`{\mathit{sx}}`, then:
 
       1) Let :math:`(\mathsf{trunc\_sat}~{\mathit{sx}})` be the destructuring of :math:`{\mathit{cvtop}}`.
 
-      #) Return :math:`{{{{\mathrm{trunc\_sat}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{iN}}_{1'})}`.
+      #) Return :math:`{{{{\mathrm{trunc\_sat}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{iN}}_1)}`.
 
-#. If :math:`{\mathit{numtype}}` is :math:`{\mathsf{i}}{n}` and :math:`{\mathit{numtype}''}` is :math:`{\mathsf{f}}{n}` and :math:`{\mathit{cvtop}}` is some :math:`\mathsf{convert}` :math:`{\mathit{sx}}`, then:
+#. If :math:`{\mathit{numtype}}` is :math:`{\mathsf{i}}{n}` and :math:`{\mathit{numtype}'}` is :math:`{\mathsf{f}}{n}` and :math:`{\mathit{cvtop}}` is some :math:`\mathsf{convert}` :math:`{\mathit{sx}}`, then:
 
    a. Let :math:`(\mathsf{convert}~{\mathit{sx}})` be the destructuring of :math:`{\mathit{cvtop}}`.
 
-   #. Return :math:`{{{{\mathrm{convert}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{iN}}_{1'})}`.
+   #. Return :math:`{{{{\mathrm{convert}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{iN}}_1)}`.
 
-#. If :math:`{\mathit{numtype}}` is :math:`{\mathsf{f}}{n}` and :math:`{\mathit{numtype}''}` is :math:`{\mathsf{f}}{n}`, then:
+#. If :math:`{\mathit{numtype}}` is :math:`{\mathsf{f}}{n}` and :math:`{\mathit{numtype}'}` is :math:`{\mathsf{f}}{n}`, then:
 
    a. If :math:`{\mathit{cvtop}} = \mathsf{promote}`, then:
 
-      1) Return :math:`{{\mathrm{promote}}}_{N_1, N_2}({\mathit{iN}}_{1'})`.
+      1) Return :math:`{{\mathrm{promote}}}_{N_1, N_2}({\mathit{iN}}_1)`.
 
    #. If :math:`{\mathit{cvtop}} = \mathsf{demote}`, then:
 
-      1) Return :math:`{{\mathrm{demote}}}_{N_1, N_2}({\mathit{iN}}_{1'})`.
+      1) Return :math:`{{\mathrm{demote}}}_{N_1, N_2}({\mathit{iN}}_1)`.
 
-#. If :math:`{\mathit{numtype}}` is :math:`{\mathsf{i}}{n}` and :math:`{\mathit{numtype}''}` is :math:`{\mathsf{f}}{n}` and :math:`{\mathit{cvtop}} = \mathsf{reinterpret}` and :math:`{|{\mathit{numtype}}|} = {|{\mathit{numtype}''}|}`, then:
+#. If :math:`{\mathit{numtype}}` is :math:`{\mathsf{i}}{n}` and :math:`{\mathit{numtype}'}` is :math:`{\mathsf{f}}{n}` and :math:`{\mathit{cvtop}} = \mathsf{reinterpret}` and :math:`{|{\mathit{numtype}}|} = {|{\mathit{numtype}'}|}`, then:
 
-   a. Return :math:`{{\mathrm{reinterpret}}}_{{\mathit{numtype}}, {\mathit{numtype}''}}({\mathit{iN}}_{1'})`.
+   a. Return :math:`{{\mathrm{reinterpret}}}_{{\mathit{numtype}}, {\mathit{numtype}'}}({\mathit{iN}}_1)`.
 
 #. Assert: Due to validation, :math:`{\mathit{numtype}}` is :math:`{\mathsf{f}}{n}`.
 
-#. Assert: Due to validation, :math:`{\mathit{numtype}''}` is :math:`{\mathsf{i}}{n}`.
+#. Assert: Due to validation, :math:`{\mathit{numtype}'}` is :math:`{\mathsf{i}}{n}`.
 
 #. Assert: Due to validation, :math:`{\mathit{cvtop}} = \mathsf{reinterpret}`.
 
-#. Assert: Due to validation, :math:`{|{\mathit{numtype}}|} = {|{\mathit{numtype}''}|}`.
+#. Assert: Due to validation, :math:`{|{\mathit{numtype}}|} = {|{\mathit{numtype}'}|}`.
 
-#. Return :math:`{{\mathrm{reinterpret}}}_{{\mathit{numtype}}, {\mathit{numtype}''}}({\mathit{iN}}_{1'})`.
+#. Return :math:`{{\mathrm{reinterpret}}}_{{\mathit{numtype}}, {\mathit{numtype}'}}({\mathit{iN}}_1)`.
 
 
 :math:`{{\mathrm{invibytes}}}_{N}({b^\ast})`
@@ -9358,8 +9358,8 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
 
-:math:`{{\mathrm{vcvtop}}}_{{{\mathit{lanetype}'}}{\mathsf{x}}{M_1}, {{\mathit{lanetype}}}{\mathsf{x}}{M_2}}({\mathit{vcvtop}}, {\mathit{iN}}_{1'})`
-....................................................................................................................................................
+:math:`{{\mathrm{vcvtop}}}_{{{\mathit{lanetype}'}}{\mathsf{x}}{M_1}, {{\mathit{lanetype}}}{\mathsf{x}}{M_2}}({\mathit{vcvtop}}, {\mathit{iN}}_1)`
+.................................................................................................................................................
 
 
 1. If :math:`{\mathit{lanetype}'}` is :math:`{\mathsf{i}}{n}`, then:
@@ -9368,7 +9368,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       1) Let :math:`(\mathsf{extend}~{\mathit{half}}~{\mathit{sx}})` be the destructuring of :math:`{\mathit{vcvtop}}`.
 
-      #) Let :math:`{\mathit{iN}}_2` be :math:`{{{{\mathrm{extend}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{iN}}_{1'})}`.
+      #) Let :math:`{\mathit{iN}}_2` be :math:`{{{{\mathrm{extend}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{iN}}_1)}`.
 
       #) Return :math:`{\mathit{iN}}_2`.
 
@@ -9376,7 +9376,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       1) Let :math:`(\mathsf{convert}~{{\mathit{half}}^?}~{\mathit{sx}})` be the destructuring of :math:`{\mathit{vcvtop}}`.
 
-      #) Let :math:`{\mathit{fN}}_2` be :math:`{{{{\mathrm{convert}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{iN}}_{1'})}`.
+      #) Let :math:`{\mathit{fN}}_2` be :math:`{{{{\mathrm{convert}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{iN}}_1)}`.
 
       #) Return :math:`{\mathit{fN}}_2`.
 
@@ -9386,7 +9386,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    a. Let :math:`(\mathsf{trunc\_sat}~{\mathit{sx}}~{{\mathit{zero}}^?})` be the destructuring of :math:`{\mathit{vcvtop}}`.
 
-   #. Let :math:`{{\mathit{iN}}_2^?}` be :math:`{{{{\mathrm{trunc\_sat}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{iN}}_{1'})}`.
+   #. Let :math:`{{\mathit{iN}}_2^?}` be :math:`{{{{\mathrm{trunc\_sat}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{iN}}_1)}`.
 
    #. Return :math:`{{\mathit{iN}}_2^?}`.
 
@@ -9394,13 +9394,13 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. If :math:`{\mathit{vcvtop}} = (\mathsf{demote}~\mathsf{zero})`, then:
 
-   a. Let :math:`{{\mathit{fN}}_2^\ast}` be :math:`{{\mathrm{demote}}}_{N_1, N_2}({\mathit{iN}}_{1'})`.
+   a. Let :math:`{{\mathit{fN}}_2^\ast}` be :math:`{{\mathrm{demote}}}_{N_1, N_2}({\mathit{iN}}_1)`.
 
    #. Return :math:`{{\mathit{fN}}_2^\ast}`.
 
 #. Assert: Due to validation, :math:`{\mathit{vcvtop}} = `.
 
-#. Let :math:`{{\mathit{fN}}_2^\ast}` be :math:`{{\mathrm{promote}}}_{N_1, N_2}({\mathit{iN}}_{1'})`.
+#. Let :math:`{{\mathit{fN}}_2^\ast}` be :math:`{{\mathrm{promote}}}_{N_1, N_2}({\mathit{iN}}_1)`.
 
 #. Return :math:`{{\mathit{fN}}_2^\ast}`.
 
@@ -11570,27 +11570,27 @@ Step_pure/vnarrow Jnn_2 X N_2 Jnn_1 X N_1 sx
 9. Let c be $invlanes_(Jnn_2 X N_2, cj_1* :: cj_2*).
 10. Push the value (V128.CONST c) to the stack.
 
-Step_pure/vcvtop Lnn_2' X M' Lnn_1' X M'' vcvtop
+Step_pure/vcvtop Lnn_2 X M Lnn_1 X M' vcvtop
 1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_1) from the stack.
 3. If $halfop(vcvtop) is defined, then:
   a. Let ?(half) be $halfop(vcvtop).
-  b. Let ci* be $lanes_(Lnn_1' X M'', c_1)[$half(half, 0, M') : M'].
-  c. Let cj** be $setproduct_(`lane_(Lnn_2), $vcvtop__(Lnn_1' X M'', Lnn_2' X M', vcvtop, ci)*).
-  d. If (|$invlanes_(Lnn_2' X M', cj*)*| > 0), then:
-    1) Let c be an element of $invlanes_(Lnn_2' X M', cj*)*.
+  b. Let ci* be $lanes_(Lnn_1 X M', c_1)[$half(half, 0, M) : M].
+  c. Let cj** be $setproduct_(`lane_(Lnn_2), $vcvtop__(Lnn_1 X M', Lnn_2 X M, vcvtop, ci)*).
+  d. If (|$invlanes_(Lnn_2 X M, cj*)*| > 0), then:
+    1) Let c be an element of $invlanes_(Lnn_2 X M, cj*)*.
     2) Push the value (V128.CONST c) to the stack.
-4. Else if ($zeroop(vcvtop) is not defined /\ (M' = M'')), then:
-  a. Let ci* be $lanes_(Lnn_1' X M'', c_1).
-  b. Let cj** be $setproduct_(`lane_(Lnn_2), $vcvtop__(Lnn_1' X M'', Lnn_2' X M'', vcvtop, ci)*).
-  c. If (|$invlanes_(Lnn_2' X M'', cj*)*| > 0), then:
-    1) Let c be an element of $invlanes_(Lnn_2' X M'', cj*)*.
+4. Else if ($zeroop(vcvtop) is not defined /\ (M = M')), then:
+  a. Let ci* be $lanes_(Lnn_1 X M', c_1).
+  b. Let cj** be $setproduct_(`lane_(Lnn_2), $vcvtop__(Lnn_1 X M', Lnn_2 X M', vcvtop, ci)*).
+  c. If (|$invlanes_(Lnn_2 X M', cj*)*| > 0), then:
+    1) Let c be an element of $invlanes_(Lnn_2 X M', cj*)*.
     2) Push the value (V128.CONST c) to the stack.
-5. If (($zeroop(vcvtop) = ?(ZERO)) /\ (Lnn_1' is numtype /\ Lnn_2' is numtype)), then:
-  a. Let ci* be $lanes_(Lnn_1' X M'', c_1).
-  b. Let cj** be $setproduct_(`lane_((nt_2 : numtype <: lanetype)), $vcvtop__(Lnn_1' X M'', Lnn_2' X M', vcvtop, ci)* :: [$zero(Lnn_2')]^M'').
-  c. If (|$invlanes_(Lnn_2' X M', cj*)*| > 0), then:
-    1) Let c be an element of $invlanes_(Lnn_2' X M', cj*)*.
+5. If (($zeroop(vcvtop) = ?(ZERO)) /\ (Lnn_1 is numtype /\ Lnn_2 is numtype)), then:
+  a. Let ci* be $lanes_(Lnn_1 X M', c_1).
+  b. Let cj** be $setproduct_(`lane_((nt_2 : numtype <: lanetype)), $vcvtop__(Lnn_1 X M', Lnn_2 X M, vcvtop, ci)* :: [$zero(Lnn_2)]^M').
+  c. If (|$invlanes_(Lnn_2 X M, cj*)*| > 0), then:
+    1) Let c be an element of $invlanes_(Lnn_2 X M, cj*)*.
     2) Push the value (V128.CONST c) to the stack.
 
 Step_pure/local.tee x
@@ -11749,23 +11749,23 @@ Step_read/table.init x y
   g. Push the value (I32.CONST (n - 1)) to the stack.
   h. Execute the instruction (TABLE.INIT x y).
 
-Step_read/load nt' loadop_? ao
+Step_read/load nt loadop_? ao
 1. Let z be the current state.
 2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 3. Pop the value (I32.CONST i) from the stack.
 4. If loadop_? is not defined, then:
-  a. If (((i + ao.OFFSET) + ($size(nt') / 8)) > |$mem(z, 0).BYTES|), then:
+  a. If (((i + ao.OFFSET) + ($size(nt) / 8)) > |$mem(z, 0).BYTES|), then:
     1) Trap.
-  b. Let c be $nbytes__1^-1(nt', $mem(z, 0).BYTES[(i + ao.OFFSET) : ($size(nt') / 8)]).
-  c. Push the value (nt'.CONST c) to the stack.
+  b. Let c be $nbytes__1^-1(nt, $mem(z, 0).BYTES[(i + ao.OFFSET) : ($size(nt) / 8)]).
+  c. Push the value (nt.CONST c) to the stack.
 5. Else:
-  a. Assert: Due to validation, nt' is Inn.
+  a. Assert: Due to validation, nt is Inn.
   b. Let ?(loadop__0) be loadop_?.
   c. Let n _ sx be loadop__0.
   d. If (((i + ao.OFFSET) + (n / 8)) > |$mem(z, 0).BYTES|), then:
     1) Trap.
   e. Let c be $ibytes__1^-1(n, $mem(z, 0).BYTES[(i + ao.OFFSET) : (n / 8)]).
-  f. Push the value (nt'.CONST $extend__(n, $size(nt'), sx, c)) to the stack.
+  f. Push the value (nt.CONST $extend__(n, $size(nt), sx, c)) to the stack.
 
 Step_read/vload V128 vloadop? ao
 1. Let z be the current state.
@@ -11941,24 +11941,24 @@ Step/elem.drop x
 1. Let z be the current state.
 2. Perform $with_elem(z, x, []).
 
-Step/store nt' sz? ao
+Step/store nt sz? ao
 1. Let z be the current state.
 2. Assert: Due to validation, a value of value type num is on the top of the stack.
-3. Pop the value (nt''.CONST c) from the stack.
+3. Pop the value (nt'.CONST c) from the stack.
 4. Assert: Due to validation, a value is on the top of the stack.
 5. Pop the value (I32.CONST i) from the stack.
-6. Assert: Due to validation, (nt' = nt'').
+6. Assert: Due to validation, (nt = nt').
 7. If sz? is not defined, then:
-  a. If (((i + ao.OFFSET) + ($size(nt'') / 8)) > |$mem(z, 0).BYTES|), then:
+  a. If (((i + ao.OFFSET) + ($size(nt') / 8)) > |$mem(z, 0).BYTES|), then:
     1) Trap.
-  b. Let b* be $nbytes_(nt'', c).
-  c. Perform $with_mem(z, 0, (i + ao.OFFSET), ($size(nt'') / 8), b*).
+  b. Let b* be $nbytes_(nt', c).
+  c. Perform $with_mem(z, 0, (i + ao.OFFSET), ($size(nt') / 8), b*).
 8. Else:
-  a. Assert: Due to validation, nt'' is Inn.
+  a. Assert: Due to validation, nt' is Inn.
   b. Let ?(n) be sz?.
   c. If (((i + ao.OFFSET) + (n / 8)) > |$mem(z, 0).BYTES|), then:
     1) Trap.
-  d. Let b* be $ibytes_(n, $wrap__($size(nt''), n, c)).
+  d. Let b* be $ibytes_(n, $wrap__($size(nt'), n, c)).
   e. Perform $with_mem(z, 0, (i + ao.OFFSET), (n / 8), b*).
 
 Step/vstore V128 ao
@@ -12257,32 +12257,32 @@ sat_s_ N i
   a. Return ((2 ^ (N - 1)) - 1).
 3. Return i.
 
-unop_ numtype unop_ iN'
+unop_ numtype unop_ iN
 1. If numtype is Inn, then:
   a. If (unop_ = CLZ), then:
-    1) Return [$iclz_($sizenn(numtype), iN')].
+    1) Return [$iclz_($sizenn(numtype), iN)].
   b. If (unop_ = CTZ), then:
-    1) Return [$ictz_($sizenn(numtype), iN')].
+    1) Return [$ictz_($sizenn(numtype), iN)].
   c. If (unop_ = POPCNT), then:
-    1) Return [$ipopcnt_($sizenn(numtype), iN')].
+    1) Return [$ipopcnt_($sizenn(numtype), iN)].
   d. Assert: Due to validation, unop_ is some EXTEND.
   e. Let (EXTEND M) be unop_.
-  f. Return [$extend__(M, $sizenn(numtype), S, $wrap__($sizenn(numtype), M, iN'))].
+  f. Return [$extend__(M, $sizenn(numtype), S, $wrap__($sizenn(numtype), M, iN))].
 2. Assert: Due to validation, numtype is Fnn.
 3. If (unop_ = ABS), then:
-  a. Return $fabs_($sizenn(numtype), iN').
+  a. Return $fabs_($sizenn(numtype), iN).
 4. If (unop_ = NEG), then:
-  a. Return $fneg_($sizenn(numtype), iN').
+  a. Return $fneg_($sizenn(numtype), iN).
 5. If (unop_ = SQRT), then:
-  a. Return $fsqrt_($sizenn(numtype), iN').
+  a. Return $fsqrt_($sizenn(numtype), iN).
 6. If (unop_ = CEIL), then:
-  a. Return $fceil_($sizenn(numtype), iN').
+  a. Return $fceil_($sizenn(numtype), iN).
 7. If (unop_ = FLOOR), then:
-  a. Return $ffloor_($sizenn(numtype), iN').
+  a. Return $ffloor_($sizenn(numtype), iN).
 8. If (unop_ = TRUNC), then:
-  a. Return $ftrunc_($sizenn(numtype), iN').
+  a. Return $ftrunc_($sizenn(numtype), iN).
 9. Assert: Due to validation, (unop_ = NEAREST).
-10. Return $fnearest_($sizenn(numtype), iN').
+10. Return $fnearest_($sizenn(numtype), iN).
 
 iadd_ N i_1 i_2
 1. Return ((i_1 + i_2) \ (2 ^ N)).
@@ -12293,50 +12293,50 @@ imul_ N i_1 i_2
 isub_ N i_1 i_2
 1. Return ((((2 ^ N) + i_1) - i_2) \ (2 ^ N)).
 
-binop_ numtype binop_ iN_1' iN_2'
+binop_ numtype binop_ iN_1 iN_2
 1. If numtype is Inn, then:
   a. If (binop_ = ADD), then:
-    1) Return [$iadd_($sizenn(numtype), iN_1', iN_2')].
+    1) Return [$iadd_($sizenn(numtype), iN_1, iN_2)].
   b. If (binop_ = SUB), then:
-    1) Return [$isub_($sizenn(numtype), iN_1', iN_2')].
+    1) Return [$isub_($sizenn(numtype), iN_1, iN_2)].
   c. If (binop_ = MUL), then:
-    1) Return [$imul_($sizenn(numtype), iN_1', iN_2')].
+    1) Return [$imul_($sizenn(numtype), iN_1, iN_2)].
   d. If binop_ is some DIV, then:
     1) Let (DIV sx) be binop_.
-    2) Return $list_(`num_((Inn : Inn <: numtype)), $idiv_($sizenn(numtype), sx, iN_1', iN_2')).
+    2) Return $list_(`num_((Inn : Inn <: numtype)), $idiv_($sizenn(numtype), sx, iN_1, iN_2)).
   e. If binop_ is some REM, then:
     1) Let (REM sx) be binop_.
-    2) Return $list_(`num_((Inn : Inn <: numtype)), $irem_($sizenn(numtype), sx, iN_1', iN_2')).
+    2) Return $list_(`num_((Inn : Inn <: numtype)), $irem_($sizenn(numtype), sx, iN_1, iN_2)).
   f. If (binop_ = AND), then:
-    1) Return [$iand_($sizenn(numtype), iN_1', iN_2')].
+    1) Return [$iand_($sizenn(numtype), iN_1, iN_2)].
   g. If (binop_ = OR), then:
-    1) Return [$ior_($sizenn(numtype), iN_1', iN_2')].
+    1) Return [$ior_($sizenn(numtype), iN_1, iN_2)].
   h. If (binop_ = XOR), then:
-    1) Return [$ixor_($sizenn(numtype), iN_1', iN_2')].
+    1) Return [$ixor_($sizenn(numtype), iN_1, iN_2)].
   i. If (binop_ = SHL), then:
-    1) Return [$ishl_($sizenn(numtype), iN_1', iN_2')].
+    1) Return [$ishl_($sizenn(numtype), iN_1, iN_2)].
   j. If binop_ is some SHR, then:
     1) Let (SHR sx) be binop_.
-    2) Return [$ishr_($sizenn(numtype), sx, iN_1', iN_2')].
+    2) Return [$ishr_($sizenn(numtype), sx, iN_1, iN_2)].
   k. If (binop_ = ROTL), then:
-    1) Return [$irotl_($sizenn(numtype), iN_1', iN_2')].
+    1) Return [$irotl_($sizenn(numtype), iN_1, iN_2)].
   l. If (binop_ = ROTR), then:
-    1) Return [$irotr_($sizenn(numtype), iN_1', iN_2')].
+    1) Return [$irotr_($sizenn(numtype), iN_1, iN_2)].
 2. Assert: Due to validation, numtype is Fnn.
 3. If (binop_ = ADD), then:
-  a. Return $fadd_($sizenn(numtype), iN_1', iN_2').
+  a. Return $fadd_($sizenn(numtype), iN_1, iN_2).
 4. If (binop_ = SUB), then:
-  a. Return $fsub_($sizenn(numtype), iN_1', iN_2').
+  a. Return $fsub_($sizenn(numtype), iN_1, iN_2).
 5. If (binop_ = MUL), then:
-  a. Return $fmul_($sizenn(numtype), iN_1', iN_2').
+  a. Return $fmul_($sizenn(numtype), iN_1, iN_2).
 6. If (binop_ = DIV), then:
-  a. Return $fdiv_($sizenn(numtype), iN_1', iN_2').
+  a. Return $fdiv_($sizenn(numtype), iN_1, iN_2).
 7. If (binop_ = MIN), then:
-  a. Return $fmin_($sizenn(numtype), iN_1', iN_2').
+  a. Return $fmin_($sizenn(numtype), iN_1, iN_2).
 8. If (binop_ = MAX), then:
-  a. Return $fmax_($sizenn(numtype), iN_1', iN_2').
+  a. Return $fmax_($sizenn(numtype), iN_1, iN_2).
 9. Assert: Due to validation, (binop_ = COPYSIGN).
-10. Return $fcopysign_($sizenn(numtype), iN_1', iN_2').
+10. Return $fcopysign_($sizenn(numtype), iN_1, iN_2).
 
 ieqz_ N i_1
 1. Return $bool((i_1 = 0)).
@@ -12374,67 +12374,67 @@ ilt_ N sx i_1 i_2
 ine_ N i_1 i_2
 1. Return $bool((i_1 =/= i_2)).
 
-relop_ numtype relop_ iN_1' iN_2'
+relop_ numtype relop_ iN_1 iN_2
 1. If numtype is Inn, then:
   a. If (relop_ = EQ), then:
-    1) Return $ieq_($sizenn(numtype), iN_1', iN_2').
+    1) Return $ieq_($sizenn(numtype), iN_1, iN_2).
   b. If (relop_ = NE), then:
-    1) Return $ine_($sizenn(numtype), iN_1', iN_2').
+    1) Return $ine_($sizenn(numtype), iN_1, iN_2).
   c. If relop_ is some LT, then:
     1) Let (LT sx) be relop_.
-    2) Return $ilt_($sizenn(numtype), sx, iN_1', iN_2').
+    2) Return $ilt_($sizenn(numtype), sx, iN_1, iN_2).
   d. If relop_ is some GT, then:
     1) Let (GT sx) be relop_.
-    2) Return $igt_($sizenn(numtype), sx, iN_1', iN_2').
+    2) Return $igt_($sizenn(numtype), sx, iN_1, iN_2).
   e. If relop_ is some LE, then:
     1) Let (LE sx) be relop_.
-    2) Return $ile_($sizenn(numtype), sx, iN_1', iN_2').
+    2) Return $ile_($sizenn(numtype), sx, iN_1, iN_2).
   f. If relop_ is some GE, then:
     1) Let (GE sx) be relop_.
-    2) Return $ige_($sizenn(numtype), sx, iN_1', iN_2').
+    2) Return $ige_($sizenn(numtype), sx, iN_1, iN_2).
 2. Assert: Due to validation, numtype is Fnn.
 3. If (relop_ = EQ), then:
-  a. Return $feq_($sizenn(numtype), iN_1', iN_2').
+  a. Return $feq_($sizenn(numtype), iN_1, iN_2).
 4. If (relop_ = NE), then:
-  a. Return $fne_($sizenn(numtype), iN_1', iN_2').
+  a. Return $fne_($sizenn(numtype), iN_1, iN_2).
 5. If (relop_ = LT), then:
-  a. Return $flt_($sizenn(numtype), iN_1', iN_2').
+  a. Return $flt_($sizenn(numtype), iN_1, iN_2).
 6. If (relop_ = GT), then:
-  a. Return $fgt_($sizenn(numtype), iN_1', iN_2').
+  a. Return $fgt_($sizenn(numtype), iN_1, iN_2).
 7. If (relop_ = LE), then:
-  a. Return $fle_($sizenn(numtype), iN_1', iN_2').
+  a. Return $fle_($sizenn(numtype), iN_1, iN_2).
 8. Assert: Due to validation, (relop_ = GE).
-9. Return $fge_($sizenn(numtype), iN_1', iN_2').
+9. Return $fge_($sizenn(numtype), iN_1, iN_2).
 
-cvtop__ numtype numtype'' cvtop iN_1'
-1. If (numtype is Inn /\ numtype'' is Inn), then:
+cvtop__ numtype numtype' cvtop iN_1
+1. If (numtype is Inn /\ numtype' is Inn), then:
   a. If cvtop is some EXTEND, then:
     1) Let (EXTEND sx) be cvtop.
-    2) Return [$extend__($sizenn1(numtype), $sizenn2(numtype''), sx, iN_1')].
+    2) Return [$extend__($sizenn1(numtype), $sizenn2(numtype'), sx, iN_1)].
   b. If (cvtop = WRAP), then:
-    1) Return [$wrap__($sizenn1(numtype), $sizenn2(numtype''), iN_1')].
-2. If (numtype is Fnn /\ numtype'' is Inn), then:
+    1) Return [$wrap__($sizenn1(numtype), $sizenn2(numtype'), iN_1)].
+2. If (numtype is Fnn /\ numtype' is Inn), then:
   a. If cvtop is some TRUNC, then:
     1) Let (TRUNC sx) be cvtop.
-    2) Return $list_(`num_((Inn_2 : Inn <: numtype)), $trunc__($sizenn1(numtype), $sizenn2(numtype''), sx, iN_1')).
+    2) Return $list_(`num_((Inn_2 : Inn <: numtype)), $trunc__($sizenn1(numtype), $sizenn2(numtype'), sx, iN_1)).
   b. If cvtop is some TRUNC_SAT, then:
     1) Let (TRUNC_SAT sx) be cvtop.
-    2) Return $list_(`num_((Inn_2 : Inn <: numtype)), $trunc_sat__($sizenn1(numtype), $sizenn2(numtype''), sx, iN_1')).
-3. If (numtype is Inn /\ (numtype'' is Fnn /\ cvtop is some CONVERT)), then:
+    2) Return $list_(`num_((Inn_2 : Inn <: numtype)), $trunc_sat__($sizenn1(numtype), $sizenn2(numtype'), sx, iN_1)).
+3. If (numtype is Inn /\ (numtype' is Fnn /\ cvtop is some CONVERT)), then:
   a. Let (CONVERT sx) be cvtop.
-  b. Return [$convert__($sizenn1(numtype), $sizenn2(numtype''), sx, iN_1')].
-4. If (numtype is Fnn /\ numtype'' is Fnn), then:
+  b. Return [$convert__($sizenn1(numtype), $sizenn2(numtype'), sx, iN_1)].
+4. If (numtype is Fnn /\ numtype' is Fnn), then:
   a. If (cvtop = PROMOTE), then:
-    1) Return $promote__($sizenn1(numtype), $sizenn2(numtype''), iN_1').
+    1) Return $promote__($sizenn1(numtype), $sizenn2(numtype'), iN_1).
   b. If (cvtop = DEMOTE), then:
-    1) Return $demote__($sizenn1(numtype), $sizenn2(numtype''), iN_1').
-5. If (numtype is Inn /\ (numtype'' is Fnn /\ ((cvtop = REINTERPRET) /\ ($size(numtype) = $size(numtype''))))), then:
-  a. Return [$reinterpret__(numtype, numtype'', iN_1')].
+    1) Return $demote__($sizenn1(numtype), $sizenn2(numtype'), iN_1).
+5. If (numtype is Inn /\ (numtype' is Fnn /\ ((cvtop = REINTERPRET) /\ ($size(numtype) = $size(numtype'))))), then:
+  a. Return [$reinterpret__(numtype, numtype', iN_1)].
 6. Assert: Due to validation, numtype is Fnn.
-7. Assert: Due to validation, numtype'' is Inn.
+7. Assert: Due to validation, numtype' is Inn.
 8. Assert: Due to validation, (cvtop = REINTERPRET).
-9. Assert: Due to validation, ($size(numtype) = $size(numtype'')).
-10. Return [$reinterpret__(numtype, numtype'', iN_1')].
+9. Assert: Due to validation, ($size(numtype) = $size(numtype')).
+10. Return [$reinterpret__(numtype, numtype', iN_1)].
 
 invibytes_ N b*
 1. Let n be $ibytes__1^-1(N, b*).
@@ -12771,27 +12771,27 @@ vrelop_ lanetype X M vrelop_ v128_1 v128_2
 13. Let v128 be $invlanes_(Inn X M, lane_3*).
 14. Return v128.
 
-vcvtop__ lanetype' X M_1 lanetype X M_2 vcvtop iN_1'
+vcvtop__ lanetype' X M_1 lanetype X M_2 vcvtop iN_1
 1. If lanetype' is Jnn, then:
   a. If (lanetype is Jnn /\ vcvtop is some EXTEND), then:
     1) Let (EXTEND half sx) be vcvtop.
-    2) Let iN_2 be $extend__($lsizenn1(lanetype'), $lsizenn2(lanetype), sx, iN_1').
+    2) Let iN_2 be $extend__($lsizenn1(lanetype'), $lsizenn2(lanetype), sx, iN_1).
     3) Return [iN_2].
   b. If (lanetype is Fnn /\ vcvtop is some CONVERT), then:
     1) Let (CONVERT half? sx) be vcvtop.
-    2) Let fN_2 be $convert__($lsizenn1(lanetype'), $lsizenn2(lanetype), sx, iN_1').
+    2) Let fN_2 be $convert__($lsizenn1(lanetype'), $lsizenn2(lanetype), sx, iN_1).
     3) Return [fN_2].
 2. Assert: Due to validation, lanetype' is Fnn.
 3. If (lanetype is Inn /\ vcvtop is some TRUNC_SAT), then:
   a. Let (TRUNC_SAT sx zero?) be vcvtop.
-  b. Let iN_2? be $trunc_sat__($lsizenn1(lanetype'), $lsizenn2(lanetype), sx, iN_1').
+  b. Let iN_2? be $trunc_sat__($lsizenn1(lanetype'), $lsizenn2(lanetype), sx, iN_1).
   c. Return $list_(`lane_((Inn_2 : Inn <: lanetype)), iN_2?).
 4. Assert: Due to validation, lanetype is Fnn.
 5. If (vcvtop = (DEMOTE ZERO)), then:
-  a. Let fN_2* be $demote__($lsizenn1(lanetype'), $lsizenn2(lanetype), iN_1').
+  a. Let fN_2* be $demote__($lsizenn1(lanetype'), $lsizenn2(lanetype), iN_1).
   b. Return fN_2*.
 6. Assert: Due to validation, (vcvtop = PROMOTELOW).
-7. Let fN_2* be $promote__($lsizenn1(lanetype'), $lsizenn2(lanetype), iN_1').
+7. Let fN_2* be $promote__($lsizenn1(lanetype'), $lsizenn2(lanetype), iN_1).
 8. Return fN_2*.
 
 vextunop__ Inn_1 X M_1 Inn_2 X M_2 (EXTADD_PAIRWISE sx) c_1
@@ -17432,7 +17432,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Assert: Due to validation, a number value is on the top of the stack.
 
-#. Pop the value :math:`({\mathit{at}'}{.}\mathsf{const}~n)` from the stack.
+#. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~n)` from the stack.
 
 #. Assert: Due to validation, a number value is on the top of the stack.
 
@@ -17597,7 +17597,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Assert: Due to validation, a number value is on the top of the stack.
 
-#. Pop the value :math:`({\mathit{at}'}{.}\mathsf{const}~n)` from the stack.
+#. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~n)` from the stack.
 
 #. Assert: Due to validation, a number value is on the top of the stack.
 
@@ -19750,15 +19750,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
    #. Execute the instruction :math:`(\mathsf{table{.}fill}~x)`.
 
 
-:math:`\mathsf{table{.}copy}~x_{1'}~x_{2'}`
-...........................................
+:math:`\mathsf{table{.}copy}~x_1~x_2`
+.....................................
 
 
 1. Let :math:`z` be the current state.
 
 #. Assert: Due to validation, a number value is on the top of the stack.
 
-#. Pop the value :math:`({\mathit{at}'}{.}\mathsf{const}~n)` from the stack.
+#. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~n)` from the stack.
 
 #. Assert: Due to validation, a number value is on the top of the stack.
 
@@ -19768,11 +19768,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`({\mathit{at}}_1{.}\mathsf{const}~i_1)` from the stack.
 
-#. If :math:`i_1 + n > {|z{.}\mathsf{tables}{}[x_{1'}]{.}\mathsf{refs}|}`, then:
+#. If :math:`i_1 + n > {|z{.}\mathsf{tables}{}[x_1]{.}\mathsf{refs}|}`, then:
 
    a. Trap.
 
-#. If :math:`i_2 + n > {|z{.}\mathsf{tables}{}[x_{2'}]{.}\mathsf{refs}|}`, then:
+#. If :math:`i_2 + n > {|z{.}\mathsf{tables}{}[x_2]{.}\mathsf{refs}|}`, then:
 
    a. Trap.
 
@@ -19788,9 +19788,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       #) Push the value :math:`({\mathit{at}}_2{.}\mathsf{const}~i_2)` to the stack.
 
-      #) Execute the instruction :math:`(\mathsf{table{.}get}~x_{2'})`.
+      #) Execute the instruction :math:`(\mathsf{table{.}get}~x_2)`.
 
-      #) Execute the instruction :math:`(\mathsf{table{.}set}~x_{1'})`.
+      #) Execute the instruction :math:`(\mathsf{table{.}set}~x_1)`.
 
       #) Push the value :math:`({\mathit{at}}_1{.}\mathsf{const}~i_1 + 1)` to the stack.
 
@@ -19802,17 +19802,17 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       #) Push the value :math:`({\mathit{at}}_2{.}\mathsf{const}~i_2 + n - 1)` to the stack.
 
-      #) Execute the instruction :math:`(\mathsf{table{.}get}~x_{2'})`.
+      #) Execute the instruction :math:`(\mathsf{table{.}get}~x_2)`.
 
-      #) Execute the instruction :math:`(\mathsf{table{.}set}~x_{1'})`.
+      #) Execute the instruction :math:`(\mathsf{table{.}set}~x_1)`.
 
       #) Push the value :math:`({\mathit{at}}_1{.}\mathsf{const}~i_1)` to the stack.
 
       #) Push the value :math:`({\mathit{at}}_2{.}\mathsf{const}~i_2)` to the stack.
 
-   #. Push the value :math:`({\mathit{at}'}{.}\mathsf{const}~n - 1)` to the stack.
+   #. Push the value :math:`({\mathit{at}}{.}\mathsf{const}~n - 1)` to the stack.
 
-   #. Execute the instruction :math:`(\mathsf{table{.}copy}~x_{1'}~x_{2'})`.
+   #. Execute the instruction :math:`(\mathsf{table{.}copy}~x_1~x_2)`.
 
 
 :math:`\mathsf{table{.}init}~x~y`
@@ -19864,8 +19864,8 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
    #. Execute the instruction :math:`(\mathsf{table{.}init}~x~y)`.
 
 
-:math:`{{\mathit{nt}'}{.}\mathsf{load}}{{{\mathit{loadop}}^?}}~x~{\mathit{ao}}`
-...............................................................................
+:math:`{{\mathit{nt}}{.}\mathsf{load}}{{{\mathit{loadop}}^?}}~x~{\mathit{ao}}`
+..............................................................................
 
 
 1. Let :math:`z` be the current state.
@@ -19876,17 +19876,17 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. If :math:`{{\mathit{loadop}}^?}` is not defined, then:
 
-   a. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|{\mathit{nt}'}|} / 8 > {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
+   a. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|{\mathit{nt}}|} / 8 > {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
 
       1) Trap.
 
-   #. Let :math:`c` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathit{nt}'}}(c)` :math:`=` :math:`z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|{\mathit{nt}'}|} / 8]`.
+   #. Let :math:`c` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathit{nt}}}(c)` :math:`=` :math:`z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|{\mathit{nt}}|} / 8]`.
 
-   #. Push the value :math:`({\mathit{nt}'}{.}\mathsf{const}~c)` to the stack.
+   #. Push the value :math:`({\mathit{nt}}{.}\mathsf{const}~c)` to the stack.
 
 #. Else:
 
-   a. Assert: Due to validation, :math:`{\mathit{nt}'}` is :math:`{\mathsf{i}}{N}`.
+   a. Assert: Due to validation, :math:`{\mathit{nt}}` is :math:`{\mathsf{i}}{N}`.
 
    #. Let :math:`{\mathit{loadop\_{\scriptstyle 0}}}` be :math:`{{\mathit{loadop}}^?}`.
 
@@ -19898,7 +19898,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. Let :math:`c` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{n}}(c)` :math:`=` :math:`z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : n / 8]`.
 
-   #. Push the value :math:`({\mathit{nt}'}{.}\mathsf{const}~{{{{\mathrm{extend}}}_{n, {|{\mathit{nt}'}|}}^{{\mathit{sx}}}}}{(c)})` to the stack.
+   #. Push the value :math:`({\mathit{nt}}{.}\mathsf{const}~{{{{\mathrm{extend}}}_{n, {|{\mathit{nt}}|}}^{{\mathit{sx}}}}}{(c)})` to the stack.
 
 
 :math:`{\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{{\mathit{vloadop}}^?}}~x~{\mathit{ao}}`
@@ -20073,7 +20073,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Assert: Due to validation, a number value is on the top of the stack.
 
-#. Pop the value :math:`({\mathit{at}'}{.}\mathsf{const}~n)` from the stack.
+#. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~n)` from the stack.
 
 #. Assert: Due to validation, a number value is on the top of the stack.
 
@@ -20125,7 +20125,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       #) Push the value :math:`({\mathit{at}}_2{.}\mathsf{const}~i_2)` to the stack.
 
-   #. Push the value :math:`({\mathit{at}'}{.}\mathsf{const}~n - 1)` to the stack.
+   #. Push the value :math:`({\mathit{at}}{.}\mathsf{const}~n - 1)` to the stack.
 
    #. Execute the instruction :math:`(\mathsf{memory{.}copy}~x_1~x_2)`.
 
@@ -20415,35 +20415,35 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Perform :math:`z{}[{.}\mathsf{elems}{}[x]{.}\mathsf{refs} = \epsilon]`.
 
 
-:math:`{{\mathit{nt}'}{.}\mathsf{store}}{{{\mathit{storeop}}^?}}~x~{\mathit{ao}}`
-.................................................................................
+:math:`{{\mathit{nt}}{.}\mathsf{store}}{{{\mathit{storeop}}^?}}~x~{\mathit{ao}}`
+................................................................................
 
 
 1. Let :math:`z` be the current state.
 
 #. Assert: Due to validation, a number value is on the top of the stack.
 
-#. Pop the value :math:`({\mathit{nt}'''}{.}\mathsf{const}~c)` from the stack.
+#. Pop the value :math:`({\mathit{nt}'}{.}\mathsf{const}~c)` from the stack.
 
 #. Assert: Due to validation, a value is on the top of the stack.
 
 #. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~i)` from the stack.
 
-#. Assert: Due to validation, :math:`{\mathit{nt}'} = {\mathit{nt}'''}`.
+#. Assert: Due to validation, :math:`{\mathit{nt}} = {\mathit{nt}'}`.
 
 #. If :math:`{{\mathit{storeop}}^?}` is not defined, then:
 
-   a. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|{\mathit{nt}'''}|} / 8 > {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
+   a. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|{\mathit{nt}'}|} / 8 > {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
 
       1) Trap.
 
-   #. Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{{\mathit{nt}'''}}(c)`.
+   #. Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{{\mathit{nt}'}}(c)`.
 
-   #. Perform :math:`z{}[{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|{\mathit{nt}'''}|} / 8] = {b^\ast}]`.
+   #. Perform :math:`z{}[{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|{\mathit{nt}'}|} / 8] = {b^\ast}]`.
 
 #. Else:
 
-   a. Assert: Due to validation, :math:`{\mathit{nt}'''}` is :math:`{\mathsf{i}}{N}`.
+   a. Assert: Due to validation, :math:`{\mathit{nt}'}` is :math:`{\mathsf{i}}{N}`.
 
    #. Let :math:`n` be :math:`{{\mathit{storeop}}^?}`.
 
@@ -20451,7 +20451,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       1) Trap.
 
-   #. Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{n}}({{\mathrm{wrap}}}_{{|{\mathit{nt}'''}|}, n}(c))`.
+   #. Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{n}}({{\mathrm{wrap}}}_{{|{\mathit{nt}'}|}, n}(c))`.
 
    #. Perform :math:`z{}[{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : n / 8] = {b^\ast}]`.
 
@@ -23507,150 +23507,150 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`{{{{\mathrm{extend}}}_{{|{\mathit{storagetype}}|}, {|{\mathrm{unpack}}({\mathit{storagetype}})|}}^{\mathsf{u}}}}{(c)}`.
 
 
-:math:`{{\mathit{unop}}}{{}_{{\mathit{numtype}}}({i'})}`
-........................................................
+:math:`{{\mathit{unop}}}{{}_{{\mathit{numtype}}}(i)}`
+.....................................................
 
 
 1. If :math:`{\mathit{numtype}}` is :math:`{\mathsf{i}}{N}`, then:
 
    a. If :math:`{\mathit{unop}} = \mathsf{clz}`, then:
 
-      1) Return :math:`{{\mathrm{iclz}}}_{N}({i'})`.
+      1) Return :math:`{{\mathrm{iclz}}}_{N}(i)`.
 
    #. If :math:`{\mathit{unop}} = \mathsf{ctz}`, then:
 
-      1) Return :math:`{{\mathrm{ictz}}}_{N}({i'})`.
+      1) Return :math:`{{\mathrm{ictz}}}_{N}(i)`.
 
    #. If :math:`{\mathit{unop}} = \mathsf{popcnt}`, then:
 
-      1) Return :math:`{{\mathrm{ipopcnt}}}_{N}({i'})`.
+      1) Return :math:`{{\mathrm{ipopcnt}}}_{N}(i)`.
 
    #. Assert: Due to validation, :math:`{\mathit{unop}}` is some :math:`\mathsf{extend}` :math:`{\mathit{sz}}`.
 
    #. Let :math:`({\mathsf{extend}}{M}{\mathsf{\_}}{\mathsf{s}})` be the destructuring of :math:`{\mathit{unop}}`.
 
-   #. Return :math:`{{{{\mathrm{iextend}}}_{N, M}^{\mathsf{s}}}}{({i'})}`.
+   #. Return :math:`{{{{\mathrm{iextend}}}_{N, M}^{\mathsf{s}}}}{(i)}`.
 
 #. Assert: Due to validation, :math:`{\mathit{numtype}}` is :math:`{\mathsf{f}}{N}`.
 
 #. If :math:`{\mathit{unop}} = \mathsf{abs}`, then:
 
-   a. Return :math:`{{\mathrm{fabs}}}_{N}({i'})`.
+   a. Return :math:`{{\mathrm{fabs}}}_{N}(i)`.
 
 #. If :math:`{\mathit{unop}} = \mathsf{neg}`, then:
 
-   a. Return :math:`{{\mathrm{fneg}}}_{N}({i'})`.
+   a. Return :math:`{{\mathrm{fneg}}}_{N}(i)`.
 
 #. If :math:`{\mathit{unop}} = \mathsf{sqrt}`, then:
 
-   a. Return :math:`{{\mathrm{fsqrt}}}_{N}({i'})`.
+   a. Return :math:`{{\mathrm{fsqrt}}}_{N}(i)`.
 
 #. If :math:`{\mathit{unop}} = \mathsf{ceil}`, then:
 
-   a. Return :math:`{{\mathrm{fceil}}}_{N}({i'})`.
+   a. Return :math:`{{\mathrm{fceil}}}_{N}(i)`.
 
 #. If :math:`{\mathit{unop}} = \mathsf{floor}`, then:
 
-   a. Return :math:`{{\mathrm{ffloor}}}_{N}({i'})`.
+   a. Return :math:`{{\mathrm{ffloor}}}_{N}(i)`.
 
 #. If :math:`{\mathit{unop}} = \mathsf{trunc}`, then:
 
-   a. Return :math:`{{\mathrm{ftrunc}}}_{N}({i'})`.
+   a. Return :math:`{{\mathrm{ftrunc}}}_{N}(i)`.
 
 #. Assert: Due to validation, :math:`{\mathit{unop}} = \mathsf{nearest}`.
 
-#. Return :math:`{{\mathrm{fnearest}}}_{N}({i'})`.
+#. Return :math:`{{\mathrm{fnearest}}}_{N}(i)`.
 
 
-:math:`{{\mathit{binop}}}{{}_{{\mathit{numtype}}}(i_{1'}, i_{2'})}`
-...................................................................
+:math:`{{\mathit{binop}}}{{}_{{\mathit{numtype}}}(i_1, i_2)}`
+.............................................................
 
 
 1. If :math:`{\mathit{numtype}}` is :math:`{\mathsf{i}}{N}`, then:
 
    a. If :math:`{\mathit{binop}} = \mathsf{add}`, then:
 
-      1) Return :math:`{{\mathrm{iadd}}}_{N}(i_{1'}, i_{2'})`.
+      1) Return :math:`{{\mathrm{iadd}}}_{N}(i_1, i_2)`.
 
    #. If :math:`{\mathit{binop}} = \mathsf{sub}`, then:
 
-      1) Return :math:`{{\mathrm{isub}}}_{N}(i_{1'}, i_{2'})`.
+      1) Return :math:`{{\mathrm{isub}}}_{N}(i_1, i_2)`.
 
    #. If :math:`{\mathit{binop}} = \mathsf{mul}`, then:
 
-      1) Return :math:`{{\mathrm{imul}}}_{N}(i_{1'}, i_{2'})`.
+      1) Return :math:`{{\mathrm{imul}}}_{N}(i_1, i_2)`.
 
    #. If :math:`{\mathit{binop}}` is some :math:`\mathsf{div}` :math:`{\mathit{sx}}`, then:
 
       1) Let :math:`({\mathsf{div}}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{binop}}`.
 
-      #) Return :math:`{{{{\mathrm{idiv}}}_{N}^{{\mathit{sx}}}}}{(i_{1'}, i_{2'})}`.
+      #) Return :math:`{{{{\mathrm{idiv}}}_{N}^{{\mathit{sx}}}}}{(i_1, i_2)}`.
 
    #. If :math:`{\mathit{binop}}` is some :math:`\mathsf{rem}` :math:`{\mathit{sx}}`, then:
 
       1) Let :math:`({\mathsf{rem}}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{binop}}`.
 
-      #) Return :math:`{{{{\mathrm{irem}}}_{N}^{{\mathit{sx}}}}}{(i_{1'}, i_{2'})}`.
+      #) Return :math:`{{{{\mathrm{irem}}}_{N}^{{\mathit{sx}}}}}{(i_1, i_2)}`.
 
    #. If :math:`{\mathit{binop}} = \mathsf{and}`, then:
 
-      1) Return :math:`{{\mathrm{iand}}}_{N}(i_{1'}, i_{2'})`.
+      1) Return :math:`{{\mathrm{iand}}}_{N}(i_1, i_2)`.
 
    #. If :math:`{\mathit{binop}} = \mathsf{or}`, then:
 
-      1) Return :math:`{{\mathrm{ior}}}_{N}(i_{1'}, i_{2'})`.
+      1) Return :math:`{{\mathrm{ior}}}_{N}(i_1, i_2)`.
 
    #. If :math:`{\mathit{binop}} = \mathsf{xor}`, then:
 
-      1) Return :math:`{{\mathrm{ixor}}}_{N}(i_{1'}, i_{2'})`.
+      1) Return :math:`{{\mathrm{ixor}}}_{N}(i_1, i_2)`.
 
    #. If :math:`{\mathit{binop}} = \mathsf{shl}`, then:
 
-      1) Return :math:`{{\mathrm{ishl}}}_{N}(i_{1'}, i_{2'})`.
+      1) Return :math:`{{\mathrm{ishl}}}_{N}(i_1, i_2)`.
 
    #. If :math:`{\mathit{binop}}` is some :math:`\mathsf{shr}` :math:`{\mathit{sx}}`, then:
 
       1) Let :math:`({\mathsf{shr}}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{binop}}`.
 
-      #) Return :math:`{{{{\mathrm{ishr}}}_{N}^{{\mathit{sx}}}}}{(i_{1'}, i_{2'})}`.
+      #) Return :math:`{{{{\mathrm{ishr}}}_{N}^{{\mathit{sx}}}}}{(i_1, i_2)}`.
 
    #. If :math:`{\mathit{binop}} = \mathsf{rotl}`, then:
 
-      1) Return :math:`{{\mathrm{irotl}}}_{N}(i_{1'}, i_{2'})`.
+      1) Return :math:`{{\mathrm{irotl}}}_{N}(i_1, i_2)`.
 
    #. If :math:`{\mathit{binop}} = \mathsf{rotr}`, then:
 
-      1) Return :math:`{{\mathrm{irotr}}}_{N}(i_{1'}, i_{2'})`.
+      1) Return :math:`{{\mathrm{irotr}}}_{N}(i_1, i_2)`.
 
 #. Assert: Due to validation, :math:`{\mathit{numtype}}` is :math:`{\mathsf{f}}{N}`.
 
 #. If :math:`{\mathit{binop}} = \mathsf{add}`, then:
 
-   a. Return :math:`{{\mathrm{fadd}}}_{N}(i_{1'}, i_{2'})`.
+   a. Return :math:`{{\mathrm{fadd}}}_{N}(i_1, i_2)`.
 
 #. If :math:`{\mathit{binop}} = \mathsf{sub}`, then:
 
-   a. Return :math:`{{\mathrm{fsub}}}_{N}(i_{1'}, i_{2'})`.
+   a. Return :math:`{{\mathrm{fsub}}}_{N}(i_1, i_2)`.
 
 #. If :math:`{\mathit{binop}} = \mathsf{mul}`, then:
 
-   a. Return :math:`{{\mathrm{fmul}}}_{N}(i_{1'}, i_{2'})`.
+   a. Return :math:`{{\mathrm{fmul}}}_{N}(i_1, i_2)`.
 
 #. If :math:`{\mathit{binop}} = \mathsf{div}`, then:
 
-   a. Return :math:`{{\mathrm{fdiv}}}_{N}(i_{1'}, i_{2'})`.
+   a. Return :math:`{{\mathrm{fdiv}}}_{N}(i_1, i_2)`.
 
 #. If :math:`{\mathit{binop}} = \mathsf{min}`, then:
 
-   a. Return :math:`{{\mathrm{fmin}}}_{N}(i_{1'}, i_{2'})`.
+   a. Return :math:`{{\mathrm{fmin}}}_{N}(i_1, i_2)`.
 
 #. If :math:`{\mathit{binop}} = \mathsf{max}`, then:
 
-   a. Return :math:`{{\mathrm{fmax}}}_{N}(i_{1'}, i_{2'})`.
+   a. Return :math:`{{\mathrm{fmax}}}_{N}(i_1, i_2)`.
 
 #. Assert: Due to validation, :math:`{\mathit{binop}} = \mathsf{copysign}`.
 
-#. Return :math:`{{\mathrm{fcopysign}}}_{N}(i_{1'}, i_{2'})`.
+#. Return :math:`{{\mathrm{fcopysign}}}_{N}(i_1, i_2)`.
 
 
 :math:`{\mathsf{eqz}}{{}_{{\mathsf{i}}{N}}(i)}`
@@ -23660,130 +23660,130 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return :math:`{{\mathrm{ieqz}}}_{N}(i)`.
 
 
-:math:`{{\mathit{relop}}}{{}_{{\mathit{numtype}}}(i_{1'}, i_{2'})}`
-...................................................................
+:math:`{{\mathit{relop}}}{{}_{{\mathit{numtype}}}(i_1, i_2)}`
+.............................................................
 
 
 1. If :math:`{\mathit{numtype}}` is :math:`{\mathsf{i}}{N}`, then:
 
    a. If :math:`{\mathit{relop}} = \mathsf{eq}`, then:
 
-      1) Return :math:`{{\mathrm{ieq}}}_{N}(i_{1'}, i_{2'})`.
+      1) Return :math:`{{\mathrm{ieq}}}_{N}(i_1, i_2)`.
 
    #. If :math:`{\mathit{relop}} = \mathsf{ne}`, then:
 
-      1) Return :math:`{{\mathrm{ine}}}_{N}(i_{1'}, i_{2'})`.
+      1) Return :math:`{{\mathrm{ine}}}_{N}(i_1, i_2)`.
 
    #. If :math:`{\mathit{relop}}` is some :math:`\mathsf{lt}` :math:`{\mathit{sx}}`, then:
 
       1) Let :math:`({\mathsf{lt}}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{relop}}`.
 
-      #) Return :math:`{{{{\mathrm{ilt}}}_{N}^{{\mathit{sx}}}}}{(i_{1'}, i_{2'})}`.
+      #) Return :math:`{{{{\mathrm{ilt}}}_{N}^{{\mathit{sx}}}}}{(i_1, i_2)}`.
 
    #. If :math:`{\mathit{relop}}` is some :math:`\mathsf{gt}` :math:`{\mathit{sx}}`, then:
 
       1) Let :math:`({\mathsf{gt}}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{relop}}`.
 
-      #) Return :math:`{{{{\mathrm{igt}}}_{N}^{{\mathit{sx}}}}}{(i_{1'}, i_{2'})}`.
+      #) Return :math:`{{{{\mathrm{igt}}}_{N}^{{\mathit{sx}}}}}{(i_1, i_2)}`.
 
    #. If :math:`{\mathit{relop}}` is some :math:`\mathsf{le}` :math:`{\mathit{sx}}`, then:
 
       1) Let :math:`({\mathsf{le}}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{relop}}`.
 
-      #) Return :math:`{{{{\mathrm{ile}}}_{N}^{{\mathit{sx}}}}}{(i_{1'}, i_{2'})}`.
+      #) Return :math:`{{{{\mathrm{ile}}}_{N}^{{\mathit{sx}}}}}{(i_1, i_2)}`.
 
    #. If :math:`{\mathit{relop}}` is some :math:`\mathsf{ge}` :math:`{\mathit{sx}}`, then:
 
       1) Let :math:`({\mathsf{ge}}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{relop}}`.
 
-      #) Return :math:`{{{{\mathrm{ige}}}_{N}^{{\mathit{sx}}}}}{(i_{1'}, i_{2'})}`.
+      #) Return :math:`{{{{\mathrm{ige}}}_{N}^{{\mathit{sx}}}}}{(i_1, i_2)}`.
 
 #. Assert: Due to validation, :math:`{\mathit{numtype}}` is :math:`{\mathsf{f}}{N}`.
 
 #. If :math:`{\mathit{relop}} = \mathsf{eq}`, then:
 
-   a. Return :math:`{{\mathrm{feq}}}_{N}(i_{1'}, i_{2'})`.
+   a. Return :math:`{{\mathrm{feq}}}_{N}(i_1, i_2)`.
 
 #. If :math:`{\mathit{relop}} = \mathsf{ne}`, then:
 
-   a. Return :math:`{{\mathrm{fne}}}_{N}(i_{1'}, i_{2'})`.
+   a. Return :math:`{{\mathrm{fne}}}_{N}(i_1, i_2)`.
 
 #. If :math:`{\mathit{relop}} = \mathsf{lt}`, then:
 
-   a. Return :math:`{{\mathrm{flt}}}_{N}(i_{1'}, i_{2'})`.
+   a. Return :math:`{{\mathrm{flt}}}_{N}(i_1, i_2)`.
 
 #. If :math:`{\mathit{relop}} = \mathsf{gt}`, then:
 
-   a. Return :math:`{{\mathrm{fgt}}}_{N}(i_{1'}, i_{2'})`.
+   a. Return :math:`{{\mathrm{fgt}}}_{N}(i_1, i_2)`.
 
 #. If :math:`{\mathit{relop}} = \mathsf{le}`, then:
 
-   a. Return :math:`{{\mathrm{fle}}}_{N}(i_{1'}, i_{2'})`.
+   a. Return :math:`{{\mathrm{fle}}}_{N}(i_1, i_2)`.
 
 #. Assert: Due to validation, :math:`{\mathit{relop}} = \mathsf{ge}`.
 
-#. Return :math:`{{\mathrm{fge}}}_{N}(i_{1'}, i_{2'})`.
+#. Return :math:`{{\mathrm{fge}}}_{N}(i_1, i_2)`.
 
 
-:math:`{{\mathit{cvtop}}}{{}_{{\mathit{numtype}}, {\mathit{numtype}''}}(i_{1'})}`
-.................................................................................
+:math:`{{\mathit{cvtop}}}{{}_{{\mathit{numtype}}, {\mathit{numtype}'}}(i_1)}`
+.............................................................................
 
 
-1. If :math:`{\mathit{numtype}}` is :math:`{\mathsf{i}}{N}` and :math:`{\mathit{numtype}''}` is :math:`{\mathsf{i}}{N}`, then:
+1. If :math:`{\mathit{numtype}}` is :math:`{\mathsf{i}}{N}` and :math:`{\mathit{numtype}'}` is :math:`{\mathsf{i}}{N}`, then:
 
    a. If :math:`{\mathit{cvtop}}` is some :math:`\mathsf{extend}` :math:`{\mathit{sx}}`, then:
 
       1) Let :math:`({\mathsf{extend}}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{cvtop}}`.
 
-      #) Return :math:`{{{{\mathrm{extend}}}_{N_1, N_2}^{{\mathit{sx}}}}}{(i_{1'})}`.
+      #) Return :math:`{{{{\mathrm{extend}}}_{N_1, N_2}^{{\mathit{sx}}}}}{(i_1)}`.
 
    #. If :math:`{\mathit{cvtop}} = \mathsf{wrap}`, then:
 
-      1) Return :math:`{{\mathrm{wrap}}}_{N_1, N_2}(i_{1'})`.
+      1) Return :math:`{{\mathrm{wrap}}}_{N_1, N_2}(i_1)`.
 
-#. If :math:`{\mathit{numtype}}` is :math:`{\mathsf{f}}{N}` and :math:`{\mathit{numtype}''}` is :math:`{\mathsf{i}}{N}`, then:
+#. If :math:`{\mathit{numtype}}` is :math:`{\mathsf{f}}{N}` and :math:`{\mathit{numtype}'}` is :math:`{\mathsf{i}}{N}`, then:
 
    a. If :math:`{\mathit{cvtop}}` is some :math:`\mathsf{trunc}` :math:`{\mathit{sx}}`, then:
 
       1) Let :math:`({\mathsf{trunc}}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{cvtop}}`.
 
-      #) Return :math:`{{{{\mathrm{trunc}}}_{N_1, N_2}^{{\mathit{sx}}}}}{(i_{1'})}`.
+      #) Return :math:`{{{{\mathrm{trunc}}}_{N_1, N_2}^{{\mathit{sx}}}}}{(i_1)}`.
 
    #. If :math:`{\mathit{cvtop}}` is some :math:`\mathsf{trunc\_sat}` :math:`{\mathit{sx}}`, then:
 
       1) Let :math:`({\mathsf{trunc\_sat}}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{cvtop}}`.
 
-      #) Return :math:`{{{{\mathrm{trunc\_sat}}}_{N_1, N_2}^{{\mathit{sx}}}}}{(i_{1'})}`.
+      #) Return :math:`{{{{\mathrm{trunc\_sat}}}_{N_1, N_2}^{{\mathit{sx}}}}}{(i_1)}`.
 
-#. If :math:`{\mathit{numtype}}` is :math:`{\mathsf{i}}{N}` and :math:`{\mathit{numtype}''}` is :math:`{\mathsf{f}}{N}` and :math:`{\mathit{cvtop}}` is some :math:`\mathsf{convert}` :math:`{\mathit{sx}}`, then:
+#. If :math:`{\mathit{numtype}}` is :math:`{\mathsf{i}}{N}` and :math:`{\mathit{numtype}'}` is :math:`{\mathsf{f}}{N}` and :math:`{\mathit{cvtop}}` is some :math:`\mathsf{convert}` :math:`{\mathit{sx}}`, then:
 
    a. Let :math:`({\mathsf{convert}}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{cvtop}}`.
 
-   #. Return :math:`{{{{\mathrm{convert}}}_{N_1, N_2}^{{\mathit{sx}}}}}{(i_{1'})}`.
+   #. Return :math:`{{{{\mathrm{convert}}}_{N_1, N_2}^{{\mathit{sx}}}}}{(i_1)}`.
 
-#. If :math:`{\mathit{numtype}}` is :math:`{\mathsf{f}}{N}` and :math:`{\mathit{numtype}''}` is :math:`{\mathsf{f}}{N}`, then:
+#. If :math:`{\mathit{numtype}}` is :math:`{\mathsf{f}}{N}` and :math:`{\mathit{numtype}'}` is :math:`{\mathsf{f}}{N}`, then:
 
    a. If :math:`{\mathit{cvtop}} = \mathsf{promote}`, then:
 
-      1) Return :math:`{{\mathrm{promote}}}_{N_1, N_2}(i_{1'})`.
+      1) Return :math:`{{\mathrm{promote}}}_{N_1, N_2}(i_1)`.
 
    #. If :math:`{\mathit{cvtop}} = \mathsf{demote}`, then:
 
-      1) Return :math:`{{\mathrm{demote}}}_{N_1, N_2}(i_{1'})`.
+      1) Return :math:`{{\mathrm{demote}}}_{N_1, N_2}(i_1)`.
 
-#. If :math:`{\mathit{numtype}}` is :math:`{\mathsf{i}}{N}` and :math:`{\mathit{numtype}''}` is :math:`{\mathsf{f}}{N}` and :math:`{\mathit{cvtop}} = \mathsf{reinterpret}` and :math:`{|{\mathit{numtype}}|} = {|{\mathit{numtype}''}|}`, then:
+#. If :math:`{\mathit{numtype}}` is :math:`{\mathsf{i}}{N}` and :math:`{\mathit{numtype}'}` is :math:`{\mathsf{f}}{N}` and :math:`{\mathit{cvtop}} = \mathsf{reinterpret}` and :math:`{|{\mathit{numtype}}|} = {|{\mathit{numtype}'}|}`, then:
 
-   a. Return :math:`{{\mathrm{reinterpret}}}_{{\mathit{numtype}}, {\mathit{numtype}''}}(i_{1'})`.
+   a. Return :math:`{{\mathrm{reinterpret}}}_{{\mathit{numtype}}, {\mathit{numtype}'}}(i_1)`.
 
 #. Assert: Due to validation, :math:`{\mathit{numtype}}` is :math:`{\mathsf{f}}{N}`.
 
-#. Assert: Due to validation, :math:`{\mathit{numtype}''}` is :math:`{\mathsf{i}}{N}`.
+#. Assert: Due to validation, :math:`{\mathit{numtype}'}` is :math:`{\mathsf{i}}{N}`.
 
 #. Assert: Due to validation, :math:`{\mathit{cvtop}} = \mathsf{reinterpret}`.
 
-#. Assert: Due to validation, :math:`{|{\mathit{numtype}}|} = {|{\mathit{numtype}''}|}`.
+#. Assert: Due to validation, :math:`{|{\mathit{numtype}}|} = {|{\mathit{numtype}'}|}`.
 
-#. Return :math:`{{\mathrm{reinterpret}}}_{{\mathit{numtype}}, {\mathit{numtype}''}}(i_{1'})`.
+#. Return :math:`{{\mathrm{reinterpret}}}_{{\mathit{numtype}}, {\mathit{numtype}'}}(i_1)`.
 
 
 :math:`{{{{\mathrm{lanes}}}_{{\mathit{sh}}}^{{-1}}}}{({c^\ast})}`
@@ -23795,11 +23795,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`{\mathit{vc}}`.
 
 
-:math:`{\mathrm{zeroop}}({{\mathit{lanetype}''}}{\mathsf{x}}{M_1}, {{\mathit{lanetype}}}{\mathsf{x}}{M_2}, {\mathit{vcvtop}})`
-..............................................................................................................................
+:math:`{\mathrm{zeroop}}({{\mathit{lanetype}'}}{\mathsf{x}}{M_1}, {{\mathit{lanetype}}}{\mathsf{x}}{M_2}, {\mathit{vcvtop}})`
+.............................................................................................................................
 
 
-1. If :math:`{\mathit{lanetype}''}` is :math:`{\mathsf{i}}{N}`, then:
+1. If :math:`{\mathit{lanetype}'}` is :math:`{\mathsf{i}}{N}`, then:
 
    a. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{i}}{N}` and :math:`{\mathit{vcvtop}}` is some :math:`\mathsf{extend}` :math:`{\mathit{half}}` :math:`{\mathit{sx}}`, then:
 
@@ -23809,7 +23809,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       1) Return :math:`\epsilon`.
 
-#. Assert: Due to validation, :math:`{\mathit{lanetype}''}` is :math:`{\mathsf{f}}{N}`.
+#. Assert: Due to validation, :math:`{\mathit{lanetype}'}` is :math:`{\mathsf{f}}{N}`.
 
 #. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{i}}{N}`, then:
 
@@ -23838,11 +23838,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`\epsilon`.
 
 
-:math:`{\mathrm{halfop}}({{\mathit{lanetype}''}}{\mathsf{x}}{M_1}, {{\mathit{lanetype}}}{\mathsf{x}}{M_2}, {\mathit{vcvtop}})`
-..............................................................................................................................
+:math:`{\mathrm{halfop}}({{\mathit{lanetype}'}}{\mathsf{x}}{M_1}, {{\mathit{lanetype}}}{\mathsf{x}}{M_2}, {\mathit{vcvtop}})`
+.............................................................................................................................
 
 
-1. If :math:`{\mathit{lanetype}''}` is :math:`{\mathsf{i}}{N}`, then:
+1. If :math:`{\mathit{lanetype}'}` is :math:`{\mathsf{i}}{N}`, then:
 
    a. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{i}}{N}` and :math:`{\mathit{vcvtop}}` is some :math:`\mathsf{extend}` :math:`{\mathit{half}}` :math:`{\mathit{sx}}`, then:
 
@@ -23856,7 +23856,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       #) Return :math:`{{\mathit{half}}^?}`.
 
-#. Assert: Due to validation, :math:`{\mathit{lanetype}''}` is :math:`{\mathsf{f}}{N}`.
+#. Assert: Due to validation, :math:`{\mathit{lanetype}'}` is :math:`{\mathsf{f}}{N}`.
 
 #. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{i}}{N}`, then:
 
@@ -24418,11 +24418,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`{{\mathrm{fvrelop}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({\mathrm{fge}}, v_1, v_2)`.
 
 
-:math:`{{\mathrm{lcvtop}}}_{{{\mathit{lanetype}''}}{\mathsf{x}}{M_1}, {{\mathit{lanetype}}}{\mathsf{x}}{M_2}}({\mathit{vcvtop}}, c_1)`
-......................................................................................................................................
+:math:`{{\mathrm{lcvtop}}}_{{{\mathit{lanetype}'}}{\mathsf{x}}{M_1}, {{\mathit{lanetype}}}{\mathsf{x}}{M_2}}({\mathit{vcvtop}}, c_1)`
+.....................................................................................................................................
 
 
-1. If :math:`{\mathit{lanetype}''}` is :math:`{\mathsf{i}}{N}`, then:
+1. If :math:`{\mathit{lanetype}'}` is :math:`{\mathsf{i}}{N}`, then:
 
    a. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{i}}{N}` and :math:`{\mathit{vcvtop}}` is some :math:`\mathsf{extend}` :math:`{\mathit{half}}` :math:`{\mathit{sx}}`, then:
 
@@ -24440,7 +24440,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       #) Return :math:`c`.
 
-#. Assert: Due to validation, :math:`{\mathit{lanetype}''}` is :math:`{\mathsf{f}}{N}`.
+#. Assert: Due to validation, :math:`{\mathit{lanetype}'}` is :math:`{\mathsf{f}}{N}`.
 
 #. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{i}}{N}`, then:
 
@@ -24475,39 +24475,39 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`{c^\ast}`.
 
 
-:math:`{{\mathrm{vcvtop}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{{M'}}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{{M''}}}({\mathit{vcvtop}}, v_1)`
-.......................................................................................................................................
+:math:`{{\mathrm{vcvtop}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{{M'}}}({\mathit{vcvtop}}, v_1)`
+...................................................................................................................................
 
 
-1. If :math:`{M'} = {M''}` and :math:`{\mathrm{halfop}}({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{{M''}}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{{M''}}, {\mathit{vcvtop}})` is not defined and :math:`{\mathrm{zeroop}}({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{{M''}}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{{M''}}, {\mathit{vcvtop}})` is not defined, then:
+1. If :math:`M = {M'}` and :math:`{\mathrm{halfop}}({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{{M'}}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{{M'}}, {\mathit{vcvtop}})` is not defined and :math:`{\mathrm{zeroop}}({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{{M'}}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{{M'}}, {\mathit{vcvtop}})` is not defined, then:
 
-   a. Let :math:`{c_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{{M''}}}(v_1)`.
+   a. Let :math:`{c_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{{M'}}}(v_1)`.
 
-   #. Let :math:`{{c^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{lcvtop}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{{M''}}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{{M''}}}({\mathit{vcvtop}}, c_1)^\ast}`.
+   #. Let :math:`{{c^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{lcvtop}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{{M'}}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{{M'}}}({\mathit{vcvtop}}, c_1)^\ast}`.
 
-   #. Let :math:`v` be an element of :math:`{{{{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_2}{\mathsf{x}}{{M''}}}^{{-1}}}}{({c^\ast})}^\ast}`.
-
-   #. Return :math:`v`.
-
-#. If :math:`{\mathrm{halfop}}({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{{M'}}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{{M''}}, {\mathit{vcvtop}})` is defined, then:
-
-   a. Let :math:`{\mathit{half}}` be :math:`{\mathrm{halfop}}({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{{M'}}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{{M''}}, {\mathit{vcvtop}})`.
-
-   #. Let :math:`{c_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{{M'}}}(v_1){}[{\mathrm{half}}({\mathit{half}}, 0, {M''}) : {M''}]`.
-
-   #. Let :math:`{{c^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{lcvtop}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{{M'}}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{{M''}}}({\mathit{vcvtop}}, c_1)^\ast}`.
-
-   #. Let :math:`v` be an element of :math:`{{{{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_2}{\mathsf{x}}{{M''}}}^{{-1}}}}{({c^\ast})}^\ast}`.
+   #. Let :math:`v` be an element of :math:`{{{{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_2}{\mathsf{x}}{{M'}}}^{{-1}}}}{({c^\ast})}^\ast}`.
 
    #. Return :math:`v`.
 
-#. Assert: Due to validation, :math:`{\mathrm{zeroop}}({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{{M'}}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{{M''}}, {\mathit{vcvtop}}) = \mathsf{zero}`.
+#. If :math:`{\mathrm{halfop}}({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{{M'}}, {\mathit{vcvtop}})` is defined, then:
 
-#. Let :math:`{c_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{{M'}}}(v_1)`.
+   a. Let :math:`{\mathit{half}}` be :math:`{\mathrm{halfop}}({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{{M'}}, {\mathit{vcvtop}})`.
 
-#. Let :math:`{{c^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{lcvtop}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{{M'}}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{{M''}}}({\mathit{vcvtop}}, c_1)^\ast}~{0^{{M'}}}`.
+   #. Let :math:`{c_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M}}(v_1){}[{\mathrm{half}}({\mathit{half}}, 0, {M'}) : {M'}]`.
 
-#. Let :math:`v` be an element of :math:`{{{{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_2}{\mathsf{x}}{{M''}}}^{{-1}}}}{({c^\ast})}^\ast}`.
+   #. Let :math:`{{c^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{lcvtop}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{{M'}}}({\mathit{vcvtop}}, c_1)^\ast}`.
+
+   #. Let :math:`v` be an element of :math:`{{{{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_2}{\mathsf{x}}{{M'}}}^{{-1}}}}{({c^\ast})}^\ast}`.
+
+   #. Return :math:`v`.
+
+#. Assert: Due to validation, :math:`{\mathrm{zeroop}}({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{{M'}}, {\mathit{vcvtop}}) = \mathsf{zero}`.
+
+#. Let :math:`{c_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M}}(v_1)`.
+
+#. Let :math:`{{c^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{lcvtop}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{{M'}}}({\mathit{vcvtop}}, c_1)^\ast}~{0^{M}}`.
+
+#. Let :math:`v` be an element of :math:`{{{{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_2}{\mathsf{x}}{{M'}}}^{{-1}}}}{({c^\ast})}^\ast}`.
 
 #. Return :math:`v`.
 
@@ -24687,19 +24687,19 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return :math:`1024`.
 
 
-:math:`{{\mathrm{pack}}}_{{\mathit{storagetype}}}({\mathit{val}'})`
-...................................................................
+:math:`{{\mathrm{pack}}}_{{\mathit{storagetype}}}({\mathit{val}})`
+..................................................................
 
 
 1. If :math:`{\mathit{storagetype}}` is value type, then:
 
-   a. Return :math:`{\mathit{val}'}`.
+   a. Return :math:`{\mathit{val}}`.
 
 #. Assert: Due to validation, :math:`{\mathit{storagetype}}` is packed type.
 
-#. Assert: Due to validation, :math:`{\mathit{val}'}` is some :math:`\mathsf{const}` :math:`{\mathit{numtype}}` :math:`{{\mathit{num}}}_{{\mathit{numtype}}}`.
+#. Assert: Due to validation, :math:`{\mathit{val}}` is some :math:`\mathsf{const}` :math:`{\mathit{numtype}}` :math:`{{\mathit{num}}}_{{\mathit{numtype}}}`.
 
-#. Let :math:`({\mathit{numtype}}_0{.}\mathsf{const}~i)` be the destructuring of :math:`{\mathit{val}'}`.
+#. Let :math:`({\mathit{numtype}}_0{.}\mathsf{const}~i)` be the destructuring of :math:`{\mathit{val}}`.
 
 #. Assert: Due to validation, :math:`{\mathit{numtype}}_0 = \mathsf{i{\scriptstyle 32}}`.
 
@@ -27951,7 +27951,7 @@ Step_read/throw_ref-handler-*
 Step_read/table.copy-oob-* x_1 x_2
 1. Let z be the current state.
 2. Assert: Due to validation, a value of value type num is on the top of the stack.
-3. Pop the value (at'.CONST n) from the stack.
+3. Pop the value (at.CONST n) from the stack.
 4. Assert: Due to validation, a value of value type num is on the top of the stack.
 5. Pop the value (at_2.CONST i_2) from the stack.
 6. Assert: Due to validation, a value of value type num is on the top of the stack.
@@ -28030,7 +28030,7 @@ Step_read/vload-zero-* V128 ?((ZERO N)) x ao
 Step_read/memory.copy-oob-* x_1 x_2
 1. Let z be the current state.
 2. Assert: Due to validation, a value of value type num is on the top of the stack.
-3. Pop the value (at'.CONST n) from the stack.
+3. Pop the value (at.CONST n) from the stack.
 4. Assert: Due to validation, a value of value type num is on the top of the stack.
 5. Pop the value (at_2.CONST i_2) from the stack.
 6. Assert: Due to validation, a value of value type num is on the top of the stack.
@@ -29047,17 +29047,17 @@ Step_read/table.fill x
   f. Push the value (at.CONST (n - 1)) to the stack.
   g. Execute the instruction (TABLE.FILL x).
 
-Step_read/table.copy x_1' x_2'
+Step_read/table.copy x_1 x_2
 1. Let z be the current state.
 2. Assert: Due to validation, a value of value type num is on the top of the stack.
-3. Pop the value (at'.CONST n) from the stack.
+3. Pop the value (at.CONST n) from the stack.
 4. Assert: Due to validation, a value of value type num is on the top of the stack.
 5. Pop the value (at_2.CONST i_2) from the stack.
 6. Assert: Due to validation, a value of value type num is on the top of the stack.
 7. Pop the value (at_1.CONST i_1) from the stack.
-8. If ((i_1 + n) > |$table(z, x_1').REFS|), then:
+8. If ((i_1 + n) > |$table(z, x_1).REFS|), then:
   a. Trap.
-9. If ((i_2 + n) > |$table(z, x_2').REFS|), then:
+9. If ((i_2 + n) > |$table(z, x_2).REFS|), then:
   a. Trap.
 10. If (n = 0), then:
   a. Do nothing.
@@ -29065,19 +29065,19 @@ Step_read/table.copy x_1' x_2'
   a. If (i_1 <= i_2), then:
     1) Push the value (at_1.CONST i_1) to the stack.
     2) Push the value (at_2.CONST i_2) to the stack.
-    3) Execute the instruction (TABLE.GET x_2').
-    4) Execute the instruction (TABLE.SET x_1').
+    3) Execute the instruction (TABLE.GET x_2).
+    4) Execute the instruction (TABLE.SET x_1).
     5) Push the value (at_1.CONST (i_1 + 1)) to the stack.
     6) Push the value (at_2.CONST (i_2 + 1)) to the stack.
   b. Else:
     1) Push the value (at_1.CONST ((i_1 + n) - 1)) to the stack.
     2) Push the value (at_2.CONST ((i_2 + n) - 1)) to the stack.
-    3) Execute the instruction (TABLE.GET x_2').
-    4) Execute the instruction (TABLE.SET x_1').
+    3) Execute the instruction (TABLE.GET x_2).
+    4) Execute the instruction (TABLE.SET x_1).
     5) Push the value (at_1.CONST i_1) to the stack.
     6) Push the value (at_2.CONST i_2) to the stack.
-  c. Push the value (at'.CONST (n - 1)) to the stack.
-  d. Execute the instruction (TABLE.COPY x_1' x_2').
+  c. Push the value (at.CONST (n - 1)) to the stack.
+  d. Execute the instruction (TABLE.COPY x_1 x_2).
 
 Step_read/table.init x y
 1. Let z be the current state.
@@ -29103,23 +29103,23 @@ Step_read/table.init x y
   g. Push the value (I32.CONST (n - 1)) to the stack.
   h. Execute the instruction (TABLE.INIT x y).
 
-Step_read/load nt' loadop_? x ao
+Step_read/load nt loadop_? x ao
 1. Let z be the current state.
 2. Assert: Due to validation, a value of value type num is on the top of the stack.
 3. Pop the value (at.CONST i) from the stack.
 4. If loadop_? is not defined, then:
-  a. If (((i + ao.OFFSET) + ($size(nt') / 8)) > |$mem(z, x).BYTES|), then:
+  a. If (((i + ao.OFFSET) + ($size(nt) / 8)) > |$mem(z, x).BYTES|), then:
     1) Trap.
-  b. Let c be $nbytes__1^-1(nt', $mem(z, x).BYTES[(i + ao.OFFSET) : ($size(nt') / 8)]).
-  c. Push the value (nt'.CONST c) to the stack.
+  b. Let c be $nbytes__1^-1(nt, $mem(z, x).BYTES[(i + ao.OFFSET) : ($size(nt) / 8)]).
+  c. Push the value (nt.CONST c) to the stack.
 5. Else:
-  a. Assert: Due to validation, nt' is Inn.
+  a. Assert: Due to validation, nt is Inn.
   b. Let ?(loadop__0) be loadop_?.
   c. Let n _ sx be loadop__0.
   d. If (((i + ao.OFFSET) + (n / 8)) > |$mem(z, x).BYTES|), then:
     1) Trap.
   e. Let c be $ibytes__1^-1(n, $mem(z, x).BYTES[(i + ao.OFFSET) : (n / 8)]).
-  f. Push the value (nt'.CONST $extend__(n, $size(nt'), sx, c)) to the stack.
+  f. Push the value (nt.CONST $extend__(n, $size(nt), sx, c)) to the stack.
 
 Step_read/vload V128 vloadop_? x ao
 1. Let z be the current state.
@@ -29204,7 +29204,7 @@ Step_read/memory.fill x
 Step_read/memory.copy x_1 x_2
 1. Let z be the current state.
 2. Assert: Due to validation, a value of value type num is on the top of the stack.
-3. Pop the value (at'.CONST n) from the stack.
+3. Pop the value (at.CONST n) from the stack.
 4. Assert: Due to validation, a value of value type num is on the top of the stack.
 5. Pop the value (at_2.CONST i_2) from the stack.
 6. Assert: Due to validation, a value of value type num is on the top of the stack.
@@ -29230,7 +29230,7 @@ Step_read/memory.copy x_1 x_2
     4) Execute the instruction (STORE I32 ?(8) x_1 $memarg0()).
     5) Push the value (at_1.CONST i_1) to the stack.
     6) Push the value (at_2.CONST i_2) to the stack.
-  c. Push the value (at'.CONST (n - 1)) to the stack.
+  c. Push the value (at.CONST (n - 1)) to the stack.
   d. Execute the instruction (MEMORY.COPY x_1 x_2).
 
 Step_read/memory.init x y
@@ -29370,24 +29370,24 @@ Step/elem.drop x
 1. Let z be the current state.
 2. Perform $with_elem(z, x, []).
 
-Step/store nt' storeop_? x ao
+Step/store nt storeop_? x ao
 1. Let z be the current state.
 2. Assert: Due to validation, a value of value type num is on the top of the stack.
-3. Pop the value (nt'''.CONST c) from the stack.
+3. Pop the value (nt'.CONST c) from the stack.
 4. Assert: Due to validation, a value is on the top of the stack.
 5. Pop the value (at.CONST i) from the stack.
-6. Assert: Due to validation, (nt' = nt''').
+6. Assert: Due to validation, (nt = nt').
 7. If storeop_? is not defined, then:
-  a. If (((i + ao.OFFSET) + ($size(nt''') / 8)) > |$mem(z, x).BYTES|), then:
+  a. If (((i + ao.OFFSET) + ($size(nt') / 8)) > |$mem(z, x).BYTES|), then:
     1) Trap.
-  b. Let b* be $nbytes_(nt''', c).
-  c. Perform $with_mem(z, x, (i + ao.OFFSET), ($size(nt''') / 8), b*).
+  b. Let b* be $nbytes_(nt', c).
+  c. Perform $with_mem(z, x, (i + ao.OFFSET), ($size(nt') / 8), b*).
 8. Else:
-  a. Assert: Due to validation, nt''' is Inn.
+  a. Assert: Due to validation, nt' is Inn.
   b. Let ?(n) be storeop_?.
   c. If (((i + ao.OFFSET) + (n / 8)) > |$mem(z, x).BYTES|), then:
     1) Trap.
-  d. Let b* be $ibytes_(n, $wrap__($size(nt'''), n, c)).
+  d. Let b* be $ibytes_(n, $wrap__($size(nt'), n, c)).
   e. Perform $with_mem(z, x, (i + ao.OFFSET), (n / 8), b*).
 
 Step/vstore V128 x ao
@@ -30805,154 +30805,154 @@ cunpacknum_ storagetype c
 2. Assert: Due to validation, storagetype is packtype.
 3. Return $extend__($psize(storagetype), $size($lunpack(storagetype)), U, c).
 
-unop_ numtype unop_ i'
+unop_ numtype unop_ i
 1. If numtype is Inn, then:
   a. If (unop_ = CLZ), then:
-    1) Return [$iclz_($sizenn(numtype), i')].
+    1) Return [$iclz_($sizenn(numtype), i)].
   b. If (unop_ = CTZ), then:
-    1) Return [$ictz_($sizenn(numtype), i')].
+    1) Return [$ictz_($sizenn(numtype), i)].
   c. If (unop_ = POPCNT), then:
-    1) Return [$ipopcnt_($sizenn(numtype), i')].
+    1) Return [$ipopcnt_($sizenn(numtype), i)].
   d. Assert: Due to validation, unop_ is some EXTEND.
   e. Let (EXTEND M) be unop_.
-  f. Return [$iextend_($sizenn(numtype), M, S, i')].
+  f. Return [$iextend_($sizenn(numtype), M, S, i)].
 2. Assert: Due to validation, numtype is Fnn.
 3. If (unop_ = ABS), then:
-  a. Return $fabs_($sizenn(numtype), i').
+  a. Return $fabs_($sizenn(numtype), i).
 4. If (unop_ = NEG), then:
-  a. Return $fneg_($sizenn(numtype), i').
+  a. Return $fneg_($sizenn(numtype), i).
 5. If (unop_ = SQRT), then:
-  a. Return $fsqrt_($sizenn(numtype), i').
+  a. Return $fsqrt_($sizenn(numtype), i).
 6. If (unop_ = CEIL), then:
-  a. Return $fceil_($sizenn(numtype), i').
+  a. Return $fceil_($sizenn(numtype), i).
 7. If (unop_ = FLOOR), then:
-  a. Return $ffloor_($sizenn(numtype), i').
+  a. Return $ffloor_($sizenn(numtype), i).
 8. If (unop_ = TRUNC), then:
-  a. Return $ftrunc_($sizenn(numtype), i').
+  a. Return $ftrunc_($sizenn(numtype), i).
 9. Assert: Due to validation, (unop_ = NEAREST).
-10. Return $fnearest_($sizenn(numtype), i').
+10. Return $fnearest_($sizenn(numtype), i).
 
-binop_ numtype binop_ i_1' i_2'
+binop_ numtype binop_ i_1 i_2
 1. If numtype is Inn, then:
   a. If (binop_ = ADD), then:
-    1) Return [$iadd_($sizenn(numtype), i_1', i_2')].
+    1) Return [$iadd_($sizenn(numtype), i_1, i_2)].
   b. If (binop_ = SUB), then:
-    1) Return [$isub_($sizenn(numtype), i_1', i_2')].
+    1) Return [$isub_($sizenn(numtype), i_1, i_2)].
   c. If (binop_ = MUL), then:
-    1) Return [$imul_($sizenn(numtype), i_1', i_2')].
+    1) Return [$imul_($sizenn(numtype), i_1, i_2)].
   d. If binop_ is some DIV, then:
     1) Let (DIV sx) be binop_.
-    2) Return $idiv_($sizenn(numtype), sx, i_1', i_2').
+    2) Return $idiv_($sizenn(numtype), sx, i_1, i_2).
   e. If binop_ is some REM, then:
     1) Let (REM sx) be binop_.
-    2) Return $irem_($sizenn(numtype), sx, i_1', i_2').
+    2) Return $irem_($sizenn(numtype), sx, i_1, i_2).
   f. If (binop_ = AND), then:
-    1) Return [$iand_($sizenn(numtype), i_1', i_2')].
+    1) Return [$iand_($sizenn(numtype), i_1, i_2)].
   g. If (binop_ = OR), then:
-    1) Return [$ior_($sizenn(numtype), i_1', i_2')].
+    1) Return [$ior_($sizenn(numtype), i_1, i_2)].
   h. If (binop_ = XOR), then:
-    1) Return [$ixor_($sizenn(numtype), i_1', i_2')].
+    1) Return [$ixor_($sizenn(numtype), i_1, i_2)].
   i. If (binop_ = SHL), then:
-    1) Return [$ishl_($sizenn(numtype), i_1', i_2')].
+    1) Return [$ishl_($sizenn(numtype), i_1, i_2)].
   j. If binop_ is some SHR, then:
     1) Let (SHR sx) be binop_.
-    2) Return [$ishr_($sizenn(numtype), sx, i_1', i_2')].
+    2) Return [$ishr_($sizenn(numtype), sx, i_1, i_2)].
   k. If (binop_ = ROTL), then:
-    1) Return [$irotl_($sizenn(numtype), i_1', i_2')].
+    1) Return [$irotl_($sizenn(numtype), i_1, i_2)].
   l. If (binop_ = ROTR), then:
-    1) Return [$irotr_($sizenn(numtype), i_1', i_2')].
+    1) Return [$irotr_($sizenn(numtype), i_1, i_2)].
 2. Assert: Due to validation, numtype is Fnn.
 3. If (binop_ = ADD), then:
-  a. Return $fadd_($sizenn(numtype), i_1', i_2').
+  a. Return $fadd_($sizenn(numtype), i_1, i_2).
 4. If (binop_ = SUB), then:
-  a. Return $fsub_($sizenn(numtype), i_1', i_2').
+  a. Return $fsub_($sizenn(numtype), i_1, i_2).
 5. If (binop_ = MUL), then:
-  a. Return $fmul_($sizenn(numtype), i_1', i_2').
+  a. Return $fmul_($sizenn(numtype), i_1, i_2).
 6. If (binop_ = DIV), then:
-  a. Return $fdiv_($sizenn(numtype), i_1', i_2').
+  a. Return $fdiv_($sizenn(numtype), i_1, i_2).
 7. If (binop_ = MIN), then:
-  a. Return $fmin_($sizenn(numtype), i_1', i_2').
+  a. Return $fmin_($sizenn(numtype), i_1, i_2).
 8. If (binop_ = MAX), then:
-  a. Return $fmax_($sizenn(numtype), i_1', i_2').
+  a. Return $fmax_($sizenn(numtype), i_1, i_2).
 9. Assert: Due to validation, (binop_ = COPYSIGN).
-10. Return $fcopysign_($sizenn(numtype), i_1', i_2').
+10. Return $fcopysign_($sizenn(numtype), i_1, i_2).
 
 testop_ Inn EQZ i
 1. Return $ieqz_($sizenn(Inn), i).
 
-relop_ numtype relop_ i_1' i_2'
+relop_ numtype relop_ i_1 i_2
 1. If numtype is Inn, then:
   a. If (relop_ = EQ), then:
-    1) Return $ieq_($sizenn(numtype), i_1', i_2').
+    1) Return $ieq_($sizenn(numtype), i_1, i_2).
   b. If (relop_ = NE), then:
-    1) Return $ine_($sizenn(numtype), i_1', i_2').
+    1) Return $ine_($sizenn(numtype), i_1, i_2).
   c. If relop_ is some LT, then:
     1) Let (LT sx) be relop_.
-    2) Return $ilt_($sizenn(numtype), sx, i_1', i_2').
+    2) Return $ilt_($sizenn(numtype), sx, i_1, i_2).
   d. If relop_ is some GT, then:
     1) Let (GT sx) be relop_.
-    2) Return $igt_($sizenn(numtype), sx, i_1', i_2').
+    2) Return $igt_($sizenn(numtype), sx, i_1, i_2).
   e. If relop_ is some LE, then:
     1) Let (LE sx) be relop_.
-    2) Return $ile_($sizenn(numtype), sx, i_1', i_2').
+    2) Return $ile_($sizenn(numtype), sx, i_1, i_2).
   f. If relop_ is some GE, then:
     1) Let (GE sx) be relop_.
-    2) Return $ige_($sizenn(numtype), sx, i_1', i_2').
+    2) Return $ige_($sizenn(numtype), sx, i_1, i_2).
 2. Assert: Due to validation, numtype is Fnn.
 3. If (relop_ = EQ), then:
-  a. Return $feq_($sizenn(numtype), i_1', i_2').
+  a. Return $feq_($sizenn(numtype), i_1, i_2).
 4. If (relop_ = NE), then:
-  a. Return $fne_($sizenn(numtype), i_1', i_2').
+  a. Return $fne_($sizenn(numtype), i_1, i_2).
 5. If (relop_ = LT), then:
-  a. Return $flt_($sizenn(numtype), i_1', i_2').
+  a. Return $flt_($sizenn(numtype), i_1, i_2).
 6. If (relop_ = GT), then:
-  a. Return $fgt_($sizenn(numtype), i_1', i_2').
+  a. Return $fgt_($sizenn(numtype), i_1, i_2).
 7. If (relop_ = LE), then:
-  a. Return $fle_($sizenn(numtype), i_1', i_2').
+  a. Return $fle_($sizenn(numtype), i_1, i_2).
 8. Assert: Due to validation, (relop_ = GE).
-9. Return $fge_($sizenn(numtype), i_1', i_2').
+9. Return $fge_($sizenn(numtype), i_1, i_2).
 
-cvtop__ numtype numtype'' cvtop__ i_1'
-1. If (numtype is Inn /\ numtype'' is Inn), then:
+cvtop__ numtype numtype' cvtop__ i_1
+1. If (numtype is Inn /\ numtype' is Inn), then:
   a. If cvtop__ is some EXTEND, then:
     1) Let (EXTEND sx) be cvtop__.
-    2) Return [$extend__($sizenn1(numtype), $sizenn2(numtype''), sx, i_1')].
+    2) Return [$extend__($sizenn1(numtype), $sizenn2(numtype'), sx, i_1)].
   b. If (cvtop__ = WRAP), then:
-    1) Return [$wrap__($sizenn1(numtype), $sizenn2(numtype''), i_1')].
-2. If (numtype is Fnn /\ numtype'' is Inn), then:
+    1) Return [$wrap__($sizenn1(numtype), $sizenn2(numtype'), i_1)].
+2. If (numtype is Fnn /\ numtype' is Inn), then:
   a. If cvtop__ is some TRUNC, then:
     1) Let (TRUNC sx) be cvtop__.
-    2) Return $trunc__($sizenn1(numtype), $sizenn2(numtype''), sx, i_1').
+    2) Return $trunc__($sizenn1(numtype), $sizenn2(numtype'), sx, i_1).
   b. If cvtop__ is some TRUNC_SAT, then:
     1) Let (TRUNC_SAT sx) be cvtop__.
-    2) Return $trunc_sat__($sizenn1(numtype), $sizenn2(numtype''), sx, i_1').
-3. If (numtype is Inn /\ (numtype'' is Fnn /\ cvtop__ is some CONVERT)), then:
+    2) Return $trunc_sat__($sizenn1(numtype), $sizenn2(numtype'), sx, i_1).
+3. If (numtype is Inn /\ (numtype' is Fnn /\ cvtop__ is some CONVERT)), then:
   a. Let (CONVERT sx) be cvtop__.
-  b. Return [$convert__($sizenn1(numtype), $sizenn2(numtype''), sx, i_1')].
-4. If (numtype is Fnn /\ numtype'' is Fnn), then:
+  b. Return [$convert__($sizenn1(numtype), $sizenn2(numtype'), sx, i_1)].
+4. If (numtype is Fnn /\ numtype' is Fnn), then:
   a. If (cvtop__ = PROMOTE), then:
-    1) Return $promote__($sizenn1(numtype), $sizenn2(numtype''), i_1').
+    1) Return $promote__($sizenn1(numtype), $sizenn2(numtype'), i_1).
   b. If (cvtop__ = DEMOTE), then:
-    1) Return $demote__($sizenn1(numtype), $sizenn2(numtype''), i_1').
-5. If (numtype is Inn /\ (numtype'' is Fnn /\ ((cvtop__ = REINTERPRET) /\ ($size(numtype) = $size(numtype''))))), then:
-  a. Return [$reinterpret__(numtype, numtype'', i_1')].
+    1) Return $demote__($sizenn1(numtype), $sizenn2(numtype'), i_1).
+5. If (numtype is Inn /\ (numtype' is Fnn /\ ((cvtop__ = REINTERPRET) /\ ($size(numtype) = $size(numtype'))))), then:
+  a. Return [$reinterpret__(numtype, numtype', i_1)].
 6. Assert: Due to validation, numtype is Fnn.
-7. Assert: Due to validation, numtype'' is Inn.
+7. Assert: Due to validation, numtype' is Inn.
 8. Assert: Due to validation, (cvtop__ = REINTERPRET).
-9. Assert: Due to validation, ($size(numtype) = $size(numtype'')).
-10. Return [$reinterpret__(numtype, numtype'', i_1')].
+9. Assert: Due to validation, ($size(numtype) = $size(numtype')).
+10. Return [$reinterpret__(numtype, numtype', i_1)].
 
 invlanes_ sh c*
 1. Let vc be $lanes__1^-1(sh, c*).
 2. Return vc.
 
-zeroop lanetype'' X M_1 lanetype X M_2 vcvtop__
-1. If lanetype'' is Jnn, then:
+zeroop lanetype' X M_1 lanetype X M_2 vcvtop__
+1. If lanetype' is Jnn, then:
   a. If (lanetype is Jnn /\ vcvtop__ is some EXTEND), then:
     1) Return ?().
   b. If (lanetype is Fnn /\ vcvtop__ is some CONVERT), then:
     1) Return ?().
-2. Assert: Due to validation, lanetype'' is Fnn.
+2. Assert: Due to validation, lanetype' is Fnn.
 3. If lanetype is Jnn, then:
   a. If vcvtop__ is some TRUNC_SAT, then:
     1) Let (TRUNC_SAT sx zero?) be vcvtop__.
@@ -30967,15 +30967,15 @@ zeroop lanetype'' X M_1 lanetype X M_2 vcvtop__
 6. Assert: Due to validation, (vcvtop__ = PROMOTELOW).
 7. Return ?().
 
-halfop lanetype'' X M_1 lanetype X M_2 vcvtop__
-1. If lanetype'' is Jnn, then:
+halfop lanetype' X M_1 lanetype X M_2 vcvtop__
+1. If lanetype' is Jnn, then:
   a. If (lanetype is Jnn /\ vcvtop__ is some EXTEND), then:
     1) Let (EXTEND half sx) be vcvtop__.
     2) Return ?(half).
   b. If (lanetype is Fnn /\ vcvtop__ is some CONVERT), then:
     1) Let (CONVERT half? sx) be vcvtop__.
     2) Return half?.
-2. Assert: Due to validation, lanetype'' is Fnn.
+2. Assert: Due to validation, lanetype' is Fnn.
 3. If lanetype is Jnn, then:
   a. If vcvtop__ is some TRUNC_SAT, then:
     1) Return ?().
@@ -31242,50 +31242,50 @@ vrelop_ lanetype X M vrelop_ v_1 v_2
 8. Assert: Due to validation, (vrelop_ = GE).
 9. Return $fvrelop_(lanetype X M, $fge_, v_1, v_2).
 
-lcvtop__ lanetype'' X M_1 lanetype X M_2 vcvtop__ c_1
-1. If lanetype'' is Jnn, then:
+lcvtop__ lanetype' X M_1 lanetype X M_2 vcvtop__ c_1
+1. If lanetype' is Jnn, then:
   a. If (lanetype is Jnn /\ vcvtop__ is some EXTEND), then:
     1) Let (EXTEND half sx) be vcvtop__.
-    2) Let c be $extend__($lsizenn1(lanetype''), $lsizenn2(lanetype), sx, c_1).
+    2) Let c be $extend__($lsizenn1(lanetype'), $lsizenn2(lanetype), sx, c_1).
     3) Return [c].
   b. If (lanetype is Fnn /\ vcvtop__ is some CONVERT), then:
     1) Let (CONVERT half? sx) be vcvtop__.
-    2) Let c be $convert__($lsizenn1(lanetype''), $lsizenn2(lanetype), sx, c_1).
+    2) Let c be $convert__($lsizenn1(lanetype'), $lsizenn2(lanetype), sx, c_1).
     3) Return [c].
-2. Assert: Due to validation, lanetype'' is Fnn.
+2. Assert: Due to validation, lanetype' is Fnn.
 3. If lanetype is Inn, then:
   a. If vcvtop__ is some TRUNC_SAT, then:
     1) Let (TRUNC_SAT sx zero?) be vcvtop__.
-    2) Let c? be $trunc_sat__($lsizenn1(lanetype''), $lsizenn2(lanetype), sx, c_1).
+    2) Let c? be $trunc_sat__($lsizenn1(lanetype'), $lsizenn2(lanetype), sx, c_1).
     3) Return c?.
   b. If vcvtop__ is some RELAXED_TRUNC, then:
     1) Let (RELAXED_TRUNC sx zero?) be vcvtop__.
-    2) Let c? be $relaxed_trunc__($lsizenn1(lanetype''), $lsizenn2(lanetype), sx, c_1).
+    2) Let c? be $relaxed_trunc__($lsizenn1(lanetype'), $lsizenn2(lanetype), sx, c_1).
     3) Return c?.
 4. Assert: Due to validation, lanetype is Fnn.
 5. If (vcvtop__ = (DEMOTE ZERO)), then:
-  a. Let c* be $demote__($lsizenn1(lanetype''), $lsizenn2(lanetype), c_1).
+  a. Let c* be $demote__($lsizenn1(lanetype'), $lsizenn2(lanetype), c_1).
   b. Return c*.
 6. Assert: Due to validation, (vcvtop__ = PROMOTELOW).
-7. Let c* be $promote__($lsizenn1(lanetype''), $lsizenn2(lanetype), c_1).
+7. Let c* be $promote__($lsizenn1(lanetype'), $lsizenn2(lanetype), c_1).
 8. Return c*.
 
-vcvtop__ Lnn_1 X M' Lnn_2 X M'' vcvtop v_1
-1. If ((M' = M'') /\ ($halfop(Lnn_1 X M'', Lnn_2 X M'', vcvtop) is not defined /\ $zeroop(Lnn_1 X M'', Lnn_2 X M'', vcvtop) is not defined)), then:
-  a. Let c_1* be $lanes_(Lnn_1 X M'', v_1).
-  b. Let c** be $setproduct_(`lane_(Lnn_2), $lcvtop__(Lnn_1 X M'', Lnn_2 X M'', vcvtop, c_1)*).
-  c. Let v be an element of $invlanes_(Lnn_2 X M'', c*)*.
+vcvtop__ Lnn_1 X M Lnn_2 X M' vcvtop v_1
+1. If ((M = M') /\ ($halfop(Lnn_1 X M', Lnn_2 X M', vcvtop) is not defined /\ $zeroop(Lnn_1 X M', Lnn_2 X M', vcvtop) is not defined)), then:
+  a. Let c_1* be $lanes_(Lnn_1 X M', v_1).
+  b. Let c** be $setproduct_(`lane_(Lnn_2), $lcvtop__(Lnn_1 X M', Lnn_2 X M', vcvtop, c_1)*).
+  c. Let v be an element of $invlanes_(Lnn_2 X M', c*)*.
   d. Return v.
-2. If $halfop(Lnn_1 X M', Lnn_2 X M'', vcvtop) is defined, then:
-  a. Let ?(half) be $halfop(Lnn_1 X M', Lnn_2 X M'', vcvtop).
-  b. Let c_1* be $lanes_(Lnn_1 X M', v_1)[$half(half, 0, M'') : M''].
-  c. Let c** be $setproduct_(`lane_(Lnn_2), $lcvtop__(Lnn_1 X M', Lnn_2 X M'', vcvtop, c_1)*).
-  d. Let v be an element of $invlanes_(Lnn_2 X M'', c*)*.
+2. If $halfop(Lnn_1 X M, Lnn_2 X M', vcvtop) is defined, then:
+  a. Let ?(half) be $halfop(Lnn_1 X M, Lnn_2 X M', vcvtop).
+  b. Let c_1* be $lanes_(Lnn_1 X M, v_1)[$half(half, 0, M') : M'].
+  c. Let c** be $setproduct_(`lane_(Lnn_2), $lcvtop__(Lnn_1 X M, Lnn_2 X M', vcvtop, c_1)*).
+  d. Let v be an element of $invlanes_(Lnn_2 X M', c*)*.
   e. Return v.
-3. Assert: Due to validation, ($zeroop(Lnn_1 X M', Lnn_2 X M'', vcvtop) = ?(ZERO)).
-4. Let c_1* be $lanes_(Lnn_1 X M', v_1).
-5. Let c** be $setproduct_(`lane_(Lnn_2), $lcvtop__(Lnn_1 X M', Lnn_2 X M'', vcvtop, c_1)* :: [$zero(Lnn_2)]^M').
-6. Let v be an element of $invlanes_(Lnn_2 X M'', c*)*.
+3. Assert: Due to validation, ($zeroop(Lnn_1 X M, Lnn_2 X M', vcvtop) = ?(ZERO)).
+4. Let c_1* be $lanes_(Lnn_1 X M, v_1).
+5. Let c** be $setproduct_(`lane_(Lnn_2), $lcvtop__(Lnn_1 X M, Lnn_2 X M', vcvtop, c_1)* :: [$zero(Lnn_2)]^M).
+6. Let v be an element of $invlanes_(Lnn_2 X M', c*)*.
 7. Return v.
 
 vshiftop_ Jnn X M vshiftop_ v i
@@ -31368,12 +31368,12 @@ vextternop__ Jnn_1 X M_1 Jnn_2 X M_2 RELAXED_DOT_ADDS c_1 c_2 c_3
 Ki
 1. Return 1024.
 
-packfield_ storagetype val'
+packfield_ storagetype val
 1. If storagetype is valtype, then:
-  a. Return val'.
+  a. Return val.
 2. Assert: Due to validation, storagetype is packtype.
-3. Assert: Due to validation, val' is some CONST.
-4. Let (numtype_0.CONST i) be val'.
+3. Assert: Due to validation, val is some CONST.
+4. Let (numtype_0.CONST i) be val.
 5. Assert: Due to validation, (numtype_0 = I32).
 6. Return (PACK storagetype $wrap__(32, $psize(storagetype), i)).
 
