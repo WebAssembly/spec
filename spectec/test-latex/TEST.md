@@ -5098,11 +5098,11 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C \vdash {\mathit{deftype}} : \mathsf{ok}
+C \vdash {\mathit{typeuse}} : \mathsf{ok}
  \qquad
-{\mathit{deftype}} \approx \mathsf{func}~({t^\ast} \rightarrow \epsilon)
+{\mathit{typeuse}} \approx_{C} \mathsf{func}~{\mathit{functype}}
 }{
-C \vdash {\mathit{deftype}} : \mathsf{ok}
+C \vdash {\mathit{typeuse}} : \mathsf{ok}
 } \, {[\textsc{\scriptsize K{-}tag}]}
 \qquad
 \end{array}
@@ -5161,11 +5161,9 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C \vdash {\mathit{typeuse}} : \mathsf{ok}
- \qquad
-{\mathit{typeuse}} \approx_{C} \mathsf{func}~{\mathit{functype}}
+C \vdash {\mathit{tagtype}} : \mathsf{ok}
 }{
-C \vdash \mathsf{tag}~{\mathit{typeuse}} : \mathsf{ok}
+C \vdash \mathsf{tag}~{\mathit{tagtype}} : \mathsf{ok}
 } \, {[\textsc{\scriptsize K{-}extern{-}tag}]}
 \qquad
 \end{array}

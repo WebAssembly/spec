@@ -14279,12 +14279,12 @@ The limits range :math:`{}[ n .. m ]` is :ref:`valid <valid-val>` within :math:`
 
 
 
-The tag type :math:`{\mathit{deftype}}` is :ref:`valid <valid-val>` if:
+The tag type :math:`{\mathit{typeuse}}` is :ref:`valid <valid-val>` if:
 
 
-   * The defined type :math:`{\mathit{deftype}}` is :ref:`valid <valid-val>`.
+   * The type use :math:`{\mathit{typeuse}}` is :ref:`valid <valid-val>`.
 
-   * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`{\mathit{deftype}}` is the composite type :math:`(\mathsf{func}~{t^\ast}~\rightarrow~\epsilon)`.
+   * The :ref:`expansion <aux-expand-typeuse>` of the context :math:`C` is the composite type :math:`(\mathsf{func}~{\mathit{functype}})`.
 
 
 
@@ -14320,11 +14320,9 @@ The external type :math:`{\mathit{externtype}}` is :ref:`valid <valid-val>` if:
 
    * Either:
 
-      * The external type :math:`{\mathit{externtype}}` is of the form :math:`(\mathsf{tag}~{\mathit{typeuse}})`.
+      * The external type :math:`{\mathit{externtype}}` is of the form :math:`(\mathsf{tag}~{\mathit{tagtype}})`.
 
-      * The type use :math:`{\mathit{typeuse}}` is :ref:`valid <valid-val>`.
-
-      * The :ref:`expansion <aux-expand-typeuse>` of the context :math:`C` is the composite type :math:`(\mathsf{func}~{\mathit{functype}})`.
+      * The tag type :math:`{\mathit{tagtype}}` is :ref:`valid <valid-val>`.
 
    * Or:
 
@@ -14352,12 +14350,10 @@ The external type :math:`{\mathit{externtype}}` is :ref:`valid <valid-val>` if:
 
 
 
-The external type :math:`(\mathsf{tag}~{\mathit{typeuse}})` is :ref:`valid <valid-val>` if:
+The external type :math:`(\mathsf{tag}~{\mathit{tagtype}})` is :ref:`valid <valid-val>` if:
 
 
-   * The type use :math:`{\mathit{typeuse}}` is :ref:`valid <valid-val>`.
-
-   * The :ref:`expansion <aux-expand-typeuse>` of the context :math:`C` is the composite type :math:`(\mathsf{func}~{\mathit{functype}})`.
+   * The tag type :math:`{\mathit{tagtype}}` is :ref:`valid <valid-val>`.
 
 
 
@@ -26347,9 +26343,9 @@ Limits_ok
   - m is less than or equal to k.
 
 Tagtype_ok
-- the tag type deftype is valid if:
-  - deftype is valid.
-  - The :ref:`expansion <aux-expand-deftype>` of deftype is the composite type (FUNC t* -> []).
+- the tag type typeuse is valid if:
+  - typeuse is valid.
+  - The :ref:`expansion <aux-expand-typeuse>` of the context C is the composite type (FUNC functype).
 
 Globaltype_ok
 - the global type (MUT? t) is valid if:
@@ -26367,9 +26363,8 @@ Tabletype_ok
 Externtype_ok
 - the external type externtype is valid if:
   - Either:
-    - externtype is (TAG typeuse).
-    - the type use typeuse is valid.
-    - The :ref:`expansion <aux-expand-typeuse>` of the context C is the composite type (FUNC functype).
+    - externtype is (TAG tagtype).
+    - the tag type tagtype is valid.
   - Or:
     - externtype is (GLOBAL globaltype).
     - the global type globaltype is valid.
@@ -26381,13 +26376,12 @@ Externtype_ok
     - the table type tabletype is valid.
   - Or:
     - externtype is (FUNC typeuse).
-    - typeuse is valid.
-    - The :ref:`expansion <aux-expand-typeuse>` of C is (FUNC functype).
+    - the type use typeuse is valid.
+    - The :ref:`expansion <aux-expand-typeuse>` of the context C is the composite type (FUNC functype).
 
 Externtype_ok/tag
-- the external type (TAG typeuse) is valid if:
-  - the type use typeuse is valid.
-  - The :ref:`expansion <aux-expand-typeuse>` of the context C is the composite type (FUNC functype).
+- the external type (TAG tagtype) is valid if:
+  - the tag type tagtype is valid.
 
 Externtype_ok/global
 - the external type (GLOBAL globaltype) is valid if:

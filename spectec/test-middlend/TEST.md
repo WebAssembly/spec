@@ -3134,10 +3134,10 @@ relation Limits_ok: `%|-%:%`(context, limits, nat)
 ;; ../../../../specification/wasm-3.0/2.1-validation.types.spectec
 relation Tagtype_ok: `%|-%:OK`(context, tagtype)
   ;; ../../../../specification/wasm-3.0/2.1-validation.types.spectec
-  rule _{C : context, deftype : deftype, `t*` : valtype*}:
-    `%|-%:OK`(C, (deftype : deftype <: typeuse))
-    -- Deftype_ok: `%|-%:OK`(C, deftype)
-    -- Expand: `%~~%`(deftype, FUNC_comptype(`%->%`_functype(`%`_resulttype(t*{t <- `t*`}), `%`_resulttype([]))))
+  rule _{C : context, typeuse : typeuse, functype : functype}:
+    `%|-%:OK`(C, typeuse)
+    -- Typeuse_ok: `%|-%:OK`(C, typeuse)
+    -- Expand_use: `%~~_%%`(typeuse, C, FUNC_comptype(functype))
 
 ;; ../../../../specification/wasm-3.0/2.1-validation.types.spectec
 relation Globaltype_ok: `%|-%:OK`(context, globaltype)
@@ -3164,10 +3164,9 @@ relation Tabletype_ok: `%|-%:OK`(context, tabletype)
 ;; ../../../../specification/wasm-3.0/2.1-validation.types.spectec
 relation Externtype_ok: `%|-%:OK`(context, externtype)
   ;; ../../../../specification/wasm-3.0/2.1-validation.types.spectec
-  rule tag{C : context, typeuse : typeuse, functype : functype}:
-    `%|-%:OK`(C, TAG_externtype(typeuse))
-    -- Typeuse_ok: `%|-%:OK`(C, typeuse)
-    -- Expand_use: `%~~_%%`(typeuse, C, FUNC_comptype(functype))
+  rule tag{C : context, tagtype : tagtype}:
+    `%|-%:OK`(C, TAG_externtype(tagtype))
+    -- Tagtype_ok: `%|-%:OK`(C, tagtype)
 
   ;; ../../../../specification/wasm-3.0/2.1-validation.types.spectec
   rule global{C : context, globaltype : globaltype}:
@@ -12099,10 +12098,10 @@ relation Limits_ok: `%|-%:%`(context, limits, nat)
 ;; ../../../../specification/wasm-3.0/2.1-validation.types.spectec
 relation Tagtype_ok: `%|-%:OK`(context, tagtype)
   ;; ../../../../specification/wasm-3.0/2.1-validation.types.spectec
-  rule _{C : context, deftype : deftype, `t*` : valtype*}:
-    `%|-%:OK`(C, (deftype : deftype <: typeuse))
-    -- Deftype_ok: `%|-%:OK`(C, deftype)
-    -- Expand: `%~~%`(deftype, FUNC_comptype(`%->%`_functype(`%`_resulttype(t*{t <- `t*`}), `%`_resulttype([]))))
+  rule _{C : context, typeuse : typeuse, functype : functype}:
+    `%|-%:OK`(C, typeuse)
+    -- Typeuse_ok: `%|-%:OK`(C, typeuse)
+    -- Expand_use: `%~~_%%`(typeuse, C, FUNC_comptype(functype))
 
 ;; ../../../../specification/wasm-3.0/2.1-validation.types.spectec
 relation Globaltype_ok: `%|-%:OK`(context, globaltype)
@@ -12129,10 +12128,9 @@ relation Tabletype_ok: `%|-%:OK`(context, tabletype)
 ;; ../../../../specification/wasm-3.0/2.1-validation.types.spectec
 relation Externtype_ok: `%|-%:OK`(context, externtype)
   ;; ../../../../specification/wasm-3.0/2.1-validation.types.spectec
-  rule tag{C : context, typeuse : typeuse, functype : functype}:
-    `%|-%:OK`(C, TAG_externtype(typeuse))
-    -- Typeuse_ok: `%|-%:OK`(C, typeuse)
-    -- Expand_use: `%~~_%%`(typeuse, C, FUNC_comptype(functype))
+  rule tag{C : context, tagtype : tagtype}:
+    `%|-%:OK`(C, TAG_externtype(tagtype))
+    -- Tagtype_ok: `%|-%:OK`(C, tagtype)
 
   ;; ../../../../specification/wasm-3.0/2.1-validation.types.spectec
   rule global{C : context, globaltype : globaltype}:
@@ -21083,10 +21081,10 @@ relation Limits_ok: `%|-%:%`(context, limits, nat)
 ;; ../../../../specification/wasm-3.0/2.1-validation.types.spectec
 relation Tagtype_ok: `%|-%:OK`(context, tagtype)
   ;; ../../../../specification/wasm-3.0/2.1-validation.types.spectec
-  rule _{C : context, deftype : deftype, `t*` : valtype*}:
-    `%|-%:OK`(C, (deftype : deftype <: typeuse))
-    -- Deftype_ok: `%|-%:OK`(C, deftype)
-    -- Expand: `%~~%`(deftype, FUNC_comptype(`%->%`_functype(`%`_resulttype(t*{t <- `t*`}), `%`_resulttype([]))))
+  rule _{C : context, typeuse : typeuse, functype : functype}:
+    `%|-%:OK`(C, typeuse)
+    -- Typeuse_ok: `%|-%:OK`(C, typeuse)
+    -- Expand_use: `%~~_%%`(typeuse, C, FUNC_comptype(functype))
 
 ;; ../../../../specification/wasm-3.0/2.1-validation.types.spectec
 relation Globaltype_ok: `%|-%:OK`(context, globaltype)
@@ -21113,10 +21111,9 @@ relation Tabletype_ok: `%|-%:OK`(context, tabletype)
 ;; ../../../../specification/wasm-3.0/2.1-validation.types.spectec
 relation Externtype_ok: `%|-%:OK`(context, externtype)
   ;; ../../../../specification/wasm-3.0/2.1-validation.types.spectec
-  rule tag{C : context, typeuse : typeuse, functype : functype}:
-    `%|-%:OK`(C, TAG_externtype(typeuse))
-    -- Typeuse_ok: `%|-%:OK`(C, typeuse)
-    -- Expand_use: `%~~_%%`(typeuse, C, FUNC_comptype(functype))
+  rule tag{C : context, tagtype : tagtype}:
+    `%|-%:OK`(C, TAG_externtype(tagtype))
+    -- Tagtype_ok: `%|-%:OK`(C, tagtype)
 
   ;; ../../../../specification/wasm-3.0/2.1-validation.types.spectec
   rule global{C : context, globaltype : globaltype}:
