@@ -393,14 +393,13 @@ Control Instructions
 
 Instructions in this group affect the flow of control.
 
-$${syntax: blocktype {instr/block instr/br instr/call instr/exn} catch}
+$${syntax: {instr/block instr/br instr/call instr/exn} catch}
 
 The ${:BLOCK}, ${:LOOP}, ${:IF} and ${:TRY_TABLE} instructions are *structured* instructions.
 They bracket nested sequences of instructions, called *blocks*, terminated with, or separated by, ${:END} or ${:ELSE} pseudo-instructions.
 As the grammar prescribes, they must be well-nested.
 
-A structured instruction can consume *input* and produce *output* on the operand stack according to its annotated *block type*.
-It is given either as a :ref:`type index <syntax-funcidx>` that refers to a suitable :ref:`function type <syntax-functype>` reinterpreted as an :ref:`instruction type <syntax-instrtype>`, or as an optional :ref:`value type <syntax-valtype>` inline, which is a shorthand for the instruction type ${instrtype: eps -> valtype?}.
+A structured instruction can consume *input* and produce *output* on the operand stack according to its annotated :ref:`block type <syntax-blocktype>`.
 
 Each structured control instruction introduces an implicit *label*.
 Labels are targets for branch instructions that reference them with :ref:`label indices <syntax-labelidx>`.

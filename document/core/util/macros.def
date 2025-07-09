@@ -1080,6 +1080,7 @@
 .. |Ttypedef| mathdef:: \xref{text/types}{text-typedef}{\T{typedef}}
 .. |Trectype| mathdef:: \xref{text/types}{text-rectype}{\T{rectype}}
 
+.. |Ttagtype| mathdef:: \xref{text/types}{text-tagtype}{\T{tagtype}}
 .. |Tglobaltype| mathdef:: \xref{text/types}{text-globaltype}{\T{globaltype}}
 .. |Ttabletype| mathdef:: \xref{text/types}{text-tabletype}{\T{tabletype}}
 .. |Taddrtype| mathdef:: \xref{text/types}{text-addrtype}{\T{addrtype}}
@@ -1164,8 +1165,8 @@
 .. |IMEMS| mathdef:: \xref{text/conventions}{text-context}{\K{mems}}
 .. |IGLOBALS| mathdef:: \xref{text/conventions}{text-context}{\K{globals}}
 .. |ITAGS| mathdef:: \xref{text/conventions}{text-context}{\K{tags}}
-.. |IELEM| mathdef:: \xref{text/conventions}{text-context}{\K{elem}}
-.. |IDATA| mathdef:: \xref{text/conventions}{text-context}{\K{data}}
+.. |IELEM| mathdef:: \xref{text/conventions}{text-context}{\K{elems}}
+.. |IDATA| mathdef:: \xref{text/conventions}{text-context}{\K{datas}}
 .. |ILOCALS| mathdef:: \xref{text/conventions}{text-context}{\K{locals}}
 .. |ILABELS| mathdef:: \xref{text/conventions}{text-context}{\K{labels}}
 
@@ -1232,7 +1233,7 @@
 .. |vdashglobaltype| mathdef:: \xref{valid/types}{valid-globaltype}{\vdash}
 .. |vdashtagtype| mathdef:: \xref{valid/types}{valid-tagtype}{\vdash}
 .. |vdashexterntype| mathdef:: \xref{valid/types}{valid-externtype}{\vdash}
-.. |vdashdeftype| mathdef:: \xref{valid/types}{valid-deftype}{\vdash}
+.. |vdashdeftype| mathdef:: \xref{appendix/properties}{valid-deftype}{\vdash}
 .. |vdashtypeuse| mathdef:: \xref{valid/types}{valid-typeuse}{\vdash}
 
 .. |vdashinstrtype| mathdef:: \xref{valid/types}{valid-instrtype}{\vdash}
@@ -1254,7 +1255,7 @@
 .. |OKsubtypeext| mathdef:: \xref{valid/types}{valid-subtype}{\K{ok}}
 .. |OKrectype| mathdef:: \xref{valid/types}{valid-rectype}{\K{ok}}
 .. |OKrectypeext| mathdef:: \xref{valid/types}{valid-rectype}{\K{ok}}
-.. |OKdeftype| mathdef:: \xref{valid/types}{valid-deftype}{\K{ok}}
+.. |OKdeftype| mathdef:: \xref{appendix/properties}{valid-deftype}{\K{ok}}
 .. |OKtypeuse| mathdef:: \xref{valid/types}{valid-typeuse}{\K{ok}}
 .. |OKtabletype| mathdef:: \xref{valid/types}{valid-tabletype}{\K{ok}}
 .. |OKmemtype| mathdef:: \xref{valid/types}{valid-memtype}{\K{ok}}

@@ -84,13 +84,13 @@ Where the underlying operators are non-deterministic, because they may return on
 
 .. _exec-const:
 
-:math:`t\K{.}\CONST~c`
-......................
+:math:`\X{nt}\K{.}\CONST~c`
+...........................
 
-1. Push the value :math:`t.\CONST~c` to the stack.
+1. Push the value ${instr: (CONST nt c)} to the stack.
 
 .. note::
-   No formal reduction rule is required for this instruction, since :math:`\CONST` instructions already are :ref:`values <syntax-val>`.
+   No formal reduction rule is required for this instruction, since ${:CONST} instructions already are :ref:`values <syntax-val>`.
 
 
 .. _exec-unop:
@@ -399,10 +399,10 @@ The remaining vector operators use :ref:`individual definitions <op-vec>`.
 :math:`\V128\K{.}\VCONST~c`
 ...........................
 
-1. Push the value :math:`\V128.\VCONST~c` to the stack.
+1. Push the value ${instr: (VCONST V128 c)} to the stack.
 
 .. note::
-   No formal reduction rule is required for this instruction, since |VCONST| instructions coincide with :ref:`values <syntax-val>`.
+   No formal reduction rule is required for this instruction, since ${:CONST} instructions are already :ref:`values <syntax-val>`.
 
 
 .. _exec-vvunop:

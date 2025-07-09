@@ -196,6 +196,17 @@ where:
    This rule is a generalisation of the ones :ref:`previously given <valid-subtype>`, which only allowed type indices as supertypes.
 
 
+.. index:: defined type, recursive type, unroll, expand
+.. _valid-deftype:
+
+:ref:`Defined types <syntax-deftype>` :math:`\rectype.i`
+........................................................
+
+$${rule-prose: Deftype_ok}
+
+$${rule: Deftype_ok}
+
+
 .. index:: heap type, recursive type, recursive type index
 .. _match-heaptype-ext:
 

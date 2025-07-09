@@ -84,8 +84,10 @@ syntax oktypeidxnat hint(show OK#(typeidx,n)) =
 relation Packtype_ok: context |- packtype : OK          hint(name "K-pack")    hint(macro "%packtype")
 relation Fieldtype_ok: context |- fieldtype : OK        hint(name "K-field")   hint(macro "%fieldtype")
 relation Storagetype_ok: context |- storagetype : OK    hint(name "K-storage") hint(macro "%storagetype")
-relation Comptype_ok: context |- comptype : OK          hint(name "K-comp")    hint(macro "%comptype")
+relation Structtype_ok: context |- structtype : OK      hint(name "K-struct")    hint(macro "%structtype")
+relation Arraytype_ok: context |- arraytype : OK        hint(name "K-array")    hint(macro "%arraytype")
 relation Functype_ok: context |- functype : OK          hint(name "K-func")    hint(macro "%functype")
+relation Comptype_ok: context |- comptype : OK          hint(name "K-comp")    hint(macro "%comptype")
 relation Subtype_ok: context |- subtype : oktypeidx     hint(name "K-sub")     hint(macro "%subtype")     hint(prosepp "for")
 relation Rectype_ok: context |- rectype : oktypeidx     hint(name "K-rect")    hint(macro "%rectype")     hint(prosepp "for")
 relation Subtype_ok2: context |- subtype : oktypeidxnat hint(name "K-sub2")    hint(macro "%subtypeext")  hint(prosepp "for")
@@ -101,13 +103,13 @@ rule Typeuse_ok/typeidx:
   C |- _IDX typeidx : OK
   -- if C.TYPES[typeidx] = dt
 
-rule Typeuse_ok/deftype:
-  C |- deftype : OK
-  -- Deftype_ok: C |- deftype : OK
-
 rule Typeuse_ok/rec:
   C |- REC i : OK
   -- if C.RECS[i] = st
+
+rule Typeuse_ok/deftype:
+  C |- deftype : OK
+  -- Deftype_ok: C |- deftype : OK
 
 
 rule Packtype_ok:
@@ -126,13 +128,22 @@ rule Fieldtype_ok:
   -- Storagetype_ok: C |- storagetype : OK
 
 
-rule Comptype_ok/struct:
-  C |- STRUCT fieldtype* : OK
+rule Structtype_ok:
+  C |- fieldtype* : OK
   -- (Fieldtype_ok: C |- fieldtype : OK)*
 
-rule Comptype_ok/array:
-  C |- ARRAY fieldtype : OK
+rule Arraytype_ok:
+  C |- fieldtype : OK
   -- Fieldtype_ok: C |- fieldtype : OK
+
+
+rule Comptype_ok/struct:
+  C |- STRUCT structtype : OK
+  -- Structtype_ok: C |- structtype : OK
+
+rule Comptype_ok/array:
+  C |- ARRAY arraytype : OK
+  -- Arraytype_ok: C |- arraytype : OK
 
 rule Comptype_ok/func:
   C |- FUNC functype : OK

@@ -2514,10 +2514,12 @@ let elab ds : Il.script * env =
   recursify_defs ds', env
 
 let elab_exp env e t : Il.exp =
-  let _ = elab_typ env t in
-  checkpoint (elab_exp env e t)
+  let env' = local_env env in
+  let _ = elab_typ env' t in
+  checkpoint (elab_exp env' e t)
 
 let elab_rel env e id : Il.exp =
-  match elab_prem env (RulePr (id, e) $ e.at) with
+  let env' = local_env env in
+  match elab_prem env' (RulePr (id, e) $ e.at) with
   | [{it = Il.RulePr (_, _, e'); _}] -> e'
   | _ -> assert false

@@ -169,7 +169,7 @@ The descriptors in imports can bind a symbolic function, table, memory, tag, or 
        &\Rightarrow& \IDMEM~~\X{mt} \\ &&|&
      \text{(}~\text{global}~~\Tid^?~~\X{gt}{:}\Tglobaltype_I~\text{)}
        &\Rightarrow& \IDGLOBAL~\X{gt} \\ &&|&
-     \text{(}~\text{tag}~~\Tid^?~~\X{tt}{:}\Ttag~\text{)}
+     \text{(}~\text{tag}~~\Tid^?~~\X{tt}{:}\Ttagtype~\text{)}
        &\Rightarrow& \IDTAG~\X{tt} \\
    \end{array}
 
@@ -467,8 +467,8 @@ An tag definition can bind a symbolic :ref:`tag identifier <text-id>`.
 .. math::
    \begin{array}{llcl}
    \production{tag} & \Ttag_I &::=&
-     \text{(}~\text{tag}~~\Tid^?~~x,I'{:}\Ttypeuse_I~\text{)} \\ &&& \qquad
-       \Rightarrow\quad \{ \TAGTYPE~x \} \\
+     \text{(}~\text{tag}~~\Tid^?~~\X{tt}{:}\Ttagtype_I~\text{)} \\ &&& \qquad
+       \Rightarrow\quad \{ \TAGTYPE~\X{tt} \} \\
    \end{array}
 
 .. index:: import, name
@@ -486,8 +486,8 @@ Tags can be defined as :ref:`imports <text-import>` or :ref:`exports <text-expor
 .. math::
    \begin{array}{llclll}
    \production{module field} &
-     \text{(}~\text{tag}~~\Tid^?~~\text{(}~\text{import}~~\Tname_1~~\Tname_2~\text{)}~~\Ttypeuse~\text{)} \quad\equiv \\ & \qquad
-       \text{(}~\text{import}~~\Tname_1~~\Tname_2~~\text{(}~\text{tag}~~\Tid^?~~\Ttypeuse~\text{)}~\text{)}
+     \text{(}~\text{tag}~~\Tid^?~~\text{(}~\text{import}~~\Tname_1~~\Tname_2~\text{)}~~\Ttagtype~\text{)} \quad\equiv \\ & \qquad
+       \text{(}~\text{import}~~\Tname_1~~\Tname_2~~\text{(}~\text{tag}~~\Tid^?~~\Ttagtype~\text{)}~\text{)}
        \\[1ex] &
      \text{(}~\text{tag}~~\Tid^?~~\text{(}~\text{export}~~\Tname~\text{)}~~\dots~\text{)} \quad\equiv \\ & \qquad
        \text{(}~\text{export}~~\Tname~~\text{(}~\text{tag}~~\Tid'~\text{)}~\text{)}~~

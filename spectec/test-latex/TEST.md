@@ -2776,7 +2776,7 @@ $$
 \mbox{(address type)} & {\mathit{addrtype}} & ::= & \mathsf{i{\scriptstyle 32}} ~|~ \mathsf{i{\scriptstyle 64}} \\
 \mbox{(number type)} & {\mathit{numtype}} & ::= & \mathsf{i{\scriptstyle 32}} ~|~ \mathsf{i{\scriptstyle 64}} ~|~ \mathsf{f{\scriptstyle 32}} ~|~ \mathsf{f{\scriptstyle 64}} \\
 \mbox{(vector type)} & {\mathit{vectype}} & ::= & \mathsf{v{\scriptstyle 128}} \\
-\mbox{(literal type)} & {\mathit{consttype}} & ::= & {\mathit{numtype}} ~|~ {\mathit{vectype}} \\
+\mbox{(constant type)} & {\mathit{consttype}} & ::= & {\mathit{numtype}} ~|~ {\mathit{vectype}} \\
 & {\mathit{absheaptype}} & ::= & \mathsf{any} ~|~ \mathsf{eq} ~|~ \mathsf{i{\scriptstyle 31}} ~|~ \mathsf{struct} ~|~ \mathsf{array} ~|~ \mathsf{none} \\
 & & | & \mathsf{func} ~|~ \mathsf{nofunc} \\
 & & | & \mathsf{exn} ~|~ \mathsf{noexn} \\
@@ -4771,9 +4771,13 @@ $\boxed{{\mathit{context}} \vdash {\mathit{fieldtype}} : \mathsf{ok}}$
 
 $\boxed{{\mathit{context}} \vdash {\mathit{storagetype}} : \mathsf{ok}}$
 
-$\boxed{{\mathit{context}} \vdash {\mathit{comptype}} : \mathsf{ok}}$
+$\boxed{{\mathit{context}} \vdash {\mathit{structtype}} : \mathsf{ok}}$
+
+$\boxed{{\mathit{context}} \vdash {\mathit{arraytype}} : \mathsf{ok}}$
 
 $\boxed{{\mathit{context}} \vdash {\mathit{functype}} : \mathsf{ok}}$
+
+$\boxed{{\mathit{context}} \vdash {\mathit{comptype}} : \mathsf{ok}}$
 
 $\boxed{{\mathit{context}} \vdash {\mathit{subtype}} : {\mathsf{ok}}{({\mathit{typeidx}})}}$
 
@@ -4805,10 +4809,10 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C \vdash {\mathit{deftype}} : \mathsf{ok}
+C{.}\mathsf{recs}{}[i] = {\mathit{st}}
 }{
-C \vdash {\mathit{deftype}} : \mathsf{ok}
-} \, {[\textsc{\scriptsize K{-}typeuse{-}deftype}]}
+C \vdash \mathsf{rec} {.} i : \mathsf{ok}
+} \, {[\textsc{\scriptsize K{-}typeuse{-}rec}]}
 \qquad
 \end{array}
 $$
@@ -4816,10 +4820,10 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C{.}\mathsf{recs}{}[i] = {\mathit{st}}
+C \vdash {\mathit{deftype}} : \mathsf{ok}
 }{
-C \vdash \mathsf{rec} {.} i : \mathsf{ok}
-} \, {[\textsc{\scriptsize K{-}typeuse{-}rec}]}
+C \vdash {\mathit{deftype}} : \mathsf{ok}
+} \, {[\textsc{\scriptsize K{-}typeuse{-}deftype}]}
 \qquad
 \end{array}
 $$
@@ -4876,8 +4880,8 @@ $$
 \frac{
 (C \vdash {\mathit{fieldtype}} : \mathsf{ok})^\ast
 }{
-C \vdash \mathsf{struct}~{{\mathit{fieldtype}}^\ast} : \mathsf{ok}
-} \, {[\textsc{\scriptsize K{-}comp{-}struct}]}
+C \vdash {{\mathit{fieldtype}}^\ast} : \mathsf{ok}
+} \, {[\textsc{\scriptsize K{-}struct}]}
 \qquad
 \end{array}
 $$
@@ -4887,7 +4891,31 @@ $$
 \frac{
 C \vdash {\mathit{fieldtype}} : \mathsf{ok}
 }{
-C \vdash \mathsf{array}~{\mathit{fieldtype}} : \mathsf{ok}
+C \vdash {\mathit{fieldtype}} : \mathsf{ok}
+} \, {[\textsc{\scriptsize K{-}array}]}
+\qquad
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+C \vdash {\mathit{structtype}} : \mathsf{ok}
+}{
+C \vdash \mathsf{struct}~{\mathit{structtype}} : \mathsf{ok}
+} \, {[\textsc{\scriptsize K{-}comp{-}struct}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+C \vdash {\mathit{arraytype}} : \mathsf{ok}
+}{
+C \vdash \mathsf{array}~{\mathit{arraytype}} : \mathsf{ok}
 } \, {[\textsc{\scriptsize K{-}comp{-}array}]}
 \qquad
 \end{array}

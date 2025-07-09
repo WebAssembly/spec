@@ -33,11 +33,28 @@ $${rule-prose: Vectype_ok}
 $${rule: Vectype_ok}
 
 
-.. index:: heap type, type index, type use
+.. index:: type index, type use
+   pair: validation; type use
+   single: abstract syntax; type use
+.. _valid-typeuse:
+
+Type Uses
+~~~~~~~~~
+
+$${rule-prose: Typeuse_ok/typeidx}
+
+$${rule: Typeuse_ok/typeidx}
+
+
+$${rule-prose: Typeuse_ok/rec}
+
+$${rule: Typeuse_ok/rec}
+
+
+.. index:: heap type, type use
    pair: validation; heap type
    single: abstract syntax; heap type
 .. _valid-heaptype:
-.. _valid-typeuse:
 
 Heap Types
 ~~~~~~~~~~
@@ -45,11 +62,6 @@ Heap Types
 $${rule-prose: Heaptype_ok/abs}
 
 $${rule: Heaptype_ok/abs}
-
-
-$${rule-prose: Typeuse_ok/typeidx}
-
-$${rule: Typeuse_ok/typeidx}
 
 
 .. index:: reference type, heap type
@@ -76,6 +88,19 @@ Value Types
 $${rule-prose: Valtype_ok}
 
 
+.. index:: result type, value type
+   pair: validation; result type
+   single: abstract syntax; result type
+.. _valid-resulttype:
+
+Result Types
+~~~~~~~~~~~~
+
+$${rule-prose: Resulttype_ok}
+
+$${rule: Resulttype_ok}
+
+
 .. index:: block type, instruction type
    pair: validation; block type
    single: abstract syntax; block type
@@ -94,19 +119,6 @@ $${rule: Blocktype_ok/typeidx}
 $${rule-prose: Blocktype_ok/valtype}
 
 $${rule: Blocktype_ok/valtype}
-
-
-.. index:: result type, value type
-   pair: validation; result type
-   single: abstract syntax; result type
-.. _valid-resulttype:
-
-Result Types
-~~~~~~~~~~~~
-
-$${rule-prose: Resulttype_ok}
-
-$${rule: Resulttype_ok}
 
 
 .. index:: instruction type
@@ -135,16 +147,52 @@ $${rule-prose: Functype_ok}
 $${rule: Functype_ok}
 
 
-.. index:: composite type, function type, aggregate type, structure type, array type, field type
-   pair: validation; composite type
+.. index:: aggregate type, structure type, array type, field type, storage type, packed type, value type, mutability
    pair: validation; aggregate type
    pair: validation; structure type
    pair: validation; array type
+   pair: validation; field type
+   pair: validation; storage type
+   pair: validation; packed type
+   single: abstract syntax; structure type
+   single: abstract syntax; array type
+   single: abstract syntax; field type
+   single: abstract syntax; storage type
+   single: abstract syntax; packed type
+   single: abstract syntax; value type
+.. _valid-fieldtype:
+.. _valid-storagetype:
+.. _valid-packtype:
+
+Aggregate Types
+~~~~~~~~~~~~~~~
+
+$${rule-prose: Structtype_ok}
+
+$${rule: Structtype_ok}
+
+
+$${rule-prose-ignore: Arraytype_ok}
+
+$${rule-ignore: Arraytype_ok}
+
+
+$${rule-prose: Fieldtype_ok}
+
+$${rule: Fieldtype_ok}
+
+
+$${rule-prose: Packtype_ok}
+
+$${rule: Packtype_ok}
+
+
+.. index:: composite type, function type, structure type, array type, field type
+   pair: validation; composite type
    single: abstract syntax; composite type
    single: abstract syntax; function type
    single: abstract syntax; structure type
    single: abstract syntax; array type
-   single: abstract syntax; field type
 .. _valid-comptype:
 .. _valid-aggrtype:
 .. _valid-structtype:
@@ -166,31 +214,6 @@ $${rule: Comptype_ok/struct}
 $${rule-prose: Comptype_ok/array}
 
 $${rule: Comptype_ok/array}
-
-
-.. index:: field type, storage type, packed type, value type, mutability
-   pair: validation; field type
-   pair: validation; storage type
-   pair: validation; packed type
-   single: abstract syntax; field type
-   single: abstract syntax; storage type
-   single: abstract syntax; packed type
-   single: abstract syntax; value type
-.. _valid-fieldtype:
-.. _valid-storagetype:
-.. _valid-packtype:
-
-Field Types
-~~~~~~~~~~~
-
-$${rule-prose: Fieldtype_ok}
-
-$${rule: Fieldtype_ok}
-
-
-$${rule-prose: Packtype_ok}
-
-$${rule: Packtype_ok}
 
 
 .. index:: recursive type, sub type, composite type, final, subtyping
@@ -226,18 +249,6 @@ $${rule: Subtype_ok}
    Future versions of WebAssembly may allow more than one supertype.
 
 
-.. index:: defined type, recursive type, unroll, expand
-   pair: abstract syntax; defined type
-.. _valid-deftype:
-
-Defined Types
-~~~~~~~~~~~~~
-
-$${rule-prose: Deftype_ok}
-
-$${rule: Deftype_ok}
-
-
 .. index:: limits
    pair: validation; limits
    single: abstract syntax; limits
@@ -253,32 +264,6 @@ $${rule-prose: Limits_ok}
 $${rule: Limits_ok}
 
 
-.. index:: table type, reference type, limits
-   pair: validation; table type
-   single: abstract syntax; table type
-.. _valid-tabletype:
-
-Table Types
-~~~~~~~~~~~
-
-$${rule-prose: Tabletype_ok}
-
-$${rule: Tabletype_ok}
-
-
-.. index:: memory type, limits
-   pair: validation; memory type
-   single: abstract syntax; memory type
-.. _valid-memtype:
-
-Memory Types
-~~~~~~~~~~~~
-
-$${rule-prose: Memtype_ok}
-
-$${rule: Memtype_ok}
-
-
 .. index:: tag type, function type, exception tag
    pair: validation; tag type
    single: abstract syntax; tag type
@@ -290,11 +275,6 @@ Tag Types
 $${rule-prose: Tagtype_ok}
 
 $${rule: Tagtype_ok}
-
-.. note::
-   Tag types do not occur in source programs,
-   so this rule is not needed for validation.
-   It is, however, used in the definition of the :ref:`embedding interface <embed>`.
 
 
 .. index:: global type, value type, mutability
@@ -310,6 +290,32 @@ $${rule-prose: Globaltype_ok}
 $${rule: Globaltype_ok}
 
 
+.. index:: memory type, limits
+   pair: validation; memory type
+   single: abstract syntax; memory type
+.. _valid-memtype:
+
+Memory Types
+~~~~~~~~~~~~
+
+$${rule-prose: Memtype_ok}
+
+$${rule: Memtype_ok}
+
+
+.. index:: table type, reference type, limits
+   pair: validation; table type
+   single: abstract syntax; table type
+.. _valid-tabletype:
+
+Table Types
+~~~~~~~~~~~
+
+$${rule-prose: Tabletype_ok}
+
+$${rule: Tabletype_ok}
+
+
 .. index:: external type, function type, table type, memory type, global type
    pair: validation; external type
    single: abstract syntax; external type
@@ -317,21 +323,6 @@ $${rule: Globaltype_ok}
 
 External Types
 ~~~~~~~~~~~~~~
-
-$${rule-prose: Externtype_ok/func}
-
-$${rule: Externtype_ok/func}
-
-
-$${rule-prose: Externtype_ok/table}
-
-$${rule: Externtype_ok/table}
-
-
-$${rule-prose: Externtype_ok/mem}
-
-$${rule: Externtype_ok/mem}
-
 
 $${rule-prose: Externtype_ok/tag}
 
@@ -341,3 +332,18 @@ $${rule: Externtype_ok/tag}
 $${rule-prose: Externtype_ok/global}
 
 $${rule: Externtype_ok/global}
+
+
+$${rule-prose: Externtype_ok/mem}
+
+$${rule: Externtype_ok/mem}
+
+
+$${rule-prose: Externtype_ok/table}
+
+$${rule: Externtype_ok/table}
+
+
+$${rule-prose: Externtype_ok/func}
+
+$${rule: Externtype_ok/func}

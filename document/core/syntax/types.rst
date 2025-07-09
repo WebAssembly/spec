@@ -237,6 +237,24 @@ which is a sequence of values, written with brackets.
 $${syntax: resulttype}
 
 
+.. index:: ! block type, block, type index, function type, value type, type index
+   pair: abstract syntax; block type
+   pair: block; type
+   pair: type; block
+.. _syntax-blocktype:
+
+Block Types
+~~~~~~~~~~~
+
+*Block types* classify the *input* and *output* of structured :ref:`control instructions <syntax-instr-control>` delimiting :ref:`blocks <syntax-block>` of instructions.
+
+$${syntax: blocktype}
+
+They are given either as a :ref:`type index <syntax-funcidx>` that refers to a suitable :ref:`function type <syntax-functype>` reinterpreted as an :ref:`instruction type <syntax-instrtype>`,
+or as an optional :ref:`value type <syntax-valtype>` inline,
+which is a shorthand for the instruction type ${instrtype: eps -> valtype?}.
+
+
 .. index:: ! function type, value type, list, function, parameter, result, result type
    pair: abstract syntax; function type
    pair: function; type
@@ -330,8 +348,8 @@ In a :ref:`module <syntax-module>`, each member of a recursive type is assigned 
    single: table; address type
 .. _syntax-addrtype:
 
-Address Type
-~~~~~~~~~~~~
+Address Types
+~~~~~~~~~~~~~
 
 *Address types* are a subset of :ref:`number types <syntax-numtype>` that classify the values that can be used as offsets into
 :ref:`memories <syntax-mem>` and :ref:`tables <syntax-table>`.
@@ -370,13 +388,12 @@ $${syntax: limits}
    pair: abstract syntax; mutability
    pair: global; type
    pair: global; mutability
-.. _syntax-mut:
-.. _syntax-globaltype:
+.. _syntax-tagtype:
 
 Tag Types
 ~~~~~~~~~
 
-*Tag types* classify :ref:`tags <syntax-tags>`.
+*Tag types* classify :ref:`tags <syntax-tag>`.
 The :ref:`type use <syntax-typeuse>` has to refer to the definition of a :ref:`function type <syntax-functype>` that declares the types of parameter and result values associated with the tag.
 The result type is empty for exception tags.
 

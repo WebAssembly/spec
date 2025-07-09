@@ -144,6 +144,36 @@ Limits
 $${grammar: Blimits}
 
 
+.. index:: tag type, function type, exception tag
+   pair: binary format; tag type
+.. _binary-tagtype:
+
+Tag Types
+~~~~~~~~~
+
+:ref:`Tag types <syntax-tagtype>` are encoded by a :ref:`type index <syntax-typeidx>` denoting a :ref:`function type <syntax-functype>`.
+
+$${grammar: Btagtype}
+
+.. note::
+   In future versions of WebAssembly,
+   the preceding zero byte may encode additional attributes.
+
+
+.. index:: global type, mutability, value type
+   pair: binary format; global type
+   pair: binary format; mutability
+.. _binary-mut:
+.. _binary-globaltype:
+
+Global Types
+~~~~~~~~~~~~
+
+:ref:`Global types <syntax-globaltype>` are encoded by their :ref:`value type <binary-valtype>` and a flag for their :ref:`mutability <syntax-mut>`.
+
+$${grammar: Bglobaltype}
+
+
 .. index:: memory type, limits, page size
    pair: binary format; memory type
 .. _binary-memtype:
@@ -166,36 +196,6 @@ Table Types
 :ref:`Table types <syntax-tabletype>` are encoded with their :ref:`limits <binary-limits>` and the encoding of their element :ref:`reference type <syntax-reftype>`.
 
 $${grammar: Btabletype}
-
-
-.. index:: global type, mutability, value type
-   pair: binary format; global type
-   pair: binary format; mutability
-.. _binary-mut:
-.. _binary-globaltype:
-
-Global Types
-~~~~~~~~~~~~
-
-:ref:`Global types <syntax-globaltype>` are encoded by their :ref:`value type <binary-valtype>` and a flag for their :ref:`mutability <syntax-mut>`.
-
-$${grammar: Bglobaltype}
-
-
-.. index:: tag type, function type, exception tag
-   pair: binary format; tag type
-.. _binary-tagtype:
-
-Tag Types
-~~~~~~~~~
-
-:ref:`Tag types <syntax-tagtype>` are encoded by a :ref:`type index <syntax-typeidx>` denoting a :ref:`function type <syntax-functype>`.
-
-$${grammar: Btagtype}
-
-.. note::
-   In future versions of WebAssembly,
-   the preceding zero byte may encode additional flags.
 
 
 .. index:: external type

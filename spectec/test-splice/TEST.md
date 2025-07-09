@@ -688,6 +688,7 @@ warning: grammar `Bvaltype` was never spliced
 warning: grammar `Bvar` was never spliced
 warning: grammar `Bvectype` was never spliced
 warning: grammar `Bversion` was never spliced
+warning: rule `Arraytype_ok` was never spliced
 warning: rule `Blocktype_ok/valtype` was never spliced
 warning: rule `Blocktype_ok/typeidx` was never spliced
 warning: rule `Catch_ok/catch` was never spliced
@@ -1152,6 +1153,7 @@ warning: rule `Storagetype_ok/val` was never spliced
 warning: rule `Storagetype_ok/pack` was never spliced
 warning: rule `Storagetype_sub/val` was never spliced
 warning: rule `Storagetype_sub/pack` was never spliced
+warning: rule `Structtype_ok` was never spliced
 warning: rule `Subtype_ok` was never spliced
 warning: rule `Subtype_ok2` was never spliced
 warning: rule `Table_ok` was never spliced
@@ -1164,8 +1166,8 @@ warning: rule `Type_ok` was never spliced
 warning: rule `Types_ok/empty` was never spliced
 warning: rule `Types_ok/cons` was never spliced
 warning: rule `Typeuse_ok/typeidx` was never spliced
-warning: rule `Typeuse_ok/deftype` was never spliced
 warning: rule `Typeuse_ok/rec` was never spliced
+warning: rule `Typeuse_ok/deftype` was never spliced
 warning: rule `Val_ok/num` was never spliced
 warning: rule `Val_ok/vec` was never spliced
 warning: rule `Val_ok/ref` was never spliced
@@ -1604,6 +1606,7 @@ warning: definition `zbytes_` was never spliced
 warning: definition `zero` was never spliced
 warning: definition `zeroop` was never spliced
 warning: definition `zsize` was never spliced
+warning: rule prose `Arraytype_ok` was never spliced
 warning: rule prose `Blocktype_ok` was never spliced
 warning: rule prose `Blocktype_ok/typeidx` was never spliced
 warning: rule prose `Blocktype_ok/valtype` was never spliced
@@ -2002,6 +2005,7 @@ warning: rule prose `Storagetype_ok/val` was never spliced
 warning: rule prose `Storagetype_sub` was never spliced
 warning: rule prose `Storagetype_sub/pack` was never spliced
 warning: rule prose `Storagetype_sub/val` was never spliced
+warning: rule prose `Structtype_ok` was never spliced
 warning: rule prose `Subtype_ok` was never spliced
 warning: rule prose `Subtype_ok2` was never spliced
 warning: rule prose `Table_ok` was never spliced

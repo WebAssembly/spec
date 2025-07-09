@@ -327,6 +327,36 @@ Limits
     \end{array}
 
 
+.. index:: tag type, type use
+   pair: text format; tag type
+.. _text-tagtype:
+
+Tag Types
+~~~~~~~~~
+
+.. math::
+   \begin{array}{llcl}
+   \production{tag} & \Ttagtype_I &::=&
+     x,I'{:}\Ttypeuse_I~\text{)} \Rightarrow\quad x \\
+   \end{array}
+
+
+.. index:: global type, mutability, value type
+   pair: text format; global type
+   pair: text format; mutability
+.. _text-globaltype:
+
+Global Types
+~~~~~~~~~~~~
+
+.. math::
+   \begin{array}{llclll}
+   \production{global type} & \Tglobaltype_I &::=&
+     t{:}\Tvaltype &\Rightarrow& \MCONST~t \\ &&|&
+     \text{(}~\text{mut}~~t{:}\Tvaltype_I~\text{)} &\Rightarrow& \MVAR~t \\
+   \end{array}
+
+
 .. index:: memory type, limits, page size
    pair: text format; memory type
 .. _text-memtype:
@@ -352,20 +382,4 @@ Table Types
    \begin{array}{llclll}
    \production{table type} & \Ttabletype_I &::=&
      \X{at}{:}\Taddrtype~~\X{lim}{:}\Tlimits~~\X{et}{:}\Treftype_I &\Rightarrow& \X{at}~\X{lim}~\X{et} \\
-   \end{array}
-
-
-.. index:: global type, mutability, value type
-   pair: text format; global type
-   pair: text format; mutability
-.. _text-globaltype:
-
-Global Types
-~~~~~~~~~~~~
-
-.. math::
-   \begin{array}{llclll}
-   \production{global type} & \Tglobaltype_I &::=&
-     t{:}\Tvaltype &\Rightarrow& \MCONST~t \\ &&|&
-     \text{(}~\text{mut}~~t{:}\Tvaltype_I~\text{)} &\Rightarrow& \MVAR~t \\
    \end{array}

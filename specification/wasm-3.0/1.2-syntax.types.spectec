@@ -18,7 +18,7 @@ syntax numtype hint(desc "number type") =
 syntax vectype hint(desc "vector type") =
   | V128
 
-syntax consttype hint(desc "literal type") =
+syntax consttype hint(desc "constant type") =
   | numtype | vectype
 
 syntax absheaptype/syn hint(desc "abstract heap type") =

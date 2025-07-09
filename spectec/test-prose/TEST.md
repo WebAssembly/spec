@@ -13376,16 +13376,16 @@ The type use :math:`{\mathit{typeuse}}` is :ref:`valid <valid-val>` if:
 
    * Or:
 
-      * The type use :math:`{\mathit{typeuse}}` is of the form :math:`{\mathit{deftype}}`.
-
-      * The defined type :math:`{\mathit{deftype}}` is :ref:`valid <valid-val>`.
-   * Or:
-
       * The type use :math:`{\mathit{typeuse}}` is of the form :math:`(\mathsf{rec} {.} i)`.
 
       * The recursive type :math:`C{.}\mathsf{recs}{}[i]` exists.
 
       * The recursive type :math:`C{.}\mathsf{recs}{}[i]` is of the form :math:`{\mathit{st}}`.
+   * Or:
+
+      * The type use :math:`{\mathit{typeuse}}` is of the form :math:`{\mathit{deftype}}`.
+
+      * The defined type :math:`{\mathit{deftype}}` is :ref:`valid <valid-val>`.
 
 
 
@@ -13400,20 +13400,20 @@ The type use :math:`{\mathit{typeidx}}` is :ref:`valid <valid-val>` if:
 
 
 
-The type use :math:`{\mathit{deftype}}` is :ref:`valid <valid-val>` if:
-
-
-   * The defined type :math:`{\mathit{deftype}}` is :ref:`valid <valid-val>`.
-
-
-
-
 The type use :math:`(\mathsf{rec} {.} i)` is :ref:`valid <valid-val>` if:
 
 
    * The recursive type :math:`C{.}\mathsf{recs}{}[i]` exists.
 
    * The recursive type :math:`C{.}\mathsf{recs}{}[i]` is of the form :math:`{\mathit{st}}`.
+
+
+
+
+The type use :math:`{\mathit{deftype}}` is :ref:`valid <valid-val>` if:
+
+
+   * The defined type :math:`{\mathit{deftype}}` is :ref:`valid <valid-val>`.
 
 
 
@@ -13470,32 +13470,7 @@ The storage type :math:`{\mathit{packtype}}` is :ref:`valid <valid-val>` if:
 
 
 
-The composite type :math:`{\mathit{comptype}}` is :ref:`valid <valid-val>` if:
-
-
-   * Either:
-
-      * The composite type :math:`{\mathit{comptype}}` is of the form :math:`(\mathsf{struct}~{{\mathit{fieldtype}}^\ast})`.
-
-      * For all :math:`{\mathit{fieldtype}}` in :math:`{{\mathit{fieldtype}}^\ast}`:
-
-         * The field type :math:`{\mathit{fieldtype}}` is :ref:`valid <valid-val>`.
-
-   * Or:
-
-      * The composite type :math:`{\mathit{comptype}}` is of the form :math:`(\mathsf{array}~{\mathit{fieldtype}})`.
-
-      * The field type :math:`{\mathit{fieldtype}}` is :ref:`valid <valid-val>`.
-   * Or:
-
-      * The composite type :math:`{\mathit{comptype}}` is of the form :math:`(\mathsf{func}~{\mathit{functype}})`.
-
-      * The function type :math:`{\mathit{functype}}` is :ref:`valid <valid-val>`.
-
-
-
-
-The composite type :math:`(\mathsf{struct}~{{\mathit{fieldtype}}^\ast})` is :ref:`valid <valid-val>` if:
+The structure type :math:`{{\mathit{fieldtype}}^\ast}` is :ref:`valid <valid-val>` if:
 
 
    * For all :math:`{\mathit{fieldtype}}` in :math:`{{\mathit{fieldtype}}^\ast}`:
@@ -13505,18 +13480,10 @@ The composite type :math:`(\mathsf{struct}~{{\mathit{fieldtype}}^\ast})` is :ref
 
 
 
-The composite type :math:`(\mathsf{array}~{\mathit{fieldtype}})` is :ref:`valid <valid-val>` if:
+The array type :math:`{\mathit{fieldtype}}` is :ref:`valid <valid-val>` if:
 
 
    * The field type :math:`{\mathit{fieldtype}}` is :ref:`valid <valid-val>`.
-
-
-
-
-The composite type :math:`(\mathsf{func}~{\mathit{functype}})` is :ref:`valid <valid-val>` if:
-
-
-   * The function type :math:`{\mathit{functype}}` is :ref:`valid <valid-val>`.
 
 
 
@@ -13527,6 +13494,53 @@ The function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is :ref:`valid <vali
    * The result type :math:`{t_1^\ast}` is :ref:`valid <valid-val>`.
 
    * The result type :math:`{t_2^\ast}` is :ref:`valid <valid-val>`.
+
+
+
+
+The composite type :math:`{\mathit{comptype}}` is :ref:`valid <valid-val>` if:
+
+
+   * Either:
+
+      * The composite type :math:`{\mathit{comptype}}` is of the form :math:`(\mathsf{struct}~{\mathit{structtype}})`.
+
+      * The structure type :math:`{\mathit{structtype}}` is :ref:`valid <valid-val>`.
+
+   * Or:
+
+      * The composite type :math:`{\mathit{comptype}}` is of the form :math:`(\mathsf{array}~{\mathit{arraytype}})`.
+
+      * The array type :math:`{\mathit{arraytype}}` is :ref:`valid <valid-val>`.
+   * Or:
+
+      * The composite type :math:`{\mathit{comptype}}` is of the form :math:`(\mathsf{func}~{\mathit{functype}})`.
+
+      * The function type :math:`{\mathit{functype}}` is :ref:`valid <valid-val>`.
+
+
+
+
+The composite type :math:`(\mathsf{struct}~{\mathit{structtype}})` is :ref:`valid <valid-val>` if:
+
+
+   * The structure type :math:`{\mathit{structtype}}` is :ref:`valid <valid-val>`.
+
+
+
+
+The composite type :math:`(\mathsf{array}~{\mathit{arraytype}})` is :ref:`valid <valid-val>` if:
+
+
+   * The array type :math:`{\mathit{arraytype}}` is :ref:`valid <valid-val>`.
+
+
+
+
+The composite type :math:`(\mathsf{func}~{\mathit{functype}})` is :ref:`valid <valid-val>` if:
+
+
+   * The function type :math:`{\mathit{functype}}` is :ref:`valid <valid-val>`.
 
 
 
@@ -21304,7 +21318,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .................................................
 
 
-1. If :math:`{\mathit{storagetype}}` is literal type, then:
+1. If :math:`{\mathit{storagetype}}` is constant type, then:
 
    a. Return :math:`{\mathit{storagetype}}`.
 
@@ -23222,7 +23236,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .............................................
 
 
-1. If :math:`{\mathit{storagetype}}` is literal type, then:
+1. If :math:`{\mathit{storagetype}}` is constant type, then:
 
    a. Return :math:`\epsilon`.
 
@@ -23462,7 +23476,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .....................................................
 
 
-1. If :math:`{\mathit{storagetype}}` is literal type, then:
+1. If :math:`{\mathit{storagetype}}` is constant type, then:
 
    a. Return :math:`c`.
 
@@ -23488,7 +23502,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .......................................................
 
 
-1. If :math:`{\mathit{storagetype}}` is literal type, then:
+1. If :math:`{\mathit{storagetype}}` is constant type, then:
 
    a. Return :math:`c`.
 
@@ -25866,26 +25880,26 @@ Typeuse_ok
     - the type C.TYPES[typeidx] exists.
     - C.TYPES[typeidx] is dt.
   - Or:
-    - typeuse is deftype.
-    - the defined type deftype is valid.
-  - Or:
     - typeuse is (REC i).
     - the recursive type C.RECS[i] exists.
     - C.RECS[i] is st.
+  - Or:
+    - typeuse is deftype.
+    - the defined type deftype is valid.
 
 Typeuse_ok/typeidx
 - the type use (_IDX typeidx) is valid if:
   - the type C.TYPES[typeidx] exists.
   - C.TYPES[typeidx] is dt.
 
-Typeuse_ok/deftype
-- the type use deftype is valid if:
-  - deftype is valid.
-
 Typeuse_ok/rec
 - the type use (REC i) is valid if:
   - the recursive type C.RECS[i] exists.
   - C.RECS[i] is st.
+
+Typeuse_ok/deftype
+- the type use deftype is valid if:
+  - deftype is valid.
 
 Resulttype_ok
 - the result type t* is valid if:
@@ -25913,36 +25927,43 @@ Storagetype_ok/pack
 - the storage type packtype is valid if:
   - packtype is valid.
 
-Comptype_ok
-- the composite type comptype is valid if:
-  - Either:
-    - comptype is (STRUCT fieldtype*).
-    - For all fieldtype in fieldtype*:
-      - the field type fieldtype is valid.
-  - Or:
-    - comptype is (ARRAY fieldtype).
-    - fieldtype is valid.
-  - Or:
-    - comptype is (FUNC functype).
-    - the function type functype is valid.
-
-Comptype_ok/struct
-- the composite type (STRUCT fieldtype*) is valid if:
+Structtype_ok
+- the structure type fieldtype* is valid if:
   - For all fieldtype in fieldtype*:
     - the field type fieldtype is valid.
 
-Comptype_ok/array
-- the composite type (ARRAY fieldtype) is valid if:
-  - the field type fieldtype is valid.
-
-Comptype_ok/func
-- the composite type (FUNC functype) is valid if:
-  - the function type functype is valid.
+Arraytype_ok
+- the array type fieldtype is valid if:
+  - fieldtype is valid.
 
 Functype_ok
 - the function type t_1* -> t_2* is valid if:
   - the result type t_1* is valid.
   - the result type t_2* is valid.
+
+Comptype_ok
+- the composite type comptype is valid if:
+  - Either:
+    - comptype is (STRUCT structtype).
+    - the structure type structtype is valid.
+  - Or:
+    - comptype is (ARRAY arraytype).
+    - the array type arraytype is valid.
+  - Or:
+    - comptype is (FUNC functype).
+    - the function type functype is valid.
+
+Comptype_ok/struct
+- the composite type (STRUCT structtype) is valid if:
+  - the structure type structtype is valid.
+
+Comptype_ok/array
+- the composite type (ARRAY arraytype) is valid if:
+  - the array type arraytype is valid.
+
+Comptype_ok/func
+- the composite type (FUNC functype) is valid if:
+  - the function type functype is valid.
 
 Subtype_ok
 - the sub type (SUB FINAL? (_IDX x)* comptype) is valid for the type index (OK x_0) if:
