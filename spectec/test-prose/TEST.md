@@ -1117,8 +1117,6 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    a. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
 
-   #. Assert: Due to validation, :math:`{n'} \geq 1`.
-
    #. Let :math:`l` be the label index :math:`{n'} - 1`.
 
    #. Pop the :math:`\mathsf{label}` L from the stack.
@@ -3543,11 +3541,10 @@ Step_pure/br n'
   f. Execute the sequence instr'*.
 4. Else:
   a. Pop all values val* from the top of the stack.
-  b. Assert: Due to validation, (n' >= 1).
-  c. Let l be (n' - 1).
-  d. Pop the label (LABEL_ _ { _ }) from the stack.
-  e. Push the values val* to the stack.
-  f. Execute the instruction (BR l).
+  b. Let l be (n' - 1).
+  c. Pop the label (LABEL_ _ { _ }) from the stack.
+  d. Push the values val* to the stack.
+  e. Execute the instruction (BR l).
 
 Step_pure/br_if l
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
@@ -6292,8 +6289,6 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Else:
 
    a. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
-
-   #. Assert: Due to validation, :math:`{n'} \geq 1`.
 
    #. Let :math:`l` be the label index :math:`{n'} - 1`.
 
@@ -11315,11 +11310,10 @@ Step_pure/br n'
   f. Execute the sequence instr'*.
 4. Else:
   a. Pop all values val* from the top of the stack.
-  b. Assert: Due to validation, (n' >= 1).
-  c. Let l be (n' - 1).
-  d. Pop the label (LABEL_ _ { _ }) from the stack.
-  e. Push the values val* to the stack.
-  f. Execute the instruction (BR l).
+  b. Let l be (n' - 1).
+  c. Pop the label (LABEL_ _ { _ }) from the stack.
+  d. Push the values val* to the stack.
+  e. Execute the instruction (BR l).
 
 Step_pure/br_if l
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
@@ -17184,8 +17178,6 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    a. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
 
-   #. Assert: Due to validation, :math:`l > 0`.
-
    #. Pop the :math:`\mathsf{label}` L from the stack.
 
    #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
@@ -17794,8 +17786,6 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
    #. Else:
 
       1) Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
-
-      #) Assert: Due to validation, :math:`l > 0`.
 
       #) Pop the :math:`\mathsf{label}` L from the stack.
 
@@ -27837,10 +27827,9 @@ Step_pure/br-label-* l
   f. Execute the sequence instr'*.
 4. Else:
   a. Pop all values val* from the top of the stack.
-  b. Assert: Due to validation, (l > 0).
-  c. Pop the label (LABEL_ _ { _ }) from the stack.
-  d. Push the values val* to the stack.
-  e. Execute the instruction (BR (l - 1)).
+  b. Pop the label (LABEL_ _ { _ }) from the stack.
+  c. Push the values val* to the stack.
+  d. Execute the instruction (BR (l - 1)).
 
 Step_read/return_call_ref-frame-* yy
 1. Let z be the current state.
@@ -28123,10 +28112,9 @@ Step_pure/br l
     6) Execute the sequence instr'*.
   c. Else:
     1) Pop all values val* from the top of the stack.
-    2) Assert: Due to validation, (l > 0).
-    3) Pop the label (LABEL_ _ { _ }) from the stack.
-    4) Push the values val* to the stack.
-    5) Execute the instruction (BR (l - 1)).
+    2) Pop the label (LABEL_ _ { _ }) from the stack.
+    3) Push the values val* to the stack.
+    4) Execute the instruction (BR (l - 1)).
 2. Else:
   a. Assert: Due to validation, the first non-value entry of the stack is a HANDLER_.
   b. Pop all values val* from the top of the stack.
