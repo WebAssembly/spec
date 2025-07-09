@@ -76,16 +76,18 @@ rule Expand_use/typeidx: _IDX typeidx ~~_C comptype  -- Expand: C.TYPES[typeidx]
 
 ;; Type definitions
 
-syntax oktypeidx hint(show OK#((typeidx)))    = | OK typeidx      hint(show OK#(%))     hint(macro "%subtype")
-syntax oktypeidxnat hint(show OK#(typeidx,n)) = | OK typeidx nat  hint(show OK#(%,%))   hint(macro "%subtypeext")
+syntax oktypeidx hint(show OK#((typeidx))) hint(prose_desc "type index") =
+  | OK typeidx      hint(show OK#(%))     hint(macro "%subtype")    hint(prose_show %)
+syntax oktypeidxnat hint(show OK#(typeidx,n)) =
+  | OK typeidx nat  hint(show OK#(%,%))   hint(macro "%subtypeext")
 
 relation Packtype_ok: context |- packtype : OK          hint(name "K-pack")    hint(macro "%packtype")
 relation Fieldtype_ok: context |- fieldtype : OK        hint(name "K-field")   hint(macro "%fieldtype")
 relation Storagetype_ok: context |- storagetype : OK    hint(name "K-storage") hint(macro "%storagetype")
 relation Comptype_ok: context |- comptype : OK          hint(name "K-comp")    hint(macro "%comptype")
 relation Functype_ok: context |- functype : OK          hint(name "K-func")    hint(macro "%functype")
-relation Subtype_ok: context |- subtype : oktypeidx     hint(name "K-sub")     hint(macro "%subtype")  hint(prosepp "for")
-relation Rectype_ok: context |- rectype : oktypeidx     hint(name "K-rect")    hint(macro "%rectype")  hint(prosepp "for")
+relation Subtype_ok: context |- subtype : oktypeidx     hint(name "K-sub")     hint(macro "%subtype")     hint(prosepp "for")
+relation Rectype_ok: context |- rectype : oktypeidx     hint(name "K-rect")    hint(macro "%rectype")     hint(prosepp "for")
 relation Subtype_ok2: context |- subtype : oktypeidxnat hint(name "K-sub2")    hint(macro "%subtypeext")  hint(prosepp "for")
 relation Rectype_ok2: context |- rectype : oktypeidxnat hint(name "K-rec2")    hint(macro "%rectypeext")  hint(prosepp "for")
 relation Deftype_ok: context |- deftype : OK            hint(name "K-def")     hint(macro "%deftype")

@@ -13537,7 +13537,7 @@ The function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is :ref:`valid <vali
 
 
 
-The sub type :math:`(\mathsf{sub}~{\mathsf{final}^?}~{x^\ast}~{\mathit{comptype}})` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x_0)})` if:
+The sub type :math:`(\mathsf{sub}~{\mathsf{final}^?}~{x^\ast}~{\mathit{comptype}})` is :ref:`valid <valid-val>` for the type index :math:`((x_0))` if:
 
 
    * The length of :math:`{x^\ast}` is less than or equal to :math:`1`.
@@ -13567,7 +13567,7 @@ The sub type :math:`(\mathsf{sub}~{\mathsf{final}^?}~{x^\ast}~{\mathit{comptype}
 
 
 
-The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}'}^\ast})` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x)})` if:
+The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}'}^\ast})` is :ref:`valid <valid-val>` for the type index :math:`((x))` if:
 
 
    * Either:
@@ -13578,24 +13578,24 @@ The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}'}^\ast})` is :ref:`va
 
       * The sub type sequence :math:`{{\mathit{subtype}'}^\ast}` is of the form :math:`{\mathit{subtype}}_1~{{\mathit{subtype}}^\ast}`.
 
-      * The sub type :math:`{\mathit{subtype}}_1` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x)})`.
+      * The sub type :math:`{\mathit{subtype}}_1` is :ref:`valid <valid-val>` for the type index :math:`((x))`.
 
-      * The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x + 1)})`.
-
-
-
-
-The recursive type :math:`(\mathsf{rec})` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x)})`.
+      * The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is :ref:`valid <valid-val>` for the type index :math:`((x + 1))`.
 
 
 
 
-The recursive type :math:`(\mathsf{rec}~{\mathit{subtype}}_1~{{\mathit{subtype}}^\ast})` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x)})` if:
+The recursive type :math:`(\mathsf{rec})` is :ref:`valid <valid-val>` for the type index :math:`((x))`.
 
 
-   * The sub type :math:`{\mathit{subtype}}_1` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x)})`.
 
-   * The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x + 1)})`.
+
+The recursive type :math:`(\mathsf{rec}~{\mathit{subtype}}_1~{{\mathit{subtype}}^\ast})` is :ref:`valid <valid-val>` for the type index :math:`((x))` if:
+
+
+   * The sub type :math:`{\mathit{subtype}}_1` is :ref:`valid <valid-val>` for the type index :math:`((x))`.
+
+   * The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is :ref:`valid <valid-val>` for the type index :math:`((x + 1))`.
 
 
 
@@ -13662,7 +13662,7 @@ The recursive type :math:`(\mathsf{rec}~{\mathit{subtype}}_1~{{\mathit{subtype}}
 The defined type :math:`({\mathit{rectype}} {.} i)` is :ref:`valid <valid-val>` if:
 
 
-   * The recursive type :math:`{\mathit{rectype}}` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x)})`.
+   * The recursive type :math:`{\mathit{rectype}}` is :ref:`valid <valid-val>` for the type index :math:`((x))`.
 
    * The recursive type :math:`{\mathit{rectype}}` is of the form :math:`(\mathsf{rec}~{{\mathit{subtype}}^{n}})`.
 
@@ -16236,7 +16236,7 @@ The type definition :math:`(\mathsf{type}~{\mathit{rectype}})` is :ref:`valid <v
 
    * Let :math:`{C'}` be the same context as :math:`C`, but with the defined type sequence :math:`{{\mathit{dt}}^\ast}` appended to the field :math:`\mathsf{types}`.
 
-   * Under the context :math:`{C'}`, the recursive type :math:`{\mathit{rectype}}` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x)})`.
+   * Under the context :math:`{C'}`, the recursive type :math:`{\mathit{rectype}}` is :ref:`valid <valid-val>` for the type index :math:`((x))`.
 
 
 
@@ -25955,7 +25955,7 @@ Functype_ok
   - the result type t_2* is valid.
 
 Subtype_ok
-- the sub type (SUB FINAL? (_IDX x)* comptype) is valid for (OK x_0) if:
+- the sub type (SUB FINAL? (_IDX x)* comptype) is valid for the type index (OK x_0) if:
   - |x*| is less than or equal to 1.
   - For all x in x*:
     - the index x is less than x_0.
@@ -25970,21 +25970,21 @@ Subtype_ok
     - comptype matches the composite type comptype'.
 
 Rectype_ok
-- the recursive type (REC subtype'*) is valid for (OK x) if:
+- the recursive type (REC subtype'*) is valid for the type index (OK x) if:
   - Either:
     - the sub type sequence subtype'* is [].
   - Or:
     - subtype'* is [subtype_1] :: subtype*.
     - the sub type subtype_1 is valid for (OK x).
-    - the recursive type (REC subtype*) is valid for (OK (x + 1)).
+    - the recursive type (REC subtype*) is valid for the type index (OK (x + 1)).
 
 Rectype_ok/empty
 - the recursive type (REC []) is valid for (OK x).
 
 Rectype_ok/cons
-- the recursive type (REC [subtype_1] :: subtype*) is valid for (OK x) if:
+- the recursive type (REC [subtype_1] :: subtype*) is valid for the type index (OK x) if:
   - the sub type subtype_1 is valid for (OK x).
-  - the recursive type (REC subtype*) is valid for (OK (x + 1)).
+  - the recursive type (REC subtype*) is valid for the type index (OK (x + 1)).
 
 Subtype_ok2
 - the sub type (SUB FINAL? typeuse* compttype) is valid for (OK x i) if:
@@ -26018,7 +26018,7 @@ Rectype_ok2/cons
 
 Deftype_ok
 - the defined type (_DEF rectype i) is valid if:
-  - the recursive type rectype is valid for (OK x).
+  - the recursive type rectype is valid for the type index (OK x).
   - rectype is (REC subtype^n).
   - i is less than n.
 
@@ -27351,7 +27351,7 @@ Type_ok
   - |C.TYPES| is x.
   - dt* is $rolldt(x, rectype).
   - the context C' is the context C with .TYPES appended by dt*.
-  - Under the context C', the recursive type rectype is valid for (OK x).
+  - Under the context C', the recursive type rectype is valid for the type index (OK x).
 
 Tag_ok
 - the tag (TAG tagtype) is valid with the tag type t if:

@@ -31,14 +31,14 @@ let map_update ?(partial = false) x y map =
           error no_region msg
       ) !map
 
-type hintenv = 
+type hintenv =
   {
     prose_hints : hints ref;
     prosepp_hints : hints ref;
     desc_hints : hints ref;
   }
 
-let hintenv = 
+let hintenv =
   {
     prose_hints = ref Map.empty;
     prosepp_hints = ref Map.empty;
@@ -278,7 +278,7 @@ let rec find_case_typ' s a: El.Ast.typ list option =
     in
     (match List.find_map find_typ tcs with
     | Some ts -> Some ts
-    | _ -> 
+    | _ ->
       List.find_map (function
       | Nl -> None
       | Elem typ -> find_case_typ' (El.Print.string_of_typ typ) a
@@ -289,7 +289,83 @@ let rec find_case_typ' s a: El.Ast.typ list option =
 let find_case_typ s a: El.Ast.typ list =
   match find_case_typ' s a with
   | Some ts -> ts
-  | None -> 
+  | None ->
     let msg = sprintf "cannot find typcase of atom %s from typ %s"
       (Xl.Atom.to_string a) s in
     error no_region msg
+
+open El.Ast
+open El.Convert
+
+(* If there is a hint of the form prose-xxx, temporarily consider as if it were the hint xxx *)
+let replace_prose_hints hs =
+  let phs, hs = List.partition (fun h -> String.starts_with ~prefix:"prose_" h.hintid.it) hs in
+  let hs' = Util.Lib.List.filter_not (fun h ->
+    List.exists (fun ph -> ph.hintid.it = "prose_" ^ h.hintid.it) phs
+  ) hs in
+
+  let phs' = List.map (fun ph ->
+    let name = ph.hintid.it in
+    let name' = String.sub name 6 (String.length name - 6) in
+    let hintid' = {ph.hintid with it = name'} in
+    {ph with hintid = hintid'}
+  ) phs in
+
+  phs' @ hs'
+
+let rec replace_prose_hint_typ t =
+  let it =
+    match t.it with
+    | VarT (id, args) -> VarT (id, args)
+    | BoolT -> BoolT
+    | NumT n -> NumT n
+    | TextT -> TextT
+    | ParenT t1 -> ParenT (replace_prose_hint_typ t1)
+    | TupT ts -> TupT (List.map replace_prose_hint_typ ts)
+    | IterT (t1, iter) -> IterT (replace_prose_hint_typ t1, iter)
+    | StrT fields ->
+        StrT (map_nl_list (fun (a, (t, prems), hints) ->
+          (a, (replace_prose_hint_typ t, prems), replace_prose_hints hints)) fields)
+    | CaseT (d1, tys, cases, d2) ->
+        let tys' = map_nl_list replace_prose_hint_typ tys in
+        let cases' = map_nl_list (fun (a, (t, prems), hints) ->
+          (a, (replace_prose_hint_typ t, prems), replace_prose_hints hints)) cases
+        in
+        CaseT (d1, tys', cases', d2)
+    | ConT ((t1, prems), hints) -> ConT ((replace_prose_hint_typ t1, prems), replace_prose_hints hints)
+    | RangeT nums -> RangeT nums
+    | AtomT a -> AtomT a
+    | SeqT ts -> SeqT (List.map replace_prose_hint_typ ts)
+    | InfixT (t1, a, t2) -> InfixT (replace_prose_hint_typ t1, a, replace_prose_hint_typ t2)
+    | BrackT (a1, t1, a2) -> BrackT (a1, replace_prose_hint_typ t1, a2)
+  in
+  {t with it}
+
+let replace_prose_hint_hintdef h =
+  let it =
+    match h.it with
+    | AtomH (id, atom, hs) -> AtomH (id, atom, replace_prose_hints hs)
+    | TypH (id1, id2, hs) -> TypH (id1, id2, replace_prose_hints hs)
+    | GramH (id1, id2, hs) -> GramH (id1, id2, replace_prose_hints hs)
+    | RelH (id, hs) -> RelH (id, replace_prose_hints hs)
+    | VarH (id, hs) -> VarH (id, replace_prose_hints hs)
+    | DecH (id, hs) -> DecH (id, replace_prose_hints hs)
+  in
+  {h with it}
+
+let replace_prose_hint_def d =
+  let it =
+    match d.it with
+    | FamD (id, params, hs) -> FamD (id, params, replace_prose_hints hs)
+    | TypD (id, typid, args, typ, hs) -> TypD (id, typid, args, replace_prose_hint_typ typ, replace_prose_hints hs)
+    | GramD (id, gramid, params, typ, gram, hs) -> GramD (id, gramid, params, replace_prose_hint_typ typ, gram, replace_prose_hints hs)
+    | RelD (id, typ, hs) -> RelD (id, replace_prose_hint_typ typ, replace_prose_hints hs)
+    | VarD (id, typ, hs) -> VarD (id, replace_prose_hint_typ typ, replace_prose_hints hs)
+    | DecD (id, params, typ, hs) -> DecD (id, params, replace_prose_hint_typ typ, replace_prose_hints hs)
+    | HintD hintdef -> HintD (replace_prose_hint_hintdef hintdef)
+    | it -> it
+  in
+  {d with it}
+
+let replace_prose_hint el =
+  List.map replace_prose_hint_def el
