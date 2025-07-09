@@ -62,6 +62,57 @@ let both_non_empty cond1 cond2 =
   | Some e1, Some e2 -> Eq.eq_expr e1 e2
   | _ -> false
 
+let eq_nat_cond cond1 cond2 =
+  let is_nat e =
+    match e.note.it with
+    | Il.Ast.NumT `NatT -> true
+    | Il.Ast.VarT (id, _) -> id.it = "uN" || String.ends_with ~suffix:"idx" id.it
+    | _ -> false
+  in
+  let is_zero cond =
+    match cond.it with
+    | BinE (op, e, { it = NumE (`Nat z); _ }) when is_nat e ->
+      if op = `EqOp && z = Z.zero
+      || op = `LeOp && z = Z.zero
+      || op = `LtOp && z = Z.one then
+        Some e
+      else
+        None
+    | BinE (op, { it = NumE (`Nat z); _ }, e) when is_nat e ->
+      if op = `EqOp && z = Z.zero
+      || op = `GeOp && z = Z.zero
+      || op = `GtOp && z = Z.one then
+        Some e
+      else None
+    | _ -> None
+  in
+  let is_pos cond =
+    match cond.it with
+    | BinE (op, e, { it = NumE (`Nat z); _ }) when is_nat e ->
+      if op = `NeOp && z = Z.zero
+      || op = `GtOp && z = Z.zero
+      || op = `GeOp && z = Z.one then
+        Some e
+      else
+        None
+    | BinE (op, { it = NumE (`Nat z); _ }, e) when is_nat e ->
+      if op = `NeOp && z = Z.zero
+      || op = `LtOp && z = Z.zero
+      || op = `LeOp && z = Z.one then
+        Some e
+      else
+        None
+    | _ -> None
+  in
+
+  (match is_zero cond1, is_zero cond2 with
+  | Some e1, Some e2 -> Eq.eq_expr e1 e2
+  | _ -> false)
+  ||
+  (match is_pos cond1, is_pos cond2 with
+  | Some e1, Some e2 -> Eq.eq_expr e1 e2
+  | _ -> false)
+
 let diff_case cond1 cond2 =
   match cond1.it, cond2.it with
   | IsCaseOfE (e1, a1), IsCaseOfE (e2, a2) ->
@@ -73,6 +124,7 @@ let eq_cond cond1 cond2 =
   Eq.eq_expr cond1 cond2
   || both_empty cond1 cond2
   || both_non_empty cond1 cond2
+  || eq_nat_cond cond1 cond2
 
 let conflicts cond1 cond2 =
   eq_cond (neg cond1) cond2
@@ -330,6 +382,7 @@ let swap_if instr =
   | IfI (c, il, []) -> ifI (c, il, []) ~at:at
   | IfI (c, [], il) -> ifI (neg c, il, []) ~at:at
   | IfI (_, _, il2) when (match il2 with | [{it = IfI _; _}] -> true | _ -> false) -> instr
+  | IfI ({it = BinE (`EqOp, _, {it = NumE _; _}); _}, _, _) -> instr
   | IfI (c, il1, il2) when count_instrs il1 > count_instrs il2 -> ifI (neg c, il2, il1) ~at:at
   | _ -> instr
 
