@@ -370,8 +370,6 @@ The instruction :math:`({\mathit{nt}}_1 {.} {{\mathit{cvtop}'}}{\mathsf{\_}}{{\m
 
    * Or:
 
-      * :math:`{\mathit{cvtop}'}` is of the form :math:`{\mathit{cvtop}}`.
-
 
 
 
@@ -448,13 +446,11 @@ The instruction :math:`({{t'}{.}\mathsf{load}}{{{\mathit{loadop}}^?}}~{\mathit{m
 
    * Either:
 
-      * The number type :math:`{t'}` is of the form :math:`t`.
-
       * :math:`{{\mathit{loadop}}^?}` is absent.
 
-      * The number type :math:`{t'''}` is of the form :math:`t`.
+      * The number type :math:`{t'''}` is of the form :math:`{t'}`.
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|t|} / 8`.
+      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{t'}|} / 8`.
 
    * Or:
 
@@ -476,13 +472,11 @@ The instruction :math:`({{t'}{.}\mathsf{store}}{{{\mathit{sz}}^?}}~{\mathit{mema
 
    * Either:
 
-      * The number type :math:`{t'}` is of the form :math:`t`.
-
       * The pack size :math:`{{\mathit{sz}}^?}` is absent.
 
-      * The number type :math:`{t''}` is of the form :math:`t`.
+      * The number type :math:`{t''}` is of the form :math:`{t'}`.
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|t|} / 8`.
+      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{t'}|} / 8`.
 
    * Or:
 
@@ -3221,7 +3215,7 @@ Instr_ok/cvtop
     - cvtop' is REINTERPRET.
     - $size(nt_1) is $size(nt_2).
   - Or:
-    - cvtop' is cvtop.
+
 
 Instr_ok/local.get
 - the instruction (LOCAL.GET x) is valid with the function type [] -> [t] if:
@@ -3260,12 +3254,11 @@ Instr_ok/load
 - the instruction (LOAD t' loadop_? memarg) is valid with the function type [I32] -> [t'''] if:
   - the memory type C.MEMS[0] is mt.
   - Either:
-    - the number type t' is t.
     - loadop_? is ?().
-    - the number type t''' is t.
-    - (2 ^ memarg.ALIGN) is less than or equal to ($size(t) / 8).
+    - the number type t''' is t'.
+    - (2 ^ memarg.ALIGN) is less than or equal to ($size(t') / 8).
   - Or:
-    - t' is Inn.
+    - the number type t' is Inn.
     - loadop_? is ?(M _ sx).
     - t''' is Inn.
     - (2 ^ memarg.ALIGN) is less than or equal to (M / 8).
@@ -3274,12 +3267,11 @@ Instr_ok/store
 - the instruction (STORE t' sz? memarg) is valid with the function type [I32, t''] -> [] if:
   - the memory type C.MEMS[0] is mt.
   - Either:
-    - the number type t' is t.
     - the pack size sz? is ?().
-    - the number type t'' is t.
-    - (2 ^ memarg.ALIGN) is less than or equal to ($size(t) / 8).
+    - the number type t'' is t'.
+    - (2 ^ memarg.ALIGN) is less than or equal to ($size(t') / 8).
   - Or:
-    - t' is Inn.
+    - the number type t' is Inn.
     - sz? is ?(M).
     - t'' is Inn.
     - (2 ^ memarg.ALIGN) is less than or equal to (M / 8).
@@ -4945,8 +4937,6 @@ The instruction :math:`({\mathit{nt}}_1 {.} {{\mathit{cvtop}'}}{\mathsf{\_}}{{\m
 
    * Or:
 
-      * :math:`{\mathit{cvtop}'}` is of the form :math:`{\mathit{cvtop}}`.
-
 
 
 
@@ -5287,8 +5277,6 @@ The instruction :math:`({{\mathit{nt}'}{.}\mathsf{load}}{{{\mathit{loadop}}^?}}~
 
    * Either:
 
-      * The number type :math:`{\mathit{nt}'}` is of the form :math:`{\mathit{nt}}`.
-
       * :math:`{{\mathit{loadop}}^?}` is absent.
 
       * The value type :math:`{\mathit{valtype}}` is of the form :math:`{\mathit{nt}}`.
@@ -5314,8 +5302,6 @@ The instruction :math:`({{\mathit{nt}'}{.}\mathsf{store}}{{{\mathit{sz}}^?}}~{\m
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is of the form :math:`{\mathit{mt}}`.
 
    * Either:
-
-      * The number type :math:`{\mathit{nt}'}` is of the form :math:`{\mathit{nt}}`.
 
       * The pack size :math:`{{\mathit{sz}}^?}` is absent.
 
@@ -10758,7 +10744,7 @@ Instr_ok/cvtop
     - cvtop' is REINTERPRET.
     - $size(nt_1) is $size(nt_2).
   - Or:
-    - cvtop' is cvtop.
+
 
 Instr_ok/ref.null
 - the instruction (REF.NULL rt) is valid with the function type [] -> [rt].
@@ -10938,12 +10924,11 @@ Instr_ok/load
 - the instruction (LOAD nt' loadop_? memarg) is valid with the function type [I32] -> [valtype] if:
   - the memory type C.MEMS[0] is mt.
   - Either:
-    - the number type nt' is nt.
     - loadop_? is ?().
     - the value type valtype is nt.
     - (2 ^ memarg.ALIGN) is less than or equal to ($size(nt) / 8).
   - Or:
-    - nt' is Inn.
+    - the number type nt' is Inn.
     - loadop_? is ?(M _ sx).
     - valtype is Inn.
     - (2 ^ memarg.ALIGN) is less than or equal to (M / 8).
@@ -10952,12 +10937,11 @@ Instr_ok/store
 - the instruction (STORE nt' sz? memarg) is valid with the function type [I32, valtype] -> [] if:
   - the memory type C.MEMS[0] is mt.
   - Either:
-    - the number type nt' is nt.
     - the pack size sz? is ?().
     - the value type valtype is nt.
     - (2 ^ memarg.ALIGN) is less than or equal to ($size(nt) / 8).
   - Or:
-    - nt' is Inn.
+    - the number type nt' is Inn.
     - sz? is ?(M).
     - valtype is Inn.
     - (2 ^ memarg.ALIGN) is less than or equal to (M / 8).
@@ -13977,21 +13961,15 @@ The heap type :math:`{\mathit{heaptype}''}` :ref:`matches <match>` the heap type
 
    * Either:
 
-      * The heap type :math:`{\mathit{heaptype}''}` is of the form :math:`{\mathit{heaptype}}`.
-
-      * The heap type :math:`{\mathit{heaptype}'''}` is of the form :math:`{\mathit{heaptype}}`.
+      * The heap type :math:`{\mathit{heaptype}'''}` is of the form :math:`{\mathit{heaptype}''}`.
 
    * Or:
 
-      * The heap type :math:`{\mathit{heaptype}''}` is of the form :math:`{\mathit{heaptype}}_1`.
-
-      * The heap type :math:`{\mathit{heaptype}'''}` is of the form :math:`{\mathit{heaptype}}_2`.
-
       * The heap type :math:`{\mathit{heaptype}'}` is :ref:`valid <valid-val>`.
 
-      * The heap type :math:`{\mathit{heaptype}}_1` :ref:`matches <match>` the heap type :math:`{\mathit{heaptype}'}`.
+      * The heap type :math:`{\mathit{heaptype}''}` :ref:`matches <match>` the heap type :math:`{\mathit{heaptype}'}`.
 
-      * The heap type :math:`{\mathit{heaptype}'}` :ref:`matches <match>` the heap type :math:`{\mathit{heaptype}}_2`.
+      * The heap type :math:`{\mathit{heaptype}'}` :ref:`matches <match>` the heap type :math:`{\mathit{heaptype}'''}`.
    * Or:
 
       * The heap type :math:`{\mathit{heaptype}''}` is of the form :math:`\mathsf{eq}`.
@@ -14044,20 +14022,16 @@ The heap type :math:`{\mathit{heaptype}''}` :ref:`matches <match>` the heap type
 
       * The heap type :math:`{\mathit{heaptype}''}` is of the form :math:`{\mathit{typeidx}}`.
 
-      * The heap type :math:`{\mathit{heaptype}'''}` is of the form :math:`{\mathit{heaptype}}`.
-
       * The type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
 
-      * The type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` :ref:`matches <match>` the heap type :math:`{\mathit{heaptype}}`.
+      * The type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` :ref:`matches <match>` the heap type :math:`{\mathit{heaptype}'''}`.
    * Or:
-
-      * The heap type :math:`{\mathit{heaptype}''}` is of the form :math:`{\mathit{heaptype}}`.
 
       * The heap type :math:`{\mathit{heaptype}'''}` is of the form :math:`{\mathit{typeidx}}`.
 
       * The type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
 
-      * The heap type :math:`{\mathit{heaptype}}` :ref:`matches <match>` the type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]`.
+      * The heap type :math:`{\mathit{heaptype}''}` :ref:`matches <match>` the type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]`.
    * Or:
 
       * The heap type :math:`{\mathit{heaptype}''}` is of the form :math:`(\mathsf{rec} {.} i)`.
@@ -14073,35 +14047,25 @@ The heap type :math:`{\mathit{heaptype}''}` :ref:`matches <match>` the heap type
 
       * The heap type :math:`{\mathit{heaptype}''}` is of the form :math:`\mathsf{none}`.
 
-      * The heap type :math:`{\mathit{heaptype}'''}` is of the form :math:`{\mathit{heaptype}}`.
-
-      * The heap type :math:`{\mathit{heaptype}}` :ref:`matches <match>` the heap type :math:`\mathsf{any}`.
+      * The heap type :math:`{\mathit{heaptype}'''}` :ref:`matches <match>` the heap type :math:`\mathsf{any}`.
    * Or:
 
       * The heap type :math:`{\mathit{heaptype}''}` is of the form :math:`\mathsf{nofunc}`.
 
-      * The heap type :math:`{\mathit{heaptype}'''}` is of the form :math:`{\mathit{heaptype}}`.
-
-      * The heap type :math:`{\mathit{heaptype}}` :ref:`matches <match>` the heap type :math:`\mathsf{func}`.
+      * The heap type :math:`{\mathit{heaptype}'''}` :ref:`matches <match>` the heap type :math:`\mathsf{func}`.
    * Or:
 
       * The heap type :math:`{\mathit{heaptype}''}` is of the form :math:`\mathsf{noexn}`.
 
-      * The heap type :math:`{\mathit{heaptype}'''}` is of the form :math:`{\mathit{heaptype}}`.
-
-      * The heap type :math:`{\mathit{heaptype}}` :ref:`matches <match>` the heap type :math:`\mathsf{exn}`.
+      * The heap type :math:`{\mathit{heaptype}'''}` :ref:`matches <match>` the heap type :math:`\mathsf{exn}`.
    * Or:
 
       * The heap type :math:`{\mathit{heaptype}''}` is of the form :math:`\mathsf{noextern}`.
 
-      * The heap type :math:`{\mathit{heaptype}'''}` is of the form :math:`{\mathit{heaptype}}`.
-
-      * The heap type :math:`{\mathit{heaptype}}` :ref:`matches <match>` the heap type :math:`\mathsf{extern}`.
+      * The heap type :math:`{\mathit{heaptype}'''}` :ref:`matches <match>` the heap type :math:`\mathsf{extern}`.
    * Or:
 
       * The heap type :math:`{\mathit{heaptype}''}` is of the form :math:`\mathsf{bot}`.
-
-      * The heap type :math:`{\mathit{heaptype}'''}` is of the form :math:`{\mathit{heaptype}}`.
 
 
 
@@ -14308,8 +14272,6 @@ The value type :math:`{\mathit{valtype}'}` :ref:`matches <match>` the value type
    * Or:
 
       * The value type :math:`{\mathit{valtype}'}` is of the form :math:`\mathsf{bot}`.
-
-      * The value type :math:`{\mathit{valtype}''}` is of the form :math:`{\mathit{valtype}}`.
 
 
 
@@ -15909,13 +15871,11 @@ The instruction :math:`({{\mathit{nt}'}{.}\mathsf{load}}{{{\mathit{loadop}}^?}}~
 
    * Either:
 
-      * The number type :math:`{\mathit{nt}'}` is of the form :math:`{\mathit{nt}}`.
-
       * :math:`{{\mathit{loadop}}^?}` is absent.
 
       * The value type :math:`{\mathit{valtype}}` is of the form :math:`{\mathit{nt}}`.
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
+      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}'}|} / 8`.
 
    * Or:
 
@@ -15939,13 +15899,11 @@ The instruction :math:`({{\mathit{nt}'}{.}\mathsf{store}}{{{\mathit{storeop}}^?}
 
    * Either:
 
-      * The number type :math:`{\mathit{nt}'}` is of the form :math:`{\mathit{nt}}`.
-
       * :math:`{{\mathit{storeop}}^?}` is absent.
 
       * The value type :math:`{\mathit{valtype}}` is of the form :math:`{\mathit{nt}}`.
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
+      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}'}|} / 8`.
 
    * Or:
 
@@ -16182,13 +16140,11 @@ The instruction sequence :math:`{{\mathit{instr}'}^\ast}` is :ref:`valid <valid-
 
       * The instruction sequence :math:`{{\mathit{instr}'}^\ast}` is of the form :math:`{{\mathit{instr}}^\ast}`.
 
-      * The instruction type :math:`{\mathit{it}''}` is of the form :math:`{\mathit{it}'}`.
-
       * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{it}}`.
 
-      * The instruction type :math:`{\mathit{it}}` :ref:`matches <match>` the instruction type :math:`{\mathit{it}'}`.
+      * The instruction type :math:`{\mathit{it}}` :ref:`matches <match>` the instruction type :math:`{\mathit{it}''}`.
 
-      * The instruction type :math:`{\mathit{it}'}` is :ref:`valid <valid-val>`.
+      * The instruction type :math:`{\mathit{it}''}` is :ref:`valid <valid-val>`.
    * Or:
 
       * The instruction sequence :math:`{{\mathit{instr}'}^\ast}` is of the form :math:`{{\mathit{instr}}^\ast}`.
@@ -17018,13 +16974,9 @@ The reference value :math:`{\mathit{ref}'}` is :ref:`valid <valid-val>` with the
       * The reference value :math:`{\mathit{addrref}}` is :ref:`valid <valid-val>` with the reference type :math:`(\mathsf{ref}~\mathsf{any})`.
    * Or:
 
-      * The reference value :math:`{\mathit{ref}'}` is of the form :math:`{\mathit{ref}}`.
+      * The reference value :math:`{\mathit{ref}'}` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{rt}'}`.
 
-      * The reference type :math:`{\mathit{rt}''}` is of the form :math:`{\mathit{rt}}`.
-
-      * The reference value :math:`{\mathit{ref}}` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{rt}'}`.
-
-      * The reference type :math:`{\mathit{rt}'}` :ref:`matches <match>` the reference type :math:`{\mathit{rt}}`.
+      * The reference type :math:`{\mathit{rt}'}` :ref:`matches <match>` the reference type :math:`{\mathit{rt}''}`.
 
 
 
@@ -17209,13 +17161,9 @@ The external address :math:`{\mathit{externaddr}'}` is :ref:`valid <valid-val>` 
       * The function instance :math:`s{.}\mathsf{funcs}{}[a]` is of the form :math:`{\mathit{funcinst}}`.
    * Or:
 
-      * The external address :math:`{\mathit{externaddr}'}` is of the form :math:`{\mathit{externaddr}}`.
+      * The external address :math:`{\mathit{externaddr}'}` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{xt}'}`.
 
-      * The external type :math:`{\mathit{externtype}}` is of the form :math:`{\mathit{xt}}`.
-
-      * The external address :math:`{\mathit{externaddr}}` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{xt}'}`.
-
-      * The external type :math:`{\mathit{xt}'}` :ref:`matches <match>` the external type :math:`{\mathit{xt}}`.
+      * The external type :math:`{\mathit{xt}'}` :ref:`matches <match>` the external type :math:`{\mathit{externtype}}`.
 
 
 
@@ -26318,14 +26266,11 @@ Deftype_sub/super
 Heaptype_sub
 - the heap type heaptype'' matches the heap type heaptype''' if:
   - Either:
-    - heaptype'' is heaptype.
-    - heaptype''' is heaptype.
+    - heaptype''' is heaptype''.
   - Or:
-    - heaptype'' is heaptype_1.
-    - heaptype''' is heaptype_2.
     - the heap type heaptype' is valid.
-    - the heap type heaptype_1 matches heaptype'.
-    - heaptype' matches the heap type heaptype_2.
+    - heaptype'' matches heaptype'.
+    - heaptype' matches heaptype'''.
   - Or:
     - heaptype'' is EQ.
     - heaptype''' is ANY.
@@ -26356,14 +26301,12 @@ Heaptype_sub
     - the defined type deftype_1 matches the defined type deftype_2.
   - Or:
     - heaptype'' is (_IDX typeidx).
-    - heaptype''' is heaptype.
     - the type C.TYPES[typeidx] exists.
-    - C.TYPES[typeidx] matches the heap type heaptype.
+    - C.TYPES[typeidx] matches heaptype'''.
   - Or:
-    - heaptype'' is heaptype.
     - heaptype''' is (_IDX typeidx).
     - C.TYPES[typeidx] exists.
-    - heaptype matches C.TYPES[typeidx].
+    - heaptype'' matches C.TYPES[typeidx].
   - Or:
     - heaptype'' is (REC i).
     - heaptype''' is typeuse*[j].
@@ -26372,26 +26315,21 @@ Heaptype_sub
     - C.RECS[i] is (SUB fin typeuse* ct).
   - Or:
     - heaptype'' is NONE.
-    - heaptype''' is heaptype.
-    - heaptype matches the heap type ANY.
+    - heaptype''' matches the heap type ANY.
   - Or:
     - heaptype'' is NOFUNC.
-    - heaptype''' is heaptype.
-    - heaptype matches the heap type FUNC.
+    - heaptype''' matches the heap type FUNC.
   - Or:
     - heaptype'' is NOEXN.
-    - heaptype''' is heaptype.
-    - heaptype matches the heap type EXN.
+    - heaptype''' matches the heap type EXN.
   - Or:
     - heaptype'' is NOEXTERN.
-    - heaptype''' is heaptype.
-    - heaptype matches the heap type EXTERN.
+    - heaptype''' matches the heap type EXTERN.
   - Or:
     - heaptype'' is BOT.
-    - heaptype''' is heaptype.
 
 Heaptype_sub/refl
-- heaptype matches only itself.
+- the heap type heaptype matches only itself.
 
 Heaptype_sub/trans
 - the heap type heaptype_1 matches the heap type heaptype_2 if:
@@ -26496,7 +26434,6 @@ Valtype_sub
     - the reference type reftype_1 matches the reference type reftype_2.
   - Or:
     - valtype' is BOT.
-    - valtype'' is valtype.
 
 Valtype_sub/num
 - the value type numtype_1 matches the value type numtype_2 if:
@@ -27315,12 +27252,11 @@ Instr_ok/load
   - the memory C.MEMS[x] exists.
   - C.MEMS[x] is at lim PAGE.
   - Either:
-    - the number type nt' is nt.
     - loadop_? is ?().
     - the value type valtype is nt.
-    - (2 ^ memarg.ALIGN) is less than or equal to ($size(nt) / 8).
+    - (2 ^ memarg.ALIGN) is less than or equal to ($size(nt') / 8).
   - Or:
-    - nt' is Inn.
+    - the number type nt' is Inn.
     - loadop_? is ?(M _ sx).
     - valtype is Inn.
     - (2 ^ memarg.ALIGN) is less than or equal to (M / 8).
@@ -27330,12 +27266,11 @@ Instr_ok/store
   - the memory C.MEMS[x] exists.
   - C.MEMS[x] is at lim PAGE.
   - Either:
-    - the number type nt' is nt.
     - storeop_? is ?().
     - the value type valtype is nt.
-    - (2 ^ memarg.ALIGN) is less than or equal to ($size(nt) / 8).
+    - (2 ^ memarg.ALIGN) is less than or equal to ($size(nt') / 8).
   - Or:
-    - nt' is Inn.
+    - the number type nt' is Inn.
     - storeop_? is ?(M).
     - valtype is Inn.
     - (2 ^ memarg.ALIGN) is less than or equal to (M / 8).
@@ -27453,10 +27388,9 @@ Instrs_ok
     - Under the context $with_locals(C, x_1*, (SET t)*), the instruction sequence instr_2* is valid with the instruction type t_2* ->_ x_2* t_3*.
   - Or:
     - instr'* is instr*.
-    - it'' is it'.
     - the instruction sequence instr* is valid with the instruction type it.
-    - it matches the instruction type it'.
-    - it' is valid.
+    - it matches it''.
+    - it'' is valid.
   - Or:
     - instr'* is instr*.
     - it'' is t* :: t_1* ->_ x* t* :: t_2*.
@@ -27893,10 +27827,8 @@ Ref_ok
     - rt'' is (REF ?() EXTERN).
     - the reference value addrref is valid with the reference type (REF ?() ANY).
   - Or:
-    - ref' is ref.
-    - rt'' is rt.
-    - the reference value ref is valid with the reference type rt'.
-    - rt' matches the reference type rt.
+    - ref' is valid with the reference type rt'.
+    - rt' matches rt''.
 
 Ref_ok/null
 - the reference value (REF.NULL ht) is valid with the reference type (REF ?(NULL) ht') if:
@@ -27992,10 +27924,8 @@ Externaddr_ok
     - the function instance s.FUNCS[a] exists.
     - s.FUNCS[a] is funcinst.
   - Or:
-    - externaddr' is externaddr.
-    - externtype is xt.
-    - the external address externaddr is valid with the external type xt'.
-    - xt' matches the external type xt.
+    - externaddr' is valid with the external type xt'.
+    - xt' matches externtype.
 
 Externaddr_ok/tag
 - the external address (TAG a) is valid with the external type (TAG taginst.TYPE) if:

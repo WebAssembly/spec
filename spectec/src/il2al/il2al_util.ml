@@ -279,3 +279,19 @@ let is_val exp =
   | VarE _ -> Il.Eval.sub_typ !Al.Valid.il_env exp.note Al.Al_util.valT
   | SubE (_, t, _) -> Il.Eval.sub_typ !Al.Valid.il_env t Al.Al_util.valT
   | _ -> false
+
+let replace_name_walker x1 x2 =
+  let replace_name' walker e =
+    match e.it with
+    | Al.Ast.VarE x when x = x1 -> {e with it = Al.Ast.VarE x2}
+    | _ -> Al.Walk.base_walker.walk_expr walker e
+  in
+  {Al.Walk.base_walker with walk_expr = replace_name'}
+
+let replace_name_expr x1 x2 =
+  let walker = replace_name_walker x1 x2 in
+  walker.walk_expr walker
+
+let replace_name x1 x2 =
+  let walker = replace_name_walker x1 x2 in
+  walker.walk_instr walker

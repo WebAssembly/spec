@@ -161,15 +161,6 @@ let atom_of_case e =
   | CaseE ((atom :: _) :: _, _) -> atom
   | _ -> Error.error e.at "prose transformation" "expected a CaseE"
 
-let replace_name new_name old_name =
-  let replace_name' walker e =
-    match e.it with
-    | VarE x when x = new_name -> {e with it = VarE old_name}
-    | _ -> Walk.base_walker.walk_expr walker e
-  in
-  let walker = {Walk.base_walker with walk_expr = replace_name'} in
-  walker.walk_instr walker
-
 let rec replace_names binds instr =
   match binds with
   | [] -> instr

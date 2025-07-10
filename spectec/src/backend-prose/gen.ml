@@ -559,7 +559,7 @@ let prose_of_rel rel = match get_rel_kind rel with
 let prose_of_rels = List.concat_map prose_of_rel
 
 (** Postprocess of generated prose **)
-let unify_either stmts =
+let unify_either def =
   let f stmt =
     match stmt with
     | EitherS sss ->
@@ -586,15 +586,96 @@ let unify_either stmts =
       | s -> s
     )
   in
-  walk stmts
+  match def with
+  | RuleD (anchor, s, sl) -> RuleD (anchor, s, walk sl)
+  | AlgoD _ -> def
+
+let rec free_stmt stmt =
+  let open Al.Free in
+  let (++) = IdSet.union in
+  match stmt with
+  | LetS (e1, e2) -> free_expr e1 ++ free_expr e2
+  | CondS e -> free_expr e
+  | CmpS (e1, _, e2) -> free_expr e1 ++ free_expr e2
+  | IsValidS (eo, e, es, _) ->
+      (match eo with Some e0 -> free_expr e0 | None -> IdSet.empty)
+      ++ free_expr e ++ free_list free_expr es
+  | MatchesS (e1, e2) -> free_expr e1 ++ free_expr e2
+  | IsConstS (eo, e) ->
+      (match eo with Some e0 -> free_expr e0 | None -> IdSet.empty)
+      ++ free_expr e
+  | IsDefinedS e -> free_expr e
+  | IsDefaultableS (e, _) -> free_expr e
+  | IfS (e, sl) -> free_expr e ++ free_list free_stmt sl
+  | ForallS (pairs, sl) ->
+      let pair_exprs = List.flatten (List.map (fun (e1, e2) -> [e1; e2]) pairs) in
+      free_list free_expr pair_exprs ++ free_list free_stmt sl
+  | EitherS sll -> free_list (free_list free_stmt) sll
+  | BinS (s1, _, s2) -> free_stmt s1 ++ free_stmt s2
+  | ContextS (e1, e2) -> free_expr e1 ++ free_expr e2
+  | RelS (_, es) -> free_list free_expr es
+  | YetS _ -> IdSet.empty
+
+let rec replace_name_stmt x1 x2 stmt =
+  let re = replace_name_expr x1 x2 in
+  let rs = replace_name_stmt x1 x2 in
+  match stmt with
+  | LetS (e1, e2) -> LetS (re e1, re e2)
+  | CondS e -> CondS (re e)
+  | CmpS (e1, op, e2) -> CmpS (re e1, op, re e2)
+  | IsValidS (eo, e, es, so) -> IsValidS (Option.map re eo, re e, List.map re es, so)
+  | MatchesS (e1, e2) -> MatchesS (re e1, re e2)
+  | IsConstS (eo, e) -> IsConstS (Option.map re eo, re e)
+  | IsDefinedS e -> IsDefinedS (re e)
+  | IsDefaultableS (e, op) -> IsDefaultableS (re e, op)
+  | IfS (e, sl) -> IfS (re e, List.map rs sl)
+  | ForallS (pairs, sl) ->
+      let pairs' = List.map (fun (e1, e2) -> (re e1, re e2)) pairs in
+      ForallS (pairs', List.map rs sl)
+  | EitherS sll -> EitherS (List.map (List.map rs) sll)
+  | BinS (s1, op, s2) -> BinS (rs s1, op, rs s2)
+  | ContextS (e1, e2) -> ContextS (re e1, re e2)
+  | RelS (name, es) -> RelS (name, List.map re es)
+  | YetS s -> YetS s
+
+
+let remove_simple_binding def =
+  match def with
+  | RuleD (anchor, s, sl) ->
+    let frees = free_stmt s in
+    let rec remove_simple_binding' acc sl =
+      match sl with
+      | [] -> List.rev acc
+      | hd :: tl ->
+        match hd with
+        (* Recursive cases *)
+        | EitherS sll ->
+          let sll' = List.map (remove_simple_binding' []) sll in
+          let hd' = EitherS sll' in
+          remove_simple_binding' (hd' :: acc) tl
+        | IfS (e, sl) ->
+          let hd' = IfS (e, remove_simple_binding' [] sl) in
+          remove_simple_binding' (hd' :: acc) tl
+        (* Base cases *)
+        | CmpS ({it = VarE x1; _}, `EqOp, {it = VarE x2; _}) when Al.Free.IdSet.(mem x1 frees && not (mem x2 frees)) ->
+          let tl' = List.map (replace_name_stmt x2 x1) tl in
+          remove_simple_binding' acc tl'
+        | CmpS ({it = VarE x2; _}, `EqOp, {it = VarE x1; _}) when Al.Free.IdSet.(mem x1 frees && not (mem x2 frees)) ->
+          let tl' = List.map (replace_name_stmt x2 x1) tl in
+          remove_simple_binding' acc tl'
+        | _ -> remove_simple_binding' (hd :: acc) tl
+    in
+    RuleD (anchor, s, remove_simple_binding' [] sl)
+  | AlgoD _ -> def
+
+let rename_param def = def
 
 let postprocess_prose defs =
   List.map (fun def ->
-    match def with
-    | RuleD (anchor, i, il) ->
-      let new_il = unify_either il in
-      RuleD (anchor, i, new_il)
-    | AlgoD _ -> def
+    def
+    |> unify_either
+    |> remove_simple_binding
+    |> rename_param
   ) defs
 
 
