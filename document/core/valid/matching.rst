@@ -180,39 +180,6 @@ $${rule-prose: Limits_sub}
 $${rule: Limits_sub}
 
 
-.. index:: table type, limits, element type
-.. _match-tabletype:
-
-Table Types
-~~~~~~~~~~~
-
-$${rule-prose: Tabletype_sub}
-
-$${rule: Tabletype_sub}
-
-
-.. index:: memory type, limits
-.. _match-memtype:
-
-Memory Types
-~~~~~~~~~~~~
-
-$${rule-prose: Memtype_sub}
-
-$${rule: Memtype_sub}
-
-
-.. index:: global type, value type, mutability
-.. _match-globaltype:
-
-Global Types
-~~~~~~~~~~~~
-
-$${rule-prose: Globaltype_sub}
-
-$${rule: {Globaltype_sub/*}}
-
-
 .. index:: tag type
 .. _match-tagtype:
 
@@ -230,25 +197,48 @@ $${rule: {Tagtype_sub}}
    while the conclusion defines it on tag types that happen to be expressed as defined types.
 
 
-.. index:: external type, function type, table type, memory type, global type
+.. index:: global type, value type, mutability
+.. _match-globaltype:
+
+Global Types
+~~~~~~~~~~~~
+
+$${rule-prose: Globaltype_sub}
+
+$${rule: {Globaltype_sub/*}}
+
+
+.. index:: memory type, limits
+.. _match-memtype:
+
+Memory Types
+~~~~~~~~~~~~
+
+$${rule-prose: Memtype_sub}
+
+$${rule: Memtype_sub}
+
+
+.. index:: table type, limits, element type
+.. _match-tabletype:
+
+Table Types
+~~~~~~~~~~~
+
+$${rule-prose: Tabletype_sub}
+
+$${rule: Tabletype_sub}
+
+
+.. index:: external type, tag type, global type, memory type, table type, function type
 .. _match-externtype:
 
 External Types
 ~~~~~~~~~~~~~~
 
-$${rule-prose: Externtype_sub/func}
+$${rule-prose: Externtype_sub/tag}
 
-$${rule: Externtype_sub/func}
-
-
-$${rule-prose: Externtype_sub/table}
-
-$${rule: Externtype_sub/table}
-
-
-$${rule-prose: Externtype_sub/mem}
-
-$${rule: Externtype_sub/mem}
+$${rule: Externtype_sub/tag}
 
 
 $${rule-prose: Externtype_sub/global}
@@ -256,6 +246,16 @@ $${rule-prose: Externtype_sub/global}
 $${rule: Externtype_sub/global}
 
 
-$${rule-prose: Externtype_sub/tag}
+$${rule-prose: Externtype_sub/mem}
 
-$${rule: Externtype_sub/tag}
+$${rule: Externtype_sub/mem}
+
+
+$${rule-prose: Externtype_sub/table}
+
+$${rule: Externtype_sub/table}
+
+
+$${rule-prose: Externtype_sub/func}
+
+$${rule: Externtype_sub/func}

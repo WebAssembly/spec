@@ -1,7 +1,7 @@
 Modules
 -------
 
-For modules, the execution semantics primarily defines :ref:`instantiation <exec-instantiation>`, which :ref:`allocates <alloc>` instances for a module and its contained definitions, initializes :ref:`tables <syntax-table>` and :ref:`memories <syntax-mem>` from contained :ref:`element <syntax-elem>` and :ref:`data <syntax-data>` segments, and invokes the :ref:`start function <syntax-start>` if present. It also includes :ref:`invocation <exec-invocation>` of exported functions.
+For modules, the execution semantics primarily defines :ref:`instantiation <exec-instantiation>`, which :ref:`allocates <alloc>` instances for a module and its contained definitions, initializes :ref:`memories <syntax-mem>` and :ref:`tables <syntax-table>` from contained :ref:`data <syntax-data>` and :ref:`element <syntax-elem>` segments, and invokes the :ref:`start function <syntax-start>` if present. It also includes :ref:`invocation <exec-invocation>` of exported functions.
 
 
 .. index:: ! allocation, store, address
@@ -11,47 +11,14 @@ Allocation
 ~~~~~~~~~~
 
 New instances of
-:ref:`functions <syntax-funcinst>`,
-:ref:`tables <syntax-tableinst>`,
-:ref:`memories <syntax-meminst>`,
-:ref:`globals <syntax-globalinst>`,
 :ref:`tags <syntax-taginst>`,
-:ref:`element segments <syntax-eleminst>`, and
-:ref:`data segments <syntax-datainst>`
+:ref:`globals <syntax-globalinst>`,
+:ref:`memories <syntax-meminst>`,
+:ref:`tables <syntax-tableinst>`,
+:ref:`functions <syntax-funcinst>`,
+:ref:`data segments <syntax-datainst>`, and
+:ref:`element segments <syntax-eleminst>`
 are *allocated* in a :ref:`store <syntax-store>` ${:s}, as defined by the following auxiliary functions.
-
-
-.. index:: function, function instance, function address, module instance, function type
-.. _alloc-func:
-
-:ref:`Functions <syntax-funcinst>`
-..................................
-
-$${definition-prose: allocfunc}
-
-$${definition: allocfunc}
-
-
-.. index:: table, table instance, table address, table type, limits
-.. _alloc-table:
-
-:ref:`Tables <syntax-tableinst>`
-................................
-
-$${definition-prose: alloctable}
-
-$${definition: alloctable}
-
-
-.. index:: memory, memory instance, memory address, memory type, limits, byte
-.. _alloc-mem:
-
-:ref:`Memories <syntax-meminst>`
-................................
-
-$${definition-prose: allocmem}
-
-$${definition: allocmem}
 
 
 .. index:: tag, tag instance, tag address, tag type
@@ -76,15 +43,37 @@ $${definition-prose: allocglobal}
 $${definition: allocglobal}
 
 
-.. index:: element, element instance, element address
-.. _alloc-elem:
+.. index:: memory, memory instance, memory address, memory type, limits, byte
+.. _alloc-mem:
 
-:ref:`Element segments <syntax-eleminst>`
-.........................................
+:ref:`Memories <syntax-meminst>`
+................................
 
-$${definition-prose: allocelem}
+$${definition-prose: allocmem}
 
-$${definition: allocelem}
+$${definition: allocmem}
+
+
+.. index:: table, table instance, table address, table type, limits
+.. _alloc-table:
+
+:ref:`Tables <syntax-tableinst>`
+................................
+
+$${definition-prose: alloctable}
+
+$${definition: alloctable}
+
+
+.. index:: function, function instance, function address, module instance, function type
+.. _alloc-func:
+
+:ref:`Functions <syntax-funcinst>`
+..................................
+
+$${definition-prose: allocfunc}
+
+$${definition: allocfunc}
 
 
 .. index:: data, data instance, data address
@@ -98,15 +87,15 @@ $${definition-prose: allocdata}
 $${definition: allocdata}
 
 
-.. index:: table, table instance, table address, grow, limits
-.. _grow-table:
+.. index:: element, element instance, element address
+.. _alloc-elem:
 
-Growing :ref:`tables <syntax-tableinst>`
-........................................
+:ref:`Element segments <syntax-eleminst>`
+.........................................
 
-$${definition-prose: growtable}
+$${definition-prose: allocelem}
 
-$${definition: growtable}
+$${definition: allocelem}
 
 
 .. index:: memory, memory instance, memory address, grow, limits
@@ -120,7 +109,18 @@ $${definition-prose: growmem}
 $${definition: growmem}
 
 
-.. index:: module, module instance, function instance, table instance, memory instance, tag instance, global instance, export instance, function address, table address, memory address, tag address, global address, function index, table index, memory index, tag index, global index, type, function, table, memory, tag, global, import, export, external address, external type, matching
+.. index:: table, table instance, table address, grow, limits
+.. _grow-table:
+
+Growing :ref:`tables <syntax-tableinst>`
+........................................
+
+$${definition-prose: growtable}
+
+$${definition: growtable}
+
+
+.. index:: module, module instance, tag instance, global instance, memory instance, table instance, function instance, data instance, element instance, export instance, tag address, global address, memory address, table address, function address, data address, element address, tag index, global index, memory index, table index, function index, type, tag, global, memory, table, function, data segment, element segment, import, export, external address, external type, matching
 .. _alloc-module:
 
 :ref:`Modules <syntax-moduleinst>`
@@ -133,7 +133,7 @@ $${definition: allocmodule}
 Here, the notation :math:`\F{allocx}^\ast` is shorthand for multiple :ref:`allocations <alloc>` of object kind :math:`X`, defined as follows:
 
 $${definition: allocXs}
-$${definition-ignore: allocfuncs allocglobals alloctables allocmems allocelems allocdatas}
+$${definition-ignore: alloctags allocglobals allocmems alloctables allocfuncs allocdatas allocelems}
 
 For types, however, allocation is defined in terms of :ref:`rolling <aux-roll-rectype>` and :ref:`substitution <notation-subst>` of all preceding types to produce a list of :ref:`closed <type-closed>` :ref:`defined types <syntax-deftype>`:
 
@@ -293,14 +293,14 @@ $${definition-prose: evalglobals}
 
 $${definition: evalglobals}
 
-.. _aux-runelem:
 .. _aux-rundata:
-
-$${definition-prose: runelem_}
+.. _aux-runelem:
 
 $${definition-prose: rundata_}
 
-$${definition: runelem_ rundata_}
+$${definition-prose: runelem_}
+
+$${definition: rundata_ runelem_}
 
 .. note::
    Checking import types assumes that the :ref:`module instance <syntax-moduleinst>` has already been :ref:`allocated <alloc-module>` to compute the respective :ref:`closed <type-closed>` :ref:`defined types <syntax-deftype>`.

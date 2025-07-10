@@ -295,13 +295,13 @@ Store Validity
 
 The following typing rules specify when a runtime :ref:`store <syntax-store>` :math:`S` is *valid*.
 A valid store must consist of
-:ref:`function <syntax-funcinst>`,
-:ref:`table <syntax-tableinst>`,
-:ref:`memory <syntax-meminst>`,
-:ref:`global <syntax-globalinst>`,
 :ref:`tag <syntax-taginst>`,
-:ref:`element <syntax-eleminst>`,
+:ref:`global <syntax-globalinst>`,
+:ref:`memory <syntax-meminst>`,
+:ref:`table <syntax-tableinst>`,
+:ref:`function <syntax-funcinst>`,
 :ref:`data <syntax-datainst>`,
+:ref:`element <syntax-eleminst>`,
 :ref:`structure <syntax-structinst>`,
 :ref:`array <syntax-arrayinst>`,
 :ref:`exception <syntax-exninst>`,
@@ -310,14 +310,14 @@ and
 instances that are themselves valid, relative to :math:`S`.
 
 To that end, each kind of instance is classified by a respective
-:ref:`function <syntax-functype>`,
-:ref:`table <syntax-tabletype>`,
-:ref:`memory <syntax-memtype>`,
-:ref:`global <syntax-globaltype>`,
 :ref:`tag <syntax-tagtype>`,
-:ref:`element <syntax-eleminst>`, or
-:ref:`data <syntax-datainst>`
+:ref:`global <syntax-globaltype>`,
+:ref:`memory <syntax-memtype>`,
+:ref:`table <syntax-tabletype>`,
+:ref:`function <syntax-functype>`, or
+:ref:`element <syntax-eleminst>`,
 type, or just ${:OK} in the case of
+:ref:`data <syntax-datainst>`
 :ref:`structures <syntax-structinst>`,
 :ref:`arrays <syntax-arrayinst>`, or
 :ref:`exceptions <syntax-exninst>`.
@@ -325,24 +325,24 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
 
 
 
-.. index:: store, function instance, table instance, memory instance, structure instance, array instance, global instance, tag instance, function type, table type, memory type, global type, tag type, defined type, structure type, array type
+.. index:: store, tag instance, global instance, memory instance, table instance, function instance, data instance, element instance, structure instance, array instance, tag type, global type, memory type, table type, function type, defined type, structure type, array type
 
 :ref:`Store <syntax-store>` :math:`S`
 .....................................
 
-* Each :ref:`function instance <syntax-funcinst>` :math:`\funcinst_i` in :math:`S.\SFUNCS` must be :ref:`valid <valid-funcinst>` with some :ref:`function type <syntax-functype>` :math:`\functype_i`.
-
-* Each :ref:`table instance <syntax-tableinst>` :math:`\tableinst_i` in :math:`S.\STABLES` must be :ref:`valid <valid-tableinst>` with some :ref:`table type <syntax-tabletype>` :math:`\tabletype_i`.
-
-* Each :ref:`memory instance <syntax-meminst>` :math:`\meminst_i` in :math:`S.\SMEMS` must be :ref:`valid <valid-meminst>` with some :ref:`memory type <syntax-memtype>` :math:`\memtype_i`.
+* Each :ref:`tag instance <syntax-taginst>` :math:`\taginst_i` in :math:`S.\STAGS` must be :ref:`valid <valid-taginst>` with some :ref:`tag type <syntax-tagtype>` :math:`\tagtype_i`.
 
 * Each :ref:`global instance <syntax-globalinst>` :math:`\globalinst_i` in :math:`S.\SGLOBALS` must be :ref:`valid <valid-globalinst>` with some  :ref:`global type <syntax-globaltype>` :math:`\globaltype_i`.
 
-* Each :ref:`tag instance <syntax-taginst>` :math:`\taginst_i` in :math:`S.\STAGS` must be :ref:`valid <valid-taginst>` with some :ref:`tag type <syntax-tagtype>` :math:`\tagtype_i`.
+* Each :ref:`memory instance <syntax-meminst>` :math:`\meminst_i` in :math:`S.\SMEMS` must be :ref:`valid <valid-meminst>` with some :ref:`memory type <syntax-memtype>` :math:`\memtype_i`.
 
-* Each :ref:`element instance <syntax-eleminst>` :math:`\eleminst_i` in :math:`S.\SELEMS` must be :ref:`valid <valid-eleminst>` with some :ref:`reference type <syntax-reftype>` :math:`\reftype_i`.
+* Each :ref:`table instance <syntax-tableinst>` :math:`\tableinst_i` in :math:`S.\STABLES` must be :ref:`valid <valid-tableinst>` with some :ref:`table type <syntax-tabletype>` :math:`\tabletype_i`.
+
+* Each :ref:`function instance <syntax-funcinst>` :math:`\funcinst_i` in :math:`S.\SFUNCS` must be :ref:`valid <valid-funcinst>` with some :ref:`function type <syntax-functype>` :math:`\functype_i`.
 
 * Each :ref:`data instance <syntax-datainst>` :math:`\datainst_i` in :math:`S.\SDATAS` must be :ref:`valid <valid-datainst>`.
+
+* Each :ref:`element instance <syntax-eleminst>` :math:`\eleminst_i` in :math:`S.\SELEMS` must be :ref:`valid <valid-eleminst>` with some :ref:`reference type <syntax-reftype>` :math:`\reftype_i`.
 
 * Each :ref:`structure instance <syntax-structinst>` :math:`\structinst_i` in :math:`S.\SSTRUCTS` must be :ref:`valid <valid-structinst>`.
 
@@ -362,19 +362,19 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
    ~\\[-1ex]
    \frac{
      \begin{array}{@{}c@{}}
-     (S \vdashfuncinst \funcinst : \deftype)^\ast
-     \qquad
-     (S \vdashtableinst \tableinst : \tabletype)^\ast
-     \\
-     (S \vdashmeminst \meminst : \memtype)^\ast
+     (S \vdashtaginst \taginst : \tagtype)^\ast
      \qquad
      (S \vdashglobalinst \globalinst : \globaltype)^\ast
      \\
-     (S \vdashtaginst \taginst : \tagtype)^\ast
+     (S \vdashmeminst \meminst : \memtype)^\ast
+     \qquad
+     (S \vdashtableinst \tableinst : \tabletype)^\ast
      \\
-     (S \vdasheleminst \eleminst : \reftype)^\ast
+     (S \vdashfuncinst \funcinst : \deftype)^\ast
      \qquad
      (S \vdashdatainst \datainst : \OKdatainst)^\ast
+     \qquad
+     (S \vdasheleminst \eleminst : \reftype)^\ast
      \\
      (S \vdashstructinst \structinst : \OKstructinst)^\ast
      \qquad
@@ -384,13 +384,13 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
      \\
      S = \{
        \begin{array}[t]{@{}l@{}}
-       \SFUNCS~\funcinst^\ast,
+       \STAGS~\taginst^\ast,
        \SGLOBALS~\globalinst^\ast,
-       \STABLES~\tableinst^\ast,
        \SMEMS~\meminst^\ast,
-       \STAGS~\taginst^\ast, \\
-       \SELEMS~\eleminst^\ast,
+       \STABLES~\tableinst^\ast,
+       \SFUNCS~\funcinst^\ast, \\
        \SDATAS~\datainst^\ast,
+       \SELEMS~\eleminst^\ast,
        \SSTRUCTS~\structinst^\ast,
        \SARRAYS~\arrayinst^\ast,
        \SEXNS~\exninst^\ast \}
@@ -429,6 +429,104 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
 .. note::
    The constraint on reachability through immutable fields prevents the presence of cyclic data structures that can not be constructed in the language.
    Cycles can only be formed using mutation.
+
+
+.. index:: tag type, tag instance
+.. _valid-taginst:
+
+:ref:`Tag Instances <syntax-taginst>` :math:`\{ \HITYPE~\tagtype \}`
+....................................................................
+
+* The :ref:`tag type <syntax-tagtype>` :math:`\tagtype` must be :ref:`valid <valid-tagtype>` under the empty :ref:`context <context>`.
+
+* Then the tag instance is valid with :ref:`tag type <syntax-tagtype>` :math:`\tagtype`.
+
+.. math::
+   \frac{
+     \vdashtagtype \tagtype : \OKtagtype
+   }{
+     S \vdashtaginst \{ \HITYPE~\tagtype \} : \tagtype
+   }
+
+
+.. index:: global type, global instance, value, mutability
+.. _valid-globalinst:
+
+:ref:`Global Instances <syntax-globalinst>` :math:`\{ \GITYPE~\mut~t, \GIVALUE~\val \}`
+.......................................................................................
+
+* The :ref:`global type <syntax-globaltype>` :math:`\mut~t` must be :ref:`valid <valid-globaltype>` under the empty :ref:`context <context>`.
+
+* The :ref:`value <syntax-val>` :math:`\val` must be :ref:`valid <valid-val>` with some :ref:`value type <syntax-valtype>` :math:`t'`.
+
+* The :ref:`value type <syntax-valtype>` :math:`t'` must :ref:`match <match-valtype>` the :ref:`value type <syntax-valtype>` :math:`t`.
+
+* Then the global instance is valid with :ref:`global type <syntax-globaltype>` :math:`\mut~t`.
+
+.. math::
+   \frac{
+     \vdashglobaltype \mut~t : \OKglobaltype
+     \qquad
+     S \vdashval \val : t'
+     \qquad
+     \vdashvaltypematch t' \subvaltypematch t
+   }{
+     S \vdashglobalinst \{ \GITYPE~\mut~t, \GIVALUE~\val \} : \mut~t
+   }
+
+
+.. index:: memory type, memory instance, limits, byte
+.. _valid-meminst:
+
+:ref:`Memory Instances <syntax-meminst>` :math:`\{ \MITYPE~(\addrtype~\limits), \MIBYTES~b^\ast \}`
+...................................................................................................
+
+* The :ref:`memory type <syntax-memtype>` :math:`\addrtype~\limits` must be :ref:`valid <valid-memtype>` under the empty :ref:`context <context>`.
+
+* The length of :math:`b^\ast` must equal :math:`\limits.\LMIN` multiplied by the :ref:`page size <page-size>` :math:`64\,\F{Ki}`.
+
+* Then the memory instance is valid with :ref:`memory type <syntax-memtype>` :math:`\addrtype~\limits`.
+
+.. math::
+   \frac{
+     \vdashmemtype \addrtype~\limits : \OKmemtype
+     \qquad
+     n = \limits.\LMIN \cdot 64\,\F{Ki}
+   }{
+     S \vdashmeminst \{ \MITYPE~(\addrtype~\limits), \MIBYTES~b^n \} : \addrtype~\limits
+   }
+
+
+.. index:: table type, table instance, limits, function address
+.. _valid-tableinst:
+
+:ref:`Table Instances <syntax-tableinst>` :math:`\{ \TITYPE~(\addrtype~\limits~t), \TIREFS~\reff^\ast \}`
+.........................................................................................................
+
+* The :ref:`table type <syntax-tabletype>` :math:`\addrtype~\limits~t` must be :ref:`valid <valid-tabletype>` under the empty :ref:`context <context>`.
+
+* The length of :math:`\reff^\ast` must equal :math:`\limits.\LMIN`.
+
+* For each :ref:`reference <syntax-ref>` :math:`\reff_i` in the table's elements :math:`\reff^n`:
+
+  * The :ref:`reference <syntax-ref>` :math:`\reff_i` must be :ref:`valid <valid-ref>` with some :ref:`reference type <syntax-reftype>` :math:`t'_i`.
+
+  * The :ref:`reference type <syntax-reftype>` :math:`t'_i` must :ref:`match <match-reftype>` the :ref:`reference type <syntax-reftype>` :math:`t`.
+
+* Then the table instance is valid with :ref:`table type <syntax-tabletype>` :math:`\addrtype~\limits~t`.
+
+.. math::
+   \frac{
+     \vdashtabletype \addrtype~\limits~t : \OKtabletype
+     \qquad
+     n = \limits.\LMIN
+     \qquad
+     (S \vdash \reff : t')^n
+     \qquad
+     (\vdashreftypematch t' \subvaltypematch t)^n
+   }{
+     S \vdashtableinst \{ \TITYPE~(\addrtype~\limits~t), \TIREFS~\reff^n \} : \addrtype~\limits~t
+   }
 
 
 .. index:: function type, function instance
@@ -520,101 +618,18 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
    That way, the function itself is able to make sufficient assumptions about future stores.
 
 
-.. index:: table type, table instance, limits, function address
-.. _valid-tableinst:
+.. index:: data instance, byte
+.. _valid-datainst:
 
-:ref:`Table Instances <syntax-tableinst>` :math:`\{ \TITYPE~(\addrtype~\limits~t), \TIREFS~\reff^\ast \}`
-.........................................................................................................
+:ref:`Data Instances <syntax-eleminst>` :math:`\{ \DIBYTES~b^\ast \}`
+.....................................................................
 
-* The :ref:`table type <syntax-tabletype>` :math:`\addrtype~\limits~t` must be :ref:`valid <valid-tabletype>` under the empty :ref:`context <context>`.
-
-* The length of :math:`\reff^\ast` must equal :math:`\limits.\LMIN`.
-
-* For each :ref:`reference <syntax-ref>` :math:`\reff_i` in the table's elements :math:`\reff^n`:
-
-  * The :ref:`reference <syntax-ref>` :math:`\reff_i` must be :ref:`valid <valid-ref>` with some :ref:`reference type <syntax-reftype>` :math:`t'_i`.
-
-  * The :ref:`reference type <syntax-reftype>` :math:`t'_i` must :ref:`match <match-reftype>` the :ref:`reference type <syntax-reftype>` :math:`t`.
-
-* Then the table instance is valid with :ref:`table type <syntax-tabletype>` :math:`\addrtype~\limits~t`.
+* The data instance is valid.
 
 .. math::
    \frac{
-     \vdashtabletype \addrtype~\limits~t : \OKtabletype
-     \qquad
-     n = \limits.\LMIN
-     \qquad
-     (S \vdash \reff : t')^n
-     \qquad
-     (\vdashreftypematch t' \subvaltypematch t)^n
    }{
-     S \vdashtableinst \{ \TITYPE~(\addrtype~\limits~t), \TIREFS~\reff^n \} : \addrtype~\limits~t
-   }
-
-
-.. index:: memory type, memory instance, limits, byte
-.. _valid-meminst:
-
-:ref:`Memory Instances <syntax-meminst>` :math:`\{ \MITYPE~(\addrtype~\limits), \MIBYTES~b^\ast \}`
-...................................................................................................
-
-* The :ref:`memory type <syntax-memtype>` :math:`\addrtype~\limits` must be :ref:`valid <valid-memtype>` under the empty :ref:`context <context>`.
-
-* The length of :math:`b^\ast` must equal :math:`\limits.\LMIN` multiplied by the :ref:`page size <page-size>` :math:`64\,\F{Ki}`.
-
-* Then the memory instance is valid with :ref:`memory type <syntax-memtype>` :math:`\addrtype~\limits`.
-
-.. math::
-   \frac{
-     \vdashmemtype \addrtype~\limits : \OKmemtype
-     \qquad
-     n = \limits.\LMIN \cdot 64\,\F{Ki}
-   }{
-     S \vdashmeminst \{ \MITYPE~(\addrtype~\limits), \MIBYTES~b^n \} : \addrtype~\limits
-   }
-
-
-.. index:: global type, global instance, value, mutability
-.. _valid-globalinst:
-
-:ref:`Global Instances <syntax-globalinst>` :math:`\{ \GITYPE~\mut~t, \GIVALUE~\val \}`
-.......................................................................................
-
-* The :ref:`global type <syntax-globaltype>` :math:`\mut~t` must be :ref:`valid <valid-globaltype>` under the empty :ref:`context <context>`.
-
-* The :ref:`value <syntax-val>` :math:`\val` must be :ref:`valid <valid-val>` with some :ref:`value type <syntax-valtype>` :math:`t'`.
-
-* The :ref:`value type <syntax-valtype>` :math:`t'` must :ref:`match <match-valtype>` the :ref:`value type <syntax-valtype>` :math:`t`.
-
-* Then the global instance is valid with :ref:`global type <syntax-globaltype>` :math:`\mut~t`.
-
-.. math::
-   \frac{
-     \vdashglobaltype \mut~t : \OKglobaltype
-     \qquad
-     S \vdashval \val : t'
-     \qquad
-     \vdashvaltypematch t' \subvaltypematch t
-   }{
-     S \vdashglobalinst \{ \GITYPE~\mut~t, \GIVALUE~\val \} : \mut~t
-   }
-
-
-.. index:: tag type, tag instance
-.. _valid-taginst:
-
-:ref:`Tag Instances <syntax-taginst>` :math:`\{ \HITYPE~\tagtype \}`
-....................................................................
-
-* The :ref:`tag type <syntax-tagtype>` :math:`\tagtype` must be :ref:`valid <valid-tagtype>` under the empty :ref:`context <context>`.
-
-* Then the tag instance is valid with :ref:`tag type <syntax-tagtype>` :math:`\tagtype`.
-
-.. math::
-   \frac{
-     \vdashtagtype \tagtype : \OKtagtype
-   }{
-     S \vdashtaginst \{ \HITYPE~\tagtype \} : \tagtype
+     S \vdashdatainst \{ \DIBYTES~b^\ast \} : \OKdatainst
    }
 
 
@@ -643,21 +658,6 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
      (\vdashreftypematch t' \subvaltypematch t)^\ast
    }{
      S \vdasheleminst \{ \EITYPE~t, \EIREFS~\reff^\ast \} : t
-   }
-
-
-.. index:: data instance, byte
-.. _valid-datainst:
-
-:ref:`Data Instances <syntax-eleminst>` :math:`\{ \DIBYTES~b^\ast \}`
-.....................................................................
-
-* The data instance is valid.
-
-.. math::
-   \frac{
-   }{
-     S \vdashdatainst \{ \DIBYTES~b^\ast \} : \OKdatainst
    }
 
 
@@ -803,19 +803,19 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
 
 * Each :ref:`defined type <syntax-deftype>` :math:`\deftype_i` in :math:`\moduleinst.\MITYPES` must be :ref:`valid <valid-deftype>` under the empty :ref:`context <context>`.
 
-* For each :ref:`function address <syntax-funcaddr>` :math:`\funcaddr_i` in :math:`\moduleinst.\MIFUNCS`, the :ref:`external address <syntax-externaddr>` :math:`\XAFUNC~\funcaddr_i` must be :ref:`valid <valid-externaddr-func>` with some :ref:`external type <syntax-externtype>` :math:`\XTFUNC~\functype_i`.
-
-* For each :ref:`table address <syntax-tableaddr>` :math:`\tableaddr_i` in :math:`\moduleinst.\MITABLES`, the :ref:`external address <syntax-externaddr>` :math:`\XATABLE~\tableaddr_i` must be :ref:`valid <valid-externaddr-table>` with some :ref:`external type <syntax-externtype>` :math:`\XTTABLE~\tabletype_i`.
-
-* For each :ref:`memory address <syntax-memaddr>` :math:`\memaddr_i` in :math:`\moduleinst.\MIMEMS`, the :ref:`external address <syntax-externaddr>` :math:`\XAMEM~\memaddr_i` must be :ref:`valid <valid-externaddr-mem>` with some :ref:`external type <syntax-externtype>` :math:`\XTMEM~\memtype_i`.
+* For each :ref:`tag address <syntax-tagaddr>` :math:`\tagaddr_i` in :math:`\moduleinst.\MITAGS`, the :ref:`external address <syntax-externaddr>` :math:`\XATAG~\tagaddr_i` must be :ref:`valid <valid-externaddr-tag>` with some :ref:`external type <syntax-externtype>` :math:`\XTTAG~\tagtype_i`.
 
 * For each :ref:`global address <syntax-globaladdr>` :math:`\globaladdr_i` in :math:`\moduleinst.\MIGLOBALS`, the :ref:`external address <syntax-externaddr>` :math:`\XAGLOBAL~\globaladdr_i` must be :ref:`valid <valid-externaddr-global>` with some :ref:`external type <syntax-externtype>` :math:`\XTGLOBAL~\globaltype_i`.
 
-* For each :ref:`tag address <syntax-tagaddr>` :math:`\tagaddr_i` in :math:`\moduleinst.\MITAGS`, the :ref:`external address <syntax-externaddr>` :math:`\XATAG~\tagaddr_i` must be :ref:`valid <valid-externaddr-tag>` with some :ref:`external type <syntax-externtype>` :math:`\XTTAG~\tagtype_i`.
+* For each :ref:`memory address <syntax-memaddr>` :math:`\memaddr_i` in :math:`\moduleinst.\MIMEMS`, the :ref:`external address <syntax-externaddr>` :math:`\XAMEM~\memaddr_i` must be :ref:`valid <valid-externaddr-mem>` with some :ref:`external type <syntax-externtype>` :math:`\XTMEM~\memtype_i`.
 
-* For each :ref:`element address <syntax-elemaddr>` :math:`\elemaddr_i` in :math:`\moduleinst.\MIELEMS`, the :ref:`element instance <syntax-eleminst>` :math:`S.\SELEMS[\elemaddr_i]` must be :ref:`valid <valid-eleminst>` with some :ref:`reference type <syntax-reftype>` :math:`\reftype_i`.
+* For each :ref:`table address <syntax-tableaddr>` :math:`\tableaddr_i` in :math:`\moduleinst.\MITABLES`, the :ref:`external address <syntax-externaddr>` :math:`\XATABLE~\tableaddr_i` must be :ref:`valid <valid-externaddr-table>` with some :ref:`external type <syntax-externtype>` :math:`\XTTABLE~\tabletype_i`.
+
+* For each :ref:`function address <syntax-funcaddr>` :math:`\funcaddr_i` in :math:`\moduleinst.\MIFUNCS`, the :ref:`external address <syntax-externaddr>` :math:`\XAFUNC~\funcaddr_i` must be :ref:`valid <valid-externaddr-func>` with some :ref:`external type <syntax-externtype>` :math:`\XTFUNC~\functype_i`.
 
 * For each :ref:`data address <syntax-dataaddr>` :math:`\dataaddr_i` in :math:`\moduleinst.\MIDATAS`, the :ref:`data instance <syntax-datainst>` :math:`S.\SDATAS[\dataaddr_i]` must be :ref:`valid <valid-datainst>` with :math:`\X{ok}_i`.
+
+* For each :ref:`element address <syntax-elemaddr>` :math:`\elemaddr_i` in :math:`\moduleinst.\MIELEMS`, the :ref:`element instance <syntax-eleminst>` :math:`S.\SELEMS[\elemaddr_i]` must be :ref:`valid <valid-eleminst>` with some :ref:`reference type <syntax-reftype>` :math:`\reftype_i`.
 
 * Each :ref:`export instance <syntax-exportinst>` :math:`\exportinst_i` in :math:`\moduleinst.\MIEXPORTS` must be :ref:`valid <valid-exportinst>`.
 
@@ -823,15 +823,15 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
 
 * Let :math:`\deftype^\ast` be the concatenation of all :math:`\deftype_i` in order.
 
-* Let :math:`\functype^\ast` be the concatenation of all :math:`\functype_i` in order.
-
-* Let :math:`\tabletype^\ast` be the concatenation of all :math:`\tabletype_i` in order.
-
-* Let :math:`\memtype^\ast` be the concatenation of all :math:`\memtype_i` in order.
+* Let :math:`\tagtype^\ast` be the concatenation of all :math:`\tagtype_i` in order.
 
 * Let :math:`\globaltype^\ast` be the concatenation of all :math:`\globaltype_i` in order.
 
-* Let :math:`\tagtype^\ast` be the concatenation of all :math:`\tagtype_i` in order.
+* Let :math:`\memtype^\ast` be the concatenation of all :math:`\memtype_i` in order.
+
+* Let :math:`\tabletype^\ast` be the concatenation of all :math:`\tabletype_i` in order.
+
+* Let :math:`\functype^\ast` be the concatenation of all :math:`\functype_i` in order.
 
 * Let :math:`\reftype^\ast` be the concatenation of all :math:`\reftype_i` in order.
 
@@ -842,27 +842,27 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
 * Let :math:`x^\ast` be the sequence of :ref:`function indices <syntax-funcidx>` from :math:`0` to :math:`m-1`.
 
 * Then the module instance is valid with :ref:`context <context>`
-  :math:`\{\CTYPES~\deftype^\ast,` :math:`\CFUNCS~\functype^\ast,` :math:`\CTABLES~\tabletype^\ast,` :math:`\CMEMS~\memtype^\ast,` :math:`\CGLOBALS~\globaltype^\ast,` \CTAGS~\tagtype^\ast, :math:`\CELEMS~\reftype^\ast,` :math:`\CDATAS~\X{ok}^\ast,` :math:`\CREFS~x^\ast\}`.
+  :math:`\{\CTYPES~\deftype^\ast,` :math:`\CTAGS~\tagtype^\ast,` :math:`\CGLOBALS~\globaltype^\ast,` :math:`\CMEMS~\memtype^\ast,` :math:`\CTABLES~\tabletype^\ast,` :math:`\CFUNCS~\functype^\ast,` :math:`\CDATAS~\X{ok}^\ast,` :math:`\CELEMS~\reftype^\ast,` :math:`\CREFS~x^\ast\}`.
 
 .. math::
    ~\\[-1ex]
    \frac{
      \begin{array}{@{}c@{}}
      (\vdashdeftype \deftype : \OKdeftype)^\ast
-     \\
-     (S \vdashexternaddr \XAFUNC~\funcaddr : \XTFUNC~\functype)^\ast
      \qquad
-     (S \vdashexternaddr \XATABLE~\tableaddr : \XTTABLE~\tabletype)^\ast
+     (S \vdashexternaddr \XATAG~\tagaddr : \XTTAG~\tagtype)^\ast
+     \\
+     (S \vdashexternaddr \XAGLOBAL~\globaladdr : \XTGLOBAL~\globaltype)^\ast
+     \qquad
+     (S \vdashexternaddr \XAFUNC~\funcaddr : \XTFUNC~\functype)^\ast
      \\
      (S \vdashexternaddr \XAMEM~\memaddr : \XTMEM~\memtype)^\ast
      \qquad
-     (S \vdashexternaddr \XAGLOBAL~\globaladdr : \XTGLOBAL~\globaltype)^\ast
+     (S \vdashexternaddr \XATABLE~\tableaddr : \XTTABLE~\tabletype)^\ast
      \\
-     (S \vdashexternaddr \XATAG~\tagaddr : \XTTAG~\tagtype)^\ast
-     \\
-     (S \vdasheleminst S.\SELEMS[\elemaddr] : \reftype)^\ast
-     \qquad
      (S \vdashdatainst S.\SDATAS[\dataaddr] : \X{ok})^\ast
+     \qquad
+     (S \vdasheleminst S.\SELEMS[\elemaddr] : \reftype)^\ast
      \\
      (S \vdashexportinst \exportinst : \OKexportinst)^\ast
      \qquad
@@ -872,23 +872,23 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
      S \vdashmoduleinst \{
        \begin{array}[t]{@{}l@{~}l@{}}
        \MITYPES & \deftype^\ast, \\
-       \MIFUNCS & \funcaddr^\ast, \\
-       \MITABLES & \tableaddr^\ast, \\
-       \MIMEMS & \memaddr^\ast, \\
-       \MIGLOBALS & \globaladdr^\ast, \\
        \MITAGS & \tagaddr^\ast, \\
-       \MIELEMS & \elemaddr^\ast, \\
+       \MIGLOBALS & \globaladdr^\ast, \\
+       \MIMEMS & \memaddr^\ast, \\
+       \MITABLES & \tableaddr^\ast, \\
+       \MIFUNCS & \funcaddr^\ast, \\
        \MIDATAS & \dataaddr^\ast, \\
+       \MIELEMS & \elemaddr^\ast, \\
        \MIEXPORTS & \exportinst^\ast ~\} : \{
          \begin{array}[t]{@{}l@{~}l@{}}
          \CTYPES & \deftype^\ast, \\
-         \CFUNCS & \functype^\ast, \\
-         \CTABLES & \tabletype^\ast, \\
-         \CMEMS & \memtype^\ast, \\
-         \CGLOBALS & \globaltype^\ast, \\
          \CTAGS & \tagtype^\ast, \\
-         \CELEMS & \reftype^\ast, \\
+         \CGLOBALS & \globaltype^\ast, \\
+         \CMEMS & \memtype^\ast, \\
+         \CTABLES & \tabletype^\ast, \\
+         \CFUNCS & \functype^\ast, \\
          \CDATAS & \X{ok}^\ast, \\
+         \CELEMS & \reftype^\ast, \\
          \CREFS & 0 \dots (|\funcaddr^\ast|-1) ~\}
          \end{array}
        \end{array}
@@ -1187,19 +1187,19 @@ a store state :math:`S'` extends state :math:`S`, written :math:`S \extendsto S'
 :ref:`Store <syntax-store>` :math:`S`
 .....................................
 
-* The length of :math:`S.\SFUNCS` must not shrink.
-
-* The length of :math:`S.\STABLES` must not shrink.
-
-* The length of :math:`S.\SMEMS` must not shrink.
+* The length of :math:`S.\STAGS` must not shrink.
 
 * The length of :math:`S.\SGLOBALS` must not shrink.
 
-* The length of :math:`S.\STAGS` must not shrink.
+* The length of :math:`S.\SMEMS` must not shrink.
 
-* The length of :math:`S.\SELEMS` must not shrink.
+* The length of :math:`S.\STABLES` must not shrink.
+
+* The length of :math:`S.\SFUNCS` must not shrink.
 
 * The length of :math:`S.\SDATAS` must not shrink.
+
+* The length of :math:`S.\SELEMS` must not shrink.
 
 * The length of :math:`S.\SSTRUCTS` must not shrink.
 
@@ -1207,19 +1207,19 @@ a store state :math:`S'` extends state :math:`S`, written :math:`S \extendsto S'
 
 * The length of :math:`S.\SEXNS` must not shrink.
 
-* For each :ref:`function instance <syntax-funcinst>` :math:`\funcinst_i` in the original :math:`S.\SFUNCS`, the new function instance must be an :ref:`extension <extend-funcinst>` of the old.
-
-* For each :ref:`table instance <syntax-tableinst>` :math:`\tableinst_i` in the original :math:`S.\STABLES`, the new table instance must be an :ref:`extension <extend-tableinst>` of the old.
-
-* For each :ref:`memory instance <syntax-meminst>` :math:`\meminst_i` in the original :math:`S.\SMEMS`, the new memory instance must be an :ref:`extension <extend-meminst>` of the old.
+* For each :ref:`tag instance <syntax-taginst>` :math:`\taginst_i` in the original :math:`S.\STAGS`, the new tag instance must be an :ref:`extension <extend-taginst>` of the old.
 
 * For each :ref:`global instance <syntax-globalinst>` :math:`\globalinst_i` in the original :math:`S.\SGLOBALS`, the new global instance must be an :ref:`extension <extend-globalinst>` of the old.
 
-* For each :ref:`tag instance <syntax-taginst>` :math:`\taginst_i` in the original :math:`S.\STAGS`, the new tag instance must be an :ref:`extension <extend-taginst>` of the old.
+* For each :ref:`memory instance <syntax-meminst>` :math:`\meminst_i` in the original :math:`S.\SMEMS`, the new memory instance must be an :ref:`extension <extend-meminst>` of the old.
 
-* For each :ref:`element instance <syntax-eleminst>` :math:`\eleminst_i` in the original :math:`S.\SELEMS`, the new element instance must be an :ref:`extension <extend-eleminst>` of the old.
+* For each :ref:`table instance <syntax-tableinst>` :math:`\tableinst_i` in the original :math:`S.\STABLES`, the new table instance must be an :ref:`extension <extend-tableinst>` of the old.
+
+* For each :ref:`function instance <syntax-funcinst>` :math:`\funcinst_i` in the original :math:`S.\SFUNCS`, the new function instance must be an :ref:`extension <extend-funcinst>` of the old.
 
 * For each :ref:`data instance <syntax-datainst>` :math:`\datainst_i` in the original :math:`S.\SDATAS`, the new data instance must be an :ref:`extension <extend-datainst>` of the old.
+
+* For each :ref:`element instance <syntax-eleminst>` :math:`\eleminst_i` in the original :math:`S.\SELEMS`, the new element instance must be an :ref:`extension <extend-eleminst>` of the old.
 
 * For each :ref:`structure instance <syntax-structinst>` :math:`\structinst_i` in the original :math:`S.\SSTRUCTS`, the new structure instance must be an :ref:`extension <extend-structinst>` of the old.
 
@@ -1230,90 +1230,63 @@ a store state :math:`S'` extends state :math:`S`, written :math:`S \extendsto S'
 .. math::
    \frac{
      \begin{array}{@{}ccc@{}}
-     S_1.\SFUNCS = \funcinst_1^\ast &
-     S_2.\SFUNCS = {\funcinst'_1}^\ast~\funcinst_2^\ast &
-     (\vdashfuncinstextends \funcinst_1 \extendsto \funcinst'_1)^\ast \\
+     S_1.\STAGS = \taginst_1^\ast &
+     S_2.\STAGS = {\taginst'_1}^\ast~\taginst_2^\ast &
+     (\vdashtaginstextends \taginst_1 \extendsto \taginst'_1)^\ast
+     \\
+     S_1.\SGLOBALS = \globalinst_1^\ast &
+     S_2.\SGLOBALS = {\globalinst'_1}^\ast~\globalinst_2^\ast &
+     (\vdashglobalinstextends \globalinst_1 \extendsto \globalinst'_1)^\ast
+     \\
+     S_1.\SMEMS = \meminst_1^\ast &
+     S_2.\SMEMS = {\meminst'_1}^\ast~\meminst_2^\ast &
+     (\vdashmeminstextends \meminst_1 \extendsto \meminst'_1)^\ast
+     \\
      S_1.\STABLES = \tableinst_1^\ast &
      S_2.\STABLES = {\tableinst'_1}^\ast~\tableinst_2^\ast &
      (\vdashtableinstextends \tableinst_1 \extendsto \tableinst'_1)^\ast \\
-     S_1.\SMEMS = \meminst_1^\ast &
-     S_2.\SMEMS = {\meminst'_1}^\ast~\meminst_2^\ast &
-     (\vdashmeminstextends \meminst_1 \extendsto \meminst'_1)^\ast \\
-     S_1.\SGLOBALS = \globalinst_1^\ast &
-     S_2.\SGLOBALS = {\globalinst'_1}^\ast~\globalinst_2^\ast &
-     (\vdashglobalinstextends \globalinst_1 \extendsto \globalinst'_1)^\ast \\
-     S_1.\STAGS = \taginst_1^\ast &
-     S_2.\STAGS = {\taginst'_1}^\ast~\taginst_2^\ast &
-     (\vdashtaginstextends \taginst_1 \extendsto \taginst'_1)^\ast \\
-     S_1.\SELEMS = \eleminst_1^\ast &
-     S_2.\SELEMS = {\eleminst'_1}^\ast~\eleminst_2^\ast &
-     (\vdasheleminstextends \eleminst_1 \extendsto \eleminst'_1)^\ast \\
+     S_1.\SFUNCS = \funcinst_1^\ast &
+     S_2.\SFUNCS = {\funcinst'_1}^\ast~\funcinst_2^\ast &
+     (\vdashfuncinstextends \funcinst_1 \extendsto \funcinst'_1)^\ast
+     \\
      S_1.\SDATAS = \datainst_1^\ast &
      S_2.\SDATAS = {\datainst'_1}^\ast~\datainst_2^\ast &
-     (\vdashdatainstextends \datainst_1 \extendsto \datainst'_1)^\ast \\
+     (\vdashdatainstextends \datainst_1 \extendsto \datainst'_1)^\ast
+     \\
+     S_1.\SELEMS = \eleminst_1^\ast &
+     S_2.\SELEMS = {\eleminst'_1}^\ast~\eleminst_2^\ast &
+     (\vdasheleminstextends \eleminst_1 \extendsto \eleminst'_1)^\ast
+     \\
      S_1.\SSTRUCTS = \structinst_1^\ast &
      S_2.\SSTRUCTS = {\structinst'_1}^\ast~\structinst_2^\ast &
-     (\vdashstructinstextends \structinst_1 \extendsto \structinst'_1)^\ast \\
+     (\vdashstructinstextends \structinst_1 \extendsto \structinst'_1)^\ast
+     \\
      S_1.\SARRAYS = \arrayinst_1^\ast &
      S_2.\SARRAYS = {\arrayinst'_1}^\ast~\arrayinst_2^\ast &
-     (\vdasharrayinstextends \arrayinst_1 \extendsto \arrayinst'_1)^\ast \\
+     (\vdasharrayinstextends \arrayinst_1 \extendsto \arrayinst'_1)^\ast
+     \\
      S_1.\SEXNS = \exninst_1^\ast &
      S_2.\SEXNS = {\exninst'_1}^\ast~\exninst_2^\ast &
-     (\vdashexninstextends \exninst_1 \extendsto \exninst'_1)^\ast \\
+     (\vdashexninstextends \exninst_1 \extendsto \exninst'_1)^\ast
+     \\
      \end{array}
    }{
      \vdashstoreextends S_1 \extendsto S_2
    }
 
 
-.. index:: function instance
-.. _extend-funcinst:
+.. index:: tag instance
+.. _extend-taginst:
 
-:ref:`Function Instance <syntax-funcinst>` :math:`\funcinst`
-............................................................
+:ref:`Tag Instance <syntax-taginst>` :math:`\taginst`
+.....................................................
 
-* A function instance must remain unchanged.
+* A tag instance must remain unchanged.
 
 .. math::
    \frac{
    }{
-     \vdashfuncinstextends \funcinst \extendsto \funcinst
-   }
-
-
-.. index:: table instance
-.. _extend-tableinst:
-
-:ref:`Table Instance <syntax-tableinst>` :math:`\tableinst`
-...........................................................
-
-* The :ref:`table type <syntax-tabletype>` :math:`\tableinst.\TITYPE` must remain unchanged.
-
-* The length of :math:`\tableinst.\TIREFS` must not shrink.
-
-.. math::
-   \frac{
-     n_1 \leq n_2
-   }{
-     \vdashtableinstextends \{\TITYPE~\X{tt}, \TIREFS~(\X{fa}_1^?)^{n_1}\} \extendsto \{\TITYPE~\X{tt}, \TIREFS~(\X{fa}_2^?)^{n_2}\}
-   }
-
-
-.. index:: memory instance
-.. _extend-meminst:
-
-:ref:`Memory Instance <syntax-meminst>` :math:`\meminst`
-........................................................
-
-* The :ref:`memory type <syntax-memtype>` :math:`\meminst.\MITYPE` must remain unchanged.
-
-* The length of :math:`\meminst.\MIBYTES` must not shrink.
-
-.. math::
-   \frac{
-     n_1 \leq n_2
-   }{
-     \vdashmeminstextends \{\MITYPE~\X{mt}, \MIBYTES~b_1^{n_1}\} \extendsto \{\MITYPE~\X{mt}, \MIBYTES~b_2^{n_2}\}
+     \vdashtaginstextends \taginst \extendsto \taginst
    }
 
 
@@ -1337,18 +1310,79 @@ a store state :math:`S'` extends state :math:`S`, written :math:`S \extendsto S'
    }
 
 
-.. index:: tag instance
-.. _extend-taginst:
+.. index:: memory instance
+.. _extend-meminst:
 
-:ref:`Tag Instance <syntax-taginst>` :math:`\taginst`
-.....................................................
+:ref:`Memory Instance <syntax-meminst>` :math:`\meminst`
+........................................................
 
-* A tag instance must remain unchanged.
+* The :ref:`memory type <syntax-memtype>` :math:`\meminst.\MITYPE` must remain unchanged.
+
+* The length of :math:`\meminst.\MIBYTES` must not shrink.
+
+.. math::
+   \frac{
+     n_1 \leq n_2
+   }{
+     \vdashmeminstextends \{\MITYPE~\X{mt}, \MIBYTES~b_1^{n_1}\} \extendsto \{\MITYPE~\X{mt}, \MIBYTES~b_2^{n_2}\}
+   }
+
+
+.. index:: table instance
+.. _extend-tableinst:
+
+:ref:`Table Instance <syntax-tableinst>` :math:`\tableinst`
+...........................................................
+
+* The :ref:`table type <syntax-tabletype>` :math:`\tableinst.\TITYPE` must remain unchanged.
+
+* The length of :math:`\tableinst.\TIREFS` must not shrink.
+
+.. math::
+   \frac{
+     n_1 \leq n_2
+   }{
+     \vdashtableinstextends \{\TITYPE~\X{tt}, \TIREFS~(\X{fa}_1^?)^{n_1}\} \extendsto \{\TITYPE~\X{tt}, \TIREFS~(\X{fa}_2^?)^{n_2}\}
+   }
+
+
+.. index:: function instance
+.. _extend-funcinst:
+
+:ref:`Function Instance <syntax-funcinst>` :math:`\funcinst`
+............................................................
+
+* A function instance must remain unchanged.
 
 .. math::
    \frac{
    }{
-     \vdashtaginstextends \taginst \extendsto \taginst
+     \vdashfuncinstextends \funcinst \extendsto \funcinst
+   }
+
+
+.. index:: data instance
+.. _extend-datainst:
+
+:ref:`Data Instance <syntax-datainst>` :math:`\datainst`
+........................................................
+
+* The list :math:`\datainst.\DIBYTES` must:
+
+  * either remain unchanged,
+
+  * or shrink to length :math:`0`.
+
+.. math::
+   \frac{
+   }{
+     \vdashdatainstextends \{\DIBYTES~b^\ast\} \extendsto \{\DIBYTES~b^\ast\}
+   }
+
+.. math::
+   \frac{
+   }{
+     \vdashdatainstextends \{\DIBYTES~b^\ast\} \extendsto \{\DIBYTES~\epsilon\}
    }
 
 
@@ -1376,31 +1410,6 @@ a store state :math:`S'` extends state :math:`S`, written :math:`S \extendsto S'
    \frac{
    }{
      \vdasheleminstextends \{\EITYPE~t, \EIREFS~a^\ast\} \extendsto \{\EITYPE~t, \EIREFS~\epsilon\}
-   }
-
-
-.. index:: data instance
-.. _extend-datainst:
-
-:ref:`Data Instance <syntax-datainst>` :math:`\datainst`
-........................................................
-
-* The list :math:`\datainst.\DIBYTES` must:
-
-  * either remain unchanged,
-
-  * or shrink to length :math:`0`.
-
-.. math::
-   \frac{
-   }{
-     \vdashdatainstextends \{\DIBYTES~b^\ast\} \extendsto \{\DIBYTES~b^\ast\}
-   }
-
-.. math::
-   \frac{
-   }{
-     \vdashdatainstextends \{\DIBYTES~b^\ast\} \extendsto \{\DIBYTES~\epsilon\}
    }
 
 

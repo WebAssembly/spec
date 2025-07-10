@@ -46,11 +46,6 @@ $${rule-prose: Typeuse_ok/typeidx}
 $${rule: Typeuse_ok/typeidx}
 
 
-$${rule-prose: Typeuse_ok/rec}
-
-$${rule: Typeuse_ok/rec}
-
-
 .. index:: heap type, type use
    pair: validation; heap type
    single: abstract syntax; heap type

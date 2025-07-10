@@ -42,8 +42,8 @@ Category                                  Constructor                           
 :ref:`Recursive type <syntax-rectype>`    :math:`\TREC~\subtype^\ast`                         :math:`\hex{4E}` (-50 as |Bs7|)
 (reserved)                                                                                    :math:`\hex{4D}` .. :math:`\hex{41}`
 :ref:`Result type <syntax-resulttype>`    :math:`[\epsilon]`                                  :math:`\hex{40}` (-64 as |Bs7|)
-:ref:`Table type <syntax-tabletype>`      :math:`\limits~\reftype`                            (none)
-:ref:`Memory type <syntax-memtype>`       :math:`\limits`                                     (none)
+:ref:`Tag type <syntax-tagtype>`          :math:`\typeuse`                                    (none)
 :ref:`Global type <syntax-globaltype>`    :math:`\mut~\valtype`                               (none)
-:ref:`Tag type <syntax-tagtype>`          :math:`\functype`                                   (none)
+:ref:`Memory type <syntax-memtype>`       :math:`\addrtype~\limits`                           (none)
+:ref:`Table type <syntax-tabletype>`      :math:`\addrtype~\limits~\reftype`                  (none)
 ========================================  ==================================================  ===============================================================
