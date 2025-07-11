@@ -65,13 +65,6 @@ Instruction Types
 
 $${rule: Instrtype_ok}
 
-.. _valid-types-function-types:
-
-Function Types
-~~~~~~~~~~~~~~
-
-$${rule: Functype_ok}
-
 .. _valid-types-composite-types:
 
 Composite Types

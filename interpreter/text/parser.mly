@@ -169,7 +169,7 @@ let field x (c : context) y =
 
 let func_type (c : context) x =
   match expand_deftype (Lib.List32.nth c.types.ctx x.it) with
-  | FuncCT ft -> ft
+  | FuncT (ts1, ts2) -> ts1, ts2
   | _ -> error x.at ("non-function type " ^ Int32.to_string x.it)
   | exception Failure _ -> error x.at ("unknown type " ^ Int32.to_string x.it)
 
@@ -224,8 +224,8 @@ let anon_fields (c : context) x n loc =
   bind "field" (Lib.List32.nth c.types.fields x) n (at loc)
 
 
-let inline_functype (c : context) ft loc =
-  let st = SubT (Final, [], FuncCT ft) in
+let inline_functype (c : context) (ts1, ts2) loc =
+  let st = SubT (Final, [], FuncT (ts1, ts2)) in
   match
     Lib.List.index_where (function
       | DefT (RecT [st'], 0l) -> st = st'
@@ -240,11 +240,11 @@ let inline_functype (c : context) ft loc =
     i @@ loc
 
 let inline_functype_explicit (c : context) x ft =
-  if ft = FuncT ([], []) then
+  if ft = ([], []) then
     (* Deferring ensures that type lookup is only triggered when
        symbolic identifiers are used, and not for desugared functions *)
     defer_locals c (fun () ->
-      let FuncT (ts1, _ts2) = func_type c x in
+      let (ts1, _ts2) = func_type c x in
       bind "local" c.locals (Lib.List32.length ts1) x.at
     )
   else if ft <> func_type c x then
@@ -427,20 +427,20 @@ struct_field_list :
     { fun c x -> ignore (bind_field c x $3); $4 c :: $6 c x }
 
 structtype :
-  | struct_field_list { fun c x -> StructT ($1 c x) }
+  | struct_field_list { $1 }
 
 arraytype :
-  | fieldtype { fun c -> ArrayT ($1 c) }
+  | fieldtype { $1 }
 
 functype :
   | functype_result
-    { fun c -> FuncT ([], $1 c) }
+    { fun c -> ([], $1 c) }
   | LPAR PARAM valtype_list RPAR functype
-    { fun c -> let FuncT (ts1, ts2) = $5 c in
-      FuncT (snd $3 c @ ts1, ts2) }
+    { fun c -> let (ts1, ts2) = $5 c in
+      (snd $3 c @ ts1, ts2) }
   | LPAR PARAM bind_idx valtype RPAR functype  /* Sugar */
-    { fun c -> let FuncT (ts1, ts2) = $6 c in
-      FuncT ($4 c :: ts1, ts2) }
+    { fun c -> let (ts1, ts2) = $6 c in
+      ($4 c :: ts1, ts2) }
 
 functype_result :
   | /* empty */
@@ -449,9 +449,9 @@ functype_result :
     { fun c -> snd $3 c @ $5 c }
 
 comptype :
-  | LPAR STRUCT structtype RPAR { fun c x -> StructCT ($3 c x) }
-  | LPAR ARRAY arraytype RPAR { fun c x -> ArrayCT ($3 c) }
-  | LPAR FUNC functype RPAR { fun c x -> FuncCT ($3 c) }
+  | LPAR STRUCT structtype RPAR { fun c x -> StructT ($3 c x) }
+  | LPAR ARRAY arraytype RPAR { fun c x -> ArrayT ($3 c) }
+  | LPAR FUNC functype RPAR { fun c x -> FuncT ($3 c) }
 
 subtype :
   | comptype { fun c x -> SubT (Final, [], $1 c x) }
@@ -706,17 +706,17 @@ call_instr_type_instr_list :
   | typeuse call_instr_params_instr_list
     { fun c ->
       match $2 c with
-      | FuncT ([], []), es -> $1 c, es
+      | ([], []), es -> $1 c, es
       | ft, es -> inline_functype_explicit c ($1 c) ft, es }
   | call_instr_params_instr_list
     { fun c -> let ft, es = $1 c in inline_functype c ft $sloc, es }
 
 call_instr_params_instr_list :
   | LPAR PARAM valtype_list RPAR call_instr_params_instr_list
-    { fun c -> let FuncT (ts1, ts2), es = $5 c in
-      FuncT (snd $3 c @ ts1, ts2), es }
+    { fun c -> let (ts1, ts2), es = $5 c in
+      (snd $3 c @ ts1, ts2), es }
   | call_instr_results_instr_list
-    { fun c -> let ts, es = $1 c in FuncT ([], ts), es }
+    { fun c -> let ts, es = $1 c in ([], ts), es }
 
 call_instr_results_instr_list :
   | LPAR RESULT valtype_list RPAR call_instr_results_instr_list
@@ -748,22 +748,22 @@ block :
     { fun c -> let ft, es = $1 c in
       let bt =
         match ft with
-        | FuncT ([], []) -> ValBlockType None
-        | FuncT ([], [t]) -> ValBlockType (Some t)
+        | ([], []) -> ValBlockType None
+        | ([], [t]) -> ValBlockType (Some t)
         | ft ->  VarBlockType (inline_functype c ft $sloc)
       in bt, es }
 
 block_param_body :
   | block_result_body { $1 }
   | LPAR PARAM valtype_list RPAR block_param_body
-    { fun c -> let FuncT (ts1, ts2), es = $5 c in
-      FuncT (snd $3 c @ ts1, ts2), es }
+    { fun c -> let (ts1, ts2), es = $5 c in
+      (snd $3 c @ ts1, ts2), es }
 
 block_result_body :
-  | instr_list { fun c -> FuncT ([], []), $1 c }
+  | instr_list { fun c -> ([], []), $1 c }
   | LPAR RESULT valtype_list RPAR block_result_body
-    { fun c -> let FuncT (ts1, ts2), es = $5 c in
-      FuncT (ts1, snd $3 c @ ts2), es }
+    { fun c -> let (ts1, ts2), es = $5 c in
+      (ts1, snd $3 c @ ts2), es }
 
 
 handler_block :
@@ -774,22 +774,22 @@ handler_block :
     { fun c c' -> let ft, esh = $1 c c' in
       let bt =
         match ft with
-        | FuncT ([], []) -> ValBlockType None
-        | FuncT ([], [t]) -> ValBlockType (Some t)
+        | ([], []) -> ValBlockType None
+        | ([], [t]) -> ValBlockType (Some t)
         | ft ->  VarBlockType (inline_functype c ft $sloc)
       in bt, esh }
 
 handler_block_param_body :
   | handler_block_result_body { $1 }
   | LPAR PARAM valtype_list RPAR handler_block_param_body
-    { fun c c' -> let FuncT (ts1, ts2), esh = $5 c c' in
-      FuncT (snd $3 c @ ts1, ts2), esh }
+    { fun c c' -> let (ts1, ts2), esh = $5 c c' in
+      (snd $3 c @ ts1, ts2), esh }
 
 handler_block_result_body :
-  | handler_block_body { fun c c' -> FuncT ([], []), $1 c c' }
+  | handler_block_body { fun c c' -> ([], []), $1 c c' }
   | LPAR RESULT valtype_list RPAR handler_block_result_body
-    { fun c c' -> let FuncT (ts1, ts2), esh = $5 c c' in
-      FuncT (ts1, snd $3 c @ ts2), esh }
+    { fun c c' -> let (ts1, ts2), esh = $5 c c' in
+      (ts1, snd $3 c @ ts2), esh }
 
 handler_block_body :
   | instr_list
@@ -845,17 +845,17 @@ call_expr_type :
   | typeuse call_expr_params
     { fun c ->
       match $2 c with
-      | FuncT ([], []), es -> $1 c, es
+      | ([], []), es -> $1 c, es
       | ft, es -> inline_functype_explicit c ($1 c) ft, es }
   | call_expr_params
     { fun c -> let ft, es = $1 c in inline_functype c ft $loc($1), es }
 
 call_expr_params :
   | LPAR PARAM valtype_list RPAR call_expr_params
-    { fun c -> let FuncT (ts1, ts2), es = $5 c in
-      FuncT (snd $3 c @ ts1, ts2), es }
+    { fun c -> let (ts1, ts2), es = $5 c in
+      (snd $3 c @ ts1, ts2), es }
   | call_expr_results
-    { fun c -> let ts, es = $1 c in FuncT ([], ts), es }
+    { fun c -> let ts, es = $1 c in ([], ts), es }
 
 call_expr_results :
   | LPAR RESULT valtype_list RPAR call_expr_results
@@ -873,22 +873,22 @@ if_block :
     { fun c c' -> let ft, es = $1 c c' in
       let bt =
         match ft with
-        | FuncT ([], []) -> ValBlockType None
-        | FuncT ([], [t]) -> ValBlockType (Some t)
+        | ([], []) -> ValBlockType None
+        | ([], [t]) -> ValBlockType (Some t)
         | ft ->  VarBlockType (inline_functype c ft $sloc)
       in bt, es }
 
 if_block_param_body :
   | if_block_result_body { $1 }
   | LPAR PARAM valtype_list RPAR if_block_param_body
-    { fun c c' -> let FuncT (ts1, ts2), es = $5 c c' in
-      FuncT (snd $3 c @ ts1, ts2), es }
+    { fun c c' -> let (ts1, ts2), es = $5 c c' in
+      (snd $3 c @ ts1, ts2), es }
 
 if_block_result_body :
-  | if_ { fun c c' -> FuncT ([], []), $1 c c' }
+  | if_ { fun c c' -> ([], []), $1 c c' }
   | LPAR RESULT valtype_list RPAR if_block_result_body
-    { fun c c' -> let FuncT (ts1, ts2), es = $5 c c' in
-      FuncT (ts1, snd $3 c @ ts2), es }
+    { fun c c' -> let (ts1, ts2), es = $5 c c' in
+      (ts1, snd $3 c @ ts2), es }
 
 if_ :
   | expr if_
@@ -911,22 +911,22 @@ try_block :
       let ft, esh = $1 c c' in
       let bt =
         match ft with
-        | FuncT ([], []) -> ValBlockType None
-        | FuncT ([], [t]) -> ValBlockType (Some t)
+        | ([], []) -> ValBlockType None
+        | ([], [t]) -> ValBlockType (Some t)
         | _ ->  VarBlockType (inline_functype c' ft $sloc)
       in bt, esh }
 
 try_block_param_body :
   | try_block_result_body { $1 }
   | LPAR PARAM valtype_list RPAR try_block_param_body
-    { fun c c' -> let FuncT (ts1, ts2), esh = $5 c c' in
-      FuncT (snd $3 c @ ts1, ts2), esh }
+    { fun c c' -> let (ts1, ts2), esh = $5 c c' in
+      (snd $3 c @ ts1, ts2), esh }
 
 try_block_result_body :
-  | try_block_handler_body { fun c c' -> FuncT ([], []), $1 c c' }
+  | try_block_handler_body { fun c c' -> ([], []), $1 c c' }
   | LPAR RESULT valtype_list RPAR try_block_result_body
-    { fun c c' -> let FuncT (ts1, ts2), esh = $5 c c' in
-      FuncT (ts1, snd $3 c @ ts2), esh }
+    { fun c c' -> let (ts1, ts2), esh = $5 c c' in
+      (ts1, snd $3 c @ ts2), esh }
 
 try_block_handler_body :
   | instr_list
@@ -993,28 +993,28 @@ func_fields :
 func_fields_import :  /* Sugar */
   | func_fields_import_result { $1 }
   | LPAR PARAM valtype_list RPAR func_fields_import
-    { fun c -> let FuncT (ts1, ts2) = $5 c in FuncT (snd $3 c @ ts1, ts2) }
+    { fun c -> let (ts1, ts2) = $5 c in (snd $3 c @ ts1, ts2) }
   | LPAR PARAM bind_idx valtype RPAR func_fields_import  /* Sugar */
-    { fun c -> let FuncT (ts1, ts2) = $6 c in FuncT ($4 c :: ts1, ts2) }
+    { fun c -> let (ts1, ts2) = $6 c in ($4 c :: ts1, ts2) }
 
 func_fields_import_result :  /* Sugar */
-  | /* empty */ { fun c -> FuncT ([], []) }
+  | /* empty */ { fun c -> ([], []) }
   | LPAR RESULT valtype_list RPAR func_fields_import_result
-    { fun c -> let FuncT (ts1, ts2) = $5 c in FuncT (ts1, snd $3 c @ ts2) }
+    { fun c -> let (ts1, ts2) = $5 c in (ts1, snd $3 c @ ts2) }
 
 func_fields_body :
   | func_result_body { $1 }
   | LPAR PARAM valtype_list RPAR func_fields_body
-    { (fun c -> let FuncT (ts1, ts2) = fst $5 c in FuncT (snd $3 c @ ts1, ts2)),
+    { (fun c -> let (ts1, ts2) = fst $5 c in (snd $3 c @ ts1, ts2)),
       (fun c -> anon_locals c (fst $3) $loc($3); snd $5 c) }
   | LPAR PARAM bind_idx valtype RPAR func_fields_body  /* Sugar */
-    { (fun c -> let FuncT (ts1, ts2) = fst $6 c in FuncT ($4 c :: ts1, ts2)),
+    { (fun c -> let (ts1, ts2) = fst $6 c in ($4 c :: ts1, ts2)),
       (fun c -> ignore (bind_local c $3); snd $6 c) }
 
 func_result_body :
-  | func_body { (fun c -> FuncT ([], [])), $1 }
+  | func_body { (fun c -> ([], [])), $1 }
   | LPAR RESULT valtype_list RPAR func_result_body
-    { (fun c -> let FuncT (ts1, ts2) = fst $5 c in FuncT (ts1, snd $3 c @ ts2)),
+    { (fun c -> let (ts1, ts2) = fst $5 c in (ts1, snd $3 c @ ts2)),
       snd $5 }
 
 func_body :

@@ -120,74 +120,54 @@ Value Types
    \end{array}
 
 
-.. index:: function type, value type, result type
-   pair: text format; function type
-.. _text-param:
-.. _text-result:
-.. _text-functype:
 
 Function Types
 ~~~~~~~~~~~~~~
 
 .. math::
    \begin{array}{llclll@{\qquad\qquad}l}
-   \production{function type} & \Tfunctype_I &::=&
+   \end{array}
+
+
+
+.. index:: composite type, aggregate type, structure type, array type, function type, field type, storage type, value type, packed type, mutability, result type
+   pair: text format; composite type
+   pair: text format; aggregate type
+   pair: text format; structure type
+   pair: text format; array type
+   pair: text format; function type
+   pair: text format; field type
+   pair: text format; storage type
+   pair: text format; packed type
+.. _text-comptype:
+.. _text-aggrtype:
+.. _text-structtype:
+.. _text-arraytype:
+.. _text-functype:
+.. _text-param:
+.. _text-result:
+.. _text-fieldtype:
+.. _text-storagetype:
+.. _text-packtype:
+
+Composite Types
+~~~~~~~~~~~~~~~
+
+.. math::
+   \begin{array}{llclll@{\qquad\qquad}l}
+   \production{composite type} & \Tcomptype_I &::=&
+     \text{(}~\text{struct}~~\X{ft}^\ast{:\,}\Tlist(\Tfield_I)~\text{)}
+       &\Rightarrow& \TSTRUCT~\X{ft}^\ast \\ &&|&
+     \text{(}~\text{array}~~\X{ft}{:}\Tfieldtype_I~\text{)}
+       &\Rightarrow& \TARRAY~\X{ft} \\ &&|&
      \text{(}~\text{func}~~t_1^\ast{:\,}\Tlist(\Tparam_I)~~t_2^\ast{:\,}\Tlist(\Tresult_I)~\text{)}
-       &\Rightarrow& [t_1^\ast] \to [t_2^\ast] \\
+       &\Rightarrow& \TFUNC~[t_1^\ast] \Tarrow [t_2^\ast] \\
    \production{parameter} & \Tparam_I &::=&
      \text{(}~\text{param}~~\Tid^?~~t{:}\Tvaltype_I~\text{)}
        &\Rightarrow& t \\
    \production{result} & \Tresult_I &::=&
      \text{(}~\text{result}~~t{:}\Tvaltype_I~\text{)}
        &\Rightarrow& t \\
-   \end{array}
-
-.. note::
-   The optional identifier names for parameters in a function type only have documentation purpose.
-   They cannot be referenced from anywhere.
-
-
-Abbreviations
-.............
-
-Multiple anonymous parameters or results may be combined into a single declaration:
-
-.. math::
-   \begin{array}{llclll}
-   \production{parameter} &
-     \text{(}~~\text{param}~~\Tvaltype^\ast~~\text{)} &\equiv&
-     (\text{(}~~\text{param}~~\Tvaltype~~\text{)})^\ast \\
-   \production{result} &
-     \text{(}~~\text{result}~~\Tvaltype^\ast~~\text{)} &\equiv&
-     (\text{(}~~\text{result}~~\Tvaltype~~\text{)})^\ast \\
-   \end{array}
-
-
-.. index:: aggregate type, value type, structure type, array type, field type, storage type, packed type, mutability
-   pair: text format; aggregate type
-   pair: text format; structure type
-   pair: text format; array type
-   pair: text format; field type
-   pair: text format; storage type
-   pair: text format; packed type
-.. _text-aggrtype:
-.. _text-structtype:
-.. _text-arraytype:
-.. _text-fieldtype:
-.. _text-storagetype:
-.. _text-packtype:
-
-Aggregate Types
-~~~~~~~~~~~~~~~
-
-.. math::
-   \begin{array}{llclll@{\qquad\qquad}l}
-   \production{array type} & \Tarraytype_I &::=&
-     \text{(}~\text{array}~~\X{ft}{:}\Tfieldtype_I~\text{)}
-       &\Rightarrow& \X{ft} \\
-   \production{structure type} & \Tstructtype_I &::=&
-     \text{(}~\text{struct}~~\X{ft}^\ast{:\,}\Tlist(\Tfield_I)~\text{)}
-       &\Rightarrow& \X{ft}^\ast \\
    \production{field} & \Tfield_I &::=&
      \text{(}~\text{field}~~\Tid^?~~\X{ft}{:}\Tfieldtype_I~\text{)}
        &\Rightarrow& \X{ft} \\
@@ -208,35 +188,32 @@ Aggregate Types
        &\Rightarrow& \I16 \\
    \end{array}
 
+.. note::
+   The optional identifier names for parameters in a function type only have documentation purpose.
+   They cannot be referenced from anywhere.
+
 Abbreviations
 .............
 
-Multiple anonymous structure fields may be combined into a single declaration:
+Multiple anonymous parameters or results may be combined into a single declaration:
+
+.. math::
+   \begin{array}{llclll}
+   \production{parameter} &
+     \text{(}~~\text{param}~~\Tvaltype^\ast~~\text{)} &\equiv&
+     (\text{(}~~\text{param}~~\Tvaltype~~\text{)})^\ast \\
+   \production{result} &
+     \text{(}~~\text{result}~~\Tvaltype^\ast~~\text{)} &\equiv&
+     (\text{(}~~\text{result}~~\Tvaltype~~\text{)})^\ast \\
+   \end{array}
+
+Similarly, multiple anonymous structure fields may be combined into a single declaration:
 
 .. math::
    \begin{array}{llclll}
    \production{field} &
      \text{(}~~\text{field}~~\Tfieldtype^\ast~~\text{)} &\equiv&
      (\text{(}~~\text{field}~~\Tfieldtype~~\text{)})^\ast \\
-   \end{array}
-
-
-.. index:: composite type, structure type, array type, function type
-   pair: text format; composite type
-.. _text-comptype:
-
-Composite Types
-~~~~~~~~~~~~~~~
-
-.. math::
-   \begin{array}{llclll@{\qquad\qquad}l}
-   \production{composite type} & \Tcomptype_I &::=&
-     \X{at}{:}\Tarraytype_I
-       &\Rightarrow& \TARRAY~\X{at} \\ &&|&
-     \X{st}{:}\Tstructtype_I
-       &\Rightarrow& \TSTRUCT~\X{at} \\ &&|&
-     \X{ft}{:}\Tfunctype_I
-       &\Rightarrow& \TFUNC~\X{ft} \\
    \end{array}
 
 

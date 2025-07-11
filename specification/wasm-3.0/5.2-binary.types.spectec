@@ -64,9 +64,9 @@ grammar Bfieldtype : fieldtype =
   | zt:Bstoragetype mut:Bmut => mut zt
 
 grammar Bcomptype : comptype =
-  | 0x5E yt:Bfieldtype => ARRAY yt
-  | 0x5F yt*:Blist(Bfieldtype) => STRUCT yt*
-  | 0x60 t_1*:Bresulttype t_2*:Bresulttype => FUNC (t_1* -> t_2*)
+  | 0x5E ft:Bfieldtype => ARRAY ft
+  | 0x5F ft*:Blist(Bfieldtype) => STRUCT ft*
+  | 0x60 t_1*:Bresulttype t_2*:Bresulttype => FUNC t_1* -> t_2*
 
 grammar Bsubtype : subtype =
   | 0x4F x*:Blist(Btypeidx) ct:Bcomptype => SUB FINAL (_IDX x)* ct

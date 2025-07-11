@@ -33,7 +33,7 @@ Category                                  Constructor                           
 :ref:`Reference type <syntax-reftype>`    |REF|                                               :math:`\hex{64}` (-28 as |Bs7|)
 :ref:`Reference type <syntax-reftype>`    |REF| |NULL|                                        :math:`\hex{63}` (-29 as |Bs7|)
 (reserved)                                                                                    :math:`\hex{62}` .. :math:`\hex{61}`
-:ref:`Composite type <syntax-comptype>`   :math:`\TFUNC~[\valtype^\ast] \toF[\valtype^\ast]`  :math:`\hex{60}` (-32 as |Bs7|)
+:ref:`Composite type <syntax-comptype>`   :math:`\TFUNC~[\valtype^\ast] \Tarrow[\valtype^\ast]`  :math:`\hex{60}` (-32 as |Bs7|)
 :ref:`Composite type <syntax-comptype>`   :math:`\TSTRUCT~\fieldtype^\ast`                    :math:`\hex{5F}` (-33 as |Bs7|)
 :ref:`Composite type <syntax-comptype>`   :math:`\TARRAY~\fieldtype`                          :math:`\hex{5E}` (-34 as |Bs7|)
 (reserved)                                                                                    :math:`\hex{5D}` .. :math:`\hex{51}`

@@ -46,7 +46,6 @@ $$
 \begin{array}[t]{@{}lrrl@{}l@{}}
 \mbox{(limits range)} & {\mathit{limits}} & ::= & {}[ {\mathit{u{\kern-0.1em\scriptstyle 64}}} .. {\mathit{u{\kern-0.1em\scriptstyle 64}}} ] \\[0.8ex]
 \mbox{(global type)} & {\mathit{globaltype}} & ::= & {\mathsf{mut}^?}~{\mathit{valtype}} \\
-\mbox{(function type)} & {\mathit{functype}} & ::= & {\mathit{resulttype}} \rightarrow {\mathit{resulttype}} \\
 \mbox{(table type)} & {\mathit{tabletype}} & ::= & {\mathit{addrtype}}~{\mathit{limits}}~{\mathit{reftype}} \\
 \mbox{(memory type)} & {\mathit{memtype}} & ::= & {\mathit{addrtype}}~{\mathit{limits}}~\mathsf{page} \\[0.8ex]
 {} \\[-2ex]
@@ -301,7 +300,6 @@ warning: syntax `addrref` was never spliced
 warning: syntax `addrtype` was never spliced
 warning: syntax `arrayaddr` was never spliced
 warning: syntax `arrayinst` was never spliced
-warning: syntax `arraytype` was never spliced
 warning: syntax `binop_` was never spliced
 warning: syntax `binop_` was never spliced
 warning: syntax `bit` was never spliced
@@ -453,7 +451,6 @@ warning: syntax `store` was never spliced
 warning: syntax `storeop_` was never spliced
 warning: syntax `structaddr` was never spliced
 warning: syntax `structinst` was never spliced
-warning: syntax `structtype` was never spliced
 warning: syntax `subtype` was never spliced
 warning: syntax `sx` was never spliced
 warning: syntax `sym` was never spliced
@@ -688,7 +685,6 @@ warning: grammar `Bvaltype` was never spliced
 warning: grammar `Bvar` was never spliced
 warning: grammar `Bvectype` was never spliced
 warning: grammar `Bversion` was never spliced
-warning: rule `Arraytype_ok` was never spliced
 warning: rule `Blocktype_ok/valtype` was never spliced
 warning: rule `Blocktype_ok/typeidx` was never spliced
 warning: rule `Catch_ok/catch` was never spliced
@@ -745,8 +741,6 @@ warning: rule `Fieldtype_ok` was never spliced
 warning: rule `Fieldtype_sub/const` was never spliced
 warning: rule `Fieldtype_sub/var` was never spliced
 warning: rule `Func_ok` was never spliced
-warning: rule `Functype_ok` was never spliced
-warning: rule `Functype_sub` was never spliced
 warning: rule `Global_ok` was never spliced
 warning: rule `Globals_ok/empty` was never spliced
 warning: rule `Globals_ok/cons` was never spliced
@@ -1153,7 +1147,6 @@ warning: rule `Storagetype_ok/val` was never spliced
 warning: rule `Storagetype_ok/pack` was never spliced
 warning: rule `Storagetype_sub/val` was never spliced
 warning: rule `Storagetype_sub/pack` was never spliced
-warning: rule `Structtype_ok` was never spliced
 warning: rule `Subtype_ok` was never spliced
 warning: rule `Subtype_ok2` was never spliced
 warning: rule `Table_ok` was never spliced
@@ -1296,7 +1289,6 @@ warning: definition `fpmin_` was never spliced
 warning: definition `frame` was never spliced
 warning: definition `free_absheaptype` was never spliced
 warning: definition `free_addrtype` was never spliced
-warning: definition `free_arraytype` was never spliced
 warning: definition `free_block` was never spliced
 warning: definition `free_blocktype` was never spliced
 warning: definition `free_comptype` was never spliced
@@ -1317,7 +1309,6 @@ warning: definition `free_externtype` was never spliced
 warning: definition `free_fieldtype` was never spliced
 warning: definition `free_func` was never spliced
 warning: definition `free_funcidx` was never spliced
-warning: definition `free_functype` was never spliced
 warning: definition `free_global` was never spliced
 warning: definition `free_globalidx` was never spliced
 warning: definition `free_globaltype` was never spliced
@@ -1343,7 +1334,6 @@ warning: definition `free_resulttype` was never spliced
 warning: definition `free_shape` was never spliced
 warning: definition `free_start` was never spliced
 warning: definition `free_storagetype` was never spliced
-warning: definition `free_structtype` was never spliced
 warning: definition `free_subtype` was never spliced
 warning: definition `free_table` was never spliced
 warning: definition `free_tableidx` was never spliced
@@ -1527,7 +1517,6 @@ warning: definition `subst_comptype` was never spliced
 warning: definition `subst_deftype` was never spliced
 warning: definition `subst_externtype` was never spliced
 warning: definition `subst_fieldtype` was never spliced
-warning: definition `subst_functype` was never spliced
 warning: definition `subst_globaltype` was never spliced
 warning: definition `subst_heaptype` was never spliced
 warning: definition `subst_memtype` was never spliced
@@ -1606,7 +1595,6 @@ warning: definition `zbytes_` was never spliced
 warning: definition `zero` was never spliced
 warning: definition `zeroop` was never spliced
 warning: definition `zsize` was never spliced
-warning: rule prose `Arraytype_ok` was never spliced
 warning: rule prose `Blocktype_ok` was never spliced
 warning: rule prose `Blocktype_ok/typeidx` was never spliced
 warning: rule prose `Blocktype_ok/valtype` was never spliced
@@ -1671,8 +1659,6 @@ warning: rule prose `Fieldtype_sub` was never spliced
 warning: rule prose `Fieldtype_sub/const` was never spliced
 warning: rule prose `Fieldtype_sub/var` was never spliced
 warning: rule prose `Func_ok` was never spliced
-warning: rule prose `Functype_ok` was never spliced
-warning: rule prose `Functype_sub` was never spliced
 warning: rule prose `Global_ok` was never spliced
 warning: rule prose `Globals_ok` was never spliced
 warning: rule prose `Globals_ok/cons` was never spliced
@@ -2005,7 +1991,6 @@ warning: rule prose `Storagetype_ok/val` was never spliced
 warning: rule prose `Storagetype_sub` was never spliced
 warning: rule prose `Storagetype_sub/pack` was never spliced
 warning: rule prose `Storagetype_sub/val` was never spliced
-warning: rule prose `Structtype_ok` was never spliced
 warning: rule prose `Subtype_ok` was never spliced
 warning: rule prose `Subtype_ok2` was never spliced
 warning: rule prose `Table_ok` was never spliced
@@ -2118,7 +2103,6 @@ warning: definition prose `fone` was never spliced
 warning: definition prose `frame` was never spliced
 warning: definition prose `free_absheaptype` was never spliced
 warning: definition prose `free_addrtype` was never spliced
-warning: definition prose `free_arraytype` was never spliced
 warning: definition prose `free_block` was never spliced
 warning: definition prose `free_blocktype` was never spliced
 warning: definition prose `free_comptype` was never spliced
@@ -2139,7 +2123,6 @@ warning: definition prose `free_externtype` was never spliced
 warning: definition prose `free_fieldtype` was never spliced
 warning: definition prose `free_func` was never spliced
 warning: definition prose `free_funcidx` was never spliced
-warning: definition prose `free_functype` was never spliced
 warning: definition prose `free_global` was never spliced
 warning: definition prose `free_globalidx` was never spliced
 warning: definition prose `free_globaltype` was never spliced
@@ -2165,7 +2148,6 @@ warning: definition prose `free_resulttype` was never spliced
 warning: definition prose `free_shape` was never spliced
 warning: definition prose `free_start` was never spliced
 warning: definition prose `free_storagetype` was never spliced
-warning: definition prose `free_structtype` was never spliced
 warning: definition prose `free_subtype` was never spliced
 warning: definition prose `free_table` was never spliced
 warning: definition prose `free_tableidx` was never spliced
@@ -2312,7 +2294,6 @@ warning: definition prose `subst_comptype` was never spliced
 warning: definition prose `subst_deftype` was never spliced
 warning: definition prose `subst_externtype` was never spliced
 warning: definition prose `subst_fieldtype` was never spliced
-warning: definition prose `subst_functype` was never spliced
 warning: definition prose `subst_globaltype` was never spliced
 warning: definition prose `subst_heaptype` was never spliced
 warning: definition prose `subst_memtype` was never spliced

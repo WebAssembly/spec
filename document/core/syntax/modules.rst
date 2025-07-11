@@ -123,7 +123,7 @@ Types
 ~~~~~
 
 The ${:type} section of a module defines a list of :ref:`recursive types <syntax-rectype>`, each consisting of a list of :ref:`sub types <syntax-subtype>` referenced by individual :ref:`type indices <syntax-typeidx>`.
-All :ref:`function <syntax-functype>` or :ref:`aggregate <syntax-aggrtype>` types used in a module must be defined in this section.
+All :ref:`function <syntax-functype>`, :ref:`structure <syntax-structtype>`, or :ref:`array <syntax-arraytype>` types used in a module must be defined in this section.
 
 $${syntax: type}
 

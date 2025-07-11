@@ -84,9 +84,6 @@ syntax oktypeidxnat hint(show OK#(typeidx,n)) =
 relation Packtype_ok: context |- packtype : OK          hint(name "K-pack")    hint(macro "%packtype")
 relation Fieldtype_ok: context |- fieldtype : OK        hint(name "K-field")   hint(macro "%fieldtype")
 relation Storagetype_ok: context |- storagetype : OK    hint(name "K-storage") hint(macro "%storagetype")
-relation Structtype_ok: context |- structtype : OK      hint(name "K-struct")    hint(macro "%structtype")
-relation Arraytype_ok: context |- arraytype : OK        hint(name "K-array")    hint(macro "%arraytype")
-relation Functype_ok: context |- functype : OK          hint(name "K-func")    hint(macro "%functype")
 relation Comptype_ok: context |- comptype : OK          hint(name "K-comp")    hint(macro "%comptype")
 relation Subtype_ok: context |- subtype : oktypeidx     hint(name "K-sub")     hint(macro "%subtype")     hint(prosepp "for")
 relation Rectype_ok: context |- rectype : oktypeidx     hint(name "K-rect")    hint(macro "%rectype")     hint(prosepp "for")
@@ -128,26 +125,18 @@ rule Fieldtype_ok:
   -- Storagetype_ok: C |- storagetype : OK
 
 
-rule Structtype_ok:
-  C |- fieldtype* : OK
+rule Comptype_ok/struct:
+  C |- STRUCT fieldtype* : OK
   -- (Fieldtype_ok: C |- fieldtype : OK)*
 
-rule Arraytype_ok:
-  C |- fieldtype : OK
+rule Comptype_ok/array:
+  C |- ARRAY fieldtype : OK
   -- Fieldtype_ok: C |- fieldtype : OK
 
-
-rule Comptype_ok/struct:
-  C |- STRUCT structtype : OK
-  -- Structtype_ok: C |- structtype : OK
-
-rule Comptype_ok/array:
-  C |- ARRAY arraytype : OK
-  -- Arraytype_ok: C |- arraytype : OK
-
 rule Comptype_ok/func:
-  C |- FUNC functype : OK
-  -- Functype_ok: C |- functype : OK
+  C |- FUNC t_1* -> t_2* : OK
+  -- Resulttype_ok: C |- t_1* : OK
+  -- Resulttype_ok: C |- t_2* : OK
 
 
 rule Subtype_ok:
@@ -224,7 +213,7 @@ rule Limits_ok:
 rule Tagtype_ok:
   C |- typeuse : OK
   -- Typeuse_ok: C |- typeuse : OK
-  -- Expand_use: typeuse ~~_C FUNC functype
+  -- Expand_use: typeuse ~~_C $($(FUNC t_1* -> t_2*))
 
 rule Globaltype_ok:
   C |- MUT? t : OK
@@ -238,11 +227,6 @@ rule Tabletype_ok:
   C |- addrtype limits reftype : OK
   -- Limits_ok: C |- limits : $(2^32 - 1)
   -- Reftype_ok: C |- reftype : OK
-
-rule Functype_ok:
-  C |- t_1* -> t_2* : OK
-  -- Resulttype_ok: C |- t_1* : OK
-  -- Resulttype_ok: C |- t_2* : OK
 
 
 rule Externtype_ok/tag:
@@ -264,4 +248,4 @@ rule Externtype_ok/table:
 rule Externtype_ok/func:
   C |- FUNC typeuse : OK
   -- Typeuse_ok: C |- typeuse : OK
-  -- Expand_use: typeuse ~~_C FUNC functype
+  -- Expand_use: typeuse ~~_C $($(FUNC t_1* -> t_2*))

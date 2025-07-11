@@ -89,14 +89,14 @@ If inline declarations are given, then their types must match the referenced :re
      \text{(}~\text{type}~~x{:}\Ttypeidx_I~\text{)}
        \quad\Rightarrow\quad x, I' \\ &&& \qquad
        (\iff \begin{array}[t]{@{}l@{}}
-        I.\ITYPEDEFS[x] = \TSUB~\TFINAL~(\TFUNC~[t_1^n] \toF [t_2^\ast]) \wedge
+        I.\ITYPEDEFS[x] = \TSUB~\TFINAL~(\TFUNC~[t_1^n] \Tarrow [t_2^\ast]) \wedge
         I' = \{\ILOCALS~(\epsilon)^n\}) \\
         \end{array} \\[1ex] &&|&
      \text{(}~\text{type}~~x{:}\Ttypeidx_I~\text{)}
      ~~(t_1{:}\Tparam)^\ast~~(t_2{:}\Tresult)^\ast
        \quad\Rightarrow\quad x, I' \\ &&& \qquad
        (\iff \begin{array}[t]{@{}l@{}}
-        I.\ITYPEDEFS[x] = \TSUB~\TFINAL~(\TFUNC~[t_1^\ast] \toF [t_2^\ast]) \wedge
+        I.\ITYPEDEFS[x] = \TSUB~\TFINAL~(\TFUNC~[t_1^\ast] \Tarrow [t_2^\ast]) \wedge
         I' = \{\ILOCALS~\F{id}(\Tparam)^\ast\} \idcwellformed) \\
         \end{array} \\
    \end{array}
@@ -115,7 +115,7 @@ The following auxiliary function extracts optional identifiers from parameters:
    \end{array}
 
 .. note::
-   Both productions overlap for the case that the function type is :math:`[] \toF []`.
+   Both productions overlap for the case that the function type is :math:`\TFUNC~ [] \Tarrow []`.
    However, in that case, they also produce the same results, so that the choice is immaterial.
 
    The :ref:`well-formedness <text-context-wf>` condition on :math:`I'` ensures that the parameters do not contain duplicate identifiers.

@@ -48,7 +48,7 @@ rule Heaptype_sub/array:
 
 rule Heaptype_sub/func:
   C |- deftype <: FUNC
-  -- Expand: deftype ~~ FUNC functype
+  -- Expand: deftype ~~ FUNC t_1* -> t_2*
 
 rule Heaptype_sub/def:
   C |- deftype_1 <: deftype_2
@@ -133,7 +133,6 @@ rule Instrtype_sub:
 relation Packtype_sub: context |- packtype <: packtype          hint(name "S-pack")    hint(macro "%packtypematch")
 relation Storagetype_sub: context |- storagetype <: storagetype hint(name "S-storage") hint(macro "%storagetypematch")
 relation Fieldtype_sub: context |- fieldtype <: fieldtype       hint(name "S-field")   hint(macro "%fieldtypematch")
-relation Functype_sub: context |- functype <: functype          hint(name "S-func")    hint(macro "%functypematch")
 
 ;; Forward declared in validation.types
 ;;relation Comptype_sub: context |- comptype <: comptype        hint(name "S-comp")    hint(macro "%comptypematch")
@@ -164,16 +163,17 @@ rule Fieldtype_sub/var:
 
 
 rule Comptype_sub/struct:
-  C |- STRUCT (yt_1* yt'_1*) <: STRUCT yt_2*
-  -- (Fieldtype_sub: C |- yt_1 <: yt_2)*
+  C |- STRUCT (ft_1* ft'_1*) <: STRUCT ft_2*
+  -- (Fieldtype_sub: C |- ft_1 <: ft_2)*
 
 rule Comptype_sub/array:
-  C |- ARRAY yt_1 <: ARRAY yt_2
-  -- Fieldtype_sub: C |- yt_1 <: yt_2
+  C |- ARRAY ft_1 <: ARRAY ft_2
+  -- Fieldtype_sub: C |- ft_1 <: ft_2
 
 rule Comptype_sub/func:
-  C |- FUNC ft_1 <: FUNC ft_2
-  -- Functype_sub: C |- ft_1 <: ft_2
+  C |- FUNC t_11* -> t_12* <: FUNC t_21* -> t_22*
+  -- Resulttype_sub: C |- t_21* <: t_11*
+  -- Resulttype_sub: C |- t_12* <: t_22*
 
 
 rule Deftype_sub/refl:
@@ -224,11 +224,6 @@ rule Tabletype_sub:
   -- Limits_sub: C |- limits_1 <: limits_2
   -- Reftype_sub: C |- reftype_1 <: reftype_2
   -- Reftype_sub: C |- reftype_2 <: reftype_1
-
-rule Functype_sub:
-  C |- t_11* -> t_12* <: t_21* -> t_22*
-  -- Resulttype_sub: C |- t_21* <: t_11*
-  -- Resulttype_sub: C |- t_12* <: t_22*
 
 
 rule Externtype_sub/tag:

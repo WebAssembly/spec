@@ -59,13 +59,6 @@ Instruction Types
 
 $${rule: Instrtype_sub}
 
-.. _valid-matching-function-types:
-
-Function Types
-~~~~~~~~~~~~~~
-
-$${rule: Functype_sub}
-
 .. _valid-matching-composite-types:
 
 Composite Types

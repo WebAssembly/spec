@@ -8,7 +8,6 @@ $${definition: size}
 $${syntax+:
   limits
   {globaltype
-  functype
   tabletype
   memtype}
   {}
@@ -23,7 +22,7 @@ $${syntax: {instr/num instr/local instr/global instr/memory} expr}
 
 **Typing** ${relation: Instr_ok}
 
-An instruction sequence ${:instr*} is well-typed with an instruction type ${functype: t_1* -> t_2*}, written ${:instr*} :math:`:` ${functype: t_1* -> t_2*}, according to the following rules:
+An instruction sequence ${:instr*} is well-typed with an instruction type ${: t_1* -> t_2*}, written ${:instr*} :math:`:` ${: t_1* -> t_2*}, according to the following rules:
 
 $${rule:
   {Instrs_ok/empty Instrs_ok/seq}

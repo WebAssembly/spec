@@ -59,13 +59,6 @@ Result Types
 
 $${syntax: resulttype}
 
-.. _syntax-functype:
-
-Function Types
-~~~~~~~~~~~~~~
-
-$${syntax: functype}
-
 .. _syntax-packtype:
 .. _syntax-storagetype:
 .. _syntax-fieldtype:

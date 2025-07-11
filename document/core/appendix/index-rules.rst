@@ -23,9 +23,6 @@ Construct                                        Judgement
 :ref:`Field type <valid-fieldtype>`              :math:`C \vdashfieldtype \fieldtype : \OKfieldtype`
 :ref:`Result type <valid-resulttype>`            :math:`C \vdashresulttype \resulttype : \OKresulttype`
 :ref:`Instruction type <valid-instrtype>`        :math:`C \vdashinstrtype \instrtype : \OKinstrtype`
-:ref:`Function type <valid-functype>`            :math:`C \vdashfunctype \functype : \OKfunctype`
-:ref:`Structure type <valid-structtype>`         :math:`C \vdashstructtype \structtype : \OKstructtype`
-:ref:`Array type <valid-arraytype>`              :math:`C \vdasharraytype \arraytype : \OKarraytype`
 :ref:`Composite type <valid-comptype>`           :math:`C \vdashcomptype \comptype : \OKcomptype`
 :ref:`Sub type <valid-subtype>`                  :math:`C \vdashsubtype \subtype : \OKsubtype`
 :ref:`Recursive type <valid-rectype>`            :math:`C \vdashrectype \rectype : \OKrectype`
@@ -55,7 +52,7 @@ Construct                                        Judgement
 :ref:`Global <valid-global>`                     :math:`C \vdashglobal \global : \globaltype`
 :ref:`Memory <valid-mem>`                        :math:`C \vdashmem \mem : \memtype`
 :ref:`Table <valid-table>`                       :math:`C \vdashtable \table : \tabletype`
-:ref:`Function <valid-func>`                     :math:`C \vdashfunc \func : \functype`
+:ref:`Function <valid-func>`                     :math:`C \vdashfunc \func : \deftype`
 :ref:`Local <valid-local>`                       :math:`C \vdashlocal \local : \localtype`
 :ref:`Element segment <valid-elem>`              :math:`C \vdashelem \elem : \reftype`
 :ref:`Element mode <valid-elemmode>`             :math:`C \vdashelemmode \elemmode : \reftype`
@@ -85,7 +82,7 @@ Construct                                        Judgement
 :ref:`Global instance <valid-globalinst>`        :math:`S \vdashglobalinst \globalinst : \globaltype`
 :ref:`Memory instance <valid-meminst>`           :math:`S \vdashmeminst \meminst : \memtype`
 :ref:`Table instance <valid-tableinst>`          :math:`S \vdashtableinst \tableinst : \tabletype`
-:ref:`Function instance <valid-funcinst>`        :math:`S \vdashfuncinst \funcinst : \functype`
+:ref:`Function instance <valid-funcinst>`        :math:`S \vdashfuncinst \funcinst : \deftype`
 :ref:`Data instance <valid-datainst>`            :math:`S \vdashdatainst \datainst : \OKdatainst`
 :ref:`Element instance <valid-eleminst>`         :math:`S \vdasheleminst \eleminst : t`
 :ref:`Structure instance <valid-structinst>`     :math:`S \vdashstructinst \structinst : \OKstructinst`
@@ -126,9 +123,6 @@ Construct                                        Judgement
 :ref:`Field type <match-fieldtype>`              :math:`C \vdashfieldtypematch \fieldtype_1 \subfieldtypematch \fieldtype_2`
 :ref:`Result type <match-resulttype>`            :math:`C \vdashresulttypematch \resulttype_1 \subresulttypematch \resulttype_2`
 :ref:`Instruction type <match-instrtype>`        :math:`C \vdashinstrtypematch \instrtype_1 \subinstrtypematch \instrtype_2`
-:ref:`Function type <match-functype>`            :math:`C \vdashfunctypematch \functype_1 \subfunctypematch \functype_2`
-:ref:`Structure type <match-structtype>`         :math:`C \vdashstructtypematch \structtype_1 \substructtypematch \structtype_2`
-:ref:`Array type <match-arraytype>`              :math:`C \vdasharraytypematch \arraytype_1 \subarraytypematch \arraytype_2`
 :ref:`Composite type <match-comptype>`           :math:`C \vdashcomptypematch \comptype_1 \subcomptypematch \comptype_2`
 :ref:`Defined type <match-deftype>`              :math:`C \vdashdeftypematch \deftype_1 \subdeftypematch \deftype_2`
 :ref:`Limits <match-limits>`                     :math:`C \vdashlimitsmatch \limits_1 \sublimitsmatch \limits_2`

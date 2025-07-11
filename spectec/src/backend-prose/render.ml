@@ -584,9 +584,7 @@ and render_expr' env expr =
     let se = render_expr env e in
     let sts =
       Prose_util.find_case_typ (Il.Print.string_of_typ_name e.note) a
-      |> List.map (render_el_typ env)
-      |> List.filter (fun s -> s <> "")
-      |> String.concat " "
+      |> render_el_typ env
     in
     sprintf "%s is not some %s" se sts
   | Al.Ast.UnE (`NotOp, { it = Al.Ast.IsDefinedE e; _ }) ->
@@ -778,9 +776,7 @@ and render_expr' env expr =
     let se = render_expr env e in
     let sts =
       Prose_util.find_case_typ (Il.Print.string_of_typ_name e.note) a
-      |> List.map (render_el_typ env)
-      |> List.filter (fun s -> s <> "")
-      |> String.concat " "
+      |> render_el_typ env
     in
     sprintf "%s is some %s" se sts
   | Al.Ast.HasTypeE (e, t) ->

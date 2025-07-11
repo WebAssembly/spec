@@ -11,8 +11,8 @@ let lookup c x = Lib.List32.nth c x
 (* Extremas *)
 
 let abs_of_comptype _c = function
-  | StructCT _ | ArrayCT _ -> StructHT
-  | FuncCT _ -> FuncHT
+  | StructT _ | ArrayT _ -> StructHT
+  | FuncT _ -> FuncHT
 
 let rec top_of_comptype c ct =
   top_of_heaptype c (abs_of_comptype c ct)
@@ -92,13 +92,13 @@ let rec match_heaptype c t1 t2 =
   | UseHT (Def dt1), UseHT (Def dt2) -> match_deftype c dt1 dt2
   | UseHT (Def dt), t ->
     (match expand_deftype dt, t with
-    | StructCT _, AnyHT -> true
-    | StructCT _, EqHT -> true
-    | StructCT _, StructHT -> true
-    | ArrayCT _, AnyHT -> true
-    | ArrayCT _, EqHT -> true
-    | ArrayCT _, ArrayHT -> true
-    | FuncCT _, FuncHT -> true
+    | StructT _, AnyHT -> true
+    | StructT _, EqHT -> true
+    | StructT _, StructHT -> true
+    | ArrayT _, AnyHT -> true
+    | ArrayT _, EqHT -> true
+    | ArrayT _, ArrayHT -> true
+    | FuncT _, FuncHT -> true
     | _ -> false
     )
   | BotHT, _ -> true
@@ -137,23 +137,15 @@ and match_fieldtype c (FieldT (mut1, st1)) (FieldT (mut2, st2)) =
   | Cons -> true
   | Var -> match_storagetype c st2 st1
 
-
-and match_structtype c (StructT fts1) (StructT fts2) =
-  List.length fts1 >= List.length fts2 &&
-  List.for_all2 (match_fieldtype c) (Lib.List.take (List.length fts2) fts1) fts2
-
-and match_arraytype c (ArrayT ft1) (ArrayT ft2) =
-  match_fieldtype c ft1 ft2
-
-and match_functype c (FuncT (ts11, ts12)) (FuncT (ts21, ts22)) =
-  match_resulttype c ts21 ts11 && match_resulttype c ts12 ts22
-
-
 and match_comptype c ct1 ct2 =
   match ct1, ct2 with
-  | StructCT st1, StructCT st2 -> match_structtype c st1 st2
-  | ArrayCT at1, ArrayCT at2 -> match_arraytype c at1 at2
-  | FuncCT ft1, FuncCT ft2 -> match_functype c ft1 ft2
+  | StructT fts1, StructT fts2 ->
+    List.length fts1 >= List.length fts2 &&
+    List.for_all2 (match_fieldtype c) (Lib.List.take (List.length fts2) fts1) fts2
+  | ArrayT ft1, ArrayT ft2 ->
+    match_fieldtype c ft1 ft2
+  | FuncT (ts11, ts12), FuncT (ts21, ts22) ->
+    match_resulttype c ts21 ts11 && match_resulttype c ts12 ts22
   | _, _ -> false
 
 and match_deftype c dt1 dt2 =

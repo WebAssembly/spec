@@ -278,40 +278,39 @@ Functions
 
 .. _embed-func-alloc:
 
-:math:`\F{func\_alloc}(\store, \functype, \hostfunc) : (\store, \funcaddr)`
-...........................................................................
+:math:`\F{func\_alloc}(\store, \deftype, \hostfunc) : (\store, \funcaddr)`
+..........................................................................
 
-1. Pre-condition: the :math:`\functype` is :ref:`valid <valid-functype>` under the empty :ref:`context <context>`.
+1. Pre-condition: the :ref:`defined type <syntax-deftype>` :math:`\deftype` is :ref:`valid <valid-deftype>` under the empty :ref:`context <context>` and :ref:`expands <aux-expand-deftype>` to a :ref:`function type <syntax-functype>`.
 
-2. Let :math:`\funcaddr` be the result of :ref:`allocating a host function <alloc-func>` in :math:`\store` with :ref:`function type <syntax-functype>` :math:`\functype`, host function code :math:`\hostfunc` and an empty :ref:`module instance <syntax-moduleinst>`.
+2. Let :math:`\funcaddr` be the result of :ref:`allocating a host function <alloc-func>` in :math:`\store` with :ref:`defined type <syntax-deftype>` :math:`\deftype`, host function code :math:`\hostfunc` and an empty :ref:`module instance <syntax-moduleinst>`.
 
 3. Return the new store paired with :math:`\funcaddr`.
 
 .. math::
    \begin{array}{lclll}
-   \F{func\_alloc}(S, \X{ft}, \X{code}) &=& (S', \X{a})
+   \F{func\_alloc}(S, \X{dt}, \X{code}) &=& (S', \X{a})
      && (\begin{array}{@{}l@{}}
-       \iff \X{dt} = (\REC~(\FUNC~\X{ft})).0 \\
-       \land \allocfunc(S, \X{dt}, \X{code}, \{\}) = S', \X{a}) \\
+       \iff \allocfunc(S, \X{dt}, \X{code}, \{\}) = S', \X{a}) \\
        \end{array} \\
    \end{array}
 
 .. note::
-   This operation assumes that :math:`\hostfunc` satisfies the :ref:`pre- and post-conditions <exec-invoke-host>` required for a function instance with type :math:`\functype`.
+   This operation assumes that :math:`\hostfunc` satisfies the :ref:`pre- and post-conditions <exec-invoke-host>` required for a function instance with type :math:`\deftype`.
 
    Regular (non-host) function instances can only be created indirectly through :ref:`module instantiation <embed-module-instantiate>`.
 
 
 .. _embed-func-type:
 
-:math:`\F{func\_type}(\store, \funcaddr) : \functype`
-.....................................................
+:math:`\F{func\_type}(\store, \funcaddr) : \deftype`
+....................................................
 
-1. Let :math:`\functype` be the :ref:`function type <syntax-functype>` :math:`S.\SFUNCS[a].\FITYPE`.
+1. Let :math:`\deftype` be the :ref:`definedn type <syntax-deftype>` :math:`S.\SFUNCS[a].\FITYPE`.
 
-2. Return :math:`\functype`.
+2. Return :math:`\deftype`.
 
-3. Post-condition: the returned :ref:`function type <syntax-functype>` is :ref:`valid <valid-functype>`.
+3. Post-condition: the returned :ref:`defined type <syntax-deftype>` is :ref:`valid <valid-deftype>` and :ref:`expands <aux-expand-deftype>` to a :ref:`function type <syntax-functype>`.
 
 .. math::
    \begin{array}{lclll}

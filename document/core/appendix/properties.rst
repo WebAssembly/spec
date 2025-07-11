@@ -338,7 +338,7 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
 
 * Each :ref:`table instance <syntax-tableinst>` :math:`\tableinst_i` in :math:`S.\STABLES` must be :ref:`valid <valid-tableinst>` with some :ref:`table type <syntax-tabletype>` :math:`\tabletype_i`.
 
-* Each :ref:`function instance <syntax-funcinst>` :math:`\funcinst_i` in :math:`S.\SFUNCS` must be :ref:`valid <valid-funcinst>` with some :ref:`function type <syntax-functype>` :math:`\functype_i`.
+* Each :ref:`function instance <syntax-funcinst>` :math:`\funcinst_i` in :math:`S.\SFUNCS` must be :ref:`valid <valid-funcinst>` with some :ref:`defined type <syntax-deftype>` :math:`\deftype_i`.
 
 * Each :ref:`data instance <syntax-datainst>` :math:`\datainst_i` in :math:`S.\SDATAS` must be :ref:`valid <valid-datainst>`.
 
@@ -529,49 +529,49 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
    }
 
 
-.. index:: function type, function instance
+.. index:: function type, defined type, function instance
 .. _valid-funcinst:
 
-:ref:`Function Instances <syntax-funcinst>` :math:`\{\FITYPE~\functype, \FIMODULE~\moduleinst, \FICODE~\func\}`
-.......................................................................................................................
+:ref:`Function Instances <syntax-funcinst>` :math:`\{\FITYPE~\deftype, \FIMODULE~\moduleinst, \FICODE~\func\}`
+......................................................................................................................
 
-* The :ref:`function type <syntax-functype>` :math:`\functype` must be :ref:`valid <valid-functype>` under an empty :ref:`context <context>`.
+* The :ref:`defined type <syntax-deftype>` :math:`\deftype` must be :ref:`valid <valid-deftype>` under an empty :ref:`context <context>`.
 
 * The :ref:`module instance <syntax-moduleinst>` :math:`\moduleinst` must be :ref:`valid <valid-moduleinst>` with some :ref:`context <context>` :math:`C`.
 
 * Under :ref:`context <context>` :math:`C`:
 
-  * The :ref:`function <syntax-func>` :math:`\func` must be :ref:`valid <valid-func>` with some :ref:`function type <syntax-functype>` :math:`\functype'`.
+  * The :ref:`function <syntax-func>` :math:`\func` must be :ref:`valid <valid-func>` with some :ref:`defined type <syntax-deftype>` :math:`\deftype'`.
 
-  * The :ref:`function type <syntax-functype>` :math:`\functype'` must :ref:`match <match-functype>` :math:`\functype`.
+  * The :ref:`defined type <syntax-deftype>` :math:`\deftype'` must :ref:`match <match-deftype>` :math:`\deftype`.
 
-* Then the function instance is valid with :ref:`function type <syntax-functype>` :math:`\functype`.
+* Then the function instance is valid with :ref:`defined type <syntax-deftype>` :math:`\deftype`.
 
 .. math::
    \frac{
      \begin{array}{@{}c@{}}
-     \vdashfunctype \functype : \OKfunctype
+     \vdashdeftype \deftype : \OKdeftype
      \qquad
      S \vdashmoduleinst \moduleinst : C
      \\
-     C \vdashfunc \func : \functype'
+     C \vdashfunc \func : \deftype'
      \qquad
-     C \vdashfunctypematch \functype' \subfunctypematch \functype
+     C \vdashdeftypematch \deftype' \subdeftypematch \deftype
      \end{array}
    }{
-     S \vdashfuncinst \{\FITYPE~\functype, \FIMODULE~\moduleinst, \FICODE~\func\} : \functype
+     S \vdashfuncinst \{\FITYPE~\deftype, \FIMODULE~\moduleinst, \FICODE~\func\} : \deftype
    }
 
 
-.. index:: function type, function instance, host function
+.. index:: function type, defined type, function instance, host function
 .. _valid-hostfuncinst:
 
-:ref:`Host Function Instances <syntax-funcinst>` :math:`\{\FITYPE~\functype, \FIHOSTFUNC~\X{hf}\}`
-..................................................................................................
+:ref:`Host Function Instances <syntax-funcinst>` :math:`\{\FITYPE~\deftype, \FIHOSTFUNC~\X{hf}\}`
+.................................................................................................
 
-* The :ref:`function type <syntax-functype>` :math:`\functype` must be :ref:`valid <valid-functype>` under an empty :ref:`context <context>`.
+* The :ref:`defined type <syntax-deftype>` :math:`\deftype` must be :ref:`valid <valid-deftype>` under an empty :ref:`context <context>`.
 
-* Let :math:`[t_1^\ast] \toF [t_2^\ast]` be the :ref:`function type <syntax-functype>` :math:`\functype`.
+*  The :ref:`expansion <aux-expand-deftype>` of :ref:`defined type <syntax-deftype>` :math:`\deftype` must be some :ref:`function type <syntax-functype>` :math:`\TFUNC~[t_1^\ast] \Tarrow [t_2^\ast]`.
 
 * For every :ref:`valid <valid-store>` :ref:`store <syntax-store>` :math:`S_1` :ref:`extending <extend-store>` :math:`S` and every sequence :math:`\val^\ast` of :ref:`values <syntax-val>` whose :ref:`types <valid-val>` coincide with :math:`t_1^\ast`:
 
@@ -583,12 +583,14 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
 
     * Or :math:`R` consists of a :ref:`valid <valid-store>` :ref:`store <syntax-store>` :math:`S_2` :ref:`extending <extend-store>` :math:`S_1` and a :ref:`result <syntax-result>` :math:`\result` whose :ref:`type <valid-result>` coincides with :math:`[t_2^\ast]`.
 
-* Then the function instance is valid with :ref:`function type <syntax-functype>` :math:`\functype`.
+* Then the function instance is valid with :ref:`defined type <syntax-deftype>` :math:`\deftype`.
 
 .. math::
    \frac{
-     \begin{array}[b]{@{}l@{}}
-     \vdashfunctype [t_1^\ast] \toF [t_2^\ast] : \OKfunctype \\
+     \begin{array}[b]{@{}r@{}}
+     \vdashdeftype \deftype : \OKdeftype
+     \\
+     \deftype \approx \TFUNC~ [t_1^\ast] \Tarrow [t_2^\ast]
      \end{array}
      \quad
      \begin{array}[b]{@{}l@{}}
@@ -607,7 +609,7 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
        R = (S_2; \result)
      \end{array}
    }{
-     S \vdashfuncinst \{\FITYPE~[t_1^\ast] \to [t_2^\ast], \FIHOSTFUNC~\X{hf}\} : [t_1^\ast] \to [t_2^\ast]
+     S \vdashfuncinst \{\FITYPE~\deftype, \FIHOSTFUNC~\X{hf}\} : \deftype
    }
 
 .. note::
@@ -757,7 +759,7 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
 
 * The store entry :math:`S.\STAGS[a]` must exist.
 
-* Let :math:`[t^\ast] \toF [{t'}^\ast]` be the :ref:`tag type <syntax-tagtype>` :math:`S.\STAGS[a].\HITYPE`.
+* The :ref:`expansion <aux-expand-deftype>` of the :ref:`tag type <syntax-tagtype>` :math:`S.\STAGS[a].\HITYPE` must be some :ref:`function type <syntax-functype>` :math:`\TFUNC~[t^\ast] \Tarrow [{t'}^\ast]`.
 
 * The :ref:`result type <syntax-resulttype>` :math:`[{t'}^\ast]` must be empty.
 
@@ -769,7 +771,7 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
 
 .. math::
    \frac{
-     S.\STAGS[a] = \{\HITYPE = [t^\ast] \toF []\}
+     S.\STAGS[a].\HITYPE \approx \TFUNC~ [t^\ast] \Tarrow []
      \qquad
      (S \vdashval \val : t)^\ast
    }{
@@ -811,7 +813,7 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
 
 * For each :ref:`table address <syntax-tableaddr>` :math:`\tableaddr_i` in :math:`\moduleinst.\MITABLES`, the :ref:`external address <syntax-externaddr>` :math:`\XATABLE~\tableaddr_i` must be :ref:`valid <valid-externaddr-table>` with some :ref:`external type <syntax-externtype>` :math:`\XTTABLE~\tabletype_i`.
 
-* For each :ref:`function address <syntax-funcaddr>` :math:`\funcaddr_i` in :math:`\moduleinst.\MIFUNCS`, the :ref:`external address <syntax-externaddr>` :math:`\XAFUNC~\funcaddr_i` must be :ref:`valid <valid-externaddr-func>` with some :ref:`external type <syntax-externtype>` :math:`\XTFUNC~\functype_i`.
+* For each :ref:`function address <syntax-funcaddr>` :math:`\funcaddr_i` in :math:`\moduleinst.\MIFUNCS`, the :ref:`external address <syntax-externaddr>` :math:`\XAFUNC~\funcaddr_i` must be :ref:`valid <valid-externaddr-func>` with some :ref:`external type <syntax-externtype>` :math:`\XTFUNC~\deftype_{\K{F}i}`.
 
 * For each :ref:`data address <syntax-dataaddr>` :math:`\dataaddr_i` in :math:`\moduleinst.\MIDATAS`, the :ref:`data instance <syntax-datainst>` :math:`S.\SDATAS[\dataaddr_i]` must be :ref:`valid <valid-datainst>` with :math:`\X{ok}_i`.
 
@@ -831,7 +833,7 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
 
 * Let :math:`\tabletype^\ast` be the concatenation of all :math:`\tabletype_i` in order.
 
-* Let :math:`\functype^\ast` be the concatenation of all :math:`\functype_i` in order.
+* Let :math:`\deftype_{\K{F}}^\ast` be the concatenation of all :math:`\deftype_{\K{F}i}` in order.
 
 * Let :math:`\reftype^\ast` be the concatenation of all :math:`\reftype_i` in order.
 
@@ -842,7 +844,7 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
 * Let :math:`x^\ast` be the sequence of :ref:`function indices <syntax-funcidx>` from :math:`0` to :math:`m-1`.
 
 * Then the module instance is valid with :ref:`context <context>`
-  :math:`\{\CTYPES~\deftype^\ast,` :math:`\CTAGS~\tagtype^\ast,` :math:`\CGLOBALS~\globaltype^\ast,` :math:`\CMEMS~\memtype^\ast,` :math:`\CTABLES~\tabletype^\ast,` :math:`\CFUNCS~\functype^\ast,` :math:`\CDATAS~\X{ok}^\ast,` :math:`\CELEMS~\reftype^\ast,` :math:`\CREFS~x^\ast\}`.
+  :math:`\{\CTYPES~\deftype^\ast,` :math:`\CTAGS~\tagtype^\ast,` :math:`\CGLOBALS~\globaltype^\ast,` :math:`\CMEMS~\memtype^\ast,` :math:`\CTABLES~\tabletype^\ast,` :math:`\CFUNCS~\deftype_{\K{F}}^\ast,` :math:`\CDATAS~\X{ok}^\ast,` :math:`\CELEMS~\reftype^\ast,` :math:`\CREFS~x^\ast\}`.
 
 .. math::
    ~\\[-1ex]
@@ -854,7 +856,7 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
      \\
      (S \vdashexternaddr \XAGLOBAL~\globaladdr : \XTGLOBAL~\globaltype)^\ast
      \qquad
-     (S \vdashexternaddr \XAFUNC~\funcaddr : \XTFUNC~\functype)^\ast
+     (S \vdashexternaddr \XAFUNC~\funcaddr : \XTFUNC~\deftype_{\K{F}})^\ast
      \\
      (S \vdashexternaddr \XAMEM~\memaddr : \XTMEM~\memtype)^\ast
      \qquad
@@ -886,7 +888,7 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
          \CGLOBALS & \globaltype^\ast, \\
          \CMEMS & \memtype^\ast, \\
          \CTABLES & \tabletype^\ast, \\
-         \CFUNCS & \functype^\ast, \\
+         \CFUNCS & \deftype_{\K{F}}^\ast, \\
          \CDATAS & \X{ok}^\ast, \\
          \CELEMS & \reftype^\ast, \\
          \CREFS & 0 \dots (|\funcaddr^\ast|-1) ~\}
@@ -909,25 +911,30 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
        \begin{array}{@{}c@{}}
        x^n = 0 \dots (n-1)
        \qquad
-       (S; \{CTYPES~\functype^n[0 \slice x]\} \vdashfunctype \functype \OKfunctype)^n
+       (S; \{CTYPES~\deftype^n[0 \slice x]\} \vdashdeftype \deftype \OKdeftype)^n
        \\
-       (S; C \vdashfunctype \functype' \OKfunctype)^\ast
+       (S; C \vdashdeftype \deftype \OKdeftype)^\ast
        \qquad
-       (S; C \vdashtabletype \tabletype \OKtabletype)^\ast
+       (S; C \vdashtagtype \tagtype \OKtagtype)^\ast
+       \\\
+       (S; C \vdashglobaltype \globaltype \OKglobaltype)^\ast
+       \qquad
+       (S; C \vdashdeftype \deftype' \OKdeftype)^\ast
        \\
        (S; C \vdashmemtype \memtype \OKmemtype)^\ast
        \qquad
-       (S; C \vdashglobaltype \globaltype \OKglobaltype)^\ast
+       (S; C \vdashtabletype \tabletype \OKtabletype)^\ast
        \qquad
        (S; C \vdashreftype \reftype \OKreftype)^\ast
        \\
        C = \{
          \begin{array}[t]{@{}l@{~}l@{}}
-         \CTYPES & \functype^n, \\
-         \CFUNCS & {\functype'}^\ast, \\
-         \CTABLES & \tabletype^\ast, \\
-         \CMEMS & \memtype^\ast, \\
+         \CTYPES & \deftype^n, \\
+         \CTAGS & \tagtype^\ast, \\
          \CGLOBALS & \globaltype^\ast, \\
+         \CMEMS & \memtype^\ast, \\
+         \CTABLES & \tabletype^\ast, \\
+         \CFUNCS & {\deftype'}^\ast, \\
          \CELEMS & \reftype^\ast, \\
          \CDATAS & {\X{ok}}^\ast ~\}
          \end{array}
@@ -1081,15 +1088,17 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
 :math:`\INVOKE~\funcaddr`
 .........................
 
-* The :ref:`external function address <syntax-externaddr>` :math:`\XAFUNC~\funcaddr` must be :ref:`valid <valid-externaddr-func>` with :ref:`external function type <syntax-externtype>` :math:`\XTFUNC~\functype'`.
+* The :ref:`external function address <syntax-externaddr>` :math:`\XAFUNC~\funcaddr` must be :ref:`valid <valid-externaddr-func>` with :ref:`external function type <syntax-externtype>` :math:`\XTFUNC~\deftype'`.
 
-* Let :math:`[t_1^\ast] \toF [t_2^\ast])` be the :ref:`function type <syntax-functype>` :math:`\functype`.
+* The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`\deftype` must be some :ref:`function type <syntax-functype>` :math:`\TFUNC~[t_1^\ast] \Tarrow [t_2^\ast])`.
 
 * Then the instruction is valid with type :math:`[t_1^\ast] \to [t_2^\ast]`.
 
 .. math::
    \frac{
-     S \vdashexternaddr \XAFUNC~\funcaddr : \XTFUNC~[t_1^\ast] \toF [t_2^\ast]
+     S \vdashexternaddr \XAFUNC~\funcaddr : \XTFUNC~\deftype
+     \qquad
+     \deftype \approx \TFUNC~[t_1^\ast] \Tarrow [t_2^\ast]
    }{
      S; C \vdashadmininstr \INVOKE~\funcaddr : [t_1^\ast] \to [t_2^\ast]
    }

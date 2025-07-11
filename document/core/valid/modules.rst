@@ -102,7 +102,7 @@ $${rule: Table_ok}
 Functions
 ~~~~~~~~~
 
-Functions ${:func} are classified by :ref:`defined types <syntax-deftype>` that :ref:`expand <aux-expand-deftype>` to :ref:`function types <syntax-functype>` of the form ${comptype: FUNC (t_1* -> t_2*)}.
+Functions ${:func} are classified by :ref:`defined types <syntax-deftype>` that :ref:`expand <aux-expand-deftype>` to :ref:`function types <syntax-functype>` of the form ${comptype: FUNC t_1* -> t_2*}.
 
 $${rule-prose: Func_ok}
 

@@ -135,7 +135,7 @@ let blocktype (inst : moduleinst) bt at =
   | ValBlockType None -> InstrT ([], [], [])
   | ValBlockType (Some t) -> InstrT ([], [subst_valtype (subst_of inst) t], [])
   | VarBlockType x ->
-    let FuncT (ts1, ts2) = func_type inst x in InstrT (ts1, ts2, [])
+    let (ts1, ts2) = func_type inst x in InstrT (ts1, ts2, [])
 
 let take n (vs : 'a stack) at =
   try Lib.List.take n vs with Failure _ -> Crash.error at "stack underflow"
@@ -302,7 +302,7 @@ let rec step (c : config) : config =
         let t = tag c.frame.inst x in
         let TagT ut = Tag.type_of t in
         let dt = deftype_of_typeuse ut in
-        let FuncT (ts, _) = functype_of_comptype (expand_deftype dt) in
+        let (ts, _) = functype_of_comptype (expand_deftype dt) in
         let n = List.length ts in
         let args, vs' = split n vs e.at in
         vs', [Throwing (t, args) @@ e.at]
@@ -674,7 +674,7 @@ let rec step (c : config) : config =
         Num (I32 (I31.to_i32 ext i)) :: vs', []
 
       | StructNew (x, initop), vs' ->
-        let StructT fts = struct_type c.frame.inst x in
+        let fts = struct_type c.frame.inst x in
         let args, vs'' =
           match initop with
           | Explicit ->
@@ -713,7 +713,7 @@ let rec step (c : config) : config =
         with Failure _ -> Crash.error e.at "type mismatch writing field")
 
       | ArrayNew (x, initop), Num (I32 n) :: vs' ->
-        let ArrayT (FieldT (_mut, st)) = array_type c.frame.inst x in
+        let FieldT (_mut, st) = array_type c.frame.inst x in
         let arg, vs'' =
           match initop with
           | Explicit -> List.hd vs', List.tl vs'
@@ -751,7 +751,7 @@ let rec step (c : config) : config =
       | ArrayNewData (x, y), Num n :: Num s :: vs' ->
         let n_64 = addr_of_num n in
         let s_64 = addr_of_num s in
-        let ArrayT (FieldT (_mut, st)) = array_type c.frame.inst x in
+        let FieldT (_mut, st) = array_type c.frame.inst x in
         let m_64 = I64.mul n_64 (I64.of_int_u (storage_size st)) in
         if data_oob c.frame y s (I64 m_64) then
           vs', [Trapping (memory_error e.at Memory.Bounds) @@ e.at]
@@ -815,7 +815,7 @@ let rec step (c : config) : config =
         else
         let exto =
           match arraytype_of_comptype (expand_deftype (Aggr.type_of_array sa)) with
-          | ArrayT (FieldT (_, PackStorageT _)) -> Some U
+          | FieldT (_, PackStorageT _) -> Some U
           | _ -> None
         in
         if I32.le_u d s then
@@ -878,7 +878,7 @@ let rec step (c : config) : config =
         Num (I32 n) :: Num s :: Num (I32 d) :: Ref (Aggr.ArrayRef a) :: vs' ->
         let s_64 = addr_of_num s in
         let n_64 = Convert.I64_.extend_i32_u n in
-        let ArrayT (FieldT (_mut, st)) = array_type c.frame.inst x in
+        let FieldT (_mut, st) = array_type c.frame.inst x in
         let m_64 = I64.mul n_64 (I64.of_int_u (storage_size st)) in
         if array_oob a d n then
           vs', [Trapping "out of bounds array access" @@ e.at]
@@ -1073,7 +1073,7 @@ let rec step (c : config) : config =
       take n vs0 e.at @ vs, []
 
     | Frame (n, frame', (vs', {it = ReturningInvoke (vs0, f); at} :: es')), vs ->
-      let FuncT (ts1, _ts2) = functype_of_comptype (expand_deftype (Func.type_of f)) in
+      let (ts1, _ts2) = functype_of_comptype (expand_deftype (Func.type_of f)) in
       take (List.length ts1) vs0 e.at @ vs, [Invoke f @@ at]
 
     | Frame (n, frame', (vs', e' :: es')), vs when is_jumping e' ->
@@ -1118,7 +1118,7 @@ let rec step (c : config) : config =
       Exhaustion.error e.at "call stack exhausted"
 
     | Invoke f, vs ->
-      let FuncT (ts1, ts2) = functype_of_comptype (expand_deftype (Func.type_of f)) in
+      let (ts1, ts2) = functype_of_comptype (expand_deftype (Func.type_of f)) in
       let n1, n2 = List.length ts1, List.length ts2 in
       let args, vs' = split n1 vs e.at in
       (match f with
@@ -1163,7 +1163,7 @@ let at_func = function
 
 let invoke (func : funcinst) (vs : value list) : value list =
   let at = at_func func in
-  let FuncT (ts1, _ts2) = functype_of_comptype (expand_deftype (Func.type_of func)) in
+  let (ts1, _ts2) = functype_of_comptype (expand_deftype (Func.type_of func)) in
   if List.length vs <> List.length ts1 then
     Crash.error at "wrong number of arguments";
   if not (List.for_all2 (fun v -> Match.match_valtype [] (type_of_value v)) vs ts1) then

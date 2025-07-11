@@ -66,8 +66,8 @@ rule Step_pure/select-false:
 
 ;; Block instructions
 
-def $blocktype_(state, blocktype) : functype hint(macro "fblocktype")
-def $blocktype_(z, _IDX x) = ft  -- Expand: $type(z, x) ~~ FUNC ft
+def $blocktype_(state, blocktype) : instrtype hint(macro "fblocktype")
+def $blocktype_(z, _IDX x) = t_1* -> t_2*  -- Expand: $type(z, x) ~~ FUNC t_1* -> t_2*
 def $blocktype_(z, _RESULT t?) = eps -> t?
 
 rule Step_read/block:
@@ -177,7 +177,7 @@ rule Step_read/call_ref-func:
   z; val^n (REF.FUNC_ADDR a) (CALL_REF yy)  ~>  (FRAME_ m `{f} (LABEL_ m `{eps} instr*))
   ----
   -- if $funcinst(z)[a] = fi
-  -- Expand: fi.TYPE ~~ FUNC (t_1^n -> t_2^m)
+  -- Expand: fi.TYPE ~~ FUNC t_1^n -> t_2^m
   -- if fi.CODE = FUNC x (LOCAL t)* (instr*)
   -- if f = {LOCALS val^n ($default_(t))*, MODULE fi.MODULE}
 
@@ -199,7 +199,7 @@ rule Step_read/return_call_ref-frame-null:
 rule Step_read/return_call_ref-frame-addr:
   z; (FRAME_ k `{f} val'* val^n (REF.FUNC_ADDR a) (RETURN_CALL_REF yy) instr*)  ~>  val^n (REF.FUNC_ADDR a) (CALL_REF yy)
   ----
-  -- Expand: $funcinst(z)[a].TYPE ~~ FUNC (t_1^n -> t_2^m)
+  -- Expand: $funcinst(z)[a].TYPE ~~ FUNC t_1^n -> t_2^m
 
 
 rule Step_pure/call_indirect:
@@ -226,7 +226,7 @@ rule Step_pure/return-handler:
 
 rule Step/throw:
   z; val^n (THROW x)  ~>  $add_exninst(z, exn); (REF.EXN_ADDR a) THROW_REF
-  -- Expand: $as_deftype($tag(z, x).TYPE) ~~ FUNC (t^n -> eps)
+  -- Expand: $as_deftype($tag(z, x).TYPE) ~~ FUNC t^n -> eps
   -- if a = |$exninst(z)|
   -- if exn = {TAG $tagaddr(z)[x], FIELDS val^n}
 

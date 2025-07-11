@@ -244,22 +244,18 @@ let fieldtype s =
   let mut = mutability s in
   FieldT (mut, t)
 
-let structtype s =
-  StructT (vec fieldtype s)
-
-let arraytype s =
-  ArrayT (fieldtype s)
-
-let functype s =
-  let ts1 = resulttype s in
-  let ts2 = resulttype s in
-  FuncT (ts1, ts2)
-
 let comptype s =
   match s7 s with
-  | -0x20 -> FuncCT (functype s)
-  | -0x21 -> StructCT (structtype s)
-  | -0x22 -> ArrayCT (arraytype s)
+  | -0x20 ->
+    let ts1 = resulttype s in
+    let ts2 = resulttype s in
+    FuncT (ts1, ts2)
+  | -0x21 ->
+    let fts = vec fieldtype s in
+    StructT fts
+  | -0x22 ->
+    let ft = fieldtype s in
+    ArrayT ft
   | _ -> error s (pos s - 1) "malformed definition type"
 
 let subtype s =

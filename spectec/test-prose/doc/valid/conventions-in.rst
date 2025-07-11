@@ -171,14 +171,6 @@ $${definition-prose: subst_globaltype}
 
 $${definition: subst_globaltype}
 
-.. _def-subst_functype:
-
-$${definition-prose: subst_functype}
-
-\
-
-$${definition: subst_functype}
-
 .. _def-subst_tabletype:
 
 $${definition-prose: subst_tabletype}

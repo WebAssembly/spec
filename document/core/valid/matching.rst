@@ -107,21 +107,11 @@ $${rule: Instrtype_sub}
    Subtyping also incorporates a sort of "frame" condition, which allows adding arbitrary invariant stack elements on both sides in the super type.
 
 
-.. index:: function type, result type
-.. _match-functype:
-
-Function Types
-~~~~~~~~~~~~~~
-
-$${rule-prose: Functype_sub}
-
-$${rule: Functype_sub}
-
-
-.. index:: composite types, aggregate type, structure type, array type, field type
+.. index:: composite types, aggregate type, structure type, array type, funciton type, result type, field type
 .. _match-comptype:
 .. _match-structtype:
 .. _match-arraytype:
+.. _match-functype:
 
 Composite Types
 ~~~~~~~~~~~~~~~

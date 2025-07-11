@@ -28,15 +28,10 @@ and instrtype = InstrT of resulttype * resulttype * localidx list
 and packtype = I8T | I16T
 and storagetype = ValStorageT of valtype | PackStorageT of packtype
 and fieldtype = FieldT of mut * storagetype
-
-and structtype = StructT of fieldtype list
-and arraytype = ArrayT of fieldtype
-and functype = FuncT of resulttype * resulttype
-
 and comptype =
-  | StructCT of structtype
-  | ArrayCT of arraytype
-  | FuncCT of functype
+  | StructT of fieldtype list
+  | ArrayT of fieldtype
+  | FuncT of (resulttype * resulttype)
 
 and subtype = SubT of final * typeuse list * comptype
 and rectype = RecT of subtype list
@@ -128,9 +123,9 @@ let unpacked_fieldtype (FieldT (_mut, t)) = unpacked_storagetype t
 let idx_of_typeuse = function Idx x -> x | _ -> assert false
 let deftype_of_typeuse = function Def dt -> dt | _ -> assert false
 
-let structtype_of_comptype = function StructCT st -> st | _ -> assert false
-let arraytype_of_comptype = function ArrayCT at -> at | _ -> assert false
-let functype_of_comptype = function FuncCT ft -> ft | _ -> assert false
+let structtype_of_comptype = function StructT fts -> fts | _ -> assert false
+let arraytype_of_comptype = function ArrayT ft -> ft | _ -> assert false
+let functype_of_comptype = function FuncT rt2 -> rt2 | _ -> assert false
 
 let externtype_of_importtype = function ImportT (_, _, xt) -> xt
 let externtype_of_exporttype = function ExportT (_, xt) -> xt
@@ -200,19 +195,10 @@ and subst_storagetype s = function
 and subst_fieldtype s = function
   | FieldT (mut, t) -> FieldT (mut, subst_storagetype s t)
 
-and subst_structtype s = function
-  | StructT ts -> StructT (List.map (subst_fieldtype s) ts)
-
-and subst_arraytype s = function
-  | ArrayT t -> ArrayT (subst_fieldtype s t)
-
-and subst_functype s = function
-  | FuncT (ts1, ts2) -> FuncT (subst_resulttype s ts1, subst_resulttype s ts2)
-
 and subst_comptype s = function
-  | StructCT st -> StructCT (subst_structtype s st)
-  | ArrayCT at -> ArrayCT (subst_arraytype s at)
-  | FuncCT ft -> FuncCT (subst_functype s ft)
+  | StructT fts -> StructT (List.map (subst_fieldtype s) fts)
+  | ArrayT ft -> ArrayT (subst_fieldtype s ft)
+  | FuncT (ts1, ts2) -> FuncT (subst_resulttype s ts1, subst_resulttype s ts2)
 
 and subst_subtype s = function
   | SubT (fin, uts, ct) ->
@@ -384,22 +370,14 @@ and string_of_storagetype = function
 and string_of_fieldtype = function
   | FieldT (mut, t) -> string_of_mut (string_of_storagetype t) mut
 
-and string_of_structtype = function
-  | StructT fts ->
-    String.concat " " (List.map (fun ft -> "(field " ^ string_of_fieldtype ft ^ ")") fts)
-
-and string_of_arraytype = function
-  | ArrayT ft -> string_of_fieldtype ft
-
-and string_of_functype = function
-  | FuncT (ts1, ts2) ->
-    string_of_resulttype ts1 ^ " -> " ^ string_of_resulttype ts2
-
 and string_of_comptype = function
-  | StructCT (StructT []) -> "struct"
-  | StructCT st -> "struct " ^ string_of_structtype st
-  | ArrayCT at -> "array " ^ string_of_arraytype at
-  | FuncCT ft -> "func " ^ string_of_functype ft
+  | StructT [] -> "struct"
+  | StructT fts ->
+    "struct " ^ String.concat " "
+      (List.map (fun ft -> "(field " ^ string_of_fieldtype ft ^ ")") fts)
+  | ArrayT ft -> "array " ^ string_of_fieldtype ft
+  | FuncT (ts1, ts2) ->
+    "func " ^ string_of_resulttype ts1 ^ " -> " ^ string_of_resulttype ts2
 
 and string_of_subtype = function
   | SubT (Final, [], ct) -> string_of_comptype ct

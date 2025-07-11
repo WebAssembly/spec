@@ -93,19 +93,11 @@ let decls kind ts = tab kind (atom valtype) ts
 let fieldtype (FieldT (mut, t)) =
   mutability (atom storagetype t) mut
 
-let structtype (StructT fts) =
-  Node ("struct", list (fun ft -> Node ("field", [fieldtype ft])) fts)
-
-let arraytype (ArrayT ft) =
-  Node ("array", [fieldtype ft])
-
-let functype (FuncT (ts1, ts2)) =
-  Node ("func", decls "param" ts1 @ decls "result" ts2)
-
 let comptype = function
-  | StructCT st -> structtype st
-  | ArrayCT at -> arraytype at
-  | FuncCT ft -> functype ft
+  | StructT fts ->
+    Node ("struct", list (fun ft -> Node ("field", [fieldtype ft])) fts)
+  | ArrayT ft -> Node ("array", [fieldtype ft])
+  | FuncT (ts1, ts2) -> Node ("func", decls "param" ts1 @ decls "result" ts2)
 
 let subtype = function
   | SubT (Final, [], ct) -> comptype ct

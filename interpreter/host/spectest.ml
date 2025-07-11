@@ -31,15 +31,15 @@ let memory =
   let mt = MemoryT (I32AT, {min = 1L; max = Some 2L}) in
   ExternMemory (Memory.alloc mt)
 
-let func f ft =
-  let dt = DefT (RecT [SubT (Final, [], FuncCT ft)], 0l) in
-  ExternFunc (Func.alloc_host dt (f ft))
+let func f ts1 ts2 =
+  let dt = DefT (RecT [SubT (Final, [], FuncT (ts1, ts2))], 0l) in
+  ExternFunc (Func.alloc_host dt (f ts1 ts2))
 
 let print_value v =
   Printf.printf "%s : %s\n"
     (string_of_value v) (string_of_valtype (type_of_value v))
 
-let print _ vs =
+let print _ts1 _ts2 vs =
   List.iter print_value vs;
   flush_all ();
   []
@@ -47,13 +47,13 @@ let print _ vs =
 
 let lookup name t =
   match Utf8.encode name, t with
-  | "print", _ -> func print (FuncT ([], []))
-  | "print_i32", _ -> func print (FuncT ([NumT I32T], []))
-  | "print_i64", _ -> func print (FuncT ([NumT I64T], []))
-  | "print_f32", _ -> func print (FuncT ([NumT F32T], []))
-  | "print_f64", _ -> func print (FuncT ([NumT F64T], []))
-  | "print_i32_f32", _ -> func print (FuncT ([NumT I32T; NumT F32T], []))
-  | "print_f64_f64", _ -> func print (FuncT ([NumT F64T; NumT F64T], []))
+  | "print", _ -> func print [] []
+  | "print_i32", _ -> func print [NumT I32T] []
+  | "print_i64", _ -> func print [NumT I64T] []
+  | "print_f32", _ -> func print [NumT F32T] []
+  | "print_f64", _ -> func print [NumT F64T] []
+  | "print_i32_f32", _ -> func print [NumT I32T; NumT F32T] []
+  | "print_f64_f64", _ -> func print [NumT F64T; NumT F64T] []
   | "global_i32", _ -> global (GlobalT (Cons, NumT I32T))
   | "global_i64", _ -> global (GlobalT (Cons, NumT I64T))
   | "global_f32", _ -> global (GlobalT (Cons, NumT F32T))

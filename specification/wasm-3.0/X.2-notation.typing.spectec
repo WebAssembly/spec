@@ -17,7 +17,7 @@ rule NotationTypingScheme:
   -- NotationTypingPremisedots: `...
   -- NotationTypingPremise: premise_n
 
-relation NotationTypingInstrScheme: context |- instr* : functype hint(macro none)
+relation NotationTypingInstrScheme: context |- instr* : instrtype hint(macro none)
 
 rule NotationTypingInstrScheme/i32.add:
   C |- BINOP I32 ADD : I32 I32 -> I32

@@ -102,14 +102,10 @@ and storagetype = function
 
 and fieldtype (FieldT (_mut, st)) = storagetype st
 
-and structtype (StructT fts) = list fieldtype fts
-and arraytype (ArrayT ft) = fieldtype ft
-and functype (FuncT (ts1, ts2)) = list valtype ts1 ++ list valtype ts2
-
 and comptype = function
-  | StructCT st -> structtype st
-  | ArrayCT at -> arraytype at
-  | FuncCT ft -> functype ft
+  | StructT fts -> list fieldtype fts
+  | ArrayT ft -> fieldtype ft
+  | FuncT (ts1, ts2) -> list valtype ts1 ++ list valtype ts2
 
 and subtype = function
   | SubT (_fin, uts, ct) -> list typeuse uts ++ comptype ct

@@ -260,7 +260,16 @@ let string_of_stack_prefix expr =
   | IterE _ -> "the values"
   | _ -> "the value"
 
-let rec find_case_typ' s a: El.Ast.typ list option =
+let rec find_case_atom typ =
+  let open El.Ast in
+  match typ.it with
+  | AtomT atom
+  | BrackT (atom, _, _) -> Some atom
+  | SeqT (typ1::_)
+  | InfixT (typ1, _, _) -> find_case_atom typ1
+  | _ -> None
+
+let rec find_case_typ' s a: El.Ast.typ option =
   let open El.Ast in
   let find_typd = function
     | { it = TypD (id', _, _, typ, _); _ } when s = id'.it -> Some typ
@@ -270,14 +279,14 @@ let rec find_case_typ' s a: El.Ast.typ list option =
   List.find_map (function
   | { it = CaseT (_, ts, tcs, _); _ } ->
     let find_typ = function
-      | Elem (atom, (typ, _prems), _hints) when Xl.Atom.eq atom a ->
-        (match typ.it with
-        | SeqT ts -> Some ts
-        | _ -> None)
-      | _ -> None
+      | Nl -> None
+      | Elem (_atom, (typ, _prems), _hints) ->
+        match find_case_atom typ with
+        | Some atom when Xl.Atom.eq a atom -> Some typ
+        | _ -> None
     in
     (match List.find_map find_typ tcs with
-    | Some ts -> Some ts
+    | Some t -> Some t
     | _ ->
       List.find_map (function
       | Nl -> None
@@ -286,9 +295,9 @@ let rec find_case_typ' s a: El.Ast.typ list option =
     )
   | _ -> None) typds
 
-let find_case_typ s a: El.Ast.typ list =
+let find_case_typ s a: El.Ast.typ =
   match find_case_typ' s a with
-  | Some ts -> ts
+  | Some t -> t
   | None ->
     let msg = sprintf "cannot find typcase of atom %s from typ %s"
       (Xl.Atom.to_string a) s in

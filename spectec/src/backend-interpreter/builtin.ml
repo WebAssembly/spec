@@ -22,17 +22,18 @@ let builtin () =
     let code = nullary winstr_tag in
     let ptype = Array.map nullary type_tags in
     let arrow = CaseV ("->", [ listV ptype; listV [||] ]) in
-    let ftype = CaseV ("FUNC", [ arrow ]) in
-    let dt =
+    let ftype = CaseV ("FUNC", [ listV ptype; listV [||] ]) in
+    let dtype =
       CaseV ("_DEF", [
         CaseV ("REC", [
           [| CaseV ("SUB", [some "FINAL"; listV [||]; ftype]) |] |> listV
         ]); natV Z.zero
       ]) in
+    let tidx = CaseV ("", [ natV Z.zero ]) in
     name, StrV [
-      "TYPE", ref (if !Construct.version = 3 then dt else arrow);
+      "TYPE", ref (if !Construct.version <= 2 then arrow else dtype);
       "MODULE", ref (StrV Record.empty); (* dummy module *)
-      "CODE", ref (CaseV ("FUNC", [ ftype; listV [||]; listV [| code |] ]))
+      "CODE", ref (CaseV ("FUNC", [ tidx; listV [||]; listV [| code |] ]))
     ] in
 
   let create_globalinst t v = StrV [
@@ -70,17 +71,17 @@ let builtin () =
   (* Builtin tables *)
   let nulls = CaseV ("REF.NULL", [ nullary "FUNC" ]) |> Array.make 10 in
   let funcref =
-    if !Construct.version = 3 then
-      CaseV ("REF", [some "NULL"; nullary "FUNC"])
-    else
+    if !Construct.version <= 2 then
       nullary "FUNCREF"
+    else
+      CaseV ("REF", [some "NULL"; nullary "FUNC"])
   in
   let mk_ttype nt =
     let args = [ CaseV ("[", [ natV (Z.of_int 10); natV (Z.of_int 20) ]); funcref ] in
-    if !Construct.version = 3 then
-      TupV (CaseV (nt, []) :: args)
-    else
+    if !Construct.version <= 2 then
       TupV args
+    else
+      TupV (CaseV (nt, []) :: args)
   in
   let tables = [
     "table",
@@ -92,10 +93,10 @@ let builtin () =
   let zeros = natV Z.zero |> Array.make 0x10000 in
   let mk_mtype nt =
     let arg = CaseV ("[", [ natV Z.one; natV (Z.of_int 2) ]) in
-    if !Construct.version = 3 then
-      CaseV ("PAGE", [ CaseV (nt, []); arg ])
+    if !Construct.version <= 2 then
+      CaseV ("PAGE", [ arg ])
     else
-      CaseV ("PAGE", [ arg ]);
+      CaseV ("PAGE", [ CaseV (nt, []); arg ])
   in
   let memories = [
     "memory",

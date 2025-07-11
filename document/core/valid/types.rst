@@ -129,47 +129,48 @@ $${rule-prose: Instrtype_ok}
 $${rule: Instrtype_ok}
 
 
-.. index:: function type
-   pair: validation; function type
-   single: abstract syntax; function type
-.. _valid-functype:
-
-Function Types
-~~~~~~~~~~~~~~
-
-$${rule-prose: Functype_ok}
-
-$${rule: Functype_ok}
-
-
-.. index:: aggregate type, structure type, array type, field type, storage type, packed type, value type, mutability
+.. index:: composite type, function type, aggregate type, structure type, array type, field type, storage type, packed type, value type, mutability
+   pair: validation; composite type
    pair: validation; aggregate type
    pair: validation; structure type
    pair: validation; array type
+   pair: validation; function type
    pair: validation; field type
    pair: validation; storage type
    pair: validation; packed type
+   single: abstract syntax; composite type
+   single: abstract syntax; function type
    single: abstract syntax; structure type
    single: abstract syntax; array type
    single: abstract syntax; field type
    single: abstract syntax; storage type
    single: abstract syntax; packed type
    single: abstract syntax; value type
+.. _valid-comptype:
+.. _valid-aggrtype:
+.. _valid-structtype:
+.. _valid-arraytype:
+.. _valid-functype:
 .. _valid-fieldtype:
 .. _valid-storagetype:
 .. _valid-packtype:
 
-Aggregate Types
+Composite Types
 ~~~~~~~~~~~~~~~
 
-$${rule-prose: Structtype_ok}
+$${rule-prose: Comptype_ok/struct}
 
-$${rule: Structtype_ok}
+$${rule: Comptype_ok/struct}
 
 
-$${rule-prose-ignore: Arraytype_ok}
+$${rule-prose: Comptype_ok/array}
 
-$${rule-ignore: Arraytype_ok}
+$${rule: Comptype_ok/array}
+
+
+$${rule-prose: Comptype_ok/func}
+
+$${rule: Comptype_ok/func}
 
 
 $${rule-prose: Fieldtype_ok}
@@ -180,35 +181,6 @@ $${rule: Fieldtype_ok}
 $${rule-prose: Packtype_ok}
 
 $${rule: Packtype_ok}
-
-
-.. index:: composite type, function type, structure type, array type, field type
-   pair: validation; composite type
-   single: abstract syntax; composite type
-   single: abstract syntax; function type
-   single: abstract syntax; structure type
-   single: abstract syntax; array type
-.. _valid-comptype:
-.. _valid-aggrtype:
-.. _valid-structtype:
-.. _valid-arraytype:
-
-Composite Types
-~~~~~~~~~~~~~~~
-
-$${rule-prose: Comptype_ok/func}
-
-$${rule: Comptype_ok/func}
-
-
-$${rule-prose: Comptype_ok/struct}
-
-$${rule: Comptype_ok/struct}
-
-
-$${rule-prose: Comptype_ok/array}
-
-$${rule: Comptype_ok/array}
 
 
 .. index:: recursive type, sub type, composite type, final, subtyping

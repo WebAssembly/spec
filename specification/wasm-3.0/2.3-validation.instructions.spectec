@@ -48,7 +48,7 @@ rule Blocktype_ok/valtype:
 
 rule Blocktype_ok/typeidx:
   C |- _IDX typeidx : t_1* -> t_2*
-  -- Expand: C.TYPES[typeidx] ~~ FUNC (t_1* -> t_2*)
+  -- Expand: C.TYPES[typeidx] ~~ FUNC t_1* -> t_2*
 
 
 rule Instr_ok/block:
@@ -115,17 +115,17 @@ rule Instr_ok/br_on_cast_fail:
 
 rule Instr_ok/call:
   C |- CALL x : t_1* -> t_2*
-  -- Expand: C.FUNCS[x] ~~ FUNC (t_1* -> t_2*)
+  -- Expand: C.FUNCS[x] ~~ FUNC t_1* -> t_2*
 
 rule Instr_ok/call_ref:
   C |- CALL_REF (_IDX x) : t_1* (REF NULL (_IDX x)) -> t_2*
-  -- Expand: C.TYPES[x] ~~ FUNC (t_1* -> t_2*)
+  -- Expand: C.TYPES[x] ~~ FUNC t_1* -> t_2*
 
 rule Instr_ok/call_indirect:
   C |- CALL_INDIRECT x (_IDX y) : t_1* at -> t_2*
   -- if C.TABLES[x] = at lim rt
   -- Reftype_sub: C |- rt <: (REF NULL FUNC)
-  -- Expand: C.TYPES[y] ~~ FUNC (t_1* -> t_2*)
+  -- Expand: C.TYPES[y] ~~ FUNC t_1* -> t_2*
 
 rule Instr_ok/return:
   C |- RETURN : t_1* t* -> t_2*
@@ -135,7 +135,7 @@ rule Instr_ok/return:
 ;; TODO(3, rossberg): enable t_2* <: C.RETURN
 rule Instr_ok/return_call:
   C |- RETURN_CALL x : t_3* t_1* -> t_4*
-  -- Expand: C.FUNCS[x] ~~ FUNC (t_1* -> t_2*)
+  -- Expand: C.FUNCS[x] ~~ FUNC t_1* -> t_2*
   -- if C.RETURN = (t'_2*)
   -- Resulttype_sub: C |- t_2* <: t'_2*
   -- Instrtype_ok: C |- t_3* -> t_4* : OK
@@ -143,7 +143,7 @@ rule Instr_ok/return_call:
 ;; TODO(3, rossberg): enable t_2* <: C.RETURN
 rule Instr_ok/return_call_ref:
   C |- RETURN_CALL_REF (_IDX x) : t_3* t_1* (REF NULL (_IDX x)) -> t_4*
-  -- Expand: C.TYPES[x] ~~ FUNC (t_1* -> t_2*)
+  -- Expand: C.TYPES[x] ~~ FUNC t_1* -> t_2*
   -- if C.RETURN = (t'_2*)
   -- Resulttype_sub: C |- t_2* <: t'_2*
   -- Instrtype_ok: C |- t_3* -> t_4* : OK
@@ -154,7 +154,7 @@ rule Instr_ok/return_call_indirect:
   -- if C.TABLES[x] = at lim rt
   -- Reftype_sub: C |- rt <: (REF NULL FUNC)
   ----
-  -- Expand: C.TYPES[y] ~~ FUNC (t_1* -> t_2*)
+  -- Expand: C.TYPES[y] ~~ FUNC t_1* -> t_2*
   -- if C.RETURN = (t'_2*)
   -- Resulttype_sub: C |- t_2* <: t'_2*
   -- Instrtype_ok: C |- t_3* -> t_4* : OK
@@ -166,7 +166,7 @@ relation Catch_ok: context |- catch : OK hint(name "T") hint(macro "%catch")
 
 rule Instr_ok/throw:
   C |- THROW x : t_1* t* -> t_2*
-  -- Expand: $as_deftype(C.TAGS[x]) ~~ FUNC (t* -> eps)
+  -- Expand: $as_deftype(C.TAGS[x]) ~~ FUNC t* -> eps
   -- Instrtype_ok: C |- t_1* -> t_2* : OK
 
 rule Instr_ok/throw_ref:
@@ -181,12 +181,12 @@ rule Instr_ok/try_table:
 
 rule Catch_ok/catch:
   C |- CATCH x l : OK
-  -- Expand: $as_deftype(C.TAGS[x]) ~~ FUNC (t* -> eps)
+  -- Expand: $as_deftype(C.TAGS[x]) ~~ FUNC t* -> eps
   -- Resulttype_sub: C |- t* <: C.LABELS[l]
 
 rule Catch_ok/catch_ref:
   C |- CATCH_REF x l : OK
-  -- Expand: $as_deftype(C.TAGS[x]) ~~ FUNC (t* -> eps)
+  -- Expand: $as_deftype(C.TAGS[x]) ~~ FUNC t* -> eps
   -- Resulttype_sub: C |- t* (REF EXN) <: C.LABELS[l]
 
 rule Catch_ok/catch_all:
@@ -276,14 +276,14 @@ rule Instr_ok/struct.new_default:
 
 rule Instr_ok/struct.get:
   C |- STRUCT.GET sx? x i : (REF NULL (_IDX x)) -> $unpack(zt)
-  -- Expand: C.TYPES[x] ~~ STRUCT yt*
-  -- if yt*[i] = mut zt
+  -- Expand: C.TYPES[x] ~~ STRUCT ft*
+  -- if ft*[i] = mut zt
   -- if sx? = eps <=> zt = $unpack(zt)
 
 rule Instr_ok/struct.set:
   C |- STRUCT.SET x i : (REF NULL (_IDX x)) $unpack(zt) -> eps
-  -- Expand: C.TYPES[x] ~~ STRUCT yt*
-  -- if yt*[i] = MUT zt
+  -- Expand: C.TYPES[x] ~~ STRUCT ft*
+  -- if ft*[i] = MUT zt
 
 
 ;; Array instructions

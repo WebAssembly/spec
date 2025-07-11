@@ -9,7 +9,7 @@ let alloc_exn tag vs =
   let TagT ut = Tag.type_of tag in
   assert Free.((typeuse ut).types = Set.empty);
   let dt = deftype_of_typeuse ut in
-  let FuncT (ts1, ts2) = functype_of_comptype (expand_deftype dt) in
+  let (ts1, ts2) = functype_of_comptype (expand_deftype dt) in
   assert (List.length vs = List.length ts1);
   assert (ts2 = []);
   Exn (tag, vs)

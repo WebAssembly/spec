@@ -603,7 +603,7 @@ Traps are bubbled up through nested instruction sequences, ultimately reducing t
 
    $${Step_pure: (BLOCK bt instr*) ~> (LABEL_ n `{eps} instr*)}
 
-   if the :ref:`block type <syntax-blocktype>` ${:bt} denotes a :ref:`function type <syntax-functype>` ${functype: t_1^m -> t_2^n},
+   if the :ref:`block type <syntax-blocktype>` ${:bt} denotes a :ref:`function type <syntax-functype>` ${comptype: FUNC t_1^m -> t_2^n},
    such that ${:n} is the block's result arity.
    This rule replaces the block with a label instruction,
    which can be interpreted as "pushing" the label on the stack.

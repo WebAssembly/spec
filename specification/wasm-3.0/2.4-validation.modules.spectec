@@ -53,7 +53,7 @@ rule Local_ok/unset:
 
 rule Func_ok:
   C |- FUNC x local* expr : C.TYPES[x]
-  -- Expand: C.TYPES[x] ~~ FUNC (t_1* -> t_2*)
+  -- Expand: C.TYPES[x] ~~ FUNC t_1* -> t_2*
   -- (Local_ok: C |- local : lct)*
   -- Expr_ok: C ++ {LOCALS (SET t_1)* lct*, LABELS (t_2*), RETURN (t_2*)} |- expr : t_2*
 
@@ -89,7 +89,7 @@ rule Elemmode_ok/declare:
 
 rule Start_ok:
   C |- START x : OK
-  -- Expand: C.FUNCS[x] ~~ FUNC (eps -> eps)
+  -- Expand: C.FUNCS[x] ~~ FUNC eps -> eps
 
 
 ;; Im/exports

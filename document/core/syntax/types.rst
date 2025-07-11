@@ -255,27 +255,19 @@ or as an optional :ref:`value type <syntax-valtype>` inline,
 which is a shorthand for the instruction type ${instrtype: eps -> valtype?}.
 
 
-.. index:: ! function type, value type, list, function, parameter, result, result type
+.. index:: ! composite type, ! function type, result type, ! aggregate type, ! structure type, ! array type, ! field type, ! storage type, ! packed type, bit width, function, structure, array, parameter, result, list
+   pair: abstract syntax; composite type
    pair: abstract syntax; function type
-   pair: function; type
-.. _syntax-functype:
-
-Function Types
-~~~~~~~~~~~~~~
-
-*Function types* classify the signature of :ref:`functions <syntax-func>`,
-mapping a list of parameters to a list of results.
-They are also used to classify the inputs and outputs of :ref:`instructions <syntax-instr>`.
-
-$${syntax: functype}
-
-
-.. index:: ! aggregate type, ! structure type, ! array type, ! field type, ! storage type, ! packed type, bit width
    pair: abstract syntax; structure type
    pair: abstract syntax; array type
    pair: abstract syntax; field type
    pair: abstract syntax; storage type
    pair: abstract syntax; packed type
+   pair: function; type
+   pair: structure; type
+   pair: array; type
+.. _syntax-comptype:
+.. _syntax-functype:
 .. _syntax-aggrtype:
 .. _syntax-structtype:
 .. _syntax-arraytype:
@@ -283,15 +275,20 @@ $${syntax: functype}
 .. _syntax-storagetype:
 .. _syntax-packtype:
 
-Aggregate Types
+Composite Types
 ~~~~~~~~~~~~~~~
 
-*Aggregate types* describe compound objects consisting of multiple values.
-These are either *structures* or *arrays*,
-which both consist of a list of possibly mutable, possibly packed *fields*.
-Structures are heterogeneous, but require static indexing, while arrays need to be homogeneous, but allow dynamic indexing.
+*Composite types* are all types composed from simpler types,
+including *function types*, *structure types* and *array types*.
 
-$${syntax: {structtype arraytype fieldtype storagetype packtype}}
+$${syntax: comptype {fieldtype storagetype packtype}}
+
+Function types classify the signature of :ref:`functions <syntax-func>`,
+mapping a list of parameters to a list of results.
+They are also used to classify the inputs and outputs of :ref:`instructions <syntax-instr>`.
+
+*Aggregate types* like structure or array types consist of a list of possibly mutable, possibly packed *field types* describing their components.
+Structures are heterogeneous, but require static indexing, while arrays need to be homogeneous, but allow dynamic indexing.
 
 .. _bitwidth-fieldtype:
 .. _aux-unpack:
@@ -304,25 +301,6 @@ Conventions
 $${definition-ignore: psize}
 
 * The auxiliary function :math:`\unpack` maps a storage type to the :ref:`value type <syntax-valtype>` obtained when accessing a field:
-
-  .. math::
-     \begin{array}{lll}
-     \unpack(\valtype) &=& \valtype \\
-     \unpack(\packtype) &=& \I32 \\
-     \end{array}
-
-
-.. index:: ! composite type, function type, aggreagate type, structure type, array type
-   pair: abstract syntax; composite type
-.. _syntax-comptype:
-
-Composite Types
-~~~~~~~~~~~~~~~
-
-*Composite types* are all types composed from simpler types,
-including :ref:`function types <syntax-functype>` and :ref:`aggregate types <syntax-aggrtype>`.
-
-$${syntax: comptype}
 
 
 .. index:: ! recursive type, ! sub type, composite type, ! final, subtyping, ! roll, ! unroll, recursive type index

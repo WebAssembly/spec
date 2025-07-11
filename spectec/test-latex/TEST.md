@@ -2918,12 +2918,9 @@ $$
 & {\mathsf{mut}}{{{}_{2}^?}} & ::= & {\mathsf{mut}^?} \\
 & {\mathsf{final}^?} & ::= & {\mathsf{final}^?} \\
 \mbox{(field type)} & {\mathit{fieldtype}} & ::= & {\mathsf{mut}^?}~{\mathit{storagetype}} \\
-\mbox{(function type)} & {\mathit{functype}} & ::= & {\mathit{resulttype}} \rightarrow {\mathit{resulttype}} \\
-\mbox{(structure type)} & {\mathit{structtype}} & ::= & {\mathit{list}}({\mathit{fieldtype}}) \\
-\mbox{(array type)} & {\mathit{arraytype}} & ::= & {\mathit{fieldtype}} \\
-\mbox{(composite type)} & {\mathit{comptype}} & ::= & \mathsf{struct}~{\mathit{structtype}} \\
-& & | & \mathsf{array}~{\mathit{arraytype}} \\
-& & | & \mathsf{func}~{\mathit{functype}} \\
+\mbox{(composite type)} & {\mathit{comptype}} & ::= & \mathsf{struct}~{\mathit{list}}({\mathit{fieldtype}}) \\
+& & | & \mathsf{array}~{\mathit{fieldtype}} \\
+& & | & \mathsf{func}~{\mathit{resulttype}} \rightarrow {\mathit{resulttype}} \\
 \mbox{(sub type)} & {\mathit{subtype}} & ::= & \mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~{\mathit{comptype}} \\
 \mbox{(recursive type)} & {\mathit{rectype}} & ::= & \mathsf{rec}~{\mathit{list}}({\mathit{subtype}}) \\
 \end{array}
@@ -3245,9 +3242,9 @@ $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-{(\mathsf{struct}~{{\mathit{yt}}^\ast})}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]} & = & \mathsf{struct}~{{{\mathit{yt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}^\ast} \\
-{(\mathsf{array}~{\mathit{yt}})}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]} & = & \mathsf{array}~{{\mathit{yt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]} \\
-{(\mathsf{func}~{\mathit{ft}})}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]} & = & \mathsf{func}~{{\mathit{ft}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]} \\
+{(\mathsf{struct}~{{\mathit{ft}}^\ast})}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]} & = & \mathsf{struct}~{{{\mathit{ft}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}^\ast} \\
+{(\mathsf{array}~{\mathit{ft}})}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]} & = & \mathsf{array}~{{\mathit{ft}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]} \\
+{(\mathsf{func}~{t_1^\ast} \rightarrow {t_2^\ast})}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]} & = & \mathsf{func}~{{t_1}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}^\ast} \rightarrow {{t_2}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}^\ast} \\
 \end{array}
 $$
 
@@ -3303,12 +3300,6 @@ $$
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
 {({\mathit{at}}~{\mathit{lim}}~{\mathit{rt}})}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]} & = & {\mathit{at}}~{\mathit{lim}}~{{\mathit{rt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]} \\
-\end{array}
-$$
-
-$$
-\begin{array}[t]{@{}lcl@{}l@{}}
-{({t_1^\ast} \rightarrow {t_2^\ast})}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]} & = & {{t_1}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}^\ast} \rightarrow {{t_2}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}^\ast} \\
 \end{array}
 $$
 
@@ -3541,32 +3532,9 @@ $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-{\mathrm{free}}_{\mathit{functype}}({\mathit{resulttype}}_1 \rightarrow {\mathit{resulttype}}_2) & = & & \\
- \multicolumn{4}{@{}l@{}}{\quad
-\begin{array}[t]{@{}l@{}}
-{\mathrm{free}}_{\mathit{resulttype}}({\mathit{resulttype}}_1) \oplus {\mathrm{free}}_{\mathit{resulttype}}({\mathit{resulttype}}_2) \\
-\end{array}
-} \\
-\end{array}
-$$
-
-$$
-\begin{array}[t]{@{}lcl@{}l@{}}
-{\mathrm{free}}_{\mathit{structtype}}({{\mathit{fieldtype}}^\ast}) & = & {\mathrm{free}}_{\mathit{list}}({{\mathrm{free}}_{\mathit{fieldtype}}({\mathit{fieldtype}})^\ast}) \\
-\end{array}
-$$
-
-$$
-\begin{array}[t]{@{}lcl@{}l@{}}
-{\mathrm{free}}_{\mathit{arraytype}}({\mathit{fieldtype}}) & = & {\mathrm{free}}_{\mathit{fieldtype}}({\mathit{fieldtype}}) \\
-\end{array}
-$$
-
-$$
-\begin{array}[t]{@{}lcl@{}l@{}}
-{\mathrm{free}}_{\mathit{comptype}}(\mathsf{struct}~{\mathit{structtype}}) & = & {\mathrm{free}}_{\mathit{structtype}}({\mathit{structtype}}) \\
-{\mathrm{free}}_{\mathit{comptype}}(\mathsf{array}~{\mathit{arraytype}}) & = & {\mathrm{free}}_{\mathit{arraytype}}({\mathit{arraytype}}) \\
-{\mathrm{free}}_{\mathit{comptype}}(\mathsf{func}~{\mathit{functype}}) & = & {\mathrm{free}}_{\mathit{functype}}({\mathit{functype}}) \\
+{\mathrm{free}}_{\mathit{comptype}}(\mathsf{struct}~{{\mathit{fieldtype}}^\ast}) & = & {\mathrm{free}}_{\mathit{list}}({{\mathrm{free}}_{\mathit{fieldtype}}({\mathit{fieldtype}})^\ast}) \\
+{\mathrm{free}}_{\mathit{comptype}}(\mathsf{array}~{\mathit{fieldtype}}) & = & {\mathrm{free}}_{\mathit{fieldtype}}({\mathit{fieldtype}}) \\
+{\mathrm{free}}_{\mathit{comptype}}(\mathsf{func}~{\mathit{resulttype}}_1 \rightarrow {\mathit{resulttype}}_2) & = & {\mathrm{free}}_{\mathit{resulttype}}({\mathit{resulttype}}_1) \oplus {\mathrm{free}}_{\mathit{resulttype}}({\mathit{resulttype}}_2) \\
 \end{array}
 $$
 
@@ -4771,12 +4739,6 @@ $\boxed{{\mathit{context}} \vdash {\mathit{fieldtype}} : \mathsf{ok}}$
 
 $\boxed{{\mathit{context}} \vdash {\mathit{storagetype}} : \mathsf{ok}}$
 
-$\boxed{{\mathit{context}} \vdash {\mathit{structtype}} : \mathsf{ok}}$
-
-$\boxed{{\mathit{context}} \vdash {\mathit{arraytype}} : \mathsf{ok}}$
-
-$\boxed{{\mathit{context}} \vdash {\mathit{functype}} : \mathsf{ok}}$
-
 $\boxed{{\mathit{context}} \vdash {\mathit{comptype}} : \mathsf{ok}}$
 
 $\boxed{{\mathit{context}} \vdash {\mathit{subtype}} : {\mathsf{ok}}{({\mathit{typeidx}})}}$
@@ -4880,31 +4842,7 @@ $$
 \frac{
 (C \vdash {\mathit{fieldtype}} : \mathsf{ok})^\ast
 }{
-C \vdash {{\mathit{fieldtype}}^\ast} : \mathsf{ok}
-} \, {[\textsc{\scriptsize K{-}struct}]}
-\qquad
-\end{array}
-$$
-
-$$
-\begin{array}{@{}c@{}}\displaystyle
-\frac{
-C \vdash {\mathit{fieldtype}} : \mathsf{ok}
-}{
-C \vdash {\mathit{fieldtype}} : \mathsf{ok}
-} \, {[\textsc{\scriptsize K{-}array}]}
-\qquad
-\end{array}
-$$
-
-\vspace{1ex}
-
-$$
-\begin{array}{@{}c@{}}\displaystyle
-\frac{
-C \vdash {\mathit{structtype}} : \mathsf{ok}
-}{
-C \vdash \mathsf{struct}~{\mathit{structtype}} : \mathsf{ok}
+C \vdash \mathsf{struct}~{{\mathit{fieldtype}}^\ast} : \mathsf{ok}
 } \, {[\textsc{\scriptsize K{-}comp{-}struct}]}
 \qquad
 \end{array}
@@ -4913,9 +4851,9 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C \vdash {\mathit{arraytype}} : \mathsf{ok}
+C \vdash {\mathit{fieldtype}} : \mathsf{ok}
 }{
-C \vdash \mathsf{array}~{\mathit{arraytype}} : \mathsf{ok}
+C \vdash \mathsf{array}~{\mathit{fieldtype}} : \mathsf{ok}
 } \, {[\textsc{\scriptsize K{-}comp{-}array}]}
 \qquad
 \end{array}
@@ -4924,9 +4862,11 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C \vdash {\mathit{functype}} : \mathsf{ok}
+C \vdash {t_1^\ast} : \mathsf{ok}
+ \qquad
+C \vdash {t_2^\ast} : \mathsf{ok}
 }{
-C \vdash \mathsf{func}~{\mathit{functype}} : \mathsf{ok}
+C \vdash \mathsf{func}~{t_1^\ast} \rightarrow {t_2^\ast} : \mathsf{ok}
 } \, {[\textsc{\scriptsize K{-}comp{-}func}]}
 \qquad
 \end{array}
@@ -5100,7 +5040,7 @@ $$
 \frac{
 C \vdash {\mathit{typeuse}} : \mathsf{ok}
  \qquad
-{\mathit{typeuse}} \approx_{C} \mathsf{func}~{\mathit{functype}}
+{\mathit{typeuse}} \approx_{C} \mathsf{func}~{t_1^\ast} \rightarrow {t_2^\ast}
 }{
 C \vdash {\mathit{typeuse}} : \mathsf{ok}
 } \, {[\textsc{\scriptsize K{-}tag}]}
@@ -5139,19 +5079,6 @@ C \vdash {\mathit{reftype}} : \mathsf{ok}
 }{
 C \vdash {\mathit{addrtype}}~{\mathit{limits}}~{\mathit{reftype}} : \mathsf{ok}
 } \, {[\textsc{\scriptsize K{-}table}]}
-\qquad
-\end{array}
-$$
-
-$$
-\begin{array}{@{}c@{}}\displaystyle
-\frac{
-C \vdash {t_1^\ast} : \mathsf{ok}
- \qquad
-C \vdash {t_2^\ast} : \mathsf{ok}
-}{
-C \vdash {t_1^\ast} \rightarrow {t_2^\ast} : \mathsf{ok}
-} \, {[\textsc{\scriptsize K{-}func}]}
 \qquad
 \end{array}
 $$
@@ -5207,7 +5134,7 @@ $$
 \frac{
 C \vdash {\mathit{typeuse}} : \mathsf{ok}
  \qquad
-{\mathit{typeuse}} \approx_{C} \mathsf{func}~{\mathit{functype}}
+{\mathit{typeuse}} \approx_{C} \mathsf{func}~{t_1^\ast} \rightarrow {t_2^\ast}
 }{
 C \vdash \mathsf{func}~{\mathit{typeuse}} : \mathsf{ok}
 } \, {[\textsc{\scriptsize K{-}extern{-}func}]}
@@ -5339,7 +5266,7 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-{\mathit{deftype}} \approx \mathsf{func}~{\mathit{functype}}
+{\mathit{deftype}} \approx \mathsf{func}~{t_1^\ast} \rightarrow {t_2^\ast}
 }{
 C \vdash {\mathit{deftype}} \leq \mathsf{func}
 } \, {[\textsc{\scriptsize S{-}heap{-}func}]}
@@ -5556,8 +5483,6 @@ $\boxed{{\mathit{context}} \vdash {\mathit{storagetype}} \leq {\mathit{storagety
 
 $\boxed{{\mathit{context}} \vdash {\mathit{fieldtype}} \leq {\mathit{fieldtype}}}$
 
-$\boxed{{\mathit{context}} \vdash {\mathit{functype}} \leq {\mathit{functype}}}$
-
 \vspace{1ex}
 
 $$
@@ -5625,21 +5550,10 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-(C \vdash {\mathit{yt}}_1 \leq {\mathit{yt}}_2)^\ast
+(C \vdash {\mathit{ft}}_1 \leq {\mathit{ft}}_2)^\ast
 }{
-C \vdash \mathsf{struct}~({{\mathit{yt}}_1^\ast}~{{\mathit{yt}'}_1^\ast}) \leq \mathsf{struct}~{{\mathit{yt}}_2^\ast}
+C \vdash \mathsf{struct}~({{\mathit{ft}}_1^\ast}~{{\mathit{ft}'}_1^\ast}) \leq \mathsf{struct}~{{\mathit{ft}}_2^\ast}
 } \, {[\textsc{\scriptsize S{-}comp{-}struct}]}
-\qquad
-\end{array}
-$$
-
-$$
-\begin{array}{@{}c@{}}\displaystyle
-\frac{
-C \vdash {\mathit{yt}}_1 \leq {\mathit{yt}}_2
-}{
-C \vdash \mathsf{array}~{\mathit{yt}}_1 \leq \mathsf{array}~{\mathit{yt}}_2
-} \, {[\textsc{\scriptsize S{-}comp{-}array}]}
 \qquad
 \end{array}
 $$
@@ -5649,7 +5563,20 @@ $$
 \frac{
 C \vdash {\mathit{ft}}_1 \leq {\mathit{ft}}_2
 }{
-C \vdash \mathsf{func}~{\mathit{ft}}_1 \leq \mathsf{func}~{\mathit{ft}}_2
+C \vdash \mathsf{array}~{\mathit{ft}}_1 \leq \mathsf{array}~{\mathit{ft}}_2
+} \, {[\textsc{\scriptsize S{-}comp{-}array}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+C \vdash {t_{21}^\ast} \leq {t_{11}^\ast}
+ \qquad
+C \vdash {t_{12}^\ast} \leq {t_{22}^\ast}
+}{
+C \vdash \mathsf{func}~{t_{11}^\ast} \rightarrow {t_{12}^\ast} \leq \mathsf{func}~{t_{21}^\ast} \rightarrow {t_{22}^\ast}
 } \, {[\textsc{\scriptsize S{-}comp{-}func}]}
 \qquad
 \end{array}
@@ -5769,19 +5696,6 @@ C \vdash {\mathit{reftype}}_2 \leq {\mathit{reftype}}_1
 }{
 C \vdash {\mathit{addrtype}}~{\mathit{limits}}_1~{\mathit{reftype}}_1 \leq {\mathit{addrtype}}~{\mathit{limits}}_2~{\mathit{reftype}}_2
 } \, {[\textsc{\scriptsize S{-}table}]}
-\qquad
-\end{array}
-$$
-
-$$
-\begin{array}{@{}c@{}}\displaystyle
-\frac{
-C \vdash {t_{21}^\ast} \leq {t_{11}^\ast}
- \qquad
-C \vdash {t_{12}^\ast} \leq {t_{22}^\ast}
-}{
-C \vdash {t_{11}^\ast} \rightarrow {t_{12}^\ast} \leq {t_{21}^\ast} \rightarrow {t_{22}^\ast}
-} \, {[\textsc{\scriptsize S{-}func}]}
 \qquad
 \end{array}
 $$
@@ -5933,7 +5847,7 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C{.}\mathsf{types}{}[{\mathit{typeidx}}] \approx \mathsf{func}~({t_1^\ast} \rightarrow {t_2^\ast})
+C{.}\mathsf{types}{}[{\mathit{typeidx}}] \approx \mathsf{func}~{t_1^\ast} \rightarrow {t_2^\ast}
 }{
 C \vdash {\mathit{typeidx}} : {t_1^\ast} \rightarrow {t_2^\ast}
 } \, {[\textsc{\scriptsize K{-}block{-}typeidx}]}
@@ -6096,7 +6010,7 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C{.}\mathsf{funcs}{}[x] \approx \mathsf{func}~({t_1^\ast} \rightarrow {t_2^\ast})
+C{.}\mathsf{funcs}{}[x] \approx \mathsf{func}~{t_1^\ast} \rightarrow {t_2^\ast}
 }{
 C \vdash \mathsf{call}~x : {t_1^\ast} \rightarrow {t_2^\ast}
 } \, {[\textsc{\scriptsize T{-}call}]}
@@ -6107,7 +6021,7 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C{.}\mathsf{types}{}[x] \approx \mathsf{func}~({t_1^\ast} \rightarrow {t_2^\ast})
+C{.}\mathsf{types}{}[x] \approx \mathsf{func}~{t_1^\ast} \rightarrow {t_2^\ast}
 }{
 C \vdash \mathsf{call\_ref}~x : {t_1^\ast}~(\mathsf{ref}~\mathsf{null}~x) \rightarrow {t_2^\ast}
 } \, {[\textsc{\scriptsize T{-}call\_ref}]}
@@ -6122,7 +6036,7 @@ C{.}\mathsf{tables}{}[x] = {\mathit{at}}~{\mathit{lim}}~{\mathit{rt}}
  \qquad
 C \vdash {\mathit{rt}} \leq (\mathsf{ref}~\mathsf{null}~\mathsf{func})
  \qquad
-C{.}\mathsf{types}{}[y] \approx \mathsf{func}~({t_1^\ast} \rightarrow {t_2^\ast})
+C{.}\mathsf{types}{}[y] \approx \mathsf{func}~{t_1^\ast} \rightarrow {t_2^\ast}
 }{
 C \vdash \mathsf{call\_indirect}~x~y : {t_1^\ast}~{\mathit{at}} \rightarrow {t_2^\ast}
 } \, {[\textsc{\scriptsize T{-}call\_indirect}]}
@@ -6146,7 +6060,7 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C{.}\mathsf{funcs}{}[x] \approx \mathsf{func}~({t_1^\ast} \rightarrow {t_2^\ast})
+C{.}\mathsf{funcs}{}[x] \approx \mathsf{func}~{t_1^\ast} \rightarrow {t_2^\ast}
  \qquad
 C{.}\mathsf{return} = ({{t'}_2^\ast})
  \qquad
@@ -6163,7 +6077,7 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C{.}\mathsf{types}{}[x] \approx \mathsf{func}~({t_1^\ast} \rightarrow {t_2^\ast})
+C{.}\mathsf{types}{}[x] \approx \mathsf{func}~{t_1^\ast} \rightarrow {t_2^\ast}
  \qquad
 C{.}\mathsf{return} = ({{t'}_2^\ast})
  \qquad
@@ -6185,7 +6099,7 @@ C{.}\mathsf{tables}{}[x] = {\mathit{at}}~{\mathit{lim}}~{\mathit{rt}}
  \qquad
 C \vdash {\mathit{rt}} \leq (\mathsf{ref}~\mathsf{null}~\mathsf{func})
  \\
-C{.}\mathsf{types}{}[y] \approx \mathsf{func}~({t_1^\ast} \rightarrow {t_2^\ast})
+C{.}\mathsf{types}{}[y] \approx \mathsf{func}~{t_1^\ast} \rightarrow {t_2^\ast}
  \qquad
 C{.}\mathsf{return} = ({{t'}_2^\ast})
  \qquad
@@ -6207,7 +6121,7 @@ $\boxed{{\mathit{context}} \vdash {\mathit{catch}} : \mathsf{ok}}$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C{.}\mathsf{tags}{}[x] \approx \mathsf{func}~({t^\ast} \rightarrow \epsilon)
+C{.}\mathsf{tags}{}[x] \approx \mathsf{func}~{t^\ast} \rightarrow \epsilon
  \qquad
 C \vdash {t_1^\ast} \rightarrow {t_2^\ast} : \mathsf{ok}
 }{
@@ -6247,7 +6161,7 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C{.}\mathsf{tags}{}[x] \approx \mathsf{func}~({t^\ast} \rightarrow \epsilon)
+C{.}\mathsf{tags}{}[x] \approx \mathsf{func}~{t^\ast} \rightarrow \epsilon
  \qquad
 C \vdash {t^\ast} \leq C{.}\mathsf{labels}{}[l]
 }{
@@ -6260,7 +6174,7 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C{.}\mathsf{tags}{}[x] \approx \mathsf{func}~({t^\ast} \rightarrow \epsilon)
+C{.}\mathsf{tags}{}[x] \approx \mathsf{func}~{t^\ast} \rightarrow \epsilon
  \qquad
 C \vdash {t^\ast}~(\mathsf{ref}~\mathsf{exn}) \leq C{.}\mathsf{labels}{}[l]
 }{
@@ -6493,9 +6407,9 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C{.}\mathsf{types}{}[x] \approx \mathsf{struct}~{{\mathit{yt}}^\ast}
+C{.}\mathsf{types}{}[x] \approx \mathsf{struct}~{{\mathit{ft}}^\ast}
  \qquad
-{{\mathit{yt}}^\ast}{}[i] = {\mathsf{mut}^?}~{\mathit{zt}}
+{{\mathit{ft}}^\ast}{}[i] = {\mathsf{mut}^?}~{\mathit{zt}}
  \qquad
 {{\mathit{sx}}^?} = \epsilon \Leftrightarrow {\mathit{zt}} = {\mathrm{unpack}}({\mathit{zt}})
 }{
@@ -6508,9 +6422,9 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C{.}\mathsf{types}{}[x] \approx \mathsf{struct}~{{\mathit{yt}}^\ast}
+C{.}\mathsf{types}{}[x] \approx \mathsf{struct}~{{\mathit{ft}}^\ast}
  \qquad
-{{\mathit{yt}}^\ast}{}[i] = \mathsf{mut}~{\mathit{zt}}
+{{\mathit{ft}}^\ast}{}[i] = \mathsf{mut}~{\mathit{zt}}
 }{
 C \vdash \mathsf{struct{.}set}~x~i : (\mathsf{ref}~\mathsf{null}~x)~{\mathrm{unpack}}({\mathit{zt}}) \rightarrow \epsilon
 } \, {[\textsc{\scriptsize T{-}struct.set}]}
@@ -7663,7 +7577,7 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C{.}\mathsf{types}{}[x] \approx \mathsf{func}~({t_1^\ast} \rightarrow {t_2^\ast})
+C{.}\mathsf{types}{}[x] \approx \mathsf{func}~{t_1^\ast} \rightarrow {t_2^\ast}
  \qquad
 (C \vdash {\mathit{local}} : {{\mathit{lt}}})^\ast
  \qquad
@@ -7763,7 +7677,7 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C{.}\mathsf{funcs}{}[x] \approx \mathsf{func}~(\epsilon \rightarrow \epsilon)
+C{.}\mathsf{funcs}{}[x] \approx \mathsf{func}~\epsilon \rightarrow \epsilon
 }{
 C \vdash \mathsf{start}~x : \mathsf{ok}
 } \, {[\textsc{\scriptsize T{-}start}]}
@@ -9744,7 +9658,7 @@ $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-{{\mathrm{blocktype}}}_{z}(x) & = & {\mathit{ft}} & \quad \mbox{if}~ z{.}\mathsf{types}{}[x] \approx \mathsf{func}~{\mathit{ft}} \\
+{{\mathrm{blocktype}}}_{z}(x) & = & {t_1^\ast} \rightarrow {t_2^\ast} & \quad \mbox{if}~ z{.}\mathsf{types}{}[x] \approx \mathsf{func}~{t_1^\ast} \rightarrow {t_2^\ast} \\
 {{\mathrm{blocktype}}}_{z}({t^?}) & = & \epsilon \rightarrow {t^?} \\
 \end{array}
 $$
@@ -9856,7 +9770,7 @@ $$
 \quad
 \begin{array}[t]{@{}l@{}}
 \mbox{if}~ z{.}\mathsf{funcs}{}[a] = {\mathit{fi}} \\
-{\land}~ {\mathit{fi}}{.}\mathsf{type} \approx \mathsf{func}~({t_1^{n}} \rightarrow {t_2^{m}}) \\
+{\land}~ {\mathit{fi}}{.}\mathsf{type} \approx \mathsf{func}~{t_1^{n}} \rightarrow {t_2^{m}} \\
 {\land}~ {\mathit{fi}}{.}\mathsf{code} = \mathsf{func}~x~{(\mathsf{local}~t)^\ast}~({{\mathit{instr}}^\ast}) \\
 {\land}~ f = \{ \begin{array}[t]{@{}l@{}}
 \mathsf{locals}~{{\mathit{val}}^{n}}~{({{\mathrm{default}}}_{t})^\ast},\; \mathsf{module}~{\mathit{fi}}{.}\mathsf{module} \}\end{array} \\
@@ -9882,7 +9796,7 @@ $$
 {[\textsc{\scriptsize E{-}return\_call\_ref{-}frame{-}null}]} \quad & z ; ({{\mathsf{frame}}_{k}}{\{ f \}}~{{\mathit{val}}^\ast}~(\mathsf{ref{.}null}~{\mathit{ht}})~(\mathsf{return\_call\_ref}~y)~{{\mathit{instr}}^\ast}) & \hookrightarrow & \mathsf{trap} \\
 {[\textsc{\scriptsize E{-}return\_call\_ref{-}frame{-}addr}]} \quad & z ; ({{\mathsf{frame}}_{k}}{\{ f \}}~{{\mathit{val}'}^\ast}~{{\mathit{val}}^{n}}~(\mathsf{ref{.}func}~a)~(\mathsf{return\_call\_ref}~y)~{{\mathit{instr}}^\ast}) & \hookrightarrow & {{\mathit{val}}^{n}}~(\mathsf{ref{.}func}~a)~(\mathsf{call\_ref}~y) &  \\
 &&& \multicolumn{2}{@{}l@{}}{\quad
-\quad \mbox{if}~ z{.}\mathsf{funcs}{}[a]{.}\mathsf{type} \approx \mathsf{func}~({t_1^{n}} \rightarrow {t_2^{m}})
+\quad \mbox{if}~ z{.}\mathsf{funcs}{}[a]{.}\mathsf{type} \approx \mathsf{func}~{t_1^{n}} \rightarrow {t_2^{m}}
 } \\
 \end{array}
 $$
@@ -9913,7 +9827,7 @@ $$
 \begin{array}[t]{@{}lrcl@{}l@{}}
 {[\textsc{\scriptsize E{-}throw}]} \quad & z ; {{\mathit{val}}^{n}}~(\mathsf{throw}~x) & \hookrightarrow & z{}[{.}\mathsf{exns} \mathrel{{=}{\oplus}} {\mathit{exn}}] ; (\mathsf{ref{.}exn}~a)~\mathsf{throw\_ref} & \quad
 \begin{array}[t]{@{}l@{}}
-\mbox{if}~ z{.}\mathsf{tags}{}[x]{.}\mathsf{type} \approx \mathsf{func}~({t^{n}} \rightarrow \epsilon) \\
+\mbox{if}~ z{.}\mathsf{tags}{}[x]{.}\mathsf{type} \approx \mathsf{func}~{t^{n}} \rightarrow \epsilon \\
 {\land}~ a = {|z{.}\mathsf{exns}|} \\
 {\land}~ {\mathit{exn}} = \{ \begin{array}[t]{@{}l@{}}
 \mathsf{tag}~z{.}\mathsf{tags}{}[x],\; \mathsf{fields}~{{\mathit{val}}^{n}} \}\end{array} \\
@@ -11255,7 +11169,7 @@ $$
  \multicolumn{4}{@{}l@{}}{\quad
 \quad
 \begin{array}[t]{@{}l@{}}
-\mbox{if}~ s{.}\mathsf{funcs}{}[{\mathit{funcaddr}}]{.}\mathsf{type} \approx \mathsf{func}~({t_1^\ast} \rightarrow {t_2^\ast}) \\
+\mbox{if}~ s{.}\mathsf{funcs}{}[{\mathit{funcaddr}}]{.}\mathsf{type} \approx \mathsf{func}~{t_1^\ast} \rightarrow {t_2^\ast} \\
 {\land}~ (s \vdash {\mathit{val}} : t_1)^\ast \\
 \end{array}
 } \\
@@ -11417,9 +11331,9 @@ $$
 & {\mathtt{storagetype}} & ::= & t{:}{\mathtt{valtype}} & \quad\Rightarrow\quad{} & t \\
 & & | & {\mathit{pt}}{:}{\mathtt{packtype}} & \quad\Rightarrow\quad{} & {\mathit{pt}} \\
 & {\mathtt{fieldtype}} & ::= & {\mathit{zt}}{:}{\mathtt{storagetype}}~~{\mathsf{mut}^?}{:}{\mathtt{mut}} & \quad\Rightarrow\quad{} & {\mathsf{mut}^?}~{\mathit{zt}} \\
-& {\mathtt{comptype}} & ::= & \mathtt{0x5E}~~{\mathit{yt}}{:}{\mathtt{fieldtype}} & \quad\Rightarrow\quad{} & \mathsf{array}~{\mathit{yt}} \\
-& & | & \mathtt{0x5F}~~{{\mathit{yt}}^\ast}{:}{\mathtt{list}}({\mathtt{fieldtype}}) & \quad\Rightarrow\quad{} & \mathsf{struct}~{{\mathit{yt}}^\ast} \\
-& & | & \mathtt{0x60}~~{t_1^\ast}{:}{\mathtt{resulttype}}~~{t_2^\ast}{:}{\mathtt{resulttype}} & \quad\Rightarrow\quad{} & \mathsf{func}~({t_1^\ast} \rightarrow {t_2^\ast}) \\
+& {\mathtt{comptype}} & ::= & \mathtt{0x5E}~~{\mathit{ft}}{:}{\mathtt{fieldtype}} & \quad\Rightarrow\quad{} & \mathsf{array}~{\mathit{ft}} \\
+& & | & \mathtt{0x5F}~~{{\mathit{ft}}^\ast}{:}{\mathtt{list}}({\mathtt{fieldtype}}) & \quad\Rightarrow\quad{} & \mathsf{struct}~{{\mathit{ft}}^\ast} \\
+& & | & \mathtt{0x60}~~{t_1^\ast}{:}{\mathtt{resulttype}}~~{t_2^\ast}{:}{\mathtt{resulttype}} & \quad\Rightarrow\quad{} & \mathsf{func}~{t_1^\ast} \rightarrow {t_2^\ast} \\
 & {\mathtt{subtype}} & ::= & \mathtt{0x4F}~~{x^\ast}{:}{\mathtt{list}}({\mathtt{typeidx}})~~{\mathit{ct}}{:}{\mathtt{comptype}} & \quad\Rightarrow\quad{} & \mathsf{sub}~\mathsf{final}~{x^\ast}~{\mathit{ct}} \\
 & & | & \mathtt{0x50}~~{x^\ast}{:}{\mathtt{list}}({\mathtt{typeidx}})~~{\mathit{ct}}{:}{\mathtt{comptype}} & \quad\Rightarrow\quad{} & \mathsf{sub}~{x^\ast}~{\mathit{ct}} \\
 & & | & {\mathit{ct}}{:}{\mathtt{comptype}} & \quad\Rightarrow\quad{} & \mathsf{sub}~\mathsf{final}~\epsilon~{\mathit{ct}} \\
@@ -12373,7 +12287,7 @@ $$
 \end{array}
 $$
 
-$\boxed{{\mathit{context}} \vdash {{\mathit{instr}}^\ast} : {\mathit{functype}}}$
+$\boxed{{\mathit{context}} \vdash {{\mathit{instr}}^\ast} : {\mathit{instrtype}}}$
 
 $$
 \begin{array}{@{}c@{}}\displaystyle

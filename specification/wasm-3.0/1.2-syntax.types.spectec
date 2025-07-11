@@ -116,14 +116,10 @@ syntax fin hint(show FINAL?) hint(macro "T%" "T%") = FINAL?
 
 syntax fieldtype  hint(desc "field type") = mut storagetype
 
-syntax functype   hint(desc "function type") = resulttype -> resulttype hint(macro "toF")
-syntax structtype hint(desc "structure type") = list(fieldtype)
-syntax arraytype  hint(desc "array type") = fieldtype
-
 syntax comptype hint(desc "composite type") hint(macro "%" "T%") =
-  | STRUCT structtype
-  | ARRAY arraytype
-  | FUNC functype
+  | STRUCT list(fieldtype)
+  | ARRAY fieldtype
+  | FUNC resulttype -> resulttype
 
 syntax subtype hint(desc "sub type") hint(macro "%" "T%") =
   | SUB fin typeuse* comptype
@@ -160,7 +156,7 @@ var at : addrtype
 var ct : comptype
 var dt : deftype
 var et : elemtype
-var ft : functype
+var ft : fieldtype
 var gt : globaltype
 var ht : heaptype
 ;; var it : instrtype  ;; defined in typing
@@ -175,7 +171,6 @@ var st : subtype
 var tt : tabletype
 var vt : vectype
 var xt : externtype
-var yt : fieldtype
 var zt : storagetype
 var ok : datatype
 
@@ -343,7 +338,6 @@ def $subst_tagtype(tagtype, typevar*, typeuse*) : tagtype             hint(show 
 def $subst_globaltype(globaltype, typevar*, typeuse*) : globaltype    hint(show %#`[%:=%]) hint(macro "%subst")
 def $subst_memtype(memtype, typevar*, typeuse*) : memtype             hint(show %#`[%:=%]) hint(macro "%subst")
 def $subst_tabletype(tabletype, typevar*, typeuse*) : tabletype       hint(show %#`[%:=%]) hint(macro "%subst")
-def $subst_functype(functype, typevar*, typeuse*) : functype          hint(show %#`[%:=%]) hint(macro "%subst")
 
 def $subst_externtype(externtype, typevar*, typeuse*) : externtype    hint(show %#`[%:=%]) hint(macro "%subst")
 def $subst_moduletype(moduletype, typevar*, typeuse*) : moduletype    hint(show %#`[%:=%]) hint(macro "%subst")
@@ -378,9 +372,9 @@ def $subst_storagetype(pt, tv*, tu*) = $subst_packtype(pt, tv*, tu*)
 
 def $subst_fieldtype((mut zt), tv*, tu*) = mut $subst_storagetype(zt, tv*, tu*)
 
-def $subst_comptype((STRUCT yt*), tv*, tu*) = STRUCT $subst_fieldtype(yt, tv*, tu*)*
-def $subst_comptype((ARRAY yt), tv*, tu*) = ARRAY $subst_fieldtype(yt, tv*, tu*)
-def $subst_comptype((FUNC ft), tv*, tu*) = FUNC $subst_functype(ft, tv*, tu*)
+def $subst_comptype((STRUCT ft*), tv*, tu*) = STRUCT $subst_fieldtype(ft, tv*, tu*)*
+def $subst_comptype((ARRAY ft), tv*, tu*) = ARRAY $subst_fieldtype(ft, tv*, tu*)
+def $subst_comptype((FUNC t_1* -> t_2*), tv*, tu*) = FUNC $subst_valtype(t_1, tv*, tu*)* -> $subst_valtype(t_2, tv*, tu*)*
 
 def $subst_subtype((SUB fin tu'* ct), tv*, tu*) =
   SUB fin $subst_typeuse(tu', tv*, tu*)* $subst_comptype(ct, tv*, tu*)
@@ -403,7 +397,6 @@ def $subst_tagtype(tu', tv*, tu*) = $subst_typeuse(tu', tv*, tu*)
 def $subst_globaltype((mut t), tv*, tu*) = mut $subst_valtype(t, tv*, tu*)
 def $subst_memtype((at lim PAGE), tv*, tu*) = at lim PAGE
 def $subst_tabletype((at lim rt), tv*, tu*) = at lim $subst_reftype(rt, tv*, tu*)
-def $subst_functype((t_1* -> t_2*), tv*, tu*) = $subst_valtype(t_1, tv*, tu*)* -> $subst_valtype(t_2, tv*, tu*)*
 
 def $subst_externtype((TAG jt), tv*, tu*) = TAG $subst_tagtype(jt, tv*, tu*)
 def $subst_externtype((GLOBAL gt), tv*, tu*) = GLOBAL $subst_globaltype(gt, tv*, tu*)
@@ -478,9 +471,6 @@ def $free_valtype(valtype) : free
 def $free_resulttype(resulttype) : free
 def $free_storagetype(storagetype) : free
 def $free_fieldtype(fieldtype) : free
-def $free_structtype(structtype) : free
-def $free_arraytype(arraytype) : free
-def $free_functype(functype) : free
 def $free_comptype(comptype) : free
 def $free_subtype(subtype) : free
 def $free_rectype(rectype) : free
@@ -537,16 +527,9 @@ def $free_storagetype(packtype) = $free_packtype(packtype)
 
 def $free_fieldtype(mut storagetype) = $free_storagetype(storagetype)
 
-def $free_functype(resulttype_1 -> resulttype_2) =
-  $free_resulttype(resulttype_1) ++ $free_resulttype(resulttype_2)
-
-def $free_structtype(fieldtype*) = $free_list($free_fieldtype(fieldtype)*)
-
-def $free_arraytype(fieldtype) = $free_fieldtype(fieldtype)
-
-def $free_comptype(STRUCT structtype) = $free_structtype(structtype)
-def $free_comptype(ARRAY arraytype) = $free_arraytype(arraytype)
-def $free_comptype(FUNC functype) = $free_functype(functype)
+def $free_comptype(STRUCT fieldtype*) = $free_list($free_fieldtype(fieldtype)*)
+def $free_comptype(ARRAY fieldtype) = $free_fieldtype(fieldtype)
+def $free_comptype(FUNC resulttype_1 -> resulttype_2) = $free_resulttype(resulttype_1) ++ $free_resulttype(resulttype_2)
 
 def $free_subtype(SUB fin typeuse* comptype) =
   $free_list($free_typeuse(typeuse)*) ++ $free_comptype(comptype)

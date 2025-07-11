@@ -318,29 +318,17 @@ and statify_fieldtype rts (FieldT (mut, st)) =
     let rts', st' = statify_storagetype rts st in
     rts', FieldT (mut, st')
 
-and statify_structtype rts (StructT fts) =
+and statify_comptype rts = function
+  | StructT fts ->
     let rts', fts' = statify_list statify_fieldtype rts fts in
     rts', StructT fts'
-
-and statify_arraytype rts (ArrayT ft) =
+  | ArrayT ft ->
     let rts', ft' = statify_fieldtype rts ft in
     rts', ArrayT ft'
-
-and statify_functype rts (FuncT (ts1, ts2)) =
+  | FuncT (ts1, ts2) ->
     let rts', ts1' = statify_list statify_valtype rts ts1 in
     let rts'', ts2' = statify_list statify_valtype rts' ts2 in
     rts'', FuncT (ts1', ts2')
-
-and statify_comptype rts = function
-  | StructCT st ->
-    let rts', st' = statify_structtype rts st in
-    rts', StructCT st'
-  | ArrayCT at ->
-    let rts', at' = statify_arraytype rts at in
-    rts', ArrayCT at'
-  | FuncCT ft ->
-    let rts', ft' = statify_functype rts ft in
-    rts', FuncCT ft'
 
 and statify_subtype rts (SubT (fin, uts, ct)) =
     let rts', uts' = statify_list statify_typeuse rts uts in
@@ -417,7 +405,7 @@ let value v =
   | Ref _ -> assert false
 
 let invoke dt vs at =
-  let dummy = RecT [SubT (Final, [], FuncCT (FuncT ([], [])))] in
+  let dummy = RecT [SubT (Final, [], FuncT ([], []))] in
   let rts0 = Lib.List32.init subject_type_idx (fun i -> dummy, (dummy, i)) in
   let rts, i = statify_deftype rts0 dt in
   List.map (fun (_, (rt, _)) -> rt @@ at) (Lib.List32.drop subject_type_idx rts),
@@ -589,7 +577,7 @@ let i32 = NumT I32T
 let anyref = RefT (Null, AnyHT)
 let eqref = RefT (Null, EqHT)
 let func_rectype ts1 ts2 at =
-  RecT [SubT (Final, [], FuncCT (FuncT (ts1, ts2)))] @@ at
+  RecT [SubT (Final, [], FuncT (ts1, ts2))] @@ at
 
 let wrap item_name wrap_action wrap_assertion at =
   let itypes, idesc, action = wrap_action at in
@@ -654,7 +642,7 @@ let is_js_globaltype = function
   | GlobalT (mut, t) -> is_js_valtype t && mut = Cons
 
 let is_js_functype = function
-  | FuncT (ts1, ts2) -> List.for_all is_js_valtype (ts1 @ ts2)
+  | (ts1, ts2) -> List.for_all is_js_valtype (ts1 @ ts2)
 
 
 (* Script conversion *)
@@ -766,7 +754,7 @@ let of_action env act =
       "[" ^ String.concat ", " (List.map of_value vs) ^ "])",
     (match lookup_export env x_opt name act.at with
     | ExternFuncT (Def dt) ->
-      let FuncT (_, out) as ft = functype_of_comptype (expand_deftype dt) in
+      let (_, out) as ft = functype_of_comptype (expand_deftype dt) in
       if is_js_functype ft then
         None
       else

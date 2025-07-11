@@ -156,6 +156,8 @@ struct
     | RefT t -> reftype t
     | BotT -> assert false
 
+  let resulttype ts = vec valtype ts
+
   let packtype = function
     | I8T -> s7 (-0x08)
     | I16T -> s7 (-0x09)
@@ -167,21 +169,10 @@ struct
   let fieldtype = function
     | FieldT (mut, t) -> storagetype t; mutability mut
 
-  let structtype = function
-    | StructT fts -> vec fieldtype fts
-
-  let arraytype = function
-    | ArrayT ft -> fieldtype ft
-
-  let resulttype = vec valtype
-
-  let functype = function
-    | FuncT (ts1, ts2) -> resulttype ts1; resulttype ts2
-
   let comptype = function
-    | StructCT st -> s7 (-0x21); structtype st
-    | ArrayCT at -> s7 (-0x22); arraytype at
-    | FuncCT ft -> s7 (-0x20); functype ft
+    | StructT fts -> s7 (-0x21); vec fieldtype fts
+    | ArrayT ft -> s7 (-0x22); fieldtype ft
+    | FuncT (ts1, ts2) -> s7 (-0x20); resulttype ts1; resulttype ts2
 
   let subtype = function
     | SubT (Final, [], ct) -> comptype ct

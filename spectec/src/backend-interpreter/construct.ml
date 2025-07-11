@@ -124,10 +124,12 @@ and al_to_resulttype: value -> resulttype = function
   v -> al_to_list al_to_valtype v
 
 and al_to_comptype: value -> comptype = function
-  | CaseV ("STRUCT", [ ftl ]) -> StructCT (StructT (al_to_list al_to_fieldtype ftl))
-  | CaseV ("ARRAY", [ ft ]) -> ArrayCT (ArrayT (al_to_fieldtype ft))
-  | CaseV ("FUNC", [ CaseV ("->", [ rt1; rt2 ]) ]) ->
-    FuncCT (FuncT (al_to_resulttype rt1, (al_to_resulttype rt2)))
+  | CaseV ("STRUCT", [ ftl ]) -> StructT (al_to_list al_to_fieldtype ftl)
+  | CaseV ("ARRAY", [ ft ]) -> ArrayT (al_to_fieldtype ft)
+  | CaseV ("FUNC", [ CaseV ("->", [ rt1; rt2 ]) ]) when !version <= 2 ->
+    FuncT (al_to_resulttype rt1, (al_to_resulttype rt2))
+  | CaseV ("FUNC", [ rt1; rt2 ]) ->
+    FuncT (al_to_resulttype rt1, (al_to_resulttype rt2))
   | v -> error_value "comptype" v
 
 and al_to_subtype: value -> subtype = function
@@ -1143,10 +1145,13 @@ and al_of_fieldtype = function
 and al_of_resulttype rt = al_of_list al_of_valtype rt
 
 and al_of_comptype = function
-  | StructCT (StructT ftl) -> CaseV ("STRUCT", [ al_of_list al_of_fieldtype ftl ])
-  | ArrayCT (ArrayT ft) -> CaseV ("ARRAY", [ al_of_fieldtype ft ])
-  | FuncCT (FuncT (rt1, rt2)) ->
-    CaseV ("FUNC", [ CaseV ("->", [ al_of_resulttype rt1; al_of_resulttype rt2 ])])
+  | StructT ftl -> CaseV ("STRUCT", [ al_of_list al_of_fieldtype ftl ])
+  | ArrayT ft -> CaseV ("ARRAY", [ al_of_fieldtype ft ])
+  | FuncT (rt1, rt2) ->
+    if !version <= 2 then
+      CaseV ("FUNC", [ CaseV ("->", [ al_of_resulttype rt1; al_of_resulttype rt2 ])])
+    else
+      CaseV ("FUNC", [ al_of_resulttype rt1; al_of_resulttype rt2 ])
 
 and al_of_subtype = function
   | SubT (fin, tul, st) ->
