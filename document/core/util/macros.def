@@ -316,7 +316,7 @@
 .. |tabletype| mathdef:: \xref{syntax/types}{syntax-tabletype}{\X{tabletype}}
 .. |addrtype| mathdef:: \xref{syntax/types}{syntax-addrtype}{\X{addrtype}}
 .. |memtype| mathdef:: \xref{syntax/types}{syntax-memtype}{\X{memtype}}
-.. |tagtype| mathdef:: \xref{valid/conventions}{syntax-tagtype}{\X{tagtype}}
+.. |tagtype| mathdef:: \xref{syntax/types}{syntax-tagtype}{\X{tagtype}}
 .. |elemtype| mathdef:: \xref{syntax/types}{syntax-elemtype}{\X{elemtype}}
 .. |datatype| mathdef:: \xref{syntax/types}{syntax-datatype}{\X{datatype}}
 .. |externtype| mathdef:: \xref{syntax/types}{syntax-externtype}{\X{externtype}}
@@ -807,7 +807,7 @@
 .. |memarg| mathdef:: \xref{syntax/instructions}{syntax-memarg}{\X{memarg}}
 .. |laneidx| mathdef:: \xref{syntax/instructions}{syntax-laneidx}{\X{laneidx}}
 
-.. |blocktype| mathdef:: \xref{syntax/instructions}{syntax-blocktype}{\X{blocktype}}
+.. |blocktype| mathdef:: \xref{syntax/types}{syntax-blocktype}{\X{blocktype}}
 
 .. |instr| mathdef:: \xref{syntax/instructions}{syntax-instr}{\X{instr}}
 .. |catch| mathdef:: \xref{syntax/instructions}{syntax-catch}{\X{catch}}
