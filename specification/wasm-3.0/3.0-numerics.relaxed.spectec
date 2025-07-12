@@ -15,12 +15,12 @@ def $relaxed4(i, syntax X, X_1, X_2, X_3, X_4) = (X_1 X_2 X_3 X_4)[i]  -- if $ND
 def $relaxed4(i, syntax X, X_1, X_2, X_3, X_4) = (X_1 X_2 X_3 X_4)[0]  -- otherwise
 
 
-def $R_fmadd : relaxed2
-def $R_fmin : relaxed4
-def $R_fmax : relaxed4
-def $R_idot : relaxed2
-def $R_iq15mulr : relaxed2
-def $R_trunc_u : relaxed4
-def $R_trunc_s : relaxed2
-def $R_swizzle : relaxed2
-def $R_laneselect : relaxed2
+def $R_fmadd : relaxed2      hint(builtin)
+def $R_fmin : relaxed4       hint(builtin)
+def $R_fmax : relaxed4       hint(builtin)
+def $R_idot : relaxed2       hint(builtin)
+def $R_iq15mulr : relaxed2   hint(builtin)
+def $R_trunc_u : relaxed4    hint(builtin)
+def $R_trunc_s : relaxed2    hint(builtin)
+def $R_swizzle : relaxed2    hint(builtin)
+def $R_laneselect : relaxed2 hint(builtin)

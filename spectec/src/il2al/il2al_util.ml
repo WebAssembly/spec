@@ -142,8 +142,7 @@ let rec typ_to_var_name ty =
   match ty.it with
   (* TODO: guess this for "var" in el? *)
   | Il.Ast.VarT (id, args) ->
-    let hintdefs = !hintdefs in
-    (match find_hint id hintdefs with
+    (match find_hint id !hintdefs with
     | None -> id.it
     | Some hint -> let _, t = subst_hint hint.hintexp args in t
     )

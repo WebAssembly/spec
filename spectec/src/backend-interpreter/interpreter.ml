@@ -32,6 +32,22 @@ let try_with_error fname at stringifier f step =
   | Exception.FreeVar _) as e -> error at (prefix ^ Printexc.to_string e) (stringifier step)
   | Failure msg -> error at (prefix ^ msg) (stringifier step)
 
+let warn msg = print_endline ("warning: " ^ msg)
+
+
+(* Hints *)
+
+(* Try to find a hint `hintid` on a spectec function definition `fname`. *)
+let find_hint fname hintid =
+  let open Il.Ast in
+  let open Il2al.Il2al_util in
+  List.find_map (fun hintdef ->
+    match hintdef.it with
+    | DecH (id', hints) when fname = id'.it ->
+      List.find_opt (fun hint -> hint.hintid.it = hintid) hints
+    | _ -> None
+  ) !hintdefs
+
 
 (* Matrix operations *)
 
@@ -257,7 +273,7 @@ and eval_expr env expr =
     let el = remove_typargs al in
     (* TODO: refactor numerics function name *)
     let args = List.map (eval_arg env) el in
-    (match call_func ("inverse_of_"^fname') args  with
+    (match call_func ("inverse_of_"^fname') args with
     | Some v -> v
     | _ -> raise (Exception.MissingReturnValue fname)
     )
@@ -753,14 +769,26 @@ and create_context (name: string) (args: value list) : AlContext.mode =
   AlContext.al (name, params, body, env, 0)
 
 and call_func (name: string) (args: value list) : value option =
-  (* Function *)
-  if bound_func name then
-    [create_context name args]
-    |> run
-    |> AlContext.get_return_value
-  (* Numerics *)
-  else if Numerics.mem name then
-    Some (Numerics.call_numerics name args)
+   let builtin_name, is_builtin =
+     match find_hint name "builtin" with
+     | None -> name, false
+     | Some hint ->
+       match hint.hintexp.it with
+       | SeqE [] -> name, true         (* hint(builtin) *)
+       | TextE fname -> fname, true    (* hint(builtin "g") *)
+       | _ -> failwith (sprintf "ill-formed builtin hint for definition `%s`" name)
+   in
+   (* Function *)
+   if bound_func name && not is_builtin then
+     [create_context name args]
+     |> run
+     |> AlContext.get_return_value
+   (* Numerics *)
+   else if Numerics.mem builtin_name then (
+     if not (is_builtin || String.starts_with ~prefix: "inverse_of_" name) then
+       warn (sprintf "Numeric function `%s` is not defined within SpecTec, consider adding a hint(builtin)" name);
+     Some (Numerics.call_numerics builtin_name args)
+   )
   (* Relation *)
   else if Relation.mem name then (
     if bound_rule name then

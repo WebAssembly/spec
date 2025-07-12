@@ -8011,10 +8011,6 @@ $$
 \end{array}
 $$
 
-\vspace{1ex}
-
-\vspace{1ex}
-
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
 {{{{\mathrm{iextend}}}_{N, M}^{\mathsf{u}}}}{(i)} & = & i \mathbin{\mathrm{mod}} {2^{M}} \\
@@ -8041,10 +8037,6 @@ $$
 {{\mathrm{imul}}}_{N}(i_1, i_2) & = & (i_1 \cdot i_2) \mathbin{\mathrm{mod}} {2^{N}} \\
 \end{array}
 $$
-
-\vspace{1ex}
-
-\vspace{1ex}
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
