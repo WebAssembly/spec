@@ -170,23 +170,6 @@ $${relation-ignore: Expand Expand_use}
 $${definition-ignore: expanddt}
 
 
-.. index:: ! tag, tag type, function type, exception tag
-   pair: abstract syntax; tag
-   pair: tag; exception tag
-   single: tag; type; exception
-.. _syntax-tagtype:
-
-Tag Types
-~~~~~~~~~
-
-*Tag types* classify the signature of :ref:`tags <syntax-tag>` with a :ref:`defined type <syntax-deftype>` that denotes a :ref:`function type <syntax-functype>`.
-
-.. math::
-   \begin{array}{llll}
-   \production{tag type} &\tagtype &::=& \deftype \\
-   \end{array}
-
-
 .. index:: ! instruction type, value type, result type, instruction, local, local index
    pair: abstract syntax; instruction type
    pair: instruction; type
