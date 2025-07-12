@@ -9,6 +9,9 @@
 
 def $lanes_(shape, vec_(V128)) : lane_($lanetype(shape))*
 
+;; TODO(3, rossberg): implement numerics internally
+def $lanes_ hint(builtin)
+
 def $invlanes_(shape, lane_($lanetype(shape))*) : vec_(V128)
     hint(show $lanes_(%)^(-1)#((%)))
 def $invlanes_(sh, c*) = vc  -- if c* = $lanes_(sh, vc)

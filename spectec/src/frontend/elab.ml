@@ -2410,6 +2410,13 @@ let check_dots env =
   ) env.grams
 
 
+let populate_hint env hd' =
+  match hd'.it with
+  | Il.TypH (id, _) -> ignore (find "syntax type" env.typs id)
+  | Il.RelH (id, _) -> ignore (find "relation" env.rels id)
+  | Il.DecH (id, _) -> ignore (find "definition" env.defs id)
+  | Il.GramH (id, _) -> ignore (find "grammar" env.grams id)
+
 let populate_def env d' : Il.def =
   Debug.(log_in "el.populate_def" dline);
   Debug.(log_in_at "el.populate_def" d'.at (Fun.const ""));
@@ -2431,9 +2438,8 @@ let populate_def env d' : Il.def =
   | Il.GramD (id, ps', t', []) ->
     let _, _, _, prods' = find "grammar" env.grams id in
     Il.GramD (id, ps', t', prods') $ d'.at
-  | Il.HintD _ -> d'
-  | _ ->
-    assert false
+  | Il.HintD hd' -> populate_hint env hd'; d'
+  | _ -> assert false
 
 
 (* Scripts *)

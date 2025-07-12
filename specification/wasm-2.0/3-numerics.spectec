@@ -64,6 +64,24 @@ def $fbytes_(N, fN(N)) : byte*                       hint(show $bytes_(F#%,%))
 def $nbytes_(numtype, num_(numtype)) : byte*         hint(show $bytes_(%,%))
 def $vbytes_(vectype, vec_(vectype)) : byte*         hint(show $bytes_(%,%))
 
+;; TODO(3, rossberg): implement numerics internally
+def $wrap__        hint(builtin)
+def $extend__      hint(builtin)
+def $trunc__       hint(builtin)
+def $trunc_sat__   hint(builtin)
+def $demote__      hint(builtin)
+def $promote__     hint(builtin)
+def $convert__     hint(builtin)
+def $narrow__      hint(builtin)
+def $reinterpret__ hint(builtin)
+
+def $ibits_  hint(builtin)
+def $fbits_  hint(builtin)
+def $ibytes_ hint(builtin)
+def $fbytes_ hint(builtin)
+def $nbytes_ hint(builtin)
+def $vbytes_ hint(builtin)
+
 
 def $invibytes_(N, byte*) : iN(N)
 def $invfbytes_(N, byte*) : fN(N)
@@ -108,29 +126,62 @@ def $isub_sat_(N, sx, iN(N), iN(N)) : iN(N)     hint(show $isub__sat_(%)^(%)#((%
 def $iavgr_(N, sx, iN(N), iN(N)) : iN(N)        hint(show $iavgr_(%)^(%)#((%,%)))
 def $iq15mulr_sat_(N, sx, iN(N), iN(N)) : iN(N) hint(show $iq15mulr__sat_(%)^(%)#((%,%)))
 
-;; TODO(3, rossberg): implement numerics internally
 def $iadd_(N, i_1, i_2) = $((i_1 + i_2) \ 2^N)
 def $isub_(N, i_1, i_2) = $((2^N + i_1 - i_2) \ 2^N)
 def $imul_(N, i_1, i_2) = $((i_1 * i_2) \ 2^N)
+
+def $idiv_ hint(builtin)
+def $irem_ hint(builtin)
+def $inot_ hint(builtin)
+def $irev_ hint(builtin)
+def $iand_ hint(builtin)
+def $iandnot_ hint(builtin)
+def $ior_  hint(builtin)
+def $ixor_ hint(builtin)
+def $ishl_ hint(builtin)
+def $ishr_ hint(builtin)
+def $irotl_ hint(builtin)
+def $irotr_ hint(builtin)
+def $iclz_  hint(builtin)
+def $ictz_  hint(builtin)
+def $ipopcnt_ hint(builtin)
+
 def $ieqz_(N, i_1) = $bool(i_1 = 0)
 def $inez_(N, i_1) = $bool(i_1 =/= 0)
+
 def $ieq_(N, i_1, i_2) = $bool(i_1 = i_2)
 def $ine_(N, i_1, i_2) = $bool(i_1 =/= i_2)
+
 def $ilt_(N, U, i_1, i_2) = $bool(i_1 < i_2)
 def $ilt_(N, S, i_1, i_2) = $bool($signed_(N, i_1) < $signed_(N, i_2))
+
 def $igt_(N, U, i_1, i_2) = $bool(i_1 > i_2)
 def $igt_(N, S, i_1, i_2) = $bool($signed_(N, i_1) > $signed_(N, i_2))
+
 def $ile_(N, U, i_1, i_2) = $bool(i_1 <= i_2)
 def $ile_(N, S, i_1, i_2) = $bool($signed_(N, i_1) <= $signed_(N, i_2))
+
 def $ige_(N, U, i_1, i_2) = $bool(i_1 >= i_2)
 def $ige_(N, S, i_1, i_2) = $bool($signed_(N, i_1) >= $signed_(N, i_2))
+
+def $ibitselect_ hint(builtin)
+
 def $iabs_(N, i_1) = i_1             -- if $signed_(N, i_1) >= 0
 def $iabs_(N, i_1) = $ineg_(N, i_1)  -- otherwise
+
+def $imin_ hint(builtin)
+def $imax_ hint(builtin)
+
 def $ineg_(N, i_1) = $invsigned_(N, $(- $signed_(N, i_1)))
+
 def $iadd_sat_(N, U, i_1, i_2) = $sat_u_(N, $(i_1 + i_2))
 def $iadd_sat_(N, S, i_1, i_2) = $invsigned_(N, $sat_s_(N, $($signed_(N, i_1) + $signed_(N, i_2))))
+
 def $isub_sat_(N, U, i_1, i_2) = $sat_u_(N, $(i_1 - i_2))
 def $isub_sat_(N, S, i_1, i_2) = $invsigned_(N, $sat_s_(N, $($signed_(N, i_1) - $signed_(N, i_2))))
+
+def $iavgr_ hint(builtin)
+def $iq15mulr_sat_ hint(builtin)
 
 def $fadd_(N, fN(N), fN(N)) : fN(N)*
 def $fsub_(N, fN(N), fN(N)) : fN(N)*
@@ -154,6 +205,31 @@ def $flt_(N, fN(N), fN(N)) : u32
 def $fgt_(N, fN(N), fN(N)) : u32
 def $fle_(N, fN(N), fN(N)) : u32
 def $fge_(N, fN(N), fN(N)) : u32
+
+def $fadd_  hint(builtin)
+def $fsub_  hint(builtin)
+def $fmul_  hint(builtin)
+def $fdiv_  hint(builtin)
+def $fmin_  hint(builtin)
+def $fmax_  hint(builtin)
+def $fpmin_ hint(builtin)
+def $fpmax_ hint(builtin)
+
+def $fcopysign_ hint(builtin)
+def $fabs_      hint(builtin)
+def $fneg_      hint(builtin)
+def $fsqrt_     hint(builtin)
+def $fceil_     hint(builtin)
+def $ffloor_    hint(builtin)
+def $ftrunc_    hint(builtin)
+def $fnearest_  hint(builtin)
+
+def $feq_ hint(builtin)
+def $fne_ hint(builtin)
+def $flt_ hint(builtin)
+def $fgt_ hint(builtin)
+def $fle_ hint(builtin)
+def $fge_ hint(builtin)
 
 def $binop_(Inn, ADD, iN_1, iN_2) = $iadd_($sizenn(Inn), iN_1, iN_2)
 def $binop_(Inn, SUB, iN_1, iN_2) = $isub_($sizenn(Inn), iN_1, iN_2)
@@ -229,6 +305,7 @@ def $unpacknum_(packtype, c) = $extend__($psize(packtype), $size($unpack(packtyp
 ;; Vectors
 
 def $lanes_(shape, vec_(V128)) : lane_($lanetype(shape))*
+def $lanes_ hint(builtin)
 
 def $invlanes_(shape, lane_($lanetype(shape))*) : vec_(V128)
     hint(show $lanes^(-1)#_%#(%,%))

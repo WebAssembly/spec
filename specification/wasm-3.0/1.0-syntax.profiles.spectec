@@ -2,4 +2,4 @@
 ;; Profiles
 ;;
 
-def $ND : bool  ;; non-determinism
+def $ND : bool hint(builtin)  ;; non-determinism
