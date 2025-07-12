@@ -182,7 +182,7 @@ In a first approximation,
 an atom is either an uppercase identifier,
 or one of various recognised *symbolic* atoms,
 such as `|-`, `:`, or `->`,
-or pairs of maching brackets escaped with `` ` ``.
+or pairs of matching brackets escaped with `` ` ``.
 Some symbolic atoms have infix operator status
 (with hard-coded "natural" precedences),
 affecting the way they are parsed;

@@ -16,10 +16,10 @@ $${definition-prose: signed_}
 
 $${definition: signed_}
 
-.. _def-invsigned_:
+.. _def-inv_signed_:
 
-$${definition-prose: invsigned_}
+$${definition-prose: inv_signed_}
 
 \
 
-$${definition: invsigned_}
+$${definition: inv_signed_}

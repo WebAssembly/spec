@@ -727,7 +727,7 @@ rule Step_pure/vshuffle:
 
 rule Step_pure/vsplat:
   (CONST $lunpack(Lnn) c_1) (VSPLAT (Lnn X M))  ~>  (VCONST V128 c)
-  -- if c = $invlanes_(Lnn X M, $lpacknum_(Lnn, c_1)^M)
+  -- if c = $inv_lanes_(Lnn X M, $lpacknum_(Lnn, c_1)^M)
 
 
 rule Step_pure/vextract_lane-num:
@@ -742,7 +742,7 @@ rule Step_pure/vextract_lane-pack:
 rule Step_pure/vreplace_lane:
   (VCONST V128 c_1) (CONST $lunpack(Lnn) c_2) (VREPLACE_LANE (Lnn X M) i)  ~>  (VCONST V128 c)
   ---- ----
-  -- if c = $invlanes_(Lnn X M, $lanes_(Lnn X M, c_1)[[i] = $lpacknum_(Lnn, c_2)])
+  -- if c = $inv_lanes_(Lnn X M, $lanes_(Lnn X M, c_1)[[i] = $lpacknum_(Lnn, c_2)])
 
 
 rule Step_pure/vextunop:
@@ -824,7 +824,7 @@ rule Step/table.grow-succeed:
   -- if ti = $growtable($table(z, x), n, ref)
 
 rule Step/table.grow-fail:
-  z; ref (CONST at n) (TABLE.GROW x)  ~>  z; (CONST at $invsigned_($size(at), $(-1)))
+  z; ref (CONST at n) (TABLE.GROW x)  ~>  z; (CONST at $inv_signed_($size(at), $(-1)))
 
 
 rule Step_read/table.fill-oob:
@@ -927,7 +927,7 @@ rule Step_read/vload-pack-val:
   z; (CONST at i) (VLOAD V128 (SHAPE M X K _ sx) x ao)  ~>  (VCONST V128 c)
   ---- ----
   -- (if $ibytes_(M, j) = $mem(z, x).BYTES[i + ao.OFFSET + k * M/8 : M/8])^(k<K)
-  -- if c = $invlanes_(Jnn X K, $extend__(M, $lsizenn(Jnn), sx, j)^K)
+  -- if c = $inv_lanes_(Jnn X K, $extend__(M, $lsizenn(Jnn), sx, j)^K)
      /\ $lsizenn(Jnn) = $(M * 2)
 
 
@@ -941,7 +941,7 @@ rule Step_read/vload-splat-val:
   -- if $ibytes_(N, j) = $mem(z, x).BYTES[i + ao.OFFSET : N/8]
   -- if N = $lsize(Jnn)  ;; TODO(2, rossberg): relate implicitly
   -- if M = $(128/N)
-  -- if c = $invlanes_(Jnn X M, j^M)
+  -- if c = $inv_lanes_(Jnn X M, j^M)
 
 
 rule Step_read/vload-zero-oob:
@@ -965,7 +965,7 @@ rule Step_read/vload_lane-val:
   -- if $ibytes_(N, k) = $mem(z, x).BYTES[i + ao.OFFSET : N/8]
   -- if N = $lsize(Jnn)  ;; TODO(2, rossberg): relate implicitly
   -- if M = $($vsize(V128)/N)
-  -- if c = $invlanes_(Jnn X M, $lanes_(Jnn X M, c_1)[[j] = k])
+  -- if c = $inv_lanes_(Jnn X M, $lanes_(Jnn X M, c_1)[[j] = k])
 
 
 rule Step/store-num-oob:
@@ -1022,7 +1022,7 @@ rule Step/memory.grow-succeed:
   -- if mi = $growmem($mem(z, x), n)
 
 rule Step/memory.grow-fail:
-  z; (CONST at n) (MEMORY.GROW x)  ~>  z; (CONST at $invsigned_($size(at), $(-1)))
+  z; (CONST at n) (MEMORY.GROW x)  ~>  z; (CONST at $inv_signed_($size(at), $(-1)))
 
 
 rule Step_read/memory.fill-oob:

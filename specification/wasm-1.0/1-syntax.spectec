@@ -138,7 +138,7 @@ var xt : externtype
 
 ;; Constants
 
-def $size(valtype) : nat  hint(partial) hint(show |%|)
+def $size(valtype) : nat  hint(show |%|) hint(partial)
 
 syntax val_(valtype)
 syntax val_(Inn) = iN($size(Inn))

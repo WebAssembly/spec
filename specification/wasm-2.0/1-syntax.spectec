@@ -201,10 +201,10 @@ var xt : externtype
 
 ;; Constants
 
-def $size(valtype) : nat      hint(partial) hint(show |%|)
-def $isize(Inn) : nat         hint(show |%|)
+def $size(valtype) : nat      hint(show |%|) hint(partial) hint(inverse $inv_size)
+def $isize(Inn) : nat         hint(show |%|) hint(inverse $inv_isize)
 def $psize(packtype) : nat    hint(show |%|)
-def $lsize(lanetype) : nat    hint(show |%|)
+def $lsize(lanetype) : nat    hint(show |%|) hint(inverse $inv_lsize)
 def $lanetype(shape) : lanetype
 
 def $sizenn(numtype) : nat     hint(show N)   hint(macro none)  ;; HACK!
@@ -220,6 +220,15 @@ def $lsizenn2(lanetype) : nat  hint(show N_2) hint(macro none)  ;; HACK!
 def $lsizenn(lt) = $lsize(lt)
 def $lsizenn1(lt) = $lsize(lt)
 def $lsizenn2(lt) = $lsize(lt)
+
+def $inv_size(nat) : valtype
+def $inv_isize(nat) : Inn
+def $inv_lsize(nat) : lanetype
+
+def $inv_size  hint(builtin)
+def $inv_isize hint(builtin)
+def $inv_lsize hint(builtin)
+
 
 syntax num_(numtype)
 syntax num_(Inn) = iN($sizenn(Inn))

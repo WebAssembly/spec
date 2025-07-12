@@ -1407,11 +1407,23 @@ warning: definition `inst_valtype` was never spliced
 warning: definition `instantiate` was never spliced
 warning: definition `instrdots` was never spliced
 warning: definition `int` was never spliced
-warning: definition `invfbytes_` was never spliced
-warning: definition `invibytes_` was never spliced
-warning: definition `invlanes_` was never spliced
+warning: definition `inv_cbytes_` was never spliced
+warning: definition `inv_concat_` was never spliced
+warning: definition `inv_concatn_` was never spliced
+warning: definition `inv_fbits_` was never spliced
+warning: definition `inv_fbytes_` was never spliced
+warning: definition `inv_ibits_` was never spliced
+warning: definition `inv_ibytes_` was never spliced
+warning: definition `inv_lanes_` was never spliced
+warning: definition `inv_lsize` was never spliced
+warning: definition `inv_lsizenn` was never spliced
+warning: definition `inv_nbytes_` was never spliced
+warning: definition `inv_signed_` was never spliced
+warning: definition `inv_size` was never spliced
+warning: definition `inv_sizenn` was never spliced
+warning: definition `inv_vbytes_` was never spliced
+warning: definition `inv_zbytes_` was never spliced
 warning: definition `invoke` was never spliced
-warning: definition `invsigned_` was never spliced
 warning: definition `ior_` was never spliced
 warning: definition `ipopcnt_` was never spliced
 warning: definition `iq15mulr_sat_` was never spliced
@@ -2202,11 +2214,8 @@ warning: definition prose `inst_reftype` was never spliced
 warning: definition prose `inst_tabletype` was never spliced
 warning: definition prose `inst_valtype` was never spliced
 warning: definition prose `instantiate` was never spliced
-warning: definition prose `invfbytes_` was never spliced
-warning: definition prose `invibytes_` was never spliced
-warning: definition prose `invlanes_` was never spliced
+warning: definition prose `inv_signed_` was never spliced
 warning: definition prose `invoke` was never spliced
-warning: definition prose `invsigned_` was never spliced
 warning: definition prose `irelaxed_swizzle_lane_` was never spliced
 warning: definition prose `isub_` was never spliced
 warning: definition prose `isub_sat_` was never spliced

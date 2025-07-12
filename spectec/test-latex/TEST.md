@@ -3008,8 +3008,6 @@ $$
 \end{array}
 $$
 
-\vspace{1ex}
-
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
 N & = & {|{\mathit{nt}}|} \\
@@ -7928,20 +7926,6 @@ $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-{{{{\mathrm{bytes}}}_{{\mathsf{i}}{N}}^{{-1}}}}{({b^\ast})} & = & n & \quad \mbox{if}~ {{\mathrm{bytes}}}_{{\mathsf{i}}{N}}(n) = {b^\ast} \\
-\end{array}
-$$
-
-$$
-\begin{array}[t]{@{}lcl@{}l@{}}
-{{{{\mathrm{bytes}}}_{{\mathsf{f}}{N}}^{{-1}}}}{({b^\ast})} & = & p & \quad \mbox{if}~ {{\mathrm{bytes}}}_{{\mathsf{f}}{N}}(p) = {b^\ast} \\
-\end{array}
-$$
-
-\vspace{1ex}
-
-$$
-\begin{array}[t]{@{}lcl@{}l@{}}
 {{\mathrm{signed}}}_{N}(i) & = & i & \quad \mbox{if}~ i < {2^{N - 1}} \\
 {{\mathrm{signed}}}_{N}(i) & = & i - {2^{N}} & \quad \mbox{if}~ {2^{N - 1}} \leq i < {2^{N}} \\
 \end{array}
@@ -7949,9 +7933,12 @@ $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-{{{{\mathrm{signed}}}_{N}^{{-1}}}}{(i)} & = & j & \quad \mbox{if}~ {{\mathrm{signed}}}_{N}(j) = i \\
+{{{{\mathrm{signed}}}_{N}^{{-1}}}}{(i)} & = & i & \quad \mbox{if}~ 0 \leq i < {2^{N - 1}} \\
+{{{{\mathrm{signed}}}_{N}^{{-1}}}}{(i)} & = & i + {2^{N}} & \quad \mbox{if}~ {-{2^{N - 1}}} \leq i < 0 \\
 \end{array}
 $$
+
+\vspace{1ex}
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
@@ -8000,7 +7987,7 @@ $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-{{\mathrm{ineg}}}_{N}(i_1) & = & {{{{\mathrm{signed}}}_{N}^{{-1}}}}{({-{{\mathrm{signed}}}_{N}(i_1)})} \\
+{{\mathrm{ineg}}}_{N}(i_1) & = & ({2^{N}} - i_1) \mathbin{\mathrm{mod}} {2^{N}} \\
 \end{array}
 $$
 
@@ -8273,12 +8260,6 @@ $$
 $$
 
 \vspace{1ex}
-
-$$
-\begin{array}[t]{@{}lcl@{}l@{}}
-{{{{\mathrm{lanes}}}_{{\mathit{sh}}}^{{-1}}}}{({c^\ast})} & = & {\mathit{vc}} & \quad \mbox{if}~ {c^\ast} = {{\mathrm{lanes}}}_{{\mathit{sh}}}({\mathit{vc}}) \\
-\end{array}
-$$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
