@@ -14,8 +14,8 @@ let f32_to_const f = CaseV ("CONST", [ nullary "F32"; Construct.al_of_float32 f 
 let f64_to_const f = CaseV ("CONST", [ nullary "F64"; Construct.al_of_float64 f ])
 
 
-(* TODO: Refactor builtin call logic *)
-let builtin () =
+(* TODO: Refactor call logic *)
+let spectest () =
   (* TODO : Change this into host function instance, instead of current normal function instance *)
   let create_funcinst (name, type_tags) =
     let winstr_tag = String.uppercase_ascii name in
@@ -158,7 +158,7 @@ let builtin () =
 
   StrV moduleinst
 
-let is_builtin = function
+let is_host = function
   | "PRINT" | "PRINT_I32" | "PRINT_I64" | "PRINT_F32" | "PRINT_F64" | "PRINT_I32_F32" | "PRINT_F64_F64" -> true
   | _ -> false
 
@@ -208,4 +208,4 @@ let call name =
     let f64 = local 0 |> as_const "F64" |> al_to_float64 |> F64.to_string in
     let f64' = local 1 |> as_const "F64" |> al_to_float64 |> F64.to_string in
     Printf.printf "- print_f64_f64: %s %s\n" f64 f64'
-  | name -> raise (Exception.UnknownFunc ("No builtin function: " ^ name))
+  | name -> raise (Exception.UnknownFunc ("No spectest function: " ^ name))

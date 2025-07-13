@@ -256,8 +256,8 @@ let run_wast name script =
     else script
   in
 
-  (* Intialize builtin *)
-  Register.add "spectest" (Builtin.builtin ());
+  (* Intialize spectest *)
+  Register.add "spectest" (Host.spectest ());
 
   let result =
     script
@@ -270,8 +270,8 @@ let run_wast name script =
 (** Wasm runner **)
 
 let run_wasm' args module_ =
-  (* Intialize builtin *)
-  Register.add "spectest" (Builtin.builtin ());
+  (* Intialize spectest *)
+  Register.add "spectest" (Host.spectest ());
 
   (* Instantiate *)
   module_

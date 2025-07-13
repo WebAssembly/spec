@@ -707,7 +707,7 @@ and step_wasm (ctx: AlContext.t) : value -> AlContext.t = function
   | CaseV ("REF.NULL", _)
   | CaseV ("CONST", _)
   | CaseV ("VCONST", _) as v -> WasmContext.push_value v; ctx
-  | CaseV (name, []) when Builtin.is_builtin name -> Builtin.call name; ctx
+  | CaseV (name, []) when Host.is_host name -> Host.call name; ctx
   | CaseV (name, args) -> create_context name args :: ctx
   | v -> fail_value "cannot step a wasm instr" v
 
