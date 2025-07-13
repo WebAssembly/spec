@@ -1406,7 +1406,6 @@ warning: definition `inst_tabletype` was never spliced
 warning: definition `inst_valtype` was never spliced
 warning: definition `instantiate` was never spliced
 warning: definition `instrdots` was never spliced
-warning: definition `int` was never spliced
 warning: definition `invfbytes_` was never spliced
 warning: definition `invibytes_` was never spliced
 warning: definition `invlanes_` was never spliced
@@ -1548,6 +1547,7 @@ warning: definition `tagsxx` was never spliced
 warning: definition `testop_` was never spliced
 warning: definition `trunc__` was never spliced
 warning: definition `trunc_sat__` was never spliced
+warning: definition `truncz` was never spliced
 warning: definition `type` was never spliced
 warning: definition `unop_` was never spliced
 warning: definition `unpack` was never spliced
@@ -2185,6 +2185,7 @@ warning: definition prose `halfop` was never spliced
 warning: definition prose `iabs_` was never spliced
 warning: definition prose `iadd_` was never spliced
 warning: definition prose `iadd_sat_` was never spliced
+warning: definition prose `idiv_` was never spliced
 warning: definition prose `ieq_` was never spliced
 warning: definition prose `ieqz_` was never spliced
 warning: definition prose `iextend_` was never spliced
@@ -2192,6 +2193,8 @@ warning: definition prose `ige_` was never spliced
 warning: definition prose `igt_` was never spliced
 warning: definition prose `ile_` was never spliced
 warning: definition prose `ilt_` was never spliced
+warning: definition prose `imax_` was never spliced
+warning: definition prose `imin_` was never spliced
 warning: definition prose `imul_` was never spliced
 warning: definition prose `ine_` was never spliced
 warning: definition prose `ineg_` was never spliced
@@ -2208,6 +2211,7 @@ warning: definition prose `invlanes_` was never spliced
 warning: definition prose `invoke` was never spliced
 warning: definition prose `invsigned_` was never spliced
 warning: definition prose `irelaxed_swizzle_lane_` was never spliced
+warning: definition prose `irem_` was never spliced
 warning: definition prose `isub_` was never spliced
 warning: definition prose `isub_sat_` was never spliced
 warning: definition prose `iswizzle_lane_` was never spliced

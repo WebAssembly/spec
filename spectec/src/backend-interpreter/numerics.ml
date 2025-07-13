@@ -94,6 +94,17 @@ let inverse_of_signed =
       )
   }
 
+let truncz : numerics =
+  {
+    name = "truncz";
+    f =
+      (function
+      | [ NumV (`Rat q) ] ->
+        Q.to_bigint q |> al_of_z_int
+      | vs -> error_values "truncz" vs
+      )
+  }
+
 let sat : numerics =
   {
     name = "sat";
@@ -120,49 +131,6 @@ let sat : numerics =
       );
   }
 
-let idiv : numerics =
-  {
-    name = "idiv";
-    f =
-      (function
-      | [ NumV _; CaseV ("U", []); NumV (`Nat m); NumV (`Nat n) ] ->
-        if n = Z.zero then
-          noneV
-        else
-          Z.(div m n) |> al_of_z_nat |> someV
-      | [ NumV (`Nat z); CaseV ("S", []); NumV (`Nat m); NumV (`Nat n) ] ->
-        if n = Z.zero then
-          noneV
-        else if m = Z.shift_left Z.one (Z.to_int z - 1) && n = maskN z then
-          noneV
-        else
-          let z = NumV (`Nat z) in
-          let m = signed.f [ z; NumV (`Nat m) ] |> al_to_z_int in
-          let n = signed.f [ z; NumV (`Nat n) ] |> al_to_z_int in
-          inverse_of_signed.f [ z; NumV (`Int Z.(div m n)) ] |> someV
-      | vs -> error_values "idiv" vs
-      );
-  }
-let irem : numerics =
-  {
-    name = "irem";
-    f =
-      (function
-      | [ NumV _; CaseV ("U", []); NumV (`Nat m); NumV (`Nat n) ] ->
-        if n = Z.zero then
-          noneV
-        else
-          Z.(rem m n) |> al_of_z_nat |> someV
-      | [ NumV _ as z; CaseV ("S", []); NumV (`Nat m); NumV (`Nat n) ] ->
-        if n = Z.zero then
-          noneV
-        else
-          let m = signed.f [ z; NumV (`Nat m) ] |> al_to_z_int in
-          let n = signed.f [ z; NumV (`Nat n) ] |> al_to_z_int in
-          inverse_of_signed.f [ z; NumV (`Int Z.(rem m n)) ] |> someV
-      | vs -> error_values "irem" vs
-      );
-  }
 let inot : numerics =
   {
     name = "inot";
@@ -1169,9 +1137,8 @@ let numerics_list : numerics list = [
   inverse_of_concatn;
   signed;
   inverse_of_signed;
+  truncz;
   sat;
-  idiv;
-  irem;
   inot;
   irev;
   iand;

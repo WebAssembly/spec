@@ -8,6 +8,10 @@ def $bool(bool) : nat
 def $bool(false) = 0
 def $bool(true) = 1
 
+def $truncz(rat) : int
+def $truncz hint(builtin)
+;;def $trunc(+-q) = +-n  -- if n <- nat /\ $(q - 1) < n <= q
+
 
 ;; Signed numbers
 
@@ -88,13 +92,23 @@ def $igt_(N, sx, iN(N), iN(N)) : u32     hint(show $igt_(%)^(%)#((%,%)))
 def $ile_(N, sx, iN(N), iN(N)) : u32     hint(show $ile_(%)^(%)#((%,%)))
 def $ige_(N, sx, iN(N), iN(N)) : u32     hint(show $ige_(%)^(%)#((%,%)))
 
-;; TODO(3, rossberg): implement numerics internally
 def $iadd_(N, i_1, i_2) = $((i_1 + i_2) \ 2^N)
 def $isub_(N, i_1, i_2) = $((2^N + i_1 - i_2) \ 2^N)
 def $imul_(N, i_1, i_2) = $((i_1 * i_2) \ 2^N)
 
-def $idiv_ hint(builtin)
-def $irem_ hint(builtin)
+def $idiv_(N, U, i_1, 0)   = eps
+def $idiv_(N, U, i_1, i_2) = $truncz($(i_1 / i_2))
+def $idiv_(N, S, i_1, 0)   = eps
+def $idiv_(N, S, i_1, i_2) = eps  -- if $($signed_(N, i_1) / $signed_(N, i_2)) = $rat$(2^(N-1))
+def $idiv_(N, S, i_1, i_2) = $invsigned_(N, $truncz($($signed_(N, i_1) / $signed_(N, i_2))))
+
+def $irem_(N, U, i_1, 0)   = eps
+def $irem_(N, U, i_1, i_2) = $(i_1 - i_2 * $truncz($(i_1 / i_2)))
+def $irem_(N, S, i_1, 0)   = eps
+def $irem_(N, S, i_1, i_2) = $invsigned_(N, $(j_1 - j_2 * $truncz($(j_1 / j_2))))
+                             -- if j_1 = $signed_(N, i_1) /\ j_2 = $signed_(N, i_2)
+
+;; TODO(3, rossberg): implement all numerics internally
 def $inot_ hint(builtin)
 def $iand_ hint(builtin)
 def $ior_  hint(builtin)

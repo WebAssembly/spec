@@ -4347,7 +4347,7 @@ def $bool(bool : bool) : nat
   def $bool(true) = 1
 
 ;; ../../../../specification/wasm-3.0/3.1-numerics.scalar.spectec
-def $int(rat : rat) : int
+def $truncz(rat : rat) : int
 
 ;; ../../../../specification/wasm-3.0/3.1-numerics.scalar.spectec
 def $sat_u_(N : N, int : int) : nat
@@ -4420,15 +4420,59 @@ def $imul_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
 
 ;; ../../../../specification/wasm-3.0/3.1-numerics.scalar.spectec
 def $idiv_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : iN(N)?
+  ;; ../../../../specification/wasm-3.0/3.1-numerics.scalar.spectec
+  def $idiv_{N : N, i_1 : iN(N)}(N, U_sx, i_1, `%`_iN(0)) = ?()
+  ;; ../../../../specification/wasm-3.0/3.1-numerics.scalar.spectec
+  def $idiv_{N : N, i_1 : iN(N), i_2 : iN(N)}(N, U_sx, i_1, i_2) = ?(`%`_iN(($truncz(((i_1!`%`_iN.0 : nat <:> rat) / (i_2!`%`_iN.0 : nat <:> rat))) : int <:> nat)))
+  ;; ../../../../specification/wasm-3.0/3.1-numerics.scalar.spectec
+  def $idiv_{N : N, i_1 : iN(N)}(N, S_sx, i_1, `%`_iN(0)) = ?()
+  ;; ../../../../specification/wasm-3.0/3.1-numerics.scalar.spectec
+  def $idiv_{N : N, i_1 : iN(N), i_2 : iN(N)}(N, S_sx, i_1, i_2) = ?()
+    -- if ((($signed_(N, i_1!`%`_iN.0) : int <:> rat) / ($signed_(N, i_2!`%`_iN.0) : int <:> rat)) = ((2 ^ (((N : nat <:> int) - (1 : nat <:> int)) : int <:> nat)) : nat <:> rat))
+  ;; ../../../../specification/wasm-3.0/3.1-numerics.scalar.spectec
+  def $idiv_{N : N, i_1 : iN(N), i_2 : iN(N)}(N, S_sx, i_1, i_2) = ?(`%`_iN($invsigned_(N, $truncz((($signed_(N, i_1!`%`_iN.0) : int <:> rat) / ($signed_(N, i_2!`%`_iN.0) : int <:> rat))))))
 
 ;; ../../../../specification/wasm-3.0/3.1-numerics.scalar.spectec
 def $irem_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : iN(N)?
+  ;; ../../../../specification/wasm-3.0/3.1-numerics.scalar.spectec
+  def $irem_{N : N, i_1 : iN(N)}(N, U_sx, i_1, `%`_iN(0)) = ?()
+  ;; ../../../../specification/wasm-3.0/3.1-numerics.scalar.spectec
+  def $irem_{N : N, i_1 : iN(N), i_2 : iN(N)}(N, U_sx, i_1, i_2) = ?(`%`_iN((((i_1!`%`_iN.0 : nat <:> int) - ((i_2!`%`_iN.0 * ($truncz(((i_1!`%`_iN.0 : nat <:> rat) / (i_2!`%`_iN.0 : nat <:> rat))) : int <:> nat)) : nat <:> int)) : int <:> nat)))
+  ;; ../../../../specification/wasm-3.0/3.1-numerics.scalar.spectec
+  def $irem_{N : N, i_1 : iN(N)}(N, S_sx, i_1, `%`_iN(0)) = ?()
+  ;; ../../../../specification/wasm-3.0/3.1-numerics.scalar.spectec
+  def $irem_{N : N, i_1 : iN(N), i_2 : iN(N), j_1 : int, j_2 : int}(N, S_sx, i_1, i_2) = ?(`%`_iN($invsigned_(N, (j_1 - (j_2 * $truncz(((j_1 : int <:> rat) / (j_2 : int <:> rat))))))))
+    -- if ((j_1 = $signed_(N, i_1!`%`_iN.0)) /\ (j_2 = $signed_(N, i_2!`%`_iN.0)))
 
 ;; ../../../../specification/wasm-3.0/3.1-numerics.scalar.spectec
 def $imin_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : iN(N)
+  ;; ../../../../specification/wasm-3.0/3.1-numerics.scalar.spectec
+  def $imin_{N : N, i_1 : iN(N), i_2 : iN(N)}(N, U_sx, i_1, i_2) = i_1
+    -- if (i_1!`%`_iN.0 <= i_2!`%`_iN.0)
+  ;; ../../../../specification/wasm-3.0/3.1-numerics.scalar.spectec
+  def $imin_{N : N, i_1 : iN(N), i_2 : iN(N)}(N, U_sx, i_1, i_2) = i_2
+    -- if (i_1!`%`_iN.0 > i_2!`%`_iN.0)
+  ;; ../../../../specification/wasm-3.0/3.1-numerics.scalar.spectec
+  def $imin_{N : N, i_1 : iN(N), i_2 : iN(N)}(N, S_sx, i_1, i_2) = i_1
+    -- if ($signed_(N, i_1!`%`_iN.0) <= $signed_(N, i_2!`%`_iN.0))
+  ;; ../../../../specification/wasm-3.0/3.1-numerics.scalar.spectec
+  def $imin_{N : N, i_1 : iN(N), i_2 : iN(N)}(N, S_sx, i_1, i_2) = i_2
+    -- otherwise
 
 ;; ../../../../specification/wasm-3.0/3.1-numerics.scalar.spectec
 def $imax_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : iN(N)
+  ;; ../../../../specification/wasm-3.0/3.1-numerics.scalar.spectec
+  def $imax_{N : N, i_1 : iN(N), i_2 : iN(N)}(N, U_sx, i_1, i_2) = i_1
+    -- if (i_1!`%`_iN.0 >= i_2!`%`_iN.0)
+  ;; ../../../../specification/wasm-3.0/3.1-numerics.scalar.spectec
+  def $imax_{N : N, i_1 : iN(N), i_2 : iN(N)}(N, U_sx, i_1, i_2) = i_2
+    -- if (i_1!`%`_iN.0 < i_2!`%`_iN.0)
+  ;; ../../../../specification/wasm-3.0/3.1-numerics.scalar.spectec
+  def $imax_{N : N, i_1 : iN(N), i_2 : iN(N)}(N, S_sx, i_1, i_2) = i_1
+    -- if ($signed_(N, i_1!`%`_iN.0) >= $signed_(N, i_2!`%`_iN.0))
+  ;; ../../../../specification/wasm-3.0/3.1-numerics.scalar.spectec
+  def $imax_{N : N, i_1 : iN(N), i_2 : iN(N)}(N, S_sx, i_1, i_2) = i_2
+    -- otherwise
 
 ;; ../../../../specification/wasm-3.0/3.1-numerics.scalar.spectec
 def $iadd_sat_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : iN(N)
