@@ -10,6 +10,10 @@ def $bool(bool) : nat
 def $bool(false) = 0
 def $bool(true) = 1
 
+def $truncz(rat) : int
+def $truncz hint(builtin)
+;;def $trunc(+-q) = +-n  -- if n <- nat /\ $(q - 1) < n <= q
+
 
 ;; Signed numbers
 
@@ -58,7 +62,7 @@ def $convert__(M, N, sx, iN(M)) : fN(N)              hint(show $convert__(%,%)^(
 def $narrow__(M, N, sx, iN(M)) : iN(N)               hint(show $narrow__(%,%)^(%)#(%))
 def $reinterpret__(numtype_1, numtype_2, num_(numtype_1)) : num_(numtype_2)
 
-;; TODO(3, rossberg): implement numerics internally
+;; TODO(3, rossberg): implement all numerics internally
 def $wrap__        hint(builtin)
 def $extend__      hint(builtin)
 def $trunc__       hint(builtin)
@@ -138,8 +142,18 @@ def $iadd_(N, i_1, i_2) = $((i_1 + i_2) \ 2^N)
 def $isub_(N, i_1, i_2) = $((2^N + i_1 - i_2) \ 2^N)
 def $imul_(N, i_1, i_2) = $((i_1 * i_2) \ 2^N)
 
-def $idiv_ hint(builtin)
-def $irem_ hint(builtin)
+def $idiv_(N, U, i_1, 0)   = eps
+def $idiv_(N, U, i_1, i_2) = $truncz($(i_1 / i_2))
+def $idiv_(N, S, i_1, 0)   = eps
+def $idiv_(N, S, i_1, i_2) = eps  -- if $($signed_(N, i_1) / $signed_(N, i_2)) = $rat$(2^(N-1))
+def $idiv_(N, S, i_1, i_2) = $inv_signed_(N, $truncz($($signed_(N, i_1) / $signed_(N, i_2))))
+
+def $irem_(N, U, i_1, 0)   = eps
+def $irem_(N, U, i_1, i_2) = $(i_1 - i_2 * $truncz($(i_1 / i_2)))
+def $irem_(N, S, i_1, 0)   = eps
+def $irem_(N, S, i_1, i_2) = $inv_signed_(N, $(j_1 - j_2 * $truncz($(j_1 / j_2))))
+                             -- if j_1 = $signed_(N, i_1) /\ j_2 = $signed_(N, i_2)
+
 def $inot_ hint(builtin)
 def $irev_ hint(builtin)
 def $iand_ hint(builtin)
@@ -177,8 +191,15 @@ def $ibitselect_ hint(builtin)
 def $iabs_(N, i_1) = i_1             -- if $signed_(N, i_1) >= 0
 def $iabs_(N, i_1) = $ineg_(N, i_1)  -- otherwise
 
-def $imin_ hint(builtin)
-def $imax_ hint(builtin)
+def $imin_(N, U, i_1, i_2) = i_1  -- if i_1 <= i_2
+def $imin_(N, U, i_1, i_2) = i_2  -- if i_1 > i_2
+def $imin_(N, S, i_1, i_2) = i_1  -- if $signed_(N, i_1) <= $signed_(N, i_2)
+def $imin_(N, S, i_1, i_2) = i_2  -- otherwise
+
+def $imax_(N, U, i_1, i_2) = i_1  -- if i_1 >= i_2
+def $imax_(N, U, i_1, i_2) = i_2  -- if i_1 < i_2
+def $imax_(N, S, i_1, i_2) = i_1  -- if $signed_(N, i_1) >= $signed_(N, i_2)
+def $imax_(N, S, i_1, i_2) = i_2  -- otherwise
 
 def $ineg_(N, i_1) = $((2^N - i_1) \ 2^N)
 

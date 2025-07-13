@@ -1915,11 +1915,61 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 1. Return :math:`(i_1 + i_2) \mathbin{\mathrm{mod}} ({2^{N}})`.
 
 
+:math:`{{{{\mathrm{idiv}}}_{N}^{{\mathit{sx}}}}}{(i_1, i_2)}`
+.............................................................
+
+
+1. If :math:`{\mathit{sx}} = \mathsf{u}`, then:
+
+   a. If :math:`i_2 = 0`, then:
+
+      1) Return :math:`\epsilon`.
+
+   #. Return :math:`{\mathrm{truncz}}(i_1 / i_2)`.
+
+#. Assert: Due to validation, :math:`{\mathit{sx}} = \mathsf{s}`.
+
+#. If :math:`i_2 = 0`, then:
+
+   a. Return :math:`\epsilon`.
+
+#. If :math:`{{\mathrm{signed}}}_{N}(i_1) / {{\mathrm{signed}}}_{N}(i_2) = {2^{N - 1}}`, then:
+
+   a. Return :math:`\epsilon`.
+
+#. Return :math:`{{{{\mathrm{signed}}}_{N}^{{-1}}}}{({\mathrm{truncz}}({{\mathrm{signed}}}_{N}(i_1) / {{\mathrm{signed}}}_{N}(i_2)))}`.
+
+
 :math:`{{\mathrm{imul}}}_{N}(i_1, i_2)`
 .......................................
 
 
 1. Return :math:`i_1 \cdot i_2 \mathbin{\mathrm{mod}} ({2^{N}})`.
+
+
+:math:`{{{{\mathrm{irem}}}_{N}^{{\mathit{sx}}}}}{(i_1, i_2)}`
+.............................................................
+
+
+1. If :math:`{\mathit{sx}} = \mathsf{u}`, then:
+
+   a. If :math:`i_2 = 0`, then:
+
+      1) Return :math:`\epsilon`.
+
+   #. Return :math:`i_1 - i_2 \cdot {\mathrm{truncz}}(i_1 / i_2)`.
+
+#. Assert: Due to validation, :math:`{\mathit{sx}} = \mathsf{s}`.
+
+#. If :math:`i_2 = 0`, then:
+
+   a. Return :math:`\epsilon`.
+
+#. Let :math:`j_1` be :math:`{{\mathrm{signed}}}_{N}(i_1)`.
+
+#. Let :math:`j_2` be :math:`{{\mathrm{signed}}}_{N}(i_2)`.
+
+#. Return :math:`{{{{\mathrm{signed}}}_{N}^{{-1}}}}{(j_1 - j_2 \cdot {\mathrm{truncz}}(j_1 / j_2))}`.
 
 
 :math:`{{\mathrm{isub}}}_{N}(i_1, i_2)`
@@ -3896,8 +3946,32 @@ unop_ valtype unop_ iN
 iadd_ N i_1 i_2
 1. Return ((i_1 + i_2) \ (2 ^ N)).
 
+idiv_ N sx i_1 i_2
+1. If (sx = U), then:
+  a. If (i_2 = 0), then:
+    1) Return ?().
+  b. Return ?($truncz((i_1 / i_2))).
+2. Assert: Due to validation, (sx = S).
+3. If (i_2 = 0), then:
+  a. Return ?().
+4. If (($signed_(N, i_1) / $signed_(N, i_2)) = (2 ^ (N - 1))), then:
+  a. Return ?().
+5. Return ?($inv_signed_(N, $truncz(($signed_(N, i_1) / $signed_(N, i_2))))).
+
 imul_ N i_1 i_2
 1. Return ((i_1 * i_2) \ (2 ^ N)).
+
+irem_ N sx i_1 i_2
+1. If (sx = U), then:
+  a. If (i_2 = 0), then:
+    1) Return ?().
+  b. Return ?((i_1 - (i_2 * $truncz((i_1 / i_2))))).
+2. Assert: Due to validation, (sx = S).
+3. If (i_2 = 0), then:
+  a. Return ?().
+4. Let j_1 be $signed_(N, i_1).
+5. Let j_2 be $signed_(N, i_2).
+6. Return ?($inv_signed_(N, (j_1 - (j_2 * $truncz((j_1 / j_2)))))).
 
 isub_ N i_1 i_2
 1. Return ((((2 ^ N) + i_1) - i_2) \ (2 ^ N)).
@@ -8416,11 +8490,61 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 1. Return :math:`(i_1 + i_2) \mathbin{\mathrm{mod}} ({2^{N}})`.
 
 
+:math:`{{{{\mathrm{idiv}}}_{N}^{{\mathit{sx}}}}}{(i_1, i_2)}`
+.............................................................
+
+
+1. If :math:`{\mathit{sx}} = \mathsf{u}`, then:
+
+   a. If :math:`i_2 = 0`, then:
+
+      1) Return :math:`\epsilon`.
+
+   #. Return :math:`{\mathrm{truncz}}(i_1 / i_2)`.
+
+#. Assert: Due to validation, :math:`{\mathit{sx}} = \mathsf{s}`.
+
+#. If :math:`i_2 = 0`, then:
+
+   a. Return :math:`\epsilon`.
+
+#. If :math:`{{\mathrm{signed}}}_{N}(i_1) / {{\mathrm{signed}}}_{N}(i_2) = {2^{N - 1}}`, then:
+
+   a. Return :math:`\epsilon`.
+
+#. Return :math:`{{{{\mathrm{signed}}}_{N}^{{-1}}}}{({\mathrm{truncz}}({{\mathrm{signed}}}_{N}(i_1) / {{\mathrm{signed}}}_{N}(i_2)))}`.
+
+
 :math:`{{\mathrm{imul}}}_{N}(i_1, i_2)`
 .......................................
 
 
 1. Return :math:`i_1 \cdot i_2 \mathbin{\mathrm{mod}} ({2^{N}})`.
+
+
+:math:`{{{{\mathrm{irem}}}_{N}^{{\mathit{sx}}}}}{(i_1, i_2)}`
+.............................................................
+
+
+1. If :math:`{\mathit{sx}} = \mathsf{u}`, then:
+
+   a. If :math:`i_2 = 0`, then:
+
+      1) Return :math:`\epsilon`.
+
+   #. Return :math:`i_1 - i_2 \cdot {\mathrm{truncz}}(i_1 / i_2)`.
+
+#. Assert: Due to validation, :math:`{\mathit{sx}} = \mathsf{s}`.
+
+#. If :math:`i_2 = 0`, then:
+
+   a. Return :math:`\epsilon`.
+
+#. Let :math:`j_1` be :math:`{{\mathrm{signed}}}_{N}(i_1)`.
+
+#. Let :math:`j_2` be :math:`{{\mathrm{signed}}}_{N}(i_2)`.
+
+#. Return :math:`{{{{\mathrm{signed}}}_{N}^{{-1}}}}{(j_1 - j_2 \cdot {\mathrm{truncz}}(j_1 / j_2))}`.
 
 
 :math:`{{\mathrm{isub}}}_{N}(i_1, i_2)`
@@ -8750,6 +8874,48 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
    a. Return :math:`i_1`.
 
 #. Return :math:`{{\mathrm{ineg}}}_{N}(i_1)`.
+
+
+:math:`{{\mathrm{imin}}}_{N}({\mathit{sx}}, i_1, i_2)`
+......................................................
+
+
+1. If :math:`{\mathit{sx}} = \mathsf{u}`, then:
+
+   a. If :math:`i_1 \leq i_2`, then:
+
+      1) Return :math:`i_1`.
+
+   #. Return :math:`i_2`.
+
+#. Assert: Due to validation, :math:`{\mathit{sx}} = \mathsf{s}`.
+
+#. If :math:`{{\mathrm{signed}}}_{N}(i_1) \leq {{\mathrm{signed}}}_{N}(i_2)`, then:
+
+   a. Return :math:`i_1`.
+
+#. Return :math:`i_2`.
+
+
+:math:`{{\mathrm{imax}}}_{N}({\mathit{sx}}, i_1, i_2)`
+......................................................
+
+
+1. If :math:`{\mathit{sx}} = \mathsf{u}`, then:
+
+   a. If :math:`i_1 \geq i_2`, then:
+
+      1) Return :math:`i_1`.
+
+   #. Return :math:`i_2`.
+
+#. Assert: Due to validation, :math:`{\mathit{sx}} = \mathsf{s}`.
+
+#. If :math:`{{\mathrm{signed}}}_{N}(i_1) \geq {{\mathrm{signed}}}_{N}(i_2)`, then:
+
+   a. Return :math:`i_1`.
+
+#. Return :math:`i_2`.
 
 
 :math:`{{{{\mathrm{iadd\_sat}}}_{N}^{{\mathit{sx}}}}}{(i_1, i_2)}`
@@ -12356,8 +12522,32 @@ unop_ numtype unop_ iN
 iadd_ N i_1 i_2
 1. Return ((i_1 + i_2) \ (2 ^ N)).
 
+idiv_ N sx i_1 i_2
+1. If (sx = U), then:
+  a. If (i_2 = 0), then:
+    1) Return ?().
+  b. Return ?($truncz((i_1 / i_2))).
+2. Assert: Due to validation, (sx = S).
+3. If (i_2 = 0), then:
+  a. Return ?().
+4. If (($signed_(N, i_1) / $signed_(N, i_2)) = (2 ^ (N - 1))), then:
+  a. Return ?().
+5. Return ?($inv_signed_(N, $truncz(($signed_(N, i_1) / $signed_(N, i_2))))).
+
 imul_ N i_1 i_2
 1. Return ((i_1 * i_2) \ (2 ^ N)).
+
+irem_ N sx i_1 i_2
+1. If (sx = U), then:
+  a. If (i_2 = 0), then:
+    1) Return ?().
+  b. Return ?((i_1 - (i_2 * $truncz((i_1 / i_2))))).
+2. Assert: Due to validation, (sx = S).
+3. If (i_2 = 0), then:
+  a. Return ?().
+4. Let j_1 be $signed_(N, i_1).
+5. Let j_2 be $signed_(N, i_2).
+6. Return ?($inv_signed_(N, (j_1 - (j_2 * $truncz((j_1 / j_2)))))).
 
 isub_ N i_1 i_2
 1. Return ((((2 ^ N) + i_1) - i_2) \ (2 ^ N)).
@@ -12515,6 +12705,26 @@ iabs_ N i_1
 1. If ($signed_(N, i_1) >= 0), then:
   a. Return i_1.
 2. Return $ineg_(N, i_1).
+
+imin_ N sx i_1 i_2
+1. If (sx = U), then:
+  a. If (i_1 <= i_2), then:
+    1) Return i_1.
+  b. Return i_2.
+2. Assert: Due to validation, (sx = S).
+3. If ($signed_(N, i_1) <= $signed_(N, i_2)), then:
+  a. Return i_1.
+4. Return i_2.
+
+imax_ N sx i_1 i_2
+1. If (sx = U), then:
+  a. If (i_1 >= i_2), then:
+    1) Return i_1.
+  b. Return i_2.
+2. Assert: Due to validation, (sx = S).
+3. If ($signed_(N, i_1) >= $signed_(N, i_2)), then:
+  a. Return i_1.
+4. Return i_2.
 
 iadd_sat_ N sx i_1 i_2
 1. If (sx = U), then:
@@ -23412,8 +23622,100 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return :math:`i_1 \cdot i_2 \mathbin{\mathrm{mod}} ({2^{N}})`.
 
 
-:math:`{{{{\mathrm{iadd\_sat}}}_{N}^{{\mathit{sx}}}}}{(i_1, i_2)}`
-..................................................................
+:math:`{{\mathrm{idiv}}}{{\mathit{sx}}}{{}_{N}(i_1, i_2)}`
+..........................................................
+
+
+1. If :math:`{\mathit{sx}} = \mathsf{u}`, then:
+
+   a. If :math:`i_2 = 0`, then:
+
+      1) Return :math:`\epsilon`.
+
+   #. Return :math:`{\mathrm{truncz}}(i_1 / i_2)`.
+
+#. Assert: Due to validation, :math:`{\mathit{sx}} = \mathsf{s}`.
+
+#. If :math:`i_2 = 0`, then:
+
+   a. Return :math:`\epsilon`.
+
+#. If :math:`{{\mathrm{signed}}}_{N}(i_1) / {{\mathrm{signed}}}_{N}(i_2) = {2^{N - 1}}`, then:
+
+   a. Return :math:`\epsilon`.
+
+#. Return :math:`{{{{\mathrm{signed}}}_{N}^{{-1}}}}{({\mathrm{truncz}}({{\mathrm{signed}}}_{N}(i_1) / {{\mathrm{signed}}}_{N}(i_2)))}`.
+
+
+:math:`{{\mathrm{irem}}}{{\mathit{sx}}}{{}_{N}(i_1, i_2)}`
+..........................................................
+
+
+1. If :math:`{\mathit{sx}} = \mathsf{u}`, then:
+
+   a. If :math:`i_2 = 0`, then:
+
+      1) Return :math:`\epsilon`.
+
+   #. Return :math:`i_1 - i_2 \cdot {\mathrm{truncz}}(i_1 / i_2)`.
+
+#. Assert: Due to validation, :math:`{\mathit{sx}} = \mathsf{s}`.
+
+#. If :math:`i_2 = 0`, then:
+
+   a. Return :math:`\epsilon`.
+
+#. Let :math:`j_1` be :math:`{{\mathrm{signed}}}_{N}(i_1)`.
+
+#. Let :math:`j_2` be :math:`{{\mathrm{signed}}}_{N}(i_2)`.
+
+#. Return :math:`{{{{\mathrm{signed}}}_{N}^{{-1}}}}{(j_1 - j_2 \cdot {\mathrm{truncz}}(j_1 / j_2))}`.
+
+
+:math:`{{\mathrm{imin}}}{{\mathit{sx}}}{{}_{N}(i_1, i_2)}`
+..........................................................
+
+
+1. If :math:`{\mathit{sx}} = \mathsf{u}`, then:
+
+   a. If :math:`i_1 \leq i_2`, then:
+
+      1) Return :math:`i_1`.
+
+   #. Return :math:`i_2`.
+
+#. Assert: Due to validation, :math:`{\mathit{sx}} = \mathsf{s}`.
+
+#. If :math:`{{\mathrm{signed}}}_{N}(i_1) \leq {{\mathrm{signed}}}_{N}(i_2)`, then:
+
+   a. Return :math:`i_1`.
+
+#. Return :math:`i_2`.
+
+
+:math:`{{\mathrm{imax}}}{{\mathit{sx}}}{{}_{N}(i_1, i_2)}`
+..........................................................
+
+
+1. If :math:`{\mathit{sx}} = \mathsf{u}`, then:
+
+   a. If :math:`i_1 \geq i_2`, then:
+
+      1) Return :math:`i_1`.
+
+   #. Return :math:`i_2`.
+
+#. Assert: Due to validation, :math:`{\mathit{sx}} = \mathsf{s}`.
+
+#. If :math:`{{\mathrm{signed}}}_{N}(i_1) \geq {{\mathrm{signed}}}_{N}(i_2)`, then:
+
+   a. Return :math:`i_1`.
+
+#. Return :math:`i_2`.
+
+
+:math:`{{\mathrm{iadd\_sat}}}{{\mathit{sx}}}{{}_{N}(i_1, i_2)}`
+...............................................................
 
 
 1. If :math:`{\mathit{sx}} = \mathsf{u}`, then:
@@ -23425,8 +23727,8 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`{{{{\mathrm{signed}}}_{N}^{{-1}}}}{({{\mathrm{sat\_s}}}_{N}({{\mathrm{signed}}}_{N}(i_1) + {{\mathrm{signed}}}_{N}(i_2)))}`.
 
 
-:math:`{{{{\mathrm{isub\_sat}}}_{N}^{{\mathit{sx}}}}}{(i_1, i_2)}`
-..................................................................
+:math:`{{\mathrm{isub\_sat}}}{{\mathit{sx}}}{{}_{N}(i_1, i_2)}`
+...............................................................
 
 
 1. If :math:`{\mathit{sx}} = \mathsf{u}`, then:
@@ -23466,8 +23768,8 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return :math:`\mathbb{B}(i_1 \neq i_2)`.
 
 
-:math:`{{{{\mathrm{ilt}}}_{N}^{{\mathit{sx}}}}}{(i_1, i_2)}`
-............................................................
+:math:`{{\mathrm{ilt}}}{{\mathit{sx}}}{{}_{N}(i_1, i_2)}`
+.........................................................
 
 
 1. If :math:`{\mathit{sx}} = \mathsf{u}`, then:
@@ -23479,8 +23781,8 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`\mathbb{B}({{\mathrm{signed}}}_{N}(i_1) < {{\mathrm{signed}}}_{N}(i_2))`.
 
 
-:math:`{{{{\mathrm{igt}}}_{N}^{{\mathit{sx}}}}}{(i_1, i_2)}`
-............................................................
+:math:`{{\mathrm{igt}}}{{\mathit{sx}}}{{}_{N}(i_1, i_2)}`
+.........................................................
 
 
 1. If :math:`{\mathit{sx}} = \mathsf{u}`, then:
@@ -23492,8 +23794,8 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`\mathbb{B}({{\mathrm{signed}}}_{N}(i_1) > {{\mathrm{signed}}}_{N}(i_2))`.
 
 
-:math:`{{{{\mathrm{ile}}}_{N}^{{\mathit{sx}}}}}{(i_1, i_2)}`
-............................................................
+:math:`{{\mathrm{ile}}}{{\mathit{sx}}}{{}_{N}(i_1, i_2)}`
+.........................................................
 
 
 1. If :math:`{\mathit{sx}} = \mathsf{u}`, then:
@@ -23505,8 +23807,8 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`\mathbb{B}({{\mathrm{signed}}}_{N}(i_1) \leq {{\mathrm{signed}}}_{N}(i_2))`.
 
 
-:math:`{{{{\mathrm{ige}}}_{N}^{{\mathit{sx}}}}}{(i_1, i_2)}`
-............................................................
+:math:`{{\mathrm{ige}}}{{\mathit{sx}}}{{}_{N}(i_1, i_2)}`
+.........................................................
 
 
 1. If :math:`{\mathit{sx}} = \mathsf{u}`, then:
@@ -23647,13 +23949,13 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       1) Let :math:`({\mathsf{div}}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{binop}}`.
 
-      #) Return :math:`{{{{\mathrm{idiv}}}_{N}^{{\mathit{sx}}}}}{(i_1, i_2)}`.
+      #) Return :math:`{{\mathrm{idiv}}}{{\mathit{sx}}}{{}_{N}(i_1, i_2)}`.
 
    #. If :math:`{\mathit{binop}}` is some :math:`{\mathsf{rem}}{\mathsf{\_}}{{\mathit{sx}}}`, then:
 
       1) Let :math:`({\mathsf{rem}}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{binop}}`.
 
-      #) Return :math:`{{{{\mathrm{irem}}}_{N}^{{\mathit{sx}}}}}{(i_1, i_2)}`.
+      #) Return :math:`{{\mathrm{irem}}}{{\mathit{sx}}}{{}_{N}(i_1, i_2)}`.
 
    #. If :math:`{\mathit{binop}} = \mathsf{and}`, then:
 
@@ -23675,7 +23977,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       1) Let :math:`({\mathsf{shr}}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{binop}}`.
 
-      #) Return :math:`{{{{\mathrm{ishr}}}_{N}^{{\mathit{sx}}}}}{(i_1, i_2)}`.
+      #) Return :math:`{{\mathrm{ishr}}}{{\mathit{sx}}}{{}_{N}(i_1, i_2)}`.
 
    #. If :math:`{\mathit{binop}} = \mathsf{rotl}`, then:
 
@@ -23741,25 +24043,25 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       1) Let :math:`({\mathsf{lt}}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{relop}}`.
 
-      #) Return :math:`{{{{\mathrm{ilt}}}_{N}^{{\mathit{sx}}}}}{(i_1, i_2)}`.
+      #) Return :math:`{{\mathrm{ilt}}}{{\mathit{sx}}}{{}_{N}(i_1, i_2)}`.
 
    #. If :math:`{\mathit{relop}}` is some :math:`{\mathsf{gt}}{\mathsf{\_}}{{\mathit{sx}}}`, then:
 
       1) Let :math:`({\mathsf{gt}}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{relop}}`.
 
-      #) Return :math:`{{{{\mathrm{igt}}}_{N}^{{\mathit{sx}}}}}{(i_1, i_2)}`.
+      #) Return :math:`{{\mathrm{igt}}}{{\mathit{sx}}}{{}_{N}(i_1, i_2)}`.
 
    #. If :math:`{\mathit{relop}}` is some :math:`{\mathsf{le}}{\mathsf{\_}}{{\mathit{sx}}}`, then:
 
       1) Let :math:`({\mathsf{le}}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{relop}}`.
 
-      #) Return :math:`{{{{\mathrm{ile}}}_{N}^{{\mathit{sx}}}}}{(i_1, i_2)}`.
+      #) Return :math:`{{\mathrm{ile}}}{{\mathit{sx}}}{{}_{N}(i_1, i_2)}`.
 
    #. If :math:`{\mathit{relop}}` is some :math:`{\mathsf{ge}}{\mathsf{\_}}{{\mathit{sx}}}`, then:
 
       1) Let :math:`({\mathsf{ge}}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{relop}}`.
 
-      #) Return :math:`{{{{\mathrm{ige}}}_{N}^{{\mathit{sx}}}}}{(i_1, i_2)}`.
+      #) Return :math:`{{\mathrm{ige}}}{{\mathit{sx}}}{{}_{N}(i_1, i_2)}`.
 
 #. Assert: Due to validation, :math:`{\mathit{numtype}}` is :math:`{\mathsf{f}}{N}`.
 
@@ -24167,7 +24469,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`{c_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}(v_1)`.
 
-#. Let :math:`c` be the result for which :math:`{{\mathrm{bits}}}_{{\mathsf{i}}{32}}(c)` :math:`=` :math:`{{{{{\mathrm{ilt}}}_{N}^{\mathsf{s}}}}{(c_1, 0)}^\ast}~{0^{32 - M}}`.
+#. Let :math:`c` be the result for which :math:`{{\mathrm{bits}}}_{{\mathsf{i}}{32}}(c)` :math:`=` :math:`{{{\mathrm{ilt}}}{\mathsf{s}}{{}_{N}(c_1, 0)}^\ast}~{0^{32 - M}}`.
 
 #. Return :math:`{{\mathrm{irev}}}_{32}(c)`.
 
@@ -24667,7 +24969,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`{j_1~j_2^\ast}` be the result for which the :ref:`concatenation <notation-concat>` of :math:`{j_1~j_2^\ast}` is :math:`{{{\mathrm{imul}}}_{N}(i_1, i_2)^\ast}`.
 
-#. Return :math:`{{{{{\mathrm{iadd\_sat}}}_{N}^{\mathsf{s}}}}{(j_1, j_2)}^\ast}`.
+#. Return :math:`{{{\mathrm{iadd\_sat}}}{\mathsf{s}}{{}_{N}(j_1, j_2)}^\ast}`.
 
 
 :math:`{{\mathrm{ivextbinop}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}({\mathrm{f}}, {\mathit{sx}}_1, {\mathit{sx}}_2, i, k, v_1, v_2)`
@@ -30782,6 +31084,50 @@ isub_ N i_1 i_2
 
 imul_ N i_1 i_2
 1. Return ((i_1 * i_2) \ (2 ^ N)).
+
+idiv_ N sx i_1 i_2
+1. If (sx = U), then:
+  a. If (i_2 = 0), then:
+    1) Return ?().
+  b. Return ?($truncz((i_1 / i_2))).
+2. Assert: Due to validation, (sx = S).
+3. If (i_2 = 0), then:
+  a. Return ?().
+4. If (($signed_(N, i_1) / $signed_(N, i_2)) = (2 ^ (N - 1))), then:
+  a. Return ?().
+5. Return ?($inv_signed_(N, $truncz(($signed_(N, i_1) / $signed_(N, i_2))))).
+
+irem_ N sx i_1 i_2
+1. If (sx = U), then:
+  a. If (i_2 = 0), then:
+    1) Return ?().
+  b. Return ?((i_1 - (i_2 * $truncz((i_1 / i_2))))).
+2. Assert: Due to validation, (sx = S).
+3. If (i_2 = 0), then:
+  a. Return ?().
+4. Let j_1 be $signed_(N, i_1).
+5. Let j_2 be $signed_(N, i_2).
+6. Return ?($inv_signed_(N, (j_1 - (j_2 * $truncz((j_1 / j_2)))))).
+
+imin_ N sx i_1 i_2
+1. If (sx = U), then:
+  a. If (i_1 <= i_2), then:
+    1) Return i_1.
+  b. Return i_2.
+2. Assert: Due to validation, (sx = S).
+3. If ($signed_(N, i_1) <= $signed_(N, i_2)), then:
+  a. Return i_1.
+4. Return i_2.
+
+imax_ N sx i_1 i_2
+1. If (sx = U), then:
+  a. If (i_1 >= i_2), then:
+    1) Return i_1.
+  b. Return i_2.
+2. Assert: Due to validation, (sx = S).
+3. If ($signed_(N, i_1) >= $signed_(N, i_2)), then:
+  a. Return i_1.
+4. Return i_2.
 
 iadd_sat_ N sx i_1 i_2
 1. If (sx = U), then:

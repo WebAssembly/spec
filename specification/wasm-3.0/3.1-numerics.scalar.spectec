@@ -73,8 +73,9 @@ def $bool(bool) : nat
 def $bool(false) = 0
 def $bool(true) = 1
 
-def $int(rat) : int
-;;def $int(+-q) = +-n  -- if n <- nat /\ $(q - 1) < n <= q
+def $truncz(rat) : int
+def $truncz hint(builtin)
+;;def $trunc(+-q) = +-n  -- if n <- nat /\ $(q - 1) < n <= q
 
 
 ;; Saturation
@@ -102,15 +103,15 @@ def $iextend_(N, M, sx, iN(N)) : iN(N)          hint(show $iextend_((%,%))^(%)#(
 def $iadd_(N, iN(N), iN(N)) : iN(N)
 def $isub_(N, iN(N), iN(N)) : iN(N)
 def $imul_(N, iN(N), iN(N)) : iN(N)
-def $idiv_(N, sx, iN(N), iN(N)) : iN(N)?        hint(show $idiv_(%)^(%)#((%,%)))
-def $irem_(N, sx, iN(N), iN(N)) : iN(N)?        hint(show $irem_(%)^(%)#((%,%)))
-def $imin_(N, sx, iN(N), iN(N)) : iN(N)         hint(show $imin_(%)^(%)%((%,%)))
-def $imax_(N, sx, iN(N), iN(N)) : iN(N)         hint(show $imax_(%)^(%)%((%,%)))
-def $iadd_sat_(N, sx, iN(N), iN(N)) : iN(N)     hint(show $iadd__sat_(%)^(%)#((%,%)))
-def $isub_sat_(N, sx, iN(N), iN(N)) : iN(N)     hint(show $isub__sat_(%)^(%)#((%,%)))
-def $iq15mulr_sat_(N, sx, iN(N), iN(N)) : iN(N) hint(show $iq15mulr__sat_(%)^(%)#((%,%)))
-def $irelaxed_q15mulr_(N, sx, iN(N), iN(N)) : iN(N)* hint(show $relaxed__iq15mulr_(%)^(%)#((%,%)))
-def $iavgr_(N, sx, iN(N), iN(N)) : iN(N)        hint(show $iavgr_(%)^(%)#((%,%)))
+def $idiv_(N, sx, iN(N), iN(N)) : iN(N)?        hint(show $idiv__#%2#$_(%1,%3,%4))
+def $irem_(N, sx, iN(N), iN(N)) : iN(N)?        hint(show $irem__#%2#$_(%1,%3,%4))
+def $imin_(N, sx, iN(N), iN(N)) : iN(N)         hint(show $imin__#%2#$_(%1,%3,%4))
+def $imax_(N, sx, iN(N), iN(N)) : iN(N)         hint(show $imax__#%2#$_(%1,%3,%4))
+def $iadd_sat_(N, sx, iN(N), iN(N)) : iN(N)     hint(show $iadd__sat__#%2#$_(%1,%3,%4))
+def $isub_sat_(N, sx, iN(N), iN(N)) : iN(N)     hint(show $isub__sat__#%2#$_(%1,%3,%4))
+def $iq15mulr_sat_(N, sx, iN(N), iN(N)) : iN(N) hint(show $iq15mulr__sat__#%2#$_(%1,%3,%4))
+def $irelaxed_q15mulr_(N, sx, iN(N), iN(N)) : iN(N)* hint(show $relaxed__iq15mulr__#%2#$_(%1,%3,%4))
+def $iavgr_(N, sx, iN(N), iN(N)) : iN(N)        hint(show $iavgr__#%2#$_(%1,%3,%4))
 
 def $inot_(N, iN(N)) : iN(N)
 def $irev_(N, iN(N)) : iN(N)
@@ -119,7 +120,7 @@ def $iandnot_(N, iN(N), iN(N)) : iN(N)
 def $ior_(N, iN(N), iN(N)) : iN(N)
 def $ixor_(N, iN(N), iN(N)) : iN(N)
 def $ishl_(N, iN(N), u32) : iN(N)
-def $ishr_(N, sx, iN(N), u32) : iN(N)    hint(show $ishr_(%)^(%)#((%,%)))
+def $ishr_(N, sx, iN(N), u32) : iN(N)    hint(show $ishr__#%2#$_(%1,%3,%4))
 def $irotl_(N, iN(N), iN(N)) : iN(N)
 def $irotr_(N, iN(N), iN(N)) : iN(N)
 
@@ -131,13 +132,13 @@ def $inez_(N, iN(N)) : u32
 
 def $ieq_(N, iN(N), iN(N)) : u32
 def $ine_(N, iN(N), iN(N)) : u32
-def $ilt_(N, sx, iN(N), iN(N)) : u32     hint(show $ilt_(%)^(%)#((%,%)))
-def $igt_(N, sx, iN(N), iN(N)) : u32     hint(show $igt_(%)^(%)#((%,%)))
-def $ile_(N, sx, iN(N), iN(N)) : u32     hint(show $ile_(%)^(%)#((%,%)))
-def $ige_(N, sx, iN(N), iN(N)) : u32     hint(show $ige_(%)^(%)#((%,%)))
+def $ilt_(N, sx, iN(N), iN(N)) : u32     hint(show $ilt__#%2#$_(%1,%3,%4))
+def $igt_(N, sx, iN(N), iN(N)) : u32     hint(show $igt__#%2#$_(%1,%3,%4))
+def $ile_(N, sx, iN(N), iN(N)) : u32     hint(show $ile__#%2#$_(%1,%3,%4))
+def $ige_(N, sx, iN(N), iN(N)) : u32     hint(show $ige__#%2#$_(%1,%3,%4))
 
 
-;; TODO(3, rossberg): implement numerics internally
+;; TODO(3, rossberg): implement all numerics internally
 
 def $ineg_(N, i_1) = $((2^N - i_1) \ 2^N)
 
@@ -163,31 +164,27 @@ def $isub_(N, i_1, i_2) = $((2^N + i_1 - i_2) \ 2^N)
 
 def $imul_(N, i_1, i_2) = $((i_1 * i_2) \ 2^N)
 
-def $idiv_ hint(builtin)
-;;def $idiv_(N, U, i_1, 0)   = eps
-;;def $idiv_(N, U, i_1, i_2) = $($int(i_1 / i_2))
-;;def $idiv_(N, S, i_1, 0)   = eps
-;;def $idiv_(N, S, i_1, i_2) = eps  -- if $($signed_(N, i_1) / $signed_(N, i_2)) = 2^(N-1)
-;;def $idiv_(N, S, i_1, i_2) = $($inv_signed_(N, $int($signed_(N, i_1) / $signed_(N, i_2))))
+def $idiv_(N, U, i_1, 0)   = eps
+def $idiv_(N, U, i_1, i_2) = $truncz($(i_1 / i_2))
+def $idiv_(N, S, i_1, 0)   = eps
+def $idiv_(N, S, i_1, i_2) = eps  -- if $($signed_(N, i_1) / $signed_(N, i_2)) = $rat$(2^(N-1))
+def $idiv_(N, S, i_1, i_2) = $inv_signed_(N, $truncz($($signed_(N, i_1) / $signed_(N, i_2))))
 
-def $irem_ hint(builtin)
-;;def $irem_(N, U, i_1, 0)   = eps
-;;def $irem_(N, U, i_1, i_2) = $(i_1 - i_2 * $int(i_1 / i_2))
-;;def $irem_(N, S, i_1, 0)   = eps
-;;def $irem_(N, S, i_1, i_2) = $($inv_signed_(N, j_1 - j_2 * $int(j_1 / f_2)))
-;;                             -- if j_1 = $signed_(N, i_1) /\ j_2 = $signed_(N, i_2)
+def $irem_(N, U, i_1, 0)   = eps
+def $irem_(N, U, i_1, i_2) = $(i_1 - i_2 * $truncz($(i_1 / i_2)))
+def $irem_(N, S, i_1, 0)   = eps
+def $irem_(N, S, i_1, i_2) = $inv_signed_(N, $(j_1 - j_2 * $truncz($(j_1 / j_2))))
+                             -- if j_1 = $signed_(N, i_1) /\ j_2 = $signed_(N, i_2)
 
-def $imin_ hint(builtin)
-;;def $imin_(N, U, i_1, i_2) = i_1  -- if i_1 <= i_2
-;;def $imin_(N, U, i_1, i_2) = i_2  -- otherwise
-;;def $imin_(N, S, i_1, i_2) = i_1  -- if $signed_(N, i_1) <= $signed_(N, i_2)
-;;def $imin_(N, S, i_1, i_2) = i_2  -- otherwise
+def $imin_(N, U, i_1, i_2) = i_1  -- if i_1 <= i_2
+def $imin_(N, U, i_1, i_2) = i_2  -- if i_1 > i_2
+def $imin_(N, S, i_1, i_2) = i_1  -- if $signed_(N, i_1) <= $signed_(N, i_2)
+def $imin_(N, S, i_1, i_2) = i_2  -- otherwise
 
-def $imax_ hint(builtin)
-;;def $imax_(N, U, i_1, i_2) = i_1  -- if i_1 >= i_2
-;;def $imax_(N, U, i_1, i_2) = i_2  -- otherwise
-;;def $imax_(N, S, i_1, i_2) = i_1  -- if $signed_(N, i_1) >= $signed_(N, i_2)
-;;def $imax_(N, S, i_1, i_2) = i_2  -- otherwise
+def $imax_(N, U, i_1, i_2) = i_1  -- if i_1 >= i_2
+def $imax_(N, U, i_1, i_2) = i_2  -- if i_1 < i_2
+def $imax_(N, S, i_1, i_2) = i_1  -- if $signed_(N, i_1) >= $signed_(N, i_2)
+def $imax_(N, S, i_1, i_2) = i_2  -- otherwise
 
 def $iadd_sat_(N, U, i_1, i_2) = $sat_u_(N, $(i_1 + i_2))
 def $iadd_sat_(N, S, i_1, i_2) = $inv_signed_(N, $sat_s_(N, $($signed_(N, i_1) + $signed_(N, i_2))))

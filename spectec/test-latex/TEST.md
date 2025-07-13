@@ -8079,15 +8079,52 @@ $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-{{{{\mathrm{iadd\_sat}}}_{N}^{\mathsf{u}}}}{(i_1, i_2)} & = & {{\mathrm{sat\_u}}}_{N}(i_1 + i_2) \\
-{{{{\mathrm{iadd\_sat}}}_{N}^{\mathsf{s}}}}{(i_1, i_2)} & = & {{{{\mathrm{signed}}}_{N}^{{-1}}}}{({{\mathrm{sat\_s}}}_{N}({{\mathrm{signed}}}_{N}(i_1) + {{\mathrm{signed}}}_{N}(i_2)))} \\
+{{\mathrm{idiv}}}{\mathsf{u}}{{}_{N}(i_1, 0)} & = & \epsilon \\
+{{\mathrm{idiv}}}{\mathsf{u}}{{}_{N}(i_1, i_2)} & = & {\mathrm{truncz}}(i_1 / i_2) \\
+{{\mathrm{idiv}}}{\mathsf{s}}{{}_{N}(i_1, 0)} & = & \epsilon \\
+{{\mathrm{idiv}}}{\mathsf{s}}{{}_{N}(i_1, i_2)} & = & \epsilon & \quad \mbox{if}~ {{\mathrm{signed}}}_{N}(i_1) / {{\mathrm{signed}}}_{N}(i_2) = {2^{N - 1}} \\
+{{\mathrm{idiv}}}{\mathsf{s}}{{}_{N}(i_1, i_2)} & = & {{{{\mathrm{signed}}}_{N}^{{-1}}}}{({\mathrm{truncz}}({{\mathrm{signed}}}_{N}(i_1) / {{\mathrm{signed}}}_{N}(i_2)))} \\
 \end{array}
 $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-{{{{\mathrm{isub\_sat}}}_{N}^{\mathsf{u}}}}{(i_1, i_2)} & = & {{\mathrm{sat\_u}}}_{N}(i_1 - i_2) \\
-{{{{\mathrm{isub\_sat}}}_{N}^{\mathsf{s}}}}{(i_1, i_2)} & = & {{{{\mathrm{signed}}}_{N}^{{-1}}}}{({{\mathrm{sat\_s}}}_{N}({{\mathrm{signed}}}_{N}(i_1) - {{\mathrm{signed}}}_{N}(i_2)))} \\
+{{\mathrm{irem}}}{\mathsf{u}}{{}_{N}(i_1, 0)} & = & \epsilon \\
+{{\mathrm{irem}}}{\mathsf{u}}{{}_{N}(i_1, i_2)} & = & i_1 - i_2 \cdot {\mathrm{truncz}}(i_1 / i_2) \\
+{{\mathrm{irem}}}{\mathsf{s}}{{}_{N}(i_1, 0)} & = & \epsilon \\
+{{\mathrm{irem}}}{\mathsf{s}}{{}_{N}(i_1, i_2)} & = & {{{{\mathrm{signed}}}_{N}^{{-1}}}}{(j_1 - j_2 \cdot {\mathrm{truncz}}(j_1 / j_2))} & \quad \mbox{if}~ j_1 = {{\mathrm{signed}}}_{N}(i_1) \land j_2 = {{\mathrm{signed}}}_{N}(i_2) \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+{{\mathrm{imin}}}{\mathsf{u}}{{}_{N}(i_1, i_2)} & = & i_1 & \quad \mbox{if}~ i_1 \leq i_2 \\
+{{\mathrm{imin}}}{\mathsf{u}}{{}_{N}(i_1, i_2)} & = & i_2 & \quad \mbox{if}~ i_1 > i_2 \\
+{{\mathrm{imin}}}{\mathsf{s}}{{}_{N}(i_1, i_2)} & = & i_1 & \quad \mbox{if}~ {{\mathrm{signed}}}_{N}(i_1) \leq {{\mathrm{signed}}}_{N}(i_2) \\
+{{\mathrm{imin}}}{\mathsf{s}}{{}_{N}(i_1, i_2)} & = & i_2 & \quad \mbox{otherwise} \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+{{\mathrm{imax}}}{\mathsf{u}}{{}_{N}(i_1, i_2)} & = & i_1 & \quad \mbox{if}~ i_1 \geq i_2 \\
+{{\mathrm{imax}}}{\mathsf{u}}{{}_{N}(i_1, i_2)} & = & i_2 & \quad \mbox{if}~ i_1 < i_2 \\
+{{\mathrm{imax}}}{\mathsf{s}}{{}_{N}(i_1, i_2)} & = & i_1 & \quad \mbox{if}~ {{\mathrm{signed}}}_{N}(i_1) \geq {{\mathrm{signed}}}_{N}(i_2) \\
+{{\mathrm{imax}}}{\mathsf{s}}{{}_{N}(i_1, i_2)} & = & i_2 & \quad \mbox{otherwise} \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+{{\mathrm{iadd\_sat}}}{\mathsf{u}}{{}_{N}(i_1, i_2)} & = & {{\mathrm{sat\_u}}}_{N}(i_1 + i_2) \\
+{{\mathrm{iadd\_sat}}}{\mathsf{s}}{{}_{N}(i_1, i_2)} & = & {{{{\mathrm{signed}}}_{N}^{{-1}}}}{({{\mathrm{sat\_s}}}_{N}({{\mathrm{signed}}}_{N}(i_1) + {{\mathrm{signed}}}_{N}(i_2)))} \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+{{\mathrm{isub\_sat}}}{\mathsf{u}}{{}_{N}(i_1, i_2)} & = & {{\mathrm{sat\_u}}}_{N}(i_1 - i_2) \\
+{{\mathrm{isub\_sat}}}{\mathsf{s}}{{}_{N}(i_1, i_2)} & = & {{{{\mathrm{signed}}}_{N}^{{-1}}}}{({{\mathrm{sat\_s}}}_{N}({{\mathrm{signed}}}_{N}(i_1) - {{\mathrm{signed}}}_{N}(i_2)))} \\
 \end{array}
 $$
 
@@ -8121,29 +8158,29 @@ $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-{{{{\mathrm{ilt}}}_{N}^{\mathsf{u}}}}{(i_1, i_2)} & = & \mathbb{B}(i_1 < i_2) \\
-{{{{\mathrm{ilt}}}_{N}^{\mathsf{s}}}}{(i_1, i_2)} & = & \mathbb{B}({{\mathrm{signed}}}_{N}(i_1) < {{\mathrm{signed}}}_{N}(i_2)) \\
+{{\mathrm{ilt}}}{\mathsf{u}}{{}_{N}(i_1, i_2)} & = & \mathbb{B}(i_1 < i_2) \\
+{{\mathrm{ilt}}}{\mathsf{s}}{{}_{N}(i_1, i_2)} & = & \mathbb{B}({{\mathrm{signed}}}_{N}(i_1) < {{\mathrm{signed}}}_{N}(i_2)) \\
 \end{array}
 $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-{{{{\mathrm{igt}}}_{N}^{\mathsf{u}}}}{(i_1, i_2)} & = & \mathbb{B}(i_1 > i_2) \\
-{{{{\mathrm{igt}}}_{N}^{\mathsf{s}}}}{(i_1, i_2)} & = & \mathbb{B}({{\mathrm{signed}}}_{N}(i_1) > {{\mathrm{signed}}}_{N}(i_2)) \\
+{{\mathrm{igt}}}{\mathsf{u}}{{}_{N}(i_1, i_2)} & = & \mathbb{B}(i_1 > i_2) \\
+{{\mathrm{igt}}}{\mathsf{s}}{{}_{N}(i_1, i_2)} & = & \mathbb{B}({{\mathrm{signed}}}_{N}(i_1) > {{\mathrm{signed}}}_{N}(i_2)) \\
 \end{array}
 $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-{{{{\mathrm{ile}}}_{N}^{\mathsf{u}}}}{(i_1, i_2)} & = & \mathbb{B}(i_1 \leq i_2) \\
-{{{{\mathrm{ile}}}_{N}^{\mathsf{s}}}}{(i_1, i_2)} & = & \mathbb{B}({{\mathrm{signed}}}_{N}(i_1) \leq {{\mathrm{signed}}}_{N}(i_2)) \\
+{{\mathrm{ile}}}{\mathsf{u}}{{}_{N}(i_1, i_2)} & = & \mathbb{B}(i_1 \leq i_2) \\
+{{\mathrm{ile}}}{\mathsf{s}}{{}_{N}(i_1, i_2)} & = & \mathbb{B}({{\mathrm{signed}}}_{N}(i_1) \leq {{\mathrm{signed}}}_{N}(i_2)) \\
 \end{array}
 $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-{{{{\mathrm{ige}}}_{N}^{\mathsf{u}}}}{(i_1, i_2)} & = & \mathbb{B}(i_1 \geq i_2) \\
-{{{{\mathrm{ige}}}_{N}^{\mathsf{s}}}}{(i_1, i_2)} & = & \mathbb{B}({{\mathrm{signed}}}_{N}(i_1) \geq {{\mathrm{signed}}}_{N}(i_2)) \\
+{{\mathrm{ige}}}{\mathsf{u}}{{}_{N}(i_1, i_2)} & = & \mathbb{B}(i_1 \geq i_2) \\
+{{\mathrm{ige}}}{\mathsf{s}}{{}_{N}(i_1, i_2)} & = & \mathbb{B}({{\mathrm{signed}}}_{N}(i_1) \geq {{\mathrm{signed}}}_{N}(i_2)) \\
 \end{array}
 $$
 
@@ -8210,13 +8247,13 @@ $$
 {\mathsf{add}}{{}_{{\mathsf{i}}{N}}(i_1, i_2)} & = & {{\mathrm{iadd}}}_{N}(i_1, i_2) \\
 {\mathsf{sub}}{{}_{{\mathsf{i}}{N}}(i_1, i_2)} & = & {{\mathrm{isub}}}_{N}(i_1, i_2) \\
 {\mathsf{mul}}{{}_{{\mathsf{i}}{N}}(i_1, i_2)} & = & {{\mathrm{imul}}}_{N}(i_1, i_2) \\
-{{\mathsf{div}}{\mathsf{\_}}{{\mathit{sx}}}}{{}_{{\mathsf{i}}{N}}(i_1, i_2)} & = & {{{{\mathrm{idiv}}}_{N}^{{\mathit{sx}}}}}{(i_1, i_2)} \\
-{{\mathsf{rem}}{\mathsf{\_}}{{\mathit{sx}}}}{{}_{{\mathsf{i}}{N}}(i_1, i_2)} & = & {{{{\mathrm{irem}}}_{N}^{{\mathit{sx}}}}}{(i_1, i_2)} \\
+{{\mathsf{div}}{\mathsf{\_}}{{\mathit{sx}}}}{{}_{{\mathsf{i}}{N}}(i_1, i_2)} & = & {{\mathrm{idiv}}}{{\mathit{sx}}}{{}_{N}(i_1, i_2)} \\
+{{\mathsf{rem}}{\mathsf{\_}}{{\mathit{sx}}}}{{}_{{\mathsf{i}}{N}}(i_1, i_2)} & = & {{\mathrm{irem}}}{{\mathit{sx}}}{{}_{N}(i_1, i_2)} \\
 {\mathsf{and}}{{}_{{\mathsf{i}}{N}}(i_1, i_2)} & = & {{\mathrm{iand}}}_{N}(i_1, i_2) \\
 {\mathsf{or}}{{}_{{\mathsf{i}}{N}}(i_1, i_2)} & = & {{\mathrm{ior}}}_{N}(i_1, i_2) \\
 {\mathsf{xor}}{{}_{{\mathsf{i}}{N}}(i_1, i_2)} & = & {{\mathrm{ixor}}}_{N}(i_1, i_2) \\
 {\mathsf{shl}}{{}_{{\mathsf{i}}{N}}(i_1, i_2)} & = & {{\mathrm{ishl}}}_{N}(i_1, i_2) \\
-{{\mathsf{shr}}{\mathsf{\_}}{{\mathit{sx}}}}{{}_{{\mathsf{i}}{N}}(i_1, i_2)} & = & {{{{\mathrm{ishr}}}_{N}^{{\mathit{sx}}}}}{(i_1, i_2)} \\
+{{\mathsf{shr}}{\mathsf{\_}}{{\mathit{sx}}}}{{}_{{\mathsf{i}}{N}}(i_1, i_2)} & = & {{\mathrm{ishr}}}{{\mathit{sx}}}{{}_{N}(i_1, i_2)} \\
 {\mathsf{rotl}}{{}_{{\mathsf{i}}{N}}(i_1, i_2)} & = & {{\mathrm{irotl}}}_{N}(i_1, i_2) \\
 {\mathsf{rotr}}{{}_{{\mathsf{i}}{N}}(i_1, i_2)} & = & {{\mathrm{irotr}}}_{N}(i_1, i_2) \\
 {\mathsf{add}}{{}_{{\mathsf{f}}{N}}(f_1, f_2)} & = & {{\mathrm{fadd}}}_{N}(f_1, f_2) \\
@@ -8239,10 +8276,10 @@ $$
 \begin{array}[t]{@{}lcl@{}l@{}}
 {\mathsf{eq}}{{}_{{\mathsf{i}}{N}}(i_1, i_2)} & = & {{\mathrm{ieq}}}_{N}(i_1, i_2) \\
 {\mathsf{ne}}{{}_{{\mathsf{i}}{N}}(i_1, i_2)} & = & {{\mathrm{ine}}}_{N}(i_1, i_2) \\
-{{\mathsf{lt}}{\mathsf{\_}}{{\mathit{sx}}}}{{}_{{\mathsf{i}}{N}}(i_1, i_2)} & = & {{{{\mathrm{ilt}}}_{N}^{{\mathit{sx}}}}}{(i_1, i_2)} \\
-{{\mathsf{gt}}{\mathsf{\_}}{{\mathit{sx}}}}{{}_{{\mathsf{i}}{N}}(i_1, i_2)} & = & {{{{\mathrm{igt}}}_{N}^{{\mathit{sx}}}}}{(i_1, i_2)} \\
-{{\mathsf{le}}{\mathsf{\_}}{{\mathit{sx}}}}{{}_{{\mathsf{i}}{N}}(i_1, i_2)} & = & {{{{\mathrm{ile}}}_{N}^{{\mathit{sx}}}}}{(i_1, i_2)} \\
-{{\mathsf{ge}}{\mathsf{\_}}{{\mathit{sx}}}}{{}_{{\mathsf{i}}{N}}(i_1, i_2)} & = & {{{{\mathrm{ige}}}_{N}^{{\mathit{sx}}}}}{(i_1, i_2)} \\
+{{\mathsf{lt}}{\mathsf{\_}}{{\mathit{sx}}}}{{}_{{\mathsf{i}}{N}}(i_1, i_2)} & = & {{\mathrm{ilt}}}{{\mathit{sx}}}{{}_{N}(i_1, i_2)} \\
+{{\mathsf{gt}}{\mathsf{\_}}{{\mathit{sx}}}}{{}_{{\mathsf{i}}{N}}(i_1, i_2)} & = & {{\mathrm{igt}}}{{\mathit{sx}}}{{}_{N}(i_1, i_2)} \\
+{{\mathsf{le}}{\mathsf{\_}}{{\mathit{sx}}}}{{}_{{\mathsf{i}}{N}}(i_1, i_2)} & = & {{\mathrm{ile}}}{{\mathit{sx}}}{{}_{N}(i_1, i_2)} \\
+{{\mathsf{ge}}{\mathsf{\_}}{{\mathit{sx}}}}{{}_{{\mathsf{i}}{N}}(i_1, i_2)} & = & {{\mathrm{ige}}}{{\mathit{sx}}}{{}_{N}(i_1, i_2)} \\
 {\mathsf{eq}}{{}_{{\mathsf{f}}{N}}(f_1, f_2)} & = & {{\mathrm{feq}}}_{N}(f_1, f_2) \\
 {\mathsf{ne}}{{}_{{\mathsf{f}}{N}}(f_1, f_2)} & = & {{\mathrm{fne}}}_{N}(f_1, f_2) \\
 {\mathsf{lt}}{{}_{{\mathsf{f}}{N}}(f_1, f_2)} & = & {{\mathrm{flt}}}_{N}(f_1, f_2) \\
@@ -8542,7 +8579,7 @@ $$
 {{\mathrm{ivbitmaskop}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}(v_1) & = & {{\mathrm{irev}}}_{32}(c) & \quad
 \begin{array}[t]{@{}l@{}}
 \mbox{if}~ {c_1^\ast} = {{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}(v_1) \\
-{\land}~ {{\mathrm{bits}}}_{{\mathsf{i}}{32}}(c) = {{{{{\mathrm{ilt}}}_{N}^{\mathsf{s}}}}{(c_1, 0)}^\ast} \oplus {(0)^{32 - M}} \\
+{\land}~ {{\mathrm{bits}}}_{{\mathsf{i}}{32}}(c) = {{{\mathrm{ilt}}}{\mathsf{s}}{{}_{N}(c_1, 0)}^\ast} \oplus {(0)^{32 - M}} \\
 \end{array} \\
 \end{array}
 $$
@@ -8789,7 +8826,7 @@ $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-{{\mathrm{ivdot\_sat}}}_{N}({i_1^\ast}, {i_2^\ast}) & = & {{{{{\mathrm{iadd\_sat}}}_{N}^{\mathsf{s}}}}{(j_1, j_2)}^\ast} & \quad \mbox{if}~ {\bigoplus}\, {(j_1~j_2)^\ast} = {{{\mathrm{imul}}}_{N}(i_1, i_2)^\ast} \\
+{{\mathrm{ivdot\_sat}}}_{N}({i_1^\ast}, {i_2^\ast}) & = & {{{\mathrm{iadd\_sat}}}{\mathsf{s}}{{}_{N}(j_1, j_2)}^\ast} & \quad \mbox{if}~ {\bigoplus}\, {(j_1~j_2)^\ast} = {{{\mathrm{imul}}}_{N}(i_1, i_2)^\ast} \\
 \end{array}
 $$
 
