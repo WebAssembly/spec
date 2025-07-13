@@ -1,0 +1,178 @@
+;;
+;; Text Format of Types
+;;
+
+;; Value Types
+
+grammar Tnumtype : numtype =
+  | "i32" => I32
+  | "i64" => I64
+  | "f32" => F32
+  | "f64" => F64
+
+grammar Tvectype : vectype =
+  | "v128" => V128
+
+
+grammar Tabsheaptype : heaptype =
+  | "any" => ANY
+  | "eq" => EQ
+  | "i31" => I31
+  | "struct" => STRUCT
+  | "array" => ARRAY
+  | "none" => NONE
+  | "func" => FUNC
+  | "nofunc" => NOFUNC
+  | "exn" => EXN
+  | "noexn" => NOEXN
+  | "extern" => EXTERN
+  | "noextern" => NOEXTERN
+
+grammar Theaptype_(I) : heaptype =
+  | ht:Tabsheaptype => ht
+  | x:Ttypeidx_(I) => _IDX x
+
+grammar Tnul : nul =
+  | eps => eps
+  | "null" => NULL
+
+grammar Treftype_(I) : reftype =
+  | "(" "ref" nul:Tnul ht:Theaptype_(I) ")" => REF nul ht
+  | ...
+
+;; TODO(4, rossberg): enable equivalences
+grammar Treftype_(I)/abbrev : reftype = ...
+  | "anyref" => (REF NULL ANY)
+  | "eqref" => (REF NULL EQ)
+  | "i31ref" => (REF NULL I31)
+  | "structref" => (REF NULL STRUCT)
+  | "arrayref" => (REF NULL ARRAY)
+  | "nullref" => (REF NULL NONE)
+  | "funcref" => (REF NULL FUNC)
+  | "nullfuncref" => (REF NULL NOFUNC)
+  | "exnref" => (REF NULL EXN)
+  | "nullexnref" => (REF NULL NOEXN)
+  | "externref" => (REF NULL EXTERN)
+  | "nullexternref" => (REF NULL NOEXTERN)
+
+
+grammar Tvaltype_(I) : valtype =
+  | nt:Tnumtype => nt
+  | vt:Tvectype => vt
+  | rt:Treftype_(I) => rt
+
+
+;; Type Definitions
+
+grammar Tpacktype : packtype =
+  | "i8" => I8
+  | "i16" => I16
+
+grammar Tstoragetype_(I) : storagetype =
+  | t:Tvaltype_(I) => t
+  | pt:Tpacktype => pt
+
+grammar Tfieldtype_(I) : fieldtype =
+  | zt:Tstoragetype_(I) => zt
+  | "(" "mut" zt:Tstoragetype_(I) ")" => MUT zt
+
+grammar Tfield_(I) : fieldtype* =
+  | "(" "field" Tid? ft:Tfieldtype_(I) ")" => ft
+;;  | ...
+
+;; TODO(2, rossberg): fix handling of parameter dimensions
+;;grammar Tfield_(I)/abbrev : fieldtype* = ...
+;;  | "(" "field" ft*:Tfieldtype_(I)* ")" => ft*
+
+grammar Tparam_(I) : (valtype*, (name?)*) =
+  | "(" "param" id?:Tid? t:Tvaltype_(I) ")" => (t, id?)
+;;  | ...
+
+;; TODO(2, rossberg): fix handling of parameter dimensions
+;;grammar Tparam_(I)/abbrev : (valtype*, (name?)*) = ...
+;;  | "(" "param" t*:Tvaltype_(I)* ")" => (t*, eps^(|t*|))
+
+grammar Tresult_(I) : valtype* =
+  | "(" "result" t:Tvaltype_(I) ")" => t
+;;  | ...
+
+;; TODO(2, rossberg): fix handling of parameter dimensions
+;;grammar Tresult_(I)/abbrev : valtype* = ...
+;;  | "(" "result" t*:Tvaltype_(I)* ")" => t*
+
+;; TODO(4, rossberg): fix total lengths of lists
+grammar Tcomptype_(I) : comptype =
+  | "(" "struct" ft*:Tlist(Tfield_(I)) ")" => STRUCT $concat_(fieldtype, ft*)
+  | "(" "array" ft:Tfieldtype_(I) ")" => ARRAY ft
+  | "(" "func" (t_1*,id?*)*:Tlist(Tparam_(I)) t_2**:Tlist(Tresult_(I)) ")" => FUNC $concat_(valtype, t_1*) -> $concat_(valtype, t_2*)
+
+
+grammar Tfin : fin =
+  | eps => eps
+  | "final" => FINAL
+
+grammar Tsubtype_(I) : subtype =
+  | "(" "sub" fin:Tfin x*:Tlist(Ttypeidx_(I)) ct:Tcomptype_(I) ")" => SUB fin $($(_IDX x))* ct
+  | ...
+
+grammar Tsubtype_(I)/abbrev : subtype = ...
+  | ct:Tcomptype_(I) => SUB eps eps ct
+
+grammar Ttypedef_(I) : subtype =
+  | "(" "type" Tid? st:Tsubtype_(I) ")" => st
+
+grammar Trectype_(I) : rectype =
+  | "(" "rec" st*:Tlist(Ttypedef_(I)) ")" => REC st*
+  | ...
+
+grammar Trectype_(I)/abbrev : rectype = ...
+  | st:Ttypedef_(I) => REC st
+
+
+;; External Types
+
+grammar Taddrtype : addrtype =
+  | "i32" => I32
+  | "i64" => I64
+  | ...
+
+grammar Taddrtype : addrtype = ...
+  | eps => I32
+
+
+grammar Tlimits_(N) : limits =
+  | n:Tu64 => `[n .. $(2^N-1)]
+  | n:Tu64 m:Tu64 => `[n .. m]
+
+
+grammar Ttypeuse_(I) : (typeuse, I) =
+  | "(" "type" x:Ttypeidx_(I) ")" => (_IDX x, I')
+    -- if I.TYPEDEFS[x] = SUB FINAL (FUNC t_1* -> t_2*)
+    -- if I' = {LOCALS eps^(|t_1*|)}
+  | "(" "type" x:Ttypeidx_(I) ")" ((t_1*,id?*):Tparam_(I))* (t_2*:Tresult_(I))* => (_IDX x, I')
+    -- if I.TYPEDEFS[x] = SUB FINAL (FUNC $concat_(valtype, t_1**) -> $concat_(valtype, t_2**))
+    -- if I' = {LOCALS (id?)*}
+;; TODO(4, rossberg): Idcontext_ok
+;;    -- Idcontext_ok: I' OK
+
+
+grammar Ttagtype_(I) : tagtype =
+  | (tu,I'):Ttypeuse_(I) => tu
+
+grammar Tglobaltype_(I) : globaltype =
+  | t:Tvaltype_(I) => t
+  | "(" "mut" t:Tvaltype_(I) ")" => MUT t
+
+grammar Tmemtype_(I) : memtype =
+  | at:Taddrtype lim:Tlimits_($($size(at)/(64 * $Ki))) => at lim PAGE
+
+grammar Ttabletype_(I) : tabletype =
+  | at:Taddrtype lim:Tlimits_($size(at)) rt:Treftype_(I) => at lim rt
+
+
+grammar Texterntype_(I) : externtype =
+  | "(" "tag" Tid? jt:Ttagtype_(I) ")" => TAG jt
+  | "(" "global" Tid? gt:Tglobaltype_(I) ")" => GLOBAL gt
+  | "(" "memory" Tid? mt:Tmemtype_(I) ")" => MEM mt
+  | "(" "table" Tid? tt:Ttabletype_(I) ")" => TABLE tt
+  | "(" "func" Tid? (tu,I'):Ttypeuse_(I) ")" => FUNC tu

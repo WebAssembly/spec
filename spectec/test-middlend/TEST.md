@@ -8883,7 +8883,7 @@ grammar Bmodule : module
     -- if ((n?{n <- `n?`} =/= ?()) \/ ($dataidx_funcs(func*{func <- `func*`}) = []))
     -- (if (func = FUNC_func(typeidx, local*{local <- `local*`}, expr)))*{expr <- `expr*`, func <- `func*`, `local*` <- `local**`, typeidx <- `typeidx*`}
 
-;; ../../../../specification/wasm-3.0/6.0-text.context.spectec
+;; ../../../../specification/wasm-3.0/6.0-text.contexts.spectec
 syntax idcontext =
 {
   TYPES{`name?*` : name?*} name?*,
@@ -8900,7 +8900,7 @@ syntax idcontext =
   TYPEDEFS{`subtype*` : subtype*} subtype*
 }
 
-;; ../../../../specification/wasm-3.0/6.0-text.context.spectec
+;; ../../../../specification/wasm-3.0/6.0-text.contexts.spectec
 syntax I = idcontext
 
 ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
@@ -18402,7 +18402,7 @@ grammar Bmodule : module
     -- if ((n?{n <- `n?`} =/= ?()) \/ ($dataidx_funcs(func*{func <- `func*`}) = []))
     -- (if (func = FUNC_func(typeidx, local*{local <- `local*`}, expr)))*{expr <- `expr*`, func <- `func*`, `local*` <- `local**`, typeidx <- `typeidx*`}
 
-;; ../../../../specification/wasm-3.0/6.0-text.context.spectec
+;; ../../../../specification/wasm-3.0/6.0-text.contexts.spectec
 syntax idcontext =
 {
   TYPES{`name?*` : name?*} name?*,
@@ -18419,7 +18419,7 @@ syntax idcontext =
   TYPEDEFS{`subtype*` : subtype*} subtype*
 }
 
-;; ../../../../specification/wasm-3.0/6.0-text.context.spectec
+;; ../../../../specification/wasm-3.0/6.0-text.contexts.spectec
 syntax I = idcontext
 
 ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
@@ -28100,7 +28100,7 @@ grammar Bmodule : module
     -- if ((n?{n <- `n?`} =/= ?()) \/ ($dataidx_funcs(func*{func <- `func*`}) = []))
     -- (if (func = FUNC_func(typeidx, local*{local <- `local*`}, expr)))*{expr <- `expr*`, func <- `func*`, `local*` <- `local**`, typeidx <- `typeidx*`}
 
-;; ../../../../specification/wasm-3.0/6.0-text.context.spectec
+;; ../../../../specification/wasm-3.0/6.0-text.contexts.spectec
 syntax idcontext =
 {
   TYPES{`name?*` : name?*} name?*,
@@ -28117,7 +28117,7 @@ syntax idcontext =
   TYPEDEFS{`subtype*` : subtype*} subtype*
 }
 
-;; ../../../../specification/wasm-3.0/6.0-text.context.spectec
+;; ../../../../specification/wasm-3.0/6.0-text.contexts.spectec
 syntax I = idcontext
 
 ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec

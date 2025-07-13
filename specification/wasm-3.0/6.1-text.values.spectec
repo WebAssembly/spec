@@ -1,0 +1,170 @@
+;;
+;; Text Format of Values
+;;
+
+;; Numbers
+
+grammar Tsign : int =
+  | eps => $(+1)
+  | "+" => $(+1)
+  | "-" => $(-1)
+
+grammar Tdigit : nat =
+  | "0" => 0
+  ;; TODO(4, rossberg): ellipses
+  | "9" => 9
+
+grammar Thexdigit : nat =
+  | d:Tdigit => d
+  | "A" => 10
+  ;; TODO(4, rossberg): ellipses
+  | "F" => 15
+  | "a" => 10
+  ;; TODO(4, rossberg): ellipses
+  | "f" => 15
+
+grammar Tnum : nat =
+  | d:Tdigit => d
+  | n:Tnum "_"? d:Tdigit => $(10*n + d)
+
+grammar Thexnum : nat =
+  | h:Thexdigit => h
+  | n:Thexnum "_"? h:Thexdigit => $(16*n + h)
+
+grammar TuN(N) : uN(N) =
+  | n:Tnum => n          -- if $(n < 2^N)
+  | "0x" n:Thexnum => n  -- if $(n < 2^N)
+
+grammar TsN(N) : sN(N) =
+  | pm:Tsign n:TuN(N) => $(pm * n)  -- if $(-2^(N-1) <= pm * n < 2^(N-1))
+
+grammar TiN(N) : iN(N) =
+  | n:TuN(N) => n
+  | i:TsN(N) => $invsigned_(N, i)
+
+
+;; TODO(4, rossberg): allow shorthand as grammar alias?
+grammar Tu32 : u32 = n:TuN(32) => n
+grammar Tu64 : u64 = n:TuN(64) => n
+
+
+grammar Tfrac : rat =
+  | d:Tdigit => $(d / 10)
+  | d:Tdigit "_"? p:Tfrac => $((d + p/10) / 10)
+
+grammar Thexfrac : rat =
+  | h:Thexdigit => $(h / 16)
+  | h:Thexdigit "_"? p:Thexfrac => $((h + p/16) / 16)
+
+grammar Tmant : rat =
+  | p:Tnum "."? => p
+  | p:Tnum "." q:Tfrac => $(p + q)
+
+grammar Thexmant : rat =
+  | p:Thexnum "."? => p
+  | p:Thexnum "." q:Thexfrac => $(p + q)
+
+;; TODO(3, rossberg): implement in numerics
+def $ieee_(N, rat) : fN(N)
+
+;; TODO(4, rossberg): enable using s, e, z as variables
+var pm : int hint(show s)
+var ee : nat hint(show e)
+var zz : nat hint(show z)
+
+grammar Tfloat : rat =
+  | p:Tmant ("E" | "e") pm:Tsign ee:Tnum => $(p * 10^(pm * ee))
+
+grammar Thexfloat : rat =
+  | "0x" p:Thexmant ("P" | "p") pm:Tsign ee:Tnum => $(p * 2^(pm * ee))
+
+(;
+grammar TfNmag(N) : fNmag(N) =
+  | zz:Tfloat => $ieee_(N, zz)     ;; TODO(4, rossberg): -- if $ieee_(N, zz) =/= +-INF
+  | zz:Thexfloat => $ieee_(N, zz)  ;; TODO(4, rossberg): -- if $ieee_(N, zz) =/= +-INF
+  | "inf" => INF
+  | "nan" => NAN($canon_(N))
+  | "nan:0x" n:Thexnum => NAN(n)  -- if $(1 <= n < 2^($signif_(N)))
+
+grammar TfN(N) : fN(N) =
+  | pm:Tsign q:TfNmag(N) => q  ;; TODO(4, rossberg): $(pm * q)
+;)
+
+
+;; Strings
+
+grammar Tstringchar : char =
+;; TODO(4, rossberg): enable
+;;  | c:Tchar => c  -- if c >= U+20 /\ c =/= U+7F /\ c =/= "\"" /\ c =/= "\\"
+  | "\\t" => U+09
+  | "\\n" => U+0A
+  | "\\r" => U+0D
+  | "\\\"" => U+22
+  | "\\'" => U+27
+  | "\\\\" => U+5C
+;; TODO(4, rossberg): enable U+exp
+;;  | "\\u{" n:Thexnum "}" => U+n  -- if n < 0xD800 \/ 0xE800 <= n < 0x110000
+
+grammar Tstringelem : byte* =
+  | c:Tstringchar => $utf8(c)
+  | "\\" h_1:Thexdigit h_2:Thexdigit => $(16 * h_1 + h_2)
+
+grammar Tstring : byte* =
+  | "\"" (b*:Tstringelem)* "\"" => $concat_(byte, b**)
+    -- if $(|$concat_(byte, b**)| < 2^32)
+
+
+;; Lists
+
+grammar Tlist(grammar TX : el) : el* =
+  | (el:TX)* => el*  -- if $(|el*| < 2^32)
+
+
+;; Names
+
+grammar Tname : name =
+  | b*:Tstring => c*  -- if b* = $utf8(c*)
+
+
+;; Identifiers
+
+;; TODO(4, rossberg): allow text tokens to stand for themselves
+(;
+grammar Tidchar : text =
+  | "0"
+  ;; TODO(4, rossberg): ellipses
+  | "9"
+  | "A"
+  ;; TODO(4, rossberg): ellipses
+  | "Z"
+  | "a"
+  ;; TODO(4, rossberg): ellipses
+  | "z"
+  | "!" | "#" | "$" | "%" | "&" | "'" | "*" | "+" | "-" | "." | "/"
+  | ":" | "<" | "=" | ">" | "?" | "@" | "\\" | "^" | "_" | "`" | "|" | "~"
+;)
+
+grammar Tid : name =
+;; TODO(4, rossberg): enable
+;;  | "$" c*:Tidchar+ => c*
+  | "$" c*:Tname => c*    -- if |c*| > 0
+
+
+;; Indices
+
+grammar Tidx_(ids : (name?)*) : idx =
+  | x:Tu32 => x
+  | id:Tid => x  -- if ids[x] = id
+
+;; TODO(4, rossberg): enable grammar aliases
+grammar Ttypeidx_(I) : typeidx = x:Tidx_(I.TYPES) => x
+grammar Ttagidx_(I) : tagidx = x:Tidx_(I.TAGS) => x
+grammar Tglobalidx_(I) : globalidx = x:Tidx_(I.GLOBALS) => x
+grammar Tmemidx_(I) : memidx = x:Tidx_(I.MEMS) => x
+grammar Ttableidx_(I) : tableidx = x:Tidx_(I.TABLES) => x
+grammar Tfuncidx_(I) : funcidx = x:Tidx_(I.FUNCS) => x
+grammar Tdataidx_(I) : dataidx = x:Tidx_(I.DATAS) => x
+grammar Telemidx_(I) : elemidx = x:Tidx_(I.ELEMS) => x
+grammar Tlocalidx_(I) : localidx = x:Tidx_(I.LOCALS) => x
+grammar Tlabelidx_(I) : labelidx = x:Tidx_(I.LABELS) => x
+grammar Tfieldidx__(I, x : idx) : fieldidx = i:Tidx_(I.FIELDS[x]) => i

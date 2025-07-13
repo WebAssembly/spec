@@ -1,0 +1,20 @@
+;;
+;; Parsing Contexts
+;;
+
+syntax idcontext hint(desc "identifier context") hint(macro "%" "I%") =
+  { TYPES (name?)*        hint(desc "type"),
+    TAGS (name?)*         hint(desc "tag"),
+    GLOBALS (name?)*      hint(desc "global"),
+    MEMS (name?)*         hint(desc "memory"),
+    TABLES (name?)*       hint(desc "table"),
+    FUNCS (name?)*        hint(desc "function"),
+    DATAS (name?)*        hint(desc "data segment"),
+    ELEMS (name?)*        hint(desc "element segment"),
+    LOCALS (name?)*       hint(desc "local"),
+    LABELS (name?)*       hint(desc "label"),
+    FIELDS (name?)**      hint(desc "field"),
+    TYPEDEFS subtype*     hint(desc "type definitions")
+  }
+
+syntax I = idcontext
