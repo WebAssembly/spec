@@ -927,8 +927,8 @@ rule Step_read/vload-pack-val:
   z; (CONST at i) (VLOAD V128 (SHAPE M X K _ sx) x ao)  ~>  (VCONST V128 c)
   ---- ----
   -- (if $ibytes_(M, j) = $mem(z, x).BYTES[i + ao.OFFSET + k * M/8 : M/8])^(k<K)
-  -- if c = $inv_lanes_(Jnn X K, $extend__(M, $lsizenn(Jnn), sx, j)^K)
-     /\ $lsizenn(Jnn) = $(M * 2)
+  -- if c = $inv_lanes_(Jnn X K, $extend__(M, $jsizenn(Jnn), sx, j)^K)
+     /\ $jsizenn(Jnn) = $(M * 2)
 
 
 rule Step_read/vload-splat-oob:
@@ -939,7 +939,7 @@ rule Step_read/vload-splat-val:
   z; (CONST at i) (VLOAD V128 (SPLAT N) x ao)  ~>  (VCONST V128 c)
   ----
   -- if $ibytes_(N, j) = $mem(z, x).BYTES[i + ao.OFFSET : N/8]
-  -- if N = $lsize(Jnn)  ;; TODO(2, rossberg): relate implicitly
+  -- if N = $jsize(Jnn)  ;; TODO(3, rossberg): relate implicitly
   -- if M = $(128/N)
   -- if c = $inv_lanes_(Jnn X M, j^M)
 
@@ -963,7 +963,7 @@ rule Step_read/vload_lane-val:
   z; (CONST at i) (VCONST V128 c_1) (VLOAD_LANE V128 N x ao j)  ~>  (VCONST V128 c)
   ----
   -- if $ibytes_(N, k) = $mem(z, x).BYTES[i + ao.OFFSET : N/8]
-  -- if N = $lsize(Jnn)  ;; TODO(2, rossberg): relate implicitly
+  -- if N = $jsize(Jnn)  ;; TODO(2, rossberg): relate implicitly
   -- if M = $($vsize(V128)/N)
   -- if c = $inv_lanes_(Jnn X M, $lanes_(Jnn X M, c_1)[[j] = k])
 
@@ -1005,7 +1005,7 @@ rule Step/vstore_lane-oob:
 
 rule Step/vstore_lane-val:
   z; (CONST at i) (VCONST V128 c) (VSTORE_LANE V128 N x ao j)  ~>  $with_mem(z, x, $(i + ao.OFFSET), $(N/8), b*); eps
-  -- if N = $lsize(Jnn)  ;; TODO(2, rossberg): relate implicitly
+  -- if N = $jsize(Jnn)  ;; TODO(2, rossberg): relate implicitly
   -- if M = $(128/N)
   -- if b* = $ibytes_(N, $lanes_(Jnn X M, c)[j])
 

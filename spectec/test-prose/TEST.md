@@ -1720,11 +1720,9 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    a. Return :math:`32`.
 
-#. If :math:`{\mathit{valtype}} = \mathsf{f{\scriptstyle 64}}`, then:
+#. Assert: Due to validation, :math:`{\mathit{valtype}} = \mathsf{f{\scriptstyle 64}}`.
 
-   a. Return :math:`64`.
-
-#. Fail.
+#. Return :math:`64`.
 
 
 :math:`{\mathrm{funcs}}({{\mathit{externtype}'}^\ast})`
@@ -3805,9 +3803,8 @@ size valtype
   a. Return 64.
 3. If (valtype = F32), then:
   a. Return 32.
-4. If (valtype = F64), then:
-  a. Return 64.
-5. Fail.
+4. Assert: Due to validation, (valtype = F64).
+5. Return 64.
 
 funcsxt externtype'*
 1. If (externtype'* = []), then:
@@ -6010,9 +6007,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{j^{N}}` be the result for which :math:`{({{\mathrm{bytes}}}_{{\mathsf{i}}{M}}({j^{N}}) = z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} + k \cdot M / 8 : M / 8])^{k<N}}`.
 
-#. Assert: Due to validation, :math:`({\mathit{lanetype}})` for which :math:`{|{\mathit{lanetype}}|}` :math:`=` :math:`M \cdot 2` is :math:`{\mathsf{i}}{n}`.
-
-#. Let :math:`{|{\mathsf{i}}{n}|}` be :math:`M \cdot 2`.
+#. Let :math:`{\mathsf{i}}{n}` be the result for which :math:`{|{\mathsf{i}}{n}|}` :math:`=` :math:`M \cdot 2`.
 
 #. Let :math:`c` be :math:`{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{N}}({{{{{\mathrm{extend}}}_{M, {|{\mathsf{i}}{n}|}}^{{\mathit{sx}}}}}{(j)}^{N}})`.
 
@@ -6035,9 +6030,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`M` be :math:`128 / N`.
 
-#. Assert: Due to validation, :math:`({\mathit{lanetype}})` for which :math:`{|{\mathit{lanetype}}|}` :math:`=` :math:`N` is :math:`{\mathsf{i}}{n}`.
-
-#. Let :math:`{|{\mathsf{i}}{n}|}` be :math:`N`.
+#. Let :math:`{\mathsf{i}}{n}` be the result for which :math:`{|{\mathsf{i}}{n}|}` :math:`=` :math:`N`.
 
 #. Let :math:`j` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{N}}(j)` :math:`=` :math:`z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : N / 8]`.
 
@@ -7264,13 +7257,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       #) Let :math:`{j^{N}}` be the result for which :math:`{({{\mathrm{bytes}}}_{{\mathsf{i}}{M}}({j^{N}}) = z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} + k \cdot M / 8 : M / 8])^{k<N}}`.
 
-      #) If :math:`({\mathit{lanetype}})` for which :math:`{|{\mathit{lanetype}}|}` :math:`=` :math:`M \cdot 2` is :math:`{\mathsf{i}}{n}`, then:
+      #) Let :math:`{\mathsf{i}}{n}` be the result for which :math:`{|{\mathsf{i}}{n}|}` :math:`=` :math:`M \cdot 2`.
 
-         a) Let :math:`{|{\mathsf{i}}{n}|}` be :math:`M \cdot 2`.
+      #) Let :math:`c` be :math:`{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{N}}({{{{{\mathrm{extend}}}_{M, {|{\mathsf{i}}{n}|}}^{{\mathit{sx}}}}}{(j)}^{N}})`.
 
-         #) Let :math:`c` be :math:`{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{N}}({{{{{\mathrm{extend}}}_{M, {|{\mathsf{i}}{n}|}}^{{\mathit{sx}}}}}{(j)}^{N}})`.
-
-         #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
+      #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
    #. If :math:`{\mathit{vloadop}}_0` is some :math:`{\mathbb{N}}{\mathsf{\_}}{\mathsf{splat}}`, then:
 
@@ -7282,15 +7273,13 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       #) Let :math:`M` be :math:`128 / N`.
 
-      #) If :math:`({\mathit{lanetype}})` for which :math:`{|{\mathit{lanetype}}|}` :math:`=` :math:`N` is :math:`{\mathsf{i}}{n}`, then:
+      #) Let :math:`{\mathsf{i}}{n}` be the result for which :math:`{|{\mathsf{i}}{n}|}` :math:`=` :math:`N`.
 
-         a) Let :math:`{|{\mathsf{i}}{n}|}` be :math:`N`.
+      #) Let :math:`j` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{N}}(j)` :math:`=` :math:`z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : N / 8]`.
 
-         #) Let :math:`j` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{N}}(j)` :math:`=` :math:`z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : N / 8]`.
+      #) Let :math:`c` be :math:`{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({j^{M}})`.
 
-         #) Let :math:`c` be :math:`{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({j^{M}})`.
-
-         #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
+      #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
    #. If :math:`{\mathit{vloadop}}_0` is some :math:`{\mathbb{N}}{\mathsf{\_}}{\mathsf{zero}}`, then:
 
@@ -7327,9 +7316,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`M` be :math:`128 / N`.
 
-#. Assert: Due to validation, :math:`({\mathit{lanetype}})` for which :math:`{|{\mathit{lanetype}}|}` :math:`=` :math:`N` is :math:`{\mathsf{i}}{n}`.
-
-#. Let :math:`{|{\mathsf{i}}{n}|}` be :math:`N`.
+#. Let :math:`{\mathsf{i}}{n}` be the result for which :math:`{|{\mathsf{i}}{n}|}` :math:`=` :math:`N`.
 
 #. Let :math:`k` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{N}}(k)` :math:`=` :math:`z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : N / 8]`.
 
@@ -7673,9 +7660,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`M` be :math:`128 / N`.
 
-#. Assert: Due to validation, :math:`({\mathit{lanetype}})` for which :math:`{|{\mathit{lanetype}}|}` :math:`=` :math:`N` is :math:`{\mathsf{i}}{n}`.
-
-#. Let :math:`{|{\mathsf{i}}{n}|}` be :math:`N`.
+#. Let :math:`{\mathsf{i}}{n}` be the result for which :math:`{|{\mathsf{i}}{n}|}` :math:`=` :math:`N`.
 
 #. Assert: Due to validation, :math:`j < {|{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}(c)|}`.
 
@@ -7888,6 +7873,13 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 1. Return :math:`{2^{{\mathrm{signif}}(N) - 1}}`.
 
 
+:math:`{\mathrm{lanetype}}({{\mathsf{i}}{n}}{\mathsf{x}}{N})`
+.............................................................
+
+
+1. Return :math:`{\mathsf{i}}{n}`.
+
+
 :math:`{|{\mathit{valtype}}|}`
 ..............................
 
@@ -7908,18 +7900,25 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    a. Return :math:`64`.
 
-#. If :math:`{\mathit{valtype}} = \mathsf{v{\scriptstyle 128}}`, then:
+#. If :math:`{\mathit{valtype}} = \mathsf{i{\scriptstyle 32}}`, then:
 
-   a. Return :math:`128`.
+   a. Return :math:`32`.
 
-#. Fail.
+#. If :math:`{\mathit{valtype}} = \mathsf{i{\scriptstyle 64}}`, then:
 
+   a. Return :math:`64`.
 
-:math:`{|{\mathsf{i}}{n}|}`
-...........................
+#. If :math:`{\mathit{valtype}} = \mathsf{f{\scriptstyle 32}}`, then:
 
+   a. Return :math:`32`.
 
-1. Return :math:`{|{\mathsf{i}}{n}|}`.
+#. If :math:`{\mathit{valtype}} = \mathsf{f{\scriptstyle 64}}`, then:
+
+   a. Return :math:`64`.
+
+#. Assert: Due to validation, :math:`{\mathit{valtype}} = \mathsf{v{\scriptstyle 128}}`.
+
+#. Return :math:`128`.
 
 
 :math:`{|{\mathit{packtype}}|}`
@@ -7927,6 +7926,14 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 
 1. If :math:`{\mathit{packtype}} = \mathsf{i{\scriptstyle 8}}`, then:
+
+   a. Return :math:`8`.
+
+#. If :math:`{\mathit{packtype}} = \mathsf{i{\scriptstyle 16}}`, then:
+
+   a. Return :math:`16`.
+
+#. If :math:`{\mathit{packtype}} = \mathsf{i{\scriptstyle 8}}`, then:
 
    a. Return :math:`8`.
 
@@ -7943,16 +7950,38 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    a. Return :math:`{|{\mathit{lanetype}}|}`.
 
+#. If :math:`{\mathit{lanetype}}` is packed type, then:
+
+   a. Return :math:`{|{\mathit{lanetype}}|}`.
+
+#. If :math:`{\mathit{lanetype}}` is number type, then:
+
+   a. Return :math:`{|{\mathit{lanetype}}|}`.
+
 #. Assert: Due to validation, :math:`{\mathit{lanetype}}` is packed type.
 
 #. Return :math:`{|{\mathit{lanetype}}|}`.
 
 
-:math:`{\mathrm{lanetype}}({{\mathsf{i}}{n}}{\mathsf{x}}{N})`
-.............................................................
+:math:`{|{\mathsf{i}}{n}|}`
+...........................
 
 
-1. Return :math:`{\mathsf{i}}{n}`.
+1. Return :math:`{|{\mathsf{i}}{n}|}`.
+
+
+:math:`{|{\mathsf{i}}{n}|}`
+...........................
+
+
+1. Return :math:`{|{\mathsf{i}}{n}|}`.
+
+
+:math:`{|{\mathsf{f}}{n}|}`
+...........................
+
+
+1. Return :math:`{|{\mathsf{f}}{n}|}`.
 
 
 :math:`N`
@@ -7995,6 +8024,51 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 
 1. Return :math:`{|{\mathit{lt}}|}`.
+
+
+:math:`{\mathrm{inv}}_{\mathit{isize}}(n)`
+..........................................
+
+
+1. If :math:`n = 32`, then:
+
+   a. Return :math:`\mathsf{i{\scriptstyle 32}}`.
+
+#. If :math:`n = 64`, then:
+
+   a. Return :math:`\mathsf{i{\scriptstyle 64}}`.
+
+#. Fail.
+
+
+:math:`{\mathrm{inv}}_{\mathit{jsize}}(n)`
+..........................................
+
+
+1. If :math:`n = 8`, then:
+
+   a. Return :math:`\mathsf{i{\scriptstyle 8}}`.
+
+#. If :math:`n = 16`, then:
+
+   a. Return :math:`\mathsf{i{\scriptstyle 16}}`.
+
+#. Return :math:`{\mathrm{inv}}_{\mathit{isize}}(n)`.
+
+
+:math:`{\mathrm{inv}}_{\mathit{fsize}}(n)`
+..........................................
+
+
+1. If :math:`n = 32`, then:
+
+   a. Return :math:`\mathsf{f{\scriptstyle 32}}`.
+
+#. If :math:`n = 64`, then:
+
+   a. Return :math:`\mathsf{f{\scriptstyle 64}}`.
+
+#. Fail.
 
 
 :math:`{\mathrm{zero}}({\mathit{numtype}})`
@@ -11148,10 +11222,9 @@ Step_read/vload-shape-* V128 ?((SHAPE M X N _ sx)) ao
 4. If (((i + ao.OFFSET) + ((M * N) / 8)) > |$mem(z, 0).BYTES|), then:
   a. Trap.
 5. Let j^N be $ibytes__1^-1(M, $mem(z, 0).BYTES[((i + ao.OFFSET) + ((k * M) / 8)) : (M / 8)])^(k<N).
-6. Assert: Due to validation, $lsize^-1((M * 2)) is Jnn.
-7. Let Jnn be $lsize^-1((M * 2)).
-8. Let c be $inv_lanes_(Jnn X N, $extend__(M, $lsize(Jnn), sx, j)^N).
-9. Push the value (V128.CONST c) to the stack.
+6. Let Jnn be $jsize^-1((M * 2)).
+7. Let c be $inv_lanes_(Jnn X N, $extend__(M, $jsize(Jnn), sx, j)^N).
+8. Push the value (V128.CONST c) to the stack.
 
 Step_read/vload-splat-* V128 ?((SPLAT N)) ao
 1. Let z be the current state.
@@ -11160,11 +11233,10 @@ Step_read/vload-splat-* V128 ?((SPLAT N)) ao
 4. If (((i + ao.OFFSET) + (N / 8)) > |$mem(z, 0).BYTES|), then:
   a. Trap.
 5. Let M be (128 / N).
-6. Assert: Due to validation, $lsize^-1(N) is Jnn.
-7. Let Jnn be $lsize^-1(N).
-8. Let j be $ibytes__1^-1(N, $mem(z, 0).BYTES[(i + ao.OFFSET) : (N / 8)]).
-9. Let c be $inv_lanes_(Jnn X M, j^M).
-10. Push the value (V128.CONST c) to the stack.
+6. Let Jnn be $jsize^-1(N).
+7. Let j be $ibytes__1^-1(N, $mem(z, 0).BYTES[(i + ao.OFFSET) : (N / 8)]).
+8. Let c be $inv_lanes_(Jnn X M, j^M).
+9. Push the value (V128.CONST c) to the stack.
 
 Step_read/vload-zero-* V128 ?((ZERO N)) ao
 1. Let z be the current state.
@@ -11739,20 +11811,18 @@ Step_read/vload V128 vloadop? ao
     2) If (((i + ao.OFFSET) + ((M * N) / 8)) > |$mem(z, 0).BYTES|), then:
       a) Trap.
     3) Let j^N be $ibytes__1^-1(M, $mem(z, 0).BYTES[((i + ao.OFFSET) + ((k * M) / 8)) : (M / 8)])^(k<N).
-    4) If $lsize^-1((M * 2)) is Jnn, then:
-      a) Let Jnn be $lsize^-1((M * 2)).
-      b) Let c be $inv_lanes_(Jnn X N, $extend__(M, $lsize(Jnn), sx, j)^N).
-      c) Push the value (V128.CONST c) to the stack.
+    4) Let Jnn be $jsize^-1((M * 2)).
+    5) Let c be $inv_lanes_(Jnn X N, $extend__(M, $jsize(Jnn), sx, j)^N).
+    6) Push the value (V128.CONST c) to the stack.
   c. If vloadop_0 is some SPLAT, then:
     1) Let (SPLAT N) be vloadop_0.
     2) If (((i + ao.OFFSET) + (N / 8)) > |$mem(z, 0).BYTES|), then:
       a) Trap.
     3) Let M be (128 / N).
-    4) If $lsize^-1(N) is Jnn, then:
-      a) Let Jnn be $lsize^-1(N).
-      b) Let j be $ibytes__1^-1(N, $mem(z, 0).BYTES[(i + ao.OFFSET) : (N / 8)]).
-      c) Let c be $inv_lanes_(Jnn X M, j^M).
-      d) Push the value (V128.CONST c) to the stack.
+    4) Let Jnn be $jsize^-1(N).
+    5) Let j be $ibytes__1^-1(N, $mem(z, 0).BYTES[(i + ao.OFFSET) : (N / 8)]).
+    6) Let c be $inv_lanes_(Jnn X M, j^M).
+    7) Push the value (V128.CONST c) to the stack.
   d. If vloadop_0 is some ZERO, then:
     1) Let (ZERO N) be vloadop_0.
     2) If (((i + ao.OFFSET) + (N / 8)) > |$mem(z, 0).BYTES|), then:
@@ -11770,11 +11840,10 @@ Step_read/vload_lane V128 N ao j
 6. If (((i + ao.OFFSET) + (N / 8)) > |$mem(z, 0).BYTES|), then:
   a. Trap.
 7. Let M be (128 / N).
-8. Assert: Due to validation, $lsize^-1(N) is Jnn.
-9. Let Jnn be $lsize^-1(N).
-10. Let k be $ibytes__1^-1(N, $mem(z, 0).BYTES[(i + ao.OFFSET) : (N / 8)]).
-11. Let c be $inv_lanes_(Jnn X M, $lanes_(Jnn X M, c_1) with [j] replaced by k).
-12. Push the value (V128.CONST c) to the stack.
+8. Let Jnn be $jsize^-1(N).
+9. Let k be $ibytes__1^-1(N, $mem(z, 0).BYTES[(i + ao.OFFSET) : (N / 8)]).
+10. Let c be $inv_lanes_(Jnn X M, $lanes_(Jnn X M, c_1) with [j] replaced by k).
+11. Push the value (V128.CONST c) to the stack.
 
 Step_read/memory.size
 1. Let z be the current state.
@@ -11937,11 +12006,10 @@ Step/vstore_lane V128 N ao j
 6. If (((i + ao.OFFSET) + N) > |$mem(z, 0).BYTES|), then:
   a. Trap.
 7. Let M be (128 / N).
-8. Assert: Due to validation, $lsize^-1(N) is Jnn.
-9. Let Jnn be $lsize^-1(N).
-10. Assert: Due to validation, (j < |$lanes_(Jnn X M, c)|).
-11. Let b* be $ibytes_(N, $lanes_(Jnn X M, c)[j]).
-12. Perform $with_mem(z, 0, (i + ao.OFFSET), (N / 8), b*).
+8. Let Jnn be $jsize^-1(N).
+9. Assert: Due to validation, (j < |$lanes_(Jnn X M, c)|).
+10. Let b* be $ibytes_(N, $lanes_(Jnn X M, c)[j]).
+11. Perform $with_mem(z, 0, (i + ao.OFFSET), (N / 8), b*).
 
 Step/memory.grow
 1. Let z be the current state.
@@ -12036,6 +12104,9 @@ fone N
 canon_ N
 1. Return (2 ^ ($signif(N) - 1)).
 
+lanetype Lnn X N
+1. Return Lnn.
+
 size valtype
 1. If (valtype = I32), then:
   a. Return 32.
@@ -12045,27 +12116,45 @@ size valtype
   a. Return 32.
 4. If (valtype = F64), then:
   a. Return 64.
-5. If (valtype = V128), then:
-  a. Return 128.
-6. Fail.
-
-isize Inn
-1. Return $size(Inn).
+5. If (valtype = I32), then:
+  a. Return 32.
+6. If (valtype = I64), then:
+  a. Return 64.
+7. If (valtype = F32), then:
+  a. Return 32.
+8. If (valtype = F64), then:
+  a. Return 64.
+9. Assert: Due to validation, (valtype = V128).
+10. Return 128.
 
 psize packtype
 1. If (packtype = I8), then:
   a. Return 8.
-2. Assert: Due to validation, (packtype = I16).
-3. Return 16.
+2. If (packtype = I16), then:
+  a. Return 16.
+3. If (packtype = I8), then:
+  a. Return 8.
+4. Assert: Due to validation, (packtype = I16).
+5. Return 16.
 
 lsize lanetype
 1. If lanetype is numtype, then:
   a. Return $size(lanetype).
-2. Assert: Due to validation, lanetype is packtype.
-3. Return $psize(lanetype).
+2. If lanetype is packtype, then:
+  a. Return $psize(lanetype).
+3. If lanetype is numtype, then:
+  a. Return $size(lanetype).
+4. Assert: Due to validation, lanetype is packtype.
+5. Return $psize(lanetype).
 
-lanetype Lnn X N
-1. Return Lnn.
+isize Inn
+1. Return $size(Inn).
+
+jsize Jnn
+1. Return $lsize(Jnn).
+
+fsize Fnn
+1. Return $size(Fnn).
 
 sizenn nt
 1. Return $size(nt).
@@ -12084,6 +12173,27 @@ lsizenn1 lt
 
 lsizenn2 lt
 1. Return $lsize(lt).
+
+inv_isize n
+1. If (n = 32), then:
+  a. Return I32.
+2. If (n = 64), then:
+  a. Return I64.
+3. Fail.
+
+inv_jsize n
+1. If (n = 8), then:
+  a. Return I8.
+2. If (n = 16), then:
+  a. Return I16.
+3. Return $inv_isize(n).
+
+inv_fsize n
+1. If (n = 32), then:
+  a. Return F32.
+2. If (n = 64), then:
+  a. Return F64.
+3. Fail.
 
 zero numtype
 1. If numtype is Inn, then:
@@ -17459,9 +17569,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{j^{K}}` be the result for which :math:`{({{\mathrm{bytes}}}_{{\mathsf{i}}{M}}({j^{K}}) = z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} + k \cdot M / 8 : M / 8])^{k<K}}`.
 
-#. Assert: Due to validation, :math:`N` for which :math:`N` :math:`=` :math:`M \cdot 2` is :math:`{\mathsf{i}}{N}`.
-
-#. Let :math:`N` be :math:`M \cdot 2`.
+#. Let :math:`{\mathsf{i}}{N}` be the result for which :math:`N` :math:`=` :math:`M \cdot 2`.
 
 #. Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{K}}^{{-1}}}}{({{{{{\mathrm{extend}}}_{M, N}^{{\mathit{sx}}}}}{(j)}^{K}})}`.
 
@@ -17484,9 +17592,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`M` be :math:`128 / N`.
 
-#. Assert: Due to validation, :math:`({\mathit{lanetype}})` for which :math:`{|{\mathit{lanetype}}|}` :math:`=` :math:`N` is :math:`{\mathsf{i}}{N}`.
-
-#. Let :math:`{|{\mathsf{i}}{N}|}` be :math:`N`.
+#. Let :math:`{\mathsf{i}}{N}` be the result for which :math:`{|{\mathsf{i}}{N}|}` :math:`=` :math:`N`.
 
 #. Let :math:`j` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{N}}(j)` :math:`=` :math:`z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : N / 8]`.
 
@@ -19862,13 +19968,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       #) Let :math:`{j^{K}}` be the result for which :math:`{({{\mathrm{bytes}}}_{{\mathsf{i}}{M}}({j^{K}}) = z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} + k \cdot M / 8 : M / 8])^{k<K}}`.
 
-      #) If :math:`N` for which :math:`N` :math:`=` :math:`M \cdot 2` is :math:`{\mathsf{i}}{N}`, then:
+      #) Let :math:`{\mathsf{i}}{N}` be the result for which :math:`N` :math:`=` :math:`M \cdot 2`.
 
-         a) Let :math:`N` be :math:`M \cdot 2`.
+      #) Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{K}}^{{-1}}}}{({{{{{\mathrm{extend}}}_{M, N}^{{\mathit{sx}}}}}{(j)}^{K}})}`.
 
-         #) Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{K}}^{{-1}}}}{({{{{{\mathrm{extend}}}_{M, N}^{{\mathit{sx}}}}}{(j)}^{K}})}`.
-
-         #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
+      #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
    #. If :math:`{\mathit{vloadop\_{\scriptstyle 0}}}` is some :math:`{{\mathit{sz}}}{\mathsf{\_}}{\mathsf{splat}}`, then:
 
@@ -19880,15 +19984,13 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       #) Let :math:`M` be :math:`128 / N`.
 
-      #) If :math:`({\mathit{lanetype}})` for which :math:`{|{\mathit{lanetype}}|}` :math:`=` :math:`N` is :math:`{\mathsf{i}}{N}`, then:
+      #) Let :math:`{\mathsf{i}}{N}` be the result for which :math:`{|{\mathsf{i}}{N}|}` :math:`=` :math:`N`.
 
-         a) Let :math:`{|{\mathsf{i}}{N}|}` be :math:`N`.
+      #) Let :math:`j` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{N}}(j)` :math:`=` :math:`z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : N / 8]`.
 
-         #) Let :math:`j` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{N}}(j)` :math:`=` :math:`z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : N / 8]`.
+      #) Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}^{{-1}}}}{({j^{M}})}`.
 
-         #) Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}^{{-1}}}}{({j^{M}})}`.
-
-         #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
+      #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
    #. If :math:`{\mathit{vloadop\_{\scriptstyle 0}}}` is some :math:`{{\mathit{sz}}}{\mathsf{\_}}{\mathsf{zero}}`, then:
 
@@ -19925,9 +20027,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`M` be :math:`{|\mathsf{v{\scriptstyle 128}}|} / N`.
 
-#. Assert: Due to validation, :math:`({\mathit{lanetype}})` for which :math:`{|{\mathit{lanetype}}|}` :math:`=` :math:`N` is :math:`{\mathsf{i}}{N}`.
-
-#. Let :math:`{|{\mathsf{i}}{N}|}` be :math:`N`.
+#. Let :math:`{\mathsf{i}}{N}` be the result for which :math:`{|{\mathsf{i}}{N}|}` :math:`=` :math:`N`.
 
 #. Let :math:`k` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{N}}(k)` :math:`=` :math:`z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : N / 8]`.
 
@@ -20424,9 +20524,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`M` be :math:`128 / N`.
 
-#. Assert: Due to validation, :math:`({\mathit{lanetype}})` for which :math:`{|{\mathit{lanetype}}|}` :math:`=` :math:`N` is :math:`{\mathsf{i}}{N}`.
-
-#. Let :math:`{|{\mathsf{i}}{N}|}` be :math:`N`.
+#. Let :math:`{\mathsf{i}}{N}` be the result for which :math:`{|{\mathsf{i}}{N}|}` :math:`=` :math:`N`.
 
 #. Assert: Due to validation, :math:`j < {|{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}(c)|}`.
 
@@ -21131,6 +21229,72 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`{|{\mathit{storagetype}}|}`.
 
 
+:math:`{|{\mathsf{i}}{N}|}`
+...........................
+
+
+1. Return :math:`{|{\mathsf{i}}{N}|}`.
+
+
+:math:`{|{\mathsf{i}}{N}|}`
+...........................
+
+
+1. Return :math:`{|{\mathsf{i}}{N}|}`.
+
+
+:math:`{|{\mathsf{f}}{N}|}`
+...........................
+
+
+1. Return :math:`{|{\mathsf{f}}{N}|}`.
+
+
+:math:`{\mathrm{inv}}_{\mathit{isize}}(n)`
+..........................................
+
+
+1. If :math:`n = 32`, then:
+
+   a. Return :math:`\mathsf{i{\scriptstyle 32}}`.
+
+#. If :math:`n = 64`, then:
+
+   a. Return :math:`\mathsf{i{\scriptstyle 64}}`.
+
+#. Fail.
+
+
+:math:`{\mathrm{inv}}_{\mathit{jsize}}(n)`
+..........................................
+
+
+1. If :math:`n = 8`, then:
+
+   a. Return :math:`\mathsf{i{\scriptstyle 8}}`.
+
+#. If :math:`n = 16`, then:
+
+   a. Return :math:`\mathsf{i{\scriptstyle 16}}`.
+
+#. Return :math:`{\mathrm{inv}}_{\mathit{isize}}(n)`.
+
+
+:math:`{\mathrm{inv}}_{\mathit{fsize}}(n)`
+..........................................
+
+
+1. If :math:`n = 32`, then:
+
+   a. Return :math:`\mathsf{f{\scriptstyle 32}}`.
+
+#. If :math:`n = 64`, then:
+
+   a. Return :math:`\mathsf{f{\scriptstyle 64}}`.
+
+#. Fail.
+
+
 :math:`N`
 .........
 
@@ -21185,6 +21349,20 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 
 1. Return :math:`{|{\mathit{lt}}|}`.
+
+
+:math:`N`
+.........
+
+
+1. Return :math:`{|{\mathsf{i}}{N}|}`.
+
+
+:math:`{\mathrm{inv}}_{\mathit{jsizenn}}(n)`
+............................................
+
+
+1. Return :math:`{\mathrm{inv}}_{\mathit{jsize}}(n)`.
 
 
 :math:`{\mathrm{unpack}}({\mathit{lanetype}})`
@@ -23954,8 +24132,6 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{c_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}(v_2)`.
 
-#. Assert: Due to validation, :math:`({\mathit{numtype}})` for which :math:`{|{\mathit{numtype}}|}` :math:`=` :math:`{|{\mathsf{f}}{N}|}` is :math:`{\mathsf{i}}{N}`.
-
 #. Let :math:`{\mathsf{i}}{N}` be the result for which :math:`{|{\mathsf{i}}{N}|}` :math:`=` :math:`{|{\mathsf{f}}{N}|}`.
 
 #. Let :math:`{c^\ast}` be :math:`{{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{\mathrm{f}}}_{N}(c_1, c_2))}^\ast}`.
@@ -24543,9 +24719,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`M` be :math:`2 \, M_2`.
 
-#. Assert: Due to validation, :math:`N` for which :math:`N` :math:`=` :math:`2 \cdot N_1` is :math:`{\mathsf{i}}{N}`.
-
-#. Let :math:`N` be :math:`2 \cdot N_1`.
+#. Let :math:`{\mathsf{i}}{N}` be the result for which :math:`N` :math:`=` :math:`2 \cdot N_1`.
 
 #. Let :math:`{c'}` be :math:`{}{{}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}, {{\mathsf{i}}{N}}{\mathsf{x}}{M}}(c_1, c_2)}`.
 
@@ -27863,10 +28037,9 @@ Step_read/vload-pack-* V128 ?((SHAPE M X K _ sx)) x ao
 4. If (((i + ao.OFFSET) + ((M * K) / 8)) > |$mem(z, x).BYTES|), then:
   a. Trap.
 5. Let j^K be $ibytes__1^-1(M, $mem(z, x).BYTES[((i + ao.OFFSET) + ((k * M) / 8)) : (M / 8)])^(k<K).
-6. Assert: Due to validation, $lsizenn^-1((M * 2)) is Jnn.
-7. Let Jnn be $lsizenn^-1((M * 2)).
-8. Let c be $inv_lanes_(Jnn X K, $extend__(M, $lsizenn(Jnn), sx, j)^K).
-9. Push the value (V128.CONST c) to the stack.
+6. Let Jnn be $jsizenn^-1((M * 2)).
+7. Let c be $inv_lanes_(Jnn X K, $extend__(M, $jsizenn(Jnn), sx, j)^K).
+8. Push the value (V128.CONST c) to the stack.
 
 Step_read/vload-splat-* V128 ?((SPLAT N)) x ao
 1. Let z be the current state.
@@ -27875,11 +28048,10 @@ Step_read/vload-splat-* V128 ?((SPLAT N)) x ao
 4. If (((i + ao.OFFSET) + (N / 8)) > |$mem(z, x).BYTES|), then:
   a. Trap.
 5. Let M be (128 / N).
-6. Assert: Due to validation, $lsize^-1(N) is Jnn.
-7. Let Jnn be $lsize^-1(N).
-8. Let j be $ibytes__1^-1(N, $mem(z, x).BYTES[(i + ao.OFFSET) : (N / 8)]).
-9. Let c be $inv_lanes_(Jnn X M, j^M).
-10. Push the value (V128.CONST c) to the stack.
+6. Let Jnn be $jsize^-1(N).
+7. Let j be $ibytes__1^-1(N, $mem(z, x).BYTES[(i + ao.OFFSET) : (N / 8)]).
+8. Let c be $inv_lanes_(Jnn X M, j^M).
+9. Push the value (V128.CONST c) to the stack.
 
 Step_read/vload-zero-* V128 ?((ZERO N)) x ao
 1. Let z be the current state.
@@ -29001,20 +29173,18 @@ Step_read/vload V128 vloadop_? x ao
     2) If (((i + ao.OFFSET) + ((M * K) / 8)) > |$mem(z, x).BYTES|), then:
       a) Trap.
     3) Let j^K be $ibytes__1^-1(M, $mem(z, x).BYTES[((i + ao.OFFSET) + ((k * M) / 8)) : (M / 8)])^(k<K).
-    4) If $lsizenn^-1((M * 2)) is Jnn, then:
-      a) Let Jnn be $lsizenn^-1((M * 2)).
-      b) Let c be $inv_lanes_(Jnn X K, $extend__(M, $lsizenn(Jnn), sx, j)^K).
-      c) Push the value (V128.CONST c) to the stack.
+    4) Let Jnn be $jsizenn^-1((M * 2)).
+    5) Let c be $inv_lanes_(Jnn X K, $extend__(M, $jsizenn(Jnn), sx, j)^K).
+    6) Push the value (V128.CONST c) to the stack.
   c. If vloadop__0 is some SPLAT, then:
     1) Let (SPLAT N) be vloadop__0.
     2) If (((i + ao.OFFSET) + (N / 8)) > |$mem(z, x).BYTES|), then:
       a) Trap.
     3) Let M be (128 / N).
-    4) If $lsize^-1(N) is Jnn, then:
-      a) Let Jnn be $lsize^-1(N).
-      b) Let j be $ibytes__1^-1(N, $mem(z, x).BYTES[(i + ao.OFFSET) : (N / 8)]).
-      c) Let c be $inv_lanes_(Jnn X M, j^M).
-      d) Push the value (V128.CONST c) to the stack.
+    4) Let Jnn be $jsize^-1(N).
+    5) Let j be $ibytes__1^-1(N, $mem(z, x).BYTES[(i + ao.OFFSET) : (N / 8)]).
+    6) Let c be $inv_lanes_(Jnn X M, j^M).
+    7) Push the value (V128.CONST c) to the stack.
   d. If vloadop__0 is some ZERO, then:
     1) Let (ZERO N) be vloadop__0.
     2) If (((i + ao.OFFSET) + (N / 8)) > |$mem(z, x).BYTES|), then:
@@ -29032,11 +29202,10 @@ Step_read/vload_lane V128 N x ao j
 6. If (((i + ao.OFFSET) + (N / 8)) > |$mem(z, x).BYTES|), then:
   a. Trap.
 7. Let M be ($vsize(V128) / N).
-8. Assert: Due to validation, $lsize^-1(N) is Jnn.
-9. Let Jnn be $lsize^-1(N).
-10. Let k be $ibytes__1^-1(N, $mem(z, x).BYTES[(i + ao.OFFSET) : (N / 8)]).
-11. Let c be $inv_lanes_(Jnn X M, $lanes_(Jnn X M, c_1) with [j] replaced by k).
-12. Push the value (V128.CONST c) to the stack.
+8. Let Jnn be $jsize^-1(N).
+9. Let k be $ibytes__1^-1(N, $mem(z, x).BYTES[(i + ao.OFFSET) : (N / 8)]).
+10. Let c be $inv_lanes_(Jnn X M, $lanes_(Jnn X M, c_1) with [j] replaced by k).
+11. Push the value (V128.CONST c) to the stack.
 
 Step_read/memory.size x
 1. Let z be the current state.
@@ -29273,11 +29442,10 @@ Step/vstore_lane V128 N x ao j
 6. If (((i + ao.OFFSET) + N) > |$mem(z, x).BYTES|), then:
   a. Trap.
 7. Let M be (128 / N).
-8. Assert: Due to validation, $lsize^-1(N) is Jnn.
-9. Let Jnn be $lsize^-1(N).
-10. Assert: Due to validation, (j < |$lanes_(Jnn X M, c)|).
-11. Let b* be $ibytes_(N, $lanes_(Jnn X M, c)[j]).
-12. Perform $with_mem(z, x, (i + ao.OFFSET), (N / 8), b*).
+8. Let Jnn be $jsize^-1(N).
+9. Assert: Due to validation, (j < |$lanes_(Jnn X M, c)|).
+10. Let b* be $ibytes_(N, $lanes_(Jnn X M, c)[j]).
+11. Perform $with_mem(z, x, (i + ao.OFFSET), (N / 8), b*).
 
 Step/memory.grow x
 1. Let z be the current state.
@@ -29597,6 +29765,36 @@ zsize storagetype
 3. Assert: Due to validation, storagetype is packtype.
 4. Return $psize(storagetype).
 
+isize Inn
+1. Return $size(Inn).
+
+jsize Jnn
+1. Return $lsize(Jnn).
+
+fsize Fnn
+1. Return $size(Fnn).
+
+inv_isize n
+1. If (n = 32), then:
+  a. Return I32.
+2. If (n = 64), then:
+  a. Return I64.
+3. Fail.
+
+inv_jsize n
+1. If (n = 8), then:
+  a. Return I8.
+2. If (n = 16), then:
+  a. Return I16.
+3. Return $inv_isize(n).
+
+inv_fsize n
+1. If (n = 32), then:
+  a. Return F32.
+2. If (n = 64), then:
+  a. Return F64.
+3. Fail.
+
 sizenn nt
 1. Return $size(nt).
 
@@ -29620,6 +29818,12 @@ lsizenn1 lt
 
 lsizenn2 lt
 1. Return $lsize(lt).
+
+jsizenn Jnn
+1. Return $lsize(Jnn).
+
+inv_jsizenn n
+1. Return $inv_jsize(n).
 
 lunpack lanetype
 1. If lanetype is numtype, then:
@@ -30920,10 +31124,9 @@ ivrelopsx_ Jnn X M $f_ sx v_1 v_2
 fvrelop_ Fnn X M $f_ v_1 v_2
 1. Let c_1* be $lanes_(Fnn X M, v_1).
 2. Let c_2* be $lanes_(Fnn X M, v_2).
-3. Assert: Due to validation, $size^-1($size(Fnn)) is Inn.
-4. Let Inn be $size^-1($size(Fnn)).
-5. Let c* be $extend__(1, $sizenn(Fnn), S, $f_($sizenn(Fnn), c_1, c_2))*.
-6. Return $inv_lanes_(Inn X M, c*).
+3. Let Inn be $isize^-1($fsize(Fnn)).
+4. Let c* be $extend__(1, $sizenn(Fnn), S, $f_($sizenn(Fnn), c_1, c_2))*.
+5. Return $inv_lanes_(Inn X M, c*).
 
 ivshiftop_ Jnn X M $f_ v_1 i
 1. Let c_1* be $lanes_(Jnn X M, v_1).
@@ -31200,12 +31403,11 @@ vextbinop__ Jnn_1 X M_1 Jnn_2 X M_2 vextbinop__ v_1 v_2
 
 vextternop__ Jnn_1 X M_1 Jnn_2 X M_2 RELAXED_DOT_ADDS c_1 c_2 c_3
 1. Let M be (2 * M_2).
-2. Assert: Due to validation, $lsizenn^-1((2 * $lsizenn1(Jnn_1))) is Jnn.
-3. Let Jnn be $lsizenn^-1((2 * $lsizenn1(Jnn_1))).
-4. Let c' be $vextbinop__(Jnn_1 X M_1, Jnn X M, RELAXED_DOTS, c_1, c_2).
-5. Let c'' be $vextunop__(Jnn X M, Jnn_2 X M_2, (EXTADD_PAIRWISE S), c').
-6. Let c be an element of $vbinop_(Jnn_2 X M_2, ADD, c'', c_3).
-7. Return c.
+2. Let Jnn be $jsizenn^-1((2 * $lsizenn1(Jnn_1))).
+3. Let c' be $vextbinop__(Jnn_1 X M_1, Jnn X M, RELAXED_DOTS, c_1, c_2).
+4. Let c'' be $vextunop__(Jnn X M, Jnn_2 X M_2, (EXTADD_PAIRWISE S), c').
+5. Let c be an element of $vbinop_(Jnn_2 X M_2, ADD, c'', c_3).
+6. Return c.
 
 Ki
 1. Return 1024.

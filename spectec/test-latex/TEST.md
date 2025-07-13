@@ -3010,6 +3010,46 @@ $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
+{|{\mathsf{i}}{N}|} & = & {|{\mathsf{i}}{N}|} \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+{|{\mathsf{f}}{N}|} & = & {|{\mathsf{f}}{N}|} \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+{|{\mathsf{i}}{N}|} & = & {|{\mathsf{i}}{N}|} \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+{\mathrm{inv}}_{\mathit{isize}}(32) & = & \mathsf{i{\scriptstyle 32}} \\
+{\mathrm{inv}}_{\mathit{isize}}(64) & = & \mathsf{i{\scriptstyle 64}} \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+{\mathrm{inv}}_{\mathit{fsize}}(32) & = & \mathsf{f{\scriptstyle 32}} \\
+{\mathrm{inv}}_{\mathit{fsize}}(64) & = & \mathsf{f{\scriptstyle 64}} \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+{\mathrm{inv}}_{\mathit{jsize}}(8) & = & \mathsf{i{\scriptstyle 8}} \\
+{\mathrm{inv}}_{\mathit{jsize}}(16) & = & \mathsf{i{\scriptstyle 16}} \\
+{\mathrm{inv}}_{\mathit{jsize}}(n) & = & {\mathrm{inv}}_{\mathit{isize}}(n) \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
 N & = & {|{\mathit{nt}}|} \\
 \end{array}
 $$
@@ -3053,6 +3093,18 @@ $$
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
 N_2 & = & {|{\mathit{lt}}|} \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+N & = & {|{\mathsf{i}}{N}|} \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+{\mathrm{inv}}_{\mathit{jsizenn}}(n) & = & {\mathrm{inv}}_{\mathit{jsize}}(n) \\
 \end{array}
 $$
 

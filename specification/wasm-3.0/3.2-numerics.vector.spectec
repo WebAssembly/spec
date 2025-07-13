@@ -143,7 +143,7 @@ def $fvrelop_(Fnn X M, def $f_, v_1, v_2) = $inv_lanes_(Inn X M, c*)
     -- if c_1* = $lanes_(Fnn X M, v_1)
     -- if c_2* = $lanes_(Fnn X M, v_2)
     -- if c* = $extend__(1, $sizenn(Fnn), S, $f_($sizenn(Fnn), c_1, c_2))*
-    -- if $size(Inn) = $size(Fnn)  ;; TODO(3, rossberg): make implicit
+    -- if $isize(Inn) = $fsize(Fnn)  ;; TODO(3, rossberg): make implicit
 
 
 def $ivshiftop_(Jnn X M, def $f_, v_1, i) = $inv_lanes_(Jnn X M, c*)
@@ -397,7 +397,7 @@ def $vextbinop__(Jnn_1 X M_1, Jnn_2 X M_2, RELAXED_DOT S, v_1, v_2) =
 (;
 ;; TODO(2, rossberg): this is obsolete, clean up
 def $vextternop__(Jnn_1 X M_1, Jnn_2 X M_2, RELAXED_DOT_ADD S, c_1, c_2, c_3) = c
-  -- if $lsizenn(Jnn) = $(2*$lsizenn1(Jnn_1))
+  -- if $jsizenn(Jnn) = $(2*$lsizenn1(Jnn_1))
   -- if ci_1* = $lanes_(Jnn_1 X M_1, c_1)
   -- if ci_2* = $lanes_(Jnn_1 X M_1, c_2)
   -- if ci_3* = $lanes_(Jnn_2 X M_2, c_3)
@@ -412,7 +412,7 @@ def $vextternop__(Jnn_1 X M_1, Jnn_2 X M_2, RELAXED_DOT_ADD S, c_1, c_2, c_3) = 
 ;)
 
 def $vextternop__(Jnn_1 X M_1, Jnn_2 X M_2, RELAXED_DOT_ADD S, c_1, c_2, c_3) = c
-  -- if $lsizenn(Jnn) = $(2*$lsizenn1(Jnn_1))
+  -- if $jsizenn(Jnn) = $(2*$lsizenn1(Jnn_1))
   -- if M = $(2*M_2)
   -- if c' = $vextbinop__(Jnn_1 X M_1, Jnn X M, RELAXED_DOT S, c_1, c_2)
   -- if c'' = $vextunop__(Jnn X M, Jnn_2 X M_2, EXTADD_PAIRWISE S, c')

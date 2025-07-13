@@ -201,11 +201,29 @@ var xt : externtype
 
 ;; Constants
 
-def $size(valtype) : nat      hint(show |%|) hint(partial) hint(inverse $inv_size)
-def $isize(Inn) : nat         hint(show |%|) hint(inverse $inv_isize)
-def $psize(packtype) : nat    hint(show |%|)
-def $lsize(lanetype) : nat    hint(show |%|) hint(inverse $inv_lsize)
 def $lanetype(shape) : lanetype
+
+def $size(valtype) : nat      hint(show |%|)
+def $psize(packtype) : nat    hint(show |%|)
+def $lsize(lanetype) : nat    hint(show |%|)
+def $isize(Inn) : nat         hint(show |%|) hint(inverse $inv_isize)
+def $jsize(Jnn) : nat         hint(show |%|) hint(inverse $inv_jsize)
+def $fsize(Fnn) : nat         hint(show |%|) hint(inverse $inv_fsize)
+
+def $size(I32) = 32
+def $size(I64) = 64
+def $size(F32) = 32
+def $size(F64) = 64
+
+def $psize(I8) = 8
+def $psize(I16) = 16
+
+def $lsize(numtype) = $size(numtype)
+def $lsize(packtype) = $psize(packtype)
+
+def $isize(Inn) = $size(Inn)
+def $fsize(Fnn) = $size(Fnn)
+def $jsize(Jnn) = $lsize(Jnn)
 
 def $sizenn(numtype) : nat     hint(show N)   hint(macro none)  ;; HACK!
 def $sizenn1(numtype) : nat    hint(show N_1) hint(macro none)  ;; HACK!
@@ -221,13 +239,17 @@ def $lsizenn(lt) = $lsize(lt)
 def $lsizenn1(lt) = $lsize(lt)
 def $lsizenn2(lt) = $lsize(lt)
 
-def $inv_size(nat) : valtype
-def $inv_isize(nat) : Inn
-def $inv_lsize(nat) : lanetype
+def $inv_isize(nat) : Inn hint(partial)
+def $inv_jsize(nat) : Jnn hint(partial)
+def $inv_fsize(nat) : Fnn hint(partial)
 
-def $inv_size  hint(builtin)
-def $inv_isize hint(builtin)
-def $inv_lsize hint(builtin)
+def $inv_isize(32) = I32
+def $inv_isize(64) = I64
+def $inv_fsize(32) = F32
+def $inv_fsize(64) = F64
+def $inv_jsize(8)  = I8
+def $inv_jsize(16) = I16
+def $inv_jsize(n)  = $inv_isize(n)
 
 
 syntax num_(numtype)

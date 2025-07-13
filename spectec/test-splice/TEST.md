@@ -1350,6 +1350,7 @@ warning: definition `frelaxed_madd_` was never spliced
 warning: definition `frelaxed_max_` was never spliced
 warning: definition `frelaxed_min_` was never spliced
 warning: definition `frelaxed_nmadd_` was never spliced
+warning: definition `fsize` was never spliced
 warning: definition `fsqrt_` was never spliced
 warning: definition `fsub_` was never spliced
 warning: definition `ftrunc_` was never spliced
@@ -1412,15 +1413,15 @@ warning: definition `inv_concat_` was never spliced
 warning: definition `inv_concatn_` was never spliced
 warning: definition `inv_fbits_` was never spliced
 warning: definition `inv_fbytes_` was never spliced
+warning: definition `inv_fsize` was never spliced
 warning: definition `inv_ibits_` was never spliced
 warning: definition `inv_ibytes_` was never spliced
+warning: definition `inv_isize` was never spliced
+warning: definition `inv_jsize` was never spliced
+warning: definition `inv_jsizenn` was never spliced
 warning: definition `inv_lanes_` was never spliced
-warning: definition `inv_lsize` was never spliced
-warning: definition `inv_lsizenn` was never spliced
 warning: definition `inv_nbytes_` was never spliced
 warning: definition `inv_signed_` was never spliced
-warning: definition `inv_size` was never spliced
-warning: definition `inv_sizenn` was never spliced
 warning: definition `inv_vbytes_` was never spliced
 warning: definition `inv_zbytes_` was never spliced
 warning: definition `invoke` was never spliced
@@ -1436,6 +1437,7 @@ warning: definition `irotl_` was never spliced
 warning: definition `irotr_` was never spliced
 warning: definition `ishl_` was never spliced
 warning: definition `ishr_` was never spliced
+warning: definition `isize` was never spliced
 warning: definition `isub_` was never spliced
 warning: definition `isub_sat_` was never spliced
 warning: definition `iswizzle_lane_` was never spliced
@@ -1459,6 +1461,8 @@ warning: definition `ivternopnd_` was never spliced
 warning: definition `ivtestop_` was never spliced
 warning: definition `ivunop_` was never spliced
 warning: definition `ixor_` was never spliced
+warning: definition `jsize` was never spliced
+warning: definition `jsizenn` was never spliced
 warning: definition `lanes_` was never spliced
 warning: definition `lanetype` was never spliced
 warning: definition `lcvtop__` was never spliced
@@ -2172,6 +2176,7 @@ warning: definition prose `free_typeuse` was never spliced
 warning: definition prose `free_typevar` was never spliced
 warning: definition prose `free_valtype` was never spliced
 warning: definition prose `free_vectype` was never spliced
+warning: definition prose `fsize` was never spliced
 warning: definition prose `func` was never spliced
 warning: definition prose `funcidx_module` was never spliced
 warning: definition prose `funcidx_nonfuncs` was never spliced
@@ -2214,9 +2219,14 @@ warning: definition prose `inst_reftype` was never spliced
 warning: definition prose `inst_tabletype` was never spliced
 warning: definition prose `inst_valtype` was never spliced
 warning: definition prose `instantiate` was never spliced
+warning: definition prose `inv_fsize` was never spliced
+warning: definition prose `inv_isize` was never spliced
+warning: definition prose `inv_jsize` was never spliced
+warning: definition prose `inv_jsizenn` was never spliced
 warning: definition prose `inv_signed_` was never spliced
 warning: definition prose `invoke` was never spliced
 warning: definition prose `irelaxed_swizzle_lane_` was never spliced
+warning: definition prose `isize` was never spliced
 warning: definition prose `isub_` was never spliced
 warning: definition prose `isub_sat_` was never spliced
 warning: definition prose `iswizzle_lane_` was never spliced
@@ -2239,6 +2249,8 @@ warning: definition prose `ivswizzlop_` was never spliced
 warning: definition prose `ivternopnd_` was never spliced
 warning: definition prose `ivtestop_` was never spliced
 warning: definition prose `ivunop_` was never spliced
+warning: definition prose `jsize` was never spliced
+warning: definition prose `jsizenn` was never spliced
 warning: definition prose `lanetype` was never spliced
 warning: definition prose `lcvtop__` was never spliced
 warning: definition prose `local` was never spliced

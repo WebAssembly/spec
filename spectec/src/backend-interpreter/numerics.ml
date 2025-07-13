@@ -1058,44 +1058,6 @@ let inv_lanes : numerics =
       );
   }
 
-let inv_isize : numerics =
-  {
-    name = "inv_isize";
-    f =
-      (function
-      | [ NumV (`Nat z) ] when z = Z.of_int 32 -> CaseV ("I32", [])
-      | [ NumV (`Nat z) ] when z = Z.of_int 64 -> CaseV ("I64", [])
-      | vs -> error_values "inv_isize" vs
-      );
-  }
-let inv_lsize : numerics =
-  {
-    name = "inv_lsize";
-    f =
-      (function
-      | [ NumV (`Nat z) ] when z = Z.of_int 8 -> CaseV ("I8", [])
-      | [ NumV (`Nat z) ] when z = Z.of_int 16 -> CaseV ("I16", [])
-      | [ NumV (`Nat z) ] when z = Z.of_int 32 -> CaseV ("I32", [])
-      | [ NumV (`Nat z) ] when z = Z.of_int 64 -> CaseV ("I64", [])
-      | vs -> error_values "inv_lsize" vs
-      );
-  }
-let inv_size : numerics =
-  {
-    name = "inv_size";
-    f = inv_lsize.f;
-  }
-let inv_lsizenn : numerics =
-  {
-    name = "inv_lsizenn";
-    f = inv_lsize.f;
-  }
-let inv_sizenn : numerics =
-  {
-    name = "inv_sizenn";
-    f = inv_lsize.f;
-  }
-
 let rec inv_concat_helper = function
   | a :: b :: l ->
     [listV_of_list [a; b]] @ inv_concat_helper l
@@ -1228,11 +1190,6 @@ let numerics_list : numerics list = [
   reinterpret;
   lanes;
   inv_lanes;
-  inv_size;
-  inv_isize;
-  inv_lsize;
-  inv_lsizenn;
-  inv_sizenn;
   inv_ibits;
 ]
 
