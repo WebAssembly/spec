@@ -9,7 +9,7 @@
     exception
     relation
     ds
-    builtin
+    host
     debugger
     )
 )
