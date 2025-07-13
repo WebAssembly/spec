@@ -120,16 +120,6 @@ Value Types
    \end{array}
 
 
-
-Function Types
-~~~~~~~~~~~~~~
-
-.. math::
-   \begin{array}{llclll@{\qquad\qquad}l}
-   \end{array}
-
-
-
 .. index:: composite type, aggregate type, structure type, array type, function type, field type, storage type, value type, packed type, mutability, result type
    pair: text format; composite type
    pair: text format; aggregate type
@@ -314,7 +304,7 @@ Tag Types
 .. math::
    \begin{array}{llcl}
    \production{tag} & \Ttagtype_I &::=&
-     x,I'{:}\Ttypeuse_I~\text{)} \Rightarrow\quad x \\
+     x,I'{:}\Ttypeuse_I \Rightarrow\quad x \\
    \end{array}
 
 
@@ -329,7 +319,7 @@ Global Types
 .. math::
    \begin{array}{llclll}
    \production{global type} & \Tglobaltype_I &::=&
-     t{:}\Tvaltype &\Rightarrow& \MCONST~t \\ &&|&
+     t{:}\Tvaltype_I &\Rightarrow& \MCONST~t \\ &&|&
      \text{(}~\text{mut}~~t{:}\Tvaltype_I~\text{)} &\Rightarrow& \MVAR~t \\
    \end{array}
 
@@ -344,7 +334,7 @@ Memory Types
 .. math::
    \begin{array}{llclll@{\qquad\qquad}l}
    \production{memory type} & \Tmemtype_I &::=&
-     \X{at}{:}\Taddrtype~~\X{lim}{:}\Tlimits &\Rightarrow& \X{at}~\X{lim} \\
+     \X{at}{:}\Taddrtype~~\X{lim}{:}\Tlimits &\Rightarrow& \X{at}~\X{lim}~\PAGE \\
    \end{array}
 
 

@@ -1071,6 +1071,24 @@ Printf.eprintf "[render_atom %s @ %s] id=%s def=%s macros: %s (%s)\n%!"
     ) |> fst
 
 
+let render_text s =
+    let buf = Buffer.create (String.length s) in
+    for i = 0 to String.length s - 1 do
+      match s.[i] with
+      | '#' -> Buffer.add_string buf "\\#"
+      | '$' -> Buffer.add_string buf "\\$"
+      | '%' -> Buffer.add_string buf "\\%"
+      | '&' -> Buffer.add_string buf "\\&"
+      | '_' -> Buffer.add_string buf "\\_"
+      | '\\' -> Buffer.add_string buf "\\backslash{}"
+      | '^' ->  Buffer.add_string buf "\\hat{~~}"
+      | '`' ->  Buffer.add_string buf "\\grave{~~}"
+      | '~' ->  Buffer.add_string buf "\\tilde{~~}"
+      | c -> Buffer.add_char buf c
+    done;
+    Buffer.contents buf
+
+
 (* Operators *)
 
 let render_unop = function
@@ -1228,7 +1246,7 @@ and render_exp env e =
     let atom = {it = Atom.Atom (Z.to_string n); at = e.at; note = Atom.info "nat"} in
     render_atom (without_macros true env) atom
   | NumE _ -> assert false
-  | TextE t -> "\\mbox{\\texttt{`" ^ t ^ "'}}"
+  | TextE t -> "\\mbox{`$\\mathtt{" ^ render_text t ^ "}$'}"
   | CvtE (e1, _) -> render_exp env e1
   | UnE (op, e2) -> "{" ^ render_unop op ^ render_exp env e2 ^ "}"
   | BinE (e1, `PowOp, ({it = ParenE e2; _ } | e2)) ->
@@ -1469,7 +1487,7 @@ and render_sym env g : string =
       "%X"
     in "\\mathrm{U{+}" ^ Z.format fmt n ^ "}"
   | NumG (`AtomOp, n) -> "\\mathtt{" ^ Z.to_string n ^ "}"
-  | TextG t -> "\\mbox{\\texttt{`" ^ t ^ "'}}"
+  | TextG t -> "\\mbox{`$\\mathtt{" ^ render_text t ^ "}$'}"
   | EpsG -> "\\epsilon"
   | SeqG gs -> render_sym_seq env gs
   | AltG gs -> render_syms " ~|~ " env gs

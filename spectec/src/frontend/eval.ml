@@ -788,7 +788,8 @@ and sub_typ env t1 t2 =
       | None -> false
     ) tcs1
   | ConT ((t11, prems1), _), ConT ((t21, prems2), _) ->
-    sub_typ env t11 t21 && sub_prems env prems1 prems2
+    sub_typ env t11 t21 && sub_prems env prems1 prems2 ||
+    equiv_typ env t1 t2
 (*
   | ConT ((t11, _), _), _ -> sub_typ env t11 t2
   | _, ConT ((t21, _), _) -> sub_typ env t1 t21

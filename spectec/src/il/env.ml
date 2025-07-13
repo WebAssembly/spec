@@ -46,7 +46,7 @@ let find_opt map id =
 
 let find space map id =
   match find_opt map id with
-  | None -> error id.at ("undeclared " ^ space)
+  | None -> error id.at ("undeclared " ^ space ^ " `" ^ id.it ^ "`")
   | Some t -> t
 
 let bind _space map id rhs =

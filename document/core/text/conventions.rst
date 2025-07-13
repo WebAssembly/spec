@@ -123,12 +123,12 @@ It is convenient to define identifier contexts as :ref:`records <notation-record
    \production{identifier context} & I &::=&
      \begin{array}[t]{l@{~}ll}
      \{ & \ITYPES & (\name^?)^\ast, \\
-        & \IFUNCS & (\name^?)^\ast, \\
-        & \ITABLES & (\name^?)^\ast, \\
-        & \IMEMS & (\name^?)^\ast, \\
-        & \IGLOBALS & (\name^?)^\ast, \\
         & \ITAGS & (\Tname^?)^\ast, \\
+        & \IGLOBALS & (\name^?)^\ast, \\
+        & \IMEMS & (\name^?)^\ast, \\
+        & \ITABLES & (\name^?)^\ast, \\
         & \IELEM & (\name^?)^\ast, \\
+        & \IFUNCS & (\name^?)^\ast, \\
         & \IDATA & (\name^?)^\ast, \\
         & \ILOCALS & (\name^?)^\ast, \\
         & \ILABELS & (\name^?)^\ast, \\
