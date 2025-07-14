@@ -878,9 +878,9 @@ let rec render_single_stmt ?(with_type=true) env stmt  =
       (render_expr env lhs)
       (render_expr env e)
     | LetS (e1, e2) ->
-      sprintf "let %s be %s"
-        (render_expr env e1)
-        (render_expr_with_type env e2)
+      sprintf "%s is %s"
+        (render_expr_with_type env e1)
+        (render_expr env e2)
     | CondS e ->
       sprintf "%s"
         (render_expr env e)

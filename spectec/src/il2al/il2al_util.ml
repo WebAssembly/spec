@@ -155,19 +155,27 @@ let rec typ_to_var_name ty =
   | Il.Ast.TupT tys -> List.map typ_to_var_name (List.map snd tys) |> String.concat "_"
   | Il.Ast.IterT _ -> failwith (Il.Print.string_of_typ ty)
 
-let rec typ_to_var_exp' ty post_fix =
+let rec typ_to_var_exp' ty suffix =
   match ty.it with
   | Il.Ast.IterT (ty', iter) ->
-    let id, e = typ_to_var_exp' ty' post_fix in
+    let id, e = typ_to_var_exp' ty' suffix in
     let iter_id = { id with it = id.it ^ Il.Print.string_of_iter iter} in
     let iter_e = VarE iter_id $$ (no_region, ty) in
     iter_id, IterE (e, (iter, [(id, iter_e)])) $$ (no_region, ty)
   | _ ->
-    let id = typ_to_var_name ty ^ post_fix $ no_region in
+    let prefix = typ_to_var_name ty in
+    let id' =
+      if prefix.[String.length prefix - 1] = '_' && suffix.[0] = '_' then
+        (* x__0 --> x_0 *)
+        prefix ^ String.sub suffix 1 (String.length suffix - 1)
+      else
+        prefix ^ suffix
+    in
+    let id = id' $ no_region in
     id, VarE id $$ (no_region, ty)
 
-let typ_to_var_exp ?(post_fix="") ty =
-  let _, e = typ_to_var_exp' ty post_fix in
+let typ_to_var_exp ?(suffix="") ty =
+  let _, e = typ_to_var_exp' ty suffix in
   e
 
 let get_var_set_in_algo (algo: Al.Ast.algorithm) : Al.Free.IdSet.t =

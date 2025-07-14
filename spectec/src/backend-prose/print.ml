@@ -392,9 +392,9 @@ let string_of_pphint = function
 let rec raw_string_of_single_stmt stmt =
   match stmt with
   | LetS (e1, e2) ->
-    sprintf "Let %s be %s"
-      (string_of_expr e1)
-      (string_of_expr_with_type e2)
+    sprintf "%s is %s"
+      (string_of_expr_with_type e1)
+      (string_of_expr e2)
   | CondS e ->
     sprintf "%s"
       (string_of_expr e)

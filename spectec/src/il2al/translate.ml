@@ -514,7 +514,7 @@ let init_lhs_id () = lhs_id_ref := 0
 let get_lhs_var_expr e =
   let lhs_id = !lhs_id_ref in
   lhs_id_ref := (lhs_id + 1);
-  let exp = Il2al_util.typ_to_var_exp e.note ~post_fix:("_" ^ string_of_int lhs_id) in
+  let exp = Il2al_util.typ_to_var_exp e.note ~suffix:("_" ^ string_of_int lhs_id) in
   { (translate_exp exp) with at = e.at; note = e.note}
 
 

@@ -1451,9 +1451,9 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    a. Assert: Due to validation, :math:`t` is :math:`{\mathsf{i}}{n}`.
 
-   #. Let :math:`{\mathit{loadop\_{\scriptstyle 0}}}` be :math:`{{\mathit{loadop}}^?}`.
+   #. Let :math:`{\mathit{loadop}}_0` be :math:`{{\mathit{loadop}}^?}`.
 
-   #. Let :math:`{n}{\mathsf{\_}}{{\mathit{sx}}}` be the destructuring of :math:`{\mathit{loadop\_{\scriptstyle 0}}}`.
+   #. Let :math:`{n}{\mathsf{\_}}{{\mathit{sx}}}` be the destructuring of :math:`{\mathit{loadop}}_0`.
 
    #. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + n / 8 > {|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
 
@@ -3723,8 +3723,8 @@ Step_read/load t loadop_? ao
   c. Push the value (t.CONST c) to the stack.
 5. Else:
   a. Assert: Due to validation, t is Inn.
-  b. Let ?(loadop__0) be loadop_?.
-  c. Let n _ sx be loadop__0.
+  b. Let ?(loadop_0) be loadop_?.
+  c. Let n _ sx be loadop_0.
   d. If (((i + ao.OFFSET) + (n / 8)) > |$mem(z, 0).BYTES|), then:
     1) Trap.
   e. Let c be $ibytes__1^-1(n, $mem(z, 0).BYTES[(i + ao.OFFSET) : (n / 8)]).
@@ -5013,7 +5013,7 @@ The instruction :math:`({\mathit{sh}}{.}\mathsf{shuffle}~{i^\ast})` is :ref:`val
 The instruction :math:`({\mathit{sh}}{.}\mathsf{splat})` is :ref:`valid <valid-val>` with the function type :math:`t~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
 
 
-   * Let :math:`t` be the number type :math:`{\mathrm{unpack}}({\mathit{sh}})`.
+   * The number type :math:`t` is :math:`{\mathrm{unpack}}({\mathit{sh}})`.
 
 
 
@@ -5023,7 +5023,7 @@ The instruction :math:`({{\mathit{sh}}{.}\mathsf{extract\_lane}}{{{\mathit{sx}}^
 
    * The lane index :math:`i` is less than :math:`{\mathrm{dim}}({\mathit{sh}})`.
 
-   * Let :math:`t` be the number type :math:`{\mathrm{unpack}}({\mathit{sh}})`.
+   * The number type :math:`t` is :math:`{\mathrm{unpack}}({\mathit{sh}})`.
 
 
 
@@ -5033,7 +5033,7 @@ The instruction :math:`({\mathit{sh}}{.}\mathsf{replace\_lane}~i)` is :ref:`vali
 
    * The lane index :math:`i` is less than :math:`{\mathrm{dim}}({\mathit{sh}})`.
 
-   * Let :math:`t` be the number type :math:`{\mathrm{unpack}}({\mathit{sh}})`.
+   * The number type :math:`t` is :math:`{\mathrm{unpack}}({\mathit{sh}})`.
 
 
 
@@ -7270,9 +7270,9 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    a. Assert: Due to validation, :math:`{\mathit{nt}}` is :math:`{\mathsf{i}}{n}`.
 
-   #. Let :math:`{\mathit{loadop\_{\scriptstyle 0}}}` be :math:`{{\mathit{loadop}}^?}`.
+   #. Let :math:`{\mathit{loadop}}_0` be :math:`{{\mathit{loadop}}^?}`.
 
-   #. Let :math:`{n}{\mathsf{\_}}{{\mathit{sx}}}` be the destructuring of :math:`{\mathit{loadop\_{\scriptstyle 0}}}`.
+   #. Let :math:`{n}{\mathsf{\_}}{{\mathit{sx}}}` be the destructuring of :math:`{\mathit{loadop}}_0`.
 
    #. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + n / 8 > {|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
 
@@ -10836,17 +10836,17 @@ Instr_ok/vshuffle
 
 Instr_ok/vsplat
 - the instruction (VSPLAT sh) is valid with the function type [t] -> [V128] if:
-  - Let t be the number type $shunpack(sh).
+  - the number type t is $shunpack(sh).
 
 Instr_ok/vextract_lane
 - the instruction (VEXTRACT_LANE sh sx? i) is valid with the function type [V128] -> [t] if:
   - the lane index i is less than $dim(sh).
-  - Let t be the number type $shunpack(sh).
+  - the number type t is $shunpack(sh).
 
 Instr_ok/vreplace_lane
 - the instruction (VREPLACE_LANE sh i) is valid with the function type [V128, t] -> [V128] if:
   - the lane index i is less than $dim(sh).
-  - Let t be the number type $shunpack(sh).
+  - the number type t is $shunpack(sh).
 
 Instr_ok/vextunop
 - the instruction (VEXTUNOP sh_1 sh_2 vextunop) is valid with the function type [V128] -> [V128].
@@ -11938,8 +11938,8 @@ Step_read/load nt loadop_? ao
   c. Push the value (nt.CONST c) to the stack.
 5. Else:
   a. Assert: Due to validation, nt is Inn.
-  b. Let ?(loadop__0) be loadop_?.
-  c. Let n _ sx be loadop__0.
+  b. Let ?(loadop_0) be loadop_?.
+  c. Let n _ sx be loadop_0.
   d. If (((i + ao.OFFSET) + (n / 8)) > |$mem(z, 0).BYTES|), then:
     1) Trap.
   e. Let c be $ibytes__1^-1(n, $mem(z, 0).BYTES[(i + ao.OFFSET) : (n / 8)]).
@@ -15088,7 +15088,7 @@ The instruction :math:`(\mathsf{br\_on\_cast}~l~{\mathit{rt}}_1~{\mathit{rt}}_2)
 
    * The reference type :math:`{\mathit{rt}}_2` :ref:`matches <match>` the reference type :math:`{\mathit{rt}}`.
 
-   * Let :math:`{t'}` be the reference type :math:`{\mathit{rt}}_1 \setminus {\mathit{rt}}_2`.
+   * The reference type :math:`{t'}` is :math:`{\mathit{rt}}_1 \setminus {\mathit{rt}}_2`.
 
 
 
@@ -15359,7 +15359,7 @@ The instruction :math:`(\mathsf{struct{.}new}~x)` is :ref:`valid <valid-val>` wi
 
    * The :ref:`expansion <aux-expand-deftype>` of the type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{struct}~{({\mathsf{mut}^?}~{\mathit{zt}})^\ast})`.
 
-   * Let :math:`{t^\ast}` be the value type sequence :math:`{{\mathrm{unpack}}({\mathit{zt}})^\ast}`.
+   * The value type sequence :math:`{t^\ast}` is :math:`{{\mathrm{unpack}}({\mathit{zt}})^\ast}`.
 
 
 
@@ -15391,7 +15391,7 @@ The instruction :math:`({\mathsf{struct{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~
 
    * The signedness :math:`{{\mathit{sx}}^?}` is absent if and only if the storage type :math:`{\mathit{zt}}` is of the form :math:`{\mathrm{unpack}}({\mathit{zt}})`.
 
-   * Let :math:`t` be the value type :math:`{\mathrm{unpack}}({\mathit{zt}})`.
+   * The value type :math:`t` is :math:`{\mathrm{unpack}}({\mathit{zt}})`.
 
 
 
@@ -15407,7 +15407,7 @@ The instruction :math:`(\mathsf{struct{.}set}~x~i)` is :ref:`valid <valid-val>` 
 
    * The field type :math:`{{\mathit{ft}}^\ast}{}[i]` is of the form :math:`(\mathsf{mut}~{\mathit{zt}})`.
 
-   * Let :math:`t` be the value type :math:`{\mathrm{unpack}}({\mathit{zt}})`.
+   * The value type :math:`t` is :math:`{\mathrm{unpack}}({\mathit{zt}})`.
 
 
 
@@ -15419,7 +15419,7 @@ The instruction :math:`(\mathsf{array{.}new}~x)` is :ref:`valid <valid-val>` wit
 
    * The :ref:`expansion <aux-expand-deftype>` of the type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`.
 
-   * Let :math:`t` be the value type :math:`{\mathrm{unpack}}({\mathit{zt}})`.
+   * The value type :math:`t` is :math:`{\mathrm{unpack}}({\mathit{zt}})`.
 
 
 
@@ -15443,7 +15443,7 @@ The instruction :math:`(\mathsf{array{.}new\_fixed}~x~n)` is :ref:`valid <valid-
 
    * The :ref:`expansion <aux-expand-deftype>` of the type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`.
 
-   * Let :math:`t` be the value type :math:`{\mathrm{unpack}}({\mathit{zt}})`.
+   * The value type :math:`t` is :math:`{\mathrm{unpack}}({\mathit{zt}})`.
 
 
 
@@ -15487,7 +15487,7 @@ The instruction :math:`({\mathsf{array{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~x
 
    * The signedness :math:`{{\mathit{sx}}^?}` is absent if and only if the storage type :math:`{\mathit{zt}}` is of the form :math:`{\mathrm{unpack}}({\mathit{zt}})`.
 
-   * Let :math:`t` be the value type :math:`{\mathrm{unpack}}({\mathit{zt}})`.
+   * The value type :math:`t` is :math:`{\mathrm{unpack}}({\mathit{zt}})`.
 
 
 
@@ -15499,7 +15499,7 @@ The instruction :math:`(\mathsf{array{.}set}~x)` is :ref:`valid <valid-val>` wit
 
    * The :ref:`expansion <aux-expand-deftype>` of the type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}))`.
 
-   * Let :math:`t` be the value type :math:`{\mathrm{unpack}}({\mathit{zt}})`.
+   * The value type :math:`t` is :math:`{\mathrm{unpack}}({\mathit{zt}})`.
 
 
 
@@ -15516,7 +15516,7 @@ The instruction :math:`(\mathsf{array{.}fill}~x)` is :ref:`valid <valid-val>` wi
 
    * The :ref:`expansion <aux-expand-deftype>` of the type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~(\mathsf{mut}~{\mathit{zt}}))`.
 
-   * Let :math:`t` be the value type :math:`{\mathrm{unpack}}({\mathit{zt}})`.
+   * The value type :math:`t` is :math:`{\mathrm{unpack}}({\mathit{zt}})`.
 
 
 
@@ -15661,7 +15661,7 @@ The instruction :math:`({\mathit{sh}}{.}\mathsf{shuffle}~{i^\ast})` is :ref:`val
 The instruction :math:`({\mathit{sh}}{.}\mathsf{splat})` is :ref:`valid <valid-val>` with the instruction type :math:`t~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
 
 
-   * Let :math:`t` be the number type :math:`{\mathrm{unpack}}({\mathit{sh}})`.
+   * The number type :math:`t` is :math:`{\mathrm{unpack}}({\mathit{sh}})`.
 
 
 
@@ -15671,7 +15671,7 @@ The instruction :math:`({{\mathit{sh}}{.}\mathsf{extract\_lane}}{\mathsf{\_}}{{{
 
    * The lane index :math:`i` is less than :math:`{\mathrm{dim}}({\mathit{sh}})`.
 
-   * Let :math:`t` be the number type :math:`{\mathrm{unpack}}({\mathit{sh}})`.
+   * The number type :math:`t` is :math:`{\mathrm{unpack}}({\mathit{sh}})`.
 
 
 
@@ -15681,7 +15681,7 @@ The instruction :math:`({\mathit{sh}}{.}\mathsf{replace\_lane}~i)` is :ref:`vali
 
    * The lane index :math:`i` is less than :math:`{\mathrm{dim}}({\mathit{sh}})`.
 
-   * Let :math:`t` be the number type :math:`{\mathrm{unpack}}({\mathit{sh}})`.
+   * The number type :math:`t` is :math:`{\mathrm{unpack}}({\mathit{sh}})`.
 
 
 
@@ -15824,7 +15824,7 @@ The instruction :math:`(\mathsf{table{.}copy}~x_1~x_2)` is :ref:`valid <valid-va
 
    * The reference type :math:`{\mathit{rt}}_2` :ref:`matches <match>` the reference type :math:`{\mathit{rt}}_1`.
 
-   * Let :math:`t` be the address type :math:`{\mathrm{min}}({\mathit{at}}_1, {\mathit{at}}_2)`.
+   * The address type :math:`t` is :math:`{\mathrm{min}}({\mathit{at}}_1, {\mathit{at}}_2)`.
 
 
 
@@ -15896,7 +15896,7 @@ The instruction :math:`(\mathsf{memory{.}copy}~x_1~x_2)` is :ref:`valid <valid-v
 
    * The memory :math:`C{.}\mathsf{mems}{}[x_2]` is of the form :math:`({\mathit{at}}_2~{\mathit{lim}}_2~\mathsf{page})`.
 
-   * Let :math:`t` be the address type :math:`{\mathrm{min}}({\mathit{at}}_1, {\mathit{at}}_2)`.
+   * The address type :math:`t` is :math:`{\mathrm{min}}({\mathit{at}}_1, {\mathit{at}}_2)`.
 
 
 
@@ -16453,7 +16453,7 @@ The tag :math:`(\mathsf{tag}~{\mathit{tagtype}})` is :ref:`valid <valid-val>` wi
 
    * The tag type :math:`{\mathit{tagtype}}` is :ref:`valid <valid-val>`.
 
-   * Let :math:`t` be the tag type :math:`{{\mathrm{clos}}}_{C}({\mathit{tagtype}})`.
+   * The tag type :math:`t` is :math:`{{\mathrm{clos}}}_{C}({\mathit{tagtype}})`.
 
 
 
@@ -16679,7 +16679,7 @@ The import :math:`(\mathsf{import}~{\mathit{name}}_1~{\mathit{name}}_2~{\mathit{
 
    * The external type :math:`{\mathit{xt}}` is :ref:`valid <valid-val>`.
 
-   * Let :math:`t` be the external type :math:`{{\mathrm{clos}}}_{C}({\mathit{xt}})`.
+   * The external type :math:`t` is :math:`{{\mathrm{clos}}}_{C}({\mathit{xt}})`.
 
 
 
@@ -16956,7 +16956,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    * The defined type sequence :math:`{{\mathit{dt}}_{\mathsf{i}}^\ast}` is of the form :math:`{\mathrm{funcs}}({{\mathit{xt}}_{\mathsf{i}}^\ast})`.
 
-   * Let :math:`t` be the module type :math:`{{\mathrm{clos}}}_{C}({{\mathit{xt}}_{\mathsf{i}}^\ast}~\rightarrow~{{\mathit{xt}}_{\mathsf{e}}^\ast})`.
+   * The module type :math:`t` is :math:`{{\mathrm{clos}}}_{C}({{\mathit{xt}}_{\mathsf{i}}^\ast}~\rightarrow~{{\mathit{xt}}_{\mathsf{e}}^\ast})`.
 
 
 
@@ -20079,9 +20079,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    a. Assert: Due to validation, :math:`{\mathit{nt}}` is :math:`{\mathsf{i}}{N}`.
 
-   #. Let :math:`{\mathit{loadop\_{\scriptstyle 0}}}` be :math:`{{\mathit{loadop}}^?}`.
+   #. Let :math:`{\mathit{loadop}}_0` be :math:`{{\mathit{loadop}}^?}`.
 
-   #. Let :math:`{n}{\mathsf{\_}}{{\mathit{sx}}}` be the destructuring of :math:`{\mathit{loadop\_{\scriptstyle 0}}}`.
+   #. Let :math:`{n}{\mathsf{\_}}{{\mathit{sx}}}` be the destructuring of :math:`{\mathit{loadop}}_0`.
 
    #. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + n / 8 > {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
 
@@ -20114,11 +20114,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Else:
 
-   a. Let :math:`{\mathit{vloadop\_{\scriptstyle 0}}}` be :math:`{{\mathit{vloadop}}^?}`.
+   a. Let :math:`{\mathit{vloadop}}_0` be :math:`{{\mathit{vloadop}}^?}`.
 
-   #. If :math:`{\mathit{vloadop\_{\scriptstyle 0}}}` is some :math:`{{\mathit{sz}}}{\mathsf{x}}{M}{\mathsf{\_}}{{\mathit{sx}}}`, then:
+   #. If :math:`{\mathit{vloadop}}_0` is some :math:`{{\mathit{sz}}}{\mathsf{x}}{M}{\mathsf{\_}}{{\mathit{sx}}}`, then:
 
-      1) Let :math:`({M}{\mathsf{x}}{K}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{vloadop\_{\scriptstyle 0}}}`.
+      1) Let :math:`({M}{\mathsf{x}}{K}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{vloadop}}_0`.
 
       #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + M \cdot K / 8 > {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
 
@@ -20132,9 +20132,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
-   #. If :math:`{\mathit{vloadop\_{\scriptstyle 0}}}` is some :math:`{{\mathit{sz}}}{\mathsf{\_}}{\mathsf{splat}}`, then:
+   #. If :math:`{\mathit{vloadop}}_0` is some :math:`{{\mathit{sz}}}{\mathsf{\_}}{\mathsf{splat}}`, then:
 
-      1) Let :math:`({N}{\mathsf{\_}}{\mathsf{splat}})` be the destructuring of :math:`{\mathit{vloadop\_{\scriptstyle 0}}}`.
+      1) Let :math:`({N}{\mathsf{\_}}{\mathsf{splat}})` be the destructuring of :math:`{\mathit{vloadop}}_0`.
 
       #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + N / 8 > {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
 
@@ -20150,9 +20150,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
-   #. If :math:`{\mathit{vloadop\_{\scriptstyle 0}}}` is some :math:`{{\mathit{sz}}}{\mathsf{\_}}{\mathsf{zero}}`, then:
+   #. If :math:`{\mathit{vloadop}}_0` is some :math:`{{\mathit{sz}}}{\mathsf{\_}}{\mathsf{zero}}`, then:
 
-      1) Let :math:`({N}{\mathsf{\_}}{\mathsf{zero}})` be the destructuring of :math:`{\mathit{vloadop\_{\scriptstyle 0}}}`.
+      1) Let :math:`({N}{\mathsf{\_}}{\mathsf{zero}})` be the destructuring of :math:`{\mathit{vloadop}}_0`.
 
       #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + N / 8 > {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
 
@@ -26921,7 +26921,7 @@ Instr_ok/br_on_cast
   - the reference type rt_2 is valid.
   - rt_2 matches rt_1.
   - rt_2 matches the reference type rt.
-  - Let t' be the reference type $diffrt(rt_1, rt_2).
+  - the reference type t' is $diffrt(rt_1, rt_2).
 
 Instr_ok/br_on_cast_fail
 - the instruction (BR_ON_CAST_FAIL l rt_1 rt_2) is valid with the instruction type t* :: [rt_1] -> t* :: [rt_2] if:
@@ -27061,7 +27061,7 @@ Instr_ok/struct.new
 - the instruction (STRUCT.NEW x) is valid with the instruction type t* -> [(REF ?() (_IDX x))] if:
   - the type C.TYPES[x] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (STRUCT (mut zt)*).
-  - Let t* be the value type sequence $unpack(zt)*.
+  - the value type sequence t* is $unpack(zt)*.
 
 Instr_ok/struct.new_default
 - the instruction (STRUCT.NEW_DEFAULT x) is valid with the instruction type [] -> [(REF ?() (_IDX x))] if:
@@ -27077,7 +27077,7 @@ Instr_ok/struct.get
   - |ft*| is greater than i.
   - the field type ft*[i] is (mut zt).
   - the signedness sx? is ?() if and only if the storage type zt is $unpack(zt).
-  - Let t be the value type $unpack(zt).
+  - the value type t is $unpack(zt).
 
 Instr_ok/struct.set
 - the instruction (STRUCT.SET x i) is valid with the instruction type [(REF ?(NULL) (_IDX x)), t] -> [] if:
@@ -27085,13 +27085,13 @@ Instr_ok/struct.set
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (STRUCT ft*).
   - |ft*| is greater than i.
   - the field type ft*[i] is (?(MUT) zt).
-  - Let t be the value type $unpack(zt).
+  - the value type t is $unpack(zt).
 
 Instr_ok/array.new
 - the instruction (ARRAY.NEW x) is valid with the instruction type [t, I32] -> [(REF ?() (_IDX x))] if:
   - the type C.TYPES[x] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (ARRAY (mut zt)).
-  - Let t be the value type $unpack(zt).
+  - the value type t is $unpack(zt).
 
 Instr_ok/array.new_default
 - the instruction (ARRAY.NEW_DEFAULT x) is valid with the instruction type [I32] -> [(REF ?() (_IDX x))] if:
@@ -27103,7 +27103,7 @@ Instr_ok/array.new_fixed
 - the instruction (ARRAY.NEW_FIXED x n) is valid with the instruction type t^n -> [(REF ?() (_IDX x))] if:
   - the type C.TYPES[x] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (ARRAY (mut zt)).
-  - Let t be the value type $unpack(zt).
+  - the value type t is $unpack(zt).
 
 Instr_ok/array.new_elem
 - the instruction (ARRAY.NEW_ELEM x y) is valid with the instruction type [I32, I32] -> [(REF ?() (_IDX x))] if:
@@ -27125,13 +27125,13 @@ Instr_ok/array.get
   - the type C.TYPES[x] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (ARRAY (mut zt)).
   - the signedness sx? is ?() if and only if the storage type zt is $unpack(zt).
-  - Let t be the value type $unpack(zt).
+  - the value type t is $unpack(zt).
 
 Instr_ok/array.set
 - the instruction (ARRAY.SET x) is valid with the instruction type [(REF ?(NULL) (_IDX x)), I32, t] -> [] if:
   - the type C.TYPES[x] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (ARRAY (?(MUT) zt)).
-  - Let t be the value type $unpack(zt).
+  - the value type t is $unpack(zt).
 
 Instr_ok/array.len
 - the instruction ARRAY.LEN is valid with the instruction type [(REF ?(NULL) ARRAY)] -> [I32].
@@ -27140,7 +27140,7 @@ Instr_ok/array.fill
 - the instruction (ARRAY.FILL x) is valid with the instruction type [(REF ?(NULL) (_IDX x)), I32, t, I32] -> [] if:
   - the type C.TYPES[x] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (ARRAY (?(MUT) zt)).
-  - Let t be the value type $unpack(zt).
+  - the value type t is $unpack(zt).
 
 Instr_ok/array.copy
 - the instruction (ARRAY.COPY x_1 x_2) is valid with the instruction type [(REF ?(NULL) (_IDX x_1)), I32, (REF ?(NULL) (_IDX x_2)), I32, I32] -> [] if:
@@ -27219,17 +27219,17 @@ Instr_ok/vshuffle
 
 Instr_ok/vsplat
 - the instruction (VSPLAT sh) is valid with the instruction type [t] -> [V128] if:
-  - Let t be the number type $unpackshape(sh).
+  - the number type t is $unpackshape(sh).
 
 Instr_ok/vextract_lane
 - the instruction (VEXTRACT_LANE sh sx? i) is valid with the instruction type [V128] -> [t] if:
   - the lane index i is less than $dim(sh).
-  - Let t be the number type $unpackshape(sh).
+  - the number type t is $unpackshape(sh).
 
 Instr_ok/vreplace_lane
 - the instruction (VREPLACE_LANE sh i) is valid with the instruction type [V128, t] -> [V128] if:
   - the lane index i is less than $dim(sh).
-  - Let t be the number type $unpackshape(sh).
+  - the number type t is $unpackshape(sh).
 
 Instr_ok/vextunop
 - the instruction (VEXTUNOP sh_1 sh_2 vextunop) is valid with the instruction type [V128] -> [V128].
@@ -27303,7 +27303,7 @@ Instr_ok/table.copy
   - the table C.TABLES[x_2] exists.
   - C.TABLES[x_2] is (at_2 lim_2 rt_2).
   - the reference type rt_2 matches the reference type rt_1.
-  - Let t be the address type $minat(at_1, at_2).
+  - the address type t is $minat(at_1, at_2).
 
 Instr_ok/table.init
 - the instruction (TABLE.INIT x y) is valid with the instruction type [at, I32, I32] -> [] if:
@@ -27339,7 +27339,7 @@ Instr_ok/memory.copy
   - C.MEMS[x_1] is at_1 lim_1 PAGE.
   - the memory C.MEMS[x_2] exists.
   - C.MEMS[x_2] is at_2 lim_2 PAGE.
-  - Let t be the address type $minat(at_1, at_2).
+  - the address type t is $minat(at_1, at_2).
 
 Instr_ok/memory.init
 - the instruction (MEMORY.INIT x y) is valid with the instruction type [at, I32, I32] -> [] if:
@@ -27632,7 +27632,7 @@ Type_ok
 Tag_ok
 - the tag (TAG tagtype) is valid with the tag type t if:
   - the tag type tagtype is valid.
-  - Let t be the tag type $clos_tagtype(C, tagtype).
+  - t is $clos_tagtype(C, tagtype).
 
 Global_ok
 - the global (GLOBAL globaltype expr) is valid with the global type globaltype if:
@@ -27747,7 +27747,7 @@ Start_ok
 Import_ok
 - the import (IMPORT name_1 name_2 xt) is valid with the external type t if:
   - the external type xt is valid.
-  - Let t be the external type $clos_externtype(C, xt).
+  - t is $clos_externtype(C, xt).
 
 Externidx_ok
 - the external index externidx is valid with the external type externtype if:
@@ -27888,7 +27888,7 @@ Module_ok
   - the memory type sequence mt_I* is $memsxt(xt_I*).
   - the table type sequence tt_I* is $tablesxt(xt_I*).
   - the defined type sequence dt_I* is $funcsxt(xt_I*).
-  - Let t be the module type $clos_moduletype(C, xt_I* -> xt_E*).
+  - t is $clos_moduletype(C, xt_I* -> xt_E*).
 
 Num_ok
 - the number value (nt.CONST c) is valid with the number type nt.
@@ -29382,8 +29382,8 @@ Step_read/load nt loadop_? x ao
   c. Push the value (nt.CONST c) to the stack.
 5. Else:
   a. Assert: Due to validation, nt is Inn.
-  b. Let ?(loadop__0) be loadop_?.
-  c. Let n _ sx be loadop__0.
+  b. Let ?(loadop_0) be loadop_?.
+  c. Let n _ sx be loadop_0.
   d. If (((i + ao.OFFSET) + (n / 8)) > |$mem(z, x).BYTES|), then:
     1) Trap.
   e. Let c be $ibytes__1^-1(n, $mem(z, x).BYTES[(i + ao.OFFSET) : (n / 8)]).
@@ -29399,17 +29399,17 @@ Step_read/vload V128 vloadop_? x ao
   b. Let c be $vbytes__1^-1(V128, $mem(z, x).BYTES[(i + ao.OFFSET) : ($vsize(V128) / 8)]).
   c. Push the value (V128.CONST c) to the stack.
 5. Else:
-  a. Let ?(vloadop__0) be vloadop_?.
-  b. If vloadop__0 is some SHAPE, then:
-    1) Let (SHAPE M X K _ sx) be vloadop__0.
+  a. Let ?(vloadop_0) be vloadop_?.
+  b. If vloadop_0 is some SHAPE, then:
+    1) Let (SHAPE M X K _ sx) be vloadop_0.
     2) If (((i + ao.OFFSET) + ((M * K) / 8)) > |$mem(z, x).BYTES|), then:
       a) Trap.
     3) Let j^K be $ibytes__1^-1(M, $mem(z, x).BYTES[((i + ao.OFFSET) + ((k * M) / 8)) : (M / 8)])^(k<K).
     4) Let Jnn be $jsizenn^-1((M * 2)).
     5) Let c be $inv_lanes_(Jnn X K, $extend__(M, $jsizenn(Jnn), sx, j)^K).
     6) Push the value (V128.CONST c) to the stack.
-  c. If vloadop__0 is some SPLAT, then:
-    1) Let (SPLAT N) be vloadop__0.
+  c. If vloadop_0 is some SPLAT, then:
+    1) Let (SPLAT N) be vloadop_0.
     2) If (((i + ao.OFFSET) + (N / 8)) > |$mem(z, x).BYTES|), then:
       a) Trap.
     3) Let M be (128 / N).
@@ -29417,8 +29417,8 @@ Step_read/vload V128 vloadop_? x ao
     5) Let j be $ibytes__1^-1(N, $mem(z, x).BYTES[(i + ao.OFFSET) : (N / 8)]).
     6) Let c be $inv_lanes_(Jnn X M, j^M).
     7) Push the value (V128.CONST c) to the stack.
-  d. If vloadop__0 is some ZERO, then:
-    1) Let (ZERO N) be vloadop__0.
+  d. If vloadop_0 is some ZERO, then:
+    1) Let (ZERO N) be vloadop_0.
     2) If (((i + ao.OFFSET) + (N / 8)) > |$mem(z, x).BYTES|), then:
       a) Trap.
     3) Let j be $ibytes__1^-1(N, $mem(z, x).BYTES[(i + ao.OFFSET) : (N / 8)]).
