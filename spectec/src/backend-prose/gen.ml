@@ -638,6 +638,11 @@ let rec replace_name_stmt x1 x2 stmt =
   | RelS (name, es) -> RelS (name, List.map re es)
   | YetS s -> YetS s
 
+let replace_name_def x1 x2 def =
+  let r = replace_name_stmt x1 x2 in
+  match def with
+  | RuleD (anchor, s, sl) -> RuleD (anchor, r s, List.map r sl)
+  | AlgoD _algo -> failwith "unreachable"
 
 let remove_simple_binding def =
   match def with
@@ -668,7 +673,65 @@ let remove_simple_binding def =
     RuleD (anchor, s, remove_simple_binding' [] sl)
   | AlgoD _ -> def
 
-let rename_param def = def
+let split_iter (s:string) =
+  let len = String.length s in
+  let rec find_last_idx i =
+    if i > 0 && List.mem s.[i - 1] ['*'; '?'; '+'] then find_last_idx (i - 1)
+    else i
+  in
+  let last = find_last_idx len in
+  String.sub s 0 last, String.sub s last (len - last)
+
+
+let get_prefix (s:string) =
+  let len = String.length s in
+  let rec find_last_idx i =
+    if i > 0 && List.mem s.[i - 1] ['\''; '*'; '?'; '+'] then find_last_idx (i - 1)
+    else i
+  in
+  let last = find_last_idx len in
+  String.sub s 0 last
+let same_prefix x1 x2 = get_prefix x1 = get_prefix x2
+
+let swap_name r (x1, x2) =
+  (* TODO: atomic swap *)
+  let tmp = "__TMP__" in
+  r
+  |> replace_name_def x1 tmp
+  |> replace_name_def x2 x1
+  |> replace_name_def tmp x2
+
+let rename_param def =
+  match def with
+  | RuleD (_, s, _) ->
+    let frees = free_stmt s in
+    let groups =
+      Util.Lib.List.group_by same_prefix (Al.Free.IdSet.elements frees)
+      |> List.map (List.map split_iter)
+      |> List.map (List.sort compare)
+    in
+    let is_match = match s with | MatchesS _ -> true | _ -> false in
+    List.fold_left (fun r tups ->
+      let names, _ = List.split tups in
+      let base_name = get_prefix (List.hd names) in
+      let expected_names =
+        match names with
+        | [_] -> [base_name]
+        | _ -> List.init (List.length names) (fun i ->
+          if is_match then
+            base_name ^ "_" ^ string_of_int (i+1)
+          else
+            base_name ^ String.make i '\''
+        )
+      in
+
+      let ps =
+        List.combine names expected_names
+        |> List.filter (fun (x, y) -> x <> y) in
+
+      List.fold_left swap_name r ps
+    ) def groups
+  | AlgoD _ -> def
 
 let postprocess_prose defs =
   List.map (fun def ->

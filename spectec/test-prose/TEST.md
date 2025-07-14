@@ -150,36 +150,36 @@ The memory type :math:`{\mathit{lim}}_1` :ref:`matches <match>` the memory type 
 
 
 
-The external type :math:`{\mathit{externtype}}` :ref:`matches <match>` the external type :math:`{\mathit{externtype}'}` if:
+The external type :math:`{\mathit{externtype}}_1` :ref:`matches <match>` the external type :math:`{\mathit{externtype}}_2` if:
 
 
    * Either:
 
-      * The external type :math:`{\mathit{externtype}}` is of the form :math:`(\mathsf{func}~{\mathit{ft}}_1)`.
+      * The external type :math:`{\mathit{externtype}}_1` is of the form :math:`(\mathsf{func}~{\mathit{ft}}_1)`.
 
-      * The external type :math:`{\mathit{externtype}'}` is of the form :math:`(\mathsf{func}~{\mathit{ft}}_2)`.
+      * The external type :math:`{\mathit{externtype}}_2` is of the form :math:`(\mathsf{func}~{\mathit{ft}}_2)`.
 
       * The function type :math:`{\mathit{ft}}_1` :ref:`matches <match>` the function type :math:`{\mathit{ft}}_2`.
 
    * Or:
 
-      * The external type :math:`{\mathit{externtype}}` is of the form :math:`(\mathsf{global}~{\mathit{gt}}_1)`.
+      * The external type :math:`{\mathit{externtype}}_1` is of the form :math:`(\mathsf{global}~{\mathit{gt}}_1)`.
 
-      * The external type :math:`{\mathit{externtype}'}` is of the form :math:`(\mathsf{global}~{\mathit{gt}}_2)`.
+      * The external type :math:`{\mathit{externtype}}_2` is of the form :math:`(\mathsf{global}~{\mathit{gt}}_2)`.
 
       * The global type :math:`{\mathit{gt}}_1` :ref:`matches <match>` the global type :math:`{\mathit{gt}}_2`.
    * Or:
 
-      * The external type :math:`{\mathit{externtype}}` is of the form :math:`(\mathsf{table}~{\mathit{tt}}_1)`.
+      * The external type :math:`{\mathit{externtype}}_1` is of the form :math:`(\mathsf{table}~{\mathit{tt}}_1)`.
 
-      * The external type :math:`{\mathit{externtype}'}` is of the form :math:`(\mathsf{table}~{\mathit{tt}}_2)`.
+      * The external type :math:`{\mathit{externtype}}_2` is of the form :math:`(\mathsf{table}~{\mathit{tt}}_2)`.
 
       * The table type :math:`{\mathit{tt}}_1` :ref:`matches <match>` the table type :math:`{\mathit{tt}}_2`.
    * Or:
 
-      * The external type :math:`{\mathit{externtype}}` is of the form :math:`(\mathsf{mem}~{\mathit{mt}}_1)`.
+      * The external type :math:`{\mathit{externtype}}_1` is of the form :math:`(\mathsf{mem}~{\mathit{mt}}_1)`.
 
-      * The external type :math:`{\mathit{externtype}'}` is of the form :math:`(\mathsf{mem}~{\mathit{mt}}_2)`.
+      * The external type :math:`{\mathit{externtype}}_2` is of the form :math:`(\mathsf{mem}~{\mathit{mt}}_2)`.
 
       * The memory type :math:`{\mathit{mt}}_1` :ref:`matches <match>` the memory type :math:`{\mathit{mt}}_2`.
 
@@ -359,12 +359,12 @@ The instruction :math:`(t {.} {\mathit{relop}}_t)` is :ref:`valid <valid-val>` w
 
 
 
-The instruction :math:`({\mathit{nt}}_1 {.} {{\mathit{cvtop}'}}{\mathsf{\_}}{{\mathit{nt}}_2})` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{nt}}_2~\rightarrow~{\mathit{nt}}_1` if:
+The instruction :math:`({\mathit{nt}}_1 {.} {{\mathit{cvtop}}}{\mathsf{\_}}{{\mathit{nt}}_2})` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{nt}}_2~\rightarrow~{\mathit{nt}}_1` if:
 
 
    * Either:
 
-      * :math:`{\mathit{cvtop}'}` is of the form :math:`\mathsf{reinterpret}`.
+      * :math:`{\mathit{cvtop}}` is of the form :math:`\mathsf{reinterpret}`.
 
       * :math:`{|{\mathit{nt}}_1|}` is of the form :math:`{|{\mathit{nt}}_2|}`.
 
@@ -439,7 +439,7 @@ The instruction :math:`\mathsf{memory{.}grow}` is :ref:`valid <valid-val>` with 
 
 
 
-The instruction :math:`({{t'}{.}\mathsf{load}}{{{\mathit{loadop}}^?}}~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~{t'''}` if:
+The instruction :math:`({t{.}\mathsf{load}}{{{\mathit{loadop}}^?}}~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~{t'}` if:
 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is of the form :math:`{\mathit{mt}}`.
@@ -448,24 +448,24 @@ The instruction :math:`({{t'}{.}\mathsf{load}}{{{\mathit{loadop}}^?}}~{\mathit{m
 
       * :math:`{{\mathit{loadop}}^?}` is absent.
 
-      * The number type :math:`{t'''}` is of the form :math:`{t'}`.
+      * The number type :math:`{t'}` is of the form :math:`t`.
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{t'}|} / 8`.
+      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|t|} / 8`.
 
    * Or:
 
-      * The number type :math:`{t'}` is of the form :math:`{\mathsf{i}}{n}`.
+      * The number type :math:`t` is of the form :math:`{\mathsf{i}}{n}`.
 
       * :math:`{{\mathit{loadop}}^?}` is of the form :math:`{M}{\mathsf{\_}}{{\mathit{sx}}}`.
 
-      * The number type :math:`{t'''}` is of the form :math:`{\mathsf{i}}{n}`.
+      * The number type :math:`{t'}` is of the form :math:`{\mathsf{i}}{n}`.
 
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
 
 
 
 
-The instruction :math:`({{t'}{.}\mathsf{store}}{{{\mathit{sz}}^?}}~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~{t''}~\rightarrow~\epsilon` if:
+The instruction :math:`({t{.}\mathsf{store}}{{{\mathit{sz}}^?}}~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~{t'}~\rightarrow~\epsilon` if:
 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is of the form :math:`{\mathit{mt}}`.
@@ -474,17 +474,17 @@ The instruction :math:`({{t'}{.}\mathsf{store}}{{{\mathit{sz}}^?}}~{\mathit{mema
 
       * The pack size :math:`{{\mathit{sz}}^?}` is absent.
 
-      * The number type :math:`{t''}` is of the form :math:`{t'}`.
+      * The number type :math:`{t'}` is of the form :math:`t`.
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{t'}|} / 8`.
+      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|t|} / 8`.
 
    * Or:
 
-      * The number type :math:`{t'}` is of the form :math:`{\mathsf{i}}{n}`.
+      * The number type :math:`t` is of the form :math:`{\mathsf{i}}{n}`.
 
       * The pack size :math:`{{\mathit{sz}}^?}` is of the form :math:`M`.
 
-      * The number type :math:`{t''}` is of the form :math:`{\mathsf{i}}{n}`.
+      * The number type :math:`{t'}` is of the form :math:`{\mathsf{i}}{n}`.
 
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
 
@@ -544,12 +544,12 @@ The instruction :math:`({{\mathsf{i}}{n}{.}\mathsf{store}}{M}~{\mathit{memarg}})
 
 
 
-The instruction sequence :math:`{{\mathit{instr}'}^\ast}` is :ref:`valid <valid-val>` with the function type :math:`{{\mathit{valtype}}^\ast}~\rightarrow~{{\mathit{valtype}'}^\ast}` if:
+The instruction sequence :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` with the function type :math:`{{\mathit{valtype}}^\ast}~\rightarrow~{{\mathit{valtype}'}^\ast}` if:
 
 
    * Either:
 
-      * The instruction sequence :math:`{{\mathit{instr}'}^\ast}` is empty.
+      * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is empty.
 
       * The number type sequence :math:`{{\mathit{valtype}}^\ast}` is empty.
 
@@ -557,7 +557,7 @@ The instruction sequence :math:`{{\mathit{instr}'}^\ast}` is :ref:`valid <valid-
 
    * Or:
 
-      * The instruction sequence :math:`{{\mathit{instr}'}^\ast}` is of the form :math:`{\mathit{instr}}_1~{{\mathit{instr}}_2^\ast}`.
+      * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is of the form :math:`{\mathit{instr}}_1~{{\mathit{instr}}_2^\ast}`.
 
       * The number type sequence :math:`{{\mathit{valtype}}^\ast}` is of the form :math:`{t_1^\ast}`.
 
@@ -568,13 +568,13 @@ The instruction sequence :math:`{{\mathit{instr}'}^\ast}` is :ref:`valid <valid-
       * The instruction sequence :math:`{{\mathit{instr}}_2^\ast}` is :ref:`valid <valid-val>` with the function type :math:`{t_2^\ast}~\rightarrow~{t_3^\ast}`.
    * Or:
 
-      * The instruction sequence :math:`{{\mathit{instr}'}^\ast}` is of the form :math:`{{\mathit{instr}}^\ast}`.
+      * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is of the form :math:`{{\mathit{instr}'}^\ast}`.
 
       * The number type sequence :math:`{{\mathit{valtype}}^\ast}` is of the form :math:`{t^\ast}~{t_1^\ast}`.
 
       * The number type sequence :math:`{{\mathit{valtype}'}^\ast}` is of the form :math:`{t^\ast}~{t_2^\ast}`.
 
-      * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+      * The instruction sequence :math:`{{\mathit{instr}'}^\ast}` is :ref:`valid <valid-val>` with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
 
 
@@ -3100,22 +3100,22 @@ Memtype_sub
   - lim_1 matches lim_2.
 
 Externtype_sub
-- the external type externtype matches the external type externtype' if:
+- the external type externtype_1 matches the external type externtype_2 if:
   - Either:
-    - externtype is (FUNC ft_1).
-    - externtype' is (FUNC ft_2).
+    - externtype_1 is (FUNC ft_1).
+    - externtype_2 is (FUNC ft_2).
     - the function type ft_1 matches the function type ft_2.
   - Or:
-    - externtype is (GLOBAL gt_1).
-    - externtype' is (GLOBAL gt_2).
+    - externtype_1 is (GLOBAL gt_1).
+    - externtype_2 is (GLOBAL gt_2).
     - the global type gt_1 matches the global type gt_2.
   - Or:
-    - externtype is (TABLE tt_1).
-    - externtype' is (TABLE tt_2).
+    - externtype_1 is (TABLE tt_1).
+    - externtype_2 is (TABLE tt_2).
     - the table type tt_1 matches the table type tt_2.
   - Or:
-    - externtype is (MEM mt_1).
-    - externtype' is (MEM mt_2).
+    - externtype_1 is (MEM mt_1).
+    - externtype_2 is (MEM mt_2).
     - the memory type mt_1 matches the memory type mt_2.
 
 Externtype_sub/func
@@ -3210,9 +3210,9 @@ Instr_ok/relop
 - the instruction (RELOP t relop_t) is valid with the function type [t, t] -> [I32].
 
 Instr_ok/cvtop
-- the instruction (CVTOP nt_1 nt_2 cvtop') is valid with the function type [nt_2] -> [nt_1] if:
+- the instruction (CVTOP nt_1 nt_2 cvtop) is valid with the function type [nt_2] -> [nt_1] if:
   - Either:
-    - cvtop' is REINTERPRET.
+    - cvtop is REINTERPRET.
     - $size(nt_1) is $size(nt_2).
   - Or:
 
@@ -3251,29 +3251,29 @@ Instr_ok/memory.grow
   - the memory type C.MEMS[0] is mt.
 
 Instr_ok/load
-- the instruction (LOAD t' loadop_? memarg) is valid with the function type [I32] -> [t'''] if:
+- the instruction (LOAD t loadop_? memarg) is valid with the function type [I32] -> [t'] if:
   - the memory type C.MEMS[0] is mt.
   - Either:
     - loadop_? is ?().
-    - the number type t''' is t'.
-    - (2 ^ memarg.ALIGN) is less than or equal to ($size(t') / 8).
+    - the number type t' is t.
+    - (2 ^ memarg.ALIGN) is less than or equal to ($size(t) / 8).
   - Or:
-    - the number type t' is Inn.
+    - the number type t is Inn.
     - loadop_? is ?(M _ sx).
-    - t''' is Inn.
+    - t' is Inn.
     - (2 ^ memarg.ALIGN) is less than or equal to (M / 8).
 
 Instr_ok/store
-- the instruction (STORE t' sz? memarg) is valid with the function type [I32, t''] -> [] if:
+- the instruction (STORE t sz? memarg) is valid with the function type [I32, t'] -> [] if:
   - the memory type C.MEMS[0] is mt.
   - Either:
     - the pack size sz? is ?().
-    - the number type t'' is t'.
-    - (2 ^ memarg.ALIGN) is less than or equal to ($size(t') / 8).
+    - the number type t' is t.
+    - (2 ^ memarg.ALIGN) is less than or equal to ($size(t) / 8).
   - Or:
-    - the number type t' is Inn.
+    - the number type t is Inn.
     - sz? is ?(M).
-    - t'' is Inn.
+    - t' is Inn.
     - (2 ^ memarg.ALIGN) is less than or equal to (M / 8).
 
 Instr_ok/cvtop-reinterpret
@@ -3304,22 +3304,22 @@ Instr_ok/store-pack
   - (2 ^ memarg.ALIGN) is less than or equal to (M / 8).
 
 Instrs_ok
-- the instruction sequence instr'* is valid with the function type valtype* -> valtype'* if:
+- the instruction sequence instr* is valid with the function type valtype* -> valtype'* if:
   - Either:
-    - instr'* is [].
+    - instr* is [].
     - the number type sequence valtype* is [].
     - the number type sequence valtype'* is [].
   - Or:
-    - instr'* is [instr_1] :: instr_2*.
+    - instr* is [instr_1] :: instr_2*.
     - valtype* is t_1*.
     - valtype'* is t_3*.
     - the instruction instr_1 is valid with the function type t_1* -> t_2*.
     - the instruction sequence instr_2* is valid with the function type t_2* -> t_3*.
   - Or:
-    - instr'* is instr*.
+    - instr* is instr'*.
     - valtype* is t* :: t_1*.
     - valtype'* is t* :: t_2*.
-    - the instruction sequence instr* is valid with t_1* -> t_2*.
+    - the instruction sequence instr'* is valid with t_1* -> t_2*.
 
 Instrs_ok/empty
 - the instruction sequence [] is valid with the function type [] -> [].
@@ -4579,16 +4579,16 @@ The external type :math:`(\mathsf{mem}~{\mathit{memtype}})` is :ref:`valid <vali
 
 
 
-The value type :math:`{t'}` :ref:`matches <match>` the value type :math:`t` if:
+The value type :math:`t_2` :ref:`matches <match>` the value type :math:`t_1` if:
 
 
    * Either:
 
-      * The value type :math:`{t'}` is of the form :math:`t`.
+      * The value type :math:`t_2` is of the form :math:`t_1`.
 
    * Or:
 
-      * The value type :math:`{t'}` is of the form :math:`\mathsf{bot}`.
+      * The value type :math:`t_2` is of the form :math:`\mathsf{bot}`.
 
 
 
@@ -4651,36 +4651,36 @@ The memory type :math:`{\mathit{lim}}_1~\mathsf{page}` :ref:`matches <match>` th
 
 
 
-The external type :math:`{\mathit{externtype}}` :ref:`matches <match>` the external type :math:`{\mathit{externtype}'}` if:
+The external type :math:`{\mathit{externtype}}_1` :ref:`matches <match>` the external type :math:`{\mathit{externtype}}_2` if:
 
 
    * Either:
 
-      * The external type :math:`{\mathit{externtype}}` is of the form :math:`(\mathsf{func}~{\mathit{ft}}_1)`.
+      * The external type :math:`{\mathit{externtype}}_1` is of the form :math:`(\mathsf{func}~{\mathit{ft}}_1)`.
 
-      * The external type :math:`{\mathit{externtype}'}` is of the form :math:`(\mathsf{func}~{\mathit{ft}}_2)`.
+      * The external type :math:`{\mathit{externtype}}_2` is of the form :math:`(\mathsf{func}~{\mathit{ft}}_2)`.
 
       * The function type :math:`{\mathit{ft}}_1` :ref:`matches <match>` the function type :math:`{\mathit{ft}}_2`.
 
    * Or:
 
-      * The external type :math:`{\mathit{externtype}}` is of the form :math:`(\mathsf{global}~{\mathit{gt}}_1)`.
+      * The external type :math:`{\mathit{externtype}}_1` is of the form :math:`(\mathsf{global}~{\mathit{gt}}_1)`.
 
-      * The external type :math:`{\mathit{externtype}'}` is of the form :math:`(\mathsf{global}~{\mathit{gt}}_2)`.
+      * The external type :math:`{\mathit{externtype}}_2` is of the form :math:`(\mathsf{global}~{\mathit{gt}}_2)`.
 
       * The global type :math:`{\mathit{gt}}_1` :ref:`matches <match>` the global type :math:`{\mathit{gt}}_2`.
    * Or:
 
-      * The external type :math:`{\mathit{externtype}}` is of the form :math:`(\mathsf{table}~{\mathit{tt}}_1)`.
+      * The external type :math:`{\mathit{externtype}}_1` is of the form :math:`(\mathsf{table}~{\mathit{tt}}_1)`.
 
-      * The external type :math:`{\mathit{externtype}'}` is of the form :math:`(\mathsf{table}~{\mathit{tt}}_2)`.
+      * The external type :math:`{\mathit{externtype}}_2` is of the form :math:`(\mathsf{table}~{\mathit{tt}}_2)`.
 
       * The table type :math:`{\mathit{tt}}_1` :ref:`matches <match>` the table type :math:`{\mathit{tt}}_2`.
    * Or:
 
-      * The external type :math:`{\mathit{externtype}}` is of the form :math:`(\mathsf{mem}~{\mathit{mt}}_1)`.
+      * The external type :math:`{\mathit{externtype}}_1` is of the form :math:`(\mathsf{mem}~{\mathit{mt}}_1)`.
 
-      * The external type :math:`{\mathit{externtype}'}` is of the form :math:`(\mathsf{mem}~{\mathit{mt}}_2)`.
+      * The external type :math:`{\mathit{externtype}}_2` is of the form :math:`(\mathsf{mem}~{\mathit{mt}}_2)`.
 
       * The memory type :math:`{\mathit{mt}}_1` :ref:`matches <match>` the memory type :math:`{\mathit{mt}}_2`.
 
@@ -4719,24 +4719,24 @@ The external type :math:`(\mathsf{mem}~{\mathit{mt}}_1)` :ref:`matches <match>` 
 
 
 
-The block type :math:`{\mathit{blocktype}}` is :ref:`valid <valid-val>` with the function type :math:`{{\mathit{valtype}'}^\ast}~\rightarrow~{{\mathit{valtype}''}^\ast}` if:
+The block type :math:`{\mathit{blocktype}}` is :ref:`valid <valid-val>` with the function type :math:`{{\mathit{valtype}}^\ast}~\rightarrow~{{\mathit{valtype}'}^\ast}` if:
 
 
    * Either:
 
-      * The block type :math:`{\mathit{blocktype}}` is of the form :math:`{{\mathit{valtype}}^?}`.
+      * The block type :math:`{\mathit{blocktype}}` is of the form :math:`{{\mathit{valtype}''}^?}`.
 
-      * The value type sequence :math:`{{\mathit{valtype}'}^\ast}` is empty.
+      * The value type sequence :math:`{{\mathit{valtype}}^\ast}` is empty.
 
-      * The value type sequence :math:`{{\mathit{valtype}''}^\ast}` is of the form :math:`{{\mathit{valtype}}^?}`.
+      * The value type sequence :math:`{{\mathit{valtype}'}^\ast}` is of the form :math:`{{\mathit{valtype}''}^?}`.
 
    * Or:
 
       * The block type :math:`{\mathit{blocktype}}` is of the form :math:`{\mathit{typeidx}}`.
 
-      * The value type sequence :math:`{{\mathit{valtype}'}^\ast}` is of the form :math:`{t_1^\ast}`.
+      * The value type sequence :math:`{{\mathit{valtype}}^\ast}` is of the form :math:`{t_1^\ast}`.
 
-      * The value type sequence :math:`{{\mathit{valtype}''}^\ast}` is of the form :math:`{t_2^\ast}`.
+      * The value type sequence :math:`{{\mathit{valtype}'}^\ast}` is of the form :math:`{t_2^\ast}`.
 
       * The function type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
 
@@ -4926,12 +4926,12 @@ The instruction :math:`({\mathit{nt}} {.} {\mathit{relop}}_{\mathit{nt}})` is :r
 
 
 
-The instruction :math:`({\mathit{nt}}_1 {.} {{\mathit{cvtop}'}}{\mathsf{\_}}{{\mathit{nt}}_2})` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{nt}}_2~\rightarrow~{\mathit{nt}}_1` if:
+The instruction :math:`({\mathit{nt}}_1 {.} {{\mathit{cvtop}}}{\mathsf{\_}}{{\mathit{nt}}_2})` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{nt}}_2~\rightarrow~{\mathit{nt}}_1` if:
 
 
    * Either:
 
-      * :math:`{\mathit{cvtop}'}` is of the form :math:`\mathsf{reinterpret}`.
+      * :math:`{\mathit{cvtop}}` is of the form :math:`\mathsf{reinterpret}`.
 
       * :math:`{|{\mathit{nt}}_1|}` is of the form :math:`{|{\mathit{nt}}_2|}`.
 
@@ -5270,7 +5270,7 @@ The instruction :math:`(\mathsf{data{.}drop}~x)` is :ref:`valid <valid-val>` wit
 
 
 
-The instruction :math:`({{\mathit{nt}'}{.}\mathsf{load}}{{{\mathit{loadop}}^?}}~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathit{valtype}}` if:
+The instruction :math:`({{\mathit{nt}}{.}\mathsf{load}}{{{\mathit{loadop}}^?}}~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathit{valtype}}` if:
 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is of the form :math:`{\mathit{mt}}`.
@@ -5285,7 +5285,7 @@ The instruction :math:`({{\mathit{nt}'}{.}\mathsf{load}}{{{\mathit{loadop}}^?}}~
 
    * Or:
 
-      * The number type :math:`{\mathit{nt}'}` is of the form :math:`{\mathsf{i}}{n}`.
+      * The number type :math:`{\mathit{nt}}` is of the form :math:`{\mathsf{i}}{n}`.
 
       * :math:`{{\mathit{loadop}}^?}` is of the form :math:`{M}{\mathsf{\_}}{{\mathit{sx}}}`.
 
@@ -5296,7 +5296,7 @@ The instruction :math:`({{\mathit{nt}'}{.}\mathsf{load}}{{{\mathit{loadop}}^?}}~
 
 
 
-The instruction :math:`({{\mathit{nt}'}{.}\mathsf{store}}{{{\mathit{sz}}^?}}~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~{\mathit{valtype}}~\rightarrow~\epsilon` if:
+The instruction :math:`({{\mathit{nt}}{.}\mathsf{store}}{{{\mathit{sz}}^?}}~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~{\mathit{valtype}}~\rightarrow~\epsilon` if:
 
 
    * The memory type :math:`C{.}\mathsf{mems}{}[0]` is of the form :math:`{\mathit{mt}}`.
@@ -5311,7 +5311,7 @@ The instruction :math:`({{\mathit{nt}'}{.}\mathsf{store}}{{{\mathit{sz}}^?}}~{\m
 
    * Or:
 
-      * The number type :math:`{\mathit{nt}'}` is of the form :math:`{\mathsf{i}}{n}`.
+      * The number type :math:`{\mathit{nt}}` is of the form :math:`{\mathsf{i}}{n}`.
 
       * The pack size :math:`{{\mathit{sz}}^?}` is of the form :math:`M`.
 
@@ -5479,12 +5479,12 @@ The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~({n}{\maths
 
 
 
-The instruction sequence :math:`{{\mathit{instr}'}^\ast}` is :ref:`valid <valid-val>` with the function type :math:`{{\mathit{valtype}}^\ast}~\rightarrow~{{\mathit{valtype}'}^\ast}` if:
+The instruction sequence :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` with the function type :math:`{{\mathit{valtype}}^\ast}~\rightarrow~{{\mathit{valtype}'}^\ast}` if:
 
 
    * Either:
 
-      * The instruction sequence :math:`{{\mathit{instr}'}^\ast}` is empty.
+      * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is empty.
 
       * The value type sequence :math:`{{\mathit{valtype}}^\ast}` is empty.
 
@@ -5492,7 +5492,7 @@ The instruction sequence :math:`{{\mathit{instr}'}^\ast}` is :ref:`valid <valid-
 
    * Or:
 
-      * The instruction sequence :math:`{{\mathit{instr}'}^\ast}` is of the form :math:`{\mathit{instr}}_1~{{\mathit{instr}}_2^\ast}`.
+      * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is of the form :math:`{\mathit{instr}}_1~{{\mathit{instr}}_2^\ast}`.
 
       * The value type sequence :math:`{{\mathit{valtype}}^\ast}` is of the form :math:`{t_1^\ast}`.
 
@@ -5503,26 +5503,26 @@ The instruction sequence :math:`{{\mathit{instr}'}^\ast}` is :ref:`valid <valid-
       * The instruction sequence :math:`{{\mathit{instr}}_2^\ast}` is :ref:`valid <valid-val>` with the function type :math:`{t_2^\ast}~\rightarrow~{t_3^\ast}`.
    * Or:
 
-      * The instruction sequence :math:`{{\mathit{instr}'}^\ast}` is of the form :math:`{{\mathit{instr}}^\ast}`.
+      * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is of the form :math:`{{\mathit{instr}'}^\ast}`.
 
       * The value type sequence :math:`{{\mathit{valtype}}^\ast}` is of the form :math:`{{t'}_1^\ast}`.
 
       * The value type sequence :math:`{{\mathit{valtype}'}^\ast}` is of the form :math:`{{t'}_2^\ast}`.
 
-      * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+      * The instruction sequence :math:`{{\mathit{instr}'}^\ast}` is :ref:`valid <valid-val>` with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
       * The result type :math:`{{t'}_1^\ast}` :ref:`matches <match>` the result type :math:`{t_1^\ast}`.
 
       * The result type :math:`{t_2^\ast}` :ref:`matches <match>` the result type :math:`{{t'}_2^\ast}`.
    * Or:
 
-      * The instruction sequence :math:`{{\mathit{instr}'}^\ast}` is of the form :math:`{{\mathit{instr}}^\ast}`.
+      * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is of the form :math:`{{\mathit{instr}'}^\ast}`.
 
       * The value type sequence :math:`{{\mathit{valtype}}^\ast}` is of the form :math:`{t^\ast}~{t_1^\ast}`.
 
       * The value type sequence :math:`{{\mathit{valtype}'}^\ast}` is of the form :math:`{t^\ast}~{t_2^\ast}`.
 
-      * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+      * The instruction sequence :math:`{{\mathit{instr}'}^\ast}` is :ref:`valid <valid-val>` with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
 
 
@@ -10558,14 +10558,14 @@ Externtype_ok/mem
   - the memory type memtype is valid.
 
 Valtype_sub
-- the value type t' matches the value type t if:
+- the value type t_2 matches the value type t_1 if:
   - Either:
-    - t' is t.
+    - t_2 is t_1.
   - Or:
-    - t' is BOT.
+    - t_2 is BOT.
 
 Valtype_sub/refl
-- t matches only itself.
+- the value type t matches only itself.
 
 Valtype_sub/bot
 - the value type BOT matches t.
@@ -10596,22 +10596,22 @@ Memtype_sub
   - the limits lim_1 matches the limits lim_2.
 
 Externtype_sub
-- the external type externtype matches the external type externtype' if:
+- the external type externtype_1 matches the external type externtype_2 if:
   - Either:
-    - externtype is (FUNC ft_1).
-    - externtype' is (FUNC ft_2).
+    - externtype_1 is (FUNC ft_1).
+    - externtype_2 is (FUNC ft_2).
     - the function type ft_1 matches the function type ft_2.
   - Or:
-    - externtype is (GLOBAL gt_1).
-    - externtype' is (GLOBAL gt_2).
+    - externtype_1 is (GLOBAL gt_1).
+    - externtype_2 is (GLOBAL gt_2).
     - the global type gt_1 matches the global type gt_2.
   - Or:
-    - externtype is (TABLE tt_1).
-    - externtype' is (TABLE tt_2).
+    - externtype_1 is (TABLE tt_1).
+    - externtype_2 is (TABLE tt_2).
     - the table type tt_1 matches the table type tt_2.
   - Or:
-    - externtype is (MEM mt_1).
-    - externtype' is (MEM mt_2).
+    - externtype_1 is (MEM mt_1).
+    - externtype_2 is (MEM mt_2).
     - the memory type mt_1 matches the memory type mt_2.
 
 Externtype_sub/func
@@ -10631,15 +10631,15 @@ Externtype_sub/mem
   - the memory type mt_1 matches the memory type mt_2.
 
 Blocktype_ok
-- the block type blocktype is valid with the function type valtype'* -> valtype''* if:
+- the block type blocktype is valid with the function type valtype* -> valtype'* if:
   - Either:
-    - blocktype is (_RESULT valtype?).
-    - the value type sequence valtype'* is [].
-    - the value type sequence valtype''* is valtype?.
+    - blocktype is (_RESULT valtype''?).
+    - the value type sequence valtype* is [].
+    - the value type sequence valtype'* is valtype''?.
   - Or:
     - blocktype is (_IDX typeidx).
-    - valtype'* is t_1*.
-    - valtype''* is t_2*.
+    - valtype* is t_1*.
+    - valtype'* is t_2*.
     - the function type C.TYPES[typeidx] exists.
     - C.TYPES[typeidx] is t_1* -> t_2*.
 
@@ -10739,9 +10739,9 @@ Instr_ok/relop
 - the instruction (RELOP nt relop_nt) is valid with the function type [nt, nt] -> [I32].
 
 Instr_ok/cvtop
-- the instruction (CVTOP nt_1 nt_2 cvtop') is valid with the function type [nt_2] -> [nt_1] if:
+- the instruction (CVTOP nt_1 nt_2 cvtop) is valid with the function type [nt_2] -> [nt_1] if:
   - Either:
-    - cvtop' is REINTERPRET.
+    - cvtop is REINTERPRET.
     - $size(nt_1) is $size(nt_2).
   - Or:
 
@@ -10921,27 +10921,27 @@ Instr_ok/data.drop
   - C.DATAS[x] is OK.
 
 Instr_ok/load
-- the instruction (LOAD nt' loadop_? memarg) is valid with the function type [I32] -> [valtype] if:
+- the instruction (LOAD nt loadop_? memarg) is valid with the function type [I32] -> [valtype] if:
   - the memory type C.MEMS[0] is mt.
   - Either:
     - loadop_? is ?().
     - the value type valtype is nt.
     - (2 ^ memarg.ALIGN) is less than or equal to ($size(nt) / 8).
   - Or:
-    - the number type nt' is Inn.
+    - the number type nt is Inn.
     - loadop_? is ?(M _ sx).
     - valtype is Inn.
     - (2 ^ memarg.ALIGN) is less than or equal to (M / 8).
 
 Instr_ok/store
-- the instruction (STORE nt' sz? memarg) is valid with the function type [I32, valtype] -> [] if:
+- the instruction (STORE nt sz? memarg) is valid with the function type [I32, valtype] -> [] if:
   - the memory type C.MEMS[0] is mt.
   - Either:
     - the pack size sz? is ?().
     - the value type valtype is nt.
     - (2 ^ memarg.ALIGN) is less than or equal to ($size(nt) / 8).
   - Or:
-    - the number type nt' is Inn.
+    - the number type nt is Inn.
     - sz? is ?(M).
     - valtype is Inn.
     - (2 ^ memarg.ALIGN) is less than or equal to (M / 8).
@@ -11027,29 +11027,29 @@ Instr_ok/vload-zero
   - (2 ^ memarg.ALIGN) is less than or equal to (n / 8).
 
 Instrs_ok
-- the instruction sequence instr'* is valid with the function type valtype* -> valtype'* if:
+- the instruction sequence instr* is valid with the function type valtype* -> valtype'* if:
   - Either:
-    - instr'* is [].
+    - instr* is [].
     - the value type sequence valtype* is [].
     - the value type sequence valtype'* is [].
   - Or:
-    - instr'* is [instr_1] :: instr_2*.
+    - instr* is [instr_1] :: instr_2*.
     - valtype* is t_1*.
     - valtype'* is t_3*.
     - the instruction instr_1 is valid with the function type t_1* -> t_2*.
     - the instruction sequence instr_2* is valid with the function type t_2* -> t_3*.
   - Or:
-    - instr'* is instr*.
+    - instr* is instr'*.
     - valtype* is t'_1*.
     - valtype'* is t'_2*.
-    - the instruction sequence instr* is valid with t_1* -> t_2*.
+    - the instruction sequence instr'* is valid with t_1* -> t_2*.
     - the result type t'_1* matches the result type t_1*.
     - the result type t_2* matches the result type t'_2*.
   - Or:
-    - instr'* is instr*.
+    - instr* is instr'*.
     - valtype* is t* :: t_1*.
     - valtype'* is t* :: t_2*.
-    - instr* is valid with t_1* -> t_2*.
+    - instr'* is valid with t_1* -> t_2*.
 
 Instrs_ok/empty
 - the instruction sequence [] is valid with the function type [] -> [].
@@ -13749,20 +13749,20 @@ The sub type :math:`(\mathsf{sub}~{\mathsf{final}^?}~{x^\ast}~{\mathit{comptype}
 
 
 
-The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}'}^\ast})` is :ref:`valid <valid-val>` for the type index :math:`((x))` if:
+The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is :ref:`valid <valid-val>` for the type index :math:`((x))` if:
 
 
    * Either:
 
-      * The sub type sequence :math:`{{\mathit{subtype}'}^\ast}` is empty.
+      * The sub type sequence :math:`{{\mathit{subtype}}^\ast}` is empty.
 
    * Or:
 
-      * The sub type sequence :math:`{{\mathit{subtype}'}^\ast}` is of the form :math:`{\mathit{subtype}}_1~{{\mathit{subtype}}^\ast}`.
+      * The sub type sequence :math:`{{\mathit{subtype}}^\ast}` is of the form :math:`{\mathit{subtype}}_1~{{\mathit{subtype}'}^\ast}`.
 
       * The sub type :math:`{\mathit{subtype}}_1` is :ref:`valid <valid-val>` for the type index :math:`((x))`.
 
-      * The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is :ref:`valid <valid-val>` for the type index :math:`((x + 1))`.
+      * The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}'}^\ast})` is :ref:`valid <valid-val>` for the type index :math:`((x + 1))`.
 
 
 
@@ -13808,20 +13808,20 @@ The sub type :math:`(\mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~{
 
 
 
-The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}'}^\ast})` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x, i)})` if:
+The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x, i)})` if:
 
 
    * Either:
 
-      * The sub type sequence :math:`{{\mathit{subtype}'}^\ast}` is empty.
+      * The sub type sequence :math:`{{\mathit{subtype}}^\ast}` is empty.
 
    * Or:
 
-      * The sub type sequence :math:`{{\mathit{subtype}'}^\ast}` is of the form :math:`{\mathit{subtype}}_1~{{\mathit{subtype}}^\ast}`.
+      * The sub type sequence :math:`{{\mathit{subtype}}^\ast}` is of the form :math:`{\mathit{subtype}}_1~{{\mathit{subtype}'}^\ast}`.
 
       * The sub type :math:`{\mathit{subtype}}_1` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x, i)})`.
 
-      * The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x + 1, i + 1)})`.
+      * The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}'}^\ast})` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x + 1, i + 1)})`.
 
 
 
@@ -13853,14 +13853,14 @@ The defined type :math:`({\mathit{rectype}} {.} i)` is :ref:`valid <valid-val>` 
 
 
 
-The composite type :math:`{\mathit{comptype}}` :ref:`matches <match>` the composite type :math:`{\mathit{comptype}'}` if:
+The composite type :math:`{\mathit{comptype}}_1` :ref:`matches <match>` the composite type :math:`{\mathit{comptype}}_2` if:
 
 
    * Either:
 
-      * The composite type :math:`{\mathit{comptype}}` is of the form :math:`(\mathsf{struct}~{{\mathit{ft}}_1^\ast}~{{\mathit{ft}'}_1^\ast})`.
+      * The composite type :math:`{\mathit{comptype}}_1` is of the form :math:`(\mathsf{struct}~{{\mathit{ft}}_1^\ast}~{{\mathit{ft}'}_1^\ast})`.
 
-      * The composite type :math:`{\mathit{comptype}'}` is of the form :math:`(\mathsf{struct}~{{\mathit{ft}}_2^\ast})`.
+      * The composite type :math:`{\mathit{comptype}}_2` is of the form :math:`(\mathsf{struct}~{{\mathit{ft}}_2^\ast})`.
 
       * The length of :math:`{{\mathit{ft}}_1^\ast}` is equal to the length of :math:`{{\mathit{ft}}_2^\ast}`.
 
@@ -13870,16 +13870,16 @@ The composite type :math:`{\mathit{comptype}}` :ref:`matches <match>` the compos
 
    * Or:
 
-      * The composite type :math:`{\mathit{comptype}}` is of the form :math:`(\mathsf{array}~{\mathit{ft}}_1)`.
+      * The composite type :math:`{\mathit{comptype}}_1` is of the form :math:`(\mathsf{array}~{\mathit{ft}}_1)`.
 
-      * The composite type :math:`{\mathit{comptype}'}` is of the form :math:`(\mathsf{array}~{\mathit{ft}}_2)`.
+      * The composite type :math:`{\mathit{comptype}}_2` is of the form :math:`(\mathsf{array}~{\mathit{ft}}_2)`.
 
       * The field type :math:`{\mathit{ft}}_1` :ref:`matches <match>` the field type :math:`{\mathit{ft}}_2`.
    * Or:
 
-      * The composite type :math:`{\mathit{comptype}}` is of the form :math:`(\mathsf{func}~{t_{11}^\ast}~\rightarrow~{t_{12}^\ast})`.
+      * The composite type :math:`{\mathit{comptype}}_1` is of the form :math:`(\mathsf{func}~{t_{11}^\ast}~\rightarrow~{t_{12}^\ast})`.
 
-      * The composite type :math:`{\mathit{comptype}'}` is of the form :math:`(\mathsf{func}~{t_{21}^\ast}~\rightarrow~{t_{22}^\ast})`.
+      * The composite type :math:`{\mathit{comptype}}_2` is of the form :math:`(\mathsf{func}~{t_{21}^\ast}~\rightarrow~{t_{22}^\ast})`.
 
       * The result type :math:`{t_{21}^\ast}` :ref:`matches <match>` the result type :math:`{t_{11}^\ast}`.
 
@@ -13956,87 +13956,87 @@ The defined type :math:`{\mathit{deftype}}_1` :ref:`matches <match>` the defined
 
 
 
-The heap type :math:`{\mathit{heaptype}''}` :ref:`matches <match>` the heap type :math:`{\mathit{heaptype}'''}` if:
+The heap type :math:`{\mathit{heaptype}}_1` :ref:`matches <match>` the heap type :math:`{\mathit{heaptype}}_2` if:
 
 
    * Either:
 
-      * The heap type :math:`{\mathit{heaptype}'''}` is of the form :math:`{\mathit{heaptype}''}`.
+      * The heap type :math:`{\mathit{heaptype}}_2` is of the form :math:`{\mathit{heaptype}}_1`.
 
    * Or:
 
       * The heap type :math:`{\mathit{heaptype}'}` is :ref:`valid <valid-val>`.
 
-      * The heap type :math:`{\mathit{heaptype}''}` :ref:`matches <match>` the heap type :math:`{\mathit{heaptype}'}`.
+      * The heap type :math:`{\mathit{heaptype}}_1` :ref:`matches <match>` the heap type :math:`{\mathit{heaptype}'}`.
 
-      * The heap type :math:`{\mathit{heaptype}'}` :ref:`matches <match>` the heap type :math:`{\mathit{heaptype}'''}`.
+      * The heap type :math:`{\mathit{heaptype}'}` :ref:`matches <match>` the heap type :math:`{\mathit{heaptype}}_2`.
    * Or:
 
-      * The heap type :math:`{\mathit{heaptype}''}` is of the form :math:`\mathsf{eq}`.
+      * The heap type :math:`{\mathit{heaptype}}_1` is of the form :math:`\mathsf{eq}`.
 
-      * The heap type :math:`{\mathit{heaptype}'''}` is of the form :math:`\mathsf{any}`.
+      * The heap type :math:`{\mathit{heaptype}}_2` is of the form :math:`\mathsf{any}`.
    * Or:
 
-      * The heap type :math:`{\mathit{heaptype}''}` is of the form :math:`\mathsf{i{\scriptstyle 31}}`.
+      * The heap type :math:`{\mathit{heaptype}}_1` is of the form :math:`\mathsf{i{\scriptstyle 31}}`.
 
-      * The heap type :math:`{\mathit{heaptype}'''}` is of the form :math:`\mathsf{eq}`.
+      * The heap type :math:`{\mathit{heaptype}}_2` is of the form :math:`\mathsf{eq}`.
    * Or:
 
-      * The heap type :math:`{\mathit{heaptype}''}` is of the form :math:`\mathsf{struct}`.
+      * The heap type :math:`{\mathit{heaptype}}_1` is of the form :math:`\mathsf{struct}`.
 
-      * The heap type :math:`{\mathit{heaptype}'''}` is of the form :math:`\mathsf{eq}`.
+      * The heap type :math:`{\mathit{heaptype}}_2` is of the form :math:`\mathsf{eq}`.
    * Or:
 
-      * The heap type :math:`{\mathit{heaptype}''}` is of the form :math:`\mathsf{array}`.
+      * The heap type :math:`{\mathit{heaptype}}_1` is of the form :math:`\mathsf{array}`.
 
-      * The heap type :math:`{\mathit{heaptype}'''}` is of the form :math:`\mathsf{eq}`.
+      * The heap type :math:`{\mathit{heaptype}}_2` is of the form :math:`\mathsf{eq}`.
    * Or:
 
-      * The heap type :math:`{\mathit{heaptype}''}` is of the form :math:`{\mathit{deftype}}`.
+      * The heap type :math:`{\mathit{heaptype}}_1` is of the form :math:`{\mathit{deftype}}`.
 
-      * The heap type :math:`{\mathit{heaptype}'''}` is of the form :math:`\mathsf{struct}`.
+      * The heap type :math:`{\mathit{heaptype}}_2` is of the form :math:`\mathsf{struct}`.
 
       * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`{\mathit{deftype}}` is the composite type :math:`(\mathsf{struct}~{{\mathit{fieldtype}}^\ast})`.
    * Or:
 
-      * The heap type :math:`{\mathit{heaptype}''}` is of the form :math:`{\mathit{deftype}}`.
+      * The heap type :math:`{\mathit{heaptype}}_1` is of the form :math:`{\mathit{deftype}}`.
 
-      * The heap type :math:`{\mathit{heaptype}'''}` is of the form :math:`\mathsf{array}`.
+      * The heap type :math:`{\mathit{heaptype}}_2` is of the form :math:`\mathsf{array}`.
 
       * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`{\mathit{deftype}}` is the composite type :math:`(\mathsf{array}~{\mathit{fieldtype}})`.
    * Or:
 
-      * The heap type :math:`{\mathit{heaptype}''}` is of the form :math:`{\mathit{deftype}}`.
+      * The heap type :math:`{\mathit{heaptype}}_1` is of the form :math:`{\mathit{deftype}}`.
 
-      * The heap type :math:`{\mathit{heaptype}'''}` is of the form :math:`\mathsf{func}`.
+      * The heap type :math:`{\mathit{heaptype}}_2` is of the form :math:`\mathsf{func}`.
 
       * The :ref:`expansion <aux-expand-deftype>` of the defined type :math:`{\mathit{deftype}}` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
    * Or:
 
-      * The heap type :math:`{\mathit{heaptype}''}` is of the form :math:`{\mathit{deftype}}_1`.
+      * The heap type :math:`{\mathit{heaptype}}_1` is of the form :math:`{\mathit{deftype}}_1`.
 
-      * The heap type :math:`{\mathit{heaptype}'''}` is of the form :math:`{\mathit{deftype}}_2`.
+      * The heap type :math:`{\mathit{heaptype}}_2` is of the form :math:`{\mathit{deftype}}_2`.
 
       * The defined type :math:`{\mathit{deftype}}_1` :ref:`matches <match>` the defined type :math:`{\mathit{deftype}}_2`.
    * Or:
 
-      * The heap type :math:`{\mathit{heaptype}''}` is of the form :math:`{\mathit{typeidx}}`.
+      * The heap type :math:`{\mathit{heaptype}}_1` is of the form :math:`{\mathit{typeidx}}`.
 
       * The type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
 
-      * The type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` :ref:`matches <match>` the heap type :math:`{\mathit{heaptype}'''}`.
+      * The type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` :ref:`matches <match>` the heap type :math:`{\mathit{heaptype}}_2`.
    * Or:
 
-      * The heap type :math:`{\mathit{heaptype}'''}` is of the form :math:`{\mathit{typeidx}}`.
+      * The heap type :math:`{\mathit{heaptype}}_2` is of the form :math:`{\mathit{typeidx}}`.
 
       * The type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
 
-      * The heap type :math:`{\mathit{heaptype}''}` :ref:`matches <match>` the type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]`.
+      * The heap type :math:`{\mathit{heaptype}}_1` :ref:`matches <match>` the type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]`.
    * Or:
 
-      * The heap type :math:`{\mathit{heaptype}''}` is of the form :math:`(\mathsf{rec} {.} i)`.
+      * The heap type :math:`{\mathit{heaptype}}_1` is of the form :math:`(\mathsf{rec} {.} i)`.
 
-      * The heap type :math:`{\mathit{heaptype}'''}` is of the form :math:`{{\mathit{typeuse}}^\ast}{}[j]`.
+      * The heap type :math:`{\mathit{heaptype}}_2` is of the form :math:`{{\mathit{typeuse}}^\ast}{}[j]`.
 
       * The length of :math:`{{\mathit{typeuse}}^\ast}` is greater than :math:`j`.
 
@@ -14045,27 +14045,27 @@ The heap type :math:`{\mathit{heaptype}''}` :ref:`matches <match>` the heap type
       * The recursive type :math:`C{.}\mathsf{recs}{}[i]` is of the form :math:`(\mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~{\mathit{ct}})`.
    * Or:
 
-      * The heap type :math:`{\mathit{heaptype}''}` is of the form :math:`\mathsf{none}`.
+      * The heap type :math:`{\mathit{heaptype}}_1` is of the form :math:`\mathsf{none}`.
 
-      * The heap type :math:`{\mathit{heaptype}'''}` :ref:`matches <match>` the heap type :math:`\mathsf{any}`.
+      * The heap type :math:`{\mathit{heaptype}}_2` :ref:`matches <match>` the heap type :math:`\mathsf{any}`.
    * Or:
 
-      * The heap type :math:`{\mathit{heaptype}''}` is of the form :math:`\mathsf{nofunc}`.
+      * The heap type :math:`{\mathit{heaptype}}_1` is of the form :math:`\mathsf{nofunc}`.
 
-      * The heap type :math:`{\mathit{heaptype}'''}` :ref:`matches <match>` the heap type :math:`\mathsf{func}`.
+      * The heap type :math:`{\mathit{heaptype}}_2` :ref:`matches <match>` the heap type :math:`\mathsf{func}`.
    * Or:
 
-      * The heap type :math:`{\mathit{heaptype}''}` is of the form :math:`\mathsf{noexn}`.
+      * The heap type :math:`{\mathit{heaptype}}_1` is of the form :math:`\mathsf{noexn}`.
 
-      * The heap type :math:`{\mathit{heaptype}'''}` :ref:`matches <match>` the heap type :math:`\mathsf{exn}`.
+      * The heap type :math:`{\mathit{heaptype}}_2` :ref:`matches <match>` the heap type :math:`\mathsf{exn}`.
    * Or:
 
-      * The heap type :math:`{\mathit{heaptype}''}` is of the form :math:`\mathsf{noextern}`.
+      * The heap type :math:`{\mathit{heaptype}}_1` is of the form :math:`\mathsf{noextern}`.
 
-      * The heap type :math:`{\mathit{heaptype}'''}` :ref:`matches <match>` the heap type :math:`\mathsf{extern}`.
+      * The heap type :math:`{\mathit{heaptype}}_2` :ref:`matches <match>` the heap type :math:`\mathsf{extern}`.
    * Or:
 
-      * The heap type :math:`{\mathit{heaptype}''}` is of the form :math:`\mathsf{bot}`.
+      * The heap type :math:`{\mathit{heaptype}}_1` is of the form :math:`\mathsf{bot}`.
 
 
 
@@ -14208,22 +14208,22 @@ The heap type :math:`\mathsf{bot}` :ref:`matches <match>` the heap type :math:`{
 
 
 
-The reference type :math:`(\mathsf{ref}~{\mathsf{null}^?}~{\mathit{ht}}_1)` :ref:`matches <match>` the reference type :math:`(\mathsf{ref}~{{\mathsf{null}^?}'}~{\mathit{ht}}_2)` if:
+The reference type :math:`(\mathsf{ref}~{{\mathsf{null}^?}}_1~{\mathit{ht}}_1)` :ref:`matches <match>` the reference type :math:`(\mathsf{ref}~{{\mathsf{null}^?}}_2~{\mathit{ht}}_2)` if:
 
 
    * The heap type :math:`{\mathit{ht}}_1` :ref:`matches <match>` the heap type :math:`{\mathit{ht}}_2`.
 
    * Either:
 
-      * :math:`{\mathsf{null}^?}` is absent.
+      * :math:`{{\mathsf{null}^?}}_1` is absent.
 
-      * :math:`{{\mathsf{null}^?}'}` is absent.
+      * :math:`{{\mathsf{null}^?}}_2` is absent.
 
    * Or:
 
-      * :math:`{\mathsf{null}^?}` is of the form :math:`{\mathsf{null}^?}`.
+      * :math:`{{\mathsf{null}^?}}_1` is of the form :math:`{\mathsf{null}^?}`.
 
-      * :math:`{{\mathsf{null}^?}'}` is of the form :math:`\mathsf{null}`.
+      * :math:`{{\mathsf{null}^?}}_2` is of the form :math:`\mathsf{null}`.
 
 
 
@@ -14244,34 +14244,34 @@ The reference type :math:`(\mathsf{ref}~{\mathsf{null}^?}~{\mathit{ht}}_1)` :ref
 
 
 
-The value type :math:`{\mathit{valtype}'}` :ref:`matches <match>` the value type :math:`{\mathit{valtype}''}` if:
+The value type :math:`{\mathit{valtype}}_1` :ref:`matches <match>` the value type :math:`{\mathit{valtype}}_2` if:
 
 
    * Either:
 
-      * The value type :math:`{\mathit{valtype}'}` is of the form :math:`{\mathit{numtype}}_1`.
+      * The value type :math:`{\mathit{valtype}}_1` is of the form :math:`{\mathit{numtype}}_1`.
 
-      * The value type :math:`{\mathit{valtype}''}` is of the form :math:`{\mathit{numtype}}_2`.
+      * The value type :math:`{\mathit{valtype}}_2` is of the form :math:`{\mathit{numtype}}_2`.
 
       * The number type :math:`{\mathit{numtype}}_1` :ref:`matches <match>` the number type :math:`{\mathit{numtype}}_2`.
 
    * Or:
 
-      * The value type :math:`{\mathit{valtype}'}` is of the form :math:`{\mathit{vectype}}_1`.
+      * The value type :math:`{\mathit{valtype}}_1` is of the form :math:`{\mathit{vectype}}_1`.
 
-      * The value type :math:`{\mathit{valtype}''}` is of the form :math:`{\mathit{vectype}}_2`.
+      * The value type :math:`{\mathit{valtype}}_2` is of the form :math:`{\mathit{vectype}}_2`.
 
       * The vector type :math:`{\mathit{vectype}}_1` :ref:`matches <match>` the vector type :math:`{\mathit{vectype}}_2`.
    * Or:
 
-      * The value type :math:`{\mathit{valtype}'}` is of the form :math:`{\mathit{reftype}}_1`.
+      * The value type :math:`{\mathit{valtype}}_1` is of the form :math:`{\mathit{reftype}}_1`.
 
-      * The value type :math:`{\mathit{valtype}''}` is of the form :math:`{\mathit{reftype}}_2`.
+      * The value type :math:`{\mathit{valtype}}_2` is of the form :math:`{\mathit{reftype}}_2`.
 
       * The reference type :math:`{\mathit{reftype}}_1` :ref:`matches <match>` the reference type :math:`{\mathit{reftype}}_2`.
    * Or:
 
-      * The value type :math:`{\mathit{valtype}'}` is of the form :math:`\mathsf{bot}`.
+      * The value type :math:`{\mathit{valtype}}_1` is of the form :math:`\mathsf{bot}`.
 
 
 
@@ -14317,22 +14317,22 @@ The result type :math:`{t_1^\ast}` :ref:`matches <match>` the result type :math:
 
 
 
-The storage type :math:`{\mathit{storagetype}}` :ref:`matches <match>` the storage type :math:`{\mathit{storagetype}'}` if:
+The storage type :math:`{\mathit{storagetype}}_1` :ref:`matches <match>` the storage type :math:`{\mathit{storagetype}}_2` if:
 
 
    * Either:
 
-      * The storage type :math:`{\mathit{storagetype}}` is of the form :math:`{\mathit{valtype}}_1`.
+      * The storage type :math:`{\mathit{storagetype}}_1` is of the form :math:`{\mathit{valtype}}_1`.
 
-      * The storage type :math:`{\mathit{storagetype}'}` is of the form :math:`{\mathit{valtype}}_2`.
+      * The storage type :math:`{\mathit{storagetype}}_2` is of the form :math:`{\mathit{valtype}}_2`.
 
       * The value type :math:`{\mathit{valtype}}_1` :ref:`matches <match>` the value type :math:`{\mathit{valtype}}_2`.
 
    * Or:
 
-      * The storage type :math:`{\mathit{storagetype}}` is of the form :math:`{\mathit{packtype}}_1`.
+      * The storage type :math:`{\mathit{storagetype}}_1` is of the form :math:`{\mathit{packtype}}_1`.
 
-      * The storage type :math:`{\mathit{storagetype}'}` is of the form :math:`{\mathit{packtype}}_2`.
+      * The storage type :math:`{\mathit{storagetype}}_2` is of the form :math:`{\mathit{packtype}}_2`.
 
       * The packed type :math:`{\mathit{packtype}}_1` :ref:`matches <match>` the packed type :math:`{\mathit{packtype}}_2`.
 
@@ -14355,22 +14355,22 @@ The storage type :math:`{\mathit{packtype}}_1` :ref:`matches <match>` the storag
 
 
 
-The field type :math:`({\mathsf{mut}^?}~{\mathit{zt}}_1)` :ref:`matches <match>` the field type :math:`({{\mathsf{mut}^?}'}~{\mathit{zt}}_2)` if:
+The field type :math:`({{\mathsf{mut}^?}}_1~{\mathit{zt}}_1)` :ref:`matches <match>` the field type :math:`({{\mathsf{mut}^?}}_2~{\mathit{zt}}_2)` if:
 
 
    * The storage type :math:`{\mathit{zt}}_1` :ref:`matches <match>` the storage type :math:`{\mathit{zt}}_2`.
 
    * Either:
 
-      * :math:`{\mathsf{mut}^?}` is absent.
+      * :math:`{{\mathsf{mut}^?}}_1` is absent.
 
-      * :math:`{{\mathsf{mut}^?}'}` is absent.
+      * :math:`{{\mathsf{mut}^?}}_2` is absent.
 
    * Or:
 
-      * :math:`{\mathsf{mut}^?}` is of the form :math:`\mathsf{mut}`.
+      * :math:`{{\mathsf{mut}^?}}_1` is of the form :math:`\mathsf{mut}`.
 
-      * :math:`{{\mathsf{mut}^?}'}` is of the form :math:`\mathsf{mut}`.
+      * :math:`{{\mathsf{mut}^?}}_2` is of the form :math:`\mathsf{mut}`.
 
       * The storage type :math:`{\mathit{zt}}_2` :ref:`matches <match>` the storage type :math:`{\mathit{zt}}_1`.
 
@@ -14580,22 +14580,22 @@ The tag type :math:`{\mathit{deftype}}_1` :ref:`matches <match>` the tag type :m
 
 
 
-The global type :math:`({\mathsf{mut}^?}~{\mathit{valtype}}_1)` :ref:`matches <match>` the global type :math:`({{\mathsf{mut}^?}'}~{\mathit{valtype}}_2)` if:
+The global type :math:`({{\mathsf{mut}^?}}_1~{\mathit{valtype}}_1)` :ref:`matches <match>` the global type :math:`({{\mathsf{mut}^?}}_2~{\mathit{valtype}}_2)` if:
 
 
    * The value type :math:`{\mathit{valtype}}_1` :ref:`matches <match>` the value type :math:`{\mathit{valtype}}_2`.
 
    * Either:
 
-      * :math:`{\mathsf{mut}^?}` is absent.
+      * :math:`{{\mathsf{mut}^?}}_1` is absent.
 
-      * :math:`{{\mathsf{mut}^?}'}` is absent.
+      * :math:`{{\mathsf{mut}^?}}_2` is absent.
 
    * Or:
 
-      * :math:`{\mathsf{mut}^?}` is of the form :math:`\mathsf{mut}`.
+      * :math:`{{\mathsf{mut}^?}}_1` is of the form :math:`\mathsf{mut}`.
 
-      * :math:`{{\mathsf{mut}^?}'}` is of the form :math:`\mathsf{mut}`.
+      * :math:`{{\mathsf{mut}^?}}_2` is of the form :math:`\mathsf{mut}`.
 
       * The value type :math:`{\mathit{valtype}}_2` :ref:`matches <match>` the value type :math:`{\mathit{valtype}}_1`.
 
@@ -14640,43 +14640,43 @@ The table type :math:`({\mathit{addrtype}}~{\mathit{limits}}_1~{\mathit{reftype}
 
 
 
-The external type :math:`{\mathit{externtype}}` :ref:`matches <match>` the external type :math:`{\mathit{externtype}'}` if:
+The external type :math:`{\mathit{externtype}}_1` :ref:`matches <match>` the external type :math:`{\mathit{externtype}}_2` if:
 
 
    * Either:
 
-      * The external type :math:`{\mathit{externtype}}` is of the form :math:`(\mathsf{tag}~{\mathit{tagtype}}_1)`.
+      * The external type :math:`{\mathit{externtype}}_1` is of the form :math:`(\mathsf{tag}~{\mathit{tagtype}}_1)`.
 
-      * The external type :math:`{\mathit{externtype}'}` is of the form :math:`(\mathsf{tag}~{\mathit{tagtype}}_2)`.
+      * The external type :math:`{\mathit{externtype}}_2` is of the form :math:`(\mathsf{tag}~{\mathit{tagtype}}_2)`.
 
       * The tag type :math:`{\mathit{tagtype}}_1` :ref:`matches <match>` the tag type :math:`{\mathit{tagtype}}_2`.
 
    * Or:
 
-      * The external type :math:`{\mathit{externtype}}` is of the form :math:`(\mathsf{global}~{\mathit{globaltype}}_1)`.
+      * The external type :math:`{\mathit{externtype}}_1` is of the form :math:`(\mathsf{global}~{\mathit{globaltype}}_1)`.
 
-      * The external type :math:`{\mathit{externtype}'}` is of the form :math:`(\mathsf{global}~{\mathit{globaltype}}_2)`.
+      * The external type :math:`{\mathit{externtype}}_2` is of the form :math:`(\mathsf{global}~{\mathit{globaltype}}_2)`.
 
       * The global type :math:`{\mathit{globaltype}}_1` :ref:`matches <match>` the global type :math:`{\mathit{globaltype}}_2`.
    * Or:
 
-      * The external type :math:`{\mathit{externtype}}` is of the form :math:`(\mathsf{mem}~{\mathit{memtype}}_1)`.
+      * The external type :math:`{\mathit{externtype}}_1` is of the form :math:`(\mathsf{mem}~{\mathit{memtype}}_1)`.
 
-      * The external type :math:`{\mathit{externtype}'}` is of the form :math:`(\mathsf{mem}~{\mathit{memtype}}_2)`.
+      * The external type :math:`{\mathit{externtype}}_2` is of the form :math:`(\mathsf{mem}~{\mathit{memtype}}_2)`.
 
       * The memory type :math:`{\mathit{memtype}}_1` :ref:`matches <match>` the memory type :math:`{\mathit{memtype}}_2`.
    * Or:
 
-      * The external type :math:`{\mathit{externtype}}` is of the form :math:`(\mathsf{table}~{\mathit{tabletype}}_1)`.
+      * The external type :math:`{\mathit{externtype}}_1` is of the form :math:`(\mathsf{table}~{\mathit{tabletype}}_1)`.
 
-      * The external type :math:`{\mathit{externtype}'}` is of the form :math:`(\mathsf{table}~{\mathit{tabletype}}_2)`.
+      * The external type :math:`{\mathit{externtype}}_2` is of the form :math:`(\mathsf{table}~{\mathit{tabletype}}_2)`.
 
       * The table type :math:`{\mathit{tabletype}}_1` :ref:`matches <match>` the table type :math:`{\mathit{tabletype}}_2`.
    * Or:
 
-      * The external type :math:`{\mathit{externtype}}` is of the form :math:`(\mathsf{func}~{\mathit{deftype}}_1)`.
+      * The external type :math:`{\mathit{externtype}}_1` is of the form :math:`(\mathsf{func}~{\mathit{deftype}}_1)`.
 
-      * The external type :math:`{\mathit{externtype}'}` is of the form :math:`(\mathsf{func}~{\mathit{deftype}}_2)`.
+      * The external type :math:`{\mathit{externtype}}_2` is of the form :math:`(\mathsf{func}~{\mathit{deftype}}_2)`.
 
       * The defined type :math:`{\mathit{deftype}}_1` :ref:`matches <match>` the defined type :math:`{\mathit{deftype}}_2`.
 
@@ -14723,28 +14723,28 @@ The external type :math:`(\mathsf{func}~{\mathit{deftype}}_1)` :ref:`matches <ma
 
 
 
-The block type :math:`{\mathit{blocktype}}` is :ref:`valid <valid-val>` as the instruction type :math:`{{\mathit{valtype}'}^\ast}~\rightarrow~{{\mathit{valtype}''}^\ast}` if:
+The block type :math:`{\mathit{blocktype}}` is :ref:`valid <valid-val>` as the instruction type :math:`{{\mathit{valtype}}^\ast}~\rightarrow~{{\mathit{valtype}'}^\ast}` if:
 
 
    * Either:
 
-      * The block type :math:`{\mathit{blocktype}}` is of the form :math:`{{\mathit{valtype}}^?}`.
+      * The block type :math:`{\mathit{blocktype}}` is of the form :math:`{{\mathit{valtype}''}^?}`.
 
-      * The value type sequence :math:`{{\mathit{valtype}'}^\ast}` is empty.
+      * The value type sequence :math:`{{\mathit{valtype}}^\ast}` is empty.
 
-      * The value type sequence :math:`{{\mathit{valtype}''}^\ast}` is of the form :math:`{{\mathit{valtype}}^?}`.
+      * The value type sequence :math:`{{\mathit{valtype}'}^\ast}` is of the form :math:`{{\mathit{valtype}''}^?}`.
 
-      * If :math:`{\mathit{valtype}}` is defined, then:
+      * If :math:`{\mathit{valtype}''}` is defined, then:
 
-         * The value type :math:`{\mathit{valtype}}` is :ref:`valid <valid-val>`.
+         * The value type :math:`{\mathit{valtype}''}` is :ref:`valid <valid-val>`.
 
    * Or:
 
       * The block type :math:`{\mathit{blocktype}}` is of the form :math:`{\mathit{typeidx}}`.
 
-      * The value type sequence :math:`{{\mathit{valtype}'}^\ast}` is of the form :math:`{t_1^\ast}`.
+      * The value type sequence :math:`{{\mathit{valtype}}^\ast}` is of the form :math:`{t_1^\ast}`.
 
-      * The value type sequence :math:`{{\mathit{valtype}''}^\ast}` is of the form :math:`{t_2^\ast}`.
+      * The value type sequence :math:`{{\mathit{valtype}'}^\ast}` is of the form :math:`{t_2^\ast}`.
 
       * The type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
 
@@ -15862,7 +15862,7 @@ The instruction :math:`(\mathsf{data{.}drop}~x)` is :ref:`valid <valid-val>` wit
 
 
 
-The instruction :math:`({{\mathit{nt}'}{.}\mathsf{load}}{{{\mathit{loadop}}^?}}~x~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}~\rightarrow~{\mathit{valtype}}` if:
+The instruction :math:`({{\mathit{nt}}{.}\mathsf{load}}{{{\mathit{loadop}}^?}}~x~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}~\rightarrow~{\mathit{valtype}}` if:
 
 
    * The memory :math:`C{.}\mathsf{mems}{}[x]` exists.
@@ -15875,11 +15875,11 @@ The instruction :math:`({{\mathit{nt}'}{.}\mathsf{load}}{{{\mathit{loadop}}^?}}~
 
       * The value type :math:`{\mathit{valtype}}` is of the form :math:`{\mathit{nt}}`.
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}'}|} / 8`.
+      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
 
    * Or:
 
-      * The number type :math:`{\mathit{nt}'}` is of the form :math:`{\mathsf{i}}{N}`.
+      * The number type :math:`{\mathit{nt}}` is of the form :math:`{\mathsf{i}}{N}`.
 
       * :math:`{{\mathit{loadop}}^?}` is of the form :math:`{M}{\mathsf{\_}}{{\mathit{sx}}}`.
 
@@ -15890,7 +15890,7 @@ The instruction :math:`({{\mathit{nt}'}{.}\mathsf{load}}{{{\mathit{loadop}}^?}}~
 
 
 
-The instruction :math:`({{\mathit{nt}'}{.}\mathsf{store}}{{{\mathit{storeop}}^?}}~x~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}~{\mathit{valtype}}~\rightarrow~\epsilon` if:
+The instruction :math:`({{\mathit{nt}}{.}\mathsf{store}}{{{\mathit{storeop}}^?}}~x~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}~{\mathit{valtype}}~\rightarrow~\epsilon` if:
 
 
    * The memory :math:`C{.}\mathsf{mems}{}[x]` exists.
@@ -15903,11 +15903,11 @@ The instruction :math:`({{\mathit{nt}'}{.}\mathsf{store}}{{{\mathit{storeop}}^?}
 
       * The value type :math:`{\mathit{valtype}}` is of the form :math:`{\mathit{nt}}`.
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}'}|} / 8`.
+      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
 
    * Or:
 
-      * The number type :math:`{\mathit{nt}'}` is of the form :math:`{\mathsf{i}}{N}`.
+      * The number type :math:`{\mathit{nt}}` is of the form :math:`{\mathsf{i}}{N}`.
 
       * :math:`{{\mathit{storeop}}^?}` is of the form :math:`M`.
 
@@ -16106,20 +16106,20 @@ The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{N}{\math
 
 
 
-The instruction sequence :math:`{{\mathit{instr}'}^\ast}` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{it}''}` if:
+The instruction sequence :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{it}}` if:
 
 
    * Either:
 
-      * The instruction sequence :math:`{{\mathit{instr}'}^\ast}` is empty.
+      * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is empty.
 
-      * The instruction type :math:`{\mathit{it}''}` is of the form :math:`\epsilon~\rightarrow~\epsilon`.
+      * The instruction type :math:`{\mathit{it}}` is of the form :math:`\epsilon~\rightarrow~\epsilon`.
 
    * Or:
 
-      * The instruction sequence :math:`{{\mathit{instr}'}^\ast}` is of the form :math:`{\mathit{instr}}_1~{{\mathit{instr}}_2^\ast}`.
+      * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is of the form :math:`{\mathit{instr}}_1~{{\mathit{instr}}_2^\ast}`.
 
-      * The instruction type :math:`{\mathit{it}''}` is of the form :math:`{t_1^\ast}~{\rightarrow}_{{x_1^\ast}~{x_2^\ast}}\,{t_3^\ast}`.
+      * The instruction type :math:`{\mathit{it}}` is of the form :math:`{t_1^\ast}~{\rightarrow}_{{x_1^\ast}~{x_2^\ast}}\,{t_3^\ast}`.
 
       * The instruction :math:`{\mathit{instr}}_1` is :ref:`valid <valid-val>` with the instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x_1^\ast}}\,{t_2^\ast}`.
 
@@ -16138,20 +16138,20 @@ The instruction sequence :math:`{{\mathit{instr}'}^\ast}` is :ref:`valid <valid-
       * Under the context :math:`C{}[{.}\mathsf{local}{}[{x_1^\ast}] = {(\mathsf{set}~t)^\ast}]`, the instruction sequence :math:`{{\mathit{instr}}_2^\ast}` is :ref:`valid <valid-val>` with the instruction type :math:`{t_2^\ast}~{\rightarrow}_{{x_2^\ast}}\,{t_3^\ast}`.
    * Or:
 
-      * The instruction sequence :math:`{{\mathit{instr}'}^\ast}` is of the form :math:`{{\mathit{instr}}^\ast}`.
+      * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is of the form :math:`{{\mathit{instr}'}^\ast}`.
 
-      * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{it}}`.
+      * The instruction sequence :math:`{{\mathit{instr}'}^\ast}` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{it}''}`.
 
-      * The instruction type :math:`{\mathit{it}}` :ref:`matches <match>` the instruction type :math:`{\mathit{it}''}`.
+      * The instruction type :math:`{\mathit{it}''}` :ref:`matches <match>` the instruction type :math:`{\mathit{it}}`.
 
-      * The instruction type :math:`{\mathit{it}''}` is :ref:`valid <valid-val>`.
+      * The instruction type :math:`{\mathit{it}}` is :ref:`valid <valid-val>`.
    * Or:
 
-      * The instruction sequence :math:`{{\mathit{instr}'}^\ast}` is of the form :math:`{{\mathit{instr}}^\ast}`.
+      * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is of the form :math:`{{\mathit{instr}'}^\ast}`.
 
-      * The instruction type :math:`{\mathit{it}''}` is of the form :math:`{t^\ast}~{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t^\ast}~{t_2^\ast}`.
+      * The instruction type :math:`{\mathit{it}}` is of the form :math:`{t^\ast}~{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t^\ast}~{t_2^\ast}`.
 
-      * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` with the instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}`.
+      * The instruction sequence :math:`{{\mathit{instr}'}^\ast}` is :ref:`valid <valid-val>` with the instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}`.
 
       * The result type :math:`{t^\ast}` is :ref:`valid <valid-val>`.
 
@@ -16185,14 +16185,14 @@ The instruction sequence :math:`{\mathit{instr}}_1~{{\mathit{instr}}_2^\ast}` is
 
 
 
-The instruction sequence :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{it}'}` if:
+The instruction sequence :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{it}}` if:
 
 
-   * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{it}}`.
+   * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{it}'}`.
 
-   * The instruction type :math:`{\mathit{it}}` :ref:`matches <match>` the instruction type :math:`{\mathit{it}'}`.
+   * The instruction type :math:`{\mathit{it}'}` :ref:`matches <match>` the instruction type :math:`{\mathit{it}}`.
 
-   * The instruction type :math:`{\mathit{it}'}` is :ref:`valid <valid-val>`.
+   * The instruction type :math:`{\mathit{it}}` is :ref:`valid <valid-val>`.
 
 
 
@@ -16732,18 +16732,18 @@ The export :math:`(\mathsf{export}~{\mathit{name}}~{\mathit{externidx}})` is :re
 
 
 
-The global sequence :math:`{{\mathit{global}'}^\ast}` is :ref:`valid <valid-val>` with the global type sequence :math:`{{\mathit{globaltype}}^\ast}` if:
+The global sequence :math:`{{\mathit{global}}^\ast}` is :ref:`valid <valid-val>` with the global type sequence :math:`{{\mathit{globaltype}}^\ast}` if:
 
 
    * Either:
 
-      * The global sequence :math:`{{\mathit{global}'}^\ast}` is empty.
+      * The global sequence :math:`{{\mathit{global}}^\ast}` is empty.
 
       * The global type sequence :math:`{{\mathit{globaltype}}^\ast}` is empty.
 
    * Or:
 
-      * The global sequence :math:`{{\mathit{global}'}^\ast}` is of the form :math:`{\mathit{global}}_1~{{\mathit{global}}^\ast}`.
+      * The global sequence :math:`{{\mathit{global}}^\ast}` is of the form :math:`{\mathit{global}}_1~{{\mathit{global}'}^\ast}`.
 
       * The global type sequence :math:`{{\mathit{globaltype}}^\ast}` is of the form :math:`{\mathit{gt}}_1~{{\mathit{gt}}^\ast}`.
 
@@ -16751,7 +16751,7 @@ The global sequence :math:`{{\mathit{global}'}^\ast}` is :ref:`valid <valid-val>
 
       * Let :math:`{C'}` be the same context as :math:`C`, but with the global type sequence :math:`{\mathit{gt}}_1` appended to the field :math:`\mathsf{globals}`.
 
-      * Under the context :math:`{C'}`, the global sequence :math:`{{\mathit{global}}^\ast}` is :ref:`valid <valid-val>` with the global type sequence :math:`{{\mathit{gt}}^\ast}`.
+      * Under the context :math:`{C'}`, the global sequence :math:`{{\mathit{global}'}^\ast}` is :ref:`valid <valid-val>` with the global type sequence :math:`{{\mathit{gt}}^\ast}`.
 
 
 
@@ -16773,18 +16773,18 @@ The global sequence :math:`{\mathit{global}}_1~{{\mathit{global}}^\ast}` is :ref
 
 
 
-The type definition sequence :math:`{{\mathit{type}'}^\ast}` is :ref:`valid <valid-val>` with the defined type sequence :math:`{{\mathit{deftype}}^\ast}` if:
+The type definition sequence :math:`{{\mathit{type}}^\ast}` is :ref:`valid <valid-val>` with the defined type sequence :math:`{{\mathit{deftype}}^\ast}` if:
 
 
    * Either:
 
-      * The type definition sequence :math:`{{\mathit{type}'}^\ast}` is empty.
+      * The type definition sequence :math:`{{\mathit{type}}^\ast}` is empty.
 
       * The defined type sequence :math:`{{\mathit{deftype}}^\ast}` is empty.
 
    * Or:
 
-      * The type definition sequence :math:`{{\mathit{type}'}^\ast}` is of the form :math:`{\mathit{type}}_1~{{\mathit{type}}^\ast}`.
+      * The type definition sequence :math:`{{\mathit{type}}^\ast}` is of the form :math:`{\mathit{type}}_1~{{\mathit{type}'}^\ast}`.
 
       * The defined type sequence :math:`{{\mathit{deftype}}^\ast}` is of the form :math:`{{\mathit{dt}}_1^\ast}~{{\mathit{dt}}^\ast}`.
 
@@ -16792,7 +16792,7 @@ The type definition sequence :math:`{{\mathit{type}'}^\ast}` is :ref:`valid <val
 
       * Let :math:`{C'}` be the same context as :math:`C`, but with the defined type sequence :math:`{{\mathit{dt}}_1^\ast}` appended to the field :math:`\mathsf{types}`.
 
-      * Under the context :math:`{C'}`, the type definition sequence :math:`{{\mathit{type}}^\ast}` is :ref:`valid <valid-val>` with the defined type sequence :math:`{{\mathit{dt}}^\ast}`.
+      * Under the context :math:`{C'}`, the type definition sequence :math:`{{\mathit{type}'}^\ast}` is :ref:`valid <valid-val>` with the defined type sequence :math:`{{\mathit{dt}}^\ast}`.
 
 
 
@@ -16908,75 +16908,75 @@ The vector value :math:`({\mathit{vt}}{.}\mathsf{const}~c)` is :ref:`valid <vali
 
 
 
-The reference value :math:`{\mathit{ref}'}` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{rt}''}` if:
+The reference value :math:`{\mathit{ref}}` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{rt}}` if:
 
 
    * Either:
 
-      * The reference value :math:`{\mathit{ref}'}` is of the form :math:`(\mathsf{ref{.}null}~{\mathit{ht}})`.
+      * The reference value :math:`{\mathit{ref}}` is of the form :math:`(\mathsf{ref{.}null}~{\mathit{ht}})`.
 
-      * The reference type :math:`{\mathit{rt}''}` is of the form :math:`(\mathsf{ref}~\mathsf{null}~{\mathit{ht}'})`.
+      * The reference type :math:`{\mathit{rt}}` is of the form :math:`(\mathsf{ref}~\mathsf{null}~{\mathit{ht}'})`.
 
       * The heap type :math:`{\mathit{ht}'}` :ref:`matches <match>` the heap type :math:`{\mathit{ht}}`.
 
    * Or:
 
-      * The reference value :math:`{\mathit{ref}'}` is of the form :math:`(\mathsf{ref{.}i{\scriptstyle 31}}~i)`.
+      * The reference value :math:`{\mathit{ref}}` is of the form :math:`(\mathsf{ref{.}i{\scriptstyle 31}}~i)`.
 
-      * The reference type :math:`{\mathit{rt}''}` is of the form :math:`(\mathsf{ref}~\mathsf{i{\scriptstyle 31}})`.
+      * The reference type :math:`{\mathit{rt}}` is of the form :math:`(\mathsf{ref}~\mathsf{i{\scriptstyle 31}})`.
    * Or:
 
-      * The reference value :math:`{\mathit{ref}'}` is of the form :math:`(\mathsf{ref{.}struct}~a)`.
+      * The reference value :math:`{\mathit{ref}}` is of the form :math:`(\mathsf{ref{.}struct}~a)`.
 
-      * The reference type :math:`{\mathit{rt}''}` is of the form :math:`(\mathsf{ref}~{\mathit{dt}})`.
+      * The reference type :math:`{\mathit{rt}}` is of the form :math:`(\mathsf{ref}~{\mathit{dt}})`.
 
       * The structure instance :math:`s{.}\mathsf{structs}{}[a]` exists.
 
       * The defined type :math:`s{.}\mathsf{structs}{}[a]{.}\mathsf{type}` is of the form :math:`{\mathit{dt}}`.
    * Or:
 
-      * The reference value :math:`{\mathit{ref}'}` is of the form :math:`(\mathsf{ref{.}array}~a)`.
+      * The reference value :math:`{\mathit{ref}}` is of the form :math:`(\mathsf{ref{.}array}~a)`.
 
-      * The reference type :math:`{\mathit{rt}''}` is of the form :math:`(\mathsf{ref}~{\mathit{dt}})`.
+      * The reference type :math:`{\mathit{rt}}` is of the form :math:`(\mathsf{ref}~{\mathit{dt}})`.
 
       * The array instance :math:`s{.}\mathsf{arrays}{}[a]` exists.
 
       * The defined type :math:`s{.}\mathsf{arrays}{}[a]{.}\mathsf{type}` is of the form :math:`{\mathit{dt}}`.
    * Or:
 
-      * The reference value :math:`{\mathit{ref}'}` is of the form :math:`(\mathsf{ref{.}func}~a)`.
+      * The reference value :math:`{\mathit{ref}}` is of the form :math:`(\mathsf{ref{.}func}~a)`.
 
-      * The reference type :math:`{\mathit{rt}''}` is of the form :math:`(\mathsf{ref}~{\mathit{dt}})`.
+      * The reference type :math:`{\mathit{rt}}` is of the form :math:`(\mathsf{ref}~{\mathit{dt}})`.
 
       * The function instance :math:`s{.}\mathsf{funcs}{}[a]` exists.
 
       * The defined type :math:`s{.}\mathsf{funcs}{}[a]{.}\mathsf{type}` is of the form :math:`{\mathit{dt}}`.
    * Or:
 
-      * The reference value :math:`{\mathit{ref}'}` is of the form :math:`(\mathsf{ref{.}exn}~a)`.
+      * The reference value :math:`{\mathit{ref}}` is of the form :math:`(\mathsf{ref{.}exn}~a)`.
 
-      * The reference type :math:`{\mathit{rt}''}` is of the form :math:`(\mathsf{ref}~\mathsf{exn})`.
+      * The reference type :math:`{\mathit{rt}}` is of the form :math:`(\mathsf{ref}~\mathsf{exn})`.
 
       * The exception instance :math:`s{.}\mathsf{exns}{}[a]` exists.
 
       * The exception instance :math:`s{.}\mathsf{exns}{}[a]` is of the form :math:`{\mathit{exn}}`.
    * Or:
 
-      * The reference value :math:`{\mathit{ref}'}` is of the form :math:`(\mathsf{ref{.}host}~a)`.
+      * The reference value :math:`{\mathit{ref}}` is of the form :math:`(\mathsf{ref{.}host}~a)`.
 
-      * The reference type :math:`{\mathit{rt}''}` is of the form :math:`(\mathsf{ref}~\mathsf{any})`.
+      * The reference type :math:`{\mathit{rt}}` is of the form :math:`(\mathsf{ref}~\mathsf{any})`.
    * Or:
 
-      * The reference value :math:`{\mathit{ref}'}` is of the form :math:`(\mathsf{ref{.}extern}~{\mathit{addrref}})`.
+      * The reference value :math:`{\mathit{ref}}` is of the form :math:`(\mathsf{ref{.}extern}~{\mathit{addrref}})`.
 
-      * The reference type :math:`{\mathit{rt}''}` is of the form :math:`(\mathsf{ref}~\mathsf{extern})`.
+      * The reference type :math:`{\mathit{rt}}` is of the form :math:`(\mathsf{ref}~\mathsf{extern})`.
 
       * The reference value :math:`{\mathit{addrref}}` is :ref:`valid <valid-val>` with the reference type :math:`(\mathsf{ref}~\mathsf{any})`.
    * Or:
 
-      * The reference value :math:`{\mathit{ref}'}` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{rt}'}`.
+      * The reference value :math:`{\mathit{ref}}` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{rt}'}`.
 
-      * The reference type :math:`{\mathit{rt}'}` :ref:`matches <match>` the reference type :math:`{\mathit{rt}''}`.
+      * The reference type :math:`{\mathit{rt}'}` :ref:`matches <match>` the reference type :math:`{\mathit{rt}}`.
 
 
 
@@ -17110,12 +17110,12 @@ The value :math:`{\mathit{ref}}` is :ref:`valid <valid-val>` with the value type
 
 
 
-The external address :math:`{\mathit{externaddr}'}` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{externtype}}` if:
+The external address :math:`{\mathit{externaddr}}` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{externtype}}` if:
 
 
    * Either:
 
-      * The external address :math:`{\mathit{externaddr}'}` is of the form :math:`(\mathsf{tag}~a)`.
+      * The external address :math:`{\mathit{externaddr}}` is of the form :math:`(\mathsf{tag}~a)`.
 
       * The external type :math:`{\mathit{externtype}}` is of the form :math:`(\mathsf{tag}~{\mathit{taginst}}{.}\mathsf{type})`.
 
@@ -17125,7 +17125,7 @@ The external address :math:`{\mathit{externaddr}'}` is :ref:`valid <valid-val>` 
 
    * Or:
 
-      * The external address :math:`{\mathit{externaddr}'}` is of the form :math:`(\mathsf{global}~a)`.
+      * The external address :math:`{\mathit{externaddr}}` is of the form :math:`(\mathsf{global}~a)`.
 
       * The external type :math:`{\mathit{externtype}}` is of the form :math:`(\mathsf{global}~{\mathit{globalinst}}{.}\mathsf{type})`.
 
@@ -17134,7 +17134,7 @@ The external address :math:`{\mathit{externaddr}'}` is :ref:`valid <valid-val>` 
       * The global instance :math:`s{.}\mathsf{globals}{}[a]` is of the form :math:`{\mathit{globalinst}}`.
    * Or:
 
-      * The external address :math:`{\mathit{externaddr}'}` is of the form :math:`(\mathsf{mem}~a)`.
+      * The external address :math:`{\mathit{externaddr}}` is of the form :math:`(\mathsf{mem}~a)`.
 
       * The external type :math:`{\mathit{externtype}}` is of the form :math:`(\mathsf{mem}~{\mathit{meminst}}{.}\mathsf{type})`.
 
@@ -17143,7 +17143,7 @@ The external address :math:`{\mathit{externaddr}'}` is :ref:`valid <valid-val>` 
       * The memory instance :math:`s{.}\mathsf{mems}{}[a]` is of the form :math:`{\mathit{meminst}}`.
    * Or:
 
-      * The external address :math:`{\mathit{externaddr}'}` is of the form :math:`(\mathsf{table}~a)`.
+      * The external address :math:`{\mathit{externaddr}}` is of the form :math:`(\mathsf{table}~a)`.
 
       * The external type :math:`{\mathit{externtype}}` is of the form :math:`(\mathsf{table}~{\mathit{tableinst}}{.}\mathsf{type})`.
 
@@ -17152,7 +17152,7 @@ The external address :math:`{\mathit{externaddr}'}` is :ref:`valid <valid-val>` 
       * The table instance :math:`s{.}\mathsf{tables}{}[a]` is of the form :math:`{\mathit{tableinst}}`.
    * Or:
 
-      * The external address :math:`{\mathit{externaddr}'}` is of the form :math:`(\mathsf{func}~a)`.
+      * The external address :math:`{\mathit{externaddr}}` is of the form :math:`(\mathsf{func}~a)`.
 
       * The external type :math:`{\mathit{externtype}}` is of the form :math:`(\mathsf{func}~{\mathit{funcinst}}{.}\mathsf{type})`.
 
@@ -17161,7 +17161,7 @@ The external address :math:`{\mathit{externaddr}'}` is :ref:`valid <valid-val>` 
       * The function instance :math:`s{.}\mathsf{funcs}{}[a]` is of the form :math:`{\mathit{funcinst}}`.
    * Or:
 
-      * The external address :math:`{\mathit{externaddr}'}` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{xt}'}`.
+      * The external address :math:`{\mathit{externaddr}}` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{xt}'}`.
 
       * The external type :math:`{\mathit{xt}'}` :ref:`matches <match>` the external type :math:`{\mathit{externtype}}`.
 
@@ -17228,12 +17228,12 @@ The external address :math:`{\mathit{externaddr}}` is :ref:`valid <valid-val>` w
 
 
 
-The instruction sequence :math:`{\mathit{instr}'}` is :ref:`valid <valid-val>` with the instruction type :math:`{{\mathit{valtype}}^\ast}~\rightarrow~{{\mathit{valtype}'}^\ast}` if:
+The instruction sequence :math:`{\mathit{instr}}` is :ref:`valid <valid-val>` with the instruction type :math:`{{\mathit{valtype}}^\ast}~\rightarrow~{{\mathit{valtype}'}^\ast}` if:
 
 
    * Either:
 
-      * The instruction :math:`{\mathit{instr}'}` is of the form :math:`(\mathsf{i{\scriptstyle 32}} {.} \mathsf{add})`.
+      * The instruction :math:`{\mathit{instr}}` is of the form :math:`(\mathsf{i{\scriptstyle 32}} {.} \mathsf{add})`.
 
       * The value type sequence :math:`{{\mathit{valtype}}^\ast}` is of the form :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}`.
 
@@ -17241,7 +17241,7 @@ The instruction sequence :math:`{\mathit{instr}'}` is :ref:`valid <valid-val>` w
 
    * Or:
 
-      * The instruction :math:`{\mathit{instr}'}` is of the form :math:`(\mathsf{global{.}get}~x)`.
+      * The instruction :math:`{\mathit{instr}}` is of the form :math:`(\mathsf{global{.}get}~x)`.
 
       * The value type sequence :math:`{{\mathit{valtype}}^\ast}` is empty.
 
@@ -17252,7 +17252,7 @@ The instruction sequence :math:`{\mathit{instr}'}` is :ref:`valid <valid-val>` w
       * The global :math:`C{.}\mathsf{globals}{}[x]` is of the form :math:`({\mathsf{mut}^?}~t)`.
    * Or:
 
-      * The instruction :math:`{\mathit{instr}'}` is of the form :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{instr}}^\ast})`.
+      * The instruction :math:`{\mathit{instr}}` is of the form :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{instr}'}^\ast})`.
 
       * The value type sequence :math:`{{\mathit{valtype}}^\ast}` is of the form :math:`{t_1^\ast}`.
 
@@ -17262,7 +17262,7 @@ The instruction sequence :math:`{\mathit{instr}'}` is :ref:`valid <valid-val>` w
 
       * Let :math:`{C'}` be the same context as :math:`C`, but with the result type sequence :math:`{t_2^\ast}` prepended to the field :math:`\mathsf{labels}`.
 
-      * Under the context :math:`{C'}`, the instruction sequence :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` with the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+      * Under the context :math:`{C'}`, the instruction sequence :math:`{{\mathit{instr}'}^\ast}` is :ref:`valid <valid-val>` with the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
 
 
@@ -26159,13 +26159,13 @@ Subtype_ok
     - comptype matches the composite type comptype'.
 
 Rectype_ok
-- the recursive type (REC subtype'*) is valid for the type index (OK x) if:
+- the recursive type (REC subtype*) is valid for the type index (OK x) if:
   - Either:
-    - the sub type sequence subtype'* is [].
+    - the sub type sequence subtype* is [].
   - Or:
-    - subtype'* is [subtype_1] :: subtype*.
+    - subtype* is [subtype_1] :: subtype'*.
     - the sub type subtype_1 is valid for (OK x).
-    - the recursive type (REC subtype*) is valid for the type index (OK (x + 1)).
+    - the recursive type (REC subtype'*) is valid for the type index (OK (x + 1)).
 
 Rectype_ok/empty
 - the recursive type (REC []) is valid for (OK x).
@@ -26189,13 +26189,13 @@ Subtype_ok2
     - comptype matches the composite type comptype'.
 
 Rectype_ok2
-- the recursive type (REC subtype'*) is valid for (OK x i) if:
+- the recursive type (REC subtype*) is valid for (OK x i) if:
   - Either:
-    - the sub type sequence subtype'* is [].
+    - the sub type sequence subtype* is [].
   - Or:
-    - subtype'* is [subtype_1] :: subtype*.
+    - subtype* is [subtype_1] :: subtype'*.
     - the sub type subtype_1 is valid for (OK x i).
-    - the recursive type (REC subtype*) is valid for (OK (x + 1) (i + 1)).
+    - the recursive type (REC subtype'*) is valid for (OK (x + 1) (i + 1)).
 
 Rectype_ok2/empty
 - the recursive type (REC []) is valid for (OK x i).
@@ -26212,20 +26212,20 @@ Deftype_ok
   - i is less than n.
 
 Comptype_sub
-- the composite type comptype matches the composite type comptype' if:
+- the composite type comptype_1 matches the composite type comptype_2 if:
   - Either:
-    - comptype is (STRUCT ft_1* :: ft'_1*).
-    - comptype' is (STRUCT ft_2*).
+    - comptype_1 is (STRUCT ft_1* :: ft'_1*).
+    - comptype_2 is (STRUCT ft_2*).
     - |ft_1*| is |ft_2*|.
     - For all ft_1 in ft_1*, and corresponding ft_2 in ft_2*:
       - the field type ft_1 matches the field type ft_2.
   - Or:
-    - comptype is (ARRAY ft_1).
-    - comptype' is (ARRAY ft_2).
+    - comptype_1 is (ARRAY ft_1).
+    - comptype_2 is (ARRAY ft_2).
     - ft_1 matches ft_2.
   - Or:
-    - comptype is (FUNC t_11* -> t_12*).
-    - comptype' is (FUNC t_21* -> t_22*).
+    - comptype_1 is (FUNC t_11* -> t_12*).
+    - comptype_2 is (FUNC t_21* -> t_22*).
     - the result type t_21* matches the result type t_11*.
     - the result type t_12* matches the result type t_22*.
 
@@ -26264,69 +26264,69 @@ Deftype_sub/super
   - the type use typeuse*[i] matches deftype_2.
 
 Heaptype_sub
-- the heap type heaptype'' matches the heap type heaptype''' if:
+- the heap type heaptype_1 matches the heap type heaptype_2 if:
   - Either:
-    - heaptype''' is heaptype''.
+    - heaptype_2 is heaptype_1.
   - Or:
     - the heap type heaptype' is valid.
-    - heaptype'' matches heaptype'.
-    - heaptype' matches heaptype'''.
+    - heaptype_1 matches heaptype'.
+    - heaptype' matches heaptype_2.
   - Or:
-    - heaptype'' is EQ.
-    - heaptype''' is ANY.
+    - heaptype_1 is EQ.
+    - heaptype_2 is ANY.
   - Or:
-    - heaptype'' is I31.
-    - heaptype''' is EQ.
+    - heaptype_1 is I31.
+    - heaptype_2 is EQ.
   - Or:
-    - heaptype'' is STRUCT.
-    - heaptype''' is EQ.
+    - heaptype_1 is STRUCT.
+    - heaptype_2 is EQ.
   - Or:
-    - heaptype'' is ARRAY.
-    - heaptype''' is EQ.
+    - heaptype_1 is ARRAY.
+    - heaptype_2 is EQ.
   - Or:
-    - heaptype'' is deftype.
-    - heaptype''' is STRUCT.
+    - heaptype_1 is deftype.
+    - heaptype_2 is STRUCT.
     - The :ref:`expansion <aux-expand-deftype>` of the defined type deftype is the composite type (STRUCT fieldtype*).
   - Or:
-    - heaptype'' is deftype.
-    - heaptype''' is ARRAY.
+    - heaptype_1 is deftype.
+    - heaptype_2 is ARRAY.
     - The :ref:`expansion <aux-expand-deftype>` of deftype is the composite type (ARRAY fieldtype).
   - Or:
-    - heaptype'' is deftype.
-    - heaptype''' is FUNC.
+    - heaptype_1 is deftype.
+    - heaptype_2 is FUNC.
     - The :ref:`expansion <aux-expand-deftype>` of deftype is the composite type (FUNC t_1* -> t_2*).
   - Or:
-    - heaptype'' is deftype_1.
-    - heaptype''' is deftype_2.
+    - heaptype_1 is deftype_1.
+    - heaptype_2 is deftype_2.
     - the defined type deftype_1 matches the defined type deftype_2.
   - Or:
-    - heaptype'' is (_IDX typeidx).
+    - heaptype_1 is (_IDX typeidx).
     - the type C.TYPES[typeidx] exists.
-    - C.TYPES[typeidx] matches heaptype'''.
+    - C.TYPES[typeidx] matches heaptype_2.
   - Or:
-    - heaptype''' is (_IDX typeidx).
+    - heaptype_2 is (_IDX typeidx).
     - C.TYPES[typeidx] exists.
-    - heaptype'' matches C.TYPES[typeidx].
+    - heaptype_1 matches C.TYPES[typeidx].
   - Or:
-    - heaptype'' is (REC i).
-    - heaptype''' is typeuse*[j].
+    - heaptype_1 is (REC i).
+    - heaptype_2 is typeuse*[j].
     - |typeuse*| is greater than j.
     - the recursive type C.RECS[i] exists.
     - C.RECS[i] is (SUB fin typeuse* ct).
   - Or:
-    - heaptype'' is NONE.
-    - heaptype''' matches the heap type ANY.
+    - heaptype_1 is NONE.
+    - heaptype_2 matches the heap type ANY.
   - Or:
-    - heaptype'' is NOFUNC.
-    - heaptype''' matches the heap type FUNC.
+    - heaptype_1 is NOFUNC.
+    - heaptype_2 matches the heap type FUNC.
   - Or:
-    - heaptype'' is NOEXN.
-    - heaptype''' matches the heap type EXN.
+    - heaptype_1 is NOEXN.
+    - heaptype_2 matches the heap type EXN.
   - Or:
-    - heaptype'' is NOEXTERN.
-    - heaptype''' matches the heap type EXTERN.
+    - heaptype_1 is NOEXTERN.
+    - heaptype_2 matches the heap type EXTERN.
   - Or:
-    - heaptype'' is BOT.
+    - heaptype_1 is BOT.
 
 Heaptype_sub/refl
 - the heap type heaptype matches only itself.
@@ -26401,14 +26401,14 @@ Heaptype_sub/bot
 - the heap type BOT matches heaptype.
 
 Reftype_sub
-- the reference type (REF nul ht_1) matches the reference type (REF nul' ht_2) if:
+- the reference type (REF nul_1 ht_1) matches the reference type (REF nul_2 ht_2) if:
   - the heap type ht_1 matches the heap type ht_2.
   - Either:
-    - nul is ?().
-    - nul' is ?().
+    - nul_1 is ?().
+    - nul_2 is ?().
   - Or:
-    - nul is NULL?.
-    - nul' is ?(NULL).
+    - nul_1 is NULL?.
+    - nul_2 is ?(NULL).
 
 Reftype_sub/nonnull
 - the reference type (REF ?() ht_1) matches the reference type (REF ?() ht_2) if:
@@ -26419,21 +26419,21 @@ Reftype_sub/null
   - the heap type ht_1 matches the heap type ht_2.
 
 Valtype_sub
-- the value type valtype' matches the value type valtype'' if:
+- the value type valtype_1 matches the value type valtype_2 if:
   - Either:
-    - valtype' is numtype_1.
-    - valtype'' is numtype_2.
+    - valtype_1 is numtype_1.
+    - valtype_2 is numtype_2.
     - the number type numtype_1 matches the number type numtype_2.
   - Or:
-    - valtype' is vectype_1.
-    - valtype'' is vectype_2.
+    - valtype_1 is vectype_1.
+    - valtype_2 is vectype_2.
     - the vector type vectype_1 matches the vector type vectype_2.
   - Or:
-    - valtype' is reftype_1.
-    - valtype'' is reftype_2.
+    - valtype_1 is reftype_1.
+    - valtype_2 is reftype_2.
     - the reference type reftype_1 matches the reference type reftype_2.
   - Or:
-    - valtype' is BOT.
+    - valtype_1 is BOT.
 
 Valtype_sub/num
 - the value type numtype_1 matches the value type numtype_2 if:
@@ -26457,14 +26457,14 @@ Resulttype_sub
     - the value type t_1 matches the value type t_2.
 
 Storagetype_sub
-- the storage type storagetype matches the storage type storagetype' if:
+- the storage type storagetype_1 matches the storage type storagetype_2 if:
   - Either:
-    - storagetype is valtype_1.
-    - storagetype' is valtype_2.
+    - storagetype_1 is valtype_1.
+    - storagetype_2 is valtype_2.
     - the value type valtype_1 matches the value type valtype_2.
   - Or:
-    - storagetype is packtype_1.
-    - storagetype' is packtype_2.
+    - storagetype_1 is packtype_1.
+    - storagetype_2 is packtype_2.
     - the packed type packtype_1 matches the packed type packtype_2.
 
 Storagetype_sub/val
@@ -26476,14 +26476,14 @@ Storagetype_sub/pack
   - packtype_1 matches packtype_2.
 
 Fieldtype_sub
-- the field type (mut zt_1) matches the field type (mut' zt_2) if:
+- the field type (mut_1 zt_1) matches the field type (mut_2 zt_2) if:
   - the storage type zt_1 matches the storage type zt_2.
   - Either:
-    - mut is ?().
-    - mut' is ?().
+    - mut_1 is ?().
+    - mut_2 is ?().
   - Or:
-    - mut is ?(MUT).
-    - mut' is ?(MUT).
+    - mut_1 is ?(MUT).
+    - mut_2 is ?(MUT).
     - zt_2 matches zt_1.
 
 Fieldtype_sub/const
@@ -26590,14 +26590,14 @@ Tagtype_sub
   - deftype_2 matches deftype_1.
 
 Globaltype_sub
-- the global type (mut valtype_1) matches the global type (mut' valtype_2) if:
+- the global type (mut_1 valtype_1) matches the global type (mut_2 valtype_2) if:
   - the value type valtype_1 matches the value type valtype_2.
   - Either:
-    - mut is ?().
-    - mut' is ?().
+    - mut_1 is ?().
+    - mut_2 is ?().
   - Or:
-    - mut is ?(MUT).
-    - mut' is ?(MUT).
+    - mut_1 is ?(MUT).
+    - mut_2 is ?(MUT).
     - valtype_2 matches valtype_1.
 
 Globaltype_sub/const
@@ -26620,26 +26620,26 @@ Tabletype_sub
   - reftype_2 matches reftype_1.
 
 Externtype_sub
-- the external type externtype matches the external type externtype' if:
+- the external type externtype_1 matches the external type externtype_2 if:
   - Either:
-    - externtype is (TAG tagtype_1).
-    - externtype' is (TAG tagtype_2).
+    - externtype_1 is (TAG tagtype_1).
+    - externtype_2 is (TAG tagtype_2).
     - the tag type tagtype_1 matches the tag type tagtype_2.
   - Or:
-    - externtype is (GLOBAL globaltype_1).
-    - externtype' is (GLOBAL globaltype_2).
+    - externtype_1 is (GLOBAL globaltype_1).
+    - externtype_2 is (GLOBAL globaltype_2).
     - the global type globaltype_1 matches the global type globaltype_2.
   - Or:
-    - externtype is (MEM memtype_1).
-    - externtype' is (MEM memtype_2).
+    - externtype_1 is (MEM memtype_1).
+    - externtype_2 is (MEM memtype_2).
     - the memory type memtype_1 matches the memory type memtype_2.
   - Or:
-    - externtype is (TABLE tabletype_1).
-    - externtype' is (TABLE tabletype_2).
+    - externtype_1 is (TABLE tabletype_1).
+    - externtype_2 is (TABLE tabletype_2).
     - the table type tabletype_1 matches the table type tabletype_2.
   - Or:
-    - externtype is (FUNC deftype_1).
-    - externtype' is (FUNC deftype_2).
+    - externtype_1 is (FUNC deftype_1).
+    - externtype_2 is (FUNC deftype_2).
     - the defined type deftype_1 matches the defined type deftype_2.
 
 Externtype_sub/tag
@@ -26663,17 +26663,17 @@ Externtype_sub/func
   - the defined type deftype_1 matches the defined type deftype_2.
 
 Blocktype_ok
-- the block type blocktype is valid as the instruction type valtype'* -> valtype''* if:
+- the block type blocktype is valid as the instruction type valtype* -> valtype'* if:
   - Either:
-    - blocktype is (_RESULT valtype?).
-    - the value type sequence valtype'* is [].
-    - the value type sequence valtype''* is valtype?.
-    - If valtype is defined, then:
-      - the value type valtype is valid.
+    - blocktype is (_RESULT valtype''?).
+    - the value type sequence valtype* is [].
+    - the value type sequence valtype'* is valtype''?.
+    - If valtype'' is defined, then:
+      - the value type valtype'' is valid.
   - Or:
     - blocktype is (_IDX typeidx).
-    - valtype'* is t_1*.
-    - valtype''* is t_2*.
+    - valtype* is t_1*.
+    - valtype'* is t_2*.
     - the type C.TYPES[typeidx] exists.
     - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[typeidx] is the composite type (FUNC t_1* -> t_2*).
 
@@ -27248,29 +27248,29 @@ Instr_ok/data.drop
   - C.DATAS[x] is OK.
 
 Instr_ok/load
-- the instruction (LOAD nt' loadop_? x memarg) is valid with the instruction type [at] -> [valtype] if:
+- the instruction (LOAD nt loadop_? x memarg) is valid with the instruction type [at] -> [valtype] if:
   - the memory C.MEMS[x] exists.
   - C.MEMS[x] is at lim PAGE.
   - Either:
     - loadop_? is ?().
     - the value type valtype is nt.
-    - (2 ^ memarg.ALIGN) is less than or equal to ($size(nt') / 8).
+    - (2 ^ memarg.ALIGN) is less than or equal to ($size(nt) / 8).
   - Or:
-    - the number type nt' is Inn.
+    - the number type nt is Inn.
     - loadop_? is ?(M _ sx).
     - valtype is Inn.
     - (2 ^ memarg.ALIGN) is less than or equal to (M / 8).
 
 Instr_ok/store
-- the instruction (STORE nt' storeop_? x memarg) is valid with the instruction type [at, valtype] -> [] if:
+- the instruction (STORE nt storeop_? x memarg) is valid with the instruction type [at, valtype] -> [] if:
   - the memory C.MEMS[x] exists.
   - C.MEMS[x] is at lim PAGE.
   - Either:
     - storeop_? is ?().
     - the value type valtype is nt.
-    - (2 ^ memarg.ALIGN) is less than or equal to ($size(nt') / 8).
+    - (2 ^ memarg.ALIGN) is less than or equal to ($size(nt) / 8).
   - Or:
-    - the number type nt' is Inn.
+    - the number type nt is Inn.
     - storeop_? is ?(M).
     - valtype is Inn.
     - (2 ^ memarg.ALIGN) is less than or equal to (M / 8).
@@ -27371,13 +27371,13 @@ Instr_ok/vload-zero
   - (2 ^ memarg.ALIGN) is less than or equal to (N / 8).
 
 Instrs_ok
-- the instruction sequence instr'* is valid with the instruction type it'' if:
+- the instruction sequence instr* is valid with the instruction type it if:
   - Either:
-    - instr'* is [].
-    - it'' is [] -> [].
+    - instr* is [].
+    - it is [] -> [].
   - Or:
-    - instr'* is [instr_1] :: instr_2*.
-    - it'' is t_1* ->_ x_1* :: x_2* t_3*.
+    - instr* is [instr_1] :: instr_2*.
+    - it is t_1* ->_ x_1* :: x_2* t_3*.
     - the instruction instr_1 is valid with the instruction type t_1* ->_ x_1* t_2*.
     - |init*| is |t*|.
     - |init*| is |x_1*|.
@@ -27387,14 +27387,14 @@ Instrs_ok
       - C.LOCALS[x_1] is (init t).
     - Under the context $with_locals(C, x_1*, (SET t)*), the instruction sequence instr_2* is valid with the instruction type t_2* ->_ x_2* t_3*.
   - Or:
-    - instr'* is instr*.
-    - the instruction sequence instr* is valid with the instruction type it.
-    - it matches it''.
-    - it'' is valid.
+    - instr* is instr'*.
+    - the instruction sequence instr'* is valid with the instruction type it''.
+    - it'' matches it.
+    - it is valid.
   - Or:
-    - instr'* is instr*.
-    - it'' is t* :: t_1* ->_ x* t* :: t_2*.
-    - instr* is valid with the instruction type t_1* ->_ x* t_2*.
+    - instr* is instr'*.
+    - it is t* :: t_1* ->_ x* t* :: t_2*.
+    - instr'* is valid with the instruction type t_1* ->_ x* t_2*.
     - the result type t* is valid.
 
 Instrs_ok/empty
@@ -27412,10 +27412,10 @@ Instrs_ok/seq
   - Under the context $with_locals(C, x_1*, (SET t)*), the instruction sequence instr_2* is valid with the instruction type t_2* ->_ x_2* t_3*.
 
 Instrs_ok/sub
-- the instruction sequence instr* is valid with the instruction type it' if:
-  - instr* is valid with the instruction type it.
-  - it matches it'.
-  - it' is valid.
+- the instruction sequence instr* is valid with the instruction type it if:
+  - instr* is valid with the instruction type it'.
+  - it' matches it.
+  - it is valid.
 
 Instrs_ok/frame
 - the instruction sequence instr* is valid with the instruction type t* :: t_1* ->_ x* t* :: t_2* if:
@@ -27701,16 +27701,16 @@ Export_ok
   - the external index externidx is valid with xt.
 
 Globals_ok
-- the global sequence global'* is valid with the global type sequence globaltype* if:
+- the global sequence global* is valid with the global type sequence globaltype* if:
   - Either:
-    - global'* is [].
+    - global* is [].
     - globaltype* is [].
   - Or:
-    - global'* is [global_1] :: global*.
+    - global* is [global_1] :: global'*.
     - globaltype* is [gt_1] :: gt*.
     - the global global_1 is valid with the global type gt_1.
     - the context C' is the context C with .GLOBALS appended by [gt_1].
-    - Under the context C', the global sequence global* is valid with the global type sequence gt*.
+    - Under the context C', the global sequence global'* is valid with the global type sequence gt*.
 
 Globals_ok/empty
 - [] is valid with the global type sequence [].
@@ -27722,16 +27722,16 @@ Globals_ok/cons
   - Under the context C', the global sequence global* is valid with the global type sequence gt*.
 
 Types_ok
-- the type definition sequence type'* is valid with the defined type sequence deftype* if:
+- the type definition sequence type* is valid with the defined type sequence deftype* if:
   - Either:
-    - type'* is [].
+    - type* is [].
     - deftype* is [].
   - Or:
-    - type'* is [type_1] :: type*.
+    - type* is [type_1] :: type'*.
     - deftype* is dt_1* :: dt*.
     - the type definition type_1 is valid with the defined type sequence dt_1*.
     - the context C' is the context C with .TYPES appended by dt_1*.
-    - Under the context C', the type definition sequence type* is valid with the defined type sequence dt*.
+    - Under the context C', the type definition sequence type'* is valid with the defined type sequence dt*.
 
 Types_ok/empty
 - [] is valid with the defined type sequence [].
@@ -27791,44 +27791,44 @@ Vec_ok
 - the vector value (vt.CONST c) is valid with the vector type vt.
 
 Ref_ok
-- the reference value ref' is valid with the reference type rt'' if:
+- the reference value ref is valid with the reference type rt if:
   - Either:
-    - ref' is (REF.NULL ht).
-    - rt'' is (REF ?(NULL) ht').
+    - ref is (REF.NULL ht).
+    - rt is (REF ?(NULL) ht').
     - the heap type ht' matches the heap type ht.
   - Or:
-    - ref' is (REF.I31_NUM i).
-    - rt'' is (REF ?() I31).
+    - ref is (REF.I31_NUM i).
+    - rt is (REF ?() I31).
   - Or:
-    - ref' is (REF.STRUCT_ADDR a).
-    - rt'' is (REF ?() dt).
+    - ref is (REF.STRUCT_ADDR a).
+    - rt is (REF ?() dt).
     - the structure instance s.STRUCTS[a] exists.
     - the defined type s.STRUCTS[a].TYPE is dt.
   - Or:
-    - ref' is (REF.ARRAY_ADDR a).
-    - rt'' is (REF ?() dt).
+    - ref is (REF.ARRAY_ADDR a).
+    - rt is (REF ?() dt).
     - the array instance s.ARRAYS[a] exists.
     - the defined type s.ARRAYS[a].TYPE is dt.
   - Or:
-    - ref' is (REF.FUNC_ADDR a).
-    - rt'' is (REF ?() dt).
+    - ref is (REF.FUNC_ADDR a).
+    - rt is (REF ?() dt).
     - the function instance s.FUNCS[a] exists.
     - the defined type s.FUNCS[a].TYPE is dt.
   - Or:
-    - ref' is (REF.EXN_ADDR a).
-    - rt'' is (REF ?() EXN).
+    - ref is (REF.EXN_ADDR a).
+    - rt is (REF ?() EXN).
     - the exception instance s.EXNS[a] exists.
     - s.EXNS[a] is exn.
   - Or:
-    - ref' is (REF.HOST_ADDR a).
-    - rt'' is (REF ?() ANY).
+    - ref is (REF.HOST_ADDR a).
+    - rt is (REF ?() ANY).
   - Or:
-    - ref' is (REF.EXTERN addrref).
-    - rt'' is (REF ?() EXTERN).
+    - ref is (REF.EXTERN addrref).
+    - rt is (REF ?() EXTERN).
     - the reference value addrref is valid with the reference type (REF ?() ANY).
   - Or:
-    - ref' is valid with the reference type rt'.
-    - rt' matches rt''.
+    - ref is valid with the reference type rt'.
+    - rt' matches rt.
 
 Ref_ok/null
 - the reference value (REF.NULL ht) is valid with the reference type (REF ?(NULL) ht') if:
@@ -27897,34 +27897,34 @@ Val_ok/ref
   - ref is valid with rt.
 
 Externaddr_ok
-- the external address externaddr' is valid with the external type externtype if:
+- the external address externaddr is valid with the external type externtype if:
   - Either:
-    - externaddr' is (TAG a).
+    - externaddr is (TAG a).
     - externtype is (TAG taginst.TYPE).
     - the tag instance s.TAGS[a] exists.
     - s.TAGS[a] is taginst.
   - Or:
-    - externaddr' is (GLOBAL a).
+    - externaddr is (GLOBAL a).
     - externtype is (GLOBAL globalinst.TYPE).
     - the global instance s.GLOBALS[a] exists.
     - s.GLOBALS[a] is globalinst.
   - Or:
-    - externaddr' is (MEM a).
+    - externaddr is (MEM a).
     - externtype is (MEM meminst.TYPE).
     - the memory instance s.MEMS[a] exists.
     - s.MEMS[a] is meminst.
   - Or:
-    - externaddr' is (TABLE a).
+    - externaddr is (TABLE a).
     - externtype is (TABLE tableinst.TYPE).
     - the table instance s.TABLES[a] exists.
     - s.TABLES[a] is tableinst.
   - Or:
-    - externaddr' is (FUNC a).
+    - externaddr is (FUNC a).
     - externtype is (FUNC funcinst.TYPE).
     - the function instance s.FUNCS[a] exists.
     - s.FUNCS[a] is funcinst.
   - Or:
-    - externaddr' is valid with the external type xt'.
+    - externaddr is valid with the external type xt'.
     - xt' matches externtype.
 
 Externaddr_ok/tag
@@ -27958,24 +27958,24 @@ Externaddr_ok/sub
   - xt' matches xt.
 
 NotationTypingInstrScheme
-- the instruction sequence [instr'] is valid with the instruction type valtype* -> valtype'* if:
+- the instruction sequence [instr] is valid with the instruction type valtype* -> valtype'* if:
   - Either:
-    - the instruction instr' is (BINOP I32 ADD).
+    - the instruction instr is (BINOP I32 ADD).
     - the value type sequence valtype* is [I32, I32].
     - the value type sequence valtype'* is [I32].
   - Or:
-    - instr' is (GLOBAL.GET x).
+    - instr is (GLOBAL.GET x).
     - valtype* is [].
     - valtype'* is [t].
     - the global C.GLOBALS[x] exists.
     - C.GLOBALS[x] is (mut t).
   - Or:
-    - instr' is (BLOCK blocktype instr*).
+    - instr is (BLOCK blocktype instr'*).
     - valtype* is t_1*.
     - valtype'* is t_2*.
     - the block type blocktype is valid as the instruction type t_1* -> t_2*.
     - the context C' is the context C with .LABELS prepended by [t_2*].
-    - Under the context C', the instruction sequence instr* is valid with t_1* -> t_2*.
+    - Under the context C', the instruction sequence instr'* is valid with t_1* -> t_2*.
 
 NotationTypingInstrScheme/i32.add
 - the instruction sequence [(BINOP I32 ADD)] is valid with the instruction type [I32, I32] -> [I32].
