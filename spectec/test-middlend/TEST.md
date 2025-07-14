@@ -7674,7 +7674,7 @@ grammar Blaneidx : laneidx
 ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec
 rec {
 
-;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:794.1-808.71
+;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:798.1-812.71
 grammar Binstr : instr
   ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:16.5-16.24
   prod 0x00 => UNREACHABLE_instr
@@ -8181,21 +8181,21 @@ grammar Binstr : instr
   ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:409.5-409.52
   prod{x : idx, ao : memarg} {0xFD `%`_u32(11):Bu32 (x, ao):Bmemarg} => VSTORE_instr(V128_vectype, x, ao)
   ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:410.5-410.72
-  prod{x : idx, ao : memarg, l : labelidx} {0xFD `%`_u32(84):Bu32 (x, ao):Bmemarg `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VLOAD_LANE_instr(V128_vectype, `%`_sz(8), x, ao, `%`_laneidx(l!`%`_labelidx.0))
+  prod{x : idx, ao : memarg, i : laneidx} {0xFD `%`_u32(84):Bu32 (x, ao):Bmemarg i:Blaneidx} => VLOAD_LANE_instr(V128_vectype, `%`_sz(8), x, ao, i)
   ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:411.5-411.73
-  prod{x : idx, ao : memarg, l : labelidx} {0xFD `%`_u32(85):Bu32 (x, ao):Bmemarg `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VLOAD_LANE_instr(V128_vectype, `%`_sz(16), x, ao, `%`_laneidx(l!`%`_labelidx.0))
+  prod{x : idx, ao : memarg, i : laneidx} {0xFD `%`_u32(85):Bu32 (x, ao):Bmemarg i:Blaneidx} => VLOAD_LANE_instr(V128_vectype, `%`_sz(16), x, ao, i)
   ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:412.5-412.73
-  prod{x : idx, ao : memarg, l : labelidx} {0xFD `%`_u32(86):Bu32 (x, ao):Bmemarg `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VLOAD_LANE_instr(V128_vectype, `%`_sz(32), x, ao, `%`_laneidx(l!`%`_labelidx.0))
+  prod{x : idx, ao : memarg, i : laneidx} {0xFD `%`_u32(86):Bu32 (x, ao):Bmemarg i:Blaneidx} => VLOAD_LANE_instr(V128_vectype, `%`_sz(32), x, ao, i)
   ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:413.5-413.73
-  prod{x : idx, ao : memarg, l : labelidx} {0xFD `%`_u32(87):Bu32 (x, ao):Bmemarg `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VLOAD_LANE_instr(V128_vectype, `%`_sz(64), x, ao, `%`_laneidx(l!`%`_labelidx.0))
+  prod{x : idx, ao : memarg, i : laneidx} {0xFD `%`_u32(87):Bu32 (x, ao):Bmemarg i:Blaneidx} => VLOAD_LANE_instr(V128_vectype, `%`_sz(64), x, ao, i)
   ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:414.5-414.73
-  prod{x : idx, ao : memarg, l : labelidx} {0xFD `%`_u32(88):Bu32 (x, ao):Bmemarg `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VSTORE_LANE_instr(V128_vectype, `%`_sz(8), x, ao, `%`_laneidx(l!`%`_labelidx.0))
+  prod{x : idx, ao : memarg, i : laneidx} {0xFD `%`_u32(88):Bu32 (x, ao):Bmemarg i:Blaneidx} => VSTORE_LANE_instr(V128_vectype, `%`_sz(8), x, ao, i)
   ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:415.5-415.74
-  prod{x : idx, ao : memarg, l : labelidx} {0xFD `%`_u32(89):Bu32 (x, ao):Bmemarg `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VSTORE_LANE_instr(V128_vectype, `%`_sz(16), x, ao, `%`_laneidx(l!`%`_labelidx.0))
+  prod{x : idx, ao : memarg, i : laneidx} {0xFD `%`_u32(89):Bu32 (x, ao):Bmemarg i:Blaneidx} => VSTORE_LANE_instr(V128_vectype, `%`_sz(16), x, ao, i)
   ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:416.5-416.74
-  prod{x : idx, ao : memarg, l : labelidx} {0xFD `%`_u32(90):Bu32 (x, ao):Bmemarg `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VSTORE_LANE_instr(V128_vectype, `%`_sz(32), x, ao, `%`_laneidx(l!`%`_labelidx.0))
+  prod{x : idx, ao : memarg, i : laneidx} {0xFD `%`_u32(90):Bu32 (x, ao):Bmemarg i:Blaneidx} => VSTORE_LANE_instr(V128_vectype, `%`_sz(32), x, ao, i)
   ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:417.5-417.74
-  prod{x : idx, ao : memarg, l : labelidx} {0xFD `%`_u32(91):Bu32 (x, ao):Bmemarg `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VSTORE_LANE_instr(V128_vectype, `%`_sz(64), x, ao, `%`_laneidx(l!`%`_labelidx.0))
+  prod{x : idx, ao : memarg, i : laneidx} {0xFD `%`_u32(91):Bu32 (x, ao):Bmemarg i:Blaneidx} => VSTORE_LANE_instr(V128_vectype, `%`_sz(64), x, ao, i)
   ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:418.5-418.62
   prod{x : idx, ao : memarg} {0xFD `%`_u32(92):Bu32 (x, ao):Bmemarg} => VLOAD_instr(V128_vectype, ?(ZERO_vloadop_(`%`_sz(32))), x, ao)
   ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:419.5-419.62
@@ -8632,33 +8632,41 @@ grammar Binstr : instr
   prod {0xFD `%`_u32(263):Bu32} => VTERNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), RELAXED_MADD_vternop_)
   ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:791.5-791.54
   prod {0xFD `%`_u32(264):Bu32} => VTERNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), RELAXED_NMADD_vternop_)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:795.5-795.61
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:792.5-792.59
+  prod {0xFD `%`_u32(265):Bu32} => VTERNOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), RELAXED_LANESELECT_vternop_)
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:793.5-793.59
+  prod {0xFD `%`_u32(266):Bu32} => VTERNOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), RELAXED_LANESELECT_vternop_)
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:794.5-794.59
+  prod {0xFD `%`_u32(267):Bu32} => VTERNOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), RELAXED_LANESELECT_vternop_)
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:795.5-795.59
+  prod {0xFD `%`_u32(268):Bu32} => VTERNOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), RELAXED_LANESELECT_vternop_)
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:799.5-799.61
   prod {0xFD `%`_u32(94):Bu32} => VCVTOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), `%X%`_shape(F64_lanetype, `%`_dim(2)), DEMOTE_vcvtop__(ZERO_zero))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:796.5-796.61
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:800.5-800.61
   prod {0xFD `%`_u32(95):Bu32} => VCVTOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), `%X%`_shape(F32_lanetype, `%`_dim(4)), `PROMOTELOW`_vcvtop__)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:797.5-797.62
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:801.5-801.62
   prod {0xFD `%`_u32(248):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(F32_lanetype, `%`_dim(4)), TRUNC_SAT_vcvtop__(S_sx, ?()))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:798.5-798.62
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:802.5-802.62
   prod {0xFD `%`_u32(249):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(F32_lanetype, `%`_dim(4)), TRUNC_SAT_vcvtop__(U_sx, ?()))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:799.5-799.60
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:803.5-803.60
   prod {0xFD `%`_u32(250):Bu32} => VCVTOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), `%X%`_shape(I32_lanetype, `%`_dim(4)), CONVERT_vcvtop__(?(), S_sx))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:800.5-800.60
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:804.5-804.60
   prod {0xFD `%`_u32(251):Bu32} => VCVTOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), `%X%`_shape(I32_lanetype, `%`_dim(4)), CONVERT_vcvtop__(?(), U_sx))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:801.5-801.67
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:805.5-805.67
   prod {0xFD `%`_u32(252):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(F64_lanetype, `%`_dim(2)), TRUNC_SAT_vcvtop__(S_sx, ?(ZERO_zero)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:802.5-802.67
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:806.5-806.67
   prod {0xFD `%`_u32(253):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(F64_lanetype, `%`_dim(2)), TRUNC_SAT_vcvtop__(U_sx, ?(ZERO_zero)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:803.5-803.64
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:807.5-807.64
   prod {0xFD `%`_u32(254):Bu32} => VCVTOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), `%X%`_shape(I32_lanetype, `%`_dim(4)), CONVERT_vcvtop__(?(LOW_half), S_sx))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:804.5-804.64
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:808.5-808.64
   prod {0xFD `%`_u32(255):Bu32} => VCVTOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), `%X%`_shape(I32_lanetype, `%`_dim(4)), CONVERT_vcvtop__(?(LOW_half), U_sx))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:805.5-805.66
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:809.5-809.66
   prod {0xFD `%`_u32(257):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(F32_lanetype, `%`_dim(4)), RELAXED_TRUNC_vcvtop__(S_sx, ?()))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:806.5-806.66
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:810.5-810.66
   prod {0xFD `%`_u32(258):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(F32_lanetype, `%`_dim(4)), RELAXED_TRUNC_vcvtop__(U_sx, ?()))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:807.5-807.71
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:811.5-811.71
   prod {0xFD `%`_u32(259):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(F64_lanetype, `%`_dim(2)), RELAXED_TRUNC_vcvtop__(S_sx, ?(ZERO_zero)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:808.5-808.71
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:812.5-812.71
   prod {0xFD `%`_u32(260):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(F64_lanetype, `%`_dim(2)), RELAXED_TRUNC_vcvtop__(U_sx, ?(ZERO_zero)))
 }
 
@@ -8874,495 +8882,6 @@ grammar Bmodule : module
     -- (if (n = |data*{data <- `data*`}|))?{n <- `n?`}
     -- if ((n?{n <- `n?`} =/= ?()) \/ ($dataidx_funcs(func*{func <- `func*`}) = []))
     -- (if (func = FUNC_func(typeidx, local*{local <- `local*`}, expr)))*{expr <- `expr*`, func <- `func*`, `local*` <- `local**`, typeidx <- `typeidx*`}
-
-;; ../../../../specification/wasm-3.0/6.0-text.context.spectec
-syntax idcontext =
-{
-  TYPES{`name?*` : name?*} name?*,
-  TAGS{`name?*` : name?*} name?*,
-  GLOBALS{`name?*` : name?*} name?*,
-  MEMS{`name?*` : name?*} name?*,
-  TABLES{`name?*` : name?*} name?*,
-  FUNCS{`name?*` : name?*} name?*,
-  DATAS{`name?*` : name?*} name?*,
-  ELEMS{`name?*` : name?*} name?*,
-  LOCALS{`name?*` : name?*} name?*,
-  LABELS{`name?*` : name?*} name?*,
-  FIELDS{`name?**` : name?**} name?**,
-  TYPEDEFS{`subtype*` : subtype*} subtype*
-}
-
-;; ../../../../specification/wasm-3.0/6.0-text.context.spectec
-syntax I = idcontext
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Tsign : int
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod eps => + (1 : nat <:> int)
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod "+" => + (1 : nat <:> int)
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod "-" => - (1 : nat <:> int)
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Tdigit : nat
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod "0" => 0
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod "9" => 9
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Thexdigit : nat
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{d : nat} d:Tdigit => d
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod "A" => 10
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod "F" => 15
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod "a" => 10
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod "f" => 15
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-rec {
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:26.1-28.40
-grammar Tnum : nat
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:27.5-27.18
-  prod{d : nat} d:Tdigit => d
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:28.5-28.40
-  prod{n : n, d : nat} {n:Tnum "_"?{} d:Tdigit} => ((10 * n) + d)
-}
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-rec {
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:30.1-32.46
-grammar Thexnum : nat
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:31.5-31.21
-  prod{h : nat} h:Thexdigit => h
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:32.5-32.46
-  prod{n : n, h : nat} {n:Thexnum "_"?{} h:Thexdigit} => ((16 * n) + h)
-}
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar TuN(N : N) : uN(N)
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{n : n} n:Tnum => `%`_uN(n)
-    -- if (n < (2 ^ N))
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{n : n} {"0x" n:Thexnum} => `%`_uN(n)
-    -- if (n < (2 ^ N))
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar TsN(N : N) : sN(N)
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{pm : int, n : n} {pm:Tsign `%`_uN(n):TuN(N)} => `%`_sN((pm * (n : nat <:> int)))
-    -- if ((- ((2 ^ (((N : nat <:> int) - (1 : nat <:> int)) : int <:> nat)) : nat <:> int) <= (pm * (n : nat <:> int))) /\ ((pm * (n : nat <:> int)) < ((2 ^ (((N : nat <:> int) - (1 : nat <:> int)) : int <:> nat)) : nat <:> int)))
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar TiN(N : N) : iN(N)
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{n : n} `%`_uN(n):TuN(N) => `%`_iN(n)
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{i : sN(N)} i:TsN(N) => `%`_iN($invsigned_(N, i!`%`_sN.0))
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Tu32 : u32
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{n : n} `%`_uN(n):TuN(32) => `%`_u32(n)
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Tu64 : u64
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{n : n} `%`_uN(n):TuN(64) => `%`_u64(n)
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-rec {
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:51.1-53.48
-grammar Tfrac : rat
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:52.5-52.26
-  prod{d : nat} d:Tdigit => ((d : nat <:> rat) / (10 : nat <:> rat))
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:53.5-53.48
-  prod{d : nat, p : rat} {d:Tdigit "_"?{} p:Tfrac} => (((d + ((p / (10 : nat <:> rat)) : rat <:> nat)) : nat <:> rat) / (10 : nat <:> rat))
-}
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-rec {
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:55.1-57.54
-grammar Thexfrac : rat
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:56.5-56.29
-  prod{h : nat} h:Thexdigit => ((h : nat <:> rat) / (16 : nat <:> rat))
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:57.5-57.54
-  prod{h : nat, p : rat} {h:Thexdigit "_"?{} p:Thexfrac} => (((h + ((p / (16 : nat <:> rat)) : rat <:> nat)) : nat <:> rat) / (16 : nat <:> rat))
-}
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Tmant : rat
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{p : nat} {p:Tnum "."?{}} => (p : nat <:> rat)
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{p : nat, q : rat} {p:Tnum "." q:Tfrac} => ((p + (q : rat <:> nat)) : nat <:> rat)
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Thexmant : rat
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{p : nat} {p:Thexnum "."?{}} => (p : nat <:> rat)
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{p : nat, q : rat} {p:Thexnum "." q:Thexfrac} => ((p + (q : rat <:> nat)) : nat <:> rat)
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-def $ieee_(N : N, rat : rat) : fN(N)
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Tfloat : rat
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{p : rat, pm : int, ee : nat} {p:Tmant ("E" | "e") pm:Tsign ee:Tnum} => (p * ((10 ^ ((pm * (ee : nat <:> int)) : int <:> nat)) : nat <:> rat))
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Thexfloat : rat
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{p : rat, pm : int, ee : nat} {"0x" p:Thexmant ("P" | "p") pm:Tsign ee:Tnum} => (p * ((2 ^ ((pm * (ee : nat <:> int)) : int <:> nat)) : nat <:> rat))
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Tstringchar : char
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod "\\t" => `%`_char(9)
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod "\\n" => `%`_char(10)
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod "\\r" => `%`_char(13)
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod "\\\"" => `%`_char(34)
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod "\\'" => `%`_char(39)
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod "\\\\" => `%`_char(92)
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Tstringelem : byte*
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{c : char} c:Tstringchar => $utf8([c])
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{h_1 : nat, h_2 : nat} {"\\" h_1:Thexdigit h_2:Thexdigit} => [`%`_byte(((16 * h_1) + h_2))]
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Tstring : byte*
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{`b**` : byte**} {"\"" b*{b <- `b*`}:Tstringelem*{`b*` <- `b**`} "\""} => $concat_(syntax byte, b*{b <- `b*`}*{`b*` <- `b**`})
-    -- if (|$concat_(syntax byte, b*{b <- `b*`}*{`b*` <- `b**`})| < (2 ^ 32))
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Tlist(syntax el, grammar TX : el) : el*
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{`el*` : el*} el:TX*{el <- `el*`} => el*{el <- `el*`}
-    -- if (|el*{el <- `el*`}| < (2 ^ 32))
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Tname : name
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{`b*` : byte*, `c*` : char*} b*{b <- `b*`}:Tstring => `%`_name(c*{c <- `c*`})
-    -- if (b*{b <- `b*`} = $utf8(c*{c <- `c*`}))
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Tid : name
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{`c*` : char*} {"$" `%`_name(c*{c <- `c*`}):Tname} => `%`_name(c*{c <- `c*`})
-    -- if (|c*{c <- `c*`}| > 0)
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Tidx_(ids : name?*) : idx
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{x : idx} x:Tu32 => x
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{id : name, x : idx} id:Tid => x
-    -- if (ids[x!`%`_idx.0] = ?(id))
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Ttypeidx_(I : I) : typeidx
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{x : idx} x:Tidx_(I.TYPES_I) => x
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Ttagidx_(I : I) : tagidx
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{x : idx} x:Tidx_(I.TAGS_I) => x
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Tglobalidx_(I : I) : globalidx
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{x : idx} x:Tidx_(I.GLOBALS_I) => x
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Tmemidx_(I : I) : memidx
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{x : idx} x:Tidx_(I.MEMS_I) => x
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Ttableidx_(I : I) : tableidx
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{x : idx} x:Tidx_(I.TABLES_I) => x
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Tfuncidx_(I : I) : funcidx
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{x : idx} x:Tidx_(I.FUNCS_I) => x
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Tdataidx_(I : I) : dataidx
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{x : idx} x:Tidx_(I.DATAS_I) => x
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Telemidx_(I : I) : elemidx
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{x : idx} x:Tidx_(I.ELEMS_I) => x
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Tlocalidx_(I : I) : localidx
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{x : idx} x:Tidx_(I.LOCALS_I) => x
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Tlabelidx_(I : I) : labelidx
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{x : idx} x:Tidx_(I.LABELS_I) => x
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Tfieldidx__(I : I, x : idx) : fieldidx
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{i : idx} i:Tidx_(I.FIELDS_I[x!`%`_idx.0]) => i
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Tnumtype : numtype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "i32" => I32_numtype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "i64" => I64_numtype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "f32" => F32_numtype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "f64" => F64_numtype
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Tvectype : vectype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "v128" => V128_vectype
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Tabsheaptype : heaptype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "any" => ANY_heaptype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "eq" => EQ_heaptype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "i31" => I31_heaptype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "struct" => STRUCT_heaptype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "array" => ARRAY_heaptype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "none" => NONE_heaptype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "func" => FUNC_heaptype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "nofunc" => NOFUNC_heaptype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "exn" => EXN_heaptype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "noexn" => NOEXN_heaptype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "extern" => EXTERN_heaptype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "noextern" => NOEXTERN_heaptype
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Theaptype_(I : I) : heaptype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{ht : heaptype} ht:Tabsheaptype => ht
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{x : idx} x:Ttypeidx_(I) => _IDX_heaptype(x)
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Tnul : nul
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod eps => ?()
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "null" => ?(NULL_NULL)
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Treftype_(I : I) : reftype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{nul : nul, ht : heaptype} {"(" "ref" nul:Tnul ht:Theaptype_(I) ")"} => REF_reftype(nul, ht)
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "anyref" => REF_reftype(?(NULL_NULL), ANY_heaptype)
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "eqref" => REF_reftype(?(NULL_NULL), EQ_heaptype)
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "i31ref" => REF_reftype(?(NULL_NULL), I31_heaptype)
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "structref" => REF_reftype(?(NULL_NULL), STRUCT_heaptype)
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "arrayref" => REF_reftype(?(NULL_NULL), ARRAY_heaptype)
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "nullref" => REF_reftype(?(NULL_NULL), NONE_heaptype)
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "funcref" => REF_reftype(?(NULL_NULL), FUNC_heaptype)
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "nullfuncref" => REF_reftype(?(NULL_NULL), NOFUNC_heaptype)
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "exnref" => REF_reftype(?(NULL_NULL), EXN_heaptype)
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "nullexnref" => REF_reftype(?(NULL_NULL), NOEXN_heaptype)
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "externref" => REF_reftype(?(NULL_NULL), EXTERN_heaptype)
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "nullexternref" => REF_reftype(?(NULL_NULL), NOEXTERN_heaptype)
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Tvaltype_(I : I) : valtype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{nt : numtype} nt:Tnumtype => (nt : numtype <: valtype)
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{vt : vectype} vt:Tvectype => (vt : vectype <: valtype)
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{rt : reftype} rt:Treftype_(I) => (rt : reftype <: valtype)
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Tpacktype : packtype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "i8" => I8_packtype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "i16" => I16_packtype
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Tstoragetype_(I : I) : storagetype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{t : valtype} t:Tvaltype_(I) => (t : valtype <: storagetype)
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{pt : packtype} pt:Tpacktype => (pt : packtype <: storagetype)
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Tfieldtype_(I : I) : fieldtype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{zt : storagetype} zt:Tstoragetype_(I) => `%%`_fieldtype(?(), zt)
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{zt : storagetype} {"(" "mut" zt:Tstoragetype_(I) ")"} => `%%`_fieldtype(?(MUT_MUT), zt)
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Tfield_(I : I) : fieldtype*
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{ft : fieldtype} {"(" "field" Tid?{} ft:Tfieldtype_(I) ")"} => [ft]
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Tparam_(I : I) : (valtype*, name?*)
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{`id?` : char?, t : valtype} {"(" "param" ?(`%`_name(lift(id?{id <- `id?`}))):Tid?{} t:Tvaltype_(I) ")"} => ([t], [?(`%`_name(lift(id?{id <- `id?`})))])
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Tresult_(I : I) : valtype*
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{t : valtype} {"(" "result" t:Tvaltype_(I) ")"} => [t]
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Tcomptype_(I : I) : comptype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{`ft*` : fieldtype*} {"(" "struct" [ft*{ft <- `ft*`}]:Tlist(syntax fieldtype*, grammar Tfield_(I)) ")"} => STRUCT_comptype(`%`_list($concat_(syntax fieldtype, [ft*{ft <- `ft*`}])))
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{ft : fieldtype} {"(" "array" ft:Tfieldtype_(I) ")"} => ARRAY_comptype(ft)
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{`t_1*` : valtype*, `id?**` : char?**, `t_2*` : valtype*} {"(" "func" (t_1*{t_1 <- `t_1*`}, ?(`%`_name(lift(id?{id <- `id?`})))*{`id?` <- `id?*`})*{`id?*` <- `id?**`}:Tlist(syntax (valtype*, name?*), grammar Tparam_(I)) t_2*{t_2 <- `t_2*`}*{}:Tlist(syntax valtype*, grammar Tresult_(I)) ")"} => `FUNC%->%`_comptype(`%`_resulttype($concat_(syntax valtype, [t_1*{t_1 <- `t_1*`}])), `%`_resulttype($concat_(syntax valtype, [t_2*{t_2 <- `t_2*`}])))
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Tfin : fin
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod eps => ?()
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "final" => ?(FINAL_FINAL)
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Tsubtype_(I : I) : subtype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{fin : fin, `x*` : idx*, ct : comptype} {"(" "sub" fin:Tfin x*{x <- `x*`}:Tlist(syntax typeidx, grammar Ttypeidx_(I)) ct:Tcomptype_(I) ")"} => SUB_subtype(fin, _IDX_typeuse(x)*{x <- `x*`}, ct)
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{ct : comptype} ct:Tcomptype_(I) => SUB_subtype(?(), [], ct)
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Ttypedef_(I : I) : subtype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{st : subtype} {"(" "type" Tid?{} st:Tsubtype_(I) ")"} => st
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Trectype_(I : I) : rectype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{`st*` : subtype*} {"(" "rec" st*{st <- `st*`}:Tlist(syntax subtype, grammar Ttypedef_(I)) ")"} => REC_rectype(`%`_list(st*{st <- `st*`}))
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{st : subtype} st:Ttypedef_(I) => REC_rectype(`%`_list([st]))
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Taddrtype : addrtype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "i32" => I32_addrtype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "i64" => I64_addrtype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod eps => I32_addrtype
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Tlimits_(N : N) : limits
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{n : n} `%`_u64(n):Tu64 => `[%..%]`_limits(`%`_u64(n), `%`_u64(((((2 ^ N) : nat <:> int) - (1 : nat <:> int)) : int <:> nat)))
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{n : n, m : m} {`%`_u64(n):Tu64 `%`_u64(m):Tu64} => `[%..%]`_limits(`%`_u64(n), `%`_u64(m))
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Ttypeuse_(I : I) : (typeuse, I)
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{x : idx, I' : I, `t_1*` : valtype*, `t_2*` : valtype*} {"(" "type" x:Ttypeidx_(I) ")"} => (_IDX_typeuse(x), I')
-    -- if (I.TYPEDEFS_I[x!`%`_idx.0] = SUB_subtype(?(FINAL_FINAL), [], `FUNC%->%`_comptype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), `%`_resulttype(t_2*{t_2 <- `t_2*`}))))
-    -- if (I' = {TYPES [], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS ?()^|t_1*{t_1 <- `t_1*`}|{}, LABELS [], FIELDS [], TYPEDEFS []})
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{x : idx, `t_1**` : valtype**, `id?*` : char?*, `t_2**` : valtype**, I' : I} {"(" "type" x:Ttypeidx_(I) ")" (t_1*{t_1 <- `t_1*`}, ?(`%`_name(lift(id?{id <- `id?`})))*{`id?` <- `id?*`}):Tparam_(I)*{`t_1*` <- `t_1**`} t_2*{t_2 <- `t_2*`}:Tresult_(I)*{`t_2*` <- `t_2**`}} => (_IDX_typeuse(x), I')
-    -- if (I.TYPEDEFS_I[x!`%`_idx.0] = SUB_subtype(?(FINAL_FINAL), [], `FUNC%->%`_comptype(`%`_resulttype($concat_(syntax valtype, t_1*{t_1 <- `t_1*`}*{`t_1*` <- `t_1**`})), `%`_resulttype($concat_(syntax valtype, t_2*{t_2 <- `t_2*`}*{`t_2*` <- `t_2**`})))))
-    -- if (I' = {TYPES [], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS ?(`%`_name(lift(id?{id <- `id?`})))*{`id?` <- `id?*`}, LABELS [], FIELDS [], TYPEDEFS []})
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Ttagtype_(I : I) : tagtype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{tu : typeuse, I' : I} (tu, I'):Ttypeuse_(I) => tu
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Tglobaltype_(I : I) : globaltype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{t : valtype} t:Tvaltype_(I) => `%%`_globaltype(?(), t)
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{t : valtype} {"(" "mut" t:Tvaltype_(I) ")"} => `%%`_globaltype(?(MUT_MUT), t)
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Tmemtype_(I : I) : memtype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{at : addrtype, lim : limits} {at:Taddrtype lim:Tlimits_(((($size((at : addrtype <: numtype)) : nat <:> rat) / ((64 * $Ki) : nat <:> rat)) : rat <:> nat))} => `%%PAGE`_memtype(at, lim)
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Ttabletype_(I : I) : tabletype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{at : addrtype, lim : limits, rt : reftype} {at:Taddrtype lim:Tlimits_($size((at : addrtype <: numtype))) rt:Treftype_(I)} => `%%%`_tabletype(at, lim, rt)
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Texterntype_(I : I) : externtype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{jt : tagtype} {"(" "tag" Tid?{} jt:Ttagtype_(I) ")"} => TAG_externtype(jt)
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{gt : globaltype} {"(" "global" Tid?{} gt:Tglobaltype_(I) ")"} => GLOBAL_externtype(gt)
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{mt : memtype} {"(" "memory" Tid?{} mt:Tmemtype_(I) ")"} => MEM_externtype(mt)
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{tt : tabletype} {"(" "table" Tid?{} tt:Ttabletype_(I) ")"} => TABLE_externtype(tt)
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{tu : typeuse, I' : I} {"(" "func" Tid?{} (tu, I'):Ttypeuse_(I) ")"} => FUNC_externtype(tu)
 
 ;; ../../../../specification/wasm-3.0/X.1-notation.syntax.spectec
 syntax A = nat
@@ -17185,7 +16704,7 @@ grammar Blaneidx : laneidx
 ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec
 rec {
 
-;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:794.1-808.71
+;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:798.1-812.71
 grammar Binstr : instr
   ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:16.5-16.24
   prod 0x00 => UNREACHABLE_instr
@@ -17692,21 +17211,21 @@ grammar Binstr : instr
   ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:409.5-409.52
   prod{x : idx, ao : memarg} {0xFD `%`_u32(11):Bu32 (x, ao):Bmemarg} => VSTORE_instr(V128_vectype, x, ao)
   ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:410.5-410.72
-  prod{x : idx, ao : memarg, l : labelidx} {0xFD `%`_u32(84):Bu32 (x, ao):Bmemarg `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VLOAD_LANE_instr(V128_vectype, `%`_sz(8), x, ao, `%`_laneidx(l!`%`_labelidx.0))
+  prod{x : idx, ao : memarg, i : laneidx} {0xFD `%`_u32(84):Bu32 (x, ao):Bmemarg i:Blaneidx} => VLOAD_LANE_instr(V128_vectype, `%`_sz(8), x, ao, i)
   ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:411.5-411.73
-  prod{x : idx, ao : memarg, l : labelidx} {0xFD `%`_u32(85):Bu32 (x, ao):Bmemarg `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VLOAD_LANE_instr(V128_vectype, `%`_sz(16), x, ao, `%`_laneidx(l!`%`_labelidx.0))
+  prod{x : idx, ao : memarg, i : laneidx} {0xFD `%`_u32(85):Bu32 (x, ao):Bmemarg i:Blaneidx} => VLOAD_LANE_instr(V128_vectype, `%`_sz(16), x, ao, i)
   ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:412.5-412.73
-  prod{x : idx, ao : memarg, l : labelidx} {0xFD `%`_u32(86):Bu32 (x, ao):Bmemarg `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VLOAD_LANE_instr(V128_vectype, `%`_sz(32), x, ao, `%`_laneidx(l!`%`_labelidx.0))
+  prod{x : idx, ao : memarg, i : laneidx} {0xFD `%`_u32(86):Bu32 (x, ao):Bmemarg i:Blaneidx} => VLOAD_LANE_instr(V128_vectype, `%`_sz(32), x, ao, i)
   ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:413.5-413.73
-  prod{x : idx, ao : memarg, l : labelidx} {0xFD `%`_u32(87):Bu32 (x, ao):Bmemarg `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VLOAD_LANE_instr(V128_vectype, `%`_sz(64), x, ao, `%`_laneidx(l!`%`_labelidx.0))
+  prod{x : idx, ao : memarg, i : laneidx} {0xFD `%`_u32(87):Bu32 (x, ao):Bmemarg i:Blaneidx} => VLOAD_LANE_instr(V128_vectype, `%`_sz(64), x, ao, i)
   ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:414.5-414.73
-  prod{x : idx, ao : memarg, l : labelidx} {0xFD `%`_u32(88):Bu32 (x, ao):Bmemarg `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VSTORE_LANE_instr(V128_vectype, `%`_sz(8), x, ao, `%`_laneidx(l!`%`_labelidx.0))
+  prod{x : idx, ao : memarg, i : laneidx} {0xFD `%`_u32(88):Bu32 (x, ao):Bmemarg i:Blaneidx} => VSTORE_LANE_instr(V128_vectype, `%`_sz(8), x, ao, i)
   ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:415.5-415.74
-  prod{x : idx, ao : memarg, l : labelidx} {0xFD `%`_u32(89):Bu32 (x, ao):Bmemarg `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VSTORE_LANE_instr(V128_vectype, `%`_sz(16), x, ao, `%`_laneidx(l!`%`_labelidx.0))
+  prod{x : idx, ao : memarg, i : laneidx} {0xFD `%`_u32(89):Bu32 (x, ao):Bmemarg i:Blaneidx} => VSTORE_LANE_instr(V128_vectype, `%`_sz(16), x, ao, i)
   ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:416.5-416.74
-  prod{x : idx, ao : memarg, l : labelidx} {0xFD `%`_u32(90):Bu32 (x, ao):Bmemarg `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VSTORE_LANE_instr(V128_vectype, `%`_sz(32), x, ao, `%`_laneidx(l!`%`_labelidx.0))
+  prod{x : idx, ao : memarg, i : laneidx} {0xFD `%`_u32(90):Bu32 (x, ao):Bmemarg i:Blaneidx} => VSTORE_LANE_instr(V128_vectype, `%`_sz(32), x, ao, i)
   ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:417.5-417.74
-  prod{x : idx, ao : memarg, l : labelidx} {0xFD `%`_u32(91):Bu32 (x, ao):Bmemarg `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VSTORE_LANE_instr(V128_vectype, `%`_sz(64), x, ao, `%`_laneidx(l!`%`_labelidx.0))
+  prod{x : idx, ao : memarg, i : laneidx} {0xFD `%`_u32(91):Bu32 (x, ao):Bmemarg i:Blaneidx} => VSTORE_LANE_instr(V128_vectype, `%`_sz(64), x, ao, i)
   ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:418.5-418.62
   prod{x : idx, ao : memarg} {0xFD `%`_u32(92):Bu32 (x, ao):Bmemarg} => VLOAD_instr(V128_vectype, ?(ZERO_vloadop_(`%`_sz(32))), x, ao)
   ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:419.5-419.62
@@ -18143,33 +17662,41 @@ grammar Binstr : instr
   prod {0xFD `%`_u32(263):Bu32} => VTERNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), RELAXED_MADD_vternop_)
   ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:791.5-791.54
   prod {0xFD `%`_u32(264):Bu32} => VTERNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), RELAXED_NMADD_vternop_)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:795.5-795.61
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:792.5-792.59
+  prod {0xFD `%`_u32(265):Bu32} => VTERNOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), RELAXED_LANESELECT_vternop_)
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:793.5-793.59
+  prod {0xFD `%`_u32(266):Bu32} => VTERNOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), RELAXED_LANESELECT_vternop_)
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:794.5-794.59
+  prod {0xFD `%`_u32(267):Bu32} => VTERNOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), RELAXED_LANESELECT_vternop_)
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:795.5-795.59
+  prod {0xFD `%`_u32(268):Bu32} => VTERNOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), RELAXED_LANESELECT_vternop_)
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:799.5-799.61
   prod {0xFD `%`_u32(94):Bu32} => VCVTOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), `%X%`_shape(F64_lanetype, `%`_dim(2)), DEMOTE_vcvtop__(ZERO_zero))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:796.5-796.61
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:800.5-800.61
   prod {0xFD `%`_u32(95):Bu32} => VCVTOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), `%X%`_shape(F32_lanetype, `%`_dim(4)), `PROMOTELOW`_vcvtop__)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:797.5-797.62
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:801.5-801.62
   prod {0xFD `%`_u32(248):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(F32_lanetype, `%`_dim(4)), TRUNC_SAT_vcvtop__(S_sx, ?()))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:798.5-798.62
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:802.5-802.62
   prod {0xFD `%`_u32(249):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(F32_lanetype, `%`_dim(4)), TRUNC_SAT_vcvtop__(U_sx, ?()))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:799.5-799.60
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:803.5-803.60
   prod {0xFD `%`_u32(250):Bu32} => VCVTOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), `%X%`_shape(I32_lanetype, `%`_dim(4)), CONVERT_vcvtop__(?(), S_sx))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:800.5-800.60
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:804.5-804.60
   prod {0xFD `%`_u32(251):Bu32} => VCVTOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), `%X%`_shape(I32_lanetype, `%`_dim(4)), CONVERT_vcvtop__(?(), U_sx))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:801.5-801.67
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:805.5-805.67
   prod {0xFD `%`_u32(252):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(F64_lanetype, `%`_dim(2)), TRUNC_SAT_vcvtop__(S_sx, ?(ZERO_zero)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:802.5-802.67
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:806.5-806.67
   prod {0xFD `%`_u32(253):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(F64_lanetype, `%`_dim(2)), TRUNC_SAT_vcvtop__(U_sx, ?(ZERO_zero)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:803.5-803.64
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:807.5-807.64
   prod {0xFD `%`_u32(254):Bu32} => VCVTOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), `%X%`_shape(I32_lanetype, `%`_dim(4)), CONVERT_vcvtop__(?(LOW_half), S_sx))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:804.5-804.64
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:808.5-808.64
   prod {0xFD `%`_u32(255):Bu32} => VCVTOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), `%X%`_shape(I32_lanetype, `%`_dim(4)), CONVERT_vcvtop__(?(LOW_half), U_sx))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:805.5-805.66
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:809.5-809.66
   prod {0xFD `%`_u32(257):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(F32_lanetype, `%`_dim(4)), RELAXED_TRUNC_vcvtop__(S_sx, ?()))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:806.5-806.66
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:810.5-810.66
   prod {0xFD `%`_u32(258):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(F32_lanetype, `%`_dim(4)), RELAXED_TRUNC_vcvtop__(U_sx, ?()))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:807.5-807.71
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:811.5-811.71
   prod {0xFD `%`_u32(259):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(F64_lanetype, `%`_dim(2)), RELAXED_TRUNC_vcvtop__(S_sx, ?(ZERO_zero)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:808.5-808.71
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:812.5-812.71
   prod {0xFD `%`_u32(260):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(F64_lanetype, `%`_dim(2)), RELAXED_TRUNC_vcvtop__(U_sx, ?(ZERO_zero)))
 }
 
@@ -18385,495 +17912,6 @@ grammar Bmodule : module
     -- (if (n = |data*{data <- `data*`}|))?{n <- `n?`}
     -- if ((n?{n <- `n?`} =/= ?()) \/ ($dataidx_funcs(func*{func <- `func*`}) = []))
     -- (if (func = FUNC_func(typeidx, local*{local <- `local*`}, expr)))*{expr <- `expr*`, func <- `func*`, `local*` <- `local**`, typeidx <- `typeidx*`}
-
-;; ../../../../specification/wasm-3.0/6.0-text.context.spectec
-syntax idcontext =
-{
-  TYPES{`name?*` : name?*} name?*,
-  TAGS{`name?*` : name?*} name?*,
-  GLOBALS{`name?*` : name?*} name?*,
-  MEMS{`name?*` : name?*} name?*,
-  TABLES{`name?*` : name?*} name?*,
-  FUNCS{`name?*` : name?*} name?*,
-  DATAS{`name?*` : name?*} name?*,
-  ELEMS{`name?*` : name?*} name?*,
-  LOCALS{`name?*` : name?*} name?*,
-  LABELS{`name?*` : name?*} name?*,
-  FIELDS{`name?**` : name?**} name?**,
-  TYPEDEFS{`subtype*` : subtype*} subtype*
-}
-
-;; ../../../../specification/wasm-3.0/6.0-text.context.spectec
-syntax I = idcontext
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Tsign : int
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod eps => + (1 : nat <:> int)
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod "+" => + (1 : nat <:> int)
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod "-" => - (1 : nat <:> int)
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Tdigit : nat
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod "0" => 0
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod "9" => 9
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Thexdigit : nat
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{d : nat} d:Tdigit => d
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod "A" => 10
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod "F" => 15
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod "a" => 10
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod "f" => 15
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-rec {
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:26.1-28.40
-grammar Tnum : nat
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:27.5-27.18
-  prod{d : nat} d:Tdigit => d
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:28.5-28.40
-  prod{n : n, d : nat} {n:Tnum "_"?{} d:Tdigit} => ((10 * n) + d)
-}
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-rec {
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:30.1-32.46
-grammar Thexnum : nat
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:31.5-31.21
-  prod{h : nat} h:Thexdigit => h
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:32.5-32.46
-  prod{n : n, h : nat} {n:Thexnum "_"?{} h:Thexdigit} => ((16 * n) + h)
-}
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar TuN(N : N) : uN(N)
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{n : n} n:Tnum => `%`_uN(n)
-    -- if (n < (2 ^ N))
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{n : n} {"0x" n:Thexnum} => `%`_uN(n)
-    -- if (n < (2 ^ N))
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar TsN(N : N) : sN(N)
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{pm : int, n : n} {pm:Tsign `%`_uN(n):TuN(N)} => `%`_sN((pm * (n : nat <:> int)))
-    -- if ((- ((2 ^ (((N : nat <:> int) - (1 : nat <:> int)) : int <:> nat)) : nat <:> int) <= (pm * (n : nat <:> int))) /\ ((pm * (n : nat <:> int)) < ((2 ^ (((N : nat <:> int) - (1 : nat <:> int)) : int <:> nat)) : nat <:> int)))
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar TiN(N : N) : iN(N)
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{n : n} `%`_uN(n):TuN(N) => `%`_iN(n)
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{i : sN(N)} i:TsN(N) => `%`_iN($invsigned_(N, i!`%`_sN.0))
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Tu32 : u32
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{n : n} `%`_uN(n):TuN(32) => `%`_u32(n)
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Tu64 : u64
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{n : n} `%`_uN(n):TuN(64) => `%`_u64(n)
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-rec {
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:51.1-53.48
-grammar Tfrac : rat
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:52.5-52.26
-  prod{d : nat} d:Tdigit => ((d : nat <:> rat) / (10 : nat <:> rat))
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:53.5-53.48
-  prod{d : nat, p : rat} {d:Tdigit "_"?{} p:Tfrac} => (((d + ((p / (10 : nat <:> rat)) : rat <:> nat)) : nat <:> rat) / (10 : nat <:> rat))
-}
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-rec {
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:55.1-57.54
-grammar Thexfrac : rat
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:56.5-56.29
-  prod{h : nat} h:Thexdigit => ((h : nat <:> rat) / (16 : nat <:> rat))
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:57.5-57.54
-  prod{h : nat, p : rat} {h:Thexdigit "_"?{} p:Thexfrac} => (((h + ((p / (16 : nat <:> rat)) : rat <:> nat)) : nat <:> rat) / (16 : nat <:> rat))
-}
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Tmant : rat
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{p : nat} {p:Tnum "."?{}} => (p : nat <:> rat)
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{p : nat, q : rat} {p:Tnum "." q:Tfrac} => ((p + (q : rat <:> nat)) : nat <:> rat)
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Thexmant : rat
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{p : nat} {p:Thexnum "."?{}} => (p : nat <:> rat)
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{p : nat, q : rat} {p:Thexnum "." q:Thexfrac} => ((p + (q : rat <:> nat)) : nat <:> rat)
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-def $ieee_(N : N, rat : rat) : fN(N)
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Tfloat : rat
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{p : rat, pm : int, ee : nat} {p:Tmant ("E" | "e") pm:Tsign ee:Tnum} => (p * ((10 ^ ((pm * (ee : nat <:> int)) : int <:> nat)) : nat <:> rat))
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Thexfloat : rat
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{p : rat, pm : int, ee : nat} {"0x" p:Thexmant ("P" | "p") pm:Tsign ee:Tnum} => (p * ((2 ^ ((pm * (ee : nat <:> int)) : int <:> nat)) : nat <:> rat))
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Tstringchar : char
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod "\\t" => `%`_char(9)
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod "\\n" => `%`_char(10)
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod "\\r" => `%`_char(13)
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod "\\\"" => `%`_char(34)
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod "\\'" => `%`_char(39)
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod "\\\\" => `%`_char(92)
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Tstringelem : byte*
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{c : char} c:Tstringchar => $utf8([c])
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{h_1 : nat, h_2 : nat} {"\\" h_1:Thexdigit h_2:Thexdigit} => [`%`_byte(((16 * h_1) + h_2))]
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Tstring : byte*
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{`b**` : byte**} {"\"" b*{b <- `b*`}:Tstringelem*{`b*` <- `b**`} "\""} => $concat_(syntax byte, b*{b <- `b*`}*{`b*` <- `b**`})
-    -- if (|$concat_(syntax byte, b*{b <- `b*`}*{`b*` <- `b**`})| < (2 ^ 32))
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Tlist(syntax el, grammar TX : el) : el*
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{`el*` : el*} el:TX*{el <- `el*`} => el*{el <- `el*`}
-    -- if (|el*{el <- `el*`}| < (2 ^ 32))
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Tname : name
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{`b*` : byte*, `c*` : char*} b*{b <- `b*`}:Tstring => `%`_name(c*{c <- `c*`})
-    -- if (b*{b <- `b*`} = $utf8(c*{c <- `c*`}))
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Tid : name
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{`c*` : char*} {"$" `%`_name(c*{c <- `c*`}):Tname} => `%`_name(c*{c <- `c*`})
-    -- if (|c*{c <- `c*`}| > 0)
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Tidx_(ids : name?*) : idx
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{x : idx} x:Tu32 => x
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{id : name, x : idx} id:Tid => x
-    -- if (ids[x!`%`_idx.0] = ?(id))
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Ttypeidx_(I : I) : typeidx
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{x : idx} x:Tidx_(I.TYPES_I) => x
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Ttagidx_(I : I) : tagidx
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{x : idx} x:Tidx_(I.TAGS_I) => x
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Tglobalidx_(I : I) : globalidx
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{x : idx} x:Tidx_(I.GLOBALS_I) => x
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Tmemidx_(I : I) : memidx
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{x : idx} x:Tidx_(I.MEMS_I) => x
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Ttableidx_(I : I) : tableidx
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{x : idx} x:Tidx_(I.TABLES_I) => x
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Tfuncidx_(I : I) : funcidx
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{x : idx} x:Tidx_(I.FUNCS_I) => x
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Tdataidx_(I : I) : dataidx
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{x : idx} x:Tidx_(I.DATAS_I) => x
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Telemidx_(I : I) : elemidx
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{x : idx} x:Tidx_(I.ELEMS_I) => x
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Tlocalidx_(I : I) : localidx
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{x : idx} x:Tidx_(I.LOCALS_I) => x
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Tlabelidx_(I : I) : labelidx
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{x : idx} x:Tidx_(I.LABELS_I) => x
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Tfieldidx__(I : I, x : idx) : fieldidx
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{i : idx} i:Tidx_(I.FIELDS_I[x!`%`_idx.0]) => i
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Tnumtype : numtype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "i32" => I32_numtype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "i64" => I64_numtype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "f32" => F32_numtype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "f64" => F64_numtype
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Tvectype : vectype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "v128" => V128_vectype
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Tabsheaptype : heaptype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "any" => ANY_heaptype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "eq" => EQ_heaptype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "i31" => I31_heaptype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "struct" => STRUCT_heaptype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "array" => ARRAY_heaptype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "none" => NONE_heaptype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "func" => FUNC_heaptype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "nofunc" => NOFUNC_heaptype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "exn" => EXN_heaptype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "noexn" => NOEXN_heaptype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "extern" => EXTERN_heaptype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "noextern" => NOEXTERN_heaptype
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Theaptype_(I : I) : heaptype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{ht : heaptype} ht:Tabsheaptype => ht
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{x : idx} x:Ttypeidx_(I) => _IDX_heaptype(x)
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Tnul : nul
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod eps => ?()
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "null" => ?(NULL_NULL)
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Treftype_(I : I) : reftype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{nul : nul, ht : heaptype} {"(" "ref" nul:Tnul ht:Theaptype_(I) ")"} => REF_reftype(nul, ht)
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "anyref" => REF_reftype(?(NULL_NULL), ANY_heaptype)
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "eqref" => REF_reftype(?(NULL_NULL), EQ_heaptype)
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "i31ref" => REF_reftype(?(NULL_NULL), I31_heaptype)
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "structref" => REF_reftype(?(NULL_NULL), STRUCT_heaptype)
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "arrayref" => REF_reftype(?(NULL_NULL), ARRAY_heaptype)
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "nullref" => REF_reftype(?(NULL_NULL), NONE_heaptype)
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "funcref" => REF_reftype(?(NULL_NULL), FUNC_heaptype)
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "nullfuncref" => REF_reftype(?(NULL_NULL), NOFUNC_heaptype)
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "exnref" => REF_reftype(?(NULL_NULL), EXN_heaptype)
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "nullexnref" => REF_reftype(?(NULL_NULL), NOEXN_heaptype)
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "externref" => REF_reftype(?(NULL_NULL), EXTERN_heaptype)
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "nullexternref" => REF_reftype(?(NULL_NULL), NOEXTERN_heaptype)
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Tvaltype_(I : I) : valtype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{nt : numtype} nt:Tnumtype => (nt : numtype <: valtype)
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{vt : vectype} vt:Tvectype => (vt : vectype <: valtype)
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{rt : reftype} rt:Treftype_(I) => (rt : reftype <: valtype)
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Tpacktype : packtype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "i8" => I8_packtype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "i16" => I16_packtype
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Tstoragetype_(I : I) : storagetype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{t : valtype} t:Tvaltype_(I) => (t : valtype <: storagetype)
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{pt : packtype} pt:Tpacktype => (pt : packtype <: storagetype)
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Tfieldtype_(I : I) : fieldtype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{zt : storagetype} zt:Tstoragetype_(I) => `%%`_fieldtype(?(), zt)
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{zt : storagetype} {"(" "mut" zt:Tstoragetype_(I) ")"} => `%%`_fieldtype(?(MUT_MUT), zt)
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Tfield_(I : I) : fieldtype*
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{ft : fieldtype} {"(" "field" Tid?{} ft:Tfieldtype_(I) ")"} => [ft]
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Tparam_(I : I) : (valtype*, name?*)
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{`id?` : char?, t : valtype} {"(" "param" ?(`%`_name(lift(id?{id <- `id?`}))):Tid?{} t:Tvaltype_(I) ")"} => ([t], [?(`%`_name(lift(id?{id <- `id?`})))])
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Tresult_(I : I) : valtype*
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{t : valtype} {"(" "result" t:Tvaltype_(I) ")"} => [t]
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Tcomptype_(I : I) : comptype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{`ft*` : fieldtype*} {"(" "struct" [ft*{ft <- `ft*`}]:Tlist(syntax fieldtype*, grammar Tfield_(I)) ")"} => STRUCT_comptype(`%`_list($concat_(syntax fieldtype, [ft*{ft <- `ft*`}])))
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{ft : fieldtype} {"(" "array" ft:Tfieldtype_(I) ")"} => ARRAY_comptype(ft)
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{`t_1*` : valtype*, `id?**` : char?**, `t_2*` : valtype*} {"(" "func" (t_1*{t_1 <- `t_1*`}, ?(`%`_name(lift(id?{id <- `id?`})))*{`id?` <- `id?*`})*{`id?*` <- `id?**`}:Tlist(syntax (valtype*, name?*), grammar Tparam_(I)) t_2*{t_2 <- `t_2*`}*{}:Tlist(syntax valtype*, grammar Tresult_(I)) ")"} => `FUNC%->%`_comptype(`%`_resulttype($concat_(syntax valtype, [t_1*{t_1 <- `t_1*`}])), `%`_resulttype($concat_(syntax valtype, [t_2*{t_2 <- `t_2*`}])))
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Tfin : fin
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod eps => ?()
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "final" => ?(FINAL_FINAL)
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Tsubtype_(I : I) : subtype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{fin : fin, `x*` : idx*, ct : comptype} {"(" "sub" fin:Tfin x*{x <- `x*`}:Tlist(syntax typeidx, grammar Ttypeidx_(I)) ct:Tcomptype_(I) ")"} => SUB_subtype(fin, _IDX_typeuse(x)*{x <- `x*`}, ct)
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{ct : comptype} ct:Tcomptype_(I) => SUB_subtype(?(), [], ct)
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Ttypedef_(I : I) : subtype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{st : subtype} {"(" "type" Tid?{} st:Tsubtype_(I) ")"} => st
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Trectype_(I : I) : rectype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{`st*` : subtype*} {"(" "rec" st*{st <- `st*`}:Tlist(syntax subtype, grammar Ttypedef_(I)) ")"} => REC_rectype(`%`_list(st*{st <- `st*`}))
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{st : subtype} st:Ttypedef_(I) => REC_rectype(`%`_list([st]))
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Taddrtype : addrtype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "i32" => I32_addrtype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "i64" => I64_addrtype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod eps => I32_addrtype
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Tlimits_(N : N) : limits
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{n : n} `%`_u64(n):Tu64 => `[%..%]`_limits(`%`_u64(n), `%`_u64(((((2 ^ N) : nat <:> int) - (1 : nat <:> int)) : int <:> nat)))
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{n : n, m : m} {`%`_u64(n):Tu64 `%`_u64(m):Tu64} => `[%..%]`_limits(`%`_u64(n), `%`_u64(m))
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Ttypeuse_(I : I) : (typeuse, I)
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{x : idx, I' : I, `t_1*` : valtype*, `t_2*` : valtype*} {"(" "type" x:Ttypeidx_(I) ")"} => (_IDX_typeuse(x), I')
-    -- if (I.TYPEDEFS_I[x!`%`_idx.0] = SUB_subtype(?(FINAL_FINAL), [], `FUNC%->%`_comptype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), `%`_resulttype(t_2*{t_2 <- `t_2*`}))))
-    -- if (I' = {TYPES [], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS ?()^|t_1*{t_1 <- `t_1*`}|{}, LABELS [], FIELDS [], TYPEDEFS []})
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{x : idx, `t_1**` : valtype**, `id?*` : char?*, `t_2**` : valtype**, I' : I} {"(" "type" x:Ttypeidx_(I) ")" (t_1*{t_1 <- `t_1*`}, ?(`%`_name(lift(id?{id <- `id?`})))*{`id?` <- `id?*`}):Tparam_(I)*{`t_1*` <- `t_1**`} t_2*{t_2 <- `t_2*`}:Tresult_(I)*{`t_2*` <- `t_2**`}} => (_IDX_typeuse(x), I')
-    -- if (I.TYPEDEFS_I[x!`%`_idx.0] = SUB_subtype(?(FINAL_FINAL), [], `FUNC%->%`_comptype(`%`_resulttype($concat_(syntax valtype, t_1*{t_1 <- `t_1*`}*{`t_1*` <- `t_1**`})), `%`_resulttype($concat_(syntax valtype, t_2*{t_2 <- `t_2*`}*{`t_2*` <- `t_2**`})))))
-    -- if (I' = {TYPES [], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS ?(`%`_name(lift(id?{id <- `id?`})))*{`id?` <- `id?*`}, LABELS [], FIELDS [], TYPEDEFS []})
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Ttagtype_(I : I) : tagtype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{tu : typeuse, I' : I} (tu, I'):Ttypeuse_(I) => tu
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Tglobaltype_(I : I) : globaltype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{t : valtype} t:Tvaltype_(I) => `%%`_globaltype(?(), t)
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{t : valtype} {"(" "mut" t:Tvaltype_(I) ")"} => `%%`_globaltype(?(MUT_MUT), t)
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Tmemtype_(I : I) : memtype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{at : addrtype, lim : limits} {at:Taddrtype lim:Tlimits_(((($size((at : addrtype <: numtype)) : nat <:> rat) / ((64 * $Ki) : nat <:> rat)) : rat <:> nat))} => `%%PAGE`_memtype(at, lim)
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Ttabletype_(I : I) : tabletype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{at : addrtype, lim : limits, rt : reftype} {at:Taddrtype lim:Tlimits_($size((at : addrtype <: numtype))) rt:Treftype_(I)} => `%%%`_tabletype(at, lim, rt)
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Texterntype_(I : I) : externtype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{jt : tagtype} {"(" "tag" Tid?{} jt:Ttagtype_(I) ")"} => TAG_externtype(jt)
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{gt : globaltype} {"(" "global" Tid?{} gt:Tglobaltype_(I) ")"} => GLOBAL_externtype(gt)
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{mt : memtype} {"(" "memory" Tid?{} mt:Tmemtype_(I) ")"} => MEM_externtype(mt)
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{tt : tabletype} {"(" "table" Tid?{} tt:Ttabletype_(I) ")"} => TABLE_externtype(tt)
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{tu : typeuse, I' : I} {"(" "func" Tid?{} (tu, I'):Ttypeuse_(I) ")"} => FUNC_externtype(tu)
 
 ;; ../../../../specification/wasm-3.0/X.1-notation.syntax.spectec
 syntax A = nat
@@ -26875,7 +25913,7 @@ grammar Blaneidx : laneidx
 ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec
 rec {
 
-;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:794.1-808.71
+;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:798.1-812.71
 grammar Binstr : instr
   ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:16.5-16.24
   prod 0x00 => UNREACHABLE_instr
@@ -27382,21 +26420,21 @@ grammar Binstr : instr
   ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:409.5-409.52
   prod{x : idx, ao : memarg} {0xFD `%`_u32(11):Bu32 (x, ao):Bmemarg} => VSTORE_instr(V128_vectype, x, ao)
   ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:410.5-410.72
-  prod{x : idx, ao : memarg, l : labelidx} {0xFD `%`_u32(84):Bu32 (x, ao):Bmemarg `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VLOAD_LANE_instr(V128_vectype, `%`_sz(8), x, ao, `%`_laneidx(l!`%`_labelidx.0))
+  prod{x : idx, ao : memarg, i : laneidx} {0xFD `%`_u32(84):Bu32 (x, ao):Bmemarg i:Blaneidx} => VLOAD_LANE_instr(V128_vectype, `%`_sz(8), x, ao, i)
   ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:411.5-411.73
-  prod{x : idx, ao : memarg, l : labelidx} {0xFD `%`_u32(85):Bu32 (x, ao):Bmemarg `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VLOAD_LANE_instr(V128_vectype, `%`_sz(16), x, ao, `%`_laneidx(l!`%`_labelidx.0))
+  prod{x : idx, ao : memarg, i : laneidx} {0xFD `%`_u32(85):Bu32 (x, ao):Bmemarg i:Blaneidx} => VLOAD_LANE_instr(V128_vectype, `%`_sz(16), x, ao, i)
   ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:412.5-412.73
-  prod{x : idx, ao : memarg, l : labelidx} {0xFD `%`_u32(86):Bu32 (x, ao):Bmemarg `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VLOAD_LANE_instr(V128_vectype, `%`_sz(32), x, ao, `%`_laneidx(l!`%`_labelidx.0))
+  prod{x : idx, ao : memarg, i : laneidx} {0xFD `%`_u32(86):Bu32 (x, ao):Bmemarg i:Blaneidx} => VLOAD_LANE_instr(V128_vectype, `%`_sz(32), x, ao, i)
   ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:413.5-413.73
-  prod{x : idx, ao : memarg, l : labelidx} {0xFD `%`_u32(87):Bu32 (x, ao):Bmemarg `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VLOAD_LANE_instr(V128_vectype, `%`_sz(64), x, ao, `%`_laneidx(l!`%`_labelidx.0))
+  prod{x : idx, ao : memarg, i : laneidx} {0xFD `%`_u32(87):Bu32 (x, ao):Bmemarg i:Blaneidx} => VLOAD_LANE_instr(V128_vectype, `%`_sz(64), x, ao, i)
   ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:414.5-414.73
-  prod{x : idx, ao : memarg, l : labelidx} {0xFD `%`_u32(88):Bu32 (x, ao):Bmemarg `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VSTORE_LANE_instr(V128_vectype, `%`_sz(8), x, ao, `%`_laneidx(l!`%`_labelidx.0))
+  prod{x : idx, ao : memarg, i : laneidx} {0xFD `%`_u32(88):Bu32 (x, ao):Bmemarg i:Blaneidx} => VSTORE_LANE_instr(V128_vectype, `%`_sz(8), x, ao, i)
   ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:415.5-415.74
-  prod{x : idx, ao : memarg, l : labelidx} {0xFD `%`_u32(89):Bu32 (x, ao):Bmemarg `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VSTORE_LANE_instr(V128_vectype, `%`_sz(16), x, ao, `%`_laneidx(l!`%`_labelidx.0))
+  prod{x : idx, ao : memarg, i : laneidx} {0xFD `%`_u32(89):Bu32 (x, ao):Bmemarg i:Blaneidx} => VSTORE_LANE_instr(V128_vectype, `%`_sz(16), x, ao, i)
   ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:416.5-416.74
-  prod{x : idx, ao : memarg, l : labelidx} {0xFD `%`_u32(90):Bu32 (x, ao):Bmemarg `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VSTORE_LANE_instr(V128_vectype, `%`_sz(32), x, ao, `%`_laneidx(l!`%`_labelidx.0))
+  prod{x : idx, ao : memarg, i : laneidx} {0xFD `%`_u32(90):Bu32 (x, ao):Bmemarg i:Blaneidx} => VSTORE_LANE_instr(V128_vectype, `%`_sz(32), x, ao, i)
   ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:417.5-417.74
-  prod{x : idx, ao : memarg, l : labelidx} {0xFD `%`_u32(91):Bu32 (x, ao):Bmemarg `%`_laneidx(l!`%`_labelidx.0):Blaneidx} => VSTORE_LANE_instr(V128_vectype, `%`_sz(64), x, ao, `%`_laneidx(l!`%`_labelidx.0))
+  prod{x : idx, ao : memarg, i : laneidx} {0xFD `%`_u32(91):Bu32 (x, ao):Bmemarg i:Blaneidx} => VSTORE_LANE_instr(V128_vectype, `%`_sz(64), x, ao, i)
   ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:418.5-418.62
   prod{x : idx, ao : memarg} {0xFD `%`_u32(92):Bu32 (x, ao):Bmemarg} => VLOAD_instr(V128_vectype, ?(ZERO_vloadop_(`%`_sz(32))), x, ao)
   ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:419.5-419.62
@@ -27833,33 +26871,41 @@ grammar Binstr : instr
   prod {0xFD `%`_u32(263):Bu32} => VTERNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), RELAXED_MADD_vternop_)
   ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:791.5-791.54
   prod {0xFD `%`_u32(264):Bu32} => VTERNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), RELAXED_NMADD_vternop_)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:795.5-795.61
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:792.5-792.59
+  prod {0xFD `%`_u32(265):Bu32} => VTERNOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), RELAXED_LANESELECT_vternop_)
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:793.5-793.59
+  prod {0xFD `%`_u32(266):Bu32} => VTERNOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), RELAXED_LANESELECT_vternop_)
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:794.5-794.59
+  prod {0xFD `%`_u32(267):Bu32} => VTERNOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), RELAXED_LANESELECT_vternop_)
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:795.5-795.59
+  prod {0xFD `%`_u32(268):Bu32} => VTERNOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), RELAXED_LANESELECT_vternop_)
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:799.5-799.61
   prod {0xFD `%`_u32(94):Bu32} => VCVTOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), `%X%`_shape(F64_lanetype, `%`_dim(2)), DEMOTE_vcvtop__(ZERO_zero))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:796.5-796.61
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:800.5-800.61
   prod {0xFD `%`_u32(95):Bu32} => VCVTOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), `%X%`_shape(F32_lanetype, `%`_dim(4)), `PROMOTELOW`_vcvtop__)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:797.5-797.62
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:801.5-801.62
   prod {0xFD `%`_u32(248):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(F32_lanetype, `%`_dim(4)), TRUNC_SAT_vcvtop__(S_sx, ?()))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:798.5-798.62
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:802.5-802.62
   prod {0xFD `%`_u32(249):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(F32_lanetype, `%`_dim(4)), TRUNC_SAT_vcvtop__(U_sx, ?()))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:799.5-799.60
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:803.5-803.60
   prod {0xFD `%`_u32(250):Bu32} => VCVTOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), `%X%`_shape(I32_lanetype, `%`_dim(4)), CONVERT_vcvtop__(?(), S_sx))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:800.5-800.60
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:804.5-804.60
   prod {0xFD `%`_u32(251):Bu32} => VCVTOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), `%X%`_shape(I32_lanetype, `%`_dim(4)), CONVERT_vcvtop__(?(), U_sx))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:801.5-801.67
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:805.5-805.67
   prod {0xFD `%`_u32(252):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(F64_lanetype, `%`_dim(2)), TRUNC_SAT_vcvtop__(S_sx, ?(ZERO_zero)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:802.5-802.67
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:806.5-806.67
   prod {0xFD `%`_u32(253):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(F64_lanetype, `%`_dim(2)), TRUNC_SAT_vcvtop__(U_sx, ?(ZERO_zero)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:803.5-803.64
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:807.5-807.64
   prod {0xFD `%`_u32(254):Bu32} => VCVTOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), `%X%`_shape(I32_lanetype, `%`_dim(4)), CONVERT_vcvtop__(?(LOW_half), S_sx))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:804.5-804.64
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:808.5-808.64
   prod {0xFD `%`_u32(255):Bu32} => VCVTOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), `%X%`_shape(I32_lanetype, `%`_dim(4)), CONVERT_vcvtop__(?(LOW_half), U_sx))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:805.5-805.66
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:809.5-809.66
   prod {0xFD `%`_u32(257):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(F32_lanetype, `%`_dim(4)), RELAXED_TRUNC_vcvtop__(S_sx, ?()))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:806.5-806.66
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:810.5-810.66
   prod {0xFD `%`_u32(258):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(F32_lanetype, `%`_dim(4)), RELAXED_TRUNC_vcvtop__(U_sx, ?()))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:807.5-807.71
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:811.5-811.71
   prod {0xFD `%`_u32(259):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(F64_lanetype, `%`_dim(2)), RELAXED_TRUNC_vcvtop__(S_sx, ?(ZERO_zero)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:808.5-808.71
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:812.5-812.71
   prod {0xFD `%`_u32(260):Bu32} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(F64_lanetype, `%`_dim(2)), RELAXED_TRUNC_vcvtop__(U_sx, ?(ZERO_zero)))
 }
 
@@ -28075,495 +27121,6 @@ grammar Bmodule : module
     -- (if (n = |data*{data <- `data*`}|))?{n <- `n?`}
     -- if ((n?{n <- `n?`} =/= ?()) \/ ($dataidx_funcs(func*{func <- `func*`}) = []))
     -- (if (func = FUNC_func(typeidx, local*{local <- `local*`}, expr)))*{expr <- `expr*`, func <- `func*`, `local*` <- `local**`, typeidx <- `typeidx*`}
-
-;; ../../../../specification/wasm-3.0/6.0-text.context.spectec
-syntax idcontext =
-{
-  TYPES{`name?*` : name?*} name?*,
-  TAGS{`name?*` : name?*} name?*,
-  GLOBALS{`name?*` : name?*} name?*,
-  MEMS{`name?*` : name?*} name?*,
-  TABLES{`name?*` : name?*} name?*,
-  FUNCS{`name?*` : name?*} name?*,
-  DATAS{`name?*` : name?*} name?*,
-  ELEMS{`name?*` : name?*} name?*,
-  LOCALS{`name?*` : name?*} name?*,
-  LABELS{`name?*` : name?*} name?*,
-  FIELDS{`name?**` : name?**} name?**,
-  TYPEDEFS{`subtype*` : subtype*} subtype*
-}
-
-;; ../../../../specification/wasm-3.0/6.0-text.context.spectec
-syntax I = idcontext
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Tsign : int
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod eps => + (1 : nat <:> int)
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod "+" => + (1 : nat <:> int)
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod "-" => - (1 : nat <:> int)
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Tdigit : nat
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod "0" => 0
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod "9" => 9
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Thexdigit : nat
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{d : nat} d:Tdigit => d
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod "A" => 10
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod "F" => 15
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod "a" => 10
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod "f" => 15
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-rec {
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:26.1-28.40
-grammar Tnum : nat
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:27.5-27.18
-  prod{d : nat} d:Tdigit => d
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:28.5-28.40
-  prod{n : n, d : nat} {n:Tnum "_"?{} d:Tdigit} => ((10 * n) + d)
-}
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-rec {
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:30.1-32.46
-grammar Thexnum : nat
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:31.5-31.21
-  prod{h : nat} h:Thexdigit => h
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:32.5-32.46
-  prod{n : n, h : nat} {n:Thexnum "_"?{} h:Thexdigit} => ((16 * n) + h)
-}
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar TuN(N : N) : uN(N)
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{n : n} n:Tnum => `%`_uN(n)
-    -- if (n < (2 ^ N))
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{n : n} {"0x" n:Thexnum} => `%`_uN(n)
-    -- if (n < (2 ^ N))
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar TsN(N : N) : sN(N)
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{pm : int, n : n} {pm:Tsign `%`_uN(n):TuN(N)} => `%`_sN((pm * (n : nat <:> int)))
-    -- if ((- ((2 ^ (((N : nat <:> int) - (1 : nat <:> int)) : int <:> nat)) : nat <:> int) <= (pm * (n : nat <:> int))) /\ ((pm * (n : nat <:> int)) < ((2 ^ (((N : nat <:> int) - (1 : nat <:> int)) : int <:> nat)) : nat <:> int)))
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar TiN(N : N) : iN(N)
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{n : n} `%`_uN(n):TuN(N) => `%`_iN(n)
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{i : sN(N)} i:TsN(N) => `%`_iN($invsigned_(N, i!`%`_sN.0))
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Tu32 : u32
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{n : n} `%`_uN(n):TuN(32) => `%`_u32(n)
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Tu64 : u64
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{n : n} `%`_uN(n):TuN(64) => `%`_u64(n)
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-rec {
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:51.1-53.48
-grammar Tfrac : rat
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:52.5-52.26
-  prod{d : nat} d:Tdigit => ((d : nat <:> rat) / (10 : nat <:> rat))
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:53.5-53.48
-  prod{d : nat, p : rat} {d:Tdigit "_"?{} p:Tfrac} => (((d + ((p / (10 : nat <:> rat)) : rat <:> nat)) : nat <:> rat) / (10 : nat <:> rat))
-}
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-rec {
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:55.1-57.54
-grammar Thexfrac : rat
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:56.5-56.29
-  prod{h : nat} h:Thexdigit => ((h : nat <:> rat) / (16 : nat <:> rat))
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:57.5-57.54
-  prod{h : nat, p : rat} {h:Thexdigit "_"?{} p:Thexfrac} => (((h + ((p / (16 : nat <:> rat)) : rat <:> nat)) : nat <:> rat) / (16 : nat <:> rat))
-}
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Tmant : rat
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{p : nat} {p:Tnum "."?{}} => (p : nat <:> rat)
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{p : nat, q : rat} {p:Tnum "." q:Tfrac} => ((p + (q : rat <:> nat)) : nat <:> rat)
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Thexmant : rat
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{p : nat} {p:Thexnum "."?{}} => (p : nat <:> rat)
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{p : nat, q : rat} {p:Thexnum "." q:Thexfrac} => ((p + (q : rat <:> nat)) : nat <:> rat)
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-def $ieee_(N : N, rat : rat) : fN(N)
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Tfloat : rat
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{p : rat, pm : int, ee : nat} {p:Tmant ("E" | "e") pm:Tsign ee:Tnum} => (p * ((10 ^ ((pm * (ee : nat <:> int)) : int <:> nat)) : nat <:> rat))
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Thexfloat : rat
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{p : rat, pm : int, ee : nat} {"0x" p:Thexmant ("P" | "p") pm:Tsign ee:Tnum} => (p * ((2 ^ ((pm * (ee : nat <:> int)) : int <:> nat)) : nat <:> rat))
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Tstringchar : char
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod "\\t" => `%`_char(9)
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod "\\n" => `%`_char(10)
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod "\\r" => `%`_char(13)
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod "\\\"" => `%`_char(34)
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod "\\'" => `%`_char(39)
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod "\\\\" => `%`_char(92)
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Tstringelem : byte*
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{c : char} c:Tstringchar => $utf8([c])
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{h_1 : nat, h_2 : nat} {"\\" h_1:Thexdigit h_2:Thexdigit} => [`%`_byte(((16 * h_1) + h_2))]
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Tstring : byte*
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{`b**` : byte**} {"\"" b*{b <- `b*`}:Tstringelem*{`b*` <- `b**`} "\""} => $concat_(syntax byte, b*{b <- `b*`}*{`b*` <- `b**`})
-    -- if (|$concat_(syntax byte, b*{b <- `b*`}*{`b*` <- `b**`})| < (2 ^ 32))
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Tlist(syntax el, grammar TX : el) : el*
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{`el*` : el*} el:TX*{el <- `el*`} => el*{el <- `el*`}
-    -- if (|el*{el <- `el*`}| < (2 ^ 32))
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Tname : name
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{`b*` : byte*, `c*` : char*} b*{b <- `b*`}:Tstring => `%`_name(c*{c <- `c*`})
-    -- if (b*{b <- `b*`} = $utf8(c*{c <- `c*`}))
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Tid : name
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{`c*` : char*} {"$" `%`_name(c*{c <- `c*`}):Tname} => `%`_name(c*{c <- `c*`})
-    -- if (|c*{c <- `c*`}| > 0)
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Tidx_(ids : name?*) : idx
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{x : idx} x:Tu32 => x
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{id : name, x : idx} id:Tid => x
-    -- if (ids[x!`%`_idx.0] = ?(id))
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Ttypeidx_(I : I) : typeidx
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{x : idx} x:Tidx_(I.TYPES_I) => x
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Ttagidx_(I : I) : tagidx
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{x : idx} x:Tidx_(I.TAGS_I) => x
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Tglobalidx_(I : I) : globalidx
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{x : idx} x:Tidx_(I.GLOBALS_I) => x
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Tmemidx_(I : I) : memidx
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{x : idx} x:Tidx_(I.MEMS_I) => x
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Ttableidx_(I : I) : tableidx
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{x : idx} x:Tidx_(I.TABLES_I) => x
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Tfuncidx_(I : I) : funcidx
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{x : idx} x:Tidx_(I.FUNCS_I) => x
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Tdataidx_(I : I) : dataidx
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{x : idx} x:Tidx_(I.DATAS_I) => x
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Telemidx_(I : I) : elemidx
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{x : idx} x:Tidx_(I.ELEMS_I) => x
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Tlocalidx_(I : I) : localidx
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{x : idx} x:Tidx_(I.LOCALS_I) => x
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Tlabelidx_(I : I) : labelidx
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{x : idx} x:Tidx_(I.LABELS_I) => x
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Tfieldidx__(I : I, x : idx) : fieldidx
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{i : idx} i:Tidx_(I.FIELDS_I[x!`%`_idx.0]) => i
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Tnumtype : numtype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "i32" => I32_numtype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "i64" => I64_numtype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "f32" => F32_numtype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "f64" => F64_numtype
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Tvectype : vectype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "v128" => V128_vectype
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Tabsheaptype : heaptype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "any" => ANY_heaptype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "eq" => EQ_heaptype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "i31" => I31_heaptype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "struct" => STRUCT_heaptype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "array" => ARRAY_heaptype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "none" => NONE_heaptype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "func" => FUNC_heaptype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "nofunc" => NOFUNC_heaptype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "exn" => EXN_heaptype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "noexn" => NOEXN_heaptype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "extern" => EXTERN_heaptype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "noextern" => NOEXTERN_heaptype
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Theaptype_(I : I) : heaptype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{ht : heaptype} ht:Tabsheaptype => ht
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{x : idx} x:Ttypeidx_(I) => _IDX_heaptype(x)
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Tnul : nul
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod eps => ?()
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "null" => ?(NULL_NULL)
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Treftype_(I : I) : reftype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{nul : nul, ht : heaptype} {"(" "ref" nul:Tnul ht:Theaptype_(I) ")"} => REF_reftype(nul, ht)
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "anyref" => REF_reftype(?(NULL_NULL), ANY_heaptype)
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "eqref" => REF_reftype(?(NULL_NULL), EQ_heaptype)
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "i31ref" => REF_reftype(?(NULL_NULL), I31_heaptype)
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "structref" => REF_reftype(?(NULL_NULL), STRUCT_heaptype)
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "arrayref" => REF_reftype(?(NULL_NULL), ARRAY_heaptype)
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "nullref" => REF_reftype(?(NULL_NULL), NONE_heaptype)
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "funcref" => REF_reftype(?(NULL_NULL), FUNC_heaptype)
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "nullfuncref" => REF_reftype(?(NULL_NULL), NOFUNC_heaptype)
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "exnref" => REF_reftype(?(NULL_NULL), EXN_heaptype)
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "nullexnref" => REF_reftype(?(NULL_NULL), NOEXN_heaptype)
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "externref" => REF_reftype(?(NULL_NULL), EXTERN_heaptype)
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "nullexternref" => REF_reftype(?(NULL_NULL), NOEXTERN_heaptype)
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Tvaltype_(I : I) : valtype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{nt : numtype} nt:Tnumtype => (nt : numtype <: valtype)
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{vt : vectype} vt:Tvectype => (vt : vectype <: valtype)
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{rt : reftype} rt:Treftype_(I) => (rt : reftype <: valtype)
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Tpacktype : packtype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "i8" => I8_packtype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "i16" => I16_packtype
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Tstoragetype_(I : I) : storagetype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{t : valtype} t:Tvaltype_(I) => (t : valtype <: storagetype)
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{pt : packtype} pt:Tpacktype => (pt : packtype <: storagetype)
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Tfieldtype_(I : I) : fieldtype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{zt : storagetype} zt:Tstoragetype_(I) => `%%`_fieldtype(?(), zt)
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{zt : storagetype} {"(" "mut" zt:Tstoragetype_(I) ")"} => `%%`_fieldtype(?(MUT_MUT), zt)
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Tfield_(I : I) : fieldtype*
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{ft : fieldtype} {"(" "field" Tid?{} ft:Tfieldtype_(I) ")"} => [ft]
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Tparam_(I : I) : (valtype*, name?*)
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{`id?` : char?, t : valtype} {"(" "param" ?(`%`_name(lift(id?{id <- `id?`}))):Tid?{} t:Tvaltype_(I) ")"} => ([t], [?(`%`_name(lift(id?{id <- `id?`})))])
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Tresult_(I : I) : valtype*
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{t : valtype} {"(" "result" t:Tvaltype_(I) ")"} => [t]
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Tcomptype_(I : I) : comptype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{`ft*` : fieldtype*} {"(" "struct" [ft*{ft <- `ft*`}]:Tlist(syntax fieldtype*, grammar Tfield_(I)) ")"} => STRUCT_comptype(`%`_list($concat_(syntax fieldtype, [ft*{ft <- `ft*`}])))
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{ft : fieldtype} {"(" "array" ft:Tfieldtype_(I) ")"} => ARRAY_comptype(ft)
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{`t_1*` : valtype*, `id?**` : char?**, `t_2*` : valtype*} {"(" "func" (t_1*{t_1 <- `t_1*`}, ?(`%`_name(lift(id?{id <- `id?`})))*{`id?` <- `id?*`})*{`id?*` <- `id?**`}:Tlist(syntax (valtype*, name?*), grammar Tparam_(I)) t_2*{t_2 <- `t_2*`}*{}:Tlist(syntax valtype*, grammar Tresult_(I)) ")"} => `FUNC%->%`_comptype(`%`_resulttype($concat_(syntax valtype, [t_1*{t_1 <- `t_1*`}])), `%`_resulttype($concat_(syntax valtype, [t_2*{t_2 <- `t_2*`}])))
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Tfin : fin
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod eps => ?()
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "final" => ?(FINAL_FINAL)
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Tsubtype_(I : I) : subtype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{fin : fin, `x*` : idx*, ct : comptype} {"(" "sub" fin:Tfin x*{x <- `x*`}:Tlist(syntax typeidx, grammar Ttypeidx_(I)) ct:Tcomptype_(I) ")"} => SUB_subtype(fin, _IDX_typeuse(x)*{x <- `x*`}, ct)
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{ct : comptype} ct:Tcomptype_(I) => SUB_subtype(?(), [], ct)
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Ttypedef_(I : I) : subtype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{st : subtype} {"(" "type" Tid?{} st:Tsubtype_(I) ")"} => st
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Trectype_(I : I) : rectype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{`st*` : subtype*} {"(" "rec" st*{st <- `st*`}:Tlist(syntax subtype, grammar Ttypedef_(I)) ")"} => REC_rectype(`%`_list(st*{st <- `st*`}))
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{st : subtype} st:Ttypedef_(I) => REC_rectype(`%`_list([st]))
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Taddrtype : addrtype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "i32" => I32_addrtype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod "i64" => I64_addrtype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod eps => I32_addrtype
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Tlimits_(N : N) : limits
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{n : n} `%`_u64(n):Tu64 => `[%..%]`_limits(`%`_u64(n), `%`_u64(((((2 ^ N) : nat <:> int) - (1 : nat <:> int)) : int <:> nat)))
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{n : n, m : m} {`%`_u64(n):Tu64 `%`_u64(m):Tu64} => `[%..%]`_limits(`%`_u64(n), `%`_u64(m))
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Ttypeuse_(I : I) : (typeuse, I)
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{x : idx, I' : I, `t_1*` : valtype*, `t_2*` : valtype*} {"(" "type" x:Ttypeidx_(I) ")"} => (_IDX_typeuse(x), I')
-    -- if (I.TYPEDEFS_I[x!`%`_idx.0] = SUB_subtype(?(FINAL_FINAL), [], `FUNC%->%`_comptype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), `%`_resulttype(t_2*{t_2 <- `t_2*`}))))
-    -- if (I' = {TYPES [], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS ?()^|t_1*{t_1 <- `t_1*`}|{}, LABELS [], FIELDS [], TYPEDEFS []})
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{x : idx, `t_1**` : valtype**, `id?*` : char?*, `t_2**` : valtype**, I' : I} {"(" "type" x:Ttypeidx_(I) ")" (t_1*{t_1 <- `t_1*`}, ?(`%`_name(lift(id?{id <- `id?`})))*{`id?` <- `id?*`}):Tparam_(I)*{`t_1*` <- `t_1**`} t_2*{t_2 <- `t_2*`}:Tresult_(I)*{`t_2*` <- `t_2**`}} => (_IDX_typeuse(x), I')
-    -- if (I.TYPEDEFS_I[x!`%`_idx.0] = SUB_subtype(?(FINAL_FINAL), [], `FUNC%->%`_comptype(`%`_resulttype($concat_(syntax valtype, t_1*{t_1 <- `t_1*`}*{`t_1*` <- `t_1**`})), `%`_resulttype($concat_(syntax valtype, t_2*{t_2 <- `t_2*`}*{`t_2*` <- `t_2**`})))))
-    -- if (I' = {TYPES [], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS ?(`%`_name(lift(id?{id <- `id?`})))*{`id?` <- `id?*`}, LABELS [], FIELDS [], TYPEDEFS []})
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Ttagtype_(I : I) : tagtype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{tu : typeuse, I' : I} (tu, I'):Ttypeuse_(I) => tu
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Tglobaltype_(I : I) : globaltype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{t : valtype} t:Tvaltype_(I) => `%%`_globaltype(?(), t)
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{t : valtype} {"(" "mut" t:Tvaltype_(I) ")"} => `%%`_globaltype(?(MUT_MUT), t)
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Tmemtype_(I : I) : memtype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{at : addrtype, lim : limits} {at:Taddrtype lim:Tlimits_(((($size((at : addrtype <: numtype)) : nat <:> rat) / ((64 * $Ki) : nat <:> rat)) : rat <:> nat))} => `%%PAGE`_memtype(at, lim)
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Ttabletype_(I : I) : tabletype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{at : addrtype, lim : limits, rt : reftype} {at:Taddrtype lim:Tlimits_($size((at : addrtype <: numtype))) rt:Treftype_(I)} => `%%%`_tabletype(at, lim, rt)
-
-;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Texterntype_(I : I) : externtype
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{jt : tagtype} {"(" "tag" Tid?{} jt:Ttagtype_(I) ")"} => TAG_externtype(jt)
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{gt : globaltype} {"(" "global" Tid?{} gt:Tglobaltype_(I) ")"} => GLOBAL_externtype(gt)
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{mt : memtype} {"(" "memory" Tid?{} mt:Tmemtype_(I) ")"} => MEM_externtype(mt)
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{tt : tabletype} {"(" "table" Tid?{} tt:Ttabletype_(I) ")"} => TABLE_externtype(tt)
-  ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{tu : typeuse, I' : I} {"(" "func" Tid?{} (tu, I'):Ttypeuse_(I) ")"} => FUNC_externtype(tu)
 
 ;; ../../../../specification/wasm-3.0/X.1-notation.syntax.spectec
 syntax A = nat
