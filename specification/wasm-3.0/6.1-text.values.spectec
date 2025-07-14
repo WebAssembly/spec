@@ -40,7 +40,7 @@ grammar TsN(N) : sN(N) =
 
 grammar TiN(N) : iN(N) =
   | n:TuN(N) => n
-  | i:TsN(N) => $invsigned_(N, i)
+  | i:TsN(N) => $inv_signed_(N, i)
 
 
 grammar Tfrac : rat =

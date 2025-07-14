@@ -12328,6 +12328,8 @@ $$
 
 \vspace{1ex}
 
+\vspace{1ex}
+
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
 & {\mathtt{sign}} & ::= & \epsilon & \quad\Rightarrow\quad{} & {+1} \\
@@ -12356,15 +12358,6 @@ $$
 
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
-& {\mathtt{u32}} & ::= & n{:}{\mathtt{uN}}(32) & \quad\Rightarrow\quad{} & n \\
-& {\mathtt{u64}} & ::= & n{:}{\mathtt{uN}}(64) & \quad\Rightarrow\quad{} & n \\
-\end{array}
-$$
-
-\vspace{1ex}
-
-$$
-\begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
 & {\mathtt{frac}} & ::= & d{:}{\mathtt{digit}} & \quad\Rightarrow\quad{} & d / 10 \\
 & & | & d{:}{\mathtt{digit}}~~{\mbox{`$\mathtt{\_}$'}^?}~~p{:}{\mathtt{frac}} & \quad\Rightarrow\quad{} & (d + p / 10) / 10 \\
 & {\mathtt{hexfrac}} & ::= & h{:}{\mathtt{hexdigit}} & \quad\Rightarrow\quad{} & h / 16 \\
@@ -12380,6 +12373,21 @@ $$
 \begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
 & {\mathtt{float}} & ::= & p{:}{\mathtt{mant}}~~(\mbox{`$\mathtt{E}$'} ~|~ \mbox{`$\mathtt{e}$'})~~s{:}{\mathtt{sign}}~~e{:}{\mathtt{num}} & \quad\Rightarrow\quad{} & p \cdot {10^{s \cdot e}} \\
 & {\mathtt{hexfloat}} & ::= & \mbox{`$\mathtt{0x}$'}~~p{:}{\mathtt{hexmant}}~~(\mbox{`$\mathtt{P}$'} ~|~ \mbox{`$\mathtt{p}$'})~~s{:}{\mathtt{sign}}~~e{:}{\mathtt{num}} & \quad\Rightarrow\quad{} & p \cdot {2^{s \cdot e}} \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
+& {\mathtt{u8}} & ::= & n{:}{\mathtt{uN}}(\mathsf{{\scriptstyle 8}}) & \quad\Rightarrow\quad{} & n \\
+& {\mathtt{u32}} & ::= & n{:}{\mathtt{uN}}(\mathsf{{\scriptstyle 32}}) & \quad\Rightarrow\quad{} & n \\
+& {\mathtt{u64}} & ::= & n{:}{\mathtt{uN}}(\mathsf{{\scriptstyle 64}}) & \quad\Rightarrow\quad{} & n \\
+& {\mathtt{i8}} & ::= & i{:}{\mathtt{iN}}(\mathsf{{\scriptstyle 8}}) & \quad\Rightarrow\quad{} & i \\
+& {\mathtt{i16}} & ::= & i{:}{\mathtt{iN}}(\mathsf{{\scriptstyle 16}}) & \quad\Rightarrow\quad{} & i \\
+& {\mathtt{i32}} & ::= & i{:}{\mathtt{iN}}(\mathsf{{\scriptstyle 32}}) & \quad\Rightarrow\quad{} & i \\
+& {\mathtt{i64}} & ::= & i{:}{\mathtt{iN}}(\mathsf{{\scriptstyle 64}}) & \quad\Rightarrow\quad{} & i \\
+& {\mathtt{i128}} & ::= & i{:}{\mathtt{iN}}(\mathsf{{\scriptstyle 128}}) & \quad\Rightarrow\quad{} & i \\
 \end{array}
 $$
 
@@ -12440,6 +12448,37 @@ $$
 & {{\mathtt{localidx}}}_{I} & ::= & x{:}{{\mathtt{idx}}}_{I{.}\mathsf{locals}} & \quad\Rightarrow\quad{} & x \\
 & {{\mathtt{labelidx}}}_{I} & ::= & x{:}{{\mathtt{idx}}}_{I{.}\mathsf{labels}} & \quad\Rightarrow\quad{} & x \\
 & {{\mathtt{fieldidx}}}_{I, x} & ::= & i{:}{{\mathtt{idx}}}_{I{.}\mathsf{fields}{}[x]} & \quad\Rightarrow\quad{} & i \\
+& {{\mathtt{externidx}}}_{I} & ::= & \mbox{`$\mathtt{(}$'}~~\mbox{`$\mathtt{tag}$'}~~x{:}{{\mathtt{tagidx}}}_{I}~~\mbox{`$\mathtt{)}$'} & \quad\Rightarrow\quad{} & \mathsf{tag}~x \\
+& & | & \mbox{`$\mathtt{(}$'}~~\mbox{`$\mathtt{global}$'}~~x{:}{{\mathtt{globalidx}}}_{I}~~\mbox{`$\mathtt{)}$'} & \quad\Rightarrow\quad{} & \mathsf{global}~x \\
+& & | & \mbox{`$\mathtt{(}$'}~~\mbox{`$\mathtt{memory}$'}~~x{:}{{\mathtt{memidx}}}_{I}~~\mbox{`$\mathtt{)}$'} & \quad\Rightarrow\quad{} & \mathsf{mem}~x \\
+& & | & \mbox{`$\mathtt{(}$'}~~\mbox{`$\mathtt{table}$'}~~x{:}{{\mathtt{tableidx}}}_{I}~~\mbox{`$\mathtt{)}$'} & \quad\Rightarrow\quad{} & \mathsf{table}~x \\
+& & | & \mbox{`$\mathtt{(}$'}~~\mbox{`$\mathtt{func}$'}~~x{:}{{\mathtt{funcidx}}}_{I}~~\mbox{`$\mathtt{)}$'} & \quad\Rightarrow\quad{} & \mathsf{func}~x \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
+& {{\mathtt{typeuse}}}_{I} & ::= & \mbox{`$\mathtt{(}$'}~~\mbox{`$\mathtt{type}$'}~~x{:}{{\mathtt{typeidx}}}_{I}~~\mbox{`$\mathtt{)}$'} & \quad\Rightarrow\quad{} & (x, {I'}) & \quad
+\begin{array}[t]{@{}l@{}}
+\mbox{if}~ I{.}\mathsf{typedefs}{}[x] = \mathsf{sub}~\mathsf{final}~(\mathsf{func}~{t_1^\ast} \rightarrow {t_2^\ast}) \\
+{\land}~ {I'} = \{ \begin{array}[t]{@{}l@{}}
+\mathsf{locals}~{\epsilon^{{|{t_1^\ast}|}}} \}\end{array} \\
+\end{array} \\
+& & | & \mbox{`$\mathtt{(}$'}~~\mbox{`$\mathtt{type}$'}~~x{:}{{\mathtt{typeidx}}}_{I}~~\mbox{`$\mathtt{)}$'}~~{(({t_1^\ast}, {{{\mathit{id}}^?}^\ast}){:}{{\mathtt{param}}}_{I})^\ast}~~{({t_2^\ast}{:}{{\mathtt{result}}}_{I})^\ast} & \quad\Rightarrow\quad{} & (x, {I'}) & \quad
+\begin{array}[t]{@{}l@{}}
+\mbox{if}~ I{.}\mathsf{typedefs}{}[x] = \mathsf{sub}~\mathsf{final}~(\mathsf{func}~{\bigoplus}\, {{t_1^\ast}^\ast} \rightarrow {\bigoplus}\, {{t_2^\ast}^\ast}) \\
+{\land}~ {I'} = \{ \begin{array}[t]{@{}l@{}}
+\mathsf{locals}~{({{\mathit{id}}^?})^\ast} \}\end{array} \\
+\end{array} \\
+& & | & {(({t_1^\ast}, {{{\mathit{id}}^?}^\ast}){:}{{\mathtt{param}}}_{I})^\ast}~~{({t_2^\ast}{:}{{\mathtt{result}}}_{I})^\ast} & \quad\Rightarrow\quad{} & (x, {I'}) & \quad
+\begin{array}[t]{@{}l@{}}
+\mbox{if}~ I{.}\mathsf{typedefs}{}[x] = \mathsf{sub}~\mathsf{final}~(\mathsf{func}~{\bigoplus}\, {{t_1^\ast}^\ast} \rightarrow {\bigoplus}\, {{t_2^\ast}^\ast}) \\
+{\land}~ (I{.}\mathsf{typedefs}{}[i] \neq \mathsf{sub}~\mathsf{final}~(\mathsf{func}~{\bigoplus}\, {{t_1^\ast}^\ast} \rightarrow {\bigoplus}\, {{t_2^\ast}^\ast}))^{i<x} \\
+{\land}~ {I'} = \{ \begin{array}[t]{@{}l@{}}
+\mathsf{locals}~{({{\mathit{id}}^?})^\ast} \}\end{array} \\
+\end{array} \\
 \end{array}
 $$
 
@@ -12488,13 +12527,6 @@ $$
 & & | & \mbox{`$\mathtt{nullexnref}$'} & \quad\Rightarrow\quad{} & (\mathsf{ref}~\mathsf{null}~\mathsf{noexn}) \\
 & & | & \mbox{`$\mathtt{externref}$'} & \quad\Rightarrow\quad{} & (\mathsf{ref}~\mathsf{null}~\mathsf{extern}) \\
 & & | & \mbox{`$\mathtt{nullexternref}$'} & \quad\Rightarrow\quad{} & (\mathsf{ref}~\mathsf{null}~\mathsf{noextern}) \\
-\end{array}
-$$
-
-\vspace{1ex}
-
-$$
-\begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
 & {{\mathtt{valtype}}}_{I} & ::= & {\mathit{nt}}{:}{\mathtt{numtype}} & \quad\Rightarrow\quad{} & {\mathit{nt}} \\
 & & | & {\mathit{vt}}{:}{\mathtt{vectype}} & \quad\Rightarrow\quad{} & {\mathit{vt}} \\
 & & | & {\mathit{rt}}{:}{{\mathtt{reftype}}}_{I} & \quad\Rightarrow\quad{} & {\mathit{rt}} \\
@@ -12512,29 +12544,11 @@ $$
 & {{\mathtt{fieldtype}}}_{I} & ::= & {\mathit{zt}}{:}{{\mathtt{storagetype}}}_{I} & \quad\Rightarrow\quad{} & {\mathit{zt}} \\
 & & | & \mbox{`$\mathtt{(}$'}~~\mbox{`$\mathtt{mut}$'}~~{\mathit{zt}}{:}{{\mathtt{storagetype}}}_{I}~~\mbox{`$\mathtt{)}$'} & \quad\Rightarrow\quad{} & \mathsf{mut}~{\mathit{zt}} \\
 & {{\mathtt{field}}}_{I} & ::= & \mbox{`$\mathtt{(}$'}~~\mbox{`$\mathtt{field}$'}~~{{\mathtt{id}}^?}~~{\mathit{ft}}{:}{{\mathtt{fieldtype}}}_{I}~~\mbox{`$\mathtt{)}$'} & \quad\Rightarrow\quad{} & {\mathit{ft}} \\
-\end{array}
-$$
-
-\vspace{1ex}
-
-$$
-\begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
+& & | & \mbox{`$\mathtt{(}$'}~~\mbox{`$\mathtt{field}$'}~~{{\mathit{ft}}^\ast}{:}{{{\mathtt{fieldtype}}}_{I}^\ast}~~\mbox{`$\mathtt{)}$'} & \quad\Rightarrow\quad{} & {{\mathit{ft}}^\ast} \\
 & {{\mathtt{param}}}_{I} & ::= & \mbox{`$\mathtt{(}$'}~~\mbox{`$\mathtt{param}$'}~~{{\mathit{id}}^?}{:}{{\mathtt{id}}^?}~~t{:}{{\mathtt{valtype}}}_{I}~~\mbox{`$\mathtt{)}$'} & \quad\Rightarrow\quad{} & (t, {{\mathit{id}}^?}) \\
-\end{array}
-$$
-
-\vspace{1ex}
-
-$$
-\begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
+& & | & \mbox{`$\mathtt{(}$'}~~\mbox{`$\mathtt{param}$'}~~{t^\ast}{:}{{{\mathtt{valtype}}}_{I}^\ast}~~\mbox{`$\mathtt{)}$'} & \quad\Rightarrow\quad{} & ({t^\ast}, {\epsilon^{{|{t^\ast}|}}}) \\
 & {{\mathtt{result}}}_{I} & ::= & \mbox{`$\mathtt{(}$'}~~\mbox{`$\mathtt{result}$'}~~t{:}{{\mathtt{valtype}}}_{I}~~\mbox{`$\mathtt{)}$'} & \quad\Rightarrow\quad{} & t \\
-\end{array}
-$$
-
-\vspace{1ex}
-
-$$
-\begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
+& & | & \mbox{`$\mathtt{(}$'}~~\mbox{`$\mathtt{result}$'}~~{t^\ast}{:}{{{\mathtt{valtype}}}_{I}^\ast}~~\mbox{`$\mathtt{)}$'} & \quad\Rightarrow\quad{} & {t^\ast} \\
 & {{\mathtt{comptype}}}_{I} & ::= & \mbox{`$\mathtt{(}$'}~~\mbox{`$\mathtt{struct}$'}~~{{\mathit{ft}}^\ast}{:}{\mathtt{list}}({{\mathtt{field}}}_{I})~~\mbox{`$\mathtt{)}$'} & \quad\Rightarrow\quad{} & \mathsf{struct}~{\bigoplus}\, {{\mathit{ft}}^\ast} \\
 & & | & \mbox{`$\mathtt{(}$'}~~\mbox{`$\mathtt{array}$'}~~{\mathit{ft}}{:}{{\mathtt{fieldtype}}}_{I}~~\mbox{`$\mathtt{)}$'} & \quad\Rightarrow\quad{} & \mathsf{array}~{\mathit{ft}} \\
 & & | & \mbox{`$\mathtt{(}$'}~~\mbox{`$\mathtt{func}$'}~~{({t_1^\ast}, {{{\mathit{id}}^?}^\ast})^\ast}{:}{\mathtt{list}}({{\mathtt{param}}}_{I})~~{{t_2^\ast}^\ast}{:}{\mathtt{list}}({{\mathtt{result}}}_{I})~~\mbox{`$\mathtt{)}$'} & \quad\Rightarrow\quad{} & \mathsf{func}~{\bigoplus}\, {t_1^\ast} \rightarrow {\bigoplus}\, {t_2^\ast} \\
@@ -12578,26 +12592,7 @@ $$
 
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
-& {{\mathtt{typeuse}}}_{I} & ::= & \mbox{`$\mathtt{(}$'}~~\mbox{`$\mathtt{type}$'}~~x{:}{{\mathtt{typeidx}}}_{I}~~\mbox{`$\mathtt{)}$'} & \quad\Rightarrow\quad{} & (x, {I'}) & \quad
-\begin{array}[t]{@{}l@{}}
-\mbox{if}~ I{.}\mathsf{typedefs}{}[x] = \mathsf{sub}~\mathsf{final}~(\mathsf{func}~{t_1^\ast} \rightarrow {t_2^\ast}) \\
-{\land}~ {I'} = \{ \begin{array}[t]{@{}l@{}}
-\mathsf{locals}~{\epsilon^{{|{t_1^\ast}|}}} \}\end{array} \\
-\end{array} \\
-& & | & \mbox{`$\mathtt{(}$'}~~\mbox{`$\mathtt{type}$'}~~x{:}{{\mathtt{typeidx}}}_{I}~~\mbox{`$\mathtt{)}$'}~~{(({t_1^\ast}, {{{\mathit{id}}^?}^\ast}){:}{{\mathtt{param}}}_{I})^\ast}~~{({t_2^\ast}{:}{{\mathtt{result}}}_{I})^\ast} & \quad\Rightarrow\quad{} & (x, {I'}) & \quad
-\begin{array}[t]{@{}l@{}}
-\mbox{if}~ I{.}\mathsf{typedefs}{}[x] = \mathsf{sub}~\mathsf{final}~(\mathsf{func}~{\bigoplus}\, {{t_1^\ast}^\ast} \rightarrow {\bigoplus}\, {{t_2^\ast}^\ast}) \\
-{\land}~ {I'} = \{ \begin{array}[t]{@{}l@{}}
-\mathsf{locals}~{({{\mathit{id}}^?})^\ast} \}\end{array} \\
-\end{array} \\
-\end{array}
-$$
-
-\vspace{1ex}
-
-$$
-\begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
-& {{\mathtt{tagtype}}}_{I} & ::= & ({\mathit{tu}}, {I'}){:}{{\mathtt{typeuse}}}_{I} & \quad\Rightarrow\quad{} & {\mathit{tu}} \\
+& {{\mathtt{tagtype}}}_{I} & ::= & (x, {I'}){:}{{\mathtt{typeuse}}}_{I} & \quad\Rightarrow\quad{} & x \\
 & {{\mathtt{globaltype}}}_{I} & ::= & t{:}{{\mathtt{valtype}}}_{I} & \quad\Rightarrow\quad{} & t \\
 & & | & \mbox{`$\mathtt{(}$'}~~\mbox{`$\mathtt{mut}$'}~~t{:}{{\mathtt{valtype}}}_{I}~~\mbox{`$\mathtt{)}$'} & \quad\Rightarrow\quad{} & \mathsf{mut}~t \\
 & {{\mathtt{memtype}}}_{I} & ::= & {\mathit{at}}{:}{\mathtt{addrtype}}~~{\mathit{lim}}{:}{{\mathtt{limits}}}_{{|{\mathit{at}}|} / (64 \, {\mathrm{Ki}})} & \quad\Rightarrow\quad{} & {\mathit{at}}~{\mathit{lim}}~\mathsf{page} \\
@@ -12609,13 +12604,837 @@ $$
 
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
-& {{\mathtt{externtype}}}_{I} & ::= & \mbox{`$\mathtt{(}$'}~~\mbox{`$\mathtt{tag}$'}~~{{\mathtt{id}}^?}~~{\mathit{jt}}{:}{{\mathtt{tagtype}}}_{I}~~\mbox{`$\mathtt{)}$'} & \quad\Rightarrow\quad{} & \mathsf{tag}~{\mathit{jt}} \\
-& & | & \mbox{`$\mathtt{(}$'}~~\mbox{`$\mathtt{global}$'}~~{{\mathtt{id}}^?}~~{\mathit{gt}}{:}{{\mathtt{globaltype}}}_{I}~~\mbox{`$\mathtt{)}$'} & \quad\Rightarrow\quad{} & \mathsf{global}~{\mathit{gt}} \\
-& & | & \mbox{`$\mathtt{(}$'}~~\mbox{`$\mathtt{memory}$'}~~{{\mathtt{id}}^?}~~{\mathit{mt}}{:}{{\mathtt{memtype}}}_{I}~~\mbox{`$\mathtt{)}$'} & \quad\Rightarrow\quad{} & \mathsf{mem}~{\mathit{mt}} \\
-& & | & \mbox{`$\mathtt{(}$'}~~\mbox{`$\mathtt{table}$'}~~{{\mathtt{id}}^?}~~{\mathit{tt}}{:}{{\mathtt{tabletype}}}_{I}~~\mbox{`$\mathtt{)}$'} & \quad\Rightarrow\quad{} & \mathsf{table}~{\mathit{tt}} \\
-& & | & \mbox{`$\mathtt{(}$'}~~\mbox{`$\mathtt{func}$'}~~{{\mathtt{id}}^?}~~({\mathit{tu}}, {I'}){:}{{\mathtt{typeuse}}}_{I}~~\mbox{`$\mathtt{)}$'} & \quad\Rightarrow\quad{} & \mathsf{func}~{\mathit{tu}} \\
+& {{\mathtt{externtype}}}_{I} & ::= & \mbox{`$\mathtt{(}$'}~~\mbox{`$\mathtt{tag}$'}~~{{\mathit{id}}^?}{:}{{\mathtt{id}}^?}~~{\mathit{jt}}{:}{{\mathtt{tagtype}}}_{I}~~\mbox{`$\mathtt{)}$'} & \quad\Rightarrow\quad{} & (\mathsf{tag}~{\mathit{jt}}, \{ \begin{array}[t]{@{}l@{}}
+\mathsf{tags}~({{\mathit{id}}^?}) \}\end{array}) \\
+& & | & \mbox{`$\mathtt{(}$'}~~\mbox{`$\mathtt{global}$'}~~{{\mathit{id}}^?}{:}{{\mathtt{id}}^?}~~{\mathit{gt}}{:}{{\mathtt{globaltype}}}_{I}~~\mbox{`$\mathtt{)}$'} & \quad\Rightarrow\quad{} & (\mathsf{global}~{\mathit{gt}}, \{ \begin{array}[t]{@{}l@{}}
+\mathsf{globals}~({{\mathit{id}}^?}) \}\end{array}) \\
+& & | & \mbox{`$\mathtt{(}$'}~~\mbox{`$\mathtt{memory}$'}~~{{\mathit{id}}^?}{:}{{\mathtt{id}}^?}~~{\mathit{mt}}{:}{{\mathtt{memtype}}}_{I}~~\mbox{`$\mathtt{)}$'} & \quad\Rightarrow\quad{} & (\mathsf{mem}~{\mathit{mt}}, \{ \begin{array}[t]{@{}l@{}}
+\mathsf{mems}~({{\mathit{id}}^?}) \}\end{array}) \\
+& & | & \mbox{`$\mathtt{(}$'}~~\mbox{`$\mathtt{table}$'}~~{{\mathit{id}}^?}{:}{{\mathtt{id}}^?}~~{\mathit{tt}}{:}{{\mathtt{tabletype}}}_{I}~~\mbox{`$\mathtt{)}$'} & \quad\Rightarrow\quad{} & (\mathsf{table}~{\mathit{tt}}, \{ \begin{array}[t]{@{}l@{}}
+\mathsf{tables}~({{\mathit{id}}^?}) \}\end{array}) \\
+& & | & \mbox{`$\mathtt{(}$'}~~\mbox{`$\mathtt{func}$'}~~{{\mathit{id}}^?}{:}{{\mathtt{id}}^?}~~(x, {I'}){:}{{\mathtt{typeuse}}}_{I}~~\mbox{`$\mathtt{)}$'} & \quad\Rightarrow\quad{} & (\mathsf{func}~x, \{ \begin{array}[t]{@{}l@{}}
+\mathsf{funcs}~({{\mathit{id}}^?}) \}\end{array}) \\
 \end{array}
 $$
+
+\vspace{1ex}
+
+$$
+\begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
+& {{\mathtt{label}}}_{I} & ::= & \epsilon & \quad\Rightarrow\quad{} & (\epsilon, \{ \begin{array}[t]{@{}l@{}}
+\mathsf{labels}~\epsilon \}\end{array} \oplus I) \\
+& & | & {\mathit{id}}{:}{\mathtt{id}} & \quad\Rightarrow\quad{} & ({\mathit{id}}, \{ \begin{array}[t]{@{}l@{}}
+\mathsf{labels}~{\mathit{id}} \}\end{array} \oplus I{}[{.}\mathsf{labels}{}[x] = \epsilon]) & \quad \mbox{if}~ {\mathit{id}} = I{.}\mathsf{labels}{}[x] \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
+& {{\mathtt{blocktype}}}_{I} & ::= & (x, {I'}){:}{{\mathtt{typeuse}}}_{I} & \quad\Rightarrow\quad{} & x & \quad \mbox{if}~ {I'} = \{ \begin{array}[t]{@{}l@{}}
+\mathsf{locals}~{(\epsilon)^\ast} \}\end{array} \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
+& {{\mathtt{instr}}}_{I} & ::= & {\mathit{in}}{:}{{\mathtt{plaininstr}}}_{I} & \quad\Rightarrow\quad{} & {\mathit{in}} \\
+& & | & {\mathit{in}}{:}{{\mathtt{blockinstr}}}_{I} & \quad\Rightarrow\quad{} & {\mathit{in}} \\
+& {{\mathtt{instrs}}}_{I} & ::= & {{\mathit{in}}^\ast}{:}{{{\mathtt{instr}}}_{I}^\ast} & \quad\Rightarrow\quad{} & {{\mathit{in}}^\ast} \\
+& & | & {{{\mathit{in}}^\ast}^\ast}{:}{{{\mathtt{foldedinstr}}}_{I}^\ast} & \quad\Rightarrow\quad{} & {\bigoplus}\, {{{\mathit{in}}^\ast}^\ast} \\
+& {{\mathtt{foldedinstr}}}_{I} & ::= & {\mathit{in}}{:}{{\mathtt{instr}}}_{I} & \quad\Rightarrow\quad{} & {\mathit{in}} \\
+& & | & \mbox{`$\mathtt{(}$'}~~{\mathit{in}}{:}{{\mathtt{plaininstr}}}_{I}~~{{\mathit{in}'}^\ast}{:}{{\mathtt{instrs}}}_{I}~~\mbox{`$\mathtt{)}$'} & \quad\Rightarrow\quad{} & {{\mathit{in}'}^\ast}~{\mathit{in}} \\
+& & | & \mbox{`$\mathtt{(}$'}~~\mbox{`$\mathtt{block}$'}~~({{\mathit{id}}^?}, {I'}){:}{{\mathtt{label}}}_{I}~~{\mathit{bt}}{:}{{\mathtt{blocktype}}}_{I}~~{{\mathit{in}}^\ast}{:}{{\mathtt{instrs}}}_{{I'}}~~\mbox{`$\mathtt{)}$'} & \quad\Rightarrow\quad{} & & \\
+&&& \multicolumn{4}{@{}l@{}}{\quad
+\begin{array}[t]{@{}l@{}}
+\mathsf{block}~{\mathit{bt}}~{{\mathit{in}}^\ast} \\
+\end{array}
+} \\
+& & | & \mbox{`$\mathtt{(}$'}~~\mbox{`$\mathtt{loop}$'}~~({{\mathit{id}}^?}, {I'}){:}{{\mathtt{label}}}_{I}~~{\mathit{bt}}{:}{{\mathtt{blocktype}}}_{I}~~{{\mathit{in}}^\ast}{:}{{\mathtt{instrs}}}_{{I'}}~~\mbox{`$\mathtt{)}$'} & \quad\Rightarrow\quad{} & & \\
+&&& \multicolumn{4}{@{}l@{}}{\quad
+\begin{array}[t]{@{}l@{}}
+\mathsf{loop}~{\mathit{bt}}~{{\mathit{in}}^\ast} \\
+\end{array}
+} \\
+& & | & \mbox{`$\mathtt{(}$'}~~\mbox{`$\mathtt{try\_table}$'}~~({{\mathit{id}}^?}, {I'}){:}{{\mathtt{label}}}_{I}~~{\mathit{bt}}{:}{{\mathtt{blocktype}}}_{I}~~{c^\ast}{:}{{{\mathtt{catch}}}_{I}^\ast}~~{{\mathit{in}}^\ast}{:}{{\mathtt{instrs}}}_{{I'}}~~\mbox{`$\mathtt{)}$'} & \quad\Rightarrow\quad{} & & \\
+&&& \multicolumn{4}{@{}l@{}}{\quad
+\begin{array}[t]{@{}l@{}}
+\mathsf{try\_table}~{\mathit{bt}}~{c^\ast}~{{\mathit{in}}^\ast} \\
+\end{array}
+} \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
+& {{\mathtt{blockinstr}}}_{I} & ::= & \mbox{`$\mathtt{block}$'}~~({{\mathit{id}}^?}, {I'}){:}{{\mathtt{label}}}_{I}~~{\mathit{bt}}{:}{{\mathtt{blocktype}}}_{I}~~{{\mathit{in}}^\ast}{:}{{\mathtt{instrs}}}_{{I'}}~~\mbox{`$\mathtt{end}$'}~~{{\mathit{id}'}^?}{:}{{\mathtt{id}}^?} & \quad\Rightarrow\quad{} & & \\
+&&& \multicolumn{4}{@{}l@{}}{\quad
+\begin{array}[t]{@{}l@{}l@{}}
+\mathsf{block}~{\mathit{bt}}~{{\mathit{in}}^\ast} & \quad \mbox{if}~ {{\mathit{id}'}^?} = \epsilon \lor {{\mathit{id}'}^?} = {{\mathit{id}}^?} \\
+\end{array}
+} \\
+& & | & \mbox{`$\mathtt{loop}$'}~~({{\mathit{id}}^?}, {I'}){:}{{\mathtt{label}}}_{I}~~{\mathit{bt}}{:}{{\mathtt{blocktype}}}_{I}~~{{\mathit{in}}^\ast}{:}{{\mathtt{instrs}}}_{{I'}}~~\mbox{`$\mathtt{end}$'}~~{{\mathit{id}'}^?}{:}{{\mathtt{id}}^?} & \quad\Rightarrow\quad{} & & \\
+&&& \multicolumn{4}{@{}l@{}}{\quad
+\begin{array}[t]{@{}l@{}l@{}}
+\mathsf{loop}~{\mathit{bt}}~{{\mathit{in}}^\ast} & \quad \mbox{if}~ {{\mathit{id}'}^?} = \epsilon \lor {{\mathit{id}'}^?} = {{\mathit{id}}^?} \\
+\end{array}
+} \\
+& & | & \mbox{`$\mathtt{if}$'}~~({{\mathit{id}}^?}, {I'}){:}{{\mathtt{label}}}_{I}~~{\mathit{bt}}{:}{{\mathtt{blocktype}}}_{I}~~{{\mathit{in}}_1^\ast}{:}{{\mathtt{instrs}}}_{{I'}}~~\mbox{`$\mathtt{else}$'}~~{{\mathit{id}}_1^?}{:}{{\mathtt{id}}^?}~~{{\mathit{in}}_2^\ast}{:}{{\mathtt{instrs}}}_{{I'}}~~\mbox{`$\mathtt{end}$'}~~{{\mathit{id}}_2^?}{:}{{\mathtt{id}}^?} & \quad\Rightarrow\quad{} & & \\
+&&& \multicolumn{4}{@{}l@{}}{\quad
+\begin{array}[t]{@{}l@{}l@{}}
+\mathsf{if}~{\mathit{bt}}~{{\mathit{in}}_1^\ast}~\mathsf{else}~{{\mathit{in}}_2^\ast} & \quad \mbox{if}~ ({{\mathit{id}}_1^?} = \epsilon \lor {{\mathit{id}}_1^?} = {{\mathit{id}}^?}) \land ({{\mathit{id}}_2^?} = \epsilon \lor {{\mathit{id}}_2^?} = {{\mathit{id}}^?}) \\
+\end{array}
+} \\
+& & | & \mbox{`$\mathtt{try\_table}$'}~~({{\mathit{id}}^?}, {I'}){:}{{\mathtt{label}}}_{I}~~{\mathit{bt}}{:}{{\mathtt{blocktype}}}_{I}~~{c^\ast}{:}{{{\mathtt{catch}}}_{I}^\ast}~~{{\mathit{in}}^\ast}{:}{{\mathtt{instrs}}}_{{I'}}~~\mbox{`$\mathtt{end}$'}~~{{\mathit{id}'}^?}{:}{{\mathtt{id}}^?} & \quad\Rightarrow\quad{} & & \\
+&&& \multicolumn{4}{@{}l@{}}{\quad
+\begin{array}[t]{@{}l@{}l@{}}
+\mathsf{try\_table}~{\mathit{bt}}~{c^\ast}~{{\mathit{in}}^\ast} & \quad \mbox{if}~ {{\mathit{id}'}^?} = \epsilon \lor {{\mathit{id}'}^?} = {{\mathit{id}}^?} \\
+\end{array}
+} \\
+& & | & \mbox{`$\mathtt{if}$'}~~({{\mathit{id}}^?}, {I'}){:}{{\mathtt{label}}}_{I}~~{\mathit{bt}}{:}{{\mathtt{blocktype}}}_{I}~~{{\mathit{in}}^\ast}{:}{{\mathtt{instrs}}}_{{I'}}~~\mbox{`$\mathtt{end}$'}~~{{\mathit{id}'}^?}{:}{{\mathtt{id}}^?} & \quad\Rightarrow\quad{} & & \\
+&&& \multicolumn{4}{@{}l@{}}{\quad
+\begin{array}[t]{@{}l@{}l@{}}
+\mathsf{if}~{\mathit{bt}}~{{\mathit{in}}^\ast}~\mathsf{else}~\epsilon & \quad \mbox{if}~ {{\mathit{id}'}^?} = \epsilon \lor {{\mathit{id}'}^?} = {{\mathit{id}}^?} \\
+\end{array}
+} \\
+& {{\mathtt{catch}}}_{I} & ::= & \mbox{`$\mathtt{(}$'}~~\mbox{`$\mathtt{catch}$'}~~x{:}{{\mathtt{tagidx}}}_{I}~~l{:}{{\mathtt{labelidx}}}_{I}~~\mbox{`$\mathtt{)}$'} & \quad\Rightarrow\quad{} & \mathsf{catch}~x~l \\
+& & | & \mbox{`$\mathtt{(}$'}~~\mbox{`$\mathtt{catch\_ref}$'}~~x{:}{{\mathtt{tagidx}}}_{I}~~l{:}{{\mathtt{labelidx}}}_{I}~~\mbox{`$\mathtt{)}$'} & \quad\Rightarrow\quad{} & \mathsf{catch\_ref}~x~l \\
+& & | & \mbox{`$\mathtt{(}$'}~~\mbox{`$\mathtt{catch\_all}$'}~~l{:}{{\mathtt{labelidx}}}_{I}~~\mbox{`$\mathtt{)}$'} & \quad\Rightarrow\quad{} & \mathsf{catch\_all}~l \\
+& & | & \mbox{`$\mathtt{(}$'}~~\mbox{`$\mathtt{catch\_all\_ref}$'}~~l{:}{{\mathtt{labelidx}}}_{I}~~\mbox{`$\mathtt{)}$'} & \quad\Rightarrow\quad{} & \mathsf{catch\_all\_ref}~l \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
+& {{\mathtt{plaininstr}}}_{I} & ::= & \mbox{`$\mathtt{unreachable}$'} & \quad\Rightarrow\quad{} & \mathsf{unreachable} \\
+& & | & \mbox{`$\mathtt{nop}$'} & \quad\Rightarrow\quad{} & \mathsf{nop} \\
+& & | & \mbox{`$\mathtt{drop}$'} & \quad\Rightarrow\quad{} & \mathsf{drop} \\
+& & | & \mbox{`$\mathtt{select}$'}~~{t^?}{:}{{{\mathtt{result}}}_{I}^?} & \quad\Rightarrow\quad{} & \mathsf{select}~{t^?} \\
+& & | & \dots \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
+& {{\mathtt{plaininstr}}}_{I} & ::= & \dots \\
+& & | & \mbox{`$\mathtt{br}$'}~~l{:}{{\mathtt{labelidx}}}_{I} & \quad\Rightarrow\quad{} & \mathsf{br}~l \\
+& & | & \mbox{`$\mathtt{br\_if}$'}~~l{:}{{\mathtt{labelidx}}}_{I} & \quad\Rightarrow\quad{} & \mathsf{br\_if}~l \\
+& & | & \mbox{`$\mathtt{br\_table}$'}~~{l^\ast}{:}{{{\mathtt{labelidx}}}_{I}^\ast}~~{l'}{:}{{\mathtt{labelidx}}}_{I} & \quad\Rightarrow\quad{} & \mathsf{br\_table}~{l^\ast}~{l'} \\
+& & | & \mbox{`$\mathtt{br\_on\_null}$'}~~l{:}{{\mathtt{labelidx}}}_{I} & \quad\Rightarrow\quad{} & \mathsf{br\_on\_null}~l \\
+& & | & \mbox{`$\mathtt{br\_on\_non\_null}$'}~~l{:}{{\mathtt{labelidx}}}_{I} & \quad\Rightarrow\quad{} & \mathsf{br\_on\_non\_null}~l \\
+& & | & \mbox{`$\mathtt{br\_on\_cast}$'}~~l{:}{{\mathtt{labelidx}}}_{I}~~{\mathit{rt}}_1{:}{{\mathtt{reftype}}}_{I}~~{\mathit{rt}}_2{:}{{\mathtt{reftype}}}_{I} & \quad\Rightarrow\quad{} & \mathsf{br\_on\_cast}~l~{\mathit{rt}}_1~{\mathit{rt}}_2 \\
+& & | & \mbox{`$\mathtt{br\_on\_cast\_fail}$'}~~l{:}{{\mathtt{labelidx}}}_{I}~~{\mathit{rt}}_1{:}{{\mathtt{reftype}}}_{I}~~{\mathit{rt}}_2{:}{{\mathtt{reftype}}}_{I} & \quad\Rightarrow\quad{} & \mathsf{br\_on\_cast\_fail}~l~{\mathit{rt}}_1~{\mathit{rt}}_2 \\
+& & | & \mbox{`$\mathtt{call}$'}~~x{:}{{\mathtt{funcidx}}}_{I} & \quad\Rightarrow\quad{} & \mathsf{call}~x \\
+& & | & \mbox{`$\mathtt{call\_ref}$'}~~x{:}{{\mathtt{typeidx}}}_{I} & \quad\Rightarrow\quad{} & \mathsf{call\_ref}~x \\
+& & | & \mbox{`$\mathtt{call\_indirect}$'}~~x{:}{{\mathtt{tableidx}}}_{I}~~(y, {I'}){:}{{\mathtt{typeuse}}}_{I} & \quad\Rightarrow\quad{} & \mathsf{call\_indirect}~x~y & \quad \mbox{if}~ {I'} = \{ \begin{array}[t]{@{}l@{}}
+\mathsf{locals}~{(\epsilon)^\ast} \}\end{array} \\
+& & | & \mbox{`$\mathtt{return}$'} & \quad\Rightarrow\quad{} & \mathsf{return} \\
+& & | & \mbox{`$\mathtt{return\_call}$'}~~x{:}{{\mathtt{funcidx}}}_{I} & \quad\Rightarrow\quad{} & \mathsf{return\_call}~x \\
+& & | & \mbox{`$\mathtt{return\_call\_ref}$'}~~x{:}{{\mathtt{typeidx}}}_{I} & \quad\Rightarrow\quad{} & \mathsf{return\_call\_ref}~x \\
+& & | & \mbox{`$\mathtt{return\_call\_indirect}$'}~~x{:}{{\mathtt{tableidx}}}_{I}~~(y, {I'}){:}{{\mathtt{typeuse}}}_{I} & \quad\Rightarrow\quad{} & \mathsf{return\_call\_indirect}~x~y & \quad \mbox{if}~ {I'} = \{ \begin{array}[t]{@{}l@{}}
+\mathsf{locals}~{(\epsilon)^\ast} \}\end{array} \\
+& & | & \mbox{`$\mathtt{call\_indirect}$'}~~(y, {I'}){:}{{\mathtt{typeuse}}}_{I} & \quad\Rightarrow\quad{} & \mathsf{call\_indirect}~0~y & \quad \mbox{if}~ {I'} = \{ \begin{array}[t]{@{}l@{}}
+\mathsf{locals}~{(\epsilon)^\ast} \}\end{array} \\
+& & | & \mbox{`$\mathtt{return\_call\_indirect}$'}~~(y, {I'}){:}{{\mathtt{typeuse}}}_{I} & \quad\Rightarrow\quad{} & \mathsf{return\_call\_indirect}~0~y & \quad \mbox{if}~ {I'} = \{ \begin{array}[t]{@{}l@{}}
+\mathsf{locals}~{(\epsilon)^\ast} \}\end{array} \\
+& & | & \mbox{`$\mathtt{throw}$'}~~x{:}{{\mathtt{tagidx}}}_{I} & \quad\Rightarrow\quad{} & \mathsf{throw}~x \\
+& & | & \mbox{`$\mathtt{throw\_ref}$'} & \quad\Rightarrow\quad{} & \mathsf{throw\_ref} \\
+& & | & \dots \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
+& {{\mathtt{plaininstr}}}_{I} & ::= & \dots \\
+& & | & \mbox{`$\mathtt{ref.null}$'}~~{\mathit{ht}}{:}{{\mathtt{heaptype}}}_{I} & \quad\Rightarrow\quad{} & \mathsf{ref{.}null}~{\mathit{ht}} \\
+& & | & \mbox{`$\mathtt{ref.func}$'}~~x{:}{{\mathtt{funcidx}}}_{I} & \quad\Rightarrow\quad{} & \mathsf{ref{.}func}~x \\
+& & | & \mbox{`$\mathtt{ref.is\_null}$'} & \quad\Rightarrow\quad{} & \mathsf{ref{.}is\_null} \\
+& & | & \mbox{`$\mathtt{ref.as\_non\_null}$'} & \quad\Rightarrow\quad{} & \mathsf{ref{.}as\_non\_null} \\
+& & | & \mbox{`$\mathtt{ref.eq}$'} & \quad\Rightarrow\quad{} & \mathsf{ref{.}eq} \\
+& & | & \mbox{`$\mathtt{ref.test}$'}~~{\mathit{rt}}{:}{{\mathtt{reftype}}}_{I} & \quad\Rightarrow\quad{} & \mathsf{ref{.}test}~{\mathit{rt}} \\
+& & | & \mbox{`$\mathtt{ref.cast}$'}~~{\mathit{rt}}{:}{{\mathtt{reftype}}}_{I} & \quad\Rightarrow\quad{} & \mathsf{ref{.}cast}~{\mathit{rt}} \\
+& & | & \mbox{`$\mathtt{ref.i31}$'} & \quad\Rightarrow\quad{} & \mathsf{ref{.}i{\scriptstyle 31}} \\
+& & | & \mbox{`$\mathtt{i31.get\_s}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 31}{.}get}}{\mathsf{\_}}{\mathsf{s}} \\
+& & | & \mbox{`$\mathtt{i31.get\_u}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 31}{.}get}}{\mathsf{\_}}{\mathsf{u}} \\
+& & | & \mbox{`$\mathtt{struct.new}$'}~~x{:}{{\mathtt{typeidx}}}_{I} & \quad\Rightarrow\quad{} & \mathsf{struct{.}new}~x \\
+& & | & \mbox{`$\mathtt{struct.new\_default}$'}~~x{:}{{\mathtt{typeidx}}}_{I} & \quad\Rightarrow\quad{} & \mathsf{struct{.}new\_default}~x \\
+& & | & \mbox{`$\mathtt{struct.get}$'}~~x{:}{{\mathtt{typeidx}}}_{I}~~i{:}{{\mathtt{fieldidx}}}_{I, x} & \quad\Rightarrow\quad{} & \mathsf{struct{.}get}~x~i \\
+& & | & \mbox{`$\mathtt{struct.get\_s}$'}~~x{:}{{\mathtt{typeidx}}}_{I}~~i{:}{{\mathtt{fieldidx}}}_{I, x} & \quad\Rightarrow\quad{} & {\mathsf{struct{.}get}}{\mathsf{\_}}{\mathsf{s}}~x~i \\
+& & | & \mbox{`$\mathtt{struct.get\_u}$'}~~x{:}{{\mathtt{typeidx}}}_{I}~~i{:}{{\mathtt{fieldidx}}}_{I, x} & \quad\Rightarrow\quad{} & {\mathsf{struct{.}get}}{\mathsf{\_}}{\mathsf{u}}~x~i \\
+& & | & \mbox{`$\mathtt{struct.set}$'}~~x{:}{{\mathtt{typeidx}}}_{I}~~i{:}{{\mathtt{fieldidx}}}_{I, x} & \quad\Rightarrow\quad{} & \mathsf{struct{.}set}~x~i \\
+& & | & \mbox{`$\mathtt{array.new}$'}~~x{:}{{\mathtt{typeidx}}}_{I} & \quad\Rightarrow\quad{} & \mathsf{array{.}new}~x \\
+& & | & \mbox{`$\mathtt{array.new\_default}$'}~~x{:}{{\mathtt{typeidx}}}_{I} & \quad\Rightarrow\quad{} & \mathsf{array{.}new\_default}~x \\
+& & | & \mbox{`$\mathtt{array.new\_fixed}$'}~~x{:}{{\mathtt{typeidx}}}_{I}~~n{:}{\mathtt{u32}} & \quad\Rightarrow\quad{} & \mathsf{array{.}new\_fixed}~x~n \\
+& & | & \mbox{`$\mathtt{array.new\_data}$'}~~x{:}{{\mathtt{typeidx}}}_{I}~~y{:}{{\mathtt{dataidx}}}_{I} & \quad\Rightarrow\quad{} & \mathsf{array{.}new\_data}~x~y \\
+& & | & \mbox{`$\mathtt{array.new\_elem}$'}~~x{:}{{\mathtt{typeidx}}}_{I}~~y{:}{{\mathtt{elemidx}}}_{I} & \quad\Rightarrow\quad{} & \mathsf{array{.}new\_elem}~x~y \\
+& & | & \mbox{`$\mathtt{array.get}$'}~~x{:}{{\mathtt{typeidx}}}_{I} & \quad\Rightarrow\quad{} & \mathsf{array{.}get}~x \\
+& & | & \mbox{`$\mathtt{array.get\_s}$'}~~x{:}{{\mathtt{typeidx}}}_{I} & \quad\Rightarrow\quad{} & {\mathsf{array{.}get}}{\mathsf{\_}}{\mathsf{s}}~x \\
+& & | & \mbox{`$\mathtt{array.get\_u}$'}~~x{:}{{\mathtt{typeidx}}}_{I} & \quad\Rightarrow\quad{} & {\mathsf{array{.}get}}{\mathsf{\_}}{\mathsf{u}}~x \\
+& & | & \mbox{`$\mathtt{array.set}$'}~~x{:}{{\mathtt{typeidx}}}_{I} & \quad\Rightarrow\quad{} & \mathsf{array{.}set}~x \\
+& & | & \mbox{`$\mathtt{array.len}$'} & \quad\Rightarrow\quad{} & \mathsf{array{.}len} \\
+& & | & \mbox{`$\mathtt{array.fill}$'}~~x{:}{{\mathtt{typeidx}}}_{I} & \quad\Rightarrow\quad{} & \mathsf{array{.}fill}~x \\
+& & | & \mbox{`$\mathtt{array.copy}$'}~~x_1{:}{{\mathtt{typeidx}}}_{I}~~x_2{:}{{\mathtt{typeidx}}}_{I} & \quad\Rightarrow\quad{} & \mathsf{array{.}copy}~x_1~x_2 \\
+& & | & \mbox{`$\mathtt{array.init\_data}$'}~~x{:}{{\mathtt{typeidx}}}_{I}~~y{:}{{\mathtt{dataidx}}}_{I} & \quad\Rightarrow\quad{} & \mathsf{array{.}init\_data}~x~y \\
+& & | & \mbox{`$\mathtt{array.init\_elem}$'}~~x{:}{{\mathtt{typeidx}}}_{I}~~y{:}{{\mathtt{elemidx}}}_{I} & \quad\Rightarrow\quad{} & \mathsf{array{.}init\_elem}~x~y \\
+& & | & \mbox{`$\mathtt{any.convert\_extern}$'} & \quad\Rightarrow\quad{} & \mathsf{any{.}convert\_extern} \\
+& & | & \mbox{`$\mathtt{extern.convert\_any}$'} & \quad\Rightarrow\quad{} & \mathsf{extern{.}convert\_any} \\
+& & | & \dots \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
+& {{\mathtt{plaininstr}}}_{I} & ::= & \dots \\
+& & | & \mbox{`$\mathtt{local.get}$'}~~x{:}{{\mathtt{localidx}}}_{I} & \quad\Rightarrow\quad{} & \mathsf{local{.}get}~x \\
+& & | & \mbox{`$\mathtt{local.set}$'}~~x{:}{{\mathtt{localidx}}}_{I} & \quad\Rightarrow\quad{} & \mathsf{local{.}set}~x \\
+& & | & \mbox{`$\mathtt{local.tee}$'}~~x{:}{{\mathtt{localidx}}}_{I} & \quad\Rightarrow\quad{} & \mathsf{local{.}tee}~x \\
+& & | & \mbox{`$\mathtt{global.get}$'}~~x{:}{{\mathtt{globalidx}}}_{I} & \quad\Rightarrow\quad{} & \mathsf{global{.}get}~x \\
+& & | & \mbox{`$\mathtt{global.set}$'}~~x{:}{{\mathtt{globalidx}}}_{I} & \quad\Rightarrow\quad{} & \mathsf{global{.}set}~x \\
+& & | & \dots \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
+& {{\mathtt{plaininstr}}}_{I} & ::= & \dots \\
+& & | & \mbox{`$\mathtt{table.get}$'}~~x{:}{{\mathtt{tableidx}}}_{I} & \quad\Rightarrow\quad{} & \mathsf{table{.}get}~x \\
+& & | & \mbox{`$\mathtt{table.set}$'}~~x{:}{{\mathtt{tableidx}}}_{I} & \quad\Rightarrow\quad{} & \mathsf{table{.}set}~x \\
+& & | & \mbox{`$\mathtt{table.size}$'}~~x{:}{{\mathtt{tableidx}}}_{I} & \quad\Rightarrow\quad{} & \mathsf{table{.}size}~x \\
+& & | & \mbox{`$\mathtt{table.grow}$'}~~x{:}{{\mathtt{tableidx}}}_{I} & \quad\Rightarrow\quad{} & \mathsf{table{.}grow}~x \\
+& & | & \mbox{`$\mathtt{table.fill}$'}~~x{:}{{\mathtt{tableidx}}}_{I} & \quad\Rightarrow\quad{} & \mathsf{table{.}fill}~x \\
+& & | & \mbox{`$\mathtt{table.copy}$'}~~x_1{:}{{\mathtt{tableidx}}}_{I}~~x_2{:}{{\mathtt{tableidx}}}_{I} & \quad\Rightarrow\quad{} & \mathsf{table{.}copy}~x_1~x_2 \\
+& & | & \mbox{`$\mathtt{table.init}$'}~~x{:}{{\mathtt{tableidx}}}_{I}~~y{:}{{\mathtt{elemidx}}}_{I} & \quad\Rightarrow\quad{} & \mathsf{table{.}init}~x~y \\
+& & | & \mbox{`$\mathtt{table.get}$'} & \quad\Rightarrow\quad{} & \mathsf{table{.}get}~0 \\
+& & | & \mbox{`$\mathtt{table.set}$'} & \quad\Rightarrow\quad{} & \mathsf{table{.}set}~0 \\
+& & | & \mbox{`$\mathtt{table.size}$'} & \quad\Rightarrow\quad{} & \mathsf{table{.}size}~0 \\
+& & | & \mbox{`$\mathtt{table.grow}$'} & \quad\Rightarrow\quad{} & \mathsf{table{.}grow}~0 \\
+& & | & \mbox{`$\mathtt{table.fill}$'} & \quad\Rightarrow\quad{} & \mathsf{table{.}fill}~0 \\
+& & | & \mbox{`$\mathtt{table.copy}$'} & \quad\Rightarrow\quad{} & \mathsf{table{.}copy}~0~0 \\
+& & | & \mbox{`$\mathtt{table.init}$'}~~y{:}{{\mathtt{elemidx}}}_{I} & \quad\Rightarrow\quad{} & \mathsf{table{.}init}~0~y \\
+& & | & \mbox{`$\mathtt{elem.drop}$'}~~x{:}{{\mathtt{elemidx}}}_{I} & \quad\Rightarrow\quad{} & \mathsf{elem{.}drop}~x \\
+& & | & \dots \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
+& {{\mathtt{memarg}}}_{N} & ::= & n{:}{\mathtt{offset}}~~m{:}{{\mathtt{align}}}_{N} & \quad\Rightarrow\quad{} & \{ \begin{array}[t]{@{}l@{}}
+\mathsf{align}~n,\; \mathsf{offset}~m \}\end{array} \\
+& {\mathtt{offset}} & ::= & \mbox{`$\mathtt{offset=}$'}~~n{:}{\mathtt{u64}} & \quad\Rightarrow\quad{} & n \\
+& {{\mathtt{align}}}_{N} & ::= & \mbox{`$\mathtt{align=}$'}~~m{:}{\mathtt{u64}} & \quad\Rightarrow\quad{} & m & \quad \mbox{if}~ m = {2^{n}} \\
+& {\mathtt{laneidx}} & ::= & i{:}{\mathtt{u8}} & \quad\Rightarrow\quad{} & i \\
+& {{\mathtt{plaininstr}}}_{I} & ::= & \dots \\
+& & | & \mbox{`$\mathtt{i32.load}$'}~~x{:}{{\mathtt{memidx}}}_{I}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{4} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 32}}{.}\mathsf{load}~x~{\mathit{ao}} \\
+& & | & \mbox{`$\mathtt{i64.load}$'}~~x{:}{{\mathtt{memidx}}}_{I}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{8} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 64}}{.}\mathsf{load}~x~{\mathit{ao}} \\
+& & | & \mbox{`$\mathtt{f32.load}$'}~~x{:}{{\mathtt{memidx}}}_{I}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{4} & \quad\Rightarrow\quad{} & \mathsf{f{\scriptstyle 32}}{.}\mathsf{load}~x~{\mathit{ao}} \\
+& & | & \mbox{`$\mathtt{f64.load}$'}~~x{:}{{\mathtt{memidx}}}_{I}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{8} & \quad\Rightarrow\quad{} & \mathsf{f{\scriptstyle 64}}{.}\mathsf{load}~x~{\mathit{ao}} \\
+& & | & \mbox{`$\mathtt{i32.load8\_s}$'}~~x{:}{{\mathtt{memidx}}}_{I}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{1} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 32}}{.}\mathsf{load}}{{\mathsf{{\scriptstyle 8}}}{\mathsf{\_}}{\mathsf{s}}}~x~{\mathit{ao}} \\
+& & | & \mbox{`$\mathtt{i32.load8\_u}$'}~~x{:}{{\mathtt{memidx}}}_{I}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{1} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 32}}{.}\mathsf{load}}{{\mathsf{{\scriptstyle 8}}}{\mathsf{\_}}{\mathsf{u}}}~x~{\mathit{ao}} \\
+& & | & \mbox{`$\mathtt{i32.load16\_s}$'}~~x{:}{{\mathtt{memidx}}}_{I}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{2} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 32}}{.}\mathsf{load}}{{\mathsf{{\scriptstyle 16}}}{\mathsf{\_}}{\mathsf{s}}}~x~{\mathit{ao}} \\
+& & | & \mbox{`$\mathtt{i32.load16\_u}$'}~~x{:}{{\mathtt{memidx}}}_{I}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{2} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 32}}{.}\mathsf{load}}{{\mathsf{{\scriptstyle 16}}}{\mathsf{\_}}{\mathsf{u}}}~x~{\mathit{ao}} \\
+& & | & \mbox{`$\mathtt{i64.load8\_s}$'}~~x{:}{{\mathtt{memidx}}}_{I}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{1} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 64}}{.}\mathsf{load}}{{\mathsf{{\scriptstyle 8}}}{\mathsf{\_}}{\mathsf{s}}}~x~{\mathit{ao}} \\
+& & | & \mbox{`$\mathtt{i64.load8\_u}$'}~~x{:}{{\mathtt{memidx}}}_{I}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{1} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 64}}{.}\mathsf{load}}{{\mathsf{{\scriptstyle 8}}}{\mathsf{\_}}{\mathsf{u}}}~x~{\mathit{ao}} \\
+& & | & \mbox{`$\mathtt{i64.load16\_s}$'}~~x{:}{{\mathtt{memidx}}}_{I}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{2} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 64}}{.}\mathsf{load}}{{\mathsf{{\scriptstyle 16}}}{\mathsf{\_}}{\mathsf{s}}}~x~{\mathit{ao}} \\
+& & | & \mbox{`$\mathtt{i64.load16\_u}$'}~~x{:}{{\mathtt{memidx}}}_{I}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{2} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 64}}{.}\mathsf{load}}{{\mathsf{{\scriptstyle 16}}}{\mathsf{\_}}{\mathsf{u}}}~x~{\mathit{ao}} \\
+& & | & \mbox{`$\mathtt{i64.load32\_s}$'}~~x{:}{{\mathtt{memidx}}}_{I}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{4} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 64}}{.}\mathsf{load}}{{\mathsf{{\scriptstyle 32}}}{\mathsf{\_}}{\mathsf{s}}}~x~{\mathit{ao}} \\
+& & | & \mbox{`$\mathtt{i64.load32\_u}$'}~~x{:}{{\mathtt{memidx}}}_{I}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{4} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 64}}{.}\mathsf{load}}{{\mathsf{{\scriptstyle 32}}}{\mathsf{\_}}{\mathsf{u}}}~x~{\mathit{ao}} \\
+& & | & \mbox{`$\mathtt{v128.load}$'}~~x{:}{{\mathtt{memidx}}}_{I}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{16} & \quad\Rightarrow\quad{} & \mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~x~{\mathit{ao}} \\
+& & | & \mbox{`$\mathtt{v128.load8x8\_s}$'}~~x{:}{{\mathtt{memidx}}}_{I}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{8} & \quad\Rightarrow\quad{} & {\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{\mathsf{{\scriptstyle 8}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}}{\mathsf{\_}}{\mathsf{s}}}~x~{\mathit{ao}} \\
+& & | & \mbox{`$\mathtt{v128.load8x8\_u}$'}~~x{:}{{\mathtt{memidx}}}_{I}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{8} & \quad\Rightarrow\quad{} & {\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{\mathsf{{\scriptstyle 8}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}}{\mathsf{\_}}{\mathsf{u}}}~x~{\mathit{ao}} \\
+& & | & \mbox{`$\mathtt{v128.load16x4\_s}$'}~~x{:}{{\mathtt{memidx}}}_{I}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{8} & \quad\Rightarrow\quad{} & {\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{\mathsf{{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}}{\mathsf{\_}}{\mathsf{s}}}~x~{\mathit{ao}} \\
+& & | & \mbox{`$\mathtt{v128.load16x4\_u}$'}~~x{:}{{\mathtt{memidx}}}_{I}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{8} & \quad\Rightarrow\quad{} & {\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{\mathsf{{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}}{\mathsf{\_}}{\mathsf{u}}}~x~{\mathit{ao}} \\
+& & | & \mbox{`$\mathtt{v128.load32x2\_s}$'}~~x{:}{{\mathtt{memidx}}}_{I}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{8} & \quad\Rightarrow\quad{} & {\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{\mathsf{{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 2}}}{\mathsf{\_}}{\mathsf{s}}}~x~{\mathit{ao}} \\
+& & | & \mbox{`$\mathtt{v128.load32x2\_u}$'}~~x{:}{{\mathtt{memidx}}}_{I}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{8} & \quad\Rightarrow\quad{} & {\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{\mathsf{{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 2}}}{\mathsf{\_}}{\mathsf{u}}}~x~{\mathit{ao}} \\
+& & | & \mbox{`$\mathtt{v128.load8\_splat}$'}~~x{:}{{\mathtt{memidx}}}_{I}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{1} & \quad\Rightarrow\quad{} & {\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{\mathsf{{\scriptstyle 8}}}{\mathsf{\_}}{\mathsf{splat}}}~x~{\mathit{ao}} \\
+& & | & \mbox{`$\mathtt{v128.load16\_splat}$'}~~x{:}{{\mathtt{memidx}}}_{I}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{2} & \quad\Rightarrow\quad{} & {\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{\mathsf{{\scriptstyle 16}}}{\mathsf{\_}}{\mathsf{splat}}}~x~{\mathit{ao}} \\
+& & | & \mbox{`$\mathtt{v128.load32\_splat}$'}~~x{:}{{\mathtt{memidx}}}_{I}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{4} & \quad\Rightarrow\quad{} & {\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{\mathsf{{\scriptstyle 32}}}{\mathsf{\_}}{\mathsf{splat}}}~x~{\mathit{ao}} \\
+& & | & \mbox{`$\mathtt{v128.load64\_splat}$'}~~x{:}{{\mathtt{memidx}}}_{I}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{8} & \quad\Rightarrow\quad{} & {\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{\mathsf{{\scriptstyle 64}}}{\mathsf{\_}}{\mathsf{splat}}}~x~{\mathit{ao}} \\
+& & | & \mbox{`$\mathtt{v128.load32\_zero}$'}~~x{:}{{\mathtt{memidx}}}_{I}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{4} & \quad\Rightarrow\quad{} & {\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{\mathsf{{\scriptstyle 32}}}{\mathsf{\_}}{\mathsf{zero}}}~x~{\mathit{ao}} \\
+& & | & \mbox{`$\mathtt{v128.load64\_zero}$'}~~x{:}{{\mathtt{memidx}}}_{I}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{8} & \quad\Rightarrow\quad{} & {\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{\mathsf{{\scriptstyle 64}}}{\mathsf{\_}}{\mathsf{zero}}}~x~{\mathit{ao}} \\
+& & | & \mbox{`$\mathtt{v128.load8\_lane}$'}~~x{:}{{\mathtt{memidx}}}_{I}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{1}~~i{:}{\mathtt{laneidx}} & \quad\Rightarrow\quad{} & {\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{\mathsf{{\scriptstyle 8}}}{\mathsf{\_}}{\mathsf{lane}}~x~{\mathit{ao}}~i \\
+& & | & \mbox{`$\mathtt{v128.load16\_lane}$'}~~x{:}{{\mathtt{memidx}}}_{I}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{2}~~i{:}{\mathtt{laneidx}} & \quad\Rightarrow\quad{} & {\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{\mathsf{{\scriptstyle 16}}}{\mathsf{\_}}{\mathsf{lane}}~x~{\mathit{ao}}~i \\
+& & | & \mbox{`$\mathtt{v128.load32\_lane}$'}~~x{:}{{\mathtt{memidx}}}_{I}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{4}~~i{:}{\mathtt{laneidx}} & \quad\Rightarrow\quad{} & {\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{\mathsf{{\scriptstyle 32}}}{\mathsf{\_}}{\mathsf{lane}}~x~{\mathit{ao}}~i \\
+& & | & \mbox{`$\mathtt{v128.load64\_lane}$'}~~x{:}{{\mathtt{memidx}}}_{I}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{8}~~i{:}{\mathtt{laneidx}} & \quad\Rightarrow\quad{} & {\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{\mathsf{{\scriptstyle 64}}}{\mathsf{\_}}{\mathsf{lane}}~x~{\mathit{ao}}~i \\
+& & | & \mbox{`$\mathtt{i32.store}$'}~~x{:}{{\mathtt{memidx}}}_{I}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{4} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 32}}{.}\mathsf{store}~x~{\mathit{ao}} \\
+& & | & \mbox{`$\mathtt{i64.store}$'}~~x{:}{{\mathtt{memidx}}}_{I}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{8} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 64}}{.}\mathsf{store}~x~{\mathit{ao}} \\
+& & | & \mbox{`$\mathtt{f32.store}$'}~~x{:}{{\mathtt{memidx}}}_{I}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{4} & \quad\Rightarrow\quad{} & \mathsf{f{\scriptstyle 32}}{.}\mathsf{store}~x~{\mathit{ao}} \\
+& & | & \mbox{`$\mathtt{f64.store}$'}~~x{:}{{\mathtt{memidx}}}_{I}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{8} & \quad\Rightarrow\quad{} & \mathsf{f{\scriptstyle 64}}{.}\mathsf{store}~x~{\mathit{ao}} \\
+& & | & \mbox{`$\mathtt{i32.store8}$'}~~x{:}{{\mathtt{memidx}}}_{I}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{1} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}}{\mathsf{{\scriptstyle 8}}}~x~{\mathit{ao}} \\
+& & | & \mbox{`$\mathtt{i32.store16}$'}~~x{:}{{\mathtt{memidx}}}_{I}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{2} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}}{\mathsf{{\scriptstyle 16}}}~x~{\mathit{ao}} \\
+& & | & \mbox{`$\mathtt{i64.store8}$'}~~x{:}{{\mathtt{memidx}}}_{I}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{1} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 64}}{.}\mathsf{store}}{\mathsf{{\scriptstyle 8}}}~x~{\mathit{ao}} \\
+& & | & \mbox{`$\mathtt{i64.store16}$'}~~x{:}{{\mathtt{memidx}}}_{I}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{2} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 64}}{.}\mathsf{store}}{\mathsf{{\scriptstyle 16}}}~x~{\mathit{ao}} \\
+& & | & \mbox{`$\mathtt{i64.store32}$'}~~x{:}{{\mathtt{memidx}}}_{I}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{4} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 64}}{.}\mathsf{store}}{\mathsf{{\scriptstyle 32}}}~x~{\mathit{ao}} \\
+& & | & \mbox{`$\mathtt{v128.store}$'}~~x{:}{{\mathtt{memidx}}}_{I}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{16} & \quad\Rightarrow\quad{} & \mathsf{v{\scriptstyle 128}}{.}\mathsf{store}~x~{\mathit{ao}} \\
+& & | & \mbox{`$\mathtt{v128.store8\_lane}$'}~~x{:}{{\mathtt{memidx}}}_{I}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{1}~~i{:}{\mathtt{laneidx}} & \quad\Rightarrow\quad{} & {\mathsf{v{\scriptstyle 128}}{.}\mathsf{store}}{\mathsf{{\scriptstyle 8}}}{\mathsf{\_}}{\mathsf{lane}}~x~{\mathit{ao}}~i \\
+& & | & \mbox{`$\mathtt{v128.store16\_lane}$'}~~x{:}{{\mathtt{memidx}}}_{I}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{2}~~i{:}{\mathtt{laneidx}} & \quad\Rightarrow\quad{} & {\mathsf{v{\scriptstyle 128}}{.}\mathsf{store}}{\mathsf{{\scriptstyle 16}}}{\mathsf{\_}}{\mathsf{lane}}~x~{\mathit{ao}}~i \\
+& & | & \mbox{`$\mathtt{v128.store32\_lane}$'}~~x{:}{{\mathtt{memidx}}}_{I}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{4}~~i{:}{\mathtt{laneidx}} & \quad\Rightarrow\quad{} & {\mathsf{v{\scriptstyle 128}}{.}\mathsf{store}}{\mathsf{{\scriptstyle 32}}}{\mathsf{\_}}{\mathsf{lane}}~x~{\mathit{ao}}~i \\
+& & | & \mbox{`$\mathtt{v128.store64\_lane}$'}~~x{:}{{\mathtt{memidx}}}_{I}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{8}~~i{:}{\mathtt{laneidx}} & \quad\Rightarrow\quad{} & {\mathsf{v{\scriptstyle 128}}{.}\mathsf{store}}{\mathsf{{\scriptstyle 64}}}{\mathsf{\_}}{\mathsf{lane}}~x~{\mathit{ao}}~i \\
+& & | & \mbox{`$\mathtt{memory.size}$'}~~x{:}{{\mathtt{memidx}}}_{I} & \quad\Rightarrow\quad{} & \mathsf{memory{.}size}~x \\
+& & | & \mbox{`$\mathtt{memory.grow}$'}~~x{:}{{\mathtt{memidx}}}_{I} & \quad\Rightarrow\quad{} & \mathsf{memory{.}grow}~x \\
+& & | & \mbox{`$\mathtt{memory.fill}$'}~~x{:}{{\mathtt{memidx}}}_{I} & \quad\Rightarrow\quad{} & \mathsf{memory{.}fill}~x \\
+& & | & \mbox{`$\mathtt{memory.copy}$'}~~x_1{:}{{\mathtt{memidx}}}_{I}~~x_2{:}{{\mathtt{memidx}}}_{I} & \quad\Rightarrow\quad{} & \mathsf{memory{.}copy}~x_1~x_2 \\
+& & | & \mbox{`$\mathtt{memory.init}$'}~~x{:}{{\mathtt{memidx}}}_{I}~~y{:}{{\mathtt{dataidx}}}_{I} & \quad\Rightarrow\quad{} & \mathsf{memory{.}init}~x~y \\
+& & | & \mbox{`$\mathtt{i32.load}$'}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{4} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 32}}{.}\mathsf{load}~0~{\mathit{ao}} \\
+& & | & \mbox{`$\mathtt{i64.load}$'}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{8} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 64}}{.}\mathsf{load}~0~{\mathit{ao}} \\
+& & | & \mbox{`$\mathtt{f32.load}$'}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{4} & \quad\Rightarrow\quad{} & \mathsf{f{\scriptstyle 32}}{.}\mathsf{load}~0~{\mathit{ao}} \\
+& & | & \mbox{`$\mathtt{f64.load}$'}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{8} & \quad\Rightarrow\quad{} & \mathsf{f{\scriptstyle 64}}{.}\mathsf{load}~0~{\mathit{ao}} \\
+& & | & \mbox{`$\mathtt{i32.load8\_s}$'}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{1} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 32}}{.}\mathsf{load}}{{\mathsf{{\scriptstyle 8}}}{\mathsf{\_}}{\mathsf{s}}}~0~{\mathit{ao}} \\
+& & | & \mbox{`$\mathtt{i32.load8\_u}$'}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{1} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 32}}{.}\mathsf{load}}{{\mathsf{{\scriptstyle 8}}}{\mathsf{\_}}{\mathsf{u}}}~0~{\mathit{ao}} \\
+& & | & \mbox{`$\mathtt{i32.load16\_s}$'}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{2} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 32}}{.}\mathsf{load}}{{\mathsf{{\scriptstyle 16}}}{\mathsf{\_}}{\mathsf{s}}}~0~{\mathit{ao}} \\
+& & | & \mbox{`$\mathtt{i32.load16\_u}$'}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{2} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 32}}{.}\mathsf{load}}{{\mathsf{{\scriptstyle 16}}}{\mathsf{\_}}{\mathsf{u}}}~0~{\mathit{ao}} \\
+& & | & \mbox{`$\mathtt{i64.load8\_s}$'}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{1} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 64}}{.}\mathsf{load}}{{\mathsf{{\scriptstyle 8}}}{\mathsf{\_}}{\mathsf{s}}}~0~{\mathit{ao}} \\
+& & | & \mbox{`$\mathtt{i64.load8\_u}$'}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{1} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 64}}{.}\mathsf{load}}{{\mathsf{{\scriptstyle 8}}}{\mathsf{\_}}{\mathsf{u}}}~0~{\mathit{ao}} \\
+& & | & \mbox{`$\mathtt{i64.load16\_s}$'}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{2} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 64}}{.}\mathsf{load}}{{\mathsf{{\scriptstyle 16}}}{\mathsf{\_}}{\mathsf{s}}}~0~{\mathit{ao}} \\
+& & | & \mbox{`$\mathtt{i64.load16\_u}$'}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{2} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 64}}{.}\mathsf{load}}{{\mathsf{{\scriptstyle 16}}}{\mathsf{\_}}{\mathsf{u}}}~0~{\mathit{ao}} \\
+& & | & \mbox{`$\mathtt{i64.load32\_s}$'}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{4} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 64}}{.}\mathsf{load}}{{\mathsf{{\scriptstyle 32}}}{\mathsf{\_}}{\mathsf{s}}}~0~{\mathit{ao}} \\
+& & | & \mbox{`$\mathtt{i64.load32\_u}$'}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{4} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 64}}{.}\mathsf{load}}{{\mathsf{{\scriptstyle 32}}}{\mathsf{\_}}{\mathsf{u}}}~0~{\mathit{ao}} \\
+& & | & \mbox{`$\mathtt{v128.load}$'}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{16} & \quad\Rightarrow\quad{} & \mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~0~{\mathit{ao}} \\
+& & | & \mbox{`$\mathtt{v128.load8x8\_s}$'}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{8} & \quad\Rightarrow\quad{} & {\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{\mathsf{{\scriptstyle 8}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}}{\mathsf{\_}}{\mathsf{s}}}~0~{\mathit{ao}} \\
+& & | & \mbox{`$\mathtt{v128.load8x8\_u}$'}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{8} & \quad\Rightarrow\quad{} & {\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{\mathsf{{\scriptstyle 8}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}}{\mathsf{\_}}{\mathsf{u}}}~0~{\mathit{ao}} \\
+& & | & \mbox{`$\mathtt{v128.load16x4\_s}$'}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{8} & \quad\Rightarrow\quad{} & {\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{\mathsf{{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}}{\mathsf{\_}}{\mathsf{s}}}~0~{\mathit{ao}} \\
+& & | & \mbox{`$\mathtt{v128.load16x4\_u}$'}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{8} & \quad\Rightarrow\quad{} & {\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{\mathsf{{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}}{\mathsf{\_}}{\mathsf{u}}}~0~{\mathit{ao}} \\
+& & | & \mbox{`$\mathtt{v128.load32x2\_s}$'}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{8} & \quad\Rightarrow\quad{} & {\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{\mathsf{{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 2}}}{\mathsf{\_}}{\mathsf{s}}}~0~{\mathit{ao}} \\
+& & | & \mbox{`$\mathtt{v128.load32x2\_u}$'}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{8} & \quad\Rightarrow\quad{} & {\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{\mathsf{{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 2}}}{\mathsf{\_}}{\mathsf{u}}}~0~{\mathit{ao}} \\
+& & | & \mbox{`$\mathtt{v128.load8\_splat}$'}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{1} & \quad\Rightarrow\quad{} & {\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{\mathsf{{\scriptstyle 8}}}{\mathsf{\_}}{\mathsf{splat}}}~0~{\mathit{ao}} \\
+& & | & \mbox{`$\mathtt{v128.load16\_splat}$'}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{2} & \quad\Rightarrow\quad{} & {\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{\mathsf{{\scriptstyle 16}}}{\mathsf{\_}}{\mathsf{splat}}}~0~{\mathit{ao}} \\
+& & | & \mbox{`$\mathtt{v128.load32\_splat}$'}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{4} & \quad\Rightarrow\quad{} & {\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{\mathsf{{\scriptstyle 32}}}{\mathsf{\_}}{\mathsf{splat}}}~0~{\mathit{ao}} \\
+& & | & \mbox{`$\mathtt{v128.load64\_splat}$'}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{8} & \quad\Rightarrow\quad{} & {\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{\mathsf{{\scriptstyle 64}}}{\mathsf{\_}}{\mathsf{splat}}}~0~{\mathit{ao}} \\
+& & | & \mbox{`$\mathtt{v128.load32\_zero}$'}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{4} & \quad\Rightarrow\quad{} & {\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{\mathsf{{\scriptstyle 32}}}{\mathsf{\_}}{\mathsf{zero}}}~0~{\mathit{ao}} \\
+& & | & \mbox{`$\mathtt{v128.load64\_zero}$'}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{8} & \quad\Rightarrow\quad{} & {\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{\mathsf{{\scriptstyle 64}}}{\mathsf{\_}}{\mathsf{zero}}}~0~{\mathit{ao}} \\
+& & | & \mbox{`$\mathtt{v128.load8\_lane}$'}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{1}~~i{:}{\mathtt{laneidx}} & \quad\Rightarrow\quad{} & {\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{\mathsf{{\scriptstyle 8}}}{\mathsf{\_}}{\mathsf{lane}}~0~{\mathit{ao}}~i \\
+& & | & \mbox{`$\mathtt{v128.load16\_lane}$'}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{2}~~i{:}{\mathtt{laneidx}} & \quad\Rightarrow\quad{} & {\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{\mathsf{{\scriptstyle 16}}}{\mathsf{\_}}{\mathsf{lane}}~0~{\mathit{ao}}~i \\
+& & | & \mbox{`$\mathtt{v128.load32\_lane}$'}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{4}~~i{:}{\mathtt{laneidx}} & \quad\Rightarrow\quad{} & {\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{\mathsf{{\scriptstyle 32}}}{\mathsf{\_}}{\mathsf{lane}}~0~{\mathit{ao}}~i \\
+& & | & \mbox{`$\mathtt{v128.load64\_lane}$'}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{8}~~i{:}{\mathtt{laneidx}} & \quad\Rightarrow\quad{} & {\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{\mathsf{{\scriptstyle 64}}}{\mathsf{\_}}{\mathsf{lane}}~0~{\mathit{ao}}~i \\
+& & | & \mbox{`$\mathtt{i32.store}$'}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{4} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 32}}{.}\mathsf{store}~0~{\mathit{ao}} \\
+& & | & \mbox{`$\mathtt{i64.store}$'}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{8} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 64}}{.}\mathsf{store}~0~{\mathit{ao}} \\
+& & | & \mbox{`$\mathtt{f32.store}$'}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{4} & \quad\Rightarrow\quad{} & \mathsf{f{\scriptstyle 32}}{.}\mathsf{store}~0~{\mathit{ao}} \\
+& & | & \mbox{`$\mathtt{f64.store}$'}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{8} & \quad\Rightarrow\quad{} & \mathsf{f{\scriptstyle 64}}{.}\mathsf{store}~0~{\mathit{ao}} \\
+& & | & \mbox{`$\mathtt{i32.store8}$'}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{1} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}}{\mathsf{{\scriptstyle 8}}}~0~{\mathit{ao}} \\
+& & | & \mbox{`$\mathtt{i32.store16}$'}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{2} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}}{\mathsf{{\scriptstyle 16}}}~0~{\mathit{ao}} \\
+& & | & \mbox{`$\mathtt{i64.store8}$'}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{1} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 64}}{.}\mathsf{store}}{\mathsf{{\scriptstyle 8}}}~0~{\mathit{ao}} \\
+& & | & \mbox{`$\mathtt{i64.store16}$'}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{2} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 64}}{.}\mathsf{store}}{\mathsf{{\scriptstyle 16}}}~0~{\mathit{ao}} \\
+& & | & \mbox{`$\mathtt{i64.store32}$'}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{4} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 64}}{.}\mathsf{store}}{\mathsf{{\scriptstyle 32}}}~0~{\mathit{ao}} \\
+& & | & \mbox{`$\mathtt{v128.store}$'}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{16} & \quad\Rightarrow\quad{} & \mathsf{v{\scriptstyle 128}}{.}\mathsf{store}~0~{\mathit{ao}} \\
+& & | & \mbox{`$\mathtt{v128.store8\_lane}$'}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{1}~~i{:}{\mathtt{laneidx}} & \quad\Rightarrow\quad{} & {\mathsf{v{\scriptstyle 128}}{.}\mathsf{store}}{\mathsf{{\scriptstyle 8}}}{\mathsf{\_}}{\mathsf{lane}}~0~{\mathit{ao}}~i \\
+& & | & \mbox{`$\mathtt{v128.store16\_lane}$'}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{2}~~i{:}{\mathtt{laneidx}} & \quad\Rightarrow\quad{} & {\mathsf{v{\scriptstyle 128}}{.}\mathsf{store}}{\mathsf{{\scriptstyle 16}}}{\mathsf{\_}}{\mathsf{lane}}~0~{\mathit{ao}}~i \\
+& & | & \mbox{`$\mathtt{v128.store32\_lane}$'}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{4}~~i{:}{\mathtt{laneidx}} & \quad\Rightarrow\quad{} & {\mathsf{v{\scriptstyle 128}}{.}\mathsf{store}}{\mathsf{{\scriptstyle 32}}}{\mathsf{\_}}{\mathsf{lane}}~0~{\mathit{ao}}~i \\
+& & | & \mbox{`$\mathtt{v128.store64\_lane}$'}~~{\mathit{ao}}{:}{{\mathtt{memarg}}}_{8}~~i{:}{\mathtt{laneidx}} & \quad\Rightarrow\quad{} & {\mathsf{v{\scriptstyle 128}}{.}\mathsf{store}}{\mathsf{{\scriptstyle 64}}}{\mathsf{\_}}{\mathsf{lane}}~0~{\mathit{ao}}~i \\
+& & | & \mbox{`$\mathtt{memory.size}$'} & \quad\Rightarrow\quad{} & \mathsf{memory{.}size}~0 \\
+& & | & \mbox{`$\mathtt{memory.grow}$'} & \quad\Rightarrow\quad{} & \mathsf{memory{.}grow}~0 \\
+& & | & \mbox{`$\mathtt{memory.fill}$'} & \quad\Rightarrow\quad{} & \mathsf{memory{.}fill}~0 \\
+& & | & \mbox{`$\mathtt{memory.copy}$'} & \quad\Rightarrow\quad{} & \mathsf{memory{.}copy}~0~0 \\
+& & | & \mbox{`$\mathtt{memory.init}$'}~~y{:}{{\mathtt{elemidx}}}_{I} & \quad\Rightarrow\quad{} & \mathsf{memory{.}init}~0~y \\
+& & | & \mbox{`$\mathtt{data.drop}$'}~~x{:}{{\mathtt{dataidx}}}_{I} & \quad\Rightarrow\quad{} & \mathsf{data{.}drop}~x \\
+& & | & \dots \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
+& {{\mathtt{plaininstr}}}_{I} & ::= & \dots \\
+& & | & \mbox{`$\mathtt{i32.const}$'}~~n{:}{\mathtt{i32}} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n \\
+& & | & \mbox{`$\mathtt{i64.const}$'}~~n{:}{\mathtt{i64}} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 64}}{.}\mathsf{const}~n \\
+& & | & \mbox{`$\mathtt{i32.eqz}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 32}} {.} \mathsf{eqz} \\
+& & | & \mbox{`$\mathtt{i64.eqz}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 64}} {.} \mathsf{eqz} \\
+& & | & \mbox{`$\mathtt{i32.eq}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 32}} {.} \mathsf{eq} \\
+& & | & \mbox{`$\mathtt{i32.ne}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 32}} {.} \mathsf{ne} \\
+& & | & \mbox{`$\mathtt{i32.lt\_s}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 32}} {.} \mathsf{lt} \\
+& & | & \mbox{`$\mathtt{i32.lt\_u}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 32}} {.} \mathsf{lt} \\
+& & | & \mbox{`$\mathtt{i32.gt\_s}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 32}} {.} \mathsf{gt} \\
+& & | & \mbox{`$\mathtt{i32.gt\_u}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 32}} {.} \mathsf{gt} \\
+& & | & \mbox{`$\mathtt{i32.le\_s}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 32}} {.} \mathsf{le} \\
+& & | & \mbox{`$\mathtt{i32.le\_u}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 32}} {.} \mathsf{le} \\
+& & | & \mbox{`$\mathtt{i32.ge\_s}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 32}} {.} \mathsf{ge} \\
+& & | & \mbox{`$\mathtt{i32.ge\_u}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 32}} {.} \mathsf{ge} \\
+& & | & \mbox{`$\mathtt{i64.eq}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 64}} {.} \mathsf{eq} \\
+& & | & \mbox{`$\mathtt{i64.ne}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 64}} {.} \mathsf{ne} \\
+& & | & \mbox{`$\mathtt{i64.lt\_s}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 64}} {.} \mathsf{lt} \\
+& & | & \mbox{`$\mathtt{i64.lt\_u}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 64}} {.} \mathsf{lt} \\
+& & | & \mbox{`$\mathtt{i64.gt\_s}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 64}} {.} \mathsf{gt} \\
+& & | & \mbox{`$\mathtt{i64.gt\_u}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 64}} {.} \mathsf{gt} \\
+& & | & \mbox{`$\mathtt{i64.le\_s}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 64}} {.} \mathsf{le} \\
+& & | & \mbox{`$\mathtt{i64.le\_u}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 64}} {.} \mathsf{le} \\
+& & | & \mbox{`$\mathtt{i64.ge\_s}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 64}} {.} \mathsf{ge} \\
+& & | & \mbox{`$\mathtt{i64.ge\_u}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 64}} {.} \mathsf{ge} \\
+& & | & \mbox{`$\mathtt{f32.eq}$'} & \quad\Rightarrow\quad{} & \mathsf{f{\scriptstyle 32}} {.} \mathsf{eq} \\
+& & | & \mbox{`$\mathtt{f32.ne}$'} & \quad\Rightarrow\quad{} & \mathsf{f{\scriptstyle 32}} {.} \mathsf{ne} \\
+& & | & \mbox{`$\mathtt{f32.lt}$'} & \quad\Rightarrow\quad{} & \mathsf{f{\scriptstyle 32}} {.} \mathsf{lt} \\
+& & | & \mbox{`$\mathtt{f32.gt}$'} & \quad\Rightarrow\quad{} & \mathsf{f{\scriptstyle 32}} {.} \mathsf{gt} \\
+& & | & \mbox{`$\mathtt{f32.le}$'} & \quad\Rightarrow\quad{} & \mathsf{f{\scriptstyle 32}} {.} \mathsf{le} \\
+& & | & \mbox{`$\mathtt{f32.ge}$'} & \quad\Rightarrow\quad{} & \mathsf{f{\scriptstyle 32}} {.} \mathsf{ge} \\
+& & | & \mbox{`$\mathtt{f64.eq}$'} & \quad\Rightarrow\quad{} & \mathsf{f{\scriptstyle 64}} {.} \mathsf{eq} \\
+& & | & \mbox{`$\mathtt{f64.ne}$'} & \quad\Rightarrow\quad{} & \mathsf{f{\scriptstyle 64}} {.} \mathsf{ne} \\
+& & | & \mbox{`$\mathtt{f64.lt}$'} & \quad\Rightarrow\quad{} & \mathsf{f{\scriptstyle 64}} {.} \mathsf{lt} \\
+& & | & \mbox{`$\mathtt{f64.gt}$'} & \quad\Rightarrow\quad{} & \mathsf{f{\scriptstyle 64}} {.} \mathsf{gt} \\
+& & | & \mbox{`$\mathtt{f64.le}$'} & \quad\Rightarrow\quad{} & \mathsf{f{\scriptstyle 64}} {.} \mathsf{le} \\
+& & | & \mbox{`$\mathtt{f64.ge}$'} & \quad\Rightarrow\quad{} & \mathsf{f{\scriptstyle 64}} {.} \mathsf{ge} \\
+& & | & \mbox{`$\mathtt{i32.clz}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 32}} {.} \mathsf{clz} \\
+& & | & \mbox{`$\mathtt{i32.ctz}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 32}} {.} \mathsf{ctz} \\
+& & | & \mbox{`$\mathtt{i32.popcnt}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 32}} {.} \mathsf{popcnt} \\
+& & | & \mbox{`$\mathtt{i32.extend8\_s}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 32}} {.} \mathsf{extend} \\
+& & | & \mbox{`$\mathtt{i32.extend16\_s}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 32}} {.} \mathsf{extend} \\
+& & | & \mbox{`$\mathtt{i64.clz}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 64}} {.} \mathsf{clz} \\
+& & | & \mbox{`$\mathtt{i64.ctz}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 64}} {.} \mathsf{ctz} \\
+& & | & \mbox{`$\mathtt{i64.popcnt}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 64}} {.} \mathsf{popcnt} \\
+& & | & \mbox{`$\mathtt{i64.extend8\_s}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 64}} {.} \mathsf{extend} \\
+& & | & \mbox{`$\mathtt{i64.extend16\_s}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 64}} {.} \mathsf{extend} \\
+& & | & \mbox{`$\mathtt{i64.extend32\_s}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 64}} {.} \mathsf{extend} \\
+& & | & \mbox{`$\mathtt{f32.abs}$'} & \quad\Rightarrow\quad{} & \mathsf{f{\scriptstyle 32}} {.} \mathsf{abs} \\
+& & | & \mbox{`$\mathtt{f32.neg}$'} & \quad\Rightarrow\quad{} & \mathsf{f{\scriptstyle 32}} {.} \mathsf{neg} \\
+& & | & \mbox{`$\mathtt{f32.sqrt}$'} & \quad\Rightarrow\quad{} & \mathsf{f{\scriptstyle 32}} {.} \mathsf{sqrt} \\
+& & | & \mbox{`$\mathtt{f32.ceil}$'} & \quad\Rightarrow\quad{} & \mathsf{f{\scriptstyle 32}} {.} \mathsf{ceil} \\
+& & | & \mbox{`$\mathtt{f32.floor}$'} & \quad\Rightarrow\quad{} & \mathsf{f{\scriptstyle 32}} {.} \mathsf{floor} \\
+& & | & \mbox{`$\mathtt{f32.trunc}$'} & \quad\Rightarrow\quad{} & \mathsf{f{\scriptstyle 32}} {.} \mathsf{trunc} \\
+& & | & \mbox{`$\mathtt{f32.nearest}$'} & \quad\Rightarrow\quad{} & \mathsf{f{\scriptstyle 32}} {.} \mathsf{nearest} \\
+& & | & \mbox{`$\mathtt{f64.abs}$'} & \quad\Rightarrow\quad{} & \mathsf{f{\scriptstyle 64}} {.} \mathsf{abs} \\
+& & | & \mbox{`$\mathtt{f64.neg}$'} & \quad\Rightarrow\quad{} & \mathsf{f{\scriptstyle 64}} {.} \mathsf{neg} \\
+& & | & \mbox{`$\mathtt{f64.sqrt}$'} & \quad\Rightarrow\quad{} & \mathsf{f{\scriptstyle 64}} {.} \mathsf{sqrt} \\
+& & | & \mbox{`$\mathtt{f64.ceil}$'} & \quad\Rightarrow\quad{} & \mathsf{f{\scriptstyle 64}} {.} \mathsf{ceil} \\
+& & | & \mbox{`$\mathtt{f64.floor}$'} & \quad\Rightarrow\quad{} & \mathsf{f{\scriptstyle 64}} {.} \mathsf{floor} \\
+& & | & \mbox{`$\mathtt{f64.trunc}$'} & \quad\Rightarrow\quad{} & \mathsf{f{\scriptstyle 64}} {.} \mathsf{trunc} \\
+& & | & \mbox{`$\mathtt{f64.nearest}$'} & \quad\Rightarrow\quad{} & \mathsf{f{\scriptstyle 64}} {.} \mathsf{nearest} \\
+& & | & \mbox{`$\mathtt{i32.add}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 32}} {.} \mathsf{add} \\
+& & | & \mbox{`$\mathtt{i32.sub}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 32}} {.} \mathsf{sub} \\
+& & | & \mbox{`$\mathtt{i32.mul}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 32}} {.} \mathsf{mul} \\
+& & | & \mbox{`$\mathtt{i32.div\_s}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 32}} {.} \mathsf{div} \\
+& & | & \mbox{`$\mathtt{i32.div\_u}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 32}} {.} \mathsf{div} \\
+& & | & \mbox{`$\mathtt{i32.rem\_s}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 32}} {.} \mathsf{rem} \\
+& & | & \mbox{`$\mathtt{i32.rem\_u}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 32}} {.} \mathsf{rem} \\
+& & | & \mbox{`$\mathtt{i32.and}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 32}} {.} \mathsf{and} \\
+& & | & \mbox{`$\mathtt{i32.or}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 32}} {.} \mathsf{or} \\
+& & | & \mbox{`$\mathtt{i32.xor}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 32}} {.} \mathsf{xor} \\
+& & | & \mbox{`$\mathtt{i32.shl}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 32}} {.} \mathsf{shl} \\
+& & | & \mbox{`$\mathtt{i32.shr\_s}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 32}} {.} \mathsf{shr} \\
+& & | & \mbox{`$\mathtt{i32.shr\_u}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 32}} {.} \mathsf{shr} \\
+& & | & \mbox{`$\mathtt{i32.rotl}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 32}} {.} \mathsf{rotl} \\
+& & | & \mbox{`$\mathtt{i32.rotr}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 32}} {.} \mathsf{rotr} \\
+& & | & \mbox{`$\mathtt{i64.add}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 64}} {.} \mathsf{add} \\
+& & | & \mbox{`$\mathtt{i64.sub}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 64}} {.} \mathsf{sub} \\
+& & | & \mbox{`$\mathtt{i64.mul}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 64}} {.} \mathsf{mul} \\
+& & | & \mbox{`$\mathtt{i64.div\_s}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 64}} {.} \mathsf{div} \\
+& & | & \mbox{`$\mathtt{i64.div\_u}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 64}} {.} \mathsf{div} \\
+& & | & \mbox{`$\mathtt{i64.rem\_s}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 64}} {.} \mathsf{rem} \\
+& & | & \mbox{`$\mathtt{i64.rem\_u}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 64}} {.} \mathsf{rem} \\
+& & | & \mbox{`$\mathtt{i64.and}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 64}} {.} \mathsf{and} \\
+& & | & \mbox{`$\mathtt{i64.or}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 64}} {.} \mathsf{or} \\
+& & | & \mbox{`$\mathtt{i64.xor}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 64}} {.} \mathsf{xor} \\
+& & | & \mbox{`$\mathtt{i64.shl}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 64}} {.} \mathsf{shl} \\
+& & | & \mbox{`$\mathtt{i64.shr\_s}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 64}} {.} \mathsf{shr} \\
+& & | & \mbox{`$\mathtt{i64.shr\_u}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 64}} {.} \mathsf{shr} \\
+& & | & \mbox{`$\mathtt{i64.rotl}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 64}} {.} \mathsf{rotl} \\
+& & | & \mbox{`$\mathtt{i64.rotr}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 64}} {.} \mathsf{rotr} \\
+& & | & \mbox{`$\mathtt{f32.add}$'} & \quad\Rightarrow\quad{} & \mathsf{f{\scriptstyle 32}} {.} \mathsf{add} \\
+& & | & \mbox{`$\mathtt{f32.sub}$'} & \quad\Rightarrow\quad{} & \mathsf{f{\scriptstyle 32}} {.} \mathsf{sub} \\
+& & | & \mbox{`$\mathtt{f32.mul}$'} & \quad\Rightarrow\quad{} & \mathsf{f{\scriptstyle 32}} {.} \mathsf{mul} \\
+& & | & \mbox{`$\mathtt{f32.div}$'} & \quad\Rightarrow\quad{} & \mathsf{f{\scriptstyle 32}} {.} \mathsf{div} \\
+& & | & \mbox{`$\mathtt{f32.min}$'} & \quad\Rightarrow\quad{} & \mathsf{f{\scriptstyle 32}} {.} \mathsf{min} \\
+& & | & \mbox{`$\mathtt{f32.max}$'} & \quad\Rightarrow\quad{} & \mathsf{f{\scriptstyle 32}} {.} \mathsf{max} \\
+& & | & \mbox{`$\mathtt{f32.copysign}$'} & \quad\Rightarrow\quad{} & \mathsf{f{\scriptstyle 32}} {.} \mathsf{copysign} \\
+& & | & \mbox{`$\mathtt{f64.add}$'} & \quad\Rightarrow\quad{} & \mathsf{f{\scriptstyle 64}} {.} \mathsf{add} \\
+& & | & \mbox{`$\mathtt{f64.sub}$'} & \quad\Rightarrow\quad{} & \mathsf{f{\scriptstyle 64}} {.} \mathsf{sub} \\
+& & | & \mbox{`$\mathtt{f64.mul}$'} & \quad\Rightarrow\quad{} & \mathsf{f{\scriptstyle 64}} {.} \mathsf{mul} \\
+& & | & \mbox{`$\mathtt{f64.div}$'} & \quad\Rightarrow\quad{} & \mathsf{f{\scriptstyle 64}} {.} \mathsf{div} \\
+& & | & \mbox{`$\mathtt{f64.min}$'} & \quad\Rightarrow\quad{} & \mathsf{f{\scriptstyle 64}} {.} \mathsf{min} \\
+& & | & \mbox{`$\mathtt{f64.max}$'} & \quad\Rightarrow\quad{} & \mathsf{f{\scriptstyle 64}} {.} \mathsf{max} \\
+& & | & \mbox{`$\mathtt{f64.copysign}$'} & \quad\Rightarrow\quad{} & \mathsf{f{\scriptstyle 64}} {.} \mathsf{copysign} \\
+& & | & \mbox{`$\mathtt{i32.wrap\_i64}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 32}} {.} {\mathsf{wrap}}{\mathsf{\_}}{\mathsf{i{\scriptstyle 64}}} \\
+& & | & \mbox{`$\mathtt{i32.trunc\_f32\_s}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 32}} {.} {\mathsf{trunc}}{\mathsf{\_}}{\mathsf{f{\scriptstyle 32}}} \\
+& & | & \mbox{`$\mathtt{i32.trunc\_f32\_u}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 32}} {.} {\mathsf{trunc}}{\mathsf{\_}}{\mathsf{f{\scriptstyle 32}}} \\
+& & | & \mbox{`$\mathtt{i32.trunc\_f64\_s}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 32}} {.} {\mathsf{trunc}}{\mathsf{\_}}{\mathsf{f{\scriptstyle 64}}} \\
+& & | & \mbox{`$\mathtt{i32.trunc\_f64\_u}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 32}} {.} {\mathsf{trunc}}{\mathsf{\_}}{\mathsf{f{\scriptstyle 64}}} \\
+& & | & \mbox{`$\mathtt{i32.trunc\_sat\_f32\_s}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 32}} {.} {\mathsf{trunc\_sat}}{\mathsf{\_}}{\mathsf{f{\scriptstyle 32}}} \\
+& & | & \mbox{`$\mathtt{i32.trunc\_sat\_f32\_u}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 32}} {.} {\mathsf{trunc\_sat}}{\mathsf{\_}}{\mathsf{f{\scriptstyle 32}}} \\
+& & | & \mbox{`$\mathtt{i32.trunc\_sat\_f64\_s}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 32}} {.} {\mathsf{trunc\_sat}}{\mathsf{\_}}{\mathsf{f{\scriptstyle 64}}} \\
+& & | & \mbox{`$\mathtt{i32.trunc\_sat\_f64\_u}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 32}} {.} {\mathsf{trunc\_sat}}{\mathsf{\_}}{\mathsf{f{\scriptstyle 64}}} \\
+& & | & \mbox{`$\mathtt{i64.extend\_i64\_s}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 64}} {.} {\mathsf{extend}}{\mathsf{\_}}{\mathsf{i{\scriptstyle 64}}} \\
+& & | & \mbox{`$\mathtt{i64.extend\_i64\_u}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 64}} {.} {\mathsf{extend}}{\mathsf{\_}}{\mathsf{i{\scriptstyle 64}}} \\
+& & | & \mbox{`$\mathtt{i64.trunc\_f32\_s}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 64}} {.} {\mathsf{trunc}}{\mathsf{\_}}{\mathsf{f{\scriptstyle 32}}} \\
+& & | & \mbox{`$\mathtt{i64.trunc\_f32\_u}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 64}} {.} {\mathsf{trunc}}{\mathsf{\_}}{\mathsf{f{\scriptstyle 32}}} \\
+& & | & \mbox{`$\mathtt{i64.trunc\_f64\_s}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 64}} {.} {\mathsf{trunc}}{\mathsf{\_}}{\mathsf{f{\scriptstyle 64}}} \\
+& & | & \mbox{`$\mathtt{i64.trunc\_f64\_u}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 64}} {.} {\mathsf{trunc}}{\mathsf{\_}}{\mathsf{f{\scriptstyle 64}}} \\
+& & | & \mbox{`$\mathtt{i64.trunc\_sat\_f32\_s}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 64}} {.} {\mathsf{trunc\_sat}}{\mathsf{\_}}{\mathsf{f{\scriptstyle 32}}} \\
+& & | & \mbox{`$\mathtt{i64.trunc\_sat\_f32\_u}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 64}} {.} {\mathsf{trunc\_sat}}{\mathsf{\_}}{\mathsf{f{\scriptstyle 32}}} \\
+& & | & \mbox{`$\mathtt{i64.trunc\_sat\_f64\_s}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 64}} {.} {\mathsf{trunc\_sat}}{\mathsf{\_}}{\mathsf{f{\scriptstyle 64}}} \\
+& & | & \mbox{`$\mathtt{i64.trunc\_sat\_f64\_u}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 64}} {.} {\mathsf{trunc\_sat}}{\mathsf{\_}}{\mathsf{f{\scriptstyle 64}}} \\
+& & | & \mbox{`$\mathtt{f32.demote\_f64}$'} & \quad\Rightarrow\quad{} & \mathsf{f{\scriptstyle 32}} {.} {\mathsf{demote}}{\mathsf{\_}}{\mathsf{f{\scriptstyle 64}}} \\
+& & | & \mbox{`$\mathtt{f32.convert\_i32\_s}$'} & \quad\Rightarrow\quad{} & \mathsf{f{\scriptstyle 32}} {.} {\mathsf{convert}}{\mathsf{\_}}{\mathsf{i{\scriptstyle 32}}} \\
+& & | & \mbox{`$\mathtt{f32.convert\_i32\_u}$'} & \quad\Rightarrow\quad{} & \mathsf{f{\scriptstyle 32}} {.} {\mathsf{convert}}{\mathsf{\_}}{\mathsf{i{\scriptstyle 32}}} \\
+& & | & \mbox{`$\mathtt{f32.convert\_i64\_s}$'} & \quad\Rightarrow\quad{} & \mathsf{f{\scriptstyle 32}} {.} {\mathsf{convert}}{\mathsf{\_}}{\mathsf{i{\scriptstyle 64}}} \\
+& & | & \mbox{`$\mathtt{f32.convert\_i64\_u}$'} & \quad\Rightarrow\quad{} & \mathsf{f{\scriptstyle 32}} {.} {\mathsf{convert}}{\mathsf{\_}}{\mathsf{i{\scriptstyle 64}}} \\
+& & | & \mbox{`$\mathtt{f64.promote\_f32}$'} & \quad\Rightarrow\quad{} & \mathsf{f{\scriptstyle 64}} {.} {\mathsf{promote}}{\mathsf{\_}}{\mathsf{f{\scriptstyle 32}}} \\
+& & | & \mbox{`$\mathtt{f64.convert\_i32\_s}$'} & \quad\Rightarrow\quad{} & \mathsf{f{\scriptstyle 64}} {.} {\mathsf{convert}}{\mathsf{\_}}{\mathsf{i{\scriptstyle 32}}} \\
+& & | & \mbox{`$\mathtt{f64.convert\_i32\_u}$'} & \quad\Rightarrow\quad{} & \mathsf{f{\scriptstyle 64}} {.} {\mathsf{convert}}{\mathsf{\_}}{\mathsf{i{\scriptstyle 32}}} \\
+& & | & \mbox{`$\mathtt{f64.convert\_i64\_s}$'} & \quad\Rightarrow\quad{} & \mathsf{f{\scriptstyle 64}} {.} {\mathsf{convert}}{\mathsf{\_}}{\mathsf{i{\scriptstyle 64}}} \\
+& & | & \mbox{`$\mathtt{f64.convert\_i64\_u}$'} & \quad\Rightarrow\quad{} & \mathsf{f{\scriptstyle 64}} {.} {\mathsf{convert}}{\mathsf{\_}}{\mathsf{i{\scriptstyle 64}}} \\
+& & | & \mbox{`$\mathtt{i32.reinterpret\_f32}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 32}} {.} {\mathsf{reinterpret}}{\mathsf{\_}}{\mathsf{f{\scriptstyle 32}}} \\
+& & | & \mbox{`$\mathtt{i64.reinterpret\_f64}$'} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 64}} {.} {\mathsf{reinterpret}}{\mathsf{\_}}{\mathsf{f{\scriptstyle 64}}} \\
+& & | & \mbox{`$\mathtt{f32.reinterpret\_i32}$'} & \quad\Rightarrow\quad{} & \mathsf{f{\scriptstyle 32}} {.} {\mathsf{reinterpret}}{\mathsf{\_}}{\mathsf{i{\scriptstyle 32}}} \\
+& & | & \mbox{`$\mathtt{f64.reinterpret\_i64}$'} & \quad\Rightarrow\quad{} & \mathsf{f{\scriptstyle 64}} {.} {\mathsf{reinterpret}}{\mathsf{\_}}{\mathsf{i{\scriptstyle 64}}} \\
+& & | & \dots \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
+& {{\mathtt{plaininstr}}}_{I} & ::= & \dots \\
+& & | & \mbox{`$\mathtt{v128.const}$'}~~\mbox{`$\mathtt{i8x16}$'}~~{n^\ast}{:}{{\mathtt{i8}}^{16}} & \quad\Rightarrow\quad{} & \mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~{{{{\mathrm{bytes}}}_{{\mathsf{i}}{128}}^{{-1}}}}{({\bigoplus}\, {{{\mathrm{bytes}}}_{{\mathsf{i}}{8}}(n)^\ast})} \\
+& & | & \mbox{`$\mathtt{v128.const}$'}~~\mbox{`$\mathtt{i16x8}$'}~~{n^\ast}{:}{{\mathtt{i16}}^{8}} & \quad\Rightarrow\quad{} & \mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~{{{{\mathrm{bytes}}}_{{\mathsf{i}}{128}}^{{-1}}}}{({\bigoplus}\, {{{\mathrm{bytes}}}_{{\mathsf{i}}{16}}(n)^\ast})} \\
+& & | & \mbox{`$\mathtt{v128.const}$'}~~\mbox{`$\mathtt{i32x4}$'}~~{n^\ast}{:}{{\mathtt{i32}}^{4}} & \quad\Rightarrow\quad{} & \mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~{{{{\mathrm{bytes}}}_{{\mathsf{i}}{128}}^{{-1}}}}{({\bigoplus}\, {{{\mathrm{bytes}}}_{{\mathsf{i}}{32}}(n)^\ast})} \\
+& & | & \mbox{`$\mathtt{v128.const}$'}~~\mbox{`$\mathtt{i64x2}$'}~~{n^\ast}{:}{{\mathtt{i64}}^{2}} & \quad\Rightarrow\quad{} & \mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~{{{{\mathrm{bytes}}}_{{\mathsf{i}}{128}}^{{-1}}}}{({\bigoplus}\, {{{\mathrm{bytes}}}_{{\mathsf{i}}{64}}(n)^\ast})} \\
+& & | & \mbox{`$\mathtt{i8x16.shuffle}$'}~~{i^\ast}{:}{{\mathtt{laneidx}}^{16}} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{\mathsf{{\scriptstyle 16}}}{.}\mathsf{shuffle}~{i^\ast} \\
+& & | & \mbox{`$\mathtt{i8x16.swizzle}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{\mathsf{{\scriptstyle 16}}} {.} \mathsf{swizzle} \\
+& & | & \mbox{`$\mathtt{i8x16.relaxed\_swizzle}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{\mathsf{{\scriptstyle 16}}} {.} \mathsf{relaxed\_swizzle} \\
+& & | & \mbox{`$\mathtt{i8x16.splat}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{\mathsf{{\scriptstyle 16}}}{.}\mathsf{splat} \\
+& & | & \mbox{`$\mathtt{i16x8.splat}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}}{.}\mathsf{splat} \\
+& & | & \mbox{`$\mathtt{i32x4.splat}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}}{.}\mathsf{splat} \\
+& & | & \mbox{`$\mathtt{i64x2.splat}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 64}}}{\mathsf{x}}{\mathsf{{\scriptstyle 2}}}{.}\mathsf{splat} \\
+& & | & \mbox{`$\mathtt{f32x4.splat}$'} & \quad\Rightarrow\quad{} & {\mathsf{f{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}}{.}\mathsf{splat} \\
+& & | & \mbox{`$\mathtt{f64x2.splat}$'} & \quad\Rightarrow\quad{} & {\mathsf{f{\scriptstyle 64}}}{\mathsf{x}}{\mathsf{{\scriptstyle 2}}}{.}\mathsf{splat} \\
+& & | & \mbox{`$\mathtt{i8x16.extract\_lane\_s}$'}~~l{:}{\mathtt{laneidx}} & \quad\Rightarrow\quad{} & {{\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{\mathsf{{\scriptstyle 16}}}{.}\mathsf{extract\_lane}}{\mathsf{\_}}{\mathsf{s}}~l \\
+& & | & \mbox{`$\mathtt{i8x16.extract\_lane\_u}$'}~~l{:}{\mathtt{laneidx}} & \quad\Rightarrow\quad{} & {{\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{\mathsf{{\scriptstyle 16}}}{.}\mathsf{extract\_lane}}{\mathsf{\_}}{\mathsf{u}}~l \\
+& & | & \mbox{`$\mathtt{i16x8.extract\_lane\_s}$'}~~l{:}{\mathtt{laneidx}} & \quad\Rightarrow\quad{} & {{\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}}{.}\mathsf{extract\_lane}}{\mathsf{\_}}{\mathsf{s}}~l \\
+& & | & \mbox{`$\mathtt{i16x8.extract\_lane\_u}$'}~~l{:}{\mathtt{laneidx}} & \quad\Rightarrow\quad{} & {{\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}}{.}\mathsf{extract\_lane}}{\mathsf{\_}}{\mathsf{u}}~l \\
+& & | & \mbox{`$\mathtt{i32x4.extract\_lane}$'}~~l{:}{\mathtt{laneidx}} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}}{.}\mathsf{extract\_lane}~l \\
+& & | & \mbox{`$\mathtt{i64x2.extract\_lane}$'}~~l{:}{\mathtt{laneidx}} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 64}}}{\mathsf{x}}{\mathsf{{\scriptstyle 2}}}{.}\mathsf{extract\_lane}~l \\
+& & | & \mbox{`$\mathtt{f32x4.extract\_lane}$'}~~l{:}{\mathtt{laneidx}} & \quad\Rightarrow\quad{} & {\mathsf{f{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}}{.}\mathsf{extract\_lane}~l \\
+& & | & \mbox{`$\mathtt{f64x2.extract\_lane}$'}~~l{:}{\mathtt{laneidx}} & \quad\Rightarrow\quad{} & {\mathsf{f{\scriptstyle 64}}}{\mathsf{x}}{\mathsf{{\scriptstyle 2}}}{.}\mathsf{extract\_lane}~l \\
+& & | & \mbox{`$\mathtt{i8x16.replace\_lane}$'}~~l{:}{\mathtt{laneidx}} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{\mathsf{{\scriptstyle 16}}}{.}\mathsf{replace\_lane}~l \\
+& & | & \mbox{`$\mathtt{i16x8.replace\_lane}$'}~~l{:}{\mathtt{laneidx}} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}}{.}\mathsf{replace\_lane}~l \\
+& & | & \mbox{`$\mathtt{i32x4.replace\_lane}$'}~~l{:}{\mathtt{laneidx}} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}}{.}\mathsf{replace\_lane}~l \\
+& & | & \mbox{`$\mathtt{i64x2.replace\_lane}$'}~~l{:}{\mathtt{laneidx}} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 64}}}{\mathsf{x}}{\mathsf{{\scriptstyle 2}}}{.}\mathsf{replace\_lane}~l \\
+& & | & \mbox{`$\mathtt{f32x4.replace\_lane}$'}~~l{:}{\mathtt{laneidx}} & \quad\Rightarrow\quad{} & {\mathsf{f{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}}{.}\mathsf{replace\_lane}~l \\
+& & | & \mbox{`$\mathtt{f64x2.replace\_lane}$'}~~l{:}{\mathtt{laneidx}} & \quad\Rightarrow\quad{} & {\mathsf{f{\scriptstyle 64}}}{\mathsf{x}}{\mathsf{{\scriptstyle 2}}}{.}\mathsf{replace\_lane}~l \\
+& & | & \mbox{`$\mathtt{v128.any\_true}$'} & \quad\Rightarrow\quad{} & \mathsf{v{\scriptstyle 128}} {.} \mathsf{any\_true} \\
+& & | & \mbox{`$\mathtt{i8x16.all\_true}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{\mathsf{{\scriptstyle 16}}} {.} \mathsf{all\_true} \\
+& & | & \mbox{`$\mathtt{i16x8.all\_true}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}} {.} \mathsf{all\_true} \\
+& & | & \mbox{`$\mathtt{i32x4.all\_true}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}} {.} \mathsf{all\_true} \\
+& & | & \mbox{`$\mathtt{i64x2.all\_true}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 64}}}{\mathsf{x}}{\mathsf{{\scriptstyle 2}}} {.} \mathsf{all\_true} \\
+& & | & \mbox{`$\mathtt{i8x16.eq}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{\mathsf{{\scriptstyle 16}}} {.} \mathsf{eq} \\
+& & | & \mbox{`$\mathtt{i8x16.ne}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{\mathsf{{\scriptstyle 16}}} {.} \mathsf{ne} \\
+& & | & \mbox{`$\mathtt{i8x16.lt\_s}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{\mathsf{{\scriptstyle 16}}} {.} \mathsf{lt} \\
+& & | & \mbox{`$\mathtt{i8x16.lt\_u}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{\mathsf{{\scriptstyle 16}}} {.} \mathsf{lt} \\
+& & | & \mbox{`$\mathtt{i8x16.gt\_s}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{\mathsf{{\scriptstyle 16}}} {.} \mathsf{gt} \\
+& & | & \mbox{`$\mathtt{i8x16.gt\_u}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{\mathsf{{\scriptstyle 16}}} {.} \mathsf{gt} \\
+& & | & \mbox{`$\mathtt{i8x16.le\_s}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{\mathsf{{\scriptstyle 16}}} {.} \mathsf{le} \\
+& & | & \mbox{`$\mathtt{i8x16.le\_u}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{\mathsf{{\scriptstyle 16}}} {.} \mathsf{le} \\
+& & | & \mbox{`$\mathtt{i8x16.ge\_s}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{\mathsf{{\scriptstyle 16}}} {.} \mathsf{ge} \\
+& & | & \mbox{`$\mathtt{i8x16.ge\_u}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{\mathsf{{\scriptstyle 16}}} {.} \mathsf{ge} \\
+& & | & \mbox{`$\mathtt{i16x8.eq}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}} {.} \mathsf{eq} \\
+& & | & \mbox{`$\mathtt{i16x8.ne}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}} {.} \mathsf{ne} \\
+& & | & \mbox{`$\mathtt{i16x8.lt\_s}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}} {.} \mathsf{lt} \\
+& & | & \mbox{`$\mathtt{i16x8.lt\_u}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}} {.} \mathsf{lt} \\
+& & | & \mbox{`$\mathtt{i16x8.gt\_s}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}} {.} \mathsf{gt} \\
+& & | & \mbox{`$\mathtt{i16x8.gt\_u}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}} {.} \mathsf{gt} \\
+& & | & \mbox{`$\mathtt{i16x8.le\_s}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}} {.} \mathsf{le} \\
+& & | & \mbox{`$\mathtt{i16x8.le\_u}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}} {.} \mathsf{le} \\
+& & | & \mbox{`$\mathtt{i16x8.ge\_s}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}} {.} \mathsf{ge} \\
+& & | & \mbox{`$\mathtt{i16x8.ge\_u}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}} {.} \mathsf{ge} \\
+& & | & \mbox{`$\mathtt{i32x4.eq}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}} {.} \mathsf{eq} \\
+& & | & \mbox{`$\mathtt{i32x4.ne}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}} {.} \mathsf{ne} \\
+& & | & \mbox{`$\mathtt{i32x4.lt\_s}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}} {.} \mathsf{lt} \\
+& & | & \mbox{`$\mathtt{i32x4.lt\_u}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}} {.} \mathsf{lt} \\
+& & | & \mbox{`$\mathtt{i32x4.gt\_s}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}} {.} \mathsf{gt} \\
+& & | & \mbox{`$\mathtt{i32x4.gt\_u}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}} {.} \mathsf{gt} \\
+& & | & \mbox{`$\mathtt{i32x4.le\_s}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}} {.} \mathsf{le} \\
+& & | & \mbox{`$\mathtt{i32x4.le\_u}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}} {.} \mathsf{le} \\
+& & | & \mbox{`$\mathtt{i32x4.ge\_s}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}} {.} \mathsf{ge} \\
+& & | & \mbox{`$\mathtt{i32x4.ge\_u}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}} {.} \mathsf{ge} \\
+& & | & \mbox{`$\mathtt{i64x2.eq}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 64}}}{\mathsf{x}}{\mathsf{{\scriptstyle 2}}} {.} \mathsf{eq} \\
+& & | & \mbox{`$\mathtt{i64x2.ne}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 64}}}{\mathsf{x}}{\mathsf{{\scriptstyle 2}}} {.} \mathsf{ne} \\
+& & | & \mbox{`$\mathtt{i64x2.lt\_s}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 64}}}{\mathsf{x}}{\mathsf{{\scriptstyle 2}}} {.} \mathsf{lt} \\
+& & | & \mbox{`$\mathtt{i64x2.gt\_s}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 64}}}{\mathsf{x}}{\mathsf{{\scriptstyle 2}}} {.} \mathsf{gt} \\
+& & | & \mbox{`$\mathtt{i64x2.le\_s}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 64}}}{\mathsf{x}}{\mathsf{{\scriptstyle 2}}} {.} \mathsf{le} \\
+& & | & \mbox{`$\mathtt{i64x2.ge\_s}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 64}}}{\mathsf{x}}{\mathsf{{\scriptstyle 2}}} {.} \mathsf{ge} \\
+& & | & \mbox{`$\mathtt{f32x4.eq}$'} & \quad\Rightarrow\quad{} & {\mathsf{f{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}} {.} \mathsf{eq} \\
+& & | & \mbox{`$\mathtt{f32x4.ne}$'} & \quad\Rightarrow\quad{} & {\mathsf{f{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}} {.} \mathsf{ne} \\
+& & | & \mbox{`$\mathtt{f32x4.lt}$'} & \quad\Rightarrow\quad{} & {\mathsf{f{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}} {.} \mathsf{lt} \\
+& & | & \mbox{`$\mathtt{f32x4.gt}$'} & \quad\Rightarrow\quad{} & {\mathsf{f{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}} {.} \mathsf{gt} \\
+& & | & \mbox{`$\mathtt{f32x4.le}$'} & \quad\Rightarrow\quad{} & {\mathsf{f{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}} {.} \mathsf{le} \\
+& & | & \mbox{`$\mathtt{f32x4.ge}$'} & \quad\Rightarrow\quad{} & {\mathsf{f{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}} {.} \mathsf{ge} \\
+& & | & \mbox{`$\mathtt{f64x2.eq}$'} & \quad\Rightarrow\quad{} & {\mathsf{f{\scriptstyle 64}}}{\mathsf{x}}{\mathsf{{\scriptstyle 2}}} {.} \mathsf{eq} \\
+& & | & \mbox{`$\mathtt{f64x2.ne}$'} & \quad\Rightarrow\quad{} & {\mathsf{f{\scriptstyle 64}}}{\mathsf{x}}{\mathsf{{\scriptstyle 2}}} {.} \mathsf{ne} \\
+& & | & \mbox{`$\mathtt{f64x2.lt}$'} & \quad\Rightarrow\quad{} & {\mathsf{f{\scriptstyle 64}}}{\mathsf{x}}{\mathsf{{\scriptstyle 2}}} {.} \mathsf{lt} \\
+& & | & \mbox{`$\mathtt{f64x2.gt}$'} & \quad\Rightarrow\quad{} & {\mathsf{f{\scriptstyle 64}}}{\mathsf{x}}{\mathsf{{\scriptstyle 2}}} {.} \mathsf{gt} \\
+& & | & \mbox{`$\mathtt{f64x2.le}$'} & \quad\Rightarrow\quad{} & {\mathsf{f{\scriptstyle 64}}}{\mathsf{x}}{\mathsf{{\scriptstyle 2}}} {.} \mathsf{le} \\
+& & | & \mbox{`$\mathtt{f64x2.ge}$'} & \quad\Rightarrow\quad{} & {\mathsf{f{\scriptstyle 64}}}{\mathsf{x}}{\mathsf{{\scriptstyle 2}}} {.} \mathsf{ge} \\
+& & | & \mbox{`$\mathtt{v128.not}$'} & \quad\Rightarrow\quad{} & \mathsf{v{\scriptstyle 128}} {.} \mathsf{not} \\
+& & | & \mbox{`$\mathtt{i8x16.abs}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{\mathsf{{\scriptstyle 16}}} {.} \mathsf{abs} \\
+& & | & \mbox{`$\mathtt{i8x16.neg}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{\mathsf{{\scriptstyle 16}}} {.} \mathsf{neg} \\
+& & | & \mbox{`$\mathtt{i8x16.popcnt}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{\mathsf{{\scriptstyle 16}}} {.} \mathsf{popcnt} \\
+& & | & \mbox{`$\mathtt{i16x8.abs}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}} {.} \mathsf{abs} \\
+& & | & \mbox{`$\mathtt{i16x8.neg}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}} {.} \mathsf{neg} \\
+& & | & \mbox{`$\mathtt{i32x4.abs}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}} {.} \mathsf{abs} \\
+& & | & \mbox{`$\mathtt{i32x4.neg}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}} {.} \mathsf{neg} \\
+& & | & \mbox{`$\mathtt{i64x2.abs}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 64}}}{\mathsf{x}}{\mathsf{{\scriptstyle 2}}} {.} \mathsf{abs} \\
+& & | & \mbox{`$\mathtt{i64x2.neg}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 64}}}{\mathsf{x}}{\mathsf{{\scriptstyle 2}}} {.} \mathsf{neg} \\
+& & | & \mbox{`$\mathtt{f32x4.abs}$'} & \quad\Rightarrow\quad{} & {\mathsf{f{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}} {.} \mathsf{abs} \\
+& & | & \mbox{`$\mathtt{f32x4.neg}$'} & \quad\Rightarrow\quad{} & {\mathsf{f{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}} {.} \mathsf{neg} \\
+& & | & \mbox{`$\mathtt{f32x4.sqrt}$'} & \quad\Rightarrow\quad{} & {\mathsf{f{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}} {.} \mathsf{sqrt} \\
+& & | & \mbox{`$\mathtt{f32x4.ceil}$'} & \quad\Rightarrow\quad{} & {\mathsf{f{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}} {.} \mathsf{ceil} \\
+& & | & \mbox{`$\mathtt{f32x4.floor}$'} & \quad\Rightarrow\quad{} & {\mathsf{f{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}} {.} \mathsf{floor} \\
+& & | & \mbox{`$\mathtt{f32x4.trunc}$'} & \quad\Rightarrow\quad{} & {\mathsf{f{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}} {.} \mathsf{trunc} \\
+& & | & \mbox{`$\mathtt{f32x4.nearest}$'} & \quad\Rightarrow\quad{} & {\mathsf{f{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}} {.} \mathsf{nearest} \\
+& & | & \mbox{`$\mathtt{f64x2.abs}$'} & \quad\Rightarrow\quad{} & {\mathsf{f{\scriptstyle 64}}}{\mathsf{x}}{\mathsf{{\scriptstyle 2}}} {.} \mathsf{abs} \\
+& & | & \mbox{`$\mathtt{f64x2.neg}$'} & \quad\Rightarrow\quad{} & {\mathsf{f{\scriptstyle 64}}}{\mathsf{x}}{\mathsf{{\scriptstyle 2}}} {.} \mathsf{neg} \\
+& & | & \mbox{`$\mathtt{f64x2.sqrt}$'} & \quad\Rightarrow\quad{} & {\mathsf{f{\scriptstyle 64}}}{\mathsf{x}}{\mathsf{{\scriptstyle 2}}} {.} \mathsf{sqrt} \\
+& & | & \mbox{`$\mathtt{f64x2.ceil}$'} & \quad\Rightarrow\quad{} & {\mathsf{f{\scriptstyle 64}}}{\mathsf{x}}{\mathsf{{\scriptstyle 2}}} {.} \mathsf{ceil} \\
+& & | & \mbox{`$\mathtt{f64x2.floor}$'} & \quad\Rightarrow\quad{} & {\mathsf{f{\scriptstyle 64}}}{\mathsf{x}}{\mathsf{{\scriptstyle 2}}} {.} \mathsf{floor} \\
+& & | & \mbox{`$\mathtt{f64x2.trunc}$'} & \quad\Rightarrow\quad{} & {\mathsf{f{\scriptstyle 64}}}{\mathsf{x}}{\mathsf{{\scriptstyle 2}}} {.} \mathsf{trunc} \\
+& & | & \mbox{`$\mathtt{f64x2.nearest}$'} & \quad\Rightarrow\quad{} & {\mathsf{f{\scriptstyle 64}}}{\mathsf{x}}{\mathsf{{\scriptstyle 2}}} {.} \mathsf{nearest} \\
+& & | & \mbox{`$\mathtt{v128.and}$'} & \quad\Rightarrow\quad{} & \mathsf{v{\scriptstyle 128}} {.} \mathsf{and} \\
+& & | & \mbox{`$\mathtt{v128.andnot}$'} & \quad\Rightarrow\quad{} & \mathsf{v{\scriptstyle 128}} {.} \mathsf{andnot} \\
+& & | & \mbox{`$\mathtt{v128.or}$'} & \quad\Rightarrow\quad{} & \mathsf{v{\scriptstyle 128}} {.} \mathsf{or} \\
+& & | & \mbox{`$\mathtt{v128.xor}$'} & \quad\Rightarrow\quad{} & \mathsf{v{\scriptstyle 128}} {.} \mathsf{xor} \\
+& & | & \mbox{`$\mathtt{i8x16.add}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{\mathsf{{\scriptstyle 16}}} {.} \mathsf{add} \\
+& & | & \mbox{`$\mathtt{i8x16.add\_sat\_s}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{\mathsf{{\scriptstyle 16}}} {.} \mathsf{add\_sat} \\
+& & | & \mbox{`$\mathtt{i8x16.add\_sat\_u}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{\mathsf{{\scriptstyle 16}}} {.} \mathsf{add\_sat} \\
+& & | & \mbox{`$\mathtt{i8x16.sub}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{\mathsf{{\scriptstyle 16}}} {.} \mathsf{sub} \\
+& & | & \mbox{`$\mathtt{i8x16.sub\_sat\_s}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{\mathsf{{\scriptstyle 16}}} {.} \mathsf{sub\_sat} \\
+& & | & \mbox{`$\mathtt{i8x16.sub\_sat\_u}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{\mathsf{{\scriptstyle 16}}} {.} \mathsf{sub\_sat} \\
+& & | & \mbox{`$\mathtt{i8x16.min\_s}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{\mathsf{{\scriptstyle 16}}} {.} \mathsf{min} \\
+& & | & \mbox{`$\mathtt{i8x16.min\_u}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{\mathsf{{\scriptstyle 16}}} {.} \mathsf{min} \\
+& & | & \mbox{`$\mathtt{i8x16.max\_s}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{\mathsf{{\scriptstyle 16}}} {.} \mathsf{max} \\
+& & | & \mbox{`$\mathtt{i8x16.max\_u}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{\mathsf{{\scriptstyle 16}}} {.} \mathsf{max} \\
+& & | & \mbox{`$\mathtt{i8x16.avgr\_u}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{\mathsf{{\scriptstyle 16}}} {.} \mathsf{avgr} \\
+& & | & \mbox{`$\mathtt{i16x8.add}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}} {.} \mathsf{add} \\
+& & | & \mbox{`$\mathtt{i16x8.add\_sat\_s}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}} {.} \mathsf{add\_sat} \\
+& & | & \mbox{`$\mathtt{i16x8.add\_sat\_u}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}} {.} \mathsf{add\_sat} \\
+& & | & \mbox{`$\mathtt{i16x8.sub}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}} {.} \mathsf{sub} \\
+& & | & \mbox{`$\mathtt{i16x8.sub\_sat\_s}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}} {.} \mathsf{sub\_sat} \\
+& & | & \mbox{`$\mathtt{i16x8.sub\_sat\_u}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}} {.} \mathsf{sub\_sat} \\
+& & | & \mbox{`$\mathtt{i16x8.mul}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}} {.} \mathsf{mul} \\
+& & | & \mbox{`$\mathtt{i16x8.min\_s}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}} {.} \mathsf{min} \\
+& & | & \mbox{`$\mathtt{i16x8.min\_u}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}} {.} \mathsf{min} \\
+& & | & \mbox{`$\mathtt{i16x8.max\_s}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}} {.} \mathsf{max} \\
+& & | & \mbox{`$\mathtt{i16x8.max\_u}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}} {.} \mathsf{max} \\
+& & | & \mbox{`$\mathtt{i16x8.avgr\_u}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}} {.} \mathsf{avgr} \\
+& & | & \mbox{`$\mathtt{i16x8.q15mulr\_sat\_s}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}} {.} \mathsf{q{\scriptstyle 15}mulr\_sat} \\
+& & | & \mbox{`$\mathtt{i16x8.relaxed\_q15mulr\_s}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}} {.} \mathsf{relaxed\_q{\scriptstyle 15}mulr} \\
+& & | & \mbox{`$\mathtt{i32x4.add}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}} {.} \mathsf{add} \\
+& & | & \mbox{`$\mathtt{i32x4.sub}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}} {.} \mathsf{sub} \\
+& & | & \mbox{`$\mathtt{i32x4.mul}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}} {.} \mathsf{mul} \\
+& & | & \mbox{`$\mathtt{i32x4.min\_s}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}} {.} \mathsf{min} \\
+& & | & \mbox{`$\mathtt{i32x4.min\_u}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}} {.} \mathsf{min} \\
+& & | & \mbox{`$\mathtt{i32x4.max\_s}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}} {.} \mathsf{max} \\
+& & | & \mbox{`$\mathtt{i32x4.max\_u}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}} {.} \mathsf{max} \\
+& & | & \mbox{`$\mathtt{i64x2.add}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 64}}}{\mathsf{x}}{\mathsf{{\scriptstyle 2}}} {.} \mathsf{add} \\
+& & | & \mbox{`$\mathtt{i64x2.sub}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 64}}}{\mathsf{x}}{\mathsf{{\scriptstyle 2}}} {.} \mathsf{sub} \\
+& & | & \mbox{`$\mathtt{i64x2.mul}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 64}}}{\mathsf{x}}{\mathsf{{\scriptstyle 2}}} {.} \mathsf{mul} \\
+& & | & \mbox{`$\mathtt{f32x4.add}$'} & \quad\Rightarrow\quad{} & {\mathsf{f{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}} {.} \mathsf{add} \\
+& & | & \mbox{`$\mathtt{f32x4.sub}$'} & \quad\Rightarrow\quad{} & {\mathsf{f{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}} {.} \mathsf{sub} \\
+& & | & \mbox{`$\mathtt{f32x4.mul}$'} & \quad\Rightarrow\quad{} & {\mathsf{f{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}} {.} \mathsf{mul} \\
+& & | & \mbox{`$\mathtt{f32x4.div}$'} & \quad\Rightarrow\quad{} & {\mathsf{f{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}} {.} \mathsf{div} \\
+& & | & \mbox{`$\mathtt{f32x4.min}$'} & \quad\Rightarrow\quad{} & {\mathsf{f{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}} {.} \mathsf{min} \\
+& & | & \mbox{`$\mathtt{f32x4.max}$'} & \quad\Rightarrow\quad{} & {\mathsf{f{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}} {.} \mathsf{max} \\
+& & | & \mbox{`$\mathtt{f32x4.pmin}$'} & \quad\Rightarrow\quad{} & {\mathsf{f{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}} {.} \mathsf{pmin} \\
+& & | & \mbox{`$\mathtt{f32x4.pmax}$'} & \quad\Rightarrow\quad{} & {\mathsf{f{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}} {.} \mathsf{pmax} \\
+& & | & \mbox{`$\mathtt{f32x4.relaxed\_min}$'} & \quad\Rightarrow\quad{} & {\mathsf{f{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}} {.} \mathsf{relaxed\_min} \\
+& & | & \mbox{`$\mathtt{f32x4.relaxed\_max}$'} & \quad\Rightarrow\quad{} & {\mathsf{f{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}} {.} \mathsf{relaxed\_max} \\
+& & | & \mbox{`$\mathtt{f64x2.add}$'} & \quad\Rightarrow\quad{} & {\mathsf{f{\scriptstyle 64}}}{\mathsf{x}}{\mathsf{{\scriptstyle 2}}} {.} \mathsf{add} \\
+& & | & \mbox{`$\mathtt{f64x2.sub}$'} & \quad\Rightarrow\quad{} & {\mathsf{f{\scriptstyle 64}}}{\mathsf{x}}{\mathsf{{\scriptstyle 2}}} {.} \mathsf{sub} \\
+& & | & \mbox{`$\mathtt{f64x2.mul}$'} & \quad\Rightarrow\quad{} & {\mathsf{f{\scriptstyle 64}}}{\mathsf{x}}{\mathsf{{\scriptstyle 2}}} {.} \mathsf{mul} \\
+& & | & \mbox{`$\mathtt{f64x2.div}$'} & \quad\Rightarrow\quad{} & {\mathsf{f{\scriptstyle 64}}}{\mathsf{x}}{\mathsf{{\scriptstyle 2}}} {.} \mathsf{div} \\
+& & | & \mbox{`$\mathtt{f64x2.min}$'} & \quad\Rightarrow\quad{} & {\mathsf{f{\scriptstyle 64}}}{\mathsf{x}}{\mathsf{{\scriptstyle 2}}} {.} \mathsf{min} \\
+& & | & \mbox{`$\mathtt{f64x2.max}$'} & \quad\Rightarrow\quad{} & {\mathsf{f{\scriptstyle 64}}}{\mathsf{x}}{\mathsf{{\scriptstyle 2}}} {.} \mathsf{max} \\
+& & | & \mbox{`$\mathtt{f64x2.pmin}$'} & \quad\Rightarrow\quad{} & {\mathsf{f{\scriptstyle 64}}}{\mathsf{x}}{\mathsf{{\scriptstyle 2}}} {.} \mathsf{pmin} \\
+& & | & \mbox{`$\mathtt{f64x2.pmax}$'} & \quad\Rightarrow\quad{} & {\mathsf{f{\scriptstyle 64}}}{\mathsf{x}}{\mathsf{{\scriptstyle 2}}} {.} \mathsf{pmax} \\
+& & | & \mbox{`$\mathtt{f64x2.relaxed\_min}$'} & \quad\Rightarrow\quad{} & {\mathsf{f{\scriptstyle 64}}}{\mathsf{x}}{\mathsf{{\scriptstyle 2}}} {.} \mathsf{relaxed\_min} \\
+& & | & \mbox{`$\mathtt{f64x2.relaxed\_max}$'} & \quad\Rightarrow\quad{} & {\mathsf{f{\scriptstyle 64}}}{\mathsf{x}}{\mathsf{{\scriptstyle 2}}} {.} \mathsf{relaxed\_max} \\
+& & | & \mbox{`$\mathtt{v128.bitselect}$'} & \quad\Rightarrow\quad{} & \mathsf{v{\scriptstyle 128}} {.} \mathsf{bitselect} \\
+& & | & \mbox{`$\mathtt{i8x16.relaxed\_laneselect}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{\mathsf{{\scriptstyle 16}}} {.} \mathsf{relaxed\_laneselect} \\
+& & | & \mbox{`$\mathtt{i16x8.relaxed\_laneselect}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}} {.} \mathsf{relaxed\_laneselect} \\
+& & | & \mbox{`$\mathtt{i32x4.relaxed\_laneselect}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}} {.} \mathsf{relaxed\_laneselect} \\
+& & | & \mbox{`$\mathtt{i64x2.relaxed\_laneselect}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 64}}}{\mathsf{x}}{\mathsf{{\scriptstyle 2}}} {.} \mathsf{relaxed\_laneselect} \\
+& & | & \mbox{`$\mathtt{f32x4.relaxed\_madd}$'} & \quad\Rightarrow\quad{} & {\mathsf{f{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}} {.} \mathsf{relaxed\_madd} \\
+& & | & \mbox{`$\mathtt{f32x4.relaxed\_nmadd}$'} & \quad\Rightarrow\quad{} & {\mathsf{f{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}} {.} \mathsf{relaxed\_nmadd} \\
+& & | & \mbox{`$\mathtt{f64x2.relaxed\_madd}$'} & \quad\Rightarrow\quad{} & {\mathsf{f{\scriptstyle 64}}}{\mathsf{x}}{\mathsf{{\scriptstyle 2}}} {.} \mathsf{relaxed\_madd} \\
+& & | & \mbox{`$\mathtt{f64x2.relaxed\_nmadd}$'} & \quad\Rightarrow\quad{} & {\mathsf{f{\scriptstyle 64}}}{\mathsf{x}}{\mathsf{{\scriptstyle 2}}} {.} \mathsf{relaxed\_nmadd} \\
+& & | & \mbox{`$\mathtt{i8x16.shl}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{\mathsf{{\scriptstyle 16}}} {.} \mathsf{shl} \\
+& & | & \mbox{`$\mathtt{i8x16.shr\_s}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{\mathsf{{\scriptstyle 16}}} {.} \mathsf{shr} \\
+& & | & \mbox{`$\mathtt{i8x16.shr\_u}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{\mathsf{{\scriptstyle 16}}} {.} \mathsf{shr} \\
+& & | & \mbox{`$\mathtt{i16x8.shl}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}} {.} \mathsf{shl} \\
+& & | & \mbox{`$\mathtt{i16x8.shr\_s}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}} {.} \mathsf{shr} \\
+& & | & \mbox{`$\mathtt{i16x8.shr\_u}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}} {.} \mathsf{shr} \\
+& & | & \mbox{`$\mathtt{i32x4.shl}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}} {.} \mathsf{shl} \\
+& & | & \mbox{`$\mathtt{i32x4.shr\_s}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}} {.} \mathsf{shr} \\
+& & | & \mbox{`$\mathtt{i32x4.shr\_u}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}} {.} \mathsf{shr} \\
+& & | & \mbox{`$\mathtt{i64x2.shl}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 64}}}{\mathsf{x}}{\mathsf{{\scriptstyle 2}}} {.} \mathsf{shl} \\
+& & | & \mbox{`$\mathtt{i64x2.shr\_s}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 64}}}{\mathsf{x}}{\mathsf{{\scriptstyle 2}}} {.} \mathsf{shr} \\
+& & | & \mbox{`$\mathtt{i64x2.shr\_u}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 64}}}{\mathsf{x}}{\mathsf{{\scriptstyle 2}}} {.} \mathsf{shr} \\
+& & | & \mbox{`$\mathtt{i8x16.bitmask}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{\mathsf{{\scriptstyle 16}}}{.}\mathsf{bitmask} \\
+& & | & \mbox{`$\mathtt{i16x8.bitmask}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}}{.}\mathsf{bitmask} \\
+& & | & \mbox{`$\mathtt{i32x4.bitmask}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}}{.}\mathsf{bitmask} \\
+& & | & \mbox{`$\mathtt{i64x2.bitmask}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 64}}}{\mathsf{x}}{\mathsf{{\scriptstyle 2}}}{.}\mathsf{bitmask} \\
+& & | & \mbox{`$\mathtt{i8x16.narrow\_i16x8\_s}$'} & \quad\Rightarrow\quad{} & {{\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{\mathsf{{\scriptstyle 16}}}{.}\mathsf{narrow}}{\mathsf{\_}}{{\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}}}{\mathsf{\_}}{\mathsf{s}} \\
+& & | & \mbox{`$\mathtt{i8x16.narrow\_i16x8\_u}$'} & \quad\Rightarrow\quad{} & {{\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{\mathsf{{\scriptstyle 16}}}{.}\mathsf{narrow}}{\mathsf{\_}}{{\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}}}{\mathsf{\_}}{\mathsf{u}} \\
+& & | & \mbox{`$\mathtt{i16x8.narrow\_i32x4\_s}$'} & \quad\Rightarrow\quad{} & {{\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}}{.}\mathsf{narrow}}{\mathsf{\_}}{{\mathsf{i{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}}}{\mathsf{\_}}{\mathsf{s}} \\
+& & | & \mbox{`$\mathtt{i16x8.narrow\_i32x4\_u}$'} & \quad\Rightarrow\quad{} & {{\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}}{.}\mathsf{narrow}}{\mathsf{\_}}{{\mathsf{i{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}}}{\mathsf{\_}}{\mathsf{u}} \\
+& & | & \mbox{`$\mathtt{i16x8.extend\_low\_i8x16\_s}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}} {.} {\mathsf{extend}}{\mathsf{\_}}{{\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{\mathsf{{\scriptstyle 16}}}} \\
+& & | & \mbox{`$\mathtt{i16x8.extend\_low\_i8x16\_u}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}} {.} {\mathsf{extend}}{\mathsf{\_}}{{\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{\mathsf{{\scriptstyle 16}}}} \\
+& & | & \mbox{`$\mathtt{i16x8.extend\_high\_i8x16\_s}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}} {.} {\mathsf{extend}}{\mathsf{\_}}{{\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{\mathsf{{\scriptstyle 16}}}} \\
+& & | & \mbox{`$\mathtt{i16x8.extend\_high\_i8x16\_u}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}} {.} {\mathsf{extend}}{\mathsf{\_}}{{\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{\mathsf{{\scriptstyle 16}}}} \\
+& & | & \mbox{`$\mathtt{i32x4.extend\_low\_i16x8\_s}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}} {.} {\mathsf{extend}}{\mathsf{\_}}{{\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}}} \\
+& & | & \mbox{`$\mathtt{i32x4.extend\_low\_i16x8\_u}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}} {.} {\mathsf{extend}}{\mathsf{\_}}{{\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}}} \\
+& & | & \mbox{`$\mathtt{i32x4.extend\_high\_i16x8\_s}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}} {.} {\mathsf{extend}}{\mathsf{\_}}{{\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}}} \\
+& & | & \mbox{`$\mathtt{i32x4.extend\_high\_i16x8\_u}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}} {.} {\mathsf{extend}}{\mathsf{\_}}{{\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}}} \\
+& & | & \mbox{`$\mathtt{i32x4.trunc\_sat\_f32x4\_s}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}} {.} {\mathsf{trunc\_sat}}{\mathsf{\_}}{{\mathsf{f{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}}} \\
+& & | & \mbox{`$\mathtt{i32x4.trunc\_sat\_f32x4\_u}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}} {.} {\mathsf{trunc\_sat}}{\mathsf{\_}}{{\mathsf{f{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}}} \\
+& & | & \mbox{`$\mathtt{i32x4.trunc\_sat\_f64x2\_s\_zero}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}} {.} {\mathsf{trunc\_sat}}{\mathsf{\_}}{{\mathsf{f{\scriptstyle 64}}}{\mathsf{x}}{\mathsf{{\scriptstyle 2}}}} \\
+& & | & \mbox{`$\mathtt{i32x4.trunc\_sat\_f64x2\_u\_zero}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}} {.} {\mathsf{trunc\_sat}}{\mathsf{\_}}{{\mathsf{f{\scriptstyle 64}}}{\mathsf{x}}{\mathsf{{\scriptstyle 2}}}} \\
+& & | & \mbox{`$\mathtt{i32x4.relaxed\_trunc\_f32x4\_s}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}} {.} {\mathsf{relaxed\_trunc}}{\mathsf{\_}}{{\mathsf{f{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}}} \\
+& & | & \mbox{`$\mathtt{i32x4.relaxed\_trunc\_f32x4\_u}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}} {.} {\mathsf{relaxed\_trunc}}{\mathsf{\_}}{{\mathsf{f{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}}} \\
+& & | & \mbox{`$\mathtt{i32x4.relaxed\_trunc\_f64x2\_s\_zero}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}} {.} {\mathsf{relaxed\_trunc}}{\mathsf{\_}}{{\mathsf{f{\scriptstyle 64}}}{\mathsf{x}}{\mathsf{{\scriptstyle 2}}}} \\
+& & | & \mbox{`$\mathtt{i32x4.relaxed\_trunc\_f64x2\_u\_zero}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}} {.} {\mathsf{relaxed\_trunc}}{\mathsf{\_}}{{\mathsf{f{\scriptstyle 64}}}{\mathsf{x}}{\mathsf{{\scriptstyle 2}}}} \\
+& & | & \mbox{`$\mathtt{i64x2.extend\_low\_i32x4\_s}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 64}}}{\mathsf{x}}{\mathsf{{\scriptstyle 2}}} {.} {\mathsf{extend}}{\mathsf{\_}}{{\mathsf{i{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}}} \\
+& & | & \mbox{`$\mathtt{i64x2.extend\_low\_i32x4\_u}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 64}}}{\mathsf{x}}{\mathsf{{\scriptstyle 2}}} {.} {\mathsf{extend}}{\mathsf{\_}}{{\mathsf{i{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}}} \\
+& & | & \mbox{`$\mathtt{i64x2.extend\_high\_i32x4\_s}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 64}}}{\mathsf{x}}{\mathsf{{\scriptstyle 2}}} {.} {\mathsf{extend}}{\mathsf{\_}}{{\mathsf{i{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}}} \\
+& & | & \mbox{`$\mathtt{i64x2.extend\_high\_i32x4\_u}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 64}}}{\mathsf{x}}{\mathsf{{\scriptstyle 2}}} {.} {\mathsf{extend}}{\mathsf{\_}}{{\mathsf{i{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}}} \\
+& & | & \mbox{`$\mathtt{f32x4.demote\_f64x2\_zero}$'} & \quad\Rightarrow\quad{} & {\mathsf{f{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}} {.} {{\mathsf{demote}}{\mathsf{\_}}{\mathsf{zero}}}{\mathsf{\_}}{{\mathsf{f{\scriptstyle 64}}}{\mathsf{x}}{\mathsf{{\scriptstyle 2}}}} \\
+& & | & \mbox{`$\mathtt{f32x4.convert\_i32x4\_s}$'} & \quad\Rightarrow\quad{} & {\mathsf{f{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}} {.} {\mathsf{convert}}{\mathsf{\_}}{{\mathsf{i{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}}} \\
+& & | & \mbox{`$\mathtt{f32x4.convert\_i32x4\_u}$'} & \quad\Rightarrow\quad{} & {\mathsf{f{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}} {.} {\mathsf{convert}}{\mathsf{\_}}{{\mathsf{i{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}}} \\
+& & | & \mbox{`$\mathtt{f64x2.promote\_low\_f32x4}$'} & \quad\Rightarrow\quad{} & {\mathsf{f{\scriptstyle 64}}}{\mathsf{x}}{\mathsf{{\scriptstyle 2}}} {.} {{\mathsf{promote}}{\mathsf{\_}}{\mathsf{low}}}{\mathsf{\_}}{{\mathsf{f{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}}} \\
+& & | & \mbox{`$\mathtt{f64x2.convert\_low\_i32x4\_s}$'} & \quad\Rightarrow\quad{} & {\mathsf{f{\scriptstyle 64}}}{\mathsf{x}}{\mathsf{{\scriptstyle 2}}} {.} {\mathsf{convert}}{\mathsf{\_}}{{\mathsf{i{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}}} \\
+& & | & \mbox{`$\mathtt{f64x2.convert\_low\_i32x4\_u}$'} & \quad\Rightarrow\quad{} & {\mathsf{f{\scriptstyle 64}}}{\mathsf{x}}{\mathsf{{\scriptstyle 2}}} {.} {\mathsf{convert}}{\mathsf{\_}}{{\mathsf{i{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}}} \\
+& & | & \mbox{`$\mathtt{i16x8.extadd\_pairwise\_i8x16\_s}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}} {.} {\mathsf{extadd\_pairwise}}{\mathsf{\_}}{{\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{\mathsf{{\scriptstyle 16}}}} \\
+& & | & \mbox{`$\mathtt{i16x8.extadd\_pairwise\_i8x16\_u}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}} {.} {\mathsf{extadd\_pairwise}}{\mathsf{\_}}{{\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{\mathsf{{\scriptstyle 16}}}} \\
+& & | & \mbox{`$\mathtt{i32x4.extadd\_pairwise\_i16x8\_s}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}} {.} {\mathsf{extadd\_pairwise}}{\mathsf{\_}}{{\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}}} \\
+& & | & \mbox{`$\mathtt{i32x4.extadd\_pairwise\_i16x8\_u}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}} {.} {\mathsf{extadd\_pairwise}}{\mathsf{\_}}{{\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}}} \\
+& & | & \mbox{`$\mathtt{i16x8.extmul\_low\_i8x16\_s}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}} {.} {\mathsf{extmul}}{\mathsf{\_}}{{\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{\mathsf{{\scriptstyle 16}}}} \\
+& & | & \mbox{`$\mathtt{i16x8.extmul\_low\_i8x16\_u}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}} {.} {\mathsf{extmul}}{\mathsf{\_}}{{\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{\mathsf{{\scriptstyle 16}}}} \\
+& & | & \mbox{`$\mathtt{i16x8.extmul\_high\_i8x16\_s}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}} {.} {\mathsf{extmul}}{\mathsf{\_}}{{\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{\mathsf{{\scriptstyle 16}}}} \\
+& & | & \mbox{`$\mathtt{i16x8.extmul\_high\_i8x16\_u}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}} {.} {\mathsf{extmul}}{\mathsf{\_}}{{\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{\mathsf{{\scriptstyle 16}}}} \\
+& & | & \mbox{`$\mathtt{i32x4.extmul\_low\_i16x8\_s}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}} {.} {\mathsf{extmul}}{\mathsf{\_}}{{\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}}} \\
+& & | & \mbox{`$\mathtt{i32x4.extmul\_low\_i16x8\_u}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}} {.} {\mathsf{extmul}}{\mathsf{\_}}{{\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}}} \\
+& & | & \mbox{`$\mathtt{i32x4.extmul\_high\_i16x8\_s}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}} {.} {\mathsf{extmul}}{\mathsf{\_}}{{\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}}} \\
+& & | & \mbox{`$\mathtt{i32x4.extmul\_high\_i16x8\_u}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}} {.} {\mathsf{extmul}}{\mathsf{\_}}{{\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}}} \\
+& & | & \mbox{`$\mathtt{i32x4.dot\_i16x8\_s}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}} {.} {\mathsf{dot}}{\mathsf{\_}}{{\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}}} \\
+& & | & \mbox{`$\mathtt{i64x2.extmul\_low\_i32x4\_s}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 64}}}{\mathsf{x}}{\mathsf{{\scriptstyle 2}}} {.} {\mathsf{extmul}}{\mathsf{\_}}{{\mathsf{i{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}}} \\
+& & | & \mbox{`$\mathtt{i64x2.extmul\_low\_i32x4\_u}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 64}}}{\mathsf{x}}{\mathsf{{\scriptstyle 2}}} {.} {\mathsf{extmul}}{\mathsf{\_}}{{\mathsf{i{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}}} \\
+& & | & \mbox{`$\mathtt{i64x2.extmul\_high\_i32x4\_s}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 64}}}{\mathsf{x}}{\mathsf{{\scriptstyle 2}}} {.} {\mathsf{extmul}}{\mathsf{\_}}{{\mathsf{i{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}}} \\
+& & | & \mbox{`$\mathtt{i64x2.extmul\_high\_i32x4\_u}$'} & \quad\Rightarrow\quad{} & {\mathsf{i{\scriptstyle 64}}}{\mathsf{x}}{\mathsf{{\scriptstyle 2}}} {.} {\mathsf{extmul}}{\mathsf{\_}}{{\mathsf{i{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}}} \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
+& {{\mathtt{expr}}}_{I} & ::= & {{\mathit{in}}^\ast}{:}{{\mathtt{instrs}}}_{I} & \quad\Rightarrow\quad{} & {{\mathit{in}}^\ast} \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
+& {{\mathtt{tag}}}_{I} & ::= & \mbox{`$\mathtt{(}$'}~~\mbox{`$\mathtt{tag}$'}~~{{\mathit{id}}^?}{:}{{\mathtt{id}}^?}~~{\mathit{jt}}{:}{{\mathtt{tagtype}}}_{I}~~\mbox{`$\mathtt{)}$'} & \quad\Rightarrow\quad{} & (\mathsf{tag}~{\mathit{jt}}, {{\mathit{id}}^?}) \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
+& {{\mathtt{global}}}_{I} & ::= & \mbox{`$\mathtt{(}$'}~~\mbox{`$\mathtt{global}$'}~~{{\mathit{id}}^?}{:}{{\mathtt{id}}^?}~~{\mathit{gt}}{:}{{\mathtt{globaltype}}}_{I}~~e{:}{{\mathtt{expr}}}_{I}~~\mbox{`$\mathtt{)}$'} & \quad\Rightarrow\quad{} & (\mathsf{global}~{\mathit{gt}}~e, {{\mathit{id}}^?}) \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
+& {{\mathtt{mem}}}_{I} & ::= & \mbox{`$\mathtt{(}$'}~~\mbox{`$\mathtt{memory}$'}~~{{\mathit{id}}^?}{:}{{\mathtt{id}}^?}~~{\mathit{mt}}{:}{{\mathtt{memtype}}}_{I}~~\mbox{`$\mathtt{)}$'} & \quad\Rightarrow\quad{} & (\mathsf{memory}~{\mathit{mt}}, {{\mathit{id}}^?}) \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
+& {{\mathtt{table}}}_{I} & ::= & \mbox{`$\mathtt{(}$'}~~\mbox{`$\mathtt{table}$'}~~{{\mathit{id}}^?}{:}{{\mathtt{id}}^?}~~{\mathit{tt}}{:}{{\mathtt{tabletype}}}_{I}~~e{:}{{\mathtt{expr}}}_{I}~~\mbox{`$\mathtt{)}$'} & \quad\Rightarrow\quad{} & (\mathsf{table}~{\mathit{tt}}~e, {{\mathit{id}}^?}) \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
+& {{\mathtt{func}}}_{I} & ::= & \mbox{`$\mathtt{(}$'}~~\mbox{`$\mathtt{func}$'}~~{{\mathit{id}}^?}{:}{{\mathtt{id}}^?}~~(x, {I'}){:}{{\mathtt{typeuse}}}_{I}~~{({\mathit{loc}}, {{\mathit{id}'}^?})^\ast}{:}{{{\mathtt{local}}}_{I}^\ast}~~e{:}{{\mathtt{expr}}}_{{I''}}~~\mbox{`$\mathtt{)}$'} & \quad\Rightarrow\quad{} & (\mathsf{func}~x~{{\mathit{loc}}^\ast}~e, {{\mathit{id}}^?}) & \quad \mbox{if}~ {I''} = I \oplus {I'} \oplus \{ \begin{array}[t]{@{}l@{}}
+\mathsf{locals}~{({{\mathit{id}'}^?})^\ast} \}\end{array} \\
+& {{\mathtt{local}}}_{I} & ::= & \mbox{`$\mathtt{(}$'}~~\mbox{`$\mathtt{local}$'}~~{{\mathit{id}}^?}{:}{{\mathtt{id}}^?}~~t{:}{{\mathtt{valtype}}}_{I}~~\mbox{`$\mathtt{)}$'} & \quad\Rightarrow\quad{} & (\mathsf{local}~t, {{\mathit{id}}^?}) \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
+& {{\mathtt{data}}}_{I} & ::= & \mbox{`$\mathtt{(}$'}~~\mbox{`$\mathtt{data}$'}~~{{\mathit{id}}^?}{:}{{\mathtt{id}}^?}~~{b^\ast}{:}{\mathtt{datastring}}~~\mbox{`$\mathtt{)}$'} & \quad\Rightarrow\quad{} & (\mathsf{data}~{b^\ast}~\mathsf{passive}, {{\mathit{id}}^?}) \\
+& & | & \mbox{`$\mathtt{(}$'}~~\mbox{`$\mathtt{data}$'}~~{{\mathit{id}}^?}{:}{{\mathtt{id}}^?}~~{b^\ast}{:}{\mathtt{datastring}}~~\mbox{`$\mathtt{(}$'}~~\mbox{`$\mathtt{memory}$'}~~x{:}{{\mathtt{memidx}}}_{I}~~\mbox{`$\mathtt{)}$'}~~\mbox{`$\mathtt{(}$'}~~\mbox{`$\mathtt{offset}$'}~~e{:}{{\mathtt{expr}}}_{I}~~\mbox{`$\mathtt{)}$'}~~\mbox{`$\mathtt{)}$'} & \quad\Rightarrow\quad{} & (\mathsf{data}~{b^\ast}~(\mathsf{active}~x~e), {{\mathit{id}}^?}) \\
+& {\mathtt{datastring}} & ::= & {{b^\ast}^\ast}{:}{{\mathtt{string}}^\ast} & \quad\Rightarrow\quad{} & {\bigoplus}\, {{b^\ast}^\ast} \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
+& {{\mathtt{elem}}}_{I} & ::= & \mbox{`$\mathtt{(}$'}~~\mbox{`$\mathtt{elem}$'}~~{{\mathit{id}}^?}{:}{{\mathtt{id}}^?}~~({\mathit{rt}}, {e^\ast}){:}{{\mathtt{elemlist}}}_{I}~~\mbox{`$\mathtt{)}$'} & \quad\Rightarrow\quad{} & (\mathsf{elem}~{\mathit{rt}}~{e^\ast}~\mathsf{passive}, {{\mathit{id}}^?}) \\
+& & | & \mbox{`$\mathtt{(}$'}~~\mbox{`$\mathtt{elem}$'}~~{{\mathit{id}}^?}{:}{{\mathtt{id}}^?}~~({\mathit{rt}}, {e^\ast}){:}{{\mathtt{elemlist}}}_{I}~~\mbox{`$\mathtt{(}$'}~~\mbox{`$\mathtt{table}$'}~~x{:}{{\mathtt{tableidx}}}_{I}~~\mbox{`$\mathtt{)}$'}~~\mbox{`$\mathtt{(}$'}~~\mbox{`$\mathtt{offset}$'}~~{e'}{:}{{\mathtt{expr}}}_{I}~~\mbox{`$\mathtt{)}$'}~~\mbox{`$\mathtt{)}$'} & \quad\Rightarrow\quad{} & (\mathsf{elem}~{\mathit{rt}}~{e^\ast}~(\mathsf{active}~x~{e'}), {{\mathit{id}}^?}) \\
+& & | & \mbox{`$\mathtt{(}$'}~~\mbox{`$\mathtt{elem}$'}~~{{\mathit{id}}^?}{:}{{\mathtt{id}}^?}~~\mbox{`$\mathtt{declare}$'}~~({\mathit{rt}}, {e^\ast}){:}{{\mathtt{elemlist}}}_{I}~~\mbox{`$\mathtt{)}$'} & \quad\Rightarrow\quad{} & (\mathsf{elem}~{\mathit{rt}}~{e^\ast}~\mathsf{declare}, {{\mathit{id}}^?}) \\
+& {{\mathtt{elemlist}}}_{I} & ::= & {\mathit{rt}}{:}{{\mathtt{reftype}}}_{I}~~{e^\ast}{:}{\mathtt{list}}({{\mathtt{expr}}}_{I}) & \quad\Rightarrow\quad{} & ({\mathit{rt}}, {e^\ast}) \\
+& {{\mathtt{elemexpr}}}_{I} & ::= & \mbox{`$\mathtt{(}$'}~~\mbox{`$\mathtt{item}$'}~~e{:}{{\mathtt{expr}}}_{I}~~\mbox{`$\mathtt{)}$'} & \quad\Rightarrow\quad{} & e \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
+& {{\mathtt{start}}}_{I} & ::= & \mbox{`$\mathtt{(}$'}~~\mbox{`$\mathtt{start}$'}~~x{:}{{\mathtt{funcidx}}}_{I}~~\mbox{`$\mathtt{)}$'} & \quad\Rightarrow\quad{} & \mathsf{start}~x \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
+& {{\mathtt{import}}}_{I} & ::= & \mbox{`$\mathtt{(}$'}~~\mbox{`$\mathtt{import}$'}~~{\mathit{nm}}_1{:}{\mathtt{name}}~~{\mathit{nm}}_2{:}{\mathtt{name}}~~({\mathit{xt}}, {I'}){:}{{\mathtt{externtype}}}_{I}~~\mbox{`$\mathtt{)}$'} & \quad\Rightarrow\quad{} & (\mathsf{import}~{\mathit{nm}}_1~{\mathit{nm}}_2~{\mathit{xt}}, {I'}) \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
+& {{\mathtt{export}}}_{I} & ::= & \mbox{`$\mathtt{(}$'}~~\mbox{`$\mathtt{export}$'}~~{\mathit{nm}}{:}{\mathtt{name}}~~{\mathit{xx}}{:}{{\mathtt{externidx}}}_{I}~~\mbox{`$\mathtt{)}$'} & \quad\Rightarrow\quad{} & \mathsf{export}~{\mathit{nm}}~{\mathit{xx}} \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+\vspace{1ex}
 
 \vspace{1ex}
 

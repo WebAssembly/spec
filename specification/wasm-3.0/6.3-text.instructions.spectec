@@ -549,13 +549,13 @@ grammar Tplaininstr_(I)/num-cvt-reinterpret : instr = ...
 ;; Vector instructions
 
 grammar Tplaininstr_(I)/vec-const : instr = ...
-  | "v128.const" "i8x16" n*:Ti8^16 => VCONST V128 $invibytes_(128, $concat_(byte, $ibytes_(8, n)*))
-  | "v128.const" "i16x8" n*:Ti16^8 => VCONST V128 $invibytes_(128, $concat_(byte, $ibytes_(16, n)*))
-  | "v128.const" "i32x4" n*:Ti32^4 => VCONST V128 $invibytes_(128, $concat_(byte, $ibytes_(32, n)*))
-  | "v128.const" "i64x2" n*:Ti64^2 => VCONST V128 $invibytes_(128, $concat_(byte, $ibytes_(64, n)*))
+  | "v128.const" "i8x16" n*:Ti8^16 => VCONST V128 $inv_ibytes_(128, $concat_(byte, $ibytes_(8, n)*))
+  | "v128.const" "i16x8" n*:Ti16^8 => VCONST V128 $inv_ibytes_(128, $concat_(byte, $ibytes_(16, n)*))
+  | "v128.const" "i32x4" n*:Ti32^4 => VCONST V128 $inv_ibytes_(128, $concat_(byte, $ibytes_(32, n)*))
+  | "v128.const" "i64x2" n*:Ti64^2 => VCONST V128 $inv_ibytes_(128, $concat_(byte, $ibytes_(64, n)*))
 ;; TODO(4, rossberg): enable fN
-;;  | "v128.const" "f32x4" q*:Tf32^4 => VCONST V128 $invibytes_(128, $concat_(byte, $fbytes_(32, q)*))
-;;  | "v128.const" "f64x2" q*:Tf64^2 => VCONST V128 $invibytes_(128, $concat_(byte, fibytes_(64, q)*))
+;;  | "v128.const" "f32x4" q*:Tf32^4 => VCONST V128 $inv_ibytes_(128, $concat_(byte, $fbytes_(32, q)*))
+;;  | "v128.const" "f64x2" q*:Tf64^2 => VCONST V128 $inv_ibytes_(128, $concat_(byte, fibytes_(64, q)*))
   | ...
 
 grammar Tplaininstr_(I)/vec-shuffle : instr = ...
