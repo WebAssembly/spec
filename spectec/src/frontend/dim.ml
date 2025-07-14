@@ -14,9 +14,16 @@ let error at msg = Error.error at "dimension" msg
 
 module Env = Map.Make(String)
 
+type outer = id list
 type ctx = iter list
 type env = ctx Env.t
-type renv = ((region * ctx * [`Impl | `Expl]) list) Env.t
+type renv = (region * ctx * [`Impl | `Expl]) list Env.t
+
+let new_env outer =
+  ref (Env.of_list (List.map (fun id -> id.it, [(id.at, [], `Expl)]) outer))
+
+let localize outer env =
+  List.fold_left (fun env id -> Env.remove id.it env) env outer
 
 
 (* Solving constraints *)
@@ -262,7 +269,7 @@ and check_param env ctx p =
     check_typ env ctx t
 
 let check_def d : env =
-  let env = ref Env.empty in
+  let env = new_env [] in
   match d.it with
   | FamD (_id, ps, _hints) ->
     List.iter (check_param env []) ps;
@@ -298,16 +305,16 @@ let check_def d : env =
   | SepD | HintD _ -> Env.empty
 
 
-let check_prod prod : env =
-  let env = ref Env.empty in
+let check_prod outer prod : env =
+  let env = new_env outer in
   check_prod env [] prod;
-  check_env env
+  localize outer (check_env env)
 
-let check_typdef t prems : env =
-  let env = ref Env.empty in
+let check_typdef outer t prems : env =
+  let env = new_env outer in
   check_typ env [] t;
   iter_nl_list (check_prem env []) prems;
-  check_env env
+  localize outer (check_env env)
 
 
 (* Annotating iterations *)

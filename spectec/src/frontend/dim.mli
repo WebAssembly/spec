@@ -1,13 +1,14 @@
 module Env : Map.S with type key = string
 
+type outer = El.Ast.id list
 type env = El.Ast.iter list Env.t
 type env' = Il.Ast.iter list Env.t
 
 val annot_varid : Il.Ast.id -> Il.Ast.iter list -> Il.Ast.id
 
 val check_def : El.Ast.def -> env (* raises Error.Error *)
-val check_prod : El.Ast.prod -> env (* raises Error.Error *)
-val check_typdef : El.Ast.typ -> El.Ast.prem El.Ast.nl_list -> env
+val check_prod : outer -> El.Ast.prod -> env (* raises Error.Error *)
+val check_typdef : outer -> El.Ast.typ -> El.Ast.prem El.Ast.nl_list -> env
   (* raises Error.Error *)
 
 val annot_iter : env' -> Il.Ast.iter -> Il.Ast.iter

@@ -178,6 +178,8 @@ let bound_env env =
     gramid = bound_env' env.grams;
   }
 
+let vars env = Map.fold (fun id (at, _) ids -> (id $ at)::ids) env.vars []
+
 let to_eval_var (_at, t) = t
 
 let to_eval_typ id (_at, (ps, k)) =
@@ -810,7 +812,7 @@ and elab_typfield env tid at ((atom, (t, prems), hints) as tf) : Il.typfield =
   let env' = local_env env in
   let _mixop, ts', ts = elab_typ_notation env' tid t in
   let es = Convert.pats_of_typs ts in
-  let dims = Dim.check_typdef t prems in
+  let dims = Dim.check_typdef (vars env) t prems in
   let dims' = Dim.Env.map (List.map (elab_iter env')) dims in
   let es' = checkpoint (map2_attempt (elab_exp env') es ts) in
   let es' = List.map (Dim.annot_exp dims') es' in
@@ -835,7 +837,7 @@ and elab_typcase env tid at ((_atom, (t, prems), hints) as tc) : Il.typcase =
   let env' = local_env env in
   let mixop, ts', ts = elab_typ_notation env' tid t in
   let es = Convert.pats_of_typs ts in
-  let dims = Dim.check_typdef t prems in
+  let dims = Dim.check_typdef (vars env) t prems in
   let dims' = Dim.Env.map (List.map (elab_iter env')) dims in
   let es' = checkpoint (map_attempt Fun.id (List.map2 (elab_exp env') es ts)) in
   let es' = List.map (Dim.annot_exp dims') es' in
@@ -865,7 +867,7 @@ and elab_typcon env tid at (((t, prems), hints) as tc) : Il.typcase =
   let env' = local_env env in
   let mixop, ts', ts = elab_typ_notation env' tid t in
   let es = Convert.pats_of_typs ts in
-  let dims = Dim.check_typdef t prems in
+  let dims = Dim.check_typdef (vars env) t prems in
   let dims' = Dim.Env.map (List.map (elab_iter env')) dims in
   let es' = checkpoint (map_attempt Fun.id (List.map2 (elab_exp env') es ts)) in
   let es' = List.map (Dim.annot_exp dims') es' in
@@ -1866,7 +1868,7 @@ and elab_prod env prod t : Il.prod list =
   let (g, e, prems) = prod.it in
   let env' = local_env env in
   env'.pm <- false;
-  let dims = Dim.check_prod prod in
+  let dims = Dim.check_prod (vars env) prod in
   let dims' = Dim.Env.map (List.map (elab_iter env')) dims in
   let g', _t', env'' = elab_sym env' g in
   let g' = Dim.annot_sym dims' g' in
