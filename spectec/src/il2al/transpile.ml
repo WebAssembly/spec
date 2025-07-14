@@ -456,6 +456,13 @@ let merge_three_branches i =
   | IfI (e1, il1, [ { it = IfI (e2, il2, il3); at = at2; _ } ]) when Eq.eq_instrs il1 il3 ->
     let at = over_region [ at1; at2 ] in
     ifI (binE (`AndOp, neg e1, e2) ~note:boolT, il2, il1) ~at:at
+  | IfI (e1, [ { it = IfI (e2, il1, il2); at = at2; _ } ], il3) when Eq.eq_instrs il2 il3 && il2 <> [] ->
+    let from_same_prem = e1.at <> no_region && e1.at.left.line = e2.at.left.line in
+    if from_same_prem then
+      let at = over_region [ at1; at2 ] in
+      ifI (binE (`AndOp, e1, e2) ~note:boolT, il1, il2) ~at:at
+    else
+      i
   | _ -> i
 
 let remove_dead_assignment il =

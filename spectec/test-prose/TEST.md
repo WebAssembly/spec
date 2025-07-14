@@ -17546,21 +17546,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       1) Let :math:`(\mathsf{catch\_ref}~x~l)` be the destructuring of :math:`{\mathit{catch}}_0`.
 
-      #) If :math:`x \geq {|z{.}\mathsf{tags}|}`, then:
-
-         a) Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}''}^\ast}`.
-
-         #) Pop the :math:`\mathsf{handler}` H from the stack.
-
-         #) Let H be the :math:`\mathsf{handler}` whose arity is :math:`n` and whose catch handler is :math:`{{\mathit{catch}'}^\ast}`.
-
-         #) Push the :math:`\mathsf{handler}` H.
-
-         #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
-
-         #) Execute the instruction :math:`\mathsf{throw\_ref}`.
-
-      #) Else if :math:`z{.}\mathsf{exns}{}[a]{.}\mathsf{tag} \neq z{.}\mathsf{tags}{}[x]`, then:
+      #) If :math:`x \geq {|z{.}\mathsf{tags}|}` or :math:`z{.}\mathsf{exns}{}[a]{.}\mathsf{tag} \neq z{.}\mathsf{tags}{}[x]`, then:
 
          a) Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}''}^\ast}`.
 
@@ -18314,19 +18300,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`{\mathit{ref}}_1` from the stack.
 
-#. If :math:`{\mathit{ref}}_1` is some :math:`\mathsf{ref{.}null}~{\mathit{heaptype}}`, then:
+#. If :math:`{\mathit{ref}}_1` is some :math:`\mathsf{ref{.}null}~{\mathit{heaptype}}` and :math:`{\mathit{ref}}_2` is some :math:`\mathsf{ref{.}null}~{\mathit{heaptype}}`, then:
 
-   a. If :math:`{\mathit{ref}}_2` is some :math:`\mathsf{ref{.}null}~{\mathit{heaptype}}`, then:
-
-      1) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~1)` to the stack.
-
-   #. Else if :math:`{\mathit{ref}}_1 = {\mathit{ref}}_2`, then:
-
-      1) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~1)` to the stack.
-
-   #. Else:
-
-      1) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~0)` to the stack.
+   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~1)` to the stack.
 
 #. Else if :math:`{\mathit{ref}}_1 = {\mathit{ref}}_2`, then:
 
@@ -19161,21 +19137,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
                a. Let :math:`(\mathsf{catch\_ref}~x~l)` be the destructuring of :math:`{\mathit{catch}}_0`.
 
-               #. If :math:`x \geq {|z{.}\mathsf{tags}|}`, then:
-
-                  1) Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}''}^\ast}`.
-
-                  #) Pop the :math:`\mathsf{handler}` H from the stack.
-
-                  #) Let H be the :math:`\mathsf{handler}` whose arity is :math:`n` and whose catch handler is :math:`{{\mathit{catch}'}^\ast}`.
-
-                  #) Push the :math:`\mathsf{handler}` H.
-
-                  #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
-
-                  #) Execute the instruction :math:`\mathsf{throw\_ref}`.
-
-               #. Else if :math:`z{.}\mathsf{exns}{}[a]{.}\mathsf{tag} \neq z{.}\mathsf{tags}{}[x]`, then:
+               #. If :math:`x \geq {|z{.}\mathsf{tags}|}` or :math:`z{.}\mathsf{exns}{}[a]{.}\mathsf{tag} \neq z{.}\mathsf{tags}{}[x]`, then:
 
                   1) Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}''}^\ast}`.
 
@@ -28185,19 +28147,13 @@ Step_read/throw_ref-handler-*
       e) Execute the instruction THROW_REF.
   d. Else if catch_0 is some CATCH_REF, then:
     1) Let (CATCH_REF x l) be catch_0.
-    2) If (x >= |$tagaddr(z)|), then:
+    2) If ((x >= |$tagaddr(z)|) \/ ($exninst(z)[a].TAG =/= $tagaddr(z)[x])), then:
       a) Let [catch] :: catch'* be catch''*.
       b) Pop the handler (HANDLER_ _ { _ }) from the stack.
       c) Push the handler (HANDLER_ n { catch'* }) to the stack.
       d) Push the value (REF.EXN_ADDR a) to the stack.
       e) Execute the instruction THROW_REF.
-    3) Else if ($exninst(z)[a].TAG =/= $tagaddr(z)[x]), then:
-      a) Let [catch] :: catch'* be catch''*.
-      b) Pop the handler (HANDLER_ _ { _ }) from the stack.
-      c) Push the handler (HANDLER_ n { catch'* }) to the stack.
-      d) Push the value (REF.EXN_ADDR a) to the stack.
-      e) Execute the instruction THROW_REF.
-    4) Else:
+    3) Else:
       a) Pop the handler (HANDLER_ _ { _ }) from the stack.
       b) Push the values val* to the stack.
       c) Push the value (REF.EXN_ADDR a) to the stack.
@@ -28544,13 +28500,8 @@ Step_pure/ref.eq
 2. Pop the value ref_2 from the stack.
 3. Assert: Due to validation, a value of value type ref is on the top of the stack.
 4. Pop the value ref_1 from the stack.
-5. If ref_1 is some REF.NULL, then:
-  a. If ref_2 is some REF.NULL, then:
-    1) Push the value (I32.CONST 1) to the stack.
-  b. Else if (ref_1 = ref_2), then:
-    1) Push the value (I32.CONST 1) to the stack.
-  c. Else:
-    1) Push the value (I32.CONST 0) to the stack.
+5. If (ref_1 is some REF.NULL /\ ref_2 is some REF.NULL), then:
+  a. Push the value (I32.CONST 1) to the stack.
 6. Else if (ref_1 = ref_2), then:
   a. Push the value (I32.CONST 1) to the stack.
 7. Else:
@@ -28941,19 +28892,13 @@ Step_read/throw_ref
           e. Execute the instruction THROW_REF.
       d) Else if catch_0 is some CATCH_REF, then:
         1. Let (CATCH_REF x l) be catch_0.
-        2. If (x >= |$tagaddr(z)|), then:
+        2. If ((x >= |$tagaddr(z)|) \/ ($exninst(z)[a].TAG =/= $tagaddr(z)[x])), then:
           a. Let [catch] :: catch'* be catch''*.
           b. Pop the handler (HANDLER_ _ { _ }) from the stack.
           c. Push the handler (HANDLER_ n { catch'* }) to the stack.
           d. Push the value (REF.EXN_ADDR a) to the stack.
           e. Execute the instruction THROW_REF.
-        3. Else if ($exninst(z)[a].TAG =/= $tagaddr(z)[x]), then:
-          a. Let [catch] :: catch'* be catch''*.
-          b. Pop the handler (HANDLER_ _ { _ }) from the stack.
-          c. Push the handler (HANDLER_ n { catch'* }) to the stack.
-          d. Push the value (REF.EXN_ADDR a) to the stack.
-          e. Execute the instruction THROW_REF.
-        4. Else:
+        3. Else:
           a. Pop the handler (HANDLER_ _ { _ }) from the stack.
           b. Push the values val* to the stack.
           c. Push the value (REF.EXN_ADDR a) to the stack.
