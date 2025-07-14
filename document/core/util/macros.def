@@ -269,9 +269,6 @@
 .. |TFINAL| mathdef:: \xref{syntax/types}{syntax-subtype}{\K{final}}
 
 .. |TMUT| mathdef:: \xref{syntax/types}{syntax-mut}{\K{mut}}
-.. TODO : remove
-.. |MVAR| mathdef:: \xref{syntax/types}{syntax-mut}{\K{var}}
-.. |MCONST| mathdef:: \xref{syntax/types}{syntax-mut}{\K{const}}
 
 .. |SET| mathdef:: \xref{valid/conventions}{syntax-init}{\K{set}}
 .. |UNSET| mathdef:: \xref{valid/conventions}{syntax-init}{\K{unset}}
@@ -279,9 +276,6 @@
 .. |Llbrack| mathdef:: \xref{syntax/types}{syntax-limits}{\[}
 .. |Lrbrack| mathdef:: \xref{syntax/types}{syntax-limits}{\]}
 .. |Ldotdot| mathdef:: \xref{syntax/types}{syntax-limits}{\,{..}\,}
-.. TODO: remove
-.. |LMIN| mathdef:: \xref{syntax/types}{syntax-limits}{\K{min}}
-.. |LMAX| mathdef:: \xref{syntax/types}{syntax-limits}{\K{max}}
 .. |PAGE| mathdef:: \xref{syntax/types}{syntax-memtype}{\K{page}}
 
 .. |XTFUNC| mathdef:: \xref{syntax/types}{syntax-externtype}{\K{func}}
@@ -391,91 +385,32 @@
 .. Modules, terminals
 
 .. |MODULE| mathdef:: \xref{syntax/modules}{syntax-module}{\K{module}}
-.. TODO : remove the following
-.. |MTYPES| mathdef:: \xref{syntax/modules}{syntax-module}{\K{types}}
-.. |MFUNCS| mathdef:: \xref{syntax/modules}{syntax-module}{\K{funcs}}
-.. |MTABLES| mathdef:: \xref{syntax/modules}{syntax-module}{\K{tables}}
-.. |MMEMS| mathdef:: \xref{syntax/modules}{syntax-module}{\K{mems}}
-.. |MGLOBALS| mathdef:: \xref{syntax/modules}{syntax-module}{\K{globals}}
-.. |MTAGS| mathdef:: \xref{syntax/modules}{syntax-module}{\K{tags}}
-.. |MIMPORTS| mathdef:: \xref{syntax/modules}{syntax-module}{\K{imports}}
-.. |MEXPORTS| mathdef:: \xref{syntax/modules}{syntax-module}{\K{exports}}
-.. |MDATAS| mathdef:: \xref{syntax/modules}{syntax-module}{\K{datas}}
-.. |MELEMS| mathdef:: \xref{syntax/modules}{syntax-module}{\K{elems}}
-.. |MSTART| mathdef:: \xref{syntax/modules}{syntax-module}{\K{start}}
 
 .. |TYPE| mathdef:: \xref{syntax/modules}{syntax-type}{\K{type}}
+.. |TAG| mathdef:: \xref{syntax/modules}{syntax-tag}{\K{tag}}
+.. |GLOBAL| mathdef:: \xref{syntax/modules}{syntax-global}{\K{global}}
+.. |MEMORY| mathdef:: \xref{syntax/modules}{syntax-mem}{\K{memory}}
+.. |TABLE| mathdef:: \xref{syntax/modules}{syntax-table}{\K{table}}
 .. |FUNC| mathdef:: \xref{syntax/modules}{syntax-func}{\K{func}}
 .. |LOCAL| mathdef:: \xref{syntax/modules}{syntax-local}{\K{local}}
-.. |FTYPE| mathdef:: \xref{syntax/modules}{syntax-func}{\K{type}}
-.. |FLOCALS| mathdef:: \xref{syntax/modules}{syntax-func}{\K{locals}}
-.. |FBODY| mathdef:: \xref{syntax/modules}{syntax-func}{\K{body}}
-
-.. |LTYPE| mathdef:: \xref{syntax/modules}{syntax-local}{\K{type}}
-
-.. |TABLE| mathdef:: \xref{syntax/modules}{syntax-table}{\K{table}}
-.. |TTYPE| mathdef:: \xref{syntax/modules}{syntax-table}{\K{type}}
-.. |TINIT| mathdef:: \xref{syntax/modules}{syntax-table}{\K{init}}
-
-.. |MEMORY| mathdef:: \xref{syntax/modules}{syntax-mem}{\K{memory}}
-.. |MTYPE| mathdef:: \xref{syntax/modules}{syntax-mem}{\K{type}}
-
-.. |GLOBAL| mathdef:: \xref{syntax/modules}{syntax-global}{\K{global}}
-.. |GTYPE| mathdef:: \xref{syntax/modules}{syntax-global}{\K{type}}
-.. |GINIT| mathdef:: \xref{syntax/modules}{syntax-global}{\K{init}}
-
-.. |TAG| mathdef:: \xref{syntax/modules}{syntax-tag}{\K{tag}}
-.. |TAGTYPE| mathdef:: \xref{syntax/modules}{syntax-tag}{\K{type}}
-
 .. |ELEM| mathdef:: \xref{syntax/modules}{syntax-elem}{\K{elem}}
-.. |ETYPE| mathdef:: \xref{syntax/modules}{syntax-elem}{\K{type}}
-.. |EINIT| mathdef:: \xref{syntax/modules}{syntax-elem}{\K{init}}
-.. |EMODE| mathdef:: \xref{syntax/modules}{syntax-elem}{\K{mode}}
+.. |DATA| mathdef:: \xref{syntax/modules}{syntax-data}{\K{data}}
+.. |START| mathdef:: \xref{syntax/modules}{syntax-start}{\K{start}}
+.. |IMPORT| mathdef:: \xref{syntax/modules}{syntax-import}{\K{import}}
+.. |EXPORT| mathdef:: \xref{syntax/modules}{syntax-export}{\K{export}}
+
+.. |DPASSIVE| mathdef:: \xref{syntax/modules}{syntax-datamode}{\K{passive}}
+.. |DACTIVE| mathdef:: \xref{syntax/modules}{syntax-datamode}{\K{active}}
+
 .. |EPASSIVE| mathdef:: \xref{syntax/modules}{syntax-elemmode}{\K{passive}}
 .. |EACTIVE| mathdef:: \xref{syntax/modules}{syntax-elemmode}{\K{active}}
 .. |EDECLARE| mathdef:: \xref{syntax/modules}{syntax-elemmode}{\K{declare}}
-.. |ETABLE| mathdef:: \xref{syntax/modules}{syntax-elem}{\K{table}}
-.. |EOFFSET| mathdef:: \xref{syntax/modules}{syntax-elem}{\K{offset}}
-
-.. |DATA| mathdef:: \xref{syntax/modules}{syntax-data}{\K{data}}
-.. |DINIT| mathdef:: \xref{syntax/modules}{syntax-data}{\K{init}}
-.. |DMODE| mathdef:: \xref{syntax/modules}{syntax-data}{\K{mode}}
-.. |DPASSIVE| mathdef:: \xref{syntax/modules}{syntax-datamode}{\K{passive}}
-.. |DACTIVE| mathdef:: \xref{syntax/modules}{syntax-datamode}{\K{active}}
-.. |DMEM| mathdef:: \xref{syntax/modules}{syntax-data}{\K{memory}}
-.. |DOFFSET| mathdef:: \xref{syntax/modules}{syntax-data}{\K{offset}}
-
-.. |START| mathdef:: \xref{syntax/modules}{syntax-start}{\K{start}}
-.. |SFUNC| mathdef:: \xref{syntax/modules}{syntax-start}{\K{func}}
-
-.. |EXPORT| mathdef:: \xref{syntax/modules}{syntax-export}{\K{export}}
-.. |XNAME| mathdef:: \xref{syntax/modules}{syntax-export}{\K{name}}
 
 .. |XXFUNC| mathdef:: \xref{syntax/modules}{syntax-externidx}{\K{func}}
 .. |XXTABLE| mathdef:: \xref{syntax/modules}{syntax-externidx}{\K{table}}
 .. |XXMEM| mathdef:: \xref{syntax/modules}{syntax-externidx}{\K{memory}}
 .. |XXGLOBAL| mathdef:: \xref{syntax/modules}{syntax-externidx}{\K{global}}
 .. |XXTAG| mathdef:: \xref{syntax/modules}{syntax-externidx}{\K{tag}}
-
-.. |IMPORT| mathdef:: \xref{syntax/modules}{syntax-import}{\K{import}}
-.. |IMODULE| mathdef:: \xref{syntax/modules}{syntax-import}{\K{module}}
-.. |INAME| mathdef:: \xref{syntax/modules}{syntax-import}{\K{name}}
-
-.. TODO remove below
-
-.. |XDESC| mathdef:: \xref{syntax/modules}{syntax-export}{\K{desc}}
-.. |XDFUNC| mathdef:: \xref{syntax/modules}{syntax-exportdesc}{\K{func}}
-.. |XDTABLE| mathdef:: \xref{syntax/modules}{syntax-exportdesc}{\K{table}}
-.. |XDMEM| mathdef:: \xref{syntax/modules}{syntax-exportdesc}{\K{mem}}
-.. |XDGLOBAL| mathdef:: \xref{syntax/modules}{syntax-exportdesc}{\K{global}}
-.. |XDTAG| mathdef:: \xref{syntax/modules}{syntax-exportdesc}{\K{tag}}
-
-.. |IDESC| mathdef:: \xref{syntax/modules}{syntax-import}{\K{desc}}
-.. |IDFUNC| mathdef:: \xref{syntax/modules}{syntax-importdesc}{\K{func}}
-.. |IDTABLE| mathdef:: \xref{syntax/modules}{syntax-importdesc}{\K{table}}
-.. |IDMEM| mathdef:: \xref{syntax/modules}{syntax-importdesc}{\K{mem}}
-.. |IDGLOBAL| mathdef:: \xref{syntax/modules}{syntax-importdesc}{\K{global}}
-.. |IDTAG| mathdef:: \xref{syntax/modules}{syntax-importdesc}{\K{tag}}
 
 
 .. Modules, non-terminals
@@ -490,8 +425,6 @@
 .. |tag| mathdef:: \xref{syntax/modules}{syntax-tag}{\X{tag}}
 .. |import| mathdef:: \xref{syntax/modules}{syntax-import}{\X{import}}
 .. |export| mathdef:: \xref{syntax/modules}{syntax-export}{\X{export}}
-.. |importdesc| mathdef:: \xref{syntax/modules}{syntax-importdesc}{\X{importdesc}}
-.. |exportdesc| mathdef:: \xref{syntax/modules}{syntax-exportdesc}{\X{exportdesc}}
 .. |elem| mathdef:: \xref{syntax/modules}{syntax-elem}{\X{elem}}
 .. |elemmode| mathdef:: \xref{syntax/modules}{syntax-elemmode}{\X{elemmode}}
 .. |data| mathdef:: \xref{syntax/modules}{syntax-data}{\X{data}}
@@ -938,8 +871,6 @@
 .. |Btag| mathdef:: \xref{binary/modules}{binary-tag}{\B{tag}}
 .. |Bimport| mathdef:: \xref{binary/modules}{binary-import}{\B{import}}
 .. |Bexport| mathdef:: \xref{binary/modules}{binary-export}{\B{export}}
-.. |Bimportdesc| mathdef:: \xref{binary/modules}{binary-importdesc}{\B{importdesc}}
-.. |Bexportdesc| mathdef:: \xref{binary/modules}{binary-exportdesc}{\B{exportdesc}}
 .. |Belem| mathdef:: \xref{binary/modules}{binary-elem}{\B{elem}}
 .. |Belemkind| mathdef:: \xref{binary/modules}{binary-elemkind}{\B{elemkind}}
 .. |Bcode| mathdef:: \xref{binary/modules}{binary-code}{\B{code}}
@@ -1070,6 +1001,7 @@
 .. |Ttypedef| mathdef:: \xref{text/types}{text-typedef}{\T{typedef}}
 .. |Trectype| mathdef:: \xref{text/types}{text-rectype}{\T{rectype}}
 
+.. |Texterntype| mathdef:: \xref{text/types}{text-externtype}{\T{externtype}}
 .. |Ttagtype| mathdef:: \xref{text/types}{text-tagtype}{\T{tagtype}}
 .. |Tglobaltype| mathdef:: \xref{text/types}{text-globaltype}{\T{globaltype}}
 .. |Ttabletype| mathdef:: \xref{text/types}{text-tabletype}{\T{tabletype}}
@@ -1110,8 +1042,7 @@
 .. |Ttag| mathdef:: \xref{text/modules}{text-tag}{\T{tag}}
 .. |Timport| mathdef:: \xref{text/modules}{text-import}{\T{import}}
 .. |Texport| mathdef:: \xref{text/modules}{text-export}{\T{export}}
-.. |Timportdesc| mathdef:: \xref{text/modules}{text-importdesc}{\T{importdesc}}
-.. |Texportdesc| mathdef:: \xref{text/modules}{text-exportdesc}{\T{exportdesc}}
+.. |Texternidx| mathdef:: \xref{text/modules}{text-externidx}{\T{externidx}}
 .. |Telem| mathdef:: \xref{text/modules}{text-elem}{\T{elem}}
 .. |Telemlist| mathdef:: \xref{text/modules}{text-elemlist}{\T{elemlist}}
 .. |Telemexpr| mathdef:: \xref{text/modules}{text-elemexpr}{\T{elemexpr}}
@@ -1319,9 +1250,7 @@
 .. |vdashdatamode| mathdef:: \xref{valid/modules}{valid-datamode}{\vdash}
 .. |vdashstart| mathdef:: \xref{valid/modules}{valid-start}{\vdash}
 .. |vdashexport| mathdef:: \xref{valid/modules}{valid-export}{\vdash}
-.. |vdashexportdesc| mathdef:: \xref{valid/modules}{valid-exportdesc}{\vdash}
 .. |vdashimport| mathdef:: \xref{valid/modules}{valid-import}{\vdash}
-.. |vdashimportdesc| mathdef:: \xref{valid/modules}{valid-importdesc}{\vdash}
 .. |vdashmodule| mathdef:: \xref{valid/modules}{valid-module}{\vdash}
 
 .. |OKelemmode| mathdef:: \xref{valid/modules}{valid-elemmode}{\K{ok}}

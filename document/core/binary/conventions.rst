@@ -76,7 +76,7 @@ In order to distinguish symbols of the binary syntax from symbols of the abstrac
 
    The :ref:`binary grammar <binary-limits>` for :ref:`limits <syntax-limits>` is defined as follows:   
 
-   $${grammar: Blimits}
+   $${grammar: Blimits_}
 
    That is, a limits pair is encoded as either the byte ${:0x00} followed by the encoding of a ${:u32} value,
    or the byte ${grammar-case: 0x01} followed by two such encodings. 

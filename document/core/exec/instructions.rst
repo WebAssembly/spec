@@ -1079,21 +1079,19 @@ Invocation of :ref:`function reference <syntax-ref.func>` :math:`(\REFFUNCADDR~a
 
 3. Let :math:`\TFUNC~[t_1^n] \Tarrow [t_2^m]` be the :ref:`composite type <syntax-comptype>` :math:`\expanddt(\X{f}.\FITYPE)`.
 
-4. Let :math:`\local^\ast` be the list of :ref:`locals <syntax-local>` :math:`f.\FICODE.\FLOCALS`.
+4. Let :math:`\FUNC~x~\local^\ast~\instr^\ast` be the :ref:`function <syntax-func>` :math:`f.\FICODE`.
 
-5. Let :math:`\instr^\ast~\END` be the :ref:`expression <syntax-expr>` :math:`f.\FICODE.\FBODY`.
+5. Assert: due to :ref:`validation <valid-call>`, :math:`n` values are on the top of the stack.
 
-6. Assert: due to :ref:`validation <valid-call>`, :math:`n` values are on the top of the stack.
+6. Pop the values :math:`\val^n` from the stack.
 
-7. Pop the values :math:`\val^n` from the stack.
+7. Let :math:`F` be the :ref:`frame <syntax-frame>` :math:`\{ \AMODULE~F.\FIMODULE, \ALOCALS~\val^n~(\default_t)^\ast \}`.
 
-8. Let :math:`F` be the :ref:`frame <syntax-frame>` :math:`\{ \AMODULE~f.\FIMODULE, \ALOCALS~\val^n~(\default_t)^\ast \}`.
+8. Push the activation of :math:`f` with arity :math:`m` to the stack.
 
-9. Push the activation of :math:`F` with arity :math:`m` to the stack.
+9. Let :math:`L` be the :ref:`label <syntax-label>` whose arity is :math:`m` and whose continuation is the end of the function.
 
-10. Let :math:`L` be the :ref:`label <syntax-label>` whose arity is :math:`m` and whose continuation is the end of the function.
-
-11. :ref:`Enter <exec-instrs-enter>` the instruction sequence :math:`\instr^\ast` with label :math:`L` and no values.
+10. :ref:`Enter <exec-instrs-enter>` the instruction sequence :math:`\instr^\ast` with label :math:`L` and no values.
 
 $${rule: {Step_read/call_ref-func}}
 

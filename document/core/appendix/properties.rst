@@ -419,9 +419,9 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
 .. math::
    \begin{array}{@{}lcll@{}}
    (\REFSTRUCTADDR~a) &\gg_S& S.\SSTRUCTS[a].\SIFIELDS[i]
-     & \iff \expanddt(S.\SSTRUCTS[a].\SITYPE) = \TSTRUCT~\X{ft}_1^i~(\MCONST~\X{st})~\X{ft}_2^\ast \\
+     & \iff \expanddt(S.\SSTRUCTS[a].\SITYPE) = \TSTRUCT~\X{ft}_1^i~\X{st}~\X{ft}_2^\ast \\
    (\REFARRAYADDR~a) &\gg_S& S.\SARRAYS[a].\AIFIELDS[i]
-     & \iff \expanddt(S.\SARRAYS[a].\AITYPE) = \TARRAY~(\MCONST~\X{st}) \\
+     & \iff \expanddt(S.\SARRAYS[a].\AITYPE) = \TARRAY~\X{st} \\
    (\REFEXNADDR~a) &\gg_S& S.\SEXNS[a].\EIFIELDS[i] \\
    (\REFEXTERN~\reff) &\gg_S& \reff \\
    \end{array}
@@ -483,17 +483,19 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
 
 * The :ref:`memory type <syntax-memtype>` :math:`\addrtype~\limits` must be :ref:`valid <valid-memtype>` under the empty :ref:`context <context>`.
 
-* The length of :math:`b^\ast` must equal :math:`\limits.\LMIN` multiplied by the :ref:`page size <page-size>` :math:`64\,\F{Ki}`.
+* Let :math:`\limits` be :math:`[n\,{..}\,m]`.
+
+* The length of :math:`b^\ast` must equal :math:`m` multiplied by the :ref:`page size <page-size>` :math:`64\,\F{Ki}`.
 
 * Then the memory instance is valid with :ref:`memory type <syntax-memtype>` :math:`\addrtype~\limits`.
 
 .. math::
    \frac{
-     \vdashmemtype \addrtype~\limits : \OKmemtype
+     \vdashmemtype \addrtype~[n\,{..}\,m] : \OKmemtype
      \qquad
-     n = \limits.\LMIN \cdot 64\,\F{Ki}
+     |b^\ast| = n \cdot 64\,\F{Ki}
    }{
-     S \vdashmeminst \{ \MITYPE~(\addrtype~\limits), \MIBYTES~b^n \} : \addrtype~\limits
+     S \vdashmeminst \{ \MITYPE~(\addrtype~[n\,{..}\,m]), \MIBYTES~b^\ast \} : \addrtype~[n\,{..}\,m]
    }
 
 
@@ -505,7 +507,9 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
 
 * The :ref:`table type <syntax-tabletype>` :math:`\addrtype~\limits~t` must be :ref:`valid <valid-tabletype>` under the empty :ref:`context <context>`.
 
-* The length of :math:`\reff^\ast` must equal :math:`\limits.\LMIN`.
+* Let :math:`\limits` be :math:`[n\,{..}\,m]`.
+
+* The length of :math:`\reff^\ast` must equal :math:`n`.
 
 * For each :ref:`reference <syntax-ref>` :math:`\reff_i` in the table's elements :math:`\reff^n`:
 
@@ -517,15 +521,15 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
 
 .. math::
    \frac{
-     \vdashtabletype \addrtype~\limits~t : \OKtabletype
+     \vdashtabletype \addrtype~[n\,{..}\,m]~t : \OKtabletype
      \qquad
-     n = \limits.\LMIN
+     |\reff^\ast| = n
      \qquad
-     (S \vdash \reff : t')^n
+     (S \vdash \reff : t')^\ast
      \qquad
-     (\vdashreftypematch t' \subvaltypematch t)^n
+     (\vdashreftypematch t' \subvaltypematch t)^\ast
    }{
-     S \vdashtableinst \{ \TITYPE~(\addrtype~\limits~t), \TIREFS~\reff^n \} : \addrtype~\limits~t
+     S \vdashtableinst \{ \TITYPE~(\addrtype~[n\,{..}\,m]~t), \TIREFS~\reff^\ast \} : \addrtype~[n\,{..}\,m]~t
    }
 
 
@@ -1309,11 +1313,11 @@ a store state :math:`S'` extends state :math:`S`, written :math:`S \extendsto S'
 
 * Let :math:`\mut~t` be the structure of :math:`\globalinst.\GITYPE`.
 
-* If :math:`\mut` is |MCONST|, then the :ref:`value <syntax-val>` :math:`\globalinst.\GIVALUE` must remain unchanged.
+* If :math:`\mut` is empty, then the :ref:`value <syntax-val>` :math:`\globalinst.\GIVALUE` must remain unchanged.
 
 .. math::
    \frac{
-     \mut = \MVAR \vee \val_1 = \val_2
+     \mut = \TMUT \vee \val_1 = \val_2
    }{
      \vdashglobalinstextends \{\GITYPE~(\mut~t), \GIVALUE~\val_1\} \extendsto \{\GITYPE~(\mut~t), \GIVALUE~\val_2\}
    }
@@ -1442,11 +1446,11 @@ a store state :math:`S'` extends state :math:`S`, written :math:`S \extendsto S'
 
   * Let :math:`\mut_i~\X{st}_i` be the structure of :math:`\fieldtype_i`.
 
-  * If :math:`\mut_i` is |MCONST|, then the :ref:`field value <syntax-fieldval>` :math:`\fieldval_i` must remain unchanged.
+  * If :math:`\mut_i` is empty, then the :ref:`field value <syntax-fieldval>` :math:`\fieldval_i` must remain unchanged.
 
 .. math::
    \frac{
-     (\mut = \MVAR \vee \fieldval_1 = \fieldval_2)^\ast
+     (\mut = \TMUT \vee \fieldval_1 = \fieldval_2)^\ast
    }{
      \vdashstructinstextends \{\SITYPE~(\mut~\X{st})^\ast, \SIFIELDS~\fieldval_1^\ast\} \extendsto \{\SITYPE~(\mut~\X{st})^\ast, \SIFIELDS~\fieldval_2^\ast\}
    }
@@ -1468,11 +1472,11 @@ a store state :math:`S'` extends state :math:`S`, written :math:`S \extendsto S'
 
 * Let :math:`\mut~\X{st}` be the structure of :math:`\fieldtype`.
 
-* If :math:`\mut` is |MCONST|, then the sequence of :ref:`field values <syntax-fieldval>` :math:`\arrayinst.\AIFIELDS` must remain unchanged.
+* If :math:`\mut` is empty, then the sequence of :ref:`field values <syntax-fieldval>` :math:`\arrayinst.\AIFIELDS` must remain unchanged.
 
 .. math::
    \frac{
-     \mut = \MVAR \vee \fieldval_1^\ast = \fieldval_2^\ast
+     \mut = \TMUT \vee \fieldval_1^\ast = \fieldval_2^\ast
    }{
      \vdasharrayinstextends \{\AITYPE~(\mut~\X{st}), \AIFIELDS~\fieldval_1^\ast\} \extendsto \{\AITYPE~(\mut~\X{st}), \AIFIELDS~\fieldval_2^\ast\}
    }

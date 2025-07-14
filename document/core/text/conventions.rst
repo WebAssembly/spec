@@ -80,11 +80,11 @@ In order to distinguish symbols of the textual syntax from symbols of the abstra
    .. math::
       \begin{array}{llclll}
       \production{limits} & \Tlimits &::=&
-        n{:}\Tu32 &\Rightarrow& \{ \LMIN~n, \LMAX~\epsilon \} \\ &&|&
-        n{:}\Tu32~~m{:}\Tu32 &\Rightarrow& \{ \LMIN~n, \LMAX~m \} \\
+        n{:}\Tu64 &\Rightarrow& [ n\,{..}\, 2^64-1 ] \\ &&|&
+        n{:}\Tu64~~m{:}\Tu64 &\Rightarrow& [ n\,{..}\, m ] \\
       \end{array}
 
-   The variables :math:`n` and :math:`m` name the attributes of the respective |Tu32| nonterminals, which in this case are the actual :ref:`unsigned integers <syntax-uint>` those parse into.
+   The variables :math:`n` and :math:`m` name the attributes of the respective |Tu64| nonterminals, which in this case are the actual :ref:`unsigned integers <syntax-uint>` those parse into.
    The attribute of the complete production then is the abstract syntax for the limit, expressed in terms of the former values.
 
 

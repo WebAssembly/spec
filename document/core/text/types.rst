@@ -163,9 +163,9 @@ Composite Types
        &\Rightarrow& \X{ft} \\
    \production{field type} & \Tfieldtype_I &::=&
      \X{st}{:}\Bstoragetype
-       &\Rightarrow& \MCONST~\X{st} \\ &&|&
+       &\Rightarrow& \X{st} \\ &&|&
      \text{(}~\text{mut}~~\X{st}{:}\Bstoragetype~\text{)}
-       &\Rightarrow& \MVAR~\X{st} \\
+       &\Rightarrow& \TMUT~\X{st} \\
    \production{storage type} & \Tstoragetype_I &::=&
      t{:}\Tvaltype_I
        &\Rightarrow& t \\ &&|&
@@ -288,9 +288,9 @@ Limits
 
 .. math::
     \begin{array}{llclll}
-    \production{limits} & \Tlimits &::=&
-      n{:}\Tu64 &\Rightarrow& \{ \LMIN~n, \LMAX~\epsilon \} \\ &&|&
-      n{:}\Tu64~~m{:}\Tu64 &\Rightarrow& \{ \LMIN~n, \LMAX~m \} \\
+    \production{limits} & \Tlimits_N &::=&
+      n{:}\Tu64 &\Rightarrow& [ n\,{..}\,2^N ] \\ &&|&
+      n{:}\Tu64~~m{:}\Tu64 &\Rightarrow& [ n\,{..}\,m ] \\
     \end{array}
 
 
@@ -319,8 +319,8 @@ Global Types
 .. math::
    \begin{array}{llclll}
    \production{global type} & \Tglobaltype_I &::=&
-     t{:}\Tvaltype_I &\Rightarrow& \MCONST~t \\ &&|&
-     \text{(}~\text{mut}~~t{:}\Tvaltype_I~\text{)} &\Rightarrow& \MVAR~t \\
+     t{:}\Tvaltype_I &\Rightarrow& t \\ &&|&
+     \text{(}~\text{mut}~~t{:}\Tvaltype_I~\text{)} &\Rightarrow& \TMUT~t \\
    \end{array}
 
 
@@ -334,7 +334,7 @@ Memory Types
 .. math::
    \begin{array}{llclll@{\qquad\qquad}l}
    \production{memory type} & \Tmemtype_I &::=&
-     \X{at}{:}\Taddrtype~~\X{lim}{:}\Tlimits &\Rightarrow& \X{at}~\X{lim}~\PAGE \\
+     \X{at}{:}\Taddrtype~~\X{lim}{:}\Tlimits_{|\X{at}|/64\cdot\F{Ki}} &\Rightarrow& \X{at}~\X{lim}~\PAGE \\
    \end{array}
 
 
@@ -348,5 +348,28 @@ Table Types
 .. math::
    \begin{array}{llclll}
    \production{table type} & \Ttabletype_I &::=&
-     \X{at}{:}\Taddrtype~~\X{lim}{:}\Tlimits~~\X{et}{:}\Treftype_I &\Rightarrow& \X{at}~\X{lim}~\X{et} \\
+     \X{at}{:}\Taddrtype~~\X{lim}{:}\Tlimits_{|\X{at}|}~~\X{et}{:}\Treftype_I &\Rightarrow& \X{at}~\X{lim}~\X{et} \\
+   \end{array}
+
+
+.. index:: external type, tag type, global type, memory type, table type, function type
+   pair: text format; external type
+.. _text-externtype:
+
+External Types
+~~~~~~~~~~~~~~
+
+.. math::
+   \begin{array}{llclll}
+   \production{external type} & \Texterntype_I &::=&
+     \text{(}~\text{tag}~~\Tid^?~~\X{tt}{:}\Ttagtype~\text{)}
+       &\Rightarrow& \XTTAG~\X{tt} \\ &&|&
+     \text{(}~\text{global}~~\Tid^?~~\X{gt}{:}\Tglobaltype_I~\text{)}
+       &\Rightarrow& \XTGLOBAL~\X{gt} \\ &&|&
+     \text{(}~\text{memory}~~\Tid^?~~\X{mt}{:}\Tmemtype_I~\text{)}
+       &\Rightarrow& \XTMEM~~\X{mt} \\ &&|&
+     \text{(}~\text{table}~~\Tid^?~~\X{tt}{:}\Ttabletype_I~\text{)}
+       &\Rightarrow& \XTTABLE~\X{tt} \\ &&|&
+     \text{(}~\text{func}~~\Tid^?~~x,I'{:}\Ttypeuse_I~\text{)}
+       &\Rightarrow& \XTFUNC~x \\
    \end{array}

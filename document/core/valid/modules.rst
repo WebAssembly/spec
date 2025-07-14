@@ -221,7 +221,7 @@ $${rule-prose: Export_ok}
 $${rule: Export_ok}
 
 
-:math:`\XDTAG~x`
+:math:`\XXTAG~x`
 ................
 
 $${rule-prose: Externidx_ok/tag}
@@ -229,7 +229,7 @@ $${rule-prose: Externidx_ok/tag}
 $${rule: Externidx_ok/tag}
 
 
-:math:`\XDGLOBAL~x`
+:math:`\XXGLOBAL~x`
 ...................
 
 $${rule-prose: Externidx_ok/global}
@@ -237,7 +237,7 @@ $${rule-prose: Externidx_ok/global}
 $${rule: Externidx_ok/global}
 
 
-:math:`\XDMEM~x`
+:math:`\XXMEM~x`
 ................
 
 $${rule-prose: Externidx_ok/mem}
@@ -245,7 +245,7 @@ $${rule-prose: Externidx_ok/mem}
 $${rule: Externidx_ok/mem}
 
 
-:math:`\XDTABLE~x`
+:math:`\XXTABLE~x`
 ..................
 
 $${rule-prose: Externidx_ok/table}
@@ -253,7 +253,7 @@ $${rule-prose: Externidx_ok/table}
 $${rule: Externidx_ok/table}
 
 
-:math:`\XDFUNC~x`
+:math:`\XXFUNC~x`
 .................
 
 $${rule-prose: Externidx_ok/func}

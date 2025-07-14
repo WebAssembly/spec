@@ -193,13 +193,15 @@ Modules
 
 1. Pre-condition: :math:`\module` is :ref:`valid <valid-module>` with the external import types :math:`\externtype^\ast` and external export types :math:`{\externtype'}^\ast`.
 
-2. Let :math:`\import^\ast` be the :ref:`imports <syntax-import>` :math:`\module.\MIMPORTS`.
+2. Let :math:`\import^\ast` be the :ref:`imports <syntax-import>` of :math:`\module`.
 
 3. Assert: the length of :math:`\import^\ast` equals the length of :math:`\externtype^\ast`.
 
 4. For each :math:`\import_i` in :math:`\import^\ast` and corresponding :math:`\externtype_i` in :math:`\externtype^\ast`, do:
 
-  a. Let :math:`\X{result}_i` be the triple :math:`(\import_i.\IMODULE, \import_i.\INAME, \externtype_i)`.
+  a. Let :math:`\IMPORT~\X{nm}_{i1}~\X{nm}_{i2}~\X{xt}_i` be the deconstruction of :math:`\import_i`.
+
+  b. Let :math:`\X{result}_i` be the triple :math:`(\X{nm}_{i1}, \X{nm}_{i2}, \externtype_i)`.
 
 5. Return the concatenation of all :math:`\X{result}_i`, in index order.
 
@@ -208,8 +210,8 @@ Modules
 .. math::
    ~ \\
    \begin{array}{lclll}
-   \F{module\_imports}(m) &=& (\X{im}.\IMODULE, \X{im}.\INAME, \externtype)^\ast \\
-     && \qquad (\iff \X{im}^\ast = m.\MIMPORTS \wedge {} \vdashmodule m : \externtype^\ast \rightarrow {\externtype'}^\ast) \\
+   \F{module\_imports}(m) &=& (\X{nm}_1, \X{nm}_2, \externtype)^\ast \\
+     && \qquad (\iff (\IMPORT~\X{nm}_1~\X{nm}_2~\X{xt}^\ast)^\ast \in m \wedge {} \vdashmodule m : \externtype^\ast \rightarrow {\externtype'}^\ast) \\
    \end{array}
 
 
@@ -221,13 +223,15 @@ Modules
 
 1. Pre-condition: :math:`\module` is :ref:`valid <valid-module>` with the external import types :math:`\externtype^\ast` and external export types :math:`{\externtype'}^\ast`.
 
-2. Let :math:`\export^\ast` be the :ref:`exports <syntax-export>` :math:`\module.\MEXPORTS`.
+2. Let :math:`\export^\ast` be the :ref:`exports <syntax-export>` of :math:`\module`.
 
 3. Assert: the length of :math:`\export^\ast` equals the length of :math:`{\externtype'}^\ast`.
 
 4. For each :math:`\export_i` in :math:`\export^\ast` and corresponding :math:`\externtype'_i` in :math:`{\externtype'}^\ast`, do:
 
-  a. Let :math:`\X{result}_i` be the pair :math:`(\export_i.\XNAME, \externtype'_i)`.
+  a. Let :math:`\EXPORT~\X{nm}_i~\externidx_i` be the deconstruction of :math:`\export_i`.
+
+  b. Let :math:`\X{result}_i` be the pair :math:`(\X{nm}_i, \externtype'_i)`.
 
 5. Return the concatenation of all :math:`\X{result}_i`, in index order.
 
@@ -236,8 +240,8 @@ Modules
 .. math::
    ~ \\
    \begin{array}{lclll}
-   \F{module\_exports}(m) &=& (\X{ex}.\XNAME, \externtype')^\ast \\
-     && \qquad (\iff \X{ex}^\ast = m.\MEXPORTS \wedge {} \vdashmodule m : \externtype^\ast \rightarrow {\externtype'}^\ast) \\
+   \F{module\_exports}(m) &=& (\\X{nm}, \externtype')^\ast \\
+     && \qquad (\iff (\EXPORT~\X{nm}~\X{xt}^\ast)^\ast \in m \wedge {} \vdashmodule m : \externtype^\ast \rightarrow {\externtype'}^\ast) \\
    \end{array}
 
 
@@ -265,7 +269,7 @@ Module Instances
 .. math::
    ~ \\
    \begin{array}{lclll}
-   \F{instance\_export}(m, \name) &=& m.\MIEXPORTS[i].\XIADDR && (\iff m.\MEXPORTS[i].\XINAME = \name) \\
+   \F{instance\_export}(m, \name) &=& m.\MIEXPORTS[i].\XIADDR && (\iff m.\MIEXPORTS[i].\XINAME = \name) \\
    \F{instance\_export}(m, \name) &=& \ERROR && (\otherwise) \\
    \end{array}
 
@@ -726,7 +730,7 @@ Globals
 
 2. Let :math:`\mut~t` be the structure of the :ref:`global type <syntax-globaltype>` :math:`\X{gi}.\GITYPE`.
 
-3. If :math:`\mut` is not :math:`\MVAR`, then return :math:`\ERROR`.
+3. If :math:`\mut` is empty, then return :math:`\ERROR`.
 
 4. Replace :math:`\X{gi}.\GIVALUE` with the :ref:`value <syntax-val>` :math:`\val`.
 
@@ -735,7 +739,7 @@ Globals
 .. math::
    ~ \\
    \begin{array}{lclll}
-   \F{global\_write}(S, a, v) &=& S' && (\iff S.\SGLOBALS[a].\GITYPE = \MVAR~t \wedge S' = S \with \SGLOBALS[a].\GIVALUE = v) \\
+   \F{global\_write}(S, a, v) &=& S' && (\iff S.\SGLOBALS[a].\GITYPE = \TMUT~t \wedge S' = S \with \SGLOBALS[a].\GIVALUE = v) \\
    \F{global\_write}(S, a, v) &=& \ERROR && (\otherwise) \\
    \end{array}
 

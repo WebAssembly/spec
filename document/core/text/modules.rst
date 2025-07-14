@@ -159,7 +159,7 @@ An tag definition can bind a symbolic :ref:`tag identifier <text-id>`.
    \begin{array}{llcl}
    \production{tag} & \Ttag_I &::=&
      \text{(}~\text{tag}~~\Tid^?~~\X{tt}{:}\Ttagtype_I~\text{)} \\ &&& \qquad
-       \Rightarrow\quad \{ \TAGTYPE~\X{tt} \} \\
+       \Rightarrow\quad \TAG~\X{tt} \\
    \end{array}
 
 .. index:: import, name
@@ -205,7 +205,7 @@ Global definitions can bind a symbolic :ref:`global identifier <text-id>`.
    \begin{array}{llclll}
    \production{global} & \Tglobal_I &::=&
      \text{(}~\text{global}~~\Tid^?~~\X{gt}{:}\Tglobaltype_I~~e{:}\Texpr_I~\text{)}
-       &\Rightarrow& \{ \GTYPE~\X{gt}, \GINIT~e \} \\
+       &\Rightarrow& \GLOBAL~\X{gt}~e \\
    \end{array}
 
 
@@ -251,7 +251,7 @@ Memory definitions can bind a symbolic :ref:`memory identifier <text-id>`.
    \begin{array}{llclll}
    \production{memory} & \Tmem_I &::=&
      \text{(}~\text{memory}~~\Tid^?~~\X{mt}{:}\Tmemtype_I~\text{)}
-       &\Rightarrow& \{ \MTYPE~\X{mt} \} \\
+       &\Rightarrow& \MEMORY~\X{mt} \\
    \end{array}
 
 
@@ -315,7 +315,7 @@ Table definitions can bind a symbolic :ref:`table identifier <text-id>`.
    \begin{array}{llclll}
    \production{table} & \Ttable_I &::=&
      \text{(}~\text{table}~~\Tid^?~~\X{tt}{:}\Ttabletype_I~~e{:}\Texpr_I~\text{)}
-       &\Rightarrow& \{ \TTYPE~\X{tt}, \TINIT~e \} \\
+       &\Rightarrow& \TABLE~\X{tt}~e \\
    \end{array}
 
 
@@ -404,11 +404,11 @@ Function definitions can bind a symbolic :ref:`function identifier <text-id>`, a
    \production{function} & \Tfunc_I &::=&
      \text{(}~\text{func}~~\Tid^?~~x,I'{:}\Ttypeuse_I~~
      (\X{loc}{:}\Tlocal_I)^\ast~~(\X{in}{:}\Tinstr_{I''})^\ast~\text{)} \\ &&& \qquad
-       \Rightarrow\quad \{ \FTYPE~x, \FLOCALS~\X{loc}^\ast, \FBODY~\X{in}^\ast~\END \} \\ &&& \qquad\qquad\qquad
+       \Rightarrow\quad \FUNC~x~\X{loc}^\ast~\X{in}^\ast \\ &&& \qquad\qquad\qquad
        (\iff I'' = I \compose I' \compose \{\ILOCALS~\F{id}(\Tlocal)^\ast\} \idcwellformed) \\[1ex]
    \production{local} & \Tlocal_I &::=&
      \text{(}~\text{local}~~\Tid^?~~t{:}\Tvaltype_I~\text{)}
-       \quad\Rightarrow\quad \{ \LTYPE~t \} \\
+       \quad\Rightarrow\quad \LOCAL~t \\
    \end{array}
 
 The definition of the local :ref:`identifier context <text-context>` :math:`I''` uses the following auxiliary function to extract optional identifiers from locals:
@@ -478,9 +478,9 @@ The data is written as a :ref:`string <text-string>`, which may be split up into
    \begin{array}{llclll}
    \production{data segment} & \Tdata_I &::=&
      \text{(}~\text{data}~~\Tid^?~~b^\ast{:}\Tdatastring~\text{)} \\ &&& \qquad
-       \Rightarrow\quad \{ \DINIT~b^\ast, \DMODE~\DPASSIVE \} \\ &&|&
+       \Rightarrow\quad \DATA~b^\ast~\DPASSIVE \\ &&|&
      \text{(}~\text{data}~~\Tid^?~~x{:}\Tmemuse_I~~\text{(}~\text{offset}~~e{:}\Texpr_I~\text{)}~~b^\ast{:}\Tdatastring~\text{)} \\ &&& \qquad
-       \Rightarrow\quad \{ \DINIT~b^\ast, \DMODE~\DACTIVE~\{ \DMEM~x, \DOFFSET~e \} \} \\
+       \Rightarrow\quad \DATA~b^\ast~\DACTIVE~x~e \\
    \production{data string} & \Tdatastring &::=&
      (b^\ast{:}\Tstring)^\ast \quad\Rightarrow\quad \concat((b^\ast)^\ast) \\
    \production{memory use} & \Tmemuse_I &::=&
@@ -533,14 +533,14 @@ Element segments allow for an optional :ref:`table index <text-tableidx>` to ide
 .. math::
    \begin{array}{llclll}
    \production{element segment} & \Telem_I &::=&
-     \text{(}~\text{elem}~~\Tid^?~~(et, y^\ast){:}\Telemlist_I~\text{)} \\ &&& \qquad
-       \Rightarrow\quad \{ \ETYPE~et, \EINIT~y^\ast, \EMODE~\EPASSIVE \} \\ &&|&
-     \text{(}~\text{elem}~~\Tid^?~~x{:}\Ttableuse_I~~\text{(}~\text{offset}~~e{:}\Texpr_I~\text{)}~~(et, y^\ast){:}\Telemlist_I~\text{)} \\ &&& \qquad
-       \Rightarrow\quad \{ \ETYPE~et, \EINIT~y^\ast, \EMODE~\EACTIVE~\{ \ETABLE~x, \EOFFSET~e \} \} \\ &&&
+     \text{(}~\text{elem}~~\Tid^?~~(et, e^\ast){:}\Telemlist_I~\text{)} \\ &&& \qquad
+       \Rightarrow\quad \ELEM~et~e^\ast~\EPASSIVE \\ &&|&
+     \text{(}~\text{elem}~~\Tid^?~~x{:}\Ttableuse_I~~\text{(}~\text{offset}~~e'{:}\Texpr_I~\text{)}~~(et, e^\ast){:}\Telemlist_I~\text{)} \\ &&& \qquad
+       \Rightarrow\quad \ELEM~et~e^\ast~\EACTIVE~~x~e' \\ &&&
      \text{(}~\text{elem}~~\Tid^?~~\text{declare}~~(et, y^\ast){:}\Telemlist_I~\text{)} \\ &&& \qquad
-       \Rightarrow\quad \{ \ETYPE~et, \EINIT~y^\ast, \EMODE~\EDECLARE \} \\
+       \Rightarrow\quad \ELEM~et~e^\ast~\EDECLARE \\
    \production{element list} & \Telemlist_I &::=&
-     t{:}\Treftype_I~~y^\ast{:}\Tlist(\Telemexpr_I) \qquad\Rightarrow\quad ( \ETYPE~t, \EINIT~y^\ast ) \\
+     t{:}\Treftype_I~~e^\ast{:}\Tlist(\Telemexpr_I) \qquad\Rightarrow\quad ( t, ee^\ast ) \\
    \production{element expression} & \Telemexpr_I &::=&
      \text{(}~\text{item}~~e{:}\Texpr_I~\text{)}
        \quad\Rightarrow\quad e \\
@@ -605,7 +605,7 @@ A :ref:`start function <syntax-start>` is defined in terms of its index.
    \begin{array}{llclll}
    \production{start function} & \Tstart_I &::=&
      \text{(}~\text{start}~~x{:}\Tfuncidx_I~\text{)}
-       &\Rightarrow& \{ \SFUNC~x \} \\
+       &\Rightarrow& \START~x \\
    \end{array}
 
 .. note::
@@ -616,30 +616,18 @@ A :ref:`start function <syntax-start>` is defined in terms of its index.
 
 .. index:: import, name, tag type, global type, memory type, table type, function type
    pair: text format; import
-.. _text-importdesc:
 .. _text-import:
 
 Imports
 ~~~~~~~
 
-The descriptors in imports can bind a symbolic function, table, memory, tag, or global :ref:`identifier <text-id>`.
+The :ref:`external type <syntax-externtype>` in imports can bind a symbolic tag, global, memory, or function :ref:`identifier <text-id>`.
 
 .. math::
    \begin{array}{llclll}
    \production{import} & \Timport_I &::=&
-     \text{(}~\text{import}~~\X{mod}{:}\Tname~~\X{nm}{:}\Tname~~d{:}\Timportdesc_I~\text{)} \\ &&& \qquad
-       \Rightarrow\quad \{ \IMODULE~\X{mod}, \INAME~\X{nm}, \IDESC~d \} \\[1ex]
-   \production{import description} & \Timportdesc_I &::=&
-     \text{(}~\text{tag}~~\Tid^?~~\X{tt}{:}\Ttagtype~\text{)}
-       &\Rightarrow& \IDTAG~\X{tt} \\ &&|&
-     \text{(}~\text{global}~~\Tid^?~~\X{gt}{:}\Tglobaltype_I~\text{)}
-       &\Rightarrow& \IDGLOBAL~\X{gt} \\ &&|&
-     \text{(}~\text{memory}~~\Tid^?~~\X{mt}{:}\Tmemtype_I~\text{)}
-       &\Rightarrow& \IDMEM~~\X{mt} \\ &&|&
-     \text{(}~\text{table}~~\Tid^?~~\X{tt}{:}\Ttabletype_I~\text{)}
-       &\Rightarrow& \IDTABLE~\X{tt} \\ &&|&
-     \text{(}~\text{func}~~\Tid^?~~x,I'{:}\Ttypeuse_I~\text{)}
-       &\Rightarrow& \IDFUNC~x \\
+     \text{(}~\text{import}~~\X{nm}_1{:}\Tname~~\X{nm}_2{:}\Tname~~\X{xx}{:}\Texterntype_I~\text{)} \\ &&& \qquad
+       \Rightarrow\quad \IMPORT~\X{nm}_1~\X{nm}_2~\X{xx} \\[1ex]
    \end{array}
 
 
@@ -656,9 +644,9 @@ definitions; see the respective sections.
 
 
 
-.. index:: export, name, index, function index, table index, memory index, global index, tag index
+.. index:: export, name, index, external index, tag index, global index, memory index, table index, function index
    pair: text format; export
-.. _text-exportdesc:
+.. _text-externidx:
 .. _text-export:
 
 Exports
@@ -669,19 +657,19 @@ The syntax for exports mirrors their :ref:`abstract syntax <syntax-export>` dire
 .. math::
    \begin{array}{llclll}
    \production{export} & \Texport_I &::=&
-     \text{(}~\text{export}~~\X{nm}{:}\Tname~~d{:}\Texportdesc_I~\text{)}
-       &\Rightarrow& \{ \XNAME~\X{nm}, \XDESC~d \} \\
-   \production{export description} & \Texportdesc_I &::=&
+     \text{(}~\text{export}~~\X{nm}{:}\Tname~~\X{xx}{:}\Texternidx_I~\text{)}
+       &\Rightarrow& \EXPORT~\X{nm}~\X{xx} \} \\
+   \production{external index} & \Texternidx_I &::=&
      \text{(}~\text{tag}~~x{:}\Ttagidx_I~\text{)}
-       &\Rightarrow& \XDTAG~x \\ &&|&
+       &\Rightarrow& \XXTAG~x \\ &&|&
      \text{(}~\text{global}~~x{:}\Tglobalidx_I~\text{)}
-       &\Rightarrow& \XDGLOBAL~x \\&&|&
+       &\Rightarrow& \XXGLOBAL~x \\&&|&
      \text{(}~\text{memory}~~x{:}\Tmemidx_I~\text{)}
-       &\Rightarrow& \XDMEM~x \\ &&|&
+       &\Rightarrow& \XXMEM~x \\ &&|&
      \text{(}~\text{table}~~x{:}\Ttableidx_I~\text{)}
-       &\Rightarrow& \XDTABLE~x \\ &&|&
+       &\Rightarrow& \XXTABLE~x \\ &&|&
      \text{(}~\text{func}~~x{:}\Tfuncidx_I~\text{)}
-       &\Rightarrow& \XDFUNC~x \\
+       &\Rightarrow& \XXFUNC~x \\
    \end{array}
 
 
@@ -727,25 +715,26 @@ The name serves a documentary role only.
    \production{module field} & \Tmodulefield_I &
    \begin{array}[t]{@{}clll}
    ::=&
-     \X{ty}^\ast{:}\Trectype_I &\Rightarrow& \{\MTYPES~\X{ty}^\ast\} \\ |&
-     \X{tg}{:}\Ttag_I &\Rightarrow& \{\MTAGS~\X{tg}\} \\ |&
-     \X{gl}{:}\Tglobal_I &\Rightarrow& \{\MGLOBALS~\X{gl}\} \\ |&
-     \X{me}{:}\Tmem_I &\Rightarrow& \{\MMEMS~\X{me}\} \\ |&
-     \X{ta}{:}\Ttable_I &\Rightarrow& \{\MTABLES~\X{ta}\} \\ |&
-     \X{fn}{:}\Tfunc_I &\Rightarrow& \{\MFUNCS~\X{fn}\} \\ |&
-     \X{da}{:}\Tdata_I &\Rightarrow& \{\MDATAS~\X{da}\} \\ |&
-     \X{el}{:}\Telem_I &\Rightarrow& \{\MELEMS~\X{el}\} \\ |&
-     \X{st}{:}\Tstart_I &\Rightarrow& \{\MSTART~\X{st}\} \\ |&
-     \X{im}{:}\Timport_I &\Rightarrow& \{\MIMPORTS~\X{im}\} \\ |&
-     \X{ex}{:}\Texport_I &\Rightarrow& \{\MEXPORTS~\X{ex}\} \\
+     \X{ty}^\ast{:}\Trectype_I &\Rightarrow& \MODULE~\X{ty}^\ast \\ |&
+     \X{im}{:}\Timport_I &\Rightarrow& \MODULE~\X{im} \\ |&
+     \X{tg}{:}\Ttag_I &\Rightarrow& \MODULE~\X{tg} \\ |&
+     \X{gl}{:}\Tglobal_I &\Rightarrow& \MODULE~\X{gl} \\ |&
+     \X{me}{:}\Tmem_I &\Rightarrow& \MODULE~\X{me} \\ |&
+     \X{ta}{:}\Ttable_I &\Rightarrow& \MODULE~\X{ta} \\ |&
+     \X{fn}{:}\Tfunc_I &\Rightarrow& \MODULE~\X{fn} \\ |&
+     \X{da}{:}\Tdata_I &\Rightarrow& \MODULE~\X{da} \\ |&
+     \X{el}{:}\Telem_I &\Rightarrow& \MODULE~\X{el} \\ |&
+     \X{st}{:}\Tstart_I &\Rightarrow& \MODULE~\X{st} \\ |&
+     \X{ex}{:}\Texport_I &\Rightarrow& \MODULE~\X{ex} \\
    \end{array}
    \end{array}
 
-The following restrictions are imposed on the composition of :ref:`modules <syntax-module>`: :math:`m_1 \compose m_2` is defined if and only if
+where :math:`\bigcompose m^\ast` is the :ref:`module <syntax-module>` formed by the repeated concatenation of the indivual field sequences in order.
+The following restrictions are imposed on this composition: :math:`m_1 \compose m_2` is defined if and only if
 
-* :math:`m_1.\MSTART = \epsilon \vee m_2.\MSTART = \epsilon`
+* :math:`\start_1^? = \epsilon \vee \start_2^? = \epsilon`
 
-* :math:`m_1.\MFUNCS = m_1.\MTABLES = m_1.\MMEMS = m_1.\MGLOBALS = m_1.\MTAGS = \epsilon \vee m_2.\MIMPORTS = \epsilon`
+* :math:`\tag_1^\ast = \global_1^\ast = \mem_1^\ast = \table_1^\ast = \func_1^\ast = \epsilon \vee \import_2^\ast = \epsilon`
 
 .. note::
    The first condition ensures that there is at most one start function.
