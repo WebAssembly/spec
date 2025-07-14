@@ -20,7 +20,8 @@ type env = ctx Env.t
 type renv = (region * ctx * [`Impl | `Expl]) list Env.t
 
 let new_env outer =
-  ref (Env.of_list (List.map (fun id -> id.it, [(id.at, [], `Expl)]) outer))
+  List.fold_left (fun env id ->
+    Env.add id.it [(id.at, [], `Expl)] env) Env.empty outer |> ref
 
 let localize outer env =
   List.fold_left (fun env id -> Env.remove id.it env) env outer
