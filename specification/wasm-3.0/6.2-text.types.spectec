@@ -2,6 +2,28 @@
 ;; Text Format of Types
 ;;
 
+;; Type uses
+
+grammar Ttypeuse_(I) : (typeidx, I) =
+  | "(" "type" x:Ttypeidx_(I) ")" => (x, I')
+    -- if I.TYPEDEFS[x] = SUB FINAL (FUNC t_1* -> t_2*)
+    -- if I' = {LOCALS eps^(|t_1*|)}
+  | "(" "type" x:Ttypeidx_(I) ")" ((t_1*,id?*):Tparam_(I))* (t_2*:Tresult_(I))* => (x, I')
+    -- if I.TYPEDEFS[x] = SUB FINAL (FUNC $concat_(valtype, t_1**) -> $concat_(valtype, t_2**))
+    -- if I' = {LOCALS (id?)*}
+;; TODO(4, rossberg): Idcontext_ok
+;;    -- Idcontext_ok: I' OK
+  | ...
+
+grammar Ttypeuse_(I)/abbrev : (typeidx, I) = ...
+  | ((t_1*,id?*):Tparam_(I))* (t_2*:Tresult_(I))* => (x, I')
+    -- if I.TYPEDEFS[x] = SUB FINAL (FUNC $concat_(valtype, t_1**) -> $concat_(valtype, t_2**))
+    -- (if I.TYPEDEFS[i] =/= SUB FINAL (FUNC $concat_(valtype, t_1**) -> $concat_(valtype, t_2**)))^(i<x)
+    -- if I' = {LOCALS (id?)*}
+
+;; TODO(4, rossberg): append new type def if necessary
+
+
 ;; Value Types
 
 grammar Tnumtype : numtype =
@@ -40,7 +62,6 @@ grammar Treftype_(I) : reftype =
   | "(" "ref" nul:Tnul ht:Theaptype_(I) ")" => REF nul ht
   | ...
 
-;; TODO(4, rossberg): enable equivalences
 grammar Treftype_(I)/abbrev : reftype = ...
   | "anyref" => (REF NULL ANY)
   | "eqref" => (REF NULL EQ)
@@ -54,7 +75,6 @@ grammar Treftype_(I)/abbrev : reftype = ...
   | "nullexnref" => (REF NULL NOEXN)
   | "externref" => (REF NULL EXTERN)
   | "nullexternref" => (REF NULL NOEXTERN)
-
 
 grammar Tvaltype_(I) : valtype =
   | nt:Tnumtype => nt
@@ -78,27 +98,24 @@ grammar Tfieldtype_(I) : fieldtype =
 
 grammar Tfield_(I) : fieldtype* =
   | "(" "field" Tid? ft:Tfieldtype_(I) ")" => ft
-;;  | ...
+  | ...
 
-;; TODO(2, rossberg): fix handling of parameter dimensions
-;;grammar Tfield_(I)/abbrev : fieldtype* = ...
-;;  | "(" "field" ft*:Tfieldtype_(I)* ")" => ft*
+grammar Tfield_(I)/abbrev : fieldtype* = ...
+  | "(" "field" ft*:Tfieldtype_(I)* ")" => ft*
 
 grammar Tparam_(I) : (valtype*, (name?)*) =
   | "(" "param" id?:Tid? t:Tvaltype_(I) ")" => (t, id?)
-;;  | ...
+  | ...
 
-;; TODO(2, rossberg): fix handling of parameter dimensions
-;;grammar Tparam_(I)/abbrev : (valtype*, (name?)*) = ...
-;;  | "(" "param" t*:Tvaltype_(I)* ")" => (t*, eps^(|t*|))
+grammar Tparam_(I)/abbrev : (valtype*, (name?)*) = ...
+  | "(" "param" t*:Tvaltype_(I)* ")" => (t*, eps^(|t*|))
 
 grammar Tresult_(I) : valtype* =
   | "(" "result" t:Tvaltype_(I) ")" => t
-;;  | ...
+  | ...
 
-;; TODO(2, rossberg): fix handling of parameter dimensions
-;;grammar Tresult_(I)/abbrev : valtype* = ...
-;;  | "(" "result" t*:Tvaltype_(I)* ")" => t*
+grammar Tresult_(I)/abbrev : valtype* = ...
+  | "(" "result" t*:Tvaltype_(I)* ")" => t*
 
 ;; TODO(4, rossberg): fix total lengths of lists
 grammar Tcomptype_(I) : comptype =
@@ -145,19 +162,8 @@ grammar Tlimits_(N) : limits =
   | n:Tu64 m:Tu64 => `[n .. m]
 
 
-grammar Ttypeuse_(I) : (typeuse, I) =
-  | "(" "type" x:Ttypeidx_(I) ")" => (_IDX x, I')
-    -- if I.TYPEDEFS[x] = SUB FINAL (FUNC t_1* -> t_2*)
-    -- if I' = {LOCALS eps^(|t_1*|)}
-  | "(" "type" x:Ttypeidx_(I) ")" ((t_1*,id?*):Tparam_(I))* (t_2*:Tresult_(I))* => (_IDX x, I')
-    -- if I.TYPEDEFS[x] = SUB FINAL (FUNC $concat_(valtype, t_1**) -> $concat_(valtype, t_2**))
-    -- if I' = {LOCALS (id?)*}
-;; TODO(4, rossberg): Idcontext_ok
-;;    -- Idcontext_ok: I' OK
-
-
 grammar Ttagtype_(I) : tagtype =
-  | (tu,I'):Ttypeuse_(I) => tu
+  | (x,I'):Ttypeuse_(I) => _IDX x
 
 grammar Tglobaltype_(I) : globaltype =
   | t:Tvaltype_(I) => t
@@ -170,9 +176,9 @@ grammar Ttabletype_(I) : tabletype =
   | at:Taddrtype lim:Tlimits_($size(at)) rt:Treftype_(I) => at lim rt
 
 
-grammar Texterntype_(I) : externtype =
-  | "(" "tag" Tid? jt:Ttagtype_(I) ")" => TAG jt
-  | "(" "global" Tid? gt:Tglobaltype_(I) ")" => GLOBAL gt
-  | "(" "memory" Tid? mt:Tmemtype_(I) ")" => MEM mt
-  | "(" "table" Tid? tt:Ttabletype_(I) ")" => TABLE tt
-  | "(" "func" Tid? (tu,I'):Ttypeuse_(I) ")" => FUNC tu
+grammar Texterntype_(I) : (externtype, I) =
+  | "(" "tag" id?:Tid? jt:Ttagtype_(I) ")" => (TAG jt, {TAGS (id?)})
+  | "(" "global" id?:Tid? gt:Tglobaltype_(I) ")" => (GLOBAL gt, {GLOBALS (id?)})
+  | "(" "memory" id?:Tid? mt:Tmemtype_(I) ")" => (MEM mt, {MEMS (id?)})
+  | "(" "table" id?:Tid? tt:Ttabletype_(I) ")" => (TABLE tt, {TABLES (id?)})
+  | "(" "func" id?:Tid? (x,I'):Ttypeuse_(I) ")" => (FUNC $($(_IDX x)), {FUNCS (id?)})

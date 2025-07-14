@@ -2,4 +2,452 @@
 ;; Text Format of Modules
 ;;
 
-;; TODO(4, rossberg): text format for modules
+;; Tags
+
+grammar Ttag_(I) : (tag, name?) =
+  | "(" "tag" id?:Tid? jt:Ttagtype_(I) ")" => (TAG jt, id?)
+
+
+;; Globals
+
+grammar Tglobal_(I) : (global, name?) =
+  | "(" "global" id?:Tid? gt:Tglobaltype_(I) e:Texpr_(I) ")" => (GLOBAL gt e, id?)
+
+
+;; Memories
+
+grammar Tmem_(I) : (mem, name?) =
+  | "(" "memory" id?:Tid? mt:Tmemtype_(I) ")" => (MEMORY mt, id?)
+
+
+;; Tables
+
+grammar Ttable_(I) : (table, name?) =
+  | "(" "table" id?:Tid? tt:Ttabletype_(I) e:Texpr_(I) ")" => (TABLE tt e, id?)
+
+
+;; Functions
+
+grammar Tfunc_(I) : (func, name?) =
+  | "(" "func" id?:Tid? (x,I'):Ttypeuse_(I) (loc,id'?)*:Tlocal_(I)* e:Texpr_(I'') ")" => (FUNC x loc* e, id?)
+    -- if I'' = I ++ I' ++ {LOCALS (id'?)*}
+;; TODO(4, rossberg): Idcontext_ok
+;;    -- Idcontext_ok: I'' OK
+
+grammar Tlocal_(I) : (local, name?) =
+  | "(" "local" id?:Tid? t:Tvaltype_(I) ")" => (LOCAL t, id?)
+
+
+;; Data segments
+
+grammar Tdata_(I) : (data, name?) =
+  | "(" "data" id?:Tid? b*:Tdatastring ")" => (DATA b* PASSIVE, id?)
+  | "(" "data" id?:Tid? b*:Tdatastring "(" "memory" x:Tmemidx_(I) ")" "(" "offset" e:Texpr_(I) ")" ")" => (DATA b* (ACTIVE x e), id?)
+
+grammar Tdatastring : byte* =
+  | b**:Tstring* => $concat_(byte, b**)
+
+
+;; Element segments
+
+grammar Telem_(I) : (elem, name?) =
+  | "(" "elem" id?:Tid? (rt,e*):Telemlist_(I) ")" => (ELEM rt e* PASSIVE, id?)
+  | "(" "elem" id?:Tid? (rt,e*):Telemlist_(I) "(" "table" x:Ttableidx_(I) ")" "(" "offset" e':Texpr_(I) ")" ")" => (ELEM rt e* (ACTIVE x e'), id?)
+  | "(" "elem" id?:Tid? "declare" (rt,e*):Telemlist_(I) ")" => (ELEM rt e* DECLARE, id?)
+
+grammar Telemlist_(I) : (reftype, expr*) =
+  | rt:Treftype_(I) e*:Tlist(Texpr_(I)) => (rt, e*)
+
+grammar Telemexpr_(I) : expr =
+  | "(" "item" e:Texpr_(I) ")" => e
+
+
+;; Start functions
+
+grammar Tstart_(I) : start =
+  | "(" "start" x:Tfuncidx_(I) ")" => START x
+
+
+;; Imports
+
+grammar Timport_(I) : (import, I) =
+  | "(" "import" nm_1:Tname nm_2:Tname (xt,I'):Texterntype_(I) ")" => (IMPORT nm_1 nm_2 xt, I')
+
+
+;; Exports
+
+grammar Texport_(I) : export =
+  | "(" "export" nm:Tname xx:Texternidx_(I) ")" => EXPORT nm xx
+
+
+;; Modules
+
+;; TODO(4, rossberg): modules
+(;
+grammar Tmodule : module =
+  | "(" "module" Tid? fld*:Tmodulefield_(I)* ")" =>
+    MODULE type* import* tag* global* mem* table* func* data* elem* start* export*
+    -- if I = (++) 
+
+   \production{module} & \Tmodule &
+   \begin{array}[t]{@{}cllll}
+   ::=&
+     \text{(}~\text{module}~~\Tid^?~~(m{:}\Tmodulefield_I)^\ast~\text{)}
+       \quad\Rightarrow\quad \bigcompose m^\ast \\
+       &\qquad (\iff I = \bigcompose \F{idc}(\Tmodulefield)^\ast \idcwellformed) \\
+   \end{array} \\[1ex]
+   \production{module field} & \Tmodulefield_I &
+   \begin{array}[t]{@{}clll}
+   ::=&
+     \X{ty}^\ast{:}\Trectype_I &\Rightarrow& \{\MTYPES~\X{ty}^\ast\} \\ |&
+     \X{tg}{:}\Ttag_I &\Rightarrow& \{\MTAGS~\X{tg}\} \\ |&
+     \X{gl}{:}\Tglobal_I &\Rightarrow& \{\MGLOBALS~\X{gl}\} \\ |&
+     \X{me}{:}\Tmem_I &\Rightarrow& \{\MMEMS~\X{me}\} \\ |&
+     \X{ta}{:}\Ttable_I &\Rightarrow& \{\MTABLES~\X{ta}\} \\ |&
+     \X{fn}{:}\Tfunc_I &\Rightarrow& \{\MFUNCS~\X{fn}\} \\ |&
+     \X{da}{:}\Tdata_I &\Rightarrow& \{\MDATAS~\X{da}\} \\ |&
+     \X{el}{:}\Telem_I &\Rightarrow& \{\MELEMS~\X{el}\} \\ |&
+     \X{st}{:}\Tstart_I &\Rightarrow& \{\MSTART~\X{st}\} \\ |&
+     \X{im}{:}\Timport_I &\Rightarrow& \{\MIMPORTS~\X{im}\} \\ |&
+     \X{ex}{:}\Texport_I &\Rightarrow& \{\MEXPORTS~\X{ex}\} \\
+   \end{array}
+;)
+
+
+;; TODO(4, rossberg): text format abbreviations for modules
+(;
+
+Abbreviations
+.............
+
+Tags can be defined as :ref:`imports <text-import>` or :ref:`exports <text-export>` inline:
+
+.. math::
+   \begin{array}{llclll}
+   \production{module field} &
+     \text{(}~\text{tag}~~\Tid^?~~\text{(}~\text{import}~~\Tname_1~~\Tname_2~\text{)}~~\Ttagtype~\text{)} \quad\equiv \\ & \qquad
+       \text{(}~\text{import}~~\Tname_1~~\Tname_2~~\text{(}~\text{tag}~~\Tid^?~~\Ttagtype~\text{)}~\text{)}
+       \\[1ex] &
+     \text{(}~\text{tag}~~\Tid^?~~\text{(}~\text{export}~~\Tname~\text{)}~~\dots~\text{)} \quad\equiv \\ & \qquad
+       \text{(}~\text{export}~~\Tname~~\text{(}~\text{tag}~~\Tid'~\text{)}~\text{)}~~
+       \text{(}~\text{tag}~~\Tid'~~\dots~\text{)}
+       \\ & \qquad\qquad
+       (\iff \Tid^? \neq \epsilon \wedge \Tid' = \Tid^? \vee \Tid^? = \epsilon \wedge \Tid' \idfresh) \\
+   \end{array}
+
+.. note::
+   The latter abbreviation can be applied repeatedly, if ":math:`\dots`" contains additional export clauses.
+   Consequently, a memory declaration can contain any number of exports, possibly followed by an import.
+
+Globals can be defined as :ref:`imports <text-import>` or :ref:`exports <text-export>` inline:
+
+.. math::
+   \begin{array}{llclll}
+   \production{module field} &
+     \text{(}~\text{global}~~\Tid^?~~\text{(}~\text{import}~~\Tname_1~~\Tname_2~\text{)}~~\Tglobaltype~\text{)} \quad\equiv \\ & \qquad
+       \text{(}~\text{import}~~\Tname_1~~\Tname_2~~\text{(}~\text{global}~~\Tid^?~~\Tglobaltype~\text{)}~\text{)}
+       \\[1ex] &
+     \text{(}~\text{global}~~\Tid^?~~\text{(}~\text{export}~~\Tname~\text{)}~~\dots~\text{)} \quad\equiv \\ & \qquad
+       \text{(}~\text{export}~~\Tname~~\text{(}~\text{global}~~\Tid'~\text{)}~\text{)}~~
+       \text{(}~\text{global}~~\Tid'~~\dots~\text{)}
+       \\ & \qquad\qquad
+       (\iff \Tid^? \neq \epsilon \wedge \Tid' = \Tid^? \vee \Tid^? = \epsilon \wedge \Tid' \idfresh) \\
+   \end{array}
+
+.. note::
+   The latter abbreviation can be applied repeatedly, if ":math:`\dots`" contains additional export clauses.
+   Consequently, a global declaration can contain any number of exports, possibly followed by an import.
+
+A :ref:`data segment <text-data>` can be given inline with a memory definition, in which case its offset is :math:`0` and the :ref:`limits <text-limits>` of the :ref:`memory type <text-memtype>` are inferred from the length of the data, rounded up to :ref:`page size <page-size>`:
+
+.. math::
+   \begin{array}{llclll}
+   \production{module field} &
+     \text{(}~\text{memory}~~\Tid^?~~\Taddrtype^?~~\text{(}~\text{data}~~b^n{:}\Tdatastring~\text{)}~~\text{)} \quad\equiv \\ & \qquad
+       \text{(}~\text{memory}~~\Tid'~~\Taddrtype^?~~m~~m~\text{)} \\ & \qquad
+       \text{(}~\text{data}~~\text{(}~\text{memory}~~\Tid'~\text{)}~~\text{(}~\Taddrtype'\text{.const}~~\text{0}~\text{)}~~\Tdatastring~\text{)}
+       \\ & \qquad\qquad
+       (\iff \Tid^? \neq \epsilon \wedge \Tid' = \Tid^? \vee \Tid^? = \epsilon \wedge \Tid' \idfresh, \\ & \qquad\qquad
+        \iff \Taddrtype? \neq \epsilon \wedge \Taddrtype' = \Taddrtype^? \vee \Taddrtype^? = \epsilon \wedge \Taddrtype' = \text{i32}, \\ & \qquad\qquad
+        m = \F{ceil}(n / 64\,\F{Ki})) \\
+   \end{array}
+
+Memories can be defined as :ref:`imports <text-import>` or :ref:`exports <text-export>` inline:
+
+.. math::
+   \begin{array}{llclll}
+   \production{module field} &
+     \text{(}~\text{memory}~~\Tid^?~~\text{(}~\text{import}~~\Tname_1~~\Tname_2~\text{)}~~\Tmemtype~\text{)} \quad\equiv \\ & \qquad
+       \text{(}~\text{import}~~\Tname_1~~\Tname_2~~\text{(}~\text{memory}~~\Tid^?~~\Tmemtype~\text{)}~\text{)}
+       \\[1ex] &
+     \text{(}~\text{memory}~~\Tid^?~~\text{(}~\text{export}~~\Tname~\text{)}~~\dots~\text{)} \quad\equiv \\ & \qquad
+       \text{(}~\text{export}~~\Tname~~\text{(}~\text{memory}~~\Tid'~\text{)}~\text{)}~~
+       \text{(}~\text{memory}~~\Tid'~~\dots~\text{)}
+       \\ & \qquad\qquad
+       (\iff \Tid^? \neq \epsilon \wedge \Tid' = \Tid^? \vee \Tid^? = \epsilon \wedge \Tid' \idfresh) \\
+   \end{array}
+
+.. note::
+   The latter abbreviation can be applied repeatedly, if ":math:`\dots`" contains additional export clauses.
+   Consequently, a memory declaration can contain any number of exports, possibly followed by an import.
+
+A table's initialization :ref:`expression <text-expr>` can be omitted, in which case it defaults to :math:`\REFNULL`:
+
+.. math::
+   \begin{array}{llclll}
+   \production{module field} &
+     \text{(}~\text{table}~~\Tid^?~~\Ttabletype~\text{)}
+       &\equiv&
+       \text{(}~\text{table}~~\Tid^?~~\Ttabletype~~\text{(}~\REFNULL~\X{ht}~\text{)}~\text{)}
+       \\ &&& \qquad\qquad
+       (\iff \Ttabletype = \Tlimits~\text{(}~\text{ref}~\text{null}^?~\X{ht}~\text{)}) \\
+   \end{array}
+
+An :ref:`element segment <text-elem>` can be given inline with a table definition, in which case its offset is :math:`0` and the :ref:`limits <text-limits>` of the :ref:`table type <text-tabletype>` are inferred from the length of the given segment:
+
+.. math::
+   \begin{array}{llclll}
+   \production{module field} &
+     \text{(}~\text{table}~~\Tid^?~~\Taddrtype^?~~\Treftype~~\text{(}~\text{elem}~~\expr^n{:}\Tlist(\Telemexpr)~\text{)}~\text{)} \quad\equiv \\ & \qquad
+       \text{(}~\text{table}~~\Tid'~~\Taddrtype^?~~n~~n~~\Treftype~\text{)} \\ & \qquad
+       \text{(}~\text{elem}~~\text{(}~\text{table}~~\Tid'~\text{)}~~\text{(}~\Taddrtype'\text{.const}~~\text{0}~\text{)}~~\Treftype~~\Tlist(\Telemexpr)~\text{)}
+       \\ & \qquad\qquad
+       (\iff \Tid^? \neq \epsilon \wedge \Tid' = \Tid^? \vee \Tid^? = \epsilon \wedge \Tid' \idfresh, \\ & \qquad\qquad
+        \iff \Taddrtype? \neq \epsilon \wedge \Taddrtype' = \Taddrtype^? \vee \Taddrtype^? = \epsilon \wedge \Taddrtype' = \text{i32}) \\
+   \end{array}
+
+.. math::
+   \begin{array}{llclll}
+   \production{module field} &
+     \text{(}~\text{table}~~\Tid^?~~\Taddrtype^?~~\Treftype~~\text{(}~\text{elem}~~x^n{:}\Tlist(\Tfuncidx)~\text{)}~\text{)} \quad\equiv \\ & \qquad
+       \text{(}~\text{table}~~\Tid'~~\Taddrtype^?~~n~~n~~\Treftype~\text{)} \\ & \qquad
+       \text{(}~\text{elem}~~\text{(}~\text{table}~~\Tid'~\text{)}~~\text{(}~\Taddrtype'\text{.const}~~\text{0}~\text{)}~~\Treftype~~\Tlist(\text{(}~\text{ref.func}~~\Tfuncidx~\text{)})~\text{)}
+       \\ & \qquad\qquad
+       (\iff \Tid^? \neq \epsilon \wedge \Tid' = \Tid^? \vee \Tid^? = \epsilon \wedge \Tid' \idfresh, \\ & \qquad\qquad
+        \iff \Taddrtype? \neq \epsilon \wedge \Taddrtype' = \Taddrtype^? \vee \Taddrtype^? = \epsilon \wedge \Taddrtype' = \text{i32}) \\
+   \end{array}
+
+Tables can be defined as :ref:`imports <text-import>` or :ref:`exports <text-export>` inline:
+
+.. math::
+   \begin{array}{llclll}
+   \production{module field} &
+     \text{(}~\text{table}~~\Tid^?~~\text{(}~\text{import}~~\Tname_1~~\Tname_2~\text{)}~~\Ttabletype~\text{)} \quad\equiv \\ & \qquad
+       \text{(}~\text{import}~~\Tname_1~~\Tname_2~~\text{(}~\text{table}~~\Tid^?~~\Ttabletype~\text{)}~\text{)} \\[1ex] &
+     \text{(}~\text{table}~~\Tid^?~~\text{(}~\text{export}~~\Tname~\text{)}~~\dots~\text{)} \quad\equiv \\ & \qquad
+       \text{(}~\text{export}~~\Tname~~\text{(}~\text{table}~~\Tid'~\text{)}~\text{)}~~
+       \text{(}~\text{table}~~\Tid'~~\dots~\text{)}
+       \\ & \qquad\qquad
+       (\iff \Tid^? \neq \epsilon \wedge \Tid' = \Tid^? \vee \Tid^? = \epsilon \wedge \Tid' \idfresh) \\
+   \end{array}
+
+.. note::
+   The latter abbreviation can be applied repeatedly, if ":math:`\dots`" contains additional export clauses.
+   Consequently, a table declaration can contain any number of exports, possibly followed by an import.
+
+Multiple anonymous locals may be combined into a single declaration:
+
+.. math::
+   \begin{array}{llclll}
+   \production{local} &
+     \text{(}~~\text{local}~~\Tvaltype^\ast~~\text{)} &\equiv&
+     (\text{(}~~\text{local}~~\Tvaltype~~\text{)})^\ast \\
+   \end{array}
+
+Functions can be defined as :ref:`imports <text-import>` or :ref:`exports <text-export>` inline:
+
+.. math::
+   \begin{array}{llclll}
+   \production{module field} &
+     \text{(}~\text{func}~~\Tid^?~~\text{(}~\text{import}~~\Tname_1~~\Tname_2~\text{)}~~\Ttypeuse~\text{)} \quad\equiv \\ & \qquad
+       \text{(}~\text{import}~~\Tname_1~~\Tname_2~~\text{(}~\text{func}~~\Tid^?~~\Ttypeuse~\text{)}~\text{)} \\[1ex] &
+     \text{(}~\text{func}~~\Tid^?~~\text{(}~\text{export}~~\Tname~\text{)}~~\dots~\text{)} \quad\equiv \\ & \qquad
+       \text{(}~\text{export}~~\Tname~~\text{(}~\text{func}~~\Tid'~\text{)}~\text{)}~~
+       \text{(}~\text{func}~~\Tid'~~\dots~\text{)}
+       \\ & \qquad\qquad
+       (\iff \Tid^? \neq \epsilon \wedge \Tid' = \Tid^? \vee \Tid^? = \epsilon \wedge \Tid' \idfresh) \\
+   \end{array}
+
+.. note::
+   The latter abbreviation can be applied repeatedly, if ":math:`\dots`" contains additional export clauses.
+   Consequently, a function declaration can contain any number of exports, possibly followed by an import.
+
+As an abbreviation, a single instruction may occur in place of the offset of an active data segment:
+
+.. math::
+   \begin{array}{llcll}
+   \production{data offset} &
+     \text{(}~\Tinstr~\text{)} &\equiv&
+     \text{(}~\text{offset}~~\Tinstr~\text{)}
+   \end{array}
+
+Also, a memory use can be omitted, defaulting to :math:`\T{0}`.
+
+.. math::
+   \begin{array}{llclll}
+   \production{memory use} &
+     \epsilon &\equiv& \text{(}~\text{memory}~~\text{0}~\text{)} \\
+   \end{array}
+
+As another abbreviation, data segments may also be specified inline with :ref:`memory <text-mem>` definitions; see the respective section.
+
+As an abbreviation, a single instruction may occur in place of the offset of an active element segment or as an element expression:
+
+.. math::
+   \begin{array}{llcll}
+   \production{element offset} &
+     \text{(}~\Tinstr~\text{)} &\equiv&
+     \text{(}~\text{offset}~~\Tinstr~\text{)} \\
+   \production{element item} &
+     \text{(}~\Tinstr~\text{)} &\equiv&
+     \text{(}~\text{item}~~\Tinstr~\text{)} \\
+   \end{array}
+
+Also, the element list may be written as just a sequence of :ref:`function indices <text-funcidx>`:
+
+.. math::
+   \begin{array}{llcll}
+   \production{element list} &
+     \text{func}~~\Tlist(\Tfuncidx_I) &\equiv&
+     \text{(ref}~\text{func)}~~\Tlist(\text{(}~\text{ref.func}~~\Tfuncidx_I~\text{)})
+   \end{array}
+
+A table use can be omitted, defaulting to :math:`\T{0}`.
+Furthermore, for backwards compatibility with earlier versions of WebAssembly, if the table use is omitted, the :math:`\text{func}` keyword can be omitted as well.
+
+.. math::
+   \begin{array}{llclll}
+   \production{table use} &
+     \epsilon &\equiv& \text{(}~\text{table}~~\text{0}~\text{)} \\
+   \production{element segment} &
+     \text{(}~\text{elem}~~\Tid^?~~\text{(}~\text{offset}~~\Texpr_I~\text{)}~~\\ &
+     \qquad \Tlist(\Tfuncidx_I)~\text{)}
+       &\equiv&
+     \text{(}~\text{elem}~~\Tid^?~~\text{(}~\text{table}~~\text{0}~\text{)}~~\text{(}~\text{offset}~~\Texpr_I~\text{)}~~\\ &
+     &&\qquad \text{func}~~\Tlist(\Tfuncidx_I)~\text{)}
+   \end{array}
+
+As another abbreviation, element segments may also be specified inline with :ref:`table <text-table>` definitions; see the respective section.
+
+
+
+.. index:: module, type definition, recursive type, tag, global, memory, table, function, data segment, element segment, start function, import, export, identifier context, identifier, name section
+   pair: text format; module
+   single: section; name
+.. _text-modulefield:
+.. _text-module:
+
+Modules
+~~~~~~~
+
+A module consists of a sequence of fields that can occur in any order.
+All definitions and their respective bound :ref:`identifiers <text-id>` scope over the entire module, including the text preceding them.
+
+A module may optionally bind an :ref:`identifier <text-id>` that names the module.
+The name serves a documentary role only.
+
+.. note::
+   Tools may include the module name in the :ref:`name section <binary-namesec>` of the :ref:`binary format <binary>`.
+
+.. math::
+   \begin{array}{lll}
+   \production{module} & \Tmodule &
+   \begin{array}[t]{@{}cllll}
+   ::=&
+     \text{(}~\text{module}~~\Tid^?~~(m{:}\Tmodulefield_I)^\ast~\text{)}
+       \quad\Rightarrow\quad \bigcompose m^\ast \\
+       &\qquad (\iff I = \bigcompose \F{idc}(\Tmodulefield)^\ast \idcwellformed) \\
+   \end{array} \\[1ex]
+   \production{module field} & \Tmodulefield_I &
+   \begin{array}[t]{@{}clll}
+   ::=&
+     \X{ty}^\ast{:}\Trectype_I &\Rightarrow& \{\MTYPES~\X{ty}^\ast\} \\ |&
+     \X{tg}{:}\Ttag_I &\Rightarrow& \{\MTAGS~\X{tg}\} \\ |&
+     \X{gl}{:}\Tglobal_I &\Rightarrow& \{\MGLOBALS~\X{gl}\} \\ |&
+     \X{me}{:}\Tmem_I &\Rightarrow& \{\MMEMS~\X{me}\} \\ |&
+     \X{ta}{:}\Ttable_I &\Rightarrow& \{\MTABLES~\X{ta}\} \\ |&
+     \X{fn}{:}\Tfunc_I &\Rightarrow& \{\MFUNCS~\X{fn}\} \\ |&
+     \X{da}{:}\Tdata_I &\Rightarrow& \{\MDATAS~\X{da}\} \\ |&
+     \X{el}{:}\Telem_I &\Rightarrow& \{\MELEMS~\X{el}\} \\ |&
+     \X{st}{:}\Tstart_I &\Rightarrow& \{\MSTART~\X{st}\} \\ |&
+     \X{im}{:}\Timport_I &\Rightarrow& \{\MIMPORTS~\X{im}\} \\ |&
+     \X{ex}{:}\Texport_I &\Rightarrow& \{\MEXPORTS~\X{ex}\} \\
+   \end{array}
+   \end{array}
+
+The following restrictions are imposed on the composition of :ref:`modules <syntax-module>`: :math:`m_1 \compose m_2` is defined if and only if
+
+* :math:`m_1.\MSTART = \epsilon \vee m_2.\MSTART = \epsilon`
+
+* :math:`m_1.\MFUNCS = m_1.\MTABLES = m_1.\MMEMS = m_1.\MGLOBALS = m_1.\MTAGS = \epsilon \vee m_2.\MIMPORTS = \epsilon`
+
+.. note::
+   The first condition ensures that there is at most one start function.
+   The second condition enforces that all :ref:`imports <text-import>` must occur before any regular definition of a
+   :ref:`tag <text-tag>`,
+   :ref:`global <text-global>`,
+   :ref:`memory <text-mem>`,
+   :ref:`table <text-table>`, or
+   :ref:`function <text-func>`,
+   thereby maintaining the ordering of the respective :ref:`index spaces <syntax-index>`.
+
+   The :ref:`well-formedness <text-context-wf>` condition on :math:`I` in the grammar for |Tmodule| ensures that no namespace contains duplicate identifiers.
+
+The definition of the initial :ref:`identifier context <text-context>` :math:`I` uses the following auxiliary definition which maps each relevant definition to a singular context with one (possibly empty) identifier:
+
+.. math::
+   \begin{array}{@{}lcl@{\qquad\qquad}l}
+   \F{idc}(\text{(}~\text{rec}~~\Ttypedef^\ast~\text{)}) &=&
+     \bigcompose \F{idc}(\Ttypedef)^\ast \\
+   \F{idc}(\text{(}~\text{type}~v^?{:}\Tid^?~\Tsubtype~\text{)}) &=&
+     \{\ITYPES~(v^?), \IFIELDS~\F{idf}(\Tsubtype), \ITYPEDEFS~\X{st}\} \\
+   \F{idc}(\text{(}~\text{tag}~v^?{:}\Tid^?~\dots~\text{)}) &=&
+     \{\ITAGS~(v^?)\} \\
+   \F{idc}(\text{(}~\text{global}~v^?{:}\Tid^?~\dots~\text{)}) &=&
+     \{\IGLOBALS~(v^?)\} \\
+   \F{idc}(\text{(}~\text{memory}~v^?{:}\Tid^?~\dots~\text{)}) &=&
+     \{\IMEMS~(v^?)\} \\
+   \F{idc}(\text{(}~\text{table}~v^?{:}\Tid^?~\dots~\text{)}) &=&
+     \{\ITABLES~(v^?)\} \\
+   \F{idc}(\text{(}~\text{func}~v^?{:}\Tid^?~\dots~\text{)}) &=&
+     \{\IFUNCS~(v^?)\} \\
+   \F{idc}(\text{(}~\text{data}~v^?{:}\Tid^?~\dots~\text{)}) &=&
+     \{\IDATA~(v^?)\} \\
+   \F{idc}(\text{(}~\text{elem}~v^?{:}\Tid^?~\dots~\text{)}) &=&
+     \{\IELEM~(v^?)\} \\
+   \F{idc}(\text{(}~\text{import}~\dots~\text{(}~\text{func}~v^?{:}\Tid^?~\dots~\text{)}~\text{)}) &=&
+     \{\IFUNCS~(v^?)\} \\
+   \F{idc}(\text{(}~\text{import}~\dots~\text{(}~\text{table}~v^?{:}\Tid^?~\dots~\text{)}~\text{)}) &=&
+     \{\ITABLES~(v^?)\} \\
+   \F{idc}(\text{(}~\text{import}~\dots~\text{(}~\text{memory}~v^?{:}\Tid^?~\dots~\text{)}~\text{)}) &=&
+     \{\IMEMS~(v^?)\} \\
+   \F{idc}(\text{(}~\text{import}~\dots~\text{(}~\text{global}~v^?{:}\Tid^?~\dots~\text{)}~\text{)}) &=&
+     \{\IGLOBALS~(v^?)\} \\
+   \F{idc}(\text{(}~\dots~\text{)}) &=&
+     \{\}
+   \\[2ex]
+   \F{idf}(\text{(}~\text{sub}~\dots~\Tcomptype~\text{)}) &=&
+     \F{idf}(\Tcomptype) \\
+   \F{idf}(\text{(}~\text{struct}~\X{Tfield}^\ast~\text{)}) &=&
+     \bigcompose \F{idf}(\Tfield)^\ast \\
+   \F{idf}(\text{(}~\text{array}~\dots~\text{)}) &=&
+     \epsilon \\
+   \F{idf}(\text{(}~\text{func}~\dots~\text{)}) &=&
+     \epsilon \\
+   \F{idf}(\text{(}~\text{field}~v^?{:}\Tid^?~\dots~\text{)}) &=&
+     v^? \\
+   \end{array}
+
+
+Abbreviations
+.............
+
+In a source file, the toplevel :math:`\T{(module}~\dots\T{)}` surrounding the module body may be omitted.
+
+.. math::
+   \begin{array}{llcll}
+   \production{module} &
+     \Tmodulefield^\ast &\equiv&
+     \text{(}~\text{module}~~\Tmodulefield^\ast~\text{)}
+   \end{array}
+;)

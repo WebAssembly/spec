@@ -43,11 +43,6 @@ grammar TiN(N) : iN(N) =
   | i:TsN(N) => $invsigned_(N, i)
 
 
-;; TODO(4, rossberg): allow shorthand as grammar alias?
-grammar Tu32 : u32 = n:TuN(32) => n
-grammar Tu64 : u64 = n:TuN(64) => n
-
-
 grammar Tfrac : rat =
   | d:Tdigit => $(d / 10)
   | d:Tdigit "_"? p:Tfrac => $((d + p/10) / 10)
@@ -78,6 +73,7 @@ grammar Tfloat : rat =
 grammar Thexfloat : rat =
   | "0x" p:Thexmant ("P" | "p") pm:Tsign ee:Tnum => $(p * 2^(pm * ee))
 
+;; TODO(4, rossberg): enable fN
 (;
 grammar TfNmag(N) : fNmag(N) =
   | zz:Tfloat => $ieee_(N, zz)     ;; TODO(4, rossberg): -- if $ieee_(N, zz) =/= +-INF
@@ -89,6 +85,20 @@ grammar TfNmag(N) : fNmag(N) =
 grammar TfN(N) : fN(N) =
   | pm:Tsign q:TfNmag(N) => q  ;; TODO(4, rossberg): $(pm * q)
 ;)
+
+
+;; TODO(4, rossberg): allow shorthand as grammar alias?
+grammar Tu8 : u8 = n:TuN(`8) => n
+grammar Tu32 : u32 = n:TuN(`32) => n
+grammar Tu64 : u64 = n:TuN(`64) => n
+grammar Ti8 : u8 = i:TiN(`8) => i
+grammar Ti16 : u16 = i:TiN(`16) => i
+grammar Ti32 : u32 = i:TiN(`32) => i
+grammar Ti64 : u64 = i:TiN(`64) => i
+grammar Ti128 : u128 = i:TiN(`128) => i
+;; TODO(4, rossberg): enable fN
+;;grammar Tf32 : f32 = q:TfN(`32) => q
+;;grammar Tf64 : f64 = q:TfN(`64) => q
 
 
 ;; Strings
@@ -168,3 +178,10 @@ grammar Telemidx_(I) : elemidx = x:Tidx_(I.ELEMS) => x
 grammar Tlocalidx_(I) : localidx = x:Tidx_(I.LOCALS) => x
 grammar Tlabelidx_(I) : labelidx = x:Tidx_(I.LABELS) => x
 grammar Tfieldidx__(I, x : idx) : fieldidx = i:Tidx_(I.FIELDS[x]) => i
+
+grammar Texternidx_(I) : externidx =
+  | "(" "tag" x:Ttagidx_(I) ")" => TAG x
+  | "(" "global" x:Tglobalidx_(I) ")" => GLOBAL x
+  | "(" "memory" x:Tmemidx_(I) ")" => MEM x
+  | "(" "table" x:Ttableidx_(I) ")" => TABLE x
+  | "(" "func" x:Tfuncidx_(I) ")" => FUNC x
