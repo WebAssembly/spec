@@ -407,14 +407,14 @@ grammar Binstr/vec-memory : instr = ...
   | 0xFD 9:Bu32 (x,ao):Bmemarg => VLOAD V128 (SPLAT `32) x ao
   | 0xFD 10:Bu32 (x,ao):Bmemarg => VLOAD V128 (SPLAT `64) x ao
   | 0xFD 11:Bu32 (x,ao):Bmemarg => VSTORE V128 x ao
-  | 0xFD 84:Bu32 (x,ao):Bmemarg l:Blaneidx => VLOAD_LANE V128 `8 x ao l
-  | 0xFD 85:Bu32 (x,ao):Bmemarg l:Blaneidx => VLOAD_LANE V128 `16 x ao l
-  | 0xFD 86:Bu32 (x,ao):Bmemarg l:Blaneidx => VLOAD_LANE V128 `32 x ao l
-  | 0xFD 87:Bu32 (x,ao):Bmemarg l:Blaneidx => VLOAD_LANE V128 `64 x ao l
-  | 0xFD 88:Bu32 (x,ao):Bmemarg l:Blaneidx => VSTORE_LANE V128 `8 x ao l
-  | 0xFD 89:Bu32 (x,ao):Bmemarg l:Blaneidx => VSTORE_LANE V128 `16 x ao l
-  | 0xFD 90:Bu32 (x,ao):Bmemarg l:Blaneidx => VSTORE_LANE V128 `32 x ao l
-  | 0xFD 91:Bu32 (x,ao):Bmemarg l:Blaneidx => VSTORE_LANE V128 `64 x ao l
+  | 0xFD 84:Bu32 (x,ao):Bmemarg i:Blaneidx => VLOAD_LANE V128 `8 x ao i
+  | 0xFD 85:Bu32 (x,ao):Bmemarg i:Blaneidx => VLOAD_LANE V128 `16 x ao i
+  | 0xFD 86:Bu32 (x,ao):Bmemarg i:Blaneidx => VLOAD_LANE V128 `32 x ao i
+  | 0xFD 87:Bu32 (x,ao):Bmemarg i:Blaneidx => VLOAD_LANE V128 `64 x ao i
+  | 0xFD 88:Bu32 (x,ao):Bmemarg i:Blaneidx => VSTORE_LANE V128 `8 x ao i
+  | 0xFD 89:Bu32 (x,ao):Bmemarg i:Blaneidx => VSTORE_LANE V128 `16 x ao i
+  | 0xFD 90:Bu32 (x,ao):Bmemarg i:Blaneidx => VSTORE_LANE V128 `32 x ao i
+  | 0xFD 91:Bu32 (x,ao):Bmemarg i:Blaneidx => VSTORE_LANE V128 `64 x ao i
   | 0xFD 92:Bu32 (x,ao):Bmemarg => VLOAD V128 (ZERO `32) x ao
   | 0xFD 93:Bu32 (x,ao):Bmemarg => VLOAD V128 (ZERO `64) x ao
   | ...
@@ -789,6 +789,10 @@ grammar Binstr/vec-bin-f64x2 : instr = ...
 grammar Binstr/vec-tern-f64x2 : instr = ...
   | 0xFD 263:Bu32 => VTERNOP (F64 X `2) RELAXED_MADD
   | 0xFD 264:Bu32 => VTERNOP (F64 X `2) RELAXED_NMADD
+  | 0xFD 265:Bu32 => VTERNOP (I8 X `16) RELAXED_LANESELECT
+  | 0xFD 266:Bu32 => VTERNOP (I16 X `8) RELAXED_LANESELECT
+  | 0xFD 267:Bu32 => VTERNOP (I32 X `4) RELAXED_LANESELECT
+  | 0xFD 268:Bu32 => VTERNOP (I64 X `2) RELAXED_LANESELECT
   | ...
 
 grammar Binstr/vec-cvt : instr = ...
