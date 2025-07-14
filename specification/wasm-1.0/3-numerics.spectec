@@ -15,13 +15,13 @@ def $truncz hint(builtin)
 
 ;; Signed numbers
 
-def $signed_(N, nat) : int
+def $signed_(N, nat) : int hint(inverse $inv_signed_)
 def $signed_(N, i) = i           -- if $(i < 2^(N-1))
 def $signed_(N, i) = $(i - 2^N)  -- if $(2^(N-1) <= i < 2^N)
 
-def $invsigned_(N, int) : nat    hint(show $signed_(%)^(-1)#((%)))
-def $invsigned_(N, i) = j        -- if $signed_(N, j) = i
-
+def $inv_signed_(N, int) : nat    hint(show $signed_(%)^(-1)#((%)))
+def $inv_signed_(N, i) = i          -- if $(0 <= i < 2^(N-1))
+def $inv_signed_(N, i) = $(i + 2^N) -- if $(-2^(N-1) <= i < 0)
 
 ;; TODO
 
@@ -53,19 +53,22 @@ def $promote__     hint(builtin)
 def $convert__     hint(builtin)
 def $reinterpret__ hint(builtin)
 
-def $ibytes_(N, iN(N)) : byte*                       hint(show $bytes_(I#%,%))
-def $fbytes_(N, fN(N)) : byte*                       hint(show $bytes_(F#%,%))
-def $bytes_(valtype, val_(valtype)) : byte*
+def $ibytes_(N, iN(N)) : byte*                   hint(show $bytes_(I#%,%)) hint(inverse $inv_ibytes_)
+def $fbytes_(N, fN(N)) : byte*                   hint(show $bytes_(F#%,%)) hint(inverse $inv_fbytes_)
+def $bytes_(valtype, val_(valtype)) : byte*      hint(inverse $inv_bytes_)
+
+def $inv_ibytes_(N, byte*) : iN(N)               hint(show $bytes_(I#%,%))
+def $inv_fbytes_(N, byte*) : fN(N)               hint(show $bytes_(F#%,%))
+def $inv_bytes_(valtype, byte*) : val_(valtype)  hint(show $bytes_(%,%))
 
 def $ibytes_ hint(builtin)
 def $fbytes_ hint(builtin)
 def $bytes_ hint(builtin)
 
-def $invibytes_(N, byte*) : iN(N)
-def $invfbytes_(N, byte*) : fN(N)
+def $inv_ibytes_ hint(builtin)
+def $inv_fbytes_ hint(builtin)
+def $inv_bytes_ hint(builtin)
 
-def $invibytes_(N, b*) = n  -- if $ibytes_(N, n) = b*
-def $invfbytes_(N, b*) = p  -- if $fbytes_(N, p) = b*
 
 def $iadd_(N, iN(N), iN(N)) : iN(N)
 def $isub_(N, iN(N), iN(N)) : iN(N)
@@ -100,12 +103,12 @@ def $idiv_(N, U, i_1, 0)   = eps
 def $idiv_(N, U, i_1, i_2) = $truncz($(i_1 / i_2))
 def $idiv_(N, S, i_1, 0)   = eps
 def $idiv_(N, S, i_1, i_2) = eps  -- if $($signed_(N, i_1) / $signed_(N, i_2)) = $rat$(2^(N-1))
-def $idiv_(N, S, i_1, i_2) = $invsigned_(N, $truncz($($signed_(N, i_1) / $signed_(N, i_2))))
+def $idiv_(N, S, i_1, i_2) = $inv_signed_(N, $truncz($($signed_(N, i_1) / $signed_(N, i_2))))
 
 def $irem_(N, U, i_1, 0)   = eps
 def $irem_(N, U, i_1, i_2) = $(i_1 - i_2 * $truncz($(i_1 / i_2)))
 def $irem_(N, S, i_1, 0)   = eps
-def $irem_(N, S, i_1, i_2) = $invsigned_(N, $(j_1 - j_2 * $truncz($(j_1 / j_2))))
+def $irem_(N, S, i_1, i_2) = $inv_signed_(N, $(j_1 - j_2 * $truncz($(j_1 / j_2))))
                              -- if j_1 = $signed_(N, i_1) /\ j_2 = $signed_(N, i_2)
 
 ;; TODO(3, rossberg): implement all numerics internally

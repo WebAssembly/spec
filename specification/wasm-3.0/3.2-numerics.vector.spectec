@@ -7,14 +7,14 @@
 
 ;; Lanes
 
-def $lanes_(shape, vec_(V128)) : lane_($lanetype(shape))*
+def $lanes_(shape, vec_(V128)) : lane_($lanetype(shape))* hint(inverse $inv_lanes_)
+
+def $inv_lanes_(shape, lane_($lanetype(shape))*) : vec_(V128)
+    hint(show $lanes_(%)^(-1)#((%)))
 
 ;; TODO(3, rossberg): implement numerics internally
 def $lanes_ hint(builtin)
-
-def $invlanes_(shape, lane_($lanetype(shape))*) : vec_(V128)
-    hint(show $lanes_(%)^(-1)#((%)))
-def $invlanes_(sh, c*) = vc  -- if c* = $lanes_(sh, vc)
+def $inv_lanes_ hint(builtin)
 
 def $zeroop(shape_1, shape_2, vcvtop__(shape_1, shape_2)) : zero?
 def $zeroop(Jnn_1 X M_1, Jnn_2 X M_2, EXTEND half sx) = eps
@@ -77,43 +77,43 @@ def $ivswizzlop_(shape, def $f_(N, iN(N)*, iN(N)) : iN(N), vec_(V128), vec_(V128
 def $ivshufflop_(shape, laneidx*, vec_(V128), vec_(V128)) : vec_(V128)
 
 
-def $ivunop_(Jnn X M, def $f_, v_1) = $invlanes_(Jnn X M, c*)
+def $ivunop_(Jnn X M, def $f_, v_1) = $inv_lanes_(Jnn X M, c*)
     -- if c_1* = $lanes_(Jnn X M, v_1)
     -- if c* = $f_($lsizenn(Jnn), c_1)*
 
-def $fvunop_(Fnn X M, def $f_, v_1) = $invlanes_(Fnn X M, c*)*
+def $fvunop_(Fnn X M, def $f_, v_1) = $inv_lanes_(Fnn X M, c*)*
     -- if c_1* = $lanes_(Fnn X M, v_1)
     -- if c** = $setproduct_(lane_(Fnn), $f_($sizenn(Fnn), c_1)*)
 
 
-def $ivbinop_(Jnn X M, def $f_, v_1, v_2) = $invlanes_(Jnn X M, c*)
+def $ivbinop_(Jnn X M, def $f_, v_1, v_2) = $inv_lanes_(Jnn X M, c*)
     -- if c_1* = $lanes_(Jnn X M, v_1)
     -- if c_2* = $lanes_(Jnn X M, v_2)
     -- if c* = $f_($lsizenn(Jnn), c_1, c_2)*
 
-def $ivbinopsx_(Jnn X M, def $f_, sx, v_1, v_2) = $invlanes_(Jnn X M, c*)
+def $ivbinopsx_(Jnn X M, def $f_, sx, v_1, v_2) = $inv_lanes_(Jnn X M, c*)
     -- if c_1* = $lanes_(Jnn X M, v_1)
     -- if c_2* = $lanes_(Jnn X M, v_2)
     -- if c* = $f_($lsizenn(Jnn), sx, c_1, c_2)*
 
-def $ivbinopsxnd_(Jnn X M, def $f_, sx, v_1, v_2) = $invlanes_(Jnn X M, c*)*
+def $ivbinopsxnd_(Jnn X M, def $f_, sx, v_1, v_2) = $inv_lanes_(Jnn X M, c*)*
     -- if c_1* = $lanes_(Jnn X M, v_1)
     -- if c_2* = $lanes_(Jnn X M, v_2)
     -- if c** = $setproduct_(lane_(Jnn), $f_($lsizenn(Jnn), sx, c_1, c_2)*)
 
-def $fvbinop_(Fnn X M, def $f_, v_1, v_2) = $invlanes_(Fnn X M, c*)*
+def $fvbinop_(Fnn X M, def $f_, v_1, v_2) = $inv_lanes_(Fnn X M, c*)*
     -- if c_1* = $lanes_(Fnn X M, v_1)
     -- if c_2* = $lanes_(Fnn X M, v_2)
     -- if c** = $setproduct_(lane_(Fnn), $f_($sizenn(Fnn), c_1, c_2)*)
 
 
-def $ivternopnd_(Jnn X M, def $f_, v_1, v_2, v_3) = $invlanes_(Jnn X M, c*)*
+def $ivternopnd_(Jnn X M, def $f_, v_1, v_2, v_3) = $inv_lanes_(Jnn X M, c*)*
     -- if c_1* = $lanes_(Jnn X M, v_1)
     -- if c_2* = $lanes_(Jnn X M, v_2)
     -- if c_3* = $lanes_(Jnn X M, v_3)
     -- if c** = $setproduct_(lane_(Jnn), $f_($lsizenn(Jnn), c_1, c_2, c_3)*)
 
-def $fvternop_(Fnn X M, def $f_, v_1, v_2, v_3) = $invlanes_(Fnn X M, c*)*
+def $fvternop_(Fnn X M, def $f_, v_1, v_2, v_3) = $inv_lanes_(Fnn X M, c*)*
     -- if c_1* = $lanes_(Fnn X M, v_1)
     -- if c_2* = $lanes_(Fnn X M, v_2)
     -- if c_3* = $lanes_(Fnn X M, v_3)
@@ -129,28 +129,28 @@ def $fvtestop_(Fnn X M, def $f_, v_1) = $prod(c*)
     -- if c* = $f_($sizenn(Fnn), c_1)*
 
 
-def $ivrelop_(Jnn X M, def $f_, v_1, v_2) = $invlanes_(Jnn X M, c*)
+def $ivrelop_(Jnn X M, def $f_, v_1, v_2) = $inv_lanes_(Jnn X M, c*)
     -- if c_1* = $lanes_(Jnn X M, v_1)
     -- if c_2* = $lanes_(Jnn X M, v_2)
     -- if c* = $extend__(1, $lsizenn(Jnn), S, $f_($lsizenn(Jnn), c_1, c_2))*
 
-def $ivrelopsx_(Jnn X M, def $f_, sx, v_1, v_2) = $invlanes_(Jnn X M, c*)
+def $ivrelopsx_(Jnn X M, def $f_, sx, v_1, v_2) = $inv_lanes_(Jnn X M, c*)
     -- if c_1* = $lanes_(Jnn X M, v_1)
     -- if c_2* = $lanes_(Jnn X M, v_2)
     -- if c* = $extend__(1, $lsizenn(Jnn), S, $f_($lsizenn(Jnn), sx, c_1, c_2))*
 
-def $fvrelop_(Fnn X M, def $f_, v_1, v_2) = $invlanes_(Inn X M, c*)
+def $fvrelop_(Fnn X M, def $f_, v_1, v_2) = $inv_lanes_(Inn X M, c*)
     -- if c_1* = $lanes_(Fnn X M, v_1)
     -- if c_2* = $lanes_(Fnn X M, v_2)
     -- if c* = $extend__(1, $sizenn(Fnn), S, $f_($sizenn(Fnn), c_1, c_2))*
-    -- if $size(Inn) = $size(Fnn)  ;; TODO(3, rossberg): make implicit
+    -- if $isize(Inn) = $fsize(Fnn)  ;; TODO(3, rossberg): make implicit
 
 
-def $ivshiftop_(Jnn X M, def $f_, v_1, i) = $invlanes_(Jnn X M, c*)
+def $ivshiftop_(Jnn X M, def $f_, v_1, i) = $inv_lanes_(Jnn X M, c*)
   -- if c_1* = $lanes_(Jnn X M, v_1)
   -- if c* = $f_($lsizenn(Jnn), c_1, i)*
 
-def $ivshiftopsx_(Jnn X M, def $f_, sx, v_1, i) = $invlanes_(Jnn X M, c*)
+def $ivshiftopsx_(Jnn X M, def $f_, sx, v_1, i) = $inv_lanes_(Jnn X M, c*)
   -- if c_1* = $lanes_(Jnn X M, v_1)
   -- if c* = $f_($lsizenn(Jnn), sx, c_1, i)*
 
@@ -160,13 +160,13 @@ def $ivbitmaskop_(Jnn X M, v_1) = $irev_(32, c)
   -- if $ibits_(32, c) = $ilt_($lsizenn(Jnn), S, c_1, 0)* ++ (0)^(32-M)
 
 
-def $ivswizzlop_(Jnn X M, def $f_, v_1, v_2) = $invlanes_(Jnn X M, c*)
+def $ivswizzlop_(Jnn X M, def $f_, v_1, v_2) = $inv_lanes_(Jnn X M, c*)
   -- if c_1* = $lanes_(Jnn X M, v_1)
   -- if c_2* = $lanes_(Jnn X M, v_2)
   -- if c* = $f_($lsizenn(Jnn), c_1*, c_2)*
 
 
-def $ivshufflop_(Jnn X M, i*, v_1, v_2) = $invlanes_(Jnn X M, c*)
+def $ivshufflop_(Jnn X M, i*, v_1, v_2) = $inv_lanes_(Jnn X M, c*)
   -- if c_1* = $lanes_(Jnn X M, v_1)
   -- if c_2* = $lanes_(Jnn X M, v_2)
   -- if c* = ((c_1* ++ c_2*)[i])*
@@ -308,61 +308,61 @@ def $vcvtop__(Lnn_1 X M, Lnn_2 X M, vcvtop, v_1) = v
   -- if $halfop(Lnn_1 X M, Lnn_2 X M, vcvtop) = eps /\ $zeroop(Lnn_1 X M, Lnn_2 X M, vcvtop) = eps
   -- if c_1* = $lanes_(Lnn_1 X M, v_1)
   -- if c** = $setproduct_(lane_(Lnn_2), $lcvtop__(Lnn_1 X M, Lnn_2 X M, vcvtop, c_1)*)
-  -- if v <- $invlanes_(Lnn_2 X M, c*)*
+  -- if v <- $inv_lanes_(Lnn_2 X M, c*)*
 def $vcvtop__(Lnn_1 X M_1, Lnn_2 X M_2, vcvtop, v_1) = v
   -- if $halfop(Lnn_1 X M_1, Lnn_2 X M_2, vcvtop) = half
   -- if c_1* = $lanes_(Lnn_1 X M_1, v_1)[$half(half, 0, M_2) : M_2]
   -- if c** = $setproduct_(lane_(Lnn_2), $lcvtop__(Lnn_1 X M_1, Lnn_2 X M_2, vcvtop, c_1)*)
-  -- if v <- $invlanes_(Lnn_2 X M_2, c*)*
+  -- if v <- $inv_lanes_(Lnn_2 X M_2, c*)*
 def $vcvtop__(Lnn_1 X M_1, Lnn_2 X M_2, vcvtop, v_1) = v
   -- if $zeroop(Lnn_1 X M_1, Lnn_2 X M_2, vcvtop) = ZERO
   -- if c_1* = $lanes_(Lnn_1 X M_1, v_1)
   -- if c** = $setproduct_(lane_(Lnn_2), ($lcvtop__(Lnn_1 X M_1, Lnn_2 X M_2, vcvtop, c_1)* ++ [$zero(Lnn_2)]^M_1))
-  -- if v <- $invlanes_(Lnn_2 X M_2, c*)*
+  -- if v <- $inv_lanes_(Lnn_2 X M_2, c*)*
 
 def $vnarrowop__(Jnn_1 X M_1, Jnn_2 X M_2, sx, v_1, v_2) = v
   -- if c_1* = $lanes_(Jnn_1 X M_1, v_1)
   -- if c_2* = $lanes_(Jnn_1 X M_1, v_2)
   -- if c'_1* = $narrow__($lsize(Jnn_1), $lsize(Jnn_2), sx, c_1)*
   -- if c'_2* = $narrow__($lsize(Jnn_1), $lsize(Jnn_2), sx, c_2)*
-  -- if v = $invlanes_(Jnn_2 X M_2, c'_1* ++ c'_2*)
+  -- if v = $inv_lanes_(Jnn_2 X M_2, c'_1* ++ c'_2*)
 
 (;
 ;; TODO(2, rossberg): this is obsolete, clean up
 def $vextunop__(Jnn_1 X M_1, Jnn_2 X M_2, EXTADD_PAIRWISE sx, c_1) = c
   -- if ci* = $lanes_(Jnn_1 X M_1, c_1)
   -- if $concat_(iN($lsizenn2(Jnn_2)), (cj_1 cj_2)*) = $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), sx, ci)*
-  -- if c = $invlanes_(Jnn_2 X M_2, $iadd_($lsizenn2(Jnn_2), cj_1, cj_2)*)
+  -- if c = $inv_lanes_(Jnn_2 X M_2, $iadd_($lsizenn2(Jnn_2), cj_1, cj_2)*)
 
 def $vextbinop__(Jnn_1 X M_1, Jnn_2 X M_2, EXTMUL half sx, c_1, c_2) = c
   -- if ci_1* = $lanes_(Jnn_1 X M_1, c_1)[$half(half, 0, M_2) : M_2]
   -- if ci_2* = $lanes_(Jnn_1 X M_1, c_2)[$half(half, 0, M_2) : M_2]
-  -- if c = $invlanes_(Jnn_2 X M_2, $imul_($lsizenn2(Jnn_2), $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), sx, ci_1), $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), sx, ci_2))*)
+  -- if c = $inv_lanes_(Jnn_2 X M_2, $imul_($lsizenn2(Jnn_2), $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), sx, ci_1), $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), sx, ci_2))*)
 def $vextbinop__(Jnn_1 X M_1, Jnn_2 X M_2, DOT S, c_1, c_2) = c
   -- if ci_1* = $lanes_(Jnn_1 X M_1, c_1)
   -- if ci_2* = $lanes_(Jnn_1 X M_1, c_2)
   -- if ci'_1* = $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), S, ci_1)*
   -- if ci'_2* = $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), S, ci_2)*
   -- if $concat_(iN($lsizenn2(Jnn_2)), (cj_1 cj_2)*) = $imul_($lsizenn2(Jnn_2), ci'_1, ci'_2)*
-  -- if c = $invlanes_(Jnn_2 X M_2, $iadd_($lsizenn2(Jnn_2), cj_1, cj_2)*)
+  -- if c = $inv_lanes_(Jnn_2 X M_2, $iadd_($lsizenn2(Jnn_2), cj_1, cj_2)*)
 def $vextbinop__(Jnn_1 X M_1, Jnn_2 X M_2, RELAXED_DOT S, c_1, c_2) = c
   -- if ci_1* = $lanes_(Jnn_1 X M_1, c_1)
   -- if ci_2* = $lanes_(Jnn_1 X M_1, c_2)
   -- if ci'_1* = $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), S, ci_1)*
   -- if ci'_2* = $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), $relaxed2($R_idot, sx, S, U), ci_2)*
   -- if $concat_(iN($lsizenn2(Jnn_2)), (cj_1 cj_2)*) = $imul_($lsizenn2(Jnn_2), ci'_1, ci'_2)*
-  -- if c = $invlanes_(Jnn_2 X M_2, $iadd_sat_($lsizenn2(Jnn_2), S, cj_1, cj_2)*)
+  -- if c = $inv_lanes_(Jnn_2 X M_2, $iadd_sat_($lsizenn2(Jnn_2), S, cj_1, cj_2)*)
 ;)
 
 ;; TODO(2, rossberg): move to lanewise section
 def $ivextunop__(shape_1, shape_2, def $f_(N, iN(N)*) : iN(N)*, sx, vec_(V128)) : vec_(V128)
-def $ivextunop__(Jnn_1 X M_1, Jnn_2 X M_2, def $f_, sx, v_1) = $invlanes_(Jnn_2 X M_2, c*)
+def $ivextunop__(Jnn_1 X M_1, Jnn_2 X M_2, def $f_, sx, v_1) = $inv_lanes_(Jnn_2 X M_2, c*)
   -- if c_1* = $lanes_(Jnn_1 X M_1, v_1)
   -- if c'_1* = $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), sx, c_1)*
   -- if c* = $f_($lsizenn2(Jnn_2), c'_1*)
 
 def $ivextbinop__(shape_1, shape_2, def $f_(N, iN(N)*, iN(N)*) : iN(N)*, sx, sx, laneidx, laneidx, vec_(V128), vec_(V128)) : vec_(V128)
-def $ivextbinop__(Jnn_1 X M_1, Jnn_2 X M_2, def $f_, sx_1, sx_2, i, k, v_1, v_2) = $invlanes_(Jnn_2 X M_2, c*)
+def $ivextbinop__(Jnn_1 X M_1, Jnn_2 X M_2, def $f_, sx_1, sx_2, i, k, v_1, v_2) = $inv_lanes_(Jnn_2 X M_2, c*)
   -- if c_1* = $lanes_(Jnn_1 X M_1, v_1)[i : k]
   -- if c_2* = $lanes_(Jnn_1 X M_1, v_2)[i : k]
   -- if c'_1* = $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), sx_1, c_1)*
@@ -397,7 +397,7 @@ def $vextbinop__(Jnn_1 X M_1, Jnn_2 X M_2, RELAXED_DOT S, v_1, v_2) =
 (;
 ;; TODO(2, rossberg): this is obsolete, clean up
 def $vextternop__(Jnn_1 X M_1, Jnn_2 X M_2, RELAXED_DOT_ADD S, c_1, c_2, c_3) = c
-  -- if $lsizenn(Jnn) = $(2*$lsizenn1(Jnn_1))
+  -- if $jsizenn(Jnn) = $(2*$lsizenn1(Jnn_1))
   -- if ci_1* = $lanes_(Jnn_1 X M_1, c_1)
   -- if ci_2* = $lanes_(Jnn_1 X M_1, c_2)
   -- if ci_3* = $lanes_(Jnn_2 X M_2, c_3)
@@ -408,11 +408,11 @@ def $vextternop__(Jnn_1 X M_1, Jnn_2 X M_2, RELAXED_DOT_ADD S, c_1, c_2, c_3) = 
   -- if ck'_1* = $extend__($lsizenn(Jnn), $lsizenn2(Jnn_2), S, ck_1)*
   -- if ck'_2* = $extend__($lsizenn(Jnn), $lsizenn2(Jnn_2), S, ck_2)*
   -- if ck* = $iadd_($lsizenn2(Jnn_2), ck'_1, ck'_2)*
-  -- if c = $invlanes_(Jnn_2 X M_2, $iadd_($lsizenn2(Jnn_2), ck, ci_3)*)
+  -- if c = $inv_lanes_(Jnn_2 X M_2, $iadd_($lsizenn2(Jnn_2), ck, ci_3)*)
 ;)
 
 def $vextternop__(Jnn_1 X M_1, Jnn_2 X M_2, RELAXED_DOT_ADD S, c_1, c_2, c_3) = c
-  -- if $lsizenn(Jnn) = $(2*$lsizenn1(Jnn_1))
+  -- if $jsizenn(Jnn) = $(2*$lsizenn1(Jnn_1))
   -- if M = $(2*M_2)
   -- if c' = $vextbinop__(Jnn_1 X M_1, Jnn X M, RELAXED_DOT S, c_1, c_2)
   -- if c'' = $vextunop__(Jnn X M, Jnn_2 X M_2, EXTADD_PAIRWISE S, c')

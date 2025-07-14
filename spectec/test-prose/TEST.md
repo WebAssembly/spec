@@ -1714,11 +1714,9 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    a. Return :math:`32`.
 
-#. If :math:`{\mathit{valtype}} = \mathsf{f{\scriptstyle 64}}`, then:
+#. Assert: Due to validation, :math:`{\mathit{valtype}} = \mathsf{f{\scriptstyle 64}}`.
 
-   a. Return :math:`64`.
-
-#. Fail.
+#. Return :math:`64`.
 
 
 :math:`{\mathrm{funcs}}({{\mathit{externtype}'}^\ast})`
@@ -1844,9 +1842,15 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ...............................................
 
 
-1. Let :math:`j` be the result for which :math:`{{\mathrm{signed}}}_{N}(j)` :math:`=` :math:`i`.
+1. If :math:`0 \leq i` and :math:`i < {2^{N - 1}}`, then:
 
-#. Return :math:`j`.
+   a. Return :math:`i`.
+
+#. Assert: Due to validation, :math:`{-{2^{N - 1}}} \leq i`.
+
+#. Assert: Due to validation, :math:`i < 0`.
+
+#. Return :math:`i + {2^{N}}`.
 
 
 :math:`{{\mathit{unop}}}{{}_{{\mathit{valtype}}}}{({\mathit{iN}})}`
@@ -2256,24 +2260,6 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Assert: Due to validation, :math:`{|{\mathit{valtype}'}|} = {|{\mathit{valtype}}|}`.
 
 #. Return :math:`{{\mathrm{reinterpret}}}_{{\mathit{valtype}}, {\mathit{valtype}'}}({\mathit{iN}})`.
-
-
-:math:`{{\mathrm{invibytes}}}_{N}({b^\ast})`
-............................................
-
-
-1. Let :math:`n` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{N}}(n)` :math:`=` :math:`{b^\ast}`.
-
-#. Return :math:`n`.
-
-
-:math:`{{\mathrm{invfbytes}}}_{N}({b^\ast})`
-............................................
-
-
-1. Let :math:`p` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{f}}{N}}(p)` :math:`=` :math:`{b^\ast}`.
-
-#. Return :math:`p`.
 
 
 :math:`{{\mathrm{inez}}}_{N}(i_1)`
@@ -3790,7 +3776,7 @@ Step/memory.grow
   b. Push the value (I32.CONST (|$mem(z, 0).BYTES| / (64 * $Ki()))) to the stack.
   c. Perform $with_meminst(z, 0, mi).
 5. Or:
-  a. Push the value (I32.CONST $invsigned_(32, (- 1))) to the stack.
+  a. Push the value (I32.CONST $inv_signed_(32, (- 1))) to the stack.
 
 Ki
 1. Return 1024.
@@ -3859,9 +3845,8 @@ size valtype
   a. Return 64.
 3. If (valtype = F32), then:
   a. Return 32.
-4. If (valtype = F64), then:
-  a. Return 64.
-5. Fail.
+4. Assert: Due to validation, (valtype = F64).
+5. Return 64.
 
 funcsxt externtype'*
 1. If (externtype'* = []), then:
@@ -3919,9 +3904,12 @@ signed_ N i
 3. Assert: Due to validation, (i < (2 ^ N)).
 4. Return (i - (2 ^ N)).
 
-invsigned_ N i
-1. Let j be $signed__1^-1(N, i).
-2. Return j.
+inv_signed_ N i
+1. If ((0 <= i) /\ (i < (2 ^ (N - 1)))), then:
+  a. Return i.
+2. Assert: Due to validation, ((- (2 ^ (N - 1))) <= i).
+3. Assert: Due to validation, (i < 0).
+4. Return (i + (2 ^ N)).
 
 unop_ valtype unop_ iN
 1. If valtype is Inn, then:
@@ -3960,7 +3948,7 @@ idiv_ N sx i_1 i_2
   a. Return ?().
 4. If (($signed_(N, i_1) / $signed_(N, i_2)) = (2 ^ (N - 1))), then:
   a. Return ?().
-5. Return ?($invsigned_(N, $truncz(($signed_(N, i_1) / $signed_(N, i_2))))).
+5. Return ?($inv_signed_(N, $truncz(($signed_(N, i_1) / $signed_(N, i_2))))).
 
 imul_ N i_1 i_2
 1. Return ((i_1 * i_2) \ (2 ^ N)).
@@ -3975,7 +3963,7 @@ irem_ N sx i_1 i_2
   a. Return ?().
 4. Let j_1 be $signed_(N, i_1).
 5. Let j_2 be $signed_(N, i_2).
-6. Return ?($invsigned_(N, (j_1 - (j_2 * $truncz((j_1 / j_2)))))).
+6. Return ?($inv_signed_(N, (j_1 - (j_2 * $truncz((j_1 / j_2)))))).
 
 isub_ N i_1 i_2
 1. Return ((((2 ^ N) + i_1) - i_2) \ (2 ^ N)).
@@ -4118,14 +4106,6 @@ cvtop__ valtype valtype' cvtop iN
 9. Assert: Due to validation, (cvtop = REINTERPRET).
 10. Assert: Due to validation, ($size(valtype') = $size(valtype)).
 11. Return [$reinterpret__(valtype, valtype', iN)].
-
-invibytes_ N b*
-1. Let n be $ibytes__1^-1(N, b*).
-2. Return n.
-
-invfbytes_ N b*
-1. Let p be $fbytes__1^-1(N, b*).
-2. Return p.
 
 inez_ N i_1
 1. Return $bool((i_1 =/= 0)).
@@ -6087,11 +6067,9 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{j^{N}}` be the result for which :math:`{({{\mathrm{bytes}}}_{{\mathsf{i}}{M}}({j^{N}}) = z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} + k \cdot M / 8 : M / 8])^{k<N}}`.
 
-#. Assert: Due to validation, :math:`({\mathit{lanetype}})` for which :math:`{|{\mathit{lanetype}}|}` :math:`=` :math:`M \cdot 2` is :math:`{\mathsf{i}}{n}`.
+#. Let :math:`{\mathsf{i}}{n}` be the result for which :math:`{|{\mathsf{i}}{n}|}` :math:`=` :math:`M \cdot 2`.
 
-#. Let :math:`{|{\mathsf{i}}{n}|}` be :math:`M \cdot 2`.
-
-#. Let :math:`c` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{N}}({{{{{\mathrm{extend}}}_{M, {|{\mathsf{i}}{n}|}}^{{\mathit{sx}}}}}{(j)}^{N}})`.
+#. Let :math:`c` be :math:`{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{N}}({{{{{\mathrm{extend}}}_{M, {|{\mathsf{i}}{n}|}}^{{\mathit{sx}}}}}{(j)}^{N}})`.
 
 #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
@@ -6112,13 +6090,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`M` be :math:`128 / N`.
 
-#. Assert: Due to validation, :math:`({\mathit{lanetype}})` for which :math:`{|{\mathit{lanetype}}|}` :math:`=` :math:`N` is :math:`{\mathsf{i}}{n}`.
-
-#. Let :math:`{|{\mathsf{i}}{n}|}` be :math:`N`.
+#. Let :math:`{\mathsf{i}}{n}` be the result for which :math:`{|{\mathsf{i}}{n}|}` :math:`=` :math:`N`.
 
 #. Let :math:`j` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{N}}(j)` :math:`=` :math:`z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : N / 8]`.
 
-#. Let :math:`c` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({j^{M}})`.
+#. Let :math:`c` be :math:`{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({j^{M}})`.
 
 #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
@@ -6701,7 +6677,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{{c'}^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{N}}(c_1)`.
 
-#. Let :math:`c` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{N}}({{{{\mathit{vshiftop}}}{\mathsf{\_}}~{{\mathsf{i}}{n}}{\mathsf{x}}{N}}{({c'}, n)}^\ast})`.
+#. Let :math:`c` be :math:`{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{N}}({{{{\mathit{vshiftop}}}{\mathsf{\_}}~{{\mathsf{i}}{n}}{\mathsf{x}}{N}}{({c'}, n)}^\ast})`.
 
 #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
@@ -6741,7 +6717,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Assert: Due to validation, :math:`{(k < {|{{\mathit{ci}}^\ast}|})^{k<M}}`.
 
-#. Let :math:`c` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{{c'}^\ast}{}[{{\mathit{ci}}^\ast}{}[k]]^{k<M}})`.
+#. Let :math:`c` be :math:`{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{{c'}^\ast}{}[{{\mathit{ci}}^\ast}{}[k]]^{k<M}})`.
 
 #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
@@ -6764,7 +6740,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Assert: Due to validation, :math:`{({i^\ast}{}[k] < {|{{c'}^\ast}|})^{k<N}}`.
 
-#. Let :math:`c` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{N}}({{{c'}^\ast}{}[{i^\ast}{}[k]]^{k<N}})`.
+#. Let :math:`c` be :math:`{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{N}}({{{c'}^\ast}{}[{i^\ast}{}[k]]^{k<N}})`.
 
 #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
@@ -6779,7 +6755,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Assert: Due to validation, :math:`{\mathit{numtype}}_0 = {\mathrm{unpack}}({\mathsf{i}}{n})`.
 
-#. Let :math:`c` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{N}}({{{\mathrm{pack}}}_{{\mathsf{i}}{n}}(c_1)^{N}})`.
+#. Let :math:`c` be :math:`{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{N}}({{{\mathrm{pack}}}_{{\mathsf{i}}{n}}(c_1)^{N}})`.
 
 #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
@@ -6829,7 +6805,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
-#. Let :math:`c` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{N}}({{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{N}}(c_1){}[{}[i] = {{\mathrm{pack}}}_{{\mathsf{i}}{n}}(c_2)])`.
+#. Let :math:`c` be :math:`{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{N}}({{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{N}}(c_1){}[{}[i] = {{\mathrm{pack}}}_{{\mathsf{i}}{n}}(c_2)])`.
 
 #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
@@ -6884,7 +6860,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{{\mathit{cj}}_2^\ast}` be :math:`{{{{{\mathrm{narrow}}}_{{|{{\mathsf{i}}{n}}_1|}, {|{{\mathsf{i}}{n}}_2|}}^{{\mathit{sx}}}}}{{\mathit{ci}}_2}^\ast}`.
 
-#. Let :math:`c` be :math:`{{\mathrm{invlanes}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{N_2}}({{\mathit{cj}}_1^\ast}~{{\mathit{cj}}_2^\ast})`.
+#. Let :math:`c` be :math:`{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{N_2}}({{\mathit{cj}}_1^\ast}~{{\mathit{cj}}_2^\ast})`.
 
 #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
@@ -6905,9 +6881,9 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Let :math:`{{{\mathit{cj}}^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{vcvtop}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{{M'}}, {{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M}}({\mathit{vcvtop}}, {\mathit{ci}})^\ast}`.
 
-   #. If :math:`{|{{{\mathrm{invlanes}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M}}({{\mathit{cj}}^\ast})^\ast}|} > 0`, then:
+   #. If :math:`{|{{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M}}({{\mathit{cj}}^\ast})^\ast}|} > 0`, then:
 
-      1) Let :math:`c` be an element of :math:`{{{\mathrm{invlanes}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M}}({{\mathit{cj}}^\ast})^\ast}`.
+      1) Let :math:`c` be an element of :math:`{{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M}}({{\mathit{cj}}^\ast})^\ast}`.
 
       #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
@@ -6917,9 +6893,9 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Let :math:`{{{\mathit{cj}}^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{vcvtop}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{{M'}}, {{{\mathsf{i}}{n}}_2}{\mathsf{x}}{{M'}}}({\mathit{vcvtop}}, {\mathit{ci}})^\ast}`.
 
-   #. If :math:`{|{{{\mathrm{invlanes}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{{M'}}}({{\mathit{cj}}^\ast})^\ast}|} > 0`, then:
+   #. If :math:`{|{{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{{M'}}}({{\mathit{cj}}^\ast})^\ast}|} > 0`, then:
 
-      1) Let :math:`c` be an element of :math:`{{{\mathrm{invlanes}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{{M'}}}({{\mathit{cj}}^\ast})^\ast}`.
+      1) Let :math:`c` be an element of :math:`{{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{{M'}}}({{\mathit{cj}}^\ast})^\ast}`.
 
       #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
@@ -6929,9 +6905,9 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Let :math:`{{{\mathit{cj}}^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{vcvtop}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{{M'}}, {{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M}}({\mathit{vcvtop}}, {\mathit{ci}})^\ast}~{{\mathrm{zero}}({{\mathsf{i}}{n}}_2)^{{M'}}}`.
 
-   #. If :math:`{|{{{\mathrm{invlanes}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M}}({{\mathit{cj}}^\ast})^\ast}|} > 0`, then:
+   #. If :math:`{|{{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M}}({{\mathit{cj}}^\ast})^\ast}|} > 0`, then:
 
-      1) Let :math:`c` be an element of :math:`{{{\mathrm{invlanes}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M}}({{\mathit{cj}}^\ast})^\ast}`.
+      1) Let :math:`c` be an element of :math:`{{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M}}({{\mathit{cj}}^\ast})^\ast}`.
 
       #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
@@ -7341,13 +7317,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       #) Let :math:`{j^{N}}` be the result for which :math:`{({{\mathrm{bytes}}}_{{\mathsf{i}}{M}}({j^{N}}) = z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} + k \cdot M / 8 : M / 8])^{k<N}}`.
 
-      #) If :math:`({\mathit{lanetype}})` for which :math:`{|{\mathit{lanetype}}|}` :math:`=` :math:`M \cdot 2` is :math:`{\mathsf{i}}{n}`, then:
+      #) Let :math:`{\mathsf{i}}{n}` be the result for which :math:`{|{\mathsf{i}}{n}|}` :math:`=` :math:`M \cdot 2`.
 
-         a) Let :math:`{|{\mathsf{i}}{n}|}` be :math:`M \cdot 2`.
+      #) Let :math:`c` be :math:`{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{N}}({{{{{\mathrm{extend}}}_{M, {|{\mathsf{i}}{n}|}}^{{\mathit{sx}}}}}{(j)}^{N}})`.
 
-         #) Let :math:`c` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{N}}({{{{{\mathrm{extend}}}_{M, {|{\mathsf{i}}{n}|}}^{{\mathit{sx}}}}}{(j)}^{N}})`.
-
-         #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
+      #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
    #. If :math:`{\mathit{vloadop}}_0` is some :math:`{\mathbb{N}}{\mathsf{\_}}{\mathsf{splat}}`, then:
 
@@ -7359,15 +7333,13 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       #) Let :math:`M` be :math:`128 / N`.
 
-      #) If :math:`({\mathit{lanetype}})` for which :math:`{|{\mathit{lanetype}}|}` :math:`=` :math:`N` is :math:`{\mathsf{i}}{n}`, then:
+      #) Let :math:`{\mathsf{i}}{n}` be the result for which :math:`{|{\mathsf{i}}{n}|}` :math:`=` :math:`N`.
 
-         a) Let :math:`{|{\mathsf{i}}{n}|}` be :math:`N`.
+      #) Let :math:`j` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{N}}(j)` :math:`=` :math:`z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : N / 8]`.
 
-         #) Let :math:`j` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{N}}(j)` :math:`=` :math:`z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : N / 8]`.
+      #) Let :math:`c` be :math:`{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({j^{M}})`.
 
-         #) Let :math:`c` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({j^{M}})`.
-
-         #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
+      #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
    #. If :math:`{\mathit{vloadop}}_0` is some :math:`{\mathbb{N}}{\mathsf{\_}}{\mathsf{zero}}`, then:
 
@@ -7404,13 +7376,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`M` be :math:`128 / N`.
 
-#. Assert: Due to validation, :math:`({\mathit{lanetype}})` for which :math:`{|{\mathit{lanetype}}|}` :math:`=` :math:`N` is :math:`{\mathsf{i}}{n}`.
-
-#. Let :math:`{|{\mathsf{i}}{n}|}` be :math:`N`.
+#. Let :math:`{\mathsf{i}}{n}` be the result for which :math:`{|{\mathsf{i}}{n}|}` :math:`=` :math:`N`.
 
 #. Let :math:`k` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{N}}(k)` :math:`=` :math:`z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : N / 8]`.
 
-#. Let :math:`c` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}(c_1){}[{}[j] = k])`.
+#. Let :math:`c` be :math:`{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}(c_1){}[{}[j] = k])`.
 
 #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
@@ -7750,9 +7720,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`M` be :math:`128 / N`.
 
-#. Assert: Due to validation, :math:`({\mathit{lanetype}})` for which :math:`{|{\mathit{lanetype}}|}` :math:`=` :math:`N` is :math:`{\mathsf{i}}{n}`.
-
-#. Let :math:`{|{\mathsf{i}}{n}|}` be :math:`N`.
+#. Let :math:`{\mathsf{i}}{n}` be the result for which :math:`{|{\mathsf{i}}{n}|}` :math:`=` :math:`N`.
 
 #. Assert: Due to validation, :math:`j < {|{{\mathrm{lanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}(c)|}`.
 
@@ -7965,6 +7933,13 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 1. Return :math:`{2^{{\mathrm{signif}}(N) - 1}}`.
 
 
+:math:`{\mathrm{lanetype}}({{\mathsf{i}}{n}}{\mathsf{x}}{N})`
+.............................................................
+
+
+1. Return :math:`{\mathsf{i}}{n}`.
+
+
 :math:`{|{\mathit{valtype}}|}`
 ..............................
 
@@ -7985,18 +7960,25 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    a. Return :math:`64`.
 
-#. If :math:`{\mathit{valtype}} = \mathsf{v{\scriptstyle 128}}`, then:
+#. If :math:`{\mathit{valtype}} = \mathsf{i{\scriptstyle 32}}`, then:
 
-   a. Return :math:`128`.
+   a. Return :math:`32`.
 
-#. Fail.
+#. If :math:`{\mathit{valtype}} = \mathsf{i{\scriptstyle 64}}`, then:
 
+   a. Return :math:`64`.
 
-:math:`{|{\mathsf{i}}{n}|}`
-...........................
+#. If :math:`{\mathit{valtype}} = \mathsf{f{\scriptstyle 32}}`, then:
 
+   a. Return :math:`32`.
 
-1. Return :math:`{|{\mathsf{i}}{n}|}`.
+#. If :math:`{\mathit{valtype}} = \mathsf{f{\scriptstyle 64}}`, then:
+
+   a. Return :math:`64`.
+
+#. Assert: Due to validation, :math:`{\mathit{valtype}} = \mathsf{v{\scriptstyle 128}}`.
+
+#. Return :math:`128`.
 
 
 :math:`{|{\mathit{packtype}}|}`
@@ -8004,6 +7986,14 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 
 1. If :math:`{\mathit{packtype}} = \mathsf{i{\scriptstyle 8}}`, then:
+
+   a. Return :math:`8`.
+
+#. If :math:`{\mathit{packtype}} = \mathsf{i{\scriptstyle 16}}`, then:
+
+   a. Return :math:`16`.
+
+#. If :math:`{\mathit{packtype}} = \mathsf{i{\scriptstyle 8}}`, then:
 
    a. Return :math:`8`.
 
@@ -8020,16 +8010,38 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    a. Return :math:`{|{\mathit{lanetype}}|}`.
 
+#. If :math:`{\mathit{lanetype}}` is packed type, then:
+
+   a. Return :math:`{|{\mathit{lanetype}}|}`.
+
+#. If :math:`{\mathit{lanetype}}` is number type, then:
+
+   a. Return :math:`{|{\mathit{lanetype}}|}`.
+
 #. Assert: Due to validation, :math:`{\mathit{lanetype}}` is packed type.
 
 #. Return :math:`{|{\mathit{lanetype}}|}`.
 
 
-:math:`{\mathrm{lanetype}}({{\mathsf{i}}{n}}{\mathsf{x}}{N})`
-.............................................................
+:math:`{|{\mathsf{i}}{n}|}`
+...........................
 
 
-1. Return :math:`{\mathsf{i}}{n}`.
+1. Return :math:`{|{\mathsf{i}}{n}|}`.
+
+
+:math:`{|{\mathsf{i}}{n}|}`
+...........................
+
+
+1. Return :math:`{|{\mathsf{i}}{n}|}`.
+
+
+:math:`{|{\mathsf{f}}{n}|}`
+...........................
+
+
+1. Return :math:`{|{\mathsf{f}}{n}|}`.
 
 
 :math:`N`
@@ -8072,6 +8084,51 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 
 1. Return :math:`{|{\mathit{lt}}|}`.
+
+
+:math:`{\mathrm{inv}}_{\mathit{isize}}(n)`
+..........................................
+
+
+1. If :math:`n = 32`, then:
+
+   a. Return :math:`\mathsf{i{\scriptstyle 32}}`.
+
+#. If :math:`n = 64`, then:
+
+   a. Return :math:`\mathsf{i{\scriptstyle 64}}`.
+
+#. Fail.
+
+
+:math:`{\mathrm{inv}}_{\mathit{jsize}}(n)`
+..........................................
+
+
+1. If :math:`n = 8`, then:
+
+   a. Return :math:`\mathsf{i{\scriptstyle 8}}`.
+
+#. If :math:`n = 16`, then:
+
+   a. Return :math:`\mathsf{i{\scriptstyle 16}}`.
+
+#. Return :math:`{\mathrm{inv}}_{\mathit{isize}}(n)`.
+
+
+:math:`{\mathrm{inv}}_{\mathit{fsize}}(n)`
+..........................................
+
+
+1. If :math:`n = 32`, then:
+
+   a. Return :math:`\mathsf{f{\scriptstyle 32}}`.
+
+#. If :math:`n = 64`, then:
+
+   a. Return :math:`\mathsf{f{\scriptstyle 64}}`.
+
+#. Fail.
 
 
 :math:`{\mathrm{zero}}({\mathit{numtype}})`
@@ -8316,9 +8373,15 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ...............................................
 
 
-1. Let :math:`j` be the result for which :math:`{{\mathrm{signed}}}_{N}(j)` :math:`=` :math:`i`.
+1. If :math:`0 \leq i` and :math:`i < {2^{N - 1}}`, then:
 
-#. Return :math:`j`.
+   a. Return :math:`i`.
+
+#. Assert: Due to validation, :math:`{-{2^{N - 1}}} \leq i`.
+
+#. Assert: Due to validation, :math:`i < 0`.
+
+#. Return :math:`i + {2^{N}}`.
 
 
 :math:`{{\mathrm{sat\_u}}}_{N}(i)`
@@ -8774,24 +8837,6 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Return :math:`{{\mathrm{reinterpret}}}_{{\mathit{numtype}}, {\mathit{numtype}'}}({\mathit{iN}}_1)`.
 
 
-:math:`{{\mathrm{invibytes}}}_{N}({b^\ast})`
-............................................
-
-
-1. Let :math:`n` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{N}}(n)` :math:`=` :math:`{b^\ast}`.
-
-#. Return :math:`n`.
-
-
-:math:`{{\mathrm{invfbytes}}}_{N}({b^\ast})`
-............................................
-
-
-1. Let :math:`p` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{f}}{N}}(p)` :math:`=` :math:`{b^\ast}`.
-
-#. Return :math:`p`.
-
-
 :math:`{{\mathrm{inez}}}_{N}(i_1)`
 ..................................
 
@@ -8803,7 +8848,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ..................................
 
 
-1. Return :math:`{{{{\mathrm{signed}}}_{N}^{{-1}}}}{({-{{\mathrm{signed}}}_{N}(i_1)})}`.
+1. Return :math:`({2^{N}} - i_1) \mathbin{\mathrm{mod}} ({2^{N}})`.
 
 
 :math:`{{\mathrm{iabs}}}_{N}(i_1)`
@@ -8909,15 +8954,6 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Assert: Due to validation, :math:`{\mathit{lanetype}}` is packed type.
 
 #. Return :math:`{{{{\mathrm{extend}}}_{{|{\mathit{lanetype}}|}, {|{\mathrm{unpack}}({\mathit{lanetype}})|}}^{\mathsf{u}}}}{(c)}`.
-
-
-:math:`{{\mathrm{invlanes}}}_{{\mathit{sh}}}({c^\ast})`
-.......................................................
-
-
-1. Let :math:`{\mathit{vc}}` be the result for which :math:`{{\mathrm{lanes}}}_{{\mathit{sh}}}({\mathit{vc}})` :math:`=` :math:`{c^\ast}`.
-
-#. Return :math:`{\mathit{vc}}`.
 
 
 :math:`{\mathrm{zeroop}}({\mathit{vcvtop}})`
@@ -9036,7 +9072,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       1) Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-      #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{{\mathrm{iabs}}}_{N}({\mathit{lane}}_1)^\ast})`.
+      #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{{\mathrm{iabs}}}_{N}({\mathit{lane}}_1)^\ast})`.
 
       #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
@@ -9044,7 +9080,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       1) Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-      #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{{\mathrm{ineg}}}_{N}({\mathit{lane}}_1)^\ast})`.
+      #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{{\mathrm{ineg}}}_{N}({\mathit{lane}}_1)^\ast})`.
 
       #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
@@ -9052,7 +9088,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       1) Let :math:`{{\mathit{lane}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-      #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{{\mathrm{ipopcnt}}}_{N}({\mathit{lane}}_1)^\ast})`.
+      #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{{\mathrm{ipopcnt}}}_{N}({\mathit{lane}}_1)^\ast})`.
 
       #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
@@ -9064,7 +9100,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{fabs}}}_{N}({\mathit{lane}}_1)^\ast}`.
 
-   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
+   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
 
    #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
@@ -9074,7 +9110,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{fneg}}}_{N}({\mathit{lane}}_1)^\ast}`.
 
-   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
+   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
 
    #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
@@ -9084,7 +9120,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{fsqrt}}}_{N}({\mathit{lane}}_1)^\ast}`.
 
-   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
+   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
 
    #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
@@ -9094,7 +9130,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{fceil}}}_{N}({\mathit{lane}}_1)^\ast}`.
 
-   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
+   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
 
    #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
@@ -9104,7 +9140,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{ffloor}}}_{N}({\mathit{lane}}_1)^\ast}`.
 
-   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
+   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
 
    #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
@@ -9114,7 +9150,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{ftrunc}}}_{N}({\mathit{lane}}_1)^\ast}`.
 
-   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
+   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
 
    #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
@@ -9124,7 +9160,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{fnearest}}}_{N}({\mathit{lane}}_1)^\ast}`.
 
-#. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
+#. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
 
 #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
@@ -9141,7 +9177,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       #) Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
-      #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{{\mathrm{iadd}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast})`.
+      #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{{\mathrm{iadd}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast})`.
 
       #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
@@ -9151,7 +9187,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       #) Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
-      #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{{\mathrm{isub}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast})`.
+      #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{{\mathrm{isub}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast})`.
 
       #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
@@ -9163,7 +9199,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       #) Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
-      #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{{\mathrm{imin}}}_{N}({\mathit{sx}}, {\mathit{lane}}_1, {\mathit{lane}}_2)^\ast})`.
+      #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{{\mathrm{imin}}}_{N}({\mathit{sx}}, {\mathit{lane}}_1, {\mathit{lane}}_2)^\ast})`.
 
       #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
@@ -9175,7 +9211,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       #) Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
-      #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{{\mathrm{imax}}}_{N}({\mathit{sx}}, {\mathit{lane}}_1, {\mathit{lane}}_2)^\ast})`.
+      #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{{\mathrm{imax}}}_{N}({\mathit{sx}}, {\mathit{lane}}_1, {\mathit{lane}}_2)^\ast})`.
 
       #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
@@ -9187,7 +9223,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       #) Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
-      #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{{{{\mathrm{iadd\_sat}}}_{N}^{{\mathit{sx}}}}}{({\mathit{lane}}_1, {\mathit{lane}}_2)}^\ast})`.
+      #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{{{{\mathrm{iadd\_sat}}}_{N}^{{\mathit{sx}}}}}{({\mathit{lane}}_1, {\mathit{lane}}_2)}^\ast})`.
 
       #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
@@ -9199,7 +9235,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       #) Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
-      #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{{{{\mathrm{isub\_sat}}}_{N}^{{\mathit{sx}}}}}{({\mathit{lane}}_1, {\mathit{lane}}_2)}^\ast})`.
+      #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{{{{\mathrm{isub\_sat}}}_{N}^{{\mathit{sx}}}}}{({\mathit{lane}}_1, {\mathit{lane}}_2)}^\ast})`.
 
       #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
@@ -9209,7 +9245,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       #) Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
-      #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{{\mathrm{imul}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast})`.
+      #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{{\mathrm{imul}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast})`.
 
       #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
@@ -9219,7 +9255,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       #) Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
-      #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{{{{\mathrm{iavgr}}}_{N}^{\mathsf{u}}}}{({\mathit{lane}}_1, {\mathit{lane}}_2)}^\ast})`.
+      #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{{{{\mathrm{iavgr}}}_{N}^{\mathsf{u}}}}{({\mathit{lane}}_1, {\mathit{lane}}_2)}^\ast})`.
 
       #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
@@ -9229,7 +9265,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       #) Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
-      #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{{{{\mathrm{iq{\kern-0.1em\scriptstyle 15\kern-0.1em}mulr\_sat}}}_{N}^{\mathsf{s}}}}{({\mathit{lane}}_1, {\mathit{lane}}_2)}^\ast})`.
+      #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{{{{\mathrm{iq{\kern-0.1em\scriptstyle 15\kern-0.1em}mulr\_sat}}}_{N}^{\mathsf{s}}}}{({\mathit{lane}}_1, {\mathit{lane}}_2)}^\ast})`.
 
       #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
@@ -9243,7 +9279,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{fadd}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast}`.
 
-   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
+   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
 
    #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
@@ -9255,7 +9291,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{fsub}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast}`.
 
-   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
+   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
 
    #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
@@ -9267,7 +9303,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{fmul}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast}`.
 
-   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
+   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
 
    #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
@@ -9279,7 +9315,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{fdiv}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast}`.
 
-   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
+   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
 
    #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
@@ -9291,7 +9327,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{fmin}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast}`.
 
-   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
+   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
 
    #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
@@ -9303,7 +9339,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{fmax}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast}`.
 
-   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
+   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
 
    #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
@@ -9315,7 +9351,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{fpmin}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast}`.
 
-   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
+   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
 
    #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
@@ -9327,7 +9363,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{fpmax}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast}`.
 
-#. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{invlanes}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
+#. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
 
 #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
@@ -9346,7 +9382,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       #) Let :math:`{{\mathit{lane}}_3^\ast}` be :math:`{{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{\mathrm{ieq}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2))}^\ast}`.
 
-      #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}_3^\ast})`.
+      #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}_3^\ast})`.
 
       #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
@@ -9358,7 +9394,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       #) Let :math:`{{\mathit{lane}}_3^\ast}` be :math:`{{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{\mathrm{ine}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2))}^\ast}`.
 
-      #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}_3^\ast})`.
+      #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}_3^\ast})`.
 
       #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
@@ -9372,7 +9408,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       #) Let :math:`{{\mathit{lane}}_3^\ast}` be :math:`{{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{{{\mathrm{ilt}}}_{N}^{{\mathit{sx}}}}}{({\mathit{lane}}_1, {\mathit{lane}}_2)})}^\ast}`.
 
-      #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}_3^\ast})`.
+      #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}_3^\ast})`.
 
       #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
@@ -9386,7 +9422,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       #) Let :math:`{{\mathit{lane}}_3^\ast}` be :math:`{{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{{{\mathrm{igt}}}_{N}^{{\mathit{sx}}}}}{({\mathit{lane}}_1, {\mathit{lane}}_2)})}^\ast}`.
 
-      #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}_3^\ast})`.
+      #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}_3^\ast})`.
 
       #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
@@ -9400,7 +9436,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       #) Let :math:`{{\mathit{lane}}_3^\ast}` be :math:`{{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{{{\mathrm{ile}}}_{N}^{{\mathit{sx}}}}}{({\mathit{lane}}_1, {\mathit{lane}}_2)})}^\ast}`.
 
-      #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}_3^\ast})`.
+      #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}_3^\ast})`.
 
       #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
@@ -9414,7 +9450,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       #) Let :math:`{{\mathit{lane}}_3^\ast}` be :math:`{{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{{{\mathrm{ige}}}_{N}^{{\mathit{sx}}}}}{({\mathit{lane}}_1, {\mathit{lane}}_2)})}^\ast}`.
 
-      #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}_3^\ast})`.
+      #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}_3^\ast})`.
 
       #) Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
@@ -9430,7 +9466,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Let :math:`{{\mathit{lane}}_3^\ast}` be :math:`{{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{\mathrm{feq}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2))}^\ast}`.
 
-   #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}_3^\ast})`.
+   #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}_3^\ast})`.
 
    #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
@@ -9444,7 +9480,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Let :math:`{{\mathit{lane}}_3^\ast}` be :math:`{{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{\mathrm{fne}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2))}^\ast}`.
 
-   #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}_3^\ast})`.
+   #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}_3^\ast})`.
 
    #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
@@ -9458,7 +9494,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Let :math:`{{\mathit{lane}}_3^\ast}` be :math:`{{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{\mathrm{flt}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2))}^\ast}`.
 
-   #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}_3^\ast})`.
+   #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}_3^\ast})`.
 
    #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
@@ -9472,7 +9508,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Let :math:`{{\mathit{lane}}_3^\ast}` be :math:`{{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{\mathrm{fgt}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2))}^\ast}`.
 
-   #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}_3^\ast})`.
+   #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}_3^\ast})`.
 
    #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
@@ -9486,7 +9522,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Let :math:`{{\mathit{lane}}_3^\ast}` be :math:`{{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{\mathrm{fle}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2))}^\ast}`.
 
-   #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}_3^\ast})`.
+   #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}_3^\ast})`.
 
    #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
@@ -9500,7 +9536,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{{\mathit{lane}}_3^\ast}` be :math:`{{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{\mathrm{fge}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2))}^\ast}`.
 
-#. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{invlanes}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}_3^\ast})`.
+#. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}_3^\ast})`.
 
 #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
@@ -9560,7 +9596,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{{\mathit{cj}}_1~{\mathit{cj}}_2^\ast}` be the result for which the :ref:`concatenation <notation-concat>` of :math:`{{\mathit{cj}}_1~{\mathit{cj}}_2^\ast}` is :math:`{{{{{\mathrm{extend}}}_{N_2, N_1}^{{\mathit{sx}}}}}{({\mathit{ci}})}^\ast}`.
 
-#. Let :math:`c` be :math:`{{\mathrm{invlanes}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M_1}}({{{\mathrm{iadd}}}_{N_1}({\mathit{cj}}_1, {\mathit{cj}}_2)^\ast})`.
+#. Let :math:`c` be :math:`{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M_1}}({{{\mathrm{iadd}}}_{N_1}({\mathit{cj}}_1, {\mathit{cj}}_2)^\ast})`.
 
 #. Return :math:`c`.
 
@@ -9577,7 +9613,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Let :math:`{{\mathit{ci}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M_2}}(c_2){}[{\mathrm{half}}({\mathit{half}}, 0, M_1) : M_1]`.
 
-   #. Let :math:`c` be :math:`{{\mathrm{invlanes}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M_1}}({{{\mathrm{imul}}}_{N_1}({{{{\mathrm{extend}}}_{N_2, N_1}^{{\mathit{sx}}}}}{({\mathit{ci}}_1)}, {{{{\mathrm{extend}}}_{N_2, N_1}^{{\mathit{sx}}}}}{({\mathit{ci}}_2)})^\ast})`.
+   #. Let :math:`c` be :math:`{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M_1}}({{{\mathrm{imul}}}_{N_1}({{{{\mathrm{extend}}}_{N_2, N_1}^{{\mathit{sx}}}}}{({\mathit{ci}}_1)}, {{{{\mathrm{extend}}}_{N_2, N_1}^{{\mathit{sx}}}}}{({\mathit{ci}}_2)})^\ast})`.
 
    #. Return :math:`c`.
 
@@ -9589,7 +9625,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{{\mathit{cj}}_1~{\mathit{cj}}_2^\ast}` be the result for which the :ref:`concatenation <notation-concat>` of :math:`{{\mathit{cj}}_1~{\mathit{cj}}_2^\ast}` is :math:`{{{\mathrm{imul}}}_{N_1}({{{{\mathrm{extend}}}_{N_2, N_1}^{\mathsf{s}}}}{({\mathit{ci}}_1)}, {{{{\mathrm{extend}}}_{N_2, N_1}^{\mathsf{s}}}}{({\mathit{ci}}_2)})^\ast}`.
 
-#. Let :math:`c` be :math:`{{\mathrm{invlanes}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M_1}}({{{\mathrm{iadd}}}_{N_1}({\mathit{cj}}_1, {\mathit{cj}}_2)^\ast})`.
+#. Let :math:`c` be :math:`{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M_1}}({{{\mathrm{iadd}}}_{N_1}({\mathit{cj}}_1, {\mathit{cj}}_2)^\ast})`.
 
 #. Return :math:`c`.
 
@@ -11336,10 +11372,9 @@ Step_read/vload-shape-* V128 ?((SHAPE M X N _ sx)) ao
 4. If (((i + ao.OFFSET) + ((M * N) / 8)) > |$mem(z, 0).BYTES|), then:
   a. Trap.
 5. Let j^N be $ibytes__1^-1(M, $mem(z, 0).BYTES[((i + ao.OFFSET) + ((k * M) / 8)) : (M / 8)])^(k<N).
-6. Assert: Due to validation, $lsize^-1((M * 2)) is Jnn.
-7. Let Jnn be $lsize^-1((M * 2)).
-8. Let c be $invlanes_(Jnn X N, $extend__(M, $lsize(Jnn), sx, j)^N).
-9. Push the value (V128.CONST c) to the stack.
+6. Let Jnn be $jsize^-1((M * 2)).
+7. Let c be $inv_lanes_(Jnn X N, $extend__(M, $jsize(Jnn), sx, j)^N).
+8. Push the value (V128.CONST c) to the stack.
 
 Step_read/vload-splat-* V128 ?((SPLAT N)) ao
 1. Let z be the current state.
@@ -11348,11 +11383,10 @@ Step_read/vload-splat-* V128 ?((SPLAT N)) ao
 4. If (((i + ao.OFFSET) + (N / 8)) > |$mem(z, 0).BYTES|), then:
   a. Trap.
 5. Let M be (128 / N).
-6. Assert: Due to validation, $lsize^-1(N) is Jnn.
-7. Let Jnn be $lsize^-1(N).
-8. Let j be $ibytes__1^-1(N, $mem(z, 0).BYTES[(i + ao.OFFSET) : (N / 8)]).
-9. Let c be $invlanes_(Jnn X M, j^M).
-10. Push the value (V128.CONST c) to the stack.
+6. Let Jnn be $jsize^-1(N).
+7. Let j be $ibytes__1^-1(N, $mem(z, 0).BYTES[(i + ao.OFFSET) : (N / 8)]).
+8. Let c be $inv_lanes_(Jnn X M, j^M).
+9. Push the value (V128.CONST c) to the stack.
 
 Step_read/vload-zero-* V128 ?((ZERO N)) ao
 1. Let z be the current state.
@@ -11624,7 +11658,7 @@ Step_pure/vshiftop Jnn X N vshiftop
 3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 4. Pop the value (V128.CONST c_1) from the stack.
 5. Let c'* be $lanes_(Jnn X N, c_1).
-6. Let c be $invlanes_(Jnn X N, $vshiftop_(Jnn X N, vshiftop, c', n)*).
+6. Let c be $inv_lanes_(Jnn X N, $vshiftop_(Jnn X N, vshiftop, c', n)*).
 7. Push the value (V128.CONST c) to the stack.
 
 Step_pure/vbitmask Jnn X N
@@ -11643,7 +11677,7 @@ Step_pure/vswizzle Pnn X M
 6. Let ci* be $lanes_(Pnn X M, c_2).
 7. Assert: Due to validation, (ci*[k] < |c'*|)^(k<M).
 8. Assert: Due to validation, (k < |ci*|)^(k<M).
-9. Let c be $invlanes_(Pnn X M, c'*[ci*[k]]^(k<M)).
+9. Let c be $inv_lanes_(Pnn X M, c'*[ci*[k]]^(k<M)).
 10. Push the value (V128.CONST c) to the stack.
 
 Step_pure/vshuffle Pnn X N i*
@@ -11654,14 +11688,14 @@ Step_pure/vshuffle Pnn X N i*
 5. Assert: Due to validation, (k < |i*|)^(k<N).
 6. Let c'* be $lanes_(Pnn X N, c_1) :: $lanes_(Pnn X N, c_2).
 7. Assert: Due to validation, (i*[k] < |c'*|)^(k<N).
-8. Let c be $invlanes_(Pnn X N, c'*[i*[k]]^(k<N)).
+8. Let c be $inv_lanes_(Pnn X N, c'*[i*[k]]^(k<N)).
 9. Push the value (V128.CONST c) to the stack.
 
 Step_pure/vsplat Lnn X N
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop the value (numtype_0.CONST c_1) from the stack.
 3. Assert: Due to validation, (numtype_0 = $unpack(Lnn)).
-4. Let c be $invlanes_(Lnn X N, $packnum_(Lnn, c_1)^N).
+4. Let c be $inv_lanes_(Lnn X N, $packnum_(Lnn, c_1)^N).
 5. Push the value (V128.CONST c) to the stack.
 
 Step_pure/vextract_lane lanetype X N sx'? i
@@ -11685,7 +11719,7 @@ Step_pure/vreplace_lane Lnn X N i
 3. Assert: Due to validation, (numtype_0 = $unpack(Lnn)).
 4. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 5. Pop the value (V128.CONST c_1) from the stack.
-6. Let c be $invlanes_(Lnn X N, $lanes_(Lnn X N, c_1) with [i] replaced by $packnum_(Lnn, c_2)).
+6. Let c be $inv_lanes_(Lnn X N, $lanes_(Lnn X N, c_1) with [i] replaced by $packnum_(Lnn, c_2)).
 7. Push the value (V128.CONST c) to the stack.
 
 Step_pure/vextunop sh_1 sh_2 vextunop
@@ -11711,7 +11745,7 @@ Step_pure/vnarrow Jnn_2 X N_2 Jnn_1 X N_1 sx
 6. Let ci_2* be $lanes_(Jnn_1 X N_1, c_2).
 7. Let cj_1* be $narrow__($lsize(Jnn_1), $lsize(Jnn_2), sx, ci_1)*.
 8. Let cj_2* be $narrow__($lsize(Jnn_1), $lsize(Jnn_2), sx, ci_2)*.
-9. Let c be $invlanes_(Jnn_2 X N_2, cj_1* :: cj_2*).
+9. Let c be $inv_lanes_(Jnn_2 X N_2, cj_1* :: cj_2*).
 10. Push the value (V128.CONST c) to the stack.
 
 Step_pure/vcvtop Lnn_2 X M Lnn_1 X M' vcvtop
@@ -11721,20 +11755,20 @@ Step_pure/vcvtop Lnn_2 X M Lnn_1 X M' vcvtop
   a. Let ?(half) be $halfop(vcvtop).
   b. Let ci* be $lanes_(Lnn_1 X M', c_1)[$half(half, 0, M) : M].
   c. Let cj** be $setproduct_(`lane_(Lnn_2), $vcvtop__(Lnn_1 X M', Lnn_2 X M, vcvtop, ci)*).
-  d. If (|$invlanes_(Lnn_2 X M, cj*)*| > 0), then:
-    1) Let c be an element of $invlanes_(Lnn_2 X M, cj*)*.
+  d. If (|$inv_lanes_(Lnn_2 X M, cj*)*| > 0), then:
+    1) Let c be an element of $inv_lanes_(Lnn_2 X M, cj*)*.
     2) Push the value (V128.CONST c) to the stack.
 4. Else if ($zeroop(vcvtop) is not defined /\ (M = M')), then:
   a. Let ci* be $lanes_(Lnn_1 X M', c_1).
   b. Let cj** be $setproduct_(`lane_(Lnn_2), $vcvtop__(Lnn_1 X M', Lnn_2 X M', vcvtop, ci)*).
-  c. If (|$invlanes_(Lnn_2 X M', cj*)*| > 0), then:
-    1) Let c be an element of $invlanes_(Lnn_2 X M', cj*)*.
+  c. If (|$inv_lanes_(Lnn_2 X M', cj*)*| > 0), then:
+    1) Let c be an element of $inv_lanes_(Lnn_2 X M', cj*)*.
     2) Push the value (V128.CONST c) to the stack.
 5. If (($zeroop(vcvtop) = ?(ZERO)) /\ (Lnn_1 is numtype /\ Lnn_2 is numtype)), then:
   a. Let ci* be $lanes_(Lnn_1 X M', c_1).
   b. Let cj** be $setproduct_(`lane_((nt_2 : numtype <: lanetype)), $vcvtop__(Lnn_1 X M', Lnn_2 X M, vcvtop, ci)* :: [$zero(Lnn_2)]^M').
-  c. If (|$invlanes_(Lnn_2 X M, cj*)*| > 0), then:
-    1) Let c be an element of $invlanes_(Lnn_2 X M, cj*)*.
+  c. If (|$inv_lanes_(Lnn_2 X M, cj*)*| > 0), then:
+    1) Let c be an element of $inv_lanes_(Lnn_2 X M, cj*)*.
     2) Push the value (V128.CONST c) to the stack.
 
 Step_pure/local.tee x
@@ -11927,20 +11961,18 @@ Step_read/vload V128 vloadop? ao
     2) If (((i + ao.OFFSET) + ((M * N) / 8)) > |$mem(z, 0).BYTES|), then:
       a) Trap.
     3) Let j^N be $ibytes__1^-1(M, $mem(z, 0).BYTES[((i + ao.OFFSET) + ((k * M) / 8)) : (M / 8)])^(k<N).
-    4) If $lsize^-1((M * 2)) is Jnn, then:
-      a) Let Jnn be $lsize^-1((M * 2)).
-      b) Let c be $invlanes_(Jnn X N, $extend__(M, $lsize(Jnn), sx, j)^N).
-      c) Push the value (V128.CONST c) to the stack.
+    4) Let Jnn be $jsize^-1((M * 2)).
+    5) Let c be $inv_lanes_(Jnn X N, $extend__(M, $jsize(Jnn), sx, j)^N).
+    6) Push the value (V128.CONST c) to the stack.
   c. If vloadop_0 is some SPLAT, then:
     1) Let (SPLAT N) be vloadop_0.
     2) If (((i + ao.OFFSET) + (N / 8)) > |$mem(z, 0).BYTES|), then:
       a) Trap.
     3) Let M be (128 / N).
-    4) If $lsize^-1(N) is Jnn, then:
-      a) Let Jnn be $lsize^-1(N).
-      b) Let j be $ibytes__1^-1(N, $mem(z, 0).BYTES[(i + ao.OFFSET) : (N / 8)]).
-      c) Let c be $invlanes_(Jnn X M, j^M).
-      d) Push the value (V128.CONST c) to the stack.
+    4) Let Jnn be $jsize^-1(N).
+    5) Let j be $ibytes__1^-1(N, $mem(z, 0).BYTES[(i + ao.OFFSET) : (N / 8)]).
+    6) Let c be $inv_lanes_(Jnn X M, j^M).
+    7) Push the value (V128.CONST c) to the stack.
   d. If vloadop_0 is some ZERO, then:
     1) Let (ZERO N) be vloadop_0.
     2) If (((i + ao.OFFSET) + (N / 8)) > |$mem(z, 0).BYTES|), then:
@@ -11958,11 +11990,10 @@ Step_read/vload_lane V128 N ao j
 6. If (((i + ao.OFFSET) + (N / 8)) > |$mem(z, 0).BYTES|), then:
   a. Trap.
 7. Let M be (128 / N).
-8. Assert: Due to validation, $lsize^-1(N) is Jnn.
-9. Let Jnn be $lsize^-1(N).
-10. Let k be $ibytes__1^-1(N, $mem(z, 0).BYTES[(i + ao.OFFSET) : (N / 8)]).
-11. Let c be $invlanes_(Jnn X M, $lanes_(Jnn X M, c_1) with [j] replaced by k).
-12. Push the value (V128.CONST c) to the stack.
+8. Let Jnn be $jsize^-1(N).
+9. Let k be $ibytes__1^-1(N, $mem(z, 0).BYTES[(i + ao.OFFSET) : (N / 8)]).
+10. Let c be $inv_lanes_(Jnn X M, $lanes_(Jnn X M, c_1) with [j] replaced by k).
+11. Push the value (V128.CONST c) to the stack.
 
 Step_read/memory.size
 1. Let z be the current state.
@@ -12079,7 +12110,7 @@ Step/table.grow x
   b. Push the value (I32.CONST |$table(z, x).REFS|) to the stack.
   c. Perform $with_tableinst(z, x, ti).
 7. Or:
-  a. Push the value (I32.CONST $invsigned_(32, (- 1))) to the stack.
+  a. Push the value (I32.CONST $inv_signed_(32, (- 1))) to the stack.
 
 Step/elem.drop x
 1. Let z be the current state.
@@ -12125,11 +12156,10 @@ Step/vstore_lane V128 N ao j
 6. If (((i + ao.OFFSET) + N) > |$mem(z, 0).BYTES|), then:
   a. Trap.
 7. Let M be (128 / N).
-8. Assert: Due to validation, $lsize^-1(N) is Jnn.
-9. Let Jnn be $lsize^-1(N).
-10. Assert: Due to validation, (j < |$lanes_(Jnn X M, c)|).
-11. Let b* be $ibytes_(N, $lanes_(Jnn X M, c)[j]).
-12. Perform $with_mem(z, 0, (i + ao.OFFSET), (N / 8), b*).
+8. Let Jnn be $jsize^-1(N).
+9. Assert: Due to validation, (j < |$lanes_(Jnn X M, c)|).
+10. Let b* be $ibytes_(N, $lanes_(Jnn X M, c)[j]).
+11. Perform $with_mem(z, 0, (i + ao.OFFSET), (N / 8), b*).
 
 Step/memory.grow
 1. Let z be the current state.
@@ -12140,7 +12170,7 @@ Step/memory.grow
   b. Push the value (I32.CONST (|$mem(z, 0).BYTES| / (64 * $Ki()))) to the stack.
   c. Perform $with_meminst(z, 0, mi).
 5. Or:
-  a. Push the value (I32.CONST $invsigned_(32, (- 1))) to the stack.
+  a. Push the value (I32.CONST $inv_signed_(32, (- 1))) to the stack.
 
 Step/data.drop x
 1. Let z be the current state.
@@ -12224,6 +12254,9 @@ fone N
 canon_ N
 1. Return (2 ^ ($signif(N) - 1)).
 
+lanetype Lnn X N
+1. Return Lnn.
+
 size valtype
 1. If (valtype = I32), then:
   a. Return 32.
@@ -12233,27 +12266,45 @@ size valtype
   a. Return 32.
 4. If (valtype = F64), then:
   a. Return 64.
-5. If (valtype = V128), then:
-  a. Return 128.
-6. Fail.
-
-isize Inn
-1. Return $size(Inn).
+5. If (valtype = I32), then:
+  a. Return 32.
+6. If (valtype = I64), then:
+  a. Return 64.
+7. If (valtype = F32), then:
+  a. Return 32.
+8. If (valtype = F64), then:
+  a. Return 64.
+9. Assert: Due to validation, (valtype = V128).
+10. Return 128.
 
 psize packtype
 1. If (packtype = I8), then:
   a. Return 8.
-2. Assert: Due to validation, (packtype = I16).
-3. Return 16.
+2. If (packtype = I16), then:
+  a. Return 16.
+3. If (packtype = I8), then:
+  a. Return 8.
+4. Assert: Due to validation, (packtype = I16).
+5. Return 16.
 
 lsize lanetype
 1. If lanetype is numtype, then:
   a. Return $size(lanetype).
-2. Assert: Due to validation, lanetype is packtype.
-3. Return $psize(lanetype).
+2. If lanetype is packtype, then:
+  a. Return $psize(lanetype).
+3. If lanetype is numtype, then:
+  a. Return $size(lanetype).
+4. Assert: Due to validation, lanetype is packtype.
+5. Return $psize(lanetype).
 
-lanetype Lnn X N
-1. Return Lnn.
+isize Inn
+1. Return $size(Inn).
+
+jsize Jnn
+1. Return $lsize(Jnn).
+
+fsize Fnn
+1. Return $size(Fnn).
 
 sizenn nt
 1. Return $size(nt).
@@ -12272,6 +12323,27 @@ lsizenn1 lt
 
 lsizenn2 lt
 1. Return $lsize(lt).
+
+inv_isize n
+1. If (n = 32), then:
+  a. Return I32.
+2. If (n = 64), then:
+  a. Return I64.
+3. Fail.
+
+inv_jsize n
+1. If (n = 8), then:
+  a. Return I8.
+2. If (n = 16), then:
+  a. Return I16.
+3. Return $inv_isize(n).
+
+inv_fsize n
+1. If (n = 32), then:
+  a. Return F32.
+2. If (n = 64), then:
+  a. Return F64.
+3. Fail.
 
 zero numtype
 1. If numtype is Inn, then:
@@ -12383,9 +12455,12 @@ signed_ N i
 3. Assert: Due to validation, (i < (2 ^ N)).
 4. Return (i - (2 ^ N)).
 
-invsigned_ N i
-1. Let j be $signed__1^-1(N, i).
-2. Return j.
+inv_signed_ N i
+1. If ((0 <= i) /\ (i < (2 ^ (N - 1)))), then:
+  a. Return i.
+2. Assert: Due to validation, ((- (2 ^ (N - 1))) <= i).
+3. Assert: Due to validation, (i < 0).
+4. Return (i + (2 ^ N)).
 
 sat_u_ N i
 1. If (i < 0), then:
@@ -12441,7 +12516,7 @@ idiv_ N sx i_1 i_2
   a. Return ?().
 4. If (($signed_(N, i_1) / $signed_(N, i_2)) = (2 ^ (N - 1))), then:
   a. Return ?().
-5. Return ?($invsigned_(N, $truncz(($signed_(N, i_1) / $signed_(N, i_2))))).
+5. Return ?($inv_signed_(N, $truncz(($signed_(N, i_1) / $signed_(N, i_2))))).
 
 imul_ N i_1 i_2
 1. Return ((i_1 * i_2) \ (2 ^ N)).
@@ -12456,7 +12531,7 @@ irem_ N sx i_1 i_2
   a. Return ?().
 4. Let j_1 be $signed_(N, i_1).
 5. Let j_2 be $signed_(N, i_2).
-6. Return ?($invsigned_(N, (j_1 - (j_2 * $truncz((j_1 / j_2)))))).
+6. Return ?($inv_signed_(N, (j_1 - (j_2 * $truncz((j_1 / j_2)))))).
 
 isub_ N i_1 i_2
 1. Return ((((2 ^ N) + i_1) - i_2) \ (2 ^ N)).
@@ -12604,19 +12679,11 @@ cvtop__ numtype numtype' cvtop iN_1
 9. Assert: Due to validation, ($size(numtype) = $size(numtype')).
 10. Return [$reinterpret__(numtype, numtype', iN_1)].
 
-invibytes_ N b*
-1. Let n be $ibytes__1^-1(N, b*).
-2. Return n.
-
-invfbytes_ N b*
-1. Let p be $fbytes__1^-1(N, b*).
-2. Return p.
-
 inez_ N i_1
 1. Return $bool((i_1 =/= 0)).
 
 ineg_ N i_1
-1. Return $invsigned_(N, (- $signed_(N, i_1))).
+1. Return (((2 ^ N) - i_1) \ (2 ^ N)).
 
 iabs_ N i_1
 1. If ($signed_(N, i_1) >= 0), then:
@@ -12647,13 +12714,13 @@ iadd_sat_ N sx i_1 i_2
 1. If (sx = U), then:
   a. Return $sat_u_(N, (i_1 + i_2)).
 2. Assert: Due to validation, (sx = S).
-3. Return $invsigned_(N, $sat_s_(N, ($signed_(N, i_1) + $signed_(N, i_2)))).
+3. Return $inv_signed_(N, $sat_s_(N, ($signed_(N, i_1) + $signed_(N, i_2)))).
 
 isub_sat_ N sx i_1 i_2
 1. If (sx = U), then:
   a. Return $sat_u_(N, (i_1 - i_2)).
 2. Assert: Due to validation, (sx = S).
-3. Return $invsigned_(N, $sat_s_(N, ($signed_(N, i_1) - $signed_(N, i_2)))).
+3. Return $inv_signed_(N, $sat_s_(N, ($signed_(N, i_1) - $signed_(N, i_2)))).
 
 packnum_ lanetype c
 1. If lanetype is numtype, then:
@@ -12666,10 +12733,6 @@ unpacknum_ lanetype c
   a. Return c.
 2. Assert: Due to validation, lanetype is packtype.
 3. Return $extend__($psize(lanetype), $size($unpack(lanetype)), U, c).
-
-invlanes_ sh c*
-1. Let vc be $lanes__1^-1(sh, c*).
-2. Return vc.
 
 zeroop vcvtop
 1. If vcvtop is some EXTEND, then:
@@ -12725,51 +12788,51 @@ vunop_ lanetype X M vunop_ v128_1
 1. If lanetype is Jnn, then:
   a. If (vunop_ = ABS), then:
     1) Let lane_1* be $lanes_(lanetype X M, v128_1).
-    2) Let v128 be $invlanes_(lanetype X M, $iabs_($lsizenn(lanetype), lane_1)*).
+    2) Let v128 be $inv_lanes_(lanetype X M, $iabs_($lsizenn(lanetype), lane_1)*).
     3) Return [v128].
   b. If (vunop_ = NEG), then:
     1) Let lane_1* be $lanes_(lanetype X M, v128_1).
-    2) Let v128 be $invlanes_(lanetype X M, $ineg_($lsizenn(lanetype), lane_1)*).
+    2) Let v128 be $inv_lanes_(lanetype X M, $ineg_($lsizenn(lanetype), lane_1)*).
     3) Return [v128].
   c. If (vunop_ = POPCNT), then:
     1) Let lane_1* be $lanes_(lanetype X M, v128_1).
-    2) Let v128 be $invlanes_(lanetype X M, $ipopcnt_($lsizenn(lanetype), lane_1)*).
+    2) Let v128 be $inv_lanes_(lanetype X M, $ipopcnt_($lsizenn(lanetype), lane_1)*).
     3) Return [v128].
 2. Assert: Due to validation, lanetype is Fnn.
 3. If (vunop_ = ABS), then:
   a. Let lane_1* be $lanes_(lanetype X M, v128_1).
   b. Let lane** be $setproduct_(`lane_((Fnn : Fnn <: lanetype)), $fabs_($sizenn(lanetype), lane_1)*).
-  c. Let v128* be $invlanes_(lanetype X M, lane*)*.
+  c. Let v128* be $inv_lanes_(lanetype X M, lane*)*.
   d. Return v128*.
 4. If (vunop_ = NEG), then:
   a. Let lane_1* be $lanes_(lanetype X M, v128_1).
   b. Let lane** be $setproduct_(`lane_((Fnn : Fnn <: lanetype)), $fneg_($sizenn(lanetype), lane_1)*).
-  c. Let v128* be $invlanes_(lanetype X M, lane*)*.
+  c. Let v128* be $inv_lanes_(lanetype X M, lane*)*.
   d. Return v128*.
 5. If (vunop_ = SQRT), then:
   a. Let lane_1* be $lanes_(lanetype X M, v128_1).
   b. Let lane** be $setproduct_(`lane_((Fnn : Fnn <: lanetype)), $fsqrt_($sizenn(lanetype), lane_1)*).
-  c. Let v128* be $invlanes_(lanetype X M, lane*)*.
+  c. Let v128* be $inv_lanes_(lanetype X M, lane*)*.
   d. Return v128*.
 6. If (vunop_ = CEIL), then:
   a. Let lane_1* be $lanes_(lanetype X M, v128_1).
   b. Let lane** be $setproduct_(`lane_((Fnn : Fnn <: lanetype)), $fceil_($sizenn(lanetype), lane_1)*).
-  c. Let v128* be $invlanes_(lanetype X M, lane*)*.
+  c. Let v128* be $inv_lanes_(lanetype X M, lane*)*.
   d. Return v128*.
 7. If (vunop_ = FLOOR), then:
   a. Let lane_1* be $lanes_(lanetype X M, v128_1).
   b. Let lane** be $setproduct_(`lane_((Fnn : Fnn <: lanetype)), $ffloor_($sizenn(lanetype), lane_1)*).
-  c. Let v128* be $invlanes_(lanetype X M, lane*)*.
+  c. Let v128* be $inv_lanes_(lanetype X M, lane*)*.
   d. Return v128*.
 8. If (vunop_ = TRUNC), then:
   a. Let lane_1* be $lanes_(lanetype X M, v128_1).
   b. Let lane** be $setproduct_(`lane_((Fnn : Fnn <: lanetype)), $ftrunc_($sizenn(lanetype), lane_1)*).
-  c. Let v128* be $invlanes_(lanetype X M, lane*)*.
+  c. Let v128* be $inv_lanes_(lanetype X M, lane*)*.
   d. Return v128*.
 9. Assert: Due to validation, (vunop_ = NEAREST).
 10. Let lane_1* be $lanes_(lanetype X M, v128_1).
 11. Let lane** be $setproduct_(`lane_((Fnn : Fnn <: lanetype)), $fnearest_($sizenn(lanetype), lane_1)*).
-12. Let v128* be $invlanes_(lanetype X M, lane*)*.
+12. Let v128* be $inv_lanes_(lanetype X M, lane*)*.
 13. Return v128*.
 
 vbinop_ lanetype X M vbinop_ v128_1 v128_2
@@ -12777,100 +12840,100 @@ vbinop_ lanetype X M vbinop_ v128_1 v128_2
   a. If (vbinop_ = ADD), then:
     1) Let lane_1* be $lanes_(lanetype X M, v128_1).
     2) Let lane_2* be $lanes_(lanetype X M, v128_2).
-    3) Let v128 be $invlanes_(lanetype X M, $iadd_($lsizenn(lanetype), lane_1, lane_2)*).
+    3) Let v128 be $inv_lanes_(lanetype X M, $iadd_($lsizenn(lanetype), lane_1, lane_2)*).
     4) Return [v128].
   b. If (vbinop_ = SUB), then:
     1) Let lane_1* be $lanes_(lanetype X M, v128_1).
     2) Let lane_2* be $lanes_(lanetype X M, v128_2).
-    3) Let v128 be $invlanes_(lanetype X M, $isub_($lsizenn(lanetype), lane_1, lane_2)*).
+    3) Let v128 be $inv_lanes_(lanetype X M, $isub_($lsizenn(lanetype), lane_1, lane_2)*).
     4) Return [v128].
   c. If vbinop_ is some MIN, then:
     1) Let (MIN sx) be vbinop_.
     2) Let lane_1* be $lanes_(lanetype X M, v128_1).
     3) Let lane_2* be $lanes_(lanetype X M, v128_2).
-    4) Let v128 be $invlanes_(lanetype X M, $imin_($lsizenn(lanetype), sx, lane_1, lane_2)*).
+    4) Let v128 be $inv_lanes_(lanetype X M, $imin_($lsizenn(lanetype), sx, lane_1, lane_2)*).
     5) Return [v128].
   d. If vbinop_ is some MAX, then:
     1) Let (MAX sx) be vbinop_.
     2) Let lane_1* be $lanes_(lanetype X M, v128_1).
     3) Let lane_2* be $lanes_(lanetype X M, v128_2).
-    4) Let v128 be $invlanes_(lanetype X M, $imax_($lsizenn(lanetype), sx, lane_1, lane_2)*).
+    4) Let v128 be $inv_lanes_(lanetype X M, $imax_($lsizenn(lanetype), sx, lane_1, lane_2)*).
     5) Return [v128].
   e. If vbinop_ is some ADD_SAT, then:
     1) Let (ADD_SAT sx) be vbinop_.
     2) Let lane_1* be $lanes_(lanetype X M, v128_1).
     3) Let lane_2* be $lanes_(lanetype X M, v128_2).
-    4) Let v128 be $invlanes_(lanetype X M, $iadd_sat_($lsizenn(lanetype), sx, lane_1, lane_2)*).
+    4) Let v128 be $inv_lanes_(lanetype X M, $iadd_sat_($lsizenn(lanetype), sx, lane_1, lane_2)*).
     5) Return [v128].
   f. If vbinop_ is some SUB_SAT, then:
     1) Let (SUB_SAT sx) be vbinop_.
     2) Let lane_1* be $lanes_(lanetype X M, v128_1).
     3) Let lane_2* be $lanes_(lanetype X M, v128_2).
-    4) Let v128 be $invlanes_(lanetype X M, $isub_sat_($lsizenn(lanetype), sx, lane_1, lane_2)*).
+    4) Let v128 be $inv_lanes_(lanetype X M, $isub_sat_($lsizenn(lanetype), sx, lane_1, lane_2)*).
     5) Return [v128].
   g. If (vbinop_ = MUL), then:
     1) Let lane_1* be $lanes_(lanetype X M, v128_1).
     2) Let lane_2* be $lanes_(lanetype X M, v128_2).
-    3) Let v128 be $invlanes_(lanetype X M, $imul_($lsizenn(lanetype), lane_1, lane_2)*).
+    3) Let v128 be $inv_lanes_(lanetype X M, $imul_($lsizenn(lanetype), lane_1, lane_2)*).
     4) Return [v128].
   h. If (vbinop_ = AVGRU), then:
     1) Let lane_1* be $lanes_(lanetype X M, v128_1).
     2) Let lane_2* be $lanes_(lanetype X M, v128_2).
-    3) Let v128 be $invlanes_(lanetype X M, $iavgr_($lsizenn(lanetype), U, lane_1, lane_2)*).
+    3) Let v128 be $inv_lanes_(lanetype X M, $iavgr_($lsizenn(lanetype), U, lane_1, lane_2)*).
     4) Return [v128].
   i. If (vbinop_ = Q15MULR_SATS), then:
     1) Let lane_1* be $lanes_(lanetype X M, v128_1).
     2) Let lane_2* be $lanes_(lanetype X M, v128_2).
-    3) Let v128 be $invlanes_(lanetype X M, $iq15mulr_sat_($lsizenn(lanetype), S, lane_1, lane_2)*).
+    3) Let v128 be $inv_lanes_(lanetype X M, $iq15mulr_sat_($lsizenn(lanetype), S, lane_1, lane_2)*).
     4) Return [v128].
 2. Assert: Due to validation, lanetype is Fnn.
 3. If (vbinop_ = ADD), then:
   a. Let lane_1* be $lanes_(lanetype X M, v128_1).
   b. Let lane_2* be $lanes_(lanetype X M, v128_2).
   c. Let lane** be $setproduct_(`lane_((Fnn : Fnn <: lanetype)), $fadd_($sizenn(lanetype), lane_1, lane_2)*).
-  d. Let v128* be $invlanes_(lanetype X M, lane*)*.
+  d. Let v128* be $inv_lanes_(lanetype X M, lane*)*.
   e. Return v128*.
 4. If (vbinop_ = SUB), then:
   a. Let lane_1* be $lanes_(lanetype X M, v128_1).
   b. Let lane_2* be $lanes_(lanetype X M, v128_2).
   c. Let lane** be $setproduct_(`lane_((Fnn : Fnn <: lanetype)), $fsub_($sizenn(lanetype), lane_1, lane_2)*).
-  d. Let v128* be $invlanes_(lanetype X M, lane*)*.
+  d. Let v128* be $inv_lanes_(lanetype X M, lane*)*.
   e. Return v128*.
 5. If (vbinop_ = MUL), then:
   a. Let lane_1* be $lanes_(lanetype X M, v128_1).
   b. Let lane_2* be $lanes_(lanetype X M, v128_2).
   c. Let lane** be $setproduct_(`lane_((Fnn : Fnn <: lanetype)), $fmul_($sizenn(lanetype), lane_1, lane_2)*).
-  d. Let v128* be $invlanes_(lanetype X M, lane*)*.
+  d. Let v128* be $inv_lanes_(lanetype X M, lane*)*.
   e. Return v128*.
 6. If (vbinop_ = DIV), then:
   a. Let lane_1* be $lanes_(lanetype X M, v128_1).
   b. Let lane_2* be $lanes_(lanetype X M, v128_2).
   c. Let lane** be $setproduct_(`lane_((Fnn : Fnn <: lanetype)), $fdiv_($sizenn(lanetype), lane_1, lane_2)*).
-  d. Let v128* be $invlanes_(lanetype X M, lane*)*.
+  d. Let v128* be $inv_lanes_(lanetype X M, lane*)*.
   e. Return v128*.
 7. If (vbinop_ = MIN), then:
   a. Let lane_1* be $lanes_(lanetype X M, v128_1).
   b. Let lane_2* be $lanes_(lanetype X M, v128_2).
   c. Let lane** be $setproduct_(`lane_((Fnn : Fnn <: lanetype)), $fmin_($sizenn(lanetype), lane_1, lane_2)*).
-  d. Let v128* be $invlanes_(lanetype X M, lane*)*.
+  d. Let v128* be $inv_lanes_(lanetype X M, lane*)*.
   e. Return v128*.
 8. If (vbinop_ = MAX), then:
   a. Let lane_1* be $lanes_(lanetype X M, v128_1).
   b. Let lane_2* be $lanes_(lanetype X M, v128_2).
   c. Let lane** be $setproduct_(`lane_((Fnn : Fnn <: lanetype)), $fmax_($sizenn(lanetype), lane_1, lane_2)*).
-  d. Let v128* be $invlanes_(lanetype X M, lane*)*.
+  d. Let v128* be $inv_lanes_(lanetype X M, lane*)*.
   e. Return v128*.
 9. If (vbinop_ = PMIN), then:
   a. Let lane_1* be $lanes_(lanetype X M, v128_1).
   b. Let lane_2* be $lanes_(lanetype X M, v128_2).
   c. Let lane** be $setproduct_(`lane_((Fnn : Fnn <: lanetype)), $fpmin_($sizenn(lanetype), lane_1, lane_2)*).
-  d. Let v128* be $invlanes_(lanetype X M, lane*)*.
+  d. Let v128* be $inv_lanes_(lanetype X M, lane*)*.
   e. Return v128*.
 10. Assert: Due to validation, (vbinop_ = PMAX).
 11. Let lane_1* be $lanes_(lanetype X M, v128_1).
 12. Let lane_2* be $lanes_(lanetype X M, v128_2).
 13. Let lane** be $setproduct_(`lane_((Fnn : Fnn <: lanetype)), $fpmax_($sizenn(lanetype), lane_1, lane_2)*).
-14. Let v128* be $invlanes_(lanetype X M, lane*)*.
+14. Let v128* be $inv_lanes_(lanetype X M, lane*)*.
 15. Return v128*.
 
 vrelop_ lanetype X M vrelop_ v128_1 v128_2
@@ -12879,41 +12942,41 @@ vrelop_ lanetype X M vrelop_ v128_1 v128_2
     1) Let lane_1* be $lanes_(lanetype X M, v128_1).
     2) Let lane_2* be $lanes_(lanetype X M, v128_2).
     3) Let lane_3* be $extend__(1, $lsizenn(lanetype), S, $ieq_($lsizenn(lanetype), lane_1, lane_2))*.
-    4) Let v128 be $invlanes_(lanetype X M, lane_3*).
+    4) Let v128 be $inv_lanes_(lanetype X M, lane_3*).
     5) Return v128.
   b. If (vrelop_ = NE), then:
     1) Let lane_1* be $lanes_(lanetype X M, v128_1).
     2) Let lane_2* be $lanes_(lanetype X M, v128_2).
     3) Let lane_3* be $extend__(1, $lsizenn(lanetype), S, $ine_($lsizenn(lanetype), lane_1, lane_2))*.
-    4) Let v128 be $invlanes_(lanetype X M, lane_3*).
+    4) Let v128 be $inv_lanes_(lanetype X M, lane_3*).
     5) Return v128.
   c. If vrelop_ is some LT, then:
     1) Let (LT sx) be vrelop_.
     2) Let lane_1* be $lanes_(lanetype X M, v128_1).
     3) Let lane_2* be $lanes_(lanetype X M, v128_2).
     4) Let lane_3* be $extend__(1, $lsizenn(lanetype), S, $ilt_($lsizenn(lanetype), sx, lane_1, lane_2))*.
-    5) Let v128 be $invlanes_(lanetype X M, lane_3*).
+    5) Let v128 be $inv_lanes_(lanetype X M, lane_3*).
     6) Return v128.
   d. If vrelop_ is some GT, then:
     1) Let (GT sx) be vrelop_.
     2) Let lane_1* be $lanes_(lanetype X M, v128_1).
     3) Let lane_2* be $lanes_(lanetype X M, v128_2).
     4) Let lane_3* be $extend__(1, $lsizenn(lanetype), S, $igt_($lsizenn(lanetype), sx, lane_1, lane_2))*.
-    5) Let v128 be $invlanes_(lanetype X M, lane_3*).
+    5) Let v128 be $inv_lanes_(lanetype X M, lane_3*).
     6) Return v128.
   e. If vrelop_ is some LE, then:
     1) Let (LE sx) be vrelop_.
     2) Let lane_1* be $lanes_(lanetype X M, v128_1).
     3) Let lane_2* be $lanes_(lanetype X M, v128_2).
     4) Let lane_3* be $extend__(1, $lsizenn(lanetype), S, $ile_($lsizenn(lanetype), sx, lane_1, lane_2))*.
-    5) Let v128 be $invlanes_(lanetype X M, lane_3*).
+    5) Let v128 be $inv_lanes_(lanetype X M, lane_3*).
     6) Return v128.
   f. If vrelop_ is some GE, then:
     1) Let (GE sx) be vrelop_.
     2) Let lane_1* be $lanes_(lanetype X M, v128_1).
     3) Let lane_2* be $lanes_(lanetype X M, v128_2).
     4) Let lane_3* be $extend__(1, $lsizenn(lanetype), S, $ige_($lsizenn(lanetype), sx, lane_1, lane_2))*.
-    5) Let v128 be $invlanes_(lanetype X M, lane_3*).
+    5) Let v128 be $inv_lanes_(lanetype X M, lane_3*).
     6) Return v128.
 2. Assert: Due to validation, lanetype is Fnn.
 3. If (vrelop_ = EQ), then:
@@ -12921,42 +12984,42 @@ vrelop_ lanetype X M vrelop_ v128_1 v128_2
   b. Let lane_2* be $lanes_(lanetype X M, v128_2).
   c. Let Inn be $isize^-1($size(lanetype)).
   d. Let lane_3* be $extend__(1, $sizenn(lanetype), S, $feq_($sizenn(lanetype), lane_1, lane_2))*.
-  e. Let v128 be $invlanes_(Inn X M, lane_3*).
+  e. Let v128 be $inv_lanes_(Inn X M, lane_3*).
   f. Return v128.
 4. If (vrelop_ = NE), then:
   a. Let lane_1* be $lanes_(lanetype X M, v128_1).
   b. Let lane_2* be $lanes_(lanetype X M, v128_2).
   c. Let Inn be $isize^-1($size(lanetype)).
   d. Let lane_3* be $extend__(1, $sizenn(lanetype), S, $fne_($sizenn(lanetype), lane_1, lane_2))*.
-  e. Let v128 be $invlanes_(Inn X M, lane_3*).
+  e. Let v128 be $inv_lanes_(Inn X M, lane_3*).
   f. Return v128.
 5. If (vrelop_ = LT), then:
   a. Let lane_1* be $lanes_(lanetype X M, v128_1).
   b. Let lane_2* be $lanes_(lanetype X M, v128_2).
   c. Let Inn be $isize^-1($size(lanetype)).
   d. Let lane_3* be $extend__(1, $sizenn(lanetype), S, $flt_($sizenn(lanetype), lane_1, lane_2))*.
-  e. Let v128 be $invlanes_(Inn X M, lane_3*).
+  e. Let v128 be $inv_lanes_(Inn X M, lane_3*).
   f. Return v128.
 6. If (vrelop_ = GT), then:
   a. Let lane_1* be $lanes_(lanetype X M, v128_1).
   b. Let lane_2* be $lanes_(lanetype X M, v128_2).
   c. Let Inn be $isize^-1($size(lanetype)).
   d. Let lane_3* be $extend__(1, $sizenn(lanetype), S, $fgt_($sizenn(lanetype), lane_1, lane_2))*.
-  e. Let v128 be $invlanes_(Inn X M, lane_3*).
+  e. Let v128 be $inv_lanes_(Inn X M, lane_3*).
   f. Return v128.
 7. If (vrelop_ = LE), then:
   a. Let lane_1* be $lanes_(lanetype X M, v128_1).
   b. Let lane_2* be $lanes_(lanetype X M, v128_2).
   c. Let Inn be $isize^-1($size(lanetype)).
   d. Let lane_3* be $extend__(1, $sizenn(lanetype), S, $fle_($sizenn(lanetype), lane_1, lane_2))*.
-  e. Let v128 be $invlanes_(Inn X M, lane_3*).
+  e. Let v128 be $inv_lanes_(Inn X M, lane_3*).
   f. Return v128.
 8. Assert: Due to validation, (vrelop_ = GE).
 9. Let lane_1* be $lanes_(lanetype X M, v128_1).
 10. Let lane_2* be $lanes_(lanetype X M, v128_2).
 11. Let Inn be $isize^-1($size(lanetype)).
 12. Let lane_3* be $extend__(1, $sizenn(lanetype), S, $fge_($sizenn(lanetype), lane_1, lane_2))*.
-13. Let v128 be $invlanes_(Inn X M, lane_3*).
+13. Let v128 be $inv_lanes_(Inn X M, lane_3*).
 14. Return v128.
 
 vcvtop__ lanetype' X M_1 lanetype X M_2 vcvtop iN_1
@@ -12985,7 +13048,7 @@ vcvtop__ lanetype' X M_1 lanetype X M_2 vcvtop iN_1
 vextunop__ Inn_1 X M_1 Inn_2 X M_2 (EXTADD_PAIRWISE sx) c_1
 1. Let ci* be $lanes_(Inn_2 X M_2, c_1).
 2. Let [cj_1, cj_2]* be $concat__1^-1(`iN($lsizenn1((Inn_1 : Inn <: lanetype))), $extend__($lsizenn2(Inn_2), $lsizenn1(Inn_1), sx, ci)*).
-3. Let c be $invlanes_(Inn_1 X M_1, $iadd_($lsizenn1(Inn_1), cj_1, cj_2)*).
+3. Let c be $inv_lanes_(Inn_1 X M_1, $iadd_($lsizenn1(Inn_1), cj_1, cj_2)*).
 4. Return c.
 
 vextbinop__ Inn_1 X M_1 Inn_2 X M_2 vextbinop_ c_1 c_2
@@ -12993,13 +13056,13 @@ vextbinop__ Inn_1 X M_1 Inn_2 X M_2 vextbinop_ c_1 c_2
   a. Let (EXTMUL half sx) be vextbinop_.
   b. Let ci_1* be $lanes_(Inn_2 X M_2, c_1)[$half(half, 0, M_1) : M_1].
   c. Let ci_2* be $lanes_(Inn_2 X M_2, c_2)[$half(half, 0, M_1) : M_1].
-  d. Let c be $invlanes_(Inn_1 X M_1, $imul_($lsizenn1(Inn_1), $extend__($lsizenn2(Inn_2), $lsizenn1(Inn_1), sx, ci_1), $extend__($lsizenn2(Inn_2), $lsizenn1(Inn_1), sx, ci_2))*).
+  d. Let c be $inv_lanes_(Inn_1 X M_1, $imul_($lsizenn1(Inn_1), $extend__($lsizenn2(Inn_2), $lsizenn1(Inn_1), sx, ci_1), $extend__($lsizenn2(Inn_2), $lsizenn1(Inn_1), sx, ci_2))*).
   e. Return c.
 2. Assert: Due to validation, (vextbinop_ = DOTS).
 3. Let ci_1* be $lanes_(Inn_2 X M_2, c_1).
 4. Let ci_2* be $lanes_(Inn_2 X M_2, c_2).
 5. Let [cj_1, cj_2]* be $concat__1^-1(`iN($lsizenn1((Inn_1 : Inn <: lanetype))), $imul_($lsizenn1(Inn_1), $extend__($lsizenn2(Inn_2), $lsizenn1(Inn_1), S, ci_1), $extend__($lsizenn2(Inn_2), $lsizenn1(Inn_1), S, ci_2))*).
-6. Let c be $invlanes_(Inn_1 X M_1, $iadd_($lsizenn1(Inn_1), cj_1, cj_2)*).
+6. Let c be $inv_lanes_(Inn_1 X M_1, $iadd_($lsizenn1(Inn_1), cj_1, cj_2)*).
 7. Return c.
 
 vshiftop_ Jnn X M vshiftop_ lane n
@@ -17664,9 +17727,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{j^{K}}` be the result for which :math:`{({{\mathrm{bytes}}}_{{\mathsf{i}}{M}}({j^{K}}) = z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} + k \cdot M / 8 : M / 8])^{k<K}}`.
 
-#. Assert: Due to validation, :math:`N` for which :math:`N` :math:`=` :math:`M \cdot 2` is :math:`{\mathsf{i}}{N}`.
-
-#. Let :math:`N` be :math:`M \cdot 2`.
+#. Let :math:`{\mathsf{i}}{N}` be the result for which :math:`N` :math:`=` :math:`M \cdot 2`.
 
 #. Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{K}}^{{-1}}}}{({{{{{\mathrm{extend}}}_{M, N}^{{\mathit{sx}}}}}{(j)}^{K}})}`.
 
@@ -17689,9 +17750,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`M` be :math:`128 / N`.
 
-#. Assert: Due to validation, :math:`({\mathit{lanetype}})` for which :math:`{|{\mathit{lanetype}}|}` :math:`=` :math:`N` is :math:`{\mathsf{i}}{N}`.
-
-#. Let :math:`{|{\mathsf{i}}{N}|}` be :math:`N`.
+#. Let :math:`{\mathsf{i}}{N}` be the result for which :math:`{|{\mathsf{i}}{N}|}` :math:`=` :math:`N`.
 
 #. Let :math:`j` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{N}}(j)` :math:`=` :math:`z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : N / 8]`.
 
@@ -20067,13 +20126,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       #) Let :math:`{j^{K}}` be the result for which :math:`{({{\mathrm{bytes}}}_{{\mathsf{i}}{M}}({j^{K}}) = z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} + k \cdot M / 8 : M / 8])^{k<K}}`.
 
-      #) If :math:`N` for which :math:`N` :math:`=` :math:`M \cdot 2` is :math:`{\mathsf{i}}{N}`, then:
+      #) Let :math:`{\mathsf{i}}{N}` be the result for which :math:`N` :math:`=` :math:`M \cdot 2`.
 
-         a) Let :math:`N` be :math:`M \cdot 2`.
+      #) Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{K}}^{{-1}}}}{({{{{{\mathrm{extend}}}_{M, N}^{{\mathit{sx}}}}}{(j)}^{K}})}`.
 
-         #) Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{K}}^{{-1}}}}{({{{{{\mathrm{extend}}}_{M, N}^{{\mathit{sx}}}}}{(j)}^{K}})}`.
-
-         #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
+      #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
    #. If :math:`{\mathit{vloadop\_{\scriptstyle 0}}}` is some :math:`{{\mathit{sz}}}{\mathsf{\_}}{\mathsf{splat}}`, then:
 
@@ -20085,15 +20142,13 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       #) Let :math:`M` be :math:`128 / N`.
 
-      #) If :math:`({\mathit{lanetype}})` for which :math:`{|{\mathit{lanetype}}|}` :math:`=` :math:`N` is :math:`{\mathsf{i}}{N}`, then:
+      #) Let :math:`{\mathsf{i}}{N}` be the result for which :math:`{|{\mathsf{i}}{N}|}` :math:`=` :math:`N`.
 
-         a) Let :math:`{|{\mathsf{i}}{N}|}` be :math:`N`.
+      #) Let :math:`j` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{N}}(j)` :math:`=` :math:`z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : N / 8]`.
 
-         #) Let :math:`j` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{N}}(j)` :math:`=` :math:`z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : N / 8]`.
+      #) Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}^{{-1}}}}{({j^{M}})}`.
 
-         #) Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}^{{-1}}}}{({j^{M}})}`.
-
-         #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
+      #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
    #. If :math:`{\mathit{vloadop\_{\scriptstyle 0}}}` is some :math:`{{\mathit{sz}}}{\mathsf{\_}}{\mathsf{zero}}`, then:
 
@@ -20130,9 +20185,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`M` be :math:`{|\mathsf{v{\scriptstyle 128}}|} / N`.
 
-#. Assert: Due to validation, :math:`({\mathit{lanetype}})` for which :math:`{|{\mathit{lanetype}}|}` :math:`=` :math:`N` is :math:`{\mathsf{i}}{N}`.
-
-#. Let :math:`{|{\mathsf{i}}{N}|}` be :math:`N`.
+#. Let :math:`{\mathsf{i}}{N}` be the result for which :math:`{|{\mathsf{i}}{N}|}` :math:`=` :math:`N`.
 
 #. Let :math:`k` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{N}}(k)` :math:`=` :math:`z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : N / 8]`.
 
@@ -20629,9 +20682,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`M` be :math:`128 / N`.
 
-#. Assert: Due to validation, :math:`({\mathit{lanetype}})` for which :math:`{|{\mathit{lanetype}}|}` :math:`=` :math:`N` is :math:`{\mathsf{i}}{N}`.
-
-#. Let :math:`{|{\mathsf{i}}{N}|}` be :math:`N`.
+#. Let :math:`{\mathsf{i}}{N}` be the result for which :math:`{|{\mathsf{i}}{N}|}` :math:`=` :math:`N`.
 
 #. Assert: Due to validation, :math:`j < {|{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}(c)|}`.
 
@@ -21336,6 +21387,72 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`{|{\mathit{storagetype}}|}`.
 
 
+:math:`{|{\mathsf{i}}{N}|}`
+...........................
+
+
+1. Return :math:`{|{\mathsf{i}}{N}|}`.
+
+
+:math:`{|{\mathsf{i}}{N}|}`
+...........................
+
+
+1. Return :math:`{|{\mathsf{i}}{N}|}`.
+
+
+:math:`{|{\mathsf{f}}{N}|}`
+...........................
+
+
+1. Return :math:`{|{\mathsf{f}}{N}|}`.
+
+
+:math:`{\mathrm{inv}}_{\mathit{isize}}(n)`
+..........................................
+
+
+1. If :math:`n = 32`, then:
+
+   a. Return :math:`\mathsf{i{\scriptstyle 32}}`.
+
+#. If :math:`n = 64`, then:
+
+   a. Return :math:`\mathsf{i{\scriptstyle 64}}`.
+
+#. Fail.
+
+
+:math:`{\mathrm{inv}}_{\mathit{jsize}}(n)`
+..........................................
+
+
+1. If :math:`n = 8`, then:
+
+   a. Return :math:`\mathsf{i{\scriptstyle 8}}`.
+
+#. If :math:`n = 16`, then:
+
+   a. Return :math:`\mathsf{i{\scriptstyle 16}}`.
+
+#. Return :math:`{\mathrm{inv}}_{\mathit{isize}}(n)`.
+
+
+:math:`{\mathrm{inv}}_{\mathit{fsize}}(n)`
+..........................................
+
+
+1. If :math:`n = 32`, then:
+
+   a. Return :math:`\mathsf{f{\scriptstyle 32}}`.
+
+#. If :math:`n = 64`, then:
+
+   a. Return :math:`\mathsf{f{\scriptstyle 64}}`.
+
+#. Fail.
+
+
 :math:`N`
 .........
 
@@ -21390,6 +21507,20 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 
 1. Return :math:`{|{\mathit{lt}}|}`.
+
+
+:math:`N`
+.........
+
+
+1. Return :math:`{|{\mathsf{i}}{N}|}`.
+
+
+:math:`{\mathrm{inv}}_{\mathit{jsizenn}}(n)`
+............................................
+
+
+1. Return :math:`{\mathrm{inv}}_{\mathit{jsize}}(n)`.
 
 
 :math:`{\mathrm{unpack}}({\mathit{lanetype}})`
@@ -23288,24 +23419,6 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`X_1~X_2~X_3~X_4{}[0]`.
 
 
-:math:`{{{{\mathrm{bytes}}}_{{\mathsf{i}}{N}}^{{-1}}}}{({b^\ast})}`
-...................................................................
-
-
-1. Let :math:`n` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{N}}(n)` :math:`=` :math:`{b^\ast}`.
-
-#. Return :math:`n`.
-
-
-:math:`{{{{\mathrm{bytes}}}_{{\mathsf{f}}{N}}^{{-1}}}}{({b^\ast})}`
-...................................................................
-
-
-1. Let :math:`p` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{f}}{N}}(p)` :math:`=` :math:`{b^\ast}`.
-
-#. Return :math:`p`.
-
-
 :math:`{{\mathrm{signed}}}_{N}(i)`
 ..................................
 
@@ -23325,9 +23438,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ...............................................
 
 
-1. Let :math:`j` be the result for which :math:`{{\mathrm{signed}}}_{N}(j)` :math:`=` :math:`i`.
+1. If :math:`0 \leq i` and :math:`i < {2^{N - 1}}`, then:
 
-#. Return :math:`j`.
+   a. Return :math:`i`.
+
+#. Assert: Due to validation, :math:`{-{2^{N - 1}}} \leq i`.
+
+#. Assert: Due to validation, :math:`i < 0`.
+
+#. Return :math:`i + {2^{N}}`.
 
 
 :math:`{\mathrm{sx}}({\mathit{storagetype}})`
@@ -23403,7 +23522,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ..................................
 
 
-1. Return :math:`{{{{\mathrm{signed}}}_{N}^{{-1}}}}{({-{{\mathrm{signed}}}_{N}(i_1)})}`.
+1. Return :math:`({2^{N}} - i_1) \mathbin{\mathrm{mod}} ({2^{N}})`.
 
 
 :math:`{{\mathrm{iabs}}}_{N}(i_1)`
@@ -23980,15 +24099,6 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`{{\mathrm{reinterpret}}}_{{\mathit{numtype}}, {\mathit{numtype}'}}(i_1)`.
 
 
-:math:`{{{{\mathrm{lanes}}}_{{\mathit{sh}}}^{{-1}}}}{({c^\ast})}`
-.................................................................
-
-
-1. Let :math:`{\mathit{vc}}` be the result for which :math:`{{\mathrm{lanes}}}_{{\mathit{sh}}}({\mathit{vc}})` :math:`=` :math:`{c^\ast}`.
-
-#. Return :math:`{\mathit{vc}}`.
-
-
 :math:`{\mathrm{zeroop}}({{\mathit{lanetype}'}}{\mathsf{x}}{M_1}, {{\mathit{lanetype}}}{\mathsf{x}}{M_2}, {\mathit{vcvtop}})`
 .............................................................................................................................
 
@@ -24271,8 +24381,6 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Let :math:`{c_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}(v_1)`.
 
 #. Let :math:`{c_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}(v_2)`.
-
-#. Assert: Due to validation, :math:`({\mathit{numtype}})` for which :math:`{|{\mathit{numtype}}|}` :math:`=` :math:`{|{\mathsf{f}}{N}|}` is :math:`{\mathsf{i}}{N}`.
 
 #. Let :math:`{\mathsf{i}}{N}` be the result for which :math:`{|{\mathsf{i}}{N}|}` :math:`=` :math:`{|{\mathsf{f}}{N}|}`.
 
@@ -24861,9 +24969,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`M` be :math:`2 \, M_2`.
 
-#. Assert: Due to validation, :math:`N` for which :math:`N` :math:`=` :math:`2 \cdot N_1` is :math:`{\mathsf{i}}{N}`.
-
-#. Let :math:`N` be :math:`2 \cdot N_1`.
+#. Let :math:`{\mathsf{i}}{N}` be the result for which :math:`N` :math:`=` :math:`2 \cdot N_1`.
 
 #. Let :math:`{c'}` be :math:`{}{{}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}, {{\mathsf{i}}{N}}{\mathsf{x}}{M}}(c_1, c_2)}`.
 
@@ -28163,10 +28269,9 @@ Step_read/vload-pack-* V128 ?((SHAPE M X K _ sx)) x ao
 4. If (((i + ao.OFFSET) + ((M * K) / 8)) > |$mem(z, x).BYTES|), then:
   a. Trap.
 5. Let j^K be $ibytes__1^-1(M, $mem(z, x).BYTES[((i + ao.OFFSET) + ((k * M) / 8)) : (M / 8)])^(k<K).
-6. Assert: Due to validation, $lsizenn^-1((M * 2)) is Jnn.
-7. Let Jnn be $lsizenn^-1((M * 2)).
-8. Let c be $invlanes_(Jnn X K, $extend__(M, $lsizenn(Jnn), sx, j)^K).
-9. Push the value (V128.CONST c) to the stack.
+6. Let Jnn be $jsizenn^-1((M * 2)).
+7. Let c be $inv_lanes_(Jnn X K, $extend__(M, $jsizenn(Jnn), sx, j)^K).
+8. Push the value (V128.CONST c) to the stack.
 
 Step_read/vload-splat-* V128 ?((SPLAT N)) x ao
 1. Let z be the current state.
@@ -28175,11 +28280,10 @@ Step_read/vload-splat-* V128 ?((SPLAT N)) x ao
 4. If (((i + ao.OFFSET) + (N / 8)) > |$mem(z, x).BYTES|), then:
   a. Trap.
 5. Let M be (128 / N).
-6. Assert: Due to validation, $lsize^-1(N) is Jnn.
-7. Let Jnn be $lsize^-1(N).
-8. Let j be $ibytes__1^-1(N, $mem(z, x).BYTES[(i + ao.OFFSET) : (N / 8)]).
-9. Let c be $invlanes_(Jnn X M, j^M).
-10. Push the value (V128.CONST c) to the stack.
+6. Let Jnn be $jsize^-1(N).
+7. Let j be $ibytes__1^-1(N, $mem(z, x).BYTES[(i + ao.OFFSET) : (N / 8)]).
+8. Let c be $inv_lanes_(Jnn X M, j^M).
+9. Push the value (V128.CONST c) to the stack.
 
 Step_read/vload-zero-* V128 ?((ZERO N)) x ao
 1. Let z be the current state.
@@ -28597,7 +28701,7 @@ Step_pure/vsplat Lnn X M
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop the value (numtype_0.CONST c_1) from the stack.
 3. Assert: Due to validation, (numtype_0 = $lunpack(Lnn)).
-4. Let c be $invlanes_(Lnn X M, $lpacknum_(Lnn, c_1)^M).
+4. Let c be $inv_lanes_(Lnn X M, $lpacknum_(Lnn, c_1)^M).
 5. Push the value (V128.CONST c) to the stack.
 
 Step_pure/vextract_lane lanetype X M sx'? i
@@ -28621,7 +28725,7 @@ Step_pure/vreplace_lane Lnn X M i
 3. Assert: Due to validation, (numtype_0 = $lunpack(Lnn)).
 4. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 5. Pop the value (V128.CONST c_1) from the stack.
-6. Let c be $invlanes_(Lnn X M, $lanes_(Lnn X M, c_1) with [i] replaced by $lpacknum_(Lnn, c_2)).
+6. Let c be $inv_lanes_(Lnn X M, $lanes_(Lnn X M, c_1) with [i] replaced by $lpacknum_(Lnn, c_2)).
 7. Push the value (V128.CONST c) to the stack.
 
 Step_pure/vextunop sh_2 sh_1 vextunop
@@ -29301,20 +29405,18 @@ Step_read/vload V128 vloadop_? x ao
     2) If (((i + ao.OFFSET) + ((M * K) / 8)) > |$mem(z, x).BYTES|), then:
       a) Trap.
     3) Let j^K be $ibytes__1^-1(M, $mem(z, x).BYTES[((i + ao.OFFSET) + ((k * M) / 8)) : (M / 8)])^(k<K).
-    4) If $lsizenn^-1((M * 2)) is Jnn, then:
-      a) Let Jnn be $lsizenn^-1((M * 2)).
-      b) Let c be $invlanes_(Jnn X K, $extend__(M, $lsizenn(Jnn), sx, j)^K).
-      c) Push the value (V128.CONST c) to the stack.
+    4) Let Jnn be $jsizenn^-1((M * 2)).
+    5) Let c be $inv_lanes_(Jnn X K, $extend__(M, $jsizenn(Jnn), sx, j)^K).
+    6) Push the value (V128.CONST c) to the stack.
   c. If vloadop__0 is some SPLAT, then:
     1) Let (SPLAT N) be vloadop__0.
     2) If (((i + ao.OFFSET) + (N / 8)) > |$mem(z, x).BYTES|), then:
       a) Trap.
     3) Let M be (128 / N).
-    4) If $lsize^-1(N) is Jnn, then:
-      a) Let Jnn be $lsize^-1(N).
-      b) Let j be $ibytes__1^-1(N, $mem(z, x).BYTES[(i + ao.OFFSET) : (N / 8)]).
-      c) Let c be $invlanes_(Jnn X M, j^M).
-      d) Push the value (V128.CONST c) to the stack.
+    4) Let Jnn be $jsize^-1(N).
+    5) Let j be $ibytes__1^-1(N, $mem(z, x).BYTES[(i + ao.OFFSET) : (N / 8)]).
+    6) Let c be $inv_lanes_(Jnn X M, j^M).
+    7) Push the value (V128.CONST c) to the stack.
   d. If vloadop__0 is some ZERO, then:
     1) Let (ZERO N) be vloadop__0.
     2) If (((i + ao.OFFSET) + (N / 8)) > |$mem(z, x).BYTES|), then:
@@ -29332,11 +29434,10 @@ Step_read/vload_lane V128 N x ao j
 6. If (((i + ao.OFFSET) + (N / 8)) > |$mem(z, x).BYTES|), then:
   a. Trap.
 7. Let M be ($vsize(V128) / N).
-8. Assert: Due to validation, $lsize^-1(N) is Jnn.
-9. Let Jnn be $lsize^-1(N).
-10. Let k be $ibytes__1^-1(N, $mem(z, x).BYTES[(i + ao.OFFSET) : (N / 8)]).
-11. Let c be $invlanes_(Jnn X M, $lanes_(Jnn X M, c_1) with [j] replaced by k).
-12. Push the value (V128.CONST c) to the stack.
+8. Let Jnn be $jsize^-1(N).
+9. Let k be $ibytes__1^-1(N, $mem(z, x).BYTES[(i + ao.OFFSET) : (N / 8)]).
+10. Let c be $inv_lanes_(Jnn X M, $lanes_(Jnn X M, c_1) with [j] replaced by k).
+11. Push the value (V128.CONST c) to the stack.
 
 Step_read/memory.size x
 1. Let z be the current state.
@@ -29527,7 +29628,7 @@ Step/table.grow x
   b. Push the value (at.CONST |$table(z, x).REFS|) to the stack.
   c. Perform $with_tableinst(z, x, ti).
 7. Or:
-  a. Push the value (at.CONST $invsigned_($size(at), (- 1))) to the stack.
+  a. Push the value (at.CONST $inv_signed_($size(at), (- 1))) to the stack.
 
 Step/elem.drop x
 1. Let z be the current state.
@@ -29573,11 +29674,10 @@ Step/vstore_lane V128 N x ao j
 6. If (((i + ao.OFFSET) + N) > |$mem(z, x).BYTES|), then:
   a. Trap.
 7. Let M be (128 / N).
-8. Assert: Due to validation, $lsize^-1(N) is Jnn.
-9. Let Jnn be $lsize^-1(N).
-10. Assert: Due to validation, (j < |$lanes_(Jnn X M, c)|).
-11. Let b* be $ibytes_(N, $lanes_(Jnn X M, c)[j]).
-12. Perform $with_mem(z, x, (i + ao.OFFSET), (N / 8), b*).
+8. Let Jnn be $jsize^-1(N).
+9. Assert: Due to validation, (j < |$lanes_(Jnn X M, c)|).
+10. Let b* be $ibytes_(N, $lanes_(Jnn X M, c)[j]).
+11. Perform $with_mem(z, x, (i + ao.OFFSET), (N / 8), b*).
 
 Step/memory.grow x
 1. Let z be the current state.
@@ -29588,7 +29688,7 @@ Step/memory.grow x
   b. Push the value (at.CONST (|$mem(z, x).BYTES| / (64 * $Ki()))) to the stack.
   c. Perform $with_meminst(z, x, mi).
 5. Or:
-  a. Push the value (at.CONST $invsigned_($size(at), (- 1))) to the stack.
+  a. Push the value (at.CONST $inv_signed_($size(at), (- 1))) to the stack.
 
 Step/data.drop x
 1. Let z be the current state.
@@ -29897,6 +29997,36 @@ zsize storagetype
 3. Assert: Due to validation, storagetype is packtype.
 4. Return $psize(storagetype).
 
+isize Inn
+1. Return $size(Inn).
+
+jsize Jnn
+1. Return $lsize(Jnn).
+
+fsize Fnn
+1. Return $size(Fnn).
+
+inv_isize n
+1. If (n = 32), then:
+  a. Return I32.
+2. If (n = 64), then:
+  a. Return I64.
+3. Fail.
+
+inv_jsize n
+1. If (n = 8), then:
+  a. Return I8.
+2. If (n = 16), then:
+  a. Return I16.
+3. Return $inv_isize(n).
+
+inv_fsize n
+1. If (n = 32), then:
+  a. Return F32.
+2. If (n = 64), then:
+  a. Return F64.
+3. Fail.
+
 sizenn nt
 1. Return $size(nt).
 
@@ -29920,6 +30050,12 @@ lsizenn1 lt
 
 lsizenn2 lt
 1. Return $lsize(lt).
+
+jsizenn Jnn
+1. Return $lsize(Jnn).
+
+inv_jsizenn n
+1. Return $inv_jsize(n).
 
 lunpack lanetype
 1. If lanetype is numtype, then:
@@ -30810,14 +30946,6 @@ relaxed4 i `X X_1 X_2 X_3 X_4
   a. Return [X_1, X_2, X_3, X_4][i].
 2. Return [X_1, X_2, X_3, X_4][0].
 
-invibytes_ N b*
-1. Let n be $ibytes__1^-1(N, b*).
-2. Return n.
-
-invfbytes_ N b*
-1. Let p be $fbytes__1^-1(N, b*).
-2. Return p.
-
 signed_ N i
 1. If (i < (2 ^ (N - 1))), then:
   a. Return i.
@@ -30825,9 +30953,12 @@ signed_ N i
 3. Assert: Due to validation, (i < (2 ^ N)).
 4. Return (i - (2 ^ N)).
 
-invsigned_ N i
-1. Let j be $signed__1^-1(N, i).
-2. Return j.
+inv_signed_ N i
+1. If ((0 <= i) /\ (i < (2 ^ (N - 1)))), then:
+  a. Return i.
+2. Assert: Due to validation, ((- (2 ^ (N - 1))) <= i).
+3. Assert: Due to validation, (i < 0).
+4. Return (i + (2 ^ N)).
 
 sx storagetype
 1. If storagetype is consttype, then:
@@ -30862,7 +30993,7 @@ sat_s_ N i
 3. Return i.
 
 ineg_ N i_1
-1. Return $invsigned_(N, (- $signed_(N, i_1))).
+1. Return (((2 ^ N) - i_1) \ (2 ^ N)).
 
 iabs_ N i_1
 1. If ($signed_(N, i_1) >= 0), then:
@@ -30873,7 +31004,7 @@ iextend_ N M sx i
 1. If (sx = U), then:
   a. Return (i \ (2 ^ M)).
 2. Assert: Due to validation, (sx = S).
-3. Return $invsigned_(N, $signed_(M, (i \ (2 ^ M)))).
+3. Return $inv_signed_(N, $signed_(M, (i \ (2 ^ M)))).
 
 iadd_ N i_1 i_2
 1. Return ((i_1 + i_2) \ (2 ^ N)).
@@ -30894,7 +31025,7 @@ idiv_ N sx i_1 i_2
   a. Return ?().
 4. If (($signed_(N, i_1) / $signed_(N, i_2)) = (2 ^ (N - 1))), then:
   a. Return ?().
-5. Return ?($invsigned_(N, $truncz(($signed_(N, i_1) / $signed_(N, i_2))))).
+5. Return ?($inv_signed_(N, $truncz(($signed_(N, i_1) / $signed_(N, i_2))))).
 
 irem_ N sx i_1 i_2
 1. If (sx = U), then:
@@ -30906,7 +31037,7 @@ irem_ N sx i_1 i_2
   a. Return ?().
 4. Let j_1 be $signed_(N, i_1).
 5. Let j_2 be $signed_(N, i_2).
-6. Return ?($invsigned_(N, (j_1 - (j_2 * $truncz((j_1 / j_2)))))).
+6. Return ?($inv_signed_(N, (j_1 - (j_2 * $truncz((j_1 / j_2)))))).
 
 imin_ N sx i_1 i_2
 1. If (sx = U), then:
@@ -30932,13 +31063,13 @@ iadd_sat_ N sx i_1 i_2
 1. If (sx = U), then:
   a. Return $sat_u_(N, (i_1 + i_2)).
 2. Assert: Due to validation, (sx = S).
-3. Return $invsigned_(N, $sat_s_(N, ($signed_(N, i_1) + $signed_(N, i_2)))).
+3. Return $inv_signed_(N, $sat_s_(N, ($signed_(N, i_1) + $signed_(N, i_2)))).
 
 isub_sat_ N sx i_1 i_2
 1. If (sx = U), then:
   a. Return $sat_u_(N, (i_1 - i_2)).
 2. Assert: Due to validation, (sx = S).
-3. Return $invsigned_(N, $sat_s_(N, ($signed_(N, i_1) - $signed_(N, i_2)))).
+3. Return $inv_signed_(N, $sat_s_(N, ($signed_(N, i_1) - $signed_(N, i_2)))).
 
 ieqz_ N i_1
 1. Return $bool((i_1 = 0)).
@@ -31137,10 +31268,6 @@ cvtop__ numtype numtype' cvtop__ i_1
 9. Assert: Due to validation, ($size(numtype) = $size(numtype')).
 10. Return [$reinterpret__(numtype, numtype', i_1)].
 
-invlanes_ sh c*
-1. Let vc be $lanes__1^-1(sh, c*).
-2. Return vc.
-
 zeroop lanetype' X M_1 lanetype X M_2 vcvtop__
 1. If lanetype' is Jnn, then:
   a. If (lanetype is Jnn /\ vcvtop__ is some EXTEND), then:
@@ -31203,50 +31330,50 @@ irelaxed_swizzle_lane_ N c* i
 ivunop_ Jnn X M $f_ v_1
 1. Let c_1* be $lanes_(Jnn X M, v_1).
 2. Let c* be $f_($lsizenn(Jnn), c_1)*.
-3. Return [$invlanes_(Jnn X M, c*)].
+3. Return [$inv_lanes_(Jnn X M, c*)].
 
 fvunop_ Fnn X M $f_ v_1
 1. Let c_1* be $lanes_(Fnn X M, v_1).
 2. Let c** be $setproduct_(`lane_((Fnn : Fnn <: lanetype)), $f_($sizenn(Fnn), c_1)*).
-3. Return $invlanes_(Fnn X M, c*)*.
+3. Return $inv_lanes_(Fnn X M, c*)*.
 
 ivbinop_ Jnn X M $f_ v_1 v_2
 1. Let c_1* be $lanes_(Jnn X M, v_1).
 2. Let c_2* be $lanes_(Jnn X M, v_2).
 3. Let c* be $f_($lsizenn(Jnn), c_1, c_2)*.
-4. Return [$invlanes_(Jnn X M, c*)].
+4. Return [$inv_lanes_(Jnn X M, c*)].
 
 ivbinopsx_ Jnn X M $f_ sx v_1 v_2
 1. Let c_1* be $lanes_(Jnn X M, v_1).
 2. Let c_2* be $lanes_(Jnn X M, v_2).
 3. Let c* be $f_($lsizenn(Jnn), sx, c_1, c_2)*.
-4. Return [$invlanes_(Jnn X M, c*)].
+4. Return [$inv_lanes_(Jnn X M, c*)].
 
 ivbinopsxnd_ Jnn X M $f_ sx v_1 v_2
 1. Let c_1* be $lanes_(Jnn X M, v_1).
 2. Let c_2* be $lanes_(Jnn X M, v_2).
 3. Let c** be $setproduct_(`lane_((Jnn : Jnn <: lanetype)), $f_($lsizenn(Jnn), sx, c_1, c_2)*).
-4. Return $invlanes_(Jnn X M, c*)*.
+4. Return $inv_lanes_(Jnn X M, c*)*.
 
 fvbinop_ Fnn X M $f_ v_1 v_2
 1. Let c_1* be $lanes_(Fnn X M, v_1).
 2. Let c_2* be $lanes_(Fnn X M, v_2).
 3. Let c** be $setproduct_(`lane_((Fnn : Fnn <: lanetype)), $f_($sizenn(Fnn), c_1, c_2)*).
-4. Return $invlanes_(Fnn X M, c*)*.
+4. Return $inv_lanes_(Fnn X M, c*)*.
 
 ivternopnd_ Jnn X M $f_ v_1 v_2 v_3
 1. Let c_1* be $lanes_(Jnn X M, v_1).
 2. Let c_2* be $lanes_(Jnn X M, v_2).
 3. Let c_3* be $lanes_(Jnn X M, v_3).
 4. Let c** be $setproduct_(`lane_((Jnn : Jnn <: lanetype)), $f_($lsizenn(Jnn), c_1, c_2, c_3)*).
-5. Return $invlanes_(Jnn X M, c*)*.
+5. Return $inv_lanes_(Jnn X M, c*)*.
 
 fvternop_ Fnn X M $f_ v_1 v_2 v_3
 1. Let c_1* be $lanes_(Fnn X M, v_1).
 2. Let c_2* be $lanes_(Fnn X M, v_2).
 3. Let c_3* be $lanes_(Fnn X M, v_3).
 4. Let c** be $setproduct_(`lane_((Fnn : Fnn <: lanetype)), $f_($sizenn(Fnn), c_1, c_2, c_3)*).
-5. Return $invlanes_(Fnn X M, c*)*.
+5. Return $inv_lanes_(Fnn X M, c*)*.
 
 ivtestop_ Jnn X M $f_ v_1
 1. Let c_1* be $lanes_(Jnn X M, v_1).
@@ -31262,31 +31389,30 @@ ivrelop_ Jnn X M $f_ v_1 v_2
 1. Let c_1* be $lanes_(Jnn X M, v_1).
 2. Let c_2* be $lanes_(Jnn X M, v_2).
 3. Let c* be $extend__(1, $lsizenn(Jnn), S, $f_($lsizenn(Jnn), c_1, c_2))*.
-4. Return $invlanes_(Jnn X M, c*).
+4. Return $inv_lanes_(Jnn X M, c*).
 
 ivrelopsx_ Jnn X M $f_ sx v_1 v_2
 1. Let c_1* be $lanes_(Jnn X M, v_1).
 2. Let c_2* be $lanes_(Jnn X M, v_2).
 3. Let c* be $extend__(1, $lsizenn(Jnn), S, $f_($lsizenn(Jnn), sx, c_1, c_2))*.
-4. Return $invlanes_(Jnn X M, c*).
+4. Return $inv_lanes_(Jnn X M, c*).
 
 fvrelop_ Fnn X M $f_ v_1 v_2
 1. Let c_1* be $lanes_(Fnn X M, v_1).
 2. Let c_2* be $lanes_(Fnn X M, v_2).
-3. Assert: Due to validation, $size^-1($size(Fnn)) is Inn.
-4. Let Inn be $size^-1($size(Fnn)).
-5. Let c* be $extend__(1, $sizenn(Fnn), S, $f_($sizenn(Fnn), c_1, c_2))*.
-6. Return $invlanes_(Inn X M, c*).
+3. Let Inn be $isize^-1($fsize(Fnn)).
+4. Let c* be $extend__(1, $sizenn(Fnn), S, $f_($sizenn(Fnn), c_1, c_2))*.
+5. Return $inv_lanes_(Inn X M, c*).
 
 ivshiftop_ Jnn X M $f_ v_1 i
 1. Let c_1* be $lanes_(Jnn X M, v_1).
 2. Let c* be $f_($lsizenn(Jnn), c_1, i)*.
-3. Return $invlanes_(Jnn X M, c*).
+3. Return $inv_lanes_(Jnn X M, c*).
 
 ivshiftopsx_ Jnn X M $f_ sx v_1 i
 1. Let c_1* be $lanes_(Jnn X M, v_1).
 2. Let c* be $f_($lsizenn(Jnn), sx, c_1, i)*.
-3. Return $invlanes_(Jnn X M, c*).
+3. Return $inv_lanes_(Jnn X M, c*).
 
 ivbitmaskop_ Jnn X M v_1
 1. Let c_1* be $lanes_(Jnn X M, v_1).
@@ -31297,13 +31423,13 @@ ivswizzlop_ Jnn X M $f_ v_1 v_2
 1. Let c_1* be $lanes_(Jnn X M, v_1).
 2. Let c_2* be $lanes_(Jnn X M, v_2).
 3. Let c* be $f_($lsizenn(Jnn), c_1*, c_2)*.
-4. Return $invlanes_(Jnn X M, c*).
+4. Return $inv_lanes_(Jnn X M, c*).
 
 ivshufflop_ Jnn X M i* v_1 v_2
 1. Let c_1* be $lanes_(Jnn X M, v_1).
 2. Let c_2* be $lanes_(Jnn X M, v_2).
 3. Let c* be c_1* :: c_2*[i]*.
-4. Return $invlanes_(Jnn X M, c*).
+4. Return $inv_lanes_(Jnn X M, c*).
 
 vvunop_ Vnn NOT v
 1. Return [$inot_($vsizenn(Vnn), v)].
@@ -31469,18 +31595,18 @@ vcvtop__ Lnn_1 X M Lnn_2 X M' vcvtop v_1
 1. If ((M = M') /\ ($halfop(Lnn_1 X M', Lnn_2 X M', vcvtop) is not defined /\ $zeroop(Lnn_1 X M', Lnn_2 X M', vcvtop) is not defined)), then:
   a. Let c_1* be $lanes_(Lnn_1 X M', v_1).
   b. Let c** be $setproduct_(`lane_(Lnn_2), $lcvtop__(Lnn_1 X M', Lnn_2 X M', vcvtop, c_1)*).
-  c. Let v be an element of $invlanes_(Lnn_2 X M', c*)*.
+  c. Let v be an element of $inv_lanes_(Lnn_2 X M', c*)*.
   d. Return v.
 2. If $halfop(Lnn_1 X M, Lnn_2 X M', vcvtop) is defined, then:
   a. Let ?(half) be $halfop(Lnn_1 X M, Lnn_2 X M', vcvtop).
   b. Let c_1* be $lanes_(Lnn_1 X M, v_1)[$half(half, 0, M') : M'].
   c. Let c** be $setproduct_(`lane_(Lnn_2), $lcvtop__(Lnn_1 X M, Lnn_2 X M', vcvtop, c_1)*).
-  d. Let v be an element of $invlanes_(Lnn_2 X M', c*)*.
+  d. Let v be an element of $inv_lanes_(Lnn_2 X M', c*)*.
   e. Return v.
 3. Assert: Due to validation, ($zeroop(Lnn_1 X M, Lnn_2 X M', vcvtop) = ?(ZERO)).
 4. Let c_1* be $lanes_(Lnn_1 X M, v_1).
 5. Let c** be $setproduct_(`lane_(Lnn_2), $lcvtop__(Lnn_1 X M, Lnn_2 X M', vcvtop, c_1)* :: [$zero(Lnn_2)]^M).
-6. Let v be an element of $invlanes_(Lnn_2 X M', c*)*.
+6. Let v be an element of $inv_lanes_(Lnn_2 X M', c*)*.
 7. Return v.
 
 vshiftop_ Jnn X M vshiftop_ v i
@@ -31507,7 +31633,7 @@ vnarrowop__ Jnn_1 X M_1 Jnn_2 X M_2 sx v_1 v_2
 2. Let c_2* be $lanes_(Jnn_1 X M_1, v_2).
 3. Let c'_1* be $narrow__($lsize(Jnn_1), $lsize(Jnn_2), sx, c_1)*.
 4. Let c'_2* be $narrow__($lsize(Jnn_1), $lsize(Jnn_2), sx, c_2)*.
-5. Let v be $invlanes_(Jnn_2 X M_2, c'_1* :: c'_2*).
+5. Let v be $inv_lanes_(Jnn_2 X M_2, c'_1* :: c'_2*).
 6. Return v.
 
 ivadd_pairwise_ N i*
@@ -31518,7 +31644,7 @@ ivextunop__ Jnn_1 X M_1 Jnn_2 X M_2 $f_ sx v_1
 1. Let c_1* be $lanes_(Jnn_1 X M_1, v_1).
 2. Let c'_1* be $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), sx, c_1)*.
 3. Let c* be $f_($lsizenn2(Jnn_2), c'_1*).
-4. Return $invlanes_(Jnn_2 X M_2, c*).
+4. Return $inv_lanes_(Jnn_2 X M_2, c*).
 
 vextunop__ Jnn_1 X M_1 Jnn_2 X M_2 (EXTADD_PAIRWISE sx) v_1
 1. Return $ivextunop__(Jnn_1 X M_1, Jnn_2 X M_2, $ivadd_pairwise_, sx, v_1).
@@ -31537,7 +31663,7 @@ ivextbinop__ Jnn_1 X M_1 Jnn_2 X M_2 $f_ sx_1 sx_2 i k v_1 v_2
 3. Let c'_1* be $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), sx_1, c_1)*.
 4. Let c'_2* be $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), sx_2, c_2)*.
 5. Let c* be $f_($lsizenn2(Jnn_2), c'_1*, c'_2*).
-6. Return $invlanes_(Jnn_2 X M_2, c*).
+6. Return $inv_lanes_(Jnn_2 X M_2, c*).
 
 ivmul_ N i_1* i_2*
 1. Return $imul_(N, i_1, i_2)*.
@@ -31553,12 +31679,11 @@ vextbinop__ Jnn_1 X M_1 Jnn_2 X M_2 vextbinop__ v_1 v_2
 
 vextternop__ Jnn_1 X M_1 Jnn_2 X M_2 RELAXED_DOT_ADDS c_1 c_2 c_3
 1. Let M be (2 * M_2).
-2. Assert: Due to validation, $lsizenn^-1((2 * $lsizenn1(Jnn_1))) is Jnn.
-3. Let Jnn be $lsizenn^-1((2 * $lsizenn1(Jnn_1))).
-4. Let c' be $vextbinop__(Jnn_1 X M_1, Jnn X M, RELAXED_DOTS, c_1, c_2).
-5. Let c'' be $vextunop__(Jnn X M, Jnn_2 X M_2, (EXTADD_PAIRWISE S), c').
-6. Let c be an element of $vbinop_(Jnn_2 X M_2, ADD, c'', c_3).
-7. Return c.
+2. Let Jnn be $jsizenn^-1((2 * $lsizenn1(Jnn_1))).
+3. Let c' be $vextbinop__(Jnn_1 X M_1, Jnn X M, RELAXED_DOTS, c_1, c_2).
+4. Let c'' be $vextunop__(Jnn X M, Jnn_2 X M_2, (EXTADD_PAIRWISE S), c').
+5. Let c be an element of $vbinop_(Jnn_2 X M_2, ADD, c'', c_3).
+6. Return c.
 
 Ki
 1. Return 1024.

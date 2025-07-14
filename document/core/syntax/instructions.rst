@@ -364,7 +364,6 @@ The ${:DATA.DROP} instruction prevents further use of a passive data segment. Th
    pair: abstract syntax; instruction
    pair: abstract syntax; block type
    pair: block; type
-.. _syntax-blocktype:
 .. _syntax-nop:
 .. _syntax-unreachable:
 .. _syntax-block:

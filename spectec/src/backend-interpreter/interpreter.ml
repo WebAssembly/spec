@@ -273,7 +273,20 @@ and eval_expr env expr =
     let el = remove_typargs al in
     (* TODO: refactor numerics function name *)
     let args = List.map (eval_arg env) el in
-    (match call_func ("inverse_of_"^fname') args with
+    let inv_fname =
+      (* If function $f has hint(inverse $invf), but $invf is defined in terms
+       * of the inversion of $f, then infinite loop! Implement loop checks? *)
+      match find_hint fname' "inverse" with
+      | None ->
+        fail_expr expr (sprintf "no inverse hint is given for definition `%s`" fname')
+      | Some hint ->
+        (* We assume that there is only one way to invert the function, on the
+         * last argument. We could extend the hint syntax to denote an argument. *)
+        match hint.hintexp.it with
+        | CallE (fid, []) -> fid.it
+        | _ -> failwith (sprintf "ill-formed inverse hint for definition `%s`" fname')
+    in
+    (match call_func inv_fname args with
     | Some v -> v
     | _ -> raise (Exception.MissingReturnValue fname)
     )
@@ -785,8 +798,8 @@ and call_func (name: string) (args: value list) : value option =
      |> AlContext.get_return_value
    (* Numerics *)
    else if Numerics.mem builtin_name then (
-     if not (is_builtin || String.starts_with ~prefix: "inverse_of_" name) then
-       warn (sprintf "Numeric function `%s` is not defined within SpecTec, consider adding a hint(builtin)" name);
+     if not is_builtin then
+       warn (sprintf "Numeric function `%s` is not defined in source, consider adding a hint(builtin)" name);
      Some (Numerics.call_numerics builtin_name args)
    )
   (* Relation *)

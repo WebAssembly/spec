@@ -361,18 +361,16 @@ $${syntax: limits}
    If no maximum is given, then the respective storage can grow to any valid size.
 
 
-.. index:: ! global type, ! mutability, value type, global, mutability
-   pair: abstract syntax; global type
-   pair: abstract syntax; mutability
-   pair: global; type
-   pair: global; mutability
+.. index:: ! tag type, type use, tag, function type, exception tag
+   pair: abstract syntax; tag type
+   pair: tag; type
 .. _syntax-tagtype:
 
 Tag Types
 ~~~~~~~~~
 
-*Tag types* classify :ref:`tags <syntax-tag>`.
-The :ref:`type use <syntax-typeuse>` has to refer to the definition of a :ref:`function type <syntax-functype>` that declares the types of parameter and result values associated with the tag.
+*Tag types* classify the signature :ref:`tags <syntax-tag>`
+with a :ref:`type use <syntax-typeuse>` referring to the definition of a :ref:`function type <syntax-functype>` that declares the types of parameter and result values associated with the tag.
 The result type is empty for exception tags.
 
 $${syntax: tagtype}

@@ -82,15 +82,15 @@ let signed : numerics =
       | vs -> error_values "signed" vs
       )
   }
-let inverse_of_signed =
+let inv_signed =
   {
-    name = "inverse_of_signed";
+    name = "inv_signed";
     f =
       (function
       | [ NumV (`Nat z); NumV (`Int n) ] ->
         let z = Z.to_int z in
         (if Z.(geq n zero) then n else Z.(add n (shift_left one z))) |> al_of_z_nat
-      | vs -> error_values "inverse_of_signed" vs
+      | vs -> error_values "inv_signed" vs
       )
   }
 
@@ -126,7 +126,7 @@ let sat : numerics =
             Z.(shift_left one n |> pred)
           else
             i
-        in inverse_of_signed.f [ NumV (`Nat z); NumV (`Int j) ]
+        in inv_signed.f [ NumV (`Nat z); NumV (`Int j) ]
       | vs -> error_values "isat" vs
       );
   }
@@ -704,7 +704,7 @@ let extend : numerics =
       | [ NumV (`Nat z); _; CaseV ("U", []); NumV (`Nat v) ] when z = Z.of_int 128 -> V128.I64x2.of_lanes [ z_to_int64 v; 0L ] |> al_of_vec128 (* HARDCODE *)
       | [ _; _; CaseV ("U", []); v ] -> v
       | [ NumV _ as m; NumV _ as n; CaseV ("S", []); NumV _ as i ] ->
-        inverse_of_signed.f [ n; signed.f [ m; i ] ]
+        inv_signed.f [ n; signed.f [ m; i ] ]
       | vs -> error_values "extend" vs
       );
   }
@@ -854,9 +854,9 @@ let ibytes : numerics =
       | vs -> error_values "ibytes" vs
       );
   }
-let inverse_of_ibytes : numerics =
+let inv_ibytes : numerics =
   {
-    name = "inverse_of_ibytes";
+    name = "inv_ibytes";
     f =
       (function
       | [ NumV (`Nat n); ListV bs ] ->
@@ -869,9 +869,9 @@ let inverse_of_ibytes : numerics =
           NumV (`Nat (Array.fold_right (fun b acc ->
             match b with
             | NumV (`Nat b) when Z.zero <= b && b < Z.of_int 256 -> Z.add b (Z.shift_left acc 8)
-            | _ -> error_typ_value "inverse_of_ibytes" "byte" b
+            | _ -> error_typ_value "inv_ibytes" "byte" b
           ) !bs Z.zero))
-      | vs -> error_values "inverse_of_ibytes" vs
+      | vs -> error_values "inv_ibytes" vs
       );
   }
 
@@ -887,16 +887,16 @@ let nbytes : numerics =
       | vs -> error_values "nbytes" vs
       );
   }
-let inverse_of_nbytes : numerics =
+let inv_nbytes : numerics =
   {
-    name = "inverse_of_nbytes";
+    name = "inv_nbytes";
     f =
       (function
-      | [ CaseV ("I32", []); l ] -> inverse_of_ibytes.f [ NumV thirtytwo; l ]
-      | [ CaseV ("I64", []); l ] -> inverse_of_ibytes.f [ NumV sixtyfour; l ]
-      | [ CaseV ("F32", []); l ] -> inverse_of_ibytes.f [ NumV thirtytwo; l ] |> al_to_nat32 |> F32.of_bits |> al_of_float32
-      | [ CaseV ("F64", []); l ] -> inverse_of_ibytes.f [ NumV sixtyfour; l ] |> al_to_nat64 |> F64.of_bits |> al_of_float64
-      | vs -> error_values "inverse_of_nbytes" vs
+      | [ CaseV ("I32", []); l ] -> inv_ibytes.f [ NumV thirtytwo; l ]
+      | [ CaseV ("I64", []); l ] -> inv_ibytes.f [ NumV sixtyfour; l ]
+      | [ CaseV ("F32", []); l ] -> inv_ibytes.f [ NumV thirtytwo; l ] |> al_to_nat32 |> F32.of_bits |> al_of_float32
+      | [ CaseV ("F64", []); l ] -> inv_ibytes.f [ NumV sixtyfour; l ] |> al_to_nat64 |> F64.of_bits |> al_of_float64
+      | vs -> error_values "inv_nbytes" vs
       );
   }
 
@@ -911,45 +911,45 @@ let vbytes : numerics =
       | vs -> error_values "vbytes" vs
       );
   }
-let inverse_of_vbytes : numerics =
+let inv_vbytes : numerics =
   {
-    name = "inverse_of_vbytes";
+    name = "inv_vbytes";
     f =
       (function
       | [ CaseV ("V128", []); ListV l ] ->
-        let v1 = inverse_of_ibytes.f [ NumV sixtyfour; Array.sub !l 0 8 |> listV ] in
-        let v2 = inverse_of_ibytes.f [ NumV sixtyfour; Array.sub !l 8 8 |> listV ] in
+        let v1 = inv_ibytes.f [ NumV sixtyfour; Array.sub !l 0 8 |> listV ] in
+        let v2 = inv_ibytes.f [ NumV sixtyfour; Array.sub !l 8 8 |> listV ] in
 
         (match v1, v2 with
         | NumV (`Nat n1), NumV (`Nat n2) -> al_of_vec128 (V128.I64x2.of_lanes [ z_to_int64 n1; z_to_int64 n2 ])
-        | _ -> error_values "inverse_of_vbytes" [ v1; v2 ]
+        | _ -> error_values "inv_vbytes" [ v1; v2 ]
         )
 
-      | vs -> error_values "inverse_of_vbytes" vs
+      | vs -> error_values "inv_vbytes" vs
       );
   }
 
-let inverse_of_zbytes : numerics =
+let inv_zbytes : numerics =
   {
-    name = "inverse_of_zbytes";
+    name = "inv_zbytes";
     f =
       (function
-      | [ CaseV ("I8", []); l ] -> inverse_of_ibytes.f [ NumV eight; l ]
-      | [ CaseV ("I16", []); l ] -> inverse_of_ibytes.f [ NumV sixteen; l ]
-      | args -> inverse_of_nbytes.f args
+      | [ CaseV ("I8", []); l ] -> inv_ibytes.f [ NumV eight; l ]
+      | [ CaseV ("I16", []); l ] -> inv_ibytes.f [ NumV sixteen; l ]
+      | args -> inv_nbytes.f args
       );
   }
 
-let inverse_of_cbytes : numerics =
+let inv_cbytes : numerics =
   {
-    name = "inverse_of_cbytes";
+    name = "inv_cbytes";
     f = function
-      | [ CaseV ("V128", []); _ ] as args -> inverse_of_vbytes.f args
-      | args -> inverse_of_nbytes.f args
+      | [ CaseV ("V128", []); _ ] as args -> inv_vbytes.f args
+      | args -> inv_nbytes.f args
   }
 
 let bytes : numerics = { name = "bytes"; f = nbytes.f }
-let inverse_of_bytes : numerics = { name = "inverse_of_bytes"; f = inverse_of_nbytes.f }
+let inv_bytes : numerics = { name = "inv_bytes"; f = inv_nbytes.f }
 
 let wrap : numerics =
   {
@@ -962,16 +962,16 @@ let wrap : numerics =
   }
 
 
-let inverse_of_ibits : numerics =
+let inv_ibits : numerics =
   {
-    name = "inverse_of_ibits";
+    name = "inv_ibits";
     f =
       (function
       | [ NumV (`Nat n); ListV vs ] as vs' ->
-        if Z.of_int (Array.length !vs) <> n then error_values "inverse_of_ibits" vs';
-        let na = Array.map (function | NumV (`Nat e) when e = Z.zero || e = Z.one -> e | v -> error_typ_value "inverse_of_ibits" "bit" v) !vs in
+        if Z.of_int (Array.length !vs) <> n then error_values "inv_ibits" vs';
+        let na = Array.map (function | NumV (`Nat e) when e = Z.zero || e = Z.one -> e | v -> error_typ_value "inv_ibits" "bit" v) !vs in
         natV (Array.fold_left (fun acc e -> Z.logor e (Z.shift_left acc 1)) Z.zero na)
-      | vs -> error_values "inverse_of_ibits" vs
+      | vs -> error_values "inv_ibits" vs
       );
   }
 
@@ -1005,9 +1005,9 @@ let lanes : numerics =
       | vs -> error_values "lanes" vs
       );
   }
-let inverse_of_lanes : numerics =
+let inv_lanes : numerics =
   {
-    name = "inverse_of_lanes";
+    name = "inv_lanes";
     f =
       (function
       | [ CaseV ("X",[ CaseV ("I8", []); NumV (`Nat z) ]); ListV lanes; ] when z = Z.of_int 16 && Array.length !lanes = 16 ->
@@ -1022,80 +1022,42 @@ let inverse_of_lanes : numerics =
         List.map al_to_float32 (!lanes |> Array.to_list) |> V128.F32x4.of_lanes |> al_of_vec128
       | [ CaseV ("X",[ CaseV ("F64", []); NumV (`Nat z) ]); ListV lanes; ] when z = Z.of_int 2 && Array.length !lanes = 2 ->
         List.map al_to_float64 (!lanes |> Array.to_list) |> V128.F64x2.of_lanes |> al_of_vec128
-        | vs -> error_values "inverse_of_lanes" vs
+        | vs -> error_values "inv_lanes" vs
       );
   }
 
-let inverse_of_isize : numerics =
-  {
-    name = "inverse_of_isize";
-    f =
-      (function
-      | [ NumV (`Nat z) ] when z = Z.of_int 32 -> CaseV ("I32", [])
-      | [ NumV (`Nat z) ] when z = Z.of_int 64 -> CaseV ("I64", [])
-      | vs -> error_values "inverse_of_isize" vs
-      );
-  }
-let inverse_of_lsize : numerics =
-  {
-    name = "inverse_of_lsize";
-    f =
-      (function
-      | [ NumV (`Nat z) ] when z = Z.of_int 8 -> CaseV ("I8", [])
-      | [ NumV (`Nat z) ] when z = Z.of_int 16 -> CaseV ("I16", [])
-      | [ NumV (`Nat z) ] when z = Z.of_int 32 -> CaseV ("I32", [])
-      | [ NumV (`Nat z) ] when z = Z.of_int 64 -> CaseV ("I64", [])
-      | vs -> error_values "inverse_of_lsize" vs
-      );
-  }
-let inverse_of_size : numerics =
-  {
-    name = "inverse_of_size";
-    f = inverse_of_lsize.f;
-  }
-let inverse_of_lsizenn : numerics =
-  {
-    name = "inverse_of_lsizenn";
-    f = inverse_of_lsize.f;
-  }
-let inverse_of_sizenn : numerics =
-  {
-    name = "inverse_of_sizenn";
-    f = inverse_of_lsize.f;
-  }
-
-let rec inverse_of_concat_helper = function
+let rec inv_concat_helper = function
   | a :: b :: l ->
-    [listV_of_list [a; b]] @ inverse_of_concat_helper l
+    [listV_of_list [a; b]] @ inv_concat_helper l
   | [] -> []
-  | vs -> error_values "inverse_of_concat_helper" vs
+  | vs -> error_values "inv_concat_helper" vs
 
-let inverse_of_concat : numerics =
+let inv_concat : numerics =
   {
-    name = "inverse_of_concat";
+    name = "inv_concat";
     f =
       (function
       | [ ListV _ as lv ] ->
         lv
         |> unwrap_listv_to_list
-        |> inverse_of_concat_helper
+        |> inv_concat_helper
         |> listV_of_list
-      | vs -> error_values "inverse_of_concat" vs
+      | vs -> error_values "inv_concat" vs
       );
   }
 
-  let rec inverse_of_concatn_helper n prev = function
+let rec inv_concatn_helper n prev = function
   | a :: l ->
     let next = prev @ [a] in
     if List.length next = n then
-      [listV_of_list (prev @ [a])] @ inverse_of_concatn_helper n [] l
+      [listV_of_list (prev @ [a])] @ inv_concatn_helper n [] l
     else
-      inverse_of_concatn_helper n next l
+      inv_concatn_helper n next l
   | [] -> []
 
-let inverse_of_concatn : numerics =
+let inv_concatn : numerics =
   {
-    name = "inverse_of_concatn";
+    name = "inv_concatn";
     f =
       (function
       | [ NumV (`Nat len); ListV _ as lv] ->
@@ -1106,9 +1068,9 @@ let inverse_of_concatn : numerics =
         in
         assert (List.length l mod n = 0);
         l
-        |> inverse_of_concatn_helper n []
+        |> inv_concatn_helper n []
         |> listV_of_list
-      | vs -> error_values "inverse_of_concatn" vs
+      | vs -> error_values "inv_concatn" vs
       );
   }
 
@@ -1124,19 +1086,17 @@ let numerics_list : numerics list = [
   r_swizzle;
   r_laneselect;
   ibytes;
-  inverse_of_ibytes;
+  inv_ibytes;
   nbytes;
   vbytes;
-  inverse_of_nbytes;
-  inverse_of_vbytes;
-  inverse_of_zbytes;
-  inverse_of_cbytes;
+  inv_nbytes;
+  inv_vbytes;
+  inv_zbytes;
+  inv_cbytes;
   bytes;
-  inverse_of_bytes;
-  inverse_of_concat;
-  inverse_of_concatn;
-  signed;
-  inverse_of_signed;
+  inv_bytes;
+  inv_concat;
+  inv_concatn;
   truncz;
   sat;
   inot;
@@ -1196,13 +1156,8 @@ let numerics_list : numerics list = [
   convert;
   reinterpret;
   lanes;
-  inverse_of_lanes;
-  inverse_of_size;
-  inverse_of_isize;
-  inverse_of_lsize;
-  inverse_of_lsizenn;
-  inverse_of_sizenn;
-  inverse_of_ibits;
+  inv_lanes;
+  inv_ibits;
 ]
 
 let rec strip_suffix name =
