@@ -712,8 +712,6 @@ The table segment :math:`(\mathsf{elem}~{\mathit{expr}}~{x^\ast})` is :ref:`vali
 
    * :math:`{\mathit{expr}}` is constant.
 
-   * The length of :math:`{{\mathit{ft}}^\ast}` is equal to the length of :math:`{x^\ast}`.
-
    * For all :math:`x` in :math:`{x^\ast}`:
 
       * The function type :math:`C{.}\mathsf{funcs}{}[x]` exists.
@@ -850,37 +848,25 @@ The export :math:`(\mathsf{export}~{\mathit{name}}~{\mathit{externidx}})` is :re
 The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` is :ref:`valid <valid-val>` if:
 
 
-   * The length of :math:`{{\mathit{ft}'}^\ast}` is equal to the length of :math:`{{\mathit{type}}^\ast}`.
-
    * For all :math:`{\mathit{ft}'}` in :math:`{{\mathit{ft}'}^\ast}`, and corresponding :math:`{\mathit{type}}` in :math:`{{\mathit{type}}^\ast}`:
 
       * The type :math:`{\mathit{type}}` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{ft}'}`.
-
-   * The length of :math:`{{\mathit{import}}^\ast}` is equal to the length of :math:`{{\mathit{ixt}}^\ast}`.
 
    * For all :math:`{\mathit{import}}` in :math:`{{\mathit{import}}^\ast}`, and corresponding :math:`{\mathit{ixt}}` in :math:`{{\mathit{ixt}}^\ast}`:
 
       * Under the context :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{ft}'}^\ast},\; \mathsf{return}~\epsilon \}\end{array}`, the import :math:`{\mathit{import}}` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{ixt}}`.
 
-   * The length of :math:`{{\mathit{global}}^\ast}` is equal to the length of :math:`{{\mathit{gt}}^\ast}`.
-
    * For all :math:`{\mathit{global}}` in :math:`{{\mathit{global}}^\ast}`, and corresponding :math:`{\mathit{gt}}` in :math:`{{\mathit{gt}}^\ast}`:
 
       * Under the context :math:`{C'}`, the global :math:`{\mathit{global}}` is :ref:`valid <valid-val>` with the global type :math:`{\mathit{gt}}`.
-
-   * The length of :math:`{{\mathit{ft}}^\ast}` is equal to the length of :math:`{{\mathit{func}}^\ast}`.
 
    * For all :math:`{\mathit{ft}}` in :math:`{{\mathit{ft}}^\ast}`, and corresponding :math:`{\mathit{func}}` in :math:`{{\mathit{func}}^\ast}`:
 
       * The function :math:`{\mathit{func}}` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{ft}}`.
 
-   * The length of :math:`{{\mathit{table}}^\ast}` is equal to the length of :math:`{{\mathit{tt}}^\ast}`.
-
    * For all :math:`{\mathit{table}}` in :math:`{{\mathit{table}}^\ast}`, and corresponding :math:`{\mathit{tt}}` in :math:`{{\mathit{tt}}^\ast}`:
 
       * The table :math:`{\mathit{table}}` is :ref:`valid <valid-val>` with the table type :math:`{\mathit{tt}}`.
-
-   * The length of :math:`{{\mathit{mem}}^\ast}` is equal to the length of :math:`{{\mathit{mt}}^\ast}`.
 
    * For all :math:`{\mathit{mem}}` in :math:`{{\mathit{mem}}^\ast}`, and corresponding :math:`{\mathit{mt}}` in :math:`{{\mathit{mt}}^\ast}`:
 
@@ -897,8 +883,6 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
    * If :math:`{\mathit{start}}` is defined, then:
 
       * The start function :math:`{\mathit{start}}` is :ref:`valid <valid-val>`.
-
-   * The length of :math:`{{\mathit{export}}^\ast}` is equal to the length of :math:`{{\mathit{xt}}^\ast}`.
 
    * For all :math:`{\mathit{export}}` in :math:`{{\mathit{export}}^\ast}`, and corresponding :math:`{\mathit{xt}}` in :math:`{{\mathit{xt}}^\ast}`:
 
@@ -3375,7 +3359,6 @@ Elem_ok
   - the limits C.TABLES[0] is lim.
   - the expression expr is valid with the number type ?(I32).
   - expr is constant.
-  - |ft*| is |x*|.
   - For all x in x*:
     - the function type C.FUNCS[x] exists.
   - For all ft in ft*, and corresponding x in x*:
@@ -3445,22 +3428,16 @@ Export_ok
 
 Module_ok
 - the module (MODULE type* import* func* global* table* mem* elem* data* start? export*) is valid if:
-  - |ft'*| is |type*|.
   - For all ft' in ft'*, and corresponding type in type*:
     - the type type is valid with the function type ft'.
-  - |import*| is |ixt*|.
   - For all import in import*, and corresponding ixt in ixt*:
     - Under the context { TYPES: ft'*; RETURN: ?() }, the import import is valid with the external type ixt.
-  - |global*| is |gt*|.
   - For all global in global*, and corresponding gt in gt*:
     - Under the context C', the global global is valid with the global type gt.
-  - |ft*| is |func*|.
   - For all ft in ft*, and corresponding func in func*:
     - the function func is valid with the function type ft.
-  - |table*| is |tt*|.
   - For all table in table*, and corresponding tt in tt*:
     - the table table is valid with the table type tt.
-  - |mem*| is |mt*|.
   - For all mem in mem*, and corresponding mt in mt*:
     - the memory mem is valid with the memory type mt.
   - For all elem in elem*:
@@ -3469,7 +3446,6 @@ Module_ok
     - the memory segment data is valid.
   - If start is defined, then:
     - the start function start is valid.
-  - |export*| is |xt*|.
   - For all export in export*, and corresponding xt in xt*:
     - the export export is valid with the external type xt.
   - |tt*| is less than or equal to 1.
@@ -4585,8 +4561,6 @@ The value type :math:`\mathsf{bot}` :ref:`matches <match>` the value type :math:
 
 The result type :math:`{t_1^\ast}` :ref:`matches <match>` the result type :math:`{t_2^\ast}` if:
 
-
-   * The length of :math:`{t_1^\ast}` is equal to the length of :math:`{t_2^\ast}`.
 
    * For all :math:`t_1` in :math:`{t_1^\ast}`, and corresponding :math:`t_2` in :math:`{t_2^\ast}`:
 
@@ -5888,37 +5862,25 @@ The export :math:`(\mathsf{export}~{\mathit{name}}~{\mathit{externidx}})` is :re
 The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^{n}}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` is :ref:`valid <valid-val>` if:
 
 
-   * The length of :math:`{{\mathit{ft}'}^\ast}` is equal to the length of :math:`{{\mathit{type}}^\ast}`.
-
    * For all :math:`{\mathit{ft}'}` in :math:`{{\mathit{ft}'}^\ast}`, and corresponding :math:`{\mathit{type}}` in :math:`{{\mathit{type}}^\ast}`:
 
       * The type :math:`{\mathit{type}}` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{ft}'}`.
-
-   * The length of :math:`{{\mathit{import}}^\ast}` is equal to the length of :math:`{{\mathit{ixt}}^\ast}`.
 
    * For all :math:`{\mathit{import}}` in :math:`{{\mathit{import}}^\ast}`, and corresponding :math:`{\mathit{ixt}}` in :math:`{{\mathit{ixt}}^\ast}`:
 
       * Under the context :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{ft}'}^\ast},\; \mathsf{return}~\epsilon \}\end{array}`, the import :math:`{\mathit{import}}` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{ixt}}`.
 
-   * The length of :math:`{{\mathit{global}}^\ast}` is equal to the length of :math:`{{\mathit{gt}}^\ast}`.
-
    * For all :math:`{\mathit{global}}` in :math:`{{\mathit{global}}^\ast}`, and corresponding :math:`{\mathit{gt}}` in :math:`{{\mathit{gt}}^\ast}`:
 
       * Under the context :math:`{C'}`, the global :math:`{\mathit{global}}` is :ref:`valid <valid-val>` with the global type :math:`{\mathit{gt}}`.
-
-   * The length of :math:`{{\mathit{table}}^\ast}` is equal to the length of :math:`{{\mathit{tt}}^\ast}`.
 
    * For all :math:`{\mathit{table}}` in :math:`{{\mathit{table}}^\ast}`, and corresponding :math:`{\mathit{tt}}` in :math:`{{\mathit{tt}}^\ast}`:
 
       * Under the context :math:`{C'}`, the table :math:`{\mathit{table}}` is :ref:`valid <valid-val>` with the table type :math:`{\mathit{tt}}`.
 
-   * The length of :math:`{{\mathit{mem}}^\ast}` is equal to the length of :math:`{{\mathit{mt}}^\ast}`.
-
    * For all :math:`{\mathit{mem}}` in :math:`{{\mathit{mem}}^\ast}`, and corresponding :math:`{\mathit{mt}}` in :math:`{{\mathit{mt}}^\ast}`:
 
       * Under the context :math:`{C'}`, the memory :math:`{\mathit{mem}}` is :ref:`valid <valid-val>` with the memory type :math:`{\mathit{mt}}`.
-
-   * The length of :math:`{{\mathit{elem}}^\ast}` is equal to the length of :math:`{{\mathit{rt}}^\ast}`.
 
    * For all :math:`{\mathit{elem}}` in :math:`{{\mathit{elem}}^\ast}`, and corresponding :math:`{\mathit{rt}}` in :math:`{{\mathit{rt}}^\ast}`:
 
@@ -5928,8 +5890,6 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       * Under the context :math:`{C'}`, the memory segment :math:`{\mathit{data}}` is :ref:`valid <valid-val>`.
 
-   * The length of :math:`{{\mathit{ft}}^\ast}` is equal to the length of :math:`{{\mathit{func}}^\ast}`.
-
    * For all :math:`{\mathit{ft}}` in :math:`{{\mathit{ft}}^\ast}`, and corresponding :math:`{\mathit{func}}` in :math:`{{\mathit{func}}^\ast}`:
 
       * The function :math:`{\mathit{func}}` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{ft}}`.
@@ -5937,8 +5897,6 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
    * If :math:`{\mathit{start}}` is defined, then:
 
       * The start function :math:`{\mathit{start}}` is :ref:`valid <valid-val>`.
-
-   * The length of :math:`{{\mathit{export}}^\ast}` is equal to the length of :math:`{{\mathit{xt}}^\ast}`.
 
    * For all :math:`{\mathit{export}}` in :math:`{{\mathit{export}}^\ast}`, and corresponding :math:`{\mathit{xt}}` in :math:`{{\mathit{xt}}^\ast}`:
 
@@ -10608,7 +10566,6 @@ Valtype_sub/bot
 
 Resulttype_sub
 - the result type t_1* matches the result type t_2* if:
-  - |t_1*| is |t_2*|.
   - For all t_1 in t_1*, and corresponding t_2 in t_2*:
     - the value type t_1 matches the value type t_2.
 
@@ -11285,32 +11242,24 @@ Export_ok
 
 Module_ok
 - the module (MODULE type* import* func* global* table* mem* elem* data^n start? export*) is valid if:
-  - |ft'*| is |type*|.
   - For all ft' in ft'*, and corresponding type in type*:
     - the type type is valid with the function type ft'.
-  - |import*| is |ixt*|.
   - For all import in import*, and corresponding ixt in ixt*:
     - Under the context { TYPES: ft'*; RETURN: ?() }, the import import is valid with the external type ixt.
-  - |global*| is |gt*|.
   - For all global in global*, and corresponding gt in gt*:
     - Under the context C', the global global is valid with the global type gt.
-  - |table*| is |tt*|.
   - For all table in table*, and corresponding tt in tt*:
     - Under the context C', the table table is valid with the table type tt.
-  - |mem*| is |mt*|.
   - For all mem in mem*, and corresponding mt in mt*:
     - Under the context C', the memory mem is valid with the memory type mt.
-  - |elem*| is |rt*|.
   - For all elem in elem*, and corresponding rt in rt*:
     - Under the context C', the table segment elem is valid with the reference type rt.
   - For all data in data*:
     - Under the context C', the memory segment data is valid.
-  - |ft*| is |func*|.
   - For all ft in ft*, and corresponding func in func*:
     - the function func is valid with the function type ft.
   - If start is defined, then:
     - the start function start is valid.
-  - |export*| is |xt*|.
   - For all export in export*, and corresponding xt in xt*:
     - the export export is valid with the external type xt.
   - |mt*| is less than or equal to 1.
@@ -13791,10 +13740,6 @@ The sub type :math:`(\mathsf{sub}~{\mathsf{final}^?}~{x^\ast}~{\mathit{comptype}
 
       * The index :math:`x` is less than :math:`x_0`.
 
-   * The length of :math:`{{\mathit{comptype}'}^\ast}` is equal to the length of :math:`{x^\ast}`.
-
-   * The length of :math:`{{\mathit{comptype}'}^\ast}` is equal to the length of :math:`{{{x'}^\ast}^\ast}`.
-
    * For all :math:`x` in :math:`{x^\ast}`:
 
       * The type :math:`C{.}\mathsf{types}{}[x]` exists.
@@ -13853,10 +13798,6 @@ The sub type :math:`(\mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~{
    * For all :math:`{\mathit{typeuse}}` in :math:`{{\mathit{typeuse}}^\ast}`:
 
       * :math:`{\mathit{typeuse}} \prec x, i` is of the form true.
-
-   * The length of :math:`{{\mathit{comptype}'}^\ast}` is equal to the length of :math:`{{\mathit{typeuse}}^\ast}`.
-
-   * The length of :math:`{{\mathit{comptype}'}^\ast}` is equal to the length of :math:`{{{\mathit{typeuse}'}^\ast}^\ast}`.
 
    * For all :math:`{\mathit{comptype}'}` in :math:`{{\mathit{comptype}'}^\ast}`, and corresponding :math:`{\mathit{typeuse}}` in :math:`{{\mathit{typeuse}}^\ast}`, and corresponding :math:`{{\mathit{typeuse}'}^\ast}` in :math:`{{{\mathit{typeuse}'}^\ast}^\ast}`:
 
@@ -13953,8 +13894,6 @@ The composite type :math:`{\mathit{comptype}}_1` :ref:`matches <match>` the comp
 
 The composite type :math:`(\mathsf{struct}~{{\mathit{ft}}_1^\ast}~{{\mathit{ft}'}_1^\ast})` :ref:`matches <match>` the composite type :math:`(\mathsf{struct}~{{\mathit{ft}}_2^\ast})` if:
 
-
-   * The length of :math:`{{\mathit{ft}}_1^\ast}` is equal to the length of :math:`{{\mathit{ft}}_2^\ast}`.
 
    * For all :math:`{\mathit{ft}}_1` in :math:`{{\mathit{ft}}_1^\ast}`, and corresponding :math:`{\mathit{ft}}_2` in :math:`{{\mathit{ft}}_2^\ast}`:
 
@@ -14371,8 +14310,6 @@ The value type :math:`\mathsf{bot}` :ref:`matches <match>` the value type :math:
 The result type :math:`{t_1^\ast}` :ref:`matches <match>` the result type :math:`{t_2^\ast}` if:
 
 
-   * The length of :math:`{t_1^\ast}` is equal to the length of :math:`{t_2^\ast}`.
-
    * For all :math:`t_1` in :math:`{t_1^\ast}`, and corresponding :math:`t_2` in :math:`{t_2^\ast}`:
 
       * The value type :math:`t_1` :ref:`matches <match>` the value type :math:`t_2`.
@@ -14464,8 +14401,6 @@ The instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}` is 
    * The result type :math:`{t_1^\ast}` is :ref:`valid <valid-val>`.
 
    * The result type :math:`{t_2^\ast}` is :ref:`valid <valid-val>`.
-
-   * The length of :math:`{{{\mathit{lt}}}^\ast}` is equal to the length of :math:`{x^\ast}`.
 
    * For all :math:`x` in :math:`{x^\ast}`:
 
@@ -14609,8 +14544,6 @@ The instruction type :math:`{t_{11}^\ast}~{\rightarrow}_{{x_1^\ast}}\,{t_{12}^\a
    * The result type :math:`{t_{12}^\ast}` :ref:`matches <match>` the result type :math:`{t_{22}^\ast}`.
 
    * The local index sequence :math:`{x^\ast}` is of the form :math:`{x_2^\ast} \setminus {x_1^\ast}`.
-
-   * The length of :math:`{t^\ast}` is equal to the length of :math:`{x^\ast}`.
 
    * For all :math:`x` in :math:`{x^\ast}`:
 
@@ -16231,10 +16164,6 @@ The instruction sequence :math:`{\mathit{instr}}_1~{{\mathit{instr}}_2^\ast}` is
 
    * The instruction :math:`{\mathit{instr}}_1` is :ref:`valid <valid-val>` with the instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x_1^\ast}}\,{t_2^\ast}`.
 
-   * The length of :math:`{{\mathit{init}}^\ast}` is equal to the length of :math:`{t^\ast}`.
-
-   * The length of :math:`{{\mathit{init}}^\ast}` is equal to the length of :math:`{x_1^\ast}`.
-
    * For all :math:`x_1` in :math:`{x_1^\ast}`:
 
       * The local :math:`C{.}\mathsf{locals}{}[x_1]` exists.
@@ -16534,8 +16463,6 @@ The function :math:`(\mathsf{func}~x~{{\mathit{local}}^\ast}~{\mathit{expr}})` i
    * The type :math:`C{.}\mathsf{types}{}[x]` exists.
 
    * The :ref:`expansion <aux-expand-deftype>` of the type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
-
-   * The length of :math:`{{{\mathit{lt}}}^\ast}` is equal to the length of :math:`{{\mathit{local}}^\ast}`.
 
    * For all :math:`{{\mathit{lt}}}` in :math:`{{{\mathit{lt}}}^\ast}`, and corresponding :math:`{\mathit{local}}` in :math:`{{\mathit{local}}^\ast}`:
 
@@ -16882,13 +16809,9 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    * Under the context :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{return}~\epsilon \}\end{array}`, the type definition sequence :math:`{{\mathit{type}}^\ast}` is :ref:`valid <valid-val>` with the defined type sequence :math:`{{\mathit{dt}'}^\ast}`.
 
-   * The length of :math:`{{\mathit{import}}^\ast}` is equal to the length of :math:`{{\mathit{xt}}_{\mathsf{i}}^\ast}`.
-
    * For all :math:`{\mathit{import}}` in :math:`{{\mathit{import}}^\ast}`, and corresponding :math:`{\mathit{xt}}_{\mathsf{i}}` in :math:`{{\mathit{xt}}_{\mathsf{i}}^\ast}`:
 
       * Under the context :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{dt}'}^\ast},\; \mathsf{return}~\epsilon \}\end{array}`, the import :math:`{\mathit{import}}` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{xt}}_{\mathsf{i}}`.
-
-   * The length of :math:`{{\mathit{jt}}^\ast}` is equal to the length of :math:`{{\mathit{tag}}^\ast}`.
 
    * For all :math:`{\mathit{jt}}` in :math:`{{\mathit{jt}}^\ast}`, and corresponding :math:`{\mathit{tag}}` in :math:`{{\mathit{tag}}^\ast}`:
 
@@ -16896,31 +16819,21 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    * Under the context :math:`{C'}`, the global sequence :math:`{{\mathit{global}}^\ast}` is :ref:`valid <valid-val>` with the global type sequence :math:`{{\mathit{gt}}^\ast}`.
 
-   * The length of :math:`{{\mathit{mem}}^\ast}` is equal to the length of :math:`{{\mathit{mt}}^\ast}`.
-
    * For all :math:`{\mathit{mem}}` in :math:`{{\mathit{mem}}^\ast}`, and corresponding :math:`{\mathit{mt}}` in :math:`{{\mathit{mt}}^\ast}`:
 
       * Under the context :math:`{C'}`, the memory :math:`{\mathit{mem}}` is :ref:`valid <valid-val>` with the memory type :math:`{\mathit{mt}}`.
-
-   * The length of :math:`{{\mathit{table}}^\ast}` is equal to the length of :math:`{{\mathit{tt}}^\ast}`.
 
    * For all :math:`{\mathit{table}}` in :math:`{{\mathit{table}}^\ast}`, and corresponding :math:`{\mathit{tt}}` in :math:`{{\mathit{tt}}^\ast}`:
 
       * Under the context :math:`{C'}`, the table :math:`{\mathit{table}}` is :ref:`valid <valid-val>` with the table type :math:`{\mathit{tt}}`.
 
-   * The length of :math:`{{\mathit{dt}}^\ast}` is equal to the length of :math:`{{\mathit{func}}^\ast}`.
-
    * For all :math:`{\mathit{dt}}` in :math:`{{\mathit{dt}}^\ast}`, and corresponding :math:`{\mathit{func}}` in :math:`{{\mathit{func}}^\ast}`:
 
       * The function :math:`{\mathit{func}}` is :ref:`valid <valid-val>` with the defined type :math:`{\mathit{dt}}`.
 
-   * The length of :math:`{{\mathit{data}}^\ast}` is equal to the length of :math:`{{\mathit{ok}}^\ast}`.
-
    * For all :math:`{\mathit{data}}` in :math:`{{\mathit{data}}^\ast}`, and corresponding :math:`{\mathit{ok}}` in :math:`{{\mathit{ok}}^\ast}`:
 
       * The memory segment :math:`{\mathit{data}}` is :ref:`valid <valid-val>`.
-
-   * The length of :math:`{{\mathit{elem}}^\ast}` is equal to the length of :math:`{{\mathit{rt}}^\ast}`.
 
    * For all :math:`{\mathit{elem}}` in :math:`{{\mathit{elem}}^\ast}`, and corresponding :math:`{\mathit{rt}}` in :math:`{{\mathit{rt}}^\ast}`:
 
@@ -16929,10 +16842,6 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
    * If :math:`{\mathit{start}}` is defined, then:
 
       * The start function :math:`{\mathit{start}}` is :ref:`valid <valid-val>`.
-
-   * The length of :math:`{{\mathit{export}}^\ast}` is equal to the length of :math:`{{\mathit{nm}}^\ast}`.
-
-   * The length of :math:`{{\mathit{export}}^\ast}` is equal to the length of :math:`{{\mathit{xt}}_{\mathsf{e}}^\ast}`.
 
    * For all :math:`{\mathit{export}}` in :math:`{{\mathit{export}}^\ast}`, and corresponding :math:`{\mathit{nm}}` in :math:`{{\mathit{nm}}^\ast}`, and corresponding :math:`{\mathit{xt}}_{\mathsf{e}}` in :math:`{{\mathit{xt}}_{\mathsf{e}}^\ast}`:
 
@@ -26216,8 +26125,6 @@ Subtype_ok
   - |x*| is less than or equal to 1.
   - For all x in x*:
     - the index x is less than x_0.
-  - |comptype'*| is |x*|.
-  - |comptype'*| is |x'**|.
   - For all x in x*:
     - the type C.TYPES[x] exists.
   - For all comptype' in comptype'*, and corresponding x in x*, and corresponding x'* in x'**:
@@ -26248,8 +26155,6 @@ Subtype_ok2
   - |typeuse*| is less than or equal to 1.
   - For all typeuse in typeuse*:
     - $before(typeuse, x, i) is true.
-  - |comptype'*| is |typeuse*|.
-  - |comptype'*| is |typeuse'**|.
   - For all comptype' in comptype'*, and corresponding typeuse in typeuse*, and corresponding typeuse'* in typeuse'**:
     - the sub type $unrollht(C, typeuse) is (SUB ?() typeuse'* comptype').
   - the composite type comptype is valid.
@@ -26299,7 +26204,6 @@ Comptype_sub
 
 Comptype_sub/struct
 - the composite type (STRUCT ft_1* :: ft'_1*) matches the composite type (STRUCT ft_2*) if:
-  - |ft_1*| is |ft_2*|.
   - For all ft_1 in ft_1*, and corresponding ft_2 in ft_2*:
     - the field type ft_1 matches the field type ft_2.
 
@@ -26520,7 +26424,6 @@ Valtype_sub/bot
 
 Resulttype_sub
 - the result type t_1* matches the result type t_2* if:
-  - |t_1*| is |t_2*|.
   - For all t_1 in t_1*, and corresponding t_2 in t_2*:
     - the value type t_1 matches the value type t_2.
 
@@ -26567,7 +26470,6 @@ Instrtype_ok
 - the instruction type t_1* ->_ x* t_2* is valid if:
   - the result type t_1* is valid.
   - the result type t_2* is valid.
-  - |lct*| is |x*|.
   - For all x in x*:
     - the local C.LOCALS[x] exists.
   - For all lct in lct*, and corresponding x in x*:
@@ -26641,7 +26543,6 @@ Instrtype_sub
   - the result type t_21* matches the result type t_11*.
   - the result type t_12* matches the result type t_22*.
   - the local index sequence x* is $setminus_(`localidx, x_2*, x_1*).
-  - |t*| is |x*|.
   - For all x in x*:
     - the local C.LOCALS[x] exists.
   - For all t in t*, and corresponding x in x*:
@@ -27471,8 +27372,6 @@ Instrs_ok/empty
 Instrs_ok/seq
 - the instruction sequence [instr_1] :: instr_2* is valid with the instruction type t_1* ->_ x_1* :: x_2* t_3* if:
   - the instruction instr_1 is valid with the instruction type t_1* ->_ x_1* t_2*.
-  - |init*| is |t*|.
-  - |init*| is |x_1*|.
   - For all x_1 in x_1*:
     - the local C.LOCALS[x_1] exists.
   - For all init in init*, and corresponding t in t*, and corresponding x_1 in x_1*:
@@ -27635,7 +27534,6 @@ Func_ok
 - the function (FUNC x local* expr) is valid with the type C.TYPES[x] if:
   - C.TYPES[x] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (FUNC t_1* -> t_2*).
-  - |lct*| is |local*|.
   - For all lct in lct*, and corresponding local in local*:
     - the local local is valid with the local type lct.
   - Under the context C with .LOCALS appended by (SET t_1)* :: lct* with .LABELS appended by [t_2*] with .RETURN appended by ?(t_2*), the expression expr is valid with the result type t_2*.
@@ -27813,32 +27711,23 @@ Types_ok/cons
 Module_ok
 - the module (MODULE type* import* tag* global* mem* table* func* data* elem* start? export*) is valid with the module type t if:
   - Under the context { RETURN: ?() }, the type definition sequence type* is valid with the defined type sequence dt'*.
-  - |import*| is |xt_I*|.
   - For all import in import*, and corresponding xt_I in xt_I*:
     - Under the context { TYPES: dt'*; RETURN: ?() }, the import import is valid with the external type xt_I.
-  - |jt*| is |tag*|.
   - For all jt in jt*, and corresponding tag in tag*:
     - Under the context C', the tag tag is valid with the tag type jt.
   - Under the context C', the global sequence global* is valid with the global type sequence gt*.
-  - |mem*| is |mt*|.
   - For all mem in mem*, and corresponding mt in mt*:
     - Under the context C', the memory mem is valid with the memory type mt.
-  - |table*| is |tt*|.
   - For all table in table*, and corresponding tt in tt*:
     - Under the context C', the table table is valid with the table type tt.
-  - |dt*| is |func*|.
   - For all dt in dt*, and corresponding func in func*:
     - the function func is valid with the defined type dt.
-  - |data*| is |ok*|.
   - For all data in data*, and corresponding ok in ok*:
     - the memory segment data is valid.
-  - |elem*| is |rt*|.
   - For all elem in elem*, and corresponding rt in rt*:
     - the table segment elem is valid with the element type rt.
   - If start is defined, then:
     - the start function start is valid.
-  - |export*| is |nm*|.
-  - |export*| is |xt_E*|.
   - For all export in export*, and corresponding nm in nm*, and corresponding xt_E in xt_E*:
     - the export export is valid with the name nm and the external type xt_E.
   - $disjoint_(`name, nm*) is true.

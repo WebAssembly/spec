@@ -733,12 +733,24 @@ let rename_param def =
     ) def groups
   | AlgoD _ -> def
 
+let remove_same_len_check def =
+  match def with
+  | RuleD (a, s, sl) ->
+    let ok s =
+      match s with
+      | CmpS ({it = LenE _; _}, `EqOp, {it = LenE _; _}) -> false
+      | _ -> true
+    in
+    RuleD (a, s, List.filter ok sl)
+  | AlgoD _ -> def
+
 let postprocess_prose defs =
   List.map (fun def ->
     def
     |> unify_either
     |> remove_simple_binding
     |> rename_param
+    |> remove_same_len_check
   ) defs
 
 
