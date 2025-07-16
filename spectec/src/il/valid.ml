@@ -544,9 +544,11 @@ and valid_sym env g : typ =
     let ps, t, _ = Env.find_gram env id in
     let s = valid_args env as_ ps Subst.empty g.at in
     Subst.subst_typ s t
-  | NumG n ->
+  | NumG _ ->
+(*
     if n < 0x00 || n > 0xff then
       error g.at "byte value out of range";
+*)
     NumT `NatT $ g.at
   | TextG _ -> TextT $ g.at
   | EpsG -> TupT [] $ g.at

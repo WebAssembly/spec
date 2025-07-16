@@ -59,7 +59,7 @@ grammar Thexmant : rat =
   | p:Thexnum "."? => p
   | p:Thexnum "." q:Thexfrac => $(p + q)
 
-;; TODO(3, rossberg): implement in numerics
+;; TODO(4, rossberg): implement in numerics
 def $ieee_(N, rat) : fN(N)
 
 ;; TODO(4, rossberg): enable using s, e, z as variables
@@ -81,10 +81,11 @@ grammar TfNmag(N) : fNmag(N) =
   | "inf" => INF
   | "nan" => NAN($canon_(N))
   | "nan:0x" n:Thexnum => NAN(n)  -- if $(1 <= n < 2^($signif_(N)))
+;)
 
 grammar TfN(N) : fN(N) =
-  | pm:Tsign q:TfNmag(N) => q  ;; TODO(4, rossberg): $(pm * q)
-;)
+eps => $fzero(N)
+;;  | pm:Tsign q:TfNmag(N) => q  ;; TODO(4, rossberg): $(pm * q)
 
 
 ;; TODO(4, rossberg): allow shorthand as grammar alias?
@@ -104,16 +105,14 @@ grammar Ti128 : u128 = i:TiN(`128) => i
 ;; Strings
 
 grammar Tstringchar : char =
-;; TODO(4, rossberg): enable
-;;  | c:Tchar => c  -- if c >= U+20 /\ c =/= U+7F /\ c =/= "\"" /\ c =/= "\\"
+  | c:Tchar => c  -- if c >= U+20 /\ c =/= U+7F /\ c =/= "\"" /\ c =/= "\\"
   | "\\t" => U+09
   | "\\n" => U+0A
   | "\\r" => U+0D
   | "\\\"" => U+22
   | "\\'" => U+27
   | "\\\\" => U+5C
-;; TODO(4, rossberg): enable U+exp
-;;  | "\\u{" n:Thexnum "}" => U+n  -- if n < 0xD800 \/ 0xE800 <= n < 0x110000
+  | "\\u{" n:Thexnum "}" => n  -- if n < 0xD800 \/ 0xE800 <= n < 0x110000
 
 grammar Tstringelem : byte* =
   | c:Tstringchar => $utf8(c)
@@ -138,9 +137,7 @@ grammar Tname : name =
 
 ;; Identifiers
 
-;; TODO(4, rossberg): allow text tokens to stand for themselves
-(;
-grammar Tidchar : text =
+grammar Tidchar =
   | "0"
   ;; TODO(4, rossberg): ellipses
   | "9"
@@ -152,12 +149,31 @@ grammar Tidchar : text =
   | "z"
   | "!" | "#" | "$" | "%" | "&" | "'" | "*" | "+" | "-" | "." | "/"
   | ":" | "<" | "=" | ">" | "?" | "@" | "\\" | "^" | "_" | "`" | "|" | "~"
-;)
 
 grammar Tid : name =
 ;; TODO(4, rossberg): enable
 ;;  | "$" c*:Tidchar+ => c*
   | "$" c*:Tname => c*    -- if |c*| > 0
+
+
+;; Identifier contexts
+
+syntax idcontext hint(desc "identifier context") hint(macro "%" "I%") =
+  { TYPES (name?)*        hint(desc "type"),
+    TAGS (name?)*         hint(desc "tag"),
+    GLOBALS (name?)*      hint(desc "global"),
+    MEMS (name?)*         hint(desc "memory"),
+    TABLES (name?)*       hint(desc "table"),
+    FUNCS (name?)*        hint(desc "function"),
+    DATAS (name?)*        hint(desc "data segment"),
+    ELEMS (name?)*        hint(desc "element segment"),
+    LOCALS (name?)*       hint(desc "local"),
+    LABELS (name?)*       hint(desc "label"),
+    FIELDS (name?)**      hint(desc "field"),
+    TYPEDEFS subtype*     hint(desc "type definitions")
+  }
+
+syntax I = idcontext
 
 
 ;; Indices

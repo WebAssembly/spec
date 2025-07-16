@@ -2895,7 +2895,7 @@ $$
 
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}}
-& {\mathsf{i}}{N} & ::= & \mathsf{i{\scriptstyle 8}} ~|~ \mathsf{i{\scriptstyle 16}} \\
+& {\mathsf{i}}{N} & ::= & {\mathit{packtype}} \\
 & {\mathsf{i}}{N} & ::= & {\mathsf{i}}{N} ~|~ {\mathsf{i}}{N} \\
 & {\mathsf{i}}{N} & ::= & {\mathsf{i}}{N} ~|~ {\mathsf{f}}{N} ~|~ {\mathsf{i}}{N} \\
 \end{array}
@@ -12306,27 +12306,77 @@ $$
 \end{array}
 $$
 
+\vspace{1ex}
+
 $$
-\begin{array}[t]{@{}lrrl@{}l@{}}
-\mbox{(identifier context)} & {\mathit{idcontext}} & ::= & \{ \begin{array}[t]{@{}l@{}l@{}}
-\mathsf{types}~{({{\mathit{name}}^?})^\ast} \\
-\mathsf{tags}~{({{\mathit{name}}^?})^\ast} \\
-\mathsf{globals}~{({{\mathit{name}}^?})^\ast} \\
-\mathsf{mems}~{({{\mathit{name}}^?})^\ast} \\
-\mathsf{tables}~{({{\mathit{name}}^?})^\ast} \\
-\mathsf{funcs}~{({{\mathit{name}}^?})^\ast} \\
-\mathsf{datas}~{({{\mathit{name}}^?})^\ast} \\
-\mathsf{elems}~{({{\mathit{name}}^?})^\ast} \\
-\mathsf{locals}~{({{\mathit{name}}^?})^\ast} \\
-\mathsf{labels}~{({{\mathit{name}}^?})^\ast} \\
-\mathsf{fields}~{{({{\mathit{name}}^?})^\ast}^\ast} \\
-\mathsf{typedefs}~{{\mathit{subtype}}^\ast} \} \\
-\end{array} \\
-& I & ::= & {\mathit{idcontext}} \\
+\begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
+& {\mathtt{char}} & ::= & \mathrm{U{+}00} ~|~ \ldots ~|~ \mathrm{U{+}D7FF} ~|~ \mathrm{U{+}E000} ~|~ \ldots ~|~ \mathrm{U{+}10FFFF} \\
+& {\mathtt{char}} & ::= & c{:}\mathrm{U{+}00} ~|~ \ldots ~|~ c{:}\mathrm{U{+}D7FF} ~\Rightarrow~ c ~|~ c{:}\mathrm{U{+}E000} ~|~ \ldots ~|~ c{:}\mathrm{U{+}10FFFF} & \quad\Rightarrow\quad{} & c \\
+& {\mathtt{source}} & ::= & {{\mathtt{char}}^\ast} \\
 \end{array}
 $$
 
 \vspace{1ex}
+
+$$
+\begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
+& {\mathtt{uN}} & ::= & \epsilon \\
+& {\mathtt{sN}} & ::= & \epsilon \\
+& {\mathtt{fN}} & ::= & \epsilon \\
+& {\mathtt{token}} & ::= & {\mathtt{keyword}} ~|~ {\mathtt{uN}} ~|~ {\mathtt{sN}} ~|~ {\mathtt{fN}} ~|~ {\mathtt{string}} ~|~ {\mathtt{id}} ~|~ \mbox{`$\mathtt{(}$'} ~|~ \mbox{`$\mathtt{)}$'} ~|~ {\mathtt{reserved}} \\
+& {\mathtt{keyword}} & ::= & (\mbox{`$\mathtt{a}$'} ~|~ \ldots ~|~ \mbox{`$\mathtt{z}$'})~~{{\mathtt{idchar}}^\ast} \\
+& {\mathtt{reserved}} & ::= & {({\mathtt{idchar}} ~|~ {\mathtt{string}} ~|~ \mbox{`$\mathtt{,}$'} ~|~ \mbox{`$\mathtt{;}$'} ~|~ \mbox{`$\mathtt{{[}}$'} ~|~ \mbox{`$\mathtt{{]}}$'} ~|~ \mbox{`$\mathtt{\{}$'} ~|~ \mbox{`$\mathtt{\}}$'})^{+}} \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
+& {\mathtt{space}} & ::= & {(\mbox{`$\mathtt{ }$'} ~|~ {\mathtt{format}} ~|~ {\mathtt{comment}} ~|~ {\mathtt{annot}})^\ast} \\
+& {\mathtt{format}} & ::= & {\mathtt{newline}} ~|~ \mathrm{U{+}09} \\
+& {\mathtt{newline}} & ::= & \mathrm{U{+}0A} ~|~ \mathrm{U{+}0D} ~|~ \mathrm{U{+}0D}~~\mathrm{U{+}0A} \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
+& {\mathtt{comment}} & ::= & {\mathtt{linecomment}} ~|~ {\mathtt{blockcomment}} \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
+& {\mathtt{linecomment}} & ::= & \mbox{`$\mathtt{;;}$'}~~{{\mathtt{linechar}}^\ast}~~({\mathtt{newline}} ~|~ {\mathtt{eof}}) \\
+& {\mathtt{eof}} & ::= & \mbox{`$\mathtt{}$'} \\
+& {\mathtt{linechar}} & ::= & c{:}{\mathtt{char}} & \quad\Rightarrow\quad{} & () & \quad \mbox{if}~ c \neq \mathrm{U{+}0A} \land c \neq \mathrm{U{+}0D} \\
+& {\mathtt{blockcomment}} & ::= & \mbox{`$\mathtt{(;}$'}~~{{\mathtt{blockchar}}^\ast}~~\mbox{`$\mathtt{;)}$'} \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
+& {\mathtt{blockchar}} & ::= & c{:}{\mathtt{char}} & \quad\Rightarrow\quad{} & () & \quad \mbox{if}~ c \neq \mbox{`$\mathtt{;}$'} \land c \neq \mbox{`$\mathtt{(}$'} \\
+& & | & {\mbox{`$\mathtt{;}$'}^{+}}~~c{:}{\mathtt{char}} & \quad\Rightarrow\quad{} & () & \quad \mbox{if}~ c \neq \mbox{`$\mathtt{;}$'} \land c \neq \mbox{`$\mathtt{)}$'} \\
+& & | & {\mbox{`$\mathtt{(}$'}^{+}}~~c{:}{\mathtt{char}} & \quad\Rightarrow\quad{} & () & \quad \mbox{if}~ c \neq \mbox{`$\mathtt{;}$'} \land c \neq \mbox{`$\mathtt{(}$'} \\
+& & | & {\mathtt{blockcomment}} \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
+& {\mathtt{annot}} & ::= & \mbox{`$\mathtt{(@}$'}~~{\mathtt{annotid}}~~{({\mathtt{space}} ~|~ {\mathtt{token}})^\ast}~~\mbox{`$\mathtt{)}$'} \\
+& {\mathtt{annotid}} & ::= & {{\mathtt{idchar}}^{+}} ~|~ {\mathtt{name}} \\
+\end{array}
+$$
 
 \vspace{1ex}
 
@@ -12373,6 +12423,7 @@ $$
 \begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
 & {\mathtt{float}} & ::= & p{:}{\mathtt{mant}}~~(\mbox{`$\mathtt{E}$'} ~|~ \mbox{`$\mathtt{e}$'})~~s{:}{\mathtt{sign}}~~e{:}{\mathtt{num}} & \quad\Rightarrow\quad{} & p \cdot {10^{s \cdot e}} \\
 & {\mathtt{hexfloat}} & ::= & \mbox{`$\mathtt{0x}$'}~~p{:}{\mathtt{hexmant}}~~(\mbox{`$\mathtt{P}$'} ~|~ \mbox{`$\mathtt{p}$'})~~s{:}{\mathtt{sign}}~~e{:}{\mathtt{num}} & \quad\Rightarrow\quad{} & p \cdot {2^{s \cdot e}} \\
+& {\mathtt{fN}}(N) & ::= & \epsilon & \quad\Rightarrow\quad{} & {+0} \\
 \end{array}
 $$
 
@@ -12395,12 +12446,14 @@ $$
 
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
-& {\mathtt{stringchar}} & ::= & \mbox{`$\mathtt{\backslash{}t}$'} & \quad\Rightarrow\quad{} & \mathrm{U{+}09} \\
+& {\mathtt{stringchar}} & ::= & c{:}{\mathtt{char}} & \quad\Rightarrow\quad{} & c & \quad \mbox{if}~ c \geq \mathrm{U{+}20} \land c \neq \mathrm{U{+}7F} \land c \neq \mbox{`$\mathtt{"}$'} \land c \neq \mbox{`$\mathtt{\backslash{}}$'} \\
+& & | & \mbox{`$\mathtt{\backslash{}t}$'} & \quad\Rightarrow\quad{} & \mathrm{U{+}09} \\
 & & | & \mbox{`$\mathtt{\backslash{}n}$'} & \quad\Rightarrow\quad{} & \mathrm{U{+}0A} \\
 & & | & \mbox{`$\mathtt{\backslash{}r}$'} & \quad\Rightarrow\quad{} & \mathrm{U{+}0D} \\
 & & | & \mbox{`$\mathtt{\backslash{}"}$'} & \quad\Rightarrow\quad{} & \mathrm{U{+}22} \\
 & & | & \mbox{`$\mathtt{\backslash{}'}$'} & \quad\Rightarrow\quad{} & \mathrm{U{+}27} \\
 & & | & \mbox{`$\mathtt{\backslash{}\backslash{}}$'} & \quad\Rightarrow\quad{} & \mathrm{U{+}5C} \\
+& & | & \mbox{`$\mathtt{\backslash{}u\{}$'}~~n{:}{\mathtt{hexnum}}~~\mbox{`$\mathtt{\}}$'} & \quad\Rightarrow\quad{} & n & \quad \mbox{if}~ n < \mathtt{0xD800} \lor \mathtt{0xE800} \leq n < \mathtt{0x110000} \\
 & {\mathtt{stringelem}} & ::= & c{:}{\mathtt{stringchar}} & \quad\Rightarrow\quad{} & {\mathrm{utf{\kern-0.1em\scriptstyle 8}}}(c) \\
 & & | & \mbox{`$\mathtt{\backslash{}}$'}~~h_1{:}{\mathtt{hexdigit}}~~h_2{:}{\mathtt{hexdigit}} & \quad\Rightarrow\quad{} & 16 \, h_1 + h_2 \\
 & {\mathtt{string}} & ::= & \mbox{`$\mathtt{"}$'}~~{({b^\ast}{:}{\mathtt{stringelem}})^\ast}~~\mbox{`$\mathtt{"}$'} & \quad\Rightarrow\quad{} & {\bigoplus}\, {{b^\ast}^\ast} & \quad \mbox{if}~ {|{\bigoplus}\, {{b^\ast}^\ast}|} < {2^{32}} \\
@@ -12427,7 +12480,37 @@ $$
 
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
+& {\mathtt{idchar}} & ::= & \mbox{`$\mathtt{0}$'} \\
+& & | & \mbox{`$\mathtt{9}$'} \\
+& & | & \mbox{`$\mathtt{A}$'} \\
+& & | & \mbox{`$\mathtt{Z}$'} \\
+& & | & \mbox{`$\mathtt{a}$'} \\
+& & | & \mbox{`$\mathtt{z}$'} \\
+& & | & \mbox{`$\mathtt{!}$'} ~|~ \mbox{`$\mathtt{\#}$'} ~|~ \mbox{`$\mathtt{\$}$'} ~|~ \mbox{`$\mathtt{\%}$'} ~|~ \mbox{`$\mathtt{\&}$'} ~|~ \mbox{`$\mathtt{'}$'} ~|~ \mbox{`$\mathtt{*}$'} ~|~ \mbox{`$\mathtt{+}$'} ~|~ \mbox{`$\mathtt{-}$'} ~|~ \mbox{`$\mathtt{.}$'} ~|~ \mbox{`$\mathtt{/}$'} \\
+& & | & \mbox{`$\mathtt{:}$'} ~|~ \mbox{`$\mathtt{<}$'} ~|~ \mbox{`$\mathtt{=}$'} ~|~ \mbox{`$\mathtt{>}$'} ~|~ \mbox{`$\mathtt{?}$'} ~|~ \mbox{`$\mathtt{@}$'} ~|~ \mbox{`$\mathtt{\backslash{}}$'} ~|~ \mbox{`$\mathtt{\hat{~~}}$'} ~|~ \mbox{`$\mathtt{\_}$'} ~|~ \mbox{`$\mathtt{\grave{~~}}$'} ~|~ \mbox{`$\mathtt{|}$'} ~|~ \mbox{`$\mathtt{\tilde{~~}}$'} \\
 & {\mathtt{id}} & ::= & \mbox{`$\mathtt{\$}$'}~~{c^\ast}{:}{\mathtt{name}} & \quad\Rightarrow\quad{} & {c^\ast} & \quad \mbox{if}~ {|{c^\ast}|} > 0 \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}[t]{@{}lrrl@{}l@{}}
+\mbox{(identifier context)} & {\mathit{idcontext}} & ::= & \{ \begin{array}[t]{@{}l@{}l@{}}
+\mathsf{types}~{({{\mathit{name}}^?})^\ast} \\
+\mathsf{tags}~{({{\mathit{name}}^?})^\ast} \\
+\mathsf{globals}~{({{\mathit{name}}^?})^\ast} \\
+\mathsf{mems}~{({{\mathit{name}}^?})^\ast} \\
+\mathsf{tables}~{({{\mathit{name}}^?})^\ast} \\
+\mathsf{funcs}~{({{\mathit{name}}^?})^\ast} \\
+\mathsf{datas}~{({{\mathit{name}}^?})^\ast} \\
+\mathsf{elems}~{({{\mathit{name}}^?})^\ast} \\
+\mathsf{locals}~{({{\mathit{name}}^?})^\ast} \\
+\mathsf{labels}~{({{\mathit{name}}^?})^\ast} \\
+\mathsf{fields}~{{({{\mathit{name}}^?})^\ast}^\ast} \\
+\mathsf{typedefs}~{{\mathit{subtype}}^\ast} \} \\
+\end{array} \\
+& I & ::= & {\mathit{idcontext}} \\
 \end{array}
 $$
 

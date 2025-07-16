@@ -444,6 +444,12 @@ let rec expand_iter_notation env t =
   | t' -> t'
 
 
+let as_nat_typ_opt env t : unit option =
+  match expand_notation env t with
+  | NumT `NatT -> Some ()
+  | RangeT _ -> Some ()
+  | _ -> None
+
 let as_num_typ_opt env t : numtyp option =
   match expand_notation env t with
   | NumT nt -> Some nt
@@ -471,6 +477,8 @@ let as_x_typ as_t_opt phrase env dir t at shape =
   | Some x -> Ok x
   | None -> fail_dir_typ env at phrase dir t shape
 
+let as_nat_typ phrase env dir t at =
+  as_x_typ as_nat_typ_opt phrase env dir t at "nat"
 let as_num_typ phrase env dir t at =
   as_x_typ as_num_typ_opt phrase env dir t at "(nat|int|rat|real)"
 let as_iter_typ phrase env dir t at =
@@ -551,6 +559,7 @@ let is_x_typ as_x_typ env t =
   | Ok _ -> true
   | Fail _ -> false
 
+let is_nat_typ = is_x_typ as_nat_typ
 let is_empty_typ = is_x_typ as_empty_typ
 let is_iter_typ = is_x_typ as_iter_typ
 let is_iter_notation_typ = is_x_typ as_iter_notation_typ
@@ -1202,11 +1211,21 @@ and elab_exp_plain env e t : Il.exp attempt =
 
 and elab_exp_plain' env e t : Il.exp' attempt =
   match e.it with
-  | BoolE _ | NumE _ | TextE _ | CvtE _ | UnE _ | BinE _ | CmpE _
+  | BoolE _ | NumE _ | CvtE _ | UnE _ | BinE _ | CmpE _
   | IdxE _ | DotE _ | MemE _ | LenE _ | SizeE _ | CallE _ | TypE _
   | HoleE _ | FuseE _ | UnparenE _ | LatexE _ ->
     let* e', t' = infer_exp env e in
     cast_exp' "expression" env e' t' t
+  | TextE s ->
+    let cs = try Utf8.decode s with Utf8.Utf8 -> [] in
+    (* Allow treatment as character constant *)
+    if List.length cs = 1 && is_nat_typ env t then
+      let e' = Il.NumE (`Nat (Z.of_int (List.hd cs))) $$ e.at %
+        (Il.NumT `NatT $ e.at) in
+      cast_exp' "character" env e' (NumT `NatT $ e.at) t
+    else
+      let* e', t' = infer_exp env e in
+      cast_exp' "expression" env e' t' t
   | VarE (id, _) when id.it = "_" ->
     Ok (Il.VarE id)
   | VarE (id, _) ->
@@ -1810,16 +1829,25 @@ and elab_prem env prem : Il.prem list =
 
 (* Grammars *)
 
-and elab_sym env g : Il.sym * typ * env =
+and infer_sym env g : Il.sym * typ * env =
+  Debug.(log_at "el.infer_sym" g.at
+    (fun _ -> fmt "%s" (el_sym g))
+    (fun (g', t, _) -> fmt "%s : %s" (il_sym g') (el_typ t))
+  ) @@ fun _ ->
   match g.it with
   | VarG (id, as_) ->
     let ps, t, _gram, _prods' = find "grammar" env.grams id in
     let as', s = elab_args `Rhs env as_ ps g.at in
     Il.VarG (id, as') $ g.at, Subst.subst_typ s t, env
   | NumG (`CharOp, n) ->
+(*
     let s = try Utf8.encode [Z.to_int n] with Z.Overflow | Utf8.Utf8 ->
       error g.at "character value out of range" in
     Il.TextG s $ g.at, TextT $ g.at, env
+*)
+    if n < Z.of_int 0x00 || n > Z.of_int 0x10ffff then
+      error g.at "unicode value out of range";
+    Il.NumG (Z.to_int n) $ g.at, NumT `NatT $ g.at, env
   | NumG (_, n) ->
     if n < Z.of_int 0x00 || n > Z.of_int 0xff then
       error g.at "byte value out of range";
@@ -1827,42 +1855,71 @@ and elab_sym env g : Il.sym * typ * env =
   | TextG s -> Il.TextG s $ g.at, TextT $ g.at, env
   | EpsG -> Il.EpsG $ g.at, TupT [] $ g.at, env
   | SeqG gs ->
-    let gs', _ts, env' = elab_sym_list env (filter_nl gs) in
+    let gs', env' = elab_sym_list env (filter_nl gs) (TupT [] $ g.at) in
     Il.SeqG gs' $ g.at, TupT [] $ g.at, env'
   | AltG gs ->
-    let gs', _ts, _env' = elab_sym_list env (filter_nl gs) in
+    let gs', _env' = elab_sym_list env (filter_nl gs) (TupT [] $ g.at) in
     Il.AltG gs' $ g.at, TupT [] $ g.at, env
   | RangeG (g1, g2) ->
-    let g1', t1, env1 = elab_sym env g1 in
-    let g2', t2, env2 = elab_sym env g2 in
+    let g1', env1 = elab_sym env g1 (NumT `NatT $ g1.at) in
+    let g2', env2 = elab_sym env g2 (NumT `NatT $ g2.at) in
     if env1 != env then
       error g1.at "invalid symbol in range";
     if env2 != env then
       error g2.at "invalid symbol in range";
-    if not (equiv_typ env t1 t2) then
-      error_typ2 env g2.at "range item" t2 t1 " of other range item";
-    Il.RangeG (g1', g2') $ g.at, TupT [] $ g.at, env
-  | ParenG g1 -> elab_sym env g1
+    Il.RangeG (g1', g2') $ g.at, NumT `NatT $ g.at, env
+  | ParenG g1 -> infer_sym env g1
   | TupG _ -> error g.at "malformed grammar"
-  | ArithG e -> elab_sym env (sym_of_exp e)
+  | ArithG e -> infer_sym env (sym_of_exp e)
   | IterG (g1, iter) ->
     let iterexp' = elab_iterexp env iter in
-    let g1', t1, env1 = elab_sym env g1 in
+    let g1', t1, env1 = infer_sym env g1 in
     Il.IterG (g1', iterexp') $ g.at,
       IterT (t1, match iter with Opt -> Opt | _ -> List) $ g.at, env1
   | AttrG (e, g1) ->
-    let g1', t1, env1 = elab_sym env g1 in
+    let g1', t1, env1 = infer_sym env g1 in
     let e' = checkpoint (elab_exp env1 e t1) in
     Il.AttrG (e', g1') $ g.at, t1, env
   | FuseG _ -> error g.at "misplaced token concatenation"
   | UnparenG _ -> error g.at "misplaced token unparenthesize"
 
-and elab_sym_list env = function
-  | [] -> [], [], env
+and elab_sym env g t : Il.sym * env =
+  Debug.(log_at "el.elab_sym" g.at
+    (fun _ -> fmt "%s : %s" (el_sym g) (el_typ t))
+    (fun (g', _) -> fmt "%s" (il_sym g'))
+  ) @@ fun _ ->
+  match g.it with
+  | TextG s when is_nat_typ env t ->
+    let cs = try Utf8.decode s with Utf8.Utf8 -> [] in
+    (* Allow treatment as character constant *)
+    if List.length cs = 1 then
+      Il.NumG (List.hd cs) $ g.at, env
+    else
+      let g', t', env' = infer_sym env g in
+      cast_sym env g' t' t, env'
+  | AltG gs ->
+    let gs', _env' = elab_sym_list env (filter_nl gs) t in
+    Il.AltG gs' $ g.at, env
+  | ParenG g1 -> elab_sym env g1 t
+  | _ ->
+    let g', t', env' = infer_sym env g in
+    cast_sym env g' t' t, env'
+
+and elab_sym_list env es t =
+  match es with
+  | [] -> [], env
   | g::gs ->
-    let g', t, env' = elab_sym env g in
-    let gs', ts, env'' = elab_sym_list env' gs in
-    g'::gs', t::ts, env''
+    let g', env' = elab_sym env g t in
+    let gs', env'' = elab_sym_list env' gs t in
+    g'::gs', env''
+
+and cast_sym env g' t1 t2 =
+  if equiv_typ env t1 t2 then
+    g'
+  else if equiv_typ env t2 (TupT [] $ t2.at) then
+    Il.SeqG [g'] $ g'.at
+  else
+    error_typ2 env g'.at "symbol" t1 t2 ""
 
 and elab_prod env prod t : Il.prod list =
   let (g, e, prems) = prod.it in
@@ -1870,7 +1927,7 @@ and elab_prod env prod t : Il.prod list =
   env'.pm <- false;
   let dims = Dim.check_prod (vars env) prod in
   let dims' = Dim.Env.map (List.map (elab_iter env')) dims in
-  let g', _t', env'' = elab_sym env' g in
+  let g', env'' = elab_sym env' g (TupT [] $ g.at) in
   let g' = Dim.annot_sym dims' g' in
   let e' = checkpoint (elab_exp env' e t) in
   let e' = Dim.annot_exp dims' e' in
@@ -2003,9 +2060,9 @@ and elab_arg in_lhs env a p s : Il.arg list * Subst.subst =
   | GramA g, GramP _ when in_lhs = `Lhs ->
     error g.at "misplaced grammar symbol"
   | GramA g, GramP (id', t) ->
-    let g', t', _ = elab_sym env g in
+    let g', t', _ = infer_sym env g in
     let s' = subst_implicit env s t t' in
-    if not (sub_typ env t' (Subst.subst_typ s' t)) then
+    if not (equiv_typ env t' (Subst.subst_typ s' t)) then
       error_typ2 env a.at "argument" t' t "";
     let as' = List.map (fun (_id, t) -> Il.TypA (elab_typ env t) $ t.at) Subst.(Map.bindings s'.typid) in
     as' @ [Il.GramA g' $ a.at], Subst.add_gramid s' id' g

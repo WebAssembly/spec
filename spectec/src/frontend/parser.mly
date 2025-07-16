@@ -747,8 +747,10 @@ sym_seq : sym_seq_ { $1 $ $sloc }
 sym_seq_ :
   | sym_attr_ { $1 }
   | sym_seq sym_attr { SeqG (as_seq_sym $1 @ [Elem $2]) }
+(*
   | sym_seq NL_NL sym_attr { SeqG (as_seq_sym $1 @ [Nl; Elem $3]) }
   | sym_seq NL_NL_NL sym_attr { SeqG (as_seq_sym $1 @ [Nl; Elem $3]) }
+*)
 
 sym_alt : sym_alt_ { $1 $ $sloc }
 sym_alt_ :
@@ -765,6 +767,55 @@ prod_ :
 
 gram :
   | dots_list(prod) { $1 $ $sloc }
+
+
+(*
+prod_short : prod_short_ { $1 $ $sloc }
+prod_short_ :
+  | sym_seq DASH prem prem_list { ($1, TupE [] $ $loc($1), Elem $2::$3) }
+  | sym_seq { ($1, TupE [] $ $loc($1), []) }
+
+gram_short :
+  | dots_list(prod_short) { $1 $ $sloc }
+*)
+
+
+gram_short :
+  | gram_short1
+    { let x, y, z = $1 in
+      let y' = El.Convert.map_nl_list (fun (a, b) ->
+        Source.((a, TupE [] $ a.at, b) $
+          over_region (a.at :: El.Convert.map_filter_nl_list at b))) y in
+      (x, y', z) $ $sloc
+    }
+
+gram_short1 :
+  (* Inline and transform dots_list to avoid conflicts *)
+  | gram_short2 { let x, y = $1 in (NoDots, x, y) }
+  | bar gram_short2 { let x, y = $2 in (NoDots, x, y) }
+  | dots BAR gram_short2 { let x, y = $3 in (Dots, x, y) }
+  | dots NL_BAR gram_short2 { let x, y = $3 in (Dots, Nl::x, y) }
+
+gram_short2 :
+  | sym_seq { [Elem ($1, [])], NoDots }
+  | sym_seq BAR range_or_prod_gram_short { $3 $1 [] }
+  | sym_seq NL_BAR range_or_prod_gram_short { $3 $1 [Nl] }
+  | prod_gram_short { $1 }
+
+prod_gram_short :
+  | (* empty *) { [], NoDots }
+  | DOTDOTDOT { [], Dots }
+  | sym_seq DASH prem prem_list { [Elem ($1, (Elem $3)::$4)], NoDots }
+  | sym_seq DASH prem prem_list BAR gram_short2
+    { let x, y = $6 in (Elem ($1, (Elem $3)::$4))::x, y }
+  | sym_seq DASH prem prem_list NL_BAR gram_short2
+    { let x, y = $6 in (Elem ($1, (Elem $3)::$4))::Nl::x, y }
+
+range_or_prod_gram_short :
+  | DOTDOTDOT bar sym_seq { fun x _ -> [Elem (RangeG (x, $3) $ $sloc, [])], NoDots }
+  | DOTDOTDOT bar sym_seq BAR gram_short2 { fun x _ -> let y, z = $5 in (Elem (RangeG (x, $3) $ $sloc, []))::y, z }
+  | DOTDOTDOT bar sym_seq NL_BAR gram_short2 { fun x _ -> let y, z = $5 in (Elem (RangeG (x, $3) $ $sloc, []))::Nl::y, z }
+  | gram_short2 { fun x y -> let a, b = $1 in (Elem (x, []))::y@a, b }
 
 
 (* Definitions *)
@@ -808,9 +859,15 @@ def_ :
   | GRAMMAR varid_bind ruleid_list COLON typ hint* EQ gram
     { let id = if $3 = "" then "" else String.sub $3 1 (String.length $3 - 1) in
       GramD ($2, id $ $loc($3), [], $5, $8, $6) }
+  | GRAMMAR varid_bind ruleid_list hint* EQ gram_short
+    { let id = if $3 = "" then "" else String.sub $3 1 (String.length $3 - 1) in
+      GramD ($2, id $ $loc($3), [], TupT [] $ $loc($1), $6, $4) }
   | GRAMMAR varid_bind_lparen enter_scope comma_list(param) RPAREN ruleid_list COLON typ hint* EQ gram exit_scope
     { let id = if $6 = "" then "" else String.sub $6 1 (String.length $6 - 1) in
       GramD ($2, id $ $loc($6), $4, $8, $11, $9) }
+  | GRAMMAR varid_bind_lparen enter_scope comma_list(param) RPAREN ruleid_list hint* EQ gram_short exit_scope
+    { let id = if $6 = "" then "" else String.sub $6 1 (String.length $6 - 1) in
+      GramD ($2, id $ $loc($6), $4, TupT [] $ $loc($1), $9, $7) }
   | RELATION relid COLON nottyp hint*
     { RelD ($2, $4, $5) }
   | RULE relid ruleid_list COLON exp prem_list
