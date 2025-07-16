@@ -370,7 +370,7 @@ INSTRUCTIONS = [
     Instruction(r'\I64.\TRUNC\K{\_sat\_}\F64\K{\_u}', r'\hex{FC}~\hex{07}', r'[\F64] \to [\I64]', r'valid-cvtop', r'exec-cvtop', r'op-trunc_sat_u'),
     Instruction(r'\MEMORYINIT~x~y', r'\hex{FC}~\hex{08}', r'[\X{at}~\I32~\I32] \to []', r'valid-memory.init', r'exec-memory.init'),
     Instruction(r'\DATADROP~x', r'\hex{FC}~\hex{09}', r'[] \to []', r'valid-data.drop', r'exec-data.drop'),
-    Instruction(r'\MEMORYCOPY~x~y', r'\hex{FC}~\hex{0A}', r'[\X{at}_x~\X{at}_y~\addrtypemin(\X{at}_x, \X{at}_y)] \to []', r'valid-memory.copy', r'exec-memory.copy'),
+    Instruction(r'\MEMORYCOPY~x~y', r'\hex{FC}~\hex{0A}', r'[\X{at}_1~\X{at}_2~\addrtypemin(\X{at}_x, \X{at}_y)] \to []', r'valid-memory.copy', r'exec-memory.copy'),
     Instruction(r'\MEMORYFILL~y', r'\hex{FC}~\hex{0B}', r'[\X{at}~\I32~\X{at}] \to []', r'valid-memory.fill', r'exec-memory.fill'),
     Instruction(r'\TABLEINIT~x~y', r'\hex{FC}~\hex{0C}', r'[\X{at}~\I32~\I32] \to []', r'valid-table.init', r'exec-table.init'),
     Instruction(r'\ELEMDROP~x', r'\hex{FC}~\hex{0D}', r'[] \to []', r'valid-elem.drop', r'exec-elem.drop'),
