@@ -939,6 +939,10 @@ let rec render_single_stmt ?(with_type=true) env stmt  =
       sprintf "%s %s defaultable"
         (render_hd_expr env e)
         (render_prose_cmpop_eps cmpop)
+    | IsConcatS (e1, e2) ->
+      sprintf "%s is the concatenation of all such %s"
+        (render_expr env e1)
+        (render_expr env e2)
     | ContextS (e1, e2) -> render_context env e1 e2
     | RelS (s, es) ->
       let args = List.map (render_expr_with_type env) es in

@@ -1,8 +1,75 @@
+open Util.Source
 open Al.Ast
 open Al.Free
+let (++) = IdSet.union
 open Prose
 open Eq
 open Il2al.Il2al_util
+
+(** Helpers **)
+
+(* Apply (f: stmt list -> stmt list) recursively *)
+let lift f sl =
+  List.map (function
+    | IfS (e, ss) -> IfS (e, f ss)
+    | ForallS (ees, ss) -> ForallS (ees, f ss)
+    | EitherS (sss) -> EitherS (List.map f sss)
+    | s -> s
+  ) (f sl)
+
+(* Family of walkers *)
+let walk_stmt_acc_lift (f: 'a -> stmt -> ('a * stmt list)) (init: 'a) (ss: stmt list) : stmt list =
+  let rec aux init ss =
+    List.fold_left_map (fun acc s ->
+      let s' =
+        match s with
+        | ForallS (ees, ss) -> ForallS (ees, aux acc ss)
+        | IfS (e, ss) -> IfS (e, aux acc ss)
+        | EitherS (sss) -> EitherS (List.map (aux acc) sss)
+        | _ -> s
+      in
+
+      f acc s'
+    ) init ss |> snd |> List.concat
+  in
+  aux init ss
+
+let walk_stmt_acc (f: 'a -> stmt -> ('a *stmt)) =
+  let f' acc s = let (acc', s') = f acc s in (acc', [s']) in
+  walk_stmt_acc_lift f'
+
+let walk_stmt_lift (f: stmt -> stmt list) =
+  let f' _ s = ((), f s) in
+  walk_stmt_acc_lift f' ()
+
+let walk_stmt (f: stmt -> stmt) =
+  let f' _ s = ((), f s) in
+  walk_stmt_acc f' ()
+
+let reversify walk sl = List.rev (walk (List.rev sl))
+
+let reverse_walk_stmt_acc_lift f acc = reversify (walk_stmt_acc_lift f acc)
+let reverse_walk_stmt_acc f acc      = reversify (walk_stmt_acc f acc)
+let reverse_walk_stmt_lift f         = reversify (walk_stmt_lift f)
+let reverse_walk_stmt f              = reversify (walk_stmt f)
+
+let fold_stmt f ss =
+  let rec aux ss =
+    List.fold_left (fun acc s ->
+      let s' =
+        match s with
+        | ForallS (ees, ss) -> ForallS (ees, aux ss)
+        | IfS (e, ss) -> IfS (e, aux ss)
+        | EitherS (sss) -> EitherS (List.map aux sss)
+        | _ -> s
+      in
+
+      f acc s'
+    ) [] ss
+  in
+  aux ss
+
+(** End of Helpers **)
 
 let unify_either def =
   let f stmt =
@@ -36,7 +103,6 @@ let unify_either def =
   | AlgoD _ -> def
 
 let rec free_stmt stmt =
-  let (++) = IdSet.union in
   match stmt with
   | LetS (e1, e2) -> free_expr e1 ++ free_expr e2
   | CondS e -> free_expr e
@@ -54,6 +120,7 @@ let rec free_stmt stmt =
   | ForallS (pairs, sl) ->
       let pair_exprs = List.flatten (List.map (fun (e1, e2) -> [e1; e2]) pairs) in
       free_list free_expr pair_exprs ++ free_list free_stmt sl
+  | IsConcatS (e1, e2) -> free_expr e1 ++ free_expr e2
   | EitherS sll -> free_list (free_list free_stmt) sll
   | BinS (s1, _, s2) -> free_stmt s1 ++ free_stmt s2
   | ContextS (e1, e2) -> free_expr e1 ++ free_expr e2
@@ -76,6 +143,7 @@ let rec replace_name_stmt x1 x2 stmt =
   | ForallS (pairs, sl) ->
       let pairs' = List.map (fun (e1, e2) -> (re e1, re e2)) pairs in
       ForallS (pairs', List.map rs sl)
+  | IsConcatS (e1, e2) -> IsConcatS (re e1, re e2)
   | EitherS sll -> EitherS (List.map (List.map rs) sll)
   | BinS (s1, op, s2) -> BinS (rs s1, op, rs s2)
   | ContextS (e1, e2) -> ContextS (re e1, re e2)
@@ -182,10 +250,57 @@ let remove_same_len_check def =
   | RuleD (a, s, sl) ->
     let ok s =
       match s with
-      | CmpS ({it = LenE _; _}, `EqOp, {it = LenE _; _}) -> false
-      | _ -> true
+      | CmpS ({it = LenE _; _}, `EqOp, {it = LenE _; _}) -> []
+      | _ -> [s]
     in
-    RuleD (a, s, List.filter ok sl)
+
+    RuleD (a, s, walk_stmt_lift ok sl)
+  | AlgoD _ -> def
+
+let restructure_forall def =
+  match def with
+  | RuleD (a, s, sl) ->
+    let frees = free_stmt s in
+
+    (* 1. Factor-out output vars *)
+    let sl1 = walk_stmt_acc_lift (fun frees s ->
+      frees ++ (free_stmt s),
+      match s with
+      | ForallS (ees, ss) when List.length ees > 1 ->
+        let is_known_iter e =
+          match e.it with
+          | IterE (_, (_, [_, {it = VarE x; _}])) -> IdSet.mem x frees
+          | _ -> false
+        in
+        let knowns, unknowns = List.partition (fun (_, e) -> is_known_iter e) ees in
+        ForallS (knowns, ss) :: List.map (fun (e1, e2) -> IsConcatS (e2, e1)) unknowns
+      | _ -> [s]
+    ) frees sl in
+
+    (* 2. Merge foralls with same iters *)
+    let rec eq_ees ees1 ees2 =
+      match ees1, ees2 with
+      | [], [] -> true
+      | (e1, e1') :: ees1, (e2, e2') :: ees2 -> Al.Eq.eq_expr e1 e2 && Al.Eq.eq_expr e1' e2' && eq_ees ees1 ees2
+      | _ -> false
+    in
+    let sl2 = fold_stmt (fun acc s ->
+      match (List.rev acc), s with
+      | ForallS (ees1, ss1) :: tl, ForallS (ees2, ss2) when eq_ees ees1 ees2 ->
+        List.rev (ForallS (ees1, ss1 @ ss2) :: tl)
+      | _ ->
+        acc @ [s]
+    ) sl1
+    in
+
+    (* 3. Remove unnecessary concats *)
+    let sl3 = reverse_walk_stmt_acc_lift (fun frees s ->
+      match s with
+      | IsConcatS ({it = IterE (_, (_, [_, {it = VarE x; _}])); _}, _) when not (IdSet.mem x frees) -> frees, []
+      | _ -> frees ++ (free_stmt s), [s]
+    ) frees sl2 in
+
+    RuleD (a, s, sl3)
   | AlgoD _ -> def
 
 let postprocess_prose defs =
@@ -195,4 +310,5 @@ let postprocess_prose defs =
     |> remove_simple_binding
     |> rename_param
     |> remove_same_len_check
+    |> restructure_forall
   ) defs

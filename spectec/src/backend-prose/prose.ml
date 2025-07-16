@@ -17,6 +17,7 @@ type stmt =
 | IsDefaultableS of expr * cmpop
 | IfS of expr * stmt list
 | ForallS of (expr * expr) list * stmt list
+| IsConcatS of expr * expr
 | EitherS of stmt list list
 | BinS of stmt * binop * stmt
 | ContextS of expr * expr

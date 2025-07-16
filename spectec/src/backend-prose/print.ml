@@ -427,6 +427,10 @@ let rec raw_string_of_single_stmt stmt =
     sprintf "%s %s defaultable"
       (string_of_expr_with_type e)
       (string_of_cmpop cmpop)
+  | IsConcatS (e1, e2) ->
+    sprintf "%s is the concatenation of all such %s"
+      (string_of_expr_with_type e1)
+      (string_of_expr e2)
   | ContextS (e1, e2) ->
     sprintf "%s is the context %s"
       (string_of_expr_with_type e1)
@@ -435,7 +439,7 @@ let rec raw_string_of_single_stmt stmt =
     let args = List.map string_of_expr_with_type es in
     Prose_util.apply_prose_hint s args
   | YetS s -> indent () ^ " Yet: " ^ s
-  | _ -> assert false
+  | IfS _ | ForallS _ | EitherS _ | BinS _ -> assert false
 
 
 and raw_string_of_stmt stmt =
