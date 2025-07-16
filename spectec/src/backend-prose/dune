@@ -11,5 +11,6 @@
     macro
     langs
     eq
-    prose_util)
+    prose_util
+    postprocess)
 )
