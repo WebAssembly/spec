@@ -999,7 +999,7 @@ When the end of a block is reached without a jump, :ref:`exception <exception>`,
 
 4. Push :math:`\val^\ast` back to the stack.
 
-5. Jump to the position after the |END| of the :ref:`structured control instruction <syntax-instr-control>` associated with the label :math:`L`.
+5. Jump to the position after the end of the :ref:`structured control instruction <syntax-instr-control>` associated with the label :math:`L`.
 
 $${rule: Step_pure/label-vals}
 
@@ -1053,7 +1053,7 @@ When the end of a ${:TRY_TABLE} block is reached without a jump, :ref:`exception
 
 6. Push :math:`\val^m` back to the stack.
 
-7. Jump to the position after the |END| of the administrative instruction associated with the handler :math:`H`.
+7. Jump to the position after the end of the administrative instruction associated with the handler :math:`H`.
 
 $${rule: Step_pure/handler-vals}
 

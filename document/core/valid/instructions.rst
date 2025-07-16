@@ -1062,8 +1062,8 @@ Control Instructions
 
 .. _valid-block:
 
-:math:`\BLOCK~\blocktype~\instr^\ast~\END`
-..........................................
+:math:`\BLOCK~\blocktype~\instr^\ast`
+.....................................
 
 $${rule-prose: Instr_ok/block}
 
@@ -1076,8 +1076,8 @@ $${rule: Instr_ok/block}
 
 .. _valid-loop:
 
-:math:`\LOOP~\blocktype~\instr^\ast~\END`
-.........................................
+:math:`\LOOP~\blocktype~\instr^\ast`
+....................................
 
 $${rule-prose: Instr_ok/loop}
 
@@ -1086,8 +1086,8 @@ $${rule: Instr_ok/loop}
 
 .. _valid-if:
 
-:math:`\IF~\blocktype~\instr_1^\ast~\ELSE~\instr_2^\ast~\END`
-.............................................................
+:math:`\IF~\blocktype~\instr_1^\ast~\ELSE~\instr_2^\ast`
+........................................................
 
 $${rule-prose: Instr_ok/if}
 
@@ -1097,8 +1097,8 @@ $${rule: Instr_ok/if}
 
 .. _valid-try_table:
 
-:math:`\TRYTABLE~\blocktype~\catch^\ast~\instr^\ast~\END`
-.........................................................
+:math:`\TRYTABLE~\blocktype~\catch^\ast~\instr^\ast`
+....................................................
 
 $${rule-prose: Instr_ok/try_table}
 

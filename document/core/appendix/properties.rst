@@ -1110,8 +1110,8 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
 
 .. index:: label, instruction, result type
 
-:math:`\LABEL_n\{\instr_0^\ast\}~\instr^\ast~\END`
-..................................................
+:math:`\LABEL_n\{\instr_0^\ast\}~\instr^\ast`
+.............................................
 
 * The instruction sequence :math:`\instr_0^\ast` must be :ref:`valid <valid-instrs>` with some type :math:`[t_1^n] \to_{x^\ast} [t_2^*]`.
 
@@ -1128,14 +1128,14 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
      \qquad
      S; C,\CLABELS\,[t_1^n] \vdashinstrs \instr^\ast : [] \to_{{x'}^\ast} [t_2^*]
    }{
-     S; C \vdashadmininstr \LABEL_n\{\instr_0^\ast\}~\instr^\ast~\END : [] \to [t_2^*]
+     S; C \vdashadmininstr \LABEL_n\{\instr_0^\ast\}~\instr^\ast : [] \to [t_2^*]
    }
 
 
 .. index:: frame, instruction, result type
 
-:math:`\FRAME_n\{F\}~\instr^\ast~\END`
-......................................
+:math:`\FRAME_n\{F\}~\instr^\ast`
+.................................
 
 * Under the :ref:`valid <valid-resulttype>` return type :math:`[t^n]`,
   the :ref:`thread <syntax-frame>` :math:`F; \instr^\ast` must be :ref:`valid <valid-frame>` with :ref:`result type <syntax-resulttype>` :math:`[t^n]`.
@@ -1148,14 +1148,14 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
      \qquad
      S; [t^n] \vdashinstrs F; \instr^\ast : [t^n]
    }{
-     S; C \vdashadmininstr \FRAME_n\{F\}~\instr^\ast~\END : [] \to [t^n]
+     S; C \vdashadmininstr \FRAME_n\{F\}~\instr^\ast : [] \to [t^n]
    }
 
 
 .. index:: handler, throw context
 
-:math:`\HANDLER_n\{\catch^\ast\}~\instr^\ast~\END`
-..................................................
+:math:`\HANDLER_n\{\catch^\ast\}~\instr^\ast`
+.............................................
 
 * For every :ref:`catch clause <syntax-catch>` :math:`\catch_i` in :math:`\catch^\ast`, :math:`\catch_i` must be :ref:`valid <valid-catch>`.
 
@@ -1171,7 +1171,7 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
      S; C \vdashinstrs \instr^\ast : [t_1^\ast] \to [t_2^\ast] \\
      \end{array}
    }{
-     S; C \vdashadmininstr \HANDLER_n\{\catch^\ast\}~\instr^\ast~\END : [t_1^\ast] \to [t_2^\ast]
+     S; C \vdashadmininstr \HANDLER_n\{\catch^\ast\}~\instr^\ast : [t_1^\ast] \to [t_2^\ast]
    }
 
 
