@@ -20,7 +20,7 @@ EXE = exe-$(NAME)/main.exe
 SRCDIR = src
 OUTDIR = _build/default/src
 ROOTDIR = ..
-REFINTERPDIR = $(ROOTDIR)/interpreter
+INTERPRETERDIR = $(ROOTDIR)/interpreter
 CLONEDIR = src/backend-interpreter/reference-interpreter
 CLONERM = dune-project jslib
 
@@ -31,9 +31,9 @@ exe: $(CLONEDIR)
 	dune build $(SRCDIR)/$(EXE)
 	ln -f $(OUTDIR)/$(EXE) ./$(NAME)
 
-$(CLONEDIR): $(shell find $(REFINTERPDIR) -type f)
+$(CLONEDIR): $(shell find $(INTERPRETERDIR) -type f)
 	rm -rf $(CLONEDIR)
-	cp -R $(REFINTERPDIR) $(CLONEDIR)
+	cp -R $(INTERPRETERDIR) $(CLONEDIR)
 	rm -r $(CLONERM:%=$@/%)
 	cp $@/../dune-ref-interp $@/dune
 
@@ -72,7 +72,17 @@ doc/example: exe
 	@(cd $@ && make out clean >$(LOG) 2>&1 && rm -f $(LOG))
 
 
-# Spec
+# Specification (copy to local workspace to make dune deps for tests happy)
+
+SPECIFICATIONDIR = $(ROOTDIR)/specification
+SPECCLONEDIR = _specification
+
+$(SPECCLONEDIR): $(shell find $(SPECIFICATIONDIR) -type f)
+	rm -rf $(SPECCLONEDIR)
+	cp -R $(SPECIFICATIONDIR) $(SPECCLONEDIR)
+
+
+# Spec document
 
 .PHONY: spec spec-pdf
 

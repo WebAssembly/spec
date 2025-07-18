@@ -135,20 +135,20 @@ rule Step/global.set:
 
 def $float(nat, nat*) : const
 
-grammar Bbyte : nat = b:0x00 | ... | b:0xFF => b
+grammar Bbyte : nat = 0x00 | ... | 0xFF
 
 grammar Bu(N : nat) : nat =
   | n:Bbyte              => n                       -- if $(n < 2^7 /\ n < 2^N)
   | n:Bbyte m:Bu($(N-7)) => $(2^7 * m + (n - 2^7))  -- if $(n >= 2^7 /\ N > 7)
 
-grammar Bu32 : const = n:Bu(32) => n
-grammar Bu64 : const = n:Bu(64) => n
+grammar Bu32 : const = Bu(32)
+grammar Bu64 : const = Bu(64)
 
 grammar Bf(N : nat) : nat =
   | b*:Bbyte^(N/8) => $float(N, b*)
 
-grammar Bf32 : const = p:Bf(32) => p
-grammar Bf64 : const = p:Bf(64) => p
+grammar Bf32 : const = Bf(32)
+grammar Bf64 : const = Bf(64)
 
 
 grammar Bvaltype : valtype =

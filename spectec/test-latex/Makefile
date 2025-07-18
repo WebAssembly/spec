@@ -7,6 +7,7 @@ LOG = _log
 
 OWNDIR = $(PWD)
 SPECDIR = ../../specification
+SPECCLONE = ../_specification
 SPECS = $(shell cd $(SPECDIR) && ls -d wasm-*)
 SPECFILES = $(shell ls $(SPECS:%=$(SPECDIR)/%/*.$(EXT)))
 TESTFILES = $(shell ls *.$(EXT))
@@ -39,8 +40,8 @@ gen: $(SPECS:%=$(GENINNAME)-%.tex)
 
 test-gen: $(SPECS:%=$(GENOUTNAME)-%.pdf) test-test
 
-$(GENINNAME)-%.tex: $(SPECFILES) $(EXE)
-	(cd $(SPECDIR)/$* && $(EXE) -l --latex *.$(EXT) -o $(OWNDIR)/$@)
+$(GENINNAME)-%.tex: $(SPECCLONE) $(EXE)
+	(cd $(SPECCLONE)/$* && $(EXE) -l --latex *.$(EXT) -o $(OWNDIR)/$@)
 
 $(GENOUTNAME)-%.tex: $(GENOUTNAME).tex
 	ln -f $< $@
@@ -68,6 +69,12 @@ $(EXE): exe
 
 exe:
 	@(cd ..; make exe)
+
+
+# Specification
+
+$(SPECCLONE): $(SPECFILES)
+	@(cd ..; make _specification)
 
 
 # Cleanup

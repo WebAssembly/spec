@@ -7,8 +7,9 @@ LOG = _log
 
 OWNDIR = $(PWD)
 SPECDIR = ../../specification/wasm-3.0
-SPECS = $(shell ls $(SPECDIR)/*.$(EXT))
-TESTS = $(SPECS:%=test-%)
+SPECCLONE = ../_specification/wasm-3.0
+SPECFILES = $(shell ls $(SPECDIR)/*.$(EXT))
+TESTS = $(SPECFILES:%=test-%)
 
 
 # Main targets
@@ -51,8 +52,8 @@ setup: document
 
 .PHONY: splice
 
-splice: setup
-	cd $(SPHINXDIR) && $(EXE) -l ../$(SPECDIR)/*.$(EXT) --sideconditions --splice-sphinx -o $(SPLICEOUTPUT) -p $(SPLICEINPUT)
+splice: setup $(SPECCLONE)
+	cd $(SPHINXDIR) && $(EXE) -l ../$(SPECCLONE)/*.$(EXT) --sideconditions --splice-sphinx -o $(SPLICEOUTPUT) -p $(SPLICEINPUT)
 	rm -f $(INPUTFILES)
 	cd ..
 
@@ -82,6 +83,12 @@ $(EXE): exe
 
 exe:
 	@(cd ..; make exe)
+
+
+# Specification
+
+$(SPECCLONE): $(SPECFILES)
+	@(cd ..; make _specification)
 
 
 # Cleanup

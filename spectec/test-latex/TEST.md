@@ -11242,7 +11242,7 @@ $$
 
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
-& {\mathtt{byte}} & ::= & b{:}\mathtt{0x00} ~|~ \ldots ~|~ b{:}\mathtt{0xFF} & \quad\Rightarrow\quad{} & b \\
+& {\mathtt{byte}} & ::= & \mathtt{0x00} ~|~ \ldots ~|~ \mathtt{0xFF} \\
 & {{\mathtt{u}}}{N} & ::= & n{:}{\mathtt{byte}} & \quad\Rightarrow\quad{} & n & \quad \mbox{if}~ n < {2^{7}} \land n < {2^{N}} \\
 & & | & n{:}{\mathtt{byte}}~~m{:}{{\mathtt{u}}}{(N - 7)} & \quad\Rightarrow\quad{} & {2^{7}} \cdot m + (n - {2^{7}}) & \quad \mbox{if}~ n \geq {2^{7}} \land N > 7 \\
 & {{\mathtt{s}}}{N} & ::= & n{:}{\mathtt{byte}} & \quad\Rightarrow\quad{} & n & \quad \mbox{if}~ n < {2^{6}} \land n < {2^{N - 1}} \\
@@ -12311,7 +12311,6 @@ $$
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
 & {\mathtt{char}} & ::= & \mathrm{U{+}00} ~|~ \ldots ~|~ \mathrm{U{+}D7FF} ~|~ \mathrm{U{+}E000} ~|~ \ldots ~|~ \mathrm{U{+}10FFFF} \\
-& {\mathtt{char}} & ::= & c{:}\mathrm{U{+}00} ~|~ \ldots ~|~ c{:}\mathrm{U{+}D7FF} ~\Rightarrow~ c ~|~ c{:}\mathrm{U{+}E000} ~|~ \ldots ~|~ c{:}\mathrm{U{+}10FFFF} & \quad\Rightarrow\quad{} & c \\
 & {\mathtt{source}} & ::= & {{\mathtt{char}}^\ast} \\
 \end{array}
 $$
@@ -12353,7 +12352,7 @@ $$
 \begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
 & {\mathtt{linecomment}} & ::= & \mbox{`$\mathtt{;;}$'}~~{{\mathtt{linechar}}^\ast}~~({\mathtt{newline}} ~|~ {\mathtt{eof}}) \\
 & {\mathtt{eof}} & ::= & \mbox{`$\mathtt{}$'} \\
-& {\mathtt{linechar}} & ::= & c{:}{\mathtt{char}} & \quad\Rightarrow\quad{} & () & \quad \mbox{if}~ c \neq \mathrm{U{+}0A} \land c \neq \mathrm{U{+}0D} \\
+& {\mathtt{linechar}} & ::= & c{:}{\mathtt{char}} & \quad \mbox{if}~ c \neq \mathrm{U{+}0A} \land c \neq \mathrm{U{+}0D} \\
 & {\mathtt{blockcomment}} & ::= & \mbox{`$\mathtt{(;}$'}~~{{\mathtt{blockchar}}^\ast}~~\mbox{`$\mathtt{;)}$'} \\
 \end{array}
 $$
@@ -12362,9 +12361,9 @@ $$
 
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
-& {\mathtt{blockchar}} & ::= & c{:}{\mathtt{char}} & \quad\Rightarrow\quad{} & () & \quad \mbox{if}~ c \neq \mbox{`$\mathtt{;}$'} \land c \neq \mbox{`$\mathtt{(}$'} \\
-& & | & {\mbox{`$\mathtt{;}$'}^{+}}~~c{:}{\mathtt{char}} & \quad\Rightarrow\quad{} & () & \quad \mbox{if}~ c \neq \mbox{`$\mathtt{;}$'} \land c \neq \mbox{`$\mathtt{)}$'} \\
-& & | & {\mbox{`$\mathtt{(}$'}^{+}}~~c{:}{\mathtt{char}} & \quad\Rightarrow\quad{} & () & \quad \mbox{if}~ c \neq \mbox{`$\mathtt{;}$'} \land c \neq \mbox{`$\mathtt{(}$'} \\
+& {\mathtt{blockchar}} & ::= & c{:}{\mathtt{char}} & \quad \mbox{if}~ c \neq \mbox{`$\mathtt{;}$'} \land c \neq \mbox{`$\mathtt{(}$'} \\
+& & | & {\mbox{`$\mathtt{;}$'}^{+}}~~c{:}{\mathtt{char}} & \quad \mbox{if}~ c \neq \mbox{`$\mathtt{;}$'} \land c \neq \mbox{`$\mathtt{)}$'} \\
+& & | & {\mbox{`$\mathtt{(}$'}^{+}}~~c{:}{\mathtt{char}} & \quad \mbox{if}~ c \neq \mbox{`$\mathtt{;}$'} \land c \neq \mbox{`$\mathtt{(}$'} \\
 & & | & {\mathtt{blockcomment}} \\
 \end{array}
 $$
@@ -12431,14 +12430,14 @@ $$
 
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
-& {\mathtt{u8}} & ::= & n{:}{\mathtt{uN}}(\mathsf{{\scriptstyle 8}}) & \quad\Rightarrow\quad{} & n \\
-& {\mathtt{u32}} & ::= & n{:}{\mathtt{uN}}(\mathsf{{\scriptstyle 32}}) & \quad\Rightarrow\quad{} & n \\
-& {\mathtt{u64}} & ::= & n{:}{\mathtt{uN}}(\mathsf{{\scriptstyle 64}}) & \quad\Rightarrow\quad{} & n \\
-& {\mathtt{i8}} & ::= & i{:}{\mathtt{iN}}(\mathsf{{\scriptstyle 8}}) & \quad\Rightarrow\quad{} & i \\
-& {\mathtt{i16}} & ::= & i{:}{\mathtt{iN}}(\mathsf{{\scriptstyle 16}}) & \quad\Rightarrow\quad{} & i \\
-& {\mathtt{i32}} & ::= & i{:}{\mathtt{iN}}(\mathsf{{\scriptstyle 32}}) & \quad\Rightarrow\quad{} & i \\
-& {\mathtt{i64}} & ::= & i{:}{\mathtt{iN}}(\mathsf{{\scriptstyle 64}}) & \quad\Rightarrow\quad{} & i \\
-& {\mathtt{i128}} & ::= & i{:}{\mathtt{iN}}(\mathsf{{\scriptstyle 128}}) & \quad\Rightarrow\quad{} & i \\
+& {\mathtt{u8}} & ::= & {\mathtt{uN}}(\mathsf{{\scriptstyle 8}}) \\
+& {\mathtt{u32}} & ::= & {\mathtt{uN}}(\mathsf{{\scriptstyle 32}}) \\
+& {\mathtt{u64}} & ::= & {\mathtt{uN}}(\mathsf{{\scriptstyle 64}}) \\
+& {\mathtt{i8}} & ::= & {\mathtt{iN}}(\mathsf{{\scriptstyle 8}}) \\
+& {\mathtt{i16}} & ::= & {\mathtt{iN}}(\mathsf{{\scriptstyle 16}}) \\
+& {\mathtt{i32}} & ::= & {\mathtt{iN}}(\mathsf{{\scriptstyle 32}}) \\
+& {\mathtt{i64}} & ::= & {\mathtt{iN}}(\mathsf{{\scriptstyle 64}}) \\
+& {\mathtt{i128}} & ::= & {\mathtt{iN}}(\mathsf{{\scriptstyle 128}}) \\
 \end{array}
 $$
 
@@ -12715,7 +12714,8 @@ $$
 
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
-& {{\mathtt{blocktype}}}_{I} & ::= & (x, {I'}){:}{{\mathtt{typeuse}}}_{I} & \quad\Rightarrow\quad{} & x & \quad \mbox{if}~ {I'} = \{ \begin{array}[t]{@{}l@{}}
+& {{\mathtt{blocktype}}}_{I} & ::= & {t^?}{:}{{{\mathtt{result}}}_{I}^?} & \quad\Rightarrow\quad{} & {t^?} \\
+& & | & (x, {I'}){:}{{\mathtt{typeuse}}}_{I} & \quad\Rightarrow\quad{} & x & \quad \mbox{if}~ {I'} = \{ \begin{array}[t]{@{}l@{}}
 \mathsf{locals}~{(\epsilon)^\ast} \}\end{array} \\
 \end{array}
 $$

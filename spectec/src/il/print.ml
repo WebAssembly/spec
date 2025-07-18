@@ -189,7 +189,7 @@ and string_of_sym g =
   | EpsG -> "eps"
   | SeqG gs -> "{" ^ concat " " (List.map string_of_sym gs) ^ "}"
   | AltG gs -> "(" ^ concat " | " (List.map string_of_sym gs) ^ ")"
-  | RangeG (g1, g2) -> string_of_sym g1 ^ " | ... | " ^ string_of_sym g2
+  | RangeG (g1, g2) -> "(" ^ string_of_sym g1 ^ " | ... | " ^ string_of_sym g2 ^ ")"
   | IterG (g1, iter) -> string_of_sym g1 ^ string_of_iterexp iter
   | AttrG (e, g1) -> string_of_exp e ^ ":" ^ string_of_sym g1
 

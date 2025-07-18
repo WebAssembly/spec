@@ -7,8 +7,10 @@ LOG = _log
 
 OWNDIR = $(PWD)
 SPECDIR = ../../specification
+SPECCLONE = ../_specification
 SPECS = $(shell ls $(SPECDIR))
 TESTS = $(SPECS:%=test-%)
+SPECFILES = $(shell ls $(SPECS:%=$(SPECDIR)/%/*.$(EXT)))
 
 
 # Main targets
@@ -24,8 +26,8 @@ all: test
 
 test: $(TESTS)
 
-$(TESTS): test-%: $(EXE)
-	(cd $(SPECDIR)/$* && $(EXE) -l *.$(EXT))
+$(TESTS): test-%: $(SPECCLONE) $(EXE)
+	(cd $(SPECCLONE)/$* && $(EXE) -l *.$(EXT))
 
 
 # Executable
@@ -34,6 +36,12 @@ $(EXE): exe
 
 exe:
 	@(cd ..; make exe)
+
+
+# Specification
+
+$(SPECCLONE): $(SPECFILES)
+	@(cd ..; make _specification)
 
 
 # Cleanup

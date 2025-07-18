@@ -4,12 +4,8 @@
 
 ;; Source
 
-;; TODO(4, rossberg): enable short form
-grammar Tcharplain hint(show Tchar) =
-  | U+0000 | ... | U+D7FF | U+E000 | ... | U+10FFFF
-
 grammar Tchar : char =
-  | c:U+0000 | ... | c:U+D7FF => c | c:U+E000 | ... | c:U+10FFFF => c
+  | U+0000 | ... | U+D7FF | U+E000 | ... | U+10FFFF
 
 grammar Tsource =
   | Tchar*

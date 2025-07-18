@@ -7,7 +7,8 @@ LOG = _log
 
 OWNDIR = $(PWD)
 SPECDIR = ../../specification/wasm-3.0
-SPECFILES = $(sh ls $(SPECDIR)/*.$(EXT))
+SPECCLONE = ../_specification/wasm-3.0
+SPECFILES = $(shell ls $(SPECDIR)/*.$(EXT))
 
 
 # Main targets
@@ -21,8 +22,22 @@ all: test
 
 .PHONY: test
 
-test: $(EXE)
-	(cd $(SPECDIR) && $(EXE) -l *.$(EXT))
+test: $(SPECCLONE) $(EXE)
+	(cd $(SPECCLONE) && $(EXE) -l *.$(EXT))
+
+
+# Executable
+
+$(EXE): exe
+
+exe:
+	@(cd ..; make exe)
+
+
+# Specification
+
+$(SPECCLONE): $(SPECFILES)
+	@(cd ..; make _specification)
 
 
 # Cleanup

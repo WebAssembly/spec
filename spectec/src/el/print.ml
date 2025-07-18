@@ -203,8 +203,8 @@ and string_of_sym g =
   | TextG t -> "\"" ^ String.escaped t ^ "\""
   | EpsG -> "eps"
   | SeqG gs -> "{" ^ concat " " (map_filter_nl_list string_of_sym gs) ^ "}"
-  | AltG gs -> concat " | " (map_filter_nl_list string_of_sym gs)
-  | RangeG (g1, g2) -> string_of_sym g1 ^ " | ... | " ^ string_of_sym g2
+  | AltG gs -> "(" ^ concat " | " (map_filter_nl_list string_of_sym gs) ^ ")"
+  | RangeG (g1, g2) -> "(" ^ string_of_sym g1 ^ " | ... | " ^ string_of_sym g2 ^ ")"
   | ParenG g -> "(" ^ string_of_sym g ^ ")"
   | TupG gs -> "(" ^ concat ", " (List.map string_of_sym gs) ^ ")"
   | IterG (g1, iter) -> string_of_sym g1 ^ string_of_iter iter

@@ -88,18 +88,17 @@ eps => $fzero(N)
 ;;  | pm:Tsign q:TfNmag(N) => q  ;; TODO(4, rossberg): $(pm * q)
 
 
-;; TODO(4, rossberg): allow shorthand as grammar alias?
-grammar Tu8 : u8 = n:TuN(`8) => n
-grammar Tu32 : u32 = n:TuN(`32) => n
-grammar Tu64 : u64 = n:TuN(`64) => n
-grammar Ti8 : u8 = i:TiN(`8) => i
-grammar Ti16 : u16 = i:TiN(`16) => i
-grammar Ti32 : u32 = i:TiN(`32) => i
-grammar Ti64 : u64 = i:TiN(`64) => i
-grammar Ti128 : u128 = i:TiN(`128) => i
+grammar Tu8 : u8 = TuN(`8)
+grammar Tu32 : u32 = TuN(`32)
+grammar Tu64 : u64 = TuN(`64)
+grammar Ti8 : u8 = TiN(`8)
+grammar Ti16 : u16 = TiN(`16)
+grammar Ti32 : u32 = TiN(`32)
+grammar Ti64 : u64 = TiN(`64)
+grammar Ti128 : u128 = TiN(`128)
 ;; TODO(4, rossberg): enable fN
-;;grammar Tf32 : f32 = q:TfN(`32) => q
-;;grammar Tf64 : f64 = q:TfN(`64) => q
+;;grammar Tf32 : f32 = TfN(`32)
+;;grammar Tf64 : f64 = TfN(`64)
 
 
 ;; Strings

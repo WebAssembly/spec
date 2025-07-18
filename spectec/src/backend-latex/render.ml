@@ -1501,6 +1501,8 @@ and render_sym env g : string =
   | TupG gs -> "(" ^ concat ", " (List.map (render_sym env) gs) ^ ")"
   | IterG (g1, iter) -> "{" ^ render_sym env g1 ^ render_iter env iter ^ "}"
   | ArithG e -> render_exp env e
+  | AttrG ({it = VarE (id, []); _}, g1) when id.it = "<implicit-prod-result>" ->
+    render_sym env g1
   | AttrG (e, g1) -> render_exp env e ^ "{:}" ^ render_sym env g1
   | FuseG (g1, g2) ->
     "{" ^ render_sym env g1 ^ "}" ^ "{" ^ render_sym env g2 ^ "}"
@@ -1531,6 +1533,10 @@ and render_prod env prod : row list =
   match e.it, prems with
   | (TupE [] | ParenE {it = SeqE []; _}), [] ->
     [Row [Col (render_sym env g)]]
+  | VarE (id, []), _ when id.it = "<implicit-prod-result>" ->
+    prefix_rows_hd
+      [Col (render_sym env g)]
+      (render_conditions env prems)
   | _ when not env.config.display ->
     prefix_rows_hd
       [Col (render_sym env g ^ " ~\\Rightarrow~ " ^ render_exp env e)]

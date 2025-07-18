@@ -4,7 +4,7 @@
 
 ;; Numbers
 
-grammar Bbyte : byte = b:0x00 | ... | b:0xFF => b
+grammar Bbyte : byte = 0x00 | ... | 0xFF
 
 grammar BuN(N) : uN(N) hint(show `Bu#%) hint(macro "BuNX") =
   | n:Bbyte                 => n                       -- if $(n < 2^7 /\ n < 2^N)

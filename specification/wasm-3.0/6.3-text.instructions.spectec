@@ -14,8 +14,7 @@ grammar Tlabel_(I) : (name?, I) =
 ;; Block types
 
 grammar Tblocktype_(I) : blocktype =
-  ;; TODO(2, rossberg): fix handling of parameter dimensions
-  ;;| t?:Tresult_(I)? => _RESULT t?
+  | t?:Tresult_(I)? => _RESULT t?
   | (x,I'):Ttypeuse_(I) => _IDX x  -- if I' = {LOCALS (eps)*}
 
 

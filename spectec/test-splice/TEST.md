@@ -700,7 +700,6 @@ warning: grammar `Tblockinstr_/abbrev` was never spliced
 warning: grammar `Tblocktype_` was never spliced
 warning: grammar `Tcatch_` was never spliced
 warning: grammar `Tchar` was never spliced
-warning: grammar `Tcharplain` was never spliced
 warning: grammar `Tcomment` was never spliced
 warning: grammar `Tcomptype_` was never spliced
 warning: grammar `Tdata_` was never spliced
