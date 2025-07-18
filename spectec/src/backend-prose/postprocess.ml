@@ -303,6 +303,51 @@ let restructure_forall def =
     RuleD (a, s, sl3)
   | AlgoD _ -> def
 
+let remove_dead_binding def =
+  match def with
+  | RuleD (anchor, s, (_ :: _ as sl)) ->
+    let freq_map: (string * int) list ref = ref [] in
+    let update_freq_map frees =
+      IdSet.iter (fun x ->
+        match List.assoc_opt x !freq_map with
+        | None -> freq_map := (x, 1) :: !freq_map
+        | Some i -> freq_map := (x, 1+i) :: (List.remove_assoc x !freq_map)
+      ) frees
+    in
+    let rec handle_stmts ss = List.iter handle_stmt ss
+    and handle_stmt s =
+      (match s with
+      | EitherS sss -> List.iter handle_stmts sss
+      | IfS (e, ss) ->
+        let frees = free_expr e in
+        update_freq_map frees;
+        handle_stmts ss
+      | ForallS (ees, ss) ->
+        let frees = List.map (fun (_, e) -> free_expr e) ees |> List.fold_left (++) IdSet.empty in
+        update_freq_map frees;
+        handle_stmts ss
+      | _ ->
+        let frees = free_stmt s in
+        update_freq_map frees
+      )
+    in
+
+    handle_stmts (s :: sl);
+
+    let is_single (x, i) = if i = 1 then Some x else None in
+    let single_vars = List.filter_map is_single !freq_map in
+
+    let sl' = walk_stmt_lift (fun s ->
+      match s with
+      | CmpS ({it = VarE x; _}, `EqOp, _) when List.mem x single_vars -> []
+      | CmpS (_, `EqOp, {it = VarE x; _}) when List.mem x single_vars -> []
+      | LetS ({it = VarE x; _}, _) when List.mem x single_vars -> []
+      | _ -> [s]
+    ) sl in
+
+    RuleD (anchor, s, sl')
+  | _ -> def
+
 let postprocess_prose defs =
   List.map (fun def ->
     def
@@ -311,4 +356,5 @@ let postprocess_prose defs =
     |> rename_param
     |> remove_same_len_check
     |> restructure_forall
+    |> remove_dead_binding
   ) defs
