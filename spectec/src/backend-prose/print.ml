@@ -120,9 +120,14 @@ and string_of_expr expr =
   | LiftE e -> string_of_expr e
   | AccE (e, p) -> sprintf "%s%s" (string_of_expr e) (string_of_path p)
   | ExtE (e1, ps, e2, dir) -> (
+    let prep =
+      match e1.it with
+      | ExtE _ -> "and"
+      | _ -> "with"
+    in
     match dir with
-    | Front -> sprintf "%s with %s prepended by %s" (string_of_expr e1) (string_of_paths ps) (string_of_expr e2)
-    | Back -> sprintf "%s with %s appended by %s" (string_of_expr e1) (string_of_paths ps) (string_of_expr e2))
+    | Front -> sprintf "%s %s %s prepended by %s" (string_of_expr e1) prep (string_of_paths ps) (string_of_expr e2)
+    | Back -> sprintf "%s %s %s appended by %s" (string_of_expr e1) prep (string_of_paths ps) (string_of_expr e2))
   | UpdE (e1, ps, e2) ->
     sprintf "%s with %s replaced by %s" (string_of_expr e1) (string_of_paths ps) (string_of_expr e2)
   | StrE r -> string_of_record_expr r

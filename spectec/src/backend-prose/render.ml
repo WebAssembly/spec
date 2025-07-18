@@ -313,11 +313,6 @@ and al_to_el_expr expr =
       let* elp = al_to_el_path pl in
       let* ele2 = al_to_el_expr e2 in
       Some (El.Ast.UpdE (ele1, elp, ele2))
-    | Al.Ast.ExtE (e1, pl, e2, _) ->
-      let* ele1 = al_to_el_expr e1 in
-      let* elp = al_to_el_path pl in
-      let* ele2 = al_to_el_expr e2 in
-      Some (El.Ast.ExtE (ele1, elp, ele2))
     | Al.Ast.StrE r ->
       let* elexpfield = al_to_el_record r in
       Some (El.Ast.StrE elexpfield)
@@ -628,9 +623,14 @@ and render_expr' env expr =
     let se1 = render_expr env e1 in
     let sps = render_paths env ps in
     let se2 = render_expr env e2 in
+    let prep =
+      match e1.it with
+      | ExtE _ -> "and"
+      | _ -> "with"
+    in
     (match dir with
-    | Al.Ast.Front -> sprintf "%s with %s prepended by %s" se1 sps se2
-    | Al.Ast.Back -> sprintf "%s with %s appended by %s" se1 sps se2)
+    | Al.Ast.Front -> sprintf "%s %s %s prepended by %s" se1 prep sps se2
+    | Al.Ast.Back -> sprintf "%s %s %s appended by %s" se1 prep sps se2)
   | Al.Ast.CallE (("concat_" | "concatn_" as id), al) ->
     (* HARDCODE: rendering of concat_ *)
     let args = List.map (render_arg env) al in

@@ -666,7 +666,7 @@ The function :math:`(\mathsf{func}~x~{(\mathsf{local}~t)^\ast}~{\mathit{expr}})`
 
    * The function type :math:`C{.}\mathsf{types}{}[x]` is of the form :math:`{t_1^\ast}~\rightarrow~{t_2^?}`.
 
-   * Under the context :math:`C{}[{.}\mathsf{locals} \mathrel{{=}{\oplus}} {t_1^\ast}~{t^\ast}]{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^?}]{}[{.}\mathsf{return} \mathrel{{=}{\oplus}} {t_2^?}]`, the expression :math:`{\mathit{expr}}` is :ref:`valid <valid-val>` with the result type :math:`{t_2^?}`.
+   * Under the context :math:`C` with the field :math:`\mathsf{locals}` appended by :math:`{t_1^\ast}~{t^\ast}` and the field :math:`\mathsf{labels}` appended by :math:`{t_2^?}` and the field :math:`\mathsf{return}` appended by :math:`{t_2^?}`, the expression :math:`{\mathit{expr}}` is :ref:`valid <valid-val>` with the result type :math:`{t_2^?}`.
 
 
 
@@ -3344,7 +3344,7 @@ Func_ok
 - the function (FUNC x (LOCAL t)* expr) is valid with the function type t_1* -> t_2? if:
   - the function type C.TYPES[x] exists.
   - C.TYPES[x] is t_1* -> t_2?.
-  - Under the context C with .LOCALS appended by t_1* :: t* with .LABELS appended by [t_2?] with .RETURN appended by ?(t_2?), the expression expr is valid with the result type t_2?.
+  - Under the context C with .LOCALS appended by t_1* :: t* and .LABELS appended by [t_2?] and .RETURN appended by ?(t_2?), the expression expr is valid with the result type t_2?.
 
 Global_ok
 - the global (GLOBAL gt expr) is valid with the global type gt if:
@@ -5616,7 +5616,7 @@ The function :math:`(\mathsf{func}~x~{(\mathsf{local}~t)^\ast}~{\mathit{expr}})`
 
    * The function type :math:`C{.}\mathsf{types}{}[x]` is of the form :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
-   * Under the context :math:`C{}[{.}\mathsf{locals} \mathrel{{=}{\oplus}} {t_1^\ast}~{t^\ast}]{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]{}[{.}\mathsf{return} \mathrel{{=}{\oplus}} {t_2^\ast}]`, the expression :math:`{\mathit{expr}}` is :ref:`valid <valid-val>` with the result type :math:`{t_2^\ast}`.
+   * Under the context :math:`C` with the field :math:`\mathsf{locals}` appended by :math:`{t_1^\ast}~{t^\ast}` and the field :math:`\mathsf{labels}` appended by :math:`{t_2^\ast}` and the field :math:`\mathsf{return}` appended by :math:`{t_2^\ast}`, the expression :math:`{\mathit{expr}}` is :ref:`valid <valid-val>` with the result type :math:`{t_2^\ast}`.
 
 
 
@@ -11134,7 +11134,7 @@ Func_ok
 - the function (FUNC x (LOCAL t)* expr) is valid with the function type t_1* -> t_2* if:
   - the function type C.TYPES[x] exists.
   - C.TYPES[x] is t_1* -> t_2*.
-  - Under the context C with .LOCALS appended by t_1* :: t* with .LABELS appended by [t_2*] with .RETURN appended by ?(t_2*), the expression expr is valid with the result type t_2*.
+  - Under the context C with .LOCALS appended by t_1* :: t* and .LABELS appended by [t_2*] and .RETURN appended by ?(t_2*), the expression expr is valid with the result type t_2*.
 
 Global_ok
 - the global (GLOBAL gt expr) is valid with the global type gt if:
@@ -16484,7 +16484,7 @@ The function :math:`(\mathsf{func}~x~{{\mathit{local}}^\ast}~{\mathit{expr}})` i
 
    * :math:`{{{\mathit{lt}}}^\ast}` is the concatenation of all such :math:`{{\mathit{lt}}}`.
 
-   * Under the context :math:`C{}[{.}\mathsf{locals} \mathrel{{=}{\oplus}} {(\mathsf{set}~t_1)^\ast}~{{{\mathit{lt}}}^\ast}]{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]{}[{.}\mathsf{return} \mathrel{{=}{\oplus}} {t_2^\ast}]`, the expression :math:`{\mathit{expr}}` is :ref:`valid <valid-val>` with the result type :math:`{t_2^\ast}`.
+   * Under the context :math:`C` with the field :math:`\mathsf{locals}` appended by :math:`{(\mathsf{set}~t_1)^\ast}~{{{\mathit{lt}}}^\ast}` and the field :math:`\mathsf{labels}` appended by :math:`{t_2^\ast}` and the field :math:`\mathsf{return}` appended by :math:`{t_2^\ast}`, the expression :math:`{\mathit{expr}}` is :ref:`valid <valid-val>` with the result type :math:`{t_2^\ast}`.
 
 
 
@@ -16883,7 +16883,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    * :math:`{{\mathit{nm}}^\ast}~{\mathrm{disjoint}}` is of the form true.
 
-   * The context :math:`C` is of the form :math:`{C'}{}[{.}\mathsf{tags} \mathrel{{=}{\oplus}} {{\mathit{jt}}_{\mathsf{i}}^\ast}~{{\mathit{jt}}^\ast}]{}[{.}\mathsf{globals} \mathrel{{=}{\oplus}} {{\mathit{gt}}^\ast}]{}[{.}\mathsf{mems} \mathrel{{=}{\oplus}} {{\mathit{mt}}_{\mathsf{i}}^\ast}~{{\mathit{mt}}^\ast}]{}[{.}\mathsf{tables} \mathrel{{=}{\oplus}} {{\mathit{tt}}_{\mathsf{i}}^\ast}~{{\mathit{tt}}^\ast}]{}[{.}\mathsf{datas} \mathrel{{=}{\oplus}} {{\mathit{ok}}^\ast}]{}[{.}\mathsf{elems} \mathrel{{=}{\oplus}} {{\mathit{rt}}^\ast}]`.
+   * The context :math:`C` is of the form :math:`{C'}` with the field :math:`\mathsf{tags}` appended by :math:`{{\mathit{jt}}_{\mathsf{i}}^\ast}~{{\mathit{jt}}^\ast}` and the field :math:`\mathsf{globals}` appended by :math:`{{\mathit{gt}}^\ast}` and the field :math:`\mathsf{mems}` appended by :math:`{{\mathit{mt}}_{\mathsf{i}}^\ast}~{{\mathit{mt}}^\ast}` and the field :math:`\mathsf{tables}` appended by :math:`{{\mathit{tt}}_{\mathsf{i}}^\ast}~{{\mathit{tt}}^\ast}` and the field :math:`\mathsf{datas}` appended by :math:`{{\mathit{ok}}^\ast}` and the field :math:`\mathsf{elems}` appended by :math:`{{\mathit{rt}}^\ast}`.
 
    * The context :math:`{C'}` is of the form :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{dt}'}^\ast},\; \mathsf{globals}~{{\mathit{gt}}_{\mathsf{i}}^\ast},\; \mathsf{funcs}~{{\mathit{dt}}_{\mathsf{i}}^\ast}~{{\mathit{dt}}^\ast},\; \mathsf{return}~\epsilon,\; \mathsf{refs}~{x^\ast} \}\end{array}`.
 
@@ -27563,7 +27563,7 @@ Func_ok
   - For all local in local*:
     - the local local is valid with the local type lct.
   - lct* is the concatenation of all such lct.
-  - Under the context C with .LOCALS appended by (SET t_1)* :: lct* with .LABELS appended by [t_2*] with .RETURN appended by ?(t_2*), the expression expr is valid with the result type t_2*.
+  - Under the context C with .LOCALS appended by (SET t_1)* :: lct* and .LABELS appended by [t_2*] and .RETURN appended by ?(t_2*), the expression expr is valid with the result type t_2*.
 
 Datamode_ok
 - the data mode datamode is valid if:
@@ -27767,7 +27767,7 @@ Module_ok
   - nm* is the concatenation of all such nm.
   - xt_E* is the concatenation of all such xt_E.
   - $disjoint_(`name, nm*) is true.
-  - the context C is C' with .TAGS appended by jt_I* :: jt* with .GLOBALS appended by gt* with .MEMS appended by mt_I* :: mt* with .TABLES appended by tt_I* :: tt* with .DATAS appended by ok* with .ELEMS appended by rt*.
+  - the context C is C' with .TAGS appended by jt_I* :: jt* and .GLOBALS appended by gt* and .MEMS appended by mt_I* :: mt* and .TABLES appended by tt_I* :: tt* and .DATAS appended by ok* and .ELEMS appended by rt*.
   - the context C' is { TYPES: dt'*; GLOBALS: gt_I*; FUNCS: dt_I* :: dt*; RETURN: ?(); REFS: x* }.
   - the function index sequence x* is $funcidx_nonfuncs((global* mem* table* elem*)).
   - the tag type sequence jt_I* is $tagsxt(xt_I*).
