@@ -136,22 +136,15 @@ grammar Tname : name =
 
 ;; Identifiers
 
-grammar Tidchar =
-  | "0"
-  ;; TODO(4, rossberg): ellipses
-  | "9"
-  | "A"
-  ;; TODO(4, rossberg): ellipses
-  | "Z"
-  | "a"
-  ;; TODO(4, rossberg): ellipses
-  | "z"
+grammar Tidchar : char =
+  | "0" | ... | "9"
+  | "A" | ... | "Z"
+  | "a" | ... | "z"
   | "!" | "#" | "$" | "%" | "&" | "'" | "*" | "+" | "-" | "." | "/"
   | ":" | "<" | "=" | ">" | "?" | "@" | "\\" | "^" | "_" | "`" | "|" | "~"
 
 grammar Tid : name =
-;; TODO(4, rossberg): enable
-;;  | "$" c*:Tidchar+ => c*
+  | "$" c*:Tidchar+ => c*
   | "$" c*:Tname => c*    -- if |c*| > 0
 
 

@@ -12479,15 +12479,10 @@ $$
 
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
-& {\mathtt{idchar}} & ::= & \mbox{`$\mathtt{0}$'} \\
-& & | & \mbox{`$\mathtt{9}$'} \\
-& & | & \mbox{`$\mathtt{A}$'} \\
-& & | & \mbox{`$\mathtt{Z}$'} \\
-& & | & \mbox{`$\mathtt{a}$'} \\
-& & | & \mbox{`$\mathtt{z}$'} \\
-& & | & \mbox{`$\mathtt{!}$'} ~|~ \mbox{`$\mathtt{\#}$'} ~|~ \mbox{`$\mathtt{\$}$'} ~|~ \mbox{`$\mathtt{\%}$'} ~|~ \mbox{`$\mathtt{\&}$'} ~|~ \mbox{`$\mathtt{'}$'} ~|~ \mbox{`$\mathtt{*}$'} ~|~ \mbox{`$\mathtt{+}$'} ~|~ \mbox{`$\mathtt{-}$'} ~|~ \mbox{`$\mathtt{.}$'} ~|~ \mbox{`$\mathtt{/}$'} \\
+& {\mathtt{idchar}} & ::= & \mbox{`$\mathtt{0}$'} ~|~ \ldots ~|~ \mbox{`$\mathtt{9}$'} ~|~ \mbox{`$\mathtt{A}$'} ~|~ \ldots ~|~ \mbox{`$\mathtt{Z}$'} ~|~ \mbox{`$\mathtt{a}$'} ~|~ \ldots ~|~ \mbox{`$\mathtt{z}$'} ~|~ \mbox{`$\mathtt{!}$'} ~|~ \mbox{`$\mathtt{\#}$'} ~|~ \mbox{`$\mathtt{\$}$'} ~|~ \mbox{`$\mathtt{\%}$'} ~|~ \mbox{`$\mathtt{\&}$'} ~|~ \mbox{`$\mathtt{'}$'} ~|~ \mbox{`$\mathtt{*}$'} ~|~ \mbox{`$\mathtt{+}$'} ~|~ \mbox{`$\mathtt{-}$'} ~|~ \mbox{`$\mathtt{.}$'} ~|~ \mbox{`$\mathtt{/}$'} \\
 & & | & \mbox{`$\mathtt{:}$'} ~|~ \mbox{`$\mathtt{<}$'} ~|~ \mbox{`$\mathtt{=}$'} ~|~ \mbox{`$\mathtt{>}$'} ~|~ \mbox{`$\mathtt{?}$'} ~|~ \mbox{`$\mathtt{@}$'} ~|~ \mbox{`$\mathtt{\backslash{}}$'} ~|~ \mbox{`$\mathtt{\hat{~~}}$'} ~|~ \mbox{`$\mathtt{\_}$'} ~|~ \mbox{`$\mathtt{\grave{~~}}$'} ~|~ \mbox{`$\mathtt{|}$'} ~|~ \mbox{`$\mathtt{\tilde{~~}}$'} \\
-& {\mathtt{id}} & ::= & \mbox{`$\mathtt{\$}$'}~~{c^\ast}{:}{\mathtt{name}} & \quad\Rightarrow\quad{} & {c^\ast} & \quad \mbox{if}~ {|{c^\ast}|} > 0 \\
+& {\mathtt{id}} & ::= & \mbox{`$\mathtt{\$}$'}~~{c^\ast}{:}{{\mathtt{idchar}}^{+}} & \quad\Rightarrow\quad{} & {c^\ast} \\
+& & | & \mbox{`$\mathtt{\$}$'}~~{c^\ast}{:}{\mathtt{name}} & \quad\Rightarrow\quad{} & {c^\ast} & \quad \mbox{if}~ {|{c^\ast}|} > 0 \\
 \end{array}
 $$
 

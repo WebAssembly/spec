@@ -8919,6 +8919,61 @@ grammar TfNplain : ()
   prod{`<implicit-prod-result>` : ()} `<implicit-prod-result>`:eps => (`<implicit-prod-result>`, ()).1
 
 ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
+grammar Tidchar : char
+  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
+  prod{`<implicit-prod-result>` : nat} `<implicit-prod-result>`:(0x30 | ... | 0x39) => `%`_char(`<implicit-prod-result>`)
+  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
+  prod{`<implicit-prod-result>` : nat} `<implicit-prod-result>`:(0x41 | ... | 0x5A) => `%`_char(`<implicit-prod-result>`)
+  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
+  prod{`<implicit-prod-result>` : nat} `<implicit-prod-result>`:(0x61 | ... | 0x7A) => `%`_char(`<implicit-prod-result>`)
+  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
+  prod{`<implicit-prod-result>` : nat} `<implicit-prod-result>`:0x21 => `%`_char(`<implicit-prod-result>`)
+  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
+  prod{`<implicit-prod-result>` : nat} `<implicit-prod-result>`:0x23 => `%`_char(`<implicit-prod-result>`)
+  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
+  prod{`<implicit-prod-result>` : nat} `<implicit-prod-result>`:0x24 => `%`_char(`<implicit-prod-result>`)
+  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
+  prod{`<implicit-prod-result>` : nat} `<implicit-prod-result>`:0x25 => `%`_char(`<implicit-prod-result>`)
+  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
+  prod{`<implicit-prod-result>` : nat} `<implicit-prod-result>`:0x26 => `%`_char(`<implicit-prod-result>`)
+  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
+  prod{`<implicit-prod-result>` : nat} `<implicit-prod-result>`:0x27 => `%`_char(`<implicit-prod-result>`)
+  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
+  prod{`<implicit-prod-result>` : nat} `<implicit-prod-result>`:0x2A => `%`_char(`<implicit-prod-result>`)
+  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
+  prod{`<implicit-prod-result>` : nat} `<implicit-prod-result>`:0x2B => `%`_char(`<implicit-prod-result>`)
+  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
+  prod{`<implicit-prod-result>` : nat} `<implicit-prod-result>`:0x2D => `%`_char(`<implicit-prod-result>`)
+  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
+  prod{`<implicit-prod-result>` : nat} `<implicit-prod-result>`:0x2E => `%`_char(`<implicit-prod-result>`)
+  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
+  prod{`<implicit-prod-result>` : nat} `<implicit-prod-result>`:0x2F => `%`_char(`<implicit-prod-result>`)
+  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
+  prod{`<implicit-prod-result>` : nat} `<implicit-prod-result>`:0x3A => `%`_char(`<implicit-prod-result>`)
+  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
+  prod{`<implicit-prod-result>` : nat} `<implicit-prod-result>`:0x3C => `%`_char(`<implicit-prod-result>`)
+  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
+  prod{`<implicit-prod-result>` : nat} `<implicit-prod-result>`:0x3D => `%`_char(`<implicit-prod-result>`)
+  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
+  prod{`<implicit-prod-result>` : nat} `<implicit-prod-result>`:0x3E => `%`_char(`<implicit-prod-result>`)
+  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
+  prod{`<implicit-prod-result>` : nat} `<implicit-prod-result>`:0x3F => `%`_char(`<implicit-prod-result>`)
+  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
+  prod{`<implicit-prod-result>` : nat} `<implicit-prod-result>`:0x40 => `%`_char(`<implicit-prod-result>`)
+  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
+  prod{`<implicit-prod-result>` : nat} `<implicit-prod-result>`:0x5C => `%`_char(`<implicit-prod-result>`)
+  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
+  prod{`<implicit-prod-result>` : nat} `<implicit-prod-result>`:0x5E => `%`_char(`<implicit-prod-result>`)
+  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
+  prod{`<implicit-prod-result>` : nat} `<implicit-prod-result>`:0x5F => `%`_char(`<implicit-prod-result>`)
+  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
+  prod{`<implicit-prod-result>` : nat} `<implicit-prod-result>`:0x60 => `%`_char(`<implicit-prod-result>`)
+  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
+  prod{`<implicit-prod-result>` : nat} `<implicit-prod-result>`:0x7C => `%`_char(`<implicit-prod-result>`)
+  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
+  prod{`<implicit-prod-result>` : nat} `<implicit-prod-result>`:0x7E => `%`_char(`<implicit-prod-result>`)
+
+;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
 grammar Tdigit : nat
   ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
   prod "0" => 0
@@ -8992,69 +9047,10 @@ grammar Tname : name
 ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
 grammar Tid : name
   ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
+  prod{`c*` : char*} {{"$"} {c*{c <- `c*`}:Tidchar+{}}} => `%`_name(c*{c <- `c*`})
+  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
   prod{`c*` : char*} {{"$"} {`%`_name(c*{c <- `c*`}):Tname}} => `%`_name(c*{c <- `c*`})
     -- if (|c*{c <- `c*`}| > 0)
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Tidchar : ()
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{`<implicit-prod-result>` : text} `<implicit-prod-result>`:"0" => (`<implicit-prod-result>`, ()).1
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{`<implicit-prod-result>` : text} `<implicit-prod-result>`:"9" => (`<implicit-prod-result>`, ()).1
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{`<implicit-prod-result>` : text} `<implicit-prod-result>`:"A" => (`<implicit-prod-result>`, ()).1
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{`<implicit-prod-result>` : text} `<implicit-prod-result>`:"Z" => (`<implicit-prod-result>`, ()).1
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{`<implicit-prod-result>` : text} `<implicit-prod-result>`:"a" => (`<implicit-prod-result>`, ()).1
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{`<implicit-prod-result>` : text} `<implicit-prod-result>`:"z" => (`<implicit-prod-result>`, ()).1
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{`<implicit-prod-result>` : text} `<implicit-prod-result>`:"!" => (`<implicit-prod-result>`, ()).1
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{`<implicit-prod-result>` : text} `<implicit-prod-result>`:"#" => (`<implicit-prod-result>`, ()).1
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{`<implicit-prod-result>` : text} `<implicit-prod-result>`:"$" => (`<implicit-prod-result>`, ()).1
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{`<implicit-prod-result>` : text} `<implicit-prod-result>`:"%" => (`<implicit-prod-result>`, ()).1
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{`<implicit-prod-result>` : text} `<implicit-prod-result>`:"&" => (`<implicit-prod-result>`, ()).1
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{`<implicit-prod-result>` : text} `<implicit-prod-result>`:"'" => (`<implicit-prod-result>`, ()).1
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{`<implicit-prod-result>` : text} `<implicit-prod-result>`:"*" => (`<implicit-prod-result>`, ()).1
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{`<implicit-prod-result>` : text} `<implicit-prod-result>`:"+" => (`<implicit-prod-result>`, ()).1
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{`<implicit-prod-result>` : text} `<implicit-prod-result>`:"-" => (`<implicit-prod-result>`, ()).1
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{`<implicit-prod-result>` : text} `<implicit-prod-result>`:"." => (`<implicit-prod-result>`, ()).1
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{`<implicit-prod-result>` : text} `<implicit-prod-result>`:"/" => (`<implicit-prod-result>`, ()).1
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{`<implicit-prod-result>` : text} `<implicit-prod-result>`:":" => (`<implicit-prod-result>`, ()).1
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{`<implicit-prod-result>` : text} `<implicit-prod-result>`:"<" => (`<implicit-prod-result>`, ()).1
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{`<implicit-prod-result>` : text} `<implicit-prod-result>`:"=" => (`<implicit-prod-result>`, ()).1
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{`<implicit-prod-result>` : text} `<implicit-prod-result>`:">" => (`<implicit-prod-result>`, ()).1
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{`<implicit-prod-result>` : text} `<implicit-prod-result>`:"?" => (`<implicit-prod-result>`, ()).1
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{`<implicit-prod-result>` : text} `<implicit-prod-result>`:"@" => (`<implicit-prod-result>`, ()).1
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{`<implicit-prod-result>` : text} `<implicit-prod-result>`:"\\" => (`<implicit-prod-result>`, ()).1
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{`<implicit-prod-result>` : text} `<implicit-prod-result>`:"^" => (`<implicit-prod-result>`, ()).1
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{`<implicit-prod-result>` : text} `<implicit-prod-result>`:"_" => (`<implicit-prod-result>`, ()).1
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{`<implicit-prod-result>` : text} `<implicit-prod-result>`:"`" => (`<implicit-prod-result>`, ()).1
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{`<implicit-prod-result>` : text} `<implicit-prod-result>`:"|" => (`<implicit-prod-result>`, ()).1
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{`<implicit-prod-result>` : text} `<implicit-prod-result>`:"~" => (`<implicit-prod-result>`, ()).1
 
 ;; ../../../../specification/wasm-3.0/6.0-text.lexical.spectec
 grammar Tkeyword : ()
@@ -9064,7 +9060,7 @@ grammar Tkeyword : ()
 ;; ../../../../specification/wasm-3.0/6.0-text.lexical.spectec
 grammar Treserved : ()
   ;; ../../../../specification/wasm-3.0/6.0-text.lexical.spectec
-  prod{`<implicit-prod-result>` : ()} [`<implicit-prod-result>`]:(Tidchar | {Tstring} | {","} | {";"} | {"["} | {"]"} | {"{"} | {"}"})+{} => (`<implicit-prod-result>`, ()).1
+  prod{`<implicit-prod-result>` : ()} [`<implicit-prod-result>`]:({Tidchar} | {Tstring} | {","} | {";"} | {"["} | {"]"} | {"{"} | {"}"})+{} => (`<implicit-prod-result>`, ()).1
 
 ;; ../../../../specification/wasm-3.0/6.0-text.lexical.spectec
 grammar Ttoken : ()
@@ -9081,16 +9077,16 @@ grammar Ttoken : ()
   ;; ../../../../specification/wasm-3.0/6.0-text.lexical.spectec
   prod{`<implicit-prod-result>` : name} `<implicit-prod-result>`:Tid => (`<implicit-prod-result>`, ()).1
   ;; ../../../../specification/wasm-3.0/6.0-text.lexical.spectec
-  prod{`<implicit-prod-result>` : text} `<implicit-prod-result>`:"(" => (`<implicit-prod-result>`, ()).1
+  prod{`<implicit-prod-result>` : nat} `<implicit-prod-result>`:0x28 => (`<implicit-prod-result>`, ()).1
   ;; ../../../../specification/wasm-3.0/6.0-text.lexical.spectec
-  prod{`<implicit-prod-result>` : text} `<implicit-prod-result>`:")" => (`<implicit-prod-result>`, ()).1
+  prod{`<implicit-prod-result>` : nat} `<implicit-prod-result>`:0x29 => (`<implicit-prod-result>`, ()).1
   ;; ../../../../specification/wasm-3.0/6.0-text.lexical.spectec
   prod{`<implicit-prod-result>` : ()} `<implicit-prod-result>`:Treserved => (`<implicit-prod-result>`, ()).1
 
 ;; ../../../../specification/wasm-3.0/6.0-text.lexical.spectec
 grammar Tannotid : ()
   ;; ../../../../specification/wasm-3.0/6.0-text.lexical.spectec
-  prod{`<implicit-prod-result>` : ()} [`<implicit-prod-result>`]:Tidchar+{} => (`<implicit-prod-result>`, ()).1
+  prod{`<implicit-prod-result>` : char} [`<implicit-prod-result>`]:Tidchar+{} => (`<implicit-prod-result>`, ()).1
   ;; ../../../../specification/wasm-3.0/6.0-text.lexical.spectec
   prod{`<implicit-prod-result>` : name} `<implicit-prod-result>`:Tname => (`<implicit-prod-result>`, ()).1
 

@@ -1866,6 +1866,11 @@ and infer_sym env g : Il.sym * typ =
         else fail g.at "inconsistent types"
       );
       (fun env ->
+        (* Hack to treat singleton strings in short grammar as characters *)
+        let* g' = attempt (elab_sym env g) (NumT `NatT $ g.at) in
+        Ok (g', NumT `NatT $ g.at)
+      );
+      (fun env ->
         let* g' = attempt (elab_sym env g) (TupT [] $ g.at) in
         Ok (g', TupT [] $ g.at)
       )
@@ -1889,9 +1894,27 @@ and infer_sym env g : Il.sym * typ =
     Il.IterG (g1', iterexp') $ g.at,
       IterT (t1, match iter with Opt -> Opt | _ -> List) $ g.at
   | AttrG (e, g1) ->
+    checkpoint (
+      choice env [
+        (fun env ->
+          (* Hack to treat singleton strings in short grammar as characters *)
+          let t1 = NumT `NatT $ g1.at in
+          let* g1' = attempt (elab_sym env g1) t1 in
+          let* e' = elab_exp env e t1 in
+          Ok (Il.AttrG (e', g1') $ g.at, t1)
+        );
+        (fun env ->
+          let* g1', t1 = attempt (infer_sym env) g1 in
+          let e' = checkpoint (elab_exp env e t1) in
+          Ok (Il.AttrG (e', g1') $ g.at, t1)
+        );
+      ]
+    )
+(*
     let g1', t1 = infer_sym env g1 in
     let e' = checkpoint (elab_exp env e t1) in
     Il.AttrG (e', g1') $ g.at, t1
+*)
   | FuseG _ -> error g.at "misplaced token concatenation"
   | UnparenG _ -> error g.at "misplaced token unparenthesize"
 

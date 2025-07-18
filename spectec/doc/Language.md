@@ -1144,13 +1144,13 @@ SpecTec allows the definition of *attribute grammars*:
 
 ```
 def ::=
-  "grammar" gramid params ":" typ "=" gram      grammar definition
+  "grammar" gramid params (":" typ)? "=" gram      grammar definition
 
 gram ::=
   "|"? prod+"|"
 
 prod ::=
-  sym "=>" exp ("--" premise)*
+  sym ("=>" exp)? ("--" premise)*
 
 sym ::=
   gramid args
@@ -1171,7 +1171,11 @@ given by a list of *productions*.
 Each production in turn is defined by a left-hand side,
 which is the symbol sequence to parse,
 and a right-hand side that computes the attribute synthesised by this production.
-The type of this attribute has to be declared with the grammar.
+The type of this attribute has to be declared with the grammar;
+when omitted it defaults to `()`.
+The right-hand sides of productions can be omitted as well,
+in which case they return the synthesised attribute of the left-hand side.
+Either all or none of a grammars right-hand sides must be omitted.
 
 Possible symbols include basic terminal *tokens*,
 which are either text literals (for textual grammars),
