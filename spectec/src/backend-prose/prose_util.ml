@@ -36,6 +36,7 @@ type hintenv =
     prose_hints : hints ref;
     prosepp_hints : hints ref;
     desc_hints : hints ref;
+    func_prose_hints : hints ref;
   }
 
 let hintenv =
@@ -43,6 +44,7 @@ let hintenv =
     prose_hints = ref Map.empty;
     prosepp_hints = ref Map.empty;
     desc_hints = ref Map.empty;
+    func_prose_hints = ref Map.empty;
   }
 
 (* Collect hints *)
@@ -51,7 +53,7 @@ let env_hints ?(partial = false) name map id hints =
   let open El.Ast in
   List.iter (fun {hintid; hintexp} ->
     if hintid.it = name then (
-      (* print_endline (sprintf "prose hint for %s found: %s" id.it (El.Print.string_of_exp hintexp)); *)
+      (* print_endline (sprintf "prose hint for %s found: (%s %s)" id.it hintid.it (El.Print.string_of_exp hintexp)); *)
       map_update id.it hintexp map ~partial
     )
   ) hints
@@ -60,6 +62,7 @@ let env_hintdef ?(partial = false) hd =
   match hd.it with
   | El.Ast.VarH (id, hints) ->
     env_hints "desc" hintenv.desc_hints id hints ~partial;
+    env_hints "prose_desc" hintenv.desc_hints id hints;
     env_hints "prose" hintenv.prose_hints id hints;
     env_hints "prosepp" hintenv.prosepp_hints id hints;
   | El.Ast.TypH (id1, id2, hints) ->
@@ -71,6 +74,8 @@ let env_hintdef ?(partial = false) hd =
   | El.Ast.RelH (id, hints) ->
     env_hints "prose" hintenv.prose_hints id hints;
     env_hints "prosepp" hintenv.prosepp_hints id hints;
+  | El.Ast.DecH (id, hints) ->
+    env_hints "prose" hintenv.func_prose_hints id hints;
   | _ -> ()
 
 let env_typ id t =
@@ -109,9 +114,10 @@ let env_def d =
   | TypD (id1, id2, _args, t, hints) ->
     if id2.it = "" then
       env_hintdef (VarH (id1, hints) $ d.at)
-    else
+    else (
       env_hintdef (TypH (id1, id2, hints) $ d.at);
-      env_hintdef (VarH (id1, hints) $ d.at) ~partial:true;
+      env_hintdef (VarH (id1, hints) $ d.at) ~partial:true
+    );
     env_typ id1 t;
   | GramD (id1, id2, _ps, t, _gram, hints) ->
     env_hintdef (GramH (id1, id2, hints) $ d.at);
@@ -236,6 +242,7 @@ let split_prose_hint input =
   split_aux [] 0
 
 let hole_to_int hole =
+  (* "%n" -> n *)
   int_of_string (String.sub hole 1 (String.length hole - 1))
 
 let apply_prose_hint hint args =
@@ -303,78 +310,15 @@ let find_case_typ s a: El.Ast.typ =
       (Xl.Atom.to_string a) s in
     error no_region msg
 
-open El.Ast
-open El.Convert
+let extract_case_hint t mixop =
+  let id1 = Il.Print.string_of_typ t in
+  let id2 = Xl.Mixop.name (List.nth mixop 0) in
+  let id = id1 ^ "." ^ id2 in
+  match Map.find_opt id !(hintenv.prose_hints) with
+  | Some (Some { it = TextE desc; _ }, _) -> Some desc
+  | _ -> None
 
-(* If there is a hint of the form prose-xxx, temporarily consider as if it were the hint xxx *)
-let replace_prose_hints hs =
-  let phs, hs = List.partition (fun h -> String.starts_with ~prefix:"prose_" h.hintid.it) hs in
-  let hs' = Util.Lib.List.filter_not (fun h ->
-    List.exists (fun ph -> ph.hintid.it = "prose_" ^ h.hintid.it) phs
-  ) hs in
-
-  let phs' = List.map (fun ph ->
-    let name = ph.hintid.it in
-    let name' = String.sub name 6 (String.length name - 6) in
-    let hintid' = {ph.hintid with it = name'} in
-    {ph with hintid = hintid'}
-  ) phs in
-
-  phs' @ hs'
-
-let rec replace_prose_hint_typ t =
-  let it =
-    match t.it with
-    | VarT (id, args) -> VarT (id, args)
-    | BoolT -> BoolT
-    | NumT n -> NumT n
-    | TextT -> TextT
-    | ParenT t1 -> ParenT (replace_prose_hint_typ t1)
-    | TupT ts -> TupT (List.map replace_prose_hint_typ ts)
-    | IterT (t1, iter) -> IterT (replace_prose_hint_typ t1, iter)
-    | StrT fields ->
-        StrT (map_nl_list (fun (a, (t, prems), hints) ->
-          (a, (replace_prose_hint_typ t, prems), replace_prose_hints hints)) fields)
-    | CaseT (d1, tys, cases, d2) ->
-        let tys' = map_nl_list replace_prose_hint_typ tys in
-        let cases' = map_nl_list (fun (a, (t, prems), hints) ->
-          (a, (replace_prose_hint_typ t, prems), replace_prose_hints hints)) cases
-        in
-        CaseT (d1, tys', cases', d2)
-    | ConT ((t1, prems), hints) -> ConT ((replace_prose_hint_typ t1, prems), replace_prose_hints hints)
-    | RangeT nums -> RangeT nums
-    | AtomT a -> AtomT a
-    | SeqT ts -> SeqT (List.map replace_prose_hint_typ ts)
-    | InfixT (t1, a, t2) -> InfixT (replace_prose_hint_typ t1, a, replace_prose_hint_typ t2)
-    | BrackT (a1, t1, a2) -> BrackT (a1, replace_prose_hint_typ t1, a2)
-  in
-  {t with it}
-
-let replace_prose_hint_hintdef h =
-  let it =
-    match h.it with
-    | AtomH (id, atom, hs) -> AtomH (id, atom, replace_prose_hints hs)
-    | TypH (id1, id2, hs) -> TypH (id1, id2, replace_prose_hints hs)
-    | GramH (id1, id2, hs) -> GramH (id1, id2, replace_prose_hints hs)
-    | RelH (id, hs) -> RelH (id, replace_prose_hints hs)
-    | VarH (id, hs) -> VarH (id, replace_prose_hints hs)
-    | DecH (id, hs) -> DecH (id, replace_prose_hints hs)
-  in
-  {h with it}
-
-let replace_prose_hint_def d =
-  let it =
-    match d.it with
-    | FamD (id, params, hs) -> FamD (id, params, replace_prose_hints hs)
-    | TypD (id, typid, args, typ, hs) -> TypD (id, typid, args, replace_prose_hint_typ typ, replace_prose_hints hs)
-    | GramD (id, gramid, params, typ, gram, hs) -> GramD (id, gramid, params, replace_prose_hint_typ typ, gram, replace_prose_hints hs)
-    | RelD (id, typ, hs) -> RelD (id, replace_prose_hint_typ typ, replace_prose_hints hs)
-    | VarD (id, typ, hs) -> VarD (id, replace_prose_hint_typ typ, replace_prose_hints hs)
-    | DecD (id, params, typ, hs) -> DecD (id, params, replace_prose_hint_typ typ, replace_prose_hints hs)
-    | HintD hintdef -> HintD (replace_prose_hint_hintdef hintdef)
-    | it -> it
-  in
-  {d with it}
-
-let replace_prose_hint el =
-  List.map replace_prose_hint_def el
+let extract_call_hint fname =
+  match Map.find_opt fname !(hintenv.func_prose_hints) with
+  | Some (Some { it = TextE desc; _ }, _) -> Some desc
+  | _ -> None

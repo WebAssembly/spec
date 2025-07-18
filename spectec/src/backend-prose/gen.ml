@@ -618,7 +618,6 @@ let gen_execution_prose () =
 
 (** Main entry for generating prose **)
 let gen_prose el il al =
-  let el = Prose_util.replace_prose_hint el in
   Langs.el := el;
   Langs.validation_il := extract_validation_il il;
   Langs.il := il;
@@ -633,7 +632,6 @@ let gen_prose el il al =
 
 (** Main entry for generating stringified prose **)
 let gen_string cfg_latex cfg_prose el il al =
-  let el = Prose_util.replace_prose_hint el in
   let env_latex = Backend_latex.Render.env cfg_latex el in
   let prose = gen_prose el il al in
   let env_prose = Render.env cfg_prose [] [] env_latex in

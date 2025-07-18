@@ -43,7 +43,7 @@ var C : context
 ;; Context update
 
 ;; TODO(3, rossberg): is there a way to show this as %[.LOCAL[%]* = %*] ?
-def $with_locals(context, localidx*, localtype*) : context  hint(show %[.LOCAL[%]=%])
+def $with_locals(context, localidx*, localtype*) : context  hint(show %[.LOCAL[%]=%]) hint(prose "%1 with the local types of %2 updated to %3")
 
 def $with_locals(C, eps, eps) = C
 def $with_locals(C, x_1 x*, lct_1 lct*) = $with_locals(C[.LOCALS[x_1] = lct_1], x*, lct*)

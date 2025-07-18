@@ -254,30 +254,34 @@ and al_to_el_expr expr =
       let* elel = al_to_el_exprs el in
       Some (El.Ast.TupE elel)
     | Al.Ast.CallE (id, al) ->
-      (match Prose_util.find_relation id with
-      | Some _ ->
+      if Prose_util.extract_call_hint id <> None then
+        (* Use customized prose hint for this call *)
         None
-      | _ ->
-        let elid = id $ no_region in
-        let* elal = al_to_el_args al in
-        (* Unwrap parenthsized args *)
-        let elal = List.map
-          (fun elarg ->
-            let elarg = match elarg with
-            | El.Ast.ExpA exp ->
-              let exp = match exp.it with
-              | ParenE exp' -> exp'
-              | _ -> exp
+      else (
+        match Prose_util.find_relation id with
+        | Some _ ->
+          None
+        | _ ->
+          let elid = id $ no_region in
+          let* elal = al_to_el_args al in
+          (* Unwrap parenthsized args *)
+          let elal = List.map
+            (fun elarg ->
+              let elarg = match elarg with
+              | El.Ast.ExpA exp ->
+                let exp = match exp.it with
+                | ParenE exp' -> exp'
+                | _ -> exp
+                in
+                El.Ast.ExpA exp
+              | _ -> elarg
               in
-              El.Ast.ExpA exp
-            | _ -> elarg
-            in
-            (ref elarg) $ no_region
-          )
-          elal
-        in
-        Some (El.Ast.CallE (elid, elal))
-      )
+              (ref elarg) $ no_region
+            )
+            elal
+          in
+          Some (El.Ast.CallE (elid, elal))
+        )
     | Al.Ast.CatE (e1, e2) ->
       let* ele1 = al_to_el_expr e1 in
       let* ele2 = al_to_el_expr e2 in
@@ -341,6 +345,7 @@ and al_to_el_expr expr =
       Some (El.Ast.IterE (ele, eliter))
     | Al.Ast.CaseE _  when Al.Valid.sub_typ expr.note Al.Al_util.evalctxT -> None
     | Al.Ast.CaseE (op, el) ->
+      if Prose_util.extract_case_hint expr.note op <> None then None else
       (* Current rules for omitting parenthesis around a CaseE:
         1) Has no argument
         2) Is infix notation
@@ -360,11 +365,6 @@ and al_to_el_expr expr =
       let elal = mixop_to_el_exprs op in
       let* elel = al_to_el_exprs el in
       let eles = case_to_el_exprs elal elel in
-      (* HARDCODE: rendering oktypeidx *)
-      let eles = match Mixop.to_string op, eles with
-      | "OK", [arg1; arg2] -> [arg1; El.Ast.ParenE arg2 $ no_region]
-      | _ -> eles
-      in
       let ele = El.Ast.SeqE eles in
       (match elal, elel with
       | _, [] -> Some ele
@@ -640,28 +640,31 @@ and render_expr' env expr =
     | _ -> error expr.at "Invalid arity for function " ^ id;
     )
   | Al.Ast.CallE (id, al) ->
-    (* HARDCODE: relation call *)
     let args = List.map (render_arg env) al in
-    if id = "Eval_expr" then
-      (match args with
-      | [arg] ->
-        sprintf "the result of :ref:`evaluating <exec-expr>` %s" arg
-      | _ -> error expr.at (Printf.sprintf "Invalid arity for relation call: %d ([ %s ])" (List.length args) (String.concat " " args));
-      )
-    else if id = "Expand" || id = "Expand_use" then
-      (match args with
-      | [arg1] ->
-        sprintf "the :ref:`expansion <aux-expand-deftype>` of %s" arg1
-      | _ -> error expr.at "Invalid arity for relation call";
-      )
-    else if String.ends_with ~suffix:"_type" id || String.ends_with ~suffix:"_ok" id then
-      (match args with
-      | [arg1; arg2] ->
-        sprintf "%s is :ref:`valid <valid-val>` with type %s" arg1 arg2
-      | [arg] -> sprintf "the type of %s" arg
-      | _ -> error expr.at "Invalid arity for relation call";
-      )
-    else error expr.at ("Not supported relation call: " ^ id);
+    (match Prose_util.extract_call_hint id with
+    | Some hint -> Prose_util.apply_prose_hint hint args
+    | None ->
+      (* HARDCODE: relation call *)
+      if id = "Eval_expr" then
+        match args with
+        | [arg] ->
+          sprintf "the result of :ref:`evaluating <exec-expr>` %s" arg
+        | _ -> error expr.at (Printf.sprintf "Invalid arity for relation call: %d ([ %s ])" (List.length args) (String.concat " " args))
+      else if id = "Expand" || id = "Expand_use" then
+        (match args with
+        | [arg1] ->
+          sprintf "the :ref:`expansion <aux-expand-deftype>` of %s" arg1
+        | _ -> error expr.at "Invalid arity for relation call";
+        )
+      else if String.ends_with ~suffix:"_type" id || String.ends_with ~suffix:"_ok" id then
+        (match args with
+        | [arg1; arg2] ->
+          sprintf "%s is :ref:`valid <valid-val>` with type %s" arg1 arg2
+        | [arg] -> sprintf "the type of %s" arg
+        | _ -> error expr.at "Invalid arity for relation call";
+        )
+      else error expr.at ("Not supported relation call: " ^ id)
+    )
   | Al.Ast.InvCallE (id, nl, al) ->
     let lhs_variable =
       if id = "lsizenn" || id = "lsizenn1" || id = "lsizenn2" then
@@ -722,6 +725,13 @@ and render_expr' env expr =
       rendered_arity
       and_opt
       rendered_arg
+  | Al.Ast.CaseE (mixop, es) ->
+    (match Prose_util.extract_case_hint expr.note mixop with
+    | None -> error expr.at (Printf.sprintf "Cannot render %s" (Al.Print.string_of_expr expr))
+    | Some template ->
+      let args = List.map (render_expr env) es in
+      Prose_util.apply_prose_hint template args
+    )
   | Al.Ast.MemE (e1, {it = ListE es; _}) ->
     let se1 = render_expr env e1 in
     let se2 = render_list (render_expr env) "; " es in

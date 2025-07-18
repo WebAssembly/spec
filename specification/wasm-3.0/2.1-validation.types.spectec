@@ -77,7 +77,7 @@ rule Expand_use/typeidx: _IDX typeidx ~~_C comptype  -- Expand: C.TYPES[typeidx]
 ;; Type definitions
 
 syntax oktypeidx hint(show OK#((typeidx))) hint(prose_desc "type index") =
-  | OK typeidx      hint(show OK#(%))     hint(macro "%subtype")    hint(prose_show %)
+  | OK typeidx      hint(show OK#(%))     hint(macro "%subtype")    hint(prose "%1")
 syntax oktypeidxnat hint(show OK#(typeidx,n)) =
   | OK typeidx nat  hint(show OK#(%,%))   hint(macro "%subtypeext")
 
