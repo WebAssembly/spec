@@ -13945,9 +13945,9 @@ The heap type :math:`{\mathit{heaptype}}_1` :ref:`matches <match>` the heap type
 
       * The heap type :math:`{\mathit{heaptype}}_1` is of the form :math:`(\mathsf{rec} {.} i)`.
 
-      * The heap type :math:`{\mathit{heaptype}}_2` is of the form :math:`{{\mathit{typeuse}}^\ast}{}[j]`.
-
       * The length of :math:`{{\mathit{typeuse}}^\ast}` is greater than :math:`j`.
+
+      * The heap type :math:`{\mathit{heaptype}}_2` is of the form :math:`{{\mathit{typeuse}}^\ast}{}[j]`.
 
       * The recursive type :math:`C{.}\mathsf{recs}{}[i]` exists.
 
@@ -26182,8 +26182,8 @@ Heaptype_sub
     - heaptype_1 matches C.TYPES[typeidx].
   - Or:
     - heaptype_1 is (REC i).
-    - heaptype_2 is typeuse*[j].
     - |typeuse*| is greater than j.
+    - heaptype_2 is typeuse*[j].
     - the recursive type C.RECS[i] exists.
     - C.RECS[i] is (SUB fin typeuse* ct).
   - Or:

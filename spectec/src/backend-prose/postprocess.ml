@@ -53,7 +53,7 @@ let reverse_walk_stmt_acc f acc      = reversify (walk_stmt_acc f acc)
 let reverse_walk_stmt_lift f         = reversify (walk_stmt_lift f)
 let reverse_walk_stmt f              = reversify (walk_stmt f)
 
-let fold_stmt f ss =
+let fold_stmt (f: stmt list -> stmt -> stmt list) ss =
   let rec aux ss =
     List.fold_left (fun acc s ->
       let s' =
@@ -348,6 +348,64 @@ let remove_dead_binding def =
     RuleD (anchor, s, sl')
   | _ -> def
 
+let has_subexpr_expr e ee =
+  let flag = ref false in
+  let base = Al.Walk.base_unit_walker in
+  let walk_expr w e' = if Al.Eq.eq_expr e e' then flag := true else base.walk_expr w e' in
+  let walker = {Al.Walk.base_unit_walker with walk_expr} in
+  walker.walk_expr walker ee;
+  !flag
+
+let rec has_subexpr e s =
+  let fe = has_subexpr_expr e in
+  let fes = List.exists fe in
+  let fs = has_subexpr e in
+  let fss = List.exists fs in
+  match s with
+  | LetS (e1, e2)
+  | CmpS (e1, _, e2)
+  | MatchesS (e1, e2)
+  | IsConcatS (e1, e2)
+  | ContextS (e1, e2) -> fe e1 || fe e2
+  | CondS e
+  | IsDefinedS e
+  | IsDefaultableS (e, _) -> fe e
+  | IsValidS (None, e, es, _) -> fe e || fes es
+  | IsValidS (Some e0, e1, es, _) -> fe e0 || fe e1 || fes es
+  | IsConstS (None, e') -> fe e'
+  | IsConstS (Some e, e') -> fe e || fe e'
+  | IfS (e, sl) -> fe e || fss sl
+  | ForallS (pairs, sl) ->
+      let pair_exprs = List.flatten (List.map (fun (e1, e2) -> [e1; e2]) pairs) in
+      fes pair_exprs || fss sl
+  | EitherS sll -> List.exists fss sll
+  | BinS (s1, _, s2) -> fs s1 || fs s2
+  | RelS (_, es) -> fes es
+  | YetS _ -> false
+
+let rec insert_at i x xs =
+  match i, xs with
+  | 0, _ -> x :: xs
+  | _, [] -> [x]
+  | _, hd :: tl -> hd :: (insert_at (i-1) x tl)
+
+let prioritize_length_check def =
+  match def with
+  | RuleD (anchor, s, sl) ->
+    let sl' = fold_stmt (fun acc s ->
+      match s with
+      | CmpS ({it = LenE base; _}, `GtOp, index) ->
+        let no_typ = (Il.Ast.VarT ("" $ no_region, []) $ no_region) in
+        let e = AccE (base, IdxP index $ no_region) $$ no_region % no_typ in
+        (match List.find_index (has_subexpr e) acc with
+        | Some i -> insert_at i s acc
+        | None -> acc @ [s]
+        )
+      | _ -> acc @ [s]
+    ) sl in
+    RuleD (anchor, s, sl')
+  | AlgoD _ -> def
+
 let postprocess_prose defs =
   List.map (fun def ->
     def
@@ -357,4 +415,5 @@ let postprocess_prose defs =
     |> remove_same_len_check
     |> restructure_forall
     |> remove_dead_binding
+    |> prioritize_length_check
   ) defs
