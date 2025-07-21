@@ -379,7 +379,10 @@ let extract_triplet_rule rule =
 let collect_non_trivial frees m exp =
   match exp.it with
   | Ast.CallE (_, _) ->
-    let fresh = (gen_new_var frees "t") $ no_region in
+    let name = Al.Al_util.typ_to_var_name exp.note in
+    (* HARDCODE: t: valtype *)
+    let name = if name = "valtype" then "t" else name in
+    let fresh = (gen_new_var frees name) $ no_region in
     let var = Ast.VarE fresh $$ exp.at % exp.note in
     m := Map.add fresh.it (var, exp) !m;
     var
@@ -397,9 +400,9 @@ let preprocess_exp frees m exp =
   transform_exp transformer exp
 
 let preprocess_rule m rule =
-  let frees = (Free.free_rule rule).varid in
   { rule with it = match rule.it with
     | Ast.RuleD (id, bs, ops, exp, prems) ->
+      let frees = Free.(union (free_rule rule) (free_list bound_bind bs)).varid in
       Ast.RuleD (id, bs, ops, preprocess_exp frees m exp, prems)}
 
 let postprocess_rules m rule =

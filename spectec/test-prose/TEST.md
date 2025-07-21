@@ -4954,30 +4954,30 @@ The instruction :math:`({\mathit{sh}}{.}\mathsf{shuffle}~{i^\ast})` is :ref:`val
 
 
 
-The instruction :math:`({\mathit{sh}}{.}\mathsf{splat})` is :ref:`valid <valid-val>` with the function type :math:`t~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
+The instruction :math:`({\mathit{sh}}{.}\mathsf{splat})` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{numtype}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
 
 
-   * The number type :math:`t` is :math:`{\mathrm{unpack}}({\mathit{sh}})`.
-
-
-
-
-The instruction :math:`({{\mathit{sh}}{.}\mathsf{extract\_lane}}{{{\mathit{sx}}^?}}~i)` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~t` if:
-
-
-   * The lane index :math:`i` is less than :math:`{\mathrm{dim}}({\mathit{sh}})`.
-
-   * The number type :math:`t` is :math:`{\mathrm{unpack}}({\mathit{sh}})`.
+   * The number type :math:`{\mathit{numtype}}` is :math:`{\mathrm{unpack}}({\mathit{sh}})`.
 
 
 
 
-The instruction :math:`({\mathit{sh}}{.}\mathsf{replace\_lane}~i)` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{v{\scriptstyle 128}}~t~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
+The instruction :math:`({{\mathit{sh}}{.}\mathsf{extract\_lane}}{{{\mathit{sx}}^?}}~i)` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~{\mathit{numtype}}` if:
 
 
    * The lane index :math:`i` is less than :math:`{\mathrm{dim}}({\mathit{sh}})`.
 
-   * The number type :math:`t` is :math:`{\mathrm{unpack}}({\mathit{sh}})`.
+   * The number type :math:`{\mathit{numtype}}` is :math:`{\mathrm{unpack}}({\mathit{sh}})`.
+
+
+
+
+The instruction :math:`({\mathit{sh}}{.}\mathsf{replace\_lane}~i)` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{v{\scriptstyle 128}}~{\mathit{numtype}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
+
+
+   * The lane index :math:`i` is less than :math:`{\mathrm{dim}}({\mathit{sh}})`.
+
+   * The number type :math:`{\mathit{numtype}}` is :math:`{\mathrm{unpack}}({\mathit{sh}})`.
 
 
 
@@ -10726,18 +10726,18 @@ Instr_ok/vshuffle
     - the lane index i is less than (2 * $dim(sh)).
 
 Instr_ok/vsplat
-- the instruction (VSPLAT sh) is valid with the function type [t] -> [V128] if:
-  - the number type t is $shunpack(sh).
+- the instruction (VSPLAT sh) is valid with the function type [numtype] -> [V128] if:
+  - the number type numtype is $shunpack(sh).
 
 Instr_ok/vextract_lane
-- the instruction (VEXTRACT_LANE sh sx? i) is valid with the function type [V128] -> [t] if:
+- the instruction (VEXTRACT_LANE sh sx? i) is valid with the function type [V128] -> [numtype] if:
   - the lane index i is less than $dim(sh).
-  - the number type t is $shunpack(sh).
+  - the number type numtype is $shunpack(sh).
 
 Instr_ok/vreplace_lane
-- the instruction (VREPLACE_LANE sh i) is valid with the function type [V128, t] -> [V128] if:
+- the instruction (VREPLACE_LANE sh i) is valid with the function type [V128, numtype] -> [V128] if:
   - the lane index i is less than $dim(sh).
-  - the number type t is $shunpack(sh).
+  - the number type numtype is $shunpack(sh).
 
 Instr_ok/vextunop
 - the instruction (VEXTUNOP sh_1 sh_2 vextunop) is valid with the function type [V128] -> [V128].
@@ -14905,7 +14905,7 @@ The instruction :math:`(\mathsf{br\_on\_non\_null}~l)` is :ref:`valid <valid-val
 
 
 
-The instruction :math:`(\mathsf{br\_on\_cast}~l~{\mathit{rt}}_1~{\mathit{rt}}_2)` is :ref:`valid <valid-val>` with the instruction type :math:`{t^\ast}~{\mathit{rt}}_1~\rightarrow~{t^\ast}~{t'}` if:
+The instruction :math:`(\mathsf{br\_on\_cast}~l~{\mathit{rt}}_1~{\mathit{rt}}_2)` is :ref:`valid <valid-val>` with the instruction type :math:`{t^\ast}~{\mathit{rt}}_1~\rightarrow~{t^\ast}~{\mathit{reftype}}` if:
 
 
    * The label :math:`C{.}\mathsf{labels}{}[l]` exists.
@@ -14920,7 +14920,7 @@ The instruction :math:`(\mathsf{br\_on\_cast}~l~{\mathit{rt}}_1~{\mathit{rt}}_2)
 
    * The reference type :math:`{\mathit{rt}}_2` :ref:`matches <match>` the reference type :math:`{\mathit{rt}}`.
 
-   * The reference type :math:`{t'}` is :math:`{\mathit{rt}}_1 \setminus {\mathit{rt}}_2`.
+   * The reference type :math:`{\mathit{reftype}}` is :math:`{\mathit{rt}}_1 \setminus {\mathit{rt}}_2`.
 
 
 
@@ -15490,30 +15490,30 @@ The instruction :math:`({\mathit{sh}}{.}\mathsf{shuffle}~{i^\ast})` is :ref:`val
 
 
 
-The instruction :math:`({\mathit{sh}}{.}\mathsf{splat})` is :ref:`valid <valid-val>` with the instruction type :math:`t~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
+The instruction :math:`({\mathit{sh}}{.}\mathsf{splat})` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{numtype}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
 
 
-   * The number type :math:`t` is :math:`{\mathrm{unpack}}({\mathit{sh}})`.
-
-
-
-
-The instruction :math:`({{\mathit{sh}}{.}\mathsf{extract\_lane}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~i)` is :ref:`valid <valid-val>` with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~t` if:
-
-
-   * The lane index :math:`i` is less than :math:`{\mathrm{dim}}({\mathit{sh}})`.
-
-   * The number type :math:`t` is :math:`{\mathrm{unpack}}({\mathit{sh}})`.
+   * The number type :math:`{\mathit{numtype}}` is :math:`{\mathrm{unpack}}({\mathit{sh}})`.
 
 
 
 
-The instruction :math:`({\mathit{sh}}{.}\mathsf{replace\_lane}~i)` is :ref:`valid <valid-val>` with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~t~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
+The instruction :math:`({{\mathit{sh}}{.}\mathsf{extract\_lane}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~i)` is :ref:`valid <valid-val>` with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~{\mathit{numtype}}` if:
 
 
    * The lane index :math:`i` is less than :math:`{\mathrm{dim}}({\mathit{sh}})`.
 
-   * The number type :math:`t` is :math:`{\mathrm{unpack}}({\mathit{sh}})`.
+   * The number type :math:`{\mathit{numtype}}` is :math:`{\mathrm{unpack}}({\mathit{sh}})`.
+
+
+
+
+The instruction :math:`({\mathit{sh}}{.}\mathsf{replace\_lane}~i)` is :ref:`valid <valid-val>` with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~{\mathit{numtype}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
+
+
+   * The lane index :math:`i` is less than :math:`{\mathrm{dim}}({\mathit{sh}})`.
+
+   * The number type :math:`{\mathit{numtype}}` is :math:`{\mathrm{unpack}}({\mathit{sh}})`.
 
 
 
@@ -15643,7 +15643,7 @@ The instruction :math:`(\mathsf{table{.}fill}~x)` is :ref:`valid <valid-val>` wi
 
 
 
-The instruction :math:`(\mathsf{table{.}copy}~x_1~x_2)` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}_1~{\mathit{at}}_2~t~\rightarrow~\epsilon` if:
+The instruction :math:`(\mathsf{table{.}copy}~x_1~x_2)` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}_1~{\mathit{at}}_2~{\mathit{addrtype}}~\rightarrow~\epsilon` if:
 
 
    * The table :math:`C{.}\mathsf{tables}{}[x_1]` exists.
@@ -15656,7 +15656,7 @@ The instruction :math:`(\mathsf{table{.}copy}~x_1~x_2)` is :ref:`valid <valid-va
 
    * The reference type :math:`{\mathit{rt}}_2` :ref:`matches <match>` the reference type :math:`{\mathit{rt}}_1`.
 
-   * The address type :math:`t` is :math:`{\mathrm{min}}({\mathit{at}}_1, {\mathit{at}}_2)`.
+   * The address type :math:`{\mathit{addrtype}}` is :math:`{\mathrm{min}}({\mathit{at}}_1, {\mathit{at}}_2)`.
 
 
 
@@ -15715,7 +15715,7 @@ The instruction :math:`(\mathsf{memory{.}fill}~x)` is :ref:`valid <valid-val>` w
 
 
 
-The instruction :math:`(\mathsf{memory{.}copy}~x_1~x_2)` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}_1~{\mathit{at}}_2~t~\rightarrow~\epsilon` if:
+The instruction :math:`(\mathsf{memory{.}copy}~x_1~x_2)` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}_1~{\mathit{at}}_2~{\mathit{addrtype}}~\rightarrow~\epsilon` if:
 
 
    * The memory :math:`C{.}\mathsf{mems}{}[x_1]` exists.
@@ -15726,7 +15726,7 @@ The instruction :math:`(\mathsf{memory{.}copy}~x_1~x_2)` is :ref:`valid <valid-v
 
    * The memory :math:`C{.}\mathsf{mems}{}[x_2]` is of the form :math:`({\mathit{at}}_2~{\mathit{lim}}_2~\mathsf{page})`.
 
-   * The address type :math:`t` is :math:`{\mathrm{min}}({\mathit{at}}_1, {\mathit{at}}_2)`.
+   * The address type :math:`{\mathit{addrtype}}` is :math:`{\mathrm{min}}({\mathit{at}}_1, {\mathit{at}}_2)`.
 
 
 
@@ -16268,12 +16268,12 @@ The type definition :math:`(\mathsf{type}~{\mathit{rectype}})` is :ref:`valid <v
 
 
 
-The tag :math:`(\mathsf{tag}~{\mathit{tagtype}})` is :ref:`valid <valid-val>` with the tag type :math:`t` if:
+The tag :math:`(\mathsf{tag}~{\mathit{tagtype}})` is :ref:`valid <valid-val>` with the tag type :math:`{\mathit{tagtype}'}` if:
 
 
    * The tag type :math:`{\mathit{tagtype}}` is :ref:`valid <valid-val>`.
 
-   * The tag type :math:`t` is :math:`{{\mathrm{clos}}}_{C}({\mathit{tagtype}})`.
+   * The tag type :math:`{\mathit{tagtype}'}` is :math:`{{\mathrm{clos}}}_{C}({\mathit{tagtype}})`.
 
 
 
@@ -16494,12 +16494,12 @@ The start function :math:`(\mathsf{start}~x)` is :ref:`valid <valid-val>` if:
 
 
 
-The import :math:`(\mathsf{import}~{\mathit{name}}_1~{\mathit{name}}_2~{\mathit{xt}})` is :ref:`valid <valid-val>` with the external type :math:`t` if:
+The import :math:`(\mathsf{import}~{\mathit{name}}_1~{\mathit{name}}_2~{\mathit{xt}})` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{externtype}}` if:
 
 
    * The external type :math:`{\mathit{xt}}` is :ref:`valid <valid-val>`.
 
-   * The external type :math:`t` is :math:`{{\mathrm{clos}}}_{C}({\mathit{xt}})`.
+   * The external type :math:`{\mathit{externtype}}` is :math:`{{\mathrm{clos}}}_{C}({\mathit{xt}})`.
 
 
 
@@ -16697,7 +16697,7 @@ The type definition sequence :math:`{\mathit{type}}_1~{{\mathit{type}}^\ast}` is
 
 
 
-The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{tag}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` is :ref:`valid <valid-val>` with the module type :math:`t` if:
+The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{tag}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` is :ref:`valid <valid-val>` with the module type :math:`{\mathit{moduletype}}` if:
 
 
    * Under the context :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{return}~\epsilon \}\end{array}`, the type definition sequence :math:`{{\mathit{type}}^\ast}` is :ref:`valid <valid-val>` with the defined type sequence :math:`{{\mathit{dt}'}^\ast}`.
@@ -16776,7 +16776,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    * The defined type sequence :math:`{{\mathit{dt}}_{\mathsf{i}}^\ast}` is of the form :math:`{\mathrm{funcs}}({{\mathit{xt}}_{\mathsf{i}}^\ast})`.
 
-   * The module type :math:`t` is :math:`{{\mathrm{clos}}}_{C}({{\mathit{xt}}_{\mathsf{i}}^\ast}~\rightarrow~{{\mathit{xt}}_{\mathsf{e}}^\ast})`.
+   * The module type :math:`{\mathit{moduletype}}` is :math:`{{\mathrm{clos}}}_{C}({{\mathit{xt}}_{\mathsf{i}}^\ast}~\rightarrow~{{\mathit{xt}}_{\mathsf{e}}^\ast})`.
 
 
 
@@ -26674,14 +26674,14 @@ Instr_ok/br_on_non_null
   - C.LABELS[l] is t* :: [(REF NULL? ht)].
 
 Instr_ok/br_on_cast
-- the instruction (BR_ON_CAST l rt_1 rt_2) is valid with the instruction type t* :: [rt_1] -> t* :: [t'] if:
+- the instruction (BR_ON_CAST l rt_1 rt_2) is valid with the instruction type t* :: [rt_1] -> t* :: [reftype] if:
   - the label C.LABELS[l] exists.
   - C.LABELS[l] is t* :: [rt].
   - the reference type rt_1 is valid.
   - the reference type rt_2 is valid.
   - rt_2 matches rt_1.
   - rt_2 matches the reference type rt.
-  - the reference type t' is $diffrt(rt_1, rt_2).
+  - the reference type reftype is $diffrt(rt_1, rt_2).
 
 Instr_ok/br_on_cast_fail
 - the instruction (BR_ON_CAST_FAIL l rt_1 rt_2) is valid with the instruction type t* :: [rt_1] -> t* :: [rt_2] if:
@@ -26978,18 +26978,18 @@ Instr_ok/vshuffle
     - the lane index i is less than (2 * $dim(sh)).
 
 Instr_ok/vsplat
-- the instruction (VSPLAT sh) is valid with the instruction type [t] -> [V128] if:
-  - the number type t is $unpackshape(sh).
+- the instruction (VSPLAT sh) is valid with the instruction type [numtype] -> [V128] if:
+  - the number type numtype is $unpackshape(sh).
 
 Instr_ok/vextract_lane
-- the instruction (VEXTRACT_LANE sh sx? i) is valid with the instruction type [V128] -> [t] if:
+- the instruction (VEXTRACT_LANE sh sx? i) is valid with the instruction type [V128] -> [numtype] if:
   - the lane index i is less than $dim(sh).
-  - the number type t is $unpackshape(sh).
+  - the number type numtype is $unpackshape(sh).
 
 Instr_ok/vreplace_lane
-- the instruction (VREPLACE_LANE sh i) is valid with the instruction type [V128, t] -> [V128] if:
+- the instruction (VREPLACE_LANE sh i) is valid with the instruction type [V128, numtype] -> [V128] if:
   - the lane index i is less than $dim(sh).
-  - the number type t is $unpackshape(sh).
+  - the number type numtype is $unpackshape(sh).
 
 Instr_ok/vextunop
 - the instruction (VEXTUNOP sh_1 sh_2 vextunop) is valid with the instruction type [V128] -> [V128].
@@ -27057,13 +27057,13 @@ Instr_ok/table.fill
   - C.TABLES[x] is (at lim rt).
 
 Instr_ok/table.copy
-- the instruction (TABLE.COPY x_1 x_2) is valid with the instruction type [at_1, at_2, t] -> [] if:
+- the instruction (TABLE.COPY x_1 x_2) is valid with the instruction type [at_1, at_2, addrtype] -> [] if:
   - the table C.TABLES[x_1] exists.
   - C.TABLES[x_1] is (at_1 lim_1 rt_1).
   - the table C.TABLES[x_2] exists.
   - C.TABLES[x_2] is (at_2 lim_2 rt_2).
   - the reference type rt_2 matches the reference type rt_1.
-  - the address type t is $minat(at_1, at_2).
+  - the address type addrtype is $minat(at_1, at_2).
 
 Instr_ok/table.init
 - the instruction (TABLE.INIT x y) is valid with the instruction type [at, I32, I32] -> [] if:
@@ -27093,12 +27093,12 @@ Instr_ok/memory.fill
   - C.MEMS[x] is at lim PAGE.
 
 Instr_ok/memory.copy
-- the instruction (MEMORY.COPY x_1 x_2) is valid with the instruction type [at_1, at_2, t] -> [] if:
+- the instruction (MEMORY.COPY x_1 x_2) is valid with the instruction type [at_1, at_2, addrtype] -> [] if:
   - the memory C.MEMS[x_1] exists.
   - C.MEMS[x_1] is at_1 lim_1 PAGE.
   - the memory C.MEMS[x_2] exists.
   - C.MEMS[x_2] is at_2 lim_2 PAGE.
-  - the address type t is $minat(at_1, at_2).
+  - the address type addrtype is $minat(at_1, at_2).
 
 Instr_ok/memory.init
 - the instruction (MEMORY.INIT x y) is valid with the instruction type [at, I32, I32] -> [] if:
@@ -27384,9 +27384,9 @@ Type_ok
   - Under the context C', the recursive type rectype is valid for the type index (OK x).
 
 Tag_ok
-- the tag (TAG tagtype) is valid with the tag type t if:
+- the tag (TAG tagtype) is valid with the tag type tagtype' if:
   - the tag type tagtype is valid.
-  - t is $clos_tagtype(C, tagtype).
+  - tagtype' is $clos_tagtype(C, tagtype).
 
 Global_ok
 - the global (GLOBAL globaltype expr) is valid with the global type globaltype if:
@@ -27499,9 +27499,9 @@ Start_ok
   - The :ref:`expansion <aux-expand-deftype>` of C.FUNCS[x] is the composite type (FUNC [] -> []).
 
 Import_ok
-- the import (IMPORT name_1 name_2 xt) is valid with the external type t if:
+- the import (IMPORT name_1 name_2 xt) is valid with the external type externtype if:
   - the external type xt is valid.
-  - t is $clos_externtype(C, xt).
+  - externtype is $clos_externtype(C, xt).
 
 Externidx_ok
 - the external index externidx is valid with the external type externtype if:
@@ -27603,7 +27603,7 @@ Types_ok/cons
   - Under the context C', the type definition sequence type* is valid with the defined type sequence dt*.
 
 Module_ok
-- the module (MODULE type* import* tag* global* mem* table* func* data* elem* start? export*) is valid with the module type t if:
+- the module (MODULE type* import* tag* global* mem* table* func* data* elem* start? export*) is valid with the module type moduletype if:
   - Under the context { RETURN: ?() }, the type definition sequence type* is valid with the defined type sequence dt'*.
   - For all import in import*:
     - Under the context { TYPES: dt'*; RETURN: ?() }, the import import is valid with the external type xt_I.
@@ -27642,7 +27642,7 @@ Module_ok
   - the memory type sequence mt_I* is $memsxt(xt_I*).
   - the table type sequence tt_I* is $tablesxt(xt_I*).
   - the defined type sequence dt_I* is $funcsxt(xt_I*).
-  - t is $clos_moduletype(C, xt_I* -> xt_E*).
+  - moduletype is $clos_moduletype(C, xt_I* -> xt_E*).
 
 Num_ok
 - the number value (nt.CONST c) is valid with the number type nt.
