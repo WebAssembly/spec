@@ -8976,31 +8976,63 @@ grammar Tidchar : char
 ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
 grammar Tdigit : nat
   ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod "0" => 0
+  prod 0x30 => 0
   ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod "9" => 9
+  prod 0x31 => 1
+  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
+  prod 0x32 => 2
+  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
+  prod 0x33 => 3
+  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
+  prod 0x34 => 4
+  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
+  prod 0x35 => 5
+  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
+  prod 0x36 => 6
+  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
+  prod 0x37 => 7
+  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
+  prod 0x38 => 8
+  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
+  prod 0x39 => 9
 
 ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
 grammar Thexdigit : nat
   ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
   prod{d : nat} d:Tdigit => d
   ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod "A" => 10
+  prod 0x41 => 10
   ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod "F" => 15
+  prod 0x42 => 11
   ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod "a" => 10
+  prod 0x43 => 12
   ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod "f" => 15
+  prod 0x44 => 13
+  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
+  prod 0x45 => 14
+  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
+  prod 0x46 => 15
+  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
+  prod 0x61 => 10
+  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
+  prod 0x62 => 11
+  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
+  prod 0x63 => 12
+  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
+  prod 0x64 => 13
+  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
+  prod 0x65 => 14
+  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
+  prod 0x66 => 15
 
 ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
 rec {
 
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:30.1-32.46
+;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:24.1-26.46
 grammar Thexnum : nat
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:31.5-31.21
+  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:25.5-25.21
   prod{h : nat} h:Thexdigit => h
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:32.5-32.46
+  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:26.5-26.46
   prod{n : n, h : nat} {{n:Thexnum} {"_"?{}} {h:Thexdigit}} => ((16 * n) + h)
 }
 
@@ -9178,11 +9210,11 @@ grammar Tsign : int
 ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
 rec {
 
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:26.1-28.40
+;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:20.1-22.40
 grammar Tnum : nat
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:27.5-27.18
+  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:21.5-21.18
   prod{d : nat} d:Tdigit => d
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:28.5-28.40
+  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:22.5-22.40
   prod{n : n, d : nat} {{n:Tnum} {"_"?{}} {d:Tdigit}} => ((10 * n) + d)
 }
 
@@ -9211,22 +9243,22 @@ grammar TiN(N : N) : iN(N)
 ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
 rec {
 
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:46.1-48.48
+;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:40.1-42.48
 grammar Tfrac : rat
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:47.5-47.26
+  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:41.5-41.26
   prod{d : nat} d:Tdigit => ((d : nat <:> rat) / (10 : nat <:> rat))
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:48.5-48.48
+  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:42.5-42.48
   prod{d : nat, p : rat} {{d:Tdigit} {"_"?{}} {p:Tfrac}} => (((d + ((p / (10 : nat <:> rat)) : rat <:> nat)) : nat <:> rat) / (10 : nat <:> rat))
 }
 
 ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
 rec {
 
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:50.1-52.54
+;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:44.1-46.54
 grammar Thexfrac : rat
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:51.5-51.29
+  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:45.5-45.29
   prod{h : nat} h:Thexdigit => ((h : nat <:> rat) / (16 : nat <:> rat))
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:52.5-52.54
+  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:46.5-46.54
   prod{h : nat, p : rat} {{h:Thexdigit} {"_"?{}} {p:Thexfrac}} => (((h + ((p / (16 : nat <:> rat)) : rat <:> nat)) : nat <:> rat) / (16 : nat <:> rat))
 }
 
@@ -9339,57 +9371,57 @@ grammar Tidx_(ids : name?*) : idx
 ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
 grammar Ttypeidx_(I : I) : typeidx
   ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{x : idx} x:Tidx_(I.TYPES_I) => x
+  prod{`<implicit-prod-result>` : idx} `<implicit-prod-result>`:Tidx_(I.TYPES_I) => `<implicit-prod-result>`
 
 ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
 grammar Ttagidx_(I : I) : tagidx
   ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{x : idx} x:Tidx_(I.TAGS_I) => x
+  prod{`<implicit-prod-result>` : idx} `<implicit-prod-result>`:Tidx_(I.TAGS_I) => `<implicit-prod-result>`
 
 ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
 grammar Tglobalidx_(I : I) : globalidx
   ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{x : idx} x:Tidx_(I.GLOBALS_I) => x
+  prod{`<implicit-prod-result>` : idx} `<implicit-prod-result>`:Tidx_(I.GLOBALS_I) => `<implicit-prod-result>`
 
 ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
 grammar Tmemidx_(I : I) : memidx
   ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{x : idx} x:Tidx_(I.MEMS_I) => x
+  prod{`<implicit-prod-result>` : idx} `<implicit-prod-result>`:Tidx_(I.MEMS_I) => `<implicit-prod-result>`
 
 ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
 grammar Ttableidx_(I : I) : tableidx
   ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{x : idx} x:Tidx_(I.TABLES_I) => x
+  prod{`<implicit-prod-result>` : idx} `<implicit-prod-result>`:Tidx_(I.TABLES_I) => `<implicit-prod-result>`
 
 ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
 grammar Tfuncidx_(I : I) : funcidx
   ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{x : idx} x:Tidx_(I.FUNCS_I) => x
+  prod{`<implicit-prod-result>` : idx} `<implicit-prod-result>`:Tidx_(I.FUNCS_I) => `<implicit-prod-result>`
 
 ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
 grammar Tdataidx_(I : I) : dataidx
   ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{x : idx} x:Tidx_(I.DATAS_I) => x
+  prod{`<implicit-prod-result>` : idx} `<implicit-prod-result>`:Tidx_(I.DATAS_I) => `<implicit-prod-result>`
 
 ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
 grammar Telemidx_(I : I) : elemidx
   ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{x : idx} x:Tidx_(I.ELEMS_I) => x
+  prod{`<implicit-prod-result>` : idx} `<implicit-prod-result>`:Tidx_(I.ELEMS_I) => `<implicit-prod-result>`
 
 ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
 grammar Tlocalidx_(I : I) : localidx
   ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{x : idx} x:Tidx_(I.LOCALS_I) => x
+  prod{`<implicit-prod-result>` : idx} `<implicit-prod-result>`:Tidx_(I.LOCALS_I) => `<implicit-prod-result>`
 
 ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
 grammar Tlabelidx_(I : I) : labelidx
   ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{x : idx} x:Tidx_(I.LABELS_I) => x
+  prod{`<implicit-prod-result>` : idx} `<implicit-prod-result>`:Tidx_(I.LABELS_I) => `<implicit-prod-result>`
 
 ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
 grammar Tfieldidx__(I : I, x : idx) : fieldidx
   ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{i : idx} i:Tidx_(I.FIELDS_I[x!`%`_idx.0]) => i
+  prod{`<implicit-prod-result>` : idx} `<implicit-prod-result>`:Tidx_(I.FIELDS_I[x!`%`_idx.0]) => `<implicit-prod-result>`
 
 ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
 grammar Texternidx_(I : I) : externidx
