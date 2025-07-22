@@ -29,7 +29,7 @@ def $sum(n n'*) = $(n + $sum(n'*))
 
 ;; General sequence functions
 
-def $opt_(syntax X, X*) : X?  hint(show %2)
+def $opt_(syntax X, X*) : X?  hint(show %2) hint(partial)
 def $opt_(syntax X, eps) = eps
 def $opt_(syntax X, w) = w
 

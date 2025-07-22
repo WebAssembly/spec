@@ -21,19 +21,6 @@ def $concat_bytes((b*) (b'*)*) = b* $concat_bytes((b'*)*)
 ;;def $psize(packtype) : nat    hint(show |%|)
 ;;def $lsize(lanetype) : nat    hint(show |%|)
 
-def $size(I32) = 32
-def $size(I64) = 64
-def $size(F32) = 32
-def $size(F64) = 64
-def $size(V128) = 128
-
-def $isize(Inn) = $size(Inn)
-
-def $psize(I8) = 8
-def $psize(I16) = 16
-
-def $lsize(numtype) = $size(numtype)
-def $lsize(packtype) = $psize(packtype)
 
 
 ;; Unpacking
