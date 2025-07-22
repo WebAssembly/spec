@@ -241,7 +241,7 @@ def $lsizenn1(lt) = $lsize(lt)
 def $lsizenn2(lt) = $lsize(lt)
 
 def $inv_isize(nat) : Inn hint(partial)
-def $inv_jsize(nat) : Jnn
+def $inv_jsize(nat) : Jnn hint(partial)
 def $inv_fsize(nat) : Fnn hint(partial)
 
 def $inv_isize(32) = I32
@@ -250,7 +250,8 @@ def $inv_fsize(32) = F32
 def $inv_fsize(64) = F64
 def $inv_jsize(8)  = I8
 def $inv_jsize(16) = I16
-def $inv_jsize(n)  = $inv_isize(n)
+def $inv_jsize(32) = I32 ;; HACK! should use $inv_isize
+def $inv_jsize(64) = I64 ;; HACK! should use $inv_isize
 
 
 syntax num_(numtype)
