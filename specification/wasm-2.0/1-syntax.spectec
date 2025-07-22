@@ -35,11 +35,11 @@ var b : byte
 
 ;; Floating-point
 
-def $signif(N) : nat
+def $signif(N) : nat hint(partial)
 def $signif(32) = 23
 def $signif(64) = 52
 
-def $expon(N) : nat
+def $expon(N) : nat hint(partial)
 def $expon(32) = 8
 def $expon(64) = 11
 
@@ -203,7 +203,7 @@ var xt : externtype
 
 def $lanetype(shape) : lanetype
 
-def $size(valtype) : nat      hint(show |%|)
+def $size(valtype) : nat      hint(show |%|) hint(partial)
 def $psize(packtype) : nat    hint(show |%|)
 def $lsize(lanetype) : nat    hint(show |%|)
 def $isize(Inn) : nat         hint(show |%|) hint(inverse $inv_isize)
@@ -214,6 +214,7 @@ def $size(I32) = 32
 def $size(I64) = 64
 def $size(F32) = 32
 def $size(F64) = 64
+def $size(V128) = 128
 
 def $psize(I8) = 8
 def $psize(I16) = 16
@@ -240,7 +241,7 @@ def $lsizenn1(lt) = $lsize(lt)
 def $lsizenn2(lt) = $lsize(lt)
 
 def $inv_isize(nat) : Inn hint(partial)
-def $inv_jsize(nat) : Jnn hint(partial)
+def $inv_jsize(nat) : Jnn
 def $inv_fsize(nat) : Fnn hint(partial)
 
 def $inv_isize(32) = I32
