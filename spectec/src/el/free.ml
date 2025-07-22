@@ -261,12 +261,15 @@ and det_sym g =
   | FuseG _ | UnparenG _ -> assert false
 
 and free_prod prod =
-  let (g, e, prems) = prod.it in
-  free_sym g + free_exp e + free_prems prems
+  match prod.it with
+  | SynthP (g, e, prems) -> free_sym g + free_exp e + free_prems prems
+  | RangeP (g1, e1, g2, e2) ->
+    free_sym g1 + free_exp e1 + free_sym g2 + free_exp e2
 
 and det_prod prod =
-  let (g, _e, prems) = prod.it in
-  det_sym g + det_prems prems
+  match prod.it with
+  | SynthP (g, _e, prems) -> det_sym g + det_prems prems
+  | RangeP (g1, _e1, g2, _e2) -> det_sym g1 + det_sym g2
 
 and free_gram gram =
   let (_dots1, prods, _dots2) = gram.it in

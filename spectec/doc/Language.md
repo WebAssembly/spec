@@ -1151,6 +1151,7 @@ gram ::=
 
 prod ::=
   sym ("=>" exp)? ("--" premise)*
+  sym "=>" exp "|" "..." "|" sym "=>" exp
 
 sym ::=
   gramid args
@@ -1191,6 +1192,12 @@ Furthermore, they may contain nested alternatives separated by `|`.
 A special form of alternation defines a numeric range using the notation `n | ... | m`;
 in that case, both limit symbols must be numeric tokens.
 
+As a special short-hand,
+grammars can be given as a range `production | ... | production`.
+In that case,
+both left-hand and right-hand sides are restricted to numeric literals,
+which both must have the same distance between first and last case.
+
 Grammars can be parameterised.
 Accordingly, grammar identifiers may have corresponding arguments.
 
@@ -1203,15 +1210,15 @@ Any variables occurring in the pattern are instantiated accordingly and can be u
 However, bindings occurring inside a nested alternative are ignored.
 
 **Example:**
-Consider the following grammar for formulas over binary numbers
+Consider the following grammar for formulas over hexadecimal numbers
 ```
 grammar digit : nat =
-  | "0" => 0
-  | "1" => 1
+  | "0" => 0 | ... | "9" => 9
+  | "A" => 10 | ... | "F" => 15
 
 grammar number : nat =
   | d:digit => d
-  | n:number d:digit => $(2*n + d)
+  | n:number d:digit => $(16*n + d)
 
 grammar formula : nat =
   | n:number => n

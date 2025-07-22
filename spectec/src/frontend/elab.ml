@@ -1866,7 +1866,7 @@ and infer_sym env g : Il.sym * typ =
         else fail g.at "inconsistent types"
       );
       (fun env ->
-        (* Hack to treat singleton strings in short grammar as characters *)
+        (* HACK to treat singleton strings in short grammar as characters *)
         let* g' = attempt (elab_sym env g) (NumT `NatT $ g.at) in
         Ok (g', NumT `NatT $ g.at)
       );
@@ -1897,7 +1897,7 @@ and infer_sym env g : Il.sym * typ =
     checkpoint (
       choice env [
         (fun env ->
-          (* Hack to treat singleton strings in short grammar as characters *)
+          (* HACK to treat singleton strings in short grammar as characters *)
           let t1 = NumT `NatT $ g1.at in
           let* g1' = attempt (elab_sym env g1) t1 in
           let* e' = elab_exp env e t1 in
@@ -1972,48 +1972,85 @@ and elab_prod env prod t : Il.prod list =
   Debug.(log_in_at "el.elab_prod" prod.at
     (fun _ -> fmt "%s : %s" (el_prod prod) (el_typ t))
   );
-  let (g, e, prems) = prod.it in
-  let env' = local_env env in
-  env'.pm <- false;
-  let dims = Dim.check_prod (vars env) prod in
-  let dims' = Dim.Env.map (List.map (elab_iter env')) dims in
-  let g', _t = infer_sym env' g in
-  let g' = Dim.annot_sym dims' g' in
-  let e' =
-    checkpoint (
-      if equiv_typ env' t (TupT [] $ e.at) then
-        (* Special case: ignore unit attributes *)
-        (* TODO(4, rossberg): introduce proper top type? *)
-        let* e', _t = infer_exp env' e in
-        let t'_unit = Il.TupT [] $ e.at in
-        let joker () = Il.VarE ("_" $ e.at) $$ e.at % t'_unit in
-        Ok (Il.ProjE (
-          Il.TupE [
-            e'; Il.TupE [] $$ e.at % t'_unit
-          ] $$ e.at % (Il.TupT [joker (), e'.note; joker (), t'_unit] $ e.at), 1
-        ) $$ e.at % t'_unit)
-      else
-        elab_exp env' e t
+  match prod.it with
+  | SynthP (g, e, prems) ->
+    let env' = local_env env in
+    env'.pm <- false;
+    let dims = Dim.check_prod (vars env) prod in
+    let dims' = Dim.Env.map (List.map (elab_iter env')) dims in
+    let g', _t = infer_sym env' g in
+    let g' = Dim.annot_sym dims' g' in
+    let e' =
+      checkpoint (
+        if equiv_typ env' t (TupT [] $ e.at) then
+          (* Special case: ignore unit attributes *)
+          (* TODO(4, rossberg): introduce proper top type? *)
+          let* e', _t = infer_exp env' e in
+          let t'_unit = Il.TupT [] $ e.at in
+          let joker () = Il.VarE ("_" $ e.at) $$ e.at % t'_unit in
+          Ok (Il.ProjE (
+            Il.TupE [
+              e'; Il.TupE [] $$ e.at % t'_unit
+            ] $$ e.at % (Il.TupT [joker (), e'.note; joker (), t'_unit] $ e.at), 1
+          ) $$ e.at % t'_unit)
+        else
+          elab_exp env' e t
+      )
+    in
+    let e' = Dim.annot_exp dims' e' in
+    let prems' = List.map (Dim.annot_prem dims')
+      (concat_map_filter_nl_list (elab_prem env') prems) in
+    let det = Free.(diff (union (det_sym g) (det_prems prems)) (bound_env env)) in
+    let free = Free.(diff (free_prod prod) (union (det_prod prod) (bound_env env'))) in
+    if free <> Free.empty then
+      error prod.at ("grammar rule contains indeterminate variable(s) `" ^
+        String.concat "`, `" (Free.Set.elements free.varid) ^ "`");
+    let acc_bs', (module Arg : Iter.Arg) = make_binds_iter_arg env' det dims in
+    let module Acc = Iter.Make(Arg) in
+    Acc.sym g;
+    Acc.exp e;
+    Acc.prems prems;
+    let prod' = Il.ProdD (!acc_bs', g', e', prems') $ prod.at in
+    if not env'.pm then
+      [prod']
+    else
+      prod' :: elab_prod env Subst.(subst_prod pm_snd (Iter.clone_prod prod)) t
+  | RangeP (g1, e1, g2, e2) ->
+    let t = NumT `NatT $ prod.at in
+    let g1' = elab_sym env g1 t in
+    let e1' = checkpoint (elab_exp env e1 t) in
+    let g2' = elab_sym env g2 t in
+    let e2' = checkpoint (elab_exp env e2 t) in
+    let c1 =
+      match g1'.it with
+      | Il.NumG c1 -> c1
+      | _ -> error g1.at "invalid rule range grammar"
+    in
+    let c2 =
+      match g2'.it with
+      | Il.NumG c2 -> c2
+      | _ -> error g2.at "invalid rule range grammar"
+    in
+    let n1 =
+      match e1'.it with
+      | Il.NumE (`Nat n1) -> n1
+      | _ -> error e1.at "invalid rule range expression"
+    in
+    let n2 =
+      match e2'.it with
+      | Il.NumE (`Nat n2) -> n2
+      | _ -> error e2.at "invalid rule range expression"
+    in
+    if c2 < c1 then
+      error prod.at "empty rule range";
+    if Z.of_int (c2 - c1) <> Z.(n2 - n1) then
+      error prod.at "inconistent grammar vs expression distance in rule range";
+    List.init (c2 - c1 + 1) (fun i ->
+      let n = `Nat Z.(n1 + Z.of_int i) in
+      let g' = {(if i = 0 then g1' else g2') with it = Il.NumG (c1 + i)} in
+      let e' = {(if i = 0 then e1' else e2') with it = Il.NumE n} in
+      Il.ProdD ([], g', e', []) $ prod.at
     )
-  in
-  let e' = Dim.annot_exp dims' e' in
-  let prems' = List.map (Dim.annot_prem dims')
-    (concat_map_filter_nl_list (elab_prem env') prems) in
-  let det = Free.(diff (union (det_sym g) (det_prems prems)) (bound_env env)) in
-  let free = Free.(diff (free_prod prod) (union (det_prod prod) (bound_env env'))) in
-  if free <> Free.empty then
-    error prod.at ("grammar rule contains indeterminate variable(s) `" ^
-      String.concat "`, `" (Free.Set.elements free.varid) ^ "`");
-  let acc_bs', (module Arg : Iter.Arg) = make_binds_iter_arg env' det dims in
-  let module Acc = Iter.Make(Arg) in
-  Acc.sym g;
-  Acc.exp e;
-  Acc.prems prems;
-  let prod' = Il.ProdD (!acc_bs', g', e', prems') $ prod.at in
-  if not env'.pm then
-    [prod']
-  else
-    prod' :: elab_prod env Subst.(subst_prod pm_snd (Iter.clone_prod prod)) t
 
 and elab_gram env gram t : Il.prod list =
   let (_dots1, prods, _dots2) = gram.it in

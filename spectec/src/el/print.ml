@@ -214,9 +214,13 @@ and string_of_sym g =
   | UnparenG g1 -> "##" ^ string_of_sym g1
 
 and string_of_prod prod =
-  let (g, e, prems) = prod.it in
-  string_of_sym g ^ " => " ^ string_of_exp e ^
-    concat "" (map_filter_nl_list (prefix "\n  -- " string_of_prem) prems)
+  match prod.it with
+  | SynthP (g, e, prems) ->
+    string_of_sym g ^ " => " ^ string_of_exp e ^
+      concat "" (map_filter_nl_list (prefix "\n  -- " string_of_prem) prems)
+  | RangeP (g1, e1, g2, e2) ->
+    string_of_sym g1 ^ " => " ^ string_of_exp e1 ^ "\n  | ...\n  |" ^
+    string_of_sym g2 ^ " => " ^ string_of_exp e2
 
 and string_of_gram gram =
   let (dots1, prods, dots2) = gram.it in

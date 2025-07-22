@@ -189,8 +189,9 @@ and sym g =
   | AttrG (e, g1) -> exp e; sym g1
 
 and prod pr =
-  let (g, e, prs) = pr.it in
-  sym g; exp e; prems prs
+  match pr.it with
+  | SynthP (g, e, prs) -> sym g; exp e; prems prs
+  | RangeP (g1, e1, g2, e2) -> sym g1; exp e1; sym g2; exp e2
 
 and gram gr =
   let (dots1, prs, dots2) = gr.it in
@@ -340,8 +341,12 @@ and clone_sym g =
   ) $ g.at
 
 and clone_prod prod =
-  let g, e, prs = prod.it in
-  {prod with it = clone_sym g, clone_exp e, Convert.map_nl_list clone_prem prs}
+  (match prod.it with
+  | SynthP (g, e, prs) ->
+    SynthP (clone_sym g, clone_exp e, Convert.map_nl_list clone_prem prs)
+  | RangeP (g1, e1, g2, e2) ->
+    RangeP (clone_sym g1, clone_exp e1, clone_sym g2, clone_exp e2)
+  ) $ prod.at
 
 and clone_gram gram =
   let dots1, prods, dots2 = gram.it in

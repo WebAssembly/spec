@@ -209,8 +209,12 @@ and subst_sym s g =
   ) $ g.at
 
 and subst_prod s prod =
-  let (g, e, prems) = prod.it in
-  (subst_sym s g, subst_exp s e, subst_nl_list subst_prem s prems) $ prod.at
+  (match prod.it with
+  | SynthP (g, e, prems) ->
+    SynthP (subst_sym s g, subst_exp s e, subst_nl_list subst_prem s prems)
+  | RangeP (g1, e1, g2, e2) ->
+    RangeP (subst_sym s g1, subst_exp s e1, subst_sym s g2, subst_exp s e2)
+  ) $ prod.at
 
 and subst_gram s gram =
   let (dots1, prods, dots2) = gram.it in

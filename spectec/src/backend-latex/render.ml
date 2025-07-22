@@ -1529,28 +1529,34 @@ and render_sym_seq env = function
     " \\\\[0.8ex]\n  &&& " ^ s
 
 and render_prod env prod : row list =
-  let (g, e, prems) = prod.it in
-  match e.it, prems with
-  | (TupE [] | ParenE {it = SeqE []; _}), [] ->
-    [Row [Col (render_sym env g)]]
-  | VarE (id, []), _ when id.it = "<implicit-prod-result>" ->
-    prefix_rows_hd
-      [Col (render_sym env g)]
-      (render_conditions env prems)
-  | _ when not env.config.display ->
-    prefix_rows_hd
-      [Col (render_sym env g ^ " ~\\Rightarrow~ " ^ render_exp env e)]
-      (render_conditions env prems)
-  | _ ->
-    prefix_rows_hd
-      ( Col (render_sym env g) ::
-        Col "\\quad\\Rightarrow\\quad{}" ::
-        if g.at.right.line = e.at.left.line then
-          Col (render_exp env e) :: []
-        else
-          Br `Narrow :: Col (render_exp env e) :: []
-      )
-      (render_conditions env prems)
+  match prod.it with
+  | SynthP (g, e, prems) ->
+    (match e.it, prems with
+    | (TupE [] | ParenE {it = SeqE []; _}), [] ->
+      [Row [Col (render_sym env g)]]
+    | VarE (id, []), _ when id.it = "<implicit-prod-result>" ->
+      prefix_rows_hd
+        [Col (render_sym env g)]
+        (render_conditions env prems)
+    | _ when not env.config.display ->
+      prefix_rows_hd
+        [Col (render_sym env g ^ " ~\\Rightarrow~ " ^ render_exp env e)]
+        (render_conditions env prems)
+    | _ ->
+      prefix_rows_hd
+        ( Col (render_sym env g) ::
+          Col "\\quad\\Rightarrow\\quad{}" ::
+          if g.at.right.line = e.at.left.line then
+            Col (render_exp env e) :: []
+          else
+            Br `Narrow :: Col (render_exp env e) :: []
+        )
+        (render_conditions env prems)
+    )
+  | RangeP (g1, e1, g2, e2) ->
+    render_prod env (SynthP (g1, e1, []) $ g1.at) @
+    prefix_rows_hd [Col "\\ldots"] [] @
+    render_prod env (SynthP (g2, e2, []) $ g2.at)
 
 and render_gram env gram : table =
   let (dots1, prods, dots2) = gram.it in

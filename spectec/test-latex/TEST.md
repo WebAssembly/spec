@@ -12385,11 +12385,14 @@ $$
 & & | & \mbox{`$\mathtt{+}$'} & \quad\Rightarrow\quad{} & {+1} \\
 & & | & \mbox{`$\mathtt{-}$'} & \quad\Rightarrow\quad{} & {-1} \\
 & {\mathtt{digit}} & ::= & \mbox{`$\mathtt{0}$'} & \quad\Rightarrow\quad{} & 0 \\
+& & | & \ldots \\
 & & | & \mbox{`$\mathtt{9}$'} & \quad\Rightarrow\quad{} & 9 \\
 & {\mathtt{hexdigit}} & ::= & d{:}{\mathtt{digit}} & \quad\Rightarrow\quad{} & d \\
 & & | & \mbox{`$\mathtt{A}$'} & \quad\Rightarrow\quad{} & 10 \\
+& & | & \ldots \\
 & & | & \mbox{`$\mathtt{F}$'} & \quad\Rightarrow\quad{} & 15 \\
 & & | & \mbox{`$\mathtt{a}$'} & \quad\Rightarrow\quad{} & 10 \\
+& & | & \ldots \\
 & & | & \mbox{`$\mathtt{f}$'} & \quad\Rightarrow\quad{} & 15 \\
 & {\mathtt{num}} & ::= & d{:}{\mathtt{digit}} & \quad\Rightarrow\quad{} & d \\
 & & | & n{:}{\mathtt{num}}~~{\mbox{`$\mathtt{\_}$'}^?}~~d{:}{\mathtt{digit}} & \quad\Rightarrow\quad{} & 10 \, n + d \\
@@ -12514,17 +12517,17 @@ $$
 \begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
 & {{\mathtt{idx}}}_{{\mathit{ids}}} & ::= & x{:}{\mathtt{u32}} & \quad\Rightarrow\quad{} & x \\
 & & | & {\mathit{id}}{:}{\mathtt{id}} & \quad\Rightarrow\quad{} & x & \quad \mbox{if}~ {\mathit{ids}}{}[x] = {\mathit{id}} \\
-& {{\mathtt{typeidx}}}_{I} & ::= & x{:}{{\mathtt{idx}}}_{I{.}\mathsf{types}} & \quad\Rightarrow\quad{} & x \\
-& {{\mathtt{tagidx}}}_{I} & ::= & x{:}{{\mathtt{idx}}}_{I{.}\mathsf{tags}} & \quad\Rightarrow\quad{} & x \\
-& {{\mathtt{globalidx}}}_{I} & ::= & x{:}{{\mathtt{idx}}}_{I{.}\mathsf{globals}} & \quad\Rightarrow\quad{} & x \\
-& {{\mathtt{memidx}}}_{I} & ::= & x{:}{{\mathtt{idx}}}_{I{.}\mathsf{mems}} & \quad\Rightarrow\quad{} & x \\
-& {{\mathtt{tableidx}}}_{I} & ::= & x{:}{{\mathtt{idx}}}_{I{.}\mathsf{tables}} & \quad\Rightarrow\quad{} & x \\
-& {{\mathtt{funcidx}}}_{I} & ::= & x{:}{{\mathtt{idx}}}_{I{.}\mathsf{funcs}} & \quad\Rightarrow\quad{} & x \\
-& {{\mathtt{dataidx}}}_{I} & ::= & x{:}{{\mathtt{idx}}}_{I{.}\mathsf{datas}} & \quad\Rightarrow\quad{} & x \\
-& {{\mathtt{elemidx}}}_{I} & ::= & x{:}{{\mathtt{idx}}}_{I{.}\mathsf{elems}} & \quad\Rightarrow\quad{} & x \\
-& {{\mathtt{localidx}}}_{I} & ::= & x{:}{{\mathtt{idx}}}_{I{.}\mathsf{locals}} & \quad\Rightarrow\quad{} & x \\
-& {{\mathtt{labelidx}}}_{I} & ::= & x{:}{{\mathtt{idx}}}_{I{.}\mathsf{labels}} & \quad\Rightarrow\quad{} & x \\
-& {{\mathtt{fieldidx}}}_{I, x} & ::= & i{:}{{\mathtt{idx}}}_{I{.}\mathsf{fields}{}[x]} & \quad\Rightarrow\quad{} & i \\
+& {{\mathtt{typeidx}}}_{I} & ::= & {{\mathtt{idx}}}_{I{.}\mathsf{types}} \\
+& {{\mathtt{tagidx}}}_{I} & ::= & {{\mathtt{idx}}}_{I{.}\mathsf{tags}} \\
+& {{\mathtt{globalidx}}}_{I} & ::= & {{\mathtt{idx}}}_{I{.}\mathsf{globals}} \\
+& {{\mathtt{memidx}}}_{I} & ::= & {{\mathtt{idx}}}_{I{.}\mathsf{mems}} \\
+& {{\mathtt{tableidx}}}_{I} & ::= & {{\mathtt{idx}}}_{I{.}\mathsf{tables}} \\
+& {{\mathtt{funcidx}}}_{I} & ::= & {{\mathtt{idx}}}_{I{.}\mathsf{funcs}} \\
+& {{\mathtt{dataidx}}}_{I} & ::= & {{\mathtt{idx}}}_{I{.}\mathsf{datas}} \\
+& {{\mathtt{elemidx}}}_{I} & ::= & {{\mathtt{idx}}}_{I{.}\mathsf{elems}} \\
+& {{\mathtt{localidx}}}_{I} & ::= & {{\mathtt{idx}}}_{I{.}\mathsf{locals}} \\
+& {{\mathtt{labelidx}}}_{I} & ::= & {{\mathtt{idx}}}_{I{.}\mathsf{labels}} \\
+& {{\mathtt{fieldidx}}}_{I, x} & ::= & {{\mathtt{idx}}}_{I{.}\mathsf{fields}{}[x]} \\
 & {{\mathtt{externidx}}}_{I} & ::= & \mbox{`$\mathtt{(}$'}~~\mbox{`$\mathtt{tag}$'}~~x{:}{{\mathtt{tagidx}}}_{I}~~\mbox{`$\mathtt{)}$'} & \quad\Rightarrow\quad{} & \mathsf{tag}~x \\
 & & | & \mbox{`$\mathtt{(}$'}~~\mbox{`$\mathtt{global}$'}~~x{:}{{\mathtt{globalidx}}}_{I}~~\mbox{`$\mathtt{)}$'} & \quad\Rightarrow\quad{} & \mathsf{global}~x \\
 & & | & \mbox{`$\mathtt{(}$'}~~\mbox{`$\mathtt{memory}$'}~~x{:}{{\mathtt{memidx}}}_{I}~~\mbox{`$\mathtt{)}$'} & \quad\Rightarrow\quad{} & \mathsf{mem}~x \\

@@ -143,7 +143,9 @@ and sym' =
   | UnparenG of sym                          (* `##` sym *)
 
 and prod = prod' phrase
-and prod' = sym * exp * prem nl_list         (* `|` sym `=>` exp (`--` prem)* *)
+and prod' =
+  | SynthP of sym * exp * prem nl_list       (* `|` sym `=>` exp (`--` prem)* *)
+  | RangeP of sym * exp * sym * exp          (* `|` sym `=>` exp | ... | sym `=>` exp *)
 
 and gram = gram' phrase
 and gram' = dots * prod nl_list * dots       (* `|` list(`...`|prod, `|`) *)

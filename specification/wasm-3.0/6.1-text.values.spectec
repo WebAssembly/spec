@@ -10,18 +10,12 @@ grammar Tsign : int =
   | "-" => $(-1)
 
 grammar Tdigit : nat =
-  | "0" => 0
-  ;; TODO(4, rossberg): ellipses
-  | "9" => 9
+  | "0" => 0 | ... | "9" => 9
 
 grammar Thexdigit : nat =
   | d:Tdigit => d
-  | "A" => 10
-  ;; TODO(4, rossberg): ellipses
-  | "F" => 15
-  | "a" => 10
-  ;; TODO(4, rossberg): ellipses
-  | "f" => 15
+  | "A" => 10 | ... | "F" => 15
+  | "a" => 10 | ... | "f" => 15
 
 grammar Tnum : nat =
   | d:Tdigit => d
@@ -174,18 +168,17 @@ grammar Tidx_(ids : (name?)*) : idx =
   | x:Tu32 => x
   | id:Tid => x  -- if ids[x] = id
 
-;; TODO(4, rossberg): enable grammar aliases
-grammar Ttypeidx_(I) : typeidx = x:Tidx_(I.TYPES) => x
-grammar Ttagidx_(I) : tagidx = x:Tidx_(I.TAGS) => x
-grammar Tglobalidx_(I) : globalidx = x:Tidx_(I.GLOBALS) => x
-grammar Tmemidx_(I) : memidx = x:Tidx_(I.MEMS) => x
-grammar Ttableidx_(I) : tableidx = x:Tidx_(I.TABLES) => x
-grammar Tfuncidx_(I) : funcidx = x:Tidx_(I.FUNCS) => x
-grammar Tdataidx_(I) : dataidx = x:Tidx_(I.DATAS) => x
-grammar Telemidx_(I) : elemidx = x:Tidx_(I.ELEMS) => x
-grammar Tlocalidx_(I) : localidx = x:Tidx_(I.LOCALS) => x
-grammar Tlabelidx_(I) : labelidx = x:Tidx_(I.LABELS) => x
-grammar Tfieldidx__(I, x : idx) : fieldidx = i:Tidx_(I.FIELDS[x]) => i
+grammar Ttypeidx_(I) : typeidx = Tidx_(I.TYPES)
+grammar Ttagidx_(I) : tagidx = Tidx_(I.TAGS)
+grammar Tglobalidx_(I) : globalidx = Tidx_(I.GLOBALS)
+grammar Tmemidx_(I) : memidx = Tidx_(I.MEMS)
+grammar Ttableidx_(I) : tableidx = Tidx_(I.TABLES)
+grammar Tfuncidx_(I) : funcidx = Tidx_(I.FUNCS)
+grammar Tdataidx_(I) : dataidx = Tidx_(I.DATAS)
+grammar Telemidx_(I) : elemidx = Tidx_(I.ELEMS)
+grammar Tlocalidx_(I) : localidx = Tidx_(I.LOCALS)
+grammar Tlabelidx_(I) : labelidx = Tidx_(I.LABELS)
+grammar Tfieldidx__(I, x : idx) : fieldidx = Tidx_(I.FIELDS[x])
 
 grammar Texternidx_(I) : externidx =
   | "(" "tag" x:Ttagidx_(I) ")" => TAG x

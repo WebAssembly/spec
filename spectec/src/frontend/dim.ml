@@ -228,10 +228,16 @@ and check_sym env ctx g =
   | UnparenG _ -> assert false
 
 and check_prod env ctx prod =
-  let (g, e, prems) = prod.it in
-  check_sym env ctx g;
-  check_exp env ctx e;
-  iter_nl_list (check_prem env ctx) prems
+  match prod.it with
+  | SynthP (g, e, prems) ->
+    check_sym env ctx g;
+    check_exp env ctx e;
+    iter_nl_list (check_prem env ctx) prems
+  | RangeP (g1, e1, g2, e2) ->
+    check_sym env ctx g1;
+    check_exp env ctx e1;
+    check_sym env ctx g2;
+    check_exp env ctx e2
 
 and check_gram env ctx gram =
   let (_dots1, prods, _dots2) = gram.it in
