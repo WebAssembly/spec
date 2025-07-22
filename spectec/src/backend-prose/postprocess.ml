@@ -383,11 +383,11 @@ let rec has_subexpr e s =
   | RelS (_, es) -> fes es
   | YetS _ -> false
 
-let rec insert_at i x xs =
-  match i, xs with
-  | 0, _ -> x :: xs
-  | _, [] -> [x]
-  | _, hd :: tl -> hd :: (insert_at (i-1) x tl)
+let rec insert_if f x xs =
+  match xs with
+  | [] -> [x]
+  | hd :: tl ->
+    if f hd then x :: xs else hd :: (insert_if f x tl)
 
 let prioritize_length_check def =
   match def with
@@ -397,10 +397,7 @@ let prioritize_length_check def =
       | CmpS ({it = LenE base; _}, `GtOp, index) ->
         let no_typ = (Il.Ast.VarT ("" $ no_region, []) $ no_region) in
         let e = AccE (base, IdxP index $ no_region) $$ no_region % no_typ in
-        (match List.find_index (has_subexpr e) acc with
-        | Some i -> insert_at i s acc
-        | None -> acc @ [s]
-        )
+        insert_if (has_subexpr e) s acc
       | _ -> acc @ [s]
     ) sl in
     RuleD (anchor, s, sl')
