@@ -315,10 +315,55 @@ let extract_case_hint t mixop =
   let id2 = Xl.Mixop.name (List.nth mixop 0) in
   let id = id1 ^ "." ^ id2 in
   match Map.find_opt id !(hintenv.prose_hints) with
-  | Some (Some { it = TextE desc; _ }, _) -> Some desc
+  | Some (Some e, _) -> Some e
   | _ -> None
 
 let extract_call_hint fname =
   match Map.find_opt fname !(hintenv.func_prose_hints) with
-  | Some (Some { it = TextE desc; _ }, _) -> Some desc
+  | Some (Some e, _) -> Some e
   | _ -> None
+
+(* EL Helpers *)
+
+let rec walk_el_exp (f : El.Ast.exp -> El.Ast.exp) (e : El.Ast.exp) : El.Ast.exp =
+  let open El.Ast in
+  let we = walk_el_exp f in
+  let it =
+    match e.it with
+    | VarE (id, args) -> VarE (id, args)
+    | AtomE _ | BoolE _ | NumE _ | TextE _ | EpsE | SizeE _ | HoleE _ | LatexE _ -> e.it
+    | CvtE (e1, t) -> CvtE (we e1, t)
+    | UnE (op, e1) -> UnE (op, we e1)
+    | BinE (e1, op, e2) -> BinE (we e1, op, we e2)
+    | CmpE (e1, op, e2) -> CmpE (we e1, op, we e2)
+    | SeqE es -> SeqE (List.map we es)
+    | ListE es -> ListE (List.map we es)
+    | IdxE (e1, e2) -> IdxE (we e1, we e2)
+    | SliceE (e1, e2, e3) -> SliceE (we e1, we e2, we e3)
+    | UpdE (e1, path, e2) -> UpdE (we e1, path, we e2)
+    | ExtE (e1, path, e2) -> ExtE (we e1, path, we e2)
+    | StrE fields -> StrE (El.Convert.map_nl_list (fun (a, e) -> (a, we e)) fields)
+    | DotE (e1, a) -> DotE (we e1, a)
+    | CommaE (e1, e2) -> CommaE (we e1, we e2)
+    | CatE (e1, e2) -> CatE (we e1, we e2)
+    | MemE (e1, e2) -> MemE (we e1, we e2)
+    | LenE e1 -> LenE (we e1)
+    | ParenE e1 -> ParenE (we e1)
+    | TupE es -> TupE (List.map we es)
+    | InfixE (e1, a, e2) -> InfixE (we e1, a, we e2)
+    | BrackE (a1, e1, a2) -> BrackE (a1, we e1, a2)
+    | CallE (id, args) -> CallE (id, args)
+    | IterE (e1, i) -> IterE (we e1, i)
+    | TypE (e1, t) -> TypE (we e1, t)
+    | ArithE e1 -> ArithE (we e1)
+    | FuseE (e1, e2) -> FuseE (we e1, we e2)
+    | UnparenE e1 -> UnparenE (we e1)
+  in
+  f {e with it}
+
+let fill_hole args = walk_el_exp
+  (fun e ->
+    match e.it with
+    | HoleE (`Num i) -> List.nth args (i-1)
+    | _ -> e
+  )

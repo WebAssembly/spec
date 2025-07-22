@@ -254,10 +254,10 @@ and al_to_el_expr expr =
       let* elel = al_to_el_exprs el in
       Some (El.Ast.TupE elel)
     | Al.Ast.CallE (id, al) ->
-      if Prose_util.extract_call_hint id <> None then
-        (* Use customized prose hint for this call *)
+      (match Prose_util.extract_call_hint id with
+      | Some {it = TextE _; _} -> (* Use customized prose hint for this call *)
         None
-      else (
+      | _ ->
         match Prose_util.find_relation id with
         | Some _ ->
           None
@@ -281,7 +281,7 @@ and al_to_el_expr expr =
             elal
           in
           Some (El.Ast.CallE (elid, elal))
-        )
+      )
     | Al.Ast.CatE (e1, e2) ->
       let* ele1 = al_to_el_expr e1 in
       let* ele2 = al_to_el_expr e2 in
@@ -340,45 +340,48 @@ and al_to_el_expr expr =
       Some (El.Ast.IterE (ele, eliter))
     | Al.Ast.CaseE _  when Al.Valid.sub_typ expr.note Al.Al_util.evalctxT -> None
     | Al.Ast.CaseE (op, el) ->
-      if Prose_util.extract_case_hint expr.note op <> None then None else
-      (* Current rules for omitting parenthesis around a CaseE:
-        1) Has no argument
-        2) Is infix notation
-        3) Is bracketed -> render into BrackE
-        4) Is argument of CallE -> add first, omit later at CallE *)
-      let atom_of atom = atom $$ no_region % (Atom.info "") in
-      let find_brace_opt mixop =
-        let s = Mixop.to_string mixop in
-        let first = String.get s 1 in
-        let last = String.get s (String.length s - 2) in
-        match first, last with
-        | '(', ')' -> Some (atom_of Atom.LParen, atom_of Atom.RParen)
-        | '[', ']' -> Some (atom_of Atom.LBrack, atom_of Atom.RBrack)
-        | '{', '}' -> Some (atom_of Atom.LBrace, atom_of Atom.RBrace)
-        | _ -> None
-      in
-      let elal = mixop_to_el_exprs op in
-      let* elel = al_to_el_exprs el in
-      let eles = case_to_el_exprs elal elel in
-      let ele = El.Ast.SeqE eles in
-      (match elal, elel with
-      | _, [] -> Some ele
-      | None :: Some _ :: _, _ -> Some ele
+      (match Prose_util.extract_case_hint expr.note op with
+      | Some {it = TextE _; _} -> None
       | _ ->
-        (match find_brace_opt op with
-        | Some (lbr, rbr) ->
-          (* Split braces of el expressions *)
-          let _, eles = Util.Lib.List.split_hd eles in
-          let eles, _ = Util.Lib.List.split_last eles in
-          let eles =
-            (match eles with
-            | [e1; { it = El.Ast.AtomE atom; _ }; e2] when atom.it = Xl.Atom.Dot2 ->
-              (* HARDCODE: postprocess limits to infix notation *)
-              El.Ast.InfixE (e1, atom, e2)
-            | _ -> El.Ast.SeqE eles
-            ) in
-          Some (El.Ast.BrackE (lbr, eles $ no_region, rbr))
-        | None -> Some (El.Ast.ParenE (ele $ no_region))
+        (* Current rules for omitting parenthesis around a CaseE:
+          1) Has no argument
+          2) Is infix notation
+          3) Is bracketed -> render into BrackE
+          4) Is argument of CallE -> add first, omit later at CallE *)
+        let atom_of atom = atom $$ no_region % (Atom.info "") in
+        let find_brace_opt mixop =
+          let s = Mixop.to_string mixop in
+          let first = String.get s 1 in
+          let last = String.get s (String.length s - 2) in
+          match first, last with
+          | '(', ')' -> Some (atom_of Atom.LParen, atom_of Atom.RParen)
+          | '[', ']' -> Some (atom_of Atom.LBrack, atom_of Atom.RBrack)
+          | '{', '}' -> Some (atom_of Atom.LBrace, atom_of Atom.RBrace)
+          | _ -> None
+        in
+        let elal = mixop_to_el_exprs op in
+        let* elel = al_to_el_exprs el in
+        let eles = case_to_el_exprs elal elel in
+        let ele = El.Ast.SeqE eles in
+        (match elal, elel with
+        | _, [] -> Some ele
+        | None :: Some _ :: _, _ -> Some ele
+        | _ ->
+          (match find_brace_opt op with
+          | Some (lbr, rbr) ->
+            (* Split braces of el expressions *)
+            let _, eles = Util.Lib.List.split_hd eles in
+            let eles, _ = Util.Lib.List.split_last eles in
+            let eles =
+              (match eles with
+              | [e1; { it = El.Ast.AtomE atom; _ }; e2] when atom.it = Xl.Atom.Dot2 ->
+                (* HARDCODE: postprocess limits to infix notation *)
+                El.Ast.InfixE (e1, atom, e2)
+              | _ -> El.Ast.SeqE eles
+              ) in
+            Some (El.Ast.BrackE (lbr, eles $ no_region, rbr))
+          | None -> Some (El.Ast.ParenE (ele $ no_region))
+          )
         )
       )
     | Al.Ast.OptE (Some e) ->
@@ -642,8 +645,8 @@ and render_expr' env expr =
   | Al.Ast.CallE (id, al) ->
     let args = List.map (render_arg env) al in
     (match Prose_util.extract_call_hint id with
-    | Some hint -> Prose_util.apply_prose_hint hint args
-    | None ->
+    | Some {it = TextE template; _} -> Prose_util.apply_prose_hint template args
+    | _ ->
       (* HARDCODE: relation call *)
       if id = "Eval_expr" then
         match args with
@@ -727,10 +730,10 @@ and render_expr' env expr =
       rendered_arg
   | Al.Ast.CaseE (mixop, es) ->
     (match Prose_util.extract_case_hint expr.note mixop with
-    | None -> error expr.at (Printf.sprintf "Cannot render %s" (Al.Print.string_of_expr expr))
-    | Some template ->
+    | Some {it = TextE template; _} ->
       let args = List.map (render_expr env) es in
       Prose_util.apply_prose_hint template args
+    | _ -> error expr.at (Printf.sprintf "Cannot render %s" (Al.Print.string_of_expr expr))
     )
   | Al.Ast.MemE (e1, {it = ListE es; _}) ->
     let se1 = render_expr env e1 in
@@ -1061,6 +1064,31 @@ let render_control_frame_binding env expr =
     |> Print.string_of_expr
     |> sprintf "Invalid control frame: %s"
     |> failwith
+
+let render_perform env fname args =
+  (
+    (* Use prose hint if it exists *)
+    let* hint = Prose_util.extract_call_hint fname in
+    let* args' = List.fold_left (fun acc a ->
+      let* acc' = acc in
+      let* ea = match a.it with | Al.Ast.ExpA e -> Some e | _ -> None in
+      let* a' = al_to_el_expr ea in
+      Some (acc' @ [a'])
+    ) (Some []) args in
+    let hint' = Prose_util.fill_hole args' hint in
+    match hint'.it with
+    | El.Ast.SeqE es ->
+      let ss = List.map (fun e ->
+        match e.it with
+        | El.Ast.TextE s -> s
+        | _ -> render_el_exp env e
+      ) es in
+      Some (String.concat " " ss)
+    | _ -> None
+  )
+  |> Option.value ~default:(
+    "Perform " ^ (render_expr env (Al.Al_util.callE (fname, args) ~at:no_region ~note:Al.Al_util.no_note))
+  )
 
 let rec render_instr env algoname index depth instr =
   match instr.it with
@@ -1400,7 +1428,7 @@ let rec render_instr env algoname index depth instr =
   | Al.Ast.ExecuteSeqI e ->
     sprintf "%s Execute the sequence %s." (render_order index depth) (render_expr env e)
   | Al.Ast.PerformI (n, es) ->
-    sprintf "%s Perform %s." (render_order index depth) (render_expr env (Al.Al_util.callE (n, es) ~at:no_region ~note:Al.Al_util.no_note))
+    sprintf "%s %s." (render_order index depth) (render_perform env n es)
   | Al.Ast.ExitI a ->
     sprintf "%s Exit from %s." (render_order index depth) (render_atom env a)
   | Al.Ast.ReplaceI (e1, p, e2) ->

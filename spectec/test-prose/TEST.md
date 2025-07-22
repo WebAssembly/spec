@@ -20164,7 +20164,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{\mathit{exn}}` be the exception instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{tag}~z{.}\mathsf{tags}{}[x],\; \mathsf{fields}~{{\mathit{val}}^{n}} \}\end{array}`.
 
-#. Perform :math:`z{}[{.}\mathsf{exns} \mathrel{{=}{\oplus}} {\mathit{exn}}]`.
+#. Append :math:`{\mathit{exn}}` to :math:`z{.}\mathsf{exns}`.
 
 #. Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
 
@@ -20193,7 +20193,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Push the value :math:`(\mathsf{ref{.}struct}~a)` to the stack.
 
-#. Perform :math:`z{}[{.}\mathsf{structs} \mathrel{{=}{\oplus}} {\mathit{si}}]`.
+#. Append :math:`{\mathit{si}}` to :math:`z{.}\mathsf{structs}`.
 
 
 :math:`\mathsf{struct{.}set}~x~i`
@@ -20251,7 +20251,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Push the value :math:`(\mathsf{ref{.}array}~a)` to the stack.
 
-#. Perform :math:`z{}[{.}\mathsf{arrays} \mathrel{{=}{\oplus}} {\mathit{ai}}]`.
+#. Append :math:`{\mathit{ai}}` to :math:`z{.}\mathsf{arrays}`.
 
 
 :math:`\mathsf{array{.}set}~x`
