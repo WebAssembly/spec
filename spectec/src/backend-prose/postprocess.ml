@@ -69,6 +69,8 @@ let fold_stmt (f: stmt list -> stmt -> stmt list) ss =
   in
   aux ss
 
+let (let*) = Option.bind
+
 (** End of Helpers **)
 
 let unify_either def =
@@ -156,6 +158,17 @@ let replace_name_def x1 x2 def =
   | RuleD (anchor, s, sl) -> RuleD (anchor, r s, List.map r sl)
   | AlgoD _algo -> failwith "unreachable"
 
+let rec extract_simple_var e =
+  match e.it with
+  | VarE x -> Some [x]
+  | IterE (e', (_, [x, {it = VarE x'; _}])) ->
+    let* r = extract_simple_var e' in
+    if List.hd r = x then
+      Some (x' :: r)
+    else
+      None
+  | _ -> None
+
 let remove_simple_binding def =
   match def with
   | RuleD (anchor, s, sl) ->
@@ -174,12 +187,22 @@ let remove_simple_binding def =
           let hd' = IfS (e, remove_simple_binding' [] sl) in
           remove_simple_binding' (hd' :: acc) tl
         (* Base cases *)
-        | CmpS ({it = VarE x1; _}, `EqOp, {it = VarE x2; _}) when Al.Free.IdSet.(mem x1 frees && not (mem x2 frees)) ->
-          let tl' = List.map (replace_name_stmt x2 x1) tl in
-          remove_simple_binding' acc tl'
-        | CmpS ({it = VarE x2; _}, `EqOp, {it = VarE x1; _}) when Al.Free.IdSet.(mem x1 frees && not (mem x2 frees)) ->
-          let tl' = List.map (replace_name_stmt x2 x1) tl in
-          remove_simple_binding' acc tl'
+        | CmpS (e1, `EqOp, e2) ->
+          (match extract_simple_var e1, extract_simple_var e2 with
+          | Some (x1 :: _ as l1), Some (x2 :: _ as l2)
+            when List.length l1 = List.length l2 && Al.Free.IdSet.(mem x1 frees && not (mem x2 frees)) ->
+            let tl' = List.fold_left2 (fun acc x1 x2 ->
+              List.map (replace_name_stmt x2 x1) acc
+            ) tl l1 l2 in
+            remove_simple_binding' acc tl'
+          | Some (x2 :: _ as l2), Some (x1 :: _ as l1)
+            when List.length l1 = List.length l2 && Al.Free.IdSet.(mem x1 frees && not (mem x2 frees)) ->
+            let tl' = List.fold_left2 (fun acc x1 x2 ->
+              List.map (replace_name_stmt x2 x1) acc
+            ) tl l1 l2 in
+            remove_simple_binding' acc tl'
+          | _ -> remove_simple_binding' (hd :: acc) tl
+          )
         | _ -> remove_simple_binding' (hd :: acc) tl
     in
     RuleD (anchor, s, remove_simple_binding' [] sl)

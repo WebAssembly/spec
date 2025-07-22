@@ -539,22 +539,16 @@ The instruction sequence :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-v
 
       * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is of the form :math:`{\mathit{instr}}_1~{{\mathit{instr}}_2^\ast}`.
 
-      * The number type sequence :math:`{{\mathit{valtype}}^\ast}` is of the form :math:`{t_1^\ast}`.
+      * The instruction :math:`{\mathit{instr}}_1` is :ref:`valid <valid-val>` with the function type :math:`{{\mathit{valtype}}^\ast}~\rightarrow~{t_2^\ast}`.
 
-      * The number type sequence :math:`{{\mathit{valtype}'}^\ast}` is of the form :math:`{t_3^\ast}`.
-
-      * The instruction :math:`{\mathit{instr}}_1` is :ref:`valid <valid-val>` with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
-
-      * The instruction sequence :math:`{{\mathit{instr}}_2^\ast}` is :ref:`valid <valid-val>` with the function type :math:`{t_2^\ast}~\rightarrow~{t_3^\ast}`.
+      * The instruction sequence :math:`{{\mathit{instr}}_2^\ast}` is :ref:`valid <valid-val>` with the function type :math:`{t_2^\ast}~\rightarrow~{{\mathit{valtype}'}^\ast}`.
    * Or:
-
-      * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is of the form :math:`{{\mathit{instr}'}^\ast}`.
 
       * The number type sequence :math:`{{\mathit{valtype}}^\ast}` is of the form :math:`{t^\ast}~{t_1^\ast}`.
 
       * The number type sequence :math:`{{\mathit{valtype}'}^\ast}` is of the form :math:`{t^\ast}~{t_2^\ast}`.
 
-      * The instruction sequence :math:`{{\mathit{instr}'}^\ast}` is :ref:`valid <valid-val>` with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+      * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
 
 
@@ -3254,15 +3248,12 @@ Instrs_ok
     - the number type sequence valtype'* is [].
   - Or:
     - instr* is [instr_1] :: instr_2*.
-    - valtype* is t_1*.
-    - valtype'* is t_3*.
-    - the instruction instr_1 is valid with the function type t_1* -> t_2*.
-    - the instruction sequence instr_2* is valid with the function type t_2* -> t_3*.
+    - the instruction instr_1 is valid with the function type valtype* -> t_2*.
+    - the instruction sequence instr_2* is valid with the function type t_2* -> valtype'*.
   - Or:
-    - instr* is instr'*.
     - valtype* is t* :: t_1*.
     - valtype'* is t* :: t_2*.
-    - the instruction sequence instr'* is valid with t_1* -> t_2*.
+    - instr* is valid with the function type t_1* -> t_2*.
 
 Instrs_ok/empty
 - the instruction sequence [] is valid with the function type [] -> [].
@@ -4662,13 +4653,9 @@ The block type :math:`{\mathit{blocktype}}` is :ref:`valid <valid-val>` with the
 
       * The block type :math:`{\mathit{blocktype}}` is of the form :math:`{\mathit{typeidx}}`.
 
-      * The value type sequence :math:`{{\mathit{valtype}}^\ast}` is of the form :math:`{t_1^\ast}`.
-
-      * The value type sequence :math:`{{\mathit{valtype}'}^\ast}` is of the form :math:`{t_2^\ast}`.
-
       * The function type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
 
-      * The function type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is of the form :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+      * The function type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is of the form :math:`{{\mathit{valtype}}^\ast}~\rightarrow~{{\mathit{valtype}'}^\ast}`.
 
 
 
@@ -5376,35 +5363,23 @@ The instruction sequence :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-v
 
       * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is of the form :math:`{\mathit{instr}}_1~{{\mathit{instr}}_2^\ast}`.
 
-      * The value type sequence :math:`{{\mathit{valtype}}^\ast}` is of the form :math:`{t_1^\ast}`.
+      * The instruction :math:`{\mathit{instr}}_1` is :ref:`valid <valid-val>` with the function type :math:`{{\mathit{valtype}}^\ast}~\rightarrow~{t_2^\ast}`.
 
-      * The value type sequence :math:`{{\mathit{valtype}'}^\ast}` is of the form :math:`{t_3^\ast}`.
-
-      * The instruction :math:`{\mathit{instr}}_1` is :ref:`valid <valid-val>` with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
-
-      * The instruction sequence :math:`{{\mathit{instr}}_2^\ast}` is :ref:`valid <valid-val>` with the function type :math:`{t_2^\ast}~\rightarrow~{t_3^\ast}`.
+      * The instruction sequence :math:`{{\mathit{instr}}_2^\ast}` is :ref:`valid <valid-val>` with the function type :math:`{t_2^\ast}~\rightarrow~{{\mathit{valtype}'}^\ast}`.
    * Or:
 
-      * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is of the form :math:`{{\mathit{instr}'}^\ast}`.
+      * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
-      * The value type sequence :math:`{{\mathit{valtype}}^\ast}` is of the form :math:`{{t'}_1^\ast}`.
+      * The result type :math:`{{\mathit{valtype}}^\ast}` :ref:`matches <match>` the result type :math:`{t_1^\ast}`.
 
-      * The value type sequence :math:`{{\mathit{valtype}'}^\ast}` is of the form :math:`{{t'}_2^\ast}`.
-
-      * The instruction sequence :math:`{{\mathit{instr}'}^\ast}` is :ref:`valid <valid-val>` with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
-
-      * The result type :math:`{{t'}_1^\ast}` :ref:`matches <match>` the result type :math:`{t_1^\ast}`.
-
-      * The result type :math:`{t_2^\ast}` :ref:`matches <match>` the result type :math:`{{t'}_2^\ast}`.
+      * The result type :math:`{t_2^\ast}` :ref:`matches <match>` the result type :math:`{{\mathit{valtype}'}^\ast}`.
    * Or:
-
-      * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is of the form :math:`{{\mathit{instr}'}^\ast}`.
 
       * The value type sequence :math:`{{\mathit{valtype}}^\ast}` is of the form :math:`{t^\ast}~{t_1^\ast}`.
 
       * The value type sequence :math:`{{\mathit{valtype}'}^\ast}` is of the form :math:`{t^\ast}~{t_2^\ast}`.
 
-      * The instruction sequence :math:`{{\mathit{instr}'}^\ast}` is :ref:`valid <valid-val>` with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+      * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
 
 
@@ -10567,10 +10542,8 @@ Blocktype_ok
     - the value type sequence valtype'* is valtype''?.
   - Or:
     - blocktype is (_IDX typeidx).
-    - valtype* is t_1*.
-    - valtype'* is t_2*.
     - the function type C.TYPES[typeidx] exists.
-    - C.TYPES[typeidx] is t_1* -> t_2*.
+    - C.TYPES[typeidx] is valtype* -> valtype'*.
 
 Blocktype_ok/valtype
 - the block type (_RESULT valtype?) is valid with the function type [] -> valtype?.
@@ -10942,22 +10915,16 @@ Instrs_ok
     - the value type sequence valtype'* is [].
   - Or:
     - instr* is [instr_1] :: instr_2*.
-    - valtype* is t_1*.
-    - valtype'* is t_3*.
-    - the instruction instr_1 is valid with the function type t_1* -> t_2*.
-    - the instruction sequence instr_2* is valid with the function type t_2* -> t_3*.
+    - the instruction instr_1 is valid with the function type valtype* -> t_2*.
+    - the instruction sequence instr_2* is valid with the function type t_2* -> valtype'*.
   - Or:
-    - instr* is instr'*.
-    - valtype* is t'_1*.
-    - valtype'* is t'_2*.
-    - the instruction sequence instr'* is valid with t_1* -> t_2*.
-    - the result type t'_1* matches the result type t_1*.
-    - the result type t_2* matches the result type t'_2*.
+    - instr* is valid with the function type t_1* -> t_2*.
+    - valtype* matches the result type t_1*.
+    - the result type t_2* matches valtype'*.
   - Or:
-    - instr* is instr'*.
     - valtype* is t* :: t_1*.
     - valtype'* is t* :: t_2*.
-    - instr'* is valid with t_1* -> t_2*.
+    - instr* is valid with t_1* -> t_2*.
 
 Instrs_ok/empty
 - the instruction sequence [] is valid with the function type [] -> [].
@@ -14639,13 +14606,9 @@ The block type :math:`{\mathit{blocktype}}` is :ref:`valid <valid-val>` as the i
 
       * The block type :math:`{\mathit{blocktype}}` is of the form :math:`{\mathit{typeidx}}`.
 
-      * The value type sequence :math:`{{\mathit{valtype}}^\ast}` is of the form :math:`{t_1^\ast}`.
-
-      * The value type sequence :math:`{{\mathit{valtype}'}^\ast}` is of the form :math:`{t_2^\ast}`.
-
       * The type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
 
-      * The :ref:`expansion <aux-expand-deftype>` of the type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is the composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
+      * The :ref:`expansion <aux-expand-deftype>` of the type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is the composite type :math:`(\mathsf{func}~{{\mathit{valtype}}^\ast}~\rightarrow~{{\mathit{valtype}'}^\ast})`.
 
 
 
@@ -16025,20 +15988,16 @@ The instruction sequence :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-v
       * Under the context :math:`C` with the local types of :math:`{x_1^\ast}` updated to :math:`{(\mathsf{set}~t)^\ast}`, the instruction sequence :math:`{{\mathit{instr}}_2^\ast}` is :ref:`valid <valid-val>` with the instruction type :math:`{t_2^\ast}~{\rightarrow}_{{x_2^\ast}}\,{t_3^\ast}`.
    * Or:
 
-      * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is of the form :math:`{{\mathit{instr}'}^\ast}`.
-
-      * The instruction sequence :math:`{{\mathit{instr}'}^\ast}` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{it}''}`.
+      * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{it}''}`.
 
       * The instruction type :math:`{\mathit{it}''}` :ref:`matches <match>` the instruction type :math:`{\mathit{it}}`.
 
       * The instruction type :math:`{\mathit{it}}` is :ref:`valid <valid-val>`.
    * Or:
 
-      * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is of the form :math:`{{\mathit{instr}'}^\ast}`.
-
       * The instruction type :math:`{\mathit{it}}` is of the form :math:`{t^\ast}~{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t^\ast}~{t_2^\ast}`.
 
-      * The instruction sequence :math:`{{\mathit{instr}'}^\ast}` is :ref:`valid <valid-val>` with the instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}`.
+      * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` with the instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}`.
 
       * The result type :math:`{t^\ast}` is :ref:`valid <valid-val>`.
 
@@ -17133,15 +17092,11 @@ The instruction sequence :math:`{\mathit{instr}}` is :ref:`valid <valid-val>` wi
 
       * The instruction :math:`{\mathit{instr}}` is of the form :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{instr}'}^\ast})`.
 
-      * The value type sequence :math:`{{\mathit{valtype}}^\ast}` is of the form :math:`{t_1^\ast}`.
+      * The block type :math:`{\mathit{blocktype}}` is :ref:`valid <valid-val>` as the instruction type :math:`{{\mathit{valtype}}^\ast}~\rightarrow~{{\mathit{valtype}'}^\ast}`.
 
-      * The value type sequence :math:`{{\mathit{valtype}'}^\ast}` is of the form :math:`{t_2^\ast}`.
+      * Let :math:`{C'}` be the same context as :math:`C`, but with the result type sequence :math:`{{\mathit{valtype}'}^\ast}` prepended to the field :math:`\mathsf{labels}`.
 
-      * The block type :math:`{\mathit{blocktype}}` is :ref:`valid <valid-val>` as the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
-
-      * Let :math:`{C'}` be the same context as :math:`C`, but with the result type sequence :math:`{t_2^\ast}` prepended to the field :math:`\mathsf{labels}`.
-
-      * Under the context :math:`{C'}`, the instruction sequence :math:`{{\mathit{instr}'}^\ast}` is :ref:`valid <valid-val>` with the instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+      * Under the context :math:`{C'}`, the instruction sequence :math:`{{\mathit{instr}'}^\ast}` is :ref:`valid <valid-val>` with the instruction type :math:`{{\mathit{valtype}}^\ast}~\rightarrow~{{\mathit{valtype}'}^\ast}`.
 
 
 
@@ -26539,10 +26494,8 @@ Blocktype_ok
       - the value type valtype'' is valid.
   - Or:
     - blocktype is (_IDX typeidx).
-    - valtype* is t_1*.
-    - valtype'* is t_2*.
     - the type C.TYPES[typeidx] exists.
-    - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[typeidx] is the composite type (FUNC t_1* -> t_2*).
+    - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[typeidx] is the composite type (FUNC valtype* -> valtype'*).
 
 Blocktype_ok/valtype
 - the block type (_RESULT valtype?) is valid as the instruction type [] -> valtype? if:
@@ -27249,14 +27202,12 @@ Instrs_ok
       - C.LOCALS[x_1] is (init t).
     - Under the context $with_locals(C, x_1*, (SET t)*), the instruction sequence instr_2* is valid with the instruction type t_2* ->_ x_2* t_3*.
   - Or:
-    - instr* is instr'*.
-    - the instruction sequence instr'* is valid with the instruction type it''.
+    - instr* is valid with the instruction type it''.
     - it'' matches it.
     - it is valid.
   - Or:
-    - instr* is instr'*.
     - it is t* :: t_1* ->_ x* t* :: t_2*.
-    - instr'* is valid with the instruction type t_1* ->_ x* t_2*.
+    - instr* is valid with the instruction type t_1* ->_ x* t_2*.
     - the result type t* is valid.
 
 Instrs_ok/empty
@@ -27829,11 +27780,9 @@ NotationTypingInstrScheme
     - C.GLOBALS[x] is (mut t).
   - Or:
     - instr is (BLOCK blocktype instr'*).
-    - valtype* is t_1*.
-    - valtype'* is t_2*.
-    - the block type blocktype is valid as the instruction type t_1* -> t_2*.
-    - the context C' is the context C with .LABELS prepended by [t_2*].
-    - Under the context C', the instruction sequence instr'* is valid with t_1* -> t_2*.
+    - the block type blocktype is valid as valtype* -> valtype'*.
+    - the context C' is the context C with .LABELS prepended by [valtype'*].
+    - Under the context C', the instruction sequence instr'* is valid with valtype* -> valtype'*.
 
 NotationTypingInstrScheme/i32.add
 - the instruction sequence [(BINOP I32 ADD)] is valid with the instruction type [I32, I32] -> [I32].
