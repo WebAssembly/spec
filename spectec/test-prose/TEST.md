@@ -17656,7 +17656,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{{\mathit{nt}}}(c)`.
 
-#. Perform :math:`z{}[{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|{\mathit{nt}}|} / 8] = {b^\ast}]`.
+#. Replace :math:`z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|{\mathit{nt}}|} / 8]` with :math:`{b^\ast}`.
 
 
 :math:`{{\mathsf{i}}{N}{.}\mathsf{store}}{n}~x~{\mathit{ao}}`
@@ -17679,7 +17679,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{n}}({{\mathrm{wrap}}}_{{|{\mathsf{i}}{N}|}, n}(c))`.
 
-#. Perform :math:`z{}[{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : n / 8] = {b^\ast}]`.
+#. Replace :math:`z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : n / 8]` with :math:`{b^\ast}`.
 
 
 :math:`\mathsf{unreachable}`
@@ -20226,7 +20226,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Assert: Due to validation, :math:`i < {|{{\mathit{zt}}^\ast}|}`.
 
-#. Perform :math:`z{}[{.}\mathsf{structs}{}[a]{.}\mathsf{fields}{}[i] = {{\mathrm{pack}}}_{{{\mathit{zt}}^\ast}{}[i]}({\mathit{val}})]`.
+#. Replace :math:`z{.}\mathsf{structs}{}[a]{.}\mathsf{fields}{}[i]` with :math:`{{\mathrm{pack}}}_{{{\mathit{zt}}^\ast}{}[i]}({\mathit{val}})`.
 
 
 :math:`\mathsf{array{.}new\_fixed}~x~n`
@@ -20290,7 +20290,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`({\mathsf{mut}^?}~{\mathit{zt}})` be the destructuring of :math:`{\mathit{fieldtype}}_0`.
 
-#. Perform :math:`z{}[{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}{}[i] = {{\mathrm{pack}}}_{{\mathit{zt}}}({\mathit{val}})]`.
+#. Replace :math:`z{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}{}[i]` with :math:`{{\mathrm{pack}}}_{{\mathit{zt}}}({\mathit{val}})`.
 
 
 :math:`\mathsf{local{.}set}~x`
@@ -20303,7 +20303,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`{\mathit{val}}` from the stack.
 
-#. Perform :math:`z{}[{.}\mathsf{locals}{}[x] = {\mathit{val}}]`.
+#. Replace :math:`z{.}\mathsf{locals}{}[x]` with :math:`{\mathit{val}}`.
 
 
 :math:`\mathsf{global{.}set}~x`
@@ -20316,7 +20316,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`{\mathit{val}}` from the stack.
 
-#. Perform :math:`z{}[{.}\mathsf{globals}{}[x]{.}\mathsf{value} = {\mathit{val}}]`.
+#. Replace :math:`z{.}\mathsf{globals}{}[x]{.}\mathsf{value}` with :math:`{\mathit{val}}`.
 
 
 :math:`\mathsf{table{.}set}~x`
@@ -20337,7 +20337,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    a. Trap.
 
-#. Perform :math:`z{}[{.}\mathsf{tables}{}[x]{.}\mathsf{refs}{}[i] = {\mathit{ref}}]`.
+#. Replace :math:`z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}{}[i]` with :math:`{\mathit{ref}}`.
 
 
 :math:`\mathsf{table{.}grow}~x`
@@ -20360,7 +20360,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. Push the value :math:`({\mathit{at}}{.}\mathsf{const}~{|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|})` to the stack.
 
-   #. Perform :math:`z{}[{.}\mathsf{tables}{}[x] = {\mathit{ti}}]`.
+   #. Replace :math:`z{.}\mathsf{tables}{}[x]` with :math:`{\mathit{ti}}`.
 
 #. Or:
 
@@ -20373,7 +20373,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Perform :math:`z{}[{.}\mathsf{elems}{}[x]{.}\mathsf{refs} = \epsilon]`.
+#. Replace :math:`z{.}\mathsf{elems}{}[x]{.}\mathsf{refs}` with :math:`\epsilon`.
 
 
 :math:`{{\mathit{nt}}{.}\mathsf{store}}{{{\mathit{storeop}}^?}}~x~{\mathit{ao}}`
@@ -20400,7 +20400,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{{\mathit{nt}'}}(c)`.
 
-   #. Perform :math:`z{}[{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|{\mathit{nt}'}|} / 8] = {b^\ast}]`.
+   #. Replace :math:`z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|{\mathit{nt}'}|} / 8]` with :math:`{b^\ast}`.
 
 #. Else:
 
@@ -20414,7 +20414,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{n}}({{\mathrm{wrap}}}_{{|{\mathit{nt}'}|}, n}(c))`.
 
-   #. Perform :math:`z{}[{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : n / 8] = {b^\ast}]`.
+   #. Replace :math:`z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : n / 8]` with :math:`{b^\ast}`.
 
 
 :math:`\mathsf{v{\scriptstyle 128}}{.}\mathsf{store}~x~{\mathit{ao}}`
@@ -20437,7 +20437,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{\mathsf{v{\scriptstyle 128}}}(c)`.
 
-#. Perform :math:`z{}[{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|\mathsf{v{\scriptstyle 128}}|} / 8] = {b^\ast}]`.
+#. Replace :math:`z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|\mathsf{v{\scriptstyle 128}}|} / 8]` with :math:`{b^\ast}`.
 
 
 :math:`{\mathsf{v{\scriptstyle 128}}{.}\mathsf{store}}{N}{\mathsf{\_}}{\mathsf{lane}}~x~{\mathit{ao}}~j`
@@ -20466,7 +20466,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{N}}({{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}(c){}[j])`.
 
-#. Perform :math:`z{}[{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : N / 8] = {b^\ast}]`.
+#. Replace :math:`z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : N / 8]` with :math:`{b^\ast}`.
 
 
 :math:`\mathsf{memory{.}grow}~x`
@@ -20485,7 +20485,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. Push the value :math:`({\mathit{at}}{.}\mathsf{const}~{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|} / (64 \, {\mathrm{Ki}}))` to the stack.
 
-   #. Perform :math:`z{}[{.}\mathsf{mems}{}[x] = {\mathit{mi}}]`.
+   #. Replace :math:`z{.}\mathsf{mems}{}[x]` with :math:`{\mathit{mi}}`.
 
 #. Or:
 
@@ -20498,7 +20498,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Perform :math:`z{}[{.}\mathsf{datas}{}[x]{.}\mathsf{bytes} = \epsilon]`.
+#. Replace :math:`z{.}\mathsf{datas}{}[x]{.}\mathsf{bytes}` with :math:`\epsilon`.
 
 
 :math:`{\mathrm{min}}(i, j)`

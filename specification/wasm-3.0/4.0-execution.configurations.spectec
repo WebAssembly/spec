@@ -276,16 +276,16 @@ def $local((s; f), x) = f.LOCALS[x]
 
 ;; State update
 
-def $with_local(state, localidx, val) : state               hint(show %[.LOCALS[%] = %])            hint(macro "Z%")
-def $with_global(state, globalidx, val) : state             hint(show %[.GLOBALS[%].VALUE = %])     hint(macro "ZG%")
-def $with_table(state, tableidx, nat, ref) : state          hint(show %[.TABLES[%].REFS[%] = %])    hint(macro "ZT%")
-def $with_tableinst(state, tableidx, tableinst) : state     hint(show %[.TABLES[%] = %])            hint(macro "Z%")
-def $with_mem(state, memidx, nat, nat, byte*) : state       hint(show %[.MEMS[%].BYTES[% : %] = %]) hint(macro "ZM%")
-def $with_meminst(state, memidx, meminst) : state           hint(show %[.MEMS[%] = %])              hint(macro "Z%")
-def $with_elem(state, elemidx, ref*) : state                hint(show %[.ELEMS[%].REFS = %])        hint(macro "ZE%")
-def $with_data(state, dataidx, byte*) : state               hint(show %[.DATAS[%].BYTES = %])       hint(macro "ZD%")
-def $with_struct(state, structaddr, nat, fieldval) : state  hint(show %[.STRUCTS[%].FIELDS[%] = %]) hint(macro "ZS%")
-def $with_array(state, arrayaddr, nat, fieldval) : state    hint(show %[.ARRAYS[%].FIELDS[%] = %])  hint(macro "ZA%")
+def $with_local(state, localidx, val) : state               hint(show %[.LOCALS[%] = %])            hint(macro "Z%")  hint(prose "Replace" $local(%1, %2) "with" %3)
+def $with_global(state, globalidx, val) : state             hint(show %[.GLOBALS[%].VALUE = %])     hint(macro "ZG%") hint(prose "Replace" $global(%1, %2).VALUE "with" %3)
+def $with_table(state, tableidx, nat, ref) : state          hint(show %[.TABLES[%].REFS[%] = %])    hint(macro "ZT%") hint(prose "Replace" $table(%1, %2).REFS[%3] "with" %4)
+def $with_tableinst(state, tableidx, tableinst) : state     hint(show %[.TABLES[%] = %])            hint(macro "Z%")  hint(prose "Replace" $table(%1, %2) "with" %3)
+def $with_mem(state, memidx, nat, nat, byte*) : state       hint(show %[.MEMS[%].BYTES[% : %] = %]) hint(macro "ZM%") hint(prose "Replace" $mem(%1, %2).BYTES[%3:%4] "with" %5)
+def $with_meminst(state, memidx, meminst) : state           hint(show %[.MEMS[%] = %])              hint(macro "Z%")  hint(prose "Replace" $meminst(%1)[%2] "with" %3)
+def $with_elem(state, elemidx, ref*) : state                hint(show %[.ELEMS[%].REFS = %])        hint(macro "ZE%") hint(prose "Replace" $elem(%1, %2).REFS "with" %3)
+def $with_data(state, dataidx, byte*) : state               hint(show %[.DATAS[%].BYTES = %])       hint(macro "ZD%") hint(prose "Replace" $data(%1, %2).BYTES "with" %3)
+def $with_struct(state, structaddr, nat, fieldval) : state  hint(show %[.STRUCTS[%].FIELDS[%] = %]) hint(macro "ZS%") hint(prose "Replace" $structinst(%1)[%2].FIELDS[%3] "with" %4)
+def $with_array(state, arrayaddr, nat, fieldval) : state    hint(show %[.ARRAYS[%].FIELDS[%] = %])  hint(macro "ZA%") hint(prose "Replace" $arrayinst(%1)[%2].FIELDS[%3] "with" %4)
 
 def $with_local((s; f), x, v) = s; f[.LOCALS[x] = v]
 def $with_global((s; f), x, v) = s[.GLOBALS[f.MODULE.GLOBALS[x]].VALUE = v]; f
@@ -299,9 +299,9 @@ def $with_struct((s; f), a, i, fv) = s[.STRUCTS[a].FIELDS[i] = fv]; f
 def $with_array((s; f), a, i, fv) = s[.ARRAYS[a].FIELDS[i] = fv]; f
 
 
-def $add_structinst(state, structinst*) : state  hint(show %[.STRUCTS =++ %]) hint(macro "Z%") hint(prose "Append" %2 "to" %1.STRUCTS)
-def $add_arrayinst(state, arrayinst*) : state    hint(show %[.ARRAYS =++ %])  hint(macro "Z%") hint(prose "Append" %2 "to" %1.ARRAYS)
-def $add_exninst(state, exninst*) : state        hint(show %[.EXNS =++ %])    hint(macro "Z%") hint(prose "Append" %2 "to" %1.EXNS)
+def $add_structinst(state, structinst*) : state  hint(show %[.STRUCTS =++ %]) hint(macro "Z%") hint(prose "Append" %2 "to" $structinst(%1))
+def $add_arrayinst(state, arrayinst*) : state    hint(show %[.ARRAYS =++ %])  hint(macro "Z%") hint(prose "Append" %2 "to" $arrayinst(%1))
+def $add_exninst(state, exninst*) : state        hint(show %[.EXNS =++ %])    hint(macro "Z%") hint(prose "Append" %2 "to" $exninst(%1))
 
 def $add_structinst((s; f), si*) = s[.STRUCTS =++ si*]; f
 def $add_arrayinst((s; f), ai*) = s[.ARRAYS =++ ai*]; f

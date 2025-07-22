@@ -324,9 +324,9 @@ let extract_call_hint fname =
   | _ -> None
 
 (* EL Helpers *)
+open El.Ast
 
 let rec walk_el_exp (f : El.Ast.exp -> El.Ast.exp) (e : El.Ast.exp) : El.Ast.exp =
-  let open El.Ast in
   let we = walk_el_exp f in
   let it =
     match e.it with
@@ -352,7 +352,7 @@ let rec walk_el_exp (f : El.Ast.exp -> El.Ast.exp) (e : El.Ast.exp) : El.Ast.exp
     | TupE es -> TupE (List.map we es)
     | InfixE (e1, a, e2) -> InfixE (we e1, a, we e2)
     | BrackE (a1, e1, a2) -> BrackE (a1, we e1, a2)
-    | CallE (id, args) -> CallE (id, args)
+    | CallE (id, args) -> CallE (id, List.map (walk_el_arg f) args)
     | IterE (e1, i) -> IterE (we e1, i)
     | TypE (e1, t) -> TypE (we e1, t)
     | ArithE e1 -> ArithE (we e1)
@@ -360,6 +360,11 @@ let rec walk_el_exp (f : El.Ast.exp -> El.Ast.exp) (e : El.Ast.exp) : El.Ast.exp
     | UnparenE e1 -> UnparenE (we e1)
   in
   f {e with it}
+
+and walk_el_arg f a =
+  match !(a.it) with
+  | ExpA e -> {a with it = ref @@ ExpA (walk_el_exp f e)}
+  | _ -> a
 
 let fill_hole args = walk_el_exp
   (fun e ->
