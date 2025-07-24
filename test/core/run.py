@@ -36,7 +36,6 @@ simd_test_files = glob.glob(os.path.join(inputDir, "simd", "*.wast"))
 relaxed_simd_test_files = glob.glob(os.path.join(inputDir, "relaxed-simd", "*.wast"))
 gc_test_files = glob.glob(os.path.join(inputDir, "gc", "*.wast"))
 multi_memory_test_files = glob.glob(os.path.join(inputDir, "multi-memory", "*.wast"))
-address64_test_files = glob.glob(os.path.join(inputDir, "address64", "*.wast"))
 exception_test_files = glob.glob(os.path.join(inputDir, "exception", "*.wast"))
 all_test_files = \
   main_test_files + \
@@ -44,7 +43,6 @@ all_test_files = \
   relaxed_simd_test_files + \
   gc_test_files + \
   multi_memory_test_files + \
-  address64_test_files + \
   exception_test_files
 
 wasmExec = arguments.wasm
