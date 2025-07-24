@@ -790,7 +790,7 @@ let of_assertion' env act loc name args wrapper_opt =
 let of_assertion env ass =
   let loc = Filename.basename ass.at.left.file ^
     ":" ^ string_of_int ass.at.left.line in
-  let loc_as_arg = ", \"" ^ String.escaped loc ^ "\"" in
+  let loc_as_arg = ", " ^ of_string_with String.iter add_char loc in
   match ass.it with
   | AssertMalformed (def, _) ->
     "assert_malformed(" ^ of_definition def ^ loc_as_arg ^ ");"
