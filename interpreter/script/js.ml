@@ -675,6 +675,7 @@ let of_string_with iter add_char s =
 
 let of_bytes = of_string_with String.iter add_hex_char
 let of_name = of_string_with List.iter add_unicode_char
+let of_string = of_string_with String.iter add_char
 
 let of_float z =
   match string_of_float z with
@@ -790,7 +791,7 @@ let of_assertion' env act loc name args wrapper_opt =
 let of_assertion env ass =
   let loc = Filename.basename ass.at.left.file ^
     ":" ^ string_of_int ass.at.left.line in
-  let loc_as_arg = ", " ^ of_string_with String.iter add_char loc in
+  let loc_as_arg = ", " ^ of_string loc in
   match ass.it with
   | AssertMalformed (def, _) ->
     "assert_malformed(" ^ of_definition def ^ loc_as_arg ^ ");"
@@ -815,10 +816,8 @@ let of_assertion env ass =
     of_assertion' env act loc_as_arg "assert_exception" [] None
 
 let of_command env cmd =
-  let loc = String.escaped (Filename.basename cmd.at.left.file ^
+  let loc_as_arg = ", " ^ of_string (Filename.basename cmd.at.left.file ^
     ":" ^ string_of_int cmd.at.left.line) in
-  let loc_as_arg = ", \"" ^ loc ^ "\"" in
-  "\n// " ^ loc ^ "\n" ^
   match cmd.it with
   | Module (x_opt, def) ->
     let rec unquote def =
