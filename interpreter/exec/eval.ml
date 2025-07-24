@@ -157,25 +157,23 @@ let split n (vs : 'a stack) at = take n vs at, drop n vs at
  *   c : config
  *)
 
+let oob i n j =
+  I64.(lt_u (add i n) i || gt_u (add i n) j)
+
 let mem_oob frame x i n =
-  let mem = (memory frame.inst x) in
-  I64.gt_u (I64.add (addr_of_num i) (addr_of_num n))
-    (Memory.bound mem)
+  oob (addr_of_num i) (addr_of_num n) (Memory.bound (memory frame.inst x))
 
 let data_oob frame x i n =
-  I64.gt_u (I64.add (addr_of_num i) (addr_of_num n))
-    (Data.size (data frame.inst x))
+  oob (addr_of_num i) (addr_of_num n) (Data.size (data frame.inst x))
 
 let table_oob frame x i n =
-  I64.gt_u (I64.add (addr_of_num i) (addr_of_num n))
-    (Table.size (table frame.inst x))
+  oob (addr_of_num i) (addr_of_num n) (Table.size (table frame.inst x))
 
 let elem_oob frame x i n =
-  I64.gt_u (I64.add (addr_of_num i) (addr_of_num n))
-    (Elem.size (elem frame.inst x))
+  oob (addr_of_num i) (addr_of_num n) (Elem.size (elem frame.inst x))
 
 let array_oob a i n =
-  I64.gt_u (I64.add (Convert.I64_.extend_i32_u i) (Convert.I64_.extend_i32_u n))
+  oob (Convert.I64_.extend_i32_u i) (Convert.I64_.extend_i32_u n)
     (Convert.I64_.extend_i32_u (Aggr.array_length a))
 
 let rec step (c : config) : config =
