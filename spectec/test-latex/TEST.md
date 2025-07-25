@@ -12696,16 +12696,6 @@ $$
 
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
-& {{\mathtt{blocktype}}}_{I} & ::= & {t^?}{:}{{{\mathtt{result}}}_{I}^?} & \quad\Rightarrow\quad{} & {t^?} \\
-& & | & (x, {I'}){:}{{\mathtt{typeuse}}}_{I} & \quad\Rightarrow\quad{} & x & \quad \mbox{if}~ {I'} = \{ \begin{array}[t]{@{}l@{}}
-\mathsf{locals}~{(\epsilon)^\ast} \}\end{array} \\
-\end{array}
-$$
-
-\vspace{1ex}
-
-$$
-\begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
 & {{\mathtt{instr}}}_{I} & ::= & {\mathit{in}}{:}{{\mathtt{plaininstr}}}_{I} & \quad\Rightarrow\quad{} & {\mathit{in}} \\
 & & | & {\mathit{in}}{:}{{\mathtt{blockinstr}}}_{I} & \quad\Rightarrow\quad{} & {\mathit{in}} \\
 & {{\mathtt{instrs}}}_{I} & ::= & {{\mathit{in}}^\ast}{:}{{{\mathtt{instr}}}_{I}^\ast} & \quad\Rightarrow\quad{} & {{\mathit{in}}^\ast} \\
@@ -12756,6 +12746,9 @@ $$
 
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
+& {{\mathtt{blocktype}}}_{I} & ::= & {t^?}{:}{{{\mathtt{result}}}_{I}^?} & \quad\Rightarrow\quad{} & {t^?} \\
+& & | & (x, {I'}){:}{{\mathtt{typeuse}}}_{I} & \quad\Rightarrow\quad{} & x & \quad \mbox{if}~ {I'} = \{ \begin{array}[t]{@{}l@{}}
+\mathsf{locals}~{(\epsilon)^\ast} \}\end{array} \\
 & {{\mathtt{blockinstr}}}_{I} & ::= & \mbox{`$\mathtt{block}$'}~~({{\mathit{id}}^?}, {I'}){:}{{\mathtt{label}}}_{I}~~{\mathit{bt}}{:}{{\mathtt{blocktype}}}_{I}~~{{\mathit{in}}^\ast}{:}{{\mathtt{instrs}}}_{{I'}}~~\mbox{`$\mathtt{end}$'}~~{{\mathit{id}'}^?}{:}{{\mathtt{id}}^?} & \quad\Rightarrow\quad{} & & \\
 &&& \multicolumn{4}{@{}l@{}}{\quad
 \begin{array}[t]{@{}l@{}l@{}}

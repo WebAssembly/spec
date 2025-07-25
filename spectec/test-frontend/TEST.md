@@ -9774,70 +9774,6 @@ grammar Tplaininstr_(I : I) : instr
   ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec
   prod "throw_ref" => THROW_REF_instr
   ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec
-  prod{ht : heaptype} {{"ref.null"} {ht:Theaptype_(I)}} => REF.NULL_instr(ht)
-  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec
-  prod{x : idx} {{"ref.func"} {x:Tfuncidx_(I)}} => REF.FUNC_instr(x)
-  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec
-  prod "ref.is_null" => REF.IS_NULL_instr
-  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec
-  prod "ref.as_non_null" => REF.AS_NON_NULL_instr
-  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec
-  prod "ref.eq" => REF.EQ_instr
-  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec
-  prod{rt : reftype} {{"ref.test"} {rt:Treftype_(I)}} => REF.TEST_instr(rt)
-  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec
-  prod{rt : reftype} {{"ref.cast"} {rt:Treftype_(I)}} => REF.CAST_instr(rt)
-  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec
-  prod "ref.i31" => REF.I31_instr
-  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec
-  prod "i31.get_s" => I31.GET_instr(S_sx)
-  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec
-  prod "i31.get_u" => I31.GET_instr(U_sx)
-  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec
-  prod{x : idx} {{"struct.new"} {x:Ttypeidx_(I)}} => STRUCT.NEW_instr(x)
-  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec
-  prod{x : idx} {{"struct.new_default"} {x:Ttypeidx_(I)}} => STRUCT.NEW_DEFAULT_instr(x)
-  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec
-  prod{x : idx, i : fieldidx} {{"struct.get"} {x:Ttypeidx_(I)} {i:Tfieldidx__(I, x)}} => STRUCT.GET_instr(?(), x, i)
-  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec
-  prod{x : idx, i : fieldidx} {{"struct.get_s"} {x:Ttypeidx_(I)} {i:Tfieldidx__(I, x)}} => STRUCT.GET_instr(?(S_sx), x, i)
-  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec
-  prod{x : idx, i : fieldidx} {{"struct.get_u"} {x:Ttypeidx_(I)} {i:Tfieldidx__(I, x)}} => STRUCT.GET_instr(?(U_sx), x, i)
-  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec
-  prod{x : idx, i : fieldidx} {{"struct.set"} {x:Ttypeidx_(I)} {i:Tfieldidx__(I, x)}} => STRUCT.SET_instr(x, i)
-  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec
-  prod{x : idx} {{"array.new"} {x:Ttypeidx_(I)}} => ARRAY.NEW_instr(x)
-  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec
-  prod{x : idx} {{"array.new_default"} {x:Ttypeidx_(I)}} => ARRAY.NEW_DEFAULT_instr(x)
-  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec
-  prod{x : idx, n : n} {{"array.new_fixed"} {x:Ttypeidx_(I)} {`%`_u32(n):Tu32}} => ARRAY.NEW_FIXED_instr(x, `%`_u32(n))
-  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec
-  prod{x : idx, y : idx} {{"array.new_data"} {x:Ttypeidx_(I)} {y:Tdataidx_(I)}} => ARRAY.NEW_DATA_instr(x, y)
-  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec
-  prod{x : idx, y : idx} {{"array.new_elem"} {x:Ttypeidx_(I)} {y:Telemidx_(I)}} => ARRAY.NEW_ELEM_instr(x, y)
-  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec
-  prod{x : idx} {{"array.get"} {x:Ttypeidx_(I)}} => ARRAY.GET_instr(?(), x)
-  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec
-  prod{x : idx} {{"array.get_s"} {x:Ttypeidx_(I)}} => ARRAY.GET_instr(?(S_sx), x)
-  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec
-  prod{x : idx} {{"array.get_u"} {x:Ttypeidx_(I)}} => ARRAY.GET_instr(?(U_sx), x)
-  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec
-  prod{x : idx} {{"array.set"} {x:Ttypeidx_(I)}} => ARRAY.SET_instr(x)
-  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec
-  prod "array.len" => ARRAY.LEN_instr
-  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec
-  prod{x : idx} {{"array.fill"} {x:Ttypeidx_(I)}} => ARRAY.FILL_instr(x)
-  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec
-  prod{x_1 : idx, x_2 : idx} {{"array.copy"} {x_1:Ttypeidx_(I)} {x_2:Ttypeidx_(I)}} => ARRAY.COPY_instr(x_1, x_2)
-  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec
-  prod{x : idx, y : idx} {{"array.init_data"} {x:Ttypeidx_(I)} {y:Tdataidx_(I)}} => ARRAY.INIT_DATA_instr(x, y)
-  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec
-  prod{x : idx, y : idx} {{"array.init_elem"} {x:Ttypeidx_(I)} {y:Telemidx_(I)}} => ARRAY.INIT_ELEM_instr(x, y)
-  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec
-  prod "any.convert_extern" => ANY.CONVERT_EXTERN_instr
-  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec
-  prod "extern.convert_any" => EXTERN.CONVERT_ANY_instr
-  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec
   prod{x : idx} {{"local.get"} {x:Tlocalidx_(I)}} => LOCAL.GET_instr(x)
   ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec
   prod{x : idx} {{"local.set"} {x:Tlocalidx_(I)}} => LOCAL.SET_instr(x)
@@ -10079,6 +10015,70 @@ grammar Tplaininstr_(I : I) : instr
   prod{y : idx} {{"memory.init"} {y:Telemidx_(I)}} => MEMORY.INIT_instr(`%`_memidx(0), y)
   ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec
   prod{x : idx} {{"data.drop"} {x:Tdataidx_(I)}} => DATA.DROP_instr(x)
+  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec
+  prod{ht : heaptype} {{"ref.null"} {ht:Theaptype_(I)}} => REF.NULL_instr(ht)
+  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec
+  prod{x : idx} {{"ref.func"} {x:Tfuncidx_(I)}} => REF.FUNC_instr(x)
+  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec
+  prod "ref.is_null" => REF.IS_NULL_instr
+  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec
+  prod "ref.as_non_null" => REF.AS_NON_NULL_instr
+  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec
+  prod "ref.eq" => REF.EQ_instr
+  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec
+  prod{rt : reftype} {{"ref.test"} {rt:Treftype_(I)}} => REF.TEST_instr(rt)
+  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec
+  prod{rt : reftype} {{"ref.cast"} {rt:Treftype_(I)}} => REF.CAST_instr(rt)
+  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec
+  prod "ref.i31" => REF.I31_instr
+  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec
+  prod "i31.get_s" => I31.GET_instr(S_sx)
+  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec
+  prod "i31.get_u" => I31.GET_instr(U_sx)
+  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec
+  prod{x : idx} {{"struct.new"} {x:Ttypeidx_(I)}} => STRUCT.NEW_instr(x)
+  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec
+  prod{x : idx} {{"struct.new_default"} {x:Ttypeidx_(I)}} => STRUCT.NEW_DEFAULT_instr(x)
+  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec
+  prod{x : idx, i : fieldidx} {{"struct.get"} {x:Ttypeidx_(I)} {i:Tfieldidx__(I, x)}} => STRUCT.GET_instr(?(), x, i)
+  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec
+  prod{x : idx, i : fieldidx} {{"struct.get_s"} {x:Ttypeidx_(I)} {i:Tfieldidx__(I, x)}} => STRUCT.GET_instr(?(S_sx), x, i)
+  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec
+  prod{x : idx, i : fieldidx} {{"struct.get_u"} {x:Ttypeidx_(I)} {i:Tfieldidx__(I, x)}} => STRUCT.GET_instr(?(U_sx), x, i)
+  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec
+  prod{x : idx, i : fieldidx} {{"struct.set"} {x:Ttypeidx_(I)} {i:Tfieldidx__(I, x)}} => STRUCT.SET_instr(x, i)
+  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec
+  prod{x : idx} {{"array.new"} {x:Ttypeidx_(I)}} => ARRAY.NEW_instr(x)
+  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec
+  prod{x : idx} {{"array.new_default"} {x:Ttypeidx_(I)}} => ARRAY.NEW_DEFAULT_instr(x)
+  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec
+  prod{x : idx, n : n} {{"array.new_fixed"} {x:Ttypeidx_(I)} {`%`_u32(n):Tu32}} => ARRAY.NEW_FIXED_instr(x, `%`_u32(n))
+  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec
+  prod{x : idx, y : idx} {{"array.new_data"} {x:Ttypeidx_(I)} {y:Tdataidx_(I)}} => ARRAY.NEW_DATA_instr(x, y)
+  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec
+  prod{x : idx, y : idx} {{"array.new_elem"} {x:Ttypeidx_(I)} {y:Telemidx_(I)}} => ARRAY.NEW_ELEM_instr(x, y)
+  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec
+  prod{x : idx} {{"array.get"} {x:Ttypeidx_(I)}} => ARRAY.GET_instr(?(), x)
+  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec
+  prod{x : idx} {{"array.get_s"} {x:Ttypeidx_(I)}} => ARRAY.GET_instr(?(S_sx), x)
+  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec
+  prod{x : idx} {{"array.get_u"} {x:Ttypeidx_(I)}} => ARRAY.GET_instr(?(U_sx), x)
+  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec
+  prod{x : idx} {{"array.set"} {x:Ttypeidx_(I)}} => ARRAY.SET_instr(x)
+  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec
+  prod "array.len" => ARRAY.LEN_instr
+  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec
+  prod{x : idx} {{"array.fill"} {x:Ttypeidx_(I)}} => ARRAY.FILL_instr(x)
+  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec
+  prod{x_1 : idx, x_2 : idx} {{"array.copy"} {x_1:Ttypeidx_(I)} {x_2:Ttypeidx_(I)}} => ARRAY.COPY_instr(x_1, x_2)
+  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec
+  prod{x : idx, y : idx} {{"array.init_data"} {x:Ttypeidx_(I)} {y:Tdataidx_(I)}} => ARRAY.INIT_DATA_instr(x, y)
+  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec
+  prod{x : idx, y : idx} {{"array.init_elem"} {x:Ttypeidx_(I)} {y:Telemidx_(I)}} => ARRAY.INIT_ELEM_instr(x, y)
+  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec
+  prod "any.convert_extern" => ANY.CONVERT_EXTERN_instr
+  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec
+  prod "extern.convert_any" => EXTERN.CONVERT_ANY_instr
   ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec
   prod{n : n} {{"i32.const"} {`%`_u32(n):Ti32}} => CONST_instr(I32_numtype, `%`_num_(n))
   ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec
@@ -10829,48 +10829,48 @@ grammar Tplaininstr_(I : I) : instr
 ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec
 rec {
 
-;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec:23.1-25.29
+;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec:16.1-18.29
 grammar Tinstr_(I : I) : instr
-  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec:24.5-24.29
+  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec:17.5-17.29
   prod{in : instr} in:Tplaininstr_(I) => in
-  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec:25.5-25.29
+  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec:18.5-18.29
   prod{in : instr} in:Tblockinstr_(I) => in
 
-;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec:31.1-32.52
+;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec:24.1-25.52
 grammar Tinstrs_(I : I) : instr*
-  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec:28.5-28.27
+  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec:21.5-21.27
   prod{`in*` : instr*} in*{in <- `in*`}:Tinstr_(I)*{} => in*{in <- `in*`}
-  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec:32.5-32.52
+  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec:25.5-25.52
   prod{`in**` : instr**} in*{in <- `in*`}*{`in*` <- `in**`}:Tfoldedinstr_(I)*{} => $concat_(syntax instr, in*{in <- `in*`}*{`in*` <- `in**`})
 
-;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec:34.1-49.24
+;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec:33.1-46.24
 grammar Tfoldedinstr_(I : I) : instr*
-  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec:35.5-35.24
+  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec:29.5-29.24
   prod{in : instr} in:Tinstr_(I) => [in]
-  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec:36.5-36.59
+  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec:30.5-30.59
   prod{in : instr, `in'*` : instr*} {{"("} {in:Tplaininstr_(I)} {in'*{in' <- `in'*`}:Tinstrs_(I)} {")"}} => in'*{in' <- `in'*`} ++ [in]
-  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec:37.5-38.17
+  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec:34.5-35.17
   prod{`id?` : char?, I' : I, bt : blocktype, `in*` : instr*} {{"("} {"block"} {(?(`%`_name(lift(id?{id <- `id?`}))), I'):Tlabel_(I)} {bt:Tblocktype_(I)} {in*{in <- `in*`}:Tinstrs_(I')} {")"}} => [BLOCK_instr(bt, in*{in <- `in*`})]
-  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec:39.5-40.16
+  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec:36.5-37.16
   prod{`id?` : char?, I' : I, bt : blocktype, `in*` : instr*} {{"("} {"loop"} {(?(`%`_name(lift(id?{id <- `id?`}))), I'):Tlabel_(I)} {bt:Tblocktype_(I)} {in*{in <- `in*`}:Tinstrs_(I')} {")"}} => [LOOP_instr(bt, in*{in <- `in*`})]
-  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec:48.5-49.24
+  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec:45.5-46.24
   prod{`id?` : char?, I' : I, bt : blocktype, `c*` : catch*, `in*` : instr*} {{"("} {"try_table"} {(?(`%`_name(lift(id?{id <- `id?`}))), I'):Tlabel_(I)} {bt:Tblocktype_(I)} {c*{c <- `c*`}:Tcatch_(I)*{}} {in*{in <- `in*`}:Tinstrs_(I')} {")"}} => [TRY_TABLE_instr(bt, `%`_list(c*{c <- `c*`}), in*{in <- `in*`})]
 
-;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec:69.1-72.35
+;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec:80.1-83.35
 grammar Tblockinstr_(I : I) : instr
-  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec:55.5-57.35
+  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec:66.5-68.35
   prod{`id?` : char?, I' : I, bt : blocktype, `in*` : instr*, `id'?` : char?} {{"block"} {(?(`%`_name(lift(id?{id <- `id?`}))), I'):Tlabel_(I)} {bt:Tblocktype_(I)} {in*{in <- `in*`}:Tinstrs_(I')} {"end"} {?(`%`_name(lift(id'?{id' <- `id'?`}))):Tid?{}}} => BLOCK_instr(bt, in*{in <- `in*`})
     -- if ((id'?{id' <- `id'?`} = ?()) \/ (id'?{id' <- `id'?`} = id?{id <- `id?`}))
-  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec:58.5-60.35
+  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec:69.5-71.35
   prod{`id?` : char?, I' : I, bt : blocktype, `in*` : instr*, `id'?` : char?} {{"loop"} {(?(`%`_name(lift(id?{id <- `id?`}))), I'):Tlabel_(I)} {bt:Tblocktype_(I)} {in*{in <- `in*`}:Tinstrs_(I')} {"end"} {?(`%`_name(lift(id'?{id' <- `id'?`}))):Tid?{}}} => LOOP_instr(bt, in*{in <- `in*`})
     -- if ((id'?{id' <- `id'?`} = ?()) \/ (id'?{id' <- `id'?`} = id?{id <- `id?`}))
-  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec:61.5-63.71
+  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec:72.5-74.71
   prod{`id?` : char?, I' : I, bt : blocktype, `in_1*` : instr*, `id_1?` : char?, `in_2*` : instr*, `id_2?` : char?} {{"if"} {(?(`%`_name(lift(id?{id <- `id?`}))), I'):Tlabel_(I)} {bt:Tblocktype_(I)} {in_1*{in_1 <- `in_1*`}:Tinstrs_(I')} {"else"} {?(`%`_name(lift(id_1?{id_1 <- `id_1?`}))):Tid?{}} {in_2*{in_2 <- `in_2*`}:Tinstrs_(I')} {"end"} {?(`%`_name(lift(id_2?{id_2 <- `id_2?`}))):Tid?{}}} => `IF%%ELSE%`_instr(bt, in_1*{in_1 <- `in_1*`}, in_2*{in_2 <- `in_2*`})
     -- if (((id_1?{id_1 <- `id_1?`} = ?()) \/ (id_1?{id_1 <- `id_1?`} = id?{id <- `id?`})) /\ ((id_2?{id_2 <- `id_2?`} = ?()) \/ (id_2?{id_2 <- `id_2?`} = id?{id <- `id?`})))
-  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec:64.5-66.35
+  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec:75.5-77.35
   prod{`id?` : char?, I' : I, bt : blocktype, `c*` : catch*, `in*` : instr*, `id'?` : char?} {{"try_table"} {(?(`%`_name(lift(id?{id <- `id?`}))), I'):Tlabel_(I)} {bt:Tblocktype_(I)} {c*{c <- `c*`}:Tcatch_(I)*{}} {in*{in <- `in*`}:Tinstrs_(I')} {"end"} {?(`%`_name(lift(id'?{id' <- `id'?`}))):Tid?{}}} => TRY_TABLE_instr(bt, `%`_list(c*{c <- `c*`}), in*{in <- `in*`})
     -- if ((id'?{id' <- `id'?`} = ?()) \/ (id'?{id' <- `id'?`} = id?{id <- `id?`}))
-  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec:70.5-72.35
+  ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec:81.5-83.35
   prod{`id?` : char?, I' : I, bt : blocktype, `in*` : instr*, `id'?` : char?} {{"if"} {(?(`%`_name(lift(id?{id <- `id?`}))), I'):Tlabel_(I)} {bt:Tblocktype_(I)} {in*{in <- `in*`}:Tinstrs_(I')} {"end"} {?(`%`_name(lift(id'?{id' <- `id'?`}))):Tid?{}}} => `IF%%ELSE%`_instr(bt, in*{in <- `in*`}, [])
     -- if ((id'?{id' <- `id'?`} = ?()) \/ (id'?{id' <- `id'?`} = id?{id <- `id?`}))
 }
