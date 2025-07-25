@@ -677,9 +677,8 @@ let of_bytes = of_string_with String.iter add_hex_char
 let of_string = of_string_with String.iter add_char
 let of_name = of_string_with List.iter add_unicode_char
 
-let of_loc =
-  of_string (Filename.basename cmd.at.left.file ^
-    ":" ^ string_of_int cmd.at.left.line)
+let of_loc at =
+  of_string (Filename.basename at.left.file ^ ":" ^ string_of_int at.left.line)
 
 let of_float z =
   match string_of_float z with
