@@ -48,6 +48,24 @@ The following grammar handles the corresponding update to the :ref:`identifier c
    then it is shadowed and the earlier label becomes inaccessible.
 
 
+.. index:: parametric instruction, value type, polymorphism
+   pair: text format; instruction
+.. _text-instr-parametric:
+
+Parametric Instructions
+~~~~~~~~~~~~~~~~~~~~~~~
+
+.. _text-drop:
+.. _text-select:
+
+.. math::
+   \begin{array}{llclll}
+   \production{instruction} & \Tplaininstr_I &::=& \dots \\ &&|&
+     \text{drop} &\Rightarrow& \DROP \\ &&|&
+     \text{select}~((t{:}\Tresult_I)^\ast)^? &\Rightarrow& \SELECT~(t^\ast)^? \\
+   \end{array}
+
+
 .. index:: control instructions, structured control, label, block, branch, result type, label index, function index, tag index, type index, list, polymorphism, reference
    pair: text format; instruction
 .. _text-blockinstr:
@@ -188,101 +206,6 @@ Also, for backwards compatibility, the table index to :math:`\text{call\_indirec
      \text{return\_call\_indirect}~~\Ttypeuse
        &\equiv&
      \text{return\_call\_indirect}~~0~~\Ttypeuse \\
-   \end{array}
-
-
-.. index:: reference instruction
-   pair: text format; instruction
-.. _text-instr-ref:
-
-Reference Instructions
-~~~~~~~~~~~~~~~~~~~~~~
-
-.. _text-ref.null:
-.. _text-ref.func:
-.. _text-ref.is_null:
-.. _text-ref.as_non_null:
-.. _text-struct.new:
-.. _text-struct.new_default:
-.. _text-struct.get:
-.. _text-struct.get_s:
-.. _text-struct.get_u:
-.. _text-struct.set:
-.. _text-array.new:
-.. _text-array.new_default:
-.. _text-array.new_fixed:
-.. _text-array.new_elem:
-.. _text-array.new_data:
-.. _text-array.get:
-.. _text-array.get_s:
-.. _text-array.get_u:
-.. _text-array.set:
-.. _text-array.len:
-.. _text-array.fill:
-.. _text-array.copy:
-.. _text-array.init_data:
-.. _text-array.init_elem:
-.. _text-ref.i31:
-.. _text-i31.get_s:
-.. _text-i31.get_u:
-.. _text-ref.test:
-.. _text-ref.cast:
-.. _text-any.convert_extern:
-.. _text-extern.convert_any:
-
-.. math::
-   \begin{array}{llclll}
-   \production{instruction} & \Tplaininstr_I &::=& \dots \\ &&|&
-     \text{ref.null}~~t{:}\Theaptype_I &\Rightarrow& \REFNULL~t \\ &&|&
-     \text{ref.func}~~x{:}\Tfuncidx_I &\Rightarrow& \REFFUNC~x \\ &&|&
-     \text{ref.is\_null} &\Rightarrow& \REFISNULL \\ &&|&
-     \text{ref.as\_non\_null} &\Rightarrow& \REFASNONNULL \\ &&|&
-     \text{ref.eq} &\Rightarrow& \REFEQ \\ &&|&
-     \text{ref.test}~~t{:}\Treftype_I &\Rightarrow& \REFTEST~t \\ &&|&
-     \text{ref.cast}~~t{:}\Treftype_I &\Rightarrow& \REFCAST~t \\ &&|&
-     \text{struct.new}~~x{:}\Ttypeidx_I &\Rightarrow& \STRUCTNEW~x \\ &&|&
-     \text{struct.new\_default}~~x{:}\Ttypeidx_I &\Rightarrow& \STRUCTNEWDEFAULT~x \\ &&|&
-     \text{struct.get}~~x{:}\Ttypeidx_I~~y{:}\Tfieldidx_{I,x} &\Rightarrow& \STRUCTGET~x~y \\ &&|&
-     \text{struct.get\_u}~~x{:}\Ttypeidx_I~~y{:}\Tfieldidx_{I,x} &\Rightarrow& \STRUCTGETU~x~y \\ &&|&
-     \text{struct.get\_s}~~x{:}\Ttypeidx_I~~y{:}\Tfieldidx_{I,x} &\Rightarrow& \STRUCTGETS~x~y \\ &&|&
-     \text{struct.set}~~x{:}\Ttypeidx_I~~y{:}\Tfieldidx_{I,x} &\Rightarrow& \STRUCTSET~x~y \\ &&|&
-     \text{array.new}~~x{:}\Ttypeidx_I &\Rightarrow& \ARRAYNEW~x \\ &&|&
-     \text{array.new\_default}~~x{:}\Ttypeidx_I &\Rightarrow& \ARRAYNEWDEFAULT~x \\ &&|&
-     \text{array.new\_fixed}~~x{:}\Ttypeidx_I~~n{:}\Tu32 &\Rightarrow& \ARRAYNEWFIXED~x~n \\ &&|&
-     \text{array.new\_data}~~x{:}\Ttypeidx_I~~y{:}\Tdataidx_I &\Rightarrow& \ARRAYNEWDATA~x~y \\ &&|&
-     \text{array.new\_elem}~~x{:}\Ttypeidx_I~~y{:}\Telemidx_I &\Rightarrow& \ARRAYNEWELEM~x~y \\ &&|&
-     \text{array.get}~~x{:}\Ttypeidx_I &\Rightarrow& \ARRAYGET~x \\ &&|&
-     \text{array.get\_u}~~x{:}\Ttypeidx_I &\Rightarrow& \ARRAYGETU~x \\ &&|&
-     \text{array.get\_s}~~x{:}\Ttypeidx_I &\Rightarrow& \ARRAYGETS~x \\ &&|&
-     \text{array.set}~~x{:}\Ttypeidx_I &\Rightarrow& \ARRAYSET~x \\ &&|&
-     \text{array.len} &\Rightarrow& \ARRAYLEN \\ &&|&
-     \text{array.fill}~~x{:}\Ttypeidx_I &\Rightarrow& \ARRAYFILL~x \\ &&|&
-     \text{array.copy}~~x{:}\Ttypeidx_I~~y{:}\Ttypeidx_I &\Rightarrow& \ARRAYCOPY~x~y \\ &&|&
-     \text{array.init\_data}~~x{:}\Ttypeidx_I~~y{:}\Tdataidx_I &\Rightarrow& \ARRAYINITDATA~x~y \\ &&|&
-     \text{array.init\_elem}~~x{:}\Ttypeidx_I~~y{:}\Telemidx_I &\Rightarrow& \ARRAYINITELEM~x~y \\ &&|&
-     \text{ref.i31} &\Rightarrow& \REFI31 \\ &&|&
-     \text{i31.get\_u} &\Rightarrow& \I31GETU \\ &&|&
-     \text{i31.get\_s} &\Rightarrow& \I31GETS \\ &&|&
-     \text{any.convert\_extern} &\Rightarrow& \ANYCONVERTEXTERN \\ &&|&
-     \text{extern.convert\_any} &\Rightarrow& \EXTERNCONVERTANY \\
-   \end{array}
-
-
-.. index:: parametric instruction, value type, polymorphism
-   pair: text format; instruction
-.. _text-instr-parametric:
-
-Parametric Instructions
-~~~~~~~~~~~~~~~~~~~~~~~
-
-.. _text-drop:
-.. _text-select:
-
-.. math::
-   \begin{array}{llclll}
-   \production{instruction} & \Tplaininstr_I &::=& \dots \\ &&|&
-     \text{drop} &\Rightarrow& \DROP \\ &&|&
-     \text{select}~((t{:}\Tresult_I)^\ast)^? &\Rightarrow& \SELECT~(t^\ast)^? \\
    \end{array}
 
 
@@ -502,6 +425,83 @@ As an abbreviation, the memory index can be omitted in all memory instructions, 
     \text{memory.init}~~x{:}\Telemidx_I
        &\equiv&
      \text{memory.init}~~\text{0}~~x{:}\Telemidx_I
+   \end{array}
+
+
+.. index:: reference instruction
+   pair: text format; instruction
+.. _text-instr-ref:
+
+Reference Instructions
+~~~~~~~~~~~~~~~~~~~~~~
+
+.. _text-ref.null:
+.. _text-ref.func:
+.. _text-ref.is_null:
+.. _text-ref.as_non_null:
+.. _text-struct.new:
+.. _text-struct.new_default:
+.. _text-struct.get:
+.. _text-struct.get_s:
+.. _text-struct.get_u:
+.. _text-struct.set:
+.. _text-array.new:
+.. _text-array.new_default:
+.. _text-array.new_fixed:
+.. _text-array.new_elem:
+.. _text-array.new_data:
+.. _text-array.get:
+.. _text-array.get_s:
+.. _text-array.get_u:
+.. _text-array.set:
+.. _text-array.len:
+.. _text-array.fill:
+.. _text-array.copy:
+.. _text-array.init_data:
+.. _text-array.init_elem:
+.. _text-ref.i31:
+.. _text-i31.get_s:
+.. _text-i31.get_u:
+.. _text-ref.test:
+.. _text-ref.cast:
+.. _text-any.convert_extern:
+.. _text-extern.convert_any:
+
+.. math::
+   \begin{array}{llclll}
+   \production{instruction} & \Tplaininstr_I &::=& \dots \\ &&|&
+     \text{ref.null}~~t{:}\Theaptype_I &\Rightarrow& \REFNULL~t \\ &&|&
+     \text{ref.func}~~x{:}\Tfuncidx_I &\Rightarrow& \REFFUNC~x \\ &&|&
+     \text{ref.is\_null} &\Rightarrow& \REFISNULL \\ &&|&
+     \text{ref.as\_non\_null} &\Rightarrow& \REFASNONNULL \\ &&|&
+     \text{ref.eq} &\Rightarrow& \REFEQ \\ &&|&
+     \text{ref.test}~~t{:}\Treftype_I &\Rightarrow& \REFTEST~t \\ &&|&
+     \text{ref.cast}~~t{:}\Treftype_I &\Rightarrow& \REFCAST~t \\ &&|&
+     \text{struct.new}~~x{:}\Ttypeidx_I &\Rightarrow& \STRUCTNEW~x \\ &&|&
+     \text{struct.new\_default}~~x{:}\Ttypeidx_I &\Rightarrow& \STRUCTNEWDEFAULT~x \\ &&|&
+     \text{struct.get}~~x{:}\Ttypeidx_I~~y{:}\Tfieldidx_{I,x} &\Rightarrow& \STRUCTGET~x~y \\ &&|&
+     \text{struct.get\_u}~~x{:}\Ttypeidx_I~~y{:}\Tfieldidx_{I,x} &\Rightarrow& \STRUCTGETU~x~y \\ &&|&
+     \text{struct.get\_s}~~x{:}\Ttypeidx_I~~y{:}\Tfieldidx_{I,x} &\Rightarrow& \STRUCTGETS~x~y \\ &&|&
+     \text{struct.set}~~x{:}\Ttypeidx_I~~y{:}\Tfieldidx_{I,x} &\Rightarrow& \STRUCTSET~x~y \\ &&|&
+     \text{array.new}~~x{:}\Ttypeidx_I &\Rightarrow& \ARRAYNEW~x \\ &&|&
+     \text{array.new\_default}~~x{:}\Ttypeidx_I &\Rightarrow& \ARRAYNEWDEFAULT~x \\ &&|&
+     \text{array.new\_fixed}~~x{:}\Ttypeidx_I~~n{:}\Tu32 &\Rightarrow& \ARRAYNEWFIXED~x~n \\ &&|&
+     \text{array.new\_data}~~x{:}\Ttypeidx_I~~y{:}\Tdataidx_I &\Rightarrow& \ARRAYNEWDATA~x~y \\ &&|&
+     \text{array.new\_elem}~~x{:}\Ttypeidx_I~~y{:}\Telemidx_I &\Rightarrow& \ARRAYNEWELEM~x~y \\ &&|&
+     \text{array.get}~~x{:}\Ttypeidx_I &\Rightarrow& \ARRAYGET~x \\ &&|&
+     \text{array.get\_u}~~x{:}\Ttypeidx_I &\Rightarrow& \ARRAYGETU~x \\ &&|&
+     \text{array.get\_s}~~x{:}\Ttypeidx_I &\Rightarrow& \ARRAYGETS~x \\ &&|&
+     \text{array.set}~~x{:}\Ttypeidx_I &\Rightarrow& \ARRAYSET~x \\ &&|&
+     \text{array.len} &\Rightarrow& \ARRAYLEN \\ &&|&
+     \text{array.fill}~~x{:}\Ttypeidx_I &\Rightarrow& \ARRAYFILL~x \\ &&|&
+     \text{array.copy}~~x{:}\Ttypeidx_I~~y{:}\Ttypeidx_I &\Rightarrow& \ARRAYCOPY~x~y \\ &&|&
+     \text{array.init\_data}~~x{:}\Ttypeidx_I~~y{:}\Tdataidx_I &\Rightarrow& \ARRAYINITDATA~x~y \\ &&|&
+     \text{array.init\_elem}~~x{:}\Ttypeidx_I~~y{:}\Telemidx_I &\Rightarrow& \ARRAYINITELEM~x~y \\ &&|&
+     \text{ref.i31} &\Rightarrow& \REFI31 \\ &&|&
+     \text{i31.get\_u} &\Rightarrow& \I31GETU \\ &&|&
+     \text{i31.get\_s} &\Rightarrow& \I31GETS \\ &&|&
+     \text{any.convert\_extern} &\Rightarrow& \ANYCONVERTEXTERN \\ &&|&
+     \text{extern.convert\_any} &\Rightarrow& \EXTERNCONVERTANY \\
    \end{array}
 
 

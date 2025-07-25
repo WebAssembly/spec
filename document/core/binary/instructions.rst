@@ -10,7 +10,29 @@ and is followed by the instruction's immediate arguments, where present.
 The only exception are :ref:`structured control instructions <binary-instr-control>`, which consist of several opcodes bracketing their nested instruction sequences.
 
 .. note::
-   Gaps in the byte code ranges for encoding instructions are reserved for future extensions.
+   The byte codes chosen to encode instructions are historical and do not follow a consistent pattern.
+   In this section, instructions are hence not presented in opcode order,
+   but instead grouped consistently with other sections in this document.
+   An instruction index ordered by opcode can be found in the :ref:`Appendix <index-instr>`.
+
+   Gaps in the byte code ranges are reserved for future extensions.
+
+
+.. index:: parametric instruction, value type, polymorphism
+   pair: binary format; instruction
+.. _binary-instr-parametric:
+
+Parametric Instructions
+~~~~~~~~~~~~~~~~~~~~~~~
+
+:ref:`Parametric instructions <syntax-instr-parametric>` are represented by single byte codes, possibly followed by a type annotation.
+
+.. _binary-nop:
+.. _binary-unreachable:
+.. _binary-drop:
+.. _binary-select:
+
+$${grammar: Binstr/parametric}
 
 
 .. index:: control instructions, structured control, exception handling, label, block, branch, result type, value type, block type, label index, function index, tag index, type index, list, polymorphism, LEB128
@@ -26,8 +48,6 @@ Control Instructions
 :ref:`Block types <syntax-blocktype>` are encoded in special compressed form, by either the byte ${:0x40} indicating the empty type, as a single :ref:`value type <binary-valtype>`, or as a :ref:`type index <binary-typeidx>` encoded as a positive :ref:`signed integer <binary-sint>`.
 
 .. _binary-blocktype:
-.. _binary-nop:
-.. _binary-unreachable:
 .. _binary-block:
 .. _binary-loop:
 .. _binary-if:
@@ -46,77 +66,13 @@ Control Instructions
 .. _binary-try_table:
 .. _binary-catch:
 
-$${grammar: Bblocktype Binstr/control Bcatch}
+$${grammar: Bblocktype {Binstr/block Binstr/control} Bcatch}
 
 .. note::
    The ${:ELSE} opcode ${:0x05} in the encoding of an ${:IF} instruction can be omitted if the following instruction sequence is empty.
 
    Unlike any :ref:`other occurrence <binary-typeidx>`, the :ref:`type index <syntax-typeidx>` in a :ref:`block type <syntax-blocktype>` is encoded as a positive :ref:`signed integer <syntax-sint>`, so that its |SignedLEB128| bit pattern cannot collide with the encoding of :ref:`value types <binary-valtype>` or the special code ${:0x40}, which correspond to the LEB128 encoding of negative integers.
    To avoid any loss in the range of allowed indices, it is treated as a 33 bit signed integer.
-
-
-.. index:: reference instruction
-   pair: binary format; instruction
-.. _binary-instr-ref:
-.. _binary-br_on_null:
-.. _binary-br_on_non_null:
-.. _binary-br_on_cast:
-.. _binary-br_on_cast_fail:
-
-Reference Instructions
-~~~~~~~~~~~~~~~~~~~~~~
-
-Generic :ref:`reference instructions <syntax-instr-ref>` are represented by single byte codes, others use prefixes and type operands.
-
-.. _binary-ref.null:
-.. _binary-ref.func:
-.. _binary-ref.is_null:
-.. _binary-ref.as_non_null:
-.. _binary-struct.new:
-.. _binary-struct.new_default:
-.. _binary-struct.get:
-.. _binary-struct.get_s:
-.. _binary-struct.get_u:
-.. _binary-struct.set:
-.. _binary-array.new:
-.. _binary-array.new_default:
-.. _binary-array.new_fixed:
-.. _binary-array.new_elem:
-.. _binary-array.new_data:
-.. _binary-array.get:
-.. _binary-array.get_s:
-.. _binary-array.get_u:
-.. _binary-array.set:
-.. _binary-array.len:
-.. _binary-array.fill:
-.. _binary-array.copy:
-.. _binary-array.init_data:
-.. _binary-array.init_elem:
-.. _binary-ref.i31:
-.. _binary-i31.get_s:
-.. _binary-i31.get_u:
-.. _binary-ref.test:
-.. _binary-ref.cast:
-.. _binary-any.convert_extern:
-.. _binary-extern.convert_any:
-.. _binary-castop:
-
-$${grammar: {Binstr/ref Binstr/struct Binstr/array Binstr/cast Binstr/extern Binstr/i31} Bcastop}
-$${syntax-ignore: castop}
-
-.. index:: parametric instruction, value type, polymorphism
-   pair: binary format; instruction
-.. _binary-instr-parametric:
-
-Parametric Instructions
-~~~~~~~~~~~~~~~~~~~~~~~
-
-:ref:`Parametric instructions <syntax-instr-parametric>` are represented by single byte codes, possibly followed by a type annotation.
-
-.. _binary-drop:
-.. _binary-select:
-
-$${grammar: Binstr/parametric}
 
 
 .. index:: variable instructions, local index, global index
@@ -179,6 +135,56 @@ Each variant of :ref:`memory instruction <syntax-instr-memory>` is encoded with 
 .. _binary-data.drop:
 
 $${grammar: Bmemarg Binstr/memory}
+
+
+.. index:: reference instruction
+   pair: binary format; instruction
+.. _binary-instr-ref:
+.. _binary-br_on_null:
+.. _binary-br_on_non_null:
+.. _binary-br_on_cast:
+.. _binary-br_on_cast_fail:
+
+Reference Instructions
+~~~~~~~~~~~~~~~~~~~~~~
+
+Generic :ref:`reference instructions <syntax-instr-ref>` are represented by single byte codes, others use prefixes and type operands.
+
+.. _binary-ref.null:
+.. _binary-ref.func:
+.. _binary-ref.is_null:
+.. _binary-ref.as_non_null:
+.. _binary-struct.new:
+.. _binary-struct.new_default:
+.. _binary-struct.get:
+.. _binary-struct.get_s:
+.. _binary-struct.get_u:
+.. _binary-struct.set:
+.. _binary-array.new:
+.. _binary-array.new_default:
+.. _binary-array.new_fixed:
+.. _binary-array.new_elem:
+.. _binary-array.new_data:
+.. _binary-array.get:
+.. _binary-array.get_s:
+.. _binary-array.get_u:
+.. _binary-array.set:
+.. _binary-array.len:
+.. _binary-array.fill:
+.. _binary-array.copy:
+.. _binary-array.init_data:
+.. _binary-array.init_elem:
+.. _binary-ref.i31:
+.. _binary-i31.get_s:
+.. _binary-i31.get_u:
+.. _binary-ref.test:
+.. _binary-ref.cast:
+.. _binary-any.convert_extern:
+.. _binary-extern.convert_any:
+.. _binary-castop:
+
+$${grammar: {Binstr/ref Binstr/struct Binstr/array Binstr/cast Binstr/extern Binstr/i31} Bcastop}
+$${syntax-ignore: castop}
 
 
 .. index:: numeric instruction

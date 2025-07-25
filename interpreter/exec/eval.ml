@@ -191,6 +191,15 @@ let rec step (c : config) : config =
       | Nop, vs ->
         vs, []
 
+      | Drop, v :: vs' ->
+        vs', []
+
+      | Select _, Num (I32 i) :: v2 :: v1 :: vs' ->
+        if i = 0l then
+          v2 :: vs', []
+        else
+          v1 :: vs', []
+
       | Block (bt, es'), vs ->
         let InstrT (ts1, ts2, _xs) = blocktype c.frame.inst bt e.at in
         let n1 = List.length ts1 in
@@ -319,15 +328,6 @@ let rec step (c : config) : config =
         let n2 = List.length ts2 in
         let args, vs' = split n1 vs e.at in
         vs', [Handler (n2, cs, ([], [Label (n2, [], (args, List.map plain es')) @@ e.at])) @@ e.at]
-
-      | Drop, v :: vs' ->
-        vs', []
-
-      | Select _, Num (I32 i) :: v2 :: v1 :: vs' ->
-        if i = 0l then
-          v2 :: vs', []
-        else
-          v1 :: vs', []
 
       | LocalGet x, vs ->
         (match !(local c.frame x) with

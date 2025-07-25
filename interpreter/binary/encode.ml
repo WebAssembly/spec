@@ -245,6 +245,9 @@ struct
     match e.it with
     | Unreachable -> op 0x00
     | Nop -> op 0x01
+    | Drop -> op 0x1a
+    | Select None -> op 0x1b
+    | Select (Some ts) -> op 0x1c; vec valtype ts
 
     | Block (bt, es) -> op 0x02; blocktype bt; list instr es; end_ ()
     | Loop (bt, es) -> op 0x03; blocktype bt; list instr es; end_ ()
@@ -273,13 +276,8 @@ struct
     | ReturnCall x -> op 0x12; idx x
     | ReturnCallRef x -> op 0x15; idx x
     | ReturnCallIndirect (x, y) -> op 0x13; idx y; idx x
-
     | Throw x -> op 0x08; idx x
     | ThrowRef -> op 0x0a
-
-    | Drop -> op 0x1a
-    | Select None -> op 0x1b
-    | Select (Some ts) -> op 0x1c; vec valtype ts
 
     | LocalGet x -> op 0x20; idx x
     | LocalSet x -> op 0x21; idx x

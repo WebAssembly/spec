@@ -46,749 +46,6 @@ $${rule: {Step_pure/select-*}}
    In future versions of WebAssembly, ${:SELECT} may allow more than one value per choice.
 
 
-.. index:: numeric instruction, determinism, non-determinism, trap, NaN, value, value type
-   pair: execution; instruction
-   single: abstract syntax; instruction
-.. _exec-instr-numeric:
-
-Numeric Instructions
-~~~~~~~~~~~~~~~~~~~~
-
-Numeric instructions are defined in terms of the generic :ref:`numeric operators <exec-numeric>`.
-The mapping of numeric instructions to their underlying operators is expressed by the following definition:
-
-.. math::
-   \begin{array}{lll@{\qquad}l}
-   \X{op}_{\IN}(i_1,\dots,i_k) &=& \xref{Step_pure/numerics}{int-ops}{\F{i}\X{op}}_N(i_1,\dots,i_k) \\
-   \X{op}_{\FN}(z_1,\dots,z_k) &=& \xref{Step_pure/numerics}{float-ops}{\F{f}\X{op}}_N(z_1,\dots,z_k) \\
-   \end{array}
-
-And for :ref:`conversion operators <exec-cvtop>`:
-
-.. math::
-   \begin{array}{lll@{\qquad}l}
-   \cvtop^{\sx^?}_{t_1,t_2}(c) &=& \xref{Step_pure/numerics}{convert-ops}{\X{cvtop}}^{\sx^?}_{|t_1|,|t_2|}(c) \\
-   \end{array}
-
-Where the underlying operators are partial, the corresponding instruction will :ref:`trap <trap>` when the result is not defined.
-Where the underlying operators are non-deterministic, because they may return one of multiple possible :ref:`NaN <syntax-nan>` values, so are the corresponding instructions.
-
-.. note::
-   For example, the result of instruction :math:`\I32.\ADD` applied to operands :math:`i_1, i_2`
-   invokes :math:`\ADD_{\I32}(i_1, i_2)`,
-   which maps to the generic :math:`\iadd_{32}(i_1, i_2)` via the above definition.
-   Similarly, :math:`\I64.\TRUNC\K{\_}\F32\K{\_s}` applied to :math:`z`
-   invokes :math:`\TRUNC^{\K{s}}_{\F32,\I64}(z)`,
-   which maps to the generic :math:`\truncs_{32,64}(z)`.
-
-
-.. _exec-const:
-
-:math:`\X{nt}\K{.}\CONST~c`
-...........................
-
-1. Push the value ${instr: (CONST nt c)} to the stack.
-
-.. note::
-   No formal reduction rule is required for this instruction, since ${:CONST} instructions already are :ref:`values <syntax-val>`.
-
-
-.. _exec-unop:
-
-$${rule-prose: Step_pure/unop}
-
-$${rule: {Step_pure/unop-*}}
-
-
-.. _exec-binop:
-
-$${rule-prose: Step_pure/binop}
-
-$${rule: {Step_pure/binop-*}}
-
-
-.. _exec-testop:
-
-$${rule-prose: Step_pure/testop}
-
-$${rule: Step_pure/testop}
-
-
-.. _exec-relop:
-
-$${rule-prose: Step_pure/relop}
-
-$${rule: Step_pure/relop}
-
-
-.. _exec-cvtop:
-
-$${rule-prose: Step_pure/cvtop}
-
-$${rule: {Step_pure/cvtop-*}}
-
-
-.. index:: reference instructions, reference
-   pair: execution; instruction
-   single: abstract syntax; instruction
-.. _exec-instr-ref:
-
-Reference Instructions
-~~~~~~~~~~~~~~~~~~~~~~
-
-.. _exec-ref.null:
-
-:math:`\REFNULL~x`
-.......................
-
-1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
-
-2. Assert: due to :ref:`validation <valid-ref.null>`, the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]` exists.
-
-3. Let :math:`\deftype` be the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]`.
-
-4. Push the value :math:`\REFNULL~\deftype` to the stack.
-
-$${rule: {Step_read/ref.null-*}}
-
-.. note::
-   No formal reduction rule is required for the case |REFNULL| |ABSHEAPTYPE|,
-   since the instruction form is already a :ref:`value <syntax-val>`.
-
-
-.. _exec-ref.func:
-
-$${rule-prose: Step_read/ref.func}
-
-$${rule: Step_read/ref.func}
-
-
-.. _exec-ref.is_null:
-
-$${rule-prose: Step_pure/ref.is_null}
-
-$${rule: {Step_pure/ref.is_null-*}}
-
-
-.. _exec-ref.as_non_null:
-
-$${rule-prose: Step_pure/ref.as_non_null}
-
-$${rule: {Step_pure/ref.as_non_null-*}}
-
-
-.. _exec-ref.eq:
-
-$${rule-prose: Step_pure/ref.eq}
-
-$${rule: {Step_pure/ref.eq-*}}
-
-
-.. _exec-ref.test:
-
-$${rule-prose: Step_read/ref.test}
-
-$${rule: {Step_read/ref.test-*}}
-
-
-.. _exec-ref.cast:
-
-$${rule-prose: Step_read/ref.cast}
-
-$${rule: {Step_read/ref.cast-*}}
-
-
-.. _exec-ref.i31:
-
-$${rule-prose: Step_pure/ref.i31}
-
-$${rule: {Step_pure/ref.i31}}
-
-
-.. _exec-i31.get:
-
-$${rule-prose: Step_pure/i31.get}
-
-$${rule: {Step_pure/i31.get-*}}
-
-
-.. _exec-struct.new:
-
-$${rule-prose: Step/struct.new}
-
-$${rule: {Step/struct.new}}
-
-
-.. _exec-struct.new_default:
-
-$${rule-prose: Step_read/struct.new_default}
-
-$${rule: {Step_read/struct.new_default}}
-
-
-.. _exec-struct.get:
-.. _exec-struct.get_sx:
-
-$${rule-prose: Step_read/struct.get}
-
-$${rule: {Step_read/struct.get-*}}
-
-
-.. _exec-struct.set:
-
-$${rule-prose: Step/struct.set}
-
-$${rule: {Step/struct.set-*}}
-   
-
-.. _exec-array.new:
-
-$${rule-prose: Step_pure/array.new}
-
-$${rule: {Step_pure/array.new}}
-
-
-.. _exec-array.new_default:
-
-$${rule-prose: Step_read/array.new_default}
-
-$${rule: {Step_read/array.new_default}}
-
-
-.. _exec-array.new_fixed:
-
-$${rule-prose: Step/array.new_fixed}
-
-$${rule: {Step/array.new_fixed}}
-
-
-.. _exec-array.new_data:
-
-$${rule-prose: Step_read/array.new_data}
-
-$${rule: {Step_read/array.new_data-*}}
-
-
-.. _exec-array.new_elem:
-
-$${rule-prose: Step_read/array.new_elem}
-
-$${rule: {Step_read/array.new_elem-*}}
-
-
-.. _exec-array.get:
-.. _exec-array.get_sx:
-
-$${rule-prose: Step_read/array.get}
-
-$${rule: {Step_read/array.get-*}}
-
-
-.. _exec-array.set:
-
-$${rule-prose: Step/array.set}
-
-$${rule: {Step/array.set-*}}
-
-
-.. _exec-array.len:
-
-$${rule-prose: Step_read/array.len}
-
-$${rule: {Step_read/array.len-*}}
-
-
-.. _exec-array.fill:
-
-$${rule-prose: Step_read/array.fill}
-
-$${rule: {Step_read/array.fill-*}}
-
-
-.. _exec-array.copy:
-
-$${rule-prose: Step_read/array.copy}
-
-$${rule: {Step_read/array.copy-*}}
-
-Where:
-
-.. _aux-sx:
-
-$${definition: sx}
-
-.. _exec-array.init_data:
-
-$${rule-prose: Step_read/array.init_data}
-
-$${rule: {Step_read/array.init_data-*}}
-
-
-.. _exec-array.init_elem:
-
-$${rule-prose: Step_read/array.init_elem}
-
-$${rule: {Step_read/array.init_elem-*}}
-
-
-.. _exec-any.convert_extern:
-
-$${rule-prose: Step_pure/any.convert_extern}
-
-$${rule: {Step_pure/any.convert_extern-*}}
-
-
-.. _exec-extern.convert_any:
-
-$${rule-prose: Step_pure/extern.convert_any}
-
-$${rule: {Step_pure/extern.convert_any-*}}
-
-
-.. index:: vector instruction
-   pair: execution; instruction
-   single: abstract syntax; instruction
-.. _exec-instr-vec:
-
-Vector Instructions
-~~~~~~~~~~~~~~~~~~~
-
-Vector instructions that operate bitwise are handled as integer operations of respective bit width.
-
-.. math::
-   \begin{array}{lll@{\qquad}l}
-   \X{op}_{\VN}(i_1,\dots,i_k) &=& \xref{Step_pure/numerics}{int-ops}{\F{i}\X{op}}_N(i_1,\dots,i_k) \\
-   \end{array}
-
-Most other vector instructions are defined in terms of :ref:`numeric operators <exec-numeric>` that are applied lane-wise according to the given :ref:`shape <syntax-shape>`.
-
-.. math::
-   \begin{array}{llll}
-   \X{op}_{t\K{x}N}(n_1,\dots,n_k) &=&
-     \lanes^{-1}_{t\K{x}N}(\xref{Step_pure/instructions}{exec-instr-numeric}{\X{op}}_t(i_1,\dots,i_k)^\ast) & \qquad(\iff i_1^\ast = \lanes_{t\K{x}N}(n_1) \land \dots \land i_k^\ast = \lanes_{t\K{x}N}(n_k) \\
-   \end{array}
-
-.. note::
-   For example, the result of instruction :math:`\K{i32x4}.\ADD` applied to operands :math:`v_1, v_2`
-   invokes :math:`\ADD_{\K{i32x4}}(v_1, v_2)`, which maps to
-   :math:`\lanes^{-1}_{\K{i32x4}}(\ADD_{\I32}(i_1, i_2)^\ast)`,
-   where :math:`i_1^\ast` and :math:`i_2^\ast` are sequences resulting from invoking
-   :math:`\lanes_{\K{i32x4}}(v_1)` and :math:`\lanes_{\K{i32x4}}(v_2)`
-   respectively.
-
-For non-deterministic operators this definition is generalized to sets:
-
-.. math::
-   \begin{array}{lll}
-   \X{op}_{t\K{x}N}(n_1,\dots,n_k) &=&
-     \{ \lanes^{-1}_{t\K{x}N}(i^\ast) ~|~ i^\ast \in {\Large\times}(\xref{Step_pure/instructions}{exec-instr-numeric}{\X{op}}_t(i_1,\dots,i_k)^\ast) \land i_1^\ast = \lanes_{t\K{x}N}(n_1) \land \dots \land i_k^\ast = \lanes_{t\K{x}N}(n_k) \} \\
-   \end{array}
-
-where :math:`{\Large\times} \{x^\ast\}^N` transforms a sequence of :math:`N` sets of values into a set of sequences of :math:`N` values by computing the set product:
-
-.. math::
-   \begin{array}{lll}
-   {\Large\times} (S_1 \dots S_N) &=& \{ x_1 \dots x_N ~|~ x_1 \in S_1 \land \dots \land x_N \in S_N \}
-   \end{array}
-
-The remaining vector operators use :ref:`individual definitions <op-vec>`.
-
-
-.. _exec-vconst:
-
-:math:`\V128\K{.}\VCONST~c`
-...........................
-
-1. Push the value ${instr: (VCONST V128 c)} to the stack.
-
-.. note::
-   No formal reduction rule is required for this instruction, since ${:CONST} instructions are already :ref:`values <syntax-val>`.
-
-
-.. _exec-vvunop:
-
-$${rule-prose: Step_pure/vvunop}
-
-$${rule: {Step_pure/vvunop}}
-
-
-.. _exec-vvbinop:
-
-$${rule-prose: Step_pure/vvbinop}
-
-$${rule: {Step_pure/vvbinop}}
-
-
-.. _exec-vvternop:
-
-$${rule-prose: Step_pure/vvternop}
-
-$${rule: {Step_pure/vvternop}}
-
-
-.. _exec-vvtestop:
-
-$${rule-prose: Step_pure/vvtestop}
-
-$${rule: {Step_pure/vvtestop}}
-
-
-.. _exec-vunop:
-
-$${rule-prose: Step_pure/vunop}
-
-$${rule: {Step_pure/vunop-*}}
-
-
-.. _exec-vbinop:
-
-$${rule-prose: Step_pure/vbinop}
-
-$${rule: {Step_pure/vbinop-*}}
-
-
-.. _exec-vternop:
-
-$${rule-prose: Step_pure/vternop}
-
-$${rule: {Step_pure/vternop-*}}
-
-
-.. _exec-vtestop:
-
-$${rule-prose: Step_pure/vtestop}
-
-$${rule: {Step_pure/vtestop}}
-
-
-.. _exec-vrelop:
-
-$${rule-prose: Step_pure/vrelop}
-
-$${rule: {Step_pure/vrelop}}
-
-
-.. _exec-vshiftop:
-
-$${rule-prose: Step_pure/vshiftop}
-
-$${rule: {Step_pure/vshiftop}}
-
-
-.. _exec-vbitmask:
-
-$${rule-prose: Step_pure/vbitmask}
-
-$${rule: {Step_pure/vbitmask}}
-
-
-.. _exec-vswizzlop:
-
-$${rule-prose: Step_pure/vswizzlop}
-
-$${rule: {Step_pure/vswizzlop}}
-
-
-.. _exec-vshuffle:
-
-$${rule-prose: Step_pure/vshuffle}
-
-$${rule: {Step_pure/vshuffle}}
-
-
-.. _exec-vsplat:
-
-$${rule-prose: Step_pure/vsplat}
-
-$${rule: {Step_pure/vsplat}}
-
-
-.. _exec-vextract_lane:
-
-$${rule-prose: Step_pure/vextract_lane}
-
-$${rule: {Step_pure/vextract_lane-*}}
-
-
-.. _exec-vreplace_lane:
-
-$${rule-prose: Step_pure/vreplace_lane}
-
-$${rule: {Step_pure/vreplace_lane}}
-
-
-.. _exec-vextunop:
-
-$${rule-prose: Step_pure/vextunop}
-
-$${rule: {Step_pure/vextunop}}
-
-
-.. _exec-vextbinop:
-
-$${rule-prose: Step_pure/vextbinop}
-
-$${rule: {Step_pure/vextbinop}}
-
-
-.. _exec-vextternop:
-
-$${rule-prose: Step_pure/vextternop}
-
-$${rule: {Step_pure/vextternop}}
-
-
-.. _exec-vnarrow:
-
-$${rule-prose: Step_pure/vnarrow}
-
-$${rule: {Step_pure/vnarrow}}
-
-
-.. _exec-vcvtop:
-
-$${rule-prose: Step_pure/vcvtop}
-
-$${rule: {Step_pure/vcvtop}}
-
-
-.. index:: variable instructions, local index, global index, address, global address, global instance, store, frame, value
-   pair: execution; instruction
-   single: abstract syntax; instruction
-.. _exec-instr-variable:
-
-Variable Instructions
-~~~~~~~~~~~~~~~~~~~~~
-
-.. _exec-local.get:
-
-$${rule-prose: Step_read/local.get}
-
-$${rule: Step_read/local.get}
-
-
-.. _exec-local.set:
-
-$${rule-prose: Step/local.set}
-
-$${rule: Step/local.set}
-
-
-.. _exec-local.tee:
-
-$${rule-prose: Step_pure/local.tee}
-
-$${rule: Step_pure/local.tee}
-
-
-.. _exec-global.get:
-
-$${rule-prose: Step_read/global.get}
-
-$${rule: Step_read/global.get}
-
-
-.. _exec-global.set:
-
-$${rule-prose: Step/global.set}
-
-$${rule: Step/global.set}
-
-
-.. index:: table instruction, table index, store, frame, address, table address, table instance, element address, element instance, value, integer, limits, reference, reference type
-   pair: execution; instruction
-   single: abstract syntax; instruction
-.. _exec-instr-table:
-
-Table Instructions
-~~~~~~~~~~~~~~~~~~
-
-.. _exec-table.get:
-
-$${rule-prose: Step_read/table.get}
-
-$${rule: {Step_read/table.get-*}}
-
-
-.. _exec-table.set:
-
-$${rule-prose: Step/table.set}
-
-$${rule: {Step/table.set-*}}
-
-
-.. _exec-table.size:
-
-$${rule-prose: Step_read/table.size}
-
-$${rule: Step_read/table.size}
-
-
-.. index:: determinism, non-determinism
-.. _exec-table.grow:
-
-$${rule-prose: Step/table.grow}
-
-$${rule: {Step/table.grow-*}}
-
-.. note::
-   The |TABLEGROW| instruction is non-deterministic.
-   It may either succeed, returning the old table size :math:`\X{sz}`,
-   or fail, returning :math:`{-1}`.
-   Failure *must* occur if the referenced table instance has a maximum size defined that would be exceeded.
-   However, failure *can* occur in other cases as well.
-   In practice, the choice depends on the :ref:`resources <impl-exec>` available to the :ref:`embedder <embedder>`.
-
-
-.. _exec-table.fill:
-
-$${rule-prose: Step_read/table.fill}
-
-$${rule: {Step_read/table.fill-*}}
-
-
-.. _exec-table.copy:
-
-$${rule-prose: Step_read/table.copy}
-
-$${rule: {Step_read/table.copy-*}}
-
-
-.. _exec-table.init:
-
-$${rule-prose: Step_read/table.init}
-
-$${rule: {Step_read/table.init-*}}
-
-
-.. _exec-elem.drop:
-
-$${rule-prose: Step/elem.drop}
-
-$${rule: Step/elem.drop}
-
-
-.. index:: memory instruction, memory index, store, frame, address, memory address, memory instance, value, integer, limits, value type, bit width
-   pair: execution; instruction
-   single: abstract syntax; instruction
-.. _exec-memarg:
-.. _exec-instr-memory:
-
-Memory Instructions
-~~~~~~~~~~~~~~~~~~~
-
-.. note::
-   The alignment :math:`\memarg.\ALIGN` in load and store instructions does not affect the semantics.
-   It is a hint that the offset :math:`\X{ea}` at which the memory is accessed is intended to satisfy the property :math:`\X{ea} \mod 2^{\memarg.\ALIGN} = 0`.
-   A WebAssembly implementation can use this hint to optimize for the intended use.
-   Unaligned access violating that property is still allowed and must succeed regardless of the annotation.
-   However, it may be substantially slower on some hardware.
-
-
-.. _exec-load-val:
-.. _exec-load-pack:
-.. _exec-vload-val:
-
-$${rule-prose: Step_read/load}
-
-$${rule: {Step_read/load-*}}
-
-
-.. _exec-vload-pack:
-
-$${rule-prose: Step_read/vload-pack-*}
-
-$${rule: {Step_read/vload-pack-*}}
-
-
-.. _exec-vload-splat:
-
-$${rule-prose: Step_read/vload-splat-*}
-
-$${rule: {Step_read/vload-splat-*}}
-
-
-.. _exec-vload-zero:
-
-$${rule-prose: Step_read/vload-zero-*}
-
-$${rule: {Step_read/vload-zero-*}}
-
-
-.. _exec-vload_lane:
-
-$${rule-prose: Step_read/vload_lane}
-
-$${rule: {Step_read/vload_lane-*}}
-
-
-.. _exec-store-val:
-.. _exec-store-pack:
-.. _exec-vstore:
-
-$${rule-prose: Step/store}
-
-$${rule: {Step/store-* Step/vstore-*}}
-
-
-.. _exec-vstore_lane:
-
-$${rule-prose: Step/vstore_lane}
-
-$${rule: {Step/vstore_lane-*}}
-
-
-.. _exec-memory.size:
-
-$${rule-prose: Step_read/memory.size}
-
-$${rule: {Step_read/memory.size}}
-
-
-.. index:: determinism, non-determinism
-.. _exec-memory.grow:
-
-$${rule-prose: Step/memory.grow}
-
-$${rule: {Step/memory.grow-*}}
-
-.. note::
-   The |MEMORYGROW| instruction is non-deterministic.
-   It may either succeed, returning the old memory size :math:`\X{sz}`,
-   or fail, returning :math:`{-1}`.
-   Failure *must* occur if the referenced memory instance has a maximum size defined that would be exceeded.
-   However, failure *can* occur in other cases as well.
-   In practice, the choice depends on the :ref:`resources <impl-exec>` available to the :ref:`embedder <embedder>`.
-
-
-.. _exec-memory.fill:
-
-$${rule-prose: Step_read/memory.fill}
-
-$${rule: {Step_read/memory.fill-*}}
-
-
-.. _exec-memory.copy:
-
-$${rule-prose: Step_read/memory.copy}
-
-$${rule: {Step_read/memory.copy-*}}
-
-
-.. _exec-memory.init:
-
-$${rule-prose: Step_read/memory.init}
-
-$${rule: {Step_read/memory.init-*}}
-
-
-.. _exec-data.drop:
-
-$${rule-prose: Step/data.drop}
-
-$${rule: {Step/data.drop}}
-
-
 .. index:: control instructions, structured control, label, block, branch, result type, label index, function index, type index, list, address, table address, table instance, store, frame
    pair: execution; instruction
    single: abstract syntax; instruction
@@ -1179,6 +436,748 @@ All these notions are made precise in the :ref:`Appendix <soundness>`.
    A host function can call back into WebAssembly by :ref:`invoking <exec-invocation>` a function :ref:`exported <syntax-export>` from a :ref:`module <syntax-module>`.
    However, the effects of any such call are subsumed by the non-deterministic behavior allowed for the host function.
 
+
+.. index:: variable instructions, local index, global index, address, global address, global instance, store, frame, value
+   pair: execution; instruction
+   single: abstract syntax; instruction
+.. _exec-instr-variable:
+
+Variable Instructions
+~~~~~~~~~~~~~~~~~~~~~
+
+.. _exec-local.get:
+
+$${rule-prose: Step_read/local.get}
+
+$${rule: Step_read/local.get}
+
+
+.. _exec-local.set:
+
+$${rule-prose: Step/local.set}
+
+$${rule: Step/local.set}
+
+
+.. _exec-local.tee:
+
+$${rule-prose: Step_pure/local.tee}
+
+$${rule: Step_pure/local.tee}
+
+
+.. _exec-global.get:
+
+$${rule-prose: Step_read/global.get}
+
+$${rule: Step_read/global.get}
+
+
+.. _exec-global.set:
+
+$${rule-prose: Step/global.set}
+
+$${rule: Step/global.set}
+
+
+.. index:: table instruction, table index, store, frame, address, table address, table instance, element address, element instance, value, integer, limits, reference, reference type
+   pair: execution; instruction
+   single: abstract syntax; instruction
+.. _exec-instr-table:
+
+Table Instructions
+~~~~~~~~~~~~~~~~~~
+
+.. _exec-table.get:
+
+$${rule-prose: Step_read/table.get}
+
+$${rule: {Step_read/table.get-*}}
+
+
+.. _exec-table.set:
+
+$${rule-prose: Step/table.set}
+
+$${rule: {Step/table.set-*}}
+
+
+.. _exec-table.size:
+
+$${rule-prose: Step_read/table.size}
+
+$${rule: Step_read/table.size}
+
+
+.. index:: determinism, non-determinism
+.. _exec-table.grow:
+
+$${rule-prose: Step/table.grow}
+
+$${rule: {Step/table.grow-*}}
+
+.. note::
+   The |TABLEGROW| instruction is non-deterministic.
+   It may either succeed, returning the old table size :math:`\X{sz}`,
+   or fail, returning :math:`{-1}`.
+   Failure *must* occur if the referenced table instance has a maximum size defined that would be exceeded.
+   However, failure *can* occur in other cases as well.
+   In practice, the choice depends on the :ref:`resources <impl-exec>` available to the :ref:`embedder <embedder>`.
+
+
+.. _exec-table.fill:
+
+$${rule-prose: Step_read/table.fill}
+
+$${rule: {Step_read/table.fill-*}}
+
+
+.. _exec-table.copy:
+
+$${rule-prose: Step_read/table.copy}
+
+$${rule: {Step_read/table.copy-*}}
+
+
+.. _exec-table.init:
+
+$${rule-prose: Step_read/table.init}
+
+$${rule: {Step_read/table.init-*}}
+
+
+.. _exec-elem.drop:
+
+$${rule-prose: Step/elem.drop}
+
+$${rule: Step/elem.drop}
+
+
+.. index:: memory instruction, memory index, store, frame, address, memory address, memory instance, value, integer, limits, value type, bit width
+   pair: execution; instruction
+   single: abstract syntax; instruction
+.. _exec-memarg:
+.. _exec-instr-memory:
+
+Memory Instructions
+~~~~~~~~~~~~~~~~~~~
+
+.. note::
+   The alignment :math:`\memarg.\ALIGN` in load and store instructions does not affect the semantics.
+   It is a hint that the offset :math:`\X{ea}` at which the memory is accessed is intended to satisfy the property :math:`\X{ea} \mod 2^{\memarg.\ALIGN} = 0`.
+   A WebAssembly implementation can use this hint to optimize for the intended use.
+   Unaligned access violating that property is still allowed and must succeed regardless of the annotation.
+   However, it may be substantially slower on some hardware.
+
+
+.. _exec-load-val:
+.. _exec-load-pack:
+.. _exec-vload-val:
+
+$${rule-prose: Step_read/load}
+
+$${rule: {Step_read/load-*}}
+
+
+.. _exec-vload-pack:
+
+$${rule-prose: Step_read/vload-pack-*}
+
+$${rule: {Step_read/vload-pack-*}}
+
+
+.. _exec-vload-splat:
+
+$${rule-prose: Step_read/vload-splat-*}
+
+$${rule: {Step_read/vload-splat-*}}
+
+
+.. _exec-vload-zero:
+
+$${rule-prose: Step_read/vload-zero-*}
+
+$${rule: {Step_read/vload-zero-*}}
+
+
+.. _exec-vload_lane:
+
+$${rule-prose: Step_read/vload_lane}
+
+$${rule: {Step_read/vload_lane-*}}
+
+
+.. _exec-store-val:
+.. _exec-store-pack:
+.. _exec-vstore:
+
+$${rule-prose: Step/store}
+
+$${rule: {Step/store-* Step/vstore-*}}
+
+
+.. _exec-vstore_lane:
+
+$${rule-prose: Step/vstore_lane}
+
+$${rule: {Step/vstore_lane-*}}
+
+
+.. _exec-memory.size:
+
+$${rule-prose: Step_read/memory.size}
+
+$${rule: {Step_read/memory.size}}
+
+
+.. index:: determinism, non-determinism
+.. _exec-memory.grow:
+
+$${rule-prose: Step/memory.grow}
+
+$${rule: {Step/memory.grow-*}}
+
+.. note::
+   The |MEMORYGROW| instruction is non-deterministic.
+   It may either succeed, returning the old memory size :math:`\X{sz}`,
+   or fail, returning :math:`{-1}`.
+   Failure *must* occur if the referenced memory instance has a maximum size defined that would be exceeded.
+   However, failure *can* occur in other cases as well.
+   In practice, the choice depends on the :ref:`resources <impl-exec>` available to the :ref:`embedder <embedder>`.
+
+
+.. _exec-memory.fill:
+
+$${rule-prose: Step_read/memory.fill}
+
+$${rule: {Step_read/memory.fill-*}}
+
+
+.. _exec-memory.copy:
+
+$${rule-prose: Step_read/memory.copy}
+
+$${rule: {Step_read/memory.copy-*}}
+
+
+.. _exec-memory.init:
+
+$${rule-prose: Step_read/memory.init}
+
+$${rule: {Step_read/memory.init-*}}
+
+
+.. _exec-data.drop:
+
+$${rule-prose: Step/data.drop}
+
+$${rule: {Step/data.drop}}
+
+
+.. index:: reference instructions, reference
+   pair: execution; instruction
+   single: abstract syntax; instruction
+.. _exec-instr-ref:
+
+Reference Instructions
+~~~~~~~~~~~~~~~~~~~~~~
+
+.. _exec-ref.null:
+
+:math:`\REFNULL~x`
+.......................
+
+1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
+
+2. Assert: due to :ref:`validation <valid-ref.null>`, the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]` exists.
+
+3. Let :math:`\deftype` be the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]`.
+
+4. Push the value :math:`\REFNULL~\deftype` to the stack.
+
+$${rule: {Step_read/ref.null-*}}
+
+.. note::
+   No formal reduction rule is required for the case |REFNULL| |ABSHEAPTYPE|,
+   since the instruction form is already a :ref:`value <syntax-val>`.
+
+
+.. _exec-ref.func:
+
+$${rule-prose: Step_read/ref.func}
+
+$${rule: Step_read/ref.func}
+
+
+.. _exec-ref.is_null:
+
+$${rule-prose: Step_pure/ref.is_null}
+
+$${rule: {Step_pure/ref.is_null-*}}
+
+
+.. _exec-ref.as_non_null:
+
+$${rule-prose: Step_pure/ref.as_non_null}
+
+$${rule: {Step_pure/ref.as_non_null-*}}
+
+
+.. _exec-ref.eq:
+
+$${rule-prose: Step_pure/ref.eq}
+
+$${rule: {Step_pure/ref.eq-*}}
+
+
+.. _exec-ref.test:
+
+$${rule-prose: Step_read/ref.test}
+
+$${rule: {Step_read/ref.test-*}}
+
+
+.. _exec-ref.cast:
+
+$${rule-prose: Step_read/ref.cast}
+
+$${rule: {Step_read/ref.cast-*}}
+
+
+.. _exec-ref.i31:
+
+$${rule-prose: Step_pure/ref.i31}
+
+$${rule: {Step_pure/ref.i31}}
+
+
+.. _exec-i31.get:
+
+$${rule-prose: Step_pure/i31.get}
+
+$${rule: {Step_pure/i31.get-*}}
+
+
+.. _exec-struct.new:
+
+$${rule-prose: Step/struct.new}
+
+$${rule: {Step/struct.new}}
+
+
+.. _exec-struct.new_default:
+
+$${rule-prose: Step_read/struct.new_default}
+
+$${rule: {Step_read/struct.new_default}}
+
+
+.. _exec-struct.get:
+.. _exec-struct.get_sx:
+
+$${rule-prose: Step_read/struct.get}
+
+$${rule: {Step_read/struct.get-*}}
+
+
+.. _exec-struct.set:
+
+$${rule-prose: Step/struct.set}
+
+$${rule: {Step/struct.set-*}}
+   
+
+.. _exec-array.new:
+
+$${rule-prose: Step_pure/array.new}
+
+$${rule: {Step_pure/array.new}}
+
+
+.. _exec-array.new_default:
+
+$${rule-prose: Step_read/array.new_default}
+
+$${rule: {Step_read/array.new_default}}
+
+
+.. _exec-array.new_fixed:
+
+$${rule-prose: Step/array.new_fixed}
+
+$${rule: {Step/array.new_fixed}}
+
+
+.. _exec-array.new_data:
+
+$${rule-prose: Step_read/array.new_data}
+
+$${rule: {Step_read/array.new_data-*}}
+
+
+.. _exec-array.new_elem:
+
+$${rule-prose: Step_read/array.new_elem}
+
+$${rule: {Step_read/array.new_elem-*}}
+
+
+.. _exec-array.get:
+.. _exec-array.get_sx:
+
+$${rule-prose: Step_read/array.get}
+
+$${rule: {Step_read/array.get-*}}
+
+
+.. _exec-array.set:
+
+$${rule-prose: Step/array.set}
+
+$${rule: {Step/array.set-*}}
+
+
+.. _exec-array.len:
+
+$${rule-prose: Step_read/array.len}
+
+$${rule: {Step_read/array.len-*}}
+
+
+.. _exec-array.fill:
+
+$${rule-prose: Step_read/array.fill}
+
+$${rule: {Step_read/array.fill-*}}
+
+
+.. _exec-array.copy:
+
+$${rule-prose: Step_read/array.copy}
+
+$${rule: {Step_read/array.copy-*}}
+
+Where:
+
+.. _aux-sx:
+
+$${definition: sx}
+
+.. _exec-array.init_data:
+
+$${rule-prose: Step_read/array.init_data}
+
+$${rule: {Step_read/array.init_data-*}}
+
+
+.. _exec-array.init_elem:
+
+$${rule-prose: Step_read/array.init_elem}
+
+$${rule: {Step_read/array.init_elem-*}}
+
+
+.. _exec-any.convert_extern:
+
+$${rule-prose: Step_pure/any.convert_extern}
+
+$${rule: {Step_pure/any.convert_extern-*}}
+
+
+.. _exec-extern.convert_any:
+
+$${rule-prose: Step_pure/extern.convert_any}
+
+$${rule: {Step_pure/extern.convert_any-*}}
+
+
+.. index:: numeric instruction, determinism, non-determinism, trap, NaN, value, value type
+   pair: execution; instruction
+   single: abstract syntax; instruction
+.. _exec-instr-numeric:
+
+Numeric Instructions
+~~~~~~~~~~~~~~~~~~~~
+
+Numeric instructions are defined in terms of the generic :ref:`numeric operators <exec-numeric>`.
+The mapping of numeric instructions to their underlying operators is expressed by the following definition:
+
+.. math::
+   \begin{array}{lll@{\qquad}l}
+   \X{op}_{\IN}(i_1,\dots,i_k) &=& \xref{Step_pure/numerics}{int-ops}{\F{i}\X{op}}_N(i_1,\dots,i_k) \\
+   \X{op}_{\FN}(z_1,\dots,z_k) &=& \xref{Step_pure/numerics}{float-ops}{\F{f}\X{op}}_N(z_1,\dots,z_k) \\
+   \end{array}
+
+And for :ref:`conversion operators <exec-cvtop>`:
+
+.. math::
+   \begin{array}{lll@{\qquad}l}
+   \cvtop^{\sx^?}_{t_1,t_2}(c) &=& \xref{Step_pure/numerics}{convert-ops}{\X{cvtop}}^{\sx^?}_{|t_1|,|t_2|}(c) \\
+   \end{array}
+
+Where the underlying operators are partial, the corresponding instruction will :ref:`trap <trap>` when the result is not defined.
+Where the underlying operators are non-deterministic, because they may return one of multiple possible :ref:`NaN <syntax-nan>` values, so are the corresponding instructions.
+
+.. note::
+   For example, the result of instruction :math:`\I32.\ADD` applied to operands :math:`i_1, i_2`
+   invokes :math:`\ADD_{\I32}(i_1, i_2)`,
+   which maps to the generic :math:`\iadd_{32}(i_1, i_2)` via the above definition.
+   Similarly, :math:`\I64.\TRUNC\K{\_}\F32\K{\_s}` applied to :math:`z`
+   invokes :math:`\TRUNC^{\K{s}}_{\F32,\I64}(z)`,
+   which maps to the generic :math:`\truncs_{32,64}(z)`.
+
+
+.. _exec-const:
+
+:math:`\X{nt}\K{.}\CONST~c`
+...........................
+
+1. Push the value ${instr: (CONST nt c)} to the stack.
+
+.. note::
+   No formal reduction rule is required for this instruction, since ${:CONST} instructions already are :ref:`values <syntax-val>`.
+
+
+.. _exec-unop:
+
+$${rule-prose: Step_pure/unop}
+
+$${rule: {Step_pure/unop-*}}
+
+
+.. _exec-binop:
+
+$${rule-prose: Step_pure/binop}
+
+$${rule: {Step_pure/binop-*}}
+
+
+.. _exec-testop:
+
+$${rule-prose: Step_pure/testop}
+
+$${rule: Step_pure/testop}
+
+
+.. _exec-relop:
+
+$${rule-prose: Step_pure/relop}
+
+$${rule: Step_pure/relop}
+
+
+.. _exec-cvtop:
+
+$${rule-prose: Step_pure/cvtop}
+
+$${rule: {Step_pure/cvtop-*}}
+
+
+.. index:: vector instruction
+   pair: execution; instruction
+   single: abstract syntax; instruction
+.. _exec-instr-vec:
+
+Vector Instructions
+~~~~~~~~~~~~~~~~~~~
+
+Vector instructions that operate bitwise are handled as integer operations of respective bit width.
+
+.. math::
+   \begin{array}{lll@{\qquad}l}
+   \X{op}_{\VN}(i_1,\dots,i_k) &=& \xref{Step_pure/numerics}{int-ops}{\F{i}\X{op}}_N(i_1,\dots,i_k) \\
+   \end{array}
+
+Most other vector instructions are defined in terms of :ref:`numeric operators <exec-numeric>` that are applied lane-wise according to the given :ref:`shape <syntax-shape>`.
+
+.. math::
+   \begin{array}{llll}
+   \X{op}_{t\K{x}N}(n_1,\dots,n_k) &=&
+     \lanes^{-1}_{t\K{x}N}(\xref{Step_pure/instructions}{exec-instr-numeric}{\X{op}}_t(i_1,\dots,i_k)^\ast) & \qquad(\iff i_1^\ast = \lanes_{t\K{x}N}(n_1) \land \dots \land i_k^\ast = \lanes_{t\K{x}N}(n_k) \\
+   \end{array}
+
+.. note::
+   For example, the result of instruction :math:`\K{i32x4}.\ADD` applied to operands :math:`v_1, v_2`
+   invokes :math:`\ADD_{\K{i32x4}}(v_1, v_2)`, which maps to
+   :math:`\lanes^{-1}_{\K{i32x4}}(\ADD_{\I32}(i_1, i_2)^\ast)`,
+   where :math:`i_1^\ast` and :math:`i_2^\ast` are sequences resulting from invoking
+   :math:`\lanes_{\K{i32x4}}(v_1)` and :math:`\lanes_{\K{i32x4}}(v_2)`
+   respectively.
+
+For non-deterministic operators this definition is generalized to sets:
+
+.. math::
+   \begin{array}{lll}
+   \X{op}_{t\K{x}N}(n_1,\dots,n_k) &=&
+     \{ \lanes^{-1}_{t\K{x}N}(i^\ast) ~|~ i^\ast \in {\Large\times}(\xref{Step_pure/instructions}{exec-instr-numeric}{\X{op}}_t(i_1,\dots,i_k)^\ast) \land i_1^\ast = \lanes_{t\K{x}N}(n_1) \land \dots \land i_k^\ast = \lanes_{t\K{x}N}(n_k) \} \\
+   \end{array}
+
+where :math:`{\Large\times} \{x^\ast\}^N` transforms a sequence of :math:`N` sets of values into a set of sequences of :math:`N` values by computing the set product:
+
+.. math::
+   \begin{array}{lll}
+   {\Large\times} (S_1 \dots S_N) &=& \{ x_1 \dots x_N ~|~ x_1 \in S_1 \land \dots \land x_N \in S_N \}
+   \end{array}
+
+The remaining vector operators use :ref:`individual definitions <op-vec>`.
+
+
+.. _exec-vconst:
+
+:math:`\V128\K{.}\VCONST~c`
+...........................
+
+1. Push the value ${instr: (VCONST V128 c)} to the stack.
+
+.. note::
+   No formal reduction rule is required for this instruction, since ${:CONST} instructions are already :ref:`values <syntax-val>`.
+
+
+.. _exec-vvunop:
+
+$${rule-prose: Step_pure/vvunop}
+
+$${rule: {Step_pure/vvunop}}
+
+
+.. _exec-vvbinop:
+
+$${rule-prose: Step_pure/vvbinop}
+
+$${rule: {Step_pure/vvbinop}}
+
+
+.. _exec-vvternop:
+
+$${rule-prose: Step_pure/vvternop}
+
+$${rule: {Step_pure/vvternop}}
+
+
+.. _exec-vvtestop:
+
+$${rule-prose: Step_pure/vvtestop}
+
+$${rule: {Step_pure/vvtestop}}
+
+
+.. _exec-vunop:
+
+$${rule-prose: Step_pure/vunop}
+
+$${rule: {Step_pure/vunop-*}}
+
+
+.. _exec-vbinop:
+
+$${rule-prose: Step_pure/vbinop}
+
+$${rule: {Step_pure/vbinop-*}}
+
+
+.. _exec-vternop:
+
+$${rule-prose: Step_pure/vternop}
+
+$${rule: {Step_pure/vternop-*}}
+
+
+.. _exec-vtestop:
+
+$${rule-prose: Step_pure/vtestop}
+
+$${rule: {Step_pure/vtestop}}
+
+
+.. _exec-vrelop:
+
+$${rule-prose: Step_pure/vrelop}
+
+$${rule: {Step_pure/vrelop}}
+
+
+.. _exec-vshiftop:
+
+$${rule-prose: Step_pure/vshiftop}
+
+$${rule: {Step_pure/vshiftop}}
+
+
+.. _exec-vbitmask:
+
+$${rule-prose: Step_pure/vbitmask}
+
+$${rule: {Step_pure/vbitmask}}
+
+
+.. _exec-vswizzlop:
+
+$${rule-prose: Step_pure/vswizzlop}
+
+$${rule: {Step_pure/vswizzlop}}
+
+
+.. _exec-vshuffle:
+
+$${rule-prose: Step_pure/vshuffle}
+
+$${rule: {Step_pure/vshuffle}}
+
+
+.. _exec-vsplat:
+
+$${rule-prose: Step_pure/vsplat}
+
+$${rule: {Step_pure/vsplat}}
+
+
+.. _exec-vextract_lane:
+
+$${rule-prose: Step_pure/vextract_lane}
+
+$${rule: {Step_pure/vextract_lane-*}}
+
+
+.. _exec-vreplace_lane:
+
+$${rule-prose: Step_pure/vreplace_lane}
+
+$${rule: {Step_pure/vreplace_lane}}
+
+
+.. _exec-vextunop:
+
+$${rule-prose: Step_pure/vextunop}
+
+$${rule: {Step_pure/vextunop}}
+
+
+.. _exec-vextbinop:
+
+$${rule-prose: Step_pure/vextbinop}
+
+$${rule: {Step_pure/vextbinop}}
+
+
+.. _exec-vextternop:
+
+$${rule-prose: Step_pure/vextternop}
+
+$${rule: {Step_pure/vextternop}}
+
+
+.. _exec-vnarrow:
+
+$${rule-prose: Step_pure/vnarrow}
+
+$${rule: {Step_pure/vnarrow}}
+
+
+.. _exec-vcvtop:
+
+$${rule-prose: Step_pure/vcvtop}
+
+$${rule: {Step_pure/vcvtop}}
 
 
 .. index:: expression

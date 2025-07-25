@@ -11,14 +11,7 @@ grammar Tlabel_(I) : (name?, I) =
   | id:Tid => (id, {LABELS id} ++ I[.LABELS[x] = eps])  -- if id = I.LABELS[x]
 
 
-;; Block types
-
-grammar Tblocktype_(I) : blocktype =
-  | t?:Tresult_(I)? => _RESULT t?
-  | (x,I'):Ttypeuse_(I) => _IDX x  -- if I' = {LOCALS (eps)*}
-
-
-;; Instructions
+;; Instruction forms
 
 grammar Tinstr_(I) : instr =
   | in:Tplaininstr_(I) => in
@@ -31,9 +24,13 @@ grammar Tinstrs_(I) : instr* =
 grammar Tinstrs_(I)/folded : instr* = ...
   | in**:Tfoldedinstr_(I)* => $concat_(instr, in**)
 
-grammar Tfoldedinstr_(I) : instr* =
+
+grammar Tfoldedinstr_(I)/plain : instr* =
   | in:Tinstr_(I) => in
   | "(" in:Tplaininstr_(I) in'*:Tinstrs_(I) ")" => in'* in
+  | ...
+
+grammar Tfoldedinstr_(I)/block : instr* = ...
   | "(" "block" (id?,I'):Tlabel_(I) bt:Tblocktype_(I) in*:Tinstrs_(I') ")" =>
     BLOCK bt in*
   | "(" "loop" (id?,I'):Tlabel_(I) bt:Tblocktype_(I) in*:Tinstrs_(I') ")" =>
@@ -49,7 +46,21 @@ grammar Tfoldedinstr_(I) : instr* =
     TRY_TABLE bt c* in*
 
 
+;; Parametric instructions
+
+grammar Tplaininstr_(I)/parametric : instr =
+  | "unreachable" => UNREACHABLE
+  | "nop" => NOP
+  | "drop" => DROP
+  | "select" t?:Tresult_(I)? => SELECT t?
+  | ...
+
+
 ;; Block instructions
+
+grammar Tblocktype_(I) : blocktype =
+  | t?:Tresult_(I)? => _RESULT t?
+  | (x,I'):Ttypeuse_(I) => _IDX x  -- if I' = {LOCALS (eps)*}
 
 grammar Tblockinstr_(I) : instr =
   | "block" (id?,I'):Tlabel_(I) bt:Tblocktype_(I) in*:Tinstrs_(I') "end" id'?:Tid? =>
@@ -78,16 +89,6 @@ grammar Tcatch_(I) : catch =
   | "(" "catch_all_ref" l:Tlabelidx_(I) ")" => CATCH_ALL_REF l
 
 
-;; Parametric instructions
-
-grammar Tplaininstr_(I)/parametric : instr =
-  | "unreachable" => UNREACHABLE
-  | "nop" => NOP
-  | "drop" => DROP
-  | "select" t?:Tresult_(I)? => SELECT t?
-  | ...
-
-
 ;; Plain control instructions
 
 grammar Tplaininstr_(I)/br : instr = ...
@@ -100,7 +101,7 @@ grammar Tplaininstr_(I)/br : instr = ...
   | "br_on_cast_fail" l:Tlabelidx_(I) rt_1:Treftype_(I) rt_2:Treftype_(I) => BR_ON_CAST_FAIL l rt_1 rt_2
   | ...
 
-grammar Tplaininstr_(I)/call : instr = ...
+grammar Tplaininstr_(I)/func : instr = ...
   | "call" x:Tfuncidx_(I) => CALL x
   | "call_ref" x:Ttypeidx_(I) => CALL_REF $($(_IDX x))
   | "call_indirect" x:Ttableidx_(I) (y,I'):Ttypeuse_(I) => CALL_INDIRECT x $($(_IDX y))
@@ -112,7 +113,7 @@ grammar Tplaininstr_(I)/call : instr = ...
     -- if I' = {LOCALS (eps)*}
   | ...
 
-grammar Tplaininstr_(I)/call/abbrev : instr = ...
+grammar Tplaininstr_(I)/func/abbrev : instr = ...
   | "call_indirect" (y,I'):Ttypeuse_(I) => CALL_INDIRECT 0 $($(_IDX y))
     -- if I' = {LOCALS (eps)*}
   | "return_call_indirect" (y,I'):Ttypeuse_(I) => RETURN_CALL_INDIRECT 0 $($(_IDX y))
@@ -122,56 +123,6 @@ grammar Tplaininstr_(I)/call/abbrev : instr = ...
 grammar Tplaininstr_(I)/exn : instr = ...
   | "throw" x:Ttagidx_(I) => THROW x
   | "throw_ref" => THROW_REF
-  | ...
-
-
-;; Reference instructions
-
-grammar Tplaininstr_(I)/ref : instr = ...
-  | "ref.null" ht:Theaptype_(I) => REF.NULL ht
-  | "ref.func" x:Tfuncidx_(I) => REF.FUNC x
-  | "ref.is_null" => REF.IS_NULL
-  | "ref.as_non_null" => REF.AS_NON_NULL
-  | "ref.eq" => REF.EQ
-  | "ref.test" rt:Treftype_(I) => REF.TEST rt
-  | "ref.cast" rt:Treftype_(I) => REF.CAST rt
-  | ...
-
-grammar Tplaininstr_(I)/i31 : instr = ...
-  | "ref.i31" => REF.I31
-  | "i31.get_s" => I31.GET S
-  | "i31.get_u" => I31.GET U
-  | ...
-
-grammar Tplaininstr_(I)/struct : instr = ...
-  | "struct.new" x:Ttypeidx_(I) => STRUCT.NEW x
-  | "struct.new_default" x:Ttypeidx_(I) => STRUCT.NEW_DEFAULT x
-  | "struct.get" x:Ttypeidx_(I) i:Tfieldidx__(I,x) => STRUCT.GET x i
-  | "struct.get_s" x:Ttypeidx_(I) i:Tfieldidx__(I,x) => STRUCT.GET S x i
-  | "struct.get_u" x:Ttypeidx_(I) i:Tfieldidx__(I,x) => STRUCT.GET U x i
-  | "struct.set" x:Ttypeidx_(I) i:Tfieldidx__(I,x) => STRUCT.SET x i
-  | ...
-
-grammar Tplaininstr_(I)/array : instr = ...
-  | "array.new" x:Ttypeidx_(I) => ARRAY.NEW x
-  | "array.new_default" x:Ttypeidx_(I) => ARRAY.NEW_DEFAULT x
-  | "array.new_fixed" x:Ttypeidx_(I) n:Tu32 => ARRAY.NEW_FIXED x n
-  | "array.new_data" x:Ttypeidx_(I) y:Tdataidx_(I) => ARRAY.NEW_DATA x y
-  | "array.new_elem" x:Ttypeidx_(I) y:Telemidx_(I) => ARRAY.NEW_ELEM x y
-  | "array.get" x:Ttypeidx_(I) => ARRAY.GET x
-  | "array.get_s" x:Ttypeidx_(I) => ARRAY.GET S x
-  | "array.get_u" x:Ttypeidx_(I) => ARRAY.GET U x
-  | "array.set" x:Ttypeidx_(I) => ARRAY.SET x
-  | "array.len" => ARRAY.LEN
-  | "array.fill" x:Ttypeidx_(I) => ARRAY.FILL x
-  | "array.copy" x_1:Ttypeidx_(I) x_2:Ttypeidx_(I) => ARRAY.COPY x_1 x_2
-  | "array.init_data" x:Ttypeidx_(I) y:Tdataidx_(I) => ARRAY.INIT_DATA x y
-  | "array.init_elem" x:Ttypeidx_(I) y:Telemidx_(I) => ARRAY.INIT_ELEM x y
-  | ...
-
-grammar Tplaininstr_(I)/extern : instr = ...
-  | "any.convert_extern" => ANY.CONVERT_EXTERN
-  | "extern.convert_any" => EXTERN.CONVERT_ANY
   | ...
 
 
@@ -338,6 +289,56 @@ grammar Tplaininstr_(I)/memory/abbrev : instr = ...
 
 grammar Tplaininstr_(I)/data : instr = ...
   | "data.drop" x:Tdataidx_(I) => DATA.DROP x
+  | ...
+
+
+;; Reference instructions
+
+grammar Tplaininstr_(I)/ref : instr = ...
+  | "ref.null" ht:Theaptype_(I) => REF.NULL ht
+  | "ref.func" x:Tfuncidx_(I) => REF.FUNC x
+  | "ref.is_null" => REF.IS_NULL
+  | "ref.as_non_null" => REF.AS_NON_NULL
+  | "ref.eq" => REF.EQ
+  | "ref.test" rt:Treftype_(I) => REF.TEST rt
+  | "ref.cast" rt:Treftype_(I) => REF.CAST rt
+  | ...
+
+grammar Tplaininstr_(I)/i31 : instr = ...
+  | "ref.i31" => REF.I31
+  | "i31.get_s" => I31.GET S
+  | "i31.get_u" => I31.GET U
+  | ...
+
+grammar Tplaininstr_(I)/struct : instr = ...
+  | "struct.new" x:Ttypeidx_(I) => STRUCT.NEW x
+  | "struct.new_default" x:Ttypeidx_(I) => STRUCT.NEW_DEFAULT x
+  | "struct.get" x:Ttypeidx_(I) i:Tfieldidx__(I,x) => STRUCT.GET x i
+  | "struct.get_s" x:Ttypeidx_(I) i:Tfieldidx__(I,x) => STRUCT.GET S x i
+  | "struct.get_u" x:Ttypeidx_(I) i:Tfieldidx__(I,x) => STRUCT.GET U x i
+  | "struct.set" x:Ttypeidx_(I) i:Tfieldidx__(I,x) => STRUCT.SET x i
+  | ...
+
+grammar Tplaininstr_(I)/array : instr = ...
+  | "array.new" x:Ttypeidx_(I) => ARRAY.NEW x
+  | "array.new_default" x:Ttypeidx_(I) => ARRAY.NEW_DEFAULT x
+  | "array.new_fixed" x:Ttypeidx_(I) n:Tu32 => ARRAY.NEW_FIXED x n
+  | "array.new_data" x:Ttypeidx_(I) y:Tdataidx_(I) => ARRAY.NEW_DATA x y
+  | "array.new_elem" x:Ttypeidx_(I) y:Telemidx_(I) => ARRAY.NEW_ELEM x y
+  | "array.get" x:Ttypeidx_(I) => ARRAY.GET x
+  | "array.get_s" x:Ttypeidx_(I) => ARRAY.GET S x
+  | "array.get_u" x:Ttypeidx_(I) => ARRAY.GET U x
+  | "array.set" x:Ttypeidx_(I) => ARRAY.SET x
+  | "array.len" => ARRAY.LEN
+  | "array.fill" x:Ttypeidx_(I) => ARRAY.FILL x
+  | "array.copy" x_1:Ttypeidx_(I) x_2:Ttypeidx_(I) => ARRAY.COPY x_1 x_2
+  | "array.init_data" x:Ttypeidx_(I) y:Tdataidx_(I) => ARRAY.INIT_DATA x y
+  | "array.init_elem" x:Ttypeidx_(I) y:Telemidx_(I) => ARRAY.INIT_ELEM x y
+  | ...
+
+grammar Tplaininstr_(I)/extern : instr = ...
+  | "any.convert_extern" => ANY.CONVERT_EXTERN
+  | "extern.convert_any" => EXTERN.CONVERT_ANY
   | ...
 
 

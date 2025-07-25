@@ -26,7 +26,6 @@ rule Instr_ok/drop:
   C |- DROP : t -> eps
   -- Valtype_ok: C |- t : OK
 
-
 rule Instr_ok/select-expl:
   C |- SELECT t : t t I32 -> t
   -- Valtype_ok: C |- t : OK
@@ -198,27 +197,6 @@ rule Catch_ok/catch_all_ref:
   -- Resulttype_sub: C |- (REF EXN) <: C.LABELS[l]
 
 
-;; Numeric instructions
-
-rule Instr_ok/const:
-  C |- CONST nt c_nt : eps -> nt
-
-rule Instr_ok/unop:
-  C |- UNOP nt unop_nt : nt -> nt
-
-rule Instr_ok/binop:
-  C |- BINOP nt binop_nt : nt nt -> nt
-
-rule Instr_ok/testop:
-  C |- TESTOP nt testop_nt : nt -> I32
-
-rule Instr_ok/relop:
-  C |- RELOP nt relop_nt : nt nt -> I32
-
-rule Instr_ok/cvtop:
-  C |- CVTOP nt_1 nt_2 cvtop : nt_2 -> nt_1
-
-
 ;; Reference instructions
 
 rule Instr_ok/ref.null:
@@ -355,78 +333,6 @@ rule Instr_ok/extern.convert_any:
 rule Instr_ok/any.convert_extern:
   C |- ANY.CONVERT_EXTERN : (REF nul1 EXTERN) -> (REF nul2 ANY)
   -- if nul1 = nul2
-
-
-;; Vector instructions
-
-rule Instr_ok/vconst:
-  C |- VCONST V128 c : eps -> V128
-
-rule Instr_ok/vvunop:
-  C |- VVUNOP V128 vvunop : V128 -> V128
-
-rule Instr_ok/vvbinop:
-  C |- VVBINOP V128 vvbinop : V128 V128 -> V128
-
-rule Instr_ok/vvternop:
-  C |- VVTERNOP V128 vvternop : V128 V128 V128 -> V128
-
-rule Instr_ok/vvtestop:
-  C |- VVTESTOP V128 vvtestop : V128 -> I32
-
-rule Instr_ok/vunop:
-  C |- VUNOP sh vunop : V128 -> V128
-
-rule Instr_ok/vbinop:
-  C |- VBINOP sh vbinop : V128 V128 -> V128
-
-rule Instr_ok/vternop:
-  C |- VTERNOP sh vternop : V128 V128 V128 -> V128
-
-rule Instr_ok/vtestop:
-  C |- VTESTOP sh vtestop : V128 -> I32
-
-rule Instr_ok/vrelop:
-  C |- VRELOP sh vrelop : V128 V128 -> V128
-
-rule Instr_ok/vshiftop:
-  C |- VSHIFTOP sh vshiftop : V128 I32 -> V128
-
-rule Instr_ok/vbitmask:
-  C |- VBITMASK sh : V128 -> I32
-
-rule Instr_ok/vswizzlop:
-  C |- VSWIZZLOP sh vswizzlop : V128 V128 -> V128
-
-rule Instr_ok/vshuffle:
-  C |- VSHUFFLE sh i* : V128 V128 -> V128
-  -- (if $(i < 2*$dim(sh)))*
-
-rule Instr_ok/vsplat:
-  C |- VSPLAT sh : $unpackshape(sh) -> V128
-
-rule Instr_ok/vextract_lane:
-  C |- VEXTRACT_LANE sh sx? i : V128 -> $unpackshape(sh)
-  -- if i < $dim(sh)
-
-rule Instr_ok/vreplace_lane:
-  C |- VREPLACE_LANE sh i : V128 $unpackshape(sh) -> V128
-  -- if i < $dim(sh)
-
-rule Instr_ok/vextunop:
-  C |- VEXTUNOP sh_1 sh_2 vextunop : V128 -> V128
-
-rule Instr_ok/vextbinop:
-  C |- VEXTBINOP sh_1 sh_2 vextbinop : V128 V128 -> V128
-
-rule Instr_ok/vextternop:
-  C |- VEXTTERNOP sh_1 sh_2 vextternop : V128 V128 V128 -> V128
-
-rule Instr_ok/vnarrow:
-  C |- VNARROW sh_1 sh_2 sx : V128 V128 -> V128
-
-rule Instr_ok/vcvtop:
-  C |- VCVTOP sh_1 sh_2 vcvtop : V128 -> V128
 
 
 ;; Local instructions
@@ -596,6 +502,99 @@ rule Instr_ok/vstore_lane:
   -- if C.MEMS[x] = at lim PAGE
   -- if $(2^(memarg.ALIGN) <= N/8)
   -- if $(i < 128/N)
+
+
+;; Numeric instructions
+
+rule Instr_ok/const:
+  C |- CONST nt c_nt : eps -> nt
+
+rule Instr_ok/unop:
+  C |- UNOP nt unop_nt : nt -> nt
+
+rule Instr_ok/binop:
+  C |- BINOP nt binop_nt : nt nt -> nt
+
+rule Instr_ok/testop:
+  C |- TESTOP nt testop_nt : nt -> I32
+
+rule Instr_ok/relop:
+  C |- RELOP nt relop_nt : nt nt -> I32
+
+rule Instr_ok/cvtop:
+  C |- CVTOP nt_1 nt_2 cvtop : nt_2 -> nt_1
+
+
+;; Vector instructions
+
+rule Instr_ok/vconst:
+  C |- VCONST V128 c : eps -> V128
+
+rule Instr_ok/vvunop:
+  C |- VVUNOP V128 vvunop : V128 -> V128
+
+rule Instr_ok/vvbinop:
+  C |- VVBINOP V128 vvbinop : V128 V128 -> V128
+
+rule Instr_ok/vvternop:
+  C |- VVTERNOP V128 vvternop : V128 V128 V128 -> V128
+
+rule Instr_ok/vvtestop:
+  C |- VVTESTOP V128 vvtestop : V128 -> I32
+
+rule Instr_ok/vunop:
+  C |- VUNOP sh vunop : V128 -> V128
+
+rule Instr_ok/vbinop:
+  C |- VBINOP sh vbinop : V128 V128 -> V128
+
+rule Instr_ok/vternop:
+  C |- VTERNOP sh vternop : V128 V128 V128 -> V128
+
+rule Instr_ok/vtestop:
+  C |- VTESTOP sh vtestop : V128 -> I32
+
+rule Instr_ok/vrelop:
+  C |- VRELOP sh vrelop : V128 V128 -> V128
+
+rule Instr_ok/vshiftop:
+  C |- VSHIFTOP sh vshiftop : V128 I32 -> V128
+
+rule Instr_ok/vbitmask:
+  C |- VBITMASK sh : V128 -> I32
+
+rule Instr_ok/vswizzlop:
+  C |- VSWIZZLOP sh vswizzlop : V128 V128 -> V128
+
+rule Instr_ok/vshuffle:
+  C |- VSHUFFLE sh i* : V128 V128 -> V128
+  -- (if $(i < 2*$dim(sh)))*
+
+rule Instr_ok/vsplat:
+  C |- VSPLAT sh : $unpackshape(sh) -> V128
+
+rule Instr_ok/vextract_lane:
+  C |- VEXTRACT_LANE sh sx? i : V128 -> $unpackshape(sh)
+  -- if i < $dim(sh)
+
+rule Instr_ok/vreplace_lane:
+  C |- VREPLACE_LANE sh i : V128 $unpackshape(sh) -> V128
+  -- if i < $dim(sh)
+
+rule Instr_ok/vextunop:
+  C |- VEXTUNOP sh_1 sh_2 vextunop : V128 -> V128
+
+rule Instr_ok/vextbinop:
+  C |- VEXTBINOP sh_1 sh_2 vextbinop : V128 V128 -> V128
+
+rule Instr_ok/vextternop:
+  C |- VEXTTERNOP sh_1 sh_2 vextternop : V128 V128 V128 -> V128
+
+rule Instr_ok/vnarrow:
+  C |- VNARROW sh_1 sh_2 sx : V128 V128 -> V128
+
+rule Instr_ok/vcvtop:
+  C |- VCVTOP sh_1 sh_2 vcvtop : V128 -> V128
 
 
 ;; Instruction sequences

@@ -120,610 +120,286 @@ $${rule: {Instr_ok/select-*}}
    In future versions of WebAssembly, ${:SELECT} may allow more than one value per choice.
 
 
-.. index:: numeric instruction
+.. index:: control instructions, structured control, label, block, branch, block type, label index, result type, function index, type index, tag index, list, polymorphism, context
    pair: validation; instruction
    single: abstract syntax; instruction
-.. _valid-instr-numeric:
+.. _valid-label:
+.. _valid-instr-control:
 
-Numeric Instructions
+Control Instructions
 ~~~~~~~~~~~~~~~~~~~~
 
-.. _valid-const:
+.. _valid-block:
 
-:math:`t\K{.}\CONST~c`
-......................
+:math:`\BLOCK~\blocktype~\instr^\ast`
+.....................................
 
-$${rule-prose: Instr_ok/const}
+$${rule-prose: Instr_ok/block}
 
-$${rule: Instr_ok/const}
-
-
-.. _valid-unop:
-
-:math:`t\K{.}\unop`
-...................
-
-$${rule-prose: Instr_ok/unop}
-
-$${rule: Instr_ok/unop}
-
-
-.. _valid-binop:
-
-:math:`t\K{.}\binop`
-....................
-
-$${rule-prose: Instr_ok/binop}
-
-$${rule: Instr_ok/binop}
-
-
-.. _valid-testop:
-
-:math:`t\K{.}\testop`
-.....................
-
-$${rule-prose: Instr_ok/testop}
-
-$${rule: Instr_ok/testop}
-
-
-.. _valid-relop:
-
-:math:`t\K{.}\relop`
-....................
-
-$${rule-prose: Instr_ok/relop}
-
-$${rule: Instr_ok/relop}
-
-
-.. _valid-cvtop:
-
-:math:`t_1\K{.}\cvtop\K{\_}t_2\K{\_}\sx^?`
-..........................................
-
-$${rule-prose: Instr_ok/cvtop}
-
-$${rule: Instr_ok/cvtop}
-
-
-.. index:: reference instructions, reference type
-   pair: validation; instruction
-   single: abstract syntax; instruction
-.. _valid-instr-ref:
-
-Reference Instructions
-~~~~~~~~~~~~~~~~~~~~~~
-
-.. _valid-ref.null:
-
-:math:`\REFNULL~\X{ht}`
-.......................
-
-$${rule-prose: Instr_ok/ref.null}
-
-$${rule: Instr_ok/ref.null}
-
-
-.. _valid-ref.func:
-
-:math:`\REFFUNC~x`
-..................
-
-$${rule-prose: Instr_ok/ref.func}
-
-$${rule: Instr_ok/ref.func}
-
-
-.. _valid-ref.is_null:
-
-:math:`\REFISNULL`
-..................
-
-$${rule-prose: Instr_ok/ref.is_null}
-
-$${rule: Instr_ok/ref.is_null}
-
-
-.. _valid-ref.as_non_null:
-
-:math:`\REFASNONNULL`
-.....................
-
-$${rule-prose: Instr_ok/ref.as_non_null}
-
-$${rule: Instr_ok/ref.as_non_null}
-
-
-.. _valid-ref.eq:
-
-:math:`\REFEQ`
-..............
-
-$${rule-prose: Instr_ok/ref.eq}
-
-$${rule: Instr_ok/ref.eq}
-
-
-.. _valid-ref.test:
-
-:math:`\REFTEST~\X{rt}`
-.......................
-
-$${rule-prose: Instr_ok/ref.test}
-
-$${rule: Instr_ok/ref.test}
+$${rule: Instr_ok/block}
 
 .. note::
-   The liberty to pick a supertype ${:rt'} allows typing the instruction with the least precise super type of ${:rt} as input, that is, the top type in the corresponding heap subtyping hierarchy.
+   The :ref:`notation <notation-concat>` ${context: {LABELS (t*)} ++ C} inserts the new label type at index ${:0}, shifting all others.
+   The same applies to all other block instructions.
 
 
-.. _valid-ref.cast:
+.. _valid-loop:
 
-:math:`\REFCAST~\X{rt}`
-.......................
+:math:`\LOOP~\blocktype~\instr^\ast`
+....................................
 
-$${rule-prose: Instr_ok/ref.cast}
+$${rule-prose: Instr_ok/loop}
 
-$${rule: Instr_ok/ref.cast}
+$${rule: Instr_ok/loop}
+
+
+.. _valid-if:
+
+:math:`\IF~\blocktype~\instr_1^\ast~\ELSE~\instr_2^\ast`
+........................................................
+
+$${rule-prose: Instr_ok/if}
+
+$${rule: Instr_ok/if}
+
+
+.. _valid-br:
+
+:math:`\BR~l`
+.............
+
+$${rule-prose: Instr_ok/br}
+
+$${rule: Instr_ok/br}
 
 .. note::
-   The liberty to pick a supertype ${:rt'} allows typing the instruction with the least precise super type of ${:rt} as input, that is, the top type in the corresponding heap subtyping hierarchy.
+   The :ref:`label index <syntax-labelidx>` space in the :ref:`context <context>` ${:C} contains the most recent label first, so that ${:C.LABELS[l]} performs a relative lookup as expected.
+   This applies to other branch instructions as well.
 
+   The ${:BR} instruction is :ref:`stack-polymorphic <polymorphism>`.
 
-.. index:: aggregate reference
 
-Aggregate Reference Instructions
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. _valid-br_if:
 
-.. _valid-struct.new:
-
-:math:`\STRUCTNEW~x`
-....................
-
-$${rule-prose: Instr_ok/struct.new}
-
-$${rule: Instr_ok/struct.new}
-
-
-.. _valid-struct.new_default:
-
-:math:`\STRUCTNEWDEFAULT~x`
-...........................
-
-$${rule-prose: Instr_ok/struct.new_default}
-
-$${rule: Instr_ok/struct.new_default}
-
-
-.. _valid-struct.get:
-.. _valid-struct.get_u:
-.. _valid-struct.get_s:
-
-:math:`\STRUCTGET\K{\_}\sx^?~x~y`
-.................................
-
-$${rule-prose: Instr_ok/struct.get}
-
-$${rule: Instr_ok/struct.get}
-
-
-.. _valid-struct.set:
-
-:math:`\STRUCTSET~x~y`
-......................
-
-$${rule-prose: Instr_ok/struct.set}
-
-$${rule: Instr_ok/struct.set}
-
-
-.. _valid-array.new:
-
-:math:`\ARRAYNEW~x`
-...................
-
-$${rule-prose: Instr_ok/array.new}
-
-$${rule: Instr_ok/array.new}
-
-
-.. _valid-array.new_default:
-
-:math:`\ARRAYNEWDEFAULT~x`
-..........................
-
-$${rule-prose: Instr_ok/array.new_default}
-
-$${rule: Instr_ok/array.new_default}
-
-
-.. _valid-array.new_fixed:
-
-:math:`\ARRAYNEWFIXED~x~n`
-..........................
-
-$${rule-prose: Instr_ok/array.new_fixed}
-
-$${rule: Instr_ok/array.new_fixed}
-
-
-.. _valid-array.new_elem:
-
-:math:`\ARRAYNEWELEM~x~y`
-.........................
-
-$${rule-prose: Instr_ok/array.new_elem}
-
-$${rule: Instr_ok/array.new_elem}
-
-
-.. _valid-array.new_data:
-
-:math:`\ARRAYNEWDATA~x~y`
-.........................
-
-$${rule-prose: Instr_ok/array.new_data}
-
-$${rule: Instr_ok/array.new_data}
-
-
-.. _valid-array.get:
-.. _valid-array.get_u:
-.. _valid-array.get_s:
-
-:math:`\ARRAYGET\K{\_}\sx^?~x`
-..............................
-
-$${rule-prose: Instr_ok/array.get}
-
-$${rule: Instr_ok/array.get}
-
-
-.. _valid-array.set:
-
-:math:`\ARRAYSET~x`
-...................
-
-$${rule-prose: Instr_ok/array.set}
-
-$${rule: Instr_ok/array.set}
-
-
-.. _valid-array.len:
-
-:math:`\ARRAYLEN`
-.................
-
-$${rule-prose: Instr_ok/array.len}
-
-$${rule: Instr_ok/array.len}
-
-
-.. _valid-array.fill:
-
-:math:`\ARRAYFILL~x`
-....................
-
-$${rule-prose: Instr_ok/array.fill}
-
-$${rule: Instr_ok/array.fill}
-
-
-.. _valid-array.copy:
-
-:math:`\ARRAYCOPY~x~y`
-......................
-
-$${rule-prose: Instr_ok/array.copy}
-
-$${rule: Instr_ok/array.copy}
-
-
-.. _valid-array.init_elem:
-
-:math:`\ARRAYINITELEM~x~y`
-..........................
-
-$${rule-prose: Instr_ok/array.init_elem}
-
-$${rule: Instr_ok/array.init_elem}
-
-
-.. _valid-array.init_data:
-
-:math:`\ARRAYINITDATA~x~y`
-..........................
-
-$${rule-prose: Instr_ok/array.init_data}
-
-$${rule: Instr_ok/array.init_data}
-
-
-.. index:: scalar reference
-
-Scalar Reference Instructions
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. _valid-ref.i31:
-
-:math:`\REFI31`
+:math:`\BRIF~l`
 ...............
 
-$${rule-prose: Instr_ok/ref.i31}
+$${rule-prose: Instr_ok/br_if}
 
-$${rule: Instr_ok/ref.i31}
+$${rule: Instr_ok/br_if}
 
 
-.. _valid-i31.get:
+.. _valid-br_table:
 
-:math:`\I31GET\K{\_}\sx`
+:math:`\BRTABLE~l^\ast~l_N`
+...........................
+
+$${rule-prose: Instr_ok/br_table}
+
+$${rule: Instr_ok/br_table}
+
+.. note::
+   The ${:BR_TABLE} instruction is :ref:`stack-polymorphic <polymorphism>`.
+
+   Furthermore, the :ref:`result type <syntax-resulttype>` ${:t*} is also chosen non-deterministically in this rule.
+   Although it may seem necessary to compute ${:t*} as the greatest lower bound of all label types in practice,
+   a simple :ref:`sequential algorithm <algo-valid>` does not require this.
+
+
+.. _valid-br_on_null:
+
+:math:`\BRONNULL~l`
+...................
+
+$${rule-prose: Instr_ok/br_on_null}
+
+$${rule: Instr_ok/br_on_null}
+
+
+.. _valid-br_on_non_null:
+
+:math:`\BRONNONNULL~l`
+......................
+
+$${rule-prose: Instr_ok/br_on_non_null}
+
+$${rule: Instr_ok/br_on_non_null}
+
+
+.. _valid-br_on_cast:
+
+:math:`\BRONCAST~l~\X{rt}_1~\X{rt}_2`
+.....................................
+
+$${rule-prose: Instr_ok/br_on_cast}
+
+$${rule: Instr_ok/br_on_cast}
+
+
+.. _valid-br_on_cast_fail:
+
+:math:`\BRONCASTFAIL~l~\X{rt}_1~\X{rt}_2`
+.........................................
+
+$${rule-prose: Instr_ok/br_on_cast_fail}
+
+$${rule: Instr_ok/br_on_cast_fail}
+
+
+.. _valid-call:
+
+:math:`\CALL~x`
+...............
+
+$${rule-prose: Instr_ok/call}
+
+$${rule: Instr_ok/call}
+
+
+.. _valid-call_ref:
+
+:math:`\CALLREF~x`
+..................
+
+$${rule-prose: Instr_ok/call_ref}
+
+$${rule: Instr_ok/call_ref}
+
+
+.. _valid-call_indirect:
+
+:math:`\CALLINDIRECT~x~y`
+.........................
+
+$${rule-prose: Instr_ok/call_indirect}
+
+$${rule: Instr_ok/call_indirect}
+
+
+.. _valid-return:
+
+:math:`\RETURN`
+...............
+
+$${rule-prose: Instr_ok/return}
+
+$${rule: Instr_ok/return}
+
+.. note::
+   The ${:RETURN} instruction is :ref:`stack-polymorphic <polymorphism>`.
+
+   ${resulttype?: C.RETURN} is absent (set to ${:eps}) when validating an :ref:`expression <valid-expr>` that is not a function body.
+   This differs from it being set to the empty result type ${:[eps]},
+   which is the case for functions not returning anything.
+
+
+.. _valid-return_call:
+
+:math:`\RETURNCALL~x`
+.....................
+
+$${rule-prose: Instr_ok/return_call}
+
+$${rule: Instr_ok/return_call}
+
+.. note::
+   The ${:RETURN_CALL} instruction is :ref:`stack-polymorphic <polymorphism>`.
+
+
+.. _valid-return_call_ref:
+
+:math:`\RETURNCALLREF~x`
 ........................
 
-$${rule-prose: Instr_ok/i31.get}
+$${rule-prose: Instr_ok/return_call_ref}
 
-$${rule: Instr_ok/i31.get}
+$${rule: Instr_ok/return_call_ref}
 
+.. note::
+   The ${:RETURN_CALL_REF} instruction is :ref:`stack-polymorphic <polymorphism>`.
 
 
-.. index:: external reference
+.. _valid-return_call_indirect:
 
-External Reference Instructions
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+:math:`\RETURNCALLINDIRECT~x~y`
+...............................
 
-.. _valid-any.convert_extern:
+$${rule-prose: Instr_ok/return_call_indirect}
 
-:math:`\ANYCONVERTEXTERN`
-.........................
+$${rule: Instr_ok/return_call_indirect}
 
-$${rule-prose: Instr_ok/any.convert_extern}
+.. note::
+   The ${:RETURN_CALL_INDIRECT} instruction is :ref:`stack-polymorphic <polymorphism>`.
 
-$${rule: Instr_ok/any.convert_extern}
 
+.. _valid-throw:
 
-.. _valid-extern.convert_any:
+:math:`\THROW~x`
+................
 
-:math:`\EXTERNCONVERTANY`
-.........................
+$${rule-prose: Instr_ok/throw}
 
-$${rule-prose: Instr_ok/extern.convert_any}
+$${rule: Instr_ok/throw}
 
-$${rule: Instr_ok/extern.convert_any}
+.. note::
+   The ${:THROW} instruction is :ref:`stack-polymorphic <polymorphism>`.
 
 
-.. index:: vector instruction
-   pair: validation; instruction
-   single: abstract syntax; instruction
+.. _valid-throw_ref:
 
-.. _valid-instr-vec:
-.. _aux-unpackshape:
+:math:`\THROWREF`
+.................
 
-Vector Instructions
-~~~~~~~~~~~~~~~~~~~
-Vector instructions can have a prefix to describe the :ref:`shape <syntax-shape>` of the operand. Packed numeric types, ${packtype:I8} and ${packtype:I16}, are not :ref:`value types <syntax-valtype>`. An auxiliary function maps such packed type shapes to value types:
+$${rule-prose: Instr_ok/throw_ref}
 
-$${definition: unpackshape}
+$${rule: Instr_ok/throw_ref}
 
+.. note::
+   The ${:THROW_REF} instruction is :ref:`stack-polymorphic <polymorphism>`.
 
-.. _valid-vconst:
 
-:math:`\V128\K{.}\VCONST~c`
-...........................
+.. _valid-try_table:
 
-$${rule-prose: Instr_ok/vconst}
-
-$${rule: Instr_ok/vconst}
-
-
-.. _valid-vvunop:
-
-:math:`\V128\K{.}\vvunop`
-.........................
-
-$${rule-prose: Instr_ok/vvunop}
-
-$${rule: Instr_ok/vvunop}
-
-
-.. _valid-vvbinop:
-
-:math:`\V128\K{.}\vvbinop`
-..........................
-
-$${rule-prose: Instr_ok/vvbinop}
-
-$${rule: Instr_ok/vvbinop}
-
-
-.. _valid-vvternop:
-
-:math:`\V128\K{.}\vvternop`
-...........................
-
-$${rule-prose: Instr_ok/vvternop}
-
-$${rule: Instr_ok/vvternop}
-
-
-.. _valid-vvtestop:
-
-:math:`\V128\K{.}\vvtestop`
-...........................
-
-$${rule-prose: Instr_ok/vvtestop}
-
-$${rule: Instr_ok/vvtestop}
-
-
-.. _valid-vunop:
-
-:math:`\shape\K{.}\vunop`
-.........................
-
-$${rule-prose: Instr_ok/vunop}
-
-$${rule: Instr_ok/vunop}
-
-
-.. _valid-vbinop:
-
-:math:`\shape\K{.}\vbinop`
-..........................
-
-$${rule-prose: Instr_ok/vbinop}
-
-$${rule: Instr_ok/vbinop}
-
-
-.. _valid-vternop:
-
-:math:`\shape\K{.}\vternop`
-...........................
-
-$${rule-prose: Instr_ok/vternop}
-
-$${rule: Instr_ok/vternop}
-
-
-.. _valid-vtestop:
-
-:math:`\shape\K{.}\vtestop`
-...........................
-
-$${rule-prose: Instr_ok/vtestop}
-
-$${rule: Instr_ok/vtestop}
-
-
-.. _valid-vrelop:
-
-:math:`\shape\K{.}\vrelop`
-..........................
-
-$${rule-prose: Instr_ok/vrelop}
-
-$${rule: Instr_ok/vrelop}
-
-
-.. _valid-vshiftop:
-
-:math:`\ishape\K{.}\vishiftop`
-..............................
-
-$${rule-prose: Instr_ok/vshiftop}
-
-$${rule: Instr_ok/vshiftop}
-
-
-.. _valid-vbitmask:
-
-:math:`\ishape\K{.}\VBITMASK`
-.............................
-
-$${rule-prose: Instr_ok/vbitmask}
-
-$${rule: Instr_ok/vbitmask}
-
-
-.. _valid-vswizzlop:
-
-:math:`\K{i8x16.}\vswizzlop`
-............................
-
-$${rule-prose: Instr_ok/vswizzlop}
-
-$${rule: Instr_ok/vswizzlop}
-
-
-.. _valid-vshuffle:
-
-:math:`\K{i8x16.}\VSHUFFLE~\laneidx^{16}`
-.........................................
-
-$${rule-prose: Instr_ok/vshuffle}
-
-$${rule: Instr_ok/vshuffle}
-
-
-.. _valid-vsplat:
-
-:math:`\shape\K{.}\VSPLAT`
-..........................
-
-$${rule-prose: Instr_ok/vsplat}
-
-$${rule: Instr_ok/vsplat}
-
-
-.. _valid-vextract_lane:
-
-:math:`\shape\K{.}\VEXTRACTLANE\K{\_}\sx^?~\laneidx`
+:math:`\TRYTABLE~\blocktype~\catch^\ast~\instr^\ast`
 ....................................................
 
-$${rule-prose: Instr_ok/vextract_lane}
+$${rule-prose: Instr_ok/try_table}
 
-$${rule: Instr_ok/vextract_lane}
-
-
-.. _valid-vreplace_lane:
-
-:math:`\shape\K{.}\VREPLACELANE~\laneidx`
-.........................................
-
-$${rule-prose: Instr_ok/vreplace_lane}
-
-$${rule: Instr_ok/vreplace_lane}
+$${rule: Instr_ok/try_table}
 
 
-.. _valid-vextunop:
+.. _valid-catch:
 
-:math:`\ishape_1\K{.}\vextunop\K{\_}\ishape_2`
-..............................................
+:math:`\CATCH~x~l`
+..................
 
-$${rule-prose: Instr_ok/vextunop}
+$${rule-prose: Catch_ok/catch}
 
-$${rule: Instr_ok/vextunop}
-
-
-.. _valid-vextbinop:
-
-:math:`\ishape_1\K{.}\vextbinop\K{\_}\ishape_2`
-...............................................
-
-$${rule-prose: Instr_ok/vextbinop}
-
-$${rule: Instr_ok/vextbinop}
+$${rule: Catch_ok/catch}
 
 
-.. _valid-vextternop:
+:math:`\CATCHREF~x~l`
+.....................
 
-:math:`\ishape_1\K{.}\vextternop\K{\_}\ishape_2`
-................................................
+$${rule-prose: Catch_ok/catch_ref}
 
-$${rule-prose: Instr_ok/vextternop}
-
-$${rule: Instr_ok/vextternop}
+$${rule: Catch_ok/catch_ref}
 
 
-.. _valid-vnarrow:
+:math:`\CATCHALL~l`
+...................
 
-:math:`\ishape_1\K{.}\VNARROW\K{\_}\ishape_2\K{\_}\sx`
-......................................................
+$${rule-prose: Catch_ok/catch_all}
 
-$${rule-prose: Instr_ok/vnarrow}
-
-$${rule: Instr_ok/vnarrow}
+$${rule: Catch_ok/catch_all}
 
 
-.. _valid-vcvtop:
+:math:`\CATCHALLREF~l`
+......................
 
-:math:`\shape\K{.}\vcvtop\K{\_}\half^?\K{\_}\shape\K{\_}\sx^?\K{\_zero}^?`
-..........................................................................
+$${rule-prose: Catch_ok/catch_all_ref}
 
-$${rule-prose: Instr_ok/vcvtop}
-
-$${rule: Instr_ok/vcvtop}
+$${rule: Catch_ok/catch_all_ref}
 
 
 .. index:: variable instructions, local index, global index, context
@@ -1051,287 +727,610 @@ $${rule-prose: Instr_ok/data.drop}
 $${rule: Instr_ok/data.drop}
 
 
-.. index:: control instructions, structured control, label, block, branch, block type, label index, result type, function index, type index, tag index, list, polymorphism, context
+.. index:: reference instructions, reference type
    pair: validation; instruction
    single: abstract syntax; instruction
-.. _valid-label:
-.. _valid-instr-control:
+.. _valid-instr-ref:
 
-Control Instructions
-~~~~~~~~~~~~~~~~~~~~
+Reference Instructions
+~~~~~~~~~~~~~~~~~~~~~~
 
-.. _valid-block:
+.. _valid-ref.null:
 
-:math:`\BLOCK~\blocktype~\instr^\ast`
-.....................................
+:math:`\REFNULL~\X{ht}`
+.......................
 
-$${rule-prose: Instr_ok/block}
+$${rule-prose: Instr_ok/ref.null}
 
-$${rule: Instr_ok/block}
-
-.. note::
-   The :ref:`notation <notation-concat>` ${context: {LABELS (t*)} ++ C} inserts the new label type at index ${:0}, shifting all others.
-   The same applies to all other block instructions.
+$${rule: Instr_ok/ref.null}
 
 
-.. _valid-loop:
+.. _valid-ref.func:
 
-:math:`\LOOP~\blocktype~\instr^\ast`
-....................................
-
-$${rule-prose: Instr_ok/loop}
-
-$${rule: Instr_ok/loop}
-
-
-.. _valid-if:
-
-:math:`\IF~\blocktype~\instr_1^\ast~\ELSE~\instr_2^\ast`
-........................................................
-
-$${rule-prose: Instr_ok/if}
-
-$${rule: Instr_ok/if}
-
-
-
-.. _valid-try_table:
-
-:math:`\TRYTABLE~\blocktype~\catch^\ast~\instr^\ast`
-....................................................
-
-$${rule-prose: Instr_ok/try_table}
-
-$${rule: Instr_ok/try_table}
-
-
-.. _valid-catch:
-
-:math:`\CATCH~x~l`
+:math:`\REFFUNC~x`
 ..................
 
-$${rule-prose: Catch_ok/catch}
+$${rule-prose: Instr_ok/ref.func}
 
-$${rule: Catch_ok/catch}
+$${rule: Instr_ok/ref.func}
 
 
-:math:`\CATCHREF~x~l`
+.. _valid-ref.is_null:
+
+:math:`\REFISNULL`
+..................
+
+$${rule-prose: Instr_ok/ref.is_null}
+
+$${rule: Instr_ok/ref.is_null}
+
+
+.. _valid-ref.as_non_null:
+
+:math:`\REFASNONNULL`
 .....................
 
-$${rule-prose: Catch_ok/catch_ref}
+$${rule-prose: Instr_ok/ref.as_non_null}
 
-$${rule: Catch_ok/catch_ref}
-
-
-:math:`\CATCHALL~l`
-...................
-
-$${rule-prose: Catch_ok/catch_all}
-
-$${rule: Catch_ok/catch_all}
+$${rule: Instr_ok/ref.as_non_null}
 
 
-:math:`\CATCHALLREF~l`
-......................
+.. _valid-ref.eq:
 
-$${rule-prose: Catch_ok/catch_all_ref}
+:math:`\REFEQ`
+..............
 
-$${rule: Catch_ok/catch_all_ref}
+$${rule-prose: Instr_ok/ref.eq}
+
+$${rule: Instr_ok/ref.eq}
 
 
-.. _valid-br:
+.. _valid-ref.test:
 
-:math:`\BR~l`
-.............
+:math:`\REFTEST~\X{rt}`
+.......................
 
-$${rule-prose: Instr_ok/br}
+$${rule-prose: Instr_ok/ref.test}
 
-$${rule: Instr_ok/br}
+$${rule: Instr_ok/ref.test}
 
 .. note::
-   The :ref:`label index <syntax-labelidx>` space in the :ref:`context <context>` ${:C} contains the most recent label first, so that ${:C.LABELS[l]} performs a relative lookup as expected.
-   This applies to other branch instructions as well.
-
-   The ${:BR} instruction is :ref:`stack-polymorphic <polymorphism>`.
+   The liberty to pick a supertype ${:rt'} allows typing the instruction with the least precise super type of ${:rt} as input, that is, the top type in the corresponding heap subtyping hierarchy.
 
 
-.. _valid-br_if:
+.. _valid-ref.cast:
 
-:math:`\BRIF~l`
-...............
+:math:`\REFCAST~\X{rt}`
+.......................
 
-$${rule-prose: Instr_ok/br_if}
+$${rule-prose: Instr_ok/ref.cast}
 
-$${rule: Instr_ok/br_if}
+$${rule: Instr_ok/ref.cast}
+
+.. note::
+   The liberty to pick a supertype ${:rt'} allows typing the instruction with the least precise super type of ${:rt} as input, that is, the top type in the corresponding heap subtyping hierarchy.
 
 
-.. _valid-br_table:
+.. index:: aggregate reference
 
-:math:`\BRTABLE~l^\ast~l_N`
+Aggregate Reference Instructions
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. _valid-struct.new:
+
+:math:`\STRUCTNEW~x`
+....................
+
+$${rule-prose: Instr_ok/struct.new}
+
+$${rule: Instr_ok/struct.new}
+
+
+.. _valid-struct.new_default:
+
+:math:`\STRUCTNEWDEFAULT~x`
 ...........................
 
-$${rule-prose: Instr_ok/br_table}
+$${rule-prose: Instr_ok/struct.new_default}
 
-$${rule: Instr_ok/br_table}
-
-.. note::
-   The ${:BR_TABLE} instruction is :ref:`stack-polymorphic <polymorphism>`.
-
-   Furthermore, the :ref:`result type <syntax-resulttype>` ${:t*} is also chosen non-deterministically in this rule.
-   Although it may seem necessary to compute ${:t*} as the greatest lower bound of all label types in practice,
-   a simple :ref:`sequential algorithm <algo-valid>` does not require this.
+$${rule: Instr_ok/struct.new_default}
 
 
-.. _valid-br_on_null:
+.. _valid-struct.get:
+.. _valid-struct.get_u:
+.. _valid-struct.get_s:
 
-:math:`\BRONNULL~l`
-...................
+:math:`\STRUCTGET\K{\_}\sx^?~x~y`
+.................................
 
-$${rule-prose: Instr_ok/br_on_null}
+$${rule-prose: Instr_ok/struct.get}
 
-$${rule: Instr_ok/br_on_null}
+$${rule: Instr_ok/struct.get}
 
 
-.. _valid-br_on_non_null:
+.. _valid-struct.set:
 
-:math:`\BRONNONNULL~l`
+:math:`\STRUCTSET~x~y`
 ......................
 
-$${rule-prose: Instr_ok/br_on_non_null}
+$${rule-prose: Instr_ok/struct.set}
 
-$${rule: Instr_ok/br_on_non_null}
-
-
-.. _valid-br_on_cast:
-
-:math:`\BRONCAST~l~\X{rt}_1~\X{rt}_2`
-.....................................
-
-$${rule-prose: Instr_ok/br_on_cast}
-
-$${rule: Instr_ok/br_on_cast}
+$${rule: Instr_ok/struct.set}
 
 
-.. _valid-br_on_cast_fail:
+.. _valid-array.new:
 
-:math:`\BRONCASTFAIL~l~\X{rt}_1~\X{rt}_2`
-.........................................
+:math:`\ARRAYNEW~x`
+...................
 
-$${rule-prose: Instr_ok/br_on_cast_fail}
+$${rule-prose: Instr_ok/array.new}
 
-$${rule: Instr_ok/br_on_cast_fail}
-
-
-.. _valid-call:
-
-:math:`\CALL~x`
-...............
-
-$${rule-prose: Instr_ok/call}
-
-$${rule: Instr_ok/call}
+$${rule: Instr_ok/array.new}
 
 
-.. _valid-call_ref:
+.. _valid-array.new_default:
 
-:math:`\CALLREF~x`
-..................
+:math:`\ARRAYNEWDEFAULT~x`
+..........................
 
-$${rule-prose: Instr_ok/call_ref}
+$${rule-prose: Instr_ok/array.new_default}
 
-$${rule: Instr_ok/call_ref}
+$${rule: Instr_ok/array.new_default}
 
 
-.. _valid-call_indirect:
+.. _valid-array.new_fixed:
 
-:math:`\CALLINDIRECT~x~y`
+:math:`\ARRAYNEWFIXED~x~n`
+..........................
+
+$${rule-prose: Instr_ok/array.new_fixed}
+
+$${rule: Instr_ok/array.new_fixed}
+
+
+.. _valid-array.new_elem:
+
+:math:`\ARRAYNEWELEM~x~y`
 .........................
 
-$${rule-prose: Instr_ok/call_indirect}
+$${rule-prose: Instr_ok/array.new_elem}
 
-$${rule: Instr_ok/call_indirect}
-
-
-.. _valid-return:
-
-:math:`\RETURN`
-...............
-
-$${rule-prose: Instr_ok/return}
-
-$${rule: Instr_ok/return}
-
-.. note::
-   The ${:RETURN} instruction is :ref:`stack-polymorphic <polymorphism>`.
-
-   ${resulttype?: C.RETURN} is absent (set to ${:eps}) when validating an :ref:`expression <valid-expr>` that is not a function body.
-   This differs from it being set to the empty result type ${:[eps]},
-   which is the case for functions not returning anything.
+$${rule: Instr_ok/array.new_elem}
 
 
-.. _valid-return_call:
+.. _valid-array.new_data:
 
-:math:`\RETURNCALL~x`
-.....................
+:math:`\ARRAYNEWDATA~x~y`
+.........................
 
-$${rule-prose: Instr_ok/return_call}
+$${rule-prose: Instr_ok/array.new_data}
 
-$${rule: Instr_ok/return_call}
-
-.. note::
-   The ${:RETURN_CALL} instruction is :ref:`stack-polymorphic <polymorphism>`.
+$${rule: Instr_ok/array.new_data}
 
 
-.. _valid-return_call_ref:
+.. _valid-array.get:
+.. _valid-array.get_u:
+.. _valid-array.get_s:
 
-:math:`\RETURNCALLREF~x`
-........................
+:math:`\ARRAYGET\K{\_}\sx^?~x`
+..............................
 
-$${rule-prose: Instr_ok/return_call_ref}
+$${rule-prose: Instr_ok/array.get}
 
-$${rule: Instr_ok/return_call_ref}
-
-.. note::
-   The ${:RETURN_CALL_REF} instruction is :ref:`stack-polymorphic <polymorphism>`.
-
-
-.. _valid-return_call_indirect:
-
-:math:`\RETURNCALLINDIRECT~x~y`
-...............................
-
-$${rule-prose: Instr_ok/return_call_indirect}
-
-$${rule: Instr_ok/return_call_indirect}
-
-.. note::
-   The ${:RETURN_CALL_INDIRECT} instruction is :ref:`stack-polymorphic <polymorphism>`.
+$${rule: Instr_ok/array.get}
 
 
-.. _valid-throw:
+.. _valid-array.set:
 
-:math:`\THROW~x`
-................
+:math:`\ARRAYSET~x`
+...................
 
-$${rule-prose: Instr_ok/throw}
+$${rule-prose: Instr_ok/array.set}
 
-$${rule: Instr_ok/throw}
-
-.. note::
-   The ${:THROW} instruction is :ref:`stack-polymorphic <polymorphism>`.
+$${rule: Instr_ok/array.set}
 
 
-.. _valid-throw_ref:
+.. _valid-array.len:
 
-:math:`\THROWREF`
+:math:`\ARRAYLEN`
 .................
 
-$${rule-prose: Instr_ok/throw_ref}
+$${rule-prose: Instr_ok/array.len}
 
-$${rule: Instr_ok/throw_ref}
+$${rule: Instr_ok/array.len}
 
-.. note::
-   The ${:THROW_REF} instruction is :ref:`stack-polymorphic <polymorphism>`.
+
+.. _valid-array.fill:
+
+:math:`\ARRAYFILL~x`
+....................
+
+$${rule-prose: Instr_ok/array.fill}
+
+$${rule: Instr_ok/array.fill}
+
+
+.. _valid-array.copy:
+
+:math:`\ARRAYCOPY~x~y`
+......................
+
+$${rule-prose: Instr_ok/array.copy}
+
+$${rule: Instr_ok/array.copy}
+
+
+.. _valid-array.init_elem:
+
+:math:`\ARRAYINITELEM~x~y`
+..........................
+
+$${rule-prose: Instr_ok/array.init_elem}
+
+$${rule: Instr_ok/array.init_elem}
+
+
+.. _valid-array.init_data:
+
+:math:`\ARRAYINITDATA~x~y`
+..........................
+
+$${rule-prose: Instr_ok/array.init_data}
+
+$${rule: Instr_ok/array.init_data}
+
+
+.. index:: scalar reference
+
+Scalar Reference Instructions
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. _valid-ref.i31:
+
+:math:`\REFI31`
+...............
+
+$${rule-prose: Instr_ok/ref.i31}
+
+$${rule: Instr_ok/ref.i31}
+
+
+.. _valid-i31.get:
+
+:math:`\I31GET\K{\_}\sx`
+........................
+
+$${rule-prose: Instr_ok/i31.get}
+
+$${rule: Instr_ok/i31.get}
+
+
+
+.. index:: external reference
+
+External Reference Instructions
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. _valid-any.convert_extern:
+
+:math:`\ANYCONVERTEXTERN`
+.........................
+
+$${rule-prose: Instr_ok/any.convert_extern}
+
+$${rule: Instr_ok/any.convert_extern}
+
+
+.. _valid-extern.convert_any:
+
+:math:`\EXTERNCONVERTANY`
+.........................
+
+$${rule-prose: Instr_ok/extern.convert_any}
+
+$${rule: Instr_ok/extern.convert_any}
+
+
+.. index:: numeric instruction
+   pair: validation; instruction
+   single: abstract syntax; instruction
+.. _valid-instr-numeric:
+
+Numeric Instructions
+~~~~~~~~~~~~~~~~~~~~
+
+.. _valid-const:
+
+:math:`t\K{.}\CONST~c`
+......................
+
+$${rule-prose: Instr_ok/const}
+
+$${rule: Instr_ok/const}
+
+
+.. _valid-unop:
+
+:math:`t\K{.}\unop`
+...................
+
+$${rule-prose: Instr_ok/unop}
+
+$${rule: Instr_ok/unop}
+
+
+.. _valid-binop:
+
+:math:`t\K{.}\binop`
+....................
+
+$${rule-prose: Instr_ok/binop}
+
+$${rule: Instr_ok/binop}
+
+
+.. _valid-testop:
+
+:math:`t\K{.}\testop`
+.....................
+
+$${rule-prose: Instr_ok/testop}
+
+$${rule: Instr_ok/testop}
+
+
+.. _valid-relop:
+
+:math:`t\K{.}\relop`
+....................
+
+$${rule-prose: Instr_ok/relop}
+
+$${rule: Instr_ok/relop}
+
+
+.. _valid-cvtop:
+
+:math:`t_1\K{.}\cvtop\K{\_}t_2\K{\_}\sx^?`
+..........................................
+
+$${rule-prose: Instr_ok/cvtop}
+
+$${rule: Instr_ok/cvtop}
+
+
+.. index:: vector instruction
+   pair: validation; instruction
+   single: abstract syntax; instruction
+
+.. _valid-instr-vec:
+.. _aux-unpackshape:
+
+Vector Instructions
+~~~~~~~~~~~~~~~~~~~
+Vector instructions can have a prefix to describe the :ref:`shape <syntax-shape>` of the operand. Packed numeric types, ${packtype:I8} and ${packtype:I16}, are not :ref:`value types <syntax-valtype>`. An auxiliary function maps such packed type shapes to value types:
+
+$${definition: unpackshape}
+
+
+.. _valid-vconst:
+
+:math:`\V128\K{.}\VCONST~c`
+...........................
+
+$${rule-prose: Instr_ok/vconst}
+
+$${rule: Instr_ok/vconst}
+
+
+.. _valid-vvunop:
+
+:math:`\V128\K{.}\vvunop`
+.........................
+
+$${rule-prose: Instr_ok/vvunop}
+
+$${rule: Instr_ok/vvunop}
+
+
+.. _valid-vvbinop:
+
+:math:`\V128\K{.}\vvbinop`
+..........................
+
+$${rule-prose: Instr_ok/vvbinop}
+
+$${rule: Instr_ok/vvbinop}
+
+
+.. _valid-vvternop:
+
+:math:`\V128\K{.}\vvternop`
+...........................
+
+$${rule-prose: Instr_ok/vvternop}
+
+$${rule: Instr_ok/vvternop}
+
+
+.. _valid-vvtestop:
+
+:math:`\V128\K{.}\vvtestop`
+...........................
+
+$${rule-prose: Instr_ok/vvtestop}
+
+$${rule: Instr_ok/vvtestop}
+
+
+.. _valid-vunop:
+
+:math:`\shape\K{.}\vunop`
+.........................
+
+$${rule-prose: Instr_ok/vunop}
+
+$${rule: Instr_ok/vunop}
+
+
+.. _valid-vbinop:
+
+:math:`\shape\K{.}\vbinop`
+..........................
+
+$${rule-prose: Instr_ok/vbinop}
+
+$${rule: Instr_ok/vbinop}
+
+
+.. _valid-vternop:
+
+:math:`\shape\K{.}\vternop`
+...........................
+
+$${rule-prose: Instr_ok/vternop}
+
+$${rule: Instr_ok/vternop}
+
+
+.. _valid-vtestop:
+
+:math:`\shape\K{.}\vtestop`
+...........................
+
+$${rule-prose: Instr_ok/vtestop}
+
+$${rule: Instr_ok/vtestop}
+
+
+.. _valid-vrelop:
+
+:math:`\shape\K{.}\vrelop`
+..........................
+
+$${rule-prose: Instr_ok/vrelop}
+
+$${rule: Instr_ok/vrelop}
+
+
+.. _valid-vshiftop:
+
+:math:`\ishape\K{.}\vishiftop`
+..............................
+
+$${rule-prose: Instr_ok/vshiftop}
+
+$${rule: Instr_ok/vshiftop}
+
+
+.. _valid-vbitmask:
+
+:math:`\ishape\K{.}\VBITMASK`
+.............................
+
+$${rule-prose: Instr_ok/vbitmask}
+
+$${rule: Instr_ok/vbitmask}
+
+
+.. _valid-vswizzlop:
+
+:math:`\K{i8x16.}\vswizzlop`
+............................
+
+$${rule-prose: Instr_ok/vswizzlop}
+
+$${rule: Instr_ok/vswizzlop}
+
+
+.. _valid-vshuffle:
+
+:math:`\K{i8x16.}\VSHUFFLE~\laneidx^{16}`
+.........................................
+
+$${rule-prose: Instr_ok/vshuffle}
+
+$${rule: Instr_ok/vshuffle}
+
+
+.. _valid-vsplat:
+
+:math:`\shape\K{.}\VSPLAT`
+..........................
+
+$${rule-prose: Instr_ok/vsplat}
+
+$${rule: Instr_ok/vsplat}
+
+
+.. _valid-vextract_lane:
+
+:math:`\shape\K{.}\VEXTRACTLANE\K{\_}\sx^?~\laneidx`
+....................................................
+
+$${rule-prose: Instr_ok/vextract_lane}
+
+$${rule: Instr_ok/vextract_lane}
+
+
+.. _valid-vreplace_lane:
+
+:math:`\shape\K{.}\VREPLACELANE~\laneidx`
+.........................................
+
+$${rule-prose: Instr_ok/vreplace_lane}
+
+$${rule: Instr_ok/vreplace_lane}
+
+
+.. _valid-vextunop:
+
+:math:`\ishape_1\K{.}\vextunop\K{\_}\ishape_2`
+..............................................
+
+$${rule-prose: Instr_ok/vextunop}
+
+$${rule: Instr_ok/vextunop}
+
+
+.. _valid-vextbinop:
+
+:math:`\ishape_1\K{.}\vextbinop\K{\_}\ishape_2`
+...............................................
+
+$${rule-prose: Instr_ok/vextbinop}
+
+$${rule: Instr_ok/vextbinop}
+
+
+.. _valid-vextternop:
+
+:math:`\ishape_1\K{.}\vextternop\K{\_}\ishape_2`
+................................................
+
+$${rule-prose: Instr_ok/vextternop}
+
+$${rule: Instr_ok/vextternop}
+
+
+.. _valid-vnarrow:
+
+:math:`\ishape_1\K{.}\VNARROW\K{\_}\ishape_2\K{\_}\sx`
+......................................................
+
+$${rule-prose: Instr_ok/vnarrow}
+
+$${rule: Instr_ok/vnarrow}
+
+
+.. _valid-vcvtop:
+
+:math:`\shape\K{.}\vcvtop\K{\_}\half^?\K{\_}\shape\K{\_}\sx^?\K{\_zero}^?`
+..........................................................................
+
+$${rule-prose: Instr_ok/vcvtop}
+
+$${rule: Instr_ok/vcvtop}
 
 
 .. index:: instruction, instruction sequence, local type
