@@ -103,6 +103,13 @@ def $concatn_(syntax X, X**, nat : nat) : X*
 }
 
 ;; ../../../../specification/wasm-3.0/0.3-aux.seq.spectec
+def $concatopt_(syntax X, X?*) : X*
+  ;; ../../../../specification/wasm-3.0/0.3-aux.seq.spectec
+  def $concatopt_{syntax X}(syntax X, []) = []
+  ;; ../../../../specification/wasm-3.0/0.3-aux.seq.spectec
+  def $concatopt_{syntax X, `w?` : X?, `w'?*` : X?*}(syntax X, [w?{w <- `w?`}] ++ w'?{w' <- `w'?`}*{`w'?` <- `w'?*`}) = lift(w?{w <- `w?`}) ++ $concat_(syntax X, lift(w'?{w' <- `w'?`})*{`w'?` <- `w'?*`})
+
+;; ../../../../specification/wasm-3.0/0.3-aux.seq.spectec
 def $inv_concat_(syntax X, X*) : X**
 
 ;; ../../../../specification/wasm-3.0/0.3-aux.seq.spectec
@@ -111,25 +118,25 @@ def $inv_concatn_(syntax X, nat : nat, X*) : X**
 ;; ../../../../specification/wasm-3.0/0.3-aux.seq.spectec
 rec {
 
-;; ../../../../specification/wasm-3.0/0.3-aux.seq.spectec:31.1-31.78
+;; ../../../../specification/wasm-3.0/0.3-aux.seq.spectec:35.1-35.78
 def $disjoint_(syntax X, X*) : bool
-  ;; ../../../../specification/wasm-3.0/0.3-aux.seq.spectec:32.1-32.37
+  ;; ../../../../specification/wasm-3.0/0.3-aux.seq.spectec:36.1-36.37
   def $disjoint_{syntax X}(syntax X, []) = true
-  ;; ../../../../specification/wasm-3.0/0.3-aux.seq.spectec:33.1-33.68
+  ;; ../../../../specification/wasm-3.0/0.3-aux.seq.spectec:37.1-37.68
   def $disjoint_{syntax X, w : X, `w'*` : X*}(syntax X, [w] ++ w'*{w' <- `w'*`}) = (~ w <- w'*{w' <- `w'*`} /\ $disjoint_(syntax X, w'*{w' <- `w'*`}))
 }
 
 ;; ../../../../specification/wasm-3.0/0.3-aux.seq.spectec
 rec {
 
-;; ../../../../specification/wasm-3.0/0.3-aux.seq.spectec:36.1-36.38
+;; ../../../../specification/wasm-3.0/0.3-aux.seq.spectec:40.1-40.38
 def $setminus1_(syntax X, X : X, X*) : X*
-  ;; ../../../../specification/wasm-3.0/0.3-aux.seq.spectec:40.1-40.38
+  ;; ../../../../specification/wasm-3.0/0.3-aux.seq.spectec:44.1-44.38
   def $setminus1_{syntax X, w : X}(syntax X, w, []) = [w]
-  ;; ../../../../specification/wasm-3.0/0.3-aux.seq.spectec:41.1-41.78
+  ;; ../../../../specification/wasm-3.0/0.3-aux.seq.spectec:45.1-45.78
   def $setminus1_{syntax X, w : X, w_1 : X, `w'*` : X*}(syntax X, w, [w_1] ++ w'*{w' <- `w'*`}) = []
     -- if (w = w_1)
-  ;; ../../../../specification/wasm-3.0/0.3-aux.seq.spectec:42.1-42.77
+  ;; ../../../../specification/wasm-3.0/0.3-aux.seq.spectec:46.1-46.77
   def $setminus1_{syntax X, w : X, w_1 : X, `w'*` : X*}(syntax X, w, [w_1] ++ w'*{w' <- `w'*`}) = $setminus1_(syntax X, w, w'*{w' <- `w'*`})
     -- otherwise
 }
@@ -137,44 +144,44 @@ def $setminus1_(syntax X, X : X, X*) : X*
 ;; ../../../../specification/wasm-3.0/0.3-aux.seq.spectec
 rec {
 
-;; ../../../../specification/wasm-3.0/0.3-aux.seq.spectec:35.1-35.56
+;; ../../../../specification/wasm-3.0/0.3-aux.seq.spectec:39.1-39.56
 def $setminus_(syntax X, X*, X*) : X*
-  ;; ../../../../specification/wasm-3.0/0.3-aux.seq.spectec:38.1-38.40
+  ;; ../../../../specification/wasm-3.0/0.3-aux.seq.spectec:42.1-42.40
   def $setminus_{syntax X, `w*` : X*}(syntax X, [], w*{w <- `w*`}) = []
-  ;; ../../../../specification/wasm-3.0/0.3-aux.seq.spectec:39.1-39.90
+  ;; ../../../../specification/wasm-3.0/0.3-aux.seq.spectec:43.1-43.90
   def $setminus_{syntax X, w_1 : X, `w'*` : X*, `w*` : X*}(syntax X, [w_1] ++ w'*{w' <- `w'*`}, w*{w <- `w*`}) = $setminus1_(syntax X, w_1, w*{w <- `w*`}) ++ $setminus_(syntax X, w'*{w' <- `w'*`}, w*{w <- `w*`})
 }
 
 ;; ../../../../specification/wasm-3.0/0.3-aux.seq.spectec
 rec {
 
-;; ../../../../specification/wasm-3.0/0.3-aux.seq.spectec:47.1-47.46
+;; ../../../../specification/wasm-3.0/0.3-aux.seq.spectec:51.1-51.46
 def $setproduct2_(syntax X, X : X, X**) : X**
-  ;; ../../../../specification/wasm-3.0/0.3-aux.seq.spectec:53.1-53.44
+  ;; ../../../../specification/wasm-3.0/0.3-aux.seq.spectec:57.1-57.44
   def $setproduct2_{syntax X, w_1 : X}(syntax X, w_1, []) = []
-  ;; ../../../../specification/wasm-3.0/0.3-aux.seq.spectec:54.1-54.90
+  ;; ../../../../specification/wasm-3.0/0.3-aux.seq.spectec:58.1-58.90
   def $setproduct2_{syntax X, w_1 : X, `w'*` : X*, `w**` : X**}(syntax X, w_1, [w'*{w' <- `w'*`}] ++ w*{w <- `w*`}*{`w*` <- `w**`}) = [[w_1] ++ w'*{w' <- `w'*`}] ++ $setproduct2_(syntax X, w_1, w*{w <- `w*`}*{`w*` <- `w**`})
 }
 
 ;; ../../../../specification/wasm-3.0/0.3-aux.seq.spectec
 rec {
 
-;; ../../../../specification/wasm-3.0/0.3-aux.seq.spectec:46.1-46.47
+;; ../../../../specification/wasm-3.0/0.3-aux.seq.spectec:50.1-50.47
 def $setproduct1_(syntax X, X*, X**) : X**
-  ;; ../../../../specification/wasm-3.0/0.3-aux.seq.spectec:51.1-51.46
+  ;; ../../../../specification/wasm-3.0/0.3-aux.seq.spectec:55.1-55.46
   def $setproduct1_{syntax X, `w**` : X**}(syntax X, [], w*{w <- `w*`}*{`w*` <- `w**`}) = []
-  ;; ../../../../specification/wasm-3.0/0.3-aux.seq.spectec:52.1-52.107
+  ;; ../../../../specification/wasm-3.0/0.3-aux.seq.spectec:56.1-56.107
   def $setproduct1_{syntax X, w_1 : X, `w'*` : X*, `w**` : X**}(syntax X, [w_1] ++ w'*{w' <- `w'*`}, w*{w <- `w*`}*{`w*` <- `w**`}) = $setproduct2_(syntax X, w_1, w*{w <- `w*`}*{`w*` <- `w**`}) ++ $setproduct1_(syntax X, w'*{w' <- `w'*`}, w*{w <- `w*`}*{`w*` <- `w**`})
 }
 
 ;; ../../../../specification/wasm-3.0/0.3-aux.seq.spectec
 rec {
 
-;; ../../../../specification/wasm-3.0/0.3-aux.seq.spectec:45.1-45.84
+;; ../../../../specification/wasm-3.0/0.3-aux.seq.spectec:49.1-49.84
 def $setproduct_(syntax X, X**) : X**
-  ;; ../../../../specification/wasm-3.0/0.3-aux.seq.spectec:49.1-49.40
+  ;; ../../../../specification/wasm-3.0/0.3-aux.seq.spectec:53.1-53.40
   def $setproduct_{syntax X}(syntax X, []) = [[]]
-  ;; ../../../../specification/wasm-3.0/0.3-aux.seq.spectec:50.1-50.90
+  ;; ../../../../specification/wasm-3.0/0.3-aux.seq.spectec:54.1-54.90
   def $setproduct_{syntax X, `w_1*` : X*, `w**` : X**}(syntax X, [w_1*{w_1 <- `w_1*`}] ++ w*{w <- `w*`}*{`w*` <- `w**`}) = $setproduct1_(syntax X, w_1*{w_1 <- `w_1*`}, $setproduct_(syntax X, w*{w <- `w*`}*{`w*` <- `w**`}))
 }
 
@@ -9341,7 +9348,7 @@ grammar Tlist(syntax el, grammar TX : el) : el*
     -- if (|el*{el <- `el*`}| < (2 ^ 32))
 
 ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-syntax idcontext =
+syntax idctxt =
 {
   TYPES{`name?*` : name?*} name?*,
   TAGS{`name?*` : name?*} name?*,
@@ -9358,7 +9365,36 @@ syntax idcontext =
 }
 
 ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-syntax I = idcontext
+syntax I = idctxt
+
+;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
+rec {
+
+;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:164.1-164.57
+def $concat_idctxt(idctxt*) : idctxt
+  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:165.1-165.29
+  def $concat_idctxt([]) = {TYPES [], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [], FIELDS [], TYPEDEFS []}
+  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:166.1-166.52
+  def $concat_idctxt{I : I, I' : I}([I I']) = I +++ $concat_idctxt(I'*{})
+}
+
+;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
+relation Idctxt_ok: `|-%:OK`(idctxt)
+  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
+  rule _{I : I, `field**` : char**}:
+    `|-%:OK`(I)
+    -- if $disjoint_(syntax name, $concatopt_(syntax name, I.TYPES_I))
+    -- if $disjoint_(syntax name, $concatopt_(syntax name, I.TAGS_I))
+    -- if $disjoint_(syntax name, $concatopt_(syntax name, I.GLOBALS_I))
+    -- if $disjoint_(syntax name, $concatopt_(syntax name, I.MEMS_I))
+    -- if $disjoint_(syntax name, $concatopt_(syntax name, I.TABLES_I))
+    -- if $disjoint_(syntax name, $concatopt_(syntax name, I.FUNCS_I))
+    -- if $disjoint_(syntax name, $concatopt_(syntax name, I.DATAS_I))
+    -- if $disjoint_(syntax name, $concatopt_(syntax name, I.ELEMS_I))
+    -- if $disjoint_(syntax name, $concatopt_(syntax name, I.LOCALS_I))
+    -- if $disjoint_(syntax name, $concatopt_(syntax name, I.LABELS_I))
+    -- (if $disjoint_(syntax name, $concatopt_(syntax name, [?(`%`_name(field*{field <- `field*`}))])))*{`field*` <- `field**`}
+    -- if ([?(`%`_name(field*{field <- `field*`}))*{`field*` <- `field**`}] = I.FIELDS_I)
 
 ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
 grammar Tidx_(ids : name?*) : idx
@@ -9508,9 +9544,9 @@ grammar Tvaltype_(I : I) : valtype
   prod{rt : reftype} rt:Treftype_(I) => (rt : reftype <: valtype)
 
 ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Tparam_(I : I) : (valtype*, name?*)
+grammar Tparam_(I : I) : (valtype, name?)*
   ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{`id?` : char?, t : valtype} {{"("} {"param"} {?(`%`_name(lift(id?{id <- `id?`}))):Tid?{}} {t:Tvaltype_(I)} {")"}} => ([t], [?(`%`_name(lift(id?{id <- `id?`})))])
+  prod{`id?` : char?, t : valtype} {{"("} {"param"} {?(`%`_name(lift(id?{id <- `id?`}))):Tid?{}} {t:Tvaltype_(I)} {")"}} => [(t, ?(`%`_name(lift(id?{id <- `id?`}))))]
 
 ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
 grammar Tresult_(I : I) : valtype*
@@ -9518,17 +9554,17 @@ grammar Tresult_(I : I) : valtype*
   prod{t : valtype} {{"("} {"result"} {t:Tvaltype_(I)} {")"}} => [t]
 
 ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Ttypeuse_(I : I) : (typeidx, I)
+grammar Ttypeuse_(I : I) : (typeidx, idctxt)
   ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
   prod{x : idx, I' : I, `t_1*` : valtype*, `t_2*` : valtype*} {{"("} {"type"} {x:Ttypeidx_(I)} {")"}} => (x, I')
     -- if (I.TYPEDEFS_I[x!`%`_idx.0] = SUB_subtype(?(FINAL_FINAL), [], `FUNC%->%`_comptype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), `%`_resulttype(t_2*{t_2 <- `t_2*`}))))
     -- if (I' = {TYPES [], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS ?()^|t_1*{t_1 <- `t_1*`}|{}, LABELS [], FIELDS [], TYPEDEFS []})
   ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{x : idx, `t_1**` : valtype**, `id?*` : char?*, `t_2**` : valtype**, I' : I} {{"("} {"type"} {x:Ttypeidx_(I)} {")"} {(t_1*{t_1 <- `t_1*`}, ?(`%`_name(lift(id?{id <- `id?`})))*{`id?` <- `id?*`}):Tparam_(I)*{`t_1*` <- `t_1**`}} {t_2*{t_2 <- `t_2*`}:Tresult_(I)*{`t_2*` <- `t_2**`}}} => (x, I')
+  prod{x : idx, `t_1**` : valtype**, `id?*` : char?*, `t_2**` : valtype**, I' : I} {{"("} {"type"} {x:Ttypeidx_(I)} {")"} {(t_1, ?(`%`_name(lift(id?{id <- `id?`}))))*{`id?` <- `id?*`, t_1 <- `t_1*`}:Tparam_(I)*{`t_1*` <- `t_1**`}} {t_2*{t_2 <- `t_2*`}:Tresult_(I)*{`t_2*` <- `t_2**`}}} => (x, I')
     -- if (I.TYPEDEFS_I[x!`%`_idx.0] = SUB_subtype(?(FINAL_FINAL), [], `FUNC%->%`_comptype(`%`_resulttype($concat_(syntax valtype, t_1*{t_1 <- `t_1*`}*{`t_1*` <- `t_1**`})), `%`_resulttype($concat_(syntax valtype, t_2*{t_2 <- `t_2*`}*{`t_2*` <- `t_2**`})))))
     -- if (I' = {TYPES [], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS ?(`%`_name(lift(id?{id <- `id?`})))*{`id?` <- `id?*`}, LABELS [], FIELDS [], TYPEDEFS []})
   ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{`t_1**` : valtype**, `id?*` : char?*, `t_2**` : valtype**, x : idx, I' : I, `i*` : nat*} {{(t_1*{t_1 <- `t_1*`}, ?(`%`_name(lift(id?{id <- `id?`})))*{`id?` <- `id?*`}):Tparam_(I)*{`t_1*` <- `t_1**`}} {t_2*{t_2 <- `t_2*`}:Tresult_(I)*{`t_2*` <- `t_2**`}}} => (x, I')
+  prod{`t_1**` : valtype**, `id?*` : char?*, `t_2**` : valtype**, x : idx, I' : I, `i*` : nat*} {{(t_1, ?(`%`_name(lift(id?{id <- `id?`}))))*{`id?` <- `id?*`, t_1 <- `t_1*`}:Tparam_(I)*{`t_1*` <- `t_1**`}} {t_2*{t_2 <- `t_2*`}:Tresult_(I)*{`t_2*` <- `t_2**`}}} => (x, I')
     -- if (I.TYPEDEFS_I[x!`%`_idx.0] = SUB_subtype(?(FINAL_FINAL), [], `FUNC%->%`_comptype(`%`_resulttype($concat_(syntax valtype, t_1*{t_1 <- `t_1*`}*{`t_1*` <- `t_1**`})), `%`_resulttype($concat_(syntax valtype, t_2*{t_2 <- `t_2*`}*{`t_2*` <- `t_2**`})))))
     -- (if (I.TYPEDEFS_I[i] =/= SUB_subtype(?(FINAL_FINAL), [], `FUNC%->%`_comptype(`%`_resulttype($concat_(syntax valtype, t_1*{t_1 <- `t_1*`}*{`t_1*` <- `t_1**`})), `%`_resulttype($concat_(syntax valtype, t_2*{t_2 <- `t_2*`}*{`t_2*` <- `t_2**`}))))))^(i<x!`%`_idx.0){i <- `i*`}
     -- if (I' = {TYPES [], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS ?(`%`_name(lift(id?{id <- `id?`})))*{`id?` <- `id?*`}, LABELS [], FIELDS [], TYPEDEFS []})
@@ -9555,18 +9591,18 @@ grammar Tfieldtype_(I : I) : fieldtype
   prod{zt : storagetype} {{"("} {"mut"} {zt:Tstoragetype_(I)} {")"}} => `%%`_fieldtype(?(MUT_MUT), zt)
 
 ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Tfield_(I : I) : fieldtype*
+grammar Tfield_(I : I) : (fieldtype, name?)*
   ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{ft : fieldtype} {{"("} {"field"} {Tid?{}} {ft:Tfieldtype_(I)} {")"}} => [ft]
+  prod{`id?` : char?, ft : fieldtype} {{"("} {"field"} {?(`%`_name(lift(id?{id <- `id?`}))):Tid?{}} {ft:Tfieldtype_(I)} {")"}} => [(ft, ?(`%`_name(lift(id?{id <- `id?`}))))]
 
 ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Tcomptype_(I : I) : comptype
+grammar Tcomptype_(I : I) : (comptype, idctxt)
   ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{`ft*` : fieldtype*} {{"("} {"struct"} {[ft*{ft <- `ft*`}]:Tlist(syntax fieldtype*, grammar Tfield_(I))} {")"}} => STRUCT_comptype(`%`_list($concat_(syntax fieldtype, [ft*{ft <- `ft*`}])))
+  prod{`ft*` : fieldtype*, `id?**` : char?**} {{"("} {"struct"} {(ft, ?(`%`_name(lift(id?{id <- `id?`}))))*{ft <- `ft*`, `id?` <- `id?*`}*{`id?*` <- `id?**`}:Tlist(syntax (fieldtype, name?)*, grammar Tfield_(I))} {")"}} => (STRUCT_comptype(`%`_list($concat_(syntax fieldtype, [ft*{ft <- `ft*`}]))), {TYPES [], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [], FIELDS [$concat_(syntax name?, ?(`%`_name(lift(id?{id <- `id?`})))*{`id?` <- `id?*`}*{`id?*` <- `id?**`})], TYPEDEFS []})
   ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{ft : fieldtype} {{"("} {"array"} {ft:Tfieldtype_(I)} {")"}} => ARRAY_comptype(ft)
+  prod{ft : fieldtype} {{"("} {"array"} {ft:Tfieldtype_(I)} {")"}} => (ARRAY_comptype(ft), {TYPES [], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [], FIELDS [], TYPEDEFS []})
   ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{`t_1*` : valtype*, `id?**` : char?**, `t_2*` : valtype*} {{"("} {"func"} {(t_1*{t_1 <- `t_1*`}, ?(`%`_name(lift(id?{id <- `id?`})))*{`id?` <- `id?*`})*{`id?*` <- `id?**`}:Tlist(syntax (valtype*, name?*), grammar Tparam_(I))} {t_2*{t_2 <- `t_2*`}*{}:Tlist(syntax valtype*, grammar Tresult_(I))} {")"}} => `FUNC%->%`_comptype(`%`_resulttype($concat_(syntax valtype, [t_1*{t_1 <- `t_1*`}])), `%`_resulttype($concat_(syntax valtype, [t_2*{t_2 <- `t_2*`}])))
+  prod{`t_1*` : valtype*, `id?**` : char?**, `t_2*` : valtype*} {{"("} {"func"} {(t_1, ?(`%`_name(lift(id?{id <- `id?`}))))*{`id?` <- `id?*`, t_1 <- `t_1*`}*{`id?*` <- `id?**`}:Tlist(syntax (valtype, name?)*, grammar Tparam_(I))} {t_2*{t_2 <- `t_2*`}*{}:Tlist(syntax valtype*, grammar Tresult_(I))} {")"}} => (`FUNC%->%`_comptype(`%`_resulttype($concat_(syntax valtype, [t_1*{t_1 <- `t_1*`}])), `%`_resulttype($concat_(syntax valtype, [t_2*{t_2 <- `t_2*`}]))), {TYPES [], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [], FIELDS [], TYPEDEFS []})
 
 ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
 grammar Tfin : fin
@@ -9576,19 +9612,19 @@ grammar Tfin : fin
   prod "final" => ?(FINAL_FINAL)
 
 ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Tsubtype_(I : I) : subtype
+grammar Tsubtype_(I : I) : (subtype, idctxt)
   ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{fin : fin, `x*` : idx*, ct : comptype} {{"("} {"sub"} {fin:Tfin} {x*{x <- `x*`}:Tlist(syntax typeidx, grammar Ttypeidx_(I))} {ct:Tcomptype_(I)} {")"}} => SUB_subtype(fin, _IDX_typeuse(x)*{x <- `x*`}, ct)
+  prod{fin : fin, `x*` : idx*, ct : comptype, I' : I} {{"("} {"sub"} {fin:Tfin} {x*{x <- `x*`}:Tlist(syntax typeidx, grammar Ttypeidx_(I))} {(ct, I'):Tcomptype_(I)} {")"}} => (SUB_subtype(fin, _IDX_typeuse(x)*{x <- `x*`}, ct), I')
 
 ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Ttypedef_(I : I) : subtype
+grammar Ttypedef_(I : I) : (subtype, idctxt)
   ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{st : subtype} {{"("} {"type"} {Tid?{}} {st:Tsubtype_(I)} {")"}} => st
+  prod{`id?` : char?, st : subtype, I' : I} {{"("} {"type"} {?(`%`_name(lift(id?{id <- `id?`}))):Tid?{}} {(st, I'):Tsubtype_(I)} {")"}} => (st, I' +++ {TYPES [?(`%`_name(lift(id?{id <- `id?`})))], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [], FIELDS [], TYPEDEFS []})
 
 ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Trectype_(I : I) : rectype
+grammar Trectype_(I : I) : (rectype, idctxt)
   ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{`st*` : subtype*} {{"("} {"rec"} {st*{st <- `st*`}:Tlist(syntax subtype, grammar Ttypedef_(I))} {")"}} => REC_rectype(`%`_list(st*{st <- `st*`}))
+  prod{`st*` : subtype*, `I'*` : I*} {{"("} {"rec"} {(st, I')*{I' <- `I'*`, st <- `st*`}:Tlist(syntax (subtype, idctxt), grammar Ttypedef_(I))} {")"}} => (REC_rectype(`%`_list(st*{st <- `st*`})), $concat_idctxt(I'*{I' <- `I'*`}))
 
 ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
 grammar Taddrtype : addrtype
@@ -9629,7 +9665,7 @@ grammar Ttabletype_(I : I) : tabletype
   prod{at : addrtype, lim : limits, rt : reftype} {{at:Taddrtype} {lim:Tlimits_($size((at : addrtype <: numtype)))} {rt:Treftype_(I)}} => `%%%`_tabletype(at, lim, rt)
 
 ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Texterntype_(I : I) : (externtype, I)
+grammar Texterntype_(I : I) : (externtype, idctxt)
   ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
   prod{`id?` : char?, jt : tagtype} {{"("} {"tag"} {?(`%`_name(lift(id?{id <- `id?`}))):Tid?{}} {jt:Ttagtype_(I)} {")"}} => (TAG_externtype(jt), {TYPES [], TAGS [?(`%`_name(lift(id?{id <- `id?`})))], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [], FIELDS [], TYPEDEFS []})
   ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
@@ -10722,35 +10758,41 @@ grammar Texpr_(I : I) : expr
   prod{`in*` : instr*} in*{in <- `in*`}:Tinstrs_(I) => in*{in <- `in*`}
 
 ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec
-grammar Ttag_(I : I) : (tag, name?)
+grammar Ttype_(I : I) : (type, idctxt)
   ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec
-  prod{`id?` : char?, jt : tagtype} {{"("} {"tag"} {?(`%`_name(lift(id?{id <- `id?`}))):Tid?{}} {jt:Ttagtype_(I)} {")"}} => (TAG_tag(jt), ?(`%`_name(lift(id?{id <- `id?`}))))
+  prod{qt : rectype, I' : I} (qt, I'):Trectype_(I) => (TYPE_type(qt), I')
 
 ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec
-grammar Tglobal_(I : I) : (global, name?)
+grammar Ttag_(I : I) : (tag, idctxt)
   ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec
-  prod{`id?` : char?, gt : globaltype, e : expr} {{"("} {"global"} {?(`%`_name(lift(id?{id <- `id?`}))):Tid?{}} {gt:Tglobaltype_(I)} {e:Texpr_(I)} {")"}} => (GLOBAL_global(gt, e), ?(`%`_name(lift(id?{id <- `id?`}))))
+  prod{`id?` : char?, jt : tagtype} {{"("} {"tag"} {?(`%`_name(lift(id?{id <- `id?`}))):Tid?{}} {jt:Ttagtype_(I)} {")"}} => (TAG_tag(jt), {TYPES [], TAGS [?(`%`_name(lift(id?{id <- `id?`})))], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [], FIELDS [], TYPEDEFS []})
 
 ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec
-grammar Tmem_(I : I) : (mem, name?)
+grammar Tglobal_(I : I) : (global, idctxt)
   ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec
-  prod{`id?` : char?, mt : memtype} {{"("} {"memory"} {?(`%`_name(lift(id?{id <- `id?`}))):Tid?{}} {mt:Tmemtype_(I)} {")"}} => (MEMORY_mem(mt), ?(`%`_name(lift(id?{id <- `id?`}))))
+  prod{`id?` : char?, gt : globaltype, e : expr} {{"("} {"global"} {?(`%`_name(lift(id?{id <- `id?`}))):Tid?{}} {gt:Tglobaltype_(I)} {e:Texpr_(I)} {")"}} => (GLOBAL_global(gt, e), {TYPES [], TAGS [], GLOBALS [?(`%`_name(lift(id?{id <- `id?`})))], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [], FIELDS [], TYPEDEFS []})
 
 ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec
-grammar Ttable_(I : I) : (table, name?)
+grammar Tmem_(I : I) : (mem, idctxt)
   ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec
-  prod{`id?` : char?, tt : tabletype, e : expr} {{"("} {"table"} {?(`%`_name(lift(id?{id <- `id?`}))):Tid?{}} {tt:Ttabletype_(I)} {e:Texpr_(I)} {")"}} => (TABLE_table(tt, e), ?(`%`_name(lift(id?{id <- `id?`}))))
+  prod{`id?` : char?, mt : memtype} {{"("} {"memory"} {?(`%`_name(lift(id?{id <- `id?`}))):Tid?{}} {mt:Tmemtype_(I)} {")"}} => (MEMORY_mem(mt), {TYPES [], TAGS [], GLOBALS [], MEMS [?(`%`_name(lift(id?{id <- `id?`})))], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [], FIELDS [], TYPEDEFS []})
 
 ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec
-grammar Tlocal_(I : I) : (local*, name?*)
+grammar Ttable_(I : I) : (table, idctxt)
   ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec
-  prod{`id?` : char?, t : valtype} {{"("} {"local"} {?(`%`_name(lift(id?{id <- `id?`}))):Tid?{}} {t:Tvaltype_(I)} {")"}} => ([LOCAL_local(t)], [?(`%`_name(lift(id?{id <- `id?`})))])
+  prod{`id?` : char?, tt : tabletype, e : expr} {{"("} {"table"} {?(`%`_name(lift(id?{id <- `id?`}))):Tid?{}} {tt:Ttabletype_(I)} {e:Texpr_(I)} {")"}} => (TABLE_table(tt, e), {TYPES [], TAGS [], GLOBALS [], MEMS [], TABLES [?(`%`_name(lift(id?{id <- `id?`})))], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [], FIELDS [], TYPEDEFS []})
 
 ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec
-grammar Tfunc_(I : I) : (func, name?)
+grammar Tlocal_(I : I) : (local*, idctxt)
   ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec
-  prod{`id?` : char?, x : idx, I' : I, `loc**` : local**, `id'?**` : char?**, e : expr, I'' : I} {{"("} {"func"} {?(`%`_name(lift(id?{id <- `id?`}))):Tid?{}} {(x, I'):Ttypeuse_(I)} {(loc*{loc <- `loc*`}, ?(`%`_name(lift(id'?{id' <- `id'?`})))*{`id'?` <- `id'?*`}):Tlocal_(I)*{`id'?*` <- `id'?**`, `loc*` <- `loc**`}} {e:Texpr_(I'')} {")"}} => (FUNC_func(x, $concat_(syntax local, loc*{loc <- `loc*`}*{`loc*` <- `loc**`}), e), ?(`%`_name(lift(id?{id <- `id?`}))))
-    -- if (I'' = I +++ I' +++ {TYPES [], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS $concat_(syntax name?, ?(`%`_name(lift(id'?{id' <- `id'?`})))*{`id'?` <- `id'?*`}*{`id'?*` <- `id'?**`}), LABELS [], FIELDS [], TYPEDEFS []})
+  prod{`id?` : char?, t : valtype} {{"("} {"local"} {?(`%`_name(lift(id?{id <- `id?`}))):Tid?{}} {t:Tvaltype_(I)} {")"}} => ([LOCAL_local(t)], {TYPES [], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [?(`%`_name(lift(id?{id <- `id?`})))], LABELS [], FIELDS [], TYPEDEFS []})
+
+;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec
+grammar Tfunc_(I : I) : (func, idctxt)
+  ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec
+  prod{`id?` : char?, x : idx, I_1 : I, `loc**` : local**, `I_2*` : I*, e : expr, I' : I} {{"("} {"func"} {?(`%`_name(lift(id?{id <- `id?`}))):Tid?{}} {(x, I_1):Ttypeuse_(I)} {(loc*{loc <- `loc*`}, I_2):Tlocal_(I)*{I_2 <- `I_2*`, `loc*` <- `loc**`}} {e:Texpr_(I')} {")"}} => (FUNC_func(x, $concat_(syntax local, loc*{loc <- `loc*`}*{`loc*` <- `loc**`}), e), {TYPES [], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [?(`%`_name(lift(id?{id <- `id?`})))], DATAS [], ELEMS [], LOCALS [], LABELS [], FIELDS [], TYPEDEFS []})
+    -- if (I' = I +++ I_1 +++ $concat_idctxt(I_2*{I_2 <- `I_2*`}))
+    -- Idctxt_ok: `|-%:OK`(I')
 
 ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec
 grammar Tdatastring : byte*
@@ -10770,11 +10812,11 @@ grammar Toffset_(I : I) : expr
   prod{e : expr} {{"("} {"offset"} {e:Texpr_(I)} {")"}} => e
 
 ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec
-grammar Tdata_(I : I) : (data, name?)
+grammar Tdata_(I : I) : (data, idctxt)
   ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec
-  prod{`id?` : char?, `b*` : byte*} {{"("} {"data"} {?(`%`_name(lift(id?{id <- `id?`}))):Tid?{}} {b*{b <- `b*`}:Tdatastring} {")"}} => (DATA_data(b*{b <- `b*`}, PASSIVE_datamode), ?(`%`_name(lift(id?{id <- `id?`}))))
+  prod{`id?` : char?, `b*` : byte*} {{"("} {"data"} {?(`%`_name(lift(id?{id <- `id?`}))):Tid?{}} {b*{b <- `b*`}:Tdatastring} {")"}} => (DATA_data(b*{b <- `b*`}, PASSIVE_datamode), {TYPES [], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [?(`%`_name(lift(id?{id <- `id?`})))], ELEMS [], LOCALS [], LABELS [], FIELDS [], TYPEDEFS []})
   ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec
-  prod{`id?` : char?, `b*` : byte*, x : idx, e : expr} {{"("} {"data"} {?(`%`_name(lift(id?{id <- `id?`}))):Tid?{}} {b*{b <- `b*`}:Tdatastring} {x:Tmemuse_(I)} {e:Toffset_(I)} {")"}} => (DATA_data(b*{b <- `b*`}, ACTIVE_datamode(x, e)), ?(`%`_name(lift(id?{id <- `id?`}))))
+  prod{`id?` : char?, `b*` : byte*, x : idx, e : expr} {{"("} {"data"} {?(`%`_name(lift(id?{id <- `id?`}))):Tid?{}} {b*{b <- `b*`}:Tdatastring} {x:Tmemuse_(I)} {e:Toffset_(I)} {")"}} => (DATA_data(b*{b <- `b*`}, ACTIVE_datamode(x, e)), {TYPES [], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [?(`%`_name(lift(id?{id <- `id?`})))], ELEMS [], LOCALS [], LABELS [], FIELDS [], TYPEDEFS []})
 
 ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec
 grammar Telemlist_(I : I) : (reftype, expr*)
@@ -10789,13 +10831,13 @@ grammar Ttableuse_(I : I) : tableidx
   prod eps => `%`_tableidx(0)
 
 ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec
-grammar Telem_(I : I) : (elem, name?)
+grammar Telem_(I : I) : (elem, idctxt)
   ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec
-  prod{`id?` : char?, rt : reftype, `e*` : expr*} {{"("} {"elem"} {?(`%`_name(lift(id?{id <- `id?`}))):Tid?{}} {(rt, e*{e <- `e*`}):Telemlist_(I)} {")"}} => (ELEM_elem(rt, e*{e <- `e*`}, PASSIVE_elemmode), ?(`%`_name(lift(id?{id <- `id?`}))))
+  prod{`id?` : char?, rt : reftype, `e*` : expr*} {{"("} {"elem"} {?(`%`_name(lift(id?{id <- `id?`}))):Tid?{}} {(rt, e*{e <- `e*`}):Telemlist_(I)} {")"}} => (ELEM_elem(rt, e*{e <- `e*`}, PASSIVE_elemmode), {TYPES [], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [?(`%`_name(lift(id?{id <- `id?`})))], LOCALS [], LABELS [], FIELDS [], TYPEDEFS []})
   ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec
-  prod{`id?` : char?, rt : reftype, `e*` : expr*, x : idx, e' : expr} {{"("} {"elem"} {?(`%`_name(lift(id?{id <- `id?`}))):Tid?{}} {(rt, e*{e <- `e*`}):Telemlist_(I)} {x:Ttableuse_(I)} {e':Toffset_(I)} {")"}} => (ELEM_elem(rt, e*{e <- `e*`}, ACTIVE_elemmode(x, e')), ?(`%`_name(lift(id?{id <- `id?`}))))
+  prod{`id?` : char?, rt : reftype, `e*` : expr*, x : idx, e' : expr} {{"("} {"elem"} {?(`%`_name(lift(id?{id <- `id?`}))):Tid?{}} {(rt, e*{e <- `e*`}):Telemlist_(I)} {x:Ttableuse_(I)} {e':Toffset_(I)} {")"}} => (ELEM_elem(rt, e*{e <- `e*`}, ACTIVE_elemmode(x, e')), {TYPES [], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [?(`%`_name(lift(id?{id <- `id?`})))], LOCALS [], LABELS [], FIELDS [], TYPEDEFS []})
   ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec
-  prod{`id?` : char?, rt : reftype, `e*` : expr*} {{"("} {"elem"} {?(`%`_name(lift(id?{id <- `id?`}))):Tid?{}} {"declare"} {(rt, e*{e <- `e*`}):Telemlist_(I)} {")"}} => (ELEM_elem(rt, e*{e <- `e*`}, DECLARE_elemmode), ?(`%`_name(lift(id?{id <- `id?`}))))
+  prod{`id?` : char?, rt : reftype, `e*` : expr*} {{"("} {"elem"} {?(`%`_name(lift(id?{id <- `id?`}))):Tid?{}} {"declare"} {(rt, e*{e <- `e*`}):Telemlist_(I)} {")"}} => (ELEM_elem(rt, e*{e <- `e*`}, DECLARE_elemmode), {TYPES [], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [?(`%`_name(lift(id?{id <- `id?`})))], LOCALS [], LABELS [], FIELDS [], TYPEDEFS []})
 
 ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec
 grammar Telemexpr_(I : I) : expr
@@ -10803,19 +10845,19 @@ grammar Telemexpr_(I : I) : expr
   prod{e : expr} {{"("} {"item"} {e:Texpr_(I)} {")"}} => e
 
 ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec
-grammar Tstart_(I : I) : start
+grammar Tstart_(I : I) : (start, idctxt)
   ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec
-  prod{x : idx} {{"("} {"start"} {x:Tfuncidx_(I)} {")"}} => START_start(x)
+  prod{x : idx} {{"("} {"start"} {x:Tfuncidx_(I)} {")"}} => (START_start(x), {TYPES [], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [], FIELDS [], TYPEDEFS []})
 
 ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec
-grammar Timport_(I : I) : (import, I)
+grammar Timport_(I : I) : (import, idctxt)
   ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec
   prod{nm_1 : name, nm_2 : name, xt : externtype, I' : I} {{"("} {"import"} {nm_1:Tname} {nm_2:Tname} {(xt, I'):Texterntype_(I)} {")"}} => (IMPORT_import(nm_1, nm_2, xt), I')
 
 ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec
-grammar Texport_(I : I) : export
+grammar Texport_(I : I) : (export, idctxt)
   ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec
-  prod{nm : name, xx : externidx} {{"("} {"export"} {nm:Tname} {xx:Texternidx_(I)} {")"}} => EXPORT_export(nm, xx)
+  prod{nm : name, xx : externidx} {{"("} {"export"} {nm:Tname} {xx:Texternidx_(I)} {")"}} => (EXPORT_export(nm, xx), {TYPES [], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [], FIELDS [], TYPEDEFS []})
 
 ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec
 grammar Texportdots : ()
@@ -10886,6 +10928,227 @@ grammar Tdatamemory_(I : I) : ()
 
 ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec
 grammar Telemtable_(I : I) : ()
+
+;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec
+syntax modulefield =
+  | TYPE{rectype : rectype}(rectype : rectype)
+  | IMPORT{name : name, externtype : externtype}(name : name, name, externtype : externtype)
+  | TAG{tagtype : tagtype}(tagtype : tagtype)
+  | GLOBAL{globaltype : globaltype, expr : expr}(globaltype : globaltype, expr : expr)
+  | MEMORY{memtype : memtype}(memtype : memtype)
+  | TABLE{tabletype : tabletype, expr : expr}(tabletype : tabletype, expr : expr)
+  | FUNC{typeidx : typeidx, `local*` : local*, expr : expr}(typeidx : typeidx, local*{local <- `local*`} : local*, expr : expr)
+  | DATA{`byte*` : byte*, datamode : datamode}(byte*{byte <- `byte*`} : byte*, datamode : datamode)
+  | ELEM{reftype : reftype, `expr*` : expr*, elemmode : elemmode}(reftype : reftype, expr*{expr <- `expr*`} : expr*, elemmode : elemmode)
+  | START{funcidx : funcidx}(funcidx : funcidx)
+  | EXPORT{name : name, externidx : externidx}(name : name, externidx : externidx)
+
+;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec
+rec {
+
+;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec:224.1-224.85
+def $typesmf(modulefield*) : type*
+  ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec:236.1-236.24
+  def $typesmf([]) = []
+  ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec:237.1-237.44
+  def $typesmf{type : type, `mf*` : modulefield*}([(type : type <: modulefield)] ++ mf*{mf <- `mf*`}) = [type] ++ $typesmf(mf*{mf <- `mf*`})
+  ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec:238.1-238.60
+  def $typesmf{modulefield : modulefield, `mf*` : modulefield*}([modulefield] ++ mf*{mf <- `mf*`}) = $typesmf(mf*{mf <- `mf*`})
+    -- otherwise
+}
+
+;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec
+rec {
+
+;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec:225.1-225.87
+def $importsmf(modulefield*) : import*
+  ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec:240.1-240.26
+  def $importsmf([]) = []
+  ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec:241.1-241.52
+  def $importsmf{import : import, `mf*` : modulefield*}([(import : import <: modulefield)] ++ mf*{mf <- `mf*`}) = [import] ++ $importsmf(mf*{mf <- `mf*`})
+  ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec:242.1-242.64
+  def $importsmf{modulefield : modulefield, `mf*` : modulefield*}([modulefield] ++ mf*{mf <- `mf*`}) = $importsmf(mf*{mf <- `mf*`})
+    -- otherwise
+}
+
+;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec
+rec {
+
+;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec:226.1-226.84
+def $tagsmf(modulefield*) : tag*
+  ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec:244.1-244.23
+  def $tagsmf([]) = []
+  ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec:245.1-245.40
+  def $tagsmf{tag : tag, `mf*` : modulefield*}([(tag : tag <: modulefield)] ++ mf*{mf <- `mf*`}) = [tag] ++ $tagsmf(mf*{mf <- `mf*`})
+  ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec:246.1-246.58
+  def $tagsmf{modulefield : modulefield, `mf*` : modulefield*}([modulefield] ++ mf*{mf <- `mf*`}) = $tagsmf(mf*{mf <- `mf*`})
+    -- otherwise
+}
+
+;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec
+rec {
+
+;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec:227.1-227.87
+def $globalsmf(modulefield*) : global*
+  ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec:248.1-248.26
+  def $globalsmf([]) = []
+  ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec:249.1-249.52
+  def $globalsmf{global : global, `mf*` : modulefield*}([(global : global <: modulefield)] ++ mf*{mf <- `mf*`}) = [global] ++ $globalsmf(mf*{mf <- `mf*`})
+  ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec:250.1-250.64
+  def $globalsmf{modulefield : modulefield, `mf*` : modulefield*}([modulefield] ++ mf*{mf <- `mf*`}) = $globalsmf(mf*{mf <- `mf*`})
+    -- otherwise
+}
+
+;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec
+rec {
+
+;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec:228.1-228.84
+def $memsmf(modulefield*) : mem*
+  ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec:252.1-252.23
+  def $memsmf([]) = []
+  ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec:253.1-253.40
+  def $memsmf{mem : mem, `mf*` : modulefield*}([(mem : mem <: modulefield)] ++ mf*{mf <- `mf*`}) = [mem] ++ $memsmf(mf*{mf <- `mf*`})
+  ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec:254.1-254.58
+  def $memsmf{modulefield : modulefield, `mf*` : modulefield*}([modulefield] ++ mf*{mf <- `mf*`}) = $memsmf(mf*{mf <- `mf*`})
+    -- otherwise
+}
+
+;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec
+rec {
+
+;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec:229.1-229.86
+def $tablesmf(modulefield*) : table*
+  ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec:256.1-256.25
+  def $tablesmf([]) = []
+  ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec:257.1-257.48
+  def $tablesmf{table : table, `mf*` : modulefield*}([(table : table <: modulefield)] ++ mf*{mf <- `mf*`}) = [table] ++ $tablesmf(mf*{mf <- `mf*`})
+  ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec:258.1-258.62
+  def $tablesmf{modulefield : modulefield, `mf*` : modulefield*}([modulefield] ++ mf*{mf <- `mf*`}) = $tablesmf(mf*{mf <- `mf*`})
+    -- otherwise
+}
+
+;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec
+rec {
+
+;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec:230.1-230.85
+def $funcsmf(modulefield*) : func*
+  ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec:260.1-260.24
+  def $funcsmf([]) = []
+  ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec:261.1-261.44
+  def $funcsmf{func : func, `mf*` : modulefield*}([(func : func <: modulefield)] ++ mf*{mf <- `mf*`}) = [func] ++ $funcsmf(mf*{mf <- `mf*`})
+  ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec:262.1-262.60
+  def $funcsmf{modulefield : modulefield, `mf*` : modulefield*}([modulefield] ++ mf*{mf <- `mf*`}) = $funcsmf(mf*{mf <- `mf*`})
+    -- otherwise
+}
+
+;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec
+rec {
+
+;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec:231.1-231.85
+def $datasmf(modulefield*) : data*
+  ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec:264.1-264.24
+  def $datasmf([]) = []
+  ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec:265.1-265.44
+  def $datasmf{data : data, `mf*` : modulefield*}([(data : data <: modulefield)] ++ mf*{mf <- `mf*`}) = [data] ++ $datasmf(mf*{mf <- `mf*`})
+  ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec:266.1-266.60
+  def $datasmf{modulefield : modulefield, `mf*` : modulefield*}([modulefield] ++ mf*{mf <- `mf*`}) = $datasmf(mf*{mf <- `mf*`})
+    -- otherwise
+}
+
+;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec
+rec {
+
+;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec:232.1-232.85
+def $elemsmf(modulefield*) : elem*
+  ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec:268.1-268.24
+  def $elemsmf([]) = []
+  ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec:269.1-269.44
+  def $elemsmf{elem : elem, `mf*` : modulefield*}([(elem : elem <: modulefield)] ++ mf*{mf <- `mf*`}) = [elem] ++ $elemsmf(mf*{mf <- `mf*`})
+  ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec:270.1-270.60
+  def $elemsmf{modulefield : modulefield, `mf*` : modulefield*}([modulefield] ++ mf*{mf <- `mf*`}) = $elemsmf(mf*{mf <- `mf*`})
+    -- otherwise
+}
+
+;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec
+rec {
+
+;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec:233.1-233.86
+def $startsmf(modulefield*) : start*
+  ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec:272.1-272.25
+  def $startsmf([]) = []
+  ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec:273.1-273.48
+  def $startsmf{start : start, `mf*` : modulefield*}([(start : start <: modulefield)] ++ mf*{mf <- `mf*`}) = [start] ++ $startsmf(mf*{mf <- `mf*`})
+  ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec:274.1-274.62
+  def $startsmf{modulefield : modulefield, `mf*` : modulefield*}([modulefield] ++ mf*{mf <- `mf*`}) = $startsmf(mf*{mf <- `mf*`})
+    -- otherwise
+}
+
+;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec
+rec {
+
+;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec:234.1-234.87
+def $exportsmf(modulefield*) : export*
+  ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec:276.1-276.26
+  def $exportsmf([]) = []
+  ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec:277.1-277.52
+  def $exportsmf{export : export, `mf*` : modulefield*}([(export : export <: modulefield)] ++ mf*{mf <- `mf*`}) = [export] ++ $exportsmf(mf*{mf <- `mf*`})
+  ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec:278.1-278.64
+  def $exportsmf{modulefield : modulefield, `mf*` : modulefield*}([modulefield] ++ mf*{mf <- `mf*`}) = $exportsmf(mf*{mf <- `mf*`})
+    -- otherwise
+}
+
+;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec
+def $ordered(modulefield*) : bool
+  ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec
+  def $ordered([]) = true
+  ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec
+  def $ordered{`mf*` : modulefield*}(mf*{mf <- `mf*`}) = ($importsmf(mf*{mf <- `mf*`}) = [])
+  ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec
+  def $ordered{`mf_1*` : modulefield*, import : import, `mf_2*` : modulefield*}(mf_1*{mf_1 <- `mf_1*`} ++ [(import : import <: modulefield)] ++ mf_2*{mf_2 <- `mf_2*`}) = (((((($importsmf(mf_1*{mf_1 <- `mf_1*`}) = []) /\ ($tagsmf(mf_1*{mf_1 <- `mf_1*`}) = [])) /\ ($globalsmf(mf_1*{mf_1 <- `mf_1*`}) = [])) /\ ($memsmf(mf_1*{mf_1 <- `mf_1*`}) = [])) /\ ($tablesmf(mf_1*{mf_1 <- `mf_1*`}) = [])) /\ ($funcsmf(mf_1*{mf_1 <- `mf_1*`}) = []))
+
+;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec
+grammar Tmodulefield_(I : I) : (modulefield, idctxt)
+  ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec
+  prod{`<implicit-prod-result>` : (type, idctxt)} `<implicit-prod-result>`:Ttype_(I) => (`<implicit-prod-result>` : (type, idctxt) <: (modulefield, idctxt))
+  ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec
+  prod{`<implicit-prod-result>` : (import, idctxt)} `<implicit-prod-result>`:Timport_(I) => (`<implicit-prod-result>` : (import, idctxt) <: (modulefield, idctxt))
+  ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec
+  prod{`<implicit-prod-result>` : (tag, idctxt)} `<implicit-prod-result>`:Ttag_(I) => (`<implicit-prod-result>` : (tag, idctxt) <: (modulefield, idctxt))
+  ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec
+  prod{`<implicit-prod-result>` : (global, idctxt)} `<implicit-prod-result>`:Tglobal_(I) => (`<implicit-prod-result>` : (global, idctxt) <: (modulefield, idctxt))
+  ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec
+  prod{`<implicit-prod-result>` : (mem, idctxt)} `<implicit-prod-result>`:Tmem_(I) => (`<implicit-prod-result>` : (mem, idctxt) <: (modulefield, idctxt))
+  ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec
+  prod{`<implicit-prod-result>` : (table, idctxt)} `<implicit-prod-result>`:Ttable_(I) => (`<implicit-prod-result>` : (table, idctxt) <: (modulefield, idctxt))
+  ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec
+  prod{`<implicit-prod-result>` : (func, idctxt)} `<implicit-prod-result>`:Tfunc_(I) => (`<implicit-prod-result>` : (func, idctxt) <: (modulefield, idctxt))
+  ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec
+  prod{`<implicit-prod-result>` : (data, idctxt)} `<implicit-prod-result>`:Tdata_(I) => (`<implicit-prod-result>` : (data, idctxt) <: (modulefield, idctxt))
+  ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec
+  prod{`<implicit-prod-result>` : (elem, idctxt)} `<implicit-prod-result>`:Telem_(I) => (`<implicit-prod-result>` : (elem, idctxt) <: (modulefield, idctxt))
+  ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec
+  prod{`<implicit-prod-result>` : (start, idctxt)} `<implicit-prod-result>`:Tstart_(I) => (`<implicit-prod-result>` : (start, idctxt) <: (modulefield, idctxt))
+  ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec
+  prod{`<implicit-prod-result>` : (export, idctxt)} `<implicit-prod-result>`:Texport_(I) => (`<implicit-prod-result>` : (export, idctxt) <: (modulefield, idctxt))
+
+;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec
+grammar Tmodule : module
+  ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec
+  prod{`fld*` : modulefield*, `I*` : I*, I' : I, `type*` : type*, `import*` : import*, `tag*` : tag*, `global*` : global*, `mem*` : mem*, `table*` : table*, `func*` : func*, `data*` : data*, `elem*` : elem*, `start?` : start?, `export*` : export*} {{"("} {"module"} {Tid?{}} {(fld, I)*{I <- `I*`, fld <- `fld*`}:Tmodulefield_(I')*{}} {")"}} => MODULE_module(type*{type <- `type*`}, import*{import <- `import*`}, tag*{tag <- `tag*`}, global*{global <- `global*`}, mem*{mem <- `mem*`}, table*{table <- `table*`}, func*{func <- `func*`}, data*{data <- `data*`}, elem*{elem <- `elem*`}, start?{start <- `start?`}, export*{export <- `export*`})
+    -- if (I' = $concat_idctxt(I*{I <- `I*`}))
+    -- Idctxt_ok: `|-%:OK`(I')
+    -- if (type*{type <- `type*`} = $typesmf(fld*{fld <- `fld*`}))
+    -- if (import*{import <- `import*`} = $importsmf(fld*{fld <- `fld*`}))
+    -- if (tag*{tag <- `tag*`} = $tagsmf(fld*{fld <- `fld*`}))
+    -- if (global*{global <- `global*`} = $globalsmf(fld*{fld <- `fld*`}))
+    -- if (mem*{mem <- `mem*`} = $memsmf(fld*{fld <- `fld*`}))
+    -- if (table*{table <- `table*`} = $tablesmf(fld*{fld <- `fld*`}))
+    -- if (func*{func <- `func*`} = $funcsmf(fld*{fld <- `fld*`}))
+    -- if (data*{data <- `data*`} = $datasmf(fld*{fld <- `fld*`}))
+    -- if (elem*{elem <- `elem*`} = $elemsmf(fld*{fld <- `fld*`}))
+    -- if (lift(start?{start <- `start?`}) = $startsmf(fld*{fld <- `fld*`}))
+    -- if (export*{export <- `export*`} = $exportsmf(fld*{fld <- `fld*`}))
+    -- if $ordered(fld*{fld <- `fld*`})
 
 ;; ../../../../specification/wasm-3.0/X.1-notation.syntax.spectec
 syntax A = nat

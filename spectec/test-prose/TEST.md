@@ -17042,6 +17042,38 @@ The external address :math:`{\mathit{externaddr}}` is :ref:`valid <valid-val>` w
 
 
 
+The identifier context :math:`I` is :ref:`valid <valid-val>` if:
+
+
+   * :math:`{\bigoplus}\, I{.}\mathsf{types}~{\mathrm{disjoint}}` is of the form true.
+
+   * :math:`{\bigoplus}\, I{.}\mathsf{tags}~{\mathrm{disjoint}}` is of the form true.
+
+   * :math:`{\bigoplus}\, I{.}\mathsf{globals}~{\mathrm{disjoint}}` is of the form true.
+
+   * :math:`{\bigoplus}\, I{.}\mathsf{mems}~{\mathrm{disjoint}}` is of the form true.
+
+   * :math:`{\bigoplus}\, I{.}\mathsf{tables}~{\mathrm{disjoint}}` is of the form true.
+
+   * :math:`{\bigoplus}\, I{.}\mathsf{funcs}~{\mathrm{disjoint}}` is of the form true.
+
+   * :math:`{\bigoplus}\, I{.}\mathsf{datas}~{\mathrm{disjoint}}` is of the form true.
+
+   * :math:`{\bigoplus}\, I{.}\mathsf{elems}~{\mathrm{disjoint}}` is of the form true.
+
+   * :math:`{\bigoplus}\, I{.}\mathsf{locals}~{\mathrm{disjoint}}` is of the form true.
+
+   * :math:`{\bigoplus}\, I{.}\mathsf{labels}~{\mathrm{disjoint}}` is of the form true.
+
+   * For all :math:`{{\mathit{field}}^\ast}` in :math:`{{{\mathit{field}}^\ast}^\ast}`:
+
+      * :math:`{\bigoplus}\, {{\mathit{field}}^\ast}~{\mathrm{disjoint}}` is of the form true.
+
+   * The name sequence sequence :math:`{{{\mathit{field}}^\ast}^\ast}` is of the form :math:`I{.}\mathsf{fields}`.
+
+
+
+
 The instruction sequence :math:`{\mathit{instr}}` is :ref:`valid <valid-val>` with the instruction type :math:`{{\mathit{valtype}}^\ast}~\rightarrow~{{\mathit{valtype}'}^\ast}` if:
 
 
@@ -20508,6 +20540,19 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Let :math:`{w^{n}}~{({{w'}^{n}})^\ast}` be :math:`{X^\ast}`.
 
 #. Return :math:`{w^{n}}~{\bigoplus}\, {({{w'}^{n}})^\ast}`.
+
+
+:math:`{\bigoplus}\, {X^\ast}`
+..............................
+
+
+1. If :math:`{X^\ast} = \epsilon`, then:
+
+   a. Return :math:`\epsilon`.
+
+#. Let :math:`{w^?}~{({{w'}^?})^\ast}` be :math:`{X^\ast}`.
+
+#. Return :math:`{w^?}~{\bigoplus}\, {({{w'}^?})^\ast}`.
 
 
 :math:`{X^\ast}~{\mathrm{disjoint}}`
@@ -25756,6 +25801,181 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`{{\mathit{val}'}^{k}}`.
 
 
+:math:`{\mathrm{concat}}_{\mathit{idctxt}}({{\mathit{idctxt}}^\ast})`
+.....................................................................
+
+
+1. If :math:`{{\mathit{idctxt}}^\ast} = \epsilon`, then:
+
+   a. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
+
+#. Let :math:`I~{I'}` be :math:`{{\mathit{idctxt}}^\ast}`.
+
+#. Return `I ++ $concat_idctxt(I'*{})`.
+
+
+:math:`{\mathrm{types}}({{\mathit{modulefield}}^\ast})`
+.......................................................
+
+
+1. If :math:`{{\mathit{modulefield}}^\ast} = \epsilon`, then:
+
+   a. Return :math:`\epsilon`.
+
+#. Let :math:`{\mathit{type}}~{{\mathit{mf}}^\ast}` be :math:`{{\mathit{modulefield}}^\ast}`.
+
+#. Return :math:`{\mathit{type}}~{\mathrm{types}}({{\mathit{mf}}^\ast})`.
+
+
+:math:`{\mathrm{imports}}({{\mathit{modulefield}}^\ast})`
+.........................................................
+
+
+1. If :math:`{{\mathit{modulefield}}^\ast} = \epsilon`, then:
+
+   a. Return :math:`\epsilon`.
+
+#. Let :math:`{\mathit{import}}~{{\mathit{mf}}^\ast}` be :math:`{{\mathit{modulefield}}^\ast}`.
+
+#. Return :math:`{\mathit{import}}~{\mathrm{imports}}({{\mathit{mf}}^\ast})`.
+
+
+:math:`{\mathrm{tags}}({{\mathit{modulefield}}^\ast})`
+......................................................
+
+
+1. If :math:`{{\mathit{modulefield}}^\ast} = \epsilon`, then:
+
+   a. Return :math:`\epsilon`.
+
+#. Let :math:`{\mathit{tag}}~{{\mathit{mf}}^\ast}` be :math:`{{\mathit{modulefield}}^\ast}`.
+
+#. Return :math:`{\mathit{tag}}~{\mathrm{tags}}({{\mathit{mf}}^\ast})`.
+
+
+:math:`{\mathrm{globals}}({{\mathit{modulefield}}^\ast})`
+.........................................................
+
+
+1. If :math:`{{\mathit{modulefield}}^\ast} = \epsilon`, then:
+
+   a. Return :math:`\epsilon`.
+
+#. Let :math:`{\mathit{global}}~{{\mathit{mf}}^\ast}` be :math:`{{\mathit{modulefield}}^\ast}`.
+
+#. Return :math:`{\mathit{global}}~{\mathrm{globals}}({{\mathit{mf}}^\ast})`.
+
+
+:math:`{\mathrm{mems}}({{\mathit{modulefield}}^\ast})`
+......................................................
+
+
+1. If :math:`{{\mathit{modulefield}}^\ast} = \epsilon`, then:
+
+   a. Return :math:`\epsilon`.
+
+#. Let :math:`{\mathit{mem}}~{{\mathit{mf}}^\ast}` be :math:`{{\mathit{modulefield}}^\ast}`.
+
+#. Return :math:`{\mathit{mem}}~{\mathrm{mems}}({{\mathit{mf}}^\ast})`.
+
+
+:math:`{\mathrm{tables}}({{\mathit{modulefield}}^\ast})`
+........................................................
+
+
+1. If :math:`{{\mathit{modulefield}}^\ast} = \epsilon`, then:
+
+   a. Return :math:`\epsilon`.
+
+#. Let :math:`{\mathit{table}}~{{\mathit{mf}}^\ast}` be :math:`{{\mathit{modulefield}}^\ast}`.
+
+#. Return :math:`{\mathit{table}}~{\mathrm{tables}}({{\mathit{mf}}^\ast})`.
+
+
+:math:`{\mathrm{funcs}}({{\mathit{modulefield}}^\ast})`
+.......................................................
+
+
+1. If :math:`{{\mathit{modulefield}}^\ast} = \epsilon`, then:
+
+   a. Return :math:`\epsilon`.
+
+#. Let :math:`{\mathit{func}}~{{\mathit{mf}}^\ast}` be :math:`{{\mathit{modulefield}}^\ast}`.
+
+#. Return :math:`{\mathit{func}}~{\mathrm{funcs}}({{\mathit{mf}}^\ast})`.
+
+
+:math:`{\mathrm{datas}}({{\mathit{modulefield}}^\ast})`
+.......................................................
+
+
+1. If :math:`{{\mathit{modulefield}}^\ast} = \epsilon`, then:
+
+   a. Return :math:`\epsilon`.
+
+#. Let :math:`{\mathit{data}}~{{\mathit{mf}}^\ast}` be :math:`{{\mathit{modulefield}}^\ast}`.
+
+#. Return :math:`{\mathit{data}}~{\mathrm{datas}}({{\mathit{mf}}^\ast})`.
+
+
+:math:`{\mathrm{elems}}({{\mathit{modulefield}}^\ast})`
+.......................................................
+
+
+1. If :math:`{{\mathit{modulefield}}^\ast} = \epsilon`, then:
+
+   a. Return :math:`\epsilon`.
+
+#. Let :math:`{\mathit{elem}}~{{\mathit{mf}}^\ast}` be :math:`{{\mathit{modulefield}}^\ast}`.
+
+#. Return :math:`{\mathit{elem}}~{\mathrm{elems}}({{\mathit{mf}}^\ast})`.
+
+
+:math:`{\mathrm{starts}}({{\mathit{modulefield}}^\ast})`
+........................................................
+
+
+1. If :math:`{{\mathit{modulefield}}^\ast} = \epsilon`, then:
+
+   a. Return :math:`\epsilon`.
+
+#. Let :math:`{\mathit{start}}~{{\mathit{mf}}^\ast}` be :math:`{{\mathit{modulefield}}^\ast}`.
+
+#. Return :math:`{\mathit{start}}~{\mathrm{starts}}({{\mathit{mf}}^\ast})`.
+
+
+:math:`{\mathrm{exports}}({{\mathit{modulefield}}^\ast})`
+.........................................................
+
+
+1. If :math:`{{\mathit{modulefield}}^\ast} = \epsilon`, then:
+
+   a. Return :math:`\epsilon`.
+
+#. Let :math:`{\mathit{export}}~{{\mathit{mf}}^\ast}` be :math:`{{\mathit{modulefield}}^\ast}`.
+
+#. Return :math:`{\mathit{export}}~{\mathrm{exports}}({{\mathit{mf}}^\ast})`.
+
+
+:math:`{\mathrm{ordered}}({{\mathit{modulefield}}^\ast})`
+.........................................................
+
+
+1. If :math:`{{\mathit{modulefield}}^\ast} = \epsilon`, then:
+
+   a. Return true.
+
+#. Let :math:`{{\mathit{mf}}^\ast}` be :math:`{{\mathit{modulefield}}^\ast}`.
+
+#. Return :math:`{\mathrm{imports}}({{\mathit{mf}}^\ast}) = \epsilon`.
+
+#. Assert: Due to validation, YetE: Nondeterministic assignment target: mf_1*{mf_1 <- mf_1*} :: [import] :: mf_2*{mf_2 <- mf_2*}.
+
+#. Let :math:`{{\mathit{mf}}_1^\ast}~{\mathit{import}}~{{\mathit{mf}}_2^\ast}` be :math:`{{\mathit{modulefield}}^\ast}`.
+
+#. Return :math:`{\mathrm{imports}}({{\mathit{mf}}_1^\ast}) = \epsilon` and :math:`{\mathrm{tags}}({{\mathit{mf}}_1^\ast}) = \epsilon` and :math:`{\mathrm{globals}}({{\mathit{mf}}_1^\ast}) = \epsilon` and :math:`{\mathrm{mems}}({{\mathit{mf}}_1^\ast}) = \epsilon` and :math:`{\mathrm{tables}}({{\mathit{mf}}_1^\ast}) = \epsilon` and :math:`{\mathrm{funcs}}({{\mathit{mf}}_1^\ast}) = \epsilon`.
+
+
 :math:`{{{\mathrm{allocX}}^\ast}}{(s, {{X''}^\ast}, {{Y''}^\ast})}`
 ...................................................................
 
@@ -27742,6 +27962,22 @@ Externaddr_ok/sub
   - externaddr is valid with the external type xt'.
   - xt' matches xt.
 
+Idctxt_ok
+- the identifier context I is valid if:
+  - $disjoint_(`name, $concatopt_(`name, I.TYPES)) is true.
+  - $disjoint_(`name, $concatopt_(`name, I.TAGS)) is true.
+  - $disjoint_(`name, $concatopt_(`name, I.GLOBALS)) is true.
+  - $disjoint_(`name, $concatopt_(`name, I.MEMS)) is true.
+  - $disjoint_(`name, $concatopt_(`name, I.TABLES)) is true.
+  - $disjoint_(`name, $concatopt_(`name, I.FUNCS)) is true.
+  - $disjoint_(`name, $concatopt_(`name, I.DATAS)) is true.
+  - $disjoint_(`name, $concatopt_(`name, I.ELEMS)) is true.
+  - $disjoint_(`name, $concatopt_(`name, I.LOCALS)) is true.
+  - $disjoint_(`name, $concatopt_(`name, I.LABELS)) is true.
+  - For all field* in field**:
+    - $disjoint_(`name, $concatopt_(`name, [?(field*)])) is true.
+  - the name sequence sequence [?(field*)*] is I.FIELDS.
+
 NotationTypingInstrScheme
 - the instruction sequence [instr] is valid with the instruction type valtype* -> valtype'* if:
   - Either:
@@ -29389,6 +29625,12 @@ concatn_ `X X* n
   a. Return [].
 2. Let [w^n] :: w'^n* be X*.
 3. Return w^n :: $concatn_(`X, w'^n*, n).
+
+concatopt_ `X X*
+1. If (X* = []), then:
+  a. Return [].
+2. Let [w?] :: w'?* be X*.
+3. Return w? :: $concat_(`X, w'?*).
 
 disjoint_ `X X*
 1. If (X* = []), then:
@@ -31827,6 +32069,87 @@ invoke s funcaddr val*
 9. Pop the values val'^k from the stack.
 10. Pop the frame (FRAME_ k { { MODULE: {} } }) from the stack.
 11. Return val'^k.
+
+concat_idctxt idctxt*
+1. If (idctxt* = []), then:
+  a. Return {}.
+2. Let [I, I'] be idctxt*.
+3. Return I ++ $concat_idctxt(I'*).
+
+typesmf modulefield*
+1. If (modulefield* = []), then:
+  a. Return [].
+2. Let [type] :: mf* be modulefield*.
+3. Return [type] :: $typesmf(mf*).
+
+importsmf modulefield*
+1. If (modulefield* = []), then:
+  a. Return [].
+2. Let [import] :: mf* be modulefield*.
+3. Return [import] :: $importsmf(mf*).
+
+tagsmf modulefield*
+1. If (modulefield* = []), then:
+  a. Return [].
+2. Let [tag] :: mf* be modulefield*.
+3. Return [tag] :: $tagsmf(mf*).
+
+globalsmf modulefield*
+1. If (modulefield* = []), then:
+  a. Return [].
+2. Let [global] :: mf* be modulefield*.
+3. Return [global] :: $globalsmf(mf*).
+
+memsmf modulefield*
+1. If (modulefield* = []), then:
+  a. Return [].
+2. Let [mem] :: mf* be modulefield*.
+3. Return [mem] :: $memsmf(mf*).
+
+tablesmf modulefield*
+1. If (modulefield* = []), then:
+  a. Return [].
+2. Let [table] :: mf* be modulefield*.
+3. Return [table] :: $tablesmf(mf*).
+
+funcsmf modulefield*
+1. If (modulefield* = []), then:
+  a. Return [].
+2. Let [func] :: mf* be modulefield*.
+3. Return [func] :: $funcsmf(mf*).
+
+datasmf modulefield*
+1. If (modulefield* = []), then:
+  a. Return [].
+2. Let [data] :: mf* be modulefield*.
+3. Return [data] :: $datasmf(mf*).
+
+elemsmf modulefield*
+1. If (modulefield* = []), then:
+  a. Return [].
+2. Let [elem] :: mf* be modulefield*.
+3. Return [elem] :: $elemsmf(mf*).
+
+startsmf modulefield*
+1. If (modulefield* = []), then:
+  a. Return [].
+2. Let [start] :: mf* be modulefield*.
+3. Return [start] :: $startsmf(mf*).
+
+exportsmf modulefield*
+1. If (modulefield* = []), then:
+  a. Return [].
+2. Let [export] :: mf* be modulefield*.
+3. Return [export] :: $exportsmf(mf*).
+
+ordered modulefield*
+1. If (modulefield* = []), then:
+  a. Return true.
+2. Let mf* be modulefield*.
+3. Return ($importsmf(mf*) = []).
+4. Assert: Due to validation, YetE (Nondeterministic assignment target: mf_1*{mf_1 <- mf_1*} :: [import] :: mf_2*{mf_2 <- mf_2*}).
+5. Let mf_1* :: [import] :: mf_2* be modulefield*.
+6. Return (((((($importsmf(mf_1*) = []) /\ ($tagsmf(mf_1*) = [])) /\ ($globalsmf(mf_1*) = [])) /\ ($memsmf(mf_1*) = [])) /\ ($tablesmf(mf_1*) = [])) /\ ($funcsmf(mf_1*) = [])).
 
 allocXs `X `Y s X''* Y''*
 1. If (X''* = []), then:

@@ -365,7 +365,7 @@ warning: syntax `heaptype` was never spliced
 warning: syntax `hostaddr` was never spliced
 warning: syntax `hostfunc` was never spliced
 warning: syntax `iN` was never spliced
-warning: syntax `idcontext` was never spliced
+warning: syntax `idctxt` was never spliced
 warning: syntax `idx` was never spliced
 warning: syntax `import` was never spliced
 warning: syntax `init` was never spliced
@@ -409,6 +409,7 @@ warning: syntax `memidx` was never spliced
 warning: syntax `memidxop` was never spliced
 warning: syntax `meminst` was never spliced
 warning: syntax `module` was never spliced
+warning: syntax `modulefield` was never spliced
 warning: syntax `moduleinst` was never spliced
 warning: syntax `moduletype` was never spliced
 warning: syntax `mut` was never spliced
@@ -788,6 +789,9 @@ warning: grammar `Tmemtype_` was never spliced
 warning: grammar `Tmemtype_/abbrev` was never spliced
 warning: grammar `Tmemuse_` was never spliced
 warning: grammar `Tmemuse_/abbrev` was never spliced
+warning: grammar `Tmodule` was never spliced
+warning: grammar `Tmodule/abbrev` was never spliced
+warning: grammar `Tmodulefield_` was never spliced
 warning: grammar `Tname` was never spliced
 warning: grammar `Tnewline` was never spliced
 warning: grammar `Tnul` was never spliced
@@ -924,6 +928,7 @@ warning: grammar `Ttag_` was never spliced
 warning: grammar `Ttagidx_` was never spliced
 warning: grammar `Ttagtype_` was never spliced
 warning: grammar `Ttoken` was never spliced
+warning: grammar `Ttype_` was never spliced
 warning: grammar `Ttypedef_` was never spliced
 warning: grammar `Ttypeidx_` was never spliced
 warning: grammar `Ttypeuse_` was never spliced
@@ -1017,6 +1022,7 @@ warning: rule `Heaptype_sub/nofunc` was never spliced
 warning: rule `Heaptype_sub/noexn` was never spliced
 warning: rule `Heaptype_sub/noextern` was never spliced
 warning: rule `Heaptype_sub/bot` was never spliced
+warning: rule `Idctxt_ok` was never spliced
 warning: rule `Import_ok` was never spliced
 warning: rule `Instr_const/const` was never spliced
 warning: rule `Instr_const/vconst` was never spliced
@@ -1491,7 +1497,9 @@ warning: definition `clos_moduletype` was never spliced
 warning: definition `clos_tagtype` was never spliced
 warning: definition `clos_valtype` was never spliced
 warning: definition `concat_` was never spliced
+warning: definition `concat_idctxt` was never spliced
 warning: definition `concatn_` was never spliced
+warning: definition `concatopt_` was never spliced
 warning: definition `const` was never spliced
 warning: definition `cont` was never spliced
 warning: definition `convert__` was never spliced
@@ -1502,16 +1510,19 @@ warning: definition `cvtop__` was never spliced
 warning: definition `data` was never spliced
 warning: definition `dataidx_funcs` was never spliced
 warning: definition `datainst` was never spliced
+warning: definition `datasmf` was never spliced
 warning: definition `demote__` was never spliced
 warning: definition `diffrt` was never spliced
 warning: definition `dim` was never spliced
 warning: definition `disjoint_` was never spliced
 warning: definition `elem` was never spliced
 warning: definition `eleminst` was never spliced
+warning: definition `elemsmf` was never spliced
 warning: definition `evalglobals` was never spliced
 warning: definition `exninst` was never spliced
 warning: definition `expanddt` was never spliced
 warning: definition `expon` was never spliced
+warning: definition `exportsmf` was never spliced
 warning: definition `extend__` was never spliced
 warning: definition `fabs_` was never spliced
 warning: definition `fadd_` was never spliced
@@ -1606,6 +1617,7 @@ warning: definition `fsub_` was never spliced
 warning: definition `ftrunc_` was never spliced
 warning: definition `funcidx_module` was never spliced
 warning: definition `funcidx_nonfuncs` was never spliced
+warning: definition `funcsmf` was never spliced
 warning: definition `funcsxa` was never spliced
 warning: definition `funcsxt` was never spliced
 warning: definition `funcsxx` was never spliced
@@ -1617,6 +1629,7 @@ warning: definition `fvunop_` was never spliced
 warning: definition `fzero` was never spliced
 warning: definition `global` was never spliced
 warning: definition `globalinst` was never spliced
+warning: definition `globalsmf` was never spliced
 warning: definition `globalsxa` was never spliced
 warning: definition `globalsxt` was never spliced
 warning: definition `globalsxx` was never spliced
@@ -1646,6 +1659,7 @@ warning: definition `ile_` was never spliced
 warning: definition `ilt_` was never spliced
 warning: definition `imax_` was never spliced
 warning: definition `imin_` was never spliced
+warning: definition `importsmf` was never spliced
 warning: definition `imul_` was never spliced
 warning: definition `ine_` was never spliced
 warning: definition `ineg_` was never spliced
@@ -1727,6 +1741,7 @@ warning: definition `lunpacknum_` was never spliced
 warning: definition `mem` was never spliced
 warning: definition `memarg0` was never spliced
 warning: definition `meminst` was never spliced
+warning: definition `memsmf` was never spliced
 warning: definition `memsxa` was never spliced
 warning: definition `memsxt` was never spliced
 warning: definition `memsxx` was never spliced
@@ -1738,6 +1753,7 @@ warning: definition `narrow__` was never spliced
 warning: definition `nbytes_` was never spliced
 warning: definition `nunpack` was never spliced
 warning: definition `opt_` was never spliced
+warning: definition `ordered` was never spliced
 warning: definition `packfield_` was never spliced
 warning: definition `prod` was never spliced
 warning: definition `promote__` was never spliced
@@ -1766,6 +1782,7 @@ warning: definition `signif` was never spliced
 warning: definition `sizenn` was never spliced
 warning: definition `sizenn1` was never spliced
 warning: definition `sizenn2` was never spliced
+warning: definition `startsmf` was never spliced
 warning: definition `store` was never spliced
 warning: definition `structinst` was never spliced
 warning: definition `subst_addrtype` was never spliced
@@ -1802,12 +1819,14 @@ warning: definition `subst_vectype` was never spliced
 warning: definition `sum` was never spliced
 warning: definition `sx` was never spliced
 warning: definition `tableinst` was never spliced
+warning: definition `tablesmf` was never spliced
 warning: definition `tablesxa` was never spliced
 warning: definition `tablesxt` was never spliced
 warning: definition `tablesxx` was never spliced
 warning: definition `tag` was never spliced
 warning: definition `tagaddr` was never spliced
 warning: definition `taginst` was never spliced
+warning: definition `tagsmf` was never spliced
 warning: definition `tagsxa` was never spliced
 warning: definition `tagsxt` was never spliced
 warning: definition `tagsxx` was never spliced
@@ -1816,6 +1835,7 @@ warning: definition `trunc__` was never spliced
 warning: definition `trunc_sat__` was never spliced
 warning: definition `truncz` was never spliced
 warning: definition `type` was never spliced
+warning: definition `typesmf` was never spliced
 warning: definition `unop_` was never spliced
 warning: definition `unpack` was never spliced
 warning: definition `unpackfield_` was never spliced
@@ -1953,6 +1973,7 @@ warning: rule prose `Heaptype_sub/refl` was never spliced
 warning: rule prose `Heaptype_sub/struct` was never spliced
 warning: rule prose `Heaptype_sub/trans` was never spliced
 warning: rule prose `Heaptype_sub/typeidx` was never spliced
+warning: rule prose `Idctxt_ok` was never spliced
 warning: rule prose `Import_ok` was never spliced
 warning: rule prose `Instr_const` was never spliced
 warning: rule prose `Instr_const/any.convert_extern` was never spliced
@@ -2345,7 +2366,9 @@ warning: definition prose `clos_moduletype` was never spliced
 warning: definition prose `clos_tagtype` was never spliced
 warning: definition prose `clos_valtype` was never spliced
 warning: definition prose `concat_` was never spliced
+warning: definition prose `concat_idctxt` was never spliced
 warning: definition prose `concatn_` was never spliced
+warning: definition prose `concatopt_` was never spliced
 warning: definition prose `const` was never spliced
 warning: definition prose `cont` was never spliced
 warning: definition prose `cpacknum_` was never spliced
@@ -2355,16 +2378,19 @@ warning: definition prose `cvtop__` was never spliced
 warning: definition prose `data` was never spliced
 warning: definition prose `dataidx_funcs` was never spliced
 warning: definition prose `datainst` was never spliced
+warning: definition prose `datasmf` was never spliced
 warning: definition prose `default_` was never spliced
 warning: definition prose `diffrt` was never spliced
 warning: definition prose `dim` was never spliced
 warning: definition prose `disjoint_` was never spliced
 warning: definition prose `elem` was never spliced
 warning: definition prose `eleminst` was never spliced
+warning: definition prose `elemsmf` was never spliced
 warning: definition prose `evalglobals` was never spliced
 warning: definition prose `exninst` was never spliced
 warning: definition prose `expanddt` was never spliced
 warning: definition prose `expon` was never spliced
+warning: definition prose `exportsmf` was never spliced
 warning: definition prose `fnat` was never spliced
 warning: definition prose `fone` was never spliced
 warning: definition prose `frame` was never spliced
@@ -2432,6 +2458,7 @@ warning: definition prose `func` was never spliced
 warning: definition prose `funcidx_module` was never spliced
 warning: definition prose `funcidx_nonfuncs` was never spliced
 warning: definition prose `funcinst` was never spliced
+warning: definition prose `funcsmf` was never spliced
 warning: definition prose `funcsxa` was never spliced
 warning: definition prose `funcsxt` was never spliced
 warning: definition prose `funcsxx` was never spliced
@@ -2443,6 +2470,7 @@ warning: definition prose `fvunop_` was never spliced
 warning: definition prose `fzero` was never spliced
 warning: definition prose `global` was never spliced
 warning: definition prose `globalinst` was never spliced
+warning: definition prose `globalsmf` was never spliced
 warning: definition prose `globalsxa` was never spliced
 warning: definition prose `globalsxt` was never spliced
 warning: definition prose `globalsxx` was never spliced
@@ -2463,6 +2491,7 @@ warning: definition prose `ile_` was never spliced
 warning: definition prose `ilt_` was never spliced
 warning: definition prose `imax_` was never spliced
 warning: definition prose `imin_` was never spliced
+warning: definition prose `importsmf` was never spliced
 warning: definition prose `imul_` was never spliced
 warning: definition prose `ine_` was never spliced
 warning: definition prose `ineg_` was never spliced
@@ -2519,6 +2548,7 @@ warning: definition prose `lunpacknum_` was never spliced
 warning: definition prose `mem` was never spliced
 warning: definition prose `memarg0` was never spliced
 warning: definition prose `meminst` was never spliced
+warning: definition prose `memsmf` was never spliced
 warning: definition prose `memsxa` was never spliced
 warning: definition prose `memsxt` was never spliced
 warning: definition prose `memsxx` was never spliced
@@ -2528,6 +2558,7 @@ warning: definition prose `minus_recs` was never spliced
 warning: definition prose `moduleinst` was never spliced
 warning: definition prose `nunpack` was never spliced
 warning: definition prose `opt_` was never spliced
+warning: definition prose `ordered` was never spliced
 warning: definition prose `packfield_` was never spliced
 warning: definition prose `prod` was never spliced
 warning: definition prose `psize` was never spliced
@@ -2553,6 +2584,7 @@ warning: definition prose `size` was never spliced
 warning: definition prose `sizenn` was never spliced
 warning: definition prose `sizenn1` was never spliced
 warning: definition prose `sizenn2` was never spliced
+warning: definition prose `startsmf` was never spliced
 warning: definition prose `store` was never spliced
 warning: definition prose `structinst` was never spliced
 warning: definition prose `subst_addrtype` was never spliced
@@ -2590,17 +2622,20 @@ warning: definition prose `sum` was never spliced
 warning: definition prose `sx` was never spliced
 warning: definition prose `table` was never spliced
 warning: definition prose `tableinst` was never spliced
+warning: definition prose `tablesmf` was never spliced
 warning: definition prose `tablesxa` was never spliced
 warning: definition prose `tablesxt` was never spliced
 warning: definition prose `tablesxx` was never spliced
 warning: definition prose `tag` was never spliced
 warning: definition prose `tagaddr` was never spliced
 warning: definition prose `taginst` was never spliced
+warning: definition prose `tagsmf` was never spliced
 warning: definition prose `tagsxa` was never spliced
 warning: definition prose `tagsxt` was never spliced
 warning: definition prose `tagsxx` was never spliced
 warning: definition prose `testop_` was never spliced
 warning: definition prose `type` was never spliced
+warning: definition prose `typesmf` was never spliced
 warning: definition prose `unop_` was never spliced
 warning: definition prose `unpack` was never spliced
 warning: definition prose `unpackfield_` was never spliced
