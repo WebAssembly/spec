@@ -104,6 +104,11 @@ let long_prod (g, e, prems) =
   let ats = g.at :: e.at :: El.Convert.map_filter_nl_list Source.at prems in
   Elem (SynthP (g, e, prems) $ over_region ats)
 
+let equiv_prod (g1, g2, prems) =
+  let open Source in
+  let ats = g1.at :: g2.at :: El.Convert.map_filter_nl_list Source.at prems in
+  Elem (EquivP (g1, g2, prems) $ over_region ats)
+
 let short_prod (g, prems) =
   let open Source in
   let var () = VarE ("<implicit-prod-result>" $ g.at, []) $ g.at in
@@ -121,6 +126,18 @@ and long_alt_prod' = function
     let open Source in
     let ats = El.Convert.map_filter_nl_list Source.at elsr in
     [long_prod (AltG (List.rev elsr) $ over_region ats, e, prems)]
+
+let rec long_equiv_prod (alts, g2, prems) = long_equiv_prod' (List.rev alts, g2, prems)
+and long_equiv_prod' = function
+  | ([], _, _) -> assert false
+  | (Nl::elsr, g2, []) -> long_equiv_prod' (elsr, g2, []) @ [Nl]
+  | (Nl::elsr, g2, prems) -> long_equiv_prod' (elsr, g2, prems)
+  | ((Elem g1)::elsr, g2, prems) when List.for_all ((=) Nl) elsr ->
+    [equiv_prod (g1, g2, prems)]
+  | (elsr, g2, prems) ->
+    let open Source in
+    let ats = El.Convert.map_filter_nl_list Source.at elsr in
+    [equiv_prod (AltG (List.rev elsr) $ over_region ats, g2, prems)]
 
 let rec short_alt_prod (els, prems) = short_alt_prod' (List.rev els, prems)
 and short_alt_prod' = function
@@ -812,6 +829,7 @@ prod_ :
   | sym ARROW2 exp prem_list { SynthP ($1, $3, $4) }
   | sym ARROW2 exp bar(sym) DOTDOTDOT bar(sym) sym ARROW2 exp
     { RangeP ($1, $3, $7, $9) }
+  | sym EQUIV sym prem_list { EquivP ($1, $3, $4) }
 
 gram :
   | dots_list(prod) { $1 $ $sloc }
@@ -855,6 +873,9 @@ gram_long1 :  (* sym nl_list -> prod nl_list * dots *)
       long_alt_prod (alts @ [Elem $1], $3, $4) @ x, y }
   | sym_seq ARROW2 exp bar(gram) long_range_cont_or_gram_long
     { fun alts -> $5 (alt_sym (alts @ [Elem $1])) $3 $4 }
+  | sym_seq EQUIV sym_seq prem_list gram_cont(gram_long)
+    { fun alts -> let x, y = $5 in
+      long_equiv_prod (alts @ [Elem $1], $3, $4) @ x, y }
 
 gram_long :  (* prod nl_list * dots *)
   | gram_empty { [], $1 }
@@ -862,6 +883,8 @@ gram_long :  (* prod nl_list * dots *)
   | sym_alt ARROW2 exp prem_list1 gram_cont(gram_long)
     { let x, y = $5 in long_prod ($1, $3, $4) :: x, y }
   | sym_alt ARROW2 exp bar(gram) long_range_cont_or_gram_long { $5 $1 $3 $4 }
+  | sym_alt EQUIV sym_seq prem_list gram_cont(gram_long)
+    { let x, y = $5 in equiv_prod ($1, $3, $4) :: x, y }
 
 gram_short1 :  (* sym nl_list -> prod nl_list * dots *)
   | prod_short1 gram_cont(gram_short)
@@ -879,9 +902,12 @@ gram_short :  (* prod nl_list * dots *)
 prod_long1 :  (* sym nl_list -> prod nl_list *)
   | sym_seq ARROW2 exp prem_list
     { fun alts -> long_alt_prod (alts @ [Elem $1], $3, $4) }
+  | sym_seq EQUIV sym prem_list
+    { fun alts -> [long_equiv_prod (alts @ [Elem $1], $3, $4)] }
 
 prod_long :  (* prem nl_list -> prod nl_elem *)
   | sym_alt ARROW2 exp { fun prems -> long_prod ($1, $3, prems) }
+  | sym_alt EQUIV sym { fun prems -> long_equiv_prod ($1, $3, prems) }
 *)
 
 prod_short1 :  (* sym nl_list -> prod nl_list *)

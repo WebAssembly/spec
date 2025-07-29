@@ -265,11 +265,13 @@ and free_prod prod =
   | SynthP (g, e, prems) -> free_sym g + free_exp e + free_prems prems
   | RangeP (g1, e1, g2, e2) ->
     free_sym g1 + free_exp e1 + free_sym g2 + free_exp e2
+  | EquivP (g1, g2, prems) -> free_sym g1 + free_sym g2 + free_prems prems
 
 and det_prod prod =
   match prod.it with
   | SynthP (g, _e, prems) -> det_sym g + det_prems prems
   | RangeP (g1, _e1, g2, _e2) -> det_sym g1 + det_sym g2
+  | EquivP (g1, _g2, prems) -> det_sym g1 + det_prems prems
 
 and free_gram gram =
   let (_dots1, prods, _dots2) = gram.it in

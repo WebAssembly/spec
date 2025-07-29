@@ -26,7 +26,6 @@ grammar Tinstrs_(I)/folded : instr* = ...
 
 
 grammar Tfoldedinstr_(I)/plain : instr* =
-  | in:Tinstr_(I) => in
   | "(" in:Tplaininstr_(I) in'*:Tinstrs_(I) ")" => in'* in
   | ...
 
@@ -78,9 +77,8 @@ grammar Tblockinstr_(I) : instr =
   | ...
 
 grammar Tblockinstr_(I)/abbrev : instr = ...
-  | "if" (id?,I'):Tlabel_(I)  bt:Tblocktype_(I) in*:Tinstrs_(I') "end" id'?:Tid? =>
-    IF bt in* ELSE eps
-    -- if id'? = eps \/ id'? = id?
+  | "if" Tlabel_(I) Tblocktype_(I) Tinstrs_(I) "end" Tid? ==
+    "if" Tlabel_(I) Tblocktype_(I) Tinstrs_(I) "else" "end" Tid?
 
 grammar Tcatch_(I) : catch =
   | "(" "catch" x:Ttagidx_(I) l:Tlabelidx_(I) ")" => CATCH x l
@@ -114,10 +112,8 @@ grammar Tplaininstr_(I)/func : instr = ...
   | ...
 
 grammar Tplaininstr_(I)/func/abbrev : instr = ...
-  | "call_indirect" (y,I'):Ttypeuse_(I) => CALL_INDIRECT 0 $($(_IDX y))
-    -- if I' = {LOCALS (eps)*}
-  | "return_call_indirect" (y,I'):Ttypeuse_(I) => RETURN_CALL_INDIRECT 0 $($(_IDX y))
-    -- if I' = {LOCALS (eps)*}
+  | "call_indirect" Ttypeuse_(I) == "call_indirect" "0" Ttypeuse_(I)
+  | "return_call_indirect" Ttypeuse_(I) == "return_call_indirect" "0" Ttypeuse_(I)
   | ...
 
 grammar Tplaininstr_(I)/exn : instr = ...
@@ -153,13 +149,13 @@ grammar Tplaininstr_(I)/table : instr = ...
   | ...
 
 grammar Tplaininstr_(I)/table/abbrev : instr = ...
-  | "table.get" => TABLE.GET 0
-  | "table.set" => TABLE.SET 0
-  | "table.size" => TABLE.SIZE 0
-  | "table.grow" => TABLE.GROW 0
-  | "table.fill" => TABLE.FILL 0
-  | "table.copy" => TABLE.COPY 0 0
-  | "table.init" y:Telemidx_(I) => TABLE.INIT 0 y
+  | "table.get" == "table.get" "0"
+  | "table.set" == "table.set" "0"
+  | "table.size" == "table.size" "0"
+  | "table.grow" == "table.grow" "0"
+  | "table.fill" == "table.fill" "0"
+  | "table.copy" == "table.copy" "0" "0"
+  | "table.init" Telemidx_(I) == "table.init" "0" Telemidx_(I)
   | ...
 
 grammar Tplaininstr_(I)/elem : instr = ...
@@ -235,56 +231,56 @@ grammar Tplaininstr_(I)/memory : instr = ...
   | ...
 
 grammar Tplaininstr_(I)/memory/abbrev : instr = ...
-  | "i32.load" ao:Tmemarg_(4) => LOAD I32 0 ao
-  | "i64.load" ao:Tmemarg_(8) => LOAD I64 0 ao
-  | "f32.load" ao:Tmemarg_(4) => LOAD F32 0 ao
-  | "f64.load" ao:Tmemarg_(8) => LOAD F64 0 ao
-  | "i32.load8_s" ao:Tmemarg_(1) => LOAD I32 (`8 _ S) 0 ao
-  | "i32.load8_u" ao:Tmemarg_(1) => LOAD I32 (`8 _ U) 0 ao
-  | "i32.load16_s" ao:Tmemarg_(2) => LOAD I32 (`16 _ S) 0 ao
-  | "i32.load16_u" ao:Tmemarg_(2) => LOAD I32 (`16 _ U) 0 ao
-  | "i64.load8_s" ao:Tmemarg_(1) => LOAD I64 (`8 _ S) 0 ao
-  | "i64.load8_u" ao:Tmemarg_(1) => LOAD I64 (`8 _ U) 0 ao
-  | "i64.load16_s" ao:Tmemarg_(2) => LOAD I64 (`16 _ S) 0 ao
-  | "i64.load16_u" ao:Tmemarg_(2) => LOAD I64 (`16 _ U) 0 ao
-  | "i64.load32_s" ao:Tmemarg_(4) => LOAD I64 (`32 _ S) 0 ao
-  | "i64.load32_u" ao:Tmemarg_(4) => LOAD I64 (`32 _ U) 0 ao
-  | "v128.load" ao:Tmemarg_(16) => VLOAD V128 0 ao
-  | "v128.load8x8_s" ao:Tmemarg_(8) => VLOAD V128 (SHAPE `8 X `8 _ S) 0 ao
-  | "v128.load8x8_u" ao:Tmemarg_(8) => VLOAD V128 (SHAPE `8 X `8 _ U) 0 ao
-  | "v128.load16x4_s" ao:Tmemarg_(8) => VLOAD V128 (SHAPE `16 X `4 _ S) 0 ao
-  | "v128.load16x4_u" ao:Tmemarg_(8) => VLOAD V128 (SHAPE `16 X `4 _ U) 0 ao
-  | "v128.load32x2_s" ao:Tmemarg_(8) => VLOAD V128 (SHAPE `32 X `2 _ S) 0 ao
-  | "v128.load32x2_u" ao:Tmemarg_(8) => VLOAD V128 (SHAPE `32 X `2 _ U) 0 ao
-  | "v128.load8_splat" ao:Tmemarg_(1) => VLOAD V128 (SPLAT `8) 0 ao
-  | "v128.load16_splat" ao:Tmemarg_(2) => VLOAD V128 (SPLAT `16) 0 ao
-  | "v128.load32_splat" ao:Tmemarg_(4) => VLOAD V128 (SPLAT `32) 0 ao
-  | "v128.load64_splat" ao:Tmemarg_(8) => VLOAD V128 (SPLAT `64) 0 ao
-  | "v128.load32_zero" ao:Tmemarg_(4) => VLOAD V128 (ZERO `32) 0 ao
-  | "v128.load64_zero" ao:Tmemarg_(8) => VLOAD V128 (ZERO `64) 0 ao
-  | "v128.load8_lane" ao:Tmemarg_(1) i:Tlaneidx => VLOAD_LANE V128 `8 0 ao i
-  | "v128.load16_lane" ao:Tmemarg_(2) i:Tlaneidx => VLOAD_LANE V128 `16 0 ao i
-  | "v128.load32_lane" ao:Tmemarg_(4) i:Tlaneidx => VLOAD_LANE V128 `32 0 ao i
-  | "v128.load64_lane" ao:Tmemarg_(8) i:Tlaneidx => VLOAD_LANE V128 `64 0 ao i
-  | "i32.store" ao:Tmemarg_(4) => STORE I32 0 ao
-  | "i64.store" ao:Tmemarg_(8) => STORE I64 0 ao
-  | "f32.store" ao:Tmemarg_(4) => STORE F32 0 ao
-  | "f64.store" ao:Tmemarg_(8) => STORE F64 0 ao
-  | "i32.store8" ao:Tmemarg_(1) => STORE I32 `8 0 ao
-  | "i32.store16" ao:Tmemarg_(2) => STORE I32 `16 0 ao
-  | "i64.store8" ao:Tmemarg_(1) => STORE I64 `8 0 ao
-  | "i64.store16" ao:Tmemarg_(2) => STORE I64 `16 0 ao
-  | "i64.store32" ao:Tmemarg_(4) => STORE I64 `32 0 ao
-  | "v128.store" ao:Tmemarg_(16) => VSTORE V128 0 ao
-  | "v128.store8_lane" ao:Tmemarg_(1) i:Tlaneidx => VSTORE_LANE V128 `8 0 ao i
-  | "v128.store16_lane" ao:Tmemarg_(2) i:Tlaneidx => VSTORE_LANE V128 `16 0 ao i
-  | "v128.store32_lane" ao:Tmemarg_(4) i:Tlaneidx => VSTORE_LANE V128 `32 0 ao i
-  | "v128.store64_lane" ao:Tmemarg_(8) i:Tlaneidx => VSTORE_LANE V128 `64 0 ao i
-  | "memory.size" => MEMORY.SIZE 0
-  | "memory.grow" => MEMORY.GROW 0
-  | "memory.fill" => MEMORY.FILL 0
-  | "memory.copy" => MEMORY.COPY 0 0
-  | "memory.init" y:Telemidx_(I) => MEMORY.INIT 0 y
+  | "i32.load" Tmemarg_(4) == "i32.load" "0" Tmemarg_(4)
+  | "i64.load" Tmemarg_(8) == "i64.load" "0" Tmemarg_(8)
+  | "f32.load" Tmemarg_(4) == "f32.load" "0" Tmemarg_(4)
+  | "f64.load" Tmemarg_(8) == "f64.load" "0" Tmemarg_(8)
+  | "i32.load8_s" Tmemarg_(1) == "i32.load8_s" "0" Tmemarg_(1)
+  | "i32.load8_u" Tmemarg_(1) == "i32.load8_u" "0" Tmemarg_(1)
+  | "i32.load16_s" Tmemarg_(2) == "i32.load16_s" "0" Tmemarg_(2)
+  | "i32.load16_u" Tmemarg_(2) == "i32.load16_u" "0" Tmemarg_(2)
+  | "i64.load8_s" Tmemarg_(1) == "i64.load8_s" "0" Tmemarg_(1)
+  | "i64.load8_u" Tmemarg_(1) == "i64.load8_u" "0" Tmemarg_(1)
+  | "i64.load16_s" Tmemarg_(2) == "i64.load16_s" "0" Tmemarg_(2)
+  | "i64.load16_u" Tmemarg_(2) == "i64.load16_u" "0" Tmemarg_(2)
+  | "i64.load32_s" Tmemarg_(4) == "i64.load32_s" "0" Tmemarg_(4)
+  | "i64.load32_u" Tmemarg_(4) == "i64.load32_u" "0" Tmemarg_(4)
+  | "v128.load" Tmemarg_(16) == "v128.load" "0" Tmemarg_(16)
+  | "v128.load8x8_s" Tmemarg_(8) == "v128.load8x8_s" "0" Tmemarg_(8)
+  | "v128.load8x8_u" Tmemarg_(8) == "v128.load8x8_u" "0" Tmemarg_(8)
+  | "v128.load16x4_s" Tmemarg_(8) == "v128.load16x4_s" "0" Tmemarg_(8)
+  | "v128.load16x4_u" Tmemarg_(8) == "v128.load16x4_u" "0" Tmemarg_(8)
+  | "v128.load32x2_s" Tmemarg_(8) == "v128.load32x2_s" "0" Tmemarg_(8)
+  | "v128.load32x2_u" Tmemarg_(8) == "v128.load32x2_u" "0" Tmemarg_(8)
+  | "v128.load8_splat" Tmemarg_(1) == "v128.load8_splat" "0" Tmemarg_(1)
+  | "v128.load16_splat" Tmemarg_(2) == "v128.load16_splat" "0" Tmemarg_(2)
+  | "v128.load32_splat" Tmemarg_(4) == "v128.load32_splat" "0" Tmemarg_(4)
+  | "v128.load64_splat" Tmemarg_(8) == "v128.load64_splat" "0" Tmemarg_(8)
+  | "v128.load32_zero" Tmemarg_(4) == "v128.load32_zero" "0" Tmemarg_(4)
+  | "v128.load64_zero" Tmemarg_(8) == "v128.load64_zero" "0" Tmemarg_(8)
+  | "v128.load8_lane" Tmemarg_(1) Tlaneidx == "v128.load8_lane" "0" Tmemarg_(1) Tlaneidx
+  | "v128.load16_lane" Tmemarg_(2) Tlaneidx == "v128.load16_lane" "0" Tmemarg_(2) Tlaneidx
+  | "v128.load32_lane" Tmemarg_(4) Tlaneidx == "v128.load32_lane" "0" Tmemarg_(4) Tlaneidx
+  | "v128.load64_lane" Tmemarg_(8) Tlaneidx == "v128.load64_lane" "0" Tmemarg_(8) Tlaneidx
+  | "i32.store" Tmemarg_(4) == "i32.store" "0" Tmemarg_(4)
+  | "i64.store" Tmemarg_(8) == "i64.store" "0" Tmemarg_(8)
+  | "f32.store" Tmemarg_(4) == "f32.store" "0" Tmemarg_(4)
+  | "f64.store" Tmemarg_(8) == "f64.store" "0" Tmemarg_(8)
+  | "i32.store8" Tmemarg_(1) == "i32.store8" "0" Tmemarg_(1)
+  | "i32.store16" Tmemarg_(2) == "i32.store16" "0" Tmemarg_(2)
+  | "i64.store8" Tmemarg_(1) == "i64.store8" "0" Tmemarg_(1)
+  | "i64.store16" Tmemarg_(2) == "i64.store16" "0" Tmemarg_(2)
+  | "i64.store32" Tmemarg_(4) == "i64.store32" "0" Tmemarg_(4)
+  | "v128.store" Tmemarg_(16) == "v128.store" "0" Tmemarg_(16)
+  | "v128.store8_lane" Tmemarg_(1) Tlaneidx == "v128.store8_lane" "0" Tmemarg_(1) Tlaneidx
+  | "v128.store16_lane" Tmemarg_(2) Tlaneidx == "v128.store16_lane" "0" Tmemarg_(1) Tlaneidx
+  | "v128.store32_lane" Tmemarg_(4) Tlaneidx == "v128.store32_lane" "0" Tmemarg_(1) Tlaneidx
+  | "v128.store64_lane" Tmemarg_(8) Tlaneidx == "v128.store64_lane" "0" Tmemarg_(1) Tlaneidx
+  | "memory.size" == "memory.size" "0"
+  | "memory.grow" == "memory.grow" "0"
+  | "memory.fill" == "memory.fill" "0"
+  | "memory.copy" == "memory.copy" "0" "0"
+  | "memory.init" Tdataidx_(I) == "memory.init" "0" Tdataidx_(I)
   | ...
 
 grammar Tplaininstr_(I)/data : instr = ...

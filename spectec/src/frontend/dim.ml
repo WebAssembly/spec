@@ -238,6 +238,10 @@ and check_prod env ctx prod =
     check_exp env ctx e1;
     check_sym env ctx g2;
     check_exp env ctx e2
+  | EquivP (g1, g2, prems) ->
+    check_sym env ctx g1;
+    check_sym env ctx g2;
+    iter_nl_list (check_prem env ctx) prems
 
 and check_gram env ctx gram =
   let (_dots1, prods, _dots2) = gram.it in

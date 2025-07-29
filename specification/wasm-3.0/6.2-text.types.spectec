@@ -63,18 +63,18 @@ grammar Treftype_(I) : reftype =
   | ...
 
 grammar Treftype_(I)/abbrev : reftype = ...
-  | "anyref" => (REF NULL ANY)
-  | "eqref" => (REF NULL EQ)
-  | "i31ref" => (REF NULL I31)
-  | "structref" => (REF NULL STRUCT)
-  | "arrayref" => (REF NULL ARRAY)
-  | "nullref" => (REF NULL NONE)
-  | "funcref" => (REF NULL FUNC)
-  | "nullfuncref" => (REF NULL NOFUNC)
-  | "exnref" => (REF NULL EXN)
-  | "nullexnref" => (REF NULL NOEXN)
-  | "externref" => (REF NULL EXTERN)
-  | "nullexternref" => (REF NULL NOEXTERN)
+  | "anyref" == "(" "ref" "null" "any" ")"
+  | "eqref" == "(" "ref" "null" "any" ")"
+  | "i31ref" == "(" "ref" "null" "any" ")"
+  | "structref" == "(" "ref" "null" "any" ")"
+  | "arrayref" == "(" "ref" "null" "any" ")"
+  | "nullref" == "(" "ref" "null" "any" ")"
+  | "funcref" == "(" "ref" "null" "any" ")"
+  | "nullfuncref" == "(" "ref" "null" "any" ")"
+  | "exnref" == "(" "ref" "null" "any" ")"
+  | "nullexnref" == "(" "ref" "null" "any" ")"
+  | "externref" == "(" "ref" "null" "any" ")"
+  | "nullexternref" == "(" "ref" "null" "any" ")"
 
 grammar Tvaltype_(I) : valtype =
   | nt:Tnumtype => nt
@@ -101,21 +101,21 @@ grammar Tfield_(I) : fieldtype* =
   | ...
 
 grammar Tfield_(I)/abbrev : fieldtype* = ...
-  | "(" "field" ft*:Tfieldtype_(I)* ")" => ft*
+  | "(" "field" Tfieldtype_(I)* ")" == ("(" "field" Tfieldtype_(I) ")")*
 
 grammar Tparam_(I) : (valtype*, (name?)*) =
   | "(" "param" id?:Tid? t:Tvaltype_(I) ")" => (t, id?)
   | ...
 
 grammar Tparam_(I)/abbrev : (valtype*, (name?)*) = ...
-  | "(" "param" t*:Tvaltype_(I)* ")" => (t*, eps^(|t*|))
+  | "(" "param" Tvaltype_(I)* ")" == ("(" "param" Tvaltype_(I) ")")*
 
 grammar Tresult_(I) : valtype* =
   | "(" "result" t:Tvaltype_(I) ")" => t
   | ...
 
 grammar Tresult_(I)/abbrev : valtype* = ...
-  | "(" "result" t*:Tvaltype_(I)* ")" => t*
+  | "(" "result" Tvaltype_(I)* ")" == ("(" "param" Tvaltype_(I) ")")*
 
 ;; TODO(4, rossberg): fix total lengths of lists
 grammar Tcomptype_(I) : comptype =
@@ -133,7 +133,7 @@ grammar Tsubtype_(I) : subtype =
   | ...
 
 grammar Tsubtype_(I)/abbrev : subtype = ...
-  | ct:Tcomptype_(I) => SUB eps eps ct
+  | Tcomptype_(I) == "(" "sub" Tcomptype_(I) ")"
 
 grammar Ttypedef_(I) : subtype =
   | "(" "type" Tid? st:Tsubtype_(I) ")" => st
@@ -143,7 +143,7 @@ grammar Trectype_(I) : rectype =
   | ...
 
 grammar Trectype_(I)/abbrev : rectype = ...
-  | st:Ttypedef_(I) => REC st
+  | Ttypedef_(I) == "(" "rec" Ttypedef_(I) ")"
 
 
 ;; External Types
@@ -170,10 +170,18 @@ grammar Tglobaltype_(I) : globaltype =
   | "(" "mut" t:Tvaltype_(I) ")" => MUT t
 
 grammar Tmemtype_(I) : memtype =
-  | at:Taddrtype lim:Tlimits_($($size(at)/(64 * $Ki))) => at lim PAGE
+  | at:Taddrtype lim:Tlimits_($($size(at)-16)) => at lim PAGE
+  | ...
+
+grammar Tmemtype_(I)/abbrev : memtype = ...
+  | Tlimits_(16) == "i32" Tlimits_(16)
 
 grammar Ttabletype_(I) : tabletype =
   | at:Taddrtype lim:Tlimits_($size(at)) rt:Treftype_(I) => at lim rt
+  | ...
+
+grammar Ttabletype_(I)/abbrev : tabletype = ...
+  | Tlimits_(32) Treftype_(I) == "i32" Tlimits_(16) Treftype_(I)
 
 
 grammar Texterntype_(I) : (externtype, I) =

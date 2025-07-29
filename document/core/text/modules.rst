@@ -342,7 +342,7 @@ A table's initialization :ref:`expression <text-expr>` can be omitted, in which 
        &\equiv&
        \text{(}~\text{table}~~\Tid^?~~\Ttabletype~~\text{(}~\REFNULL~\X{ht}~\text{)}~\text{)}
        \\ &&& \qquad\qquad
-       (\iff \Ttabletype = \Tlimits~\text{(}~\text{ref}~\text{null}^?~\X{ht}~\text{)}) \\
+       (\iff \Ttabletype = \Taddrtype^?~\Tlimits~\text{(}~\text{ref}~\text{null}^?~\X{ht}~\text{)}) \\
    \end{array}
 
 An :ref:`element segment <text-elem>` can be given inline with a table definition, in which case its offset is :math:`0` and the :ref:`limits <text-limits>` of the :ref:`table type <text-tabletype>` are inferred from the length of the given segment:
@@ -496,12 +496,12 @@ The data is written as a :ref:`string <text-string>`, which may be split up into
 Abbreviations
 .............
 
-As an abbreviation, a single instruction may occur in place of the offset of an active data segment:
+As an abbreviation, a single :ref:`folded instruction <text-foldedinstr>` may occur in place of the offset of an active data segment:
 
 .. math::
    \begin{array}{llcll}
    \production{data offset} &
-     \text{(}~\Tinstr~\text{)} &\equiv&
+     \text{(}~\Tfoldedinstr~\text{)} &\equiv&
      \text{(}~\text{offset}~~\Tinstr~\text{)}
    \end{array}
 
@@ -553,15 +553,15 @@ Element segments allow for an optional :ref:`table index <text-tableidx>` to ide
 Abbreviations
 .............
 
-As an abbreviation, a single instruction may occur in place of the offset of an active element segment or as an element expression:
+As an abbreviation, a single :ref:`folded instruction <text-foldedinstr>` may occur in place of the offset of an active element segment or as an element expression:
 
 .. math::
    \begin{array}{llcll}
    \production{element offset} &
-     \text{(}~\Tinstr~\text{)} &\equiv&
+     \text{(}~\Tfoldedinstr~\text{)} &\equiv&
      \text{(}~\text{offset}~~\Tinstr~\text{)} \\
    \production{element item} &
-     \text{(}~\Tinstr~\text{)} &\equiv&
+     \text{(}~\Tfoldedinstr~\text{)} &\equiv&
      \text{(}~\text{item}~~\Tinstr~\text{)} \\
    \end{array}
 

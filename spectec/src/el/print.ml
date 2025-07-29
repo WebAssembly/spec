@@ -221,6 +221,9 @@ and string_of_prod prod =
   | RangeP (g1, e1, g2, e2) ->
     string_of_sym g1 ^ " => " ^ string_of_exp e1 ^ "\n  | ...\n  |" ^
     string_of_sym g2 ^ " => " ^ string_of_exp e2
+  | EquivP (g1, g2, prems) ->
+    string_of_sym g1 ^ " == " ^ string_of_sym g2 ^
+      concat "" (map_filter_nl_list (prefix "\n  -- " string_of_prem) prems)
 
 and string_of_gram gram =
   let (dots1, prods, dots2) = gram.it in

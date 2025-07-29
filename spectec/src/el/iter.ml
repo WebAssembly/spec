@@ -192,6 +192,7 @@ and prod pr =
   match pr.it with
   | SynthP (g, e, prs) -> sym g; exp e; prems prs
   | RangeP (g1, e1, g2, e2) -> sym g1; exp e1; sym g2; exp e2
+  | EquivP (g1, g2, prs) -> sym g1; sym g2; prems prs
 
 and gram gr =
   let (dots1, prs, dots2) = gr.it in
@@ -346,6 +347,8 @@ and clone_prod prod =
     SynthP (clone_sym g, clone_exp e, Convert.map_nl_list clone_prem prs)
   | RangeP (g1, e1, g2, e2) ->
     RangeP (clone_sym g1, clone_exp e1, clone_sym g2, clone_exp e2)
+  | EquivP (g1, g2, prs) ->
+    EquivP (clone_sym g1, clone_sym g2, Convert.map_nl_list clone_prem prs)
   ) $ prod.at
 
 and clone_gram gram =

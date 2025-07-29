@@ -214,6 +214,8 @@ and subst_prod s prod =
     SynthP (subst_sym s g, subst_exp s e, subst_nl_list subst_prem s prems)
   | RangeP (g1, e1, g2, e2) ->
     RangeP (subst_sym s g1, subst_exp s e1, subst_sym s g2, subst_exp s e2)
+  | EquivP (g1, g2, prems) ->
+    EquivP (subst_sym s g1, subst_sym s g2, subst_nl_list subst_prem s prems)
   ) $ prod.at
 
 and subst_gram s gram =

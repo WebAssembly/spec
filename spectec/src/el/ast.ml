@@ -146,6 +146,7 @@ and prod = prod' phrase
 and prod' =
   | SynthP of sym * exp * prem nl_list       (* `|` sym `=>` exp (`--` prem)* *)
   | RangeP of sym * exp * sym * exp          (* `|` sym `=>` exp | ... | sym `=>` exp *)
+  | EquivP of sym * sym * prem nl_list       (* `|` sym `==` sym (`--` prem)* *)
 
 and gram = gram' phrase
 and gram' = dots * prod nl_list * dots       (* `|` list(`...`|prod, `|`) *)

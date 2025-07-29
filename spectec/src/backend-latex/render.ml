@@ -1211,11 +1211,6 @@ and render_typenum env (e, eo) : row list =
 and is_atom_exp_with_show env e =
   match e.it with
   | AtomE atom when Map.mem (typed_id atom).it !(env.show_atom) -> true
-| AtomE atom ->
-if atom.it = Atom.Atom "X" && String.contains e.at.left.file 'A' then
-Printf.eprintf "[is_atom_exp %s:X @ %s] false %s\n%!" (Source.string_of_region e.at) atom.note.Atom.def
-(typed_id atom).it;
-false
   | _ -> false
 
 and flatten_fuse_exp_rev e =
@@ -1365,7 +1360,7 @@ and render_exps sep env es =
 
 and render_exp_seq env = function
   | [] -> ""
-  | es when (List.hd es).at.left.line < (Lib.List.last es).at.right.line ->
+  | es when env.config.display && (List.hd es).at.left.line < (Lib.List.last es).at.right.line ->
     "\\begin{array}[t]{@{}l@{}} " ^ render_exp_seq' env es ^ " \\end{array}"
   | es -> render_exp_seq' env es
 
@@ -1379,7 +1374,7 @@ and render_exp_seq' env = function
     in
     let s2 = render_exp_seq' env es in
     if s1 <> "" && s2 <> "" then s1 ^ "\\," ^ s2 else s1 ^ s2
-  | e1::e2::es when e1.at.right.line < e2.at.left.line ->
+  | e1::e2::es when env.config.display && e1.at.right.line < e2.at.left.line ->
     let s1 = render_exp env e1 in
     let s2 = render_exp_seq' env (e2::es) in
     s1 ^ " \\\\\n  " ^ s2
@@ -1508,25 +1503,35 @@ and render_sym env g : string =
     "{" ^ render_sym env g1 ^ "}" ^ "{" ^ render_sym env g2 ^ "}"
   | UnparenG ({it = ParenG g1; _} | g1) -> render_sym env g1
 
-(* TODO(3, rossberg): don't hard-code number of tabs *)
 and render_syms sep env gs =
-  let br = if env.config.display then " \\\\\n&&& " else " " in
-  altern_map_nl sep br (render_sym env) gs
+  if env.config.display && List.exists ((=) Nl) gs then
+    "\\begin{array}[t]{@{}l@{}} " ^
+    altern_map_nl sep " \\\\\n " (render_sym env) gs ^
+    "\\end{array}"
+  else
+    altern_map_nl sep " " (render_sym env) gs
 
-(* TODO(3, rossberg): don't hard-code number of tabs *)
-and render_sym_seq env = function
+and render_sym_seq env gs =
+  match El.Convert.filter_nl gs with
   | [] -> ""
-  | (Elem g1)::(Elem g2)::gs when g1.at.right.line < g2.at.left.line ->
+  | gs' when env.config.display && (List.hd gs').at.left.line < (Lib.List.last gs').at.right.line
+    || List.exists ((=) Nl) gs ->
+    "\\begin{array}[t]{@{}l@{}} " ^ render_sym_seq' env gs ^ " \\end{array}"
+  | _ -> render_sym_seq' env gs
+
+and render_sym_seq' env = function
+  | [] -> ""
+  | (Elem g1)::(Elem g2)::gs when env.config.display && g1.at.right.line < g2.at.left.line ->
     let s1 = render_sym env g1 in
-    let s2 = render_sym_seq env (Elem g2::gs) in
-    s1 ^ " \\\\\n  &&& " ^ s2
+    let s2 = render_sym_seq' env (Elem g2::gs) in
+    s1 ^ " \\\\\n  " ^ s2
   | (Elem g1)::gs ->
     let s1 = render_sym env g1 in
-    let s2 = render_sym_seq env gs in
+    let s2 = render_sym_seq' env gs in
     if s1 <> "" && s2 <> "" then s1 ^ "~~" ^ s2 else s1 ^ s2
   | Nl::gs ->
-    let s = render_sym_seq env gs in
-    " \\\\[0.8ex]\n  &&& " ^ s
+    let s = render_sym_seq' env gs in
+    " \\\\[0.8ex]\n  " ^ s
 
 and render_prod env prod : row list =
   match prod.it with
@@ -1557,6 +1562,23 @@ and render_prod env prod : row list =
     render_prod env (SynthP (g1, e1, []) $ g1.at) @
     prefix_rows_hd [Col "\\ldots"] [] @
     render_prod env (SynthP (g2, e2, []) $ g2.at)
+  | EquivP (g1, g2, prems) ->
+    (match prems with
+    | _ when not env.config.display ->
+      prefix_rows_hd
+        [Col (render_sym env g1 ^ " ~\\equiv~ " ^ render_sym env g2)]
+        (render_conditions env prems)
+    | _ ->
+      prefix_rows_hd
+        ( Col (render_sym env g1) ::
+          Col "\\quad\\equiv\\quad{}" ::
+          if g1.at.right.line = g2.at.left.line then
+            Col (render_sym env g2) :: []
+          else
+            Br `Narrow :: Col (render_sym env g2) :: []
+        )
+        (render_conditions env prems)
+    )
 
 and render_gram env gram : table =
   let (dots1, prods, dots2) = gram.it in
