@@ -4,19 +4,19 @@
 
 ;; Type uses
 
-grammar Ttypeuse_(I) : (typeidx, I) =
+grammar Ttypeuse_(I) : (typeidx, idctxt) =
   | "(" "type" x:Ttypeidx_(I) ")" => (x, I')
     -- if I.TYPEDEFS[x] = SUB FINAL (FUNC t_1* -> t_2*)
     -- if I' = {LOCALS eps^(|t_1*|)}
-  | "(" "type" x:Ttypeidx_(I) ")" ((t_1*,id?*):Tparam_(I))* (t_2*:Tresult_(I))* => (x, I')
+  | "(" "type" x:Ttypeidx_(I) ")" ((t_1,id?)*:Tparam_(I))* (t_2*:Tresult_(I))* => (x, I')
     -- if I.TYPEDEFS[x] = SUB FINAL (FUNC $concat_(valtype, t_1**) -> $concat_(valtype, t_2**))
     -- if I' = {LOCALS (id?)*}
 ;; TODO(4, rossberg): Idcontext_ok
 ;;    -- Idcontext_ok: I' OK
   | ...
 
-grammar Ttypeuse_(I)/abbrev : (typeidx, I) = ...
-  | ((t_1*,id?*):Tparam_(I))* (t_2*:Tresult_(I))* => (x, I')
+grammar Ttypeuse_(I)/abbrev : (typeidx, idctxt) = ...
+  | ((t_1,id?)*:Tparam_(I))* (t_2*:Tresult_(I))* => (x, I')
     -- if I.TYPEDEFS[x] = SUB FINAL (FUNC $concat_(valtype, t_1**) -> $concat_(valtype, t_2**))
     -- (if I.TYPEDEFS[i] =/= SUB FINAL (FUNC $concat_(valtype, t_1**) -> $concat_(valtype, t_2**)))^(i<x)
     -- if I' = {LOCALS (id?)*}
@@ -96,18 +96,18 @@ grammar Tfieldtype_(I) : fieldtype =
   | zt:Tstoragetype_(I) => zt
   | "(" "mut" zt:Tstoragetype_(I) ")" => MUT zt
 
-grammar Tfield_(I) : fieldtype* =
-  | "(" "field" Tid? ft:Tfieldtype_(I) ")" => ft
+grammar Tfield_(I) : (fieldtype, name?)* =
+  | "(" "field" id?:Tid? ft:Tfieldtype_(I) ")" => (ft, id?)
   | ...
 
-grammar Tfield_(I)/abbrev : fieldtype* = ...
+grammar Tfield_(I)/abbrev : (fieldtype, name?)* = ...
   | "(" "field" Tfieldtype_(I)* ")" == ("(" "field" Tfieldtype_(I) ")")*
 
-grammar Tparam_(I) : (valtype*, (name?)*) =
+grammar Tparam_(I) : (valtype, name?)* =
   | "(" "param" id?:Tid? t:Tvaltype_(I) ")" => (t, id?)
   | ...
 
-grammar Tparam_(I)/abbrev : (valtype*, (name?)*) = ...
+grammar Tparam_(I)/abbrev : (valtype, name?)* = ...
   | "(" "param" Tvaltype_(I)* ")" == ("(" "param" Tvaltype_(I) ")")*
 
 grammar Tresult_(I) : valtype* =
@@ -118,31 +118,31 @@ grammar Tresult_(I)/abbrev : valtype* = ...
   | "(" "result" Tvaltype_(I)* ")" == ("(" "param" Tvaltype_(I) ")")*
 
 ;; TODO(4, rossberg): fix total lengths of lists
-grammar Tcomptype_(I) : comptype =
-  | "(" "struct" ft*:Tlist(Tfield_(I)) ")" => STRUCT $concat_(fieldtype, ft*)
-  | "(" "array" ft:Tfieldtype_(I) ")" => ARRAY ft
-  | "(" "func" (t_1*,id?*)*:Tlist(Tparam_(I)) t_2**:Tlist(Tresult_(I)) ")" => FUNC $concat_(valtype, t_1*) -> $concat_(valtype, t_2*)
+grammar Tcomptype_(I) : (comptype, idctxt) =
+  | "(" "struct" (ft,id?)**:Tlist(Tfield_(I)) ")" => (STRUCT $concat_(fieldtype, ft*), {FIELDS ($concat_(name?, id?**))})
+  | "(" "array" ft:Tfieldtype_(I) ")" => (ARRAY ft, {})
+  | "(" "func" (t_1,id?)**:Tlist(Tparam_(I)) t_2**:Tlist(Tresult_(I)) ")" => (FUNC $concat_(valtype, t_1*) -> $concat_(valtype, t_2*), {})
 
 
 grammar Tfin : fin =
   | eps => eps
   | "final" => FINAL
 
-grammar Tsubtype_(I) : subtype =
-  | "(" "sub" fin:Tfin x*:Tlist(Ttypeidx_(I)) ct:Tcomptype_(I) ")" => SUB fin $($(_IDX x))* ct
+grammar Tsubtype_(I) : (subtype, idctxt) =
+  | "(" "sub" fin:Tfin x*:Tlist(Ttypeidx_(I)) (ct,I'):Tcomptype_(I) ")" => (SUB fin $($(_IDX x))* ct, I')
   | ...
 
-grammar Tsubtype_(I)/abbrev : subtype = ...
+grammar Tsubtype_(I)/abbrev : (subtype, idctxt) = ...
   | Tcomptype_(I) == "(" "sub" Tcomptype_(I) ")"
 
-grammar Ttypedef_(I) : subtype =
-  | "(" "type" Tid? st:Tsubtype_(I) ")" => st
+grammar Ttypedef_(I) : (subtype, idctxt) =
+  | "(" "type" id?:Tid? (st,I'):Tsubtype_(I) ")" => (st, I' ++ {TYPES (id?)})
 
-grammar Trectype_(I) : rectype =
-  | "(" "rec" st*:Tlist(Ttypedef_(I)) ")" => REC st*
+grammar Trectype_(I) : (rectype, idctxt) =
+  | "(" "rec" (st,I')*:Tlist(Ttypedef_(I)) ")" => (REC st*, $concat_idctxt(I'*))
   | ...
 
-grammar Trectype_(I)/abbrev : rectype = ...
+grammar Trectype_(I)/abbrev : (rectype, idctxt) = ...
   | Ttypedef_(I) == "(" "rec" Ttypedef_(I) ")"
 
 
@@ -184,7 +184,7 @@ grammar Ttabletype_(I)/abbrev : tabletype = ...
   | Tlimits_(32) Treftype_(I) == "i32" Tlimits_(16) Treftype_(I)
 
 
-grammar Texterntype_(I) : (externtype, I) =
+grammar Texterntype_(I) : (externtype, idctxt) =
   | "(" "tag" id?:Tid? jt:Ttagtype_(I) ")" => (TAG jt, {TAGS (id?)})
   | "(" "global" id?:Tid? gt:Tglobaltype_(I) ")" => (GLOBAL gt, {GLOBALS (id?)})
   | "(" "memory" id?:Tid? mt:Tmemtype_(I) ")" => (MEM mt, {MEMS (id?)})

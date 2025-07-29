@@ -144,7 +144,7 @@ grammar Tid : name =
 
 ;; Identifier contexts
 
-syntax idcontext hint(desc "identifier context") hint(macro "%" "I%") =
+syntax idctxt hint(desc "identifier context") hint(macro "%" "I%") =
   { TYPES (name?)*        hint(desc "type"),
     TAGS (name?)*         hint(desc "tag"),
     GLOBALS (name?)*      hint(desc "global"),
@@ -159,7 +159,29 @@ syntax idcontext hint(desc "identifier context") hint(macro "%" "I%") =
     TYPEDEFS subtype*     hint(desc "type definitions")
   }
 
-syntax I = idcontext
+syntax I = idctxt
+
+def $concat_idctxt(idctxt*) : idctxt  hint(show (++) %2)
+def $concat_idctxt(eps) = {}
+def $concat_idctxt(I I') = I ++ $concat_idctxt(I'*)
+
+
+relation Idctxt_ok: |- idctxt : OK
+
+rule Idctxt_ok:
+  |- I : OK
+  -- if $disjoint_(name, $concatopt_(name, I.TYPES))
+  -- if $disjoint_(name, $concatopt_(name, I.TAGS))
+  -- if $disjoint_(name, $concatopt_(name, I.GLOBALS))
+  -- if $disjoint_(name, $concatopt_(name, I.MEMS))
+  -- if $disjoint_(name, $concatopt_(name, I.TABLES))
+  -- if $disjoint_(name, $concatopt_(name, I.FUNCS))
+  -- if $disjoint_(name, $concatopt_(name, I.DATAS))
+  -- if $disjoint_(name, $concatopt_(name, I.ELEMS))
+  -- if $disjoint_(name, $concatopt_(name, I.LOCALS))
+  -- if $disjoint_(name, $concatopt_(name, I.LABELS))
+  -- (if $disjoint_(name, $concatopt_(name, field*)))*
+  -- if field** = I.FIELDS
 
 
 ;; Indices

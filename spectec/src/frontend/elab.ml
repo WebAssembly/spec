@@ -1834,95 +1834,97 @@ and infer_sym env g : (Il.sym * typ) attempt =
     (fun _ -> fmt "%s" (el_sym g))
     (function Ok (g', t) -> fmt "%s : %s" (il_sym g') (el_typ t) | _ -> "fail")
   ) @@ fun _ ->
-  match g.it with
-  | VarG (id, as_) ->
-    let ps, t, _gram, _prods' = find "grammar" env.grams id in
-    let as', s = elab_args `Rhs env as_ ps g.at in
-    Ok (Il.VarG (id, as') $ g.at, Subst.subst_typ s t)
-  | NumG (`CharOp, n) ->
+  nest g.at (TupT [] $ g.at) (
+    match g.it with
+    | VarG (id, as_) ->
+      let ps, t, _gram, _prods' = find "grammar" env.grams id in
+      let as', s = elab_args `Rhs env as_ ps g.at in
+      Ok (Il.VarG (id, as') $ g.at, Subst.subst_typ s t)
+    | NumG (`CharOp, n) ->
 (*
-    let s = try Utf8.encode [Z.to_int n] with Z.Overflow | Utf8.Utf8 ->
-      error g.at "character value out of range" in
-    Il.TextG s $ g.at, TextT $ g.at, env
+      let s = try Utf8.encode [Z.to_int n] with Z.Overflow | Utf8.Utf8 ->
+        error g.at "character value out of range" in
+      Il.TextG s $ g.at, TextT $ g.at, env
 *)
-    if n < Z.of_int 0x00 || n > Z.of_int 0x10ffff then
-      fail g.at "unicode value out of range"
-    else
-      Ok (Il.NumG (Z.to_int n) $ g.at, NumT `NatT $ g.at)
-  | NumG (_, n) ->
-    if n < Z.of_int 0x00 || n > Z.of_int 0xff then
-      fail g.at "byte value out of range"
-    else
-      Ok (Il.NumG (Z.to_int n) $ g.at, NumT `NatT $ g.at)
-  | TextG s ->
-    Ok (Il.TextG s $ g.at, TextT $ g.at)
-  | EpsG ->
-    Ok (Il.EpsG $ g.at, TupT [] $ g.at)
-  | SeqG gs ->
-    let* gs' = elab_sym_list env (filter_nl gs) (TupT [] $ g.at) in
-    Ok (Il.SeqG gs' $ g.at, TupT [] $ g.at)
-  | AltG gs ->
-    choice env [
-      (fun env ->
-        let* gs', ts = infer_sym_list env (filter_nl gs) in
-        if ts <> [] && List.for_all (equiv_typ env (List.hd ts)) ts then
-          Ok (Il.AltG gs' $ g.at, List.hd ts)
-        else fail g.at "inconsistent types"
-      );
-      (fun env ->
-        (* HACK to treat singleton strings in short grammar as characters *)
-        let* g' = elab_sym env g (NumT `NatT $ g.at) in
-        Ok (g', NumT `NatT $ g.at)
-      );
-      (fun env ->
-        let* g' = elab_sym env g (TupT [] $ g.at) in
-        Ok (g', TupT [] $ g.at)
+      if n < Z.of_int 0x00 || n > Z.of_int 0x10ffff then
+        fail g.at "unicode value out of range"
+      else
+        Ok (Il.NumG (Z.to_int n) $ g.at, NumT `NatT $ g.at)
+    | NumG (_, n) ->
+      if n < Z.of_int 0x00 || n > Z.of_int 0xff then
+        fail g.at "byte value out of range"
+      else
+        Ok (Il.NumG (Z.to_int n) $ g.at, NumT `NatT $ g.at)
+    | TextG s ->
+      Ok (Il.TextG s $ g.at, TextT $ g.at)
+    | EpsG ->
+      Ok (Il.EpsG $ g.at, TupT [] $ g.at)
+    | SeqG gs ->
+      let* gs' = elab_sym_list env (filter_nl gs) (TupT [] $ g.at) in
+      Ok (Il.SeqG gs' $ g.at, TupT [] $ g.at)
+    | AltG gs ->
+      choice env [
+        (fun env ->
+          let* gs', ts = infer_sym_list env (filter_nl gs) in
+          if ts <> [] && List.for_all (equiv_typ env (List.hd ts)) ts then
+            Ok (Il.AltG gs' $ g.at, List.hd ts)
+          else fail g.at "inconsistent types"
+        );
+        (fun env ->
+          (* HACK to treat singleton strings in short grammar as characters *)
+          let* g' = elab_sym env g (NumT `NatT $ g.at) in
+          Ok (g', NumT `NatT $ g.at)
+        );
+        (fun env ->
+          let* g' = elab_sym env g (TupT [] $ g.at) in
+          Ok (g', TupT [] $ g.at)
+        )
+      ]
+    | RangeG (g1, g2) ->
+      let env1 = local_env env in
+      let env2 = local_env env in
+      let* g1' = elab_sym env1 g1 (NumT `NatT $ g1.at) in
+      let* g2' = elab_sym env2 g2 (NumT `NatT $ g2.at) in
+      if env1.vars != env.vars then
+        error g1.at "invalid symbol in range";
+      if env2.vars != env.vars then
+        error g2.at "invalid symbol in range";
+      Ok (Il.RangeG (g1', g2') $ g.at, NumT `NatT $ g.at)
+    | ParenG g1 ->
+      infer_sym env g1
+    | TupG _ -> error g.at "malformed grammar"
+    | ArithG e ->
+      infer_sym env (sym_of_exp e)
+    | IterG (g1, iter) ->
+      let iterexp' = elab_iterexp env iter in
+      let* g1', t1 = infer_sym env g1 in
+      Ok (
+        Il.IterG (g1', iterexp') $ g.at,
+        IterT (t1, match iter with Opt -> Opt | _ -> List) $ g.at
       )
-    ]
-  | RangeG (g1, g2) ->
-    let env1 = local_env env in
-    let env2 = local_env env in
-    let* g1' = elab_sym env1 g1 (NumT `NatT $ g1.at) in
-    let* g2' = elab_sym env2 g2 (NumT `NatT $ g2.at) in
-    if env1.vars != env.vars then
-      error g1.at "invalid symbol in range";
-    if env2.vars != env.vars then
-      error g2.at "invalid symbol in range";
-    Ok (Il.RangeG (g1', g2') $ g.at, NumT `NatT $ g.at)
-  | ParenG g1 ->
-    infer_sym env g1
-  | TupG _ -> error g.at "malformed grammar"
-  | ArithG e ->
-    infer_sym env (sym_of_exp e)
-  | IterG (g1, iter) ->
-    let iterexp' = elab_iterexp env iter in
-    let* g1', t1 = infer_sym env g1 in
-    Ok (
-      Il.IterG (g1', iterexp') $ g.at,
-      IterT (t1, match iter with Opt -> Opt | _ -> List) $ g.at
-    )
-  | AttrG (e, g1) ->
-    choice env [
-      (fun env ->
-        (* HACK to treat singleton strings in short grammar as characters *)
-        let t1 = NumT `NatT $ g1.at in
-        let* g1' = elab_sym env g1 t1 in
-        let* e' = elab_exp env e t1 in
-        Ok (Il.AttrG (e', g1') $ g.at, t1)
-      );
-      (fun env ->
-        let* g1', t1 = infer_sym env g1 in
-        let* e' = elab_exp env e t1 in
-        Ok (Il.AttrG (e', g1') $ g.at, t1)
-      );
-    ]
-(*
-    let g1', t1 = infer_sym env g1 in
-    let e' = checkpoint (elab_exp env e t1) in
-    Il.AttrG (e', g1') $ g.at, t1
-*)
-  | FuseG _ -> error g.at "misplaced token concatenation"
-  | UnparenG _ -> error g.at "misplaced token unparenthesize"
+    | AttrG (e, g1) ->
+      choice env [
+        (fun env ->
+          (* HACK to treat singleton strings in short grammar as characters *)
+          let t1 = NumT `NatT $ g1.at in
+          let* g1' = elab_sym env g1 t1 in
+          let* e' = elab_exp env e t1 in
+          Ok (Il.AttrG (e', g1') $ g.at, t1)
+        );
+        (fun env ->
+          let* g1', t1 = infer_sym env g1 in
+          let* e' = elab_exp env e t1 in
+          Ok (Il.AttrG (e', g1') $ g.at, t1)
+        );
+      ]
+  (*
+      let g1', t1 = infer_sym env g1 in
+      let e' = checkpoint (elab_exp env e t1) in
+      Il.AttrG (e', g1') $ g.at, t1
+  *)
+    | FuseG _ -> error g.at "misplaced token concatenation"
+    | UnparenG _ -> error g.at "misplaced token unparenthesize"
+  )
 
 and infer_sym_list env es : (Il.sym list * typ list) attempt =
   match es with
