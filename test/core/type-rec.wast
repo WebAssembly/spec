@@ -34,6 +34,38 @@
 )
 
 
+;; Implicit function types
+
+(module
+  (rec (type $ft (func)) (type (struct)))
+  (func $f (type $ft))
+  (global (ref $ft) (ref.func $f))
+)
+
+(module
+  (rec (type $ft (func)))
+  (func $f)  ;; the implicit type of $f is $ft
+  (global (ref $ft) (ref.func $f))
+)
+
+(assert_invalid
+  (module
+    (rec (type $ft (func)) (type (func)))
+    (func $f)  ;; the implicit type of $f is not $ft
+    (global (ref $ft) (ref.func $f))
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (rec (type (func)) (type $ft (func)))
+    (func $f)  ;; the implicit type of $f is not $ft
+    (global (ref $ft) (ref.func $f))
+  )
+  "type mismatch"
+)
+
+
 ;; Static matching of recursive types
 
 (module
