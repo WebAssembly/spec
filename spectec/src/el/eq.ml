@@ -80,6 +80,7 @@ and eq_exp e1 e2 =
   match e1.it, e2.it with
   | VarE (id1, args1), VarE (id2, args2) ->
     eq_id id1 id2 && eq_list eq_arg args1 args2
+  | NumE (_, n1), NumE (_, n2) -> n1 = n2
   | CvtE (e11, nt1), CvtE (e21, nt2) -> eq_exp e11 e21 && nt1 = nt2
   | UnE (op1, e11), UnE (op2, e21) -> op1 = op2 && eq_exp e11 e21
   | BinE (e11, op1, e12), BinE (e21, op2, e22) ->
@@ -149,6 +150,7 @@ and eq_sym g1 g2 =
   match g1.it, g2.it with
   | VarG (id1, args1), VarG (id2, args2) ->
     eq_id id1 id2 && eq_list eq_arg args1 args2
+  | NumG (_, n1), NumG (_, n2) -> n1 = n2
   | SeqG gs1, SeqG gs2
   | AltG gs1, AltG gs2 -> eq_nl_list eq_sym gs1 gs2
   | TupG gs1, TupG gs2 -> eq_list eq_sym gs1 gs2

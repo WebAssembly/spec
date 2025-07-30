@@ -392,9 +392,10 @@ try
     valid_exp env e1 t;
     valid_exp env e2 t
   | MemE (e1, e2) ->
-    let t1 = infer_exp env e1 in
+    let t2 = infer_exp env e2 in
+    let t1 = as_list_typ "expression" env Check t2 e2.at in
     valid_exp env e1 t1;
-    valid_exp env e2 (IterT (t1, List) $ e2.at);
+    valid_exp env e2 t2;
     equiv_typ env (BoolT $ e.at) t e.at
   | LenE e1 ->
     let t1 = infer_exp env e1 in
