@@ -5,7 +5,9 @@
 ;; Types
 
 grammar Ttype_(I) : (type, idctxt) =
-  | (qt,I'):Trectype_(I) => (TYPE qt, I')
+  | (qt,I'):Trectype_(I) => (TYPE qt, I' ++ I'')
+    -- if qt = REC st^n
+    -- if n = 1 /\ I'' = {TYPEDEFS st} \/ n =/= 1 /\ I'' = {TYPEDEFS eps^n}
 
 
 ;; Tags
@@ -159,7 +161,8 @@ grammar Texportfuncdots_(I) hint(show `...) =
   | Texportdots* Timportdots Ttypeuse_(I)
 
 
-;; TODO(5, rossberg): make properly typed
+;; TODO(5, rossberg): These abbreviations are currently not formally reachable
+;; and their types don't match up with anything.
 
 grammar Texporttag_(I)/abbrev : () =
   | "(" "tag" id?:Tid? "(" "export" Tname ")" Texporttagdots_(I) ")" ==
@@ -204,8 +207,7 @@ grammar Tdatamemory_(I)/abbrev : () =
     ----
     -- if id? = id' \/ id? = eps /\ ~(id' <- I.MEMS)
     -- if at? = at' \/ at? = eps /\ at' = I32
-;; TODO(4, rossberg): define $ceil
-;;    -- if n = $ceil($(|b*| / 64*$Ki))
+    -- if n = $ceilz($(|b*| / 64*$Ki))
 
 grammar Telemtable_(I)/abbrev : () =
   | "(" "table" id?:Tid? at?:Taddrtype? Treftype_(I) "(" "elem" (rt,e*):Telemlist_(I) ")" ")" ==
@@ -219,93 +221,95 @@ grammar Telemtable_(I)/abbrev : () =
 
 ;; Modules
 
-syntax modulefield = type | import | tag | global | mem | table | func | data | elem | start | export
+syntax decl = type | import | tag | global | mem | table | func | data | elem | start | export
 
-def $typesmf(modulefield*) : type*      hint(show $types(%))   hint(macro "typesmf")
-def $importsmf(modulefield*) : import*  hint(show $imports(%)) hint(macro "importsmf")
-def $tagsmf(modulefield*) : tag*        hint(show $tags(%))    hint(macro "tagsmf")
-def $globalsmf(modulefield*) : global*  hint(show $globals(%)) hint(macro "globalsmf")
-def $memsmf(modulefield*) : mem*        hint(show $mems(%))    hint(macro "memsmf")
-def $tablesmf(modulefield*) : table*    hint(show $tables(%))  hint(macro "tablesmf")
-def $funcsmf(modulefield*) : func*      hint(show $funcs(%))   hint(macro "funcsmf")
-def $datasmf(modulefield*) : data*      hint(show $datas(%))   hint(macro "datasmf")
-def $elemsmf(modulefield*) : elem*      hint(show $elems(%))   hint(macro "elemsmf")
-def $startsmf(modulefield*) : start*    hint(show $starts(%))  hint(macro "startsmf")
-def $exportsmf(modulefield*) : export*  hint(show $exports(%)) hint(macro "exportsmf")
+def $typesd(decl*) : type*      hint(show $types(%))   hint(macro "typesd")
+def $importsd(decl*) : import*  hint(show $imports(%)) hint(macro "importsd")
+def $tagsd(decl*) : tag*        hint(show $tags(%))    hint(macro "tagsd")
+def $globalsd(decl*) : global*  hint(show $globals(%)) hint(macro "globalsd")
+def $memsd(decl*) : mem*        hint(show $mems(%))    hint(macro "memsd")
+def $tablesd(decl*) : table*    hint(show $tables(%))  hint(macro "tablesd")
+def $funcsd(decl*) : func*      hint(show $funcs(%))   hint(macro "funcsd")
+def $datasd(decl*) : data*      hint(show $datas(%))   hint(macro "datasd")
+def $elemsd(decl*) : elem*      hint(show $elems(%))   hint(macro "elemsd")
+def $startsd(decl*) : start*    hint(show $starts(%))  hint(macro "startsd")
+def $exportsd(decl*) : export*  hint(show $exports(%)) hint(macro "exportsd")
 
-def $typesmf(eps) = eps
-def $typesmf(type mf*) = type $typesmf(mf*)
-def $typesmf(modulefield mf*) = $typesmf(mf*)  -- otherwise
+def $typesd(eps) = eps
+def $typesd(type decl'*) = type $typesd(decl'*)
+def $typesd(decl decl'*) = $typesd(decl'*)  -- otherwise
 
-def $importsmf(eps) = eps
-def $importsmf(import mf*) = import $importsmf(mf*)
-def $importsmf(modulefield mf*) = $importsmf(mf*)  -- otherwise
+def $importsd(eps) = eps
+def $importsd(import decl'*) = import $importsd(decl'*)
+def $importsd(decl decl'*) = $importsd(decl'*)  -- otherwise
 
-def $tagsmf(eps) = eps
-def $tagsmf(tag mf*) = tag $tagsmf(mf*)
-def $tagsmf(modulefield mf*) = $tagsmf(mf*)  -- otherwise
+def $tagsd(eps) = eps
+def $tagsd(tag decl'*) = tag $tagsd(decl'*)
+def $tagsd(decl decl'*) = $tagsd(decl'*)  -- otherwise
 
-def $globalsmf(eps) = eps
-def $globalsmf(global mf*) = global $globalsmf(mf*)
-def $globalsmf(modulefield mf*) = $globalsmf(mf*)  -- otherwise
+def $globalsd(eps) = eps
+def $globalsd(global decl'*) = global $globalsd(decl'*)
+def $globalsd(decl decl'*) = $globalsd(decl'*)  -- otherwise
 
-def $memsmf(eps) = eps
-def $memsmf(mem mf*) = mem $memsmf(mf*)
-def $memsmf(modulefield mf*) = $memsmf(mf*)  -- otherwise
+def $memsd(eps) = eps
+def $memsd(mem decl'*) = mem $memsd(decl'*)
+def $memsd(decl decl'*) = $memsd(decl'*)  -- otherwise
 
-def $tablesmf(eps) = eps
-def $tablesmf(table mf*) = table $tablesmf(mf*)
-def $tablesmf(modulefield mf*) = $tablesmf(mf*)  -- otherwise
+def $tablesd(eps) = eps
+def $tablesd(table decl'*) = table $tablesd(decl'*)
+def $tablesd(decl decl'*) = $tablesd(decl'*)  -- otherwise
 
-def $funcsmf(eps) = eps
-def $funcsmf(func mf*) = func $funcsmf(mf*)
-def $funcsmf(modulefield mf*) = $funcsmf(mf*)  -- otherwise
+def $funcsd(eps) = eps
+def $funcsd(func decl'*) = func $funcsd(decl'*)
+def $funcsd(decl decl'*) = $funcsd(decl'*)  -- otherwise
 
-def $datasmf(eps) = eps
-def $datasmf(data mf*) = data $datasmf(mf*)
-def $datasmf(modulefield mf*) = $datasmf(mf*)  -- otherwise
+def $datasd(eps) = eps
+def $datasd(data decl'*) = data $datasd(decl'*)
+def $datasd(decl decl'*) = $datasd(decl'*)  -- otherwise
 
-def $elemsmf(eps) = eps
-def $elemsmf(elem mf*) = elem $elemsmf(mf*)
-def $elemsmf(modulefield mf*) = $elemsmf(mf*)  -- otherwise
+def $elemsd(eps) = eps
+def $elemsd(elem decl'*) = elem $elemsd(decl'*)
+def $elemsd(decl decl'*) = $elemsd(decl'*)  -- otherwise
 
-def $startsmf(eps) = eps
-def $startsmf(start mf*) = start $startsmf(mf*)
-def $startsmf(modulefield mf*) = $startsmf(mf*)  -- otherwise
+def $startsd(eps) = eps
+def $startsd(start decl'*) = start $startsd(decl'*)
+def $startsd(decl decl'*) = $startsd(decl'*)  -- otherwise
 
-def $exportsmf(eps) = eps
-def $exportsmf(export mf*) = export $exportsmf(mf*)
-def $exportsmf(modulefield mf*) = $exportsmf(mf*)  -- otherwise
+def $exportsd(eps) = eps
+def $exportsd(export decl'*) = export $exportsd(decl'*)
+def $exportsd(decl decl'*) = $exportsd(decl'*)  -- otherwise
 
-def $ordered(modulefield*) : bool
+def $ordered(decl*) : bool
 def $ordered(eps) = true
-def $ordered(mf*) = ($importsmf(mf*) = eps)
-def $ordered(mf_1* import mf_2*) =
-  $importsmf(mf_1*) = eps /\ $tagsmf(mf_1*) = eps /\ $globalsmf(mf_1*) = eps /\ $memsmf(mf_1*) = eps /\ $tablesmf(mf_1*) = eps /\ $funcsmf(mf_1*) = eps
+def $ordered(decl'*) = ($importsd(decl'*) = eps)
+def $ordered(decl_1* import decl_2*) =
+  $importsd(decl_1*) = eps /\ $tagsd(decl_1*) = eps /\
+  $globalsd(decl_1*) = eps /\ $memsd(decl_1*) = eps /\
+  $tablesd(decl_1*) = eps /\ $funcsd(decl_1*) = eps
 
 
-grammar Tmodulefield_(I) : (modulefield, idctxt) =
+grammar Tdecl_(I) : (decl, idctxt) =
   | Ttype_(I) | Timport_(I) | Ttag_(I) | Tglobal_(I) | Tmem_(I) | Ttable_(I) | Tfunc_(I) | Tdata_(I) | Telem_(I) | Tstart_(I) | Texport_(I)
 
 
 grammar Tmodule : module =
-  | "(" "module" Tid? (fld,I)*:Tmodulefield_(I')* ")" =>
+  | "(" "module" Tid? (decl,I)*:Tdecl_(I')* ")" =>
     MODULE type* import* tag* global* mem* table* func* data* elem* start? export*
     -- if I' = $concat_idctxt(I*)
     -- Idctxt_ok: |- I' : OK
-    -- if type* = $typesmf(fld*)
-    -- if import* = $importsmf(fld*)
-    -- if tag* = $tagsmf(fld*)
-    -- if global* = $globalsmf(fld*)
-    -- if mem* = $memsmf(fld*)
-    -- if table* = $tablesmf(fld*)
-    -- if func* = $funcsmf(fld*)
-    -- if data* = $datasmf(fld*)
-    -- if elem* = $elemsmf(fld*)
-    -- if start? = $startsmf(fld*)
-    -- if export* = $exportsmf(fld*)
-    -- if $ordered(fld*)
+    -- if type* = $typesd(decl*)
+    -- if import* = $importsd(decl*)
+    -- if tag* = $tagsd(decl*)
+    -- if global* = $globalsd(decl*)
+    -- if mem* = $memsd(decl*)
+    -- if table* = $tablesd(decl*)
+    -- if func* = $funcsd(decl*)
+    -- if data* = $datasd(decl*)
+    -- if elem* = $elemsd(decl*)
+    -- if start? = $startsd(decl*)
+    -- if export* = $exportsd(decl*)
+    -- if $ordered(decl*)
   | ...
 
 grammar Tmodule/abbrev : module = ...
-  | Tmodulefield_(I)* == "(" "module" Tmodulefield_(I)* ")"
+  | Tdecl_(I)* == "(" "module" Tdecl_(I)* ")"

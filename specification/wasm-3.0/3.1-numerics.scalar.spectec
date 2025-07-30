@@ -75,7 +75,11 @@ def $bool(true) = 1
 
 def $truncz(rat) : int
 def $truncz hint(builtin)
-;;def $trunc(+-q) = +-n  -- if n <- nat /\ $(q - 1) < n <= q
+;;def $truncz(+-q) = +-n  -- if n <- nat /\ $(q - 1) < n <= q
+
+def $ceilz(rat) : int
+def $ceilz hint(builtin)
+;;def $ceilz(+-q) = +-n  -- if n <- nat /\ q <= n < $(q + 1)
 
 
 ;; Saturation

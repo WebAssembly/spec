@@ -30,7 +30,7 @@ grammar TuN(N) : uN(N) =
   | "0x" n:Thexnum => n  -- if $(n < 2^N)
 
 grammar TsN(N) : sN(N) =
-  | pm:Tsign n:TuN(N) => $(pm * n)  -- if $(-2^(N-1) <= pm * n < 2^(N-1))
+  | s:Tsign n:TuN(N) => $(s * n)  -- if $(-2^(N-1) <= s * n < 2^(N-1))
 
 grammar TiN(N) : iN(N) =
   | n:TuN(N) => n
@@ -54,32 +54,26 @@ grammar Thexmant : rat =
   | p:Thexnum "." q:Thexfrac => $(p + q)
 
 ;; TODO(4, rossberg): implement in numerics
-def $ieee_(N, rat) : fN(N)
+def $ieee_(N, rat) : fNmag(N)
 
-;; TODO(4, rossberg): enable using s, e, z as variables
-var pm : int hint(show s)
-var ee : nat hint(show e)
-var zz : nat hint(show z)
+var ee : nat hint(show e)  ;; HACK
 
 grammar Tfloat : rat =
-  | p:Tmant ("E" | "e") pm:Tsign ee:Tnum => $(p * 10^(pm * ee))
+  | p:Tmant ("E" | "e") s:Tsign ee:Tnum => $(p * 10^(s * ee))
 
 grammar Thexfloat : rat =
-  | "0x" p:Thexmant ("P" | "p") pm:Tsign ee:Tnum => $(p * 2^(pm * ee))
+  | "0x" p:Thexmant ("P" | "p") s:Tsign ee:Tnum => $(p * 2^(s * ee))
 
-;; TODO(4, rossberg): enable fN
-(;
 grammar TfNmag(N) : fNmag(N) =
-  | zz:Tfloat => $ieee_(N, zz)     ;; TODO(4, rossberg): -- if $ieee_(N, zz) =/= +-INF
-  | zz:Thexfloat => $ieee_(N, zz)  ;; TODO(4, rossberg): -- if $ieee_(N, zz) =/= +-INF
+  | q:Tfloat => $ieee_(N, q)      -- if $ieee_(N, q) =/= INF
+  | q:Thexfloat => $ieee_(N, q)   -- if $ieee_(N, q) =/= INF
   | "inf" => INF
   | "nan" => NAN($canon_(N))
-  | "nan:0x" n:Thexnum => NAN(n)  -- if $(1 <= n < 2^($signif_(N)))
-;)
+  | "nan:0x" n:Thexnum => NAN(n)  -- if $(1 <= n < 2^($signif(N)))
 
 grammar TfN(N) : fN(N) =
-eps => $fzero(N)
-;;  | pm:Tsign q:TfNmag(N) => q  ;; TODO(4, rossberg): $(pm * q)
+  | $((+1)):Tsign q:TfNmag(N) => POS q
+  | $((-1)):Tsign q:TfNmag(N) => NEG q
 
 
 grammar Tu8 : u8 = TuN(`8)
@@ -90,9 +84,8 @@ grammar Ti16 : u16 = TiN(`16)
 grammar Ti32 : u32 = TiN(`32)
 grammar Ti64 : u64 = TiN(`64)
 grammar Ti128 : u128 = TiN(`128)
-;; TODO(4, rossberg): enable fN
-;;grammar Tf32 : f32 = TfN(`32)
-;;grammar Tf64 : f64 = TfN(`64)
+grammar Tf32 : f32 = TfN(`32)
+grammar Tf64 : f64 = TfN(`64)
 
 
 ;; Strings
@@ -156,7 +149,7 @@ syntax idctxt hint(desc "identifier context") hint(macro "%" "I%") =
     LOCALS (name?)*       hint(desc "local"),
     LABELS (name?)*       hint(desc "label"),
     FIELDS (name?)**      hint(desc "field"),
-    TYPEDEFS subtype*     hint(desc "type definitions")
+    TYPEDEFS (subtype?)*  hint(desc "type definitions")
   }
 
 syntax I = idctxt

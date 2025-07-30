@@ -14,13 +14,13 @@ syntax sN(N) hint(desc "signed integer") hint(show s#%) hint(macro "sNX") =
 syntax iN(N) hint(desc "integer") hint(show i#%) hint(macro "iNX") =
   uN(N)
 
-syntax u8  = uN(8)
-syntax u16 = uN(16)
-syntax u31 = uN(31)
-syntax u32 = uN(32)
-syntax u64 = uN(64)
-syntax u128 = uN(128)
-syntax s33 = sN(33)
+syntax u8  = uN(`8)
+syntax u16 = uN(`16)
+syntax u31 = uN(`31)
+syntax u32 = uN(`32)
+syntax u64 = uN(`64)
+syntax u128 = uN(`128)
+syntax s33 = sN(`33)
 
 var b : byte
 
@@ -52,8 +52,8 @@ syntax fNmag(N) hint(desc "floating-point magnitude") hint(show fNmag) =
   | INF          hint(show infinity)
   | NAN (m)      hint(show NAN#(%))                       -- if $(1 <= m < 2^$M(N))
 
-syntax f32 = fN(32)
-syntax f64 = fN(64)
+syntax f32 = fN(`32)
+syntax f64 = fN(`64)
 
 def $fzero(N) : fN(N) hint(show $(+0))
 def $fzero(N) = POS (SUBNORM 0)
@@ -73,7 +73,7 @@ def $canon_(N) = $(2^($signif(N)-1))
 syntax vN(N) hint(desc "vector") hint(show v#%) hint(macro "vNX") =
   uN(N)
 
-syntax v128 = vN(128)
+syntax v128 = vN(`128)
 
 
 ;; Lists

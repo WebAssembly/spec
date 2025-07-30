@@ -8,20 +8,19 @@ grammar Ttypeuse_(I) : (typeidx, idctxt) =
   | "(" "type" x:Ttypeidx_(I) ")" => (x, I')
     -- if I.TYPEDEFS[x] = SUB FINAL (FUNC t_1* -> t_2*)
     -- if I' = {LOCALS eps^(|t_1*|)}
-  | "(" "type" x:Ttypeidx_(I) ")" ((t_1,id?)*:Tparam_(I))* (t_2*:Tresult_(I))* => (x, I')
-    -- if I.TYPEDEFS[x] = SUB FINAL (FUNC $concat_(valtype, t_1**) -> $concat_(valtype, t_2**))
+  | "(" "type" x:Ttypeidx_(I) ")" (t_1,id?)*:Tparam_(I)* t_2*:Tresult_(I)* => (x, I')
+    -- if I.TYPEDEFS[x] = SUB FINAL (FUNC t_1* -> t_2*)
     -- if I' = {LOCALS (id?)*}
-;; TODO(4, rossberg): Idcontext_ok
-;;    -- Idcontext_ok: I' OK
+    -- Idctxt_ok: |- I' : OK
   | ...
 
 grammar Ttypeuse_(I)/abbrev : (typeidx, idctxt) = ...
-  | ((t_1,id?)*:Tparam_(I))* (t_2*:Tresult_(I))* => (x, I')
-    -- if I.TYPEDEFS[x] = SUB FINAL (FUNC $concat_(valtype, t_1**) -> $concat_(valtype, t_2**))
-    -- (if I.TYPEDEFS[i] =/= SUB FINAL (FUNC $concat_(valtype, t_1**) -> $concat_(valtype, t_2**)))^(i<x)
-    -- if I' = {LOCALS (id?)*}
+  | (t_1,id?)*:Tparam_(I)* t_2*:Tresult_(I)* == "(" "type" x:Ttypeidx_(I) ")" Tparam_(I)* Tresult_(I)*
+    -- if I.TYPEDEFS[x] = SUB FINAL (FUNC t_1* -> t_2*)
+    -- (if I.TYPEDEFS[i] =/= SUB FINAL (FUNC t_1* -> t_2*))^(i<x)
 
-;; TODO(4, rossberg): append new type def if necessary
+;; TODO(5, rossberg): This does not yet formalise how new type definitions are
+;; appended to the module if needed for implicit type uses.
 
 
 ;; Value Types
@@ -96,32 +95,33 @@ grammar Tfieldtype_(I) : fieldtype =
   | zt:Tstoragetype_(I) => zt
   | "(" "mut" zt:Tstoragetype_(I) ")" => MUT zt
 
-grammar Tfield_(I) : (fieldtype, name?)* =
+grammar Tfield_(I) : (fieldtype, name?) =
   | "(" "field" id?:Tid? ft:Tfieldtype_(I) ")" => (ft, id?)
   | ...
 
-grammar Tfield_(I)/abbrev : (fieldtype, name?)* = ...
+;; TODO(5, rossberg): The type currently glosses over the fact that the
+;; abbreviation yields multiple fields. Similarly for params and results.
+grammar Tfield_(I)/abbrev : (fieldtype, name?) = ...
   | "(" "field" Tfieldtype_(I)* ")" == ("(" "field" Tfieldtype_(I) ")")*
 
-grammar Tparam_(I) : (valtype, name?)* =
+grammar Tparam_(I) : (valtype, name?) =
   | "(" "param" id?:Tid? t:Tvaltype_(I) ")" => (t, id?)
   | ...
 
-grammar Tparam_(I)/abbrev : (valtype, name?)* = ...
+grammar Tparam_(I)/abbrev : (valtype, name?) = ...
   | "(" "param" Tvaltype_(I)* ")" == ("(" "param" Tvaltype_(I) ")")*
 
-grammar Tresult_(I) : valtype* =
+grammar Tresult_(I) : valtype =
   | "(" "result" t:Tvaltype_(I) ")" => t
   | ...
 
-grammar Tresult_(I)/abbrev : valtype* = ...
+grammar Tresult_(I)/abbrev : valtype = ...
   | "(" "result" Tvaltype_(I)* ")" == ("(" "param" Tvaltype_(I) ")")*
 
-;; TODO(4, rossberg): fix total lengths of lists
 grammar Tcomptype_(I) : (comptype, idctxt) =
-  | "(" "struct" (ft,id?)**:Tlist(Tfield_(I)) ")" => (STRUCT $concat_(fieldtype, ft*), {FIELDS ($concat_(name?, id?**))})
+  | "(" "struct" (ft,id?)*:Tlist(Tfield_(I)) ")" => (STRUCT ft*, {FIELDS (id?)*})
   | "(" "array" ft:Tfieldtype_(I) ")" => (ARRAY ft, {})
-  | "(" "func" (t_1,id?)**:Tlist(Tparam_(I)) t_2**:Tlist(Tresult_(I)) ")" => (FUNC $concat_(valtype, t_1*) -> $concat_(valtype, t_2*), {})
+  | "(" "func" (t_1,id?)*:Tlist(Tparam_(I)) t_2*:Tlist(Tresult_(I)) ")" => (FUNC t_1* -> t_2*, {})
 
 
 grammar Tfin : fin =

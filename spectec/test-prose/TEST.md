@@ -25814,166 +25814,166 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return `I ++ $concat_idctxt(I'*{})`.
 
 
-:math:`{\mathrm{types}}({{\mathit{modulefield}}^\ast})`
-.......................................................
+:math:`{\mathrm{types}}({{\mathit{decl}'}^\ast})`
+.................................................
 
 
-1. If :math:`{{\mathit{modulefield}}^\ast} = \epsilon`, then:
-
-   a. Return :math:`\epsilon`.
-
-#. Let :math:`{\mathit{type}}~{{\mathit{mf}}^\ast}` be :math:`{{\mathit{modulefield}}^\ast}`.
-
-#. Return :math:`{\mathit{type}}~{\mathrm{types}}({{\mathit{mf}}^\ast})`.
-
-
-:math:`{\mathrm{imports}}({{\mathit{modulefield}}^\ast})`
-.........................................................
-
-
-1. If :math:`{{\mathit{modulefield}}^\ast} = \epsilon`, then:
+1. If :math:`{{\mathit{decl}'}^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{import}}~{{\mathit{mf}}^\ast}` be :math:`{{\mathit{modulefield}}^\ast}`.
+#. Let :math:`{\mathit{type}}~{{\mathit{decl}'}^\ast}` be :math:`{{\mathit{decl}'}^\ast}`.
 
-#. Return :math:`{\mathit{import}}~{\mathrm{imports}}({{\mathit{mf}}^\ast})`.
-
-
-:math:`{\mathrm{tags}}({{\mathit{modulefield}}^\ast})`
-......................................................
+#. Return :math:`{\mathit{type}}~{\mathrm{types}}({{\mathit{decl}'}^\ast})`.
 
 
-1. If :math:`{{\mathit{modulefield}}^\ast} = \epsilon`, then:
-
-   a. Return :math:`\epsilon`.
-
-#. Let :math:`{\mathit{tag}}~{{\mathit{mf}}^\ast}` be :math:`{{\mathit{modulefield}}^\ast}`.
-
-#. Return :math:`{\mathit{tag}}~{\mathrm{tags}}({{\mathit{mf}}^\ast})`.
+:math:`{\mathrm{imports}}({{\mathit{decl}'}^\ast})`
+...................................................
 
 
-:math:`{\mathrm{globals}}({{\mathit{modulefield}}^\ast})`
-.........................................................
-
-
-1. If :math:`{{\mathit{modulefield}}^\ast} = \epsilon`, then:
+1. If :math:`{{\mathit{decl}'}^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{global}}~{{\mathit{mf}}^\ast}` be :math:`{{\mathit{modulefield}}^\ast}`.
+#. Let :math:`{\mathit{import}}~{{\mathit{decl}'}^\ast}` be :math:`{{\mathit{decl}'}^\ast}`.
 
-#. Return :math:`{\mathit{global}}~{\mathrm{globals}}({{\mathit{mf}}^\ast})`.
-
-
-:math:`{\mathrm{mems}}({{\mathit{modulefield}}^\ast})`
-......................................................
+#. Return :math:`{\mathit{import}}~{\mathrm{imports}}({{\mathit{decl}'}^\ast})`.
 
 
-1. If :math:`{{\mathit{modulefield}}^\ast} = \epsilon`, then:
-
-   a. Return :math:`\epsilon`.
-
-#. Let :math:`{\mathit{mem}}~{{\mathit{mf}}^\ast}` be :math:`{{\mathit{modulefield}}^\ast}`.
-
-#. Return :math:`{\mathit{mem}}~{\mathrm{mems}}({{\mathit{mf}}^\ast})`.
+:math:`{\mathrm{tags}}({{\mathit{decl}'}^\ast})`
+................................................
 
 
-:math:`{\mathrm{tables}}({{\mathit{modulefield}}^\ast})`
-........................................................
-
-
-1. If :math:`{{\mathit{modulefield}}^\ast} = \epsilon`, then:
+1. If :math:`{{\mathit{decl}'}^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{table}}~{{\mathit{mf}}^\ast}` be :math:`{{\mathit{modulefield}}^\ast}`.
+#. Let :math:`{\mathit{tag}}~{{\mathit{decl}'}^\ast}` be :math:`{{\mathit{decl}'}^\ast}`.
 
-#. Return :math:`{\mathit{table}}~{\mathrm{tables}}({{\mathit{mf}}^\ast})`.
-
-
-:math:`{\mathrm{funcs}}({{\mathit{modulefield}}^\ast})`
-.......................................................
+#. Return :math:`{\mathit{tag}}~{\mathrm{tags}}({{\mathit{decl}'}^\ast})`.
 
 
-1. If :math:`{{\mathit{modulefield}}^\ast} = \epsilon`, then:
-
-   a. Return :math:`\epsilon`.
-
-#. Let :math:`{\mathit{func}}~{{\mathit{mf}}^\ast}` be :math:`{{\mathit{modulefield}}^\ast}`.
-
-#. Return :math:`{\mathit{func}}~{\mathrm{funcs}}({{\mathit{mf}}^\ast})`.
+:math:`{\mathrm{globals}}({{\mathit{decl}'}^\ast})`
+...................................................
 
 
-:math:`{\mathrm{datas}}({{\mathit{modulefield}}^\ast})`
-.......................................................
-
-
-1. If :math:`{{\mathit{modulefield}}^\ast} = \epsilon`, then:
+1. If :math:`{{\mathit{decl}'}^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{data}}~{{\mathit{mf}}^\ast}` be :math:`{{\mathit{modulefield}}^\ast}`.
+#. Let :math:`{\mathit{global}}~{{\mathit{decl}'}^\ast}` be :math:`{{\mathit{decl}'}^\ast}`.
 
-#. Return :math:`{\mathit{data}}~{\mathrm{datas}}({{\mathit{mf}}^\ast})`.
-
-
-:math:`{\mathrm{elems}}({{\mathit{modulefield}}^\ast})`
-.......................................................
+#. Return :math:`{\mathit{global}}~{\mathrm{globals}}({{\mathit{decl}'}^\ast})`.
 
 
-1. If :math:`{{\mathit{modulefield}}^\ast} = \epsilon`, then:
-
-   a. Return :math:`\epsilon`.
-
-#. Let :math:`{\mathit{elem}}~{{\mathit{mf}}^\ast}` be :math:`{{\mathit{modulefield}}^\ast}`.
-
-#. Return :math:`{\mathit{elem}}~{\mathrm{elems}}({{\mathit{mf}}^\ast})`.
+:math:`{\mathrm{mems}}({{\mathit{decl}'}^\ast})`
+................................................
 
 
-:math:`{\mathrm{starts}}({{\mathit{modulefield}}^\ast})`
-........................................................
-
-
-1. If :math:`{{\mathit{modulefield}}^\ast} = \epsilon`, then:
+1. If :math:`{{\mathit{decl}'}^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{start}}~{{\mathit{mf}}^\ast}` be :math:`{{\mathit{modulefield}}^\ast}`.
+#. Let :math:`{\mathit{mem}}~{{\mathit{decl}'}^\ast}` be :math:`{{\mathit{decl}'}^\ast}`.
 
-#. Return :math:`{\mathit{start}}~{\mathrm{starts}}({{\mathit{mf}}^\ast})`.
-
-
-:math:`{\mathrm{exports}}({{\mathit{modulefield}}^\ast})`
-.........................................................
+#. Return :math:`{\mathit{mem}}~{\mathrm{mems}}({{\mathit{decl}'}^\ast})`.
 
 
-1. If :math:`{{\mathit{modulefield}}^\ast} = \epsilon`, then:
+:math:`{\mathrm{tables}}({{\mathit{decl}'}^\ast})`
+..................................................
+
+
+1. If :math:`{{\mathit{decl}'}^\ast} = \epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{export}}~{{\mathit{mf}}^\ast}` be :math:`{{\mathit{modulefield}}^\ast}`.
+#. Let :math:`{\mathit{table}}~{{\mathit{decl}'}^\ast}` be :math:`{{\mathit{decl}'}^\ast}`.
 
-#. Return :math:`{\mathit{export}}~{\mathrm{exports}}({{\mathit{mf}}^\ast})`.
-
-
-:math:`{\mathrm{ordered}}({{\mathit{modulefield}}^\ast})`
-.........................................................
+#. Return :math:`{\mathit{table}}~{\mathrm{tables}}({{\mathit{decl}'}^\ast})`.
 
 
-1. If :math:`{{\mathit{modulefield}}^\ast} = \epsilon`, then:
+:math:`{\mathrm{funcs}}({{\mathit{decl}'}^\ast})`
+.................................................
+
+
+1. If :math:`{{\mathit{decl}'}^\ast} = \epsilon`, then:
+
+   a. Return :math:`\epsilon`.
+
+#. Let :math:`{\mathit{func}}~{{\mathit{decl}'}^\ast}` be :math:`{{\mathit{decl}'}^\ast}`.
+
+#. Return :math:`{\mathit{func}}~{\mathrm{funcs}}({{\mathit{decl}'}^\ast})`.
+
+
+:math:`{\mathrm{datas}}({{\mathit{decl}'}^\ast})`
+.................................................
+
+
+1. If :math:`{{\mathit{decl}'}^\ast} = \epsilon`, then:
+
+   a. Return :math:`\epsilon`.
+
+#. Let :math:`{\mathit{data}}~{{\mathit{decl}'}^\ast}` be :math:`{{\mathit{decl}'}^\ast}`.
+
+#. Return :math:`{\mathit{data}}~{\mathrm{datas}}({{\mathit{decl}'}^\ast})`.
+
+
+:math:`{\mathrm{elems}}({{\mathit{decl}'}^\ast})`
+.................................................
+
+
+1. If :math:`{{\mathit{decl}'}^\ast} = \epsilon`, then:
+
+   a. Return :math:`\epsilon`.
+
+#. Let :math:`{\mathit{elem}}~{{\mathit{decl}'}^\ast}` be :math:`{{\mathit{decl}'}^\ast}`.
+
+#. Return :math:`{\mathit{elem}}~{\mathrm{elems}}({{\mathit{decl}'}^\ast})`.
+
+
+:math:`{\mathrm{starts}}({{\mathit{decl}'}^\ast})`
+..................................................
+
+
+1. If :math:`{{\mathit{decl}'}^\ast} = \epsilon`, then:
+
+   a. Return :math:`\epsilon`.
+
+#. Let :math:`{\mathit{start}}~{{\mathit{decl}'}^\ast}` be :math:`{{\mathit{decl}'}^\ast}`.
+
+#. Return :math:`{\mathit{start}}~{\mathrm{starts}}({{\mathit{decl}'}^\ast})`.
+
+
+:math:`{\mathrm{exports}}({{\mathit{decl}'}^\ast})`
+...................................................
+
+
+1. If :math:`{{\mathit{decl}'}^\ast} = \epsilon`, then:
+
+   a. Return :math:`\epsilon`.
+
+#. Let :math:`{\mathit{export}}~{{\mathit{decl}'}^\ast}` be :math:`{{\mathit{decl}'}^\ast}`.
+
+#. Return :math:`{\mathit{export}}~{\mathrm{exports}}({{\mathit{decl}'}^\ast})`.
+
+
+:math:`{\mathrm{ordered}}({{\mathit{decl}}^\ast})`
+..................................................
+
+
+1. If :math:`{{\mathit{decl}}^\ast} = \epsilon`, then:
 
    a. Return true.
 
-#. Let :math:`{{\mathit{mf}}^\ast}` be :math:`{{\mathit{modulefield}}^\ast}`.
+#. Let :math:`{{\mathit{decl}'}^\ast}` be :math:`{{\mathit{decl}}^\ast}`.
 
-#. Return :math:`{\mathrm{imports}}({{\mathit{mf}}^\ast}) = \epsilon`.
+#. Return :math:`{\mathrm{imports}}({{\mathit{decl}'}^\ast}) = \epsilon`.
 
-#. Assert: Due to validation, YetE: Nondeterministic assignment target: mf_1*{mf_1 <- mf_1*} :: [import] :: mf_2*{mf_2 <- mf_2*}.
+#. Assert: Due to validation, YetE: Nondeterministic assignment target: decl_1*{decl_1 <- decl_1*} :: [import] :: decl_2*{decl_2 <- decl_2*}.
 
-#. Let :math:`{{\mathit{mf}}_1^\ast}~{\mathit{import}}~{{\mathit{mf}}_2^\ast}` be :math:`{{\mathit{modulefield}}^\ast}`.
+#. Let :math:`{{\mathit{decl}}_1^\ast}~{\mathit{import}}~{{\mathit{decl}}_2^\ast}` be :math:`{{\mathit{decl}}^\ast}`.
 
-#. Return :math:`{\mathrm{imports}}({{\mathit{mf}}_1^\ast}) = \epsilon` and :math:`{\mathrm{tags}}({{\mathit{mf}}_1^\ast}) = \epsilon` and :math:`{\mathrm{globals}}({{\mathit{mf}}_1^\ast}) = \epsilon` and :math:`{\mathrm{mems}}({{\mathit{mf}}_1^\ast}) = \epsilon` and :math:`{\mathrm{tables}}({{\mathit{mf}}_1^\ast}) = \epsilon` and :math:`{\mathrm{funcs}}({{\mathit{mf}}_1^\ast}) = \epsilon`.
+#. Return :math:`{\mathrm{imports}}({{\mathit{decl}}_1^\ast}) = \epsilon` and :math:`{\mathrm{tags}}({{\mathit{decl}}_1^\ast}) = \epsilon` and :math:`{\mathrm{globals}}({{\mathit{decl}}_1^\ast}) = \epsilon` and :math:`{\mathrm{mems}}({{\mathit{decl}}_1^\ast}) = \epsilon` and :math:`{\mathrm{tables}}({{\mathit{decl}}_1^\ast}) = \epsilon` and :math:`{\mathrm{funcs}}({{\mathit{decl}}_1^\ast}) = \epsilon`.
 
 
 :math:`{{{\mathrm{allocX}}^\ast}}{(s, {{X''}^\ast}, {{Y''}^\ast})}`
@@ -32076,80 +32076,80 @@ concat_idctxt idctxt*
 2. Let [I, I'] be idctxt*.
 3. Return I ++ $concat_idctxt(I'*).
 
-typesmf modulefield*
-1. If (modulefield* = []), then:
+typesd decl'*
+1. If (decl'* = []), then:
   a. Return [].
-2. Let [type] :: mf* be modulefield*.
-3. Return [type] :: $typesmf(mf*).
+2. Let [type] :: decl'* be decl'*.
+3. Return [type] :: $typesd(decl'*).
 
-importsmf modulefield*
-1. If (modulefield* = []), then:
+importsd decl'*
+1. If (decl'* = []), then:
   a. Return [].
-2. Let [import] :: mf* be modulefield*.
-3. Return [import] :: $importsmf(mf*).
+2. Let [import] :: decl'* be decl'*.
+3. Return [import] :: $importsd(decl'*).
 
-tagsmf modulefield*
-1. If (modulefield* = []), then:
+tagsd decl'*
+1. If (decl'* = []), then:
   a. Return [].
-2. Let [tag] :: mf* be modulefield*.
-3. Return [tag] :: $tagsmf(mf*).
+2. Let [tag] :: decl'* be decl'*.
+3. Return [tag] :: $tagsd(decl'*).
 
-globalsmf modulefield*
-1. If (modulefield* = []), then:
+globalsd decl'*
+1. If (decl'* = []), then:
   a. Return [].
-2. Let [global] :: mf* be modulefield*.
-3. Return [global] :: $globalsmf(mf*).
+2. Let [global] :: decl'* be decl'*.
+3. Return [global] :: $globalsd(decl'*).
 
-memsmf modulefield*
-1. If (modulefield* = []), then:
+memsd decl'*
+1. If (decl'* = []), then:
   a. Return [].
-2. Let [mem] :: mf* be modulefield*.
-3. Return [mem] :: $memsmf(mf*).
+2. Let [mem] :: decl'* be decl'*.
+3. Return [mem] :: $memsd(decl'*).
 
-tablesmf modulefield*
-1. If (modulefield* = []), then:
+tablesd decl'*
+1. If (decl'* = []), then:
   a. Return [].
-2. Let [table] :: mf* be modulefield*.
-3. Return [table] :: $tablesmf(mf*).
+2. Let [table] :: decl'* be decl'*.
+3. Return [table] :: $tablesd(decl'*).
 
-funcsmf modulefield*
-1. If (modulefield* = []), then:
+funcsd decl'*
+1. If (decl'* = []), then:
   a. Return [].
-2. Let [func] :: mf* be modulefield*.
-3. Return [func] :: $funcsmf(mf*).
+2. Let [func] :: decl'* be decl'*.
+3. Return [func] :: $funcsd(decl'*).
 
-datasmf modulefield*
-1. If (modulefield* = []), then:
+datasd decl'*
+1. If (decl'* = []), then:
   a. Return [].
-2. Let [data] :: mf* be modulefield*.
-3. Return [data] :: $datasmf(mf*).
+2. Let [data] :: decl'* be decl'*.
+3. Return [data] :: $datasd(decl'*).
 
-elemsmf modulefield*
-1. If (modulefield* = []), then:
+elemsd decl'*
+1. If (decl'* = []), then:
   a. Return [].
-2. Let [elem] :: mf* be modulefield*.
-3. Return [elem] :: $elemsmf(mf*).
+2. Let [elem] :: decl'* be decl'*.
+3. Return [elem] :: $elemsd(decl'*).
 
-startsmf modulefield*
-1. If (modulefield* = []), then:
+startsd decl'*
+1. If (decl'* = []), then:
   a. Return [].
-2. Let [start] :: mf* be modulefield*.
-3. Return [start] :: $startsmf(mf*).
+2. Let [start] :: decl'* be decl'*.
+3. Return [start] :: $startsd(decl'*).
 
-exportsmf modulefield*
-1. If (modulefield* = []), then:
+exportsd decl'*
+1. If (decl'* = []), then:
   a. Return [].
-2. Let [export] :: mf* be modulefield*.
-3. Return [export] :: $exportsmf(mf*).
+2. Let [export] :: decl'* be decl'*.
+3. Return [export] :: $exportsd(decl'*).
 
-ordered modulefield*
-1. If (modulefield* = []), then:
+ordered decl*
+1. If (decl* = []), then:
   a. Return true.
-2. Let mf* be modulefield*.
-3. Return ($importsmf(mf*) = []).
-4. Assert: Due to validation, YetE (Nondeterministic assignment target: mf_1*{mf_1 <- mf_1*} :: [import] :: mf_2*{mf_2 <- mf_2*}).
-5. Let mf_1* :: [import] :: mf_2* be modulefield*.
-6. Return (((((($importsmf(mf_1*) = []) /\ ($tagsmf(mf_1*) = [])) /\ ($globalsmf(mf_1*) = [])) /\ ($memsmf(mf_1*) = [])) /\ ($tablesmf(mf_1*) = [])) /\ ($funcsmf(mf_1*) = [])).
+2. Let decl'* be decl*.
+3. Return ($importsd(decl'*) = []).
+4. Assert: Due to validation, YetE (Nondeterministic assignment target: decl_1*{decl_1 <- decl_1*} :: [import] :: decl_2*{decl_2 <- decl_2*}).
+5. Let decl_1* :: [import] :: decl_2* be decl*.
+6. Return (((((($importsd(decl_1*) = []) /\ ($tagsd(decl_1*) = [])) /\ ($globalsd(decl_1*) = [])) /\ ($memsd(decl_1*) = [])) /\ ($tablesd(decl_1*) = [])) /\ ($funcsd(decl_1*) = [])).
 
 allocXs `X `Y s X''* Y''*
 1. If (X''* = []), then:

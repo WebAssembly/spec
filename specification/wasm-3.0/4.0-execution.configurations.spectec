@@ -166,7 +166,7 @@ var ai : arrayinst
 var fv : fieldval
 var pv : packval
 
-var s : store
+;;var s : store
 var z : state
 
 
