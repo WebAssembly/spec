@@ -323,6 +323,10 @@ let rec string_of_instr' depth instr =
   | AppendI (e1, e2) ->
     sprintf " %s :+ %s"
       (string_of_expr e2) (string_of_expr e1)
+  | ForEachI (xes, il) ->
+    sprintf " For each %s, do:%s"
+      (xes |> List.map (fun (x, e) -> x ^ " in " ^ string_of_expr e) |> String.concat " and ")
+      (string_of_instrs' (depth + 1) il)
   | YetI s -> sprintf " YetI: %s." s
 
 and string_of_instrs' depth instrs =
@@ -597,6 +601,12 @@ let rec structured_string_of_instr' depth instr =
     ^ ", "
     ^ structured_string_of_expr e2
     ^ ")"
+  | ForEachI (xes, b) ->
+    "ForEachI (\n"
+    ^ "[" ^ string_of_list (fun (x, e) -> x ^ ", " ^ structured_string_of_expr e) "; " xes ^ "]"
+    ^ ","
+    ^ structured_string_of_instrs' (depth + 1) b
+    ^ repeat indent depth ^ ")"
   | YetI s -> "YetI " ^ s
 
 and structured_string_of_instrs' depth instrs =

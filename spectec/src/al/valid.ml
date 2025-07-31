@@ -709,7 +709,7 @@ let rec valid_instr (env: Env.t) (instr: instr) : Env.t =
     valid_expr env expr2;
     check_list source expr1.note;
     env
-  | OtherwiseI _ | YetI _ -> error_valid "invalid instruction" source ""
+  | ForEachI _ | OtherwiseI _ | YetI _ -> error_valid "invalid instruction" source ""
   )
 
 and valid_instrs env = function

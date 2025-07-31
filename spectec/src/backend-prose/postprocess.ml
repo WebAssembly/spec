@@ -426,6 +426,56 @@ let prioritize_length_check def =
     RuleD (anchor, s, sl')
   | AlgoD _ -> def
 
+let string_drop_last s =
+  let l = String.length s in
+  String.sub s 0 (l-1)
+
+let rec dedup eq = function
+  | [] -> []
+  | hd :: tl ->
+    if List.exists (eq hd) tl then dedup eq tl else hd :: dedup eq tl
+
+
+let handle_allocxs def =
+  match def with
+  | AlgoD algo ->
+    let name = Al.Al_util.name_of_algo algo in
+    let walk_instr walker i =
+      match i.it with
+      | LetI (e1, e2) ->
+        (match e1.it, e2.it with
+        | IterE (e', (List, _)), CallE (fname, args) when Prose_util.is_allocxs fname && fname <> name ->
+          let fname' = string_drop_last fname in
+          let store, tl = Util.Lib.List.split_hd args in
+          let iters, tl' = List.fold_left_map (fun acc arg ->
+            match arg.it with
+            | ExpA ({it = IterE (arg', (_, xes)); _}) ->
+              let arg' = {arg with it = ExpA arg'} in
+              acc @ xes, arg'
+            | _ -> Util.Error.error arg.at "prose postprocessing" "IterE expected as a non-first argument of allocXs"
+          ) [] tl in
+          let iters' = dedup (fun (x1, _) (x2, _) -> x1 = x2) iters in
+          let args' = store :: tl' in
+          let e2' = {e2 with it = CallE (fname', args')} in
+
+          Al.Al_util.
+          [
+            letI (e1, listE [] ~note:e1.note);
+            forEachI (iters', [
+              letI (e', e2');
+              appendI(e1, e')
+            ])
+          ]
+        | _ -> [i]
+        )
+      | _ -> Al.Walk.base_walker.walk_instr walker i
+    in
+    let walker = {Al.Walk.base_walker with walk_instr} in
+    let algo' = walker.walk_algo walker algo in
+    AlgoD algo'
+  | _ -> def
+
+
 let postprocess_prose defs =
   List.map (fun def ->
     def
@@ -436,4 +486,5 @@ let postprocess_prose defs =
     |> restructure_forall
     |> remove_dead_binding
     |> prioritize_length_check
+    |> handle_allocxs
   ) defs

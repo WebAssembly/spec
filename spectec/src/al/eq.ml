@@ -99,8 +99,11 @@ and eq_arg a1 a2 =
 and eq_args al1 al2 = eq_list eq_arg al1 al2
 
 
+and eq_xes xes1 xes2 =
+  eq_list (eq_pair eq_id eq_expr) xes1 xes2
+
 and eq_iterexp (iter1, xes1) (iter2, xes2) =
-  eq_iter iter1 iter2 && eq_list (eq_pair eq_id eq_expr) xes1 xes2
+  eq_iter iter1 iter2 && eq_xes xes1 xes2
 
 
 let rec eq_instr i1 i2 =
@@ -128,6 +131,8 @@ let rec eq_instr i1 i2 =
   | ReplaceI (e11, p1, e12), ReplaceI (e21, p2, e22) ->
     eq_expr e11 e21 && eq_path p1 p2 && eq_expr e12 e22
   | AppendI (e11, e12), AppendI (e21, e22) -> eq_expr e11 e21 && eq_expr e12 e22
+  | ForEachI (xes1, il1), ForEachI (xes2, il2) ->
+    eq_xes xes1 xes2 && eq_instrs il1 il2
   | OtherwiseI il1, OtherwiseI il2 -> eq_instrs il1 il2
   | YetI s1, YetI s2 -> s1 = s2
   | _ -> false

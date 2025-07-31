@@ -384,6 +384,6 @@ and reduce_instrs s : instr list -> expr option = function
     | EitherI _ | PerformI _ | ReplaceI _ | AppendI _ -> None
     (* Invalid instruction in FuncA *)
     | EnterI _  | PushI _ | PopI _ | PopAllI _ | TrapI | FailI | ThrowI _
-    | ExecuteI _ | ExecuteSeqI _ | ExitI _ | OtherwiseI _ | YetI _ -> assert (false)
+    | ExecuteI _ | ExecuteSeqI _ | ExitI _ | ForEachI _ | OtherwiseI _ | YetI _ -> assert (false)
     (* Nop *)
     | (AssertI _ | NopI) -> reduce_instrs s t

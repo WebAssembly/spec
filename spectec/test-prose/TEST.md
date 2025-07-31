@@ -25591,23 +25591,71 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{(\mathsf{func}~x~{{\mathit{local}}^\ast}~{\mathit{expr}}_{\mathsf{f}})^\ast}` be :math:`{{\mathit{func}}^\ast}`.
 
-#. Let :math:`{{\mathit{aa}}^\ast}` be :math:`{{{\mathrm{alloctag}}^\ast}}{(s, {{{\mathit{tagtype}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}^\ast})}`.
+#. Let :math:`{{\mathit{aa}}^\ast}` be :math:`\epsilon`.
 
-#. Let :math:`{{\mathit{ga}}^\ast}` be :math:`{{{\mathrm{allocglobal}}^\ast}}{(s, {{{\mathit{globaltype}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}^\ast}, {{\mathit{val}}_{\mathsf{g}}^\ast})}`.
+#. For each :math:`{\mathit{tagtype}}` in :math:`{{\mathit{tagtype}}^\ast}`, do:
 
-#. Let :math:`{{\mathit{ma}}^\ast}` be :math:`{{{\mathrm{allocmem}}^\ast}}{(s, {{{\mathit{memtype}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}^\ast})}`.
+   a. Let :math:`{\mathit{aa}}` be the tag address :math:`{\mathrm{alloctag}}(s, {{\mathit{tagtype}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]})`.
 
-#. Let :math:`{{\mathit{ta}}^\ast}` be :math:`{{{\mathrm{alloctable}}^\ast}}{(s, {{{\mathit{tabletype}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}^\ast}, {{\mathit{ref}}_{\mathsf{t}}^\ast})}`.
+   #. Append :math:`{\mathit{aa}}` to :math:`{{\mathit{aa}}^\ast}`.
 
-#. Let :math:`{{\mathit{xi}}^\ast}` be :math:`{{{\mathrm{allocexport}}^\ast}}{(\{ \begin{array}[t]{@{}l@{}}\mathsf{tags}~{{\mathit{aa}}_{\mathsf{i}}^\ast}~{{\mathit{aa}}^\ast},\; \mathsf{globals}~{{\mathit{ga}}_{\mathsf{i}}^\ast}~{{\mathit{ga}}^\ast},\; \mathsf{mems}~{{\mathit{ma}}_{\mathsf{i}}^\ast}~{{\mathit{ma}}^\ast},\; \mathsf{tables}~{{\mathit{ta}}_{\mathsf{i}}^\ast}~{{\mathit{ta}}^\ast},\; \mathsf{funcs}~{{\mathit{fa}}_{\mathsf{i}}^\ast}~{{\mathit{fa}}^\ast} \}\end{array}, {{\mathit{export}}^\ast})}`.
+#. Let :math:`{{\mathit{ga}}^\ast}` be :math:`\epsilon`.
 
-#. Let :math:`{{\mathit{da}}^\ast}` be :math:`{{{\mathrm{allocdata}}^\ast}}{(s, {\mathsf{ok}^{{|{{\mathit{data}}^\ast}|}}}, {{{\mathit{byte}}^\ast}^\ast})}`.
+#. For each :math:`{\mathit{globaltype}}` in :math:`{{\mathit{globaltype}}^\ast}` and :math:`{\mathit{val}}_{\mathsf{g}}` in :math:`{{\mathit{val}}_{\mathsf{g}}^\ast}`, do:
 
-#. Let :math:`{{\mathit{ea}}^\ast}` be :math:`{{{\mathrm{allocelem}}^\ast}}{(s, {{{\mathit{elemtype}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}^\ast}, {{{\mathit{ref}}_{\mathsf{e}}^\ast}^\ast})}`.
+   a. Let :math:`{\mathit{ga}}` be the global address :math:`{\mathrm{allocglobal}}(s, {{\mathit{globaltype}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}, {\mathit{val}}_{\mathsf{g}})`.
+
+   #. Append :math:`{\mathit{ga}}` to :math:`{{\mathit{ga}}^\ast}`.
+
+#. Let :math:`{{\mathit{ma}}^\ast}` be :math:`\epsilon`.
+
+#. For each :math:`{\mathit{memtype}}` in :math:`{{\mathit{memtype}}^\ast}`, do:
+
+   a. Let :math:`{\mathit{ma}}` be the memory address :math:`{\mathrm{allocmem}}(s, {{\mathit{memtype}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]})`.
+
+   #. Append :math:`{\mathit{ma}}` to :math:`{{\mathit{ma}}^\ast}`.
+
+#. Let :math:`{{\mathit{ta}}^\ast}` be :math:`\epsilon`.
+
+#. For each :math:`{\mathit{tabletype}}` in :math:`{{\mathit{tabletype}}^\ast}` and :math:`{\mathit{ref}}_{\mathsf{t}}` in :math:`{{\mathit{ref}}_{\mathsf{t}}^\ast}`, do:
+
+   a. Let :math:`{\mathit{ta}}` be the table address :math:`{\mathrm{alloctable}}(s, {{\mathit{tabletype}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}, {\mathit{ref}}_{\mathsf{t}})`.
+
+   #. Append :math:`{\mathit{ta}}` to :math:`{{\mathit{ta}}^\ast}`.
+
+#. Let :math:`{{\mathit{xi}}^\ast}` be :math:`\epsilon`.
+
+#. For each :math:`{\mathit{export}}` in :math:`{{\mathit{export}}^\ast}`, do:
+
+   a. Let :math:`{\mathit{xi}}` be the export instance :math:`{\mathrm{allocexport}}({\mathit{moduleinst}}, {\mathit{export}})`.
+
+   #. Append :math:`{\mathit{xi}}` to :math:`{{\mathit{xi}}^\ast}`.
+
+#. Let :math:`{{\mathit{da}}^\ast}` be :math:`\epsilon`.
+
+#. For each :math:`{{\mathit{byte}}^\ast}` in :math:`{{{\mathit{byte}}^\ast}^\ast}`, do:
+
+   a. Let :math:`{\mathit{da}}` be the data address :math:`{\mathrm{allocdata}}(s, \mathsf{ok}, {{\mathit{byte}}^\ast})`.
+
+   #. Append :math:`{\mathit{da}}` to :math:`{{\mathit{da}}^\ast}`.
+
+#. Let :math:`{{\mathit{ea}}^\ast}` be :math:`\epsilon`.
+
+#. For each :math:`{\mathit{elemtype}}` in :math:`{{\mathit{elemtype}}^\ast}` and :math:`{{\mathit{ref}}_{\mathsf{e}}^\ast}` in :math:`{{{\mathit{ref}}_{\mathsf{e}}^\ast}^\ast}`, do:
+
+   a. Let :math:`{\mathit{ea}}` be the elem address :math:`{\mathrm{allocelem}}(s, {{\mathit{elemtype}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}, {{\mathit{ref}}_{\mathsf{e}}^\ast})`.
+
+   #. Append :math:`{\mathit{ea}}` to :math:`{{\mathit{ea}}^\ast}`.
 
 #. Let :math:`{\mathit{moduleinst}}` be the module instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{dt}}^\ast},\; \mathsf{tags}~{{\mathit{aa}}_{\mathsf{i}}^\ast}~{{\mathit{aa}}^\ast},\; \mathsf{globals}~{{\mathit{ga}}_{\mathsf{i}}^\ast}~{{\mathit{ga}}^\ast},\; \mathsf{mems}~{{\mathit{ma}}_{\mathsf{i}}^\ast}~{{\mathit{ma}}^\ast},\; \mathsf{tables}~{{\mathit{ta}}_{\mathsf{i}}^\ast}~{{\mathit{ta}}^\ast},\; \mathsf{funcs}~{{\mathit{fa}}_{\mathsf{i}}^\ast}~{{\mathit{fa}}^\ast},\; \mathsf{datas}~{{\mathit{da}}^\ast},\; \mathsf{elems}~{{\mathit{ea}}^\ast},\; \mathsf{exports}~{{\mathit{xi}}^\ast} \}\end{array}`.
 
-#. Let :math:`{{\mathit{funcaddr}}_0^\ast}` be :math:`{{{\mathrm{allocfunc}}^\ast}}{(s, {{{\mathit{dt}}^\ast}{}[x]^\ast}, {(\mathsf{func}~x~{{\mathit{local}}^\ast}~{\mathit{expr}}_{\mathsf{f}})^\ast}, {{\mathit{moduleinst}}^{{|{{\mathit{func}}^\ast}|}}})}`.
+#. Let :math:`{{\mathit{funcaddr}}_0^\ast}` be :math:`\epsilon`.
+
+#. For each :math:`{\mathit{expr}}_{\mathsf{f}}` in :math:`{{\mathit{expr}}_{\mathsf{f}}^\ast}` and :math:`{{\mathit{local}}^\ast}` in :math:`{{{\mathit{local}}^\ast}^\ast}` and :math:`x` in :math:`{x^\ast}`, do:
+
+   a. Let :math:`{\mathit{funcaddr}}_0` be the function address :math:`{\mathrm{allocfunc}}(s, {{\mathit{dt}}^\ast}{}[x], \mathsf{func}~x~{{\mathit{local}}^\ast}~{\mathit{expr}}_{\mathsf{f}}, {\mathit{moduleinst}})`.
+
+   #. Append :math:`{\mathit{funcaddr}}_0` to :math:`{{\mathit{funcaddr}}_0^\ast}`.
 
 #. Assert: Due to validation, :math:`{{\mathit{funcaddr}}_0^\ast} = {{\mathit{fa}}^\ast}`.
 
@@ -31980,17 +32028,41 @@ allocmodule s module externaddr* val_G* ref_T* ref_E**
 13. Let dt* be $alloctypes(type*).
 14. Let (ELEM elemtype expr_E* elemmode)* be elem*.
 15. Let (FUNC x local* expr_F)* be func*.
-16. Let aa* be $alloctags(s, $subst_all_tagtype(tagtype, dt*)*).
-17. Let ga* be $allocglobals(s, $subst_all_globaltype(globaltype, dt*)*, val_G*).
-18. Let ma* be $allocmems(s, $subst_all_memtype(memtype, dt*)*).
-19. Let ta* be $alloctables(s, $subst_all_tabletype(tabletype, dt*)*, ref_T*).
-20. Let xi* be $allocexports({ TAGS: aa_I* :: aa*; GLOBALS: ga_I* :: ga*; MEMS: ma_I* :: ma*; TABLES: ta_I* :: ta*; FUNCS: fa_I* :: fa* }, export*).
-21. Let da* be $allocdatas(s, OK^|data*|, byte**).
-22. Let ea* be $allocelems(s, $subst_all_reftype(elemtype, dt*)*, ref_E**).
-23. Let moduleinst be { TYPES: dt*; TAGS: aa_I* :: aa*; GLOBALS: ga_I* :: ga*; MEMS: ma_I* :: ma*; TABLES: ta_I* :: ta*; FUNCS: fa_I* :: fa*; DATAS: da*; ELEMS: ea*; EXPORTS: xi* }.
-24. Let funcaddr_0* be $allocfuncs(s, dt*[x]*, (FUNC x local* expr_F)*, moduleinst^|func*|).
-25. Assert: Due to validation, (funcaddr_0* = fa*).
-26. Return moduleinst.
+16. Let aa* be [].
+17. For each tagtype in tagtype*, do:
+  a. Let aa be $alloctag(s, $subst_all_tagtype(tagtype, dt*)).
+  b. Append aa to the aa*.
+18. Let ga* be [].
+19. For each globaltype in globaltype* and val_G in val_G*, do:
+  a. Let ga be $allocglobal(s, $subst_all_globaltype(globaltype, dt*), val_G).
+  b. Append ga to the ga*.
+20. Let ma* be [].
+21. For each memtype in memtype*, do:
+  a. Let ma be $allocmem(s, $subst_all_memtype(memtype, dt*)).
+  b. Append ma to the ma*.
+22. Let ta* be [].
+23. For each tabletype in tabletype* and ref_T in ref_T*, do:
+  a. Let ta be $alloctable(s, $subst_all_tabletype(tabletype, dt*), ref_T).
+  b. Append ta to the ta*.
+24. Let xi* be [].
+25. For each export in export*, do:
+  a. Let xi be $allocexport({ TAGS: aa_I* :: aa*; GLOBALS: ga_I* :: ga*; MEMS: ma_I* :: ma*; TABLES: ta_I* :: ta*; FUNCS: fa_I* :: fa* }, export).
+  b. Append xi to the xi*.
+26. Let da* be [].
+27. For each byte* in byte**, do:
+  a. Let da be $allocdata(s, OK, byte*).
+  b. Append da to the da*.
+28. Let ea* be [].
+29. For each elemtype in elemtype* and ref_E* in ref_E**, do:
+  a. Let ea be $allocelem(s, $subst_all_reftype(elemtype, dt*), ref_E*).
+  b. Append ea to the ea*.
+30. Let moduleinst be { TYPES: dt*; TAGS: aa_I* :: aa*; GLOBALS: ga_I* :: ga*; MEMS: ma_I* :: ma*; TABLES: ta_I* :: ta*; FUNCS: fa_I* :: fa*; DATAS: da*; ELEMS: ea*; EXPORTS: xi* }.
+31. Let funcaddr_0* be [].
+32. For each expr_F in expr_F* and local* in local** and x in x*, do:
+  a. Let funcaddr_0 be $allocfunc(s, dt*[x], (FUNC x local* expr_F), moduleinst).
+  b. Append funcaddr_0 to the funcaddr_0*.
+33. Assert: Due to validation, (funcaddr_0* = fa*).
+34. Return moduleinst.
 
 rundata_ x (DATA b^n datamode)
 1. If (datamode = PASSIVE), then:

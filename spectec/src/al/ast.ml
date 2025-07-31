@@ -138,6 +138,7 @@ and instr' =
   | ReplaceI of expr * path * expr        (* `replace` expr `->` path `with` expr *)
   | AppendI of expr * expr                (* `append` expr `to the` expr *)
   (* Administrative instructions *)
+  | ForEachI of (id * expr) list * instr list  (* only for rendering prose *)
   | OtherwiseI of instr list              (* only during the intermediate processing of il->al *)
   | YetI of string                        (* for future not yet implemented feature *)
 

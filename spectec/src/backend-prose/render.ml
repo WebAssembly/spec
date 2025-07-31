@@ -1437,6 +1437,14 @@ let rec render_instr env algoname index depth instr =
   | Al.Ast.AppendI (e1, e2) ->
     sprintf "%s Append %s to %s." (render_order index depth)
       (render_expr env e2) (render_expr env e1)
+  | Al.Ast.ForEachI (xes, il) ->
+    sprintf "%s For each %s, do:%s" (render_order index depth)
+      (xes |> List.map (fun (x, e) ->
+        let t = match e.note.it with | Il.Ast.IterT (t, _) -> t | _ -> assert false in
+        let e' = Al.Ast.VarE x $$ no_region % t in
+        render_expr env e' ^ " in " ^ render_expr env e
+      ) |> String.concat " and ")
+      (render_instrs env algoname (depth + 1) il)
   | Al.Ast.YetI s -> sprintf "%s YetI: %s." (render_order index depth) s
 
 and render_instrs env algoname depth instrs =

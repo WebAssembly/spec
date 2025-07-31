@@ -37,6 +37,7 @@ type hintenv =
     prosepp_hints : hints ref;
     desc_hints : hints ref;
     func_prose_hints : hints ref;
+    prose_allocxs_hints: hints ref; (* Hardcoded hint for allocX* in allocmodule *)
   }
 
 let hintenv =
@@ -45,6 +46,7 @@ let hintenv =
     prosepp_hints = ref Map.empty;
     desc_hints = ref Map.empty;
     func_prose_hints = ref Map.empty;
+    prose_allocxs_hints = ref Map.empty;
   }
 
 (* Collect hints *)
@@ -76,6 +78,7 @@ let env_hintdef ?(partial = false) hd =
     env_hints "prosepp" hintenv.prosepp_hints id hints;
   | El.Ast.DecH (id, hints) ->
     env_hints "prose" hintenv.func_prose_hints id hints;
+    env_hints "prose_allocxs" hintenv.prose_allocxs_hints id hints;
   | _ -> ()
 
 let env_typ id t =
@@ -322,6 +325,11 @@ let extract_call_hint fname =
   match Map.find_opt fname !(hintenv.func_prose_hints) with
   | Some (Some e, _) -> Some e
   | _ -> None
+
+let is_allocxs fname =
+  match Map.find_opt fname !(hintenv.prose_allocxs_hints) with
+  | Some _ -> true
+  | _ -> false
 
 (* EL Helpers *)
 open El.Ast

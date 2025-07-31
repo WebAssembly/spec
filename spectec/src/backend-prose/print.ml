@@ -334,6 +334,10 @@ let rec string_of_instr' depth instr =
   | AppendI (e1, e2) ->
     sprintf "%s Append %s to the %s." (make_index depth)
       (string_of_expr e2) (string_of_expr e1)
+  | ForEachI (xes, il) ->
+    sprintf "%s For each %s, do:%s" (make_index depth)
+      (xes |> List.map (fun (x, e) -> x ^ " in " ^ string_of_expr e) |> String.concat " and ")
+      (string_of_instrs' (depth + 1) il)
   | YetI s -> sprintf "%s YetI: %s." (make_index depth) s
 
 and string_of_instrs' depth instrs =

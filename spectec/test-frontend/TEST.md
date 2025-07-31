@@ -7098,7 +7098,7 @@ def $alloctag(store : store, tagtype : tagtype) : (store, tagaddr)
 ;; ../../../../specification/wasm-3.0/4.4-execution.modules.spectec
 rec {
 
-;; ../../../../specification/wasm-3.0/4.4-execution.modules.spectec:20.1-20.82
+;; ../../../../specification/wasm-3.0/4.4-execution.modules.spectec:20.1-20.102
 def $alloctags(store : store, tagtype*) : (store, tagaddr*)
   ;; ../../../../specification/wasm-3.0/4.4-execution.modules.spectec:21.1-21.34
   def $alloctags{s : store}(s, []) = (s, [])
@@ -7117,7 +7117,7 @@ def $allocglobal(store : store, globaltype : globaltype, val : val) : (store, gl
 ;; ../../../../specification/wasm-3.0/4.4-execution.modules.spectec
 rec {
 
-;; ../../../../specification/wasm-3.0/4.4-execution.modules.spectec:31.1-31.102
+;; ../../../../specification/wasm-3.0/4.4-execution.modules.spectec:31.1-31.122
 def $allocglobals(store : store, globaltype*, val*) : (store, globaladdr*)
   ;; ../../../../specification/wasm-3.0/4.4-execution.modules.spectec:32.1-32.42
   def $allocglobals{s : store}(s, [], []) = (s, [])
@@ -7136,7 +7136,7 @@ def $allocmem(store : store, memtype : memtype) : (store, memaddr)
 ;; ../../../../specification/wasm-3.0/4.4-execution.modules.spectec
 rec {
 
-;; ../../../../specification/wasm-3.0/4.4-execution.modules.spectec:42.1-42.82
+;; ../../../../specification/wasm-3.0/4.4-execution.modules.spectec:42.1-42.102
 def $allocmems(store : store, memtype*) : (store, memaddr*)
   ;; ../../../../specification/wasm-3.0/4.4-execution.modules.spectec:43.1-43.34
   def $allocmems{s : store}(s, []) = (s, [])
@@ -7155,7 +7155,7 @@ def $alloctable(store : store, tabletype : tabletype, ref : ref) : (store, table
 ;; ../../../../specification/wasm-3.0/4.4-execution.modules.spectec
 rec {
 
-;; ../../../../specification/wasm-3.0/4.4-execution.modules.spectec:53.1-53.98
+;; ../../../../specification/wasm-3.0/4.4-execution.modules.spectec:53.1-53.118
 def $alloctables(store : store, tabletype*, ref*) : (store, tableaddr*)
   ;; ../../../../specification/wasm-3.0/4.4-execution.modules.spectec:54.1-54.41
   def $alloctables{s : store}(s, [], []) = (s, [])
@@ -7174,7 +7174,7 @@ def $allocfunc(store : store, deftype : deftype, funccode : funccode, moduleinst
 ;; ../../../../specification/wasm-3.0/4.4-execution.modules.spectec
 rec {
 
-;; ../../../../specification/wasm-3.0/4.4-execution.modules.spectec:64.1-64.113
+;; ../../../../specification/wasm-3.0/4.4-execution.modules.spectec:64.1-64.133
 def $allocfuncs(store : store, deftype*, funccode*, moduleinst*) : (store, funcaddr*)
   ;; ../../../../specification/wasm-3.0/4.4-execution.modules.spectec:65.1-65.45
   def $allocfuncs{s : store}(s, [], [], []) = (s, [])
@@ -7193,7 +7193,7 @@ def $allocdata(store : store, datatype : datatype, byte*) : (store, dataaddr)
 ;; ../../../../specification/wasm-3.0/4.4-execution.modules.spectec
 rec {
 
-;; ../../../../specification/wasm-3.0/4.4-execution.modules.spectec:75.1-75.98
+;; ../../../../specification/wasm-3.0/4.4-execution.modules.spectec:75.1-75.118
 def $allocdatas(store : store, datatype*, byte**) : (store, dataaddr*)
   ;; ../../../../specification/wasm-3.0/4.4-execution.modules.spectec:76.1-76.40
   def $allocdatas{s : store}(s, [], []) = (s, [])
@@ -7212,7 +7212,7 @@ def $allocelem(store : store, elemtype : elemtype, ref*) : (store, elemaddr)
 ;; ../../../../specification/wasm-3.0/4.4-execution.modules.spectec
 rec {
 
-;; ../../../../specification/wasm-3.0/4.4-execution.modules.spectec:86.1-86.97
+;; ../../../../specification/wasm-3.0/4.4-execution.modules.spectec:86.1-86.117
 def $allocelems(store : store, elemtype*, ref**) : (store, elemaddr*)
   ;; ../../../../specification/wasm-3.0/4.4-execution.modules.spectec:87.1-87.40
   def $allocelems{s : store}(s, [], []) = (s, [])

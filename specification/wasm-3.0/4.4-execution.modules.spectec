@@ -17,7 +17,7 @@ def $alloctag(s, tagtype) = (s ++ {TAGS taginst}, |s.TAGS|)
   ---- ----
   -- if taginst = { TYPE tagtype }
 
-def $alloctags(store, tagtype*) : (store, tagaddr*) hint(show $alloctag*#((%,%)))
+def $alloctags(store, tagtype*) : (store, tagaddr*) hint(show $alloctag*#((%,%))) hint(prose_allocxs)
 def $alloctags(s, eps) = (s, eps)
 def $alloctags(s, tagtype tagtype'*) = (s_2, ja ja'*)
   -- if (s_1, ja) = $alloctag(s, tagtype)
@@ -28,7 +28,7 @@ def $allocglobal(s, globaltype, val) = (s ++ {GLOBALS globalinst}, |s.GLOBALS|)
   ---- ----
   -- if globalinst = { TYPE globaltype, VALUE val }
 
-def $allocglobals(store, globaltype*, val*) : (store, globaladdr*) hint(show $allocglobal*#((%,%,%)))
+def $allocglobals(store, globaltype*, val*) : (store, globaladdr*) hint(show $allocglobal*#((%,%,%))) hint(prose_allocxs)
 def $allocglobals(s, eps, eps) = (s, eps)
 def $allocglobals(s, globaltype globaltype'*, val val'*) = (s_2, ga ga'*)
   -- if (s_1, ga) = $allocglobal(s, globaltype, val)
@@ -39,7 +39,7 @@ def $allocmem(s, at `[i .. j] PAGE) = (s ++ {MEMS meminst}, |s.MEMS|)
   ---- ----
   -- if meminst = { TYPE (at `[i .. j] PAGE), BYTES (0x00)^(i * $($(64 * $Ki))) }
 
-def $allocmems(store, memtype*) : (store, memaddr*) hint(show $allocmem*#((%,%)))
+def $allocmems(store, memtype*) : (store, memaddr*) hint(show $allocmem*#((%,%))) hint(prose_allocxs)
 def $allocmems(s, eps) = (s, eps)
 def $allocmems(s, memtype memtype'*) = (s_2, ma ma'*)
   -- if (s_1, ma) = $allocmem(s, memtype)
@@ -50,7 +50,7 @@ def $alloctable(s, at `[i .. j] rt, ref) = (s ++ {TABLES tableinst}, |s.TABLES|)
   ---- ----
   -- if tableinst = { TYPE (at `[i .. j] rt), REFS ref^i }
 
-def $alloctables(store, tabletype*, ref*) : (store, tableaddr*) hint(show $alloctable*#((%,%,%)))
+def $alloctables(store, tabletype*, ref*) : (store, tableaddr*) hint(show $alloctable*#((%,%,%))) hint(prose_allocxs)
 def $alloctables(s, eps, eps) = (s, eps)
 def $alloctables(s, tabletype tabletype'*, ref ref'*) = (s_2, ta ta'*)
   -- if (s_1, ta) = $alloctable(s, tabletype, ref)
@@ -61,7 +61,7 @@ def $allocfunc(s, deftype, funccode, moduleinst) = (s ++ {FUNCS funcinst}, |s.FU
   ---- ----
   -- if funcinst = { TYPE deftype, MODULE moduleinst, CODE funccode }
 
-def $allocfuncs(store, deftype*, funccode*, moduleinst*) : (store, funcaddr*) hint(show $allocfunc*#((%,%,%,%)))
+def $allocfuncs(store, deftype*, funccode*, moduleinst*) : (store, funcaddr*) hint(show $allocfunc*#((%,%,%,%))) hint(prose_allocxs)
 def $allocfuncs(s, eps, eps, eps) = (s, eps)
 def $allocfuncs(s, dt dt'*, funccode funccode'*, moduleinst moduleinst'*) = (s_2, fa fa'*)
   -- if (s_1, fa) = $allocfunc(s, dt, funccode, moduleinst)
@@ -72,7 +72,7 @@ def $allocdata(s, OK, byte*) = (s ++ {DATAS datainst}, |s.DATAS|)
   ---- ----
   -- if datainst = { BYTES byte* }
 
-def $allocdatas(store, datatype*, (byte*)*) : (store, dataaddr*) hint(show $allocdata*#((%,%,%)))
+def $allocdatas(store, datatype*, (byte*)*) : (store, dataaddr*) hint(show $allocdata*#((%,%,%))) hint(prose_allocxs)
 def $allocdatas(s, eps, eps) = (s, eps)
 def $allocdatas(s, ok ok'*, (b*) (b'*)*) = (s_2, da da'*)
   -- if (s_1, da) = $allocdata(s, ok, b*)
@@ -83,7 +83,7 @@ def $allocelem(s, elemtype, ref*) = (s ++ {ELEMS eleminst}, |s.ELEMS|)
   ---- ----
   -- if eleminst = { TYPE elemtype, REFS ref* }
 
-def $allocelems(store, elemtype*, (ref*)*) : (store, elemaddr*) hint(show $allocelem*#((%,%,%)))
+def $allocelems(store, elemtype*, (ref*)*) : (store, elemaddr*) hint(show $allocelem*#((%,%,%))) hint(prose_allocxs)
 def $allocelems(s, eps, eps) = (s, eps)
 def $allocelems(s, rt rt'*, (ref*) (ref'*)*) = (s_2, ea ea'*)
   -- if (s_1, ea) = $allocelem(s, rt, ref*)
@@ -96,7 +96,7 @@ def $allocexport(moduleinst, EXPORT name (MEM x)) = { NAME name, ADDR (MEM modul
 def $allocexport(moduleinst, EXPORT name (TABLE x)) = { NAME name, ADDR (TABLE moduleinst.TABLES[x]) }
 def $allocexport(moduleinst, EXPORT name (FUNC x)) = { NAME name, ADDR (FUNC moduleinst.FUNCS[x]) }
 
-def $allocexports(moduleinst, export*) : exportinst* hint(show $allocexport*#(%,%))
+def $allocexports(moduleinst, export*) : exportinst* hint(show $allocexport*#(%,%)) hint(prose_allocxs)
 def $allocexports(moduleinst, export*) = $allocexport(moduleinst, export)*
 
 
