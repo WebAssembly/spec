@@ -3329,6 +3329,11 @@ relation Defaultable: `|-%DEFAULTABLE`(valtype)
     -- if ($default_(t) =/= ?())
 
 ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec
+def $is_packtype(storagetype : storagetype) : bool
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec
+  def $is_packtype{zt : storagetype}(zt) = (zt = ($unpack(zt) : valtype <: storagetype))
+
+;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec
 rec {
 
 ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:5.1-5.95
@@ -3550,403 +3555,403 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
     -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], STRUCT_comptype(`%`_list(`%%`_fieldtype(mut, zt)*{mut <- `mut*`, zt <- `zt*`})))
     -- (Defaultable: `|-%DEFAULTABLE`($unpack(zt)))*{zt <- `zt*`}
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:255.1-259.39
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:258.1-262.39
   rule struct.get{C : context, `sx?` : sx?, x : idx, i : u32, zt : storagetype, `ft*` : fieldtype*, mut : mut}:
     `%|-%:%`(C, STRUCT.GET_instr(sx?{sx <- `sx?`}, x, i), `%->_%%`_instrtype(`%`_resulttype([REF_valtype(?(NULL_NULL), _IDX_heaptype(x))]), [], `%`_resulttype([$unpack(zt)])))
     -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], STRUCT_comptype(`%`_list(ft*{ft <- `ft*`})))
     -- if (ft*{ft <- `ft*`}[i!`%`_u32.0] = `%%`_fieldtype(mut, zt))
-    -- if ((sx?{sx <- `sx?`} = ?()) <=> (zt = ($unpack(zt) : valtype <: storagetype)))
+    -- if ((sx?{sx <- `sx?`} = ?()) <=> $is_packtype(zt))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:261.1-264.24
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:264.1-267.24
   rule struct.set{C : context, x : idx, i : u32, zt : storagetype, `ft*` : fieldtype*}:
     `%|-%:%`(C, STRUCT.SET_instr(x, i), `%->_%%`_instrtype(`%`_resulttype([REF_valtype(?(NULL_NULL), _IDX_heaptype(x)) $unpack(zt)]), [], `%`_resulttype([])))
     -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], STRUCT_comptype(`%`_list(ft*{ft <- `ft*`})))
     -- if (ft*{ft <- `ft*`}[i!`%`_u32.0] = `%%`_fieldtype(?(MUT_MUT), zt))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:269.1-271.42
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:272.1-274.42
   rule array.new{C : context, x : idx, zt : storagetype, mut : mut}:
     `%|-%:%`(C, ARRAY.NEW_instr(x), `%->_%%`_instrtype(`%`_resulttype([$unpack(zt) I32_valtype]), [], `%`_resulttype([REF_valtype(?(), _IDX_heaptype(x))])))
     -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], ARRAY_comptype(`%%`_fieldtype(mut, zt)))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:273.1-276.45
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:276.1-279.45
   rule array.new_default{C : context, x : idx, mut : mut, zt : storagetype}:
     `%|-%:%`(C, ARRAY.NEW_DEFAULT_instr(x), `%->_%%`_instrtype(`%`_resulttype([I32_valtype]), [], `%`_resulttype([REF_valtype(?(), _IDX_heaptype(x))])))
     -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], ARRAY_comptype(`%%`_fieldtype(mut, zt)))
     -- Defaultable: `|-%DEFAULTABLE`($unpack(zt))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:278.1-280.42
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:281.1-283.42
   rule array.new_fixed{C : context, x : idx, n : n, zt : storagetype, mut : mut}:
     `%|-%:%`(C, ARRAY.NEW_FIXED_instr(x, `%`_u32(n)), `%->_%%`_instrtype(`%`_resulttype($unpack(zt)^n{}), [], `%`_resulttype([REF_valtype(?(), _IDX_heaptype(x))])))
     -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], ARRAY_comptype(`%%`_fieldtype(mut, zt)))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:282.1-285.40
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:285.1-288.40
   rule array.new_elem{C : context, x : idx, y : idx, mut : mut, rt : reftype}:
     `%|-%:%`(C, ARRAY.NEW_ELEM_instr(x, y), `%->_%%`_instrtype(`%`_resulttype([I32_valtype I32_valtype]), [], `%`_resulttype([REF_valtype(?(), _IDX_heaptype(x))])))
     -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], ARRAY_comptype(`%%`_fieldtype(mut, (rt : reftype <: storagetype))))
     -- Reftype_sub: `%|-%<:%`(C, C.ELEMS_context[y!`%`_idx.0], rt)
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:287.1-291.24
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:290.1-294.24
   rule array.new_data{C : context, x : idx, y : idx, mut : mut, zt : storagetype, numtype : numtype, vectype : vectype}:
     `%|-%:%`(C, ARRAY.NEW_DATA_instr(x, y), `%->_%%`_instrtype(`%`_resulttype([I32_valtype I32_valtype]), [], `%`_resulttype([REF_valtype(?(), _IDX_heaptype(x))])))
     -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], ARRAY_comptype(`%%`_fieldtype(mut, zt)))
     -- if (($unpack(zt) = (numtype : numtype <: valtype)) \/ ($unpack(zt) = (vectype : vectype <: valtype)))
     -- if (C.DATAS_context[y!`%`_idx.0] = OK_datatype)
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:293.1-296.39
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:296.1-299.39
   rule array.get{C : context, `sx?` : sx?, x : idx, zt : storagetype, mut : mut}:
     `%|-%:%`(C, ARRAY.GET_instr(sx?{sx <- `sx?`}, x), `%->_%%`_instrtype(`%`_resulttype([REF_valtype(?(NULL_NULL), _IDX_heaptype(x)) I32_valtype]), [], `%`_resulttype([$unpack(zt)])))
     -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], ARRAY_comptype(`%%`_fieldtype(mut, zt)))
-    -- if ((sx?{sx <- `sx?`} = ?()) <=> (zt = ($unpack(zt) : valtype <: storagetype)))
+    -- if ((sx?{sx <- `sx?`} = ?()) <=> $is_packtype(zt))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:298.1-300.42
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:301.1-303.42
   rule array.set{C : context, x : idx, zt : storagetype}:
     `%|-%:%`(C, ARRAY.SET_instr(x), `%->_%%`_instrtype(`%`_resulttype([REF_valtype(?(NULL_NULL), _IDX_heaptype(x)) I32_valtype $unpack(zt)]), [], `%`_resulttype([])))
     -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], ARRAY_comptype(`%%`_fieldtype(?(MUT_MUT), zt)))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:302.1-303.43
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:305.1-306.43
   rule array.len{C : context}:
     `%|-%:%`(C, ARRAY.LEN_instr, `%->_%%`_instrtype(`%`_resulttype([REF_valtype(?(NULL_NULL), ARRAY_heaptype)]), [], `%`_resulttype([I32_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:305.1-307.42
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:308.1-310.42
   rule array.fill{C : context, x : idx, zt : storagetype}:
     `%|-%:%`(C, ARRAY.FILL_instr(x), `%->_%%`_instrtype(`%`_resulttype([REF_valtype(?(NULL_NULL), _IDX_heaptype(x)) I32_valtype $unpack(zt) I32_valtype]), [], `%`_resulttype([])))
     -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], ARRAY_comptype(`%%`_fieldtype(?(MUT_MUT), zt)))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:309.1-313.40
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:312.1-316.40
   rule array.copy{C : context, x_1 : idx, x_2 : idx, zt_1 : storagetype, mut : mut, zt_2 : storagetype}:
     `%|-%:%`(C, ARRAY.COPY_instr(x_1, x_2), `%->_%%`_instrtype(`%`_resulttype([REF_valtype(?(NULL_NULL), _IDX_heaptype(x_1)) I32_valtype REF_valtype(?(NULL_NULL), _IDX_heaptype(x_2)) I32_valtype I32_valtype]), [], `%`_resulttype([])))
     -- Expand: `%~~%`(C.TYPES_context[x_1!`%`_idx.0], ARRAY_comptype(`%%`_fieldtype(?(MUT_MUT), zt_1)))
     -- Expand: `%~~%`(C.TYPES_context[x_2!`%`_idx.0], ARRAY_comptype(`%%`_fieldtype(mut, zt_2)))
     -- Storagetype_sub: `%|-%<:%`(C, zt_2, zt_1)
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:315.1-318.44
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:318.1-321.44
   rule array.init_elem{C : context, x : idx, y : idx, zt : storagetype}:
     `%|-%:%`(C, ARRAY.INIT_ELEM_instr(x, y), `%->_%%`_instrtype(`%`_resulttype([REF_valtype(?(NULL_NULL), _IDX_heaptype(x)) I32_valtype I32_valtype I32_valtype]), [], `%`_resulttype([])))
     -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], ARRAY_comptype(`%%`_fieldtype(?(MUT_MUT), zt)))
     -- Storagetype_sub: `%|-%<:%`(C, (C.ELEMS_context[y!`%`_idx.0] : reftype <: storagetype), zt)
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:320.1-324.24
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:323.1-327.24
   rule array.init_data{C : context, x : idx, y : idx, zt : storagetype, numtype : numtype, vectype : vectype}:
     `%|-%:%`(C, ARRAY.INIT_DATA_instr(x, y), `%->_%%`_instrtype(`%`_resulttype([REF_valtype(?(NULL_NULL), _IDX_heaptype(x)) I32_valtype I32_valtype I32_valtype]), [], `%`_resulttype([])))
     -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], ARRAY_comptype(`%%`_fieldtype(?(MUT_MUT), zt)))
     -- if (($unpack(zt) = (numtype : numtype <: valtype)) \/ ($unpack(zt) = (vectype : vectype <: valtype)))
     -- if (C.DATAS_context[y!`%`_idx.0] = OK_datatype)
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:329.1-331.20
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:332.1-334.20
   rule extern.convert_any{C : context, nul1 : nul1, nul2 : nul2}:
     `%|-%:%`(C, EXTERN.CONVERT_ANY_instr, `%->_%%`_instrtype(`%`_resulttype([REF_valtype(nul1, ANY_heaptype)]), [], `%`_resulttype([REF_valtype(nul2, EXTERN_heaptype)])))
     -- if (nul1 = nul2)
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:333.1-335.20
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:336.1-338.20
   rule any.convert_extern{C : context, nul1 : nul1, nul2 : nul2}:
     `%|-%:%`(C, ANY.CONVERT_EXTERN_instr, `%->_%%`_instrtype(`%`_resulttype([REF_valtype(nul1, EXTERN_heaptype)]), [], `%`_resulttype([REF_valtype(nul2, ANY_heaptype)])))
     -- if (nul1 = nul2)
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:340.1-342.28
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:343.1-345.28
   rule local.get{C : context, x : idx, t : valtype}:
     `%|-%:%`(C, LOCAL.GET_instr(x), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([t])))
     -- if (C.LOCALS_context[x!`%`_idx.0] = `%%`_localtype(SET_init, t))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:344.1-346.29
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:347.1-349.29
   rule local.set{C : context, x : idx, t : valtype, init : init}:
     `%|-%:%`(C, LOCAL.SET_instr(x), `%->_%%`_instrtype(`%`_resulttype([t]), [x], `%`_resulttype([])))
     -- if (C.LOCALS_context[x!`%`_idx.0] = `%%`_localtype(init, t))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:348.1-350.29
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:351.1-353.29
   rule local.tee{C : context, x : idx, t : valtype, init : init}:
     `%|-%:%`(C, LOCAL.TEE_instr(x), `%->_%%`_instrtype(`%`_resulttype([t]), [x], `%`_resulttype([t])))
     -- if (C.LOCALS_context[x!`%`_idx.0] = `%%`_localtype(init, t))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:355.1-357.29
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:358.1-360.29
   rule global.get{C : context, x : idx, t : valtype, mut : mut}:
     `%|-%:%`(C, GLOBAL.GET_instr(x), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([t])))
     -- if (C.GLOBALS_context[x!`%`_idx.0] = `%%`_globaltype(mut, t))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:359.1-361.29
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:362.1-364.29
   rule global.set{C : context, x : idx, t : valtype}:
     `%|-%:%`(C, GLOBAL.SET_instr(x), `%->_%%`_instrtype(`%`_resulttype([t]), [], `%`_resulttype([])))
     -- if (C.GLOBALS_context[x!`%`_idx.0] = `%%`_globaltype(?(MUT_MUT), t))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:366.1-368.32
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:369.1-371.32
   rule table.get{C : context, x : idx, at : addrtype, rt : reftype, lim : limits}:
     `%|-%:%`(C, TABLE.GET_instr(x), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype)]), [], `%`_resulttype([(rt : reftype <: valtype)])))
     -- if (C.TABLES_context[x!`%`_idx.0] = `%%%`_tabletype(at, lim, rt))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:370.1-372.32
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:373.1-375.32
   rule table.set{C : context, x : idx, at : addrtype, rt : reftype, lim : limits}:
     `%|-%:%`(C, TABLE.SET_instr(x), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype) (rt : reftype <: valtype)]), [], `%`_resulttype([])))
     -- if (C.TABLES_context[x!`%`_idx.0] = `%%%`_tabletype(at, lim, rt))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:374.1-376.32
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:377.1-379.32
   rule table.size{C : context, x : idx, at : addrtype, lim : limits, rt : reftype}:
     `%|-%:%`(C, TABLE.SIZE_instr(x), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([(at : addrtype <: valtype)])))
     -- if (C.TABLES_context[x!`%`_idx.0] = `%%%`_tabletype(at, lim, rt))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:378.1-380.32
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:381.1-383.32
   rule table.grow{C : context, x : idx, rt : reftype, at : addrtype, lim : limits}:
     `%|-%:%`(C, TABLE.GROW_instr(x), `%->_%%`_instrtype(`%`_resulttype([(rt : reftype <: valtype) (at : addrtype <: valtype)]), [], `%`_resulttype([I32_valtype])))
     -- if (C.TABLES_context[x!`%`_idx.0] = `%%%`_tabletype(at, lim, rt))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:382.1-384.32
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:385.1-387.32
   rule table.fill{C : context, x : idx, at : addrtype, rt : reftype, lim : limits}:
     `%|-%:%`(C, TABLE.FILL_instr(x), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype) (rt : reftype <: valtype) (at : addrtype <: valtype)]), [], `%`_resulttype([])))
     -- if (C.TABLES_context[x!`%`_idx.0] = `%%%`_tabletype(at, lim, rt))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:386.1-390.36
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:389.1-393.36
   rule table.copy{C : context, x_1 : idx, x_2 : idx, at_1 : addrtype, at_2 : addrtype, lim_1 : limits, rt_1 : reftype, lim_2 : limits, rt_2 : reftype}:
     `%|-%:%`(C, TABLE.COPY_instr(x_1, x_2), `%->_%%`_instrtype(`%`_resulttype([(at_1 : addrtype <: valtype) (at_2 : addrtype <: valtype) ($minat(at_1, at_2) : addrtype <: valtype)]), [], `%`_resulttype([])))
     -- if (C.TABLES_context[x_1!`%`_idx.0] = `%%%`_tabletype(at_1, lim_1, rt_1))
     -- if (C.TABLES_context[x_2!`%`_idx.0] = `%%%`_tabletype(at_2, lim_2, rt_2))
     -- Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:392.1-396.36
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:395.1-399.36
   rule table.init{C : context, x : idx, y : idx, at : addrtype, lim : limits, rt_1 : reftype, rt_2 : reftype}:
     `%|-%:%`(C, TABLE.INIT_instr(x, y), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype) I32_valtype I32_valtype]), [], `%`_resulttype([])))
     -- if (C.TABLES_context[x!`%`_idx.0] = `%%%`_tabletype(at, lim, rt_1))
     -- if (C.ELEMS_context[y!`%`_idx.0] = rt_2)
     -- Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:398.1-400.24
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:401.1-403.24
   rule elem.drop{C : context, x : idx, rt : reftype}:
     `%|-%:%`(C, ELEM.DROP_instr(x), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([])))
     -- if (C.ELEMS_context[x!`%`_idx.0] = rt)
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:405.1-407.32
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:408.1-410.32
   rule memory.size{C : context, x : idx, at : addrtype, lim : limits}:
     `%|-%:%`(C, MEMORY.SIZE_instr(x), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([(at : addrtype <: valtype)])))
     -- if (C.MEMS_context[x!`%`_idx.0] = `%%PAGE`_memtype(at, lim))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:409.1-411.32
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:412.1-414.32
   rule memory.grow{C : context, x : idx, at : addrtype, lim : limits}:
     `%|-%:%`(C, MEMORY.GROW_instr(x), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype)]), [], `%`_resulttype([(at : addrtype <: valtype)])))
     -- if (C.MEMS_context[x!`%`_idx.0] = `%%PAGE`_memtype(at, lim))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:413.1-415.32
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:416.1-418.32
   rule memory.fill{C : context, x : idx, at : addrtype, lim : limits}:
     `%|-%:%`(C, MEMORY.FILL_instr(x), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype) I32_valtype (at : addrtype <: valtype)]), [], `%`_resulttype([])))
     -- if (C.MEMS_context[x!`%`_idx.0] = `%%PAGE`_memtype(at, lim))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:417.1-420.38
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:420.1-423.38
   rule memory.copy{C : context, x_1 : idx, x_2 : idx, at_1 : addrtype, at_2 : addrtype, lim_1 : limits, lim_2 : limits}:
     `%|-%:%`(C, MEMORY.COPY_instr(x_1, x_2), `%->_%%`_instrtype(`%`_resulttype([(at_1 : addrtype <: valtype) (at_2 : addrtype <: valtype) ($minat(at_1, at_2) : addrtype <: valtype)]), [], `%`_resulttype([])))
     -- if (C.MEMS_context[x_1!`%`_idx.0] = `%%PAGE`_memtype(at_1, lim_1))
     -- if (C.MEMS_context[x_2!`%`_idx.0] = `%%PAGE`_memtype(at_2, lim_2))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:422.1-425.24
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:425.1-428.24
   rule memory.init{C : context, x : idx, y : idx, at : addrtype, lim : limits}:
     `%|-%:%`(C, MEMORY.INIT_instr(x, y), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype) I32_valtype I32_valtype]), [], `%`_resulttype([])))
     -- if (C.MEMS_context[x!`%`_idx.0] = `%%PAGE`_memtype(at, lim))
     -- if (C.DATAS_context[y!`%`_idx.0] = OK_datatype)
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:427.1-429.24
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:430.1-432.24
   rule data.drop{C : context, x : idx}:
     `%|-%:%`(C, DATA.DROP_instr(x), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([])))
     -- if (C.DATAS_context[x!`%`_idx.0] = OK_datatype)
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:440.1-443.43
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:443.1-446.43
   rule `load-val`{C : context, nt : numtype, x : idx, memarg : memarg, at : addrtype, lim : limits}:
     `%|-%:%`(C, LOAD_instr(nt, ?(), x, memarg), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype)]), [], `%`_resulttype([(nt : numtype <: valtype)])))
     -- if (C.MEMS_context[x!`%`_idx.0] = `%%PAGE`_memtype(at, lim))
     -- if (((2 ^ memarg.ALIGN_memarg!`%`_u32.0) : nat <:> rat) <= (($size(nt) : nat <:> rat) / (8 : nat <:> rat)))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:445.1-448.35
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:448.1-451.35
   rule `load-pack`{C : context, Inn : Inn, M : M, sx : sx, x : idx, memarg : memarg, at : addrtype, lim : limits}:
     `%|-%:%`(C, LOAD_instr((Inn : Inn <: numtype), ?(`%_%`_loadop_(`%`_sz(M), sx)), x, memarg), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype)]), [], `%`_resulttype([(Inn : Inn <: valtype)])))
     -- if (C.MEMS_context[x!`%`_idx.0] = `%%PAGE`_memtype(at, lim))
     -- if (((2 ^ memarg.ALIGN_memarg!`%`_u32.0) : nat <:> rat) <= ((M : nat <:> rat) / (8 : nat <:> rat)))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:459.1-462.43
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:462.1-465.43
   rule `store-val`{C : context, nt : numtype, x : idx, memarg : memarg, at : addrtype, lim : limits}:
     `%|-%:%`(C, STORE_instr(nt, ?(), x, memarg), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype) (nt : numtype <: valtype)]), [], `%`_resulttype([])))
     -- if (C.MEMS_context[x!`%`_idx.0] = `%%PAGE`_memtype(at, lim))
     -- if (((2 ^ memarg.ALIGN_memarg!`%`_u32.0) : nat <:> rat) <= (($size(nt) : nat <:> rat) / (8 : nat <:> rat)))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:464.1-467.35
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:467.1-470.35
   rule `store-pack`{C : context, Inn : Inn, M : M, x : idx, memarg : memarg, at : addrtype, lim : limits}:
     `%|-%:%`(C, STORE_instr((Inn : Inn <: numtype), ?(`%`_storeop_(`%`_sz(M))), x, memarg), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype) (Inn : Inn <: valtype)]), [], `%`_resulttype([])))
     -- if (C.MEMS_context[x!`%`_idx.0] = `%%PAGE`_memtype(at, lim))
     -- if (((2 ^ memarg.ALIGN_memarg!`%`_u32.0) : nat <:> rat) <= ((M : nat <:> rat) / (8 : nat <:> rat)))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:469.1-472.46
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:472.1-475.46
   rule `vload-val`{C : context, x : idx, memarg : memarg, at : addrtype, lim : limits}:
     `%|-%:%`(C, VLOAD_instr(V128_vectype, ?(), x, memarg), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype)]), [], `%`_resulttype([V128_valtype])))
     -- if (C.MEMS_context[x!`%`_idx.0] = `%%PAGE`_memtype(at, lim))
     -- if (((2 ^ memarg.ALIGN_memarg!`%`_u32.0) : nat <:> rat) <= (($vsize(V128_vectype) : nat <:> rat) / (8 : nat <:> rat)))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:474.1-477.39
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:477.1-480.39
   rule `vload-pack`{C : context, M : M, N : N, sx : sx, x : idx, memarg : memarg, at : addrtype, lim : limits}:
     `%|-%:%`(C, VLOAD_instr(V128_vectype, ?(`SHAPE%X%_%`_vloadop_(`%`_sz(M), N, sx)), x, memarg), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype)]), [], `%`_resulttype([V128_valtype])))
     -- if (C.MEMS_context[x!`%`_idx.0] = `%%PAGE`_memtype(at, lim))
     -- if (((2 ^ memarg.ALIGN_memarg!`%`_u32.0) : nat <:> rat) <= (((M : nat <:> rat) / (8 : nat <:> rat)) * (N : nat <:> rat)))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:479.1-482.35
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:482.1-485.35
   rule `vload-splat`{C : context, N : N, x : idx, memarg : memarg, at : addrtype, lim : limits}:
     `%|-%:%`(C, VLOAD_instr(V128_vectype, ?(SPLAT_vloadop_(`%`_sz(N))), x, memarg), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype)]), [], `%`_resulttype([V128_valtype])))
     -- if (C.MEMS_context[x!`%`_idx.0] = `%%PAGE`_memtype(at, lim))
     -- if (((2 ^ memarg.ALIGN_memarg!`%`_u32.0) : nat <:> rat) <= ((N : nat <:> rat) / (8 : nat <:> rat)))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:484.1-487.35
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:487.1-490.35
   rule `vload-zero`{C : context, N : N, x : idx, memarg : memarg, at : addrtype, lim : limits}:
     `%|-%:%`(C, VLOAD_instr(V128_vectype, ?(ZERO_vloadop_(`%`_sz(N))), x, memarg), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype)]), [], `%`_resulttype([V128_valtype])))
     -- if (C.MEMS_context[x!`%`_idx.0] = `%%PAGE`_memtype(at, lim))
     -- if (((2 ^ memarg.ALIGN_memarg!`%`_u32.0) : nat <:> rat) <= ((N : nat <:> rat) / (8 : nat <:> rat)))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:489.1-493.21
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:492.1-496.21
   rule vload_lane{C : context, N : N, x : idx, memarg : memarg, i : laneidx, at : addrtype, lim : limits}:
     `%|-%:%`(C, VLOAD_LANE_instr(V128_vectype, `%`_sz(N), x, memarg, i), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype) V128_valtype]), [], `%`_resulttype([V128_valtype])))
     -- if (C.MEMS_context[x!`%`_idx.0] = `%%PAGE`_memtype(at, lim))
     -- if (((2 ^ memarg.ALIGN_memarg!`%`_u32.0) : nat <:> rat) <= ((N : nat <:> rat) / (8 : nat <:> rat)))
     -- if ((i!`%`_laneidx.0 : nat <:> rat) < ((128 : nat <:> rat) / (N : nat <:> rat)))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:495.1-498.46
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:498.1-501.46
   rule vstore{C : context, x : idx, memarg : memarg, at : addrtype, lim : limits}:
     `%|-%:%`(C, VSTORE_instr(V128_vectype, x, memarg), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype) V128_valtype]), [], `%`_resulttype([])))
     -- if (C.MEMS_context[x!`%`_idx.0] = `%%PAGE`_memtype(at, lim))
     -- if (((2 ^ memarg.ALIGN_memarg!`%`_u32.0) : nat <:> rat) <= (($vsize(V128_vectype) : nat <:> rat) / (8 : nat <:> rat)))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:500.1-504.21
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:503.1-507.21
   rule vstore_lane{C : context, N : N, x : idx, memarg : memarg, i : laneidx, at : addrtype, lim : limits}:
     `%|-%:%`(C, VSTORE_LANE_instr(V128_vectype, `%`_sz(N), x, memarg, i), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype) V128_valtype]), [], `%`_resulttype([])))
     -- if (C.MEMS_context[x!`%`_idx.0] = `%%PAGE`_memtype(at, lim))
     -- if (((2 ^ memarg.ALIGN_memarg!`%`_u32.0) : nat <:> rat) <= ((N : nat <:> rat) / (8 : nat <:> rat)))
     -- if ((i!`%`_laneidx.0 : nat <:> rat) < ((128 : nat <:> rat) / (N : nat <:> rat)))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:509.1-510.33
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:512.1-513.33
   rule const{C : context, nt : numtype, c_nt : num_(nt)}:
     `%|-%:%`(C, CONST_instr(nt, c_nt), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([(nt : numtype <: valtype)])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:512.1-513.34
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:515.1-516.34
   rule unop{C : context, nt : numtype, unop_nt : unop_(nt)}:
     `%|-%:%`(C, UNOP_instr(nt, unop_nt), `%->_%%`_instrtype(`%`_resulttype([(nt : numtype <: valtype)]), [], `%`_resulttype([(nt : numtype <: valtype)])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:515.1-516.39
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:518.1-519.39
   rule binop{C : context, nt : numtype, binop_nt : binop_(nt)}:
     `%|-%:%`(C, BINOP_instr(nt, binop_nt), `%->_%%`_instrtype(`%`_resulttype([(nt : numtype <: valtype) (nt : numtype <: valtype)]), [], `%`_resulttype([(nt : numtype <: valtype)])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:518.1-519.39
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:521.1-522.39
   rule testop{C : context, nt : numtype, testop_nt : testop_(nt)}:
     `%|-%:%`(C, TESTOP_instr(nt, testop_nt), `%->_%%`_instrtype(`%`_resulttype([(nt : numtype <: valtype)]), [], `%`_resulttype([I32_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:521.1-522.40
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:524.1-525.40
   rule relop{C : context, nt : numtype, relop_nt : relop_(nt)}:
     `%|-%:%`(C, RELOP_instr(nt, relop_nt), `%->_%%`_instrtype(`%`_resulttype([(nt : numtype <: valtype) (nt : numtype <: valtype)]), [], `%`_resulttype([I32_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:524.1-525.44
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:527.1-528.44
   rule cvtop{C : context, nt_1 : numtype, nt_2 : numtype, cvtop : cvtop__(nt_2, nt_1)}:
     `%|-%:%`(C, CVTOP_instr(nt_1, nt_2, cvtop), `%->_%%`_instrtype(`%`_resulttype([(nt_2 : numtype <: valtype)]), [], `%`_resulttype([(nt_1 : numtype <: valtype)])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:530.1-531.35
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:533.1-534.35
   rule vconst{C : context, c : vec_(V128_Vnn)}:
     `%|-%:%`(C, VCONST_instr(V128_vectype, c), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([V128_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:533.1-534.41
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:536.1-537.41
   rule vvunop{C : context, vvunop : vvunop}:
     `%|-%:%`(C, VVUNOP_instr(V128_vectype, vvunop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:536.1-537.48
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:539.1-540.48
   rule vvbinop{C : context, vvbinop : vvbinop}:
     `%|-%:%`(C, VVBINOP_instr(V128_vectype, vvbinop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:539.1-540.55
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:542.1-543.55
   rule vvternop{C : context, vvternop : vvternop}:
     `%|-%:%`(C, VVTERNOP_instr(V128_vectype, vvternop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:542.1-543.44
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:545.1-546.44
   rule vvtestop{C : context, vvtestop : vvtestop}:
     `%|-%:%`(C, VVTESTOP_instr(V128_vectype, vvtestop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype]), [], `%`_resulttype([I32_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:545.1-546.37
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:548.1-549.37
   rule vunop{C : context, sh : shape, vunop : vunop_(sh)}:
     `%|-%:%`(C, VUNOP_instr(sh, vunop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:548.1-549.44
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:551.1-552.44
   rule vbinop{C : context, sh : shape, vbinop : vbinop_(sh)}:
     `%|-%:%`(C, VBINOP_instr(sh, vbinop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:551.1-552.51
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:554.1-555.51
   rule vternop{C : context, sh : shape, vternop : vternop_(sh)}:
     `%|-%:%`(C, VTERNOP_instr(sh, vternop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:554.1-555.40
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:557.1-558.40
   rule vtestop{C : context, sh : shape, vtestop : vtestop_(sh)}:
     `%|-%:%`(C, VTESTOP_instr(sh, vtestop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype]), [], `%`_resulttype([I32_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:557.1-558.44
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:560.1-561.44
   rule vrelop{C : context, sh : shape, vrelop : vrelop_(sh)}:
     `%|-%:%`(C, VRELOP_instr(sh, vrelop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:560.1-561.47
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:563.1-564.47
   rule vshiftop{C : context, sh : ishape, vshiftop : vshiftop_(sh)}:
     `%|-%:%`(C, VSHIFTOP_instr(sh, vshiftop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype I32_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:563.1-564.33
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:566.1-567.33
   rule vbitmask{C : context, sh : ishape}:
     `%|-%:%`(C, VBITMASK_instr(sh), `%->_%%`_instrtype(`%`_resulttype([V128_valtype]), [], `%`_resulttype([I32_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:566.1-567.50
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:569.1-570.50
   rule vswizzlop{C : context, sh : bshape, vswizzlop : vswizzlop_(sh)}:
     `%|-%:%`(C, VSWIZZLOP_instr(sh, vswizzlop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:569.1-571.29
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:572.1-574.29
   rule vshuffle{C : context, sh : bshape, `i*` : laneidx*}:
     `%|-%:%`(C, VSHUFFLE_instr(sh, i*{i <- `i*`}), `%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
     -- (if (i!`%`_laneidx.0 < (2 * $dim(sh!`%`_bshape.0)!`%`_dim.0)))*{i <- `i*`}
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:573.1-574.44
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:576.1-577.44
   rule vsplat{C : context, sh : shape}:
     `%|-%:%`(C, VSPLAT_instr(sh), `%->_%%`_instrtype(`%`_resulttype([($unpackshape(sh) : numtype <: valtype)]), [], `%`_resulttype([V128_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:576.1-578.21
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:579.1-581.21
   rule vextract_lane{C : context, sh : shape, `sx?` : sx?, i : laneidx}:
     `%|-%:%`(C, VEXTRACT_LANE_instr(sh, sx?{sx <- `sx?`}, i), `%->_%%`_instrtype(`%`_resulttype([V128_valtype]), [], `%`_resulttype([($unpackshape(sh) : numtype <: valtype)])))
     -- if (i!`%`_laneidx.0 < $dim(sh)!`%`_dim.0)
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:580.1-582.21
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:583.1-585.21
   rule vreplace_lane{C : context, sh : shape, i : laneidx}:
     `%|-%:%`(C, VREPLACE_LANE_instr(sh, i), `%->_%%`_instrtype(`%`_resulttype([V128_valtype ($unpackshape(sh) : numtype <: valtype)]), [], `%`_resulttype([V128_valtype])))
     -- if (i!`%`_laneidx.0 < $dim(sh)!`%`_dim.0)
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:584.1-585.50
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:587.1-588.50
   rule vextunop{C : context, sh_1 : ishape, sh_2 : ishape, vextunop : vextunop__(sh_2, sh_1)}:
     `%|-%:%`(C, VEXTUNOP_instr(sh_1, sh_2, vextunop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:587.1-588.57
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:590.1-591.57
   rule vextbinop{C : context, sh_1 : ishape, sh_2 : ishape, vextbinop : vextbinop__(sh_2, sh_1)}:
     `%|-%:%`(C, VEXTBINOP_instr(sh_1, sh_2, vextbinop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:590.1-591.64
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:593.1-594.64
   rule vextternop{C : context, sh_1 : ishape, sh_2 : ishape, vextternop : vextternop__(sh_2, sh_1)}:
     `%|-%:%`(C, VEXTTERNOP_instr(sh_1, sh_2, vextternop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:593.1-594.48
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:596.1-597.48
   rule vnarrow{C : context, sh_1 : ishape, sh_2 : ishape, sx : sx}:
     `%|-%:%`(C, VNARROW_instr(sh_1, sh_2, sx), `%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:596.1-597.46
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:599.1-600.46
   rule vcvtop{C : context, sh_1 : shape, sh_2 : shape, vcvtop : vcvtop__(sh_2, sh_1)}:
     `%|-%:%`(C, VCVTOP_instr(sh_1, sh_2, vcvtop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
 ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:6.1-6.96
 relation Instrs_ok: `%|-%:%`(context, instr*, instrtype)
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:602.1-603.24
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:605.1-606.24
   rule empty{C : context}:
     `%|-%:%`(C, [], `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:606.1-610.82
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:609.1-613.82
   rule seq{C : context, instr_1 : instr, `instr_2*` : instr*, `t_1*` : valtype*, `x_1*` : idx*, `x_2*` : idx*, `t_3*` : valtype*, `t_2*` : valtype*, `init*` : init*, `t*` : valtype*}:
     `%|-%:%`(C, [instr_1] ++ instr_2*{instr_2 <- `instr_2*`}, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), x_1*{x_1 <- `x_1*`} ++ x_2*{x_2 <- `x_2*`}, `%`_resulttype(t_3*{t_3 <- `t_3*`})))
     -- Instr_ok: `%|-%:%`(C, instr_1, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), x_1*{x_1 <- `x_1*`}, `%`_resulttype(t_2*{t_2 <- `t_2*`})))
     -- (if (C.LOCALS_context[x_1!`%`_idx.0] = `%%`_localtype(init, t)))*{init <- `init*`, t <- `t*`, x_1 <- `x_1*`}
     -- Instrs_ok: `%|-%:%`($with_locals(C, x_1*{x_1 <- `x_1*`}, `%%`_localtype(SET_init, t)*{t <- `t*`}), instr_2*{instr_2 <- `instr_2*`}, `%->_%%`_instrtype(`%`_resulttype(t_2*{t_2 <- `t_2*`}), x_2*{x_2 <- `x_2*`}, `%`_resulttype(t_3*{t_3 <- `t_3*`})))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:612.1-616.33
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:615.1-619.33
   rule sub{C : context, `instr*` : instr*, it' : instrtype, it : instrtype}:
     `%|-%:%`(C, instr*{instr <- `instr*`}, it')
     -- Instrs_ok: `%|-%:%`(C, instr*{instr <- `instr*`}, it)
     -- Instrtype_sub: `%|-%<:%`(C, it, it')
     -- Instrtype_ok: `%|-%:OK`(C, it')
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:619.1-622.33
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:622.1-625.33
   rule frame{C : context, `instr*` : instr*, `t*` : valtype*, `t_1*` : valtype*, `x*` : idx*, `t_2*` : valtype*}:
     `%|-%:%`(C, instr*{instr <- `instr*`}, `%->_%%`_instrtype(`%`_resulttype(t*{t <- `t*`} ++ t_1*{t_1 <- `t_1*`}), x*{x <- `x*`}, `%`_resulttype(t*{t <- `t*`} ++ t_2*{t_2 <- `t_2*`})))
     -- Instrs_ok: `%|-%:%`(C, instr*{instr <- `instr*`}, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), x*{x <- `x*`}, `%`_resulttype(t_2*{t_2 <- `t_2*`})))
@@ -14656,6 +14661,11 @@ relation Defaultable: `|-%DEFAULTABLE`(valtype)
     -- if ($default_(t) =/= ?())
 
 ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec
+def $is_packtype(storagetype : storagetype) : bool
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec
+  def $is_packtype{zt : storagetype}(zt) = (zt = ($unpack(zt) : valtype <: storagetype))
+
+;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec
 rec {
 
 ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:5.1-5.95
@@ -14877,403 +14887,403 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
     -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], STRUCT_comptype(`%`_list(`%%`_fieldtype(mut, zt)*{mut <- `mut*`, zt <- `zt*`})))
     -- (Defaultable: `|-%DEFAULTABLE`($unpack(zt)))*{zt <- `zt*`}
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:255.1-259.39
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:258.1-262.39
   rule struct.get{C : context, `sx?` : sx?, x : idx, i : u32, zt : storagetype, `ft*` : fieldtype*, mut : mut}:
     `%|-%:%`(C, STRUCT.GET_instr(sx?{sx <- `sx?`}, x, i), `%->_%%`_instrtype(`%`_resulttype([REF_valtype(?(NULL_NULL), _IDX_heaptype(x))]), [], `%`_resulttype([$unpack(zt)])))
     -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], STRUCT_comptype(`%`_list(ft*{ft <- `ft*`})))
     -- if (ft*{ft <- `ft*`}[i!`%`_u32.0] = `%%`_fieldtype(mut, zt))
-    -- if ((sx?{sx <- `sx?`} = ?()) <=> (zt = ($unpack(zt) : valtype <: storagetype)))
+    -- if ((sx?{sx <- `sx?`} = ?()) <=> $is_packtype(zt))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:261.1-264.24
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:264.1-267.24
   rule struct.set{C : context, x : idx, i : u32, zt : storagetype, `ft*` : fieldtype*}:
     `%|-%:%`(C, STRUCT.SET_instr(x, i), `%->_%%`_instrtype(`%`_resulttype([REF_valtype(?(NULL_NULL), _IDX_heaptype(x)) $unpack(zt)]), [], `%`_resulttype([])))
     -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], STRUCT_comptype(`%`_list(ft*{ft <- `ft*`})))
     -- if (ft*{ft <- `ft*`}[i!`%`_u32.0] = `%%`_fieldtype(?(MUT_MUT), zt))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:269.1-271.42
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:272.1-274.42
   rule array.new{C : context, x : idx, zt : storagetype, mut : mut}:
     `%|-%:%`(C, ARRAY.NEW_instr(x), `%->_%%`_instrtype(`%`_resulttype([$unpack(zt) I32_valtype]), [], `%`_resulttype([REF_valtype(?(), _IDX_heaptype(x))])))
     -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], ARRAY_comptype(`%%`_fieldtype(mut, zt)))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:273.1-276.45
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:276.1-279.45
   rule array.new_default{C : context, x : idx, mut : mut, zt : storagetype}:
     `%|-%:%`(C, ARRAY.NEW_DEFAULT_instr(x), `%->_%%`_instrtype(`%`_resulttype([I32_valtype]), [], `%`_resulttype([REF_valtype(?(), _IDX_heaptype(x))])))
     -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], ARRAY_comptype(`%%`_fieldtype(mut, zt)))
     -- Defaultable: `|-%DEFAULTABLE`($unpack(zt))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:278.1-280.42
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:281.1-283.42
   rule array.new_fixed{C : context, x : idx, n : n, zt : storagetype, mut : mut}:
     `%|-%:%`(C, ARRAY.NEW_FIXED_instr(x, `%`_u32(n)), `%->_%%`_instrtype(`%`_resulttype($unpack(zt)^n{}), [], `%`_resulttype([REF_valtype(?(), _IDX_heaptype(x))])))
     -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], ARRAY_comptype(`%%`_fieldtype(mut, zt)))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:282.1-285.40
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:285.1-288.40
   rule array.new_elem{C : context, x : idx, y : idx, mut : mut, rt : reftype}:
     `%|-%:%`(C, ARRAY.NEW_ELEM_instr(x, y), `%->_%%`_instrtype(`%`_resulttype([I32_valtype I32_valtype]), [], `%`_resulttype([REF_valtype(?(), _IDX_heaptype(x))])))
     -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], ARRAY_comptype(`%%`_fieldtype(mut, (rt : reftype <: storagetype))))
     -- Reftype_sub: `%|-%<:%`(C, C.ELEMS_context[y!`%`_idx.0], rt)
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:287.1-291.24
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:290.1-294.24
   rule array.new_data{C : context, x : idx, y : idx, mut : mut, zt : storagetype, numtype : numtype, vectype : vectype}:
     `%|-%:%`(C, ARRAY.NEW_DATA_instr(x, y), `%->_%%`_instrtype(`%`_resulttype([I32_valtype I32_valtype]), [], `%`_resulttype([REF_valtype(?(), _IDX_heaptype(x))])))
     -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], ARRAY_comptype(`%%`_fieldtype(mut, zt)))
     -- if (($unpack(zt) = (numtype : numtype <: valtype)) \/ ($unpack(zt) = (vectype : vectype <: valtype)))
     -- if (C.DATAS_context[y!`%`_idx.0] = OK_datatype)
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:293.1-296.39
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:296.1-299.39
   rule array.get{C : context, `sx?` : sx?, x : idx, zt : storagetype, mut : mut}:
     `%|-%:%`(C, ARRAY.GET_instr(sx?{sx <- `sx?`}, x), `%->_%%`_instrtype(`%`_resulttype([REF_valtype(?(NULL_NULL), _IDX_heaptype(x)) I32_valtype]), [], `%`_resulttype([$unpack(zt)])))
     -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], ARRAY_comptype(`%%`_fieldtype(mut, zt)))
-    -- if ((sx?{sx <- `sx?`} = ?()) <=> (zt = ($unpack(zt) : valtype <: storagetype)))
+    -- if ((sx?{sx <- `sx?`} = ?()) <=> $is_packtype(zt))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:298.1-300.42
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:301.1-303.42
   rule array.set{C : context, x : idx, zt : storagetype}:
     `%|-%:%`(C, ARRAY.SET_instr(x), `%->_%%`_instrtype(`%`_resulttype([REF_valtype(?(NULL_NULL), _IDX_heaptype(x)) I32_valtype $unpack(zt)]), [], `%`_resulttype([])))
     -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], ARRAY_comptype(`%%`_fieldtype(?(MUT_MUT), zt)))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:302.1-303.43
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:305.1-306.43
   rule array.len{C : context}:
     `%|-%:%`(C, ARRAY.LEN_instr, `%->_%%`_instrtype(`%`_resulttype([REF_valtype(?(NULL_NULL), ARRAY_heaptype)]), [], `%`_resulttype([I32_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:305.1-307.42
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:308.1-310.42
   rule array.fill{C : context, x : idx, zt : storagetype}:
     `%|-%:%`(C, ARRAY.FILL_instr(x), `%->_%%`_instrtype(`%`_resulttype([REF_valtype(?(NULL_NULL), _IDX_heaptype(x)) I32_valtype $unpack(zt) I32_valtype]), [], `%`_resulttype([])))
     -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], ARRAY_comptype(`%%`_fieldtype(?(MUT_MUT), zt)))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:309.1-313.40
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:312.1-316.40
   rule array.copy{C : context, x_1 : idx, x_2 : idx, zt_1 : storagetype, mut : mut, zt_2 : storagetype}:
     `%|-%:%`(C, ARRAY.COPY_instr(x_1, x_2), `%->_%%`_instrtype(`%`_resulttype([REF_valtype(?(NULL_NULL), _IDX_heaptype(x_1)) I32_valtype REF_valtype(?(NULL_NULL), _IDX_heaptype(x_2)) I32_valtype I32_valtype]), [], `%`_resulttype([])))
     -- Expand: `%~~%`(C.TYPES_context[x_1!`%`_idx.0], ARRAY_comptype(`%%`_fieldtype(?(MUT_MUT), zt_1)))
     -- Expand: `%~~%`(C.TYPES_context[x_2!`%`_idx.0], ARRAY_comptype(`%%`_fieldtype(mut, zt_2)))
     -- Storagetype_sub: `%|-%<:%`(C, zt_2, zt_1)
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:315.1-318.44
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:318.1-321.44
   rule array.init_elem{C : context, x : idx, y : idx, zt : storagetype}:
     `%|-%:%`(C, ARRAY.INIT_ELEM_instr(x, y), `%->_%%`_instrtype(`%`_resulttype([REF_valtype(?(NULL_NULL), _IDX_heaptype(x)) I32_valtype I32_valtype I32_valtype]), [], `%`_resulttype([])))
     -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], ARRAY_comptype(`%%`_fieldtype(?(MUT_MUT), zt)))
     -- Storagetype_sub: `%|-%<:%`(C, (C.ELEMS_context[y!`%`_idx.0] : reftype <: storagetype), zt)
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:320.1-324.24
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:323.1-327.24
   rule array.init_data{C : context, x : idx, y : idx, zt : storagetype, numtype : numtype, vectype : vectype}:
     `%|-%:%`(C, ARRAY.INIT_DATA_instr(x, y), `%->_%%`_instrtype(`%`_resulttype([REF_valtype(?(NULL_NULL), _IDX_heaptype(x)) I32_valtype I32_valtype I32_valtype]), [], `%`_resulttype([])))
     -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], ARRAY_comptype(`%%`_fieldtype(?(MUT_MUT), zt)))
     -- if (($unpack(zt) = (numtype : numtype <: valtype)) \/ ($unpack(zt) = (vectype : vectype <: valtype)))
     -- if (C.DATAS_context[y!`%`_idx.0] = OK_datatype)
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:329.1-331.20
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:332.1-334.20
   rule extern.convert_any{C : context, nul1 : nul1, nul2 : nul2}:
     `%|-%:%`(C, EXTERN.CONVERT_ANY_instr, `%->_%%`_instrtype(`%`_resulttype([REF_valtype(nul1, ANY_heaptype)]), [], `%`_resulttype([REF_valtype(nul2, EXTERN_heaptype)])))
     -- if (nul1 = nul2)
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:333.1-335.20
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:336.1-338.20
   rule any.convert_extern{C : context, nul1 : nul1, nul2 : nul2}:
     `%|-%:%`(C, ANY.CONVERT_EXTERN_instr, `%->_%%`_instrtype(`%`_resulttype([REF_valtype(nul1, EXTERN_heaptype)]), [], `%`_resulttype([REF_valtype(nul2, ANY_heaptype)])))
     -- if (nul1 = nul2)
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:340.1-342.28
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:343.1-345.28
   rule local.get{C : context, x : idx, t : valtype}:
     `%|-%:%`(C, LOCAL.GET_instr(x), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([t])))
     -- if (C.LOCALS_context[x!`%`_idx.0] = `%%`_localtype(SET_init, t))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:344.1-346.29
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:347.1-349.29
   rule local.set{C : context, x : idx, t : valtype, init : init}:
     `%|-%:%`(C, LOCAL.SET_instr(x), `%->_%%`_instrtype(`%`_resulttype([t]), [x], `%`_resulttype([])))
     -- if (C.LOCALS_context[x!`%`_idx.0] = `%%`_localtype(init, t))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:348.1-350.29
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:351.1-353.29
   rule local.tee{C : context, x : idx, t : valtype, init : init}:
     `%|-%:%`(C, LOCAL.TEE_instr(x), `%->_%%`_instrtype(`%`_resulttype([t]), [x], `%`_resulttype([t])))
     -- if (C.LOCALS_context[x!`%`_idx.0] = `%%`_localtype(init, t))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:355.1-357.29
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:358.1-360.29
   rule global.get{C : context, x : idx, t : valtype, mut : mut}:
     `%|-%:%`(C, GLOBAL.GET_instr(x), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([t])))
     -- if (C.GLOBALS_context[x!`%`_idx.0] = `%%`_globaltype(mut, t))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:359.1-361.29
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:362.1-364.29
   rule global.set{C : context, x : idx, t : valtype}:
     `%|-%:%`(C, GLOBAL.SET_instr(x), `%->_%%`_instrtype(`%`_resulttype([t]), [], `%`_resulttype([])))
     -- if (C.GLOBALS_context[x!`%`_idx.0] = `%%`_globaltype(?(MUT_MUT), t))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:366.1-368.32
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:369.1-371.32
   rule table.get{C : context, x : idx, at : addrtype, rt : reftype, lim : limits}:
     `%|-%:%`(C, TABLE.GET_instr(x), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype)]), [], `%`_resulttype([(rt : reftype <: valtype)])))
     -- if (C.TABLES_context[x!`%`_idx.0] = `%%%`_tabletype(at, lim, rt))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:370.1-372.32
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:373.1-375.32
   rule table.set{C : context, x : idx, at : addrtype, rt : reftype, lim : limits}:
     `%|-%:%`(C, TABLE.SET_instr(x), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype) (rt : reftype <: valtype)]), [], `%`_resulttype([])))
     -- if (C.TABLES_context[x!`%`_idx.0] = `%%%`_tabletype(at, lim, rt))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:374.1-376.32
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:377.1-379.32
   rule table.size{C : context, x : idx, at : addrtype, lim : limits, rt : reftype}:
     `%|-%:%`(C, TABLE.SIZE_instr(x), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([(at : addrtype <: valtype)])))
     -- if (C.TABLES_context[x!`%`_idx.0] = `%%%`_tabletype(at, lim, rt))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:378.1-380.32
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:381.1-383.32
   rule table.grow{C : context, x : idx, rt : reftype, at : addrtype, lim : limits}:
     `%|-%:%`(C, TABLE.GROW_instr(x), `%->_%%`_instrtype(`%`_resulttype([(rt : reftype <: valtype) (at : addrtype <: valtype)]), [], `%`_resulttype([I32_valtype])))
     -- if (C.TABLES_context[x!`%`_idx.0] = `%%%`_tabletype(at, lim, rt))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:382.1-384.32
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:385.1-387.32
   rule table.fill{C : context, x : idx, at : addrtype, rt : reftype, lim : limits}:
     `%|-%:%`(C, TABLE.FILL_instr(x), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype) (rt : reftype <: valtype) (at : addrtype <: valtype)]), [], `%`_resulttype([])))
     -- if (C.TABLES_context[x!`%`_idx.0] = `%%%`_tabletype(at, lim, rt))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:386.1-390.36
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:389.1-393.36
   rule table.copy{C : context, x_1 : idx, x_2 : idx, at_1 : addrtype, at_2 : addrtype, lim_1 : limits, rt_1 : reftype, lim_2 : limits, rt_2 : reftype}:
     `%|-%:%`(C, TABLE.COPY_instr(x_1, x_2), `%->_%%`_instrtype(`%`_resulttype([(at_1 : addrtype <: valtype) (at_2 : addrtype <: valtype) ($minat(at_1, at_2) : addrtype <: valtype)]), [], `%`_resulttype([])))
     -- if (C.TABLES_context[x_1!`%`_idx.0] = `%%%`_tabletype(at_1, lim_1, rt_1))
     -- if (C.TABLES_context[x_2!`%`_idx.0] = `%%%`_tabletype(at_2, lim_2, rt_2))
     -- Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:392.1-396.36
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:395.1-399.36
   rule table.init{C : context, x : idx, y : idx, at : addrtype, lim : limits, rt_1 : reftype, rt_2 : reftype}:
     `%|-%:%`(C, TABLE.INIT_instr(x, y), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype) I32_valtype I32_valtype]), [], `%`_resulttype([])))
     -- if (C.TABLES_context[x!`%`_idx.0] = `%%%`_tabletype(at, lim, rt_1))
     -- if (C.ELEMS_context[y!`%`_idx.0] = rt_2)
     -- Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:398.1-400.24
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:401.1-403.24
   rule elem.drop{C : context, x : idx, rt : reftype}:
     `%|-%:%`(C, ELEM.DROP_instr(x), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([])))
     -- if (C.ELEMS_context[x!`%`_idx.0] = rt)
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:405.1-407.32
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:408.1-410.32
   rule memory.size{C : context, x : idx, at : addrtype, lim : limits}:
     `%|-%:%`(C, MEMORY.SIZE_instr(x), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([(at : addrtype <: valtype)])))
     -- if (C.MEMS_context[x!`%`_idx.0] = `%%PAGE`_memtype(at, lim))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:409.1-411.32
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:412.1-414.32
   rule memory.grow{C : context, x : idx, at : addrtype, lim : limits}:
     `%|-%:%`(C, MEMORY.GROW_instr(x), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype)]), [], `%`_resulttype([(at : addrtype <: valtype)])))
     -- if (C.MEMS_context[x!`%`_idx.0] = `%%PAGE`_memtype(at, lim))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:413.1-415.32
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:416.1-418.32
   rule memory.fill{C : context, x : idx, at : addrtype, lim : limits}:
     `%|-%:%`(C, MEMORY.FILL_instr(x), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype) I32_valtype (at : addrtype <: valtype)]), [], `%`_resulttype([])))
     -- if (C.MEMS_context[x!`%`_idx.0] = `%%PAGE`_memtype(at, lim))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:417.1-420.38
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:420.1-423.38
   rule memory.copy{C : context, x_1 : idx, x_2 : idx, at_1 : addrtype, at_2 : addrtype, lim_1 : limits, lim_2 : limits}:
     `%|-%:%`(C, MEMORY.COPY_instr(x_1, x_2), `%->_%%`_instrtype(`%`_resulttype([(at_1 : addrtype <: valtype) (at_2 : addrtype <: valtype) ($minat(at_1, at_2) : addrtype <: valtype)]), [], `%`_resulttype([])))
     -- if (C.MEMS_context[x_1!`%`_idx.0] = `%%PAGE`_memtype(at_1, lim_1))
     -- if (C.MEMS_context[x_2!`%`_idx.0] = `%%PAGE`_memtype(at_2, lim_2))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:422.1-425.24
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:425.1-428.24
   rule memory.init{C : context, x : idx, y : idx, at : addrtype, lim : limits}:
     `%|-%:%`(C, MEMORY.INIT_instr(x, y), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype) I32_valtype I32_valtype]), [], `%`_resulttype([])))
     -- if (C.MEMS_context[x!`%`_idx.0] = `%%PAGE`_memtype(at, lim))
     -- if (C.DATAS_context[y!`%`_idx.0] = OK_datatype)
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:427.1-429.24
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:430.1-432.24
   rule data.drop{C : context, x : idx}:
     `%|-%:%`(C, DATA.DROP_instr(x), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([])))
     -- if (C.DATAS_context[x!`%`_idx.0] = OK_datatype)
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:440.1-443.43
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:443.1-446.43
   rule `load-val`{C : context, nt : numtype, x : idx, memarg : memarg, at : addrtype, lim : limits}:
     `%|-%:%`(C, LOAD_instr(nt, ?(), x, memarg), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype)]), [], `%`_resulttype([(nt : numtype <: valtype)])))
     -- if (C.MEMS_context[x!`%`_idx.0] = `%%PAGE`_memtype(at, lim))
     -- if (((2 ^ memarg.ALIGN_memarg!`%`_u32.0) : nat <:> rat) <= (($size(nt) : nat <:> rat) / (8 : nat <:> rat)))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:445.1-448.35
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:448.1-451.35
   rule `load-pack`{C : context, Inn : Inn, M : M, sx : sx, x : idx, memarg : memarg, at : addrtype, lim : limits}:
     `%|-%:%`(C, LOAD_instr((Inn : Inn <: numtype), ?(`%_%`_loadop_(`%`_sz(M), sx)), x, memarg), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype)]), [], `%`_resulttype([(Inn : Inn <: valtype)])))
     -- if (C.MEMS_context[x!`%`_idx.0] = `%%PAGE`_memtype(at, lim))
     -- if (((2 ^ memarg.ALIGN_memarg!`%`_u32.0) : nat <:> rat) <= ((M : nat <:> rat) / (8 : nat <:> rat)))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:459.1-462.43
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:462.1-465.43
   rule `store-val`{C : context, nt : numtype, x : idx, memarg : memarg, at : addrtype, lim : limits}:
     `%|-%:%`(C, STORE_instr(nt, ?(), x, memarg), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype) (nt : numtype <: valtype)]), [], `%`_resulttype([])))
     -- if (C.MEMS_context[x!`%`_idx.0] = `%%PAGE`_memtype(at, lim))
     -- if (((2 ^ memarg.ALIGN_memarg!`%`_u32.0) : nat <:> rat) <= (($size(nt) : nat <:> rat) / (8 : nat <:> rat)))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:464.1-467.35
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:467.1-470.35
   rule `store-pack`{C : context, Inn : Inn, M : M, x : idx, memarg : memarg, at : addrtype, lim : limits}:
     `%|-%:%`(C, STORE_instr((Inn : Inn <: numtype), ?(`%`_storeop_(`%`_sz(M))), x, memarg), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype) (Inn : Inn <: valtype)]), [], `%`_resulttype([])))
     -- if (C.MEMS_context[x!`%`_idx.0] = `%%PAGE`_memtype(at, lim))
     -- if (((2 ^ memarg.ALIGN_memarg!`%`_u32.0) : nat <:> rat) <= ((M : nat <:> rat) / (8 : nat <:> rat)))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:469.1-472.46
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:472.1-475.46
   rule `vload-val`{C : context, x : idx, memarg : memarg, at : addrtype, lim : limits}:
     `%|-%:%`(C, VLOAD_instr(V128_vectype, ?(), x, memarg), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype)]), [], `%`_resulttype([V128_valtype])))
     -- if (C.MEMS_context[x!`%`_idx.0] = `%%PAGE`_memtype(at, lim))
     -- if (((2 ^ memarg.ALIGN_memarg!`%`_u32.0) : nat <:> rat) <= (($vsize(V128_vectype) : nat <:> rat) / (8 : nat <:> rat)))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:474.1-477.39
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:477.1-480.39
   rule `vload-pack`{C : context, M : M, N : N, sx : sx, x : idx, memarg : memarg, at : addrtype, lim : limits}:
     `%|-%:%`(C, VLOAD_instr(V128_vectype, ?(`SHAPE%X%_%`_vloadop_(`%`_sz(M), N, sx)), x, memarg), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype)]), [], `%`_resulttype([V128_valtype])))
     -- if (C.MEMS_context[x!`%`_idx.0] = `%%PAGE`_memtype(at, lim))
     -- if (((2 ^ memarg.ALIGN_memarg!`%`_u32.0) : nat <:> rat) <= (((M : nat <:> rat) / (8 : nat <:> rat)) * (N : nat <:> rat)))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:479.1-482.35
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:482.1-485.35
   rule `vload-splat`{C : context, N : N, x : idx, memarg : memarg, at : addrtype, lim : limits}:
     `%|-%:%`(C, VLOAD_instr(V128_vectype, ?(SPLAT_vloadop_(`%`_sz(N))), x, memarg), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype)]), [], `%`_resulttype([V128_valtype])))
     -- if (C.MEMS_context[x!`%`_idx.0] = `%%PAGE`_memtype(at, lim))
     -- if (((2 ^ memarg.ALIGN_memarg!`%`_u32.0) : nat <:> rat) <= ((N : nat <:> rat) / (8 : nat <:> rat)))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:484.1-487.35
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:487.1-490.35
   rule `vload-zero`{C : context, N : N, x : idx, memarg : memarg, at : addrtype, lim : limits}:
     `%|-%:%`(C, VLOAD_instr(V128_vectype, ?(ZERO_vloadop_(`%`_sz(N))), x, memarg), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype)]), [], `%`_resulttype([V128_valtype])))
     -- if (C.MEMS_context[x!`%`_idx.0] = `%%PAGE`_memtype(at, lim))
     -- if (((2 ^ memarg.ALIGN_memarg!`%`_u32.0) : nat <:> rat) <= ((N : nat <:> rat) / (8 : nat <:> rat)))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:489.1-493.21
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:492.1-496.21
   rule vload_lane{C : context, N : N, x : idx, memarg : memarg, i : laneidx, at : addrtype, lim : limits}:
     `%|-%:%`(C, VLOAD_LANE_instr(V128_vectype, `%`_sz(N), x, memarg, i), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype) V128_valtype]), [], `%`_resulttype([V128_valtype])))
     -- if (C.MEMS_context[x!`%`_idx.0] = `%%PAGE`_memtype(at, lim))
     -- if (((2 ^ memarg.ALIGN_memarg!`%`_u32.0) : nat <:> rat) <= ((N : nat <:> rat) / (8 : nat <:> rat)))
     -- if ((i!`%`_laneidx.0 : nat <:> rat) < ((128 : nat <:> rat) / (N : nat <:> rat)))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:495.1-498.46
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:498.1-501.46
   rule vstore{C : context, x : idx, memarg : memarg, at : addrtype, lim : limits}:
     `%|-%:%`(C, VSTORE_instr(V128_vectype, x, memarg), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype) V128_valtype]), [], `%`_resulttype([])))
     -- if (C.MEMS_context[x!`%`_idx.0] = `%%PAGE`_memtype(at, lim))
     -- if (((2 ^ memarg.ALIGN_memarg!`%`_u32.0) : nat <:> rat) <= (($vsize(V128_vectype) : nat <:> rat) / (8 : nat <:> rat)))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:500.1-504.21
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:503.1-507.21
   rule vstore_lane{C : context, N : N, x : idx, memarg : memarg, i : laneidx, at : addrtype, lim : limits}:
     `%|-%:%`(C, VSTORE_LANE_instr(V128_vectype, `%`_sz(N), x, memarg, i), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype) V128_valtype]), [], `%`_resulttype([])))
     -- if (C.MEMS_context[x!`%`_idx.0] = `%%PAGE`_memtype(at, lim))
     -- if (((2 ^ memarg.ALIGN_memarg!`%`_u32.0) : nat <:> rat) <= ((N : nat <:> rat) / (8 : nat <:> rat)))
     -- if ((i!`%`_laneidx.0 : nat <:> rat) < ((128 : nat <:> rat) / (N : nat <:> rat)))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:509.1-510.33
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:512.1-513.33
   rule const{C : context, nt : numtype, c_nt : num_(nt)}:
     `%|-%:%`(C, CONST_instr(nt, c_nt), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([(nt : numtype <: valtype)])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:512.1-513.34
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:515.1-516.34
   rule unop{C : context, nt : numtype, unop_nt : unop_(nt)}:
     `%|-%:%`(C, UNOP_instr(nt, unop_nt), `%->_%%`_instrtype(`%`_resulttype([(nt : numtype <: valtype)]), [], `%`_resulttype([(nt : numtype <: valtype)])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:515.1-516.39
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:518.1-519.39
   rule binop{C : context, nt : numtype, binop_nt : binop_(nt)}:
     `%|-%:%`(C, BINOP_instr(nt, binop_nt), `%->_%%`_instrtype(`%`_resulttype([(nt : numtype <: valtype) (nt : numtype <: valtype)]), [], `%`_resulttype([(nt : numtype <: valtype)])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:518.1-519.39
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:521.1-522.39
   rule testop{C : context, nt : numtype, testop_nt : testop_(nt)}:
     `%|-%:%`(C, TESTOP_instr(nt, testop_nt), `%->_%%`_instrtype(`%`_resulttype([(nt : numtype <: valtype)]), [], `%`_resulttype([I32_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:521.1-522.40
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:524.1-525.40
   rule relop{C : context, nt : numtype, relop_nt : relop_(nt)}:
     `%|-%:%`(C, RELOP_instr(nt, relop_nt), `%->_%%`_instrtype(`%`_resulttype([(nt : numtype <: valtype) (nt : numtype <: valtype)]), [], `%`_resulttype([I32_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:524.1-525.44
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:527.1-528.44
   rule cvtop{C : context, nt_1 : numtype, nt_2 : numtype, cvtop : cvtop__(nt_2, nt_1)}:
     `%|-%:%`(C, CVTOP_instr(nt_1, nt_2, cvtop), `%->_%%`_instrtype(`%`_resulttype([(nt_2 : numtype <: valtype)]), [], `%`_resulttype([(nt_1 : numtype <: valtype)])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:530.1-531.35
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:533.1-534.35
   rule vconst{C : context, c : vec_(V128_Vnn)}:
     `%|-%:%`(C, VCONST_instr(V128_vectype, c), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([V128_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:533.1-534.41
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:536.1-537.41
   rule vvunop{C : context, vvunop : vvunop}:
     `%|-%:%`(C, VVUNOP_instr(V128_vectype, vvunop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:536.1-537.48
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:539.1-540.48
   rule vvbinop{C : context, vvbinop : vvbinop}:
     `%|-%:%`(C, VVBINOP_instr(V128_vectype, vvbinop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:539.1-540.55
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:542.1-543.55
   rule vvternop{C : context, vvternop : vvternop}:
     `%|-%:%`(C, VVTERNOP_instr(V128_vectype, vvternop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:542.1-543.44
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:545.1-546.44
   rule vvtestop{C : context, vvtestop : vvtestop}:
     `%|-%:%`(C, VVTESTOP_instr(V128_vectype, vvtestop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype]), [], `%`_resulttype([I32_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:545.1-546.37
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:548.1-549.37
   rule vunop{C : context, sh : shape, vunop : vunop_(sh)}:
     `%|-%:%`(C, VUNOP_instr(sh, vunop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:548.1-549.44
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:551.1-552.44
   rule vbinop{C : context, sh : shape, vbinop : vbinop_(sh)}:
     `%|-%:%`(C, VBINOP_instr(sh, vbinop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:551.1-552.51
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:554.1-555.51
   rule vternop{C : context, sh : shape, vternop : vternop_(sh)}:
     `%|-%:%`(C, VTERNOP_instr(sh, vternop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:554.1-555.40
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:557.1-558.40
   rule vtestop{C : context, sh : shape, vtestop : vtestop_(sh)}:
     `%|-%:%`(C, VTESTOP_instr(sh, vtestop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype]), [], `%`_resulttype([I32_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:557.1-558.44
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:560.1-561.44
   rule vrelop{C : context, sh : shape, vrelop : vrelop_(sh)}:
     `%|-%:%`(C, VRELOP_instr(sh, vrelop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:560.1-561.47
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:563.1-564.47
   rule vshiftop{C : context, sh : ishape, vshiftop : vshiftop_(sh)}:
     `%|-%:%`(C, VSHIFTOP_instr(sh, vshiftop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype I32_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:563.1-564.33
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:566.1-567.33
   rule vbitmask{C : context, sh : ishape}:
     `%|-%:%`(C, VBITMASK_instr(sh), `%->_%%`_instrtype(`%`_resulttype([V128_valtype]), [], `%`_resulttype([I32_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:566.1-567.50
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:569.1-570.50
   rule vswizzlop{C : context, sh : bshape, vswizzlop : vswizzlop_(sh)}:
     `%|-%:%`(C, VSWIZZLOP_instr(sh, vswizzlop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:569.1-571.29
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:572.1-574.29
   rule vshuffle{C : context, sh : bshape, `i*` : laneidx*}:
     `%|-%:%`(C, VSHUFFLE_instr(sh, i*{i <- `i*`}), `%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
     -- (if (i!`%`_laneidx.0 < (2 * $dim(sh!`%`_bshape.0)!`%`_dim.0)))*{i <- `i*`}
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:573.1-574.44
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:576.1-577.44
   rule vsplat{C : context, sh : shape}:
     `%|-%:%`(C, VSPLAT_instr(sh), `%->_%%`_instrtype(`%`_resulttype([($unpackshape(sh) : numtype <: valtype)]), [], `%`_resulttype([V128_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:576.1-578.21
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:579.1-581.21
   rule vextract_lane{C : context, sh : shape, `sx?` : sx?, i : laneidx}:
     `%|-%:%`(C, VEXTRACT_LANE_instr(sh, sx?{sx <- `sx?`}, i), `%->_%%`_instrtype(`%`_resulttype([V128_valtype]), [], `%`_resulttype([($unpackshape(sh) : numtype <: valtype)])))
     -- if (i!`%`_laneidx.0 < $dim(sh)!`%`_dim.0)
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:580.1-582.21
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:583.1-585.21
   rule vreplace_lane{C : context, sh : shape, i : laneidx}:
     `%|-%:%`(C, VREPLACE_LANE_instr(sh, i), `%->_%%`_instrtype(`%`_resulttype([V128_valtype ($unpackshape(sh) : numtype <: valtype)]), [], `%`_resulttype([V128_valtype])))
     -- if (i!`%`_laneidx.0 < $dim(sh)!`%`_dim.0)
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:584.1-585.50
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:587.1-588.50
   rule vextunop{C : context, sh_1 : ishape, sh_2 : ishape, vextunop : vextunop__(sh_2, sh_1)}:
     `%|-%:%`(C, VEXTUNOP_instr(sh_1, sh_2, vextunop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:587.1-588.57
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:590.1-591.57
   rule vextbinop{C : context, sh_1 : ishape, sh_2 : ishape, vextbinop : vextbinop__(sh_2, sh_1)}:
     `%|-%:%`(C, VEXTBINOP_instr(sh_1, sh_2, vextbinop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:590.1-591.64
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:593.1-594.64
   rule vextternop{C : context, sh_1 : ishape, sh_2 : ishape, vextternop : vextternop__(sh_2, sh_1)}:
     `%|-%:%`(C, VEXTTERNOP_instr(sh_1, sh_2, vextternop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:593.1-594.48
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:596.1-597.48
   rule vnarrow{C : context, sh_1 : ishape, sh_2 : ishape, sx : sx}:
     `%|-%:%`(C, VNARROW_instr(sh_1, sh_2, sx), `%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:596.1-597.46
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:599.1-600.46
   rule vcvtop{C : context, sh_1 : shape, sh_2 : shape, vcvtop : vcvtop__(sh_2, sh_1)}:
     `%|-%:%`(C, VCVTOP_instr(sh_1, sh_2, vcvtop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
 ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:6.1-6.96
 relation Instrs_ok: `%|-%:%`(context, instr*, instrtype)
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:602.1-603.24
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:605.1-606.24
   rule empty{C : context}:
     `%|-%:%`(C, [], `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:606.1-610.82
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:609.1-613.82
   rule seq{C : context, instr_1 : instr, `instr_2*` : instr*, `t_1*` : valtype*, `x_1*` : idx*, `x_2*` : idx*, `t_3*` : valtype*, `t_2*` : valtype*, `init*` : init*, `t*` : valtype*}:
     `%|-%:%`(C, [instr_1] ++ instr_2*{instr_2 <- `instr_2*`}, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), x_1*{x_1 <- `x_1*`} ++ x_2*{x_2 <- `x_2*`}, `%`_resulttype(t_3*{t_3 <- `t_3*`})))
     -- Instr_ok: `%|-%:%`(C, instr_1, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), x_1*{x_1 <- `x_1*`}, `%`_resulttype(t_2*{t_2 <- `t_2*`})))
     -- (if (C.LOCALS_context[x_1!`%`_idx.0] = `%%`_localtype(init, t)))*{init <- `init*`, t <- `t*`, x_1 <- `x_1*`}
     -- Instrs_ok: `%|-%:%`($with_locals(C, x_1*{x_1 <- `x_1*`}, `%%`_localtype(SET_init, t)*{t <- `t*`}), instr_2*{instr_2 <- `instr_2*`}, `%->_%%`_instrtype(`%`_resulttype(t_2*{t_2 <- `t_2*`}), x_2*{x_2 <- `x_2*`}, `%`_resulttype(t_3*{t_3 <- `t_3*`})))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:612.1-616.33
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:615.1-619.33
   rule sub{C : context, `instr*` : instr*, it' : instrtype, it : instrtype}:
     `%|-%:%`(C, instr*{instr <- `instr*`}, it')
     -- Instrs_ok: `%|-%:%`(C, instr*{instr <- `instr*`}, it)
     -- Instrtype_sub: `%|-%<:%`(C, it, it')
     -- Instrtype_ok: `%|-%:OK`(C, it')
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:619.1-622.33
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:622.1-625.33
   rule frame{C : context, `instr*` : instr*, `t*` : valtype*, `t_1*` : valtype*, `x*` : idx*, `t_2*` : valtype*}:
     `%|-%:%`(C, instr*{instr <- `instr*`}, `%->_%%`_instrtype(`%`_resulttype(t*{t <- `t*`} ++ t_1*{t_1 <- `t_1*`}), x*{x <- `x*`}, `%`_resulttype(t*{t <- `t*`} ++ t_2*{t_2 <- `t_2*`})))
     -- Instrs_ok: `%|-%:%`(C, instr*{instr <- `instr*`}, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), x*{x <- `x*`}, `%`_resulttype(t_2*{t_2 <- `t_2*`})))
@@ -26011,6 +26021,11 @@ relation Defaultable: `|-%DEFAULTABLE`(valtype)
     -- if ($default_(t) =/= ?())
 
 ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec
+def $is_packtype(storagetype : storagetype) : bool
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec
+  def $is_packtype{zt : storagetype}(zt) = (zt = ($unpack(zt) : valtype <: storagetype))
+
+;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec
 rec {
 
 ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:5.1-5.95
@@ -26253,16 +26268,16 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
     -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], STRUCT_comptype(`%`_list(`%%`_fieldtype(mut, zt)*{mut <- `mut*`, zt <- `zt*`})))
     -- (Defaultable: `|-%DEFAULTABLE`($unpack(zt)))*{zt <- `zt*`}
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:255.1-259.39
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:258.1-262.39
   rule struct.get{C : context, `sx?` : sx?, x : idx, i : u32, zt : storagetype, `ft*` : fieldtype*, mut : mut}:
     `%|-%:%`(C, STRUCT.GET_instr(sx?{sx <- `sx?`}, x, i), `%->_%%`_instrtype(`%`_resulttype([REF_valtype(?(NULL_NULL), _IDX_heaptype(x))]), [], `%`_resulttype([$unpack(zt)])))
     -- if (x!`%`_idx.0 < |C.TYPES_context|)
     -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], STRUCT_comptype(`%`_list(ft*{ft <- `ft*`})))
     -- if (i!`%`_u32.0 < |ft*{ft <- `ft*`}|)
     -- if (ft*{ft <- `ft*`}[i!`%`_u32.0] = `%%`_fieldtype(mut, zt))
-    -- if ((sx?{sx <- `sx?`} = ?()) <=> (zt = ($unpack(zt) : valtype <: storagetype)))
+    -- if ((sx?{sx <- `sx?`} = ?()) <=> $is_packtype(zt))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:261.1-264.24
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:264.1-267.24
   rule struct.set{C : context, x : idx, i : u32, zt : storagetype, `ft*` : fieldtype*}:
     `%|-%:%`(C, STRUCT.SET_instr(x, i), `%->_%%`_instrtype(`%`_resulttype([REF_valtype(?(NULL_NULL), _IDX_heaptype(x)) $unpack(zt)]), [], `%`_resulttype([])))
     -- if (x!`%`_idx.0 < |C.TYPES_context|)
@@ -26270,26 +26285,26 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
     -- if (i!`%`_u32.0 < |ft*{ft <- `ft*`}|)
     -- if (ft*{ft <- `ft*`}[i!`%`_u32.0] = `%%`_fieldtype(?(MUT_MUT), zt))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:269.1-271.42
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:272.1-274.42
   rule array.new{C : context, x : idx, zt : storagetype, mut : mut}:
     `%|-%:%`(C, ARRAY.NEW_instr(x), `%->_%%`_instrtype(`%`_resulttype([$unpack(zt) I32_valtype]), [], `%`_resulttype([REF_valtype(?(), _IDX_heaptype(x))])))
     -- if (x!`%`_idx.0 < |C.TYPES_context|)
     -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], ARRAY_comptype(`%%`_fieldtype(mut, zt)))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:273.1-276.45
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:276.1-279.45
   rule array.new_default{C : context, x : idx, mut : mut, zt : storagetype}:
     `%|-%:%`(C, ARRAY.NEW_DEFAULT_instr(x), `%->_%%`_instrtype(`%`_resulttype([I32_valtype]), [], `%`_resulttype([REF_valtype(?(), _IDX_heaptype(x))])))
     -- if (x!`%`_idx.0 < |C.TYPES_context|)
     -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], ARRAY_comptype(`%%`_fieldtype(mut, zt)))
     -- Defaultable: `|-%DEFAULTABLE`($unpack(zt))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:278.1-280.42
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:281.1-283.42
   rule array.new_fixed{C : context, x : idx, n : n, zt : storagetype, mut : mut}:
     `%|-%:%`(C, ARRAY.NEW_FIXED_instr(x, `%`_u32(n)), `%->_%%`_instrtype(`%`_resulttype($unpack(zt)^n{}), [], `%`_resulttype([REF_valtype(?(), _IDX_heaptype(x))])))
     -- if (x!`%`_idx.0 < |C.TYPES_context|)
     -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], ARRAY_comptype(`%%`_fieldtype(mut, zt)))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:282.1-285.40
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:285.1-288.40
   rule array.new_elem{C : context, x : idx, y : idx, mut : mut, rt : reftype}:
     `%|-%:%`(C, ARRAY.NEW_ELEM_instr(x, y), `%->_%%`_instrtype(`%`_resulttype([I32_valtype I32_valtype]), [], `%`_resulttype([REF_valtype(?(), _IDX_heaptype(x))])))
     -- if (x!`%`_idx.0 < |C.TYPES_context|)
@@ -26297,7 +26312,7 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
     -- if (y!`%`_idx.0 < |C.ELEMS_context|)
     -- Reftype_sub: `%|-%<:%`(C, C.ELEMS_context[y!`%`_idx.0], rt)
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:287.1-291.24
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:290.1-294.24
   rule array.new_data{C : context, x : idx, y : idx, mut : mut, zt : storagetype, numtype : numtype, vectype : vectype}:
     `%|-%:%`(C, ARRAY.NEW_DATA_instr(x, y), `%->_%%`_instrtype(`%`_resulttype([I32_valtype I32_valtype]), [], `%`_resulttype([REF_valtype(?(), _IDX_heaptype(x))])))
     -- if (x!`%`_idx.0 < |C.TYPES_context|)
@@ -26306,30 +26321,30 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
     -- if (y!`%`_idx.0 < |C.DATAS_context|)
     -- if (C.DATAS_context[y!`%`_idx.0] = OK_datatype)
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:293.1-296.39
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:296.1-299.39
   rule array.get{C : context, `sx?` : sx?, x : idx, zt : storagetype, mut : mut}:
     `%|-%:%`(C, ARRAY.GET_instr(sx?{sx <- `sx?`}, x), `%->_%%`_instrtype(`%`_resulttype([REF_valtype(?(NULL_NULL), _IDX_heaptype(x)) I32_valtype]), [], `%`_resulttype([$unpack(zt)])))
     -- if (x!`%`_idx.0 < |C.TYPES_context|)
     -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], ARRAY_comptype(`%%`_fieldtype(mut, zt)))
-    -- if ((sx?{sx <- `sx?`} = ?()) <=> (zt = ($unpack(zt) : valtype <: storagetype)))
+    -- if ((sx?{sx <- `sx?`} = ?()) <=> $is_packtype(zt))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:298.1-300.42
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:301.1-303.42
   rule array.set{C : context, x : idx, zt : storagetype}:
     `%|-%:%`(C, ARRAY.SET_instr(x), `%->_%%`_instrtype(`%`_resulttype([REF_valtype(?(NULL_NULL), _IDX_heaptype(x)) I32_valtype $unpack(zt)]), [], `%`_resulttype([])))
     -- if (x!`%`_idx.0 < |C.TYPES_context|)
     -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], ARRAY_comptype(`%%`_fieldtype(?(MUT_MUT), zt)))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:302.1-303.43
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:305.1-306.43
   rule array.len{C : context}:
     `%|-%:%`(C, ARRAY.LEN_instr, `%->_%%`_instrtype(`%`_resulttype([REF_valtype(?(NULL_NULL), ARRAY_heaptype)]), [], `%`_resulttype([I32_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:305.1-307.42
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:308.1-310.42
   rule array.fill{C : context, x : idx, zt : storagetype}:
     `%|-%:%`(C, ARRAY.FILL_instr(x), `%->_%%`_instrtype(`%`_resulttype([REF_valtype(?(NULL_NULL), _IDX_heaptype(x)) I32_valtype $unpack(zt) I32_valtype]), [], `%`_resulttype([])))
     -- if (x!`%`_idx.0 < |C.TYPES_context|)
     -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], ARRAY_comptype(`%%`_fieldtype(?(MUT_MUT), zt)))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:309.1-313.40
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:312.1-316.40
   rule array.copy{C : context, x_1 : idx, x_2 : idx, zt_1 : storagetype, mut : mut, zt_2 : storagetype}:
     `%|-%:%`(C, ARRAY.COPY_instr(x_1, x_2), `%->_%%`_instrtype(`%`_resulttype([REF_valtype(?(NULL_NULL), _IDX_heaptype(x_1)) I32_valtype REF_valtype(?(NULL_NULL), _IDX_heaptype(x_2)) I32_valtype I32_valtype]), [], `%`_resulttype([])))
     -- if (x_1!`%`_idx.0 < |C.TYPES_context|)
@@ -26338,7 +26353,7 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
     -- Expand: `%~~%`(C.TYPES_context[x_2!`%`_idx.0], ARRAY_comptype(`%%`_fieldtype(mut, zt_2)))
     -- Storagetype_sub: `%|-%<:%`(C, zt_2, zt_1)
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:315.1-318.44
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:318.1-321.44
   rule array.init_elem{C : context, x : idx, y : idx, zt : storagetype}:
     `%|-%:%`(C, ARRAY.INIT_ELEM_instr(x, y), `%->_%%`_instrtype(`%`_resulttype([REF_valtype(?(NULL_NULL), _IDX_heaptype(x)) I32_valtype I32_valtype I32_valtype]), [], `%`_resulttype([])))
     -- if (x!`%`_idx.0 < |C.TYPES_context|)
@@ -26346,7 +26361,7 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
     -- if (y!`%`_idx.0 < |C.ELEMS_context|)
     -- Storagetype_sub: `%|-%<:%`(C, (C.ELEMS_context[y!`%`_idx.0] : reftype <: storagetype), zt)
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:320.1-324.24
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:323.1-327.24
   rule array.init_data{C : context, x : idx, y : idx, zt : storagetype, numtype : numtype, vectype : vectype}:
     `%|-%:%`(C, ARRAY.INIT_DATA_instr(x, y), `%->_%%`_instrtype(`%`_resulttype([REF_valtype(?(NULL_NULL), _IDX_heaptype(x)) I32_valtype I32_valtype I32_valtype]), [], `%`_resulttype([])))
     -- if (x!`%`_idx.0 < |C.TYPES_context|)
@@ -26355,77 +26370,77 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
     -- if (y!`%`_idx.0 < |C.DATAS_context|)
     -- if (C.DATAS_context[y!`%`_idx.0] = OK_datatype)
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:329.1-331.20
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:332.1-334.20
   rule extern.convert_any{C : context, nul1 : nul1, nul2 : nul2}:
     `%|-%:%`(C, EXTERN.CONVERT_ANY_instr, `%->_%%`_instrtype(`%`_resulttype([REF_valtype(nul1, ANY_heaptype)]), [], `%`_resulttype([REF_valtype(nul2, EXTERN_heaptype)])))
     -- if (nul1 = nul2)
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:333.1-335.20
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:336.1-338.20
   rule any.convert_extern{C : context, nul1 : nul1, nul2 : nul2}:
     `%|-%:%`(C, ANY.CONVERT_EXTERN_instr, `%->_%%`_instrtype(`%`_resulttype([REF_valtype(nul1, EXTERN_heaptype)]), [], `%`_resulttype([REF_valtype(nul2, ANY_heaptype)])))
     -- if (nul1 = nul2)
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:340.1-342.28
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:343.1-345.28
   rule local.get{C : context, x : idx, t : valtype}:
     `%|-%:%`(C, LOCAL.GET_instr(x), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([t])))
     -- if (x!`%`_idx.0 < |C.LOCALS_context|)
     -- if (C.LOCALS_context[x!`%`_idx.0] = `%%`_localtype(SET_init, t))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:344.1-346.29
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:347.1-349.29
   rule local.set{C : context, x : idx, t : valtype, init : init}:
     `%|-%:%`(C, LOCAL.SET_instr(x), `%->_%%`_instrtype(`%`_resulttype([t]), [x], `%`_resulttype([])))
     -- if (x!`%`_idx.0 < |C.LOCALS_context|)
     -- if (C.LOCALS_context[x!`%`_idx.0] = `%%`_localtype(init, t))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:348.1-350.29
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:351.1-353.29
   rule local.tee{C : context, x : idx, t : valtype, init : init}:
     `%|-%:%`(C, LOCAL.TEE_instr(x), `%->_%%`_instrtype(`%`_resulttype([t]), [x], `%`_resulttype([t])))
     -- if (x!`%`_idx.0 < |C.LOCALS_context|)
     -- if (C.LOCALS_context[x!`%`_idx.0] = `%%`_localtype(init, t))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:355.1-357.29
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:358.1-360.29
   rule global.get{C : context, x : idx, t : valtype, mut : mut}:
     `%|-%:%`(C, GLOBAL.GET_instr(x), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([t])))
     -- if (x!`%`_idx.0 < |C.GLOBALS_context|)
     -- if (C.GLOBALS_context[x!`%`_idx.0] = `%%`_globaltype(mut, t))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:359.1-361.29
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:362.1-364.29
   rule global.set{C : context, x : idx, t : valtype}:
     `%|-%:%`(C, GLOBAL.SET_instr(x), `%->_%%`_instrtype(`%`_resulttype([t]), [], `%`_resulttype([])))
     -- if (x!`%`_idx.0 < |C.GLOBALS_context|)
     -- if (C.GLOBALS_context[x!`%`_idx.0] = `%%`_globaltype(?(MUT_MUT), t))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:366.1-368.32
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:369.1-371.32
   rule table.get{C : context, x : idx, at : addrtype, rt : reftype, lim : limits}:
     `%|-%:%`(C, TABLE.GET_instr(x), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype)]), [], `%`_resulttype([(rt : reftype <: valtype)])))
     -- if (x!`%`_idx.0 < |C.TABLES_context|)
     -- if (C.TABLES_context[x!`%`_idx.0] = `%%%`_tabletype(at, lim, rt))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:370.1-372.32
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:373.1-375.32
   rule table.set{C : context, x : idx, at : addrtype, rt : reftype, lim : limits}:
     `%|-%:%`(C, TABLE.SET_instr(x), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype) (rt : reftype <: valtype)]), [], `%`_resulttype([])))
     -- if (x!`%`_idx.0 < |C.TABLES_context|)
     -- if (C.TABLES_context[x!`%`_idx.0] = `%%%`_tabletype(at, lim, rt))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:374.1-376.32
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:377.1-379.32
   rule table.size{C : context, x : idx, at : addrtype, lim : limits, rt : reftype}:
     `%|-%:%`(C, TABLE.SIZE_instr(x), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([(at : addrtype <: valtype)])))
     -- if (x!`%`_idx.0 < |C.TABLES_context|)
     -- if (C.TABLES_context[x!`%`_idx.0] = `%%%`_tabletype(at, lim, rt))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:378.1-380.32
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:381.1-383.32
   rule table.grow{C : context, x : idx, rt : reftype, at : addrtype, lim : limits}:
     `%|-%:%`(C, TABLE.GROW_instr(x), `%->_%%`_instrtype(`%`_resulttype([(rt : reftype <: valtype) (at : addrtype <: valtype)]), [], `%`_resulttype([I32_valtype])))
     -- if (x!`%`_idx.0 < |C.TABLES_context|)
     -- if (C.TABLES_context[x!`%`_idx.0] = `%%%`_tabletype(at, lim, rt))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:382.1-384.32
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:385.1-387.32
   rule table.fill{C : context, x : idx, at : addrtype, rt : reftype, lim : limits}:
     `%|-%:%`(C, TABLE.FILL_instr(x), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype) (rt : reftype <: valtype) (at : addrtype <: valtype)]), [], `%`_resulttype([])))
     -- if (x!`%`_idx.0 < |C.TABLES_context|)
     -- if (C.TABLES_context[x!`%`_idx.0] = `%%%`_tabletype(at, lim, rt))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:386.1-390.36
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:389.1-393.36
   rule table.copy{C : context, x_1 : idx, x_2 : idx, at_1 : addrtype, at_2 : addrtype, lim_1 : limits, rt_1 : reftype, lim_2 : limits, rt_2 : reftype}:
     `%|-%:%`(C, TABLE.COPY_instr(x_1, x_2), `%->_%%`_instrtype(`%`_resulttype([(at_1 : addrtype <: valtype) (at_2 : addrtype <: valtype) ($minat(at_1, at_2) : addrtype <: valtype)]), [], `%`_resulttype([])))
     -- if (x_1!`%`_idx.0 < |C.TABLES_context|)
@@ -26434,7 +26449,7 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
     -- if (C.TABLES_context[x_2!`%`_idx.0] = `%%%`_tabletype(at_2, lim_2, rt_2))
     -- Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:392.1-396.36
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:395.1-399.36
   rule table.init{C : context, x : idx, y : idx, at : addrtype, lim : limits, rt_1 : reftype, rt_2 : reftype}:
     `%|-%:%`(C, TABLE.INIT_instr(x, y), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype) I32_valtype I32_valtype]), [], `%`_resulttype([])))
     -- if (x!`%`_idx.0 < |C.TABLES_context|)
@@ -26443,31 +26458,31 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
     -- if (C.ELEMS_context[y!`%`_idx.0] = rt_2)
     -- Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:398.1-400.24
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:401.1-403.24
   rule elem.drop{C : context, x : idx, rt : reftype}:
     `%|-%:%`(C, ELEM.DROP_instr(x), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([])))
     -- if (x!`%`_idx.0 < |C.ELEMS_context|)
     -- if (C.ELEMS_context[x!`%`_idx.0] = rt)
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:405.1-407.32
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:408.1-410.32
   rule memory.size{C : context, x : idx, at : addrtype, lim : limits}:
     `%|-%:%`(C, MEMORY.SIZE_instr(x), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([(at : addrtype <: valtype)])))
     -- if (x!`%`_idx.0 < |C.MEMS_context|)
     -- if (C.MEMS_context[x!`%`_idx.0] = `%%PAGE`_memtype(at, lim))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:409.1-411.32
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:412.1-414.32
   rule memory.grow{C : context, x : idx, at : addrtype, lim : limits}:
     `%|-%:%`(C, MEMORY.GROW_instr(x), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype)]), [], `%`_resulttype([(at : addrtype <: valtype)])))
     -- if (x!`%`_idx.0 < |C.MEMS_context|)
     -- if (C.MEMS_context[x!`%`_idx.0] = `%%PAGE`_memtype(at, lim))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:413.1-415.32
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:416.1-418.32
   rule memory.fill{C : context, x : idx, at : addrtype, lim : limits}:
     `%|-%:%`(C, MEMORY.FILL_instr(x), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype) I32_valtype (at : addrtype <: valtype)]), [], `%`_resulttype([])))
     -- if (x!`%`_idx.0 < |C.MEMS_context|)
     -- if (C.MEMS_context[x!`%`_idx.0] = `%%PAGE`_memtype(at, lim))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:417.1-420.38
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:420.1-423.38
   rule memory.copy{C : context, x_1 : idx, x_2 : idx, at_1 : addrtype, at_2 : addrtype, lim_1 : limits, lim_2 : limits}:
     `%|-%:%`(C, MEMORY.COPY_instr(x_1, x_2), `%->_%%`_instrtype(`%`_resulttype([(at_1 : addrtype <: valtype) (at_2 : addrtype <: valtype) ($minat(at_1, at_2) : addrtype <: valtype)]), [], `%`_resulttype([])))
     -- if (x_1!`%`_idx.0 < |C.MEMS_context|)
@@ -26475,7 +26490,7 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
     -- if (x_2!`%`_idx.0 < |C.MEMS_context|)
     -- if (C.MEMS_context[x_2!`%`_idx.0] = `%%PAGE`_memtype(at_2, lim_2))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:422.1-425.24
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:425.1-428.24
   rule memory.init{C : context, x : idx, y : idx, at : addrtype, lim : limits}:
     `%|-%:%`(C, MEMORY.INIT_instr(x, y), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype) I32_valtype I32_valtype]), [], `%`_resulttype([])))
     -- if (x!`%`_idx.0 < |C.MEMS_context|)
@@ -26483,69 +26498,69 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
     -- if (y!`%`_idx.0 < |C.DATAS_context|)
     -- if (C.DATAS_context[y!`%`_idx.0] = OK_datatype)
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:427.1-429.24
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:430.1-432.24
   rule data.drop{C : context, x : idx}:
     `%|-%:%`(C, DATA.DROP_instr(x), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([])))
     -- if (x!`%`_idx.0 < |C.DATAS_context|)
     -- if (C.DATAS_context[x!`%`_idx.0] = OK_datatype)
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:440.1-443.43
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:443.1-446.43
   rule `load-val`{C : context, nt : numtype, x : idx, memarg : memarg, at : addrtype, lim : limits}:
     `%|-%:%`(C, LOAD_instr(nt, ?(), x, memarg), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype)]), [], `%`_resulttype([(nt : numtype <: valtype)])))
     -- if (x!`%`_idx.0 < |C.MEMS_context|)
     -- if (C.MEMS_context[x!`%`_idx.0] = `%%PAGE`_memtype(at, lim))
     -- if (((2 ^ memarg.ALIGN_memarg!`%`_u32.0) : nat <:> rat) <= (($size(nt) : nat <:> rat) / (8 : nat <:> rat)))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:445.1-448.35
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:448.1-451.35
   rule `load-pack`{C : context, Inn : Inn, M : M, sx : sx, x : idx, memarg : memarg, at : addrtype, lim : limits}:
     `%|-%:%`(C, LOAD_instr((Inn : Inn <: numtype), ?(`%_%`_loadop_(`%`_sz(M), sx)), x, memarg), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype)]), [], `%`_resulttype([(Inn : Inn <: valtype)])))
     -- if (x!`%`_idx.0 < |C.MEMS_context|)
     -- if (C.MEMS_context[x!`%`_idx.0] = `%%PAGE`_memtype(at, lim))
     -- if (((2 ^ memarg.ALIGN_memarg!`%`_u32.0) : nat <:> rat) <= ((M : nat <:> rat) / (8 : nat <:> rat)))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:459.1-462.43
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:462.1-465.43
   rule `store-val`{C : context, nt : numtype, x : idx, memarg : memarg, at : addrtype, lim : limits}:
     `%|-%:%`(C, STORE_instr(nt, ?(), x, memarg), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype) (nt : numtype <: valtype)]), [], `%`_resulttype([])))
     -- if (x!`%`_idx.0 < |C.MEMS_context|)
     -- if (C.MEMS_context[x!`%`_idx.0] = `%%PAGE`_memtype(at, lim))
     -- if (((2 ^ memarg.ALIGN_memarg!`%`_u32.0) : nat <:> rat) <= (($size(nt) : nat <:> rat) / (8 : nat <:> rat)))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:464.1-467.35
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:467.1-470.35
   rule `store-pack`{C : context, Inn : Inn, M : M, x : idx, memarg : memarg, at : addrtype, lim : limits}:
     `%|-%:%`(C, STORE_instr((Inn : Inn <: numtype), ?(`%`_storeop_(`%`_sz(M))), x, memarg), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype) (Inn : Inn <: valtype)]), [], `%`_resulttype([])))
     -- if (x!`%`_idx.0 < |C.MEMS_context|)
     -- if (C.MEMS_context[x!`%`_idx.0] = `%%PAGE`_memtype(at, lim))
     -- if (((2 ^ memarg.ALIGN_memarg!`%`_u32.0) : nat <:> rat) <= ((M : nat <:> rat) / (8 : nat <:> rat)))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:469.1-472.46
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:472.1-475.46
   rule `vload-val`{C : context, x : idx, memarg : memarg, at : addrtype, lim : limits}:
     `%|-%:%`(C, VLOAD_instr(V128_vectype, ?(), x, memarg), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype)]), [], `%`_resulttype([V128_valtype])))
     -- if (x!`%`_idx.0 < |C.MEMS_context|)
     -- if (C.MEMS_context[x!`%`_idx.0] = `%%PAGE`_memtype(at, lim))
     -- if (((2 ^ memarg.ALIGN_memarg!`%`_u32.0) : nat <:> rat) <= (($vsize(V128_vectype) : nat <:> rat) / (8 : nat <:> rat)))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:474.1-477.39
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:477.1-480.39
   rule `vload-pack`{C : context, M : M, N : N, sx : sx, x : idx, memarg : memarg, at : addrtype, lim : limits}:
     `%|-%:%`(C, VLOAD_instr(V128_vectype, ?(`SHAPE%X%_%`_vloadop_(`%`_sz(M), N, sx)), x, memarg), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype)]), [], `%`_resulttype([V128_valtype])))
     -- if (x!`%`_idx.0 < |C.MEMS_context|)
     -- if (C.MEMS_context[x!`%`_idx.0] = `%%PAGE`_memtype(at, lim))
     -- if (((2 ^ memarg.ALIGN_memarg!`%`_u32.0) : nat <:> rat) <= (((M : nat <:> rat) / (8 : nat <:> rat)) * (N : nat <:> rat)))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:479.1-482.35
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:482.1-485.35
   rule `vload-splat`{C : context, N : N, x : idx, memarg : memarg, at : addrtype, lim : limits}:
     `%|-%:%`(C, VLOAD_instr(V128_vectype, ?(SPLAT_vloadop_(`%`_sz(N))), x, memarg), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype)]), [], `%`_resulttype([V128_valtype])))
     -- if (x!`%`_idx.0 < |C.MEMS_context|)
     -- if (C.MEMS_context[x!`%`_idx.0] = `%%PAGE`_memtype(at, lim))
     -- if (((2 ^ memarg.ALIGN_memarg!`%`_u32.0) : nat <:> rat) <= ((N : nat <:> rat) / (8 : nat <:> rat)))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:484.1-487.35
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:487.1-490.35
   rule `vload-zero`{C : context, N : N, x : idx, memarg : memarg, at : addrtype, lim : limits}:
     `%|-%:%`(C, VLOAD_instr(V128_vectype, ?(ZERO_vloadop_(`%`_sz(N))), x, memarg), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype)]), [], `%`_resulttype([V128_valtype])))
     -- if (x!`%`_idx.0 < |C.MEMS_context|)
     -- if (C.MEMS_context[x!`%`_idx.0] = `%%PAGE`_memtype(at, lim))
     -- if (((2 ^ memarg.ALIGN_memarg!`%`_u32.0) : nat <:> rat) <= ((N : nat <:> rat) / (8 : nat <:> rat)))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:489.1-493.21
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:492.1-496.21
   rule vload_lane{C : context, N : N, x : idx, memarg : memarg, i : laneidx, at : addrtype, lim : limits}:
     `%|-%:%`(C, VLOAD_LANE_instr(V128_vectype, `%`_sz(N), x, memarg, i), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype) V128_valtype]), [], `%`_resulttype([V128_valtype])))
     -- if (x!`%`_idx.0 < |C.MEMS_context|)
@@ -26553,14 +26568,14 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
     -- if (((2 ^ memarg.ALIGN_memarg!`%`_u32.0) : nat <:> rat) <= ((N : nat <:> rat) / (8 : nat <:> rat)))
     -- if ((i!`%`_laneidx.0 : nat <:> rat) < ((128 : nat <:> rat) / (N : nat <:> rat)))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:495.1-498.46
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:498.1-501.46
   rule vstore{C : context, x : idx, memarg : memarg, at : addrtype, lim : limits}:
     `%|-%:%`(C, VSTORE_instr(V128_vectype, x, memarg), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype) V128_valtype]), [], `%`_resulttype([])))
     -- if (x!`%`_idx.0 < |C.MEMS_context|)
     -- if (C.MEMS_context[x!`%`_idx.0] = `%%PAGE`_memtype(at, lim))
     -- if (((2 ^ memarg.ALIGN_memarg!`%`_u32.0) : nat <:> rat) <= (($vsize(V128_vectype) : nat <:> rat) / (8 : nat <:> rat)))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:500.1-504.21
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:503.1-507.21
   rule vstore_lane{C : context, N : N, x : idx, memarg : memarg, i : laneidx, at : addrtype, lim : limits}:
     `%|-%:%`(C, VSTORE_LANE_instr(V128_vectype, `%`_sz(N), x, memarg, i), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype) V128_valtype]), [], `%`_resulttype([])))
     -- if (x!`%`_idx.0 < |C.MEMS_context|)
@@ -26568,128 +26583,128 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
     -- if (((2 ^ memarg.ALIGN_memarg!`%`_u32.0) : nat <:> rat) <= ((N : nat <:> rat) / (8 : nat <:> rat)))
     -- if ((i!`%`_laneidx.0 : nat <:> rat) < ((128 : nat <:> rat) / (N : nat <:> rat)))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:509.1-510.33
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:512.1-513.33
   rule const{C : context, nt : numtype, c_nt : num_(nt)}:
     `%|-%:%`(C, CONST_instr(nt, c_nt), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([(nt : numtype <: valtype)])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:512.1-513.34
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:515.1-516.34
   rule unop{C : context, nt : numtype, unop_nt : unop_(nt)}:
     `%|-%:%`(C, UNOP_instr(nt, unop_nt), `%->_%%`_instrtype(`%`_resulttype([(nt : numtype <: valtype)]), [], `%`_resulttype([(nt : numtype <: valtype)])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:515.1-516.39
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:518.1-519.39
   rule binop{C : context, nt : numtype, binop_nt : binop_(nt)}:
     `%|-%:%`(C, BINOP_instr(nt, binop_nt), `%->_%%`_instrtype(`%`_resulttype([(nt : numtype <: valtype) (nt : numtype <: valtype)]), [], `%`_resulttype([(nt : numtype <: valtype)])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:518.1-519.39
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:521.1-522.39
   rule testop{C : context, nt : numtype, testop_nt : testop_(nt)}:
     `%|-%:%`(C, TESTOP_instr(nt, testop_nt), `%->_%%`_instrtype(`%`_resulttype([(nt : numtype <: valtype)]), [], `%`_resulttype([I32_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:521.1-522.40
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:524.1-525.40
   rule relop{C : context, nt : numtype, relop_nt : relop_(nt)}:
     `%|-%:%`(C, RELOP_instr(nt, relop_nt), `%->_%%`_instrtype(`%`_resulttype([(nt : numtype <: valtype) (nt : numtype <: valtype)]), [], `%`_resulttype([I32_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:524.1-525.44
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:527.1-528.44
   rule cvtop{C : context, nt_1 : numtype, nt_2 : numtype, cvtop : cvtop__(nt_2, nt_1)}:
     `%|-%:%`(C, CVTOP_instr(nt_1, nt_2, cvtop), `%->_%%`_instrtype(`%`_resulttype([(nt_2 : numtype <: valtype)]), [], `%`_resulttype([(nt_1 : numtype <: valtype)])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:530.1-531.35
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:533.1-534.35
   rule vconst{C : context, c : vec_(V128_Vnn)}:
     `%|-%:%`(C, VCONST_instr(V128_vectype, c), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([V128_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:533.1-534.41
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:536.1-537.41
   rule vvunop{C : context, vvunop : vvunop}:
     `%|-%:%`(C, VVUNOP_instr(V128_vectype, vvunop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:536.1-537.48
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:539.1-540.48
   rule vvbinop{C : context, vvbinop : vvbinop}:
     `%|-%:%`(C, VVBINOP_instr(V128_vectype, vvbinop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:539.1-540.55
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:542.1-543.55
   rule vvternop{C : context, vvternop : vvternop}:
     `%|-%:%`(C, VVTERNOP_instr(V128_vectype, vvternop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:542.1-543.44
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:545.1-546.44
   rule vvtestop{C : context, vvtestop : vvtestop}:
     `%|-%:%`(C, VVTESTOP_instr(V128_vectype, vvtestop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype]), [], `%`_resulttype([I32_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:545.1-546.37
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:548.1-549.37
   rule vunop{C : context, sh : shape, vunop : vunop_(sh)}:
     `%|-%:%`(C, VUNOP_instr(sh, vunop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:548.1-549.44
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:551.1-552.44
   rule vbinop{C : context, sh : shape, vbinop : vbinop_(sh)}:
     `%|-%:%`(C, VBINOP_instr(sh, vbinop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:551.1-552.51
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:554.1-555.51
   rule vternop{C : context, sh : shape, vternop : vternop_(sh)}:
     `%|-%:%`(C, VTERNOP_instr(sh, vternop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:554.1-555.40
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:557.1-558.40
   rule vtestop{C : context, sh : shape, vtestop : vtestop_(sh)}:
     `%|-%:%`(C, VTESTOP_instr(sh, vtestop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype]), [], `%`_resulttype([I32_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:557.1-558.44
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:560.1-561.44
   rule vrelop{C : context, sh : shape, vrelop : vrelop_(sh)}:
     `%|-%:%`(C, VRELOP_instr(sh, vrelop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:560.1-561.47
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:563.1-564.47
   rule vshiftop{C : context, sh : ishape, vshiftop : vshiftop_(sh)}:
     `%|-%:%`(C, VSHIFTOP_instr(sh, vshiftop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype I32_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:563.1-564.33
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:566.1-567.33
   rule vbitmask{C : context, sh : ishape}:
     `%|-%:%`(C, VBITMASK_instr(sh), `%->_%%`_instrtype(`%`_resulttype([V128_valtype]), [], `%`_resulttype([I32_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:566.1-567.50
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:569.1-570.50
   rule vswizzlop{C : context, sh : bshape, vswizzlop : vswizzlop_(sh)}:
     `%|-%:%`(C, VSWIZZLOP_instr(sh, vswizzlop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:569.1-571.29
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:572.1-574.29
   rule vshuffle{C : context, sh : bshape, `i*` : laneidx*}:
     `%|-%:%`(C, VSHUFFLE_instr(sh, i*{i <- `i*`}), `%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
     -- (if (i!`%`_laneidx.0 < (2 * $dim(sh!`%`_bshape.0)!`%`_dim.0)))*{i <- `i*`}
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:573.1-574.44
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:576.1-577.44
   rule vsplat{C : context, sh : shape}:
     `%|-%:%`(C, VSPLAT_instr(sh), `%->_%%`_instrtype(`%`_resulttype([($unpackshape(sh) : numtype <: valtype)]), [], `%`_resulttype([V128_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:576.1-578.21
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:579.1-581.21
   rule vextract_lane{C : context, sh : shape, `sx?` : sx?, i : laneidx}:
     `%|-%:%`(C, VEXTRACT_LANE_instr(sh, sx?{sx <- `sx?`}, i), `%->_%%`_instrtype(`%`_resulttype([V128_valtype]), [], `%`_resulttype([($unpackshape(sh) : numtype <: valtype)])))
     -- if (i!`%`_laneidx.0 < $dim(sh)!`%`_dim.0)
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:580.1-582.21
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:583.1-585.21
   rule vreplace_lane{C : context, sh : shape, i : laneidx}:
     `%|-%:%`(C, VREPLACE_LANE_instr(sh, i), `%->_%%`_instrtype(`%`_resulttype([V128_valtype ($unpackshape(sh) : numtype <: valtype)]), [], `%`_resulttype([V128_valtype])))
     -- if (i!`%`_laneidx.0 < $dim(sh)!`%`_dim.0)
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:584.1-585.50
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:587.1-588.50
   rule vextunop{C : context, sh_1 : ishape, sh_2 : ishape, vextunop : vextunop__(sh_2, sh_1)}:
     `%|-%:%`(C, VEXTUNOP_instr(sh_1, sh_2, vextunop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:587.1-588.57
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:590.1-591.57
   rule vextbinop{C : context, sh_1 : ishape, sh_2 : ishape, vextbinop : vextbinop__(sh_2, sh_1)}:
     `%|-%:%`(C, VEXTBINOP_instr(sh_1, sh_2, vextbinop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:590.1-591.64
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:593.1-594.64
   rule vextternop{C : context, sh_1 : ishape, sh_2 : ishape, vextternop : vextternop__(sh_2, sh_1)}:
     `%|-%:%`(C, VEXTTERNOP_instr(sh_1, sh_2, vextternop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:593.1-594.48
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:596.1-597.48
   rule vnarrow{C : context, sh_1 : ishape, sh_2 : ishape, sx : sx}:
     `%|-%:%`(C, VNARROW_instr(sh_1, sh_2, sx), `%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:596.1-597.46
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:599.1-600.46
   rule vcvtop{C : context, sh_1 : shape, sh_2 : shape, vcvtop : vcvtop__(sh_2, sh_1)}:
     `%|-%:%`(C, VCVTOP_instr(sh_1, sh_2, vcvtop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
 ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:6.1-6.96
 relation Instrs_ok: `%|-%:%`(context, instr*, instrtype)
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:602.1-603.24
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:605.1-606.24
   rule empty{C : context}:
     `%|-%:%`(C, [], `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:606.1-610.82
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:609.1-613.82
   rule seq{C : context, instr_1 : instr, `instr_2*` : instr*, `t_1*` : valtype*, `x_1*` : idx*, `x_2*` : idx*, `t_3*` : valtype*, `t_2*` : valtype*, `init*` : init*, `t*` : valtype*}:
     `%|-%:%`(C, [instr_1] ++ instr_2*{instr_2 <- `instr_2*`}, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), x_1*{x_1 <- `x_1*`} ++ x_2*{x_2 <- `x_2*`}, `%`_resulttype(t_3*{t_3 <- `t_3*`})))
     -- Instr_ok: `%|-%:%`(C, instr_1, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), x_1*{x_1 <- `x_1*`}, `%`_resulttype(t_2*{t_2 <- `t_2*`})))
@@ -26699,14 +26714,14 @@ relation Instrs_ok: `%|-%:%`(context, instr*, instrtype)
     -- (if (C.LOCALS_context[x_1!`%`_idx.0] = `%%`_localtype(init, t)))*{init <- `init*`, t <- `t*`, x_1 <- `x_1*`}
     -- Instrs_ok: `%|-%:%`($with_locals(C, x_1*{x_1 <- `x_1*`}, `%%`_localtype(SET_init, t)*{t <- `t*`}), instr_2*{instr_2 <- `instr_2*`}, `%->_%%`_instrtype(`%`_resulttype(t_2*{t_2 <- `t_2*`}), x_2*{x_2 <- `x_2*`}, `%`_resulttype(t_3*{t_3 <- `t_3*`})))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:612.1-616.33
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:615.1-619.33
   rule sub{C : context, `instr*` : instr*, it' : instrtype, it : instrtype}:
     `%|-%:%`(C, instr*{instr <- `instr*`}, it')
     -- Instrs_ok: `%|-%:%`(C, instr*{instr <- `instr*`}, it)
     -- Instrtype_sub: `%|-%<:%`(C, it, it')
     -- Instrtype_ok: `%|-%:OK`(C, it')
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:619.1-622.33
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:622.1-625.33
   rule frame{C : context, `instr*` : instr*, `t*` : valtype*, `t_1*` : valtype*, `x*` : idx*, `t_2*` : valtype*}:
     `%|-%:%`(C, instr*{instr <- `instr*`}, `%->_%%`_instrtype(`%`_resulttype(t*{t <- `t*`} ++ t_1*{t_1 <- `t_1*`}), x*{x <- `x*`}, `%`_resulttype(t*{t <- `t*`} ++ t_2*{t_2 <- `t_2*`})))
     -- Instrs_ok: `%|-%:%`(C, instr*{instr <- `instr*`}, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), x*{x <- `x*`}, `%`_resulttype(t_2*{t_2 <- `t_2*`})))

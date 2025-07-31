@@ -252,11 +252,14 @@ rule Instr_ok/struct.new_default:
   -- Expand: C.TYPES[x] ~~ STRUCT (mut zt)*
   -- (Defaultable: |- $unpack(zt) DEFAULTABLE)*
 
+def $is_packtype(storagetype) : bool             hint(show %1 = $unpack(%1)) hint(prose "%1 is a packed type")
+def $is_packtype(zt) = zt = $unpack(zt)
+
 rule Instr_ok/struct.get:
   C |- STRUCT.GET sx? x i : (REF NULL (_IDX x)) -> $unpack(zt)
   -- Expand: C.TYPES[x] ~~ STRUCT ft*
   -- if ft*[i] = mut zt
-  -- if sx? = eps <=> zt = $unpack(zt)
+  -- if sx? = eps <=> $is_packtype(zt)
 
 rule Instr_ok/struct.set:
   C |- STRUCT.SET x i : (REF NULL (_IDX x)) $unpack(zt) -> eps
@@ -293,7 +296,7 @@ rule Instr_ok/array.new_data:
 rule Instr_ok/array.get:
   C |- ARRAY.GET sx? x : (REF NULL (_IDX x)) I32 -> $unpack(zt)
   -- Expand: C.TYPES[x] ~~ ARRAY (mut zt)
-  -- if sx? = eps <=> zt = $unpack(zt)
+  -- if sx? = eps <=> $is_packtype(zt)
 
 rule Instr_ok/array.set:
   C |- ARRAY.SET x : (REF NULL (_IDX x)) I32 $unpack(zt) -> eps

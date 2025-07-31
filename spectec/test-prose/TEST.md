@@ -13649,7 +13649,7 @@ The sub type :math:`(\mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~{
 
    * For all :math:`{\mathit{typeuse}}` in :math:`{{\mathit{typeuse}}^\ast}`:
 
-      * :math:`{\mathit{typeuse}} \prec x, i` is of the form true.
+      * :math:`{\mathit{typeuse}} \prec x, i` is true.
 
       * The sub type :math:`{{\mathrm{unroll}}}_{C}({\mathit{typeuse}})` is of the form :math:`(\mathsf{sub}~{{\mathit{typeuse}'}^\ast}~{\mathit{comptype}'})`.
 
@@ -15130,7 +15130,7 @@ The instruction :math:`({\mathsf{struct{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~
 
    * The field type :math:`{{\mathit{ft}}^\ast}{}[i]` is of the form :math:`({\mathsf{mut}^?}~{\mathit{zt}})`.
 
-   * The signedness :math:`{{\mathit{sx}}^?}` is absent if and only if the storage type :math:`{\mathit{zt}}` is of the form :math:`{\mathrm{unpack}}({\mathit{zt}})`.
+   * The signedness :math:`{{\mathit{sx}}^?}` is absent if and only if :math:`{\mathit{zt}}` is a packed type.
 
    * The value type :math:`t` is :math:`{\mathrm{unpack}}({\mathit{zt}})`.
 
@@ -15226,7 +15226,7 @@ The instruction :math:`({\mathsf{array{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~x
 
    * The :ref:`expansion <aux-expand-deftype>` of the type :math:`C{.}\mathsf{types}{}[x]` is the composite type :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`.
 
-   * The signedness :math:`{{\mathit{sx}}^?}` is absent if and only if the storage type :math:`{\mathit{zt}}` is of the form :math:`{\mathrm{unpack}}({\mathit{zt}})`.
+   * The signedness :math:`{{\mathit{sx}}^?}` is absent if and only if :math:`{\mathit{zt}}` is a packed type.
 
    * The value type :math:`t` is :math:`{\mathrm{unpack}}({\mathit{zt}})`.
 
@@ -16693,7 +16693,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    * :math:`{{\mathit{xt}}_{\mathsf{e}}^\ast}` is the concatenation of all such :math:`{\mathit{xt}}_{\mathsf{e}}`.
 
-   * :math:`{{\mathit{nm}}^\ast}~{\mathrm{disjoint}}` is of the form true.
+   * :math:`{{\mathit{nm}}^\ast}~{\mathrm{disjoint}}` is true.
 
    * The context :math:`C` is of the form :math:`{C'}` with the field :math:`\mathsf{tags}` appended by :math:`{{\mathit{jt}}_{\mathsf{i}}^\ast}~{{\mathit{jt}}^\ast}` and the field :math:`\mathsf{globals}` appended by :math:`{{\mathit{gt}}^\ast}` and the field :math:`\mathsf{mems}` appended by :math:`{{\mathit{mt}}_{\mathsf{i}}^\ast}~{{\mathit{mt}}^\ast}` and the field :math:`\mathsf{tables}` appended by :math:`{{\mathit{tt}}_{\mathsf{i}}^\ast}~{{\mathit{tt}}^\ast}` and the field :math:`\mathsf{datas}` appended by :math:`{{\mathit{ok}}^\ast}` and the field :math:`\mathsf{elems}` appended by :math:`{{\mathit{rt}}^\ast}`.
 
@@ -17045,29 +17045,29 @@ The external address :math:`{\mathit{externaddr}}` is :ref:`valid <valid-val>` w
 The identifier context :math:`I` is :ref:`valid <valid-val>` if:
 
 
-   * :math:`{\bigoplus}\, I{.}\mathsf{types}~{\mathrm{disjoint}}` is of the form true.
+   * :math:`{\bigoplus}\, I{.}\mathsf{types}~{\mathrm{disjoint}}` is true.
 
-   * :math:`{\bigoplus}\, I{.}\mathsf{tags}~{\mathrm{disjoint}}` is of the form true.
+   * :math:`{\bigoplus}\, I{.}\mathsf{tags}~{\mathrm{disjoint}}` is true.
 
-   * :math:`{\bigoplus}\, I{.}\mathsf{globals}~{\mathrm{disjoint}}` is of the form true.
+   * :math:`{\bigoplus}\, I{.}\mathsf{globals}~{\mathrm{disjoint}}` is true.
 
-   * :math:`{\bigoplus}\, I{.}\mathsf{mems}~{\mathrm{disjoint}}` is of the form true.
+   * :math:`{\bigoplus}\, I{.}\mathsf{mems}~{\mathrm{disjoint}}` is true.
 
-   * :math:`{\bigoplus}\, I{.}\mathsf{tables}~{\mathrm{disjoint}}` is of the form true.
+   * :math:`{\bigoplus}\, I{.}\mathsf{tables}~{\mathrm{disjoint}}` is true.
 
-   * :math:`{\bigoplus}\, I{.}\mathsf{funcs}~{\mathrm{disjoint}}` is of the form true.
+   * :math:`{\bigoplus}\, I{.}\mathsf{funcs}~{\mathrm{disjoint}}` is true.
 
-   * :math:`{\bigoplus}\, I{.}\mathsf{datas}~{\mathrm{disjoint}}` is of the form true.
+   * :math:`{\bigoplus}\, I{.}\mathsf{datas}~{\mathrm{disjoint}}` is true.
 
-   * :math:`{\bigoplus}\, I{.}\mathsf{elems}~{\mathrm{disjoint}}` is of the form true.
+   * :math:`{\bigoplus}\, I{.}\mathsf{elems}~{\mathrm{disjoint}}` is true.
 
-   * :math:`{\bigoplus}\, I{.}\mathsf{locals}~{\mathrm{disjoint}}` is of the form true.
+   * :math:`{\bigoplus}\, I{.}\mathsf{locals}~{\mathrm{disjoint}}` is true.
 
-   * :math:`{\bigoplus}\, I{.}\mathsf{labels}~{\mathrm{disjoint}}` is of the form true.
+   * :math:`{\bigoplus}\, I{.}\mathsf{labels}~{\mathrm{disjoint}}` is true.
 
    * For all :math:`{{\mathit{field}}^\ast}` in :math:`{{{\mathit{field}}^\ast}^\ast}`:
 
-      * :math:`{\bigoplus}\, {{\mathit{field}}^\ast}~{\mathrm{disjoint}}` is of the form true.
+      * :math:`{\bigoplus}\, {{\mathit{field}}^\ast}~{\mathrm{disjoint}}` is true.
 
    * The name sequence sequence :math:`{{{\mathit{field}}^\ast}^\ast}` is of the form :math:`I{.}\mathsf{fields}`.
 
@@ -23144,6 +23144,13 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`\epsilon`.
 
 
+:math:`{\mathit{zt}}` is a packed type
+......................................
+
+
+1. Return :math:`{\mathit{zt}} = {\mathrm{unpack}}({\mathit{zt}})`.
+
+
 :math:`{\mathrm{funcidx}}({{\mathit{global}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{elem}}^\ast})`
 .........................................................................................................................
 
@@ -27015,7 +27022,7 @@ Instr_ok/struct.get
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (STRUCT ft*).
   - |ft*| is greater than i.
   - the field type ft*[i] is (mut zt).
-  - the signedness sx? is ?() if and only if the storage type zt is $unpack(zt).
+  - the signedness sx? is ?() if and only if $is_packtype(zt).
   - the value type t is $unpack(zt).
 
 Instr_ok/struct.set
@@ -27063,7 +27070,7 @@ Instr_ok/array.get
 - the instruction (ARRAY.GET sx? x) is valid with the instruction type [(REF ?(NULL) (_IDX x)), I32] -> [t] if:
   - the type C.TYPES[x] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is the composite type (ARRAY (mut zt)).
-  - the signedness sx? is ?() if and only if the storage type zt is $unpack(zt).
+  - the signedness sx? is ?() if and only if $is_packtype(zt).
   - the value type t is $unpack(zt).
 
 Instr_ok/array.set
@@ -30882,6 +30889,9 @@ default_ valtype
   a. Return ?((REF.NULL ht)).
 7. Assert: Due to validation, NULL_opt_0 is not defined.
 8. Return ?().
+
+is_packtype zt
+1. Return (zt = $unpack(zt)).
 
 funcidx_nonfuncs (global* mem* table* elem*)
 1. Return $funcidx_module((MODULE [] [] [] global* mem* table* [] [] elem* ?() [])).

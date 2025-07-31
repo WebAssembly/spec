@@ -919,6 +919,7 @@ let rec render_single_stmt ?(with_type=true) env stmt  =
         match e2.it with
         | OptE None -> render_prose_cmpop_eps cmpop, "absent"
         | ListE [] -> render_prose_cmpop_eps cmpop, "empty"
+        | BoolE _ -> render_prose_cmpop_eps cmpop, render_expr env e2
         | _ -> render_prose_cmpop cmpop, render_expr env e2
       in
       sprintf "%s %s %s" (render_hd_expr env e1) cmpop rhs

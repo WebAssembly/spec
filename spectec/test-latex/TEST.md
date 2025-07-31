@@ -6391,6 +6391,12 @@ C \vdash \mathsf{struct{.}new\_default}~x : \epsilon \rightarrow (\mathsf{ref}~x
 $$
 
 $$
+\begin{array}[t]{@{}lcl@{}l@{}}
+{\mathit{zt}} = {\mathrm{unpack}}({\mathit{zt}}) & = & {\mathit{zt}} = {\mathrm{unpack}}({\mathit{zt}}) \\
+\end{array}
+$$
+
+$$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
 C{.}\mathsf{types}{}[x] \approx \mathsf{struct}~{{\mathit{ft}}^\ast}

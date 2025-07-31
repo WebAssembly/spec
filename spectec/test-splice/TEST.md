@@ -1703,6 +1703,7 @@ warning: definition `irem_` was never spliced
 warning: definition `irev_` was never spliced
 warning: definition `irotl_` was never spliced
 warning: definition `irotr_` was never spliced
+warning: definition `is_packtype` was never spliced
 warning: definition `ishl_` was never spliced
 warning: definition `ishr_` was never spliced
 warning: definition `isize` was never spliced
@@ -2514,6 +2515,7 @@ warning: definition prose `inv_signed_` was never spliced
 warning: definition prose `invoke` was never spliced
 warning: definition prose `irelaxed_swizzle_lane_` was never spliced
 warning: definition prose `irem_` was never spliced
+warning: definition prose `is_packtype` was never spliced
 warning: definition prose `isize` was never spliced
 warning: definition prose `isub_` was never spliced
 warning: definition prose `isub_sat_` was never spliced

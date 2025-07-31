@@ -247,6 +247,7 @@ let rec if_expr_to_instrs e =
       | _, [ stmt1 ], [ stmt2 ] -> BinS (stmt1, op, stmt2)
       | _ -> CondS (exp_to_expr e)]
   | Ast.MemE _ -> [ CondS (exp_to_expr e) ]
+  | Ast.CallE (fname, _) when Prose_util.extract_call_hint fname.it <> None -> [ CondS (exp_to_expr e) ]
   | _ -> [ CmpS (exp_to_expr e, `EqOp, boolE true ~note:boolT) ]
 
 
