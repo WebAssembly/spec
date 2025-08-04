@@ -445,7 +445,7 @@ let rec raw_string_of_single_stmt stmt =
       (string_of_expr_with_type e1)
       (string_of_expr e2)
   | RelS (s, es) ->
-    let args = List.map string_of_expr_with_type es in
+    let args = List.map string_of_expr es in
     Prose_util.apply_prose_hint s args
   | YetS s -> indent () ^ " Yet: " ^ s
   | IfS _ | ForallS _ | EitherS _ | BinS _ -> assert false

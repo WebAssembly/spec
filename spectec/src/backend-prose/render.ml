@@ -959,7 +959,7 @@ let rec render_single_stmt ?(with_type=true) env stmt  =
         (render_expr env e2)
     | ContextS (e1, e2) -> render_context env e1 e2
     | RelS (s, es) ->
-      let args = List.map (render_expr_with_type env) es in
+      let args = List.map (render_expr env) es in
       Prose_util.apply_prose_hint s args
     | YetS s -> sprintf "YetS: %s" s
     | _ -> assert false
