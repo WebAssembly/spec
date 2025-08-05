@@ -13,9 +13,9 @@ grammar Tsource =
 
 ;; Tokens
 
-grammar TuNplain hint(show TuN) = eps  ;; HACK
-grammar TsNplain hint(show TsN) = eps  ;; HACK
-grammar TfNplain hint(show TfN) = eps  ;; HACK
+grammar TuNplain hint(show TuN) hint(macro TuN) = eps  ;; HACK
+grammar TsNplain hint(show TsN) hint(macro TsN) = eps  ;; HACK
+grammar TfNplain hint(show TfN) hint(macro TfN) = eps  ;; HACK
 
 grammar Ttoken =
   | Tkeyword | TuNplain | TsNplain | TfNplain | Tstring | Tid | "(" | ")" | Treserved

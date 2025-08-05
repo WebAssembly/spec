@@ -54,10 +54,10 @@ Such identifiers are looked up in the suitable space of the :ref:`identifier con
      v{:}\Tid &\Rightarrow& x & (\iff I.\IFUNCS[x] = v) \\
    \production{data index} & \Tdataidx_I &::=&
      x{:}\Tu32 &\Rightarrow& x \\&&|&
-     v{:}\Tid &\Rightarrow& x & (\iff I.\IDATA[x] = v) \\
+     v{:}\Tid &\Rightarrow& x & (\iff I.\IDATAS[x] = v) \\
    \production{element index} & \Telemidx_I &::=&
      x{:}\Tu32 &\Rightarrow& x \\&&|&
-     v{:}\Tid &\Rightarrow& x & (\iff I.\IELEM[x] = v) \\
+     v{:}\Tid &\Rightarrow& x & (\iff I.\IELEMS[x] = v) \\
    \production{local index} & \Tlocalidx_I &::=&
      x{:}\Tu32 &\Rightarrow& x \\&&|&
      v{:}\Tid &\Rightarrow& x & (\iff I.\ILOCALS[x] = v) \\
@@ -767,9 +767,9 @@ The definition of the initial :ref:`identifier context <text-context>` :math:`I`
    \F{idc}(\text{(}~\text{func}~v^?{:}\Tid^?~\dots~\text{)}) &=&
      \{\IFUNCS~(v^?)\} \\
    \F{idc}(\text{(}~\text{data}~v^?{:}\Tid^?~\dots~\text{)}) &=&
-     \{\IDATA~(v^?)\} \\
+     \{\IDATAS~(v^?)\} \\
    \F{idc}(\text{(}~\text{elem}~v^?{:}\Tid^?~\dots~\text{)}) &=&
-     \{\IELEM~(v^?)\} \\
+     \{\IELEMS~(v^?)\} \\
    \F{idc}(\text{(}~\text{import}~\dots~\text{(}~\text{func}~v^?{:}\Tid^?~\dots~\text{)}~\text{)}) &=&
      \{\IFUNCS~(v^?)\} \\
    \F{idc}(\text{(}~\text{import}~\dots~\text{(}~\text{table}~v^?{:}\Tid^?~\dots~\text{)}~\text{)}) &=&

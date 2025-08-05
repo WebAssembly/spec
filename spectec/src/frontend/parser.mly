@@ -919,7 +919,7 @@ prod_short :  (* prod nl_elem *)
 
 long_range_cont_or_gram_long :  (* sym -> exp -> prod nl_list -> prod nl_list * dots *)
   | long_range_cont gram_cont(gram_long)
-    { fun g1 e1 _nl -> let x, y = $2 in $1 g1 e1 :: x, y }
+    { fun g1 e1 nl -> let x, y = $2 in $1 g1 e1 :: nl @ x, y }
   | gram_long
     { fun g1 e1 nl -> let x, y = $1 in
       Elem Source.(SynthP (g1, e1, []) $ over_region [g1.at; e1.at]) :: nl @ x, y }
@@ -931,15 +931,19 @@ long_range_cont :  (* sym -> exp -> prod nl_elem *)
 
 short_range_cont_or_gram_long_or_short :  (* sym nl_list -> sym -> sym nl_list -> prod nl_list * dots *)
   | short_range_cont ARROW2 exp prem_list gram_cont(gram_long)
-    { fun alts g1 _ ->
-      let x, y = $5 in long_alt_prod (alts @ [Elem ($1 g1)], $3, $4) @ x, y }
+    { fun alts g1 nl ->
+      let nl' = List.map (function Nl -> Nl | Elem _ -> assert false) nl in
+      let x, y = $5 in long_alt_prod (alts @ [Elem ($1 g1)], $3, $4) @ nl' @ x, y }
   | short_range_cont prem_list1 gram_cont(gram_short)
-    { fun alts g1 _ ->
-      let x, y = $3 in short_alt_prod (alts @ [Elem ($1 g1)], $2) @ x, y }
+    { fun alts g1 nl ->
+      let nl' = List.map (function Nl -> Nl | Elem _ -> assert false) nl in
+      let x, y = $3 in short_alt_prod (alts @ [Elem ($1 g1)], $2) @ nl' @ x, y }
   | short_range_cont
-    { fun alts g1 _ -> short_alt_prod (alts @ [Elem ($1 g1)], []), NoDots }
+    { fun alts g1 nl ->
+      let nl' = List.map (function Nl -> Nl | Elem _ -> assert false) nl in
+      short_alt_prod (alts @ [Elem ($1 g1)], []) @ nl', NoDots }
   | short_range_cont bar(sym) gram_long_or_short
-    { fun alts g1 nl -> $3 (alts @ [Elem ($1 g1)] @ nl) }
+    { fun alts g1 nl -> $3 (alts @ [Elem ($1 g1)] @ nl @ $2) }
   | gram_long_or_short
     { fun alts g1 nl -> $1 (alts @ [Elem g1] @ nl) }
 

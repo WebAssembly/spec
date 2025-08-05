@@ -113,33 +113,16 @@ Contexts
 
 The text format allows the use of symbolic :ref:`identifiers <text-id>` in place of :ref:`indices <syntax-index>`.
 To resolve these identifiers into concrete indices,
-some grammar productions are indexed by an *identifier context* :math:`I` as a synthesized attribute that records the declared identifiers in each :ref:`index space <syntax-index>`.
+some grammar productions are indexed by an *identifier context* ${:I} as a synthesized attribute that records the declared identifiers in each :ref:`index space <syntax-index>`.
 In addition, the context records the types defined in the module, so that :ref:`parameter <text-param>` indices can be computed for :ref:`functions <text-func>`.
 
-It is convenient to define identifier contexts as :ref:`records <notation-record>` :math:`I` with abstract syntax as follows:
+It is convenient to define identifier contexts as :ref:`records <notation-record>` ${:I} with abstract syntax as follows:
 
-.. math::
-   \begin{array}{llll}
-   \production{identifier context} & I &::=&
-     \begin{array}[t]{l@{~}ll}
-     \{ & \ITYPES & (\name^?)^\ast, \\
-        & \ITAGS & (\Tname^?)^\ast, \\
-        & \IGLOBALS & (\name^?)^\ast, \\
-        & \IMEMS & (\name^?)^\ast, \\
-        & \ITABLES & (\name^?)^\ast, \\
-        & \IELEM & (\name^?)^\ast, \\
-        & \IFUNCS & (\name^?)^\ast, \\
-        & \IDATA & (\name^?)^\ast, \\
-        & \ILOCALS & (\name^?)^\ast, \\
-        & \ILABELS & (\name^?)^\ast, \\
-        & \IFIELDS & ((\name^?)^\ast)^\ast ~\} \\
-        & \ITYPEDEFS & \subtype^\ast ~\} \\
-     \end{array}
-   \end{array}
+$${syntax: idctxt}
 
 For each index space, such a context contains the list of :ref:`names <syntax-name>` assigned to the defined indices,
 which were denoted by the corresponding :ref:`identifiers <text-id>`.
-Unnamed indices are associated with empty (:math:`\epsilon`) entries in these lists.
+Unnamed indices are associated with empty (${:eps}) entries in these lists.
 Fields have *dependent* name spaces, and hence a separate list of field identifiers per type.
 
 An identifier context is *well-formed* if no index space contains duplicate identifiers.
@@ -151,7 +134,7 @@ Conventions
 ...........
 
 To avoid unnecessary clutter, empty components are omitted when writing out identifier contexts.
-For example, the record :math:`\{\}` is shorthand for an :ref:`identifier context <text-context>` whose components are all empty.
+For example, the record ${idctxt: {}} is shorthand for an :ref:`identifier context <text-context>` whose components are all empty.
 
 
 .. index:: list
@@ -163,8 +146,4 @@ Lists
 
 :ref:`Lists <syntax-list>` are written as plain sequences, but with a restriction on the length of these sequence.
 
-.. math::
-   \begin{array}{llclll@{\qquad\qquad}l}
-   \production{list} & \Tlist(\T{A}) &::=&
-     (x{:}\T{A})^n &\Rightarrow& x^n & (\iff n < 2^{32}) \\
-   \end{array}
+$${grammar: Tlist}

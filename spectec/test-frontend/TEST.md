@@ -9043,11 +9043,11 @@ grammar Thexdigit : nat
 ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
 rec {
 
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:24.1-26.46
+;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:22.1-24.46
 grammar Thexnum : nat
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:25.5-25.21
+  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:23.5-23.21
   prod{h : nat} h:Thexdigit => h
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:26.5-26.46
+  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:24.5-24.46
   prod{n : n, h : nat} {{n:Thexnum} {"_"?{}} {h:Thexdigit}} => ((16 * n) + h)
 }
 
@@ -9225,11 +9225,11 @@ grammar Tsign : int
 ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
 rec {
 
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:20.1-22.40
+;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:18.1-20.40
 grammar Tnum : nat
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:21.5-21.18
+  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:19.5-19.18
   prod{d : nat} d:Tdigit => d
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:22.5-22.40
+  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:20.5-20.40
   prod{n : n, d : nat} {{n:Tnum} {"_"?{}} {d:Tdigit}} => ((10 * n) + d)
 }
 
@@ -9258,22 +9258,22 @@ grammar TiN(N : N) : iN(N)
 ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
 rec {
 
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:40.1-42.48
+;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:38.1-40.48
 grammar Tfrac : rat
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:41.5-41.26
+  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:39.5-39.26
   prod{d : nat} d:Tdigit => ((d : nat <:> rat) / (10 : nat <:> rat))
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:42.5-42.48
+  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:40.5-40.48
   prod{d : nat, p : rat} {{d:Tdigit} {"_"?{}} {p:Tfrac}} => (((d + ((p / (10 : nat <:> rat)) : rat <:> nat)) : nat <:> rat) / (10 : nat <:> rat))
 }
 
 ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
 rec {
 
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:44.1-46.54
+;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:42.1-44.54
 grammar Thexfrac : rat
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:45.5-45.29
+  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:43.5-43.29
   prod{h : nat} h:Thexdigit => ((h : nat <:> rat) / (16 : nat <:> rat))
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:46.5-46.54
+  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:44.5-44.54
   prod{h : nat, p : rat} {{h:Thexdigit} {"_"?{}} {p:Thexfrac}} => (((h + ((p / (16 : nat <:> rat)) : rat <:> nat)) : nat <:> rat) / (16 : nat <:> rat))
 }
 
@@ -9406,11 +9406,11 @@ syntax I = idctxt
 ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
 rec {
 
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:157.1-157.57
+;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:155.1-155.57
 def $concat_idctxt(idctxt*) : idctxt
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:158.1-158.29
+  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:156.1-156.29
   def $concat_idctxt([]) = {TYPES [], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [], FIELDS [], TYPEDEFS []}
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:159.1-159.52
+  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:157.1-157.52
   def $concat_idctxt{I : I, I' : I}([I I']) = I +++ $concat_idctxt(I'*{})
 }
 

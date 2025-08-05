@@ -12,6 +12,14 @@ let prefix s f x = s ^ f x
 let suffix f s x = f x ^ s
 let space f x = " " ^ f x ^ " "
 
+let rec string_of_nl_list s1 s2 f = function
+  | [] -> ""
+  | Nl::[] -> s1
+  | Nl::xs -> s1 ^ string_of_nl_list s1 s2 f xs
+  | (Elem x)::[] -> f x
+  | (Elem x)::Nl::xs -> f x ^ s1 ^ string_of_nl_list s1 s2 f xs
+  | (Elem x)::xs -> f x ^ s2 ^ string_of_nl_list s1 s2 f xs
+
 
 (* Identifiers *)
 
@@ -75,13 +83,19 @@ and string_of_typ ?(short=false) t =
   | StrT tfs ->
     "{" ^ concat ", " (map_filter_nl_list (string_of_typfield ~short) tfs) ^ "}"
   | CaseT (dots1, ts, tcs, dots2) when short && List.length tcs > 3 ->
-    "| " ^ concat " | "
-      (strings_of_dots dots1 @ map_filter_nl_list string_of_typ ts @
-        map_filter_nl_list (string_of_typcase ~short) (Lib.List.take 3 tcs) @ ".." :: strings_of_dots dots2)
+    "| " ^ concat " | " (
+      strings_of_dots dots1 @
+      map_filter_nl_list string_of_typ ts @
+      map_filter_nl_list (string_of_typcase ~short) (Lib.List.take 3 tcs) @
+      ".." :: strings_of_dots dots2
+    )
   | CaseT (dots1, ts, tcs, dots2) ->
-    "| " ^ concat " | "
-      (strings_of_dots dots1 @ map_filter_nl_list string_of_typ ts @
-        map_filter_nl_list (string_of_typcase ~short) tcs @ strings_of_dots dots2)
+    "| " ^ concat " | " (
+      strings_of_dots dots1 @
+      map_filter_nl_list string_of_typ ts @
+      map_filter_nl_list (string_of_typcase ~short) tcs @
+      strings_of_dots dots2
+    )
   | ConT tc -> string_of_typcon ~short tc
   | RangeT tes when short && List.length tes > 3 ->
     concat " | " (map_filter_nl_list string_of_typenum (Lib.List.take 3 tes)) ^ " | .."
@@ -150,7 +164,7 @@ and string_of_exp e =
   | ExtE (e1, p, e2) ->
     string_of_exp e1 ^
       "[" ^ string_of_path p ^ " =++ " ^ string_of_exp e2 ^ "]"
-  | StrE efs -> "{" ^ concat ", " (map_filter_nl_list string_of_expfield efs) ^ "}"
+  | StrE efs -> "{" ^ string_of_nl_list "" ", " string_of_expfield efs ^ "}"
   | DotE (e1, atom) -> string_of_exp e1 ^ "." ^ string_of_atom atom
   | CommaE (e1, e2) -> string_of_exp e1 ^ ", " ^ string_of_exp e2
   | CatE (e1, e2) -> string_of_exp e1 ^ " ++ " ^ string_of_exp e2
@@ -202,8 +216,8 @@ and string_of_sym g =
   | NumG (`AtomOp, n) -> "`" ^ Z.to_string n
   | TextG t -> "\"" ^ String.escaped t ^ "\""
   | EpsG -> "eps"
-  | SeqG gs -> "{" ^ concat " " (map_filter_nl_list string_of_sym gs) ^ "}"
-  | AltG gs -> "(" ^ concat " | " (map_filter_nl_list string_of_sym gs) ^ ")"
+  | SeqG gs -> "{" ^ string_of_nl_list "(; \\n ;) " " " string_of_sym gs ^ "}"
+  | AltG gs -> "(" ^ string_of_nl_list "(; \\n ;) " " | " string_of_sym gs ^ ")"
   | RangeG (g1, g2) -> "(" ^ string_of_sym g1 ^ " | ... | " ^ string_of_sym g2 ^ ")"
   | ParenG g -> "(" ^ string_of_sym g ^ ")"
   | TupG gs -> "(" ^ concat ", " (List.map string_of_sym gs) ^ ")"
@@ -217,19 +231,21 @@ and string_of_prod prod =
   match prod.it with
   | SynthP (g, e, prems) ->
     string_of_sym g ^ " => " ^ string_of_exp e ^
-      concat "" (map_filter_nl_list (prefix "\n  -- " string_of_prem) prems)
+      string_of_nl_list "\n    ----" "" (prefix "\n    -- " string_of_prem) prems
   | RangeP (g1, e1, g2, e2) ->
     string_of_sym g1 ^ " => " ^ string_of_exp e1 ^ "\n  | ...\n  |" ^
     string_of_sym g2 ^ " => " ^ string_of_exp e2
   | EquivP (g1, g2, prems) ->
     string_of_sym g1 ^ " == " ^ string_of_sym g2 ^
-      concat "" (map_filter_nl_list (prefix "\n  -- " string_of_prem) prems)
+      string_of_nl_list "\n    ----" "" (prefix "\n    -- " string_of_prem) prems
 
 and string_of_gram gram =
   let (dots1, prods, dots2) = gram.it in
-  "\n  | " ^ concat "\n  | "
-    (strings_of_dots dots1 @ map_filter_nl_list string_of_prod prods @
-      strings_of_dots dots2)
+  "\n  | " ^ string_of_nl_list "\n  (; \\n ;)\n  | " "\n  | " Fun.id (
+    List.map (fun x -> Elem x) (strings_of_dots dots1) @
+    map_nl_list string_of_prod prods @
+    List.map (fun x -> Elem x) (strings_of_dots dots2)
+  )
 
 
 (* Premises *)
@@ -286,7 +302,7 @@ let string_of_def d =
   | RuleD (id1, id2, e, prems) ->
     "rule " ^ string_of_relid id1 ^ string_of_ruleid id2 ^ ":\n  " ^
       string_of_exp e ^
-      concat "" (map_filter_nl_list (prefix "\n  -- " string_of_prem) prems)
+      string_of_nl_list "" "" (prefix "\n  -- " string_of_prem) prems
   | VarD (id, t, _hints) ->
     "var " ^ string_of_varid id ^ " : " ^ string_of_typ t
   | DecD (id, ps, t, _hints) ->
@@ -294,7 +310,7 @@ let string_of_def d =
   | DefD (id, args, e, prems) ->
     "def " ^ string_of_defid id ^ string_of_args args ^ " = " ^
       string_of_exp e ^
-      concat "" (map_filter_nl_list (prefix "\n  -- " string_of_prem) prems)
+      string_of_nl_list "" "" (prefix "\n  -- " string_of_prem) prems
   | SepD ->
     "\n\n"
   | HintD _ -> ""

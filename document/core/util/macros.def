@@ -925,6 +925,8 @@
 .. |Tkeyword| mathdef:: \xref{text/lexical}{text-keyword}{\T{keyword}}
 .. |Treserved| mathdef:: \xref{text/lexical}{text-reserved}{\T{reserved}}
 
+.. |Teof| mathdef:: \xref{text/lexical}{text-eof}{\T{eof}}
+
 .. |Tcomment| mathdef:: \xref{text/lexical}{text-comment}{\T{comment}}
 .. |Tlinecomment| mathdef:: \xref{text/lexical}{text-comment}{\T{linecomment}}
 .. |Tblockcomment| mathdef:: \xref{text/lexical}{text-comment}{\T{blockcomment}}
@@ -945,32 +947,39 @@
 .. |Thexnum| mathdef:: \xref{text/values}{text-hexnum}{\T{hexnum}}
 .. |Tfrac| mathdef:: \xref{text/values}{text-frac}{\T{frac}}
 .. |Thexfrac| mathdef:: \xref{text/values}{text-hexfrac}{\T{hexfrac}}
+.. |Tmant| mathdef:: \xref{text/values}{text-mant}{\T{mant}}
+.. |Thexmant| mathdef:: \xref{text/values}{text-hexmant}{\T{hexmant}}
 .. |Tfloat| mathdef:: \xref{text/values}{text-float}{\T{float}}
 .. |Thexfloat| mathdef:: \xref{text/values}{text-hexfloat}{\T{hexfloat}}
+
+.. |TuNX| mathdef:: \xref{text/values}{text-int}{\T{u}\kern-0.1em}
+.. |TsNX| mathdef:: \xref{text/values}{text-int}{\T{s}\kern-0.1em}
+.. |TiNX| mathdef:: \xref{text/values}{text-int}{\T{i}\kern-0.1em}
+.. |TfNX| mathdef:: \xref{text/values}{text-int}{\T{f}\kern-0.1em}
 
 .. |TuX#1| mathdef:: {\T{u}#1}
 .. |TsX#1| mathdef:: {\T{s}#1}
 .. |TiX#1| mathdef:: {\T{i}#1}
 .. |TfX#1| mathdef:: {\T{f}#1}
 
-.. |TuN| mathdef:: \xref{text/values}{text-int}{\TuX{N}}
+.. |TuN| mathdef:: \xref{text/values}{text-int}{\TuX{{\kern-0.1em N}}}
 .. |Tu1| mathdef:: \xref{text/values}{text-int}{\TuX{\T{1}}}
 .. |Tu8| mathdef:: \xref{text/values}{text-int}{\TuX{\T{8}}}
 .. |Tu16| mathdef:: \xref{text/values}{text-int}{\TuX{\T{16}}}
 .. |Tu32| mathdef:: \xref{text/values}{text-int}{\TuX{\T{32}}}
 .. |Tu64| mathdef:: \xref{text/values}{text-int}{\TuX{\T{64}}}
 
-.. |TsN| mathdef:: \xref{text/values}{text-int}{\TsX{N}}
+.. |TsN| mathdef:: \xref{text/values}{text-int}{\TsX{\kern-0.1em N}}
 .. |Ts32| mathdef:: \xref{text/values}{text-int}{\TsX{\T{32}}}
 .. |Ts64| mathdef:: \xref{text/values}{text-int}{\TsX{\T{64}}}
 
-.. |TiN| mathdef:: \xref{text/values}{text-int}{\TiX{N}}
+.. |TiN| mathdef:: \xref{text/values}{text-int}{\TiX{\kern-0.1em N}}
 .. |Ti8| mathdef:: \xref{text/values}{text-int}{\TiX{\T{8}}}
 .. |Ti16| mathdef:: \xref{text/values}{text-int}{\TiX{\T{16}}}
 .. |Ti32| mathdef:: \xref{text/values}{text-int}{\TiX{\T{32}}}
 .. |Ti64| mathdef:: \xref{text/values}{text-int}{\TiX{\T{64}}}
 
-.. |TfN| mathdef:: \xref{text/values}{text-float}{\TfX{N}}
+.. |TfN| mathdef:: \xref{text/values}{text-float}{\TfX{\kern-0.1em N}}
 .. |TfNmag| mathdef:: \xref{text/values}{text-float}{\TfX{N}\T{mag}}
 .. |Tf32| mathdef:: \xref{text/values}{text-float}{\TfX{\T{32}}}
 .. |Tf64| mathdef:: \xref{text/values}{text-float}{\TfX{\T{64}}}
@@ -1078,6 +1087,8 @@
 
 .. Contexts
 
+.. |I| mathdef:: \xref{text/conventions}{text-context}{I}
+
 .. |ITYPEDEFS| mathdef:: \xref{text/conventions}{text-context}{\K{typedefs}}
 .. |IFIELDS| mathdef:: \xref{text/conventions}{text-context}{\K{fields}}
 .. |ITYPES| mathdef:: \xref{text/conventions}{text-context}{\K{types}}
@@ -1086,8 +1097,8 @@
 .. |IMEMS| mathdef:: \xref{text/conventions}{text-context}{\K{mems}}
 .. |IGLOBALS| mathdef:: \xref{text/conventions}{text-context}{\K{globals}}
 .. |ITAGS| mathdef:: \xref{text/conventions}{text-context}{\K{tags}}
-.. |IELEM| mathdef:: \xref{text/conventions}{text-context}{\K{elems}}
-.. |IDATA| mathdef:: \xref{text/conventions}{text-context}{\K{datas}}
+.. |IELEMS| mathdef:: \xref{text/conventions}{text-context}{\K{elems}}
+.. |IDATAS| mathdef:: \xref{text/conventions}{text-context}{\K{datas}}
 .. |ILOCALS| mathdef:: \xref{text/conventions}{text-context}{\K{locals}}
 .. |ILABELS| mathdef:: \xref{text/conventions}{text-context}{\K{labels}}
 

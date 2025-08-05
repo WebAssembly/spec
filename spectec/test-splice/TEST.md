@@ -49,7 +49,7 @@ $$
 \mbox{(table type)} & {\mathit{tabletype}} & ::= & {\mathit{addrtype}}~{\mathit{limits}}~{\mathit{reftype}} \\
 \mbox{(memory type)} & {\mathit{memtype}} & ::= & {\mathit{addrtype}}~{\mathit{limits}}~\mathsf{page} \\[0.8ex]
 {} \\[-2ex]
-\mbox{(external type)} & {\mathit{externtype}} & ::= & \mathsf{tag}~{\mathit{tagtype}} ~|~ \mathsf{global}~{\mathit{globaltype}} ~|~ \mathsf{mem}~{\mathit{memtype}} ~|~ \mathsf{table}~{\mathit{tabletype}} ~|~ \mathsf{func}~{\mathit{typeuse}} \\
+\mbox{(external type)} & {\mathit{externtype}} & ::= & \mathsf{tag}~{\mathit{tagtype}} ~~|~~ \mathsf{global}~{\mathit{globaltype}} ~~|~~ \mathsf{mem}~{\mathit{memtype}} ~~|~~ \mathsf{table}~{\mathit{tabletype}} ~~|~~ \mathsf{func}~{\mathit{typeuse}} \\
 \end{array}
 $$
 

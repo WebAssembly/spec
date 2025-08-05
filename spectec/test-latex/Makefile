@@ -54,7 +54,7 @@ $(GENOUTNAME)-%.pdf: $(GENOUTNAME)-%.tex $(EXE) $(GENINNAME)-%.tex
 test-test: $(TESTFILES:%.$(EXT)=test-%.pdf)
 
 test-%.tex: %.$(EXT) $(EXE)
-	$(EXE) -l --latex $< -o $@
+	$(EXE) -l --latex $< -o $@ --print-el >$(@:%.tex=%.el)
 
 test-%.pdf: test-%.tex $(GENOUTNAME).tex
 	ln -f $< $(GENINNAME).tex

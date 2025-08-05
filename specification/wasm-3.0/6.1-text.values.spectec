@@ -5,9 +5,7 @@
 ;; Numbers
 
 grammar Tsign : int =
-  | eps => $(+1)
-  | "+" => $(+1)
-  | "-" => $(-1)
+  | eps => $(+1) | "+" => $(+1) | "-" => $(-1)
 
 grammar Tdigit : nat =
   | "0" => 0 | ... | "9" => 9
@@ -25,14 +23,14 @@ grammar Thexnum : nat =
   | h:Thexdigit => h
   | n:Thexnum "_"? h:Thexdigit => $(16*n + h)
 
-grammar TuN(N) : uN(N) =
+grammar TuN(N) : uN(N) hint(show u#%) hint(macro "TuNX") =
   | n:Tnum => n          -- if $(n < 2^N)
   | "0x" n:Thexnum => n  -- if $(n < 2^N)
 
-grammar TsN(N) : sN(N) =
+grammar TsN(N) : sN(N) hint(show s#%) hint(macro "TsNX") =
   | s:Tsign n:TuN(N) => $(s * n)  -- if $(-2^(N-1) <= s * n < 2^(N-1))
 
-grammar TiN(N) : iN(N) =
+grammar TiN(N) : iN(N) hint(show i#%) hint(macro "TiNX") =
   | n:TuN(N) => n
   | i:TsN(N) => $inv_signed_(N, i)
 
@@ -64,14 +62,14 @@ grammar Tfloat : rat =
 grammar Thexfloat : rat =
   | "0x" p:Thexmant ("P" | "p") s:Tsign ee:Tnum => $(p * 2^(s * ee))
 
-grammar TfNmag(N) : fNmag(N) =
+grammar TfNmag(N) : fNmag(N) hint(show fNmag) hint(macro "TfNmag") =
   | q:Tfloat => $ieee_(N, q)      -- if $ieee_(N, q) =/= INF
   | q:Thexfloat => $ieee_(N, q)   -- if $ieee_(N, q) =/= INF
   | "inf" => INF
   | "nan" => NAN($canon_(N))
   | "nan:0x" n:Thexnum => NAN(n)  -- if $(1 <= n < 2^($signif(N)))
 
-grammar TfN(N) : fN(N) =
+grammar TfN(N) : fN(N) hint(show f#%) hint(macro "TfNX") =
   | $((+1)):Tsign q:TfNmag(N) => POS q
   | $((-1)):Tsign q:TfNmag(N) => NEG q
 
@@ -137,7 +135,7 @@ grammar Tid : name =
 
 ;; Identifier contexts
 
-syntax idctxt hint(desc "identifier context") hint(macro "%" "I%") =
+syntax idctxt hint(desc "identifier context") hint(macro "I" "I%") =
   { TYPES (name?)*        hint(desc "type"),
     TAGS (name?)*         hint(desc "tag"),
     GLOBALS (name?)*      hint(desc "global"),
@@ -148,7 +146,7 @@ syntax idctxt hint(desc "identifier context") hint(macro "%" "I%") =
     ELEMS (name?)*        hint(desc "element segment"),
     LOCALS (name?)*       hint(desc "local"),
     LABELS (name?)*       hint(desc "label"),
-    FIELDS (name?)**      hint(desc "field"),
+    FIELDS ((name?)*)*    hint(desc "field"),
     TYPEDEFS (subtype?)*  hint(desc "type definitions")
   }
 
