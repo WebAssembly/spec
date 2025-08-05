@@ -14060,22 +14060,22 @@ The heap type :math:`\mathsf{bot}` :ref:`matches <match>` the heap type :math:`{
 
 
 
-The reference type :math:`(\mathsf{ref}~{{\mathsf{null}^?}}_1~{\mathit{ht}}_1)` :ref:`matches <match>` the reference type :math:`(\mathsf{ref}~{{\mathsf{null}^?}}_2~{\mathit{ht}}_2)` if:
+The reference type :math:`(\mathsf{ref}~{{\mathsf{null}}_1^?}~{\mathit{ht}}_1)` :ref:`matches <match>` the reference type :math:`(\mathsf{ref}~{{\mathsf{null}}_2^?}~{\mathit{ht}}_2)` if:
 
 
    * The heap type :math:`{\mathit{ht}}_1` :ref:`matches <match>` the heap type :math:`{\mathit{ht}}_2`.
 
    * Either:
 
-      * :math:`{{\mathsf{null}^?}}_1` is absent.
+      * :math:`{{\mathsf{null}}_1^?}` is absent.
 
-      * :math:`{{\mathsf{null}^?}}_2` is absent.
+      * :math:`{{\mathsf{null}}_2^?}` is absent.
 
    * Or:
 
-      * :math:`{{\mathsf{null}^?}}_1` is of the form :math:`{\mathsf{null}^?}`.
+      * :math:`{{\mathsf{null}}_1^?}` is of the form :math:`{\mathsf{null}^?}`.
 
-      * :math:`{{\mathsf{null}^?}}_2` is of the form :math:`\mathsf{null}`.
+      * :math:`{{\mathsf{null}}_2^?}` is of the form :math:`\mathsf{null}`.
 
 
 
@@ -14205,22 +14205,22 @@ The storage type :math:`{\mathit{packtype}}_1` :ref:`matches <match>` the storag
 
 
 
-The field type :math:`({{\mathsf{mut}^?}}_1~{\mathit{zt}}_1)` :ref:`matches <match>` the field type :math:`({{\mathsf{mut}^?}}_2~{\mathit{zt}}_2)` if:
+The field type :math:`({{\mathsf{mut}}_1^?}~{\mathit{zt}}_1)` :ref:`matches <match>` the field type :math:`({{\mathsf{mut}}_2^?}~{\mathit{zt}}_2)` if:
 
 
    * The storage type :math:`{\mathit{zt}}_1` :ref:`matches <match>` the storage type :math:`{\mathit{zt}}_2`.
 
    * Either:
 
-      * :math:`{{\mathsf{mut}^?}}_1` is absent.
+      * :math:`{{\mathsf{mut}}_1^?}` is absent.
 
-      * :math:`{{\mathsf{mut}^?}}_2` is absent.
+      * :math:`{{\mathsf{mut}}_2^?}` is absent.
 
    * Or:
 
-      * :math:`{{\mathsf{mut}^?}}_1` is of the form :math:`\mathsf{mut}`.
+      * :math:`{{\mathsf{mut}}_1^?}` is of the form :math:`\mathsf{mut}`.
 
-      * :math:`{{\mathsf{mut}^?}}_2` is of the form :math:`\mathsf{mut}`.
+      * :math:`{{\mathsf{mut}}_2^?}` is of the form :math:`\mathsf{mut}`.
 
       * The storage type :math:`{\mathit{zt}}_2` :ref:`matches <match>` the storage type :math:`{\mathit{zt}}_1`.
 
@@ -14420,22 +14420,22 @@ The tag type :math:`{\mathit{deftype}}_1` :ref:`matches <match>` the tag type :m
 
 
 
-The global type :math:`({{\mathsf{mut}^?}}_1~{\mathit{valtype}}_1)` :ref:`matches <match>` the global type :math:`({{\mathsf{mut}^?}}_2~{\mathit{valtype}}_2)` if:
+The global type :math:`({{\mathsf{mut}}_1^?}~{\mathit{valtype}}_1)` :ref:`matches <match>` the global type :math:`({{\mathsf{mut}}_2^?}~{\mathit{valtype}}_2)` if:
 
 
    * The value type :math:`{\mathit{valtype}}_1` :ref:`matches <match>` the value type :math:`{\mathit{valtype}}_2`.
 
    * Either:
 
-      * :math:`{{\mathsf{mut}^?}}_1` is absent.
+      * :math:`{{\mathsf{mut}}_1^?}` is absent.
 
-      * :math:`{{\mathsf{mut}^?}}_2` is absent.
+      * :math:`{{\mathsf{mut}}_2^?}` is absent.
 
    * Or:
 
-      * :math:`{{\mathsf{mut}^?}}_1` is of the form :math:`\mathsf{mut}`.
+      * :math:`{{\mathsf{mut}}_1^?}` is of the form :math:`\mathsf{mut}`.
 
-      * :math:`{{\mathsf{mut}^?}}_2` is of the form :math:`\mathsf{mut}`.
+      * :math:`{{\mathsf{mut}}_2^?}` is of the form :math:`\mathsf{mut}`.
 
       * The value type :math:`{\mathit{valtype}}_2` :ref:`matches <match>` the value type :math:`{\mathit{valtype}}_1`.
 
@@ -15308,18 +15308,18 @@ The instruction :math:`(\mathsf{array{.}init\_data}~x~y)` is :ref:`valid <valid-
 
 
 
-The instruction :math:`\mathsf{extern{.}convert\_any}` is :ref:`valid <valid-val>` with the instruction type :math:`(\mathsf{ref}~{\mathsf{null}}{{{}_{1}^?}}~\mathsf{any})~\rightarrow~(\mathsf{ref}~{\mathsf{null}}{{{}_{2}^?}}~\mathsf{extern})` if:
+The instruction :math:`\mathsf{extern{.}convert\_any}` is :ref:`valid <valid-val>` with the instruction type :math:`(\mathsf{ref}~{{\mathsf{null}}_1^?}~\mathsf{any})~\rightarrow~(\mathsf{ref}~{{\mathsf{null}}_2^?}~\mathsf{extern})` if:
 
 
-   * :math:`{\mathsf{null}}{{{}_{1}^?}}` is of the form :math:`{\mathsf{null}}{{{}_{2}^?}}`.
+   * :math:`{{\mathsf{null}}_1^?}` is of the form :math:`{{\mathsf{null}}_2^?}`.
 
 
 
 
-The instruction :math:`\mathsf{any{.}convert\_extern}` is :ref:`valid <valid-val>` with the instruction type :math:`(\mathsf{ref}~{\mathsf{null}}{{{}_{1}^?}}~\mathsf{extern})~\rightarrow~(\mathsf{ref}~{\mathsf{null}}{{{}_{2}^?}}~\mathsf{any})` if:
+The instruction :math:`\mathsf{any{.}convert\_extern}` is :ref:`valid <valid-val>` with the instruction type :math:`(\mathsf{ref}~{{\mathsf{null}}_1^?}~\mathsf{extern})~\rightarrow~(\mathsf{ref}~{{\mathsf{null}}_2^?}~\mathsf{any})` if:
 
 
-   * :math:`{\mathsf{null}}{{{}_{1}^?}}` is of the form :math:`{\mathsf{null}}{{{}_{2}^?}}`.
+   * :math:`{{\mathsf{null}}_1^?}` is of the form :math:`{{\mathsf{null}}_2^?}`.
 
 
 
@@ -17095,7 +17095,7 @@ The instruction sequence :math:`{\mathit{instr}}` is :ref:`valid <valid-val>` wi
 
       * The global :math:`C{.}\mathsf{globals}{}[x]` exists.
 
-      * The global :math:`C{.}\mathsf{globals}{}[x]` is of the form :math:`({\mathsf{mut}^?}~t)`.
+      * The global :math:`C{.}\mathsf{globals}{}[x]` is of the form :math:`(\mathsf{mut}~t)`.
    * Or:
 
       * The instruction :math:`{\mathit{instr}}` is of the form :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{instr}'}^\ast})`.
@@ -17119,7 +17119,7 @@ The instruction sequence :math:`(\mathsf{global{.}get}~x)` is :ref:`valid <valid
 
    * The global :math:`C{.}\mathsf{globals}{}[x]` exists.
 
-   * The global :math:`C{.}\mathsf{globals}{}[x]` is of the form :math:`({\mathsf{mut}^?}~t)`.
+   * The global :math:`C{.}\mathsf{globals}{}[x]` is of the form :math:`(\mathsf{mut}~t)`.
 
 
 
@@ -21355,8 +21355,8 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`{\mathit{at}}_2`.
 
 
-:math:`\mathsf{ref}~{\mathsf{null}}{{{}_{1}^?}}~{\mathit{ht}}_1 \setminus \mathsf{ref}~{\mathsf{null}^?}~{\mathit{ht}}_2`
-.........................................................................................................................
+:math:`\mathsf{ref}~{{\mathsf{null}}_1^?}~{\mathit{ht}}_1 \setminus \mathsf{ref}~{\mathsf{null}^?}~{\mathit{ht}}_2`
+...................................................................................................................
 
 
 1. If :math:`{\mathsf{null}^?} = \mathsf{null}`, then:
@@ -21365,7 +21365,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Assert: Due to validation, :math:`{\mathsf{null}^?}` is not defined.
 
-#. Return :math:`(\mathsf{ref}~{\mathsf{null}}{{{}_{1}^?}}~{\mathit{ht}}_1)`.
+#. Return :math:`(\mathsf{ref}~{{\mathsf{null}}_1^?}~{\mathit{ht}}_1)`.
 
 
 :math:`{\mathit{dt}}`
@@ -23133,13 +23133,13 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Assert: Due to validation, :math:`{\mathit{valtype}}` is some :math:`\mathsf{ref}~{\mathsf{null}^?}~{\mathit{heaptype}}`.
 
-#. Let :math:`(\mathsf{ref}~{\mathit{NULL}}_{{\mathit{opt}}_0}~{\mathit{ht}})` be the destructuring of :math:`{\mathit{valtype}}`.
+#. Let :math:`(\mathsf{ref}~{{\mathit{NULL}}_0^?}~{\mathit{ht}})` be the destructuring of :math:`{\mathit{valtype}}`.
 
-#. If :math:`{\mathit{NULL}}_{{\mathit{opt}}_0} = \mathsf{null}`, then:
+#. If :math:`{{\mathit{NULL}}_0^?} = \mathsf{null}`, then:
 
    a. Return :math:`(\mathsf{ref{.}null}~{\mathit{ht}})`.
 
-#. Assert: Due to validation, :math:`{\mathit{NULL}}_{{\mathit{opt}}_0}` is not defined.
+#. Assert: Due to validation, :math:`{{\mathit{NULL}}_0^?}` is not defined.
 
 #. Return :math:`\epsilon`.
 
@@ -26326,7 +26326,7 @@ Deftype_sub
   - Either:
     - the defined type $clos_deftype(C, deftype_1) is $clos_deftype(C, deftype_2).
   - Or:
-    - the sub type $unrolldt(deftype_1) is (SUB fin typeuse* ct).
+    - the sub type $unrolldt(deftype_1) is (SUB final? typeuse* ct).
     - |typeuse*| is greater than i.
     - the type use typeuse*[i] matches deftype_2.
 
@@ -26336,7 +26336,7 @@ Deftype_sub/refl
 
 Deftype_sub/super
 - the defined type deftype_1 matches the defined type deftype_2 if:
-  - the sub type $unrolldt(deftype_1) is (SUB fin typeuse* ct).
+  - the sub type $unrolldt(deftype_1) is (SUB final? typeuse* ct).
   - |typeuse*| is greater than i.
   - the type use typeuse*[i] matches deftype_2.
 
@@ -26389,7 +26389,7 @@ Heaptype_sub
     - |typeuse*| is greater than j.
     - heaptype_2 is typeuse*[j].
     - the recursive type C.RECS[i] exists.
-    - C.RECS[i] is (SUB fin typeuse* ct).
+    - C.RECS[i] is (SUB final? typeuse* ct).
   - Or:
     - heaptype_1 is NONE.
     - heaptype_2 matches the heap type ANY.
@@ -26456,7 +26456,7 @@ Heaptype_sub/rec
 - the heap type (REC i) matches the type use typeuse*[j] if:
   - |typeuse*| is greater than j.
   - the recursive type C.RECS[i] exists.
-  - C.RECS[i] is (SUB fin typeuse* ct).
+  - C.RECS[i] is (SUB final? typeuse* ct).
 
 Heaptype_sub/none
 - the heap type NONE matches the heap type heaptype if:
@@ -26478,14 +26478,14 @@ Heaptype_sub/bot
 - the heap type BOT matches heaptype.
 
 Reftype_sub
-- the reference type (REF nul_1 ht_1) matches the reference type (REF nul_2 ht_2) if:
+- the reference type (REF null_1? ht_1) matches the reference type (REF null_2? ht_2) if:
   - the heap type ht_1 matches the heap type ht_2.
   - Either:
-    - nul_1 is ?().
-    - nul_2 is ?().
+    - null_1? is ?().
+    - null_2? is ?().
   - Or:
-    - nul_1 is NULL?.
-    - nul_2 is ?(NULL).
+    - null_1? is NULL?.
+    - null_2? is ?(NULL).
 
 Reftype_sub/nonnull
 - the reference type (REF ?() ht_1) matches the reference type (REF ?() ht_2) if:
@@ -26552,14 +26552,14 @@ Storagetype_sub/pack
   - packtype_1 matches packtype_2.
 
 Fieldtype_sub
-- the field type (mut_1 zt_1) matches the field type (mut_2 zt_2) if:
+- the field type (mut_1? zt_1) matches the field type (mut_2? zt_2) if:
   - the storage type zt_1 matches the storage type zt_2.
   - Either:
-    - mut_1 is ?().
-    - mut_2 is ?().
+    - mut_1? is ?().
+    - mut_2? is ?().
   - Or:
-    - mut_1 is ?(MUT).
-    - mut_2 is ?(MUT).
+    - mut_1? is ?(MUT).
+    - mut_2? is ?(MUT).
     - zt_2 matches zt_1.
 
 Fieldtype_sub/const
@@ -26661,14 +26661,14 @@ Tagtype_sub
   - deftype_2 matches deftype_1.
 
 Globaltype_sub
-- the global type (mut_1 valtype_1) matches the global type (mut_2 valtype_2) if:
+- the global type (mut_1? valtype_1) matches the global type (mut_2? valtype_2) if:
   - the value type valtype_1 matches the value type valtype_2.
   - Either:
-    - mut_1 is ?().
-    - mut_2 is ?().
+    - mut_1? is ?().
+    - mut_2? is ?().
   - Or:
-    - mut_1 is ?(MUT).
-    - mut_2 is ?(MUT).
+    - mut_1? is ?(MUT).
+    - mut_2? is ?(MUT).
     - valtype_2 matches valtype_1.
 
 Globaltype_sub/const
@@ -27004,13 +27004,13 @@ Instr_ok/i31.get
 Instr_ok/struct.new
 - the instruction (STRUCT.NEW x) is valid with the instruction type t* -> [(REF ?() (_IDX x))] if:
   - the type C.TYPES[x] exists.
-  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is (STRUCT (mut zt)*).
+  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is (STRUCT (mut? zt)*).
   - the value type sequence t* is $unpack(zt)*.
 
 Instr_ok/struct.new_default
 - the instruction (STRUCT.NEW_DEFAULT x) is valid with the instruction type [] -> [(REF ?() (_IDX x))] if:
   - the type C.TYPES[x] exists.
-  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is (STRUCT (mut zt)*).
+  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is (STRUCT (mut? zt)*).
   - For all zt in zt*:
     - A :ref:`default value <aux-default>` for $unpack(zt) is defined.
 
@@ -27019,7 +27019,7 @@ Instr_ok/struct.get
   - the type C.TYPES[x] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is (STRUCT ft*).
   - |ft*| is greater than i.
-  - the field type ft*[i] is (mut zt).
+  - the field type ft*[i] is (mut? zt).
   - the signedness sx? is ?() if and only if $is_packtype(zt).
   - the value type t is $unpack(zt).
 
@@ -27034,32 +27034,32 @@ Instr_ok/struct.set
 Instr_ok/array.new
 - the instruction (ARRAY.NEW x) is valid with the instruction type [t, I32] -> [(REF ?() (_IDX x))] if:
   - the type C.TYPES[x] exists.
-  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is (ARRAY (mut zt)).
+  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is (ARRAY (mut? zt)).
   - the value type t is $unpack(zt).
 
 Instr_ok/array.new_default
 - the instruction (ARRAY.NEW_DEFAULT x) is valid with the instruction type [I32] -> [(REF ?() (_IDX x))] if:
   - the type C.TYPES[x] exists.
-  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is (ARRAY (mut zt)).
+  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is (ARRAY (mut? zt)).
   - A :ref:`default value <aux-default>` for $unpack(zt) is defined.
 
 Instr_ok/array.new_fixed
 - the instruction (ARRAY.NEW_FIXED x n) is valid with the instruction type t^n -> [(REF ?() (_IDX x))] if:
   - the type C.TYPES[x] exists.
-  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is (ARRAY (mut zt)).
+  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is (ARRAY (mut? zt)).
   - the value type t is $unpack(zt).
 
 Instr_ok/array.new_elem
 - the instruction (ARRAY.NEW_ELEM x y) is valid with the instruction type [I32, I32] -> [(REF ?() (_IDX x))] if:
   - the type C.TYPES[x] exists.
-  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is (ARRAY (mut rt)).
+  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is (ARRAY (mut? rt)).
   - the element segment C.ELEMS[y] exists.
   - C.ELEMS[y] matches the reference type rt.
 
 Instr_ok/array.new_data
 - the instruction (ARRAY.NEW_DATA x y) is valid with the instruction type [I32, I32] -> [(REF ?() (_IDX x))] if:
   - the type C.TYPES[x] exists.
-  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is (ARRAY (mut zt)).
+  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is (ARRAY (mut? zt)).
   - $unpack(zt) is numtype or the value type $unpack(zt) is vectype.
   - the data segment C.DATAS[y] exists.
   - C.DATAS[y] is OK.
@@ -27067,7 +27067,7 @@ Instr_ok/array.new_data
 Instr_ok/array.get
 - the instruction (ARRAY.GET sx? x) is valid with the instruction type [(REF ?(NULL) (_IDX x)), I32] -> [t] if:
   - the type C.TYPES[x] exists.
-  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is (ARRAY (mut zt)).
+  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is (ARRAY (mut? zt)).
   - the signedness sx? is ?() if and only if $is_packtype(zt).
   - the value type t is $unpack(zt).
 
@@ -27091,7 +27091,7 @@ Instr_ok/array.copy
   - the type C.TYPES[x_1] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x_1] is (ARRAY (?(MUT) zt_1)).
   - the type C.TYPES[x_2] exists.
-  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x_2] is (ARRAY (mut zt_2)).
+  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x_2] is (ARRAY (mut? zt_2)).
   - the storage type zt_2 matches the storage type zt_1.
 
 Instr_ok/array.init_elem
@@ -27110,12 +27110,12 @@ Instr_ok/array.init_data
   - C.DATAS[y] is OK.
 
 Instr_ok/extern.convert_any
-- the instruction EXTERN.CONVERT_ANY is valid with the instruction type [(REF nul1 ANY)] -> [(REF nul2 EXTERN)] if:
-  - nul1 is nul2.
+- the instruction EXTERN.CONVERT_ANY is valid with the instruction type [(REF null_1? ANY)] -> [(REF null_2? EXTERN)] if:
+  - null_1? is null_2?.
 
 Instr_ok/any.convert_extern
-- the instruction ANY.CONVERT_EXTERN is valid with the instruction type [(REF nul1 EXTERN)] -> [(REF nul2 ANY)] if:
-  - nul1 is nul2.
+- the instruction ANY.CONVERT_EXTERN is valid with the instruction type [(REF null_1? EXTERN)] -> [(REF null_2? ANY)] if:
+  - null_1? is null_2?.
 
 Instr_ok/local.get
 - the instruction (LOCAL.GET x) is valid with the instruction type [] -> [t] if:
@@ -27135,7 +27135,7 @@ Instr_ok/local.tee
 Instr_ok/global.get
 - the instruction (GLOBAL.GET x) is valid with the instruction type [] -> [t] if:
   - the global C.GLOBALS[x] exists.
-  - C.GLOBALS[x] is (mut t).
+  - C.GLOBALS[x] is (mut? t).
 
 Instr_ok/global.set
 - the instruction (GLOBAL.SET x) is valid with the instruction type [t] -> [] if:
@@ -27591,7 +27591,7 @@ Tag_ok
 Global_ok
 - the global (GLOBAL globaltype expr) is valid with the global type globaltype if:
   - globaltype is valid.
-  - globaltype is (mut t).
+  - globaltype is (MUT? t).
   - the expression expr is valid with the value type t.
   - expr is constant.
 
@@ -28042,7 +28042,7 @@ NotationTypingInstrScheme
     - valtype* is [].
     - valtype'* is [t].
     - the global C.GLOBALS[x] exists.
-    - C.GLOBALS[x] is (mut t).
+    - C.GLOBALS[x] is (?(mut) t).
   - Or:
     - instr is (BLOCK blocktype instr'*).
     - the block type blocktype is valid as valtype* -> valtype'*.
@@ -28055,7 +28055,7 @@ NotationTypingInstrScheme/i32.add
 NotationTypingInstrScheme/global.get
 - the instruction sequence [(GLOBAL.GET x)] is valid with the instruction type [] -> [t] if:
   - the global C.GLOBALS[x] exists.
-  - C.GLOBALS[x] is (mut t).
+  - C.GLOBALS[x] is (?(mut) t).
 
 NotationTypingInstrScheme/block
 - the instruction sequence [(BLOCK blocktype instr*)] is valid with the instruction type t_1* -> t_2* if:
@@ -29222,7 +29222,7 @@ Step_read/struct.new_default x
 1. Let z be the current state.
 2. Assert: Due to validation, $Expand($type(z, x)) is some STRUCT.
 3. Let (STRUCT list_0) be $Expand($type(z, x)).
-4. Let (mut zt)* be list_0.
+4. Let (mut? zt)* be list_0.
 5. Assert: Due to validation, $default_($unpack(zt)) is defined*.
 6. Let ?(val)* be $default_($unpack(zt))*.
 7. Assert: Due to validation, (|val*| = |zt*|).
@@ -29241,7 +29241,7 @@ Step_read/struct.get sx? x i
 8. Assert: Due to validation, (a < |$structinst(z)|).
 9. Assert: Due to validation, $Expand($type(z, x)) is some STRUCT.
 10. Let (STRUCT list_0) be $Expand($type(z, x)).
-11. Let (mut zt)* be list_0.
+11. Let (mut? zt)* be list_0.
 12. Assert: Due to validation, (i < |zt*|).
 13. Push the value $unpackfield_(zt*[i], sx?, $structinst(z)[a].FIELDS[i]) to the stack.
 
@@ -29251,7 +29251,7 @@ Step_read/array.new_default x
 3. Pop the value (I32.CONST n) from the stack.
 4. Assert: Due to validation, $Expand($type(z, x)) is some ARRAY.
 5. Let (ARRAY fieldtype_0) be $Expand($type(z, x)).
-6. Let (mut zt) be fieldtype_0.
+6. Let (mut? zt) be fieldtype_0.
 7. Assert: Due to validation, $default_($unpack(zt)) is defined.
 8. Let ?(val) be $default_($unpack(zt)).
 9. Push the values val^n to the stack.
@@ -29277,7 +29277,7 @@ Step_read/array.new_data x y
 5. Pop the value (I32.CONST i) from the stack.
 6. Assert: Due to validation, $Expand($type(z, x)) is some ARRAY.
 7. Let (ARRAY fieldtype_0) be $Expand($type(z, x)).
-8. Let (mut zt) be fieldtype_0.
+8. Let (mut? zt) be fieldtype_0.
 9. If ((i + ((n * $zsize(zt)) / 8)) > |$data(z, y).BYTES|), then:
   a. Trap.
 10. Let byte** be $concatn__1^-1(`byte, ($zsize(zt) / 8), $data(z, y).BYTES[i : ((n * $zsize(zt)) / 8)]).
@@ -29300,7 +29300,7 @@ Step_read/array.get sx? x
 10. If ((i < |$arrayinst(z)[a].FIELDS|) /\ (a < |$arrayinst(z)|)), then:
   a. Assert: Due to validation, $Expand($type(z, x)) is some ARRAY.
   b. Let (ARRAY fieldtype_0) be $Expand($type(z, x)).
-  c. Let (mut zt) be fieldtype_0.
+  c. Let (mut? zt) be fieldtype_0.
   d. Push the value $unpackfield_(zt, sx?, $arrayinst(z)[a].FIELDS[i]) to the stack.
 
 Step_read/array.len
@@ -29376,7 +29376,7 @@ Step_read/array.copy x_1 x_2
     6) Else:
       a) Assert: Due to validation, $Expand($type(z, x_2)) is some ARRAY.
       b) Let (ARRAY fieldtype_0) be $Expand($type(z, x_2)).
-      c) Let (mut zt_2) be fieldtype_0.
+      c) Let (mut? zt_2) be fieldtype_0.
       d) Let sx? be $sx(zt_2).
       e) Push the value (REF.ARRAY_ADDR a_1) to the stack.
       f) If (i_1 <= i_2), then:
@@ -29452,7 +29452,7 @@ Step_read/array.init_data x y
   a. Trap.
 14. If $Expand($type(z, x)) is some ARRAY, then:
   a. Let (ARRAY fieldtype_0) be $Expand($type(z, x)).
-  b. Let (mut zt) be fieldtype_0.
+  b. Let (mut? zt) be fieldtype_0.
   c. If ((j + ((n * $zsize(zt)) / 8)) > |$data(z, y).BYTES|), then:
     1) Trap.
   d. If (n = 0), then:
@@ -29588,7 +29588,7 @@ Step/struct.new x
 1. Let z be the current state.
 2. Assert: Due to validation, $Expand($type(z, x)) is some STRUCT.
 3. Let (STRUCT list_0) be $Expand($type(z, x)).
-4. Let (mut zt)^n be list_0.
+4. Let (mut? zt)^n be list_0.
 5. Let a be |$structinst(z)|.
 6. Assert: Due to validation, there are at least n values on the top of the stack.
 7. Pop the values val^n from the stack.
@@ -29608,7 +29608,7 @@ Step/struct.set x i
 8. Let (REF.STRUCT_ADDR a) be val'.
 9. Assert: Due to validation, $Expand($type(z, x)) is some STRUCT.
 10. Let (STRUCT list_0) be $Expand($type(z, x)).
-11. Let (mut zt)* be list_0.
+11. Let (mut? zt)* be list_0.
 12. Assert: Due to validation, (i < |zt*|).
 13. Perform $with_struct(z, a, i, $packfield_(zt*[i], val)).
 
@@ -29616,7 +29616,7 @@ Step/array.new_fixed x n
 1. Let z be the current state.
 2. Assert: Due to validation, $Expand($type(z, x)) is some ARRAY.
 3. Let (ARRAY fieldtype_0) be $Expand($type(z, x)).
-4. Let (mut zt) be fieldtype_0.
+4. Let (mut? zt) be fieldtype_0.
 5. Let a be |$arrayinst(z)|.
 6. Assert: Due to validation, there are at least n values on the top of the stack.
 7. Pop the values val^n from the stack.
@@ -29640,7 +29640,7 @@ Step/array.set x
   a. Trap.
 12. Assert: Due to validation, $Expand($type(z, x)) is some ARRAY.
 13. Let (ARRAY fieldtype_0) be $Expand($type(z, x)).
-14. Let (mut zt) be fieldtype_0.
+14. Let (mut? zt) be fieldtype_0.
 15. Perform $with_array(z, a, i, $packfield_(zt, val)).
 
 min i j
@@ -30048,11 +30048,11 @@ minat at_1 at_2
   a. Return at_1.
 2. Return at_2.
 
-diffrt (REF nul1 ht_1) (REF nul ht_2)
-1. If (nul = ?(NULL)), then:
+diffrt (REF null_1? ht_1) (REF null? ht_2)
+1. If (null? = ?(NULL)), then:
   a. Return (REF ?() ht_1).
-2. Assert: Due to validation, nul is not defined.
-3. Return (REF nul1 ht_1).
+2. Assert: Due to validation, null? is not defined.
+3. Return (REF null_1? ht_1).
 
 as_deftype dt
 1. Return dt.
@@ -30159,8 +30159,8 @@ subst_heaptype heaptype tv* tu*
   a. Return $subst_deftype(heaptype, tv*, tu*).
 3. Return heaptype.
 
-subst_reftype (REF nul ht) tv* tu*
-1. Return (REF nul $subst_heaptype(ht, tv*, tu*)).
+subst_reftype (REF null? ht) tv* tu*
+1. Return (REF null? $subst_heaptype(ht, tv*, tu*)).
 
 subst_valtype valtype tv* tu*
 1. If valtype is numtype, then:
@@ -30178,8 +30178,8 @@ subst_storagetype storagetype tv* tu*
 2. Assert: Due to validation, storagetype is packtype.
 3. Return $subst_packtype(storagetype, tv*, tu*).
 
-subst_fieldtype (mut zt) tv* tu*
-1. Return (mut $subst_storagetype(zt, tv*, tu*)).
+subst_fieldtype (mut? zt) tv* tu*
+1. Return (mut? $subst_storagetype(zt, tv*, tu*)).
 
 subst_comptype comptype tv* tu*
 1. If comptype is some STRUCT, then:
@@ -30192,8 +30192,8 @@ subst_comptype comptype tv* tu*
 4. Let (FUNC t_1* -> t_2*) be comptype.
 5. Return (FUNC $subst_valtype(t_1, tv*, tu*)* -> $subst_valtype(t_2, tv*, tu*)*).
 
-subst_subtype (SUB fin tu'* ct) tv* tu*
-1. Return (SUB fin $subst_typeuse(tu', tv*, tu*)* $subst_comptype(ct, tv*, tu*)).
+subst_subtype (SUB final? tu'* ct) tv* tu*
+1. Return (SUB final? $subst_typeuse(tu', tv*, tu*)* $subst_comptype(ct, tv*, tu*)).
 
 subst_rectype (REC st*) tv* tu*
 1. Let (tv'*, tu'*) be $minus_recs(tv*, tu*).
@@ -30208,8 +30208,8 @@ subst_addrtype at tv* tu*
 subst_tagtype tu' tv* tu*
 1. Return $subst_typeuse(tu', tv*, tu*).
 
-subst_globaltype (mut t) tv* tu*
-1. Return (mut $subst_valtype(t, tv*, tu*)).
+subst_globaltype (mut? t) tv* tu*
+1. Return (mut? $subst_valtype(t, tv*, tu*)).
 
 subst_memtype at lim PAGE tv* tu*
 1. Return at lim PAGE.
@@ -30287,7 +30287,7 @@ unrolldt (_DEF rectype i)
 2. Return subtype*[i].
 
 expanddt deftype
-1. Let (SUB fin typeuse* comptype) be $unrolldt(deftype).
+1. Let (SUB final? typeuse* comptype) be $unrolldt(deftype).
 2. Return comptype.
 
 free_addrtype addrtype
@@ -30330,7 +30330,7 @@ free_heaptype heaptype
 2. Assert: Due to validation, heaptype is typeuse.
 3. Return $free_typeuse(heaptype).
 
-free_reftype (REF nul heaptype)
+free_reftype (REF null? heaptype)
 1. Return $free_heaptype(heaptype).
 
 free_typeuse typeuse
@@ -30358,7 +30358,7 @@ free_storagetype storagetype
 2. Assert: Due to validation, storagetype is packtype.
 3. Return $free_packtype(storagetype).
 
-free_fieldtype (mut storagetype)
+free_fieldtype (mut? storagetype)
 1. Return $free_storagetype(storagetype).
 
 free_comptype comptype
@@ -30372,7 +30372,7 @@ free_comptype comptype
 4. Let (FUNC resulttype_1 -> resulttype_2) be comptype.
 5. Return $free_resulttype(resulttype_1) ++ $free_resulttype(resulttype_2).
 
-free_subtype (SUB fin typeuse* comptype)
+free_subtype (SUB final? typeuse* comptype)
 1. Return $free_list($free_typeuse(typeuse)*) ++ $free_comptype(comptype).
 
 free_rectype (REC subtype*)
@@ -30384,7 +30384,7 @@ free_deftype (_DEF rectype n)
 free_tagtype deftype
 1. Return $free_deftype(deftype).
 
-free_globaltype (mut valtype)
+free_globaltype (mut? valtype)
 1. Return $free_valtype(valtype).
 
 free_memtype addrtype limits PAGE
@@ -30882,10 +30882,10 @@ default_ valtype
 3. If valtype is Vnn, then:
   a. Return ?((valtype.CONST 0)).
 4. Assert: Due to validation, valtype is some REF.
-5. Let (REF NULL_opt_0 ht) be valtype.
-6. If (NULL_opt_0 = ?(NULL)), then:
+5. Let (REF NULL_0? ht) be valtype.
+6. If (NULL_0? = ?(NULL)), then:
   a. Return ?((REF.NULL ht)).
-7. Assert: Due to validation, NULL_opt_0 is not defined.
+7. Assert: Due to validation, NULL_0? is not defined.
 8. Return ?().
 
 is_packtype zt

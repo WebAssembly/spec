@@ -12,14 +12,7 @@ Types
 Number Types
 ~~~~~~~~~~~~
 
-.. math::
-   \begin{array}{llrll@{\qquad\qquad}l}
-   \production{number type} & \Tnumtype_I &::=&
-     \text{i32} &\Rightarrow& \I32 \\ &&|&
-     \text{i64} &\Rightarrow& \I64 \\ &&|&
-     \text{f32} &\Rightarrow& \F32 \\ &&|&
-     \text{f64} &\Rightarrow& \F64 \\
-   \end{array}
+$${grammar: Tnumtype}
 
 
 .. index:: vector type
@@ -29,11 +22,7 @@ Number Types
 Vector Types
 ~~~~~~~~~~~~
 
-.. math::
-   \begin{array}{llcll@{\qquad\qquad}l}
-   \production{vector type} & \Tvectype_I &::=&
-     \text{v128} &\Rightarrow& \V128 \\
-   \end{array}
+$${grammar: Tvectype}
 
 
 .. index:: heap type
@@ -44,64 +33,25 @@ Vector Types
 Heap Types
 ~~~~~~~~~~
 
-.. math::
-   \begin{array}{llrll@{\qquad\qquad}l}
-   \production{abstract heap type} & \Tabsheaptype &::=&
-     \text{any} &\Rightarrow& \ANY \\ &&|&
-     \text{eq} &\Rightarrow& \EQT \\ &&|&
-     \text{i31} &\Rightarrow& \I31 \\ &&|&
-     \text{struct} &\Rightarrow& \STRUCT \\ &&|&
-     \text{array} &\Rightarrow& \ARRAY \\ &&|&
-     \text{none} &\Rightarrow& \NONE \\ &&|&
-     \text{func} &\Rightarrow& \FUNC \\ &&|&
-     \text{nofunc} &\Rightarrow& \NOFUNC \\ &&|&
-     \text{extern} &\Rightarrow& \EXTERN \\ &&|&
-     \text{noexn} &\Rightarrow& \NOEXN \\ &&|&
-     \text{exn} &\Rightarrow& \EXN \\ &&|&
-     \text{noextern} &\Rightarrow& \NOEXTERN \\
-   \production{heap type} & \Theaptype_I &::=&
-     t{:}\Tabsheaptype &\Rightarrow& y \\ &&|&
-     x{:}\Ttypeidx_I &\Rightarrow& x \\
-   \end{array}
+$${grammar: Tabsheaptype Theaptype_}
 
 
 .. index:: reference type
    pair: text format; reference type
 .. _text-reftype:
+.. _text-null:
 
 Reference Types
 ~~~~~~~~~~~~~~~
 
-.. math::
-   \begin{array}{llcll@{\qquad\qquad}l}
-   \production{reference type} & \Treftype_I &::=&
-     \text{(}~\text{ref}~~\X{ht}{:}\Theaptype~\text{)}
-       &\Rightarrow& \REF~\X{ht} \\ &&|&
-     \text{(}~\text{ref}~~\text{null}~~\X{ht}{:}\Theaptype~\text{)}
-       &\Rightarrow& \REF~\NULL~\X{ht} \\
-   \end{array}
+$${grammar: Tnull Treftype_/base}
 
 Abbreviations
 .............
 
 There are shorthands for references to abstract heap types.
 
-.. math::
-   \begin{array}{llclll}
-   \production{reference type} &
-     \text{anyref} &\equiv& \text{(}~\text{ref}~~\text{null}~~\text{any}~\text{)} \\
-     \text{eqref} &\equiv& \text{(}~\text{ref}~~\text{null}~~\text{eq}~\text{)} \\
-     \text{i31ref} &\equiv& \text{(}~\text{ref}~~\text{null}~~\text{i31}~\text{)} \\
-     \text{structref} &\equiv& \text{(}~\text{ref}~~\text{null}~~\text{struct}~\text{)} \\
-     \text{arrayref} &\equiv& \text{(}~\text{ref}~~\text{null}~~\text{array}~\text{)} \\
-     \text{nullref} &\equiv& \text{(}~\text{ref}~~\text{null}~~\text{none}~\text{)} \\
-     \text{funcref} &\equiv& \text{(}~\text{ref}~~\text{null}~~\text{func}~\text{)} \\
-     \text{nullfuncref} &\equiv& \text{(}~\text{ref}~~\text{null}~~\text{nofunc}~\text{)} \\
-     \text{exnref} &\equiv& \text{(}~\text{ref}~~\text{null}~~\text{exn}~\text{)} \\
-     \text{nullexnref} &\equiv& \text{(}~\text{ref}~~\text{null}~~\text{noexn}~\text{)} \\
-     \text{externref} &\equiv& \text{(}~\text{ref}~~\text{null}~~\text{extern}~\text{)} \\
-     \text{nullexternref} &\equiv& \text{(}~\text{ref}~~\text{null}~~\text{noextern}~\text{)} \\
-   \end{array}
+$${grammar: Treftype_/abbrev}
 
 
 .. index:: value type, number type, vector type, reference type
@@ -111,13 +61,7 @@ There are shorthands for references to abstract heap types.
 Value Types
 ~~~~~~~~~~~
 
-.. math::
-   \begin{array}{llcll@{\qquad\qquad}l}
-   \production{value type} & \Tvaltype_I &::=&
-     t{:}\Tnumtype_I &\Rightarrow& t \\ &&|&
-     t{:}\Tvectype_I &\Rightarrow& t \\ &&|&
-     t{:}\Treftype_I &\Rightarrow& t \\
-   \end{array}
+$${grammar: Tvaltype_}
 
 
 .. index:: composite type, aggregate type, structure type, array type, function type, field type, storage type, value type, packed type, mutability, result type
@@ -143,40 +87,16 @@ Value Types
 Composite Types
 ~~~~~~~~~~~~~~~
 
-.. math::
-   \begin{array}{llclll@{\qquad\qquad}l}
-   \production{composite type} & \Tcomptype_I &::=&
-     \text{(}~\text{struct}~~\X{ft}^\ast{:\,}\Tlist(\Tfield_I)~\text{)}
-       &\Rightarrow& \TSTRUCT~\X{ft}^\ast \\ &&|&
-     \text{(}~\text{array}~~\X{ft}{:}\Tfieldtype_I~\text{)}
-       &\Rightarrow& \TARRAY~\X{ft} \\ &&|&
-     \text{(}~\text{func}~~t_1^\ast{:\,}\Tlist(\Tparam_I)~~t_2^\ast{:\,}\Tlist(\Tresult_I)~\text{)}
-       &\Rightarrow& \TFUNC~[t_1^\ast] \Tarrow [t_2^\ast] \\
-   \production{parameter} & \Tparam_I &::=&
-     \text{(}~\text{param}~~\Tid^?~~t{:}\Tvaltype_I~\text{)}
-       &\Rightarrow& t \\
-   \production{result} & \Tresult_I &::=&
-     \text{(}~\text{result}~~t{:}\Tvaltype_I~\text{)}
-       &\Rightarrow& t \\
-   \production{field} & \Tfield_I &::=&
-     \text{(}~\text{field}~~\Tid^?~~\X{ft}{:}\Tfieldtype_I~\text{)}
-       &\Rightarrow& \X{ft} \\
-   \production{field type} & \Tfieldtype_I &::=&
-     \X{st}{:}\Bstoragetype
-       &\Rightarrow& \X{st} \\ &&|&
-     \text{(}~\text{mut}~~\X{st}{:}\Bstoragetype~\text{)}
-       &\Rightarrow& \TMUT~\X{st} \\
-   \production{storage type} & \Tstoragetype_I &::=&
-     t{:}\Tvaltype_I
-       &\Rightarrow& t \\ &&|&
-     t{:}\Tpacktype
-       &\Rightarrow& t \\
-   \production{packed type} & \Tpacktype &::=&
-     \text{i8}
-       &\Rightarrow& \I8 \\ &&|&
-     \text{i16}
-       &\Rightarrow& \I16 \\
-   \end{array}
+Composite types are parsed into their respective abstract representation,
+paired with the local :ref:`identifier context <text-context>` generated by their bound field or parameter identifiers:
+
+$${grammar:
+  Tcomptype_
+  {Tfield_/base Tparam_/base Tresult_/base}
+  Tfieldtype_
+  Tstoragetype_
+  Tpacktype
+}
 
 .. note::
    The optional identifier names for parameters in a function type only have documentation purpose.
@@ -185,26 +105,9 @@ Composite Types
 Abbreviations
 .............
 
-Multiple anonymous parameters or results may be combined into a single declaration:
+Multiple anonymous structure fields or parameters or multiple results may be combined into a single declaration:
 
-.. math::
-   \begin{array}{llclll}
-   \production{parameter} &
-     \text{(}~~\text{param}~~\Tvaltype^\ast~~\text{)} &\equiv&
-     (\text{(}~~\text{param}~~\Tvaltype~~\text{)})^\ast \\
-   \production{result} &
-     \text{(}~~\text{result}~~\Tvaltype^\ast~~\text{)} &\equiv&
-     (\text{(}~~\text{result}~~\Tvaltype~~\text{)})^\ast \\
-   \end{array}
-
-Similarly, multiple anonymous structure fields may be combined into a single declaration:
-
-.. math::
-   \begin{array}{llclll}
-   \production{field} &
-     \text{(}~~\text{field}~~\Tfieldtype^\ast~~\text{)} &\equiv&
-     (\text{(}~~\text{field}~~\Tfieldtype~~\text{)})^\ast \\
-   \end{array}
+$${grammar: {Tfield_/abbrev Tparam_/abbrev Tresult_/abbrev}}
 
 
 .. index:: recursive type, sub type, composite type
@@ -213,44 +116,27 @@ Similarly, multiple anonymous structure fields may be combined into a single dec
 .. _text-rectype:
 .. _text-subtype:
 .. _text-typedef:
+.. _text-final:
 
 Recursive Types
 ~~~~~~~~~~~~~~~
 
-.. math::
-   \begin{array}{llclll@{\qquad\qquad}l}
-   \production{recursive type} & \Trectype_I &::=&
-     \text{(}~\text{rec}~~\X{st}^\ast{:\,}\Tlist(\Ttypedef_I)~\text{)}
-       &\Rightarrow& \TREC~\X{st}^\ast \\
-   \production{defined type} & \Ttypedef_I &::=&
-     \text{(}~\text{type}~~\Tid^?~~\X{st}{:}\Tsubtype_I~\text{)}
-       &\Rightarrow& \X{st} \\
-   \production{sub type} & \Tsubtype_I &::=&
-     \text{(}~\text{sub}~~\text{final}^?~~x^\ast{:\,}\Tlist(\Ttypeidx_I)~~\X{ct}{:}\Tcomptype_I~\text{)}
-       &\Rightarrow& \TSUB~\TFINAL^?~x^\ast~\X{ct} \\
-   \end{array}
+Recursive types are parsed into their respective abstract representation,
+paired with the :ref:`identifier context <text-context>` generated by their bound identifiers:
+
+$${grammar: Tfinal Tsubtype_/base Ttypedef_ Trectype_/base}
 
 
 Abbreviations
 .............
 
-Singular recursive types can omit the :math:`\text{rec}` keyword:
+Final sub types with no super-types can omit the ${grammar-case: "sub"} keyword and its arguments:
 
-.. math::
-   \begin{array}{llclll}
-   \production{recursive type} &
-     \Ttypedef &\equiv&
-     \text{(}~~\text{rec}~~\Ttypedef~~\text{)} \\
-   \end{array}
+$${grammar: Tsubtype_/abbrev}
 
-Similarly, final sub types with no super-types can omit the |Tsub| keyword and arguments:
+Similarly, singular recursive types can omit the ${grammar-case: "rec"} keyword:
 
-.. math::
-   \begin{array}{llclll}
-   \production{sub type} &
-     \Tcomptype &\equiv&
-     \text{(}~~\text{sub}~~\text{final}~~\epsilon~~\Tcomptype~~\text{)} \\
-   \end{array}
+$${grammar: Trectype_/abbrev}
 
 
 .. index:: address type
@@ -260,23 +146,14 @@ Similarly, final sub types with no super-types can omit the |Tsub| keyword and a
 Address Types
 ~~~~~~~~~~~~~
 
-.. math::
-   \begin{array}{llclll}
-   \production{address type} & \Taddrtype &::=&
-     \text{i32} &\Rightarrow& \I32 \\ &&|&
-     \text{i64} &\Rightarrow& \I64 \\
-   \end{array}
+$${grammar: Taddrtype/base}
 
 Abbreviations
 .............
 
-The address type can be omitted, in which case it defaults :math:`\I32`:
+The address type can be omitted, in which case it defaults ${addrtype: I32}:
 
-.. math::
-   \begin{array}{llclll}
-   \production{address type} &
-     \text{} &\equiv& \text{i32}
-   \end{array}
+$${grammar: Taddrtype/abbrev}
 
 
 .. index:: limits
@@ -286,12 +163,7 @@ The address type can be omitted, in which case it defaults :math:`\I32`:
 Limits
 ~~~~~~
 
-.. math::
-    \begin{array}{llclll}
-    \production{limits} & \Tlimits_N &::=&
-      n{:}\Tu64 &\Rightarrow& [ n\,{..}\,2^N ] \\ &&|&
-      n{:}\Tu64~~m{:}\Tu64 &\Rightarrow& [ n\,{..}\,m ] \\
-    \end{array}
+$${grammar: Tlimits_}
 
 
 .. index:: tag type, type use
@@ -301,11 +173,7 @@ Limits
 Tag Types
 ~~~~~~~~~
 
-.. math::
-   \begin{array}{llcl}
-   \production{tag} & \Ttagtype_I &::=&
-     x,I'{:}\Ttypeuse_I \Rightarrow\quad x \\
-   \end{array}
+$${grammar: Ttagtype_}
 
 
 .. index:: global type, mutability, value type
@@ -316,12 +184,7 @@ Tag Types
 Global Types
 ~~~~~~~~~~~~
 
-.. math::
-   \begin{array}{llclll}
-   \production{global type} & \Tglobaltype_I &::=&
-     t{:}\Tvaltype_I &\Rightarrow& t \\ &&|&
-     \text{(}~\text{mut}~~t{:}\Tvaltype_I~\text{)} &\Rightarrow& \TMUT~t \\
-   \end{array}
+$${grammar: Tglobaltype_}
 
 
 .. index:: memory type, limits, page size
@@ -331,11 +194,7 @@ Global Types
 Memory Types
 ~~~~~~~~~~~~
 
-.. math::
-   \begin{array}{llclll@{\qquad\qquad}l}
-   \production{memory type} & \Tmemtype_I &::=&
-     \X{at}{:}\Taddrtype~~\X{lim}{:}\Tlimits_{|\X{at}|/64\cdot\F{Ki}} &\Rightarrow& \X{at}~\X{lim}~\PAGE \\
-   \end{array}
+$${grammar: Tmemtype_}
 
 
 .. index:: table type, reference type, limits
@@ -345,11 +204,7 @@ Memory Types
 Table Types
 ~~~~~~~~~~~
 
-.. math::
-   \begin{array}{llclll}
-   \production{table type} & \Ttabletype_I &::=&
-     \X{at}{:}\Taddrtype~~\X{lim}{:}\Tlimits_{|\X{at}|}~~\X{et}{:}\Treftype_I &\Rightarrow& \X{at}~\X{lim}~\X{et} \\
-   \end{array}
+$${grammar: Ttabletype_}
 
 
 .. index:: external type, tag type, global type, memory type, table type, function type
@@ -359,17 +214,49 @@ Table Types
 External Types
 ~~~~~~~~~~~~~~
 
-.. math::
-   \begin{array}{llclll}
-   \production{external type} & \Texterntype_I &::=&
-     \text{(}~\text{tag}~~\Tid^?~~\X{tt}{:}\Ttagtype~\text{)}
-       &\Rightarrow& \XTTAG~\X{tt} \\ &&|&
-     \text{(}~\text{global}~~\Tid^?~~\X{gt}{:}\Tglobaltype_I~\text{)}
-       &\Rightarrow& \XTGLOBAL~\X{gt} \\ &&|&
-     \text{(}~\text{memory}~~\Tid^?~~\X{mt}{:}\Tmemtype_I~\text{)}
-       &\Rightarrow& \XTMEM~~\X{mt} \\ &&|&
-     \text{(}~\text{table}~~\Tid^?~~\X{tt}{:}\Ttabletype_I~\text{)}
-       &\Rightarrow& \XTTABLE~\X{tt} \\ &&|&
-     \text{(}~\text{func}~~\Tid^?~~x,I'{:}\Ttypeuse_I~\text{)}
-       &\Rightarrow& \XTFUNC~x \\
-   \end{array}
+$${grammar: Texterntype_}
+
+
+.. index:: type use
+   pair: text format; type use
+.. _text-typeuse:
+
+Type Uses
+~~~~~~~~~
+
+A *type use* is a reference to a :ref:`type definition <text-type>`.
+Where it is required to reference a :ref:`function type <text-functype>`,
+it may optionally be augmented by explicit inlined :ref:`parameter <text-param>` and :ref:`result <text-result>` declarations.
+That allows binding symbolic :ref:`identifiers <text-id>` to name the :ref:`local indices <text-localidx>` of parameters.
+If inline declarations are given, then their types must match the referenced :ref:`function type <text-type>`.
+
+$${grammar: Ttypeuse_/base}
+
+.. note::
+   If inline declarations are given, their types must be *syntactically* equal to the types from the indexed definition;
+   possible type :ref:`substitutions <notation-subst>` from other definitions that might make them equal are not taken into account.
+   This is to simplify syntactic pre-processing.
+
+The synthesized attribute of a ${grammar-case: Ttypeuse} is a pair consisting of both the used :ref:`type index <syntax-typeidx>` and the local :ref:`identifier context <text-context>` containing possible parameter identifiers.
+
+.. note::
+   Both productions overlap for the case that the function type is ${comptype: FUNC eps -> eps}.
+   However, in that case, they also produce the same results, so that the choice is immaterial.
+
+   The :ref:`well-formedness <text-context-wf>` condition on ${:I'} ensures that the parameters do not contain duplicate identifiers.
+
+
+.. _text-typeuse-abbrev:
+
+Abbreviations
+.............
+
+A type use may also be replaced entirely by inline :ref:`parameter <text-param>` and :ref:`result <text-result>` declarations.
+In that case, a :ref:`type index <syntax-typeidx>` is automatically inserted:
+
+$${grammar: Ttypeuse_/abbrev}
+
+where ${:x} is the smallest existing :ref:`type index <syntax-typeidx>` whose :ref:`recursive type <syntax-rectype>` definition parses into a singular, final :ref:`function type <syntax-functype>` with the same parameters and results.
+If no such index exists, then a new :ref:`recursive type <text-rectype>` of the same form is inserted at the end of the module.
+
+Abbreviations are expanded in the order they appear, such that previously inserted type definitions are reused by consecutive expansions.

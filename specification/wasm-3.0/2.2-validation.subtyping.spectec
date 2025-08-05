@@ -64,7 +64,7 @@ rule Heaptype_sub/typeidx-r:
 
 rule Heaptype_sub/rec:
   C |- REC i <: typeuse*[j]
-  -- if C.RECS[i] = SUB fin typeuse* ct
+  -- if C.RECS[i] = SUB final? typeuse* ct
 
 rule Heaptype_sub/none:
   C |- NONE <: heaptype
@@ -182,7 +182,7 @@ rule Deftype_sub/refl:
 
 rule Deftype_sub/super:
   C |- deftype_1 <: deftype_2
-  -- if $unrolldt(deftype_1) = SUB fin typeuse* ct
+  -- if $unrolldt(deftype_1) = SUB final? typeuse* ct
   -- Heaptype_sub: C |- typeuse*[i] <: deftype_2
 
 

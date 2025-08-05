@@ -107,7 +107,7 @@ Branch instructions come in several flavors:
 ${:BR} performs an unconditional branch,
 ${:BR_IF} performs a conditional branch,
 and ${:BR_TABLE} performs an indirect branch through an operand indexing into the label list that is an immediate to the instruction, or to a default target if the operand is out of bounds.
-The ${:BR_ON_NULL} and ${:BR_ON_NON_NULL} instructions check whether a reference operand is :ref:`null <syntax-null>` and branch if that is the case or not the case, respectively.
+The ${:BR_ON_NULL} and ${:BR_ON_NON_NULL} instructions check whether a reference operand is :ref:`null <syntax-nullref>` and branch if that is the case or not the case, respectively.
 Similarly, ${:BR_ON_CAST} and ${:BR_ON_CAST_FAIL} attempt a downcast on a reference operand and branch if that succeeds, or fails, respectively.
 
 The ${:RETURN} instruction is a shortcut for an unconditional branch to the outermost block, which implicitly is the body of the current function.
@@ -238,7 +238,7 @@ Instructions in this group are concerned with accessing :ref:`references <syntax
 
 $${syntax: {instr/func instr/ref}}
 
-The ${:REF.NULL} and ${:REF.FUNC} instructions produce a :ref:`null <syntax-null>` value or a reference to a given function, respectively.
+The ${:REF.NULL} and ${:REF.FUNC} instructions produce a :ref:`null <syntax-nullref>` reference or a reference to a given function, respectively.
 
 The instruction ${:REF.IS_NULL} checks for null,
 while ${:REF.AS_NON_NULL} converts a :ref:`nullable <syntax-reftype>` to a non-null one, and :ref:`traps <trap>` if it encounters null.

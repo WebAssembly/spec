@@ -30,7 +30,7 @@ rule Tag_ok:
 rule Global_ok:
   C |- GLOBAL globaltype expr : globaltype
   -- Globaltype_ok: C |- globaltype : OK
-  -- if globaltype = mut t
+  -- if globaltype = MUT? t
   -- Expr_ok_const: C |- expr : t CONST
 
 rule Mem_ok:

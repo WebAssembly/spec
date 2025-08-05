@@ -5,9 +5,7 @@
 ;; Value types
 
 ;; TODO(3, rossberg): add ability to do this inline
-syntax nul hint(show NULL?) hint(macro "%" "%") = NULL?
-syntax nul1 hint(show NULL#$_(1)?) hint(macro "%" "%") = NULL?  ;; HACK
-syntax nul2 hint(show NULL#$_(2)?) hint(macro "%" "%") = NULL?  ;; HACK
+syntax null hint(show NULL) hint(macro "%" "%") = NULL
 
 syntax addrtype hint(desc "address type") =
   | I32 | I64
@@ -46,7 +44,7 @@ syntax heaptype hint(desc "heap type") =
   | absheaptype | typeuse
 
 syntax reftype hint(desc "reference type") =
-  | REF nul heaptype
+  | REF null? heaptype
 
 syntax valtype/syn hint(desc "value type") =
   | numtype | vectype | reftype | ...
@@ -108,13 +106,10 @@ syntax resulttype hint(desc "result type") =
 ;; Type definitions
 
 ;; TODO(3, rossberg): add ability to do this inline
-syntax mut hint(show MUT?)   hint(macro "T%" "T%") = MUT?
-;; HACK
-syntax mut1 hint(show MUT#$_(1)?) hint(macro "T%" "T%") = MUT?
-syntax mut2 hint(show MUT#$_(2)?) hint(macro "T%" "T%") = MUT?
-syntax fin hint(show FINAL?) hint(macro "T%" "T%") = FINAL?
+syntax mut hint(show MUT) hint(macro "T%" "T%") = MUT
+syntax final hint(show FINAL) hint(macro "T%" "T%") = FINAL
 
-syntax fieldtype  hint(desc "field type") = mut storagetype
+syntax fieldtype  hint(desc "field type") = mut? storagetype
 
 syntax comptype hint(desc "composite type") hint(macro "%" "T%") =
   | STRUCT list(fieldtype)
@@ -122,7 +117,7 @@ syntax comptype hint(desc "composite type") hint(macro "%" "T%") =
   | FUNC resulttype -> resulttype
 
 syntax subtype hint(desc "sub type") hint(macro "%" "T%") =
-  | SUB fin typeuse* comptype
+  | SUB final? typeuse* comptype
 
 syntax rectype hint(desc "recursive type") hint(macro "%" "T%") =
   | REC list(subtype)
@@ -133,7 +128,7 @@ syntax rectype hint(desc "recursive type") hint(macro "%" "T%") =
 syntax limits hint(desc "limits range") = `[u64 .. u64] hint(macro "L%")
 
 syntax tagtype hint(desc "tag type") = typeuse
-syntax globaltype hint(desc "global type") = mut valtype
+syntax globaltype hint(desc "global type") = mut? valtype
 syntax memtype hint(desc "memory type") = addrtype limits PAGE
 syntax tabletype hint(desc "table type") = addrtype limits reftype
 syntax datatype hint(desc "data type") = OK hint(macro "%data")
@@ -298,8 +293,8 @@ def $minat(at_1, at_2) = at_1  -- if $size(at_1) <= $size(at_2)
 def $minat(at_1, at_2) = at_2  -- otherwise
 
 def $diffrt(reftype, reftype) : reftype  hint(show %\%) hint(macro "reftypediff")
-def $diffrt((REF nul1 ht_1), (REF NULL ht_2)) = (REF ht_1)
-def $diffrt((REF nul1 ht_1), (REF ht_2)) = (REF nul1 ht_1)
+def $diffrt((REF null_1? ht_1), (REF NULL ht_2)) = (REF ht_1)
+def $diffrt((REF null_1? ht_1), (REF ht_2)) = (REF null_1? ht_1)
 
 ;; TODO(3, rossberg): Could this be inferable as a narrowing coercion?
 def $as_deftype(typeuse) : deftype  hint(show %)
@@ -382,7 +377,7 @@ def $subst_heaptype(tv', tv*, tu*) = $subst_typevar(tv', tv*, tu*)
 def $subst_heaptype(dt, tv*, tu*) = $subst_deftype(dt, tv*, tu*)
 def $subst_heaptype(ht, tv*, tu*) = ht  -- otherwise
 
-def $subst_reftype((REF nul ht), tv*, tu*) = REF nul $subst_heaptype(ht, tv*, tu*)
+def $subst_reftype((REF null? ht), tv*, tu*) = REF null? $subst_heaptype(ht, tv*, tu*)
 
 def $subst_valtype(nt, tv*, tu*) = $subst_numtype(nt, tv*, tu*)
 def $subst_valtype(vt, tv*, tu*) = $subst_vectype(vt, tv*, tu*)
@@ -394,14 +389,14 @@ def $subst_packtype(pt, tv*, tu*) = pt
 def $subst_storagetype(t, tv*, tu*) = $subst_valtype(t, tv*, tu*)
 def $subst_storagetype(pt, tv*, tu*) = $subst_packtype(pt, tv*, tu*)
 
-def $subst_fieldtype((mut zt), tv*, tu*) = mut $subst_storagetype(zt, tv*, tu*)
+def $subst_fieldtype((mut? zt), tv*, tu*) = mut? $subst_storagetype(zt, tv*, tu*)
 
 def $subst_comptype((STRUCT ft*), tv*, tu*) = STRUCT $subst_fieldtype(ft, tv*, tu*)*
 def $subst_comptype((ARRAY ft), tv*, tu*) = ARRAY $subst_fieldtype(ft, tv*, tu*)
 def $subst_comptype((FUNC t_1* -> t_2*), tv*, tu*) = FUNC $subst_valtype(t_1, tv*, tu*)* -> $subst_valtype(t_2, tv*, tu*)*
 
-def $subst_subtype((SUB fin tu'* ct), tv*, tu*) =
-  SUB fin $subst_typeuse(tu', tv*, tu*)* $subst_comptype(ct, tv*, tu*)
+def $subst_subtype((SUB final? tu'* ct), tv*, tu*) =
+  SUB final? $subst_typeuse(tu', tv*, tu*)* $subst_comptype(ct, tv*, tu*)
 
 def $minus_recs(typevar*, typeuse*) : (typevar*, typeuse*)
 def $minus_recs(eps, eps) = (eps, eps)
@@ -418,7 +413,7 @@ def $subst_rectype((REC st*), tv*, tu*) = REC $subst_subtype(st, tv'*, tu'*)*
 def $subst_deftype((_DEF qt i), tv*, tu*) = _DEF $subst_rectype(qt, tv*, tu*) i
 
 def $subst_tagtype(tu', tv*, tu*) = $subst_typeuse(tu', tv*, tu*)
-def $subst_globaltype((mut t), tv*, tu*) = mut $subst_valtype(t, tv*, tu*)
+def $subst_globaltype((mut? t), tv*, tu*) = mut? $subst_valtype(t, tv*, tu*)
 def $subst_memtype((at lim PAGE), tv*, tu*) = at lim PAGE
 def $subst_tabletype((at lim rt), tv*, tu*) = at lim $subst_reftype(rt, tv*, tu*)
 
@@ -474,7 +469,7 @@ def $unrollrt(rectype) = REC ($subst_subtype(subtype, (REC i)^(i<n), (_DEF recty
 def $rolldt(x, rectype) = (_DEF (REC subtype^n) i)^(i<n)  -- if $rollrt(x, rectype) = REC subtype^n
 def $unrolldt(_DEF rectype i) = subtype*[i]               -- if $unrollrt(rectype) = REC subtype*
 
-def $expanddt(deftype) = comptype                         -- if $unrolldt(deftype) = SUB fin typeuse* comptype
+def $expanddt(deftype) = comptype                         -- if $unrolldt(deftype) = SUB final? typeuse* comptype
 
 
 ;; Free indices
@@ -537,7 +532,7 @@ def $free_typeuse(deftype) = $free_deftype(deftype)
 def $free_heaptype(absheaptype) = $free_absheaptype(absheaptype)
 def $free_heaptype(typeuse) = $free_typeuse(typeuse)
 
-def $free_reftype(REF nul heaptype) = $free_heaptype(heaptype)
+def $free_reftype(REF null? heaptype) = $free_heaptype(heaptype)
 
 def $free_valtype(numtype) = $free_numtype(numtype)
 def $free_valtype(vectype) = $free_vectype(vectype)
@@ -549,20 +544,20 @@ def $free_resulttype(valtype*) = $free_list($free_valtype(valtype)*)
 def $free_storagetype(valtype) = $free_valtype(valtype)
 def $free_storagetype(packtype) = $free_packtype(packtype)
 
-def $free_fieldtype(mut storagetype) = $free_storagetype(storagetype)
+def $free_fieldtype(mut? storagetype) = $free_storagetype(storagetype)
 
 def $free_comptype(STRUCT fieldtype*) = $free_list($free_fieldtype(fieldtype)*)
 def $free_comptype(ARRAY fieldtype) = $free_fieldtype(fieldtype)
 def $free_comptype(FUNC resulttype_1 -> resulttype_2) = $free_resulttype(resulttype_1) ++ $free_resulttype(resulttype_2)
 
-def $free_subtype(SUB fin typeuse* comptype) =
+def $free_subtype(SUB final? typeuse* comptype) =
   $free_list($free_typeuse(typeuse)*) ++ $free_comptype(comptype)
 
 def $free_rectype(REC subtype*) = $free_list($free_subtype(subtype)*)
 
 def $free_tagtype(deftype) = $free_deftype(deftype)
 
-def $free_globaltype(mut valtype) = $free_valtype(valtype)
+def $free_globaltype(mut? valtype) = $free_valtype(valtype)
 
 def $free_memtype(addrtype limits PAGE) = $free_addrtype(addrtype)
  

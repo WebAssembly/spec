@@ -156,7 +156,7 @@ The syntax of abstract heap types is :ref:`extended <syntax-heaptype-ext>` with 
    pair: abstract syntax; reference type
    pair: reference; type
 .. _syntax-reftype:
-.. _syntax-nullable:
+.. _syntax-null:
 
 Reference Types
 ~~~~~~~~~~~~~~~
@@ -308,6 +308,7 @@ $${definition-ignore: psize}
    pair: abstract syntax; sub type
 .. _syntax-rectype:
 .. _syntax-subtype:
+.. _syntax-final:
 
 Recursive Types
 ~~~~~~~~~~~~~~~

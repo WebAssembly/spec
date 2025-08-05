@@ -287,8 +287,6 @@
 
 .. Types, non-terminals
 
-.. |typeuse| mathdef:: \xref{syntax/types}{syntax-typeuse}{\X{typeuse}}
-
 .. |numtype| mathdef:: \xref{syntax/types}{syntax-numtype}{\X{numtype}}
 .. |packtype| mathdef:: \xref{syntax/types}{syntax-packtype}{\X{packtype}}
 .. |lanetype| mathdef:: \xref{syntax/instructions}{syntax-lanetype}{\X{lanetype}}
@@ -316,8 +314,12 @@
 .. |externtype| mathdef:: \xref{syntax/types}{syntax-externtype}{\X{externtype}}
 
 .. |limits| mathdef:: \xref{syntax/types}{syntax-limits}{\X{limits}}
+.. |null| mathdef:: \xref{syntax/types}{syntax-null}{\X{null}}
 .. |mut| mathdef:: \xref{syntax/types}{syntax-mut}{\X{mut}}
+.. |final| mathdef:: \xref{syntax/types}{syntax-final}{\X{final}}
 .. |init| mathdef:: \xref{valid/conventions}{syntax-init}{\X{init}}
+
+.. |typeuse| mathdef:: \xref{syntax/types}{syntax-typeuse}{\X{typeuse}}
 
 .. |instrtype| mathdef:: \xref{valid/conventions}{syntax-instrtype}{\X{instrtype}}
 .. |localtype| mathdef:: \xref{valid/conventions}{syntax-localtype}{\X{localtype}}
@@ -995,6 +997,9 @@
 
 .. Types, non-terminals
 
+.. |Tnull| mathdef:: \xref{text/types}{text-null}{\T{null}}
+.. |Tfinal| mathdef:: \xref{text/types}{text-final}{\T{final}}
+
 .. |Tnumtype| mathdef:: \xref{text/types}{text-numtype}{\T{numtype}}
 .. |Tvectype| mathdef:: \xref{text/types}{text-vectype}{\T{vectype}}
 .. |Theaptype| mathdef:: \xref{text/types}{text-heaptype}{\T{heaptype}}
@@ -1043,7 +1048,7 @@
 .. |Tmodule| mathdef:: \xref{text/modules}{text-module}{\T{module}}
 .. |Tmodulefield| mathdef:: \xref{text/modules}{text-modulefield}{\T{modulefield}}
 .. |Ttype| mathdef:: \xref{text/types}{text-type}{\T{type}}
-.. |Ttypeuse| mathdef:: \xref{text/modules}{text-typeuse}{\T{typeuse}}
+.. |Ttypeuse| mathdef:: \xref{text/types}{text-typeuse}{\T{typeuse}}
 .. |Tfunc| mathdef:: \xref{text/modules}{text-func}{\T{func}}
 .. |Ttable| mathdef:: \xref{text/modules}{text-table}{\T{table}}
 .. |Tmem| mathdef:: \xref{text/modules}{text-mem}{\T{mem}}

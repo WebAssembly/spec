@@ -2,27 +2,6 @@
 ;; Text Format of Types
 ;;
 
-;; Type uses
-
-grammar Ttypeuse_(I) : (typeidx, idctxt) =
-  | "(" "type" x:Ttypeidx_(I) ")" => (x, I')
-    -- if I.TYPEDEFS[x] = SUB FINAL (FUNC t_1* -> t_2*)
-    -- if I' = {LOCALS eps^(|t_1*|)}
-  | "(" "type" x:Ttypeidx_(I) ")" (t_1,id?)*:Tparam_(I)* t_2*:Tresult_(I)* => (x, I')
-    -- if I.TYPEDEFS[x] = SUB FINAL (FUNC t_1* -> t_2*)
-    -- if I' = {LOCALS (id?)*}
-    -- Idctxt_ok: |- I' : OK
-  | ...
-
-grammar Ttypeuse_(I)/abbrev : (typeidx, idctxt) = ...
-  | (t_1,id?)*:Tparam_(I)* t_2*:Tresult_(I)* == "(" "type" x:Ttypeidx_(I) ")" Tparam_(I)* Tresult_(I)*
-    -- if I.TYPEDEFS[x] = SUB FINAL (FUNC t_1* -> t_2*)
-    -- (if I.TYPEDEFS[i] =/= SUB FINAL (FUNC t_1* -> t_2*))^(i<x)
-
-;; TODO(5, rossberg): This does not yet formalise how new type definitions are
-;; appended to the module if needed for implicit type uses.
-
-
 ;; Value Types
 
 grammar Tnumtype : numtype =
@@ -53,27 +32,26 @@ grammar Theaptype_(I) : heaptype =
   | ht:Tabsheaptype => ht
   | x:Ttypeidx_(I) => _IDX x
 
-grammar Tnul : nul =
-  | eps => eps
+grammar Tnull : null =
   | "null" => NULL
 
-grammar Treftype_(I) : reftype =
-  | "(" "ref" nul:Tnul ht:Theaptype_(I) ")" => REF nul ht
+grammar Treftype_(I)/base : reftype =
+  | "(" "ref" null?:Tnull? ht:Theaptype_(I) ")" => REF null? ht
   | ...
 
 grammar Treftype_(I)/abbrev : reftype = ...
   | "anyref" == "(" "ref" "null" "any" ")"
-  | "eqref" == "(" "ref" "null" "any" ")"
-  | "i31ref" == "(" "ref" "null" "any" ")"
-  | "structref" == "(" "ref" "null" "any" ")"
-  | "arrayref" == "(" "ref" "null" "any" ")"
-  | "nullref" == "(" "ref" "null" "any" ")"
-  | "funcref" == "(" "ref" "null" "any" ")"
-  | "nullfuncref" == "(" "ref" "null" "any" ")"
-  | "exnref" == "(" "ref" "null" "any" ")"
-  | "nullexnref" == "(" "ref" "null" "any" ")"
-  | "externref" == "(" "ref" "null" "any" ")"
-  | "nullexternref" == "(" "ref" "null" "any" ")"
+  | "eqref" == "(" "ref" "null" "eq" ")"
+  | "i31ref" == "(" "ref" "null" "i31" ")"
+  | "structref" == "(" "ref" "null" "struct" ")"
+  | "arrayref" == "(" "ref" "null" "array" ")"
+  | "nullref" == "(" "ref" "null" "none" ")"
+  | "funcref" == "(" "ref" "null" "func" ")"
+  | "nullfuncref" == "(" "ref" "null" "nofunc" ")"
+  | "exnref" == "(" "ref" "null" "exn" ")"
+  | "nullexnref" == "(" "ref" "null" "noexn" ")"
+  | "externref" == "(" "ref" "null" "extern" ")"
+  | "nullexternref" == "(" "ref" "null" "noextern" ")"
 
 grammar Tvaltype_(I) : valtype =
   | nt:Tnumtype => nt
@@ -95,28 +73,25 @@ grammar Tfieldtype_(I) : fieldtype =
   | zt:Tstoragetype_(I) => zt
   | "(" "mut" zt:Tstoragetype_(I) ")" => MUT zt
 
-grammar Tfield_(I) : (fieldtype, name?) =
+grammar Tfield_(I)/base : (fieldtype, name?) =
   | "(" "field" id?:Tid? ft:Tfieldtype_(I) ")" => (ft, id?)
   | ...
 
 ;; TODO(5, rossberg): The type currently glosses over the fact that the
 ;; abbreviation yields multiple fields. Similarly for params and results.
-grammar Tfield_(I)/abbrev : (fieldtype, name?) = ...
-  | "(" "field" Tfieldtype_(I)* ")" == ("(" "field" Tfieldtype_(I) ")")*
+grammar Tfield_(I)/abbrev : (fieldtype, name?) = ... | "(" "field" Tfieldtype_(I)* ")" == ("(" "field" Tfieldtype_(I) ")")*
 
-grammar Tparam_(I) : (valtype, name?) =
+grammar Tparam_(I)/base : (valtype, name?) =
   | "(" "param" id?:Tid? t:Tvaltype_(I) ")" => (t, id?)
   | ...
 
-grammar Tparam_(I)/abbrev : (valtype, name?) = ...
-  | "(" "param" Tvaltype_(I)* ")" == ("(" "param" Tvaltype_(I) ")")*
+grammar Tparam_(I)/abbrev : (valtype, name?) = ... | "(" "param" Tvaltype_(I)* ")" == ("(" "param" Tvaltype_(I) ")")*
 
-grammar Tresult_(I) : valtype =
+grammar Tresult_(I)/base : valtype =
   | "(" "result" t:Tvaltype_(I) ")" => t
   | ...
 
-grammar Tresult_(I)/abbrev : valtype = ...
-  | "(" "result" Tvaltype_(I)* ")" == ("(" "param" Tvaltype_(I) ")")*
+grammar Tresult_(I)/abbrev : valtype = ... | "(" "result" Tvaltype_(I)* ")" == ("(" "param" Tvaltype_(I) ")")*
 
 grammar Tcomptype_(I) : (comptype, idctxt) =
   | "(" "struct" (ft,id?)*:Tlist(Tfield_(I)) ")" => (STRUCT ft*, {FIELDS (id?)*})
@@ -124,41 +99,37 @@ grammar Tcomptype_(I) : (comptype, idctxt) =
   | "(" "func" (t_1,id?)*:Tlist(Tparam_(I)) t_2*:Tlist(Tresult_(I)) ")" => (FUNC t_1* -> t_2*, {})
 
 
-grammar Tfin : fin =
-  | eps => eps
+grammar Tfinal : final =
   | "final" => FINAL
 
-grammar Tsubtype_(I) : (subtype, idctxt) =
-  | "(" "sub" fin:Tfin x*:Tlist(Ttypeidx_(I)) (ct,I'):Tcomptype_(I) ")" => (SUB fin $($(_IDX x))* ct, I')
+grammar Tsubtype_(I)/base : (subtype, idctxt) =
+  | "(" "sub" fin?:Tfinal? x*:Tlist(Ttypeidx_(I)) (ct,I'):Tcomptype_(I) ")" => (SUB fin? $($(_IDX x))* ct, I')
   | ...
 
-grammar Tsubtype_(I)/abbrev : (subtype, idctxt) = ...
-  | Tcomptype_(I) == "(" "sub" Tcomptype_(I) ")"
+grammar Tsubtype_(I)/abbrev : (subtype, idctxt) = ... | Tcomptype_(I) == "(" "sub" "final" Tcomptype_(I) ")"
 
 grammar Ttypedef_(I) : (subtype, idctxt) =
   | "(" "type" id?:Tid? (st,I'):Tsubtype_(I) ")" => (st, I' ++ {TYPES (id?)})
 
-grammar Trectype_(I) : (rectype, idctxt) =
+grammar Trectype_(I)/base : (rectype, idctxt) =
   | "(" "rec" (st,I')*:Tlist(Ttypedef_(I)) ")" => (REC st*, $concat_idctxt(I'*))
   | ...
 
-grammar Trectype_(I)/abbrev : (rectype, idctxt) = ...
-  | Ttypedef_(I) == "(" "rec" Ttypedef_(I) ")"
+grammar Trectype_(I)/abbrev : (rectype, idctxt) = ... | Ttypedef_(I) == "(" "rec" Ttypedef_(I) ")"
 
 
 ;; External Types
 
-grammar Taddrtype : addrtype =
+grammar Taddrtype/base : addrtype =
   | "i32" => I32
   | "i64" => I64
   | ...
 
-grammar Taddrtype : addrtype = ...
-  | eps => I32
+grammar Taddrtype/abbrev : addrtype = ... | eps == "i32"
 
 
 grammar Tlimits_(N) : limits =
-  | n:Tu64 => `[n .. $(2^N-1)]
+  | n:Tu64 => `[n .. $(2^N)]
   | n:Tu64 m:Tu64 => `[n .. m]
 
 
@@ -171,17 +142,9 @@ grammar Tglobaltype_(I) : globaltype =
 
 grammar Tmemtype_(I) : memtype =
   | at:Taddrtype lim:Tlimits_($($size(at)-16)) => at lim PAGE
-  | ...
-
-grammar Tmemtype_(I)/abbrev : memtype = ...
-  | Tlimits_(16) == "i32" Tlimits_(16)
 
 grammar Ttabletype_(I) : tabletype =
   | at:Taddrtype lim:Tlimits_($size(at)) rt:Treftype_(I) => at lim rt
-  | ...
-
-grammar Ttabletype_(I)/abbrev : tabletype = ...
-  | Tlimits_(32) Treftype_(I) == "i32" Tlimits_(16) Treftype_(I)
 
 
 grammar Texterntype_(I) : (externtype, idctxt) =
@@ -190,3 +153,26 @@ grammar Texterntype_(I) : (externtype, idctxt) =
   | "(" "memory" id?:Tid? mt:Tmemtype_(I) ")" => (MEM mt, {MEMS (id?)})
   | "(" "table" id?:Tid? tt:Ttabletype_(I) ")" => (TABLE tt, {TABLES (id?)})
   | "(" "func" id?:Tid? (x,I'):Ttypeuse_(I) ")" => (FUNC $($(_IDX x)), {FUNCS (id?)})
+
+
+;; Type uses
+
+grammar Ttypeuse_(I)/base : (typeidx, idctxt) =
+  | "(" "type" x:Ttypeidx_(I) ")" => (x, I')
+    ----
+    -- if I.TYPEDEFS[x] = SUB FINAL (FUNC t_1* -> t_2*)
+    -- if I' = {LOCALS (eps)^(|t_1*|)}
+  | "(" "type" x:Ttypeidx_(I) ")" (t_1,id?)*:Tparam_(I)* t_2*:Tresult_(I)* => (x, I')
+    ----
+    -- if I.TYPEDEFS[x] = SUB FINAL (FUNC t_1* -> t_2*)
+    -- if I' = {LOCALS (id?)*}
+    -- Idctxt_ok: |- I' : OK
+  | ...
+
+grammar Ttypeuse_(I)/abbrev : (typeidx, idctxt) = ... | (t_1,id?)*:Tparam_(I)* t_2*:Tresult_(I)* == "(" "type" x:Ttypeidx_(I) ")" Tparam_(I)* Tresult_(I)*
+    ----
+    -- if I.TYPEDEFS[x] = SUB FINAL (FUNC t_1* -> t_2*)
+    -- (if I.TYPEDEFS[i] =/= SUB FINAL (FUNC t_1* -> t_2*))^(i<x)
+
+;; TODO(5, rossberg): This does not yet formalise how new type definitions are
+;; appended to the module if needed for implicit type uses.

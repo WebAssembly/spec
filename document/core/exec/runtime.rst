@@ -19,8 +19,8 @@ Runtime Structure
 .. _syntax-ref.exn:
 .. _syntax-ref.host:
 .. _syntax-ref.extern:
+.. _syntax-nullref:
 .. _syntax-val:
-.. _syntax-null:
 .. _syntax-pack:
 
 Values

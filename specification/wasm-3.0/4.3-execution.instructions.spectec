@@ -683,13 +683,13 @@ rule Step_pure/i31.get-num:
 
 rule Step/struct.new:
   z; val^n (STRUCT.NEW x)  ~>  $add_structinst(z, si); (REF.STRUCT_ADDR a)
-  -- Expand: $type(z, x) ~~ STRUCT (mut zt)^n
+  -- Expand: $type(z, x) ~~ STRUCT (mut? zt)^n
   -- if a = |$structinst(z)|
   -- if si = {TYPE $type(z, x), FIELDS ($packfield_(zt, val))^n}
 
 rule Step_read/struct.new_default:
   z; (STRUCT.NEW_DEFAULT x)  ~>  val* (STRUCT.NEW x)
-  -- Expand: $type(z, x) ~~ STRUCT (mut zt)*
+  -- Expand: $type(z, x) ~~ STRUCT (mut? zt)*
   -- (if $default_($unpack(zt)) = val)*
 
 
@@ -698,7 +698,7 @@ rule Step_read/struct.get-null:
 
 rule Step_read/struct.get-struct:
   z; (REF.STRUCT_ADDR a) (STRUCT.GET sx? x i)  ~>  $unpackfield_(zt*[i], sx?, $structinst(z)[a].FIELDS[i])
-  -- Expand: $type(z, x) ~~ STRUCT (mut zt)*
+  -- Expand: $type(z, x) ~~ STRUCT (mut? zt)*
 
 
 rule Step/struct.set-null:
@@ -706,7 +706,7 @@ rule Step/struct.set-null:
 
 rule Step/struct.set-struct:
   z; (REF.STRUCT_ADDR a) val (STRUCT.SET x i)  ~>  $with_struct(z, a, i, $packfield_(zt*[i], val)); eps
-  -- Expand: $type(z, x) ~~ STRUCT (mut zt)*
+  -- Expand: $type(z, x) ~~ STRUCT (mut? zt)*
 
 
 ;; Array instructions
@@ -716,13 +716,13 @@ rule Step_pure/array.new:
 
 rule Step_read/array.new_default:
   z; (CONST I32 n) (ARRAY.NEW_DEFAULT x)  ~>  val^n (ARRAY.NEW_FIXED x n)
-  -- Expand: $type(z, x) ~~ ARRAY (mut zt)
+  -- Expand: $type(z, x) ~~ ARRAY (mut? zt)
   -- if $default_($unpack(zt)) = val
 
 rule Step/array.new_fixed:
   z; val^n (ARRAY.NEW_FIXED x n)  ~>  $add_arrayinst(z, ai); (REF.ARRAY_ADDR a)
   ----
-  -- Expand: $type(z, x) ~~ ARRAY (mut zt)
+  -- Expand: $type(z, x) ~~ ARRAY (mut? zt)
   -- if a = |$arrayinst(z)|
      /\ ai = {TYPE $type(z, x), FIELDS ($packfield_(zt, val))^n}
 
@@ -740,14 +740,14 @@ rule Step_read/array.new_elem-alloc:
 rule Step_read/array.new_data-oob:
   z; (CONST I32 i) (CONST I32 n) (ARRAY.NEW_DATA x y)  ~>  TRAP
   ----
-  -- Expand: $type(z, x) ~~ ARRAY (mut zt)
+  -- Expand: $type(z, x) ~~ ARRAY (mut? zt)
   -- if $(i + n * $zsize(zt)/8 > |$data(z, y).BYTES|)
 
 ;; TODO(2, rossberg): outline Cnn = $cunpack(zt)
 rule Step_read/array.new_data-num:
   z; (CONST I32 i) (CONST I32 n) (ARRAY.NEW_DATA x y)  ~>  ($const($cunpack(zt), $cunpacknum_(zt, c)))^n (ARRAY.NEW_FIXED x n)
   ----
-  -- Expand: $type(z, x) ~~ ARRAY (mut zt)
+  -- Expand: $type(z, x) ~~ ARRAY (mut? zt)
   -- if $concatn_(byte, $zbytes_(zt, c)^n, $($zsize(zt)/8)) = $data(z, y).BYTES[i : n * $zsize(zt)/8]
 
 
@@ -761,7 +761,7 @@ rule Step_read/array.get-oob:
 rule Step_read/array.get-array:
   z; (REF.ARRAY_ADDR a) (CONST I32 i) (ARRAY.GET sx? x)  ~>  $unpackfield_(zt, sx?, $arrayinst(z)[a].FIELDS[i])
   ----
-  -- Expand: $type(z, x) ~~ ARRAY (mut zt)
+  -- Expand: $type(z, x) ~~ ARRAY (mut? zt)
 
 
 rule Step/array.set-null:
@@ -774,7 +774,7 @@ rule Step/array.set-oob:
 rule Step/array.set-array:
   z; (REF.ARRAY_ADDR a) (CONST I32 i) val (ARRAY.SET x)  ~>  $with_array(z, a, i, $packfield_(zt, val)); eps
   ----
-  -- Expand: $type(z, x) ~~ ARRAY (mut zt)
+  -- Expand: $type(z, x) ~~ ARRAY (mut? zt)
 
 
 rule Step_read/array.len-null:
@@ -832,7 +832,7 @@ rule Step_read/array.copy-le:
     (REF.ARRAY_ADDR a_1) (CONST I32 $(i_1 + 1)) (REF.ARRAY_ADDR a_2) (CONST I32 $(i_2 + 1)) (CONST I32 $(n-1)) (ARRAY.COPY x_1 x_2)
   ---- ----
   -- otherwise
-  -- Expand: $type(z, x_2) ~~ ARRAY (mut zt_2)
+  -- Expand: $type(z, x_2) ~~ ARRAY (mut? zt_2)
   -- if i_1 <= i_2
      /\ sx? = $sx(zt_2)
 
@@ -844,7 +844,7 @@ rule Step_read/array.copy-gt:
     (REF.ARRAY_ADDR a_1) (CONST I32 i_1) (REF.ARRAY_ADDR a_2) (CONST I32 i_2) (CONST I32 $(n-1)) (ARRAY.COPY x_1 x_2)
   ---- ----
   -- otherwise
-  -- Expand: $type(z, x_2) ~~ ARRAY (mut zt_2)
+  -- Expand: $type(z, x_2) ~~ ARRAY (mut? zt_2)
   -- if sx? = $sx(zt_2)
 
 
@@ -887,7 +887,7 @@ rule Step_read/array.init_data-oob1:
 rule Step_read/array.init_data-oob2:
   z; (REF.ARRAY_ADDR a) (CONST I32 i) (CONST I32 j) (CONST I32 n) (ARRAY.INIT_DATA x y)  ~>  TRAP
   ---- ----
-  -- Expand: $type(z, x) ~~ ARRAY (mut zt)
+  -- Expand: $type(z, x) ~~ ARRAY (mut? zt)
   -- if $(j + n * $zsize(zt)/8 > |$data(z, y).BYTES|)
 
 rule Step_read/array.init_data-zero:
@@ -903,7 +903,7 @@ rule Step_read/array.init_data-num:
     (REF.ARRAY_ADDR a) (CONST I32 $(i + 1)) (CONST I32 $(j + $zsize(zt)/8)) (CONST I32 $(n-1)) (ARRAY.INIT_DATA x y)
   ---- ----
   -- otherwise
-  -- Expand: $type(z, x) ~~ ARRAY (mut zt)
+  -- Expand: $type(z, x) ~~ ARRAY (mut? zt)
   -- if $zbytes_(zt, c) = $data(z, y).BYTES[j : $zsize(zt)/8]
 
 

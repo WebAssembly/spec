@@ -2777,9 +2777,7 @@ $$
 
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}}
-& {\mathsf{null}^?} & ::= & {\mathsf{null}^?} \\
-& {\mathsf{null}}{{{}_{1}^?}} & ::= & {\mathsf{null}^?} \\
-& {\mathsf{null}}{{{}_{2}^?}} & ::= & {\mathsf{null}^?} \\
+& \mathsf{null} & ::= & \mathsf{null} \\
 \mbox{(address type)} & {\mathit{addrtype}} & ::= & \mathsf{i{\scriptstyle 32}} ~~|~~ \mathsf{i{\scriptstyle 64}} \\
 \mbox{(number type)} & {\mathit{numtype}} & ::= & \mathsf{i{\scriptstyle 32}} ~~|~~ \mathsf{i{\scriptstyle 64}} ~~|~~ \mathsf{f{\scriptstyle 32}} ~~|~~ \mathsf{f{\scriptstyle 64}} \\
 \mbox{(vector type)} & {\mathit{vectype}} & ::= & \mathsf{v{\scriptstyle 128}} \\
@@ -2920,10 +2918,8 @@ $$
 
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}}
-& {\mathsf{mut}^?} & ::= & {\mathsf{mut}^?} \\
-& {\mathsf{mut}}{{{}_{1}^?}} & ::= & {\mathsf{mut}^?} \\
-& {\mathsf{mut}}{{{}_{2}^?}} & ::= & {\mathsf{mut}^?} \\
-& {\mathsf{final}^?} & ::= & {\mathsf{final}^?} \\
+& \mathsf{mut} & ::= & \mathsf{mut} \\
+& \mathsf{final} & ::= & \mathsf{final} \\
 \mbox{(field type)} & {\mathit{fieldtype}} & ::= & {\mathsf{mut}^?}~{\mathit{storagetype}} \\
 \mbox{(composite type)} & {\mathit{comptype}} & ::= & \mathsf{struct}~{\mathit{list}}({\mathit{fieldtype}}) \\
 & & | & \mathsf{array}~{\mathit{fieldtype}} \\
@@ -3163,8 +3159,8 @@ $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-(\mathsf{ref}~{\mathsf{null}}{{{}_{1}^?}}~{\mathit{ht}}_1) \setminus (\mathsf{ref}~\mathsf{null}~{\mathit{ht}}_2) & = & (\mathsf{ref}~{\mathit{ht}}_1) \\
-(\mathsf{ref}~{\mathsf{null}}{{{}_{1}^?}}~{\mathit{ht}}_1) \setminus (\mathsf{ref}~{\mathit{ht}}_2) & = & (\mathsf{ref}~{\mathsf{null}}{{{}_{1}^?}}~{\mathit{ht}}_1) \\
+(\mathsf{ref}~{{\mathsf{null}}_1^?}~{\mathit{ht}}_1) \setminus (\mathsf{ref}~\mathsf{null}~{\mathit{ht}}_2) & = & (\mathsf{ref}~{\mathit{ht}}_1) \\
+(\mathsf{ref}~{{\mathsf{null}}_1^?}~{\mathit{ht}}_1) \setminus (\mathsf{ref}~{\mathit{ht}}_2) & = & (\mathsf{ref}~{{\mathsf{null}}_1^?}~{\mathit{ht}}_1) \\
 \end{array}
 $$
 
@@ -6582,9 +6578,9 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-{\mathsf{null}}{{{}_{1}^?}} = {\mathsf{null}}{{{}_{2}^?}}
+{{\mathsf{null}}_1^?} = {{\mathsf{null}}_2^?}
 }{
-C \vdash \mathsf{extern{.}convert\_any} : (\mathsf{ref}~{\mathsf{null}}{{{}_{1}^?}}~\mathsf{any}) \rightarrow (\mathsf{ref}~{\mathsf{null}}{{{}_{2}^?}}~\mathsf{extern})
+C \vdash \mathsf{extern{.}convert\_any} : (\mathsf{ref}~{{\mathsf{null}}_1^?}~\mathsf{any}) \rightarrow (\mathsf{ref}~{{\mathsf{null}}_2^?}~\mathsf{extern})
 } \, {[\textsc{\scriptsize T{-}extern.convert\_any}]}
 \qquad
 \end{array}
@@ -6593,9 +6589,9 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-{\mathsf{null}}{{{}_{1}^?}} = {\mathsf{null}}{{{}_{2}^?}}
+{{\mathsf{null}}_1^?} = {{\mathsf{null}}_2^?}
 }{
-C \vdash \mathsf{any{.}convert\_extern} : (\mathsf{ref}~{\mathsf{null}}{{{}_{1}^?}}~\mathsf{extern}) \rightarrow (\mathsf{ref}~{\mathsf{null}}{{{}_{2}^?}}~\mathsf{any})
+C \vdash \mathsf{any{.}convert\_extern} : (\mathsf{ref}~{{\mathsf{null}}_1^?}~\mathsf{extern}) \rightarrow (\mathsf{ref}~{{\mathsf{null}}_2^?}~\mathsf{any})
 } \, {[\textsc{\scriptsize T{-}any.convert\_extern}]}
 \qquad
 \end{array}
@@ -11605,10 +11601,10 @@ $$
 & & | & \mathtt{0xFB}~~21{:}{\mathtt{u32}}~~{\mathit{ht}}{:}{\mathtt{heaptype}} & \quad\Rightarrow\quad{} & \mathsf{ref{.}test}~(\mathsf{ref}~\mathsf{null}~{\mathit{ht}}) \\
 & & | & \mathtt{0xFB}~~22{:}{\mathtt{u32}}~~{\mathit{ht}}{:}{\mathtt{heaptype}} & \quad\Rightarrow\quad{} & \mathsf{ref{.}cast}~(\mathsf{ref}~{\mathit{ht}}) \\
 & & | & \mathtt{0xFB}~~23{:}{\mathtt{u32}}~~{\mathit{ht}}{:}{\mathtt{heaptype}} & \quad\Rightarrow\quad{} & \mathsf{ref{.}cast}~(\mathsf{ref}~\mathsf{null}~{\mathit{ht}}) \\
-& & | & \begin{array}[t]{@{}l@{}} \mathtt{0xFB}~~24{:}{\mathtt{u32}}~~({\mathsf{null}}{{{}_{1}^?}}, {\mathsf{null}}{{{}_{2}^?}}){:}{\mathtt{castop}} \\
-  l{:}{\mathtt{labelidx}}~~{\mathit{ht}}_1{:}{\mathtt{heaptype}}~~{\mathit{ht}}_2{:}{\mathtt{heaptype}} \end{array} & \quad\Rightarrow\quad{} & \mathsf{br\_on\_cast}~l~(\mathsf{ref}~{\mathsf{null}}{{{}_{1}^?}}~{\mathit{ht}}_1)~(\mathsf{ref}~{\mathsf{null}}{{{}_{2}^?}}~{\mathit{ht}}_2) \\
-& & | & \begin{array}[t]{@{}l@{}} \mathtt{0xFB}~~25{:}{\mathtt{u32}}~~({\mathsf{null}}{{{}_{1}^?}}, {\mathsf{null}}{{{}_{2}^?}}){:}{\mathtt{castop}} \\
-  l{:}{\mathtt{labelidx}}~~{\mathit{ht}}_1{:}{\mathtt{heaptype}}~~{\mathit{ht}}_2{:}{\mathtt{heaptype}} \end{array} & \quad\Rightarrow\quad{} & \mathsf{br\_on\_cast\_fail}~l~(\mathsf{ref}~{\mathsf{null}}{{{}_{1}^?}}~{\mathit{ht}}_1)~(\mathsf{ref}~{\mathsf{null}}{{{}_{2}^?}}~{\mathit{ht}}_2) \\
+& & | & \begin{array}[t]{@{}l@{}} \mathtt{0xFB}~~24{:}{\mathtt{u32}}~~({{\mathsf{null}}_1^?}, {{\mathsf{null}}_2^?}){:}{\mathtt{castop}} \\
+  l{:}{\mathtt{labelidx}}~~{\mathit{ht}}_1{:}{\mathtt{heaptype}}~~{\mathit{ht}}_2{:}{\mathtt{heaptype}} \end{array} & \quad\Rightarrow\quad{} & \mathsf{br\_on\_cast}~l~(\mathsf{ref}~{{\mathsf{null}}_1^?}~{\mathit{ht}}_1)~(\mathsf{ref}~{{\mathsf{null}}_2^?}~{\mathit{ht}}_2) \\
+& & | & \begin{array}[t]{@{}l@{}} \mathtt{0xFB}~~25{:}{\mathtt{u32}}~~({{\mathsf{null}}_1^?}, {{\mathsf{null}}_2^?}){:}{\mathtt{castop}} \\
+  l{:}{\mathtt{labelidx}}~~{\mathit{ht}}_1{:}{\mathtt{heaptype}}~~{\mathit{ht}}_2{:}{\mathtt{heaptype}} \end{array} & \quad\Rightarrow\quad{} & \mathsf{br\_on\_cast\_fail}~l~(\mathsf{ref}~{{\mathsf{null}}_1^?}~{\mathit{ht}}_1)~(\mathsf{ref}~{{\mathsf{null}}_2^?}~{\mathit{ht}}_2) \\
 & & | & \mathtt{0xFB}~~26{:}{\mathtt{u32}} & \quad\Rightarrow\quad{} & \mathsf{any{.}convert\_extern} \\
 & & | & \mathtt{0xFB}~~27{:}{\mathtt{u32}} & \quad\Rightarrow\quad{} & \mathsf{extern{.}convert\_any} \\
 & & | & \mathtt{0xFB}~~28{:}{\mathtt{u32}} & \quad\Rightarrow\quad{} & \mathsf{ref{.}i{\scriptstyle 31}} \\
@@ -12585,31 +12581,6 @@ $$
 
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
-& {{\mathtt{typeuse}}}_{I} & ::= & \mbox{‘}\mathtt{(}\mbox{’}~~\mbox{‘}\mathtt{type}\mbox{’}~~x{:}{{\mathtt{typeidx}}}_{I}~~\mbox{‘}\mathtt{)}\mbox{’} & \quad\Rightarrow\quad{} & (x, {I'}) & \quad
-\begin{array}[t]{@{}l@{}}
-\mbox{if}~ I{.}\mathsf{typedefs}{}[x] = \mathsf{sub}~\mathsf{final}~(\mathsf{func}~{t_1^\ast} \rightarrow {t_2^\ast}) \\
-{\land}~ {I'} = \{ \begin{array}[t]{@{}l@{}}
-\mathsf{locals}~{\epsilon^{{|{t_1^\ast}|}}} \}\end{array} \\
-\end{array} \\
-& & | & \mbox{‘}\mathtt{(}\mbox{’}~~\mbox{‘}\mathtt{type}\mbox{’}~~x{:}{{\mathtt{typeidx}}}_{I}~~\mbox{‘}\mathtt{)}\mbox{’}~~{(t_1, {{\mathit{id}}^?})^\ast}{:}{{{\mathtt{param}}}_{I}^\ast}~~{t_2^\ast}{:}{{{\mathtt{result}}}_{I}^\ast} & \quad\Rightarrow\quad{} & (x, {I'}) & \quad
-\begin{array}[t]{@{}l@{}}
-\mbox{if}~ I{.}\mathsf{typedefs}{}[x] = \mathsf{sub}~\mathsf{final}~(\mathsf{func}~{t_1^\ast} \rightarrow {t_2^\ast}) \\
-{\land}~ {I'} = \{ \begin{array}[t]{@{}l@{}}
-\mathsf{locals}~{({{\mathit{id}}^?})^\ast} \}\end{array} \\
-{\land}~ {\vdash}\, {I'} : \mathsf{ok} \\
-\end{array} \\
-& & | & {(t_1, {{\mathit{id}}^?})^\ast}{:}{{{\mathtt{param}}}_{I}^\ast}~~{t_2^\ast}{:}{{{\mathtt{result}}}_{I}^\ast} & \quad\equiv\quad{} & \mbox{‘}\mathtt{(}\mbox{’}~~\mbox{‘}\mathtt{type}\mbox{’}~~x{:}{{\mathtt{typeidx}}}_{I}~~\mbox{‘}\mathtt{)}\mbox{’}~~{{{\mathtt{param}}}_{I}^\ast}~~{{{\mathtt{result}}}_{I}^\ast} & \quad
-\begin{array}[t]{@{}l@{}}
-\mbox{if}~ I{.}\mathsf{typedefs}{}[x] = \mathsf{sub}~\mathsf{final}~(\mathsf{func}~{t_1^\ast} \rightarrow {t_2^\ast}) \\
-{\land}~ (I{.}\mathsf{typedefs}{}[i] \neq \mathsf{sub}~\mathsf{final}~(\mathsf{func}~{t_1^\ast} \rightarrow {t_2^\ast}))^{i<x} \\
-\end{array} \\
-\end{array}
-$$
-
-\vspace{1ex}
-
-$$
-\begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
 & {\mathtt{numtype}} & ::= & \mbox{‘}\mathtt{i32}\mbox{’} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 32}} \\
 & & | & \mbox{‘}\mathtt{i64}\mbox{’} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 64}} \\
 & & | & \mbox{‘}\mathtt{f32}\mbox{’} & \quad\Rightarrow\quad{} & \mathsf{f{\scriptstyle 32}} \\
@@ -12636,21 +12607,20 @@ $$
 & & | & \mbox{‘}\mathtt{noextern}\mbox{’} & \quad\Rightarrow\quad{} & \mathsf{noextern} \\
 & {{\mathtt{heaptype}}}_{I} & ::= & {\mathit{ht}}{:}{\mathtt{absheaptype}} & \quad\Rightarrow\quad{} & {\mathit{ht}} \\
 & & | & x{:}{{\mathtt{typeidx}}}_{I} & \quad\Rightarrow\quad{} & x \\
-& {\mathtt{nul}} & ::= & \epsilon & \quad\Rightarrow\quad{} & \epsilon \\
-& & | & \mbox{‘}\mathtt{null}\mbox{’} & \quad\Rightarrow\quad{} & \mathsf{null} \\
-& {{\mathtt{reftype}}}_{I} & ::= & \mbox{‘}\mathtt{(}\mbox{’}~~\mbox{‘}\mathtt{ref}\mbox{’}~~{\mathsf{null}^?}{:}{\mathtt{nul}}~~{\mathit{ht}}{:}{{\mathtt{heaptype}}}_{I}~~\mbox{‘}\mathtt{)}\mbox{’} & \quad\Rightarrow\quad{} & \mathsf{ref}~{\mathsf{null}^?}~{\mathit{ht}} \\
+& {\mathtt{null}} & ::= & \mbox{‘}\mathtt{null}\mbox{’} & \quad\Rightarrow\quad{} & \mathsf{null} \\
+& {{\mathtt{reftype}}}_{I} & ::= & \mbox{‘}\mathtt{(}\mbox{’}~~\mbox{‘}\mathtt{ref}\mbox{’}~~{\mathsf{null}^?}{:}{{\mathtt{null}}^?}~~{\mathit{ht}}{:}{{\mathtt{heaptype}}}_{I}~~\mbox{‘}\mathtt{)}\mbox{’} & \quad\Rightarrow\quad{} & \mathsf{ref}~{\mathsf{null}^?}~{\mathit{ht}} \\
 & & | & \mbox{‘}\mathtt{anyref}\mbox{’} & \quad\equiv\quad{} & \mbox{‘}\mathtt{(}\mbox{’}~~\mbox{‘}\mathtt{ref}\mbox{’}~~\mbox{‘}\mathtt{null}\mbox{’}~~\mbox{‘}\mathtt{any}\mbox{’}~~\mbox{‘}\mathtt{)}\mbox{’} \\
-& & | & \mbox{‘}\mathtt{eqref}\mbox{’} & \quad\equiv\quad{} & \mbox{‘}\mathtt{(}\mbox{’}~~\mbox{‘}\mathtt{ref}\mbox{’}~~\mbox{‘}\mathtt{null}\mbox{’}~~\mbox{‘}\mathtt{any}\mbox{’}~~\mbox{‘}\mathtt{)}\mbox{’} \\
-& & | & \mbox{‘}\mathtt{i31ref}\mbox{’} & \quad\equiv\quad{} & \mbox{‘}\mathtt{(}\mbox{’}~~\mbox{‘}\mathtt{ref}\mbox{’}~~\mbox{‘}\mathtt{null}\mbox{’}~~\mbox{‘}\mathtt{any}\mbox{’}~~\mbox{‘}\mathtt{)}\mbox{’} \\
-& & | & \mbox{‘}\mathtt{structref}\mbox{’} & \quad\equiv\quad{} & \mbox{‘}\mathtt{(}\mbox{’}~~\mbox{‘}\mathtt{ref}\mbox{’}~~\mbox{‘}\mathtt{null}\mbox{’}~~\mbox{‘}\mathtt{any}\mbox{’}~~\mbox{‘}\mathtt{)}\mbox{’} \\
-& & | & \mbox{‘}\mathtt{arrayref}\mbox{’} & \quad\equiv\quad{} & \mbox{‘}\mathtt{(}\mbox{’}~~\mbox{‘}\mathtt{ref}\mbox{’}~~\mbox{‘}\mathtt{null}\mbox{’}~~\mbox{‘}\mathtt{any}\mbox{’}~~\mbox{‘}\mathtt{)}\mbox{’} \\
-& & | & \mbox{‘}\mathtt{nullref}\mbox{’} & \quad\equiv\quad{} & \mbox{‘}\mathtt{(}\mbox{’}~~\mbox{‘}\mathtt{ref}\mbox{’}~~\mbox{‘}\mathtt{null}\mbox{’}~~\mbox{‘}\mathtt{any}\mbox{’}~~\mbox{‘}\mathtt{)}\mbox{’} \\
-& & | & \mbox{‘}\mathtt{funcref}\mbox{’} & \quad\equiv\quad{} & \mbox{‘}\mathtt{(}\mbox{’}~~\mbox{‘}\mathtt{ref}\mbox{’}~~\mbox{‘}\mathtt{null}\mbox{’}~~\mbox{‘}\mathtt{any}\mbox{’}~~\mbox{‘}\mathtt{)}\mbox{’} \\
-& & | & \mbox{‘}\mathtt{nullfuncref}\mbox{’} & \quad\equiv\quad{} & \mbox{‘}\mathtt{(}\mbox{’}~~\mbox{‘}\mathtt{ref}\mbox{’}~~\mbox{‘}\mathtt{null}\mbox{’}~~\mbox{‘}\mathtt{any}\mbox{’}~~\mbox{‘}\mathtt{)}\mbox{’} \\
-& & | & \mbox{‘}\mathtt{exnref}\mbox{’} & \quad\equiv\quad{} & \mbox{‘}\mathtt{(}\mbox{’}~~\mbox{‘}\mathtt{ref}\mbox{’}~~\mbox{‘}\mathtt{null}\mbox{’}~~\mbox{‘}\mathtt{any}\mbox{’}~~\mbox{‘}\mathtt{)}\mbox{’} \\
-& & | & \mbox{‘}\mathtt{nullexnref}\mbox{’} & \quad\equiv\quad{} & \mbox{‘}\mathtt{(}\mbox{’}~~\mbox{‘}\mathtt{ref}\mbox{’}~~\mbox{‘}\mathtt{null}\mbox{’}~~\mbox{‘}\mathtt{any}\mbox{’}~~\mbox{‘}\mathtt{)}\mbox{’} \\
-& & | & \mbox{‘}\mathtt{externref}\mbox{’} & \quad\equiv\quad{} & \mbox{‘}\mathtt{(}\mbox{’}~~\mbox{‘}\mathtt{ref}\mbox{’}~~\mbox{‘}\mathtt{null}\mbox{’}~~\mbox{‘}\mathtt{any}\mbox{’}~~\mbox{‘}\mathtt{)}\mbox{’} \\
-& & | & \mbox{‘}\mathtt{nullexternref}\mbox{’} & \quad\equiv\quad{} & \mbox{‘}\mathtt{(}\mbox{’}~~\mbox{‘}\mathtt{ref}\mbox{’}~~\mbox{‘}\mathtt{null}\mbox{’}~~\mbox{‘}\mathtt{any}\mbox{’}~~\mbox{‘}\mathtt{)}\mbox{’} \\
+& & | & \mbox{‘}\mathtt{eqref}\mbox{’} & \quad\equiv\quad{} & \mbox{‘}\mathtt{(}\mbox{’}~~\mbox{‘}\mathtt{ref}\mbox{’}~~\mbox{‘}\mathtt{null}\mbox{’}~~\mbox{‘}\mathtt{eq}\mbox{’}~~\mbox{‘}\mathtt{)}\mbox{’} \\
+& & | & \mbox{‘}\mathtt{i31ref}\mbox{’} & \quad\equiv\quad{} & \mbox{‘}\mathtt{(}\mbox{’}~~\mbox{‘}\mathtt{ref}\mbox{’}~~\mbox{‘}\mathtt{null}\mbox{’}~~\mbox{‘}\mathtt{i31}\mbox{’}~~\mbox{‘}\mathtt{)}\mbox{’} \\
+& & | & \mbox{‘}\mathtt{structref}\mbox{’} & \quad\equiv\quad{} & \mbox{‘}\mathtt{(}\mbox{’}~~\mbox{‘}\mathtt{ref}\mbox{’}~~\mbox{‘}\mathtt{null}\mbox{’}~~\mbox{‘}\mathtt{struct}\mbox{’}~~\mbox{‘}\mathtt{)}\mbox{’} \\
+& & | & \mbox{‘}\mathtt{arrayref}\mbox{’} & \quad\equiv\quad{} & \mbox{‘}\mathtt{(}\mbox{’}~~\mbox{‘}\mathtt{ref}\mbox{’}~~\mbox{‘}\mathtt{null}\mbox{’}~~\mbox{‘}\mathtt{array}\mbox{’}~~\mbox{‘}\mathtt{)}\mbox{’} \\
+& & | & \mbox{‘}\mathtt{nullref}\mbox{’} & \quad\equiv\quad{} & \mbox{‘}\mathtt{(}\mbox{’}~~\mbox{‘}\mathtt{ref}\mbox{’}~~\mbox{‘}\mathtt{null}\mbox{’}~~\mbox{‘}\mathtt{none}\mbox{’}~~\mbox{‘}\mathtt{)}\mbox{’} \\
+& & | & \mbox{‘}\mathtt{funcref}\mbox{’} & \quad\equiv\quad{} & \mbox{‘}\mathtt{(}\mbox{’}~~\mbox{‘}\mathtt{ref}\mbox{’}~~\mbox{‘}\mathtt{null}\mbox{’}~~\mbox{‘}\mathtt{func}\mbox{’}~~\mbox{‘}\mathtt{)}\mbox{’} \\
+& & | & \mbox{‘}\mathtt{nullfuncref}\mbox{’} & \quad\equiv\quad{} & \mbox{‘}\mathtt{(}\mbox{’}~~\mbox{‘}\mathtt{ref}\mbox{’}~~\mbox{‘}\mathtt{null}\mbox{’}~~\mbox{‘}\mathtt{nofunc}\mbox{’}~~\mbox{‘}\mathtt{)}\mbox{’} \\
+& & | & \mbox{‘}\mathtt{exnref}\mbox{’} & \quad\equiv\quad{} & \mbox{‘}\mathtt{(}\mbox{’}~~\mbox{‘}\mathtt{ref}\mbox{’}~~\mbox{‘}\mathtt{null}\mbox{’}~~\mbox{‘}\mathtt{exn}\mbox{’}~~\mbox{‘}\mathtt{)}\mbox{’} \\
+& & | & \mbox{‘}\mathtt{nullexnref}\mbox{’} & \quad\equiv\quad{} & \mbox{‘}\mathtt{(}\mbox{’}~~\mbox{‘}\mathtt{ref}\mbox{’}~~\mbox{‘}\mathtt{null}\mbox{’}~~\mbox{‘}\mathtt{noexn}\mbox{’}~~\mbox{‘}\mathtt{)}\mbox{’} \\
+& & | & \mbox{‘}\mathtt{externref}\mbox{’} & \quad\equiv\quad{} & \mbox{‘}\mathtt{(}\mbox{’}~~\mbox{‘}\mathtt{ref}\mbox{’}~~\mbox{‘}\mathtt{null}\mbox{’}~~\mbox{‘}\mathtt{extern}\mbox{’}~~\mbox{‘}\mathtt{)}\mbox{’} \\
+& & | & \mbox{‘}\mathtt{nullexternref}\mbox{’} & \quad\equiv\quad{} & \mbox{‘}\mathtt{(}\mbox{’}~~\mbox{‘}\mathtt{ref}\mbox{’}~~\mbox{‘}\mathtt{null}\mbox{’}~~\mbox{‘}\mathtt{noextern}\mbox{’}~~\mbox{‘}\mathtt{)}\mbox{’} \\
 & {{\mathtt{valtype}}}_{I} & ::= & {\mathit{nt}}{:}{\mathtt{numtype}} & \quad\Rightarrow\quad{} & {\mathit{nt}} \\
 & & | & {\mathit{vt}}{:}{\mathtt{vectype}} & \quad\Rightarrow\quad{} & {\mathit{vt}} \\
 & & | & {\mathit{rt}}{:}{{\mathtt{reftype}}}_{I} & \quad\Rightarrow\quad{} & {\mathit{rt}} \\
@@ -12686,10 +12656,9 @@ $$
 
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
-& {\mathtt{fin}} & ::= & \epsilon & \quad\Rightarrow\quad{} & \epsilon \\
-& & | & \mbox{‘}\mathtt{final}\mbox{’} & \quad\Rightarrow\quad{} & \mathsf{final} \\
-& {{\mathtt{subtype}}}_{I} & ::= & \mbox{‘}\mathtt{(}\mbox{’}~~\mbox{‘}\mathtt{sub}\mbox{’}~~{\mathsf{final}^?}{:}{\mathtt{fin}}~~{x^\ast}{:}{\mathtt{list}}({{\mathtt{typeidx}}}_{I})~~({\mathit{ct}}, {I'}){:}{{\mathtt{comptype}}}_{I}~~\mbox{‘}\mathtt{)}\mbox{’} & \quad\Rightarrow\quad{} & (\mathsf{sub}~{\mathsf{final}^?}~{x^\ast}~{\mathit{ct}}, {I'}) \\
-& & | & {{\mathtt{comptype}}}_{I} & \quad\equiv\quad{} & \mbox{‘}\mathtt{(}\mbox{’}~~\mbox{‘}\mathtt{sub}\mbox{’}~~{{\mathtt{comptype}}}_{I}~~\mbox{‘}\mathtt{)}\mbox{’} \\
+& {\mathtt{final}} & ::= & \mbox{‘}\mathtt{final}\mbox{’} & \quad\Rightarrow\quad{} & \mathsf{final} \\
+& {{\mathtt{subtype}}}_{I} & ::= & \mbox{‘}\mathtt{(}\mbox{’}~~\mbox{‘}\mathtt{sub}\mbox{’}~~{{\mathit{fin}}^?}{:}{{\mathtt{final}}^?}~~{x^\ast}{:}{\mathtt{list}}({{\mathtt{typeidx}}}_{I})~~({\mathit{ct}}, {I'}){:}{{\mathtt{comptype}}}_{I}~~\mbox{‘}\mathtt{)}\mbox{’} & \quad\Rightarrow\quad{} & (\mathsf{sub}~{{\mathit{fin}}^?}~{x^\ast}~{\mathit{ct}}, {I'}) \\
+& & | & {{\mathtt{comptype}}}_{I} & \quad\equiv\quad{} & \mbox{‘}\mathtt{(}\mbox{’}~~\mbox{‘}\mathtt{sub}\mbox{’}~~\mbox{‘}\mathtt{final}\mbox{’}~~{{\mathtt{comptype}}}_{I}~~\mbox{‘}\mathtt{)}\mbox{’} \\
 & {{\mathtt{typedef}}}_{I} & ::= & \mbox{‘}\mathtt{(}\mbox{’}~~\mbox{‘}\mathtt{type}\mbox{’}~~{{\mathit{id}}^?}{:}{{\mathtt{id}}^?}~~({\mathit{st}}, {I'}){:}{{\mathtt{subtype}}}_{I}~~\mbox{‘}\mathtt{)}\mbox{’} & \quad\Rightarrow\quad{} & ({\mathit{st}}, {I'} \oplus \{ \begin{array}[t]{@{}l@{}}
 \mathsf{types}~({{\mathit{id}}^?}) \}\end{array}) \\
 & {{\mathtt{rectype}}}_{I} & ::= & \mbox{‘}\mathtt{(}\mbox{’}~~\mbox{‘}\mathtt{rec}\mbox{’}~~{({\mathit{st}}, {I'})^\ast}{:}{\mathtt{list}}({{\mathtt{typedef}}}_{I})~~\mbox{‘}\mathtt{)}\mbox{’} & \quad\Rightarrow\quad{} & (\mathsf{rec}~{{\mathit{st}}^\ast}, {\mathrm{concat}}_{\mathit{idctxt}}({{I'}^\ast})) \\
@@ -12703,7 +12672,7 @@ $$
 \begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
 & {\mathtt{addrtype}} & ::= & \mbox{‘}\mathtt{i32}\mbox{’} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 32}} \\
 & & | & \mbox{‘}\mathtt{i64}\mbox{’} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 64}} \\
-& & | & \epsilon & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 32}} \\
+& & | & \epsilon & \quad\equiv\quad{} & \mbox{‘}\mathtt{i32}\mbox{’} \\
 \end{array}
 $$
 
@@ -12711,7 +12680,7 @@ $$
 
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
-& {{\mathtt{limits}}}_{N} & ::= & n{:}{\mathtt{u64}} & \quad\Rightarrow\quad{} & {}[ n .. {2^{N}} - 1 ] \\
+& {{\mathtt{limits}}}_{N} & ::= & n{:}{\mathtt{u64}} & \quad\Rightarrow\quad{} & {}[ n .. {2^{N}} ] \\
 & & | & n{:}{\mathtt{u64}}~~m{:}{\mathtt{u64}} & \quad\Rightarrow\quad{} & {}[ n .. m ] \\
 \end{array}
 $$
@@ -12724,9 +12693,7 @@ $$
 & {{\mathtt{globaltype}}}_{I} & ::= & t{:}{{\mathtt{valtype}}}_{I} & \quad\Rightarrow\quad{} & t \\
 & & | & \mbox{‘}\mathtt{(}\mbox{’}~~\mbox{‘}\mathtt{mut}\mbox{’}~~t{:}{{\mathtt{valtype}}}_{I}~~\mbox{‘}\mathtt{)}\mbox{’} & \quad\Rightarrow\quad{} & \mathsf{mut}~t \\
 & {{\mathtt{memtype}}}_{I} & ::= & {\mathit{at}}{:}{\mathtt{addrtype}}~~{\mathit{lim}}{:}{{\mathtt{limits}}}_{{|{\mathit{at}}|} - 16} & \quad\Rightarrow\quad{} & {\mathit{at}}~{\mathit{lim}}~\mathsf{page} \\
-& & | & {{\mathtt{limits}}}_{16} & \quad\equiv\quad{} & \mbox{‘}\mathtt{i32}\mbox{’}~~{{\mathtt{limits}}}_{16} \\
 & {{\mathtt{tabletype}}}_{I} & ::= & {\mathit{at}}{:}{\mathtt{addrtype}}~~{\mathit{lim}}{:}{{\mathtt{limits}}}_{{|{\mathit{at}}|}}~~{\mathit{rt}}{:}{{\mathtt{reftype}}}_{I} & \quad\Rightarrow\quad{} & {\mathit{at}}~{\mathit{lim}}~{\mathit{rt}} \\
-& & | & {{\mathtt{limits}}}_{32}~~{{\mathtt{reftype}}}_{I} & \quad\equiv\quad{} & \mbox{‘}\mathtt{i32}\mbox{’}~~{{\mathtt{limits}}}_{16}~~{{\mathtt{reftype}}}_{I} \\
 \end{array}
 $$
 
@@ -12744,6 +12711,40 @@ $$
 \mathsf{tables}~({{\mathit{id}}^?}) \}\end{array}) \\
 & & | & \mbox{‘}\mathtt{(}\mbox{’}~~\mbox{‘}\mathtt{func}\mbox{’}~~{{\mathit{id}}^?}{:}{{\mathtt{id}}^?}~~(x, {I'}){:}{{\mathtt{typeuse}}}_{I}~~\mbox{‘}\mathtt{)}\mbox{’} & \quad\Rightarrow\quad{} & (\mathsf{func}~x, \{ \begin{array}[t]{@{}l@{}}
 \mathsf{funcs}~({{\mathit{id}}^?}) \}\end{array}) \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
+& {{\mathtt{typeuse}}}_{I} & ::= & \mbox{‘}\mathtt{(}\mbox{’}~~\mbox{‘}\mathtt{type}\mbox{’}~~x{:}{{\mathtt{typeidx}}}_{I}~~\mbox{‘}\mathtt{)}\mbox{’} & \quad\Rightarrow\quad{} & (x, {I'}) &  \\
+&&& \multicolumn{4}{@{}l@{}}{\quad
+\quad
+\begin{array}[t]{@{}l@{}}
+\mbox{if}~ I{.}\mathsf{typedefs}{}[x] = \mathsf{sub}~\mathsf{final}~(\mathsf{func}~{t_1^\ast} \rightarrow {t_2^\ast}) \\
+{\land}~ {I'} = \{ \begin{array}[t]{@{}l@{}}
+\mathsf{locals}~{(\epsilon)^{{|{t_1^\ast}|}}} \}\end{array} \\
+\end{array}
+} \\
+& & | & \mbox{‘}\mathtt{(}\mbox{’}~~\mbox{‘}\mathtt{type}\mbox{’}~~x{:}{{\mathtt{typeidx}}}_{I}~~\mbox{‘}\mathtt{)}\mbox{’}~~{(t_1, {{\mathit{id}}^?})^\ast}{:}{{{\mathtt{param}}}_{I}^\ast}~~{t_2^\ast}{:}{{{\mathtt{result}}}_{I}^\ast} & \quad\Rightarrow\quad{} & (x, {I'}) &  \\
+&&& \multicolumn{4}{@{}l@{}}{\quad
+\quad
+\begin{array}[t]{@{}l@{}}
+\mbox{if}~ I{.}\mathsf{typedefs}{}[x] = \mathsf{sub}~\mathsf{final}~(\mathsf{func}~{t_1^\ast} \rightarrow {t_2^\ast}) \\
+{\land}~ {I'} = \{ \begin{array}[t]{@{}l@{}}
+\mathsf{locals}~{({{\mathit{id}}^?})^\ast} \}\end{array} \\
+{\land}~ {\vdash}\, {I'} : \mathsf{ok} \\
+\end{array}
+} \\
+& & | & {(t_1, {{\mathit{id}}^?})^\ast}{:}{{{\mathtt{param}}}_{I}^\ast}~~{t_2^\ast}{:}{{{\mathtt{result}}}_{I}^\ast} & \quad\equiv\quad{} & \mbox{‘}\mathtt{(}\mbox{’}~~\mbox{‘}\mathtt{type}\mbox{’}~~x{:}{{\mathtt{typeidx}}}_{I}~~\mbox{‘}\mathtt{)}\mbox{’}~~{{{\mathtt{param}}}_{I}^\ast}~~{{{\mathtt{result}}}_{I}^\ast} &  \\
+&&& \multicolumn{4}{@{}l@{}}{\quad
+\quad
+\begin{array}[t]{@{}l@{}}
+\mbox{if}~ I{.}\mathsf{typedefs}{}[x] = \mathsf{sub}~\mathsf{final}~(\mathsf{func}~{t_1^\ast} \rightarrow {t_2^\ast}) \\
+{\land}~ (I{.}\mathsf{typedefs}{}[i] \neq \mathsf{sub}~\mathsf{final}~(\mathsf{func}~{t_1^\ast} \rightarrow {t_2^\ast}))^{i<x} \\
+\end{array}
+} \\
 \end{array}
 $$
 
@@ -13985,7 +13986,7 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C{.}\mathsf{globals}{}[x] = {\mathsf{mut}^?}~t
+C{.}\mathsf{globals}{}[x] = \mathsf{mut}~t
 }{
 C \vdash \mathsf{global{.}get}~x : \epsilon \rightarrow t
 } \, {[\textsc{\scriptsize NotationTypingInstrScheme{-}global.get}]}
@@ -14044,12 +14045,6 @@ $$
 \vspace{1ex}
 
 $$
-\begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
-& {\mathtt{typewriter}} & ::= & \mathtt{0x00} \\
-\end{array}
-$$
-
-$$
 \begin{array}[t]{@{}lrrl@{}l@{}}
 & \ldots & ::= & 0 \\
 \end{array}
@@ -14065,6 +14060,33 @@ $$
 \begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
 & X & ::= & \mathtt{0x00} \\
 & {\mathtt{sym}} & ::= & B_1 ~\Rightarrow~ A_1 ~~|~~ \ldots ~~|~~ B_n ~\Rightarrow~ A_n \\
+& {\mathtt{sym}} & ::= & B_1 ~~|~~ B_2 \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+\vspace{1ex}
+
+$$
+\begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
+& X & ::= & \mathtt{0x00} \\
+& {\mathtt{sym}} & ::= & T_1 ~\Rightarrow~ A_1 ~~|~~ \ldots ~~|~~ T_n ~\Rightarrow~ A_n \\
+& {\mathtt{sym}} & ::= & B_1 ~~|~~ B_2 \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lrrl@{}l@{}}
+& {\mathit{abbreviated}} & ::= & () \\
+& {\mathit{expanded}} & ::= & () \\
+& {\mathit{syntax}} & ::= & () \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
+& {\mathtt{sym}} & ::= & {\mathit{abbreviated}}~~{\mathit{syntax}} & \quad\equiv\quad{} & {\mathit{expanded}}~~{\mathit{syntax}} \\
 \end{array}
 $$
 

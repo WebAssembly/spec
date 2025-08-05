@@ -120,7 +120,7 @@ grammar Binstr/memory : instr = ...
 
 ;; Reference instructions
 
-syntax castop = (nul, nul)
+syntax castop = (null?, null?)
 
 grammar Bcastop : castop =
   | 0x00 => (eps, eps)
@@ -169,10 +169,10 @@ grammar Binstr/cast : instr = ...
   | 0xFB 21:Bu32 ht:Bheaptype => REF.TEST (REF NULL ht)
   | 0xFB 22:Bu32 ht:Bheaptype => REF.CAST (REF ht)
   | 0xFB 23:Bu32 ht:Bheaptype => REF.CAST (REF NULL ht)
-  | 0xFB 24:Bu32 (nul1, nul2):Bcastop
-    l:Blabelidx ht_1:Bheaptype ht_2:Bheaptype => BR_ON_CAST l (REF nul1 ht_1) (REF nul2 ht_2)
-  | 0xFB 25:Bu32 (nul1, nul2):Bcastop
-    l:Blabelidx ht_1:Bheaptype ht_2:Bheaptype => BR_ON_CAST_FAIL l (REF nul1 ht_1) (REF nul2 ht_2)
+  | 0xFB 24:Bu32 (null_1?, null_2?):Bcastop
+    l:Blabelidx ht_1:Bheaptype ht_2:Bheaptype => BR_ON_CAST l (REF null_1? ht_1) (REF null_2? ht_2)
+  | 0xFB 25:Bu32 (null_1?, null_2?):Bcastop
+    l:Blabelidx ht_1:Bheaptype ht_2:Bheaptype => BR_ON_CAST_FAIL l (REF null_1? ht_1) (REF null_2? ht_2)
   | ...
 
 grammar Binstr/extern : instr = ...

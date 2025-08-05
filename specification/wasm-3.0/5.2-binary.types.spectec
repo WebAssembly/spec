@@ -48,7 +48,7 @@ grammar Bresulttype : resulttype =
 
 ;; Type definitions
 
-grammar Bmut : mut =
+grammar Bmut : mut? =
   | 0x00 => eps
   | 0x01 => MUT
 
@@ -61,7 +61,7 @@ grammar Bstoragetype : storagetype =
   | pt:Bpacktype => pt
 
 grammar Bfieldtype : fieldtype =
-  | zt:Bstoragetype mut:Bmut => mut zt
+  | zt:Bstoragetype mut?:Bmut => mut? zt
 
 grammar Bcomptype : comptype =
   | 0x5E ft:Bfieldtype => ARRAY ft
@@ -90,7 +90,7 @@ grammar Btagtype : tagtype =
   | 0x00 x:Btypeidx => _IDX x
 
 grammar Bglobaltype : globaltype =
-  | t:Bvaltype mut:Bmut => mut t
+  | t:Bvaltype mut?:Bmut => mut? t
 
 grammar Bmemtype : memtype =
   | (at,lim):Blimits_($($size(at)/(64 * $Ki))) => at lim PAGE
