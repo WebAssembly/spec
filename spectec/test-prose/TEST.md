@@ -2864,8 +2864,6 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`n_{\mathsf{f}}` be the length of :math:`{{\mathit{func}}^\ast}`.
 
-#. Let :math:`{(\mathsf{start}~{x'})^?}` be :math:`{{\mathit{start}}^?}`.
-
 #. Let :math:`{(\mathsf{data}~{\mathit{expr}}_{\mathsf{d}}~{b^\ast})^\ast}` be :math:`{{\mathit{data}}^\ast}`.
 
 #. Let :math:`{(\mathsf{elem}~{\mathit{expr}}_{\mathsf{e}}~{x^\ast})^\ast}` be :math:`{{\mathit{elem}}^\ast}`.
@@ -2914,9 +2912,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Push the :math:`\mathsf{frame}` F.
 
-#. If :math:`{(\mathsf{call}~{x'})^?}` is defined, then:
+#. If :math:`{{\mathit{start}}^?}` is defined, then:
 
-   a. Let :math:`{\mathit{instr}}_0` be :math:`{(\mathsf{call}~{x'})^?}`.
+   a. Let :math:`(\mathsf{start}~{x'})` be :math:`{{\mathit{start}}^?}`.
+
+   #. Let :math:`{\mathit{instr}}_0` be the administrative instruction :math:`(\mathsf{call}~{x'})`.
 
    #. Execute the instruction :math:`{\mathit{instr}}_0`.
 
@@ -4346,32 +4346,32 @@ instantiate s module externaddr*
 1. Let (MODULE type* import* func* global* table* mem* elem* data* start? export*) be module.
 2. Let (TYPE functype)* be type*.
 3. Let n_F be |func*|.
-4. Let (START x')? be start?.
-5. Let (DATA expr_D b*)* be data*.
-6. Let (ELEM expr_E x*)* be elem*.
-7. Let (GLOBAL globaltype expr_G)* be global*.
-8. Let moduleinst_init be { TYPES: functype*; FUNCS: $funcs(externaddr*) :: (|s.FUNCS| + i_F)^(i_F<n_F); GLOBALS: $globals(externaddr*) }.
-9. Let f_init be { MODULE: moduleinst_init }.
-10. Let z be (s, f_init).
-11. Push the frame (FRAME_ 0 { $frame(z) }) to the stack.
-12. Let [(I32.CONST i_D)]* be $Eval_expr(z, expr_D)*.
-13. Pop the frame (FRAME_ 0 { $frame(z) }) from the stack.
-14. Push the frame (FRAME_ 0 { $frame(z) }) to the stack.
-15. Let [(I32.CONST i_E)]* be $Eval_expr(z, expr_E)*.
-16. Pop the frame (FRAME_ 0 { $frame(z) }) from the stack.
-17. Push the frame (FRAME_ 0 { $frame(z) }) to the stack.
-18. Let [val]* be $Eval_expr(z, expr_G)*.
-19. Pop the frame (FRAME_ 0 { $frame(z) }) from the stack.
-20. Let moduleinst be $allocmodule(s, module, externaddr*, val*).
-21. Let f be { MODULE: moduleinst }.
-22. Perform $initelem(s, moduleinst, i_E*, moduleinst.FUNCS[x]**).
-23. Perform $initdata(s, moduleinst, i_D*, b**).
-24. Push the frame (FRAME_ 0 { f }) to the stack.
-25. If (CALL x')? is defined, then:
-  a. Let ?(instr_0) be (CALL x')?.
-  b. Execute the instruction instr_0.
-26. Pop the frame (FRAME_ 0 { f }) from the stack.
-27. Return f.MODULE.
+4. Let (DATA expr_D b*)* be data*.
+5. Let (ELEM expr_E x*)* be elem*.
+6. Let (GLOBAL globaltype expr_G)* be global*.
+7. Let moduleinst_init be { TYPES: functype*; FUNCS: $funcs(externaddr*) :: (|s.FUNCS| + i_F)^(i_F<n_F); GLOBALS: $globals(externaddr*) }.
+8. Let f_init be { MODULE: moduleinst_init }.
+9. Let z be (s, f_init).
+10. Push the frame (FRAME_ 0 { $frame(z) }) to the stack.
+11. Let [(I32.CONST i_D)]* be $Eval_expr(z, expr_D)*.
+12. Pop the frame (FRAME_ 0 { $frame(z) }) from the stack.
+13. Push the frame (FRAME_ 0 { $frame(z) }) to the stack.
+14. Let [(I32.CONST i_E)]* be $Eval_expr(z, expr_E)*.
+15. Pop the frame (FRAME_ 0 { $frame(z) }) from the stack.
+16. Push the frame (FRAME_ 0 { $frame(z) }) to the stack.
+17. Let [val]* be $Eval_expr(z, expr_G)*.
+18. Pop the frame (FRAME_ 0 { $frame(z) }) from the stack.
+19. Let moduleinst be $allocmodule(s, module, externaddr*, val*).
+20. Let f be { MODULE: moduleinst }.
+21. Perform $initelem(s, moduleinst, i_E*, moduleinst.FUNCS[x]**).
+22. Perform $initdata(s, moduleinst, i_D*, b**).
+23. Push the frame (FRAME_ 0 { f }) to the stack.
+24. If start? is defined, then:
+  a. Let ?((START x')) be start?.
+  b. Let instr_0 be (CALL x').
+  c. Execute the instruction instr_0.
+25. Pop the frame (FRAME_ 0 { f }) from the stack.
+26. Return f.MODULE.
 
 invoke s fa val^n
 1. Let f be { MODULE: {} }.
@@ -10290,8 +10290,6 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`n_{\mathsf{f}}` be the length of :math:`{{\mathit{func}}^\ast}`.
 
-#. Let :math:`{(\mathsf{start}~x)^?}` be :math:`{{\mathit{start}}^?}`.
-
 #. Let :math:`{(\mathsf{global}~{\mathit{globaltype}}~{\mathit{expr}}_{\mathsf{g}})^\ast}` be :math:`{{\mathit{global}}^\ast}`.
 
 #. Let :math:`{(\mathsf{elem}~{\mathit{reftype}}~{{\mathit{expr}}_{\mathsf{e}}^\ast}~{\mathit{elemmode}})^\ast}` be :math:`{{\mathit{elem}}^\ast}`.
@@ -10334,9 +10332,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Execute the sequence :math:`{{\mathit{instr}}_{\mathsf{d}}^\ast}`.
 
-#. If :math:`{(\mathsf{call}~x)^?}` is defined, then:
+#. If :math:`{{\mathit{start}}^?}` is defined, then:
 
-   a. Let :math:`{\mathit{instr}}_0` be :math:`{(\mathsf{call}~x)^?}`.
+   a. Let :math:`(\mathsf{start}~x)` be :math:`{{\mathit{start}}^?}`.
+
+   #. Let :math:`{\mathit{instr}}_0` be the administrative instruction :math:`(\mathsf{call}~x)`.
 
    #. Execute the instruction :math:`{\mathit{instr}}_0`.
 
@@ -13251,30 +13251,30 @@ instantiate s module externaddr*
 3. Let n_D be |data*|.
 4. Let n_E be |elem*|.
 5. Let n_F be |func*|.
-6. Let (START x)? be start?.
-7. Let (GLOBAL globaltype expr_G)* be global*.
-8. Let (ELEM reftype expr_E* elemmode)* be elem*.
-9. Let instr_D* be $concat_(`instr, $rundata(data*[j], j)^(j<n_D)).
-10. Let instr_E* be $concat_(`instr, $runelem(elem*[i], i)^(i<n_E)).
-11. Let moduleinst_init be { TYPES: functype*; FUNCS: $funcs(externaddr*) :: (|s.FUNCS| + i_F)^(i_F<n_F); GLOBALS: $globals(externaddr*) }.
-12. Let f_init be { MODULE: moduleinst_init }.
-13. Let z be (s, f_init).
-14. Push the frame (FRAME_ 0 { $frame(z) }) to the stack.
-15. Let [val]* be $Eval_expr(z, expr_G)*.
-16. Pop the frame (FRAME_ 0 { $frame(z) }) from the stack.
-17. Push the frame (FRAME_ 0 { $frame(z) }) to the stack.
-18. Let [ref]** be $Eval_expr(z, expr_E)**.
-19. Pop the frame (FRAME_ 0 { $frame(z) }) from the stack.
-20. Let moduleinst be $allocmodule(s, module, externaddr*, val*, ref**).
-21. Let f be { MODULE: moduleinst }.
-22. Push the frame (FRAME_ 0 { f }) to the stack.
-23. Execute the sequence instr_E*.
-24. Execute the sequence instr_D*.
-25. If (CALL x)? is defined, then:
-  a. Let ?(instr_0) be (CALL x)?.
-  b. Execute the instruction instr_0.
-26. Pop the frame (FRAME_ 0 { f }) from the stack.
-27. Return f.MODULE.
+6. Let (GLOBAL globaltype expr_G)* be global*.
+7. Let (ELEM reftype expr_E* elemmode)* be elem*.
+8. Let instr_D* be $concat_(`instr, $rundata(data*[j], j)^(j<n_D)).
+9. Let instr_E* be $concat_(`instr, $runelem(elem*[i], i)^(i<n_E)).
+10. Let moduleinst_init be { TYPES: functype*; FUNCS: $funcs(externaddr*) :: (|s.FUNCS| + i_F)^(i_F<n_F); GLOBALS: $globals(externaddr*) }.
+11. Let f_init be { MODULE: moduleinst_init }.
+12. Let z be (s, f_init).
+13. Push the frame (FRAME_ 0 { $frame(z) }) to the stack.
+14. Let [val]* be $Eval_expr(z, expr_G)*.
+15. Pop the frame (FRAME_ 0 { $frame(z) }) from the stack.
+16. Push the frame (FRAME_ 0 { $frame(z) }) to the stack.
+17. Let [ref]** be $Eval_expr(z, expr_E)**.
+18. Pop the frame (FRAME_ 0 { $frame(z) }) from the stack.
+19. Let moduleinst be $allocmodule(s, module, externaddr*, val*, ref**).
+20. Let f be { MODULE: moduleinst }.
+21. Push the frame (FRAME_ 0 { f }) to the stack.
+22. Execute the sequence instr_E*.
+23. Execute the sequence instr_D*.
+24. If start? is defined, then:
+  a. Let ?((START x)) be start?.
+  b. Let instr_0 be (CALL x).
+  c. Execute the instruction instr_0.
+25. Pop the frame (FRAME_ 0 { f }) from the stack.
+26. Return f.MODULE.
 
 invoke s fa val^n
 1. Let f be { MODULE: {} }.
@@ -25760,8 +25760,6 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{{\mathit{instr}}_{\mathsf{e}}^\ast}` be the :ref:`concatenation <notation-concat>` of :math:`{{{\mathrm{runelem}}}_{i_{\mathsf{e}}}({{\mathit{elem}}^\ast}{}[i_{\mathsf{e}}])^{i_{\mathsf{e}}<{|{{\mathit{elem}}^\ast}|}}}`.
 
-#. Let :math:`{(\mathsf{start}~x)^?}` be :math:`{{\mathit{start}}^?}`.
-
 #. Let :math:`{\mathit{moduleinst}}_0` be the module instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{{\mathrm{alloctype}}^\ast}}{({{\mathit{type}}^\ast})},\; \mathsf{globals}~{\mathrm{globals}}({{\mathit{externaddr}}^\ast}),\; \mathsf{funcs}~{\mathrm{funcs}}({{\mathit{externaddr}}^\ast})~{({|s{.}\mathsf{funcs}|} + i_{\mathsf{f}})^{i_{\mathsf{f}}<{|{{\mathit{func}}^\ast}|}}} \}\end{array}`.
 
 #. Let :math:`{(\mathsf{table}~{\mathit{tabletype}}~{\mathit{expr}}_{\mathsf{t}})^\ast}` be :math:`{{\mathit{table}}^\ast}`.
@@ -25769,8 +25767,6 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Let :math:`{(\mathsf{global}~{\mathit{globaltype}}~{\mathit{expr}}_{\mathsf{g}})^\ast}` be :math:`{{\mathit{global}}^\ast}`.
 
 #. Let :math:`{(\mathsf{elem}~{\mathit{reftype}}~{{\mathit{expr}}_{\mathsf{e}}^\ast}~{\mathit{elemmode}})^\ast}` be :math:`{{\mathit{elem}}^\ast}`.
-
-#. Let :math:`{{\mathit{instr}}_{\mathsf{s}}^?}` be :math:`{(\mathsf{call}~x)^?}`.
 
 #. Let :math:`z` be the state :math:`(s, \{ \begin{array}[t]{@{}l@{}}\mathsf{module}~{\mathit{moduleinst}}_0 \}\end{array})`.
 
@@ -25808,11 +25804,13 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Execute the sequence :math:`{{\mathit{instr}}_{\mathsf{d}}^\ast}`.
 
-#. If :math:`{{\mathit{instr}}_{\mathsf{s}}^?}` is defined, then:
+#. If :math:`{{\mathit{start}}^?}` is defined, then:
 
-   a. Let :math:`{\mathit{instr}}_0` be :math:`{{\mathit{instr}}_{\mathsf{s}}^?}`.
+   a. Let :math:`(\mathsf{start}~x)` be :math:`{{\mathit{start}}^?}`.
 
-   #. Execute the instruction :math:`{\mathit{instr}}_0`.
+   #. Let :math:`{\mathit{instr}}_{\mathsf{s}}` be the instruction :math:`(\mathsf{call}~x)`.
+
+   #. Execute the instruction :math:`{\mathit{instr}}_{\mathsf{s}}`.
 
 #. Pop the :math:`\mathsf{frame}` F from the stack.
 
@@ -32112,31 +32110,30 @@ instantiate s module externaddr*
   a. Fail.
 4. Let instr_D* be $concat_(`instr, $rundata_(i_D, data*[i_D])^(i_D<|data*|)).
 5. Let instr_E* be $concat_(`instr, $runelem_(i_E, elem*[i_E])^(i_E<|elem*|)).
-6. Let (START x)? be start?.
-7. Let moduleinst_0 be { TYPES: $alloctypes(type*); GLOBALS: $globalsxa(externaddr*); FUNCS: $funcsxa(externaddr*) :: (|s.FUNCS| + i_F)^(i_F<|func*|) }.
-8. Let (TABLE tabletype expr_T)* be table*.
-9. Let (GLOBAL globaltype expr_G)* be global*.
-10. Let (ELEM reftype expr_E* elemmode)* be elem*.
-11. Let instr_S? be (CALL x)?.
-12. Let z be (s, { MODULE: moduleinst_0 }).
-13. Push the frame (FRAME_ 0 { $frame(z) }) to the stack.
-14. Let val_G* be $evalglobals(z, globaltype*, expr_G*).
-15. Pop the frame (FRAME_ 0 { f }) from the stack.
-16. Push the frame (FRAME_ 0 { f }) to the stack.
-17. Let [ref_T]* be $Eval_expr(z, expr_T)*.
-18. Pop the frame (FRAME_ 0 { f }) from the stack.
-19. Push the frame (FRAME_ 0 { f }) to the stack.
-20. Let [ref_E]** be $Eval_expr(z, expr_E)**.
-21. Pop the frame (FRAME_ 0 { f }) from the stack.
-22. Let moduleinst be $allocmodule(s, module, externaddr*, val_G*, ref_T*, ref_E**).
-23. Push the frame (FRAME_ 0 { { MODULE: moduleinst } }) to the stack.
-24. Execute the sequence instr_E*.
-25. Execute the sequence instr_D*.
-26. If instr_S? is defined, then:
-  a. Let ?(instr_0) be instr_S?.
-  b. Execute the instruction instr_0.
-27. Pop the frame (FRAME_ 0 { { MODULE: moduleinst } }) from the stack.
-28. Return { MODULE: moduleinst }.MODULE.
+6. Let moduleinst_0 be { TYPES: $alloctypes(type*); GLOBALS: $globalsxa(externaddr*); FUNCS: $funcsxa(externaddr*) :: (|s.FUNCS| + i_F)^(i_F<|func*|) }.
+7. Let (TABLE tabletype expr_T)* be table*.
+8. Let (GLOBAL globaltype expr_G)* be global*.
+9. Let (ELEM reftype expr_E* elemmode)* be elem*.
+10. Let z be (s, { MODULE: moduleinst_0 }).
+11. Push the frame (FRAME_ 0 { $frame(z) }) to the stack.
+12. Let val_G* be $evalglobals(z, globaltype*, expr_G*).
+13. Pop the frame (FRAME_ 0 { f }) from the stack.
+14. Push the frame (FRAME_ 0 { f }) to the stack.
+15. Let [ref_T]* be $Eval_expr(z, expr_T)*.
+16. Pop the frame (FRAME_ 0 { f }) from the stack.
+17. Push the frame (FRAME_ 0 { f }) to the stack.
+18. Let [ref_E]** be $Eval_expr(z, expr_E)**.
+19. Pop the frame (FRAME_ 0 { f }) from the stack.
+20. Let moduleinst be $allocmodule(s, module, externaddr*, val_G*, ref_T*, ref_E**).
+21. Push the frame (FRAME_ 0 { { MODULE: moduleinst } }) to the stack.
+22. Execute the sequence instr_E*.
+23. Execute the sequence instr_D*.
+24. If start? is defined, then:
+  a. Let ?((START x)) be start?.
+  b. Let instr_S be (CALL x).
+  c. Execute the instruction instr_S.
+25. Pop the frame (FRAME_ 0 { { MODULE: moduleinst } }) from the stack.
+26. Return { MODULE: moduleinst }.MODULE.
 
 invoke s funcaddr val*
 1. Assert: Due to validation, $Expand(s.FUNCS[funcaddr].TYPE) is some FUNC.

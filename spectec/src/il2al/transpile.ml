@@ -676,6 +676,58 @@ let infer_case_assert instrs =
   in
   rewrite_il instrs
 
+let split x il =
+  let contains_x i = Free.IdSet.mem x (Free.free_instr i) in
+  let rec aux acc il =
+    match il with
+    | [] -> None
+    | hd :: tl ->
+      match hd.it with
+      | IfI (
+        {it = IsDefinedE {it = IterE (_, (Opt, [x', _])); _}; _},
+        {it = LetI ({it = OptE Some lhs; _}, {it = IterE (rhs, (Opt, [x'', _])); _}); _} :: rest,
+        []
+      ) when x = x' && x = x'' ->
+        if List.exists contains_x tl then
+          None
+        else
+          let if_info = (hd, lhs, rhs, rest) in
+          Some (acc, if_info, tl)
+      | _ when contains_x hd -> None
+      | _ -> aux (acc @ [hd]) tl
+  in
+  aux [] il
+
+(* Merge `x? = y?` and `if x is defined then ...` *)
+let rec merge_isdefined instrs =
+  List.fold_right (fun i acc ->
+    match i.it with
+    | IfI (c, il1, il2) ->
+      let it = IfI (c, merge_isdefined il1, merge_isdefined il2) in
+      {i with it} :: acc
+    | OtherwiseI il ->
+      let it = OtherwiseI (merge_isdefined il) in
+      {i with it} :: acc
+    | EitherI (il1, il2) ->
+      let it = EitherI (merge_isdefined il1, merge_isdefined il2) in
+      {i with it} :: acc
+    | LetI (({it = IterE (e1', (Opt, [x1, _])); _}) as e1, ({it = IterE (_, (Opt, [_, _])); _} as e2)) ->
+      (match split x1 acc with
+      | Some (prefix, (hd, lhs, rhs, rest), suffix) ->
+        let i' = {i with it = LetI ({e1 with it = OptE (Some e1')}, e2)} in
+        let hd' = {hd with it = LetI (lhs, rhs)} in
+        let i'' = {hd with it = IfI (
+          isDefinedE e2 ~note:boolT,
+          i' :: hd' :: rest,
+          []
+        )}
+        in
+        prefix @ i'' :: suffix
+      | None -> i :: acc
+      )
+    | _ -> i :: acc
+  ) instrs []
+
 (* Remove case check for a single case type *)
 let remove_trivial_case_check instr =
   let get_typ_cases typ =
@@ -770,6 +822,7 @@ let rec enhance_readability instrs =
     |> List.concat_map remove_unnecessary_branch
     |> remove_nop []
     |> infer_case_assert
+    |> merge_isdefined
     |> List.concat_map (walker.walk_instr walker)
   in
 
