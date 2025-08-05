@@ -29,7 +29,7 @@ Prose Notation
 Execution is specified by stylised, step-wise rules for each :ref:`instruction <syntax-instr>` of the :ref:`abstract syntax <syntax>`.
 The following conventions are adopted in stating these rules.
 
-* The execution rules implicitly assume a given :ref:`store <store>` :math:`S`.
+* The execution rules implicitly assume a given :ref:`store <store>` ${store: s}`.
 
 * The execution rules also assume the presence of an implicit :ref:`stack <stack>`
   that is modified by *pushing* or *popping*

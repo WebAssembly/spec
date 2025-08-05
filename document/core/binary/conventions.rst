@@ -48,17 +48,17 @@ In order to distinguish symbols of the binary syntax from symbols of the abstrac
 * ${grammar-case: $(B)^n} is a sequence of ${:n>=0} iterations of ${:B}.
 
 * ${grammar-case: $(B)*} is a possibly empty sequence of iterations of ${:B}.
-  (This is a shorthand for ${:B^n} used where ${:n} is not relevant.)
+  (This is a shorthand for ${grammar-case: $(B)^n} used where ${:n} is not relevant.)
 
 * ${grammar-case: $(B)?} is an optional occurrence of ${:B}.
-  (This is a shorthand for ${:B^n} where ${:n<=1}.)
+  (This is a shorthand for ${grammar-case: $(B)^n} where ${:n<=1}.)
 
 * ${grammar-case: x:$(B)} denotes the same language as the nonterminal ${:B}, but also binds the variable ${:x} to the attribute synthesized for ${:B}.
   A pattern may also be used instead of a variable, e.g., ${grammar-case: 7:$(B)}.
 
 * Productions are written ${grammar: Bsym}, where each ${:A_i} is the attribute that is synthesized for ${grammar-case: Bsym} in the given case, usually from attribute variables bound in ${:B_i}.
 
-* Large productions may be split into multiple definitions, indicated by ending the first one with explicit ellipses, :math:`\B{sym} ::= B_1 \Rightarrow A_1 ~|~ \dots`, and starting continuations with ellipses, :math:`\B{sym} ::= \dots ~|~ B_2 \Rightarrow A_2`.
+* Large productions may be split into multiple definitions, indicated by ending the first one with explicit ellipses, ${grammar: Bsymsplit/1}, and starting continuations with ellipses, ${grammar: Bsymsplit/2}.
 
 * Some productions are augmented by side conditions in parentheses, which restrict the applicability of the production. They provide a shorthand for a combinatorial expansion of the production into many separate cases.
 
@@ -78,10 +78,13 @@ In order to distinguish symbols of the binary syntax from symbols of the abstrac
 
    $${grammar: Blimits_}
 
-   That is, a limits pair is encoded as either the byte ${:0x00} followed by the encoding of a ${:u32} value,
+   That is, a limits pair is encoded as either the byte ${:0x00} followed by the encoding of a ${:u64} value,
    or the byte ${grammar-case: 0x01} followed by two such encodings. 
-   The variables ${:n} and ${:m} name the attributes of the respective ${grammar-case: Bu32} nonterminals, which in this case are the actual :ref:`unsigned integers <syntax-uint>` those decode into.
+   The variables ${:n} and ${:m} name the attributes of the respective ${grammar-case: Bu64} nonterminals, which in this case are the actual :ref:`unsigned integers <syntax-uint>` those decode into.
    The attribute of the complete production then is the abstract syntax for the limit, expressed in terms of the former values.
+
+   The variable ${:N} is a *parameter* to the grammer symbol that can be instantiated differently at each use site.
+   In this example, it controls the value range of the limits.
 
 
 .. _binary-notation:
