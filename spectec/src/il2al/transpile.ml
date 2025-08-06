@@ -484,6 +484,10 @@ let remove_dead_assignment il =
         | EnterI (e1, e2, il) ->
           let il', bounds = remove_dead_assignment' il ([], bounds) in
           enterI (e1, e2, il') ~at:at :: acc, bounds @ free_expr e1 @ free_expr e2
+        | ForEachI (xes, il) ->
+          let il', bounds = remove_dead_assignment' il ([], bounds) in
+          let _, es = List.split xes in
+          forEachI (xes, il') ~at:at :: acc, bounds @ free_list free_expr es
         (* n in, Let val'* ++ val^n be val*. should be bound, not binding *)
         | LetI ({ it = CatE (e11, e12) ; _ }, e2) ->
           let bindings = free_expr e11 @ free_expr e12 in
@@ -504,6 +508,12 @@ let remove_dead_assignment il =
             acc, bounds
           else
             (instr :: acc), (IdSet.diff bounds bindings) @ free_expr e2
+        | AppendI ({it = (VarE _ | IterE _); _} as e1, e2) ->
+          let bindings = free_expr e1 in
+          if IdSet.(is_empty (inter bindings bounds)) then
+            acc, bounds
+          else
+            (instr :: acc), (IdSet.diff bounds bindings) @ free_expr e1 @ free_expr e2
         | AssertI _ when acc = [] -> acc, bounds
         | _ ->
           instr :: acc, bounds @ free_instr instr)
@@ -548,6 +558,10 @@ let remove_trivial_assignment il =
           acc, [ifI (e, il1', il2') ~at:at]
         | LetI ({it = VarE x1; _}, {it = VarE x2; _}) ->
             (x1, x2) :: acc, []
+        | LetI (
+          {it = IterE ({it = VarE x1; _}, (_, [_, {it = VarE x1'; _}])); _},
+          {it = IterE ({it = VarE x2; _}, (_, [_, {it = VarE x2'; _}])); _}) ->
+            (x1, x2) :: (x1', x2') :: acc, []
         | _ ->
           acc, [instr]
       ) binds il

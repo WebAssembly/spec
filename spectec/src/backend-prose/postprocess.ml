@@ -476,9 +476,60 @@ let handle_allocxs def =
   | _ -> def
 
 
+let infer_foreach def =
+  match def with
+  | AlgoD algo ->
+    let walk_instr walker i =
+      match i.it with
+      | LetI (e1, e2) ->
+        (match e1.it, e2.it with
+        | IterE (lhs, (List, bound_xes)), IterE (rhs, (List, xes)) ->
+
+          let open Al.Al_util in
+
+          let inits = List.map (fun (_x, e) ->
+            letI (e, listE [] ~note:e.note)
+          ) bound_xes in
+
+          let appends = List.map (fun (x, e) ->
+            let note = match e.note.it with | Il.Ast.IterT (t, _) -> t | _ -> e.note in
+            appendI (e, varE x ~note)
+          ) bound_xes in
+
+          inits @
+          [
+            forEachI (xes,
+              letI (lhs, rhs) ::
+              appends
+            )
+          ]
+        | _ -> [i]
+        )
+      | _ -> Al.Walk.base_walker.walk_instr walker i
+    in
+    let walker = {Al.Walk.base_walker with walk_instr} in
+    let algo' = walker.walk_algo walker algo in
+    AlgoD algo'
+  | _ -> def
+
+
+let remove_dead_assignment def =
+  let f = Il2al.Transpile.remove_dead_assignment in
+  match def with
+  | AlgoD algo ->
+    let it =
+      match algo.it with
+      | RuleA (atom, anchor, al, il) -> RuleA (atom, anchor, al, f il)
+      | FuncA (id, al, il) -> FuncA (id, al, f il)
+    in
+    AlgoD {algo with it}
+  | _ -> def
+
+
 let postprocess_prose defs =
   List.map (fun def ->
     def
+    (* handle valid prose *)
     |> unify_either
     |> remove_simple_binding
     |> rename_param
@@ -486,5 +537,8 @@ let postprocess_prose defs =
     |> restructure_forall
     |> remove_dead_binding
     |> prioritize_length_check
+    (* handle exec prose *)
     |> handle_allocxs
+    |> infer_foreach |> infer_foreach
+    |> remove_dead_assignment
   ) defs

@@ -1352,7 +1352,13 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`(\mathsf{func}~x~{{\mathit{local}}_0^\ast}~{{\mathit{instr}}^\ast})` be the destructuring of :math:`{\mathit{func}}`.
 
-#. Let :math:`{(\mathsf{local}~t)^\ast}` be :math:`{{\mathit{local}}_0^\ast}`.
+#. Let :math:`{t^\ast}` be the number type sequence :math:`\epsilon`.
+
+#. For each :math:`{\mathit{local}}_0` in :math:`{{\mathit{local}}_0^\ast}`, do:
+
+   a. Let :math:`(\mathsf{local}~t)` be the destructuring of :math:`{\mathit{local}}_0`.
+
+   #. Append :math:`t` to :math:`{t^\ast}`.
 
 #. Assert: Due to validation, there are at least :math:`k` values on the top of the stack.
 
@@ -2763,7 +2769,13 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{(\mathsf{global}~{\mathit{globaltype}}~{\mathit{expr}}_1)^{n_{\mathit{global}}}}` be :math:`{{\mathit{global}}_1^\ast}`.
 
-#. Let :math:`{(\mathsf{type}~{\mathit{ft}})^\ast}` be :math:`{{\mathit{type}}_0^\ast}`.
+#. Let :math:`{{\mathit{ft}}^\ast}` be the function type sequence :math:`\epsilon`.
+
+#. For each :math:`{\mathit{type}}_0` in :math:`{{\mathit{type}}_0^\ast}`, do:
+
+   a. Let :math:`(\mathsf{type}~{\mathit{ft}})` be the destructuring of :math:`{\mathit{type}}_0`.
+
+   #. Append :math:`{\mathit{ft}}` to :math:`{{\mathit{ft}}^\ast}`.
 
 #. Let :math:`{{\mathit{fa}}_{\mathit{ex}}^\ast}` be :math:`{\mathrm{funcs}}({{\mathit{externaddr}}^\ast})`.
 
@@ -2781,7 +2793,13 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{{\mathit{ma}}^\ast}` be :math:`{|s{.}\mathsf{mems}|} + i_{\mathit{mem}}` for all :math:`i_{\mathit{mem}}` from :math:`0` to :math:`n_{\mathit{mem}} - 1`.
 
-#. Let :math:`{{\mathit{xi}}^\ast}` be :math:`{{\mathrm{instexport}}({{\mathit{fa}}_{\mathit{ex}}^\ast}~{{\mathit{fa}}^\ast}, {{\mathit{ga}}_{\mathit{ex}}^\ast}~{{\mathit{ga}}^\ast}, {{\mathit{ta}}_{\mathit{ex}}^\ast}~{{\mathit{ta}}^\ast}, {{\mathit{ma}}_{\mathit{ex}}^\ast}~{{\mathit{ma}}^\ast}, {\mathit{export}})^\ast}`.
+#. Let :math:`{{\mathit{xi}}^\ast}` be the export instance sequence :math:`\epsilon`.
+
+#. For each :math:`{\mathit{export}}` in :math:`{{\mathit{export}}^\ast}`, do:
+
+   a. Let :math:`{\mathit{xi}}` be the export instance :math:`{\mathrm{instexport}}({{\mathit{fa}}_{\mathit{ex}}^\ast}~{{\mathit{fa}}^\ast}, {{\mathit{ga}}_{\mathit{ex}}^\ast}~{{\mathit{ga}}^\ast}, {{\mathit{ta}}_{\mathit{ex}}^\ast}~{{\mathit{ta}}^\ast}, {{\mathit{ma}}_{\mathit{ex}}^\ast}~{{\mathit{ma}}^\ast}, {\mathit{export}})`.
+
+   #. Append :math:`{\mathit{xi}}` to :math:`{{\mathit{xi}}^\ast}`.
 
 #. Let :math:`{\mathit{moduleinst}}` be the module instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{ft}}^\ast},\; \mathsf{funcs}~{{\mathit{fa}}_{\mathit{ex}}^\ast}~{{\mathit{fa}}^\ast},\; \mathsf{globals}~{{\mathit{ga}}_{\mathit{ex}}^\ast}~{{\mathit{ga}}^\ast},\; \mathsf{tables}~{{\mathit{ta}}_{\mathit{ex}}^\ast}~{{\mathit{ta}}^\ast},\; \mathsf{mems}~{{\mathit{ma}}_{\mathit{ex}}^\ast}~{{\mathit{ma}}^\ast},\; \mathsf{exports}~{{\mathit{xi}}^\ast} \}\end{array}`.
 
@@ -2860,15 +2878,47 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` be the destructuring of :math:`{\mathit{module}}`.
 
-#. Let :math:`{(\mathsf{type}~{\mathit{functype}})^\ast}` be :math:`{{\mathit{type}}^\ast}`.
+#. Let :math:`{{\mathit{functype}}^\ast}` be the function type sequence :math:`\epsilon`.
+
+#. For each :math:`{\mathit{type}}` in :math:`{{\mathit{type}}^\ast}`, do:
+
+   a. Let :math:`(\mathsf{type}~{\mathit{functype}})` be the destructuring of :math:`{\mathit{type}}`.
+
+   #. Append :math:`{\mathit{functype}}` to :math:`{{\mathit{functype}}^\ast}`.
 
 #. Let :math:`n_{\mathsf{f}}` be the length of :math:`{{\mathit{func}}^\ast}`.
 
-#. Let :math:`{(\mathsf{data}~{\mathit{expr}}_{\mathsf{d}}~{b^\ast})^\ast}` be :math:`{{\mathit{data}}^\ast}`.
+#. Let :math:`{{b^\ast}^\ast}` be the byte sequence sequence :math:`\epsilon`.
 
-#. Let :math:`{(\mathsf{elem}~{\mathit{expr}}_{\mathsf{e}}~{x^\ast})^\ast}` be :math:`{{\mathit{elem}}^\ast}`.
+#. Let :math:`{{\mathit{expr}}_{\mathsf{d}}^\ast}` be the expression sequence :math:`\epsilon`.
 
-#. Let :math:`{(\mathsf{global}~{\mathit{globaltype}}~{\mathit{expr}}_{\mathsf{g}})^\ast}` be :math:`{{\mathit{global}}^\ast}`.
+#. For each :math:`{\mathit{data}}` in :math:`{{\mathit{data}}^\ast}`, do:
+
+   a. Let :math:`(\mathsf{data}~{\mathit{expr}}_{\mathsf{d}}~{b^\ast})` be the destructuring of :math:`{\mathit{data}}`.
+
+   #. Append :math:`{b^\ast}` to :math:`{{b^\ast}^\ast}`.
+
+   #. Append :math:`{\mathit{expr}}_{\mathsf{d}}` to :math:`{{\mathit{expr}}_{\mathsf{d}}^\ast}`.
+
+#. Let :math:`{{\mathit{expr}}_{\mathsf{e}}^\ast}` be the expression sequence :math:`\epsilon`.
+
+#. Let :math:`{{x^\ast}^\ast}` be the function index sequence sequence :math:`\epsilon`.
+
+#. For each :math:`{\mathit{elem}}` in :math:`{{\mathit{elem}}^\ast}`, do:
+
+   a. Let :math:`(\mathsf{elem}~{\mathit{expr}}_{\mathsf{e}}~{x^\ast})` be the destructuring of :math:`{\mathit{elem}}`.
+
+   #. Append :math:`{\mathit{expr}}_{\mathsf{e}}` to :math:`{{\mathit{expr}}_{\mathsf{e}}^\ast}`.
+
+   #. Append :math:`{x^\ast}` to :math:`{{x^\ast}^\ast}`.
+
+#. Let :math:`{{\mathit{expr}}_{\mathsf{g}}^\ast}` be the expression sequence :math:`\epsilon`.
+
+#. For each :math:`{\mathit{global}}` in :math:`{{\mathit{global}}^\ast}`, do:
+
+   a. Let :math:`(\mathsf{global}~{\mathit{globaltype}}~{\mathit{expr}}_{\mathsf{g}})` be the destructuring of :math:`{\mathit{global}}`.
+
+   #. Append :math:`{\mathit{expr}}_{\mathsf{g}}` to :math:`{{\mathit{expr}}_{\mathsf{g}}^\ast}`.
 
 #. Let :math:`{\mathit{moduleinst}}_{\mathit{init}}` be the module instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{functype}}^\ast},\; \mathsf{funcs}~{\mathrm{funcs}}({{\mathit{externaddr}}^\ast})~{({|s{.}\mathsf{funcs}|} + i_{\mathsf{f}})^{i_{\mathsf{f}}<n_{\mathsf{f}}}},\; \mathsf{globals}~{\mathrm{globals}}({{\mathit{externaddr}}^\ast}) \}\end{array}`.
 
@@ -2880,7 +2930,13 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Push the :math:`\mathsf{frame}` F.
 
-#. Let :math:`{(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_{\mathsf{d}})^\ast}` be the result of :ref:`evaluating <exec-expr>` :math:`{{\mathit{expr}}_{\mathsf{d}}^\ast}` with state :math:`z`.
+#. Let :math:`{i_{\mathsf{d}}^\ast}` be :math:`\epsilon`.
+
+#. For each :math:`{\mathit{expr}}_{\mathsf{d}}` in :math:`{{\mathit{expr}}_{\mathsf{d}}^\ast}`, do:
+
+   a. Let :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_{\mathsf{d}})` be the result of :ref:`evaluating <exec-expr>` :math:`{\mathit{expr}}_{\mathsf{d}}` with state :math:`z`.
+
+   #. Append :math:`i_{\mathsf{d}}` to :math:`{i_{\mathsf{d}}^\ast}`.
 
 #. Pop the :math:`\mathsf{frame}` F from the stack.
 
@@ -2888,7 +2944,13 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Push the :math:`\mathsf{frame}` F.
 
-#. Let :math:`{(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_{\mathsf{e}})^\ast}` be the result of :ref:`evaluating <exec-expr>` :math:`{{\mathit{expr}}_{\mathsf{e}}^\ast}` with state :math:`z`.
+#. Let :math:`{i_{\mathsf{e}}^\ast}` be :math:`\epsilon`.
+
+#. For each :math:`{\mathit{expr}}_{\mathsf{e}}` in :math:`{{\mathit{expr}}_{\mathsf{e}}^\ast}`, do:
+
+   a. Let :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_{\mathsf{e}})` be the result of :ref:`evaluating <exec-expr>` :math:`{\mathit{expr}}_{\mathsf{e}}` with state :math:`z`.
+
+   #. Append :math:`i_{\mathsf{e}}` to :math:`{i_{\mathsf{e}}^\ast}`.
 
 #. Pop the :math:`\mathsf{frame}` F from the stack.
 
@@ -2896,7 +2958,13 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Push the :math:`\mathsf{frame}` F.
 
-#. Let :math:`{{\mathit{val}}^\ast}` be the result of :ref:`evaluating <exec-expr>` :math:`{{\mathit{expr}}_{\mathsf{g}}^\ast}` with state :math:`z`.
+#. Let :math:`{{\mathit{val}}^\ast}` be the value sequence :math:`\epsilon`.
+
+#. For each :math:`{\mathit{expr}}_{\mathsf{g}}` in :math:`{{\mathit{expr}}_{\mathsf{g}}^\ast}`, do:
+
+   a. Let :math:`{\mathit{val}}` be the result of :ref:`evaluating <exec-expr>` :math:`{\mathit{expr}}_{\mathsf{g}}` with state :math:`z`.
+
+   #. Append :math:`{\mathit{val}}` to :math:`{{\mathit{val}}^\ast}`.
 
 #. Pop the :math:`\mathsf{frame}` F from the stack.
 
@@ -3638,12 +3706,15 @@ Step_read/call_addr a
 2. Assert: Due to validation, (a < |$funcinst(z)|).
 3. Let { TYPE: t_1^k -> t_2^n; MODULE: mm; CODE: func } be $funcinst(z)[a].
 4. Let (FUNC x local_0* instr*) be func.
-5. Let (LOCAL t)* be local_0*.
-6. Assert: Due to validation, there are at least k values on the top of the stack.
-7. Pop the values val^k from the stack.
-8. Let f be { LOCALS: val^k :: $default_(t)*; MODULE: mm }.
-9. Push the frame (FRAME_ n { f }) to the stack.
-10. Enter instr* with label (LABEL_ n { [] }).
+5. Let t* be [].
+6. For each local_0 in local_0*, do:
+  a. Let (LOCAL t) be local_0.
+  b. Append t to the t*.
+7. Assert: Due to validation, there are at least k values on the top of the stack.
+8. Pop the values val^k from the stack.
+9. Let f be { LOCALS: val^k :: $default_(t)*; MODULE: mm }.
+10. Push the frame (FRAME_ n { f }) to the stack.
+11. Enter instr* with label (LABEL_ n { [] }).
 
 Step_read/local.get x
 1. Let z be the current state.
@@ -4297,26 +4368,32 @@ allocmodule s module externaddr* val*
 2. Let (MEMORY memtype)^n_mem be mem_3*.
 3. Let (TABLE tabletype)^n_table be table_2*.
 4. Let (GLOBAL globaltype expr_1)^n_global be global_1*.
-5. Let (TYPE ft)* be type_0*.
-6. Let fa_ex* be $funcs(externaddr*).
-7. Let ga_ex* be $globals(externaddr*).
-8. Let ma_ex* be $mems(externaddr*).
-9. Let ta_ex* be $tables(externaddr*).
-10. Let fa* be (|s.FUNCS| + i_func)^(i_func<n_func).
-11. Let ga* be (|s.GLOBALS| + i_global)^(i_global<n_global).
-12. Let ta* be (|s.TABLES| + i_table)^(i_table<n_table).
-13. Let ma* be (|s.MEMS| + i_mem)^(i_mem<n_mem).
-14. Let xi* be $instexport(fa_ex* :: fa*, ga_ex* :: ga*, ta_ex* :: ta*, ma_ex* :: ma*, export)*.
-15. Let moduleinst be { TYPES: ft*; FUNCS: fa_ex* :: fa*; GLOBALS: ga_ex* :: ga*; TABLES: ta_ex* :: ta*; MEMS: ma_ex* :: ma*; EXPORTS: xi* }.
-16. Let funcaddr_0* be $allocfuncs(s, moduleinst, func^n_func).
-17. Assert: Due to validation, (funcaddr_0* = fa*).
-18. Let globaladdr_0* be $allocglobals(s, globaltype^n_global, val*).
-19. Assert: Due to validation, (globaladdr_0* = ga*).
-20. Let tableaddr_0* be $alloctables(s, tabletype^n_table).
-21. Assert: Due to validation, (tableaddr_0* = ta*).
-22. Let memaddr_0* be $allocmems(s, memtype^n_mem).
-23. Assert: Due to validation, (memaddr_0* = ma*).
-24. Return moduleinst.
+5. Let ft* be [].
+6. For each type_0 in type_0*, do:
+  a. Let (TYPE ft) be type_0.
+  b. Append ft to the ft*.
+7. Let fa_ex* be $funcs(externaddr*).
+8. Let ga_ex* be $globals(externaddr*).
+9. Let ma_ex* be $mems(externaddr*).
+10. Let ta_ex* be $tables(externaddr*).
+11. Let fa* be (|s.FUNCS| + i_func)^(i_func<n_func).
+12. Let ga* be (|s.GLOBALS| + i_global)^(i_global<n_global).
+13. Let ta* be (|s.TABLES| + i_table)^(i_table<n_table).
+14. Let ma* be (|s.MEMS| + i_mem)^(i_mem<n_mem).
+15. Let xi* be [].
+16. For each export in export*, do:
+  a. Let xi be $instexport(fa_ex* :: fa*, ga_ex* :: ga*, ta_ex* :: ta*, ma_ex* :: ma*, export).
+  b. Append xi to the xi*.
+17. Let moduleinst be { TYPES: ft*; FUNCS: fa_ex* :: fa*; GLOBALS: ga_ex* :: ga*; TABLES: ta_ex* :: ta*; MEMS: ma_ex* :: ma*; EXPORTS: xi* }.
+18. Let funcaddr_0* be $allocfuncs(s, moduleinst, func^n_func).
+19. Assert: Due to validation, (funcaddr_0* = fa*).
+20. Let globaladdr_0* be $allocglobals(s, globaltype^n_global, val*).
+21. Assert: Due to validation, (globaladdr_0* = ga*).
+22. Let tableaddr_0* be $alloctables(s, tabletype^n_table).
+23. Assert: Due to validation, (tableaddr_0* = ta*).
+24. Let memaddr_0* be $allocmems(s, memtype^n_mem).
+25. Assert: Due to validation, (memaddr_0* = ma*).
+26. Return moduleinst.
 
 initelem s moduleinst u32* funcaddr*
 1. If (funcaddr* = []), then:
@@ -4344,34 +4421,59 @@ initdata s moduleinst u32* byte*
 
 instantiate s module externaddr*
 1. Let (MODULE type* import* func* global* table* mem* elem* data* start? export*) be module.
-2. Let (TYPE functype)* be type*.
-3. Let n_F be |func*|.
-4. Let (DATA expr_D b*)* be data*.
-5. Let (ELEM expr_E x*)* be elem*.
-6. Let (GLOBAL globaltype expr_G)* be global*.
-7. Let moduleinst_init be { TYPES: functype*; FUNCS: $funcs(externaddr*) :: (|s.FUNCS| + i_F)^(i_F<n_F); GLOBALS: $globals(externaddr*) }.
-8. Let f_init be { MODULE: moduleinst_init }.
-9. Let z be (s, f_init).
-10. Push the frame (FRAME_ 0 { $frame(z) }) to the stack.
-11. Let [(I32.CONST i_D)]* be $Eval_expr(z, expr_D)*.
-12. Pop the frame (FRAME_ 0 { $frame(z) }) from the stack.
-13. Push the frame (FRAME_ 0 { $frame(z) }) to the stack.
-14. Let [(I32.CONST i_E)]* be $Eval_expr(z, expr_E)*.
-15. Pop the frame (FRAME_ 0 { $frame(z) }) from the stack.
+2. Let functype* be [].
+3. For each type in type*, do:
+  a. Let (TYPE functype) be type.
+  b. Append functype to the functype*.
+4. Let n_F be |func*|.
+5. Let b** be [].
+6. Let expr_D* be [].
+7. For each data in data*, do:
+  a. Let (DATA expr_D b*) be data.
+  b. Append b* to the b**.
+  c. Append expr_D to the expr_D*.
+8. Let expr_E* be [].
+9. Let x** be [].
+10. For each elem in elem*, do:
+  a. Let (ELEM expr_E x*) be elem.
+  b. Append expr_E to the expr_E*.
+  c. Append x* to the x**.
+11. Let expr_G* be [].
+12. For each global in global*, do:
+  a. Let (GLOBAL globaltype expr_G) be global.
+  b. Append expr_G to the expr_G*.
+13. Let moduleinst_init be { TYPES: functype*; FUNCS: $funcs(externaddr*) :: (|s.FUNCS| + i_F)^(i_F<n_F); GLOBALS: $globals(externaddr*) }.
+14. Let f_init be { MODULE: moduleinst_init }.
+15. Let z be (s, f_init).
 16. Push the frame (FRAME_ 0 { $frame(z) }) to the stack.
-17. Let [val]* be $Eval_expr(z, expr_G)*.
-18. Pop the frame (FRAME_ 0 { $frame(z) }) from the stack.
-19. Let moduleinst be $allocmodule(s, module, externaddr*, val*).
-20. Let f be { MODULE: moduleinst }.
-21. Perform $initelem(s, moduleinst, i_E*, moduleinst.FUNCS[x]**).
-22. Perform $initdata(s, moduleinst, i_D*, b**).
-23. Push the frame (FRAME_ 0 { f }) to the stack.
-24. If start? is defined, then:
+17. Let i_D* be [].
+18. For each expr_D in expr_D*, do:
+  a. Let [(I32.CONST i_D)] be $Eval_expr(z, expr_D).
+  b. Append i_D to the i_D*.
+19. Pop the frame (FRAME_ 0 { $frame(z) }) from the stack.
+20. Push the frame (FRAME_ 0 { $frame(z) }) to the stack.
+21. Let i_E* be [].
+22. For each expr_E in expr_E*, do:
+  a. Let [(I32.CONST i_E)] be $Eval_expr(z, expr_E).
+  b. Append i_E to the i_E*.
+23. Pop the frame (FRAME_ 0 { $frame(z) }) from the stack.
+24. Push the frame (FRAME_ 0 { $frame(z) }) to the stack.
+25. Let val* be [].
+26. For each expr_G in expr_G*, do:
+  a. Let [val] be $Eval_expr(z, expr_G).
+  b. Append val to the val*.
+27. Pop the frame (FRAME_ 0 { $frame(z) }) from the stack.
+28. Let moduleinst be $allocmodule(s, module, externaddr*, val*).
+29. Let f be { MODULE: moduleinst }.
+30. Perform $initelem(s, moduleinst, i_E*, moduleinst.FUNCS[x]**).
+31. Perform $initdata(s, moduleinst, i_D*, b**).
+32. Push the frame (FRAME_ 0 { f }) to the stack.
+33. If start? is defined, then:
   a. Let ?((START x')) be start?.
   b. Let instr_0 be (CALL x').
   c. Execute the instruction instr_0.
-25. Pop the frame (FRAME_ 0 { f }) from the stack.
-26. Return f.MODULE.
+34. Pop the frame (FRAME_ 0 { f }) from the stack.
+35. Return f.MODULE.
 
 invoke s fa val^n
 1. Let f be { MODULE: {} }.
@@ -6725,9 +6827,21 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{{\mathit{ci}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{N_1}}(c_2)`.
 
-#. Let :math:`{{\mathit{cj}}_1^\ast}` be :math:`{{{{{\mathrm{narrow}}}_{{|{{\mathsf{i}}{n}}_1|}, {|{{\mathsf{i}}{n}}_2|}}^{{\mathit{sx}}}}}{{\mathit{ci}}_1}^\ast}`.
+#. Let :math:`{{\mathit{cj}}_1^\ast}` be :math:`\epsilon`.
 
-#. Let :math:`{{\mathit{cj}}_2^\ast}` be :math:`{{{{{\mathrm{narrow}}}_{{|{{\mathsf{i}}{n}}_1|}, {|{{\mathsf{i}}{n}}_2|}}^{{\mathit{sx}}}}}{{\mathit{ci}}_2}^\ast}`.
+#. For each :math:`{\mathit{ci}}_1` in :math:`{{\mathit{ci}}_1^\ast}`, do:
+
+   a. Let :math:`{\mathit{cj}}_1` be :math:`{{{{\mathrm{narrow}}}_{{|{{\mathsf{i}}{n}}_1|}, {|{{\mathsf{i}}{n}}_2|}}^{{\mathit{sx}}}}}{{\mathit{ci}}_1}`.
+
+   #. Append :math:`{\mathit{cj}}_1` to :math:`{{\mathit{cj}}_1^\ast}`.
+
+#. Let :math:`{{\mathit{cj}}_2^\ast}` be :math:`\epsilon`.
+
+#. For each :math:`{\mathit{ci}}_2` in :math:`{{\mathit{ci}}_2^\ast}`, do:
+
+   a. Let :math:`{\mathit{cj}}_2` be :math:`{{{{\mathrm{narrow}}}_{{|{{\mathsf{i}}{n}}_1|}, {|{{\mathsf{i}}{n}}_2|}}^{{\mathit{sx}}}}}{{\mathit{ci}}_2}`.
+
+   #. Append :math:`{\mathit{cj}}_2` to :math:`{{\mathit{cj}}_2^\ast}`.
 
 #. Let :math:`c` be :math:`{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{N_2}}({{\mathit{cj}}_1^\ast}~{{\mathit{cj}}_2^\ast})`.
 
@@ -6884,7 +6998,13 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`(\mathsf{func}~x~{{\mathit{local}}_0^\ast}~{{\mathit{instr}}^\ast})` be the destructuring of :math:`{\mathit{func}}`.
 
-#. Let :math:`{(\mathsf{local}~t)^\ast}` be :math:`{{\mathit{local}}_0^\ast}`.
+#. Let :math:`{t^\ast}` be the value type sequence :math:`\epsilon`.
+
+#. For each :math:`{\mathit{local}}_0` in :math:`{{\mathit{local}}_0^\ast}`, do:
+
+   a. Let :math:`(\mathsf{local}~t)` be the destructuring of :math:`{\mathit{local}}_0`.
+
+   #. Append :math:`t` to :math:`{t^\ast}`.
 
 #. Assert: Due to validation, there are at least :math:`k` values on the top of the stack.
 
@@ -8953,7 +9073,13 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{fabs}}}_{N}({\mathit{lane}}_1)^\ast}`.
 
-   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
+   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`\epsilon`.
+
+   #. For each :math:`{{\mathit{lane}}^\ast}` in :math:`{{{\mathit{lane}}^\ast}^\ast}`, do:
+
+      1) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})`.
+
+      #) Append :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` to :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
    #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
@@ -8963,7 +9089,13 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{fneg}}}_{N}({\mathit{lane}}_1)^\ast}`.
 
-   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
+   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`\epsilon`.
+
+   #. For each :math:`{{\mathit{lane}}^\ast}` in :math:`{{{\mathit{lane}}^\ast}^\ast}`, do:
+
+      1) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})`.
+
+      #) Append :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` to :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
    #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
@@ -8973,7 +9105,13 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{fsqrt}}}_{N}({\mathit{lane}}_1)^\ast}`.
 
-   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
+   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`\epsilon`.
+
+   #. For each :math:`{{\mathit{lane}}^\ast}` in :math:`{{{\mathit{lane}}^\ast}^\ast}`, do:
+
+      1) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})`.
+
+      #) Append :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` to :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
    #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
@@ -8983,7 +9121,13 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{fceil}}}_{N}({\mathit{lane}}_1)^\ast}`.
 
-   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
+   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`\epsilon`.
+
+   #. For each :math:`{{\mathit{lane}}^\ast}` in :math:`{{{\mathit{lane}}^\ast}^\ast}`, do:
+
+      1) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})`.
+
+      #) Append :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` to :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
    #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
@@ -8993,7 +9137,13 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{ffloor}}}_{N}({\mathit{lane}}_1)^\ast}`.
 
-   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
+   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`\epsilon`.
+
+   #. For each :math:`{{\mathit{lane}}^\ast}` in :math:`{{{\mathit{lane}}^\ast}^\ast}`, do:
+
+      1) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})`.
+
+      #) Append :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` to :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
    #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
@@ -9003,7 +9153,13 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{ftrunc}}}_{N}({\mathit{lane}}_1)^\ast}`.
 
-   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
+   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`\epsilon`.
+
+   #. For each :math:`{{\mathit{lane}}^\ast}` in :math:`{{{\mathit{lane}}^\ast}^\ast}`, do:
+
+      1) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})`.
+
+      #) Append :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` to :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
    #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
@@ -9013,7 +9169,13 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{fnearest}}}_{N}({\mathit{lane}}_1)^\ast}`.
 
-#. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
+#. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`\epsilon`.
+
+#. For each :math:`{{\mathit{lane}}^\ast}` in :math:`{{{\mathit{lane}}^\ast}^\ast}`, do:
+
+   a. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})`.
+
+   #. Append :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` to :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
 #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
@@ -9132,7 +9294,13 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{fadd}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast}`.
 
-   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
+   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`\epsilon`.
+
+   #. For each :math:`{{\mathit{lane}}^\ast}` in :math:`{{{\mathit{lane}}^\ast}^\ast}`, do:
+
+      1) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})`.
+
+      #) Append :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` to :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
    #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
@@ -9144,7 +9312,13 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{fsub}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast}`.
 
-   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
+   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`\epsilon`.
+
+   #. For each :math:`{{\mathit{lane}}^\ast}` in :math:`{{{\mathit{lane}}^\ast}^\ast}`, do:
+
+      1) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})`.
+
+      #) Append :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` to :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
    #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
@@ -9156,7 +9330,13 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{fmul}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast}`.
 
-   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
+   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`\epsilon`.
+
+   #. For each :math:`{{\mathit{lane}}^\ast}` in :math:`{{{\mathit{lane}}^\ast}^\ast}`, do:
+
+      1) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})`.
+
+      #) Append :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` to :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
    #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
@@ -9168,7 +9348,13 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{fdiv}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast}`.
 
-   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
+   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`\epsilon`.
+
+   #. For each :math:`{{\mathit{lane}}^\ast}` in :math:`{{{\mathit{lane}}^\ast}^\ast}`, do:
+
+      1) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})`.
+
+      #) Append :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` to :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
    #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
@@ -9180,7 +9366,13 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{fmin}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast}`.
 
-   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
+   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`\epsilon`.
+
+   #. For each :math:`{{\mathit{lane}}^\ast}` in :math:`{{{\mathit{lane}}^\ast}^\ast}`, do:
+
+      1) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})`.
+
+      #) Append :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` to :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
    #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
@@ -9192,7 +9384,13 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{fmax}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast}`.
 
-   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
+   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`\epsilon`.
+
+   #. For each :math:`{{\mathit{lane}}^\ast}` in :math:`{{{\mathit{lane}}^\ast}^\ast}`, do:
+
+      1) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})`.
+
+      #) Append :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` to :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
    #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
@@ -9204,7 +9402,13 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{fpmin}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast}`.
 
-   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
+   #. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`\epsilon`.
+
+   #. For each :math:`{{\mathit{lane}}^\ast}` in :math:`{{{\mathit{lane}}^\ast}^\ast}`, do:
+
+      1) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})`.
+
+      #) Append :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` to :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
    #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
@@ -9216,7 +9420,13 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{{{\mathit{lane}}^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{fpmax}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast}`.
 
-#. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`{{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})^\ast}`.
+#. Let :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}` be :math:`\epsilon`.
+
+#. For each :math:`{{\mathit{lane}}^\ast}` in :math:`{{{\mathit{lane}}^\ast}^\ast}`, do:
+
+   a. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}^\ast})`.
+
+   #. Append :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` to :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
 #. Return :math:`{{\mathit{v{\kern-0.1em\scriptstyle 128}}}^\ast}`.
 
@@ -9233,7 +9443,13 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       #) Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
-      #) Let :math:`{{\mathit{lane}}_3^\ast}` be :math:`{{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{\mathrm{ieq}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2))}^\ast}`.
+      #) Let :math:`{{\mathit{lane}}_3^\ast}` be :math:`\epsilon`.
+
+      #) For each :math:`{\mathit{lane}}_1` in :math:`{{\mathit{lane}}_1^\ast}` and :math:`{\mathit{lane}}_2` in :math:`{{\mathit{lane}}_2^\ast}`, do:
+
+         a) Let :math:`{\mathit{lane}}_3` be :math:`{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{\mathrm{ieq}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2))}`.
+
+         #) Append :math:`{\mathit{lane}}_3` to :math:`{{\mathit{lane}}_3^\ast}`.
 
       #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}_3^\ast})`.
 
@@ -9245,7 +9461,13 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       #) Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
-      #) Let :math:`{{\mathit{lane}}_3^\ast}` be :math:`{{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{\mathrm{ine}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2))}^\ast}`.
+      #) Let :math:`{{\mathit{lane}}_3^\ast}` be :math:`\epsilon`.
+
+      #) For each :math:`{\mathit{lane}}_1` in :math:`{{\mathit{lane}}_1^\ast}` and :math:`{\mathit{lane}}_2` in :math:`{{\mathit{lane}}_2^\ast}`, do:
+
+         a) Let :math:`{\mathit{lane}}_3` be :math:`{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{\mathrm{ine}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2))}`.
+
+         #) Append :math:`{\mathit{lane}}_3` to :math:`{{\mathit{lane}}_3^\ast}`.
 
       #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}_3^\ast})`.
 
@@ -9259,7 +9481,13 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       #) Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
-      #) Let :math:`{{\mathit{lane}}_3^\ast}` be :math:`{{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{{{\mathrm{ilt}}}_{N}^{{\mathit{sx}}}}}{({\mathit{lane}}_1, {\mathit{lane}}_2)})}^\ast}`.
+      #) Let :math:`{{\mathit{lane}}_3^\ast}` be :math:`\epsilon`.
+
+      #) For each :math:`{\mathit{lane}}_1` in :math:`{{\mathit{lane}}_1^\ast}` and :math:`{\mathit{lane}}_2` in :math:`{{\mathit{lane}}_2^\ast}`, do:
+
+         a) Let :math:`{\mathit{lane}}_3` be :math:`{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{{{\mathrm{ilt}}}_{N}^{{\mathit{sx}}}}}{({\mathit{lane}}_1, {\mathit{lane}}_2)})}`.
+
+         #) Append :math:`{\mathit{lane}}_3` to :math:`{{\mathit{lane}}_3^\ast}`.
 
       #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}_3^\ast})`.
 
@@ -9273,7 +9501,13 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       #) Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
-      #) Let :math:`{{\mathit{lane}}_3^\ast}` be :math:`{{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{{{\mathrm{igt}}}_{N}^{{\mathit{sx}}}}}{({\mathit{lane}}_1, {\mathit{lane}}_2)})}^\ast}`.
+      #) Let :math:`{{\mathit{lane}}_3^\ast}` be :math:`\epsilon`.
+
+      #) For each :math:`{\mathit{lane}}_1` in :math:`{{\mathit{lane}}_1^\ast}` and :math:`{\mathit{lane}}_2` in :math:`{{\mathit{lane}}_2^\ast}`, do:
+
+         a) Let :math:`{\mathit{lane}}_3` be :math:`{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{{{\mathrm{igt}}}_{N}^{{\mathit{sx}}}}}{({\mathit{lane}}_1, {\mathit{lane}}_2)})}`.
+
+         #) Append :math:`{\mathit{lane}}_3` to :math:`{{\mathit{lane}}_3^\ast}`.
 
       #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}_3^\ast})`.
 
@@ -9287,7 +9521,13 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       #) Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
-      #) Let :math:`{{\mathit{lane}}_3^\ast}` be :math:`{{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{{{\mathrm{ile}}}_{N}^{{\mathit{sx}}}}}{({\mathit{lane}}_1, {\mathit{lane}}_2)})}^\ast}`.
+      #) Let :math:`{{\mathit{lane}}_3^\ast}` be :math:`\epsilon`.
+
+      #) For each :math:`{\mathit{lane}}_1` in :math:`{{\mathit{lane}}_1^\ast}` and :math:`{\mathit{lane}}_2` in :math:`{{\mathit{lane}}_2^\ast}`, do:
+
+         a) Let :math:`{\mathit{lane}}_3` be :math:`{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{{{\mathrm{ile}}}_{N}^{{\mathit{sx}}}}}{({\mathit{lane}}_1, {\mathit{lane}}_2)})}`.
+
+         #) Append :math:`{\mathit{lane}}_3` to :math:`{{\mathit{lane}}_3^\ast}`.
 
       #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}_3^\ast})`.
 
@@ -9301,7 +9541,13 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       #) Let :math:`{{\mathit{lane}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)`.
 
-      #) Let :math:`{{\mathit{lane}}_3^\ast}` be :math:`{{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{{{\mathrm{ige}}}_{N}^{{\mathit{sx}}}}}{({\mathit{lane}}_1, {\mathit{lane}}_2)})}^\ast}`.
+      #) Let :math:`{{\mathit{lane}}_3^\ast}` be :math:`\epsilon`.
+
+      #) For each :math:`{\mathit{lane}}_1` in :math:`{{\mathit{lane}}_1^\ast}` and :math:`{\mathit{lane}}_2` in :math:`{{\mathit{lane}}_2^\ast}`, do:
+
+         a) Let :math:`{\mathit{lane}}_3` be :math:`{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{{{\mathrm{ige}}}_{N}^{{\mathit{sx}}}}}{({\mathit{lane}}_1, {\mathit{lane}}_2)})}`.
+
+         #) Append :math:`{\mathit{lane}}_3` to :math:`{{\mathit{lane}}_3^\ast}`.
 
       #) Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({{\mathit{lane}}_3^\ast})`.
 
@@ -9317,7 +9563,13 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Let :math:`{\mathsf{i}}{n}` be the result for which :math:`{|{\mathsf{i}}{n}|}` :math:`=` :math:`{|{\mathit{lanetype}}|}`.
 
-   #. Let :math:`{{\mathit{lane}}_3^\ast}` be :math:`{{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{\mathrm{feq}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2))}^\ast}`.
+   #. Let :math:`{{\mathit{lane}}_3^\ast}` be :math:`\epsilon`.
+
+   #. For each :math:`{\mathit{lane}}_1` in :math:`{{\mathit{lane}}_1^\ast}` and :math:`{\mathit{lane}}_2` in :math:`{{\mathit{lane}}_2^\ast}`, do:
+
+      1) Let :math:`{\mathit{lane}}_3` be :math:`{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{\mathrm{feq}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2))}`.
+
+      #) Append :math:`{\mathit{lane}}_3` to :math:`{{\mathit{lane}}_3^\ast}`.
 
    #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}_3^\ast})`.
 
@@ -9331,7 +9583,13 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Let :math:`{\mathsf{i}}{n}` be the result for which :math:`{|{\mathsf{i}}{n}|}` :math:`=` :math:`{|{\mathit{lanetype}}|}`.
 
-   #. Let :math:`{{\mathit{lane}}_3^\ast}` be :math:`{{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{\mathrm{fne}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2))}^\ast}`.
+   #. Let :math:`{{\mathit{lane}}_3^\ast}` be :math:`\epsilon`.
+
+   #. For each :math:`{\mathit{lane}}_1` in :math:`{{\mathit{lane}}_1^\ast}` and :math:`{\mathit{lane}}_2` in :math:`{{\mathit{lane}}_2^\ast}`, do:
+
+      1) Let :math:`{\mathit{lane}}_3` be :math:`{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{\mathrm{fne}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2))}`.
+
+      #) Append :math:`{\mathit{lane}}_3` to :math:`{{\mathit{lane}}_3^\ast}`.
 
    #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}_3^\ast})`.
 
@@ -9345,7 +9603,13 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Let :math:`{\mathsf{i}}{n}` be the result for which :math:`{|{\mathsf{i}}{n}|}` :math:`=` :math:`{|{\mathit{lanetype}}|}`.
 
-   #. Let :math:`{{\mathit{lane}}_3^\ast}` be :math:`{{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{\mathrm{flt}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2))}^\ast}`.
+   #. Let :math:`{{\mathit{lane}}_3^\ast}` be :math:`\epsilon`.
+
+   #. For each :math:`{\mathit{lane}}_1` in :math:`{{\mathit{lane}}_1^\ast}` and :math:`{\mathit{lane}}_2` in :math:`{{\mathit{lane}}_2^\ast}`, do:
+
+      1) Let :math:`{\mathit{lane}}_3` be :math:`{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{\mathrm{flt}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2))}`.
+
+      #) Append :math:`{\mathit{lane}}_3` to :math:`{{\mathit{lane}}_3^\ast}`.
 
    #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}_3^\ast})`.
 
@@ -9359,7 +9623,13 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Let :math:`{\mathsf{i}}{n}` be the result for which :math:`{|{\mathsf{i}}{n}|}` :math:`=` :math:`{|{\mathit{lanetype}}|}`.
 
-   #. Let :math:`{{\mathit{lane}}_3^\ast}` be :math:`{{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{\mathrm{fgt}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2))}^\ast}`.
+   #. Let :math:`{{\mathit{lane}}_3^\ast}` be :math:`\epsilon`.
+
+   #. For each :math:`{\mathit{lane}}_1` in :math:`{{\mathit{lane}}_1^\ast}` and :math:`{\mathit{lane}}_2` in :math:`{{\mathit{lane}}_2^\ast}`, do:
+
+      1) Let :math:`{\mathit{lane}}_3` be :math:`{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{\mathrm{fgt}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2))}`.
+
+      #) Append :math:`{\mathit{lane}}_3` to :math:`{{\mathit{lane}}_3^\ast}`.
 
    #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}_3^\ast})`.
 
@@ -9373,7 +9643,13 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Let :math:`{\mathsf{i}}{n}` be the result for which :math:`{|{\mathsf{i}}{n}|}` :math:`=` :math:`{|{\mathit{lanetype}}|}`.
 
-   #. Let :math:`{{\mathit{lane}}_3^\ast}` be :math:`{{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{\mathrm{fle}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2))}^\ast}`.
+   #. Let :math:`{{\mathit{lane}}_3^\ast}` be :math:`\epsilon`.
+
+   #. For each :math:`{\mathit{lane}}_1` in :math:`{{\mathit{lane}}_1^\ast}` and :math:`{\mathit{lane}}_2` in :math:`{{\mathit{lane}}_2^\ast}`, do:
+
+      1) Let :math:`{\mathit{lane}}_3` be :math:`{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{\mathrm{fle}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2))}`.
+
+      #) Append :math:`{\mathit{lane}}_3` to :math:`{{\mathit{lane}}_3^\ast}`.
 
    #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}_3^\ast})`.
 
@@ -9387,7 +9663,13 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{\mathsf{i}}{n}` be the result for which :math:`{|{\mathsf{i}}{n}|}` :math:`=` :math:`{|{\mathit{lanetype}}|}`.
 
-#. Let :math:`{{\mathit{lane}}_3^\ast}` be :math:`{{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{\mathrm{fge}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2))}^\ast}`.
+#. Let :math:`{{\mathit{lane}}_3^\ast}` be :math:`\epsilon`.
+
+#. For each :math:`{\mathit{lane}}_1` in :math:`{{\mathit{lane}}_1^\ast}` and :math:`{\mathit{lane}}_2` in :math:`{{\mathit{lane}}_2^\ast}`, do:
+
+   a. Let :math:`{\mathit{lane}}_3` be :math:`{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{\mathrm{fge}}}_{N}({\mathit{lane}}_1, {\mathit{lane}}_2))}`.
+
+   #. Append :math:`{\mathit{lane}}_3` to :math:`{{\mathit{lane}}_3^\ast}`.
 
 #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be :math:`{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{\mathsf{i}}{n}}{\mathsf{x}}{M}}({{\mathit{lane}}_3^\ast})`.
 
@@ -10183,7 +10465,13 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{(\mathsf{global}~{\mathit{globaltype}}~{\mathit{expr}}_1)^{n_{\mathit{global}}}}` be :math:`{{\mathit{global}}_1^\ast}`.
 
-#. Let :math:`{(\mathsf{type}~{\mathit{ft}})^\ast}` be :math:`{{\mathit{type}}_0^\ast}`.
+#. Let :math:`{{\mathit{ft}}^\ast}` be the function type sequence :math:`\epsilon`.
+
+#. For each :math:`{\mathit{type}}_0` in :math:`{{\mathit{type}}_0^\ast}`, do:
+
+   a. Let :math:`(\mathsf{type}~{\mathit{ft}})` be the destructuring of :math:`{\mathit{type}}_0`.
+
+   #. Append :math:`{\mathit{ft}}` to :math:`{{\mathit{ft}}^\ast}`.
 
 #. Let :math:`{{\mathit{fa}}_{\mathit{ex}}^\ast}` be :math:`{\mathrm{funcs}}({{\mathit{externaddr}}^\ast})`.
 
@@ -10205,7 +10493,13 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{{\mathit{da}}^\ast}` be :math:`{|s{.}\mathsf{datas}|} + i_{\mathit{data}}` for all :math:`i_{\mathit{data}}` from :math:`0` to :math:`n_{\mathit{data}} - 1`.
 
-#. Let :math:`{{\mathit{xi}}^\ast}` be :math:`{{\mathrm{instexport}}({{\mathit{fa}}_{\mathit{ex}}^\ast}~{{\mathit{fa}}^\ast}, {{\mathit{ga}}_{\mathit{ex}}^\ast}~{{\mathit{ga}}^\ast}, {{\mathit{ta}}_{\mathit{ex}}^\ast}~{{\mathit{ta}}^\ast}, {{\mathit{ma}}_{\mathit{ex}}^\ast}~{{\mathit{ma}}^\ast}, {\mathit{export}})^\ast}`.
+#. Let :math:`{{\mathit{xi}}^\ast}` be the export instance sequence :math:`\epsilon`.
+
+#. For each :math:`{\mathit{export}}` in :math:`{{\mathit{export}}^\ast}`, do:
+
+   a. Let :math:`{\mathit{xi}}` be the export instance :math:`{\mathrm{instexport}}({{\mathit{fa}}_{\mathit{ex}}^\ast}~{{\mathit{fa}}^\ast}, {{\mathit{ga}}_{\mathit{ex}}^\ast}~{{\mathit{ga}}^\ast}, {{\mathit{ta}}_{\mathit{ex}}^\ast}~{{\mathit{ta}}^\ast}, {{\mathit{ma}}_{\mathit{ex}}^\ast}~{{\mathit{ma}}^\ast}, {\mathit{export}})`.
+
+   #. Append :math:`{\mathit{xi}}` to :math:`{{\mathit{xi}}^\ast}`.
 
 #. Let :math:`{\mathit{moduleinst}}` be the module instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{ft}}^\ast},\; \mathsf{funcs}~{{\mathit{fa}}_{\mathit{ex}}^\ast}~{{\mathit{fa}}^\ast},\; \mathsf{globals}~{{\mathit{ga}}_{\mathit{ex}}^\ast}~{{\mathit{ga}}^\ast},\; \mathsf{tables}~{{\mathit{ta}}_{\mathit{ex}}^\ast}~{{\mathit{ta}}^\ast},\; \mathsf{mems}~{{\mathit{ma}}_{\mathit{ex}}^\ast}~{{\mathit{ma}}^\ast},\; \mathsf{elems}~{{\mathit{ea}}^\ast},\; \mathsf{datas}~{{\mathit{da}}^\ast},\; \mathsf{exports}~{{\mathit{xi}}^\ast} \}\end{array}`.
 
@@ -10282,7 +10576,13 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` be the destructuring of :math:`{\mathit{module}}`.
 
-#. Let :math:`{(\mathsf{type}~{\mathit{functype}})^\ast}` be :math:`{{\mathit{type}}^\ast}`.
+#. Let :math:`{{\mathit{functype}}^\ast}` be the function type sequence :math:`\epsilon`.
+
+#. For each :math:`{\mathit{type}}` in :math:`{{\mathit{type}}^\ast}`, do:
+
+   a. Let :math:`(\mathsf{type}~{\mathit{functype}})` be the destructuring of :math:`{\mathit{type}}`.
+
+   #. Append :math:`{\mathit{functype}}` to :math:`{{\mathit{functype}}^\ast}`.
 
 #. Let :math:`n_{\mathsf{d}}` be the length of :math:`{{\mathit{data}}^\ast}`.
 
@@ -10290,9 +10590,21 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`n_{\mathsf{f}}` be the length of :math:`{{\mathit{func}}^\ast}`.
 
-#. Let :math:`{(\mathsf{global}~{\mathit{globaltype}}~{\mathit{expr}}_{\mathsf{g}})^\ast}` be :math:`{{\mathit{global}}^\ast}`.
+#. Let :math:`{{\mathit{expr}}_{\mathsf{g}}^\ast}` be the expression sequence :math:`\epsilon`.
 
-#. Let :math:`{(\mathsf{elem}~{\mathit{reftype}}~{{\mathit{expr}}_{\mathsf{e}}^\ast}~{\mathit{elemmode}})^\ast}` be :math:`{{\mathit{elem}}^\ast}`.
+#. For each :math:`{\mathit{global}}` in :math:`{{\mathit{global}}^\ast}`, do:
+
+   a. Let :math:`(\mathsf{global}~{\mathit{globaltype}}~{\mathit{expr}}_{\mathsf{g}})` be the destructuring of :math:`{\mathit{global}}`.
+
+   #. Append :math:`{\mathit{expr}}_{\mathsf{g}}` to :math:`{{\mathit{expr}}_{\mathsf{g}}^\ast}`.
+
+#. Let :math:`{{{\mathit{expr}}_{\mathsf{e}}^\ast}^\ast}` be the expression sequence sequence :math:`\epsilon`.
+
+#. For each :math:`{\mathit{elem}}` in :math:`{{\mathit{elem}}^\ast}`, do:
+
+   a. Let :math:`(\mathsf{elem}~{\mathit{reftype}}~{{\mathit{expr}}_{\mathsf{e}}^\ast}~{\mathit{elemmode}})` be the destructuring of :math:`{\mathit{elem}}`.
+
+   #. Append :math:`{{\mathit{expr}}_{\mathsf{e}}^\ast}` to :math:`{{{\mathit{expr}}_{\mathsf{e}}^\ast}^\ast}`.
 
 #. Let :math:`{{\mathit{instr}}_{\mathsf{d}}^\ast}` be the :ref:`concatenation <notation-concat>` of :math:`{{\mathrm{rundata}}({{\mathit{data}}^\ast}{}[j], j)^{j<n_{\mathsf{d}}}}`.
 
@@ -10308,7 +10620,13 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Push the :math:`\mathsf{frame}` F.
 
-#. Let :math:`{{\mathit{val}}^\ast}` be the result of :ref:`evaluating <exec-expr>` :math:`{{\mathit{expr}}_{\mathsf{g}}^\ast}` with state :math:`z`.
+#. Let :math:`{{\mathit{val}}^\ast}` be the value sequence :math:`\epsilon`.
+
+#. For each :math:`{\mathit{expr}}_{\mathsf{g}}` in :math:`{{\mathit{expr}}_{\mathsf{g}}^\ast}`, do:
+
+   a. Let :math:`{\mathit{val}}` be the result of :ref:`evaluating <exec-expr>` :math:`{\mathit{expr}}_{\mathsf{g}}` with state :math:`z`.
+
+   #. Append :math:`{\mathit{val}}` to :math:`{{\mathit{val}}^\ast}`.
 
 #. Pop the :math:`\mathsf{frame}` F from the stack.
 
@@ -10316,7 +10634,19 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Push the :math:`\mathsf{frame}` F.
 
-#. Let :math:`{{{\mathit{ref}}^\ast}^\ast}` be the result of :ref:`evaluating <exec-expr>` :math:`{{{\mathit{expr}}_{\mathsf{e}}^\ast}^\ast}` with state :math:`z`.
+#. Let :math:`{{{\mathit{ref}}^\ast}^\ast}` be the reference sequence sequence :math:`\epsilon`.
+
+#. For each :math:`{{\mathit{expr}}_{\mathsf{e}}^\ast}` in :math:`{{{\mathit{expr}}_{\mathsf{e}}^\ast}^\ast}`, do:
+
+   a. Let :math:`{{\mathit{ref}}^\ast}` be the reference sequence :math:`\epsilon`.
+
+   #. For each :math:`{\mathit{expr}}_{\mathsf{e}}` in :math:`{{\mathit{expr}}_{\mathsf{e}}^\ast}`, do:
+
+      1) Let :math:`{\mathit{ref}}` be the result of :ref:`evaluating <exec-expr>` :math:`{\mathit{expr}}_{\mathsf{e}}` with state :math:`z`.
+
+      #) Append :math:`{\mathit{ref}}` to :math:`{{\mathit{ref}}^\ast}`.
+
+   #. Append :math:`{{\mathit{ref}}^\ast}` to :math:`{{{\mathit{ref}}^\ast}^\ast}`.
 
 #. Pop the :math:`\mathsf{frame}` F from the stack.
 
@@ -11562,10 +11892,16 @@ Step_pure/vnarrow Jnn_2 X N_2 Jnn_1 X N_1 sx
 4. Pop the value (V128.CONST c_1) from the stack.
 5. Let ci_1* be $lanes_(Jnn_1 X N_1, c_1).
 6. Let ci_2* be $lanes_(Jnn_1 X N_1, c_2).
-7. Let cj_1* be $narrow__($lsize(Jnn_1), $lsize(Jnn_2), sx, ci_1)*.
-8. Let cj_2* be $narrow__($lsize(Jnn_1), $lsize(Jnn_2), sx, ci_2)*.
-9. Let c be $inv_lanes_(Jnn_2 X N_2, cj_1* :: cj_2*).
-10. Push the value (V128.CONST c) to the stack.
+7. Let cj_1* be [].
+8. For each ci_1 in ci_1*, do:
+  a. Let cj_1 be $narrow__($lsize(Jnn_1), $lsize(Jnn_2), sx, ci_1).
+  b. Append cj_1 to the cj_1*.
+9. Let cj_2* be [].
+10. For each ci_2 in ci_2*, do:
+  a. Let cj_2 be $narrow__($lsize(Jnn_1), $lsize(Jnn_2), sx, ci_2).
+  b. Append cj_2 to the cj_2*.
+11. Let c be $inv_lanes_(Jnn_2 X N_2, cj_1* :: cj_2*).
+12. Push the value (V128.CONST c) to the stack.
 
 Step_pure/vcvtop Lnn_2 X M Lnn_1 X M' vcvtop
 1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
@@ -11636,12 +11972,15 @@ Step_read/call_addr a
 2. Assert: Due to validation, (a < |$funcinst(z)|).
 3. Let { TYPE: t_1^k -> t_2^n; MODULE: mm; CODE: func } be $funcinst(z)[a].
 4. Let (FUNC x local_0* instr*) be func.
-5. Let (LOCAL t)* be local_0*.
-6. Assert: Due to validation, there are at least k values on the top of the stack.
-7. Pop the values val^k from the stack.
-8. Let f be { LOCALS: val^k :: $default_(t)*; MODULE: mm }.
-9. Push the frame (FRAME_ n { f }) to the stack.
-10. Enter instr* with label (LABEL_ n { [] }).
+5. Let t* be [].
+6. For each local_0 in local_0*, do:
+  a. Let (LOCAL t) be local_0.
+  b. Append t to the t*.
+7. Assert: Due to validation, there are at least k values on the top of the stack.
+8. Pop the values val^k from the stack.
+9. Let f be { LOCALS: val^k :: $default_(t)*; MODULE: mm }.
+10. Push the frame (FRAME_ n { f }) to the stack.
+11. Enter instr* with label (LABEL_ n { [] }).
 
 Step_read/ref.func x
 1. Let z be the current state.
@@ -12613,38 +12952,59 @@ vunop_ lanetype X M vunop_ v128_1
 3. If (vunop_ = ABS), then:
   a. Let lane_1* be $lanes_(lanetype X M, v128_1).
   b. Let lane** be $setproduct_(`lane_((Fnn : Fnn <: lanetype)), $fabs_($sizenn(lanetype), lane_1)*).
-  c. Let v128* be $inv_lanes_(lanetype X M, lane*)*.
-  d. Return v128*.
+  c. Let v128* be [].
+  d. For each lane* in lane**, do:
+    1) Let v128 be $inv_lanes_(lanetype X M, lane*).
+    2) Append v128 to the v128*.
+  e. Return v128*.
 4. If (vunop_ = NEG), then:
   a. Let lane_1* be $lanes_(lanetype X M, v128_1).
   b. Let lane** be $setproduct_(`lane_((Fnn : Fnn <: lanetype)), $fneg_($sizenn(lanetype), lane_1)*).
-  c. Let v128* be $inv_lanes_(lanetype X M, lane*)*.
-  d. Return v128*.
+  c. Let v128* be [].
+  d. For each lane* in lane**, do:
+    1) Let v128 be $inv_lanes_(lanetype X M, lane*).
+    2) Append v128 to the v128*.
+  e. Return v128*.
 5. If (vunop_ = SQRT), then:
   a. Let lane_1* be $lanes_(lanetype X M, v128_1).
   b. Let lane** be $setproduct_(`lane_((Fnn : Fnn <: lanetype)), $fsqrt_($sizenn(lanetype), lane_1)*).
-  c. Let v128* be $inv_lanes_(lanetype X M, lane*)*.
-  d. Return v128*.
+  c. Let v128* be [].
+  d. For each lane* in lane**, do:
+    1) Let v128 be $inv_lanes_(lanetype X M, lane*).
+    2) Append v128 to the v128*.
+  e. Return v128*.
 6. If (vunop_ = CEIL), then:
   a. Let lane_1* be $lanes_(lanetype X M, v128_1).
   b. Let lane** be $setproduct_(`lane_((Fnn : Fnn <: lanetype)), $fceil_($sizenn(lanetype), lane_1)*).
-  c. Let v128* be $inv_lanes_(lanetype X M, lane*)*.
-  d. Return v128*.
+  c. Let v128* be [].
+  d. For each lane* in lane**, do:
+    1) Let v128 be $inv_lanes_(lanetype X M, lane*).
+    2) Append v128 to the v128*.
+  e. Return v128*.
 7. If (vunop_ = FLOOR), then:
   a. Let lane_1* be $lanes_(lanetype X M, v128_1).
   b. Let lane** be $setproduct_(`lane_((Fnn : Fnn <: lanetype)), $ffloor_($sizenn(lanetype), lane_1)*).
-  c. Let v128* be $inv_lanes_(lanetype X M, lane*)*.
-  d. Return v128*.
+  c. Let v128* be [].
+  d. For each lane* in lane**, do:
+    1) Let v128 be $inv_lanes_(lanetype X M, lane*).
+    2) Append v128 to the v128*.
+  e. Return v128*.
 8. If (vunop_ = TRUNC), then:
   a. Let lane_1* be $lanes_(lanetype X M, v128_1).
   b. Let lane** be $setproduct_(`lane_((Fnn : Fnn <: lanetype)), $ftrunc_($sizenn(lanetype), lane_1)*).
-  c. Let v128* be $inv_lanes_(lanetype X M, lane*)*.
-  d. Return v128*.
+  c. Let v128* be [].
+  d. For each lane* in lane**, do:
+    1) Let v128 be $inv_lanes_(lanetype X M, lane*).
+    2) Append v128 to the v128*.
+  e. Return v128*.
 9. Assert: Due to validation, (vunop_ = NEAREST).
 10. Let lane_1* be $lanes_(lanetype X M, v128_1).
 11. Let lane** be $setproduct_(`lane_((Fnn : Fnn <: lanetype)), $fnearest_($sizenn(lanetype), lane_1)*).
-12. Let v128* be $inv_lanes_(lanetype X M, lane*)*.
-13. Return v128*.
+12. Let v128* be [].
+13. For each lane* in lane**, do:
+  a. Let v128 be $inv_lanes_(lanetype X M, lane*).
+  b. Append v128 to the v128*.
+14. Return v128*.
 
 vbinop_ lanetype X M vbinop_ v128_1 v128_2
 1. If lanetype is Jnn, then:
@@ -12702,136 +13062,196 @@ vbinop_ lanetype X M vbinop_ v128_1 v128_2
   a. Let lane_1* be $lanes_(lanetype X M, v128_1).
   b. Let lane_2* be $lanes_(lanetype X M, v128_2).
   c. Let lane** be $setproduct_(`lane_((Fnn : Fnn <: lanetype)), $fadd_($sizenn(lanetype), lane_1, lane_2)*).
-  d. Let v128* be $inv_lanes_(lanetype X M, lane*)*.
-  e. Return v128*.
+  d. Let v128* be [].
+  e. For each lane* in lane**, do:
+    1) Let v128 be $inv_lanes_(lanetype X M, lane*).
+    2) Append v128 to the v128*.
+  f. Return v128*.
 4. If (vbinop_ = SUB), then:
   a. Let lane_1* be $lanes_(lanetype X M, v128_1).
   b. Let lane_2* be $lanes_(lanetype X M, v128_2).
   c. Let lane** be $setproduct_(`lane_((Fnn : Fnn <: lanetype)), $fsub_($sizenn(lanetype), lane_1, lane_2)*).
-  d. Let v128* be $inv_lanes_(lanetype X M, lane*)*.
-  e. Return v128*.
+  d. Let v128* be [].
+  e. For each lane* in lane**, do:
+    1) Let v128 be $inv_lanes_(lanetype X M, lane*).
+    2) Append v128 to the v128*.
+  f. Return v128*.
 5. If (vbinop_ = MUL), then:
   a. Let lane_1* be $lanes_(lanetype X M, v128_1).
   b. Let lane_2* be $lanes_(lanetype X M, v128_2).
   c. Let lane** be $setproduct_(`lane_((Fnn : Fnn <: lanetype)), $fmul_($sizenn(lanetype), lane_1, lane_2)*).
-  d. Let v128* be $inv_lanes_(lanetype X M, lane*)*.
-  e. Return v128*.
+  d. Let v128* be [].
+  e. For each lane* in lane**, do:
+    1) Let v128 be $inv_lanes_(lanetype X M, lane*).
+    2) Append v128 to the v128*.
+  f. Return v128*.
 6. If (vbinop_ = DIV), then:
   a. Let lane_1* be $lanes_(lanetype X M, v128_1).
   b. Let lane_2* be $lanes_(lanetype X M, v128_2).
   c. Let lane** be $setproduct_(`lane_((Fnn : Fnn <: lanetype)), $fdiv_($sizenn(lanetype), lane_1, lane_2)*).
-  d. Let v128* be $inv_lanes_(lanetype X M, lane*)*.
-  e. Return v128*.
+  d. Let v128* be [].
+  e. For each lane* in lane**, do:
+    1) Let v128 be $inv_lanes_(lanetype X M, lane*).
+    2) Append v128 to the v128*.
+  f. Return v128*.
 7. If (vbinop_ = MIN), then:
   a. Let lane_1* be $lanes_(lanetype X M, v128_1).
   b. Let lane_2* be $lanes_(lanetype X M, v128_2).
   c. Let lane** be $setproduct_(`lane_((Fnn : Fnn <: lanetype)), $fmin_($sizenn(lanetype), lane_1, lane_2)*).
-  d. Let v128* be $inv_lanes_(lanetype X M, lane*)*.
-  e. Return v128*.
+  d. Let v128* be [].
+  e. For each lane* in lane**, do:
+    1) Let v128 be $inv_lanes_(lanetype X M, lane*).
+    2) Append v128 to the v128*.
+  f. Return v128*.
 8. If (vbinop_ = MAX), then:
   a. Let lane_1* be $lanes_(lanetype X M, v128_1).
   b. Let lane_2* be $lanes_(lanetype X M, v128_2).
   c. Let lane** be $setproduct_(`lane_((Fnn : Fnn <: lanetype)), $fmax_($sizenn(lanetype), lane_1, lane_2)*).
-  d. Let v128* be $inv_lanes_(lanetype X M, lane*)*.
-  e. Return v128*.
+  d. Let v128* be [].
+  e. For each lane* in lane**, do:
+    1) Let v128 be $inv_lanes_(lanetype X M, lane*).
+    2) Append v128 to the v128*.
+  f. Return v128*.
 9. If (vbinop_ = PMIN), then:
   a. Let lane_1* be $lanes_(lanetype X M, v128_1).
   b. Let lane_2* be $lanes_(lanetype X M, v128_2).
   c. Let lane** be $setproduct_(`lane_((Fnn : Fnn <: lanetype)), $fpmin_($sizenn(lanetype), lane_1, lane_2)*).
-  d. Let v128* be $inv_lanes_(lanetype X M, lane*)*.
-  e. Return v128*.
+  d. Let v128* be [].
+  e. For each lane* in lane**, do:
+    1) Let v128 be $inv_lanes_(lanetype X M, lane*).
+    2) Append v128 to the v128*.
+  f. Return v128*.
 10. Assert: Due to validation, (vbinop_ = PMAX).
 11. Let lane_1* be $lanes_(lanetype X M, v128_1).
 12. Let lane_2* be $lanes_(lanetype X M, v128_2).
 13. Let lane** be $setproduct_(`lane_((Fnn : Fnn <: lanetype)), $fpmax_($sizenn(lanetype), lane_1, lane_2)*).
-14. Let v128* be $inv_lanes_(lanetype X M, lane*)*.
-15. Return v128*.
+14. Let v128* be [].
+15. For each lane* in lane**, do:
+  a. Let v128 be $inv_lanes_(lanetype X M, lane*).
+  b. Append v128 to the v128*.
+16. Return v128*.
 
 vrelop_ lanetype X M vrelop_ v128_1 v128_2
 1. If lanetype is Jnn, then:
   a. If (vrelop_ = EQ), then:
     1) Let lane_1* be $lanes_(lanetype X M, v128_1).
     2) Let lane_2* be $lanes_(lanetype X M, v128_2).
-    3) Let lane_3* be $extend__(1, $lsizenn(lanetype), S, $ieq_($lsizenn(lanetype), lane_1, lane_2))*.
-    4) Let v128 be $inv_lanes_(lanetype X M, lane_3*).
-    5) Return v128.
+    3) Let lane_3* be [].
+    4) For each lane_1 in lane_1* and lane_2 in lane_2*, do:
+      a) Let lane_3 be $extend__(1, $lsizenn(lanetype), S, $ieq_($lsizenn(lanetype), lane_1, lane_2)).
+      b) Append lane_3 to the lane_3*.
+    5) Let v128 be $inv_lanes_(lanetype X M, lane_3*).
+    6) Return v128.
   b. If (vrelop_ = NE), then:
     1) Let lane_1* be $lanes_(lanetype X M, v128_1).
     2) Let lane_2* be $lanes_(lanetype X M, v128_2).
-    3) Let lane_3* be $extend__(1, $lsizenn(lanetype), S, $ine_($lsizenn(lanetype), lane_1, lane_2))*.
-    4) Let v128 be $inv_lanes_(lanetype X M, lane_3*).
-    5) Return v128.
+    3) Let lane_3* be [].
+    4) For each lane_1 in lane_1* and lane_2 in lane_2*, do:
+      a) Let lane_3 be $extend__(1, $lsizenn(lanetype), S, $ine_($lsizenn(lanetype), lane_1, lane_2)).
+      b) Append lane_3 to the lane_3*.
+    5) Let v128 be $inv_lanes_(lanetype X M, lane_3*).
+    6) Return v128.
   c. If vrelop_ is some LT, then:
     1) Let (LT sx) be vrelop_.
     2) Let lane_1* be $lanes_(lanetype X M, v128_1).
     3) Let lane_2* be $lanes_(lanetype X M, v128_2).
-    4) Let lane_3* be $extend__(1, $lsizenn(lanetype), S, $ilt_($lsizenn(lanetype), sx, lane_1, lane_2))*.
-    5) Let v128 be $inv_lanes_(lanetype X M, lane_3*).
-    6) Return v128.
+    4) Let lane_3* be [].
+    5) For each lane_1 in lane_1* and lane_2 in lane_2*, do:
+      a) Let lane_3 be $extend__(1, $lsizenn(lanetype), S, $ilt_($lsizenn(lanetype), sx, lane_1, lane_2)).
+      b) Append lane_3 to the lane_3*.
+    6) Let v128 be $inv_lanes_(lanetype X M, lane_3*).
+    7) Return v128.
   d. If vrelop_ is some GT, then:
     1) Let (GT sx) be vrelop_.
     2) Let lane_1* be $lanes_(lanetype X M, v128_1).
     3) Let lane_2* be $lanes_(lanetype X M, v128_2).
-    4) Let lane_3* be $extend__(1, $lsizenn(lanetype), S, $igt_($lsizenn(lanetype), sx, lane_1, lane_2))*.
-    5) Let v128 be $inv_lanes_(lanetype X M, lane_3*).
-    6) Return v128.
+    4) Let lane_3* be [].
+    5) For each lane_1 in lane_1* and lane_2 in lane_2*, do:
+      a) Let lane_3 be $extend__(1, $lsizenn(lanetype), S, $igt_($lsizenn(lanetype), sx, lane_1, lane_2)).
+      b) Append lane_3 to the lane_3*.
+    6) Let v128 be $inv_lanes_(lanetype X M, lane_3*).
+    7) Return v128.
   e. If vrelop_ is some LE, then:
     1) Let (LE sx) be vrelop_.
     2) Let lane_1* be $lanes_(lanetype X M, v128_1).
     3) Let lane_2* be $lanes_(lanetype X M, v128_2).
-    4) Let lane_3* be $extend__(1, $lsizenn(lanetype), S, $ile_($lsizenn(lanetype), sx, lane_1, lane_2))*.
-    5) Let v128 be $inv_lanes_(lanetype X M, lane_3*).
-    6) Return v128.
+    4) Let lane_3* be [].
+    5) For each lane_1 in lane_1* and lane_2 in lane_2*, do:
+      a) Let lane_3 be $extend__(1, $lsizenn(lanetype), S, $ile_($lsizenn(lanetype), sx, lane_1, lane_2)).
+      b) Append lane_3 to the lane_3*.
+    6) Let v128 be $inv_lanes_(lanetype X M, lane_3*).
+    7) Return v128.
   f. If vrelop_ is some GE, then:
     1) Let (GE sx) be vrelop_.
     2) Let lane_1* be $lanes_(lanetype X M, v128_1).
     3) Let lane_2* be $lanes_(lanetype X M, v128_2).
-    4) Let lane_3* be $extend__(1, $lsizenn(lanetype), S, $ige_($lsizenn(lanetype), sx, lane_1, lane_2))*.
-    5) Let v128 be $inv_lanes_(lanetype X M, lane_3*).
-    6) Return v128.
+    4) Let lane_3* be [].
+    5) For each lane_1 in lane_1* and lane_2 in lane_2*, do:
+      a) Let lane_3 be $extend__(1, $lsizenn(lanetype), S, $ige_($lsizenn(lanetype), sx, lane_1, lane_2)).
+      b) Append lane_3 to the lane_3*.
+    6) Let v128 be $inv_lanes_(lanetype X M, lane_3*).
+    7) Return v128.
 2. Assert: Due to validation, lanetype is Fnn.
 3. If (vrelop_ = EQ), then:
   a. Let lane_1* be $lanes_(lanetype X M, v128_1).
   b. Let lane_2* be $lanes_(lanetype X M, v128_2).
   c. Let Inn be $isize^-1($size(lanetype)).
-  d. Let lane_3* be $extend__(1, $sizenn(lanetype), S, $feq_($sizenn(lanetype), lane_1, lane_2))*.
-  e. Let v128 be $inv_lanes_(Inn X M, lane_3*).
-  f. Return v128.
+  d. Let lane_3* be [].
+  e. For each lane_1 in lane_1* and lane_2 in lane_2*, do:
+    1) Let lane_3 be $extend__(1, $sizenn(lanetype), S, $feq_($sizenn(lanetype), lane_1, lane_2)).
+    2) Append lane_3 to the lane_3*.
+  f. Let v128 be $inv_lanes_(Inn X M, lane_3*).
+  g. Return v128.
 4. If (vrelop_ = NE), then:
   a. Let lane_1* be $lanes_(lanetype X M, v128_1).
   b. Let lane_2* be $lanes_(lanetype X M, v128_2).
   c. Let Inn be $isize^-1($size(lanetype)).
-  d. Let lane_3* be $extend__(1, $sizenn(lanetype), S, $fne_($sizenn(lanetype), lane_1, lane_2))*.
-  e. Let v128 be $inv_lanes_(Inn X M, lane_3*).
-  f. Return v128.
+  d. Let lane_3* be [].
+  e. For each lane_1 in lane_1* and lane_2 in lane_2*, do:
+    1) Let lane_3 be $extend__(1, $sizenn(lanetype), S, $fne_($sizenn(lanetype), lane_1, lane_2)).
+    2) Append lane_3 to the lane_3*.
+  f. Let v128 be $inv_lanes_(Inn X M, lane_3*).
+  g. Return v128.
 5. If (vrelop_ = LT), then:
   a. Let lane_1* be $lanes_(lanetype X M, v128_1).
   b. Let lane_2* be $lanes_(lanetype X M, v128_2).
   c. Let Inn be $isize^-1($size(lanetype)).
-  d. Let lane_3* be $extend__(1, $sizenn(lanetype), S, $flt_($sizenn(lanetype), lane_1, lane_2))*.
-  e. Let v128 be $inv_lanes_(Inn X M, lane_3*).
-  f. Return v128.
+  d. Let lane_3* be [].
+  e. For each lane_1 in lane_1* and lane_2 in lane_2*, do:
+    1) Let lane_3 be $extend__(1, $sizenn(lanetype), S, $flt_($sizenn(lanetype), lane_1, lane_2)).
+    2) Append lane_3 to the lane_3*.
+  f. Let v128 be $inv_lanes_(Inn X M, lane_3*).
+  g. Return v128.
 6. If (vrelop_ = GT), then:
   a. Let lane_1* be $lanes_(lanetype X M, v128_1).
   b. Let lane_2* be $lanes_(lanetype X M, v128_2).
   c. Let Inn be $isize^-1($size(lanetype)).
-  d. Let lane_3* be $extend__(1, $sizenn(lanetype), S, $fgt_($sizenn(lanetype), lane_1, lane_2))*.
-  e. Let v128 be $inv_lanes_(Inn X M, lane_3*).
-  f. Return v128.
+  d. Let lane_3* be [].
+  e. For each lane_1 in lane_1* and lane_2 in lane_2*, do:
+    1) Let lane_3 be $extend__(1, $sizenn(lanetype), S, $fgt_($sizenn(lanetype), lane_1, lane_2)).
+    2) Append lane_3 to the lane_3*.
+  f. Let v128 be $inv_lanes_(Inn X M, lane_3*).
+  g. Return v128.
 7. If (vrelop_ = LE), then:
   a. Let lane_1* be $lanes_(lanetype X M, v128_1).
   b. Let lane_2* be $lanes_(lanetype X M, v128_2).
   c. Let Inn be $isize^-1($size(lanetype)).
-  d. Let lane_3* be $extend__(1, $sizenn(lanetype), S, $fle_($sizenn(lanetype), lane_1, lane_2))*.
-  e. Let v128 be $inv_lanes_(Inn X M, lane_3*).
-  f. Return v128.
+  d. Let lane_3* be [].
+  e. For each lane_1 in lane_1* and lane_2 in lane_2*, do:
+    1) Let lane_3 be $extend__(1, $sizenn(lanetype), S, $fle_($sizenn(lanetype), lane_1, lane_2)).
+    2) Append lane_3 to the lane_3*.
+  f. Let v128 be $inv_lanes_(Inn X M, lane_3*).
+  g. Return v128.
 8. Assert: Due to validation, (vrelop_ = GE).
 9. Let lane_1* be $lanes_(lanetype X M, v128_1).
 10. Let lane_2* be $lanes_(lanetype X M, v128_2).
 11. Let Inn be $isize^-1($size(lanetype)).
-12. Let lane_3* be $extend__(1, $sizenn(lanetype), S, $fge_($sizenn(lanetype), lane_1, lane_2))*.
-13. Let v128 be $inv_lanes_(Inn X M, lane_3*).
-14. Return v128.
+12. Let lane_3* be [].
+13. For each lane_1 in lane_1* and lane_2 in lane_2*, do:
+  a. Let lane_3 be $extend__(1, $sizenn(lanetype), S, $fge_($sizenn(lanetype), lane_1, lane_2)).
+  b. Append lane_3 to the lane_3*.
+14. Let v128 be $inv_lanes_(Inn X M, lane_3*).
+15. Return v128.
 
 vcvtop__ lanetype' X M_1 lanetype X M_2 vcvtop iN_1
 1. If lanetype' is Jnn, then:
@@ -13199,32 +13619,38 @@ allocmodule s module externaddr* val* ref**
 4. Let (MEMORY memtype)^n_mem be mem_3*.
 5. Let (TABLE tabletype)^n_table be table_2*.
 6. Let (GLOBAL globaltype expr_1)^n_global be global_1*.
-7. Let (TYPE ft)* be type_0*.
-8. Let fa_ex* be $funcs(externaddr*).
-9. Let ga_ex* be $globals(externaddr*).
-10. Let ma_ex* be $mems(externaddr*).
-11. Let ta_ex* be $tables(externaddr*).
-12. Let fa* be (|s.FUNCS| + i_func)^(i_func<n_func).
-13. Let ga* be (|s.GLOBALS| + i_global)^(i_global<n_global).
-14. Let ta* be (|s.TABLES| + i_table)^(i_table<n_table).
-15. Let ma* be (|s.MEMS| + i_mem)^(i_mem<n_mem).
-16. Let ea* be (|s.ELEMS| + i_elem)^(i_elem<n_elem).
-17. Let da* be (|s.DATAS| + i_data)^(i_data<n_data).
-18. Let xi* be $instexport(fa_ex* :: fa*, ga_ex* :: ga*, ta_ex* :: ta*, ma_ex* :: ma*, export)*.
-19. Let moduleinst be { TYPES: ft*; FUNCS: fa_ex* :: fa*; GLOBALS: ga_ex* :: ga*; TABLES: ta_ex* :: ta*; MEMS: ma_ex* :: ma*; ELEMS: ea*; DATAS: da*; EXPORTS: xi* }.
-20. Let funcaddr_0* be $allocfuncs(s, moduleinst, func^n_func).
-21. Assert: Due to validation, (funcaddr_0* = fa*).
-22. Let globaladdr_0* be $allocglobals(s, globaltype^n_global, val*).
-23. Assert: Due to validation, (globaladdr_0* = ga*).
-24. Let tableaddr_0* be $alloctables(s, tabletype^n_table).
-25. Assert: Due to validation, (tableaddr_0* = ta*).
-26. Let memaddr_0* be $allocmems(s, memtype^n_mem).
-27. Assert: Due to validation, (memaddr_0* = ma*).
-28. Let elemaddr_0* be $allocelems(s, rt^n_elem, ref**).
-29. Assert: Due to validation, (elemaddr_0* = ea*).
-30. Let dataaddr_0* be $allocdatas(s, byte*^n_data).
-31. Assert: Due to validation, (dataaddr_0* = da*).
-32. Return moduleinst.
+7. Let ft* be [].
+8. For each type_0 in type_0*, do:
+  a. Let (TYPE ft) be type_0.
+  b. Append ft to the ft*.
+9. Let fa_ex* be $funcs(externaddr*).
+10. Let ga_ex* be $globals(externaddr*).
+11. Let ma_ex* be $mems(externaddr*).
+12. Let ta_ex* be $tables(externaddr*).
+13. Let fa* be (|s.FUNCS| + i_func)^(i_func<n_func).
+14. Let ga* be (|s.GLOBALS| + i_global)^(i_global<n_global).
+15. Let ta* be (|s.TABLES| + i_table)^(i_table<n_table).
+16. Let ma* be (|s.MEMS| + i_mem)^(i_mem<n_mem).
+17. Let ea* be (|s.ELEMS| + i_elem)^(i_elem<n_elem).
+18. Let da* be (|s.DATAS| + i_data)^(i_data<n_data).
+19. Let xi* be [].
+20. For each export in export*, do:
+  a. Let xi be $instexport(fa_ex* :: fa*, ga_ex* :: ga*, ta_ex* :: ta*, ma_ex* :: ma*, export).
+  b. Append xi to the xi*.
+21. Let moduleinst be { TYPES: ft*; FUNCS: fa_ex* :: fa*; GLOBALS: ga_ex* :: ga*; TABLES: ta_ex* :: ta*; MEMS: ma_ex* :: ma*; ELEMS: ea*; DATAS: da*; EXPORTS: xi* }.
+22. Let funcaddr_0* be $allocfuncs(s, moduleinst, func^n_func).
+23. Assert: Due to validation, (funcaddr_0* = fa*).
+24. Let globaladdr_0* be $allocglobals(s, globaltype^n_global, val*).
+25. Assert: Due to validation, (globaladdr_0* = ga*).
+26. Let tableaddr_0* be $alloctables(s, tabletype^n_table).
+27. Assert: Due to validation, (tableaddr_0* = ta*).
+28. Let memaddr_0* be $allocmems(s, memtype^n_mem).
+29. Assert: Due to validation, (memaddr_0* = ma*).
+30. Let elemaddr_0* be $allocelems(s, rt^n_elem, ref**).
+31. Assert: Due to validation, (elemaddr_0* = ea*).
+32. Let dataaddr_0* be $allocdatas(s, byte*^n_data).
+33. Assert: Due to validation, (dataaddr_0* = da*).
+34. Return moduleinst.
 
 runelem (ELEM reftype expr* elemmode) i
 1. If (elemmode = PASSIVE), then:
@@ -13247,34 +13673,52 @@ rundata (DATA byte* datamode) i
 
 instantiate s module externaddr*
 1. Let (MODULE type* import* func* global* table* mem* elem* data* start? export*) be module.
-2. Let (TYPE functype)* be type*.
-3. Let n_D be |data*|.
-4. Let n_E be |elem*|.
-5. Let n_F be |func*|.
-6. Let (GLOBAL globaltype expr_G)* be global*.
-7. Let (ELEM reftype expr_E* elemmode)* be elem*.
-8. Let instr_D* be $concat_(`instr, $rundata(data*[j], j)^(j<n_D)).
-9. Let instr_E* be $concat_(`instr, $runelem(elem*[i], i)^(i<n_E)).
-10. Let moduleinst_init be { TYPES: functype*; FUNCS: $funcs(externaddr*) :: (|s.FUNCS| + i_F)^(i_F<n_F); GLOBALS: $globals(externaddr*) }.
-11. Let f_init be { MODULE: moduleinst_init }.
-12. Let z be (s, f_init).
-13. Push the frame (FRAME_ 0 { $frame(z) }) to the stack.
-14. Let [val]* be $Eval_expr(z, expr_G)*.
-15. Pop the frame (FRAME_ 0 { $frame(z) }) from the stack.
+2. Let functype* be [].
+3. For each type in type*, do:
+  a. Let (TYPE functype) be type.
+  b. Append functype to the functype*.
+4. Let n_D be |data*|.
+5. Let n_E be |elem*|.
+6. Let n_F be |func*|.
+7. Let expr_G* be [].
+8. For each global in global*, do:
+  a. Let (GLOBAL globaltype expr_G) be global.
+  b. Append expr_G to the expr_G*.
+9. Let expr_E** be [].
+10. For each elem in elem*, do:
+  a. Let (ELEM reftype expr_E* elemmode) be elem.
+  b. Append expr_E* to the expr_E**.
+11. Let instr_D* be $concat_(`instr, $rundata(data*[j], j)^(j<n_D)).
+12. Let instr_E* be $concat_(`instr, $runelem(elem*[i], i)^(i<n_E)).
+13. Let moduleinst_init be { TYPES: functype*; FUNCS: $funcs(externaddr*) :: (|s.FUNCS| + i_F)^(i_F<n_F); GLOBALS: $globals(externaddr*) }.
+14. Let f_init be { MODULE: moduleinst_init }.
+15. Let z be (s, f_init).
 16. Push the frame (FRAME_ 0 { $frame(z) }) to the stack.
-17. Let [ref]** be $Eval_expr(z, expr_E)**.
-18. Pop the frame (FRAME_ 0 { $frame(z) }) from the stack.
-19. Let moduleinst be $allocmodule(s, module, externaddr*, val*, ref**).
-20. Let f be { MODULE: moduleinst }.
-21. Push the frame (FRAME_ 0 { f }) to the stack.
-22. Execute the sequence instr_E*.
-23. Execute the sequence instr_D*.
-24. If start? is defined, then:
+17. Let val* be [].
+18. For each expr_G in expr_G*, do:
+  a. Let [val] be $Eval_expr(z, expr_G).
+  b. Append val to the val*.
+19. Pop the frame (FRAME_ 0 { $frame(z) }) from the stack.
+20. Push the frame (FRAME_ 0 { $frame(z) }) to the stack.
+21. Let ref** be [].
+22. For each expr_E* in expr_E**, do:
+  a. Let ref* be [].
+  b. For each expr_E in expr_E*, do:
+    1) Let [ref] be $Eval_expr(z, expr_E).
+    2) Append ref to the ref*.
+  c. Append ref* to the ref**.
+23. Pop the frame (FRAME_ 0 { $frame(z) }) from the stack.
+24. Let moduleinst be $allocmodule(s, module, externaddr*, val*, ref**).
+25. Let f be { MODULE: moduleinst }.
+26. Push the frame (FRAME_ 0 { f }) to the stack.
+27. Execute the sequence instr_E*.
+28. Execute the sequence instr_D*.
+29. If start? is defined, then:
   a. Let ?((START x)) be start?.
   b. Let instr_0 be (CALL x).
   c. Execute the instruction instr_0.
-25. Pop the frame (FRAME_ 0 { f }) from the stack.
-26. Return f.MODULE.
+30. Pop the frame (FRAME_ 0 { f }) from the stack.
+31. Return f.MODULE.
 
 invoke s fa val^n
 1. Let f be { MODULE: {} }.
@@ -18679,7 +19123,13 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`(\mathsf{func}~x~{{\mathit{local}}_0^\ast}~{{\mathit{instr}}^\ast})` be the destructuring of :math:`{\mathit{fi}}{.}\mathsf{code}`.
 
-#. Let :math:`{(\mathsf{local}~t)^\ast}` be :math:`{{\mathit{local}}_0^\ast}`.
+#. Let :math:`{t^\ast}` be the value type sequence :math:`\epsilon`.
+
+#. For each :math:`{\mathit{local}}_0` in :math:`{{\mathit{local}}_0^\ast}`, do:
+
+   a. Let :math:`(\mathsf{local}~t)` be the destructuring of :math:`{\mathit{local}}_0`.
+
+   #. Append :math:`t` to :math:`{t^\ast}`.
 
 #. Assert: Due to validation, the :ref:`expansion <aux-expand-deftype>` of :math:`{\mathit{fi}}{.}\mathsf{type}` is some :math:`\mathsf{func}~{\mathit{resulttype}} \rightarrow {\mathit{resulttype}}`.
 
@@ -19602,7 +20052,13 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Assert: Due to validation, for all :math:`{\mathit{zt}}` in :math:`{{\mathit{zt}}^\ast}`, :math:`{{\mathrm{default}}}_{{\mathrm{unpack}}({\mathit{zt}})}` is defined.
 
-#. Let :math:`{{\mathit{val}}^\ast}` be :math:`{{{\mathrm{default}}}_{{\mathrm{unpack}}({\mathit{zt}})}^\ast}`.
+#. Let :math:`{{\mathit{val}}^\ast}` be the value sequence :math:`\epsilon`.
+
+#. For each :math:`{\mathit{zt}}` in :math:`{{\mathit{zt}}^\ast}`, do:
+
+   a. Let :math:`{\mathit{val}}` be :math:`{{\mathrm{default}}}_{{\mathrm{unpack}}({\mathit{zt}})}`.
+
+   #. Append :math:`{\mathit{val}}` to :math:`{{\mathit{val}}^\ast}`.
 
 #. Assert: Due to validation, :math:`{|{{\mathit{val}}^\ast}|} = {|{{\mathit{zt}}^\ast}|}`.
 
@@ -23989,7 +24445,13 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`{c_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}(v_1)`.
 
-#. Let :math:`{c^\ast}` be :math:`{{{\mathrm{f}}}_{N}(c_1)^\ast}`.
+#. Let :math:`{c^\ast}` be :math:`\epsilon`.
+
+#. For each :math:`c_1` in :math:`{c_1^\ast}`, do:
+
+   a. Let :math:`c` be :math:`{{\mathrm{f}}}_{N}(c_1)`.
+
+   #. Append :math:`c` to :math:`{c^\ast}`.
 
 #. Return :math:`{{{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}^{{-1}}}}{({c^\ast})}`.
 
@@ -24013,7 +24475,13 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{c_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}(v_2)`.
 
-#. Let :math:`{c^\ast}` be :math:`{{{\mathrm{f}}}_{N}(c_1, c_2)^\ast}`.
+#. Let :math:`{c^\ast}` be :math:`\epsilon`.
+
+#. For each :math:`c_1` in :math:`{c_1^\ast}` and :math:`c_2` in :math:`{c_2^\ast}`, do:
+
+   a. Let :math:`c` be :math:`{{\mathrm{f}}}_{N}(c_1, c_2)`.
+
+   #. Append :math:`c` to :math:`{c^\ast}`.
 
 #. Return :math:`{{{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}^{{-1}}}}{({c^\ast})}`.
 
@@ -24026,7 +24494,13 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{c_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}(v_2)`.
 
-#. Let :math:`{c^\ast}` be :math:`{{{\mathrm{f}}}_{N}({\mathit{sx}}, c_1, c_2)^\ast}`.
+#. Let :math:`{c^\ast}` be :math:`\epsilon`.
+
+#. For each :math:`c_1` in :math:`{c_1^\ast}` and :math:`c_2` in :math:`{c_2^\ast}`, do:
+
+   a. Let :math:`c` be :math:`{{\mathrm{f}}}_{N}({\mathit{sx}}, c_1, c_2)`.
+
+   #. Append :math:`c` to :math:`{c^\ast}`.
 
 #. Return :math:`{{{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}^{{-1}}}}{({c^\ast})}`.
 
@@ -24093,7 +24567,13 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`{c_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}(v_1)`.
 
-#. Let :math:`{c^\ast}` be :math:`{{{\mathrm{f}}}_{N}(c_1)^\ast}`.
+#. Let :math:`{c^\ast}` be :math:`\epsilon`.
+
+#. For each :math:`c_1` in :math:`{c_1^\ast}`, do:
+
+   a. Let :math:`c` be :math:`{{\mathrm{f}}}_{N}(c_1)`.
+
+   #. Append :math:`c` to :math:`{c^\ast}`.
 
 #. Return :math:`{\Pi}\, {c^\ast}`.
 
@@ -24104,7 +24584,13 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`{c_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}(v_1)`.
 
-#. Let :math:`{c^\ast}` be :math:`{{{\mathrm{f}}}_{N}(c_1)^\ast}`.
+#. Let :math:`{c^\ast}` be :math:`\epsilon`.
+
+#. For each :math:`c_1` in :math:`{c_1^\ast}`, do:
+
+   a. Let :math:`c` be :math:`{{\mathrm{f}}}_{N}(c_1)`.
+
+   #. Append :math:`c` to :math:`{c^\ast}`.
 
 #. Return :math:`{\Pi}\, {c^\ast}`.
 
@@ -24117,7 +24603,13 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{c_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}(v_2)`.
 
-#. Let :math:`{c^\ast}` be :math:`{{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{\mathrm{f}}}_{N}(c_1, c_2))}^\ast}`.
+#. Let :math:`{c^\ast}` be :math:`\epsilon`.
+
+#. For each :math:`c_1` in :math:`{c_1^\ast}` and :math:`c_2` in :math:`{c_2^\ast}`, do:
+
+   a. Let :math:`c` be :math:`{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{\mathrm{f}}}_{N}(c_1, c_2))}`.
+
+   #. Append :math:`c` to :math:`{c^\ast}`.
 
 #. Return :math:`{{{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}^{{-1}}}}{({c^\ast})}`.
 
@@ -24130,7 +24622,13 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{c_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}(v_2)`.
 
-#. Let :math:`{c^\ast}` be :math:`{{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{\mathrm{f}}}_{N}({\mathit{sx}}, c_1, c_2))}^\ast}`.
+#. Let :math:`{c^\ast}` be :math:`\epsilon`.
+
+#. For each :math:`c_1` in :math:`{c_1^\ast}` and :math:`c_2` in :math:`{c_2^\ast}`, do:
+
+   a. Let :math:`c` be :math:`{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{\mathrm{f}}}_{N}({\mathit{sx}}, c_1, c_2))}`.
+
+   #. Append :math:`c` to :math:`{c^\ast}`.
 
 #. Return :math:`{{{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}^{{-1}}}}{({c^\ast})}`.
 
@@ -24145,7 +24643,13 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{\mathsf{i}}{N}` be the result for which :math:`{|{\mathsf{i}}{N}|}` :math:`=` :math:`{|{\mathsf{f}}{N}|}`.
 
-#. Let :math:`{c^\ast}` be :math:`{{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{\mathrm{f}}}_{N}(c_1, c_2))}^\ast}`.
+#. Let :math:`{c^\ast}` be :math:`\epsilon`.
+
+#. For each :math:`c_1` in :math:`{c_1^\ast}` and :math:`c_2` in :math:`{c_2^\ast}`, do:
+
+   a. Let :math:`c` be :math:`{{{{\mathrm{extend}}}_{1, N}^{\mathsf{s}}}}{({{\mathrm{f}}}_{N}(c_1, c_2))}`.
+
+   #. Append :math:`c` to :math:`{c^\ast}`.
 
 #. Return :math:`{{{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}^{{-1}}}}{({c^\ast})}`.
 
@@ -24156,7 +24660,13 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`{c_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}(v_1)`.
 
-#. Let :math:`{c^\ast}` be :math:`{{{\mathrm{f}}}_{N}(c_1, i)^\ast}`.
+#. Let :math:`{c^\ast}` be :math:`\epsilon`.
+
+#. For each :math:`c_1` in :math:`{c_1^\ast}`, do:
+
+   a. Let :math:`c` be :math:`{{\mathrm{f}}}_{N}(c_1, i)`.
+
+   #. Append :math:`c` to :math:`{c^\ast}`.
 
 #. Return :math:`{{{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}^{{-1}}}}{({c^\ast})}`.
 
@@ -24167,7 +24677,13 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`{c_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}(v_1)`.
 
-#. Let :math:`{c^\ast}` be :math:`{{{\mathrm{f}}}_{N}({\mathit{sx}}, c_1, i)^\ast}`.
+#. Let :math:`{c^\ast}` be :math:`\epsilon`.
+
+#. For each :math:`c_1` in :math:`{c_1^\ast}`, do:
+
+   a. Let :math:`c` be :math:`{{\mathrm{f}}}_{N}({\mathit{sx}}, c_1, i)`.
+
+   #. Append :math:`c` to :math:`{c^\ast}`.
 
 #. Return :math:`{{{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}^{{-1}}}}{({c^\ast})}`.
 
@@ -24191,7 +24707,13 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{c_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}(v_2)`.
 
-#. Let :math:`{c^\ast}` be :math:`{{{\mathrm{f}}}_{N}({c_1^\ast}, c_2)^\ast}`.
+#. Let :math:`{c^\ast}` be :math:`\epsilon`.
+
+#. For each :math:`c_2` in :math:`{c_2^\ast}`, do:
+
+   a. Let :math:`c` be :math:`{{\mathrm{f}}}_{N}({c_1^\ast}, c_2)`.
+
+   #. Append :math:`c` to :math:`{c^\ast}`.
 
 #. Return :math:`{{{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}^{{-1}}}}{({c^\ast})}`.
 
@@ -24204,7 +24726,13 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{c_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}(v_2)`.
 
-#. Let :math:`{c^\ast}` be :math:`{{c_1^\ast}~{c_2^\ast}{}[i]^\ast}`.
+#. Let :math:`{c^\ast}` be :math:`\epsilon`.
+
+#. For each :math:`i` in :math:`{i^\ast}`, do:
+
+   a. Let :math:`c` be :math:`{c_1^\ast}~{c_2^\ast}{}[i]`.
+
+   #. Append :math:`c` to :math:`{c^\ast}`.
 
 #. Return :math:`{{{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}^{{-1}}}}{({c^\ast})}`.
 
@@ -24625,9 +25153,21 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{c_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}}(v_2)`.
 
-#. Let :math:`{{c'}_1^\ast}` be :math:`{{{{{\mathrm{narrow}}}_{{|{{\mathsf{i}}{N}}_1|}, {|{{\mathsf{i}}{N}}_2|}}^{{\mathit{sx}}}}}{c_1}^\ast}`.
+#. Let :math:`{{c'}_1^\ast}` be :math:`\epsilon`.
 
-#. Let :math:`{{c'}_2^\ast}` be :math:`{{{{{\mathrm{narrow}}}_{{|{{\mathsf{i}}{N}}_1|}, {|{{\mathsf{i}}{N}}_2|}}^{{\mathit{sx}}}}}{c_2}^\ast}`.
+#. For each :math:`c_1` in :math:`{c_1^\ast}`, do:
+
+   a. Let :math:`{c'}_1` be :math:`{{{{\mathrm{narrow}}}_{{|{{\mathsf{i}}{N}}_1|}, {|{{\mathsf{i}}{N}}_2|}}^{{\mathit{sx}}}}}{c_1}`.
+
+   #. Append :math:`{c'}_1` to :math:`{{c'}_1^\ast}`.
+
+#. Let :math:`{{c'}_2^\ast}` be :math:`\epsilon`.
+
+#. For each :math:`c_2` in :math:`{c_2^\ast}`, do:
+
+   a. Let :math:`{c'}_2` be :math:`{{{{\mathrm{narrow}}}_{{|{{\mathsf{i}}{N}}_1|}, {|{{\mathsf{i}}{N}}_2|}}^{{\mathit{sx}}}}}{c_2}`.
+
+   #. Append :math:`{c'}_2` to :math:`{{c'}_2^\ast}`.
 
 #. Let :math:`v` be :math:`{{{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}^{{-1}}}}{({{c'}_1^\ast}~{{c'}_2^\ast})}`.
 
@@ -24649,7 +25189,13 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`{c_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}}(v_1)`.
 
-#. Let :math:`{{c'}_1^\ast}` be :math:`{{{{{\mathrm{extend}}}_{N_1, N_2}^{{\mathit{sx}}}}}{(c_1)}^\ast}`.
+#. Let :math:`{{c'}_1^\ast}` be :math:`\epsilon`.
+
+#. For each :math:`c_1` in :math:`{c_1^\ast}`, do:
+
+   a. Let :math:`{c'}_1` be :math:`{{{{\mathrm{extend}}}_{N_1, N_2}^{{\mathit{sx}}}}}{(c_1)}`.
+
+   #. Append :math:`{c'}_1` to :math:`{{c'}_1^\ast}`.
 
 #. Let :math:`{c^\ast}` be :math:`{{\mathrm{f}}}_{N_2}({{c'}_1^\ast})`.
 
@@ -24689,9 +25235,21 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{c_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}}(v_2){}[i : k]`.
 
-#. Let :math:`{{c'}_1^\ast}` be :math:`{{{{{\mathrm{extend}}}_{N_1, N_2}^{{\mathit{sx}}_1}}}{(c_1)}^\ast}`.
+#. Let :math:`{{c'}_1^\ast}` be :math:`\epsilon`.
 
-#. Let :math:`{{c'}_2^\ast}` be :math:`{{{{{\mathrm{extend}}}_{N_1, N_2}^{{\mathit{sx}}_2}}}{(c_2)}^\ast}`.
+#. For each :math:`c_1` in :math:`{c_1^\ast}`, do:
+
+   a. Let :math:`{c'}_1` be :math:`{{{{\mathrm{extend}}}_{N_1, N_2}^{{\mathit{sx}}_1}}}{(c_1)}`.
+
+   #. Append :math:`{c'}_1` to :math:`{{c'}_1^\ast}`.
+
+#. Let :math:`{{c'}_2^\ast}` be :math:`\epsilon`.
+
+#. For each :math:`c_2` in :math:`{c_2^\ast}`, do:
+
+   a. Let :math:`{c'}_2` be :math:`{{{{\mathrm{extend}}}_{N_1, N_2}^{{\mathit{sx}}_2}}}{(c_2)}`.
+
+   #. Append :math:`{c'}_2` to :math:`{{c'}_2^\ast}`.
 
 #. Let :math:`{c^\ast}` be :math:`{{\mathrm{f}}}_{N_2}({{c'}_1^\ast}, {{c'}_2^\ast})`.
 
@@ -25582,21 +26140,71 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{{\mathit{fa}}^\ast}` be :math:`{|s{.}\mathsf{funcs}|} + i_{\mathsf{f}}` for all :math:`i_{\mathsf{f}}` from :math:`0` to :math:`{|{{\mathit{func}}^\ast}|} - 1`.
 
-#. Let :math:`{(\mathsf{tag}~{\mathit{tagtype}})^\ast}` be :math:`{{\mathit{tag}}^\ast}`.
+#. Let :math:`{{\mathit{tagtype}}^\ast}` be the tag type sequence :math:`\epsilon`.
 
-#. Let :math:`{(\mathsf{data}~{{\mathit{byte}}^\ast}~{\mathit{datamode}})^\ast}` be :math:`{{\mathit{data}}^\ast}`.
+#. For each :math:`{\mathit{tag}}` in :math:`{{\mathit{tag}}^\ast}`, do:
 
-#. Let :math:`{(\mathsf{global}~{\mathit{globaltype}}~{\mathit{expr}}_{\mathsf{g}})^\ast}` be :math:`{{\mathit{global}}^\ast}`.
+   a. Let :math:`(\mathsf{tag}~{\mathit{tagtype}})` be the destructuring of :math:`{\mathit{tag}}`.
 
-#. Let :math:`{(\mathsf{table}~{\mathit{tabletype}}~{\mathit{expr}}_{\mathsf{t}})^\ast}` be :math:`{{\mathit{table}}^\ast}`.
+   #. Append :math:`{\mathit{tagtype}}` to :math:`{{\mathit{tagtype}}^\ast}`.
 
-#. Let :math:`{(\mathsf{memory}~{\mathit{memtype}})^\ast}` be :math:`{{\mathit{mem}}^\ast}`.
+#. Let :math:`{{{\mathit{byte}}^\ast}^\ast}` be the byte sequence sequence :math:`\epsilon`.
+
+#. For each :math:`{\mathit{data}}` in :math:`{{\mathit{data}}^\ast}`, do:
+
+   a. Let :math:`(\mathsf{data}~{{\mathit{byte}}^\ast}~{\mathit{datamode}})` be the destructuring of :math:`{\mathit{data}}`.
+
+   #. Append :math:`{{\mathit{byte}}^\ast}` to :math:`{{{\mathit{byte}}^\ast}^\ast}`.
+
+#. Let :math:`{{\mathit{globaltype}}^\ast}` be the global type sequence :math:`\epsilon`.
+
+#. For each :math:`{\mathit{global}}` in :math:`{{\mathit{global}}^\ast}`, do:
+
+   a. Let :math:`(\mathsf{global}~{\mathit{globaltype}}~{\mathit{expr}}_{\mathsf{g}})` be the destructuring of :math:`{\mathit{global}}`.
+
+   #. Append :math:`{\mathit{globaltype}}` to :math:`{{\mathit{globaltype}}^\ast}`.
+
+#. Let :math:`{{\mathit{tabletype}}^\ast}` be the table type sequence :math:`\epsilon`.
+
+#. For each :math:`{\mathit{table}}` in :math:`{{\mathit{table}}^\ast}`, do:
+
+   a. Let :math:`(\mathsf{table}~{\mathit{tabletype}}~{\mathit{expr}}_{\mathsf{t}})` be the destructuring of :math:`{\mathit{table}}`.
+
+   #. Append :math:`{\mathit{tabletype}}` to :math:`{{\mathit{tabletype}}^\ast}`.
+
+#. Let :math:`{{\mathit{memtype}}^\ast}` be the memory type sequence :math:`\epsilon`.
+
+#. For each :math:`{\mathit{mem}}` in :math:`{{\mathit{mem}}^\ast}`, do:
+
+   a. Let :math:`(\mathsf{memory}~{\mathit{memtype}})` be the destructuring of :math:`{\mathit{mem}}`.
+
+   #. Append :math:`{\mathit{memtype}}` to :math:`{{\mathit{memtype}}^\ast}`.
 
 #. Let :math:`{{\mathit{dt}}^\ast}` be :math:`{{{\mathrm{alloctype}}^\ast}}{({{\mathit{type}}^\ast})}`.
 
-#. Let :math:`{(\mathsf{elem}~{\mathit{elemtype}}~{{\mathit{expr}}_{\mathsf{e}}^\ast}~{\mathit{elemmode}})^\ast}` be :math:`{{\mathit{elem}}^\ast}`.
+#. Let :math:`{{\mathit{elemtype}}^\ast}` be the reference type sequence :math:`\epsilon`.
 
-#. Let :math:`{(\mathsf{func}~x~{{\mathit{local}}^\ast}~{\mathit{expr}}_{\mathsf{f}})^\ast}` be :math:`{{\mathit{func}}^\ast}`.
+#. For each :math:`{\mathit{elem}}` in :math:`{{\mathit{elem}}^\ast}`, do:
+
+   a. Let :math:`(\mathsf{elem}~{\mathit{elemtype}}~{{\mathit{expr}}_{\mathsf{e}}^\ast}~{\mathit{elemmode}})` be the destructuring of :math:`{\mathit{elem}}`.
+
+   #. Append :math:`{\mathit{elemtype}}` to :math:`{{\mathit{elemtype}}^\ast}`.
+
+#. Let :math:`{{\mathit{expr}}_{\mathsf{f}}^\ast}` be the expression sequence :math:`\epsilon`.
+
+#. Let :math:`{{{\mathit{local}}^\ast}^\ast}` be the local sequence sequence :math:`\epsilon`.
+
+#. Let :math:`{x^\ast}` be the type index sequence :math:`\epsilon`.
+
+#. For each :math:`{\mathit{func}}` in :math:`{{\mathit{func}}^\ast}`, do:
+
+   a. Let :math:`(\mathsf{func}~x~{{\mathit{local}}^\ast}~{\mathit{expr}}_{\mathsf{f}})` be the destructuring of :math:`{\mathit{func}}`.
+
+   #. Append :math:`{\mathit{expr}}_{\mathsf{f}}` to :math:`{{\mathit{expr}}_{\mathsf{f}}^\ast}`.
+
+   #. Append :math:`{{\mathit{local}}^\ast}` to :math:`{{{\mathit{local}}^\ast}^\ast}`.
+
+   #. Append :math:`x` to :math:`{x^\ast}`.
 
 #. Let :math:`{{\mathit{aa}}^\ast}` be :math:`\epsilon`.
 
@@ -25762,11 +26370,33 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{\mathit{moduleinst}}_0` be the module instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{{\mathrm{alloctype}}^\ast}}{({{\mathit{type}}^\ast})},\; \mathsf{globals}~{\mathrm{globals}}({{\mathit{externaddr}}^\ast}),\; \mathsf{funcs}~{\mathrm{funcs}}({{\mathit{externaddr}}^\ast})~{({|s{.}\mathsf{funcs}|} + i_{\mathsf{f}})^{i_{\mathsf{f}}<{|{{\mathit{func}}^\ast}|}}} \}\end{array}`.
 
-#. Let :math:`{(\mathsf{table}~{\mathit{tabletype}}~{\mathit{expr}}_{\mathsf{t}})^\ast}` be :math:`{{\mathit{table}}^\ast}`.
+#. Let :math:`{{\mathit{expr}}_{\mathsf{t}}^\ast}` be the expression sequence :math:`\epsilon`.
 
-#. Let :math:`{(\mathsf{global}~{\mathit{globaltype}}~{\mathit{expr}}_{\mathsf{g}})^\ast}` be :math:`{{\mathit{global}}^\ast}`.
+#. For each :math:`{\mathit{table}}` in :math:`{{\mathit{table}}^\ast}`, do:
 
-#. Let :math:`{(\mathsf{elem}~{\mathit{reftype}}~{{\mathit{expr}}_{\mathsf{e}}^\ast}~{\mathit{elemmode}})^\ast}` be :math:`{{\mathit{elem}}^\ast}`.
+   a. Let :math:`(\mathsf{table}~{\mathit{tabletype}}~{\mathit{expr}}_{\mathsf{t}})` be the destructuring of :math:`{\mathit{table}}`.
+
+   #. Append :math:`{\mathit{expr}}_{\mathsf{t}}` to :math:`{{\mathit{expr}}_{\mathsf{t}}^\ast}`.
+
+#. Let :math:`{{\mathit{expr}}_{\mathsf{g}}^\ast}` be the expression sequence :math:`\epsilon`.
+
+#. Let :math:`{{\mathit{globaltype}}^\ast}` be the global type sequence :math:`\epsilon`.
+
+#. For each :math:`{\mathit{global}}` in :math:`{{\mathit{global}}^\ast}`, do:
+
+   a. Let :math:`(\mathsf{global}~{\mathit{globaltype}}~{\mathit{expr}}_{\mathsf{g}})` be the destructuring of :math:`{\mathit{global}}`.
+
+   #. Append :math:`{\mathit{expr}}_{\mathsf{g}}` to :math:`{{\mathit{expr}}_{\mathsf{g}}^\ast}`.
+
+   #. Append :math:`{\mathit{globaltype}}` to :math:`{{\mathit{globaltype}}^\ast}`.
+
+#. Let :math:`{{{\mathit{expr}}_{\mathsf{e}}^\ast}^\ast}` be the expression sequence sequence :math:`\epsilon`.
+
+#. For each :math:`{\mathit{elem}}` in :math:`{{\mathit{elem}}^\ast}`, do:
+
+   a. Let :math:`(\mathsf{elem}~{\mathit{reftype}}~{{\mathit{expr}}_{\mathsf{e}}^\ast}~{\mathit{elemmode}})` be the destructuring of :math:`{\mathit{elem}}`.
+
+   #. Append :math:`{{\mathit{expr}}_{\mathsf{e}}^\ast}` to :math:`{{{\mathit{expr}}_{\mathsf{e}}^\ast}^\ast}`.
 
 #. Let :math:`z` be the state :math:`(s, \{ \begin{array}[t]{@{}l@{}}\mathsf{module}~{\mathit{moduleinst}}_0 \}\end{array})`.
 
@@ -25782,7 +26412,13 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Push the :math:`\mathsf{frame}` F.
 
-#. Let :math:`{{\mathit{ref}}_{\mathsf{t}}^\ast}` be the result of :ref:`evaluating <exec-expr>` :math:`{{\mathit{expr}}_{\mathsf{t}}^\ast}` with state :math:`z`.
+#. Let :math:`{{\mathit{ref}}_{\mathsf{t}}^\ast}` be the reference value sequence :math:`\epsilon`.
+
+#. For each :math:`{\mathit{expr}}_{\mathsf{t}}` in :math:`{{\mathit{expr}}_{\mathsf{t}}^\ast}`, do:
+
+   a. Let :math:`{\mathit{ref}}_{\mathsf{t}}` be the result of :ref:`evaluating <exec-expr>` :math:`{\mathit{expr}}_{\mathsf{t}}` with state :math:`z`.
+
+   #. Append :math:`{\mathit{ref}}_{\mathsf{t}}` to :math:`{{\mathit{ref}}_{\mathsf{t}}^\ast}`.
 
 #. Pop the :math:`\mathsf{frame}` f from the stack.
 
@@ -25790,7 +26426,19 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Push the :math:`\mathsf{frame}` F.
 
-#. Let :math:`{{{\mathit{ref}}_{\mathsf{e}}^\ast}^\ast}` be the result of :ref:`evaluating <exec-expr>` :math:`{{{\mathit{expr}}_{\mathsf{e}}^\ast}^\ast}` with state :math:`z`.
+#. Let :math:`{{{\mathit{ref}}_{\mathsf{e}}^\ast}^\ast}` be the reference value sequence sequence :math:`\epsilon`.
+
+#. For each :math:`{{\mathit{expr}}_{\mathsf{e}}^\ast}` in :math:`{{{\mathit{expr}}_{\mathsf{e}}^\ast}^\ast}`, do:
+
+   a. Let :math:`{{\mathit{ref}}_{\mathsf{e}}^\ast}` be the reference value sequence :math:`\epsilon`.
+
+   #. For each :math:`{\mathit{expr}}_{\mathsf{e}}` in :math:`{{\mathit{expr}}_{\mathsf{e}}^\ast}`, do:
+
+      1) Let :math:`{\mathit{ref}}_{\mathsf{e}}` be the result of :ref:`evaluating <exec-expr>` :math:`{\mathit{expr}}_{\mathsf{e}}` with state :math:`z`.
+
+      #) Append :math:`{\mathit{ref}}_{\mathsf{e}}` to :math:`{{\mathit{ref}}_{\mathsf{e}}^\ast}`.
+
+   #. Append :math:`{{\mathit{ref}}_{\mathsf{e}}^\ast}` to :math:`{{{\mathit{ref}}_{\mathsf{e}}^\ast}^\ast}`.
 
 #. Pop the :math:`\mathsf{frame}` f from the stack.
 
@@ -26018,9 +26666,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    a. Return true.
 
-#. Let :math:`{{\mathit{decl}'}^\ast}` be :math:`{{\mathit{decl}}^\ast}`.
-
-#. Return :math:`{\mathrm{imports}}({{\mathit{decl}'}^\ast}) = \epsilon`.
+#. Return :math:`{\mathrm{imports}}({{\mathit{decl}}^\ast}) = \epsilon`.
 
 #. Assert: Due to validation, YetE: Nondeterministic assignment target: decl_1*{decl_1 <- decl_1*} :: [import] :: decl_2*{decl_2 <- decl_2*}.
 
@@ -28786,14 +29432,17 @@ Step_read/call_ref yy
 8. Let fi be $funcinst(z)[a].
 9. Assert: Due to validation, fi.CODE is some FUNC.
 10. Let (FUNC x local_0* instr*) be fi.CODE.
-11. Let (LOCAL t)* be local_0*.
-12. Assert: Due to validation, $Expand(fi.TYPE) is some FUNC.
-13. Let (FUNC t_1^n -> t_2^m) be $Expand(fi.TYPE).
-14. Assert: Due to validation, there are at least n values on the top of the stack.
-15. Pop the values val^n from the stack.
-16. Let f be { LOCALS: ?(val)^n :: $default_(t)*; MODULE: fi.MODULE }.
-17. Push the frame (FRAME_ m { f }) to the stack.
-18. Enter instr* with label (LABEL_ m { [] }).
+11. Let t* be [].
+12. For each local_0 in local_0*, do:
+  a. Let (LOCAL t) be local_0.
+  b. Append t to the t*.
+13. Assert: Due to validation, $Expand(fi.TYPE) is some FUNC.
+14. Let (FUNC t_1^n -> t_2^m) be $Expand(fi.TYPE).
+15. Assert: Due to validation, there are at least n values on the top of the stack.
+16. Pop the values val^n from the stack.
+17. Let f be { LOCALS: ?(val)^n :: $default_(t)*; MODULE: fi.MODULE }.
+18. Push the frame (FRAME_ m { f }) to the stack.
+19. Enter instr* with label (LABEL_ m { [] }).
 
 Step_read/return_call x
 1. Let z be the current state.
@@ -29224,10 +29873,13 @@ Step_read/struct.new_default x
 3. Let (STRUCT list_0) be $Expand($type(z, x)).
 4. Let (mut? zt)* be list_0.
 5. Assert: Due to validation, $default_($unpack(zt)) is defined*.
-6. Let ?(val)* be $default_($unpack(zt))*.
-7. Assert: Due to validation, (|val*| = |zt*|).
-8. Push the values val* to the stack.
-9. Execute the instruction (STRUCT.NEW x).
+6. Let val* be [].
+7. For each zt in zt*, do:
+  a. Let ?(val) be $default_($unpack(zt)).
+  b. Append val to the val*.
+8. Assert: Due to validation, (|val*| = |zt*|).
+9. Push the values val* to the stack.
+10. Execute the instruction (STRUCT.NEW x).
 
 Step_read/struct.get sx? x i
 1. Let z be the current state.
@@ -31287,8 +31939,11 @@ irelaxed_swizzle_lane_ N c* i
 
 ivunop_ Jnn X M $f_ v_1
 1. Let c_1* be $lanes_(Jnn X M, v_1).
-2. Let c* be $f_($lsizenn(Jnn), c_1)*.
-3. Return [$inv_lanes_(Jnn X M, c*)].
+2. Let c* be [].
+3. For each c_1 in c_1*, do:
+  a. Let c be $f_($lsizenn(Jnn), c_1).
+  b. Append c to the c*.
+4. Return [$inv_lanes_(Jnn X M, c*)].
 
 fvunop_ Fnn X M $f_ v_1
 1. Let c_1* be $lanes_(Fnn X M, v_1).
@@ -31298,14 +31953,20 @@ fvunop_ Fnn X M $f_ v_1
 ivbinop_ Jnn X M $f_ v_1 v_2
 1. Let c_1* be $lanes_(Jnn X M, v_1).
 2. Let c_2* be $lanes_(Jnn X M, v_2).
-3. Let c* be $f_($lsizenn(Jnn), c_1, c_2)*.
-4. Return [$inv_lanes_(Jnn X M, c*)].
+3. Let c* be [].
+4. For each c_1 in c_1* and c_2 in c_2*, do:
+  a. Let c be $f_($lsizenn(Jnn), c_1, c_2).
+  b. Append c to the c*.
+5. Return [$inv_lanes_(Jnn X M, c*)].
 
 ivbinopsx_ Jnn X M $f_ sx v_1 v_2
 1. Let c_1* be $lanes_(Jnn X M, v_1).
 2. Let c_2* be $lanes_(Jnn X M, v_2).
-3. Let c* be $f_($lsizenn(Jnn), sx, c_1, c_2)*.
-4. Return [$inv_lanes_(Jnn X M, c*)].
+3. Let c* be [].
+4. For each c_1 in c_1* and c_2 in c_2*, do:
+  a. Let c be $f_($lsizenn(Jnn), sx, c_1, c_2).
+  b. Append c to the c*.
+5. Return [$inv_lanes_(Jnn X M, c*)].
 
 ivbinopsxnd_ Jnn X M $f_ sx v_1 v_2
 1. Let c_1* be $lanes_(Jnn X M, v_1).
@@ -31335,42 +31996,63 @@ fvternop_ Fnn X M $f_ v_1 v_2 v_3
 
 ivtestop_ Jnn X M $f_ v_1
 1. Let c_1* be $lanes_(Jnn X M, v_1).
-2. Let c* be $f_($lsizenn(Jnn), c_1)*.
-3. Return $prod(c*).
+2. Let c* be [].
+3. For each c_1 in c_1*, do:
+  a. Let c be $f_($lsizenn(Jnn), c_1).
+  b. Append c to the c*.
+4. Return $prod(c*).
 
 fvtestop_ Fnn X M $f_ v_1
 1. Let c_1* be $lanes_(Fnn X M, v_1).
-2. Let c* be $f_($sizenn(Fnn), c_1)*.
-3. Return $prod(c*).
+2. Let c* be [].
+3. For each c_1 in c_1*, do:
+  a. Let c be $f_($sizenn(Fnn), c_1).
+  b. Append c to the c*.
+4. Return $prod(c*).
 
 ivrelop_ Jnn X M $f_ v_1 v_2
 1. Let c_1* be $lanes_(Jnn X M, v_1).
 2. Let c_2* be $lanes_(Jnn X M, v_2).
-3. Let c* be $extend__(1, $lsizenn(Jnn), S, $f_($lsizenn(Jnn), c_1, c_2))*.
-4. Return $inv_lanes_(Jnn X M, c*).
+3. Let c* be [].
+4. For each c_1 in c_1* and c_2 in c_2*, do:
+  a. Let c be $extend__(1, $lsizenn(Jnn), S, $f_($lsizenn(Jnn), c_1, c_2)).
+  b. Append c to the c*.
+5. Return $inv_lanes_(Jnn X M, c*).
 
 ivrelopsx_ Jnn X M $f_ sx v_1 v_2
 1. Let c_1* be $lanes_(Jnn X M, v_1).
 2. Let c_2* be $lanes_(Jnn X M, v_2).
-3. Let c* be $extend__(1, $lsizenn(Jnn), S, $f_($lsizenn(Jnn), sx, c_1, c_2))*.
-4. Return $inv_lanes_(Jnn X M, c*).
+3. Let c* be [].
+4. For each c_1 in c_1* and c_2 in c_2*, do:
+  a. Let c be $extend__(1, $lsizenn(Jnn), S, $f_($lsizenn(Jnn), sx, c_1, c_2)).
+  b. Append c to the c*.
+5. Return $inv_lanes_(Jnn X M, c*).
 
 fvrelop_ Fnn X M $f_ v_1 v_2
 1. Let c_1* be $lanes_(Fnn X M, v_1).
 2. Let c_2* be $lanes_(Fnn X M, v_2).
 3. Let Inn be $isize^-1($fsize(Fnn)).
-4. Let c* be $extend__(1, $sizenn(Fnn), S, $f_($sizenn(Fnn), c_1, c_2))*.
-5. Return $inv_lanes_(Inn X M, c*).
+4. Let c* be [].
+5. For each c_1 in c_1* and c_2 in c_2*, do:
+  a. Let c be $extend__(1, $sizenn(Fnn), S, $f_($sizenn(Fnn), c_1, c_2)).
+  b. Append c to the c*.
+6. Return $inv_lanes_(Inn X M, c*).
 
 ivshiftop_ Jnn X M $f_ v_1 i
 1. Let c_1* be $lanes_(Jnn X M, v_1).
-2. Let c* be $f_($lsizenn(Jnn), c_1, i)*.
-3. Return $inv_lanes_(Jnn X M, c*).
+2. Let c* be [].
+3. For each c_1 in c_1*, do:
+  a. Let c be $f_($lsizenn(Jnn), c_1, i).
+  b. Append c to the c*.
+4. Return $inv_lanes_(Jnn X M, c*).
 
 ivshiftopsx_ Jnn X M $f_ sx v_1 i
 1. Let c_1* be $lanes_(Jnn X M, v_1).
-2. Let c* be $f_($lsizenn(Jnn), sx, c_1, i)*.
-3. Return $inv_lanes_(Jnn X M, c*).
+2. Let c* be [].
+3. For each c_1 in c_1*, do:
+  a. Let c be $f_($lsizenn(Jnn), sx, c_1, i).
+  b. Append c to the c*.
+4. Return $inv_lanes_(Jnn X M, c*).
 
 ivbitmaskop_ Jnn X M v_1
 1. Let c_1* be $lanes_(Jnn X M, v_1).
@@ -31380,14 +32062,20 @@ ivbitmaskop_ Jnn X M v_1
 ivswizzlop_ Jnn X M $f_ v_1 v_2
 1. Let c_1* be $lanes_(Jnn X M, v_1).
 2. Let c_2* be $lanes_(Jnn X M, v_2).
-3. Let c* be $f_($lsizenn(Jnn), c_1*, c_2)*.
-4. Return $inv_lanes_(Jnn X M, c*).
+3. Let c* be [].
+4. For each c_2 in c_2*, do:
+  a. Let c be $f_($lsizenn(Jnn), c_1*, c_2).
+  b. Append c to the c*.
+5. Return $inv_lanes_(Jnn X M, c*).
 
 ivshufflop_ Jnn X M i* v_1 v_2
 1. Let c_1* be $lanes_(Jnn X M, v_1).
 2. Let c_2* be $lanes_(Jnn X M, v_2).
-3. Let c* be c_1* :: c_2*[i]*.
-4. Return $inv_lanes_(Jnn X M, c*).
+3. Let c* be [].
+4. For each i in i*, do:
+  a. Let c be c_1* :: c_2*[i].
+  b. Append c to the c*.
+5. Return $inv_lanes_(Jnn X M, c*).
 
 vvunop_ Vnn NOT v
 1. Return [$inot_($vsizenn(Vnn), v)].
@@ -31589,10 +32277,16 @@ vshufflop_ I8 X M i* v_1 v_2
 vnarrowop__ Jnn_1 X M_1 Jnn_2 X M_2 sx v_1 v_2
 1. Let c_1* be $lanes_(Jnn_1 X M_1, v_1).
 2. Let c_2* be $lanes_(Jnn_1 X M_1, v_2).
-3. Let c'_1* be $narrow__($lsize(Jnn_1), $lsize(Jnn_2), sx, c_1)*.
-4. Let c'_2* be $narrow__($lsize(Jnn_1), $lsize(Jnn_2), sx, c_2)*.
-5. Let v be $inv_lanes_(Jnn_2 X M_2, c'_1* :: c'_2*).
-6. Return v.
+3. Let c'_1* be [].
+4. For each c_1 in c_1*, do:
+  a. Let c'_1 be $narrow__($lsize(Jnn_1), $lsize(Jnn_2), sx, c_1).
+  b. Append c'_1 to the c'_1*.
+5. Let c'_2* be [].
+6. For each c_2 in c_2*, do:
+  a. Let c'_2 be $narrow__($lsize(Jnn_1), $lsize(Jnn_2), sx, c_2).
+  b. Append c'_2 to the c'_2*.
+7. Let v be $inv_lanes_(Jnn_2 X M_2, c'_1* :: c'_2*).
+8. Return v.
 
 ivadd_pairwise_ N i*
 1. Let [j_1, j_2]* be $concat__1^-1(`N, i*).
@@ -31600,9 +32294,12 @@ ivadd_pairwise_ N i*
 
 ivextunop__ Jnn_1 X M_1 Jnn_2 X M_2 $f_ sx v_1
 1. Let c_1* be $lanes_(Jnn_1 X M_1, v_1).
-2. Let c'_1* be $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), sx, c_1)*.
-3. Let c* be $f_($lsizenn2(Jnn_2), c'_1*).
-4. Return $inv_lanes_(Jnn_2 X M_2, c*).
+2. Let c'_1* be [].
+3. For each c_1 in c_1*, do:
+  a. Let c'_1 be $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), sx, c_1).
+  b. Append c'_1 to the c'_1*.
+4. Let c* be $f_($lsizenn2(Jnn_2), c'_1*).
+5. Return $inv_lanes_(Jnn_2 X M_2, c*).
 
 vextunop__ Jnn_1 X M_1 Jnn_2 X M_2 (EXTADD_PAIRWISE sx) v_1
 1. Return $ivextunop__(Jnn_1 X M_1, Jnn_2 X M_2, $ivadd_pairwise_, sx, v_1).
@@ -31618,10 +32315,16 @@ ivdot_sat_ N i_1* i_2*
 ivextbinop__ Jnn_1 X M_1 Jnn_2 X M_2 $f_ sx_1 sx_2 i k v_1 v_2
 1. Let c_1* be $lanes_(Jnn_1 X M_1, v_1)[i : k].
 2. Let c_2* be $lanes_(Jnn_1 X M_1, v_2)[i : k].
-3. Let c'_1* be $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), sx_1, c_1)*.
-4. Let c'_2* be $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), sx_2, c_2)*.
-5. Let c* be $f_($lsizenn2(Jnn_2), c'_1*, c'_2*).
-6. Return $inv_lanes_(Jnn_2 X M_2, c*).
+3. Let c'_1* be [].
+4. For each c_1 in c_1*, do:
+  a. Let c'_1 be $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), sx_1, c_1).
+  b. Append c'_1 to the c'_1*.
+5. Let c'_2* be [].
+6. For each c_2 in c_2*, do:
+  a. Let c'_2 be $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), sx_2, c_2).
+  b. Append c'_2 to the c'_2*.
+7. Let c* be $f_($lsizenn2(Jnn_2), c'_1*, c'_2*).
+8. Return $inv_lanes_(Jnn_2 X M_2, c*).
 
 ivmul_ N i_1* i_2*
 1. Return $imul_(N, i_1, i_2)*.
@@ -32028,49 +32731,74 @@ allocmodule s module externaddr* val_G* ref_T* ref_E**
 5. Let ma_I* be $memsxa(externaddr*).
 6. Let ta_I* be $tablesxa(externaddr*).
 7. Let fa* be (|s.FUNCS| + i_F)^(i_F<|func*|).
-8. Let (TAG tagtype)* be tag*.
-9. Let (DATA byte* datamode)* be data*.
-10. Let (GLOBAL globaltype expr_G)* be global*.
-11. Let (TABLE tabletype expr_T)* be table*.
-12. Let (MEMORY memtype)* be mem*.
-13. Let dt* be $alloctypes(type*).
-14. Let (ELEM elemtype expr_E* elemmode)* be elem*.
-15. Let (FUNC x local* expr_F)* be func*.
-16. Let aa* be [].
-17. For each tagtype in tagtype*, do:
+8. Let tagtype* be [].
+9. For each tag in tag*, do:
+  a. Let (TAG tagtype) be tag.
+  b. Append tagtype to the tagtype*.
+10. Let byte** be [].
+11. For each data in data*, do:
+  a. Let (DATA byte* datamode) be data.
+  b. Append byte* to the byte**.
+12. Let globaltype* be [].
+13. For each global in global*, do:
+  a. Let (GLOBAL globaltype expr_G) be global.
+  b. Append globaltype to the globaltype*.
+14. Let tabletype* be [].
+15. For each table in table*, do:
+  a. Let (TABLE tabletype expr_T) be table.
+  b. Append tabletype to the tabletype*.
+16. Let memtype* be [].
+17. For each mem in mem*, do:
+  a. Let (MEMORY memtype) be mem.
+  b. Append memtype to the memtype*.
+18. Let dt* be $alloctypes(type*).
+19. Let elemtype* be [].
+20. For each elem in elem*, do:
+  a. Let (ELEM elemtype expr_E* elemmode) be elem.
+  b. Append elemtype to the elemtype*.
+21. Let expr_F* be [].
+22. Let local** be [].
+23. Let x* be [].
+24. For each func in func*, do:
+  a. Let (FUNC x local* expr_F) be func.
+  b. Append expr_F to the expr_F*.
+  c. Append local* to the local**.
+  d. Append x to the x*.
+25. Let aa* be [].
+26. For each tagtype in tagtype*, do:
   a. Let aa be $alloctag(s, $subst_all_tagtype(tagtype, dt*)).
   b. Append aa to the aa*.
-18. Let ga* be [].
-19. For each globaltype in globaltype* and val_G in val_G*, do:
+27. Let ga* be [].
+28. For each globaltype in globaltype* and val_G in val_G*, do:
   a. Let ga be $allocglobal(s, $subst_all_globaltype(globaltype, dt*), val_G).
   b. Append ga to the ga*.
-20. Let ma* be [].
-21. For each memtype in memtype*, do:
+29. Let ma* be [].
+30. For each memtype in memtype*, do:
   a. Let ma be $allocmem(s, $subst_all_memtype(memtype, dt*)).
   b. Append ma to the ma*.
-22. Let ta* be [].
-23. For each tabletype in tabletype* and ref_T in ref_T*, do:
+31. Let ta* be [].
+32. For each tabletype in tabletype* and ref_T in ref_T*, do:
   a. Let ta be $alloctable(s, $subst_all_tabletype(tabletype, dt*), ref_T).
   b. Append ta to the ta*.
-24. Let xi* be [].
-25. For each export in export*, do:
+33. Let xi* be [].
+34. For each export in export*, do:
   a. Let xi be $allocexport({ TAGS: aa_I* :: aa*; GLOBALS: ga_I* :: ga*; MEMS: ma_I* :: ma*; TABLES: ta_I* :: ta*; FUNCS: fa_I* :: fa* }, export).
   b. Append xi to the xi*.
-26. Let da* be [].
-27. For each byte* in byte**, do:
+35. Let da* be [].
+36. For each byte* in byte**, do:
   a. Let da be $allocdata(s, OK, byte*).
   b. Append da to the da*.
-28. Let ea* be [].
-29. For each elemtype in elemtype* and ref_E* in ref_E**, do:
+37. Let ea* be [].
+38. For each elemtype in elemtype* and ref_E* in ref_E**, do:
   a. Let ea be $allocelem(s, $subst_all_reftype(elemtype, dt*), ref_E*).
   b. Append ea to the ea*.
-30. Let moduleinst be { TYPES: dt*; TAGS: aa_I* :: aa*; GLOBALS: ga_I* :: ga*; MEMS: ma_I* :: ma*; TABLES: ta_I* :: ta*; FUNCS: fa_I* :: fa*; DATAS: da*; ELEMS: ea*; EXPORTS: xi* }.
-31. Let funcaddr_0* be [].
-32. For each expr_F in expr_F* and local* in local** and x in x*, do:
+39. Let moduleinst be { TYPES: dt*; TAGS: aa_I* :: aa*; GLOBALS: ga_I* :: ga*; MEMS: ma_I* :: ma*; TABLES: ta_I* :: ta*; FUNCS: fa_I* :: fa*; DATAS: da*; ELEMS: ea*; EXPORTS: xi* }.
+40. Let funcaddr_0* be [].
+41. For each expr_F in expr_F* and local* in local** and x in x*, do:
   a. Let funcaddr_0 be $allocfunc(s, dt*[x], (FUNC x local* expr_F), moduleinst).
   b. Append funcaddr_0 to the funcaddr_0*.
-33. Assert: Due to validation, (funcaddr_0* = fa*).
-34. Return moduleinst.
+42. Assert: Due to validation, (funcaddr_0* = fa*).
+43. Return moduleinst.
 
 rundata_ x (DATA b^n datamode)
 1. If (datamode = PASSIVE), then:
@@ -32111,29 +32839,49 @@ instantiate s module externaddr*
 4. Let instr_D* be $concat_(`instr, $rundata_(i_D, data*[i_D])^(i_D<|data*|)).
 5. Let instr_E* be $concat_(`instr, $runelem_(i_E, elem*[i_E])^(i_E<|elem*|)).
 6. Let moduleinst_0 be { TYPES: $alloctypes(type*); GLOBALS: $globalsxa(externaddr*); FUNCS: $funcsxa(externaddr*) :: (|s.FUNCS| + i_F)^(i_F<|func*|) }.
-7. Let (TABLE tabletype expr_T)* be table*.
-8. Let (GLOBAL globaltype expr_G)* be global*.
-9. Let (ELEM reftype expr_E* elemmode)* be elem*.
-10. Let z be (s, { MODULE: moduleinst_0 }).
-11. Push the frame (FRAME_ 0 { $frame(z) }) to the stack.
-12. Let val_G* be $evalglobals(z, globaltype*, expr_G*).
-13. Pop the frame (FRAME_ 0 { f }) from the stack.
-14. Push the frame (FRAME_ 0 { f }) to the stack.
-15. Let [ref_T]* be $Eval_expr(z, expr_T)*.
-16. Pop the frame (FRAME_ 0 { f }) from the stack.
-17. Push the frame (FRAME_ 0 { f }) to the stack.
-18. Let [ref_E]** be $Eval_expr(z, expr_E)**.
-19. Pop the frame (FRAME_ 0 { f }) from the stack.
-20. Let moduleinst be $allocmodule(s, module, externaddr*, val_G*, ref_T*, ref_E**).
-21. Push the frame (FRAME_ 0 { { MODULE: moduleinst } }) to the stack.
-22. Execute the sequence instr_E*.
-23. Execute the sequence instr_D*.
-24. If start? is defined, then:
+7. Let expr_T* be [].
+8. For each table in table*, do:
+  a. Let (TABLE tabletype expr_T) be table.
+  b. Append expr_T to the expr_T*.
+9. Let expr_G* be [].
+10. Let globaltype* be [].
+11. For each global in global*, do:
+  a. Let (GLOBAL globaltype expr_G) be global.
+  b. Append expr_G to the expr_G*.
+  c. Append globaltype to the globaltype*.
+12. Let expr_E** be [].
+13. For each elem in elem*, do:
+  a. Let (ELEM reftype expr_E* elemmode) be elem.
+  b. Append expr_E* to the expr_E**.
+14. Let z be (s, { MODULE: moduleinst_0 }).
+15. Push the frame (FRAME_ 0 { $frame(z) }) to the stack.
+16. Let val_G* be $evalglobals(z, globaltype*, expr_G*).
+17. Pop the frame (FRAME_ 0 { f }) from the stack.
+18. Push the frame (FRAME_ 0 { f }) to the stack.
+19. Let ref_T* be [].
+20. For each expr_T in expr_T*, do:
+  a. Let [ref_T] be $Eval_expr(z, expr_T).
+  b. Append ref_T to the ref_T*.
+21. Pop the frame (FRAME_ 0 { f }) from the stack.
+22. Push the frame (FRAME_ 0 { f }) to the stack.
+23. Let ref_E** be [].
+24. For each expr_E* in expr_E**, do:
+  a. Let ref_E* be [].
+  b. For each expr_E in expr_E*, do:
+    1) Let [ref_E] be $Eval_expr(z, expr_E).
+    2) Append ref_E to the ref_E*.
+  c. Append ref_E* to the ref_E**.
+25. Pop the frame (FRAME_ 0 { f }) from the stack.
+26. Let moduleinst be $allocmodule(s, module, externaddr*, val_G*, ref_T*, ref_E**).
+27. Push the frame (FRAME_ 0 { { MODULE: moduleinst } }) to the stack.
+28. Execute the sequence instr_E*.
+29. Execute the sequence instr_D*.
+30. If start? is defined, then:
   a. Let ?((START x)) be start?.
   b. Let instr_S be (CALL x).
   c. Execute the instruction instr_S.
-25. Pop the frame (FRAME_ 0 { { MODULE: moduleinst } }) from the stack.
-26. Return { MODULE: moduleinst }.MODULE.
+31. Pop the frame (FRAME_ 0 { { MODULE: moduleinst } }) from the stack.
+32. Return { MODULE: moduleinst }.MODULE.
 
 invoke s funcaddr val*
 1. Assert: Due to validation, $Expand(s.FUNCS[funcaddr].TYPE) is some FUNC.
@@ -32224,11 +32972,10 @@ exportsd decl'*
 ordered decl*
 1. If (decl* = []), then:
   a. Return true.
-2. Let decl'* be decl*.
-3. Return ($importsd(decl'*) = []).
-4. Assert: Due to validation, YetE (Nondeterministic assignment target: decl_1*{decl_1 <- decl_1*} :: [import] :: decl_2*{decl_2 <- decl_2*}).
-5. Let decl_1* :: [import] :: decl_2* be decl*.
-6. Return (((((($importsd(decl_1*) = []) /\ ($tagsd(decl_1*) = [])) /\ ($globalsd(decl_1*) = [])) /\ ($memsd(decl_1*) = [])) /\ ($tablesd(decl_1*) = [])) /\ ($funcsd(decl_1*) = [])).
+2. Return ($importsd(decl*) = []).
+3. Assert: Due to validation, YetE (Nondeterministic assignment target: decl_1*{decl_1 <- decl_1*} :: [import] :: decl_2*{decl_2 <- decl_2*}).
+4. Let decl_1* :: [import] :: decl_2* be decl*.
+5. Return (((((($importsd(decl_1*) = []) /\ ($tagsd(decl_1*) = [])) /\ ($globalsd(decl_1*) = [])) /\ ($memsd(decl_1*) = [])) /\ ($tablesd(decl_1*) = [])) /\ ($funcsd(decl_1*) = [])).
 
 allocXs `X `Y s X''* Y''*
 1. If (X''* = []), then:

@@ -6,6 +6,7 @@ val insert_nop : instr list -> instr list
 val merge_blocks : instr list list -> instr list
 val push_either :instr -> instr list
 val simplify_record_concat : expr -> expr
+val remove_dead_assignment : instr list -> instr list
 val enhance_readability : instr list -> instr list
 val reduce_comp: expr -> expr
 val flatten_if : instr list -> instr list
