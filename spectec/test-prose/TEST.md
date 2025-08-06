@@ -26462,7 +26462,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the :math:`\mathsf{frame}` F from the stack.
 
-#. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{module}~{\mathit{moduleinst}} \}\end{array}{.}\mathsf{module}`.
+#. Return :math:`{\mathit{moduleinst}}`.
 
 
 :math:`{\mathrm{invoke}}(s, {\mathit{funcaddr}}, {{\mathit{val}}^\ast})`
@@ -32881,7 +32881,7 @@ instantiate s module externaddr*
   b. Let instr_S be (CALL x).
   c. Execute the instruction instr_S.
 31. Pop the frame (FRAME_ 0 { { MODULE: moduleinst } }) from the stack.
-32. Return { MODULE: moduleinst }.MODULE.
+32. Return moduleinst.
 
 invoke s funcaddr val*
 1. Assert: Due to validation, $Expand(s.FUNCS[funcaddr].TYPE) is some FUNC.

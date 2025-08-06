@@ -631,6 +631,18 @@ let simplify_record_concat expr =
   in
   { expr with it = expr' }
 
+let simplify_dot_access e =
+  match e.it with
+  | AccE ({it = StrE r; _}, {it = DotP a; _}) ->
+    let e_opt = List.find_map (fun (a', er) ->
+      if a.it = a'.it then Some !er else None
+    ) r in
+    (match e_opt with
+    | Some e -> e
+    | None -> e
+    )
+  | _ -> e
+
 type count = One of string | Many
 module Counter = Map.Make (String)
 let infer_case_assert instrs =
@@ -802,7 +814,7 @@ let reduce_comp expr =
 let loop_max = 100
 let loop_cnt = ref loop_max
 let rec enhance_readability instrs =
-  let pre_expr = simplify_record_concat << if_not_defined << reduce_comp in
+  let pre_expr = simplify_record_concat << if_not_defined << reduce_comp << simplify_dot_access in
   let walk_expr walker expr =
     let expr1 = pre_expr expr in
     Al.Walk.base_walker.walk_expr walker expr1
