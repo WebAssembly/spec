@@ -116,8 +116,15 @@ let match_link env e =
 
 let get_context_var e =
   match e.it with
-  | Al.Ast.CaseE (_, [_; {it = Al.Ast.VarE x; _}]) when x <> "_" -> x (* HARDCODE for frame *)
-  | Al.Ast.CaseE (mixop, _) -> mixop |> List.hd |> List.hd |> Atom.to_string |> (fun s -> String.sub s 0 1)
+  | Al.Ast.CaseE (_, [_; {it = Al.Ast.VarE x; _} as e']) when x <> "_" -> e' (* HARDCODE for frame *)
+  | Al.Ast.CaseE (mixop, _) ->
+    let x = mixop
+      |> List.hd
+      |> List.hd
+      |> Atom.to_string
+      |> (fun s -> String.sub s 0 1)
+    in
+    {e with it = VarE x}
   | _ -> assert false (* It is expected that the context is a CaseE *)
 
 (* Translation from Al inverse call exp to Al binary exp *)
@@ -723,7 +730,7 @@ and render_expr' env expr =
     let space_opt = if (rendered_arg ^ rendered_arity) = "" then "" else " " in
     let and_opt = if rendered_arg <> "" && rendered_arity <> "" then " and " else "" in
     sprintf "%s%s%s%s%s"
-      context_var
+      (render_expr env context_var)
       space_opt
       rendered_arity
       and_opt
@@ -1054,7 +1061,7 @@ let render_control_frame_binding env expr =
     let space_opt = if (rendered_arg ^ rendered_arity) = "" then "" else " " in
     let and_opt = if rendered_arg <> "" && rendered_arity <> "" then " and " else "" in
     sprintf "Let %s be %s%s%s%s%s."
-      context_var
+      (render_expr env context_var)
       control_frame_name
       space_opt
       rendered_arity
@@ -1228,7 +1235,7 @@ let rec render_instr env algoname index depth instr =
       (repeat indent depth)
       (render_order index depth)
       (render_atom env atom)
-      (String.sub (Atom.to_string atom) 0 1)
+      (render_expr env (get_context_var e))
   | Al.Ast.PushI e ->
     sprintf "%s Push %s %s to the stack." (render_order index depth)
       (render_stack_prefix e) (render_expr env e)
@@ -1240,7 +1247,7 @@ let rec render_instr env algoname index depth instr =
     sprintf "%s Pop the %s %s from the stack."
       (render_order index depth)
       control_frame_kind
-      context_var
+      (render_expr env context_var)
   | Al.Ast.PopI e ->
     sprintf "%s Pop %s %s from the stack." (render_order index depth)
       (render_stack_prefix e) (render_expr env e)
@@ -1260,7 +1267,7 @@ let rec render_instr env algoname index depth instr =
       let rendered_let =
         sprintf "%s Let %s be %s."
           (render_order index depth)
-          context_var
+          (render_expr env context_var)
           (render_expr env e2) in
       (* XXX: It could introduce dead assignment *)
       let rendered_arity =
@@ -1271,7 +1278,7 @@ let rec render_instr env algoname index depth instr =
             (repeat indent depth)
             (render_order index depth)
             s
-            context_var in
+            (render_expr env context_var) in
       (* XXX: It could introduce dead assignment *)
       let rendered_arg =
         match atom_name with
@@ -1280,7 +1287,7 @@ let rec render_instr env algoname index depth instr =
             (repeat indent depth)
             (render_order index depth)
             (render_expr env arg)
-            context_var
+            (render_expr env context_var)
         | _ -> "" in
       rendered_let ^ rendered_arity ^ rendered_arg
     | _ ->
@@ -1414,7 +1421,7 @@ let rec render_instr env algoname index depth instr =
       (render_order index depth)
       (render_expr env e2)
       (render_atom env atom)
-      (String.sub (Atom.to_string atom) 0 1)
+      (render_expr env (get_context_var e1))
       (render_instrs env algoname (depth + 1) il)
   | Al.Ast.EnterI (e1, e2, il) ->
     sprintf "%s Enter the block %s with label %s.%s" (render_order index depth)
@@ -1423,7 +1430,8 @@ let rec render_instr env algoname index depth instr =
   | Al.Ast.ExecuteI e ->
     sprintf "%s Execute the instruction %s." (render_order index depth) (render_expr env e)
   | Al.Ast.ExecuteSeqI ({ it = CallE ("__prose:_jump_to_the_cont", _); _}) ->
-    sprintf "%s Jump to the continuation of L." (render_order index depth)
+    let label = Al.Al_util.(varE "L" ~note:(varT "label" [])) in
+    sprintf "%s Jump to the continuation of %s." (render_order index depth) (render_expr env label)
   | Al.Ast.ExecuteSeqI e ->
     sprintf "%s Execute the sequence %s." (render_order index depth) (render_expr env e)
   | Al.Ast.PerformI (n, es) ->
