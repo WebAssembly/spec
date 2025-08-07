@@ -137,8 +137,7 @@ and string_of_expr expr =
     sprintf "%s is contained in %s" (string_of_expr e1) (string_of_expr e2)
   | LenE e -> sprintf "|%s|" (string_of_expr e)
   | GetCurStateE -> "current_state()"
-  | GetCurContextE None -> "current_context()"
-  | GetCurContextE (Some a) -> sprintf "current_context(%s)" (string_of_atom a)
+  | GetCurContextE a -> sprintf "current_context(%s)" (string_of_atom a)
   | ListE el -> "[" ^ string_of_exprs ", " el ^ "]"
   | LiftE e -> "lift(" ^ string_of_expr e ^ ")"
   | AccE (e, p) -> sprintf "%s%s" (string_of_expr e) (string_of_path p)
@@ -448,8 +447,7 @@ and structured_string_of_expr expr =
     ^ ")"
   | LenE e -> "LenE (" ^ structured_string_of_expr e ^ ")"
   | GetCurStateE -> "GetCurStateE"
-  | GetCurContextE None -> "GetCurContextE"
-  | GetCurContextE (Some a) -> sprintf "GetCurContextE (%s)" (string_of_atom a)
+  | GetCurContextE a -> sprintf "GetCurContextE (%s)" (string_of_atom a)
   | ListE el -> "ListE ([" ^ structured_string_of_exprs el ^ "])"
   | LiftE e -> "LiftE (" ^ structured_string_of_expr e ^ ")"
   | AccE (e, p) ->

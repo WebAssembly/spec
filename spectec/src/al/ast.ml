@@ -84,7 +84,7 @@ and expr' =
   | ListE of expr list                            (* `[` expr* `]` *)
   | LiftE of expr                                 (* convert option to list *)
   | GetCurStateE                                  (* "the current state" *)
-  | GetCurContextE of atom option                 (* "the current context of certain (Some) or any (None) type" *)
+  | GetCurContextE of atom                        (* "the topmost `atom`" *)
   | ChooseE of expr                               (* "an element of" expr *)
   (* Conditions *)
   | IsCaseOfE of expr * atom                      (* expr is atom *)

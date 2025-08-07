@@ -780,8 +780,7 @@ and render_expr' env expr =
       let render_iters env iters = List.map (render_iter env) iters |> String.concat ", and corresponding " in
       sprintf "for all %s, %s" (render_iters env iters) se)
   | Al.Ast.GetCurStateE -> "the current state"
-  | Al.Ast.GetCurContextE None -> failwith "Unreachable" (*TODO: Refactor*)
-  | Al.Ast.GetCurContextE (Some a) ->
+  | Al.Ast.GetCurContextE a ->
     sprintf "the topmost %s" (render_atom env a)
   | Al.Ast.ChooseE e ->
     let se = render_expr env e in

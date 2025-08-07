@@ -349,8 +349,7 @@ and eval_expr env expr =
   | OptE opt -> Option.map (eval_expr env) opt |> optV
   | TupE el -> List.map (eval_expr env) el |> tupV
   (* Context *)
-  | GetCurContextE None -> WasmContext.get_top_context ()
-  | GetCurContextE (Some { it = Atom a; _ }) when List.mem a context_names ->
+  | GetCurContextE { it = Atom a; _ } when List.mem a context_names ->
     WasmContext.get_current_context a
   | ChooseE e ->
     let a = eval_expr env e |> unwrap_listv_to_array in

@@ -1106,7 +1106,7 @@ let insert_frame_binding instrs =
   match List.concat_map (walker.walk_instr walker) instrs with
   | il when !found ->
     let frame = frameE (varE "_" ~note:natT, varE "f" ~note:frameT) ~note:evalctxT in
-    (letI (frame, getCurContextE (Some frame_atom) ~note:evalctxT)) :: il
+    (letI (frame, getCurContextE frame_atom ~note:evalctxT)) :: il
   | _ -> instrs
 
 
@@ -1157,7 +1157,7 @@ let handle_framed_algo a instrs =
   (* End of helpers *)
 
   let frame = frameE (varE "_" ~note:natT, e_zf) ~note:evalctxT ~at:e_zf.at in
-  let instr_hd = letI (frame, getCurContextE (Some frame_atom) ~note:evalctxT) in
+  let instr_hd = letI (frame, getCurContextE frame_atom ~note:evalctxT) in
   let walk_expr walker expr =
     let expr1 = frame_finder expr in
     let expr2 = Al.Walk.base_walker.walk_expr walker expr1 in

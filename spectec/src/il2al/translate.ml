@@ -339,7 +339,7 @@ let cond_of_pop_value e =
     | Some {it = Atom.Atom "VCONST"; _} -> topValueE (Some t) ~note:bt
     | _ -> topValueE None ~note:bt
     ) *)
-  | GetCurContextE (Some a) ->
+  | GetCurContextE a ->
     contextKindE a ~at ~note:bt
   (* TODO: Remove this when pops is done *)
   | IterE (_, (ListN (e', _), _)) ->
@@ -1073,7 +1073,7 @@ let translate_context_winstr winstr =
 
   let destruct = caseE (case, List.map translate_exp args) ~note:evalctxT ~at in
   [
-    letI (destruct, getCurContextE (Some kind) ~note:evalctxT) ~at:at;
+    letI (destruct, getCurContextE kind ~note:evalctxT) ~at:at;
     insert_assert vals;
   ] @ insert_pop' vals @ [
     insert_assert winstr;
@@ -1087,13 +1087,7 @@ let translate_context ctx =
   | Il.CaseE ([{it = Atom.Atom id; _} as atom]::_ as case, { it = Il.TupE args; _ }) when List.mem id context_names ->
     let destruct = caseE (case, List.map translate_exp args) ~note:evalctxT ~at in
     [
-      letI (destruct, getCurContextE (Some atom) ~note:evalctxT) ~at:at;
-    ],
-    exitI atom ~at:at
-  | Il.CaseE ([atom]::_, _) ->
-    [
-      yetI "this should not happen";
-      letI (translate_exp ctx, getCurContextE (None) ~note:ctx.note) ~at:at;
+      letI (destruct, getCurContextE atom ~note:evalctxT) ~at:at;
     ],
     exitI atom ~at:at
   | _ -> [ yetI "TODO: translate_context" ~at ], yetI "TODO: translate_context"

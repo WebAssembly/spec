@@ -39,8 +39,7 @@ let rec eq_expr e1 e2 =
   | OptE eo1, OptE eo2 -> eq_expr_opt eo1 eo2
   | ListE el1, ListE el2 -> eq_exprs el1 el2
   | LiftE e1, LiftE e2 -> eq_expr e1 e2
-  | GetCurStateE, GetCurStateE -> true
-  | GetCurContextE i1, GetCurContextE i2 -> Option.equal (=) i1 i2
+  | GetCurContextE a1, GetCurContextE a2 -> a1 = a2
   | ChooseE e1, ChooseE e2 -> eq_expr e1 e2
   | IsCaseOfE (e1, a1), IsCaseOfE (e2, a2) -> eq_expr e1 e2 && Atom.eq a1 a2
   | IsValidE e1, IsValidE e2 -> eq_expr e1 e2
