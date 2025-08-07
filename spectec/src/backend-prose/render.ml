@@ -1354,32 +1354,30 @@ let rec render_instr env algoname index depth instr =
         let valid_check_string = render_instr env algoname index depth assert_instr in
         valid_check_string ^ "\n\n", render_expr env e2
       | Al.Ast.CallE (("concat_" | "concatn_"), _) -> "", render_expr' env e2
-      | _ -> (match e1.it with
-        | _ ->
-          let rec find_eval_expr e = match e.it with
-            | Al.Ast.CallE ("Eval_expr", [z; arg]) ->
-              Some (z, arg)
-            | Al.Ast.IterE (expr, ie) ->
-              let* z, arg = find_eval_expr expr in
-              let* arg = match arg.it with
-              | Al.Ast.ExpA e' ->
-                Some { arg with it = Al.Ast.ExpA { e' with it = Al.Ast.IterE (e', ie) } }
-              | _-> None
-              in
-              Some (z, arg)
-            | _ -> None
-          in
-          (match find_eval_expr e2 with
-          | Some (z, al) ->
-            let sz = render_arg env z in
-            let sal = render_arg env al in
-            let eval =
-              "the result of :ref:`evaluating <exec-expr>` " ^ sal ^ " with state " ^ sz
+      | _ ->
+        let rec find_eval_expr e = match e.it with
+          | Al.Ast.CallE ("Eval_expr", [z; arg]) ->
+            Some (z, arg)
+          | Al.Ast.IterE (expr, ie) ->
+            let* z, arg = find_eval_expr expr in
+            let* arg = match arg.it with
+            | Al.Ast.ExpA e' ->
+              Some { arg with it = Al.Ast.ExpA { e' with it = Al.Ast.IterE (e', ie) } }
+            | _-> None
             in
-            "", eval
-          | _ ->
-            "", render_expr env e2
-          )
+            Some (z, arg)
+          | _ -> None
+        in
+        (match find_eval_expr e2 with
+        | Some (z, al) ->
+          let sz = render_arg env z in
+          let sal = render_arg env al in
+          let eval =
+            "the result of :ref:`evaluating <exec-expr>` " ^ sal ^ " with state " ^ sz
+          in
+          "", eval
+        | _ ->
+          "", render_expr env e2
         )
       ) in
       let type_desc = (
