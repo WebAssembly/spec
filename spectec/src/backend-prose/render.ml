@@ -1097,6 +1097,85 @@ let render_perform env fname args =
     "Perform " ^ (render_expr env (Al.Al_util.callE (fname, args) ~at:no_region ~note:Al.Al_util.no_note))
   )
 
+let render_rhs env lhs rhs =
+  match rhs.it with
+  | Al.Ast.LenE e -> sprintf "the length of %s" (render_expr env e)
+  | Al.Ast.IterE ({ it = Al.Ast.InvCallE (id, nl, al); _ }, iterexp) ->
+    let elhs, erhs = al_invcalle_to_al_bine lhs id nl al in
+    let ebin = Al.Al_util.binE (`EqOp, elhs, erhs) ~note:Al.Al_util.no_note in
+    let eiter = Al.Al_util.iterE (ebin, iterexp) ~note:Al.Al_util.no_note in
+    sprintf "the result for which %s" (render_expr env eiter)
+  | Al.Ast.IterE (e, (Al.Ast.ListN (ie, Some id), xes)) ->
+    let se = render_expr env e in
+    let ids = List.map fst xes in
+    assert (ids = [ id ]);
+    let eid = Al.Al_util.varE id ~note:Al.Al_util.no_note in
+    let sid = render_expr env eid in
+    let elb = Al.Al_util.natE Z.zero ~note:Al.Al_util.no_note in
+    let selb = render_expr env elb in
+    let eub =
+      Al.Al_util.binE (
+        `SubOp,
+        ie,
+        Al.Al_util.natE Z.one ~note:Al.Al_util.no_note)
+      ~note:Al.Al_util.no_note
+    in
+    let seub = render_expr env eub in
+    sprintf "%s for all %s from %s to %s" se sid selb seub
+  | Al.Ast.InvCallE ("concat_", nl, al) ->
+    let elhs, erhs = al_invcalle_to_al_bine lhs "concat_" nl al in
+    sprintf "the result for which %s is %s"
+      (render_expr' env elhs)
+      (render_expr env erhs)
+  (* HARDCODE: rendering of concat_ *)
+  | Al.Ast.InvCallE ("concatn_", nl, al) ->
+    let elhs, erhs = al_invcalle_to_al_bine lhs "concatn_" nl al in
+    (match elhs.it with
+    | CallE (_, [_; { it = Al.Ast.ExpA e'; _}; n]) ->
+      (match e'.it with
+      | Al.Ast.IterE (e'', _) ->
+        sprintf "the result for which each %s has length %s, and %s is %s"
+          (render_expr env e'')
+          (render_arg env n)
+          (render_expr' env elhs)
+          (render_expr env erhs)
+      | _ -> error rhs.at "Invalid argument for function concatn_"
+      )
+    | _ -> error rhs.at "Invalid arity for function concatn_"
+    )
+  | Al.Ast.InvCallE (id, nl, al) ->
+    let elhs, erhs = al_invcalle_to_al_bine lhs id nl al in
+    sprintf "the result for which %s %s %s"
+      (render_expr env elhs)
+      (render_math "=")
+      (render_expr env erhs)
+  | Al.Ast.CallE (("concat_" | "concatn_"), _) -> render_expr' env rhs
+  | _ ->
+    let rec find_eval_expr e = match e.it with
+      | Al.Ast.CallE ("Eval_expr", [z; arg]) ->
+        Some (z, arg)
+      | Al.Ast.IterE (expr, ie) ->
+        let* z, arg = find_eval_expr expr in
+        let* arg = match arg.it with
+        | Al.Ast.ExpA e' ->
+          Some { arg with it = Al.Ast.ExpA { e' with it = Al.Ast.IterE (e', ie) } }
+        | _-> None
+        in
+        Some (z, arg)
+      | _ -> None
+    in
+    (match find_eval_expr rhs with
+    | Some (z, al) ->
+      let sz = render_arg env z in
+      let sal = render_arg env al in
+      let eval =
+        "the result of :ref:`evaluating <exec-expr>` " ^ sal ^ " with state " ^ sz
+      in
+      eval
+    | _ ->
+      render_expr env rhs
+    )
+
 let rec render_instr env algoname index depth instr =
   match instr.it with
   | Al.Ast.IfI (c, il, []) ->
@@ -1290,102 +1369,31 @@ let rec render_instr env algoname index depth instr =
         | _ -> "" in
       rendered_let ^ rendered_arity ^ rendered_arg
     | _ ->
-      let pre_cond, rhs = (match e2.it with
-      | Al.Ast.LenE e -> "", sprintf "the length of %s" (render_expr env e)
-      | Al.Ast.IterE ({ it = Al.Ast.InvCallE (id, nl, al); _ }, iterexp) ->
-        let elhs, erhs = al_invcalle_to_al_bine e1 id nl al in
-        let ebin = Al.Al_util.binE (`EqOp, elhs, erhs) ~note:Al.Al_util.no_note in
-        let eiter = Al.Al_util.iterE (ebin, iterexp) ~note:Al.Al_util.no_note in
-        "", sprintf "the result for which %s" (render_expr env eiter)
-      | Al.Ast.IterE (e, (Al.Ast.ListN (ie, Some id), xes)) ->
-        let se = render_expr env e in
-        let ids = List.map fst xes in
-        assert (ids = [ id ]);
-        let eid = Al.Al_util.varE id ~note:Al.Al_util.no_note in
-        let sid = render_expr env eid in
-        let elb = Al.Al_util.natE Z.zero ~note:Al.Al_util.no_note in
-        let selb = render_expr env elb in
-        let eub =
-          Al.Al_util.binE (
-            `SubOp,
-            ie,
-            Al.Al_util.natE Z.one ~note:Al.Al_util.no_note)
-          ~note:Al.Al_util.no_note
-        in
-        let seub = render_expr env eub in
-        "", sprintf "%s for all %s from %s to %s" se sid selb seub
-      | Al.Ast.InvCallE ("concat_", nl, al) ->
-        let elhs, erhs = al_invcalle_to_al_bine e1 "concat_" nl al in
-        "", sprintf "the result for which %s is %s"
-          (render_expr' env elhs)
-          (render_expr env erhs)
-      (* HARDCODE: rendering of concat_ *)
-      | Al.Ast.InvCallE ("concatn_", nl, al) ->
-        let elhs, erhs = al_invcalle_to_al_bine e1 "concatn_" nl al in
-        (match elhs.it with
-        | CallE (_, [_; { it = Al.Ast.ExpA e'; _}; n]) ->
-          (match e'.it with
-          | Al.Ast.IterE (e'', _) ->
-            "", sprintf "the result for which each %s has length %s, and %s is %s"
-              (render_expr env e'')
-              (render_arg env n)
-              (render_expr' env elhs)
-              (render_expr env erhs)
-          | _ -> error instr.at "Invalid argument for function concatn_"
-          )
-        | _ -> error instr.at "Invalid arity for function concatn_"
-        )
-      | Al.Ast.InvCallE (id, nl, al) ->
-        let elhs, erhs = al_invcalle_to_al_bine e1 id nl al in
-        "", sprintf "the result for which %s %s %s"
-          (render_expr env elhs)
-          (render_math "=")
-          (render_expr env erhs)
-      | Al.Ast.CallE ("Module_ok", [{ it = ExpA arge; _ }]) ->
-        (* HARDCODE: special function calls for LetI *)
-        let to_expr exp' = exp' $$ (no_region, Il.Ast.BoolT $ no_region) in
-        let to_instr instr' = instr' $$ (no_region, 0) in
-        let is_valid = Al.Ast.IsValidE arge |> to_expr in
-        let not_valid = Al.Ast.UnE (`NotOp, is_valid) |> to_expr in
-        let faili = [Al.Ast.FailI |> to_instr] in
-        let check_instr = Al.Ast.IfI (not_valid, faili, []) |> to_instr in
-        let valid_check_string = render_instr env algoname index depth check_instr in
-        valid_check_string ^ "\n\n", render_expr env e2
-      | Al.Ast.CallE ("Ref_type", [{ it = ExpA arge; _ }]) ->
-        (* HARDCODE: special function calls for LetI *)
-        let to_expr exp' = exp' $$ (no_region, Il.Ast.BoolT $ no_region) in
-        let to_instr instr' = instr' $$ (no_region, 0) in
-        let is_valid = Al.Ast.IsValidE arge |> to_expr in
-        let assert_instr = Al.Ast.AssertI (is_valid) |> to_instr in
-        let valid_check_string = render_instr env algoname index depth assert_instr in
-        valid_check_string ^ "\n\n", render_expr env e2
-      | Al.Ast.CallE (("concat_" | "concatn_"), _) -> "", render_expr' env e2
-      | _ ->
-        let rec find_eval_expr e = match e.it with
-          | Al.Ast.CallE ("Eval_expr", [z; arg]) ->
-            Some (z, arg)
-          | Al.Ast.IterE (expr, ie) ->
-            let* z, arg = find_eval_expr expr in
-            let* arg = match arg.it with
-            | Al.Ast.ExpA e' ->
-              Some { arg with it = Al.Ast.ExpA { e' with it = Al.Ast.IterE (e', ie) } }
-            | _-> None
-            in
-            Some (z, arg)
-          | _ -> None
-        in
-        (match find_eval_expr e2 with
-        | Some (z, al) ->
-          let sz = render_arg env z in
-          let sal = render_arg env al in
-          let eval =
-            "the result of :ref:`evaluating <exec-expr>` " ^ sal ^ " with state " ^ sz
-          in
-          "", eval
-        | _ ->
-          "", render_expr env e2
-        )
-      ) in
+      let pre_cond =
+        match e2.it with
+        | Al.Ast.CallE ("Module_ok", [{ it = ExpA arge; _ }]) ->
+          (* HARDCODE: special function calls for LetI *)
+          let to_expr exp' = exp' $$ (no_region, Il.Ast.BoolT $ no_region) in
+          let to_instr instr' = instr' $$ (no_region, 0) in
+          let is_valid = Al.Ast.IsValidE arge |> to_expr in
+          let not_valid = Al.Ast.UnE (`NotOp, is_valid) |> to_expr in
+          let faili = [Al.Ast.FailI |> to_instr] in
+          let check_instr = Al.Ast.IfI (not_valid, faili, []) |> to_instr in
+          let valid_check_string = render_instr env algoname index depth check_instr in
+          valid_check_string ^ "\n\n"
+        | Al.Ast.CallE ("Ref_type", [{ it = ExpA arge; _ }]) ->
+          (* HARDCODE: special function calls for LetI *)
+          let to_expr exp' = exp' $$ (no_region, Il.Ast.BoolT $ no_region) in
+          let to_instr instr' = instr' $$ (no_region, 0) in
+          let is_valid = Al.Ast.IsValidE arge |> to_expr in
+          let assert_instr = Al.Ast.AssertI (is_valid) |> to_instr in
+          let valid_check_string = render_instr env algoname index depth assert_instr in
+          valid_check_string ^ "\n\n"
+        | _ -> ""
+      in
+
+      let rhs = render_rhs env e1 e2 in
+
       let type_desc = (
         if String.starts_with ~prefix:":math:" rhs then (
           match type_with_link env e1 with
