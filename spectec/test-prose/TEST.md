@@ -2938,12 +2938,6 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Append :math:`i_{\mathsf{d}}` to :math:`{i_{\mathsf{d}}^\ast}`.
 
-#. Pop the :math:`\mathsf{frame}` :math:`F` from the stack.
-
-#. Let :math:`F` be the :math:`\mathsf{frame}` :math:`z{.}\mathsf{frame}`.
-
-#. Push the :math:`\mathsf{frame}` :math:`F`.
-
 #. Let :math:`{i_{\mathsf{e}}^\ast}` be :math:`\epsilon`.
 
 #. For each :math:`{\mathit{expr}}_{\mathsf{e}}` in :math:`{{\mathit{expr}}_{\mathsf{e}}^\ast}`, do:
@@ -2951,12 +2945,6 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
    a. Let :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_{\mathsf{e}})` be the result of :ref:`evaluating <exec-expr>` :math:`{\mathit{expr}}_{\mathsf{e}}` with state :math:`z`.
 
    #. Append :math:`i_{\mathsf{e}}` to :math:`{i_{\mathsf{e}}^\ast}`.
-
-#. Pop the :math:`\mathsf{frame}` :math:`F` from the stack.
-
-#. Let :math:`F` be the :math:`\mathsf{frame}` :math:`z{.}\mathsf{frame}`.
-
-#. Push the :math:`\mathsf{frame}` :math:`F`.
 
 #. Let :math:`{{\mathit{val}}^\ast}` be the value sequence :math:`\epsilon`.
 
@@ -4450,30 +4438,26 @@ instantiate s module externaddr*
 18. For each expr_D in expr_D*, do:
   a. Let [(I32.CONST i_D)] be $Eval_expr(z, expr_D).
   b. Append i_D to the i_D*.
-19. Pop the frame (FRAME_ 0 { $frame(z) }) from the stack.
-20. Push the frame (FRAME_ 0 { $frame(z) }) to the stack.
-21. Let i_E* be [].
-22. For each expr_E in expr_E*, do:
+19. Let i_E* be [].
+20. For each expr_E in expr_E*, do:
   a. Let [(I32.CONST i_E)] be $Eval_expr(z, expr_E).
   b. Append i_E to the i_E*.
-23. Pop the frame (FRAME_ 0 { $frame(z) }) from the stack.
-24. Push the frame (FRAME_ 0 { $frame(z) }) to the stack.
-25. Let val* be [].
-26. For each expr_G in expr_G*, do:
+21. Let val* be [].
+22. For each expr_G in expr_G*, do:
   a. Let [val] be $Eval_expr(z, expr_G).
   b. Append val to the val*.
-27. Pop the frame (FRAME_ 0 { $frame(z) }) from the stack.
-28. Let moduleinst be $allocmodule(s, module, externaddr*, val*).
-29. Let f be { MODULE: moduleinst }.
-30. Perform $initelem(s, moduleinst, i_E*, moduleinst.FUNCS[x]**).
-31. Perform $initdata(s, moduleinst, i_D*, b**).
-32. Push the frame (FRAME_ 0 { f }) to the stack.
-33. If start? is defined, then:
+23. Pop the frame (FRAME_ 0 { $frame(z) }) from the stack.
+24. Let moduleinst be $allocmodule(s, module, externaddr*, val*).
+25. Let f be { MODULE: moduleinst }.
+26. Perform $initelem(s, moduleinst, i_E*, moduleinst.FUNCS[x]**).
+27. Perform $initdata(s, moduleinst, i_D*, b**).
+28. Push the frame (FRAME_ 0 { f }) to the stack.
+29. If start? is defined, then:
   a. Let ?((START x')) be start?.
   b. Let instr_0 be (CALL x').
   c. Execute the instruction instr_0.
-34. Pop the frame (FRAME_ 0 { f }) from the stack.
-35. Return f.MODULE.
+30. Pop the frame (FRAME_ 0 { f }) from the stack.
+31. Return f.MODULE.
 
 invoke s fa val^n
 1. Let f be { MODULE: {} }.
@@ -10628,12 +10612,6 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Append :math:`{\mathit{val}}` to :math:`{{\mathit{val}}^\ast}`.
 
-#. Pop the :math:`\mathsf{frame}` :math:`F` from the stack.
-
-#. Let :math:`F` be the :math:`\mathsf{frame}` :math:`z{.}\mathsf{frame}`.
-
-#. Push the :math:`\mathsf{frame}` :math:`F`.
-
 #. Let :math:`{{{\mathit{ref}}^\ast}^\ast}` be the reference sequence sequence :math:`\epsilon`.
 
 #. For each :math:`{{\mathit{expr}}_{\mathsf{e}}^\ast}` in :math:`{{{\mathit{expr}}_{\mathsf{e}}^\ast}^\ast}`, do:
@@ -13698,27 +13676,25 @@ instantiate s module externaddr*
 18. For each expr_G in expr_G*, do:
   a. Let [val] be $Eval_expr(z, expr_G).
   b. Append val to the val*.
-19. Pop the frame (FRAME_ 0 { $frame(z) }) from the stack.
-20. Push the frame (FRAME_ 0 { $frame(z) }) to the stack.
-21. Let ref** be [].
-22. For each expr_E* in expr_E**, do:
+19. Let ref** be [].
+20. For each expr_E* in expr_E**, do:
   a. Let ref* be [].
   b. For each expr_E in expr_E*, do:
     1) Let [ref] be $Eval_expr(z, expr_E).
     2) Append ref to the ref*.
   c. Append ref* to the ref**.
-23. Pop the frame (FRAME_ 0 { $frame(z) }) from the stack.
-24. Let moduleinst be $allocmodule(s, module, externaddr*, val*, ref**).
-25. Let f be { MODULE: moduleinst }.
-26. Push the frame (FRAME_ 0 { f }) to the stack.
-27. Execute the sequence instr_E*.
-28. Execute the sequence instr_D*.
-29. If start? is defined, then:
+21. Pop the frame (FRAME_ 0 { $frame(z) }) from the stack.
+22. Let moduleinst be $allocmodule(s, module, externaddr*, val*, ref**).
+23. Let f be { MODULE: moduleinst }.
+24. Push the frame (FRAME_ 0 { f }) to the stack.
+25. Execute the sequence instr_E*.
+26. Execute the sequence instr_D*.
+27. If start? is defined, then:
   a. Let ?((START x)) be start?.
   b. Let instr_0 be (CALL x).
   c. Execute the instruction instr_0.
-30. Pop the frame (FRAME_ 0 { f }) from the stack.
-31. Return f.MODULE.
+28. Pop the frame (FRAME_ 0 { f }) from the stack.
+29. Return f.MODULE.
 
 invoke s fa val^n
 1. Let f be { MODULE: {} }.
@@ -26406,12 +26382,6 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{{\mathit{val}}_{\mathsf{g}}^\ast}` be :math:`{{{\mathrm{evalglobal}}^\ast}}{(z, {{\mathit{globaltype}}^\ast}, {{\mathit{expr}}_{\mathsf{g}}^\ast})}`.
 
-#. Pop the :math:`\mathsf{frame}` :math:`f` from the stack.
-
-#. Let :math:`f` be the :math:`\mathsf{frame}` :math:`f`.
-
-#. Push the :math:`\mathsf{frame}` :math:`f`.
-
 #. Let :math:`{{\mathit{ref}}_{\mathsf{t}}^\ast}` be the reference value sequence :math:`\epsilon`.
 
 #. For each :math:`{\mathit{expr}}_{\mathsf{t}}` in :math:`{{\mathit{expr}}_{\mathsf{t}}^\ast}`, do:
@@ -26419,12 +26389,6 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
    a. Let :math:`{\mathit{ref}}_{\mathsf{t}}` be the result of :ref:`evaluating <exec-expr>` :math:`{\mathit{expr}}_{\mathsf{t}}` with state :math:`z`.
 
    #. Append :math:`{\mathit{ref}}_{\mathsf{t}}` to :math:`{{\mathit{ref}}_{\mathsf{t}}^\ast}`.
-
-#. Pop the :math:`\mathsf{frame}` :math:`f` from the stack.
-
-#. Let :math:`f` be the :math:`\mathsf{frame}` :math:`f`.
-
-#. Push the :math:`\mathsf{frame}` :math:`f`.
 
 #. Let :math:`{{{\mathit{ref}}_{\mathsf{e}}^\ast}^\ast}` be the reference value sequence sequence :math:`\epsilon`.
 
@@ -32856,32 +32820,28 @@ instantiate s module externaddr*
 14. Let z be (s, { MODULE: moduleinst_0 }).
 15. Push the frame (FRAME_ 0 { $frame(z) }) to the stack.
 16. Let val_G* be $evalglobals(z, globaltype*, expr_G*).
-17. Pop the frame (FRAME_ 0 { f }) from the stack.
-18. Push the frame (FRAME_ 0 { f }) to the stack.
-19. Let ref_T* be [].
-20. For each expr_T in expr_T*, do:
+17. Let ref_T* be [].
+18. For each expr_T in expr_T*, do:
   a. Let [ref_T] be $Eval_expr(z, expr_T).
   b. Append ref_T to the ref_T*.
-21. Pop the frame (FRAME_ 0 { f }) from the stack.
-22. Push the frame (FRAME_ 0 { f }) to the stack.
-23. Let ref_E** be [].
-24. For each expr_E* in expr_E**, do:
+19. Let ref_E** be [].
+20. For each expr_E* in expr_E**, do:
   a. Let ref_E* be [].
   b. For each expr_E in expr_E*, do:
     1) Let [ref_E] be $Eval_expr(z, expr_E).
     2) Append ref_E to the ref_E*.
   c. Append ref_E* to the ref_E**.
-25. Pop the frame (FRAME_ 0 { f }) from the stack.
-26. Let moduleinst be $allocmodule(s, module, externaddr*, val_G*, ref_T*, ref_E**).
-27. Push the frame (FRAME_ 0 { { MODULE: moduleinst } }) to the stack.
-28. Execute the sequence instr_E*.
-29. Execute the sequence instr_D*.
-30. If start? is defined, then:
+21. Pop the frame (FRAME_ 0 { f }) from the stack.
+22. Let moduleinst be $allocmodule(s, module, externaddr*, val_G*, ref_T*, ref_E**).
+23. Push the frame (FRAME_ 0 { { MODULE: moduleinst } }) to the stack.
+24. Execute the sequence instr_E*.
+25. Execute the sequence instr_D*.
+26. If start? is defined, then:
   a. Let ?((START x)) be start?.
   b. Let instr_S be (CALL x).
   c. Execute the instruction instr_S.
-31. Pop the frame (FRAME_ 0 { { MODULE: moduleinst } }) from the stack.
-32. Return moduleinst.
+27. Pop the frame (FRAME_ 0 { { MODULE: moduleinst } }) from the stack.
+28. Return moduleinst.
 
 invoke s funcaddr val*
 1. Assert: Due to validation, $Expand(s.FUNCS[funcaddr].TYPE) is some FUNC.

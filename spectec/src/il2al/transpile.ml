@@ -613,6 +613,28 @@ let rec remove_nop acc il = match il with
   | { it = NopI; _ } :: acc' -> remove_nop (i' :: acc') il'
   | _ -> remove_nop (i' :: acc) il'
 
+(* Remove Pop frame; push frame *)
+let rec remove_dead_pop_push il =
+
+  let is_frame e = match e.note.it with
+    | Il.Ast.VarT (id, _) when id.it = "evalctx" -> true
+    | _ -> false
+  in
+
+  List.fold_right (fun i acc ->
+    let at = i.at in
+    match i.it with
+    | IfI (c, il1, il2) -> ifI (c, remove_dead_pop_push il1, remove_dead_pop_push il2) ~at :: acc
+    | OtherwiseI il -> otherwiseI (remove_dead_pop_push il) ~at :: acc
+    | EitherI (il1, il2) -> eitherI (remove_dead_pop_push il1, remove_dead_pop_push il2) ~at :: acc
+    | PopI e ->
+      (match acc with
+      | {it = PushI e'; _} :: tl when Al.Eq.eq_expr e e' && is_frame e -> tl
+      | _ -> i :: acc
+      )
+    | _ -> i :: acc
+  ) il []
+
 let simplify_record_concat expr =
   let expr' =
     match expr.it with
@@ -842,6 +864,7 @@ let rec enhance_readability instrs =
     |> remove_redundant_assignment
     |> remove_trivial_assignment
     |> remove_pre_trap
+    |> remove_dead_pop_push
     |> unify_if
     |> unify_multi_if
     |> infer_else
