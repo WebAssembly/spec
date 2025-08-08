@@ -1047,68 +1047,6 @@ let remove_state algo =
     }
   )
 
-(* Insert "Let f be the current frame" if necessary. *)
-let insert_frame_binding instrs =
-  let open Free in
-  let (@) = IdSet.union in
-  let frame_count = ref 0 in
-  let bindings = ref IdSet.empty in
-  let found = ref false in
-
-  let count_frame e =
-    (match e.it with
-    | VarE "f" -> frame_count := !frame_count + 1
-    | _ -> ());
-    e
-  in
-
-  let update_bindings i =
-    frame_count := 0;
-    match i.it with
-    | LetI ({ it = CatE (e11, e12) ; _ }, _) ->
-      let bindings' = free_expr e11 @ free_expr e12 in
-      let get_bounds_iters e =
-        match e.it with
-        | IterE (_, (ListN (e_iter, _), _)) -> free_expr e_iter
-        | _ -> IdSet.empty
-      in
-      let bounds_iters = (get_bounds_iters e11) @ (get_bounds_iters e12) in
-      bindings := IdSet.diff bindings' bounds_iters |> IdSet.union !bindings;
-      [ i ]
-    | LetI (e1, _) ->
-      bindings := IdSet.union !bindings (free_expr e1);
-      found := (not (IdSet.mem "f" !bindings)) && !frame_count > 0;
-      [ i ]
-    | _ -> [ i ]
-  in
-
-  let found_frame _ = !found in
-  let check_free_frame i =
-    found := (not (IdSet.mem "f" !bindings)) && !frame_count > 0;
-    [ i ]
-  in
-
-  let walk_expr walker expr =
-    let expr1 = count_frame expr in
-    Al.Walk.base_walker.walk_expr walker expr1
-  in
-  let walk_instr walker instr =
-    let instr1 = update_bindings instr in
-    let instr2 = List.concat_map (fun i -> if found_frame i then [i] else Al.Walk.base_walker.walk_instr walker i) instr1 in
-    List.concat_map check_free_frame instr2
-  in
-  let walker = { Walk.base_walker with
-    walk_expr = walk_expr;
-    walk_instr = walk_instr;
-  }
-  in
-
-  match List.concat_map (walker.walk_instr walker) instrs with
-  | il when !found ->
-    let frame = frameE (varE "_" ~note:natT, varE "f" ~note:frameT) ~note:evalctxT in
-    (letI (frame, getCurContextE frame_atom ~note:evalctxT)) :: il
-  | _ -> instrs
-
 
 (* This function infers whether the frame should be
    considered global or not within this given AL function.
