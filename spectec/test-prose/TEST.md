@@ -1366,9 +1366,9 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`f` be the frame :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~{{\mathit{val}}^{k}}~{{{\mathrm{default}}}_{t}^\ast},\; \mathsf{module}~{\mathit{mm}} \}\end{array}`.
 
-#. Let :math:`f` be the :math:`\mathsf{frame}` :math:`f` whose arity is :math:`n`.
+#. Let :math:`{f'}` be the :math:`\mathsf{frame}` :math:`f` whose arity is :math:`n`.
 
-#. Push the :math:`\mathsf{frame}` :math:`f`.
+#. Push the :math:`\mathsf{frame}` :math:`{f'}`.
 
 #. Let :math:`L` be the :math:`\mathsf{label}` whose arity is :math:`n` and whose continuation is the end of the block.
 
@@ -2964,9 +2964,9 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Perform :math:`{\mathrm{initdata}}(s, {\mathit{moduleinst}}, {i_{\mathsf{d}}^\ast}, {{b^\ast}^\ast})`.
 
-#. Let :math:`f` be the :math:`\mathsf{frame}` :math:`f`.
+#. Let :math:`{f'}` be the :math:`\mathsf{frame}` :math:`f`.
 
-#. Push the :math:`\mathsf{frame}` :math:`f`.
+#. Push the :math:`\mathsf{frame}` :math:`{f'}`.
 
 #. If :math:`{{\mathit{start}}^?}` is defined, then:
 
@@ -2997,9 +2997,9 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`k` be the length of :math:`{t_2^\ast}`.
 
-#. Let :math:`f` be the :math:`\mathsf{frame}` :math:`f` whose arity is :math:`k`.
+#. Let :math:`{f'}` be the :math:`\mathsf{frame}` :math:`f` whose arity is :math:`k`.
 
-#. Push the :math:`\mathsf{frame}` :math:`f`.
+#. Push the :math:`\mathsf{frame}` :math:`{f'}`.
 
 #. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
 
@@ -6996,9 +6996,9 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`f` be the frame :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~{{\mathit{val}}^{k}}~{{{\mathrm{default}}}_{t}^\ast},\; \mathsf{module}~{\mathit{mm}} \}\end{array}`.
 
-#. Let :math:`f` be the :math:`\mathsf{frame}` :math:`f` whose arity is :math:`n`.
+#. Let :math:`{f'}` be the :math:`\mathsf{frame}` :math:`f` whose arity is :math:`n`.
 
-#. Push the :math:`\mathsf{frame}` :math:`f`.
+#. Push the :math:`\mathsf{frame}` :math:`{f'}`.
 
 #. Let :math:`L` be the :math:`\mathsf{label}` whose arity is :math:`n` and whose continuation is the end of the block.
 
@@ -10632,9 +10632,9 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`f` be the frame :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{module}~{\mathit{moduleinst}} \}\end{array}`.
 
-#. Let :math:`f` be the :math:`\mathsf{frame}` :math:`f`.
+#. Let :math:`{f'}` be the :math:`\mathsf{frame}` :math:`f`.
 
-#. Push the :math:`\mathsf{frame}` :math:`f`.
+#. Push the :math:`\mathsf{frame}` :math:`{f'}`.
 
 #. Execute the sequence :math:`{{\mathit{instr}}_{\mathsf{e}}^\ast}`.
 
@@ -10669,9 +10669,9 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`k` be the length of :math:`{t_2^\ast}`.
 
-#. Let :math:`f` be the :math:`\mathsf{frame}` :math:`f` whose arity is :math:`k`.
+#. Let :math:`{f'}` be the :math:`\mathsf{frame}` :math:`f` whose arity is :math:`k`.
 
-#. Push the :math:`\mathsf{frame}` :math:`f`.
+#. Push the :math:`\mathsf{frame}` :math:`{f'}`.
 
 #. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
 
@@ -17691,9 +17691,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       #) Pop the :math:`\mathsf{handler}` from the stack.
 
-      #) Let :math:`H` be the :math:`\mathsf{handler}` whose arity is :math:`n` and whose catch handler is :math:`{{\mathit{catch}'}^\ast}`.
+      #) Let :math:`{H'}` be the :math:`\mathsf{handler}` whose arity is :math:`n` and whose catch handler is :math:`{{\mathit{catch}'}^\ast}`.
 
-      #) Push the :math:`\mathsf{handler}` :math:`H`.
+      #) Push the :math:`\mathsf{handler}` :math:`{H'}`.
 
       #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
 
@@ -17733,9 +17733,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
          #) Pop the :math:`\mathsf{handler}` from the stack.
 
-         #) Let :math:`H` be the :math:`\mathsf{handler}` whose arity is :math:`n` and whose catch handler is :math:`{{\mathit{catch}'}^\ast}`.
+         #) Let :math:`{H'}` be the :math:`\mathsf{handler}` whose arity is :math:`n` and whose catch handler is :math:`{{\mathit{catch}'}^\ast}`.
 
-         #) Push the :math:`\mathsf{handler}` :math:`H`.
+         #) Push the :math:`\mathsf{handler}` :math:`{H'}`.
 
          #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
 
@@ -17751,9 +17751,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
          #) Pop the :math:`\mathsf{handler}` from the stack.
 
-         #) Let :math:`H` be the :math:`\mathsf{handler}` whose arity is :math:`n` and whose catch handler is :math:`{{\mathit{catch}'}^\ast}`.
+         #) Let :math:`{H'}` be the :math:`\mathsf{handler}` whose arity is :math:`n` and whose catch handler is :math:`{{\mathit{catch}'}^\ast}`.
 
-         #) Push the :math:`\mathsf{handler}` :math:`H`.
+         #) Push the :math:`\mathsf{handler}` :math:`{H'}`.
 
          #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
 
@@ -19117,9 +19117,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`f` be the frame :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~{{\mathit{val}}^{n}}~{{{\mathrm{default}}}_{t}^\ast},\; \mathsf{module}~{\mathit{fi}}{.}\mathsf{module} \}\end{array}`.
 
-#. Let :math:`f` be the :math:`\mathsf{frame}` :math:`f` whose arity is :math:`m`.
+#. Let :math:`{f'}` be the :math:`\mathsf{frame}` :math:`f` whose arity is :math:`m`.
 
-#. Push the :math:`\mathsf{frame}` :math:`f`.
+#. Push the :math:`\mathsf{frame}` :math:`{f'}`.
 
 #. Let :math:`L` be the :math:`\mathsf{label}` whose arity is :math:`m` and whose continuation is the end of the block.
 
@@ -19288,9 +19288,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
                #. Pop the :math:`\mathsf{handler}` from the stack.
 
-               #. Let :math:`H` be the :math:`\mathsf{handler}` whose arity is :math:`n` and whose catch handler is :math:`{{\mathit{catch}'}^\ast}`.
+               #. Let :math:`{H'}` be the :math:`\mathsf{handler}` whose arity is :math:`n` and whose catch handler is :math:`{{\mathit{catch}'}^\ast}`.
 
-               #. Push the :math:`\mathsf{handler}` :math:`H`.
+               #. Push the :math:`\mathsf{handler}` :math:`{H'}`.
 
                #. Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
 
@@ -19330,9 +19330,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
                   #) Pop the :math:`\mathsf{handler}` from the stack.
 
-                  #) Let :math:`H` be the :math:`\mathsf{handler}` whose arity is :math:`n` and whose catch handler is :math:`{{\mathit{catch}'}^\ast}`.
+                  #) Let :math:`{H'}` be the :math:`\mathsf{handler}` whose arity is :math:`n` and whose catch handler is :math:`{{\mathit{catch}'}^\ast}`.
 
-                  #) Push the :math:`\mathsf{handler}` :math:`H`.
+                  #) Push the :math:`\mathsf{handler}` :math:`{H'}`.
 
                   #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
 
@@ -19348,9 +19348,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
                   #) Pop the :math:`\mathsf{handler}` from the stack.
 
-                  #) Let :math:`H` be the :math:`\mathsf{handler}` whose arity is :math:`n` and whose catch handler is :math:`{{\mathit{catch}'}^\ast}`.
+                  #) Let :math:`{H'}` be the :math:`\mathsf{handler}` whose arity is :math:`n` and whose catch handler is :math:`{{\mathit{catch}'}^\ast}`.
 
-                  #) Push the :math:`\mathsf{handler}` :math:`H`.
+                  #) Push the :math:`\mathsf{handler}` :math:`{H'}`.
 
                   #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
 
@@ -26408,9 +26408,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{\mathit{moduleinst}}` be :math:`{\mathrm{allocmodule}}(s, {\mathit{module}}, {{\mathit{externaddr}}^\ast}, {{\mathit{val}}_{\mathsf{g}}^\ast}, {{\mathit{ref}}_{\mathsf{t}}^\ast}, {{{\mathit{ref}}_{\mathsf{e}}^\ast}^\ast})`.
 
-#. Let :math:`F` be the :math:`\mathsf{frame}` :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{module}~{\mathit{moduleinst}} \}\end{array}`.
+#. Let :math:`{F'}` be the :math:`\mathsf{frame}` :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{module}~{\mathit{moduleinst}} \}\end{array}`.
 
-#. Push the :math:`\mathsf{frame}` :math:`F`.
+#. Push the :math:`\mathsf{frame}` :math:`{F'}`.
 
 #. Execute the sequence :math:`{{\mathit{instr}}_{\mathsf{e}}^\ast}`.
 

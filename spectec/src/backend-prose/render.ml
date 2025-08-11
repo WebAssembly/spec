@@ -19,7 +19,7 @@ type env =
     config : Config.config;
     render_latex: Backend_latex.Render.env;
     macro: Macro.env;
-    vars: Set.t;
+    mutable vars: Set.t;
     uncond_concl: bool; (* Indicates if currently rendering an unconditional concl *)
   }
 
@@ -126,6 +126,21 @@ let get_context_var e =
     in
     {e with it = VarE x}
   | _ -> assert false (* It is expected that the context is a CaseE *)
+
+let to_fresh_var env e =
+  match e.it with
+  | Al.Ast.VarE x ->
+    let (e', x') = if Set.mem x env.vars then
+      let x' = x ^ "'" in
+      let e' = {e with it = Al.Ast.VarE x'} in
+      (e', x')
+    else
+      (e, x)
+    in
+    env.vars <- Set.add x' env.vars;
+    e'
+  | _ -> e
+
 
 (* Translation from Al inverse call exp to Al binary exp *)
 let e2a e = Al.Ast.ExpA e $ e.at
@@ -1025,13 +1040,12 @@ and render_stmts env depth stmts =
 (* Prefix for stack push/pop operations *)
 let render_stack_prefix = Prose_util.string_of_stack_prefix
 
-let render_control_frame_binding env expr =
+let render_control_frame env expr =
   let open Al in
   match expr.it with
   | Ast.CaseE (mixop, [ arity; arg ]) ->
     let atom = mixop |> List.hd |> List.hd in
     let atom_name = Atom.to_string atom in
-    let context_var = get_context_var expr in
     let control_frame_name, rendered_arg =
       match atom_name with
       | "LABEL_" ->
@@ -1059,8 +1073,7 @@ let render_control_frame_binding env expr =
       | _ -> sprintf "whose arity is %s" (render_expr env arity) in
     let space_opt = if (rendered_arg ^ rendered_arity) = "" then "" else " " in
     let and_opt = if rendered_arg <> "" && rendered_arity <> "" then " and " else "" in
-    sprintf "Let %s be %s%s%s%s%s."
-      (render_expr env context_var)
+    sprintf "%s%s%s%s%s"
       control_frame_name
       space_opt
       rendered_arity
@@ -1307,13 +1320,16 @@ let rec render_instr env algoname index depth instr =
   | Al.Ast.PushI ({ it = Al.Ast.CaseE (mixop, _); _ } as e)
   when Al.Valid.sub_typ e.note Al.Al_util.evalctxT ->
     let atom = mixop |> List.hd |> List.hd in
-    sprintf "%s %s\n\n%s%s Push the %s %s."
+    let context_var = get_context_var e in
+    let context_var' = to_fresh_var env context_var in
+    sprintf "%s Let %s be %s.\n\n%s%s Push the %s %s."
       (render_order index depth)
-      (render_control_frame_binding env e)
+      (render_expr env context_var')
+      (render_control_frame env e)
       (repeat indent depth)
       (render_order index depth)
       (render_atom env atom)
-      (render_expr env (get_context_var e))
+      (render_expr env context_var')
   | Al.Ast.PushI e ->
     sprintf "%s Push %s %s to the stack." (render_order index depth)
       (render_stack_prefix e) (render_expr env e)
@@ -1419,14 +1435,16 @@ let rec render_instr env algoname index depth instr =
       (render_opt " " (render_expr env) "" e_opt)
   | Al.Ast.EnterI ({ it = Al.Ast.CaseE (mixop, _); _ } as e1, e2, il) ->
     let atom = mixop |> List.hd |> List.hd in
-    sprintf "%s %s\n\n%s%s Enter the block %s with the %s %s.%s"
+    let context_var = (get_context_var e1) in
+    sprintf "%s Let %s be %s.\n\n%s%s Enter the block %s with the %s %s.%s"
       (render_order index depth)
-      (render_control_frame_binding env e1)
+      (render_expr env context_var)
+      (render_control_frame env e1)
       (repeat indent depth)
       (render_order index depth)
       (render_expr env e2)
       (render_atom env atom)
-      (render_expr env (get_context_var e1))
+      (render_expr env context_var)
       (render_instrs env algoname (depth + 1) il)
   | Al.Ast.EnterI (e1, e2, il) ->
     sprintf "%s Enter the block %s with label %s.%s" (render_order index depth)
