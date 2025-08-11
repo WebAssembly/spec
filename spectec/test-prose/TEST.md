@@ -1038,7 +1038,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Assert: Due to validation, the first non-value entry of the stack is a :math:`\mathsf{label}`.
 
-#. Pop the :math:`\mathsf{label}` :math:`L` from the stack.
+#. Pop the :math:`\mathsf{label}` from the stack.
 
 #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
@@ -1061,7 +1061,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Pop all values :math:`{{\mathit{val}'}^\ast}` from the top of the stack.
 
-   #. Pop the :math:`\mathsf{label}` :math:`L` from the stack.
+   #. Pop the :math:`\mathsf{label}` from the stack.
 
    #. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
 
@@ -1073,7 +1073,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Let :math:`l` be the label index :math:`{n'} - 1`.
 
-   #. Pop the :math:`\mathsf{label}` :math:`L` from the stack.
+   #. Pop the :math:`\mathsf{label}` from the stack.
 
    #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
@@ -1130,7 +1130,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Assert: Due to validation, the first non-value entry of the stack is a :math:`\mathsf{frame}`.
 
-#. Pop the :math:`\mathsf{frame}` :math:`F` from the stack.
+#. Pop the :math:`\mathsf{frame}` from the stack.
 
 #. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
 
@@ -1151,7 +1151,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Pop all values :math:`{{\mathit{val}'}^\ast}` from the top of the stack.
 
-   #. Pop the :math:`\mathsf{frame}` :math:`F` from the stack.
+   #. Pop the :math:`\mathsf{frame}` from the stack.
 
    #. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
 
@@ -1161,7 +1161,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
 
-   #. Pop the :math:`\mathsf{label}` :math:`L` from the stack.
+   #. Pop the :math:`\mathsf{label}` from the stack.
 
    #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
@@ -2954,7 +2954,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Append :math:`{\mathit{val}}` to :math:`{{\mathit{val}}^\ast}`.
 
-#. Pop the :math:`\mathsf{frame}` :math:`F` from the stack.
+#. Pop the :math:`\mathsf{frame}` from the stack.
 
 #. Let :math:`{\mathit{moduleinst}}` be :math:`{\mathrm{allocmodule}}(s, {\mathit{module}}, {{\mathit{externaddr}}^\ast}, {{\mathit{val}}^\ast})`.
 
@@ -2976,7 +2976,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Execute the instruction :math:`{\mathit{instr}}_0`.
 
-#. Pop the :math:`\mathsf{frame}` :math:`f` from the stack.
+#. Pop the :math:`\mathsf{frame}` from the stack.
 
 #. Return :math:`f{.}\mathsf{module}`.
 
@@ -2993,7 +2993,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{t_1^{n}}~\rightarrow~{t_2^\ast}` be the destructuring of :math:`(s, f){.}\mathsf{funcs}{}[{\mathit{fa}}]{.}\mathsf{type}`.
 
-#. Pop the :math:`\mathsf{frame}` :math:`f` from the stack.
+#. Pop the :math:`\mathsf{frame}` from the stack.
 
 #. Let :math:`k` be the length of :math:`{t_2^\ast}`.
 
@@ -3007,7 +3007,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Pop the values :math:`{{\mathit{val}'}^{k}}` from the stack.
 
-#. Pop the :math:`\mathsf{frame}` :math:`f` from the stack.
+#. Pop the :math:`\mathsf{frame}` from the stack.
 
 #. Return :math:`{{\mathit{val}'}^{k}}`.
 
@@ -6248,7 +6248,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Assert: Due to validation, the first non-value entry of the stack is a :math:`\mathsf{label}`.
 
-#. Pop the :math:`\mathsf{label}` :math:`L` from the stack.
+#. Pop the :math:`\mathsf{label}` from the stack.
 
 #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
@@ -6271,7 +6271,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Pop all values :math:`{{\mathit{val}'}^\ast}` from the top of the stack.
 
-   #. Pop the :math:`\mathsf{label}` :math:`L` from the stack.
+   #. Pop the :math:`\mathsf{label}` from the stack.
 
    #. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
 
@@ -6283,7 +6283,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Let :math:`l` be the label index :math:`{n'} - 1`.
 
-   #. Pop the :math:`\mathsf{label}` :math:`L` from the stack.
+   #. Pop the :math:`\mathsf{label}` from the stack.
 
    #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
@@ -6340,7 +6340,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Assert: Due to validation, the first non-value entry of the stack is a :math:`\mathsf{frame}`.
 
-#. Pop the :math:`\mathsf{frame}` :math:`F` from the stack.
+#. Pop the :math:`\mathsf{frame}` from the stack.
 
 #. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
 
@@ -6361,7 +6361,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Pop all values :math:`{{\mathit{val}'}^\ast}` from the top of the stack.
 
-   #. Pop the :math:`\mathsf{frame}` :math:`F` from the stack.
+   #. Pop the :math:`\mathsf{frame}` from the stack.
 
    #. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
 
@@ -6371,7 +6371,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
 
-   #. Pop the :math:`\mathsf{label}` :math:`L` from the stack.
+   #. Pop the :math:`\mathsf{label}` from the stack.
 
    #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
@@ -10626,7 +10626,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Append :math:`{{\mathit{ref}}^\ast}` to :math:`{{{\mathit{ref}}^\ast}^\ast}`.
 
-#. Pop the :math:`\mathsf{frame}` :math:`F` from the stack.
+#. Pop the :math:`\mathsf{frame}` from the stack.
 
 #. Let :math:`{\mathit{moduleinst}}` be :math:`{\mathrm{allocmodule}}(s, {\mathit{module}}, {{\mathit{externaddr}}^\ast}, {{\mathit{val}}^\ast}, {{{\mathit{ref}}^\ast}^\ast})`.
 
@@ -10648,7 +10648,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Execute the instruction :math:`{\mathit{instr}}_0`.
 
-#. Pop the :math:`\mathsf{frame}` :math:`f` from the stack.
+#. Pop the :math:`\mathsf{frame}` from the stack.
 
 #. Return :math:`f{.}\mathsf{module}`.
 
@@ -10665,7 +10665,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{t_1^{n}}~\rightarrow~{t_2^\ast}` be the destructuring of :math:`(s, f){.}\mathsf{funcs}{}[{\mathit{fa}}]{.}\mathsf{type}`.
 
-#. Pop the :math:`\mathsf{frame}` :math:`f` from the stack.
+#. Pop the :math:`\mathsf{frame}` from the stack.
 
 #. Let :math:`k` be the length of :math:`{t_2^\ast}`.
 
@@ -10679,7 +10679,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Pop the values :math:`{{\mathit{val}'}^{k}}` from the stack.
 
-#. Pop the :math:`\mathsf{frame}` :math:`f` from the stack.
+#. Pop the :math:`\mathsf{frame}` from the stack.
 
 #. Return :math:`{{\mathit{val}'}^{k}}`.
 
@@ -17572,7 +17572,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. Pop all values :math:`{{\mathit{val}'}^\ast}` from the top of the stack.
 
-   #. Pop the :math:`\mathsf{label}` :math:`L` from the stack.
+   #. Pop the :math:`\mathsf{label}` from the stack.
 
    #. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
 
@@ -17582,7 +17582,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    a. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
 
-   #. Pop the :math:`\mathsf{label}` :math:`L` from the stack.
+   #. Pop the :math:`\mathsf{label}` from the stack.
 
    #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
@@ -17621,7 +17621,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop all values :math:`{{\mathit{val}'}^\ast}` from the top of the stack.
 
-#. Pop the :math:`\mathsf{frame}` :math:`F` from the stack.
+#. Pop the :math:`\mathsf{frame}` from the stack.
 
 #. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
 
@@ -17667,7 +17667,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. If :math:`{{\mathit{catch}''}^\ast} = \epsilon`, then:
 
-   a. Pop the :math:`\mathsf{handler}` :math:`H` from the stack.
+   a. Pop the :math:`\mathsf{handler}` from the stack.
 
    #. Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
 
@@ -17681,7 +17681,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       1) Let :math:`(\mathsf{catch\_all}~l)` be the destructuring of :math:`{\mathit{catch}}_0`.
 
-      #) Pop the :math:`\mathsf{handler}` :math:`H` from the stack.
+      #) Pop the :math:`\mathsf{handler}` from the stack.
 
       #) Execute the instruction :math:`(\mathsf{br}~l)`.
 
@@ -17689,7 +17689,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       1) Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}''}^\ast}`.
 
-      #) Pop the :math:`\mathsf{handler}` :math:`H` from the stack.
+      #) Pop the :math:`\mathsf{handler}` from the stack.
 
       #) Let :math:`H` be the :math:`\mathsf{handler}` whose arity is :math:`n` and whose catch handler is :math:`{{\mathit{catch}'}^\ast}`.
 
@@ -17703,7 +17703,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       1) Let :math:`(\mathsf{catch\_all\_ref}~l)` be the destructuring of :math:`{\mathit{catch}}_0`.
 
-      #) Pop the :math:`\mathsf{handler}` :math:`H` from the stack.
+      #) Pop the :math:`\mathsf{handler}` from the stack.
 
       #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
 
@@ -17721,7 +17721,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       #) If :math:`x < {|z{.}\mathsf{tags}|}` and :math:`z{.}\mathsf{exns}{}[a]{.}\mathsf{tag} = z{.}\mathsf{tags}{}[x]`, then:
 
-         a) Pop the :math:`\mathsf{handler}` :math:`H` from the stack.
+         a) Pop the :math:`\mathsf{handler}` from the stack.
 
          #) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
@@ -17731,7 +17731,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
          a) Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}''}^\ast}`.
 
-         #) Pop the :math:`\mathsf{handler}` :math:`H` from the stack.
+         #) Pop the :math:`\mathsf{handler}` from the stack.
 
          #) Let :math:`H` be the :math:`\mathsf{handler}` whose arity is :math:`n` and whose catch handler is :math:`{{\mathit{catch}'}^\ast}`.
 
@@ -17749,7 +17749,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
          a) Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}''}^\ast}`.
 
-         #) Pop the :math:`\mathsf{handler}` :math:`H` from the stack.
+         #) Pop the :math:`\mathsf{handler}` from the stack.
 
          #) Let :math:`H` be the :math:`\mathsf{handler}` whose arity is :math:`n` and whose catch handler is :math:`{{\mathit{catch}'}^\ast}`.
 
@@ -17761,7 +17761,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       #) Else:
 
-         a) Pop the :math:`\mathsf{handler}` :math:`H` from the stack.
+         a) Pop the :math:`\mathsf{handler}` from the stack.
 
          #) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
@@ -17775,7 +17775,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
          a) Let :math:`(\mathsf{catch\_all}~l)` be the destructuring of :math:`{\mathit{catch}}_0`.
 
-         #) Pop the :math:`\mathsf{handler}` :math:`H` from the stack.
+         #) Pop the :math:`\mathsf{handler}` from the stack.
 
          #) Execute the instruction :math:`(\mathsf{br}~l)`.
 
@@ -17783,7 +17783,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
          a) Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}''}^\ast}`.
 
-         #) Pop the :math:`\mathsf{handler}` :math:`H` from the stack.
+         #) Pop the :math:`\mathsf{handler}` from the stack.
 
          #) Let :math:`H` be the :math:`\mathsf{handler}` whose arity is :math:`n` and whose catch handler is :math:`{{\mathit{catch}'}^\ast}`.
 
@@ -17797,7 +17797,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
          a) Let :math:`(\mathsf{catch\_all\_ref}~l)` be the destructuring of :math:`{\mathit{catch}}_0`.
 
-         #) Pop the :math:`\mathsf{handler}` :math:`H` from the stack.
+         #) Pop the :math:`\mathsf{handler}` from the stack.
 
          #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
 
@@ -18138,7 +18138,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Assert: Due to validation, the first non-value entry of the stack is a :math:`\mathsf{label}`.
 
-#. Pop the :math:`\mathsf{label}` :math:`L` from the stack.
+#. Pop the :math:`\mathsf{label}` from the stack.
 
 #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
@@ -18161,7 +18161,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       #) Pop all values :math:`{{\mathit{val}'}^\ast}` from the top of the stack.
 
-      #) Pop the :math:`\mathsf{label}` :math:`L` from the stack.
+      #) Pop the :math:`\mathsf{label}` from the stack.
 
       #) Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
 
@@ -18171,7 +18171,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       1) Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
 
-      #) Pop the :math:`\mathsf{label}` :math:`L` from the stack.
+      #) Pop the :math:`\mathsf{label}` from the stack.
 
       #) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
@@ -18183,7 +18183,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
 
-   #. Pop the :math:`\mathsf{handler}` :math:`H` from the stack.
+   #. Pop the :math:`\mathsf{handler}` from the stack.
 
    #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
@@ -18298,7 +18298,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Assert: Due to validation, the first non-value entry of the stack is a :math:`\mathsf{frame}`.
 
-#. Pop the :math:`\mathsf{frame}` :math:`F` from the stack.
+#. Pop the :math:`\mathsf{frame}` from the stack.
 
 #. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
 
@@ -18319,7 +18319,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. Pop all values :math:`{{\mathit{val}'}^\ast}` from the top of the stack.
 
-   #. Pop the :math:`\mathsf{frame}` :math:`F` from the stack.
+   #. Pop the :math:`\mathsf{frame}` from the stack.
 
    #. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
 
@@ -18327,7 +18327,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    a. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
 
-   #. Pop the :math:`\mathsf{label}` :math:`L` from the stack.
+   #. Pop the :math:`\mathsf{label}` from the stack.
 
    #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
@@ -18339,7 +18339,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
 
-   #. Pop the :math:`\mathsf{handler}` :math:`H` from the stack.
+   #. Pop the :math:`\mathsf{handler}` from the stack.
 
    #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
@@ -18354,7 +18354,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Assert: Due to validation, the first non-value entry of the stack is a :math:`\mathsf{handler}`.
 
-#. Pop the :math:`\mathsf{handler}` :math:`H` from the stack.
+#. Pop the :math:`\mathsf{handler}` from the stack.
 
 #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
@@ -19153,7 +19153,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    a. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
 
-   #. Pop the :math:`\mathsf{label}` :math:`L` from the stack.
+   #. Pop the :math:`\mathsf{label}` from the stack.
 
    #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
@@ -19163,7 +19163,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    a. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
 
-   #. Pop the :math:`\mathsf{handler}` :math:`H` from the stack.
+   #. Pop the :math:`\mathsf{handler}` from the stack.
 
    #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
@@ -19197,7 +19197,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. Pop all values :math:`{{\mathit{val}'}^\ast}` from the top of the stack.
 
-   #. Pop the :math:`\mathsf{frame}` :math:`F` from the stack.
+   #. Pop the :math:`\mathsf{frame}` from the stack.
 
    #. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
 
@@ -19234,7 +19234,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. Else if the first non-value entry of the stack is a :math:`\mathsf{label}`, then:
 
-      1) Pop the :math:`\mathsf{label}` :math:`L` from the stack.
+      1) Pop the :math:`\mathsf{label}` from the stack.
 
       #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
 
@@ -19244,7 +19244,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       1) If the first non-value entry of the stack is a :math:`\mathsf{frame}`, then:
 
-         a) Pop the :math:`\mathsf{frame}` :math:`F` from the stack.
+         a) Pop the :math:`\mathsf{frame}` from the stack.
 
          #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
 
@@ -19264,7 +19264,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
          #) If :math:`{{\mathit{catch}''}^\ast} = \epsilon`, then:
 
-            1. Pop the :math:`\mathsf{handler}` :math:`H` from the stack.
+            1. Pop the :math:`\mathsf{handler}` from the stack.
 
             #. Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
 
@@ -19278,7 +19278,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
                a. Let :math:`(\mathsf{catch\_all}~l)` be the destructuring of :math:`{\mathit{catch}}_0`.
 
-               #. Pop the :math:`\mathsf{handler}` :math:`H` from the stack.
+               #. Pop the :math:`\mathsf{handler}` from the stack.
 
                #. Execute the instruction :math:`(\mathsf{br}~l)`.
 
@@ -19286,7 +19286,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
                a. Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}''}^\ast}`.
 
-               #. Pop the :math:`\mathsf{handler}` :math:`H` from the stack.
+               #. Pop the :math:`\mathsf{handler}` from the stack.
 
                #. Let :math:`H` be the :math:`\mathsf{handler}` whose arity is :math:`n` and whose catch handler is :math:`{{\mathit{catch}'}^\ast}`.
 
@@ -19300,7 +19300,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
                a. Let :math:`(\mathsf{catch\_all\_ref}~l)` be the destructuring of :math:`{\mathit{catch}}_0`.
 
-               #. Pop the :math:`\mathsf{handler}` :math:`H` from the stack.
+               #. Pop the :math:`\mathsf{handler}` from the stack.
 
                #. Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
 
@@ -19318,7 +19318,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
                #. If :math:`x < {|z{.}\mathsf{tags}|}` and :math:`z{.}\mathsf{exns}{}[a]{.}\mathsf{tag} = z{.}\mathsf{tags}{}[x]`, then:
 
-                  1) Pop the :math:`\mathsf{handler}` :math:`H` from the stack.
+                  1) Pop the :math:`\mathsf{handler}` from the stack.
 
                   #) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
@@ -19328,7 +19328,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
                   1) Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}''}^\ast}`.
 
-                  #) Pop the :math:`\mathsf{handler}` :math:`H` from the stack.
+                  #) Pop the :math:`\mathsf{handler}` from the stack.
 
                   #) Let :math:`H` be the :math:`\mathsf{handler}` whose arity is :math:`n` and whose catch handler is :math:`{{\mathit{catch}'}^\ast}`.
 
@@ -19346,7 +19346,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
                   1) Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}''}^\ast}`.
 
-                  #) Pop the :math:`\mathsf{handler}` :math:`H` from the stack.
+                  #) Pop the :math:`\mathsf{handler}` from the stack.
 
                   #) Let :math:`H` be the :math:`\mathsf{handler}` whose arity is :math:`n` and whose catch handler is :math:`{{\mathit{catch}'}^\ast}`.
 
@@ -19358,7 +19358,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
                #. Else:
 
-                  1) Pop the :math:`\mathsf{handler}` :math:`H` from the stack.
+                  1) Pop the :math:`\mathsf{handler}` from the stack.
 
                   #) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
@@ -19372,7 +19372,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
                   1) Let :math:`(\mathsf{catch\_all}~l)` be the destructuring of :math:`{\mathit{catch}}_0`.
 
-                  #) Pop the :math:`\mathsf{handler}` :math:`H` from the stack.
+                  #) Pop the :math:`\mathsf{handler}` from the stack.
 
                   #) Execute the instruction :math:`(\mathsf{br}~l)`.
 
@@ -19380,7 +19380,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
                   1) Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}''}^\ast}`.
 
-                  #) Pop the :math:`\mathsf{handler}` :math:`H` from the stack.
+                  #) Pop the :math:`\mathsf{handler}` from the stack.
 
                   #) Let :math:`H` be the :math:`\mathsf{handler}` whose arity is :math:`n` and whose catch handler is :math:`{{\mathit{catch}'}^\ast}`.
 
@@ -19394,7 +19394,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
                   1) Let :math:`(\mathsf{catch\_all\_ref}~l)` be the destructuring of :math:`{\mathit{catch}}_0`.
 
-                  #) Pop the :math:`\mathsf{handler}` :math:`H` from the stack.
+                  #) Pop the :math:`\mathsf{handler}` from the stack.
 
                   #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
 
@@ -26404,7 +26404,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. Append :math:`{{\mathit{ref}}_{\mathsf{e}}^\ast}` to :math:`{{{\mathit{ref}}_{\mathsf{e}}^\ast}^\ast}`.
 
-#. Pop the :math:`\mathsf{frame}` :math:`f` from the stack.
+#. Pop the :math:`\mathsf{frame}` from the stack.
 
 #. Let :math:`{\mathit{moduleinst}}` be :math:`{\mathrm{allocmodule}}(s, {\mathit{module}}, {{\mathit{externaddr}}^\ast}, {{\mathit{val}}_{\mathsf{g}}^\ast}, {{\mathit{ref}}_{\mathsf{t}}^\ast}, {{{\mathit{ref}}_{\mathsf{e}}^\ast}^\ast})`.
 
@@ -26424,7 +26424,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. Execute the instruction :math:`{\mathit{instr}}_{\mathsf{s}}`.
 
-#. Pop the :math:`\mathsf{frame}` :math:`F` from the stack.
+#. Pop the :math:`\mathsf{frame}` from the stack.
 
 #. Return :math:`{\mathit{moduleinst}}`.
 
@@ -26461,7 +26461,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the values :math:`{{\mathit{val}'}^{k}}` from the stack.
 
-#. Pop the :math:`\mathsf{frame}` :math:`F` from the stack.
+#. Pop the :math:`\mathsf{frame}` from the stack.
 
 #. Return :math:`{{\mathit{val}'}^{k}}`.
 

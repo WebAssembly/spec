@@ -1321,11 +1321,9 @@ let rec render_instr env algoname index depth instr =
   when Al.Valid.sub_typ expr.note Al.Al_util.evalctxT ->
     let atom = mixop |> List.hd |> List.hd in
     let control_frame_kind = render_atom env atom in
-    let context_var = get_context_var expr in
-    sprintf "%s Pop the %s %s from the stack."
+    sprintf "%s Pop the %s from the stack."
       (render_order index depth)
       control_frame_kind
-      (render_expr env context_var)
   | Al.Ast.PopI e ->
     sprintf "%s Pop %s %s from the stack." (render_order index depth)
       (render_stack_prefix e) (render_expr env e)
