@@ -1,3 +1,12 @@
+(module (table (export "table-10-inf") 10 funcref))
+(register "test-table-10-inf")
+(module (table (export "table-10-20") 10 20 funcref))
+(register "test-table-10-20")
+(module (memory (export "memory-2-inf") 2))
+(register "test-memory-2-inf")
+(module (memory (export "memory-2-4") 2 4))
+(register "test-memory-2-4")
+
 (module (table (export "table64-10-inf") i64 10 funcref))
 (register "test-table64-10-inf")
 (module (table (export "table64-10-20") i64 10 20 funcref))
