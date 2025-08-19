@@ -754,8 +754,6 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
 
     1. Let |block| be a [=Data Block=] which is [=identified with=] the underlying memory of |memaddr|.
     1. Let |length| be the length of |block|.
-    1. If |maxsize| &gt; (65536 &times; 65536),
-        1. Throw a {{RangeError}} exception.
     1. Let |buffer| be a new {{ArrayBuffer}} with the internal slots \[[ArrayBufferData]], \[[ArrayBufferByteLength]], \[[ArrayBufferMaxByteLength]], and \[[ArrayBufferDetachKey]].
     1. Set |buffer|.\[[ArrayBufferData]] to |block|.
     1. Set |buffer|.\[[ArrayBufferByteLength]] to |length|.
