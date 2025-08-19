@@ -866,7 +866,7 @@ Immediately after a WebAssembly [=memory.grow=] instruction executes, perform th
     1. Let |buffer| be **this**.\[[BufferObject]].
     1. If [=IsFixedLengthArrayBuffer=](|buffer|) is false, return |buffer|.
     1. Assert |memtype| has a max.
-    1. Let |maxsize| be the max value in |memtype|.
+    1. Let |maxsize| be the max value in |memtype| * 65536.
     1. Let |resizableBuffer| be the result of [=create a resizable memory buffer|creating a resizable memory buffer=] from |memaddr| and |maxsize|.
     1. Perform [=!=] [$DetachArrayBuffer$](|buffer|, "WebAssembly.Memory").
     1. Set **this**.\[[BufferObject]] to |resizableBuffer|.
