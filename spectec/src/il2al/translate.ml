@@ -1201,9 +1201,11 @@ and translate_rgroup (rule: rule_def) =
   let instrs = translate_rgroup' rule in
 
   let name =
-    match case_of_case winstr with
-    | (atom :: _) :: _ -> atom
-    | _ -> assert false
+    try
+      match case_of_case winstr with
+      | (atom :: _) :: _ -> atom
+      | _ -> failwith ""
+    with | _ -> error rule.at "The reduction rules do not have valid or consistent target Wasm instructions."
   in
   let anchor = rel_id.it ^ "/" ^ instr_name in
   let al_params =

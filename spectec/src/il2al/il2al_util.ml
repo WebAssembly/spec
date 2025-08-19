@@ -54,7 +54,7 @@ let case_of_case e =
   match e.it with
   | CaseE (mixop, _) -> mixop
   | _ -> error e.at
-    (Printf.sprintf "cannot get case of case expression `%s`" (Il.Print.string_of_exp e))
+    (Printf.sprintf "expected a CaseE, but got `%s`" (Il.Print.string_of_exp e))
 
 let is_let_prem_with_rhs_type t prem =
   match prem.it with
