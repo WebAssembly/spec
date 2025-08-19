@@ -860,15 +860,15 @@ Immediately after a WebAssembly [=memory.grow=] instruction executes, perform th
 
 <div algorithm=dom-Memory-toResizableBuffer>
     The <dfn method for="Memory">toResizableBuffer()</dfn> method, when invoked, performs the following steps:
+    1. If |memtype| does not have a max,
+        1. [=Throw=] a {{TypeError}} exception.
     1. Let |buffer| be **this**.\[[BufferObject]].
     1. If [=IsFixedLengthArrayBuffer=](|buffer|) is false, return |buffer|.
     1. Let |memaddr| be **this**.\[[Memory]].
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
     1. Let |memtype| be [=mem_type=](|store|, |memaddr|).
-    1. If |memtype| has a max,
-        1. Let |maxsize| be the max value in |memtype|.
-    1. Otherwise,
-        1. Let |maxsize| be 65536 &times; 65536.
+    1. Assert |memtype| has a max.
+    1. Let |maxsize| be the max value in |memtype|.
     1. Let |resizableBuffer| be the result of [=create a resizable memory buffer|creating a resizable memory buffer=] from |memaddr| and |maxsize|.
     1. Perform [=!=] [$DetachArrayBuffer$](|buffer|, "WebAssembly.Memory").
     1. Set **this**.\[[BufferObject]] to |resizableBuffer|.
