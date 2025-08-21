@@ -25,7 +25,7 @@ Date: now
     "status": "Draft"
   },
   "WASMWEB": {
-    "href": "https://webassembly.github.io/spec/js-api/",
+    "href": "https://webassembly.github.io/spec/web-api/",
     "title": "WebAssembly Web API Specification",
     "publisher": "W3C WebAssembly Community Group",
     "status": "Draft"
@@ -446,9 +446,9 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
             1. If |v| [=implements=] {{Global}},
                 1. Let |globaladdr| be |v|.\[[Global]].
             1. Otherwise,
-                1. If |valtype| is [=i64=] and [=Type=](|v|) is not BigInt,
+                1. If |valtype| is [=i64=] and |v| [=is not a BigInt=],
                     1. Throw a {{LinkError}} exception.
-                1. If |valtype| is one of [=i32=], [=f32=] or [=f64=] and [=Type=](|v|) is not Number,
+                1. If |valtype| is one of [=i32=], [=f32=] or [=f64=] and |v| [=is not a Number=],
                     1. Throw a {{LinkError}} exception.
                 1. If |valtype| is [=v128=],
                     1. Throw a {{LinkError}} exception.
