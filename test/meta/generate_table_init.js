@@ -84,7 +84,8 @@ emit_a();
 // to count through the vector entries when debugging.
 let e = undefined;
 
-for ( let table of [0, 1, 2] ) {
+const tables = INDEX_TYPE == 'i64' ? [0, 1, 2] : [0,1];
+for ( let table of tables ) {
     let tt = table == 2 ? 'i64' : 'i32';
     // Passive init that overwrites all-null entries
     tab_test(`(table.init $t${table} 1 (${tt}.const 7) (i32.const 0) (i32.const 4))`,

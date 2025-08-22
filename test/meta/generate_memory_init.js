@@ -3,13 +3,13 @@
 
 print_origin("generate_memory_init.js");
 
-for ( const memtype of ['i32', 'i64'] ) {
+const memtype = INDEX_TYPE;
 
-  const decltype = memtype == 'i64' ? ' i64' : '';
+const decltype = memtype == 'i64' ? ' i64' : '';
 
-  // In-bounds tests.
-  function mem_test(instruction, expected_result_vector) {
-      print(
+// In-bounds tests.
+function mem_test(instruction, expected_result_vector) {
+    print(
 `
 (module
   (memory (export "memory0")${decltype} 1 1)
@@ -24,28 +24,28 @@ for ( const memtype of ['i32', 'i64'] ) {
 
 (invoke "test")
 `);
-      for (let i = 0; i < expected_result_vector.length; i++) {
-          print(`(assert_return (invoke "load8_u" (${memtype}.const ${i})) (i32.const ${expected_result_vector[i]}))`);
-      }
-  }
+    for (let i = 0; i < expected_result_vector.length; i++) {
+        print(`(assert_return (invoke "load8_u" (${memtype}.const ${i})) (i32.const ${expected_result_vector[i]}))`);
+    }
+}
 
-  const e = 0;
+const e = 0;
 
-  // This just gives the initial state of the memory, with its active
-  // initialisers applied.
-  mem_test("(nop)",
-           [e,e,3,1,4, 1,e,e,e,e, e,e,7,5,2, 3,6,e,e,e, e,e,e,e,e, e,e,e,e,e]);
+// This just gives the initial state of the memory, with its active
+// initialisers applied.
+mem_test("(nop)",
+          [e,e,3,1,4, 1,e,e,e,e, e,e,7,5,2, 3,6,e,e,e, e,e,e,e,e, e,e,e,e,e]);
 
-  // Passive init that overwrites all-zero entries
-  mem_test(`(memory.init 1 (${memtype}.const 7) (i32.const 0) (i32.const 4))`,
-           [e,e,3,1,4, 1,e,2,7,1, 8,e,7,5,2, 3,6,e,e,e, e,e,e,e,e, e,e,e,e,e]);
+// Passive init that overwrites all-zero entries
+mem_test(`(memory.init 1 (${memtype}.const 7) (i32.const 0) (i32.const 4))`,
+          [e,e,3,1,4, 1,e,2,7,1, 8,e,7,5,2, 3,6,e,e,e, e,e,e,e,e, e,e,e,e,e]);
 
-  // Passive init that overwrites existing active-init-created entries
-  mem_test(`(memory.init 3 (${memtype}.const 15) (i32.const 1) (i32.const 3))`,
-           [e,e,3,1,4, 1,e,e,e,e, e,e,7,5,2, 9,2,7,e,e, e,e,e,e,e, e,e,e,e,e]);
+// Passive init that overwrites existing active-init-created entries
+mem_test(`(memory.init 3 (${memtype}.const 15) (i32.const 1) (i32.const 3))`,
+          [e,e,3,1,4, 1,e,e,e,e, e,e,7,5,2, 9,2,7,e,e, e,e,e,e,e, e,e,e,e,e]);
 
-  // Perform active and passive initialisation and then multiple copies
-  mem_test(`(memory.init 1 (${memtype}.const 7) (i32.const 0) (i32.const 4))
+// Perform active and passive initialisation and then multiple copies
+mem_test(`(memory.init 1 (${memtype}.const 7) (i32.const 0) (i32.const 4))
     (data.drop 1)
     (memory.init 3 (${memtype}.const 15) (i32.const 1) (i32.const 3))
     (data.drop 3)
@@ -54,16 +54,16 @@ for ( const memtype of ['i32', 'i64'] ) {
     (memory.copy (${memtype}.const 24) (${memtype}.const 10) (${memtype}.const 1))
     (memory.copy (${memtype}.const 13) (${memtype}.const 11) (${memtype}.const 4))
     (memory.copy (${memtype}.const 19) (${memtype}.const 20) (${memtype}.const 5))`,
-           [e,e,3,1,4, 1,e,2,7,1, 8,e,7,e,7, 5,2,7,e,9, e,7,e,8,8, e,e,e,e,e]);
+          [e,e,3,1,4, 1,e,2,7,1, 8,e,7,e,7, 5,2,7,e,9, e,7,e,8,8, e,e,e,e,e]);
 
-  // Miscellaneous
+// Miscellaneous
 
-  let PREAMBLE =
-    `(memory${decltype} 1)
+let PREAMBLE =
+`(memory${decltype} 1)
     (data "\\37")`;
 
-  // drop with no memory
-  print(
+// drop with no memory
+print(
 `(assert_invalid
    (module
      (func (export "test")
@@ -71,8 +71,8 @@ for ( const memtype of ['i32', 'i64'] ) {
    "unknown data segment")
 `);
 
-  // drop with data seg ix out of range
-  print(
+// drop with data seg ix out of range
+print(
 `(assert_invalid
   (module
     ${PREAMBLE}
@@ -81,8 +81,8 @@ for ( const memtype of ['i32', 'i64'] ) {
   "unknown data segment")
 `);
 
-  // drop, then drop
-  print(
+// drop, then drop
+print(
 `(module
   ${PREAMBLE}
   (func (export "test")
@@ -91,8 +91,8 @@ for ( const memtype of ['i32', 'i64'] ) {
 (invoke "test")
 `);
 
-  // drop, then init
-  print(
+// drop, then init
+print(
 `(module
   ${PREAMBLE}
   (func (export "test")
@@ -101,8 +101,8 @@ for ( const memtype of ['i32', 'i64'] ) {
 (assert_trap (invoke "test") "out of bounds memory access")
 `);
 
-  // init with data seg ix indicating an active segment
-  print(
+// init with data seg ix indicating an active segment
+print(
 `(module
    (memory${decltype} 1)
    (data (${memtype}.const 0) "\\37")
@@ -111,8 +111,8 @@ for ( const memtype of ['i32', 'i64'] ) {
 (assert_trap (invoke "test") "out of bounds memory access")
 `);
 
-  // init with no memory
-  print(
+// init with no memory
+print(
 `(assert_invalid
   (module
     (func (export "test")
@@ -120,8 +120,8 @@ for ( const memtype of ['i32', 'i64'] ) {
   "unknown memory 0")
 `);
 
-  // init with data seg ix out of range
-  print(
+// init with data seg ix out of range
+print(
 `(assert_invalid
   (module
     ${PREAMBLE}
@@ -130,8 +130,8 @@ for ( const memtype of ['i32', 'i64'] ) {
   "unknown data segment 1")
 `);
 
-  // init, using a data seg ix more than once is OK
-  print(
+// init, using a data seg ix more than once is OK
+print(
 `(module
   ${PREAMBLE}
   (func (export "test")
@@ -140,8 +140,8 @@ for ( const memtype of ['i32', 'i64'] ) {
 (invoke "test")
 `);
 
-  // init: seg ix is valid passive, but length to copy > len of seg
-  print(
+// init: seg ix is valid passive, but length to copy > len of seg
+print(
 `(module
   ${PREAMBLE}
   (func (export "test")
@@ -149,8 +149,8 @@ for ( const memtype of ['i32', 'i64'] ) {
 (assert_trap (invoke "test") "out of bounds memory access")
 `);
 
-  // init: seg ix is valid passive, but implies copying beyond end of seg
-  print(
+// init: seg ix is valid passive, but implies copying beyond end of seg
+print(
 `(module
   ${PREAMBLE}
   (func (export "test")
@@ -158,8 +158,8 @@ for ( const memtype of ['i32', 'i64'] ) {
 (assert_trap (invoke "test") "out of bounds memory access")
 `);
 
-  // init: seg ix is valid passive, but implies copying beyond end of dst
-  print(
+// init: seg ix is valid passive, but implies copying beyond end of dst
+print(
 `(module
   ${PREAMBLE}
   (func (export "test")
@@ -167,8 +167,8 @@ for ( const memtype of ['i32', 'i64'] ) {
 (assert_trap (invoke "test") "out of bounds memory access")
 `);
 
-  // init: seg ix is valid passive, src offset past the end, zero len is invalid
-  print(
+// init: seg ix is valid passive, src offset past the end, zero len is invalid
+print(
 `(module
   ${PREAMBLE}
   (func (export "test")
@@ -176,8 +176,8 @@ for ( const memtype of ['i32', 'i64'] ) {
 (assert_trap (invoke "test") "out of bounds memory access")
 `);
 
-  // init: seg ix is valid passive, zero len, src offset at the end
-  print(
+// init: seg ix is valid passive, zero len, src offset at the end
+print(
 `(module
   ${PREAMBLE}
   (func (export "test")
@@ -185,8 +185,8 @@ for ( const memtype of ['i32', 'i64'] ) {
 (invoke "test")
 `);
 
-  // init: seg ix is valid passive, dst offset past the end, zero len is invalid
-  print(
+// init: seg ix is valid passive, dst offset past the end, zero len is invalid
+print(
 `(module
   ${PREAMBLE}
   (func (export "test")
@@ -194,8 +194,8 @@ for ( const memtype of ['i32', 'i64'] ) {
 (assert_trap (invoke "test") "out of bounds memory access")
 `);
 
-  // init: seg ix is valid passive, zero len, but dst offset at the end
-  print(
+// init: seg ix is valid passive, zero len, but dst offset at the end
+print(
 `(module
   ${PREAMBLE}
   (func (export "test")
@@ -203,8 +203,8 @@ for ( const memtype of ['i32', 'i64'] ) {
 (invoke "test")
 `);
 
-  // init: seg ix is valid passive, zero len, dst and src offsets at the end
-  print(
+// init: seg ix is valid passive, zero len, dst and src offsets at the end
+print(
 `(module
   ${PREAMBLE}
   (func (export "test")
@@ -212,9 +212,9 @@ for ( const memtype of ['i32', 'i64'] ) {
 (invoke "test")
 `);
 
-  // init: seg ix is valid passive, src and dst offset past the end, zero len is
-  // invalid
-  print(
+// init: seg ix is valid passive, src and dst offset past the end, zero len is
+// invalid
+print(
 `(module
   ${PREAMBLE}
   (func (export "test")
@@ -222,16 +222,16 @@ for ( const memtype of ['i32', 'i64'] ) {
 (assert_trap (invoke "test") "out of bounds memory access")
 `);
 
-  // invalid argument types.  TODO: can add anyfunc etc here.
-  {
-      const tys  = ['i32', 'f32', 'i64', 'f64'];
+// invalid argument types.  TODO: can add anyfunc etc here.
+{
+    const tys  = ['i32', 'f32', 'i64', 'f64'];
 
-      for (let ty1 of tys) {
-      for (let ty2 of tys) {
-      for (let ty3 of tys) {
-          if (ty1 == memtype && ty2 == 'i32' && ty3 == 'i32')
-              continue;  // this is the only valid case
-          print(
+    for (let ty1 of tys) {
+    for (let ty2 of tys) {
+    for (let ty3 of tys) {
+        if (ty1 == memtype && ty2 == 'i32' && ty3 == 'i32')
+            continue;  // this is the only valid case
+        print(
 `(assert_invalid
   (module
     ${PREAMBLE}
@@ -239,20 +239,20 @@ for ( const memtype of ['i32', 'i64'] ) {
       (memory.init 0 (${ty1}.const 1) (${ty2}.const 1) (${ty3}.const 1))))
   "type mismatch")
 `);
-      }}}
-  }
+    }}}
+}
 
-  // memory.init: out of bounds of the memory or the segment, but should perform
-  // the operation up to the appropriate bound.
-  //
-  // Arithmetic overflow of memoffset + len or of bufferoffset + len should not
-  // affect the behavior.
+// memory.init: out of bounds of the memory or the segment, but should perform
+// the operation up to the appropriate bound.
+//
+// Arithmetic overflow of memoffset + len or of bufferoffset + len should not
+// affect the behavior.
 
-  // Note, the length of the data segment is 16.
-  const mem_init_len = 16;
+// Note, the length of the data segment is 16.
+const mem_init_len = 16;
 
-  function mem_init(min, max, shared, backup, write) {
-      print(
+function mem_init(min, max, shared, backup, write) {
+    print(
 `(module
   (memory${decltype} ${min} ${max} ${shared})
   (data "\\42\\42\\42\\42\\42\\42\\42\\42\\42\\42\\42\\42\\42\\42\\42\\42")
@@ -260,44 +260,44 @@ for ( const memtype of ['i32', 'i64'] ) {
   (func (export "run") (param $offs ${memtype}) (param $len i32)
     (memory.init 0 (local.get $offs) (i32.const 0) (local.get $len))))
 `);
-      // A fill writing past the end of the memory should throw *and* have filled
-      // all the way up to the end.
-      //
-      // A fill reading past the end of the segment should throw *and* have filled
-      // memory with as much data as was available.
-      let offs = min*PAGESIZE - backup;
-      print(
+    // A fill writing past the end of the memory should throw *and* have filled
+    // all the way up to the end.
+    //
+    // A fill reading past the end of the segment should throw *and* have filled
+    // memory with as much data as was available.
+    let offs = min*PAGESIZE - backup;
+    print(
 `(assert_trap (invoke "run" (${memtype}.const ${offs}) (i32.const ${write}))
               "out of bounds memory access")
 `);
-      checkRange(memtype, 0, min, 0);
-  }
+    checkRange(memtype, 0, min, 0);
+}
 
-  // We exceed the bounds of the memory but not of the data segment
-  mem_init(1, 1, "", Math.floor(mem_init_len/2), mem_init_len);
-  mem_init(1, 1, "", Math.floor(mem_init_len/2)+1, mem_init_len);
-  if (WITH_SHARED_MEMORY) {
-      mem_init(2, 4, "shared", Math.floor(mem_init_len/2), mem_init_len);
-      mem_init(2, 4, "shared", Math.floor(mem_init_len/2)+1, mem_init_len);
-  }
+// We exceed the bounds of the memory but not of the data segment
+mem_init(1, 1, "", Math.floor(mem_init_len/2), mem_init_len);
+mem_init(1, 1, "", Math.floor(mem_init_len/2)+1, mem_init_len);
+if (WITH_SHARED_MEMORY) {
+    mem_init(2, 4, "shared", Math.floor(mem_init_len/2), mem_init_len);
+    mem_init(2, 4, "shared", Math.floor(mem_init_len/2)+1, mem_init_len);
+}
 
-  // We exceed the bounds of the data segment but not the memory
-  mem_init(1, 1, "", mem_init_len*4, mem_init_len*2-2);
-  mem_init(1, 1, "", mem_init_len*4-1, mem_init_len*2-1);
-  if (WITH_SHARED_MEMORY) {
-      mem_init(2, 4, "shared", mem_init_len*4, mem_init_len*2-2);
-      mem_init(2, 4, "shared", mem_init_len*4-1, mem_init_len*2-1);
-  }
+// We exceed the bounds of the data segment but not the memory
+mem_init(1, 1, "", mem_init_len*4, mem_init_len*2-2);
+mem_init(1, 1, "", mem_init_len*4-1, mem_init_len*2-1);
+if (WITH_SHARED_MEMORY) {
+    mem_init(2, 4, "shared", mem_init_len*4, mem_init_len*2-2);
+    mem_init(2, 4, "shared", mem_init_len*4-1, mem_init_len*2-1);
+}
 
-  // We arithmetically overflow the memory limit but not the segment limit
-  mem_init(1, "", "", Math.floor(mem_init_len/2), 0xFFFFFF00);
+// We arithmetically overflow the memory limit but not the segment limit
+mem_init(1, "", "", Math.floor(mem_init_len/2), 0xFFFFFF00);
 
-  // We arithmetically overflow the segment limit but not the memory limit
-  mem_init(1, "", "", PAGESIZE, 0xFFFFFFFC);
+// We arithmetically overflow the segment limit but not the memory limit
+mem_init(1, "", "", PAGESIZE, 0xFFFFFFFC);
 
-  // Test that the data segment index is properly encoded as an unsigned (not
-  // signed) LEB.
-  print(
+// Test that the data segment index is properly encoded as an unsigned (not
+// signed) LEB.
+print(
 `
 (module
   (memory${decltype} 1)
@@ -313,4 +313,3 @@ for ( const memtype of ['i32', 'i64'] ) {
   (data "") (data "") (data "") (data "") (data "") (data "") (data "") (data "")
   (data "")
   (func (memory.init 64 (${memtype}.const 0) (i32.const 0) (i32.const 0))))`)
-}
