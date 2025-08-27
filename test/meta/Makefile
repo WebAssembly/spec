@@ -6,7 +6,7 @@ SHARED_MEM=false
 # Node.js
 JSSHELL=./noderun.sh $(SHARED_MEM)
 
-TARGETDIR=../core
+TARGETDIR=../core/bulk-memory
 TARGETDIR64=../core/memory64
 
 WAST_FILES = memory_copy memory_init memory_fill table_copy table_init

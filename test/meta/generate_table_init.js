@@ -28,6 +28,7 @@ function emit_a() {
 
 function emit_b(insn, table) {
     let tt = table == 2 ? 'i64' : 'i32';
+    let t2 = table == 2 ? '(table $t2 i64 30 30 funcref)' : '';
     print(
 `
 (module
@@ -39,7 +40,7 @@ function emit_b(insn, table) {
   (import "a" "ef4" (func (result i32)))    ;; index 4
   (table $t0 30 30 funcref)
   (table $t1 30 30 funcref)
-  (table $t2 i64 30 30 funcref)
+  ${t2}
   (elem (table $t${table}) (${tt}.const 2) func 3 1 4 1)
   (elem funcref
     (ref.func 2) (ref.func 7) (ref.func 1) (ref.func 8))
