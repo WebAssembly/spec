@@ -197,7 +197,8 @@ function tab_test_nofail(tt, insn1, insn2) {
     do_test(tt, insn1, insn2, undefined, undefined);
 }
 
-for ( let tt of ["i32", "i64"] ) {
+ {
+  const tt = INDEX_TYPE;
   for ( let dest of ["$t0","$t1"] ) {
       // Here we test the boundary-failure cases.  The table's valid indices are 0..29
       // inclusive.
