@@ -615,7 +615,6 @@ warning: grammar `Binstr/vec-bitmask-i16x8` was never spliced
 warning: grammar `Binstr/vec-narrow-i16x8` was never spliced
 warning: grammar `Binstr/vec-ext-i16x8` was never spliced
 warning: grammar `Binstr/vec-shift-i16x8` was never spliced
-warning: grammar `Binstr/vec-bin-i16x8` was never spliced
 warning: grammar `Binstr/vec-extbin-i16x8` was never spliced
 warning: grammar `Binstr/vec-extun-i32x4` was never spliced
 warning: grammar `Binstr/vec-un-i32x4` was never spliced

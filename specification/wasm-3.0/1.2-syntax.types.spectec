@@ -107,7 +107,7 @@ syntax resulttype hint(desc "result type") =
 
 ;; TODO(3, rossberg): add ability to do this inline
 syntax mut hint(show MUT) hint(macro "T%" "T%") = MUT
-syntax final hint(show FINAL) hint(macro "T%" "T%") = FINAL
+syntax final hint(show FINAL) hint(macro "%" "T%") = FINAL
 
 syntax fieldtype  hint(desc "field type") = mut? storagetype
 

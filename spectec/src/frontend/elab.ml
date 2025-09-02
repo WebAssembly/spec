@@ -80,13 +80,13 @@ let cat_exp' e1' e2' =
 type kind =
   | Transp  (* alias types, notation types *)
   | Opaque  (* structures or variants, type parameter *)
-  | Defined of typ * Il.deftyp
+  | Defined of typ * id list * Il.deftyp
   | Family of (arg list * typ * Il.inst) list (* family of types *)
 
 type var_typ = typ
 type typ_typ = param list * kind
-type gram_typ = param list * typ * gram option * Il.prod list
-type rel_typ = typ * Il.rule list
+type gram_typ = param list * typ * gram option * (id * Il.prod) list
+type rel_typ = typ * (id * Il.rule) list
 type def_typ = param list * typ * (def * Il.clause) list
 
 type 'a env' = (region * 'a) Map.t
@@ -187,7 +187,7 @@ let to_eval_typ id (_at, (ps, k)) =
   | Opaque | Transp ->
     let args' = List.map Convert.arg_of_param ps in
     [(args', VarT (id $ no_region, args') $ no_region)]
-  | Defined (t, _dt') ->
+  | Defined (t, _ids, _dt') ->
     [(List.map Convert.arg_of_param ps, t)]
   | Family insts ->
     List.map (fun (args, t, _inst') -> (args, t)) insts
@@ -351,7 +351,7 @@ let aliased_inst inst' =
 (* TODO(4, rossberg): replace with reduce_typ *)
 let as_defined_typid' env id args at : typ' * [`Alias | `NoAlias] =
   match find "syntax type" env.typs (strip_var_suffix id) with
-  | ps, Defined (t, dt') ->
+  | ps, Defined (t, _ids, dt') ->
     let t' = if ps = [] then t else  (* optimization *)
       Subst.subst_typ (arg_subst Subst.empty ps args) t in
     t'.it, aliased dt'
@@ -2470,16 +2470,19 @@ let rec elab_def env d : Il.def list =
       | Opaque, CaseT (Dots, _, _, _) ->
         error_id id1 "extension of not yet defined syntax type"
       | Opaque, CaseT (NoDots, _, _, dots2) ->
-        Defined (t, dt'), dots2 = NoDots
+        Defined (t, [id2], dt'), dots2 = NoDots
       | (Opaque | Transp), _ ->
-        Defined (t, dt'), true
-      | Defined ({it = CaseT (dots1, ts1, tcs1, Dots); at; _}, _),
+        Defined (t, [id2], dt'), true
+      | Defined ({it = CaseT (dots1, ts1, tcs1, Dots); at; _}, ids, _),
           CaseT (Dots, ts2, tcs2, dots2) ->
         let ps = List.map Convert.param_of_arg as_ in
+        if List.exists (fun id -> id.it = id2.it) ids then
+          error d.at ("duplicate syntax fragment name `" ^ id1.it ^
+            (if id2.it = "" then "" else "/" ^ id2.it) ^ "`");
         if not Eq.(eq_list eq_param ps ps1) then
           error d.at "syntax parameters differ from previous fragment";
         let t1 = CaseT (dots1, ts1 @ ts2, tcs1 @ tcs2, dots2) $ over_region [at; t.at] in
-        Defined (t1, dt'), dots2 = NoDots
+        Defined (t1, id2::ids, dt'), dots2 = NoDots
       | Defined _, CaseT (Dots, _, _, _) ->
         error_id id1 "extension of non-extensible syntax type"
       | Defined _, _ ->
@@ -2506,7 +2509,7 @@ let rec elab_def env d : Il.def list =
     let ps' = elab_params env' ps in
     let t' = elab_typ env' t in
     if env'.pm then error d.at "misplaced +- or -+ operator in grammar";
-    let prods' = elab_gram env' gram t in
+    let prods' = List.map (fun pr -> id2, pr) (elab_gram env' gram t) in
     let dims = Dim.check_def d in
     infer_no_binds env' dims d;
     let ps1, t1, gram1_opt, prods1' = find "grammar" env.grams id1 in
@@ -2517,6 +2520,9 @@ let rec elab_def env d : Il.def list =
       | None, (_, _, dots2) ->
         gram, dots2 = NoDots
       | Some {it = (dots1, prods1, Dots); at; _}, (Dots, prods2, dots2) ->
+        if List.exists (fun (id, _) -> id.it = id2.it) prods1' then
+          error d.at ("duplicate grammar fragment name `" ^ id1.it ^
+            (if id2.it = "" then "" else "/" ^ id2.it) ^ "`");
         if not Eq.(eq_list eq_param ps ps1) then
           error d.at "grammar parameters differ from previous fragment";
         if not (equiv_typ env' t t1) then
@@ -2546,6 +2552,9 @@ let rec elab_def env d : Il.def list =
     let dims = Dim.check_def d in
     let dims' = Dim.Env.map (List.map (elab_iter env')) dims in
     let t, rules' = find "relation" env.rels id1 in
+    if List.exists (fun (id, _) -> id.it = id2.it) rules' then
+      error d.at ("duplicate rule name `" ^ id1.it ^
+        (if id2.it = "" then "" else "/" ^ id2.it) ^ "`");
     let mixop, _, _ = elab_typ_notation env id1 t in
     let es', _ = checkpoint (elab_exp_notation' env' id1 e t) in
     let es' = List.map (Dim.annot_exp dims') es' in
@@ -2553,7 +2562,7 @@ let rec elab_def env d : Il.def list =
       (concat_map_filter_nl_list (elab_prem env') prems) in
     let bs' = infer_binds env env' dims d in
     let rule' = Il.RuleD (id2, bs', mixop, tup_exp' es' e.at, prems') $ d.at in
-    env.rels <- rebind "relation" env.rels id1 (t, rules' @ [rule']);
+    env.rels <- rebind "relation" env.rels id1 (t, rules' @ [id2, rule']);
     if not env'.pm then [] else elab_def env Subst.(subst_def pm_snd (Iter.clone_def d))
   | VarD (id, t, _hints) ->
     env.pm <- false;
@@ -2600,7 +2609,7 @@ let check_dots env =
   Map.iter (fun id (at, (_ps, k)) ->
     match k with
     | Transp | Opaque -> assert false
-    | Defined ({it = CaseT (_, _, _, Dots); _}, _) ->
+    | Defined ({it = CaseT (_, _, _, Dots); _}, _, _) ->
       error_id (id $ at) "missing final extension to syntax type"
     | Family [] ->
       error_id (id $ at) "no defined cases for syntax type family"
@@ -2636,13 +2645,13 @@ let populate_def env d' : Il.def =
     )
   | Il.RelD (id, mixop, t', []) ->
     let _, rules' = find "relation" env.rels id in
-    Il.RelD (id, mixop, t', rules') $ d'.at
+    Il.RelD (id, mixop, t', List.map snd rules') $ d'.at
   | Il.DecD (id, ps', t', []) ->
     let _, _, clauses' = find "definition" env.defs id in
     Il.DecD (id, ps', t', List.map snd clauses') $ d'.at
   | Il.GramD (id, ps', t', []) ->
     let _, _, _, prods' = find "grammar" env.grams id in
-    Il.GramD (id, ps', t', prods') $ d'.at
+    Il.GramD (id, ps', t', List.map snd prods') $ d'.at
   | Il.HintD hd' -> populate_hint env hd'; d'
   | _ -> assert false
 
