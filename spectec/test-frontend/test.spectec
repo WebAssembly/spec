@@ -121,6 +121,13 @@ def $testemptyn6(([""]) 0) = 0
 def $testemptyn6((["" "" ""]) 0) = 0
 
 
+;;
+;; Nested iteration
+;;
+
+def $fnest(nat**): nat*
+def $fnest((n^(i<k))^j) = l^j  -- (if l = |n^k|)^j
+
 
 ;;
 ;; Parameterisation

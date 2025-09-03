@@ -27,6 +27,15 @@ let localize outer env =
   List.fold_left (fun env id -> Env.remove id.it env) env outer
 
 
+let il_occur occur =
+  let ss =
+    List.map (fun (x, (t, iters)) ->
+      x ^ ":" ^ Il.Debug.il_typ t ^
+        String.concat "" (List.map Il.Debug.il_iter iters)
+    ) (Env.bindings occur)
+  in "{" ^ String.concat ", " ss ^ "}"
+
+
 (* Solving constraints *)
 
 let string_of_ctx id ctx =
@@ -91,6 +100,15 @@ let rec check_iter env ctx iter =
   | Opt | List | List1 -> ()
   | ListN (e, id_opt) ->
     check_exp env ctx e;
+    (* TODO(2, rossberg): The dimension for id should match that of e:
+     * for example, if we b^(i<n) and n's dimension turns out to be * itself,
+     * then i should be **. But unfortunately, n's dimension is not known
+     * at this point, so we cannot predict a choice for this use site of i.
+     * In general, this would require unification on dimension variables.
+     * Declaratively, it should be fine to always assume full dimensionality,
+     * i.e., check id under context (strip_index iter :: ctx) below.
+     * However, the interpreter backend cannot handle that.
+     * We chicken out by assuming n is scalar, i.e., ignore outer ctx below. *)
     Option.iter (fun id -> check_varid env [strip_index iter] `Expl id) id_opt
 
 and check_typ env ctx t =
@@ -352,6 +370,11 @@ let rec annot_varid id = function
   | iter::iters -> annot_varid (annot_varid' id.it iter $ id.at) iters
 
 let rec annot_iter env iter : Il.Ast.iter * (occur * occur) =
+  Il.Debug.(log "il.annot_iter"
+    (fun _ -> fmt "%s" (il_iter iter))
+    (fun (iter', (occur1, occur2)) -> fmt "%s %s %s" (il_iter iter')
+      (il_occur occur1) (il_occur occur2))
+  ) @@ fun _ ->
   match iter with
   | Opt | List | List1 -> iter, Env.(empty, empty)
   | ListN (e, id_opt) ->
@@ -359,20 +382,15 @@ let rec annot_iter env iter : Il.Ast.iter * (occur * occur) =
     let occur2 =
       match id_opt with
       | None -> Env.empty
-      | Some id ->
-        let iterexps', occurs =
-          List.split
-            (List.map (fun iter' -> annot_iterexp env occur1 (iter', []) e.at)
-              (Env.find id.it env))
-        in
-        List.fold_left union
-          (Env.singleton id.it (NumT `NatT $ id.at, List.map fst iterexps'))
-          occurs
+      | Some id -> Env.singleton id.it (NumT `NatT $ id.at, Env.find id.it env)
     in
     ListN (e', id_opt), (occur1, occur2)
 
 and annot_exp env e : Il.Ast.exp * occur =
-  Il.Debug.(log_in "el.annot_exp" (fun _ -> il_exp e));
+  Il.Debug.(log "il.annot_exp"
+    (fun _ -> fmt "%s" (il_exp e))
+    (fun (e', occur') -> fmt "%s %s" (il_exp e') (il_occur occur'))
+  ) @@ fun _ ->
   let it, occur =
     match e.it with
     | VarE id when id.it <> "_" && Env.mem id.it env ->
@@ -494,6 +512,10 @@ and annot_path env p : Il.Ast.path * occur =
   in {p with it}, occur
 
 and annot_iterexp env occur1 (iter, xes) at : Il.Ast.iterexp * occur =
+  Il.Debug.(log "il.annot_iterexp"
+    (fun _ -> fmt "%s %s" (il_iter iter) (il_occur occur1))
+    (fun ((iter', _), occur') -> fmt "%s %s" (il_iter iter') (il_occur occur'))
+  ) @@ fun _ ->
   assert (xes = []);
   let iter', (occur2, occur3) = annot_iter env iter in
   let occur1'_l =
@@ -501,7 +523,11 @@ and annot_iterexp env occur1 (iter, xes) at : Il.Ast.iterexp * occur =
       match iters with
       | [] -> None
       | iter::iters' ->
+(* TODO(2, rossberg): this doesn't quite work, since it's comparing
+   annotated and unannotated expressions:
         assert (Il.Eq.eq_iter (strip_index iter') iter);
+*)
+        ignore strip_index;
         Some (x, (annot_varid' x iter, (IterT (t, iter) $ at, iters')))
     ) (Env.bindings (union occur1 occur3))
   in
@@ -514,7 +540,7 @@ and annot_iterexp env occur1 (iter, xes) at : Il.Ast.iterexp * occur =
   (iter', xes'), union (Env.of_seq (List.to_seq (List.map snd occur1'_l))) occur2
 
 and annot_sym env g : Il.Ast.sym * occur =
-  Il.Debug.(log_in "el.annot_sym" (fun _ -> il_sym g));
+  Il.Debug.(log_in "il.annot_sym" (fun _ -> il_sym g));
   let it, occur =
     match g.it with
     | VarG (id, as1) ->
