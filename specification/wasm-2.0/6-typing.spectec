@@ -577,6 +577,7 @@ rule Type_ok:
 rule Func_ok:
   C |- FUNC x (LOCAL t)* expr : t_1* -> t_2*
   -- if C.TYPES[x] = t_1* -> t_2*
+  -- (if t =/= BOT)*
   -- Expr_ok: C ++ {LOCALS t_1* t*, LABELS (t_2*), RETURN (t_2*)} |- expr : t_2*
 
 rule Global_ok:

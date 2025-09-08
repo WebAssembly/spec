@@ -5595,6 +5595,10 @@ The function :math:`(\mathsf{func}~x~{(\mathsf{local}~t)^\ast}~{\mathit{expr}})`
 
    * The function type :math:`C{.}\mathsf{types}{}[x]` is of the form :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
+   * For all :math:`t` in :math:`{t^\ast}`:
+
+      * The value type :math:`t` is not of the form :math:`\mathsf{bot}`.
+
    * Under the context :math:`C` with the field :math:`\mathsf{locals}` appended by :math:`{t_1^\ast}~{t^\ast}` and the field :math:`\mathsf{labels}` appended by :math:`{t_2^\ast}` and the field :math:`\mathsf{return}` appended by :math:`{t_2^\ast}`, the expression :math:`{\mathit{expr}}` is :ref:`valid <valid-val>` with the result type :math:`{t_2^\ast}`.
 
 
@@ -11285,6 +11289,8 @@ Func_ok
 - the function (FUNC x (LOCAL t)* expr) is valid with the function type t_1* -> t_2* if:
   - the function type C.TYPES[x] exists.
   - C.TYPES[x] is t_1* -> t_2*.
+  - For all t in t*:
+    - the value type t is not BOT.
   - Under the context C with .LOCALS appended by t_1* :: t* and .LABELS appended by [t_2*] and .RETURN appended by ?(t_2*), the expression expr is valid with the result type t_2*.
 
 Global_ok

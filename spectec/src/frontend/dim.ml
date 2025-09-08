@@ -108,7 +108,7 @@ let rec check_iter env ctx iter =
      * Declaratively, it should be fine to always assume full dimensionality,
      * i.e., check id under context (strip_index iter :: ctx) below.
      * However, the interpreter backend cannot handle that.
-     * We chicken out by assuming n is scalar, i.e., ignore outer ctx below. *)
+     * We chicken out by assuming e is scalar, i.e., ignore outer ctx below. *)
     Option.iter (fun id -> check_varid env [strip_index iter] `Expl id) id_opt
 
 and check_typ env ctx t =
