@@ -10,6 +10,7 @@ let PREAMBLE =
 // Range valid
 print(
 `
+(script
 (module
   ${PREAMBLE}
   (func (export "test")
@@ -18,56 +19,68 @@ print(
 `);
 checkRange(0x00000, 0x0FF00, 0x00)
 checkRange(0x0FF00, 0x10000, 0x55)
+print(')');
 
 // Range invalid
 print(
-`(module
+`(script
+(module
   ${PREAMBLE}
   (func (export "test")
     (memory.fill (i32.const 0xFF00) (i32.const 0x55) (i32.const 257))))
 (assert_trap (invoke "test") "out of bounds memory access")
+)
 `);
 
 // Wraparound the end of 32-bit offset space
 print(
-`(module
+`(script
+(module
   ${PREAMBLE}
   (func (export "test")
     (memory.fill (i32.const 0xFFFFFF00) (i32.const 0x55) (i32.const 257))))
 (assert_trap (invoke "test") "out of bounds memory access")
+)
 `);
 
 // Zero len with offset in-bounds is a no-op
 print(
-`(module
+`(script
+(module
   ${PREAMBLE}
   (func (export "test")
     (memory.fill (i32.const 0x12) (i32.const 0x55) (i32.const 0))))
 (invoke "test")
 `);
 checkRange(0x00000, 0x10000, 0x00);
+print(')');
 
 // Zero len with offset out-of-bounds at the end of memory is allowed
 print(
-`(module
+`(script
+(module
   ${PREAMBLE}
   (func (export "test")
     (memory.fill (i32.const 0x10000) (i32.const 0x55) (i32.const 0))))
 (invoke "test")
+)
 `);
 
 // Zero len with offset out-of-bounds past the end of memory is not allowed
 print(
-`(module
+`(script
+(module
   ${PREAMBLE}
   (func (export "test")
     (memory.fill (i32.const 0x20000) (i32.const 0x55) (i32.const 0))))
 (assert_trap (invoke "test") "out of bounds memory access")
+)
 `);
 
 // Very large range
 print(
-`(module
+`(script
+(module
   ${PREAMBLE}
   (func (export "test")
     (memory.fill (i32.const 0x1) (i32.const 0xAA) (i32.const 0xFFFE))))
@@ -76,10 +89,12 @@ print(
 checkRange(0x00000, 0x00001, 0x00);
 checkRange(0x00001, 0x0FFFF, 0xAA);
 checkRange(0x0FFFF, 0x10000, 0x00);
+print(')');
 
 // Sequencing
 print(
 `
+(script
 (module
   ${PREAMBLE}
   (func (export "test")
@@ -92,6 +107,7 @@ checkRange(0x12+0,  0x12+3,  0x55);
 checkRange(0x12+3,  0x12+7,  0xAA);
 checkRange(0x12+7,  0x12+10, 0x55);
 checkRange(0x12+10, 0x10000, 0x00);
+print(')');
 
 // Sundry compilation failures.
 
@@ -130,7 +146,8 @@ print(
 
 function mem_fill(min, max, shared, backup, write=backup*2) {
     print(
-`(module
+`(script
+(module
   (memory ${min} ${max} ${shared})
   ${checkRangeCode()}
   (func (export "run") (param $offs i32) (param $val i32) (param $len i32)
@@ -144,6 +161,7 @@ function mem_fill(min, max, shared, backup, write=backup*2) {
               "out of bounds memory access")
 `);
     checkRange(0, min, 0);
+    print(')');
 }
 
 mem_fill(1, 1, "", 256);

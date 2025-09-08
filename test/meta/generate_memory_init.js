@@ -8,6 +8,7 @@ print_origin("generate_memory_init.js");
 function mem_test(instruction, expected_result_vector) {
     print(
 `
+(script
 (module
   (memory (export "memory0") 1 1)
   (data (i32.const 2) "\\03\\01\\04\\01")
@@ -24,6 +25,7 @@ function mem_test(instruction, expected_result_vector) {
     for (let i = 0; i < expected_result_vector.length; i++) {
         print(`(assert_return (invoke "load8_u" (i32.const ${i})) (i32.const ${expected_result_vector[i]}))`);
     }
+    print(')');
 }
 
 const e = 0;
@@ -90,22 +92,26 @@ print(
 
 // drop, then init
 print(
-`(module
+`(script
+(module
   ${PREAMBLE}
   (func (export "test")
     (data.drop 0)
     (memory.init 0 (i32.const 1234) (i32.const 1) (i32.const 1))))
 (assert_trap (invoke "test") "out of bounds memory access")
+)
 `);
 
 // init with data seg ix indicating an active segment
 print(
-`(module
+`(script
+(module
    (memory 1)
    (data (i32.const 0) "\\37")
    (func (export "test")
      (memory.init 0 (i32.const 1234) (i32.const 1) (i32.const 1))))
 (assert_trap (invoke "test") "out of bounds memory access")
+)
 `);
 
 // init with no memory
@@ -129,94 +135,114 @@ print(
 
 // init, using a data seg ix more than once is OK
 print(
-`(module
+`(script
+(module
   ${PREAMBLE}
   (func (export "test")
     (memory.init 0 (i32.const 1) (i32.const 0) (i32.const 1))
     (memory.init 0 (i32.const 1) (i32.const 0) (i32.const 1))))
 (invoke "test")
+)
 `);
 
 // init: seg ix is valid passive, but length to copy > len of seg
 print(
-`(module
+`(script
+(module
   ${PREAMBLE}
   (func (export "test")
     (memory.init 0 (i32.const 1234) (i32.const 0) (i32.const 5))))
 (assert_trap (invoke "test") "out of bounds memory access")
+)
 `);
 
 // init: seg ix is valid passive, but implies copying beyond end of seg
 print(
-`(module
+`(script
+(module
   ${PREAMBLE}
   (func (export "test")
     (memory.init 0 (i32.const 1234) (i32.const 2) (i32.const 3))))
 (assert_trap (invoke "test") "out of bounds memory access")
+)
 `);
 
 // init: seg ix is valid passive, but implies copying beyond end of dst
 print(
-`(module
+`(script
+(module
   ${PREAMBLE}
   (func (export "test")
     (memory.init 0 (i32.const 0xFFFE) (i32.const 1) (i32.const 3))))
 (assert_trap (invoke "test") "out of bounds memory access")
+)
 `);
 
 // init: seg ix is valid passive, src offset past the end, zero len is invalid
 print(
-`(module
+`(script
+(module
   ${PREAMBLE}
   (func (export "test")
     (memory.init 0 (i32.const 1234) (i32.const 4) (i32.const 0))))
 (assert_trap (invoke "test") "out of bounds memory access")
+)
 `);
 
 // init: seg ix is valid passive, zero len, src offset at the end
 print(
-`(module
+`(script
+(module
   ${PREAMBLE}
   (func (export "test")
     (memory.init 0 (i32.const 1234) (i32.const 1) (i32.const 0))))
 (invoke "test")
+)
 `);
 
 // init: seg ix is valid passive, dst offset past the end, zero len is invalid
 print(
-`(module
+`(script
+(module
   ${PREAMBLE}
   (func (export "test")
     (memory.init 0 (i32.const 0x10001) (i32.const 0) (i32.const 0))))
 (assert_trap (invoke "test") "out of bounds memory access")
+)
 `);
 
 // init: seg ix is valid passive, zero len, but dst offset at the end
 print(
-`(module
+`(script
+(module
   ${PREAMBLE}
   (func (export "test")
     (memory.init 0 (i32.const 0x10000) (i32.const 0) (i32.const 0))))
 (invoke "test")
+)
 `);
 
 // init: seg ix is valid passive, zero len, dst and src offsets at the end
 print(
-`(module
+`(script
+(module
   ${PREAMBLE}
   (func (export "test")
     (memory.init 0 (i32.const 0x10000) (i32.const 1) (i32.const 0))))
 (invoke "test")
+)
 `);
 
 // init: seg ix is valid passive, src and dst offset past the end, zero len is
 // invalid
 print(
-`(module
+`(script
+(module
   ${PREAMBLE}
   (func (export "test")
     (memory.init 0 (i32.const 0x10001) (i32.const 4) (i32.const 0))))
 (assert_trap (invoke "test") "out of bounds memory access")
+)
 `);
 
 // invalid argument types.  TODO: can add anyfunc etc here.
