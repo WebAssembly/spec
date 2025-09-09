@@ -438,7 +438,7 @@ def $free_instr(IF blocktype instr_1* ELSE instr_2*) =
 def $free_instr(BR labelidx) = $free_labelidx(labelidx)
 def $free_instr(BR_IF labelidx) = $free_labelidx(labelidx)
 def $free_instr(BR_TABLE labelidx* labelidx') =
-  $free_list($free_labelidx(labelidx)*) ++ $free_labelidx(labelidx)
+  $free_list($free_labelidx(labelidx)*) ++ $free_labelidx(labelidx')
 def $free_instr(BR_ON_NULL labelidx) = $free_labelidx(labelidx)
 def $free_instr(BR_ON_NON_NULL labelidx) = $free_labelidx(labelidx)
 def $free_instr(BR_ON_CAST labelidx reftype_1 reftype_2) =
