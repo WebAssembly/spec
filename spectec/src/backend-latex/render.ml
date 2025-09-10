@@ -1296,8 +1296,9 @@ Printf.eprintf "[render %s:X @ %s] try expansion\n%!" (Source.string_of_region e
       "{}[" ^ render_path env p ^ " \\mathrel{{=}{\\oplus}} " ^ render_exp env e2 ^ "]"
   | StrE efs ->
     if not (List.mem Nl efs) then
+      let sep = if env.config.display then ",\\;\\allowbreak " else ",\\; " in
       "\\{ " ^
-      concat_map_nl ",\\;\\allowbreak " "\\\\\n  " (render_expfield env) efs ^ " \\}"
+      concat_map_nl sep "\\\\\n  " (render_expfield env) efs ^ " \\}"
     else
       "\\{ " ^
       "\\begin{array}[t]{@{}l@{}}\n" ^

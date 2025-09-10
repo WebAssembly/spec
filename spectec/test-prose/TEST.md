@@ -822,7 +822,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    * For all :math:`{\mathit{import}}` in :math:`{{\mathit{import}}^\ast}`:
 
-      * Under the context :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{ft}'}^\ast},\; \mathsf{return}~\epsilon \}\end{array}`, the import :math:`{\mathit{import}}` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{ixt}}`.
+      * Under the context :math:`\{ \mathsf{types}~{{\mathit{ft}'}^\ast},\;\allowbreak \mathsf{return}~\epsilon \}`, the import :math:`{\mathit{import}}` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{ixt}}`.
 
    * :math:`{{\mathit{ixt}}^\ast}` is the concatenation of all such :math:`{\mathit{ixt}}`.
 
@@ -870,7 +870,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    * The length of :math:`{{\mathit{mt}}^\ast}` is less than or equal to :math:`1`.
 
-   * The context :math:`{C'}` is of the form :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{ft}'}^\ast},\; \mathsf{funcs}~{{\mathit{ift}}^\ast}~{{\mathit{ft}}^\ast},\; \mathsf{globals}~{{\mathit{igt}}^\ast},\; \mathsf{return}~\epsilon \}\end{array}`.
+   * The context :math:`{C'}` is of the form :math:`\{ \mathsf{types}~{{\mathit{ft}'}^\ast},\;\allowbreak \mathsf{funcs}~{{\mathit{ift}}^\ast}~{{\mathit{ft}}^\ast},\;\allowbreak \mathsf{globals}~{{\mathit{igt}}^\ast},\;\allowbreak \mathsf{return}~\epsilon \}`.
 
    * The function type sequence :math:`{{\mathit{ift}}^\ast}` is of the form :math:`{\mathrm{funcs}}({{\mathit{ixt}}^\ast})`.
 
@@ -1348,7 +1348,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Assert: Due to validation, :math:`a < {|z{.}\mathsf{funcs}|}`.
 
-#. Let :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{t_1^{k}}~\rightarrow~{t_2^{n}},\; \mathsf{module}~{\mathit{mm}},\; \mathsf{code}~{\mathit{func}} \}\end{array}` be the destructuring of :math:`z{.}\mathsf{funcs}{}[a]`.
+#. Let :math:`\{ \mathsf{type}~{t_1^{k}}~\rightarrow~{t_2^{n}},\;\allowbreak \mathsf{module}~{\mathit{mm}},\;\allowbreak \mathsf{code}~{\mathit{func}} \}` be the destructuring of :math:`z{.}\mathsf{funcs}{}[a]`.
 
 #. Let :math:`(\mathsf{func}~x~{{\mathit{local}}_0^\ast}~{{\mathit{instr}}^\ast})` be the destructuring of :math:`{\mathit{func}}`.
 
@@ -1364,7 +1364,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Pop the values :math:`{{\mathit{val}}^{k}}` from the stack.
 
-#. Let :math:`f` be the frame :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~{{\mathit{val}}^{k}}~{{{\mathrm{default}}}_{t}^\ast},\; \mathsf{module}~{\mathit{mm}} \}\end{array}`.
+#. Let :math:`f` be the frame :math:`\{ \mathsf{locals}~{{\mathit{val}}^{k}}~{{{\mathrm{default}}}_{t}^\ast},\;\allowbreak \mathsf{module}~{\mathit{mm}} \}`.
 
 #. Let :math:`{f'}` be the :math:`\mathsf{frame}` :math:`f` whose arity is :math:`n`.
 
@@ -1773,7 +1773,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 
 
-1. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{align}~0,\; \mathsf{offset}~0 \}\end{array}`.
+1. Return :math:`\{ \mathsf{align}~0,\;\allowbreak \mathsf{offset}~0 \}`.
 
 
 :math:`\mathbb{B}(b)`
@@ -2484,13 +2484,13 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ..............................................
 
 
-1. Let :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{}[ i .. j ],\; \mathsf{refs}~{a^\ast} \}\end{array}` be the destructuring of :math:`{\mathit{ti}}`.
+1. Let :math:`\{ \mathsf{type}~{}[ i .. j ],\;\allowbreak \mathsf{refs}~{a^\ast} \}` be the destructuring of :math:`{\mathit{ti}}`.
 
 #. Let :math:`{i'}` be :math:`{|{a^\ast}|} + n`.
 
 #. If :math:`{i'} \leq j`, then:
 
-   a. Let :math:`{\mathit{ti}'}` be the table instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{}[ {i'} .. j ],\; \mathsf{refs}~{a^\ast}~{\epsilon^{n}} \}\end{array}`.
+   a. Let :math:`{\mathit{ti}'}` be the table instance :math:`\{ \mathsf{type}~{}[ {i'} .. j ],\;\allowbreak \mathsf{refs}~{a^\ast}~{\epsilon^{n}} \}`.
 
    #. Return :math:`{\mathit{ti}'}`.
 
@@ -2501,13 +2501,13 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ...............................................
 
 
-1. Let :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{}[ i .. j ],\; \mathsf{bytes}~{b^\ast} \}\end{array}` be the destructuring of :math:`{\mathit{mi}}`.
+1. Let :math:`\{ \mathsf{type}~{}[ i .. j ],\;\allowbreak \mathsf{bytes}~{b^\ast} \}` be the destructuring of :math:`{\mathit{mi}}`.
 
 #. Let :math:`{i'}` be :math:`{|{b^\ast}|} / (64 \, {\mathrm{Ki}}) + n`.
 
 #. If :math:`{i'} \leq j`, then:
 
-   a. Let :math:`{\mathit{mi}'}` be the memory instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{}[ {i'} .. j ],\; \mathsf{bytes}~{b^\ast}~{\mathtt{0x00}^{n \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
+   a. Let :math:`{\mathit{mi}'}` be the memory instance :math:`\{ \mathsf{type}~{}[ {i'} .. j ],\;\allowbreak \mathsf{bytes}~{b^\ast}~{\mathtt{0x00}^{n \cdot 64 \, {\mathrm{Ki}}}} \}`.
 
    #. Return :math:`{\mathit{mi}'}`.
 
@@ -2604,7 +2604,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`(\mathsf{func}~x~{{\mathit{local}}^\ast}~{\mathit{expr}})` be the destructuring of :math:`{\mathit{func}}`.
 
-#. Let :math:`{\mathit{fi}}` be the function instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{\mathit{moduleinst}}{.}\mathsf{types}{}[x],\; \mathsf{module}~{\mathit{moduleinst}},\; \mathsf{code}~{\mathit{func}} \}\end{array}`.
+#. Let :math:`{\mathit{fi}}` be the function instance :math:`\{ \mathsf{type}~{\mathit{moduleinst}}{.}\mathsf{types}{}[x],\;\allowbreak \mathsf{module}~{\mathit{moduleinst}},\;\allowbreak \mathsf{code}~{\mathit{func}} \}`.
 
 #. Let :math:`a` be the length of :math:`s{.}\mathsf{funcs}`.
 
@@ -2634,7 +2634,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ........................................................................
 
 
-1. Let :math:`{\mathit{gi}}` be the global instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{\mathit{globaltype}},\; \mathsf{value}~{\mathit{val}} \}\end{array}`.
+1. Let :math:`{\mathit{gi}}` be the global instance :math:`\{ \mathsf{type}~{\mathit{globaltype}},\;\allowbreak \mathsf{value}~{\mathit{val}} \}`.
 
 #. Let :math:`a` be the length of :math:`s{.}\mathsf{globals}`.
 
@@ -2672,7 +2672,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ..............................................
 
 
-1. Let :math:`{\mathit{ti}}` be the table instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{}[ i .. j ],\; \mathsf{refs}~{\epsilon^{i}} \}\end{array}`.
+1. Let :math:`{\mathit{ti}}` be the table instance :math:`\{ \mathsf{type}~{}[ i .. j ],\;\allowbreak \mathsf{refs}~{\epsilon^{i}} \}`.
 
 #. Let :math:`a` be the length of :math:`s{.}\mathsf{tables}`.
 
@@ -2702,7 +2702,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ............................................
 
 
-1. Let :math:`{\mathit{mi}}` be the memory instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{}[ i .. j ],\; \mathsf{bytes}~{\mathtt{0x00}^{i \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
+1. Let :math:`{\mathit{mi}}` be the memory instance :math:`\{ \mathsf{type}~{}[ i .. j ],\;\allowbreak \mathsf{bytes}~{\mathtt{0x00}^{i \cdot 64 \, {\mathrm{Ki}}}} \}`.
 
 #. Let :math:`a` be the length of :math:`s{.}\mathsf{mems}`.
 
@@ -2736,25 +2736,25 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    a. Let :math:`(\mathsf{func}~x)` be the destructuring of :math:`{\mathit{externidx}}`.
 
-   #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{func}~{{\mathit{fa}}^\ast}{}[x]) \}\end{array}`.
+   #. Return :math:`\{ \mathsf{name}~{\mathit{name}},\;\allowbreak \mathsf{addr}~(\mathsf{func}~{{\mathit{fa}}^\ast}{}[x]) \}`.
 
 #. If :math:`{\mathit{externidx}}` is some :math:`\mathsf{global}~{\mathit{globalidx}}`, then:
 
    a. Let :math:`(\mathsf{global}~x)` be the destructuring of :math:`{\mathit{externidx}}`.
 
-   #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{global}~{{\mathit{ga}}^\ast}{}[x]) \}\end{array}`.
+   #. Return :math:`\{ \mathsf{name}~{\mathit{name}},\;\allowbreak \mathsf{addr}~(\mathsf{global}~{{\mathit{ga}}^\ast}{}[x]) \}`.
 
 #. If :math:`{\mathit{externidx}}` is some :math:`\mathsf{table}~{\mathit{tableidx}}`, then:
 
    a. Let :math:`(\mathsf{table}~x)` be the destructuring of :math:`{\mathit{externidx}}`.
 
-   #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{table}~{{\mathit{ta}}^\ast}{}[x]) \}\end{array}`.
+   #. Return :math:`\{ \mathsf{name}~{\mathit{name}},\;\allowbreak \mathsf{addr}~(\mathsf{table}~{{\mathit{ta}}^\ast}{}[x]) \}`.
 
 #. Assert: :math:`{\mathit{externidx}}` is some :math:`\mathsf{mem}~{\mathit{memidx}}`.
 
 #. Let :math:`(\mathsf{mem}~x)` be the destructuring of :math:`{\mathit{externidx}}`.
 
-#. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{mem}~{{\mathit{ma}}^\ast}{}[x]) \}\end{array}`.
+#. Return :math:`\{ \mathsf{name}~{\mathit{name}},\;\allowbreak \mathsf{addr}~(\mathsf{mem}~{{\mathit{ma}}^\ast}{}[x]) \}`.
 
 
 :math:`{\mathrm{allocmodule}}(s, {\mathit{module}}, {{\mathit{externaddr}}^\ast}, {{\mathit{val}}^\ast})`
@@ -2801,7 +2801,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Append :math:`{\mathit{xi}}` to :math:`{{\mathit{xi}}^\ast}`.
 
-#. Let :math:`{\mathit{moduleinst}}` be the module instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{ft}}^\ast},\; \mathsf{funcs}~{{\mathit{fa}}_{\mathit{ex}}^\ast}~{{\mathit{fa}}^\ast},\; \mathsf{globals}~{{\mathit{ga}}_{\mathit{ex}}^\ast}~{{\mathit{ga}}^\ast},\; \mathsf{tables}~{{\mathit{ta}}_{\mathit{ex}}^\ast}~{{\mathit{ta}}^\ast},\; \mathsf{mems}~{{\mathit{ma}}_{\mathit{ex}}^\ast}~{{\mathit{ma}}^\ast},\; \mathsf{exports}~{{\mathit{xi}}^\ast} \}\end{array}`.
+#. Let :math:`{\mathit{moduleinst}}` be the module instance :math:`\{ \mathsf{types}~{{\mathit{ft}}^\ast},\;\allowbreak \mathsf{funcs}~{{\mathit{fa}}_{\mathit{ex}}^\ast}~{{\mathit{fa}}^\ast},\;\allowbreak \mathsf{globals}~{{\mathit{ga}}_{\mathit{ex}}^\ast}~{{\mathit{ga}}^\ast},\;\allowbreak \mathsf{tables}~{{\mathit{ta}}_{\mathit{ex}}^\ast}~{{\mathit{ta}}^\ast},\;\allowbreak \mathsf{mems}~{{\mathit{ma}}_{\mathit{ex}}^\ast}~{{\mathit{ma}}^\ast},\;\allowbreak \mathsf{exports}~{{\mathit{xi}}^\ast} \}`.
 
 #. Let :math:`{{\mathit{funcaddr}}_0^\ast}` be :math:`{\mathrm{allocfuncs}}(s, {\mathit{moduleinst}}, {{\mathit{func}}^{n_{\mathit{func}}}})`.
 
@@ -2920,9 +2920,9 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Append :math:`{\mathit{expr}}_{\mathsf{g}}` to :math:`{{\mathit{expr}}_{\mathsf{g}}^\ast}`.
 
-#. Let :math:`{\mathit{moduleinst}}_{\mathit{init}}` be the module instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{functype}}^\ast},\; \mathsf{funcs}~{\mathrm{funcs}}({{\mathit{externaddr}}^\ast})~{({|s{.}\mathsf{funcs}|} + i_{\mathsf{f}})^{i_{\mathsf{f}}<n_{\mathsf{f}}}},\; \mathsf{globals}~{\mathrm{globals}}({{\mathit{externaddr}}^\ast}) \}\end{array}`.
+#. Let :math:`{\mathit{moduleinst}}_{\mathit{init}}` be the module instance :math:`\{ \mathsf{types}~{{\mathit{functype}}^\ast},\;\allowbreak \mathsf{funcs}~{\mathrm{funcs}}({{\mathit{externaddr}}^\ast})~{({|s{.}\mathsf{funcs}|} + i_{\mathsf{f}})^{i_{\mathsf{f}}<n_{\mathsf{f}}}},\;\allowbreak \mathsf{globals}~{\mathrm{globals}}({{\mathit{externaddr}}^\ast}) \}`.
 
-#. Let :math:`f_{\mathit{init}}` be the frame :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{module}~{\mathit{moduleinst}}_{\mathit{init}} \}\end{array}`.
+#. Let :math:`f_{\mathit{init}}` be the frame :math:`\{ \mathsf{module}~{\mathit{moduleinst}}_{\mathit{init}} \}`.
 
 #. Let :math:`z` be the state :math:`(s, f_{\mathit{init}})`.
 
@@ -2958,7 +2958,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{\mathit{moduleinst}}` be :math:`{\mathrm{allocmodule}}(s, {\mathit{module}}, {{\mathit{externaddr}}^\ast}, {{\mathit{val}}^\ast})`.
 
-#. Let :math:`f` be the frame :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{module}~{\mathit{moduleinst}} \}\end{array}`.
+#. Let :math:`f` be the frame :math:`\{ \mathsf{module}~{\mathit{moduleinst}} \}`.
 
 #. Perform :math:`{\mathrm{initelem}}(s, {\mathit{moduleinst}}, {i_{\mathsf{e}}^\ast}, {{{\mathit{moduleinst}}{.}\mathsf{funcs}{}[x]^\ast}^\ast})`.
 
@@ -2985,7 +2985,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 .................................................................
 
 
-1. Let :math:`f` be the frame :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{module}~\{ \begin{array}[t]{@{}l@{}} \}\end{array} \}\end{array}`.
+1. Let :math:`f` be the frame :math:`\{ \mathsf{module}~\{  \} \}`.
 
 #. Let :math:`F` be the :math:`\mathsf{frame}` :math:`(s, f)`.
 
@@ -5859,7 +5859,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    * For all :math:`{\mathit{import}}` in :math:`{{\mathit{import}}^\ast}`:
 
-      * Under the context :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{ft}'}^\ast},\; \mathsf{return}~\epsilon \}\end{array}`, the import :math:`{\mathit{import}}` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{ixt}}`.
+      * Under the context :math:`\{ \mathsf{types}~{{\mathit{ft}'}^\ast},\;\allowbreak \mathsf{return}~\epsilon \}`, the import :math:`{\mathit{import}}` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{ixt}}`.
 
    * :math:`{{\mathit{ixt}}^\ast}` is the concatenation of all such :math:`{\mathit{ixt}}`.
 
@@ -5907,7 +5907,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    * The length of :math:`{{\mathit{mt}}^\ast}` is less than or equal to :math:`1`.
 
-   * The context :math:`{C'}` is of the form :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{ft}'}^\ast},\; \mathsf{funcs}~{{\mathit{ift}}^\ast}~{{\mathit{ft}}^\ast},\; \mathsf{globals}~{{\mathit{igt}}^\ast},\; \mathsf{tables}~{{\mathit{itt}}^\ast}~{{\mathit{tt}}^\ast},\; \mathsf{mems}~{{\mathit{imt}}^\ast}~{{\mathit{mt}}^\ast},\; \mathsf{return}~\epsilon \}\end{array}`.
+   * The context :math:`{C'}` is of the form :math:`\{ \mathsf{types}~{{\mathit{ft}'}^\ast},\;\allowbreak \mathsf{funcs}~{{\mathit{ift}}^\ast}~{{\mathit{ft}}^\ast},\;\allowbreak \mathsf{globals}~{{\mathit{igt}}^\ast},\;\allowbreak \mathsf{tables}~{{\mathit{itt}}^\ast}~{{\mathit{tt}}^\ast},\;\allowbreak \mathsf{mems}~{{\mathit{imt}}^\ast}~{{\mathit{mt}}^\ast},\;\allowbreak \mathsf{return}~\epsilon \}`.
 
    * The function type sequence :math:`{{\mathit{ift}}^\ast}` is of the form :math:`{\mathrm{funcs}}({{\mathit{ixt}}^\ast})`.
 
@@ -6982,7 +6982,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Assert: Due to validation, :math:`a < {|z{.}\mathsf{funcs}|}`.
 
-#. Let :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{t_1^{k}}~\rightarrow~{t_2^{n}},\; \mathsf{module}~{\mathit{mm}},\; \mathsf{code}~{\mathit{func}} \}\end{array}` be the destructuring of :math:`z{.}\mathsf{funcs}{}[a]`.
+#. Let :math:`\{ \mathsf{type}~{t_1^{k}}~\rightarrow~{t_2^{n}},\;\allowbreak \mathsf{module}~{\mathit{mm}},\;\allowbreak \mathsf{code}~{\mathit{func}} \}` be the destructuring of :math:`z{.}\mathsf{funcs}{}[a]`.
 
 #. Let :math:`(\mathsf{func}~x~{{\mathit{local}}_0^\ast}~{{\mathit{instr}}^\ast})` be the destructuring of :math:`{\mathit{func}}`.
 
@@ -6998,7 +6998,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Pop the values :math:`{{\mathit{val}}^{k}}` from the stack.
 
-#. Let :math:`f` be the frame :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~{{\mathit{val}}^{k}}~{{{\mathrm{default}}}_{t}^\ast},\; \mathsf{module}~{\mathit{mm}} \}\end{array}`.
+#. Let :math:`f` be the frame :math:`\{ \mathsf{locals}~{{\mathit{val}}^{k}}~{{{\mathrm{default}}}_{t}^\ast},\;\allowbreak \mathsf{module}~{\mathit{mm}} \}`.
 
 #. Let :math:`{f'}` be the :math:`\mathsf{frame}` :math:`f` whose arity is :math:`n`.
 
@@ -8299,7 +8299,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 
 
-1. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{align}~0,\; \mathsf{offset}~0 \}\end{array}`.
+1. Return :math:`\{ \mathsf{align}~0,\;\allowbreak \mathsf{offset}~0 \}`.
 
 
 :math:`\mathbb{B}(b)`
@@ -10071,13 +10071,13 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 .................................................
 
 
-1. Let :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({}[ i .. j ]~{\mathit{rt}}),\; \mathsf{refs}~{{r'}^\ast} \}\end{array}` be the destructuring of :math:`{\mathit{ti}}`.
+1. Let :math:`\{ \mathsf{type}~({}[ i .. j ]~{\mathit{rt}}),\;\allowbreak \mathsf{refs}~{{r'}^\ast} \}` be the destructuring of :math:`{\mathit{ti}}`.
 
 #. Let :math:`{i'}` be :math:`{|{{r'}^\ast}|} + n`.
 
 #. If :math:`{i'} \leq j`, then:
 
-   a. Let :math:`{\mathit{ti}'}` be the table instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({}[ {i'} .. j ]~{\mathit{rt}}),\; \mathsf{refs}~{{r'}^\ast}~{r^{n}} \}\end{array}`.
+   a. Let :math:`{\mathit{ti}'}` be the table instance :math:`\{ \mathsf{type}~({}[ {i'} .. j ]~{\mathit{rt}}),\;\allowbreak \mathsf{refs}~{{r'}^\ast}~{r^{n}} \}`.
 
    #. Return :math:`{\mathit{ti}'}`.
 
@@ -10088,13 +10088,13 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ...............................................
 
 
-1. Let :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{}[ i .. j ]~\mathsf{page},\; \mathsf{bytes}~{b^\ast} \}\end{array}` be the destructuring of :math:`{\mathit{mi}}`.
+1. Let :math:`\{ \mathsf{type}~{}[ i .. j ]~\mathsf{page},\;\allowbreak \mathsf{bytes}~{b^\ast} \}` be the destructuring of :math:`{\mathit{mi}}`.
 
 #. Let :math:`{i'}` be :math:`{|{b^\ast}|} / (64 \, {\mathrm{Ki}}) + n`.
 
 #. If :math:`{i'} \leq j`, then:
 
-   a. Let :math:`{\mathit{mi}'}` be the memory instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{}[ {i'} .. j ]~\mathsf{page},\; \mathsf{bytes}~{b^\ast}~{\mathtt{0x00}^{n \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
+   a. Let :math:`{\mathit{mi}'}` be the memory instance :math:`\{ \mathsf{type}~{}[ {i'} .. j ]~\mathsf{page},\;\allowbreak \mathsf{bytes}~{b^\ast}~{\mathtt{0x00}^{n \cdot 64 \, {\mathrm{Ki}}}} \}`.
 
    #. Return :math:`{\mathit{mi}'}`.
 
@@ -10216,7 +10216,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 1. Let :math:`(\mathsf{func}~x~{{\mathit{local}}^\ast}~{\mathit{expr}})` be the destructuring of :math:`{\mathit{func}}`.
 
-#. Let :math:`{\mathit{fi}}` be the function instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{\mathit{moduleinst}}{.}\mathsf{types}{}[x],\; \mathsf{module}~{\mathit{moduleinst}},\; \mathsf{code}~{\mathit{func}} \}\end{array}`.
+#. Let :math:`{\mathit{fi}}` be the function instance :math:`\{ \mathsf{type}~{\mathit{moduleinst}}{.}\mathsf{types}{}[x],\;\allowbreak \mathsf{module}~{\mathit{moduleinst}},\;\allowbreak \mathsf{code}~{\mathit{func}} \}`.
 
 #. Let :math:`a` be the length of :math:`s{.}\mathsf{funcs}`.
 
@@ -10246,7 +10246,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ........................................................................
 
 
-1. Let :math:`{\mathit{gi}}` be the global instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{\mathit{globaltype}},\; \mathsf{value}~{\mathit{val}} \}\end{array}`.
+1. Let :math:`{\mathit{gi}}` be the global instance :math:`\{ \mathsf{type}~{\mathit{globaltype}},\;\allowbreak \mathsf{value}~{\mathit{val}} \}`.
 
 #. Let :math:`a` be the length of :math:`s{.}\mathsf{globals}`.
 
@@ -10284,7 +10284,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ............................................................
 
 
-1. Let :math:`{\mathit{ti}}` be the table instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({}[ i .. j ]~{\mathit{rt}}),\; \mathsf{refs}~{(\mathsf{ref{.}null}~{\mathit{rt}})^{i}} \}\end{array}`.
+1. Let :math:`{\mathit{ti}}` be the table instance :math:`\{ \mathsf{type}~({}[ i .. j ]~{\mathit{rt}}),\;\allowbreak \mathsf{refs}~{(\mathsf{ref{.}null}~{\mathit{rt}})^{i}} \}`.
 
 #. Let :math:`a` be the length of :math:`s{.}\mathsf{tables}`.
 
@@ -10314,7 +10314,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 ..........................................................
 
 
-1. Let :math:`{\mathit{mi}}` be the memory instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{}[ i .. j ]~\mathsf{page},\; \mathsf{bytes}~{\mathtt{0x00}^{i \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
+1. Let :math:`{\mathit{mi}}` be the memory instance :math:`\{ \mathsf{type}~{}[ i .. j ]~\mathsf{page},\;\allowbreak \mathsf{bytes}~{\mathtt{0x00}^{i \cdot 64 \, {\mathrm{Ki}}}} \}`.
 
 #. Let :math:`a` be the length of :math:`s{.}\mathsf{mems}`.
 
@@ -10344,7 +10344,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 .....................................................................
 
 
-1. Let :math:`{\mathit{ei}}` be the element instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{\mathit{rt}},\; \mathsf{refs}~{{\mathit{ref}}^\ast} \}\end{array}`.
+1. Let :math:`{\mathit{ei}}` be the element instance :math:`\{ \mathsf{type}~{\mathit{rt}},\;\allowbreak \mathsf{refs}~{{\mathit{ref}}^\ast} \}`.
 
 #. Let :math:`a` be the length of :math:`s{.}\mathsf{elems}`.
 
@@ -10382,7 +10382,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 .......................................................
 
 
-1. Let :math:`{\mathit{di}}` be the data instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{bytes}~{{\mathit{byte}}^\ast} \}\end{array}`.
+1. Let :math:`{\mathit{di}}` be the data instance :math:`\{ \mathsf{bytes}~{{\mathit{byte}}^\ast} \}`.
 
 #. Let :math:`a` be the length of :math:`s{.}\mathsf{datas}`.
 
@@ -10416,25 +10416,25 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    a. Let :math:`(\mathsf{func}~x)` be the destructuring of :math:`{\mathit{externidx}}`.
 
-   #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{func}~{{\mathit{fa}}^\ast}{}[x]) \}\end{array}`.
+   #. Return :math:`\{ \mathsf{name}~{\mathit{name}},\;\allowbreak \mathsf{addr}~(\mathsf{func}~{{\mathit{fa}}^\ast}{}[x]) \}`.
 
 #. If :math:`{\mathit{externidx}}` is some :math:`\mathsf{global}~{\mathit{globalidx}}`, then:
 
    a. Let :math:`(\mathsf{global}~x)` be the destructuring of :math:`{\mathit{externidx}}`.
 
-   #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{global}~{{\mathit{ga}}^\ast}{}[x]) \}\end{array}`.
+   #. Return :math:`\{ \mathsf{name}~{\mathit{name}},\;\allowbreak \mathsf{addr}~(\mathsf{global}~{{\mathit{ga}}^\ast}{}[x]) \}`.
 
 #. If :math:`{\mathit{externidx}}` is some :math:`\mathsf{table}~{\mathit{tableidx}}`, then:
 
    a. Let :math:`(\mathsf{table}~x)` be the destructuring of :math:`{\mathit{externidx}}`.
 
-   #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{table}~{{\mathit{ta}}^\ast}{}[x]) \}\end{array}`.
+   #. Return :math:`\{ \mathsf{name}~{\mathit{name}},\;\allowbreak \mathsf{addr}~(\mathsf{table}~{{\mathit{ta}}^\ast}{}[x]) \}`.
 
 #. Assert: :math:`{\mathit{externidx}}` is some :math:`\mathsf{mem}~{\mathit{memidx}}`.
 
 #. Let :math:`(\mathsf{mem}~x)` be the destructuring of :math:`{\mathit{externidx}}`.
 
-#. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{mem}~{{\mathit{ma}}^\ast}{}[x]) \}\end{array}`.
+#. Return :math:`\{ \mathsf{name}~{\mathit{name}},\;\allowbreak \mathsf{addr}~(\mathsf{mem}~{{\mathit{ma}}^\ast}{}[x]) \}`.
 
 
 :math:`{\mathrm{allocmodule}}(s, {\mathit{module}}, {{\mathit{externaddr}}^\ast}, {{\mathit{val}}^\ast}, {{{\mathit{ref}}^\ast}^\ast})`
@@ -10489,7 +10489,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. Append :math:`{\mathit{xi}}` to :math:`{{\mathit{xi}}^\ast}`.
 
-#. Let :math:`{\mathit{moduleinst}}` be the module instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{ft}}^\ast},\; \mathsf{funcs}~{{\mathit{fa}}_{\mathit{ex}}^\ast}~{{\mathit{fa}}^\ast},\; \mathsf{globals}~{{\mathit{ga}}_{\mathit{ex}}^\ast}~{{\mathit{ga}}^\ast},\; \mathsf{tables}~{{\mathit{ta}}_{\mathit{ex}}^\ast}~{{\mathit{ta}}^\ast},\; \mathsf{mems}~{{\mathit{ma}}_{\mathit{ex}}^\ast}~{{\mathit{ma}}^\ast},\; \mathsf{elems}~{{\mathit{ea}}^\ast},\; \mathsf{datas}~{{\mathit{da}}^\ast},\; \mathsf{exports}~{{\mathit{xi}}^\ast} \}\end{array}`.
+#. Let :math:`{\mathit{moduleinst}}` be the module instance :math:`\{ \mathsf{types}~{{\mathit{ft}}^\ast},\;\allowbreak \mathsf{funcs}~{{\mathit{fa}}_{\mathit{ex}}^\ast}~{{\mathit{fa}}^\ast},\;\allowbreak \mathsf{globals}~{{\mathit{ga}}_{\mathit{ex}}^\ast}~{{\mathit{ga}}^\ast},\;\allowbreak \mathsf{tables}~{{\mathit{ta}}_{\mathit{ex}}^\ast}~{{\mathit{ta}}^\ast},\;\allowbreak \mathsf{mems}~{{\mathit{ma}}_{\mathit{ex}}^\ast}~{{\mathit{ma}}^\ast},\;\allowbreak \mathsf{elems}~{{\mathit{ea}}^\ast},\;\allowbreak \mathsf{datas}~{{\mathit{da}}^\ast},\;\allowbreak \mathsf{exports}~{{\mathit{xi}}^\ast} \}`.
 
 #. Let :math:`{{\mathit{funcaddr}}_0^\ast}` be :math:`{\mathrm{allocfuncs}}(s, {\mathit{moduleinst}}, {{\mathit{func}}^{n_{\mathit{func}}}})`.
 
@@ -10598,9 +10598,9 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{{\mathit{instr}}_{\mathsf{e}}^\ast}` be the :ref:`concatenation <notation-concat>` of :math:`{{\mathrm{runelem}}({{\mathit{elem}}^\ast}{}[i], i)^{i<n_{\mathsf{e}}}}`.
 
-#. Let :math:`{\mathit{moduleinst}}_{\mathit{init}}` be the module instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{functype}}^\ast},\; \mathsf{funcs}~{\mathrm{funcs}}({{\mathit{externaddr}}^\ast})~{({|s{.}\mathsf{funcs}|} + i_{\mathsf{f}})^{i_{\mathsf{f}}<n_{\mathsf{f}}}},\; \mathsf{globals}~{\mathrm{globals}}({{\mathit{externaddr}}^\ast}) \}\end{array}`.
+#. Let :math:`{\mathit{moduleinst}}_{\mathit{init}}` be the module instance :math:`\{ \mathsf{types}~{{\mathit{functype}}^\ast},\;\allowbreak \mathsf{funcs}~{\mathrm{funcs}}({{\mathit{externaddr}}^\ast})~{({|s{.}\mathsf{funcs}|} + i_{\mathsf{f}})^{i_{\mathsf{f}}<n_{\mathsf{f}}}},\;\allowbreak \mathsf{globals}~{\mathrm{globals}}({{\mathit{externaddr}}^\ast}) \}`.
 
-#. Let :math:`f_{\mathit{init}}` be the frame :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{module}~{\mathit{moduleinst}}_{\mathit{init}} \}\end{array}`.
+#. Let :math:`f_{\mathit{init}}` be the frame :math:`\{ \mathsf{module}~{\mathit{moduleinst}}_{\mathit{init}} \}`.
 
 #. Let :math:`z` be the state :math:`(s, f_{\mathit{init}})`.
 
@@ -10634,7 +10634,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Let :math:`{\mathit{moduleinst}}` be :math:`{\mathrm{allocmodule}}(s, {\mathit{module}}, {{\mathit{externaddr}}^\ast}, {{\mathit{val}}^\ast}, {{{\mathit{ref}}^\ast}^\ast})`.
 
-#. Let :math:`f` be the frame :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{module}~{\mathit{moduleinst}} \}\end{array}`.
+#. Let :math:`f` be the frame :math:`\{ \mathsf{module}~{\mathit{moduleinst}} \}`.
 
 #. Let :math:`{f'}` be the :math:`\mathsf{frame}` :math:`f`.
 
@@ -10661,7 +10661,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 .................................................................
 
 
-1. Let :math:`f` be the frame :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{module}~\{ \begin{array}[t]{@{}l@{}} \}\end{array} \}\end{array}`.
+1. Let :math:`f` be the frame :math:`\{ \mathsf{module}~\{  \} \}`.
 
 #. Let :math:`F` be the :math:`\mathsf{frame}` :math:`(s, f)`.
 
@@ -16732,6 +16732,10 @@ The data mode :math:`{\mathit{datamode}}` is :ref:`valid <valid-val>` if:
 
    * Either:
 
+      * The data mode :math:`{\mathit{datamode}}` is of the form :math:`\mathsf{passive}`.
+
+   * Or:
+
       * The data mode :math:`{\mathit{datamode}}` is of the form :math:`(\mathsf{active}~x~{\mathit{expr}})`.
 
       * The memory :math:`C{.}\mathsf{mems}{}[x]` exists.
@@ -16742,9 +16746,10 @@ The data mode :math:`{\mathit{datamode}}` is :ref:`valid <valid-val>` if:
 
       * :math:`{\mathit{expr}}` is constant.
 
-   * Or:
 
-      * The data mode :math:`{\mathit{datamode}}` is of the form :math:`\mathsf{passive}`.
+
+
+The data mode :math:`\mathsf{passive}` is :ref:`valid <valid-val>`.
 
 
 
@@ -16763,11 +16768,6 @@ The data mode :math:`(\mathsf{active}~x~{\mathit{expr}})` is :ref:`valid <valid-
 
 
 
-The data mode :math:`\mathsf{passive}` is :ref:`valid <valid-val>`.
-
-
-
-
 The memory segment :math:`(\mathsf{data}~{b^\ast}~{\mathit{datamode}})` is :ref:`valid <valid-val>` if:
 
 
@@ -16781,6 +16781,13 @@ The element mode :math:`{\mathit{elemmode}}` is :ref:`valid <valid-val>` with th
 
    * Either:
 
+      * The element mode :math:`{\mathit{elemmode}}` is of the form :math:`\mathsf{passive}`.
+
+   * Or:
+
+      * The element mode :math:`{\mathit{elemmode}}` is of the form :math:`\mathsf{declare}`.
+   * Or:
+
       * The element mode :math:`{\mathit{elemmode}}` is of the form :math:`(\mathsf{active}~x~{\mathit{expr}})`.
 
       * The table :math:`C{.}\mathsf{tables}{}[x]` exists.
@@ -16793,12 +16800,15 @@ The element mode :math:`{\mathit{elemmode}}` is :ref:`valid <valid-val>` with th
 
       * :math:`{\mathit{expr}}` is constant.
 
-   * Or:
 
-      * The element mode :math:`{\mathit{elemmode}}` is of the form :math:`\mathsf{passive}`.
-   * Or:
 
-      * The element mode :math:`{\mathit{elemmode}}` is of the form :math:`\mathsf{declare}`.
+
+The element mode :math:`\mathsf{passive}` is :ref:`valid <valid-val>` with the element type :math:`{\mathit{rt}}`.
+
+
+
+
+The element mode :math:`\mathsf{declare}` is :ref:`valid <valid-val>` with the element type :math:`{\mathit{rt}}`.
 
 
 
@@ -16815,16 +16825,6 @@ The element mode :math:`(\mathsf{active}~x~{\mathit{expr}})` is :ref:`valid <val
    * The expression :math:`{\mathit{expr}}` is :ref:`valid <valid-val>` with the value type :math:`{\mathit{at}}`.
 
    * :math:`{\mathit{expr}}` is constant.
-
-
-
-
-The element mode :math:`\mathsf{passive}` is :ref:`valid <valid-val>` with the element type :math:`{\mathit{rt}}`.
-
-
-
-
-The element mode :math:`\mathsf{declare}` is :ref:`valid <valid-val>` with the element type :math:`{\mathit{rt}}`.
 
 
 
@@ -17061,11 +17061,11 @@ The type definition sequence :math:`{\mathit{type}}_1~{{\mathit{type}}^\ast}` is
 The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{tag}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` is :ref:`valid <valid-val>` with the module type :math:`{\mathit{moduletype}}` if:
 
 
-   * Under the context :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{return}~\epsilon \}\end{array}`, the type definition sequence :math:`{{\mathit{type}}^\ast}` is :ref:`valid <valid-val>` with the defined type sequence :math:`{{\mathit{dt}'}^\ast}`.
+   * Under the context :math:`\{ \mathsf{return}~\epsilon \}`, the type definition sequence :math:`{{\mathit{type}}^\ast}` is :ref:`valid <valid-val>` with the defined type sequence :math:`{{\mathit{dt}'}^\ast}`.
 
    * For all :math:`{\mathit{import}}` in :math:`{{\mathit{import}}^\ast}`:
 
-      * Under the context :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{dt}'}^\ast},\; \mathsf{return}~\epsilon \}\end{array}`, the import :math:`{\mathit{import}}` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{xt}}_{\mathsf{i}}`.
+      * Under the context :math:`\{ \mathsf{types}~{{\mathit{dt}'}^\ast},\;\allowbreak \mathsf{return}~\epsilon \}`, the import :math:`{\mathit{import}}` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{xt}}_{\mathsf{i}}`.
 
    * :math:`{{\mathit{xt}}_{\mathsf{i}}^\ast}` is the concatenation of all such :math:`{\mathit{xt}}_{\mathsf{i}}`.
 
@@ -17123,7 +17123,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    * The context :math:`C` is of the form :math:`{C'}` with the field :math:`\mathsf{tags}` appended by :math:`{{\mathit{jt}}_{\mathsf{i}}^\ast}~{{\mathit{jt}}^\ast}` and the field :math:`\mathsf{globals}` appended by :math:`{{\mathit{gt}}^\ast}` and the field :math:`\mathsf{mems}` appended by :math:`{{\mathit{mt}}_{\mathsf{i}}^\ast}~{{\mathit{mt}}^\ast}` and the field :math:`\mathsf{tables}` appended by :math:`{{\mathit{tt}}_{\mathsf{i}}^\ast}~{{\mathit{tt}}^\ast}` and the field :math:`\mathsf{datas}` appended by :math:`{{\mathit{ok}}^\ast}` and the field :math:`\mathsf{elems}` appended by :math:`{{\mathit{rt}}^\ast}`.
 
-   * The context :math:`{C'}` is of the form :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{dt}'}^\ast},\; \mathsf{globals}~{{\mathit{gt}}_{\mathsf{i}}^\ast},\; \mathsf{funcs}~{{\mathit{dt}}_{\mathsf{i}}^\ast}~{{\mathit{dt}}^\ast},\; \mathsf{return}~\epsilon,\; \mathsf{refs}~{x^\ast} \}\end{array}`.
+   * The context :math:`{C'}` is of the form :math:`\{ \mathsf{types}~{{\mathit{dt}'}^\ast},\;\allowbreak \mathsf{globals}~{{\mathit{gt}}_{\mathsf{i}}^\ast},\;\allowbreak \mathsf{funcs}~{{\mathit{dt}}_{\mathsf{i}}^\ast}~{{\mathit{dt}}^\ast},\;\allowbreak \mathsf{return}~\epsilon,\;\allowbreak \mathsf{refs}~{x^\ast} \}`.
 
    * The function index sequence :math:`{x^\ast}` is of the form :math:`{\mathrm{funcidx}}({{\mathit{global}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{elem}}^\ast})`.
 
@@ -19121,7 +19121,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
 
-#. Let :math:`f` be the frame :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~{{\mathit{val}}^{n}}~{{{\mathrm{default}}}_{t}^\ast},\; \mathsf{module}~{\mathit{fi}}{.}\mathsf{module} \}\end{array}`.
+#. Let :math:`f` be the frame :math:`\{ \mathsf{locals}~{{\mathit{val}}^{n}}~{{{\mathrm{default}}}_{t}^\ast},\;\allowbreak \mathsf{module}~{\mathit{fi}}{.}\mathsf{module} \}`.
 
 #. Let :math:`{f'}` be the :math:`\mathsf{frame}` :math:`f` whose arity is :math:`m`.
 
@@ -20563,7 +20563,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
 
-#. Let :math:`{\mathit{exn}}` be the exception instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{tag}~z{.}\mathsf{tags}{}[x],\; \mathsf{fields}~{{\mathit{val}}^{n}} \}\end{array}`.
+#. Let :math:`{\mathit{exn}}` be the exception instance :math:`\{ \mathsf{tag}~z{.}\mathsf{tags}{}[x],\;\allowbreak \mathsf{fields}~{{\mathit{val}}^{n}} \}`.
 
 #. Append :math:`{\mathit{exn}}` to :math:`z{.}\mathsf{exns}`.
 
@@ -20798,7 +20798,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
 
-#. Let :math:`{\mathit{si}}` be the structure instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~z{.}\mathsf{types}{}[x],\; \mathsf{fields}~{{{\mathrm{pack}}}_{{\mathit{zt}}}({\mathit{val}})^{n}} \}\end{array}`.
+#. Let :math:`{\mathit{si}}` be the structure instance :math:`\{ \mathsf{type}~z{.}\mathsf{types}{}[x],\;\allowbreak \mathsf{fields}~{{{\mathrm{pack}}}_{{\mathit{zt}}}({\mathit{val}})^{n}} \}`.
 
 #. Push the value :math:`(\mathsf{ref{.}struct}~a)` to the stack.
 
@@ -20856,7 +20856,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
 
-#. Let :math:`{\mathit{ai}}` be the array instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~z{.}\mathsf{types}{}[x],\; \mathsf{fields}~{{{\mathrm{pack}}}_{{\mathit{zt}}}({\mathit{val}})^{n}} \}\end{array}`.
+#. Let :math:`{\mathit{ai}}` be the array instance :math:`\{ \mathsf{type}~z{.}\mathsf{types}{}[x],\;\allowbreak \mathsf{fields}~{{{\mathrm{pack}}}_{{\mathit{zt}}}({\mathit{val}})^{n}} \}`.
 
 #. Push the value :math:`(\mathsf{ref{.}array}~a)` to the stack.
 
@@ -21265,7 +21265,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. If :math:`{{\mathit{free}'}^?}` is not defined, then:
 
-   a. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
+   a. Return :math:`\{  \}`.
 
 #. Let :math:`{\mathit{free}}` be :math:`{{\mathit{free}'}^?}`.
 
@@ -21278,7 +21278,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. If :math:`{{\mathit{free}''}^\ast} = \epsilon`, then:
 
-   a. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
+   a. Return :math:`\{  \}`.
 
 #. Let :math:`{\mathit{free}}~{{\mathit{free}'}^\ast}` be :math:`{{\mathit{free}''}^\ast}`.
 
@@ -21289,63 +21289,63 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ..............................................................
 
 
-1. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{\mathit{typeidx}} \}\end{array}`.
+1. Return :math:`\{ \mathsf{types}~{\mathit{typeidx}} \}`.
 
 
 :math:`{\mathrm{free}}_{\mathit{funcidx}}({\mathit{funcidx}})`
 ..............................................................
 
 
-1. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{funcs}~{\mathit{funcidx}} \}\end{array}`.
+1. Return :math:`\{ \mathsf{funcs}~{\mathit{funcidx}} \}`.
 
 
 :math:`{\mathrm{free}}_{\mathit{globalidx}}({\mathit{globalidx}})`
 ..................................................................
 
 
-1. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{globals}~{\mathit{globalidx}} \}\end{array}`.
+1. Return :math:`\{ \mathsf{globals}~{\mathit{globalidx}} \}`.
 
 
 :math:`{\mathrm{free}}_{\mathit{tableidx}}({\mathit{tableidx}})`
 ................................................................
 
 
-1. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{tables}~{\mathit{tableidx}} \}\end{array}`.
+1. Return :math:`\{ \mathsf{tables}~{\mathit{tableidx}} \}`.
 
 
 :math:`{\mathrm{free}}_{\mathit{memidx}}({\mathit{memidx}})`
 ............................................................
 
 
-1. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{mems}~{\mathit{memidx}} \}\end{array}`.
+1. Return :math:`\{ \mathsf{mems}~{\mathit{memidx}} \}`.
 
 
 :math:`{\mathrm{free}}_{\mathit{elemidx}}({\mathit{elemidx}})`
 ..............................................................
 
 
-1. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{elems}~{\mathit{elemidx}} \}\end{array}`.
+1. Return :math:`\{ \mathsf{elems}~{\mathit{elemidx}} \}`.
 
 
 :math:`{\mathrm{free}}_{\mathit{dataidx}}({\mathit{dataidx}})`
 ..............................................................
 
 
-1. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{datas}~{\mathit{dataidx}} \}\end{array}`.
+1. Return :math:`\{ \mathsf{datas}~{\mathit{dataidx}} \}`.
 
 
 :math:`{\mathrm{free}}_{\mathit{localidx}}({\mathit{localidx}})`
 ................................................................
 
 
-1. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~{\mathit{localidx}} \}\end{array}`.
+1. Return :math:`\{ \mathsf{locals}~{\mathit{localidx}} \}`.
 
 
 :math:`{\mathrm{free}}_{\mathit{labelidx}}({\mathit{labelidx}})`
 ................................................................
 
 
-1. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{labels}~{\mathit{labelidx}} \}\end{array}`.
+1. Return :math:`\{ \mathsf{labels}~{\mathit{labelidx}} \}`.
 
 
 :math:`{\mathrm{free}}_{\mathit{externidx}}({\mathit{externidx}})`
@@ -21957,7 +21957,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    a. Let :math:`{\mathit{typevar}}_0~{{\mathit{tv}}^\ast}` be :math:`{{\mathit{typevar}}^\ast}`.
 
-   #. If :math:`{\mathit{typevar}}_0` is some :math:`\mathsf{rec} {.} \mathbb{N}` and :math:`{|{{\mathit{typeuse}}^\ast}|} \geq 1`, then:
+   #. If :math:`{\mathit{typevar}}_0` is some :math:`\mathsf{rec} {.} n` and :math:`{|{{\mathit{typeuse}}^\ast}|} \geq 1`, then:
 
       1) Let :math:`{\mathit{tu}}_1~{{\mathit{tu}}^\ast}` be :math:`{{\mathit{typeuse}}^\ast}`.
 
@@ -22325,21 +22325,21 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ................................................................
 
 
-1. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
+1. Return :math:`\{  \}`.
 
 
 :math:`{\mathrm{free}}_{\mathit{numtype}}({\mathit{numtype}})`
 ..............................................................
 
 
-1. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
+1. Return :math:`\{  \}`.
 
 
 :math:`{\mathrm{free}}_{\mathit{packtype}}({\mathit{packtype}})`
 ................................................................
 
 
-1. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
+1. Return :math:`\{  \}`.
 
 
 :math:`{\mathrm{free}}_{\mathit{lanetype}}({\mathit{lanetype}})`
@@ -22359,7 +22359,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ..............................................................
 
 
-1. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
+1. Return :math:`\{  \}`.
 
 
 :math:`{\mathrm{free}}_{\mathit{consttype}}({\mathit{consttype}})`
@@ -22379,7 +22379,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ......................................................................
 
 
-1. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
+1. Return :math:`\{  \}`.
 
 
 :math:`{\mathrm{free}}_{\mathit{typevar}}({\mathit{typevar}})`
@@ -22392,9 +22392,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. Return :math:`{\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}})`.
 
-#. Assert: Due to validation, :math:`{\mathit{typevar}}` is some :math:`\mathsf{rec} {.} \mathbb{N}`.
+#. Assert: Due to validation, :math:`{\mathit{typevar}}` is some :math:`\mathsf{rec} {.} n`.
 
-#. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
+#. Return :math:`\{  \}`.
 
 
 :math:`{\mathrm{free}}_{\mathit{heaptype}}({\mathit{heaptype}})`
@@ -22448,7 +22448,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Assert: Due to validation, :math:`{\mathit{valtype}} = \mathsf{bot}`.
 
-#. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
+#. Return :math:`\{  \}`.
 
 
 :math:`{\mathrm{free}}_{\mathit{resulttype}}({{\mathit{valtype}}^\ast})`
@@ -22554,7 +22554,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ........................................................
 
 
-1. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
+1. Return :math:`\{  \}`.
 
 
 :math:`{\mathrm{free}}_{\mathit{elemtype}}({\mathit{reftype}})`
@@ -22631,7 +22631,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 
 
-1. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{align}~0,\; \mathsf{offset}~0 \}\end{array}`.
+1. Return :math:`\{ \mathsf{align}~0,\;\allowbreak \mathsf{offset}~0 \}`.
 
 
 :math:`{\mathit{consttype}}{.}\mathsf{const}~c`
@@ -22696,15 +22696,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. If :math:`{\mathit{instr}'} = \mathsf{nop}`, then:
 
-   a. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
+   a. Return :math:`\{  \}`.
 
 #. If :math:`{\mathit{instr}'} = \mathsf{unreachable}`, then:
 
-   a. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
+   a. Return :math:`\{  \}`.
 
 #. If :math:`{\mathit{instr}'} = \mathsf{drop}`, then:
 
-   a. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
+   a. Return :math:`\{  \}`.
 
 #. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{select}~{({{\mathit{valtype}}^\ast})^?}`, then:
 
@@ -22744,9 +22744,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{br\_table}~{{\mathit{labelidx}}^\ast}~{\mathit{labelidx}}`, then:
 
-   a. Let :math:`(\mathsf{br\_table}~{{\mathit{labelidx}}^\ast}~{\mathit{labelidx}'})` be the destructuring of :math:`{\mathit{instr}'}`.
+   a. Let :math:`(\mathsf{br\_table}~{{\mathit{labelidx}}^\ast}~{\mathit{labelidx}''})` be the destructuring of :math:`{\mathit{instr}'}`.
 
-   #. Return `$free_list($free_labelidx(labelidx)*{}) ++ $free_labelidx(labelidx)`.
+   #. Return `$free_list($free_labelidx(labelidx)*{labelidx <- labelidx'*}) ++ $free_labelidx(labelidx'')`.
 
 #. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{br\_on\_null}~{\mathit{labelidx}}`, then:
 
@@ -22792,7 +22792,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. If :math:`{\mathit{instr}'} = \mathsf{return}`, then:
 
-   a. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
+   a. Return :math:`\{  \}`.
 
 #. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{return\_call}~{\mathit{funcidx}}`, then:
 
@@ -22988,15 +22988,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. If :math:`{\mathit{instr}'} = \mathsf{ref{.}is\_null}`, then:
 
-   a. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
+   a. Return :math:`\{  \}`.
 
 #. If :math:`{\mathit{instr}'} = \mathsf{ref{.}as\_non\_null}`, then:
 
-   a. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
+   a. Return :math:`\{  \}`.
 
 #. If :math:`{\mathit{instr}'} = \mathsf{ref{.}eq}`, then:
 
-   a. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
+   a. Return :math:`\{  \}`.
 
 #. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{ref{.}test}~{\mathit{reftype}}`, then:
 
@@ -23018,15 +23018,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. If :math:`{\mathit{instr}'} = \mathsf{ref{.}i{\scriptstyle 31}}`, then:
 
-   a. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
+   a. Return :math:`\{  \}`.
 
 #. If :math:`{\mathit{instr}'}` is some :math:`{\mathsf{i{\scriptstyle 31}{.}get}}{\mathsf{\_}}{{\mathit{sx}}}`, then:
 
-   a. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
+   a. Return :math:`\{  \}`.
 
 #. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{struct{.}new}~{\mathit{typeidx}}`, then:
 
-   a. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
+   a. Return :math:`\{  \}`.
 
 #. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{struct{.}new\_default}~{\mathit{typeidx}}`, then:
 
@@ -23090,7 +23090,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. If :math:`{\mathit{instr}'} = \mathsf{array{.}len}`, then:
 
-   a. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
+   a. Return :math:`\{  \}`.
 
 #. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{array{.}fill}~{\mathit{typeidx}}`, then:
 
@@ -23118,11 +23118,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. If :math:`{\mathit{instr}'} = \mathsf{extern{.}convert\_any}`, then:
 
-   a. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
+   a. Return :math:`\{  \}`.
 
 #. If :math:`{\mathit{instr}'} = \mathsf{any{.}convert\_extern}`, then:
 
-   a. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
+   a. Return :math:`\{  \}`.
 
 #. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{local{.}get}~{\mathit{localidx}}`, then:
 
@@ -23352,7 +23352,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Assert: Due to validation, :math:`{\mathit{datamode}} = \mathsf{passive}`.
 
-#. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
+#. Return :math:`\{  \}`.
 
 
 :math:`{\mathrm{free}}_{\mathit{data}}(\mathsf{data}~{{\mathit{byte}}^\ast}~{\mathit{datamode}})`
@@ -23374,11 +23374,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. If :math:`{\mathit{elemmode}} = \mathsf{passive}`, then:
 
-   a. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
+   a. Return :math:`\{  \}`.
 
 #. Assert: Due to validation, :math:`{\mathit{elemmode}} = \mathsf{declare}`.
 
-#. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
+#. Return :math:`\{  \}`.
 
 
 :math:`{\mathrm{free}}_{\mathit{elem}}(\mathsf{elem}~{\mathit{reftype}}~{{\mathit{expr}}^\ast}~{\mathit{elemmode}})`
@@ -23525,7 +23525,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. Return :math:`{\mathit{typeidx}} < x`.
 
-#. Assert: Due to validation, :math:`{\mathit{typeuse}}` is some :math:`\mathsf{rec} {.} \mathbb{N}`.
+#. Assert: Due to validation, :math:`{\mathit{typeuse}}` is some :math:`\mathsf{rec} {.} n`.
 
 #. Let :math:`(\mathsf{rec} {.} j)` be the destructuring of :math:`{\mathit{typeuse}}`.
 
@@ -23546,7 +23546,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. Return :math:`{\mathrm{unroll}}(C{.}\mathsf{types}{}[{\mathit{typeidx}}])`.
 
-#. Assert: Due to validation, :math:`{\mathit{heaptype}}` is some :math:`\mathsf{rec} {.} \mathbb{N}`.
+#. Assert: Due to validation, :math:`{\mathit{heaptype}}` is some :math:`\mathsf{rec} {.} n`.
 
 #. Let :math:`(\mathsf{rec} {.} i)` be the destructuring of :math:`{\mathit{heaptype}}`.
 
@@ -25689,7 +25689,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ........................................................
 
 
-1. Let :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({\mathit{at}}~{}[ i .. j ]~{\mathit{rt}}),\; \mathsf{refs}~{{r'}^\ast} \}\end{array}` be the destructuring of :math:`{\mathit{tableinst}}`.
+1. Let :math:`\{ \mathsf{type}~({\mathit{at}}~{}[ i .. j ]~{\mathit{rt}}),\;\allowbreak \mathsf{refs}~{{r'}^\ast} \}` be the destructuring of :math:`{\mathit{tableinst}}`.
 
 #. If :math:`{|{{r'}^\ast}|} + n > j`, then:
 
@@ -25697,7 +25697,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{i'}` be :math:`{|{{r'}^\ast}|} + n`.
 
-#. Let :math:`{\mathit{tableinst}'}` be the table instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({\mathit{at}}~{}[ {i'} .. j ]~{\mathit{rt}}),\; \mathsf{refs}~{{r'}^\ast}~{r^{n}} \}\end{array}`.
+#. Let :math:`{\mathit{tableinst}'}` be the table instance :math:`\{ \mathsf{type}~({\mathit{at}}~{}[ {i'} .. j ]~{\mathit{rt}}),\;\allowbreak \mathsf{refs}~{{r'}^\ast}~{r^{n}} \}`.
 
 #. Return :math:`{\mathit{tableinst}'}`.
 
@@ -25706,7 +25706,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .................................................
 
 
-1. Let :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({\mathit{at}}~{}[ i .. j ]~\mathsf{page}),\; \mathsf{bytes}~{b^\ast} \}\end{array}` be the destructuring of :math:`{\mathit{meminst}}`.
+1. Let :math:`\{ \mathsf{type}~({\mathit{at}}~{}[ i .. j ]~\mathsf{page}),\;\allowbreak \mathsf{bytes}~{b^\ast} \}` be the destructuring of :math:`{\mathit{meminst}}`.
 
 #. If :math:`{|{b^\ast}|} / (64 \, {\mathrm{Ki}}) + n > j`, then:
 
@@ -25714,7 +25714,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{i'}` be :math:`{|{b^\ast}|} / (64 \, {\mathrm{Ki}}) + n`.
 
-#. Let :math:`{\mathit{meminst}'}` be the memory instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({\mathit{at}}~{}[ {i'} .. j ]~\mathsf{page}),\; \mathsf{bytes}~{b^\ast}~{\mathtt{0x00}^{n \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
+#. Let :math:`{\mathit{meminst}'}` be the memory instance :math:`\{ \mathsf{type}~({\mathit{at}}~{}[ {i'} .. j ]~\mathsf{page}),\;\allowbreak \mathsf{bytes}~{b^\ast}~{\mathtt{0x00}^{n \cdot 64 \, {\mathrm{Ki}}}} \}`.
 
 #. Return :math:`{\mathit{meminst}'}`.
 
@@ -25810,7 +25810,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ..................................................
 
 
-1. Let :math:`{\mathit{taginst}}` be the tag instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{\mathit{tagtype}} \}\end{array}`.
+1. Let :math:`{\mathit{taginst}}` be the tag instance :math:`\{ \mathsf{type}~{\mathit{tagtype}} \}`.
 
 #. Let :math:`a` be the length of :math:`s{.}\mathsf{tags}`.
 
@@ -25840,7 +25840,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ........................................................................
 
 
-1. Let :math:`{\mathit{globalinst}}` be the global instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{\mathit{globaltype}},\; \mathsf{value}~{\mathit{val}} \}\end{array}`.
+1. Let :math:`{\mathit{globalinst}}` be the global instance :math:`\{ \mathsf{type}~{\mathit{globaltype}},\;\allowbreak \mathsf{value}~{\mathit{val}} \}`.
 
 #. Let :math:`a` be the length of :math:`s{.}\mathsf{globals}`.
 
@@ -25878,7 +25878,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ........................................................................
 
 
-1. Let :math:`{\mathit{meminst}}` be the memory instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({\mathit{at}}~{}[ i .. j ]~\mathsf{page}),\; \mathsf{bytes}~{\mathtt{0x00}^{i \cdot 64 \, {\mathrm{Ki}}}} \}\end{array}`.
+1. Let :math:`{\mathit{meminst}}` be the memory instance :math:`\{ \mathsf{type}~({\mathit{at}}~{}[ i .. j ]~\mathsf{page}),\;\allowbreak \mathsf{bytes}~{\mathtt{0x00}^{i \cdot 64 \, {\mathrm{Ki}}}} \}`.
 
 #. Let :math:`a` be the length of :math:`s{.}\mathsf{mems}`.
 
@@ -25908,7 +25908,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ..........................................................................................
 
 
-1. Let :math:`{\mathit{tableinst}}` be the table instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({\mathit{at}}~{}[ i .. j ]~{\mathit{rt}}),\; \mathsf{refs}~{{\mathit{ref}}^{i}} \}\end{array}`.
+1. Let :math:`{\mathit{tableinst}}` be the table instance :math:`\{ \mathsf{type}~({\mathit{at}}~{}[ i .. j ]~{\mathit{rt}}),\;\allowbreak \mathsf{refs}~{{\mathit{ref}}^{i}} \}`.
 
 #. Let :math:`a` be the length of :math:`s{.}\mathsf{tables}`.
 
@@ -25946,7 +25946,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ...........................................................................................
 
 
-1. Let :math:`{\mathit{funcinst}}` be the function instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{\mathit{deftype}},\; \mathsf{module}~{\mathit{moduleinst}},\; \mathsf{code}~{\mathit{code}} \}\end{array}`.
+1. Let :math:`{\mathit{funcinst}}` be the function instance :math:`\{ \mathsf{type}~{\mathit{deftype}},\;\allowbreak \mathsf{module}~{\mathit{moduleinst}},\;\allowbreak \mathsf{code}~{\mathit{code}} \}`.
 
 #. Let :math:`a` be the length of :math:`s{.}\mathsf{funcs}`.
 
@@ -25990,7 +25990,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ....................................................................
 
 
-1. Let :math:`{\mathit{datainst}}` be the data instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{bytes}~{{\mathit{byte}}^\ast} \}\end{array}`.
+1. Let :math:`{\mathit{datainst}}` be the data instance :math:`\{ \mathsf{bytes}~{{\mathit{byte}}^\ast} \}`.
 
 #. Let :math:`a` be the length of :math:`s{.}\mathsf{datas}`.
 
@@ -26028,7 +26028,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ...........................................................................
 
 
-1. Let :math:`{\mathit{eleminst}}` be the element instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{\mathit{elemtype}},\; \mathsf{refs}~{{\mathit{ref}}^\ast} \}\end{array}`.
+1. Let :math:`{\mathit{eleminst}}` be the element instance :math:`\{ \mathsf{type}~{\mathit{elemtype}},\;\allowbreak \mathsf{refs}~{{\mathit{ref}}^\ast} \}`.
 
 #. Let :math:`a` be the length of :math:`s{.}\mathsf{elems}`.
 
@@ -26070,31 +26070,31 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    a. Let :math:`(\mathsf{tag}~x)` be the destructuring of :math:`{\mathit{externidx}}`.
 
-   #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{tag}~{\mathit{moduleinst}}{.}\mathsf{tags}{}[x]) \}\end{array}`.
+   #. Return :math:`\{ \mathsf{name}~{\mathit{name}},\;\allowbreak \mathsf{addr}~(\mathsf{tag}~{\mathit{moduleinst}}{.}\mathsf{tags}{}[x]) \}`.
 
 #. If :math:`{\mathit{externidx}}` is some :math:`\mathsf{global}~{\mathit{globalidx}}`, then:
 
    a. Let :math:`(\mathsf{global}~x)` be the destructuring of :math:`{\mathit{externidx}}`.
 
-   #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{global}~{\mathit{moduleinst}}{.}\mathsf{globals}{}[x]) \}\end{array}`.
+   #. Return :math:`\{ \mathsf{name}~{\mathit{name}},\;\allowbreak \mathsf{addr}~(\mathsf{global}~{\mathit{moduleinst}}{.}\mathsf{globals}{}[x]) \}`.
 
 #. If :math:`{\mathit{externidx}}` is some :math:`\mathsf{mem}~{\mathit{memidx}}`, then:
 
    a. Let :math:`(\mathsf{mem}~x)` be the destructuring of :math:`{\mathit{externidx}}`.
 
-   #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{mem}~{\mathit{moduleinst}}{.}\mathsf{mems}{}[x]) \}\end{array}`.
+   #. Return :math:`\{ \mathsf{name}~{\mathit{name}},\;\allowbreak \mathsf{addr}~(\mathsf{mem}~{\mathit{moduleinst}}{.}\mathsf{mems}{}[x]) \}`.
 
 #. If :math:`{\mathit{externidx}}` is some :math:`\mathsf{table}~{\mathit{tableidx}}`, then:
 
    a. Let :math:`(\mathsf{table}~x)` be the destructuring of :math:`{\mathit{externidx}}`.
 
-   #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{table}~{\mathit{moduleinst}}{.}\mathsf{tables}{}[x]) \}\end{array}`.
+   #. Return :math:`\{ \mathsf{name}~{\mathit{name}},\;\allowbreak \mathsf{addr}~(\mathsf{table}~{\mathit{moduleinst}}{.}\mathsf{tables}{}[x]) \}`.
 
 #. Assert: Due to validation, :math:`{\mathit{externidx}}` is some :math:`\mathsf{func}~{\mathit{funcidx}}`.
 
 #. Let :math:`(\mathsf{func}~x)` be the destructuring of :math:`{\mathit{externidx}}`.
 
-#. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{func}~{\mathit{moduleinst}}{.}\mathsf{funcs}{}[x]) \}\end{array}`.
+#. Return :math:`\{ \mathsf{name}~{\mathit{name}},\;\allowbreak \mathsf{addr}~(\mathsf{func}~{\mathit{moduleinst}}{.}\mathsf{funcs}{}[x]) \}`.
 
 
 :math:`{{{\mathrm{allocexport}}^\ast}}{({\mathit{moduleinst}}, {{\mathit{export}}^\ast})}`
@@ -26244,7 +26244,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. Append :math:`{\mathit{ea}}` to :math:`{{\mathit{ea}}^\ast}`.
 
-#. Let :math:`{\mathit{moduleinst}}` be the module instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{dt}}^\ast},\; \mathsf{tags}~{{\mathit{aa}}_{\mathsf{i}}^\ast}~{{\mathit{aa}}^\ast},\; \mathsf{globals}~{{\mathit{ga}}_{\mathsf{i}}^\ast}~{{\mathit{ga}}^\ast},\; \mathsf{mems}~{{\mathit{ma}}_{\mathsf{i}}^\ast}~{{\mathit{ma}}^\ast},\; \mathsf{tables}~{{\mathit{ta}}_{\mathsf{i}}^\ast}~{{\mathit{ta}}^\ast},\; \mathsf{funcs}~{{\mathit{fa}}_{\mathsf{i}}^\ast}~{{\mathit{fa}}^\ast},\; \mathsf{datas}~{{\mathit{da}}^\ast},\; \mathsf{elems}~{{\mathit{ea}}^\ast},\; \mathsf{exports}~{{\mathit{xi}}^\ast} \}\end{array}`.
+#. Let :math:`{\mathit{moduleinst}}` be the module instance :math:`\{ \mathsf{types}~{{\mathit{dt}}^\ast},\;\allowbreak \mathsf{tags}~{{\mathit{aa}}_{\mathsf{i}}^\ast}~{{\mathit{aa}}^\ast},\;\allowbreak \mathsf{globals}~{{\mathit{ga}}_{\mathsf{i}}^\ast}~{{\mathit{ga}}^\ast},\;\allowbreak \mathsf{mems}~{{\mathit{ma}}_{\mathsf{i}}^\ast}~{{\mathit{ma}}^\ast},\;\allowbreak \mathsf{tables}~{{\mathit{ta}}_{\mathsf{i}}^\ast}~{{\mathit{ta}}^\ast},\;\allowbreak \mathsf{funcs}~{{\mathit{fa}}_{\mathsf{i}}^\ast}~{{\mathit{fa}}^\ast},\;\allowbreak \mathsf{datas}~{{\mathit{da}}^\ast},\;\allowbreak \mathsf{elems}~{{\mathit{ea}}^\ast},\;\allowbreak \mathsf{exports}~{{\mathit{xi}}^\ast} \}`.
 
 #. Let :math:`{{\mathit{funcaddr}}_0^\ast}` be :math:`\epsilon`.
 
@@ -26350,7 +26350,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{{\mathit{instr}}_{\mathsf{e}}^\ast}` be the :ref:`concatenation <notation-concat>` of :math:`{{{\mathrm{runelem}}}_{i_{\mathsf{e}}}({{\mathit{elem}}^\ast}{}[i_{\mathsf{e}}])^{i_{\mathsf{e}}<{|{{\mathit{elem}}^\ast}|}}}`.
 
-#. Let :math:`{\mathit{moduleinst}}_0` be the module instance :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{{\mathrm{alloctype}}^\ast}}{({{\mathit{type}}^\ast})},\; \mathsf{globals}~{\mathrm{globals}}({{\mathit{externaddr}}^\ast}),\; \mathsf{funcs}~{\mathrm{funcs}}({{\mathit{externaddr}}^\ast})~{({|s{.}\mathsf{funcs}|} + i_{\mathsf{f}})^{i_{\mathsf{f}}<{|{{\mathit{func}}^\ast}|}}} \}\end{array}`.
+#. Let :math:`{\mathit{moduleinst}}_0` be the module instance :math:`\{ \mathsf{types}~{{{\mathrm{alloctype}}^\ast}}{({{\mathit{type}}^\ast})},\;\allowbreak \mathsf{globals}~{\mathrm{globals}}({{\mathit{externaddr}}^\ast}),\;\allowbreak \mathsf{funcs}~{\mathrm{funcs}}({{\mathit{externaddr}}^\ast})~{({|s{.}\mathsf{funcs}|} + i_{\mathsf{f}})^{i_{\mathsf{f}}<{|{{\mathit{func}}^\ast}|}}} \}`.
 
 #. Let :math:`{{\mathit{expr}}_{\mathsf{t}}^\ast}` be the expression sequence :math:`\epsilon`.
 
@@ -26380,7 +26380,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. Append :math:`{{\mathit{expr}}_{\mathsf{e}}^\ast}` to :math:`{{{\mathit{expr}}_{\mathsf{e}}^\ast}^\ast}`.
 
-#. Let :math:`z` be the state :math:`(s, \{ \begin{array}[t]{@{}l@{}}\mathsf{module}~{\mathit{moduleinst}}_0 \}\end{array})`.
+#. Let :math:`z` be the state :math:`(s, \{ \mathsf{module}~{\mathit{moduleinst}}_0 \})`.
 
 #. Let :math:`F` be the :math:`\mathsf{frame}` :math:`z{.}\mathsf{frame}`.
 
@@ -26414,7 +26414,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{\mathit{moduleinst}}` be :math:`{\mathrm{allocmodule}}(s, {\mathit{module}}, {{\mathit{externaddr}}^\ast}, {{\mathit{val}}_{\mathsf{g}}^\ast}, {{\mathit{ref}}_{\mathsf{t}}^\ast}, {{{\mathit{ref}}_{\mathsf{e}}^\ast}^\ast})`.
 
-#. Let :math:`{F'}` be the :math:`\mathsf{frame}` :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{module}~{\mathit{moduleinst}} \}\end{array}`.
+#. Let :math:`{F'}` be the :math:`\mathsf{frame}` :math:`\{ \mathsf{module}~{\mathit{moduleinst}} \}`.
 
 #. Push the :math:`\mathsf{frame}` :math:`{F'}`.
 
@@ -26455,7 +26455,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`k` be the length of :math:`{t_2^\ast}`.
 
-#. Let :math:`F` be the :math:`\mathsf{frame}` :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{module}~\{ \begin{array}[t]{@{}l@{}} \}\end{array} \}\end{array}` whose arity is :math:`k`.
+#. Let :math:`F` be the :math:`\mathsf{frame}` :math:`\{ \mathsf{module}~\{  \} \}` whose arity is :math:`k`.
 
 #. Push the :math:`\mathsf{frame}` :math:`F`.
 
@@ -26478,7 +26478,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. If :math:`{{\mathit{idctxt}}^\ast} = \epsilon`, then:
 
-   a. Return :math:`\{ \begin{array}[t]{@{}l@{}} \}\end{array}`.
+   a. Return :math:`\{  \}`.
 
 #. Let :math:`I~{I'}` be :math:`{{\mathit{idctxt}}^\ast}`.
 
@@ -28251,13 +28251,16 @@ Func_ok
 Datamode_ok
 - the data mode datamode is valid if:
   - Either:
+    - datamode is PASSIVE.
+  - Or:
     - datamode is (ACTIVE x expr).
     - the memory C.MEMS[x] exists.
     - C.MEMS[x] is at lim PAGE.
     - the expression expr is valid with the value type at.
     - expr is constant.
-  - Or:
-    - datamode is PASSIVE.
+
+Datamode_ok/passive
+- the data mode PASSIVE is always valid.
 
 Datamode_ok/active
 - the data mode (ACTIVE x expr) is valid if:
@@ -28266,9 +28269,6 @@ Datamode_ok/active
   - the expression expr is valid with the value type at.
   - expr is constant.
 
-Datamode_ok/passive
-- the data mode PASSIVE is always valid.
-
 Data_ok
 - the memory segment (DATA b* datamode) is valid if:
   - the data mode datamode is valid.
@@ -28276,16 +28276,22 @@ Data_ok
 Elemmode_ok
 - the element mode elemmode is valid with the element type rt if:
   - Either:
+    - elemmode is PASSIVE.
+  - Or:
+    - elemmode is DECLARE.
+  - Or:
     - elemmode is (ACTIVE x expr).
     - the table C.TABLES[x] exists.
     - C.TABLES[x] is (at lim rt').
     - rt matches the reference type rt'.
     - the expression expr is valid with the value type at.
     - expr is constant.
-  - Or:
-    - elemmode is PASSIVE.
-  - Or:
-    - elemmode is DECLARE.
+
+Elemmode_ok/passive
+- the element mode PASSIVE is valid with rt.
+
+Elemmode_ok/declare
+- the element mode DECLARE is valid with rt.
 
 Elemmode_ok/active
 - the element mode (ACTIVE x expr) is valid with the element type rt if:
@@ -28294,12 +28300,6 @@ Elemmode_ok/active
   - rt matches the reference type rt'.
   - the expression expr is valid with the value type at.
   - expr is constant.
-
-Elemmode_ok/passive
-- the element mode PASSIVE is valid with rt.
-
-Elemmode_ok/declare
-- the element mode DECLARE is valid with rt.
 
 Elem_ok
 - the table segment (ELEM elemtype expr* elemmode) is valid with the element type elemtype if:
@@ -31105,8 +31105,8 @@ free_instr instr'
   a. Let (BR_IF labelidx) be instr'.
   b. Return $free_labelidx(labelidx).
 10. If instr' is some BR_TABLE, then:
-  a. Let (BR_TABLE labelidx* labelidx') be instr'.
-  b. Return $free_list($free_labelidx(labelidx)*) ++ $free_labelidx(labelidx).
+  a. Let (BR_TABLE labelidx* labelidx'') be instr'.
+  b. Return $free_list($free_labelidx(labelidx)*) ++ $free_labelidx(labelidx'').
 11. If instr' is some BR_ON_NULL, then:
   a. Let (BR_ON_NULL labelidx) be instr'.
   b. Return $free_labelidx(labelidx).

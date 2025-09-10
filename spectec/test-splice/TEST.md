@@ -184,8 +184,7 @@ $$
 \frac{
 C \vdash {\mathit{bt}} : {t_1^\ast} \rightarrow {t_2^\ast}
  \qquad
-\{ \begin{array}[t]{@{}l@{}}
-\mathsf{labels}~({t_2^\ast}) \}\end{array} \oplus C \vdash {{\mathit{instr}}^\ast} : {t_1^\ast} \rightarrow_{{x^\ast}} {t_2^\ast}
+\{ \mathsf{labels}~({t_2^\ast}) \} \oplus C \vdash {{\mathit{instr}}^\ast} : {t_1^\ast} \rightarrow_{{x^\ast}} {t_2^\ast}
 }{
 C \vdash \mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}^\ast} : {t_1^\ast} \rightarrow {t_2^\ast}
 } \, {[\textsc{\scriptsize T{-}block}]}
@@ -198,8 +197,7 @@ $$
 \frac{
 C \vdash {\mathit{bt}} : {t_1^\ast} \rightarrow {t_2^\ast}
  \qquad
-\{ \begin{array}[t]{@{}l@{}}
-\mathsf{labels}~({t_1^\ast}) \}\end{array} \oplus C \vdash {{\mathit{instr}}^\ast} : {t_1^\ast} \rightarrow_{{x^\ast}} {t_2^\ast}
+\{ \mathsf{labels}~({t_1^\ast}) \} \oplus C \vdash {{\mathit{instr}}^\ast} : {t_1^\ast} \rightarrow_{{x^\ast}} {t_2^\ast}
 }{
 C \vdash \mathsf{loop}~{\mathit{bt}}~{{\mathit{instr}}^\ast} : {t_1^\ast} \rightarrow {t_2^\ast}
 } \, {[\textsc{\scriptsize T{-}loop}]}
@@ -212,11 +210,9 @@ $$
 \frac{
 C \vdash {\mathit{bt}} : {t_1^\ast} \rightarrow {t_2^\ast}
  \qquad
-\{ \begin{array}[t]{@{}l@{}}
-\mathsf{labels}~({t_2^\ast}) \}\end{array} \oplus C \vdash {{\mathit{instr}}_1^\ast} : {t_1^\ast} \rightarrow_{{x_1^\ast}} {t_2^\ast}
+\{ \mathsf{labels}~({t_2^\ast}) \} \oplus C \vdash {{\mathit{instr}}_1^\ast} : {t_1^\ast} \rightarrow_{{x_1^\ast}} {t_2^\ast}
  \qquad
-\{ \begin{array}[t]{@{}l@{}}
-\mathsf{labels}~({t_2^\ast}) \}\end{array} \oplus C \vdash {{\mathit{instr}}_2^\ast} : {t_1^\ast} \rightarrow_{{x_2^\ast}} {t_2^\ast}
+\{ \mathsf{labels}~({t_2^\ast}) \} \oplus C \vdash {{\mathit{instr}}_2^\ast} : {t_1^\ast} \rightarrow_{{x_2^\ast}} {t_2^\ast}
 }{
 C \vdash \mathsf{if}~{\mathit{bt}}~{{\mathit{instr}}_1^\ast}~\mathsf{else}~{{\mathit{instr}}_2^\ast} : {t_1^\ast}~\mathsf{i{\scriptstyle 32}} \rightarrow {t_2^\ast}
 } \, {[\textsc{\scriptsize T{-}if}]}
@@ -958,16 +954,16 @@ warning: rule `Comptype_sub/struct` was never spliced
 warning: rule `Comptype_sub/array` was never spliced
 warning: rule `Comptype_sub/func` was never spliced
 warning: rule `Data_ok` was never spliced
-warning: rule `Datamode_ok/active` was never spliced
 warning: rule `Datamode_ok/passive` was never spliced
+warning: rule `Datamode_ok/active` was never spliced
 warning: rule `Defaultable` was never spliced
 warning: rule `Deftype_ok` was never spliced
 warning: rule `Deftype_sub/refl` was never spliced
 warning: rule `Deftype_sub/super` was never spliced
 warning: rule `Elem_ok` was never spliced
-warning: rule `Elemmode_ok/active` was never spliced
 warning: rule `Elemmode_ok/passive` was never spliced
 warning: rule `Elemmode_ok/declare` was never spliced
+warning: rule `Elemmode_ok/active` was never spliced
 warning: rule `Eval_expr` was never spliced
 warning: rule `Expand` was never spliced
 warning: rule `Expand_use/deftype` was never spliced
