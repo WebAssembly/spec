@@ -2254,3 +2254,6 @@ Multiple tables can be exported and imported to and from JavaScript.
 
 <h4 id="changes-multimemory" class="no-toc heading settled">Multiple Memories</h4>
 Multiple memories can be exported and imported to and from JavaScript.
+
+<h4 id="changes-js-sb" class="no-toc heading settled">JS String Builtins</h4>
+Added a builtins option when compiling a module, and a collection of builtin functions for manipulating JS Strings.
