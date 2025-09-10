@@ -235,6 +235,7 @@ rule Step_read/throw_ref-null:
 
 rule Step_read/throw_ref-instrs:
   z; val* (REF.EXN_ADDR a) THROW_REF instr*  ~>  (REF.EXN_ADDR a) THROW_REF
+  ----
   -- if val* =/= eps \/ instr* =/= eps
 
 rule Step_read/throw_ref-label:
@@ -248,11 +249,13 @@ rule Step_read/throw_ref-handler-empty:
 
 rule Step_read/throw_ref-handler-catch:
   z; (HANDLER_ n `{(CATCH x l) catch'*} (REF.EXN_ADDR a) THROW_REF)  ~>  val* (BR l)
+  ----
   -- if $exninst(z)[a].TAG = $tagaddr(z)[x]
   -- if val* = $exninst(z)[a].FIELDS
 
 rule Step_read/throw_ref-handler-catch_ref:
   z; (HANDLER_ n `{(CATCH_REF x l) catch'*} (REF.EXN_ADDR a) THROW_REF)  ~>  val* (REF.EXN_ADDR a) (BR l)
+  ----
   -- if $exninst(z)[a].TAG = $tagaddr(z)[x]
   -- if val* = $exninst(z)[a].FIELDS
 
@@ -264,10 +267,12 @@ rule Step_read/throw_ref-handler-catch_all_ref:
 
 rule Step_read/throw_ref-handler-next:
   z; (HANDLER_ n `{catch catch'*} (REF.EXN_ADDR a) THROW_REF)  ~>  (HANDLER_ n `{catch'*} (REF.EXN_ADDR a) THROW_REF)
+  ----
   -- otherwise
 
 rule Step_read/try_table:
   z; val^m (TRY_TABLE bt catch* instr*)  ~>  (HANDLER_ n `{catch*} (LABEL_ n `{eps} val^m instr*))
+  ----
   -- if $blocktype_(z, bt) = t_1^m -> t_2^n
 
 
@@ -510,19 +515,23 @@ rule Step/store-pack-val:
 
 rule Step/vstore-oob:
   z; (CONST at i) (VCONST V128 c) (VSTORE V128 x ao)  ~>  z; TRAP
+  ----
   -- if $(i + ao.OFFSET + $vsize(V128)/8) > |$mem(z, x).BYTES|
 
 rule Step/vstore-val:
   z; (CONST at i) (VCONST V128 c) (VSTORE V128 x ao)  ~>  $with_mem(z, x, $(i + ao.OFFSET), $($vsize(V128)/8), b*); eps
+  ----
   -- if b* = $vbytes_(V128, c)
 
 
 rule Step/vstore_lane-oob:
   z; (CONST at i) (VCONST V128 c) (VSTORE_LANE V128 N x ao j)  ~>  z; TRAP
+  ----
   -- if $(i + ao.OFFSET + N) > |$mem(z, x).BYTES|
 
 rule Step/vstore_lane-val:
   z; (CONST at i) (VCONST V128 c) (VSTORE_LANE V128 N x ao j)  ~>  $with_mem(z, x, $(i + ao.OFFSET), $(N/8), b*); eps
+  ----
   -- if N = $jsize(Jnn)  ;; TODO(2, rossberg): relate implicitly
   -- if M = $(128/N)
   -- if b* = $ibytes_(N, $lanes_(Jnn X M, c)[j])
@@ -554,7 +563,7 @@ rule Step_read/memory.fill-zero:
 
 rule Step_read/memory.fill-succ:
   z; (CONST at i) val (CONST at n) (MEMORY.FILL x)  ~>
-    (CONST at i) val (STORE I32 8 x $memarg0)
+    (CONST at i) val (STORE I32 `8 x $memarg0)
     (CONST at $(i+1)) val (CONST at $(n-1)) (MEMORY.FILL x)
   -- otherwise
 
@@ -571,14 +580,14 @@ rule Step_read/memory.copy-zero:
 
 rule Step_read/memory.copy-le:
   z; (CONST at_1 i_1) (CONST at_2 i_2) (CONST at' n) (MEMORY.COPY x_1 x_2)  ~>
-    (CONST at_1 i_1) (CONST at_2 i_2) (LOAD I32 (8 _ U) x_2 $memarg0) (STORE I32 8 x_1 $memarg0)
+    (CONST at_1 i_1) (CONST at_2 i_2) (LOAD I32 (`8 _ U) x_2 $memarg0) (STORE I32 `8 x_1 $memarg0)
     (CONST at_1 $(i_1 + 1)) (CONST at_2 $(i_2 + 1)) (CONST at' $(n - 1)) (MEMORY.COPY x_1 x_2)
   -- otherwise
   -- if i_1 <= i_2
 
 rule Step_read/memory.copy-gt:
   z; (CONST at_1 i_1) (CONST at_2 i_2) (CONST at' n) (MEMORY.COPY x_1 x_2)  ~>
-    (CONST at_1 $(i_1+n-1)) (CONST at_2 $(i_2+n-1)) (LOAD I32 (8 _ U) x_2 $memarg0) (STORE I32 8 x_1 $memarg0)
+    (CONST at_1 $(i_1+n-1)) (CONST at_2 $(i_2+n-1)) (LOAD I32 (`8 _ U) x_2 $memarg0) (STORE I32 `8 x_1 $memarg0)
     (CONST at_1 i_1) (CONST at_2 i_2) (CONST at' $(n-1)) (MEMORY.COPY x_1 x_2)
   -- otherwise
 
@@ -595,7 +604,7 @@ rule Step_read/memory.init-zero:
 
 rule Step_read/memory.init-succ:
   z; (CONST at i) (CONST I32 j) (CONST I32 n) (MEMORY.INIT x y)  ~>
-    (CONST at i) (CONST I32 $data(z,y).BYTES[j]) (STORE I32 8 x $memarg0)
+    (CONST at i) (CONST I32 $data(z,y).BYTES[j]) (STORE I32 `8 x $memarg0)
     (CONST at $(i+1)) (CONST I32 $(j+1)) (CONST I32 $(n-1)) (MEMORY.INIT x y)
   -- otherwise
 
@@ -698,6 +707,7 @@ rule Step_read/struct.get-null:
 
 rule Step_read/struct.get-struct:
   z; (REF.STRUCT_ADDR a) (STRUCT.GET sx? x i)  ~>  $unpackfield_(zt*[i], sx?, $structinst(z)[a].FIELDS[i])
+  ----
   -- Expand: $type(z, x) ~~ STRUCT (mut? zt)*
 
 
@@ -706,6 +716,7 @@ rule Step/struct.set-null:
 
 rule Step/struct.set-struct:
   z; (REF.STRUCT_ADDR a) val (STRUCT.SET x i)  ~>  $with_struct(z, a, i, $packfield_(zt*[i], val)); eps
+  ----
   -- Expand: $type(z, x) ~~ STRUCT (mut? zt)*
 
 
@@ -1073,6 +1084,7 @@ rule Step_pure/vextbinop:
 
 rule Step_pure/vextternop:
   (VCONST V128 c_1) (VCONST V128 c_2) (VCONST V128 c_3) (VEXTTERNOP sh_2 sh_1 vextternop)  ~>  (VCONST V128 c)
+  ----
   -- if $vextternop__(sh_1, sh_2, vextternop, c_1, c_2, c_3) = c
 
 

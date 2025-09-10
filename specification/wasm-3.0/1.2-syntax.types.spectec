@@ -35,10 +35,10 @@ syntax deftype hint(desc "defined type") =
 syntax typeuse/syn hint(desc "type use") =
   | _IDX typeidx | ...
 syntax typeuse/sem =
-  | ... | deftype | REC nat hint(show REC.%)
+  | ... | deftype | REC n hint(show REC.%)
 
 syntax typevar hint(desc "type variable") =
-  | _IDX typeidx | REC nat hint(show REC.%)
+  | _IDX typeidx | REC n hint(show REC.%)
 
 syntax heaptype hint(desc "heap type") =
   | absheaptype | typeuse

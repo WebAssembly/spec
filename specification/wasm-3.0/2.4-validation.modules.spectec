@@ -55,6 +55,7 @@ rule Func_ok:
   C |- FUNC x local* expr : C.TYPES[x]
   -- Expand: C.TYPES[x] ~~ FUNC t_1* -> t_2*
   -- (Local_ok: C |- local : lct)*
+  ----
   -- Expr_ok: C ++ {LOCALS (SET t_1)* lct*, LABELS (t_2*), RETURN (t_2*)} |- expr : t_2*
 
 rule Data_ok:
@@ -67,18 +68,12 @@ rule Elem_ok:
   -- (Expr_ok_const: C |- expr : elemtype CONST)*
   -- Elemmode_ok: C |- elemmode : elemtype
 
-rule Datamode_ok/active:
-  C |- ACTIVE x expr : OK
-  -- if C.MEMS[x] = at lim PAGE
-  -- Expr_ok_const: C |- expr : at CONST
-
 rule Datamode_ok/passive:
   C |- PASSIVE : OK
 
-rule Elemmode_ok/active:
-  C |- ACTIVE x expr : rt
-  -- if C.TABLES[x] = at lim rt'
-  -- Reftype_sub: C |- rt <: rt'
+rule Datamode_ok/active:
+  C |- ACTIVE x expr : OK
+  -- if C.MEMS[x] = at lim PAGE
   -- Expr_ok_const: C |- expr : at CONST
 
 rule Elemmode_ok/passive:
@@ -86,6 +81,12 @@ rule Elemmode_ok/passive:
 
 rule Elemmode_ok/declare:
   C |- DECLARE : rt
+
+rule Elemmode_ok/active:
+  C |- ACTIVE x expr : rt
+  -- if C.TABLES[x] = at lim rt'
+  -- Reftype_sub: C |- rt <: rt'
+  -- Expr_ok_const: C |- expr : at CONST
 
 rule Start_ok:
   C |- START x : OK

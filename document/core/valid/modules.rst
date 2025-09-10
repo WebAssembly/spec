@@ -172,7 +172,7 @@ $${rule: Elem_ok}
 
 $${rule-prose:Elemmode_ok}
 
-$${rule: {Elemmode_ok/*}}
+$${rule: {Elemmode_ok/passive Elemmode_ok/declare} {Elemmode_ok/active}}
 
 
 .. index:: start function, function index

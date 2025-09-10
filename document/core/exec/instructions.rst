@@ -405,18 +405,18 @@ Furthermore, the resulting store must be :ref:`valid <valid-store>`, i.e., all d
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & S.\SFUNCS[a] = \{ \FITYPE~\deftype, \FIHOSTFUNC~\X{hf} \} \\
+     \iff & S.\SFUNCS[a] = \{ \FITYPE~\deftype, \FIHOSTFUNC~\X{hf} \} \\
      \wedge & \deftype \approx \TFUNC~[t_1^n] \Tarrow [t_2^m] \\
-     \wedge & (S'; \result) \in \X{hf}(S; \val^n)) \\
+     \wedge & (S'; \result) \in \X{hf}(S; \val^n) \\
      \end{array} \\
    \begin{array}{lcl@{\qquad}l}
    S; \val^n~(\INVOKE~a) &\stepto& S; \val^n~(\INVOKE~a)
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & S.\SFUNCS[a] = \{ \FITYPE~\deftype, \FIHOSTFUNC~\X{hf} \} \\
+     \iff & S.\SFUNCS[a] = \{ \FITYPE~\deftype, \FIHOSTFUNC~\X{hf} \} \\
      \wedge & \deftype \approx \TFUNC~[t_1^n] \Tarrow [t_2^m] \\
-     \wedge & \bot \in \X{hf}(S; \val^n)) \\
+     \wedge & \bot \in \X{hf}(S; \val^n) \\
      \end{array} \\
    \end{array}
 
