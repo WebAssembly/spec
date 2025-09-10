@@ -1295,10 +1295,14 @@ Printf.eprintf "[render %s:X @ %s] try expansion\n%!" (Source.string_of_region e
     render_exp env e1 ^
       "{}[" ^ render_path env p ^ " \\mathrel{{=}{\\oplus}} " ^ render_exp env e2 ^ "]"
   | StrE efs ->
-    "\\{ " ^
-    "\\begin{array}[t]{@{}l@{}}\n" ^
-    concat_map_nl ",\\; " "\\\\\n  " (render_expfield env) efs ^ " \\}" ^
-    "\\end{array}"
+    if not (List.mem Nl efs) then
+      "\\{ " ^
+      concat_map_nl ",\\;\\allowbreak " "\\\\\n  " (render_expfield env) efs ^ " \\}"
+    else
+      "\\{ " ^
+      "\\begin{array}[t]{@{}l@{}}\n" ^
+      concat_map_nl ",\\; " "\\\\\n  " (render_expfield env) efs ^ " \\}" ^
+      "\\end{array}"
   | DotE (e1, atom) -> render_exp env e1 ^ "{.}" ^ render_fieldname env atom
   | CommaE (e1, e2) -> render_exp env e1 ^ ", " ^ render_exp env e2
   | CatE (e1, e2) -> render_exp env e1 ^ " \\oplus " ^ render_exp env e2

@@ -507,6 +507,8 @@ rst_prolog = """
 .. include:: /""" + pwd + """/util/macros.def
 """
 
+mathjax_path = 'https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js'
+
 # https://www.sphinx-doc.org/en/master/usage/extensions/math.html#confval-mathjax3_config
 # https://docs.mathjax.org/en/latest/web/configuration.html#configuration
 # https://docs.mathjax.org/en/latest/options/input/tex.html#tex-maxbuffer
