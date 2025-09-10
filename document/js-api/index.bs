@@ -43,6 +43,8 @@ urlPrefix: https://tc39.github.io/ecma262/; spec: ECMASCRIPT
         text: TypeError; url: sec-native-error-types-used-in-this-standard-typeerror
         text: RangeError; url: sec-native-error-types-used-in-this-standard-rangeerror
     type: dfn
+        url: sec-string-object
+            text: String
         url: sec-returnifabrupt-shorthands
             text: !
             text: ?
@@ -398,16 +400,18 @@ Note:
 </div>
 
 <div algorithm>
-  To <dfn>validate builtins and imported string for a WebAssembly module</dfn> from module |module|, enabled builtins |builtinSetNames|, and |importedStringModule|, perform the following steps:
-    1. If [=validate builtin set names|validating builtin set names=] for |builtinSetNames| is false, return false.
-    1. [=list/iterate|For each=] |import| of [=module_imports=](|module|),
-        1. If |importedStringModule| is not null and |import|[0] equals |importedStringModule|,
-            1. Let |importExternType| be |import|[2]
-            1. Let |stringExternType| be `global const (ref extern)`
-            1. If [=match_externtype=](|stringExternType|, |importExternType|) is false, return false
-        1. Else,
-            1. If [=validate an import for builtins|validating a import for builtin=] with |import| and |builtinSetNames| is false, return false.
-    1. Return true.
+
+To <dfn>validate builtins and imported string for a WebAssembly module</dfn> from module |module|, enabled builtins |builtinSetNames|, and |importedStringModule|, perform the following steps:
+1. If [=validate builtin set names|validating builtin set names=] for |builtinSetNames| is false, return false.
+1. [=list/iterate|For each=] |import| of [=module_imports=](|module|),
+    1. If |importedStringModule| is not null and |import|[0] equals |importedStringModule|,
+        1. Let |importExternType| be |import|[2].
+        1. Let |stringExternType| be `global const (ref extern)`.
+        1. If [=match_externtype=](|stringExternType|, |importExternType|) is false, return false
+    1. Else,
+        1. If [=validate an import for builtins|validating a import for builtin=] with |import| and |builtinSetNames| is false, return false.
+1. Return true.
+
 </div>
 
 <div algorithm>
@@ -415,8 +419,8 @@ Note:
     1. Let |stableBytes| be a [=get a copy of the buffer source|copy of the bytes held by the buffer=] |bytes|.
     1. [=Compile a WebAssembly module|Compile=] |stableBytes| as a WebAssembly module and store the results as |module|.
     1. If |module| is [=error=], return false.
-    1. Let |builtinSetNames| be |options|["builtins"]
-    1. Let |importedStringModule| be |options|["importedStringConstants"]
+    1. Let |builtinSetNames| be |options|["builtins"].
+    1. Let |importedStringModule| be |options|["importedStringConstants"].
     1. If [=validate builtins and imported string for a WebAssembly module|validating builtins and imported strings=] for |module| with |builtinSetNames| and |importedStringModule| returns false, return false.
     1. Return true.
 </div>
@@ -447,8 +451,8 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
         1. [=compile a WebAssembly module|Compile the WebAssembly module=] |bytes| and store the result as |module|.
         1. [=Queue a task=] to perform the following steps. If |taskSource| was provided, queue the task on that task source.
             1. If |module| is [=error=], reject |promise| with a {{CompileError}} exception.
-            1. Let |builtinSetNames| be |options|["builtins"]
-            1. Let |importedStringModule| be |options|["importedStringConstants"]
+            1. Let |builtinSetNames| be |options|["builtins"].
+            1. Let |importedStringModule| be |options|["importedStringConstants"].
             1. If [=validate builtins and imported string for a WebAssembly module|validating builtins and imported strings=] for |module| with |builtinSetNames| and |importedStringModule| is false, reject |promise| with a {{CompileError}} exception.
             1. Otherwise,
                 1. [=Construct a WebAssembly module object=] from |module|, |bytes|, |builtinSetNames|, |importedStringModule|, and let |moduleObject| be the result.
@@ -463,7 +467,9 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
 </div>
 
 <div algorithm>
+
 To <dfn>instantiate imported strings</dfn> with module |module| and |importedStringModule|, perform the following steps:
+
 1. Assert: |importedStringModule| is not null.
 1. Let |exportsObject| be [=!=] [$OrdinaryObjectCreate$](null).
 1. [=list/iterate|For each=] (|moduleName|, |componentName|, |externtype|) of [=module_imports=](|module|),
@@ -727,8 +733,8 @@ interface Module {
     1. Let |importedStringModule| be |moduleObject|.\[[ImportedStringModule]].
     1. Let |imports| be « ».
     1. [=list/iterate|For each=] (|moduleName|, |name|, |type|) of [=module_imports=](|module|),
-        1. If [=find a builtin=] for (|moduleName|, |name|, |type|) and |builtinSetNames| is not null, then [=iteration/continue=]
-        1. If |importedStringModule| is not null and |moduleName| equals |importedStringModule|, then [=iteration/continue=]
+        1. If [=find a builtin=] for (|moduleName|, |name|, |type|) and |builtinSetNames| is not null, then [=iteration/continue=].
+        1. If |importedStringModule| is not null and |moduleName| equals |importedStringModule|, then [=iteration/continue=].
         1. Let |kind| be the [=string value of the extern type=] |type|.
         1. Let |obj| be «[ "{{ModuleImportDescriptor/module}}" → |moduleName|, "{{ModuleImportDescriptor/name}}" → |name|, "{{ModuleImportDescriptor/kind}}" → |kind| ]».
         1. [=list/Append=] |obj| to |imports|.
@@ -753,8 +759,8 @@ interface Module {
     1. Let |stableBytes| be a [=get a copy of the buffer source|copy of the bytes held by the buffer=] |bytes|.
     1. [=Compile a WebAssembly module|Compile the WebAssembly module=] |stableBytes| and store the result as |module|.
     1. If |module| is [=error=], throw a {{CompileError}} exception.
-    1. Let |builtinSetNames| be |options|["builtins"]
-    1. Let |importedStringModule| be |options|["importedStringConstants"]
+    1. Let |builtinSetNames| be |options|["builtins"].
+    1. Let |importedStringModule| be |options|["importedStringConstants"].
     1. If [=validate builtins and imported string for a WebAssembly module|validating builtins and imported strings=] for |module| with |builtinSetNames| and |importedStringModule| returns false, throw a {{CompileError}} exception.
     1. Set **this**.\[[Module]] to |module|.
     1. Set **this**.\[[Bytes]] to |stableBytes|.
@@ -1821,9 +1827,10 @@ Note: It is not currently possible to define this behavior using Web IDL.
 
 The JS-API defines sets of builtin functions which can be imported through {{WebAssemblyCompileOptions|options}} when compiling a module. WebAssembly builtin functions mirror existing JavaScript builtins, but adapt them to be useable directly as WebAssembly functions with minimal overhead.
 
-All builtin functions are grouped into sets. Every builtin set has a |name| that is used in {{WebAssemblyCompileOptions}}, and a |qualified name| with a `wasm:` prefix that [=read the imports|is used during import lookup=].
+All builtin functions are grouped into sets. Every builtin set has a <dfn for="builtin-set">|name|</dfn> that is used in {{WebAssemblyCompileOptions}}, and a <dfn for="builtin-set">|qualified name|</dfn> with a `wasm:` prefix that [=read the imports|is used during import lookup=].
 
 <div algorithm>
+
 To <dfn>get the builtins for a builtin set</dfn> with |builtinSetName|, perform the following steps:
 
 1. Return a list of (|name|, |funcType|, |steps|) for the set with name |builtinSetName| defined within this section.
@@ -1831,24 +1838,26 @@ To <dfn>get the builtins for a builtin set</dfn> with |builtinSetName|, perform 
 </div>
 
 <div algorithm>
+
 To <dfn>find a builtin</dfn> with |import| and enabled builtins |builtinSetNames|, perform the following steps:
 
 1. Assert: [=validate builtin set names=] |builtinSetNames| is true.
-1. Let |importModuleName| be |import|[0]
-1. Let |importName| be |import|[1]
+1. Let |importModuleName| be |import|[0].
+1. Let |importName| be |import|[1].
 1.  [=list/iterate|For each=] |builtinSetName| of |builtinSetNames|,
     1. If |builtinSetName| does not refer to a builtin set, then [=iteration/continue=].
-    1. Let |builtinSetQualifiedName| be |builtinSetName| prefixed with "wasm:"
-    1. If |importModuleName| equals |builtinSetQualifiedName|
-        1. Let |builtins| be the result of [=get the builtins for a builtin set=] |builtinSetName|
-        1. [=list/iterate|For each=] |builtin| of |builtins|
-            1. Let |builtinName| be |builtin|[0]
+    1. Let |builtinSetQualifiedName| be |builtinSetName| prefixed with "wasm:".
+    1. If |importModuleName| equals |builtinSetQualifiedName|,
+        1. Let |builtins| be the result of [=get the builtins for a builtin set=] |builtinSetName|.
+        1. [=list/iterate|For each=] |builtin| of |builtins|,
+            1. Let |builtinName| be |builtin|[0].
             1. If |importName| equals |builtinName|, return (|builtinSetName|, |builtin|).
 1. Return null.
 
 </div>
 
 <div algorithm>
+
 To <dfn>validate builtin set names</dfn> with |builtinSetNames|, perform the following steps:
 
 1. If |builtinSetNames| contains any duplicates, return false.
@@ -1857,23 +1866,24 @@ To <dfn>validate builtin set names</dfn> with |builtinSetNames|, perform the fol
 </div>
 
 <div algorithm>
-  To <dfn>create a builtin function</dfn> from type |funcType| and execution steps |steps|, perform the following steps:
 
-    1. Let |stored settings| be the <a spec=HTML>incumbent settings object</a>.
-    1. Let |hostfunc| be a [=host function=] which executes |steps| when called.
-    1. Let (|store|, |funcaddr|) be [=func_alloc=](|store|, |functype|, |hostfunc|).
-    1. Set the [=surrounding agent=]'s [=associated store=] to |store|.
-    1. Return |funcaddr|.
+To <dfn>create a builtin function</dfn> from type |funcType| and execution steps |steps|, perform the following steps:
+
+1. Let |hostfunc| be a [=host function=] which executes |steps| when called.
+1. Let (|store|, |funcaddr|) be [=func_alloc=](|store|, |functype|, |hostfunc|).
+1. Set the [=surrounding agent=]'s [=associated store=] to |store|.
+1. Return |funcaddr|.
 
 </div>
 
 <div algorithm>
+
 To <dfn>instantiate a builtin set</dfn> with name |builtinSetName|, perform the following steps:
 
-1. Let |builtins| be the result of [=get the builtins for a builtin set=] |builtinSetName|
+1. Let |builtins| be the result of [=get the builtins for a builtin set=] |builtinSetName|.
 1. Let |exportsObject| be [=!=] [$OrdinaryObjectCreate$](null).
 1. [=list/iterate|For each=] (|name|, |funcType|, |steps|) of |builtins|,
-    1. Let |funcaddr| be the result fo [=create a builtin function=] with |funcType| and |steps|
+    1. Let |funcaddr| be the result fo [=create a builtin function=] with |funcType| and |steps|.
     1. Let |func| be the result of creating [=a new Exported Function=] from |funcaddr|.
     1. Let |value| be |func|.
     1. Let |status| be [=!=] [$CreateDataProperty$](|exportsObject|, |name|, |value|).
@@ -1883,31 +1893,33 @@ To <dfn>instantiate a builtin set</dfn> with name |builtinSetName|, perform the 
 </div>
 
 <div algorithm>
+
 To <dfn>validate an import for builtins</dfn> with |import|, enabled builtins |builtinSetNames|, perform the following steps:
 
 1. Assert: [=validate builtin set names=] |builtinSetNames| is true.
-1. Let |maybeBuiltin| be the result of [=find a builtin|finding a builtin=] for |import| and |builtinSetNames|
+1. Let |maybeBuiltin| be the result of [=find a builtin|finding a builtin=] for |import| and |builtinSetNames|.
 1. If |maybeBuiltin| is null, return true.
-1. Let |importExternType| be |import|[2]
-1. Let |builtinFuncType| be |maybeBuiltin|[0][1]
-1. Let |builtinExternType| be `func |builtinFuncType|`
-1. Return [=match_externtype=](|builtinExternType|, |importExternType|)
+1. Let |importExternType| be |import|[2].
+1. Let |builtinFuncType| be |maybeBuiltin|[0][1].
+1. Let |builtinExternType| be `func |builtinFuncType|`.
+1. Return [=match_externtype=](|builtinExternType|, |importExternType|).
 
 </div>
 
 
 <h3 id="builtins-js-string">String Builtins</h3>
 
-String builtins adapt the interface of the [=String=] builtin object. The |name| for this set is `js-string`.
+String builtins adapt the interface of the [=String=] builtin object. The [=builtin-set/name=] for this set is `js-string`, and the [=builtin-set/qualified name=] is `wasm:js-string`.
 
 Note: The algorithms in this section refer to JS builtins defined on [=String=]. These refer to the actual builtin and do not perform a dynamic lookup on the [=String=] object.
 
 <h4 id="builtins-js-string-abstract-ops">Abstract operations</h4>
+
 <div algorithm>
 
 The <dfn abstract-op lt="UnwrapString">UnwrapString(|v|)</dfn> abstract operation, when invoked, performs the following steps:
 
-1. If |v| [=is not a String=]
+1. If |v| [=is not a String=],
     1. Throw a {{RuntimeError}} exception as if a [=trap=] was executed.
 1. Return |v|
 
@@ -1924,7 +1936,7 @@ The <dfn abstract-op lt="FromCharCode">FromCharCode(|v|)</dfn> abstract operatio
 
 <div algorithm>
 
-The <dfn abstract-op lt="CharCodeAt ">CharCodeAt(|string|, |index|)</dfn> abstract operation, when invoked, performs the following steps:
+The <dfn abstract-op lt="CharCodeAt">CharCodeAt(|string|, |index|)</dfn> abstract operation, when invoked, performs the following steps:
 
 1. Assert: |index| is of type [=i32=].
 1. Return [=!=] [$Call$]([=String.prototype.charCodeAt=], |string|, « [=ToJSValue=](|index|) »).
@@ -1936,6 +1948,7 @@ The <dfn abstract-op lt="CharCodeAt ">CharCodeAt(|string|, |index|)</dfn> abstra
 The |funcType| of this builtin is `(rec (type (func (param externref) (result externref)))).0`.
 
 <div algorithm="js-string-cast">
+
 When this builtin is invoked with parameter |v|, the following steps must be run:
 
 1. Return [=?=] [$UnwrapString$](|v|)
@@ -1947,11 +1960,12 @@ When this builtin is invoked with parameter |v|, the following steps must be run
 The |funcType| of this builtin is `(rec (type (func (param externref) (result i32)))).0`.
 
 <div algorithm="js-string-test">
+
 When this builtin is invoked with parameter |v|, the following steps must be run:
 
-1. If |v| [=is not a String=]
-    1. Return 0
-1. Return 1
+1. If |v| [=is not a String=],
+    1. Return 0.
+1. Return 1.
 
 </div>
 
@@ -1962,12 +1976,13 @@ Let |arrayType| be `(rec (type (array (mut i16)))).0`.
 The |funcType| of this builtin is `(rec (type (func (param (ref null arrayType) i32 i32) (result externref)))).0`.
 
 <div algorithm="js-string-fromCharCodeArray">
+
 When this builtin is invoked with parameters |array|, |start|, and |end|, the following steps must be run:
 
-1. If |array| is null
+1. If |array| is null,
     1. Throw a {{RuntimeError}} exception as if a [=trap=] was executed.
 1. Let |length| be the number of elements in |array|.
-1. If |start| > |end| or |end| > |length|
+1. If |start| > |end| or |end| > |length|,
     1. Throw a {{RuntimeError}} exception as if a [=trap=] was executed.
 1. Let |result| be the empty string.
 1. Let |i| be |start|.
@@ -1987,14 +2002,15 @@ Let |arrayType| be `(rec (type (array (mut i16)))).0`.
 The |funcType| of this builtin is `(rec (type (func (param externref (ref null arrayType) i32) (result i32)))).0`.
 
 <div algorithm="js-string-intoCharCodeArray">
+
 When this builtin is invoked with parameters |string|, |array|, and |start|, the following steps must be run:
 
-1. If |array| is null
+1. If |array| is null,
     1. Throw a {{RuntimeError}} exception as if a [=trap=] was executed.
 1. Let |string| be [=?=] [$UnwrapString$](|string|).
 1. Let |stringLength| be the [=string/length=] of |string|.
 1. Let |arrayLength| be the number of elements in |array|.
-1. If |start| + |stringLength| > |arrayLength|
+1. If |start| + |stringLength| > |arrayLength|,
     1. Throw a {{RuntimeError}} exception as if a [=trap=] was executed.
 1. Let |i| be 0.
 1. While |i| < |stringLength|:
@@ -2011,6 +2027,7 @@ When this builtin is invoked with parameters |string|, |array|, and |start|, the
 The |funcType| of this builtin is `(rec (type (func (param i32) (result externref)))).0`.
 
 <div algorithm="js-string-fromCharCode">
+
 When this builtin is invoked with parameter |v|, the following steps must be run:
 
 1. Return [$FromCharCode$](|v|).
@@ -2022,9 +2039,10 @@ When this builtin is invoked with parameter |v|, the following steps must be run
 The |funcType| of this builtin is `(rec (type (func (param i32) (result externref)))).0`.
 
 <div algorithm="js-string-fromCodePoint">
+
 When this builtin is invoked with parameter |v|, the following steps must be run:
 
-1. If |v| &gt; 0x10ffff
+1. If |v| &gt; 0x10ffff,
     1. Throw a {{RuntimeError}} exception as if a [=trap=] was executed.
 1. Return [=!=] [$Call$]([=String.fromCodePoint=], undefined, « [=ToJSValue=](|v|) »).
 
@@ -2035,11 +2053,12 @@ When this builtin is invoked with parameter |v|, the following steps must be run
 The type of this function is `(rec (type (func (param externref i32) (result i32)))).0`.
 
 <div algorithm="js-string-charCodeAt">
+
 When this builtin is invoked with parameters |string| and |index|, the following steps must be run:
 
 1. Let |string| be [=?=] [$UnwrapString$](|string|).
 1. Let |length| be the [=string/length=] of |string|.
-1. If |index| >= |length|
+1. If |index| >= |length|,
     1. Throw a {{RuntimeError}} exception as if a [=trap=] was executed.
 1. Return [$CharCodeAt$](|string|, |index|).
 
@@ -2050,11 +2069,12 @@ When this builtin is invoked with parameters |string| and |index|, the following
 The type of this function is `(rec (type (func (param externref i32) (result i32)))).0`.
 
 <div algorithm="js-string-codePointAt">
+
 When this builtin is invoked with parameters |string| and |index|, the following steps must be run:
 
 1. Let |string| be [=?=] [$UnwrapString$](|string|).
 1. Let |length| be the [=string/length=] of |string|.
-1. If |index| >= |length|
+1. If |index| >= |length|,
     1. Throw a {{RuntimeError}} exception as if a [=trap=] was executed.
 1. Return [=!=] [$Call$]([=String.prototype.codePointAt=], |string|, « [=ToJSValue=](|index|) »).
 
@@ -2065,6 +2085,7 @@ When this builtin is invoked with parameters |string| and |index|, the following
 The |funcType| of this builtin is `(rec (type (func (param externref) (result i32)))).0`.
 
 <div algorithm="js-string-length">
+
 When this builtin is invoked with parameter |v|, the following steps must be run:
 
 1. Let |string| be [=?=] [$UnwrapString$](|v|).
@@ -2077,6 +2098,7 @@ When this builtin is invoked with parameter |v|, the following steps must be run
 The |funcType| of this builtin is `(rec (type (func (param externref externref) (result externref)))).0`.
 
 <div algorithm="js-string-concat">
+
 When this builtin is invoked with parameters |first| and |second|, the following steps must be run:
 
 1. Let |first| be [=?=] [$UnwrapString$](|first|).
@@ -2090,11 +2112,12 @@ When this builtin is invoked with parameters |first| and |second|, the following
 The |funcType| of this builtin is `(rec (type (func (param externref i32 i32) (result externref)))).0`.
 
 <div algorithm="js-string-substring">
+
 When this builtin is invoked with parameters |string|, |start|, and |end|, the following steps must be run:
 
 1. Let |string| be [=?=] [$UnwrapString$](|string|).
 1. Let |length| be the [=string/length=] of |string|.
-1. If |start| > |end| or |start| > |length|
+1. If |start| > |end| or |start| > |length|,
     1. Return the empty string.
 1. Return [=!=] [$Call$]([=String.prototype.substring=], |string|, « [=ToJSValue=](|start|), [=ToJSValue=](|end|) »).
 
@@ -2110,11 +2133,11 @@ Note: Explicitly allow null strings to be compared for equality as that is meani
 
 When this builtin is invoked with parameters |first| and |second|, the following steps must be run:
 
-1. If |first| is not null and |first| [=is not a String=]
+1. If |first| is not null and |first| [=is not a String=],
     1. Throw a {{RuntimeError}} exception as if a [=trap=] was executed.
-1. If |second| is not null and |second| [=is not a String=]
+1. If |second| is not null and |second| [=is not a String=],
     1. Throw a {{RuntimeError}} exception as if a [=trap=] was executed.
-1. If [=!=] [=IsStrictlyEqual=](|first|, |second|) is true
+1. If [=!=] [=IsStrictlyEqual=](|first|, |second|) is true,
     1. Return 1.
 1. Return 0.
 
@@ -2130,9 +2153,9 @@ When this builtin is invoked with parameters |first| and |second|, the following
 
 1. Let |first| be [=?=] [$UnwrapString$](|first|).
 1. Let |second| be [=?=] [$UnwrapString$](|second|).
-1. If [=!=] [=IsStrictlyEqual=](|first|, |second|) is true
+1. If [=!=] [=IsStrictlyEqual=](|first|, |second|) is true,
     1. Return 0.
-1. If [=!=] [=IsLessThan=](|first|, |second|, true) is true
+1. If [=!=] [=IsLessThan=](|first|, |second|, true) is true,
     1. Return -1.
 1. Return 1.
 
