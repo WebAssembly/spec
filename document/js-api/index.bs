@@ -25,7 +25,7 @@ Date: now
     "status": "Draft"
   },
   "WASMWEB": {
-    "href": "https://webassembly.github.io/spec/js-api/",
+    "href": "https://webassembly.github.io/spec/web-api/",
     "title": "WebAssembly Web API Specification",
     "publisher": "W3C WebAssembly Community Group",
     "status": "Draft"
