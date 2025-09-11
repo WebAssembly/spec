@@ -841,8 +841,6 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
 
     1. Let |block| be a [=Data Block=] which is [=identified with=] the underlying memory of |memaddr|.
     1. Let |length| be the length of |block|.
-    1. If |maxsize| &gt; (65536 &times; 65536),
-        1. Throw a {{RangeError}} exception.
     1. Let |buffer| be a new {{ArrayBuffer}} with the internal slots \[[ArrayBufferData]], \[[ArrayBufferByteLength]], \[[ArrayBufferMaxByteLength]], and \[[ArrayBufferDetachKey]].
     1. Set |buffer|.\[[ArrayBufferData]] to |block|.
     1. Set |buffer|.\[[ArrayBufferByteLength]] to |length|.
@@ -947,15 +945,15 @@ Immediately after a WebAssembly [=memory.grow=] instruction executes, perform th
 
 <div algorithm=dom-Memory-toResizableBuffer>
     The <dfn method for="Memory">toResizableBuffer()</dfn> method, when invoked, performs the following steps:
-    1. Let |buffer| be **this**.\[[BufferObject]].
-    1. If [=IsFixedLengthArrayBuffer=](|buffer|) is false, return |buffer|.
     1. Let |memaddr| be **this**.\[[Memory]].
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
     1. Let |memtype| be [=mem_type=](|store|, |memaddr|).
-    1. If |memtype| has a max,
-        1. Let |maxsize| be the max value in |memtype|.
-    1. Otherwise,
-        1. Let |maxsize| be 65536 &times; 65536.
+    1. If |memtype| does not have a max,
+        1. [=Throw=] a {{TypeError}} exception.
+    1. Let |buffer| be **this**.\[[BufferObject]].
+    1. If [=IsFixedLengthArrayBuffer=](|buffer|) is false, return |buffer|.
+    1. Assert: |memtype| has a max.
+    1. Let |maxsize| be the max value in |memtype| * 65536.
     1. Let |resizableBuffer| be the result of [=create a resizable memory buffer|creating a resizable memory buffer=] from |memaddr| and |maxsize|.
     1. Perform [=!=] [$DetachArrayBuffer$](|buffer|, "WebAssembly.Memory").
     1. Set **this**.\[[BufferObject]] to |resizableBuffer|.
@@ -2230,7 +2228,10 @@ In practice, an implementation may run out of resources for valid modules below 
 <li>The maximum number of tables, including declared or imported tables, is 100,000.</li>
 <li>The maximum size of a table is 10,000,000.</li>
 <li>The maximum number of table entries in any table initialization is 10,000,000.</li>
+
 <li>The maximum number of memories, including defined and imported memories, is 100.</li>
+<li>The maximum `min` or `max` field of a 32-bit memory is 65,536 pages (4 GiB).</li>
+<li>The maximum `min` or `max` field of a 64-bit memory is 2^37-1 pages (2^53 - 2^16 bytes).</li>
 
 <li>The maximum number of parameters to any function or block is 1,000.</li>
 <li>The maximum number of return values for any function or block is 1,000.</li>
