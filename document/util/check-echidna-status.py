@@ -33,8 +33,8 @@ def get_current_response(echidna_id):
         print(response.text)
         tries -= 1
         if tries:
-            print('Retrying in 5s')
-            time.sleep(5)
+            print('Retrying in 10s')
+            time.sleep(10)
 
     raise Exception('Failed to fetch echidna result')
 
