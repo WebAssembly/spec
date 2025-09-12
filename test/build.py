@@ -165,9 +165,10 @@ def build_html_from_js(tests, html_dir, use_sync):
         html_file = os.path.join(html_dir, subdir, html_filename)
         js_harness = "sync_index.js" if use_sync else "async_index.js"
         harness_dir = os.path.join(js_prefix, 'harness')
+
         with open(html_file, 'w+') as f:
             content = HTML_HEADER.replace('{PREFIX}', harness_dir) \
-                                 .replace('{WPT_PREFIX}', harness_dir) \
+                                 .replace('{WPT_PREFIX}', '/resources') \
                                  .replace('{JS_HARNESS}', js_harness)
             content += '        <script src="' + js_filename + '"></script>'
             content += HTML_BOTTOM

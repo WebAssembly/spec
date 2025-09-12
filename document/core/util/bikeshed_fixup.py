@@ -63,7 +63,7 @@ def Main():
   # get carried over into the resulting bikeshed output and then end up causing
   # the W3C pubrules checker to refuse to autopublish that bikeshed output.
   data = re.sub(r'.+?(<div class="toctree-wrapper compound">.+)',
-                r'<!doctype HTML>\n<meta charset="utf-8">\n<body>\1',
+                r'<!doctype HTML>\n<meta charset="utf-8">\n<body><section id="webassembly-specification">\1',
                 data, flags=re.DOTALL)
 
   # Drop spurious navigation from footer.

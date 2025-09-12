@@ -1,5 +1,5 @@
 let name = "wasm"
-let version = "2.0.1"
+let version = "2.0.2"
 
 let configure () =
   Import.register (Utf8.decode "spectest") Spectest.lookup;
@@ -13,7 +13,7 @@ let usage = "Usage: " ^ name ^ " [option] [file ...]"
 let args = ref []
 let add_arg source = args := !args @ [source]
 
-let quote s = "\"" ^ String.escaped s ^ "\""
+let quote = Arrange.string
 
 let argspec = Arg.align
 [

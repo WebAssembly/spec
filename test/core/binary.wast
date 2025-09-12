@@ -815,7 +815,7 @@
       "\00asm" "\01\00\00\00"
       "\04\04\01"                           ;; table section with one entry
       "\70"                                 ;; anyfunc
-      "\02"                                 ;; malformed table limits flag
+      "\08"                                 ;; malformed table limits flag
       "\00"                                 ;; dummy byte
   )
   "integer too large"
@@ -860,7 +860,7 @@
   (module binary
       "\00asm" "\01\00\00\00"
       "\05\03\01"                           ;; memory section with one entry
-      "\02"                                 ;; malformed memory limits flag
+      "\10"                                 ;; malformed memory limits flag
       "\00"                                 ;; dummy byte
   )
   "integer too large"
@@ -1351,6 +1351,7 @@
 (assert_malformed
   (module binary
       "\00asm" "\01\00\00\00"
+      "\01\04\01\60\00\00"        ;; Type section
       "\03\02\01\00"              ;; Function section
       "\08\01\00"                 ;; Start section: function 0
       "\07\01\00"                 ;; Export section with zero entries
@@ -1362,6 +1363,7 @@
 (assert_malformed
   (module binary
       "\00asm" "\01\00\00\00"
+      "\01\04\01\60\00\00"        ;; Type section
       "\03\02\01\00"              ;; Function section
       "\09\01\00"                 ;; Element section with zero entries
       "\08\01\00"                 ;; Start section: function 0
