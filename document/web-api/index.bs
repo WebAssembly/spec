@@ -1,5 +1,5 @@
 <pre class='metadata'>
-Title: WebAssembly Web API: Exception Handling
+Title: WebAssembly Web API
 Shortname: wasm-web-api
 Group: wasm
 Status: ED
