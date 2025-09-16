@@ -771,14 +771,8 @@ spectec 0.5 generator
 ===== ../test-interpreter/spec-test-3/address.wast =====
 - 264/264 (100.00%)
 
-===== ../test-interpreter/spec-test-3/address64.wast =====
-- 246/246 (100.00%)
-
 ===== ../test-interpreter/spec-test-3/align.wast =====
-- 143/143 (100.00%)
-
-===== ../test-interpreter/spec-test-3/align64.wast =====
-- 135/135 (100.00%)
+- 142/142 (100.00%)
 
 ===== ../test-interpreter/spec-test-3/annotations.wast =====
 - 20/20 (100.00%)
@@ -807,8 +801,29 @@ spectec 0.5 generator
 ===== ../test-interpreter/spec-test-3/br_table.wast =====
 - 187/187 (100.00%)
 
-===== ../test-interpreter/spec-test-3/bulk.wast =====
+===== ../test-interpreter/spec-test-3/bulk-memory/bulk.wast =====
 - 130/130 (100.00%)
+
+===== ../test-interpreter/spec-test-3/bulk-memory/memory_copy.wast =====
+- 0/0 (100.00%)
+
+===== ../test-interpreter/spec-test-3/bulk-memory/memory_fill.wast =====
+- 0/0 (100.00%)
+
+===== ../test-interpreter/spec-test-3/bulk-memory/memory_init.wast =====
+- 264/264 (100.00%)
+
+===== ../test-interpreter/spec-test-3/bulk-memory/table-sub.wast =====
+- 4/4 (100.00%)
+
+===== ../test-interpreter/spec-test-3/bulk-memory/table_copy.wast =====
+- 1779/1779 (100.00%)
+
+===== ../test-interpreter/spec-test-3/bulk-memory/table_fill.wast =====
+- 46/46 (100.00%)
+
+===== ../test-interpreter/spec-test-3/bulk-memory/table_init.wast =====
+- 814/814 (100.00%)
 
 ===== ../test-interpreter/spec-test-3/call.wast =====
 - 90/90 (100.00%)
@@ -840,8 +855,17 @@ spectec 0.5 generator
 ===== ../test-interpreter/spec-test-3/endianness.wast =====
 - 70/70 (100.00%)
 
-===== ../test-interpreter/spec-test-3/endianness64.wast =====
-- 70/70 (100.00%)
+===== ../test-interpreter/spec-test-3/exceptions/tag.wast =====
+- 12/12 (100.00%)
+
+===== ../test-interpreter/spec-test-3/exceptions/throw.wast =====
+- 14/14 (100.00%)
+
+===== ../test-interpreter/spec-test-3/exceptions/throw_ref.wast =====
+- 16/16 (100.00%)
+
+===== ../test-interpreter/spec-test-3/exceptions/try_table.wast =====
+- 64/64 (100.00%)
 
 ===== ../test-interpreter/spec-test-3/exports.wast =====
 - 153/153 (100.00%)
@@ -874,9 +898,6 @@ spectec 0.5 generator
 - 103/103 (100.00%)
 
 ===== ../test-interpreter/spec-test-3/float_memory.wast =====
-- 96/96 (100.00%)
-
-===== ../test-interpreter/spec-test-3/float_memory64.wast =====
 - 96/96 (100.00%)
 
 ===== ../test-interpreter/spec-test-3/float_misc.wast =====
@@ -972,7 +993,7 @@ spectec 0.5 generator
 - print_f64: 24
 - print_f64: 24
 - print_i32: 13
-- 324/324 (100.00%)
+- 264/264 (100.00%)
 
 ===== ../test-interpreter/spec-test-3/inline-module.wast =====
 - 1/1 (100.00%)
@@ -996,9 +1017,6 @@ spectec 0.5 generator
 - 182/182 (100.00%)
 
 ===== ../test-interpreter/spec-test-3/load.wast =====
-- 108/108 (100.00%)
-
-===== ../test-interpreter/spec-test-3/load64.wast =====
 - 85/85 (100.00%)
 
 ===== ../test-interpreter/spec-test-3/local_get.wast =====
@@ -1016,44 +1034,86 @@ spectec 0.5 generator
 ===== ../test-interpreter/spec-test-3/loop.wast =====
 - 106/106 (100.00%)
 
-===== ../test-interpreter/spec-test-3/memory-multi.wast =====
-- 8/8 (100.00%)
-
 ===== ../test-interpreter/spec-test-3/memory.wast =====
 - 98/98 (100.00%)
 
-===== ../test-interpreter/spec-test-3/memory64.wast =====
+===== ../test-interpreter/spec-test-3/memory64/address64.wast =====
+- 246/246 (100.00%)
+
+===== ../test-interpreter/spec-test-3/memory64/align64.wast =====
+- 137/137 (100.00%)
+
+===== ../test-interpreter/spec-test-3/memory64/bulk64.wast =====
+- 75/75 (100.00%)
+
+===== ../test-interpreter/spec-test-3/memory64/call_indirect64.wast =====
+- 3/3 (100.00%)
+
+===== ../test-interpreter/spec-test-3/memory64/endianness64.wast =====
+- 70/70 (100.00%)
+
+===== ../test-interpreter/spec-test-3/memory64/float_memory64.wast =====
+- 96/96 (100.00%)
+
+===== ../test-interpreter/spec-test-3/memory64/load64.wast =====
+- 85/85 (100.00%)
+
+===== ../test-interpreter/spec-test-3/memory64/memory64-imports.wast =====
+- 110/110 (100.00%)
+
+===== ../test-interpreter/spec-test-3/memory64/memory64.wast =====
 - 78/78 (100.00%)
 
-===== ../test-interpreter/spec-test-3/memory_copy.wast =====
-- 0/0 (100.00%)
+===== ../test-interpreter/spec-test-3/memory64/memory_copy64.wast =====
+- 4483/4483 (100.00%)
 
-===== ../test-interpreter/spec-test-3/memory_fill.wast =====
-- 0/0 (100.00%)
+===== ../test-interpreter/spec-test-3/memory64/memory_fill64.wast =====
+- 111/111 (100.00%)
+
+===== ../test-interpreter/spec-test-3/memory64/memory_grow64.wast =====
+- 53/53 (100.00%)
+
+===== ../test-interpreter/spec-test-3/memory64/memory_init64.wast =====
+- 264/264 (100.00%)
+
+===== ../test-interpreter/spec-test-3/memory64/memory_redundancy64.wast =====
+- 9/9 (100.00%)
+
+===== ../test-interpreter/spec-test-3/memory64/memory_trap64.wast =====
+- 174/174 (100.00%)
+
+===== ../test-interpreter/spec-test-3/memory64/table_copy64.wast =====
+- 1779/1779 (100.00%)
+
+===== ../test-interpreter/spec-test-3/memory64/table_copy_mixed.wast =====
+- 5/5 (100.00%)
+
+===== ../test-interpreter/spec-test-3/memory64/table_fill64.wast =====
+- 81/81 (100.00%)
+
+===== ../test-interpreter/spec-test-3/memory64/table_get64.wast =====
+- 12/12 (100.00%)
+
+===== ../test-interpreter/spec-test-3/memory64/table_init64.wast =====
+- 913/913 (100.00%)
+
+===== ../test-interpreter/spec-test-3/memory64/table_set64.wast =====
+- 20/20 (100.00%)
+
+===== ../test-interpreter/spec-test-3/memory64/table_size64.wast =====
+- 38/38 (100.00%)
 
 ===== ../test-interpreter/spec-test-3/memory_grow.wast =====
 - 0/0 (100.00%)
 
-===== ../test-interpreter/spec-test-3/memory_grow64.wast =====
-- 53/53 (100.00%)
-
-===== ../test-interpreter/spec-test-3/memory_init.wast =====
-- 528/528 (100.00%)
-
 ===== ../test-interpreter/spec-test-3/memory_redundancy.wast =====
 - 9/9 (100.00%)
 
-===== ../test-interpreter/spec-test-3/memory_redundancy64.wast =====
-- 9/9 (100.00%)
-
 ===== ../test-interpreter/spec-test-3/memory_size.wast =====
-- 54/54 (100.00%)
+- 46/46 (100.00%)
 
 ===== ../test-interpreter/spec-test-3/memory_trap.wast =====
 - 184/184 (100.00%)
-
-===== ../test-interpreter/spec-test-3/memory_trap64.wast =====
-- 174/174 (100.00%)
 
 ===== ../test-interpreter/spec-test-3/multi-memory/address0.wast =====
 - 93/93 (100.00%)
@@ -1124,6 +1184,9 @@ spectec 0.5 generator
 ===== ../test-interpreter/spec-test-3/multi-memory/load2.wast =====
 - 39/39 (100.00%)
 
+===== ../test-interpreter/spec-test-3/multi-memory/memory-multi.wast =====
+- 8/8 (100.00%)
+
 ===== ../test-interpreter/spec-test-3/multi-memory/memory_copy0.wast =====
 - 30/30 (100.00%)
 
@@ -1132,6 +1195,9 @@ spectec 0.5 generator
 
 ===== ../test-interpreter/spec-test-3/multi-memory/memory_fill0.wast =====
 - 17/17 (100.00%)
+
+===== ../test-interpreter/spec-test-3/multi-memory/memory_grow.wast =====
+- 0/0 (100.00%)
 
 ===== ../test-interpreter/spec-test-3/multi-memory/memory_init0.wast =====
 - 14/14 (100.00%)
@@ -1148,6 +1214,9 @@ spectec 0.5 generator
 ===== ../test-interpreter/spec-test-3/multi-memory/memory_size3.wast =====
 - 2/2 (100.00%)
 
+===== ../test-interpreter/spec-test-3/multi-memory/memory_size_import.wast =====
+- 8/8 (100.00%)
+
 ===== ../test-interpreter/spec-test-3/multi-memory/memory_trap0.wast =====
 - 15/15 (100.00%)
 
@@ -1162,6 +1231,9 @@ spectec 0.5 generator
 
 ===== ../test-interpreter/spec-test-3/multi-memory/store1.wast =====
 - 14/14 (100.00%)
+
+===== ../test-interpreter/spec-test-3/multi-memory/store2.wast =====
+- 26/26 (100.00%)
 
 ===== ../test-interpreter/spec-test-3/multi-memory/traps0.wast =====
 - 16/16 (100.00%)
@@ -1310,7 +1382,7 @@ spectec 0.5 generator
 - 467/467 (100.00%)
 
 ===== ../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast =====
-- 31/31 (100.00%)
+- 33/33 (100.00%)
 
 ===== ../test-interpreter/spec-test-3/simd/simd_i32x4_extadd_pairwise_i16x8.wast =====
 - 22/22 (100.00%)
@@ -1418,58 +1490,31 @@ spectec 0.5 generator
 - 25/25 (100.00%)
 
 ===== ../test-interpreter/spec-test-3/store.wast =====
-- 108/108 (100.00%)
+- 62/62 (100.00%)
 
 ===== ../test-interpreter/spec-test-3/switch.wast =====
 - 29/29 (100.00%)
 
-===== ../test-interpreter/spec-test-3/table-sub.wast =====
-- 4/4 (100.00%)
-
 ===== ../test-interpreter/spec-test-3/table.wast =====
 - 84/84 (100.00%)
 
-===== ../test-interpreter/spec-test-3/table_copy.wast =====
-- 1845/1845 (100.00%)
-
-===== ../test-interpreter/spec-test-3/table_copy_mixed.wast =====
-- 5/5 (100.00%)
-
-===== ../test-interpreter/spec-test-3/table_fill.wast =====
-- 81/81 (100.00%)
-
 ===== ../test-interpreter/spec-test-3/table_get.wast =====
-- 18/18 (100.00%)
+- 17/17 (100.00%)
 
 ===== ../test-interpreter/spec-test-3/table_grow.wast =====
 - 85/85 (100.00%)
 
-===== ../test-interpreter/spec-test-3/table_init.wast =====
-- 913/913 (100.00%)
-
 ===== ../test-interpreter/spec-test-3/table_set.wast =====
-- 29/29 (100.00%)
+- 27/27 (100.00%)
 
 ===== ../test-interpreter/spec-test-3/table_size.wast =====
-- 41/41 (100.00%)
-
-===== ../test-interpreter/spec-test-3/tag.wast =====
-- 12/12 (100.00%)
-
-===== ../test-interpreter/spec-test-3/throw.wast =====
-- 14/14 (100.00%)
-
-===== ../test-interpreter/spec-test-3/throw_ref.wast =====
-- 16/16 (100.00%)
+- 40/40 (100.00%)
 
 ===== ../test-interpreter/spec-test-3/token.wast =====
 - 70/70 (100.00%)
 
 ===== ../test-interpreter/spec-test-3/traps.wast =====
 - 40/40 (100.00%)
-
-===== ../test-interpreter/spec-test-3/try_table.wast =====
-- 64/64 (100.00%)
 
 ===== ../test-interpreter/spec-test-3/type-canon.wast =====
 - 4/4 (100.00%)
@@ -1507,7 +1552,7 @@ spectec 0.5 generator
 ===== ../test-interpreter/spec-test-3/utf8-invalid-encoding.wast =====
 - 0/0 (100.00%)
 
-Total [53019/53019] (100.00%)
+Total [60340/60340] (100.00%)
 
 == Complete.
 ```
