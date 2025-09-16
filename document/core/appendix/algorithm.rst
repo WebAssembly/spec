@@ -179,8 +179,8 @@ However, these variables are not manipulated directly by the main checking funct
      vals.push(type)
 
    func pop_val() : val_type =
-     if (vals.size() = ctrls[0].height && ctrls[0].unreachable) return Bot
-     error_if(vals.size() = ctrls[0].height)
+     if (vals.size() = ctrls[0].val_height && ctrls[0].unreachable) return Bot
+     error_if(vals.size() = ctrls[0].val_height)
      return vals.pop()
 
    func pop_val(expect : val_type) : val_type =
@@ -268,7 +268,7 @@ The control stack is likewise manipulated through auxiliary functions:
      return (if (frame.opcode = loop) frame.start_types else frame.end_types)
 
    func unreachable() =
-     vals.resize(ctrls[0].height)
+     vals.resize(ctrls[0].val_height)
      ctrls[0].unreachable := true
 
 Pushing a control frame takes the types of the label and result values.

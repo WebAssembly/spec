@@ -25,7 +25,7 @@ Date: now
     "status": "Draft"
   },
   "WASMWEB": {
-    "href": "https://webassembly.github.io/spec/js-api/",
+    "href": "https://webassembly.github.io/spec/web-api/",
     "title": "WebAssembly Web API Specification",
     "publisher": "W3C WebAssembly Community Group",
     "status": "Draft"
@@ -43,6 +43,8 @@ urlPrefix: https://tc39.github.io/ecma262/; spec: ECMASCRIPT
         text: TypeError; url: sec-native-error-types-used-in-this-standard-typeerror
         text: RangeError; url: sec-native-error-types-used-in-this-standard-rangeerror
     type: dfn
+        url: sec-string-object
+            text: String
         url: sec-returnifabrupt-shorthands
             text: !
             text: ?
@@ -88,6 +90,14 @@ urlPrefix: https://tc39.github.io/ecma262/; spec: ECMASCRIPT
         text: ℤ; url: #ℤ
         text: mathematical value; url: #mathematical-value
         text: SameValue; url: sec-samevalue
+        text: IsStrictlyEqual; url: sec-isstrictlyequal
+        text: IsLessThan; url: sec-islessthan
+        text: String.fromCharCode; url: sec-string.fromcharcode
+        text: String.fromCodePoint; url: sec-string.fromcodepoint
+        text: String.prototype.charCodeAt; url: sec-string.prototype.charcodeat
+        text: String.prototype.codePointAt; url: sec-string.prototype.codepointat
+        text: String.prototype.concat; url: sec-string.prototype.concat
+        text: String.prototype.substring; url: sec-string.prototype.substring
         text: Array; url: sec-array-exotic-objects
         text: BigInt; url: sec-ecmascript-language-types-bigint-type
 urlPrefix: https://webassembly.github.io/spec/core/; spec: WebAssembly; type: dfn
@@ -99,6 +109,9 @@ urlPrefix: https://webassembly.github.io/spec/core/; spec: WebAssembly; type: df
     text: valid limits; url: valid/types.html#valid-limits
     text: valid memtype; url: valid/types.html#valid-memtype
     text: valid tabletype; url: valid/types.html#valid-tabletype
+    urlPrefix: valid/matching.html; for: matches
+        text: valtype; url: #match-valtype
+        text: reftype; url: #match-reftype
     text: module grammar; url: binary/modules.html#binary-module
     text: custom section; url: binary/modules.html#custom-section
     text: customsec; url: binary/modules.html#binary-customsec
@@ -152,6 +165,7 @@ urlPrefix: https://webassembly.github.io/spec/core/; spec: WebAssembly; type: df
     text: ref_type; url: appendix/embedding.html#embed-ref-type
     text: val_default; url: appendix/embedding.html#embed-val-default
     text: match_valtype; url: appendix/embedding.html#embed-match-valtype
+    text: match_externtype; url: appendix/embedding.html#embed-match-externtype
     text: error; url: appendix/embedding.html#embed-error
     text: store; url: exec/runtime.html#syntax-store
     text: address type; url: syntax/types.html#syntax-addrtype
@@ -351,13 +365,18 @@ dictionary WebAssemblyInstantiatedSource {
     required Instance instance;
 };
 
+dictionary WebAssemblyCompileOptions {
+    USVString? importedStringConstants;
+    sequence&lt;USVString> builtins;
+};
+
 [Exposed=*]
 namespace WebAssembly {
-    boolean validate(BufferSource bytes);
-    Promise&lt;Module> compile(BufferSource bytes);
+    boolean validate(BufferSource bytes, optional WebAssemblyCompileOptions options = {});
+    Promise&lt;Module> compile(BufferSource bytes, optional WebAssemblyCompileOptions options = {});
 
     Promise&lt;WebAssemblyInstantiatedSource> instantiate(
-        BufferSource bytes, optional object importObject);
+        BufferSource bytes, optional object importObject, optional WebAssemblyCompileOptions options = {});
 
     Promise&lt;Instance> instantiate(
         Module moduleObject, optional object importObject);
@@ -384,10 +403,28 @@ Note:
 </div>
 
 <div algorithm>
-  The <dfn method for="WebAssembly">validate(|bytes|)</dfn> method, when invoked, performs the following steps:
+
+To <dfn>validate builtins and imported string for a WebAssembly module</dfn> from module |module|, enabled builtins |builtinSetNames|, and |importedStringModule|, perform the following steps:
+1. If [=validate builtin set names|validating builtin set names=] for |builtinSetNames| is false, return false.
+1. [=list/iterate|For each=] |import| of [=module_imports=](|module|),
+    1. If |importedStringModule| is not null and |import|[0] equals |importedStringModule|,
+        1. Let |importExternType| be |import|[2].
+        1. Let |stringExternType| be `global const (ref extern)`.
+        1. If [=match_externtype=](|stringExternType|, |importExternType|) is false, return false
+    1. Else,
+        1. If [=validate an import for builtins|validating a import for builtin=] with |import| and |builtinSetNames| is false, return false.
+1. Return true.
+
+</div>
+
+<div algorithm>
+  The <dfn method for="WebAssembly">validate(|bytes|, |options|)</dfn> method, when invoked, performs the following steps:
     1. Let |stableBytes| be a [=get a copy of the buffer source|copy of the bytes held by the buffer=] |bytes|.
     1. [=Compile a WebAssembly module|Compile=] |stableBytes| as a WebAssembly module and store the results as |module|.
     1. If |module| is [=error=], return false.
+    1. Let |builtinSetNames| be |options|["builtins"].
+    1. Let |importedStringModule| be |options|["importedStringConstants"].
+    1. If [=validate builtins and imported string for a WebAssembly module|validating builtins and imported strings=] for |module| with |builtinSetNames| and |importedStringModule| returns false, return false.
     1. Return true.
 </div>
 
@@ -395,42 +432,79 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
 
     * \[[Module]] : a WebAssembly [=/module=]
     * \[[Bytes]] : the source bytes of \[[Module]].
+    * \[[BuiltinSets]] : an ordered set of names of <a href="#builtins">builtin sets</a>
+    * \[[ImportedStringModule]] : an optional module specifier string where any string constant can be imported from.
 
 <div algorithm>
-  To <dfn>construct a WebAssembly module object</dfn> from a module |module| and source bytes |bytes|, perform the following steps:
+  To <dfn>construct a WebAssembly module object</dfn> from a module |module|, source bytes |bytes|, enabled builtins |builtinSetNames|, and |importedStringModule|, perform the following steps:
 
     1. Let |moduleObject| be a new {{Module}} object.
     1. Set |moduleObject|.\[[Module]] to |module|.
     1. Set |moduleObject|.\[[Bytes]] to |bytes|.
+    1. Set |moduleObject|.\[[BuiltinSets]] to |builtinSetNames|.
+    1. Set |moduleObject|.\[[ImportedStringModule]] to |importedStringModule|.
     1. Return |moduleObject|.
 </div>
 
 <div algorithm>
-  To <dfn>asynchronously compile a WebAssembly module</dfn> from source bytes |bytes|, using optional [=task source=] |taskSource|, perform the following steps:
+  To <dfn>asynchronously compile a WebAssembly module</dfn> from source bytes |bytes| and {{WebAssemblyCompileOptions}} |options| using optional [=task source=] |taskSource|, perform the following steps:
 
     1. Let |promise| be [=a new promise=].
     1. Run the following steps [=in parallel=]:
         1. [=compile a WebAssembly module|Compile the WebAssembly module=] |bytes| and store the result as |module|.
         1. [=Queue a task=] to perform the following steps. If |taskSource| was provided, queue the task on that task source.
             1. If |module| is [=error=], reject |promise| with a {{CompileError}} exception.
+            1. Let |builtinSetNames| be |options|["builtins"].
+            1. Let |importedStringModule| be |options|["importedStringConstants"].
+            1. If [=validate builtins and imported string for a WebAssembly module|validating builtins and imported strings=] for |module| with |builtinSetNames| and |importedStringModule| is false, reject |promise| with a {{CompileError}} exception.
             1. Otherwise,
-                1. [=Construct a WebAssembly module object=] from |module| and |bytes|, and let |moduleObject| be the result.
+                1. [=Construct a WebAssembly module object=] from |module|, |bytes|, |builtinSetNames|, |importedStringModule|, and let |moduleObject| be the result.
                 1. [=Resolve=] |promise| with |moduleObject|.
     1. Return |promise|.
 </div>
 
 <div algorithm>
-    The <dfn method for="WebAssembly">compile(|bytes|)</dfn> method, when invoked, performs the following steps:
+    The <dfn method for="WebAssembly">compile(|bytes|, |options|)</dfn> method, when invoked, performs the following steps:
     1. Let |stableBytes| be a [=get a copy of the buffer source|copy of the bytes held by the buffer=] |bytes|.
-    1. [=Asynchronously compile a WebAssembly module=] from |stableBytes| and return the result.
+    1. [=Asynchronously compile a WebAssembly module=] from |stableBytes| using |options| and return the result.
+</div>
+
+<div algorithm>
+
+To <dfn>instantiate imported strings</dfn> with module |module| and |importedStringModule|, perform the following steps:
+
+1. Assert: |importedStringModule| is not null.
+1. Let |exportsObject| be [=!=] [$OrdinaryObjectCreate$](null).
+1. [=list/iterate|For each=] (|moduleName|, |componentName|, |externtype|) of [=module_imports=](|module|),
+    1. If |moduleName| does not equal |importedStringModule|, then [=iteration/continue=].
+    1. Let |stringConstant| be |componentName|.
+    1. Let |status| be [=!=] [$CreateDataProperty$](|exportsObject|, |stringConstant|, |stringConstant|).
+    1. Assert: |status| is true.
+1. Return |exportsObject|.
+
 </div>
 
 <div algorithm="read-the-imports">
-  To <dfn>read the imports</dfn> from a WebAssembly module |module| from imports object |importObject|, perform the following steps:
+  To <dfn>read the imports</dfn> from a WebAssembly module |module| from imports object |importObject|, enabled builtins |builtinSetNames|, and |importedStringModule|, perform the following steps:
     1. If |module|.[=imports=] [=list/is empty|is not empty=], and |importObject| is undefined, throw a {{TypeError}} exception.
+    1. Let |builtinOrStringImports| be the ordered map « ».
+    1. [=list/iterate|For each=] |builtinSetName| of |builtinSetNames|,
+        1. Assert: |builtinOrStringImports| does not contain |builtinSetName|
+        1. If |builtinSetName| does not refer to a builtin set, then [=iteration/continue=].
+        1. Let |exportsObject| be the result of [=instantiate a builtin set=] with |builtinSetName|
+        1. Let |builtinSetQualifiedName| be |builtinSetName| prefixed with "wasm:"
+        1. [=map/set|Set=] |builtinOrStringImports|[|builtinSetQualifiedName|] to |exportsObject|
+    1. If |importedStringModule| is not null,
+        1. Let |exportsObject| be the result of [=instantiate imported strings=] with |module| and |importedStringModule|
+        1. [=map/set|Set=] |builtinOrStringImports|[|importedStringModule|] to |exportsObject|
     1. Let |imports| be « ».
     1. [=list/iterate|For each=] (|moduleName|, |componentName|, |externtype|) of [=module_imports=](|module|),
-        1. Let |o| be [=?=] [$Get$](|importObject|, |moduleName|).
+        1. If |builtinOrStringImports| [=map/exist|contains=] |moduleName|,
+            1. Let |o| be |builtinOrStringImports|[|moduleName|].
+            1. If |o| [=is not an Object=] or if |o| [=map/exist|does not contain=] |componentName|,
+                1. Set |o| to [=?=] [$Get$](|importObject|, |moduleName|).
+        1. Else,
+            1. Let |o| be [=?=] [$Get$](|importObject|, |moduleName|).
         1. If |o| [=is not an Object=], throw a {{TypeError}} exception.
         1. Let |v| be [=?=] [$Get$](|o|, |componentName|).
         1. If |externtype| is of the form [=external-type/func=] |functype|,
@@ -446,9 +520,9 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
             1. If |v| [=implements=] {{Global}},
                 1. Let |globaladdr| be |v|.\[[Global]].
             1. Otherwise,
-                1. If |valtype| is [=i64=] and [=Type=](|v|) is not BigInt,
+                1. If |valtype| is [=i64=] and |v| [=is not a BigInt=],
                     1. Throw a {{LinkError}} exception.
-                1. If |valtype| is one of [=i32=], [=f32=] or [=f64=] and [=Type=](|v|) is not Number,
+                1. If |valtype| is one of [=i32=], [=f32=] or [=f64=] and |v| [=is not a Number=],
                     1. Throw a {{LinkError}} exception.
                 1. If |valtype| is [=v128=],
                     1. Throw a {{LinkError}} exception.
@@ -545,7 +619,9 @@ The verification of WebAssembly type requirements is deferred to the
   To <dfn>asynchronously instantiate a WebAssembly module</dfn> from a {{Module}} |moduleObject| and imports |importObject|, perform the following steps:
     1. Let |promise| be [=a new promise=].
     1. Let |module| be |moduleObject|.\[[Module]].
-    1. [=Read the imports=] of |module| with imports |importObject|, and let |imports| be the result.
+    1. Let |builtinSetNames| be |moduleObject|.\[[BuiltinSets]].
+    1. Let |importedStringModule| be |moduleObject|.\[[ImportedStringModule]].
+    1. [=Read the imports=] of |module| with imports |importObject|, |builtinSetNames| and |importedStringModule|, and let |imports| be the result.
         If this operation throws an exception, catch it, [=reject=] |promise| with the exception, and return |promise|.
     1. Run the following steps [=in parallel=]:
         1. [=Queue a task=] to perform the following steps:
@@ -576,9 +652,9 @@ The verification of WebAssembly type requirements is deferred to the
 </div>
 
 <div algorithm>
-  The <dfn method for="WebAssembly">instantiate(|bytes|, |importObject|)</dfn> method, when invoked, performs the following steps:
+  The <dfn method for="WebAssembly">instantiate(|bytes|, |importObject|, |options|)</dfn> method, when invoked, performs the following steps:
     1. Let |stableBytes| be a [=get a copy of the buffer source|copy of the bytes held by the buffer=] |bytes|.
-    1. [=Asynchronously compile a WebAssembly module=] from |stableBytes| and let |promiseOfModule| be the result.
+    1. [=Asynchronously compile a WebAssembly module=] from |stableBytes| using |options| and let |promiseOfModule| be the result.
     1. [=Instantiate a promise of a module|Instantiate=] |promiseOfModule| with imports |importObject| and return the result.
 </div>
 
@@ -626,7 +702,7 @@ dictionary ModuleImportDescriptor {
 
 [LegacyNamespace=WebAssembly, Exposed=*]
 interface Module {
-  constructor(BufferSource bytes);
+  constructor(BufferSource bytes, optional WebAssemblyCompileOptions options = {});
   static sequence&lt;ModuleExportDescriptor> exports(Module moduleObject);
   static sequence&lt;ModuleImportDescriptor> imports(Module moduleObject);
   static sequence&lt;ArrayBuffer> customSections(Module moduleObject, DOMString sectionName);
@@ -656,8 +732,12 @@ interface Module {
 <div algorithm>
     The <dfn method for="Module">imports(|moduleObject|)</dfn> method, when invoked, performs the following steps:
     1. Let |module| be |moduleObject|.\[[Module]].
+    1. Let |builtinSetNames| be |moduleObject|.\[[BuiltinSets]].
+    1. Let |importedStringModule| be |moduleObject|.\[[ImportedStringModule]].
     1. Let |imports| be « ».
     1. [=list/iterate|For each=] (|moduleName|, |name|, |type|) of [=module_imports=](|module|),
+        1. If [=find a builtin=] for (|moduleName|, |name|, |type|) and |builtinSetNames| is not null, then [=iteration/continue=].
+        1. If |importedStringModule| is not null and |moduleName| equals |importedStringModule|, then [=iteration/continue=].
         1. Let |kind| be the [=string value of the extern type=] |type|.
         1. Let |obj| be «[ "{{ModuleImportDescriptor/module}}" → |moduleName|, "{{ModuleImportDescriptor/name}}" → |name|, "{{ModuleImportDescriptor/kind}}" → |kind| ]».
         1. [=list/Append=] |obj| to |imports|.
@@ -677,13 +757,18 @@ interface Module {
 </div>
 
 <div algorithm>
-    The <dfn constructor for="Module">Module(|bytes|)</dfn> constructor, when invoked, performs the following steps:
+    The <dfn constructor for="Module">Module(|bytes|, |options|)</dfn> constructor, when invoked, performs the following steps:
 
     1. Let |stableBytes| be a [=get a copy of the buffer source|copy of the bytes held by the buffer=] |bytes|.
     1. [=Compile a WebAssembly module|Compile the WebAssembly module=] |stableBytes| and store the result as |module|.
     1. If |module| is [=error=], throw a {{CompileError}} exception.
+    1. Let |builtinSetNames| be |options|["builtins"].
+    1. Let |importedStringModule| be |options|["importedStringConstants"].
+    1. If [=validate builtins and imported string for a WebAssembly module|validating builtins and imported strings=] for |module| with |builtinSetNames| and |importedStringModule| returns false, throw a {{CompileError}} exception.
     1. Set **this**.\[[Module]] to |module|.
     1. Set **this**.\[[Bytes]] to |stableBytes|.
+    1. Set **this**.\[[BuiltinSets]] to |builtinSetNames|.
+    1. Set **this**.\[[ImportedStringModule]] to |importedStringModule|.
 
 Note: Some implementations enforce a size limitation on |bytes|. Use of this API is discouraged, in favor of asynchronous APIs.
 </div>
@@ -701,7 +786,9 @@ interface Instance {
 <div algorithm>
   The <dfn constructor for="Instance">Instance(|module|, |importObject|)</dfn> constructor, when invoked, runs the following steps:
     1. Let |module| be |module|.\[[Module]].
-    1. [=Read the imports=] of |module| with imports |importObject|, and let |imports| be the result.
+    1. Let |builtinSetNames| be |module|.\[[BuiltinSets]].
+    1. Let |importedStringModule| be |module|.\[[ImportedStringModule]].
+    1. [=Read the imports=] of |module| with imports |importObject|, |builtinSetNames|, and |importedStringModule|, and let |imports| be the result.
     1. [=Instantiate the core of a WebAssembly module=] |module| with |imports|, and let |instance| be the result.
     1. [=initialize an instance object|Initialize=] **this** from |module| and |instance|.
 
@@ -754,8 +841,6 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
 
     1. Let |block| be a [=Data Block=] which is [=identified with=] the underlying memory of |memaddr|.
     1. Let |length| be the length of |block|.
-    1. If |maxsize| &gt; (65536 &times; 65536),
-        1. Throw a {{RangeError}} exception.
     1. Let |buffer| be a new {{ArrayBuffer}} with the internal slots \[[ArrayBufferData]], \[[ArrayBufferByteLength]], \[[ArrayBufferMaxByteLength]], and \[[ArrayBufferDetachKey]].
     1. Set |buffer|.\[[ArrayBufferData]] to |block|.
     1. Set |buffer|.\[[ArrayBufferByteLength]] to |length|.
@@ -860,15 +945,15 @@ Immediately after a WebAssembly [=memory.grow=] instruction executes, perform th
 
 <div algorithm=dom-Memory-toResizableBuffer>
     The <dfn method for="Memory">toResizableBuffer()</dfn> method, when invoked, performs the following steps:
-    1. Let |buffer| be **this**.\[[BufferObject]].
-    1. If [=IsFixedLengthArrayBuffer=](|buffer|) is false, return |buffer|.
     1. Let |memaddr| be **this**.\[[Memory]].
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
     1. Let |memtype| be [=mem_type=](|store|, |memaddr|).
-    1. If |memtype| has a max,
-        1. Let |maxsize| be the max value in |memtype|.
-    1. Otherwise,
-        1. Let |maxsize| be 65536 &times; 65536.
+    1. If |memtype| does not have a max,
+        1. [=Throw=] a {{TypeError}} exception.
+    1. Let |buffer| be **this**.\[[BufferObject]].
+    1. If [=IsFixedLengthArrayBuffer=](|buffer|) is false, return |buffer|.
+    1. Assert: |memtype| has a max.
+    1. Let |maxsize| be the max value in |memtype| * 65536.
     1. Let |resizableBuffer| be the result of [=create a resizable memory buffer|creating a resizable memory buffer=] from |memaddr| and |maxsize|.
     1. Perform [=!=] [$DetachArrayBuffer$](|buffer|, "WebAssembly.Memory").
     1. Set **this**.\[[BufferObject]] to |resizableBuffer|.
@@ -1005,7 +1090,7 @@ Each {{Table}} object has a \[[Table]] internal slot, which is a [=table address
     1. Let |tableaddr| be **this**.\[[Table]].
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
     1. Let (|addrtype|, <var ignore>limits</var>, |elementtype|) be [=table_type=](|store|, |tableaddr|).
-    1. If |elementtype| is [=exnref=],
+    1. If |elementtype| [=matches/reftype|matches=] [=exnref=],
         1. Throw a {{TypeError}} exception.
     1. Let |index64| be [=?=] [=AddressValueToU64=](|index|, |addrtype|).
     1. Let |result| be [=table_read=](|store|, |tableaddr|, |index64|).
@@ -1018,7 +1103,7 @@ Each {{Table}} object has a \[[Table]] internal slot, which is a [=table address
     1. Let |tableaddr| be **this**.\[[Table]].
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
     1. Let (|addrtype|, <var ignore>limits</var>, |elementtype|) be [=table_type=](|store|, |tableaddr|).
-    1. If |elementtype| is [=exnref=],
+    1. If |elementtype| [=matches/reftype|matches=] [=exnref=],
         1. Throw a {{TypeError}} exception.
     1. Let |index64| be [=?=] [=AddressValueToU64=](|index|, |addrtype|).
     1. If |value| is missing,
@@ -1107,7 +1192,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
     The <dfn constructor for="Global">Global(|descriptor|, |v|)</dfn> constructor, when invoked, performs the following steps:
     1. Let |mutable| be |descriptor|["mutable"].
     1. Let |valuetype| be [=ToValueType=](|descriptor|["value"]).
-    1. If |valuetype| is [=v128=] or [=exnref=],
+    1. If |valuetype| [=matches/valtype|matches=] [=v128=] or [=exnref=],
         1. Throw a {{TypeError}} exception.
     1. If |v| is missing,
         1. Let |value| be [=DefaultValue=](|valuetype|).
@@ -1126,7 +1211,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
     1. Let |store| be the current agent's [=associated store=].
     1. Let |globaladdr| be |global|.\[[Global]].
     1. Let |globaltype| be [=global_type=](|store|, |globaladdr|).
-    1. If |globaltype| is of the form <var ignore>mut</var> |valuetype| where |valuetype| is [=v128=] or [=exnref=], throw a {{TypeError}}.
+    1. If |globaltype| is of the form <var ignore>mut</var> |valuetype| where |valuetype| [=matches/valtype|matches=] [=v128=] or [=exnref=], throw a {{TypeError}}.
     1. Let |value| be [=global_read=](|store|, |globaladdr|).
     1. Return [=ToJSValue=](|value|).
 </div>
@@ -1139,7 +1224,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
     1. Let |store| be the current agent's [=associated store=].
     1. Let |globaladdr| be **this**.\[[Global]].
     1. Let |mut| |valuetype| be [=global_type=](|store|, |globaladdr|).
-    1. If |valuetype| is [=v128=] or [=exnref=], throw a {{TypeError}}.
+    1. If |valuetype| [=matches/valtype|matches=] [=v128=] or [=exnref=], throw a {{TypeError}}.
     1. If |mut| is [=const=], throw a {{TypeError}}.
     1. Let |value| be [=ToWebAssemblyValue=](**the given value**, |valuetype|).
     1. Let |store| be [=global_write=](|store|, |globaladdr|, |value|).
@@ -1198,7 +1283,7 @@ This slot holds a [=function address=] relative to the [=surrounding agent=]'s [
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
     1. Let |functype| be [=func_type=](|store|, |funcaddr|).
     1. Let [|parameters|] → [|results|] be |functype|.
-    1. If |parameters| or |results| contain [=v128=] or [=exnref=], throw a {{TypeError}}.
+    1. If any type in |parameters| or |results| [=matches/valtype|matches=] [=v128=] or [=exnref=], throw a {{TypeError}}.
 
         Note: the above error is thrown each time the \[[Call]] method is invoked.
     1. Let |args| be « ».
@@ -1238,7 +1323,7 @@ Note: Exported Functions do not have a \[[Construct]] method and thus it is not 
   To <dfn>run a host function</dfn> from the JavaScript object |func|, type |functype|, and [=list=] of [=WebAssembly values=] |arguments|, perform the following steps:
 
     1. Let [|parameters|] → [|results|] be |functype|.
-    1. If |parameters| or |results| contain [=v128=] or [=exnref=], throw a {{TypeError}}.
+    1. If any type in |parameters| or |results| [=matches/valtype|matches=] [=v128=] or [=exnref=], throw a {{TypeError}}.
     1. Let |jsArguments| be « ».
     1. [=list/iterate|For each=] |arg| of |arguments|,
         1. [=list/Append=] [=!=] [=ToJSValue=](|arg|) to |jsArguments|.
@@ -1335,7 +1420,7 @@ For <dfn>retrieving a host value</dfn> from an [=host address=] |hostaddr|, perf
 The algorithm <dfn>ToWebAssemblyValue</dfn>(|v|, |type|) coerces a JavaScript value to a [=WebAssembly value=] by performing the following steps:
 
 1. Assert: |type| is not [=v128=].
-1. Assert: |type| is not [=exnref=].
+1. Assert: |type| does not [=matches/valtype|match=] [=exnref=].
 1. If |type| is [=i64=],
     1. Let |i64| be [=?=] [$ToBigInt64$](|v|).
     1. Let |u64| be the unsigned integer such that |i64| is [=signed_64=](|u64|).
@@ -1650,7 +1735,7 @@ constructor steps are:
     1. Throw a {{TypeError}}.
 1. Let |wasmPayload| be « ».
 1. [=list/iterate|For each=] |value| and |resultType| of |payload| and |types|, paired linearly,
-    1. If |resultType| is [=v128=] or [=exnref=],
+    1. If |resultType| [=matches/valtype|matches=] [=v128=] or [=exnref=],
         1. Throw a {{TypeError}}.
     1. [=list/Append=] [=?=] [=ToWebAssemblyValue=](|value|, |resultType|) to |wasmPayload|.
 1. Let (|store|, |exceptionAddr|) be [=exn_alloc=](|store|, |exceptionTag|.\[[Address]], |wasmPayload|)
@@ -1673,7 +1758,7 @@ The <dfn method for="Exception">getArg(|index|)</dfn> method steps are:
 1. If |index| ≥ |payload|'s [=list/size=],
     1. Throw a {{RangeError}}.
 1. Let [|types|] → [] be [=tag_type=](|store|, |tagaddr|).
-1. If |types|[|index|] is [=v128=] or [=exnref=],
+1. If |types|[|index|] [=matches/valtype|matches=] [=v128=] or [=exnref=],
     1. Throw a {{TypeError}}.
 1. Return [=ToJSValue=](|payload|[|index|]).
 
@@ -1738,6 +1823,344 @@ They expose the same interface as native JavaScript errors like {{TypeError}} an
 
 Note: It is not currently possible to define this behavior using Web IDL.
 
+
+<h2 id="builtins">Builtins</h2>
+
+The JS-API defines sets of builtin functions which can be imported through {{WebAssemblyCompileOptions|options}} when compiling a module. WebAssembly builtin functions mirror existing JavaScript builtins, but adapt them to be useable directly as WebAssembly functions with minimal overhead.
+
+All builtin functions are grouped into sets. Every builtin set has a <dfn for="builtin-set">|name|</dfn> that is used in {{WebAssemblyCompileOptions}}, and a <dfn for="builtin-set">|qualified name|</dfn> with a `wasm:` prefix that [=read the imports|is used during import lookup=].
+
+<div algorithm>
+
+To <dfn>get the builtins for a builtin set</dfn> with |builtinSetName|, perform the following steps:
+
+1. Return a list of (|name|, |funcType|, |steps|) for the set with name |builtinSetName| defined within this section.
+
+</div>
+
+<div algorithm>
+
+To <dfn>find a builtin</dfn> with |import| and enabled builtins |builtinSetNames|, perform the following steps:
+
+1. Assert: [=validate builtin set names=] |builtinSetNames| is true.
+1. Let |importModuleName| be |import|[0].
+1. Let |importName| be |import|[1].
+1.  [=list/iterate|For each=] |builtinSetName| of |builtinSetNames|,
+    1. If |builtinSetName| does not refer to a builtin set, then [=iteration/continue=].
+    1. Let |builtinSetQualifiedName| be |builtinSetName| prefixed with "wasm:".
+    1. If |importModuleName| equals |builtinSetQualifiedName|,
+        1. Let |builtins| be the result of [=get the builtins for a builtin set=] |builtinSetName|.
+        1. [=list/iterate|For each=] |builtin| of |builtins|,
+            1. Let |builtinName| be |builtin|[0].
+            1. If |importName| equals |builtinName|, return (|builtinSetName|, |builtin|).
+1. Return null.
+
+</div>
+
+<div algorithm>
+
+To <dfn>validate builtin set names</dfn> with |builtinSetNames|, perform the following steps:
+
+1. If |builtinSetNames| contains any duplicates, return false.
+1. Return true.
+
+</div>
+
+<div algorithm>
+
+To <dfn>create a builtin function</dfn> from type |funcType| and execution steps |steps|, perform the following steps:
+
+1. Let |hostfunc| be a [=host function=] which executes |steps| when called.
+1. Let (|store|, |funcaddr|) be [=func_alloc=](|store|, |functype|, |hostfunc|).
+1. Set the [=surrounding agent=]'s [=associated store=] to |store|.
+1. Return |funcaddr|.
+
+</div>
+
+<div algorithm>
+
+To <dfn>instantiate a builtin set</dfn> with name |builtinSetName|, perform the following steps:
+
+1. Let |builtins| be the result of [=get the builtins for a builtin set=] |builtinSetName|.
+1. Let |exportsObject| be [=!=] [$OrdinaryObjectCreate$](null).
+1. [=list/iterate|For each=] (|name|, |funcType|, |steps|) of |builtins|,
+    1. Let |funcaddr| be the result fo [=create a builtin function=] with |funcType| and |steps|.
+    1. Let |func| be the result of creating [=a new Exported Function=] from |funcaddr|.
+    1. Let |value| be |func|.
+    1. Let |status| be [=!=] [$CreateDataProperty$](|exportsObject|, |name|, |value|).
+    1. Assert: |status| is true.
+1. Return |exportsObject|.
+
+</div>
+
+<div algorithm>
+
+To <dfn>validate an import for builtins</dfn> with |import|, enabled builtins |builtinSetNames|, perform the following steps:
+
+1. Assert: [=validate builtin set names=] |builtinSetNames| is true.
+1. Let |maybeBuiltin| be the result of [=find a builtin|finding a builtin=] for |import| and |builtinSetNames|.
+1. If |maybeBuiltin| is null, return true.
+1. Let |importExternType| be |import|[2].
+1. Let |builtinFuncType| be |maybeBuiltin|[0][1].
+1. Let |builtinExternType| be `func |builtinFuncType|`.
+1. Return [=match_externtype=](|builtinExternType|, |importExternType|).
+
+</div>
+
+
+<h3 id="builtins-js-string">String Builtins</h3>
+
+String builtins adapt the interface of the [=String=] builtin object. The [=builtin-set/name=] for this set is `js-string`, and the [=builtin-set/qualified name=] is `wasm:js-string`.
+
+Note: The algorithms in this section refer to JS builtins defined on [=String=]. These refer to the actual builtin and do not perform a dynamic lookup on the [=String=] object.
+
+<h4 id="builtins-js-string-abstract-ops">Abstract operations</h4>
+
+<div algorithm>
+
+The <dfn abstract-op lt="UnwrapString">UnwrapString(|v|)</dfn> abstract operation, when invoked, performs the following steps:
+
+1. If |v| [=is not a String=],
+    1. Throw a {{RuntimeError}} exception as if a [=trap=] was executed.
+1. Return |v|
+
+</div>
+
+<div algorithm>
+
+The <dfn abstract-op lt="FromCharCode">FromCharCode(|v|)</dfn> abstract operation, when invoked, performs the following steps:
+
+1. Assert: |v| is of type [=i32=].
+1. Return [=!=] [$Call$]([=String.fromCharCode=], undefined, « [=ToJSValue=](|v|) »).
+
+</div>
+
+<div algorithm>
+
+The <dfn abstract-op lt="CharCodeAt">CharCodeAt(|string|, |index|)</dfn> abstract operation, when invoked, performs the following steps:
+
+1. Assert: |index| is of type [=i32=].
+1. Return [=!=] [$Call$]([=String.prototype.charCodeAt=], |string|, « [=ToJSValue=](|index|) »).
+
+</div>
+
+<h4 id="js-string-cast">cast</h4>
+
+The |funcType| of this builtin is `(rec (type (func (param externref) (result externref)))).0`.
+
+<div algorithm="js-string-cast">
+
+When this builtin is invoked with parameter |v|, the following steps must be run:
+
+1. Return [=?=] [$UnwrapString$](|v|)
+
+</div>
+
+<h4 id="js-string-test">test</h4>
+
+The |funcType| of this builtin is `(rec (type (func (param externref) (result i32)))).0`.
+
+<div algorithm="js-string-test">
+
+When this builtin is invoked with parameter |v|, the following steps must be run:
+
+1. If |v| [=is not a String=],
+    1. Return 0.
+1. Return 1.
+
+</div>
+
+<h4 id="js-string-fromCharCodeArray">fromCharCodeArray</h4>
+
+Let |arrayType| be `(rec (type (array (mut i16)))).0`.
+
+The |funcType| of this builtin is `(rec (type (func (param (ref null arrayType) i32 i32) (result externref)))).0`.
+
+<div algorithm="js-string-fromCharCodeArray">
+
+When this builtin is invoked with parameters |array|, |start|, and |end|, the following steps must be run:
+
+1. If |array| is null,
+    1. Throw a {{RuntimeError}} exception as if a [=trap=] was executed.
+1. Let |length| be the number of elements in |array|.
+1. If |start| > |end| or |end| > |length|,
+    1. Throw a {{RuntimeError}} exception as if a [=trap=] was executed.
+1. Let |result| be the empty string.
+1. Let |i| be |start|.
+1. While |i| < |end|:
+    1. Let |charCode| be the value of the element stored at index |i| in |array|.
+    1. Let |charCodeString| be [$FromCharCode$](|charCode|).
+    1. Let |result| be the concatenation of |result| and |charCodeString|.
+    1. Set |i| to |i| + 1.
+1. Return |result|.
+
+</div>
+
+<h4 id="js-string-intoCharCodeArray">intoCharCodeArray</h4>
+
+Let |arrayType| be `(rec (type (array (mut i16)))).0`.
+
+The |funcType| of this builtin is `(rec (type (func (param externref (ref null arrayType) i32) (result i32)))).0`.
+
+<div algorithm="js-string-intoCharCodeArray">
+
+When this builtin is invoked with parameters |string|, |array|, and |start|, the following steps must be run:
+
+1. If |array| is null,
+    1. Throw a {{RuntimeError}} exception as if a [=trap=] was executed.
+1. Let |string| be [=?=] [$UnwrapString$](|string|).
+1. Let |stringLength| be the [=string/length=] of |string|.
+1. Let |arrayLength| be the number of elements in |array|.
+1. If |start| + |stringLength| > |arrayLength|,
+    1. Throw a {{RuntimeError}} exception as if a [=trap=] was executed.
+1. Let |i| be 0.
+1. While |i| < |stringLength|:
+    1. Let |charCode| be [$CharCodeAt$](|string|, |i|).
+    1. Set the element at index |start| + |i| in |array| to [=ToWebAssemblyValue=](|charCode|).
+    1. Set |i| to |i| + 1.
+1. Return |stringLength|.
+
+</div>
+
+
+<h4 id="js-string-fromCharCode">fromCharCode</h4>
+
+The |funcType| of this builtin is `(rec (type (func (param i32) (result externref)))).0`.
+
+<div algorithm="js-string-fromCharCode">
+
+When this builtin is invoked with parameter |v|, the following steps must be run:
+
+1. Return [$FromCharCode$](|v|).
+
+</div>
+
+<h4 id="js-string-fromCodePoint">fromCodePoint</h4>
+
+The |funcType| of this builtin is `(rec (type (func (param i32) (result externref)))).0`.
+
+<div algorithm="js-string-fromCodePoint">
+
+When this builtin is invoked with parameter |v|, the following steps must be run:
+
+1. If |v| &gt; 0x10ffff,
+    1. Throw a {{RuntimeError}} exception as if a [=trap=] was executed.
+1. Return [=!=] [$Call$]([=String.fromCodePoint=], undefined, « [=ToJSValue=](|v|) »).
+
+</div>
+
+<h4 id="js-string-charCodeAt">charCodeAt</h4>
+
+The type of this function is `(rec (type (func (param externref i32) (result i32)))).0`.
+
+<div algorithm="js-string-charCodeAt">
+
+When this builtin is invoked with parameters |string| and |index|, the following steps must be run:
+
+1. Let |string| be [=?=] [$UnwrapString$](|string|).
+1. Let |length| be the [=string/length=] of |string|.
+1. If |index| >= |length|,
+    1. Throw a {{RuntimeError}} exception as if a [=trap=] was executed.
+1. Return [$CharCodeAt$](|string|, |index|).
+
+</div>
+
+<h4 id="js-string-codePointAt">codePointAt</h4>
+
+The type of this function is `(rec (type (func (param externref i32) (result i32)))).0`.
+
+<div algorithm="js-string-codePointAt">
+
+When this builtin is invoked with parameters |string| and |index|, the following steps must be run:
+
+1. Let |string| be [=?=] [$UnwrapString$](|string|).
+1. Let |length| be the [=string/length=] of |string|.
+1. If |index| >= |length|,
+    1. Throw a {{RuntimeError}} exception as if a [=trap=] was executed.
+1. Return [=!=] [$Call$]([=String.prototype.codePointAt=], |string|, « [=ToJSValue=](|index|) »).
+
+</div>
+
+<h4 id="js-string-length">length</h4>
+
+The |funcType| of this builtin is `(rec (type (func (param externref) (result i32)))).0`.
+
+<div algorithm="js-string-length">
+
+When this builtin is invoked with parameter |v|, the following steps must be run:
+
+1. Let |string| be [=?=] [$UnwrapString$](|v|).
+1. Return the [=string/length=] of |string|.
+
+</div>
+
+<h4 id="js-string-concat">concat</h4>
+
+The |funcType| of this builtin is `(rec (type (func (param externref externref) (result externref)))).0`.
+
+<div algorithm="js-string-concat">
+
+When this builtin is invoked with parameters |first| and |second|, the following steps must be run:
+
+1. Let |first| be [=?=] [$UnwrapString$](|first|).
+1. Let |second| be [=?=] [$UnwrapString$](|second|).
+1. Return [=!=] [$Call$]([=String.prototype.concat=], |first|, « |second| »).
+
+</div>
+
+<h4 id="js-string-substring">substring</h4>
+
+The |funcType| of this builtin is `(rec (type (func (param externref i32 i32) (result externref)))).0`.
+
+<div algorithm="js-string-substring">
+
+When this builtin is invoked with parameters |string|, |start|, and |end|, the following steps must be run:
+
+1. Let |string| be [=?=] [$UnwrapString$](|string|).
+1. Let |length| be the [=string/length=] of |string|.
+1. If |start| > |end| or |start| > |length|,
+    1. Return the empty string.
+1. Return [=!=] [$Call$]([=String.prototype.substring=], |string|, « [=ToJSValue=](|start|), [=ToJSValue=](|end|) »).
+
+</div>
+
+<h4 id="js-string-equals">equals</h4>
+
+The |funcType| of this builtin is `(rec (type (func (param externref externref) (result i32)))).0`.
+
+Note: Explicitly allow null strings to be compared for equality as that is meaningful.
+
+<div algorithm="js-string-equals">
+
+When this builtin is invoked with parameters |first| and |second|, the following steps must be run:
+
+1. If |first| is not null and |first| [=is not a String=],
+    1. Throw a {{RuntimeError}} exception as if a [=trap=] was executed.
+1. If |second| is not null and |second| [=is not a String=],
+    1. Throw a {{RuntimeError}} exception as if a [=trap=] was executed.
+1. If [=!=] [=IsStrictlyEqual=](|first|, |second|) is true,
+    1. Return 1.
+1. Return 0.
+
+</div>
+
+<h4 id="js-string-compare">compare</h4>
+
+The |funcType| of this builtin is `(rec (type (func (param externref externref) (result i32)))).0`.
+
+<div algorithm="js-string-compare">
+
+When this builtin is invoked with parameters |first| and |second|, the following steps must be run:
+
+1. Let |first| be [=?=] [$UnwrapString$](|first|).
+1. Let |second| be [=?=] [$UnwrapString$](|second|).
+1. If [=!=] [=IsStrictlyEqual=](|first|, |second|) is true,
+    1. Return 0.
+1. If [=!=] [=IsLessThan=](|first|, |second|, true) is true,
+    1. Return -1.
+1. Return 1.
+
+</div>
 
 <h2 id="errors">Error Condition Mappings to JavaScript</h2>
 
@@ -1805,7 +2228,10 @@ In practice, an implementation may run out of resources for valid modules below 
 <li>The maximum number of tables, including declared or imported tables, is 100,000.</li>
 <li>The maximum size of a table is 10,000,000.</li>
 <li>The maximum number of table entries in any table initialization is 10,000,000.</li>
+
 <li>The maximum number of memories, including defined and imported memories, is 100.</li>
+<li>The maximum `min` or `max` field of a 32-bit memory is 65,536 pages (4 GiB).</li>
+<li>The maximum `min` or `max` field of a 64-bit memory is 2^37-1 pages (2^53 - 2^16 bytes).</li>
 
 <li>The maximum number of parameters to any function or block is 1,000.</li>
 <li>The maximum number of return values for any function or block is 1,000.</li>
@@ -1855,3 +2281,6 @@ Multiple tables can be exported and imported to and from JavaScript.
 
 <h4 id="changes-multimemory" class="no-toc heading settled">Multiple Memories</h4>
 Multiple memories can be exported and imported to and from JavaScript.
+
+<h4 id="changes-js-sb" class="no-toc heading settled">JS String Builtins</h4>
+Added a builtins option when compiling a module, and a collection of builtin functions for manipulating JS Strings.

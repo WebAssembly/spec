@@ -53,7 +53,7 @@ function register(name, instance) {
   registry[name] = instance.exports;
 }
 
-function module(bytes, valid = true) {
+function module(bytes, loc, valid = true) {
   let buffer = new ArrayBuffer(bytes.length);
   let view = new Uint8Array(buffer);
   for (let i = 0; i < bytes.length; ++i) {
@@ -92,8 +92,8 @@ function run(action) {
   action();
 }
 
-function assert_malformed(bytes) {
-  try { module(bytes, false) } catch (e) {
+function assert_malformed(bytes, loc) {
+  try { module(bytes, loc, false) } catch (e) {
     if (e instanceof WebAssembly.CompileError) return;
   }
   throw new Error("Wasm decoding failure expected");
@@ -103,8 +103,8 @@ function assert_malformed_custom(bytes) {
   return;
 }
 
-function assert_invalid(bytes) {
-  try { module(bytes, false) } catch (e) {
+function assert_invalid(bytes, loc) {
+  try { module(bytes, loc, false) } catch (e) {
     if (e instanceof WebAssembly.CompileError) return;
   }
   throw new Error("Wasm validation failure expected");
@@ -128,7 +128,7 @@ function assert_uninstantiable(mod) {
   throw new Error("Wasm trap expected");
 }
 
-function assert_trap(action) {
+function assert_trap(action, loc) {
   try { action() } catch (e) {
     if (e instanceof WebAssembly.RuntimeError) return;
   }
@@ -150,7 +150,7 @@ function assert_exhaustion(action) {
   throw new Error("Wasm resource exhaustion expected");
 }
 
-function assert_return(action, ...expected) {
+function assert_return(action, loc, ...expected) {
   let actual = action();
   if (actual === undefined) {
     actual = [];
@@ -669,7 +669,11 @@ let of_string_with iter add_char s =
   Buffer.contents buf
 
 let of_bytes = of_string_with String.iter add_hex_char
+let of_string = of_string_with String.iter add_char
 let of_name = of_string_with List.iter add_unicode_char
+
+let of_loc at =
+  of_string (Filename.basename at.left.file ^ ":" ^ string_of_int at.left.line)
 
 let of_float z =
   match string_of_float z with
@@ -744,7 +748,7 @@ let rec of_definition def =
 let of_wrapper env x_opt name wrap_action wrap_assertion at =
   let x = of_inst_opt env x_opt in
   let bs = wrap name wrap_action wrap_assertion at in
-  "call(instance(module(" ^ of_bytes bs ^ "), " ^
+  "call(instance(module(" ^ of_bytes bs ^ ", \"wrapper\"), " ^
     "exports(" ^ x ^ ")), " ^ " \"run\", [])"
 
 let of_action env act =
@@ -770,9 +774,9 @@ let of_action env act =
     | _ -> None
     )
 
-let of_assertion' env act name args wrapper_opt =
+let of_assertion' env act loc name args wrapper_opt =
   let act_js, act_wrapper_opt = of_action env act in
-  let js = name ^ "(() => " ^ act_js ^ String.concat ", " ("" :: args) ^ ")" in
+  let js = name ^ "(() => " ^ act_js ^ loc ^ String.concat ", " ("" :: args) ^ ")" in
   match act_wrapper_opt with
   | None -> js ^ ";"
   | Some (act_wrapper, out) ->
@@ -780,35 +784,36 @@ let of_assertion' env act name args wrapper_opt =
       match wrapper_opt with
       | None -> name, run
       | Some wrapper -> "run", wrapper
-    in run_name ^ "(() => " ^ act_wrapper (wrapper out) act.at ^ ");  // " ^ js
+    in run_name ^ "(() => " ^ act_wrapper (wrapper out) act.at ^ loc ^ ");  // " ^ js
 
 let of_assertion env ass =
+  let loc = of_loc ass.at in
   match ass.it with
   | AssertMalformed (def, _) ->
-    "assert_malformed(" ^ of_definition def ^ ");"
+    "assert_malformed(" ^ of_definition def ^ ", " ^ loc ^ ");"
   | AssertMalformedCustom (def, _) ->
-    "assert_malformed_custom(" ^ of_definition def ^ ");"
+    "assert_malformed_custom(" ^ of_definition def ^ ", " ^ loc ^ ");"
   | AssertInvalid (def, _) ->
-    "assert_invalid(" ^ of_definition def ^ ");"
+    "assert_invalid(" ^ of_definition def ^ ", " ^ loc ^ ");"
   | AssertInvalidCustom (def, _) ->
-    "assert_invalid_custom(" ^ of_definition def ^ ");"
+    "assert_invalid_custom(" ^ of_definition def ^ ", " ^ loc ^ ");"
   | AssertUnlinkable (x_opt, _) ->
     "assert_unlinkable(" ^ of_mod_opt env x_opt ^ ");"
   | AssertUninstantiable (x_opt, _) ->
     "assert_uninstantiable(" ^ of_mod_opt env x_opt ^ ");"
   | AssertReturn (act, ress) ->
-    of_assertion' env act "assert_return" (List.map of_result ress)
+    of_assertion' env act loc "assert_return" (List.map of_result ress)
       (Some (assert_return ress))
   | AssertTrap (act, _) ->
-    of_assertion' env act "assert_trap" [] None
+    of_assertion' env act loc "assert_trap" [] None
   | AssertExhaustion (act, _) ->
-    of_assertion' env act "assert_exhaustion" [] None
+    of_assertion' env act loc "assert_exhaustion" [] None
   | AssertException act ->
-    of_assertion' env act "assert_exception" [] None
+    of_assertion' env act loc "assert_exception" [] None
 
 let of_command env cmd =
-  "\n// " ^ Filename.basename cmd.at.left.file ^
-    ":" ^ string_of_int cmd.at.left.line ^ "\n" ^
+  let loc = of_loc cmd.at in
+  "\n// " ^ loc ^ "\n" ^
   match cmd.it with
   | Module (x_opt, def) ->
     let rec unquote def =
@@ -818,7 +823,7 @@ let of_command env cmd =
       | Quoted (_, s) ->
         unquote (snd (Parse.Module.parse_string ~offset:s.at s.it))
     in bind_mod env x_opt (unquote def);
-    "let " ^ current_mod env ^ " = module(" ^ of_definition def ^ ");\n" ^
+    "let " ^ current_mod env ^ " = module(" ^ of_definition def ^ ", " ^ loc ^ ");\n" ^
     (if x_opt = None then "" else
     "let " ^ of_mod_opt env x_opt ^ " = " ^ current_mod env ^ ";\n")
   | Instance (x1_opt, x2_opt) ->
@@ -830,7 +835,7 @@ let of_command env cmd =
   | Register (name, x_opt) ->
     "register(" ^ of_name name ^ ", " ^ of_inst_opt env x_opt ^ ")\n"
   | Action act ->
-    of_assertion' env act "run" [] None ^ "\n"
+    of_assertion' env act loc "run" [] None ^ "\n"
   | Assertion ass ->
     of_assertion env ass ^ "\n"
   | Meta _ -> assert false
