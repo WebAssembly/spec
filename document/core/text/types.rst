@@ -163,7 +163,7 @@ $${grammar: Taddrtype/abbrev}
 Limits
 ~~~~~~
 
-$${grammar: Tlimits_}
+$${grammar: Tlimits}
 
 
 .. index:: tag type, type use

@@ -70,13 +70,10 @@ In order to distinguish symbols of the textual syntax from symbols of the abstra
 
    The :ref:`textual grammar <text-limits>` for :ref:`limits <syntax-limits>` is defined as follows:   
 
-   $${grammar: Tlimits_}
+   $${grammar: Tlimits}
 
    The variables ${:n} and ${:m} name the attributes of the respective ${grammar-case: Tu64} nonterminals, which in this case are the actual :ref:`unsigned integers <syntax-uint>` those parse into.
    The attribute of the complete production then is the abstract syntax for the limit, expressed in terms of the former values.
-
-   The variable ${:N} is a *parameter* to the grammer symbol that can be instantiated differently at each use site.
-   In this example, it controls the value range of the limits.
 
 
 .. index:: ! abbreviations, rewrite rule

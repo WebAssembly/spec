@@ -76,15 +76,12 @@ In order to distinguish symbols of the binary syntax from symbols of the abstrac
 
    The :ref:`binary grammar <binary-limits>` for :ref:`limits <syntax-limits>` is defined as follows:   
 
-   $${grammar: Blimits_}
+   $${grammar: Blimits}
 
    That is, a limits pair is encoded as either the byte ${:0x00} followed by the encoding of a ${:u64} value,
    or the byte ${grammar-case: 0x01} followed by two such encodings. 
    The variables ${:n} and ${:m} name the attributes of the respective ${grammar-case: Bu64} nonterminals, which in this case are the actual :ref:`unsigned integers <syntax-uint>` those decode into.
    The attribute of the complete production then is the abstract syntax for the limit, expressed in terms of the former values.
-
-   The variable ${:N} is a *parameter* to the grammer symbol that can be instantiated differently at each use site.
-   In this example, it controls the value range of the limits.
 
 
 .. _binary-notation:
