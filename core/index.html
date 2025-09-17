@@ -1,21 +1,19 @@
-
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>WebAssembly Specification &#8212; WebAssembly 2.0 (Draft 2025-06-24)</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script>window.MathJax = {"tex": {"maxBuffer": 30720}}</script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <title>WebAssembly Specification &#8212; WebAssembly 3.0 (2025-09-17)</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=686e5160" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=057308f9" />
+    <script src="_static/documentation_options.js?v=d3e2c804"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>window.MathJax = {"tex": {"maxBuffer": 30720, "macros": {"multicolumn": ["", 2]}}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Introduction" href="intro/index.html" />
@@ -29,10 +27,10 @@
   </head><body>
   <div class="document">
     
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="#">
-              <img class="logo" src="_static/webassembly.png" alt="Logo"/>
+              <img class="logo" src="_static/webassembly.png" alt="Logo of WebAssembly"/>
             </a></p><h3>Navigation</h3>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="intro/index.html">Introduction</a></li>
@@ -59,7 +57,7 @@
     
 </ul>
 
-<div id="searchbox" style="display: none" role="search">
+<search id="searchbox" style="display: none" role="search">
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
@@ -67,7 +65,7 @@
       <input type="submit" value="Go" />
     </form>
     </div>
-</div>
+</search>
 <script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
@@ -78,9 +76,9 @@
           <div class="body" role="main">
             
   <section id="webassembly-specification">
-<h1>WebAssembly Specification<a class="headerlink" href="#webassembly-specification" title="Permalink to this heading">¶</a></h1>
+<h1>WebAssembly Specification<a class="headerlink" href="#webassembly-specification" title="Link to this heading">¶</a></h1>
 <div class="line-block">
-<div class="line">Release 2.0 (Draft 2025-06-24)</div>
+<div class="line">Release 3.0 (2025-09-17)</div>
 </div>
 <div class="line-block">
 <div class="line">Editor: Andreas Rossberg</div>
@@ -107,6 +105,7 @@
 <li class="toctree-l1"><a class="reference internal" href="valid/index.html">Validation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="valid/conventions.html">Conventions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="valid/types.html">Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="valid/matching.html">Matching</a></li>
 <li class="toctree-l2"><a class="reference internal" href="valid/instructions.html">Instructions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="valid/modules.html">Modules</a></li>
 </ul>
@@ -115,6 +114,8 @@
 <li class="toctree-l2"><a class="reference internal" href="exec/conventions.html">Conventions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="exec/runtime.html">Runtime Structure</a></li>
 <li class="toctree-l2"><a class="reference internal" href="exec/numerics.html">Numerics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exec/types.html">Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exec/values.html">Values</a></li>
 <li class="toctree-l2"><a class="reference internal" href="exec/instructions.html">Instructions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="exec/modules.html">Modules</a></li>
 </ul>
@@ -138,11 +139,16 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="appendix/index.html">Appendix</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="appendix/embedding.html">Embedding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="appendix/profiles.html">Profiles</a></li>
 <li class="toctree-l2"><a class="reference internal" href="appendix/implementation.html">Implementation Limitations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="appendix/properties.html">Type Soundness</a></li>
+<li class="toctree-l2"><a class="reference internal" href="appendix/properties.html#type-system-properties">Type System Properties</a></li>
 <li class="toctree-l2"><a class="reference internal" href="appendix/algorithm.html">Validation Algorithm</a></li>
-<li class="toctree-l2"><a class="reference internal" href="appendix/custom.html">Custom Sections</a></li>
-<li class="toctree-l2"><a class="reference internal" href="appendix/properties.html">Soundness</a></li>
+<li class="toctree-l2"><a class="reference internal" href="appendix/custom.html">Custom Sections and Annotations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="appendix/changes.html">Change History</a></li>
+<li class="toctree-l2"><a class="reference internal" href="appendix/index-types.html">Index of Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="appendix/index-instructions.html">Index of Instructions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="appendix/index-rules.html">Index of Semantic Rules</a></li>
 </ul>
 </li>
 </ul>
@@ -163,7 +169,7 @@
     <div class="clearer"></div>
   </div>
     <div class="footer">
-      &#169;2025, WebAssembly Community Group.
+      &#169;2017-2025, WebAssembly Community Group.
       
     </div>
 

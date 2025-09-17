@@ -1,21 +1,19 @@
-
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="../">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Conventions &#8212; WebAssembly 2.0 (Draft 2025-06-24)</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-    <script src="../_static/jquery.js"></script>
-    <script src="../_static/underscore.js"></script>
-    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-    <script src="../_static/doctools.js"></script>
-    <script>window.MathJax = {"tex": {"maxBuffer": 30720}}</script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <title>Conventions &#8212; WebAssembly 3.0 (2025-09-17)</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=686e5160" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=057308f9" />
+    <script src="../_static/documentation_options.js?v=d3e2c804"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>window.MathJax = {"tex": {"maxBuffer": 30720, "macros": {"multicolumn": ["", 2]}}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Runtime Structure" href="runtime.html" />
@@ -30,10 +28,10 @@
   </head><body>
   <div class="document">
     
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../index.html">
-              <img class="logo" src="../_static/webassembly.png" alt="Logo"/>
+              <img class="logo" src="../_static/webassembly.png" alt="Logo of WebAssembly"/>
             </a></p><h3>Navigation</h3>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../intro/index.html">Introduction</a></li>
@@ -43,6 +41,8 @@
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Conventions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="runtime.html">Runtime Structure</a></li>
 <li class="toctree-l2"><a class="reference internal" href="numerics.html">Numerics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="types.html">Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="values.html">Values</a></li>
 <li class="toctree-l2"><a class="reference internal" href="instructions.html">Instructions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="modules.html">Modules</a></li>
 </ul>
@@ -67,7 +67,7 @@
     
 </ul>
 
-<div id="searchbox" style="display: none" role="search">
+<search id="searchbox" style="display: none" role="search">
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
@@ -75,7 +75,7 @@
       <input type="submit" value="Go" />
     </form>
     </div>
-</div>
+</search>
 <script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
@@ -86,7 +86,7 @@
           <div class="body" role="main">
             
   <section id="conventions">
-<span id="index-0"></span><h1>Conventions<a class="headerlink" href="#conventions" title="Permalink to this heading">¶</a></h1>
+<span id="index-0"></span><h1>Conventions<a class="headerlink" href="#conventions" title="Link to this heading">¶</a></h1>
 <p>WebAssembly code is <em>executed</em> when <a class="reference internal" href="modules.html#exec-instantiation"><span class="std std-ref">instantiating</span></a> a module or <a class="reference internal" href="modules.html#exec-invocation"><span class="std std-ref">invoking</span></a> an <a class="reference internal" href="../syntax/modules.html#syntax-export"><span class="std std-ref">exported</span></a> function on the resulting module <a class="reference internal" href="runtime.html#syntax-moduleinst"><span class="std std-ref">instance</span></a>.</p>
 <p>Execution behavior is defined in terms of an <em>abstract machine</em> that models the <em>program state</em>.
 It includes a <em>stack</em>, which records operand values and control constructs, and an abstract <em>store</em> containing global state.</p>
@@ -104,11 +104,11 @@ so that understanding of the formal notation is <em>not</em> required to read th
 The formalism offers a more concise description in notation that is used widely in programming languages semantics and is readily amenable to mathematical proof.</p>
 </div>
 <section id="prose-notation">
-<span id="exec-notation-textual"></span><h2>Prose Notation<a class="headerlink" href="#prose-notation" title="Permalink to this heading">¶</a></h2>
+<span id="exec-notation-textual"></span><h2>Prose Notation<a class="headerlink" href="#prose-notation" title="Link to this heading">¶</a></h2>
 <p>Execution is specified by stylised, step-wise rules for each <a class="reference internal" href="../syntax/instructions.html#syntax-instr"><span class="std std-ref">instruction</span></a> of the <a class="reference internal" href="../syntax/index.html#syntax"><span class="std std-ref">abstract syntax</span></a>.
 The following conventions are adopted in stating these rules.</p>
 <ul class="simple">
-<li><p>The execution rules implicitly assume a given <a class="reference internal" href="runtime.html#store"><span class="std std-ref">store</span></a> <span class="math notranslate nohighlight">\(S\)</span>.</p></li>
+<li><p>The execution rules implicitly assume a given <a class="reference internal" href="runtime.html#store"><span class="std std-ref">store</span></a> <span class="math notranslate nohighlight">\(s\)</span>.</p></li>
 <li><p>The execution rules also assume the presence of an implicit <a class="reference internal" href="runtime.html#stack"><span class="std std-ref">stack</span></a>
 that is modified by <em>pushing</em> or <em>popping</em>
 <a class="reference internal" href="../syntax/values.html#syntax-value"><span class="std std-ref">values</span></a>, <a class="reference internal" href="runtime.html#syntax-label"><span class="std std-ref">labels</span></a>, and <a class="reference internal" href="runtime.html#syntax-frame"><span class="std std-ref">frames</span></a>.</p></li>
@@ -120,13 +120,13 @@ Such replacement is assumed to apply globally.</p></li>
 in which case the entire computation is aborted and no further modifications to the store are performed by it. (Other computations can still be initiated afterwards.)</p></li>
 <li><p>The execution of an instruction may also end in a <em>jump</em> to a designated target,
 which defines the next instruction to execute.</p></li>
-<li><p>Execution can <em>enter</em> and <em>exit</em> <a class="reference internal" href="../syntax/instructions.html#syntax-instr-seq"><span class="std std-ref">instruction sequences</span></a> that form <a class="reference internal" href="../syntax/instructions.html#syntax-instr-control"><span class="std std-ref">blocks</span></a>.</p></li>
-<li><p><a class="reference internal" href="../syntax/instructions.html#syntax-instr-seq"><span class="std std-ref">Instruction sequences</span></a> are implicitly executed in order, unless a trap or jump occurs.</p></li>
+<li><p>Execution can <em>enter</em> and <em>exit</em> <a class="reference internal" href="../syntax/instructions.html#syntax-instrs"><span class="std std-ref">instruction sequences</span></a> that form <a class="reference internal" href="../syntax/instructions.html#syntax-instr-control"><span class="std std-ref">blocks</span></a>.</p></li>
+<li><p><a class="reference internal" href="../syntax/instructions.html#syntax-instrs"><span class="std std-ref">Instruction sequences</span></a> are implicitly executed in order, unless a trap, jump, or exception occurs.</p></li>
 <li><p>In various places the rules contain <em>assertions</em> expressing crucial invariants about the program state.</p></li>
 </ul>
 </section>
 <section id="formal-notation">
-<span id="exec-notation"></span><span id="index-1"></span><h2>Formal Notation<a class="headerlink" href="#formal-notation" title="Permalink to this heading">¶</a></h2>
+<span id="exec-notation"></span><span id="index-1"></span><h2>Formal Notation<a class="headerlink" href="#formal-notation" title="Link to this heading">¶</a></h2>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This section gives a brief explanation of the notation for specifying execution formally.
@@ -135,56 +135,57 @@ For the interested reader, a more thorough introduction can be found in respecti
 <p>The formal execution rules use a standard approach for specifying operational semantics, rendering them into <em>reduction rules</em>.
 Every rule has the following general form:</p>
 <div class="math notranslate nohighlight">
-\[\mathit{configuration} \quad\href{../exec/conventions.html#exec-notation}{\hookrightarrow}\quad \mathit{configuration}\]</div>
+\[{\mathit{configuration}} \hookrightarrow {\mathit{configuration}}\]</div>
 <p>A <em>configuration</em> is a syntactic description of a program state.
 Each rule specifies one <em>step</em> of execution.
 As long as there is at most one reduction rule applicable to a given configuration, reduction – and thereby execution – is <em>deterministic</em>.
 WebAssembly has only very few exceptions to this, which are noted explicitly in this specification.</p>
-<p>For WebAssembly, a configuration typically is a tuple <span class="math notranslate nohighlight">\((S; F; \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast)\)</span> consisting of the current <a class="reference internal" href="runtime.html#store"><span class="std std-ref">store</span></a> <span class="math notranslate nohighlight">\(S\)</span>, the <a class="reference internal" href="runtime.html#frame"><span class="std std-ref">call frame</span></a> <span class="math notranslate nohighlight">\(F\)</span> of the current function, and the sequence of <a class="reference internal" href="../syntax/instructions.html#syntax-instr"><span class="std std-ref">instructions</span></a> that is to be executed.
+<p>For WebAssembly, a configuration typically is a tuple <span class="math notranslate nohighlight">\((s ; f ; {{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}}^\ast})\)</span> consisting of the current <a class="reference internal" href="runtime.html#store"><span class="std std-ref">store</span></a> <span class="math notranslate nohighlight">\(s\)</span>, the <a class="reference internal" href="runtime.html#frame"><span class="std std-ref">call frame</span></a> <span class="math notranslate nohighlight">\(f\)</span> of the current function, and the sequence of <a class="reference internal" href="../syntax/instructions.html#syntax-instr"><span class="std std-ref">instructions</span></a> that is to be executed.
 (A more precise definition is given <a class="reference internal" href="runtime.html#syntax-config"><span class="std std-ref">later</span></a>.)</p>
-<p>To avoid unnecessary clutter, the store <span class="math notranslate nohighlight">\(S\)</span> and the frame <span class="math notranslate nohighlight">\(F\)</span> are omitted from reduction rules that do not touch them.</p>
+<p>To avoid unnecessary clutter, the store <span class="math notranslate nohighlight">\(s\)</span> and the frame <span class="math notranslate nohighlight">\(f\)</span> are often combined into a <em>state</em> <span class="math notranslate nohighlight">\(z\)</span>, which is a pair <span class="math notranslate nohighlight">\((s ; f)\)</span>.
+Moreover, <span class="math notranslate nohighlight">\(z\)</span> is omitted from reduction rules that do not touch them.</p>
 <p>There is no separate representation of the <a class="reference internal" href="runtime.html#stack"><span class="std std-ref">stack</span></a>.
 Instead, it is conveniently represented as part of the configuration’s instruction sequence.
-In particular, <a class="reference internal" href="runtime.html#syntax-val"><span class="std std-ref">values</span></a> are defined to coincide with <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}\)</span> instructions,
-and a sequence of <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}\)</span> instructions can be interpreted as an operand “stack” that grows to the right.</p>
+In particular, <a class="reference internal" href="runtime.html#syntax-val"><span class="std std-ref">values</span></a> are defined to coincide with <span class="math notranslate nohighlight">\(\mathsf{const}\)</span> and <span class="math notranslate nohighlight">\(\mathsf{ref}\)</span> instructions,
+and a sequence of such instructions can be interpreted as an operand “stack” that grows to the right.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>For example, the <a class="reference internal" href="instructions.html#exec-binop"><span class="std std-ref">reduction rule</span></a> for the <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{add}}\)</span> instruction can be given as follows:</p>
+<p>For example, the <a class="reference internal" href="instructions.html#exec-binop"><span class="std std-ref">reduction rule</span></a> for the <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}}~{.}~\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{add}}\)</span> instruction can be given as follows:</p>
 <div class="math notranslate nohighlight">
-\[(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~n_1)~(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~n_2)~\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{add}} \quad\href{../exec/conventions.html#exec-notation}{\hookrightarrow}\quad (\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~(n_1 + n_2) \mathbin{\mathrm{mod}} 2^{32})\]</div>
-<p>Per this rule, two <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}\)</span> instructions and the <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{add}}\)</span> instruction itself are removed from the instruction stream and replaced with one new <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}\)</span> instruction.
+\[(\href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}}{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~n_1)~(\href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}}{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~n_2)~(\href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}}~{.}~\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{add}}) \href{../exec/conventions.html#exec-notation}{\hookrightarrow} (\href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}}{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~(n_1 + n_2) \mathbin{\mathrm{mod}} {2^{32}})\]</div>
+<p>Per this rule, two <span class="math notranslate nohighlight">\(\mathsf{const}\)</span> instructions and the <span class="math notranslate nohighlight">\(\mathsf{add}\)</span> instruction itself are removed from the instruction stream and replaced with one new <span class="math notranslate nohighlight">\(\mathsf{const}\)</span> instruction.
 This can be interpreted as popping two values off the stack and pushing the result.</p>
 <p>When no result is produced, an instruction reduces to the empty sequence:</p>
 <div class="math notranslate nohighlight">
-\[\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{nop}} \quad\href{../exec/conventions.html#exec-notation}{\hookrightarrow}\quad \epsilon\]</div>
+\[\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{nop}} \href{../exec/conventions.html#exec-notation}{\hookrightarrow} \epsilon\]</div>
 </div>
 <p><a class="reference internal" href="runtime.html#label"><span class="std std-ref">Labels</span></a> and <a class="reference internal" href="runtime.html#frame"><span class="std std-ref">frames</span></a> are similarly <a class="reference internal" href="runtime.html#syntax-instr-admin"><span class="std std-ref">defined</span></a> to be part of an instruction sequence.</p>
-<p>The order of reduction is determined by the definition of an appropriate <a class="reference internal" href="runtime.html#syntax-ctxt-eval"><span class="std std-ref">evaluation context</span></a>.</p>
+<p>The order of reduction is determined by the details of the reduction rules.
+Usually, the left-most instruction that is not a constant will be the subject of the next reduction <em>step</em>.</p>
 <p>Reduction <em>terminates</em> when no more reduction rules are applicable.
-<a class="reference internal" href="../appendix/properties.html#soundness"><span class="std std-ref">Soundness</span></a> of the WebAssembly <a class="reference internal" href="../valid/conventions.html#type-system"><span class="std std-ref">type system</span></a> guarantees that this is only the case when the original instruction sequence has either been reduced to a sequence of <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}\)</span> instructions, which can be interpreted as the <a class="reference internal" href="runtime.html#syntax-val"><span class="std std-ref">values</span></a> of the resulting operand stack,
-or if a <a class="reference internal" href="runtime.html#syntax-trap"><span class="std std-ref">trap</span></a> occurred.</p>
+<a class="reference internal" href="../appendix/properties.html#soundness"><span class="std std-ref">Soundness</span></a> of the WebAssembly <a class="reference internal" href="../valid/conventions.html#type-system"><span class="std std-ref">type system</span></a> guarantees that this is only the case when the original instruction sequence has either been reduced to a sequence of <a class="reference internal" href="runtime.html#syntax-val"><span class="std std-ref">value</span></a> instructions, which can be interpreted as the <a class="reference internal" href="runtime.html#syntax-val"><span class="std std-ref">values</span></a> of the resulting operand stack,
+or if an <a class="reference internal" href="../syntax/instructions.html#exception"><span class="std std-ref">exception</span></a> or <a class="reference internal" href="../intro/overview.html#trap"><span class="std std-ref">trap</span></a> occurred.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>For example, the following instruction sequence,</p>
 <div class="math notranslate nohighlight">
-\[(\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~x_1)~(\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~x_2)~\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{neg}}~(\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~x_3)~\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{add}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{mul}}\]</div>
+\[(\href{../syntax/types.html#syntax-numtype}{\mathsf{f\scriptstyle64}}{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~q_1)~(\href{../syntax/types.html#syntax-numtype}{\mathsf{f\scriptstyle64}}{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~q_2)~(\href{../syntax/types.html#syntax-numtype}{\mathsf{f\scriptstyle64}}~{.}~\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{neg}})~(\href{../syntax/types.html#syntax-numtype}{\mathsf{f\scriptstyle64}}{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~q_3)~(\href{../syntax/types.html#syntax-numtype}{\mathsf{f\scriptstyle64}}~{.}~\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{add}})~(\href{../syntax/types.html#syntax-numtype}{\mathsf{f\scriptstyle64}}~{.}~\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{mul}})\]</div>
 <p>terminates after three steps:</p>
 <div class="math notranslate nohighlight">
-\[\begin{split}\begin{array}{ll}
-&amp; (\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~x_1)~(\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~x_2)~\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{neg}}~(\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~x_3)~\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{add}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{mul}} \\
-\href{../exec/conventions.html#exec-notation}{\hookrightarrow} &amp; (\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~x_1)~(\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~x_4)~(\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~x_3)~\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{add}}~\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{mul}} \\
-\href{../exec/conventions.html#exec-notation}{\hookrightarrow} &amp; (\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~x_1)~(\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~x_5)~\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{mul}} \\
-\href{../exec/conventions.html#exec-notation}{\hookrightarrow} &amp; (\href{../syntax/types.html#syntax-valtype}{\mathsf{f64}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~x_6) \\
+\[\begin{split}\begin{array}[t]{&#64;{}l&#64;{}rcl&#64;{}l&#64;{}}
+&amp; &amp; \hookrightarrow &amp; (\href{../syntax/types.html#syntax-numtype}{\mathsf{f\scriptstyle64}}{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~q_1)~(\href{../syntax/types.html#syntax-numtype}{\mathsf{f\scriptstyle64}}{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~q_4)~(\href{../syntax/types.html#syntax-numtype}{\mathsf{f\scriptstyle64}}{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~q_3)~(\href{../syntax/types.html#syntax-numtype}{\mathsf{f\scriptstyle64}}~{.}~\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{add}})~(\href{../syntax/types.html#syntax-numtype}{\mathsf{f\scriptstyle64}}~{.}~\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{mul}}) \\
+&amp; &amp; \hookrightarrow &amp; (\href{../syntax/types.html#syntax-numtype}{\mathsf{f\scriptstyle64}}{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~q_1)~(\href{../syntax/types.html#syntax-numtype}{\mathsf{f\scriptstyle64}}{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~q_5)~(\href{../syntax/types.html#syntax-numtype}{\mathsf{f\scriptstyle64}}~{.}~\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{mul}}) \\
+&amp; &amp; \hookrightarrow &amp; (\href{../syntax/types.html#syntax-numtype}{\mathsf{f\scriptstyle64}}{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~q_6) \\
 \end{array}\end{split}\]</div>
-<p>where <span class="math notranslate nohighlight">\(x_4 = -x_2\)</span> and <span class="math notranslate nohighlight">\(x_5 = -x_2 + x_3\)</span> and <span class="math notranslate nohighlight">\(x_6 = x_1 \cdot (-x_2 + x_3)\)</span>.</p>
+<p>where <span class="math notranslate nohighlight">\(q_4 = {-q_2}\)</span> and <span class="math notranslate nohighlight">\(q_5 = {-q_2} + q_3\)</span> and <span class="math notranslate nohighlight">\(q_6 = q_1 \cdot ({-q_2} + q_3)\)</span>.</p>
 </div>
 <aside class="footnote-list brackets">
-<aside class="footnote brackets" id="cite-pldi2017" role="note">
+<aside class="footnote brackets" id="cite-pldi2017" role="doc-footnote">
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
 <p>The semantics is derived from the following article:
 Andreas Haas, Andreas Rossberg, Derek Schuff, Ben Titzer, Dan Gohman, Luke Wagner, Alon Zakai, JF Bastien, Michael Holman. <a class="reference external" href="https://dl.acm.org/citation.cfm?doid=3062341.3062363">Bringing the Web up to Speed with WebAssembly</a>. Proceedings of the 38th ACM SIGPLAN Conference on Programming Language Design and Implementation (PLDI 2017). ACM 2017.</p>
 </aside>
-<aside class="footnote brackets" id="cite-tapl" role="note">
+<aside class="footnote brackets" id="cite-tapl" role="doc-footnote">
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">2</a><span class="fn-bracket">]</span></span>
 <p>For example: Benjamin Pierce. <a class="reference external" href="https://www.cis.upenn.edu/~bcpierce/tapl/">Types and Programming Languages</a>. The MIT Press 2002</p>
 </aside>
@@ -200,7 +201,7 @@ Andreas Haas, Andreas Rossberg, Derek Schuff, Ben Titzer, Dan Gohman, Luke Wagne
     <div class="clearer"></div>
   </div>
     <div class="footer">
-      &#169;2025, WebAssembly Community Group.
+      &#169;2017-2025, WebAssembly Community Group.
       
     </div>
 

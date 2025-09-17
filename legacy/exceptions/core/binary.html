@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Binary Format &#8212; WebAssembly Legacy Exceptions</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=686e5160" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=057308f9" />
+    <script src="_static/documentation_options.js?v=7f41d439"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>window.MathJax = {"tex": {"maxBuffer": 30720}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Text Format" href="text.html" />
+    <link rel="prev" title="Execution" href="exec.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  <div class="document">
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/webassembly.png" alt="Logo of WebAssembly-Legacy-Exceptions"/>
+            </a></p><h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="syntax.html">Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="valid.html">Validation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exec.html">Execution</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Binary Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="text.html">Text Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="appendix/index-instructions.html">Index of Instructions</a></li>
+</ul>
+
+
+<hr />
+<ul>
+    
+    <li class="toctree-l1"><a href="./_download/WebAssembly-Legacy-Exceptions.pdf">Download as PDF</a></li>
+    
+</ul>
+
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="binary-format">
+<span id="binary"></span><h1>Binary Format<a class="headerlink" href="#binary-format" title="Link to this heading">¶</a></h1>
+<section id="instructions">
+<span id="binary-instr"></span><h2>Instructions<a class="headerlink" href="#instructions" title="Link to this heading">¶</a></h2>
+<section id="control-instructions">
+<span id="binary-instr-control"></span><h3>Control Instructions<a class="headerlink" href="#control-instructions" title="Link to this heading">¶</a></h3>
+<div class="math notranslate nohighlight" id="binary-rethrow">
+<span id="binary-try"></span>\[\begin{split}\begin{array}{&#64;{}llcllll}
+\def\mathdef45#1{{}}\mathdef45{instruction} &amp; \href{../binary/instructions.html#binary-instr}{\mathtt{instr}} &amp;::=&amp; \dots \\ &amp;&amp;|&amp;
+  \def\mathdef84#1{\mathtt{0x#1}}\mathdef84{06}~~\mathit{bt}{:}\href{../binary/instructions.html#binary-blocktype}{\mathtt{blocktype}}~~
+    (\mathit{in}_1{:}\href{../binary/instructions.html#binary-instr}{\mathtt{instr}})^\ast~~ \\&amp;&amp;&amp;
+    (\def\mathdef85#1{\mathtt{0x#1}}\mathdef85{07}~~x{:}\href{../binary/modules.html#binary-tagidx}{\mathtt{tagidx}}~~(\mathit{in}_2{:}\href{../binary/instructions.html#binary-instr}{\mathtt{instr}})^\ast)^\ast~~ \\&amp;&amp;&amp;
+    (\def\mathdef86#1{\mathtt{0x#1}}\mathdef86{19}~~(\mathit{in}_3{:}\href{../binary/instructions.html#binary-instr}{\mathtt{instr}})^\ast)^?~~\def\mathdef87#1{\mathtt{0x#1}}\mathdef87{0B}
+    &amp;\Rightarrow&amp; \href{../syntax/instructions.html#syntax-instr-control}{\mathsf{try}}~\mathit{bt}~\mathit{in}_1^\ast~(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{catch}}~x~\mathit{in}_2^\ast)^\ast~
+    (\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{catch\_all}}~\mathit{in}_3^\ast)^?\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} \\ &amp;&amp;|&amp;
+  \def\mathdef88#1{\mathtt{0x#1}}\mathdef88{06}~~\mathit{bt}{:}\href{../binary/instructions.html#binary-blocktype}{\mathtt{blocktype}}~~(\mathit{in}{:}\href{../binary/instructions.html#binary-instr}{\mathtt{instr}})^\ast~~ \\&amp;&amp;&amp;
+    \def\mathdef89#1{\mathtt{0x#1}}\mathdef89{18}~~l{:}\href{../binary/modules.html#binary-labelidx}{\mathtt{labelidx}}
+    &amp;\Rightarrow&amp; \href{../syntax/instructions.html#syntax-instr-control}{\mathsf{try}}~\mathit{bt}~\mathit{in}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{delegate}}~l \\ &amp;&amp;|&amp;
+  \def\mathdef90#1{\mathtt{0x#1}}\mathdef90{09}~~l{:}\href{../binary/modules.html#binary-labelidx}{\mathtt{labelidx}} &amp;\Rightarrow&amp; \href{../syntax/instructions.html#syntax-instr-control}{\mathsf{rethrow}}~l \\
+\end{array}\end{split}\]</div>
+</section>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+    <div class="clearer"></div>
+  </div>
+    <div class="footer">
+      &#169;2023, WebAssembly Community Group.
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Structure &#8212; WebAssembly Legacy Exceptions</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=686e5160" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=057308f9" />
+    <script src="_static/documentation_options.js?v=7f41d439"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>window.MathJax = {"tex": {"maxBuffer": 30720}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Validation" href="valid.html" />
+    <link rel="prev" title="Introduction" href="intro.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  <div class="document">
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/webassembly.png" alt="Logo of WebAssembly-Legacy-Exceptions"/>
+            </a></p><h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="valid.html">Validation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exec.html">Execution</a></li>
+<li class="toctree-l1"><a class="reference internal" href="binary.html">Binary Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="text.html">Text Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="appendix/index-instructions.html">Index of Instructions</a></li>
+</ul>
+
+
+<hr />
+<ul>
+    
+    <li class="toctree-l1"><a href="./_download/WebAssembly-Legacy-Exceptions.pdf">Download as PDF</a></li>
+    
+</ul>
+
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="structure">
+<span id="syntax"></span><h1>Structure<a class="headerlink" href="#structure" title="Link to this heading">¶</a></h1>
+<section id="instructions">
+<span id="syntax-instr"></span><h2>Instructions<a class="headerlink" href="#instructions" title="Link to this heading">¶</a></h2>
+<section id="control-instructions">
+<span id="syntax-instr-control"></span><span id="syntax-rethrow"></span><span id="syntax-try-delegate"></span><span id="syntax-try-catch"></span><span id="syntax-try"></span><h3>Control Instructions<a class="headerlink" href="#control-instructions" title="Link to this heading">¶</a></h3>
+<p>The set of recognised instructions is extended with the following:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{array}{llcl}
+\def\mathdef208#1{{}}\mathdef208{instruction} &amp; \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}} &amp;::=&amp;
+  \dots \\&amp;&amp;|&amp;
+  \href{../syntax/instructions.html#syntax-instr-control}{\mathsf{try}}~\href{../syntax/instructions.html#syntax-blocktype}{\mathit{blocktype}}~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{catch}}~\href{../syntax/modules.html#syntax-tagidx}{\mathit{tagidx}}~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast)^\ast~(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{catch\_all}}~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast)^?~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} \\ &amp;&amp;|&amp;
+  \href{../syntax/instructions.html#syntax-instr-control}{\mathsf{try}}~\href{../syntax/instructions.html#syntax-blocktype}{\mathit{blocktype}}~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{delegate}}~\href{../syntax/modules.html#syntax-labelidx}{\mathit{labelidx}} \\ &amp;&amp;|&amp;
+  \href{../syntax/instructions.html#syntax-instr-control}{\mathsf{rethrow}}~\href{../syntax/modules.html#syntax-labelidx}{\mathit{labelidx}} \\
+\end{array}\end{split}\]</div>
+<p>The instructions <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{try}}\)</span> and <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{rethrow}}\)</span>, are concerned with exceptions.
+The <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{try}}\)</span> instruction installs an exception handler, and may either handle exceptions in the case of <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{catch}}\)</span> and <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{catch\_all}}\)</span>,
+or rethrow them in an outer block in the case of <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{delegate}}\)</span>.</p>
+<p>The <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{rethrow}}\)</span> instruction is only allowed inside a <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{catch}}\)</span> or <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{catch\_all}}\)</span> clause and allows rethrowing the caught exception by lexically referring to a the corresponding <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{try}}\)</span>.</p>
+<p>When <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{try}}\)</span>-<span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{delegate}}\)</span> handles an exception, it also behaves similar to a forward jump,
+effectively rethrowing the caught exception right before the matching <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}}\)</span>.</p>
+</section>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+    <div class="clearer"></div>
+  </div>
+    <div class="footer">
+      &#169;2023, WebAssembly Community Group.
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

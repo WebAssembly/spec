@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Text Format &#8212; WebAssembly Legacy Exceptions</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=686e5160" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=057308f9" />
+    <script src="_static/documentation_options.js?v=7f41d439"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>window.MathJax = {"tex": {"maxBuffer": 30720}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Index of Instructions" href="appendix/index-instructions.html" />
+    <link rel="prev" title="Binary Format" href="binary.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  <div class="document">
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/webassembly.png" alt="Logo of WebAssembly-Legacy-Exceptions"/>
+            </a></p><h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="syntax.html">Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="valid.html">Validation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exec.html">Execution</a></li>
+<li class="toctree-l1"><a class="reference internal" href="binary.html">Binary Format</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Text Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="appendix/index-instructions.html">Index of Instructions</a></li>
+</ul>
+
+
+<hr />
+<ul>
+    
+    <li class="toctree-l1"><a href="./_download/WebAssembly-Legacy-Exceptions.pdf">Download as PDF</a></li>
+    
+</ul>
+
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="text-format">
+<span id="text"></span><h1>Text Format<a class="headerlink" href="#text-format" title="Link to this heading">¶</a></h1>
+<section id="instructions">
+<span id="text-instr"></span><h2>Instructions<a class="headerlink" href="#instructions" title="Link to this heading">¶</a></h2>
+<section id="control-instructions">
+<span id="text-instr-control"></span><span id="text-plaininstr"></span><span id="text-blockinstr"></span><h3>Control Instructions<a class="headerlink" href="#control-instructions" title="Link to this heading">¶</a></h3>
+<p id="text-try">The label identifier on a structured control instruction may optionally be repeated after the corresponding <span class="math notranslate nohighlight">\(\mathtt{end}\)</span>, <span class="math notranslate nohighlight">\(\mathtt{else}\)</span>, <span class="math notranslate nohighlight">\(\mathtt{catch}\)</span>, <span class="math notranslate nohighlight">\(\mathtt{catch\_all}\)</span>, and <span class="math notranslate nohighlight">\(\mathtt{delegate}\)</span>
+pseudo instructions, to indicate the matching delimiters.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{array}{&#64;{}llclll}
+\def\mathdef247#1{{}}\mathdef247{block instruction} &amp; \href{../text/instructions.html#text-blockinstr}{\mathtt{blockinstr}}_I &amp;::=&amp; \dots \\ &amp;&amp;|&amp;
+  \def\mathdef286#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef286{try}~~I'{:}\href{../text/instructions.html#text-label}{\mathtt{label}}_I~~\mathit{bt}{:}\href{../text/instructions.html#text-blocktype}{\mathtt{blocktype}}~~(\mathit{in}_1{:}\href{../text/instructions.html#text-instr}{\mathtt{instr}}_{I'})^\ast~~\\&amp;&amp;&amp;
+    (\def\mathdef287#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef287{catch}~~\href{../text/values.html#text-id}{\mathtt{id}}_1^?~~x{:}\href{../text/modules.html#text-tagidx}{\mathtt{tagidx}}_I~~(\mathit{in}_2{:}\href{../text/instructions.html#text-instr}{\mathtt{instr}}_{I'})^\ast)^\ast~~ \\&amp;&amp;&amp;
+    (\def\mathdef288#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef288{catch\_all}~~\href{../text/values.html#text-id}{\mathtt{id}}_1^?~~(\mathit{in}_3{:}\href{../text/instructions.html#text-instr}{\mathtt{instr}}_{I'})^\ast)^?~~ \\&amp;&amp;&amp;
+    \def\mathdef289#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef289{end}~~\href{../text/values.html#text-id}{\mathtt{id}}_2^?
+    \\ &amp;&amp;&amp;\qquad \Rightarrow\quad \href{../syntax/instructions.html#syntax-instr-control}{\mathsf{try}}~\mathit{bt}~\mathit{in}_1^\ast~(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{catch}}~x~\mathit{in}_2^\ast)^\ast~(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{catch\_all}}~\mathit{in}_3^\ast)^?~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}}
+    \\ &amp;&amp;&amp;\qquad\qquad (\mathrel{\mbox{if}} \href{../text/values.html#text-id}{\mathtt{id}}_1^? = \epsilon \vee \href{../text/values.html#text-id}{\mathtt{id}}_1^? = \href{../text/instructions.html#text-label}{\mathtt{label}}, \href{../text/values.html#text-id}{\mathtt{id}}_2^? = \epsilon \vee \href{../text/values.html#text-id}{\mathtt{id}}_2^? = \href{../text/instructions.html#text-label}{\mathtt{label}}) \\ &amp;&amp;|&amp;
+  \def\mathdef290#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef290{try}~~I'{:}\href{../text/instructions.html#text-label}{\mathtt{label}}_I~~\mathit{bt}{:}\href{../text/instructions.html#text-blocktype}{\mathtt{blocktype}}~~(\mathit{in}_1{:}\href{../text/instructions.html#text-instr}{\mathtt{instr}}_{I'})^\ast~~ \\&amp;&amp;&amp;
+    \def\mathdef291#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef291{delegate}~~l{:}\href{../text/modules.html#text-labelidx}{\mathtt{labelidx}}_I~~\mathit{l}{:}\href{../text/modules.html#text-labelidx}{\mathtt{labelidx}}_I
+    \\ &amp;&amp;&amp;\qquad \Rightarrow\quad \href{../syntax/instructions.html#syntax-instr-control}{\mathsf{try}}~\mathit{bt}~\mathit{in}_1^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{delegate}}~l
+    \qquad\quad~~ (\mathrel{\mbox{if}} \href{../text/values.html#text-id}{\mathtt{id}}^? = \epsilon \vee \href{../text/values.html#text-id}{\mathtt{id}}^? = \href{../text/instructions.html#text-label}{\mathtt{label}}) \\
+\def\mathdef247#1{{}}\mathdef247{plain instruction} &amp; \href{../text/instructions.html#text-plaininstr}{\mathtt{plaininstr}}_I &amp;::=&amp; \dots \\ &amp;&amp;|&amp;
+  \def\mathdef292#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef292{rethrow}~~l{:}\href{../text/modules.html#text-labelidx}{\mathtt{labelidx}}_I \quad\Rightarrow\quad \href{../syntax/instructions.html#syntax-instr-control}{\mathsf{rethrow}}~l \\
+\end{array}\end{split}\]</div>
+</section>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+    <div class="clearer"></div>
+  </div>
+    <div class="footer">
+      &#169;2023, WebAssembly Community Group.
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
