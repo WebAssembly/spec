@@ -25,8 +25,9 @@ relation Externtype_ok: |- externtype : OK  hint(show "K-extern")
 
 
 rule Limits_ok:
-  |- `[n .. m] : k
-  -- if n <= m <= k
+  |- `[n .. m?] : k
+  -- if n <= k
+  -- (if n <= m <= k)?
 
 rule Functype_ok:
   |- t_1* -> t_2* : OK

@@ -358,8 +358,8 @@ Limits
 
 $${syntax: limits}
 
-.. scratch
-   If no maximum is given, then the respective storage can grow to any valid size.
+If no maximum is present,
+then the respective storage can grow to any valid size.
 
 
 .. index:: ! tag type, type use, tag, function type, exception tag

@@ -116,7 +116,7 @@ syntax resulttype hint(desc "result type") =
 syntax mut = MUT?
 
 syntax limits hint(desc "limits") =
-  `[u32 .. u32]
+  `[u32 .. u32?]
 syntax globaltype hint(desc "global type") =
   mut valtype
 syntax functype hint(desc "function type") =

@@ -314,11 +314,13 @@ def $growtable(tableinst, nat, ref) : tableinst hint(partial)
 def $growmem(meminst, nat) : meminst            hint(partial)
 
 def $growtable(tableinst, n, r) = tableinst'
-  -- if tableinst = { TYPE (at `[i .. j] rt), REFS r'* }
-  -- if tableinst' = { TYPE (at `[i' .. j] rt), REFS r'* r^n }
-  -- if $(i' = |r'*| + n <= j)
+  -- if tableinst = { TYPE (at `[i .. j?] rt), REFS r'* }
+  -- if tableinst' = { TYPE (at `[i' .. j?] rt), REFS r'* r^n }
+  -- if $(i' = |r'*| + n)
+  -- (if i' <= j)?
 
 def $growmem(meminst, n) = meminst'
-  -- if meminst = { TYPE (at `[i .. j] PAGE), BYTES b* }
-  -- if meminst' = { TYPE (at `[i' .. j] PAGE), BYTES b* (0x00)^(n * $($(64 * $Ki))) }
-  -- if $(i' = |b*| / (64 * $Ki) + n <= j)
+  -- if meminst = { TYPE (at `[i .. j?] PAGE), BYTES b* }
+  -- if meminst' = { TYPE (at `[i' .. j?] PAGE), BYTES b* (0x00)^(n * $($(64 * $Ki))) }
+  -- if $(i' = |b*| / (64 * $Ki) + n)
+  -- (if i' <= j)?

@@ -185,7 +185,7 @@ and short_alt_prod' = function
 %right EQ NE LT GT LE GE MEM EQSUB
 %right ARROW ARROWSUB
 %left SEMICOLON
-%left DOT DOTDOT DOTDOTDOT
+%left DOTDOTDOT
 %left PLUS MINUS CAT
 %left STAR SLASH BACKSLASH
 
@@ -308,6 +308,8 @@ atom_escape :
   | BOT { Atom.Bot }
   | TOP { Atom.Top }
   | INFINITY { Atom.Infinity }
+  | DOT { Atom.Dot }
+  | DOTDOT { Atom.Dot2 }
 
 varid_bind_with_suffix :
   | varid { $1 }
@@ -360,8 +362,6 @@ check_atom :
 %inline infixop :
   | infixop_ { $1 $$ $sloc }
 %inline infixop_ :
-  | DOT { Atom.Dot }
-  | DOTDOT { Atom.Dot2 }
   | DOTDOTDOT { Atom.Dot3 }
   | SEMICOLON { Atom.Semicolon }
   | BACKSLASH { Atom.Backslash }

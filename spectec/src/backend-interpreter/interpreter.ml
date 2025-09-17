@@ -227,7 +227,7 @@ and eval_expr env expr =
       | Some n -> numV n
       | None -> fail_expr expr ("conversion not defined for " ^ string_of_value (NumV n1))
       )
-    | _ -> fail_expr expr "type mismatch for conversion operation"
+    | v -> fail_expr expr ("type mismatch for conversion operation on " ^ string_of_value v)
     )
   | UnE (op, e1) ->
     (match op, eval_expr env e1 with
@@ -237,7 +237,7 @@ and eval_expr env expr =
       | Some n -> numV n
       | None -> fail_expr expr ("unary operation `" ^ Num.string_of_unop op' ^ "` not defined for " ^ string_of_value (NumV n1))
       )
-    | _ -> fail_expr expr "type mismatch for unary operation"
+    | _, v -> fail_expr expr ("type mismatch for unary operation on " ^ string_of_value v)
     )
   | BinE (op, e1, e2) ->
     (match op, eval_expr env e1, eval_expr env e2 with
@@ -253,7 +253,7 @@ and eval_expr env expr =
       | Some b -> boolV b
       | None -> fail_expr expr ("comparison operation `" ^ Num.string_of_cmpop op' ^ "` not defined for " ^ string_of_value (NumV n1) ^ ", " ^ string_of_value (NumV n2))
       )
-    | _ -> fail_expr expr "type mismatch for binary operation"
+    | _, v1, v2 -> fail_expr expr ("type mismatch for binary operation on " ^ string_of_value v1 ^ " and " ^ string_of_value v2)
     )
   (* Set Operation *)
   | MemE (e1, e2) ->

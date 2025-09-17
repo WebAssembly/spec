@@ -44,7 +44,7 @@ $$
 
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}}
-\mbox{(limits range)} & {\mathit{limits}} & ::= & {}[ {\mathit{u{\kern-0.1em\scriptstyle 64}}} .. {\mathit{u{\kern-0.1em\scriptstyle 64}}} ] \\[0.8ex]
+\mbox{(limits range)} & {\mathit{limits}} & ::= & {}[ {\mathit{u{\kern-0.1em\scriptstyle 64}}}~..~{{\mathit{u{\kern-0.1em\scriptstyle 64}}}^?} ] \\[0.8ex]
 \mbox{(global type)} & {\mathit{globaltype}} & ::= & {\mathsf{mut}^?}~{\mathit{valtype}} \\
 \mbox{(table type)} & {\mathit{tabletype}} & ::= & {\mathit{addrtype}}~{\mathit{limits}}~{\mathit{reftype}} \\
 \mbox{(memory type)} & {\mathit{memtype}} & ::= & {\mathit{addrtype}}~{\mathit{limits}}~\mathsf{page} \\[0.8ex]
@@ -67,11 +67,11 @@ $$
 \begin{array}[t]{@{}l@{}rrl@{}l@{}}
 & {\mathit{instr}} & ::= & \dots \\
 & & | & {\mathit{numtype}}{.}\mathsf{const}~{{\mathit{num}}}_{{\mathit{numtype}}} \\
-& & | & {\mathit{numtype}} {.} {{\mathit{unop}}}_{{\mathit{numtype}}} \\
-& & | & {\mathit{numtype}} {.} {{\mathit{binop}}}_{{\mathit{numtype}}} \\
-& & | & {\mathit{numtype}} {.} {{\mathit{testop}}}_{{\mathit{numtype}}} \\
-& & | & {\mathit{numtype}} {.} {{\mathit{relop}}}_{{\mathit{numtype}}} \\
-& & | & {\mathit{numtype}}_1 {.} {{{\mathit{cvtop}}}_{{\mathit{numtype}}_2, {\mathit{numtype}}_1}}{\mathsf{\_}}{{\mathit{numtype}}_2} \\
+& & | & {\mathit{numtype}}~{.}~{{\mathit{unop}}}_{{\mathit{numtype}}} \\
+& & | & {\mathit{numtype}}~{.}~{{\mathit{binop}}}_{{\mathit{numtype}}} \\
+& & | & {\mathit{numtype}}~{.}~{{\mathit{testop}}}_{{\mathit{numtype}}} \\
+& & | & {\mathit{numtype}}~{.}~{{\mathit{relop}}}_{{\mathit{numtype}}} \\
+& & | & {{\mathit{numtype}}_1~{.}~{{\mathit{cvtop}}}_{{\mathit{numtype}}_2, {\mathit{numtype}}_1}}{\mathsf{\_}}{{\mathit{numtype}}_2} \\
 & & | & \mathsf{local{.}get}~{\mathit{localidx}} \\
 & & | & \mathsf{local{.}set}~{\mathit{localidx}} \\
 & & | & \mathsf{local{.}tee}~{\mathit{localidx}} \\
@@ -638,7 +638,7 @@ warning: grammar `Binstr/vec-tern-f64x2` was never spliced
 warning: grammar `Binstr/vec-cvt` was never spliced
 warning: grammar `Blabelidx` was never spliced
 warning: grammar `Blaneidx` was never spliced
-warning: grammar `Blimits_` was never spliced
+warning: grammar `Blimits` was never spliced
 warning: grammar `Blist` was never spliced
 warning: grammar `Blocalidx` was never spliced
 warning: grammar `Blocals` was never spliced
@@ -774,7 +774,7 @@ warning: grammar `Tkeyword` was never spliced
 warning: grammar `Tlabel_` was never spliced
 warning: grammar `Tlabelidx_` was never spliced
 warning: grammar `Tlaneidx` was never spliced
-warning: grammar `Tlimits_` was never spliced
+warning: grammar `Tlimits` was never spliced
 warning: grammar `Tlinechar` was never spliced
 warning: grammar `Tlinecomment` was never spliced
 warning: grammar `Tlist` was never spliced

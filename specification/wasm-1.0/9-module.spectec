@@ -55,8 +55,8 @@ def $allocglobals(s, globaltype globaltype'*, val val'*) = (s_2, ga ga'*)
   -- if (s_2, ga'*) = $allocglobals(s_1, globaltype'*, val'*)
 
 def $alloctable(store, tabletype) : (store, tableaddr)
-def $alloctable(s, `[i .. j]) = (s[.TABLES =++ ti], |s.TABLES|)
-  -- if ti = { TYPE `[i .. j], REFS eps^i }
+def $alloctable(s, `[i .. j?]) = (s[.TABLES =++ ti], |s.TABLES|)
+  -- if ti = { TYPE `[i .. j?], REFS eps^i }
 
 def $alloctables(store, tabletype*) : (store, tableaddr*)
 def $alloctables(s, eps) = (s, eps)
@@ -65,8 +65,8 @@ def $alloctables(s, tabletype tabletype'*) = (s_2, ta ta'*)
   -- if (s_2, ta'*) = $alloctables(s_1, tabletype'*)
 
 def $allocmem(store, memtype) : (store, memaddr)
-def $allocmem(s, `[i .. j]) = (s[.MEMS =++ mi], |s.MEMS|)
-  -- if mi = { TYPE `[i .. j], BYTES 0^(i * $($(64 * $Ki))) }
+def $allocmem(s, `[i .. j?]) = (s[.MEMS =++ mi], |s.MEMS|)
+  -- if mi = { TYPE `[i .. j?], BYTES 0^(i * $($(64 * $Ki))) }
 
 def $allocmems(store, memtype*) : (store, memaddr*)
 def $allocmems(s, eps) = (s, eps)
