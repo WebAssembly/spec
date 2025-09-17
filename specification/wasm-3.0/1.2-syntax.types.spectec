@@ -125,7 +125,7 @@ syntax rectype hint(desc "recursive type") hint(macro "%" "T%") =
 
 ;; External types
 
-syntax limits hint(desc "limits range") = `[u64 .. u64] hint(macro "L%")
+syntax limits hint(desc "limits range") = `[u64 .. u64?] hint(macro "L%")
 
 syntax tagtype hint(desc "tag type") = typeuse
 syntax globaltype hint(desc "global type") = mut? valtype

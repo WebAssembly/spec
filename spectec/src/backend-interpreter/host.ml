@@ -77,7 +77,7 @@ let spectest () =
       CaseV ("REF", [some "NULL"; nullary "FUNC"])
   in
   let mk_ttype nt =
-    let args = [ CaseV ("[", [ natV (Z.of_int 10); natV (Z.of_int 20) ]); funcref ] in
+    let args = [ CaseV ("[", [ natV (Z.of_int 10); someV (natV (Z.of_int 20)) ]); funcref ] in
     if !Construct.version <= 2 then
       TupV args
     else
@@ -92,7 +92,7 @@ let spectest () =
   (* Builtin memories *)
   let zeros = natV Z.zero |> Array.make 0x10000 in
   let mk_mtype nt =
-    let arg = CaseV ("[", [ natV Z.one; natV (Z.of_int 2) ]) in
+    let arg = CaseV ("[", [ natV Z.one; someV (natV (Z.of_int 2)) ]) in
     if !Construct.version <= 2 then
       CaseV ("PAGE", [ arg ])
     else

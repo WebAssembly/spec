@@ -799,7 +799,7 @@ syntax Lnn =
 
 ;; ../../../../specification/wasm-3.0/1.2-syntax.types.spectec
 syntax limits =
-  | `[%..%]`{u64 : u64}(u64 : u64, u64)
+  | `[%..%]`{u64 : u64}(u64 : u64, u64?)
 
 ;; ../../../../specification/wasm-3.0/1.2-syntax.types.spectec
 syntax tagtype = typeuse
@@ -3117,9 +3117,10 @@ relation Expand_use: `%~~_%%`(typeuse, context, comptype)
 ;; ../../../../specification/wasm-3.0/2.1-validation.types.spectec
 relation Limits_ok: `%|-%:%`(context, limits, nat)
   ;; ../../../../specification/wasm-3.0/2.1-validation.types.spectec
-  rule _{C : context, n : n, m : m, k : nat}:
-    `%|-%:%`(C, `[%..%]`_limits(`%`_u64(n), `%`_u64(m)), k)
-    -- if ((n <= m) /\ (m <= k))
+  rule _{C : context, n : n, `m?` : m?, k : nat}:
+    `%|-%:%`(C, `[%..%]`_limits(`%`_u64(n), `%`_u64(m)?{m <- `m?`}), k)
+    -- if (n <= k)
+    -- (if ((n <= m) /\ (m <= k)))?{m <- `m?`}
 
 ;; ../../../../specification/wasm-3.0/2.1-validation.types.spectec
 relation Tagtype_ok: `%|-%:OK`(context, tagtype)
@@ -3193,7 +3194,7 @@ relation Instrtype_sub: `%|-%<:%`(context, instrtype, instrtype)
 relation Limits_sub: `%|-%<:%`(context, limits, limits)
   ;; ../../../../specification/wasm-3.0/2.2-validation.subtyping.spectec
   rule _{C : context, n_1 : n, m_1 : m, n_2 : n, m_2 : m}:
-    `%|-%<:%`(C, `[%..%]`_limits(`%`_u64(n_1), `%`_u64(m_1)), `[%..%]`_limits(`%`_u64(n_2), `%`_u64(m_2)))
+    `%|-%<:%`(C, `[%..%]`_limits(`%`_u64(n_1), ?(`%`_u64(m_1))), `[%..%]`_limits(`%`_u64(n_2), ?(`%`_u64(m_2))))
     -- if (n_1 >= n_2)
     -- if (m_1 <= m_2)
 
@@ -5788,18 +5789,20 @@ def $add_exninst(state : state, exninst*) : state
 ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
 def $growtable(tableinst : tableinst, nat : nat, ref : ref) : tableinst
   ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
-  def $growtable{tableinst : tableinst, n : n, r : ref, tableinst' : tableinst, at : addrtype, i : u64, j : u64, rt : reftype, `r'*` : ref*, i' : u64}(tableinst, n, r) = tableinst'
-    -- if (tableinst = {TYPE `%%%`_tabletype(at, `[%..%]`_limits(i, j), rt), REFS r'*{r' <- `r'*`}})
-    -- if (tableinst' = {TYPE `%%%`_tabletype(at, `[%..%]`_limits(i', j), rt), REFS r'*{r' <- `r'*`} ++ r^n{}})
-    -- if ((i'!`%`_u64.0 = (|r'*{r' <- `r'*`}| + n)) /\ ((|r'*{r' <- `r'*`}| + n) <= j!`%`_u64.0))
+  def $growtable{tableinst : tableinst, n : n, r : ref, tableinst' : tableinst, at : addrtype, i : u64, `j?` : u64?, rt : reftype, `r'*` : ref*, i' : u64}(tableinst, n, r) = tableinst'
+    -- if (tableinst = {TYPE `%%%`_tabletype(at, `[%..%]`_limits(i, j?{j <- `j?`}), rt), REFS r'*{r' <- `r'*`}})
+    -- if (tableinst' = {TYPE `%%%`_tabletype(at, `[%..%]`_limits(i', j?{j <- `j?`}), rt), REFS r'*{r' <- `r'*`} ++ r^n{}})
+    -- if (i'!`%`_u64.0 = (|r'*{r' <- `r'*`}| + n))
+    -- (if (i'!`%`_u64.0 <= j!`%`_u64.0))?{j <- `j?`}
 
 ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
 def $growmem(meminst : meminst, nat : nat) : meminst
   ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
-  def $growmem{meminst : meminst, n : n, meminst' : meminst, at : addrtype, i : u64, j : u64, `b*` : byte*, i' : u64}(meminst, n) = meminst'
-    -- if (meminst = {TYPE `%%PAGE`_memtype(at, `[%..%]`_limits(i, j)), BYTES b*{b <- `b*`}})
-    -- if (meminst' = {TYPE `%%PAGE`_memtype(at, `[%..%]`_limits(i', j)), BYTES b*{b <- `b*`} ++ `%`_byte(0)^(n * (64 * $Ki)){}})
-    -- if (((i'!`%`_u64.0 : nat <:> rat) = (((|b*{b <- `b*`}| : nat <:> rat) / ((64 * $Ki) : nat <:> rat)) + (n : nat <:> rat))) /\ ((((|b*{b <- `b*`}| : nat <:> rat) / ((64 * $Ki) : nat <:> rat)) + (n : nat <:> rat)) <= (j!`%`_u64.0 : nat <:> rat)))
+  def $growmem{meminst : meminst, n : n, meminst' : meminst, at : addrtype, i : u64, `j?` : u64?, `b*` : byte*, i' : u64}(meminst, n) = meminst'
+    -- if (meminst = {TYPE `%%PAGE`_memtype(at, `[%..%]`_limits(i, j?{j <- `j?`})), BYTES b*{b <- `b*`}})
+    -- if (meminst' = {TYPE `%%PAGE`_memtype(at, `[%..%]`_limits(i', j?{j <- `j?`})), BYTES b*{b <- `b*`} ++ `%`_byte(0)^(n * (64 * $Ki)){}})
+    -- if ((i'!`%`_u64.0 : nat <:> rat) = (((|b*{b <- `b*`}| : nat <:> rat) / ((64 * $Ki) : nat <:> rat)) + (n : nat <:> rat)))
+    -- (if (i'!`%`_u64.0 <= j!`%`_u64.0))?{j <- `j?`}
 
 ;; ../../../../specification/wasm-3.0/4.1-execution.values.spectec
 relation Num_ok: `%|-%:%`(store, num, numtype)
@@ -7114,8 +7117,8 @@ def $allocglobals(store : store, globaltype*, val*) : (store, globaladdr*)
 ;; ../../../../specification/wasm-3.0/4.4-execution.modules.spectec
 def $allocmem(store : store, memtype : memtype) : (store, memaddr)
   ;; ../../../../specification/wasm-3.0/4.4-execution.modules.spectec
-  def $allocmem{s : store, at : addrtype, i : u64, j : u64, meminst : meminst}(s, `%%PAGE`_memtype(at, `[%..%]`_limits(i, j))) = (s +++ {TAGS [], GLOBALS [], MEMS [meminst], TABLES [], FUNCS [], DATAS [], ELEMS [], STRUCTS [], ARRAYS [], EXNS []}, |s.MEMS_store|)
-    -- if (meminst = {TYPE `%%PAGE`_memtype(at, `[%..%]`_limits(i, j)), BYTES `%`_byte(0)^(i!`%`_u64.0 * (64 * $Ki)){}})
+  def $allocmem{s : store, at : addrtype, i : u64, `j?` : u64?, meminst : meminst}(s, `%%PAGE`_memtype(at, `[%..%]`_limits(i, j?{j <- `j?`}))) = (s +++ {TAGS [], GLOBALS [], MEMS [meminst], TABLES [], FUNCS [], DATAS [], ELEMS [], STRUCTS [], ARRAYS [], EXNS []}, |s.MEMS_store|)
+    -- if (meminst = {TYPE `%%PAGE`_memtype(at, `[%..%]`_limits(i, j?{j <- `j?`})), BYTES `%`_byte(0)^(i!`%`_u64.0 * (64 * $Ki)){}})
 
 ;; ../../../../specification/wasm-3.0/4.4-execution.modules.spectec
 rec {
@@ -7133,8 +7136,8 @@ def $allocmems(store : store, memtype*) : (store, memaddr*)
 ;; ../../../../specification/wasm-3.0/4.4-execution.modules.spectec
 def $alloctable(store : store, tabletype : tabletype, ref : ref) : (store, tableaddr)
   ;; ../../../../specification/wasm-3.0/4.4-execution.modules.spectec
-  def $alloctable{s : store, at : addrtype, i : u64, j : u64, rt : reftype, ref : ref, tableinst : tableinst}(s, `%%%`_tabletype(at, `[%..%]`_limits(i, j), rt), ref) = (s +++ {TAGS [], GLOBALS [], MEMS [], TABLES [tableinst], FUNCS [], DATAS [], ELEMS [], STRUCTS [], ARRAYS [], EXNS []}, |s.TABLES_store|)
-    -- if (tableinst = {TYPE `%%%`_tabletype(at, `[%..%]`_limits(i, j), rt), REFS ref^i!`%`_u64.0{}})
+  def $alloctable{s : store, at : addrtype, i : u64, `j?` : u64?, rt : reftype, ref : ref, tableinst : tableinst}(s, `%%%`_tabletype(at, `[%..%]`_limits(i, j?{j <- `j?`}), rt), ref) = (s +++ {TAGS [], GLOBALS [], MEMS [], TABLES [tableinst], FUNCS [], DATAS [], ELEMS [], STRUCTS [], ARRAYS [], EXNS []}, |s.TABLES_store|)
+    -- if (tableinst = {TYPE `%%%`_tabletype(at, `[%..%]`_limits(i, j?{j <- `j?`}), rt), REFS ref^i!`%`_u64.0{}})
 
 ;; ../../../../specification/wasm-3.0/4.4-execution.modules.spectec
 rec {
@@ -7578,15 +7581,15 @@ grammar Brectype : rectype
   prod{st : subtype} st:Bsubtype => REC_rectype(`%`_list([st]))
 
 ;; ../../../../specification/wasm-3.0/5.2-binary.types.spectec
-grammar Blimits_(N : N) : (addrtype, limits)
+grammar Blimits : (addrtype, limits)
   ;; ../../../../specification/wasm-3.0/5.2-binary.types.spectec
-  prod{n : n} {{0x00} {`%`_u64(n):Bu64}} => (I32_addrtype, `[%..%]`_limits(`%`_u64(n), `%`_u64(((((2 ^ N) : nat <:> int) - (1 : nat <:> int)) : int <:> nat))))
+  prod{n : n} {{0x00} {`%`_u64(n):Bu64}} => (I32_addrtype, `[%..%]`_limits(`%`_u64(n), ?()))
   ;; ../../../../specification/wasm-3.0/5.2-binary.types.spectec
-  prod{n : n, m : m} {{0x01} {`%`_u64(n):Bu64} {`%`_u64(m):Bu64}} => (I32_addrtype, `[%..%]`_limits(`%`_u64(n), `%`_u64(m)))
+  prod{n : n, m : m} {{0x01} {`%`_u64(n):Bu64} {`%`_u64(m):Bu64}} => (I32_addrtype, `[%..%]`_limits(`%`_u64(n), ?(`%`_u64(m))))
   ;; ../../../../specification/wasm-3.0/5.2-binary.types.spectec
-  prod{n : n} {{0x04} {`%`_u64(n):Bu64}} => (I64_addrtype, `[%..%]`_limits(`%`_u64(n), `%`_u64(((((2 ^ N) : nat <:> int) - (1 : nat <:> int)) : int <:> nat))))
+  prod{n : n} {{0x04} {`%`_u64(n):Bu64}} => (I64_addrtype, `[%..%]`_limits(`%`_u64(n), ?()))
   ;; ../../../../specification/wasm-3.0/5.2-binary.types.spectec
-  prod{n : n, m : m} {{0x05} {`%`_u64(n):Bu64} {`%`_u64(m):Bu64}} => (I64_addrtype, `[%..%]`_limits(`%`_u64(n), `%`_u64(m)))
+  prod{n : n, m : m} {{0x05} {`%`_u64(n):Bu64} {`%`_u64(m):Bu64}} => (I64_addrtype, `[%..%]`_limits(`%`_u64(n), ?(`%`_u64(m))))
 
 ;; ../../../../specification/wasm-3.0/5.2-binary.types.spectec
 grammar Btagtype : tagtype
@@ -7601,12 +7604,12 @@ grammar Bglobaltype : globaltype
 ;; ../../../../specification/wasm-3.0/5.2-binary.types.spectec
 grammar Bmemtype : memtype
   ;; ../../../../specification/wasm-3.0/5.2-binary.types.spectec
-  prod{at : addrtype, lim : limits} (at, lim):Blimits_(((($size((at : addrtype <: numtype)) : nat <:> rat) / ((64 * $Ki) : nat <:> rat)) : rat <:> nat)) => `%%PAGE`_memtype(at, lim)
+  prod{at : addrtype, lim : limits} (at, lim):Blimits => `%%PAGE`_memtype(at, lim)
 
 ;; ../../../../specification/wasm-3.0/5.2-binary.types.spectec
 grammar Btabletype : tabletype
   ;; ../../../../specification/wasm-3.0/5.2-binary.types.spectec
-  prod{rt : reftype, at : addrtype, lim : limits} {{rt:Breftype} {(at, lim):Blimits_($size((at : addrtype <: numtype)))}} => `%%%`_tabletype(at, lim, rt)
+  prod{rt : reftype, at : addrtype, lim : limits} {{rt:Breftype} {(at, lim):Blimits}} => `%%%`_tabletype(at, lim, rt)
 
 ;; ../../../../specification/wasm-3.0/5.2-binary.types.spectec
 grammar Bexterntype : externtype
@@ -9629,11 +9632,11 @@ grammar Taddrtype : addrtype
   prod "i64" => I64_addrtype
 
 ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-grammar Tlimits_(N : N) : limits
+grammar Tlimits : limits
   ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{n : n} `%`_u64(n):Tu64 => `[%..%]`_limits(`%`_u64(n), `%`_u64((2 ^ N)))
+  prod{n : n} `%`_u64(n):Tu64 => `[%..%]`_limits(`%`_u64(n), ?())
   ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{n : n, m : m} {{`%`_u64(n):Tu64} {`%`_u64(m):Tu64}} => `[%..%]`_limits(`%`_u64(n), `%`_u64(m))
+  prod{n : n, m : m} {{`%`_u64(n):Tu64} {`%`_u64(m):Tu64}} => `[%..%]`_limits(`%`_u64(n), ?(`%`_u64(m)))
 
 ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
 grammar Ttypeuse_(I : I) : (typeidx, idctxt)
@@ -9662,12 +9665,12 @@ grammar Tglobaltype_(I : I) : globaltype
 ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
 grammar Tmemtype_(I : I) : memtype
   ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{at : addrtype, lim : limits} {{at:Taddrtype} {lim:Tlimits_(((($size((at : addrtype <: numtype)) : nat <:> int) - (16 : nat <:> int)) : int <:> nat))}} => `%%PAGE`_memtype(at, lim)
+  prod{at : addrtype, lim : limits} {{at:Taddrtype} {lim:Tlimits}} => `%%PAGE`_memtype(at, lim)
 
 ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
 grammar Ttabletype_(I : I) : tabletype
   ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
-  prod{at : addrtype, lim : limits, rt : reftype} {{at:Taddrtype} {lim:Tlimits_($size((at : addrtype <: numtype)))} {rt:Treftype_(I)}} => `%%%`_tabletype(at, lim, rt)
+  prod{at : addrtype, lim : limits, rt : reftype} {{at:Taddrtype} {lim:Tlimits} {rt:Treftype_(I)}} => `%%%`_tabletype(at, lim, rt)
 
 ;; ../../../../specification/wasm-3.0/6.2-text.types.spectec
 grammar Texterntype_(I : I) : (externtype, idctxt)

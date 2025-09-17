@@ -207,8 +207,9 @@ relation Externtype_ok: context |- externtype : OK  hint(name "K-extern") hint(m
 
 
 rule Limits_ok:
-  C |- `[n .. m] : k
-  -- if n <= m <= k
+  C |- `[n .. m?] : k
+  -- if n <= k
+  -- (if n <= m <= k)?
 
 rule Tagtype_ok:
   C |- typeuse : OK

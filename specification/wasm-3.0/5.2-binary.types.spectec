@@ -80,10 +80,10 @@ grammar Brectype : rectype =
 
 ;; External types
 
-grammar Blimits_(N) : (addrtype, limits) =
-  | 0x00 n:Bu64 => (I32, `[n .. $(2^N-1)])
+grammar Blimits : (addrtype, limits) =
+  | 0x00 n:Bu64 => (I32, `[n .. ])
   | 0x01 n:Bu64 m:Bu64 => (I32, `[n .. m])
-  | 0x04 n:Bu64 => (I64, `[n .. $(2^N-1)])
+  | 0x04 n:Bu64 => (I64, `[n .. ])
   | 0x05 n:Bu64 m:Bu64 => (I64, `[n .. m])
 
 grammar Btagtype : tagtype =
@@ -93,10 +93,10 @@ grammar Bglobaltype : globaltype =
   | t:Bvaltype mut?:Bmut => mut? t
 
 grammar Bmemtype : memtype =
-  | (at,lim):Blimits_($($size(at)/(64 * $Ki))) => at lim PAGE
+  | (at,lim):Blimits => at lim PAGE
 
 grammar Btabletype : tabletype =
-  | rt:Breftype (at,lim):Blimits_($size(at)) => at lim rt
+  | rt:Breftype (at,lim):Blimits => at lim rt
 
 
 grammar Bexterntype : externtype =

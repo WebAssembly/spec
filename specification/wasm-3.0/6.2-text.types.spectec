@@ -128,8 +128,8 @@ grammar Taddrtype/base : addrtype =
 grammar Taddrtype/abbrev : addrtype = ... | eps == "i32"
 
 
-grammar Tlimits_(N) : limits =
-  | n:Tu64 => `[n .. $(2^N)]
+grammar Tlimits : limits =
+  | n:Tu64 => `[n .. ]
   | n:Tu64 m:Tu64 => `[n .. m]
 
 
@@ -141,10 +141,10 @@ grammar Tglobaltype_(I) : globaltype =
   | "(" "mut" t:Tvaltype_(I) ")" => MUT t
 
 grammar Tmemtype_(I) : memtype =
-  | at:Taddrtype lim:Tlimits_($($size(at)-16)) => at lim PAGE
+  | at:Taddrtype lim:Tlimits => at lim PAGE
 
 grammar Ttabletype_(I) : tabletype =
-  | at:Taddrtype lim:Tlimits_($size(at)) rt:Treftype_(I) => at lim rt
+  | at:Taddrtype lim:Tlimits rt:Treftype_(I) => at lim rt
 
 
 grammar Texterntype_(I) : (externtype, idctxt) =
