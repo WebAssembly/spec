@@ -310,6 +310,8 @@ atom_escape :
   | INFINITY { Atom.Infinity }
   | DOT { Atom.Dot }
   | DOTDOT { Atom.Dot2 }
+  | TICK DOT { Atom.Dot }
+  | TICK DOTDOT { Atom.Dot2 }
 
 varid_bind_with_suffix :
   | varid { $1 }
