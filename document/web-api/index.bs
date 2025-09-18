@@ -88,9 +88,9 @@ additional APIs that are implemented by Web user agents but are outside the scop
 <pre class="idl">
 [Exposed=(Window,Worker)]
 partial namespace WebAssembly {
-  Promise&lt;Module> compileStreaming(Promise&lt;Response> source, optional WebAssemblyCompileOptions options);
+  Promise&lt;Module> compileStreaming(Promise&lt;Response> source, optional WebAssemblyCompileOptions options = {});
   Promise&lt;WebAssemblyInstantiatedSource> instantiateStreaming(
-      Promise&lt;Response> source, optional object importObject, optional WebAssemblyCompileOptions options);
+      Promise&lt;Response> source, optional object importObject, optional WebAssemblyCompileOptions options = {});
 };
 </pre>
 
