@@ -101,7 +101,8 @@ $(RSTDIRS:%=$(SPLICEDIR)/%):: $(SPLICEDIR)
 	mkdir -p $@
 
 $(SPLICEDIR)/util/katex:: util/katex
-	cp -R $< $@   # F it!
+	(cd $< && yarn && yarn build && npm install --only=prod)
+	cp -Rf $< `dirname $@`   # F it!
 
 $(SPLICEDIR)/_splice: $(SPLICEDIR) $(RSTFILES) $(SPECTECFILES)
 	@echo Modified $?
@@ -204,7 +205,7 @@ bikeshed-nested: $(GENERATED)
 	mkdir -p $(BUILDDIR)/bikeshed_mathjax/
 	bikeshed spec --md-status=$(W3C_STATUS) --md-deadline=$(DEADLINE) index.bs $(BUILDDIR)/bikeshed_mathjax/index.html
 	mkdir -p $(BUILDDIR)/html/bikeshed/
-	(cd util/katex/ && yarn && yarn build && npm install --only=prod)
+	# (cd util/katex/ && yarn && yarn build && npm install --only=prod)
 	python3 util/mathjax2katex.py $(BUILDDIR)/bikeshed_mathjax/index.html \
 		>$(BUILDDIR)/html/bikeshed/index.html
 	mkdir -p $(BUILDDIR)/html/bikeshed/katex/dist/
