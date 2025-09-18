@@ -76,7 +76,7 @@ spectec:
 
 SPECTECPAT = $(SPECTECSPEC)/*.$(SPECTECEXT)
 SPECTECFILES = $(shell ls $(SPECTECPAT))
-RSTDIRS = $(shell ls -d [a-z]*/ util/[a-z]*/)
+RSTDIRS = $(shell ls -d [a-z]*/ util/[a-z]*/ | grep -v util/katex)
 RSTFILES = $(shell ls -d *.rst [a-z]*/*.rst) $(GENERATED)
 CTRLFILES = $(shell ls Makefile *.* util/*.* util/bikeshed/*.*) $(shell ls static/*)
 ALLFILES = $(RSTDIRS) $(CTRLFILES) _splice  #$(RSTFILES)
@@ -97,12 +97,8 @@ $(SPLICEDIR)/$(BUILDDIR): $(SPLICEDIR)
 $(BUILDDIR): $(SPLICEDIR)/$(BUILDDIR)
 	ln -s $< $@
 
-$(RSTDIRS:%=$(SPLICEDIR)/%):: $(SPLICEDIR)
+$(RSTDIRS:%=$(SPLICEDIR)/%): $(SPLICEDIR)
 	mkdir -p $@
-
-$(SPLICEDIR)/util/katex:: util/katex
-	(cd $< && yarn && yarn build && npm install --only=prod)
-	cp -Rf $< `dirname $@`   # F it!
 
 $(SPLICEDIR)/_splice: $(SPLICEDIR) $(RSTFILES) $(SPECTECFILES)
 	@echo Modified $?
@@ -187,6 +183,7 @@ singlehtml-nested: $(GENERATED)
 
 .PHONY: bikeshed bikeshed-nested
 bikeshed:	$(SPLICEDFILES)
+	(cd util/katex/ && yarn && yarn build && npm install --only=prod)
 	(cd $(SPLICEDIR) && make bikeshed-nested)
 	@echo
 	@echo "Build finished. The HTML page is in $(BUILDDIR)/html/bikeshed/."
