@@ -184,6 +184,7 @@ singlehtml-nested: $(GENERATED)
 .PHONY: bikeshed bikeshed-nested
 bikeshed:	$(SPLICEDFILES)
 	(cd util/katex/ && yarn && yarn build && npm install --only=prod)
+	cp -Rf util/katex/* $(SPLICEDIR)/util/katex
 	(cd $(SPLICEDIR) && make bikeshed-nested)
 	@echo
 	@echo "Build finished. The HTML page is in $(BUILDDIR)/html/bikeshed/."
