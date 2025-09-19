@@ -84,7 +84,7 @@ def ReplaceMath(cache, data):
   data = data.replace('@{\\qquad}', '')
   data = data.replace('@{\\qquad\\qquad}', '')
   data = re.sub('([^\\\\])[$]', '\\1', data)
-  # data = '\\mathrm{' + data + '}'
+  data = '\\mathrm{' + data + '}'
 
   if data in cache:
     return cache[data]
@@ -133,6 +133,9 @@ def ReplaceMath(cache, data):
   assert HasBalancedTags(ret)
 
   cache[data] = ret
+  sys.stderr.write('-------------------------------------------------------')
+  sys.stderr.write(ret)
+  sys.stderr.write('-------------------------------------------------------')
   return ret
 
 
