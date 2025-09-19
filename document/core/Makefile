@@ -181,7 +181,7 @@ singlehtml:	$(SPLICEDFILES)
 singlehtml-nested: $(GENERATED)
 	$(SPHINXBUILD) -b singlehtml $(ALLSPHINXOPTS) $(BUILDDIR)/singlehtml
 
-.PHONY: bikeshed bikeshed-nested
+.PHONY: bikeshed bikshed-fixup bikeshed-nested
 bikeshed:	$(SPLICEDFILES)
 	(cd util/katex/ && yarn && yarn build && npm install --only=prod)
 	mkdir -p $(SPLICEDIR)/util/katex
@@ -190,7 +190,7 @@ bikeshed:	$(SPLICEDFILES)
 	@echo
 	@echo "Build finished. The HTML page is in $(BUILDDIR)/html/bikeshed/."
 
-bikeshed-nested: $(GENERATED)
+bikeshed-fixup: $(GENERATED)
 	$(SPHINXBUILD) -b singlehtml -c util/bikeshed \
 		$(ALLSPHINXOPTS) $(BUILDDIR)/bikeshed_singlehtml
 	python3 util/bikeshed_fixup.py $(BUILDDIR)/bikeshed_singlehtml/index.html \
@@ -201,6 +201,8 @@ bikeshed-nested: $(GENERATED)
 	@tail -n10 _build/bikeshed_singlehtml/index_fixed.html
 	@echo
 	@echo =========================================================================
+
+bikeshed-nested: bikeshed-fixup
 	mkdir -p $(BUILDDIR)/bikeshed_mathjax/
 	bikeshed spec --md-status=$(W3C_STATUS) --md-deadline=$(DEADLINE) index.bs $(BUILDDIR)/bikeshed_mathjax/index.html
 	mkdir -p $(BUILDDIR)/html/bikeshed/

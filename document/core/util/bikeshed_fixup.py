@@ -56,8 +56,8 @@ def Main():
   # an error — which in turn causes the W3C pubrules checker to refuse to
   # autopublish the resulting bikeshed output.
   data = data.replace(
-      """\href{#binary-sint}{\href{#syntax-int}""",
-      """{\href{#syntax-int}""")
+      """\\href{#binary-sint}{\\href{#syntax-int}""",
+      """{\\href{#syntax-int}""")
 
   # Strip the entire <head> element from the the sphinx output — because it
   # contains several <meta>, <script>, and <link> elements that are unnecessary

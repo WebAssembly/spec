@@ -40,8 +40,8 @@ jobs:
         run: cd spectec && opam exec make
       - name: Build main spec
         run: cd document/core && opam exec make main
-      #- name: Run Bikeshed
-      #  run: cd document/core && opam exec make bikeshed
+      - name: Run Bikeshed
+        run: cd document/core && opam exec make bikeshed
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
