@@ -73,7 +73,7 @@ def ReplaceMath(cache, data):
   data = data.replace('\\mbox', '\\text')
   data = data.replace('\\begin{split}', '\\begin{aligned}')
   data = data.replace('\\end{split}', '\\end{aligned}')
-  data = re.sub('\\\\multicolumn\\{[^}]*\\}\\{[^}]*\\}', '', data)   # Katex can't handle it
+  data = re.sub('\\\\multicolumn\\{[0-9]*\\}\\{[a-z]*\\}', '', data)   # Katex can't handle it
   data = data.replace('&amp;', '&')    # Messed up by Bikeshed
   data = data.replace('&lt;', '<')     # Messed up by Bikeshed
   data = data.replace('&gt;', '>')     # Messed up by Bikeshed
