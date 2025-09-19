@@ -73,7 +73,7 @@ def ReplaceMath(cache, data):
   data = data.replace('\\mbox', '\\text')
   data = data.replace('\\begin{split}', '\\begin{aligned}')
   data = data.replace('\\end{split}', '\\end{aligned}')
-  data = re.sub('\\multicolumn{[^}]*}{[^}]*}', '', data)   # Katex can't handle it
+  data = re.sub('\\\\multicolumn\\{[^}]*\\}\\{[^}]*\\}', '', data)   # Katex can't handle it
   data = data.replace('&amp;', '&')    # Messed up by Bikeshed
   data = data.replace('&lt;', '<')     # Messed up by Bikeshed
   data = data.replace('&gt;', '>')     # Messed up by Bikeshed
@@ -133,9 +133,6 @@ def ReplaceMath(cache, data):
   assert HasBalancedTags(ret)
 
   cache[data] = ret
-  sys.stderr.write('-------------------------------------------------------')
-  sys.stderr.write(ret)
-  sys.stderr.write('-------------------------------------------------------')
   return ret
 
 
