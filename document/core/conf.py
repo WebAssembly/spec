@@ -518,5 +518,12 @@ mathjax3_config = {
       'macros': {
         'multicolumn': ['', 2]   # Bummer, MathJax can't handle multicolumn, ignore it
       }
+    },
+    'options': {
+      'menuOptions': {
+        'settings': {
+          'enrich': False,  # Activating this apparently increases page load times by 4x
+        }
+      }
     }
 }
