@@ -84,7 +84,7 @@ def ReplaceMath(cache, data):
   data = data.replace('@{\\qquad}', '')
   data = data.replace('@{\\qquad\\qquad}', '')
   data = re.sub('([^\\\\])[$]', '\\1', data)
-  data = '\\mathrm{' + data + '}'
+  # data = '\\mathrm{' + data + '}'
 
   if data in cache:
     return cache[data]
