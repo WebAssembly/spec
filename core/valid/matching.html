@@ -5,14 +5,14 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Matching &#8212; WebAssembly 3.0 (2025-09-17)</title>
+    <title>Matching &#8212; WebAssembly 3.0 (2025-09-19)</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=686e5160" />
     <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=057308f9" />
-    <script src="../_static/documentation_options.js?v=d3e2c804"></script>
+    <script src="../_static/documentation_options.js?v=14242dd9"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
-    <script>window.MathJax = {"tex": {"maxBuffer": 30720, "macros": {"multicolumn": ["", 2]}}}</script>
+    <script>window.MathJax = {"tex": {"maxBuffer": 30720, "macros": {"multicolumn": ["", 2]}}, "options": {"menuOptions": {"settings": {"enrich": false}}}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -220,7 +220,7 @@ C \href{../valid/matching.html#match-vectype}{\vdash} {\href{../syntax/types.htm
 <li><p>Or:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>The <a class="reference internal" href="../syntax/types.html#syntax-heaptype"><span class="std std-ref">heap type</span></a> <span class="math notranslate nohighlight">\({\href{../syntax/types.html#syntax-heaptype}{\mathit{heaptype}}}_1\)</span> is of the form <span class="math notranslate nohighlight">\((\href{../syntax/types.html#syntax-heaptype}{\mathsf{rec}}~{.}~{.})\)</span>.</p></li>
+<li><p>The <a class="reference internal" href="../syntax/types.html#syntax-heaptype"><span class="std std-ref">heap type</span></a> <span class="math notranslate nohighlight">\({\href{../syntax/types.html#syntax-heaptype}{\mathit{heaptype}}}_1\)</span> is of the form <span class="math notranslate nohighlight">\((\href{../syntax/types.html#syntax-heaptype}{\mathsf{rec}} {.} i)\)</span>.</p></li>
 <li><p>The length of <span class="math notranslate nohighlight">\({{\href{../syntax/types.html#syntax-typeuse}{\mathit{typeuse}}}^\ast}\)</span> is greater than <span class="math notranslate nohighlight">\(j\)</span>.</p></li>
 <li><p>The <a class="reference internal" href="../syntax/types.html#syntax-heaptype"><span class="std std-ref">heap type</span></a> <span class="math notranslate nohighlight">\({\href{../syntax/types.html#syntax-heaptype}{\mathit{heaptype}}}_2\)</span> is of the form <span class="math notranslate nohighlight">\({{\href{../syntax/types.html#syntax-typeuse}{\mathit{typeuse}}}^\ast}{}[j]\)</span>.</p></li>
 <li><p>The <a class="reference internal" href="../syntax/types.html#syntax-subtype"><span class="std std-ref">recursive type</span></a> <span class="math notranslate nohighlight">\(C{.}\href{../appendix/properties.html#context-ext}{\mathsf{recs}}{}[i]\)</span> exists.</p></li>
@@ -339,7 +339,7 @@ C \href{../valid/matching.html#match-heaptype}{\vdash} {\href{../syntax/types.ht
 \frac{
 C{.}\href{../appendix/properties.html#context-ext}{\mathsf{recs}}{}[i] = \href{../syntax/types.html#syntax-subtype}{\mathsf{sub}}~{\href{../syntax/types.html#syntax-subtype}{\mathsf{final}}^?}~{{\href{../syntax/types.html#syntax-typeuse}{\mathit{typeuse}}}^\ast}~{\mathit{ct}}
 }{
-C \href{../valid/matching.html#match-heaptype}{\vdash} \href{../syntax/types.html#syntax-heaptype}{\mathsf{rec}}~{.}~{.} \href{../valid/matching.html#match-heaptype}{\leq} {{\href{../syntax/types.html#syntax-typeuse}{\mathit{typeuse}}}^\ast}{}[j]
+C \href{../valid/matching.html#match-heaptype}{\vdash} \href{../syntax/types.html#syntax-heaptype}{\mathsf{rec}} {.} i \href{../valid/matching.html#match-heaptype}{\leq} {{\href{../syntax/types.html#syntax-typeuse}{\mathit{typeuse}}}^\ast}{}[j]
 }
 \\[3ex]\displaystyle
 \frac{
@@ -732,7 +732,7 @@ n_1 \geq n_2
  \qquad
 m_1 \leq m_2
 }{
-C \href{../valid/matching.html#match-limits}{\vdash} {}[ n_1~\href{../syntax/types.html#syntax-limits}{\,{..}\,}~m_1 ] \href{../valid/matching.html#match-limits}{\leq} {}[ n_2~\href{../syntax/types.html#syntax-limits}{\,{..}\,}~m_2 ]
+C \href{../valid/matching.html#match-limits}{\vdash} {}[ n_1 \href{../syntax/types.html#syntax-limits}{\,{..}\,} m_1 ] \href{../valid/matching.html#match-limits}{\leq} {}[ n_2 \href{../syntax/types.html#syntax-limits}{\,{..}\,} m_2 ]
 }
 \qquad
 \end{array}\]</div>

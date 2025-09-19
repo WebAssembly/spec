@@ -5,14 +5,14 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Conventions &#8212; WebAssembly 3.0 (2025-09-17)</title>
+    <title>Conventions &#8212; WebAssembly 3.0 (2025-09-19)</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=686e5160" />
     <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=057308f9" />
-    <script src="../_static/documentation_options.js?v=d3e2c804"></script>
+    <script src="../_static/documentation_options.js?v=14242dd9"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
-    <script>window.MathJax = {"tex": {"maxBuffer": 30720, "macros": {"multicolumn": ["", 2]}}}</script>
+    <script>window.MathJax = {"tex": {"maxBuffer": 30720, "macros": {"multicolumn": ["", 2]}}, "options": {"menuOptions": {"settings": {"enrich": false}}}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -113,7 +113,7 @@ they only occur during <a class="reference internal" href="index.html#valid"><sp
 \[\begin{split}\begin{array}[t]{&#64;{}l&#64;{}rrl&#64;{}l&#64;{}}
 &amp; {\href{../syntax/types.html#syntax-valtype}{\mathit{valtype}}} &amp; ::= &amp; \dots ~~|~~ \href{../valid/conventions.html#syntax-valtype-ext}{\mathsf{bot}} \\
 &amp; {\href{../syntax/types.html#syntax-absheaptype}{\mathit{absheaptype}}} &amp; ::= &amp; \dots ~~|~~ \href{../valid/conventions.html#syntax-valtype-ext}{\mathsf{bot}} \\
-&amp; {\href{../syntax/types.html#syntax-typeuse}{\mathit{typeuse}}} &amp; ::= &amp; \dots ~~|~~ {\href{../valid/conventions.html#syntax-deftype}{\mathit{deftype}}} ~~|~~ \href{../syntax/types.html#syntax-heaptype}{\mathsf{rec}}~{.}~{.} \\
+&amp; {\href{../syntax/types.html#syntax-typeuse}{\mathit{typeuse}}} &amp; ::= &amp; \dots ~~|~~ {\href{../valid/conventions.html#syntax-deftype}{\mathit{deftype}}} ~~|~~ \href{../syntax/types.html#syntax-heaptype}{\mathsf{rec}} {.} n \\
 \end{array}\end{split}\]</div>
 <p>The unique <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">value type</span></a> <span class="math notranslate nohighlight">\(\href{../valid/conventions.html#syntax-valtype-ext}{\mathsf{bot}}\)</span> is a <em>bottom type</em> that <a class="reference internal" href="matching.html#match-valtype"><span class="std std-ref">matches</span></a> all value types.
 Similarly, <span class="math notranslate nohighlight">\(\href{../valid/conventions.html#syntax-valtype-ext}{\mathsf{bot}}\)</span> is also used as a bottom type of all <a class="reference internal" href="../syntax/types.html#syntax-heaptype"><span class="std std-ref">heap types</span></a>.</p>
@@ -165,7 +165,7 @@ the defnition only affects the presence of null and cannot express the absence o
 Each such type is represented as a projection from the <a class="reference internal" href="../syntax/types.html#syntax-rectype"><span class="std std-ref">recursive type</span></a> group it originates from, indexed by its position in that group.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}[t]{&#64;{}l&#64;{}rrl&#64;{}l&#64;{}}
-&amp; {\href{../valid/conventions.html#syntax-deftype}{\mathit{deftype}}} &amp; ::= &amp; {\href{../syntax/types.html#syntax-rectype}{\mathit{rectype}}}~{.}~n \\
+&amp; {\href{../valid/conventions.html#syntax-deftype}{\mathit{deftype}}} &amp; ::= &amp; {\href{../syntax/types.html#syntax-rectype}{\mathit{rectype}}} {.} n \\
 \end{array}\end{split}\]</div>
 <p>Defined types do not occur in the <a class="reference internal" href="../binary/index.html#binary"><span class="std std-ref">binary</span></a> or <a class="reference internal" href="../text/index.html#text"><span class="std std-ref">text</span></a> format,
 but are formed by <a class="reference internal" href="#aux-roll-deftype"><span class="std std-ref">rolling up</span></a> the <a class="reference internal" href="../syntax/types.html#syntax-reftype"><span class="std std-ref">recursive types</span></a> defined in a module.</p>
@@ -210,10 +210,10 @@ It gives rise to an <em>iso-recursive</em> interpretation of types.</p>
 <p>These operations are extended to <a class="reference internal" href="#syntax-deftype"><span class="std std-ref">defined types</span></a> and defined as follows:</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}[t]{&#64;{}lcl&#64;{}l&#64;{}}
-{{\href{../valid/conventions.html#aux-roll-rectype}{\mathrm{roll}}}}_{x}({\href{../syntax/types.html#syntax-rectype}{\mathit{rectype}}}) &amp; = &amp; \href{../syntax/types.html#syntax-rectype}{\mathsf{rec}}~{({{\href{../syntax/types.html#syntax-subtype}{\mathit{subtype}}}}{{}[ {(x + i)^{i&lt;n}} \href{../valid/conventions.html#notation-subst}{\mathrel{:=}} {(\href{../syntax/types.html#syntax-heaptype}{\mathsf{rec}}~{.}~i)^{i&lt;n}} ]})^{n}} &amp; \quad \mbox{if}~ {\href{../syntax/types.html#syntax-rectype}{\mathit{rectype}}} = \href{../syntax/types.html#syntax-rectype}{\mathsf{rec}}~{{\href{../syntax/types.html#syntax-subtype}{\mathit{subtype}}}^{n}} \\[0.8ex]
-{\href{../valid/conventions.html#aux-unroll-rectype}{\mathrm{unroll}}}({\href{../syntax/types.html#syntax-rectype}{\mathit{rectype}}}) &amp; = &amp; \href{../syntax/types.html#syntax-rectype}{\mathsf{rec}}~{({{\href{../syntax/types.html#syntax-subtype}{\mathit{subtype}}}}{{}[ {(\href{../syntax/types.html#syntax-heaptype}{\mathsf{rec}}~{.}~i)^{i&lt;n}} \href{../valid/conventions.html#notation-subst}{\mathrel{:=}} {({\href{../syntax/types.html#syntax-rectype}{\mathit{rectype}}}~{.}~i)^{i&lt;n}} ]})^{n}} &amp; \quad \mbox{if}~ {\href{../syntax/types.html#syntax-rectype}{\mathit{rectype}}} = \href{../syntax/types.html#syntax-rectype}{\mathsf{rec}}~{{\href{../syntax/types.html#syntax-subtype}{\mathit{subtype}}}^{n}} \\[0.8ex]
-{{{{\href{../valid/conventions.html#aux-roll-deftype}{\mathrm{roll}}}}_{x}^\ast}}{({\href{../syntax/types.html#syntax-rectype}{\mathit{rectype}}})} &amp; = &amp; {((\href{../syntax/types.html#syntax-rectype}{\mathsf{rec}}~{{\href{../syntax/types.html#syntax-subtype}{\mathit{subtype}}}^{n}})~{.}~i)^{i&lt;n}} &amp; \quad \mbox{if}~ {{\href{../valid/conventions.html#aux-roll-rectype}{\mathrm{roll}}}}_{x}({\href{../syntax/types.html#syntax-rectype}{\mathit{rectype}}}) = \href{../syntax/types.html#syntax-rectype}{\mathsf{rec}}~{{\href{../syntax/types.html#syntax-subtype}{\mathit{subtype}}}^{n}} \\[0.8ex]
-{\href{../valid/conventions.html#aux-unroll-deftype}{\mathrm{unroll}}}({\href{../syntax/types.html#syntax-rectype}{\mathit{rectype}}}~{.}~i) &amp; = &amp; {{\href{../syntax/types.html#syntax-subtype}{\mathit{subtype}}}^\ast}{}[i] &amp; \quad \mbox{if}~ {\href{../valid/conventions.html#aux-unroll-rectype}{\mathrm{unroll}}}({\href{../syntax/types.html#syntax-rectype}{\mathit{rectype}}}) = \href{../syntax/types.html#syntax-rectype}{\mathsf{rec}}~{{\href{../syntax/types.html#syntax-subtype}{\mathit{subtype}}}^\ast} \\
+{{\href{../valid/conventions.html#aux-roll-rectype}{\mathrm{roll}}}}_{x}({\href{../syntax/types.html#syntax-rectype}{\mathit{rectype}}}) &amp; = &amp; \href{../syntax/types.html#syntax-rectype}{\mathsf{rec}}~{({{\href{../syntax/types.html#syntax-subtype}{\mathit{subtype}}}}{{}[ {(x + i)^{i&lt;n}} \href{../valid/conventions.html#notation-subst}{\mathrel{:=}} {(\href{../syntax/types.html#syntax-heaptype}{\mathsf{rec}} {.} i)^{i&lt;n}} ]})^{n}} &amp; \quad \mbox{if}~ {\href{../syntax/types.html#syntax-rectype}{\mathit{rectype}}} = \href{../syntax/types.html#syntax-rectype}{\mathsf{rec}}~{{\href{../syntax/types.html#syntax-subtype}{\mathit{subtype}}}^{n}} \\[0.8ex]
+{\href{../valid/conventions.html#aux-unroll-rectype}{\mathrm{unroll}}}({\href{../syntax/types.html#syntax-rectype}{\mathit{rectype}}}) &amp; = &amp; \href{../syntax/types.html#syntax-rectype}{\mathsf{rec}}~{({{\href{../syntax/types.html#syntax-subtype}{\mathit{subtype}}}}{{}[ {(\href{../syntax/types.html#syntax-heaptype}{\mathsf{rec}} {.} i)^{i&lt;n}} \href{../valid/conventions.html#notation-subst}{\mathrel{:=}} {({\href{../syntax/types.html#syntax-rectype}{\mathit{rectype}}} {.} i)^{i&lt;n}} ]})^{n}} &amp; \quad \mbox{if}~ {\href{../syntax/types.html#syntax-rectype}{\mathit{rectype}}} = \href{../syntax/types.html#syntax-rectype}{\mathsf{rec}}~{{\href{../syntax/types.html#syntax-subtype}{\mathit{subtype}}}^{n}} \\[0.8ex]
+{{{{\href{../valid/conventions.html#aux-roll-deftype}{\mathrm{roll}}}}_{x}^\ast}}{({\href{../syntax/types.html#syntax-rectype}{\mathit{rectype}}})} &amp; = &amp; {((\href{../syntax/types.html#syntax-rectype}{\mathsf{rec}}~{{\href{../syntax/types.html#syntax-subtype}{\mathit{subtype}}}^{n}}) {.} i)^{i&lt;n}} &amp; \quad \mbox{if}~ {{\href{../valid/conventions.html#aux-roll-rectype}{\mathrm{roll}}}}_{x}({\href{../syntax/types.html#syntax-rectype}{\mathit{rectype}}}) = \href{../syntax/types.html#syntax-rectype}{\mathsf{rec}}~{{\href{../syntax/types.html#syntax-subtype}{\mathit{subtype}}}^{n}} \\[0.8ex]
+{\href{../valid/conventions.html#aux-unroll-deftype}{\mathrm{unroll}}}({\href{../syntax/types.html#syntax-rectype}{\mathit{rectype}}} {.} i) &amp; = &amp; {{\href{../syntax/types.html#syntax-subtype}{\mathit{subtype}}}^\ast}{}[i] &amp; \quad \mbox{if}~ {\href{../valid/conventions.html#aux-unroll-rectype}{\mathrm{unroll}}}({\href{../syntax/types.html#syntax-rectype}{\mathit{rectype}}}) = \href{../syntax/types.html#syntax-rectype}{\mathsf{rec}}~{{\href{../syntax/types.html#syntax-subtype}{\mathit{subtype}}}^\ast} \\
 \end{array}\end{split}\]</div>
 <p>In addition, the following auxiliary relation denotes the <em>expansion</em> of a <a class="reference internal" href="#syntax-deftype"><span class="std std-ref">defined type</span></a> or <a class="reference internal" href="../syntax/types.html#syntax-typeuse"><span class="std std-ref">type use</span></a>:</p>
 <div class="math notranslate nohighlight">
@@ -368,12 +368,12 @@ The conclusion always is a judgment <span class="math notranslate nohighlight">\
 and there usually is one respective rule for each relevant construct <span class="math notranslate nohighlight">\(A\)</span> of the abstract syntax.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>For example, the typing rule for the <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}}~{.}~\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{add}}\)</span> instruction can be given as an axiom:</p>
+<p>For example, the typing rule for the <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}} {.} \href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{add}}\)</span> instruction can be given as an axiom:</p>
 <div class="math notranslate nohighlight">
 \[\begin{array}{&#64;{}c&#64;{}}\displaystyle
 \frac{
 }{
-C \vdash \href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}}~{.}~\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{add}} : \href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}}~\href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}} \rightarrow \href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}}
+C \vdash \href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}} {.} \href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{add}} : \href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}}~\href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}} \rightarrow \href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}}
 }
 \qquad
 \end{array}\]</div>
