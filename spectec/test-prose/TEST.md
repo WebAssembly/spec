@@ -19272,7 +19272,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
          #) Execute the instruction :math:`\mathsf{throw\_ref}`.
 
-      #) Else if not the first non-value entry of the stack is a :math:`\mathsf{handler}`, then:
+      #) Else if the first non-value entry of the stack is not a :math:`\mathsf{handler}`, then:
 
          a) Throw the exception :math:`{\mathit{val}'}` as a result.
 
@@ -19424,11 +19424,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Else:
 
-   a. Assert: Due to validation, not the first non-value entry of the stack is a :math:`\mathsf{label}`.
+   a. Assert: Due to validation, the first non-value entry of the stack is not a :math:`\mathsf{label}`.
 
-   #. Assert: Due to validation, not the first non-value entry of the stack is a :math:`\mathsf{frame}`.
+   #. Assert: Due to validation, the first non-value entry of the stack is not a :math:`\mathsf{frame}`.
 
-   #. Assert: Due to validation, not the first non-value entry of the stack is a :math:`\mathsf{handler}`.
+   #. Assert: Due to validation, the first non-value entry of the stack is not a :math:`\mathsf{handler}`.
 
    #. Throw the exception :math:`{\mathit{val}'}` as a result.
 
@@ -29491,7 +29491,7 @@ Step_read/throw_ref
     1) Pop the frame (FRAME_ _ { _ }) from the stack.
     2) Push the value (REF.EXN_ADDR a) to the stack.
     3) Execute the instruction THROW_REF.
-  f. Else if not the first non-value entry of the stack is a HANDLER_, then:
+  f. Else if the first non-value entry of the stack is not a HANDLER_, then:
     1) Throw the exception val' as a result.
   g. Else:
     1) Let (HANDLER_ n { catch''* }) be the topmost HANDLER_.
@@ -29560,9 +29560,9 @@ Step_read/throw_ref
         3. Push the value (REF.EXN_ADDR a) to the stack.
         4. Execute the instruction (BR l).
 6. Else:
-  a. Assert: Due to validation, not the first non-value entry of the stack is a LABEL_.
-  b. Assert: Due to validation, not the first non-value entry of the stack is a FRAME_.
-  c. Assert: Due to validation, not the first non-value entry of the stack is a HANDLER_.
+  a. Assert: Due to validation, the first non-value entry of the stack is not a LABEL_.
+  b. Assert: Due to validation, the first non-value entry of the stack is not a FRAME_.
+  c. Assert: Due to validation, the first non-value entry of the stack is not a HANDLER_.
   d. Throw the exception val' as a result.
 
 Step_read/try_table bt catch* instr*

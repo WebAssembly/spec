@@ -86,6 +86,8 @@ and string_of_expr expr =
     sprintf "%s does not match %s" (string_of_expr e1) (string_of_expr e2)
   | UnE (`NotOp, { it = MemE (e1, e2); _ }) ->
     sprintf "%s is not contained in %s" (string_of_expr e1) (string_of_expr e2)
+  | UnE (`NotOp, { it = ContextKindE a; _ }) ->
+    sprintf "the first non-value entry of the stack is not a %s" (string_of_atom a)
   | UnE (`NotOp, e) -> sprintf "not %s" (string_of_expr e)
   | UnE (op, e) -> sprintf "(%s %s)" (string_of_unop op) (string_of_expr e)
   | BinE (op, e1, e2) ->
