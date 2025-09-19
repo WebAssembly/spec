@@ -44,7 +44,7 @@ $$
 
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}}
-\mbox{(limits range)} & {\mathit{limits}} & ::= & {}[ {\mathit{u{\kern-0.1em\scriptstyle 64}}}~..~{{\mathit{u{\kern-0.1em\scriptstyle 64}}}^?} ] \\[0.8ex]
+\mbox{(limits range)} & {\mathit{limits}} & ::= & {}[ {\mathit{u{\kern-0.1em\scriptstyle 64}}} .. {{\mathit{u{\kern-0.1em\scriptstyle 64}}}^?} ] \\[0.8ex]
 \mbox{(global type)} & {\mathit{globaltype}} & ::= & {\mathsf{mut}^?}~{\mathit{valtype}} \\
 \mbox{(table type)} & {\mathit{tabletype}} & ::= & {\mathit{addrtype}}~{\mathit{limits}}~{\mathit{reftype}} \\
 \mbox{(memory type)} & {\mathit{memtype}} & ::= & {\mathit{addrtype}}~{\mathit{limits}}~\mathsf{page} \\[0.8ex]
@@ -67,11 +67,11 @@ $$
 \begin{array}[t]{@{}l@{}rrl@{}l@{}}
 & {\mathit{instr}} & ::= & \dots \\
 & & | & {\mathit{numtype}}{.}\mathsf{const}~{{\mathit{num}}}_{{\mathit{numtype}}} \\
-& & | & {\mathit{numtype}}~{.}~{{\mathit{unop}}}_{{\mathit{numtype}}} \\
-& & | & {\mathit{numtype}}~{.}~{{\mathit{binop}}}_{{\mathit{numtype}}} \\
-& & | & {\mathit{numtype}}~{.}~{{\mathit{testop}}}_{{\mathit{numtype}}} \\
-& & | & {\mathit{numtype}}~{.}~{{\mathit{relop}}}_{{\mathit{numtype}}} \\
-& & | & {{\mathit{numtype}}_1~{.}~{{\mathit{cvtop}}}_{{\mathit{numtype}}_2, {\mathit{numtype}}_1}}{\mathsf{\_}}{{\mathit{numtype}}_2} \\
+& & | & {\mathit{numtype}} {.} {{\mathit{unop}}}_{{\mathit{numtype}}} \\
+& & | & {\mathit{numtype}} {.} {{\mathit{binop}}}_{{\mathit{numtype}}} \\
+& & | & {\mathit{numtype}} {.} {{\mathit{testop}}}_{{\mathit{numtype}}} \\
+& & | & {\mathit{numtype}} {.} {{\mathit{relop}}}_{{\mathit{numtype}}} \\
+& & | & {\mathit{numtype}}_1 {.} {{{\mathit{cvtop}}}_{{\mathit{numtype}}_2, {\mathit{numtype}}_1}}{\mathsf{\_}}{{\mathit{numtype}}_2} \\
 & & | & \mathsf{local{.}get}~{\mathit{localidx}} \\
 & & | & \mathsf{local{.}set}~{\mathit{localidx}} \\
 & & | & \mathsf{local{.}tee}~{\mathit{localidx}} \\

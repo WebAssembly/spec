@@ -118,7 +118,7 @@ grammar Bmut : mut =
   | 0x01 => MUT
 
 grammar Blimits : limits =
-  | 0x00 n:Bu32 => `[n .. ]
+  | 0x00 n:Bu32 => `[n .. eps]
   | 0x01 n:Bu32 m:Bu32 => `[n .. m]
 
 grammar Bglobaltype : globaltype =

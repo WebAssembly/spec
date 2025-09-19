@@ -778,7 +778,7 @@ spectec 0.5 generator
 - 20/20 (100.00%)
 
 ===== ../test-interpreter/spec-test-3/binary-leb128.wast =====
-- 68/68 (100.00%)
+- 66/66 (100.00%)
 
 ===== ../test-interpreter/spec-test-3/binary.wast =====
 - 40/40 (100.00%)
@@ -1043,11 +1043,14 @@ spectec 0.5 generator
 ===== ../test-interpreter/spec-test-3/memory64/align64.wast =====
 - 137/137 (100.00%)
 
+===== ../test-interpreter/spec-test-3/memory64/binary_leb128_64.wast =====
+- 2/2 (100.00%)
+
 ===== ../test-interpreter/spec-test-3/memory64/bulk64.wast =====
 - 75/75 (100.00%)
 
 ===== ../test-interpreter/spec-test-3/memory64/call_indirect64.wast =====
-- 3/3 (100.00%)
+- 0/0 (100.00%)
 
 ===== ../test-interpreter/spec-test-3/memory64/endianness64.wast =====
 - 70/70 (100.00%)
@@ -1065,13 +1068,13 @@ spectec 0.5 generator
 - 78/78 (100.00%)
 
 ===== ../test-interpreter/spec-test-3/memory64/memory_copy64.wast =====
-- 4483/4483 (100.00%)
+- 0/0 (100.00%)
 
 ===== ../test-interpreter/spec-test-3/memory64/memory_fill64.wast =====
-- 111/111 (100.00%)
+- 0/0 (100.00%)
 
 ===== ../test-interpreter/spec-test-3/memory64/memory_grow64.wast =====
-- 53/53 (100.00%)
+- 0/0 (100.00%)
 
 ===== ../test-interpreter/spec-test-3/memory64/memory_init64.wast =====
 - 264/264 (100.00%)
@@ -1081,6 +1084,9 @@ spectec 0.5 generator
 
 ===== ../test-interpreter/spec-test-3/memory64/memory_trap64.wast =====
 - 174/174 (100.00%)
+
+===== ../test-interpreter/spec-test-3/memory64/table64.wast =====
+- 25/25 (100.00%)
 
 ===== ../test-interpreter/spec-test-3/memory64/table_copy64.wast =====
 - 1779/1779 (100.00%)
@@ -1093,6 +1099,9 @@ spectec 0.5 generator
 
 ===== ../test-interpreter/spec-test-3/memory64/table_get64.wast =====
 - 12/12 (100.00%)
+
+===== ../test-interpreter/spec-test-3/memory64/table_grow64.wast =====
+- 23/23 (100.00%)
 
 ===== ../test-interpreter/spec-test-3/memory64/table_init64.wast =====
 - 913/913 (100.00%)
@@ -1496,13 +1505,13 @@ spectec 0.5 generator
 - 29/29 (100.00%)
 
 ===== ../test-interpreter/spec-test-3/table.wast =====
-- 84/84 (100.00%)
+- 59/59 (100.00%)
 
 ===== ../test-interpreter/spec-test-3/table_get.wast =====
 - 17/17 (100.00%)
 
 ===== ../test-interpreter/spec-test-3/table_grow.wast =====
-- 85/85 (100.00%)
+- 64/64 (100.00%)
 
 ===== ../test-interpreter/spec-test-3/table_set.wast =====
 - 27/27 (100.00%)
@@ -1552,7 +1561,7 @@ spectec 0.5 generator
 ===== ../test-interpreter/spec-test-3/utf8-invalid-encoding.wast =====
 - 0/0 (100.00%)
 
-Total [60340/60340] (100.00%)
+Total [55692/55692] (100.00%)
 
 == Complete.
 ```

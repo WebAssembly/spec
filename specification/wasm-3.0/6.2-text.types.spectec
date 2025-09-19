@@ -129,7 +129,7 @@ grammar Taddrtype/abbrev : addrtype = ... | eps == "i32"
 
 
 grammar Tlimits : limits =
-  | n:Tu64 => `[n .. ]
+  | n:Tu64 => `[n .. eps]
   | n:Tu64 m:Tu64 => `[n .. m]
 
 

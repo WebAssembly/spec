@@ -31,9 +31,13 @@ let num_parse_fail = ref 0
 let is_long_test path =
   List.mem (Filename.basename path)
     [ "memory_copy.wast";
+      "memory_copy64.wast";
       "memory_fill.wast";
+      "memory_fill64.wast";
       "memory_grow.wast";
+      "memory_grow64.wast";
       "call_indirect.wast";
+      "call_indirect64.wast";
       "return_call.wast";
       "return_call_indirect.wast";
       "return_call_ref.wast"
