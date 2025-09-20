@@ -2,9 +2,8 @@ name: Validate/Publish to W3C TR space
 
 on:
   push:
-    # Disable on fork
-    # branches: [ main ]
-    branches: [ main-only-on-spec-repo ]
+    # Disable on forks!
+    branches: [ main ]
     paths: [ .github/**, document/** ]
   pull_request:
     paths: [ .github/**, document/** ]
