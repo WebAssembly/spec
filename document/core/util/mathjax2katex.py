@@ -73,11 +73,7 @@ def ReplaceMath(cache, data):
   data = data.replace('\\mbox', '\\text')
   data = data.replace('\\begin{split}', '\\begin{aligned}')
   data = data.replace('\\end{split}', '\\end{aligned}')
-  mcolcnt1 = len(re.split('multicolumn', data)) - 1
-  data = re.sub('\\\\multicolumn\\{[0-9]*\\}\\{[a-z]*\\}', '', data)   # Katex can't handle it
-  mcolcnt2 = len(re.split('multicolumn', data)) - 1
-  if mcolcnt2 > 0:
-    sys.stderr.write('MULTICOLUMN SUB: before %d, after %d\n' % (mcolcnt1, mcolcnt2))
+  data = re.sub('\\\\multicolumn\\{[2-9]\\}\\{@\\{\\}l@\\{\\}\\}', '', data)   # Katex can't handle it
   data = data.replace('&amp;', '&')    # Messed up by Bikeshed
   data = data.replace('&lt;', '<')     # Messed up by Bikeshed
   data = data.replace('&gt;', '>')     # Messed up by Bikeshed
@@ -111,10 +107,6 @@ def ReplaceMath(cache, data):
       if start is None:
         break
       data = data[:start] + v.replace('#1', data[start+len(k):end]) + data[end:]
-
-  mcolcnt3 = len(re.split('multicolumn', data)) - 1
-  if mcolcnt3 > 0:
-    sys.stderr.write('MULTICOLUMN SUB: before Katex run %d\n' % mcolcnt3)
 
   p = subprocess.Popen(
       ['node', os.path.join(SCRIPT_DIR, 'katex/cli.js'), '--display-mode', '--trust'],
