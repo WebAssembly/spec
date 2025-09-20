@@ -118,14 +118,6 @@ $(CTRLFILES:%=$(SPLICEDIR)/%): $(SPLICEDIR)/%: %
 macrosok:	$(GENERATED)
 	sh util/check_macros.sh
 
-# Dirty hack to avoid rebuilding the Bikeshed version for every push.
-.PHONY: bikeshed-keep
-bikeshed-keep:
-	test -e $(BUILDDIR)/html/bikeshed || \
-	  wget -r -nH --cut-dirs=2 -P $(BUILDDIR)/html --no-check-certificate \
-	    https://webassembly.github.io/spec/core/bikeshed || \
-	  echo Downloaded Bikeshed.
-
 .PHONY: pdf pdf-nested
 pdf:	$(SPLICEDFILES)
 	(cd $(SPLICEDIR) && make pdf-nested)
@@ -167,7 +159,7 @@ html-nested: $(GENERATED)
 dirhtml:	$(SPLICEDFILES)
 	(cd $(SPLICEDIR) && make dirhtml-nested)
 	@echo
-	@echo "Build finished. The HTML pages are in $(BUILDDIR)/dirhtml."
+	@echo "Build finished. The HTML pages are in `pwd`/$(BUILDDIR)/dirhtml."
 
 dirhtml-nested: $(GENERATED)
 	$(SPHINXBUILD) -b dirhtml $(ALLSPHINXOPTS) $(BUILDDIR)/dirhtml
@@ -176,21 +168,35 @@ dirhtml-nested: $(GENERATED)
 singlehtml:	$(SPLICEDFILES)
 	(cd $(SPLICEDIR) && make singlehtml-nested)
 	@echo
-	@echo "Build finished. The HTML page is in $(BUILDDIR)/singlehtml."
+	@echo "Build finished. The HTML page is in `pwd`/$(BUILDDIR)/singlehtml."
 
 singlehtml-nested: $(GENERATED)
 	$(SPHINXBUILD) -b singlehtml $(ALLSPHINXOPTS) $(BUILDDIR)/singlehtml
 
-.PHONY: bikeshed bikshed-fixup bikeshed-nested
-bikeshed:	$(SPLICEDFILES)
+# Dirty hack to avoid rebuilding the Bikeshed version for every push.
+.PHONY: bikeshed-keep bikeshed-keep-nested
+bikeshed-keep:
+	(cd $(SPLICEDIR) && make bikeshed-keep-nested)
+
+bikeshed-keep-nested:
+	test -e $(BUILDDIR)/html/bikeshed || \
+	  wget -r -nH --cut-dirs=2 -P $(BUILDDIR)/html --no-check-certificate \
+	    https://webassembly.github.io/spec/core/bikeshed || \
+	  echo Downloaded Bikeshed.
+
+.PHONY: katex-install
+katex-install:
 	(cd util/katex/ && yarn && yarn build && npm install --only=prod)
+
+.PHONY: bikeshed bikeshed-nested
+bikeshed:	$(SPLICEDFILES) katex-install
 	mkdir -p $(SPLICEDIR)/util/katex
 	cp -Rf util/katex/* $(SPLICEDIR)/util/katex
 	(cd $(SPLICEDIR) && make bikeshed-nested)
 	@echo
-	@echo "Build finished. The HTML page is in $(BUILDDIR)/html/bikeshed/."
+	@echo "Build finished. The HTML page is in `pwd`/$(BUILDDIR)/html/bikeshed/."
 
-bikeshed-fixup: $(GENERATED)
+bikeshed-nested: $(GENERATED)
 	$(SPHINXBUILD) -b singlehtml -c util/bikeshed \
 		$(ALLSPHINXOPTS) $(BUILDDIR)/bikeshed_singlehtml
 	python3 util/bikeshed_fixup.py $(BUILDDIR)/bikeshed_singlehtml/index.html \
@@ -201,12 +207,9 @@ bikeshed-fixup: $(GENERATED)
 	@tail -n10 _build/bikeshed_singlehtml/index_fixed.html
 	@echo
 	@echo =========================================================================
-
-bikeshed-nested: bikeshed-fixup
 	mkdir -p $(BUILDDIR)/bikeshed_mathjax/
 	bikeshed spec --md-status=$(W3C_STATUS) --md-deadline=$(DEADLINE) index.bs $(BUILDDIR)/bikeshed_mathjax/index.html
 	mkdir -p $(BUILDDIR)/html/bikeshed/
-	# (cd util/katex/ && yarn && yarn build && npm install --only=prod)
 	python3 util/mathjax2katex.py $(BUILDDIR)/bikeshed_mathjax/index.html \
 		>$(BUILDDIR)/html/bikeshed/index.html
 	mkdir -p $(BUILDDIR)/html/bikeshed/katex/dist/
@@ -216,10 +219,13 @@ bikeshed-nested: bikeshed-fixup
 	cp $(BUILDDIR)/bikeshed_singlehtml/_static/pygments.css \
 		$(BUILDDIR)/html/bikeshed/
 
-.PHONY: WD-tar
+.PHONY: WD-tar WD-tar-nested
+WD-tar: bikeshed
+	(cd $(SPLICEDIR) && make WD-tar-nested)
+
 # macOS tar has no “--transform” option (only GNU tar does), so on macOS,
 # do “brew install tar” & run “make” like this: “TAR=gtar make -e WD-tar”
-WD-tar: bikeshed
+WD-tar-nested:
 	@echo "Building tar file..."
 	$(TAR) cvf \
 		$(BUILDDIR)/WD.tar \
@@ -229,7 +235,7 @@ WD-tar: bikeshed
 		$(BUILDDIR)/html/bikeshed/pygments.css \
 		$(BUILDDIR)/html/bikeshed/katex/dist/katex.css \
 		$(BUILDDIR)/html/bikeshed/katex/dist/fonts
-	@echo "Built $(BUILDDIR)/WD.tar."
+	@echo "Built `pwd`/$(BUILDDIR)/WD.tar."
 
 .PHONY: WD-echidna
 WD-echidna: WD-tar
