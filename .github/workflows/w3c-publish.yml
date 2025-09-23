@@ -46,6 +46,14 @@ jobs:
         uses: actions/checkout@v4
         with:
           submodules: "recursive"
+      - name: Setup OCaml
+        if: ${{ matrix.spec == 'core' }}
+        uses: ocaml/setup-ocaml@v3
+        with:
+          ocaml-compiler: 4.14.x
+      - name: Setup Dune
+        if: ${{ matrix.spec == 'core' }}
+        run: opam install --yes dune menhir mdx zarith && opam exec dune --version
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -57,7 +65,10 @@ jobs:
         run: sudo apt-get update -y && sudo apt-get install -y latexmk texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended
       - name: Setup Sphinx
         if: ${{ matrix.spec == 'core' }}
-        run: pip install six && pip install sphinx==8.0.0
+        run: pip install six && pip install sphinx==8.3.1
+      - name: Build SpecTec
+        if: ${{ matrix.spec == 'core' }}
+        run: cd spectec && opam exec make
       - name: Publish ${{ matrix.spec }} spec to its https://www.w3.org/TR/ URL
         if: env.W3C_ECHIDNA_TOKEN_CORE
         run: cd document && make -e -C ${{ matrix.spec }} WD-echidna-CI
