@@ -1179,7 +1179,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
     1. If |s| equals "v128", return [=v128=].
     1. If |s| equals "anyfunc", return [=funcref=].
     1. If |s| equals "externref", return [=externref=].
-    1. Assert: This step is not reached.
+    1. Throw a {{TypeError}} exception.
 </div>
 
 <div algorithm>
