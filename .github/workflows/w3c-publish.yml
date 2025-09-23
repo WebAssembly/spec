@@ -51,6 +51,7 @@ jobs:
         with:
           ocaml-compiler: 4.14.x
       - name: Setup Dune
+        if: ${{ matrix.spec == 'core' }}
         run: opam install --yes dune menhir mdx zarith && opam exec dune --version
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -69,7 +70,7 @@ jobs:
         run: cd spectec && opam exec make
       - name: Publish ${{ matrix.spec }} spec to its https://www.w3.org/TR/ URL
         if: env.W3C_ECHIDNA_TOKEN_CORE
-        run: cd document && make -e -C ${{ matrix.spec }} WD-echidna-CI
+        run: cd document && opam exec make -e -C ${{ matrix.spec }} WD-echidna-CI
         env:
           W3C_ECHIDNA_TOKEN_CORE: ${{ secrets.W3C_ECHIDNA_TOKEN_CORE }}
           W3C_ECHIDNA_TOKEN_JSAPI: ${{ secrets.W3C_ECHIDNA_TOKEN_JSAPI }}
