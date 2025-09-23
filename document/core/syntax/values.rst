@@ -125,7 +125,7 @@ Conventions
 
 * The meta variable ${:z} ranges over floating-point values where clear from context.
 
-* Where clear from context, shorthands like ${:+1} denote floating point values like ${f64: POS $($(NORM 1 0))}.
+* Where clear from context, shorthands like ${:+1} denote floating point values like ${f64: POS $($(NORM 0 0))}.
 
 
 .. index:: ! numeric vector, integer, floating-point, lane, SIMD
