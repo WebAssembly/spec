@@ -628,6 +628,9 @@ and render_expr' env expr =
     let se1 = render_expr env e1 in
     let se2 = render_expr env e2 in
     sprintf "%s is not contained in %s" se1 se2
+  | Al.Ast.UnE (`NotOp, { it = Al.Ast.ContextKindE a; _ }) ->
+    let sa = render_atom env a in
+    sprintf "the first non-value entry of the stack is not a %s" sa
   | Al.Ast.UnE (op, e) ->
     let sop = render_al_unop op in
     let se = render_expr env e in
