@@ -3903,7 +3903,7 @@ $$
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}}
 \mbox{(block type)} & {\mathit{blocktype}} & ::= & {{\mathit{valtype}}^?} \\
-& & | & {\mathit{funcidx}} \\
+& & | & {\mathit{typeidx}} \\
 \end{array}
 $$
 
@@ -4063,7 +4063,7 @@ $$
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
 {\mathrm{free}}_{\mathit{blocktype}}({{\mathit{valtype}}^?}) & = & {\mathrm{free}}_{\mathit{opt}}({{\mathrm{free}}_{\mathit{valtype}}({\mathit{valtype}})^?}) \\
-{\mathrm{free}}_{\mathit{blocktype}}({\mathit{funcidx}}) & = & {\mathrm{free}}_{\mathit{funcidx}}({\mathit{funcidx}}) \\
+{\mathrm{free}}_{\mathit{blocktype}}({\mathit{typeidx}}) & = & {\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}}) \\
 \end{array}
 $$
 

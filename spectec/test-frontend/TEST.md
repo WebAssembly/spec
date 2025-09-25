@@ -1945,7 +1945,7 @@ syntax vloadop_{vectype : vectype}(vectype) =
 ;; ../../../../specification/wasm-3.0/1.3-syntax.instructions.spectec
 syntax blocktype =
   | _RESULT{`valtype?` : valtype?}(valtype?{valtype <- `valtype?`} : valtype?)
-  | _IDX{funcidx : funcidx}(funcidx : funcidx)
+  | _IDX{typeidx : typeidx}(typeidx : typeidx)
 
 ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
 syntax addr = nat
@@ -2203,7 +2203,7 @@ def $free_blocktype(blocktype : blocktype) : free
   ;; ../../../../specification/wasm-3.0/1.3-syntax.instructions.spectec
   def $free_blocktype{`valtype?` : valtype?}(_RESULT_blocktype(valtype?{valtype <- `valtype?`})) = $free_opt($free_valtype(valtype)?{valtype <- `valtype?`})
   ;; ../../../../specification/wasm-3.0/1.3-syntax.instructions.spectec
-  def $free_blocktype{funcidx : funcidx}(_IDX_blocktype(funcidx)) = $free_funcidx(funcidx)
+  def $free_blocktype{typeidx : typeidx}(_IDX_blocktype(typeidx)) = $free_typeidx(typeidx)
 
 ;; ../../../../specification/wasm-3.0/1.3-syntax.instructions.spectec
 rec {
@@ -7631,7 +7631,7 @@ grammar Bblocktype : blocktype
   ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec
   prod{t : valtype} t:Bvaltype => _RESULT_blocktype(?(t))
   ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec
-  prod{i : s33} i:Bs33 => _IDX_blocktype(`%`_funcidx((i!`%`_s33.0 : int <:> nat)))
+  prod{i : s33} i:Bs33 => _IDX_blocktype(`%`_typeidx((i!`%`_s33.0 : int <:> nat)))
     -- if (i!`%`_s33.0 >= (0 : nat <:> int))
 
 ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec

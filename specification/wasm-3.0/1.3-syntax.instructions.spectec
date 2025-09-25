@@ -204,7 +204,7 @@ syntax vloadop_(vectype) hint(macro "%" "L%") =
 
 syntax blocktype hint(desc "block type") =
   | _RESULT valtype?
-  | _IDX funcidx
+  | _IDX typeidx
 
 var bt : blocktype
 
@@ -422,7 +422,7 @@ def $free_expr(expr) : free
 def $free_shape(lanetype X dim) = $free_lanetype(lanetype)
 
 def $free_blocktype(_RESULT valtype?) = $free_opt($free_valtype(valtype)?)
-def $free_blocktype(_IDX funcidx) = $free_funcidx(funcidx)
+def $free_blocktype(_IDX typeidx) = $free_typeidx(typeidx)
 
 
 def $free_instr(NOP) = {}

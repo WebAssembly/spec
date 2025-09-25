@@ -10129,7 +10129,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       #) Return :math:`\epsilon~\rightarrow~t`.
 
-#. Assert: Due to validation, :math:`{\mathit{blocktype}}` is some :math:`{\mathit{funcidx}}`.
+#. Assert: Due to validation, :math:`{\mathit{blocktype}}` is some :math:`{\mathit{typeidx}}`.
 
 #. Let :math:`x` be the block type :math:`{\mathit{blocktype}}`.
 
@@ -22680,11 +22680,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. Return :math:`{\mathrm{free}}_{\mathit{opt}}({{\mathrm{free}}_{\mathit{valtype}}({\mathit{valtype}})^?})`.
 
-#. Assert: Due to validation, :math:`{\mathit{blocktype}}` is some :math:`{\mathit{funcidx}}`.
+#. Assert: Due to validation, :math:`{\mathit{blocktype}}` is some :math:`{\mathit{typeidx}}`.
 
-#. Let :math:`{\mathit{funcidx}}` be the block type :math:`{\mathit{blocktype}}`.
+#. Let :math:`{\mathit{typeidx}}` be the block type :math:`{\mathit{blocktype}}`.
 
-#. Return :math:`{\mathrm{free}}_{\mathit{funcidx}}({\mathit{funcidx}})`.
+#. Return :math:`{\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}})`.
 
 
 :math:`{\mathrm{shift}}_{\mathit{labelidxs}}({{\mathit{labelidx}''}^\ast})`
@@ -25784,7 +25784,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ........................................................
 
 
-1. If :math:`{\mathit{blocktype}}` is some :math:`{\mathit{funcidx}}`, then:
+1. If :math:`{\mathit{blocktype}}` is some :math:`{\mathit{typeidx}}`, then:
 
    a. Let :math:`x` be the block type :math:`{\mathit{blocktype}}`.
 
@@ -31085,8 +31085,8 @@ free_blocktype blocktype
   a. Let (_RESULT valtype?) be blocktype.
   b. Return $free_opt($free_valtype(valtype)?).
 2. Assert: Due to validation, blocktype is some _IDX.
-3. Let (_IDX funcidx) be blocktype.
-4. Return $free_funcidx(funcidx).
+3. Let (_IDX typeidx) be blocktype.
+4. Return $free_typeidx(typeidx).
 
 shift_labelidxs labelidx''*
 1. If (labelidx''* = []), then:

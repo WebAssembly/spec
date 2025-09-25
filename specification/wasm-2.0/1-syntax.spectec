@@ -395,7 +395,7 @@ syntax vloadop =
 
 syntax blocktype hint(desc "block type") =
   | _RESULT valtype?
-  | _IDX funcidx
+  | _IDX typeidx
 
 var bt : blocktype
 
