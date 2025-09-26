@@ -184,7 +184,7 @@ syntax vcvtop__(Fnn_1 X M_1, Fnn_2 X M_2) =
 
 ;; Memory operators
 
-syntax memarg hint(desc "memory argument") = {ALIGN u32, OFFSET u32}
+syntax memarg hint(desc "memory argument") = {ALIGN u32, OFFSET u64}
 
 var ao : memarg
 

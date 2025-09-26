@@ -41,7 +41,7 @@ let try_with_error src i f x =
       { file = src.file; line = line + pos.line - 1;
         column = if line = 1 then column + pos.column - 1 else column} in
     let at' = {left = shift at.left; right = shift at.right} in
-Printexc.print_backtrace stdout;
+    Printexc.print_backtrace stdout;
     raise (Error.Error (at', msg))
 
 

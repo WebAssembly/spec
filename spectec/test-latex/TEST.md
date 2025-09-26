@@ -3878,7 +3878,7 @@ $$
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}}
 \mbox{(memory argument)} & {\mathit{memarg}} & ::= & \{ \begin{array}[t]{@{}l@{}l@{}}
-\mathsf{align}~{\mathit{u{\kern-0.1em\scriptstyle 32}}} ,  \mathsf{offset}~{\mathit{u{\kern-0.1em\scriptstyle 32}}} \} \\
+\mathsf{align}~{\mathit{u{\kern-0.1em\scriptstyle 32}}} ,  \mathsf{offset}~{\mathit{u{\kern-0.1em\scriptstyle 64}}} \} \\
 \end{array} \\
 \end{array}
 $$
@@ -6717,6 +6717,23 @@ $$
 
 \vspace{1ex}
 
+$\boxed{{\vdash}\, {\mathit{memarg}} : {\mathit{addrtype}} \rightarrow N}$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+{2^{n}} \leq N / 8
+ \qquad
+m < {2^{{|{\mathit{at}}|}}}
+}{
+{\vdash}\, \{ \mathsf{align}~n,\;\allowbreak \mathsf{offset}~m \} : {\mathit{at}} \rightarrow N
+} \, {[\textsc{\scriptsize Memarg\_ok}]}
+\qquad
+\end{array}
+$$
+
+\vspace{1ex}
+
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
@@ -6792,7 +6809,7 @@ $$
 \frac{
 C{.}\mathsf{mems}{}[x] = {\mathit{at}}~{\mathit{lim}}~\mathsf{page}
  \qquad
-{2^{{\mathit{memarg}}{.}\mathsf{align}}} \leq {|{\mathit{nt}}|} / 8
+{\vdash}\, {\mathit{memarg}} : {\mathit{at}} \rightarrow {|{\mathit{nt}}|}
 }{
 C \vdash {\mathit{nt}}{.}\mathsf{load}~x~{\mathit{memarg}} : {\mathit{at}} \rightarrow {\mathit{nt}}
 } \, {[\textsc{\scriptsize T{-}load{-}val}]}
@@ -6805,7 +6822,7 @@ $$
 \frac{
 C{.}\mathsf{mems}{}[x] = {\mathit{at}}~{\mathit{lim}}~\mathsf{page}
  \qquad
-{2^{{\mathit{memarg}}{.}\mathsf{align}}} \leq M / 8
+{\vdash}\, {\mathit{memarg}} : {\mathit{at}} \rightarrow M
 }{
 C \vdash {{\mathsf{i}}{N}{.}\mathsf{load}}{{M}{\mathsf{\_}}{{\mathit{sx}}}}~x~{\mathit{memarg}} : {\mathit{at}} \rightarrow {\mathsf{i}}{N}
 } \, {[\textsc{\scriptsize T{-}load{-}pack}]}
@@ -6818,7 +6835,7 @@ $$
 \frac{
 C{.}\mathsf{mems}{}[x] = {\mathit{at}}~{\mathit{lim}}~\mathsf{page}
  \qquad
-{2^{{\mathit{memarg}}{.}\mathsf{align}}} \leq {|{\mathit{nt}}|} / 8
+{\vdash}\, {\mathit{memarg}} : {\mathit{at}} \rightarrow {|{\mathit{nt}}|}
 }{
 C \vdash {\mathit{nt}}{.}\mathsf{store}~x~{\mathit{memarg}} : {\mathit{at}}~{\mathit{nt}} \rightarrow \epsilon
 } \, {[\textsc{\scriptsize T{-}store{-}val}]}
@@ -6831,7 +6848,7 @@ $$
 \frac{
 C{.}\mathsf{mems}{}[x] = {\mathit{at}}~{\mathit{lim}}~\mathsf{page}
  \qquad
-{2^{{\mathit{memarg}}{.}\mathsf{align}}} \leq M / 8
+{\vdash}\, {\mathit{memarg}} : {\mathit{at}} \rightarrow M
 }{
 C \vdash {{\mathsf{i}}{N}{.}\mathsf{store}}{M}~x~{\mathit{memarg}} : {\mathit{at}}~{\mathsf{i}}{N} \rightarrow \epsilon
 } \, {[\textsc{\scriptsize T{-}store{-}pack}]}
@@ -6844,7 +6861,7 @@ $$
 \frac{
 C{.}\mathsf{mems}{}[x] = {\mathit{at}}~{\mathit{lim}}~\mathsf{page}
  \qquad
-{2^{{\mathit{memarg}}{.}\mathsf{align}}} \leq {|\mathsf{v{\scriptstyle 128}}|} / 8
+{\vdash}\, {\mathit{memarg}} : {\mathit{at}} \rightarrow {|\mathsf{v{\scriptstyle 128}}|}
 }{
 C \vdash \mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~x~{\mathit{memarg}} : {\mathit{at}} \rightarrow \mathsf{v{\scriptstyle 128}}
 } \, {[\textsc{\scriptsize T{-}vload{-}val}]}
@@ -6857,7 +6874,7 @@ $$
 \frac{
 C{.}\mathsf{mems}{}[x] = {\mathit{at}}~{\mathit{lim}}~\mathsf{page}
  \qquad
-{2^{{\mathit{memarg}}{.}\mathsf{align}}} \leq M / 8 \cdot N
+{\vdash}\, {\mathit{memarg}} : {\mathit{at}} \rightarrow M \cdot N
 }{
 C \vdash {\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{M}{\mathsf{x}}{N}{\mathsf{\_}}{{\mathit{sx}}}}~x~{\mathit{memarg}} : {\mathit{at}} \rightarrow \mathsf{v{\scriptstyle 128}}
 } \, {[\textsc{\scriptsize T{-}vload{-}pack}]}
@@ -6870,7 +6887,7 @@ $$
 \frac{
 C{.}\mathsf{mems}{}[x] = {\mathit{at}}~{\mathit{lim}}~\mathsf{page}
  \qquad
-{2^{{\mathit{memarg}}{.}\mathsf{align}}} \leq N / 8
+{\vdash}\, {\mathit{memarg}} : {\mathit{at}} \rightarrow N
 }{
 C \vdash {\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{N}{\mathsf{\_}}{\mathsf{splat}}}~x~{\mathit{memarg}} : {\mathit{at}} \rightarrow \mathsf{v{\scriptstyle 128}}
 } \, {[\textsc{\scriptsize T{-}vload{-}splat}]}
@@ -6883,7 +6900,7 @@ $$
 \frac{
 C{.}\mathsf{mems}{}[x] = {\mathit{at}}~{\mathit{lim}}~\mathsf{page}
  \qquad
-{2^{{\mathit{memarg}}{.}\mathsf{align}}} \leq N / 8
+{\vdash}\, {\mathit{memarg}} : {\mathit{at}} \rightarrow N
 }{
 C \vdash {\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{N}{\mathsf{\_}}{\mathsf{zero}}}~x~{\mathit{memarg}} : {\mathit{at}} \rightarrow \mathsf{v{\scriptstyle 128}}
 } \, {[\textsc{\scriptsize T{-}vload{-}zero}]}
@@ -6896,7 +6913,7 @@ $$
 \frac{
 C{.}\mathsf{mems}{}[x] = {\mathit{at}}~{\mathit{lim}}~\mathsf{page}
  \qquad
-{2^{{\mathit{memarg}}{.}\mathsf{align}}} \leq N / 8
+{\vdash}\, {\mathit{memarg}} : {\mathit{at}} \rightarrow N
  \qquad
 i < 128 / N
 }{
@@ -6911,7 +6928,7 @@ $$
 \frac{
 C{.}\mathsf{mems}{}[x] = {\mathit{at}}~{\mathit{lim}}~\mathsf{page}
  \qquad
-{2^{{\mathit{memarg}}{.}\mathsf{align}}} \leq {|\mathsf{v{\scriptstyle 128}}|} / 8
+{\vdash}\, {\mathit{memarg}} : {\mathit{at}} \rightarrow {|\mathsf{v{\scriptstyle 128}}|}
 }{
 C \vdash \mathsf{v{\scriptstyle 128}}{.}\mathsf{store}~x~{\mathit{memarg}} : {\mathit{at}}~\mathsf{v{\scriptstyle 128}} \rightarrow \epsilon
 } \, {[\textsc{\scriptsize T{-}vstore}]}
@@ -6924,7 +6941,7 @@ $$
 \frac{
 C{.}\mathsf{mems}{}[x] = {\mathit{at}}~{\mathit{lim}}~\mathsf{page}
  \qquad
-{2^{{\mathit{memarg}}{.}\mathsf{align}}} \leq N / 8
+{\vdash}\, {\mathit{memarg}} : {\mathit{at}} \rightarrow N
  \qquad
 i < 128 / N
 }{
@@ -11471,8 +11488,8 @@ $$
 
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
-& {\mathtt{memarg}} & ::= & n{:}{\mathtt{u32}}~~m{:}{\mathtt{u32}} & \quad\Rightarrow\quad{} & (0, \{ \mathsf{align}~n,\;\allowbreak \mathsf{offset}~m \}) & \quad \mbox{if}~ n < {2^{6}} \\
-& & | & n{:}{\mathtt{u32}}~~x{:}{\mathtt{memidx}}~~m{:}{\mathtt{u32}} & \quad\Rightarrow\quad{} & (x, \{ \mathsf{align}~(n - {2^{6}}),\;\allowbreak \mathsf{offset}~m \}) & \quad \mbox{if}~ {2^{6}} \leq n < {2^{7}} \\
+& {\mathtt{memarg}} & ::= & n{:}{\mathtt{u32}}~~m{:}{\mathtt{u64}} & \quad\Rightarrow\quad{} & (0, \{ \mathsf{align}~n,\;\allowbreak \mathsf{offset}~m \}) & \quad \mbox{if}~ n < {2^{6}} \\
+& & | & n{:}{\mathtt{u32}}~~x{:}{\mathtt{memidx}}~~m{:}{\mathtt{u64}} & \quad\Rightarrow\quad{} & (x, \{ \mathsf{align}~(n - {2^{6}}),\;\allowbreak \mathsf{offset}~m \}) & \quad \mbox{if}~ {2^{6}} \leq n < {2^{7}} \\
 & {\mathtt{instr}} & ::= & \dots \\
 & & | & \mathtt{0x28}~~(x, {\mathit{ao}}){:}{\mathtt{memarg}} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 32}}{.}\mathsf{load}~x~{\mathit{ao}} \\
 & & | & \mathtt{0x29}~~(x, {\mathit{ao}}){:}{\mathtt{memarg}} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 64}}{.}\mathsf{load}~x~{\mathit{ao}} \\
