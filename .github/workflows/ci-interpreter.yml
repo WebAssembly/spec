@@ -27,10 +27,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20.x
+          node-version: 24.x
       - name: Build interpreter
         run: cd interpreter && opam exec make
       - name: Run tests
-        # TODO: reactivate node once it supports all of Wasm 3.0
-        # run: cd interpreter && opam exec make JS=node ci
-        run: cd interpreter && opam exec make ci
+        run: cd interpreter && opam exec make JS=node ci
