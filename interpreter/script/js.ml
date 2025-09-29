@@ -629,7 +629,7 @@ let is_js_vectype = function
   | _ -> false
 
 let is_js_reftype = function
-  | (_, ExnHT) -> false
+  | (_, (ExnHT | NoExnHT)) -> false
   | _ -> true
 
 let is_js_valtype = function
