@@ -27,7 +27,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 24.x
+          node-version: 25-nightly
       - name: Build interpreter
         run: cd interpreter && opam exec make
       - name: Run tests
