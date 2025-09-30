@@ -6,5 +6,6 @@
     totalize
     unthe
     sideconditions
+    typefamilyremoval
   )
 )
