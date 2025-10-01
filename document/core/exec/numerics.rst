@@ -592,7 +592,7 @@ The integer result of predicates -- i.e., :ref:`tests <syntax-testop>` and :ref:
 
 .. math::
    \begin{array}{@{}lcll}
-   \ialltrue_N(i) &=& \tobool(i =/= 0)
+   \ialltrue_N(i) &=& \tobool(i \neq 0)
    \end{array}
 
 

@@ -92,6 +92,9 @@ spec:
 spec-pdf:
 	(cd ../document/core && make pdf)
 
+spec-html:
+	(cd ../document/core && make html)
+
 spec-clean:
 	(cd ../document/core && make clean)
 

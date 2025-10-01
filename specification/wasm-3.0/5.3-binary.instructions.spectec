@@ -82,8 +82,8 @@ grammar Binstr/table : instr = ...
 syntax memidxop = (memidx, memarg)
 
 grammar Bmemarg : memidxop =
-  | n:Bu32 m:Bu32 => (0, {ALIGN n, OFFSET m})                       -- if $(n < 2^6)
-  | n:Bu32 x:Bmemidx m:Bu32 => (x, {ALIGN $((n - 2^6)), OFFSET m})  -- if $(2^6 <= n < 2^7)
+  | n:Bu32 m:Bu64 => (0, {ALIGN n, OFFSET m})                       -- if $(n < 2^6)
+  | n:Bu32 x:Bmemidx m:Bu64 => (x, {ALIGN $((n - 2^6)), OFFSET m})  -- if $(2^6 <= n < 2^7)
 
 grammar Binstr/memory : instr = ...
   | 0x28 (x,ao):Bmemarg => LOAD I32 x ao

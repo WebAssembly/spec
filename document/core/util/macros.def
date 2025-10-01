@@ -1235,6 +1235,8 @@
 .. |subexterntypematch| mathdef:: \xref{valid/matching}{match-externtype}{\leq}
 .. |sublimitsmatch| mathdef:: \xref{valid/matching}{match-limits}{\leq}
 
+.. |arrowmemarg| mathdef:: \xref{valid/instructions}{valid-memarg}{\rightarrow}
+.. |vdashmemarg| mathdef:: \xref{valid/instructions}{valid-memarg}{\vdash}
 .. |vdashinstr| mathdef:: \xref{valid/instructions}{valid-instr}{\vdash}
 .. |vdashinstrs| mathdef:: \xref{valid/instructions}{valid-instrs}{\vdash}
 .. |vdashcatch| mathdef:: \xref{valid/instructions}{valid-catch}{\vdash}
