@@ -583,16 +583,16 @@ The integer result of predicates -- i.e., :ref:`tests <syntax-testop>` and :ref:
    \end{array}
 
 
-.. _op-inez:
+.. _op-iall_true:
 
-:math:`\inez_N(i)`
-..................
+:math:`\ialltrue_N(i)`
+......................
 
 * Return :math:`0` if :math:`i` is zero, :math:`1` otherwise.
 
 .. math::
    \begin{array}{@{}lcll}
-   \inez_N(i) &=& \tobool(i =/= 0)
+   \ialltrue_N(i) &=& \tobool(i =/= 0)
    \end{array}
 
 
