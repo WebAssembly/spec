@@ -1074,11 +1074,13 @@
 .. |Tmemarg| mathdef:: \xref{text/instructions}{text-memarg}{\T{memarg}}
 .. |Talign| mathdef:: \xref{text/instructions}{text-memarg}{\T{align}}
 .. |Toffset| mathdef:: \xref{text/instructions}{text-memarg}{\T{offset}}
+.. |Tlaneidx| mathdef:: \xref{text/instructions}{text-laneidx}{\T{laneidx}}
 
 .. |Tblocktype| mathdef:: \xref{text/instructions}{text-blocktype}{\T{blocktype}}
 
 .. |Tlabel| mathdef:: \xref{text/instructions}{text-label}{\T{label}}
 .. |Tinstr| mathdef:: \xref{text/instructions}{text-instr}{\T{instr}}
+.. |Tinstrs| mathdef:: \xref{text/instructions}{text-instrs}{\T{instrs}}
 .. |Tplaininstr| mathdef:: \xref{text/instructions}{text-plaininstr}{\T{plaininstr}}
 .. |Tblockinstr| mathdef:: \xref{text/instructions}{text-blockinstr}{\T{blockinstr}}
 .. |Tfoldedinstr| mathdef:: \xref{text/instructions}{text-foldedinstr}{\T{foldedinstr}}

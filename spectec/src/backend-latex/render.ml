@@ -1083,12 +1083,17 @@ let render_text s =
     | '%' -> Buffer.add_string buf "\\%"
     | '&' -> Buffer.add_string buf "\\&"
     | '_' -> Buffer.add_string buf "\\_"
-    | '-' -> Buffer.add_string buf "\\mbox{-}"
-    | '{' -> Buffer.add_string buf "\\{"  (* TODO: not typeset in TT *)
-    | '}' -> Buffer.add_string buf "\\}"  (* TODO: not typeset in TT *)
-    | '[' -> Buffer.add_string buf "{[}"
-    | ']' -> Buffer.add_string buf "{]}"
-    | '\\' -> Buffer.add_string buf "\\backslash{}"  (* TODO: not typeset in TT *)
+    | '=' -> Buffer.add_string buf "{=}"
+    | '<' -> Buffer.add_string buf "{<}"
+    | '>' -> Buffer.add_string buf "{>}"
+    | '-' -> Buffer.add_string buf "\\mbox{\\tt-}"
+    | '(' -> Buffer.add_string buf "\\mbox{\\tt(}"
+    | ')' -> Buffer.add_string buf "\\mbox{\\tt)}"
+    | '{' -> Buffer.add_string buf "\\mbox{\\tt\\{}"
+    | '}' -> Buffer.add_string buf "\\mbox{\\tt\\}}"
+    | '[' -> Buffer.add_string buf "\\mbox{\\tt[}"
+    | ']' -> Buffer.add_string buf "\\mbox{\\tt]}"
+    | '\\' -> Buffer.add_string buf "{\\backslash}"  (* TODO: not typeset in TT *)
     | '^' ->  Buffer.add_string buf "\\hat{~~}"
     | '`' ->  Buffer.add_string buf "\\grave{~~}"
     | '~' ->  Buffer.add_string buf "\\tilde{~~}"
@@ -1252,6 +1257,8 @@ and render_exp env e =
   | NumE _ -> assert false
   | TextE t -> render_text t
   | CvtE (e1, _) -> render_exp env e1
+  | UnE (`NotOp, {it = MemE (e1, e2); _}) ->
+    render_exp env e1 ^ " \\notin " ^ render_exp env e2
   | UnE (op, e2) -> "{" ^ render_unop op ^ render_exp env e2 ^ "}"
   | BinE (e1, `PowOp, ({it = ParenE e2; _ } | e2)) ->
     "{" ^ render_exp env e1 ^ "^{" ^ render_exp env e2 ^ "}}"

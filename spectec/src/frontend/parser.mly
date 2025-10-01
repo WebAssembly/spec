@@ -159,7 +159,7 @@ and short_alt_prod' = function
 %token NOT AND OR
 %token QUEST PLUS MINUS STAR SLASH BACKSLASH UP CAT PLUSMINUS MINUSPLUS
 %token ARROW ARROW2 ARROWSUB ARROW2SUB DARROW2 SQARROW SQARROWSUB SQARROWSTAR SQARROWSTARSUB
-%token MEM PREC SUCC TURNSTILE TILESTURN TURNSTILESUB TILESTURNSUB
+%token MEM NOTMEM PREC SUCC TURNSTILE TILESTURN TURNSTILESUB TILESTURNSUB
 %token DOLLAR TICK
 %token BOT TOP
 %token HOLE MULTIHOLE NOTHING FUSE FUSEFUSE LATEX
@@ -182,7 +182,7 @@ and short_alt_prod' = function
 %right SQARROW SQARROWSUB SQARROWSTAR SQARROWSTARSUB PREC SUCC BIGAND BIGOR BIGADD BIGMUL BIGCAT
 %left COLON SUB SUP ASSIGN EQUIV APPROX COLONSUB EQUIVSUB APPROXSUB
 %left COMMA COMMA_NL
-%right EQ NE LT GT LE GE MEM EQSUB
+%right EQ NE LT GT LE GE MEM NOTMEM EQSUB
 %right ARROW ARROWSUB
 %left SEMICOLON
 %left DOTDOTDOT
@@ -296,6 +296,7 @@ atom_escape :
   | TICK LE { Atom.LessEqual }
   | TICK GE { Atom.GreaterEqual }
   | TICK MEM { Atom.Mem }
+  | TICK NOTMEM { Atom.NotMem }
   | TICK QUEST { Atom.Quest }
   | TICK PLUS { Atom.Plus }
   | TICK STAR { Atom.Star }
@@ -654,6 +655,7 @@ exp_bin_ :
   | exp_bin boolop exp_bin { BinE ($1, $2, $3) }
   | exp_bin CAT exp_bin { CatE ($1, $3) }
   | exp_bin MEM exp_bin { MemE ($1, $3) }
+  | exp_bin NOTMEM exp_bin { UnE (`NotOp, MemE ($1, $3) $ $sloc) }
 
 exp_rel : exp_rel_ { $1 $ $sloc }
 exp_rel_ :
@@ -722,6 +724,7 @@ arith_bin_ :
   | arith_bin boolop arith_bin { BinE ($1, $2, $3) }
   | arith_bin CAT arith_bin { CatE ($1, $3) }
   | arith_bin MEM arith_bin { MemE ($1, $3) }
+  | arith_bin NOTMEM arith_bin { UnE (`NotOp, MemE ($1, $3) $ $sloc) }
 
 arith : arith_bin { $1 }
 

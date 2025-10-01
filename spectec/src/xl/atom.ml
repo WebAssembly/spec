@@ -16,6 +16,7 @@ and atom' =
   | Semicolon                    (* `;` *)
   | Backslash                    (* `\` *)
   | Mem                          (* `<-` *)
+  | NotMem                       (* `</-` *)
   | Arrow                        (* `->` *)
   | Arrow2                       (* ``=>` *)
   | ArrowSub                     (* `->_` *)
@@ -104,6 +105,7 @@ let to_string atom =
   | Semicolon -> ";"
   | Backslash -> "\\"
   | Mem -> "<-"
+  | NotMem -> "</-"
   | Arrow -> "->"
   | Arrow2 -> "=>"
   | ArrowSub -> "->_"
@@ -168,6 +170,7 @@ let name atom =
   | Semicolon -> "semicolon"      (* Latex: ; *)
   | Backslash -> "setminus"
   | Mem -> "in"
+  | NotMem -> "notin"
   | Arrow -> "arrow"              (* Latex: \rightarrow *)
   | Arrow2 -> "darrow"            (* Latex: \Rightarrow *)
   | ArrowSub -> "arrow_"          (* Latex: \rightarrow with subscript *)
