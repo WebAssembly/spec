@@ -405,7 +405,7 @@ rule Instr_ok/elem.drop:
 
 ;; Memory instructions
 
-relation Memarg_ok: |- memarg : addrtype -> N  hint(name "T-memarg") hint(macro "%memarg") hint(prosepp "for")
+relation Memarg_ok: |- memarg : addrtype -> N  hint(name "T-memarg") hint(macro "%memarg") hint(prose "%1 is valid for %2 and %3")
 
 rule Memarg_ok:
   |- {ALIGN n, OFFSET m} : at -> N
