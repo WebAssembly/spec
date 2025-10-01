@@ -196,7 +196,7 @@ Instructions in this group are concerned with linear :ref:`memory <syntax-mem>`.
 
 $${syntax: memarg loadop_ storeop_ vloadop_ {instr/memory instr/data}}
 
-Memory is accessed with ${:LOAD} and ${:STORE} instructions for the different :ref:`number types <syntax-numtype>` and `vector types <syntax-vectype>`.
+Memory is accessed with ${:LOAD} and ${:STORE} instructions for the different :ref:`number types <syntax-numtype>` and :ref:`vector types <syntax-vectype>`.
 They all take a :ref:`memory index <syntax-memidx>` and a *memory argument* ${:memarg} that contains an address *offset* and the expected *alignment* (expressed as the exponent of a power of 2).
 
 Integer loads and stores can optionally specify a *storage size* ${:sz} that is smaller than the :ref:`bit width <syntax-numtype>` of the respective value type.
@@ -213,8 +213,8 @@ The ${:MEMORY.SIZE} instruction returns the current size of a memory.
 The ${:MEMORY.GROW} instruction grows a memory by a given delta and returns the previous size, or ${:$(-1)} if enough memory cannot be allocated.
 Both instructions operate in units of :ref:`page size <page-size>`.
 
-The ${:MEMORY.FILL} instruction sets all values in a regionof a memory to a given byte.
-The ${:MEMORY.COPY} instruction copies data from a source memory region to a possibly overlapping destination region in another or the same memory; the first index denotes the destination
+The ${:MEMORY.FILL} instruction sets all values in a region of memory to a given byte.
+The ${:MEMORY.COPY} instruction copies data from a source memory region to a possibly overlapping destination region in another or the same memory; the first index denotes the destination.
 The ${:MEMORY.INIT} instruction copies data from a :ref:`passive data segment <syntax-data>` into a memory.
 
 The ${:DATA.DROP} instruction prevents further use of a passive data segment. This instruction is intended to be used as an optimization hint. After a data segment is dropped its data can no longer be retrieved, so the memory used by this segment may be freed.
