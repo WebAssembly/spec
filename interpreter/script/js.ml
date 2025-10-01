@@ -629,7 +629,7 @@ let is_js_vectype = function
   | _ -> false
 
 let is_js_reftype = function
-  | (_, ExnHT) -> false
+  | (_, (ExnHT | NoExnHT)) -> false
   | _ -> true
 
 let is_js_valtype = function
@@ -776,7 +776,7 @@ let of_action env act =
 
 let of_assertion' env act loc name args wrapper_opt =
   let act_js, act_wrapper_opt = of_action env act in
-  let js = name ^ "(() => " ^ act_js ^ loc ^ String.concat ", " ("" :: args) ^ ")" in
+  let js = name ^ "(() => " ^ act_js ^ ", " ^ loc ^ String.concat ", " ("" :: args) ^ ")" in
   match act_wrapper_opt with
   | None -> js ^ ";"
   | Some (act_wrapper, out) ->
@@ -784,7 +784,7 @@ let of_assertion' env act loc name args wrapper_opt =
       match wrapper_opt with
       | None -> name, run
       | Some wrapper -> "run", wrapper
-    in run_name ^ "(() => " ^ act_wrapper (wrapper out) act.at ^ loc ^ ");  // " ^ js
+    in run_name ^ "(() => " ^ act_wrapper (wrapper out) act.at ^ ", " ^ loc ^ ");  // " ^ js
 
 let of_assertion env ass =
   let loc = of_loc ass.at in

@@ -132,7 +132,7 @@ def $ibitselect_(N, iN(N), iN(N), iN(N)) : iN(N)
 def $irelaxed_laneselect_(N, iN(N), iN(N), iN(N)) : iN(N)*
 
 def $ieqz_(N, iN(N)) : u32
-def $inez_(N, iN(N)) : u32
+def $iall_true_(N, iN(N)) : u32          hint(show $iall__true_(%1,%2))
 
 def $ieq_(N, iN(N), iN(N)) : u32
 def $ine_(N, iN(N), iN(N)) : u32
@@ -217,7 +217,7 @@ def $irelaxed_laneselect_ hint(builtin)
 
 def $ieqz_(N, i_1) = $bool(i_1 = 0)
 
-def $inez_(N, i_1) = $bool(i_1 =/= 0)
+def $iall_true_(N, i_1) = $bool(i_1 =/= 0)
 
 
 def $ieq_(N, i_1, i_2) = $bool(i_1 = i_2)

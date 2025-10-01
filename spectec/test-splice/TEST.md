@@ -9,8 +9,6 @@ $ (../src/exe-spectec/main.exe ../../../../specification/wasm-3.0/*.spectec -l -
 == IL Validation after pass sideconditions...
 == Translating to AL...
 == Prose Generation...
-Untranslated relation Expand: `%~~%`(deftype, comptype)
-Untranslated relation Expand_use: `%~~_%%`(typeuse, context, comptype)
 == Splicing...
 \documentclass[a4paper]{scrartcl}
 
@@ -187,7 +185,7 @@ C \vdash {\mathit{bt}} : {t_1^\ast} \rightarrow {t_2^\ast}
 \{ \mathsf{labels}~({t_2^\ast}) \} \oplus C \vdash {{\mathit{instr}}^\ast} : {t_1^\ast} \rightarrow_{{x^\ast}} {t_2^\ast}
 }{
 C \vdash \mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}^\ast} : {t_1^\ast} \rightarrow {t_2^\ast}
-} \, {[\textsc{\scriptsize T{-}block}]}
+} \, {[\textsc{\scriptsize T{-}instr{-}block}]}
 \qquad
 \end{array}
 $$
@@ -200,7 +198,7 @@ C \vdash {\mathit{bt}} : {t_1^\ast} \rightarrow {t_2^\ast}
 \{ \mathsf{labels}~({t_1^\ast}) \} \oplus C \vdash {{\mathit{instr}}^\ast} : {t_1^\ast} \rightarrow_{{x^\ast}} {t_2^\ast}
 }{
 C \vdash \mathsf{loop}~{\mathit{bt}}~{{\mathit{instr}}^\ast} : {t_1^\ast} \rightarrow {t_2^\ast}
-} \, {[\textsc{\scriptsize T{-}loop}]}
+} \, {[\textsc{\scriptsize T{-}instr{-}loop}]}
 \qquad
 \end{array}
 $$
@@ -215,7 +213,7 @@ C \vdash {\mathit{bt}} : {t_1^\ast} \rightarrow {t_2^\ast}
 \{ \mathsf{labels}~({t_2^\ast}) \} \oplus C \vdash {{\mathit{instr}}_2^\ast} : {t_1^\ast} \rightarrow_{{x_2^\ast}} {t_2^\ast}
 }{
 C \vdash \mathsf{if}~{\mathit{bt}}~{{\mathit{instr}}_1^\ast}~\mathsf{else}~{{\mathit{instr}}_2^\ast} : {t_1^\ast}~\mathsf{i{\scriptstyle 32}} \rightarrow {t_2^\ast}
-} \, {[\textsc{\scriptsize T{-}if}]}
+} \, {[\textsc{\scriptsize T{-}instr{-}if}]}
 \qquad
 \end{array}
 $$
@@ -1152,6 +1150,7 @@ warning: rule `Limits_sub` was never spliced
 warning: rule `Local_ok/set` was never spliced
 warning: rule `Local_ok/unset` was never spliced
 warning: rule `Mem_ok` was never spliced
+warning: rule `Memarg_ok` was never spliced
 warning: rule `Memtype_ok` was never spliced
 warning: rule `Memtype_sub` was never spliced
 warning: rule `Module_ok` was never spliced
@@ -1642,6 +1641,7 @@ warning: definition `halfop` was never spliced
 warning: definition `iabs_` was never spliced
 warning: definition `iadd_` was never spliced
 warning: definition `iadd_sat_` was never spliced
+warning: definition `iall_true_` was never spliced
 warning: definition `iand_` was never spliced
 warning: definition `iandnot_` was never spliced
 warning: definition `iavgr_` was never spliced
@@ -1665,7 +1665,6 @@ warning: definition `importsd` was never spliced
 warning: definition `imul_` was never spliced
 warning: definition `ine_` was never spliced
 warning: definition `ineg_` was never spliced
-warning: definition `inez_` was never spliced
 warning: definition `inot_` was never spliced
 warning: definition `inst_globaltype` was never spliced
 warning: definition `inst_memtype` was never spliced
@@ -1916,6 +1915,10 @@ warning: rule prose `Elemmode_ok/active` was never spliced
 warning: rule prose `Elemmode_ok/declare` was never spliced
 warning: rule prose `Elemmode_ok/passive` was never spliced
 warning: rule prose `Eval_expr` was never spliced
+warning: rule prose `Expand` was never spliced
+warning: rule prose `Expand_use` was never spliced
+warning: rule prose `Expand_use/deftype` was never spliced
+warning: rule prose `Expand_use/typeidx` was never spliced
 warning: rule prose `Export_ok` was never spliced
 warning: rule prose `Expr_const` was never spliced
 warning: rule prose `Expr_ok` was never spliced
@@ -2120,6 +2123,7 @@ warning: rule prose `Local_ok` was never spliced
 warning: rule prose `Local_ok/set` was never spliced
 warning: rule prose `Local_ok/unset` was never spliced
 warning: rule prose `Mem_ok` was never spliced
+warning: rule prose `Memarg_ok` was never spliced
 warning: rule prose `Memtype_ok` was never spliced
 warning: rule prose `Memtype_sub` was never spliced
 warning: rule prose `Module_ok` was never spliced
@@ -2484,6 +2488,7 @@ warning: definition prose `halfop` was never spliced
 warning: definition prose `iabs_` was never spliced
 warning: definition prose `iadd_` was never spliced
 warning: definition prose `iadd_sat_` was never spliced
+warning: definition prose `iall_true_` was never spliced
 warning: definition prose `idiv_` was never spliced
 warning: definition prose `ieq_` was never spliced
 warning: definition prose `ieqz_` was never spliced
@@ -2498,7 +2503,6 @@ warning: definition prose `importsd` was never spliced
 warning: definition prose `imul_` was never spliced
 warning: definition prose `ine_` was never spliced
 warning: definition prose `ineg_` was never spliced
-warning: definition prose `inez_` was never spliced
 warning: definition prose `inst_globaltype` was never spliced
 warning: definition prose `inst_memtype` was never spliced
 warning: definition prose `inst_reftype` was never spliced

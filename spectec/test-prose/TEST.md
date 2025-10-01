@@ -13742,8 +13742,6 @@ spectec 0.5 generator
 == IL Validation after pass sideconditions...
 == Translating to AL...
 == Prose Generation...
-Untranslated relation Expand: `%~~%`(deftype, comptype)
-Untranslated relation Expand_use: `%~~_%%`(typeuse, context, comptype)
 
 
 
@@ -13768,6 +13766,14 @@ The packed type :math:`{\mathit{packtype}}` :ref:`matches <match>` only itself.
 
 
 The number type :math:`{\mathit{numtype}}` :ref:`matches <match>` only itself.
+
+
+
+
+The :ref:`expansion <aux-expand-deftype>` of :math:`{\mathit{deftype}}` is :math:`{\mathit{comptype}}` if:
+
+
+   * The composite type :math:`{\mathrm{expand}}({\mathit{deftype}})` is of the form :math:`{\mathit{comptype}}`.
 
 
 
@@ -14697,6 +14703,44 @@ The instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}` is 
 
 
 
+The :ref:`expansion <aux-expand-typeuse>` of :math:`C` is :math:`{\mathit{comptype}}` if:
+
+
+   * Either:
+
+      * The type use :math:`{\mathit{typeuse}}` is of the form :math:`{\mathit{deftype}}`.
+
+      * The :ref:`expansion <aux-expand-deftype>` of :math:`{\mathit{deftype}}` is :math:`{\mathit{comptype}}`.
+
+   * Or:
+
+      * The type use :math:`{\mathit{typeuse}}` is of the form :math:`{\mathit{typeidx}}`.
+
+      * The type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
+
+      * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is :math:`{\mathit{comptype}}`.
+
+
+
+
+The :ref:`expansion <aux-expand-typeuse>` of :math:`C` is :math:`{\mathit{comptype}}` if:
+
+
+   * The :ref:`expansion <aux-expand-deftype>` of :math:`{\mathit{deftype}}` is :math:`{\mathit{comptype}}`.
+
+
+
+
+The :ref:`expansion <aux-expand-typeuse>` of :math:`C` is :math:`{\mathit{comptype}}` if:
+
+
+   * The type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
+
+   * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is :math:`{\mathit{comptype}}`.
+
+
+
+
 The limits range :math:`{}[ n .. {m^?} ]` is :ref:`valid <valid-val>` within :math:`k` if:
 
 
@@ -15141,6 +15185,16 @@ The value type :math:`t` is defaultable if:
 
 
    * The value :math:`{{\mathrm{default}}}_{t}` is not absent.
+
+
+
+
+:math:`\{ \mathsf{align}~n,\;\allowbreak \mathsf{offset}~m \}` is valid for :math:`{\mathit{at}}` and :math:`N` if:
+
+
+   * :math:`{2^{n}}` is less than or equal to :math:`N / 8`.
+
+   * :math:`m` is less than :math:`{2^{{|{\mathit{at}}|}}}`.
 
 
 
@@ -15991,7 +16045,7 @@ The instruction :math:`({{\mathit{nt}}{.}\mathsf{load}}{{{\mathit{loadop}}^?}}~x
 
       * The value type :math:`{\mathit{valtype}}` is of the form :math:`{\mathit{nt}}`.
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
+      * :math:`{\mathit{memarg}}` is valid for :math:`{\mathit{at}}` and :math:`{|{\mathit{nt}}|}`.
 
    * Or:
 
@@ -16001,7 +16055,7 @@ The instruction :math:`({{\mathit{nt}}{.}\mathsf{load}}{{{\mathit{loadop}}^?}}~x
 
       * The value type :math:`{\mathit{valtype}}` is of the form :math:`{\mathsf{i}}{N}`.
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
+      * :math:`{\mathit{memarg}}` is valid for :math:`{\mathit{at}}` and :math:`M`.
 
 
 
@@ -16019,7 +16073,7 @@ The instruction :math:`({{\mathit{nt}}{.}\mathsf{store}}{{{\mathit{storeop}}^?}}
 
       * The value type :math:`{\mathit{valtype}}` is of the form :math:`{\mathit{nt}}`.
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
+      * :math:`{\mathit{memarg}}` is valid for :math:`{\mathit{at}}` and :math:`{|{\mathit{nt}}|}`.
 
    * Or:
 
@@ -16029,7 +16083,7 @@ The instruction :math:`({{\mathit{nt}}{.}\mathsf{store}}{{{\mathit{storeop}}^?}}
 
       * The value type :math:`{\mathit{valtype}}` is of the form :math:`{\mathsf{i}}{N}`.
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
+      * :math:`{\mathit{memarg}}` is valid for :math:`{\mathit{at}}` and :math:`M`.
 
 
 
@@ -16045,23 +16099,23 @@ The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{{\mathit
 
       * :math:`{{\mathit{vloadop}}^?}` is absent.
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|\mathsf{v{\scriptstyle 128}}|} / 8`.
+      * :math:`{\mathit{memarg}}` is valid for :math:`{\mathit{at}}` and :math:`{|\mathsf{v{\scriptstyle 128}}|}`.
 
    * Or:
 
       * :math:`{{\mathit{vloadop}}^?}` is of the form :math:`({M}{\mathsf{x}}{N}{\mathsf{\_}}{{\mathit{sx}}})`.
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8 \cdot N`.
+      * :math:`{\mathit{memarg}}` is valid for :math:`{\mathit{at}}` and :math:`M \cdot N`.
    * Or:
 
       * :math:`{{\mathit{vloadop}}^?}` is of the form :math:`({N}{\mathsf{\_}}{\mathsf{splat}})`.
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`N / 8`.
+      * :math:`{\mathit{memarg}}` is valid for :math:`{\mathit{at}}` and :math:`N`.
    * Or:
 
       * :math:`{{\mathit{vloadop}}^?}` is of the form :math:`({N}{\mathsf{\_}}{\mathsf{zero}})`.
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`N / 8`.
+      * :math:`{\mathit{memarg}}` is valid for :math:`{\mathit{at}}` and :math:`N`.
 
 
 
@@ -16073,7 +16127,7 @@ The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{N}{\maths
 
    * The memory :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
 
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`N / 8`.
+   * :math:`{\mathit{memarg}}` is valid for :math:`{\mathit{at}}` and :math:`N`.
 
    * :math:`i` is less than :math:`128 / N`.
 
@@ -16087,7 +16141,7 @@ The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{store}~x~{\mathit
 
    * The memory :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
 
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|\mathsf{v{\scriptstyle 128}}|} / 8`.
+   * :math:`{\mathit{memarg}}` is valid for :math:`{\mathit{at}}` and :math:`{|\mathsf{v{\scriptstyle 128}}|}`.
 
 
 
@@ -16099,7 +16153,7 @@ The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{store}}{N}{\math
 
    * The memory :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
 
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`N / 8`.
+   * :math:`{\mathit{memarg}}` is valid for :math:`{\mathit{at}}` and :math:`N`.
 
    * :math:`i` is less than :math:`128 / N`.
 
@@ -16291,7 +16345,7 @@ The instruction :math:`({\mathit{nt}}{.}\mathsf{load}~x~{\mathit{memarg}})` is :
 
    * The memory :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
 
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
+   * :math:`{\mathit{memarg}}` is valid for :math:`{\mathit{at}}` and :math:`{|{\mathit{nt}}|}`.
 
 
 
@@ -16303,7 +16357,7 @@ The instruction :math:`({{\mathsf{i}}{N}{.}\mathsf{load}}{{M}{\mathsf{\_}}{{\mat
 
    * The memory :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
 
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
+   * :math:`{\mathit{memarg}}` is valid for :math:`{\mathit{at}}` and :math:`M`.
 
 
 
@@ -16315,7 +16369,7 @@ The instruction :math:`({\mathit{nt}}{.}\mathsf{store}~x~{\mathit{memarg}})` is 
 
    * The memory :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
 
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
+   * :math:`{\mathit{memarg}}` is valid for :math:`{\mathit{at}}` and :math:`{|{\mathit{nt}}|}`.
 
 
 
@@ -16327,7 +16381,7 @@ The instruction :math:`({{\mathsf{i}}{N}{.}\mathsf{store}}{M}~x~{\mathit{memarg}
 
    * The memory :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
 
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
+   * :math:`{\mathit{memarg}}` is valid for :math:`{\mathit{at}}` and :math:`M`.
 
 
 
@@ -16339,7 +16393,7 @@ The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~x~{\mathit{
 
    * The memory :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
 
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|\mathsf{v{\scriptstyle 128}}|} / 8`.
+   * :math:`{\mathit{memarg}}` is valid for :math:`{\mathit{at}}` and :math:`{|\mathsf{v{\scriptstyle 128}}|}`.
 
 
 
@@ -16351,7 +16405,7 @@ The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{M}{\math
 
    * The memory :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
 
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8 \cdot N`.
+   * :math:`{\mathit{memarg}}` is valid for :math:`{\mathit{at}}` and :math:`M \cdot N`.
 
 
 
@@ -16363,7 +16417,7 @@ The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{N}{\math
 
    * The memory :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
 
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`N / 8`.
+   * :math:`{\mathit{memarg}}` is valid for :math:`{\mathit{at}}` and :math:`N`.
 
 
 
@@ -16375,7 +16429,7 @@ The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{N}{\math
 
    * The memory :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
 
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`N / 8`.
+   * :math:`{\mathit{memarg}}` is valid for :math:`{\mathit{at}}` and :math:`N`.
 
 
 
@@ -23910,8 +23964,8 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return :math:`\mathbb{B}(i_1 = 0)`.
 
 
-:math:`{{\mathrm{inez}}}_{N}(i_1)`
-..................................
+:math:`{{\mathrm{iall\_true}}}_{N}(i_1)`
+........................................
 
 
 1. Return :math:`\mathbb{B}(i_1 \neq 0)`.
@@ -24939,7 +24993,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ......................................................................
 
 
-1. Return :math:`{{\mathrm{ivtestop}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{inez}}, v)`.
+1. Return :math:`{{\mathrm{ivtestop}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{iall}}_{{\mathit{true}}}, v)`.
 
 
 :math:`{{\mathit{vrelop}}}{{}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}(v_1, v_2)}`
@@ -26713,8 +26767,6 @@ spectec 0.5 generator
 == IL Validation after pass sideconditions...
 == Translating to AL...
 == Prose Generation...
-Untranslated relation Expand: `%~~%`(deftype, comptype)
-Untranslated relation Expand_use: `%~~_%%`(typeuse, context, comptype)
 Numtype_ok
 - the number type numtype is always valid.
 
@@ -26730,8 +26782,12 @@ Packtype_sub
 Numtype_sub
 - numtype matches only itself.
 
+Expand
+- The :ref:`expansion <aux-expand-deftype>` of deftype is comptype if:
+  - the composite type $expanddt(deftype) is comptype.
+
 Vectype_sub
-- vectype matches only itself.
+- the vector type vectype matches only itself.
 
 Heaptype_ok
 - the heap type heaptype is valid if:
@@ -27210,6 +27266,25 @@ Instrtype_ok
   - For all x in x*:
     - the local C.LOCALS[x] exists.
 
+Expand_use
+- The :ref:`expansion <aux-expand-typeuse>` of C is comptype if:
+  - Either:
+    - the type use typeuse is deftype.
+    - The :ref:`expansion <aux-expand-deftype>` of deftype is comptype.
+  - Or:
+    - typeuse is (_IDX typeidx).
+    - the type C.TYPES[typeidx] exists.
+    - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[typeidx] is comptype.
+
+Expand_use/deftype
+- The :ref:`expansion <aux-expand-typeuse>` of C is comptype if:
+  - The :ref:`expansion <aux-expand-deftype>` of deftype is comptype.
+
+Expand_use/typeidx
+- The :ref:`expansion <aux-expand-typeuse>` of C is comptype if:
+  - the type C.TYPES[typeidx] exists.
+  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[typeidx] is comptype.
+
 Limits_ok
 - the limits range ([ n .. m? ]) is valid within k if:
   - n is less than or equal to k.
@@ -27437,6 +27512,11 @@ Catch_ok/catch_all_ref
 Defaultable
 - the value type t is defaultable if:
   - the value $default_(t) is not ?().
+
+Memarg_ok
+- { ALIGN: n; OFFSET: m } is valid for at and N if:
+  - (2 ^ n) is less than or equal to (N / 8).
+  - m is less than (2 ^ $size(at)).
 
 Instr_ok/nop
 - the instruction NOP is valid with the instruction type [] -> [].
@@ -27864,12 +27944,12 @@ Instr_ok/load
   - Either:
     - loadop_? is ?().
     - the value type valtype is nt.
-    - (2 ^ memarg.ALIGN) is less than or equal to ($size(nt) / 8).
+    - memarg is valid for at and $size(nt).
   - Or:
     - the number type nt is Inn.
     - loadop_? is ?(M _ sx).
     - valtype is Inn.
-    - (2 ^ memarg.ALIGN) is less than or equal to (M / 8).
+    - memarg is valid for at and M.
 
 Instr_ok/store
 - the instruction (STORE nt storeop_? x memarg) is valid with the instruction type [at, valtype] -> [] if:
@@ -27878,12 +27958,12 @@ Instr_ok/store
   - Either:
     - storeop_? is ?().
     - the value type valtype is nt.
-    - (2 ^ memarg.ALIGN) is less than or equal to ($size(nt) / 8).
+    - memarg is valid for at and $size(nt).
   - Or:
     - the number type nt is Inn.
     - storeop_? is ?(M).
     - valtype is Inn.
-    - (2 ^ memarg.ALIGN) is less than or equal to (M / 8).
+    - memarg is valid for at and M.
 
 Instr_ok/vload
 - the instruction (VLOAD V128 vloadop_? x memarg) is valid with the instruction type [at] -> [V128] if:
@@ -27891,35 +27971,35 @@ Instr_ok/vload
   - C.MEMS[x] is at lim PAGE.
   - Either:
     - vloadop_? is ?().
-    - (2 ^ memarg.ALIGN) is less than or equal to ($vsize(V128) / 8).
+    - memarg is valid for at and $vsize(V128).
   - Or:
     - vloadop_? is ?((SHAPE M X N _ sx)).
-    - (2 ^ memarg.ALIGN) is less than or equal to ((M / 8) * N).
+    - memarg is valid for at and (M * N).
   - Or:
     - vloadop_? is ?((SPLAT N)).
-    - (2 ^ memarg.ALIGN) is less than or equal to (N / 8).
+    - memarg is valid for at and N.
   - Or:
     - vloadop_? is ?((ZERO N)).
-    - (2 ^ memarg.ALIGN) is less than or equal to (N / 8).
+    - memarg is valid for at and N.
 
 Instr_ok/vload_lane
 - the instruction (VLOAD_LANE V128 N x memarg i) is valid with the instruction type [at, V128] -> [V128] if:
   - the memory C.MEMS[x] exists.
   - C.MEMS[x] is at lim PAGE.
-  - (2 ^ memarg.ALIGN) is less than or equal to (N / 8).
+  - memarg is valid for at and N.
   - i is less than (128 / N).
 
 Instr_ok/vstore
 - the instruction (VSTORE V128 x memarg) is valid with the instruction type [at, V128] -> [] if:
   - the memory C.MEMS[x] exists.
   - C.MEMS[x] is at lim PAGE.
-  - (2 ^ memarg.ALIGN) is less than or equal to ($vsize(V128) / 8).
+  - memarg is valid for at and $vsize(V128).
 
 Instr_ok/vstore_lane
 - the instruction (VSTORE_LANE V128 N x memarg i) is valid with the instruction type [at, V128] -> [] if:
   - the memory C.MEMS[x] exists.
   - C.MEMS[x] is at lim PAGE.
-  - (2 ^ memarg.ALIGN) is less than or equal to (N / 8).
+  - memarg is valid for at and N.
   - i is less than (128 / N).
 
 Instr_ok/const
@@ -28027,49 +28107,49 @@ Instr_ok/load-val
 - the instruction (LOAD nt ?() x memarg) is valid with the instruction type [at] -> [nt] if:
   - the memory C.MEMS[x] exists.
   - C.MEMS[x] is at lim PAGE.
-  - (2 ^ memarg.ALIGN) is less than or equal to ($size(nt) / 8).
+  - memarg is valid for at and $size(nt).
 
 Instr_ok/load-pack
 - the instruction (LOAD Inn ?(M _ sx) x memarg) is valid with the instruction type [at] -> [Inn] if:
   - the memory C.MEMS[x] exists.
   - C.MEMS[x] is at lim PAGE.
-  - (2 ^ memarg.ALIGN) is less than or equal to (M / 8).
+  - memarg is valid for at and M.
 
 Instr_ok/store-val
 - the instruction (STORE nt ?() x memarg) is valid with the instruction type [at, nt] -> [] if:
   - the memory C.MEMS[x] exists.
   - C.MEMS[x] is at lim PAGE.
-  - (2 ^ memarg.ALIGN) is less than or equal to ($size(nt) / 8).
+  - memarg is valid for at and $size(nt).
 
 Instr_ok/store-pack
 - the instruction (STORE Inn ?(M) x memarg) is valid with the instruction type [at, Inn] -> [] if:
   - the memory C.MEMS[x] exists.
   - C.MEMS[x] is at lim PAGE.
-  - (2 ^ memarg.ALIGN) is less than or equal to (M / 8).
+  - memarg is valid for at and M.
 
 Instr_ok/vload-val
 - the instruction (VLOAD V128 ?() x memarg) is valid with the instruction type [at] -> [V128] if:
   - the memory C.MEMS[x] exists.
   - C.MEMS[x] is at lim PAGE.
-  - (2 ^ memarg.ALIGN) is less than or equal to ($vsize(V128) / 8).
+  - memarg is valid for at and $vsize(V128).
 
 Instr_ok/vload-pack
 - the instruction (VLOAD V128 ?((SHAPE M X N _ sx)) x memarg) is valid with the instruction type [at] -> [V128] if:
   - the memory C.MEMS[x] exists.
   - C.MEMS[x] is at lim PAGE.
-  - (2 ^ memarg.ALIGN) is less than or equal to ((M / 8) * N).
+  - memarg is valid for at and (M * N).
 
 Instr_ok/vload-splat
 - the instruction (VLOAD V128 ?((SPLAT N)) x memarg) is valid with the instruction type [at] -> [V128] if:
   - the memory C.MEMS[x] exists.
   - C.MEMS[x] is at lim PAGE.
-  - (2 ^ memarg.ALIGN) is less than or equal to (N / 8).
+  - memarg is valid for at and N.
 
 Instr_ok/vload-zero
 - the instruction (VLOAD V128 ?((ZERO N)) x memarg) is valid with the instruction type [at] -> [V128] if:
   - the memory C.MEMS[x] exists.
   - C.MEMS[x] is at lim PAGE.
-  - (2 ^ memarg.ALIGN) is less than or equal to (N / 8).
+  - memarg is valid for at and N.
 
 Instrs_ok
 - the instruction sequence instr* is valid with the instruction type it if:
@@ -31672,7 +31752,7 @@ isub_sat_ N sx i_1 i_2
 ieqz_ N i_1
 1. Return $bool((i_1 = 0)).
 
-inez_ N i_1
+iall_true_ N i_1
 1. Return $bool((i_1 =/= 0)).
 
 ieq_ N i_1 i_2
@@ -32163,7 +32243,7 @@ vternop_ lanetype X M vternop_ v_1 v_2 v_3
 5. Return $fvternop_(lanetype X M, $frelaxed_nmadd_, v_1, v_2, v_3).
 
 vtestop_ Jnn X M ALL_TRUE v
-1. Return $ivtestop_(Jnn X M, $inez_, v).
+1. Return $ivtestop_(Jnn X M, $iall_true_, v).
 
 vrelop_ lanetype X M vrelop_ v_1 v_2
 1. If lanetype is Jnn, then:

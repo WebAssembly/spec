@@ -265,7 +265,7 @@ def $vternop_(Jnn X M, RELAXED_LANESELECT, v_1, v_2, v_3) = $ivternopnd_(Jnn X M
 def $vternop_(Fnn X M, RELAXED_MADD, v_1, v_2, v_3) = $fvternop_(Fnn X M, $frelaxed_madd_, v_1, v_2, v_3)
 def $vternop_(Fnn X M, RELAXED_NMADD, v_1, v_2, v_3) = $fvternop_(Fnn X M, $frelaxed_nmadd_, v_1, v_2, v_3)
 
-def $vtestop_(Jnn X M, ALL_TRUE, v) = $ivtestop_(Jnn X M, $inez_, v)
+def $vtestop_(Jnn X M, ALL_TRUE, v) = $ivtestop_(Jnn X M, $iall_true_, v)
 
 def $vrelop_(Jnn X M, EQ, v_1, v_2) = $ivrelop_(Jnn X M, $ieq_, v_1, v_2)
 def $vrelop_(Jnn X M, NE, v_1, v_2) = $ivrelop_(Jnn X M, $ine_, v_1, v_2)
