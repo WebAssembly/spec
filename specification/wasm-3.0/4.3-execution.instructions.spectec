@@ -992,7 +992,7 @@ rule Step_pure/vvternop:
 
 rule Step_pure/vvtestop:
   (VCONST V128 c_1) (VVTESTOP V128 ANY_TRUE) ~> (CONST I32 c)
-  -- if c = $ine_($vsize(V128), c_1, 0)
+  -- if c = $inez_($vsize(V128), c_1)
 
 
 rule Step_pure/vunop-val:
@@ -1023,8 +1023,9 @@ rule Step_pure/vternop-trap:
 
 
 rule Step_pure/vtestop:
-  (VCONST V128 c_1) (VTESTOP sh vtestop) ~> (CONST I32 i)
-  -- if i = $vtestop_(sh, vtestop, c_1)
+  (VCONST V128 c_1) (VTESTOP (Jnn X M) ALL_TRUE) ~> (CONST I32 c)
+  -- if i* = $lanes_(Jnn X M, c_1)
+  -- if c = $prod(($inez_($jsizenn(Jnn), i)*))
 
 
 rule Step_pure/vrelop:

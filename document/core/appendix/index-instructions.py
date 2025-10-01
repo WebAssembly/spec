@@ -478,7 +478,7 @@ INSTRUCTIONS = [
     Instruction(2.0, r'\I8X16.\VABS', r'\hex{FD}~~\hex{60}', r'[\V128] \to [\V128]', r'valid-vunop', r'exec-vunop', r'op-iabs'),
     Instruction(2.0, r'\I8X16.\VNEG', r'\hex{FD}~~\hex{61}', r'[\V128] \to [\V128]', r'valid-vunop', r'exec-vunop', r'op-ineg'),
     Instruction(2.0, r'\I8X16.\VPOPCNT', r'\hex{FD}~~\hex{62}', r'[\V128] \to [\V128]', r'valid-vunop', r'exec-vunop', r'op-ipopcnt'),
-    Instruction(2.0, r'\I8X16.\VALLTRUE', r'\hex{FD}~~\hex{63}', r'[\V128] \to [\I32]', r'valid-vtestop', r'exec-vtestop', r'op-iall_true'),
+    Instruction(2.0, r'\I8X16.\VALLTRUE', r'\hex{FD}~~\hex{63}', r'[\V128] \to [\I32]', r'valid-vtestop', r'exec-vtestop'),
     Instruction(2.0, r'\I8X16.\VBITMASK', r'\hex{FD}~~\hex{64}', r'[\V128] \to [\I32]', r'valid-vbitmask', r'exec-vbitmask', r'op-ivbitmask'),
     Instruction(2.0, r'\I8X16.\VNARROW\K{\_i16x8\_s}', r'\hex{FD}~~\hex{65}', r'[\V128~\V128] \to [\V128]', r'valid-vbinop', r'exec-vnarrow', r'op-vnarrow'),
     Instruction(2.0, r'\I8X16.\VNARROW\K{\_i16x8\_u}', r'\hex{FD}~~\hex{66}', r'[\V128~\V128] \to [\V128]', r'valid-vbinop', r'exec-vnarrow', r'op-vnarrow'),

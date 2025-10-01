@@ -8110,7 +8110,7 @@ $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-{{\mathrm{iall\_true}}}_{N}(i_1) & = & \mathbb{B}(i_1 \neq 0) \\
+{{\mathrm{inez}}}_{N}(i_1) & = & \mathbb{B}(i_1 \neq 0) \\
 \end{array}
 $$
 
@@ -8468,28 +8468,6 @@ $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-{{\mathrm{ivtestop}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{f}}, v_1) & = & {\Pi}\, {c^\ast} & \quad
-\begin{array}[t]{@{}l@{}}
-\mbox{if}~ {c_1^\ast} = {{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}(v_1) \\
-{\land}~ {c^\ast} = {{{\mathrm{f}}}_{N}(c_1)^\ast} \\
-\end{array} \\
-\end{array}
-$$
-
-$$
-\begin{array}[t]{@{}lcl@{}l@{}}
-{{\mathrm{fvtestop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{f}}, v_1) & = & {\Pi}\, {c^\ast} & \quad
-\begin{array}[t]{@{}l@{}}
-\mbox{if}~ {c_1^\ast} = {{\mathrm{lanes}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}(v_1) \\
-{\land}~ {c^\ast} = {{{\mathrm{f}}}_{N}(c_1)^\ast} \\
-\end{array} \\
-\end{array}
-$$
-
-\vspace{1ex}
-
-$$
-\begin{array}[t]{@{}lcl@{}l@{}}
 {{\mathrm{ivrelop}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{f}}, v_1, v_2) & = & {{{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}^{{-1}}}}{({c^\ast})} & \quad
 \begin{array}[t]{@{}l@{}}
 \mbox{if}~ {c_1^\ast} = {{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}(v_1) \\
@@ -8652,12 +8630,6 @@ $$
 {\mathsf{relaxed\_laneselect}}{{}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}(v_1, v_2, v_3)} & = & {{\mathrm{ivternopnd}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{irelaxed}}_{{\mathit{laneselect}}}, v_1, v_2, v_3) \\
 {\mathsf{relaxed\_madd}}{{}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}(v_1, v_2, v_3)} & = & {{\mathrm{fvternop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{frelaxed}}_{{\mathit{madd}}}, v_1, v_2, v_3) \\
 {\mathsf{relaxed\_nmadd}}{{}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}(v_1, v_2, v_3)} & = & {{\mathrm{fvternop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{frelaxed}}_{{\mathit{nmadd}}}, v_1, v_2, v_3) \\
-\end{array}
-$$
-
-$$
-\begin{array}[t]{@{}lcl@{}l@{}}
-{\mathsf{all\_true}}{{}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}(v)} & = & {{\mathrm{ivtestop}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{iall}}_{{\mathit{true}}}, v) \\
 \end{array}
 $$
 
@@ -10747,7 +10719,7 @@ $$
 
 $$
 \begin{array}[t]{@{}lrcl@{}l@{}}
-{[\textsc{\scriptsize E{-}vvtestop}]} \quad & (\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)~(\mathsf{v{\scriptstyle 128}} {.} \mathsf{any\_true}) & \hookrightarrow & (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c) & \quad \mbox{if}~ c = {{\mathrm{ine}}}_{{|\mathsf{v{\scriptstyle 128}}|}}(c_1, 0) \\
+{[\textsc{\scriptsize E{-}vvtestop}]} \quad & (\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)~(\mathsf{v{\scriptstyle 128}} {.} \mathsf{any\_true}) & \hookrightarrow & (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c) & \quad \mbox{if}~ c = {{\mathrm{inez}}}_{{|\mathsf{v{\scriptstyle 128}}|}}(c_1) \\
 \end{array}
 $$
 
@@ -10782,7 +10754,11 @@ $$
 
 $$
 \begin{array}[t]{@{}lrcl@{}l@{}}
-{[\textsc{\scriptsize E{-}vtestop}]} \quad & (\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)~({\mathit{sh}} {.} {\mathit{vtestop}}) & \hookrightarrow & (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i) & \quad \mbox{if}~ i = {{\mathit{vtestop}}}{{}_{{\mathit{sh}}}(c_1)} \\
+{[\textsc{\scriptsize E{-}vtestop}]} \quad & (\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)~({{\mathsf{i}}{N}}{\mathsf{x}}{M} {.} \mathsf{all\_true}) & \hookrightarrow & (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c) & \quad
+\begin{array}[t]{@{}l@{}}
+\mbox{if}~ {i^\ast} = {{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}(c_1) \\
+{\land}~ c = {\Pi}\, ({{{\mathrm{inez}}}_{N}(i)^\ast}) \\
+\end{array} \\
 \end{array}
 $$
 
