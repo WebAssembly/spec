@@ -1136,6 +1136,30 @@ C \href{../valid/instructions.html#valid-instr}{\vdash} \href{../syntax/instruct
 </section>
 <section id="memory-instructions">
 <span id="valid-instr-memory"></span><span id="valid-memarg"></span><span id="index-5"></span><h2>Memory Instructions<a class="headerlink" href="#memory-instructions" title="Link to this heading">¶</a></h2>
+<p>Memory instructions use <a class="reference internal" href="../syntax/instructions.html#syntax-memarg"><span class="std std-ref">memory arguments</span></a>,
+which are classified by the <a class="reference internal" href="../syntax/types.html#syntax-addrtype"><span class="std std-ref">address type</span></a> and the
+and <a class="reference internal" href="../syntax/types.html#bitwidth-valtype"><span class="std std-ref">bit width</span></a> of the access they are suitable for.</p>
+<section id="xref-syntax-instructions-syntax-memarg-mathit-memarg">
+<h3><span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}\)</span><a class="headerlink" href="#xref-syntax-instructions-syntax-memarg-mathit-memarg" title="Link to this heading">¶</a></h3>
+<p><span class="math notranslate nohighlight">\(\{ \href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{align}}~n,\;\allowbreak \href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{offset}}~m \}\)</span> is valid for <span class="math notranslate nohighlight">\({\mathit{at}}\)</span> and <span class="math notranslate nohighlight">\(N\)</span> if:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><span class="math notranslate nohighlight">\({2^{n}}\)</span> is less than or equal to <span class="math notranslate nohighlight">\(N / 8\)</span>.</p></li>
+<li><p><span class="math notranslate nohighlight">\(m\)</span> is less than <span class="math notranslate nohighlight">\({2^{{|{\mathit{at}}|}}}\)</span>.</p></li>
+</ul>
+</div></blockquote>
+<div class="math notranslate nohighlight">
+\[\begin{array}{&#64;{}c&#64;{}}\displaystyle
+\frac{
+{2^{n}} \leq N / 8
+ \qquad
+m &lt; {2^{{|{\mathit{at}}|}}}
+}{
+{\href{../valid/instructions.html#valid-memarg}{\vdash}}\, \{ \href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{align}}~n,\;\allowbreak \href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{offset}}~m \} : {\mathit{at}} \href{../valid/instructions.html#valid-memarg}{\rightarrow} N
+}
+\qquad
+\end{array}\]</div>
+</section>
 <section id="t-mathsf-xref-syntax-instructions-syntax-instr-memory-mathsf-load-x-xref-syntax-instructions-syntax-memarg-mathit-memarg">
 <span id="valid-load-val"></span><h3><span class="math notranslate nohighlight">\(t\mathsf{.}\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{load}}~x~\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}\)</span><a class="headerlink" href="#t-mathsf-xref-syntax-instructions-syntax-instr-memory-mathsf-load-x-xref-syntax-instructions-syntax-memarg-mathit-memarg" title="Link to this heading">¶</a></h3>
 <p>The <a class="reference internal" href="../syntax/instructions.html#syntax-instr"><span class="std std-ref">instruction</span></a> <span class="math notranslate nohighlight">\(({\mathit{nt}}{.}\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{load}}~x~{\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}})\)</span> is <a class="reference internal" href="#valid-instr"><span class="std std-ref">valid</span></a> with the <a class="reference internal" href="conventions.html#syntax-instrtype"><span class="std std-ref">instruction type</span></a> <span class="math notranslate nohighlight">\({\mathit{at}}~\rightarrow~{\mathit{nt}}\)</span> if:</p>
@@ -1143,7 +1167,7 @@ C \href{../valid/instructions.html#valid-instr}{\vdash} \href{../syntax/instruct
 <div><ul class="simple">
 <li><p>The <a class="reference internal" href="../syntax/types.html#syntax-memtype"><span class="std std-ref">memory</span></a> <span class="math notranslate nohighlight">\(C{.}\href{../valid/conventions.html#context}{\mathsf{mems}}{}[x]\)</span> exists.</p></li>
 <li><p>The <a class="reference internal" href="../syntax/types.html#syntax-memtype"><span class="std std-ref">memory</span></a> <span class="math notranslate nohighlight">\(C{.}\href{../valid/conventions.html#context}{\mathsf{mems}}{}[x]\)</span> is of the form <span class="math notranslate nohighlight">\(({\mathit{at}}~{\mathit{lim}}~\href{../syntax/types.html#syntax-memtype}{\mathsf{page}})\)</span>.</p></li>
-<li><p><span class="math notranslate nohighlight">\({2^{{\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}}{.}\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{align}}}}\)</span> is less than or equal to <span class="math notranslate nohighlight">\({|{\mathit{nt}}|} / 8\)</span>.</p></li>
+<li><p><span class="math notranslate nohighlight">\({\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}}\)</span> is valid for <span class="math notranslate nohighlight">\({\mathit{at}}\)</span> and <span class="math notranslate nohighlight">\({|{\mathit{nt}}|}\)</span>.</p></li>
 </ul>
 </div></blockquote>
 <div class="math notranslate nohighlight">
@@ -1151,7 +1175,7 @@ C \href{../valid/instructions.html#valid-instr}{\vdash} \href{../syntax/instruct
 \frac{
 C{.}\href{../valid/conventions.html#context}{\mathsf{mems}}{}[x] = {\mathit{at}}~{\mathit{lim}}~\href{../syntax/types.html#syntax-memtype}{\mathsf{page}}
  \qquad
-{2^{{\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}}{.}\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{align}}}} \leq {|{\mathit{nt}}|} / 8
+{\href{../valid/instructions.html#valid-memarg}{\vdash}}\, {\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}} : {\mathit{at}} \href{../valid/instructions.html#valid-memarg}{\rightarrow} {|{\mathit{nt}}|}
 }{
 C \href{../valid/instructions.html#valid-instr}{\vdash} {\mathit{nt}}{.}\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{load}}~x~{\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}} : {\mathit{at}} \rightarrow {\mathit{nt}}
 }
@@ -1165,7 +1189,7 @@ C \href{../valid/instructions.html#valid-instr}{\vdash} {\mathit{nt}}{.}\href{..
 <div><ul class="simple">
 <li><p>The <a class="reference internal" href="../syntax/types.html#syntax-memtype"><span class="std std-ref">memory</span></a> <span class="math notranslate nohighlight">\(C{.}\href{../valid/conventions.html#context}{\mathsf{mems}}{}[x]\)</span> exists.</p></li>
 <li><p>The <a class="reference internal" href="../syntax/types.html#syntax-memtype"><span class="std std-ref">memory</span></a> <span class="math notranslate nohighlight">\(C{.}\href{../valid/conventions.html#context}{\mathsf{mems}}{}[x]\)</span> is of the form <span class="math notranslate nohighlight">\(({\mathit{at}}~{\mathit{lim}}~\href{../syntax/types.html#syntax-memtype}{\mathsf{page}})\)</span>.</p></li>
-<li><p><span class="math notranslate nohighlight">\({2^{{\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}}{.}\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{align}}}}\)</span> is less than or equal to <span class="math notranslate nohighlight">\(M / 8\)</span>.</p></li>
+<li><p><span class="math notranslate nohighlight">\({\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}}\)</span> is valid for <span class="math notranslate nohighlight">\({\mathit{at}}\)</span> and <span class="math notranslate nohighlight">\(M\)</span>.</p></li>
 </ul>
 </div></blockquote>
 <div class="math notranslate nohighlight">
@@ -1173,7 +1197,7 @@ C \href{../valid/instructions.html#valid-instr}{\vdash} {\mathit{nt}}{.}\href{..
 \frac{
 C{.}\href{../valid/conventions.html#context}{\mathsf{mems}}{}[x] = {\mathit{at}}~{\mathit{lim}}~\href{../syntax/types.html#syntax-memtype}{\mathsf{page}}
  \qquad
-{2^{{\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}}{.}\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{align}}}} \leq M / 8
+{\href{../valid/instructions.html#valid-memarg}{\vdash}}\, {\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}} : {\mathit{at}} \href{../valid/instructions.html#valid-memarg}{\rightarrow} M
 }{
 C \href{../valid/instructions.html#valid-instr}{\vdash} {{\href{../syntax/types.html#syntax-numtype}{\mathsf{i}}}{{\href{../syntax/types.html#syntax-numtype}{\scriptstyle\kern-0.1emN}}}{.}\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{load}}}{{M}{\mathsf{\_}}{{\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}}}}~x~{\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}} : {\mathit{at}} \rightarrow {\href{../syntax/types.html#syntax-numtype}{\mathsf{i}}}{{\href{../syntax/types.html#syntax-numtype}{\scriptstyle\kern-0.1emN}}}
 }
@@ -1187,7 +1211,7 @@ C \href{../valid/instructions.html#valid-instr}{\vdash} {{\href{../syntax/types.
 <div><ul class="simple">
 <li><p>The <a class="reference internal" href="../syntax/types.html#syntax-memtype"><span class="std std-ref">memory</span></a> <span class="math notranslate nohighlight">\(C{.}\href{../valid/conventions.html#context}{\mathsf{mems}}{}[x]\)</span> exists.</p></li>
 <li><p>The <a class="reference internal" href="../syntax/types.html#syntax-memtype"><span class="std std-ref">memory</span></a> <span class="math notranslate nohighlight">\(C{.}\href{../valid/conventions.html#context}{\mathsf{mems}}{}[x]\)</span> is of the form <span class="math notranslate nohighlight">\(({\mathit{at}}~{\mathit{lim}}~\href{../syntax/types.html#syntax-memtype}{\mathsf{page}})\)</span>.</p></li>
-<li><p><span class="math notranslate nohighlight">\({2^{{\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}}{.}\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{align}}}}\)</span> is less than or equal to <span class="math notranslate nohighlight">\({|{\mathit{nt}}|} / 8\)</span>.</p></li>
+<li><p><span class="math notranslate nohighlight">\({\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}}\)</span> is valid for <span class="math notranslate nohighlight">\({\mathit{at}}\)</span> and <span class="math notranslate nohighlight">\({|{\mathit{nt}}|}\)</span>.</p></li>
 </ul>
 </div></blockquote>
 <div class="math notranslate nohighlight">
@@ -1195,7 +1219,7 @@ C \href{../valid/instructions.html#valid-instr}{\vdash} {{\href{../syntax/types.
 \frac{
 C{.}\href{../valid/conventions.html#context}{\mathsf{mems}}{}[x] = {\mathit{at}}~{\mathit{lim}}~\href{../syntax/types.html#syntax-memtype}{\mathsf{page}}
  \qquad
-{2^{{\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}}{.}\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{align}}}} \leq {|{\mathit{nt}}|} / 8
+{\href{../valid/instructions.html#valid-memarg}{\vdash}}\, {\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}} : {\mathit{at}} \href{../valid/instructions.html#valid-memarg}{\rightarrow} {|{\mathit{nt}}|}
 }{
 C \href{../valid/instructions.html#valid-instr}{\vdash} {\mathit{nt}}{.}\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{store}}~x~{\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}} : {\mathit{at}}~{\mathit{nt}} \rightarrow \epsilon
 }
@@ -1209,7 +1233,7 @@ C \href{../valid/instructions.html#valid-instr}{\vdash} {\mathit{nt}}{.}\href{..
 <div><ul class="simple">
 <li><p>The <a class="reference internal" href="../syntax/types.html#syntax-memtype"><span class="std std-ref">memory</span></a> <span class="math notranslate nohighlight">\(C{.}\href{../valid/conventions.html#context}{\mathsf{mems}}{}[x]\)</span> exists.</p></li>
 <li><p>The <a class="reference internal" href="../syntax/types.html#syntax-memtype"><span class="std std-ref">memory</span></a> <span class="math notranslate nohighlight">\(C{.}\href{../valid/conventions.html#context}{\mathsf{mems}}{}[x]\)</span> is of the form <span class="math notranslate nohighlight">\(({\mathit{at}}~{\mathit{lim}}~\href{../syntax/types.html#syntax-memtype}{\mathsf{page}})\)</span>.</p></li>
-<li><p><span class="math notranslate nohighlight">\({2^{{\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}}{.}\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{align}}}}\)</span> is less than or equal to <span class="math notranslate nohighlight">\(M / 8\)</span>.</p></li>
+<li><p><span class="math notranslate nohighlight">\({\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}}\)</span> is valid for <span class="math notranslate nohighlight">\({\mathit{at}}\)</span> and <span class="math notranslate nohighlight">\(M\)</span>.</p></li>
 </ul>
 </div></blockquote>
 <div class="math notranslate nohighlight">
@@ -1217,7 +1241,7 @@ C \href{../valid/instructions.html#valid-instr}{\vdash} {\mathit{nt}}{.}\href{..
 \frac{
 C{.}\href{../valid/conventions.html#context}{\mathsf{mems}}{}[x] = {\mathit{at}}~{\mathit{lim}}~\href{../syntax/types.html#syntax-memtype}{\mathsf{page}}
  \qquad
-{2^{{\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}}{.}\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{align}}}} \leq M / 8
+{\href{../valid/instructions.html#valid-memarg}{\vdash}}\, {\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}} : {\mathit{at}} \href{../valid/instructions.html#valid-memarg}{\rightarrow} M
 }{
 C \href{../valid/instructions.html#valid-instr}{\vdash} {{\href{../syntax/types.html#syntax-numtype}{\mathsf{i}}}{{\href{../syntax/types.html#syntax-numtype}{\scriptstyle\kern-0.1emN}}}{.}\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{store}}}{M}~x~{\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}} : {\mathit{at}}~{\href{../syntax/types.html#syntax-numtype}{\mathsf{i}}}{{\href{../syntax/types.html#syntax-numtype}{\scriptstyle\kern-0.1emN}}} \rightarrow \epsilon
 }
@@ -1231,7 +1255,7 @@ C \href{../valid/instructions.html#valid-instr}{\vdash} {{\href{../syntax/types.
 <div><ul class="simple">
 <li><p>The <a class="reference internal" href="../syntax/types.html#syntax-memtype"><span class="std std-ref">memory</span></a> <span class="math notranslate nohighlight">\(C{.}\href{../valid/conventions.html#context}{\mathsf{mems}}{}[x]\)</span> exists.</p></li>
 <li><p>The <a class="reference internal" href="../syntax/types.html#syntax-memtype"><span class="std std-ref">memory</span></a> <span class="math notranslate nohighlight">\(C{.}\href{../valid/conventions.html#context}{\mathsf{mems}}{}[x]\)</span> is of the form <span class="math notranslate nohighlight">\(({\mathit{at}}~{\mathit{lim}}~\href{../syntax/types.html#syntax-memtype}{\mathsf{page}})\)</span>.</p></li>
-<li><p><span class="math notranslate nohighlight">\({2^{{\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}}{.}\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{align}}}}\)</span> is less than or equal to <span class="math notranslate nohighlight">\({|\href{../syntax/types.html#syntax-vectype}{\mathsf{v\scriptstyle128}}|} / 8\)</span>.</p></li>
+<li><p><span class="math notranslate nohighlight">\({\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}}\)</span> is valid for <span class="math notranslate nohighlight">\({\mathit{at}}\)</span> and <span class="math notranslate nohighlight">\({|\href{../syntax/types.html#syntax-vectype}{\mathsf{v\scriptstyle128}}|}\)</span>.</p></li>
 </ul>
 </div></blockquote>
 <div class="math notranslate nohighlight">
@@ -1239,7 +1263,7 @@ C \href{../valid/instructions.html#valid-instr}{\vdash} {{\href{../syntax/types.
 \frac{
 C{.}\href{../valid/conventions.html#context}{\mathsf{mems}}{}[x] = {\mathit{at}}~{\mathit{lim}}~\href{../syntax/types.html#syntax-memtype}{\mathsf{page}}
  \qquad
-{2^{{\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}}{.}\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{align}}}} \leq {|\href{../syntax/types.html#syntax-vectype}{\mathsf{v\scriptstyle128}}|} / 8
+{\href{../valid/instructions.html#valid-memarg}{\vdash}}\, {\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}} : {\mathit{at}} \href{../valid/instructions.html#valid-memarg}{\rightarrow} {|\href{../syntax/types.html#syntax-vectype}{\mathsf{v\scriptstyle128}}|}
 }{
 C \href{../valid/instructions.html#valid-instr}{\vdash} \href{../syntax/types.html#syntax-vectype}{\mathsf{v\scriptstyle128}}{.}\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{load}}~x~{\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}} : {\mathit{at}} \rightarrow \href{../syntax/types.html#syntax-vectype}{\mathsf{v\scriptstyle128}}
 }
@@ -1253,7 +1277,7 @@ C \href{../valid/instructions.html#valid-instr}{\vdash} \href{../syntax/types.ht
 <div><ul class="simple">
 <li><p>The <a class="reference internal" href="../syntax/types.html#syntax-memtype"><span class="std std-ref">memory</span></a> <span class="math notranslate nohighlight">\(C{.}\href{../valid/conventions.html#context}{\mathsf{mems}}{}[x]\)</span> exists.</p></li>
 <li><p>The <a class="reference internal" href="../syntax/types.html#syntax-memtype"><span class="std std-ref">memory</span></a> <span class="math notranslate nohighlight">\(C{.}\href{../valid/conventions.html#context}{\mathsf{mems}}{}[x]\)</span> is of the form <span class="math notranslate nohighlight">\(({\mathit{at}}~{\mathit{lim}}~\href{../syntax/types.html#syntax-memtype}{\mathsf{page}})\)</span>.</p></li>
-<li><p><span class="math notranslate nohighlight">\({2^{{\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}}{.}\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{align}}}}\)</span> is less than or equal to <span class="math notranslate nohighlight">\(M / 8 \cdot N\)</span>.</p></li>
+<li><p><span class="math notranslate nohighlight">\({\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}}\)</span> is valid for <span class="math notranslate nohighlight">\({\mathit{at}}\)</span> and <span class="math notranslate nohighlight">\(M \cdot N\)</span>.</p></li>
 </ul>
 </div></blockquote>
 <div class="math notranslate nohighlight">
@@ -1261,7 +1285,7 @@ C \href{../valid/instructions.html#valid-instr}{\vdash} \href{../syntax/types.ht
 \frac{
 C{.}\href{../valid/conventions.html#context}{\mathsf{mems}}{}[x] = {\mathit{at}}~{\mathit{lim}}~\href{../syntax/types.html#syntax-memtype}{\mathsf{page}}
  \qquad
-{2^{{\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}}{.}\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{align}}}} \leq M / 8 \cdot N
+{\href{../valid/instructions.html#valid-memarg}{\vdash}}\, {\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}} : {\mathit{at}} \href{../valid/instructions.html#valid-memarg}{\rightarrow} M \cdot N
 }{
 C \href{../valid/instructions.html#valid-instr}{\vdash} {\href{../syntax/types.html#syntax-vectype}{\mathsf{v\scriptstyle128}}{.}\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{load}}}{{M}{\href{../syntax/instructions.html#syntax-shape}{\mathsf{x}}}{N}{\mathsf{\_}}{{\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}}}}~x~{\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}} : {\mathit{at}} \rightarrow \href{../syntax/types.html#syntax-vectype}{\mathsf{v\scriptstyle128}}
 }
@@ -1275,7 +1299,7 @@ C \href{../valid/instructions.html#valid-instr}{\vdash} {\href{../syntax/types.h
 <div><ul class="simple">
 <li><p>The <a class="reference internal" href="../syntax/types.html#syntax-memtype"><span class="std std-ref">memory</span></a> <span class="math notranslate nohighlight">\(C{.}\href{../valid/conventions.html#context}{\mathsf{mems}}{}[x]\)</span> exists.</p></li>
 <li><p>The <a class="reference internal" href="../syntax/types.html#syntax-memtype"><span class="std std-ref">memory</span></a> <span class="math notranslate nohighlight">\(C{.}\href{../valid/conventions.html#context}{\mathsf{mems}}{}[x]\)</span> is of the form <span class="math notranslate nohighlight">\(({\mathit{at}}~{\mathit{lim}}~\href{../syntax/types.html#syntax-memtype}{\mathsf{page}})\)</span>.</p></li>
-<li><p><span class="math notranslate nohighlight">\({2^{{\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}}{.}\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{align}}}}\)</span> is less than or equal to <span class="math notranslate nohighlight">\(N / 8\)</span>.</p></li>
+<li><p><span class="math notranslate nohighlight">\({\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}}\)</span> is valid for <span class="math notranslate nohighlight">\({\mathit{at}}\)</span> and <span class="math notranslate nohighlight">\(N\)</span>.</p></li>
 </ul>
 </div></blockquote>
 <div class="math notranslate nohighlight">
@@ -1283,7 +1307,7 @@ C \href{../valid/instructions.html#valid-instr}{\vdash} {\href{../syntax/types.h
 \frac{
 C{.}\href{../valid/conventions.html#context}{\mathsf{mems}}{}[x] = {\mathit{at}}~{\mathit{lim}}~\href{../syntax/types.html#syntax-memtype}{\mathsf{page}}
  \qquad
-{2^{{\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}}{.}\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{align}}}} \leq N / 8
+{\href{../valid/instructions.html#valid-memarg}{\vdash}}\, {\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}} : {\mathit{at}} \href{../valid/instructions.html#valid-memarg}{\rightarrow} N
 }{
 C \href{../valid/instructions.html#valid-instr}{\vdash} {\href{../syntax/types.html#syntax-vectype}{\mathsf{v\scriptstyle128}}{.}\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{load}}}{{N}{\mathsf{\_}}{\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{splat}}}}~x~{\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}} : {\mathit{at}} \rightarrow \href{../syntax/types.html#syntax-vectype}{\mathsf{v\scriptstyle128}}
 }
@@ -1297,7 +1321,7 @@ C \href{../valid/instructions.html#valid-instr}{\vdash} {\href{../syntax/types.h
 <div><ul class="simple">
 <li><p>The <a class="reference internal" href="../syntax/types.html#syntax-memtype"><span class="std std-ref">memory</span></a> <span class="math notranslate nohighlight">\(C{.}\href{../valid/conventions.html#context}{\mathsf{mems}}{}[x]\)</span> exists.</p></li>
 <li><p>The <a class="reference internal" href="../syntax/types.html#syntax-memtype"><span class="std std-ref">memory</span></a> <span class="math notranslate nohighlight">\(C{.}\href{../valid/conventions.html#context}{\mathsf{mems}}{}[x]\)</span> is of the form <span class="math notranslate nohighlight">\(({\mathit{at}}~{\mathit{lim}}~\href{../syntax/types.html#syntax-memtype}{\mathsf{page}})\)</span>.</p></li>
-<li><p><span class="math notranslate nohighlight">\({2^{{\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}}{.}\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{align}}}}\)</span> is less than or equal to <span class="math notranslate nohighlight">\(N / 8\)</span>.</p></li>
+<li><p><span class="math notranslate nohighlight">\({\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}}\)</span> is valid for <span class="math notranslate nohighlight">\({\mathit{at}}\)</span> and <span class="math notranslate nohighlight">\(N\)</span>.</p></li>
 </ul>
 </div></blockquote>
 <div class="math notranslate nohighlight">
@@ -1305,7 +1329,7 @@ C \href{../valid/instructions.html#valid-instr}{\vdash} {\href{../syntax/types.h
 \frac{
 C{.}\href{../valid/conventions.html#context}{\mathsf{mems}}{}[x] = {\mathit{at}}~{\mathit{lim}}~\href{../syntax/types.html#syntax-memtype}{\mathsf{page}}
  \qquad
-{2^{{\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}}{.}\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{align}}}} \leq N / 8
+{\href{../valid/instructions.html#valid-memarg}{\vdash}}\, {\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}} : {\mathit{at}} \href{../valid/instructions.html#valid-memarg}{\rightarrow} N
 }{
 C \href{../valid/instructions.html#valid-instr}{\vdash} {\href{../syntax/types.html#syntax-vectype}{\mathsf{v\scriptstyle128}}{.}\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{load}}}{{N}{\mathsf{\_}}{\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{zero}}}}~x~{\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}} : {\mathit{at}} \rightarrow \href{../syntax/types.html#syntax-vectype}{\mathsf{v\scriptstyle128}}
 }
@@ -1319,7 +1343,7 @@ C \href{../valid/instructions.html#valid-instr}{\vdash} {\href{../syntax/types.h
 <div><ul class="simple">
 <li><p>The <a class="reference internal" href="../syntax/types.html#syntax-memtype"><span class="std std-ref">memory</span></a> <span class="math notranslate nohighlight">\(C{.}\href{../valid/conventions.html#context}{\mathsf{mems}}{}[x]\)</span> exists.</p></li>
 <li><p>The <a class="reference internal" href="../syntax/types.html#syntax-memtype"><span class="std std-ref">memory</span></a> <span class="math notranslate nohighlight">\(C{.}\href{../valid/conventions.html#context}{\mathsf{mems}}{}[x]\)</span> is of the form <span class="math notranslate nohighlight">\(({\mathit{at}}~{\mathit{lim}}~\href{../syntax/types.html#syntax-memtype}{\mathsf{page}})\)</span>.</p></li>
-<li><p><span class="math notranslate nohighlight">\({2^{{\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}}{.}\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{align}}}}\)</span> is less than or equal to <span class="math notranslate nohighlight">\(N / 8\)</span>.</p></li>
+<li><p><span class="math notranslate nohighlight">\({\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}}\)</span> is valid for <span class="math notranslate nohighlight">\({\mathit{at}}\)</span> and <span class="math notranslate nohighlight">\(N\)</span>.</p></li>
 <li><p><span class="math notranslate nohighlight">\(i\)</span> is less than <span class="math notranslate nohighlight">\(128 / N\)</span>.</p></li>
 </ul>
 </div></blockquote>
@@ -1328,7 +1352,7 @@ C \href{../valid/instructions.html#valid-instr}{\vdash} {\href{../syntax/types.h
 \frac{
 C{.}\href{../valid/conventions.html#context}{\mathsf{mems}}{}[x] = {\mathit{at}}~{\mathit{lim}}~\href{../syntax/types.html#syntax-memtype}{\mathsf{page}}
  \qquad
-{2^{{\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}}{.}\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{align}}}} \leq N / 8
+{\href{../valid/instructions.html#valid-memarg}{\vdash}}\, {\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}} : {\mathit{at}} \href{../valid/instructions.html#valid-memarg}{\rightarrow} N
  \qquad
 i &lt; 128 / N
 }{
@@ -1344,7 +1368,7 @@ C \href{../valid/instructions.html#valid-instr}{\vdash} {\href{../syntax/types.h
 <div><ul class="simple">
 <li><p>The <a class="reference internal" href="../syntax/types.html#syntax-memtype"><span class="std std-ref">memory</span></a> <span class="math notranslate nohighlight">\(C{.}\href{../valid/conventions.html#context}{\mathsf{mems}}{}[x]\)</span> exists.</p></li>
 <li><p>The <a class="reference internal" href="../syntax/types.html#syntax-memtype"><span class="std std-ref">memory</span></a> <span class="math notranslate nohighlight">\(C{.}\href{../valid/conventions.html#context}{\mathsf{mems}}{}[x]\)</span> is of the form <span class="math notranslate nohighlight">\(({\mathit{at}}~{\mathit{lim}}~\href{../syntax/types.html#syntax-memtype}{\mathsf{page}})\)</span>.</p></li>
-<li><p><span class="math notranslate nohighlight">\({2^{{\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}}{.}\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{align}}}}\)</span> is less than or equal to <span class="math notranslate nohighlight">\({|\href{../syntax/types.html#syntax-vectype}{\mathsf{v\scriptstyle128}}|} / 8\)</span>.</p></li>
+<li><p><span class="math notranslate nohighlight">\({\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}}\)</span> is valid for <span class="math notranslate nohighlight">\({\mathit{at}}\)</span> and <span class="math notranslate nohighlight">\({|\href{../syntax/types.html#syntax-vectype}{\mathsf{v\scriptstyle128}}|}\)</span>.</p></li>
 </ul>
 </div></blockquote>
 <div class="math notranslate nohighlight">
@@ -1352,7 +1376,7 @@ C \href{../valid/instructions.html#valid-instr}{\vdash} {\href{../syntax/types.h
 \frac{
 C{.}\href{../valid/conventions.html#context}{\mathsf{mems}}{}[x] = {\mathit{at}}~{\mathit{lim}}~\href{../syntax/types.html#syntax-memtype}{\mathsf{page}}
  \qquad
-{2^{{\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}}{.}\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{align}}}} \leq {|\href{../syntax/types.html#syntax-vectype}{\mathsf{v\scriptstyle128}}|} / 8
+{\href{../valid/instructions.html#valid-memarg}{\vdash}}\, {\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}} : {\mathit{at}} \href{../valid/instructions.html#valid-memarg}{\rightarrow} {|\href{../syntax/types.html#syntax-vectype}{\mathsf{v\scriptstyle128}}|}
 }{
 C \href{../valid/instructions.html#valid-instr}{\vdash} \href{../syntax/types.html#syntax-vectype}{\mathsf{v\scriptstyle128}}{.}\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{store}}~x~{\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}} : {\mathit{at}}~\href{../syntax/types.html#syntax-vectype}{\mathsf{v\scriptstyle128}} \rightarrow \epsilon
 }
@@ -1366,7 +1390,7 @@ C \href{../valid/instructions.html#valid-instr}{\vdash} \href{../syntax/types.ht
 <div><ul class="simple">
 <li><p>The <a class="reference internal" href="../syntax/types.html#syntax-memtype"><span class="std std-ref">memory</span></a> <span class="math notranslate nohighlight">\(C{.}\href{../valid/conventions.html#context}{\mathsf{mems}}{}[x]\)</span> exists.</p></li>
 <li><p>The <a class="reference internal" href="../syntax/types.html#syntax-memtype"><span class="std std-ref">memory</span></a> <span class="math notranslate nohighlight">\(C{.}\href{../valid/conventions.html#context}{\mathsf{mems}}{}[x]\)</span> is of the form <span class="math notranslate nohighlight">\(({\mathit{at}}~{\mathit{lim}}~\href{../syntax/types.html#syntax-memtype}{\mathsf{page}})\)</span>.</p></li>
-<li><p><span class="math notranslate nohighlight">\({2^{{\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}}{.}\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{align}}}}\)</span> is less than or equal to <span class="math notranslate nohighlight">\(N / 8\)</span>.</p></li>
+<li><p><span class="math notranslate nohighlight">\({\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}}\)</span> is valid for <span class="math notranslate nohighlight">\({\mathit{at}}\)</span> and <span class="math notranslate nohighlight">\(N\)</span>.</p></li>
 <li><p><span class="math notranslate nohighlight">\(i\)</span> is less than <span class="math notranslate nohighlight">\(128 / N\)</span>.</p></li>
 </ul>
 </div></blockquote>
@@ -1375,7 +1399,7 @@ C \href{../valid/instructions.html#valid-instr}{\vdash} \href{../syntax/types.ht
 \frac{
 C{.}\href{../valid/conventions.html#context}{\mathsf{mems}}{}[x] = {\mathit{at}}~{\mathit{lim}}~\href{../syntax/types.html#syntax-memtype}{\mathsf{page}}
  \qquad
-{2^{{\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}}{.}\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{align}}}} \leq N / 8
+{\href{../valid/instructions.html#valid-memarg}{\vdash}}\, {\href{../syntax/instructions.html#syntax-memarg}{\mathit{memarg}}} : {\mathit{at}} \href{../valid/instructions.html#valid-memarg}{\rightarrow} N
  \qquad
 i &lt; 128 / N
 }{
