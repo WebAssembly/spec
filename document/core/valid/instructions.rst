@@ -559,7 +559,7 @@ Memory Instructions
 
 Memory instructions use :ref:`memory arguments <syntax-memarg>`,
 which are classified by the :ref:`address type <syntax-addrtype>` and the
-and :ref:`bit width <bitwidth>` of the access they are suitable for.
+and :ref:`bit width <bitwidth-valtype>` of the access they are suitable for.
 
 :math:`\memarg`
 ...............
