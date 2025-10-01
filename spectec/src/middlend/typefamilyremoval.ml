@@ -7,6 +7,7 @@ let make_prefix = "mk_"
 let name_prefix id = id.it ^ "_" 
 let proj_prefix = "proj_"
 let _error at msg = Error.error at "Type families removal" msg
+let var_typ_fam = "x"
 
 module StringMap = Map.Make(String)
 
@@ -19,6 +20,42 @@ let get_tuple_typ t =
   match t.it with
     | TupT typs -> List.map snd typs
     | _ -> [t]
+
+let construct_tuple_exp at e t =
+  let tupt = TupT [(VarE (var_typ_fam $ at) $$ at % t, t)] $ at in 
+  TupE [e] $$ e.at % tupt
+
+let make_arg_from_param p = 
+  (match p.it with
+  | ExpP (id, typ) -> ExpA (VarE id $$ id.at % typ)
+  | TypP id -> TypA (VarT (id, []) $ id.at)
+  | DefP (id, _, _) -> DefA id
+  | GramP _ -> assert false
+  ) $ p.at
+
+let make_bind_from_param p = 
+  (match p.it with
+  | ExpP (id, typ) -> ExpB (id, typ)
+  | TypP id -> TypB id
+  | DefP (id, params, typ) -> DefB (id, params, typ)
+  | GramP _ -> assert false
+  ) $ p.at
+
+let make_param_from_bind b = 
+  (match b.it with
+  | ExpB (id, typ) -> ExpP (id, typ)
+  | TypB id -> TypP id
+  | DefB (id, params, typ) -> DefP (id, params, typ)
+  | GramB _ -> assert false
+  ) $ b.at
+
+let make_arg_from_bind b = 
+  (match b.it with
+  | ExpB (id, typ) -> ExpA (VarE id $$ id.at % typ)
+  | TypB id -> TypA (VarT (id, []) $ id.at)
+  | DefB (id, _, _) -> DefA id
+  | GramB _ -> assert false
+  ) $ b.at
 
 let create_arg_param_subst args params =
   List.fold_left2 (fun s a p -> 
@@ -66,7 +103,7 @@ let constructor_name' id binds = make_prefix ^ name_prefix id ^ sub_type_name_bi
 let _constructor_name id binds = constructor_name' id binds $ id.at 
 let constructor_name_mixop id binds: mixop = [[ Xl.Atom.Atom (constructor_name' id binds) $$ empty_info ]; []]
 let proj_name' id binds = proj_prefix ^ name_prefix id ^ sub_type_name_binds binds
-let _proj_name id binds = proj_name' id binds $ id.at
+let proj_name id binds = proj_name' id binds $ id.at
 
 let check_type_family insts = 
   match insts with
@@ -243,17 +280,27 @@ and transform_exp is_match bind_map env e =
   let typ = transform_typ is_match bind_map env e.note in
   let t_func = transform_exp is_match bind_map env in
   (match e.it with
+
+  (* Specific match case handling *)
   | VarE var_id when is_family_typ env e.note && is_match -> 
     (match (get_family_type_binds env e.note) with
-    | Some (id, binds) -> CaseE (constructor_name_mixop id binds, VarE var_id $$ e.at % (get_real_typ_from_exp bind_map env e))  
+    | Some (id, binds) -> 
+      let real_typ = get_real_typ_from_exp bind_map env e in
+      let var_exp = VarE var_id $$ e.at % (get_real_typ_from_exp bind_map env e) in
+      CaseE (constructor_name_mixop id binds, construct_tuple_exp e.at var_exp real_typ)  
     | None -> VarE var_id 
     )
   | CaseE (m, e1) when is_match -> 
     let t_e1 = t_func e1 in 
     (match (get_family_type_binds env e.note) with
-    | Some (id, binds) -> CaseE (constructor_name_mixop id binds, CaseE (m, t_e1) $$ e.at % (get_real_typ_from_exp bind_map env e))  
-    | None -> CaseE (m, t_e1)  
+    | Some (id, binds) -> 
+      let real_typ = get_real_typ_from_exp bind_map env e in
+      let case_exp = CaseE (m, t_e1) $$ e.at % real_typ in 
+      CaseE (constructor_name_mixop id binds, construct_tuple_exp e.at case_exp real_typ)  
+    | None -> CaseE (m, t_e1)
     )
+
+  (* Conversions traversal *)
   | CaseE (m, e1) -> 
     let new_exp = apply_conversion_case_exp bind_map env e.note m (t_func e1) in
     CaseE (m, new_exp)  
@@ -414,14 +461,21 @@ let transform_rule env rule =
     transform_exp false bind_map env exp, 
     List.map (transform_prem bind_map env) prems) $ rule.at
 
+(* Reducing binds for matching *)
+let reduce_bind env b = 
+  match b.it with
+  | ExpB (id, typ) -> ExpB (id, Il.Eval.reduce_typ env typ) $ b.at
+  | _ -> b
+
 let transform_clause _id env rt clause =
   match clause.it with 
   | DefD (binds, args, exp, prems) -> 
-    let bind_map = make_bind_set binds in
+    let reduced_binds = List.map (reduce_bind env) binds in 
+    let bind_map = make_bind_set reduced_binds in
     let t_exp = transform_exp false bind_map env exp in
     let real_typ = get_real_typ_from_exp bind_map env exp in
     let new_exp = if check_type_equality real_typ rt then t_exp else apply_conversion env t_exp real_typ rt in 
-    DefD ((List.map (transform_bind env) binds), 
+    DefD ((List.map (transform_bind env) reduced_binds), 
     List.map (transform_arg true bind_map env) args, 
     new_exp, 
     List.map (transform_prem bind_map env) prems) $ clause.at
@@ -501,43 +555,64 @@ let rec create_types_from_instances def =
   | d -> [d]
   ) |> List.map (fun d -> d $ def.at)
 
+let gen_family_projections (id : id) (_params : param list) (_has_one_inst : bool) (i : inst) =
+  match i.it with
+  | InstD (binds, args, deftyp) -> 
+    match deftyp.it with
+    | AliasT typ ->
+      let family_typ = VarT(id, args) $ id.at in
+      let return_type = IterT (typ, Opt) $ id.at in
+      let new_param = ExpP ("x" $ id.at, family_typ) $ id.at in
+      let new_bind = ExpB ("x" $ id.at, typ) $ id.at in
+      let var_exp = VarE ("x" $ id.at) $$ id.at % typ in
+      let opt_exp = OptE (Some (var_exp)) $$ id.at % return_type in
+      let new_case = CaseE(constructor_name_mixop id binds, construct_tuple_exp deftyp.at var_exp typ) $$ id.at % family_typ in
+      let new_args = List.map make_arg_from_bind binds in
+
+      let new_clause = DefD(binds @ [new_bind], new_args @ [ExpA new_case $ id.at], opt_exp, []) $ id.at in
+
+      let extra_bind = ExpB ("x" $ id.at, family_typ) $ id.at in
+      let extra_arg = ExpA (VarE ("x" $ id.at) $$ id.at % family_typ) $ id.at in
+      let none_exp = OptE (None) $$ id.at % return_type in  
+      let extra_clause = DefD(binds @ [extra_bind], new_args @ [extra_arg], none_exp, []) $ id.at in 
+      let clauses = new_clause :: if _has_one_inst then [] else [extra_clause] in
+      DecD (proj_name id binds, List.map make_param_from_bind binds @ [new_param], return_type, clauses)
+    | _ -> _error i.at "Type Family of variant or records should not exist" (* This should never occur *)
+
 let rec transform_type_family def =
-  let make_arg_from_param p = 
-    (match p.it with
-    | ExpP (id, typ) -> ExpA (VarE id $$ id.at % typ)
-    | TypP id -> TypA (VarT (id, []) $ id.at)
-    | DefP (id, _, _) -> DefA id
-    | GramP _ -> assert false
-    ) $ p.at
-  in
-  let make_bind_from_param p = 
-    (match p.it with
-    | ExpP (id, typ) -> ExpB (id, typ)
-    | TypP id -> TypB id
-    | DefP (id, params, typ) -> DefB (id, params, typ)
-    | GramP _ -> assert false
-    ) $ p.at
-  in
   (match def.it with
-  | TypD (id, params, [inst]) when check_normal_type_creation inst -> TypD (id, params, [inst])
+  | TypD (id, params, [inst]) when check_normal_type_creation inst -> [TypD (id, params, [inst])]
   | TypD (id, params, insts) -> 
     let deftyp = VariantT (List.map (fun inst -> match inst.it with 
-      | InstD (binds, _, {it = AliasT typ; _})  ->
-        let name = "x" $ typ.at in  
+      | InstD (binds, args, {it = AliasT typ; _})  ->
+        let name = var_typ_fam $ typ.at in  
         let varE = VarE (name) $$ typ.at % typ in
         let tupt = TupT [(varE, typ)] $ typ.at in
         let new_bind = ExpB (name, typ) $ typ.at in
-        (constructor_name_mixop id binds, (binds @ [new_bind], tupt, []), [])
+
+        let prems = List.map2 (fun a p ->
+          let var_param = (match p.it with
+            | ExpP (id', typ') -> VarE id' $$ id'.at % typ'
+            | _ -> _error id.at "Removal of other arguments is not supported yet"
+          ) in
+          let exp_arg = (match a.it with
+            | ExpA exp -> exp
+            | _ -> _error id.at "Removal of other arguments is not supported yet"
+          ) in 
+          let cmp_exp = CmpE (`EqOp, `BoolT, var_param, exp_arg) $$ id.at % (BoolT $ id.at) in
+          IfPr cmp_exp $ id.at
+        ) args params in 
+        (constructor_name_mixop id binds, (binds @ [new_bind], tupt, prems), [])
       | _ -> _error def.at "Should be type alias"
     ) insts) $ def.at in
     let inst = InstD (List.map make_bind_from_param params, List.map make_arg_from_param params, deftyp) $ def.at in 
-    TypD(id, params, [inst])
-  | RecD defs -> RecD (List.map transform_type_family defs)
-  | d -> d
-  ) $ def.at
+    TypD(id, params, [inst]) :: List.map (gen_family_projections id params (List.length insts = 1)) insts 
+  | RecD defs -> [RecD (List.concat_map transform_type_family defs)]
+  | d -> [d]
+  ) |> List.map (fun d -> d $ def.at)
 
 let transform (il : script): script = 
   let il_transformed = List.concat_map create_types_from_instances il in
   let env = Env.env_of_script il_transformed in 
   List.map (transform_def env) il_transformed |>
-  List.map transform_type_family
+  List.concat_map transform_type_family
