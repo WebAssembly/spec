@@ -23910,8 +23910,8 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return :math:`\mathbb{B}(i_1 = 0)`.
 
 
-:math:`{{\mathrm{inez}}}_{N}(i_1)`
-..................................
+:math:`{{\mathrm{iall\_true}}}_{N}(i_1)`
+........................................
 
 
 1. Return :math:`\mathbb{B}(i_1 \neq 0)`.
@@ -24939,7 +24939,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ......................................................................
 
 
-1. Return :math:`{{\mathrm{ivtestop}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{inez}}, v)`.
+1. Return :math:`{{\mathrm{ivtestop}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{iall}}_{{\mathit{true}}}, v)`.
 
 
 :math:`{{\mathit{vrelop}}}{{}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}(v_1, v_2)}`
@@ -31672,7 +31672,7 @@ isub_sat_ N sx i_1 i_2
 ieqz_ N i_1
 1. Return $bool((i_1 = 0)).
 
-inez_ N i_1
+iall_true_ N i_1
 1. Return $bool((i_1 =/= 0)).
 
 ieq_ N i_1 i_2
@@ -32163,7 +32163,7 @@ vternop_ lanetype X M vternop_ v_1 v_2 v_3
 5. Return $fvternop_(lanetype X M, $frelaxed_nmadd_, v_1, v_2, v_3).
 
 vtestop_ Jnn X M ALL_TRUE v
-1. Return $ivtestop_(Jnn X M, $inez_, v).
+1. Return $ivtestop_(Jnn X M, $iall_true_, v).
 
 vrelop_ lanetype X M vrelop_ v_1 v_2
 1. If lanetype is Jnn, then:

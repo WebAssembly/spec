@@ -1642,6 +1642,7 @@ warning: definition `halfop` was never spliced
 warning: definition `iabs_` was never spliced
 warning: definition `iadd_` was never spliced
 warning: definition `iadd_sat_` was never spliced
+warning: definition `iall_true_` was never spliced
 warning: definition `iand_` was never spliced
 warning: definition `iandnot_` was never spliced
 warning: definition `iavgr_` was never spliced
@@ -1665,7 +1666,6 @@ warning: definition `importsd` was never spliced
 warning: definition `imul_` was never spliced
 warning: definition `ine_` was never spliced
 warning: definition `ineg_` was never spliced
-warning: definition `inez_` was never spliced
 warning: definition `inot_` was never spliced
 warning: definition `inst_globaltype` was never spliced
 warning: definition `inst_memtype` was never spliced
@@ -2484,6 +2484,7 @@ warning: definition prose `halfop` was never spliced
 warning: definition prose `iabs_` was never spliced
 warning: definition prose `iadd_` was never spliced
 warning: definition prose `iadd_sat_` was never spliced
+warning: definition prose `iall_true_` was never spliced
 warning: definition prose `idiv_` was never spliced
 warning: definition prose `ieq_` was never spliced
 warning: definition prose `ieqz_` was never spliced
@@ -2498,7 +2499,6 @@ warning: definition prose `importsd` was never spliced
 warning: definition prose `imul_` was never spliced
 warning: definition prose `ine_` was never spliced
 warning: definition prose `ineg_` was never spliced
-warning: definition prose `inez_` was never spliced
 warning: definition prose `inst_globaltype` was never spliced
 warning: definition prose `inst_memtype` was never spliced
 warning: definition prose `inst_reftype` was never spliced
