@@ -418,6 +418,7 @@
 .. Modules, non-terminals
 
 .. |module| mathdef:: \xref{syntax/modules}{syntax-module}{\X{module}}
+.. |decl| mathdef:: \xref{syntax/modules}{syntax-decl}{\X{decl}}
 .. |type| mathdef:: \xref{syntax/types}{syntax-rectype}{\X{type}}
 .. |func| mathdef:: \xref{syntax/modules}{syntax-func}{\X{func}}
 .. |local| mathdef:: \xref{syntax/modules}{syntax-local}{\X{local}}
@@ -441,6 +442,20 @@
 .. |memsxx| mathdef:: \xref{syntax/modules}{syntax-externidx}{\F{mems}}
 .. |globalsxx| mathdef:: \xref{syntax/modules}{syntax-externidx}{\F{globals}}
 .. |tagsxx| mathdef:: \xref{syntax/modules}{syntax-externidx}{\F{tags}}
+
+.. |typesd| mathdef:: \xref{syntax/modules}{syntax-decl}{\F{types}}
+.. |importsd| mathdef:: \xref{syntax/modules}{syntax-decl}{\F{imports}}
+.. |tagsd| mathdef:: \xref{syntax/modules}{syntax-decl}{\F{tags}}
+.. |globalsd| mathdef:: \xref{syntax/modules}{syntax-decl}{\F{globals}}
+.. |memsd| mathdef:: \xref{syntax/modules}{syntax-decl}{\F{mems}}
+.. |tablesd| mathdef:: \xref{syntax/modules}{syntax-decl}{\F{tables}}
+.. |funcsd| mathdef:: \xref{syntax/modules}{syntax-decl}{\F{funcs}}
+.. |datasd| mathdef:: \xref{syntax/modules}{syntax-decl}{\F{datas}}
+.. |elemsd| mathdef:: \xref{syntax/modules}{syntax-decl}{\F{elems}}
+.. |startsd| mathdef:: \xref{syntax/modules}{syntax-decl}{\F{starts}}
+.. |exportsd| mathdef:: \xref{syntax/modules}{syntax-decl}{\F{exports}}
+
+.. |ordered| mathdef:: \xref{syntax/modules}{aux-ordered}{\F{ordered}}
 
 
 .. Instructions, terminals
@@ -965,26 +980,26 @@
 .. |TfX#1| mathdef:: {\T{f}#1}
 
 .. |TuN| mathdef:: \xref{text/values}{text-int}{\TuX{{\kern-0.1em N}}}
-.. |Tu1| mathdef:: \xref{text/values}{text-int}{\TuX{\T{1}}}
-.. |Tu8| mathdef:: \xref{text/values}{text-int}{\TuX{\T{8}}}
-.. |Tu16| mathdef:: \xref{text/values}{text-int}{\TuX{\T{16}}}
-.. |Tu32| mathdef:: \xref{text/values}{text-int}{\TuX{\T{32}}}
-.. |Tu64| mathdef:: \xref{text/values}{text-int}{\TuX{\T{64}}}
+.. |Tu1| mathdef:: \xref{text/values}{text-int}{\T{u1}}
+.. |Tu8| mathdef:: \xref{text/values}{text-int}{\T{u8}}
+.. |Tu16| mathdef:: \xref{text/values}{text-int}{\T{u16}}
+.. |Tu32| mathdef:: \xref{text/values}{text-int}{\T{u32}}
+.. |Tu64| mathdef:: \xref{text/values}{text-int}{\T{u64}}
 
 .. |TsN| mathdef:: \xref{text/values}{text-int}{\TsX{\kern-0.1em N}}
-.. |Ts32| mathdef:: \xref{text/values}{text-int}{\TsX{\T{32}}}
-.. |Ts64| mathdef:: \xref{text/values}{text-int}{\TsX{\T{64}}}
+.. |Ts32| mathdef:: \xref{text/values}{text-int}{\T{s32}}
+.. |Ts64| mathdef:: \xref{text/values}{text-int}{\T{s64}}
 
 .. |TiN| mathdef:: \xref{text/values}{text-int}{\TiX{\kern-0.1em N}}
-.. |Ti8| mathdef:: \xref{text/values}{text-int}{\TiX{\T{8}}}
-.. |Ti16| mathdef:: \xref{text/values}{text-int}{\TiX{\T{16}}}
-.. |Ti32| mathdef:: \xref{text/values}{text-int}{\TiX{\T{32}}}
-.. |Ti64| mathdef:: \xref{text/values}{text-int}{\TiX{\T{64}}}
+.. |Ti8| mathdef:: \xref{text/values}{text-int}{\T{i8}}
+.. |Ti16| mathdef:: \xref{text/values}{text-int}{\T{i16}}
+.. |Ti32| mathdef:: \xref{text/values}{text-int}{\T{i32}}
+.. |Ti64| mathdef:: \xref{text/values}{text-int}{\T{i64}}
 
 .. |TfN| mathdef:: \xref{text/values}{text-float}{\TfX{\kern-0.1em N}}
 .. |TfNmag| mathdef:: \xref{text/values}{text-float}{\TfX{N}\T{mag}}
-.. |Tf32| mathdef:: \xref{text/values}{text-float}{\TfX{\T{32}}}
-.. |Tf64| mathdef:: \xref{text/values}{text-float}{\TfX{\T{64}}}
+.. |Tf32| mathdef:: \xref{text/values}{text-float}{\T{f32}}
+.. |Tf64| mathdef:: \xref{text/values}{text-float}{\T{f64}}
 
 .. |Tstring| mathdef:: \xref{text/values}{text-string}{\T{string}}
 .. |Tstringelem| mathdef:: \xref{text/values}{text-string}{\T{stringelem}}
@@ -1030,6 +1045,7 @@
 
 .. Indices, non-terminals
 
+.. |Tidx| mathdef:: \xref{text/modules}{text-idx}{\T{idx}}
 .. |Ttypeidx| mathdef:: \xref{text/modules}{text-typeidx}{\T{typeidx}}
 .. |Tfuncidx| mathdef:: \xref{text/modules}{text-funcidx}{\T{funcidx}}
 .. |Ttableidx| mathdef:: \xref{text/modules}{text-tableidx}{\T{tableidx}}
@@ -1046,7 +1062,7 @@
 .. Modules, non-terminals
 
 .. |Tmodule| mathdef:: \xref{text/modules}{text-module}{\T{module}}
-.. |Tmodulefield| mathdef:: \xref{text/modules}{text-modulefield}{\T{modulefield}}
+.. |Tdecl| mathdef:: \xref{text/modules}{text-decl}{\T{decl}}
 .. |Ttype| mathdef:: \xref{text/types}{text-type}{\T{type}}
 .. |Ttypeuse| mathdef:: \xref{text/types}{text-typeuse}{\T{typeuse}}
 .. |Tfunc| mathdef:: \xref{text/modules}{text-func}{\T{func}}

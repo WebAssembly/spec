@@ -1166,7 +1166,7 @@ and render_nottyp env t : table =
       render_table env "@{}" ["l"; "l"] 0 0
         (concat_table "" (render_nl_list env (`H, ", ") render_typfield tfs) [Row [Col " \\}"]])
     )]]
-  | CaseT (dots1, ts, tcs, dots2) ->
+  | CaseT (dots1, ts, tcs, _dots2) ->
     let render env = function
       | `Dots -> render_dots Dots
       | `Typ t -> render_nottyp env t
@@ -1177,7 +1177,7 @@ and render_nottyp env t : table =
         (match dots1 with Dots -> [Elem `Dots] | NoDots -> []) @
         map_nl_list (fun t -> `Typ t) ts @
         map_nl_list (fun tc -> `TypCase tc) tcs @
-        (match dots2 with Dots -> [Elem `Dots] | NoDots -> [])
+        [] (* (match dots2 with Dots -> [Elem `Dots] | NoDots -> []) *)
       )
     in
     if env.config.display then
@@ -1609,7 +1609,7 @@ and render_prod env prod : row list =
     )
 
 and render_gram env gram : table =
-  let (dots1, prods, dots2) = gram.it in
+  let (dots1, prods, _dots2) = gram.it in
   let singleline =
     List.length prods > 1 && gram.at.left.line = gram.at.right.line ||
     List.exists (function (Elem {it = RangeP _; _}) -> true | _ -> false) prods
@@ -1627,7 +1627,7 @@ and render_gram env gram : table =
     render_nl_list env (`H, "~~|~~") render (
       (match dots1 with Dots -> [Elem `Dots] | NoDots -> []) @
       map_nl_list (fun p -> `Prod p) prods @
-      (match dots2 with Dots -> [Elem `Dots] | NoDots -> [])
+      [] (* (match dots2 with Dots -> [Elem `Dots] | NoDots -> []) *)
     )
   in
   if env.config.display then

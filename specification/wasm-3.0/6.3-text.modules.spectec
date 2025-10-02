@@ -7,7 +7,7 @@
 grammar Ttype_(I) : (type, idctxt) =
   | (qt,I'):Trectype_(I) => (TYPE qt, I' ++ I'')
     -- if qt = REC st^n
-    -- if n = 1 /\ I'' = {TYPEDEFS st} \/ n =/= 1 /\ I'' = {TYPEDEFS eps^n}
+    -- if I'' = {TYPEDEFS (_DEF qt i)^(i<n)}  ;; TODO(4, rossberg): inline
 
 
 ;; Tags
@@ -30,83 +30,96 @@ grammar Tmem_(I) : (mem, idctxt) =
 
 ;; Tables
 
-grammar Ttable_(I) : (table, idctxt) =
+grammar Ttable_(I)/plain : (table, idctxt) =
   | "(" "table" id?:Tid? tt:Ttabletype_(I) e:Texpr_(I) ")" => (TABLE tt e, {TABLES (id?)})
   | ...
 
 grammar Ttable_(I)/abbrev : (table, idctxt) = ...
   | "(" "table" Tid? tt:Ttabletype_(I) ")" ==
     "(" "table" Tid? tt:Ttabletype_(I) "(" "ref.null" ht:Theaptype_(I) ")" ")"
+    ----
     -- if tt = at lim (REF NULL? ht)
 
 
 ;; Functions
 
 grammar Tfunc_(I) : (func, idctxt) =
-  | "(" "func" id?:Tid? (x,I_1):Ttypeuse_(I) ((loc*,I_2):Tlocal_(I))* e:Texpr_(I') ")" => (FUNC x $concat_(local, loc**) e, {FUNCS (id?)})
+  | "(" "func" id?:Tid? (x,I_1):Ttypeuse_(I) ((loc*,I_2):Tlocal_(I))* e:Texpr_(I') ")" =>
+    (FUNC x ($concat_(local, loc**)) e, {FUNCS (id?)})
+    ----
     -- if I' = I ++ I_1 ++ $concat_idctxt(I_2*)
     -- Idctxt_ok: |- I' : OK
 
-grammar Tlocal_(I) : (local*, idctxt) =
-  | "(" "local" id?:Tid? t:Tvaltype_(I) ")" => (LOCAL t, {LOCALS (id?)})
+grammar Tlocal_(I)/plain : (local*, idctxt) =
+  | "(" "local" id?:Tid? t:Tvaltype_(I) ")" =>
+    (LOCAL t, {LOCALS (id?)})
   | ...
 
-grammar Tlocal_(I)/abbrev : (local*, idctxt) = ...
-  | "(" "local" t:Tvaltype_(I)* ")" == ("(" "local" t:Tvaltype_(I) ")")*
+grammar Tlocal_(I)/abbrev : (local*, idctxt) =
+  ... | "(" "local" t:Tvaltype_(I)* ")" == ("(" "local" t:Tvaltype_(I) ")")*
 
 
 ;; Data segments
 
 grammar Tdata_(I) : (data, idctxt) =
-  | "(" "data" id?:Tid? b*:Tdatastring ")" => (DATA b* PASSIVE, {DATAS (id?)})
-  | "(" "data" id?:Tid? b*:Tdatastring x:Tmemuse_(I) e:Toffset_(I) ")" => (DATA b* (ACTIVE x e), {DATAS (id?)})
+  | "(" "data" id?:Tid? b*:Tdatastring ")" =>
+    (DATA b* PASSIVE, {DATAS (id?)})
+  | "(" "data" id?:Tid? x:Tmemuse_(I) e:Toffset_(I) b*:Tdatastring ")" =>
+    (DATA b* (ACTIVE x e), {DATAS (id?)})
 
 grammar Tdatastring : byte* =
   | b**:Tstring* => $concat_(byte, b**)
 
-grammar Tmemuse_(I) : memidx =
+grammar Tmemuse_(I)/plain : memidx =
   | "(" "memory" x:Tmemidx_(I) ")" => x
   | ...
 
-grammar Tmemuse_(I)/abbrev : memidx = ...
-  | eps => 0
+grammar Tmemuse_(I)/abbrev : memidx =
+  ... | eps == "(" "memory" "0" ")"
 
-grammar Toffset_(I) : expr =
+grammar Toffset_(I)/plain : expr =
   | "(" "offset" e:Texpr_(I) ")" => e
   | ...
 
-grammar Toffset_(I)/abbrev : expr = ...
-  | Tfoldedinstr_(I) == "(" "offset" Tfoldedinstr_(I) ")"
+grammar Toffset_(I)/abbrev : expr =
+  ... | Tfoldedinstr_(I) == "(" "offset" Tfoldedinstr_(I) ")"
 
 
 ;; Element segments
 
-grammar Telem_(I) : (elem, idctxt) =
-  | "(" "elem" id?:Tid? (rt,e*):Telemlist_(I) ")" => (ELEM rt e* PASSIVE, {ELEMS (id?)})
-  | "(" "elem" id?:Tid? (rt,e*):Telemlist_(I) x:Ttableuse_(I) e':Toffset_(I) ")" => (ELEM rt e* (ACTIVE x e'), {ELEMS (id?)})
-  | "(" "elem" id?:Tid? "declare" (rt,e*):Telemlist_(I) ")" => (ELEM rt e* DECLARE, {ELEMS (id?)})
+grammar Telem_(I)/plain : (elem, idctxt) =
+  | "(" "elem" id?:Tid? (rt,e*):Telemlist_(I) ")" =>
+    (ELEM rt e* PASSIVE, {ELEMS (id?)})
+  | "(" "elem" id?:Tid? x:Ttableuse_(I) e':Toffset_(I) (rt,e*):Telemlist_(I) ")" =>
+    (ELEM rt e* (ACTIVE x e'), {ELEMS (id?)})
+  | "(" "elem" id?:Tid? "declare" (rt,e*):Telemlist_(I) ")" =>
+    (ELEM rt e* DECLARE, {ELEMS (id?)})
+  | ...
 
-grammar Telemlist_(I) : (reftype, expr*) =
+grammar Telem_(I)/abbrev : (elem, idctxt) = ...
+  | "(" "elem" e':Toffset_(I) Tlist(Tfuncidx_(I)) ")" ==
+    "(" "elem" e':Toffset_(I) "func" Tlist(Tfuncidx_(I)) ")"
+
+grammar Telemlist_(I)/plain : (reftype, expr*) =
   | rt:Treftype_(I) e*:Tlist(Texpr_(I)) => (rt, e*)
   | ...
 
-grammar Telemlist_(I)/abbrev : (reftype, expr*) = ...
-  | "func" x*:Tfuncidx_(I)* ==
-    "(" "ref" "func" ")" ("(" "ref.func" Tfuncidx_(I) ")")*
+grammar Telemlist_(I)/abbrev : (reftype, expr*) =
+  ... | "func" x*:Tfuncidx_(I)* == "(" "ref" "func" ")" ("(" "ref.func" Tfuncidx_(I) ")")*
 
-grammar Telemexpr_(I) : expr =
+grammar Telemexpr_(I)/plain : expr =
   | "(" "item" e:Texpr_(I) ")" => e
   | ...
 
-grammar Telemexpr_(I)/abbrev : expr = ...
-  | Tfoldedinstr_(I) == "(" "item" Tfoldedinstr_(I) ")"
+grammar Telemexpr_(I)/abbrev : expr =
+  ... | Tfoldedinstr_(I) == "(" "item" Tfoldedinstr_(I) ")"
 
-grammar Ttableuse_(I) : tableidx =
+grammar Ttableuse_(I)/plain : tableidx =
   | "(" "table" x:Ttableidx_(I) ")" => x
   | ...
 
-grammar Ttableuse_(I)/abbrev : tableidx = ...
-  | eps => 0
+grammar Ttableuse_(I)/abbrev : tableidx =
+  ... | eps == "(" "table" "0" ")"
 
 
 ;; Start functions
@@ -117,19 +130,31 @@ grammar Tstart_(I) : (start, idctxt) =
 
 ;; Imports
 
-grammar Timport_(I) : (import, idctxt) =
+grammar Timport_(I)/plain : (import, idctxt) =
   | "(" "import" nm_1:Tname nm_2:Tname (xt,I'):Texterntype_(I) ")" => (IMPORT nm_1 nm_2 xt, I')
   | ...
 
-grammar Timport_(I)/abbrev : (import, idctxt) = ...
+grammar Timport_(I)/abbrev-tag : (import, idctxt) = ...
   | "(" "tag" Tid? "(" "import" Tname^2 ")" Ttagtype_(I) ")" ==
     "(" "import" Tname^2 "(" "tag" Tid? Ttagtype_(I) ")" ")"
+  | ...
+
+grammar Timport_(I)/abbrev-global : (import, idctxt) = ...
   | "(" "global" Tid? "(" "import" Tname^2 ")" Tglobaltype_(I) ")" ==
     "(" "import" Tname^2 "(" "global" Tid? Tglobaltype_(I) ")" ")"
+  | ...
+
+grammar Timport_(I)/abbrev-mem : (import, idctxt) = ...
   | "(" "memory" Tid? "(" "import" Tname^2 ")" Tmemtype_(I) ")" ==
     "(" "import" Tname^2 "(" "memory" Tid? Tmemtype_(I) ")" ")"
+  | ...
+
+grammar Timport_(I)/abbrev-table : (import, idctxt) = ...
   | "(" "table" Tid? "(" "import" Tname^2 ")" Ttabletype_(I) ")" ==
     "(" "import" Tname^2 "(" "table" Tid? Ttabletype_(I) ")" ")"
+  | ...
+
+grammar Timport_(I)/abbrev-func : (import, idctxt) = ...
   | "(" "func" Tid? "(" "import" Tname^2 ")" Ttypeuse_(I) ")" ==
     "(" "import" Tname^2 "(" "func" Tid? Ttypeuse_(I) ")" ")"
 
@@ -142,21 +167,27 @@ grammar Texport_(I) : (export, idctxt) =
 grammar Texportdots = "(" "export" Tname ")"
 grammar Timportdots = "(" "import" Tname Tname ")"
 
-grammar Texporttagdots_(I) hint(show `...) =
+def $dots : () hint(show `...)  ;; Hack
+
+grammar Texporttagdots_(I) hint(show $dots) =
   | Texportdots* Ttagtype_(I)
   | Texportdots* Timportdots Ttagtype_(I)
-grammar Texportglobaldots_(I) hint(show `...) =
+
+grammar Texportglobaldots_(I) hint(show $dots) =
   | Texportdots* Tglobaltype_(I) Texpr_(I)
   | Texportdots* Timportdots Tglobaltype_(I)
-grammar Texportmemorydots_(I) hint(show `...) =
+
+grammar Texportmemdots_(I) hint(show $dots) =
   | Texportdots* Tmemtype_(I)
   | Texportdots* Taddrtype? "(" "data" Tdatastring ")"
   | Texportdots* Timportdots Tmemtype_(I)
-grammar Texporttabledots_(I) hint(show `...) =
+
+grammar Texporttabledots_(I) hint(show $dots) =
   | Texportdots* Ttabletype_(I) Texpr_(I)?
   | Texportdots* Taddrtype? Treftype_(I) "(" "elem" Telemlist_(I) ")"
   | Texportdots* Timportdots Ttabletype_(I)
-grammar Texportfuncdots_(I) hint(show `...) =
+
+grammar Texportfuncdots_(I) hint(show $dots) =
   | Texportdots* Ttypeuse_(I) Tlocal_(I)* Texpr_(I)
   | Texportdots* Timportdots Ttypeuse_(I)
 
@@ -164,64 +195,65 @@ grammar Texportfuncdots_(I) hint(show `...) =
 ;; TODO(5, rossberg): These abbreviations are currently not formally reachable
 ;; and their types don't match up with anything.
 
-grammar Texporttag_(I)/abbrev : () =
+grammar Texporttag_(I)/abbrev : () hint(show Texport_(%)) =
   | "(" "tag" id?:Tid? "(" "export" Tname ")" Texporttagdots_(I) ")" ==
     "(" "tag" id':Tid Texporttagdots_(I) ")"
     "(" "export" Tname "(" "tag" Tid ")" ")"
     ----
-    -- if id? = id' \/ id? = eps /\ ~(id' <- I.TAGS)
+    -- if id? = id' \/ id? = eps /\ id' </- I.TAGS
 
-grammar Texportglobal_(I)/abbrev : () =
+grammar Texportglobal_(I)/abbrev : () hint(show Texport_(%)) =
   | "(" "global" id?:Tid? "(" "export" Tname ")" Texportglobaldots_(I) ")" ==
     "(" "global" id':Tid Texportglobaldots_(I) ")"
     "(" "export" Tname "(" "global" Tid ")" ")"
     ----
-    -- if id? = id' \/ id? = eps /\ ~(id' <- I.GLOBALS)
+    -- if id? = id' \/ id? = eps /\ id' </- I.GLOBALS
 
-grammar Texportmemory_(I)/abbrev : () =
-  | "(" "memory" id?:Tid? "(" "export" Tname ")" Texportmemorydots_(I) ")" ==
-    "(" "memory" id':Tid Texportmemorydots_(I) ")"
+grammar Texportmem_(I)/abbrev : () hint(show Texport_(%)) =
+  | "(" "memory" id?:Tid? "(" "export" Tname ")" Texportmemdots_(I) ")" ==
+    "(" "memory" id':Tid Texportmemdots_(I) ")"
     "(" "export" Tname "(" "memory" Tid ")" ")"
     ----
-    -- if id? = id' \/ id? = eps /\ ~(id' <- I.MEMS)
+    -- if id? = id' \/ id? = eps /\ id' </- I.MEMS
 
-grammar Texporttable_(I)/abbrev : () =
+grammar Texporttable_(I)/abbrev : () hint(show Texport_(%)) =
   | "(" "table" id?:Tid? "(" "export" Tname ")" Texporttabledots_(I) ")" ==
     "(" "table" id':Tid Texporttabledots_(I) ")"
     "(" "export" Tname "(" "table" Tid ")" ")"
     ----
-    -- if id? = id' \/ id? = eps /\ ~(id' <- I.TABLES)
+    -- if id? = id' \/ id? = eps /\ id' </- I.TABLES
 
-grammar Texportfunc_(I)/abbrev : () =
+grammar Texportfunc_(I)/abbrev : () hint(show Texport_(%)) =
   | "(" "func" id?:Tid? "(" "export" Tname ")" Texportfuncdots_(I) ")" ==
     "(" "func" id':Tid Texportfuncdots_(I) ")"
     "(" "export" Tname "(" "func" Tid ")" ")"
     ----
-    -- if id? = id' \/ id? = eps /\ ~(id' <- I.FUNCS)
+    -- if id? = id' \/ id? = eps /\ id' </- I.FUNCS
 
 
-grammar Tdatamemory_(I)/abbrev : () =
+grammar Tdatamem_(I)/abbrev : () hint(show Tmem_(%)) =
   | "(" "memory" id?:Tid? at?:Taddrtype? "(" "data" b*:Tdatastring ")" ")" ==
     "(" "memory" id':Tid at?:Taddrtype? n:Tu64 n:Tu64 ")"
     "(" "data" "(" "memory" id':Tid ")" "(" at':Taddrtype ".const" "0" ")" Tdatastring ")"
     ----
-    -- if id? = id' \/ id? = eps /\ ~(id' <- I.MEMS)
+    -- if id? = id' \/ id? = eps /\ id' </- I.MEMS
     -- if at? = at' \/ at? = eps /\ at' = I32
     -- if n = $ceilz($(|b*| / 64*$Ki))
 
-grammar Telemtable_(I)/abbrev : () =
+grammar Telemtable_(I)/abbrev : () hint(show Ttable_(%)) =
   | "(" "table" id?:Tid? at?:Taddrtype? Treftype_(I) "(" "elem" (rt,e*):Telemlist_(I) ")" ")" ==
     "(" "table" id':Tid at?:Taddrtype? n:Tu64 n:Tu64 Treftype_(I) ")"
     "(" "elem" "(" "table" id':Tid ")" "(" at':Taddrtype ".const" "0" ")" Telemlist_(I) ")"
     ----
-    -- if id? = id' \/ id? = eps /\ ~(id' <- I.TABLES)
+    -- if id? = id' \/ id? = eps /\ id' </- I.TABLES
     -- if at? = at' \/ at? = eps /\ at' = I32
     -- if n = |e*|
 
 
 ;; Modules
 
-syntax decl = type | import | tag | global | mem | table | func | data | elem | start | export
+syntax decl hint(name "declaration") =
+  type | import | tag | global | mem | table | func | data | elem | start | export
 
 def $typesd(decl*) : type*      hint(show $types(%))   hint(macro "typesd")
 def $importsd(decl*) : import*  hint(show $imports(%)) hint(macro "importsd")
@@ -280,7 +312,6 @@ def $exportsd(export decl'*) = export $exportsd(decl'*)
 def $exportsd(decl decl'*) = $exportsd(decl'*)  -- otherwise
 
 def $ordered(decl*) : bool
-def $ordered(eps) = true
 def $ordered(decl'*) = ($importsd(decl'*) = eps)
 def $ordered(decl_1* import decl_2*) =
   $importsd(decl_1*) = eps /\ $tagsd(decl_1*) = eps /\
@@ -289,12 +320,14 @@ def $ordered(decl_1* import decl_2*) =
 
 
 grammar Tdecl_(I) : (decl, idctxt) =
-  | Ttype_(I) | Timport_(I) | Ttag_(I) | Tglobal_(I) | Tmem_(I) | Ttable_(I) | Tfunc_(I) | Tdata_(I) | Telem_(I) | Tstart_(I) | Texport_(I)
+  | Ttype_(I) | Timport_(I) | Ttag_(I) | Tglobal_(I) | Tmem_(I) | Ttable_(I)
+  | Tfunc_(I) | Tdata_(I) | Telem_(I) | Tstart_(I) | Texport_(I)
 
 
-grammar Tmodule : module =
+grammar Tmodule/plain : module =
   | "(" "module" Tid? (decl,I)*:Tdecl_(I')* ")" =>
     MODULE type* import* tag* global* mem* table* func* data* elem* start? export*
+    ----
     -- if I' = $concat_idctxt(I*)
     -- Idctxt_ok: |- I' : OK
     -- if type* = $typesd(decl*)
@@ -311,5 +344,7 @@ grammar Tmodule : module =
     -- if $ordered(decl*)
   | ...
 
-grammar Tmodule/abbrev : module = ...
-  | Tdecl_(I)* == "(" "module" Tdecl_(I)* ")"
+grammar Tmodule/abbrev : module =
+  ... | Tdecl_(I)* == "(" "module" Tdecl_(I)* ")"
+
+grammar Tdecldots_(I) : (decl, idctxt)* hint(show $dots) = Tdecl_(I)*
