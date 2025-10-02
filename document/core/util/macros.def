@@ -418,7 +418,7 @@
 .. Modules, non-terminals
 
 .. |module| mathdef:: \xref{syntax/modules}{syntax-module}{\X{module}}
-.. |decl| mathdef:: \xref{syntax/modules}{syntax-decl}{\X{decl}}
+.. |decl| mathdef:: \xref{text/modules}{syntax-decl}{\X{decl}}
 .. |type| mathdef:: \xref{syntax/types}{syntax-rectype}{\X{type}}
 .. |func| mathdef:: \xref{syntax/modules}{syntax-func}{\X{func}}
 .. |local| mathdef:: \xref{syntax/modules}{syntax-local}{\X{local}}
@@ -443,19 +443,19 @@
 .. |globalsxx| mathdef:: \xref{syntax/modules}{syntax-externidx}{\F{globals}}
 .. |tagsxx| mathdef:: \xref{syntax/modules}{syntax-externidx}{\F{tags}}
 
-.. |typesd| mathdef:: \xref{syntax/modules}{syntax-decl}{\F{types}}
-.. |importsd| mathdef:: \xref{syntax/modules}{syntax-decl}{\F{imports}}
-.. |tagsd| mathdef:: \xref{syntax/modules}{syntax-decl}{\F{tags}}
-.. |globalsd| mathdef:: \xref{syntax/modules}{syntax-decl}{\F{globals}}
-.. |memsd| mathdef:: \xref{syntax/modules}{syntax-decl}{\F{mems}}
-.. |tablesd| mathdef:: \xref{syntax/modules}{syntax-decl}{\F{tables}}
-.. |funcsd| mathdef:: \xref{syntax/modules}{syntax-decl}{\F{funcs}}
-.. |datasd| mathdef:: \xref{syntax/modules}{syntax-decl}{\F{datas}}
-.. |elemsd| mathdef:: \xref{syntax/modules}{syntax-decl}{\F{elems}}
-.. |startsd| mathdef:: \xref{syntax/modules}{syntax-decl}{\F{starts}}
-.. |exportsd| mathdef:: \xref{syntax/modules}{syntax-decl}{\F{exports}}
+.. |typesd| mathdef:: \xref{text/modules}{syntax-decl}{\F{types}}
+.. |importsd| mathdef:: \xref{text/modules}{syntax-decl}{\F{imports}}
+.. |tagsd| mathdef:: \xref{text/modules}{syntax-decl}{\F{tags}}
+.. |globalsd| mathdef:: \xref{text/modules}{syntax-decl}{\F{globals}}
+.. |memsd| mathdef:: \xref{text/modules}{syntax-decl}{\F{mems}}
+.. |tablesd| mathdef:: \xref{text/modules}{syntax-decl}{\F{tables}}
+.. |funcsd| mathdef:: \xref{text/modules}{syntax-decl}{\F{funcs}}
+.. |datasd| mathdef:: \xref{text/modules}{syntax-decl}{\F{datas}}
+.. |elemsd| mathdef:: \xref{text/modules}{syntax-decl}{\F{elems}}
+.. |startsd| mathdef:: \xref{text/modules}{syntax-decl}{\F{starts}}
+.. |exportsd| mathdef:: \xref{text/modules}{syntax-decl}{\F{exports}}
 
-.. |ordered| mathdef:: \xref{syntax/modules}{aux-ordered}{\F{ordered}}
+.. |ordered| mathdef:: \xref{text/modules}{aux-ordered}{\F{ordered}}
 
 
 .. Instructions, terminals

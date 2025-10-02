@@ -393,6 +393,7 @@ definitions; see the respective sections.
 .. index:: module, type definition, recursive type, tag, global, memory, table, function, data segment, element segment, start function, import, export, identifier context, identifier, name section, ! declaration
    pair: text format; module
    single: section; name
+.. _syntax-decl:
 .. _text-decl:
 .. _text-module:
 
@@ -422,6 +423,8 @@ The auxiliary predicate ${:$ordered} checks that no imports occur after the firs
 :ref:`table <syntax-table>`, or
 :ref:`function <syntax-func>`
 in a sequence of declarations:
+
+.. _aux-ordered:
 
 $${definition: ordered}
 
