@@ -63,8 +63,8 @@ def ReplaceMath(cache, data):
   old = data
   data = re.sub('[\\\\]\\[([0-9]|-)', '\\\\DOUBLESLASH\\[\\1', data)  # Messed up by Bikeshed
   data = data.replace('\\\\', '\\DOUBLESLASH')
-  data = data.replace('\\(', '')
-  data = data.replace('\\)', '')
+  #data = data.replace('\\(', '')
+  #data = data.replace('\\)', '')
   data = data.replace('\\[', '')
   data = data.replace('\\]', '')
   data = data.replace('\\DOUBLESLASH', '\\\\')
