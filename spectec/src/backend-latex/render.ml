@@ -1101,10 +1101,10 @@ let render_text s =
     | '}' -> Buffer.add_string buf "{\\}}"
     | '[' -> Buffer.add_string buf "{[}"
     | ']' -> Buffer.add_string buf "{]}"
-    | '\\' -> Buffer.add_string buf "$\\mathtt{\\backslash}$"  (* TODO: not typeset in TT *)
-    | '^' ->  Buffer.add_string buf "$\\mathtt{\\hat{~~}}$"
-    | '`' ->  Buffer.add_string buf "$\\mathtt{\\grave{~~}}$"
-    | '~' ->  Buffer.add_string buf "$\\mathtt{\\tilde{~~}}$"
+    | '\\' -> Buffer.add_string buf "\\(\\mathtt{\\backslash}\\)"  (* TODO: not typeset in TT *)
+    | '^' ->  Buffer.add_string buf "\\(\\mathtt{\\hat{~~}}\\)"
+    | '`' ->  Buffer.add_string buf "\\(\\mathtt{\\grave{~~}}\\)"
+    | '~' ->  Buffer.add_string buf "\\(\\mathtt{\\tilde{~~}}\\)"
     | c -> Buffer.add_char buf c
   done;
   Buffer.add_string buf "}’}";
