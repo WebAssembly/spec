@@ -6,7 +6,7 @@
 
 grammar Tlabel_(I) : (name?, I) =
   | eps => (eps, {LABELS eps} ++ I)
-  | id:Tid => (id, {LABELS id} ++ I)                    -- if ~(id <- I.LABELS)
+  | id:Tid => (id, {LABELS id} ++ I)                    -- if id </- I.LABELS
   | id:Tid => (id, {LABELS id} ++ I[.LABELS[x] = eps])  -- if id = I.LABELS[x]
 
 
@@ -16,7 +16,7 @@ grammar Tinstr_(I) : instr =
   | in:Tplaininstr_(I) => in
   | in:Tblockinstr_(I) => in
 
-grammar Tinstrs_(I) : instr* =
+grammar Tinstrs_(I)/unfolded : instr* =
   | in*:Tinstr_(I)* => in*
   | ...
 
@@ -25,20 +25,20 @@ grammar Tinstrs_(I)/folded : instr* = ...
 
 
 grammar Tfoldedinstr_(I)/plain : instr* =
-  | "(" in:Tplaininstr_(I) in'*:Tinstrs_(I) ")" => in'* in
+  | "(" Tplaininstr_(I) Tinstrs_(I) ")" ==
+    Tinstrs_(I) Tplaininstr_(I)
   | ...
 
 grammar Tfoldedinstr_(I)/block : instr* = ...
-  | "(" "block" (id?,I'):Tlabel_(I) bt:Tblocktype_(I) in*:Tinstrs_(I') ")" =>
-    BLOCK bt in*
-  | "(" "loop" (id?,I'):Tlabel_(I) bt:Tblocktype_(I) in*:Tinstrs_(I') ")" =>
-    LOOP bt in*
-  | "(" "if" (id?,I'):Tlabel_(I) bt:Tblocktype_(I) in*:Tinstrs_(I')
-      "(" "then" in_1*:Tinstrs_(I') ")"
-      ("(" "else" in_2*:Tinstrs_(I') ")")? ")" =>
-    in* (IF bt in_1* ELSE in_2*)
-  | "(" "try_table" (id?,I'):Tlabel_(I) bt:Tblocktype_(I) c*:Tcatch_(I)* in*:Tinstrs_(I') ")" =>
-    TRY_TABLE bt c* in*
+  | "(" "block" Tlabel_(I) Tblocktype_(I) Tinstrs_(I') ")" ==
+    "block" Tlabel_(I) Tblocktype_(I) Tinstrs_(I') "end"
+  | "(" "loop" Tlabel_(I) Tblocktype_(I) Tinstrs_(I') ")" ==
+    "loop" Tlabel_(I) Tblocktype_(I) Tinstrs_(I') "end"
+  | "(" "if" Tlabel_(I) Tblocktype_(I) Tfoldedinstr_(I)*
+      "(" "then" in_1*:Tinstrs_(I') ")" ("(" "else" in_2*:Tinstrs_(I') ")")? ")" ==
+    Tfoldedinstr_(I)* "if" Tlabel_(I) Tblocktype_(I) in_1*:Tinstrs_(I') ("else" in_2*:Tinstrs_(I'))? "end"
+  | "(" "try_table" Tlabel_(I) Tblocktype_(I) Tcatch_(I)* Tinstrs_(I') ")" ==
+    "try_table" Tlabel_(I) Tblocktype_(I) Tcatch_(I)* Tinstrs_(I') "end"
 
 
 ;; Parametric instructions
@@ -47,7 +47,7 @@ grammar Tplaininstr_(I)/parametric : instr =
   | "unreachable" => UNREACHABLE
   | "nop" => NOP
   | "drop" => DROP
-  | "select" t?:Tresult_(I)? => SELECT t?
+  | "select" (t*:Tresult_(I)*)? => SELECT (t*)?
   | ...
 
 
@@ -55,20 +55,33 @@ grammar Tplaininstr_(I)/parametric : instr =
 
 grammar Tblocktype_(I) : blocktype =
   | t?:Tresult_(I)? => _RESULT t?
-  | (x,I'):Ttypeuse_(I) => _IDX x  -- if I' = {LOCALS (eps)*}
+  | (x,I'):Ttypeuse_(I) => _IDX x
+    ----
+    -- if I' = {LOCALS (eps)*}
 
-grammar Tblockinstr_(I) : instr =
-  | "block" (id?,I'):Tlabel_(I) bt:Tblocktype_(I) in*:Tinstrs_(I') "end" id'?:Tid? =>
-    BLOCK bt in*
+grammar Tblockinstr_(I)/plain : instr =
+  | "block" (id?,I'):Tlabel_(I) bt:Tblocktype_(I)
+    in*:Tinstrs_(I')
+    "end" id'?:Tid? => BLOCK bt in*
+    ----
     -- if id'? = eps \/ id'? = id?
-  | "loop" (id?,I'):Tlabel_(I) bt:Tblocktype_(I) in*:Tinstrs_(I') "end" id'?:Tid? =>
-    LOOP bt in*
+  | "loop" (id?,I'):Tlabel_(I) bt:Tblocktype_(I)
+    in*:Tinstrs_(I')
+    "end" id'?:Tid? => LOOP bt in*
+    ----
     -- if id'? = eps \/ id'? = id?
-  | "if" (id?,I'):Tlabel_(I) bt:Tblocktype_(I) in_1*:Tinstrs_(I') "else" id_1?:Tid? in_2*:Tinstrs_(I') "end" id_2?:Tid? =>
-    IF bt in_1* ELSE in_2*
+  | "if" (id?,I'):Tlabel_(I) bt:Tblocktype_(I)
+    in_1*:Tinstrs_(I')
+    "else" id_1?:Tid?
+    in_2*:Tinstrs_(I')
+    "end" id_2?:Tid? => IF bt in_1* ELSE in_2*
+    ----
     -- if (id_1? = eps \/ id_1? = id?) /\ (id_2? = eps \/ id_2? = id?)
-  | "try_table" (id?,I'):Tlabel_(I) bt:Tblocktype_(I) c*:Tcatch_(I)* in*:Tinstrs_(I') "end" id'?:Tid? =>
-    TRY_TABLE bt c* in*
+  | "try_table" (id?,I'):Tlabel_(I) bt:Tblocktype_(I)
+    c*:Tcatch_(I)*
+    in*:Tinstrs_(I')
+    "end" id'?:Tid? => TRY_TABLE bt c* in*
+    ----
     -- if id'? = eps \/ id'? = id?
   | ...
 
@@ -95,7 +108,7 @@ grammar Tplaininstr_(I)/br : instr = ...
   | "br_on_cast_fail" l:Tlabelidx_(I) rt_1:Treftype_(I) rt_2:Treftype_(I) => BR_ON_CAST_FAIL l rt_1 rt_2
   | ...
 
-grammar Tplaininstr_(I)/func : instr = ...
+grammar Tplaininstr_(I)/func-plain : instr = ...
   | "call" x:Tfuncidx_(I) => CALL x
   | "call_ref" x:Ttypeidx_(I) => CALL_REF $($(_IDX x))
   | "call_indirect" x:Ttableidx_(I) (y,I'):Ttypeuse_(I) => CALL_INDIRECT x $($(_IDX y))
@@ -107,7 +120,7 @@ grammar Tplaininstr_(I)/func : instr = ...
     -- if I' = {LOCALS (eps)*}
   | ...
 
-grammar Tplaininstr_(I)/func/abbrev : instr = ...
+grammar Tplaininstr_(I)/func-abbrev : instr = ...
   | "call_indirect" Ttypeuse_(I) == "call_indirect" "0" Ttypeuse_(I)
   | "return_call_indirect" Ttypeuse_(I) == "return_call_indirect" "0" Ttypeuse_(I)
   | ...
@@ -134,7 +147,7 @@ grammar Tplaininstr_(I)/global : instr = ...
 
 ;; Table instructions
 
-grammar Tplaininstr_(I)/table : instr = ...
+grammar Tplaininstr_(I)/table-plain : instr = ...
   | "table.get" x:Ttableidx_(I) => TABLE.GET x
   | "table.set" x:Ttableidx_(I) => TABLE.SET x
   | "table.size" x:Ttableidx_(I) => TABLE.SIZE x
@@ -144,7 +157,7 @@ grammar Tplaininstr_(I)/table : instr = ...
   | "table.init" x:Ttableidx_(I) y:Telemidx_(I) => TABLE.INIT x y
   | ...
 
-grammar Tplaininstr_(I)/table/abbrev : instr = ...
+grammar Tplaininstr_(I)/table-abbrev : instr = ...
   | "table.get" == "table.get" "0"
   | "table.set" == "table.set" "0"
   | "table.size" == "table.size" "0"
@@ -166,14 +179,16 @@ grammar Tmemarg_(N) : memarg =
 
 grammar Toffset : u64 =
   | "offset=" n:Tu64 => n
+  | eps => 0
 
 grammar Talign_(N) : u64 =
   | "align=" m:Tu64 => m  -- if $(m = 2^n)
+  | eps => N
 
 grammar Tlaneidx : laneidx =
   | i:Tu8 => i
 
-grammar Tplaininstr_(I)/memory : instr = ...
+grammar Tplaininstr_(I)/memory-plain : instr = ...
   | "i32.load" x:Tmemidx_(I) ao:Tmemarg_(4) => LOAD I32 x ao
   | "i64.load" x:Tmemidx_(I) ao:Tmemarg_(8) => LOAD I64 x ao
   | "f32.load" x:Tmemidx_(I) ao:Tmemarg_(4) => LOAD F32 x ao
@@ -226,7 +241,7 @@ grammar Tplaininstr_(I)/memory : instr = ...
   | "memory.init" x:Tmemidx_(I) y:Tdataidx_(I) => MEMORY.INIT x y
   | ...
 
-grammar Tplaininstr_(I)/memory/abbrev : instr = ...
+grammar Tplaininstr_(I)/memory-abbrev : instr = ...
   | "i32.load" Tmemarg_(4) == "i32.load" "0" Tmemarg_(4)
   | "i64.load" Tmemarg_(8) == "i64.load" "0" Tmemarg_(8)
   | "f32.load" Tmemarg_(4) == "f32.load" "0" Tmemarg_(4)
@@ -564,20 +579,20 @@ grammar Tplaininstr_(I)/vec-splat : instr = ...
   | ...
 
 grammar Tplaininstr_(I)/vec-lane : instr = ...
-  | "i8x16.extract_lane_s" l:Tlaneidx => VEXTRACT_LANE (I8 X `16) S l
-  | "i8x16.extract_lane_u" l:Tlaneidx => VEXTRACT_LANE (I8 X `16) U l
-  | "i16x8.extract_lane_s" l:Tlaneidx => VEXTRACT_LANE (I16 X `8) S l
-  | "i16x8.extract_lane_u" l:Tlaneidx => VEXTRACT_LANE (I16 X `8) U l
-  | "i32x4.extract_lane" l:Tlaneidx => VEXTRACT_LANE (I32 X `4) l
-  | "i64x2.extract_lane" l:Tlaneidx => VEXTRACT_LANE (I64 X `2) l
-  | "f32x4.extract_lane" l:Tlaneidx => VEXTRACT_LANE (F32 X `4) l
-  | "f64x2.extract_lane" l:Tlaneidx => VEXTRACT_LANE (F64 X `2) l
-  | "i8x16.replace_lane" l:Tlaneidx => VREPLACE_LANE (I8 X `16) l
-  | "i16x8.replace_lane" l:Tlaneidx => VREPLACE_LANE (I16 X `8) l
-  | "i32x4.replace_lane" l:Tlaneidx => VREPLACE_LANE (I32 X `4) l
-  | "i64x2.replace_lane" l:Tlaneidx => VREPLACE_LANE (I64 X `2) l
-  | "f32x4.replace_lane" l:Tlaneidx => VREPLACE_LANE (F32 X `4) l
-  | "f64x2.replace_lane" l:Tlaneidx => VREPLACE_LANE (F64 X `2) l
+  | "i8x16.extract_lane_s" i:Tlaneidx => VEXTRACT_LANE (I8 X `16) S i
+  | "i8x16.extract_lane_u" i:Tlaneidx => VEXTRACT_LANE (I8 X `16) U i
+  | "i16x8.extract_lane_s" i:Tlaneidx => VEXTRACT_LANE (I16 X `8) S i
+  | "i16x8.extract_lane_u" i:Tlaneidx => VEXTRACT_LANE (I16 X `8) U i
+  | "i32x4.extract_lane" i:Tlaneidx => VEXTRACT_LANE (I32 X `4) i
+  | "i64x2.extract_lane" i:Tlaneidx => VEXTRACT_LANE (I64 X `2) i
+  | "f32x4.extract_lane" i:Tlaneidx => VEXTRACT_LANE (F32 X `4) i
+  | "f64x2.extract_lane" i:Tlaneidx => VEXTRACT_LANE (F64 X `2) i
+  | "i8x16.replace_lane" i:Tlaneidx => VREPLACE_LANE (I8 X `16) i
+  | "i16x8.replace_lane" i:Tlaneidx => VREPLACE_LANE (I16 X `8) i
+  | "i32x4.replace_lane" i:Tlaneidx => VREPLACE_LANE (I32 X `4) i
+  | "i64x2.replace_lane" i:Tlaneidx => VREPLACE_LANE (I64 X `2) i
+  | "f32x4.replace_lane" i:Tlaneidx => VREPLACE_LANE (F32 X `4) i
+  | "f64x2.replace_lane" i:Tlaneidx => VREPLACE_LANE (F64 X `2) i
   | ...
 
 grammar Tplaininstr_(I)/vec-test-v128 : instr = ...

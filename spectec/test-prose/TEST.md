@@ -26542,8 +26542,8 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`{{\mathit{val}'}^{k}}`.
 
 
-:math:`{\mathrm{concat}}_{\mathit{idctxt}}({{\mathit{idctxt}}^\ast})`
-.....................................................................
+:math:`{\bigoplus}\, {{\mathit{idctxt}}^\ast}`
+..............................................
 
 
 1. If :math:`{{\mathit{idctxt}}^\ast} = \epsilon`, then:
@@ -26702,11 +26702,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ..................................................
 
 
-1. If :math:`{{\mathit{decl}}^\ast} = \epsilon`, then:
+1. If :math:`{\mathrm{imports}}({{\mathit{decl}}^\ast}) = \epsilon`, then:
 
    a. Return true.
-
-#. Return :math:`{\mathrm{imports}}({{\mathit{decl}}^\ast}) = \epsilon`.
 
 #. Assert: Due to validation, YetE: Nondeterministic assignment target: decl_1*{decl_1 <- decl_1*} :: [import] :: decl_2*{decl_2 <- decl_2*}.
 
@@ -33034,12 +33032,11 @@ exportsd decl'*
 3. Return [export] :: $exportsd(decl'*).
 
 ordered decl*
-1. If (decl* = []), then:
+1. If ($importsd(decl*) = []), then:
   a. Return true.
-2. Return ($importsd(decl*) = []).
-3. Assert: Due to validation, YetE (Nondeterministic assignment target: decl_1*{decl_1 <- decl_1*} :: [import] :: decl_2*{decl_2 <- decl_2*}).
-4. Let decl_1* :: [import] :: decl_2* be decl*.
-5. Return (((((($importsd(decl_1*) = []) /\ ($tagsd(decl_1*) = [])) /\ ($globalsd(decl_1*) = [])) /\ ($memsd(decl_1*) = [])) /\ ($tablesd(decl_1*) = [])) /\ ($funcsd(decl_1*) = [])).
+2. Assert: Due to validation, YetE (Nondeterministic assignment target: decl_1*{decl_1 <- decl_1*} :: [import] :: decl_2*{decl_2 <- decl_2*}).
+3. Let decl_1* :: [import] :: decl_2* be decl*.
+4. Return (((((($importsd(decl_1*) = []) /\ ($tagsd(decl_1*) = [])) /\ ($globalsd(decl_1*) = [])) /\ ($memsd(decl_1*) = [])) /\ ($tablesd(decl_1*) = [])) /\ ($funcsd(decl_1*) = [])).
 
 allocXs `X `Y s X''* Y''*
 1. If (X''* = []), then:

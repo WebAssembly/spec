@@ -192,6 +192,7 @@ and token = parse
   | "-+" { MINUSPLUS }
 
   | "<-" { MEM }
+  | "</-" { NOTMEM }
   | "->" { ARROW }
   | "=>" { ARROW2 }
   | "->_" { ARROWSUB }

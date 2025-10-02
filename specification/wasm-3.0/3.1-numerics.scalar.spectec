@@ -77,7 +77,7 @@ def $truncz(rat) : int
 def $truncz hint(builtin)
 ;;def $truncz(+-q) = +-n  -- if n <- nat /\ $(q - 1) < n <= q
 
-def $ceilz(rat) : int
+def $ceilz(rat) : int hint(show $ceil(%)) hint(macro none)
 def $ceilz hint(builtin)
 ;;def $ceilz(+-q) = +-n  -- if n <- nat /\ q <= n < $(q + 1)
 
