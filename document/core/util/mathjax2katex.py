@@ -71,6 +71,7 @@ def ReplaceMath(cache, data):
   data = data.replace('\u2019', '\'')       # "Right Single Quotation Mark" messed up by Bikeshed
   data = data.replace('\\hfill', ' ')
   data = data.replace('\\mbox', '\\text')
+  data = data.replace('\\texttt{', '{\\tt ')
   data = data.replace('\\begin{split}', '\\begin{aligned}')
   data = data.replace('\\end{split}', '\\end{aligned}')
   data = re.sub('\\\\multicolumn\\{[2-9]\\}\\{@\\{\\}l@\\{\\}\\}', '', data)   # Katex can't handle it
