@@ -12398,16 +12398,16 @@ $$
 
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
-& {\mathtt{stringchar}} & ::= & c{:}{\mathtt{char}} & \quad\Rightarrow\quad{} & c & \quad \mbox{if}~ c \geq \mathrm{U{+}20} \land c \neq \mathrm{U{+}7F} \land c \neq \mbox{‘\texttt{\kern-0.02em{'}\kern-0.05em{'}\kern-0.02em}’} \land c \neq \mbox{‘\texttt{$\mathtt{\backslash}$}’} \\
-& & | & \mbox{‘\texttt{$\mathtt{\backslash}$t}’} & \quad\Rightarrow\quad{} & \mathrm{U{+}09} \\
-& & | & \mbox{‘\texttt{$\mathtt{\backslash}$n}’} & \quad\Rightarrow\quad{} & \mathrm{U{+}0A} \\
-& & | & \mbox{‘\texttt{$\mathtt{\backslash}$r}’} & \quad\Rightarrow\quad{} & \mathrm{U{+}0D} \\
-& & | & \mbox{‘\texttt{$\mathtt{\backslash}$\kern-0.02em{'}\kern-0.05em{'}\kern-0.02em}’} & \quad\Rightarrow\quad{} & \mathrm{U{+}22} \\
-& & | & \mbox{‘\texttt{$\mathtt{\backslash}$\kern0.03em{'}\kern0.03em}’} & \quad\Rightarrow\quad{} & \mathrm{U{+}27} \\
-& & | & \mbox{‘\texttt{$\mathtt{\backslash}$$\mathtt{\backslash}$}’} & \quad\Rightarrow\quad{} & \mathrm{U{+}5C} \\
-& & | & \mbox{‘\texttt{$\mathtt{\backslash}$u{\{}}’}~~n{:}{\mathtt{hexnum}}~~\mbox{‘\texttt{{\}}}’} & \quad\Rightarrow\quad{} & n & \quad \mbox{if}~ n < \mathtt{0xD800} \lor \mathtt{0xE800} \leq n < \mathtt{0x110000} \\
+& {\mathtt{stringchar}} & ::= & c{:}{\mathtt{char}} & \quad\Rightarrow\quad{} & c & \quad \mbox{if}~ c \geq \mathrm{U{+}20} \land c \neq \mathrm{U{+}7F} \land c \neq \mbox{‘\texttt{\kern-0.02em{'}\kern-0.05em{'}\kern-0.02em}’} \land c \neq \mbox{‘\texttt{\(\mathtt{\backslash}\)}’} \\
+& & | & \mbox{‘\texttt{\(\mathtt{\backslash}\)t}’} & \quad\Rightarrow\quad{} & \mathrm{U{+}09} \\
+& & | & \mbox{‘\texttt{\(\mathtt{\backslash}\)n}’} & \quad\Rightarrow\quad{} & \mathrm{U{+}0A} \\
+& & | & \mbox{‘\texttt{\(\mathtt{\backslash}\)r}’} & \quad\Rightarrow\quad{} & \mathrm{U{+}0D} \\
+& & | & \mbox{‘\texttt{\(\mathtt{\backslash}\)\kern-0.02em{'}\kern-0.05em{'}\kern-0.02em}’} & \quad\Rightarrow\quad{} & \mathrm{U{+}22} \\
+& & | & \mbox{‘\texttt{\(\mathtt{\backslash}\)\kern0.03em{'}\kern0.03em}’} & \quad\Rightarrow\quad{} & \mathrm{U{+}27} \\
+& & | & \mbox{‘\texttt{\(\mathtt{\backslash}\)\(\mathtt{\backslash}\)}’} & \quad\Rightarrow\quad{} & \mathrm{U{+}5C} \\
+& & | & \mbox{‘\texttt{\(\mathtt{\backslash}\)u{\{}}’}~~n{:}{\mathtt{hexnum}}~~\mbox{‘\texttt{{\}}}’} & \quad\Rightarrow\quad{} & n & \quad \mbox{if}~ n < \mathtt{0xD800} \lor \mathtt{0xE800} \leq n < \mathtt{0x110000} \\
 & {\mathtt{stringelem}} & ::= & c{:}{\mathtt{stringchar}} & \quad\Rightarrow\quad{} & {\mathrm{utf{\kern-0.1em\scriptstyle 8}}}(c) \\
-& & | & \mbox{‘\texttt{$\mathtt{\backslash}$}’}~~h_1{:}{\mathtt{hexdigit}}~~h_2{:}{\mathtt{hexdigit}} & \quad\Rightarrow\quad{} & 16 \, h_1 + h_2 \\
+& & | & \mbox{‘\texttt{\(\mathtt{\backslash}\)}’}~~h_1{:}{\mathtt{hexdigit}}~~h_2{:}{\mathtt{hexdigit}} & \quad\Rightarrow\quad{} & 16 \, h_1 + h_2 \\
 & {\mathtt{string}} & ::= & \mbox{‘\texttt{\kern-0.02em{'}\kern-0.05em{'}\kern-0.02em}’}~~{({b^\ast}{:}{\mathtt{stringelem}})^\ast}~~\mbox{‘\texttt{\kern-0.02em{'}\kern-0.05em{'}\kern-0.02em}’} & \quad\Rightarrow\quad{} & {\bigoplus}\, {{b^\ast}^\ast} & \quad \mbox{if}~ {|{\bigoplus}\, {{b^\ast}^\ast}|} < {2^{32}} \\
 \end{array}
 $$
@@ -12436,7 +12436,7 @@ $$
 & & | & \mbox{‘\texttt{A}’} ~~|~~ \ldots ~~|~~ \mbox{‘\texttt{Z}’} \\
 & & | & \mbox{‘\texttt{a}’} ~~|~~ \ldots ~~|~~ \mbox{‘\texttt{z}’} \\
 & & | & \mbox{‘\texttt{!}’} ~~|~~ \mbox{‘\texttt{\#}’} ~~|~~ \mbox{‘\texttt{\$}’} ~~|~~ \mbox{‘\texttt{\%}’} ~~|~~ \mbox{‘\texttt{\&}’} ~~|~~ \mbox{‘\texttt{\kern0.03em{'}\kern0.03em}’} ~~|~~ \mbox{‘\texttt{*}’} ~~|~~ \mbox{‘\texttt{+}’} ~~|~~ \mbox{‘\texttt{{-}}’} ~~|~~ \mbox{‘\texttt{.}’} ~~|~~ \mbox{‘\texttt{/}’} \\
-& & | & \mbox{‘\texttt{:}’} ~~|~~ \mbox{‘\texttt{{<}}’} ~~|~~ \mbox{‘\texttt{{=}}’} ~~|~~ \mbox{‘\texttt{{>}}’} ~~|~~ \mbox{‘\texttt{?}’} ~~|~~ \mbox{‘\texttt{@}’} ~~|~~ \mbox{‘\texttt{$\mathtt{\backslash}$}’} ~~|~~ \mbox{‘\texttt{$\mathtt{\hat{~~}}$}’} ~~|~~ \mbox{‘\texttt{\_}’} ~~|~~ \mbox{‘\texttt{$\mathtt{\grave{~~}}$}’} ~~|~~ \mbox{‘\texttt{|}’} ~~|~~ \mbox{‘\texttt{$\mathtt{\tilde{~~}}$}’} \\
+& & | & \mbox{‘\texttt{:}’} ~~|~~ \mbox{‘\texttt{{<}}’} ~~|~~ \mbox{‘\texttt{{=}}’} ~~|~~ \mbox{‘\texttt{{>}}’} ~~|~~ \mbox{‘\texttt{?}’} ~~|~~ \mbox{‘\texttt{@}’} ~~|~~ \mbox{‘\texttt{\(\mathtt{\backslash}\)}’} ~~|~~ \mbox{‘\texttt{\(\mathtt{\hat{~~}}\)}’} ~~|~~ \mbox{‘\texttt{\_}’} ~~|~~ \mbox{‘\texttt{\(\mathtt{\grave{~~}}\)}’} ~~|~~ \mbox{‘\texttt{|}’} ~~|~~ \mbox{‘\texttt{\(\mathtt{\tilde{~~}}\)}’} \\
 & {\mathtt{id}} & ::= & \mbox{‘\texttt{\$}’}~~{c^\ast}{:}{{\mathtt{idchar}}^{+}} & \quad\Rightarrow\quad{} & {c^\ast} \\
 & & | & \mbox{‘\texttt{\$}’}~~{c^\ast}{:}{\mathtt{name}} & \quad\Rightarrow\quad{} & {c^\ast} & \quad \mbox{if}~ {|{c^\ast}|} > 0 \\
 \end{array}
