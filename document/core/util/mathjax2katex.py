@@ -65,6 +65,8 @@ def ReplaceMath(cache, data):
   data = data.replace('\\\\', '\\DOUBLESLASH')
   #data = data.replace('\\(', '')
   #data = data.replace('\\)', '')
+  data = re.sub('^\\\\\\(', '', data)
+  data = re.sub('\\\\\\)$', '', data)
   data = data.replace('\\[', '')
   data = data.replace('\\]', '')
   data = data.replace('\\DOUBLESLASH', '\\\\')
