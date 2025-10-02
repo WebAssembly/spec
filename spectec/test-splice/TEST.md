@@ -59,7 +59,6 @@ $$
 & & | & \mathsf{block}~{\mathit{blocktype}}~{{\mathit{instr}}^\ast} \\
 & & | & \mathsf{loop}~{\mathit{blocktype}}~{{\mathit{instr}}^\ast} \\
 & & | & \mathsf{if}~{\mathit{blocktype}}~{{\mathit{instr}}^\ast}~\mathsf{else}~{{\mathit{instr}}^\ast} \\
-& & | & \dots \\
 \end{array}
 $$
 
@@ -87,8 +86,7 @@ $$
 & & | & \mathsf{memory{.}grow}~{\mathit{memidx}} \\
 & & | & \mathsf{memory{.}fill}~{\mathit{memidx}} \\
 & & | & \mathsf{memory{.}copy}~{\mathit{memidx}}~{\mathit{memidx}} \\
-& & | & \mathsf{memory{.}init}~{\mathit{memidx}}~{\mathit{dataidx}} \\
-& & | & \dots \\[0.8ex]
+& & | & \mathsf{memory{.}init}~{\mathit{memidx}}~{\mathit{dataidx}} \\[0.8ex]
 & {\mathit{expr}} & ::= & {{\mathit{instr}}^\ast} \\
 \end{array}
 $$
@@ -693,7 +691,7 @@ warning: grammar `Tannot` was never spliced
 warning: grammar `Tannotid` was never spliced
 warning: grammar `Tblockchar` was never spliced
 warning: grammar `Tblockcomment` was never spliced
-warning: grammar `Tblockinstr_` was never spliced
+warning: grammar `Tblockinstr_/plain` was never spliced
 warning: grammar `Tblockinstr_/abbrev` was never spliced
 warning: grammar `Tblocktype_` was never spliced
 warning: grammar `Tcatch_` was never spliced
@@ -702,15 +700,17 @@ warning: grammar `Tcomment` was never spliced
 warning: grammar `Tcomptype_` was never spliced
 warning: grammar `Tdata_` was never spliced
 warning: grammar `Tdataidx_` was never spliced
-warning: grammar `Tdatamemory_/abbrev` was never spliced
+warning: grammar `Tdatamem_/abbrev` was never spliced
 warning: grammar `Tdatastring` was never spliced
 warning: grammar `Tdecl_` was never spliced
+warning: grammar `Tdecldots_` was never spliced
 warning: grammar `Tdigit` was never spliced
-warning: grammar `Telem_` was never spliced
-warning: grammar `Telemexpr_` was never spliced
+warning: grammar `Telem_/plain` was never spliced
+warning: grammar `Telem_/abbrev` was never spliced
+warning: grammar `Telemexpr_/plain` was never spliced
 warning: grammar `Telemexpr_/abbrev` was never spliced
 warning: grammar `Telemidx_` was never spliced
-warning: grammar `Telemlist_` was never spliced
+warning: grammar `Telemlist_/plain` was never spliced
 warning: grammar `Telemlist_/abbrev` was never spliced
 warning: grammar `Telemtable_/abbrev` was never spliced
 warning: grammar `Teof` was never spliced
@@ -720,8 +720,8 @@ warning: grammar `Texportfunc_/abbrev` was never spliced
 warning: grammar `Texportfuncdots_` was never spliced
 warning: grammar `Texportglobal_/abbrev` was never spliced
 warning: grammar `Texportglobaldots_` was never spliced
-warning: grammar `Texportmemory_/abbrev` was never spliced
-warning: grammar `Texportmemorydots_` was never spliced
+warning: grammar `Texportmem_/abbrev` was never spliced
+warning: grammar `Texportmemdots_` was never spliced
 warning: grammar `Texporttable_/abbrev` was never spliced
 warning: grammar `Texporttabledots_` was never spliced
 warning: grammar `Texporttag_/abbrev` was never spliced
@@ -764,11 +764,15 @@ warning: grammar `TiN` was never spliced
 warning: grammar `Tid` was never spliced
 warning: grammar `Tidchar` was never spliced
 warning: grammar `Tidx_` was never spliced
-warning: grammar `Timport_` was never spliced
-warning: grammar `Timport_/abbrev` was never spliced
+warning: grammar `Timport_/plain` was never spliced
+warning: grammar `Timport_/abbrev-tag` was never spliced
+warning: grammar `Timport_/abbrev-global` was never spliced
+warning: grammar `Timport_/abbrev-mem` was never spliced
+warning: grammar `Timport_/abbrev-table` was never spliced
+warning: grammar `Timport_/abbrev-func` was never spliced
 warning: grammar `Timportdots` was never spliced
 warning: grammar `Tinstr_` was never spliced
-warning: grammar `Tinstrs_` was never spliced
+warning: grammar `Tinstrs_/unfolded` was never spliced
 warning: grammar `Tinstrs_/folded` was never spliced
 warning: grammar `Tkeyword` was never spliced
 warning: grammar `Tlabel_` was never spliced
@@ -778,7 +782,7 @@ warning: grammar `Tlimits` was never spliced
 warning: grammar `Tlinechar` was never spliced
 warning: grammar `Tlinecomment` was never spliced
 warning: grammar `Tlist` was never spliced
-warning: grammar `Tlocal_` was never spliced
+warning: grammar `Tlocal_/plain` was never spliced
 warning: grammar `Tlocal_/abbrev` was never spliced
 warning: grammar `Tlocalidx_` was never spliced
 warning: grammar `Tmant` was never spliced
@@ -786,9 +790,9 @@ warning: grammar `Tmem_` was never spliced
 warning: grammar `Tmemarg_` was never spliced
 warning: grammar `Tmemidx_` was never spliced
 warning: grammar `Tmemtype_` was never spliced
-warning: grammar `Tmemuse_` was never spliced
+warning: grammar `Tmemuse_/plain` was never spliced
 warning: grammar `Tmemuse_/abbrev` was never spliced
-warning: grammar `Tmodule` was never spliced
+warning: grammar `Tmodule/plain` was never spliced
 warning: grammar `Tmodule/abbrev` was never spliced
 warning: grammar `Tname` was never spliced
 warning: grammar `Tnewline` was never spliced
@@ -796,23 +800,23 @@ warning: grammar `Tnull` was never spliced
 warning: grammar `Tnum` was never spliced
 warning: grammar `Tnumtype` was never spliced
 warning: grammar `Toffset` was never spliced
-warning: grammar `Toffset_` was never spliced
+warning: grammar `Toffset_/plain` was never spliced
 warning: grammar `Toffset_/abbrev` was never spliced
 warning: grammar `Tpacktype` was never spliced
 warning: grammar `Tparam_/base` was never spliced
 warning: grammar `Tparam_/abbrev` was never spliced
 warning: grammar `Tplaininstr_/parametric` was never spliced
 warning: grammar `Tplaininstr_/br` was never spliced
-warning: grammar `Tplaininstr_/func` was never spliced
-warning: grammar `Tplaininstr_/func/abbrev` was never spliced
+warning: grammar `Tplaininstr_/func-plain` was never spliced
+warning: grammar `Tplaininstr_/func-abbrev` was never spliced
 warning: grammar `Tplaininstr_/exn` was never spliced
 warning: grammar `Tplaininstr_/local` was never spliced
 warning: grammar `Tplaininstr_/global` was never spliced
-warning: grammar `Tplaininstr_/table` was never spliced
-warning: grammar `Tplaininstr_/table/abbrev` was never spliced
+warning: grammar `Tplaininstr_/table-plain` was never spliced
+warning: grammar `Tplaininstr_/table-abbrev` was never spliced
 warning: grammar `Tplaininstr_/elem` was never spliced
-warning: grammar `Tplaininstr_/memory` was never spliced
-warning: grammar `Tplaininstr_/memory/abbrev` was never spliced
+warning: grammar `Tplaininstr_/memory-plain` was never spliced
+warning: grammar `Tplaininstr_/memory-abbrev` was never spliced
 warning: grammar `Tplaininstr_/data` was never spliced
 warning: grammar `Tplaininstr_/ref` was never spliced
 warning: grammar `Tplaininstr_/i31` was never spliced
@@ -918,11 +922,11 @@ warning: grammar `Tsubtype_/abbrev` was never spliced
 warning: grammar `Tsym` was never spliced
 warning: grammar `Tsymsplit/1` was never spliced
 warning: grammar `Tsymsplit/2` was never spliced
-warning: grammar `Ttable_` was never spliced
+warning: grammar `Ttable_/plain` was never spliced
 warning: grammar `Ttable_/abbrev` was never spliced
 warning: grammar `Ttableidx_` was never spliced
 warning: grammar `Ttabletype_` was never spliced
-warning: grammar `Ttableuse_` was never spliced
+warning: grammar `Ttableuse_/plain` was never spliced
 warning: grammar `Ttableuse_/abbrev` was never spliced
 warning: grammar `Ttag_` was never spliced
 warning: grammar `Ttagidx_` was never spliced
@@ -1517,6 +1521,7 @@ warning: definition `demote__` was never spliced
 warning: definition `diffrt` was never spliced
 warning: definition `dim` was never spliced
 warning: definition `disjoint_` was never spliced
+warning: definition `dots` was never spliced
 warning: definition `elem` was never spliced
 warning: definition `eleminst` was never spliced
 warning: definition `elemsd` was never spliced

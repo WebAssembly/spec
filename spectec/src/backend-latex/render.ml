@@ -1073,7 +1073,7 @@ Printf.eprintf "[render_atom %s @ %s] id=%s def=%s macros: %s (%s)\n%!"
 
 let render_text s =
   let buf = Buffer.create (String.length s + 32) in
-  Buffer.add_string buf "\\mbox{‘}\\mathtt{";
+  Buffer.add_string buf "\\mbox{‘\\texttt{";
   for i = 0 to String.length s - 1 do
     match s.[i] with
     | '\'' -> Buffer.add_string buf "\\kern0.03em{'}\\kern0.03em"  (* TODO: not typeset in TT *)
@@ -1086,20 +1086,20 @@ let render_text s =
     | '=' -> Buffer.add_string buf "{=}"
     | '<' -> Buffer.add_string buf "{<}"
     | '>' -> Buffer.add_string buf "{>}"
-    | '-' -> Buffer.add_string buf "\\mbox{\\tt-}"
-    | '(' -> Buffer.add_string buf "\\mbox{\\tt(}"
-    | ')' -> Buffer.add_string buf "\\mbox{\\tt)}"
-    | '{' -> Buffer.add_string buf "\\mbox{\\tt\\{}"
-    | '}' -> Buffer.add_string buf "\\mbox{\\tt\\}}"
-    | '[' -> Buffer.add_string buf "\\mbox{\\tt[}"
-    | ']' -> Buffer.add_string buf "\\mbox{\\tt]}"
-    | '\\' -> Buffer.add_string buf "{\\backslash}"  (* TODO: not typeset in TT *)
-    | '^' ->  Buffer.add_string buf "\\hat{~~}"
-    | '`' ->  Buffer.add_string buf "\\grave{~~}"
-    | '~' ->  Buffer.add_string buf "\\tilde{~~}"
+    | '-' -> Buffer.add_string buf "{-}"
+    | '(' -> Buffer.add_string buf "{(}"
+    | ')' -> Buffer.add_string buf "{)}"
+    | '{' -> Buffer.add_string buf "{\\{}"
+    | '}' -> Buffer.add_string buf "{\\}}"
+    | '[' -> Buffer.add_string buf "{[}"
+    | ']' -> Buffer.add_string buf "{]}"
+    | '\\' -> Buffer.add_string buf "$\\mathtt{\\backslash}$"  (* TODO: not typeset in TT *)
+    | '^' ->  Buffer.add_string buf "$\\mathtt{\\hat{~~}}$"
+    | '`' ->  Buffer.add_string buf "$\\mathtt{\\grave{~~}}$"
+    | '~' ->  Buffer.add_string buf "$\\mathtt{\\tilde{~~}}$"
     | c -> Buffer.add_char buf c
   done;
-  Buffer.add_string buf "}\\mbox{’}";
+  Buffer.add_string buf "}’}";
   Buffer.contents buf
 
 
