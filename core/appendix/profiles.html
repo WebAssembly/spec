@@ -5,11 +5,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Profiles &#8212; WebAssembly 3.0 (2025-10-01)</title>
+    <title>Profiles &#8212; WebAssembly 3.0 (2025-10-02)</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=686e5160" />
     <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=057308f9" />
-    <script src="../_static/documentation_options.js?v=909f528b"></script>
+    <script src="../_static/documentation_options.js?v=02e08c60"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>window.MathJax = {"tex": {"maxBuffer": 30720, "macros": {"multicolumn": ["", 2]}}, "options": {"menuOptions": {"settings": {"enrich": false}}}}</script>
@@ -96,8 +96,8 @@ A host platform can thereby decide to support the language only under a restrict
 <section id="conventions">
 <h2>Conventions<a class="headerlink" href="#conventions" title="Link to this heading">¶</a></h2>
 <p>A profile modification is specified by decorating selected rules in the main body of this specification with a <em>profile annotation</em> that defines them as conditional on the choice of profile.</p>
-<p>For that purpose, every profile defines a <em>profile marker</em>, an alphanumeric short-hand like <span class="math notranslate nohighlight">\(\def\mathdef1578#1{{\small{\mathrm{#1}}}}\mathdef1578{ABC}\)</span>.
-A profile annotation of the form <span class="math notranslate nohighlight">\(\def\mathdef1579#1{{{}^{\small{[{!}#1]}}}}\mathdef1579{\mathrm{ABC}~\mathrm{XYZ}}\)</span> on a rule indicates that this rule is <em>excluded</em> for either of the profiles whose marker is <span class="math notranslate nohighlight">\(\def\mathdef1580#1{{\small{\mathrm{#1}}}}\mathdef1580{ABC}\)</span> or <span class="math notranslate nohighlight">\(\def\mathdef1581#1{{\small{\mathrm{#1}}}}\mathdef1581{XYZ}\)</span>.</p>
+<p>For that purpose, every profile defines a <em>profile marker</em>, an alphanumeric short-hand like <span class="math notranslate nohighlight">\(\def\mathdef1448#1{{\small{\mathrm{#1}}}}\mathdef1448{ABC}\)</span>.
+A profile annotation of the form <span class="math notranslate nohighlight">\(\def\mathdef1449#1{{{}^{\small{[{!}#1]}}}}\mathdef1449{\mathrm{ABC}~\mathrm{XYZ}}\)</span> on a rule indicates that this rule is <em>excluded</em> for either of the profiles whose marker is <span class="math notranslate nohighlight">\(\def\mathdef1450#1{{\small{\mathrm{#1}}}}\mathdef1450{ABC}\)</span> or <span class="math notranslate nohighlight">\(\def\mathdef1451#1{{\small{\mathrm{#1}}}}\mathdef1451{XYZ}\)</span>.</p>
 <p>There are two ways of subsetting the language in a profile:</p>
 <ul class="simple">
 <li><p><em>Syntactic</em>, by <em>omitting</em> a feature, in which case certain constructs are removed from the syntax altogether.</p></li>
@@ -114,12 +114,12 @@ This is defined to have the following implications:</p>
 <p>The overall effect is that the respective construct is no longer part of the language under a respective profile.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>For example, a “busy” profile marked <span class="math notranslate nohighlight">\(\def\mathdef1582#1{{\small{\mathrm{#1}}}}\mathdef1582{BUSY}\)</span> could rule out the <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{nop}}\)</span> instruction by marking the production for it in the abstract syntax as follows:</p>
+<p>For example, a “busy” profile marked <span class="math notranslate nohighlight">\(\def\mathdef1452#1{{\small{\mathrm{#1}}}}\mathdef1452{BUSY}\)</span> could rule out the <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{nop}}\)</span> instruction by marking the production for it in the abstract syntax as follows:</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{llcl}
-\def\mathdef1534#1{{}}\mathdef1534{instruction} &amp; \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}} &amp;::=&amp;
+\def\mathdef1417#1{{}}\mathdef1417{instruction} &amp; \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}} &amp;::=&amp;
   \dots \\
-&amp; \def\mathdef1583#1{{{}^{\small{[{!}#1]}}}}\mathdef1583{\mathrm{BUSY}} &amp;|&amp; \href{../syntax/instructions.html#syntax-instr-control}{\mathsf{nop}} \\
+&amp; \def\mathdef1453#1{{{}^{\small{[{!}#1]}}}}\mathdef1453{\mathrm{BUSY}} &amp;|&amp; \href{../syntax/instructions.html#syntax-instr-control}{\mathsf{nop}} \\
 &amp;                           &amp;|&amp; \href{../syntax/instructions.html#syntax-instr-control}{\mathsf{unreachable}} \\
 \end{array}\end{split}\]</div>
 <p>A rule may be annotated by multiple markers, which could be the case if a construct is in the intersection of multiple features.</p>
@@ -131,7 +131,7 @@ This is defined to have the following implications:</p>
 <p>This has the consequence that the respective rule is no longer applicable under the given profile.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>For example, an “infinite” profile marked <span class="math notranslate nohighlight">\(\def\mathdef1584#1{{\small{\mathrm{#1}}}}\mathdef1584{INF}\)</span> could define that growing memory never fails:</p>
+<p>For example, an “infinite” profile marked <span class="math notranslate nohighlight">\(\def\mathdef1454#1{{\small{\mathrm{#1}}}}\mathdef1454{INF}\)</span> could define that growing memory never fails:</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{llcl&#64;{\qquad}l}
 &amp; S; F; (\href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~n)~\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{memory{.}grow}}~x &amp;\href{../exec/conventions.html#exec-notation}{\hookrightarrow}&amp; S'; F; (\href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~\mathit{sz})
@@ -142,7 +142,7 @@ This is defined to have the following implications:</p>
   \wedge &amp; S' = S \href{../syntax/conventions.html#notation-replace}{\mathrel{\mbox{with}}} \href{../exec/runtime.html#syntax-store}{\mathsf{mems}}[a] = \href{../exec/modules.html#grow-mem}{\mathrm{growmem}}(S.\href{../exec/runtime.html#syntax-store}{\mathsf{mems}}[a], n)) \\[1ex]
   \end{array}
 \\[1ex]
-\def\mathdef1585#1{{{}^{\small{[{!}#1]}}}}\mathdef1585{\mathrm{INF}} &amp; S; F; (\href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~n)~\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{memory{.}grow}}~x &amp;\href{../exec/conventions.html#exec-notation}{\hookrightarrow}&amp; S; F; (\href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~\href{../exec/numerics.html#aux-signed}{\mathrm{signed}}_{32}^{-1}(-1))
+\def\mathdef1455#1{{{}^{\small{[{!}#1]}}}}\mathdef1455{\mathrm{INF}} &amp; S; F; (\href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~n)~\href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{memory{.}grow}}~x &amp;\href{../exec/conventions.html#exec-notation}{\hookrightarrow}&amp; S; F; (\href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~\href{../exec/numerics.html#aux-signed}{\mathrm{signed}}_{32}^{-1}(-1))
 \end{array}\end{split}\]</div>
 </div>
 </section>
@@ -176,7 +176,7 @@ All other profiles define sub-languages of this profile.</p>
 </section>
 <section id="deterministic-profile-small-mathrm-det">
 <span id="profile-deterministic"></span><span id="index-2"></span><h3>Deterministic Profile (<span class="math notranslate nohighlight">\({\small{\mathrm{DET}}}\)</span>)<a class="headerlink" href="#deterministic-profile-small-mathrm-det" title="Link to this heading">¶</a></h3>
-<p>The <em>deterministic</em> profile excludes all rules marked <span class="math notranslate nohighlight">\(\def\mathdef1586#1{{{}^{\small{[{!}#1]}}}}\mathdef1586{\href{../appendix/profiles.html#profile-deterministic}{\mathrm{DET}}}\)</span>.
+<p>The <em>deterministic</em> profile excludes all rules marked <span class="math notranslate nohighlight">\(\def\mathdef1456#1{{{}^{\small{[{!}#1]}}}}\mathdef1456{\href{../appendix/profiles.html#profile-deterministic}{\mathrm{DET}}}\)</span>.
 It defines a sub-language that does not exhibit any incidental non-deterministic behaviour:</p>
 <ul class="simple">
 <li><p>All <a class="reference internal" href="../syntax/values.html#syntax-nan"><span class="std std-ref">NaN</span></a> values <a class="reference internal" href="../exec/numerics.html#aux-nans"><span class="std std-ref">generated</span></a> by <a class="reference internal" href="../syntax/instructions.html#syntax-instr-numeric"><span class="std std-ref">floating-point instructions</span></a> are canonical and positive.</p></li>

@@ -79,7 +79,7 @@ section of format <em>T</em>.</p>
 \def\mathdef1#1{{}}\mathdef1{code metadata section} &amp; \href{binary.html#binary-codemetadata}{\mathtt{codemetadatasec}}(\mathtt{T}) &amp;::=&amp;
   \href{../../core/binary/modules.html#binary-section}{\mathtt{section}}_0(\href{binary.html#binary-codemetadata}{\mathtt{codemetadata}}(\mathtt{T})) \\
 \def\mathdef1#1{{}}\mathdef1{code metadata} &amp; \href{binary.html#binary-codemetadata}{\mathtt{codemetadata}}(\mathtt{T}) &amp;::=&amp;
-  n{:}\href{../../core/binary/values.html#binary-name}{\mathtt{name}} &amp; (\mathrel{\mbox{if}} n = \def\mathdef45#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef45{metadata.code.T}) \\ &amp;&amp;&amp;
+  n{:}\href{../../core/binary/values.html#binary-name}{\mathtt{name}} &amp; (\mathrel{\mbox{if}} n = \def\mathdef32#1{\mbox{‘}\mathtt{#1}\mbox{’}}\mathdef32{metadata.code.T}) \\ &amp;&amp;&amp;
   \href{../../core/binary/conventions.html#binary-list}{\mathtt{list}}(\href{binary.html#binary-codemetadata}{\mathtt{codemetadatafunc}}(\mathtt{T})) \\
 \def\mathdef1#1{{}}\mathdef1{code metadata function} &amp; \href{binary.html#binary-codemetadata}{\mathtt{codemetadatafunc}}(\mathtt{T}) &amp;::=&amp;
   x{:}\href{../../core/binary/modules.html#binary-funcidx}{\mathtt{funcidx}}~\href{../../core/binary/conventions.html#binary-list}{\mathtt{list}}(\href{binary.html#binary-codemetadata}{\mathtt{codemetadataitem}}(\mathtt{T})) \\
@@ -104,9 +104,9 @@ with name <em>‘metadata.code.branch_hint’</em>.</p>
   \href{binary.html#binary-branchhints}{\mathtt{unlikely}} \\ &amp;&amp;|&amp;
   \href{binary.html#binary-branchhints}{\mathtt{likely}} \\
 \def\mathdef1#1{{}}\mathdef1{unlikely} &amp; \href{binary.html#binary-branchhints}{\mathtt{unlikely}} &amp;::=&amp;
-  \def\mathdef46#1{\mathtt{0x#1}}\mathdef46{00} \\
+  \def\mathdef33#1{\mathtt{0x#1}}\mathdef33{00} \\
 \def\mathdef1#1{{}}\mathdef1{likely} &amp; \href{binary.html#binary-branchhints}{\mathtt{likely}} &amp;::=&amp;
-  \def\mathdef47#1{\mathtt{0x#1}}\mathdef47{01} \\
+  \def\mathdef34#1{\mathtt{0x#1}}\mathdef34{01} \\
 \end{array}\end{split}\]</div>
 <p id="index-1">A value of <span class="math notranslate nohighlight">\(\href{binary.html#binary-branchhints}{\mathtt{likely}}\)</span> means that the branch is likely to be taken, while a
 value of <span class="math notranslate nohighlight">\(\href{binary.html#binary-branchhints}{\mathtt{unlikely}}\)</span> means the opposite. A branch with no hints is considered

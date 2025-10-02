@@ -5,11 +5,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Types &#8212; WebAssembly 3.0 (2025-10-01)</title>
+    <title>Types &#8212; WebAssembly 3.0 (2025-10-02)</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=686e5160" />
     <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=057308f9" />
-    <script src="../_static/documentation_options.js?v=909f528b"></script>
+    <script src="../_static/documentation_options.js?v=02e08c60"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>window.MathJax = {"tex": {"maxBuffer": 30720, "macros": {"multicolumn": ["", 2]}}, "options": {"menuOptions": {"settings": {"enrich": false}}}}</script>
@@ -133,7 +133,7 @@ Values of vector type can be stored in <a class="reference internal" href="modul
 It classifies objects of the respective type.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}[t]{&#64;{}l&#64;{}rrl&#64;{}l&#64;{}}
-&amp; {\href{../syntax/types.html#syntax-typeuse}{\mathit{typeuse}}} &amp; ::= &amp; {\href{../syntax/modules.html#syntax-typeidx}{\mathit{typeidx}}} ~~|~~ \dots \\
+&amp; {\href{../syntax/types.html#syntax-typeuse}{\mathit{typeuse}}} &amp; ::= &amp; {\href{../syntax/modules.html#syntax-typeidx}{\mathit{typeidx}}} \\
 \end{array}\end{split}\]</div>
 <p>The syntax of type uses is <a class="reference internal" href="../valid/conventions.html#syntax-typeuse-ext"><span class="std std-ref">extended</span></a> with additional forms for the purpose of specifying <a class="reference internal" href="../valid/index.html#valid"><span class="std std-ref">validation</span></a> and <a class="reference internal" href="../exec/index.html#exec"><span class="std std-ref">execution</span></a>.</p>
 </section>
@@ -154,7 +154,6 @@ That is, both type hierarchies are inhabited by an isomorphic set of values, but
 &amp; &amp; | &amp; \href{../syntax/types.html#syntax-heaptype}{\mathsf{func}} ~~|~~ \href{../syntax/types.html#syntax-heaptype}{\mathsf{nofunc}} \\
 &amp; &amp; | &amp; \href{../syntax/types.html#syntax-heaptype}{\mathsf{exn}} ~~|~~ \href{../syntax/types.html#syntax-heaptype}{\mathsf{noexn}} \\
 &amp; &amp; | &amp; \href{../syntax/types.html#syntax-heaptype}{\mathsf{extern}} ~~|~~ \href{../syntax/types.html#syntax-heaptype}{\mathsf{noextern}} \\
-&amp; &amp; | &amp; \dots \\
 &amp; {\href{../syntax/types.html#syntax-heaptype}{\mathit{heaptype}}} &amp; ::= &amp; {\href{../syntax/types.html#syntax-absheaptype}{\mathit{absheaptype}}} ~~|~~ {\href{../syntax/types.html#syntax-typeuse}{\mathit{typeuse}}} \\
 \end{array}\end{split}\]</div>
 <p>A heap type is either <em>abstract</em> or <em>concrete</em>.
@@ -229,7 +228,7 @@ They are either <a class="reference internal" href="#syntax-numtype"><span class
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}[t]{&#64;{}l&#64;{}rrl&#64;{}l&#64;{}}
 &amp; {\href{../syntax/types.html#syntax-consttype}{\mathit{consttype}}} &amp; ::= &amp; {\href{../syntax/types.html#syntax-numtype}{\mathit{numtype}}} ~~|~~ {\href{../syntax/types.html#syntax-vectype}{\mathit{vectype}}} \\
-&amp; {\href{../syntax/types.html#syntax-valtype}{\mathit{valtype}}} &amp; ::= &amp; {\href{../syntax/types.html#syntax-numtype}{\mathit{numtype}}} ~~|~~ {\href{../syntax/types.html#syntax-vectype}{\mathit{vectype}}} ~~|~~ {\href{../syntax/types.html#syntax-reftype}{\mathit{reftype}}} ~~|~~ \dots \\
+&amp; {\href{../syntax/types.html#syntax-valtype}{\mathit{valtype}}} &amp; ::= &amp; {\href{../syntax/types.html#syntax-numtype}{\mathit{numtype}}} ~~|~~ {\href{../syntax/types.html#syntax-vectype}{\mathit{vectype}}} ~~|~~ {\href{../syntax/types.html#syntax-reftype}{\mathit{reftype}}} \\
 \end{array}\end{split}\]</div>
 <p>The syntax of value types is <a class="reference internal" href="../valid/conventions.html#syntax-valtype-ext"><span class="std std-ref">extended</span></a> with additional forms for the purpose of specifying <a class="reference internal" href="../valid/index.html#valid"><span class="std std-ref">validation</span></a>.</p>
 <section id="id3">

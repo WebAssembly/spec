@@ -5,11 +5,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Type Soundness &#8212; WebAssembly 3.0 (2025-10-01)</title>
+    <title>Type Soundness &#8212; WebAssembly 3.0 (2025-10-02)</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=686e5160" />
     <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=057308f9" />
-    <script src="../_static/documentation_options.js?v=909f528b"></script>
+    <script src="../_static/documentation_options.js?v=02e08c60"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>window.MathJax = {"tex": {"maxBuffer": 30720, "macros": {"multicolumn": ["", 2]}}, "options": {"menuOptions": {"settings": {"enrich": false}}}}</script>
@@ -108,7 +108,7 @@ In order to state and prove soundness precisely, the typing rules must be extend
 the <a class="reference internal" href="../valid/conventions.html#context"><span class="std std-ref">context</span></a> is locally extended with an additional component that records the <a class="reference internal" href="../syntax/types.html#syntax-subtype"><span class="std std-ref">sub type</span></a> corresponding to each <a class="reference internal" href="../valid/conventions.html#syntax-rectypeidx"><span class="std std-ref">recursive type index</span></a> within the current <a class="reference internal" href="../syntax/types.html#syntax-rectype"><span class="std std-ref">recursive type</span></a>:</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{llll}
-\def\mathdef1587#1{{}}\mathdef1587{context} &amp; C &amp;::=&amp;
+\def\mathdef1457#1{{}}\mathdef1457{context} &amp; C &amp;::=&amp;
   \{~ \dots, \href{../appendix/properties.html#context-ext}{\mathsf{recs}} ~ \href{../syntax/types.html#syntax-subtype}{\mathit{subtype}}^\ast ~\} \\
 \end{array}\end{split}\]</div>
 </section>
@@ -1290,15 +1290,15 @@ but it does not need to perform backtracking or record any non-syntactic constra
 <p>Technically, the <a class="reference internal" href="../syntax/modules.html#syntax-type"><span class="std std-ref">syntax</span></a> of <a class="reference internal" href="../syntax/types.html#syntax-heaptype"><span class="std std-ref">heap</span></a>, <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">value</span></a>, and <a class="reference internal" href="../syntax/types.html#syntax-resulttype"><span class="std std-ref">result</span></a> types can be enriched with type variables as follows:</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{llll}
-\def\mathdef1587#1{{}}\mathdef1587{nullability} &amp; \mathit{null} &amp;::=&amp;
+\def\mathdef1457#1{{}}\mathdef1457{nullability} &amp; \mathit{null} &amp;::=&amp;
   \href{../syntax/types.html#syntax-reftype}{\mathsf{null}}^? ~|~ \alpha_{\mathit{null}} \\
-\def\mathdef1587#1{{}}\mathdef1587{heap type} &amp; \href{../syntax/types.html#syntax-heaptype}{\mathit{heaptype}} &amp;::=&amp;
+\def\mathdef1457#1{{}}\mathdef1457{heap type} &amp; \href{../syntax/types.html#syntax-heaptype}{\mathit{heaptype}} &amp;::=&amp;
   \dots ~|~ \alpha_{\href{../syntax/types.html#syntax-heaptype}{\mathit{heaptype}}} \\
-\def\mathdef1587#1{{}}\mathdef1587{reference type} &amp; \href{../syntax/types.html#syntax-reftype}{\mathit{reftype}} &amp;::=&amp;
+\def\mathdef1457#1{{}}\mathdef1457{reference type} &amp; \href{../syntax/types.html#syntax-reftype}{\mathit{reftype}} &amp;::=&amp;
   \href{../syntax/types.html#syntax-reftype}{\mathsf{ref}}~\mathit{null}~\href{../syntax/types.html#syntax-heaptype}{\mathit{heaptype}} \\
-\def\mathdef1587#1{{}}\mathdef1587{value type} &amp; \href{../syntax/types.html#syntax-valtype}{\mathit{valtype}} &amp;::=&amp;
+\def\mathdef1457#1{{}}\mathdef1457{value type} &amp; \href{../syntax/types.html#syntax-valtype}{\mathit{valtype}} &amp;::=&amp;
   \dots ~|~ \alpha_{\href{../syntax/types.html#syntax-valtype}{\mathit{valtype}}} ~|~ \alpha_{\mathit{numvectype}} \\
-\def\mathdef1587#1{{}}\mathdef1587{result type} &amp; \href{../syntax/types.html#syntax-resulttype}{\mathit{resulttype}} &amp;::=&amp;
+\def\mathdef1457#1{{}}\mathdef1457{result type} &amp; \href{../syntax/types.html#syntax-resulttype}{\mathit{resulttype}} &amp;::=&amp;
   [\alpha_{\href{../syntax/types.html#syntax-valtype}{\mathit{valtype}}^\ast}^?~\href{../syntax/types.html#syntax-valtype}{\mathit{valtype}}^\ast] \\
 \end{array}\end{split}\]</div>
 <p>where each <span class="math notranslate nohighlight">\(\alpha_{\mathit{xyz}}\)</span> ranges over a set of type variables for syntactic class <span class="math notranslate nohighlight">\(\mathit{xyz}\)</span>, respectively.
