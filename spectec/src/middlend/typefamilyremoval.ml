@@ -42,10 +42,6 @@ and reduce_inst_alias env args inst base_typ =
     ) 
   | _ -> base_typ
 
-let construct_tuple_exp at e t =
-  let tupt = TupT [(VarE (var_typ_fam $ at) $$ at % t, t)] $ at in 
-  TupE [{e with note = t}] $$ e.at % tupt
-
 let make_arg_from_param p = 
   (match p.it with
   | ExpP (id, typ) -> ExpA (VarE id $$ id.at % typ)
@@ -112,7 +108,7 @@ let empty_info: region * Xl.Atom.info = (no_region, {def = ""; case = ""})
 let sub_type_name_binds binds = (String.concat "_" (List.map bind_to_string binds))
 let constructor_name' id binds = make_prefix ^ name_prefix id ^ sub_type_name_binds binds
 let _constructor_name id binds = constructor_name' id binds $ id.at 
-let constructor_name_mixop id binds: mixop = [[ Xl.Atom.Atom (constructor_name' id binds) $$ empty_info ]; []]
+let constructor_name_mixop id binds: mixop = [[ Xl.Atom.Atom (constructor_name' id binds) $$ empty_info ]] @ List.init (List.length binds + 1) (fun _ -> [])
 let proj_name' id binds = proj_prefix ^ name_prefix id ^ sub_type_name_binds binds
 let proj_name id binds = proj_name' id binds $ id.at
 let fun_constructor_name' id binds = make_fun_prefix ^ name_prefix id ^ sub_type_name_binds binds
@@ -128,6 +124,7 @@ let make_bind_set binds =
   List.fold_left (fun acc b -> 
     match b.it with 
     | ExpB (id, typ) -> StringMap.add id.it typ acc
+    | DefB (id, _, typ) -> StringMap.add id.it typ acc
     | _ -> acc  
   ) StringMap.empty binds
 
@@ -158,7 +155,12 @@ let rec get_real_typ_from_exp bind_map env e =
       let subst = create_arg_param_subst args params in 
       let s_typ = Subst.subst_typ subst typ in
       s_typ
-    | None -> e.note
+    | None -> 
+      (match StringMap.find_opt id.it bind_map with
+      | Some typ -> typ
+      | None -> e.note
+      )
+      
   )
   | CaseE (m, _) -> 
     let r_typ = Eval.reduce_typ env e.note in 
@@ -211,6 +213,9 @@ let rec get_real_typ_from_exp bind_map env e =
   | LenE _ -> NumT `NatT $ e.at
   | MemE _ -> BoolT $ e.at
   | SubE (_, _, t) -> t
+  | LiftE e ->
+    let t = get_real_typ_from_exp bind_map env e in
+    IterT (remove_iter_from_type t, List) $ e.at
   | _ -> e.note
 
 let is_family_typ env typ = 
@@ -515,6 +520,23 @@ let rec transform_def env def =
   | d -> d
   ) $ def.at
 
+let construct_tuple_typ typ binds at = 
+  let name = var_typ_fam $ typ.at in  
+  let varE = VarE (name) $$ typ.at % typ in
+  let extra_case_args = List.map (fun b -> match b.it with 
+    | ExpB (id, typ) -> (VarE id $$ id.at % typ, typ)
+    | _ -> _error at "Removal of other arguments is not supported yet"
+  ) binds in
+  TupT (extra_case_args @ [(varE, typ)]) $ typ.at 
+
+let construct_tuple_exp at e t binds =
+  let tupt = construct_tuple_typ t binds at in 
+  let extra_tup_exps = List.map (fun b -> match b.it with 
+    | ExpB (id, typ) -> VarE id $$ id.at % typ
+    | _ -> _error at "Removal of other arguments is not supported yet"
+  ) binds in
+  TupE (extra_tup_exps @ [{e with note = t}]) $$ e.at % tupt
+
 let rec create_types_from_instances def =
   (match def.it with
   | TypD (id, params, [inst]) when check_normal_type_creation inst -> [TypD (id, params, [inst])]
@@ -540,7 +562,7 @@ let gen_family_projections (id : id) (_has_one_inst : bool) (i : inst) =
       let new_bind = ExpB ("x" $ id.at, typ) $ id.at in
       let var_exp = VarE ("x" $ id.at) $$ id.at % typ in
       let opt_exp = OptE (Some (var_exp)) $$ id.at % return_type in
-      let new_case = CaseE(constructor_name_mixop id binds, construct_tuple_exp deftyp.at var_exp typ) $$ id.at % family_typ in
+      let new_case = CaseE(constructor_name_mixop id binds, construct_tuple_exp deftyp.at var_exp typ binds) $$ id.at % family_typ in
       let new_args = List.map make_arg_from_bind binds in
 
       let return_exp = if _has_one_inst then var_exp else opt_exp in
@@ -564,11 +586,9 @@ let gen_family_construtors (id : id) (i : inst) =
       let new_param = ExpP ("x" $ id.at, typ) $ id.at in
       let new_bind = ExpB ("x" $ id.at, typ) $ id.at in
       let var_exp = VarE ("x" $ id.at) $$ id.at % typ in
-      let new_case = CaseE(constructor_name_mixop id binds, construct_tuple_exp deftyp.at var_exp typ) $$ id.at % family_typ in
+      let new_case = CaseE (constructor_name_mixop id binds, construct_tuple_exp deftyp.at var_exp typ binds) $$ id.at % family_typ in
       let new_args = List.map make_arg_from_bind binds in
-
-      let return_exp = new_case in
-      let new_clause = DefD(binds @ [new_bind], new_args @ [ExpA var_exp $ id.at], return_exp, []) $ id.at in
+      let new_clause = DefD (binds @ [new_bind], new_args @ [ExpA var_exp $ id.at], new_case, []) $ id.at in
       DecD (fun_constructor_name id binds, List.map make_param_from_bind binds @ [new_param], return_type, [new_clause])
     | _ -> _error i.at "Type Family of variant or records should not exist" (* This should never occur *)
 
@@ -577,10 +597,9 @@ let rec transform_type_family def =
   | TypD (id, params, [inst]) when check_normal_type_creation inst -> [TypD (id, params, [inst])]
   | TypD (id, params, insts) -> 
     let deftyp = VariantT (List.map (fun inst -> match inst.it with 
-      | InstD (binds, args, {it = AliasT typ; _})  ->
+      | InstD (binds, args, {it = AliasT typ; _}) ->
         let name = var_typ_fam $ typ.at in  
-        let varE = VarE (name) $$ typ.at % typ in
-        let tupt = TupT [(varE, typ)] $ typ.at in
+        let tupt = construct_tuple_typ typ binds id.at in
         let new_bind = ExpB (name, typ) $ typ.at in
 
         let prems = List.map2 (fun a p ->
@@ -599,7 +618,7 @@ let rec transform_type_family def =
       | _ -> _error def.at "Should be type alias"
     ) insts) $ def.at in
     let inst = InstD (List.map make_bind_from_param params, List.map make_arg_from_param params, deftyp) $ def.at in 
-    TypD(id, params, [inst]) :: List.map (gen_family_projections id (List.length insts = 1)) insts @ List.map (gen_family_construtors id) insts
+    TypD (id, params, [inst]) :: List.map (gen_family_projections id (List.length insts = 1)) insts @ List.map (gen_family_construtors id) insts
   | RecD defs -> [RecD (List.concat_map transform_type_family defs)]
   | d -> [d]
   ) |> List.map (fun d -> d $ def.at)
