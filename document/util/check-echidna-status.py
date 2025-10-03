@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import argparse
 from datetime import datetime, timedelta
 import json
 import os
@@ -55,7 +56,12 @@ def get_echidna_result(echidna_id):
 
 
 def main(argv):
-    directory = os.getcwd() if len(argv) < 2 else argv[1]
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--ignore-failure', action='store_true')
+    parser.add_argument('directory', nargs='?', default=os.getcwd())
+    args = parser.parse_args()
+
+    directory = args.directory
     echidna_id = get_echidna_id(directory)
     print(f'Got echidna id {echidna_id}.')
     time.sleep(5)
@@ -63,7 +69,8 @@ def main(argv):
         get_echidna_result(echidna_id)
     except Exception as e:
         print(f'Echidna failure: {e}')
-        sys.exit(1)
+        if not args.ignore_failure:
+            sys.exit(1)
 
 
 if __name__ == '__main__':
