@@ -202,8 +202,6 @@ let rec get_real_typ_from_exp bind_map env e =
     IterT (t, iter) $ e.at
   | OptE (Some e) -> let t = get_real_typ_from_exp bind_map env e in
     IterT (t, Opt) $ e.at
-  | IterE ({it = VarE id; _}, (_iter, [(id', e')])) when Eq.eq_id id id' -> 
-    get_real_typ_from_exp bind_map env e'
   | IterE (e', (iter, _)) ->
     let t = get_real_typ_from_exp bind_map env e' in
     IterT (t, iter) $ e.at  
@@ -219,7 +217,7 @@ let is_family_typ env typ =
   match typ.it with
   | VarT (id, _) -> 
     (match (Env.find_opt_typ env id) with
-      | Some (_, insts) when check_type_family insts -> true
+      | Some (_, insts) -> check_type_family insts 
       | _ -> false
     )
   | _ -> false
@@ -293,6 +291,15 @@ let apply_iteration iters (base_exp : exp) converted_exp =
   in
   go iters length
 
+let add_iter_ids_to_map env id_exp_pairs bind_map = 
+  List.fold_left (fun acc (id, e') -> 
+    let r_typ = (get_real_typ_from_exp bind_map env e') |>
+      reduce_type_aliasing env |>
+      remove_iter_from_type
+    in 
+    StringMap.add id.it r_typ acc
+  ) bind_map id_exp_pairs
+
 let apply_conversion env exp real_typ expected_typ = 
   let (iters, iter_exp, r_typ, e_typ) = handle_iter_typ exp real_typ expected_typ in 
   if (is_family_typ env r_typ || is_family_typ env e_typ) 
@@ -306,222 +313,114 @@ let apply_conversion env exp real_typ expected_typ =
     )
     else exp
 
-let apply_conversion_call_arg bind_map env subst param arg = 
-  match param.it, arg.it with
-  | ExpP (_, expected_typ), ExpA e -> 
-    let real_typ = get_real_typ_from_exp bind_map env e in
-    let s_expected_typ = Subst.subst_typ subst expected_typ in
-    let matched = check_type_equality env real_typ s_expected_typ in
-    if matched then arg else 
-    ExpA (apply_conversion env e real_typ s_expected_typ) $ arg.at
-  | _ -> arg
-
-let rec transform_iter is_match bind_map env i =
+let rec transform_iter bind_map env i =
   match i with 
-  | ListN (exp, id_opt) -> ListN (transform_exp is_match bind_map env exp, id_opt)
+  | ListN (exp, id_opt) -> ListN (transform_exp bind_map env exp, id_opt)
   | _ -> i
 
-and transform_typ (is_match : bool) bind_map env t = 
+and transform_typ bind_map env t = 
   (match t.it with
-  | VarT (id, args) -> VarT (id, List.map (transform_arg is_match bind_map env) args)
-  | TupT exp_typ_pairs -> TupT (List.map (fun (e, t) -> (transform_exp is_match bind_map env e, transform_typ is_match bind_map env t)) exp_typ_pairs)
-  | IterT (typ, iter) -> IterT (transform_typ is_match bind_map env typ, transform_iter is_match bind_map env iter)
+  | VarT (id, args) -> VarT (id, List.map (transform_arg bind_map env) args)
+  | TupT exp_typ_pairs -> TupT (List.map (fun (e, t) -> (transform_exp bind_map env e, transform_typ bind_map env t)) exp_typ_pairs)
+  | IterT (typ, iter) -> IterT (transform_typ bind_map env typ, transform_iter bind_map env iter)
   | typ -> typ
   ) $ t.at
 
-and transform_exp is_match bind_map env e =  
-  let t_func = transform_exp is_match bind_map env in
-  let typ = transform_typ is_match bind_map env e.note in
-  (match e.it with
-  | VarE var_id -> 
-    let expected_typ = typ in 
-    let real_typ = get_real_typ_from_exp bind_map env e in
-    if (check_type_equality env real_typ expected_typ) then VarE var_id else
-    (apply_conversion env (VarE var_id $$ e.at % real_typ) real_typ expected_typ).it
-  | CaseE (m, e1) -> 
-    let t_e1 = t_func e1 in 
-    let expected_typ = typ in
-    let real_typ = get_real_typ_from_exp bind_map env e in
-    let case_exp = CaseE (m, t_e1) $$ e.at % real_typ in 
-    if (check_type_equality env real_typ expected_typ) then case_exp.it else
-    (apply_conversion env case_exp real_typ expected_typ).it
-  | CallE (fun_id, fun_args) -> 
-    (match (Env.find_opt_def env fun_id) with
-    | Some (params, _, _) -> 
-      (* print_endline ("Call exp: " ^ Print.string_of_exp e); *)
-      let fun_args' = List.map (transform_arg is_match bind_map env) fun_args in
-      let subst = create_arg_param_subst fun_args' params in
-      let new_args = List.map2 (fun a p -> apply_conversion_call_arg bind_map env subst p a) fun_args' params in
-      CallE (fun_id, new_args)
-    | None -> CallE (fun_id, List.map (transform_arg is_match bind_map env) fun_args)
-    )
+and transform_exp bind_map env e =  
+  let t_func = transform_exp bind_map env in
+  let typ = transform_typ bind_map env e.note in
+  let t_e = (match e.it with
+  | CaseE (m, e1) -> CaseE (m, t_func e1)
+  | CallE (fun_id, fun_args) -> CallE (fun_id, List.map (transform_arg bind_map env) fun_args)
   | UnE (unop, optyp, e1) -> 
-    let t_e1 = t_func e1 in
-    let expected_typ = get_real_typ_from_exp bind_map env e in
-    let real_typ = get_real_typ_from_exp bind_map env t_e1 in 
-    let converted_e1 = if check_type_equality env real_typ expected_typ then t_e1 else apply_conversion env t_e1 real_typ expected_typ in
-    UnE (unop, optyp, converted_e1) 
+    UnE (unop, optyp, t_func e1) 
   | BinE (binop, optyp, e1, e2) ->
-    let t_e1 = t_func e1 in
-    let t_e2 = t_func e2 in 
-    let expected_typ = get_real_typ_from_exp bind_map env e in
-    let real_typ1 = get_real_typ_from_exp bind_map env t_e1 in 
-    let real_typ2 = get_real_typ_from_exp bind_map env t_e2 in
-    let converted_e1 = if check_type_equality env real_typ1 expected_typ then t_e1 else apply_conversion env t_e1 real_typ1 expected_typ in
-    let converted_e2 = if check_type_equality env real_typ2 expected_typ then t_e2 else apply_conversion env t_e2 real_typ2 expected_typ in
-    BinE (binop, optyp, converted_e1, converted_e2) 
+    BinE (binop, optyp, t_func e1, t_func e2) 
   | CmpE (cmpop, optyp, e1, e2) -> 
-    let t_e1 = t_func e1 in 
-    let t_e2 = t_func e2 in
-    let rel_typ1 = get_real_typ_from_exp bind_map env t_e1 in 
-    let expected_typ2 = transform_typ is_match bind_map env t_e2.note in
-    if check_type_equality env rel_typ1 expected_typ2
-      then CmpE (cmpop, optyp, t_e1, t_e2) 
-      else CmpE (cmpop, optyp, apply_conversion env t_e1 rel_typ1 expected_typ2, t_e2)
+    CmpE (cmpop, optyp, t_func e1, t_func e2) 
   | IterE (e1, (iter, id_exp_pairs)) -> 
-    let new_bind_map = List.fold_left (fun acc (id, e') -> 
-      let r_typ = (get_real_typ_from_exp bind_map env e') |>
-        reduce_type_aliasing env |>
-        remove_iter_from_type
-      in 
-      StringMap.add id.it r_typ acc
-    ) bind_map id_exp_pairs in 
-    let t_e1 = transform_exp is_match new_bind_map env e1 in
-    let real_typ = get_real_typ_from_exp new_bind_map env t_e1 in
-    let expected_typ = t_e1.note in 
-    let converted_e1 = if check_type_equality env real_typ expected_typ then t_e1 else apply_conversion env t_e1 real_typ expected_typ in
-    IterE (converted_e1, (transform_iter is_match new_bind_map env iter, id_exp_pairs))
-  | TupE (exps) -> 
-    let expected_typs = (match (reduce_type_aliasing env typ).it with
-      | TupT pairs -> List.map snd pairs 
-      | _ -> [typ]
-      ) 
-    in
-    let new_exps = List.map2 (fun e expected_typ -> 
-      let t_e = t_func e in 
-      let real_typ = get_real_typ_from_exp bind_map env t_e in 
-      if check_type_equality env real_typ expected_typ then t_e else apply_conversion env t_e real_typ expected_typ
-    ) exps expected_typs in
-    TupE new_exps
+    let new_bind_map = add_iter_ids_to_map env id_exp_pairs bind_map in
+    let t_e1 = transform_exp new_bind_map env e1 in
+    IterE (t_e1, (transform_iter new_bind_map env iter, id_exp_pairs))
+  | TupE (exps) -> TupE (List.map t_func exps)
+  | ListE exps -> ListE (List.map t_func exps)
   | ProjE (e1, n) -> ProjE (t_func e1, n) 
-  | UncaseE (e1, m) -> 
-    UncaseE (t_func { e1 with note = Eval.reduce_typ env e1.note }, m) 
+  | UncaseE (e1, m) -> UncaseE (t_func { e1 with note = Eval.reduce_typ env e1.note }, m) 
   | OptE e1 -> OptE (Option.map t_func e1) 
   | TheE e1 -> TheE (t_func e1) 
   | StrE fields -> StrE (List.map (fun (a, e1) -> (a, t_func e1)) fields) 
   | DotE (e1, a) -> DotE (t_func e1, a) 
   | CompE (e1, e2) -> CompE (t_func e1, t_func e2) 
-  | ListE entries -> 
-    let expected_typ = remove_iter_from_type typ in
-    let new_entries = List.map (fun e -> 
-      let t_e = t_func e in 
-      let real_typ = get_real_typ_from_exp bind_map env t_e in 
-      if check_type_equality env real_typ expected_typ then t_e else apply_conversion env t_e real_typ expected_typ
-    ) entries in
-    ListE new_entries
   | LiftE e1 -> LiftE (t_func e1) 
   | MemE (e1, e2) -> MemE (t_func e1, t_func e2) 
   | LenE e1 -> LenE e1 
-  | CatE (e1, e2) -> 
-    let t_e1 = t_func e1 in 
-    let t_e2 = t_func e2 in 
-    let rel_typ1 = get_real_typ_from_exp bind_map env t_e1 in 
-    let rel_typ2 = get_real_typ_from_exp bind_map env t_e2 in
-    let expected_typ = typ in 
-    let new_e1 = if (check_type_equality env rel_typ1 expected_typ) then t_e1 else apply_conversion env t_e1 rel_typ1 expected_typ in 
-    let new_e2 = if (check_type_equality env rel_typ2 expected_typ) then t_e2 else apply_conversion env t_e2 rel_typ2 expected_typ in 
-    CatE (new_e1, new_e2) 
-  | IdxE (e1, e2) -> 
-    let real_typ = get_real_typ_from_exp bind_map env e in
-    let expected_typ = typ in 
-    let exp = IdxE (t_func e1, t_func e2) $$ e.at % real_typ in 
-    if (check_type_equality env real_typ expected_typ) then exp.it else (apply_conversion env exp real_typ expected_typ).it
+  | CatE (e1, e2) -> CatE (t_func e1, t_func e2) 
+  | IdxE (e1, e2) -> IdxE (t_func e1, t_func e2)
   | SliceE (e1, e2, e3) -> SliceE (t_func e1, t_func e2, t_func e3) 
-  | UpdE (e1, p, e2) -> 
-    let t_e1 = t_func e1 in 
-    let t_e2 = t_func e2 in 
-    let rel_typ1 = get_real_typ_from_exp bind_map env t_e1 in 
-    let rel_typ2 = get_real_typ_from_exp bind_map env t_e2 in
-    let expected_typ1 = typ in
-    let expected_typ2 = remove_iter_from_type expected_typ1 in 
-    let new_e1 = if (check_type_equality env rel_typ1 expected_typ1) then t_e1 else apply_conversion env t_e1 rel_typ1 expected_typ1 in 
-    let new_e2 = if (check_type_equality env rel_typ2 expected_typ2) then t_e2 else apply_conversion env t_e2 rel_typ2 expected_typ2 in 
-    UpdE (new_e1, transform_path is_match bind_map env p, new_e2) 
-  | ExtE (e1, p, e2) -> 
-    let t_e1 = t_func e1 in 
-    let t_e2 = t_func e2 in 
-    let rel_typ1 = get_real_typ_from_exp bind_map env t_e1 in 
-    let rel_typ2 = get_real_typ_from_exp bind_map env t_e2 in
-    let expected_typ1 = typ in
-    let expected_typ2 = remove_iter_from_type expected_typ1 in 
-    let new_e1 = if (check_type_equality env rel_typ1 expected_typ1) then t_e1 else apply_conversion env t_e1 rel_typ1 expected_typ1 in 
-    let new_e2 = if (check_type_equality env rel_typ2 expected_typ2) then t_e2 else apply_conversion env t_e2 rel_typ2 expected_typ2 in 
-    ExtE (new_e1, transform_path is_match bind_map env p, new_e2)  
+  | UpdE (e1, p, e2) -> UpdE (t_func e1, transform_path bind_map env p, t_func e2) 
+  | ExtE (e1, p, e2) -> ExtE (t_func e1, transform_path bind_map env p, t_func e2)  
   | CvtE (e1, nt1, nt2) -> CvtE (t_func e1, nt1, nt2) 
-  | SubE (e1, t1, t2) -> SubE (t_func e1, transform_typ is_match bind_map env t1, transform_typ is_match bind_map env t2) 
+  | SubE (e1, t1, t2) -> SubE (t_func e1, transform_typ bind_map env t1, transform_typ bind_map env t2) 
   | exp -> exp 
-  ) $$ e.at % typ
+  ) $$ e.at % typ in
+  let real_type = get_real_typ_from_exp bind_map env t_e in
+  let expected_type = typ in 
+  if (check_type_equality env real_type expected_type) then t_e else apply_conversion env t_e real_type expected_type
 
-and transform_path is_match bind_map env p = 
+and transform_path bind_map env p = 
   (match p.it with
   | RootP -> RootP
-  | IdxP (p, e) -> IdxP (transform_path is_match bind_map env p, transform_exp is_match bind_map env e)
-  | SliceP (p, e1, e2) -> SliceP (transform_path is_match bind_map env p, transform_exp is_match bind_map env e1, transform_exp is_match bind_map env e2)
-  | DotP (p, a) -> DotP (transform_path is_match bind_map env p, a)
-  ) $$ p.at % (transform_typ is_match bind_map env p.note)
+  | IdxP (p, e) -> IdxP (transform_path bind_map env p, transform_exp bind_map env e)
+  | SliceP (p, e1, e2) -> SliceP (transform_path bind_map env p, transform_exp bind_map env e1, transform_exp bind_map env e2)
+  | DotP (p, a) -> DotP (transform_path bind_map env p, a)
+  ) $$ p.at % (transform_typ bind_map env p.note)
 
-and transform_sym is_match bind_map env s = 
+and transform_sym bind_map env s = 
   (match s.it with
-  | VarG (id, args) -> VarG (id, List.map (transform_arg is_match bind_map env) args)
-  | SeqG syms | AltG syms -> SeqG (List.map (transform_sym is_match bind_map env) syms)
-  | RangeG (syml, symu) -> RangeG (transform_sym is_match bind_map env syml, transform_sym is_match bind_map env symu)
-  | IterG (sym, (iter, id_exp_pairs)) -> IterG (transform_sym is_match bind_map env sym, (transform_iter is_match bind_map env iter, 
-      List.map (fun (id, exp) -> (id, transform_exp is_match bind_map env exp)) id_exp_pairs)
+  | VarG (id, args) -> VarG (id, List.map (transform_arg bind_map env) args)
+  | SeqG syms | AltG syms -> SeqG (List.map (transform_sym bind_map env) syms)
+  | RangeG (syml, symu) -> RangeG (transform_sym bind_map env syml, transform_sym bind_map env symu)
+  | IterG (sym, (iter, id_exp_pairs)) -> IterG (transform_sym bind_map env sym, (transform_iter bind_map env iter, 
+      List.map (fun (id, exp) -> (id, transform_exp bind_map env exp)) id_exp_pairs)
     )
-  | AttrG (e, sym) -> AttrG (transform_exp is_match bind_map env e, transform_sym is_match bind_map env sym)
+  | AttrG (e, sym) -> AttrG (transform_exp bind_map env e, transform_sym bind_map env sym)
   | sym -> sym 
   ) $ s.at 
 
-and transform_arg is_match bind_map env a =
+and transform_arg bind_map env a =
   (match a.it with
-  | ExpA exp -> ExpA (transform_exp is_match bind_map env exp)
-  | TypA typ -> TypA (transform_typ is_match bind_map env typ)
+  | ExpA exp -> ExpA (transform_exp bind_map env exp)
+  | TypA typ -> TypA (transform_typ bind_map env typ)
   | DefA id -> DefA id
-  | GramA sym -> GramA (transform_sym is_match bind_map env sym)
+  | GramA sym -> GramA (transform_sym bind_map env sym)
   ) $ a.at
 
 and transform_bind env b =
   (match b.it with
-  | ExpB (id, typ) -> ExpB (id, transform_typ false StringMap.empty env typ)
+  | ExpB (id, typ) -> ExpB (id, transform_typ StringMap.empty env typ)
   | TypB id -> TypB id
-  | DefB (id, params, typ) -> DefB (id, List.map (transform_param env) params, transform_typ false StringMap.empty env typ)
-  | GramB (id, params, typ) -> GramB (id, List.map (transform_param env) params, transform_typ false StringMap.empty env typ)
+  | DefB (id, params, typ) -> DefB (id, List.map (transform_param env) params, transform_typ StringMap.empty env typ)
+  | GramB (id, params, typ) -> GramB (id, List.map (transform_param env) params, transform_typ StringMap.empty env typ)
   ) $ b.at 
   
 and transform_param env p =
   (match p.it with
-  | ExpP (id, typ) -> ExpP (id, transform_typ false StringMap.empty env typ)
+  | ExpP (id, typ) -> ExpP (id, transform_typ StringMap.empty env typ)
   | TypP id -> TypP id
-  | DefP (id, params, typ) -> DefP (id, List.map (transform_param env) params, transform_typ false StringMap.empty env typ)
-  | GramP (id, typ) -> GramP (id, transform_typ false StringMap.empty env typ)
+  | DefP (id, params, typ) -> DefP (id, List.map (transform_param env) params, transform_typ StringMap.empty env typ)
+  | GramP (id, typ) -> GramP (id, transform_typ StringMap.empty env typ)
   ) $ p.at 
 
 let rec transform_prem bind_map env prem = 
   (match prem.it with
-  | RulePr (id, m, e) -> RulePr (id, m, transform_exp false bind_map env e)
-  | IfPr e -> IfPr (transform_exp false bind_map env e)
-  | LetPr (e1, e2, ids) -> LetPr (transform_exp false bind_map env e1, transform_exp false bind_map env e2, ids)
+  | RulePr (id, m, e) -> RulePr (id, m, transform_exp bind_map env e)
+  | IfPr e -> IfPr (transform_exp bind_map env e)
+  | LetPr (e1, e2, ids) -> LetPr (transform_exp bind_map env e1, transform_exp bind_map env e2, ids)
   | ElsePr -> ElsePr
   | IterPr (prem1, (iter, id_exp_pairs)) -> 
-    let new_bind_map = List.fold_left (fun acc (id, e') -> 
-      let r_typ = (get_real_typ_from_exp bind_map env e') |>
-        reduce_type_aliasing env |>
-        remove_iter_from_type
-      in 
-      StringMap.add id.it r_typ acc
-    ) bind_map id_exp_pairs in
+    let new_bind_map = add_iter_ids_to_map env id_exp_pairs bind_map in
     IterPr (transform_prem new_bind_map env prem1, 
-      (transform_iter false new_bind_map env iter, List.map (fun (id, exp) -> (id, transform_exp false new_bind_map env exp)) id_exp_pairs)
+      (transform_iter new_bind_map env iter, List.map (fun (id, exp) -> (id, transform_exp new_bind_map env exp)) id_exp_pairs)
     )
   ) $ prem.at
 
@@ -532,7 +431,7 @@ let transform_rule env rule =
     RuleD (id, 
     List.map (transform_bind env) binds, 
     m, 
-    transform_exp false bind_map env exp, 
+    transform_exp bind_map env exp, 
     List.map (transform_prem bind_map env) prems) $ rule.at
 
 (* Reducing binds for matching *)
@@ -547,12 +446,12 @@ let transform_clause _id params env rt clause =
     let subst = create_arg_param_subst args params in
     let reduced_binds = List.map (reduce_bind env) binds in 
     let bind_map = make_bind_set reduced_binds in
-    let t_exp = transform_exp false bind_map env exp in
+    let t_exp = transform_exp bind_map env exp in
     let real_typ = get_real_typ_from_exp bind_map env t_exp in
     let s_rt = Subst.subst_typ subst rt in 
     let new_exp = if check_type_equality env real_typ s_rt then t_exp else apply_conversion env t_exp real_typ s_rt in 
     DefD ((List.map (transform_bind env) reduced_binds), 
-    List.map (transform_arg true bind_map env) args, 
+    List.map (transform_arg bind_map env) args, 
     new_exp, 
     List.map (transform_prem bind_map env) prems) $ clause.at
 
@@ -561,29 +460,28 @@ let transform_prod env prod =
   | ProdD (binds, sym, exp, prems) -> 
     let bind_map = make_bind_set binds in
     ProdD (List.map (transform_bind env) binds,
-    transform_sym false bind_map env sym,
-    transform_exp false bind_map env exp,
+    transform_sym bind_map env sym,
+    transform_exp bind_map env exp,
     List.map (transform_prem bind_map env) prems
   )
   ) $ prod.at
 
 let transform_deftyp env deftyp = 
   (match deftyp.it with
-  | AliasT typ -> AliasT (transform_typ false StringMap.empty env typ)
+  | AliasT typ -> AliasT (transform_typ StringMap.empty env typ)
   | StructT typfields -> StructT (List.map (fun (a, (bs, t, prems), hints) -> 
     let bind_map = make_bind_set bs in
-    (a, (List.map (transform_bind env) bs, transform_typ false bind_map env t, List.map (transform_prem bind_map env) prems), hints)) typfields)
+    (a, (List.map (transform_bind env) bs, transform_typ bind_map env t, List.map (transform_prem bind_map env) prems), hints)) typfields)
   | VariantT typcases -> VariantT (List.map (fun (m, (bs, t, prems), hints) -> 
     let bind_map = make_bind_set bs in
-    (m, (List.map (transform_bind env) bs, transform_typ false bind_map env t, List.map (transform_prem bind_map env) prems), hints)) typcases)
+    (m, (List.map (transform_bind env) bs, transform_typ bind_map env t, List.map (transform_prem bind_map env) prems), hints)) typcases)
   ) $ deftyp.at
 
 let transform_inst env inst =
   match inst.it with 
   | (InstD (binds, args, deftyp)) -> 
-    [InstD (List.map (transform_bind env) binds, List.map (transform_arg false StringMap.empty env) args, transform_deftyp env deftyp) $ inst.at]
+    [InstD (List.map (transform_bind env) binds, List.map (transform_arg StringMap.empty env) args, transform_deftyp env deftyp) $ inst.at]
  
-  
 (* Creates new TypD's for each StructT and VariantT *)
 let create_types id inst = 
   let make_param_from_bind b = 
@@ -609,11 +507,11 @@ let rec transform_def env def =
     TypD (id, List.map (transform_param env) params, new_insts)
   | RecD defs -> RecD (List.map (transform_def env) defs)
   | RelD (id, m, typ, rules) ->
-    RelD (id, m, transform_typ false StringMap.empty env typ, List.map (transform_rule env) rules)
+    RelD (id, m, transform_typ StringMap.empty env typ, List.map (transform_rule env) rules)
   | DecD (id, params, typ, clauses) -> 
-    DecD (id, List.map (transform_param env) params, transform_typ false StringMap.empty env typ, List.map (transform_clause id params env typ) clauses)
+    DecD (id, List.map (transform_param env) params, transform_typ StringMap.empty env typ, List.map (transform_clause id params env typ) clauses)
   | GramD (id, params, typ, prods) -> 
-    GramD (id, List.map (transform_param env) params, transform_typ false StringMap.empty env typ, List.map (transform_prod env) prods)
+    GramD (id, List.map (transform_param env) params, transform_typ StringMap.empty env typ, List.map (transform_prod env) prods)
   | d -> d
   ) $ def.at
 
@@ -671,7 +569,6 @@ let gen_family_construtors (id : id) (i : inst) =
 
       let return_exp = new_case in
       let new_clause = DefD(binds @ [new_bind], new_args @ [ExpA var_exp $ id.at], return_exp, []) $ id.at in
-
       DecD (fun_constructor_name id binds, List.map make_param_from_bind binds @ [new_param], return_type, [new_clause])
     | _ -> _error i.at "Type Family of variant or records should not exist" (* This should never occur *)
 
