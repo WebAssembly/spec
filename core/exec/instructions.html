@@ -5,11 +5,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Instructions &#8212; WebAssembly 3.0 (2025-10-02)</title>
+    <title>Instructions &#8212; WebAssembly 3.0 (2025-10-03)</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=686e5160" />
     <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=057308f9" />
-    <script src="../_static/documentation_options.js?v=02e08c60"></script>
+    <script src="../_static/documentation_options.js?v=7335c639"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>window.MathJax = {"tex": {"maxBuffer": 30720, "macros": {"multicolumn": ["", 2]}}, "options": {"menuOptions": {"settings": {"enrich": false}}}}</script>
@@ -979,7 +979,7 @@ Furthermore, the resulting store must be <a class="reference internal" href="../
 \[\begin{split}~\\[-1ex]
 \begin{array}{l}
 \begin{array}{lcl&#64;{\qquad}l}
-S; \href{../exec/runtime.html#syntax-val}{\mathit{val}}^n~(\href{../exec/instructions.html#exec-invoke}{\mathsf{invoke}}~a) &amp;\href{../exec/conventions.html#exec-notation}{\hookrightarrow}&amp; S'; \href{../exec/runtime.html#syntax-result}{\mathit{result}}
+S; \href{../exec/runtime.html#syntax-val}{\mathit{val}}^n~(\href{../exec/runtime.html#syntax-ref}{\mathsf{ref{.}func}}~a)~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{call\_ref}} &amp;\href{../exec/conventions.html#exec-notation}{\hookrightarrow}&amp; S'; \href{../exec/runtime.html#syntax-result}{\mathit{result}}
 \end{array}
 \\ \qquad
   \begin{array}[t]{&#64;{}r&#64;{~}l&#64;{}}
@@ -988,7 +988,7 @@ S; \href{../exec/runtime.html#syntax-val}{\mathit{val}}^n~(\href{../exec/instruc
   \wedge &amp; (S'; \href{../exec/runtime.html#syntax-result}{\mathit{result}}) \in \mathit{hf}(S; \href{../exec/runtime.html#syntax-val}{\mathit{val}}^n) \\
   \end{array} \\
 \begin{array}{lcl&#64;{\qquad}l}
-S; \href{../exec/runtime.html#syntax-val}{\mathit{val}}^n~(\href{../exec/instructions.html#exec-invoke}{\mathsf{invoke}}~a) &amp;\href{../exec/conventions.html#exec-notation}{\hookrightarrow}&amp; S; \href{../exec/runtime.html#syntax-val}{\mathit{val}}^n~(\href{../exec/instructions.html#exec-invoke}{\mathsf{invoke}}~a)
+S; \href{../exec/runtime.html#syntax-val}{\mathit{val}}^n~(\href{../exec/runtime.html#syntax-ref}{\mathsf{ref{.}func}}~a)~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{call\_ref}} &amp;\href{../exec/conventions.html#exec-notation}{\hookrightarrow}&amp; S; \href{../exec/runtime.html#syntax-val}{\mathit{val}}^n~(\href{../exec/runtime.html#syntax-ref}{\mathsf{ref{.}func}}~a)~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{call\_ref}}
 \end{array}
 \\ \qquad
   \begin{array}[t]{&#64;{}r&#64;{~}l&#64;{}}

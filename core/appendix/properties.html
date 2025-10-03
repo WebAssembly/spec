@@ -5,11 +5,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Type Soundness &#8212; WebAssembly 3.0 (2025-10-02)</title>
+    <title>Type Soundness &#8212; WebAssembly 3.0 (2025-10-03)</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=686e5160" />
     <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=057308f9" />
-    <script src="../_static/documentation_options.js?v=02e08c60"></script>
+    <script src="../_static/documentation_options.js?v=7335c639"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>window.MathJax = {"tex": {"maxBuffer": 30720, "macros": {"multicolumn": ["", 2]}}, "options": {"menuOptions": {"settings": {"enrich": false}}}}</script>
@@ -917,24 +917,8 @@ In addition to the <a class="reference internal" href="../valid/conventions.html
   S; C \href{../appendix/properties.html#valid-instr-admin}{\vdash} \href{../exec/runtime.html#syntax-val}{\mathit{val}} : [] \mathrel{\href{../valid/conventions.html#syntax-instrtype}{\rightarrow}} [t]
 }\]</div>
 </section>
-<section id="xref-exec-instructions-exec-invoke-mathsf-invoke-xref-exec-runtime-syntax-funcaddr-mathit-funcaddr">
-<span id="index-29"></span><h3><span class="math notranslate nohighlight">\(\href{../exec/instructions.html#exec-invoke}{\mathsf{invoke}}~\href{../exec/runtime.html#syntax-funcaddr}{\mathit{funcaddr}}\)</span><a class="headerlink" href="#xref-exec-instructions-exec-invoke-mathsf-invoke-xref-exec-runtime-syntax-funcaddr-mathit-funcaddr" title="Link to this heading">¶</a></h3>
-<ul class="simple">
-<li><p>The <a class="reference internal" href="../exec/runtime.html#syntax-externaddr"><span class="std std-ref">external function address</span></a> <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-externaddr}{\mathsf{func}}~\href{../exec/runtime.html#syntax-funcaddr}{\mathit{funcaddr}}\)</span> must be <a class="reference internal" href="../exec/values.html#valid-externaddr-func"><span class="std std-ref">valid</span></a> with <a class="reference internal" href="../syntax/types.html#syntax-externtype"><span class="std std-ref">external function type</span></a> <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-externtype}{\mathsf{func}}~\href{../valid/conventions.html#syntax-deftype}{\mathit{deftype}}'\)</span>.</p></li>
-<li><p>The <a class="reference internal" href="../valid/conventions.html#aux-expand-deftype"><span class="std std-ref">expansion</span></a> of the <a class="reference internal" href="../valid/conventions.html#syntax-deftype"><span class="std std-ref">defined type</span></a> <span class="math notranslate nohighlight">\(\href{../valid/conventions.html#syntax-deftype}{\mathit{deftype}}\)</span> must be some <a class="reference internal" href="../syntax/types.html#syntax-functype"><span class="std std-ref">function type</span></a> <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-comptype}{\mathsf{func}}~[t_1^\ast] \href{../syntax/types.html#syntax-comptype}{\rightarrow} [t_2^\ast])\)</span>.</p></li>
-<li><p>Then the instruction is valid with type <span class="math notranslate nohighlight">\([t_1^\ast] \mathrel{\href{../valid/conventions.html#syntax-instrtype}{\rightarrow}} [t_2^\ast]\)</span>.</p></li>
-</ul>
-<div class="math notranslate nohighlight">
-\[\frac{
-  S \href{../exec/values.html#valid-externaddr}{\vdash} \href{../exec/runtime.html#syntax-externaddr}{\mathsf{func}}~\href{../exec/runtime.html#syntax-funcaddr}{\mathit{funcaddr}} : \href{../syntax/types.html#syntax-externtype}{\mathsf{func}}~\href{../valid/conventions.html#syntax-deftype}{\mathit{deftype}}
-  \qquad
-  \href{../valid/conventions.html#syntax-deftype}{\mathit{deftype}} \approx \href{../syntax/types.html#syntax-comptype}{\mathsf{func}}~[t_1^\ast] \href{../syntax/types.html#syntax-comptype}{\rightarrow} [t_2^\ast]
-}{
-  S; C \href{../appendix/properties.html#valid-instr-admin}{\vdash} \href{../exec/instructions.html#exec-invoke}{\mathsf{invoke}}~\href{../exec/runtime.html#syntax-funcaddr}{\mathit{funcaddr}} : [t_1^\ast] \mathrel{\href{../valid/conventions.html#syntax-instrtype}{\rightarrow}} [t_2^\ast]
-}\]</div>
-</section>
 <section id="xref-exec-runtime-syntax-label-mathsf-label-n-xref-syntax-instructions-syntax-instr-mathit-instr-0-ast-xref-syntax-instructions-syntax-instr-mathit-instr-ast">
-<span id="index-30"></span><h3><span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-label}{\mathsf{label}}_n\{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}_0^\ast\}~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast\)</span><a class="headerlink" href="#xref-exec-runtime-syntax-label-mathsf-label-n-xref-syntax-instructions-syntax-instr-mathit-instr-0-ast-xref-syntax-instructions-syntax-instr-mathit-instr-ast" title="Link to this heading">¶</a></h3>
+<span id="index-29"></span><h3><span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-label}{\mathsf{label}}_n\{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}_0^\ast\}~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast\)</span><a class="headerlink" href="#xref-exec-runtime-syntax-label-mathsf-label-n-xref-syntax-instructions-syntax-instr-mathit-instr-0-ast-xref-syntax-instructions-syntax-instr-mathit-instr-ast" title="Link to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>The instruction sequence <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}_0^\ast\)</span> must be <a class="reference internal" href="../valid/instructions.html#valid-instrs"><span class="std std-ref">valid</span></a> with some type <span class="math notranslate nohighlight">\([t_1^n] \mathrel{\href{../valid/conventions.html#syntax-instrtype}{\rightarrow}}_{x^\ast} [t_2^*]\)</span>.</p></li>
 <li><p>Let <span class="math notranslate nohighlight">\(C'\)</span> be the same <a class="reference internal" href="../valid/conventions.html#context"><span class="std std-ref">context</span></a> as <span class="math notranslate nohighlight">\(C\)</span>, but with the <a class="reference internal" href="../syntax/types.html#syntax-resulttype"><span class="std std-ref">result type</span></a> <span class="math notranslate nohighlight">\([t_1^n]\)</span> prepended to the <span class="math notranslate nohighlight">\(\href{../valid/conventions.html#context}{\mathsf{labels}}\)</span> list.</p></li>
@@ -952,7 +936,7 @@ the instruction sequence <span class="math notranslate nohighlight">\(\href{../s
 }\]</div>
 </section>
 <section id="xref-exec-runtime-syntax-frame-mathsf-frame-n-f-xref-syntax-instructions-syntax-instr-mathit-instr-ast">
-<span id="index-31"></span><h3><span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-frame}{\mathsf{frame}}_n\{F\}~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast\)</span><a class="headerlink" href="#xref-exec-runtime-syntax-frame-mathsf-frame-n-f-xref-syntax-instructions-syntax-instr-mathit-instr-ast" title="Link to this heading">¶</a></h3>
+<span id="index-30"></span><h3><span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-frame}{\mathsf{frame}}_n\{F\}~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast\)</span><a class="headerlink" href="#xref-exec-runtime-syntax-frame-mathsf-frame-n-f-xref-syntax-instructions-syntax-instr-mathit-instr-ast" title="Link to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>Under the <a class="reference internal" href="../valid/types.html#valid-resulttype"><span class="std std-ref">valid</span></a> return type <span class="math notranslate nohighlight">\([t^n]\)</span>,
 the <a class="reference internal" href="../exec/runtime.html#syntax-frame"><span class="std std-ref">thread</span></a> <span class="math notranslate nohighlight">\(F; \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast\)</span> must be <a class="reference internal" href="#valid-frame"><span class="std std-ref">valid</span></a> with <a class="reference internal" href="../syntax/types.html#syntax-resulttype"><span class="std std-ref">result type</span></a> <span class="math notranslate nohighlight">\([t^n]\)</span>.</p></li>
@@ -968,7 +952,7 @@ the <a class="reference internal" href="../exec/runtime.html#syntax-frame"><span
 }\]</div>
 </section>
 <section id="xref-exec-runtime-syntax-handler-mathsf-handler-n-xref-syntax-instructions-syntax-catch-mathit-catch-ast-xref-syntax-instructions-syntax-instr-mathit-instr-ast">
-<span id="index-32"></span><h3><span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-handler}{\mathsf{handler}}_n\{\href{../syntax/instructions.html#syntax-catch}{\mathit{catch}}^\ast\}~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast\)</span><a class="headerlink" href="#xref-exec-runtime-syntax-handler-mathsf-handler-n-xref-syntax-instructions-syntax-catch-mathit-catch-ast-xref-syntax-instructions-syntax-instr-mathit-instr-ast" title="Link to this heading">¶</a></h3>
+<span id="index-31"></span><h3><span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-handler}{\mathsf{handler}}_n\{\href{../syntax/instructions.html#syntax-catch}{\mathit{catch}}^\ast\}~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast\)</span><a class="headerlink" href="#xref-exec-runtime-syntax-handler-mathsf-handler-n-xref-syntax-instructions-syntax-catch-mathit-catch-ast-xref-syntax-instructions-syntax-instr-mathit-instr-ast" title="Link to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>For every <a class="reference internal" href="../syntax/instructions.html#syntax-catch"><span class="std std-ref">catch clause</span></a> <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-catch}{\mathit{catch}}_i\)</span> in <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-catch}{\mathit{catch}}^\ast\)</span>, <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-catch}{\mathit{catch}}_i\)</span> must be <a class="reference internal" href="../valid/instructions.html#valid-catch"><span class="std std-ref">valid</span></a>.</p></li>
 <li><p>The instruction sequence <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast\)</span> must be <a class="reference internal" href="../valid/instructions.html#valid-instrs"><span class="std std-ref">valid</span></a> with some type <span class="math notranslate nohighlight">\([t_1^\ast] \mathrel{\href{../valid/conventions.html#syntax-instrtype}{\rightarrow}} [t_2^\ast]\)</span>.</p></li>
@@ -987,7 +971,7 @@ the <a class="reference internal" href="../exec/runtime.html#syntax-frame"><span
 </section>
 </section>
 <section id="store-extension">
-<span id="extend"></span><span id="index-33"></span><h2>Store Extension<a class="headerlink" href="#store-extension" title="Link to this heading">¶</a></h2>
+<span id="extend"></span><span id="index-32"></span><h2>Store Extension<a class="headerlink" href="#store-extension" title="Link to this heading">¶</a></h2>
 <p>Programs can mutate the <a class="reference internal" href="../exec/runtime.html#syntax-store"><span class="std std-ref">store</span></a> and its contained instances.
 Any such modification must respect certain invariants, such as not removing allocated instances or changing immutable definitions.
 While these invariants are inherent to the execution semantics of WebAssembly <a class="reference internal" href="../exec/instructions.html#exec-instr"><span class="std std-ref">instructions</span></a> and <a class="reference internal" href="../exec/modules.html#exec-instantiation"><span class="std std-ref">modules</span></a>,
@@ -1000,7 +984,7 @@ a store state <span class="math notranslate nohighlight">\(S'\)</span> extends s
 <p>Extension does not imply that the new store is valid, which is defined separately <a class="reference internal" href="#valid-store"><span class="std std-ref">above</span></a>.</p>
 </div>
 <section id="extend-store">
-<span id="index-34"></span><span id="id2"></span><h3><a class="reference internal" href="../exec/runtime.html#syntax-store"><span class="std std-ref">Store</span></a> <span class="math notranslate nohighlight">\(S\)</span><a class="headerlink" href="#extend-store" title="Link to this heading">¶</a></h3>
+<span id="index-33"></span><span id="id2"></span><h3><a class="reference internal" href="../exec/runtime.html#syntax-store"><span class="std std-ref">Store</span></a> <span class="math notranslate nohighlight">\(S\)</span><a class="headerlink" href="#extend-store" title="Link to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>The length of <span class="math notranslate nohighlight">\(S.\href{../exec/runtime.html#syntax-store}{\mathsf{tags}}\)</span> must not shrink.</p></li>
 <li><p>The length of <span class="math notranslate nohighlight">\(S.\href{../exec/runtime.html#syntax-store}{\mathsf{globals}}\)</span> must not shrink.</p></li>
@@ -1071,7 +1055,7 @@ a store state <span class="math notranslate nohighlight">\(S'\)</span> extends s
 }\end{split}\]</div>
 </section>
 <section id="tag-instance-xref-exec-runtime-syntax-taginst-mathit-taginst">
-<span id="extend-taginst"></span><span id="index-35"></span><h3><a class="reference internal" href="../exec/runtime.html#syntax-taginst"><span class="std std-ref">Tag Instance</span></a> <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-taginst}{\mathit{taginst}}\)</span><a class="headerlink" href="#tag-instance-xref-exec-runtime-syntax-taginst-mathit-taginst" title="Link to this heading">¶</a></h3>
+<span id="extend-taginst"></span><span id="index-34"></span><h3><a class="reference internal" href="../exec/runtime.html#syntax-taginst"><span class="std std-ref">Tag Instance</span></a> <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-taginst}{\mathit{taginst}}\)</span><a class="headerlink" href="#tag-instance-xref-exec-runtime-syntax-taginst-mathit-taginst" title="Link to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>A tag instance must remain unchanged.</p></li>
 </ul>
@@ -1082,7 +1066,7 @@ a store state <span class="math notranslate nohighlight">\(S'\)</span> extends s
 }\]</div>
 </section>
 <section id="global-instance-xref-exec-runtime-syntax-globalinst-mathit-globalinst">
-<span id="extend-globalinst"></span><span id="index-36"></span><h3><a class="reference internal" href="../exec/runtime.html#syntax-globalinst"><span class="std std-ref">Global Instance</span></a> <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-globalinst}{\mathit{globalinst}}\)</span><a class="headerlink" href="#global-instance-xref-exec-runtime-syntax-globalinst-mathit-globalinst" title="Link to this heading">¶</a></h3>
+<span id="extend-globalinst"></span><span id="index-35"></span><h3><a class="reference internal" href="../exec/runtime.html#syntax-globalinst"><span class="std std-ref">Global Instance</span></a> <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-globalinst}{\mathit{globalinst}}\)</span><a class="headerlink" href="#global-instance-xref-exec-runtime-syntax-globalinst-mathit-globalinst" title="Link to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>The <a class="reference internal" href="../syntax/types.html#syntax-globaltype"><span class="std std-ref">global type</span></a> <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-globalinst}{\mathit{globalinst}}.\href{../exec/runtime.html#syntax-globalinst}{\mathsf{type}}\)</span> must remain unchanged.</p></li>
 <li><p>Let <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-mut}{\mathit{mut}}~t\)</span> be the structure of <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-globalinst}{\mathit{globalinst}}.\href{../exec/runtime.html#syntax-globalinst}{\mathsf{type}}\)</span>.</p></li>
@@ -1096,7 +1080,7 @@ a store state <span class="math notranslate nohighlight">\(S'\)</span> extends s
 }\]</div>
 </section>
 <section id="memory-instance-xref-exec-runtime-syntax-meminst-mathit-meminst">
-<span id="extend-meminst"></span><span id="index-37"></span><h3><a class="reference internal" href="../exec/runtime.html#syntax-meminst"><span class="std std-ref">Memory Instance</span></a> <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-meminst}{\mathit{meminst}}\)</span><a class="headerlink" href="#memory-instance-xref-exec-runtime-syntax-meminst-mathit-meminst" title="Link to this heading">¶</a></h3>
+<span id="extend-meminst"></span><span id="index-36"></span><h3><a class="reference internal" href="../exec/runtime.html#syntax-meminst"><span class="std std-ref">Memory Instance</span></a> <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-meminst}{\mathit{meminst}}\)</span><a class="headerlink" href="#memory-instance-xref-exec-runtime-syntax-meminst-mathit-meminst" title="Link to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>The <a class="reference internal" href="../syntax/types.html#syntax-memtype"><span class="std std-ref">memory type</span></a> <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-meminst}{\mathit{meminst}}.\href{../exec/runtime.html#syntax-meminst}{\mathsf{type}}\)</span> must remain unchanged.</p></li>
 <li><p>The length of <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-meminst}{\mathit{meminst}}.\href{../exec/runtime.html#syntax-meminst}{\mathsf{bytes}}\)</span> must not shrink.</p></li>
@@ -1109,7 +1093,7 @@ a store state <span class="math notranslate nohighlight">\(S'\)</span> extends s
 }\]</div>
 </section>
 <section id="table-instance-xref-exec-runtime-syntax-tableinst-mathit-tableinst">
-<span id="extend-tableinst"></span><span id="index-38"></span><h3><a class="reference internal" href="../exec/runtime.html#syntax-tableinst"><span class="std std-ref">Table Instance</span></a> <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-tableinst}{\mathit{tableinst}}\)</span><a class="headerlink" href="#table-instance-xref-exec-runtime-syntax-tableinst-mathit-tableinst" title="Link to this heading">¶</a></h3>
+<span id="extend-tableinst"></span><span id="index-37"></span><h3><a class="reference internal" href="../exec/runtime.html#syntax-tableinst"><span class="std std-ref">Table Instance</span></a> <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-tableinst}{\mathit{tableinst}}\)</span><a class="headerlink" href="#table-instance-xref-exec-runtime-syntax-tableinst-mathit-tableinst" title="Link to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>The <a class="reference internal" href="../syntax/types.html#syntax-tabletype"><span class="std std-ref">table type</span></a> <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-tableinst}{\mathit{tableinst}}.\href{../exec/runtime.html#syntax-tableinst}{\mathsf{type}}\)</span> must remain unchanged.</p></li>
 <li><p>The length of <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-tableinst}{\mathit{tableinst}}.\href{../exec/runtime.html#syntax-tableinst}{\mathsf{elem}}\)</span> must not shrink.</p></li>
@@ -1122,7 +1106,7 @@ a store state <span class="math notranslate nohighlight">\(S'\)</span> extends s
 }\]</div>
 </section>
 <section id="function-instance-xref-exec-runtime-syntax-funcinst-mathit-funcinst">
-<span id="extend-funcinst"></span><span id="index-39"></span><h3><a class="reference internal" href="../exec/runtime.html#syntax-funcinst"><span class="std std-ref">Function Instance</span></a> <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-funcinst}{\mathit{funcinst}}\)</span><a class="headerlink" href="#function-instance-xref-exec-runtime-syntax-funcinst-mathit-funcinst" title="Link to this heading">¶</a></h3>
+<span id="extend-funcinst"></span><span id="index-38"></span><h3><a class="reference internal" href="../exec/runtime.html#syntax-funcinst"><span class="std std-ref">Function Instance</span></a> <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-funcinst}{\mathit{funcinst}}\)</span><a class="headerlink" href="#function-instance-xref-exec-runtime-syntax-funcinst-mathit-funcinst" title="Link to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>A function instance must remain unchanged.</p></li>
 </ul>
@@ -1133,7 +1117,7 @@ a store state <span class="math notranslate nohighlight">\(S'\)</span> extends s
 }\]</div>
 </section>
 <section id="data-instance-xref-exec-runtime-syntax-datainst-mathit-datainst">
-<span id="extend-datainst"></span><span id="index-40"></span><h3><a class="reference internal" href="../exec/runtime.html#syntax-datainst"><span class="std std-ref">Data Instance</span></a> <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-datainst}{\mathit{datainst}}\)</span><a class="headerlink" href="#data-instance-xref-exec-runtime-syntax-datainst-mathit-datainst" title="Link to this heading">¶</a></h3>
+<span id="extend-datainst"></span><span id="index-39"></span><h3><a class="reference internal" href="../exec/runtime.html#syntax-datainst"><span class="std std-ref">Data Instance</span></a> <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-datainst}{\mathit{datainst}}\)</span><a class="headerlink" href="#data-instance-xref-exec-runtime-syntax-datainst-mathit-datainst" title="Link to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>The list <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-datainst}{\mathit{datainst}}.\href{../exec/runtime.html#syntax-datainst}{\mathsf{bytes}}\)</span> must:</p>
 <ul>
@@ -1154,7 +1138,7 @@ a store state <span class="math notranslate nohighlight">\(S'\)</span> extends s
 }\]</div>
 </section>
 <section id="element-instance-xref-exec-runtime-syntax-eleminst-mathit-eleminst">
-<span id="extend-eleminst"></span><span id="index-41"></span><h3><a class="reference internal" href="../exec/runtime.html#syntax-eleminst"><span class="std std-ref">Element Instance</span></a> <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-eleminst}{\mathit{eleminst}}\)</span><a class="headerlink" href="#element-instance-xref-exec-runtime-syntax-eleminst-mathit-eleminst" title="Link to this heading">¶</a></h3>
+<span id="extend-eleminst"></span><span id="index-40"></span><h3><a class="reference internal" href="../exec/runtime.html#syntax-eleminst"><span class="std std-ref">Element Instance</span></a> <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-eleminst}{\mathit{eleminst}}\)</span><a class="headerlink" href="#element-instance-xref-exec-runtime-syntax-eleminst-mathit-eleminst" title="Link to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>The <a class="reference internal" href="../syntax/types.html#syntax-reftype"><span class="std std-ref">reference type</span></a> <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-eleminst}{\mathit{eleminst}}.\href{../exec/runtime.html#syntax-eleminst}{\mathsf{type}}\)</span> must remain unchanged.</p></li>
 <li><p>The list <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-eleminst}{\mathit{eleminst}}.\href{../exec/runtime.html#syntax-eleminst}{\mathsf{elem}}\)</span> must:</p>
@@ -1176,7 +1160,7 @@ a store state <span class="math notranslate nohighlight">\(S'\)</span> extends s
 }\]</div>
 </section>
 <section id="structure-instance-xref-exec-runtime-syntax-structinst-mathit-structinst">
-<span id="extend-structinst"></span><span id="index-42"></span><h3><a class="reference internal" href="../exec/runtime.html#syntax-structinst"><span class="std std-ref">Structure Instance</span></a> <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-structinst}{\mathit{structinst}}\)</span><a class="headerlink" href="#structure-instance-xref-exec-runtime-syntax-structinst-mathit-structinst" title="Link to this heading">¶</a></h3>
+<span id="extend-structinst"></span><span id="index-41"></span><h3><a class="reference internal" href="../exec/runtime.html#syntax-structinst"><span class="std std-ref">Structure Instance</span></a> <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-structinst}{\mathit{structinst}}\)</span><a class="headerlink" href="#structure-instance-xref-exec-runtime-syntax-structinst-mathit-structinst" title="Link to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>The <a class="reference internal" href="../valid/conventions.html#syntax-deftype"><span class="std std-ref">defined type</span></a> <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-structinst}{\mathit{structinst}}.\href{../exec/runtime.html#syntax-structinst}{\mathsf{type}}\)</span> must remain unchanged.</p></li>
 <li><p>Assert: due to <a class="reference internal" href="#valid-structinst"><span class="std std-ref">store well-formedness</span></a>, the <a class="reference internal" href="../valid/conventions.html#aux-expand-deftype"><span class="std std-ref">expansion</span></a> of <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-structinst}{\mathit{structinst}}.\href{../exec/runtime.html#syntax-structinst}{\mathsf{type}}\)</span> is a <a class="reference internal" href="../syntax/types.html#syntax-structtype"><span class="std std-ref">structure type</span></a>.</p></li>
@@ -1198,7 +1182,7 @@ a store state <span class="math notranslate nohighlight">\(S'\)</span> extends s
 }\]</div>
 </section>
 <section id="array-instance-xref-exec-runtime-syntax-arrayinst-mathit-arrayinst">
-<span id="extend-arrayinst"></span><span id="index-43"></span><h3><a class="reference internal" href="../exec/runtime.html#syntax-arrayinst"><span class="std std-ref">Array Instance</span></a> <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-arrayinst}{\mathit{arrayinst}}\)</span><a class="headerlink" href="#array-instance-xref-exec-runtime-syntax-arrayinst-mathit-arrayinst" title="Link to this heading">¶</a></h3>
+<span id="extend-arrayinst"></span><span id="index-42"></span><h3><a class="reference internal" href="../exec/runtime.html#syntax-arrayinst"><span class="std std-ref">Array Instance</span></a> <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-arrayinst}{\mathit{arrayinst}}\)</span><a class="headerlink" href="#array-instance-xref-exec-runtime-syntax-arrayinst-mathit-arrayinst" title="Link to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>The <a class="reference internal" href="../valid/conventions.html#syntax-deftype"><span class="std std-ref">defined type</span></a> <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-arrayinst}{\mathit{arrayinst}}.\href{../exec/runtime.html#syntax-arrayinst}{\mathsf{type}}\)</span> must remain unchanged.</p></li>
 <li><p>Assert: due to <a class="reference internal" href="#valid-arrayinst"><span class="std std-ref">store well-formedness</span></a>, the <a class="reference internal" href="../valid/conventions.html#aux-expand-deftype"><span class="std std-ref">expansion</span></a> of <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-arrayinst}{\mathit{arrayinst}}.\href{../exec/runtime.html#syntax-arrayinst}{\mathsf{type}}\)</span> is an <a class="reference internal" href="../syntax/types.html#syntax-arraytype"><span class="std std-ref">array type</span></a>.</p></li>
@@ -1215,7 +1199,7 @@ a store state <span class="math notranslate nohighlight">\(S'\)</span> extends s
 }\]</div>
 </section>
 <section id="exception-instance-xref-exec-runtime-syntax-exninst-mathit-exninst">
-<span id="extend-exninst"></span><span id="index-44"></span><h3><a class="reference internal" href="../exec/runtime.html#syntax-exninst"><span class="std std-ref">Exception Instance</span></a> <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-exninst}{\mathit{exninst}}\)</span><a class="headerlink" href="#exception-instance-xref-exec-runtime-syntax-exninst-mathit-exninst" title="Link to this heading">¶</a></h3>
+<span id="extend-exninst"></span><span id="index-43"></span><h3><a class="reference internal" href="../exec/runtime.html#syntax-exninst"><span class="std std-ref">Exception Instance</span></a> <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-exninst}{\mathit{exninst}}\)</span><a class="headerlink" href="#exception-instance-xref-exec-runtime-syntax-exninst-mathit-exninst" title="Link to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>An exception instance must remain unchanged.</p></li>
 </ul>
@@ -1227,7 +1211,7 @@ a store state <span class="math notranslate nohighlight">\(S'\)</span> extends s
 </section>
 </section>
 <section id="theorems">
-<span id="soundness-statement"></span><span id="index-45"></span><h2>Theorems<a class="headerlink" href="#theorems" title="Link to this heading">¶</a></h2>
+<span id="soundness-statement"></span><span id="index-44"></span><h2>Theorems<a class="headerlink" href="#theorems" title="Link to this heading">¶</a></h2>
 <p>Given the definition of <a class="reference internal" href="#valid-config"><span class="std std-ref">valid configurations</span></a>,
 the standard soundness theorems hold. <a class="footnote-reference brackets" href="#cite-cpp2018" id="id3" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a> <a class="footnote-reference brackets" href="#cite-fm2021" id="id4" role="doc-noteref"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></a></p>
 <p><strong>Theorem (Preservation).</strong>
@@ -1268,9 +1252,9 @@ Conrad Watt, Xiaojia Rao, Jean Pichon-Pharabod, Martin Bodin, Philippa Gardner. 
 </section>
 </section>
 <section id="type-system-properties">
-<span id="index-46"></span><h1>Type System Properties<a class="headerlink" href="#type-system-properties" title="Link to this heading">¶</a></h1>
+<span id="index-45"></span><h1>Type System Properties<a class="headerlink" href="#type-system-properties" title="Link to this heading">¶</a></h1>
 <section id="principal-types">
-<span id="principality"></span><span id="index-47"></span><h2>Principal Types<a class="headerlink" href="#principal-types" title="Link to this heading">¶</a></h2>
+<span id="principality"></span><span id="index-46"></span><h2>Principal Types<a class="headerlink" href="#principal-types" title="Link to this heading">¶</a></h2>
 <p>The <a class="reference internal" href="../valid/conventions.html#type-system"><span class="std std-ref">type system</span></a> of WebAssembly features both <a class="reference internal" href="../valid/matching.html#match"><span class="std std-ref">subtyping</span></a> and simple forms of <a class="reference internal" href="../valid/instructions.html#polymorphism"><span class="std std-ref">polymorphism</span></a> for <a class="reference internal" href="../valid/conventions.html#syntax-instrtype"><span class="std std-ref">instruction types</span></a>.
 That has the effect that every instruction or instruction sequence can be classified with multiple different instruction types.</p>
 <p>However, the typing rules still allow deriving <em>principal types</em> for instruction sequences.
@@ -1323,7 +1307,7 @@ there exists a substitution <span class="math notranslate nohighlight">\(\sigma\
 such that <span class="math notranslate nohighlight">\([{t'_2}^\ast] = [\sigma(\alpha_{\href{../syntax/types.html#syntax-valtype}{\mathit{valtype}}^\ast})~t^\ast]\)</span>.</p>
 </section>
 <section id="type-lattice">
-<span id="index-48"></span><h2>Type Lattice<a class="headerlink" href="#type-lattice" title="Link to this heading">¶</a></h2>
+<span id="index-47"></span><h2>Type Lattice<a class="headerlink" href="#type-lattice" title="Link to this heading">¶</a></h2>
 <p>The <a class="reference internal" href="#principality"><span class="std std-ref">Principal Types</span></a> property depends on the existence of a <em>greatest lower bound</em> for any pair of types.</p>
 <p><strong>Theorem (Greatest Lower Bounds for Value Types).</strong>
 For any two value types <span class="math notranslate nohighlight">\(t_1\)</span> and <span class="math notranslate nohighlight">\(t_2\)</span> that are <a class="reference internal" href="../valid/types.html#valid-valtype"><span class="std std-ref">valid</span></a>
@@ -1369,7 +1353,7 @@ because their values can never flow to the same place.</p>
 </div>
 </section>
 <section id="compositionality">
-<span id="index-49"></span><h2>Compositionality<a class="headerlink" href="#compositionality" title="Link to this heading">¶</a></h2>
+<span id="index-48"></span><h2>Compositionality<a class="headerlink" href="#compositionality" title="Link to this heading">¶</a></h2>
 <p><a class="reference internal" href="../valid/instructions.html#valid-instrs"><span class="std std-ref">Valid</span></a> <a class="reference internal" href="../syntax/instructions.html#syntax-instr"><span class="std std-ref">instruction sequences</span></a> can be freely <em>composed</em>, as long as their types match up.</p>
 <p><strong>Theorem (Composition).</strong>
 If two instruction sequences <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}_1^\ast\)</span> and <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}_2^\ast\)</span> are valid with types <span class="math notranslate nohighlight">\([t_1^\ast] \mathrel{\href{../valid/conventions.html#syntax-instrtype}{\rightarrow}}_{x_1^\ast} [t^\ast]\)</span> and  <span class="math notranslate nohighlight">\([t^\ast] \mathrel{\href{../valid/conventions.html#syntax-instrtype}{\rightarrow}}_{x_2^\ast} [t_2^\ast]\)</span>, respectively (i.e., <span class="math notranslate nohighlight">\(C \href{../valid/instructions.html#valid-instrs}{\vdash} \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}_1^\ast : [t_1^\ast] \mathrel{\href{../valid/conventions.html#syntax-instrtype}{\rightarrow}}_{x_1^\ast} [t^\ast]\)</span> and <span class="math notranslate nohighlight">\(C \href{../valid/instructions.html#valid-instrs}{\vdash} \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}_1^\ast : [t^\ast] \mathrel{\href{../valid/conventions.html#syntax-instrtype}{\rightarrow}}_{x_2^\ast} [t_2^\ast]\)</span>),
