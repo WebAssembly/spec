@@ -1630,7 +1630,6 @@ warning: definition `funcsxx` was never spliced
 warning: definition `fvbinop_` was never spliced
 warning: definition `fvrelop_` was never spliced
 warning: definition `fvternop_` was never spliced
-warning: definition `fvtestop_` was never spliced
 warning: definition `fvunop_` was never spliced
 warning: definition `fzero` was never spliced
 warning: definition `global` was never spliced
@@ -1646,7 +1645,6 @@ warning: definition `halfop` was never spliced
 warning: definition `iabs_` was never spliced
 warning: definition `iadd_` was never spliced
 warning: definition `iadd_sat_` was never spliced
-warning: definition `iall_true_` was never spliced
 warning: definition `iand_` was never spliced
 warning: definition `iandnot_` was never spliced
 warning: definition `iavgr_` was never spliced
@@ -1670,6 +1668,7 @@ warning: definition `importsd` was never spliced
 warning: definition `imul_` was never spliced
 warning: definition `ine_` was never spliced
 warning: definition `ineg_` was never spliced
+warning: definition `inez_` was never spliced
 warning: definition `inot_` was never spliced
 warning: definition `inst_globaltype` was never spliced
 warning: definition `inst_memtype` was never spliced
@@ -1729,7 +1728,6 @@ warning: definition `ivshiftopsx_` was never spliced
 warning: definition `ivshufflop_` was never spliced
 warning: definition `ivswizzlop_` was never spliced
 warning: definition `ivternopnd_` was never spliced
-warning: definition `ivtestop_` was never spliced
 warning: definition `ivunop_` was never spliced
 warning: definition `ixor_` was never spliced
 warning: definition `jsize` was never spliced
@@ -1867,7 +1865,6 @@ warning: definition `vsize` was never spliced
 warning: definition `vsizenn` was never spliced
 warning: definition `vswizzlop_` was never spliced
 warning: definition `vternop_` was never spliced
-warning: definition `vtestop_` was never spliced
 warning: definition `vunop_` was never spliced
 warning: definition `vunpack` was never spliced
 warning: definition `vvbinop_` was never spliced
@@ -2477,7 +2474,6 @@ warning: definition prose `funcsxx` was never spliced
 warning: definition prose `fvbinop_` was never spliced
 warning: definition prose `fvrelop_` was never spliced
 warning: definition prose `fvternop_` was never spliced
-warning: definition prose `fvtestop_` was never spliced
 warning: definition prose `fvunop_` was never spliced
 warning: definition prose `fzero` was never spliced
 warning: definition prose `global` was never spliced
@@ -2493,7 +2489,6 @@ warning: definition prose `halfop` was never spliced
 warning: definition prose `iabs_` was never spliced
 warning: definition prose `iadd_` was never spliced
 warning: definition prose `iadd_sat_` was never spliced
-warning: definition prose `iall_true_` was never spliced
 warning: definition prose `idiv_` was never spliced
 warning: definition prose `ieq_` was never spliced
 warning: definition prose `ieqz_` was never spliced
@@ -2508,6 +2503,7 @@ warning: definition prose `importsd` was never spliced
 warning: definition prose `imul_` was never spliced
 warning: definition prose `ine_` was never spliced
 warning: definition prose `ineg_` was never spliced
+warning: definition prose `inez_` was never spliced
 warning: definition prose `inst_globaltype` was never spliced
 warning: definition prose `inst_memtype` was never spliced
 warning: definition prose `inst_reftype` was never spliced
@@ -2544,7 +2540,6 @@ warning: definition prose `ivshiftopsx_` was never spliced
 warning: definition prose `ivshufflop_` was never spliced
 warning: definition prose `ivswizzlop_` was never spliced
 warning: definition prose `ivternopnd_` was never spliced
-warning: definition prose `ivtestop_` was never spliced
 warning: definition prose `ivunop_` was never spliced
 warning: definition prose `jsize` was never spliced
 warning: definition prose `jsizenn` was never spliced
@@ -2671,7 +2666,6 @@ warning: definition prose `vsize` was never spliced
 warning: definition prose `vsizenn` was never spliced
 warning: definition prose `vswizzlop_` was never spliced
 warning: definition prose `vternop_` was never spliced
-warning: definition prose `vtestop_` was never spliced
 warning: definition prose `vunop_` was never spliced
 warning: definition prose `vunpack` was never spliced
 warning: definition prose `vvbinop_` was never spliced

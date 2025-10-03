@@ -4599,9 +4599,9 @@ def $ieqz_(N : N, iN : iN(N)) : u32
   def $ieqz_{N : N, i_1 : iN(N)}(N, i_1) = `%`_u32($bool((i_1!`%`_iN.0 = 0)))
 
 ;; ../../../../specification/wasm-3.0/3.1-numerics.scalar.spectec
-def $iall_true_(N : N, iN : iN(N)) : u32
+def $inez_(N : N, iN : iN(N)) : u32
   ;; ../../../../specification/wasm-3.0/3.1-numerics.scalar.spectec
-  def $iall_true_{N : N, i_1 : iN(N)}(N, i_1) = `%`_u32($bool((i_1!`%`_iN.0 =/= 0)))
+  def $inez_{N : N, i_1 : iN(N)}(N, i_1) = `%`_u32($bool((i_1!`%`_iN.0 =/= 0)))
 
 ;; ../../../../specification/wasm-3.0/3.1-numerics.scalar.spectec
 def $ieq_(N : N, iN : iN(N), iN : iN(N)) : u32
@@ -5027,20 +5027,6 @@ def $fvternop_(shape : shape, def $f_(N : N, fN : fN(N), fN : fN(N), fN : fN(N))
     -- if (c*{c <- `c*`}*{`c*` <- `c**`} = $setproduct_(syntax lane_((Fnn : Fnn <: lanetype)), $f_($sizenn((Fnn : Fnn <: numtype)), c_1, c_2, c_3)*{c_1 <- `c_1*`, c_2 <- `c_2*`, c_3 <- `c_3*`}))
 
 ;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
-def $ivtestop_(shape : shape, def $f_(N : N, iN : iN(N)) : u32, vec_ : vec_(V128_Vnn)) : u32
-  ;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
-  def $ivtestop_{Jnn : Jnn, M : M, def $f_(N : N, iN : iN(N)) : u32, v_1 : vec_(V128_Vnn), `c*` : u32*, `c_1*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))))*}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $f_, v_1) = `%`_u32($prod(c!`%`_u32.0*{c <- `c*`}))
-    -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), v_1))
-    -- if (c*{c <- `c*`} = $f_($lsizenn((Jnn : Jnn <: lanetype)), c_1)*{c_1 <- `c_1*`})
-
-;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
-def $fvtestop_(shape : shape, def $f_(N : N, fN : fN(N)) : u32, vec_ : vec_(V128_Vnn)) : u32
-  ;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
-  def $fvtestop_{Fnn : Fnn, M : M, def $f_(N : N, fN : fN(N)) : u32, v_1 : vec_(V128_Vnn), `c*` : u32*, `c_1*` : lane_($lanetype(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M))))*}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $f_, v_1) = `%`_u32($prod(c!`%`_u32.0*{c <- `c*`}))
-    -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), v_1))
-    -- if (c*{c <- `c*`} = $f_($sizenn((Fnn : Fnn <: numtype)), c_1)*{c_1 <- `c_1*`})
-
-;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
 def $ivrelop_(shape : shape, def $f_(N : N, iN : iN(N), iN : iN(N)) : u32, vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn)) : vec_(V128_Vnn)
   ;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
   def $ivrelop_{Jnn : Jnn, M : M, def $f_(N : N, iN : iN(N), iN : iN(N)) : u32, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn), `c*` : iN($lsizenn((Jnn : Jnn <: lanetype)))*, `c_1*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))))*, `c_2*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))))*}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $f_, v_1, v_2) = $inv_lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), c*{c <- `c*`})
@@ -5197,11 +5183,6 @@ def $vternop_(shape : shape, vternop_ : vternop_(shape), vec_ : vec_(V128_Vnn), 
   def $vternop_{Fnn : Fnn, M : M, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn), v_3 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), RELAXED_MADD_vternop_, v_1, v_2, v_3) = $fvternop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $frelaxed_madd_, v_1, v_2, v_3)
   ;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
   def $vternop_{Fnn : Fnn, M : M, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn), v_3 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), RELAXED_NMADD_vternop_, v_1, v_2, v_3) = $fvternop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $frelaxed_nmadd_, v_1, v_2, v_3)
-
-;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
-def $vtestop_(shape : shape, vtestop_ : vtestop_(shape), vec_ : vec_(V128_Vnn)) : u32
-  ;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
-  def $vtestop_{Jnn : Jnn, M : M, v : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), ALL_TRUE_vtestop_, v) = $ivtestop_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $iall_true_, v)
 
 ;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
 def $vrelop_(shape : shape, vrelop_ : vrelop_(shape), vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn)) : vec_(V128_Vnn)
@@ -6211,7 +6192,7 @@ relation Step_pure: `%~>%`(instr*, instr*)
   ;; ../../../../specification/wasm-3.0/4.3-execution.instructions.spectec
   rule vvtestop{c_1 : vec_(V128_Vnn), c : num_(I32_numtype)}:
     `%~>%`([VCONST_instr(V128_vectype, c_1) VVTESTOP_instr(V128_vectype, ANY_TRUE_vvtestop)], [CONST_instr(I32_numtype, c)])
-    -- if (c = $ine_($vsize(V128_vectype), c_1, `%`_iN(0)))
+    -- if (c = $inez_($vsize(V128_vectype), c_1))
 
   ;; ../../../../specification/wasm-3.0/4.3-execution.instructions.spectec
   rule `vunop-val`{c_1 : vec_(V128_Vnn), sh : shape, vunop : vunop_(sh), c : vec_(V128_Vnn)}:
@@ -6244,9 +6225,10 @@ relation Step_pure: `%~>%`(instr*, instr*)
     -- if ($vternop_(sh, vternop, c_1, c_2, c_3) = [])
 
   ;; ../../../../specification/wasm-3.0/4.3-execution.instructions.spectec
-  rule vtestop{c_1 : vec_(V128_Vnn), sh : shape, vtestop : vtestop_(sh), i : num_(I32_numtype)}:
-    `%~>%`([VCONST_instr(V128_vectype, c_1) VTESTOP_instr(sh, vtestop)], [CONST_instr(I32_numtype, i)])
-    -- if (i = $vtestop_(sh, vtestop, c_1))
+  rule vtestop{c_1 : vec_(V128_Vnn), Jnn : Jnn, M : M, c : num_(I32_numtype), `i*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))))*}:
+    `%~>%`([VCONST_instr(V128_vectype, c_1) VTESTOP_instr(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), ALL_TRUE_vtestop_)], [CONST_instr(I32_numtype, c)])
+    -- if (i*{i <- `i*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), c_1))
+    -- if (c!`%`_num_.0 = $prod($inez_($jsizenn(Jnn), i)!`%`_u32.0*{i <- `i*`}))
 
   ;; ../../../../specification/wasm-3.0/4.3-execution.instructions.spectec
   rule vrelop{c_1 : vec_(V128_Vnn), c_2 : vec_(V128_Vnn), sh : shape, vrelop : vrelop_(sh), c : vec_(V128_Vnn)}:
@@ -15947,9 +15929,9 @@ def $ieqz_(N : N, iN : iN(N)) : u32
   def $ieqz_{N : N, i_1 : iN(N)}(N, i_1) = `%`_u32($bool((i_1!`%`_iN.0 = 0)))
 
 ;; ../../../../specification/wasm-3.0/3.1-numerics.scalar.spectec
-def $iall_true_(N : N, iN : iN(N)) : u32
+def $inez_(N : N, iN : iN(N)) : u32
   ;; ../../../../specification/wasm-3.0/3.1-numerics.scalar.spectec
-  def $iall_true_{N : N, i_1 : iN(N)}(N, i_1) = `%`_u32($bool((i_1!`%`_iN.0 =/= 0)))
+  def $inez_{N : N, i_1 : iN(N)}(N, i_1) = `%`_u32($bool((i_1!`%`_iN.0 =/= 0)))
 
 ;; ../../../../specification/wasm-3.0/3.1-numerics.scalar.spectec
 def $ieq_(N : N, iN : iN(N), iN : iN(N)) : u32
@@ -16375,20 +16357,6 @@ def $fvternop_(shape : shape, def $f_(N : N, fN : fN(N), fN : fN(N), fN : fN(N))
     -- if (c*{c <- `c*`}*{`c*` <- `c**`} = $setproduct_(syntax lane_((Fnn : Fnn <: lanetype)), $f_($sizenn((Fnn : Fnn <: numtype)), c_1, c_2, c_3)*{c_1 <- `c_1*`, c_2 <- `c_2*`, c_3 <- `c_3*`}))
 
 ;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
-def $ivtestop_(shape : shape, def $f_(N : N, iN : iN(N)) : u32, vec_ : vec_(V128_Vnn)) : u32
-  ;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
-  def $ivtestop_{Jnn : Jnn, M : M, def $f_(N : N, iN : iN(N)) : u32, v_1 : vec_(V128_Vnn), `c*` : u32*, `c_1*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))))*}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $f_, v_1) = `%`_u32($prod(c!`%`_u32.0*{c <- `c*`}))
-    -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), v_1))
-    -- if (c*{c <- `c*`} = $f_($lsizenn((Jnn : Jnn <: lanetype)), c_1)*{c_1 <- `c_1*`})
-
-;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
-def $fvtestop_(shape : shape, def $f_(N : N, fN : fN(N)) : u32, vec_ : vec_(V128_Vnn)) : u32
-  ;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
-  def $fvtestop_{Fnn : Fnn, M : M, def $f_(N : N, fN : fN(N)) : u32, v_1 : vec_(V128_Vnn), `c*` : u32*, `c_1*` : lane_($lanetype(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M))))*}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $f_, v_1) = `%`_u32($prod(c!`%`_u32.0*{c <- `c*`}))
-    -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), v_1))
-    -- if (c*{c <- `c*`} = $f_($sizenn((Fnn : Fnn <: numtype)), c_1)*{c_1 <- `c_1*`})
-
-;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
 def $ivrelop_(shape : shape, def $f_(N : N, iN : iN(N), iN : iN(N)) : u32, vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn)) : vec_(V128_Vnn)
   ;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
   def $ivrelop_{Jnn : Jnn, M : M, def $f_(N : N, iN : iN(N), iN : iN(N)) : u32, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn), `c*` : iN($lsizenn((Jnn : Jnn <: lanetype)))*, `c_1*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))))*, `c_2*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))))*}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $f_, v_1, v_2) = $inv_lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), c*{c <- `c*`})
@@ -16545,11 +16513,6 @@ def $vternop_(shape : shape, vternop_ : vternop_(shape), vec_ : vec_(V128_Vnn), 
   def $vternop_{Fnn : Fnn, M : M, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn), v_3 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), RELAXED_MADD_vternop_, v_1, v_2, v_3) = $fvternop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $frelaxed_madd_, v_1, v_2, v_3)
   ;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
   def $vternop_{Fnn : Fnn, M : M, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn), v_3 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), RELAXED_NMADD_vternop_, v_1, v_2, v_3) = $fvternop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $frelaxed_nmadd_, v_1, v_2, v_3)
-
-;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
-def $vtestop_(shape : shape, vtestop_ : vtestop_(shape), vec_ : vec_(V128_Vnn)) : u32
-  ;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
-  def $vtestop_{Jnn : Jnn, M : M, v : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), ALL_TRUE_vtestop_, v) = $ivtestop_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $iall_true_, v)
 
 ;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
 def $vrelop_(shape : shape, vrelop_ : vrelop_(shape), vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn)) : vec_(V128_Vnn)
@@ -17561,7 +17524,7 @@ relation Step_pure: `%~>%`(instr*, instr*)
   ;; ../../../../specification/wasm-3.0/4.3-execution.instructions.spectec
   rule vvtestop{c_1 : vec_(V128_Vnn), c : num_(I32_numtype)}:
     `%~>%`([VCONST_instr(V128_vectype, c_1) VVTESTOP_instr(V128_vectype, ANY_TRUE_vvtestop)], [CONST_instr(I32_numtype, c)])
-    -- if (c = $ine_($vsize(V128_vectype), c_1, `%`_iN(0)))
+    -- if (c = $inez_($vsize(V128_vectype), c_1))
 
   ;; ../../../../specification/wasm-3.0/4.3-execution.instructions.spectec
   rule `vunop-val`{c_1 : vec_(V128_Vnn), sh : shape, vunop : vunop_(sh), c : vec_(V128_Vnn)}:
@@ -17594,9 +17557,10 @@ relation Step_pure: `%~>%`(instr*, instr*)
     -- if ($vternop_(sh, vternop, c_1, c_2, c_3) = [])
 
   ;; ../../../../specification/wasm-3.0/4.3-execution.instructions.spectec
-  rule vtestop{c_1 : vec_(V128_Vnn), sh : shape, vtestop : vtestop_(sh), i : num_(I32_numtype)}:
-    `%~>%`([VCONST_instr(V128_vectype, c_1) VTESTOP_instr(sh, vtestop)], [CONST_instr(I32_numtype, i)])
-    -- if (i = $vtestop_(sh, vtestop, c_1))
+  rule vtestop{c_1 : vec_(V128_Vnn), Jnn : Jnn, M : M, c : num_(I32_numtype), `i*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))))*}:
+    `%~>%`([VCONST_instr(V128_vectype, c_1) VTESTOP_instr(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), ALL_TRUE_vtestop_)], [CONST_instr(I32_numtype, c)])
+    -- if (i*{i <- `i*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), c_1))
+    -- if (c!`%`_num_.0 = $prod($inez_($jsizenn(Jnn), i)!`%`_u32.0*{i <- `i*`}))
 
   ;; ../../../../specification/wasm-3.0/4.3-execution.instructions.spectec
   rule vrelop{c_1 : vec_(V128_Vnn), c_2 : vec_(V128_Vnn), sh : shape, vrelop : vrelop_(sh), c : vec_(V128_Vnn)}:
@@ -27421,9 +27385,9 @@ def $ieqz_(N : N, iN : iN(N)) : u32
   def $ieqz_{N : N, i_1 : iN(N)}(N, i_1) = `%`_u32($bool((i_1!`%`_iN.0 = 0)))
 
 ;; ../../../../specification/wasm-3.0/3.1-numerics.scalar.spectec
-def $iall_true_(N : N, iN : iN(N)) : u32
+def $inez_(N : N, iN : iN(N)) : u32
   ;; ../../../../specification/wasm-3.0/3.1-numerics.scalar.spectec
-  def $iall_true_{N : N, i_1 : iN(N)}(N, i_1) = `%`_u32($bool((i_1!`%`_iN.0 =/= 0)))
+  def $inez_{N : N, i_1 : iN(N)}(N, i_1) = `%`_u32($bool((i_1!`%`_iN.0 =/= 0)))
 
 ;; ../../../../specification/wasm-3.0/3.1-numerics.scalar.spectec
 def $ieq_(N : N, iN : iN(N), iN : iN(N)) : u32
@@ -27849,20 +27813,6 @@ def $fvternop_(shape : shape, def $f_(N : N, fN : fN(N), fN : fN(N), fN : fN(N))
     -- if (c*{c <- `c*`}*{`c*` <- `c**`} = $setproduct_(syntax lane_((Fnn : Fnn <: lanetype)), $f_($sizenn((Fnn : Fnn <: numtype)), c_1, c_2, c_3)*{c_1 <- `c_1*`, c_2 <- `c_2*`, c_3 <- `c_3*`}))
 
 ;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
-def $ivtestop_(shape : shape, def $f_(N : N, iN : iN(N)) : u32, vec_ : vec_(V128_Vnn)) : u32
-  ;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
-  def $ivtestop_{Jnn : Jnn, M : M, def $f_(N : N, iN : iN(N)) : u32, v_1 : vec_(V128_Vnn), `c*` : u32*, `c_1*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))))*}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $f_, v_1) = `%`_u32($prod(c!`%`_u32.0*{c <- `c*`}))
-    -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), v_1))
-    -- if (c*{c <- `c*`} = $f_($lsizenn((Jnn : Jnn <: lanetype)), c_1)*{c_1 <- `c_1*`})
-
-;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
-def $fvtestop_(shape : shape, def $f_(N : N, fN : fN(N)) : u32, vec_ : vec_(V128_Vnn)) : u32
-  ;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
-  def $fvtestop_{Fnn : Fnn, M : M, def $f_(N : N, fN : fN(N)) : u32, v_1 : vec_(V128_Vnn), `c*` : u32*, `c_1*` : lane_($lanetype(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M))))*}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $f_, v_1) = `%`_u32($prod(c!`%`_u32.0*{c <- `c*`}))
-    -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), v_1))
-    -- if (c*{c <- `c*`} = $f_($sizenn((Fnn : Fnn <: numtype)), c_1)*{c_1 <- `c_1*`})
-
-;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
 def $ivrelop_(shape : shape, def $f_(N : N, iN : iN(N), iN : iN(N)) : u32, vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn)) : vec_(V128_Vnn)
   ;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
   def $ivrelop_{Jnn : Jnn, M : M, def $f_(N : N, iN : iN(N), iN : iN(N)) : u32, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn), `c*` : iN($lsizenn((Jnn : Jnn <: lanetype)))*, `c_1*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))))*, `c_2*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))))*}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $f_, v_1, v_2) = $inv_lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), c*{c <- `c*`})
@@ -28019,11 +27969,6 @@ def $vternop_(shape : shape, vternop_ : vternop_(shape), vec_ : vec_(V128_Vnn), 
   def $vternop_{Fnn : Fnn, M : M, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn), v_3 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), RELAXED_MADD_vternop_, v_1, v_2, v_3) = $fvternop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $frelaxed_madd_, v_1, v_2, v_3)
   ;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
   def $vternop_{Fnn : Fnn, M : M, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn), v_3 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), RELAXED_NMADD_vternop_, v_1, v_2, v_3) = $fvternop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $frelaxed_nmadd_, v_1, v_2, v_3)
-
-;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
-def $vtestop_(shape : shape, vtestop_ : vtestop_(shape), vec_ : vec_(V128_Vnn)) : u32
-  ;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
-  def $vtestop_{Jnn : Jnn, M : M, v : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), ALL_TRUE_vtestop_, v) = $ivtestop_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $iall_true_, v)
 
 ;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
 def $vrelop_(shape : shape, vrelop_ : vrelop_(shape), vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn)) : vec_(V128_Vnn)
@@ -29050,7 +28995,7 @@ relation Step_pure: `%~>%`(instr*, instr*)
   ;; ../../../../specification/wasm-3.0/4.3-execution.instructions.spectec
   rule vvtestop{c_1 : vec_(V128_Vnn), c : num_(I32_numtype)}:
     `%~>%`([VCONST_instr(V128_vectype, c_1) VVTESTOP_instr(V128_vectype, ANY_TRUE_vvtestop)], [CONST_instr(I32_numtype, c)])
-    -- if (c = $ine_($vsize(V128_vectype), c_1, `%`_iN(0)))
+    -- if (c = $inez_($vsize(V128_vectype), c_1))
 
   ;; ../../../../specification/wasm-3.0/4.3-execution.instructions.spectec
   rule `vunop-val`{c_1 : vec_(V128_Vnn), sh : shape, vunop : vunop_(sh), c : vec_(V128_Vnn)}:
@@ -29086,9 +29031,10 @@ relation Step_pure: `%~>%`(instr*, instr*)
     -- if ($vternop_(sh, vternop, c_1, c_2, c_3) = [])
 
   ;; ../../../../specification/wasm-3.0/4.3-execution.instructions.spectec
-  rule vtestop{c_1 : vec_(V128_Vnn), sh : shape, vtestop : vtestop_(sh), i : num_(I32_numtype)}:
-    `%~>%`([VCONST_instr(V128_vectype, c_1) VTESTOP_instr(sh, vtestop)], [CONST_instr(I32_numtype, i)])
-    -- if (i = $vtestop_(sh, vtestop, c_1))
+  rule vtestop{c_1 : vec_(V128_Vnn), Jnn : Jnn, M : M, c : num_(I32_numtype), `i*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))))*}:
+    `%~>%`([VCONST_instr(V128_vectype, c_1) VTESTOP_instr(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), ALL_TRUE_vtestop_)], [CONST_instr(I32_numtype, c)])
+    -- if (i*{i <- `i*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), c_1))
+    -- if (c!`%`_num_.0 = $prod($inez_($jsizenn(Jnn), i)!`%`_u32.0*{i <- `i*`}))
 
   ;; ../../../../specification/wasm-3.0/4.3-execution.instructions.spectec
   rule vrelop{c_1 : vec_(V128_Vnn), c_2 : vec_(V128_Vnn), sh : shape, vrelop : vrelop_(sh), c : vec_(V128_Vnn)}:

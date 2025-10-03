@@ -18740,7 +18740,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
-#. Let :math:`c` be :math:`{{\mathrm{ine}}}_{{|\mathsf{v{\scriptstyle 128}}|}}(c_1, 0)`.
+#. Let :math:`c` be :math:`{{\mathrm{inez}}}_{{|\mathsf{v{\scriptstyle 128}}|}}(c_1)`.
 
 #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` to the stack.
 
@@ -18808,17 +18808,19 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
 
-:math:`{\mathit{sh}} {.} {\mathit{vtestop}}`
-............................................
+:math:`{{\mathsf{i}}{N}}{\mathsf{x}}{M} {.} \mathsf{all\_true}`
+...............................................................
 
 
 1. Assert: Due to validation, a value of vector type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
-#. Let :math:`i` be :math:`{{\mathit{vtestop}}}{{}_{{\mathit{sh}}}(c_1)}`.
+#. Let :math:`{i^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}(c_1)`.
 
-#. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` to the stack.
+#. Let :math:`c` be :math:`{\Pi}\, {{{\mathrm{inez}}}_{N}(i)^\ast}`.
+
+#. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` to the stack.
 
 
 :math:`{\mathit{sh}} {.} {\mathit{vrelop}}`
@@ -23964,8 +23966,8 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return :math:`\mathbb{B}(i_1 = 0)`.
 
 
-:math:`{{\mathrm{iall\_true}}}_{N}(i_1)`
-........................................
+:math:`{{\mathrm{inez}}}_{N}(i_1)`
+..................................
 
 
 1. Return :math:`\mathbb{B}(i_1 \neq 0)`.
@@ -24613,40 +24615,6 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`{{{{{\mathrm{lanes}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}^{{-1}}}}{({c^\ast})}^\ast}`.
 
 
-:math:`{{\mathrm{ivtestop}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{f}}, v_1)`
-...................................................................................
-
-
-1. Let :math:`{c_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}(v_1)`.
-
-#. Let :math:`{c^\ast}` be :math:`\epsilon`.
-
-#. For each :math:`c_1` in :math:`{c_1^\ast}`, do:
-
-   a. Let :math:`c` be :math:`{{\mathrm{f}}}_{N}(c_1)`.
-
-   #. Append :math:`c` to :math:`{c^\ast}`.
-
-#. Return :math:`{\Pi}\, {c^\ast}`.
-
-
-:math:`{{\mathrm{fvtestop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{f}}, v_1)`
-...................................................................................
-
-
-1. Let :math:`{c_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}(v_1)`.
-
-#. Let :math:`{c^\ast}` be :math:`\epsilon`.
-
-#. For each :math:`c_1` in :math:`{c_1^\ast}`, do:
-
-   a. Let :math:`c` be :math:`{{\mathrm{f}}}_{N}(c_1)`.
-
-   #. Append :math:`c` to :math:`{c^\ast}`.
-
-#. Return :math:`{\Pi}\, {c^\ast}`.
-
-
 :math:`{{\mathrm{ivrelop}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{f}}, v_1, v_2)`
 .......................................................................................
 
@@ -24987,13 +24955,6 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Assert: Due to validation, :math:`{\mathit{vternop}} = \mathsf{relaxed\_nmadd}`.
 
 #. Return :math:`{{\mathrm{fvternop}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({\mathrm{frelaxed}}_{{\mathit{nmadd}}}, v_1, v_2, v_3)`.
-
-
-:math:`{\mathsf{all\_true}}{{}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}(v)}`
-......................................................................
-
-
-1. Return :math:`{{\mathrm{ivtestop}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{iall}}_{{\mathit{true}}}, v)`.
 
 
 :math:`{{\mathit{vrelop}}}{{}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}(v_1, v_2)}`
@@ -29294,7 +29255,7 @@ Step_pure/vvternop V128 vvternop
 Step_pure/vvtestop V128 ANY_TRUE
 1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_1) from the stack.
-3. Let c be $ine_($vsize(V128), c_1, 0).
+3. Let c be $inez_($vsize(V128), c_1).
 4. Push the value (I32.CONST c) to the stack.
 
 Step_pure/vunop sh vunop
@@ -29327,11 +29288,12 @@ Step_pure/vternop sh vternop
 8. Let c be an element of $vternop_(sh, vternop, c_1, c_2, c_3).
 9. Push the value (V128.CONST c) to the stack.
 
-Step_pure/vtestop sh vtestop
+Step_pure/vtestop Jnn X M ALL_TRUE
 1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_1) from the stack.
-3. Let i be $vtestop_(sh, vtestop, c_1).
-4. Push the value (I32.CONST i) to the stack.
+3. Let i* be $lanes_(Jnn X M, c_1).
+4. Let c be $prod($inez_($jsizenn(Jnn), i)*).
+5. Push the value (I32.CONST c) to the stack.
 
 Step_pure/vrelop sh vrelop
 1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
@@ -31750,7 +31712,7 @@ isub_sat_ N sx i_1 i_2
 ieqz_ N i_1
 1. Return $bool((i_1 = 0)).
 
-iall_true_ N i_1
+inez_ N i_1
 1. Return $bool((i_1 =/= 0)).
 
 ieq_ N i_1 i_2
@@ -32060,22 +32022,6 @@ fvternop_ Fnn X M $f_ v_1 v_2 v_3
 4. Let c** be $setproduct_(`lane_((Fnn : Fnn <: lanetype)), $f_($sizenn(Fnn), c_1, c_2, c_3)*).
 5. Return $inv_lanes_(Fnn X M, c*)*.
 
-ivtestop_ Jnn X M $f_ v_1
-1. Let c_1* be $lanes_(Jnn X M, v_1).
-2. Let c* be [].
-3. For each c_1 in c_1*, do:
-  a. Let c be $f_($lsizenn(Jnn), c_1).
-  b. Append c to the c*.
-4. Return $prod(c*).
-
-fvtestop_ Fnn X M $f_ v_1
-1. Let c_1* be $lanes_(Fnn X M, v_1).
-2. Let c* be [].
-3. For each c_1 in c_1*, do:
-  a. Let c be $f_($sizenn(Fnn), c_1).
-  b. Append c to the c*.
-4. Return $prod(c*).
-
 ivrelop_ Jnn X M $f_ v_1 v_2
 1. Let c_1* be $lanes_(Jnn X M, v_1).
 2. Let c_2* be $lanes_(Jnn X M, v_2).
@@ -32239,9 +32185,6 @@ vternop_ lanetype X M vternop_ v_1 v_2 v_3
   a. Return $fvternop_(lanetype X M, $frelaxed_madd_, v_1, v_2, v_3).
 4. Assert: Due to validation, (vternop_ = RELAXED_NMADD).
 5. Return $fvternop_(lanetype X M, $frelaxed_nmadd_, v_1, v_2, v_3).
-
-vtestop_ Jnn X M ALL_TRUE v
-1. Return $ivtestop_(Jnn X M, $iall_true_, v).
 
 vrelop_ lanetype X M vrelop_ v_1 v_2
 1. If lanetype is Jnn, then:
