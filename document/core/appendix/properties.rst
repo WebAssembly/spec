@@ -1087,27 +1087,6 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
    }
 
 
-.. index:: function address, extern value, extern type, function type
-
-:math:`\INVOKE~\funcaddr`
-.........................
-
-* The :ref:`external function address <syntax-externaddr>` :math:`\XAFUNC~\funcaddr` must be :ref:`valid <valid-externaddr-func>` with :ref:`external function type <syntax-externtype>` :math:`\XTFUNC~\deftype'`.
-
-* The :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`\deftype` must be some :ref:`function type <syntax-functype>` :math:`\TFUNC~[t_1^\ast] \Tarrow [t_2^\ast])`.
-
-* Then the instruction is valid with type :math:`[t_1^\ast] \to [t_2^\ast]`.
-
-.. math::
-   \frac{
-     S \vdashexternaddr \XAFUNC~\funcaddr : \XTFUNC~\deftype
-     \qquad
-     \deftype \approx \TFUNC~[t_1^\ast] \Tarrow [t_2^\ast]
-   }{
-     S; C \vdashadmininstr \INVOKE~\funcaddr : [t_1^\ast] \to [t_2^\ast]
-   }
-
-
 .. index:: label, instruction, result type
 
 :math:`\LABEL_n\{\instr_0^\ast\}~\instr^\ast`

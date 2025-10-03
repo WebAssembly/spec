@@ -1539,10 +1539,6 @@
 .. |REFEXTERN| mathdef:: \xref{exec/runtime}{syntax-ref}{\K{ref{.}extern}}
 .. |TRAP| mathdef:: \xref{exec/runtime}{syntax-trap}{\K{trap}}
 
-.. TODO remove these
-.. |INVOKE| mathdef:: \xref{exec/instructions}{exec-invoke}{\K{invoke}}
-.. |RETURNINVOKE| mathdef:: \xref{exec/instructions}{exec-invoke}{\K{return\_invoke}}
-
 
 .. Values & Results, non-terminals
 
