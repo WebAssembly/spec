@@ -412,20 +412,20 @@
 
 ;; Malformed lane index value
 
-(assert_malformed (module quote "(func (result i32) (i8x16.extract_lane_s 256 (v128.const i8x16 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)))") "malformed lane index")
-(assert_malformed (module quote "(func (result i32) (i8x16.extract_lane_u 256 (v128.const i8x16 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)))") "malformed lane index")
-(assert_malformed (module quote "(func (result i32) (i16x8.extract_lane_s 256 (v128.const i16x8 0 0 0 0 0 0 0 0)))") "malformed lane index")
-(assert_malformed (module quote "(func (result i32) (i16x8.extract_lane_u 256 (v128.const i16x8 0 0 0 0 0 0 0 0)))") "malformed lane index")
-(assert_malformed (module quote "(func (result i32) (i32x4.extract_lane 256 (v128.const i32x4 0 0 0 0)))") "malformed lane index")
-(assert_malformed (module quote "(func (result f32) (f32x4.extract_lane 256 (v128.const f32x4 0 0 0 0)))") "malformed lane index")
-(assert_malformed (module quote "(func (result v128) (i8x16.replace_lane 256 (v128.const i8x16 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (i32.const 1)))") "malformed lane index")
-(assert_malformed (module quote "(func (result v128) (i16x8.replace_lane 256 (v128.const i16x8 0 0 0 0 0 0 0 0) (i32.const 1)))") "malformed lane index")
-(assert_malformed (module quote "(func (result v128) (i32x4.replace_lane 256 (v128.const i32x4 0 0 0 0) (i32.const 1)))") "malformed lane index")
-(assert_malformed (module quote "(func (result v128) (f32x4.replace_lane 256 (v128.const f32x4 0 0 0 0) (i32.const 1)))") "malformed lane index")
-(assert_malformed (module quote "(func (result i64) (i64x2.extract_lane 256 (v128.const i64x2 0 0)))") "malformed lane index")
-(assert_malformed (module quote "(func (result f64) (f64x2.extract_lane 256 (v128.const f64x2 0 0)))") "malformed lane index")
-(assert_malformed (module quote "(func (result v128) (i64x2.replace_lane 256 (v128.const i64x2 0 0) (i64.const 1)))") "malformed lane index")
-(assert_malformed (module quote "(func (result v128) (f64x2.replace_lane 256 (v128.const f64x2 0 0) (f64.const 1)))") "malformed lane index")
+(assert_malformed (module quote "(func (result i32) (i8x16.extract_lane_s 256 (v128.const i8x16 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)))") "i8 constant out of range")
+(assert_malformed (module quote "(func (result i32) (i8x16.extract_lane_u 256 (v128.const i8x16 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)))") "i8 constant out of range")
+(assert_malformed (module quote "(func (result i32) (i16x8.extract_lane_s 256 (v128.const i16x8 0 0 0 0 0 0 0 0)))") "i8 constant out of range")
+(assert_malformed (module quote "(func (result i32) (i16x8.extract_lane_u 256 (v128.const i16x8 0 0 0 0 0 0 0 0)))") "i8 constant out of range")
+(assert_malformed (module quote "(func (result i32) (i32x4.extract_lane 256 (v128.const i32x4 0 0 0 0)))") "i8 constant out of range")
+(assert_malformed (module quote "(func (result f32) (f32x4.extract_lane 256 (v128.const f32x4 0 0 0 0)))") "i8 constant out of range")
+(assert_malformed (module quote "(func (result v128) (i8x16.replace_lane 256 (v128.const i8x16 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) (i32.const 1)))") "i8 constant out of range")
+(assert_malformed (module quote "(func (result v128) (i16x8.replace_lane 256 (v128.const i16x8 0 0 0 0 0 0 0 0) (i32.const 1)))") "i8 constant out of range")
+(assert_malformed (module quote "(func (result v128) (i32x4.replace_lane 256 (v128.const i32x4 0 0 0 0) (i32.const 1)))") "i8 constant out of range")
+(assert_malformed (module quote "(func (result v128) (f32x4.replace_lane 256 (v128.const f32x4 0 0 0 0) (i32.const 1)))") "i8 constant out of range")
+(assert_malformed (module quote "(func (result i64) (i64x2.extract_lane 256 (v128.const i64x2 0 0)))") "i8 constant out of range")
+(assert_malformed (module quote "(func (result f64) (f64x2.extract_lane 256 (v128.const f64x2 0 0)))") "i8 constant out of range")
+(assert_malformed (module quote "(func (result v128) (i64x2.replace_lane 256 (v128.const i64x2 0 0) (i64.const 1)))") "i8 constant out of range")
+(assert_malformed (module quote "(func (result v128) (f64x2.replace_lane 256 (v128.const f64x2 0 0) (f64.const 1)))") "i8 constant out of")
 
 ;; Invalid lane index value
 
@@ -521,11 +521,11 @@
 (assert_malformed (module quote "(func (result v128)"
   "(i8x16.shuffle 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 -1"
   "(v128.const i8x16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0)"
-  "(v128.const i8x16 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15)))") "malformed lane index")
+  "(v128.const i8x16 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15)))") "i8 constant out of")
 (assert_malformed (module quote "(func (result v128)"
   "(i8x16.shuffle 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 256"
   "(v128.const i8x16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0)"
-  "(v128.const i8x16 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15)))") "malformed lane index")
+  "(v128.const i8x16 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15)))") "i8 constant out of")
 (assert_invalid (module (func (result v128)
   (i8x16.shuffle 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 255
   (v128.const i8x16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0)
@@ -602,25 +602,25 @@
   "(v128.const i8x16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0) "
   "(v128.const i8x16 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15)))") "invalid lane length")
 (assert_malformed (module quote "(func (result v128) "
-  "(i8x16.shuffle 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15.0) "
+  "(i8x16.shuffle 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15.0 "
   "(v128.const i8x16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0) "
-  "(v128.const i8x16 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15)))") "malformed lane index")
+  "(v128.const i8x16 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15)))") "i8 constant out of")
 (assert_malformed (module quote "(func (result v128) "
-  "(i8x16.shuffle 0.5 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15) "
+  "(i8x16.shuffle 0.5 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 "
   "(v128.const i8x16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0) "
-  "(v128.const i8x16 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15)))") "malformed lane index")
+  "(v128.const i8x16 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15)))") "i8 constant out of")
 (assert_malformed (module quote "(func (result v128) "
-  "(i8x16.shuffle -inf 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15) "
+  "(i8x16.shuffle -inf 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 "
   "(v128.const i8x16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0) "
-  "(v128.const i8x16 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15)))") "malformed lane index")
+  "(v128.const i8x16 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15)))") "i8 constant out of")
 (assert_malformed (module quote "(func (result v128) "
-  "(i8x16.shuffle 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 inf) "
+  "(i8x16.shuffle 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 inf "
   "(v128.const i8x16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0) "
-  "(v128.const i8x16 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15)))") "malformed lane index")
+  "(v128.const i8x16 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15)))") "i8 constant out of")
 (assert_malformed (module quote "(func (result v128) "
-  "(i8x16.shuffle nan 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15) "
+  "(i8x16.shuffle nan 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 "
   "(v128.const i8x16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0) "
-  "(v128.const i8x16 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15)))") "malformed lane index")
+  "(v128.const i8x16 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15)))") "i8 constant out of")
 
 
 ;; Combination with each other

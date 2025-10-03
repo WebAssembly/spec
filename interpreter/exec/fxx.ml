@@ -2,6 +2,7 @@ module type RepType =
 sig
   type t
 
+  val bitwidth : int
   val mantissa : int
 
   val zero : t
@@ -24,10 +25,16 @@ sig
   val logxor : t -> t -> t
 end
 
-module type S =
+module type T =
 sig
   type t
   type bits
+  val bitwidth : int
+  val mantissa : int
+  val exponent : int
+  val zero : t
+  val pos_inf : t
+  val neg_inf : t
   val pos_nan : t
   val neg_nan : t
   val is_inf : t -> bool
@@ -43,6 +50,7 @@ sig
   val sub : t -> t -> t
   val mul : t -> t -> t
   val div : t -> t -> t
+  val fma : t -> t -> t -> t
   val sqrt : t -> t
   val min : t -> t -> t
   val max : t -> t -> t
@@ -59,15 +67,18 @@ sig
   val le : t -> t -> bool
   val gt : t -> t -> bool
   val ge : t -> t -> bool
-  val zero : t
 end
 
-module Make (Rep : RepType) : S with type bits = Rep.t =
+module Make (Rep : RepType) : T with type bits = Rep.t =
 struct
-  let _ = assert (Rep.mantissa <= 52)
+  let _ = assert (Rep.mantissa < Rep.bitwidth - 2)
 
   type t = Rep.t
   type bits = Rep.t
+
+  let bitwidth = Rep.bitwidth
+  let mantissa = Rep.mantissa
+  let exponent = bitwidth - mantissa - 1
 
   let pos_inf = Rep.bits_of_float (1.0 /. 0.0)
   let neg_inf = Rep.bits_of_float (-. (1.0 /. 0.0))
@@ -137,6 +148,13 @@ struct
   let sub x y = binary x (-.) y
   let mul x y = binary x ( *.) y
   let div x y = binary x (/.) y
+
+  let fma x y z =
+    let xf = to_float x in
+    let yf = to_float y in
+    let zf = to_float z in
+    let t = Float.fma xf yf zf in
+    if t = t then of_float t else determine_binary_nan x y
 
   let sqrt  x = unary Stdlib.sqrt x
 

@@ -1,12 +1,11 @@
 open Types
-open Values
+open Value
 
 type table
 type t = table
 
-type size = int32
-type index = int32
-type count = int32
+type size = address
+type offset = address
 
 exception Type
 exception Bounds
@@ -14,12 +13,14 @@ exception SizeOverflow
 exception SizeLimit
 exception OutOfMemory
 
-val alloc : table_type -> ref_ -> table (* raises Type, OutOfMemory *)
-val type_of : table -> table_type
+val alloc : tabletype -> ref_ -> table (* raises Type, OutOfMemory *)
+val type_of : table -> tabletype
+val addrtype_of : table -> addrtype
 val size : table -> size
+val addr_of_num : num -> address
 val grow : table -> size -> ref_ -> unit
   (* raises SizeOverflow, SizeLimit, OutOfMemory *)
 
-val load : table -> index -> ref_ (* raises Bounds *)
-val store : table -> index -> ref_ -> unit (* raises Type, Bounds *)
-val blit : table -> index -> ref_ list -> unit (* raises Bounds *)
+val load : table -> address -> ref_ (* raises Bounds *)
+val store : table -> address -> ref_ -> unit (* raises Type, Bounds *)
+val blit : table -> address -> ref_ list -> unit (* raises Bounds *)

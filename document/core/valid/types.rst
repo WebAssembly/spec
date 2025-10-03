@@ -1,9 +1,221 @@
 Types
 -----
 
-Most :ref:`types <syntax-type>` are universally valid.
-However, restrictions apply to :ref:`limits <syntax-limits>`, which must be checked during validation.
-Moreover, :ref:`block types <syntax-blocktype>` are converted to plain :ref:`function types <syntax-functype>` for ease of processing.
+Simple :ref:`types <syntax-type>`, such as :ref:`number types <syntax-numtype>` are universally valid.
+However, restrictions apply to most other types, such as :ref:`reference types <syntax-reftype>`, :ref:`function types <syntax-functype>`, as well as the :ref:`limits <syntax-limits>` of :ref:`table types <syntax-tabletype>` and :ref:`memory types <syntax-memtype>`, which must be checked during validation.
+
+Moreover, :ref:`block types <syntax-blocktype>` are converted to :ref:`instruction types <syntax-instrtype>` for ease of processing.
+
+
+.. index:: number type
+   pair: validation; number type
+   single: abstract syntax; number type
+.. _valid-numtype:
+
+Number Types
+~~~~~~~~~~~~
+
+$${rule-prose: Numtype_ok}
+
+$${rule: Numtype_ok}
+
+
+.. index:: vector type
+   pair: validation; vector type
+   single: abstract syntax; vector type
+.. _valid-vectype:
+
+Vector Types
+~~~~~~~~~~~~
+
+$${rule-prose: Vectype_ok}
+
+$${rule: Vectype_ok}
+
+
+.. index:: type index, type use
+   pair: validation; type use
+   single: abstract syntax; type use
+.. _valid-typeuse:
+
+Type Uses
+~~~~~~~~~
+
+$${rule-prose: Typeuse_ok/typeidx}
+
+$${rule: Typeuse_ok/typeidx}
+
+
+.. index:: heap type, type use
+   pair: validation; heap type
+   single: abstract syntax; heap type
+.. _valid-heaptype:
+
+Heap Types
+~~~~~~~~~~
+
+$${rule-prose: Heaptype_ok/abs}
+
+$${rule: Heaptype_ok/abs}
+
+
+.. index:: reference type, heap type
+   pair: validation; reference type
+   single: abstract syntax; reference type
+.. _valid-reftype:
+
+Reference Types
+~~~~~~~~~~~~~~~
+
+$${rule-prose: Reftype_ok}
+
+$${rule: Reftype_ok}
+
+
+.. index:: value type, reference type, number type, vector type
+   pair: validation; value type
+   single: abstract syntax; value type
+.. _valid-valtype:
+
+Value Types
+~~~~~~~~~~~
+
+$${rule-prose: Valtype_ok}
+
+$${rule: Valtype_ok/bot}
+
+
+.. index:: result type, value type
+   pair: validation; result type
+   single: abstract syntax; result type
+.. _valid-resulttype:
+
+Result Types
+~~~~~~~~~~~~
+
+$${rule-prose: Resulttype_ok}
+
+$${rule: Resulttype_ok}
+
+
+.. index:: block type, instruction type
+   pair: validation; block type
+   single: abstract syntax; block type
+.. _valid-blocktype:
+
+Block Types
+~~~~~~~~~~~
+
+:ref:`Block types <syntax-blocktype>` may be expressed in one of two forms, both of which are converted to :ref:`instruction types <syntax-instrtype>` by the following rules.
+
+$${rule-prose: Blocktype_ok/typeidx}
+
+$${rule: Blocktype_ok/typeidx}
+
+
+$${rule-prose: Blocktype_ok/valtype}
+
+$${rule: Blocktype_ok/valtype}
+
+
+.. index:: instruction type
+   pair: validation; instruction type
+   single: abstract syntax; instruction type
+.. _valid-instrtype:
+
+Instruction Types
+~~~~~~~~~~~~~~~~~
+
+$${rule-prose: Instrtype_ok}
+
+$${rule: Instrtype_ok}
+
+
+.. index:: composite type, function type, aggregate type, structure type, array type, field type, storage type, packed type, value type, mutability
+   pair: validation; composite type
+   pair: validation; aggregate type
+   pair: validation; structure type
+   pair: validation; array type
+   pair: validation; function type
+   pair: validation; field type
+   pair: validation; storage type
+   pair: validation; packed type
+   single: abstract syntax; composite type
+   single: abstract syntax; function type
+   single: abstract syntax; structure type
+   single: abstract syntax; array type
+   single: abstract syntax; field type
+   single: abstract syntax; storage type
+   single: abstract syntax; packed type
+   single: abstract syntax; value type
+.. _valid-comptype:
+.. _valid-aggrtype:
+.. _valid-structtype:
+.. _valid-arraytype:
+.. _valid-functype:
+.. _valid-fieldtype:
+.. _valid-storagetype:
+.. _valid-packtype:
+
+Composite Types
+~~~~~~~~~~~~~~~
+
+$${rule-prose: Comptype_ok/struct}
+
+$${rule: Comptype_ok/struct}
+
+
+$${rule-prose: Comptype_ok/array}
+
+$${rule: Comptype_ok/array}
+
+
+$${rule-prose: Comptype_ok/func}
+
+$${rule: Comptype_ok/func}
+
+
+$${rule-prose: Fieldtype_ok}
+
+$${rule: Fieldtype_ok}
+
+
+$${rule-prose: Packtype_ok}
+
+$${rule: Packtype_ok}
+
+
+.. index:: recursive type, sub type, composite type, final, subtyping
+   pair: abstract syntax; recursive type
+   pair: abstract syntax; sub type
+.. _valid-rectype:
+.. _valid-subtype:
+
+Recursive Types
+~~~~~~~~~~~~~~~
+
+:ref:`Recursive types <syntax-rectype>` are validated with respect to the first :ref:`type index <syntax-typeidx>` defined by the recursive group.
+
+:math:`\TREC~\subtype^\ast`
+...........................
+
+$${rule-prose: Rectype_ok}
+
+$${rule: {Rectype_ok/empty Rectype_ok/cons}}
+
+
+:math:`\TSUB~\TFINAL^?~y^\ast~\comptype`
+........................................
+
+$${rule-prose: Subtype_ok}
+
+$${rule: Subtype_ok}
+
+.. note::
+   The side condition on the index ensures that a declared supertype is a previously defined types,
+   preventing cyclic subtype hierarchies.
+
+   Future versions of WebAssembly may allow more than one supertype.
 
 
 .. index:: limits
@@ -16,134 +228,22 @@ Limits
 
 :ref:`Limits <syntax-limits>` must have meaningful bounds that are within a given range.
 
-:math:`\{ \LMIN~n, \LMAX~m^? \}`
-................................
+$${rule-prose: Limits_ok}
 
-* The value of :math:`n` must not be larger than :math:`k`.
-
-* If the maximum :math:`m^?` is not empty, then:
-
-  * Its value must not be larger than :math:`k`.
-
-  * Its value must not be smaller than :math:`n`.
-
-* Then the limit is valid within range :math:`k`.
-
-.. math::
-   \frac{
-     n \leq k
-     \qquad
-     (m \leq k)^?
-     \qquad
-     (n \leq m)^?
-   }{
-     \vdashlimits \{ \LMIN~n, \LMAX~m^? \} : k
-   }
+$${rule: Limits_ok}
 
 
-.. index:: block type
-   pair: validation; block type
-   single: abstract syntax; block type
-.. _valid-blocktype:
+.. index:: tag type, function type, exception tag
+   pair: validation; tag type
+   single: abstract syntax; tag type
+.. _valid-tagtype:
 
-Block Types
-~~~~~~~~~~~
+Tag Types
+~~~~~~~~~
 
-:ref:`Block types <syntax-blocktype>` may be expressed in one of two forms, both of which are converted to plain :ref:`function types <syntax-functype>` by the following rules.
+$${rule-prose: Tagtype_ok}
 
-:math:`\typeidx`
-................
-
-* The type :math:`C.\CTYPES[\typeidx]` must be defined in the context.
-
-* Then the block type is valid as :ref:`function type <syntax-functype>` :math:`C.\CTYPES[\typeidx]`.
-
-.. math::
-   \frac{
-     C.\CTYPES[\typeidx] = \functype
-   }{
-     C \vdashblocktype \typeidx : \functype
-   }
-
-
-:math:`[\valtype^?]`
-....................
-
-* The block type is valid as :ref:`function type <syntax-functype>` :math:`[] \to [\valtype^?]`.
-
-.. math::
-   \frac{
-   }{
-     C \vdashblocktype [\valtype^?] : [] \to [\valtype^?]
-   }
-
-
-.. index:: function type
-   pair: validation; function type
-   single: abstract syntax; function type
-.. _valid-functype:
-
-Function Types
-~~~~~~~~~~~~~~
-
-:ref:`Function types <syntax-functype>` are always valid.
-
-:math:`[t_1^n] \to [t_2^m]`
-...........................
-
-* The function type is valid.
-
-.. math::
-   \frac{
-   }{
-     \vdashfunctype [t_1^\ast] \to [t_2^\ast] \ok
-   }
-
-
-.. index:: table type, reference type, limits
-   pair: validation; table type
-   single: abstract syntax; table type
-.. _valid-tabletype:
-
-Table Types
-~~~~~~~~~~~
-
-:math:`\limits~\reftype`
-........................
-
-* The limits :math:`\limits` must be :ref:`valid <valid-limits>` within range :math:`2^{32}-1`.
-
-* Then the table type is valid.
-
-.. math::
-   \frac{
-     \vdashlimits \limits : 2^{32} - 1
-   }{
-     \vdashtabletype \limits~\reftype \ok
-   }
-
-
-.. index:: memory type, limits
-   pair: validation; memory type
-   single: abstract syntax; memory type
-.. _valid-memtype:
-
-Memory Types
-~~~~~~~~~~~~
-
-:math:`\limits`
-...............
-
-* The limits :math:`\limits` must be :ref:`valid <valid-limits>` within range :math:`2^{16}`.
-
-* Then the memory type is valid.
-
-.. math::
-   \frac{
-     \vdashlimits \limits : 2^{16}
-   }{
-     \vdashmemtype \limits \ok
-   }
+$${rule: Tagtype_ok}
 
 
 .. index:: global type, value type, mutability
@@ -154,16 +254,35 @@ Memory Types
 Global Types
 ~~~~~~~~~~~~
 
-:math:`\mut~\valtype`
-.....................
+$${rule-prose: Globaltype_ok}
 
-* The global type is valid.
+$${rule: Globaltype_ok}
 
-.. math::
-   \frac{
-   }{
-     \vdashglobaltype \mut~\valtype \ok
-   }
+
+.. index:: memory type, limits
+   pair: validation; memory type
+   single: abstract syntax; memory type
+.. _valid-memtype:
+
+Memory Types
+~~~~~~~~~~~~
+
+$${rule-prose: Memtype_ok}
+
+$${rule: Memtype_ok}
+
+
+.. index:: table type, reference type, limits
+   pair: validation; table type
+   single: abstract syntax; table type
+.. _valid-tabletype:
+
+Table Types
+~~~~~~~~~~~
+
+$${rule-prose: Tabletype_ok}
+
+$${rule: Tabletype_ok}
 
 
 .. index:: external type, function type, table type, memory type, global type
@@ -174,182 +293,26 @@ Global Types
 External Types
 ~~~~~~~~~~~~~~
 
-:math:`\ETFUNC~\functype`
-.........................
+$${rule-prose: Externtype_ok/tag}
 
-* The :ref:`function type <syntax-functype>` :math:`\functype` must be :ref:`valid <valid-functype>`.
-
-* Then the external type is valid.
-
-.. math::
-   \frac{
-     \vdashfunctype \functype \ok
-   }{
-     \vdashexterntype \ETFUNC~\functype \ok
-   }
-
-:math:`\ETTABLE~\tabletype`
-...........................
-
-* The :ref:`table type <syntax-tabletype>` :math:`\tabletype` must be :ref:`valid <valid-tabletype>`.
-
-* Then the external type is valid.
-
-.. math::
-   \frac{
-     \vdashtabletype \tabletype \ok
-   }{
-     \vdashexterntype \ETTABLE~\tabletype \ok
-   }
-
-:math:`\ETMEM~\memtype`
-.......................
-
-* The :ref:`memory type <syntax-memtype>` :math:`\memtype` must be :ref:`valid <valid-memtype>`.
-
-* Then the external type is valid.
-
-.. math::
-   \frac{
-     \vdashmemtype \memtype \ok
-   }{
-     \vdashexterntype \ETMEM~\memtype \ok
-   }
-
-:math:`\ETGLOBAL~\globaltype`
-.............................
-
-* The :ref:`global type <syntax-globaltype>` :math:`\globaltype` must be :ref:`valid <valid-globaltype>`.
-
-* Then the external type is valid.
-
-.. math::
-   \frac{
-     \vdashglobaltype \globaltype \ok
-   }{
-     \vdashexterntype \ETGLOBAL~\globaltype \ok
-   }
+$${rule: Externtype_ok/tag}
 
 
-.. index:: ! matching, external type
-.. _exec-import:
-.. _match:
+$${rule-prose: Externtype_ok/global}
 
-Import Subtyping
-~~~~~~~~~~~~~~~~
-
-When :ref:`instantiating <exec-module>` a module,
-:ref:`external values <syntax-externval>` must be provided whose :ref:`types <valid-externval>` are *matched* against the respective :ref:`external types <syntax-externtype>` classifying each import.
-In some cases, this allows for a simple form of subtyping (written ":math:`\matchesexterntype`" formally), as defined here.
+$${rule: Externtype_ok/global}
 
 
-.. index:: limits
-.. _match-limits:
+$${rule-prose: Externtype_ok/mem}
 
-Limits
-......
-
-:ref:`Limits <syntax-limits>` :math:`\{ \LMIN~n_1, \LMAX~m_1^? \}` match limits :math:`\{ \LMIN~n_2, \LMAX~m_2^? \}` if and only if:
-
-* :math:`n_1` is larger than or equal to :math:`n_2`.
-
-* Either:
-
-  * :math:`m_2^?` is empty.
-
-* Or:
-
-  * Both :math:`m_1^?` and :math:`m_2^?` are non-empty.
-
-  * :math:`m_1` is smaller than or equal to :math:`m_2`.
-
-.. math::
-   ~\\[-1ex]
-   \frac{
-     n_1 \geq n_2
-   }{
-     \vdashlimitsmatch \{ \LMIN~n_1, \LMAX~m_1^? \} \matcheslimits \{ \LMIN~n_2, \LMAX~\epsilon \}
-   }
-   \quad
-   \frac{
-     n_1 \geq n_2
-     \qquad
-     m_1 \leq m_2
-   }{
-     \vdashlimitsmatch \{ \LMIN~n_1, \LMAX~m_1 \} \matcheslimits \{ \LMIN~n_2, \LMAX~m_2 \}
-   }
-
-.. _match-externtype:
-
-.. index:: function type
-.. _match-functype:
-
-Functions
-.........
-
-An :ref:`external type <syntax-externtype>` :math:`\ETFUNC~\functype_1` matches :math:`\ETFUNC~\functype_2` if and only if:
-
-* Both :math:`\functype_1` and :math:`\functype_2` are the same.
-
-.. math::
-   ~\\[-1ex]
-   \frac{
-   }{
-     \vdashexterntypematch \ETFUNC~\functype \matchesexterntype \ETFUNC~\functype
-   }
+$${rule: Externtype_ok/mem}
 
 
-.. index:: table type, limits, element type
-.. _match-tabletype:
+$${rule-prose: Externtype_ok/table}
 
-Tables
-......
-
-An :ref:`external type <syntax-externtype>` :math:`\ETTABLE~(\limits_1~\reftype_1)` matches :math:`\ETTABLE~(\limits_2~\reftype_2)` if and only if:
-
-* Limits :math:`\limits_1` :ref:`match <match-limits>` :math:`\limits_2`.
-
-* Both :math:`\reftype_1` and :math:`\reftype_2` are the same.
-
-.. math::
-   \frac{
-     \vdashlimitsmatch \limits_1 \matcheslimits \limits_2
-   }{
-     \vdashexterntypematch \ETTABLE~(\limits_1~\reftype) \matchesexterntype \ETTABLE~(\limits_2~\reftype)
-   }
+$${rule: Externtype_ok/table}
 
 
-.. index:: memory type, limits
-.. _match-memtype:
+$${rule-prose: Externtype_ok/func}
 
-Memories
-........
-
-An :ref:`external type <syntax-externtype>` :math:`\ETMEM~\limits_1` matches :math:`\ETMEM~\limits_2` if and only if:
-
-* Limits :math:`\limits_1` :ref:`match <match-limits>` :math:`\limits_2`.
-
-.. math::
-   \frac{
-     \vdashlimitsmatch \limits_1 \matcheslimits \limits_2
-   }{
-     \vdashexterntypematch \ETMEM~\limits_1 \matchesexterntype \ETMEM~\limits_2
-   }
-
-
-.. index:: global type, value type, mutability
-.. _match-globaltype:
-
-Globals
-.......
-
-An :ref:`external type <syntax-externtype>` :math:`\ETGLOBAL~\globaltype_1` matches :math:`\ETGLOBAL~\globaltype_2` if and only if:
-
-* Both :math:`\globaltype_1` and :math:`\globaltype_2` are the same.
-
-.. math::
-   ~\\[-1ex]
-   \frac{
-   }{
-     \vdashexterntypematch \ETGLOBAL~\globaltype \matchesexterntype \ETGLOBAL~\globaltype
-   }
+$${rule: Externtype_ok/func}

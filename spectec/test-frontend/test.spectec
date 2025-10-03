@@ -1,0 +1,359 @@
+;;
+;; Mixfix variant cases
+;;
+
+syntax testmixfix = | `{ nat* } | `[ nat* ] | nat -> nat
+
+def $testmixfix(testmixfix) : nat*
+def $testmixfix(`{nat*}) = nat*
+def $testmixfix(`[nat*]) = nat*
+def $testmixfix(nat_1 -> nat_2) = nat_1 nat_2
+
+
+;;
+;; Empty iterations
+;;
+
+syntax opt = O?
+syntax list = L*
+
+syntax variant =
+  | V1 opt nat
+  | V2 O? nat
+  | V3 text? nat
+  | V4 list nat
+  | V5 L* nat
+  | V6 text* nat
+
+syntax notation1 = opt nat
+syntax notation2 = O? nat
+syntax notation3 = text? nat
+syntax notation4 = list nat
+syntax notation5 = L* nat
+syntax notation6 = text* nat
+
+def $testemptyv1(variant) : nat
+def $testemptyv1(V1 opt 0) = 0
+def $testemptyv1(V1 eps 0) = 0
+def $testemptyv1(V1 0) = 0
+def $testemptyv1(V1 O 0) = 0
+
+def $testemptyv2(variant) : nat
+def $testemptyv2(V2 eps 0) = 0
+def $testemptyv2(V2 0) = 0
+def $testemptyv2(V2 O 0) = 0
+
+def $testemptyv3(variant) : nat
+def $testemptyv3(V3 eps 0) = 0
+def $testemptyv3(V3 0) = 0
+def $testemptyv3(V3 "" 0) = 0
+
+def $testemptyv4(variant) : nat
+def $testemptyv4(V4 list 0) = 0
+def $testemptyv4(V4 eps 0) = 0
+def $testemptyv4(V4 0) = 0
+def $testemptyv4(V4 L 0) = 0
+def $testemptyv4(V4 L L L 0) = 0
+def $testemptyv4(V4 ([]) 0) = 0
+def $testemptyv4(V4 ([L]) 0) = 0
+def $testemptyv4(V4 ([L L L]) 0) = 0
+
+def $testemptyv5(variant) : nat
+def $testemptyv5(V5 eps 0) = 0
+def $testemptyv5(V5 0) = 0
+def $testemptyv5(V5 L 0) = 0
+def $testemptyv5(V5 L L L 0) = 0
+def $testemptyv5(V5 ([]) 0) = 0
+def $testemptyv5(V5 ([L]) 0) = 0
+def $testemptyv5(V5 ([L L L]) 0) = 0
+
+def $testemptyv6(variant) : nat
+def $testemptyv6(V6 eps 0) = 0
+def $testemptyv6(V6 0) = 0
+def $testemptyv6(V6 "" 0) = 0
+def $testemptyv6(V6 "" "" 0) = 0
+def $testemptyv6(V6 ([]) 0) = 0
+def $testemptyv6(V6 ([""]) 0) = 0
+def $testemptyv6(V6 (["" ""]) 0) = 0
+
+def $testemptyn1(notation1) : nat
+def $testemptyn1(opt 0) = 0
+def $testemptyn1(eps 0) = 0
+def $testemptyn1(0) = 0
+def $testemptyn1(O 0) = 0
+
+def $testemptyn2(notation2) : nat
+def $testemptyn2(eps 0) = 0
+def $testemptyn2(0) = 0
+def $testemptyn2(O 0) = 0
+
+def $testemptyn3(notation3) : nat
+def $testemptyn3(eps 0) = 0
+def $testemptyn3(0) = 0
+def $testemptyn3("" 0) = 0
+
+def $testemptyn4(notation4) : nat
+def $testemptyn4(list 0) = 0
+def $testemptyn4(eps 0) = 0
+def $testemptyn4(0) = 0
+def $testemptyn4(L 0) = 0
+def $testemptyn4(L L L 0) = 0
+def $testemptyn4(([]) 0) = 0
+def $testemptyn4(([L]) 0) = 0
+def $testemptyn4(([L L L]) 0) = 0
+
+def $testemptyn5(notation5) : nat
+def $testemptyn5(eps 0) = 0
+def $testemptyn5(0) = 0
+def $testemptyn5(L 0) = 0
+def $testemptyn5(L L L 0) = 0
+def $testemptyn5(([]) 0) = 0
+def $testemptyn5(([L]) 0) = 0
+def $testemptyn5(([L L L]) 0) = 0
+
+def $testemptyn6(notation6) : nat
+def $testemptyn6(eps 0) = 0
+def $testemptyn6(0) = 0
+def $testemptyn6("" 0) = 0
+def $testemptyn6("" "" "" 0) = 0
+def $testemptyn6(([]) 0) = 0
+def $testemptyn6(([""]) 0) = 0
+def $testemptyn6((["" "" ""]) 0) = 0
+
+
+;;
+;; Nested iteration
+;;
+
+def $fnest(nat**): nat*
+def $fnest((n^(i<k))^j) = l^j  -- (if l = |n^k|)^j
+
+
+;;
+;; Parameterisation
+;;
+
+def $f(syntax X, X) : X
+def $f(syntax X, x) = x
+
+def $g(def $h(syntax X, X) : X, syntax Y, Y) : Y
+def $g(def $h, syntax Y, y) = $h(Y, y)
+
+def $x : nat
+def $x = $($g(def $f, syntax nat, 1) + $g($f, nat, 2))
+
+
+
+;;
+;; Plus/minus
+;;
+
+var n : nat
+var m : nat
+
+def $pppp(int, int) : int
+def $pppm(int, int) : int
+def $ppmp(int, int) : int
+def $ppmm(int, int) : int
+def $pmpp(int, int) : int
+def $pmpm(int, int) : int
+def $pmmp(int, int) : int
+def $pmmm(int, int) : int
+def $mppp(int, int) : int
+def $mppm(int, int) : int
+def $mpmp(int, int) : int
+def $mpmm(int, int) : int
+def $mmpp(int, int) : int
+def $mmpm(int, int) : int
+def $mmmp(int, int) : int
+def $mmmm(int, int) : int
+
+def $pppp(+-n, +-m) = $((+-n) + (+-m))
+def $pppm(+-n, +-m) = $((+-n) + (-+m))
+def $ppmp(+-n, +-m) = $((-+n) + (+-m))
+def $ppmm(+-n, +-m) = $((-+n) + (-+m))
+def $pmpp(+-n, -+m) = $((+-n) + (+-m))
+def $pmpm(+-n, -+m) = $((+-n) + (-+m))
+def $pmmp(+-n, -+m) = $((-+n) + (+-m))
+def $pmmm(+-n, -+m) = $((-+n) + (-+m))
+def $mppp(-+n, +-m) = $((+-n) + (+-m))
+def $mppm(-+n, +-m) = $((+-n) + (-+m))
+def $mpmp(-+n, +-m) = $((-+n) + (+-m))
+def $mpmm(-+n, +-m) = $((-+n) + (-+m))
+def $mmpp(-+n, -+m) = $((+-n) + (+-m))
+def $mmpm(-+n, -+m) = $((+-n) + (-+m))
+def $mmmp(-+n, -+m) = $((-+n) + (+-m))
+def $mmmm(-+n, -+m) = $((-+n) + (-+m))
+
+syntax val(int)
+syntax val(+1) = Val1
+syntax val(+7) = Val7
+syntax val(-1) = Valm1
+syntax val(-7) = Valm7
+
+def $eq(int_1, int_2, val(int_1)) : val(int_2)
+
+def $eq(1, 1, x) = x
+def $eq($pppp(3, 4), 7, x) = x
+def $eq($pppp(-3, -4), -7, x) = x
+def $eq($pppm(3, 4), -1, x) = x
+def $eq($pppm(-3, -4), 1, x) = x
+def $eq($ppmp(3, 4), 1, x) = x
+def $eq($ppmp(-3, -4), -1, x) = x
+def $eq($ppmm(3, 4), -7, x) = x
+def $eq($ppmm(-3, -4), 7, x) = x
+def $eq($pmpp(3, -4), 7, x) = x
+def $eq($pmpp(-3, 4), -7, x) = x
+def $eq($pmpm(3, -4), -1, x) = x
+def $eq($pmpm(-3, 4), 1, x) = x
+def $eq($pmmp(3, -4), 1, x) = x
+def $eq($pmmp(-3, 4), -1, x) = x
+def $eq($pmmm(3, -4), -7, x) = x
+def $eq($pmmm(-3, 4), 7, x) = x
+def $eq($mppp(3, -4), -7, x) = x
+def $eq($mppp(-3, 4), 7, x) = x
+def $eq($mppm(3, -4), 1, x) = x
+def $eq($mppm(-3, 4), -1, x) = x
+def $eq($mpmp(3, -4), -1, x) = x
+def $eq($mpmp(-3, 4), 1, x) = x
+def $eq($mpmm(3, -4), 7, x) = x
+def $eq($mpmm(-3, 4), -7, x) = x
+def $eq($mmpp(3, 4), -7, x) = x
+def $eq($mmpp(-3, -4), 7, x) = x
+def $eq($mmpm(3, 4), 1, x) = x
+def $eq($mmpm(-3, -4), -1, x) = x
+def $eq($mmmp(3, 4), -1, x) = x
+def $eq($mmmp(-3, -4), 1, x) = x
+def $eq($mmmm(3, 4), 7, x) = x
+def $eq($mmmm(-3, -4), -7, x) = x
+
+
+;;
+;; Grammars
+;;
+
+;; Short grammars
+
+grammar Tchar1 : nat = 0x00
+grammar Tchar2 : nat = U+00
+grammar Tchar3 : nat = "X"
+grammar Tchar4 : nat = | 0x00
+grammar Tchar5 : nat = | U+00
+grammar Tchar6 : nat = | "X"
+
+grammar Talt1 : nat = 0x00 | 0x01 | 0x02
+grammar Talt2 : nat = U+00 | U+01 | U+02
+grammar Talt3 : nat = "X" | "Y" | "Z"
+grammar Talt4 : nat = U+00 | "A" | U+02
+grammar Talt5 : nat = "X" | U+00 | "Z"
+grammar Talt6 : nat = | 0x00 | 0x01 | 0x02
+grammar Talt7 : nat = | U+00 | U+01 | U+02
+grammar Talt8 : nat = | "X" | "Y" | "Z"
+
+grammar Trange1 : nat = 0x00 | ... | 0xFF
+grammar Trange2 : nat = U+00 | ... | U+FF
+grammar Trange3 : nat = "A" | ... | "Z"
+grammar Trange4 : nat = U+00 | ... | "A"
+grammar Trange5 : nat = "A" | ... | U+FF
+grammar Trange6 : nat = | 0x00 | ... | 0xFF
+grammar Trange7 : nat = | U+00 | ... | U+FF
+grammar Trange8 : nat = | "A" | ... | "Z"
+
+grammar Trangechar1 : nat = 0x00 | ... | 0x7F | 0xFF
+grammar Trangechar2 : nat = U+00 | ... | U+7F | U+FF
+grammar Trangechar3 : nat = "A" | ... | "F" | "X"
+grammar Trangechar4 : nat = | 0x00 | ... | 0x7F | 0xFF
+grammar Trangechar5 : nat = | U+00 | ... | U+7F | U+FF
+grammar Trangechar6 : nat = | "A" | ... | "F" | "X"
+
+grammar Tcharrange1 : nat = 0xFF | 0x00 | ... | 0x7F
+grammar Tcharrange2 : nat = U+FF | U+00 | ... | U+7F
+grammar Tcharrange3 : nat = "X" | "A" | ... | "F"
+grammar Tcharrange4 : nat = | 0xFF | 0x00 | ... | 0x7F
+grammar Tcharrange5 : nat = | U+FF | U+00 | ... | U+7F
+grammar Tcharrange6 : nat = | "X" | "A" | ... | "F"
+
+grammar Trangerange1 : nat = 0x00 | ... | 0x1F | 0x7F | ... | 0x8F
+grammar Trangerange2 : nat = U+00 | ... | U+1F | U+7F | ... | U+8F
+grammar Trangerange3 : nat = "A" | ... | "F" | "a" | ... | "f"
+grammar Trangerange4 : nat = | 0x00 | ... | 0x1F | 0x7F | ... | 0x8F
+grammar Trangerange5 : nat = | U+00 | ... | U+1F | U+7F | ... | U+8F
+grammar Trangerange6 : nat = | "A" | ... | "F" | "a" | ... | "f"
+
+grammar Trangecharrange1 : nat = 0x00 | ... | 0x1F | 0x50 | 0x7F | ... | 0x8F
+grammar Trangecharrange2 : nat = U+00 | ... | U+1F | "A" | "Z" | ... | U+8F
+
+grammar Tmixed : nat = U+00 | U+01 | "0" | ... | "9" | "A" | ... | "Z" | "_" | 0x7F
+
+
+;; Long grammars
+
+grammar Tlchar1 : nat = 0x00 => 0
+grammar Tlchar2 : nat = U+00 => 0
+grammar Tlchar3 : nat = "X" => 0
+grammar Tlchar4 : nat = | 0x00 => 0
+grammar Tlchar5 : nat = | U+00 => 0
+grammar Tlchar6 : nat = | "X" => 0
+
+grammar Tlialt1 : nat = 0x00 | 0x01 | 0x02 => 0
+grammar Tlialt2 : nat = U+00 | U+01 | U+02 => 0
+grammar Tlialt3 : nat = "X" | "Y" | "Z" => 0
+grammar Tlialt4 : nat = U+00 | "A" | U+02 => 0
+grammar Tlialt5 : nat = "X" | U+00 | "Z" => 0
+grammar Tlialt6 : nat = | 0x00 | 0x01 | 0x02 => 0
+grammar Tlialt7 : nat = | U+00 | U+01 | U+02 => 0
+grammar Tlialt8 : nat = | "X" | "Y" | "Z" => 0
+
+grammar Tlirange1 : nat = 0x00 | ... | 0xFF => 0
+grammar Tlirange2 : nat = U+00 | ... | U+FF => 0
+grammar Tlirange3 : nat = "A" | ... | "Z" => 0
+grammar Tlirange4 : nat = U+00 | ... | "A" => 0
+grammar Tlirange5 : nat = "A" | ... | U+FF => 0
+grammar Tlirange6 : nat = | 0x00 | ... | 0xFF => 0
+grammar Tlirange7 : nat = | U+00 | ... | U+FF => 0
+grammar Tlirange8 : nat = | "A" | ... | "Z" => 0
+
+grammar Tlalt1 : nat = 0x00 => 0 | 0x01 => 1 | 0x02 => 2
+grammar Tlalt2 : nat = U+00 => 0 | U+01 => 1 | U+02 => 2
+grammar Tlalt3 : nat = "X" => 0 | "Y" => 1 | "Z" => 2
+grammar Tlalt4 : nat = U+00 => 0 | "A" => 1 | U+02 => 2
+grammar Tlalt5 : nat = "X" => 0 | U+00 => 1 | "Z" => 2
+grammar Tlalt6 : nat = | 0x00 => 0 | 0x01 => 1 | 0x02 => 2
+grammar Tlalt7 : nat = | U+00 => 0 | U+01 => 1 | U+02 => 2
+grammar Tlalt8 : nat = | "X" => 0 | "Y" => 1 | "Z" => 2
+
+grammar Tlrange1 : nat = 0x00 => 0 | ... | 0xFF => 255
+grammar Tlrange2 : nat = U+00 => 0 | ... | U+FF => 255
+grammar Tlrange3 : nat = "A" => 1 | ... | "Z" => 26
+grammar Tlrange4 : nat = U+00 => 0 | ... | "A" => 65
+grammar Tlrange5 : nat = "A" => 65 | ... | U+FF => 255
+grammar Tlrange6 : nat = | 0x00 => 0 | ... | 0xFF => 255
+grammar Tlrange7 : nat = | U+00 => 0 | ... | U+FF => 255
+grammar Tlrange8 : nat = | "A" => 1 | ... | "Z" => 26
+
+grammar Tlrangechar1 : nat = 0x00 => 0 | ... | 0x7F => 127 | 0xFF => 255
+grammar Tlrangechar2 : nat = U+00 => 0 | ... | U+7F => 127 | U+FF => 255
+grammar Tlrangechar3 : nat = "A" => 0 | ... | "F" => 5 | "X" => 10
+grammar Tlrangechar4 : nat = | 0x00 => 0 | ... | 0x7F => 127 | 0xFF => 255
+grammar Tlrangechar5 : nat = | U+00 => 0 | ... | U+7F => 127 | U+FF => 255
+grammar Tlrangechar6 : nat = | "A" => 0 | ... | "F" => 5 | "X" => 10
+
+grammar Tlcharrange1 : nat = 0xFF => 255 | 0x00 => 0 | ... | 0x7F => 127
+grammar Tlcharrange2 : nat = U+FF => 255 | U+00 => 0 | ... | U+7F => 127
+grammar Tlcharrange3 : nat = "X" => 10 | "A" => 0 | ... | "F" => 5
+grammar Tlcharrange4 : nat = | 0xFF => 255 | 0x00 => 0 | ... | 0x7F => 127
+grammar Tlcharrange5 : nat = | U+FF => 255 | U+00 => 0 | ... | U+7F => 127
+grammar Tlcharrange6 : nat = | "X" => 10 | "A" => 0 | ... | "F" => 5
+
+grammar Tlrangerange1 : nat = 0x00 => 0 | ... | 0x1F => 31 | 0x80 => 128 | ... | 0x8F => 143
+grammar Tlrangerange2 : nat = U+00 => 0 | ... | U+1F => 31 | U+80 => 128 | ... | U+8F => 143
+grammar Tlrangerange3 : nat = "A" => 0 | ... | "F" => 5 | "a" => 0 | ... | "f" => 5
+grammar Tlrangerange4 : nat = | 0x00 => 0 | ... | 0x1F => 31 | 0x80 => 128 | ... | 0x8F => 143
+grammar Tlrangerange5 : nat = | U+00 => 0 | ... | U+1F => 31 | U+80 => 128 | ... | U+8F => 143
+grammar Tlrangerange6 : nat = | "A" => 0 | ... | "F" => 5 | "a" => 0 | ... | "f" => 5
+
+grammar Tlrangecharrange1 : nat = 0x00 => 0 | ... | 0x1F => 31 | 0x50 => 0 | 0x7F => 127 | ... | 0x8F => 143
+grammar Tlrangecharrange2 : nat = U+00 => 0 | ... | U+1F => 31 | "A" => 0 | "Z" => 90 | ... | U+8F => 143
+
+grammar Tlmixed1 : nat = U+00 => 0 | U+01 => 1 | "0" => 0 | ... | "9" => 9 | "A" => 10 | ... | "Z" => 35 | "_" => 0 | 0x7F => 0
+grammar Tlmixed2 : nat = U+00 | U+01 => 0 | "0" => 0 | ... | "9" => 9 | "A" => 10 | ... | "Z" => 35 | "_" | "." => 0 | 0x7F => 0

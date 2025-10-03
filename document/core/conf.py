@@ -60,7 +60,7 @@ master_doc = 'index'
 name = 'WebAssembly'
 project = u'WebAssembly'
 title = u'WebAssembly Specification'
-copyright = u'2025, WebAssembly Community Group'
+copyright = u'2017-2025, WebAssembly Community Group'
 author = u'WebAssembly Community Group'
 editor = u'Andreas Rossberg (editor)'
 logo = 'static/webassembly.png'
@@ -72,14 +72,14 @@ repo = 'spec'
 proposal = ''
 
 # The draft version string (clear out for release cuts)
-draft = ' (Draft ' + date.today().strftime("%Y-%m-%d") + ')'
+draft = ' (' + date.today().strftime("%Y-%m-%d") + ')'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
 # built documents.
 #
 # The short X.Y version.
-version = u'2.0'
+version = u'3.0'
 # The full version, including alpha/beta/rc tags.
 release = version + ('' if proposal == '' else ' + ') + proposal + draft
 
@@ -297,14 +297,28 @@ latex_elements = {
   'pointsize': '10pt',
 
    # Additional stuff for the LaTeX preamble.
+   # enumitem package is used to allow deeper nesting of lists, than the default 4 levels.
    # Don't type-set cross references with emphasis.
-   'preamble': '\\renewcommand\\sphinxcrossref[1]{#1}\n',
+   'preamble': r'''
+      \renewcommand\sphinxcrossref[1]{#1}
+      \usepackage{enumitem}
+      \setlistdepth{9}
+      \renewlist{enumerate}{enumerate}{9}
+      \setlist[enumerate,1]{label=\arabic*.}
+      \setlist[enumerate,2]{label=\alph*.}
+      \setlist[enumerate,3]{label=\roman*.}
+      \setlist[enumerate,4]{label=\Alph*.}
+      \setlist[enumerate,5]{label=\Roman*.}
+      \renewcommand\sphinxcrossref[1]{#1}
+   ''',
 
    # Latex figure (float) alignment
   'figure_align': 'htbp',
 
    # Fancy chapters [Bjarne, Sonny, Lenny, Glenn, Conny, Rejne]
    'fncychap': '\\usepackage[Sonny]{fncychap}',
+
+   'sphinxsetup': 'noteborder=0pt, iconpackage=none, div.note_title-background-TeXcolor={RGB}{255,255,255}, div.note_border-radius=0pt',
 }
 
 # Grouping the document tree into LaTeX files. List of tuples
@@ -493,9 +507,23 @@ rst_prolog = """
 .. include:: /""" + pwd + """/util/macros.def
 """
 
+mathjax_path = 'https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js'
+
 # https://www.sphinx-doc.org/en/master/usage/extensions/math.html#confval-mathjax3_config
 # https://docs.mathjax.org/en/latest/web/configuration.html#configuration
 # https://docs.mathjax.org/en/latest/options/input/tex.html#tex-maxbuffer
 mathjax3_config = {
-    'tex': { 'maxBuffer': 30*1024 },
+    'tex': {
+      'maxBuffer': 30*1024,
+      'macros': {
+        'multicolumn': ['', 2]   # Bummer, MathJax can't handle multicolumn, ignore it
+      }
+    },
+    'options': {
+      'menuOptions': {
+        'settings': {
+          'enrich': False,  # Activating this apparently increases page load times by 4x
+        }
+      }
+    }
 }

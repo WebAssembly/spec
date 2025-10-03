@@ -1,12 +1,15 @@
+![Spectec Status](https://github.com/WebAssembly/spec/actions/workflows/ci-spectec.yml/badge.svg)
+![Interpreter Status](https://github.com/WebAssembly/spec/actions/workflows/ci-interpreter.yml/badge.svg)
+![Spec doc Status](https://github.com/WebAssembly/spec/actions/workflows/ci-spec.yml/badge.svg)
+
 [![CI for specs](https://github.com/WebAssembly/spec/actions/workflows/ci-spec.yml/badge.svg)](https://github.com/WebAssembly/spec/actions/workflows/ci-spec.yml)
 [![CI for interpreter & tests](https://github.com/WebAssembly/spec/actions/workflows/ci-interpreter.yml/badge.svg)](https://github.com/WebAssembly/spec/actions/workflows/ci-interpreter.yml)
 
+
 # spec
 
-This repository holds the sources for the WebAssembly draft specification
-(to seed a future
-[WebAssembly Working Group](https://lists.w3.org/Archives/Public/public-new-work/2017Jun/0005.html)),
-a reference implementation, and the official testsuite.
+This repository holds the sources for the WebAssembly specification,
+a reference implementation, and the official test suite.
 
 A formatted version of the spec is available here:
 [webassembly.github.io/spec](https://webassembly.github.io/spec/),

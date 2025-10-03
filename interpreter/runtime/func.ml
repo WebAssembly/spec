@@ -1,14 +1,20 @@
 open Types
-open Values
+open Value
 
 type 'inst t = 'inst func
 and 'inst func =
-  | AstFunc of func_type * 'inst * Ast.func
-  | HostFunc of func_type * (value list -> value list)
+  | AstFunc of deftype * 'inst * Ast.func
+  | HostFunc of deftype * (value list -> value list)
 
-let alloc ft inst f = AstFunc (ft, inst, f)
-let alloc_host ft f = HostFunc (ft, f)
+let alloc dt inst f =
+  ignore (functype_of_comptype (expand_deftype dt));
+  assert Free.((deftype dt).types = Set.empty);
+  AstFunc (dt, inst, f)
+
+let alloc_host dt f =
+  ignore (functype_of_comptype (expand_deftype dt));
+  HostFunc (dt, f)
 
 let type_of = function
-  | AstFunc (ft, _, _) -> ft
-  | HostFunc (ft, _) -> ft
+  | AstFunc (dt, _, _) -> dt
+  | HostFunc (dt, _) -> dt

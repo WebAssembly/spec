@@ -1,0 +1,201 @@
+;;
+;; Text Format of Values
+;;
+
+;; Numbers
+
+grammar Tsign : int =
+  | eps => $(+1) | "+" => $(+1) | "-" => $(-1)
+
+grammar Tdigit : nat =
+  | "0" => 0 | ... | "9" => 9
+
+grammar Thexdigit : nat =
+  | d:Tdigit => d
+  | "A" => 10 | ... | "F" => 15
+  | "a" => 10 | ... | "f" => 15
+
+grammar Tnum : nat =
+  | d:Tdigit => d
+  | n:Tnum "_"? d:Tdigit => $(10*n + d)
+
+grammar Thexnum : nat =
+  | h:Thexdigit => h
+  | n:Thexnum "_"? h:Thexdigit => $(16*n + h)
+
+grammar TuN(N) : uN(N) hint(show u#%) hint(macro "TuNX") =
+  | n:Tnum => n          -- if $(n < 2^N)
+  | "0x" n:Thexnum => n  -- if $(n < 2^N)
+
+grammar TsN(N) : sN(N) hint(show s#%) hint(macro "TsNX") =
+  | s:Tsign n:TuN(N) => $(s * n)  -- if $(-2^(N-1) <= s * n < 2^(N-1))
+
+grammar TiN(N) : iN(N) hint(show i#%) hint(macro "TiNX") =
+  | n:TuN(N) => n
+  | i:TsN(N) => $inv_signed_(N, i)
+
+
+grammar Tfrac : rat =
+  | d:Tdigit => $(d / 10)
+  | d:Tdigit "_"? p:Tfrac => $((d + p/10) / 10)
+
+grammar Thexfrac : rat =
+  | h:Thexdigit => $(h / 16)
+  | h:Thexdigit "_"? p:Thexfrac => $((h + p/16) / 16)
+
+grammar Tmant : rat =
+  | p:Tnum "."? => p
+  | p:Tnum "." q:Tfrac => $(p + q)
+
+grammar Thexmant : rat =
+  | p:Thexnum "."? => p
+  | p:Thexnum "." q:Thexfrac => $(p + q)
+
+;; TODO(4, rossberg): implement in numerics
+def $ieee_(N, rat) : fNmag(N)
+
+var ee : nat hint(show e)  ;; HACK
+
+grammar Tfloat : rat =
+  | p:Tmant ("E" | "e") s:Tsign ee:Tnum => $(p * 10^(s * ee))
+
+grammar Thexfloat : rat =
+  | "0x" p:Thexmant ("P" | "p") s:Tsign ee:Tnum => $(p * 2^(s * ee))
+
+grammar TfNmag(N) : fNmag(N) hint(show fNmag) hint(macro "TfNmag") =
+  | q:Tfloat => $ieee_(N, q)      -- if $ieee_(N, q) =/= INF
+  | q:Thexfloat => $ieee_(N, q)   -- if $ieee_(N, q) =/= INF
+  | "inf" => INF
+  | "nan" => NAN($canon_(N))
+  | "nan:0x" n:Thexnum => NAN(n)  -- if $(1 <= n < 2^($signif(N)))
+
+grammar TfN(N) : fN(N) hint(show f#%) hint(macro "TfNX") =
+  | $((+1)):Tsign q:TfNmag(N) => POS q
+  | $((-1)):Tsign q:TfNmag(N) => NEG q
+
+
+grammar Tu8 : u8 = TuN(`8)
+grammar Tu32 : u32 = TuN(`32)
+grammar Tu64 : u64 = TuN(`64)
+grammar Ti8 : u8 = TiN(`8)
+grammar Ti16 : u16 = TiN(`16)
+grammar Ti32 : u32 = TiN(`32)
+grammar Ti64 : u64 = TiN(`64)
+grammar Ti128 : u128 = TiN(`128)
+grammar Tf32 : f32 = TfN(`32)
+grammar Tf64 : f64 = TfN(`64)
+
+
+;; Strings
+
+grammar Tstringchar : char =
+  | c:Tchar => c  -- if c >= U+20 /\ c =/= U+7F /\ c =/= "\"" /\ c =/= "\\"
+  | "\\t" => U+09
+  | "\\n" => U+0A
+  | "\\r" => U+0D
+  | "\\\"" => U+22
+  | "\\'" => U+27
+  | "\\\\" => U+5C
+  | "\\u{" n:Thexnum "}" => n  -- if n < 0xD800 \/ 0xE800 <= n < 0x110000
+
+grammar Tstringelem : byte* =
+  | c:Tstringchar => $utf8(c)
+  | "\\" h_1:Thexdigit h_2:Thexdigit => $(16 * h_1 + h_2)
+
+grammar Tstring : byte* =
+  | "\"" (b*:Tstringelem)* "\"" => $concat_(byte, b**)
+    -- if $(|$concat_(byte, b**)| < 2^32)
+
+
+;; Lists
+
+grammar Tlist(grammar TX : el) : el* =
+  | (el:TX)* => el*  -- if $(|el*| < 2^32)
+
+
+;; Names
+
+grammar Tname : name =
+  | b*:Tstring => c*  -- if b* = $utf8(c*)
+
+
+;; Identifiers
+
+grammar Tidchar : char =
+  | "0" | ... | "9"
+  | "A" | ... | "Z"
+  | "a" | ... | "z"
+  | "!" | "#" | "$" | "%" | "&" | "'" | "*" | "+" | "-" | "." | "/"
+  | ":" | "<" | "=" | ">" | "?" | "@" | "\\" | "^" | "_" | "`" | "|" | "~"
+
+grammar Tid : name =
+  | "$" c*:Tidchar+ => c*
+  | "$" c*:Tname => c*    -- if |c*| > 0
+
+
+;; Identifier contexts
+
+syntax idctxt hint(desc "identifier context") hint(macro "I" "I%") =
+  { TYPES (name?)*        hint(desc "type"),
+    TAGS (name?)*         hint(desc "tag"),
+    GLOBALS (name?)*      hint(desc "global"),
+    MEMS (name?)*         hint(desc "memory"),
+    TABLES (name?)*       hint(desc "table"),
+    FUNCS (name?)*        hint(desc "function"),
+    DATAS (name?)*        hint(desc "data segment"),
+    ELEMS (name?)*        hint(desc "element segment"),
+    LOCALS (name?)*       hint(desc "local"),
+    LABELS (name?)*       hint(desc "label"),
+    FIELDS ((name?)*)*    hint(desc "field"),
+    TYPEDEFS (deftype?)*  hint(desc "type definitions")
+  }
+
+syntax I = idctxt
+
+def $concat_idctxt(idctxt*) : idctxt  hint(show (++) %)
+def $concat_idctxt(eps) = {}
+def $concat_idctxt(I I') = I ++ $concat_idctxt(I'*)
+
+
+relation Idctxt_ok: |- idctxt : OK
+
+rule Idctxt_ok:
+  |- I : OK
+  -- if $disjoint_(name, $concatopt_(name, I.TYPES))
+  -- if $disjoint_(name, $concatopt_(name, I.TAGS))
+  -- if $disjoint_(name, $concatopt_(name, I.GLOBALS))
+  -- if $disjoint_(name, $concatopt_(name, I.MEMS))
+  -- if $disjoint_(name, $concatopt_(name, I.TABLES))
+  -- if $disjoint_(name, $concatopt_(name, I.FUNCS))
+  -- if $disjoint_(name, $concatopt_(name, I.DATAS))
+  -- if $disjoint_(name, $concatopt_(name, I.ELEMS))
+  -- if $disjoint_(name, $concatopt_(name, I.LOCALS))
+  -- if $disjoint_(name, $concatopt_(name, I.LABELS))
+  -- (if $disjoint_(name, $concatopt_(name, field*)))*
+  -- if field** = I.FIELDS
+
+
+;; Indices
+
+grammar Tidx_(ids : (name?)*) : idx =
+  | x:Tu32 => x
+  | id:Tid => x  -- if ids[x] = id
+
+grammar Ttypeidx_(I) : typeidx = Tidx_(I.TYPES)
+grammar Ttagidx_(I) : tagidx = Tidx_(I.TAGS)
+grammar Tglobalidx_(I) : globalidx = Tidx_(I.GLOBALS)
+grammar Tmemidx_(I) : memidx = Tidx_(I.MEMS)
+grammar Ttableidx_(I) : tableidx = Tidx_(I.TABLES)
+grammar Tfuncidx_(I) : funcidx = Tidx_(I.FUNCS)
+grammar Tdataidx_(I) : dataidx = Tidx_(I.DATAS)
+grammar Telemidx_(I) : elemidx = Tidx_(I.ELEMS)
+grammar Tlocalidx_(I) : localidx = Tidx_(I.LOCALS)
+grammar Tlabelidx_(I) : labelidx = Tidx_(I.LABELS)
+grammar Tfieldidx__(I, x : idx) : fieldidx = Tidx_(I.FIELDS[x])
+
+grammar Texternidx_(I) : externidx =
+  | "(" "tag" x:Ttagidx_(I) ")" => TAG x
+  | "(" "global" x:Tglobalidx_(I) ")" => GLOBAL x
+  | "(" "memory" x:Tmemidx_(I) ")" => MEM x
+  | "(" "table" x:Ttableidx_(I) ")" => TABLE x
+  | "(" "func" x:Tfuncidx_(I) ")" => FUNC x

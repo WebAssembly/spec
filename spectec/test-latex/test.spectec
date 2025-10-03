@@ -1,0 +1,831 @@
+;;
+;; Identifier notation
+;;
+
+var XYZ : nat
+
+def $test_sub_ATOM_22(nat) : nat                       ;; {\rm test}_{{\it sub}_{{\sf ATOM}_{22}}}
+def $test_sub_ATOM_22(n_1_xyz_y) = 0                   ;; n_{1_{{\it xyz}_y}}
+def $test_sub_ATOM_22(n_2_XYZ_y) = 0                   ;; n_{2_{{\sf xyz}_y}}
+def $test_sub_ATOM_22(n_3_ATOM_y) = 0                  ;; n_{3_{{\sf atom}_y}}
+
+def $curried_(nat, nat) : nat
+def $curried_(n_1, n_2) = $(n_1 + n_2)
+
+syntax testfuse =
+  | AB_ nat nat nat                                    ;; {\AB}_{...} ... ...
+  | CD nat nat nat  hint(show CD_% % %)                ;; {\CD}_{...} ... ...
+  | EF nat nat nat  hint(show EF_#% % %)               ;; {\EF}{...} ... ...
+  | GH nat nat nat  hint(show GH_%#% %)                ;; {\GH}_{...}{...} ...
+  | IJ nat nat nat  hint(show IJ#_%#AB#% %)            ;; {\IJ}{\mathsf{\_}} {...}{\AB}{...} ...
+  | KL nat nat nat  hint(show KL_AB#% % %)             ;; {\KLAB}{...} ... ...
+  | MN nat nat nat  hint(show MN_#AB % % %)            ;; {\MN}{\AB} ... ... ...
+  | OP nat nat nat  hint(show OP_#AB#% % %)            ;; {\OP}{\AB}{...} ... ...
+  | QR nat nat nat  hint(show QR_%#AB % %)             ;; {\QR}_{...}{\AB} ... ...
+
+
+;;
+;; Atoms with subscripts
+;;
+
+syntax InfixArrow  = nat* ->_(nat*) nat* hint(macro none)
+syntax InfixArrow2 = nat* =>_(nat*) nat* hint(macro none)
+syntax AtomArrow   = nat? `->_(nat*) nat* hint(macro none)
+syntax AtomArrow2  = nat? `=>_(nat*) nat* hint(macro none)
+
+def $InfixArrow(InfixArrow) : nat
+def $InfixArrow(a ->_c) = 0
+def $InfixArrow(a ->_c b) = 0
+def $InfixArrow(a ->_(c*) b) = 0
+def $InfixArrow(a ->_c b_1 b_2) = 0
+def $InfixArrow(a ->_(c*) b_1 b_2) = 0
+def $InfixArrow(a ->_(c_1 c_2) b_1 b_2) = 0
+def $InfixArrow(->_(c_1 c_2) b_1 b_2) = 0
+
+def $InfixArrow2(InfixArrow2) : nat
+def $InfixArrow2(a =>_c) = 0
+def $InfixArrow2(a =>_c b) = 0
+def $InfixArrow2(a =>_(c*) b) = 0
+def $InfixArrow2(a =>_c b_1 b_2) = 0
+def $InfixArrow2(a =>_(c*) b_1 b_2) = 0
+def $InfixArrow2(a =>_(c_1 c_2) b_1 b_2) = 0
+def $InfixArrow2(=>_(c_1 c_2) b_1 b_2) = 0
+
+def $AtomArrow(AtomArrow) : nat
+def $AtomArrow(a `->_c) = 0
+def $AtomArrow(a `->_c b) = 0
+def $AtomArrow(a `->_(c*) b) = 0
+def $AtomArrow(a `->_c b_1 b_2) = 0
+def $AtomArrow(a `->_(c*) b_1 b_2) = 0
+def $AtomArrow(a `->_(c_1 c_2) b_1 b_2) = 0
+def $AtomArrow(`->_(c_1 c_2) b_1 b_2) = 0
+
+def $AtomArrow2(AtomArrow2) : nat
+def $AtomArrow2(a `=>_c) = 0
+def $AtomArrow2(a `=>_c b) = 0
+def $AtomArrow2(a `=>_(c*) b) = 0
+def $AtomArrow2(a `=>_c b_1 b_2) = 0
+def $AtomArrow2(a `=>_(c*) b_1 b_2) = 0
+def $AtomArrow2(a `=>_(c_1 c_2) b_1 b_2) = 0
+def $AtomArrow2(`=>_(c_1 c_2) b_1 b_2) = 0
+
+syntax MacroInfixArrow = nat* ->_nat* nat* hint(macro "to")
+syntax MacroAtomArrow = nat* ->_nat* nat* hint(macro "to")
+
+def $MacroInfixArrow(MacroInfixArrow) : nat
+def $MacroInfixArrow(a ->_c) = 0
+def $MacroInfixArrow(a ->_c b) = 0
+def $MacroInfixArrow(a ->_(c*) b) = 0
+def $MacroInfixArrow(a ->_c b_1 b_2) = 0
+def $MacroInfixArrow(a ->_(c*) b_1 b_2) = 0
+def $MacroInfixArrow(a ->_(c_1 c_2) b_1 b_2) = 0
+def $MacroInfixArrow(->_(c_1 c_2) b_1 b_2) = 0
+
+def $MacroAtomArrow(MacroAtomArrow) : nat
+def $MacroAtomArrow(a ->_c) = 0
+def $MacroAtomArrow(a ->_c b) = 0
+def $MacroAtomArrow(a ->_(c*) b) = 0
+def $MacroAtomArrow(a ->_c b_1 b_2) = 0
+def $MacroAtomArrow(a ->_(c*) b_1 b_2) = 0
+def $MacroAtomArrow(a ->_(c_1 c_2) b_1 b_2) = 0
+def $MacroAtomArrow(->_(c_1 c_2) b_1 b_2) = 0
+
+syntax ShowInfixArrow = nat* ->_nat* nat* hint(show %0 ->_%2 %%) hint(macro none)
+syntax ShowAtomArrow = nat* ->_nat* nat* hint(show %0 `->_%2 %%) hint(macro none)
+
+def $ShowInfixArrow(ShowInfixArrow) : nat
+def $ShowInfixArrow(a ->_c) = 0
+def $ShowInfixArrow(a ->_c b) = 0
+def $ShowInfixArrow(a ->_(c*) b) = 0
+def $ShowInfixArrow(a ->_c b_1 b_2) = 0
+def $ShowInfixArrow(a ->_(c*) b_1 b_2) = 0
+def $ShowInfixArrow(a ->_(c_1 c_2) b_1 b_2) = 0
+def $ShowInfixArrow(->_(c_1 c_2) b_1 b_2) = 0
+
+def $ShowAtomArrow(ShowAtomArrow) : nat
+def $ShowAtomArrow(a ->_c) = 0
+def $ShowAtomArrow(a ->_c b) = 0
+def $ShowAtomArrow(a ->_(c*) b) = 0
+def $ShowAtomArrow(a ->_c b_1 b_2) = 0
+def $ShowAtomArrow(a ->_(c*) b_1 b_2) = 0
+def $ShowAtomArrow(a ->_(c_1 c_2) b_1 b_2) = 0
+def $ShowAtomArrow(->_(c_1 c_2) b_1 b_2) = 0
+
+syntax ShowMacroInfixArrow = nat* ->_nat* nat* hint(show %0 ->_%2 %%) hint(macro "to")
+syntax ShowMacroAtomArrow = nat* ->_nat* nat* hint(show %0 `->_%2 %%) hint(macro "to")
+
+def $ShowMacroInfixArrow(ShowMacroInfixArrow) : nat
+def $ShowMacroInfixArrow(a ->_c) = 0
+def $ShowMacroInfixArrow(a ->_c b) = 0
+def $ShowMacroInfixArrow(a ->_(c*) b) = 0
+def $ShowMacroInfixArrow(a ->_c b_1 b_2) = 0
+def $ShowMacroInfixArrow(a ->_(c*) b_1 b_2) = 0
+def $ShowMacroInfixArrow(a ->_(c_1 c_2) b_1 b_2) = 0
+def $ShowMacroInfixArrow(->_(c_1 c_2) b_1 b_2) = 0
+
+def $ShowMacroAtomArrow(ShowMacroAtomArrow) : nat
+def $ShowMacroAtomArrow(a ->_c) = 0
+def $ShowMacroAtomArrow(a ->_c b) = 0
+def $ShowMacroAtomArrow(a ->_(c*) b) = 0
+def $ShowMacroAtomArrow(a ->_c b_1 b_2) = 0
+def $ShowMacroAtomArrow(a ->_(c*) b_1 b_2) = 0
+def $ShowMacroAtomArrow(a ->_(c_1 c_2) b_1 b_2) = 0
+def $ShowMacroAtomArrow(->_(c_1 c_2) b_1 b_2) = 0
+
+
+;;
+;; Expansions
+;;
+
+;; Atoms
+
+syntax xfoo =
+  | XFOONULL             hint(show XBARNULL)
+  | XFOOUN0 nat          hint(show XBARUN0)
+  | XFOOUN1N nat         hint(show XBARUN1N %)
+  | XFOOUN11 nat         hint(show XBARUN11 %1)
+  | XFOOUNREST nat       hint(show XBARUNREST %%)
+  | XFOOBIN0 nat nat     hint(show XBARBIN0)
+  | XFOOBIN1N nat nat    hint(show XBARBIN1N %)
+  | XFOOBIN11 nat nat    hint(show XBARBIN11 %1)
+  | XFOOBIN1N2N nat nat  hint(show XBARBIN1N2N % %)
+  | XFOOBIN1N22 nat nat  hint(show XBARBIN1N22 % %2)
+  | XFOOBIN112N nat nat  hint(show XBARBIN112N %1 %)
+  | XFOOBIN1122 nat nat  hint(show XBARBIN1122 %1 %2)
+  | XFOOBIN22 nat nat    hint(show XBARBIN22 %2)
+  | XFOOBIN2211 nat nat  hint(show XBARBIN2211 %2 %1)
+  | XFOOBINREST nat nat  hint(show XBARBINREST %%)
+  | XFOOBIN1NREST nat nat  hint(show XBARBIN1NREST % %%)
+  | XFOOBIN11REST nat nat  hint(show XBARBIN1NREST %1 %%)
+  | XFOOBIN22REST nat nat  hint(show XBARBIN1NREST %2 %%)
+  | XFOOBIN1N2NREST nat nat  hint(show XBARBIN1NREST % % %%)
+  | XFOOBIN1122REST nat nat  hint(show XBARBIN1NREST %1 %2 %%)
+  | XFOOBIN2211REST nat nat  hint(show XBARBIN1NREST %2 %1 %%)
+  | XFOONAME1N2NREST nat nat  hint(show XBARBIN1NREST %0 % % %%)
+  | XFOONAME1122REST nat nat  hint(show XBARBIN1NREST %0 %1 %2 %%)
+  | XFOONAME2211REST nat nat  hint(show XBARBIN1NREST %0 %2 %1 %%)
+
+syntax xxfoo = xfoo nat
+syntax xxxfoo = nat xfoo nat
+
+def $xfoo(xfoo) : nat
+def $xfoo(XFOONULL) = 0
+def $xfoo(XFOOUN0 2) = 0
+def $xfoo(XFOOUN1N 2) = 0
+def $xfoo(XFOOUN11 2) = 0
+def $xfoo(XFOOUNREST 2) = 0
+def $xfoo(XFOOBIN0 2 3) = 0
+def $xfoo(XFOOBIN1N 2 3) = 0
+def $xfoo(XFOOBIN11 2 3) = 0
+def $xfoo(XFOOBIN1N2N 2 3) = 0
+def $xfoo(XFOOBIN1N22 2 3) = 0
+def $xfoo(XFOOBIN112N 2 3) = 0
+def $xfoo(XFOOBIN1122 2 3) = 0
+def $xfoo(XFOOBIN22 2 3) = 0
+def $xfoo(XFOOBIN2211 2 3) = 0
+def $xfoo(XFOOBINREST 2 3) = 0
+def $xfoo(XFOOBIN1NREST 2 3) = 0
+def $xfoo(XFOOBIN11REST 2 3) = 0
+def $xfoo(XFOOBIN22REST 2 3) = 0
+def $xfoo(XFOOBIN1N2NREST 2 3) = 0
+def $xfoo(XFOOBIN1122REST 2 3) = 0
+def $xfoo(XFOOBIN2211REST 2 3) = 0
+def $xfoo(XFOONAME1N2NREST 2 3) = 0
+def $xfoo(XFOONAME1122REST 2 3) = 0
+def $xfoo(XFOONAME2211REST 2 3) = 0
+
+def $xxfoo(xxfoo) : nat
+def $xxfoo(XFOONULL 9) = 0
+(; The following are not supported yet
+def $xxfoo(XFOOUN0 2 9) = 0
+def $xxfoo(XFOOUN1N 2 9) = 0
+def $xxfoo(XFOOUN11 2 9) = 0
+def $xxfoo(XFOOUNREST 2 9) = 0
+def $xxfoo(XFOOBIN0 2 3 9) = 0
+def $xxfoo(XFOOBIN1N 2 3 9) = 0
+def $xxfoo(XFOOBIN11 2 3 9) = 0
+def $xxfoo(XFOOBIN1N2N 2 3 9) = 0
+def $xxfoo(XFOOBIN1N22 2 3 9) = 0
+def $xxfoo(XFOOBIN112N 2 3 9) = 0
+def $xxfoo(XFOOBIN1122 2 3 9) = 0
+def $xxfoo(XFOOBIN22 2 3 9) = 0
+def $xxfoo(XFOOBIN2211 2 3 9) = 0
+def $xxfoo(XFOOBINREST 2 3 9) = 0
+def $xxfoo(XFOOBIN1NREST 2 3 9) = 0
+def $xxfoo(XFOOBIN11REST 2 3 9) = 0
+def $xxfoo(XFOOBIN22REST 2 3 9) = 0
+def $xxfoo(XFOOBIN1N2NREST 2 3 9) = 0
+def $xxfoo(XFOOBIN1122REST 2 3 9) = 0
+def $xxfoo(XFOOBIN2211REST 2 3 9) = 0
+def $xxfoo(XFOONAME1N2NREST 2 3 9) = 0
+def $xxfoo(XFOONAME1122REST 2 3 9) = 0
+def $xxfoo(XFOONAME2211REST 2 3 9) = 0
+;)
+
+def $xxxfoo(xxxfoo) : nat
+def $xxxfoo(1 XFOONULL 9) = 0
+(; The following are not supported yet
+def $xxxfoo(1 XFOOUN0 2 9) = 0
+def $xxxfoo(1 XFOOUN1N 2 9) = 0
+def $xxxfoo(1 XFOOUN11 2 9) = 0
+def $xxxfoo(1 XFOOUNREST 2 9) = 0
+def $xxxfoo(1 XFOOBIN0 2 3 9) = 0
+def $xxxfoo(1 XFOOBIN1N 2 3 9) = 0
+def $xxxfoo(1 XFOOBIN11 2 3 9) = 0
+def $xxxfoo(1 XFOOBIN1N2N 2 3 9) = 0
+def $xxxfoo(1 XFOOBIN1N22 2 3 9) = 0
+def $xxxfoo(1 XFOOBIN112N 2 3 9) = 0
+def $xxxfoo(1 XFOOBIN1122 2 3 9) = 0
+def $xxxfoo(1 XFOOBIN22 2 3 9) = 0
+def $xxxfoo(1 XFOOBIN2211 2 3 9) = 0
+def $xxxfoo(1 XFOOBINREST 2 3 9) = 0
+def $xxxfoo(1 XFOOBIN1NREST 2 3 9) = 0
+def $xxxfoo(1 XFOOBIN11REST 2 3 9) = 0
+def $xxxfoo(1 XFOOBIN22REST 2 3 9) = 0
+def $xxxfoo(1 XFOOBIN1N2NREST 2 3 9) = 0
+def $xxxfoo(1 XFOOBIN1122REST 2 3 9) = 0
+def $xxxfoo(1 XFOOBIN2211REST 2 3 9) = 0
+def $xxxfoo(1 XFOONAME1N2NREST 2 3 9) = 0
+def $xxxfoo(1 XFOONAME1122REST 2 3 9) = 0
+def $xxxfoo(1 XFOONAME2211REST 2 3 9) = 0
+;)
+
+
+;;
+;; Macro hints
+;;
+
+;; Syntax identifiers
+
+syntax fii = FII                                       ;; \fii
+syntax faa hint(macro "%") = FAA                       ;; \faa
+syntax foo hint(macro "X%Y%Z") = FOO                   ;; \XfooYfooZ
+syntax fuu hint(macro none) = FUU                      ;; \mathit{fuu}
+syntax bar hint(show foobar) = BAR                     ;; \foobar
+syntax boo hint(show fooboo) hint(macro "%") = BOO     ;; \fooboo
+syntax baz hint(show fob) hint(macro "X%Y%Z") = BAZ    ;; \XfobYfobZ
+syntax boi hint(show fib) hint(macro none) = BOI       ;; \mathit{fib}
+
+def $macros1 : nat
+def $macros1 = 0
+  -- if fii = FII
+  -- if faa = FAA
+  -- if foo = FOO
+  -- if fuu = FUU
+  -- if bar = BAR
+  -- if boo = BOO
+  -- if baz = BAZ
+  -- if boi = BOI
+
+syntax ufii_(nat_1, nat_2) = UFII                            ;; \ufii
+syntax ufaa_(nat_1, nat_2) hint(macro "%") = UFAA            ;; \ufaa
+syntax ufoo_(nat_1, nat_2) hint(macro "X%Y%Z") = UFOO        ;; \XufooYufooZ
+syntax ufuu_(nat_1, nat_2) hint(macro none) = UFUU           ;; \mathit{ufuu}
+syntax ubar_(nat_1, nat_2) hint(show ufoobar_(%,%,z)) = UBAR ;; \ufoobar
+syntax uboo_(nat_1, nat_2) hint(show ufooboo_(%,%,z)) hint(macro "%") = UBOO  ;; \ufooboo
+syntax ubaz_(nat_1, nat_2) hint(show ufob_(%,%,z)) hint(macro "X%Y%Z") = UBAZ ;; \XufobYufobZ
+syntax uboi_(nat_1, nat_2) hint(show ufib_(%,%,z)) hint(macro none) = UBOI    ;; \mathit{ufib}
+
+def $macros2 : nat
+def $macros2 = 0
+  -- var ufii : ufii_(0,0) -- if ufii = UFII
+  -- var ufaa : ufaa_(0,0) -- if ufaa = UFAA
+  -- var ufoo : ufoo_(0,0) -- if ufoo = UFOO
+  -- var ufuu : ufuu_(0,0) -- if ufuu = UFUU
+  -- var ubar : ubar_(0,0) -- if ubar = UBAR
+  -- var uboo : uboo_(0,0) -- if uboo = UBOO
+  -- var ubaz : ubaz_(0,0) -- if ubaz = UBAZ
+  -- var uboi : uboi_(0,0) -- if uboi = UBOI
+
+
+;; Definition identifiers
+
+def $fii : nat                                       ;; \fii
+def $fii = 0
+def $faa : nat hint(macro "%")                       ;; \faa
+def $faa = 0
+def $foo : nat hint(macro "X%Y%Z")                   ;; \XfooYfooZ
+def $foo = 0
+def $fuu : nat hint(macro none)                      ;; \mathrm{fuu}
+def $fuu = 0
+def $bar : nat hint(show foobar)                     ;; \foobar
+def $bar = 0
+def $boo : nat hint(show fooboo) hint(macro "%")     ;; \fooboo
+def $boo = 0
+def $baz : nat hint(show fob) hint(macro "X%Y%Z")    ;; \XfobYfobZ
+def $baz = 0
+def $boi : nat hint(show fib) hint(macro none)       ;; \mathit{fib}
+def $boi = 0
+
+def $ufii_(nat_1, nat_2) : nat                            ;; \ufii
+def $ufii_(x, y) = 0
+def $ufaa_(nat_1, nat_2) : nat hint(macro "%")            ;; \ufaa
+def $ufaa_(x, y) = 0
+def $ufoo_(nat_1, nat_2) : nat hint(macro "X%Y%Z")        ;; \XufooYufooZ
+def $ufoo_(x, y) = 0
+def $ufuu_(nat_1, nat_2) : nat hint(macro none)           ;; \mathrm{ufuu}
+def $ufuu_(x, y) = 0
+def $ubar_(nat_1, nat_2) : nat hint(show ufoobar_(%,%,z)) ;; \ufoobar
+def $ubar_(x, y) = 0
+def $uboo_(nat_1, nat_2) : nat hint(show ufooboo_(%,%,z)) hint(macro "%")  ;; \ufooboo
+def $uboo_(x, y) = 0
+def $ubaz_(nat_1, nat_2) : nat hint(show ufob_(%,%,z)) hint(macro "X%Y%Z") ;; \XufobYufobZ
+def $ubaz_(x, y) = 0
+def $uboi_(nat_1, nat_2) : nat hint(show ufib_(%,%,z)) hint(macro none)    ;; \mathrm{fib}
+def $uboi_(x, y) = 0
+
+def $foo__bar : nat                                               ;; \foobar
+def $foo__bar = 0
+def $foo_boo : nat hint(show $foo__boo)                           ;; \fooboo
+def $foo_boo = 0
+
+def $ufoo__bar_(nat_1, nat_2) : nat                               ;; \ufoobar
+def $ufoo__bar_(x, y) = 0
+def $ufoo_boo_(nat_1, nat_2) : nat hint(show $ufoo__boo_(%,%,z))  ;; \ufooboo
+def $ufoo_boo_(x, y) = 0
+
+
+;; Case atoms
+
+syntax parent =
+  | AA                                                            ;; \AA
+  | AAX      hint(macro "%")                                      ;; \AAX
+  | AAY      hint(macro "x%y%z")                                  ;; \xAAYyAAYz
+  | AAZ      hint(macro none)                                     ;; \mathsf{aaz}
+  | BB       hint(show BBB)                                       ;; \BBB
+  | BBX      hint(show BBBX) hint(macro "%")                      ;; \BBBX
+  | BBY      hint(show BBBY) hint(macro "x%y%z")                  ;; \xBBBYyBBBYz
+  | BBZ      hint(show BBBZ) hint(macro none)                     ;; \mathsf{bbbz}
+  | CC  nat CCCC                                                  ;; \CC \CCCC
+  | CCX nat CCXX hint(macro "%")                                  ;; \CCX \CCXX
+  | CCY nat CCYY hint(macro "x%y%z")                              ;; \xCCYyCCYz \xCCYYyCCYYz
+  | CCZ nat CCZZ hint(macro none)                                 ;; \mathsf{ccz} \mathsf{ccxx}
+  | DD  nat  hint(show DDD % child $foo $fuu $fiz)                ;; \DDD
+  | DDX nat  hint(show DDDX % child) hint(macro "%")              ;; \DDDX
+  | DDY nat  hint(show DDDY % child) hint(macro "x%y%z")          ;; \xDDYyDDYz
+  | DDZ nat  hint(show DDDZ % child) hint(macro none)             ;; \mathsf{dddz}
+  | EE  nat  hint(show %1#_#EA#%0 z)                              ;; {\mathit{nat}}\mathsf{\_}{\EA}{\EE}
+  | EEX nat  hint(show %1#_#EB#%0 z) hint(macro "%")              ;; {\mathit{nat}}\mathsf{\_}{\EB}{\EEX}
+  | EEY nat  hint(show %1#_#EC#%0 z) hint(macro "x%y%z")          ;; {\mathit{nat}}\mathsf{\_}{\xECyECz}{\xEEYyEEYz}
+  | EEZ nat  hint(show %1#_#ED#%0 z) hint(macro none)             ;; {\mathit{nat}}\mathsf{\_}{\mathsf{ed}}{\mathsf{eez}}
+
+def $parent(parent) : nat
+def $parent(AA) = 0
+def $parent(AAX) = 0
+def $parent(AAY) = 0
+def $parent(AAZ) = 0
+def $parent(BB) = 0
+def $parent(BBX) = 0
+def $parent(BBY) = 0
+def $parent(BBZ) = 0
+def $parent(CC n CCCC) = 0
+def $parent(CCX n CCXX) = 0
+def $parent(CCY n CCYY) = 0
+def $parent(CCZ n CCZZ) = 0
+def $parent(DD n) = 0
+def $parent(DDX n) = 0
+def $parent(DDY n) = 0
+def $parent(DDZ n) = 0
+def $parent(EE n) = 0
+def $parent(EEX n) = 0
+def $parent(EEY n) = 0
+def $parent(EEZ n) = 0
+
+syntax parentimplicit(syntax t) hint(macro "%" "%impl") =
+  | PP                                                            ;; \PPimpl
+  | PPX hint(macro "%")                                           ;; \PPX
+  | PPY hint(macro "%x%")                                         ;; \PPYxPPY
+  | PPZ hint(macro none)                                          ;; \mathsf{ppz}
+  | QQ  hint(show QQQ)                                            ;; \QQQimpl
+  | QQX hint(show QQQX) hint(macro "%")                           ;; \QQQX
+  | QQY hint(show QQQY) hint(macro "%x%")                         ;; \QQQYxQQQY
+  | QQZ hint(show QQQZ) hint(macro none)                          ;; \mathsf{qqqz}
+  | RR t  hint(show %1#_#RA#%0 z)                                 ;; {\mathit{nat}}\mathsf{\_}{\RAimpl}{\RRimpl}
+  | RRX t hint(show %1#_#RB#%0 z) hint(macro "%")                 ;; {\mathit{nat}}\mathsf{\_}{\RB}{\RRX}
+  | RRY t hint(show %1#_#RC#%0 z) hint(macro "%x%")               ;; {\mathit{nat}}\mathsf{\_}{\RCxRC}{\RRYxRRY}
+  | RRZ t hint(show %1#_#RD#%0 z) hint(macro none)                ;; {\mathit{nat}}\mathsf{\_}{\mathsf{rd}}{\mathsf{rrz}}
+
+def $parentimpl(parentimplicit(text)) : nat
+def $parentimpl(PP) = 0
+def $parentimpl(PPX) = 0
+def $parentimpl(PPY) = 0
+def $parentimpl(PPZ) = 0
+def $parentimpl(QQ) = 0
+def $parentimpl(QQX) = 0
+def $parentimpl(QQY) = 0
+def $parentimpl(QQZ) = 0
+def $parentimpl(RR n) = 0
+def $parentimpl(RRX n) = 0
+def $parentimpl(RRY n) = 0
+def $parentimpl(RRZ n) = 0
+
+syntax indirect = parentimplicit(nat)
+
+def $indirect(indirect) : nat
+def $indirect(PP) = 0
+def $indirect(PPX) = 0
+def $indirect(PPY) = 0
+def $indirect(PPZ) = 0
+def $indirect(QQ) = 0
+def $indirect(QQX) = 0
+def $indirect(QQY) = 0
+def $indirect(QQZ) = 0
+def $indirect(RR n) = 0
+def $indirect(RRX n) = 0
+def $indirect(RRY n) = 0
+def $indirect(RRZ n) = 0
+
+syntax family(nat) hint(macro "%" "%family")
+syntax family(0) = FF                               ;; \FFfamily
+syntax family(1) = GG                               ;; \GGfamily
+syntax family(2) = HH hint(macro "x%y")             ;; \xHHy
+
+def $family(nat, family(nat)) : nat
+def $family(0, FF) = 0
+def $family(1, GG) = 0
+def $family(2, HH) = 0
+
+syntax child = parent | family(0) | indirect | ZZZ
+
+def $child(child) : nat
+def $child(AA) = 0
+def $child(AAX) = 0
+def $child(AAY) = 0
+def $child(AAZ) = 0
+def $child(BB) = 0
+def $child(BBX) = 0
+def $child(BBY) = 0
+def $child(BBZ) = 0
+def $child(CC n CCCC) = 0
+def $child(CCX n CCXX) = 0
+def $child(CCY n CCYY) = 0
+def $child(CCZ n CCZZ) = 0
+def $child(DD n) = 0
+def $child(DDX n) = 0
+def $child(DDY n) = 0
+def $child(DDZ n) = 0
+def $child(EE n) = 0
+def $child(EEX n) = 0
+def $child(EEY n) = 0
+def $child(EEZ n) = 0
+def $child(FF) = 0
+def $child(PP) = 0
+def $child(PPX) = 0
+def $child(PPY) = 0
+def $child(PPZ) = 0
+def $child(QQ) = 0
+def $child(QQX) = 0
+def $child(QQY) = 0
+def $child(QQZ) = 0
+def $child(RR n) = 0
+def $child(RRX n) = 0
+def $child(RRY n) = 0
+def $child(RRZ n) = 0
+def $child(ZZZ) = 0
+
+syntax grandchild = child | ZZZZ
+
+def $grandchild(grandchild) : nat
+def $grandchild(AA) = 0
+def $grandchild(AAX) = 0
+def $grandchild(AAY) = 0
+def $grandchild(AAZ) = 0
+def $grandchild(BB) = 0
+def $grandchild(BBX) = 0
+def $grandchild(BBY) = 0
+def $grandchild(BBZ) = 0
+def $grandchild(CC n CCCC) = 0
+def $grandchild(CCX n CCXX) = 0
+def $grandchild(CCY n CCYY) = 0
+def $grandchild(CCZ n CCZZ) = 0
+def $grandchild(DD n) = 0
+def $grandchild(DDX n) = 0
+def $grandchild(DDY n) = 0
+def $grandchild(DDZ n) = 0
+def $grandchild(EE n) = 0
+def $grandchild(EEX n) = 0
+def $grandchild(EEY n) = 0
+def $grandchild(EEZ n) = 0
+def $grandchild(FF) = 0
+def $grandchild(PP) = 0
+def $grandchild(PPX) = 0
+def $grandchild(PPY) = 0
+def $grandchild(PPZ) = 0
+def $grandchild(QQ) = 0
+def $grandchild(QQX) = 0
+def $grandchild(QQY) = 0
+def $grandchild(QQZ) = 0
+def $grandchild(RR n) = 0
+def $grandchild(RRX n) = 0
+def $grandchild(RRY n) = 0
+def $grandchild(RRZ n) = 0
+def $grandchild(ZZZ) = 0
+def $grandchild(ZZZZ) = 0
+
+
+;; Field atoms
+
+syntax rec = {
+  FA nat*,                                     ;; \FA
+  FB nat*  hint(macro "%"),                    ;; \FB
+  FC nat*  hint(macro "x%y%z"),                ;; \xFCyFCz
+  FD nat*  hint(macro none),                   ;; \mathsf{fd}
+  FE nat*  hint(show FEE),                     ;; \FEE
+  FF nat*  hint(show FFF) hint(macro "%"),     ;; \FFF
+  FG nat*  hint(show FGG) hint(macro "x%y%z"), ;; \xFGGyFGGz
+  FH nat*  hint(show FHH) hint(macro none)     ;; \mathsf{fhh}
+}
+
+def $proj(rec, nat) : nat*
+def $proj(r, 0) = r.FA
+def $proj(r, 1) = r.FB
+def $proj(r, 2) = r.FC
+def $proj(r, 3) = r.FD
+def $proj(r, 4) = r.FE
+def $proj(r, 5) = r.FF
+def $proj(r, 6) = r.FG
+def $proj(r, 7) = r.FH
+
+def $upd(rec, nat) : rec
+def $upd(r, 0) = r[.FA = 0]
+def $upd(r, 1) = r[.FB = 0]
+def $upd(r, 2) = r[.FC = 0]
+def $upd(r, 3) = r[.FD = 0]
+def $upd(r, 4) = r[.FE = 0]
+def $upd(r, 5) = r[.FF = 0]
+def $upd(r, 6) = r[.FG = 0]
+def $upd(r, 7) = r[.FH = 0]
+
+def $ext(rec, nat) : rec
+def $ext(r, 0) = r[.FA =++ 0]
+def $ext(r, 1) = r[.FB =++ 0]
+def $ext(r, 2) = r[.FC =++ 0]
+def $ext(r, 3) = r[.FD =++ 0]
+def $ext(r, 4) = r[.FE =++ 0]
+def $ext(r, 5) = r[.FF =++ 0]
+def $ext(r, 6) = r[.FG =++ 0]
+def $ext(r, 7) = r[.FH =++ 0]
+
+syntax recimpl hint(macro "%" "R%") = {
+  FIA nat*,                                      ;; \RFIA
+  FIB nat*  hint(macro "%"),                     ;; \FIB
+  FIC nat*  hint(macro "x%y%z"),                 ;; \xFICyFICz
+  FID nat*  hint(macro none),                    ;; \mathsf{fid}
+  FIE nat*  hint(show FIEE),                     ;; \RFIEE
+  FIF nat*  hint(show FIFF) hint(macro "%"),     ;; \FIFF
+  FIG nat*  hint(show FIGG) hint(macro "x%y%z"), ;; \xFIGGyFIGGz
+  FIH nat*  hint(show FIHH) hint(macro none)     ;; \mathsf{fihh}
+}
+
+def $rproj(recimpl, nat) : nat*
+def $rproj(r, 0) = r.FIA
+def $rproj(r, 1) = r.FIB
+def $rproj(r, 2) = r.FIC
+def $rproj(r, 3) = r.FID
+def $rproj(r, 4) = r.FIE
+def $rproj(r, 5) = r.FIF
+def $rproj(r, 6) = r.FIG
+def $rproj(r, 7) = r.FIH
+
+
+;; Constructor atoms
+
+syntax cona = nat COA nat                            ;; \COA
+syntax conb hint(macro "%" "%") = nat COB nat        ;; \COB
+syntax conc hint(macro "%" "x%y%z") = nat COC nat    ;; \xCOCyCOCz
+syntax cond hint(macro "%" none) = nat COD nat       ;; \mathsf{COD}
+syntax cone hint(show %COOE%) = nat COE nat                            ;; \COE
+syntax conf hint(show %COOF%) hint(macro "%" "%") = nat COF nat        ;; \COF
+syntax cong hint(show %COOG%) hint(macro "%" "x%y%z") = nat COG nat    ;; \xCOGyCOGz
+syntax conh hint(show %COOH%) hint(macro "%" none) = nat COH nat       ;; \mathsf{COH}
+
+
+;; Relation atoms
+
+syntax C = {}
+
+relation Rok: C |- parent : OK
+relation Rsub: C |- parent <: parent
+relation Reval: parent; child ~> parent; child hint(tabular)
+
+rule Rok: C |- AA : OK
+rule Rsub: C |- parent <: AA
+rule Reval: parent; child ~> AA; BB
+
+relation Rok_macro: C |- parent : OK                  hint(macro "%ok")
+relation Rsub_macro: C |- parent <: parent            hint(macro "%sub")
+relation Reval_macro: parent; child ~> parent; child  hint(macro "%eval") hint(tabular)
+
+rule Rok_macro: C |- AA : OK
+rule Rsub_macro: C |- parent <: AA
+rule Reval_macro: parent; child ~> AA; BB
+
+relation Rok_nomacro: C |- parent : OK                  hint(macro none)
+relation Rsub_nomacro: C |- parent <: parent            hint(macro none)
+relation Reval_nomacro: parent; child ~> parent; child  hint(macro none) hint(tabular)
+
+rule Rok_nomacro: C |- AA : OK
+rule Rsub_nomacro: C |- parent <: AA
+rule Reval_nomacro: parent; child ~> AA; BB
+
+
+;;
+;; Layout
+;;
+
+;; Syntax
+
+syntax argh = ARGH
+syntax borg = BORG
+syntax curb = CURB
+syntax dork = DORK
+syntax eerk = EERK
+
+
+syntax dotstypex/1 = argh | DX1 | ...
+syntax dotstypey/1 =
+  argh | DY1 | ...
+syntax dotstypex/2 = ... | borg | DX2 | ...
+syntax dotstypesep = borg
+syntax dotstypex/3 = ...
+  | curb | DX3
+  | DX4 | DX5
+  | DX6 | ...
+syntax dotstypey/2 =
+  | ...
+  | borg | DY2
+  | DY3 | DY4
+  | ...
+syntax dotstypex/4 = ... | dork | DX7
+syntax dotstypey/3 =
+  | ...
+  | dork
+  | DY5
+
+
+syntax casetype = LA nat argh
+    -- if nat = 0
+    -- if argh =/= ARGH
+  | LB borg curb
+  | LC dork_1 dork_2 -- if dork_1 =/= dork_2
+  | LD argh nat
+    -- if nat > 0 -- if argh =/= ARGH
+  | LE nat_1 nat_2
+    -- if nat_1 <= nat_2
+  | LFA borg | LFB borg | LFC borg
+;;  | LGA borg -- if borg = borg | LGB borg   ;; TODO(3, rossberg): what should this produce?
+  | LH borg
+      argh eerk
+  | LI borg
+      argh eerk
+    -- if 0 < 1
+    -- if 1 > 0
+  | LJ borg
+    ----
+    -- if 0 < 1
+    -- if 1 > 0
+  | LK borg
+      argh eerk
+    ----
+    -- if 0 < 1
+    -- if 1 > 0
+
+
+;; Grammars
+
+grammar gram : nat* = "GA" "GB" => 0
+    -- if 0 < 1
+  | "GB" "GC" "GD" => 0
+  | "GC" "GD" => 0 -- if 0 < 1
+  | "GD" "GE" => 0
+    -- if 0 < 1 -- if 1 > 0
+  | "GE" "GF" => 0
+    -- if 0 < 1
+  | "GFA" "GF" => 0 | "GFB" "GF" => 1 | "GFC" => 2
+  | "GG" =>
+    0 -- if 1 > 0
+  | "GH" =>
+    0
+    -- if 1 > 0
+  | "GI" =>
+    0
+    1
+    2
+    -- if 0 < 1
+    -- if 1 > 0
+  | "GJ" "GJ"
+      "G" "J" => 0
+  | "GK" "GJ"
+      "G" "J" => 0
+    -- if 0 < 1
+    -- if 1 > 0
+  | "GI" => 0 1 2
+    ----
+    -- if 0 < 1
+    -- if 1 > 0
+  | "GI" =>
+    0
+    1
+    2
+    ----
+    -- if 0 < 1
+    -- if 1 > 0
+
+
+;; Functions
+
+def $func(nat, nat) : nat*
+
+def $func(n, m) = 0
+def $func(n, m) = 0 -- if n < m
+def $func(n, m) = 0 -- if n > m -- if m < n
+def $func(n, m) = 0 1
+  -- if n < m
+  -- if m > n
+def $func(n, m) =
+  0 1
+  -- if n < m
+  -- if m > n
+def $func(n, m) =
+  0
+  1
+  2
+  -- if n < m
+  -- if m > n
+def $func(n, m) = 0 1 2
+  ----
+  -- if n < m
+  -- if m > n
+def $func(n, m) =
+  0
+  1
+  2
+  ----
+  -- if n < m
+  -- if m > n
+
+
+;; Rules
+
+relation Rel: argh borg -> curb dork hint(tabular)
+
+rule Rel/A:
+  argh borg -> curb dork
+
+rule Rel/B:
+  argh borg -> curb dork -- if 0 < 1
+
+rule Rel/C:
+  argh borg -> curb dork -- if 0 < 1 -- if 1 > 0
+
+rule Rel/D:
+  argh borg -> curb dork
+  -- if 0 < 1 
+  -- if 1 > 0
+
+rule Rel/E:
+  argh borg ->
+    curb dork
+  -- if 0 < 1 
+  -- if 1 > 0
+
+rule Rel/F:
+  argh borg -> curb
+    dork
+  -- if 0 < 1 
+  -- if 1 > 0
+
+rule Rel/G:
+  argh borg ->
+    curb
+    dork
+  -- if 0 < 1 
+  -- if 1 > 0
+
+rule Rel/DD:
+  argh borg -> curb dork
+  ----
+  -- if 0 < 1 
+  -- if 1 > 0
+
+rule Rel/EE:
+  argh borg ->
+    curb dork
+  ----
+  -- if 0 < 1 
+  -- if 1 > 0
+
+rule Rel/FF:
+  argh borg -> curb
+    dork
+  ----
+  -- if 0 < 1 
+  -- if 1 > 0
+
+rule Rel/GG:
+  argh borg ->
+    curb
+    dork
+  ----
+  -- if 0 < 1 
+  -- if 1 > 0

@@ -1,0 +1,135 @@
+;;
+;; Addresses
+;;
+
+syntax addr hint(desc "address") = nat
+syntax funcaddr hint(desc "function address") = addr
+syntax globaladdr hint(desc "global address") = addr
+syntax tableaddr hint(desc "table address") = addr
+syntax memaddr hint(desc "memory address") = addr
+syntax elemaddr hint(desc "elem address") = addr
+syntax dataaddr hint(desc "data address") = addr
+syntax hostaddr hint(desc "host address") = addr
+
+var a : addr
+var fa : funcaddr
+var ga : globaladdr
+var ta : tableaddr
+var ma : memaddr
+var ea : elemaddr
+var da : dataaddr
+
+
+;; External addresses
+
+syntax externaddr hint(desc "external value") =
+  | FUNC funcaddr | GLOBAL globaladdr | TABLE tableaddr | MEM memaddr
+
+var xa : externaddr
+
+
+;;
+;; Values
+;;
+
+;; Basic values
+
+syntax num hint(desc "number") =
+  | CONST numtype num_(numtype)          hint(show %.CONST %)
+syntax vec hint(desc "vector") =
+  | VCONST vectype vec_(vectype)         hint(show %.CONST %)
+syntax ref hint(desc "reference") hint(macro "reff") =
+  | REF.NULL reftype | REF.FUNC_ADDR funcaddr | REF.HOST_ADDR hostaddr
+syntax val hint(desc "value") =
+  | num | vec | ref
+
+syntax result hint(desc "result") =
+  | _VALS val* | TRAP
+
+var r : ref
+var v : val
+var res : result
+
+
+;;
+;; Configurations
+;;
+
+;; Instances
+
+syntax funcinst hint(desc "function instance") =
+  { TYPE functype,
+    MODULE moduleinst,
+    CODE func }
+syntax globalinst hint(desc "global instance") =
+  { TYPE globaltype,
+    VALUE val }
+syntax tableinst hint(desc "table instance") =
+  { TYPE tabletype,
+    REFS ref* }
+syntax meminst hint(desc "memory instance") =
+  { TYPE memtype,
+    BYTES byte* }
+syntax eleminst hint(desc "element instance") =
+  { TYPE elemtype,
+    REFS ref* }
+syntax datainst hint(desc "data instance") =
+  { BYTES byte* }
+syntax exportinst hint(desc "export instance") =
+  { NAME name,
+    ADDR externaddr }
+
+syntax moduleinst hint(desc "module instance") =
+  { TYPES functype*,
+    FUNCS funcaddr*,
+    GLOBALS globaladdr*,
+    TABLES tableaddr*,
+    MEMS memaddr*,
+    ELEMS elemaddr*,
+    DATAS dataaddr*,
+    EXPORTS exportinst* }
+
+var mm : moduleinst
+var fi : funcinst
+var gi : globalinst
+var ti : tableinst
+var mi : meminst
+var ei : eleminst
+var di : datainst
+var xi : exportinst
+
+
+;; Configurations proper
+
+syntax store hint(desc "store") =
+  { FUNCS funcinst*,
+    GLOBALS globalinst*,
+    TABLES tableinst*,
+    MEMS meminst*,
+    ELEMS eleminst*,
+    DATAS datainst* }
+
+syntax frame hint(desc "frame") =
+  { LOCALS val*,
+    MODULE moduleinst }
+
+syntax state hint(desc "state") = store; frame
+syntax config hint(desc "configuration") = state; admininstr*
+
+var s : store
+var f : frame
+var z : state
+
+
+;;
+;; Administrative Instructions
+;;
+
+syntax admininstr hint(show instr) hint(desc "administrative instruction") =
+  | instr
+  | REF.FUNC_ADDR funcaddr         hint(show REF.FUNC %)
+  | REF.HOST_ADDR hostaddr         hint(show REF.EXTERN %)
+  | CALL_ADDR funcaddr             hint(show CALL %)
+  | LABEL_ n `{instr*} admininstr* hint(show LABEL_%#% %%)
+  | FRAME_ n `{frame} admininstr*  hint(show FRAME_%#% %%)
+  | TRAP

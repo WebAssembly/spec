@@ -1,10 +1,10 @@
 open Types
-open Values
+open Value
 
 
 (* Int operators *)
 
-module IntOp (IXX : Ixx.S) (Num : NumType with type t = IXX.t) =
+module IntOp (IXX : Ixx.T) (Num : NumType with type t = IXX.t) =
 struct
   open Ast.IntOp
   open Num
@@ -14,7 +14,7 @@ struct
       | Clz -> IXX.clz
       | Ctz -> IXX.ctz
       | Popcnt -> IXX.popcnt
-      | ExtendS sz -> IXX.extend_s (8 * packed_size sz)
+      | ExtendS sz -> IXX.extend_s (8 * Pack.packed_size sz)
     in fun v -> to_num (f (of_num 1 v))
 
   let binop op =
@@ -22,16 +22,16 @@ struct
       | Add -> IXX.add
       | Sub -> IXX.sub
       | Mul -> IXX.mul
-      | DivS -> IXX.div_s
-      | DivU -> IXX.div_u
-      | RemS -> IXX.rem_s
-      | RemU -> IXX.rem_u
+      | Div S -> IXX.div_s
+      | Div U -> IXX.div_u
+      | Rem S -> IXX.rem_s
+      | Rem U -> IXX.rem_u
       | And -> IXX.and_
       | Or -> IXX.or_
       | Xor -> IXX.xor
       | Shl -> IXX.shl
-      | ShrU -> IXX.shr_u
-      | ShrS -> IXX.shr_s
+      | Shr U -> IXX.shr_u
+      | Shr S -> IXX.shr_s
       | Rotl -> IXX.rotl
       | Rotr -> IXX.rotr
     in fun v1 v2 -> to_num (f (of_num 1 v1) (of_num 2 v2))
@@ -45,14 +45,14 @@ struct
     let f = match op with
       | Eq -> IXX.eq
       | Ne -> IXX.ne
-      | LtS -> IXX.lt_s
-      | LtU -> IXX.lt_u
-      | LeS -> IXX.le_s
-      | LeU -> IXX.le_u
-      | GtS -> IXX.gt_s
-      | GtU -> IXX.gt_u
-      | GeS -> IXX.ge_s
-      | GeU -> IXX.ge_u
+      | Lt S -> IXX.lt_s
+      | Lt U -> IXX.lt_u
+      | Le S -> IXX.le_s
+      | Le U -> IXX.le_u
+      | Gt S -> IXX.gt_s
+      | Gt U -> IXX.gt_u
+      | Ge S -> IXX.ge_s
+      | Ge U -> IXX.ge_u
     in fun v1 v2 -> f (of_num 1 v1) (of_num 2 v2)
 end
 
@@ -62,7 +62,7 @@ module I64Op = IntOp (I64) (I64Num)
 
 (* Float operators *)
 
-module FloatOp (FXX : Fxx.S) (Num : NumType with type t = FXX.t) =
+module FloatOp (FXX : Fxx.T) (Num : NumType with type t = FXX.t) =
 struct
   open Ast.FloatOp
   open Num
@@ -114,18 +114,17 @@ struct
 
   let cvtop op v =
     let i = match op with
-      | WrapI64 -> I32_convert.wrap_i64 (I64Num.of_num 1 v)
-      | TruncUF32 -> I32_convert.trunc_f32_u (F32Num.of_num 1 v)
-      | TruncSF32 -> I32_convert.trunc_f32_s (F32Num.of_num 1 v)
-      | TruncUF64 -> I32_convert.trunc_f64_u (F64Num.of_num 1 v)
-      | TruncSF64 -> I32_convert.trunc_f64_s (F64Num.of_num 1 v)
-      | TruncSatUF32 -> I32_convert.trunc_sat_f32_u (F32Num.of_num 1 v)
-      | TruncSatSF32 -> I32_convert.trunc_sat_f32_s (F32Num.of_num 1 v)
-      | TruncSatUF64 -> I32_convert.trunc_sat_f64_u (F64Num.of_num 1 v)
-      | TruncSatSF64 -> I32_convert.trunc_sat_f64_s (F64Num.of_num 1 v)
-      | ReinterpretFloat -> I32_convert.reinterpret_f32 (F32Num.of_num 1 v)
-      | ExtendUI32 -> raise (TypeError (1, v, I32Type))
-      | ExtendSI32 -> raise (TypeError (1, v, I32Type))
+      | WrapI64 -> Convert.I32_.wrap_i64 (I64Num.of_num 1 v)
+      | TruncF32 S -> Convert.I32_.trunc_f32_s (F32Num.of_num 1 v)
+      | TruncF32 U -> Convert.I32_.trunc_f32_u (F32Num.of_num 1 v)
+      | TruncF64 S -> Convert.I32_.trunc_f64_s (F64Num.of_num 1 v)
+      | TruncF64 U -> Convert.I32_.trunc_f64_u (F64Num.of_num 1 v)
+      | TruncSatF32 S -> Convert.I32_.trunc_sat_f32_s (F32Num.of_num 1 v)
+      | TruncSatF32 U -> Convert.I32_.trunc_sat_f32_u (F32Num.of_num 1 v)
+      | TruncSatF64 S -> Convert.I32_.trunc_sat_f64_s (F64Num.of_num 1 v)
+      | TruncSatF64 U -> Convert.I32_.trunc_sat_f64_u (F64Num.of_num 1 v)
+      | ReinterpretFloat -> Convert.I32_.reinterpret_f32 (F32Num.of_num 1 v)
+      | ExtendI32 _ -> raise (TypeError (1, v, I32T))
     in I32Num.to_num i
 end
 
@@ -135,18 +134,18 @@ struct
 
   let cvtop op v =
     let i = match op with
-      | ExtendUI32 -> I64_convert.extend_i32_u (I32Num.of_num 1 v)
-      | ExtendSI32 -> I64_convert.extend_i32_s (I32Num.of_num 1 v)
-      | TruncUF32 -> I64_convert.trunc_f32_u (F32Num.of_num 1 v)
-      | TruncSF32 -> I64_convert.trunc_f32_s (F32Num.of_num 1 v)
-      | TruncUF64 -> I64_convert.trunc_f64_u (F64Num.of_num 1 v)
-      | TruncSF64 -> I64_convert.trunc_f64_s (F64Num.of_num 1 v)
-      | TruncSatUF32 -> I64_convert.trunc_sat_f32_u (F32Num.of_num 1 v)
-      | TruncSatSF32 -> I64_convert.trunc_sat_f32_s (F32Num.of_num 1 v)
-      | TruncSatUF64 -> I64_convert.trunc_sat_f64_u (F64Num.of_num 1 v)
-      | TruncSatSF64 -> I64_convert.trunc_sat_f64_s (F64Num.of_num 1 v)
-      | ReinterpretFloat -> I64_convert.reinterpret_f64 (F64Num.of_num 1 v)
-      | WrapI64 -> raise (TypeError (1, v, I64Type))
+      | ExtendI32 S -> Convert.I64_.extend_i32_s (I32Num.of_num 1 v)
+      | ExtendI32 U -> Convert.I64_.extend_i32_u (I32Num.of_num 1 v)
+      | TruncF32 S -> Convert.I64_.trunc_f32_s (F32Num.of_num 1 v)
+      | TruncF32 U -> Convert.I64_.trunc_f32_u (F32Num.of_num 1 v)
+      | TruncF64 S -> Convert.I64_.trunc_f64_s (F64Num.of_num 1 v)
+      | TruncF64 U -> Convert.I64_.trunc_f64_u (F64Num.of_num 1 v)
+      | TruncSatF32 S -> Convert.I64_.trunc_sat_f32_s (F32Num.of_num 1 v)
+      | TruncSatF32 U -> Convert.I64_.trunc_sat_f32_u (F32Num.of_num 1 v)
+      | TruncSatF64 S -> Convert.I64_.trunc_sat_f64_s (F64Num.of_num 1 v)
+      | TruncSatF64 U -> Convert.I64_.trunc_sat_f64_u (F64Num.of_num 1 v)
+      | ReinterpretFloat -> Convert.I64_.reinterpret_f64 (F64Num.of_num 1 v)
+      | WrapI64 -> raise (TypeError (1, v, I64T))
     in I64Num.to_num i
 end
 
@@ -156,13 +155,13 @@ struct
 
   let cvtop op v =
     let z = match op with
-      | DemoteF64 -> F32_convert.demote_f64 (F64Num.of_num 1 v)
-      | ConvertSI32 -> F32_convert.convert_i32_s (I32Num.of_num 1 v)
-      | ConvertUI32 -> F32_convert.convert_i32_u (I32Num.of_num 1 v)
-      | ConvertSI64 -> F32_convert.convert_i64_s (I64Num.of_num 1 v)
-      | ConvertUI64 -> F32_convert.convert_i64_u (I64Num.of_num 1 v)
-      | ReinterpretInt -> F32_convert.reinterpret_i32 (I32Num.of_num 1 v)
-      | PromoteF32 -> raise (TypeError (1, v, F32Type))
+      | DemoteF64 -> Convert.F32_.demote_f64 (F64Num.of_num 1 v)
+      | ConvertI32 S -> Convert.F32_.convert_i32_s (I32Num.of_num 1 v)
+      | ConvertI32 U -> Convert.F32_.convert_i32_u (I32Num.of_num 1 v)
+      | ConvertI64 S -> Convert.F32_.convert_i64_s (I64Num.of_num 1 v)
+      | ConvertI64 U -> Convert.F32_.convert_i64_u (I64Num.of_num 1 v)
+      | ReinterpretInt -> Convert.F32_.reinterpret_i32 (I32Num.of_num 1 v)
+      | PromoteF32 -> raise (TypeError (1, v, F32T))
     in F32Num.to_num z
 end
 
@@ -172,13 +171,13 @@ struct
 
   let cvtop op v =
     let z = match op with
-      | PromoteF32 -> F64_convert.promote_f32 (F32Num.of_num 1 v)
-      | ConvertSI32 -> F64_convert.convert_i32_s (I32Num.of_num 1 v)
-      | ConvertUI32 -> F64_convert.convert_i32_u (I32Num.of_num 1 v)
-      | ConvertSI64 -> F64_convert.convert_i64_s (I64Num.of_num 1 v)
-      | ConvertUI64 -> F64_convert.convert_i64_u (I64Num.of_num 1 v)
-      | ReinterpretInt -> F64_convert.reinterpret_i64 (I64Num.of_num 1 v)
-      | DemoteF64 -> raise (TypeError (1, v, F64Type))
+      | PromoteF32 -> Convert.F64_.promote_f32 (F32Num.of_num 1 v)
+      | ConvertI32 S -> Convert.F64_.convert_i32_s (I32Num.of_num 1 v)
+      | ConvertI32 U -> Convert.F64_.convert_i32_u (I32Num.of_num 1 v)
+      | ConvertI64 S -> Convert.F64_.convert_i64_s (I64Num.of_num 1 v)
+      | ConvertI64 U -> Convert.F64_.convert_i64_u (I64Num.of_num 1 v)
+      | ReinterpretInt -> Convert.F64_.reinterpret_i64 (I64Num.of_num 1 v)
+      | DemoteF64 -> raise (TypeError (1, v, F64T))
     in F64Num.to_num z
 end
 

@@ -1,0 +1,84 @@
+;;
+;; Binary Format of Values
+;;
+
+;; Numbers
+
+grammar Bbyte : byte = 0x00 | ... | 0xFF
+
+grammar BuN(N) : uN(N) hint(show `Bu#%) hint(macro "BuNX") =
+  | n:Bbyte                 => n                       -- if $(n < 2^7 /\ n < 2^N)
+  | n:Bbyte m:BuN(($(N-7))) => $(2^7 * m + (n - 2^7))  -- if $(n >= 2^7 /\ N > 7)
+
+grammar BsN(N) : sN(N) hint(show `Bs#%) hint(macro "BsNX") =
+  | n:Bbyte                 => n                       -- if $(n < 2^6 /\ n < 2^(N-1))
+  | n:Bbyte                 => $(n - 2^7)              -- if $(2^6 <= n < 2^7 /\ n >= 2^7 - 2^(N-1))
+  | n:Bbyte i:BuN(($(N-7))) => $(2^7 * i + (n - 2^7))  -- if $(n >= 2^7 /\ N > 7)
+
+grammar BiN(N) : iN(N) hint(show `Bi#%) hint(macro "BiNX") =
+  | i:BsN(N)                => $inv_signed_(N, i)
+
+
+grammar BfN(N) : fN(N) hint(show `Bf#%) hint(macro "BfNX") =
+  | b*:Bbyte^(N/8)  => $inv_fbytes_(N, b*)
+
+
+grammar Bu32 : u32 = n:BuN(32) => n
+grammar Bu64 : u64 = n:BuN(64) => n
+grammar Bs33 : s33 = i:BsN(33) => i
+
+grammar Bf32 : f32 = p:BfN(32) => p
+grammar Bf64 : f64 = p:BfN(64) => p
+
+
+;; Lists
+
+grammar Blist(grammar BX : el) : el* =
+  | n:Bu32 (el:BX)^n => el^n
+
+
+;; Names
+
+var ch : char
+
+def $cont(byte) : nat hint(macro none)
+def $cont(b) = $(b - 0x80) -- if (0x80 < b < 0xC0)
+
+;; def $utf8(char*) : byte*
+def $utf8(ch*) = $concat_(byte, $utf8(ch)*)
+def $utf8(ch) = b
+  -- if ch < U+0080
+  -- if ch = b
+def $utf8(ch) = b_1 b_2
+  -- if U+0080 <= ch < U+0800
+  -- if ch = $(2^6*(b_1 - 0xC0) + $cont(b_2))
+def $utf8(ch) = b_1 b_2 b_3
+  -- if U+0800 <= ch < U+D800 \/ U+E000 <= ch < U+10000
+  -- if ch = $(2^12*(b_1 - 0xE0) + 2^6*$cont(b_2) + $cont(b_3))
+def $utf8(ch) = b_1 b_2 b_3 b_4
+  -- if U+10000 <= ch < U+11000
+  -- if ch = $(2^18*(b_1 - 0xF0) + 2^12*$cont(b_2) + 2^6*$cont(b_3) + $cont(b_4))
+
+grammar Bname : name =
+  | b*:Blist(Bbyte) => name  -- if $utf8(name) = b*
+
+
+;; Indices
+
+grammar Btypeidx : typeidx = x:Bu32 => x
+grammar Btagidx : tagidx = x:Bu32 => x
+grammar Bglobalidx : globalidx = x:Bu32 => x
+grammar Bmemidx : memidx = x:Bu32 => x
+grammar Btableidx : tableidx = x:Bu32 => x
+grammar Bfuncidx : funcidx = x:Bu32 => x
+grammar Bdataidx : dataidx = x:Bu32 => x
+grammar Belemidx : elemidx = x:Bu32 => x
+grammar Blocalidx : localidx = x:Bu32 => x
+grammar Blabelidx : labelidx = l:Bu32 => l
+
+grammar Bexternidx : externidx =
+  | 0x00 x:Bfuncidx => FUNC x
+  | 0x01 x:Btableidx => TABLE x
+  | 0x02 x:Bmemidx => MEM x
+  | 0x03 x:Bglobalidx => GLOBAL x
+  | 0x04 x:Btagidx => TAG x

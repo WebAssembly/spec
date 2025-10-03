@@ -15,7 +15,7 @@ that records bound :ref:`identifiers <text-id>`.
 Except for a few exceptions, the core of the text grammar closely mirrors the grammar of the abstract syntax.
 However, it also defines a number of *abbreviations* that are "syntactic sugar" over the core syntax.
 
-The recommended extension for files containing WebAssembly modules in text format is ":math:`\T{.wat}`".
+The recommended extension for files containing WebAssembly modules in text format is "``.wat``".
 Files with this extension are assumed to be encoded in UTF-8, as per |Unicode|_ (Section 2.5).
 
 
@@ -29,31 +29,31 @@ Grammar
 
 The following conventions are adopted in defining grammar rules of the text format.
 They mirror the conventions used for :ref:`abstract syntax <grammar>` and for the :ref:`binary format <binary>`.
-In order to distinguish symbols of the textual syntax from symbols of the abstract syntax, :math:`\mathtt{typewriter}` font is adopted for the former.
+In order to distinguish symbols of the textual syntax from symbols of the abstract syntax, ${grammar-case: Ttypewriter} font is adopted for the former.
 
 * Terminal symbols are either literal strings of characters enclosed in quotes
-  or expressed as |Unicode|_ scalar values: :math:`\text{module}`, :math:`\unicode{0A}`.
+  or expressed as |Unicode|_ scalar values: ${grammar-case: "module"}, ${grammar-case: U+0A}.
   (All characters written literally are unambiguously drawn from the 7-bit |ASCII|_ subset of Unicode.)
 
-* Nonterminal symbols are written in typewriter font: :math:`\T{valtype}, \T{instr}`.
+* Nonterminal symbols are written in typewriter font: ${grammar-case: Tvaltype}, ${grammar-case: Tinstr}.
 
-* :math:`T^n` is a sequence of :math:`n\geq 0` iterations  of :math:`T`.
+* ${grammar-case: $(T)^n} is a sequence of ${:n>=0} iterations of ${:T}.
 
-* :math:`T^\ast` is a possibly empty sequence of iterations of :math:`T`.
-  (This is a shorthand for :math:`T^n` used where :math:`n` is not relevant.)
+* ${grammar-case: $(T)*} is a possibly empty sequence of iterations of ${:T}.
+  (This is a shorthand for ${grammar-case: $(T)^n} used where ${:n} is not relevant.)
 
-* :math:`T^+` is a sequence of one or more iterations of :math:`T`.
-  (This is a shorthand for :math:`T^n` where :math:`n \geq 1`.)
+* ${grammar-case: $(T)+} is a possibly empty sequence of iterations of ${:T}.
+  (This is a shorthand for ${grammar-case: $(T)^n} used where ${:n} is not relevant.)
 
-* :math:`T^?` is an optional occurrence of :math:`T`.
-  (This is a shorthand for :math:`T^n` where :math:`n \leq 1`.)
+* ${grammar-case: $(T)?} is an optional occurrence of ${:T}.
+  (This is a shorthand for ${grammar-case: $(T)^n} where ${:n<=1}.)
 
-* :math:`x{:}T` denotes the same language as the nonterminal :math:`T`, but also binds the variable :math:`x` to the attribute synthesized for :math:`T`.
-  A pattern may also be used instead of a variable, e.g., :math:`(x,y){:}T`.
+* ${grammar-case: x:$(T)} denotes the same language as the nonterminal ${:T}, but also binds the variable ${:x} to the attribute synthesized for ${:T}.
+  A pattern may also be used instead of a variable, e.g., ${grammar-case: 7:$(T)}.
 
-* Productions are written :math:`\T{sym} ::= T_1 \Rightarrow A_1 ~|~ \dots ~|~ T_n \Rightarrow A_n`, where each :math:`A_i` is the attribute that is synthesized for :math:`\T{sym}` in the given case, usually from attribute variables bound in :math:`T_i`.
+* Productions are written ${grammar: Tsym}, where each ${:A_i} is the attribute that is synthesized for ${grammar-case: Tsym} in the given case, usually from attribute variables bound in ${:T_i}.
 
-* Large productions may be split into multiple definitions, indicated by ending the first one with explicit ellipses, :math:`\T{sym} ::= T_1 \Rightarrow A_1 ~|~ \dots`, and starting continuations with ellipses, :math:`\T{sym} ::= \dots ~|~ T_2 \Rightarrow A_2`.
+* Large productions may be split into multiple definitions, indicated by ending the first one with explicit ellipses, ${grammar: Tsymsplit/1}, and starting continuations with ellipses, ${grammar: Tsymsplit/2}.
 
 * Some productions are augmented by side conditions in parentheses, which restrict the applicability of the production. They provide a shorthand for a combinatorial expansion of the production into many separate cases.
 
@@ -61,30 +61,18 @@ In order to distinguish symbols of the textual syntax from symbols of the abstra
 
 .. _text-syntactic:
 
-* A distinction is made between *lexical* and *syntactic* productions. For the latter, arbitrary :ref:`white space <text-space>` is allowed in any place where the grammar contains spaces. The productions defining :ref:`lexical syntax <text-lexical>` and the syntax of :Ref:`values <text-value>` are considered lexical, all others are syntactic.
+* A distinction is made between *lexical* and *syntactic* productions. For the latter, arbitrary :ref:`white space <text-space>` is allowed in any place where the grammar contains spaces. The productions defining :ref:`lexical syntax <text-lexical>` and the syntax of :ref:`values <text-value>` are considered lexical, all others are syntactic.
 
 .. note::
    For example, the :ref:`textual grammar <text-numtype>` for :ref:`number types <syntax-numtype>` is given as follows:
 
-   .. math::
-     \begin{array}{llcll@{\qquad\qquad}l}
-     \production{number types} & \Tnumtype &::=&
-       \text{i32} &\Rightarrow& \I32 \\ &&|&
-       \text{i64} &\Rightarrow& \I64 \\ &&|&
-       \text{f32} &\Rightarrow& \F32 \\ &&|&
-       \text{f64} &\Rightarrow& \F64 \\
-     \end{array}
+   $${grammar: Tnumtype}
 
    The :ref:`textual grammar <text-limits>` for :ref:`limits <syntax-limits>` is defined as follows:   
 
-   .. math::
-      \begin{array}{llclll}
-      \production{limits} & \Tlimits &::=&
-        n{:}\Tu32 &\Rightarrow& \{ \LMIN~n, \LMAX~\epsilon \} \\ &&|&
-        n{:}\Tu32~~m{:}\Tu32 &\Rightarrow& \{ \LMIN~n, \LMAX~m \} \\
-      \end{array}
+   $${grammar: Tlimits}
 
-   The variables :math:`n` and :math:`m` name the attributes of the respective |Tu32| nonterminals, which in this case are the actual :ref:`unsigned integers <syntax-uint>` those parse into.
+   The variables ${:n} and ${:m} name the attributes of the respective ${grammar-case: Tu64} nonterminals, which in this case are the actual :ref:`unsigned integers <syntax-uint>` those parse into.
    The attribute of the complete production then is the abstract syntax for the limit, expressed in terms of the former values.
 
 
@@ -98,8 +86,7 @@ In addition to the core grammar, which corresponds directly to the :ref:`abstrac
 
 Abbreviations are defined by *rewrite rules* specifying their expansion into the core syntax:
 
-.. math::
-   \X{abbreviation~syntax} \quad\equiv\quad \X{expanded~syntax}
+$${grammar: Tabbrev}
 
 These expansions are assumed to be applied, recursively and in order of appearance, before applying the core grammar rules to construct the abstract syntax.
 
@@ -113,52 +100,41 @@ Contexts
 
 The text format allows the use of symbolic :ref:`identifiers <text-id>` in place of :ref:`indices <syntax-index>`.
 To resolve these identifiers into concrete indices,
-some grammar productions are indexed by an *identifier context* :math:`I` as a synthesized attribute that records the declared identifiers in each :ref:`index space <syntax-index>`.
+some grammar productions are indexed by an *identifier context* ${:I} as a synthesized attribute that records the declared identifiers in each :ref:`index space <syntax-index>`.
 In addition, the context records the types defined in the module, so that :ref:`parameter <text-param>` indices can be computed for :ref:`functions <text-func>`.
 
-It is convenient to define identifier contexts as :ref:`records <notation-record>` :math:`I` with abstract syntax as follows:
+It is convenient to define identifier contexts as :ref:`records <notation-record>` ${:I} with abstract syntax as follows:
 
-.. math::
-   \begin{array}{llll}
-   \production{identifier context} & I &::=&
-     \begin{array}[t]{l@{~}ll}
-     \{ & \ITYPES & (\Tid^?)^\ast, \\
-        & \IFUNCS & (\Tid^?)^\ast, \\
-        & \ITABLES & (\Tid^?)^\ast, \\
-        & \IMEMS & (\Tid^?)^\ast, \\
-        & \IGLOBALS & (\Tid^?)^\ast, \\
-        & \IELEM & (\Tid^?)^\ast, \\
-        & \IDATA & (\Tid^?)^\ast, \\
-        & \ILOCALS & (\Tid^?)^\ast, \\
-        & \ILABELS & (\Tid^?)^\ast, \\
-        & \ITYPEDEFS & \functype^\ast ~\} \\
-     \end{array}
-   \end{array}
+$${syntax: idctxt}
 
-For each index space, such a context contains the list of :ref:`identifiers <text-id>` assigned to the defined indices.
-Unnamed indices are associated with empty (:math:`\epsilon`) entries in these lists.
+For each index space, such a context contains the list of :ref:`names <syntax-name>` assigned to the defined indices,
+which were denoted by the corresponding :ref:`identifiers <text-id>`.
+Unnamed indices are associated with empty (${:eps}) entries in these lists.
+Fields have *dependent* name spaces, and hence a separate list of field identifiers per type.
+
+In addition, the field ${:TYPEDEFS} records the :ref:`defined type <syntax-deftype>` associated with each :ref:`type index <syntax-typeidx>`.
+They are needed to look up the number of parameters of :ref:`function types <syntax-functype>` when used in a :ref:`function definition <text-func>`,
+in order to produce the correct indices for :ref:`locals <syntax-local>`.
 
 An identifier context is *well-formed* if no index space contains duplicate identifiers.
+For fields, names need only be unique within a single type.
+
 
 
 Conventions
 ...........
 
 To avoid unnecessary clutter, empty components are omitted when writing out identifier contexts.
-For example, the record :math:`\{\}` is shorthand for an :ref:`identifier context <text-context>` whose components are all empty.
+For example, the record ${idctxt: {}} is shorthand for an :ref:`identifier context <text-context>` whose components are all empty.
 
 
-.. index:: vector
-   pair: text format; vector
-.. _text-vec:
+.. index:: list
+   pair: text format; list
+.. _text-list:
 
-Vectors
-~~~~~~~
+Lists
+~~~~~
 
-:ref:`Vectors <syntax-vec>` are written as plain sequences, but with a restriction on the length of these sequence.
+:ref:`Lists <syntax-list>` are written as plain sequences, but with a restriction on the length of these sequence.
 
-.. math::
-   \begin{array}{llclll@{\qquad\qquad}l}
-   \production{vector} & \Tvec(\T{A}) &::=&
-     (x{:}\T{A})^n &\Rightarrow& x^n & (\iff n < 2^{32}) \\
-   \end{array}
+$${grammar: Tlist}

@@ -62,6 +62,8 @@ let at f s =
 
 (* Generic values *)
 
+let bit i n = n land (1 lsl i) <> 0
+
 let byte s =
   get s
 
@@ -76,8 +78,8 @@ let word32 s =
   Int32.(add lo (shift_left hi 16))
 
 let word64 s =
-  let lo = I64_convert.extend_i32_u (word32 s) in
-  let hi = I64_convert.extend_i32_u (word32 s) in
+  let lo = Convert.I64_.extend_i32_u (word32 s) in
+  let hi = Convert.I64_.extend_i32_u (word32 s) in
   Int64.(add lo (shift_left hi 32))
 
 let rec uN n s =
@@ -98,15 +100,16 @@ let rec sN n s =
   then (if b land 0x40 = 0 then x else Int64.(logor x (logxor (-1L) 0x7fL)))
   else Int64.(logor x (shift_left (sN (n - 7) s) 7))
 
-let u1 s = Int64.to_int (uN 1 s)
-let u32 s = Int64.to_int32 (uN 32 s)
-let s7 s = Int64.to_int (sN 7 s)
-let s32 s = Int64.to_int32 (sN 32 s)
-let s33 s = I32_convert.wrap_i64 (sN 33 s)
+let u8 s = I8.of_int_u (I64.to_int_u (uN 8 s))
+let u32 s = I32.of_int_u (I64.to_int_u (uN 32 s))
+let u64 s = uN 64 s
+let s7 s = I64.to_int_s (sN 7 s)
+let s32 s = I32.of_int_s (I64.to_int_s (sN 32 s))
+let s33 s = Convert.I32_.wrap_i64 (sN 33 s)
 let s64 s = sN 64 s
 let f32 s = F32.of_bits (word32 s)
 let f64 s = F64.of_bits (word64 s)
-let v128 s = V128.of_bits (get_string (Types.vec_size Types.V128Type) s)
+let v128 s = V128.of_bits (get_string 16 s)
 
 let len32 s =
   let pos = pos s in
@@ -114,11 +117,11 @@ let len32 s =
   if I32.le_u n (Int32.of_int (len s - pos)) then Int32.to_int n else
     error s pos "length out of bounds"
 
-let bool s = (u1 s = 1)
 let string s = let n = len32 s in get_string n s
 let rec list f n s = if n = 0 then [] else let x = f s in x :: list f (n - 1) s
 let opt f b s = if b then Some (f s) else None
 let vec f s = let n = len32 s in list f n s
+let repeat n f s = List.init n (fun _ -> f s)
 
 let rec either fs s =
   match fs with
@@ -144,93 +147,210 @@ let sized f s =
 
 open Types
 
-let num_type s =
-  match s7 s with
-  | -0x01 -> I32Type
-  | -0x02 -> I64Type
-  | -0x03 -> F32Type
-  | -0x04 -> F64Type
-  | _ -> error s (pos s - 1) "malformed number type"
-
-let vec_type s =
-  match s7 s with
-  | -0x05 -> V128Type
-  | _ -> error s (pos s - 1) "malformed vector type"
-
-let ref_type s =
-  match s7 s with
-  | -0x10 -> FuncRefType
-  | -0x11 -> ExternRefType
-  | _ -> error s (pos s - 1) "malformed reference type"
-
-let value_type s =
-  either [
-    (fun s -> NumType (num_type s));
-    (fun s -> VecType (vec_type s));
-    (fun s -> RefType (ref_type s));
-  ] s
-
-let result_type s = vec value_type s
-
-let func_type s =
-  match s7 s with
-  | -0x20 ->
-    let ts1 = result_type s in
-    let ts2 = result_type s in
-    FuncType (ts1, ts2)
-  | _ -> error s (pos s - 1) "malformed function type"
-
-let limits uN s =
-  let has_max = bool s in
-  let min = uN s in
-  let max = opt uN has_max s in
-  {min; max}
-
-let table_type s =
-  let t = ref_type s in
-  let lim = limits u32 s in
-  TableType (lim, t)
-
-let memory_type s =
-  let lim = limits u32 s in
-  MemoryType lim
+let zero s = expect 0x00 s "zero byte expected"
+let idx s = u32 s
+let laneidx s = u8 s
 
 let mutability s =
   match byte s with
-  | 0 -> Immutable
-  | 1 -> Mutable
+  | 0 -> Cons
+  | 1 -> Var
   | _ -> error s (pos s - 1) "malformed mutability"
 
-let global_type s =
-  let t = value_type s in
+let typeuse idx s =
+  let pos = pos s in
+  match idx s with
+  | i when i >= 0l -> Idx i
+  | _ -> error s pos "malformed type index"
+
+let numtype s =
+  match s7 s with
+  | -0x01 -> I32T
+  | -0x02 -> I64T
+  | -0x03 -> F32T
+  | -0x04 -> F64T
+  | _ -> error s (pos s - 1) "malformed number type"
+
+let vectype s =
+  match s7 s with
+  | -0x05 -> V128T
+  | _ -> error s (pos s - 1) "malformed vector type"
+
+let heaptype s =
+  let pos = pos s in
+  either [
+    (fun s -> UseHT (typeuse s33 s));
+    (fun s ->
+      match s7 s with
+      | -0x0c -> NoExnHT
+      | -0x0d -> NoFuncHT
+      | -0x0e -> NoExternHT
+      | -0x0f -> NoneHT
+      | -0x10 -> FuncHT
+      | -0x11 -> ExternHT
+      | -0x12 -> AnyHT
+      | -0x13 -> EqHT
+      | -0x14 -> I31HT
+      | -0x15 -> StructHT
+      | -0x16 -> ArrayHT
+      | -0x17 -> ExnHT
+      | _ -> error s pos "malformed heap type"
+    )
+  ] s
+
+let reftype s =
+  let pos = pos s in
+  match s7 s with
+  | -0x0c -> (Null, NoExnHT)
+  | -0x0d -> (Null, NoFuncHT)
+  | -0x0e -> (Null, NoExternHT)
+  | -0x0f -> (Null, NoneHT)
+  | -0x10 -> (Null, FuncHT)
+  | -0x11 -> (Null, ExternHT)
+  | -0x12 -> (Null, AnyHT)
+  | -0x13 -> (Null, EqHT)
+  | -0x14 -> (Null, I31HT)
+  | -0x15 -> (Null, StructHT)
+  | -0x16 -> (Null, ArrayHT)
+  | -0x17 -> (Null, ExnHT)
+  | -0x1c -> (NoNull, heaptype s)
+  | -0x1d -> (Null, heaptype s)
+  | _ -> error s pos "malformed reference type"
+
+let valtype s =
+  either [
+    (fun s -> NumT (numtype s));
+    (fun s -> VecT (vectype s));
+    (fun s -> RefT (reftype s));
+  ] s
+
+let resulttype s = vec valtype s
+
+let packtype s =
+  let pos = pos s in
+  match s7 s with
+  | -0x08 -> I8T
+  | -0x09 -> I16T
+  | _ -> error s pos "malformed storage type"
+
+let storagetype s =
+  either [
+    (fun s -> ValStorageT (valtype s));
+    (fun s -> PackStorageT (packtype s));
+  ] s
+
+let fieldtype s =
+  let t = storagetype s in
   let mut = mutability s in
-  GlobalType (t, mut)
+  FieldT (mut, t)
+
+let comptype s =
+  match s7 s with
+  | -0x20 ->
+    let ts1 = resulttype s in
+    let ts2 = resulttype s in
+    FuncT (ts1, ts2)
+  | -0x21 ->
+    let fts = vec fieldtype s in
+    StructT fts
+  | -0x22 ->
+    let ft = fieldtype s in
+    ArrayT ft
+  | _ -> error s (pos s - 1) "malformed definition type"
+
+let subtype s =
+  match peek s with
+  | Some i when i = -0x30 land 0x7f ->
+    skip 1 s;
+    let uts = vec (typeuse u32) s in
+    SubT (NoFinal, uts, comptype s)
+  | Some i when i = -0x31 land 0x7f ->
+    skip 1 s;
+    let uts = vec (typeuse u32) s in
+    SubT (Final, uts, comptype s)
+  | _ -> SubT (Final, [], comptype s)
+
+let rectype s =
+  match peek s with
+  | Some i when i = -0x32 land 0x7f -> skip 1 s; RecT (vec subtype s)
+  | _ -> RecT [subtype s]
+
+
+let limits uN s =
+  let flags = byte s in
+  require (flags land 0xfa = 0) s (pos s - 1) "malformed limits flags";
+  let has_max = (flags land 1 = 1) in
+  let at = if flags land 4 = 4 then I64AT else I32AT in
+  let min = uN s in
+  let max = opt uN has_max s in
+  at, {min; max}
+
+let tagtype s =
+  zero s;
+  TagT (typeuse idx s)
+
+let globaltype s =
+  let t = valtype s in
+  let mut = mutability s in
+  GlobalT (mut, t)
+
+let memorytype s =
+  let at, lim = limits u64 s in
+  MemoryT (at, lim)
+
+let tabletype s =
+  let t = reftype s in
+  let at, lim = limits u64 s in
+  TableT (at, lim, t)
+
+let externtype s =
+  match byte s with
+  | 0x00 -> ExternFuncT (typeuse idx s)
+  | 0x01 -> ExternTableT (tabletype s)
+  | 0x02 -> ExternMemoryT (memorytype s)
+  | 0x03 -> ExternGlobalT (globaltype s)
+  | 0x04 -> ExternTagT (tagtype s)
+  | _ -> error s (pos s - 1) "malformed import kind"
 
 
 (* Instructions *)
 
 open Ast
-open Operators
-
-let var s = u32 s
+open Mnemonics
 
 let op s = byte s
 let end_ s = expect 0x0b s "END opcode expected"
-let zero s = expect 0x00 s "zero byte expected"
 
 let memop s =
-  let align = u32 s in
-  require (I32.lt_u align 32l) s (pos s - 1) "malformed memop flags";
-  let offset = u32 s in
-  Int32.to_int align, offset
+  let pos = pos s in
+  let flags = u32 s in
+  require (I32.lt_u flags 0x80l) s pos "malformed memop flags";
+  let has_idx = Int32.logand flags 0x40l <> 0l in
+  let x = if has_idx then at idx s else Source.(0l @@ no_region) in
+  let align = Int32.(to_int (logand flags 0x3fl)) in
+  let offset = u64 s in
+  x, align, offset
 
-let block_type s =
-  let p = pos s in
+let blocktype s =
   either [
-    (fun s -> let x = at s33 s in require (x.it >= 0l) s p ""; VarBlockType x);
+    (fun s -> VarBlockType (at (fun s -> idx_of_typeuse (typeuse s33 s)) s));
     (fun s -> expect 0x40 s ""; ValBlockType None);
-    (fun s -> ValBlockType (Some (value_type s)));
+    (fun s -> ValBlockType (Some (valtype s)));
   ] s
+
+let local s =
+  let n = u32 s in
+  let t = at valtype s in
+  n, Local t.it @@ t.at
+
+let locals s =
+  let pos = pos s in
+  let nts = vec local s in
+  let ns = List.map (fun (n, _) -> Convert.I64_.extend_i32_u n) nts in
+  require (I64.lt_u (List.fold_left I64.add 0L ns) 0x1_0000_0000L)
+    s pos "too many locals";
+  List.flatten (List.map (Lib.Fun.uncurry Lib.List32.make) nts)
+
 
 let rec instr s =
   let pos = pos s in
@@ -239,17 +359,17 @@ let rec instr s =
   | 0x01 -> nop
 
   | 0x02 ->
-    let bt = block_type s in
+    let bt = blocktype s in
     let es' = instr_block s in
     end_ s;
     block bt es'
   | 0x03 ->
-    let bt = block_type s in
+    let bt = blocktype s in
     let es' = instr_block s in
     end_ s;
     loop bt es'
   | 0x04 ->
-    let bt = block_type s in
+    let bt = blocktype s in
     let es1 = instr_block s in
     if peek s = Some 0x05 then begin
       expect 0x05 s "ELSE or END opcode expected";
@@ -262,73 +382,82 @@ let rec instr s =
     end
 
   | 0x05 -> error s pos "misplaced ELSE opcode"
-  | 0x06| 0x07 | 0x08 | 0x09 | 0x0a as b -> illegal s pos b
+  | 0x06 | 0x07 as b -> illegal s pos b
+  | 0x08 -> let x = at idx s in throw x
+  | 0x09 as b -> illegal s pos b
+  | 0x0a -> throw_ref
   | 0x0b -> error s pos "misplaced END opcode"
 
-  | 0x0c -> br (at var s)
-  | 0x0d -> br_if (at var s)
-  | 0x0e ->
-    let xs = vec (at var) s in
-    let x = at var s in
-    br_table xs x
+  | 0x0c -> let x = at idx s in br x
+  | 0x0d -> let x = at idx s in br_if x
+  | 0x0e -> let xs = vec (at idx) s in let x = at idx s in br_table xs x
   | 0x0f -> return
 
-  | 0x10 -> call (at var s)
-  | 0x11 ->
-    let y = at var s in
-    let x = at var s in
-    call_indirect x y
+  | 0x10 -> let x = at idx s in call x
+  | 0x11 -> let y = at idx s in let x = at idx s in call_indirect x y
+  | 0x12 -> let x = at idx s in return_call x
+  | 0x13 -> let y = at idx s in let x = at idx s in return_call_indirect x y
 
-  | 0x12 | 0x13 | 0x14 | 0x15 | 0x16 | 0x17 | 0x18 | 0x19 as b -> illegal s pos b
+  | 0x14 -> let x = at idx s in call_ref x
+  | 0x15 -> let x = at idx s in return_call_ref x
+
+  | 0x16 | 0x17 | 0x18 | 0x19 as b -> illegal s pos b
 
   | 0x1a -> drop
   | 0x1b -> select None
-  | 0x1c -> select (Some (vec value_type s))
+  | 0x1c -> let ts = vec valtype s in select (Some ts)
 
-  | 0x1d | 0x1e | 0x1f as b -> illegal s pos b
+  | 0x1d | 0x1e as b -> illegal s pos b
 
-  | 0x20 -> local_get (at var s)
-  | 0x21 -> local_set (at var s)
-  | 0x22 -> local_tee (at var s)
-  | 0x23 -> global_get (at var s)
-  | 0x24 -> global_set (at var s)
-  | 0x25 -> table_get (at var s)
-  | 0x26 -> table_set (at var s)
+  | 0x1f ->
+    let bt = blocktype s in
+    let cs = vec (at catch) s in
+    let es = instr_block s in
+    end_ s;
+    try_table bt cs es
+
+  | 0x20 -> let x = at idx s in local_get x
+  | 0x21 -> let x = at idx s in local_set x
+  | 0x22 -> let x = at idx s in local_tee x
+  | 0x23 -> let x = at idx s in global_get x
+  | 0x24 -> let x = at idx s in global_set x
+  | 0x25 -> let x = at idx s in table_get x
+  | 0x26 -> let x = at idx s in table_set x
 
   | 0x27 as b -> illegal s pos b
 
-  | 0x28 -> let a, o = memop s in i32_load a o
-  | 0x29 -> let a, o = memop s in i64_load a o
-  | 0x2a -> let a, o = memop s in f32_load a o
-  | 0x2b -> let a, o = memop s in f64_load a o
-  | 0x2c -> let a, o = memop s in i32_load8_s a o
-  | 0x2d -> let a, o = memop s in i32_load8_u a o
-  | 0x2e -> let a, o = memop s in i32_load16_s a o
-  | 0x2f -> let a, o = memop s in i32_load16_u a o
-  | 0x30 -> let a, o = memop s in i64_load8_s a o
-  | 0x31 -> let a, o = memop s in i64_load8_u a o
-  | 0x32 -> let a, o = memop s in i64_load16_s a o
-  | 0x33 -> let a, o = memop s in i64_load16_u a o
-  | 0x34 -> let a, o = memop s in i64_load32_s a o
-  | 0x35 -> let a, o = memop s in i64_load32_u a o
+  | 0x28 -> let x, a, o = memop s in i32_load x a o
+  | 0x29 -> let x, a, o = memop s in i64_load x a o
+  | 0x2a -> let x, a, o = memop s in f32_load x a o
+  | 0x2b -> let x, a, o = memop s in f64_load x a o
+  | 0x2c -> let x, a, o = memop s in i32_load8_s x a o
+  | 0x2d -> let x, a, o = memop s in i32_load8_u x a o
+  | 0x2e -> let x, a, o = memop s in i32_load16_s x a o
+  | 0x2f -> let x, a, o = memop s in i32_load16_u x a o
+  | 0x30 -> let x, a, o = memop s in i64_load8_s x a o
+  | 0x31 -> let x, a, o = memop s in i64_load8_u x a o
+  | 0x32 -> let x, a, o = memop s in i64_load16_s x a o
+  | 0x33 -> let x, a, o = memop s in i64_load16_u x a o
+  | 0x34 -> let x, a, o = memop s in i64_load32_s x a o
+  | 0x35 -> let x, a, o = memop s in i64_load32_u x a o
 
-  | 0x36 -> let a, o = memop s in i32_store a o
-  | 0x37 -> let a, o = memop s in i64_store a o
-  | 0x38 -> let a, o = memop s in f32_store a o
-  | 0x39 -> let a, o = memop s in f64_store a o
-  | 0x3a -> let a, o = memop s in i32_store8 a o
-  | 0x3b -> let a, o = memop s in i32_store16 a o
-  | 0x3c -> let a, o = memop s in i64_store8 a o
-  | 0x3d -> let a, o = memop s in i64_store16 a o
-  | 0x3e -> let a, o = memop s in i64_store32 a o
+  | 0x36 -> let x, a, o = memop s in i32_store x a o
+  | 0x37 -> let x, a, o = memop s in i64_store x a o
+  | 0x38 -> let x, a, o = memop s in f32_store x a o
+  | 0x39 -> let x, a, o = memop s in f64_store x a o
+  | 0x3a -> let x, a, o = memop s in i32_store8 x a o
+  | 0x3b -> let x, a, o = memop s in i32_store16 x a o
+  | 0x3c -> let x, a, o = memop s in i64_store8 x a o
+  | 0x3d -> let x, a, o = memop s in i64_store16 x a o
+  | 0x3e -> let x, a, o = memop s in i64_store32 x a o
 
-  | 0x3f -> zero s; memory_size
-  | 0x40 -> zero s; memory_grow
+  | 0x3f -> let x = at idx s in memory_size x
+  | 0x40 -> let x = at idx s in memory_grow x
 
-  | 0x41 -> i32_const (at s32 s)
-  | 0x42 -> i64_const (at s64 s)
-  | 0x43 -> f32_const (at f32 s)
-  | 0x44 -> f64_const (at f64 s)
+  | 0x41 -> let c = at s32 s in i32_const c
+  | 0x42 -> let c = at s64 s in i64_const c
+  | 0x43 -> let c = at f32 s in f32_const c
+  | 0x44 -> let c = at f64 s in f64_const c
 
   | 0x45 -> i32_eqz
   | 0x46 -> i32_eq
@@ -472,9 +601,59 @@ let rec instr s =
   | 0xc5 | 0xc6 | 0xc7 | 0xc8 | 0xc9 | 0xca | 0xcb
   | 0xcc | 0xcd | 0xce | 0xcf as b -> illegal s pos b
 
-  | 0xd0 -> ref_null (ref_type s)
+  | 0xd0 -> let ht = heaptype s in ref_null ht
   | 0xd1 -> ref_is_null
-  | 0xd2 -> ref_func (at var s)
+  | 0xd2 -> let x = at idx s in ref_func x
+  | 0xd3 -> ref_eq
+  | 0xd4 -> ref_as_non_null
+  | 0xd5 -> let x = at idx s in br_on_null x
+  | 0xd6 -> let x = at idx s in br_on_non_null x
+
+  | 0xfb as b ->
+    (match u32 s with
+    | 0x00l -> let x = at idx s in struct_new x
+    | 0x01l -> let x = at idx s in struct_new_default x
+    | 0x02l -> let x = at idx s in let i = idx s in struct_get x i
+    | 0x03l -> let x = at idx s in let i = idx s in struct_get_s x i
+    | 0x04l -> let x = at idx s in let i = idx s in struct_get_u x i
+    | 0x05l -> let x = at idx s in let i = idx s in struct_set x i
+
+    | 0x06l -> let x = at idx s in array_new x
+    | 0x07l -> let x = at idx s in array_new_default x
+    | 0x08l -> let x = at idx s in let n = u32 s in array_new_fixed x n
+    | 0x09l -> let x = at idx s in let y = at idx s in array_new_data x y
+    | 0x0al -> let x = at idx s in let y = at idx s in array_new_elem x y
+    | 0x0bl -> let x = at idx s in array_get x
+    | 0x0cl -> let x = at idx s in array_get_s x
+    | 0x0dl -> let x = at idx s in array_get_u x
+    | 0x0el -> let x = at idx s in array_set x
+    | 0x0fl -> array_len
+    | 0x10l -> let x = at idx s in array_fill x
+    | 0x11l -> let x = at idx s in let y = at idx s in array_copy x y
+    | 0x12l -> let x = at idx s in let y = at idx s in array_init_data x y
+    | 0x13l -> let x = at idx s in let y = at idx s in array_init_elem x y
+
+    | 0x14l -> let ht = heaptype s in ref_test (NoNull, ht)
+    | 0x15l -> let ht = heaptype s in ref_test (Null, ht)
+    | 0x16l -> let ht = heaptype s in ref_cast (NoNull, ht)
+    | 0x17l -> let ht = heaptype s in ref_cast (Null, ht)
+    | 0x18l | 0x19l as opcode ->
+      let flags = byte s in
+      require (flags land 0xfc = 0) s (pos + 2) "malformed br_on_cast flags";
+      let x = at idx s in
+      let rt1 = ((if bit 0 flags then Null else NoNull), heaptype s) in
+      let rt2 = ((if bit 1 flags then Null else NoNull), heaptype s) in
+      (if opcode = 0x18l then br_on_cast else br_on_cast_fail) x rt1 rt2
+
+    | 0x1al -> any_convert_extern
+    | 0x1bl -> extern_convert_any
+
+    | 0x1cl -> ref_i31
+    | 0x1dl -> i31_get_s
+    | 0x1el -> i31_get_u
+
+    | n -> illegal2 s pos b n
+    )
 
   | 0xfc as b ->
     (match u32 s with
@@ -487,45 +666,37 @@ let rec instr s =
     | 0x06l -> i64_trunc_sat_f64_s
     | 0x07l -> i64_trunc_sat_f64_u
 
-    | 0x08l ->
-      let x = at var s in
-      zero s; memory_init x
-    | 0x09l -> data_drop (at var s)
-    | 0x0al -> zero s; zero s; memory_copy
-    | 0x0bl -> zero s; memory_fill
+    | 0x08l -> let y = at idx s in let x = at idx s in memory_init x y
+    | 0x09l -> let x = at idx s in data_drop x
+    | 0x0al -> let x = at idx s in let y = at idx s in memory_copy x y
+    | 0x0bl -> let x = at idx s in memory_fill x
 
-    | 0x0cl ->
-      let y = at var s in
-      let x = at var s in
-      table_init x y
-    | 0x0dl -> elem_drop (at var s)
-    | 0x0el ->
-      let x = at var s in
-      let y = at var s in
-      table_copy x y
-    | 0x0fl -> table_grow (at var s)
-    | 0x10l -> table_size (at var s)
-    | 0x11l -> table_fill (at var s)
+    | 0x0cl -> let y = at idx s in let x = at idx s in table_init x y
+    | 0x0dl -> let x = at idx s in elem_drop x
+    | 0x0el -> let x = at idx s in let y = at idx s in table_copy x y
+    | 0x0fl -> let x = at idx s in table_grow x
+    | 0x10l -> let x = at idx s in table_size x
+    | 0x11l -> let x = at idx s in table_fill x
 
     | n -> illegal2 s pos b n
     )
 
   | 0xfd ->
     (match u32 s with
-    | 0x00l -> let a, o = memop s in v128_load a o
-    | 0x01l -> let a, o = memop s in v128_load8x8_s a o
-    | 0x02l -> let a, o = memop s in v128_load8x8_u a o
-    | 0x03l -> let a, o = memop s in v128_load16x4_s a o
-    | 0x04l -> let a, o = memop s in v128_load16x4_u a o
-    | 0x05l -> let a, o = memop s in v128_load32x2_s a o
-    | 0x06l -> let a, o = memop s in v128_load32x2_u a o
-    | 0x07l -> let a, o = memop s in v128_load8_splat a o
-    | 0x08l -> let a, o = memop s in v128_load16_splat a o
-    | 0x09l -> let a, o = memop s in v128_load32_splat a o
-    | 0x0al -> let a, o = memop s in v128_load64_splat a o
-    | 0x0bl -> let a, o = memop s in v128_store a o
-    | 0x0cl -> v128_const (at v128 s)
-    | 0x0dl -> i8x16_shuffle (List.init 16 (fun _ -> byte s))
+    | 0x00l -> let x, a, o = memop s in v128_load x a o
+    | 0x01l -> let x, a, o = memop s in v128_load8x8_s x a o
+    | 0x02l -> let x, a, o = memop s in v128_load8x8_u x a o
+    | 0x03l -> let x, a, o = memop s in v128_load16x4_s x a o
+    | 0x04l -> let x, a, o = memop s in v128_load16x4_u x a o
+    | 0x05l -> let x, a, o = memop s in v128_load32x2_s x a o
+    | 0x06l -> let x, a, o = memop s in v128_load32x2_u x a o
+    | 0x07l -> let x, a, o = memop s in v128_load8_splat x a o
+    | 0x08l -> let x, a, o = memop s in v128_load16_splat x a o
+    | 0x09l -> let x, a, o = memop s in v128_load32_splat x a o
+    | 0x0al -> let x, a, o = memop s in v128_load64_splat x a o
+    | 0x0bl -> let x, a, o = memop s in v128_store x a o
+    | 0x0cl -> let c = at v128 s in v128_const c
+    | 0x0dl -> let is = repeat 16 laneidx s in i8x16_shuffle is
     | 0x0el -> i8x16_swizzle
     | 0x0fl -> i8x16_splat
     | 0x10l -> i16x8_splat
@@ -533,20 +704,20 @@ let rec instr s =
     | 0x12l -> i64x2_splat
     | 0x13l -> f32x4_splat
     | 0x14l -> f64x2_splat
-    | 0x15l -> let i = byte s in i8x16_extract_lane_s i
-    | 0x16l -> let i = byte s in i8x16_extract_lane_u i
-    | 0x17l -> let i = byte s in i8x16_replace_lane i
-    | 0x18l -> let i = byte s in i16x8_extract_lane_s i
-    | 0x19l -> let i = byte s in i16x8_extract_lane_u i
-    | 0x1al -> let i = byte s in i16x8_replace_lane i
-    | 0x1bl -> let i = byte s in i32x4_extract_lane i
-    | 0x1cl -> let i = byte s in i32x4_replace_lane i
-    | 0x1dl -> let i = byte s in i64x2_extract_lane i
-    | 0x1el -> let i = byte s in i64x2_replace_lane i
-    | 0x1fl -> let i = byte s in f32x4_extract_lane i
-    | 0x20l -> let i = byte s in f32x4_replace_lane i
-    | 0x21l -> let i = byte s in f64x2_extract_lane i
-    | 0x22l -> let i = byte s in f64x2_replace_lane i
+    | 0x15l -> let i = laneidx s in i8x16_extract_lane_s i
+    | 0x16l -> let i = laneidx s in i8x16_extract_lane_u i
+    | 0x17l -> let i = laneidx s in i8x16_replace_lane i
+    | 0x18l -> let i = laneidx s in i16x8_extract_lane_s i
+    | 0x19l -> let i = laneidx s in i16x8_extract_lane_u i
+    | 0x1al -> let i = laneidx s in i16x8_replace_lane i
+    | 0x1bl -> let i = laneidx s in i32x4_extract_lane i
+    | 0x1cl -> let i = laneidx s in i32x4_replace_lane i
+    | 0x1dl -> let i = laneidx s in i64x2_extract_lane i
+    | 0x1el -> let i = laneidx s in i64x2_replace_lane i
+    | 0x1fl -> let i = laneidx s in f32x4_extract_lane i
+    | 0x20l -> let i = laneidx s in f32x4_replace_lane i
+    | 0x21l -> let i = laneidx s in f64x2_extract_lane i
+    | 0x22l -> let i = laneidx s in f64x2_replace_lane i
     | 0x23l -> i8x16_eq
     | 0x24l -> i8x16_ne
     | 0x25l -> i8x16_lt_s
@@ -597,39 +768,23 @@ let rec instr s =
     | 0x52l -> v128_bitselect
     | 0x53l -> v128_any_true
     | 0x54l ->
-      let a, o = memop s in
-      let lane = byte s in
-      v128_load8_lane a o lane
+      let x, a, o = memop s in let i = laneidx s in v128_load8_lane x a o i
     | 0x55l ->
-      let a, o = memop s in
-      let lane = byte s in
-      v128_load16_lane a o lane
+      let x, a, o = memop s in let i = laneidx s in v128_load16_lane x a o i
     | 0x56l ->
-      let a, o = memop s in
-      let lane = byte s in
-      v128_load32_lane a o lane
+      let x, a, o = memop s in let i = laneidx s in v128_load32_lane x a o i
     | 0x57l ->
-      let a, o = memop s in
-      let lane = byte s in
-      v128_load64_lane a o lane
+      let x, a, o = memop s in let i = laneidx s in v128_load64_lane x a o i
     | 0x58l ->
-      let a, o = memop s in
-      let lane = byte s in
-      v128_store8_lane a o lane
+      let x, a, o = memop s in let i = laneidx s in v128_store8_lane x a o i
     | 0x59l ->
-      let a, o = memop s in
-      let lane = byte s in
-      v128_store16_lane a o lane
+      let x, a, o = memop s in let i = laneidx s in v128_store16_lane x a o i
     | 0x5al ->
-      let a, o = memop s in
-      let lane = byte s in
-      v128_store32_lane a o lane
+      let x, a, o = memop s in let i = laneidx s in v128_store32_lane x a o i
     | 0x5bl ->
-      let a, o = memop s in
-      let lane = byte s in
-      v128_store64_lane a o lane
-    | 0x5cl -> let a, o = memop s in v128_load32_zero a o
-    | 0x5dl -> let a, o = memop s in v128_load64_zero a o
+      let x, a, o = memop s in let i = laneidx s in v128_store64_lane x a o i
+    | 0x5cl -> let x, a, o = memop s in v128_load32_zero x a o
+    | 0x5dl -> let x, a, o = memop s in v128_load64_zero x a o
     | 0x5el -> f32x4_demote_f64x2_zero
     | 0x5fl -> f64x2_promote_low_f32x4
     | 0x60l -> i8x16_abs
@@ -690,6 +845,7 @@ let rec instr s =
     | 0x97l -> i16x8_min_u
     | 0x98l -> i16x8_max_s
     | 0x99l -> i16x8_max_u
+    | 0x9al as n -> illegal s pos (I32.to_int_u n)
     | 0x9bl -> i16x8_avgr_u
     | 0x9cl -> i16x8_extmul_low_i8x16_s
     | 0x9dl -> i16x8_extmul_high_i8x16_s
@@ -697,8 +853,10 @@ let rec instr s =
     | 0x9fl -> i16x8_extmul_high_i8x16_u
     | 0xa0l -> i32x4_abs
     | 0xa1l -> i32x4_neg
+    | 0xa2l as n -> illegal s pos (I32.to_int_u n)
     | 0xa3l -> i32x4_all_true
     | 0xa4l -> i32x4_bitmask
+    | 0xa5l | 0xa6l as n -> illegal s pos (I32.to_int_u n)
     | 0xa7l -> i32x4_extend_low_i16x8_s
     | 0xa8l -> i32x4_extend_high_i16x8_s
     | 0xa9l -> i32x4_extend_low_i16x8_u
@@ -707,7 +865,9 @@ let rec instr s =
     | 0xacl -> i32x4_shr_s
     | 0xadl -> i32x4_shr_u
     | 0xael -> i32x4_add
+    | 0xafl | 0xb0l as n -> illegal s pos (I32.to_int_u n)
     | 0xb1l -> i32x4_sub
+    | 0xb2l | 0xb3l | 0xb4l as n -> illegal s pos (I32.to_int_u n)
     | 0xb5l -> i32x4_mul
     | 0xb6l -> i32x4_min_s
     | 0xb7l -> i32x4_min_u
@@ -720,8 +880,10 @@ let rec instr s =
     | 0xbfl -> i32x4_extmul_high_i16x8_u
     | 0xc0l -> i64x2_abs
     | 0xc1l -> i64x2_neg
+    | 0xc2l as n -> illegal s pos (I32.to_int_u n)
     | 0xc3l -> i64x2_all_true
     | 0xc4l -> i64x2_bitmask
+    | 0xc5l | 0xc6l as n -> illegal s pos (I32.to_int_u n)
     | 0xc7l -> i64x2_extend_low_i32x4_s
     | 0xc8l -> i64x2_extend_high_i32x4_s
     | 0xc9l -> i64x2_extend_low_i32x4_u
@@ -730,7 +892,9 @@ let rec instr s =
     | 0xccl -> i64x2_shr_s
     | 0xcdl -> i64x2_shr_u
     | 0xcel -> i64x2_add
+    | 0xcfl | 0xd0l as n -> illegal s pos (I32.to_int_u n)
     | 0xd1l -> i64x2_sub
+    | 0xd2l | 0xd3l | 0xd4l as n -> illegal s pos (I32.to_int_u n)
     | 0xd5l -> i64x2_mul
     | 0xd6l -> i64x2_eq
     | 0xd7l -> i64x2_ne
@@ -744,6 +908,7 @@ let rec instr s =
     | 0xdfl -> i64x2_extmul_high_i32x4_u
     | 0xe0l -> f32x4_abs
     | 0xe1l -> f32x4_neg
+    | 0xe2l as n -> illegal s pos (I32.to_int_u n)
     | 0xe3l -> f32x4_sqrt
     | 0xe4l -> f32x4_add
     | 0xe5l -> f32x4_sub
@@ -772,6 +937,26 @@ let rec instr s =
     | 0xfdl -> i32x4_trunc_sat_f64x2_u_zero
     | 0xfel -> f64x2_convert_low_i32x4_s
     | 0xffl -> f64x2_convert_low_i32x4_u
+    | 0x100l -> i8x16_relaxed_swizzle
+    | 0x101l -> i32x4_relaxed_trunc_f32x4_s
+    | 0x102l -> i32x4_relaxed_trunc_f32x4_u
+    | 0x103l -> i32x4_relaxed_trunc_f64x2_s_zero
+    | 0x104l -> i32x4_relaxed_trunc_f64x2_u_zero
+    | 0x105l -> f32x4_relaxed_madd
+    | 0x106l -> f32x4_relaxed_nmadd
+    | 0x107l -> f64x2_relaxed_madd
+    | 0x108l -> f64x2_relaxed_nmadd
+    | 0x109l -> i8x16_relaxed_laneselect
+    | 0x10al -> i16x8_relaxed_laneselect
+    | 0x10bl -> i32x4_relaxed_laneselect
+    | 0x10cl -> i64x2_relaxed_laneselect
+    | 0x10dl -> f32x4_relaxed_min
+    | 0x10el -> f32x4_relaxed_max
+    | 0x10fl -> f64x2_relaxed_min
+    | 0x110l -> f64x2_relaxed_max
+    | 0x111l -> i16x8_relaxed_q15mulr_s
+    | 0x112l -> i16x8_relaxed_dot_i8x16_i7x16_s
+    | 0x113l -> i32x4_relaxed_dot_i8x16_i7x16_add_s
     | n -> illegal s pos (I32.to_int_u n)
     )
 
@@ -786,6 +971,14 @@ and instr_block' s es =
     let e' = instr s in
     instr_block' s ((e' @@ region s pos pos) :: es)
 
+and catch s =
+  match byte s with
+  | 0x00 -> let x = at idx s in let y = at idx s in Mnemonics.catch x y
+  | 0x01 -> let x = at idx s in let y = at idx s in catch_ref x y
+  | 0x02 -> let x = at idx s in catch_all x
+  | 0x03 -> let x = at idx s in catch_all_ref x
+  | _ -> error s (pos s - 1) "malformed catch clause"
+
 let const s =
   let c = at instr_block s in
   end_ s;
@@ -798,221 +991,216 @@ let id s =
   let bo = peek s in
   Lib.Option.map
     (function
-    | 0 -> `CustomSection
-    | 1 -> `TypeSection
-    | 2 -> `ImportSection
-    | 3 -> `FuncSection
-    | 4 -> `TableSection
-    | 5 -> `MemorySection
-    | 6 -> `GlobalSection
-    | 7 -> `ExportSection
-    | 8 -> `StartSection
-    | 9 -> `ElemSection
-    | 10 -> `CodeSection
-    | 11 -> `DataSection
-    | 12 -> `DataCountSection
+    | 0 -> Custom.Custom
+    | 1 -> Custom.Type
+    | 2 -> Custom.Import
+    | 3 -> Custom.Func
+    | 4 -> Custom.Table
+    | 5 -> Custom.Memory
+    | 6 -> Custom.Global
+    | 7 -> Custom.Export
+    | 8 -> Custom.Start
+    | 9 -> Custom.Elem
+    | 10 -> Custom.Code
+    | 11 -> Custom.Data
+    | 12 -> Custom.DataCount
+    | 13 -> Custom.Tag
     | _ -> error s (pos s) "malformed section id"
     ) bo
 
-let section_with_size tag f default s =
+let section_with_size kind f default s =
   match id s with
-  | Some tag' when tag' = tag -> skip 1 s; sized f s
+  | Some kind' when kind' = kind -> skip 1 s; sized f s
   | _ -> default
 
-let section tag f default s =
-  section_with_size tag (fun _ -> f) default s
+let section kind f default s =
+  section_with_size kind (fun _ -> f) default s
 
 
 (* Type section *)
 
-let type_ s = at func_type s
+let type_ s = at rectype s
 
 let type_section s =
-  section `TypeSection (vec type_) [] s
+  section Custom.Type (vec type_) [] s
 
 
 (* Import section *)
 
-let import_desc s =
-  match byte s with
-  | 0x00 -> FuncImport (at var s)
-  | 0x01 -> TableImport (table_type s)
-  | 0x02 -> MemoryImport (memory_type s)
-  | 0x03 -> GlobalImport (global_type s)
-  | _ -> error s (pos s - 1) "malformed import kind"
-
 let import s =
   let module_name = name s in
   let item_name = name s in
-  let idesc = at import_desc s in
-  {module_name; item_name; idesc}
+  let xt = externtype s in
+  Import (module_name, item_name, xt)
 
 let import_section s =
-  section `ImportSection (vec (at import)) [] s
+  section Custom.Import (vec (at import)) [] s
 
 
 (* Function section *)
 
 let func_section s =
-  section `FuncSection (vec (at var)) [] s
+  section Custom.Func (vec (at idx)) [] s
 
 
 (* Table section *)
 
 let table s =
-  let ttype = table_type s in
-  {ttype}
+  either [
+    (fun s ->
+      expect 0x40 s "";
+      zero s;
+      let tt = tabletype s in
+      let c = const s in
+      Table (tt, c)
+    );
+    (fun s ->
+      let at = region s (pos s) (pos s) in
+      let TableT (_, _at, (_, ht)) as tt = tabletype s in
+      let c = [RefNull ht @@ at] @@ at in
+      Table (tt, c)
+    );
+  ] s
 
 let table_section s =
-  section `TableSection (vec (at table)) [] s
+  section Custom.Table (vec (at table)) [] s
 
 
 (* Memory section *)
 
 let memory s =
-  let mtype = memory_type s in
-  {mtype}
+  let mt = memorytype s in
+  Memory mt
 
 let memory_section s =
-  section `MemorySection (vec (at memory)) [] s
+  section Custom.Memory (vec (at memory)) [] s
+
+
+(* Tag section *)
+
+let tag s =
+  let tt = tagtype s in
+  Tag tt
+
+let tag_section s =
+  section Custom.Tag (vec (at tag)) [] s
 
 
 (* Global section *)
 
 let global s =
-  let gtype = global_type s in
-  let ginit = const s in
-  {gtype; ginit}
+  let gt = globaltype s in
+  let c = const s in
+  Global (gt, c)
 
 let global_section s =
-  section `GlobalSection (vec (at global)) [] s
+  section Custom.Global (vec (at global)) [] s
 
 
 (* Export section *)
 
-let export_desc s =
+let externidx s =
   match byte s with
-  | 0x00 -> FuncExport (at var s)
-  | 0x01 -> TableExport (at var s)
-  | 0x02 -> MemoryExport (at var s)
-  | 0x03 -> GlobalExport (at var s)
+  | 0x00 -> let x = at idx s in FuncX x
+  | 0x01 -> let x = at idx s in TableX x
+  | 0x02 -> let x = at idx s in MemoryX x
+  | 0x03 -> let x = at idx s in GlobalX x
+  | 0x04 -> let x = at idx s in TagX x
   | _ -> error s (pos s - 1) "malformed export kind"
 
 let export s =
   let name = name s in
-  let edesc = at export_desc s in
-  {name; edesc}
+  let xx = at externidx s in
+  Export (name, xx)
 
 let export_section s =
-  section `ExportSection (vec (at export)) [] s
+  section Custom.Export (vec (at export)) [] s
 
 
 (* Start section *)
 
 let start s =
-  let sfunc = at var s in
-  {sfunc}
+  let x = at idx s in
+  Start x
 
 let start_section s =
-  section `StartSection (opt (at start) true) None s
+  section Custom.Start (opt (at start) true) None s
 
 
 (* Code section *)
 
-let local s =
-  let n = u32 s in
-  let t = value_type s in
-  n, t
-
-let locals s =
-  let pos = pos s in
-  let nts = vec local s in
-  let ns = List.map (fun (n, _) -> I64_convert.extend_i32_u n) nts in
-  require (I64.lt_u (List.fold_left I64.add 0L ns) 0x1_0000_0000L)
-    s pos "too many locals";
-  List.flatten (List.map (Lib.Fun.uncurry Lib.List32.make) nts)
-
 let code _ s =
-  let locals = locals s in
-  let body = instr_block s in
+  let ls = locals s in
+  let es = instr_block s in
   end_ s;
-  {locals; body; ftype = -1l @@ no_region}
+  Func (-1l @@ no_region, ls, es)
 
 let code_section s =
-  section `CodeSection (vec (at (sized code))) [] s
+  section Custom.Code (vec (at (sized code))) [] s
 
 
 (* Element section *)
 
-let passive s =
-  Passive
-
-let active s =
-  let index = at var s in
-  let offset = const s in
-  Active {index; offset}
-
-let active_zero s =
-  let index = 0l @@ no_region in
-  let offset = const s in
-  Active {index; offset}
-
-let declarative s =
-  Declarative
+let passive s = Passive
+let active s = let x = at idx s in let c = const s in Active (x, c)
+let active_zero s = let x = 0l @@ no_region in let c = const s in Active (x, c)
+let declarative s = Declarative
 
 let elem_index s =
-  let x = at var s in
+  let x = at idx s in
   [ref_func x @@ x.at]
 
 let elem_kind s =
   match byte s with
-  | 0x00 -> FuncRefType
+  | 0x00 -> (NoNull, FuncHT)
   | _ -> error s (pos s - 1) "malformed element kind"
 
 let elem s =
   match u32 s with
   | 0x00l ->
     let emode = at active_zero s in
-    let einit = vec (at elem_index) s in
-    {etype = FuncRefType; einit; emode}
+    let rt = (NoNull, FuncHT) in
+    let cs = vec (at elem_index) s in
+    Elem (rt, cs, emode)
   | 0x01l ->
     let emode = at passive s in
-    let etype = elem_kind s in
-    let einit = vec (at elem_index) s in
-    {etype; einit; emode}
+    let rt = elem_kind s in
+    let cs = vec (at elem_index) s in
+    Elem (rt, cs, emode)
   | 0x02l ->
     let emode = at active s in
-    let etype = elem_kind s in
-    let einit = vec (at elem_index) s in
-    {etype; einit; emode}
+    let rt = elem_kind s in
+    let cs = vec (at elem_index) s in
+    Elem (rt, cs, emode)
   | 0x03l ->
     let emode = at declarative s in
-    let etype = elem_kind s in
-    let einit = vec (at elem_index) s in
-    {etype; einit; emode}
+    let rt = elem_kind s in
+    let cs = vec (at elem_index) s in
+    Elem (rt, cs, emode)
   | 0x04l ->
     let emode = at active_zero s in
-    let einit = vec const s in
-    {etype = FuncRefType; einit; emode}
+    let rt = (Null, FuncHT) in
+    let cs = vec const s in
+    Elem (rt, cs, emode)
   | 0x05l ->
     let emode = at passive s in
-    let etype = ref_type s in
-    let einit = vec const s in
-    {etype; einit; emode}
+    let rt = reftype s in
+    let cs = vec const s in
+    Elem (rt, cs, emode)
   | 0x06l ->
     let emode = at active s in
-    let etype = ref_type s in
-    let einit = vec const s in
-    {etype; einit; emode}
+    let rt = reftype s in
+    let cs = vec const s in
+    Elem (rt, cs, emode)
   | 0x07l ->
     let emode = at declarative s in
-    let etype = ref_type s in
-    let einit = vec const s in
-    {etype; einit; emode}
+    let rt = reftype s in
+    let cs = vec const s in
+    Elem (rt, cs, emode)
   | _ -> error s (pos s - 1) "malformed elements segment kind"
 
 let elem_section s =
-  section `ElemSection (vec (at elem)) [] s
+  section Custom.Elem (vec (at elem)) [] s
 
 
 (* Data section *)
@@ -1021,20 +1209,20 @@ let data s =
   match u32 s with
   | 0x00l ->
     let dmode = at active_zero s in
-    let dinit = string s in
-    {dinit; dmode}
+    let bs = string s in
+    Data (bs, dmode)
   | 0x01l ->
     let dmode = at passive s in
-    let dinit = string s in
-    {dinit; dmode}
+    let bs = string s in
+    Data (bs, dmode)
   | 0x02l ->
     let dmode = at active s in
-    let dinit = string s in
-    {dinit; dmode}
+    let bs = string s in
+    Data (bs, dmode)
   | _ -> error s (pos s - 1) "malformed data segment kind"
 
 let data_section s =
-  section `DataSection (vec (at data)) [] s
+  section Custom.Data (vec (at data)) [] s
 
 
 (* DataCount section *)
@@ -1043,29 +1231,30 @@ let data_count s =
   Some (u32 s)
 
 let data_count_section s =
-  section `DataCountSection data_count None s
+  section Custom.DataCount data_count None s
 
 
 (* Custom section *)
 
-let custom size s =
+let custom place size s =
   let start = pos s in
-  let id = name s in
-  let bs = get_string (size - (pos s - start)) s in
-  Some (id, bs)
+  let name = name s in
+  let content = get_string (size - (pos s - start)) s in
+  Custom.{name; content; place}
 
-let custom_section s =
-  section_with_size `CustomSection custom None s
+let some_custom place size s =
+  Some (at (custom place size) s)
 
-let non_custom_section s =
-  match id s with
-  | None | Some `CustomSection -> None
-  | _ -> skip 1 s; sized skip s; Some ()
+let custom_section place s =
+  section_with_size Custom.Custom (some_custom place) None s
 
 
 (* Modules *)
 
-let rec iterate f s = if f s <> None then iterate f s
+let rec iterate f s =
+  match f s with
+  | None -> []
+  | Some x -> x :: iterate f s
 
 let magic = 0x6d736100l
 
@@ -1074,31 +1263,33 @@ let module_ s =
   require (header = magic) s 0 "magic header not detected";
   let version = word32 s in
   require (version = Encode.version) s 4 "unknown binary version";
-  iterate custom_section s;
+  let customs = iterate (custom_section Custom.(Before Type)) s in
   let types = type_section s in
-  iterate custom_section s;
+  let customs = customs @ iterate (custom_section Custom.(After Type)) s in
   let imports = import_section s in
-  iterate custom_section s;
+  let customs = customs @ iterate (custom_section Custom.(After Import)) s in
   let func_types = func_section s in
-  iterate custom_section s;
+  let customs = customs @ iterate (custom_section Custom.(After Func)) s in
   let tables = table_section s in
-  iterate custom_section s;
+  let customs = customs @ iterate (custom_section Custom.(After Table)) s in
   let memories = memory_section s in
-  iterate custom_section s;
+  let customs = customs @ iterate (custom_section Custom.(After Memory)) s in
+  let tags = tag_section s in
+  let customs = customs @ iterate (custom_section Custom.(After Tag)) s in
   let globals = global_section s in
-  iterate custom_section s;
+  let customs = customs @ iterate (custom_section Custom.(After Global)) s in
   let exports = export_section s in
-  iterate custom_section s;
+  let customs = customs @ iterate (custom_section Custom.(After Export)) s in
   let start = start_section s in
-  iterate custom_section s;
+  let customs = customs @ iterate (custom_section Custom.(After Start)) s in
   let elems = elem_section s in
-  iterate custom_section s;
+  let customs = customs @ iterate (custom_section Custom.(After Elem)) s in
   let data_count = data_count_section s in
-  iterate custom_section s;
+  let customs = customs @ iterate (custom_section Custom.(After DataCount)) s in
   let func_bodies = code_section s in
-  iterate custom_section s;
+  let customs = customs @ iterate (custom_section Custom.(After Code)) s in
   let datas = data_section s in
-  iterate custom_section s;
+  let customs = customs @ iterate (custom_section Custom.(After Data)) s in
   require (pos s = len s) s (len s) "unexpected content after last section";
   require (List.length func_types = List.length func_bodies)
     s (len s) "function and code section have inconsistent lengths";
@@ -1108,23 +1299,39 @@ let module_ s =
     List.for_all Free.(fun f -> (func f).datas = Set.empty) func_bodies)
     s (len s) "data count section required";
   let funcs =
-    List.map2 (fun t f -> {f.it with ftype = t} @@ f.at) func_types func_bodies
-  in {types; tables; memories; globals; funcs; imports; exports; elems; datas; start}
+    List.map2 Source.(fun x f ->
+      let Func (_, ls, es) = f.it in Func (x, ls, es) @@ f.at
+    ) func_types func_bodies
+  in
+  { types; tables; memories; tags; globals; funcs;
+    imports; exports; elems; datas; start },
+  customs
 
 
-let decode name bs = at module_ (stream name bs)
+let decode_custom m bs custom =
+  let open Source in
+  let Custom.{name; content; place} = custom.it in
+  match Custom.handler name, Custom.handler (Utf8.decode "custom") with
+  | Some (module Handler), _ ->
+    let fmt = Handler.decode m bs custom in
+    let module S = struct module Handler = Handler let it = fmt end in
+    [(module S : Custom.Section)]
+  | None, Some (module Handler') ->
+    let fmt = Handler'.decode m bs custom in
+    let module S = struct module Handler = Handler' let it = fmt end in
+    [(module S : Custom.Section)]
+  | None, None ->
+    if !Flags.custom_reject then
+      raise (Custom.Code (custom.at,
+        "unknown custom section \"" ^ Utf8.encode name ^ "\""))
+    else
+      []
 
-let all_custom tag s =
-  let header = word32 s in
-  require (header = magic) s 0 "magic header not detected";
-  let version = word32 s in
-  require (version = Encode.version) s 4 "unknown binary version";
-  let rec collect () =
-    iterate non_custom_section s;
-    match custom_section s with
-    | None -> []
-    | Some (n, s) when n = tag -> s :: collect ()
-    | Some _ -> collect ()
-  in collect ()
+let decode_with_custom name bs =
+  let m_cs = at module_ (stream name bs) in
+  let open Source in
+  let m', cs = m_cs.it in
+  let m = m' @@ m_cs.at in
+  m, List.flatten (List.map (decode_custom m bs) cs)
 
-let decode_custom tag name bs = all_custom tag (stream name bs)
+let decode name bs = fst (decode_with_custom name bs)

@@ -9,44 +9,45 @@ except that :ref:`function definitions <syntax-func>` are split into two section
    This separation enables *parallel* and *streaming* compilation of the functions in a module.
 
 
-.. index:: index, type index, function index, table index, memory index, global index, element index, data index, local index, label index
+.. index:: index, type index, tag index, global index, memory index, table index, function index, data index, element index, local index, label index, field index
    pair: binary format; type index
-   pair: binary format; function index
-   pair: binary format; table index
-   pair: binary format; memory index
+   pair: binary format; tag index
    pair: binary format; global index
-   pair: binary format; element index
+   pair: binary format; memory index
+   pair: binary format; table index
+   pair: binary format; function index
    pair: binary format; data index
+   pair: binary format; element index
    pair: binary format; local index
    pair: binary format; label index
+   pair: binary format; field index
 .. _binary-typeidx:
-.. _binary-funcidx:
-.. _binary-tableidx:
-.. _binary-memidx:
+.. _binary-tagidx:
 .. _binary-globalidx:
-.. _binary-elemidx:
+.. _binary-memidx:
+.. _binary-tableidx:
+.. _binary-funcidx:
 .. _binary-dataidx:
+.. _binary-elemidx:
 .. _binary-localidx:
 .. _binary-labelidx:
+.. _binary-fieldidx:
+.. _binary-externidx:
 .. _binary-index:
 
 Indices
 ~~~~~~~
 
-All :ref:`indices <syntax-index>` are encoded with their respective value.
+All basic :ref:`indices <syntax-index>` are encoded with their respective value.
 
-.. math::
-   \begin{array}{llclll}
-   \production{type index} & \Btypeidx &::=& x{:}\Bu32 &\Rightarrow& x \\
-   \production{function index} & \Bfuncidx &::=& x{:}\Bu32 &\Rightarrow& x \\
-   \production{table index} & \Btableidx &::=& x{:}\Bu32 &\Rightarrow& x \\
-   \production{memory index} & \Bmemidx &::=& x{:}\Bu32 &\Rightarrow& x \\
-   \production{global index} & \Bglobalidx &::=& x{:}\Bu32 &\Rightarrow& x \\
-   \production{element index} & \Belemidx &::=& x{:}\Bu32 &\Rightarrow& x \\
-   \production{data index} & \Bdataidx &::=& x{:}\Bu32 &\Rightarrow& x \\
-   \production{local index} & \Blocalidx &::=& x{:}\Bu32 &\Rightarrow& x \\
-   \production{label index} & \Blabelidx &::=& l{:}\Bu32 &\Rightarrow& l \\
-   \end{array}
+$${grammar: {
+  Btypeidx Bfuncidx Btableidx Bmemidx Bglobalidx Btagidx Belemidx Bdataidx
+  Blocalidx Blabelidx
+}}
+
+:ref:`External indices <syntax-externidx>` are encoded by a distiguishing byte followed by an encoding of their respective value.
+
+$${grammar: Bexternidx}
 
 
 .. index:: ! section
@@ -59,28 +60,22 @@ Sections
 Each section consists of
 
 * a one-byte section *id*,
-* the |U32| *size* of the contents, in bytes,
+* the ${:u32} *length* of the contents, in bytes,
 * the actual *contents*, whose structure is dependent on the section id.
 
 Every section is optional; an omitted section is equivalent to the section being present with empty contents.
 
-The following parameterized grammar rule defines the generic structure of a section with id :math:`N` and contents described by the grammar :math:`\B{B}`.
+The following parameterized grammar rule defines the generic structure of a section with id ${:N} and contents described by the grammar ${grammar-case: X}.
 
-.. math::
-   \begin{array}{llclll@{\qquad}l}
-   \production{section} & \Bsection_N(\B{B}) &::=&
-     N{:}\Bbyte~~\X{size}{:}\Bu32~~\X{cont}{:}\B{B}
-       &\Rightarrow& \X{cont} & (\iff \X{size} = ||\B{B}||) \\ &&|&
-     \epsilon &\Rightarrow& \epsilon
-   \end{array}
+$${grammar: Bsection_}
 
-For most sections, the contents :math:`\B{B}` encodes a :ref:`vector <binary-vec>`.
-In these cases, the empty result :math:`\epsilon` is interpreted as the empty vector.
+For most sections, the contents ${grammar-case: X} encodes a :ref:`list <binary-list>`.
+In these cases, the empty result ${:eps} is interpreted as the empty list.
 
 .. note::
    Other than for unknown :ref:`custom sections <binary-customsec>`,
-   the :math:`\X{size}` is not required for decoding, but can be used to skip sections when navigating through a binary.
-   The module is malformed if the size does not match the length of the binary contents :math:`\B{B}`.
+   the ${:size} is not required for decoding, but can be used to skip sections when navigating through a binary.
+   The module is malformed if the size does not match the length of the binary contents ${grammar-case: X}.
 
 The following section ids are used:
 
@@ -99,7 +94,8 @@ Id  Section
  9  :ref:`element section <binary-elemsec>`        
 10  :ref:`code section <binary-codesec>`           
 11  :ref:`data section <binary-datasec>`           
-12  :ref:`data count section <binary-datacountsec>`
+12  :ref:`data count section <binary-datacntsec>`
+13  :ref:`tag section <binary-tagsec>`
 ==  ===============================================
 
 .. note::
@@ -118,38 +114,28 @@ Custom Section
 They are intended to be used for debugging information or third-party extensions, and are ignored by the WebAssembly semantics.
 Their contents consist of a :ref:`name <syntax-name>` further identifying the custom section, followed by an uninterpreted sequence of bytes for custom use.
 
-.. math::
-   \begin{array}{llclll}
-   \production{custom section} & \Bcustomsec &::=&
-     \Bsection_0(\Bcustom) \\
-   \production{custom data} & \Bcustom &::=&
-     \Bname~~\Bbyte^\ast \\
-   \end{array}
+$${grammar: {Bcustomsec Bcustom}}
 
 .. note::
    If an implementation interprets the data of a custom section, then errors in that data, or the placement of the section, must not invalidate the module.
 
 
-.. index:: ! type section, type definition
+.. index:: ! type section, type definition, recursive type
    pair: binary format; type section
    pair: section; type
-.. _binary-typedef:
+.. _binary-type:
 .. _binary-typesec:
 
 Type Section
 ~~~~~~~~~~~~
 
 The *type section* has the id 1.
-It decodes into a vector of :ref:`function types <syntax-functype>` that represent the |MTYPES| component of a :ref:`module <syntax-module>`.
+It decodes into the list of :ref:`recursive types <syntax-rectype>` of a :ref:`module <syntax-module>`.
 
-.. math::
-   \begin{array}{llclll}
-   \production{type section} & \Btypesec &::=&
-     \X{ft}^\ast{:\,}\Bsection_1(\Bvec(\Bfunctype)) &\Rightarrow& \X{ft}^\ast \\
-   \end{array}
+$${grammar: {Btypesec Btype}}
 
 
-.. index:: ! import section, import, name, function type, table type, memory type, global type
+.. index:: ! import section, import, name, function type, table type, memory type, global type, tag type
    pair: binary format; import
    pair: section; import
 .. _binary-import:
@@ -160,21 +146,9 @@ Import Section
 ~~~~~~~~~~~~~~
 
 The *import section* has the id 2.
-It decodes into a vector of :ref:`imports <syntax-import>` that represent the |MIMPORTS| component of a :ref:`module <syntax-module>`.
+It decodes into the list of :ref:`imports <syntax-import>` of a :ref:`module <syntax-module>`.
 
-.. math::
-   \begin{array}{llclll}
-   \production{import section} & \Bimportsec &::=&
-     \X{im}^\ast{:}\Bsection_2(\Bvec(\Bimport)) &\Rightarrow& \X{im}^\ast \\
-   \production{import} & \Bimport &::=&
-     \X{mod}{:}\Bname~~\X{nm}{:}\Bname~~d{:}\Bimportdesc
-       &\Rightarrow& \{ \IMODULE~\X{mod}, \INAME~\X{nm}, \IDESC~d \} \\
-   \production{import description} & \Bimportdesc &::=&
-     \hex{00}~~x{:}\Btypeidx &\Rightarrow& \IDFUNC~x \\ &&|&
-     \hex{01}~~\X{tt}{:}\Btabletype &\Rightarrow& \IDTABLE~\X{tt} \\ &&|&
-     \hex{02}~~\X{mt}{:}\Bmemtype &\Rightarrow& \IDMEM~\X{mt} \\ &&|&
-     \hex{03}~~\X{gt}{:}\Bglobaltype &\Rightarrow& \IDGLOBAL~\X{gt} \\
-   \end{array}
+$${grammar: {Bimportsec Bimport}}
 
 
 .. index:: ! function section, function, type index, function type
@@ -186,14 +160,10 @@ Function Section
 ~~~~~~~~~~~~~~~~
 
 The *function section* has the id 3.
-It decodes into a vector of :ref:`type indices <syntax-typeidx>` that represent the |FTYPE| fields of the :ref:`functions <syntax-func>` in the |MFUNCS| component of a :ref:`module <syntax-module>`.
-The |FLOCALS| and |FBODY| fields of the respective functions are encoded separately in the :ref:`code section <binary-codesec>`.
+It decodes into a list of :ref:`type indices <syntax-typeidx>` that classify the :ref:`functions <syntax-func>` defined by a :ref:`module <syntax-module>`.
+The bodies of the respective functions are encoded separately in the :ref:`code section <binary-codesec>`.
 
-.. math::
-   \begin{array}{llclll}
-   \production{function section} & \Bfuncsec &::=&
-     x^\ast{:}\Bsection_3(\Bvec(\Btypeidx)) &\Rightarrow& x^\ast \\
-   \end{array}
+$${grammar: {Bfuncsec}}
 
 
 .. index:: ! table section, table, table type
@@ -206,15 +176,14 @@ Table Section
 ~~~~~~~~~~~~~
 
 The *table section* has the id 4.
-It decodes into a vector of :ref:`tables <syntax-table>` that represent the |MTABLES| component of a :ref:`module <syntax-module>`.
+It decodes into the list of :ref:`tables <syntax-table>` defined by a :ref:`module <syntax-module>`.
 
-.. math::
-   \begin{array}{llclll}
-   \production{table section} & \Btablesec &::=&
-     \X{tab}^\ast{:}\Bsection_4(\Bvec(\Btable)) &\Rightarrow& \X{tab}^\ast \\
-   \production{table} & \Btable &::=&
-     \X{tt}{:}\Btabletype &\Rightarrow& \{ \TTYPE~\X{tt} \} \\
-   \end{array}
+$${grammar: {Btablesec Btable}}
+
+.. note::
+   The encoding of a table type cannot start with byte ${:0x40}`,
+   hence decoding is unambiguous.
+   The zero byte following it is reserved for future extensions.
 
 
 .. index:: ! memory section, memory, memory type
@@ -227,15 +196,9 @@ Memory Section
 ~~~~~~~~~~~~~~
 
 The *memory section* has the id 5.
-It decodes into a vector of :ref:`memories <syntax-mem>` that represent the |MMEMS| component of a :ref:`module <syntax-module>`.
+It decodes into the list of :ref:`memories <syntax-mem>` defined by a :ref:`module <syntax-module>`.
 
-.. math::
-   \begin{array}{llclll}
-   \production{memory section} & \Bmemsec &::=&
-     \X{mem}^\ast{:}\Bsection_5(\Bvec(\Bmem)) &\Rightarrow& \X{mem}^\ast \\
-   \production{memory} & \Bmem &::=&
-     \X{mt}{:}\Bmemtype &\Rightarrow& \{ \MTYPE~\X{mt} \} \\
-   \end{array}
+$${grammar: {Bmemsec Bmem}}
 
 
 .. index:: ! global section, global, global type, expression
@@ -248,19 +211,12 @@ Global Section
 ~~~~~~~~~~~~~~
 
 The *global section* has the id 6.
-It decodes into a vector of :ref:`globals <syntax-global>` that represent the |MGLOBALS| component of a :ref:`module <syntax-module>`.
+It decodes into the list of :ref:`globals <syntax-global>` defined by a :ref:`module <syntax-module>`.
 
-.. math::
-   \begin{array}{llclll}
-   \production{global section} & \Bglobalsec &::=&
-     \X{glob}^\ast{:}\Bsection_6(\Bvec(\Bglobal)) &\Rightarrow& \X{glob}^\ast \\
-   \production{global} & \Bglobal &::=&
-     \X{gt}{:}\Bglobaltype~~e{:}\Bexpr
-       &\Rightarrow& \{ \GTYPE~\X{gt}, \GINIT~e \} \\
-   \end{array}
+$${grammar: {Bglobalsec Bglobal}}
 
 
-.. index:: ! export section, export, name, index, function index, table index, memory index, global index
+.. index:: ! export section, export, name, index, function index, table index, memory index, tag index, global index
    pair: binary format; export
    pair: section; export
 .. _binary-export:
@@ -271,21 +227,9 @@ Export Section
 ~~~~~~~~~~~~~~
 
 The *export section* has the id 7.
-It decodes into a vector of :ref:`exports <syntax-export>` that represent the |MEXPORTS| component of a :ref:`module <syntax-module>`.
+It decodes into the list of :ref:`exports <syntax-export>` of a :ref:`module <syntax-module>`.
 
-.. math::
-   \begin{array}{llclll}
-   \production{export section} & \Bexportsec &::=&
-     \X{ex}^\ast{:}\Bsection_7(\Bvec(\Bexport)) &\Rightarrow& \X{ex}^\ast \\
-   \production{export} & \Bexport &::=&
-     \X{nm}{:}\Bname~~d{:}\Bexportdesc
-       &\Rightarrow& \{ \ENAME~\X{nm}, \EDESC~d \} \\
-   \production{export description} & \Bexportdesc &::=&
-     \hex{00}~~x{:}\Bfuncidx &\Rightarrow& \EDFUNC~x \\ &&|&
-     \hex{01}~~x{:}\Btableidx &\Rightarrow& \EDTABLE~x \\ &&|&
-     \hex{02}~~x{:}\Bmemidx &\Rightarrow& \EDMEM~x \\ &&|&
-     \hex{03}~~x{:}\Bglobalidx &\Rightarrow& \EDGLOBAL~x \\
-   \end{array}
+$${grammar: {Bexportsec Bexport}}
 
 
 .. index:: ! start section, start function, function index
@@ -299,15 +243,9 @@ Start Section
 ~~~~~~~~~~~~~
 
 The *start section* has the id 8.
-It decodes into an optional :ref:`start function <syntax-start>` that represents the |MSTART| component of a :ref:`module <syntax-module>`.
+It decodes into the optional :ref:`start function <syntax-start>` of a :ref:`module <syntax-module>`.
 
-.. math::
-   \begin{array}{llclll}
-   \production{start section} & \Bstartsec &::=&
-     \X{st}^?{:}\Bsection_8(\Bstart) &\Rightarrow& \X{st}^? \\
-   \production{start function} & \Bstart &::=&
-     x{:}\Bfuncidx &\Rightarrow& \{ \SFUNC~x \} \\
-   \end{array}
+$${grammar: {Bstartsec Bstart}}
 
 
 .. index:: ! element section, element, table index, expression, function index
@@ -323,40 +261,9 @@ Element Section
 ~~~~~~~~~~~~~~~
 
 The *element section* has the id 9.
-It decodes into a vector of :ref:`element segments <syntax-elem>` that represent the |MELEMS| component of a :ref:`module <syntax-module>`.
+It decodes into the list of :ref:`element segments <syntax-elem>` defined by a :ref:`module <syntax-module>`.
 
-.. math::
-   \begin{array}{llclll}
-   \production{element section} & \Belemsec &::=&
-     \X{seg}^\ast{:}\Bsection_9(\Bvec(\Belem)) &\Rightarrow& \X{seg}^\ast \\
-   \production{element segment} & \Belem &::=&
-     0{:}\Bu32~~e{:}\Bexpr~~y^\ast{:}\Bvec(\Bfuncidx)
-       &\Rightarrow& \\&&&\quad
-       \{ \ETYPE~\FUNCREF, \EINIT~((\REFFUNC~y)~\END)^\ast, \EMODE~\EACTIVE~\{ \ETABLE~0, \EOFFSET~e \} \} \\ &&|&
-     1{:}\Bu32~~\X{et}:\Belemkind~~y^\ast{:}\Bvec(\Bfuncidx)
-       &\Rightarrow& \\&&&\quad
-       \{ \ETYPE~\X{et}, \EINIT~((\REFFUNC~y)~\END)^\ast, \EMODE~\EPASSIVE \} \\ &&|&
-     2{:}\Bu32~~x{:}\Btableidx~~e{:}\Bexpr~~\X{et}:\Belemkind~~y^\ast{:}\Bvec(\Bfuncidx)
-       &\Rightarrow& \\&&&\quad
-       \{ \ETYPE~\X{et}, \EINIT~((\REFFUNC~y)~\END)^\ast, \EMODE~\EACTIVE~\{ \ETABLE~x, \EOFFSET~e \} \} \\ &&|&
-     3{:}\Bu32~~\X{et}:\Belemkind~~y^\ast{:}\Bvec(\Bfuncidx)
-       &\Rightarrow& \\&&&\quad
-       \{ \ETYPE~\X{et}, \EINIT~((\REFFUNC~y)~\END)^\ast, \EMODE~\EDECLARATIVE \} \\ &&|&
-     4{:}\Bu32~~e{:}\Bexpr~~\X{el}^\ast{:}\Bvec(\Bexpr)
-       &\Rightarrow& \\&&&\quad
-       \{ \ETYPE~\FUNCREF, \EINIT~\X{el}^\ast, \EMODE~\EACTIVE~\{ \ETABLE~0, \EOFFSET~e \} \} \\ &&|&
-     5{:}\Bu32~~\X{et}:\Breftype~~\X{el}^\ast{:}\Bvec(\Bexpr)
-       &\Rightarrow& \\&&&\quad
-       \{ \ETYPE~et, \EINIT~\X{el}^\ast, \EMODE~\EPASSIVE \} \\ &&|&
-     6{:}\Bu32~~x{:}\Btableidx~~e{:}\Bexpr~~\X{et}:\Breftype~~\X{el}^\ast{:}\Bvec(\Bexpr)
-       &\Rightarrow& \\&&&\quad
-       \{ \ETYPE~et, \EINIT~\X{el}^\ast, \EMODE~\EACTIVE~\{ \ETABLE~x, \EOFFSET~e \} \} \\ &&|&
-     7{:}\Bu32~~\X{et}:\Breftype~~\X{el}^\ast{:}\Bvec(\Bexpr)
-       &\Rightarrow& \\&&&\quad
-       \{ \ETYPE~et, \EINIT~\X{el}^\ast, \EMODE~\EDECLARATIVE \} \\
-   \production{element kind} & \Belemkind &::=&
-     \hex{00} &\Rightarrow& \FUNCREF \\
-   \end{array}
+$${grammar: {Belemsec Belemkind Belem}}
 
 .. note::
    The initial integer can be interpreted as a bitfield.
@@ -380,47 +287,32 @@ Code Section
 ~~~~~~~~~~~~
 
 The *code section* has the id 10.
-It decodes into a vector of *code* entries that are pairs of :ref:`value type <syntax-valtype>` vectors and :ref:`expressions <syntax-expr>`.
-They represent the |FLOCALS| and |FBODY| field of the :ref:`functions <syntax-func>` in the |MFUNCS| component of a :ref:`module <syntax-module>`.
-The |FTYPE| fields of the respective functions are encoded separately in the :ref:`function section <binary-funcsec>`.
+It decodes into the list of *code* entries that are pairs of lists of :ref:`locals <syntax-list>` and :ref:`expressions <syntax-expr>`.
+They represent the body of the :ref:`functions <syntax-func>` defined by a :ref:`module <syntax-module>`.
+The types of the respective functions are encoded separately in the :ref:`function section <binary-funcsec>`.
 
 The encoding of each code entry consists of
 
-* the |U32| *size* of the function code in bytes,
+* the ${:u32} *length* of the function code in bytes,
 * the actual *function code*, which in turn consists of
 
   * the declaration of *locals*,
   * the function *body* as an :ref:`expression <binary-expr>`.
 
-Local declarations are compressed into a vector whose entries consist of
+Local declarations are compressed into a list whose entries consist of
 
-* a |U32| *count*,
+* a ${:u32} *count*,
 * a :ref:`value type <binary-valtype>`,
 
 denoting *count* locals of the same value type.
 
-.. math::
-   \begin{array}{llclll@{\qquad}l}
-   \production{code section} & \Bcodesec &::=&
-     \X{code}^\ast{:}\Bsection_{10}(\Bvec(\Bcode))
-       &\Rightarrow& \X{code}^\ast \\
-   \production{code} & \Bcode &::=&
-     \X{size}{:}\Bu32~~\X{code}{:}\Bfunc
-       &\Rightarrow& \X{code} & (\iff \X{size} = ||\Bfunc||) \\
-   \production{function} & \Bfunc &::=&
-     (t^\ast)^\ast{:}\Bvec(\Blocals)~~e{:}\Bexpr
-       &\Rightarrow& \concat((t^\ast)^\ast), e
-         & (\iff |\concat((t^\ast)^\ast)| < 2^{32}) \\
-   \production{locals} & \Blocals &::=&
-     n{:}\Bu32~~t{:}\Bvaltype &\Rightarrow& t^n \\
-   \end{array}
+$${grammar: {Bcodesec Bcode Bfunc Blocals}}
 
-Here, :math:`\X{code}` ranges over pairs :math:`(\valtype^\ast, \expr)`.
-The meta function :math:`\concat((t^\ast)^\ast)` concatenates all sequences :math:`t_i^\ast` in :math:`(t^\ast)^\ast`.
-Any code for which the length of the resulting sequence is out of bounds of the maximum size of a :ref:`vector <syntax-vec>` is malformed.
+Here, ${:code} ranges over pairs ${:(local*, expr)}.
+Any code for which the length of the resulting sequence is out of bounds of the maximum size of a :ref:`list <syntax-list>` is malformed.
 
 .. note::
-   Like with :ref:`sections <binary-section>`, the code :math:`\X{size}` is not needed for decoding, but can be used to skip functions when navigating through a binary.
+   Like with :ref:`sections <binary-section>`, the code ${:size} is not needed for decoding, but can be used to skip functions when navigating through a binary.
    The module is malformed if a size does not match the length of the respective function code.
 
 
@@ -436,58 +328,56 @@ Data Section
 ~~~~~~~~~~~~
 
 The *data section* has the id 11.
-It decodes into a vector of :ref:`data segments <syntax-data>` that represent the |MDATAS| component of a :ref:`module <syntax-module>`.
+It decodes into the list of :ref:`data segments <syntax-data>` defined by a :ref:`module <syntax-module>`.
 
-.. math::
-   \begin{array}{llclll}
-   \production{data section} & \Bdatasec &::=&
-     \X{seg}^\ast{:}\Bsection_{11}(\Bvec(\Bdata)) &\Rightarrow& \X{seg}^\ast \\
-   \production{data segment} & \Bdata &::=&
-     0{:}\Bu32~~e{:}\Bexpr~~b^\ast{:}\Bvec(\Bbyte)
-       &\Rightarrow& \{ \DINIT~b^\ast, \DMODE~\DACTIVE~\{ \DMEM~0, \DOFFSET~e \} \} \\ &&|&
-     1{:}\Bu32~~b^\ast{:}\Bvec(\Bbyte)
-       &\Rightarrow& \{ \DINIT~b^\ast, \DMODE~\DPASSIVE \} \\ &&|&
-     2{:}\Bu32~~x{:}\Bmemidx~~e{:}\Bexpr~~b^\ast{:}\Bvec(\Bbyte)
-       &\Rightarrow& \{ \DINIT~b^\ast, \DMODE~\DACTIVE~\{ \DMEM~x, \DOFFSET~e \} \} \\
-   \end{array}
+$${grammar: {Bdatasec Bdata}}
 
 .. note::
    The initial integer can be interpreted as a bitfield.
    Bit 0 indicates a passive segment,
    bit 1 indicates the presence of an explicit memory index for an active segment.
 
-   In the current version of WebAssembly, at most one memory may be defined or
-   imported in a single module, so all valid :ref:`active <syntax-data>` data
-   segments have a |DMEM| value of :math:`0`.
-
 
 .. index:: ! data count section, data count, data segment
    pair: binary format; data count
    pair: section; data count
-.. _binary-datacountsec:
+.. _binary-datacntsec:
+.. _binary-datacnt:
 
 Data Count Section
 ~~~~~~~~~~~~~~~~~~
 
 The *data count section* has the id 12.
-It decodes into an optional :ref:`u32 <syntax-uint>` that represents the number of :ref:`data segments <syntax-data>` in the :ref:`data section <binary-datasec>`. If this count does not match the length of the data segment vector, the module is malformed.
+It decodes into an optional ${:u32} count that represents the number of :ref:`data segments <syntax-data>` in the :ref:`data section <binary-datasec>`.
+If this count does not match the length of the data segment list, the module is malformed.
 
-.. math::
-   \begin{array}{llclll}
-   \production{data count section} & \Bdatacountsec &::=&
-     \X{n}^?{:}\Bsection_{12}(\Bu32) &\Rightarrow& \X{n}^? \\
-   \end{array}
+$${grammar: {Bdatacntsec Bdatacnt}}
 
 .. note::
    The data count section is used to simplify single-pass validation. Since the
-   data section occurs after the code section, the :math:`\MEMORYINIT` and
-   :math:`\DATADROP` instructions would not be able to check whether the data
+   data section occurs after the code section, the ${:MEMORY.INIT} and
+   ${:DATA.DROP} instructions would not be able to check whether the data
    segment index is valid until the data section is read. The data count section
    occurs before the code section, so a single-pass validator can use this count
    instead of deferring validation.
 
 
-.. index:: module, section, type definition, function type, function, table, memory, global, element, data, start function, import, export, context, version
+.. index:: ! tag section, tag, tag type, function type index, exception tag
+   pair: binary format; tag
+   pair: section; tag
+.. _binary-tag:
+.. _binary-tagsec:
+
+Tag Section
+~~~~~~~~~~~
+
+The *tag section* has the id 13.
+It decodes into the list of :ref:`tags <syntax-tag>` defined by a :ref:`module <syntax-module>`.
+
+$${grammar: {Btagsec Btag}}
+
+
+.. index:: module, section, type definition, function type, function, table, memory, tag, global, element, data, start function, import, export, context, version
    pair: binary format; module
 .. _binary-magic:
 .. _binary-version:
@@ -504,65 +394,12 @@ The preamble is followed by a sequence of :ref:`sections <binary-section>`.
 while other sections must occur at most once and in the prescribed order.
 All sections can be empty.
 
-The lengths of vectors produced by the (possibly empty) :ref:`function <binary-funcsec>` and :ref:`code <binary-codesec>` section must match up.
+The lengths of lists produced by the (possibly empty) :ref:`function <binary-funcsec>` and :ref:`code <binary-codesec>` section must match up.
 
-Similarly, the optional data count must match the length of the :ref:`data segment <binary-datasec>` vector.
+Similarly, the optional data count must match the length of the :ref:`data segment <binary-datasec>` list.
 Furthermore, it must be present if any :ref:`data index <syntax-dataidx>` occurs in the code section.
 
-.. math::
-   \begin{array}{llcllll}
-   \production{magic} & \Bmagic &::=&
-     \hex{00}~\hex{61}~\hex{73}~\hex{6D} \\
-   \production{version} & \Bversion &::=&
-     \hex{01}~\hex{00}~\hex{00}~\hex{00} \\
-   \production{module} & \Bmodule &::=&
-     \Bmagic \\ &&&
-     \Bversion \\ &&&
-     \Bcustomsec^\ast \\ &&&
-     \functype^\ast{:\,}\Btypesec \\ &&&
-     \Bcustomsec^\ast \\ &&&
-     \import^\ast{:\,}\Bimportsec \\ &&&
-     \Bcustomsec^\ast \\ &&&
-     \typeidx^n{:\,}\Bfuncsec \\ &&&
-     \Bcustomsec^\ast \\ &&&
-     \table^\ast{:\,}\Btablesec \\ &&&
-     \Bcustomsec^\ast \\ &&&
-     \mem^\ast{:\,}\Bmemsec \\ &&&
-     \Bcustomsec^\ast \\ &&&
-     \global^\ast{:\,}\Bglobalsec \\ &&&
-     \Bcustomsec^\ast \\ &&&
-     \export^\ast{:\,}\Bexportsec \\ &&&
-     \Bcustomsec^\ast \\ &&&
-     \start^?{:\,}\Bstartsec \\ &&&
-     \Bcustomsec^\ast \\ &&&
-     \elem^\ast{:\,}\Belemsec \\ &&&
-     \Bcustomsec^\ast \\ &&&
-     m^?{:\,}\Bdatacountsec \\ &&&
-     \Bcustomsec^\ast \\ &&&
-     \X{code}^n{:\,}\Bcodesec \\ &&&
-     \Bcustomsec^\ast \\ &&&
-     \data^m{:\,}\Bdatasec \\ &&&
-     \Bcustomsec^\ast
-     \quad\Rightarrow\quad \{~
-       \begin{array}[t]{@{}l@{}}
-       \MTYPES~\functype^\ast, \\
-       \MFUNCS~\func^n, \\
-       \MTABLES~\table^\ast, \\
-       \MMEMS~\mem^\ast, \\
-       \MGLOBALS~\global^\ast, \\
-       \MELEMS~\elem^\ast, \\
-       \MDATAS~\data^m, \\
-       \MSTART~\start^?, \\
-       \MIMPORTS~\import^\ast, \\
-       \MEXPORTS~\export^\ast ~\} \\
-       \end{array} \\ &&&
-     (\iff m^? \neq \epsilon \vee \freedataidx(\X{code}^n) = \emptyset) \\
-   \end{array}
-
-where for each :math:`t_i^\ast, e_i` in :math:`\X{code}^n`,
-
-.. math::
-   \func^n[i] = \{ \FTYPE~\typeidx^n[i], \FLOCALS~t_i^\ast, \FBODY~e_i \} \\
+$${grammar: {Bmagic Bversion Bmodule}}
 
 .. note::
    The version of the WebAssembly binary format may increase in the future

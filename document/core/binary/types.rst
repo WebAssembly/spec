@@ -1,13 +1,12 @@
 .. index:: type
    pair: binary format; type
-.. _binary-type:
 
 Types
 -----
 
 .. note::
    In some places, possible types include both type constructors or types denoted by :ref:`type indices <syntax-typeidx>`.
-   Thus, the binary format for type constructors corresponds to the encodings of small negative :math:`\xref{binary/values}{binary-sint}{\sN}` values, such that they can unambiguously occur in the same place as (positive) type indices.
+   Thus, the binary format for type constructors corresponds to the encodings of small negative ${:sN(N)} values, such that they can unambiguously occur in the same place as (positive) type indices.
 
 
 .. index:: number type
@@ -19,14 +18,7 @@ Number Types
 
 :ref:`Number types <syntax-numtype>` are encoded by a single byte.
 
-.. math::
-   \begin{array}{llclll@{\qquad\qquad}l}
-   \production{number type} & \Bnumtype &::=&
-     \hex{7F} &\Rightarrow& \I32 \\ &&|&
-     \hex{7E} &\Rightarrow& \I64 \\ &&|&
-     \hex{7D} &\Rightarrow& \F32 \\ &&|&
-     \hex{7C} &\Rightarrow& \F64 \\
-   \end{array}
+$${grammar: Bnumtype}
 
 
 .. index:: vector type
@@ -38,11 +30,23 @@ Vector Types
 
 :ref:`Vector types <syntax-vectype>` are also encoded by a single byte.
 
-.. math::
-   \begin{array}{llclll@{\qquad\qquad}l}
-   \production{vector type} & \Bvectype &::=&
-     \hex{7B} &\Rightarrow& \V128 \\
-   \end{array}
+$${grammar: Bvectype}
+
+
+.. index:: heap type
+   pair: binary format; heap type
+.. _binary-heaptype:
+.. _binary-absheaptype:
+
+Heap Types
+~~~~~~~~~~
+
+:ref:`Heap types <syntax-reftype>` are encoded as either a single byte, or as a :ref:`type index <binary-typeidx>` encoded as a positive :ref:`signed integer <binary-sint>`.
+
+$${grammar: Babsheaptype Bheaptype}
+
+.. note::
+   The heap type ${heaptype: BOT} cannot occur in a module.
 
 
 .. index:: reference type
@@ -52,14 +56,9 @@ Vector Types
 Reference Types
 ~~~~~~~~~~~~~~~
 
-:ref:`Reference types <syntax-reftype>` are also encoded by a single byte.
+:ref:`Reference types <syntax-reftype>` are either encoded by a single byte followed by a :ref:`heap type <binary-heaptype>`, or, as a short form, directly as an :ref:`abstract heap type <binary-absheaptype>`.
 
-.. math::
-   \begin{array}{llclll@{\qquad\qquad}l}
-   \production{reference type} & \Breftype &::=&
-     \hex{70} &\Rightarrow& \FUNCREF \\ &&|&
-     \hex{6F} &\Rightarrow& \EXTERNREF \\
-   \end{array}
+$${grammar: Breftype}
 
 
 .. index:: value type, number type, reference type
@@ -71,17 +70,13 @@ Value Types
 
 :ref:`Value types <syntax-valtype>` are encoded with their respective encoding as a :ref:`number type <binary-numtype>`, :ref:`vector type <binary-vectype>`, or :ref:`reference type <binary-reftype>`.
 
-.. math::
-   \begin{array}{llclll@{\qquad\qquad}l}
-   \production{value type} & \Bvaltype &::=&
-     t{:}\Bnumtype &\Rightarrow& t \\ &&|&
-     t{:}\Bvectype &\Rightarrow& t \\ &&|&
-     t{:}\Breftype &\Rightarrow& t \\
-   \end{array}
+$${grammar: Bvaltype}
 
 .. note::
+   The value type ${valtype: BOT} cannot occur in a module.
+
    Value types can occur in contexts where :ref:`type indices <syntax-typeidx>` are also allowed, such as in the case of :ref:`block types <binary-blocktype>`.
-   Thus, the binary format for types corresponds to the |SignedLEB128|_ :ref:`encoding <binary-sint>` of small negative :math:`\sN` values, so that they can coexist with (positive) type indices in the future.
+   Thus, the binary format for types corresponds to the |SignedLEB128|_ :ref:`encoding <binary-sint>` of small negative ${:sN(N)} values, so that they can coexist with (positive) type indices in the future.
 
 
 .. index:: result type, value type
@@ -91,30 +86,50 @@ Value Types
 Result Types
 ~~~~~~~~~~~~
 
-:ref:`Result types <syntax-resulttype>` are encoded by the respective :ref:`vectors <binary-vec>` of :ref:`value types <binary-valtype>`.
+:ref:`Result types <syntax-resulttype>` are encoded by the respective :ref:`lists <binary-list>` of :ref:`value types <binary-valtype>`.
 
-.. math::
-   \begin{array}{llclll@{\qquad\qquad}l}
-   \production{result type} & \Bresulttype &::=&
-     t^\ast{:\,}\Bvec(\Bvaltype) &\Rightarrow& [t^\ast] \\
-   \end{array}
+$${grammar: Bresulttype}
 
 
-.. index:: function type, value type, result type
+.. index:: composite type, aggregate type, structure type, array type, function type, result type, value type, field type, storage type, packed type, mutability
+   pair: binary format; composite type
+   pair: binary format; aggregate type
    pair: binary format; function type
+   pair: binary format; structure type
+   pair: binary format; array type
+   pair: binary format; field type
+   pair: binary format; storage type
+   pair: binary format; packed type
+.. _binary-comptype:
+.. _binary-aggrtype:
 .. _binary-functype:
+.. _binary-structtype:
+.. _binary-arraytype:
+.. _binary-fieldtype:
+.. _binary-storagetype:
+.. _binary-packtype:
 
-Function Types
-~~~~~~~~~~~~~~
+Composite Types
+~~~~~~~~~~~~~~~
 
-:ref:`Function types <syntax-functype>` are encoded by the byte :math:`\hex{60}` followed by the respective :ref:`vectors <binary-vec>` of parameter and result types.
+:ref:`Composite types <syntax-comptype>` are encoded by a distinct byte followed by a type encoding of the respective form.
 
-.. math::
-   \begin{array}{llclll@{\qquad\qquad}l}
-   \production{function type} & \Bfunctype &::=&
-     \hex{60}~~\X{rt}_1{:\,}\Bresulttype~~\X{rt}_2{:\,}\Bresulttype
-       &\Rightarrow& \X{rt}_1 \to \X{rt}_2 \\
-   \end{array}
+$${grammar: Bmut Bcomptype Bfieldtype Bstoragetype Bpacktype}
+
+
+.. index:: recursive type, sub type, composite type
+   pair: binary format; recursive type
+   pair: binary format; sub type
+.. _binary-rectype:
+.. _binary-subtype:
+
+Recursive Types
+~~~~~~~~~~~~~~~
+
+:ref:`Recursive types <syntax-rectype>` are encoded by the byte ${:0x4E} followed by a :ref:`list <binary-list>` of :ref:`sub types <syntax-subtype>`.
+Additional shorthands are recognized for unary recursions and sub types without super types.
+
+$${grammar: Brectype Bsubtype}
 
 
 .. index:: limits
@@ -124,46 +139,25 @@ Function Types
 Limits
 ~~~~~~
 
-:ref:`Limits <syntax-limits>` are encoded with a preceding flag indicating whether a maximum is present.
+:ref:`Limits <syntax-limits>` are encoded with a preceding flag indicating whether a maximum is present, and a flag for the :ref:`address type <syntax-addrtype>`.
 
-.. math::
-   \begin{array}{llclll}
-   \production{limits} & \Blimits &::=&
-     \hex{00}~~n{:}\Bu32 &\Rightarrow& \{ \LMIN~n, \LMAX~\epsilon \} \\ &&|&
-     \hex{01}~~n{:}\Bu32~~m{:}\Bu32 &\Rightarrow& \{ \LMIN~n, \LMAX~m \} \\
-   \end{array}
+$${grammar: Blimits}
 
 
-.. index:: memory type, limits, page size
-   pair: binary format; memory type
-.. _binary-memtype:
+.. index:: tag type, function type, exception tag
+   pair: binary format; tag type
+.. _binary-tagtype:
 
-Memory Types
-~~~~~~~~~~~~
+Tag Types
+~~~~~~~~~
 
-:ref:`Memory types <syntax-memtype>` are encoded with their :ref:`limits <binary-limits>`.
+:ref:`Tag types <syntax-tagtype>` are encoded by a :ref:`type index <syntax-typeidx>` denoting a :ref:`function type <syntax-functype>`.
 
-.. math::
-   \begin{array}{llclll@{\qquad\qquad}l}
-   \production{memory type} & \Bmemtype &::=&
-     \X{lim}{:}\Blimits &\Rightarrow& \X{lim} \\
-   \end{array}
+$${grammar: Btagtype}
 
-
-.. index:: table type, reference type, limits
-   pair: binary format; table type
-.. _binary-tabletype:
-
-Table Types
-~~~~~~~~~~~
-
-:ref:`Table types <syntax-tabletype>` are encoded with their :ref:`limits <binary-limits>` and the encoding of their element :ref:`reference type <syntax-reftype>`.
-
-.. math::
-   \begin{array}{llclll}
-   \production{table type} & \Btabletype &::=&
-     \X{et}{:}\Breftype~~\X{lim}{:}\Blimits &\Rightarrow& \X{lim}~\X{et} \\
-   \end{array}
+.. note::
+   In future versions of WebAssembly,
+   the preceding zero byte may encode additional attributes.
 
 
 .. index:: global type, mutability, value type
@@ -177,11 +171,40 @@ Global Types
 
 :ref:`Global types <syntax-globaltype>` are encoded by their :ref:`value type <binary-valtype>` and a flag for their :ref:`mutability <syntax-mut>`.
 
-.. math::
-   \begin{array}{llclll}
-   \production{global type} & \Bglobaltype &::=&
-     t{:}\Bvaltype~~m{:}\Bmut &\Rightarrow& m~t \\
-   \production{mutability} & \Bmut &::=&
-     \hex{00} &\Rightarrow& \MCONST \\ &&|&
-     \hex{01} &\Rightarrow& \MVAR \\
-   \end{array}
+$${grammar: Bglobaltype}
+
+
+.. index:: memory type, limits, page size
+   pair: binary format; memory type
+.. _binary-memtype:
+
+Memory Types
+~~~~~~~~~~~~
+
+:ref:`Memory types <syntax-memtype>` are encoded with their :ref:`limits <binary-limits>`.
+
+$${grammar: Bmemtype}
+
+
+.. index:: table type, reference type, limits
+   pair: binary format; table type
+.. _binary-tabletype:
+
+Table Types
+~~~~~~~~~~~
+
+:ref:`Table types <syntax-tabletype>` are encoded with their :ref:`limits <binary-limits>` and the encoding of their element :ref:`reference type <syntax-reftype>`.
+
+$${grammar: Btabletype}
+
+
+.. index:: external type
+   pair: binary format; external type
+.. _binary-externtype:
+
+External Types
+~~~~~~~~~~~~~~
+
+:ref:`External types <syntax-externtype>` are encoded by a distiguishing byte followed by an encoding of the respective form of type.
+
+$${grammar: Bexterntype}

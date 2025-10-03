@@ -25,10 +25,12 @@ def Main():
   number = 1
   for section in [
       'Embedding',
+      'Profiles',
       'Implementation Limitations',
       'Validation Algorithm',
       'Custom Sections',
       'Soundness',
+      'Type System Properties',
       'Change History',
       'Index of Types',
       'Index of Instructions',
@@ -54,8 +56,8 @@ def Main():
   # an error — which in turn causes the W3C pubrules checker to refuse to
   # autopublish the resulting bikeshed output.
   data = data.replace(
-      """\href{#binary-sint}{\href{#syntax-int}""",
-      """{\href{#syntax-int}""")
+      """\\href{#binary-sint}{\\href{#syntax-int}""",
+      """{\\href{#syntax-int}""")
 
   # Strip the entire <head> element from the the sphinx output — because it
   # contains several <meta>, <script>, and <link> elements that are unnecessary

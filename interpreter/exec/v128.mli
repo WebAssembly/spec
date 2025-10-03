@@ -15,7 +15,7 @@ type shape = (unit, unit, unit, unit, unit, unit) laneop
 val bitwidth : int
 
 val num_lanes : ('a, 'b, 'c, 'd, 'e, 'f) laneop -> int
-val type_of_lane : ('a, 'b, 'c, 'd, 'e, 'f) laneop -> Types.num_type
+val type_of_lane : ('a, 'b, 'c, 'd, 'e, 'f) laneop -> Types.numtype
 val string_of_shape : ('a, 'b, 'c, 'd, 'e, 'f) laneop -> string
 
 val zero : t
@@ -41,8 +41,7 @@ sig
   val of_lanes : lane list -> t
 
   val splat : lane -> t
-  val extract_lane_s : int -> t -> lane
-  val extract_lane_u : int -> t -> lane
+  val extract_lane : int -> t -> lane
   val replace_lane : int -> t -> lane -> t
 
   val eq : t -> t -> t
@@ -108,6 +107,8 @@ sig
   val sub : t -> t -> t
   val mul : t -> t -> t
   val div : t -> t -> t
+  val fma : t -> t -> t -> t
+  val fnma : t -> t -> t -> t
   val min : t -> t -> t
   val max : t -> t -> t
   val pmin : t -> t -> t
@@ -126,7 +127,7 @@ module F64x2 : FloatShape with type lane = F64.t
 
 module V1x128 :
 sig
-  val lognot : t -> t
+  val not_ : t -> t
   val and_ : t -> t -> t
   val or_ : t -> t -> t
   val xor : t -> t -> t
@@ -137,7 +138,7 @@ end
 module V8x16 :
 sig
   val swizzle : t -> t -> t
-  val shuffle : t -> t -> int list -> t
+  val shuffle : int list -> t -> t -> t
 end
 
 
@@ -163,6 +164,7 @@ sig
   val extmul_high_u : t -> t -> t
   val extadd_pairwise_s : t -> t
   val extadd_pairwise_u : t -> t
+  val dot_s : t -> t -> t
 end
 
 module I32x4_convert :
@@ -176,6 +178,7 @@ sig
   val extend_low_u : t -> t
   val extend_high_u : t -> t
   val dot_s : t -> t -> t
+  val dot_add_s : t -> t -> t -> t
   val extmul_low_s : t -> t -> t
   val extmul_high_s : t -> t -> t
   val extmul_low_u : t -> t -> t

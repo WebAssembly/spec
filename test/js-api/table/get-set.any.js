@@ -101,6 +101,23 @@ test(() => {
 }, "Basic");
 
 test(() => {
+  const argument = { "element": "anyfunc", "address": "i64", "initial": 5n };
+  const table = new WebAssembly.Table(argument);
+  assert_equal_to_array(table, [null, null, null, null, null], undefined, "i64");
+
+  const {fn, fn2} = functions;
+
+  assert_equals(table.set(0n, fn), undefined, "set() returns undefined.");
+  table.set(2n, fn2);
+  table.set(4n, fn);
+
+  assert_equal_to_array(table, [fn, null, fn2, null, fn], undefined, "i64");
+
+  table.set(0n, null);
+  assert_equal_to_array(table, [null, null, fn2, null, fn], undefined, "i64");
+}, "Basic (i64)");
+
+test(() => {
   const argument = { "element": "anyfunc", "initial": 5 };
   const table = new WebAssembly.Table(argument);
   assert_equal_to_array(table, [null, null, null, null, null]);
@@ -119,6 +136,24 @@ test(() => {
 }, "Growing");
 
 test(() => {
+  const argument = { "element": "anyfunc", "address": "i64", "initial": 5n };
+  const table = new WebAssembly.Table(argument);
+  assert_equal_to_array(table, [null, null, null, null, null], undefined, "i64");
+
+  const {fn, fn2} = functions;
+
+  table.set(0n, fn);
+  table.set(2n, fn2);
+  table.set(4n, fn);
+
+  assert_equal_to_array(table, [fn, null, fn2, null, fn], undefined, "i64");
+
+  table.grow(4n);
+
+  assert_equal_to_array(table, [fn, null, fn2, null, fn, null, null, null, null], undefined, "i64");
+}, "Growing (i64)");
+
+test(() => {
   const argument = { "element": "anyfunc", "initial": 5 };
   const table = new WebAssembly.Table(argument);
   assert_equal_to_array(table, [null, null, null, null, null]);
@@ -131,6 +166,20 @@ test(() => {
   assert_throws_js(RangeError, () => table.set(5, fn));
   assert_equal_to_array(table, [null, null, null, null, null]);
 }, "Setting out-of-bounds");
+
+test(() => {
+  const argument = { "element": "anyfunc", "address": "i64", "initial": 5n };
+  const table = new WebAssembly.Table(argument);
+  assert_equal_to_array(table, [null, null, null, null, null], undefined, "i64");
+
+  const {fn} = functions;
+
+  // -1 is the wrong type hence the type check on entry gets this
+  // before the range check does.
+  assert_throws_js(TypeError, () => table.set(-1n, fn));
+  assert_throws_js(RangeError, () => table.set(5n, fn));
+  assert_equal_to_array(table, [null, null, null, null, null], undefined, "i64");
+}, "Setting out-of-bounds (i64)");
 
 test(() => {
   const argument = { "element": "anyfunc", "initial": 1 };
@@ -198,6 +247,26 @@ for (const value of outOfRangeValues) {
     const table = new WebAssembly.Table(argument);
     assert_throws_js(TypeError, () => table.set(value, null));
   }, `Setting out-of-range argument: ${format_value(value)}`);
+}
+
+const outOfRangeValuesI64 = [
+  -1n,
+  0x10000000000000000n,
+  "0x10000000000000000",
+];
+
+for (const value of outOfRangeValuesI64) {
+  test(() => {
+    const argument = { "element": "anyfunc", "address": "i64", "initial": 1n };
+    const table = new WebAssembly.Table(argument);
+    assert_throws_js(TypeError, () => table.get(value));
+  }, `Getting out-of-range argument (i64): ${format_value(value)}`);
+
+  test(() => {
+    const argument = { "element": "anyfunc", "address": "i64", "initial": 1n };
+    const table = new WebAssembly.Table(argument);
+    assert_throws_js(TypeError, () => table.set(value, null));
+  }, `Setting out-of-range argument (i64): ${format_value(value)}`);
 }
 
 test(() => {

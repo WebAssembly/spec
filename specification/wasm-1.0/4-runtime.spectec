@@ -1,0 +1,110 @@
+;;
+;; Addresses
+;;
+
+syntax addr hint(desc "address") = nat
+syntax funcaddr hint(desc "function address") = addr
+syntax globaladdr hint(desc "global address") = addr
+syntax tableaddr hint(desc "table address") = addr
+syntax memaddr hint(desc "memory address") = addr
+
+var a : addr
+var fa : funcaddr
+var ga : globaladdr
+var ta : tableaddr
+var ma : memaddr
+
+
+;; External addresses
+
+syntax externaddr hint(desc "external value") =
+  | FUNC funcaddr | GLOBAL globaladdr | TABLE tableaddr | MEM memaddr
+
+var xa : externaddr
+
+
+;;
+;; Values
+;;
+
+;; Basic values
+
+syntax val hint(desc "value") =
+  | CONST valtype val_(valtype)   hint(show %.CONST %)
+
+syntax result hint(desc "result") =
+  | _VALS val* | TRAP
+
+var v : val
+var res : result
+
+
+;;
+;; Configurations
+;;
+
+;; Instances
+
+syntax funcinst hint(desc "function instance") =
+  { TYPE functype,
+    MODULE moduleinst,
+    CODE func }
+syntax globalinst hint(desc "global instance") =
+  { TYPE globaltype,
+    VALUE val }
+syntax tableinst hint(desc "table instance") =
+  { TYPE tabletype,
+    REFS (funcaddr?)* }
+syntax meminst hint(desc "memory instance") =
+  { TYPE memtype,
+    BYTES byte* }
+syntax exportinst hint(desc "export instance") =
+  { NAME name,
+    ADDR externaddr }
+
+syntax moduleinst hint(desc "module instance") =
+  { TYPES functype*,
+    FUNCS funcaddr*,
+    GLOBALS globaladdr*,
+    TABLES tableaddr*,
+    MEMS memaddr*,
+    EXPORTS exportinst* }
+
+var mm : moduleinst
+var fi : funcinst
+var gi : globalinst
+var ti : tableinst
+var mi : meminst
+var xi : exportinst
+
+
+;; Configurations proper
+
+syntax store hint(desc "store") =
+  { FUNCS funcinst*,
+    GLOBALS globalinst*,
+    TABLES tableinst*,
+    MEMS meminst* }
+
+syntax frame hint(desc "frame") =
+  { LOCALS val*,
+    MODULE moduleinst }
+
+syntax state hint(desc "state") = store; frame
+syntax config hint(desc "configuration") = state; admininstr*
+
+var s : store
+var f : frame
+var z : state
+
+
+;;
+;; Administrative Instructions
+;;
+
+syntax admininstr hint(show instr) hint(desc "administrative instruction") =
+  | instr
+  | CALL_ADDR funcaddr             hint(show CALL %)
+  | LABEL_ n `{instr*} admininstr* hint(show LABEL_%#% %%)
+  | FRAME_ n `{frame} admininstr*  hint(show FRAME_%#% %%)
+  | TRAP
