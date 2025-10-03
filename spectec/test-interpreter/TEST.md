@@ -920,7 +920,7 @@ spectec 0.5 generator
 - 36/36 (100.00%)
 
 ===== ../test-interpreter/spec-test-3/gc/array_fill.wast =====
-- 18/18 (100.00%)
+- 31/31 (100.00%)
 
 ===== ../test-interpreter/spec-test-3/gc/array_init_data.wast =====
 - 48/48 (100.00%)
@@ -1561,7 +1561,7 @@ spectec 0.5 generator
 ===== ../test-interpreter/spec-test-3/utf8-invalid-encoding.wast =====
 - 0/0 (100.00%)
 
-Total [55692/55692] (100.00%)
+Total [55705/55705] (100.00%)
 
 == Complete.
 ```
