@@ -286,21 +286,21 @@ and get_family_type_chain env family_typ =
   | _ -> []
 
 let make_projection_chain env (lst : (id * bind list * Subst.t * typ * typ) list) (base_exp : exp) = 
-  List.fold_left (fun exp (id, binds, subst, family_typ, sub_typ) ->
+  List.fold_right (fun (id, binds, subst, family_typ, sub_typ) exp ->
     let proj_id = proj_name id binds in 
     let new_args = List.map make_arg_from_bind binds |> Subst.subst_list Subst.subst_arg subst in
     let sub_typ' = Subst.subst_typ subst sub_typ in 
     let opt_typ = IterT (sub_typ', Opt) $ sub_typ'.at in
     let calle = CallE (proj_id, new_args @ [(ExpA exp) $ exp.at]) in
     (if has_one_inst env family_typ then calle else TheE (calle $$ exp.at % opt_typ)) $$ exp.at % sub_typ'
-  ) base_exp lst 
+  ) lst base_exp  
 
 let make_constructor_chain (lst : (id * bind list * Subst.t * typ * typ) list) (base_exp : exp) = 
   List.fold_left (fun exp (id, binds, subst, family_typ, sub_typ) ->
     let new_args = List.map make_arg_from_bind binds |> Subst.subst_list Subst.subst_arg subst in
     let tupe = construct_tuple_exp base_exp.at exp sub_typ new_args in
     CaseE (constructor_name_mixop id binds, tupe) $$ id.at % family_typ 
-  ) base_exp lst
+  ) base_exp lst 
 
 let handle_iter_typ base_exp real_typ expected_typ = 
   let rec go real_typ expected_typ num = 
@@ -353,7 +353,7 @@ let apply_conversion env exp real_typ expected_typ =
     then (
       let proj_list = get_family_type_chain env r_typ in
       let constructor_list = get_family_type_chain env e_typ in
-      let p_list, c_list = simplify_conversions proj_list (List.rev constructor_list) in
+      let p_list, c_list = simplify_conversions (List.rev proj_list) (List.rev constructor_list) in
       let real_exp = { iter_exp with note = reduced_r_typ } in
       let converted_exp = make_constructor_chain c_list (make_projection_chain env p_list real_exp) in
       if iters = [] then converted_exp else
@@ -573,13 +573,13 @@ let rec transform_def env def =
   | d -> d
   ) $ def.at
 
-let gen_family_projections (id : id) (_has_one_inst : bool) (i : inst) =
-  match i.it with
+let gen_family_projections id has_one_inst inst =
+  match inst.it with
   | InstD (binds, args, deftyp) -> 
     match deftyp.it with
     | AliasT typ ->
       let family_typ = VarT(id, args) $ id.at in
-      let return_type = if _has_one_inst then typ else IterT (typ, Opt) $ id.at in
+      let return_type = if has_one_inst then typ else IterT (typ, Opt) $ id.at in
       let new_param = ExpP (var_typ_fam $ id.at, family_typ) $ id.at in
       let new_bind = ExpB (var_typ_fam $ id.at, typ) $ id.at in
       let var_exp = VarE (var_typ_fam $ id.at) $$ id.at % typ in
@@ -587,16 +587,16 @@ let gen_family_projections (id : id) (_has_one_inst : bool) (i : inst) =
       let new_args = List.map make_arg_from_bind binds in
       let new_case = CaseE(constructor_name_mixop id binds, construct_tuple_exp deftyp.at var_exp typ new_args) $$ id.at % family_typ in
 
-      let return_exp = if _has_one_inst then var_exp else opt_exp in
+      let return_exp = if has_one_inst then var_exp else opt_exp in
       let new_clause = DefD(binds @ [new_bind], new_args @ [ExpA new_case $ id.at], return_exp, []) $ id.at in
 
       let extra_bind = ExpB (var_typ_fam $ id.at, family_typ) $ id.at in
       let extra_arg = ExpA (VarE (var_typ_fam $ id.at) $$ id.at % family_typ) $ id.at in
       let none_exp = OptE (None) $$ id.at % return_type in  
       let extra_clause = DefD(binds @ [extra_bind], new_args @ [extra_arg], none_exp, []) $ id.at in 
-      let clauses = new_clause :: if _has_one_inst then [] else [extra_clause] in
+      let clauses = new_clause :: if has_one_inst then [] else [extra_clause] in
       DecD (proj_name id binds, List.map make_param_from_bind binds @ [new_param], return_type, clauses)
-    | _ -> _error i.at "Type Family of variant or records should not exist" (* This should never occur *)
+    | _ -> _error inst.at "Type Family of variant or records should not exist" (* This should never occur *)
 
 let rec create_types_from_instances def =
   (match def.it with
@@ -607,19 +607,14 @@ let rec create_types_from_instances def =
         InstD (binds, args, AliasT (VarT (id.it ^ sub_type_name_binds binds $ id.at, List.map make_arg binds) $ id.at) $ at) $ inst.at
       | _ -> inst 
     ) insts in
-    let one_inst = match transformed_instances with 
-      | [_] -> true
-      | _ -> false
-    in
-    types @ [TypD(id, params, transformed_instances)] @ 
-    List.map (gen_family_projections id one_inst) transformed_instances
+    types @ [TypD(id, params, transformed_instances)]
   | RecD defs -> [RecD (List.concat_map create_types_from_instances defs)]
   | d -> [d]
   ) |> List.map (fun d -> d $ def.at)
 
 let rec transform_type_family def =
   (match def.it with
-  | TypD (id, params, [inst]) when check_normal_type_creation inst -> TypD (id, params, [inst])
+  | TypD (id, params, [inst]) when check_normal_type_creation inst -> [TypD (id, params, [inst])]
   | TypD (id, params, insts) -> 
     let deftyp = VariantT (List.map (fun inst -> match inst.it with 
       | InstD (binds, args, {it = AliasT typ; _}) ->
@@ -644,13 +639,17 @@ let rec transform_type_family def =
       | _ -> _error def.at "Should be type alias"
     ) insts) $ def.at in
     let inst = InstD (List.map make_bind_from_param params, List.map make_arg_from_param params, deftyp) $ def.at in 
-    TypD (id, params, [inst])
-  | RecD defs -> RecD (List.map transform_type_family defs)
-  | d -> d
-  ) $ def.at
+    let one_inst = match insts with 
+      | [_] -> true
+      | _ -> false
+    in
+    TypD (id, params, [inst]) :: List.map (gen_family_projections id one_inst) insts
+  | RecD defs -> [RecD (List.concat_map transform_type_family defs)]
+  | d -> [d]
+  ) |> List.map (fun d -> d $ def.at)
 
 let transform (il : script): script = 
   let il_transformed = List.concat_map create_types_from_instances il in
   let env = Env.env_of_script il_transformed in 
   List.map (transform_def env) il_transformed |>
-  List.map transform_type_family
+  List.concat_map transform_type_family
