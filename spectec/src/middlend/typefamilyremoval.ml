@@ -296,11 +296,11 @@ let make_projection_chain env (lst : (id * bind list * Subst.t * typ * typ) list
   ) base_exp lst 
 
 let make_constructor_chain (lst : (id * bind list * Subst.t * typ * typ) list) (base_exp : exp) = 
-  List.fold_right (fun (id, binds, subst, family_typ, sub_typ) exp ->
+  List.fold_left (fun exp (id, binds, subst, family_typ, sub_typ) ->
     let new_args = List.map make_arg_from_bind binds |> Subst.subst_list Subst.subst_arg subst in
     let tupe = construct_tuple_exp base_exp.at exp sub_typ new_args in
     CaseE (constructor_name_mixop id binds, tupe) $$ id.at % family_typ 
-  ) lst base_exp 
+  ) base_exp lst
 
 let handle_iter_typ base_exp real_typ expected_typ = 
   let rec go real_typ expected_typ num = 
@@ -331,6 +331,20 @@ let apply_iteration iters (base_exp : exp) converted_exp =
   in
   go iters length
 
+let rec simplify_conversions proj_list constructor_list = 
+  match proj_list, constructor_list with
+  | [], cs -> ([], cs)
+  | ps, [] -> (ps, [])
+  | (id, _, _, family_typ, sub_typ) :: ps, (id', _, _, family_typ', sub_typ'):: cs when
+    Eq.eq_id id id' && 
+    Eq.eq_typ family_typ family_typ' &&
+    Eq.eq_typ sub_typ sub_typ' ->
+    simplify_conversions ps cs
+  | p :: ps, c :: cs -> 
+    let ps', cs' = simplify_conversions ps cs in
+    (p :: ps', c :: cs')
+  
+
 let apply_conversion env exp real_typ expected_typ = 
   let reduced_r_typ = reduce_type_aliasing env real_typ in
   let reduced_e_typ = reduce_type_aliasing env expected_typ in 
@@ -339,8 +353,9 @@ let apply_conversion env exp real_typ expected_typ =
     then (
       let proj_list = get_family_type_chain env r_typ in
       let constructor_list = get_family_type_chain env e_typ in
+      let p_list, c_list = simplify_conversions proj_list (List.rev constructor_list) in
       let real_exp = { iter_exp with note = reduced_r_typ } in
-      let converted_exp = make_constructor_chain constructor_list (make_projection_chain env proj_list real_exp) in
+      let converted_exp = make_constructor_chain c_list (make_projection_chain env p_list real_exp) in
       if iters = [] then converted_exp else
       apply_iteration iters exp converted_exp
     )
