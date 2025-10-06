@@ -68,9 +68,9 @@ jobs:
       - name: Build SpecTec
         if: ${{ matrix.spec == 'core' }}
         run: cd spectec && opam exec make
-      - name: Publish ${{ matrix.spec }} spec to its https://www.w3.org/TR/ URL
+      - name: Publish (or validate) ${{ matrix.spec }} spec to its https://www.w3.org/TR/ URL
         if: env.W3C_ECHIDNA_TOKEN_CORE
-        run: cd document/${{ matrix.spec }} && opam exec make W3C_STATUS=${{ env.W3C_STATUS }} WD-echidna-CI
+        run: cd document/${{ matrix.spec }} && opam exec make W3C_STATUS=${{ env.W3C_STATUS }} ECHIDNA_DRYRUN=${{ env.ECHIDNA_DRYRUN}} WD-echidna-CI
         env:
           W3C_ECHIDNA_TOKEN_CORE: ${{ secrets.W3C_ECHIDNA_TOKEN_CORE }}
           W3C_ECHIDNA_TOKEN_JSAPI: ${{ secrets.W3C_ECHIDNA_TOKEN_JSAPI }}
@@ -79,7 +79,7 @@ jobs:
           ECHIDNA_DRYRUN: |-
             ${{ !((github.event_name == 'workflow_dispatch' && !inputs.dry-run) ||
                   (github.event_name == 'push' && github.repository == 'WebAssembly/spec' && github.ref == 'refs/heads/main')) }}
-      - name: Validate ${{ matrix.spec }} spec with Echidna
+      - name: Validate ${{ matrix.spec }} spec with Echidna using personal credentials
         if: env.W3C_USERNAME
         run: cd document/${{ matrix.spec }} && opam exec make W3C_STATUS=${{ env.W3C_STATUS }} WD-echidna
         env:
