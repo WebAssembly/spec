@@ -316,20 +316,20 @@ let handle_iter_typ base_exp real_typ expected_typ =
   in
   go real_typ expected_typ 0
 
-let apply_iteration iters (base_exp : exp) converted_exp =
+let apply_iteration iters (base_exp : exp) converted_exp real_typ =
   let length = List.length iters in
   let rec go iters num = 
     match iters with
-    | [] -> converted_exp
+    | [] -> (real_typ, converted_exp)
     | iter :: iters' -> 
-      let iter_e = go iters' (num - 1) in
+      let (r_typ, iter_e) = go iters' (num - 1) in
       let old_id = iter_var_name ^ Int.to_string num $ converted_exp.at in
       let new_id = iter_var_name ^ Int.to_string (num - 1) $ converted_exp.at in
-      let iter_typ = IterT (iter_e.note, iter) $ converted_exp.at in 
+      let iter_typ = IterT (r_typ, iter) $ converted_exp.at in 
       let new_exp = if num = length then base_exp else VarE old_id $$ converted_exp.at % iter_typ in
-      IterE (iter_e, (iter, [new_id, new_exp])) $$ converted_exp.at % iter_typ 
+      iter_typ, IterE (iter_e, (iter, [new_id, new_exp])) $$ converted_exp.at % iter_typ 
   in
-  go iters length
+  snd (go iters length)
 
 let rec simplify_conversions proj_list constructor_list = 
   match proj_list, constructor_list with
@@ -354,10 +354,11 @@ let apply_conversion env exp real_typ expected_typ =
       let proj_list = get_family_type_chain env r_typ in
       let constructor_list = get_family_type_chain env e_typ in
       let p_list, c_list = simplify_conversions (List.rev proj_list) (List.rev constructor_list) in
-      let real_exp = { iter_exp with note = reduced_r_typ } in
+      let real_exp = { iter_exp with note = r_typ } in
+      let real_base_exp = { exp with note = reduced_r_typ } in
       let converted_exp = make_constructor_chain c_list (make_projection_chain env p_list real_exp) in
       if iters = [] then converted_exp else
-      apply_iteration iters exp converted_exp
+      apply_iteration iters real_base_exp converted_exp r_typ
     )
     else exp
 
@@ -399,7 +400,7 @@ and transform_exp bind_map env e =
   | IterE (e1, (iter, id_exp_pairs)) -> 
     let new_bind_map = add_iter_ids_to_map env id_exp_pairs bind_map in
     let t_e1 = transform_exp new_bind_map env e1 in
-    IterE (t_e1, (transform_iter new_bind_map env iter, id_exp_pairs))
+    IterE (t_e1, (transform_iter new_bind_map env iter, List.map (fun (id, exp) -> (id, {exp with note = get_real_typ_from_exp bind_map env exp})) id_exp_pairs))
   | TupE (exps) -> TupE (List.map t_func exps)
   | ListE exps -> ListE (List.map t_func exps)
   | ProjE (e1, n) -> ProjE (t_func e1, n) 
