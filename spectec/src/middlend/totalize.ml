@@ -214,7 +214,7 @@ let rec t_def' env = function
         | ExpP (_, typI) ->
           let x = ("x" ^ string_of_int i) $ no_region in
           [ExpB (x, typI) $ x.at], ExpA (VarE x $$ no_region % typI) $ no_region
-        | TypP id -> [], TypA (VarT (id, []) $ no_region) $ no_region
+        | TypP id -> [TypB id $ no_region], TypA (VarT (id, []) $ no_region) $ no_region
         | DefP (id, _, _) -> [], DefA id $ no_region
         | GramP (id, _) -> [], GramA (VarG (id, []) $ no_region) $ no_region
         ) params' |> List.split in
