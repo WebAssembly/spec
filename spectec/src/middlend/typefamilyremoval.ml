@@ -1,3 +1,52 @@
+(*
+This transformation transforms type families into a single variant user-defined
+type. 
+
+This is achieved through the following steps:
+  * Transform variant and struct instances of the type family into their own
+    user-defined type, using the binds as their respective dependent type arguments.
+  * Transform the type family itself as a variant type with many as many cases as there
+    were instances before, encoding the pattern matching as equality premises. 
+  * Projection functions are made for each instance that go from type family to the
+    sub type.
+  * Implicit conversions going from type family to sub type and vice-versa are made
+    explicit through the use of the constructor and projections made before. This is achieved
+    by inspecting the expression and generating its "real type", and match that to the type
+    given by elaboration.
+
+As an example,
+given the following type family:
+
+syntax foo(p)
+syntax foo{v : t}(a) = t_alias(a)
+syntax foo{v : t}(b) = | case_1 | case_2 | ... | case_n
+syntax foo{v : t}(c) = { field_1, field_2, ... , field_n }
+
+where p is a parameter type, a, b and c are arguments that match their respective parameter type,
+v is a bind that appears in a, b, and c with type t.
+
+This is transformed into: 
+
+syntax foo_case_2(v : t) = | case_1 | case_2 | ... | case_n
+syntax foo_case_3(v : t) = { field_1, field_2, ... , field_n }
+
+syntax foo(p) =
+  | foo_make_case_1{v : t, x : t_alias(a)}(v : t, x : t_alias(a))
+    -- if a == p
+  | foo_make_case_2{v : t, x : foo_case_2(b)}(v : t, x : foo_case_2(b))
+    -- if b == p
+  | foo_make_case_3{v : t, x : foo_case_3(c)}(v : t, x : foo_case_2(c))
+    -- if c == p
+
+an example of the projection function is as follows:
+
+def $proj_foo_case_1(v : t, x : foo(a)) : t_alias(a)?
+def $proj_foo_case_1{v : t, x : t_alias(a)}(v, foo_make_case_1(v, x)) = ?(x)
+def $proj_foo_case_1{v : t, x : foo(a)}(v, x) = ?()
+
+Names were specifically chosen here for simplicity.
+*)
+
 open Il.Ast
 open Util.Source
 open Util
@@ -5,19 +54,35 @@ open Il
 
 module StringMap = Map.Make(String)
 
+let error at msg = Error.error at "Type families removal" msg
+
+let bind_to_string bind = 
+  match bind.it with
+  | ExpB (id, _) -> id.it
+  | TypB id -> id.it
+  | DefB (id, _, _) -> id.it
+  | GramB (id, _, _) -> id.it
+
 let make_prefix = "mk_"
-let name_prefix id = id.it ^ "_" 
 let proj_prefix = "proj_"
-let _error at msg = Error.error at "Type families removal" msg
-let var_typ_fam = "x"
+let var_typ_fam = "var_x"
 let iter_var_name = "iter_"
+let name_prefix id = id.it ^ "_"
+
+let empty_info: region * Xl.Atom.info = (no_region, {def = ""; case = ""})
+let sub_type_name_binds binds = (String.concat "_" (List.map bind_to_string binds))
+let constructor_name' id binds = make_prefix ^ name_prefix id ^ sub_type_name_binds binds
+let _constructor_name id binds = constructor_name' id binds $ id.at 
+let constructor_name_mixop id binds: mixop = [[ Xl.Atom.Atom (constructor_name' id binds) $$ empty_info ]] @ List.init (List.length binds + 1) (fun _ -> [])
+let proj_name' id binds = proj_prefix ^ name_prefix id ^ sub_type_name_binds binds
+let proj_name id binds = proj_name' id binds $ id.at
 
 let construct_tuple_typ typ args at = 
   let name = var_typ_fam $ typ.at in  
   let varE = VarE (name) $$ typ.at % typ in
   let extra_case_args = List.map (fun a -> match a.it with 
     | ExpA exp -> (exp, exp.note)
-    | _ -> _error at "Removal of other arguments is not supported yet"
+    | _ -> error at "Removal of other arguments is not supported yet"
   ) args in
   TupT (extra_case_args @ [(varE, typ)]) $ typ.at 
 
@@ -25,7 +90,7 @@ let construct_tuple_exp at e t args =
   let tupt = construct_tuple_typ t args at in 
   let extra_tup_exps = List.map (fun a -> match a.it with 
     | ExpA exp -> exp
-    | _ -> _error at "Removal of other arguments is not supported yet"
+    | _ -> error at "Removal of other arguments is not supported yet"
   ) args in
   TupE (extra_tup_exps @ [{e with note = t}]) $$ e.at % tupt
 
@@ -112,21 +177,6 @@ let make_arg b =
   | DefB (id, _, _) -> DefA id 
   | GramB (id, _, _) -> GramA (VarG (id, []) $ id.at)
   ) $ b.at
-
-let bind_to_string bind = 
-  match bind.it with
-  | ExpB (id, _) -> id.it
-  | TypB id -> id.it
-  | DefB (id, _, _) -> id.it
-  | GramB (id, _, _) -> id.it
-
-let empty_info: region * Xl.Atom.info = (no_region, {def = ""; case = ""})
-let sub_type_name_binds binds = (String.concat "_" (List.map bind_to_string binds))
-let constructor_name' id binds = make_prefix ^ name_prefix id ^ sub_type_name_binds binds
-let _constructor_name id binds = constructor_name' id binds $ id.at 
-let constructor_name_mixop id binds: mixop = [[ Xl.Atom.Atom (constructor_name' id binds) $$ empty_info ]] @ List.init (List.length binds + 1) (fun _ -> [])
-let proj_name' id binds = proj_prefix ^ name_prefix id ^ sub_type_name_binds binds
-let proj_name id binds = proj_name' id binds $ id.at
 
 let check_type_family insts = 
   match insts with
@@ -344,7 +394,6 @@ let rec simplify_conversions proj_list constructor_list =
     let ps', cs' = simplify_conversions ps cs in
     (p :: ps', c :: cs')
   
-
 let apply_conversion env exp real_typ expected_typ = 
   let reduced_r_typ = reduce_type_aliasing env real_typ in
   let reduced_e_typ = reduce_type_aliasing env expected_typ in 
@@ -493,7 +542,7 @@ let transform_rule env rule =
     transform_exp bind_map env exp, 
     List.map (transform_prem bind_map env) prems) $ rule.at
 
-(* Reducing binds for matching *)
+(* Reducing binds as conversion functions actively change the type of variables when matching *)
 let reduce_bind env b = 
   match b.it with
   | ExpB (id, typ) -> ExpB (id, Il.Eval.reduce_typ env typ) $ b.at
@@ -597,7 +646,7 @@ let gen_family_projections id has_one_inst inst =
       let extra_clause = DefD(binds @ [extra_bind], new_args @ [extra_arg], none_exp, []) $ id.at in 
       let clauses = new_clause :: if has_one_inst then [] else [extra_clause] in
       DecD (proj_name id binds, List.map make_param_from_bind binds @ [new_param], return_type, clauses)
-    | _ -> _error inst.at "Type Family of variant or records should not exist" (* This should never occur *)
+    | _ -> error inst.at "Type Family of variant or records should not exist" (* This should never occur *)
 
 let rec create_types_from_instances def =
   (match def.it with
@@ -627,17 +676,17 @@ let rec transform_type_family def =
         let prems = List.map2 (fun a p ->
           let var_param = (match p.it with
             | ExpP (id', typ') -> VarE id' $$ id'.at % typ'
-            | _ -> _error id.at "Removal of other arguments is not supported yet"
+            | _ -> error id.at "Removal of other arguments is not supported yet"
           ) in
           let exp_arg = (match a.it with
             | ExpA exp -> exp
-            | _ -> _error id.at "Removal of other arguments is not supported yet"
+            | _ -> error id.at "Removal of other arguments is not supported yet"
           ) in 
           let cmp_exp = CmpE (`EqOp, `BoolT, var_param, exp_arg) $$ id.at % (BoolT $ id.at) in
           IfPr cmp_exp $ id.at
         ) args params in 
         (constructor_name_mixop id binds, (binds @ [new_bind], tupt, prems), [])
-      | _ -> _error def.at "Should be type alias"
+      | _ -> error def.at "Should be type alias"
     ) insts) $ def.at in
     let inst = InstD (List.map make_bind_from_param params, List.map make_arg_from_param params, deftyp) $ def.at in 
     let one_inst = match insts with 
