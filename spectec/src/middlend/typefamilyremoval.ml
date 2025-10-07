@@ -54,7 +54,7 @@ open Il
 
 module StringMap = Map.Make(String)
 
-type chain = (id * bind list * Subst.t * int * typ * typ)
+type family_data = (id * bind list * Subst.t * int * typ * typ)
 
 let error at msg = Error.error at "Type families removal" msg
 
@@ -314,7 +314,7 @@ let is_family_typ env typ =
     )
   | _ -> false
       
-let rec get_chain_list_from_inst id env family_typ args insts = 
+let rec get_chain_from_inst id env family_typ args insts = 
   let rec helper insts num = 
     match insts with
     | [] -> []
@@ -323,24 +323,24 @@ let rec get_chain_list_from_inst id env family_typ args insts =
         | exception Eval.Irred -> helper insts' (num + 1)
         | Some subst -> 
           let subst_typ = reduce_type_aliasing env (Il.Subst.subst_typ subst sub_typ) in
-          (id, binds, subst, num, family_typ, subst_typ) :: get_family_type_chain env subst_typ 
+          (id, binds, subst, num, family_typ, subst_typ) :: get_type_family_conversion_chain env subst_typ 
         | _ -> helper insts' (num + 1)
       )
     | _ -> [] in
   helper insts 0
 
-and get_family_type_chain env family_typ = 
+and get_type_family_conversion_chain env family_typ = 
   match family_typ.it with
   | VarT (id, args) -> 
     (match (Env.find_opt_typ env id) with
       | Some (_, insts) when check_type_family insts ->
-        get_chain_list_from_inst id env family_typ args insts
+        get_chain_from_inst id env family_typ args insts
       | _ -> []
   )
-  | IterT (typ, _) -> get_family_type_chain env typ
+  | IterT (typ, _) -> get_type_family_conversion_chain env typ
   | _ -> []
 
-let make_projection_chain env (lst : chain list) (base_exp : exp) = 
+let make_projection_family_data env (lst : family_data list) (base_exp : exp) = 
   List.fold_right (fun (id, binds, subst, case_num, family_typ, sub_typ) exp ->
     let proj_id = proj_name id case_num in 
     let new_args = List.map make_arg_from_bind binds |> Subst.subst_list Subst.subst_arg subst in
@@ -350,7 +350,7 @@ let make_projection_chain env (lst : chain list) (base_exp : exp) =
     (if has_one_inst env family_typ then calle else TheE (calle $$ exp.at % opt_typ)) $$ exp.at % sub_typ'
   ) lst base_exp  
 
-let make_constructor_chain (lst : chain list) (base_exp : exp) = 
+let make_constructor_family_data (lst : family_data list) (base_exp : exp) = 
   List.fold_left (fun exp (id, binds, subst, case_num, family_typ, sub_typ) ->
     let new_args = List.map make_arg_from_bind binds |> Subst.subst_list Subst.subst_arg subst in
     let tupe = construct_tuple_exp base_exp.at exp sub_typ new_args in
@@ -406,12 +406,12 @@ let apply_conversion env exp real_typ expected_typ =
   let (iters, iter_exp, r_typ, e_typ) = handle_iter_typ exp reduced_r_typ reduced_e_typ in 
   if (is_family_typ env r_typ || is_family_typ env e_typ) 
     then (
-      let proj_list = get_family_type_chain env r_typ in
-      let constructor_list = get_family_type_chain env e_typ in
+      let proj_list = get_type_family_conversion_chain env r_typ in
+      let constructor_list = get_type_family_conversion_chain env e_typ in
       let p_list, c_list = simplify_conversions (List.rev proj_list) (List.rev constructor_list) in
       let real_exp = { iter_exp with note = r_typ } in
       let real_base_exp = { exp with note = reduced_r_typ } in
-      let converted_exp = make_constructor_chain c_list (make_projection_chain env p_list real_exp) in
+      let converted_exp = make_constructor_family_data c_list (make_projection_family_data env p_list real_exp) in
       if iters = [] then converted_exp else
       apply_iteration iters real_base_exp converted_exp r_typ
     )
