@@ -11171,7 +11171,7 @@ $$
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
 {\mathrm{invoke}}(s, {\mathit{funcaddr}}, {{\mathit{val}}^\ast}) & = & s ; \{ \mathsf{module}~\{  \} \} ; {{\mathit{val}}^\ast}~(\mathsf{ref{.}func}~{\mathit{funcaddr}})~(\mathsf{call\_ref}~s{.}\mathsf{funcs}{}[{\mathit{funcaddr}}]{.}\mathsf{type}) &  \\
- \multicolumn{4}{@{}l@{}}{\quad
+&& \multicolumn{2}{@{}l@{}}{\quad
 \quad
 \begin{array}[t]{@{}l@{}}
 \mbox{if}~ s{.}\mathsf{funcs}{}[{\mathit{funcaddr}}]{.}\mathsf{type} \approx \mathsf{func}~{t_1^\ast} \rightarrow {t_2^\ast} \\
