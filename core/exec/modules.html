@@ -769,6 +769,14 @@ it happens in individual steps that may be interleaved with other threads.</p>
 </section>
 <section id="invocation">
 <span id="exec-invocation"></span><span id="index-12"></span><h2>Invocation<a class="headerlink" href="#invocation" title="Link to this heading">¶</a></h2>
+<p>Once a <a class="reference internal" href="../syntax/modules.html#syntax-module"><span class="std std-ref">module</span></a> has been <a class="reference internal" href="#exec-instantiation"><span class="std std-ref">instantiated</span></a>, any exported function can be <em>invoked</em> externally via its <a class="reference internal" href="runtime.html#syntax-funcaddr"><span class="std std-ref">function address</span></a> <span class="math notranslate nohighlight">\({\href{../exec/runtime.html#syntax-funcaddr}{\mathit{funcaddr}}}\)</span> in the <a class="reference internal" href="runtime.html#syntax-store"><span class="std std-ref">store</span></a> <span class="math notranslate nohighlight">\(s\)</span> and an appropriate list <span class="math notranslate nohighlight">\({{\href{../exec/runtime.html#syntax-val}{\mathit{val}}}^\ast}\)</span> of argument <a class="reference internal" href="runtime.html#syntax-val"><span class="std std-ref">values</span></a>.</p>
+<p>Invocation may <em>fail</em> with an error if the arguments do not fit the <a class="reference internal" href="../syntax/types.html#syntax-functype"><span class="std std-ref">function type</span></a>.
+Invocation can also result in an <a class="reference internal" href="../syntax/instructions.html#exception"><span class="std std-ref">exception</span></a> or <a class="reference internal" href="../intro/overview.html#trap"><span class="std std-ref">trap</span></a>.
+It is up to the <a class="reference internal" href="../intro/overview.html#embedder"><span class="std std-ref">embedder</span></a> to define how such conditions are reported.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If the <a class="reference internal" href="../intro/overview.html#embedder"><span class="std std-ref">embedder</span></a> API performs type checks itself, either statically or dynamically, before performing an invocation, then no failure other than traps or exceptions can occur.</p>
+</div>
 <section id="xref-exec-modules-exec-invocation-mathrm-invoke-s-xref-exec-runtime-syntax-funcaddr-mathit-funcaddr-xref-exec-runtime-syntax-val-mathit-val-ast">
 <h3><span class="math notranslate nohighlight">\({\href{../exec/modules.html#exec-invocation}{\mathrm{invoke}}}(s, {\href{../exec/runtime.html#syntax-funcaddr}{\mathit{funcaddr}}}, {{\href{../exec/runtime.html#syntax-val}{\mathit{val}}}^\ast})\)</span><a class="headerlink" href="#xref-exec-modules-exec-invocation-mathrm-invoke-s-xref-exec-runtime-syntax-funcaddr-mathit-funcaddr-xref-exec-runtime-syntax-val-mathit-val-ast" title="Link to this heading">¶</a></h3>
 <ol class="arabic simple">
@@ -798,50 +806,10 @@ it happens in individual steps that may be interleaved with other threads.</p>
 <li><p>Pop the <span class="math notranslate nohighlight">\(\mathsf{frame}\)</span> from the stack.</p></li>
 <li><p>Return <span class="math notranslate nohighlight">\({{\href{../exec/runtime.html#syntax-val}{\mathit{val}}'}^{k}}\)</span>.</p></li>
 </ol>
-<p>Once a <a class="reference internal" href="../syntax/modules.html#syntax-module"><span class="std std-ref">module</span></a> has been <a class="reference internal" href="#exec-instantiation"><span class="std std-ref">instantiated</span></a>, any exported function can be <em>invoked</em> externally via its <a class="reference internal" href="runtime.html#syntax-funcaddr"><span class="std std-ref">function address</span></a> <span class="math notranslate nohighlight">\({\href{../exec/runtime.html#syntax-funcaddr}{\mathit{funcaddr}}}\)</span> in the <a class="reference internal" href="runtime.html#syntax-store"><span class="std std-ref">store</span></a> <span class="math notranslate nohighlight">\(s\)</span> and an appropriate list <span class="math notranslate nohighlight">\({{\href{../exec/runtime.html#syntax-val}{\mathit{val}}}^\ast}\)</span> of argument <a class="reference internal" href="runtime.html#syntax-val"><span class="std std-ref">values</span></a>.</p>
-<p>Invocation may <em>fail</em> with an error if the arguments do not fit the <a class="reference internal" href="../syntax/types.html#syntax-functype"><span class="std std-ref">function type</span></a>.
-Invocation can also result in an <a class="reference internal" href="../syntax/instructions.html#exception"><span class="std std-ref">exception</span></a> or <a class="reference internal" href="../intro/overview.html#trap"><span class="std std-ref">trap</span></a>.
-It is up to the <a class="reference internal" href="../intro/overview.html#embedder"><span class="std std-ref">embedder</span></a> to define how such conditions are reported.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>If the <a class="reference internal" href="../intro/overview.html#embedder"><span class="std std-ref">embedder</span></a> API performs type checks itself, either statically or dynamically, before performing an invocation, then no failure other than traps or exceptions can occur.</p>
-</div>
-<p>The following steps are performed:</p>
-<ol class="arabic simple">
-<li><p>Assert: <span class="math notranslate nohighlight">\(S.\href{../exec/runtime.html#syntax-store}{\mathsf{funcs}}[\href{../exec/runtime.html#syntax-funcaddr}{\mathit{funcaddr}}]\)</span> exists.</p></li>
-<li><p>Let <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-funcinst}{\mathit{funcinst}}\)</span> be the <a class="reference internal" href="runtime.html#syntax-funcinst"><span class="std std-ref">function instance</span></a> <span class="math notranslate nohighlight">\(S.\href{../exec/runtime.html#syntax-store}{\mathsf{funcs}}[\href{../exec/runtime.html#syntax-funcaddr}{\mathit{funcaddr}}]\)</span>.</p></li>
-<li><p>Let <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-comptype}{\mathsf{func}}~[t_1^n] \href{../syntax/types.html#syntax-comptype}{\rightarrow} [t_2^m]\)</span> be the <a class="reference internal" href="../syntax/types.html#syntax-comptype"><span class="std std-ref">composite type</span></a> <span class="math notranslate nohighlight">\(\href{../valid/conventions.html#aux-expand-deftype}{\mathrm{expand}}(\href{../exec/runtime.html#syntax-funcinst}{\mathit{funcinst}}.\href{../exec/runtime.html#syntax-funcinst}{\mathsf{type}})\)</span>.</p></li>
-<li><p>If the length <span class="math notranslate nohighlight">\(|\href{../exec/runtime.html#syntax-val}{\mathit{val}}^\ast|\)</span> of the provided argument values is different from the number <span class="math notranslate nohighlight">\(n\)</span> of expected arguments, then:</p>
-<ol class="loweralpha simple">
-<li><p>Fail.</p></li>
-</ol>
-</li>
-<li><p>For each <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">value type</span></a> <span class="math notranslate nohighlight">\(t_i\)</span> in <span class="math notranslate nohighlight">\(t_1^n\)</span> and corresponding <a class="reference internal" href="runtime.html#syntax-val"><span class="std std-ref">value</span></a> <span class="math notranslate nohighlight">\(val_i\)</span> in <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-val}{\mathit{val}}^\ast\)</span>, do:</p>
-<ol class="loweralpha simple">
-<li><p>If <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-val}{\mathit{val}}_i\)</span> is not <a class="reference internal" href="values.html#valid-val"><span class="std std-ref">valid</span></a> with value type <span class="math notranslate nohighlight">\(t_i\)</span>, then:</p>
-<ol class="lowerroman simple">
-<li><p>Fail.</p></li>
-</ol>
-</li>
-</ol>
-</li>
-<li><p>Let <span class="math notranslate nohighlight">\(F\)</span> be the dummy <a class="reference internal" href="runtime.html#syntax-frame"><span class="std std-ref">frame</span></a> <span class="math notranslate nohighlight">\(\{ \href{../exec/runtime.html#syntax-frame}{\mathsf{module}}~\{\}, \href{../exec/runtime.html#syntax-frame}{\mathsf{locals}}~\epsilon \}\)</span>.</p></li>
-<li><p>Push the frame <span class="math notranslate nohighlight">\(F\)</span> to the stack.</p></li>
-<li><p>Push the values <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-val}{\mathit{val}}^\ast\)</span> to the stack.</p></li>
-<li><p><a class="reference internal" href="instructions.html#exec-invoke"><span class="std std-ref">Invoke</span></a> the function instance at address <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-funcaddr}{\mathit{funcaddr}}\)</span>.</p></li>
-</ol>
-<p>Once the function has returned, the following steps are executed:</p>
-<ol class="arabic simple">
-<li><p>Assert: due to <a class="reference internal" href="../valid/modules.html#valid-func"><span class="std std-ref">validation</span></a>, <span class="math notranslate nohighlight">\(m\)</span> <a class="reference internal" href="runtime.html#syntax-val"><span class="std std-ref">values</span></a> are on the top of the stack.</p></li>
-<li><p>Pop <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-val}{\mathit{val}}_{\mathrm{res}}^m\)</span> from the stack.</p></li>
-<li><p>Assert: due to <a class="reference internal" href="../valid/modules.html#valid-module"><span class="std std-ref">validation</span></a>, the frame <span class="math notranslate nohighlight">\(F\)</span> is now on the top of the stack.</p></li>
-<li><p>Pop the frame <span class="math notranslate nohighlight">\(F\)</span> from the stack.</p></li>
-</ol>
-<p>The values <span class="math notranslate nohighlight">\({{\href{../exec/runtime.html#syntax-val}{\mathit{val}}}_{\mathsf{res}}^{m}}\)</span> are returned as the results of the invocation.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}[t]{&#64;{}lcl&#64;{}l&#64;{}}
 {\href{../exec/modules.html#exec-invocation}{\mathrm{invoke}}}(s, {\href{../exec/runtime.html#syntax-funcaddr}{\mathit{funcaddr}}}, {{\href{../exec/runtime.html#syntax-val}{\mathit{val}}}^\ast}) &amp; = &amp; s ; \{ \href{../exec/runtime.html#syntax-frame}{\mathsf{module}}~\{  \} \} ; {{\href{../exec/runtime.html#syntax-val}{\mathit{val}}}^\ast}~(\href{../exec/runtime.html#syntax-ref}{\mathsf{ref{.}func}}~{\href{../exec/runtime.html#syntax-funcaddr}{\mathit{funcaddr}}})~(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{call\_ref}}~s{.}\href{../exec/runtime.html#syntax-store}{\mathsf{funcs}}{}[{\href{../exec/runtime.html#syntax-funcaddr}{\mathit{funcaddr}}}]{.}\href{../exec/runtime.html#syntax-funcinst}{\mathsf{type}}) &amp;  \\
- \multicolumn{4}{&#64;{}l&#64;{}}{\quad
+&amp;&amp; \multicolumn{2}{&#64;{}l&#64;{}}{\quad
 \quad
 \begin{array}[t]{&#64;{}l&#64;{}}
 \mbox{if}~ s{.}\href{../exec/runtime.html#syntax-store}{\mathsf{funcs}}{}[{\href{../exec/runtime.html#syntax-funcaddr}{\mathit{funcaddr}}}]{.}\href{../exec/runtime.html#syntax-funcinst}{\mathsf{type}} \mathrel{\href{../valid/conventions.html#aux-expand-deftype}{\approx}} \href{../syntax/types.html#syntax-comptype}{\mathsf{func}}~{t_1^\ast} \href{../syntax/types.html#syntax-comptype}{\rightarrow} {t_2^\ast} \\
