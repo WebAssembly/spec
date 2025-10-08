@@ -51,6 +51,7 @@ open Il.Ast
 open Util.Source
 open Util
 open Il
+open Xl
 
 module StringMap = Map.Make(String)
 
@@ -252,16 +253,10 @@ let rec get_real_typ_from_exp bind_map env e =
   | NumE (`Int _) -> NumT `IntT $ e.at
   | NumE (`Rat _) -> NumT `RatT $ e.at
   | NumE (`Real _) -> NumT `RealT $ e.at
-  | UnE (_, `BoolT, _) -> BoolT $ e.at 
-  | UnE (_, `NatT, _) -> NumT `NatT $ e.at 
-  | UnE (_, `IntT, _) -> NumT `IntT $ e.at 
-  | UnE (_, `RatT, _) -> NumT `RatT $ e.at 
-  | UnE (_, `RealT, _) -> NumT `RealT $ e.at 
+  | UnE (_, `BoolT, _) -> BoolT $ e.at
+  | UnE (_, (#Num.typ as t), _) -> NumT t $ e.at
   | BinE (_, `BoolT, _, _) -> BoolT $ e.at 
-  | BinE (_, `NatT, _, _) -> NumT `NatT $ e.at 
-  | BinE (_, `IntT, _, _) -> NumT `IntT $ e.at 
-  | BinE (_, `RatT, _, _) -> NumT `RatT $ e.at 
-  | BinE (_, `RealT, _, _) -> NumT `RealT $ e.at 
+  | BinE (_, (#Num.typ as t), _, _) -> NumT t $ e.at
   | BoolE _ -> BoolT $ e.at
   | TextE _ -> TextT $ e.at
   | TupE es -> let typs = List.map (get_real_typ_from_exp bind_map env) es in
