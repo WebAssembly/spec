@@ -378,7 +378,7 @@ It is an invariant of the semantics that all elements of a segment have a type :
 Data Instances
 ~~~~~~~~~~~~~~
 
-An *data instance* is the runtime representation of a :ref:`data segment <syntax-data>`.
+A *data instance* is the runtime representation of a :ref:`data segment <syntax-data>`.
 It holds a list of :ref:`bytes <syntax-byte>`.
 
 $${syntax: datainst}
