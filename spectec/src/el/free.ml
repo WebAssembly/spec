@@ -102,8 +102,9 @@ and free_typ t =
   | ParenT t1 -> free_typ t1
   | TupT ts -> free_list free_typ ts
   | IterT (t1, iter) -> free_typ t1 + free_iter iter
-  | StrT tfs ->
-    free_nl_list (fun tf -> free_typfield tf - det_typfield tf) tfs
+  | StrT (_, ts, tfs, _) ->
+    free_nl_list free_typ ts +
+      free_nl_list (fun tf -> free_typfield tf - det_typfield tf) tfs
   | CaseT (_, ts, tcs, _) ->
     free_nl_list free_typ ts +
       free_nl_list (fun tc -> free_typcase tc - det_typcase tc) tcs

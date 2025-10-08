@@ -365,12 +365,11 @@ and reduce_exp env e : exp =
       )
     | _ -> e1'
     )
-  | SubE (e1, t1, t2) when equiv_typ env t1 t2 ->
-    reduce_exp env e1
   | SubE (e1, t1, t2) ->
     let e1' = reduce_exp env e1 in
     let t1' = reduce_typ env t1 in
     let t2' = reduce_typ env t2 in
+    if equiv_typ env t1' t2' then e1' else
     (match e1'.it with
     | SubE (e11', t11', _t12') ->
       reduce_exp env (SubE (e11', t11', t2') $> e)

@@ -506,14 +506,16 @@ let as_notation_typ phrase env dir t at : typ attempt =
   | VarT (id, args) -> as_notation_typid' phrase env id args at
   | _ -> fail_dir_typ env at phrase dir t "_ ... _"
 
-let rec as_struct_typid' phrase env id args at : typfield list attempt =
+let rec as_struct_typid' phrase env id args at : (typfield list * dots) attempt =
   match as_defined_typid' env id args at with
   | VarT (id', args'), `Alias -> as_struct_typid' phrase env id' args' at
-  | StrT tfs, _ -> Ok (filter_nl tfs)
-  | _ -> fail_dir_typ env at phrase Infer (VarT (id, args) $ id.at) "| ..."
+  | StrT (_dots1, ts, tfs, dots2), _ ->
+    let* tfss = map_attempt (fun t -> as_struct_typ "" env Infer t at) (filter_nl ts) in
+    Ok (List.concat (filter_nl tfs :: List.map fst tfss), dots2)
+  | _ -> fail_dir_typ env at phrase Infer (VarT (id, args) $ id.at) "{...}"
   | exception Error (at', msg) -> fail at' msg
 
-let as_struct_typ phrase env dir t at : typfield list attempt =
+and as_struct_typ phrase env dir t at : (typfield list * dots) attempt =
   match expand env t with
   | VarT (id, args) -> as_struct_typid' phrase env id args at
   | _ -> fail_dir_typ env at phrase dir t "{...}"
@@ -522,8 +524,12 @@ let rec as_cat_typid' phrase env dir id args at =
   match as_defined_typid' env id args at with
   | VarT (id', args'), `Alias -> as_cat_typid' phrase env dir id' args' at
   | IterT _, _ -> Ok ()
-  | StrT tfs, _ ->
-    iter_attempt (fun (_, (t, _), _) -> as_cat_typ phrase env dir t at) (filter_nl tfs)
+  | StrT (_dots1, ts, tfs, dots2), _ ->
+    let* tfss = map_attempt (fun t -> as_struct_typ "" env Infer t at) (filter_nl ts) in
+    let tfs' = List.concat (filter_nl tfs :: List.map fst tfss) in
+    if dots2 = Dots then
+      error at "used record type is only partially defined at this point";
+    iter_attempt (fun (_, (t, _), _) -> as_cat_typ phrase env dir t at) tfs'
   | _ ->
     fail at (phrase ^ "'s type `" ^ string_of_typ ~short:true (VarT (id, args) $ id.at) ^
       "` is not concatenable")
@@ -539,9 +545,9 @@ and as_cat_typ phrase env dir t at =
 let rec as_variant_typid' phrase env id args at : (typcase list * dots) attempt =
   match as_defined_typid' env id args at with
   | VarT (id', args'), `Alias -> as_variant_typid' phrase env id' args' at
-  | CaseT (_dots1, ts, cases, dots2), _ ->
-    let* casess = map_attempt (fun t -> as_variant_typ "" env Infer t at) (filter_nl ts) in
-    Ok (List.concat (filter_nl cases :: List.map fst casess), dots2)
+  | CaseT (_dots1, ts, tcs, dots2), _ ->
+    let* tcss = map_attempt (fun t -> as_variant_typ "" env Infer t at) (filter_nl ts) in
+    Ok (List.concat (filter_nl tcs :: List.map fst tcss), dots2)
   | _ -> fail_dir_typ env id.at phrase Infer (VarT (id, args) $ id.at) "| ..."
   | exception Error (at', msg) -> fail at' msg
 
@@ -753,27 +759,41 @@ and elab_typ_definition env tid t : Il.deftyp =
   ) @@ fun _ ->
   assert (valid_tid tid);
   (match t.it with
-  | StrT tfs ->
-    let tfs' = filter_nl tfs in
+  | StrT (dots1, ts, tfs, _dots2) ->
+    let tfs0 =
+      if dots1 = Dots then
+        fst (checkpoint (as_struct_typid' "own type" env tid [] t.at))
+      else []
+    in
+    let tfss =
+      map_filter_nl_list (fun t ->
+        let tfs, dots = checkpoint (as_struct_typ "parent type" env Infer t t.at) in
+        if dots = Dots then
+          error t.at "cannot include incomplete syntax type";
+        List.map Iter.clone_typfield tfs  (* ensure atom annotations are fresh *)
+      ) ts
+    in
+    let tfs1 = List.flatten (List.map Iter.clone_typfield tfs0 :: tfss @ [filter_nl tfs]) in
+    let tfs' = List.map (elab_typfield env tid t.at) tfs1 in
     check_atoms "record" "field" tfs' t.at;
-    Il.StructT (map_filter_nl_list (elab_typfield env tid t.at) tfs)
-  | CaseT (dots1, ts, cases, _dots2) ->
-    let cases0 =
+    Il.StructT tfs'
+  | CaseT (dots1, ts, tcs, _dots2) ->
+    let tcs0 =
       if dots1 = Dots then
         fst (checkpoint (as_variant_typid "own type" env tid []))
       else []
     in
-    let casess =
+    let tcss =
       map_filter_nl_list (fun t ->
-        let cases, dots = checkpoint (as_variant_typ "parent type" env Infer t t.at) in
+        let tcs, dots = checkpoint (as_variant_typ "parent type" env Infer t t.at) in
         if dots = Dots then
           error t.at "cannot include incomplete syntax type";
-        List.map Iter.clone_typcase cases  (* ensure atom annotations are fresh *)
+        List.map Iter.clone_typcase tcs  (* ensure atom annotations are fresh *)
       ) ts
     in
-    let cases' = List.flatten (List.map Iter.clone_typcase cases0 :: casess @ [filter_nl cases]) in
-    let tcs' = List.map (elab_typcase env tid t.at) cases' in
-    check_atoms "variant" "case" cases' t.at;
+    let tcs1 = List.flatten (List.map Iter.clone_typcase tcs0 :: tcss @ [filter_nl tcs]) in
+    let tcs' = List.map (elab_typcase env tid t.at) tcs1 in
+    check_atoms "variant" "case" tcs1 t.at;
     Il.VariantT tcs'
   | ConT tc ->
     let tc' = elab_typcon env tid t.at tc in
@@ -1078,14 +1098,18 @@ and infer_exp' env e : (Il.exp' * typ') attempt =
     fail_infer e.at "record"
   | DotE (e1, atom) ->
     let* e1', t1 = infer_exp env e1 in
-    let* tfs = as_struct_typ "expression" env Infer t1 e1.at in
+    let* tfs, dots1 = as_struct_typ "expression" env Infer t1 e1.at in
+    if dots1 = Dots then
+      error e1.at "used record type is only partially defined at this point";
     let* t, prems = attempt (find_field tfs atom e1.at) t1 in
     let e' = Il.DotE (e1', elab_atom atom (expand_id env t1)) in
     let e'' = if prems = [] then e' else Il.ProjE (e' $$ e.at % elab_typ env t, 0) in
     Ok (e'', t.it)
   | CommaE (e1, e2) ->
     let* e1', t1 = infer_exp env e1 in
-    let* tfs = as_struct_typ "expression" env Infer t1 e1.at in
+    let* tfs, dots1 = as_struct_typ "expression" env Infer t1 e1.at in
+    if dots1 = Dots then
+      error e1.at "used record type is only partially defined at this point";
     let* _ = as_cat_typ "expression" env Infer t1 e.at in
     (* TODO(4, rossberg): this is a bit of a hack, can we avoid it? *)
     (match e2.it with
@@ -1266,12 +1290,16 @@ and elab_exp_plain' env e t : Il.exp' attempt =
     let* e2' = elab_exp env e2 t2 in
     Ok (Il.ExtE (e1', p', e2'))
   | StrE efs ->
-    let* tfs = as_struct_typ "record" env Check t e.at in
+    let* tfs, dots = as_struct_typ "record" env Check t e.at in
+    if dots = Dots then
+      error e.at "used record type is only partially defined at this point";
     let* efs' = elab_expfields env (expand_id env t) (filter_nl efs) tfs t e.at in
     Ok (Il.StrE efs')
   | CommaE (e1, e2) ->
     let* e1' = elab_exp env e1 t in
-    let* tfs = as_struct_typ "expression" env Check t e1.at in
+    let* tfs, dots1 = as_struct_typ "expression" env Check t e1.at in
+    if dots1 = Dots then
+      error e1.at "used record type is only partially defined at this point";
     let* _ = as_cat_typ "expression" env Check t e.at in
     (* TODO(4, rossberg): this is a bit of a hack, can we avoid it? *)
     (match e2.it with
@@ -1589,7 +1617,9 @@ and elab_path' env p t : (Il.path' * typ) attempt =
     Ok (Il.SliceP (p1', e1', e2'), t1)
   | DotP (p1, atom) ->
     let* p1', t1 = elab_path env p1 t in
-    let* tfs = as_struct_typ "path" env Check t1 p1.at in
+    let* tfs, dots1 = as_struct_typ "path" env Check t1 p1.at in
+    if dots1 = Dots then
+      error p1.at "used record type is only partially defined at this point";
     let* t', _prems = attempt (find_field tfs atom p1.at) t1 in
     Ok (Il.DotP (p1', elab_atom atom (expand_id env t1)), t')
 
@@ -2324,9 +2354,9 @@ and infer_typ_notation env is_con t : typ =
     InfixT (infer_typ_notation env is_con t1, op, infer_typ_notation env is_con t2)
   | BrackT (l, t1, r) -> is_con := true;
     BrackT (l, infer_typ_notation env is_con t1, r)
-  | StrT tfs ->
-    StrT (Convert.map_nl_list (fun (a, (t, p), h) ->
-      a, (infer_typ_notation env is_con t, p), h) tfs)
+  | StrT (d1, ts, tfs, d2) ->
+    StrT (d1, ts, Convert.map_nl_list (fun (a, (t, p), h) ->
+      a, (infer_typ_notation env is_con t, p), h) tfs, d2)
   | CaseT (d1, ts, tcs, d2) ->
     CaseT (d1, ts, Convert.map_nl_list (fun (a, (t, p), h) ->
       a, (infer_typ_notation env is_con t, p), h) tcs, d2)
@@ -2368,7 +2398,10 @@ let infer_typdef env d : def =
     if bound env.typs id1 then (
       let _ps, k = find "syntax type" env.typs id1 in
       let extension =
-        match t.it with CaseT (Dots, _, _, _) -> true | _ -> false in
+        match t.it with
+        | CaseT (Dots, _, _, _) | StrT (Dots, _, _, _) -> true
+        | _ -> false
+      in
       if k <> Family [] && not extension then (* force error *)
         ignore (env.typs <- bind "syntax type" env.typs id1 ([], Family []))
     )
@@ -2467,9 +2500,9 @@ let rec elab_def env d : Il.def list =
     let inst' = Il.InstD (bs', List.map (Dim.annot_arg dims') as', dt') $ d.at in
     let k1', closed =
       match k1, t.it with
-      | Opaque, CaseT (Dots, _, _, _) ->
+      | Opaque, (CaseT (Dots, _, _, _) | StrT (Dots, _, _, _)) ->
         error_id id1 "extension of not yet defined syntax type"
-      | Opaque, CaseT (NoDots, _, _, dots2) ->
+      | Opaque, (CaseT (NoDots, _, _, dots2) | StrT (NoDots, _, _, dots2)) ->
         Defined (t, [id2], dt'), dots2 = NoDots
       | (Opaque | Transp), _ ->
         Defined (t, [id2], dt'), true
@@ -2483,11 +2516,22 @@ let rec elab_def env d : Il.def list =
           error d.at "syntax parameters differ from previous fragment";
         let t1 = CaseT (dots1, ts1 @ ts2, tcs1 @ tcs2, dots2) $ over_region [at; t.at] in
         Defined (t1, id2::ids, dt'), dots2 = NoDots
-      | Defined _, CaseT (Dots, _, _, _) ->
+      | Defined ({it = StrT (dots1, ts1, tfs1, Dots); at; _}, ids, _),
+          StrT (Dots, ts2, tfs2, dots2) ->
+        let ps = List.map Convert.param_of_arg as_ in
+        if List.exists (fun id -> id.it = id2.it) ids then
+          error d.at ("duplicate syntax fragment name `" ^ id1.it ^
+            (if id2.it = "" then "" else "/" ^ id2.it) ^ "`");
+        if not Eq.(eq_list eq_param ps ps1) then
+          error d.at "syntax parameters differ from previous fragment";
+        let t1 = StrT (dots1, ts1 @ ts2, tfs1 @ tfs2, dots2) $ over_region [at; t.at] in
+        Defined (t1, id2::ids, dt'), dots2 = NoDots
+      | Defined _, (CaseT (Dots, _, _, _) | StrT (Dots, _, _, _)) ->
         error_id id1 "extension of non-extensible syntax type"
       | Defined _, _ ->
         error_id id1 "duplicate declaration for syntax type";
-      | Family _, CaseT (dots1, _, _, dots2) when dots1 = Dots || dots2 = Dots ->
+      | Family _, (CaseT (dots1, _, _, dots2) | StrT (dots1, _, _, dots2))
+        when dots1 = Dots || dots2 = Dots ->
         error_id id1 "syntax type family cases are not extensible"
       | Family insts, _ ->
         Family (insts @ [(as_, t, inst')]), false
@@ -2609,7 +2653,7 @@ let check_dots env =
   Map.iter (fun id (at, (_ps, k)) ->
     match k with
     | Transp | Opaque -> assert false
-    | Defined ({it = CaseT (_, _, _, Dots); _}, _, _) ->
+    | Defined ({it = (CaseT (_, _, _, Dots) | StrT (_, _, _, Dots)); _}, _, _) ->
       error_id (id $ at) "missing final extension to syntax type"
     | Family [] ->
       error_id (id $ at) "no defined cases for syntax type family"

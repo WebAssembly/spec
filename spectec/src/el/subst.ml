@@ -102,7 +102,9 @@ and subst_typ s t =
   | ParenT t1 -> ParenT (subst_typ s t1)
   | TupT ts -> TupT (subst_list subst_typ s ts)
   | IterT (t1, iter) -> IterT (subst_typ s t1, subst_iter s iter)
-  | StrT tfs -> StrT (subst_nl_list subst_typfield s tfs)
+  | StrT (dots1, ts, tfs, dots2) ->
+    StrT (dots1, subst_nl_list subst_typ s ts,
+      subst_nl_list subst_typfield s tfs, dots2)
   | CaseT (dots1, ts, tcs, dots2) ->
     CaseT (dots1, subst_nl_list subst_typ s ts,
       subst_nl_list subst_typcase s tcs, dots2)

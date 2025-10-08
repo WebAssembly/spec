@@ -288,9 +288,15 @@ let env_typdef env tid t : typ list option =
   | VarT (id, _) ->
     map_append tid.it (Map.find id.it !(env.atoms)) env.atoms;
     Some [t]
-  | StrT tfs ->
+  | StrT (dots1, ts, tfs, _) ->
     iter_nl_list (env_typfield env tid) tfs;
-    Some []
+    iter_nl_list (fun t ->
+      match t.it with
+      | VarT (id, _) ->
+        map_append tid.it (Map.find id.it !(env.atoms)) env.atoms
+      | _ -> ()
+    ) ts;
+    if dots1 = Dots && ts = [] then None else Some (filter_nl ts)
   | CaseT (dots1, ts, tcs, _) ->
     iter_nl_list (env_typcase env tid) tcs;
     iter_nl_list (fun t ->
@@ -1168,11 +1174,21 @@ and render_nottyp env t : table =
     (string_of_region t.at) (El.Print.string_of_typ t);
   *)
   match t.it with
-  | StrT tfs ->
+  | StrT (dots1, ts, tfs, _dots2) ->
+    let render env = function
+      | `Dots -> render_dots Dots
+      | `Typ t -> render_nottyp env t
+      | `TypField tf -> render_typfield env tf
+    in
     [Row [Col (
       "\\{ " ^
       render_table env "@{}" ["l"; "l"] 0 0
-        (concat_table "" (render_nl_list env (`H, ", ") render_typfield tfs) [Row [Col " \\}"]])
+        (concat_table "" (render_nl_list env (`H, ", ") render (
+          (match dots1 with Dots -> [Elem `Dots] | NoDots -> []) @
+          map_nl_list (fun t -> `Typ t) ts @
+          map_nl_list (fun tf -> `TypField tf) tfs @
+          [] (* (match dots2 with Dots -> [Elem `Dots] | NoDots -> []) *)
+        )) [Row [Col " \\}"]])
     )]]
   | CaseT (dots1, ts, tcs, _dots2) ->
     let render env = function
