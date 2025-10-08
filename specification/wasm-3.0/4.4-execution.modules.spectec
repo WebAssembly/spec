@@ -198,6 +198,6 @@ def $instantiate(s, module, externaddr*) = s'; {MODULE moduleinst}; instr_E* ins
 
 def $invoke(store, funcaddr, val*) : config
 def $invoke(s, funcaddr, val*) = s; {MODULE {}}; val* (REF.FUNC_ADDR funcaddr) (CALL_REF s.FUNCS[funcaddr].TYPE)
-  ---- ----
+  ----
   -- Expand: s.FUNCS[funcaddr].TYPE ~~ FUNC t_1* -> t_2*
   -- (Val_ok: s |- val : t_1)*

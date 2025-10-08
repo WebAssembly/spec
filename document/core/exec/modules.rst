@@ -220,8 +220,6 @@ $${definition: rundata_ runelem_}
 Invocation
 ~~~~~~~~~~
 
-$${definition-prose: invoke}
-
 Once a :ref:`module <syntax-module>` has been :ref:`instantiated <exec-instantiation>`, any exported function can be *invoked* externally via its :ref:`function address <syntax-funcaddr>` ${:funcaddr} in the :ref:`store <syntax-store>` ${:s} and an appropriate list ${:val*} of argument :ref:`values <syntax-val>`.
 
 Invocation may *fail* with an error if the arguments do not fit the :ref:`function type <syntax-functype>`.
@@ -231,42 +229,6 @@ It is up to the :ref:`embedder <embedder>` to define how such conditions are rep
 .. note::
    If the :ref:`embedder <embedder>` API performs type checks itself, either statically or dynamically, before performing an invocation, then no failure other than traps or exceptions can occur.
 
-The following steps are performed:
-
-1. Assert: :math:`S.\SFUNCS[\funcaddr]` exists.
-
-2. Let :math:`\funcinst` be the :ref:`function instance <syntax-funcinst>` :math:`S.\SFUNCS[\funcaddr]`.
-
-3. Let :math:`\TFUNC~[t_1^n] \Tarrow [t_2^m]` be the :ref:`composite type <syntax-comptype>` :math:`\expanddt(\funcinst.\FITYPE)`.
-
-4. If the length :math:`|\val^\ast|` of the provided argument values is different from the number :math:`n` of expected arguments, then:
-
-   a. Fail.
-
-5. For each :ref:`value type <syntax-valtype>` :math:`t_i` in :math:`t_1^n` and corresponding :ref:`value <syntax-val>` :math:`val_i` in :math:`\val^\ast`, do:
-
-   a. If :math:`\val_i` is not :ref:`valid <valid-val>` with value type :math:`t_i`, then:
-
-      i. Fail.
-
-6. Let :math:`F` be the dummy :ref:`frame <syntax-frame>` :math:`\{ \AMODULE~\{\}, \ALOCALS~\epsilon \}`.
-
-7. Push the frame :math:`F` to the stack.
-
-8. Push the values :math:`\val^\ast` to the stack.
-
-9. :ref:`Invoke <exec-invoke>` the function instance at address :math:`\funcaddr`.
-
-Once the function has returned, the following steps are executed:
-
-1. Assert: due to :ref:`validation <valid-func>`, :math:`m` :ref:`values <syntax-val>` are on the top of the stack.
-
-2. Pop :math:`\val_{\F{res}}^m` from the stack.
-
-3. Assert: due to :ref:`validation <valid-module>`, the frame :math:`F` is now on the top of the stack.
-
-4. Pop the frame :math:`F` from the stack.
-
-The values ${:val_RES^m} are returned as the results of the invocation.
+$${definition-prose: invoke}
 
 $${definition: invoke}
