@@ -150,7 +150,7 @@ syntax resulttype hint(desc "result type") =
 syntax packtype hint(desc "packed type") = I8 | I16
 syntax lanetype hint(desc "lane type") = numtype | packtype
 
-syntax Pnn hint(show I#n) = I8 | I16
+syntax Pnn hint(show I#n) = packtype
 syntax Jnn hint(show I#n) = Inn | Pnn
 syntax Lnn hint(show I#n) = Inn | Fnn | Pnn
 
