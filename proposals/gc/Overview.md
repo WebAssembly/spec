@@ -162,7 +162,7 @@ The above could map to
       (array.new $char-array (i32.const 0x41) (i32.const 4))
     )
   )
-  (array.get $buf
+  (array.get $char-array
     (struct.get $buf $chars (local.get $b))
     (struct.get $buf $pos (local.get $b))
   )
