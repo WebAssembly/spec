@@ -676,7 +676,7 @@ let of_loc_unquoted at =
   Filename.basename at.left.file ^ ":" ^ string_of_int at.left.line
 
 let of_loc at =
-  of_string(of_loc_unquoted at)
+  of_string (of_loc_unquoted at)
 
 let of_float z =
   match string_of_float z with
