@@ -1600,7 +1600,7 @@ The internal methods of an [=Exported GC Object=] use the following implementati
 <div algorithm>
   The <dfn>\[[PreventExtensions]] internal method of an Exported GC Object</dfn> <var ignore>O</var> takes no arguments and returns a boolean. It performs the following steps when called:
 
-    1. Return false.
+    1. Return true.
 </div>
 
 <div algorithm>
