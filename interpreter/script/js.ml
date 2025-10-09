@@ -669,13 +669,14 @@ let of_string_with iter add_char s =
   Buffer.contents buf
 
 let of_bytes = of_string_with String.iter add_hex_char
+let of_string = of_string_with String.iter add_char
 let of_name = of_string_with List.iter add_unicode_char
 
 let of_loc_unquoted at =
- Filename.basename at.left.file ^ ":" ^ string_of_int at.left.line
+  Filename.basename at.left.file ^ ":" ^ string_of_int at.left.line
 
 let of_loc at =
-  "\"" ^ of_loc_unquoted at ^ "\""
+  of_string(of_loc_unquoted at)
 
 let of_float z =
   match string_of_float z with
