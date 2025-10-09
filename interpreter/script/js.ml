@@ -672,8 +672,11 @@ let of_bytes = of_string_with String.iter add_hex_char
 let of_string = of_string_with String.iter add_char
 let of_name = of_string_with List.iter add_unicode_char
 
+let of_loc_unquoted at =
+  Filename.basename at.left.file ^ ":" ^ string_of_int at.left.line
+
 let of_loc at =
-  of_string (Filename.basename at.left.file ^ ":" ^ string_of_int at.left.line)
+  of_string(of_loc_unquoted at)
 
 let of_float z =
   match string_of_float z with
@@ -812,8 +815,8 @@ let of_assertion env ass =
     of_assertion' env act loc "assert_exception" [] None
 
 let of_command env cmd =
+  "\n// " ^ of_loc_unquoted cmd.at ^ "\n" ^
   let loc = of_loc cmd.at in
-  "\n// " ^ loc ^ "\n" ^
   match cmd.it with
   | Module (x_opt, def) ->
     let rec unquote def =
