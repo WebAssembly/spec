@@ -161,6 +161,8 @@ function assert_return(action, loc, ...expected) {
     throw new Error(expected.length + " value(s) expected, got " + actual.length);
   }
   for (let i = 0; i < actual.length; ++i) {
+    let actual_i;
+    try { actual_i = "" + actual[i] } catch (e) { actual_i = typeof actual[i] }
     switch (expected[i]) {
       case "nan:canonical":
       case "nan:arithmetic":
@@ -168,12 +170,12 @@ function assert_return(action, loc, ...expected) {
         // Note that JS can't reliably distinguish different NaN values,
         // so there's no good way to test that it's a canonical NaN.
         if (!Number.isNaN(actual[i])) {
-          throw new Error("Wasm NaN return value expected, got " + actual[i]);
+          throw new Error("Wasm NaN return value expected, got " + actual_i);
         };
         return;
       case "ref.i31":
         if (typeof actual[i] !== "number" || (actual[i] & 0x7fffffff) !== actual[i]) {
-          throw new Error("Wasm i31 return value expected, got " + actual[i]);
+          throw new Error("Wasm i31 return value expected, got " + actual_i);
         };
         return;
       case "ref.any":
@@ -183,27 +185,27 @@ function assert_return(action, loc, ...expected) {
         // For now, JS can't distinguish exported Wasm GC values,
         // so we only test for object.
         if (typeof actual[i] !== "object") {
-          throw new Error("Wasm object return value expected, got " + actual[i]);
+          throw new Error("Wasm object return value expected, got " + actual_i);
         };
         return;
       case "ref.func":
         if (typeof actual[i] !== "function") {
-          throw new Error("Wasm function return value expected, got " + actual[i]);
+          throw new Error("Wasm function return value expected, got " + actual_i);
         };
         return;
       case "ref.extern":
         if (actual[i] === null) {
-          throw new Error("Wasm reference return value expected, got " + actual[i]);
+          throw new Error("Wasm reference return value expected, got " + actual_i);
         };
         return;
       case "ref.null":
         if (actual[i] !== null) {
-          throw new Error("Wasm null return value expected, got " + actual[i]);
+          throw new Error("Wasm null return value expected, got " + actual_i);
         };
         return;
       default:
         if (!Object.is(actual[i], expected[i])) {
-          throw new Error("Wasm return value " + expected[i] + " expected, got " + actual[i]);
+          throw new Error("Wasm return value " + expected[i] + " expected, got " + actual_i);
         };
     }
   }
