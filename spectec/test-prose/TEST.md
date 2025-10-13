@@ -19689,7 +19689,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Else:
 
-   a. Assert: Due to validation, :math:`{\mathit{nt}}` is :math:`{\mathsf{i}}{N}`.
+   a. Assert: Due to validation, :math:`{\mathit{nt}}` is address type.
 
    #. Let :math:`{\mathit{loadop}}_0` be :math:`{{\mathit{loadop}}^?}`.
 
@@ -20699,7 +20699,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Else:
 
-   a. Assert: Due to validation, :math:`{\mathit{nt}'}` is :math:`{\mathsf{i}}{N}`.
+   a. Assert: Due to validation, :math:`{\mathit{nt}'}` is address type.
 
    #. Let :math:`n` be :math:`{{\mathit{storeop}}^?}`.
 
@@ -23573,7 +23573,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .................................................
 
 
-1. If :math:`{\mathit{valtype}}` is :math:`{\mathsf{i}}{N}`, then:
+1. If :math:`{\mathit{valtype}}` is address type, then:
 
    a. Return :math:`({\mathit{valtype}}{.}\mathsf{const}~0)`.
 
@@ -24039,7 +24039,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .....................................................
 
 
-1. If :math:`{\mathit{numtype}}` is :math:`{\mathsf{i}}{N}`, then:
+1. If :math:`{\mathit{numtype}}` is address type, then:
 
    a. If :math:`{\mathit{unop}} = \mathsf{clz}`, then:
 
@@ -24094,7 +24094,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .............................................................
 
 
-1. If :math:`{\mathit{numtype}}` is :math:`{\mathsf{i}}{N}`, then:
+1. If :math:`{\mathit{numtype}}` is address type, then:
 
    a. If :math:`{\mathit{binop}} = \mathsf{add}`, then:
 
@@ -24192,7 +24192,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .............................................................
 
 
-1. If :math:`{\mathit{numtype}}` is :math:`{\mathsf{i}}{N}`, then:
+1. If :math:`{\mathit{numtype}}` is address type, then:
 
    a. If :math:`{\mathit{relop}} = \mathsf{eq}`, then:
 
@@ -24257,7 +24257,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .............................................................................
 
 
-1. If :math:`{\mathit{numtype}}` is :math:`{\mathsf{i}}{N}` and :math:`{\mathit{numtype}'}` is :math:`{\mathsf{i}}{N}`, then:
+1. If :math:`{\mathit{numtype}}` is address type and :math:`{\mathit{numtype}'}` is address type, then:
 
    a. If :math:`{\mathit{cvtop}}` is some :math:`{\mathsf{extend}}{\mathsf{\_}}{{\mathit{sx}}}`, then:
 
@@ -24269,7 +24269,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       1) Return :math:`{{\mathrm{wrap}}}_{N_1, N_2}(i_1)`.
 
-#. If :math:`{\mathit{numtype}}` is :math:`{\mathsf{f}}{N}` and :math:`{\mathit{numtype}'}` is :math:`{\mathsf{i}}{N}`, then:
+#. If :math:`{\mathit{numtype}}` is :math:`{\mathsf{f}}{N}` and :math:`{\mathit{numtype}'}` is address type, then:
 
    a. If :math:`{\mathit{cvtop}}` is some :math:`{\mathsf{trunc}}{\mathsf{\_}}{{\mathit{sx}}}`, then:
 
@@ -24283,7 +24283,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       #) Return :math:`{{{{\mathrm{trunc\_sat}}}_{N_1, N_2}^{{\mathit{sx}}}}}{(i_1)}`.
 
-#. If :math:`{\mathit{numtype}}` is :math:`{\mathsf{i}}{N}` and :math:`{\mathit{numtype}'}` is :math:`{\mathsf{f}}{N}` and :math:`{\mathit{cvtop}}` is some :math:`{\mathsf{convert}}{\mathsf{\_}}{{\mathit{sx}}}`, then:
+#. If :math:`{\mathit{numtype}}` is address type and :math:`{\mathit{numtype}'}` is :math:`{\mathsf{f}}{N}` and :math:`{\mathit{cvtop}}` is some :math:`{\mathsf{convert}}{\mathsf{\_}}{{\mathit{sx}}}`, then:
 
    a. Let :math:`({\mathsf{convert}}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{cvtop}}`.
 
@@ -24299,13 +24299,13 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       1) Return :math:`{{\mathrm{demote}}}_{N_1, N_2}(i_1)`.
 
-#. If :math:`{\mathit{numtype}}` is :math:`{\mathsf{i}}{N}` and :math:`{\mathit{numtype}'}` is :math:`{\mathsf{f}}{N}` and :math:`{\mathit{cvtop}} = \mathsf{reinterpret}` and :math:`{|{\mathit{numtype}}|} = {|{\mathit{numtype}'}|}`, then:
+#. If :math:`{\mathit{numtype}}` is address type and :math:`{\mathit{numtype}'}` is :math:`{\mathsf{f}}{N}` and :math:`{\mathit{cvtop}} = \mathsf{reinterpret}` and :math:`{|{\mathit{numtype}}|} = {|{\mathit{numtype}'}|}`, then:
 
    a. Return :math:`{{\mathrm{reinterpret}}}_{{\mathit{numtype}}, {\mathit{numtype}'}}(i_1)`.
 
 #. Assert: Due to validation, :math:`{\mathit{numtype}}` is :math:`{\mathsf{f}}{N}`.
 
-#. Assert: Due to validation, :math:`{\mathit{numtype}'}` is :math:`{\mathsf{i}}{N}`.
+#. Assert: Due to validation, :math:`{\mathit{numtype}'}` is address type.
 
 #. Assert: Due to validation, :math:`{\mathit{cvtop}} = \mathsf{reinterpret}`.
 
@@ -25031,7 +25031,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Assert: Due to validation, :math:`{\mathit{lanetype}'}` is :math:`{\mathsf{f}}{N}`.
 
-#. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{i}}{N}`, then:
+#. If :math:`{\mathit{lanetype}}` is address type, then:
 
    a. If :math:`{\mathit{vcvtop}}` is some :math:`{\mathsf{trunc\_sat}}{\mathsf{\_}}{{\mathit{sx}}}`, then:
 
@@ -29686,7 +29686,7 @@ Step_read/load nt loadop_? x ao
   b. Let c be $nbytes__1^-1(nt, $mem(z, x).BYTES[(i + ao.OFFSET) : ($size(nt) / 8)]).
   c. Push the value (nt.CONST c) to the stack.
 5. Else:
-  a. Assert: Due to validation, nt is Inn.
+  a. Assert: Due to validation, nt is addrtype.
   b. Let ?(loadop_0) be loadop_?.
   c. Let n _ sx be loadop_0.
   d. If (((i + ao.OFFSET) + (n / 8)) > |$mem(z, x).BYTES|), then:
@@ -30177,7 +30177,7 @@ Step/store nt storeop_? x ao
   b. Let b* be $nbytes_(nt', c).
   c. Perform $with_mem(z, x, (i + ao.OFFSET), ($size(nt') / 8), b*).
 8. Else:
-  a. Assert: Due to validation, nt' is Inn.
+  a. Assert: Due to validation, nt' is addrtype.
   b. Let ?(n) be storeop_?.
   c. If (((i + ao.OFFSET) + (n / 8)) > |$mem(z, x).BYTES|), then:
     1) Trap.
@@ -31515,7 +31515,7 @@ unrollht C heaptype
 5. Return C.RECS[i].
 
 default_ valtype
-1. If valtype is Inn, then:
+1. If valtype is addrtype, then:
   a. Return ?((valtype.CONST 0)).
 2. If valtype is Fnn, then:
   a. Return ?((valtype.CONST $fzero($size(valtype)))).
@@ -31730,7 +31730,7 @@ cunpacknum_ storagetype c
 3. Return $extend__($psize(storagetype), $size($lunpack(storagetype)), U, c).
 
 unop_ numtype unop_ i
-1. If numtype is Inn, then:
+1. If numtype is addrtype, then:
   a. If (unop_ = CLZ), then:
     1) Return [$iclz_($sizenn(numtype), i)].
   b. If (unop_ = CTZ), then:
@@ -31757,7 +31757,7 @@ unop_ numtype unop_ i
 10. Return $fnearest_($sizenn(numtype), i).
 
 binop_ numtype binop_ i_1 i_2
-1. If numtype is Inn, then:
+1. If numtype is addrtype, then:
   a. If (binop_ = ADD), then:
     1) Return [$iadd_($sizenn(numtype), i_1, i_2)].
   b. If (binop_ = SUB), then:
@@ -31805,7 +31805,7 @@ testop_ Inn EQZ i
 1. Return $ieqz_($sizenn(Inn), i).
 
 relop_ numtype relop_ i_1 i_2
-1. If numtype is Inn, then:
+1. If numtype is addrtype, then:
   a. If (relop_ = EQ), then:
     1) Return $ieq_($sizenn(numtype), i_1, i_2).
   b. If (relop_ = NE), then:
@@ -31837,20 +31837,20 @@ relop_ numtype relop_ i_1 i_2
 9. Return $fge_($sizenn(numtype), i_1, i_2).
 
 cvtop__ numtype numtype' cvtop__ i_1
-1. If (numtype is Inn /\ numtype' is Inn), then:
+1. If (numtype is addrtype /\ numtype' is addrtype), then:
   a. If cvtop__ is some EXTEND, then:
     1) Let (EXTEND sx) be cvtop__.
     2) Return [$extend__($sizenn1(numtype), $sizenn2(numtype'), sx, i_1)].
   b. If (cvtop__ = WRAP), then:
     1) Return [$wrap__($sizenn1(numtype), $sizenn2(numtype'), i_1)].
-2. If (numtype is Fnn /\ numtype' is Inn), then:
+2. If (numtype is Fnn /\ numtype' is addrtype), then:
   a. If cvtop__ is some TRUNC, then:
     1) Let (TRUNC sx) be cvtop__.
     2) Return $trunc__($sizenn1(numtype), $sizenn2(numtype'), sx, i_1).
   b. If cvtop__ is some TRUNC_SAT, then:
     1) Let (TRUNC_SAT sx) be cvtop__.
     2) Return $trunc_sat__($sizenn1(numtype), $sizenn2(numtype'), sx, i_1).
-3. If (numtype is Inn /\ (numtype' is Fnn /\ cvtop__ is some CONVERT)), then:
+3. If (numtype is addrtype /\ (numtype' is Fnn /\ cvtop__ is some CONVERT)), then:
   a. Let (CONVERT sx) be cvtop__.
   b. Return [$convert__($sizenn1(numtype), $sizenn2(numtype'), sx, i_1)].
 4. If (numtype is Fnn /\ numtype' is Fnn), then:
@@ -31858,10 +31858,10 @@ cvtop__ numtype numtype' cvtop__ i_1
     1) Return $promote__($sizenn1(numtype), $sizenn2(numtype'), i_1).
   b. If (cvtop__ = DEMOTE), then:
     1) Return $demote__($sizenn1(numtype), $sizenn2(numtype'), i_1).
-5. If (numtype is Inn /\ (numtype' is Fnn /\ ((cvtop__ = REINTERPRET) /\ ($size(numtype) = $size(numtype'))))), then:
+5. If (numtype is addrtype /\ (numtype' is Fnn /\ ((cvtop__ = REINTERPRET) /\ ($size(numtype) = $size(numtype'))))), then:
   a. Return [$reinterpret__(numtype, numtype', i_1)].
 6. Assert: Due to validation, numtype is Fnn.
-7. Assert: Due to validation, numtype' is Inn.
+7. Assert: Due to validation, numtype' is addrtype.
 8. Assert: Due to validation, (cvtop__ = REINTERPRET).
 9. Assert: Due to validation, ($size(numtype) = $size(numtype')).
 10. Return [$reinterpret__(numtype, numtype', i_1)].
@@ -32208,7 +32208,7 @@ lcvtop__ lanetype' X M_1 lanetype X M_2 vcvtop__ c_1
     2) Let c be $convert__($lsizenn1(lanetype'), $lsizenn2(lanetype), sx, c_1).
     3) Return [c].
 2. Assert: Due to validation, lanetype' is Fnn.
-3. If lanetype is Inn, then:
+3. If lanetype is addrtype, then:
   a. If vcvtop__ is some TRUNC_SAT, then:
     1) Let (TRUNC_SAT sx zero?) be vcvtop__.
     2) Let c? be $trunc_sat__($lsizenn1(lanetype'), $lsizenn2(lanetype), sx, c_1).
