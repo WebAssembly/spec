@@ -339,9 +339,9 @@ For each type, several subcategories can be distinguished:
 
 * *Constants*: return a static constant.
 
-* *Unary Operations*: consume one operand and produce one result of the respective type.
+* *Unary operations*: consume one operand and produce one result of the respective type.
 
-* *Binary Operations*: consume two operands and produce one result of the respective type.
+* *Binary operations*: consume two operands and produce one result of the respective type.
 
 * *Tests*: consume one operand of the respective type and produce a Boolean integer result.
 

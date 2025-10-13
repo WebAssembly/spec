@@ -160,19 +160,21 @@ grammar Texterntype_(I) : (externtype, idctxt) =
 grammar Ttypeuse_(I)/base : (typeidx, idctxt) =
   | "(" "type" x:Ttypeidx_(I) ")" => (x, I')
     ----
-    -- if I.TYPEDEFS[x] = SUB FINAL (FUNC t_1* -> t_2*)
+    -- if I.TYPEDEFS[x] = _DEF (REC st*) i
+    -- if st*[i] = SUB FINAL (FUNC t_1* -> t_2*)
     -- if I' = {LOCALS (eps)^(|t_1*|)}
   | "(" "type" x:Ttypeidx_(I) ")" (t_1,id?)*:Tparam_(I)* t_2*:Tresult_(I)* => (x, I')
     ----
-    -- if I.TYPEDEFS[x] = SUB FINAL (FUNC t_1* -> t_2*)
+    -- if I.TYPEDEFS[x] = _DEF (REC st*) i
+    -- if st*[i] = SUB FINAL (FUNC t_1* -> t_2*)
     -- if I' = {LOCALS (id?)*}
     -- Idctxt_ok: |- I' : OK
   | ...
 
 grammar Ttypeuse_(I)/abbrev : (typeidx, idctxt) = ... | (t_1,id?)*:Tparam_(I)* t_2*:Tresult_(I)* == "(" "type" x:Ttypeidx_(I) ")" Tparam_(I)* Tresult_(I)*
     ----
-    -- if I.TYPEDEFS[x] = SUB FINAL (FUNC t_1* -> t_2*)
-    -- (if I.TYPEDEFS[i] =/= SUB FINAL (FUNC t_1* -> t_2*))^(i<x)
+    -- if I.TYPEDEFS[x] = _DEF (REC (SUB FINAL (FUNC t_1* -> t_2*))) 0
+    -- (if I.TYPEDEFS[i] =/= _DEF (REC (SUB FINAL (FUNC t_1* -> t_2*))) 0)^(i<x)
 
 ;; TODO(5, rossberg): This does not yet formalise how new type definitions are
 ;; appended to the module if needed for implicit type uses.

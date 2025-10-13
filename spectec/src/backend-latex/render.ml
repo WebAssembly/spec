@@ -1073,7 +1073,7 @@ Printf.eprintf "[render_atom %s @ %s] id=%s def=%s macros: %s (%s)\n%!"
 
 let render_text s =
   let buf = Buffer.create (String.length s + 32) in
-  Buffer.add_string buf "\\mbox{‘}\\mathtt{";
+  Buffer.add_string buf "\\mbox{‘\\texttt{";
   for i = 0 to String.length s - 1 do
     match s.[i] with
     | '\'' -> Buffer.add_string buf "\\kern0.03em{'}\\kern0.03em"  (* TODO: not typeset in TT *)
@@ -1083,18 +1083,23 @@ let render_text s =
     | '%' -> Buffer.add_string buf "\\%"
     | '&' -> Buffer.add_string buf "\\&"
     | '_' -> Buffer.add_string buf "\\_"
-    | '-' -> Buffer.add_string buf "\\mbox{-}"
-    | '{' -> Buffer.add_string buf "\\{"  (* TODO: not typeset in TT *)
-    | '}' -> Buffer.add_string buf "\\}"  (* TODO: not typeset in TT *)
+    | '=' -> Buffer.add_string buf "{=}"
+    | '<' -> Buffer.add_string buf "{<}"
+    | '>' -> Buffer.add_string buf "{>}"
+    | '-' -> Buffer.add_string buf "{-}"
+    | '(' -> Buffer.add_string buf "{(}"
+    | ')' -> Buffer.add_string buf "{)}"
+    | '{' -> Buffer.add_string buf "{\\{}"
+    | '}' -> Buffer.add_string buf "{\\}}"
     | '[' -> Buffer.add_string buf "{[}"
     | ']' -> Buffer.add_string buf "{]}"
-    | '\\' -> Buffer.add_string buf "\\backslash{}"  (* TODO: not typeset in TT *)
-    | '^' ->  Buffer.add_string buf "\\hat{~~}"
-    | '`' ->  Buffer.add_string buf "\\grave{~~}"
-    | '~' ->  Buffer.add_string buf "\\tilde{~~}"
+    | '\\' -> Buffer.add_string buf "$\\mathtt{\\backslash}$"  (* TODO: not typeset in TT *)
+    | '^' ->  Buffer.add_string buf "$\\mathtt{\\hat{~~}}$"
+    | '`' ->  Buffer.add_string buf "$\\mathtt{\\grave{~~}}$"
+    | '~' ->  Buffer.add_string buf "$\\mathtt{\\tilde{~~}}$"
     | c -> Buffer.add_char buf c
   done;
-  Buffer.add_string buf "}\\mbox{’}";
+  Buffer.add_string buf "}’}";
   Buffer.contents buf
 
 
@@ -1161,7 +1166,7 @@ and render_nottyp env t : table =
       render_table env "@{}" ["l"; "l"] 0 0
         (concat_table "" (render_nl_list env (`H, ", ") render_typfield tfs) [Row [Col " \\}"]])
     )]]
-  | CaseT (dots1, ts, tcs, dots2) ->
+  | CaseT (dots1, ts, tcs, _dots2) ->
     let render env = function
       | `Dots -> render_dots Dots
       | `Typ t -> render_nottyp env t
@@ -1172,7 +1177,7 @@ and render_nottyp env t : table =
         (match dots1 with Dots -> [Elem `Dots] | NoDots -> []) @
         map_nl_list (fun t -> `Typ t) ts @
         map_nl_list (fun tc -> `TypCase tc) tcs @
-        (match dots2 with Dots -> [Elem `Dots] | NoDots -> [])
+        [] (* (match dots2 with Dots -> [Elem `Dots] | NoDots -> []) *)
       )
     in
     if env.config.display then
@@ -1252,6 +1257,8 @@ and render_exp env e =
   | NumE _ -> assert false
   | TextE t -> render_text t
   | CvtE (e1, _) -> render_exp env e1
+  | UnE (`NotOp, {it = MemE (e1, e2); _}) ->
+    render_exp env e1 ^ " \\notin " ^ render_exp env e2
   | UnE (op, e2) -> "{" ^ render_unop op ^ render_exp env e2 ^ "}"
   | BinE (e1, `PowOp, ({it = ParenE e2; _ } | e2)) ->
     "{" ^ render_exp env e1 ^ "^{" ^ render_exp env e2 ^ "}}"
@@ -1602,7 +1609,7 @@ and render_prod env prod : row list =
     )
 
 and render_gram env gram : table =
-  let (dots1, prods, dots2) = gram.it in
+  let (dots1, prods, _dots2) = gram.it in
   let singleline =
     List.length prods > 1 && gram.at.left.line = gram.at.right.line ||
     List.exists (function (Elem {it = RangeP _; _}) -> true | _ -> false) prods
@@ -1620,7 +1627,7 @@ and render_gram env gram : table =
     render_nl_list env (`H, "~~|~~") render (
       (match dots1 with Dots -> [Elem `Dots] | NoDots -> []) @
       map_nl_list (fun p -> `Prod p) prods @
-      (match dots2 with Dots -> [Elem `Dots] | NoDots -> [])
+      [] (* (match dots2 with Dots -> [Elem `Dots] | NoDots -> []) *)
     )
   in
   if env.config.display then

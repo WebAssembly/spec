@@ -147,12 +147,12 @@ syntax idctxt hint(desc "identifier context") hint(macro "I" "I%") =
     LOCALS (name?)*       hint(desc "local"),
     LABELS (name?)*       hint(desc "label"),
     FIELDS ((name?)*)*    hint(desc "field"),
-    TYPEDEFS (subtype?)*  hint(desc "type definitions")
+    TYPEDEFS (deftype?)*  hint(desc "type definitions")
   }
 
 syntax I = idctxt
 
-def $concat_idctxt(idctxt*) : idctxt  hint(show (++) %2)
+def $concat_idctxt(idctxt*) : idctxt  hint(show (++) %)
 def $concat_idctxt(eps) = {}
 def $concat_idctxt(I I') = I ++ $concat_idctxt(I'*)
 
