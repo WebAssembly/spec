@@ -179,7 +179,7 @@ and check_type ty v expr =
     boolV (ty = "val")
   (* numtype *)
   | CaseV (nt, []) when List.mem nt inn_types ->
-    boolV (ty = "Inn" || ty = "Jnn" || ty = "numtype" || ty = "valtype" || ty = "consttype")
+    boolV (ty = "Inn" || ty = "Jnn" || ty = "numtype" || ty = "valtype" || ty = "consttype" || ty = "addrtype")
   | CaseV (nt, []) when List.mem nt fnn_types ->
     boolV (ty = "Fnn" || ty = "numtype" || ty = "valtype" || ty = "consttype")
   | CaseV (vt, []) when List.mem vt vnn_types ->
