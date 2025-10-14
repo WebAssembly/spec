@@ -162,7 +162,7 @@ function assert_return(action, loc, ...expected) {
   }
   for (let i = 0; i < actual.length; ++i) {
     let actual_i;
-    try { actual_i = "" + actual[i] } catch (e) { actual_i = typeof actual[i] }
+    try { actual_i = "" + actual[i] } catch { actual_i = typeof actual[i] }
     switch (expected[i]) {
       case "nan:canonical":
       case "nan:arithmetic":
