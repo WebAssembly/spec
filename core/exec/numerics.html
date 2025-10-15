@@ -900,9 +900,9 @@ then its sign is non-deterministic and the <a class="reference internal" href=".
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{llcl&#64;{\qquad}l}
 &amp; \href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{z^\ast\} &amp;=&amp; \{ + \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(\href{../syntax/values.html#aux-canon}{\mathrm{canon}}_N) \} \\
-\def\mathdef1850#1{{{}^{\small{[{!}#1]}}}}\mathdef1850{\href{../appendix/profiles.html#profile-deterministic}{\mathrm{DET}}} &amp; \href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{z^\ast\} &amp;=&amp; \{ + \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), - \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n) ~|~ n = \href{../syntax/values.html#aux-canon}{\mathrm{canon}}_N \}
+\def\mathdef1853#1{{{}^{\small{[{!}#1]}}}}\mathdef1853{\href{../appendix/profiles.html#profile-deterministic}{\mathrm{DET}}} &amp; \href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{z^\ast\} &amp;=&amp; \{ + \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), - \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n) ~|~ n = \href{../syntax/values.html#aux-canon}{\mathrm{canon}}_N \}
   &amp; (\mathrel{\mbox{if}} \{z^\ast\} \subseteq \{ + \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(\href{../syntax/values.html#aux-canon}{\mathrm{canon}}_N), - \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(\href{../syntax/values.html#aux-canon}{\mathrm{canon}}_N) \} \\
-\def\mathdef1851#1{{{}^{\small{[{!}#1]}}}}\mathdef1851{\href{../appendix/profiles.html#profile-deterministic}{\mathrm{DET}}} &amp; \href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{z^\ast\} &amp;=&amp; \{ + \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), - \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n) ~|~ n \geq \href{../syntax/values.html#aux-canon}{\mathrm{canon}}_N \}
+\def\mathdef1854#1{{{}^{\small{[{!}#1]}}}}\mathdef1854{\href{../appendix/profiles.html#profile-deterministic}{\mathrm{DET}}} &amp; \href{../exec/numerics.html#aux-nans}{\mathrm{nans}}_N\{z^\ast\} &amp;=&amp; \{ + \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n), - \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(n) ~|~ n \geq \href{../syntax/values.html#aux-canon}{\mathrm{canon}}_N \}
   &amp; (\mathrel{\mbox{if}} \{z^\ast\} \not\subseteq \{ + \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(\href{../syntax/values.html#aux-canon}{\mathrm{canon}}_N), - \href{../syntax/values.html#syntax-float}{\mathsf{nan}}(\href{../syntax/values.html#aux-canon}{\mathrm{canon}}_N) \} \\
 \end{array}\end{split}\]</div>
 </section>
@@ -1838,7 +1838,7 @@ This behaviour is expressed by the following auxiliary function,
 where <span class="math notranslate nohighlight">\(R\)</span> is a global parameter selecting one of the allowed outcomes:</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{&#64;{}lcll}
-\def\mathdef1820#1{{{}^{\small{[{!}#1]}}}}\mathdef1820{\href{../appendix/profiles.html#profile-deterministic}{\mathrm{DET}}} &amp; \href{../exec/numerics.html#aux-relaxed}{\mathrm{relaxed}}(R)[ A_0, \dots, A_n ] = A_R \\
+\def\mathdef1823#1{{{}^{\small{[{!}#1]}}}}\mathdef1823{\href{../appendix/profiles.html#profile-deterministic}{\mathrm{DET}}} &amp; \href{../exec/numerics.html#aux-relaxed}{\mathrm{relaxed}}(R)[ A_0, \dots, A_n ] = A_R \\
 &amp; \href{../exec/numerics.html#aux-relaxed}{\mathrm{relaxed}}(R)[ A_0, \dots, A_n ] = A_0 \\
 \end{array}\end{split}\]</div>
 <div class="admonition note">

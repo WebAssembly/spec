@@ -531,7 +531,7 @@ Locals are mutated by respective <a class="reference internal" href="../syntax/i
 <p>Exception handlers are installed by <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{try\_table}}\)</span> instructions and record the corresponding list of <a class="reference internal" href="../syntax/instructions.html#syntax-catch"><span class="std std-ref">catch clauses</span></a>:</p>
 <div class="math notranslate nohighlight">
 \[\begin{array}{llllll}
-  \def\mathdef1852#1{{}}\mathdef1852{handler} &amp; \href{../exec/runtime.html#syntax-handler}{\mathit{handler}} &amp;::=&amp;
+  \def\mathdef1855#1{{}}\mathdef1855{handler} &amp; \href{../exec/runtime.html#syntax-handler}{\mathit{handler}} &amp;::=&amp;
     \href{../exec/runtime.html#syntax-handler}{\mathsf{handler}}_n\{\href{../syntax/instructions.html#syntax-catch}{\mathit{catch}}^\ast\}
 \end{array}\]</div>
 <p>The handlers on the stack are searched when an exception is <a class="reference internal" href="../syntax/instructions.html#syntax-throw"><span class="std std-ref">thrown</span></a>.</p>
