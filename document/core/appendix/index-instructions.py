@@ -616,6 +616,7 @@ INSTRUCTIONS = [
     Instruction(2.0, r'\F32X4.\VPMAX', r'\hex{FD}~~\hex{EB}~~\hex{01}', r'[\V128~\V128] \to [\V128]', r'valid-vbinop', r'exec-vbinop', r'op-fpmax'),
     Instruction(2.0, r'\F64X2.\VABS', r'\hex{FD}~~\hex{EC}~~\hex{01}', r'[\V128] \to [\V128]', r'valid-vunop', r'exec-vunop', r'op-fabs'),
     Instruction(2.0, r'\F64X2.\VNEG', r'\hex{FD}~~\hex{ED}~~\hex{01}', r'[\V128] \to [\V128]', r'valid-vunop', r'exec-vunop', r'op-fneg'),
+    Instruction(0.0, None, r'\hex{FD}~\hex{EE}~\hex{01}'),
     Instruction(2.0, r'\F64X2.\VSQRT', r'\hex{FD}~~\hex{EF}~~\hex{01}', r'[\V128] \to [\V128]', r'valid-vunop', r'exec-vunop', r'op-fsqrt'),
     Instruction(2.0, r'\F64X2.\VADD', r'\hex{FD}~~\hex{F0}~~\hex{01}', r'[\V128~\V128] \to [\V128]', r'valid-vbinop', r'exec-vbinop', r'op-fadd'),
     Instruction(2.0, r'\F64X2.\VSUB', r'\hex{FD}~~\hex{F1}~~\hex{01}', r'[\V128~\V128] \to [\V128]', r'valid-vbinop', r'exec-vbinop', r'op-fsub'),
