@@ -85,9 +85,9 @@ let print_runner_result name result =
   in
 
   if name = "Total" then
-    Printf.printf "Total [%d/%d] (%.2f%%)\n\n" num_success total percentage
+    log "Total [%d/%d] (%.2f%%)\n\n" num_success total percentage
   else
-    Printf.printf "- %d/%d (%.2f%%)\n\n" num_success total percentage;
+    log "- %d/%d (%.2f%%)\n\n" num_success total percentage;
   log "%s took %f ms.\n" name (execution_time *. 1000.)
 
 let get_export name modulename =
