@@ -85,9 +85,12 @@ let print_runner_result name result =
   in
 
   if name = "Total" then
-    Printf.printf "Total [%d/%d] (%.2f%%)\n\n" num_success total percentage
-  else
-    Printf.printf "- %d/%d (%.2f%%)\n\n" num_success total percentage;
+    log "Total [%d/%d] (%.2f%%)\n\n" num_success total percentage
+  else (
+    log "- %d/%d (%.2f%%)\n\n" num_success total percentage;
+    if num_success < total then
+       Printf.printf "Test failed for %s\n" name
+  );
   log "%s took %f ms.\n" name (execution_time *. 1000.)
 
 let get_export name modulename =
@@ -306,7 +309,6 @@ let run_wat = run_wasm
 (** Parse **)
 
 let parse_file name parser_ file =
-  Printf.printf "===== %s =====\n%!" name;
   log "===========================\n\n%s\n\n" name;
 
   try
