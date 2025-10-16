@@ -302,6 +302,8 @@ $${definition-ignore: psize}
 
 * The auxiliary function :math:`\unpack` maps a storage type to the :ref:`value type <syntax-valtype>` obtained when accessing a field:
 
+$${definition: unpack}
+
 
 .. index:: ! recursive type, ! sub type, composite type, ! final, subtyping, ! roll, ! unroll, recursive type index
    pair: abstract syntax; recursive type
