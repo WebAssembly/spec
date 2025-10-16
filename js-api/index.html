@@ -6,7 +6,7 @@
   <meta content="ED" name="w3c-status">
   <meta content="Bikeshed version 3f621ba99, updated Mon Jul 28 15:38:36 2025 -0700" name="generator">
   <link href="https://www.w3.org/TR/wasm-js-api-2/" rel="canonical">
-  <meta content="f915557f1ff6982b29cebb5f877175138c028f43" name="revision">
+  <meta content="939d97ed1fb09e2e691e4f455482fbb5f4ed119e" name="revision">
   <meta content="dark light" name="color-scheme">
 <style>
 emu-const {
@@ -1520,31 +1520,39 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://web
      <li data-md>
       <p>Let <var>promise</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#a-new-promise" id="ref-for-a-new-promise②">a new promise</a>.</p>
      <li data-md>
-      <p><a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#upon-fulfillment" id="ref-for-upon-fulfillment">Upon fulfillment</a> of <var>promiseOfModule</var> with value <var>module</var>:</p>
-      <ol>
+      <p><a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#dfn-perform-steps-once-promise-is-settled" id="ref-for-dfn-perform-steps-once-promise-is-settled">React</a> to <var>promiseOfModule</var>:</p>
+      <ul>
        <li data-md>
-        <p><a data-link-type="dfn" href="#asynchronously-instantiate-a-webassembly-module" id="ref-for-asynchronously-instantiate-a-webassembly-module">Instantiate the WebAssembly module</a> <var>module</var> importing <var>importObject</var>, and let <var>innerPromise</var> be the result.</p>
-       <li data-md>
-        <p><a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#upon-fulfillment" id="ref-for-upon-fulfillment①">Upon fulfillment</a> of <var>innerPromise</var> with value <var>instance</var>.</p>
+        <p>If <var>promiseOfModule</var> was fulfilled with value <var>module</var>:</p>
         <ol>
          <li data-md>
-          <p>Let <var>result</var> be the <code class="idl"><a data-link-type="idl" href="#dictdef-webassemblyinstantiatedsource" id="ref-for-dictdef-webassemblyinstantiatedsource①">WebAssemblyInstantiatedSource</a></code> value «[ "<code class="idl"><a data-link-type="idl" href="#dom-webassemblyinstantiatedsource-module" id="ref-for-dom-webassemblyinstantiatedsource-module">module</a></code>" → <var>module</var>, "<code class="idl"><a data-link-type="idl" href="#dom-webassemblyinstantiatedsource-instance" id="ref-for-dom-webassemblyinstantiatedsource-instance">instance</a></code>" → <var>instance</var> ]».</p>
+          <p><a data-link-type="dfn" href="#asynchronously-instantiate-a-webassembly-module" id="ref-for-asynchronously-instantiate-a-webassembly-module">Instantiate the WebAssembly module</a> <var>module</var> importing <var>importObject</var>, and let <var>innerPromise</var> be the result.</p>
          <li data-md>
-          <p><a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#resolve" id="ref-for-resolve②">Resolve</a> <var>promise</var> with <var>result</var>.</p>
+          <p><a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#dfn-perform-steps-once-promise-is-settled" id="ref-for-dfn-perform-steps-once-promise-is-settled①">React</a> to <var>innerPromise</var>:</p>
+          <ul>
+           <li data-md>
+            <p>If <var>innerPromise</var> was fulfilled with value <var>instance</var>.</p>
+            <ol>
+             <li data-md>
+              <p>Let <var>result</var> be the <code class="idl"><a data-link-type="idl" href="#dictdef-webassemblyinstantiatedsource" id="ref-for-dictdef-webassemblyinstantiatedsource①">WebAssemblyInstantiatedSource</a></code> value «[ "<code class="idl"><a data-link-type="idl" href="#dom-webassemblyinstantiatedsource-module" id="ref-for-dom-webassemblyinstantiatedsource-module">module</a></code>" → <var>module</var>, "<code class="idl"><a data-link-type="idl" href="#dom-webassemblyinstantiatedsource-instance" id="ref-for-dom-webassemblyinstantiatedsource-instance">instance</a></code>" → <var>instance</var> ]».</p>
+             <li data-md>
+              <p><a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#resolve" id="ref-for-resolve②">Resolve</a> <var>promise</var> with <var>result</var>.</p>
+            </ol>
+           <li data-md>
+            <p>If <var>innerPromise</var> was rejected with reason <var>reason</var>:</p>
+            <ol>
+             <li data-md>
+              <p><a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject③">Reject</a> <var>promise</var> with <var>reason</var>.</p>
+            </ol>
+          </ul>
         </ol>
        <li data-md>
-        <p><a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#upon-rejection" id="ref-for-upon-rejection">Upon rejection</a> of <var>innerPromise</var> with reason <var>reason</var>:</p>
+        <p>If <var>promiseOfModule</var> was rejected with reason <var>reason</var>:</p>
         <ol>
          <li data-md>
-          <p><a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject③">Reject</a> <var>promise</var> with <var>reason</var>.</p>
+          <p><a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject④">Reject</a> <var>promise</var> with <var>reason</var>.</p>
         </ol>
-      </ol>
-     <li data-md>
-      <p><a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#upon-rejection" id="ref-for-upon-rejection①">Upon rejection</a> of <var>promiseOfModule</var> with reason <var>reason</var>:</p>
-      <ol>
-       <li data-md>
-        <p><a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject④">Reject</a> <var>promise</var> with <var>reason</var>.</p>
-      </ol>
+      </ul>
      <li data-md>
       <p>Return <var>promise</var>.</p>
     </ol>
@@ -4626,14 +4634,13 @@ Added a builtins option when compiling a module, and a collection of builtin fun
      <li><span class="dfn-paneled" id="60e61e1a">namespace object</span>
      <li><span class="dfn-paneled" id="56f81a8e">new</span>
      <li><span class="dfn-paneled" id="efd1ec5d">object</span>
+     <li><span class="dfn-paneled" id="750a2f08">react</span>
      <li><span class="dfn-paneled" id="b262501e">reject</span>
      <li><span class="dfn-paneled" id="3b90bdcd">resolve</span>
      <li><span class="dfn-paneled" id="9cce47fd">sequence</span>
      <li><span class="dfn-paneled" id="b4cfa5ce">throw</span>
      <li><span class="dfn-paneled" id="5f90bbfb">undefined</span>
      <li><span class="dfn-paneled" id="e97a9688">unsigned long</span>
-     <li><span class="dfn-paneled" id="24bd7d25">upon fulfillment</span>
-     <li><span class="dfn-paneled" id="f14ed351">upon rejection</span>
     </ul>
   </ul>
   <h2 class="no-num no-ref heading settled" id="references"><span class="content">References</span><a class="self-link" href="#references"></a></h2>
@@ -5060,7 +5067,6 @@ let dfnPanelData = {
 "218fe9cc": {"dfnID":"218fe9cc","dfnText":"global_read","external":true,"refSections":[{"refs":[{"id":"ref-for-embed-global-read"}],"title":"5.5. Globals"}],"url":"https://webassembly.github.io/spec/core/appendix/embedding.html#embed-global-read"},
 "222b8c82": {"dfnID":"222b8c82","dfnText":"tag (for external-type)","external":true,"refSections":[{"refs":[{"id":"ref-for-external-types"},{"id":"ref-for-external-types\u2460"},{"id":"ref-for-external-types\u2461"},{"id":"ref-for-external-types\u2462"},{"id":"ref-for-external-types\u2463"},{"id":"ref-for-external-types\u2464"},{"id":"ref-for-external-types\u2465"},{"id":"ref-for-external-types\u2466"},{"id":"ref-for-external-types\u2467"},{"id":"ref-for-external-types\u2468"}],"title":"5. The WebAssembly Namespace"},{"refs":[{"id":"ref-for-external-types\u2460\u24ea"},{"id":"ref-for-external-types\u2460\u2460"},{"id":"ref-for-external-types\u2460\u2461"},{"id":"ref-for-external-types\u2460\u2462"},{"id":"ref-for-external-types\u2460\u2463"}],"title":"5.1. Modules"}],"url":"https://webassembly.github.io/spec/core/syntax/types.html#external-types"},
 "24a3a894": {"dfnID":"24a3a894","dfnText":"global_type","external":true,"refSections":[{"refs":[{"id":"ref-for-embed-global-type"},{"id":"ref-for-embed-global-type\u2460"}],"title":"5.5. Globals"}],"url":"https://webassembly.github.io/spec/core/appendix/embedding.html#embed-global-type"},
-"24bd7d25": {"dfnID":"24bd7d25","dfnText":"upon fulfillment","external":true,"refSections":[{"refs":[{"id":"ref-for-upon-fulfillment"},{"id":"ref-for-upon-fulfillment\u2460"}],"title":"5. The WebAssembly Namespace"}],"url":"https://webidl.spec.whatwg.org/#upon-fulfillment"},
 "25439d77": {"dfnID":"25439d77","dfnText":"v128","external":true,"refSections":[{"refs":[{"id":"ref-for-vector-types"}],"title":"5. The WebAssembly Namespace"},{"refs":[{"id":"ref-for-vector-types\u2460"},{"id":"ref-for-vector-types\u2461"},{"id":"ref-for-vector-types\u2462"},{"id":"ref-for-vector-types\u2463"}],"title":"5.5. Globals"},{"refs":[{"id":"ref-for-vector-types\u2464"},{"id":"ref-for-vector-types\u2465"},{"id":"ref-for-vector-types\u2466"}],"title":"5.6. Exported Functions"},{"refs":[{"id":"ref-for-vector-types\u2467"},{"id":"ref-for-vector-types\u2468"}],"title":"5.9. Exceptions"}],"url":"https://webassembly.github.io/spec/core/syntax/types.html#vector-types"},
 "288fbd68": {"dfnID":"288fbd68","dfnText":"String.fromCodePoint","external":true,"refSections":[{"refs":[{"id":"ref-for-sec-string.fromcodepoint"}],"title":"6.1.7. fromCodePoint"}],"url":"https://tc39.github.io/ecma262/#sec-string.fromcodepoint"},
 "297c7b14": {"dfnID":"297c7b14","dfnText":"mem","external":true,"refSections":[{"refs":[{"id":"ref-for-external-types"},{"id":"ref-for-external-types\u2460"},{"id":"ref-for-external-types\u2461"},{"id":"ref-for-external-types\u2462"},{"id":"ref-for-external-types\u2463"},{"id":"ref-for-external-types\u2464"},{"id":"ref-for-external-types\u2465"},{"id":"ref-for-external-types\u2466"},{"id":"ref-for-external-types\u2467"},{"id":"ref-for-external-types\u2468"}],"title":"5. The WebAssembly Namespace"},{"refs":[{"id":"ref-for-external-types\u2460\u24ea"},{"id":"ref-for-external-types\u2460\u2460"},{"id":"ref-for-external-types\u2460\u2461"},{"id":"ref-for-external-types\u2460\u2462"},{"id":"ref-for-external-types\u2460\u2463"}],"title":"5.1. Modules"}],"url":"https://webassembly.github.io/spec/core/syntax/types.html#external-types"},
@@ -5121,6 +5127,7 @@ let dfnPanelData = {
 "74269a03": {"dfnID":"74269a03","dfnText":"String.prototype.concat","external":true,"refSections":[{"refs":[{"id":"ref-for-sec-string.prototype.concat"}],"title":"6.1.11. concat"}],"url":"https://tc39.github.io/ecma262/#sec-string.prototype.concat"},
 "746f6bc3": {"dfnID":"746f6bc3","dfnText":"memory instance","external":true,"refSections":[{"refs":[{"id":"ref-for-memory-instances"}],"title":"4.1. Interaction of the WebAssembly Store with JavaScript"},{"refs":[{"id":"ref-for-memory-instances\u2460"}],"title":"5.3. Memories"}],"url":"https://webassembly.github.io/spec/core/exec/runtime.html#memory-instances"},
 "750115f9": {"dfnID":"750115f9","dfnText":"DefineMethodProperty","external":true,"refSections":[{"refs":[{"id":"ref-for-sec-definemethodproperty"}],"title":"5.10. Error Objects"}],"url":"https://tc39.es/ecma262/multipage/ordinary-and-exotic-objects-behaviours.html#sec-definemethodproperty"},
+"750a2f08": {"dfnID":"750a2f08","dfnText":"react","external":true,"refSections":[{"refs":[{"id":"ref-for-dfn-perform-steps-once-promise-is-settled"},{"id":"ref-for-dfn-perform-steps-once-promise-is-settled\u2460"}],"title":"5. The WebAssembly Namespace"}],"url":"https://webidl.spec.whatwg.org/#dfn-perform-steps-once-promise-is-settled"},
 "76674d02": {"dfnID":"76674d02","dfnText":"module_exports","external":true,"refSections":[{"refs":[{"id":"ref-for-embed-module-exports"}],"title":"5. The WebAssembly Namespace"},{"refs":[{"id":"ref-for-embed-module-exports\u2460"}],"title":"5.1. Modules"}],"url":"https://webassembly.github.io/spec/core/appendix/embedding.html#embed-module-exports"},
 "76ec690d": {"dfnID":"76ec690d","dfnText":"signed_31","external":true,"refSections":[{"refs":[{"id":"ref-for-aux-signed"},{"id":"ref-for-aux-signed\u2460"},{"id":"ref-for-aux-signed\u2461"},{"id":"ref-for-aux-signed\u2462"},{"id":"ref-for-aux-signed\u2463"},{"id":"ref-for-aux-signed\u2464"}],"title":"5.6. Exported Functions"}],"url":"https://webassembly.github.io/spec/core/exec/numerics.html#aux-signed"},
 "77489c34": {"dfnID":"77489c34","dfnText":"global address","external":true,"refSections":[{"refs":[{"id":"ref-for-syntax-globaladdr"}],"title":"4.2. WebAssembly JS Object Caches"},{"refs":[{"id":"ref-for-syntax-globaladdr\u2460"},{"id":"ref-for-syntax-globaladdr\u2461"},{"id":"ref-for-syntax-globaladdr\u2462"}],"title":"5.5. Globals"}],"url":"https://webassembly.github.io/spec/core/exec/runtime.html#syntax-globaladdr"},
@@ -5388,7 +5395,6 @@ let dfnPanelData = {
 "f0590fd3": {"dfnID":"f0590fd3","dfnText":"String.fromCharCode","external":true,"refSections":[{"refs":[{"id":"ref-for-sec-string.fromcharcode"}],"title":"6.1.1. Abstract operations"}],"url":"https://tc39.github.io/ecma262/#sec-string.fromcharcode"},
 "f06ddd8a": {"dfnID":"f06ddd8a","dfnText":"memaddrs","external":true,"refSections":[{"refs":[{"id":"ref-for-syntax-moduleinst"},{"id":"ref-for-syntax-moduleinst\u2460"}],"title":"5.3. Memories"}],"url":"https://webassembly.github.io/spec/core/exec/runtime.html#syntax-moduleinst"},
 "f0c8810c": {"dfnID":"f0c8810c","dfnText":"import","external":true,"refSections":[{"refs":[{"id":"ref-for-syntax-import"}],"title":"9. Security and Privacy Considerations"}],"url":"https://webassembly.github.io/spec/core/syntax/modules.html#syntax-import"},
-"f14ed351": {"dfnID":"f14ed351","dfnText":"upon rejection","external":true,"refSections":[{"refs":[{"id":"ref-for-upon-rejection"},{"id":"ref-for-upon-rejection\u2460"}],"title":"5. The WebAssembly Namespace"}],"url":"https://webidl.spec.whatwg.org/#upon-rejection"},
 "f17862f0": {"dfnID":"f17862f0","dfnText":"ArrayBuffer","external":true,"refSections":[{"refs":[{"id":"ref-for-sec-arraybuffer-objects"},{"id":"ref-for-sec-arraybuffer-objects\u2460"}],"title":"5.1. Modules"},{"refs":[{"id":"ref-for-sec-arraybuffer-objects\u2461"},{"id":"ref-for-sec-arraybuffer-objects\u2462"},{"id":"ref-for-sec-arraybuffer-objects\u2463"},{"id":"ref-for-sec-arraybuffer-objects\u2464"},{"id":"ref-for-sec-arraybuffer-objects\u2465"},{"id":"ref-for-sec-arraybuffer-objects\u2466"},{"id":"ref-for-sec-arraybuffer-objects\u2467"},{"id":"ref-for-sec-arraybuffer-objects\u2468"}],"title":"5.3. Memories"}],"url":"https://tc39.github.io/ecma262/#sec-arraybuffer-objects"},
 "f256859a": {"dfnID":"f256859a","dfnText":"UTF-8 decode without BOM or fail","external":true,"refSections":[{"refs":[{"id":"ref-for-utf-8-decode-without-bom-or-fail"}],"title":"5.1. Modules"}],"url":"https://encoding.spec.whatwg.org/#utf-8-decode-without-bom-or-fail"},
 "f2ca6ec5": {"dfnID":"f2ca6ec5","dfnText":"IsStrictlyEqual","external":true,"refSections":[{"refs":[{"id":"ref-for-sec-isstrictlyequal"}],"title":"6.1.13. equals"},{"refs":[{"id":"ref-for-sec-isstrictlyequal\u2460"}],"title":"6.1.14. compare"}],"url":"https://tc39.github.io/ecma262/#sec-isstrictlyequal"},
@@ -6196,6 +6202,7 @@ let refsData = {
 "https://webidl.spec.whatwg.org/#dfn-associated-realm": {"displayText":"associated realm","export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"associated realm","type":"dfn","url":"https://webidl.spec.whatwg.org/#dfn-associated-realm"},
 "https://webidl.spec.whatwg.org/#dfn-get-buffer-source-copy": {"displayText":"get a copy of the buffer source","export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"get a copy of the buffer source","type":"dfn","url":"https://webidl.spec.whatwg.org/#dfn-get-buffer-source-copy"},
 "https://webidl.spec.whatwg.org/#dfn-namespace-object": {"displayText":"namespace object","export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"namespace object","type":"dfn","url":"https://webidl.spec.whatwg.org/#dfn-namespace-object"},
+"https://webidl.spec.whatwg.org/#dfn-perform-steps-once-promise-is-settled": {"displayText":"react","export":true,"for_":["promise"],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"react","type":"dfn","url":"https://webidl.spec.whatwg.org/#dfn-perform-steps-once-promise-is-settled"},
 "https://webidl.spec.whatwg.org/#dfn-throw": {"displayText":"throw","export":true,"for_":["exception"],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"throw","type":"dfn","url":"https://webidl.spec.whatwg.org/#dfn-throw"},
 "https://webidl.spec.whatwg.org/#idl-DOMString": {"displayText":"DOMString","export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"DOMString","type":"interface","url":"https://webidl.spec.whatwg.org/#idl-DOMString"},
 "https://webidl.spec.whatwg.org/#idl-USVString": {"displayText":"USVString","export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"USVString","type":"interface","url":"https://webidl.spec.whatwg.org/#idl-USVString"},
@@ -6210,8 +6217,6 @@ let refsData = {
 "https://webidl.spec.whatwg.org/#new": {"displayText":"new","export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"new","type":"dfn","url":"https://webidl.spec.whatwg.org/#new"},
 "https://webidl.spec.whatwg.org/#reject": {"displayText":"reject","export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"reject","type":"dfn","url":"https://webidl.spec.whatwg.org/#reject"},
 "https://webidl.spec.whatwg.org/#resolve": {"displayText":"resolve","export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"resolve","type":"dfn","url":"https://webidl.spec.whatwg.org/#resolve"},
-"https://webidl.spec.whatwg.org/#upon-fulfillment": {"displayText":"upon fulfillment","export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"upon fulfillment","type":"dfn","url":"https://webidl.spec.whatwg.org/#upon-fulfillment"},
-"https://webidl.spec.whatwg.org/#upon-rejection": {"displayText":"upon rejection","export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"upon rejection","type":"dfn","url":"https://webidl.spec.whatwg.org/#upon-rejection"},
 };
 
 function mkRefHint(link, ref) {

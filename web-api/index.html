@@ -6,7 +6,7 @@
   <meta content="ED" name="w3c-status">
   <meta content="Bikeshed version 3f621ba99, updated Mon Jul 28 15:38:36 2025 -0700" name="generator">
   <link href="https://www.w3.org/TR/wasm-web-api-2/" rel="canonical">
-  <meta content="f915557f1ff6982b29cebb5f877175138c028f43" name="revision">
+  <meta content="939d97ed1fb09e2e691e4f455482fbb5f4ed119e" name="revision">
   <meta content="dark light" name="color-scheme">
 <style>/* Boilerplate: style-autolinks */
 .css.css, .property.property, .descriptor.descriptor {
@@ -901,49 +901,57 @@ To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="compile-a-pote
     <code class="idl"><a data-link-type="idl" href="https://webassembly.github.io/spec/js-api/#exceptiondef-compileerror" id="ref-for-exceptiondef-compileerror">CompileError</a></code> or other relevant error type, depending on the cause of failure.</p>
     <ol>
      <li data-md>
-      <p>Let <var>returnValue</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#a-new-promise" id="ref-for-a-new-promise">a new promise</a></p>
+      <p>Let <var>returnValue</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#a-new-promise" id="ref-for-a-new-promise">a new promise</a>.</p>
      <li data-md>
-      <p><a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#upon-fulfillment" id="ref-for-upon-fulfillment">Upon fulfillment</a> of <var>source</var> with value <var>unwrappedSource</var>:</p>
-      <ol>
+      <p><a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#dfn-perform-steps-once-promise-is-settled" id="ref-for-dfn-perform-steps-once-promise-is-settled">React</a> to <var>source</var>:</p>
+      <ul>
        <li data-md>
-        <p>Let <var>response</var> be <var>unwrappedSource</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response-response" id="ref-for-concept-response-response">response</a>.</p>
-       <li data-md>
-        <p>Let <var>mimeType</var> be the result of <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-header-list-get" id="ref-for-concept-header-list-get">getting</a> <code>`Content-Type`</code> from <var>response</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response-header-list" id="ref-for-concept-response-header-list">header list</a>.</p>
-       <li data-md>
-        <p>If <var>mimeType</var> is null, reject <var>returnValue</var> with a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror①">TypeError</a></code> and abort these substeps.</p>
-       <li data-md>
-        <p>Remove all <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#http-tab-or-space-byte" id="ref-for-http-tab-or-space-byte">HTTP tab or space byte</a> from the start and end of <var>mimeType</var>.</p>
-       <li data-md>
-        <p>If <var>mimeType</var> is not a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#byte-case-insensitive" id="ref-for-byte-case-insensitive">byte-case-insensitive</a> match for <code>`application/wasm`</code>, reject <var>returnValue</var> with a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror②">TypeError</a></code> and abort these substeps.</p>
-        <p class="note" role="note"><span class="marker">Note:</span> extra parameters are not allowed, including the empty <code>`application/wasm;`</code>.</p>
-       <li data-md>
-        <p>If <var>response</var> is not <a data-link-type="dfn" href="https://html.spec.whatwg.org/#cors-same-origin" id="ref-for-cors-same-origin①">CORS-same-origin</a>, <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject">reject</a> <var>returnValue</var> with a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror③">TypeError</a></code> and abort these substeps.</p>
-       <li data-md>
-        <p>If <var>response</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response-status" id="ref-for-concept-response-status">status</a> is not an <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#ok-status" id="ref-for-ok-status①">ok status</a>, <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject①">reject</a> <var>returnValue</var> with a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror④">TypeError</a></code> and abort these substeps.</p>
-       <li data-md>
-        <p><a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-body-consume-body" id="ref-for-concept-body-consume-body">Consume</a> <var>response</var>’s body as an <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-arraybuffer-objects" id="ref-for-sec-arraybuffer-objects">ArrayBuffer</a></code>, and let <var>bodyPromise</var> be the result.</p>
-        <p class="note" role="note"><span class="marker">Note:</span> Although it is specified here that the response is consumed entirely before compilation proceeds, that is purely for ease of specification; implementations are likely to instead perform processing in a streaming fashion. The difference is unobservable, and thus the simpler model is specified. </p>
-       <li data-md>
-        <p><a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#upon-fulfillment" id="ref-for-upon-fulfillment①">Upon fulfillment</a> of <var>bodyPromise</var> with value <var>bodyArrayBuffer</var>:</p>
+        <p>If <var>source</var> was fulfilled with value <var>unwrappedSource</var>:</p>
         <ol>
          <li data-md>
-          <p>Let <var>stableBytes</var> be a <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#dfn-get-buffer-source-copy" id="ref-for-dfn-get-buffer-source-copy">copy of the bytes held by the buffer</a> <var>bodyArrayBuffer</var>.</p>
+          <p>Let <var>response</var> be <var>unwrappedSource</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response-response" id="ref-for-concept-response-response">response</a>.</p>
          <li data-md>
-          <p><a data-link-type="dfn" href="https://webassembly.github.io/spec/js-api/#asynchronously-compile-a-webassembly-module" id="ref-for-asynchronously-compile-a-webassembly-module">Asynchronously compile the WebAssembly module</a> <var>stableBytes</var> using the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#networking-task-source" id="ref-for-networking-task-source">networking task source</a> and <var>options</var> and <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#resolve" id="ref-for-resolve">resolve</a> <var>returnValue</var> with the result.</p>
+          <p>Let <var>mimeType</var> be the result of <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-header-list-get" id="ref-for-concept-header-list-get">getting</a> <code>`Content-Type`</code> from <var>response</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response-header-list" id="ref-for-concept-response-header-list">header list</a>.</p>
+         <li data-md>
+          <p>If <var>mimeType</var> is null, reject <var>returnValue</var> with a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror①">TypeError</a></code> and abort these substeps.</p>
+         <li data-md>
+          <p>Remove all <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#http-tab-or-space-byte" id="ref-for-http-tab-or-space-byte">HTTP tab or space byte</a> from the start and end of <var>mimeType</var>.</p>
+         <li data-md>
+          <p>If <var>mimeType</var> is not a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#byte-case-insensitive" id="ref-for-byte-case-insensitive">byte-case-insensitive</a> match for <code>`application/wasm`</code>, reject <var>returnValue</var> with a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror②">TypeError</a></code> and abort these substeps.</p>
+          <p class="note" role="note"><span class="marker">Note:</span> extra parameters are not allowed, including the empty <code>`application/wasm;`</code>.</p>
+         <li data-md>
+          <p>If <var>response</var> is not <a data-link-type="dfn" href="https://html.spec.whatwg.org/#cors-same-origin" id="ref-for-cors-same-origin①">CORS-same-origin</a>, <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject">reject</a> <var>returnValue</var> with a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror③">TypeError</a></code> and abort these substeps.</p>
+         <li data-md>
+          <p>If <var>response</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response-status" id="ref-for-concept-response-status">status</a> is not an <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#ok-status" id="ref-for-ok-status①">ok status</a>, <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject①">reject</a> <var>returnValue</var> with a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror④">TypeError</a></code> and abort these substeps.</p>
+         <li data-md>
+          <p><a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-body-consume-body" id="ref-for-concept-body-consume-body">Consume</a> <var>response</var>’s body as an <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-arraybuffer-objects" id="ref-for-sec-arraybuffer-objects">ArrayBuffer</a></code>, and let <var>bodyPromise</var> be the result.</p>
+          <p class="note" role="note"><span class="marker">Note:</span> Although it is specified here that the response is consumed entirely before compilation proceeds, that is purely for ease of specification; implementations are likely to instead perform processing in a streaming fashion. The difference is unobservable, and thus the simpler model is specified. </p>
+         <li data-md>
+          <p><a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#dfn-perform-steps-once-promise-is-settled" id="ref-for-dfn-perform-steps-once-promise-is-settled①">React</a> to <var>bodyPromise</var>:</p>
+          <ul>
+           <li data-md>
+            <p>If <var>bodyPromise</var> was fulfilled with value <var>bodyArrayBuffer</var>:</p>
+            <ol>
+             <li data-md>
+              <p>Let <var>stableBytes</var> be a <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#dfn-get-buffer-source-copy" id="ref-for-dfn-get-buffer-source-copy">copy of the bytes held by the buffer</a> <var>bodyArrayBuffer</var>.</p>
+             <li data-md>
+              <p><a data-link-type="dfn" href="https://webassembly.github.io/spec/js-api/#asynchronously-compile-a-webassembly-module" id="ref-for-asynchronously-compile-a-webassembly-module">Asynchronously compile the WebAssembly module</a> <var>stableBytes</var> using the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#networking-task-source" id="ref-for-networking-task-source">networking task source</a> and <var>options</var> and <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#resolve" id="ref-for-resolve">resolve</a> <var>returnValue</var> with the result.</p>
+            </ol>
+           <li data-md>
+            <p>If <var>bodyPromise</var> was rejected with reason <var>reason</var>:</p>
+            <ol>
+             <li data-md>
+              <p><a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject②">Reject</a> <var>returnValue</var> with <var>reason</var>.</p>
+            </ol>
+          </ul>
         </ol>
        <li data-md>
-        <p><a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#upon-rejection" id="ref-for-upon-rejection">Upon rejection</a> of <var>bodyPromise</var> with reason <var>reason</var>:</p>
+        <p>If <var>source</var> was rejected with reason <var>reason</var>:</p>
         <ol>
          <li data-md>
-          <p><a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject②">Reject</a> <var>returnValue</var> with <var>reason</var>.</p>
+          <p><a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject③">Reject</a> <var>returnValue</var> with <var>reason</var>.</p>
         </ol>
-      </ol>
-     <li data-md>
-      <p><a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#upon-rejection" id="ref-for-upon-rejection①">Upon rejection</a> of <var>source</var> with reason <var>reason</var>:</p>
-      <ol>
-       <li data-md>
-        <p><a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject③">Reject</a> <var>returnValue</var> with <var>reason</var>.</p>
-      </ol>
+      </ul>
      <li data-md>
       <p>Return <var>returnValue</var>.</p>
     </ol>
@@ -1282,10 +1290,9 @@ The registration for the <code>application/wasm</code> media type has been succe
      <li><span class="dfn-paneled" id="dacde8b5">a new promise</span>
      <li><span class="dfn-paneled" id="92d13070">get a copy of the buffer source</span>
      <li><span class="dfn-paneled" id="efd1ec5d">object</span>
+     <li><span class="dfn-paneled" id="750a2f08">react</span>
      <li><span class="dfn-paneled" id="b262501e">reject</span>
      <li><span class="dfn-paneled" id="3b90bdcd">resolve</span>
-     <li><span class="dfn-paneled" id="24bd7d25">upon fulfillment</span>
-     <li><span class="dfn-paneled" id="f14ed351">upon rejection</span>
     </ul>
   </ul>
   <h2 class="no-num no-ref heading settled" id="references"><span class="content">References</span><a class="self-link" href="#references"></a></h2>
@@ -1530,13 +1537,13 @@ let dfnPanelData = {
 "1295a79f": {"dfnID":"1295a79f","dfnText":"function index","external":true,"refSections":[{"refs":[{"id":"ref-for-syntax-funcidx"}],"title":"4. Developer-Facing Display Conventions"}],"url":"https://webassembly.github.io/spec/core/syntax/modules.html#syntax-funcidx"},
 "13c2b84c": {"dfnID":"13c2b84c","dfnText":"consume body","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-body-consume-body"}],"title":"2. Streaming Module Compilation and Instantiation"}],"url":"https://fetch.spec.whatwg.org/#concept-body-consume-body"},
 "1f72c462": {"dfnID":"1f72c462","dfnText":"instantiate a promise of a module","external":true,"refSections":[{"refs":[{"id":"ref-for-instantiate-a-promise-of-a-module"}],"title":"2. Streaming Module Compilation and Instantiation"}],"url":"https://webassembly.github.io/spec/js-api/#instantiate-a-promise-of-a-module"},
-"24bd7d25": {"dfnID":"24bd7d25","dfnText":"upon fulfillment","external":true,"refSections":[{"refs":[{"id":"ref-for-upon-fulfillment"},{"id":"ref-for-upon-fulfillment\u2460"}],"title":"2. Streaming Module Compilation and Instantiation"}],"url":"https://webidl.spec.whatwg.org/#upon-fulfillment"},
 "275fa0e6": {"dfnID":"275fa0e6","dfnText":"instantiate","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-webassembly-instantiate"}],"title":"4. Developer-Facing Display Conventions"}],"url":"https://webassembly.github.io/spec/js-api/#dom-webassembly-instantiate"},
 "29228fdf": {"dfnID":"29228fdf","dfnText":"Module","external":true,"refSections":[{"refs":[{"id":"ref-for-module"}],"title":"2. Streaming Module Compilation and Instantiation"},{"refs":[{"id":"ref-for-module\u2460"},{"id":"ref-for-module\u2461"}],"title":"3. Serialization"}],"url":"https://webassembly.github.io/spec/js-api/#module"},
 "3b90bdcd": {"dfnID":"3b90bdcd","dfnText":"resolve","external":true,"refSections":[{"refs":[{"id":"ref-for-resolve"}],"title":"2. Streaming Module Compilation and Instantiation"}],"url":"https://webidl.spec.whatwg.org/#resolve"},
 "58788f9d": {"dfnID":"58788f9d","dfnText":"TypeError","external":true,"refSections":[{"refs":[{"id":"ref-for-sec-native-error-types-used-in-this-standard-typeerror"},{"id":"ref-for-sec-native-error-types-used-in-this-standard-typeerror\u2460"},{"id":"ref-for-sec-native-error-types-used-in-this-standard-typeerror\u2461"},{"id":"ref-for-sec-native-error-types-used-in-this-standard-typeerror\u2462"},{"id":"ref-for-sec-native-error-types-used-in-this-standard-typeerror\u2463"}],"title":"2. Streaming Module Compilation and Instantiation"}],"url":"https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror"},
 "70d2cdbd": {"dfnID":"70d2cdbd","dfnText":"asynchronously compile a webassembly module","external":true,"refSections":[{"refs":[{"id":"ref-for-asynchronously-compile-a-webassembly-module"}],"title":"2. Streaming Module Compilation and Instantiation"}],"url":"https://webassembly.github.io/spec/js-api/#asynchronously-compile-a-webassembly-module"},
 "72f9eaed": {"dfnID":"72f9eaed","dfnText":"Exported Function","external":true,"refSections":[{"refs":[{"id":"ref-for-exported-function"}],"title":"4. Developer-Facing Display Conventions"}],"url":"https://webassembly.github.io/spec/js-api/#exported-function"},
+"750a2f08": {"dfnID":"750a2f08","dfnText":"react","external":true,"refSections":[{"refs":[{"id":"ref-for-dfn-perform-steps-once-promise-is-settled"},{"id":"ref-for-dfn-perform-steps-once-promise-is-settled\u2460"}],"title":"2. Streaming Module Compilation and Instantiation"}],"url":"https://webidl.spec.whatwg.org/#dfn-perform-steps-once-promise-is-settled"},
 "888d7c65": {"dfnID":"888d7c65","dfnText":"deserialization steps","external":true,"refSections":[{"refs":[{"id":"ref-for-deserialization-steps"}],"title":"3. Serialization"}],"url":"https://html.spec.whatwg.org/multipage/structured-data.html#deserialization-steps"},
 "889e932f": {"dfnID":"889e932f","dfnText":"Exposed","external":true,"refSections":[{"refs":[{"id":"ref-for-Exposed"}],"title":"2. Streaming Module Compilation and Instantiation"}],"url":"https://webidl.spec.whatwg.org/#Exposed"},
 "8beb99bd": {"dfnID":"8beb99bd","dfnText":"compile a WebAssembly module","external":true,"refSections":[{"refs":[{"id":"ref-for-compile-a-webassembly-module"}],"title":"3. Serialization"}],"url":"https://webassembly.github.io/spec/js-api/#compile-a-webassembly-module"},
@@ -1570,7 +1577,6 @@ let dfnPanelData = {
 "e3201629": {"dfnID":"e3201629","dfnText":"response","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-response-response"}],"title":"2. Streaming Module Compilation and Instantiation"}],"url":"https://fetch.spec.whatwg.org/#concept-response-response"},
 "eb5c4be3": {"dfnID":"eb5c4be3","dfnText":"Serializable","external":true,"refSections":[{"refs":[{"id":"ref-for-serializable"}],"title":"3. Serialization"}],"url":"https://html.spec.whatwg.org/multipage/structured-data.html#serializable"},
 "efd1ec5d": {"dfnID":"efd1ec5d","dfnText":"object","external":true,"refSections":[{"refs":[{"id":"ref-for-idl-object"}],"title":"2. Streaming Module Compilation and Instantiation"}],"url":"https://webidl.spec.whatwg.org/#idl-object"},
-"f14ed351": {"dfnID":"f14ed351","dfnText":"upon rejection","external":true,"refSections":[{"refs":[{"id":"ref-for-upon-rejection"},{"id":"ref-for-upon-rejection\u2460"}],"title":"2. Streaming Module Compilation and Instantiation"}],"url":"https://webidl.spec.whatwg.org/#upon-rejection"},
 "f17862f0": {"dfnID":"f17862f0","dfnText":"ArrayBuffer","external":true,"refSections":[{"refs":[{"id":"ref-for-sec-arraybuffer-objects"}],"title":"2. Streaming Module Compilation and Instantiation"},{"refs":[{"id":"ref-for-sec-arraybuffer-objects\u2460"}],"title":"4. Developer-Facing Display Conventions"}],"url":"https://tc39.github.io/ecma262/#sec-arraybuffer-objects"},
 "f32dc6c1": {"dfnID":"f32dc6c1","dfnText":"serialization steps","external":true,"refSections":[{"refs":[{"id":"ref-for-serialization-steps"}],"title":"3. Serialization"}],"url":"https://html.spec.whatwg.org/multipage/structured-data.html#serialization-steps"},
 "f6e4cbfd": {"dfnID":"f6e4cbfd","dfnText":"agent cluster","external":true,"refSections":[{"refs":[{"id":"ref-for-sec-agent-clusters"},{"id":"ref-for-sec-agent-clusters\u2460"}],"title":"3. Serialization"}],"url":"https://tc39.github.io/ecma262/#sec-agent-clusters"},
@@ -2002,13 +2008,12 @@ let refsData = {
 "https://webidl.spec.whatwg.org/#a-new-promise": {"displayText":"a new promise","export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"a new promise","type":"dfn","url":"https://webidl.spec.whatwg.org/#a-new-promise"},
 "https://webidl.spec.whatwg.org/#datacloneerror": {"displayText":"DataCloneError","export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"DataCloneError","type":"exception","url":"https://webidl.spec.whatwg.org/#datacloneerror"},
 "https://webidl.spec.whatwg.org/#dfn-get-buffer-source-copy": {"displayText":"get a copy of the buffer source","export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"get a copy of the buffer source","type":"dfn","url":"https://webidl.spec.whatwg.org/#dfn-get-buffer-source-copy"},
+"https://webidl.spec.whatwg.org/#dfn-perform-steps-once-promise-is-settled": {"displayText":"react","export":true,"for_":["promise"],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"react","type":"dfn","url":"https://webidl.spec.whatwg.org/#dfn-perform-steps-once-promise-is-settled"},
 "https://webidl.spec.whatwg.org/#idl-DOMException": {"displayText":"DOMException","export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"DOMException","type":"interface","url":"https://webidl.spec.whatwg.org/#idl-DOMException"},
 "https://webidl.spec.whatwg.org/#idl-object": {"displayText":"object","export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"object","type":"interface","url":"https://webidl.spec.whatwg.org/#idl-object"},
 "https://webidl.spec.whatwg.org/#idl-promise": {"displayText":"Promise","export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"Promise","type":"interface","url":"https://webidl.spec.whatwg.org/#idl-promise"},
 "https://webidl.spec.whatwg.org/#reject": {"displayText":"reject","export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"reject","type":"dfn","url":"https://webidl.spec.whatwg.org/#reject"},
 "https://webidl.spec.whatwg.org/#resolve": {"displayText":"resolve","export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"resolve","type":"dfn","url":"https://webidl.spec.whatwg.org/#resolve"},
-"https://webidl.spec.whatwg.org/#upon-fulfillment": {"displayText":"upon fulfillment","export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"upon fulfillment","type":"dfn","url":"https://webidl.spec.whatwg.org/#upon-fulfillment"},
-"https://webidl.spec.whatwg.org/#upon-rejection": {"displayText":"upon rejection","export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"upon rejection","type":"dfn","url":"https://webidl.spec.whatwg.org/#upon-rejection"},
 };
 
 function mkRefHint(link, ref) {
