@@ -52,7 +52,7 @@ syntax valtype/sem =
   | ... | BOT
 
 
-syntax Inn hint(show I#N) hint(macro "nt%") = I32 | I64
+syntax Inn hint(show I#N) hint(macro "nt%") = addrtype
 syntax Fnn hint(show F#N) hint(macro "nt%") = F32 | F64
 syntax Vnn hint(show V#N) hint(macro "nt%") = V128
 syntax Cnn hint(show t) = Inn | Fnn | Vnn
