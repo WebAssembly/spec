@@ -8,6 +8,8 @@ function assert_Global(actual, expected) {
 
   assert_equals(actual.value, expected, "value");
   assert_equals(actual.valueOf(), expected, "valueOf");
+  assert_true(Object.is(actual.value, expected), "value Object.is");
+  assert_true(Object.is(actual.valueOf(), expected), "valueOf Object.is");
 }
 
 test(() => {
@@ -171,8 +173,6 @@ test(() => {
 }, "Construct v128 global");
 
 test(() => {
-  let global = new WebAssembly.Global({value: "externref"}, "initial value");
-  assert_Global(global, "initial value");
   for (let value of [
     undefined,
     null,
@@ -186,7 +186,7 @@ test(() => {
     {"an": "object"},
     () => null
   ]) {
-    global.value = value;
+    let global = new WebAssembly.Global({value: "externref"}, value);
     assert_Global(global, value);
   }
 }, "externref global");
