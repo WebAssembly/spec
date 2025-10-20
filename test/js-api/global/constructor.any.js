@@ -8,8 +8,6 @@ function assert_Global(actual, expected) {
 
   assert_equals(actual.value, expected, "value");
   assert_equals(actual.valueOf(), expected, "valueOf");
-  assert_true(Object.is(actual.value, expected), "value Object.is");
-  assert_true(Object.is(actual.valueOf(), expected), "valueOf Object.is");
 }
 
 test(() => {
