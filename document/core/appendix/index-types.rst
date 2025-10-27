@@ -17,7 +17,7 @@ Category                                  Constructor                           
 :ref:`Packed type <syntax-packtype>`      |I8|                                                   :math:`\hex{78}` (-8 as |Bs7|)
 :ref:`Packed type <syntax-packtype>`      |I16|                                                  :math:`\hex{77}` (-9 as |Bs7|)
 (reserved)                                                                                       :math:`\hex{78}` .. :math:`\hex{75}`
-:ref:`Heap type <syntax-heaptype>`        |NOEXN|                                                :math:`\hex{74}` (-14 as |Bs7|)
+:ref:`Heap type <syntax-heaptype>`        |NOEXN|                                                :math:`\hex{74}` (-12 as |Bs7|)
 :ref:`Heap type <syntax-heaptype>`        |NOFUNC|                                               :math:`\hex{73}` (-13 as |Bs7|)
 :ref:`Heap type <syntax-heaptype>`        |NOEXTERN|                                             :math:`\hex{72}` (-14 as |Bs7|)
 :ref:`Heap type <syntax-heaptype>`        |NONE|                                                 :math:`\hex{71}` (-15 as |Bs7|)
