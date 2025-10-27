@@ -30,9 +30,7 @@ This is transformed into:
 syntax foo = 
   | CASE{v2 : t}(v2 : t)
 
-;; ../specification/wasm-2.0/1-syntax.spectec:20.8-20.12
 relation wf_foo: `%%`(t, foo)
-  ;; ../specification/wasm-2.0/1-syntax.spectec:20.8-20.12
   rule foo_case_0{v : t, v2 : t}:
     `%%`(v, CASE_foo(v2))
     -- wf_t: `%`(v)
