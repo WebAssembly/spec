@@ -166,6 +166,7 @@ and t_prem' env = function
   | LetPr (e1, e2, ids) -> LetPr (t_exp env e1, t_exp env e2, ids)
   | ElsePr -> ElsePr
   | IterPr (prem, iterexp) -> IterPr (t_prem env prem, t_iterexp env iterexp)
+  | NegPr prem -> NegPr (t_prem env prem)
 
 and t_prem env x = { x with it = t_prem' env x.it }
 

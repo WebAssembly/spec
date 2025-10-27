@@ -603,6 +603,7 @@ and valid_prem env prem =
   | IterPr (prem', iterexp) ->
     let _iter, env' = valid_iterexp env iterexp prem.at in
     valid_prem env' prem'
+  | NegPr prem' -> valid_prem env prem'
 
 
 (* Definitions *)

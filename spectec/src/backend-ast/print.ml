@@ -168,6 +168,7 @@ and prem pr =
   | LetPr (e1, e2, _xs) -> Node ("let", [exp e1; exp e2])
   | ElsePr -> Atom "else"
   | IterPr (pr1, it) -> Node ("iter", [prem pr1] @ iterexp it)
+  | NegPr pr1 -> Node ("neg", [prem pr1])
 
 
 (* Definitions *)

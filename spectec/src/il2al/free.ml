@@ -89,6 +89,7 @@ let rec free_prem ignore_listN prem =
     let free1 = fp prem' in
     let bound, free2 = fi iter in
     diff (free1 + free2) bound
+  | NegPr prem' -> fp prem'
 
 
 (* For unification *)

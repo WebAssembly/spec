@@ -970,6 +970,7 @@ and translate_prem prem =
     translate_letpr exp1 exp2 ids
   | Il.RulePr (id, _, exp) -> translate_rulepr id exp
   | Il.IterPr (pr, iterexp) -> translate_iterpr pr iterexp
+  | Il.NegPr _ -> error at "encountered a negated premise"
 
 
 (* `premise list` -> `instr list` (return instructions) -> `instr list` *)

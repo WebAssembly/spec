@@ -179,6 +179,7 @@ and prem pr =
   | ElsePr -> ()
   | IterPr (pr1, it) -> prem pr1; iterexp it
   | LetPr (e1, e2, _) -> exp e1; exp e2
+  | NegPr pr1 -> prem pr1
 
 and prems prs = list prem prs
 
