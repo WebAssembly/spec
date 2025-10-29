@@ -9,7 +9,7 @@
 
 This repository is a clone of [`WebAssembly/spec`](https://github.com/WebAssembly/spec/). It is meant for discussion, prototype specification, and implementation of a proposal to add support for dynamically-generating new code as a core feature.
 
-See the [explainer](proposals/stack-switching/Explainer.md) for a high-level summary of the proposal.
+See the [explainer](proposals/jit-interface/Explainer.md) for a high-level summary of the proposal.
 
 # spec
 
