@@ -5,6 +5,11 @@
 [![CI for specs](https://github.com/WebAssembly/spec/actions/workflows/ci-spec.yml/badge.svg)](https://github.com/WebAssembly/spec/actions/workflows/ci-spec.yml)
 [![CI for interpreter & tests](https://github.com/WebAssembly/spec/actions/workflows/ci-interpreter.yml/badge.svg)](https://github.com/WebAssembly/spec/actions/workflows/ci-interpreter.yml)
 
+# JIT interface Proposal for WebAssembly
+
+This repository is a clone of [`WebAssembly/spec`](https://github.com/WebAssembly/spec/). It is meant for discussion, prototype specification, and implementation of a proposal to add support for dynamically-generating new code as a core feature.
+
+See the [explainer](proposals/stack-switching/Explainer.md) for a high-level summary of the proposal.
 
 # spec
 
