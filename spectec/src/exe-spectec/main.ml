@@ -20,6 +20,7 @@ type pass =
   | Unthe
   | Sideconditions
   | TypeFamilyRemoval
+  | Else
 
 (* This list declares the intended order of passes.
 
@@ -28,7 +29,7 @@ passers (--all-passes, some targets), we do _not_ want to use the order of
 flags on the command line.
 *)
 let _skip_passes = [ Sub; Unthe ]  (* Not clear how to extend them to indexed types *)
-let all_passes = [ TypeFamilyRemoval; Totalize; Sideconditions; ]
+let all_passes = [ TypeFamilyRemoval; Totalize; Else; Sideconditions; ]
 
 type file_kind =
   | Spec
@@ -75,6 +76,7 @@ let pass_flag = function
   | Unthe -> "the-elimination"
   | Sideconditions -> "sideconditions"
   | TypeFamilyRemoval -> "typefamily-removal"
+  | Else -> "else"
 
 let pass_desc = function
   | Sub -> "Synthesize explicit subtype coercions"
@@ -82,6 +84,7 @@ let pass_desc = function
   | Unthe -> "Eliminate the ! operator in relations"
   | Sideconditions -> "Infer side conditions"
   | TypeFamilyRemoval -> "Transform Type families into sum types"
+  | Else -> "Eliminate the otherwise premise in relations"
 
 let run_pass : pass -> Il.Ast.script -> Il.Ast.script = function
   | Sub -> Middlend.Sub.transform
@@ -89,6 +92,7 @@ let run_pass : pass -> Il.Ast.script -> Il.Ast.script = function
   | Unthe -> Middlend.Unthe.transform
   | Sideconditions -> Middlend.Sideconditions.transform
   | TypeFamilyRemoval -> Middlend.Typefamilyremoval.transform
+  | Else -> Middlend.Else.transform
 
 
 (* Argument parsing *)

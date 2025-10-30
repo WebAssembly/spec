@@ -79,6 +79,7 @@ let rec rewrite_iterexp' iterexp pr =
     LetPr (new_ e1, new_ e2, new_ids)
   | ElsePr -> ElsePr
   | IterPr (pr, (iter, xes)) -> IterPr (rewrite_iterexp iterexp pr, (iter, xes |> List.map (fun (x, e) -> (x, new_ e))))
+  | NegPr pr' -> NegPr (rewrite_iterexp iterexp pr')
 and rewrite_iterexp iterexp pr = Source.map (rewrite_iterexp' iterexp) pr
 
 (* Recover iterexp of IterPr *)
@@ -109,6 +110,7 @@ let rec recover_iterexp' iterexp pr =
     LetPr (new_ e1, new_ e2, new_ids)
   | ElsePr -> ElsePr
   | IterPr (pr, (iter, xes)) -> IterPr (recover_iterexp iterexp pr, (iter, xes |> List.map (fun (x, e) -> (x, new_ e))))
+  | NegPr prem -> NegPr (recover_iterexp iterexp prem)
 and recover_iterexp iterexp pr = Source.map (recover_iterexp' iterexp) pr
 
 (* is this assign premise a if-let? *)

@@ -531,6 +531,7 @@ let rec transform_prem bind_map env prem =
     IterPr (transform_prem new_bind_map env prem1, 
       (transform_iter new_bind_map env iter, List.map (fun (id, exp) -> (id, transform_exp new_bind_map env exp)) id_exp_pairs)
     )
+  | NegPr prem1 -> NegPr (transform_prem bind_map env prem1)
   ) $ prem.at
 
 let transform_rule env rule = 

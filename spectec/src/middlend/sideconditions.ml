@@ -139,6 +139,9 @@ let rec t_prem env prem =
      t_iterexp env iterexp @
      let env' = env_under_iter env iterexp in
      List.map (fun pr -> iterPr (pr, iterexp) $ prem.at) (t_prem env' prem)
+  | NegPr _prem' -> 
+    (* We do not want to infer anything from NegPr *)
+    []
   ) @ [prem]
 
 let t_prems env = List.concat_map (t_prem env)

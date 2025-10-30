@@ -164,6 +164,7 @@ and prem' =
   | LetPr of exp * exp * string list                  (* binding *)
   | ElsePr                                            (* otherwise *)
   | IterPr of prem * iterexp                          (* iteration *)
+  | NegPr of prem                                     (* negated premise *)
 
 and hintdef = hintdef' phrase
 and hintdef' =
