@@ -12,6 +12,7 @@ let il_deftyp = string_of_deftyp `H
 let il_exp = string_of_exp
 let il_sym = string_of_sym
 let il_prod = string_of_prod
+let il_clause = string_of_clause
 let il_prem = string_of_prem
 let il_arg = string_of_arg
 let il_bind = string_of_bind

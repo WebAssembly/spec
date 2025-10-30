@@ -106,6 +106,8 @@ and string_of_typcase (op, (bs, t, prems), _hints) =
 (* Expressions *)
 
 and string_of_exp e =
+"{" ^ string_of_exp' e ^ " :: " ^ string_of_typ e.note ^ "}"
+and string_of_exp' e =
   match e.it with
   | VarE id -> string_of_id id
   | BoolE b -> string_of_bool b
@@ -132,7 +134,7 @@ and string_of_exp e =
   | CompE (e1, e2) -> string_of_exp e1 ^ " +++ " ^ string_of_exp e2
   | MemE (e1, e2) -> "(" ^ string_of_exp e1 ^ " <- " ^ string_of_exp e2 ^ ")"
   | LenE e1 -> "|" ^ string_of_exp e1 ^ "|"
-  | TupE es -> "(" ^ string_of_exps ", " es ^ ")"
+  | TupE es -> "(" ^ string_of_exps ", " es ^ ")_" ^ string_of_typ e.note
   | CallE (id, as1) -> "$" ^ string_of_id id ^ string_of_args as1
   | IterE (e1, iter) -> string_of_exp e1 ^ string_of_iterexp iter
   | ProjE (e1, i) -> string_of_exp e1 ^ "." ^ string_of_int i

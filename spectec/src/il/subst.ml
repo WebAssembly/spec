@@ -53,6 +53,7 @@ let remove_varids s ids' =
 
 let subst_opt subst_x s xo = Option.map (subst_x s) xo
 let subst_list subst_x s xs = List.map (subst_x s) xs
+let subst_pair subst_x subst_y s (x, y) = subst_x s x, subst_y s y
 
 let rec subst_list_dep subst_x bound_x s = function
   | [] -> [], s
@@ -102,7 +103,7 @@ and subst_typ s t =
     | Some t' -> assert (as_ = []); t'.it  (* We do not support higher-order substitutions yet *)
     )
   | BoolT | NumT _ | TextT -> t.it
-  | TupT ets -> TupT (fst (subst_list_dep subst_typbind Free.bound_typbind s ets))
+  | TupT ets -> TupT (subst_list (subst_pair subst_exp subst_typ) s ets)
   | IterT (t1, iter) ->
     let iter', s' = subst_iter s iter in
     IterT (subst_typ s' t1, iter')

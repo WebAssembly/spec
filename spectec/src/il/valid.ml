@@ -231,16 +231,16 @@ and valid_typcase envr (mixop, (bs, t, prems), _hints) =
   List.iter (valid_prem !envr') prems
 
 
-and proj_tup_typ env s e ets i : typ option =
-  match ets, i with
-  | (_eI, tI)::_, 0 -> Some tI
-  | (eI, tI)::ets', i ->
-    (match Eval.match_exp env s (ProjE (e, i) $$ e.at % tI) eI with
-    | None -> None
-    | Some s' -> proj_tup_typ env s' e ets' (i - 1)
-    | exception Eval.Irred -> None
-    )
-  | [], _ -> assert false
+and inst_tup_typ env s e i ets : (exp * typ) list =
+  match ets with
+  | [] -> []
+  | (eI, tI)::ets' ->
+    let eI' = Subst.subst_exp s eI in
+    let tI' = Subst.subst_typ s tI in
+    match Eval.match_exp env s (ProjE (e, i) $$ e.at % tI') eI' with
+    | Some s' -> (eI', tI') :: inst_tup_typ env s' e (i + 1) ets'
+    | None -> error e.at "tuple does not match its own type"
+    | exception Eval.Irred -> error e.at "tuple does not match its own type"
 
 
 (* Expressions *)
@@ -282,8 +282,9 @@ and infer_exp (env : Env.t) e : typ =
     let ets = as_tup_typ "expression" env Infer t1 e1.at in
     if i >= List.length ets then
       error e.at "invalid tuple projection";
-    (match proj_tup_typ env Subst.empty e1 ets i with
-    | Some tI -> tI
+    let ets' = inst_tup_typ env Subst.empty e1 0 ets in
+    (match List.nth_opt ets' i with
+    | Some (_, tI) -> tI
     | None -> error e.at "cannot infer type of tuple projection"
     )
   | UncaseE (e1, op) ->
@@ -325,6 +326,13 @@ and valid_exp ?(side = `Rhs) env e t =
     (Fun.const "ok")
   ) @@ fun _ ->
 try
+  (try
+    valid_typ env t
+  with exn ->
+    let bt = Printexc.get_raw_backtrace () in
+    Printf.eprintf "[valid_exp] %s : %s\n%!" (Debug.il_exp e) (Debug.il_typ t);
+    Printexc.raise_with_backtrace exn bt
+  );
   match e.it with
   | VarE id when id.it = "_" && side = `Lhs -> ()
   | VarE id ->
@@ -423,9 +431,10 @@ try
     if i >= List.length ets then
       error e.at "invalid tuple projection";
     let side' = if List.length ets > 1 then `Rhs else side in
-    valid_exp ~side:side' env e1 t1;
-    (match proj_tup_typ env Subst.empty e1 ets i with
-    | Some tI -> equiv_typ env tI t e.at
+    let ets' = inst_tup_typ env Subst.empty e1 0 ets in
+    valid_exp ~side:side' env e1 (TupT ets' $ t1.at);
+    (match List.nth_opt ets i with
+    | Some (_, tI) -> equiv_typ env tI t e.at
     | None -> error e.at "invalid tuple projection, cannot match pattern"
     )
   | UncaseE (e1, op) ->
@@ -501,6 +510,7 @@ and valid_expfield ~side env (atom1, e) (atom2, (_binds, t, _prems), _) =
   valid_exp ~side env e t
 
 and valid_path env p t : typ =
+  valid_typ env t;
   let t' =
     match p.it with
     | RootP -> t
@@ -698,11 +708,12 @@ let valid_rule envr mixop t rule =
     valid_expmix ~side:`Lhs !envr' mixop' e (mixop, t) e.at;
     List.iter (valid_prem !envr') prems
 
-let valid_clause envr ps t clause =
+let valid_clause envr id ps t clause =
   Debug.(log_in "il.valid_clause" line);
   Debug.(log_in_at "il.valid_clause" clause.at
     (fun _ -> fmt ": (%s) -> %s" (il_params ps) (il_typ t))
   );
+try
   match clause.it with
   | DefD (bs, as_, e, prems) ->
     let envr' = local_env envr in
@@ -710,6 +721,10 @@ let valid_clause envr ps t clause =
     let s = valid_args !envr' as_ ps Subst.empty clause.at in
     valid_exp !envr' e (Subst.subst_typ s t);
     List.iter (valid_prem !envr') prems
+with exn ->
+  let bt = Printexc.get_raw_backtrace () in
+  Printf.eprintf "[valid_clause] %s\n%!" (Debug.il_clause id clause);
+  Printexc.raise_with_backtrace exn bt
 
 let valid_prod envr ps t prod =
   Debug.(log_in "il.valid_prod" line);
@@ -763,7 +778,7 @@ let rec valid_def envr d =
     let envr' = local_env envr in
     List.iter (valid_param envr') ps;
     valid_typ !envr' t;
-    List.iter (valid_clause envr ps t) clauses;
+    List.iter (valid_clause envr id ps t) clauses;
     envr := Env.bind_def !envr id (ps, t, clauses)
   | GramD (id, ps, t, prods) ->
     let envr' = local_env envr in

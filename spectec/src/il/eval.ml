@@ -521,6 +521,10 @@ and match_iter env s iter1 iter2 : subst option =
 (* Types *)
 
 and match_typ env s t1 t2 : subst option =
+  Debug.(log "il.match_typ"
+    (fun _ -> fmt "%s =: %s" (il_typ t1) (il_typ (Subst.subst_typ s t2)))
+    (fun r -> fmt "%s" (opt il_subst r))
+  ) @@ fun _ ->
   match t1.it, t2.it with
   | _, VarT (id, []) when Subst.mem_typid s id ->
     match_typ env s t1 (Subst.subst_typ s t2)
