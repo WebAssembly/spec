@@ -23,7 +23,7 @@ ROOTDIR = ..
 INTERPRETERDIR = $(ROOTDIR)/interpreter
 CLONEDIR = src/backend-interpreter/reference-interpreter
 CLONERM = dune-project jslib
-OPAMPACKAGES = zarith menhir
+OPAMPACKAGES = zarith menhir mdx
 
 
 .PHONY: exe

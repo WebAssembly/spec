@@ -24380,7 +24380,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       1) Return :math:`\epsilon`.
 
-   #. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{f}}{N}` and :math:`{\mathit{vcvtop}}` is some :math:`{\mathsf{convert}}{\mathsf{\_}}{{{\mathit{half}}^?}~{\mathit{sx}}}`, then:
+   #. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{f}}{N}` and :math:`{\mathit{vcvtop}}` is some :math:`{\mathsf{convert}}{\mathsf{\_}}{{{\mathit{half}}^?}}{\mathsf{\_}}{{\mathit{sx}}}`, then:
 
       1) Return :math:`\epsilon`.
 
@@ -24388,15 +24388,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{i}}{N}`, then:
 
-   a. If :math:`{\mathit{vcvtop}}` is some :math:`{\mathsf{trunc\_sat}}{\mathsf{\_}}{{\mathit{sx}}~{{\mathit{zero}}^?}}`, then:
+   a. If :math:`{\mathit{vcvtop}}` is some :math:`{\mathsf{trunc\_sat}}{\mathsf{\_}}{{\mathit{sx}}}{\mathsf{\_}}{{{\mathit{zero}}^?}}`, then:
 
-      1) Let :math:`({\mathsf{trunc\_sat}}{\mathsf{\_}}{{\mathit{sx}}~{{\mathit{zero}}^?}})` be the destructuring of :math:`{\mathit{vcvtop}}`.
+      1) Let :math:`({\mathsf{trunc\_sat}}{\mathsf{\_}}{{\mathit{sx}}}{\mathsf{\_}}{{{\mathit{zero}}^?}})` be the destructuring of :math:`{\mathit{vcvtop}}`.
 
       #) Return :math:`{{\mathit{zero}}^?}`.
 
-   #. If :math:`{\mathit{vcvtop}}` is some :math:`{\mathsf{relaxed\_trunc}}{\mathsf{\_}}{{\mathit{sx}}~{{\mathit{zero}}^?}}`, then:
+   #. If :math:`{\mathit{vcvtop}}` is some :math:`{\mathsf{relaxed\_trunc}}{\mathsf{\_}}{{\mathit{sx}}}{\mathsf{\_}}{{{\mathit{zero}}^?}}`, then:
 
-      1) Let :math:`({\mathsf{relaxed\_trunc}}{\mathsf{\_}}{{\mathit{sx}}~{{\mathit{zero}}^?}})` be the destructuring of :math:`{\mathit{vcvtop}}`.
+      1) Let :math:`({\mathsf{relaxed\_trunc}}{\mathsf{\_}}{{\mathit{sx}}}{\mathsf{\_}}{{{\mathit{zero}}^?}})` be the destructuring of :math:`{\mathit{vcvtop}}`.
 
       #) Return :math:`{{\mathit{zero}}^?}`.
 
@@ -24425,9 +24425,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       #) Return :math:`{\mathit{half}}`.
 
-   #. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{f}}{N}` and :math:`{\mathit{vcvtop}}` is some :math:`{\mathsf{convert}}{\mathsf{\_}}{{{\mathit{half}}^?}~{\mathit{sx}}}`, then:
+   #. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{f}}{N}` and :math:`{\mathit{vcvtop}}` is some :math:`{\mathsf{convert}}{\mathsf{\_}}{{{\mathit{half}}^?}}{\mathsf{\_}}{{\mathit{sx}}}`, then:
 
-      1) Let :math:`({\mathsf{convert}}{\mathsf{\_}}{{{\mathit{half}}^?}~{\mathit{sx}}})` be the destructuring of :math:`{\mathit{vcvtop}}`.
+      1) Let :math:`({\mathsf{convert}}{\mathsf{\_}}{{{\mathit{half}}^?}}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{vcvtop}}`.
 
       #) Return :math:`{{\mathit{half}}^?}`.
 
@@ -24435,11 +24435,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{i}}{N}`, then:
 
-   a. If :math:`{\mathit{vcvtop}}` is some :math:`{\mathsf{trunc\_sat}}{\mathsf{\_}}{{\mathit{sx}}~{{\mathit{zero}}^?}}`, then:
+   a. If :math:`{\mathit{vcvtop}}` is some :math:`{\mathsf{trunc\_sat}}{\mathsf{\_}}{{\mathit{sx}}}{\mathsf{\_}}{{{\mathit{zero}}^?}}`, then:
 
       1) Return :math:`\epsilon`.
 
-   #. If :math:`{\mathit{vcvtop}}` is some :math:`{\mathsf{relaxed\_trunc}}{\mathsf{\_}}{{\mathit{sx}}~{{\mathit{zero}}^?}}`, then:
+   #. If :math:`{\mathit{vcvtop}}` is some :math:`{\mathsf{relaxed\_trunc}}{\mathsf{\_}}{{\mathit{sx}}}{\mathsf{\_}}{{{\mathit{zero}}^?}}`, then:
 
       1) Return :math:`\epsilon`.
 
@@ -25036,9 +25036,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       #) Return :math:`c`.
 
-   #. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{f}}{N}` and :math:`{\mathit{vcvtop}}` is some :math:`{\mathsf{convert}}{\mathsf{\_}}{{{\mathit{half}}^?}~{\mathit{sx}}}`, then:
+   #. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{f}}{N}` and :math:`{\mathit{vcvtop}}` is some :math:`{\mathsf{convert}}{\mathsf{\_}}{{{\mathit{half}}^?}}{\mathsf{\_}}{{\mathit{sx}}}`, then:
 
-      1) Let :math:`({\mathsf{convert}}{\mathsf{\_}}{{{\mathit{half}}^?}~{\mathit{sx}}})` be the destructuring of :math:`{\mathit{vcvtop}}`.
+      1) Let :math:`({\mathsf{convert}}{\mathsf{\_}}{{{\mathit{half}}^?}}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{vcvtop}}`.
 
       #) Let :math:`c` be :math:`{{{{\mathrm{convert}}}_{N_1, N_2}^{{\mathit{sx}}}}}{(c_1)}`.
 
@@ -25048,17 +25048,17 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{i}}{N}`, then:
 
-   a. If :math:`{\mathit{vcvtop}}` is some :math:`{\mathsf{trunc\_sat}}{\mathsf{\_}}{{\mathit{sx}}~{{\mathit{zero}}^?}}`, then:
+   a. If :math:`{\mathit{vcvtop}}` is some :math:`{\mathsf{trunc\_sat}}{\mathsf{\_}}{{\mathit{sx}}}{\mathsf{\_}}{{{\mathit{zero}}^?}}`, then:
 
-      1) Let :math:`({\mathsf{trunc\_sat}}{\mathsf{\_}}{{\mathit{sx}}~{{\mathit{zero}}^?}})` be the destructuring of :math:`{\mathit{vcvtop}}`.
+      1) Let :math:`({\mathsf{trunc\_sat}}{\mathsf{\_}}{{\mathit{sx}}}{\mathsf{\_}}{{{\mathit{zero}}^?}})` be the destructuring of :math:`{\mathit{vcvtop}}`.
 
       #) Let :math:`{c^?}` be :math:`{{{{\mathrm{trunc\_sat}}}_{N_1, N_2}^{{\mathit{sx}}}}}{(c_1)}`.
 
       #) Return :math:`{c^?}`.
 
-   #. If :math:`{\mathit{vcvtop}}` is some :math:`{\mathsf{relaxed\_trunc}}{\mathsf{\_}}{{\mathit{sx}}~{{\mathit{zero}}^?}}`, then:
+   #. If :math:`{\mathit{vcvtop}}` is some :math:`{\mathsf{relaxed\_trunc}}{\mathsf{\_}}{{\mathit{sx}}}{\mathsf{\_}}{{{\mathit{zero}}^?}}`, then:
 
-      1) Let :math:`({\mathsf{relaxed\_trunc}}{\mathsf{\_}}{{\mathit{sx}}~{{\mathit{zero}}^?}})` be the destructuring of :math:`{\mathit{vcvtop}}`.
+      1) Let :math:`({\mathsf{relaxed\_trunc}}{\mathsf{\_}}{{\mathit{sx}}}{\mathsf{\_}}{{{\mathit{zero}}^?}})` be the destructuring of :math:`{\mathit{vcvtop}}`.
 
       #) Let :math:`{c^?}` be :math:`{{{{\mathrm{relaxed\_trunc}}}_{N_1, N_2}^{{\mathit{sx}}}}}{(c_1)}`.
 
