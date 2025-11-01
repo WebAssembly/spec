@@ -5,11 +5,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Matching &#8212; WebAssembly 3.0 (2025-10-30)</title>
+    <title>Matching &#8212; WebAssembly 3.0 (2025-11-01)</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=686e5160" />
     <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=057308f9" />
-    <script src="../_static/documentation_options.js?v=d6005cfc"></script>
+    <script src="../_static/documentation_options.js?v=0fddc611"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>window.MathJax = {"tex": {"maxBuffer": 30720, "macros": {"multicolumn": ["", 2]}}, "options": {"menuOptions": {"settings": {"enrich": false}}}}</script>
@@ -718,11 +718,32 @@ as used in the premise of the former rule above.</p>
 </section>
 <section id="limits">
 <span id="match-limits"></span><span id="index-11"></span><h2>Limits<a class="headerlink" href="#limits" title="Link to this heading">¶</a></h2>
-<p>The <a class="reference internal" href="../syntax/types.html#syntax-limits"><span class="std std-ref">limits range</span></a> <span class="math notranslate nohighlight">\({}[ n_1 \href{../syntax/types.html#syntax-limits}{\,{..}\,} m_1 ]\)</span> <a class="reference internal" href="#match-limits"><span class="std std-ref">matches</span></a> the <a class="reference internal" href="../syntax/types.html#syntax-limits"><span class="std std-ref">limits range</span></a> <span class="math notranslate nohighlight">\({}[ n_2 \href{../syntax/types.html#syntax-limits}{\,{..}\,} m_2 ]\)</span> if:</p>
+<p>The <a class="reference internal" href="../syntax/types.html#syntax-limits"><span class="std std-ref">limits range</span></a> <span class="math notranslate nohighlight">\({}[ n_1 \href{../syntax/types.html#syntax-limits}{\,{..}\,} {{\href{../syntax/values.html#syntax-int}{\mathit{u\scriptstyle\kern-0.1em64}}}_1^?} ]\)</span> <a class="reference internal" href="#match-limits"><span class="std std-ref">matches</span></a> the <a class="reference internal" href="../syntax/types.html#syntax-limits"><span class="std std-ref">limits range</span></a> <span class="math notranslate nohighlight">\({}[ n_2 \href{../syntax/types.html#syntax-limits}{\,{..}\,} {{\href{../syntax/values.html#syntax-int}{\mathit{u\scriptstyle\kern-0.1em64}}}_2^?} ]\)</span> if:</p>
+<blockquote>
+<div><ul>
+<li><p><span class="math notranslate nohighlight">\(n_1\)</span> is greater than or equal to <span class="math notranslate nohighlight">\(n_2\)</span>.</p></li>
+<li><p>Either:</p>
+<blockquote>
+<div><ul>
+<li><p><span class="math notranslate nohighlight">\({{\href{../syntax/values.html#syntax-int}{\mathit{u\scriptstyle\kern-0.1em64}}}_1^?}\)</span> is of the form <span class="math notranslate nohighlight">\(m_1\)</span>.</p></li>
+<li><p>If <span class="math notranslate nohighlight">\({\href{../syntax/values.html#syntax-int}{\mathit{u\scriptstyle\kern-0.1em64}}}_2\)</span> is defined, then:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p><span class="math notranslate nohighlight">\(n_1\)</span> is greater than or equal to <span class="math notranslate nohighlight">\(n_2\)</span>.</p></li>
-<li><p><span class="math notranslate nohighlight">\(m_1\)</span> is less than or equal to <span class="math notranslate nohighlight">\(m_2\)</span>.</p></li>
+<li><p><span class="math notranslate nohighlight">\(m_1\)</span> is less than or equal to <span class="math notranslate nohighlight">\({\href{../syntax/values.html#syntax-int}{\mathit{u\scriptstyle\kern-0.1em64}}}_2\)</span>.</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>Or:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><span class="math notranslate nohighlight">\({{\href{../syntax/values.html#syntax-int}{\mathit{u\scriptstyle\kern-0.1em64}}}_1^?}\)</span> is absent.</p></li>
+<li><p><span class="math notranslate nohighlight">\({{\href{../syntax/values.html#syntax-int}{\mathit{u\scriptstyle\kern-0.1em64}}}_2^?}\)</span> is absent.</p></li>
+</ul>
+</div></blockquote>
+</li>
 </ul>
 </div></blockquote>
 <div class="math notranslate nohighlight">
@@ -730,9 +751,15 @@ as used in the premise of the former rule above.</p>
 \frac{
 n_1 \geq n_2
  \qquad
-m_1 \leq m_2
+(m_1 \leq m_2)^?
 }{
-C \href{../valid/matching.html#match-limits}{\vdash} {}[ n_1 \href{../syntax/types.html#syntax-limits}{\,{..}\,} m_1 ] \href{../valid/matching.html#match-limits}{\leq} {}[ n_2 \href{../syntax/types.html#syntax-limits}{\,{..}\,} m_2 ]
+C \href{../valid/matching.html#match-limits}{\vdash} {}[ n_1 \href{../syntax/types.html#syntax-limits}{\,{..}\,} m_1 ] \href{../valid/matching.html#match-limits}{\leq} {}[ n_2 \href{../syntax/types.html#syntax-limits}{\,{..}\,} {m_2^?} ]
+}
+\qquad
+\frac{
+n_1 \geq n_2
+}{
+C \href{../valid/matching.html#match-limits}{\vdash} {}[ n_1 \href{../syntax/types.html#syntax-limits}{\,{..}\,} \epsilon ] \href{../valid/matching.html#match-limits}{\leq} {}[ n_2 \href{../syntax/types.html#syntax-limits}{\,{..}\,} \epsilon ]
 }
 \qquad
 \end{array}\]</div>
