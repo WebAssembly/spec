@@ -5637,13 +5637,26 @@ $$
 \frac{
 n_1 \geq n_2
  \qquad
-m_1 \leq m_2
+(m_1 \leq m_2)^?
 }{
-C \vdash {}[ n_1 .. m_1 ] \leq {}[ n_2 .. m_2 ]
-} \, {[\textsc{\scriptsize S{-}limits}]}
+C \vdash {}[ n_1 .. m_1 ] \leq {}[ n_2 .. {m_2^?} ]
+} \, {[\textsc{\scriptsize S{-}limits{-}max}]}
 \qquad
 \end{array}
 $$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+n_1 \geq n_2
+}{
+C \vdash {}[ n_1 .. \epsilon ] \leq {}[ n_2 .. \epsilon ]
+} \, {[\textsc{\scriptsize S{-}limits{-}eps}]}
+\qquad
+\end{array}
+$$
+
+\vspace{1ex}
 
 $$
 \begin{array}{@{}c@{}}\displaystyle

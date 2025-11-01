@@ -14886,12 +14886,44 @@ The instruction type :math:`{t_{11}^\ast}~{\rightarrow}_{{x_1^\ast}}\,{t_{12}^\a
 
 
 
-The limits range :math:`{}[ n_1 .. m_1 ]` :ref:`matches <match>` the limits range :math:`{}[ n_2 .. m_2 ]` if:
+The limits range :math:`{}[ n_1 .. {{\mathit{u{\kern-0.1em\scriptstyle 64}}}_1^?} ]` :ref:`matches <match>` the limits range :math:`{}[ n_2 .. {{\mathit{u{\kern-0.1em\scriptstyle 64}}}_2^?} ]` if:
 
 
    * :math:`n_1` is greater than or equal to :math:`n_2`.
 
-   * :math:`m_1` is less than or equal to :math:`m_2`.
+   * Either:
+
+      * :math:`{{\mathit{u{\kern-0.1em\scriptstyle 64}}}_1^?}` is of the form :math:`m_1`.
+
+      * If :math:`{\mathit{u{\kern-0.1em\scriptstyle 64}}}_2` is defined, then:
+
+         * :math:`m_1` is less than or equal to :math:`{\mathit{u{\kern-0.1em\scriptstyle 64}}}_2`.
+
+   * Or:
+
+      * :math:`{{\mathit{u{\kern-0.1em\scriptstyle 64}}}_1^?}` is absent.
+
+      * :math:`{{\mathit{u{\kern-0.1em\scriptstyle 64}}}_2^?}` is absent.
+
+
+
+
+The limits range :math:`{}[ n_1 .. m_1 ]` :ref:`matches <match>` the limits range :math:`{}[ n_2 .. {m_2^?} ]` if:
+
+
+   * :math:`n_1` is greater than or equal to :math:`n_2`.
+
+   * If :math:`m_2` is defined, then:
+
+      * :math:`m_1` is less than or equal to :math:`m_2`.
+
+
+
+
+The limits range :math:`{}[ n_1~.. ]` :ref:`matches <match>` the limits range :math:`{}[ n_2~.. ]` if:
+
+
+   * :math:`n_1` is greater than or equal to :math:`n_2`.
 
 
 
@@ -27319,9 +27351,25 @@ Instrtype_sub
     - C.LOCALS[x] is (SET t).
 
 Limits_sub
-- the limits range ([ n_1 .. ?(m_1) ]) matches the limits range ([ n_2 .. ?(m_2) ]) if:
+- the limits range ([ n_1 .. u64_1? ]) matches the limits range ([ n_2 .. u64_2? ]) if:
   - n_1 is greater than or equal to n_2.
-  - m_1 is less than or equal to m_2.
+  - Either:
+    - u64_1? is ?(m_1).
+    - If u64_2 is defined, then:
+      - m_1 is less than or equal to u64_2.
+  - Or:
+    - u64_1? is ?().
+    - u64_2? is ?().
+
+Limits_sub/max
+- the limits range ([ n_1 .. ?(m_1) ]) matches the limits range ([ n_2 .. m_2? ]) if:
+  - n_1 is greater than or equal to n_2.
+  - If m_2 is defined, then:
+    - m_1 is less than or equal to m_2.
+
+Limits_sub/eps
+- the limits range ([ n_1 .. ?() ]) matches the limits range ([ n_2 .. ?() ]) if:
+  - n_1 is greater than or equal to n_2.
 
 Tagtype_sub
 - the tag type deftype_1 matches the tag type deftype_2 if:

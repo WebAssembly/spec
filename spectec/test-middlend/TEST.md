@@ -3183,10 +3183,15 @@ relation Instrtype_sub: `%|-%<:%`(context, instrtype, instrtype)
 ;; ../../../../specification/wasm-3.0/2.2-validation.subtyping.spectec
 relation Limits_sub: `%|-%<:%`(context, limits, limits)
   ;; ../../../../specification/wasm-3.0/2.2-validation.subtyping.spectec
-  rule _{C : context, n_1 : n, m_1 : m, n_2 : n, m_2 : m}:
-    `%|-%<:%`(C, `[%..%]`_limits(`%`_u64(n_1), ?(`%`_u64(m_1))), `[%..%]`_limits(`%`_u64(n_2), ?(`%`_u64(m_2))))
+  rule max{C : context, n_1 : n, m_1 : m, n_2 : n, `m_2?` : m?}:
+    `%|-%<:%`(C, `[%..%]`_limits(`%`_u64(n_1), ?(`%`_u64(m_1))), `[%..%]`_limits(`%`_u64(n_2), `%`_u64(m_2)?{m_2 <- `m_2?`}))
     -- if (n_1 >= n_2)
-    -- if (m_1 <= m_2)
+    -- (if (m_1 <= m_2))?{m_2 <- `m_2?`}
+
+  ;; ../../../../specification/wasm-3.0/2.2-validation.subtyping.spectec
+  rule eps{C : context, n_1 : n, n_2 : n}:
+    `%|-%<:%`(C, `[%..%]`_limits(`%`_u64(n_1), ?()), `[%..%]`_limits(`%`_u64(n_2), ?()))
+    -- if (n_1 >= n_2)
 
 ;; ../../../../specification/wasm-3.0/2.2-validation.subtyping.spectec
 relation Tagtype_sub: `%|-%<:%`(context, tagtype, tagtype)
@@ -14513,10 +14518,15 @@ relation Instrtype_sub: `%|-%<:%`(context, instrtype, instrtype)
 ;; ../../../../specification/wasm-3.0/2.2-validation.subtyping.spectec
 relation Limits_sub: `%|-%<:%`(context, limits, limits)
   ;; ../../../../specification/wasm-3.0/2.2-validation.subtyping.spectec
-  rule _{C : context, n_1 : n, m_1 : m, n_2 : n, m_2 : m}:
-    `%|-%<:%`(C, `[%..%]`_limits(`%`_u64(n_1), ?(`%`_u64(m_1))), `[%..%]`_limits(`%`_u64(n_2), ?(`%`_u64(m_2))))
+  rule max{C : context, n_1 : n, m_1 : m, n_2 : n, `m_2?` : m?}:
+    `%|-%<:%`(C, `[%..%]`_limits(`%`_u64(n_1), ?(`%`_u64(m_1))), `[%..%]`_limits(`%`_u64(n_2), `%`_u64(m_2)?{m_2 <- `m_2?`}))
     -- if (n_1 >= n_2)
-    -- if (m_1 <= m_2)
+    -- (if (m_1 <= m_2))?{m_2 <- `m_2?`}
+
+  ;; ../../../../specification/wasm-3.0/2.2-validation.subtyping.spectec
+  rule eps{C : context, n_1 : n, n_2 : n}:
+    `%|-%<:%`(C, `[%..%]`_limits(`%`_u64(n_1), ?()), `[%..%]`_limits(`%`_u64(n_2), ?()))
+    -- if (n_1 >= n_2)
 
 ;; ../../../../specification/wasm-3.0/2.2-validation.subtyping.spectec
 relation Tagtype_sub: `%|-%<:%`(context, tagtype, tagtype)
@@ -25864,10 +25874,15 @@ relation Instrtype_sub: `%|-%<:%`(context, instrtype, instrtype)
 ;; ../../../../specification/wasm-3.0/2.2-validation.subtyping.spectec
 relation Limits_sub: `%|-%<:%`(context, limits, limits)
   ;; ../../../../specification/wasm-3.0/2.2-validation.subtyping.spectec
-  rule _{C : context, n_1 : n, m_1 : m, n_2 : n, m_2 : m}:
-    `%|-%<:%`(C, `[%..%]`_limits(`%`_u64(n_1), ?(`%`_u64(m_1))), `[%..%]`_limits(`%`_u64(n_2), ?(`%`_u64(m_2))))
+  rule max{C : context, n_1 : n, m_1 : m, n_2 : n, `m_2?` : m?}:
+    `%|-%<:%`(C, `[%..%]`_limits(`%`_u64(n_1), ?(`%`_u64(m_1))), `[%..%]`_limits(`%`_u64(n_2), `%`_u64(m_2)?{m_2 <- `m_2?`}))
     -- if (n_1 >= n_2)
-    -- if (m_1 <= m_2)
+    -- (if (m_1 <= m_2))?{m_2 <- `m_2?`}
+
+  ;; ../../../../specification/wasm-3.0/2.2-validation.subtyping.spectec
+  rule eps{C : context, n_1 : n, n_2 : n}:
+    `%|-%<:%`(C, `[%..%]`_limits(`%`_u64(n_1), ?()), `[%..%]`_limits(`%`_u64(n_2), ?()))
+    -- if (n_1 >= n_2)
 
 ;; ../../../../specification/wasm-3.0/2.2-validation.subtyping.spectec
 relation Tagtype_sub: `%|-%<:%`(context, tagtype, tagtype)
