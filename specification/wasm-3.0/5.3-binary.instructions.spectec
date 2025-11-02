@@ -39,6 +39,8 @@ grammar Binstr/control : instr = ...
   | 0x11 y:Btypeidx x:Btableidx => CALL_INDIRECT x (_IDX y)
   | 0x12 x:Bfuncidx => RETURN_CALL x
   | 0x13 y:Btypeidx x:Btableidx => RETURN_CALL_INDIRECT x (_IDX y)
+  | 0x14 x:Btypeidx => CALL_REF (_IDX x)
+  | 0x15 x:Btypeidx => RETURN_CALL_REF (_IDX x)
   | 0x1F bt:Bblocktype c*:Blist(Bcatch) (in:Binstr)* 0x0B => TRY_TABLE bt c* in*
   | ...
 
@@ -369,7 +371,7 @@ grammar Binstr/num-cvt : instr = ...
   | 0xB8 => CVTOP F64 I32 CONVERT U
   | 0xB9 => CVTOP F64 I64 CONVERT S
   | 0xBA => CVTOP F64 I64 CONVERT U
-  | 0xBB => CVTOP F32 F64 PROMOTE
+  | 0xBB => CVTOP F64 F32 PROMOTE
   | 0xBC => CVTOP I32 F32 REINTERPRET
   | 0xBD => CVTOP I64 F64 REINTERPRET
   | 0xBE => CVTOP F32 I32 REINTERPRET

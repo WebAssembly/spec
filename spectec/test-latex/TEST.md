@@ -11422,6 +11422,8 @@ $$
 & & | & \mathtt{0x11}~~y{:}{\mathtt{typeidx}}~~x{:}{\mathtt{tableidx}} & \quad\Rightarrow\quad{} & \mathsf{call\_indirect}~x~y \\
 & & | & \mathtt{0x12}~~x{:}{\mathtt{funcidx}} & \quad\Rightarrow\quad{} & \mathsf{return\_call}~x \\
 & & | & \mathtt{0x13}~~y{:}{\mathtt{typeidx}}~~x{:}{\mathtt{tableidx}} & \quad\Rightarrow\quad{} & \mathsf{return\_call\_indirect}~x~y \\
+& & | & \mathtt{0x14}~~x{:}{\mathtt{typeidx}} & \quad\Rightarrow\quad{} & \mathsf{call\_ref}~x \\
+& & | & \mathtt{0x15}~~x{:}{\mathtt{typeidx}} & \quad\Rightarrow\quad{} & \mathsf{return\_call\_ref}~x \\
 & & | & \mathtt{0x1F}~~{\mathit{bt}}{:}{\mathtt{blocktype}}~~{c^\ast}{:}{\mathtt{list}}({\mathtt{catch}})~~{({\mathit{in}}{:}{\mathtt{instr}})^\ast}~~\mathtt{0x0B} & \quad\Rightarrow\quad{} & \mathsf{try\_table}~{\mathit{bt}}~{c^\ast}~{{\mathit{in}}^\ast} \\
 & {\mathtt{catch}} & ::= & \mathtt{0x00}~~x{:}{\mathtt{tagidx}}~~l{:}{\mathtt{labelidx}} & \quad\Rightarrow\quad{} & \mathsf{catch}~x~l \\
 & & | & \mathtt{0x01}~~x{:}{\mathtt{tagidx}}~~l{:}{\mathtt{labelidx}} & \quad\Rightarrow\quad{} & \mathsf{catch\_ref}~x~l \\
@@ -11702,7 +11704,7 @@ $$
 & & | & \mathtt{0xB8} & \quad\Rightarrow\quad{} & \mathsf{f{\scriptstyle 64}} {.} {{\mathsf{convert}}{\mathsf{\_}}{\mathsf{u}}}{\mathsf{\_}}{\mathsf{i{\scriptstyle 32}}} \\
 & & | & \mathtt{0xB9} & \quad\Rightarrow\quad{} & \mathsf{f{\scriptstyle 64}} {.} {{\mathsf{convert}}{\mathsf{\_}}{\mathsf{s}}}{\mathsf{\_}}{\mathsf{i{\scriptstyle 64}}} \\
 & & | & \mathtt{0xBA} & \quad\Rightarrow\quad{} & \mathsf{f{\scriptstyle 64}} {.} {{\mathsf{convert}}{\mathsf{\_}}{\mathsf{u}}}{\mathsf{\_}}{\mathsf{i{\scriptstyle 64}}} \\
-& & | & \mathtt{0xBB} & \quad\Rightarrow\quad{} & \mathsf{f{\scriptstyle 32}} {.} {\mathsf{promote}}{\mathsf{\_}}{\mathsf{f{\scriptstyle 64}}} \\
+& & | & \mathtt{0xBB} & \quad\Rightarrow\quad{} & \mathsf{f{\scriptstyle 64}} {.} {\mathsf{promote}}{\mathsf{\_}}{\mathsf{f{\scriptstyle 32}}} \\
 & & | & \mathtt{0xBC} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 32}} {.} {\mathsf{reinterpret}}{\mathsf{\_}}{\mathsf{f{\scriptstyle 32}}} \\
 & & | & \mathtt{0xBD} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 64}} {.} {\mathsf{reinterpret}}{\mathsf{\_}}{\mathsf{f{\scriptstyle 64}}} \\
 & & | & \mathtt{0xBE} & \quad\Rightarrow\quad{} & \mathsf{f{\scriptstyle 32}} {.} {\mathsf{reinterpret}}{\mathsf{\_}}{\mathsf{i{\scriptstyle 32}}} \\
