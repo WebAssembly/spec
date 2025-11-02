@@ -5,11 +5,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Instructions &#8212; WebAssembly 3.0 (2025-11-01)</title>
+    <title>Instructions &#8212; WebAssembly 3.0 (2025-11-02)</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=686e5160" />
     <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=057308f9" />
-    <script src="../_static/documentation_options.js?v=0fddc611"></script>
+    <script src="../_static/documentation_options.js?v=9da218fa"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>window.MathJax = {"tex": {"maxBuffer": 30720, "macros": {"multicolumn": ["", 2]}}, "options": {"menuOptions": {"settings": {"enrich": false}}}}</script>
@@ -369,8 +369,8 @@ Lexically, an <span class="math notranslate nohighlight">\({\href{../text/instru
 </section>
 <section id="reference-instructions">
 <span id="text-instr-ref"></span><span id="index-7"></span><h2>Reference Instructions<a class="headerlink" href="#reference-instructions" title="Link to this heading">¶</a></h2>
-<div class="math notranslate nohighlight" id="text-extern-convert-any">
-<span id="text-any-convert-extern"></span><span id="text-ref-cast"></span><span id="text-ref-test"></span><span id="text-i31-get-u"></span><span id="text-i31-get-s"></span><span id="text-ref-i31"></span><span id="text-array-init-elem"></span><span id="text-array-init-data"></span><span id="text-array-copy"></span><span id="text-array-fill"></span><span id="text-array-len"></span><span id="text-array-set"></span><span id="text-array-get-u"></span><span id="text-array-get-s"></span><span id="text-array-get"></span><span id="text-array-new-data"></span><span id="text-array-new-elem"></span><span id="text-array-new-fixed"></span><span id="text-array-new-default"></span><span id="text-array-new"></span><span id="text-struct-set"></span><span id="text-struct-get-u"></span><span id="text-struct-get-s"></span><span id="text-struct-get"></span><span id="text-struct-new-default"></span><span id="text-struct-new"></span><span id="text-ref-as-non-null"></span><span id="text-ref-is-null"></span><span id="text-ref-func"></span><span id="text-ref-null"></span>\[\begin{split}\begin{array}[t]{&#64;{}l&#64;{}rrl&#64;{}l&#64;{}l&#64;{}l&#64;{}}
+<div class="math notranslate nohighlight" id="text-ref-cast">
+<span id="text-ref-test"></span><span id="text-ref-as-non-null"></span><span id="text-ref-is-null"></span><span id="text-ref-func"></span><span id="text-ref-null"></span>\[\begin{split}\begin{array}[t]{&#64;{}l&#64;{}rrl&#64;{}l&#64;{}l&#64;{}l&#64;{}}
 &amp; {{\href{../text/instructions.html#text-plaininstr}{\mathtt{plaininstr}}}}_{{\href{../text/conventions.html#text-context}{I}}} &amp; ::= &amp; \dots \\
 &amp; &amp; | &amp; \mbox{‘\texttt{ref.null}’}~~{\mathit{ht}}{:}{{\href{../text/types.html#text-heaptype}{\mathtt{heaptype}}}}_{{\href{../text/conventions.html#text-context}{I}}} &amp; \quad\Rightarrow\quad{} &amp; \href{../syntax/instructions.html#syntax-instr-ref}{\mathsf{ref{.}null}}~{\mathit{ht}} \\
 &amp; &amp; | &amp; \mbox{‘\texttt{ref.func}’}~~x{:}{{\href{../text/modules.html#text-funcidx}{\mathtt{funcidx}}}}_{{\href{../text/conventions.html#text-context}{I}}} &amp; \quad\Rightarrow\quad{} &amp; \href{../syntax/instructions.html#syntax-instr-ref}{\mathsf{ref{.}func}}~x \\
@@ -379,6 +379,13 @@ Lexically, an <span class="math notranslate nohighlight">\({\href{../text/instru
 &amp; &amp; | &amp; \mbox{‘\texttt{ref.eq}’} &amp; \quad\Rightarrow\quad{} &amp; \href{../syntax/instructions.html#syntax-instr-ref}{\mathsf{ref{.}eq}} \\
 &amp; &amp; | &amp; \mbox{‘\texttt{ref.test}’}~~{\mathit{rt}}{:}{{\href{../text/types.html#text-reftype}{\mathtt{reftype}}}}_{{\href{../text/conventions.html#text-context}{I}}} &amp; \quad\Rightarrow\quad{} &amp; \href{../syntax/instructions.html#syntax-instr-ref}{\mathsf{ref{.}test}}~{\mathit{rt}} \\
 &amp; &amp; | &amp; \mbox{‘\texttt{ref.cast}’}~~{\mathit{rt}}{:}{{\href{../text/types.html#text-reftype}{\mathtt{reftype}}}}_{{\href{../text/conventions.html#text-context}{I}}} &amp; \quad\Rightarrow\quad{} &amp; \href{../syntax/instructions.html#syntax-instr-ref}{\mathsf{ref{.}cast}}~{\mathit{rt}} \\
+\end{array}\end{split}\]</div>
+</section>
+<section id="aggregate-instructions">
+<span id="text-instr-aggr"></span><span id="index-8"></span><h2>Aggregate Instructions<a class="headerlink" href="#aggregate-instructions" title="Link to this heading">¶</a></h2>
+<div class="math notranslate nohighlight" id="text-extern-convert-any">
+<span id="text-any-convert-extern"></span><span id="text-array-init-elem"></span><span id="text-array-init-data"></span><span id="text-array-copy"></span><span id="text-array-fill"></span><span id="text-array-len"></span><span id="text-array-set"></span><span id="text-array-get-u"></span><span id="text-array-get-s"></span><span id="text-array-get"></span><span id="text-array-new-data"></span><span id="text-array-new-elem"></span><span id="text-array-new-fixed"></span><span id="text-array-new-default"></span><span id="text-array-new"></span><span id="text-struct-set"></span><span id="text-struct-get-u"></span><span id="text-struct-get-s"></span><span id="text-struct-get"></span><span id="text-struct-new-default"></span><span id="text-struct-new"></span><span id="text-i31-get-u"></span><span id="text-i31-get-s"></span><span id="text-ref-i31"></span>\[\begin{split}\begin{array}[t]{&#64;{}l&#64;{}rrl&#64;{}l&#64;{}l&#64;{}l&#64;{}}
+&amp; {{\href{../text/instructions.html#text-plaininstr}{\mathtt{plaininstr}}}}_{{\href{../text/conventions.html#text-context}{I}}} &amp; ::= &amp; \dots \\
 &amp; &amp; | &amp; \mbox{‘\texttt{ref.i31}’} &amp; \quad\Rightarrow\quad{} &amp; \href{../syntax/instructions.html#syntax-instr-i31}{\mathsf{ref{.}i\scriptstyle31}} \\
 &amp; &amp; | &amp; \mbox{‘\texttt{i31.get\_s}’} &amp; \quad\Rightarrow\quad{} &amp; {\href{../syntax/instructions.html#syntax-instr-i31}{\mathsf{i{\scriptstyle31}{.}get}}}{\mathsf{\_}}{\href{../syntax/instructions.html#syntax-sx}{\mathsf{s}}} \\
 &amp; &amp; | &amp; \mbox{‘\texttt{i31.get\_u}’} &amp; \quad\Rightarrow\quad{} &amp; {\href{../syntax/instructions.html#syntax-instr-i31}{\mathsf{i{\scriptstyle31}{.}get}}}{\mathsf{\_}}{\href{../syntax/instructions.html#syntax-sx}{\mathsf{u}}} \\
@@ -407,7 +414,7 @@ Lexically, an <span class="math notranslate nohighlight">\({\href{../text/instru
 \end{array}\end{split}\]</div>
 </section>
 <section id="numeric-instructions">
-<span id="text-instr-numeric"></span><span id="index-8"></span><h2>Numeric Instructions<a class="headerlink" href="#numeric-instructions" title="Link to this heading">¶</a></h2>
+<span id="text-instr-numeric"></span><span id="index-9"></span><h2>Numeric Instructions<a class="headerlink" href="#numeric-instructions" title="Link to this heading">¶</a></h2>
 <div class="math notranslate nohighlight" id="text-const">
 \[\begin{split}\begin{array}[t]{&#64;{}l&#64;{}rrl&#64;{}l&#64;{}l&#64;{}l&#64;{}}
 &amp; {{\href{../text/instructions.html#text-plaininstr}{\mathtt{plaininstr}}}}_{{\href{../text/conventions.html#text-context}{I}}} &amp; ::= &amp; \dots \\
@@ -574,7 +581,7 @@ Lexically, an <span class="math notranslate nohighlight">\({\href{../text/instru
 \end{array}\end{split}\]</div>
 </section>
 <section id="vector-instructions">
-<span id="text-instr-vec"></span><span id="index-9"></span><h2>Vector Instructions<a class="headerlink" href="#vector-instructions" title="Link to this heading">¶</a></h2>
+<span id="text-instr-vec"></span><span id="index-10"></span><h2>Vector Instructions<a class="headerlink" href="#vector-instructions" title="Link to this heading">¶</a></h2>
 <p>Vector constant instructions have a mandatory <a class="reference internal" href="../syntax/instructions.html#syntax-shape"><span class="std std-ref">shape</span></a> descriptor, which determines how the following values are parsed.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}[t]{&#64;{}l&#64;{}rrl&#64;{}l&#64;{}l&#64;{}l&#64;{}}
@@ -859,7 +866,7 @@ Lexically, an <span class="math notranslate nohighlight">\({\href{../text/instru
 \end{array}\end{split}\]</div>
 </section>
 <section id="folded-instructions">
-<span id="text-foldedinstr"></span><span id="index-10"></span><h2>Folded Instructions<a class="headerlink" href="#folded-instructions" title="Link to this heading">¶</a></h2>
+<span id="text-foldedinstr"></span><span id="index-11"></span><h2>Folded Instructions<a class="headerlink" href="#folded-instructions" title="Link to this heading">¶</a></h2>
 <p>Instructions can be written as S-expressions by grouping them into <em>folded</em> form. In that notation, an instruction is wrapped in parentheses and optionally includes nested folded instructions to indicate its operands.</p>
 <p>In the case of <a class="reference internal" href="#text-instr-block"><span class="std std-ref">block instructions</span></a>, the folded form omits the <span class="math notranslate nohighlight">\(\mbox{‘\texttt{end}’}\)</span> delimiter.
 For <span class="math notranslate nohighlight">\(\mathsf{if}\)</span> instructions, both branches have to be wrapped into nested S-expressions, headed by the keywords <span class="math notranslate nohighlight">\(\mbox{‘\texttt{then}’}\)</span> and <span class="math notranslate nohighlight">\(\mbox{‘\texttt{else}’}\)</span>.</p>
@@ -912,7 +919,7 @@ no additional syntactic or type-based checking is implied.</p>
 </div>
 </section>
 <section id="expressions">
-<span id="text-expr"></span><span id="index-11"></span><h2>Expressions<a class="headerlink" href="#expressions" title="Link to this heading">¶</a></h2>
+<span id="text-expr"></span><span id="index-12"></span><h2>Expressions<a class="headerlink" href="#expressions" title="Link to this heading">¶</a></h2>
 <p>Expressions are written as instruction sequences.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}[t]{&#64;{}l&#64;{}rrl&#64;{}l&#64;{}l&#64;{}l&#64;{}}
