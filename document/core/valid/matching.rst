@@ -167,7 +167,7 @@ Limits
 
 $${rule-prose: Limits_sub}
 
-$${rule: Limits_sub}
+$${rule: {Limits_sub/*}}
 
 
 .. index:: tag type

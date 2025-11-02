@@ -557,7 +557,6 @@ warning: grammar `Binstr/memory` was never spliced
 warning: grammar `Binstr/ref` was never spliced
 warning: grammar `Binstr/struct` was never spliced
 warning: grammar `Binstr/array` was never spliced
-warning: grammar `Binstr/cast` was never spliced
 warning: grammar `Binstr/extern` was never spliced
 warning: grammar `Binstr/i31` was never spliced
 warning: grammar `Binstr/num-const` was never spliced
@@ -1150,7 +1149,8 @@ warning: rule `Instrs_ok/frame` was spliced more than once
 warning: rule `Instrtype_ok` was never spliced
 warning: rule `Instrtype_sub` was never spliced
 warning: rule `Limits_ok` was never spliced
-warning: rule `Limits_sub` was never spliced
+warning: rule `Limits_sub/max` was never spliced
+warning: rule `Limits_sub/eps` was never spliced
 warning: rule `Local_ok/set` was never spliced
 warning: rule `Local_ok/unset` was never spliced
 warning: rule `Mem_ok` was never spliced
@@ -2121,6 +2121,8 @@ warning: rule prose `Instrtype_ok` was never spliced
 warning: rule prose `Instrtype_sub` was never spliced
 warning: rule prose `Limits_ok` was never spliced
 warning: rule prose `Limits_sub` was never spliced
+warning: rule prose `Limits_sub/eps` was never spliced
+warning: rule prose `Limits_sub/max` was never spliced
 warning: rule prose `Local_ok` was never spliced
 warning: rule prose `Local_ok/set` was never spliced
 warning: rule prose `Local_ok/unset` was never spliced

@@ -10,7 +10,7 @@
       (array.fill $a (local.get $1) (i32.const 0) (local.get $2) (i32.const 0))
     )
   )
-  "array is immutable"
+  "immutable array"
 )
 
 (assert_invalid

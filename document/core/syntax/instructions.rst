@@ -61,15 +61,19 @@ If missing, the operands must be of :ref:`numeric <syntax-numtype>` or :ref:`vec
 .. _syntax-br_on_non_null:
 .. _syntax-br_on_cast:
 .. _syntax-br_on_cast_fail:
-.. _syntax-return:
 .. _syntax-call:
+.. _syntax-call_ref:
 .. _syntax-call_indirect:
-.. _syntax-instrs:
-.. _syntax-instr-control:
+.. _syntax-return:
+.. _syntax-return_call:
+.. _syntax-return_call_ref:
+.. _syntax-return_call_indirect:
 .. _syntax-throw:
 .. _syntax-throw_ref:
 .. _syntax-try_table:
 .. _syntax-catch:
+.. _syntax-instrs:
+.. _syntax-instr-control:
 .. _exception:
 
 Control Instructions
@@ -284,6 +288,7 @@ while the latter performs a downcast and :ref:`traps <trap>` if the operand's ty
 .. _syntax-i31.get_u:
 .. _syntax-any.convert_extern:
 .. _syntax-extern.convert_any:
+.. _syntax-instr-aggr:
 .. _syntax-instr-struct:
 .. _syntax-instr-array:
 .. _syntax-instr-i31:
