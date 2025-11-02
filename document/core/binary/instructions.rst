@@ -54,6 +54,10 @@ Control Instructions
 .. _binary-br:
 .. _binary-br_if:
 .. _binary-br_table:
+.. _binary-br_on_null:
+.. _binary-br_on_non_null:
+.. _binary-br_on_cast:
+.. _binary-br_on_cast_fail:
 .. _binary-return:
 .. _binary-call:
 .. _binary-call_ref:
@@ -65,8 +69,10 @@ Control Instructions
 .. _binary-throw_ref:
 .. _binary-try_table:
 .. _binary-catch:
+.. _binary-castop:
 
-$${grammar: Bblocktype {Binstr/block Binstr/control} Bcatch}
+$${grammar: Bblocktype {Binstr/block Binstr/control} Bcatch Bcastop}
+$${syntax-ignore: castop}
 
 .. note::
    The ${:ELSE} opcode ${:0x05} in the encoding of an ${:IF} instruction can be omitted if the following instruction sequence is empty.
@@ -140,10 +146,6 @@ $${grammar: Bmemarg Binstr/memory}
 .. index:: reference instruction
    pair: binary format; instruction
 .. _binary-instr-ref:
-.. _binary-br_on_null:
-.. _binary-br_on_non_null:
-.. _binary-br_on_cast:
-.. _binary-br_on_cast_fail:
 
 Reference Instructions
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -154,6 +156,24 @@ Generic :ref:`reference instructions <syntax-instr-ref>` are represented by sing
 .. _binary-ref.func:
 .. _binary-ref.is_null:
 .. _binary-ref.as_non_null:
+.. _binary-ref.test:
+.. _binary-ref.cast:
+
+$${grammar: {Binstr/ref}}
+
+
+.. index:: aggregate instruction
+   pair: binary format; instruction
+.. _binary-instr-aggr:
+
+Aggregate Instructions
+~~~~~~~~~~~~~~~~~~~~~~
+
+:ref:`Aggregate instructions <syntax-instr-aggr>` all use a prefix.
+
+.. _binary-ref.i31:
+.. _binary-i31.get_s:
+.. _binary-i31.get_u:
 .. _binary-struct.new:
 .. _binary-struct.new_default:
 .. _binary-struct.get:
@@ -174,17 +194,10 @@ Generic :ref:`reference instructions <syntax-instr-ref>` are represented by sing
 .. _binary-array.copy:
 .. _binary-array.init_data:
 .. _binary-array.init_elem:
-.. _binary-ref.i31:
-.. _binary-i31.get_s:
-.. _binary-i31.get_u:
-.. _binary-ref.test:
-.. _binary-ref.cast:
 .. _binary-any.convert_extern:
 .. _binary-extern.convert_any:
-.. _binary-castop:
 
-$${grammar: {Binstr/ref Binstr/struct Binstr/array Binstr/cast Binstr/extern Binstr/i31} Bcastop}
-$${syntax-ignore: castop}
+$${grammar: {Binstr/struct Binstr/array Binstr/extern Binstr/i31}}
 
 
 .. index:: numeric instruction

@@ -557,7 +557,6 @@ warning: grammar `Binstr/memory` was never spliced
 warning: grammar `Binstr/ref` was never spliced
 warning: grammar `Binstr/struct` was never spliced
 warning: grammar `Binstr/array` was never spliced
-warning: grammar `Binstr/cast` was never spliced
 warning: grammar `Binstr/extern` was never spliced
 warning: grammar `Binstr/i31` was never spliced
 warning: grammar `Binstr/num-const` was never spliced

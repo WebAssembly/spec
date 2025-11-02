@@ -11402,7 +11402,17 @@ $$
 \vspace{1ex}
 
 $$
+\begin{array}[t]{@{}lrrl@{}l@{}}
+& {\mathit{castop}} & ::= & ({\mathsf{null}^?}, {\mathsf{null}^?}) \\
+\end{array}
+$$
+
+$$
 \begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
+& {\mathtt{castop}} & ::= & \mathtt{0x00} & \quad\Rightarrow\quad{} & (\epsilon, \epsilon) \\
+& & | & \mathtt{0x01} & \quad\Rightarrow\quad{} & (\mathsf{null}, \epsilon) \\
+& & | & \mathtt{0x02} & \quad\Rightarrow\quad{} & (\epsilon, \mathsf{null}) \\
+& & | & \mathtt{0x03} & \quad\Rightarrow\quad{} & (\mathsf{null}, \mathsf{null}) \\
 & {\mathtt{blocktype}} & ::= & \mathtt{0x40} & \quad\Rightarrow\quad{} & \epsilon \\
 & & | & t{:}{\mathtt{valtype}} & \quad\Rightarrow\quad{} & t \\
 & & | & i{:}{\mathtt{s33}} & \quad\Rightarrow\quad{} & i & \quad \mbox{if}~ i \geq 0 \\
@@ -11425,6 +11435,12 @@ $$
 & & | & \mathtt{0x14}~~x{:}{\mathtt{typeidx}} & \quad\Rightarrow\quad{} & \mathsf{call\_ref}~x \\
 & & | & \mathtt{0x15}~~x{:}{\mathtt{typeidx}} & \quad\Rightarrow\quad{} & \mathsf{return\_call\_ref}~x \\
 & & | & \mathtt{0x1F}~~{\mathit{bt}}{:}{\mathtt{blocktype}}~~{c^\ast}{:}{\mathtt{list}}({\mathtt{catch}})~~{({\mathit{in}}{:}{\mathtt{instr}})^\ast}~~\mathtt{0x0B} & \quad\Rightarrow\quad{} & \mathsf{try\_table}~{\mathit{bt}}~{c^\ast}~{{\mathit{in}}^\ast} \\
+& & | & \mathtt{0xD5}~~l{:}{\mathtt{labelidx}} & \quad\Rightarrow\quad{} & \mathsf{br\_on\_null}~l \\
+& & | & \mathtt{0xD6}~~l{:}{\mathtt{labelidx}} & \quad\Rightarrow\quad{} & \mathsf{br\_on\_non\_null}~l \\
+& & | & \begin{array}[t]{@{}l@{}} \mathtt{0xFB}~~24{:}{\mathtt{u32}}~~({{\mathsf{null}}_1^?}, {{\mathsf{null}}_2^?}){:}{\mathtt{castop}} \\
+  l{:}{\mathtt{labelidx}}~~{\mathit{ht}}_1{:}{\mathtt{heaptype}}~~{\mathit{ht}}_2{:}{\mathtt{heaptype}} \end{array} & \quad\Rightarrow\quad{} & \mathsf{br\_on\_cast}~l~(\mathsf{ref}~{{\mathsf{null}}_1^?}~{\mathit{ht}}_1)~(\mathsf{ref}~{{\mathsf{null}}_2^?}~{\mathit{ht}}_2) \\
+& & | & \begin{array}[t]{@{}l@{}} \mathtt{0xFB}~~25{:}{\mathtt{u32}}~~({{\mathsf{null}}_1^?}, {{\mathsf{null}}_2^?}){:}{\mathtt{castop}} \\
+  l{:}{\mathtt{labelidx}}~~{\mathit{ht}}_1{:}{\mathtt{heaptype}}~~{\mathit{ht}}_2{:}{\mathtt{heaptype}} \end{array} & \quad\Rightarrow\quad{} & \mathsf{br\_on\_cast\_fail}~l~(\mathsf{ref}~{{\mathsf{null}}_1^?}~{\mathit{ht}}_1)~(\mathsf{ref}~{{\mathsf{null}}_2^?}~{\mathit{ht}}_2) \\
 & {\mathtt{catch}} & ::= & \mathtt{0x00}~~x{:}{\mathtt{tagidx}}~~l{:}{\mathtt{labelidx}} & \quad\Rightarrow\quad{} & \mathsf{catch}~x~l \\
 & & | & \mathtt{0x01}~~x{:}{\mathtt{tagidx}}~~l{:}{\mathtt{labelidx}} & \quad\Rightarrow\quad{} & \mathsf{catch\_ref}~x~l \\
 & & | & \mathtt{0x02}~~l{:}{\mathtt{labelidx}} & \quad\Rightarrow\quad{} & \mathsf{catch\_all}~l \\
@@ -11509,25 +11525,17 @@ $$
 \vspace{1ex}
 
 $$
-\begin{array}[t]{@{}lrrl@{}l@{}}
-& {\mathit{castop}} & ::= & ({\mathsf{null}^?}, {\mathsf{null}^?}) \\
-\end{array}
-$$
-
-$$
 \begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
-& {\mathtt{castop}} & ::= & \mathtt{0x00} & \quad\Rightarrow\quad{} & (\epsilon, \epsilon) \\
-& & | & \mathtt{0x01} & \quad\Rightarrow\quad{} & (\mathsf{null}, \epsilon) \\
-& & | & \mathtt{0x02} & \quad\Rightarrow\quad{} & (\epsilon, \mathsf{null}) \\
-& & | & \mathtt{0x03} & \quad\Rightarrow\quad{} & (\mathsf{null}, \mathsf{null}) \\
 & {\mathtt{instr}} & ::= & \dots \\
 & & | & \mathtt{0xD0}~~{\mathit{ht}}{:}{\mathtt{heaptype}} & \quad\Rightarrow\quad{} & \mathsf{ref{.}null}~{\mathit{ht}} \\
 & & | & \mathtt{0xD1} & \quad\Rightarrow\quad{} & \mathsf{ref{.}is\_null} \\
 & & | & \mathtt{0xD2}~~x{:}{\mathtt{funcidx}} & \quad\Rightarrow\quad{} & \mathsf{ref{.}func}~x \\
 & & | & \mathtt{0xD3} & \quad\Rightarrow\quad{} & \mathsf{ref{.}eq} \\
 & & | & \mathtt{0xD4} & \quad\Rightarrow\quad{} & \mathsf{ref{.}as\_non\_null} \\
-& & | & \mathtt{0xD5}~~l{:}{\mathtt{labelidx}} & \quad\Rightarrow\quad{} & \mathsf{br\_on\_null}~l \\
-& & | & \mathtt{0xD6}~~l{:}{\mathtt{labelidx}} & \quad\Rightarrow\quad{} & \mathsf{br\_on\_non\_null}~l \\
+& & | & \mathtt{0xFB}~~20{:}{\mathtt{u32}}~~{\mathit{ht}}{:}{\mathtt{heaptype}} & \quad\Rightarrow\quad{} & \mathsf{ref{.}test}~(\mathsf{ref}~{\mathit{ht}}) \\
+& & | & \mathtt{0xFB}~~21{:}{\mathtt{u32}}~~{\mathit{ht}}{:}{\mathtt{heaptype}} & \quad\Rightarrow\quad{} & \mathsf{ref{.}test}~(\mathsf{ref}~\mathsf{null}~{\mathit{ht}}) \\
+& & | & \mathtt{0xFB}~~22{:}{\mathtt{u32}}~~{\mathit{ht}}{:}{\mathtt{heaptype}} & \quad\Rightarrow\quad{} & \mathsf{ref{.}cast}~(\mathsf{ref}~{\mathit{ht}}) \\
+& & | & \mathtt{0xFB}~~23{:}{\mathtt{u32}}~~{\mathit{ht}}{:}{\mathtt{heaptype}} & \quad\Rightarrow\quad{} & \mathsf{ref{.}cast}~(\mathsf{ref}~\mathsf{null}~{\mathit{ht}}) \\
 & & | & \mathtt{0xFB}~~0{:}{\mathtt{u32}}~~x{:}{\mathtt{typeidx}} & \quad\Rightarrow\quad{} & \mathsf{struct{.}new}~x \\
 & & | & \mathtt{0xFB}~~1{:}{\mathtt{u32}}~~x{:}{\mathtt{typeidx}} & \quad\Rightarrow\quad{} & \mathsf{struct{.}new\_default}~x \\
 & & | & \mathtt{0xFB}~~2{:}{\mathtt{u32}}~~x{:}{\mathtt{typeidx}}~~i{:}{\mathtt{u32}} & \quad\Rightarrow\quad{} & \mathsf{struct{.}get}~x~i \\
@@ -11548,14 +11556,6 @@ $$
 & & | & \mathtt{0xFB}~~17{:}{\mathtt{u32}}~~x_1{:}{\mathtt{typeidx}}~~x_2{:}{\mathtt{typeidx}} & \quad\Rightarrow\quad{} & \mathsf{array{.}copy}~x_1~x_2 \\
 & & | & \mathtt{0xFB}~~18{:}{\mathtt{u32}}~~x{:}{\mathtt{typeidx}}~~y{:}{\mathtt{dataidx}} & \quad\Rightarrow\quad{} & \mathsf{array{.}init\_data}~x~y \\
 & & | & \mathtt{0xFB}~~19{:}{\mathtt{u32}}~~x{:}{\mathtt{typeidx}}~~y{:}{\mathtt{elemidx}} & \quad\Rightarrow\quad{} & \mathsf{array{.}init\_elem}~x~y \\
-& & | & \mathtt{0xFB}~~20{:}{\mathtt{u32}}~~{\mathit{ht}}{:}{\mathtt{heaptype}} & \quad\Rightarrow\quad{} & \mathsf{ref{.}test}~(\mathsf{ref}~{\mathit{ht}}) \\
-& & | & \mathtt{0xFB}~~21{:}{\mathtt{u32}}~~{\mathit{ht}}{:}{\mathtt{heaptype}} & \quad\Rightarrow\quad{} & \mathsf{ref{.}test}~(\mathsf{ref}~\mathsf{null}~{\mathit{ht}}) \\
-& & | & \mathtt{0xFB}~~22{:}{\mathtt{u32}}~~{\mathit{ht}}{:}{\mathtt{heaptype}} & \quad\Rightarrow\quad{} & \mathsf{ref{.}cast}~(\mathsf{ref}~{\mathit{ht}}) \\
-& & | & \mathtt{0xFB}~~23{:}{\mathtt{u32}}~~{\mathit{ht}}{:}{\mathtt{heaptype}} & \quad\Rightarrow\quad{} & \mathsf{ref{.}cast}~(\mathsf{ref}~\mathsf{null}~{\mathit{ht}}) \\
-& & | & \begin{array}[t]{@{}l@{}} \mathtt{0xFB}~~24{:}{\mathtt{u32}}~~({{\mathsf{null}}_1^?}, {{\mathsf{null}}_2^?}){:}{\mathtt{castop}} \\
-  l{:}{\mathtt{labelidx}}~~{\mathit{ht}}_1{:}{\mathtt{heaptype}}~~{\mathit{ht}}_2{:}{\mathtt{heaptype}} \end{array} & \quad\Rightarrow\quad{} & \mathsf{br\_on\_cast}~l~(\mathsf{ref}~{{\mathsf{null}}_1^?}~{\mathit{ht}}_1)~(\mathsf{ref}~{{\mathsf{null}}_2^?}~{\mathit{ht}}_2) \\
-& & | & \begin{array}[t]{@{}l@{}} \mathtt{0xFB}~~25{:}{\mathtt{u32}}~~({{\mathsf{null}}_1^?}, {{\mathsf{null}}_2^?}){:}{\mathtt{castop}} \\
-  l{:}{\mathtt{labelidx}}~~{\mathit{ht}}_1{:}{\mathtt{heaptype}}~~{\mathit{ht}}_2{:}{\mathtt{heaptype}} \end{array} & \quad\Rightarrow\quad{} & \mathsf{br\_on\_cast\_fail}~l~(\mathsf{ref}~{{\mathsf{null}}_1^?}~{\mathit{ht}}_1)~(\mathsf{ref}~{{\mathsf{null}}_2^?}~{\mathit{ht}}_2) \\
 & & | & \mathtt{0xFB}~~26{:}{\mathtt{u32}} & \quad\Rightarrow\quad{} & \mathsf{any{.}convert\_extern} \\
 & & | & \mathtt{0xFB}~~27{:}{\mathtt{u32}} & \quad\Rightarrow\quad{} & \mathsf{extern{.}convert\_any} \\
 & & | & \mathtt{0xFB}~~28{:}{\mathtt{u32}} & \quad\Rightarrow\quad{} & \mathsf{ref{.}i{\scriptstyle 31}} \\
