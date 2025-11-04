@@ -29,8 +29,8 @@ Because passes have dependencies, and because some flags enable multiple
 passers (--all-passes, some targets), we do _not_ want to use the order of
 flags on the command line.
 *)
-let _skip_passes = [ Sub; Unthe ]  (* Not clear how to extend them to indexed types *)
-let all_passes = [ TypeFamilyRemoval; Undep; Totalize; Else; Sideconditions; ]
+let _skip_passes = [ Unthe ]  (* Not clear how to extend them to indexed types *)
+let all_passes = [ TypeFamilyRemoval; Undep; Totalize; Else; Sideconditions; Sub ]
 
 type file_kind =
   | Spec

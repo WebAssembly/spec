@@ -39,7 +39,7 @@ let iterPr (pr, (iter, vars)) =
 let is_null e = CmpE (`EqOp, `BoolT, e, OptE None $$ e.at % e.note) $$ e.at % (BoolT $ e.at)
 let iffE e1 e2 = IfPr (BinE (`EquivOp, `BoolT, e1, e2) $$ e1.at % (BoolT $ e1.at)) $ e1.at
 let same_len e1 e2 = IfPr (CmpE (`EqOp, `BoolT, lenE e1, lenE e2) $$ e1.at % (BoolT $ e1.at)) $ e1.at
-(* let has_len ne e = IfPr (CmpE (`EqOp, None, lenE e, ne) $$ e.at % (BoolT $ e.at)) $ e.at *)
+let has_len ne e = IfPr (CmpE (`EqOp, `BoolT, lenE e, ne) $$ e.at % (BoolT $ e.at)) $ e.at
 
 (* updates the types in the environment as we go under iteras *)
 let env_under_iter env ((_, vs) : iterexp) =
@@ -50,7 +50,7 @@ let iter_side_conditions _env ((iter, vs) : iterexp) : prem list =
   match iter, List.map snd vs with
   | Opt, (e::es) -> List.map (fun e' -> iffE (is_null e) (is_null e')) es
   | (List|List1), (e::es) -> List.map (same_len e) es
-  (* | ListN (ne, None), es -> List.map (has_len ne) es *)
+  | ListN (ne, None), es -> List.map (has_len ne) es
   | ListN _, _ -> []
   | _ -> []
 
@@ -64,7 +64,7 @@ let rec t_exp env e : prem list =
     [IfPr (CmpE (`LtOp, `NatT, exp2, LenE exp1 $$ e.at % exp2.note) $$ e.at % (BoolT $ e.at)) $ e.at]
   | TheE exp ->
     [IfPr (CmpE (`NeOp, `BoolT, exp, OptE None $$ e.at % exp.note) $$ e.at % (BoolT $ e.at)) $ e.at]
-  | IterE ({it= CmpE (`EqOp, _,  _, _); _}, iterexp) -> iter_side_conditions env iterexp
+  | IterE (_, iterexp) -> iter_side_conditions env iterexp
   | MemE (_exp, exp) ->
     [IfPr (CmpE (`GtOp, `NatT, LenE exp $$ exp.at % (NumT `NatT $ exp.at), NumE (`Nat Z.zero) $$ no_region % (NumT `NatT $ no_region)) $$ e.at % (BoolT $ e.at)) $ e.at]
   | _ -> []
