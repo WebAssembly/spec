@@ -19,7 +19,7 @@ let error at msg = Error.error at "option projection" msg
 
 (* We pull out fresh variables and equating side conditions. *)
 
-type eqn = bind * prem
+type eqn = param * prem
 type eqns = eqn list
 
 (* Fresh name generation *)
@@ -42,19 +42,19 @@ let update_iterexp_vars (sets : Il.Free.sets) ((iter, vs) : iterexp) : iterexp =
     | _ -> [List.hd vs]  (* prevent empty iterator list *)
   in (iter, vs'')
 
-(* If a bind and premise is generated under an iteration, wrap them accordingly *)
+(* If a param and premise is generated under an iteration, wrap them accordingly *)
 
 let under_iterexp (iter, vs) eqns : iterexp * eqns =
-   let new_vs = List.map (fun (bind, _) ->
-     match bind.it with
-     | ExpB (v, t) ->
+   let new_vs = List.map (fun (param, _) ->
+     match param.it with
+     | ExpP (v, t) ->
        (v, VarE v $$ v.at % (IterT (t, match iter with Opt -> Opt | _ -> List) $ v.at))
-     | TypB _ | DefB _ | GramB _ -> error bind.at "unexpected type binding"
+     | TypP _ | DefP _ | GramP _ -> error param.at "unexpected sort of parameter"
    ) eqns in
-   let eqns' = List.map2 (fun (bind, pr) (v, e) ->
+   let eqns' = List.map2 (fun (param, pr) (v, e) ->
      let iterexp' = update_iterexp_vars (Il.Free.free_prem pr) (iter, vs @ [(v, e)]) in
      let pr' = IterPr (pr, iterexp') $ no_region in
-     (ExpB (v, e.note) $ bind.at, pr')
+     (ExpP (v, e.note) $ param.at, pr')
    ) eqns new_vs in
    (iter, vs @ new_vs), eqns'
 
@@ -104,11 +104,11 @@ let rec t_exp n e : eqns * exp =
     in
     let x = fresh_id n in
     let xe = VarE x $$ no_region % t in
-    let bind = ExpB (x, t) $ no_region in
+    let param = ExpP (x, t) $ no_region in
     let prem = IfPr (
       CmpE (`EqOp, `BoolT, exp, OptE (Some xe) $$ no_region % ot) $$ no_region % (BoolT $ no_region)
     ) $ no_region in
-    eqns @ [(bind, prem)], xe
+    eqns @ [(param, prem)], xe
   | _ -> eqns, e'
 
 (* Traversal helpers *)
@@ -117,6 +117,7 @@ and t_exp2 n = phrase t_exp' n
 
 and t_e n x k = unary t_exp n x k
 and t_ee n x k = binary t_exp t_exp n x k
+and t_eas n x k = binary t_exp (fun n xs -> t_list t_arg n xs Fun.id) n x k
 and t_eee n x k = ternary t_exp t_exp t_exp n x k
 and t_epe n x k = ternary t_exp t_path t_exp n x k
 
@@ -125,15 +126,15 @@ and t_exp' n e : eqns * exp' =
   | VarE _ | BoolE _ | NumE _ | TextE _ | OptE None -> [], e
 
   | UnE (uo, nto, exp) -> t_e n exp (fun exp' -> UnE (uo, nto, exp'))
-  | DotE (exp, a) -> t_e n exp (fun exp' -> DotE (exp', a))
+  | DotE (exp, a, args) -> t_eas n (exp, args) (fun (exp', args') -> DotE (exp', a, args'))
   | LenE exp -> t_e n exp (fun exp' -> LenE exp')
   | CallE (f, args) -> t_list t_arg n args (fun args' -> CallE (f, args'))
   | ProjE (exp, i) -> t_e n exp (fun exp' -> ProjE (exp', i))
-  | UncaseE (exp, mo) -> t_e n exp (fun exp' -> UncaseE (exp', mo))
+  | UncaseE (exp, mo, args) -> t_eas n (exp, args) (fun (exp', args') -> UncaseE (exp', mo, args'))
   | OptE (Some exp) -> t_e n exp (fun exp' -> OptE (Some exp'))
   | TheE exp -> t_e n exp (fun exp' -> TheE exp')
   | LiftE exp -> t_e n exp (fun exp' -> LiftE exp')
-  | CaseE (mixop, exp) -> t_e n exp (fun exp' -> CaseE (mixop, exp'))
+  | CaseE (mixop, args, exp) -> t_eas n (exp, args) (fun (exp', args') -> CaseE (mixop, args', exp'))
   | CvtE (exp, a, b) -> t_e n exp (fun exp' -> CvtE (exp', a, b))
   | SubE (exp, a, b) -> t_e n exp (fun exp' -> SubE (exp', a, b))
 
@@ -160,16 +161,16 @@ and t_exp' n e : eqns * exp' =
     let iterexp''' = update_iterexp_vars (Il.Free.free_exp e') iterexp'' in
     eqns1' @ eqns2, IterE (e', iterexp''')
 
-and t_field n ((a, e) : expfield) =
-  unary t_exp n e (fun e' -> (a, e'))
+and t_field n ((a, args, e) : expfield) =
+  binary (fun n xs -> t_list t_arg n xs Fun.id) t_exp n (args, e) (fun (args', e') -> (a, args', e'))
 
 and t_iterexp n iterexp =
-  binary t_iter t_iterbinds n iterexp Fun.id
+  binary t_iter t_iterparams n iterexp Fun.id
 
-and t_iterbinds n binds =
-  t_list t_iterbind n binds Fun.id
+and t_iterparams n params =
+  t_list t_iterparam n params Fun.id
 
-and t_iterbind n (id, e) =
+and t_iterparam n (id, e) =
   unary t_exp n e (fun e' -> (id, e'))
 
 and t_iter n iter = match iter with
@@ -182,7 +183,7 @@ and t_path' n path = match path with
   | RootP -> [], path
   | IdxP (path, e) -> binary t_path t_exp n (path, e) (fun (path', e') -> IdxP (path', e'))
   | SliceP (path, e1, e2) -> ternary t_path t_exp t_exp n (path, e1, e2) (fun (path', e1', e2') -> SliceP (path', e1', e2'))
-  | DotP (path, a) -> unary t_path n path (fun path' -> DotP (path', a))
+  | DotP (path, a, args) -> binary t_path (fun n xs -> t_list t_arg n xs Fun.id) n (path, args) (fun (path', args') -> DotP (path', a, args'))
 
 and t_arg n = phrase t_arg' n
 
@@ -211,12 +212,12 @@ and t_prem' n prem : eqns * prem' =
 let t_prems n k  = t_list t_prem n k (fun x -> x)
 
 let t_rule' = function
-  | RuleD (id, binds, mixop, exp, prems) ->
+  | RuleD (id, params, mixop, exp, prems) ->
     (* Counter for fresh variables *)
     let n = ref 0 in
     let eqns, (exp', prems') = binary t_exp t_prems n (exp, prems) (fun x -> x) in
-    let extra_binds, extra_prems = List.split eqns in
-    RuleD (id, binds @ extra_binds, mixop, exp', extra_prems @ prems')
+    let extra_params, extra_prems = List.split eqns in
+    RuleD (id, params @ extra_params, mixop, exp', extra_prems @ prems')
 
 let t_rule x = { x with it = t_rule' x.it }
 

@@ -29,7 +29,6 @@ val free_prod : prod -> sets
 val free_deftyp : deftyp -> sets
 val free_param : param -> sets
 
-val bound_typbind : exp * typ -> sets
-val bound_bind : bind -> sets
+val bound_typbind : id * typ -> sets
 val bound_param : param -> sets
 val bound_def : def -> sets

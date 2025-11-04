@@ -114,7 +114,7 @@ and recover_iterexp iterexp pr = Source.map (recover_iterexp' iterexp) pr
 (* is this assign premise a if-let? *)
 let is_cond_assign prem =
   match prem.it with
-  | LetPr ({it = CaseE (_, _); _}, _, _) -> true
+  | LetPr ({it = CaseE (_, _, _); _}, _, _) -> true
   | _ -> false
 
 (* is this assign premise encoded premise for popping one value? *)
@@ -251,7 +251,7 @@ let is_not_lhs e = match e.it with
 
 (* Hack to handle RETURN_CALL_ADDR, eventually should be removed *)
 let is_atomic_lhs e = match e.it with
-| CaseE ([{it = Atom "FUNC"; _}]::_, { it = CaseE ([[]; [{it = Arrow; _}]; []], { it = TupE [ { it = IterE (_, (ListN _, _)); _} ; { it = IterE (_, (ListN _, _)); _} ] ; _} ); _ }) -> true
+| CaseE ([{it = Atom "FUNC"; _}]::_, _, { it = CaseE ([[]; [{it = Arrow; _}]; []], _, { it = TupE [ { it = IterE (_, (ListN _, _)); _} ; { it = IterE (_, (ListN _, _)); _} ] ; _} ); _ }) -> true
 | _ -> false
 
 (* Hack to handle ARRAY.INIT_DATA, eventually should be removed *)

@@ -122,10 +122,10 @@ let rec overlap env e1 e2 = if eq_exp e1 e2 then e1 else
       UpdE (overlap env e1 e2, path1, overlap env e1' e2') |> replace_it
     | ExtE (e1, path1, e1'), ExtE (e2, path2, e2') when eq_path path1 path2 ->
       ExtE (overlap env e1 e2, path1, overlap env e1' e2') |> replace_it
-    | StrE efs1, StrE efs2 when List.map fst efs1 = List.map fst efs2 ->
-      StrE (List.map2 (fun (a1, e1) (_, e2) -> (a1, overlap env e1 e2)) efs1 efs2) |> replace_it
-    | DotE (e1, atom1), DotE (e2, atom2) when eq_atom atom1 atom2 ->
-      DotE (overlap env e1 e2, atom1) |> replace_it
+    | StrE efs1, StrE efs2 when List.map (fun (a, _, _) -> a) efs1 = List.map (fun (a, _, _) -> a) efs2 ->
+      StrE (List.map2 (fun (a1, as1, e1) (_, as2, e2) -> (a1, List.map2 (overlap_arg env) as1 as2, overlap env e1 e2)) efs1 efs2) |> replace_it
+    | DotE (e1, atom1, as1), DotE (e2, atom2, as2) when eq_atom atom1 atom2 ->
+      DotE (overlap env e1 e2, atom1, List.map2 (overlap_arg env) as1 as2) |> replace_it
     | CompE (e1, e1'), CompE (e2, e2') ->
       CompE (overlap env e1 e2, overlap env e1' e2') |> replace_it
     | LenE e1, LenE e2 ->
@@ -138,8 +138,8 @@ let rec overlap env e1 e2 = if eq_exp e1 e2 then e1 else
       IterE (overlap env e1 e2, itere1) |> replace_it
     | ProjE (e1, i1), ProjE (e2, i2) when i1 = i2 ->
       ProjE (overlap env e1 e2, i1) |> replace_it
-    | UncaseE (e1, op1), UncaseE (e2, op2) when eq_mixop op1 op2 ->
-      UncaseE (overlap env e1 e2, op1) |> replace_it
+    | UncaseE (e1, op1, as1), UncaseE (e2, op2, as2) when eq_mixop op1 op2 ->
+      UncaseE (overlap env e1 e2, op1, List.map2 (overlap_arg env) as1 as2) |> replace_it
     | OptE (Some e1), OptE (Some e2) ->
       OptE (Some (overlap env e1 e2)) |> replace_it
     | TheE e1, TheE e2 ->
@@ -152,8 +152,8 @@ let rec overlap env e1 e2 = if eq_exp e1 e2 then e1 else
       CatE (overlap env e1 e2, overlap env e1' e2') |> replace_it
     | MemE (e1, e1'), MemE (e2, e2') ->
       MemE (overlap env e1 e2, overlap env e1' e2') |> replace_it
-    | CaseE (mixop1, e1), CaseE (mixop2, e2) when eq_mixop mixop1 mixop2 ->
-      CaseE (mixop1, overlap env e1 e2) |> replace_it
+    | CaseE (mixop1, as1, e1), CaseE (mixop2, as2, e2) when eq_mixop mixop1 mixop2 ->
+      CaseE (mixop1, List.map2 (overlap_arg env) as1 as2, overlap env e1 e2) |> replace_it
     | SubE (e1, typ1, typ1'), SubE (e2, typ2, typ2') when eq_typ typ1 typ2 && eq_typ typ1' typ2' ->
       SubE (overlap env e1 e2, typ1, typ1') |> replace_it
     (* HARDCODE: Prevent vals overlapped into instr *)
@@ -203,8 +203,8 @@ and overlap_typ env t1 t2 = if eq_typ t1 t2 then t1 else
   (match t1.it, t2.it with
     | VarT (id1, args1), VarT (id2, args2) when id1 = id2 ->
       VarT (id1, List.map2 (overlap_arg env) args1 args2)
-    | TupT ets1, TupT ets2 when List.for_all2 (fun (e1, _) (e2, _) -> eq_exp e1 e2) ets1 ets2 ->
-      TupT (List.map2 (fun (e1, t1) (_, t2) -> (e1, (overlap_typ env) t1 t2)) ets1 ets2)
+    | TupT xts1, TupT xts2 when List.for_all2 (fun (x1, _) (x2, _) -> eq_id x1 x2) xts1 xts2 ->
+      TupT (List.map2 (fun (x1, t1) (_, t2) -> (x1, (overlap_typ env) t1 t2)) xts1 xts2)
     | IterT (t1, iter1), IterT (t2, iter2) when eq_iter iter1 iter2 ->
       IterT (overlap_typ env t1 t2, iter1)
     | _ -> assert false (* Unreachable due to IL validation *)
@@ -218,17 +218,14 @@ let rec collect_unified template e = if eq_exp template e then [], [] else
     | IterE ({ it = VarE id; _}, _) , _
       when is_unified_id id.it ->
       [IfPr (CmpE (`EqOp, `BoolT, template, e) $$ e.at % (BoolT $ e.at)) $ e.at],
-      [ExpB (id, template.note) $ e.at]
+      [ExpP (id, template.note) $ e.at]
     | UnE (_, _, e1), UnE (_, _, e2)
-    | DotE (e1, _), DotE (e2, _)
     | LiftE e1, LiftE e2
     | LenE e1, LenE e2
     | IterE (e1, _), IterE (e2, _)
     | ProjE (e1, _), ProjE (e2, _)
-    | UncaseE (e1, _), UncaseE (e2, _)
     | OptE (Some e1), OptE (Some e2)
     | TheE e1, TheE e2
-    | CaseE (_, e1), CaseE (_, e2)
     | SubE (e1, _, _), SubE (e2, _, _) -> collect_unified e1 e2
     | BinE (_, _, e1, e1'), BinE (_, _, e2, e2')
     | CmpE (_, _, e1, e1'), CmpE (_, _, e2, e2')
@@ -236,12 +233,15 @@ let rec collect_unified template e = if eq_exp template e then [], [] else
     | UpdE (e1, _, e1'), UpdE (e2, _, e2')
     | ExtE (e1, _, e1'), ExtE (e2, _, e2')
     | CompE (e1, e1'), CompE (e2, e2')
-    | CatE (e1, e1'), CatE (e2, e2') -> pairwise_concat (collect_unified e1 e2) (collect_unified e1' e2')
+    | CatE (e1, e1'), CatE (e2, e2')
     | MemE (e1, e1'), MemE (e2, e2') -> pairwise_concat (collect_unified e1 e2) (collect_unified e1' e2')
+    | DotE (e1, _, as1), DotE (e2, _, as2)
+    | UncaseE (e1, _, as1), UncaseE (e2, _, as2)
+    | CaseE (_, as1, e1), CaseE (_, as2, e2) -> pairwise_concat (collect_unified e1 e2) (collect_unified_args as1 as2)
     | SliceE (e1, e1', e1''), SliceE (e2, e2', e2'') ->
       pairwise_concat (pairwise_concat (collect_unified e1 e2) (collect_unified e1' e2')) (collect_unified e1'' e2'')
     | StrE efs1, StrE efs2 ->
-      List.fold_left2 (fun acc (_, e1) (_, e2) -> pairwise_concat acc (collect_unified e1 e2)) ([], []) efs1 efs2
+      List.fold_left2 (fun acc (_, as1, e1) (_, as2, e2) -> pairwise_concat acc (pairwise_concat (collect_unified e1 e2) (collect_unified_args as1 as2))) ([], []) efs1 efs2
     | TupE es1, TupE es2
     | ListE es1, ListE es2 ->
       List.fold_left2 (fun acc e1 e2 -> pairwise_concat acc (collect_unified e1 e2)) ([], []) es1 es2

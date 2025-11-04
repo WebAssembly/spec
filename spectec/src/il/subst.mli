@@ -38,10 +38,9 @@ val subst_param : subst -> param -> param
 val subst_deftyp : subst -> deftyp -> deftyp
 val subst_typcase : subst -> typcase -> typcase
 val subst_typfield : subst -> typfield -> typfield
-val subst_typbind : subst -> exp * typ -> exp * typ
+val subst_typbind : subst -> id * typ -> id * typ
 
 val subst_args : subst -> arg list -> arg list
-val subst_binds : subst -> bind list -> bind list * subst
 val subst_params : subst -> param list -> param list * subst
 
 val subst_list : (subst -> 'a -> 'a) -> subst -> 'a list -> 'a list

@@ -312,7 +312,7 @@ let name_of_mixop = Mixop.name
 (* Il Types *)
 
 (* name for tuple type *)
-let no_name = Il.Ast.VarE ("_" $ no_region) $$ no_region % (Il.Ast.TextT $ no_region)
+let no_name = "_" $ no_region
 let varT id args = Il.Ast.VarT (id $ no_region, args) $ no_region
 let iterT ty iter = Il.Ast.IterT (ty, iter) $ no_region
 let listT ty = iterT ty Il.Ast.List

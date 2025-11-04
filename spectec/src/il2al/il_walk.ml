@@ -5,7 +5,7 @@ open Il.Ast
 
 type transformer = {
   transform_exp: exp -> exp;
-  transform_bind: bind -> bind;
+  transform_param: param -> param;
   transform_prem: prem -> prem;
   transform_iterexp: iterexp -> iterexp;
   }
@@ -13,7 +13,7 @@ type transformer = {
 let id = Fun.id
 let base_transformer = {
   transform_exp = id;
-  transform_bind = id;
+  transform_param = id;
   transform_prem = id;
   transform_iterexp = id;
 }
@@ -35,22 +35,22 @@ let rec transform_exp t e =
     | SliceE (e1, e2, e3) -> SliceE (t_exp e1, t_exp e2, t_exp e3)
     | UpdE (e1, p, e2) -> UpdE (t_exp e1, p, t_exp e2)
     | ExtE (e1, p, e2) -> ExtE (t_exp e1, p, t_exp e2)
-    | StrE efs -> StrE (List.map (fun (a, e) -> (a, t_exp e)) efs)
-    | DotE (e1, atom) -> DotE (t_exp e1, atom)
+    | StrE efs -> StrE (List.map (fun (a, as_, e) -> (a, List.map (transform_arg t) as_, t_exp e)) efs)
+    | DotE (e1, atom, as1) -> DotE (t_exp e1, atom, List.map (transform_arg t) as1)
     | CompE (e1, e2) -> CompE (t_exp e1, t_exp e2)
     | LenE e1 -> LenE (t_exp e1)
     | TupE es -> TupE ((List.map t_exp) es)
     | CallE (id, as1) -> CallE (id, List.map (transform_arg t) as1)
     | IterE (e1, iter) -> IterE (t_exp e1, transform_iterexp t iter) (* TODO iter *)
     | ProjE (e1, i) -> ProjE (t_exp e1, i)
-    | UncaseE (e1, op) -> UncaseE (t_exp e1, op)
+    | UncaseE (e1, op, as1) -> UncaseE (t_exp e1, op, List.map (transform_arg t) as1)
     | OptE eo -> OptE ((Option.map t_exp) eo)
     | TheE e1 -> TheE (t_exp e1)
     | ListE es -> ListE ((List.map t_exp) es)
     | LiftE e1 -> LiftE (t_exp e1)
     | CatE (e1, e2) -> CatE (t_exp e1, t_exp e2)
     | MemE (e1, e2) -> MemE (t_exp e1, t_exp e2)
-    | CaseE (mixop, e1) -> CaseE (mixop, t_exp e1)
+    | CaseE (mixop, as1, e1) -> CaseE (mixop, List.map (transform_arg t) as1, t_exp e1)
     | SubE (e1, _t1, t2) -> SubE (t_exp e1, _t1, t2)
   in
   f { e with it }
@@ -78,20 +78,20 @@ and transform_prem t p =
   in
   f { p with it }
 
-and transform_bind t b =
-  let f = t.transform_bind in
-  let it = match b.it with
-    | ExpB (id, typ) -> ExpB (id, typ)
-    | TypB id -> TypB id
-    | DefB (id, params, typ) -> DefB (id, params, typ)
-    | GramB (id, params, typ) -> GramB (id, params, typ)
+and transform_param t p =
+  let f = t.transform_param in
+  let it = match p.it with
+    | ExpP (id, typ) -> ExpP (id, typ)
+    | TypP id -> TypP id
+    | DefP (id, params, typ) -> DefP (id, params, typ)
+    | GramP (id, params, typ) -> GramP (id, params, typ)
   in
-  f { b with it }
+  f { p with it }
 
 and transform_clause t c =
   { c with it = match c.it with
     | DefD (bs, args, e, ps) ->
-      DefD (List.map (transform_bind t) bs, List.map (transform_arg t) args, transform_exp t e, List.map (transform_prem t) ps) }
+      DefD (List.map (transform_param t) bs, List.map (transform_arg t) args, transform_exp t e, List.map (transform_prem t) ps) }
 
 
 (* For unification *)
@@ -109,5 +109,5 @@ and transform_helper_def t hd =
     | (id, cs, partial) -> (id, List.map (transform_clause t) cs, partial) }
 
 and transform_rule t r =
-  let RuleD (id, binds, mixop, exp, prems) = r.it in
-  RuleD (id, binds, mixop, transform_exp t exp, List.map (transform_prem t) prems) $ r.at
+  let RuleD (id, params, mixop, exp, prems) = r.it in
+  RuleD (id, params, mixop, transform_exp t exp, List.map (transform_prem t) prems) $ r.at

@@ -35,7 +35,7 @@ let is_store: Il.exp -> bool = check_typ_of_exp "store"
 let is_frame: Il.exp -> bool = check_typ_of_exp "frame"
 let is_config: Il.exp -> bool = check_typ_of_exp "config"
 
-let field t = Il.VarE ("_" $ Source.no_region) $$ Source.no_region % t, t
+let field t = "_" $ Source.no_region, t
 let typ_store = Il.VarT ("store" $ Source.no_region, []) $ Source.no_region
 let typ_frame = Il.VarT ("frame" $ Source.no_region, []) $ Source.no_region
 let typ_state = Il.VarT ("state" $ Source.no_region, []) $ Source.no_region
@@ -44,17 +44,17 @@ let typ_state_arg = Il.TupT [field typ_store; field typ_frame] $ Source.no_regio
 let split_config (exp: Il.exp): Il.exp * Il.exp =
   assert(is_config exp);
   match exp.it with
-  | Il.CaseE ([[]; [{it = Atom.Semicolon; _}]; []], {it = TupE [ e1; e2 ]; _})
+  | Il.CaseE ([[]; [{it = Atom.Semicolon; _}]; []], _, {it = TupE [ e1; e2 ]; _})
   when is_state e1 -> e1, e2
-  | Il.CaseE ([[]; [{it = Atom.Semicolon; _}]; []], {it = TupE [ e1; e2 ]; _})
+  | Il.CaseE ([[]; [{it = Atom.Semicolon; _}]; []], _, {it = TupE [ e1; e2 ]; _})
   when is_frame e1 ->
     let store = Il.StrE [] $$ e1.at % typ_store in
-    let state = Il.CaseE ([[]; [Atom.Semicolon $$ e1.at % Atom.info ""]; []], Il.TupE [ store; e1 ] $$ e1.at % typ_state_arg) $$ e1.at % typ_state in
+    let state = Il.CaseE ([[]; [Atom.Semicolon $$ e1.at % Atom.info ""]; []], [], Il.TupE [ store; e1 ] $$ e1.at % typ_state_arg) $$ e1.at % typ_state in
     state, e2
-  | Il.CaseE ([[]; [{it = Atom.Semicolon; _}]; []], {it = TupE [ e1; e2 ]; _})
+  | Il.CaseE ([[]; [{it = Atom.Semicolon; _}]; []], _, {it = TupE [ e1; e2 ]; _})
   when is_store e1 ->
     let frame = Il.StrE [] $$ e1.at % typ_frame in
-    let state = Il.CaseE ([[]; [Atom.Semicolon $$ e1.at % Atom.info ""]; []], Il.TupE [ e1; frame ] $$ e1.at % typ_state_arg) $$ e1.at % typ_state in
+    let state = Il.CaseE ([[]; [Atom.Semicolon $$ e1.at % Atom.info ""]; []], [], Il.TupE [ e1; frame ] $$ e1.at % typ_state_arg) $$ e1.at % typ_state in
     state, e2
   | _ -> error exp.at
     (sprintf "can not recognize `%s` as a `config` expression" (Il.Print.string_of_exp exp))
@@ -62,7 +62,7 @@ let split_config (exp: Il.exp): Il.exp * Il.exp =
 let split_state (exp: Il.exp): Il.exp * Il.exp =
   assert(is_state exp);
   match exp.it with
-  | Il.CaseE ([[]; [{it = Atom.Semicolon; _}]; []], {it = TupE [ e1; e2 ]; _})
+  | Il.CaseE ([[]; [{it = Atom.Semicolon; _}]; []], _, {it = TupE [ e1; e2 ]; _})
   when is_store e1 && is_frame e2 -> e1, e2
   | _ -> error exp.at
     (sprintf "can not recognize `%s` as a `state` expression" (Il.Print.string_of_exp exp))
@@ -87,8 +87,8 @@ let is_case e =
   | _ -> false
 let args_of_case e =
   match e.it with
-  | Il.CaseE (_, { it = Il.TupE exps; _ }) -> exps
-  | Il.CaseE (_, exp) -> [ exp ]
+  | Il.CaseE (_, _, { it = Il.TupE exps; _ }) -> exps
+  | Il.CaseE (_, _, exp) -> [ exp ]
   | _ -> error e.at
     (sprintf "cannot get arguments of case expression `%s`" (Il.Print.string_of_exp e))
 let is_simple_separator = function
@@ -146,7 +146,7 @@ let rec is_wasm_value e =
   (* TODO: use hint? *)
   match e.it with
   | Il.SubE (e, _, _) -> is_wasm_value e
-  | Il.CaseE ([{it = Atom id; _}]::_, _) when
+  | Il.CaseE ([{it = Atom id; _}]::_, _, _) when
     List.mem id [
       "CONST";
       "VCONST";
@@ -198,7 +198,7 @@ and translate_exp exp =
   | Il.IterE (inner_exp, iterexp) ->
     iterE (translate_exp inner_exp, translate_iterexp iterexp) ~at ~note
   (* property access *)
-  | Il.DotE (inner_exp, ({it = Atom _; _} as atom)) ->
+  | Il.DotE (inner_exp, ({it = Atom _; _} as atom), _) ->
     accE (translate_exp inner_exp, dotP atom) ~at ~note
   (* concatenation of records *)
   | Il.CompE (exp1, exp2) -> compE (translate_exp exp1, translate_exp exp2) ~at ~note
@@ -237,7 +237,7 @@ and translate_exp exp =
   (* Record expression *)
   | Il.StrE expfields ->
     let f acc = function
-      | {it = Atom.Atom _; _} as atom, fieldexp ->
+      | {it = Atom.Atom _; _} as atom, _, fieldexp ->
         let expr = translate_exp fieldexp in
         Record.add atom expr acc
       | _ -> error_exp exp "AL record expression"
@@ -245,7 +245,7 @@ and translate_exp exp =
     let record = List.fold_left f Record.empty expfields in
     strE record ~at ~note
   (* CaseE *)
-  | Il.CaseE (op, e) -> (
+  | Il.CaseE (op, _, e) -> (
     let exps =
       match e.it with
       | TupE exps -> exps
@@ -267,7 +267,7 @@ and translate_exp exp =
       else
         error_exp exp "arity mismatch for CaseE mixop and args"
     )
-  | Il.UncaseE (e, op) ->
+  | Il.UncaseE (e, op, _) ->
     (match op with
     | [ []; [] ] -> translate_exp e
     | _ -> yetE (Il.Print.string_of_exp exp) ~at ~note
@@ -304,7 +304,7 @@ and translate_path path =
     | Il.RootP -> []
     | Il.IdxP (p, e) -> (translate_path' p) @ [ idxP (translate_exp e) ~at ]
     | Il.SliceP (p, e1, e2) -> (translate_path' p) @ [ sliceP (translate_exp e1, translate_exp e2) ~at ]
-    | Il.DotP (p, ({it = Atom _; _} as atom)) ->
+    | Il.DotP (p, ({it = Atom _; _} as atom), _) ->
       (translate_path' p) @ [ dotP atom ~at ]
     | _ -> assert false
   in
@@ -319,12 +319,12 @@ and translate_iterexp (iter, xes) =
 let insert_assert exp =
   let at = exp.at in
   match exp.it with
-  | Il.CaseE ([{it = Atom.Atom id; _}]::_, _) when List.mem id context_names ->
+  | Il.CaseE ([{it = Atom.Atom id; _}]::_, _, _) when List.mem id context_names ->
     assertI (contextKindE (atom_of_name id "evalctx") ~note:boolT) ~at:at
   | Il.IterE (_, (Il.ListN (e, None), _)) ->
     assertI (topValuesE (translate_exp e) ~at ~note:boolT) ~at:at
   | Il.IterE (_, (Il.List, _)) -> nopI () ~at:at
-  | Il.CaseE ([{it = Atom.Atom "CONST"; _}]::_, { it = Il.TupE (ty' :: _); _ }) ->
+  | Il.CaseE ([{it = Atom.Atom "CONST"; _}]::_, _, { it = Il.TupE (ty' :: _); _ }) ->
     assertI (topValueE (Some (translate_exp ty')) ~note:boolT) ~at:at
   | _ ->
     assertI (topValueE None ~note:boolT) ~at:at
@@ -333,7 +333,7 @@ let cond_of_pop_value e =
   let at = e.at in
   let bt = boolT in
   match e.it with
-  (* | CaseE (op, [t; _]) ->
+  (* | CaseE (op, _, [t; _]) ->
     (match get_atom op with
     | Some {it = Atom.Atom "CONST"; _} -> topValueE (Some t) ~note:bt
     | Some {it = Atom.Atom "VCONST"; _} -> topValueE (Some t) ~note:bt
@@ -425,7 +425,7 @@ let rec translate_rhs exp =
   let at = exp.at in
   match exp.it with
   (* Trap *)
-  | Il.CaseE ([{it = Atom "TRAP"; _}]::_, _) -> [ trapI () ~at ]
+  | Il.CaseE ([{it = Atom "TRAP"; _}]::_, _, _) -> [ trapI () ~at ]
   (* Context *)
   | _ when is_context exp -> translate_context_rhs exp
   (* Config *)
@@ -1041,7 +1041,7 @@ let to_frame_instr r =
 
   let rec e_to_frame_instr e =
     match e with
-    | {it = Il.Ast.CaseE ([[]; [{it = Semicolon; _}]; []], {it = TupE [lhs; rhs]; _}); _} ->
+    | {it = Il.Ast.CaseE ([[]; [{it = Semicolon; _}]; []], _, {it = TupE [lhs; rhs]; _}); _} ->
       let i = e_to_frame_instr lhs in
       if i = [] then e_to_frame_instr rhs else i
     | {it = Il.Ast.VarE _; note = {it = Il.Ast.VarT ({it = "frame"; _}, _); _}; _} ->
@@ -1101,7 +1101,7 @@ let translate_context ctx =
   let at = ctx.at in
 
   match ctx.it with
-  | Il.CaseE ([{it = Atom.Atom id; _} as atom]::_ as case, { it = Il.TupE args; _ }) when List.mem id context_names ->
+  | Il.CaseE ([{it = Atom.Atom id; _} as atom]::_ as case, _, { it = Il.TupE args; _ }) when List.mem id context_names ->
     let destruct = caseE (case, List.map translate_exp args) ~note:evalctxT ~at in
     [
       letI (destruct, getCurContextE atom ~note:evalctxT) ~at:at;

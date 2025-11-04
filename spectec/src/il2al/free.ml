@@ -26,8 +26,10 @@ let rec free_exp ignore_listN e =
   | VarE id -> free_varid id
   | BoolE _ | NumE _ | TextE _ -> empty
   | CvtE (e1, _, _) | UnE (_, _, e1) | LiftE e1 | LenE e1 | TheE e1 | SubE (e1, _, _)
-  | DotE (e1, _) | CaseE (_, e1) | ProjE (e1, _) | UncaseE (e1, _) ->
+  | ProjE (e1, _) ->
     f e1
+  | DotE (e1, _, al) | CaseE (_, al, e1) | UncaseE (e1, _, al) ->
+    f e1 + free_list fa al
   | BinE (_, _, e1, e2) | CmpE (_, _, e1, e2) | IdxE (e1, e2) | CompE (e1, e2) | MemE (e1, e2) | CatE (e1, e2) ->
     free_list f [e1; e2]
   | SliceE (e1, e2, e3) -> free_list f [e1; e2; e3]
@@ -42,7 +44,8 @@ let rec free_exp ignore_listN e =
     let bound, free2 = fi iter in
     diff free1 bound + free2
 
-and free_expfield ignore_listN (_, e) = free_exp ignore_listN e
+and free_expfield ignore_listN (_, al, e) =
+  free_list (free_arg ignore_listN) al + free_exp ignore_listN e
 
 and free_arg ignore_listN arg =
   let f = free_exp ignore_listN in
@@ -55,12 +58,13 @@ and free_arg ignore_listN arg =
 and free_path ignore_listN p =
   let f = free_exp ignore_listN in
   let fp = free_path ignore_listN in
+  let fa = free_arg ignore_listN in
   match p.it with
   | RootP -> empty
   | IdxP (p1, e) -> fp p1 + f e
   | SliceP (p1, e1, e2) ->
     fp p1 + f e1 + f e2
-  | DotP (p1, _) -> fp p1
+  | DotP (p1, _, al) -> fp p1 + free_list fa al
 
 and free_iterexp ignore_listN (iter, xes) =
   let f = free_exp ignore_listN in

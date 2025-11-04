@@ -410,9 +410,9 @@ let preprocess_exp frees m exp =
 
 let preprocess_rule m rule =
   { rule with it = match rule.it with
-    | Ast.RuleD (id, bs, ops, exp, prems) ->
-      let frees = Free.(union (free_rule rule) (free_list bound_bind bs)).varid in
-      Ast.RuleD (id, bs, ops, preprocess_exp frees m exp, prems)}
+    | Ast.RuleD (id, ps, ops, exp, prems) ->
+      let frees = Free.(union (free_rule rule) (free_list bound_param ps)).varid in
+      Ast.RuleD (id, ps, ops, preprocess_exp frees m exp, prems)}
 
 let postprocess_rules m rule =
   let binds = Map.fold (fun _ (v, e) acc ->

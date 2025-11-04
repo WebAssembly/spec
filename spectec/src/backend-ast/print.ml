@@ -86,14 +86,14 @@ and deftyp dt =
   | StructT tfs -> Node ("struct", List.map typfield tfs)
   | VariantT tcs -> Node ("variant", List.map typcase tcs)
 
-and typbind (e, t) =
-  Node ("bind", [exp e; typ t])
+and typbind (x, t) =
+  Node ("bind", [id x; typ t])
 
-and typfield (at, (bs, t, prs), _hints) =
-  Node ("field", mixop [[at]] :: List.map bind bs @ typ t :: List.map prem prs)
+and typfield (at, (ps, t, prs), _hints) =
+  Node ("field", mixop [[at]] :: List.map param ps @ typ t :: List.map prem prs)
 
-and typcase (op, (bs, t, prs), _hints) =
-  Node ("case", mixop op :: List.map bind bs @ typ t :: List.map prem prs)
+and typcase (op, (ps, t, prs), _hints) =
+  Node ("case", mixop op :: List.map param ps @ typ t :: List.map prem prs)
 
 
 (* Expressions *)
@@ -112,7 +112,7 @@ and exp e =
   | UpdE (e1, p, e2) -> Node ("upd", [exp e1; path p; exp e2])
   | ExtE (e1, p, e2) -> Node ("ext", [exp e1; path p; exp e2])
   | StrE efs -> Node ("struct", List.map expfield efs)
-  | DotE (e1, at) -> Node ("dot", [exp e1; mixop [[at]]])
+  | DotE (e1, at, as_) -> Node ("dot", [exp e1; mixop [[at]]] @ List.map arg as_)
   | CompE (e1, e2) -> Node ("comp", [exp e1; exp e2])
   | MemE (e1, e2) -> Node ("mem", [exp e1; exp e2])
   | LenE e1 -> Node ("len", [exp e1])
@@ -120,8 +120,8 @@ and exp e =
   | CallE (x, as1) -> Node ("call", id x :: List.map arg as1)
   | IterE (e1, it) -> Node ("iter", [exp e1] @ iterexp it)
   | ProjE (e1, i) -> Node ("proj", [exp e1; Atom (string_of_int i)])
-  | CaseE (op, e1) -> Node ("case", [mixop op; exp e1])
-  | UncaseE (e1, op) -> Node ("uncase", [exp e1; mixop op])
+  | CaseE (op, as_, e1) -> Node ("case", [mixop op] @ List.map arg as_ @ [exp e1])
+  | UncaseE (e1, op, as_) -> Node ("uncase", [exp e1; mixop op] @ List.map arg as_)
   | OptE eo -> Node ("opt", List.map exp (Option.to_list eo))
   | TheE e1 -> Node ("unopt", [exp e1])
   | ListE es -> Node ("list", List.map exp es)
@@ -130,15 +130,15 @@ and exp e =
   | CvtE (e1, nt1, nt2) -> Node ("cvt", [numtyp nt1; numtyp nt2; exp e1])
   | SubE (e1, t1, t2) -> Node ("sub", [typ t1; typ t2; exp e1])
 
-and expfield (at, e) =
-  Node ("field", [mixop [[at]]; exp e])
+and expfield (at, as_, e) =
+  Node ("field", [mixop [[at]]] @ List.map arg as_ @ [exp e])
 
 and path p =
   match p.it with
   | RootP -> Atom "root"
   | IdxP (p1, e) -> Node ("idx", [path p1; exp e])
   | SliceP (p1, e1, e2) -> Node ("slice", [path p1; exp e1; exp e2])
-  | DotP (p1, at) -> Node ("dot", [path p1; mixop [[at]]])
+  | DotP (p1, at, as_) -> Node ("dot", [path p1; mixop [[at]]] @ List.map arg as_)
 
 and iterexp (it, xes) =
   iter it :: List.map (fun (x, e) -> Node ("dom", [id x; exp e])) xes
@@ -179,39 +179,32 @@ and arg a =
   | DefA x -> Node ("def", [id x])
   | GramA g -> Node ("gram", [sym g])
 
-and bind bind =
-  match bind.it with
-  | ExpB (x, t) -> Node ("exp", [id x; typ t])
-  | TypB x -> Node ("typ", [id x])
-  | DefB (x, ps, t) -> Node ("def", [id x] @ List.map param ps @ [typ t])
-  | GramB (x, ps, t) -> Node ("gram", [id x] @ List.map param ps @ [typ t])
-
 and param p =
   match p.it with
   | ExpP (x, t) -> Node ("exp", [id x; typ t])
   | TypP x -> Node ("typ", [id x])
   | DefP (x, ps, t) -> Node ("def", [id x] @ List.map param ps @ [typ t])
-  | GramP (x, t) -> Node ("gram", [id x; typ t])
+  | GramP (x, ps, t) -> Node ("gram", [id x] @ List.map param ps @ [typ t])
 
 let inst inst =
   match inst.it with
-  | InstD (bs, as_, dt) ->
-    Node ("inst", List.map bind bs @ List.map arg as_ @ [deftyp dt])
+  | InstD (ps, as_, dt) ->
+    Node ("inst", List.map param ps @ List.map arg as_ @ [deftyp dt])
 
 let rule rule =
   match rule.it with
-  | RuleD (x, bs, op, e, prs) ->
-    Node ("rule", [id x] @ List.map bind bs @ [mixop op; exp e] @ List.map prem prs)
+  | RuleD (x, ps, op, e, prs) ->
+    Node ("rule", [id x] @ List.map param ps @ [mixop op; exp e] @ List.map prem prs)
 
 let clause clause =
   match clause.it with
-  | DefD (bs, as_, e, prs) ->
-    Node ("clause", List.map bind bs @ List.map arg as_ @ [exp e] @ List.map prem prs)
+  | DefD (ps, as_, e, prs) ->
+    Node ("clause", List.map param ps @ List.map arg as_ @ [exp e] @ List.map prem prs)
 
 let prod prod =
   match prod.it with
-  | ProdD (bs, g, e, prs) ->
-    Node ("prod", List.map bind bs @ [sym g; exp e] @ List.map prem prs)
+  | ProdD (ps, g, e, prs) ->
+    Node ("prod", List.map param ps @ [sym g; exp e] @ List.map prem prs)
 
 let rec def d =
   match d.it with

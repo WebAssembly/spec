@@ -63,7 +63,7 @@ let arg_of_param param =
   | ExpP (id, t) -> ExpA (VarE id $$ param.at % t) $ param.at
   | TypP id -> TypA (VarT (id, []) $ param.at) $ param.at
   | DefP (id, _ps, _t) -> DefA id $ param.at
-  | GramP (id, _t) -> GramA (VarG (id, []) $ param.at) $ param.at
+  | GramP (id, _ps, _t) -> GramA (VarG (id, []) $ param.at) $ param.at
 
 let register_variant (env : env) (id : id) params (cases : typcase list) =
   if M.mem id.it env.typ then
@@ -132,10 +132,10 @@ and t_deftyp' env = function
   | StructT typfields -> StructT (List.map (t_typfield env) typfields)
   | VariantT typcases -> VariantT (List.map (t_typcase env) typcases)
 
-and t_typfield env (atom, (binds, t, prems), hints) =
-  (atom, (t_binds env binds, t_typ env t, t_prems env prems), hints)
-and t_typcase env (atom, (binds, t, prems), hints) =
-  (atom, (t_binds env binds, t_typ env t, t_prems env prems), hints)
+and t_typfield env (atom, (params, t, prems), hints) =
+  (atom, (t_params env params, t_typ env t, t_prems env prems), hints)
+and t_typcase env (atom, (params, t, prems), hints) =
+  (atom, (t_params env params, t_typ env t, t_prems env prems), hints)
 
 and t_exp2 env x = { x with it = t_exp' env x.it; note = t_typ env x.note }
 
@@ -148,8 +148,8 @@ and t_exp' env = function
   | SliceE (exp1, exp2, exp3) -> SliceE (t_exp env exp1, t_exp env exp2, t_exp env exp3)
   | UpdE (exp1, path, exp2) -> UpdE (t_exp env exp1, t_path env path, t_exp env exp2)
   | ExtE (exp1, path, exp2) -> ExtE (t_exp env exp1, t_path env path, t_exp env exp2)
-  | StrE fields -> StrE (List.map (fun (a, e) -> a, t_exp env e) fields)
-  | DotE (e, a) -> DotE (t_exp env e, a)
+  | StrE fields -> StrE (List.map (fun (a, args, e) -> a, t_args env args, t_exp env e) fields)
+  | DotE (e, a, args) -> DotE (t_exp env e, a, t_args env args)
   | CompE (exp1, exp2) -> CompE (t_exp env exp1, t_exp env exp2)
   | LiftE exp -> LiftE (t_exp env exp)
   | LenE exp -> LenE (t_exp env exp)
@@ -157,14 +157,14 @@ and t_exp' env = function
   | CallE (a, args) -> CallE (a, t_args env args)
   | IterE (e, iterexp) -> IterE (t_exp env e, t_iterexp env iterexp)
   | ProjE (e, i) -> ProjE (t_exp env e, i)
-  | UncaseE (e, mixop) -> UncaseE (t_exp env e, mixop)
+  | UncaseE (e, mixop, args) -> UncaseE (t_exp env e, mixop, t_args env args)
   | OptE None -> OptE None
   | OptE (Some exp) -> OptE (Some exp)
   | TheE exp -> TheE exp
   | ListE es -> ListE (List.map (t_exp env) es)
   | CatE (exp1, exp2) -> CatE (t_exp env exp1, t_exp env exp2)
   | MemE (exp1, exp2) -> MemE (t_exp env exp1, t_exp env exp2)
-  | CaseE (mixop, e) -> CaseE (mixop, t_exp env e)
+  | CaseE (mixop, args, e) -> CaseE (mixop, t_args env args, t_exp env e)
   | CvtE (exp, t1, t2) -> CvtE (t_exp env exp, t1, t2)
   | SubE (e, t1, t2) -> SubE (e, t1, t2)
 
@@ -179,7 +179,7 @@ and t_path' env = function
   | RootP -> RootP
   | IdxP (path, e) -> IdxP (t_path env path, t_exp env e)
   | SliceP (path, e1, e2) -> SliceP (t_path env path, t_exp env e1, t_exp env e2)
-  | DotP (path, a) -> DotP (t_path env path, a)
+  | DotP (path, a, args) -> DotP (t_path env path, a, t_args env args)
 
 and t_path env x = { x with it = t_path' env x.it; note = t_typ env x.note }
 
@@ -202,24 +202,15 @@ and t_arg' env = function
 
 and t_arg env x = { x with it = t_arg' env x.it }
 
-and t_bind' env = function
-  | ExpB (id, t) -> ExpB (id, t_typ env t)
-  | TypB id -> TypB id
-  | DefB (id, ps, t) -> DefB (id, t_params env ps, t_typ env t)
-  | GramB (id, ps, t) -> GramB (id, t_params env ps, t_typ env t)
-
-and t_bind env x = { x with it = t_bind' env x.it }
-
 and t_param' env = function
   | ExpP (id, t) -> ExpP (id, t_typ env t)
   | TypP id -> TypP id
   | DefP (id, ps, t) -> DefP (id, t_params env ps, t_typ env t)
-  | GramP (id, t) -> GramP (id, t_typ env t)
+  | GramP (id, ps, t) -> GramP (id, t_params env ps, t_typ env t)
 
 and t_param env x = { x with it = t_param' env x.it }
 
 and t_args env = List.map (t_arg env)
-and t_binds env = List.map (t_bind env)
 and t_params env = List.map (t_param env)
 
 and t_prem' env = function
@@ -234,32 +225,32 @@ and t_prem env x = { x with it = t_prem' env x.it }
 and t_prems env = List.map (t_prem env)
 
 let t_clause' env = function
- | DefD (binds, lhs, rhs, prems) ->
-   DefD (t_binds env binds, (*DO NOT intro calls on LHS: t_args env*) lhs, t_exp env rhs, t_prems env prems)
+ | DefD (params, lhs, rhs, prems) ->
+   DefD (t_params env params, (*DO NOT intro calls on LHS: t_args env*) lhs, t_exp env rhs, t_prems env prems)
 
 let t_clause env (clause : clause) = { clause with it = t_clause' env clause.it }
 
 let t_clauses env = List.map (t_clause env)
 
 let t_inst' env = function
- | InstD (binds, args, deftyp) ->
-   InstD (t_binds env binds, (*DO NOT intro calls on LHS: t_args env*) args, t_deftyp env deftyp)
+ | InstD (params, args, deftyp) ->
+   InstD (t_params env params, (*DO NOT intro calls on LHS: t_args env*) args, t_deftyp env deftyp)
 
 let t_inst env (inst : inst) = { inst with it = t_inst' env inst.it }
 
 let t_insts env = List.map (t_inst env)
 
 let t_prod' env = function
- | ProdD (binds, lhs, rhs, prems) ->
-   ProdD (t_binds env binds, t_sym env lhs, t_exp env rhs, t_prems env prems)
+ | ProdD (params, lhs, rhs, prems) ->
+   ProdD (t_params env params, t_sym env lhs, t_exp env rhs, t_prems env prems)
 
 let t_prod env (prod : prod) = { prod with it = t_prod' env prod.it }
 
 let t_prods env = List.map (t_prod env)
 
 let t_rule' env = function
-  | RuleD (id, binds, mixop, exp, prems) ->
-    RuleD (id, t_binds env binds, mixop, t_exp env exp, t_prems env prems)
+  | RuleD (id, params, mixop, exp, prems) ->
+    RuleD (id, t_params env params, mixop, t_exp env exp, t_prems env prems)
 
 let t_rule env x = { x with it = t_rule' env x.it }
 
@@ -315,9 +306,9 @@ let rec rename_params s = function
     let id' = (id.it ^ "_2") $ id.at in
     (DefP (id', ps, t) $ at) ::
       rename_params (Il.Subst.add_defid s id id') params
-  | { it = GramP (id, t); at; _ } :: params ->
+  | { it = GramP (id, ps, t); at; _ } :: params ->
     let id' = (id.it ^ "_2") $ id.at in
-    (GramP (id', t) $ at) ::
+    (GramP (id', ps, t) $ at) ::
       rename_params (Il.Subst.add_gramid s id (VarG (id', []) $ id.at)) params
 
 let insert_injections env (def : def) : def list =
@@ -332,25 +323,25 @@ let insert_injections env (def : def) : def list =
     let sub_ty = VarT (sub, List.map arg_of_param params_sub) $ no_region in
     let sup_ty = VarT (sup, List.map arg_of_param params_sup') $ no_region in
     let real_ty = VarT (real_id_sub, args_sub) $ no_region in
-    let clauses = List.map (fun (a, (_binds, arg_typ, _prems), _hints) ->
+    let clauses = List.map (fun (a, (_params, arg_typ, _prems), _hints) ->
       match arg_typ.it with
       | TupT ts ->
-        let binds = List.mapi (fun i (_, arg_typ_i) -> ExpB ("x" ^ string_of_int i $ no_region, arg_typ_i) $ no_region) ts in
-        let xes = List.map (fun bind ->
-          match bind.it with
-          | ExpB (x, arg_typ_i) -> VarE x $$ no_region % arg_typ_i
-          | TypB _ | DefB _ | GramB _ -> assert false) binds
+        let params = List.mapi (fun i (_, arg_typ_i) -> ExpP ("x" ^ string_of_int i $ no_region, arg_typ_i) $ no_region) ts in
+        let xes = List.map (fun param ->
+          match param.it with
+          | ExpP (x, arg_typ_i) -> VarE x $$ no_region % arg_typ_i
+          | TypP _ | DefP _ | GramP _ -> assert false) params
         in
         let xe = TupE xes $$ no_region % arg_typ in
-        DefD (binds,
-          [ExpA (CaseE (a, xe) $$ no_region % real_ty) $ no_region],
-          CaseE (a, xe) $$ no_region % sup_ty, []) $ no_region
+        DefD (params,
+          [ExpA (CaseE (a, [], xe) $$ no_region % real_ty) $ no_region],
+          CaseE (a, [], xe) $$ no_region % sup_ty, []) $ no_region
       | _ ->
         let x = "x" $ no_region in
         let xe = VarE x $$ no_region % arg_typ in
-        DefD ([ExpB (x, arg_typ) $ x.at],
-          [ExpA (CaseE (a, xe) $$ no_region % real_ty) $ no_region],
-          CaseE (a, xe) $$ no_region % sup_ty, []) $ no_region
+        DefD ([ExpP (x, arg_typ) $ x.at],
+          [ExpA (CaseE (a, [], xe) $$ no_region % real_ty) $ no_region],
+          CaseE (a, [], xe) $$ no_region % sup_ty, []) $ no_region
       ) cases_sub in
     DecD (name, params_sub @ params_sup' @ [ExpP ("_" $ no_region, sub_ty) $ no_region], sup_ty, clauses) $ no_region
   ) pairs

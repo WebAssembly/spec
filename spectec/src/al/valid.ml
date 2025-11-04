@@ -402,7 +402,7 @@ let check_inv_call source id indices args result_typ =
     | _ ->
       let arg2typ arg = (
         match arg.it with
-        | ExpA exp -> (Il.Ast.VarE ("" $ no_region) $$ no_region % exp.note, exp.note)
+        | ExpA exp -> ("_" $ no_region, exp.note)
         | a -> error_valid (Printf.sprintf "wrong result argument")
           source (Print.string_of_arg (a $ no_region))
       ) in

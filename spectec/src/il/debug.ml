@@ -15,11 +15,10 @@ let il_prod = string_of_prod
 let il_clause = string_of_clause
 let il_prem = string_of_prem
 let il_arg = string_of_arg
-let il_bind = string_of_bind
+let il_args = string_of_args
 let il_param = string_of_param
-let il_args = list il_arg
-let il_binds = string_of_binds
-let il_params = list il_param
+let il_params = string_of_params
+let il_quants = string_of_quants
 let il_def = string_of_def
 let il_free s = String.concat " "
   Free.[

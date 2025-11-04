@@ -112,7 +112,7 @@ and reduce_typ_app' env id args at = function
     if !assume_coherent_matches then None else
     Error.error at "validation"
       ("undefined instance of partial type `" ^ id.it ^ "`")
-  | Some (ps, {it = InstD (_binds, args', dt); _}::insts') ->
+  | Some (ps, {it = InstD (_ps, args', dt); _}::insts') ->
     Debug.(log "il.reduce_typ_app'"
       (fun _ -> fmt "%s(%s) =: %s(%s)" id.it (il_args args) id.it (il_args args'))
       (fun r -> fmt "%s" (opt (Fun.const "!") r))
@@ -139,8 +139,8 @@ and is_normal_exp e =
   | BoolE _ | NumE _ | TextE _ -> true
   | ListE es | TupE es -> List.for_all is_normal_exp es
   | OptE None -> true
-  | OptE (Some e) | CaseE (_, e) | SubE (e, _, _) -> is_normal_exp e
-  | StrE efs -> List.for_all (fun (_, e) -> is_normal_exp e) efs
+  | OptE (Some e) | CaseE (_, _, e) | SubE (e, _, _) -> is_normal_exp e
+  | StrE efs -> List.for_all (fun (_, _, e) -> is_normal_exp e) efs
   | _ -> false
 
 and reduce_exp env e : exp =
@@ -224,11 +224,13 @@ and reduce_exp env e : exp =
         else ExtE (e', p', e2') $> e'
       )
   | StrE efs -> StrE (List.map (reduce_expfield env) efs) $> e
-  | DotE (e1, atom) ->
+  | DotE (e1, atom, as_) ->
     let e1' = reduce_exp env e1 in
     (match e1'.it with
-    | StrE efs -> snd (List.find (fun (atomN, _) -> Atom.eq atomN atom) efs)
-    | _ -> DotE (e1', atom) $> e
+    | StrE efs ->
+      let _, _, e = List.find (fun (atomN, _, _) -> Atom.eq atomN atom) efs in
+      e
+    | _ -> DotE (e1', atom, List.map (reduce_arg env) as_) $> e
     )
   | CompE (e1, e2) ->
     (* TODO(4, rossberg): avoid overlap with CatE? *)
@@ -239,10 +241,16 @@ and reduce_exp env e : exp =
     | OptE None, OptE _ -> e2'.it
     | OptE _, OptE None -> e1'.it
     | StrE efs1, StrE efs2 ->
-      let merge (atom1, e1) (atom2, e2) =
+      let merge (atom1, as1, e1) (atom2, as2, e2) =
         assert (Atom.eq atom1 atom2);
-        (atom1, reduce_exp env (CompE (e1, e2) $> e1))
-      in StrE (List.map2 merge efs1 efs2)
+        let s = Option.get (match_list match_arg env Subst.empty as1 as2) in
+        (atom1, as1, reduce_exp env (CompE (e1, Subst.subst_exp s e2) $> e1))
+      in
+      (try
+        StrE (List.map2 merge efs1 efs2)
+      with Irred | Failure _ ->
+        CompE (e1', e2')
+      )
     | _ -> CompE (e1', e2')
     ) $> e
   | MemE (e1, e2) ->
@@ -264,13 +272,13 @@ and reduce_exp env e : exp =
     | _ -> LenE e1'
     ) $> e
   | TupE es -> TupE (List.map (reduce_exp env) es) $> e
-  | CallE (id, args) ->
-    let args' = List.map (reduce_arg env) args in
+  | CallE (id, as_) ->
+    let as' = List.map (reduce_arg env) as_ in
     let _ps, _t, clauses = Env.find_def env id in
     (* Allow for uninterpreted functions *)
-    if not !assume_coherent_matches && clauses = [] then CallE (id, args') $> e else
-    (match reduce_exp_call env id args' e.at clauses with
-    | None -> CallE (id, args') $> e
+    if not !assume_coherent_matches && clauses = [] then CallE (id, as') $> e else
+    (match reduce_exp_call env id as' e.at clauses with
+    | None -> CallE (id, as') $> e
     | Some e -> e
     )
   | IterE (e1, iterexp) ->
@@ -324,11 +332,11 @@ and reduce_exp env e : exp =
     | TupE es -> List.nth es i
     | _ -> ProjE (e1', i) $> e
     )
-  | UncaseE (e1, mixop) ->
+  | UncaseE (e1, mixop, as_) ->
     let e1' = reduce_exp env e1 in
     (match e1'.it with
-    | CaseE (_, e11') -> e11'
-    | _ -> UncaseE (e1', mixop) $> e
+    | CaseE (_, _, e11') -> e11'
+    | _ -> UncaseE (e1', mixop, List.map (reduce_arg env) as_) $> e
     )
   | OptE eo -> OptE (Option.map (reduce_exp env) eo) $> e
   | TheE e1 ->
@@ -354,7 +362,8 @@ and reduce_exp env e : exp =
     | OptE _, OptE None -> e1'.it
     | _ -> CatE (e1', e2')
     ) $> e
-  | CaseE (op, e1) -> CaseE (op, reduce_exp env e1) $> e
+  | CaseE (op, as_, e1) ->
+    CaseE (op, List.map (reduce_arg env) as_, reduce_exp env e1) $> e
   | CvtE (e1, _nt1, nt2) ->
     let e1' = reduce_exp env e1 in
     (match e1'.it with
@@ -375,19 +384,17 @@ and reduce_exp env e : exp =
       reduce_exp env (SubE (e11', t11', t2') $> e)
     | TupE es' ->
       (match t1.it, t2.it with
-      | TupT ets1, TupT ets2 ->
+      | TupT xts1, TupT xts2 ->
         (match
-          List.fold_left2 (fun opt eI ((e1I, t1I), (e2I, t2I)) ->
+          List.fold_left2 (fun opt eI ((x1I, t1I), (x2I, t2I)) ->
             let* (s1, s2, res') = opt in
             let t1I' = Subst.subst_typ s1 t1I in
             let t2I' = Subst.subst_typ s2 t2I in
-            let e1I' = reduce_exp env (Subst.subst_exp s1 e1I) in
-            let e2I' = reduce_exp env (Subst.subst_exp s2 e2I) in
-            let* s1' = try match_exp env s1 eI e1I' with Irred -> None in
-            let* s2' = try match_exp env s2 eI e2I' with Irred -> None in
+            let s1' = Subst.add_varid s1 x1I eI in
+            let s2' = Subst.add_varid s2 x2I eI in
             let eI' = reduce_exp env (SubE (eI, t1I', t2I') $$ eI.at % t2I') in
             Some (s1', s2', eI'::res')
-          ) (Some (Subst.empty, Subst.empty, [])) es' (List.combine ets1 ets2)
+          ) (Some (Subst.empty, Subst.empty, [])) es' (List.combine xts1 xts2)
         with
         | Some (_, _, res') -> TupE (List.rev res') $> e
         | None -> SubE (e1', t1', t2') $> e
@@ -406,7 +413,8 @@ and reduce_iter env = function
 and reduce_iterexp env (iter, xes) =
   (reduce_iter env iter, List.map (fun (id, e) -> id, reduce_exp env e) xes)
 
-and reduce_expfield env (atom, e) : expfield = (atom, reduce_exp env e)
+and reduce_expfield env (atom, as_, e) : expfield =
+  (atom, List.map (reduce_arg env) as_, reduce_exp env e)
 
 and reduce_path env e p f =
   match p.it with
@@ -435,14 +443,17 @@ and reduce_path env e p f =
         f e' (SliceP (p1', e1', e2') $> p)
     in
     reduce_path env e p1 f'
-  | DotP (p1, atom) ->
+  | DotP (p1, atom, as_) ->
     let f' e' p1' =
       match e'.it with
       | StrE efs ->
-        StrE (List.map (fun (atomI, eI) ->
-          if Eq.eq_atom atomI atom then (atomI, f eI p1') else (atomI, eI)) efs) $> e'
+        StrE (List.map (fun (atomI, asI, eI) ->
+          if Eq.eq_atom atomI atom
+          then (atomI, asI, f eI p1')
+          else (atomI, asI, eI)
+        ) efs) $> e'
       | _ ->
-        f e' (DotP (p1', atom) $> p)
+        f e' (DotP (p1', atom, as_) $> p)
     in
     reduce_path env e p1 f'
 
@@ -462,7 +473,7 @@ and reduce_exp_call env id args at = function
     if !assume_coherent_matches then None else
     Error.error at "validation"
       ("undefined call to partial function `$" ^ id.it ^ "`")
-  | {it = DefD (_binds, args', e, prems); _}::clauses' ->
+  | {it = DefD (_ps, args', e, prems); _}::clauses' ->
     Debug.(log "il.reduce_exp_call"
       (fun _ -> fmt "$%s(%s) =: $%s(%s)" id.it (il_args args) id.it (il_args args'))
       (function None -> "-" | Some e' -> fmt "%s" (il_exp e'))
@@ -555,8 +566,8 @@ and match_typ env s t1 t2 : subst option =
     let* s' = match_typ env s t11 t21 in match_iter env s' iter1 iter2
   | _, _ -> None
 
-and match_typbind env s (e1, t1) (e2, t2) =
-  let* s' = match_exp env s e1 (Subst.subst_exp s e2) in
+and match_typbind env s (x1, t1) (x2, t2) =
+  let s' = Subst.add_varid s x2 (VarE x1 $$ x1.at % t1) in
   let* s'' = match_typ env s' t1 (Subst.subst_typ s t2) in
   Some s''
 
@@ -635,14 +646,15 @@ and match_exp' env s e1 e2 : subst option =
     match_exp' env s e11 e21
   | LenE e11, LenE e21 -> match_exp' env s e11 e21
 *)
-  | CaseE (op1, e11), CaseE (op2, e21) when Eq.eq_mixop op1 op2 ->
-    match_exp' env s e11 e21
+  | CaseE (op1, as1, e11), CaseE (op2, as2, e21) when Eq.eq_mixop op1 op2 ->
+    let* s' = match_list match_arg env s as1 as2 in
+    match_exp' env s' e11 e21
 (*
   | CallE (id1, args1), CallE (id2, args2) when id1.it = id2.it ->
     match_list match_arg env s args1 args2
 *)
-  | _, UncaseE (e21, mixop) ->
-    match_exp' env s (CaseE (mixop, e1) $$ e1.at % e21.note) e21
+  | _, UncaseE (e21, mixop, as_) ->
+    match_exp' env s (CaseE (mixop, as_, e1) $$ e1.at % e21.note) e21
   | _, ProjE (e21, 0) ->  (* only valid on unary tuples! *)
     match_exp' env s (TupE [e1] $$ e1.at % e21.note) e21
 (*
@@ -718,7 +730,7 @@ and match_exp' env s e1 e2 : subst option =
         | BoolE _, BoolT
         | NumE _, NumT _
         | TextE _, TextT -> true
-        | CaseE (op, _), VarT _ ->
+        | CaseE (op, _, _), VarT _ ->
           (match (reduce_typdef env t21).it with
           | VariantT tcs ->
             (* Assumes that we only have shallow subtyping. *)
@@ -736,27 +748,28 @@ and match_exp' env s e1 e2 : subst option =
   | _, _ ->
     raise Irred
 
-and match_expfield env s (atom1, e1) (atom2, e2) =
+and match_expfield env s (atom1, as1, e1) (atom2, as2, e2) =
   if not (Eq.eq_atom atom1 atom2) then None else
-  match_exp' env s e1 e2
+  let* s' = match_list match_arg env s as1 as2 in
+  match_exp' env s' e1 (Subst.subst_exp s e2)
 
 and match_iterexp env s (iter1, _ids1) (iter2, _ids2) =
   match_iter env s iter1 iter2
 
 
 and eta_tup_exp env e : exp list option =
-  let ets =
+  let xts =
     match (reduce_typ env e.note).it with
-    | TupT ets -> ets
+    | TupT xts -> xts
     | _ -> assert false
   in
   let* es' =
-    List.fold_left (fun opt (eI, tI) ->
+    List.fold_left (fun opt (xI, tI) ->
       let* res', i, s = opt in
       let eI' = ProjE (e, i) $$ e.at % Subst.subst_typ s tI in
-      let* s' = try match_exp env s eI' eI with Irred -> None in
+      let s' = Subst.add_varid s xI eI' in
       Some (eI'::res', i + 1, s')
-    ) (Some ([], 0, Subst.empty)) ets |> Option.map fst3 |> Option.map List.rev
+    ) (Some ([], 0, Subst.empty)) xts |> Option.map fst3 |> Option.map List.rev
   in Some es'
 
 and eta_iter_exp env e : exp * iterexp =
@@ -824,16 +837,12 @@ and equiv_typ env t1 t2 =
   | _, _ ->
     t1.it = t2.it
 
-and equiv_tup env s ets1 ets2 =
-  match ets1, ets2 with
-  | (e1, t1)::ets1', (e2, t2)::ets2' ->
+and equiv_tup env s xts1 xts2 =
+  match xts1, xts2 with
+  | (x1, t1)::xts1', (x2, t2)::xts2' ->
     equiv_typ env t1 (Subst.subst_typ s t2) &&
-    (match match_exp env s e1 e2 with
-    | None -> false
-    | Some s' -> equiv_tup env s' ets1' ets2'
-    | exception Irred -> false
-    )
-  | _, _ -> ets1 = ets2
+    equiv_tup env (Subst.add_varid s x2 (VarE x1 $$ x1.at % t1)) xts1' xts2'
+  | _, _ -> xts1 = xts2
 
 and equiv_iter env iter1 iter2 =
   match iter1, iter2 with
@@ -896,8 +905,8 @@ and equiv_params env ps1 ps2 =
     | DefP (id1, ps1, t1), DefP (id2, ps2, t2) ->
       if not (equiv_functyp env (ps1, t1) (ps2, t2)) then None else
       Some (Subst.add_defid s id2 id1)
-    | GramP (id1, t1), GramP (id2, t2) ->
-      if not (equiv_typ env t1 t2) then None else
+    | GramP (id1, ps1, t1), GramP (id2, ps2, t2) ->
+      if not (equiv_functyp env (ps1, t1) (ps2, t2)) then None else
       Some (Subst.add_gramid s id2 (VarG (id1, []) $ p1.at))
     | _, _ -> assert false
   ) (Some Subst.empty) ps1 ps2
@@ -921,16 +930,16 @@ and sub_typ env t1 t2 =
   | VarT _, VarT _ ->
     (match (reduce_typdef env t1').it, (reduce_typdef env t2').it with
     | StructT tfs1, StructT tfs2 ->
-      List.for_all (fun (atom, (_binds2, t2, prems2), _) ->
+      List.for_all (fun (atom, (_ps2, t2, prems2), _) ->
         match find_field tfs1 atom with
-        | Some (_binds1, t1, prems1) ->
+        | Some (_ps1, t1, prems1) ->
           sub_typ env t1 t2 && sub_prems env prems1 prems2
         | None -> false
       ) tfs2
     | VariantT tcs1, VariantT tcs2 ->
-      List.for_all (fun (mixop, (_binds1, t1, prems1), _) ->
+      List.for_all (fun (mixop, (_ps1, t1, prems1), _) ->
         match find_case tcs2 mixop with
-        | Some (_binds2, t2, prems2) ->
+        | Some (_ps2, t2, prems2) ->
           sub_typ env t1 t2 && sub_prems env prems1 prems2
         | None -> false
       ) tcs1
@@ -939,16 +948,12 @@ and sub_typ env t1 t2 =
   | _, _ ->
     false
 
-and sub_tup env s ets1 ets2 =
-  match ets1, ets2 with
-  | (e1, t1)::ets1', (e2, t2)::ets2' ->
+and sub_tup env s xts1 xts2 =
+  match xts1, xts2 with
+  | (x1, t1)::xts1', (x2, t2)::xts2' ->
     sub_typ env t1 (Subst.subst_typ s t2) &&
-    (match match_exp env s e1 e2 with
-    | None -> false
-    | Some s' -> sub_tup env s' ets1' ets2'
-    | exception Irred -> false
-    )
-  | _, _ -> ets1 = ets2
+    sub_tup env (Subst.add_varid s x2 (VarE x1 $$ x1.at % t1)) xts1' xts2'
+  | _, _ -> xts1 = xts2
 
 
 and find_field tfs atom =
@@ -969,16 +974,16 @@ and disj_typ env t1 t2 =
     (match (reduce_typdef env t1).it, (reduce_typdef env t2).it with
     | StructT tfs1, StructT tfs2 ->
       unordered (atoms tfs1) (atoms tfs2) ||
-      List.exists (fun (atom, (_binds2, t2, _prems2), _) ->
+      List.exists (fun (atom, (_ps2, t2, _prems2), _) ->
         match find_field tfs1 atom with
-        | Some (_binds1, t1, _prems1) -> disj_typ env t1 t2
+        | Some (_ps1, t1, _prems1) -> disj_typ env t1 t2
         | None -> true
       ) tfs2
     | VariantT tcs1, VariantT tcs2 ->
       Set.disjoint (mixops tcs1) (mixops tcs2) ||
-      List.exists (fun (atom, (_binds1, t1, _prems1), _) ->
+      List.exists (fun (atom, (_ps1, t1, _prems1), _) ->
         match find_case tcs2 atom with
-        | Some (_binds2, t2, _prems2) -> disj_typ env t1 t2
+        | Some (_ps2, t2, _prems2) -> disj_typ env t1 t2
         | None -> false
       ) tcs1
     | _, _ -> true
@@ -998,13 +1003,9 @@ and disj_typ env t1 t2 =
 and atoms xs = Set.of_list (List.map Print.string_of_atom (List.map fst3 xs))
 and mixops xs = Set.of_list (List.map Print.string_of_mixop (List.map fst3 xs))
 
-and disj_tup env s ets1 ets2 =
-  match ets1, ets2 with
-  | (e1, t1)::ets1', (e2, t2)::ets2' ->
+and disj_tup env s xts1 xts2 =
+  match xts1, xts2 with
+  | (x1, t1)::xts1', (x2, t2)::xts2' ->
     disj_typ env t1 (Subst.subst_typ s t2) ||
-    (match match_exp env s e1 e2 with
-    | None -> false
-    | Some s' -> disj_tup env s' ets1' ets2'
-    | exception Irred -> false
-    )
-  | _, _ -> ets1 = ets2
+    disj_tup env (Subst.add_varid s x2 (VarE x1 $$ x1.at % t1)) xts1' xts2'
+  | _, _ -> xts1 = xts2

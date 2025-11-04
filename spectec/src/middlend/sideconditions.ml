@@ -74,14 +74,11 @@ let rec t_exp env e : prem list =
   | VarE _ | BoolE _ | NumE _ | TextE _ | OptE None
   -> []
   | UnE (_, _, exp)
-  | DotE (exp, _)
   | LenE exp
   | ProjE (exp, _)
-  | UncaseE (exp, _)
   | OptE (Some exp)
   | TheE exp
   | LiftE exp
-  | CaseE (_, exp)
   | CvtE (exp, _, _)
   | SubE (exp, _, _)
   -> t_exp env exp
@@ -99,8 +96,13 @@ let rec t_exp env e : prem list =
   -> t_exp env exp1 @ t_path env path @ t_exp env exp2
   | CallE (_, args)
   -> List.concat_map (t_arg env) args
+  | CaseE (_, args, exp)
+  | UncaseE (exp, _, args)
+  | DotE (exp, _, args)
+  -> List.concat_map (t_arg env) args @ t_exp env exp
   | StrE fields
-  -> List.concat_map (fun (_, e) -> t_exp env e) fields
+  -> List.concat_map (fun (_, args, exp) ->
+    List.concat_map (t_arg env) args @ t_exp env exp) fields
   | TupE es | ListE es
   -> List.concat_map (t_exp env) es
   | IterE (e1, iterexp)
@@ -119,7 +121,7 @@ and t_path env path = match path.it with
   | RootP -> []
   | IdxP (path, e) -> t_path env path @ t_exp env e
   | SliceP (path, e1, e2) -> t_path env path @ t_exp env e1 @ t_exp env e2
-  | DotP (path, _) -> t_path env path
+  | DotP (path, _, args) -> t_path env path @ List.concat_map (t_arg env) args
 
 and t_arg env arg = match arg.it with
   | ExpA exp -> t_exp env exp
@@ -167,16 +169,17 @@ let reduce_prems prems = prems
   |> Util.Lib.List.nub implies
 
 let t_rule' = function
-  | RuleD (id, binds, mixop, exp, prems) ->
-    let env = List.fold_left (fun env bind ->
-      match bind.it with
-      | ExpB (v, t) -> Env.add v.it t env
-      | TypB _ | DefB _ | GramB _ -> error bind.at "unexpected type argument in rule") Env.empty binds
+  | RuleD (id, params, mixop, exp, prems) ->
+    let env = List.fold_left (fun env param ->
+      match param.it with
+      | ExpP (v, t) -> Env.add v.it t env
+      | TypP _ | DefP _ | GramP _ -> error param.at "unexpected type argument in rule"
+      ) Env.empty params
     in
     let prems' = t_prems env prems in
     let extra_prems = t_exp env exp in
     let reduced_prems = reduce_prems (extra_prems @ prems') in
-    RuleD (id, binds, mixop, exp, reduced_prems)
+    RuleD (id, params, mixop, exp, reduced_prems)
 
 let t_rule x = { x with it = t_rule' x.it }
 
