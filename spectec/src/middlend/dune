@@ -8,5 +8,7 @@
     sideconditions
     typefamilyremoval
     else
+    undep
+    utils
   )
 )
