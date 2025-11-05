@@ -142,10 +142,10 @@ let create_projection_functions id params mixops inst =
     (* Should not be allowed since struct does not have cases *)
     | StructT _ -> error inst.at "Found struct construction while constructing projection functions, should not happen" 
     | VariantT typcases -> 
-      let mixop_opt = List.find_mapi (fun i (m', (_, t, _), _) -> 
+      let mixop_opt = List.find_map (fun (i, (m', (_, t, _), _)) -> 
         if not (Eq.eq_mixop m m') then None else 
         Some (i, m, t)
-      ) typcases in
+      ) (List.mapi (fun i t -> (i, t)) typcases) in
       begin match mixop_opt with
       | Some (i, m, t) -> make_func m (get_case_typs t) (List.length typcases = 1) i
       | None -> 
