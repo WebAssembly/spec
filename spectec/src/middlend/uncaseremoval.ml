@@ -159,9 +159,9 @@ let get_proj_info p_env m id =
   let opt = Env.find_opt_typ p_env.env (id $ no_region) in
   match opt with
   | Some (_, [{it = InstD(_, _, {it = VariantT typcases; _}); _}]) -> 
-    List.find_mapi (fun i (m', (_, t, _), _) -> 
+    List.find_map (fun (i, (m', (_, t, _), _)) -> 
       if Eq.eq_mixop m m' then Some (i, t) else None
-    ) typcases |>
+    ) (List.mapi (fun i t -> (i, t)) typcases) |>
     Option.map (fun (i, t) -> (i, t, List.length typcases = 1))
   | _ -> None
 
