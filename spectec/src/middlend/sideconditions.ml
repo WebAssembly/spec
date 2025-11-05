@@ -195,4 +195,3 @@ and t_def x = { x with it = t_def' x.it }
 
 let transform (defs : script) =
   List.map t_def defs
-
