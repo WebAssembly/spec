@@ -47,7 +47,7 @@ let generate_var ids id =
   | s when List.mem s ids -> go s start
   | _ -> id
 
-let improve_ids_binders generate_all_binds at exp_typ_pairs =
+let improve_ids_binders ids generate_all_binds at exp_typ_pairs =
   let get_id_from_exp e = 
     match e.it with
     | VarE id -> Some id.it
@@ -75,7 +75,7 @@ let improve_ids_binders generate_all_binds at exp_typ_pairs =
       let (binds, pairs) = improve_ids_helper ids bs' in
       (binds, b :: pairs)
   in
-  improve_ids_helper [] exp_typ_pairs
+  improve_ids_helper ids exp_typ_pairs
 
 let improve_ids_params params =
   let reconstruct_param id p = 

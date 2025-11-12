@@ -351,7 +351,7 @@ let create_well_formed_predicate id env inst =
         | TupT tups -> tups
         | _ -> [(VarE ("_" $ id.at) $$ id.at % case_typ, case_typ)] 
       in 
-      let extra_binds, t_pairs = Utils.improve_ids_binders false id.at exp_typ_pairs in
+      let extra_binds, t_pairs = Utils.improve_ids_binders [] false id.at exp_typ_pairs in
       let new_binds = case_binds @ extra_binds in 
       let exp = TupE (List.map fst t_pairs) $$ at % (TupT t_pairs $ at) in 
       let case_exp = CaseE (m, exp) $$ at % user_typ in
@@ -385,7 +385,7 @@ let create_well_formed_predicate id env inst =
       ([wrapped], tups, prems)
     ) typfields) in
 
-    let (rule_binds, pairs') = Utils.improve_ids_binders true at pairs in
+    let (rule_binds, pairs') = Utils.improve_ids_binders [] true at pairs in
     let new_prems = (List.filter_map get_exp_typ rule_binds |> List.concat_map (get_wf_pred env)) @ rule_prems in
     let str_exp = StrE (List.map2 (fun a ((e, t), wrapped) -> 
       let tupt = TupT [(e, t)] $ at in
