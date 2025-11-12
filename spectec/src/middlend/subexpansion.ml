@@ -1,3 +1,39 @@
+(* 
+  This pass expands the subtyping patterns that appear in the LHS of
+  function clauses and type family arguments. 
+  
+  It achieves this through the following steps:
+    * For each argument, we collect every unique sub expression.
+    * Then, for each sub expression, we collect every case that is
+    possible in the subtype. If the specific case additionally carries
+    values, then we generate binds to add in the function scope. 
+    * With all of these cases, for each unique sub expression, we compute
+    the cartesian product in order to absolutely grab all the possible cases.
+    See $cvtop to see how this might be done.
+    * Once we have calculated the product, we generate a subst for each product
+    and proceed to generate the clause/type instance.
+    * Finally, we filter out binds that do not appear in the substed rhs.
+
+  For example, take the following types and function:
+
+  syntax A = t1 nat | t2 nat nat
+  syntax B = t1 nat | t2 nat nat | t3 | t4 
+
+  def $foo(B) : nat
+  def $foo(x : A <: B) = 1
+  def $foo(t3) = 2
+  def $foo(t4) = 3
+
+  Would be transformed as such:
+
+  def $foo(B) : nat
+  def $foo{n : nat}(t1(n)) = 1
+  def $foo{n1 : nat, n2 : nat}(t2(n1, n2)) = 1
+  def $foo(t3) = 2
+  def $foo(t4) = 3
+
+*)
+
 open Util
 open Source
 open Il.Ast
@@ -11,8 +47,6 @@ let error at msg = Error.error at "sub expression expansion" msg
 
 (* Global IL env*)
 let env_ref = ref Il.Env.empty
-
-module S = Set.Make(String)
 
 let empty_tuple_exp at = TupE [] $$ at % (TupT [] $ at)
 
@@ -165,15 +199,63 @@ let t_clause clause =
         | ExpB (id, _) -> Il.Subst.mem_varid subst id || not (Free.Set.mem id.it free_vars.varid)
         | _ -> false
       ) binds' in 
+      let new_binds, _ = Il.Subst.subst_binds subst binds_filtered in
       (* Reduction is done here to remove subtyping expressions *)
-      DefD (binds_filtered, List.map (Il.Eval.reduce_arg !env_ref) new_lhs, new_rhs, new_prems) $ clause.at
+      DefD (new_binds, List.map (Il.Eval.reduce_arg !env_ref) new_lhs, new_rhs, new_prems) $ clause.at
     ) subst_list
+
+let t_inst inst =
+  match inst.it with 
+  | InstD (binds, lhs, deftyp) ->
+    (* Collect all unique sub expressions for each argument *)
+    let subs = List.concat_map (fun a -> 
+      Lib.List.nub eq_sube (collect_sube_arg a)
+    ) lhs in
+    let ids = List.map get_bind_id binds in
+
+    (* Collect all cases for the specific subtype, generating any potential binds in the process *)
+    let binds', cases = 
+      List.fold_left (fun (binds, cases) (id, t1, _) -> 
+        let ids' = List.map get_bind_id binds @ ids in
+        let new_binds, cases' = collect_all_instances_typ ids' id.at t1 in 
+        let cases'' = List.map (fun e -> (id, e)) cases' in
+        (new_binds @ binds, cases'' :: cases)
+      ) (binds, []) subs 
+    in
+
+    (* Compute cartesian product for all cases and generate a subst *)
+    let cases' = product_of_lists cases in
+    let subst_list = List.map (List.fold_left (fun acc (id, exp) -> 
+      Il.Subst.add_varid acc id exp) Il.Subst.empty
+    ) cases' in
+    List.map (fun subst -> 
+      (* Subst all occurrences of the subE id *)
+      let new_lhs = Il.Subst.subst_args subst lhs in
+      let new_rhs = Il.Subst.subst_deftyp subst deftyp in
+
+      (* Filtering binds - since binds are handled globally for all cases, they must be removed in this case by 
+         checking the free variables in the function clause. *)
+      let free_vars_lhs = Free.free_list Free.free_arg new_lhs in
+      let free_vars_deftyp = Free.free_deftyp deftyp in 
+      let free_vars = Free.union free_vars_lhs free_vars_deftyp in
+      let binds_filtered = Lib.List.filter_not (fun b -> match b.it with
+        | ExpB (id, _) -> Il.Subst.mem_varid subst id || not (Free.Set.mem id.it free_vars.varid)
+        | _ -> false
+      ) binds' in 
+
+      let new_binds, _ = Il.Subst.subst_binds subst binds_filtered in
+      (* Reduction is done here to remove subtyping expressions *)
+      InstD (new_binds, List.map (Il.Eval.reduce_arg !env_ref) new_lhs, new_rhs) $ inst.at
+    ) subst_list
+
 
 let rec t_def def = 
   match def.it with
   | RecD defs -> { def with it = RecD (List.map t_def defs) }
   | DecD (id, params, typ, clauses) ->
     { def with it = DecD (id, params, typ, List.concat_map t_clause clauses) }
+  | TypD (id, params, insts) ->
+    { def with it = TypD (id, params, List.concat_map t_inst insts)}
   | _ -> def
 
 let transform (defs : script) =
