@@ -71,6 +71,18 @@ let improve_ids_binders ids generate_all_binds at exp_typ_pairs =
       let tupt = TupT pairs $ typ_at in
       let tupe = TupE (List.map fst pairs) $$ exp_at % tupt in 
       (binds' @ binds, (tupe, tupt) :: pairs')
+    | ({it = IterE (_, (_, iter_binds)); _}, {it = IterT _; _}) as b :: bs' ->
+      let new_binds = if generate_all_binds 
+        then 
+          List.filter_map (fun (_, e) -> 
+            match e.it with
+            | VarE id -> Some (ExpB (id, e.note) $ e.at)
+            | _ -> None
+          ) iter_binds 
+        else [] 
+      in 
+      let (binds, pairs) = improve_ids_helper ids bs' in
+      (new_binds @ binds, b :: pairs)
     | b :: bs' -> 
       let (binds, pairs) = improve_ids_helper ids bs' in
       (binds, b :: pairs)
