@@ -37,7 +37,7 @@ let generate_var ids id =
   let max = 1000 in
   let rec go prefix c =
     if max <= c then assert false else
-    let name = fresh_prefix ^ "_" ^ Int.to_string c in 
+    let name = prefix ^ "_" ^ Int.to_string c in 
     if (List.mem name ids) 
       then go prefix (c + 1) 
       else name
