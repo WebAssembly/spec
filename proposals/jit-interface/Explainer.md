@@ -1,22 +1,22 @@
 # JIT interface
 
 This proposal adds safe, programmably-constrained dynamic code generation to WebAssembly.
-We propose a new `func.new` instruction and a new kind of section called a "scope", which declares the elements of the surround module that new code may legally access.
+We propose a new `func.new` instruction and a new kind of section called a "scope", which declares the elements of the surrounding module that new code may legally access.
 
 # Problem
 
-Core WebAssembly has no mechanism ford dynamically generating code.
-This is an important feature for a number of important use cases, such as guest language virtual machines that otherwise must use relatively slow interpretation.
+Core WebAssembly has no mechanism for dynamically generating code.
+Yet generating new code at runtime is important in a number of important use cases, such as guest language virtual machines that otherwise must use relatively slow interpretation.
 
 ### Harvard architecture, no JIT
 
-Core WebAssembly disallows using runtime data as code or generating new code at runtime.
+Core WebAssembly's separates code (functions) and data (memories, tables, and managed data) as a fundamental design principle.
 This important property of Wasm allows efficient validation of all code in a module and establishes other important security properties.
-Further, this restriction allows static analysis against the state declared in a module but not exported, admitting sound closed-world optimizations, which is common in tooling today.
+Further, this restriction allows static analysis of modules; state declared in a module but not exported admits sound closed-world optimizations, which is common in tooling today.
 
 ### Guest runtimes want to JIT new code
 
-However, guest runtimes running on top of Wasm, such as language runtimes like Python or Lua, and hardware emulators, such as QEMU, can benefit tremendously by generating specialized code at runtime.
+However, some programs running on top of Wasm, such as guest language runtimes like Python or Lua, and hardware emulators, such as QEMU, can benefit tremendously by generating specialized code at runtime.
 The performance benefit of dynamic code generation can be extreme; as much as *10 to 100 times* faster than running in interpreted mode. Today, these runtimes can run *only* in interpreted mode and are prohibitively slow.
 
 ### Inconsistent host support for new modules
