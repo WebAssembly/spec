@@ -1,9 +1,62 @@
-(mdx
-  (libraries spectec)
+; A simple test of processing `test.spectec` in this directory.
+; Output from all passes is dumped compared to `test.spectec.exp`
+; Run `dune promote` to update expected output.
+
+(rule
+  (action (with-stdout-to test.spectec.act
+    (run ../src/exe-spectec/main.exe test.spectec -l --print-all-il --print-no-pos --all-passes --check)
+  ))
+  (deps
+    (file ../src/exe-spectec/main.exe)
+    (glob_files *.spectec)
+  )
+)
+(rule (alias runtest) (action (diff test.spectec.exp test.spectec.act)))
+
+; A more complicated setup that tests the various middle end passes against the full specification.
+;
+; It runs spectec on the 3.0 specification files and dumps the IL of each pass
+; into a separate file (`specification.XX-passname.act`).
+; It then compares it against the expected output files (`specification.XX-passname.exp`).
+; `dune promote` can be used to update the expected files.
+;
+; It is often helpful to diff the the output from one pass against its previous pass,
+; hence the numbers in the filenames.
+;
+; Adding a new pass is somewhat tedious:
+; - Add the filename in `targets` below
+; - Add a `diff`-rule at the bottom
+; - Remove all expected files (`rm *.exp`)
+; - Run `dune runtest --diff-command "diff -Nur"`
+;   (Without this flag `diff` will stumble over the missing files, see https://github.com/ocaml/dune/issues/8075)
+; - Run `dune promote`
+;
+; Same when reordering passes: the filenames have to be updated.
+
+(rule
+  (targets
+    specification.00-elab.act
+    specification.01-typefamily-removal.act
+    specification.02-remove-indexed-types.act
+    specification.03-totalize.act
+    specification.04-else.act
+    specification.05-sideconditions.act
+    specification.06-sub.act
+  )
+  (action
+    (system "../src/exe-spectec/main.exe ../../../../specification/wasm-3.0/*.spectec -l --print-all-il-to specification.%s.act --print-no-pos --all-passes --check")
+  )
   (deps
     (file ../src/exe-spectec/main.exe)
     (glob_files_rec ../_specification/*)
-    (glob_files *.spectec)
   )
-  (files TEST.md)
 )
+
+
+(rule (alias runtest) (action (diff specification.00-elab.exp specification.00-elab.act)))
+(rule (alias runtest) (action (diff specification.01-typefamily-removal.exp specification.01-typefamily-removal.act)))
+(rule (alias runtest) (action (diff specification.02-remove-indexed-types.exp specification.02-remove-indexed-types.act)))
+(rule (alias runtest) (action (diff specification.03-totalize.exp specification.03-totalize.act)))
+(rule (alias runtest) (action (diff specification.04-else.exp specification.04-else.act)))
+(rule (alias runtest) (action (diff specification.05-sideconditions.exp specification.05-sideconditions.act)))
+(rule (alias runtest) (action (diff specification.06-sub.exp specification.06-sub.act)))
