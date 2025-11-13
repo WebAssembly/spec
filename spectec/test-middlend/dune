@@ -45,6 +45,7 @@
     specification.07-sub-expansion.act
     specification.08-sub.act
     specification.09-alias-demut.act
+    specification.10-improve-ids.act
   )
   (action
     (system "../src/exe-spectec/main.exe ../../../../specification/wasm-3.0/*.spectec -l --print-all-il-to specification.%s.act --print-no-pos --all-passes --check")
@@ -66,3 +67,4 @@
 (rule (alias runtest) (action (diff specification.07-sub-expansion.exp specification.07-sub-expansion.act)))
 (rule (alias runtest) (action (diff specification.08-sub.exp specification.08-sub.act)))
 (rule (alias runtest) (action (diff specification.09-alias-demut.exp specification.09-alias-demut.act)))
+(rule (alias runtest) (action (diff specification.10-improve-ids.exp specification.10-improve-ids.act)))

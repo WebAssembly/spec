@@ -238,7 +238,7 @@ let transform_rule env rel_id rule =
   | RuleD (id, binds, m, exp, prems) -> 
     RuleD (transform_rule_id env id rel_id $ id.at, 
     List.map (transform_bind env) binds, 
-    transform_mixop env id.it m, 
+    m, 
     transform_exp env exp, 
     List.map (transform_prem env) prems
   )
