@@ -23,6 +23,7 @@ type pass =
   | Else
   | Undep
   | Uncaseremoval
+  | AliasDemut
 
 (* This list declares the intended order of passes.
 
@@ -31,7 +32,7 @@ passers (--all-passes, some targets), we do _not_ want to use the order of
 flags on the command line.
 *)
 let _skip_passes = [ Unthe ]  (* Not clear how to extend them to indexed types *)
-let all_passes = [ TypeFamilyRemoval; Undep; Totalize; Else; Uncaseremoval; Sideconditions; Sub ]
+let all_passes = [ TypeFamilyRemoval; Undep; Totalize; Else; Uncaseremoval; Sideconditions; Sub; AliasDemut ]
 
 type file_kind =
   | Spec
@@ -57,6 +58,7 @@ let print_el = ref false
 let print_elab_il = ref false
 let print_final_il = ref false
 let print_all_il = ref false
+let print_all_il_to = ref ""
 let print_al = ref false
 let print_al_o = ref ""
 let print_no_pos = ref false
@@ -69,6 +71,16 @@ let enable_pass pass = selected_passes := PS.add pass !selected_passes
 let print_il il =
   Printf.printf "%s\n%!" (Il.Print.string_of_script ~suppress_pos:(!print_no_pos) il)
 
+let print_il_to pass_name pass_count il =
+  let pass_name = if pass_name = "" then "elab" else pass_name in
+  let pass_name = Printf.sprintf "%02d-%s" pass_count pass_name in
+  if !print_all_il_to <> "" then
+    let filename = Str.replace_first (Str.regexp "%s") pass_name !print_all_il_to in
+    Out_channel.with_open_text filename (fun oc ->
+      Out_channel.output_string oc (Il.Print.string_of_script ~suppress_pos:(!print_no_pos) il);
+      Out_channel.output_string oc "\n"
+    )
+
 
 (* Il pass metadata *)
 
@@ -78,9 +90,10 @@ let pass_flag = function
   | Unthe -> "the-elimination"
   | Sideconditions -> "sideconditions"
   | TypeFamilyRemoval -> "typefamily-removal"
+  | AliasDemut -> "alias-demut"
   | Else -> "else"
   | Undep -> "remove-indexed-types"
-  | Uncaseremoval -> "uncase-elimination"
+  | Uncaseremoval -> "uncase-removal"
 
 let pass_desc = function
   | Sub -> "Synthesize explicit subtype coercions"
@@ -91,6 +104,7 @@ let pass_desc = function
   | Else -> "Eliminate the otherwise premise in relations"
   | Undep -> "Transform indexed types into types with well-formedness predicates"
   | Uncaseremoval -> "Eliminate the uncase expression"
+  | AliasDemut -> "Lifts type aliases out of mutual groups"
 
 
 let run_pass : pass -> Il.Ast.script -> Il.Ast.script = function
@@ -102,6 +116,7 @@ let run_pass : pass -> Il.Ast.script -> Il.Ast.script = function
   | Else -> Middlend.Else.transform
   | Undep -> Middlend.Undep.transform
   | Uncaseremoval -> Middlend.Uncaseremoval.transform
+  | AliasDemut -> Middlend.AliasDemut.transform
 
 
 (* Argument parsing *)
@@ -167,6 +182,7 @@ let argspec = Arg.align (
   "--print-il", Arg.Set print_elab_il, " Print IL (after elaboration)";
   "--print-final-il", Arg.Set print_final_il, " Print final IL";
   "--print-all-il", Arg.Set print_all_il, " Print IL after each step";
+  "--print-all-il-to", Arg.Set_string print_all_il_to, " Print IL after each step to file (with %s replaced by pass numer and name)";
   "--print-al", Arg.Set print_al, " Print al";
   "--print-al-o", Arg.Set_string print_al_o, " Print al with given name";
   "--print-no-pos", Arg.Set print_no_pos, " Suppress position info in output";
@@ -187,6 +203,7 @@ let log s = if !logging then Printf.printf "== %s\n%!" s
 let () =
   Printexc.record_backtrace true;
   let last_pass = ref "" in
+  let pass_count = ref 0 in
   try
     Arg.parse argspec add_arg usage;
     log "Parsing...";
@@ -196,6 +213,7 @@ let () =
     log "Elaboration...";
     let il, elab_env = Frontend.Elab.elab el in
     if !print_elab_il || !print_all_il then print_il il;
+    print_il_to !last_pass !pass_count il;
     log "IL Validation...";
     Il.Valid.valid il;
 
@@ -212,9 +230,11 @@ let () =
         if not (PS.mem pass !selected_passes) then il else
         (
           last_pass := pass_flag pass;
+          pass_count := !pass_count + 1;
           log ("Running pass " ^ pass_flag pass ^ "...");
           let il = run_pass pass il in
           if !print_all_il then print_il il;
+          print_il_to !last_pass !pass_count il;
           log ("IL Validation after pass " ^ pass_flag pass ^ "...");
           Il.Valid.valid il;
           il
