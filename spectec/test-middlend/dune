@@ -42,6 +42,7 @@
     specification.04-else.act
     specification.05-sideconditions.act
     specification.06-sub.act
+    specification.07-alias-demut.act
   )
   (action
     (system "../src/exe-spectec/main.exe ../../../../specification/wasm-3.0/*.spectec -l --print-all-il-to specification.%s.act --print-no-pos --all-passes --check")
@@ -60,3 +61,4 @@
 (rule (alias runtest) (action (diff specification.04-else.exp specification.04-else.act)))
 (rule (alias runtest) (action (diff specification.05-sideconditions.exp specification.05-sideconditions.act)))
 (rule (alias runtest) (action (diff specification.06-sub.exp specification.06-sub.act)))
+(rule (alias runtest) (action (diff specification.07-alias-demut.exp specification.07-alias-demut.act)))
