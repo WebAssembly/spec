@@ -11,5 +11,7 @@
     undep
     utils
     subexpansion
+    uncaseremoval
+    aliasDemut
   )
 )

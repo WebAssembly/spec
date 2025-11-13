@@ -89,6 +89,10 @@ let improve_ids_binders ids generate_all_binds at exp_typ_pairs =
   in
   improve_ids_helper ids exp_typ_pairs
 
+let get_param_id p = 
+  match p.it with
+  | ExpP (id, _) | TypP id | DefP (id, _, _) | GramP (id, _) -> id
+
 let improve_ids_params params =
   let reconstruct_param id p = 
     (match p.it with
@@ -98,16 +102,13 @@ let improve_ids_params params =
     | GramP (_, typ) -> GramP (id, typ)
     ) $ p.at
   in
-  let get_id p = 
-    match p.it with
-    | ExpP (id, _) | TypP id | DefP (id, _, _) | GramP (id, _) -> id
-  in
   let rec improve_ids_helper ids ps = 
     match ps with
     | [] -> []
     | p :: ps' -> 
-      let p_id = get_id p in
+      let p_id = get_param_id p in
       let new_name = generate_var ids p_id.it $ p_id.at in 
       reconstruct_param new_name p :: improve_ids_helper (new_name.it :: ids) ps' 
   in
   improve_ids_helper [] params
+
