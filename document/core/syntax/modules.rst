@@ -68,7 +68,7 @@ Indices
 Definitions are referenced with zero-based *indices*.
 Each class of definition has its own *index space*, as distinguished by the following classes.
 
-$${syntax: {typeidx funcidx globalidx tableidx memidx tagidx elemidx dataidx labelidx localidx fieldidx}}
+$${syntax: {idx typeidx funcidx globalidx tableidx memidx tagidx elemidx dataidx labelidx localidx fieldidx}}
 
 The index space for
 :ref:`tags <syntax-tag>`,
