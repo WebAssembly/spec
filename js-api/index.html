@@ -4,9 +4,9 @@
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <title>WebAssembly JavaScript Interface</title>
   <meta content="ED" name="w3c-status">
-  <meta content="Bikeshed version 3f621ba99, updated Mon Jul 28 15:38:36 2025 -0700" name="generator">
+  <meta content="Bikeshed version 7b3ff057a, updated Sun Nov 9 18:39:50 2025 -0800" name="generator">
   <link href="https://www.w3.org/TR/wasm-js-api-2/" rel="canonical">
-  <meta content="a5f4a85c8a4fa2239fdc4bb2c7226ed13d25dd2e" name="revision">
+  <meta content="4e314daa06c877f22db5561b2ea59e467c124563" name="revision">
   <meta content="dark light" name="color-scheme">
 <style>
 emu-const {
@@ -323,7 +323,7 @@ body {
 }
 .invalid.example:not(.no-marker)::before,
 .illegal.example:not(.no-marker)::before {
-    content: "Invalid Example" counter(example);
+    content: "Invalid Example " counter(example);
 }
 
 figcaption {
@@ -745,9 +745,9 @@ var[data-var-color="6"] { --var-vg: #FFBCF2; }
     <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72">
 </a>
 </p>
-   <h1 class="p-name no-ref" id="title">WebAssembly JavaScript Interface</h1>
+   <h1 class="no-ref p-name" id="title">WebAssembly JavaScript Interface</h1>
    <p id="w3c-state"><a href="https://www.w3.org/standards/types/#ED">Editor’s Draft</a>,
-    <time class="dt-updated" datetime="2025-11-02">2 November 2025</time></p>
+    <time class="dt-updated" datetime="2025-11-14">14 November 2025</time></p>
    <details open>
     <summary>More details about this document</summary>
     <div data-fill-with="spec-metadata">
@@ -762,7 +762,7 @@ var[data-var-color="6"] { --var-vg: #FFBCF2; }
       <dd><a href="https://github.com/WebAssembly/spec/issues">GitHub</a>
       <dd><a href="#issues-index">Inline In Spec</a>
       <dt class="editor">Editor:
-      <dd class="editor p-author h-card vcard" data-editor-id="46309"><span class="p-name fn">Ms2ger</span> (<span class="p-org org">Igalia</span>)
+      <dd class="editor h-card p-author vcard" data-editor-id="46309"><span class="fn p-name">Ms2ger</span> (<span class="org p-org">Igalia</span>)
       <dt>Issue Tracking:
       <dd><a href="https://github.com/WebAssembly/spec/labels/wasm-js-api-2">GitHub Issues</a>
      </dl>
@@ -774,7 +774,7 @@ var[data-var-color="6"] { --var-vg: #FFBCF2; }
    <hr title="Separator for header">
   </div>
   <div class="p-summary" data-fill-with="abstract">
-   <h2 class="no-num no-toc no-ref heading settled" id="abstract"><span class="content">Abstract</span></h2>
+   <h2 class="heading no-num no-ref no-toc settled" id="abstract"><span class="content">Abstract</span></h2>
    <p>This document provides an explicit JavaScript API for interacting with WebAssembly.</p>
    
 
@@ -786,7 +786,7 @@ the <a href="https://www.w3.org/TR/wasm-js-api/">WebAssembly JS Interface</a>,
 and the <a href="https://www.w3.org/TR/wasm-web-api/">WebAssembly Web API</a>.
 
   </div>
-  <h2 class="no-num no-toc no-ref heading settled" id="sotd"><span class="content">Status of this document</span></h2>
+  <h2 class="heading no-num no-ref no-toc settled" id="sotd"><span class="content">Status of this document</span></h2>
   <div data-fill-with="status">
    <p><em>This section describes the status of this document at the time of
    its publication. A list of
@@ -828,7 +828,7 @@ and the <a href="https://www.w3.org/TR/wasm-web-api/">WebAssembly Web API</a>.
   </div>
   <div data-fill-with="at-risk"></div>
   <nav data-fill-with="table-of-contents" id="toc">
-   <h2 class="no-num no-toc no-ref" id="contents">Table of Contents</h2>
+   <h2 class="no-num no-ref no-toc" id="contents">Table of Contents</h2>
    <ol class="toc" role="directory">
     <li><a href="#intro"><span class="secno">1</span> <span class="content">Introduction</span></a>
     <li><a href="#sample"><span class="secno">2</span> <span class="content">Sample API Usage</span></a>
@@ -929,7 +929,7 @@ When the JavaScript environment is itself embedded in a Web browser, the Web API
    <h2 class="heading settled" data-level="2" id="sample"><span class="secno">2. </span><span class="content">Sample API Usage</span><a class="self-link" href="#sample"></a></h2>
    <p><em>This section is non-normative.</em></p>
    <p>Given <code>demo.wat</code> (encoded to <code>demo.wasm</code>):</p>
-<pre class="language-lisp highlight"><c- p>(</c-><c- g>module</c->
+<pre class="highlight language-lisp"><c- p>(</c-><c- g>module</c->
     <c- p>(</c->import <c- s>"js"</c-> <c- s>"import1"</c-> <c- p>(</c-><c- g>func</c-> <c- g>$i1</c-><c- p>))</c->
     <c- p>(</c->import <c- s>"js"</c-> <c- s>"import2"</c-> <c- p>(</c-><c- g>func</c-> <c- g>$i2</c-><c- p>))</c->
     <c- p>(</c-><c- g>func</c-> <c- g>$main</c-> <c- p>(</c-><c- g>call</c-> <c- g>$i1</c-><c- p>))</c->
@@ -938,7 +938,7 @@ When the JavaScript environment is itself embedded in a Web browser, the Web API
 <c- p>)</c->
 </pre>
    <p>and the following JavaScript, run in a browser:</p>
-<pre class="language-javascript highlight"><c- a>var</c-> importObj <c- o>=</c-> <c- p>{</c->js<c- o>:</c-> <c- p>{</c->
+<pre class="highlight language-javascript"><c- a>var</c-> importObj <c- o>=</c-> <c- p>{</c->js<c- o>:</c-> <c- p>{</c->
     import1<c- o>:</c-> <c- p>()</c-> <c- p>=></c-> console<c- p>.</c->log<c- p>(</c-><c- u>"hello,"</c-><c- p>),</c->
     import2<c- o>:</c-> <c- p>()</c-> <c- p>=></c-> console<c- p>.</c->log<c- p>(</c-><c- u>"world!"</c-><c- p>)</c->
 <c- p>}};</c->
@@ -983,7 +983,7 @@ This mapping is used to ensure that, for a given <a data-link-type="dfn" href="h
      <p>The <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="host-value-cache">Host value cache</dfn>, mapping <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-hostaddr" id="ref-for-syntax-hostaddr">host address</a>es to values.</p>
    </ul>
    <h2 class="heading settled" data-level="5" id="webassembly-namespace"><span class="secno">5. </span><span class="content">The WebAssembly Namespace</span><a class="self-link" href="#webassembly-namespace"></a></h2>
-<pre class="idl highlight def"><c- b>dictionary</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="dictionary" data-export id="dictdef-webassemblyinstantiatedsource"><code><c- g>WebAssemblyInstantiatedSource</c-></code></dfn> {
+<pre class="def highlight idl"><c- b>dictionary</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="dictionary" data-export id="dictdef-webassemblyinstantiatedsource"><code><c- g>WebAssemblyInstantiatedSource</c-></code></dfn> {
     <c- b>required</c-> <a data-link-type="idl-name" href="#module" id="ref-for-module"><c- n>Module</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="WebAssemblyInstantiatedSource" data-dfn-type="dict-member" data-export data-type="Module" id="dom-webassemblyinstantiatedsource-module"><code><c- g>module</c-></code></dfn>;
     <c- b>required</c-> <a data-link-type="idl-name" href="#instance" id="ref-for-instance"><c- n>Instance</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="WebAssemblyInstantiatedSource" data-dfn-type="dict-member" data-export data-type="Instance" id="dom-webassemblyinstantiatedsource-instance"><code><c- g>instance</c-></code></dfn>;
 };
@@ -1590,7 +1590,7 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://web
      <p>Return <var>JSTagObject</var>.</p>
    </ol>
    <h3 class="heading settled" data-level="5.1" id="modules"><span class="secno">5.1. </span><span class="content">Modules</span><a class="self-link" href="#modules"></a></h3>
-<pre class="idl highlight def"><c- b>enum</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="enum" data-export id="enumdef-importexportkind"><code><c- g>ImportExportKind</c-></code></dfn> {
+<pre class="def highlight idl"><c- b>enum</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="enum" data-export id="enumdef-importexportkind"><code><c- g>ImportExportKind</c-></code></dfn> {
   <dfn class="dfn-paneled idl-code" data-dfn-for="ImportExportKind" data-dfn-type="enum-value" data-export id="dom-importexportkind-function"><code><c- s>"function"</c-></code></dfn>,
   <dfn class="dfn-paneled idl-code" data-dfn-for="ImportExportKind" data-dfn-type="enum-value" data-export id="dom-importexportkind-table"><code><c- s>"table"</c-></code></dfn>,
   <dfn class="dfn-paneled idl-code" data-dfn-for="ImportExportKind" data-dfn-type="enum-value" data-export id="dom-importexportkind-memory"><code><c- s>"memory"</c-></code></dfn>,
@@ -1753,7 +1753,7 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://web
     <p class="note" role="note"><span class="marker">Note:</span> Some implementations enforce a size limitation on <var>bytes</var>. Use of this API is discouraged, in favor of asynchronous APIs.</p>
    </div>
    <h3 class="heading settled" data-level="5.2" id="instances"><span class="secno">5.2. </span><span class="content">Instances</span><a class="self-link" href="#instances"></a></h3>
-<pre class="idl highlight def">[<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#LegacyNamespace" id="ref-for-LegacyNamespace①"><c- g>LegacyNamespace</c-></a>=<a data-link-type="idl-name" href="#namespacedef-webassembly" id="ref-for-namespacedef-webassembly②"><c- n>WebAssembly</c-></a>, Exposed=*]
+<pre class="def highlight idl">[<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#LegacyNamespace" id="ref-for-LegacyNamespace①"><c- g>LegacyNamespace</c-></a>=<a data-link-type="idl-name" href="#namespacedef-webassembly" id="ref-for-namespacedef-webassembly②"><c- n>WebAssembly</c-></a>, Exposed=*]
 <c- b>interface</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="interface" data-export id="instance"><code><c- g>Instance</c-></code></dfn> {
   <a class="idl-code" data-link-type="constructor" href="#dom-instance-instance" id="ref-for-dom-instance-instance"><c- g>constructor</c-></a>(<a data-link-type="idl-name" href="#module" id="ref-for-module①⓪"><c- n>Module</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="Instance/Instance(module, importObject), Instance/constructor(module, importObject), Instance/Instance(module), Instance/constructor(module)" data-dfn-type="argument" data-export id="dom-instance-instance-module-importobject-module"><code><c- g>module</c-></code></dfn>, <c- b>optional</c-> <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-object" id="ref-for-idl-object②"><c- b>object</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="Instance/Instance(module, importObject), Instance/constructor(module, importObject), Instance/Instance(module), Instance/constructor(module)" data-dfn-type="argument" data-export id="dom-instance-instance-module-importobject-importobject"><code><c- g>importObject</c-></code></dfn>);
   <c- b>readonly</c-> <c- b>attribute</c-> <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-object" id="ref-for-idl-object③"><c- b>object</c-></a> <a class="idl-code" data-link-type="attribute" data-readonly data-type="object" href="#dom-instance-exports" id="ref-for-dom-instance-exports"><c- g>exports</c-></a>;
@@ -1783,7 +1783,7 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://web
     The getter of the <dfn class="dfn-paneled idl-code" data-dfn-for="Instance" data-dfn-type="attribute" data-export id="dom-instance-exports"><code>exports</code></dfn> attribute of <code class="idl"><a data-link-type="idl" href="#instance" id="ref-for-instance③">Instance</a></code> returns <strong>this</strong>.[[Exports]].
 </div>
    <h3 class="heading settled" data-level="5.3" id="memories"><span class="secno">5.3. </span><span class="content">Memories</span><a class="self-link" href="#memories"></a></h3>
-<pre class="idl highlight def"><c- b>dictionary</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="dictionary" data-export id="dictdef-memorydescriptor"><code><c- g>MemoryDescriptor</c-></code></dfn> {
+<pre class="def highlight idl"><c- b>dictionary</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="dictionary" data-export id="dictdef-memorydescriptor"><code><c- g>MemoryDescriptor</c-></code></dfn> {
   <c- b>required</c-> <a data-link-type="idl-name" href="#typedefdef-addressvalue" id="ref-for-typedefdef-addressvalue"><c- n>AddressValue</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="MemoryDescriptor" data-dfn-type="dict-member" data-export data-type="AddressValue" id="dom-memorydescriptor-initial"><code><c- g>initial</c-></code></dfn>;
   <a data-link-type="idl-name" href="#typedefdef-addressvalue" id="ref-for-typedefdef-addressvalue①"><c- n>AddressValue</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="MemoryDescriptor" data-dfn-type="dict-member" data-export data-type="AddressValue" id="dom-memorydescriptor-maximum"><code><c- g>maximum</c-></code></dfn>;
   <a data-link-type="idl-name" href="#enumdef-addresstype" id="ref-for-enumdef-addresstype"><c- n>AddressType</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="MemoryDescriptor" data-dfn-type="dict-member" data-export data-type="AddressType" id="dom-memorydescriptor-address"><code><c- g>address</c-></code></dfn>;
@@ -2111,7 +2111,7 @@ which can be simultaneously referenced by multiple <code class="idl"><a data-lin
     The getter of the <dfn class="dfn-paneled idl-code" data-dfn-for="Memory" data-dfn-type="attribute" data-export id="dom-memory-buffer"><code>buffer</code></dfn> attribute of <code class="idl"><a data-link-type="idl" href="#memory" id="ref-for-memory⑦">Memory</a></code> returns <strong>this</strong>.[[BufferObject]].
 </div>
    <h3 class="heading settled" data-level="5.4" id="tables"><span class="secno">5.4. </span><span class="content">Tables</span><a class="self-link" href="#tables"></a></h3>
-<pre class="idl highlight def"><c- b>enum</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="enum" data-export id="enumdef-tablekind"><code><c- g>TableKind</c-></code></dfn> {
+<pre class="def highlight idl"><c- b>enum</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="enum" data-export id="enumdef-tablekind"><code><c- g>TableKind</c-></code></dfn> {
   <dfn class="dfn-paneled idl-code" data-dfn-for="TableKind" data-dfn-type="enum-value" data-export id="dom-tablekind-externref"><code><c- s>"externref"</c-></code></dfn>,
   <dfn class="dfn-paneled idl-code" data-dfn-for="TableKind" data-dfn-type="enum-value" data-export id="dom-tablekind-anyfunc"><code><c- s>"anyfunc"</c-></code></dfn>,
   // Note: More values may be added in future iterations,
@@ -2346,7 +2346,7 @@ Each <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table�
     </ol>
    </div>
    <h3 class="heading settled" data-level="5.5" id="globals"><span class="secno">5.5. </span><span class="content">Globals</span><a class="self-link" href="#globals"></a></h3>
-<pre class="idl highlight def"><c- b>enum</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="enum" data-export id="enumdef-valuetype"><code><c- g>ValueType</c-></code></dfn> {
+<pre class="def highlight idl"><c- b>enum</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="enum" data-export id="enumdef-valuetype"><code><c- g>ValueType</c-></code></dfn> {
   <dfn class="dfn-paneled idl-code" data-dfn-for="ValueType" data-dfn-type="enum-value" data-export id="dom-valuetype-i32"><code><c- s>"i32"</c-></code></dfn>,
   <dfn class="dfn-paneled idl-code" data-dfn-for="ValueType" data-dfn-type="enum-value" data-export id="dom-valuetype-i64"><code><c- s>"i64"</c-></code></dfn>,
   <dfn class="dfn-paneled idl-code" data-dfn-for="ValueType" data-dfn-type="enum-value" data-export id="dom-valuetype-f32"><code><c- s>"f32"</c-></code></dfn>,
@@ -2357,7 +2357,7 @@ Each <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table�
 };
 </pre>
    <p class="note" role="note"><span class="marker">Note:</span> this type may be extended with additional cases in future versions of WebAssembly.</p>
-<pre class="idl highlight def"><c- b>dictionary</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="dictionary" data-export id="dictdef-globaldescriptor"><code><c- g>GlobalDescriptor</c-></code></dfn> {
+<pre class="def highlight idl"><c- b>dictionary</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="dictionary" data-export id="dictdef-globaldescriptor"><code><c- g>GlobalDescriptor</c-></code></dfn> {
   <c- b>required</c-> <a data-link-type="idl-name" href="#enumdef-valuetype" id="ref-for-enumdef-valuetype"><c- n>ValueType</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="GlobalDescriptor" data-dfn-type="dict-member" data-export data-type="ValueType" id="dom-globaldescriptor-value"><code><c- g>value</c-></code></dfn>;
   <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-boolean" id="ref-for-idl-boolean①"><c- b>boolean</c-></a> <dfn class="dfn-paneled idl-code" data-default="false" data-dfn-for="GlobalDescriptor" data-dfn-type="dict-member" data-export data-type="boolean" id="dom-globaldescriptor-mutable"><code><c- g>mutable</c-></code></dfn> = <c- b>false</c->;
 };
@@ -3113,7 +3113,7 @@ The algorithm <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="u64
    <h3 class="heading settled" data-level="5.7" id="tags"><span class="secno">5.7. </span><span class="content">Tags</span><a class="self-link" href="#tags"></a></h3>
    <p>The <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="tag_alloc">tag_alloc</dfn>(<var>store</var>, <var>parameters</var>) algorithm creates a new <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-tagaddr" id="ref-for-syntax-tagaddr①">tag address</a> for <var>parameters</var> in <var>store</var> and returns the updated store and the <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-tagaddr" id="ref-for-syntax-tagaddr②">tag address</a>.</p>
    <h4 class="heading settled" data-level="5.7.1" id="tag-types"><span class="secno">5.7.1. </span><span class="content">Tag types</span><a class="self-link" href="#tag-types"></a></h4>
-<pre class="idl highlight def"><c- b>dictionary</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="dictionary" data-export id="dictdef-tagtype"><code><c- g>TagType</c-></code></dfn> {
+<pre class="def highlight idl"><c- b>dictionary</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="dictionary" data-export id="dictdef-tagtype"><code><c- g>TagType</c-></code></dfn> {
   <c- b>required</c-> <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#idl-sequence" id="ref-for-idl-sequence④"><c- b>sequence</c-></a>&lt;<a data-link-type="idl-name" href="#enumdef-valuetype" id="ref-for-enumdef-valuetype①"><c- n>ValueType</c-></a>> <dfn class="dfn-paneled idl-code" data-dfn-for="TagType" data-dfn-type="dict-member" data-export data-type="sequence<ValueType>" id="dom-tagtype-parameters"><code><c- g>parameters</c-></code></dfn>;
 };
 
@@ -3352,7 +3352,7 @@ and an [[ObjectKind]] internal slot, which holds the string value "struct" or "a
     </ol>
    </div>
    <h3 class="heading settled" data-level="5.9" id="exceptions"><span class="secno">5.9. </span><span class="content">Exceptions</span><a class="self-link" href="#exceptions"></a></h3>
-<pre class="idl highlight def"><c- b>dictionary</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="dictionary" data-export id="dictdef-exceptionoptions"><code><c- g>ExceptionOptions</c-></code></dfn> {
+<pre class="def highlight idl"><c- b>dictionary</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="dictionary" data-export id="dictdef-exceptionoptions"><code><c- g>ExceptionOptions</c-></code></dfn> {
   <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-boolean" id="ref-for-idl-boolean②"><c- b>boolean</c-></a> <dfn class="dfn-paneled idl-code" data-default="false" data-dfn-for="ExceptionOptions" data-dfn-type="dict-member" data-export data-type="boolean" id="dom-exceptionoptions-tracestack"><code><c- g>traceStack</c-></code></dfn> = <c- b>false</c->;
 };
 
@@ -4049,33 +4049,33 @@ In practice, an implementation may run out of resources for valid modules below 
    <p>Since the original release 1.0 of the WebAssembly specification, a number of proposals for extensions have been integrated.
 The following sections provide an overview of what has changed.</p>
    <h3 class="heading settled" data-level="10.1" id="release-20"><span class="secno">10.1. </span><span class="content">Release 2.0</span><a class="self-link" href="#release-20"></a></h3>
-   <h4 class="no-toc heading settled" id="changes-multivalue">Multiple Values<a class="self-link" href="#changes-multivalue"></a></h4>
+   <h4 class="heading no-toc settled" id="changes-multivalue">Multiple Values<a class="self-link" href="#changes-multivalue"></a></h4>
    
 Multiple values can be returned to and from JavaScript functions as an <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-array-exotic-objects" id="ref-for-sec-array-exotic-objects">Array</a> object.
 
 
-   <h4 class="no-toc heading settled" id="changes-bigint">BigInt Integration<a class="self-link" href="#changes-bigint"></a></h4>
+   <h4 class="heading no-toc settled" id="changes-bigint">BigInt Integration<a class="self-link" href="#changes-bigint"></a></h4>
    
 WebAssembly <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-numtype" id="ref-for-syntax-numtype①④">i64</a> values can be passed to and from JavaScript (via imported or exported globals, table get or set operations, function return values or arguments) as <a data-link-type="dfn" data-refhint-key="55e2e3f1" href="https://tc39.github.io/ecma262/#sec-ecmascript-language-types-bigint-type" id="ref-for-sec-ecmascript-language-types-bigint-type①">BigInt</a> objects.
 
 
-   <h4 class="no-toc heading settled" id="changes-reftypes">Reference Types<a class="self-link" href="#changes-reftypes"></a></h4>
+   <h4 class="heading no-toc settled" id="changes-reftypes">Reference Types<a class="self-link" href="#changes-reftypes"></a></h4>
    
 JavaScript values can be passed to and from WebAssembly (via imported or exported globals, table set or get operations, and function arguments or return values) as <a data-link-type="dfn" data-refhint-key="92193adb" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-reftype" id="ref-for-syntax-reftype②⓪">externref</a> values.
 
 
-   <h4 class="no-toc heading settled" id="changes-multitable">Multiple Tables<a class="self-link" href="#changes-multitable"></a></h4>
+   <h4 class="heading no-toc settled" id="changes-multitable">Multiple Tables<a class="self-link" href="#changes-multitable"></a></h4>
    
 Multiple tables can be exported and imported to and from JavaScript.
 
 
    <h3 class="heading settled" data-level="10.2" id="release-30"><span class="secno">10.2. </span><span class="content">Release 3.0</span><a class="self-link" href="#release-30"></a></h3>
-   <h4 class="no-toc heading settled" id="changes-multimemory">Multiple Memories<a class="self-link" href="#changes-multimemory"></a></h4>
+   <h4 class="heading no-toc settled" id="changes-multimemory">Multiple Memories<a class="self-link" href="#changes-multimemory"></a></h4>
    
 Multiple memories can be exported and imported to and from JavaScript.
 
 
-   <h4 class="no-toc heading settled" id="changes-js-sb">JS String Builtins<a class="self-link" href="#changes-js-sb"></a></h4>
+   <h4 class="heading no-toc settled" id="changes-js-sb">JS String Builtins<a class="self-link" href="#changes-js-sb"></a></h4>
    
 Added a builtins option when compiling a module, and a collection of builtin functions for manipulating JS Strings.
 
@@ -4083,8 +4083,8 @@ Added a builtins option when compiling a module, and a collection of builtin fun
 
   </main>
   <div data-fill-with="conformance">
-   <h2 class="no-ref no-num heading settled" id="w3c-conformance"><span class="content">Conformance</span><a class="self-link" href="#w3c-conformance"></a></h2>
-   <h3 class="no-ref no-num heading settled" id="w3c-conventions"><span class="content">Document conventions</span><a class="self-link" href="#w3c-conventions"></a></h3>
+   <h2 class="heading no-num no-ref settled" id="w3c-conformance"><span class="content">Conformance</span><a class="self-link" href="#w3c-conformance"></a></h2>
+   <h3 class="heading no-num no-ref settled" id="w3c-conventions"><span class="content">Document conventions</span><a class="self-link" href="#w3c-conventions"></a></h3>
    <p>Conformance requirements are expressed
     with a combination of descriptive assertions
     and RFC 2119 terminology.
@@ -4119,7 +4119,7 @@ Added a builtins option when compiling a module, and a collection of builtin fun
     </p>
    <p class="note" role="note">Note, this is an informative note.</p>
    <section>
-    <h3 class="no-ref no-num heading settled" id="w3c-conformant-algorithms"><span class="content">Conformant Algorithms</span><a class="self-link" href="#w3c-conformant-algorithms"></a></h3>
+    <h3 class="heading no-num no-ref settled" id="w3c-conformant-algorithms"><span class="content">Conformant Algorithms</span><a class="self-link" href="#w3c-conformant-algorithms"></a></h3>
     <p>Requirements phrased in the imperative as part of algorithms
     (such as "strip any leading space characters"
     or "return false and abort these steps")
@@ -4139,8 +4139,8 @@ Added a builtins option when compiling a module, and a collection of builtin fun
    </section>
   </div>
   <script src="https://www.w3.org/scripts/TR/2021/fixup.js"></script>
-  <h2 class="no-num no-ref heading settled" id="index"><span class="content">Index</span><a class="self-link" href="#index"></a></h2>
-  <h3 class="no-num no-ref heading settled" id="index-defined-here"><span class="content">Terms defined by this specification</span><a class="self-link" href="#index-defined-here"></a></h3>
+  <h2 class="heading no-num no-ref settled" id="index"><span class="content">Index</span><a class="self-link" href="#index"></a></h2>
+  <h3 class="heading no-num no-ref settled" id="index-defined-here"><span class="content">Terms defined by this specification</span><a class="self-link" href="#index-defined-here"></a></h3>
   <ul class="index">
    <li><a href="#HostResizeArrayBuffer">abstract operation HostResizeArrayBuffer</a><span>, in § 5.3</span>
    <li>
@@ -4388,7 +4388,7 @@ Added a builtins option when compiling a module, and a collection of builtin fun
    <li><a href="#dictdef-webassemblycompileoptions">WebAssemblyCompileOptions</a><span>, in § 5</span>
    <li><a href="#dictdef-webassemblyinstantiatedsource">WebAssemblyInstantiatedSource</a><span>, in § 5</span>
   </ul>
-  <h3 class="no-num no-ref heading settled" id="index-defined-elsewhere"><span class="content">Terms defined by reference</span><a class="self-link" href="#index-defined-elsewhere"></a></h3>
+  <h3 class="heading no-num no-ref settled" id="index-defined-elsewhere"><span class="content">Terms defined by reference</span><a class="self-link" href="#index-defined-elsewhere"></a></h3>
   <ul class="index">
    <li>
     <a data-link-type="biblio">[ECMASCRIPT]</a> defines the following terms:
@@ -4643,8 +4643,8 @@ Added a builtins option when compiling a module, and a collection of builtin fun
      <li><span class="dfn-paneled" id="e97a9688">unsigned long</span>
     </ul>
   </ul>
-  <h2 class="no-num no-ref heading settled" id="references"><span class="content">References</span><a class="self-link" href="#references"></a></h2>
-  <h3 class="no-num no-ref heading settled" id="normative"><span class="content">Normative References</span><a class="self-link" href="#normative"></a></h3>
+  <h2 class="heading no-num no-ref settled" id="references"><span class="content">References</span><a class="self-link" href="#references"></a></h2>
+  <h3 class="heading no-num no-ref settled" id="normative"><span class="content">Normative References</span><a class="self-link" href="#normative"></a></h3>
   <dl>
    <dt id="biblio-ecmascript">[ECMASCRIPT]
    <dd><a href="https://tc39.es/ecma262/multipage/"><cite>ECMAScript Language Specification</cite></a>. URL: <a href="https://tc39.es/ecma262/multipage/">https://tc39.es/ecma262/multipage/</a>
@@ -4661,15 +4661,15 @@ Added a builtins option when compiling a module, and a collection of builtin fun
    <dt id="biblio-webidl">[WEBIDL]
    <dd>Edgar Chen; Timothy Gu. <a href="https://webidl.spec.whatwg.org/"><cite>Web IDL Standard</cite></a>. Living Standard. URL: <a href="https://webidl.spec.whatwg.org/">https://webidl.spec.whatwg.org/</a>
   </dl>
-  <h3 class="no-num no-ref heading settled" id="informative"><span class="content">Informative References</span><a class="self-link" href="#informative"></a></h3>
+  <h3 class="heading no-num no-ref settled" id="informative"><span class="content">Informative References</span><a class="self-link" href="#informative"></a></h3>
   <dl>
    <dt id="biblio-ieee-754">[IEEE-754]
    <dd><a href="https://ieeexplore.ieee.org/document/8766229"><cite>IEEE Standard for Floating-Point Arithmetic</cite></a>. 22 July 2019. URL: <a href="https://ieeexplore.ieee.org/document/8766229">https://ieeexplore.ieee.org/document/8766229</a>
    <dt id="biblio-wasmweb">[WASMWEB]
    <dd><a href="https://webassembly.github.io/spec/web-api/"><cite>WebAssembly Web API Specification</cite></a>. Draft. URL: <a href="https://webassembly.github.io/spec/web-api/">https://webassembly.github.io/spec/web-api/</a>
   </dl>
-  <h2 class="no-num no-ref heading settled" id="idl-index"><span class="content">IDL Index</span><a class="self-link" href="#idl-index"></a></h2>
-<pre class="idl highlight def"><c- b>dictionary</c-> <a href="#dictdef-webassemblyinstantiatedsource"><code><c- g>WebAssemblyInstantiatedSource</c-></code></a> {
+  <h2 class="heading no-num no-ref settled" id="idl-index"><span class="content">IDL Index</span><a class="self-link" href="#idl-index"></a></h2>
+<pre class="def highlight idl"><c- b>dictionary</c-> <a href="#dictdef-webassemblyinstantiatedsource"><code><c- g>WebAssemblyInstantiatedSource</c-></code></a> {
     <c- b>required</c-> <a data-link-type="idl-name" href="#module"><c- n>Module</c-></a> <a data-type="Module" href="#dom-webassemblyinstantiatedsource-module"><code><c- g>module</c-></code></a>;
     <c- b>required</c-> <a data-link-type="idl-name" href="#instance"><c- n>Instance</c-></a> <a data-type="Instance" href="#dom-webassemblyinstantiatedsource-instance"><code><c- g>instance</c-></code></a>;
 };
@@ -4816,7 +4816,7 @@ Added a builtins option when compiling a module, and a collection of builtin fun
 };
 
 </pre>
-  <h2 class="no-num no-ref heading settled" id="issues-index"><span class="content">Issues Index</span><a class="self-link" href="#issues-index"></a></h2>
+  <h2 class="heading no-num no-ref settled" id="issues-index"><span class="content">Issues Index</span><a class="self-link" href="#issues-index"></a></h2>
   <div style="counter-reset:issue">
    <div class="issue">
     
