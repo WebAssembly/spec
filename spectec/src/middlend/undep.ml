@@ -50,11 +50,13 @@ module StringSet = Set.Make(String)
 
 type env = {
   mutable wf_set : StringSet.t;
+  mutable proj_set : StringSet.t;
   mutable il_env : Il.Env.t;
 }
 
 let empty_env = {
   wf_set = StringSet.empty;
+  proj_set = StringSet.empty;
   il_env = Il.Env.empty
 }
 
@@ -470,6 +472,27 @@ let get_def_id def =
   | TypD (id, _, _) -> id
   | _ -> "" $ def.at
 
+let is_part_of_bind (free_set : Free.sets) b =
+  match b.it with
+  | ExpB (id, _) -> Free.Set.mem id.it free_set.varid 
+  | TypB id -> Free.Set.mem id.it free_set.typid
+  | DefB (id, _, _) -> Free.Set.mem id.it free_set.defid
+  | GramB (id, _, _) -> Free.Set.mem id.it free_set.gramid
+
+let remove_unused_params def =
+  match def.it with
+  | DecD (id, params, typ, clauses) -> 
+    let params' = [Lib.List.last params] in
+    let clauses' = List.map (fun clause -> match clause.it with
+      | DefD (binds, args, exp, prems) -> 
+        let a = Lib.List.last args in
+        let free_vars = Free.free_arg a in 
+        let filtered_binds = List.filter (is_part_of_bind free_vars) binds in
+        DefD (filtered_binds, [a], exp, prems) $ clause.at  
+    ) clauses in
+    { def with it = DecD (id, params', typ, clauses') }
+  | _ -> def
+
 let rec transform_def env def = 
   match def.it with
   | TypD (id, params, [inst]) when List.exists is_not_exp_param params -> 
@@ -481,8 +504,17 @@ let rec transform_def env def =
     error def.at "Multiples instances encountered, please run type family removal pass first."
   | RelD (id, m, typ, rules) -> 
     (RelD (id, m, transform_typ env typ, List.map (transform_rule env) rules) $ def.at, [])
-  | DecD (id, params, typ, clauses) -> (DecD (id, List.map (transform_param env) params, transform_typ env typ, List.map (transform_clause env) clauses) $ def.at, [])
-  | GramD (id, params, typ, prods) -> (GramD (id, List.map (transform_param env) params, transform_typ env typ, List.map (transform_prod env) prods) $ def.at, [])
+  | DecD (id, params, typ, clauses) -> 
+    let d = DecD (id, 
+      List.map (transform_param env) params, 
+      transform_typ env typ, 
+      List.map (transform_clause env) clauses
+      ) $ def.at 
+    in
+    let t_d = if StringSet.mem id.it env.proj_set then remove_unused_params d else d in
+    (t_d, [])
+  | GramD (id, params, typ, prods) -> 
+    (GramD (id, List.map (transform_param env) params, transform_typ env typ, List.map (transform_prod env) prods) $ def.at, [])
   | RecD defs -> 
     if List.exists (needs_wfness env) defs 
       then List.iter (fun d -> bind_wf_set env (get_def_id d).it) defs; 
@@ -492,9 +524,23 @@ let rec transform_def env def =
     (rec_defs, [RecD (List.concat wf_relations) $ def.at])
   | HintD hintdef -> (HintD hintdef $ def.at, [])
   
+let has_proj_hint (hint : hint) = hint.hintid.it = Typefamilyremoval.projection_hint_id
+
+let create_prefix_map_def set (d : def) = 
+  match d.it with
+  | HintD {it = DecH (id, hints); _} ->
+    (match (List.find_opt has_proj_hint hints) with
+    | Some _ -> set := StringSet.add id.it !set
+    | _ -> ()
+    ) 
+  | _ -> ()
+
 let transform (il : script): script =
   let env = empty_env in 
   env.il_env <- Il.Env.env_of_script il;
+  let proj_set = ref StringSet.empty in
+  List.iter (create_prefix_map_def proj_set) il;
+  env.proj_set <- !proj_set;
   List.concat_map (fun d -> 
     let (t_d, wf_relations) = transform_def env d in 
     t_d :: wf_relations
