@@ -359,7 +359,7 @@ INSTRUCTIONS = [
     Instruction(3.0, r'\REFI31', r'\hex{FB}~\hex{1C}', r'[\I32] \to [(\REF~\I31)]', r'valid-ref.i31', r'exec-ref.i31'),
     Instruction(3.0, r'\I31GETS', r'\hex{FB}~\hex{1D}', r'[\I31REF] \to [\I32]', r'valid-i31.get', r'exec-i31.get'),
     Instruction(3.0, r'\I31GETU', r'\hex{FB}~\hex{1E}', r'[\I31REF] \to [\I32]', r'valid-i31.get', r'exec-i31.get'),
-    Instruction(0.0, None, r'\hex{FB}~\hex{1E} \dots'),
+    Instruction(0.0, None, r'\hex{FB}~\hex{1F} \dots'),
     Instruction(2.0, r'\I32.\TRUNC\K{\_sat\_}\F32\K{\_s}', r'\hex{FC}~\hex{00}', r'[\F32] \to [\I32]', r'valid-cvtop', r'exec-cvtop', r'op-trunc_sat'),
     Instruction(2.0, r'\I32.\TRUNC\K{\_sat\_}\F32\K{\_u}', r'\hex{FC}~\hex{01}', r'[\F32] \to [\I32]', r'valid-cvtop', r'exec-cvtop', r'op-trunc_sat'),
     Instruction(2.0, r'\I32.\TRUNC\K{\_sat\_}\F64\K{\_s}', r'\hex{FC}~\hex{02}', r'[\F64] \to [\I32]', r'valid-cvtop', r'exec-cvtop', r'op-trunc_sat'),
