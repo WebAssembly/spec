@@ -38,7 +38,7 @@ let string_of_region r =
 
 (* Phrases *)
 
-type ('a, 'b) note_phrase = {at : region; it : 'a; note : 'b; mutable mark : bool}
+type ('a, 'b) note_phrase = {at : region; it : 'a; note : 'b; mark : bool}
 type 'a phrase = ('a, unit) note_phrase
 
 let ($) it at = {it; at; note = (); mark = false}
@@ -49,7 +49,6 @@ let it phrase = phrase.it
 let at phrase = phrase.at
 let note phrase = phrase.note
 let mark phrase = phrase.mark
-let set_mark phrase b = phrase.mark <- b
 
 
 (* Utilities *)

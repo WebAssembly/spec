@@ -31,7 +31,7 @@ let snd3 (_, x, _) = x
 let unordered s1 s2 = not Set.(subset s1 s2 || subset s2 s1)
 
 
-let cnf x = x.mark <- true; x
+let cnf x = {x with mark = true}
 
 let cnf_if b e = if b then cnf e else e
 
