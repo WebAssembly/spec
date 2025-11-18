@@ -1,11 +1,5 @@
 (* Things that should be in the OCaml library... *)
 
-module Option :
-sig
-  val exists : ('a -> bool) -> 'a option -> bool
-  val for_all : ('a -> bool) -> 'a option -> bool
-end
-
 module List :
 sig
   val take : int -> 'a list -> 'a list (* raises Failure *)

@@ -31,9 +31,11 @@ let snd3 (_, x, _) = x
 let unordered s1 s2 = not Set.(subset s1 s2 || subset s2 s1)
 
 
+let is_cnf x = x.mark
+
 let cnf x = {x with mark = true}
 
-let cnf_if b e = if b then cnf e else e
+let cnf_if xs x = if List.for_all is_cnf xs then cnf x else x
 
 let cnf_if_prim e =
   if e.mark then e else
@@ -91,13 +93,13 @@ let rec reduce_typ env t : typ =
     (fun _ -> fmt "%s" (il_typ t))
     (fun r -> fmt "%s" (il_typ r))
   ) @@ fun _ ->
-  if t.mark then t else
+  if is_cnf t then t else
   match t.it with
   | VarT (id, args) ->
     let args' = List.map (reduce_arg env) args in
     (match reduce_typ_app' env id args' t.at (Env.find_opt_typ env id) with
     | Some {it = AliasT t'; _} -> reduce_typ env t'
-    | _ -> VarT (id, args') $ t.at |> cnf_if (List.for_all Source.mark args')
+    | _ -> VarT (id, args') $ t.at |> cnf_if args'
     )
   | _ -> t
 
@@ -140,7 +142,7 @@ and reduce_typ_app' env id args at = function
 (* Expression Reduction *)
 
 and is_head_normal_exp e =
-  e.mark ||
+  is_cnf e ||
   match e.it with
   | BoolE _ | NumE _ | TextE _
   | OptE _ | ListE _ | TupE _ | CaseE _ | StrE _ -> true
@@ -148,7 +150,7 @@ and is_head_normal_exp e =
   | _ -> false
 
 and is_normal_exp e =
-  e.mark ||
+  is_cnf e ||
   match e.it with
   | BoolE _ | NumE _ | TextE _ -> true
   | ListE es | TupE es -> List.for_all is_normal_exp es
@@ -162,7 +164,7 @@ and reduce_exp env e : exp =
     (fun _ -> fmt "%s" (il_exp e))
     (fun e' -> fmt "%s" (il_exp e'))
   ) @@ fun _ ->
-  if e.mark then e else
+  if is_cnf e then e else
   match e.it with
   | VarE _ -> e
   | BoolE _ | NumE _ | TextE _ -> cnf e
@@ -222,7 +224,7 @@ and reduce_exp env e : exp =
     let e3' = reduce_exp env e3 in
     (match e1'.it, e2'.it, e3'.it with
     | ListE es, NumE (`Nat i), NumE (`Nat n) when Z.(i + n) < Z.of_int (List.length es) ->
-      ListE (Lib.List.take (Z.to_int n) (Lib.List.drop (Z.to_int i) es)) $> e |> cnf_if e1'.mark
+      ListE (Lib.List.take (Z.to_int n) (Lib.List.drop (Z.to_int i) es)) $> e |> cnf_if [e1']
     | _ -> SliceE (e1', e2', e3') $> e
     )
   | UpdE (e1, p, e2) ->
@@ -236,12 +238,12 @@ and reduce_exp env e : exp =
     reduce_path env e1' p
       (fun e' p' ->
         if p'.it = RootP
-        then reduce_exp env (CatE (e', e2') $> e' |> cnf_if (e'.mark && e2'.mark))
+        then reduce_exp env (CatE (e', e2') $> e' |> cnf_if [e'; e2'])
         else ExtE (e', p', e2') $> e'
       )
   | StrE efs ->
     let efs' = List.map (reduce_expfield env) efs in
-    StrE efs' $> e |> cnf_if (List.for_all (fun (_, e') -> e'.mark) efs')
+    StrE efs' $> e |> cnf_if (List.map snd efs')
   | DotE (e1, atom) ->
     let e1' = reduce_exp env e1 in
     (match e1'.it with
@@ -253,14 +255,14 @@ and reduce_exp env e : exp =
     let e1' = reduce_exp env e1 in
     let e2' = reduce_exp env e2 in
     (match e1'.it, e2'.it with
-    | ListE es1, ListE es2 -> ListE (es1 @ es2) $> e |> cnf_if (e1'.mark && e2'.mark)
+    | ListE es1, ListE es2 -> ListE (es1 @ es2) $> e |> cnf_if [e1'; e2']
     | OptE None, OptE _ -> e2'
     | OptE _, OptE None -> e1'
     | StrE efs1, StrE efs2 ->
       let merge (atom1, e1) (atom2, e2) =
         assert (Atom.eq atom1 atom2);
         (atom1, reduce_exp env (CompE (e1, e2) $> e1))
-      in StrE (List.map2 merge efs1 efs2) $> e |> cnf_if (e1'.mark && e2'.mark)
+      in StrE (List.map2 merge efs1 efs2) $> e |> cnf_if [e1'; e2']
     | _ -> CompE (e1', e2') $> e
     )
   | MemE (e1, e2) ->
@@ -283,7 +285,7 @@ and reduce_exp env e : exp =
     )
   | TupE es ->
     let es' = List.map (reduce_exp env) es in
-    TupE es' $> e |> cnf_if (List.for_all Source.mark es')
+    TupE es' $> e |> cnf_if es'
   | CallE (id, args) ->
     let args' = List.map (reduce_arg env) args in
     let _ps, _t, clauses = Env.find_def env id in
@@ -352,7 +354,7 @@ and reduce_exp env e : exp =
     )
   | OptE eo ->
     let eo' = Option.map (reduce_exp env) eo in
-    OptE eo' $> e |> cnf_if (Lib.Option.for_all Source.mark eo')
+    OptE eo' $> e |> cnf_if (Option.to_list eo')
   | TheE e1 ->
     let e1' = reduce_exp env e1 in
     (match e1'.it with
@@ -361,26 +363,26 @@ and reduce_exp env e : exp =
     )
   | ListE es -> 
     let es' = List.map (reduce_exp env) es in
-    ListE es' $> e |> cnf_if (List.for_all Source.mark es')
+    ListE es' $> e |> cnf_if es'
   | LiftE e1 ->
     let e1' = reduce_exp env e1 in
     (match e1'.it with
     | OptE None -> ListE [] $> e |> cnf
-    | OptE (Some e11') -> ListE [e11'] $> e |> cnf_if e11'.mark
+    | OptE (Some e11') -> ListE [e11'] $> e |> cnf_if [e11']
     | _ -> LiftE e1' $> e
     )
   | CatE (e1, e2) ->
     let e1' = reduce_exp env e1 in
     let e2' = reduce_exp env e2 in
     (match e1'.it, e2'.it with
-    | ListE es1, ListE es2 -> ListE (es1 @ es2) $> e |> cnf_if (e1'.mark && e2'.mark)
+    | ListE es1, ListE es2 -> ListE (es1 @ es2) $> e |> cnf_if [e1'; e2']
     | OptE None, OptE _ -> e2'
     | OptE _, OptE None -> e1'
     | _ -> CatE (e1', e2') $> e
     )
   | CaseE (op, e1) ->
     let e1' = reduce_exp env e1 in
-    CaseE (op, e1') $> e |> cnf_if e1'.mark
+    CaseE (op, e1') $> e |> cnf_if [e1']
   | CvtE (e1, _nt1, nt2) ->
     let e1' = reduce_exp env e1 in
     (match e1'.it with
@@ -415,7 +417,7 @@ and reduce_exp env e : exp =
             Some (s1', s2', eI'::res')
           ) (Some (Subst.empty, Subst.empty, [])) es' (List.combine ets1 ets2)
         with
-        | Some (_, _, res') -> TupE (List.rev res') $> e |> cnf_if (List.for_all Source.mark res')
+        | Some (_, _, res') -> TupE (List.rev res') $> e |> cnf_if res'
         | None -> SubE (e1', t1', t2') $> e
         )
       | _ -> SubE (e1', t1', t2') $> e
@@ -477,9 +479,9 @@ and reduce_arg env a : arg =
     (fun _ -> fmt "%s" (il_arg a))
     (fun a' -> fmt "%s" (il_arg a'))
   ) @@ fun _ ->
-  if a.mark then a else
+  if is_cnf a then a else
   match a.it with
-  | ExpA e -> let e' = reduce_exp env e in ExpA e' $ a.at |> cnf_if e'.mark
+  | ExpA e -> let e' = reduce_exp env e in ExpA e' $ a.at |> cnf_if [e']
   | TypA _t -> a  (* types are reduced on demand *)
   | DefA _id -> a
   | GramA _g -> a

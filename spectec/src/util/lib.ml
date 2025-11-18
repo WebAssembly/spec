@@ -1,16 +1,3 @@
-module Option =
-struct
-  include Option
-
-  let exists f = function
-    | None -> false
-    | Some e -> f e
-
-  let for_all f = function
-    | None -> true
-    | Some e -> f e
-end
-
 module List =
 struct
   include List
