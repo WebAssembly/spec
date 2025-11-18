@@ -8,7 +8,7 @@ type num = Num.num
 type text = string
 type id = string phrase
 type atom = Atom.atom
-type mixop = Mixop.mixop
+type mixop = unit Mixop.mixop
 
 
 (* Iteration *)
@@ -40,8 +40,8 @@ and deftyp' =
   | StructT of typfield list     (* record type *)
   | VariantT of typcase list     (* variant type *)
 
-and typfield = atom * (param list * typ * prem list) * hint list  (* record field *)
-and typcase = mixop * (param list * typ * prem list) * hint list  (* variant case *)
+and typfield = atom * (quant list * typ * prem list) * hint list  (* record field *)
+and typcase = mixop * (quant list * typ * prem list) * hint list  (* variant case *)
 
 
 (* Expressions *)
@@ -125,6 +125,8 @@ and param' =
   | DefP of id * param list * typ           (* `def` defid params : typ *)
   | GramP of id * param list * typ          (* `grammar` gramid param : typ *)
 
+and quant = param
+
 and def = def' phrase
 and def' =
   | TypD of id * param list * inst list               (* syntax type (family) *)
@@ -136,19 +138,19 @@ and def' =
 
 and inst = inst' phrase
 and inst' =
-  | InstD of param list * arg list * deftyp           (* family instance clause *)
+  | InstD of quant list * arg list * deftyp           (* family instance clause *)
 
 and rule = rule' phrase
 and rule' =
-  | RuleD of id * param list * mixop * exp * prem list (* relation rule *)
+  | RuleD of id * quant list * mixop * exp * prem list (* relation rule *)
 
 and clause = clause' phrase
 and clause' =
-  | DefD of param list * arg list * exp * prem list   (* definition clause *)
+  | DefD of quant list * arg list * exp * prem list   (* definition clause *)
 
 and prod = prod' phrase
 and prod' =
-  | ProdD of param list * sym * exp * prem list       (* grammar production *)
+  | ProdD of quant list * sym * exp * prem list       (* grammar production *)
 
 and prem = prem' phrase
 and prem' =

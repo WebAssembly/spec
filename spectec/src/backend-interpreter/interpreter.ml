@@ -342,7 +342,7 @@ and eval_expr env expr =
       | [] -> eval_expr env e2 in
     eval_expr env e1 |> replace ps
   | CaseE (op, el) ->
-    (match (get_atom op) with
+    (match Mixop.head op with
     | Some a -> caseV (Print.string_of_atom a, List.map (eval_expr env) el)
     | None -> caseV ("", List.map (eval_expr env) el)
     )
@@ -480,7 +480,7 @@ and assign lhs rhs env =
     when List.length lhs_s = Array.length !rhs_s ->
     List.fold_right2 assign lhs_s (Array.to_list !rhs_s) env
   | CaseE (op, lhs_s), CaseV (rhs_tag, rhs_s) when List.length lhs_s = List.length rhs_s ->
-    (match get_atom op with
+    (match Mixop.head op with
     | Some lhs_tag when (Print.string_of_atom lhs_tag) = rhs_tag ->
       List.fold_right2 assign lhs_s rhs_s env
     | None when "" = rhs_tag ->
@@ -600,7 +600,7 @@ and step_instr (fname: string) (ctx: AlContext.t) (env: value Env.t) (instr: ins
     )
   | PopI e ->
     (match e.it with
-    | CaseE ([{it = Atom.Atom "FRAME_"; _}] :: _, [_; inner_e]) ->
+    | CaseE (op, [_; inner_e]) when (Option.get (Mixop.head op)).it = Atom.Atom "FRAME_" ->
       (match WasmContext.pop_context () with
       | CaseV ("FRAME_", [_; inner_v]), _, _ ->
         let new_env = assign inner_e inner_v env in

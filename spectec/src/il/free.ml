@@ -113,10 +113,10 @@ and free_deftyp dt =
   | StructT tfs -> free_list free_typfield tfs
   | VariantT tcs -> free_list free_typcase tcs
 
-and free_typfield (_, (ps, t, prems), _) =
-  free_params ps + (free_typ t + (free_prems prems - bound_typ t) - bound_params ps)
-and free_typcase (_, (ps, t, prems), _) =
-  free_params ps + (free_typ t + (free_prems prems - bound_typ t) - bound_params ps)
+and free_typfield (_, (qs, t, prems), _) =
+  free_quants qs + (free_typ t + (free_prems prems - bound_typ t) - bound_quants qs)
+and free_typcase (_, (qs, t, prems), _) =
+  free_quants qs + (free_typ t + (free_prems prems - bound_typ t) - bound_quants qs)
 
 
 (* Expressions *)
@@ -204,29 +204,34 @@ and bound_param p =
   | DefP (x, _, _) -> bound_defid x
   | GramP (x, _, _) -> bound_gramid x
 
+and free_quant q = free_param q
+and bound_quant q = bound_param q
+
 and free_args as_ = free_list free_arg as_
 and free_params ps = free_list_dep free_param bound_param ps
+and free_quants qs = free_list_dep free_quant bound_quant qs
 and bound_params ps = free_list bound_param ps
+and bound_quants qs = free_list bound_quant qs
 
 let free_inst inst =
   match inst.it with
-  | InstD (ps, as_, dt) ->
-    free_params ps + (free_args as_ + free_deftyp dt - bound_params ps)
+  | InstD (qs, as_, dt) ->
+    free_quants qs + (free_args as_ + free_deftyp dt - bound_quants qs)
 
 let free_rule rule =
   match rule.it with
-  | RuleD (_x, ps, _op, e, prems) ->
-    free_params ps + (free_exp e + free_prems prems - bound_params ps)
+  | RuleD (_x, qs, _op, e, prems) ->
+    free_quants qs + (free_exp e + free_prems prems - bound_quants qs)
 
 let free_clause clause =
   match clause.it with
-  | DefD (ps, as_, e, prems) ->
-    free_params ps + (free_args as_ + free_exp e + free_prems prems - bound_params ps)
+  | DefD (qs, as_, e, prems) ->
+    free_quants qs + (free_args as_ + free_exp e + free_prems prems - bound_quants qs)
 
 let free_prod prod =
   match prod.it with
-  | ProdD (ps, g, e, prems) ->
-    free_params ps + (free_sym g + free_exp e + free_prems prems - bound_params ps)
+  | ProdD (qs, g, e, prems) ->
+    free_quants qs + (free_sym g + free_exp e + free_prems prems - bound_quants qs)
 
 let free_hintdef hd =
   match hd.it with

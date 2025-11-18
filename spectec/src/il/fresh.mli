@@ -9,3 +9,5 @@ val refresh_typid : id -> id
 val refresh_varid : id -> id
 val refresh_defid : id -> id
 val refresh_gramid : id -> id
+
+val refresh_quants : quant list -> quant list * Subst.t

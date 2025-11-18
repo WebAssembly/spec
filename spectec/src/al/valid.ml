@@ -68,7 +68,10 @@ let il_env: IlEnv.t ref = ref IlEnv.empty
 
 let varT s = VarT (s $ no_region, []) $ no_region
 
-let is_trivial_mixop = List.for_all (fun atoms -> List.length atoms = 0)
+let rec is_trivial_mixop = function
+  | Mixop.Arg () -> true
+  | Mixop.Seq mixops -> List.for_all is_trivial_mixop mixops
+  | _ -> false
 
 
 (* Subtyping *)
@@ -555,14 +558,14 @@ and valid_expr env (expr: expr) : unit =
   | CaseE (op, exprs) ->
     let is_evalctx_id id =
       let evalctx_ids = List.filter_map (fun (mixop, _, _) ->
-        let atom = mixop |> List.hd |> List.hd in
+        let atom = Mixop.flatten mixop |> List.hd |> List.hd in
         match atom.it with
         | Atom.Atom s -> Some s
         | _ -> None
       ) (get_typcases source evalctxT) in
       List.mem id evalctx_ids
     in
-    (match op with
+    (match Mixop.flatten op with
     | [[{ it=Atom id; _ }]] when is_evalctx_id id ->
       check_case source exprs (TupT [] $ no_region)
     | _ -> 

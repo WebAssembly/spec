@@ -11,10 +11,7 @@ open Ast
 let bool b = Atom (Bool.to_string b)
 let text t = Atom ("\"" ^ String.escaped t ^ "\"")
 let id x = text x.it
-let mixop op =
-  String.concat "%" (List.map (
-    fun ats -> String.concat "" (List.map Atom.to_string ats)) op
-  ) |> text
+let mixop op = text (Mixop.to_string op)
 
 let num = function
   | `Nat n -> Node ("nat", [Atom (Z.to_string n)])
@@ -90,7 +87,7 @@ and typbind (x, t) =
   Node ("bind", [id x; typ t])
 
 and typfield (at, (ps, t, prs), _hints) =
-  Node ("field", mixop [[at]] :: List.map param ps @ typ t :: List.map prem prs)
+  Node ("field", mixop (Mixop.Atom at) :: List.map param ps @ typ t :: List.map prem prs)
 
 and typcase (op, (ps, t, prs), _hints) =
   Node ("case", mixop op :: List.map param ps @ typ t :: List.map prem prs)
@@ -112,7 +109,7 @@ and exp e =
   | UpdE (e1, p, e2) -> Node ("upd", [exp e1; path p; exp e2])
   | ExtE (e1, p, e2) -> Node ("ext", [exp e1; path p; exp e2])
   | StrE efs -> Node ("struct", List.map expfield efs)
-  | DotE (e1, at, as_) -> Node ("dot", [exp e1; mixop [[at]]] @ List.map arg as_)
+  | DotE (e1, at, as_) -> Node ("dot", [exp e1; mixop (Mixop.Atom at)] @ List.map arg as_)
   | CompE (e1, e2) -> Node ("comp", [exp e1; exp e2])
   | MemE (e1, e2) -> Node ("mem", [exp e1; exp e2])
   | LenE e1 -> Node ("len", [exp e1])
@@ -131,14 +128,14 @@ and exp e =
   | SubE (e1, t1, t2) -> Node ("sub", [typ t1; typ t2; exp e1])
 
 and expfield (at, as_, e) =
-  Node ("field", [mixop [[at]]] @ List.map arg as_ @ [exp e])
+  Node ("field", [mixop (Mixop.Atom at)] @ List.map arg as_ @ [exp e])
 
 and path p =
   match p.it with
   | RootP -> Atom "root"
   | IdxP (p1, e) -> Node ("idx", [path p1; exp e])
   | SliceP (p1, e1, e2) -> Node ("slice", [path p1; exp e1; exp e2])
-  | DotP (p1, at, as_) -> Node ("dot", [path p1; mixop [[at]]] @ List.map arg as_)
+  | DotP (p1, at, as_) -> Node ("dot", [path p1; mixop (Mixop.Atom at)] @ List.map arg as_)
 
 and iterexp (it, xes) =
   iter it :: List.map (fun (x, e) -> Node ("dom", [id x; exp e])) xes

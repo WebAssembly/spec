@@ -56,6 +56,35 @@ let case_of_case e =
   | _ -> error e.at
     (Printf.sprintf "expected a CaseE, but got `%s`" (Il.Print.string_of_exp e))
 
+let case_head mixop =
+  match Mixop.head mixop with
+  | Some {it = Atom.Atom id; _} -> id
+  | _ -> ""
+
+let rec split_last_case' = function
+  | Mixop.Arg () -> Some (Mixop.Seq [])
+  | Mixop.Seq [] | Mixop.Atom _ -> None
+  | Mixop.Seq mixops ->
+    let mixops', mixop = Lib.List.split_last mixops in
+    (match split_last_case' mixop with
+    | Some (Mixop.Seq []) -> Some (Mixop.Seq mixops')
+    | Some mixop' -> Some (Mixop.Seq (mixops' @ [mixop']))
+    | None -> split_last_case' (Mixop.Seq mixops')
+    )
+  | Mixop.Brack (l, mixop, _) ->
+    (match split_last_case' mixop with
+    | Some (Mixop.Seq []) -> Some (Mixop.Atom l)
+    | Some mixop' -> Some (Mixop.Seq [Mixop.Atom l; mixop'])
+    | None -> None
+    )
+  | Mixop.Infix (mixop1, atom, mixop2) ->
+    (match split_last_case' mixop2 with
+    | Some mixop2' -> Some (Mixop.Infix (mixop1, atom, mixop2'))
+    | None -> split_last_case' mixop1
+    )
+
+let split_last_case mixop = Option.get (split_last_case' mixop)
+
 let is_let_prem_with_rhs_type t prem =
   match prem.it with
   | LetPr (_, e, _) ->

@@ -211,7 +211,7 @@ and valid_deftyp envr dt =
   | AliasT t ->
     valid_typ !envr t
   | StructT tfs ->
-    check_mixops "record" "field" (List.map (fun (atom, _, _) -> [[atom]]) tfs) dt.at;
+    check_mixops "record" "field" (List.map (fun (atom, _, _) -> Mixop.Atom atom) tfs) dt.at;
     List.iter (valid_typfield envr) tfs
   | VariantT tcs ->
     check_mixops "variant" "case" (List.map (fun (op, _, _) -> op) tcs) dt.at;
@@ -219,7 +219,7 @@ and valid_deftyp envr dt =
 
 and valid_typfield envr (_atom, (qs, t, prems), _hints) =
   let envr' = local_env envr in
-  List.iter (valid_param envr') qs;
+  List.iter (valid_quant envr') qs;
   valid_typ !envr' t;
   List.iter (valid_prem !envr') prems
 
@@ -233,11 +233,11 @@ and valid_typcase envr (mixop, (qs, t, prems), _hints) =
     | TupT ts -> List.length ts
     | _ -> 1
   in
-  if List.length mixop <> arity + 1 then
+  if Mixop.arity mixop <> arity then
     error t.at ("inconsistent arity in mixin notation, `" ^ string_of_mixop mixop ^
       "` applied to " ^ typ_string !envr t);
   let envr' = local_env envr in
-  List.iter (valid_param envr') qs;
+  List.iter (valid_quant envr') qs;
   valid_typ !envr' t;
   List.iter (valid_prem !envr') prems
 
@@ -673,6 +673,8 @@ and valid_param envr p =
     valid_typ !envr' t;
     envr := Env.bind_gram !envr x (ps, t, [])
 
+and valid_quant envr q = valid_param envr q
+
 let valid_inst envr ps inst =
   Debug.(log_in "il.valid_inst" line);
   Debug.(log_in_at "il.valid_inst" inst.at
@@ -681,7 +683,7 @@ let valid_inst envr ps inst =
   match inst.it with
   | InstD (qs, as_, dt) ->
     let envr' = local_env envr in
-    List.iter (valid_param envr') qs;
+    List.iter (valid_quant envr') qs;
     let _s = valid_args !envr' as_ ps Subst.empty inst.at in
     valid_deftyp envr' dt
 
@@ -693,7 +695,7 @@ let valid_rule envr mixop t rule =
   match rule.it with
   | RuleD (_x, qs, mixop', e, prems) ->
     let envr' = local_env envr in
-    List.iter (valid_param envr') qs;
+    List.iter (valid_quant envr') qs;
     valid_expmix ~side:`Lhs !envr' mixop' e (mixop, t) e.at;
     List.iter (valid_prem !envr') prems
 
@@ -706,7 +708,7 @@ try
   match clause.it with
   | DefD (qs, as_, e, prems) ->
     let envr' = local_env envr in
-    List.iter (valid_param envr') qs;
+    List.iter (valid_quant envr') qs;
     let s = valid_args !envr' as_ ps Subst.empty clause.at in
     valid_exp !envr' e (Subst.subst_typ s t);
     List.iter (valid_prem !envr') prems
@@ -723,7 +725,7 @@ let valid_prod envr ps t prod =
   match prod.it with
   | ProdD (qs, g, e, prems) ->
     let envr' = local_env envr in
-    List.iter (valid_param envr') qs;
+    List.iter (valid_quant envr') qs;
     let _t' = valid_sym !envr' g in
     valid_exp !envr' e t;
     List.iter (valid_prem !envr') prems

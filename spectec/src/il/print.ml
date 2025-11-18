@@ -41,7 +41,7 @@ let string_of_cmpop = function
   | #Num.cmpop as op -> Num.string_of_cmpop op
 
 let string_of_atom = Atom.to_string
-let string_of_mixop = Mixop.to_string
+let string_of_mixop mixop = "`" ^ Mixop.to_string mixop ^ "`"
 
 
 (* Types *)
@@ -85,20 +85,23 @@ and string_of_deftyp layout dt =
   match dt.it with
   | AliasT t -> string_of_typ t
   | StructT tfs when layout = `H ->
-    "{" ^ concat ", " (List.map string_of_typfield tfs) ^ "}"
+    "{" ^ concat ", " (List.map (string_of_typfield layout) tfs) ^ "}"
   | StructT tfs ->
-    "\n{\n  " ^ concat ",\n  " (List.map string_of_typfield tfs) ^ "\n}"
+    "\n{\n  " ^ concat ",\n  " (List.map (string_of_typfield layout) tfs) ^ "\n}"
   | VariantT tcs when layout = `H ->
-    "| " ^ concat " | " (List.map string_of_typcase tcs)
+    "| " ^ concat " | " (List.map (string_of_typcase layout) tcs)
   | VariantT tcs ->
-    "\n  | " ^ concat "\n  | " (List.map string_of_typcase tcs)
+    "\n  | " ^ concat "\n  | " (List.map (string_of_typcase layout) tcs)
 
-and string_of_typfield (atom, (qs, t, prems), _hints) =
-  string_of_mixop [[atom]] ^ string_of_quants qs ^ " " ^ string_of_typ t ^
+and string_of_typfield layout (atom, (qs, t, prems), _hints) =
+  string_of_mixop (Mixop.Atom atom) ^
+  string_of_quants qs ^ " " ^ string_of_typ t ^
+  if layout = `H && prems <> [] then " -- .." else
     concat "" (List.map (prefix "\n    -- " string_of_prem) prems)
 
-and string_of_typcase (op, (qs, t, prems), _hints) =
+and string_of_typcase layout (op, (qs, t, prems), _hints) =
   string_of_mixop op ^ string_of_quants qs ^ string_of_typ_args t ^
+  if layout = `H && prems <> [] then " -- .." else
     concat "" (List.map (prefix "\n    -- " string_of_prem) prems)
 
 
@@ -128,7 +131,7 @@ and string_of_exp e =
   | StrE efs -> "{" ^ concat ", " (List.map string_of_expfield efs) ^ "}"
   | DotE (e1, atom, as_) ->
     string_of_exp e1 ^ "." ^
-    string_of_mixop [[atom]] ^ "_" ^ string_of_typ_name e1.note ^
+    string_of_mixop (Mixop.Atom atom) ^ "_" ^ string_of_typ_name e1.note ^
     string_of_quantargs as_
   | CompE (e1, e2) -> string_of_exp e1 ^ " +++ " ^ string_of_exp e2
   | MemE (e1, e2) -> "(" ^ string_of_exp e1 ^ " <- " ^ string_of_exp e2 ^ ")"
@@ -165,7 +168,7 @@ and string_of_exps sep es =
   concat sep (List.map string_of_exp es)
 
 and string_of_expfield (atom, as_, e) =
-  string_of_mixop [[atom]] ^
+  string_of_mixop (Mixop.Atom atom) ^
   string_of_quantargs as_ ^
   " " ^ string_of_exp e
 
@@ -177,11 +180,11 @@ and string_of_path p =
   | SliceP (p1, e1, e2) ->
     string_of_path p1 ^ "[" ^ string_of_exp e1 ^ " : " ^ string_of_exp e2 ^ "]"
   | DotP ({it = RootP; note; _}, atom, as_) ->
-    string_of_mixop [[atom]] ^ "_" ^ string_of_typ_name note ^
+    string_of_mixop (Mixop.Atom atom) ^ "_" ^ string_of_typ_name note ^
     string_of_quantargs as_
   | DotP (p1, atom, as_) ->
     string_of_path p1 ^ "." ^
-    string_of_mixop [[atom]] ^ "_" ^ string_of_typ_name p1.note ^
+    string_of_mixop (Mixop.Atom atom) ^ "_" ^ string_of_typ_name p1.note ^
     string_of_quantargs as_
 
 and string_of_iterexp (iter, xes) =

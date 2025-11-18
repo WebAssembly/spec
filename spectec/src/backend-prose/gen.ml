@@ -38,7 +38,7 @@ let is_validation_helper_relation def =
 let is_validation_relation def =
   match def.it with
   | Ast.RelD (_, mixop, _, _) ->
-    List.exists (List.exists (fun atom -> atom.it = Atom.Turnstile)) mixop
+    List.exists (List.exists (fun atom -> atom.it = Atom.Turnstile)) (Mixop.flatten mixop)
   | _ -> false
 
 let extract_validation_il il =
@@ -46,8 +46,6 @@ let extract_validation_il il =
   |> List.concat_map flatten_rec
   |> List.filter
     (fun rel -> is_validation_relation rel || is_validation_helper_relation rel)
-
-let atomize atom' = atom' $$ no_region % (Atom.info "")
 
 let rel_has_id id rel =
   match rel.it with
@@ -72,11 +70,11 @@ let swap = function `LtOp -> `GtOp | `GtOp -> `LtOp | `LeOp -> `GeOp | `GeOp -> 
    CASE (?()) ~> () *)
 let recover_optional_singleton_constructor e =
   match e.it with
-  | Al.Ast.CaseE ([[atom]; [{it = Quest; _}]], [{it = OptE opt; _ }]) ->
+  | Al.Ast.CaseE (Mixop.(Seq [Atom atom; Arg ()]), [{it = OptE opt; _ }]) ->
     (
       match opt with
-      | None   -> Al.Ast.CaseE ([[]], [])
-      | Some _ -> Al.Ast.CaseE ([[atom]], [])
+      | Some _ -> Al.Ast.CaseE (Mixop.Atom atom, [])
+      | None   -> Al.Ast.CaseE (Mixop.Seq [], [])
     ) |> (fun it -> {e with it})
   | _ -> e
 
@@ -84,10 +82,10 @@ let recover_optional_singleton_constructor e =
 let remove_empty_arrow_sub e =
   match e.it with
   | Al.Ast.CaseE (
-      [[]; [{it = ArrowSub; _} as arrow]; []; []],
+      Mixop.(Infix (Arg (), ({it = ArrowSub; _} as arrow), Seq [Arg (); Arg ()])),
       [lhs; {it = ListE []; _}; rhs]
     ) ->
-    let it = Al.Ast.CaseE ([[];[{arrow with it = Arrow}];[]], [lhs; rhs]) in
+    let it = Al.Ast.CaseE (Mixop.(Infix (Arg (), {arrow with it = Arrow}, Arg ())), [lhs; rhs]) in
     {e with it}
   | _ -> e
 
@@ -135,14 +133,14 @@ type rel_kind =
 
 let get_rel_kind def =
   let open Atom in
-  let valid_pattern = [[]; [atomize Turnstile]; [atomize Colon; atomize (Atom "OK")]] in
-  let valid_with_pattern = [[]; [atomize Turnstile]; [atomize Colon]; []] in
-  let match_pattern = [[]; [atomize Turnstile]; [atomize Sub]; []] in
-  let const_pattern = [[]; [atomize Turnstile]; [atomize (Atom "CONST")]] in
-  let valid_const_pattern = [[]; [atomize Turnstile]; [atomize Colon]; [atomize (Atom "CONST")]] in
-  let valid_with2_pattern = [[]; [atomize Turnstile]; [atomize Colon]; []; []] in
-  let defaultable_pattern = [[]; [atomize Turnstile]; [atomize (Atom "DEFAULTABLE")]] in
-  let nondefaultable_pattern = [[]; [atomize Turnstile]; [atomize (Atom "NONDEFAULTABLE")]] in
+  let valid_pattern = [[]; [Turnstile]; [Colon; Atom "OK"]] in
+  let valid_with_pattern = [[]; [Turnstile]; [Colon]; []] in
+  let match_pattern = [[]; [Turnstile]; [Sub]; []] in
+  let const_pattern = [[]; [Turnstile]; [Atom "CONST"]] in
+  let valid_const_pattern = [[]; [Turnstile]; [Colon]; [Atom "CONST"]] in
+  let valid_with2_pattern = [[]; [Turnstile]; [Colon]; []; []] in
+  let defaultable_pattern = [[]; [Turnstile]; [Atom "DEFAULTABLE"]] in
+  let nondefaultable_pattern = [[]; [Turnstile]; [Atom "NONDEFAULTABLE"]] in
 
   let has_instr_as_second typ =
     match typ.it with
@@ -153,7 +151,8 @@ let get_rel_kind def =
 
   match def.it with
   | Ast.RelD (id, mixop, typ, _) ->
-      let match_mixop pattern = Mixop.(eq mixop pattern || eq mixop (List.tl pattern)) in
+      let mixop' = List.map (List.map Util.Source.it) (Mixop.flatten mixop) in
+      let match_mixop pattern = mixop' = pattern || mixop' = List.tl pattern in
       if match_mixop valid_pattern then
         ValidRel
       else if match_mixop valid_with_pattern then

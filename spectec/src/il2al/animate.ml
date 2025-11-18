@@ -251,7 +251,8 @@ let is_not_lhs e = match e.it with
 
 (* Hack to handle RETURN_CALL_ADDR, eventually should be removed *)
 let is_atomic_lhs e = match e.it with
-| CaseE ([{it = Atom "FUNC"; _}]::_, _, { it = CaseE ([[]; [{it = Arrow; _}]; []], _, { it = TupE [ { it = IterE (_, (ListN _, _)); _} ; { it = IterE (_, (ListN _, _)); _} ] ; _} ); _ }) -> true
+| CaseE (op, _, { it = CaseE (Xl.Mixop.(Infix (Arg (), {it = Arrow; _}, Arg ())), _, { it = TupE [ { it = IterE (_, (ListN _, _)); _} ; { it = IterE (_, (ListN _, _)); _} ] ; _} ); _ }) ->
+  Il2al_util.case_head op = "FUNC"
 | _ -> false
 
 (* Hack to handle ARRAY.INIT_DATA, eventually should be removed *)
@@ -349,7 +350,7 @@ let animate_rule r = match r.it with
   | RuleD(id, binds, mixop, args, prems) -> (
     match (mixop, args.it) with
     (* lhs ~> rhs *)
-    | ([ [] ; [{it = SqArrow; _}] ; []] , TupE ([_lhs; _rhs])) ->
+    | (Xl.Mixop.(Infix (Arg (), {it = SqArrow; _}, Arg ())) , TupE ([_lhs; _rhs])) ->
       let new_prems = animate_prems {empty with varid = Set.of_list Encode.input_vars} prems in
       RuleD(id, binds, mixop, args, new_prems) $ r.at
     | _ -> r

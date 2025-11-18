@@ -115,13 +115,13 @@ and subst_deftyp s dt =
   | VariantT tcs -> VariantT (subst_list subst_typcase s tcs)
   ) $ dt.at
 
-and subst_typfield s (atom, (ps, t, prems), hints) =
-  let ps', s' = subst_params s ps in
-  (atom, (ps', subst_typ s' t, subst_list subst_prem s' prems), hints)
+and subst_typfield s (atom, (qs, t, prems), hints) =
+  let qs', s' = subst_quants s qs in
+  (atom, (qs', subst_typ s' t, subst_list subst_prem s' prems), hints)
 
-and subst_typcase s (op, (ps, t, prems), hints) =
-  let ps', s' = subst_params s ps in
-  (op, (ps', subst_typ s' t, subst_list subst_prem s' prems), hints)
+and subst_typcase s (op, (qs, t, prems), hints) =
+  let qs', s' = subst_quants s qs in
+  (op, (qs', subst_typ s' t, subst_list subst_prem s' prems), hints)
 
 and subst_typbind s (x, t) =
   (subst_varid s x, subst_typ s t)
@@ -244,6 +244,7 @@ and subst_param s p =
 
 and subst_args s as_ = subst_list subst_arg s as_
 and subst_params s ps = subst_list_dep subst_param Free.bound_param s ps
+and subst_quants s ps = subst_list_dep subst_param Free.bound_quant s ps
 
 
 (* Optimizations *)
