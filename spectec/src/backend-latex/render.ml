@@ -1276,7 +1276,7 @@ and render_exp env e =
       "%X"
     in "\\mathrm{U{+}" ^ Z.format fmt n ^ "}"
   | NumE (`AtomOp, `Nat n) ->
-    let atom = {it = Atom.Atom (Z.to_string n); at = e.at; note = Atom.info "nat"} in
+    let atom = Atom.Atom (Z.to_string n) $$ e.at % Atom.info "nat" in
     render_atom (without_macros true env) atom
   | NumE _ -> assert false
   | TextE t -> render_text t

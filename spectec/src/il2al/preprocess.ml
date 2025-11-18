@@ -12,7 +12,7 @@ let rec transform_rulepr_prem prem =
     prem
     |> transform_rulepr_prem
     |> (fun new_prem -> IterPr (new_prem, iterexp) $ prem.at)
-  | IfPr ({ it = CmpE (`EqOp, _, { it = CallE (id, args); note; at }, rhs); _ })
+  | IfPr ({ it = CmpE (`EqOp, _, { it = CallE (id, args); note; at; _ }, rhs); _ })
   when List.mem id.it !typing_functions ->
     IfPr (CallE (id, args @ [ExpA rhs $ rhs.at]) $$ at % note) $ prem.at
   | _ -> prem

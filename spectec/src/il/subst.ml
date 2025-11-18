@@ -95,6 +95,7 @@ let rec subst_iter s iter =
 (* Types *)
 
 and subst_typ s t =
+  if t.mark then t else
   (match t.it with
   | VarT (id, as_) ->
     (match Map.find_opt id.it s.typid with
@@ -130,6 +131,7 @@ and subst_typcase s (op, (bs, t, prems), hints) =
 (* Expressions *)
 
 and subst_exp s e =
+  if e.mark then e else
   (match e.it with
   | VarE id ->
     (match Map.find_opt id.it s.varid with
@@ -223,6 +225,7 @@ and subst_prem s prem =
 (* Definitions *)
 
 and subst_arg s a =
+  if a.mark then a else
   (match a.it with
   | ExpA e -> ExpA (subst_exp s e)
   | TypA t -> TypA (subst_typ s t)

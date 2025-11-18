@@ -25,7 +25,7 @@ type iter =
 and numtyp = Num.typ
 and optyp = [Bool.typ | Num.typ]
 
-and typ = typ' phrase
+and typ = typ' phrase  (* mark denotes closed normal forms up to struct/variant type names *)
 and typ' =
   | VarT of id * arg list        (* typid( arg* ) *)
   | BoolT                        (* `bool` *)
@@ -50,7 +50,7 @@ and unop = [Bool.unop | Num.unop]
 and binop = [Bool.binop | Num.binop]
 and cmpop = [Bool.cmpop | Num.cmpop]
 
-and exp = (exp', typ) note_phrase
+and exp = (exp', typ) note_phrase  (* mark denotes closed normal forms *)
 and exp' =
   | VarE of id                   (* varid *)
   | BoolE of bool                (* bool *)
@@ -111,7 +111,7 @@ and sym' =
 
 (* Definitions *)
 
-and arg = arg' phrase
+and arg = arg' phrase  (* mark denotes closed normal forms *)
 and arg' =
   | ExpA of exp                                       (* exp *)
   | TypA of typ                                       (* `syntax` typ *)
