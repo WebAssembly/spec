@@ -524,9 +524,10 @@ and reduce_prem env prem : [`True of Subst.t | `False | `None] =
     else
       (match iter' with
       | Opt ->
+        (* Iterationen values es'/es_in are in hnf, so got to be options. *)
         let eos_in = List.map as_opt_exp es_in in
         if List.for_all Option.is_none eos_in then
-          (* Iterating over empty option: nothing to do. *)
+          (* Iterating over empty options: nothing to do. *)
           `True Subst.empty
         else if List.for_all Option.is_some eos_in then
           (* All iteration variables are non-empty: reduce body. *)
