@@ -1,4 +1,4 @@
-module Make (Engine : Engine.Engine) :
+module Make (Engine : Embed.Engine) :
 sig
   val register_instance : Ast.name -> Engine.moduleinst -> unit
   val register_virtual : Ast.name ->

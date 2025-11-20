@@ -1,4 +1,4 @@
-module Make (Engine : Engine.Engine) =
+module Make (Engine : Embed.Engine) =
 struct
 
 open Script
