@@ -524,7 +524,7 @@ and reduce_prem env prem : [`True of Subst.t | `False | `None] =
     else
       (match iter' with
       | Opt ->
-        (* Iterationen values es'/es_in are in hnf, so got to be options. *)
+        (* Iterationen values es_in are in hnf, so got to be options. *)
         let eos_in = List.map as_opt_exp es_in in
         if List.for_all Option.is_none eos_in then
           (* Iterating over empty options: nothing to do. *)
@@ -555,7 +555,7 @@ and reduce_prem env prem : [`True of Subst.t | `False | `None] =
           `None
       | List | List1 ->
         (* Unspecified iteration count: get length from (first) iteration value
-         * and start over; es'/es_in is in hnf, so got to be a list. *)
+         * and start over; es_in are in hnf, so got to be lists. *)
         let n = List.length (as_list_exp (List.hd es_in)) in
         if iter' = List || n >= 1 then
           let en = NumE (`Nat (Z.of_int n)) $$ prem.at % (NumT `NatT $ prem.at) in
@@ -565,7 +565,7 @@ and reduce_prem env prem : [`True of Subst.t | `False | `None] =
            * (This is a stuck computation, i.e., undefined.) *)
           `None
       | ListN ({it = NumE (`Nat n'); _}, xo) ->
-        (* Iterationen values es'/es_in are in hnf, so got to be lists. *)
+        (* Iterationen values es_in are in hnf, so got to be lists. *)
         let ess_in = List.map as_list_exp es_in in
         let ns = List.map List.length ess_in in
         let n = Z.to_int n' in
