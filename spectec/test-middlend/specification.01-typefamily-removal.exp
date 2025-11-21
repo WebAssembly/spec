@@ -675,8 +675,7 @@ syntax Fnn =
   | F64
 
 ;; ../../../../specification/wasm-3.0/1.2-syntax.types.spectec
-syntax Vnn = 
-  | V128
+syntax Vnn = vectype
 
 ;; ../../../../specification/wasm-3.0/1.2-syntax.types.spectec
 syntax Cnn = 
@@ -771,13 +770,7 @@ syntax Jnn =
   | I16
 
 ;; ../../../../specification/wasm-3.0/1.2-syntax.types.spectec
-syntax Lnn = 
-  | I32
-  | I64
-  | F32
-  | F64
-  | I8
-  | I16
+syntax Lnn = lanetype
 
 ;; ../../../../specification/wasm-3.0/1.2-syntax.types.spectec
 syntax limits = 
@@ -1829,17 +1822,17 @@ syntax shape =
 ;; ../../../../specification/wasm-3.0/1.3-syntax.instructions.spectec
 def $dim(shape : shape) : dim
   ;; ../../../../specification/wasm-3.0/1.3-syntax.instructions.spectec
-  def $dim{Lnn : Lnn, N : nat}(`%X%`_shape(Lnn, `%`_dim(N))) = `%`_dim(N)
+  def $dim{Lnn : lanetype, N : nat}(`%X%`_shape(Lnn, `%`_dim(N))) = `%`_dim(N)
 
 ;; ../../../../specification/wasm-3.0/1.3-syntax.instructions.spectec
 def $lanetype(shape : shape) : lanetype
   ;; ../../../../specification/wasm-3.0/1.3-syntax.instructions.spectec
-  def $lanetype{Lnn : Lnn, N : nat}(`%X%`_shape(Lnn, `%`_dim(N))) = Lnn
+  def $lanetype{Lnn : lanetype, N : nat}(`%X%`_shape(Lnn, `%`_dim(N))) = Lnn
 
 ;; ../../../../specification/wasm-3.0/1.3-syntax.instructions.spectec
 def $unpackshape(shape : shape) : numtype
   ;; ../../../../specification/wasm-3.0/1.3-syntax.instructions.spectec
-  def $unpackshape{Lnn : Lnn, N : nat}(`%X%`_shape(Lnn, `%`_dim(N))) = $lunpack(Lnn)
+  def $unpackshape{Lnn : lanetype, N : nat}(`%X%`_shape(Lnn, `%`_dim(N))) = $lunpack(Lnn)
 
 ;; ../../../../specification/wasm-3.0/1.3-syntax.instructions.spectec
 syntax ishape = 
@@ -3616,7 +3609,7 @@ def $default_(valtype : valtype) : val?
   ;; ../../../../specification/wasm-3.0/4.1-execution.values.spectec
   def $default_{Fnn : Fnn}((Fnn : Fnn <: valtype)) = ?(CONST_val((Fnn : Fnn <: numtype), mk_num__1_num_(Fnn, $fzero($size((Fnn : Fnn <: numtype))))))
   ;; ../../../../specification/wasm-3.0/4.1-execution.values.spectec
-  def $default_{Vnn : Vnn}((Vnn : Vnn <: valtype)) = ?(VCONST_val(Vnn, `%`_vec_(0)))
+  def $default_{Vnn : vectype}((Vnn : vectype <: valtype)) = ?(VCONST_val(Vnn, `%`_vec_(0)))
   ;; ../../../../specification/wasm-3.0/4.1-execution.values.spectec
   def $default_{ht : heaptype}(REF_valtype(?(NULL_null), ht)) = ?(REF.NULL_val(ht))
   ;; ../../../../specification/wasm-3.0/4.1-execution.values.spectec
@@ -5418,23 +5411,23 @@ def $ivshufflop_(shape : shape, laneidx*, vec_ : vec_(V128_Vnn), vec_ : vec_(V12
 ;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
 def $vvunop_(vectype : vectype, vvunop : vvunop, vec_ : vec_(vectype)) : vec_(vectype)*
   ;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
-  def $vvunop_{Vnn : Vnn, v : uN($vsize(Vnn))}(Vnn, NOT_vvunop, v) = [$inot_($vsizenn(Vnn), v)]
+  def $vvunop_{Vnn : vectype, v : uN($vsize(Vnn))}(Vnn, NOT_vvunop, v) = [$inot_($vsizenn(Vnn), v)]
 
 ;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
 def $vvbinop_(vectype : vectype, vvbinop : vvbinop, vec_ : vec_(vectype), vec_ : vec_(vectype)) : vec_(vectype)*
   ;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
-  def $vvbinop_{Vnn : Vnn, v_1 : uN($vsize(Vnn)), v_2 : uN($vsize(Vnn))}(Vnn, AND_vvbinop, v_1, v_2) = [$iand_($vsizenn(Vnn), v_1, v_2)]
+  def $vvbinop_{Vnn : vectype, v_1 : uN($vsize(Vnn)), v_2 : uN($vsize(Vnn))}(Vnn, AND_vvbinop, v_1, v_2) = [$iand_($vsizenn(Vnn), v_1, v_2)]
   ;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
-  def $vvbinop_{Vnn : Vnn, v_1 : uN($vsize(Vnn)), v_2 : uN($vsize(Vnn))}(Vnn, ANDNOT_vvbinop, v_1, v_2) = [$iandnot_($vsizenn(Vnn), v_1, v_2)]
+  def $vvbinop_{Vnn : vectype, v_1 : uN($vsize(Vnn)), v_2 : uN($vsize(Vnn))}(Vnn, ANDNOT_vvbinop, v_1, v_2) = [$iandnot_($vsizenn(Vnn), v_1, v_2)]
   ;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
-  def $vvbinop_{Vnn : Vnn, v_1 : uN($vsize(Vnn)), v_2 : uN($vsize(Vnn))}(Vnn, OR_vvbinop, v_1, v_2) = [$ior_($vsizenn(Vnn), v_1, v_2)]
+  def $vvbinop_{Vnn : vectype, v_1 : uN($vsize(Vnn)), v_2 : uN($vsize(Vnn))}(Vnn, OR_vvbinop, v_1, v_2) = [$ior_($vsizenn(Vnn), v_1, v_2)]
   ;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
-  def $vvbinop_{Vnn : Vnn, v_1 : uN($vsize(Vnn)), v_2 : uN($vsize(Vnn))}(Vnn, XOR_vvbinop, v_1, v_2) = [$ixor_($vsizenn(Vnn), v_1, v_2)]
+  def $vvbinop_{Vnn : vectype, v_1 : uN($vsize(Vnn)), v_2 : uN($vsize(Vnn))}(Vnn, XOR_vvbinop, v_1, v_2) = [$ixor_($vsizenn(Vnn), v_1, v_2)]
 
 ;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
 def $vvternop_(vectype : vectype, vvternop : vvternop, vec_ : vec_(vectype), vec_ : vec_(vectype), vec_ : vec_(vectype)) : vec_(vectype)*
   ;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
-  def $vvternop_{Vnn : Vnn, v_1 : uN($vsize(Vnn)), v_2 : uN($vsize(Vnn)), v_3 : uN($vsize(Vnn))}(Vnn, BITSELECT_vvternop, v_1, v_2, v_3) = [$ibitselect_($vsizenn(Vnn), v_1, v_2, v_3)]
+  def $vvternop_{Vnn : vectype, v_1 : uN($vsize(Vnn)), v_2 : uN($vsize(Vnn)), v_3 : uN($vsize(Vnn))}(Vnn, BITSELECT_vvternop, v_1, v_2, v_3) = [$ibitselect_($vsizenn(Vnn), v_1, v_2, v_3)]
 
 ;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
 def $vunop_(shape : shape, vunop_ : vunop_(shape), vec_ : vec_(V128_Vnn)) : vec_(V128_Vnn)*
@@ -5567,19 +5560,19 @@ def $lcvtop__(shape_1 : shape, shape_2 : shape, vcvtop__ : vcvtop__(shape_1, sha
 ;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
 def $vcvtop__(shape_1 : shape, shape_2 : shape, vcvtop__ : vcvtop__(shape_1, shape_2), vec_ : vec_(V128_Vnn)) : vec_(V128_Vnn)
   ;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
-  def $vcvtop__{Lnn_1 : Lnn, M : nat, Lnn_2 : Lnn, vcvtop : vcvtop__(`%X%`_shape(Lnn_1, `%`_dim(M)), `%X%`_shape(Lnn_2, `%`_dim(M))), v_1 : uN(128), v : uN(128), `c_1*` : lane_($lanetype(`%X%`_shape(Lnn_1, `%`_dim(M))))*, `c**` : lane_(Lnn_2)**}(`%X%`_shape(Lnn_1, `%`_dim(M)), `%X%`_shape(Lnn_2, `%`_dim(M)), vcvtop, v_1) = v
+  def $vcvtop__{Lnn_1 : lanetype, M : nat, Lnn_2 : lanetype, vcvtop : vcvtop__(`%X%`_shape(Lnn_1, `%`_dim(M)), `%X%`_shape(Lnn_2, `%`_dim(M))), v_1 : uN(128), v : uN(128), `c_1*` : lane_($lanetype(`%X%`_shape(Lnn_1, `%`_dim(M))))*, `c**` : lane_(Lnn_2)**}(`%X%`_shape(Lnn_1, `%`_dim(M)), `%X%`_shape(Lnn_2, `%`_dim(M)), vcvtop, v_1) = v
     -- if (($halfop(`%X%`_shape(Lnn_1, `%`_dim(M)), `%X%`_shape(Lnn_2, `%`_dim(M)), vcvtop) = ?()) /\ ($zeroop(`%X%`_shape(Lnn_1, `%`_dim(M)), `%X%`_shape(Lnn_2, `%`_dim(M)), vcvtop) = ?()))
     -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape(Lnn_1, `%`_dim(M)), v_1))
     -- if (c*{c <- `c*`}*{`c*` <- `c**`} = $setproduct_(syntax lane_(Lnn_2), $lcvtop__(`%X%`_shape(Lnn_1, `%`_dim(M)), `%X%`_shape(Lnn_2, `%`_dim(M)), vcvtop, c_1)*{c_1 <- `c_1*`}))
     -- if (v <- $inv_lanes_(`%X%`_shape(Lnn_2, `%`_dim(M)), c*{c <- `c*`})*{`c*` <- `c**`})
   ;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
-  def $vcvtop__{Lnn_1 : Lnn, M_1 : nat, Lnn_2 : Lnn, M_2 : nat, vcvtop : vcvtop__(`%X%`_shape(Lnn_1, `%`_dim(M_1)), `%X%`_shape(Lnn_2, `%`_dim(M_2))), v_1 : uN(128), v : uN(128), half : half, `c_1*` : lane_($lanetype(`%X%`_shape(Lnn_1, `%`_dim(M_1))))*, `c**` : lane_(Lnn_2)**}(`%X%`_shape(Lnn_1, `%`_dim(M_1)), `%X%`_shape(Lnn_2, `%`_dim(M_2)), vcvtop, v_1) = v
+  def $vcvtop__{Lnn_1 : lanetype, M_1 : nat, Lnn_2 : lanetype, M_2 : nat, vcvtop : vcvtop__(`%X%`_shape(Lnn_1, `%`_dim(M_1)), `%X%`_shape(Lnn_2, `%`_dim(M_2))), v_1 : uN(128), v : uN(128), half : half, `c_1*` : lane_($lanetype(`%X%`_shape(Lnn_1, `%`_dim(M_1))))*, `c**` : lane_(Lnn_2)**}(`%X%`_shape(Lnn_1, `%`_dim(M_1)), `%X%`_shape(Lnn_2, `%`_dim(M_2)), vcvtop, v_1) = v
     -- if ($halfop(`%X%`_shape(Lnn_1, `%`_dim(M_1)), `%X%`_shape(Lnn_2, `%`_dim(M_2)), vcvtop) = ?(half))
     -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape(Lnn_1, `%`_dim(M_1)), v_1)[$half(half, 0, M_2) : M_2])
     -- if (c*{c <- `c*`}*{`c*` <- `c**`} = $setproduct_(syntax lane_(Lnn_2), $lcvtop__(`%X%`_shape(Lnn_1, `%`_dim(M_1)), `%X%`_shape(Lnn_2, `%`_dim(M_2)), vcvtop, c_1)*{c_1 <- `c_1*`}))
     -- if (v <- $inv_lanes_(`%X%`_shape(Lnn_2, `%`_dim(M_2)), c*{c <- `c*`})*{`c*` <- `c**`})
   ;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
-  def $vcvtop__{Lnn_1 : Lnn, M_1 : nat, Lnn_2 : Lnn, M_2 : nat, vcvtop : vcvtop__(`%X%`_shape(Lnn_1, `%`_dim(M_1)), `%X%`_shape(Lnn_2, `%`_dim(M_2))), v_1 : uN(128), v : uN(128), `c_1*` : lane_($lanetype(`%X%`_shape(Lnn_1, `%`_dim(M_1))))*, `c**` : lane_(Lnn_2)**}(`%X%`_shape(Lnn_1, `%`_dim(M_1)), `%X%`_shape(Lnn_2, `%`_dim(M_2)), vcvtop, v_1) = v
+  def $vcvtop__{Lnn_1 : lanetype, M_1 : nat, Lnn_2 : lanetype, M_2 : nat, vcvtop : vcvtop__(`%X%`_shape(Lnn_1, `%`_dim(M_1)), `%X%`_shape(Lnn_2, `%`_dim(M_2))), v_1 : uN(128), v : uN(128), `c_1*` : lane_($lanetype(`%X%`_shape(Lnn_1, `%`_dim(M_1))))*, `c**` : lane_(Lnn_2)**}(`%X%`_shape(Lnn_1, `%`_dim(M_1)), `%X%`_shape(Lnn_2, `%`_dim(M_2)), vcvtop, v_1) = v
     -- if ($zeroop(`%X%`_shape(Lnn_1, `%`_dim(M_1)), `%X%`_shape(Lnn_2, `%`_dim(M_2)), vcvtop) = ?(ZERO_zero))
     -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape(Lnn_1, `%`_dim(M_1)), v_1))
     -- if (c*{c <- `c*`}*{`c*` <- `c**`} = $setproduct_(syntax lane_(Lnn_2), $lcvtop__(`%X%`_shape(Lnn_1, `%`_dim(M_1)), `%X%`_shape(Lnn_2, `%`_dim(M_2)), vcvtop, c_1)*{c_1 <- `c_1*`} ++ [$zero(Lnn_2)]^M_1{}))
