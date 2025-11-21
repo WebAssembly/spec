@@ -474,34 +474,144 @@ and reduce_exp_call env id args at = function
       reduce_exp_call env id args at clauses'
     | None -> reduce_exp_call env id args at clauses'
     | Some s ->
-      match reduce_prems env Subst.(subst_list subst_prem s prems) with
+      match reduce_prems env s prems with
       | None -> None
       | Some false -> reduce_exp_call env id args at clauses'
       | Some true -> Some (reduce_exp env (Subst.subst_exp s e))
 
-and reduce_prems env = function
+and reduce_prems env s = function
   | [] -> Some true
   | prem::prems ->
-    match reduce_prem env prem with
-    | Some true -> reduce_prems env prems
-    | other -> other
+    match reduce_prem env (Subst.subst_prem s prem) with
+    | `True s' -> reduce_prems env (Subst.union s s') prems
+    | `False -> Some false
+    | `None -> None
 
-and reduce_prem env prem : bool option =
+and reduce_prem env prem : [`True of Subst.t | `False | `None] =
   match prem.it with
-  | RulePr _ -> None
+  | RulePr _ -> `None
   | IfPr e ->
     (match (reduce_exp env e).it with
-    | BoolE b -> Some b
-    | _ -> None
+    | BoolE b -> if b then `True Subst.empty else `False
+    | _ -> `None
     )
-  | ElsePr -> Some true
+  | ElsePr -> `True Subst.empty
   | LetPr (e1, e2, _ids) ->
     (match match_exp env Subst.empty e2 e1 with
-    | Some _ -> Some true  (* TODO(2, rossberg): need to keep substitution? *)
-    | None -> None
-    | exception Irred -> None
+    | Some s -> `True s
+    | None -> `None
+    | exception Irred -> `None
     )
-  | IterPr (_prem, _iter) -> None  (* TODO(3, rossberg): reduce? *)
+  | IterPr (prem1, iterexp) ->
+    let iter', xes' = reduce_iterexp env iterexp in
+    (* Distinguish between let-defined variables, which flow outwards,
+     * and others, which are assumed to flow inwards. *)
+    let rec is_let_bound prem (x, _) =
+      match prem.it with
+      | LetPr (_, _, xs) -> List.mem x.it xs
+      | IterPr (premI, iterexpI) ->
+        let _iter1', xes1' = reduce_iterexp env iterexpI in
+        let xes1_out, _ = List.partition (is_let_bound premI) xes1' in
+        List.exists (fun (_, e1) -> Free.(Set.mem x.it (free_exp e1).varid)) xes1_out
+      | _ -> false
+    in
+    let xes_out, xes_in = List.partition (is_let_bound prem) xes' in
+    let xs_out, es_out = List.split xes_out in
+    let xs_in, es_in = List.split xes_in in
+    if not (List.for_all is_head_normal_exp es_in) || iter' <= List1 && es_in = [] then
+      (* We don't know the number of iterations (yet): can't do anything. *)
+      `None
+    else
+      (match iter' with
+      | Opt ->
+        (* Iterationen values es_in are in hnf, so got to be options. *)
+        let eos_in = List.map as_opt_exp es_in in
+        if List.for_all Option.is_none eos_in then
+          (* Iterating over empty options: nothing to do. *)
+          `True Subst.empty
+        else if List.for_all Option.is_some eos_in then
+          (* All iteration variables are non-empty: reduce body. *)
+          let es1_in = List.map Option.get eos_in in
+          (* s substitutes in-bound iteration variables with corresponding
+           * values. *)
+          let s = List.fold_left2 Subst.add_varid Subst.empty xs_in es1_in in
+          match reduce_prem env (Subst.subst_prem s prem1) with
+          | (`None | `False) as r -> r
+          | `True s' ->
+            (* Body is true: now reverse-match out-bound iteration values
+             * against iteration sources. *)
+            match
+              List.fold_left (fun s_opt (xI, eI) ->
+                let* s = s_opt in
+                let tI = match eI.note.it with IterT (tI, _) -> tI | _ -> assert false in
+                match_exp' env s (OptE (Some (Subst.subst_exp s' (VarE xI $$ xI.at % tI))) $> eI) eI
+              ) (Some Subst.empty) xes_out
+            with
+            | Some s'' -> `True s''
+            | None -> `None
+        else
+          (* Inconsistent arity of iteration values: can't perform mapping.
+           * (This is a stuck computation, i.e., undefined.) *)
+          `None
+      | List | List1 ->
+        (* Unspecified iteration count: get length from (first) iteration value
+         * and start over; es_in are in hnf, so got to be lists. *)
+        let n = List.length (as_list_exp (List.hd es_in)) in
+        if iter' = List || n >= 1 then
+          let en = NumE (`Nat (Z.of_int n)) $$ prem.at % (NumT `NatT $ prem.at) in
+          reduce_prem env (IterPr (prem1, (ListN (en, None), xes')) $> prem)
+        else
+          (* List is empty although it is List1: inconsistency.
+           * (This is a stuck computation, i.e., undefined.) *)
+          `None
+      | ListN ({it = NumE (`Nat n'); _}, xo) ->
+        (* Iterationen values es_in are in hnf, so got to be lists. *)
+        let ess_in = List.map as_list_exp es_in in
+        let ns = List.map List.length ess_in in
+        let n = Z.to_int n' in
+        if List.for_all ((=) n) ns then
+          (* All in-bound lists have the expected length: reduce body,
+           * once for each tuple of values from the iterated lists. *)
+          let rs = List.init n (fun i ->
+              let esI_in = List.map (fun es -> List.nth es i) ess_in in
+              (* s substitutes in-bound iteration variables with corresponding
+               * values for this respective iteration. *)
+              let s = List.fold_left2 Subst.add_varid Subst.empty xs_in esI_in in
+              (* Add iteration counter variable if used. *)
+              let s' =
+                Option.fold xo ~none:s ~some:(fun x ->
+                  let en = NumE (`Nat (Z.of_int i)) $$ x.at % (NumT `NatT $ x.at) in
+                  Subst.add_varid s x en
+                )
+              in
+              reduce_prem env (Subst.subst_prem s' prem1)
+            )
+          in
+          if List.mem `None rs then `None else
+          if List.mem `False rs then `False else
+          (* Body was true in every iteration: now reverse-match out-bound
+           * iteration variables against iteration sources. *)
+          let ss = List.map (function `True s -> s | _ -> assert false) rs in
+          (* Aggregate the out-lists for each out-bound variable. *)
+          let es_out' =
+            List.map2 (fun xI eI ->
+              let tI = match eI.note.it with IterT (tI, _) -> tI | _ -> assert false in
+              let esI = List.map (fun sJ ->
+                  Subst.subst_exp sJ (VarE xI $$ xI.at % tI)
+                ) ss
+              in ListE esI $> eI
+            ) xs_out es_out
+          in
+          (* Reverse-match out-bound list values against iteration sources. *)
+          match match_list match_exp env Subst.empty es_out' es_out with
+          | Some s' -> `True s'
+          | None -> `None
+        else
+          (* Inconsistent list lengths: can't perform mapping.
+           * (This is a stuck computation, i.e., undefined.) *)
+          `None
+      | ListN _ -> `None
+      )
 
 
 (* Matching *)
