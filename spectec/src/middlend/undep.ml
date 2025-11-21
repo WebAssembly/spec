@@ -304,7 +304,7 @@ let rec get_wf_pred env (exp, t) =
     | VarE id -> id
     | _ -> 
       let s_iter = if iter = Opt then "?" else "*" in
-      let free_vars = (Free.free_exp exp).varid |> Free.Set.to_list in
+      let free_vars = (Free.free_exp exp).varid |> Free.Set.elements in
       Utils.generate_var free_vars "iter" ^ s_iter $ exp.at 
   in
   let t' = Utils.reduce_type_aliasing env.il_env t in
