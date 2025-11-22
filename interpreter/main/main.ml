@@ -8,8 +8,8 @@ let all_handlers = [
 ]
 
 let configure custom_handlers =
-  Import.register (Utf8.decode "spectest") Spectest.lookup;
-  Import.register (Utf8.decode "env") Env.lookup;
+  Run.register_virtual (Utf8.decode "spectest") Spectest.lookup;
+  Run.register_virtual (Utf8.decode "env") Env.lookup;
   List.iter Custom.register custom_handlers
 
 let banner () =

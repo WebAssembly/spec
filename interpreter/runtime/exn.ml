@@ -1,7 +1,8 @@
 open Types
 open Value
 
-type exn_ = Exn of Tag.t * value list
+type t = exn_
+and exn_ = Exn of Tag.t * value list
 
 type ref_ += ExnRef of exn_
 

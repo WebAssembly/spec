@@ -9,16 +9,15 @@ open Instance
 (* Errors *)
 
 module Link = Error.Make ()
-module Exception = Error.Make ()
 module Trap = Error.Make ()
 module Crash = Error.Make ()
 module Exhaustion = Error.Make ()
 
 exception Link = Link.Error
-exception Exception = Exception.Error
 exception Trap = Trap.Error
 exception Crash = Crash.Error (* failure that cannot happen in valid code *)
 exception Exhaustion = Exhaustion.Error
+exception Exception of region * Exn.t
 
 let table_error at = function
   | Table.Bounds -> "out of bounds table access"
@@ -1146,8 +1145,7 @@ let rec eval (c : config) : value stack =
     Trap.error at msg
 
   | vs, {it = Throwing (a, args); at} :: _ ->
-    let msg = "uncaught exception with args (" ^ string_of_values args ^ ")" in
-    Exception.error at msg
+    raise (Exception (at, Exn.Exn (a, args)))
 
   | vs, es ->
     eval (step c)
@@ -1183,7 +1181,7 @@ let init_type (inst : moduleinst) (type_ : type_) : moduleinst =
   let x = Lib.List32.length inst.types in
   {inst with types = inst.types @ roll_deftypes x rt}
 
-let init_import (inst : moduleinst) (ex : extern) (im : import) : moduleinst =
+let init_import (inst : moduleinst) (ex : externinst) (im : import) : moduleinst =
   let Import (module_name, item_name, xt) = im.it in
   let xt = subst_externtype (subst_of inst) xt in
   let xt' = externtype_of inst.types ex in
@@ -1305,7 +1303,7 @@ let init_list f xs (inst : moduleinst) : moduleinst =
 let init_list2 f xs ys (inst : moduleinst) : moduleinst =
   List.fold_left2 f inst xs ys
 
-let init (m : module_) (exts : extern list) : moduleinst =
+let init (m : module_) (exts : externinst list) : moduleinst =
   if List.length exts <> List.length m.it.imports then
     Link.error m.at "wrong number of imports provided for initialisation";
   let inst =
