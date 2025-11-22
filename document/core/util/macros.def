@@ -1373,7 +1373,7 @@
 .. |FIdots| mathdef:: \dots
 
 .. |TITYPE| mathdef:: \xref{exec/runtime}{syntax-tableinst}{\K{type}}
-.. |TIREFS| mathdef:: \xref{exec/runtime}{syntax-tableinst}{\K{elem}}
+.. |TIREFS| mathdef:: \xref{exec/runtime}{syntax-tableinst}{\K{refs}}
 
 .. |MITYPE| mathdef:: \xref{exec/runtime}{syntax-meminst}{\K{type}}
 .. |MIBYTES| mathdef:: \xref{exec/runtime}{syntax-meminst}{\K{bytes}}
