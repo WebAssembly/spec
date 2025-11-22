@@ -280,14 +280,13 @@ let string_of_results = function
   | rs -> "[" ^ String.concat " " (List.map string_of_result rs) ^ "]"
 
 let rec type_of_result r =
-  let open Types in
   match r.it with
-  | NumResult (NumPat n) -> NumT (Value.type_of_num n.it)
-  | NumResult (NanPat n) -> NumT (Value.type_of_num n.it)
-  | VecResult (VecPat v) -> VecT (Value.type_of_vec v)
-  | RefResult (RefPat r) -> RefT (Value.type_of_ref r.it)
-  | RefResult (RefTypePat t) -> RefT (NoNull, t)  (* assume closed *)
-  | RefResult (NullPat) -> RefT (Null, ExternHT)
+  | NumResult (NumPat n) -> Types.NumT (Value.type_of_num n.it)
+  | NumResult (NanPat n) -> Types.NumT (Value.type_of_num n.it)
+  | VecResult (VecPat v) -> Types.VecT (Value.type_of_vec v)
+  | RefResult (RefPat r) -> Types.RefT (Value.type_of_ref r.it)
+  | RefResult (RefTypePat t) -> Types.(RefT (NoNull, t))  (* assume closed *)
+  | RefResult (NullPat) -> Types.(RefT (Null, ExternHT))
   | EitherResult rs ->
     let ts = List.map type_of_result rs in
     List.fold_left (fun t1 t2 ->
@@ -296,7 +295,7 @@ let rec type_of_result r =
       if Match.(top_of_valtype [] t1 = top_of_valtype [] t2) then
         Match.top_of_valtype [] t1
       else
-        BotT  (* should really be Top, but we don't have that :) *)
+        Types.BotT  (* should really be Top, but we don't have that :) *)
     ) (List.hd ts) ts
 
 let print_results rs =
