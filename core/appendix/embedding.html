@@ -5,11 +5,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Embedding &#8212; WebAssembly 3.0 (2025-11-21)</title>
+    <title>Embedding &#8212; WebAssembly 3.0 (2025-11-22)</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=686e5160" />
     <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=057308f9" />
-    <script src="../_static/documentation_options.js?v=2a51be25"></script>
+    <script src="../_static/documentation_options.js?v=b82e60ce"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>window.MathJax = {"tex": {"maxBuffer": 30720, "macros": {"multicolumn": ["", 2]}}, "options": {"menuOptions": {"settings": {"enrich": false}}}}</script>
@@ -388,12 +388,12 @@ If it does, the post conditions are guaranteed by the semantics.</p>
 <span id="embed-table-read"></span><h3><span class="math notranslate nohighlight">\(\mathrm{table\_read}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-tableaddr}{\mathit{tableaddr}}, i:\href{../syntax/values.html#syntax-int}{\mathit{u\scriptstyle\kern-0.1em64}}) : \href{../exec/runtime.html#syntax-ref}{\mathit{ref}} ~|~ \href{../appendix/embedding.html#embed-error}{\mathit{error}}\)</span><a class="headerlink" href="#mathrm-table-read-xref-exec-runtime-syntax-store-mathit-store-xref-exec-runtime-syntax-tableaddr-mathit-tableaddr-i-xref-syntax-values-syntax-int-mathit-u-scriptstyle-kern-0-1em64-xref-exec-runtime-syntax-ref-mathit-ref-xref-appendix-embedding-embed-error-mathit-error" title="Link to this heading">¶</a></h3>
 <ol class="arabic simple">
 <li><p>Let <span class="math notranslate nohighlight">\(\mathit{ti}\)</span> be the <a class="reference internal" href="../exec/runtime.html#syntax-tableinst"><span class="std std-ref">table instance</span></a> <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-store}{\mathit{store}}.\href{../exec/runtime.html#syntax-store}{\mathsf{tables}}[\href{../exec/runtime.html#syntax-tableaddr}{\mathit{tableaddr}}]\)</span>.</p></li>
-<li><p>If <span class="math notranslate nohighlight">\(i\)</span> is larger than or equal to the length of <span class="math notranslate nohighlight">\(\mathit{ti}.\href{../exec/runtime.html#syntax-tableinst}{\mathsf{elem}}\)</span>, then return <span class="math notranslate nohighlight">\(\href{../appendix/embedding.html#embed-error}{\mathsf{error}}\)</span>.</p></li>
-<li><p>Else, return the <a class="reference internal" href="../exec/runtime.html#syntax-ref"><span class="std std-ref">reference value</span></a> <span class="math notranslate nohighlight">\(\mathit{ti}.\href{../exec/runtime.html#syntax-tableinst}{\mathsf{elem}}[i]\)</span>.</p></li>
+<li><p>If <span class="math notranslate nohighlight">\(i\)</span> is larger than or equal to the length of <span class="math notranslate nohighlight">\(\mathit{ti}.\href{../exec/runtime.html#syntax-tableinst}{\mathsf{refs}}\)</span>, then return <span class="math notranslate nohighlight">\(\href{../appendix/embedding.html#embed-error}{\mathsf{error}}\)</span>.</p></li>
+<li><p>Else, return the <a class="reference internal" href="../exec/runtime.html#syntax-ref"><span class="std std-ref">reference value</span></a> <span class="math notranslate nohighlight">\(\mathit{ti}.\href{../exec/runtime.html#syntax-tableinst}{\mathsf{refs}}[i]\)</span>.</p></li>
 </ol>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{lclll}
-\mathrm{table\_read}(S, a, i) &amp;=&amp; r &amp;&amp; (\mathrel{\mbox{if}} S.\href{../exec/runtime.html#syntax-store}{\mathsf{tables}}[a].\href{../exec/runtime.html#syntax-tableinst}{\mathsf{elem}}[i] = r) \\
+\mathrm{table\_read}(S, a, i) &amp;=&amp; r &amp;&amp; (\mathrel{\mbox{if}} S.\href{../exec/runtime.html#syntax-store}{\mathsf{tables}}[a].\href{../exec/runtime.html#syntax-tableinst}{\mathsf{refs}}[i] = r) \\
 \mathrm{table\_read}(S, a, i) &amp;=&amp; \href{../appendix/embedding.html#embed-error}{\mathsf{error}} &amp;&amp; (\mathrel{\mbox{otherwise}}) \\
 \end{array}\end{split}\]</div>
 </section>
@@ -401,26 +401,26 @@ If it does, the post conditions are guaranteed by the semantics.</p>
 <span id="embed-table-write"></span><h3><span class="math notranslate nohighlight">\(\mathrm{table\_write}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-tableaddr}{\mathit{tableaddr}}, i:\href{../syntax/values.html#syntax-int}{\mathit{u\scriptstyle\kern-0.1em64}}, \href{../exec/runtime.html#syntax-ref}{\mathit{ref}}) : \href{../exec/runtime.html#syntax-store}{\mathit{store}} ~|~ \href{../appendix/embedding.html#embed-error}{\mathit{error}}\)</span><a class="headerlink" href="#mathrm-table-write-xref-exec-runtime-syntax-store-mathit-store-xref-exec-runtime-syntax-tableaddr-mathit-tableaddr-i-xref-syntax-values-syntax-int-mathit-u-scriptstyle-kern-0-1em64-xref-exec-runtime-syntax-ref-mathit-ref-xref-exec-runtime-syntax-store-mathit-store-xref-appendix-embedding-embed-error-mathit-error" title="Link to this heading">¶</a></h3>
 <ol class="arabic simple">
 <li><p>Let <span class="math notranslate nohighlight">\(\mathit{ti}\)</span> be the <a class="reference internal" href="../exec/runtime.html#syntax-tableinst"><span class="std std-ref">table instance</span></a> <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-store}{\mathit{store}}.\href{../exec/runtime.html#syntax-store}{\mathsf{tables}}[\href{../exec/runtime.html#syntax-tableaddr}{\mathit{tableaddr}}]\)</span>.</p></li>
-<li><p>If <span class="math notranslate nohighlight">\(i\)</span> is larger than or equal to the length of <span class="math notranslate nohighlight">\(\mathit{ti}.\href{../exec/runtime.html#syntax-tableinst}{\mathsf{elem}}\)</span>, then return <span class="math notranslate nohighlight">\(\href{../appendix/embedding.html#embed-error}{\mathsf{error}}\)</span>.</p></li>
-<li><p>Replace <span class="math notranslate nohighlight">\(\mathit{ti}.\href{../exec/runtime.html#syntax-tableinst}{\mathsf{elem}}[i]\)</span> with the <a class="reference internal" href="../exec/runtime.html#syntax-ref"><span class="std std-ref">reference value</span></a> <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}\)</span>.</p></li>
+<li><p>If <span class="math notranslate nohighlight">\(i\)</span> is larger than or equal to the length of <span class="math notranslate nohighlight">\(\mathit{ti}.\href{../exec/runtime.html#syntax-tableinst}{\mathsf{refs}}\)</span>, then return <span class="math notranslate nohighlight">\(\href{../appendix/embedding.html#embed-error}{\mathsf{error}}\)</span>.</p></li>
+<li><p>Replace <span class="math notranslate nohighlight">\(\mathit{ti}.\href{../exec/runtime.html#syntax-tableinst}{\mathsf{refs}}[i]\)</span> with the <a class="reference internal" href="../exec/runtime.html#syntax-ref"><span class="std std-ref">reference value</span></a> <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}\)</span>.</p></li>
 <li><p>Return the updated store.</p></li>
 </ol>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{lclll}
-\mathrm{table\_write}(S, a, i, r) &amp;=&amp; S' &amp;&amp; (\mathrel{\mbox{if}} S' = S \href{../syntax/conventions.html#notation-replace}{\mathrel{\mbox{with}}} \href{../exec/runtime.html#syntax-store}{\mathsf{tables}}[a].\href{../exec/runtime.html#syntax-tableinst}{\mathsf{elem}}[i] = r) \\
+\mathrm{table\_write}(S, a, i, r) &amp;=&amp; S' &amp;&amp; (\mathrel{\mbox{if}} S' = S \href{../syntax/conventions.html#notation-replace}{\mathrel{\mbox{with}}} \href{../exec/runtime.html#syntax-store}{\mathsf{tables}}[a].\href{../exec/runtime.html#syntax-tableinst}{\mathsf{refs}}[i] = r) \\
 \mathrm{table\_write}(S, a, i, r) &amp;=&amp; \href{../appendix/embedding.html#embed-error}{\mathsf{error}} &amp;&amp; (\mathrel{\mbox{otherwise}}) \\
 \end{array}\end{split}\]</div>
 </section>
 <section id="mathrm-table-size-xref-exec-runtime-syntax-store-mathit-store-xref-exec-runtime-syntax-tableaddr-mathit-tableaddr-xref-syntax-values-syntax-int-mathit-u-scriptstyle-kern-0-1em64">
 <span id="embed-table-size"></span><h3><span class="math notranslate nohighlight">\(\mathrm{table\_size}(\href{../exec/runtime.html#syntax-store}{\mathit{store}}, \href{../exec/runtime.html#syntax-tableaddr}{\mathit{tableaddr}}) : \href{../syntax/values.html#syntax-int}{\mathit{u\scriptstyle\kern-0.1em64}}\)</span><a class="headerlink" href="#mathrm-table-size-xref-exec-runtime-syntax-store-mathit-store-xref-exec-runtime-syntax-tableaddr-mathit-tableaddr-xref-syntax-values-syntax-int-mathit-u-scriptstyle-kern-0-1em64" title="Link to this heading">¶</a></h3>
 <ol class="arabic simple">
-<li><p>Return the length of <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-store}{\mathit{store}}.\href{../exec/runtime.html#syntax-store}{\mathsf{tables}}[\href{../exec/runtime.html#syntax-tableaddr}{\mathit{tableaddr}}].\href{../exec/runtime.html#syntax-tableinst}{\mathsf{elem}}\)</span>.</p></li>
+<li><p>Return the length of <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-store}{\mathit{store}}.\href{../exec/runtime.html#syntax-store}{\mathsf{tables}}[\href{../exec/runtime.html#syntax-tableaddr}{\mathit{tableaddr}}].\href{../exec/runtime.html#syntax-tableinst}{\mathsf{refs}}\)</span>.</p></li>
 </ol>
 <div class="math notranslate nohighlight">
 \[\begin{split}~ \\
 \begin{array}{lclll}
 \mathrm{table\_size}(S, a) &amp;=&amp; n &amp;&amp;
-  (\mathrel{\mbox{if}} |S.\href{../exec/runtime.html#syntax-store}{\mathsf{tables}}[a].\href{../exec/runtime.html#syntax-tableinst}{\mathsf{elem}}| = n) \\
+  (\mathrel{\mbox{if}} |S.\href{../exec/runtime.html#syntax-store}{\mathsf{tables}}[a].\href{../exec/runtime.html#syntax-tableinst}{\mathsf{refs}}| = n) \\
 \end{array}\end{split}\]</div>
 </section>
 <section id="mathrm-table-grow-xref-exec-runtime-syntax-store-mathit-store-xref-exec-runtime-syntax-tableaddr-mathit-tableaddr-n-xref-syntax-values-syntax-int-mathit-u-scriptstyle-kern-0-1em64-xref-exec-runtime-syntax-ref-mathit-ref-xref-exec-runtime-syntax-store-mathit-store-xref-appendix-embedding-embed-error-mathit-error">

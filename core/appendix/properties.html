@@ -5,11 +5,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Type Soundness &#8212; WebAssembly 3.0 (2025-11-21)</title>
+    <title>Type Soundness &#8212; WebAssembly 3.0 (2025-11-22)</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=686e5160" />
     <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=057308f9" />
-    <script src="../_static/documentation_options.js?v=2a51be25"></script>
+    <script src="../_static/documentation_options.js?v=b82e60ce"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>window.MathJax = {"tex": {"maxBuffer": 30720, "macros": {"multicolumn": ["", 2]}}, "options": {"menuOptions": {"settings": {"enrich": false}}}}</script>
@@ -503,8 +503,8 @@ Cycles can only be formed using mutation.</p>
   S \href{../appendix/properties.html#valid-meminst}{\vdash} \{ \href{../exec/runtime.html#syntax-meminst}{\mathsf{type}}~(\href{../syntax/types.html#syntax-addrtype}{\mathit{addrtype}}~[n\,{..}\,m]), \href{../exec/runtime.html#syntax-meminst}{\mathsf{bytes}}~b^\ast \} : \href{../syntax/types.html#syntax-addrtype}{\mathit{addrtype}}~[n\,{..}\,m]
 }\]</div>
 </section>
-<section id="table-instances-xref-exec-runtime-syntax-tableinst-mathsf-type-xref-syntax-types-syntax-addrtype-mathit-addrtype-xref-syntax-types-syntax-limits-mathit-limits-t-xref-exec-runtime-syntax-tableinst-mathsf-elem-xref-exec-runtime-syntax-ref-mathit-ref-ast">
-<span id="valid-tableinst"></span><span id="index-11"></span><h3><a class="reference internal" href="../exec/runtime.html#syntax-tableinst"><span class="std std-ref">Table Instances</span></a> <span class="math notranslate nohighlight">\(\{ \href{../exec/runtime.html#syntax-tableinst}{\mathsf{type}}~(\href{../syntax/types.html#syntax-addrtype}{\mathit{addrtype}}~\href{../syntax/types.html#syntax-limits}{\mathit{limits}}~t), \href{../exec/runtime.html#syntax-tableinst}{\mathsf{elem}}~\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}^\ast \}\)</span><a class="headerlink" href="#table-instances-xref-exec-runtime-syntax-tableinst-mathsf-type-xref-syntax-types-syntax-addrtype-mathit-addrtype-xref-syntax-types-syntax-limits-mathit-limits-t-xref-exec-runtime-syntax-tableinst-mathsf-elem-xref-exec-runtime-syntax-ref-mathit-ref-ast" title="Link to this heading">¶</a></h3>
+<section id="table-instances-xref-exec-runtime-syntax-tableinst-mathsf-type-xref-syntax-types-syntax-addrtype-mathit-addrtype-xref-syntax-types-syntax-limits-mathit-limits-t-xref-exec-runtime-syntax-tableinst-mathsf-refs-xref-exec-runtime-syntax-ref-mathit-ref-ast">
+<span id="valid-tableinst"></span><span id="index-11"></span><h3><a class="reference internal" href="../exec/runtime.html#syntax-tableinst"><span class="std std-ref">Table Instances</span></a> <span class="math notranslate nohighlight">\(\{ \href{../exec/runtime.html#syntax-tableinst}{\mathsf{type}}~(\href{../syntax/types.html#syntax-addrtype}{\mathit{addrtype}}~\href{../syntax/types.html#syntax-limits}{\mathit{limits}}~t), \href{../exec/runtime.html#syntax-tableinst}{\mathsf{refs}}~\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}^\ast \}\)</span><a class="headerlink" href="#table-instances-xref-exec-runtime-syntax-tableinst-mathsf-type-xref-syntax-types-syntax-addrtype-mathit-addrtype-xref-syntax-types-syntax-limits-mathit-limits-t-xref-exec-runtime-syntax-tableinst-mathsf-refs-xref-exec-runtime-syntax-ref-mathit-ref-ast" title="Link to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>The <a class="reference internal" href="../syntax/types.html#syntax-tabletype"><span class="std std-ref">table type</span></a> <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-addrtype}{\mathit{addrtype}}~\href{../syntax/types.html#syntax-limits}{\mathit{limits}}~t\)</span> must be <a class="reference internal" href="../valid/types.html#valid-tabletype"><span class="std std-ref">valid</span></a> under the empty <a class="reference internal" href="../valid/conventions.html#context"><span class="std std-ref">context</span></a>.</p></li>
 <li><p>Let <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-limits}{\mathit{limits}}\)</span> be <span class="math notranslate nohighlight">\([n\,{..}\,m]\)</span>.</p></li>
@@ -527,7 +527,7 @@ Cycles can only be formed using mutation.</p>
   \qquad
   (\href{../valid/matching.html#match-reftype}{\vdash} t' \href{../valid/matching.html#match-valtype}{\leq} t)^\ast
 }{
-  S \href{../appendix/properties.html#valid-tableinst}{\vdash} \{ \href{../exec/runtime.html#syntax-tableinst}{\mathsf{type}}~(\href{../syntax/types.html#syntax-addrtype}{\mathit{addrtype}}~[n\,{..}\,m]~t), \href{../exec/runtime.html#syntax-tableinst}{\mathsf{elem}}~\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}^\ast \} : \href{../syntax/types.html#syntax-addrtype}{\mathit{addrtype}}~[n\,{..}\,m]~t
+  S \href{../appendix/properties.html#valid-tableinst}{\vdash} \{ \href{../exec/runtime.html#syntax-tableinst}{\mathsf{type}}~(\href{../syntax/types.html#syntax-addrtype}{\mathit{addrtype}}~[n\,{..}\,m]~t), \href{../exec/runtime.html#syntax-tableinst}{\mathsf{refs}}~\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}^\ast \} : \href{../syntax/types.html#syntax-addrtype}{\mathit{addrtype}}~[n\,{..}\,m]~t
 }\]</div>
 </section>
 <section id="function-instances-xref-exec-runtime-syntax-funcinst-mathsf-type-xref-valid-conventions-syntax-deftype-mathit-deftype-xref-exec-runtime-syntax-funcinst-mathsf-module-xref-exec-runtime-syntax-moduleinst-mathit-moduleinst-xref-exec-runtime-syntax-funcinst-mathsf-code-xref-syntax-modules-syntax-func-mathit-func">
@@ -1096,13 +1096,13 @@ a store state <span class="math notranslate nohighlight">\(S'\)</span> extends s
 <span id="extend-tableinst"></span><span id="index-37"></span><h3><a class="reference internal" href="../exec/runtime.html#syntax-tableinst"><span class="std std-ref">Table Instance</span></a> <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-tableinst}{\mathit{tableinst}}\)</span><a class="headerlink" href="#table-instance-xref-exec-runtime-syntax-tableinst-mathit-tableinst" title="Link to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>The <a class="reference internal" href="../syntax/types.html#syntax-tabletype"><span class="std std-ref">table type</span></a> <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-tableinst}{\mathit{tableinst}}.\href{../exec/runtime.html#syntax-tableinst}{\mathsf{type}}\)</span> must remain unchanged.</p></li>
-<li><p>The length of <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-tableinst}{\mathit{tableinst}}.\href{../exec/runtime.html#syntax-tableinst}{\mathsf{elem}}\)</span> must not shrink.</p></li>
+<li><p>The length of <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-tableinst}{\mathit{tableinst}}.\href{../exec/runtime.html#syntax-tableinst}{\mathsf{refs}}\)</span> must not shrink.</p></li>
 </ul>
 <div class="math notranslate nohighlight">
 \[\frac{
   n_1 \leq n_2
 }{
-  \href{../appendix/properties.html#extend-tableinst}{\vdash} \{\href{../exec/runtime.html#syntax-tableinst}{\mathsf{type}}~\mathit{tt}, \href{../exec/runtime.html#syntax-tableinst}{\mathsf{elem}}~(\mathit{fa}_1^?)^{n_1}\} \href{../appendix/properties.html#extend}{\preceq} \{\href{../exec/runtime.html#syntax-tableinst}{\mathsf{type}}~\mathit{tt}, \href{../exec/runtime.html#syntax-tableinst}{\mathsf{elem}}~(\mathit{fa}_2^?)^{n_2}\}
+  \href{../appendix/properties.html#extend-tableinst}{\vdash} \{\href{../exec/runtime.html#syntax-tableinst}{\mathsf{type}}~\mathit{tt}, \href{../exec/runtime.html#syntax-tableinst}{\mathsf{refs}}~(\mathit{fa}_1^?)^{n_1}\} \href{../appendix/properties.html#extend}{\preceq} \{\href{../exec/runtime.html#syntax-tableinst}{\mathsf{type}}~\mathit{tt}, \href{../exec/runtime.html#syntax-tableinst}{\mathsf{refs}}~(\mathit{fa}_2^?)^{n_2}\}
 }\]</div>
 </section>
 <section id="function-instance-xref-exec-runtime-syntax-funcinst-mathit-funcinst">

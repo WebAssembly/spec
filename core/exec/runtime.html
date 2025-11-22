@@ -5,11 +5,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Runtime Structure &#8212; WebAssembly 3.0 (2025-11-21)</title>
+    <title>Runtime Structure &#8212; WebAssembly 3.0 (2025-11-22)</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=686e5160" />
     <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=057308f9" />
-    <script src="../_static/documentation_options.js?v=2a51be25"></script>
+    <script src="../_static/documentation_options.js?v=b82e60ce"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>window.MathJax = {"tex": {"maxBuffer": 30720, "macros": {"multicolumn": ["", 2]}}, "options": {"menuOptions": {"settings": {"enrich": false}}}}</script>
@@ -323,7 +323,7 @@ It records its <a class="reference internal" href="../syntax/types.html#syntax-t
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}[t]{&#64;{}l&#64;{}rrl&#64;{}l&#64;{}}
 &amp; {\href{../exec/runtime.html#syntax-tableinst}{\mathit{tableinst}}} &amp; ::= &amp; \{ \begin{array}[t]{&#64;{}l&#64;{}l&#64;{}}
-\href{../exec/runtime.html#syntax-tableinst}{\mathsf{type}}~{\href{../syntax/types.html#syntax-tabletype}{\mathit{tabletype}}} ,  \href{../exec/runtime.html#syntax-tableinst}{\mathsf{elem}}~{{\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}}^\ast} \} \\
+\href{../exec/runtime.html#syntax-tableinst}{\mathsf{type}}~{\href{../syntax/types.html#syntax-tabletype}{\mathit{tabletype}}} ,  \href{../exec/runtime.html#syntax-tableinst}{\mathsf{refs}}~{{\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}}^\ast} \} \\
 \end{array} \\
 \end{array}\end{split}\]</div>
 <p>Table elements can be mutated through <a class="reference internal" href="../syntax/instructions.html#syntax-instr-table"><span class="std std-ref">table instructions</span></a>, the execution of an active <a class="reference internal" href="../syntax/modules.html#syntax-elem"><span class="std std-ref">element segment</span></a>, or by external means provided by the <a class="reference internal" href="../intro/overview.html#embedder"><span class="std std-ref">embedder</span></a>.</p>
