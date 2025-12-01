@@ -52,6 +52,7 @@ let rec transform_exp t e =
     | MemE (e1, e2) -> MemE (t_exp e1, t_exp e2)
     | CaseE (mixop, e1) -> CaseE (mixop, t_exp e1)
     | SubE (e1, _t1, t2) -> SubE (t_exp e1, _t1, t2)
+    | IfE (e1, e2, e3) -> IfE (t_exp e1, t_exp e2, t_exp e3)
   in
   f { e with it }
 
