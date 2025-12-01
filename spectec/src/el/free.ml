@@ -3,64 +3,16 @@ open Ast
 open Xl
 
 
-(* Data Structure *)
-
-module Set = Set.Make(String)
-
-type sets =
-  { typid : Set.t;
-    gramid : Set.t;
-    relid : Set.t;
-    varid : Set.t;
-    defid : Set.t;
-  }
-
-let empty =
-  { typid = Set.empty;
-    gramid = Set.empty;
-    relid = Set.empty;
-    varid = Set.empty;
-    defid = Set.empty;
-  }
-
-let union sets1 sets2 =
-  { typid = Set.union sets1.typid sets2.typid;
-    gramid = Set.union sets1.gramid sets2.gramid;
-    relid = Set.union sets1.relid sets2.relid;
-    varid = Set.union sets1.varid sets2.varid;
-    defid = Set.union sets1.defid sets2.defid;
-  }
-
-let inter sets1 sets2 =
-  { typid = Set.inter sets1.typid sets2.typid;
-    gramid = Set.inter sets1.gramid sets2.gramid;
-    relid = Set.inter sets1.relid sets2.relid;
-    varid = Set.inter sets1.varid sets2.varid;
-    defid = Set.inter sets1.defid sets2.defid;
-  }
-
-let diff sets1 sets2 =
-  { typid = Set.diff sets1.typid sets2.typid;
-    gramid = Set.diff sets1.gramid sets2.gramid;
-    relid = Set.diff sets1.relid sets2.relid;
-    varid = Set.diff sets1.varid sets2.varid;
-    defid = Set.diff sets1.defid sets2.defid;
-  }
+include Xl.Gen_free
 
 let (+) = union
 let (-) = diff
 
-let free_opt free_x xo = Option.(value (map free_x xo) ~default:empty)
-let free_list free_x xs = List.(fold_left (+) empty (map free_x xs))
 
-let rec free_list_dep free_x bound_x = function
-  | [] -> empty
-  | x::xs -> free_x x + (free_list_dep free_x bound_x xs - bound_x x)
+(* Aggregates *)
 
 let free_nl_elem free_x = function Nl -> empty | Elem x -> free_x x
 let free_nl_list free_x xs = List.(fold_left (+) empty (map (free_nl_elem free_x) xs))
-
-let bound_list = free_list
 
 
 (* Identifiers *)
@@ -68,18 +20,8 @@ let bound_list = free_list
 let free_typid id =
   let id' = Convert.strip_var_suffix id in
   match (Convert.typ_of_varid id').it with
-  | VarT _ -> {empty with typid = Set.singleton id'.it}
+  | VarT _ -> Xl.Gen_free.free_typid id'
   | _ -> empty
-
-let free_gramid id = {empty with gramid = Set.singleton id.it}
-let free_relid id = {empty with relid = Set.singleton id.it}
-let free_varid id = {empty with varid = Set.singleton id.it}
-let free_defid id = {empty with defid = Set.singleton id.it}
-
-let bound_typid id = if id.it = "_" then empty else free_typid id
-let bound_gramid id = if id.it = "_" then empty else free_gramid id
-let bound_varid id = if id.it = "_" then empty else free_varid id
-let bound_defid id = if id.it = "_" then empty else free_defid id
 
 let free_op op = {empty with varid = Set.singleton op}
 let bound_op op = free_op op
@@ -329,16 +271,16 @@ and free_param p =
   match p.it with
   | ExpP (_, t) -> free_typ t
   | TypP _ -> empty
-  | GramP (_, t) -> free_typ t - impl_bound_typ t
+  | GramP (_, ps, t) -> free_params ps + free_typ t - bound_params ps - impl_bound_typ ps t
   | DefP (_, ps, t) -> free_params ps + free_typ t - bound_params ps
 
-and impl_bound_typ t = {empty with typid = (free_typ t).typid}
+and impl_bound_typ ps t = {empty with typid = (free_typ t).typid} - bound_params ps
 
 and bound_param p =
   match p.it with
   | ExpP (id, _) -> bound_varid id
   | TypP id -> bound_typid id
-  | GramP (id, t) -> bound_gramid id + impl_bound_typ t
+  | GramP (id, ps, t) -> bound_gramid id + impl_bound_typ ps t
   | DefP (id, _, _) -> bound_defid id
 
 and free_args as_ = free_list free_arg as_
@@ -354,7 +296,7 @@ let free_def d =
   | TypD (_id1, _id2, as_, t, _hints) ->
     free_args as_ + free_typ t
   | GramD (_id1, _id2, ps, t, gram, _hints) ->
-    free_params ps + (free_typ t + free_gram gram - bound_params ps - impl_bound_typ t)
+    free_params ps + (free_typ t + free_gram gram - bound_params ps - impl_bound_typ ps t)
   | VarD (_id, t, _hints) -> free_typ t
   | SepD -> empty
   | RelD (_id, t, _hints) -> free_typ t

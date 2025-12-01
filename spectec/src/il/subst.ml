@@ -193,6 +193,11 @@ and subst_iterexp s (iter, xes) =
 
 and subst_sym s g =
   (match g.it with
+  | VarG (x, []) ->
+    (match Map.find_opt x.it s.gramid with
+    | None -> VarG (x, [])
+    | Some g' -> g'.it
+    )
   | VarG (x, args) -> VarG (subst_gramid s x, List.map (subst_arg s) args)
   | NumG _ | TextG _ -> g.it
   | EpsG -> EpsG

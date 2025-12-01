@@ -1547,7 +1547,7 @@ params ::= ("(" param*"," ")")?
 param ::=
   (varid ":") typ
   "syntax" synid
-  "grammar" gramid ":" typ
+  "grammar" gramid params ":" typ
   "def" "$" defid params ":" typ
 
 def ::=

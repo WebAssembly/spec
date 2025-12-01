@@ -213,7 +213,7 @@ and param p =
   match p.it with
   | ExpP (x, t) -> varid x; typ t
   | TypP x -> typid x
-  | GramP (x, t) -> gramid x; typ t
+  | GramP (x, ps, t) -> gramid x; params ps; typ t
   | DefP (x, ps, t) -> defid x; params ps; typ t
 
 and args as_ = list arg as_
@@ -377,7 +377,7 @@ and clone_param p =
   (match p.it with
   | ExpP (x, t) -> ExpP (x, clone_typ t)
   | TypP x -> TypP x
-  | GramP (x, t) -> GramP (x, clone_typ t)
+  | GramP (x, ps, t) -> GramP (x, List.map clone_param ps, clone_typ t)
   | DefP (x, ps, t) -> DefP (x, List.map clone_param ps, clone_typ t)
   ) $ p.at
 

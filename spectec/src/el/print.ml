@@ -289,7 +289,7 @@ let rec string_of_param p =
   match p.it with
   | ExpP (id, t) -> (if id.it = "_" then "" else string_of_varid id ^ " : ") ^ string_of_typ t
   | TypP id -> "syntax " ^ string_of_typid id
-  | GramP (id, t) -> "grammar " ^ string_of_gramid id ^ " : " ^ string_of_typ t
+  | GramP (id, ps, t) -> "grammar " ^ string_of_gramid id ^ string_of_params ps ^ " : " ^ string_of_typ t
   | DefP (id, ps, t) -> "def " ^ string_of_defid id ^ string_of_params ps ^ " : " ^ string_of_typ t
 
 and string_of_params = function

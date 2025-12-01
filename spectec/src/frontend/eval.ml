@@ -746,8 +746,8 @@ and equiv_params env ps1 ps2 =
       if not (equiv_typ env t1 t2) then None else
       Some (Subst.add_varid s id2 (VarE (id1, []) $ p1.at))
     | TypP _, TypP _ -> Some s
-    | GramP (id1, t1), GramP (id2, t2) ->
-      if not (equiv_typ env t1 t2) then None else
+    | GramP (id1, ps1, t1), GramP (id2, ps2, t2) ->
+      if not (equiv_functyp env (ps1, t1) (ps2, t2)) then None else
       Some (Subst.add_gramid s id2 (VarG (id1, []) $ p1.at))
     | DefP (id1, ps1, t1), DefP (id2, ps2, t2) ->
       if not (equiv_functyp env (ps1, t1) (ps2, t2)) then None else

@@ -39,6 +39,13 @@ let rec map_atoms f mixop =
 
 let arity mixop = fold (fun n _ -> n + 1) 0 mixop
 
+let apply mixop xs =
+  let rxs = ref xs in
+  let mixop' =
+    map (fun _ -> let xs = !rxs in rxs := List.tl xs; List.hd xs) mixop in
+  assert (!rxs = []);
+  mixop'
+
 
 let (++) atomss1 atomss2 =
   let atomss1', atoms1 = Lib.List.split_last atomss1 in

@@ -634,9 +634,13 @@ and valid_arg env a p s =
     if not (Eval.equiv_functyp env (ps', t') (ps, t)) then
       error a.at "type mismatch in function argument";
     Subst.add_defid s x x'
-  | GramA g, GramP (x, ps, t) ->
+  | GramA g, GramP (x, [], t) ->
     let t' = valid_sym env g in
-    if not (Eval.equiv_functyp env ([], t') (ps, t)) then
+    equiv_typ env t' t a.at;
+    Subst.add_gramid s x g
+  | GramA ({it = VarG (x', as'); _} as g), GramP (x, ps, t) ->
+    let ps', t', _ = Env.find_gram env x' in
+    if as' <> [] || not (Eval.equiv_functyp env (ps', t') (ps, t)) then
       error a.at "type mismatch in grammar argument";
     Subst.add_gramid s x g
   | _, _ ->

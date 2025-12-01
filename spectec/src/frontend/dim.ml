@@ -291,8 +291,9 @@ and check_param env ctx p =
   | TypP id ->
     check_typid env ctx id;
     check_varid env ctx `Impl id
-  | GramP (id, t) ->
+  | GramP (id, ps, t) ->
     check_gramid env ctx id;
+    List.iter (check_param env ctx) ps;
     check_typ env ctx t
   | DefP (_id, ps, t) ->
     List.iter (check_param env ctx) ps;

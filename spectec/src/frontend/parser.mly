@@ -1028,7 +1028,9 @@ param_ :
         try El.Convert.varid_of_typ $1 with Error.Error _ -> "" $ $sloc
       in ExpP (id, $1) }
   | SYNTAX varid_bind { TypP $2 }
-  | GRAMMAR gramid COLON typ { GramP ($2, $4) }
+  | GRAMMAR gramid COLON typ { GramP ($2, [], $4) }
+  | GRAMMAR gramid_lparen enter_scope comma_list(param) RPAREN COLON typ exit_scope
+    { GramP ($2, $4, $7) }
   | DEF DOLLAR defid COLON typ
     { DefP ($3, [], $5) }
   | DEF DOLLAR defid_lparen enter_scope comma_list(param) RPAREN COLON typ exit_scope
