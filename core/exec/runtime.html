@@ -5,11 +5,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Runtime Structure &#8212; WebAssembly 3.0 (2025-11-22)</title>
+    <title>Runtime Structure &#8212; WebAssembly 3.0 (2025-12-02)</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=686e5160" />
     <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=057308f9" />
-    <script src="../_static/documentation_options.js?v=b82e60ce"></script>
+    <script src="../_static/documentation_options.js?v=e714a315"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>window.MathJax = {"tex": {"maxBuffer": 30720, "macros": {"multicolumn": ["", 2]}}, "options": {"menuOptions": {"settings": {"enrich": false}}}}</script>
@@ -545,7 +545,7 @@ Locals are mutated by respective <a class="reference internal" href="../syntax/i
 <li><p>The following auxiliary definition takes a <a class="reference internal" href="../syntax/types.html#syntax-blocktype"><span class="std std-ref">block type</span></a> and looks up the <a class="reference internal" href="../valid/conventions.html#syntax-instrtype"><span class="std std-ref">instruction type</span></a> that it denotes in the current frame:</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}[t]{&#64;{}lcl&#64;{}l&#64;{}}
-{{\href{../exec/runtime.html#aux-blocktype}{\mathrm{instrtype}}}}_{z}(x) &amp; = &amp; {t_1^\ast} \rightarrow {t_2^\ast} &amp; \quad \mbox{if}~ z{.}\href{../exec/runtime.html#syntax-store}{\mathsf{types}}{}[x] \mathrel{\href{../valid/conventions.html#aux-expand-deftype}{\approx}} \href{../syntax/types.html#syntax-comptype}{\mathsf{func}}~{t_1^\ast} \href{../syntax/types.html#syntax-comptype}{\rightarrow} {t_2^\ast} \\
+{{\href{../exec/runtime.html#aux-blocktype}{\mathrm{instrtype}}}}_{z}(x) &amp; = &amp; {t_1^\ast} \rightarrow {t_2^\ast} &amp; \quad \mbox{if}~ z{.}\href{../exec/runtime.html#syntax-state}{\mathsf{types}}{}[x] \mathrel{\href{../valid/conventions.html#aux-expand-deftype}{\approx}} \href{../syntax/types.html#syntax-comptype}{\mathsf{func}}~{t_1^\ast} \href{../syntax/types.html#syntax-comptype}{\rightarrow} {t_2^\ast} \\
 {{\href{../exec/runtime.html#aux-blocktype}{\mathrm{instrtype}}}}_{z}({t^?}) &amp; = &amp; \epsilon \rightarrow {t^?} \\
 \end{array}\end{split}\]</div>
 </li>
@@ -588,8 +588,9 @@ When its end is reached, i.e., the inner instruction sequence has been reduced t
 <p>This can be interpreted as removing the label from the stack and only leaving the locally accumulated operand values.
 Validation guarantees that <span class="math notranslate nohighlight">\(n\)</span> matches the number <span class="math notranslate nohighlight">\({|{{\href{../exec/runtime.html#syntax-val}{\mathit{val}}}^\ast}|}\)</span> of resulting values at this point.</p>
 </div>
+</section>
 <section id="configurations">
-<span id="syntax-config"></span><span id="syntax-thread"></span><span id="syntax-state"></span><span id="index-19"></span><h3>Configurations<a class="headerlink" href="#configurations" title="Link to this heading">¶</a></h3>
+<span id="syntax-config"></span><span id="syntax-thread"></span><span id="syntax-state"></span><span id="index-19"></span><h2>Configurations<a class="headerlink" href="#configurations" title="Link to this heading">¶</a></h2>
 <p>A <em>configuration</em> describes the current computation.
 It consists of the computations’s <em>state</em> and the sequence of <a class="reference internal" href="../syntax/instructions.html#syntax-instr"><span class="std std-ref">instructions</span></a> left to execute.
 The state in turn consists of a global <a class="reference internal" href="#syntax-store"><span class="std std-ref">store</span></a> and a current <a class="reference internal" href="#syntax-frame"><span class="std std-ref">frame</span></a> referring to the <a class="reference internal" href="#syntax-moduleinst"><span class="std std-ref">module instance</span></a> in which the computation runs, i.e., where the current function originates from.</p>
@@ -603,6 +604,31 @@ The state in turn consists of a global <a class="reference internal" href="#synt
 <p>The current version of WebAssembly is single-threaded,
 but configurations with multiple threads may be supported in the future.</p>
 </div>
+<section id="id8">
+<h3>Conventions<a class="headerlink" href="#id8" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>The following shorthands are defined for accessing a state <span class="math notranslate nohighlight">\(z = (s ; f)\)</span>:</p>
+<ul>
+<li><p><span class="math notranslate nohighlight">\(\begin{array}[t]{&#64;{}l&#64;{~}c&#64;{~}l&#64;{}l&#64;{}} (s ; f){.}\href{../exec/runtime.html#syntax-state}{\mathsf{types}}{}[x] &amp; = &amp; f{.}\href{../exec/runtime.html#syntax-frame}{\mathsf{module}}{.}\href{../exec/runtime.html#syntax-moduleinst}{\mathsf{types}}{}[x] \\ \end{array}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\begin{array}[t]{&#64;{}l&#64;{~}c&#64;{~}l&#64;{}l&#64;{}} (s ; f){.}\href{../exec/runtime.html#syntax-state}{\mathsf{tags}}{}[x] &amp; = &amp; s{.}\href{../exec/runtime.html#syntax-store}{\mathsf{tags}}{}[f{.}\href{../exec/runtime.html#syntax-frame}{\mathsf{module}}{.}\href{../exec/runtime.html#syntax-moduleinst}{\mathsf{tags}}{}[x]] \\ \end{array}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\begin{array}[t]{&#64;{}l&#64;{~}c&#64;{~}l&#64;{}l&#64;{}} (s ; f){.}\href{../exec/runtime.html#syntax-state}{\mathsf{globals}}{}[x] &amp; = &amp; s{.}\href{../exec/runtime.html#syntax-store}{\mathsf{globals}}{}[f{.}\href{../exec/runtime.html#syntax-frame}{\mathsf{module}}{.}\href{../exec/runtime.html#syntax-moduleinst}{\mathsf{globals}}{}[x]] \\ \end{array}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\begin{array}[t]{&#64;{}l&#64;{~}c&#64;{~}l&#64;{}l&#64;{}} (s ; f){.}\href{../exec/runtime.html#syntax-state}{\mathsf{mems}}{}[x] &amp; = &amp; s{.}\href{../exec/runtime.html#syntax-store}{\mathsf{mems}}{}[f{.}\href{../exec/runtime.html#syntax-frame}{\mathsf{module}}{.}\href{../exec/runtime.html#syntax-moduleinst}{\mathsf{mems}}{}[x]] \\ \end{array}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\begin{array}[t]{&#64;{}l&#64;{~}c&#64;{~}l&#64;{}l&#64;{}} (s ; f){.}\href{../exec/runtime.html#syntax-state}{\mathsf{tables}}{}[x] &amp; = &amp; s{.}\href{../exec/runtime.html#syntax-store}{\mathsf{tables}}{}[f{.}\href{../exec/runtime.html#syntax-frame}{\mathsf{module}}{.}\href{../exec/runtime.html#syntax-moduleinst}{\mathsf{tables}}{}[x]] \\ \end{array}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\begin{array}[t]{&#64;{}l&#64;{~}c&#64;{~}l&#64;{}l&#64;{}} (s ; f){.}\href{../exec/runtime.html#syntax-state}{\mathsf{funcs}}{}[x] &amp; = &amp; s{.}\href{../exec/runtime.html#syntax-store}{\mathsf{funcs}}{}[f{.}\href{../exec/runtime.html#syntax-frame}{\mathsf{module}}{.}\href{../exec/runtime.html#syntax-moduleinst}{\mathsf{funcs}}{}[x]] \\ \end{array}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\begin{array}[t]{&#64;{}l&#64;{~}c&#64;{~}l&#64;{}l&#64;{}} (s ; f){.}\href{../exec/runtime.html#syntax-state}{\mathsf{datas}}{}[x] &amp; = &amp; s{.}\href{../exec/runtime.html#syntax-store}{\mathsf{datas}}{}[f{.}\href{../exec/runtime.html#syntax-frame}{\mathsf{module}}{.}\href{../exec/runtime.html#syntax-moduleinst}{\mathsf{datas}}{}[x]] \\ \end{array}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\begin{array}[t]{&#64;{}l&#64;{~}c&#64;{~}l&#64;{}l&#64;{}} (s ; f){.}\href{../exec/runtime.html#syntax-state}{\mathsf{elems}}{}[x] &amp; = &amp; s{.}\href{../exec/runtime.html#syntax-store}{\mathsf{elems}}{}[f{.}\href{../exec/runtime.html#syntax-frame}{\mathsf{module}}{.}\href{../exec/runtime.html#syntax-moduleinst}{\mathsf{elems}}{}[x]] \\ \end{array}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\begin{array}[t]{&#64;{}l&#64;{~}c&#64;{~}l&#64;{}l&#64;{}} (s ; f){.}\href{../exec/runtime.html#syntax-state}{\mathsf{locals}}{}[x] &amp; = &amp; f{.}\href{../exec/runtime.html#syntax-frame}{\mathsf{locals}}{}[x] \\ \end{array}\)</span></p></li>
+</ul>
+</li>
+<li><p>These shorthands also extend to <a class="reference internal" href="../syntax/conventions.html#notation-replace"><span class="std std-ref">notation</span></a> for updating state:</p>
+<ul>
+<li><p><span class="math notranslate nohighlight">\(\begin{array}[t]{&#64;{}l&#64;{~}c&#64;{~}l&#64;{}l&#64;{}} (s ; f){}[{.}\href{../exec/runtime.html#syntax-state}{\mathsf{globals}}{}[x]{.}\href{../exec/runtime.html#syntax-globalinst}{\mathsf{value}} = v] &amp; = &amp; s{}[{.}\href{../exec/runtime.html#syntax-store}{\mathsf{globals}}{}[f{.}\href{../exec/runtime.html#syntax-frame}{\mathsf{module}}{.}\href{../exec/runtime.html#syntax-moduleinst}{\mathsf{globals}}{}[x]]{.}\href{../exec/runtime.html#syntax-globalinst}{\mathsf{value}} = v] ; f \\ \end{array}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\begin{array}[t]{&#64;{}l&#64;{~}c&#64;{~}l&#64;{}l&#64;{}} (s ; f){}[{.}\href{../exec/runtime.html#syntax-state}{\mathsf{mems}}{}[x]{.}\href{../exec/runtime.html#syntax-meminst}{\mathsf{bytes}}{}[i : j] = {b^\ast}] &amp; = &amp; s{}[{.}\href{../exec/runtime.html#syntax-store}{\mathsf{mems}}{}[f{.}\href{../exec/runtime.html#syntax-frame}{\mathsf{module}}{.}\href{../exec/runtime.html#syntax-moduleinst}{\mathsf{mems}}{}[x]]{.}\href{../exec/runtime.html#syntax-meminst}{\mathsf{bytes}}{}[i : j] = {b^\ast}] ; f \\ \end{array}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\begin{array}[t]{&#64;{}l&#64;{~}c&#64;{~}l&#64;{}l&#64;{}} (s ; f){}[{.}\href{../exec/runtime.html#syntax-state}{\mathsf{tables}}{}[x]{.}\href{../exec/runtime.html#syntax-tableinst}{\mathsf{refs}}{}[i] = r] &amp; = &amp; s{}[{.}\href{../exec/runtime.html#syntax-store}{\mathsf{tables}}{}[f{.}\href{../exec/runtime.html#syntax-frame}{\mathsf{module}}{.}\href{../exec/runtime.html#syntax-moduleinst}{\mathsf{tables}}{}[x]]{.}\href{../exec/runtime.html#syntax-tableinst}{\mathsf{refs}}{}[i] = r] ; f \\ \end{array}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\begin{array}[t]{&#64;{}l&#64;{~}c&#64;{~}l&#64;{}l&#64;{}} (s ; f){}[{.}\href{../exec/runtime.html#syntax-state}{\mathsf{locals}}{}[x] = v] &amp; = &amp; s ; f{}[{.}\href{../exec/runtime.html#syntax-frame}{\mathsf{locals}}{}[x] = v] \\ \end{array}\)</span></p></li>
+</ul>
+</li>
+</ul>
 </section>
 </section>
 </section>
