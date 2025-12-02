@@ -263,15 +263,21 @@ def $data(state, dataidx) : datainst        hint(show %.DATAS[%])   hint(macro "
 def $elem(state, tableidx) : eleminst       hint(show %.ELEMS[%])   hint(macro "Z%")
 def $local(state, localidx) : val?          hint(show %.LOCALS[%])  hint(macro "Z%")
 
-def $type((s; f), x) = f.MODULE.TYPES[x]
-def $tag((s; f), x) = s.TAGS[f.MODULE.TAGS[x]]
-def $global((s; f), x) = s.GLOBALS[f.MODULE.GLOBALS[x]]
-def $mem((s; f), x) = s.MEMS[f.MODULE.MEMS[x]]
-def $table((s; f), x) = s.TABLES[f.MODULE.TABLES[x]]
-def $func((s; f), x) = s.FUNCS[f.MODULE.FUNCS[x]]
-def $data((s; f), x) = s.DATAS[f.MODULE.DATAS[x]]
-def $elem((s; f), x) = s.ELEMS[f.MODULE.ELEMS[x]]
-def $local((s; f), x) = f.LOCALS[x]
+def $sof(state) : store  hint(show s)
+def $fof(state) : frame  hint(show f)
+
+def $sof(z) = $store(z)
+def $fof(z) = $frame(z)
+
+def $type(z, x) = $fof(z).MODULE.TYPES[x]
+def $tag(z, x) = $sof(z).TAGS[$fof(z).MODULE.TAGS[x]]
+def $global(z, x) = $sof(z).GLOBALS[$fof(z).MODULE.GLOBALS[x]]
+def $mem(z, x) = $sof(z).MEMS[$fof(z).MODULE.MEMS[x]]
+def $table(z, x) = $sof(z).TABLES[$fof(z).MODULE.TABLES[x]]
+def $func(z, x) = $sof(z).FUNCS[$fof(z).MODULE.FUNCS[x]]
+def $data(z, x) = $sof(z).DATAS[$fof(z).MODULE.DATAS[x]]
+def $elem(z, x) = $sof(z).ELEMS[$fof(z).MODULE.ELEMS[x]]
+def $local(z, x) = $fof(z).LOCALS[x]
 
 
 ;; State update
@@ -287,25 +293,25 @@ def $with_data(state, dataidx, byte*) : state               hint(show %[.DATAS[%
 def $with_struct(state, structaddr, nat, fieldval) : state  hint(show %[.STRUCTS[%].FIELDS[%] = %]) hint(macro "ZS%") hint(prose "Replace" $structinst(%1)[%2].FIELDS[%3] "with" %4)
 def $with_array(state, arrayaddr, nat, fieldval) : state    hint(show %[.ARRAYS[%].FIELDS[%] = %])  hint(macro "ZA%") hint(prose "Replace" $arrayinst(%1)[%2].FIELDS[%3] "with" %4)
 
-def $with_local((s; f), x, v) = s; f[.LOCALS[x] = v]
-def $with_global((s; f), x, v) = s[.GLOBALS[f.MODULE.GLOBALS[x]].VALUE = v]; f
-def $with_table((s; f), x, i, r) = s[.TABLES[f.MODULE.TABLES[x]].REFS[i] = r]; f
-def $with_tableinst((s; f), x, ti) = s[.TABLES[f.MODULE.TABLES[x]] = ti]; f
-def $with_mem((s; f), x, i, j, b*) = s[.MEMS[f.MODULE.MEMS[x]].BYTES[i : j] = b*]; f
-def $with_meminst((s; f), x, mi) = s[.MEMS[f.MODULE.MEMS[x]] = mi]; f
-def $with_elem((s; f), x, r*) = s[.ELEMS[f.MODULE.ELEMS[x]].REFS = r*]; f
-def $with_data((s; f), x, b*) = s[.DATAS[f.MODULE.DATAS[x]].BYTES = b*]; f
-def $with_struct((s; f), a, i, fv) = s[.STRUCTS[a].FIELDS[i] = fv]; f
-def $with_array((s; f), a, i, fv) = s[.ARRAYS[a].FIELDS[i] = fv]; f
+def $with_local(z, x, v) = $sof(z); $fof(z)[.LOCALS[x] = v]
+def $with_global(z, x, v) = $sof(z)[.GLOBALS[$fof(z).MODULE.GLOBALS[x]].VALUE = v]; $fof(z)
+def $with_table(z, x, i, r) = $sof(z)[.TABLES[$fof(z).MODULE.TABLES[x]].REFS[i] = r]; $fof(z)
+def $with_tableinst(z, x, ti) = $sof(z)[.TABLES[$fof(z).MODULE.TABLES[x]] = ti]; $fof(z)
+def $with_mem(z, x, i, j, b*) = $sof(z)[.MEMS[$fof(z).MODULE.MEMS[x]].BYTES[i : j] = b*]; $fof(z)
+def $with_meminst(z, x, mi) = $sof(z)[.MEMS[$fof(z).MODULE.MEMS[x]] = mi]; $fof(z)
+def $with_elem(z, x, r*) = $sof(z)[.ELEMS[$fof(z).MODULE.ELEMS[x]].REFS = r*]; $fof(z)
+def $with_data(z, x, b*) = $sof(z)[.DATAS[$fof(z).MODULE.DATAS[x]].BYTES = b*]; $fof(z)
+def $with_struct(z, a, i, fv) = $sof(z)[.STRUCTS[a].FIELDS[i] = fv]; $fof(z)
+def $with_array(z, a, i, fv) = $sof(z)[.ARRAYS[a].FIELDS[i] = fv]; $fof(z)
 
 
 def $add_structinst(state, structinst*) : state  hint(show %[.STRUCTS =++ %]) hint(macro "Z%") hint(prose "Append" %2 "to" $structinst(%1))
 def $add_arrayinst(state, arrayinst*) : state    hint(show %[.ARRAYS =++ %])  hint(macro "Z%") hint(prose "Append" %2 "to" $arrayinst(%1))
 def $add_exninst(state, exninst*) : state        hint(show %[.EXNS =++ %])    hint(macro "Z%") hint(prose "Append" %2 "to" $exninst(%1))
 
-def $add_structinst((s; f), si*) = s[.STRUCTS =++ si*]; f
-def $add_arrayinst((s; f), ai*) = s[.ARRAYS =++ ai*]; f
-def $add_exninst((s; f), exn*) = s[.EXNS =++ exn*]; f
+def $add_structinst(z, si*) = $sof(z)[.STRUCTS =++ si*]; $fof(z)
+def $add_arrayinst(z, ai*) = $sof(z)[.ARRAYS =++ ai*]; $fof(z)
+def $add_exninst(z, exn*) = $sof(z)[.EXNS =++ exn*]; $fof(z)
 
 
 ;; Growing
