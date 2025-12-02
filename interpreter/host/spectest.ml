@@ -17,23 +17,23 @@ let global (GlobalT (_, t) as gt) =
     | VecT V128T -> Vec (V128 (V128.I32x4.of_lanes [666l; 666l; 666l; 666l]))
     | RefT (_, t) -> Ref (NullRef t)
     | BotT -> assert false
-  in ExternGlobal (Global.alloc gt v)
+  in Some (ExternGlobal (Global.alloc gt v))
 
 let table =
   let tt = TableT (I32AT, {min = 10L; max = Some 20L}, (Null, FuncHT)) in
-  ExternTable (Table.alloc tt (NullRef FuncHT))
+  Some (ExternTable (Table.alloc tt (NullRef FuncHT)))
 
 let table64 =
   let tt = TableT (I64AT, {min = 10L; max = Some 20L}, (Null, FuncHT)) in
-  ExternTable (Table.alloc tt (NullRef FuncHT))
+  Some (ExternTable (Table.alloc tt (NullRef FuncHT)))
 
 let memory =
   let mt = MemoryT (I32AT, {min = 1L; max = Some 2L}) in
-  ExternMemory (Memory.alloc mt)
+  Some (ExternMemory (Memory.alloc mt))
 
 let func f ts1 ts2 =
   let dt = DefT (RecT [SubT (Final, [], FuncT (ts1, ts2))], 0l) in
-  ExternFunc (Func.alloc_host dt (f ts1 ts2))
+  Some (ExternFunc (Func.alloc_host dt (f ts1 ts2)))
 
 let print_value v =
   Printf.printf "%s : %s\n"
@@ -61,4 +61,4 @@ let lookup name t =
   | "table", _ -> table
   | "table64", _ -> table64
   | "memory", _ -> memory
-  | _ -> raise Not_found
+  | _ -> None
