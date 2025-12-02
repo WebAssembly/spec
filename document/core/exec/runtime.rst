@@ -651,6 +651,8 @@ $${syntax: config state}
 Conventions
 ...........
 
+* The meta variable ${state: z} ranges over frame states where clear from context.
+
 * The following shorthands are defined for accessing a state ${:z = (s; f)}:
 
   - ${definition: type}
