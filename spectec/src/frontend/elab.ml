@@ -26,6 +26,10 @@ let error_atom at atom t msg =
   error at (msg ^ " `" ^ string_of_atom atom ^
     "` in type `" ^ Il.string_of_typ t ^ "`")
 
+let error_mixop at mixop t msg =
+  error at (msg ^ " `" ^ Il.string_of_mixop mixop ^
+    "` in type `" ^ Il.string_of_typ t ^ "`")
+
 let error_id id msg =
   error id.at (msg ^ " `" ^ id.it ^ "`")
 
@@ -114,7 +118,7 @@ type kind =
 
 type var_typ = Il.typ
 type typ_typ = Il.param list * kind
-type gram_typ = Il.param list * Il.typ * dots option * (id * Il.prod) list
+type gram_typ = Il.param list * Il.typ * (id * Il.prod) list * dots option
 type rel_typ = Il.mixop * notation * Il.typ * (id * Il.rule) list
 type def_typ = Il.param list * Il.typ * (def * Il.clause) list
 
@@ -187,19 +191,21 @@ let find_field tfs atom at t =
   | Some tf -> tf
   | None -> error_atom at atom t "unbound field"
 
-let find_case' f tcs atom at t =
+let find_case tcs mixop at t =
+  match List.find_opt (fun (mixop', _, _) -> Mixop.eq mixop' mixop) tcs with
+  | Some tc -> tc
+  | None -> error_mixop at mixop t "unknown case"
+
+let find_case_atom tcs atom at t =
   match List.find_opt
     (fun (mixop, _, _) ->
       match Mixop.head mixop with
-      | Some atom' -> f atom' atom
+      | Some atom' -> Atom.(eq atom' atom || sub atom' atom)
       | None -> false
     ) tcs
   with
   | Some tc -> tc
   | None -> error_atom at atom t "unknown case"
-
-let find_case = find_case' Atom.eq
-let find_case_sub = find_case' (fun a' a -> Atom.(eq a' a || sub a' a))
 
 let bound_env' env' = Map.fold (fun id _ s -> Free.Set.add id s) env' Free.Set.empty
 let bound_env env =
@@ -216,7 +222,7 @@ let bind_quant env q =
   | Il.ExpP (x, t) -> env.vars <- bind "variable" env.vars x t
   | Il.TypP x -> env.typs <- bind "syntax type" env.typs x ([], Opaque)
   | Il.DefP (x, ps, t) -> env.defs <- bind "definition" env.defs x (ps, t, [])
-  | Il.GramP (x, ps, t) -> env.grams <- bind "grammar" env.grams x (ps, t, None, [])
+  | Il.GramP (x, ps, t) -> env.grams <- bind "grammar" env.grams x (ps, t, [], None)
 
 
 let vars env = Map.fold (fun id (at, _) ids -> (id $ at)::ids) env.vars []
@@ -233,7 +239,7 @@ let il_args_of_params = List.map il_arg_of_param
 
 let to_il_var (_at, t) = t
 let to_il_def (_at, (ps, t, clauses)) = (ps, t, List.map snd clauses)
-let to_il_gram (_at, (ps, t, _, prods)) = (ps, t, List.map snd prods)
+let to_il_gram (_at, (ps, t, prods, _)) = (ps, t, List.map snd prods)
 
 let to_il_typ (_at, (ps, k)) =
   match k with
@@ -306,6 +312,9 @@ let fail_silent = Fail []
 
 let fail_atom at atom t msg =
   fail at (msg ^ " `" ^ string_of_atom atom ^ "` in type `" ^ Il.string_of_typ t ^ "`")
+
+let fail_mixop at mixop t msg =
+  fail at (msg ^ " `" ^ Il.string_of_mixop mixop ^ "` in type `" ^ Il.string_of_typ t ^ "`")
 
 let fail_infer at construct =
   fail at ("cannot infer type of " ^ construct)
@@ -910,9 +919,10 @@ and typ_rep env t : Il.typ =
   match expand env t with
   | Il.VarT _ as t' ->
     (match expand_def env (t' $ t.at) with
-    | Il.VariantT [_, (_, t1, _), _], NoDots -> t1
+    | Il.VariantT [_, (_, t1, _), _], NoDots -> typ_rep env t1
     | _ -> t' $ t.at
-  )
+    )
+  | Il.TupT [_, t1] -> typ_rep env t1
   | t' -> t' $ t.at
 
 and elab_typfield env tid at (tf : typfield) : Il.typfield =
@@ -1512,18 +1522,16 @@ and elab_expfields env tid (efs : expfield list) (tfs : Il.typfield list) (t0 : 
   match efs, tfs with
   | [], [] -> Ok ([], [])
   | (atom1, e)::efs2, (atom2, (qsF, tF, prems), _)::tfs2 when atom1.it = atom2.it ->
-    let not = Mixop.(Seq [Atom atom2; Arg tF]) in
-    let* qs1, es', s = elab_exp_notation' env tid e not in
+    let* qs1, e' = elab_exp env e tF in
     let* qs2, efs2' = elab_expfields env tid efs2 tfs2 t0 at in
-    let e' = (if prems = [] then tup_exp' else tup_exp_bind') es' e.at in
-    let as' = Il.Subst.subst_args s (il_args_of_params qsF) in
+    let e' = if prems = [] then e' else tup_exp_bind' [e'] e.at in
+    let as' = il_args_of_params qsF in
     Ok (qs1 @ qs2, (elab_atom atom1 tid, as', e') :: efs2')
   | _, (atom, (_qs, t, prems), _)::tfs2 ->
     let atom' = string_of_atom atom in
     let* qs1, e1' = cast_empty ("omitted record field `" ^ atom' ^ "`") env t at in
-    let e' = (if prems = [] then tup_exp' else tup_exp_bind') [e1'] at in
+    let e' = if prems = [] then e1' else tup_exp_bind' [e1'] at in
     let* qs2, efs2' = elab_expfields env tid efs tfs2 t0 at in
-(*TODO*)
     Ok (qs1 @ qs2, (elab_atom atom tid, [], e') :: efs2')
   | (atom, e)::_, [] ->
     fail_atom e.at atom t0 "undefined or misplaced record field"
@@ -1703,11 +1711,12 @@ and elab_exp_variant env tid (e : exp) (tcs : Il.typcase list) t at : (Il.quant 
     | AtomE atom
     | InfixE (_, atom, _)
     | BrackE (atom, _, _) -> Ok atom
-    | SeqE (e1::_) -> head e1
+    | SeqE (e1::es) ->
+      (match head e1 with Ok _ as ok -> ok | _ -> head (SeqE es $ e.at))
     | _ -> fail_typ env at "expression" t
   in
   let* atom = head e in
-  let* mixop, (qsC, tC, _prems), _ = attempt (find_case_sub tcs atom atom.at) t in
+  let* mixop, (qsC, tC, _prems), _ = attempt (find_case_atom tcs atom atom.at) t in
   let* xtsC = as_tup_typ "tuple" env Check tC e.at in
   let not = Mixop.apply mixop (List.map snd xtsC) in
   let* qs, es', s = elab_exp_notation' env tid e not in
@@ -1805,22 +1814,6 @@ and cast_exp' phrase env (e' : Il.exp) t1 t2 : (Il.quant list * Il.exp') attempt
   | Il.TupT [], Il.VarT _ when is_empty_notation_typ env t2' ->
     Ok ([], e'.it)
 
-  | IterT (t11, Opt), IterT (t21, List) ->
-    choice env [
-      (fun env ->
-        let t1' = Il.IterT (t11, Il.List) $ e'.at in
-        let e'' = Il.LiftE e' $$ e'.at % t1' in
-        cast_exp' phrase env e'' t1' t2
-      );
-      (fun env ->
-        let* qs, e'' = cast_exp phrase env e' t1 t21 in
-        Ok (qs, Il.ListE [e''])
-      );
-    ]
-  | _, IterT (t21, (List | List1)) ->
-    let* qs, e'' = cast_exp phrase env e' t1 t21 in
-    Ok (qs, Il.ListE [e''])
-
   | Il.VarT _, Il.VarT _ ->
     (match expand_def env t1', expand_def env t2' with
     | (Il.VariantT [mixop1, (qs1, tC1, _), _], NoDots),
@@ -1863,7 +1856,35 @@ and cast_exp' phrase env (e' : Il.exp) t1 t2 : (Il.quant list * Il.exp') attempt
         | _ -> fail_typ2 env e'.at phrase t1 t2 ""
       )
 
-    | (Il.VariantT [mixop1, (qs1, tC1, _), _], NoDots), _ ->
+    | (Il.VariantT tcs1, dots1), (Il.VariantT tcs2, dots2) ->
+      if dots1 = Dots || dots2 = Dots then
+        error e'.at "used variant type is only partially defined at this point";
+      let* () =
+        (* Shallow breadth subtyping on variants *)
+        match
+          iter_attempt (fun (mixop, (qs1, tC1, _prems1), _) ->
+            let* _, (qs2, tC2, _prems2), _ =
+              attempt (find_case tcs2 mixop t1.at) t2 in
+            (* TODO(2, rossberg): this should take alpha-equivalence into account *)
+            if Il.Eq.(eq_list eq_param qs1 qs2) && equiv_typ env tC1 tC2 then
+              Ok ()
+            else
+              fail_mixop e'.at mixop t1 "type mismatch for case"
+          ) tcs1
+        with
+        | Ok () -> Ok ()
+        | Fail (Trace (_, msg, _) :: _) -> fail_typ2 env e'.at phrase t1 t2 (", " ^ msg)
+        | Fail [] -> assert false
+      in
+      Ok ([], Il.SubE (e', t1', t2'))
+
+    | _, _ ->
+      fail_typ2 env e'.at phrase t1 t2 ""
+    )
+
+  | Il.VarT _, _ ->
+    (match expand_def env t1' with
+    | Il.VariantT [mixop1, (qs1, tC1, _), _], NoDots ->
       choice env [
         (fun env ->
           (* A ConT can always be cast to a (singleton) iteration *)
@@ -1902,7 +1923,13 @@ and cast_exp' phrase env (e' : Il.exp) t1 t2 : (Il.quant list * Il.exp') attempt
         );
       ]
 
-    | _, (Il.VariantT [mixop2, (qs2, tC2, _), _], NoDots) ->
+    | _ ->
+      fail_typ2 env e'.at phrase t1 t2 ""
+    )
+
+  | _, Il.VarT _ ->
+    (match expand_def env t2' with
+    | Il.VariantT [mixop2, (qs2, tC2, _), _], NoDots ->
       (* A ConT payload can be cast to the ConT *)
       let qs2', s2 = Il.Fresh.refresh_quants qs2 in
       let tC2' = Il.Subst.subst_typ s2 tC2 in
@@ -1914,36 +1941,25 @@ and cast_exp' phrase env (e' : Il.exp) t1 t2 : (Il.quant list * Il.exp') attempt
       | _ -> fail_typ2 env e'.at phrase t1 t2 ""
       )
 
-    | (Il.VariantT tcs1, dots1), (Il.VariantT tcs2, dots2) ->
-      if dots1 = Dots || dots2 = Dots then
-        error e'.at "used variant type is only partially defined at this point";
-      let* () =
-        (* Shallow breadth subtyping on variants *)
-        match
-          iter_attempt (fun (mixop1, (qs1, tC1, _prems1), _) ->
-            match Mixop.head mixop1 with
-            | None -> fail_silent
-            | Some atom ->
-              let* mixop2, (qs2, tC2, _prems2), _ =
-                attempt (find_case tcs2 atom t1.at) t2 in
-              (* TODO(2, rossberg): this should take alpha-equivalence into account *)
-              if Mixop.eq mixop1 mixop2
-              && Il.Eq.(eq_list eq_param qs1 qs2)
-              && equiv_typ env tC1 tC2 then
-                Ok ()
-              else
-                fail_atom e'.at atom t1 "type mismatch for case"
-          ) tcs1
-        with
-        | Ok () -> Ok ()
-        | Fail (Trace (_, msg, _) :: _) -> fail_typ2 env e'.at phrase t1 t2 (", " ^ msg)
-        | Fail [] -> assert false
-      in
-      Ok ([], Il.SubE (e', t1', t2'))
-
-    | _, _ ->
+    | _ ->
       fail_typ2 env e'.at phrase t1 t2 ""
     )
+
+  | Il.IterT (t11, Opt), Il.IterT (t21, List) ->
+    choice env [
+      (fun env ->
+        let t1' = Il.IterT (t11, Il.List) $ e'.at in
+        let e'' = Il.LiftE e' $$ e'.at % t1' in
+        cast_exp' phrase env e'' t1' t2
+      );
+      (fun env ->
+        let* qs, e'' = cast_exp phrase env e' t1 t21 in
+        Ok (qs, Il.ListE [e''])
+      );
+    ]
+  | _, Il.IterT (t21, (List | List1)) ->
+    let* qs, e'' = cast_exp phrase env e' t1 t21 in
+    Ok (qs, Il.ListE [e''])
 
   | _, _ ->
     fail_typ2 env e'.at phrase t1 t2 ""
@@ -2580,6 +2596,9 @@ and elab_args' in_lhs env (as_ : arg list) (ps : Il.param list) qs as' s at : Il
   | [], [] -> qs, List.concat (List.rev as'), s
   | a::_, [] -> error a.at "too many arguments"
   | [], _::_ -> error at "too few arguments"
+  | _, {it = Il.TypP _; at; _}::ps1 when at = Source.no_region ->
+    (* Implicitly inserted type parameter *)
+    elab_args' in_lhs env as_ ps1 qs as' s at
   | a::as1, p::ps1 ->
     let qs', a', s' = elab_arg in_lhs env a p s in
     elab_args' in_lhs env as1 ps1 (qs @ qs') (a'::as') s' at
@@ -2635,13 +2654,15 @@ and elab_param env (p : param) : Il.param list =
             error_id x "invalid identifer suffix in binding position";
           env'.typs <- bind "syntax type" env.typs x ([], Opaque);
           env.typs <- bind "syntax type" env.typs x ([], Opaque);
-          env.gvars <- bind "variable" env.gvars (strip_var_sub x) (Il.VarT (x, []) $ x.at);
-          (Il.TypP x $ x.at) :: ps'
+          env.gvars <- bind "variable" env.gvars (strip_var_sub x)
+            (Il.VarT (x, []) $ x.at);
+          (* Mark as implicit type parameter via empty region. *)
+          (Il.TypP x $ Source.no_region) :: ps'
         )
       ) free.typid []
     in
     let t' = elab_typ env' t in
-    env.grams <- bind "grammar" env.grams x ([], t', None, []);
+    env.grams <- bind "grammar" env.grams x ([], t', [], None);
     ps_implicit' @ [Il.GramP (x, ps', t') $ p.at]
   | DefP (x, ps, t) ->
     let env' = local_env env in
@@ -2745,7 +2766,7 @@ let infer_gramdef env (d : def) =
       let env' = local_env env in
       let ps' = elab_params env' ps in
       let t' = elab_typ env' t in
-      env.grams <- bind "grammar" env.grams x1 (ps', t', None, []);
+      env.grams <- bind "grammar" env.grams x1 (ps', t', [], None);
     )
   | _ -> ()
 
@@ -2847,7 +2868,7 @@ let rec elab_def env (d : def) : Il.def list =
     let xprods2' = List.map (fun pr -> x2, pr) (elab_gram env' gram t') in
     let dims = Dim.check_def d in
     infer_no_quants env' dims d;
-    let ps1', t1', dots_opt, xprods1' = find "grammar" env.grams x1 in
+    let ps1', t1', xprods1', dots_opt = find "grammar" env.grams x1 in
     let dots1, _, dots2 = gram.it in
     let xprods' =
       match dots_opt with
@@ -2867,7 +2888,7 @@ let rec elab_def env (d : def) : Il.def list =
           error_typ2 env d.at "grammar" t1' t' " of previous fragment";
         xprods1' @ xprods2'
     in
-    env.grams <- rebind "grammar" env.grams x1 (ps', t', Some dots2, xprods');
+    env.grams <- rebind "grammar" env.grams x1 (ps', t', xprods', Some dots2);
     (* Only add last fragment to IL defs, so that populate finds it only once *)
     (if dots2 = Dots then [] else [Il.GramD (x1, ps', t', []) $ d.at])
       @ elab_hintdef env (GramH (x1, x2, hints) $ d.at)
@@ -2950,8 +2971,8 @@ let check_dots env =
       error_id (x $ at) "no defined cases for syntax type family"
     | Defined _ | Family _ -> ()
   ) env.typs;
-  Map.iter (fun x (at, (_ps, _t, gram_opt, _prods')) ->
-    match gram_opt with
+  Map.iter (fun x (at, (_ps, _t, _prods', dots_opt)) ->
+    match dots_opt with
     | None -> assert false
     | Some Dots ->
       error_id (x $ at) "missing final extension to grammar"
@@ -2982,7 +3003,7 @@ let populate_def env (d' : Il.def) : Il.def =
     let _, _, clauses' = find "definition" env.defs x in
     Il.DecD (x, ps', t', List.map snd clauses') $ d'.at
   | Il.GramD (x, ps', t', []) ->
-    let _, _, _, prods' = find "grammar" env.grams x in
+    let _, _, prods', _ = find "grammar" env.grams x in
     Il.GramD (x, ps', t', List.map snd prods') $ d'.at
   | Il.HintD hd' -> populate_hint env hd'; d'
   | _ -> assert false
