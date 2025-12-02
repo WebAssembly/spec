@@ -8,4 +8,9 @@ sig
   val run_string : string -> bool
   val run_file : string -> bool
   val run_stdin : unit -> unit
+
+  (* Currently used by SpecTec AL runner, should be ported to functor *)
+  val assert_message : Source.region -> string -> string -> string -> unit
+  val assert_results :
+    Source.region -> Value.value list -> Script.result list -> unit
 end
