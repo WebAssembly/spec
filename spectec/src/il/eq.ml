@@ -155,3 +155,10 @@ and eq_arg a1 a2 =
   | DefA id1, DefA id2 -> eq_id id1 id2
   | GramA g1, GramA g2 -> eq_sym g1 g2
   | _, _ -> false
+
+and eq_bind b1 b2 =
+  match b1.it, b2.it with
+  | ExpB (id1, t1), ExpB (id2, t2) ->
+    eq_id id1 id2 && eq_typ t1 t2
+  | TypB id1, TypB id2 -> eq_id id1 id2
+  | _ -> false (* unsupported *)

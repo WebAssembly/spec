@@ -17,11 +17,7 @@ syntax m = nat
 ;; ../../../../specification/wasm-3.0/0.2-aux.num.spectec
 def $min(nat : nat, nat : nat) : nat
   ;; ../../../../specification/wasm-3.0/0.2-aux.num.spectec
-  def $min{i : nat, j : nat}(i, j) = i
-    -- if (i <= j)
-  ;; ../../../../specification/wasm-3.0/0.2-aux.num.spectec
-  def $min{i : nat, j : nat}(i, j) = j
-    -- otherwise
+  def $min{i : nat, j : nat}(i, j) = (if (i <= j) then i else j)
 
 ;; ../../../../specification/wasm-3.0/0.2-aux.num.spectec
 rec {
@@ -106,11 +102,7 @@ def $setminus1_(syntax X, X : X, X*) : X*
   ;; ../../../../specification/wasm-3.0/0.3-aux.seq.spectec:44.1-44.38
   def $setminus1_{syntax X, w : X}(syntax X, w, []) = [w]
   ;; ../../../../specification/wasm-3.0/0.3-aux.seq.spectec:45.1-45.78
-  def $setminus1_{syntax X, w : X, w_1 : X, `w'*` : X*}(syntax X, w, [w_1] ++ w'*{w' <- `w'*`}) = []
-    -- if (w = w_1)
-  ;; ../../../../specification/wasm-3.0/0.3-aux.seq.spectec:46.1-46.77
-  def $setminus1_{syntax X, w : X, w_1 : X, `w'*` : X*}(syntax X, w, [w_1] ++ w'*{w' <- `w'*`}) = $setminus1_(syntax X, w, w'*{w' <- `w'*`})
-    -- otherwise
+  def $setminus1_{syntax X, w : X, w_1 : X, `w'*` : X*}(syntax X, w, [w_1] ++ w'*{w' <- `w'*`}) = (if (w = w_1) then [] else $setminus1_(syntax X, w, w'*{w' <- `w'*`}))
 }
 
 ;; ../../../../specification/wasm-3.0/0.3-aux.seq.spectec
@@ -529,7 +521,6 @@ def $funcsxx(externidx*) : typeidx*
   def $funcsxx{externidx : externidx, `xx*` : externidx*}([externidx] ++ xx*{xx <- `xx*`}) = $funcsxx(xx*{xx <- `xx*`})
     -- wf_externidx: `%`(externidx)
     -- (wf_externidx: `%`(xx))*{xx <- `xx*`}
-    -- otherwise
 }
 
 ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec
@@ -547,7 +538,6 @@ def $globalsxx(externidx*) : globalidx*
   def $globalsxx{externidx : externidx, `xx*` : externidx*}([externidx] ++ xx*{xx <- `xx*`}) = $globalsxx(xx*{xx <- `xx*`})
     -- wf_externidx: `%`(externidx)
     -- (wf_externidx: `%`(xx))*{xx <- `xx*`}
-    -- otherwise
 }
 
 ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec
@@ -565,7 +555,6 @@ def $tablesxx(externidx*) : tableidx*
   def $tablesxx{externidx : externidx, `xx*` : externidx*}([externidx] ++ xx*{xx <- `xx*`}) = $tablesxx(xx*{xx <- `xx*`})
     -- wf_externidx: `%`(externidx)
     -- (wf_externidx: `%`(xx))*{xx <- `xx*`}
-    -- otherwise
 }
 
 ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec
@@ -583,7 +572,6 @@ def $memsxx(externidx*) : memidx*
   def $memsxx{externidx : externidx, `xx*` : externidx*}([externidx] ++ xx*{xx <- `xx*`}) = $memsxx(xx*{xx <- `xx*`})
     -- wf_externidx: `%`(externidx)
     -- (wf_externidx: `%`(xx))*{xx <- `xx*`}
-    -- otherwise
 }
 
 ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec
@@ -601,7 +589,6 @@ def $tagsxx(externidx*) : tagidx*
   def $tagsxx{externidx : externidx, `xx*` : externidx*}([externidx] ++ xx*{xx <- `xx*`}) = $tagsxx(xx*{xx <- `xx*`})
     -- wf_externidx: `%`(externidx)
     -- (wf_externidx: `%`(xx))*{xx <- `xx*`}
-    -- otherwise
 }
 
 ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec
@@ -1075,8 +1062,7 @@ syntax Fnn =
   | F64
 
 ;; ../../../../specification/wasm-3.0/1.2-syntax.types.spectec
-syntax Vnn = 
-  | V128
+syntax Vnn = vectype
 
 ;; ../../../../specification/wasm-3.0/1.2-syntax.types.spectec
 syntax Cnn = 
@@ -1183,13 +1169,7 @@ syntax Jnn =
   | I16
 
 ;; ../../../../specification/wasm-3.0/1.2-syntax.types.spectec
-syntax Lnn = 
-  | I32
-  | I64
-  | F32
-  | F64
-  | I8
-  | I16
+syntax Lnn = lanetype
 
 ;; ../../../../specification/wasm-3.0/1.2-syntax.types.spectec
 syntax limits = 
@@ -1566,11 +1546,7 @@ def $cunpack(storagetype : storagetype) : consttype?
 ;; ../../../../specification/wasm-3.0/1.2-syntax.types.spectec
 def $minat(addrtype : addrtype, addrtype : addrtype) : addrtype
   ;; ../../../../specification/wasm-3.0/1.2-syntax.types.spectec
-  def $minat{at_1 : addrtype, at_2 : addrtype}(at_1, at_2) = at_1
-    -- if ($size((at_1 : addrtype <: numtype)) <= $size((at_2 : addrtype <: numtype)))
-  ;; ../../../../specification/wasm-3.0/1.2-syntax.types.spectec
-  def $minat{at_1 : addrtype, at_2 : addrtype}(at_1, at_2) = at_2
-    -- otherwise
+  def $minat{at_1 : addrtype, at_2 : addrtype}(at_1, at_2) = (if ($size((at_1 : addrtype <: numtype)) <= $size((at_2 : addrtype <: numtype))) then at_1 else at_2)
 
 ;; ../../../../specification/wasm-3.0/1.2-syntax.types.spectec
 def $diffrt(reftype : reftype, reftype : reftype) : reftype
@@ -1603,7 +1579,6 @@ def $tagsxt(externtype*) : tagtype*
   def $tagsxt{externtype : externtype, `xt*` : externtype*}([externtype] ++ xt*{xt <- `xt*`}) = $tagsxt(xt*{xt <- `xt*`})
     -- wf_externtype: `%`(externtype)
     -- (wf_externtype: `%`(xt))*{xt <- `xt*`}
-    -- otherwise
 }
 
 ;; ../../../../specification/wasm-3.0/1.2-syntax.types.spectec
@@ -1621,7 +1596,6 @@ def $globalsxt(externtype*) : globaltype*
   def $globalsxt{externtype : externtype, `xt*` : externtype*}([externtype] ++ xt*{xt <- `xt*`}) = $globalsxt(xt*{xt <- `xt*`})
     -- wf_externtype: `%`(externtype)
     -- (wf_externtype: `%`(xt))*{xt <- `xt*`}
-    -- otherwise
 }
 
 ;; ../../../../specification/wasm-3.0/1.2-syntax.types.spectec
@@ -1639,7 +1613,6 @@ def $memsxt(externtype*) : memtype*
   def $memsxt{externtype : externtype, `xt*` : externtype*}([externtype] ++ xt*{xt <- `xt*`}) = $memsxt(xt*{xt <- `xt*`})
     -- wf_externtype: `%`(externtype)
     -- (wf_externtype: `%`(xt))*{xt <- `xt*`}
-    -- otherwise
 }
 
 ;; ../../../../specification/wasm-3.0/1.2-syntax.types.spectec
@@ -1657,7 +1630,6 @@ def $tablesxt(externtype*) : tabletype*
   def $tablesxt{externtype : externtype, `xt*` : externtype*}([externtype] ++ xt*{xt <- `xt*`}) = $tablesxt(xt*{xt <- `xt*`})
     -- wf_externtype: `%`(externtype)
     -- (wf_externtype: `%`(xt))*{xt <- `xt*`}
-    -- otherwise
 }
 
 ;; ../../../../specification/wasm-3.0/1.2-syntax.types.spectec
@@ -1674,7 +1646,6 @@ def $funcsxt(externtype*) : deftype*
   def $funcsxt{externtype : externtype, `xt*` : externtype*}([externtype] ++ xt*{xt <- `xt*`}) = $funcsxt(xt*{xt <- `xt*`})
     -- wf_externtype: `%`(externtype)
     -- (wf_externtype: `%`(xt))*{xt <- `xt*`}
-    -- otherwise
 }
 
 ;; ../../../../specification/wasm-3.0/1.2-syntax.types.spectec
@@ -1686,21 +1657,12 @@ def $subst_typevar(typevar : typevar, typevar*, typeuse*) : typeuse
   def $subst_typevar{tv : typevar}(tv, [], []) = (tv : typevar <: typeuse)
     -- wf_typevar: `%`(tv)
   ;; ../../../../specification/wasm-3.0/1.2-syntax.types.spectec:366.1-366.95
-  def $subst_typevar{tv : typevar, tv_1 : typevar, `tv'*` : typevar*, tu_1 : typeuse, `tu'*` : typeuse*}(tv, [tv_1] ++ tv'*{tv' <- `tv'*`}, [tu_1] ++ tu'*{tu' <- `tu'*`}) = tu_1
+  def $subst_typevar{tv : typevar, tv_1 : typevar, `tv'*` : typevar*, tu_1 : typeuse, `tu'*` : typeuse*}(tv, [tv_1] ++ tv'*{tv' <- `tv'*`}, [tu_1] ++ tu'*{tu' <- `tu'*`}) = (if (tv = tv_1) then tu_1 else $subst_typevar(tv, tv'*{tv' <- `tv'*`}, tu'*{tu' <- `tu'*`}))
     -- wf_typevar: `%`(tv)
     -- wf_typevar: `%`(tv_1)
     -- (wf_typevar: `%`(tv'))*{tv' <- `tv'*`}
     -- wf_typeuse: `%`(tu_1)
     -- (wf_typeuse: `%`(tu'))*{tu' <- `tu'*`}
-    -- if (tv = tv_1)
-  ;; ../../../../specification/wasm-3.0/1.2-syntax.types.spectec:367.1-367.92
-  def $subst_typevar{tv : typevar, tv_1 : typevar, `tv'*` : typevar*, tu_1 : typeuse, `tu'*` : typeuse*}(tv, [tv_1] ++ tv'*{tv' <- `tv'*`}, [tu_1] ++ tu'*{tu' <- `tu'*`}) = $subst_typevar(tv, tv'*{tv' <- `tv'*`}, tu'*{tu' <- `tu'*`})
-    -- wf_typevar: `%`(tv)
-    -- wf_typevar: `%`(tv_1)
-    -- (wf_typevar: `%`(tv'))*{tv' <- `tv'*`}
-    -- wf_typeuse: `%`(tu_1)
-    -- (wf_typeuse: `%`(tu'))*{tu' <- `tu'*`}
-    -- otherwise
 }
 
 ;; ../../../../specification/wasm-3.0/1.2-syntax.types.spectec
@@ -1788,7 +1750,6 @@ def $subst_heaptype(heaptype : heaptype, typevar*, typeuse*) : heaptype
     -- wf_heaptype: `%`(ht)
     -- (wf_typevar: `%`(tv))*{tv <- `tv*`}
     -- (wf_typeuse: `%`(tu))*{tu <- `tu*`}
-    -- otherwise
 
 ;; ../../../../specification/wasm-3.0/1.2-syntax.types.spectec:344.1-344.112
 def $subst_reftype(reftype : reftype, typevar*, typeuse*) : reftype
@@ -2922,18 +2883,18 @@ relation wf_shape: `%`(shape)
 ;; ../../../../specification/wasm-3.0/1.3-syntax.instructions.spectec
 def $dim(shape : shape) : dim
   ;; ../../../../specification/wasm-3.0/1.3-syntax.instructions.spectec
-  def $dim{Lnn : Lnn, N : nat}(`%X%`_shape(Lnn, `%`_dim(N))) = `%`_dim(N)
+  def $dim{Lnn : lanetype, N : nat}(`%X%`_shape(Lnn, `%`_dim(N))) = `%`_dim(N)
     -- wf_dim: `%`(`%`_dim(N))
 
 ;; ../../../../specification/wasm-3.0/1.3-syntax.instructions.spectec
 def $lanetype(shape : shape) : lanetype
   ;; ../../../../specification/wasm-3.0/1.3-syntax.instructions.spectec
-  def $lanetype{Lnn : Lnn, N : nat}(`%X%`_shape(Lnn, `%`_dim(N))) = Lnn
+  def $lanetype{Lnn : lanetype, N : nat}(`%X%`_shape(Lnn, `%`_dim(N))) = Lnn
 
 ;; ../../../../specification/wasm-3.0/1.3-syntax.instructions.spectec
 def $unpackshape(shape : shape) : numtype
   ;; ../../../../specification/wasm-3.0/1.3-syntax.instructions.spectec
-  def $unpackshape{Lnn : Lnn, N : nat}(`%X%`_shape(Lnn, `%`_dim(N))) = $lunpack(Lnn)
+  def $unpackshape{Lnn : lanetype, N : nat}(`%X%`_shape(Lnn, `%`_dim(N))) = $lunpack(Lnn)
 
 ;; ../../../../specification/wasm-3.0/1.3-syntax.instructions.spectec
 syntax ishape = 
@@ -8162,24 +8123,14 @@ relation wf_relaxed4: `%`(relaxed4)
 ;; ../../../../specification/wasm-3.0/3.0-numerics.relaxed.spectec
 def $relaxed2(relaxed2 : relaxed2, syntax X, X : X, X : X) : X
   ;; ../../../../specification/wasm-3.0/3.0-numerics.relaxed.spectec
-  def $relaxed2{i : relaxed2, syntax X, X_1 : X, X_2 : X}(i, syntax X, X_1, X_2) = [X_1 X_2][$proj_relaxed2_0(i).0]
+  def $relaxed2{i : relaxed2, syntax X, X_1 : X, X_2 : X}(i, syntax X, X_1, X_2) = (if $ND then [X_1 X_2][i!`%`_relaxed2.0] else [X_1 X_2][0])
     -- wf_relaxed2: `%`(i)
-    -- if $ND
-  ;; ../../../../specification/wasm-3.0/3.0-numerics.relaxed.spectec
-  def $relaxed2{i : relaxed2, syntax X, X_1 : X, X_2 : X}(i, syntax X, X_1, X_2) = [X_1 X_2][0]
-    -- wf_relaxed2: `%`(i)
-    -- otherwise
 
 ;; ../../../../specification/wasm-3.0/3.0-numerics.relaxed.spectec
 def $relaxed4(relaxed4 : relaxed4, syntax X, X : X, X : X, X : X, X : X) : X
   ;; ../../../../specification/wasm-3.0/3.0-numerics.relaxed.spectec
-  def $relaxed4{i : relaxed4, syntax X, X_1 : X, X_2 : X, X_3 : X, X_4 : X}(i, syntax X, X_1, X_2, X_3, X_4) = [X_1 X_2 X_3 X_4][$proj_relaxed4_0(i).0]
+  def $relaxed4{i : relaxed4, syntax X, X_1 : X, X_2 : X, X_3 : X, X_4 : X}(i, syntax X, X_1, X_2, X_3, X_4) = (if $ND then [X_1 X_2 X_3 X_4][i!`%`_relaxed4.0] else [X_1 X_2 X_3 X_4][0])
     -- wf_relaxed4: `%`(i)
-    -- if $ND
-  ;; ../../../../specification/wasm-3.0/3.0-numerics.relaxed.spectec
-  def $relaxed4{i : relaxed4, syntax X, X_1 : X, X_2 : X, X_3 : X, X_4 : X}(i, syntax X, X_1, X_2, X_3, X_4) = [X_1 X_2 X_3 X_4][0]
-    -- wf_relaxed4: `%`(i)
-    -- otherwise
 
 ;; ../../../../specification/wasm-3.0/3.0-numerics.relaxed.spectec
 def $R_fmadd : relaxed2
@@ -8331,26 +8282,12 @@ def $ceilz(rat : rat) : int
 ;; ../../../../specification/wasm-3.0/3.1-numerics.scalar.spectec
 def $sat_u_(N : N, int : int) : nat
   ;; ../../../../specification/wasm-3.0/3.1-numerics.scalar.spectec
-  def $sat_u_{N : nat, i : int}(N, i) = 0
-    -- if (i < (0 : nat <:> int))
-  ;; ../../../../specification/wasm-3.0/3.1-numerics.scalar.spectec
-  def $sat_u_{N : nat, i : int}(N, i) = ((((2 ^ N) : nat <:> int) - (1 : nat <:> int)) : int <:> nat)
-    -- if (i > (((2 ^ N) : nat <:> int) - (1 : nat <:> int)))
-  ;; ../../../../specification/wasm-3.0/3.1-numerics.scalar.spectec
-  def $sat_u_{N : nat, i : int}(N, i) = (i : int <:> nat)
-    -- otherwise
+  def $sat_u_{N : nat, i : int}(N, i) = (if (i < (0 : nat <:> int)) then 0 else (if (i > (((2 ^ N) : nat <:> int) - (1 : nat <:> int))) then ((((2 ^ N) : nat <:> int) - (1 : nat <:> int)) : int <:> nat) else (i : int <:> nat)))
 
 ;; ../../../../specification/wasm-3.0/3.1-numerics.scalar.spectec
 def $sat_s_(N : N, int : int) : int
   ;; ../../../../specification/wasm-3.0/3.1-numerics.scalar.spectec
-  def $sat_s_{N : nat, i : int}(N, i) = - ((2 ^ (((N : nat <:> int) - (1 : nat <:> int)) : int <:> nat)) : nat <:> int)
-    -- if (i < - ((2 ^ (((N : nat <:> int) - (1 : nat <:> int)) : int <:> nat)) : nat <:> int))
-  ;; ../../../../specification/wasm-3.0/3.1-numerics.scalar.spectec
-  def $sat_s_{N : nat, i : int}(N, i) = (((2 ^ (((N : nat <:> int) - (1 : nat <:> int)) : int <:> nat)) : nat <:> int) - (1 : nat <:> int))
-    -- if (i > (((2 ^ (((N : nat <:> int) - (1 : nat <:> int)) : int <:> nat)) : nat <:> int) - (1 : nat <:> int)))
-  ;; ../../../../specification/wasm-3.0/3.1-numerics.scalar.spectec
-  def $sat_s_{N : nat, i : int}(N, i) = i
-    -- otherwise
+  def $sat_s_{N : nat, i : int}(N, i) = (if (i < - ((2 ^ (((N : nat <:> int) - (1 : nat <:> int)) : int <:> nat)) : nat <:> int)) then - ((2 ^ (((N : nat <:> int) - (1 : nat <:> int)) : int <:> nat)) : nat <:> int) else (if (i > (((2 ^ (((N : nat <:> int) - (1 : nat <:> int)) : int <:> nat)) : nat <:> int) - (1 : nat <:> int))) then (((2 ^ (((N : nat <:> int) - (1 : nat <:> int)) : int <:> nat)) : nat <:> int) - (1 : nat <:> int)) else i))
 
 ;; ../../../../specification/wasm-3.0/3.1-numerics.scalar.spectec
 def $ineg_(N : N, iN : iN) : iN
@@ -8361,13 +8298,8 @@ def $ineg_(N : N, iN : iN) : iN
 ;; ../../../../specification/wasm-3.0/3.1-numerics.scalar.spectec
 def $iabs_(N : N, iN : iN) : iN
   ;; ../../../../specification/wasm-3.0/3.1-numerics.scalar.spectec
-  def $iabs_{N : nat, i_1 : uN}(N, i_1) = i_1
+  def $iabs_{N : nat, i_1 : uN}(N, i_1) = (if ($signed_(N, i_1!`%`_uN.0) >= (0 : nat <:> int)) then i_1 else $ineg_(N, i_1))
     -- wf_uN: `%%`(N, i_1)
-    -- if ($signed_(N, $proj_uN_0(i_1).0) >= (0 : nat <:> int))
-  ;; ../../../../specification/wasm-3.0/3.1-numerics.scalar.spectec
-  def $iabs_{N : nat, i_1 : uN}(N, i_1) = $ineg_(N, i_1)
-    -- wf_uN: `%%`(N, i_1)
-    -- otherwise
 
 ;; ../../../../specification/wasm-3.0/3.1-numerics.scalar.spectec
 def $iclz_(N : N, iN : iN) : iN
@@ -8456,15 +8388,9 @@ def $imin_(N : N, sx : sx, iN : iN, iN : iN) : iN
     -- wf_uN: `%%`(N, i_2)
     -- if ($proj_uN_0(i_1).0 > $proj_uN_0(i_2).0)
   ;; ../../../../specification/wasm-3.0/3.1-numerics.scalar.spectec
-  def $imin_{N : nat, i_1 : uN, i_2 : uN}(N, S_sx, i_1, i_2) = i_1
+  def $imin_{N : nat, i_1 : uN, i_2 : uN}(N, S_sx, i_1, i_2) = (if ($signed_(N, i_1!`%`_uN.0) <= $signed_(N, i_2!`%`_uN.0)) then i_1 else i_2)
     -- wf_uN: `%%`(N, i_1)
     -- wf_uN: `%%`(N, i_2)
-    -- if ($signed_(N, $proj_uN_0(i_1).0) <= $signed_(N, $proj_uN_0(i_2).0))
-  ;; ../../../../specification/wasm-3.0/3.1-numerics.scalar.spectec
-  def $imin_{N : nat, i_1 : uN, i_2 : uN}(N, S_sx, i_1, i_2) = i_2
-    -- wf_uN: `%%`(N, i_1)
-    -- wf_uN: `%%`(N, i_2)
-    -- otherwise
 
 ;; ../../../../specification/wasm-3.0/3.1-numerics.scalar.spectec
 def $imax_(N : N, sx : sx, iN : iN, iN : iN) : iN
@@ -8479,15 +8405,9 @@ def $imax_(N : N, sx : sx, iN : iN, iN : iN) : iN
     -- wf_uN: `%%`(N, i_2)
     -- if ($proj_uN_0(i_1).0 < $proj_uN_0(i_2).0)
   ;; ../../../../specification/wasm-3.0/3.1-numerics.scalar.spectec
-  def $imax_{N : nat, i_1 : uN, i_2 : uN}(N, S_sx, i_1, i_2) = i_1
+  def $imax_{N : nat, i_1 : uN, i_2 : uN}(N, S_sx, i_1, i_2) = (if ($signed_(N, i_1!`%`_uN.0) >= $signed_(N, i_2!`%`_uN.0)) then i_1 else i_2)
     -- wf_uN: `%%`(N, i_1)
     -- wf_uN: `%%`(N, i_2)
-    -- if ($signed_(N, $proj_uN_0(i_1).0) >= $signed_(N, $proj_uN_0(i_2).0))
-  ;; ../../../../specification/wasm-3.0/3.1-numerics.scalar.spectec
-  def $imax_{N : nat, i_1 : uN, i_2 : uN}(N, S_sx, i_1, i_2) = i_2
-    -- wf_uN: `%%`(N, i_1)
-    -- wf_uN: `%%`(N, i_2)
-    -- otherwise
 
 ;; ../../../../specification/wasm-3.0/3.1-numerics.scalar.spectec
 def $iadd_sat_(N : N, sx : sx, iN : iN, iN : iN) : iN
@@ -9437,36 +9357,18 @@ def $half(half : half, nat : nat, nat : nat) : nat
 ;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
 def $iswizzle_lane_(N : N, iN*, iN : iN) : iN
   ;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
-  def $iswizzle_lane_{N : nat, `c*` : iN*, i : uN}(N, c*{c <- `c*`}, i) = c*{c <- `c*`}[$proj_uN_0(i).0]
-    -- (wf_uN: `%%`(N, c))*{c <- `c*`}
-    -- wf_uN: `%%`(N, i)
-    -- if ($proj_uN_0(i).0 < |c*{c <- `c*`}|)
-  ;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
-  def $iswizzle_lane_{N : nat, `c*` : iN*, i : uN}(N, c*{c <- `c*`}, i) = `%`_iN(0)
+  def $iswizzle_lane_{N : nat, `c*` : iN*, i : uN}(N, c*{c <- `c*`}, i) = (if (i!`%`_uN.0 < |c*{c <- `c*`}|) then c*{c <- `c*`}[i!`%`_uN.0] else `%`_iN(0))
     -- (wf_uN: `%%`(N, c))*{c <- `c*`}
     -- wf_uN: `%%`(N, i)
     -- wf_uN: `%%`(N, `%`_uN(0))
-    -- otherwise
 
 ;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
 def $irelaxed_swizzle_lane_(N : N, iN*, iN : iN) : iN
   ;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
-  def $irelaxed_swizzle_lane_{N : nat, `c*` : iN*, i : uN}(N, c*{c <- `c*`}, i) = c*{c <- `c*`}[$proj_uN_0(i).0]
-    -- (wf_uN: `%%`(N, c))*{c <- `c*`}
-    -- wf_uN: `%%`(N, i)
-    -- if ($proj_uN_0(i).0 < |c*{c <- `c*`}|)
-  ;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
-  def $irelaxed_swizzle_lane_{N : nat, `c*` : iN*, i : uN}(N, c*{c <- `c*`}, i) = `%`_iN(0)
+  def $irelaxed_swizzle_lane_{N : nat, `c*` : iN*, i : uN}(N, c*{c <- `c*`}, i) = (if (i!`%`_uN.0 < |c*{c <- `c*`}|) then c*{c <- `c*`}[i!`%`_uN.0] else (if ($signed_(N, i!`%`_uN.0) < (0 : nat <:> int)) then `%`_iN(0) else $relaxed2($R_swizzle, syntax iN, `%`_iN(0), c*{c <- `c*`}[(i!`%`_uN.0 \ |c*{c <- `c*`}|)])))
     -- (wf_uN: `%%`(N, c))*{c <- `c*`}
     -- wf_uN: `%%`(N, i)
     -- wf_uN: `%%`(N, `%`_uN(0))
-    -- if ($signed_(N, $proj_uN_0(i).0) < (0 : nat <:> int))
-  ;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
-  def $irelaxed_swizzle_lane_{N : nat, `c*` : iN*, i : uN}(N, c*{c <- `c*`}, i) = $relaxed2($R_swizzle, syntax iN, `%`_iN(0), c*{c <- `c*`}[($proj_uN_0(i).0 \ |c*{c <- `c*`}|)])
-    -- (wf_uN: `%%`(N, c))*{c <- `c*`}
-    -- wf_uN: `%%`(N, i)
-    -- wf_uN: `%%`(N, `%`_uN(0))
-    -- otherwise
 
 ;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
 def $ivunop_(shape : shape, def $f_(N : N, iN : iN) : iN, vec_ : vec_) : vec_*
@@ -10145,32 +10047,32 @@ def $ivshufflop_(shape : shape, laneidx*, vec_ : vec_, vec_ : vec_) : vec_
 ;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
 def $vvunop_(vectype : vectype, vvunop : vvunop, vec_ : vec_) : vec_*
   ;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
-  def $vvunop_{Vnn : Vnn, v : uN}(Vnn, NOT_vvunop, v) = [$inot_($vsizenn(Vnn), v)]
+  def $vvunop_{Vnn : vectype, v : uN}(Vnn, NOT_vvunop, v) = [$inot_($vsizenn(Vnn), v)]
     -- wf_uN: `%%`($vsize(Vnn), v)
 
 ;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
 def $vvbinop_(vectype : vectype, vvbinop : vvbinop, vec_ : vec_, vec_ : vec_) : vec_*
   ;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
-  def $vvbinop_{Vnn : Vnn, v_1 : uN, v_2 : uN}(Vnn, AND_vvbinop, v_1, v_2) = [$iand_($vsizenn(Vnn), v_1, v_2)]
+  def $vvbinop_{Vnn : vectype, v_1 : uN, v_2 : uN}(Vnn, AND_vvbinop, v_1, v_2) = [$iand_($vsizenn(Vnn), v_1, v_2)]
     -- wf_uN: `%%`($vsize(Vnn), v_1)
     -- wf_uN: `%%`($vsize(Vnn), v_2)
   ;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
-  def $vvbinop_{Vnn : Vnn, v_1 : uN, v_2 : uN}(Vnn, ANDNOT_vvbinop, v_1, v_2) = [$iandnot_($vsizenn(Vnn), v_1, v_2)]
+  def $vvbinop_{Vnn : vectype, v_1 : uN, v_2 : uN}(Vnn, ANDNOT_vvbinop, v_1, v_2) = [$iandnot_($vsizenn(Vnn), v_1, v_2)]
     -- wf_uN: `%%`($vsize(Vnn), v_1)
     -- wf_uN: `%%`($vsize(Vnn), v_2)
   ;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
-  def $vvbinop_{Vnn : Vnn, v_1 : uN, v_2 : uN}(Vnn, OR_vvbinop, v_1, v_2) = [$ior_($vsizenn(Vnn), v_1, v_2)]
+  def $vvbinop_{Vnn : vectype, v_1 : uN, v_2 : uN}(Vnn, OR_vvbinop, v_1, v_2) = [$ior_($vsizenn(Vnn), v_1, v_2)]
     -- wf_uN: `%%`($vsize(Vnn), v_1)
     -- wf_uN: `%%`($vsize(Vnn), v_2)
   ;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
-  def $vvbinop_{Vnn : Vnn, v_1 : uN, v_2 : uN}(Vnn, XOR_vvbinop, v_1, v_2) = [$ixor_($vsizenn(Vnn), v_1, v_2)]
+  def $vvbinop_{Vnn : vectype, v_1 : uN, v_2 : uN}(Vnn, XOR_vvbinop, v_1, v_2) = [$ixor_($vsizenn(Vnn), v_1, v_2)]
     -- wf_uN: `%%`($vsize(Vnn), v_1)
     -- wf_uN: `%%`($vsize(Vnn), v_2)
 
 ;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
 def $vvternop_(vectype : vectype, vvternop : vvternop, vec_ : vec_, vec_ : vec_, vec_ : vec_) : vec_*
   ;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
-  def $vvternop_{Vnn : Vnn, v_1 : uN, v_2 : uN, v_3 : uN}(Vnn, BITSELECT_vvternop, v_1, v_2, v_3) = [$ibitselect_($vsizenn(Vnn), v_1, v_2, v_3)]
+  def $vvternop_{Vnn : vectype, v_1 : uN, v_2 : uN, v_3 : uN}(Vnn, BITSELECT_vvternop, v_1, v_2, v_3) = [$ibitselect_($vsizenn(Vnn), v_1, v_2, v_3)]
     -- wf_uN: `%%`($vsize(Vnn), v_1)
     -- wf_uN: `%%`($vsize(Vnn), v_2)
     -- wf_uN: `%%`($vsize(Vnn), v_3)
@@ -11204,7 +11106,7 @@ def $lcvtop__(shape_1 : shape, shape_2 : shape, vcvtop__ : vcvtop__, lane_ : lan
 ;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
 def $vcvtop__(shape_1 : shape, shape_2 : shape, vcvtop__ : vcvtop__, vec_ : vec_) : vec_
   ;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
-  def $vcvtop__{Lnn_1 : Lnn, M : nat, Lnn_2 : Lnn, vcvtop : vcvtop__, v_1 : uN, v : uN, `c_1*` : lane_*, `c**` : lane_**}(`%X%`_shape(Lnn_1, `%`_dim(M)), `%X%`_shape(Lnn_2, `%`_dim(M)), vcvtop, v_1) = v
+  def $vcvtop__{Lnn_1 : lanetype, M : nat, Lnn_2 : lanetype, vcvtop : vcvtop__, v_1 : uN, v : uN, `c_1*` : lane_*, `c**` : lane_**}(`%X%`_shape(Lnn_1, `%`_dim(M)), `%X%`_shape(Lnn_2, `%`_dim(M)), vcvtop, v_1) = v
     -- wf_vcvtop__: `%%%`(`%X%`_shape(Lnn_1, `%`_dim(M)), `%X%`_shape(Lnn_2, `%`_dim(M)), vcvtop)
     -- wf_uN: `%%`(128, v_1)
     -- wf_uN: `%%`(128, v)
@@ -11217,7 +11119,7 @@ def $vcvtop__(shape_1 : shape, shape_2 : shape, vcvtop__ : vcvtop__, vec_ : vec_
     -- if (c*{c <- `c*`}*{`c*` <- `c**`} = $setproduct_(syntax lane_, $lcvtop__(`%X%`_shape(Lnn_1, `%`_dim(M)), `%X%`_shape(Lnn_2, `%`_dim(M)), vcvtop, c_1)*{c_1 <- `c_1*`}))
     -- if (v <- $inv_lanes_(`%X%`_shape(Lnn_2, `%`_dim(M)), c*{c <- `c*`})*{`c*` <- `c**`})
   ;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
-  def $vcvtop__{Lnn_1 : Lnn, M_1 : nat, Lnn_2 : Lnn, M_2 : nat, vcvtop : vcvtop__, v_1 : uN, v : uN, half : half, `c_1*` : lane_*, `c**` : lane_**}(`%X%`_shape(Lnn_1, `%`_dim(M_1)), `%X%`_shape(Lnn_2, `%`_dim(M_2)), vcvtop, v_1) = v
+  def $vcvtop__{Lnn_1 : lanetype, M_1 : nat, Lnn_2 : lanetype, M_2 : nat, vcvtop : vcvtop__, v_1 : uN, v : uN, half : half, `c_1*` : lane_*, `c**` : lane_**}(`%X%`_shape(Lnn_1, `%`_dim(M_1)), `%X%`_shape(Lnn_2, `%`_dim(M_2)), vcvtop, v_1) = v
     -- wf_vcvtop__: `%%%`(`%X%`_shape(Lnn_1, `%`_dim(M_1)), `%X%`_shape(Lnn_2, `%`_dim(M_2)), vcvtop)
     -- wf_uN: `%%`(128, v_1)
     -- wf_uN: `%%`(128, v)
@@ -11230,7 +11132,7 @@ def $vcvtop__(shape_1 : shape, shape_2 : shape, vcvtop__ : vcvtop__, vec_ : vec_
     -- if (c*{c <- `c*`}*{`c*` <- `c**`} = $setproduct_(syntax lane_, $lcvtop__(`%X%`_shape(Lnn_1, `%`_dim(M_1)), `%X%`_shape(Lnn_2, `%`_dim(M_2)), vcvtop, c_1)*{c_1 <- `c_1*`}))
     -- if (v <- $inv_lanes_(`%X%`_shape(Lnn_2, `%`_dim(M_2)), c*{c <- `c*`})*{`c*` <- `c**`})
   ;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
-  def $vcvtop__{Lnn_1 : Lnn, M_1 : nat, Lnn_2 : Lnn, M_2 : nat, vcvtop : vcvtop__, v_1 : uN, v : uN, `c_1*` : lane_*, `c**` : lane_**}(`%X%`_shape(Lnn_1, `%`_dim(M_1)), `%X%`_shape(Lnn_2, `%`_dim(M_2)), vcvtop, v_1) = v
+  def $vcvtop__{Lnn_1 : lanetype, M_1 : nat, Lnn_2 : lanetype, M_2 : nat, vcvtop : vcvtop__, v_1 : uN, v : uN, `c_1*` : lane_*, `c**` : lane_**}(`%X%`_shape(Lnn_1, `%`_dim(M_1)), `%X%`_shape(Lnn_2, `%`_dim(M_2)), vcvtop, v_1) = v
     -- wf_vcvtop__: `%%%`(`%X%`_shape(Lnn_1, `%`_dim(M_1)), `%X%`_shape(Lnn_2, `%`_dim(M_2)), vcvtop)
     -- wf_uN: `%%`(128, v_1)
     -- wf_uN: `%%`(128, v)
@@ -13616,7 +13518,6 @@ def $tagsxa(externaddr*) : tagaddr*
   def $tagsxa{a : nat, `xa*` : externaddr*}([TAG_externaddr(a)] ++ xa*{xa <- `xa*`}) = [a] ++ $tagsxa(xa*{xa <- `xa*`})
   ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec:201.1-201.57
   def $tagsxa{externaddr : externaddr, `xa*` : externaddr*}([externaddr] ++ xa*{xa <- `xa*`}) = $tagsxa(xa*{xa <- `xa*`})
-    -- otherwise
 }
 
 ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
@@ -13630,7 +13531,6 @@ def $globalsxa(externaddr*) : globaladdr*
   def $globalsxa{a : nat, `xa*` : externaddr*}([GLOBAL_externaddr(a)] ++ xa*{xa <- `xa*`}) = [a] ++ $globalsxa(xa*{xa <- `xa*`})
   ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec:205.1-205.63
   def $globalsxa{externaddr : externaddr, `xa*` : externaddr*}([externaddr] ++ xa*{xa <- `xa*`}) = $globalsxa(xa*{xa <- `xa*`})
-    -- otherwise
 }
 
 ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
@@ -13644,7 +13544,6 @@ def $memsxa(externaddr*) : memaddr*
   def $memsxa{a : nat, `xa*` : externaddr*}([MEM_externaddr(a)] ++ xa*{xa <- `xa*`}) = [a] ++ $memsxa(xa*{xa <- `xa*`})
   ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec:209.1-209.57
   def $memsxa{externaddr : externaddr, `xa*` : externaddr*}([externaddr] ++ xa*{xa <- `xa*`}) = $memsxa(xa*{xa <- `xa*`})
-    -- otherwise
 }
 
 ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
@@ -13658,7 +13557,6 @@ def $tablesxa(externaddr*) : tableaddr*
   def $tablesxa{a : nat, `xa*` : externaddr*}([TABLE_externaddr(a)] ++ xa*{xa <- `xa*`}) = [a] ++ $tablesxa(xa*{xa <- `xa*`})
   ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec:213.1-213.61
   def $tablesxa{externaddr : externaddr, `xa*` : externaddr*}([externaddr] ++ xa*{xa <- `xa*`}) = $tablesxa(xa*{xa <- `xa*`})
-    -- otherwise
 }
 
 ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
@@ -13672,7 +13570,6 @@ def $funcsxa(externaddr*) : funcaddr*
   def $funcsxa{a : nat, `xa*` : externaddr*}([FUNC_externaddr(a)] ++ xa*{xa <- `xa*`}) = [a] ++ $funcsxa(xa*{xa <- `xa*`})
   ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec:217.1-217.59
   def $funcsxa{externaddr : externaddr, `xa*` : externaddr*}([externaddr] ++ xa*{xa <- `xa*`}) = $funcsxa(xa*{xa <- `xa*`})
-    -- otherwise
 }
 
 ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
@@ -20866,7 +20763,6 @@ def $typesd(decl*) : type*
   def $typesd{decl : decl, `decl'*` : decl*}([decl] ++ decl'*{decl' <- `decl'*`}) = $typesd(decl'*{decl' <- `decl'*`})
     -- wf_decl: `%`(decl)
     -- (wf_decl: `%`(decl'))*{decl' <- `decl'*`}
-    -- otherwise
 }
 
 ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec
@@ -20884,7 +20780,6 @@ def $importsd(decl*) : import*
   def $importsd{decl : decl, `decl'*` : decl*}([decl] ++ decl'*{decl' <- `decl'*`}) = $importsd(decl'*{decl' <- `decl'*`})
     -- wf_decl: `%`(decl)
     -- (wf_decl: `%`(decl'))*{decl' <- `decl'*`}
-    -- otherwise
 }
 
 ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec
@@ -20902,7 +20797,6 @@ def $tagsd(decl*) : tag*
   def $tagsd{decl : decl, `decl'*` : decl*}([decl] ++ decl'*{decl' <- `decl'*`}) = $tagsd(decl'*{decl' <- `decl'*`})
     -- wf_decl: `%`(decl)
     -- (wf_decl: `%`(decl'))*{decl' <- `decl'*`}
-    -- otherwise
 }
 
 ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec
@@ -20920,7 +20814,6 @@ def $globalsd(decl*) : global*
   def $globalsd{decl : decl, `decl'*` : decl*}([decl] ++ decl'*{decl' <- `decl'*`}) = $globalsd(decl'*{decl' <- `decl'*`})
     -- wf_decl: `%`(decl)
     -- (wf_decl: `%`(decl'))*{decl' <- `decl'*`}
-    -- otherwise
 }
 
 ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec
@@ -20938,7 +20831,6 @@ def $memsd(decl*) : mem*
   def $memsd{decl : decl, `decl'*` : decl*}([decl] ++ decl'*{decl' <- `decl'*`}) = $memsd(decl'*{decl' <- `decl'*`})
     -- wf_decl: `%`(decl)
     -- (wf_decl: `%`(decl'))*{decl' <- `decl'*`}
-    -- otherwise
 }
 
 ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec
@@ -20956,7 +20848,6 @@ def $tablesd(decl*) : table*
   def $tablesd{decl : decl, `decl'*` : decl*}([decl] ++ decl'*{decl' <- `decl'*`}) = $tablesd(decl'*{decl' <- `decl'*`})
     -- wf_decl: `%`(decl)
     -- (wf_decl: `%`(decl'))*{decl' <- `decl'*`}
-    -- otherwise
 }
 
 ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec
@@ -20974,7 +20865,6 @@ def $funcsd(decl*) : func*
   def $funcsd{decl : decl, `decl'*` : decl*}([decl] ++ decl'*{decl' <- `decl'*`}) = $funcsd(decl'*{decl' <- `decl'*`})
     -- wf_decl: `%`(decl)
     -- (wf_decl: `%`(decl'))*{decl' <- `decl'*`}
-    -- otherwise
 }
 
 ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec
@@ -20992,7 +20882,6 @@ def $datasd(decl*) : data*
   def $datasd{decl : decl, `decl'*` : decl*}([decl] ++ decl'*{decl' <- `decl'*`}) = $datasd(decl'*{decl' <- `decl'*`})
     -- wf_decl: `%`(decl)
     -- (wf_decl: `%`(decl'))*{decl' <- `decl'*`}
-    -- otherwise
 }
 
 ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec
@@ -21010,7 +20899,6 @@ def $elemsd(decl*) : elem*
   def $elemsd{decl : decl, `decl'*` : decl*}([decl] ++ decl'*{decl' <- `decl'*`}) = $elemsd(decl'*{decl' <- `decl'*`})
     -- wf_decl: `%`(decl)
     -- (wf_decl: `%`(decl'))*{decl' <- `decl'*`}
-    -- otherwise
 }
 
 ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec
@@ -21028,7 +20916,6 @@ def $startsd(decl*) : start*
   def $startsd{decl : decl, `decl'*` : decl*}([decl] ++ decl'*{decl' <- `decl'*`}) = $startsd(decl'*{decl' <- `decl'*`})
     -- wf_decl: `%`(decl)
     -- (wf_decl: `%`(decl'))*{decl' <- `decl'*`}
-    -- otherwise
 }
 
 ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec
@@ -21046,7 +20933,6 @@ def $exportsd(decl*) : export*
   def $exportsd{decl : decl, `decl'*` : decl*}([decl] ++ decl'*{decl' <- `decl'*`}) = $exportsd(decl'*{decl' <- `decl'*`})
     -- wf_decl: `%`(decl)
     -- (wf_decl: `%`(decl'))*{decl' <- `decl'*`}
-    -- otherwise
 }
 
 ;; ../../../../specification/wasm-3.0/6.3-text.modules.spectec

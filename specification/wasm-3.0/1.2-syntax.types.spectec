@@ -54,7 +54,7 @@ syntax valtype/sem =
 
 syntax Inn hint(show I#N) hint(macro "nt%") = addrtype
 syntax Fnn hint(show F#N) hint(macro "nt%") = F32 | F64
-syntax Vnn hint(show V#N) hint(macro "nt%") = V128
+syntax Vnn hint(show V#N) hint(macro "nt%") = vectype
 syntax Cnn hint(show t) = Inn | Fnn | Vnn
 
 
@@ -94,7 +94,7 @@ syntax storagetype hint(desc "storage type") = valtype | packtype
 
 syntax Pnn hint(show I#N) hint(macro "nt%") = packtype
 syntax Jnn hint(show I#N) hint(macro "nt%") = Inn | Pnn
-syntax Lnn hint(show I#N) hint(macro "nt%") = Inn | Fnn | Pnn
+syntax Lnn hint(show I#N) hint(macro "nt%") = lanetype
 
 
 ;; Result types

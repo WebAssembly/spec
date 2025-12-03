@@ -169,6 +169,7 @@ and subst_exp s e =
     CaseE (op, subst_exp s e1)
   | CvtE (e1, nt1, nt2) -> CvtE (subst_exp s e1, nt1, nt2)
   | SubE (e1, t1, t2) -> SubE (subst_exp s e1, subst_typ s t1, subst_typ s t2)
+  | IfE (e1, e2, e3) -> IfE (subst_exp s e1, subst_exp s e2, subst_exp s e3)
   ) $$ e.at % subst_typ s e.note
 
 and subst_expfield s (atom, e) = (atom, subst_exp s e)

@@ -399,6 +399,13 @@ and reduce_exp env e : exp =
       {e1' with note = e.note}
     | _ -> SubE (e1', t1', t2') $> e
     )
+  | IfE (e1, e2, e3) ->
+    let e1' = reduce_exp env e1 in
+    (match e1'.it with
+    | BoolE true -> reduce_exp env e2
+    | BoolE false -> reduce_exp env e3
+    | _ -> IfE (e1', e2, e3) $> e (* do not reduce arms *)
+    )
 
 and reduce_iter env = function
   | ListN (e, ido) -> ListN (reduce_exp env e, ido)

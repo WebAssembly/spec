@@ -14,40 +14,22 @@
 (rule (alias runtest) (action (diff test.spectec.exp test.spectec.act)))
 
 ; A more complicated setup that tests the various middle end passes against the full specification.
+; 
+; It stores each pass's output in a separate directory.
 ;
-; It runs spectec on the 3.0 specification files and dumps the IL of each pass
-; into a separate file (`specification.XX-passname.act`).
-; It then compares it against the expected output files (`specification.XX-passname.exp`).
-; `dune promote` can be used to update the expected files.
+; This requires a dynamic dune rule to enumerate the files. Whe this changes, then running
 ;
-; It is often helpful to diff the the output from one pass against its previous pass,
-; hence the numbers in the filenames.
+; rm specification.exp/*
+; dune runtest test-middlend --auto-promote --diff-command "diff -Nur"
 ;
-; Adding a new pass is somewhat tedious:
-; - Add the filename in `targets` below
-; - Add a `diff`-rule at the bottom
-; - Remove all expected files (`rm *.exp`)
-; - Run `dune runtest --diff-command "diff -Nur"`
-;   (Without this flag `diff` will stumble over the missing files, see https://github.com/ocaml/dune/issues/8075)
-; - Run `dune promote`
-;
-; Same when reordering passes: the filenames have to be updated.
+; should update that dynamically included dune file.
 
 (rule
   (targets
-    specification.00-elab.act
-    specification.01-typefamily-removal.act
-    specification.02-remove-indexed-types.act
-    specification.03-totalize.act
-    specification.04-else.act
-    specification.05-uncase-removal.act
-    specification.06-sideconditions.act
-    specification.07-sub-expansion.act
-    specification.08-sub.act
-    specification.09-alias-demut.act
+    specification.act
   )
   (action
-    (system "../src/exe-spectec/main.exe ../../../../specification/wasm-3.0/*.spectec -l --print-all-il-to specification.%s.act --print-no-pos --all-passes --check")
+    (system "mkdir -p specification.act; ../src/exe-spectec/main.exe ../../../../specification/wasm-3.0/*.spectec -l --print-all-il-to specification.act/%s.il --print-no-pos --all-passes --check")
   )
   (deps
     (file ../src/exe-spectec/main.exe)
@@ -55,14 +37,19 @@
   )
 )
 
+(include dune.inc)
 
-(rule (alias runtest) (action (diff specification.00-elab.exp specification.00-elab.act)))
-(rule (alias runtest) (action (diff specification.01-typefamily-removal.exp specification.01-typefamily-removal.act)))
-(rule (alias runtest) (action (diff specification.02-remove-indexed-types.exp specification.02-remove-indexed-types.act)))
-(rule (alias runtest) (action (diff specification.03-totalize.exp specification.03-totalize.act)))
-(rule (alias runtest) (action (diff specification.04-else.exp specification.04-else.act)))
-(rule (alias runtest) (action (diff specification.05-uncase-removal.exp specification.05-uncase-removal.act)))
-(rule (alias runtest) (action (diff specification.06-sideconditions.exp specification.06-sideconditions.act)))
-(rule (alias runtest) (action (diff specification.07-sub-expansion.exp specification.07-sub-expansion.act)))
-(rule (alias runtest) (action (diff specification.08-sub.exp specification.08-sub.act)))
-(rule (alias runtest) (action (diff specification.09-alias-demut.exp specification.09-alias-demut.act)))
+(rule (alias dune.inc) (action (diff dune.inc dune.inc.gen)))
+(alias (name runtest) (deps (alias dune.inc)))
+
+; The generated rules depend on dune.inc. This way, these actions are not run when dune.inc is out
+; of date.
+(rule
+  (deps (file specification.act))
+  (action (with-stdout-to dune.inc.gen (system
+    "ls specification.act |
+     while read f; do
+       echo \"(rule (alias runtest) (deps (alias dune.inc) (file specification.act) (glob_files_rec specification.exp/*)) (action (no-infer (diff specification.exp/$f specification.act/$f))))\";
+     done"
+  )))
+)

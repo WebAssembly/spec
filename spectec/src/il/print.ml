@@ -149,6 +149,8 @@ and string_of_exp e =
     "(" ^ string_of_exp e1 ^ " : " ^ string_of_numtyp nt1 ^ " <:> " ^ string_of_numtyp nt2 ^ ")"
   | SubE (e1, t1, t2) ->
     "(" ^ string_of_exp e1 ^ " : " ^ string_of_typ t1 ^ " <: " ^ string_of_typ t2 ^ ")"
+  | IfE (e1, e2, e3) ->
+    "(if " ^ string_of_exp e1 ^ " then " ^ string_of_exp e2 ^ " else " ^ string_of_exp e3 ^ ")"
 
 and string_of_exp_args e =
   match e.it with

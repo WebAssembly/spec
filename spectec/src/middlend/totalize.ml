@@ -105,6 +105,7 @@ and t_exp' env = function
   | CaseE (mixop, e) -> CaseE (mixop, t_exp env e)
   | CvtE (exp, t1, t2) -> CvtE (t_exp env exp, t1, t2)
   | SubE (exp, t1, t2) -> SubE (t_exp env exp, t_typ env t1, t_typ env t2)
+  | IfE (e1, e2, e3) -> IfE (t_exp env e1, t_exp env e2, t_exp env e3)
 
 and t_iter env = function
   | ListN (e, id_opt) -> ListN (t_exp env e, id_opt)

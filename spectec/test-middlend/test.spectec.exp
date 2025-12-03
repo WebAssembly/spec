@@ -12,6 +12,19 @@ relation TestNestedIter: `%|-%`(nat***, nat**)
     -- (if (|n*{n <- `n*`}| = m))*{m <- `m*`, `n*` <- `n**`}+{`m*` <- `m**`, `n**` <- `n***`}
 
 == IL Validation...
+== Running pass ite...
+
+;; test.spectec
+relation HasSize: `%|-%`(nat, nat)
+
+;; test.spectec
+relation TestNestedIter: `%|-%`(nat***, nat**)
+  ;; test.spectec
+  rule _{`n***` : nat***, `m**` : nat**}:
+    `%|-%`(n*{n <- `n*`}*{`n*` <- `n**`}+{`n**` <- `n***`}, m*{m <- `m*`}+{`m*` <- `m**`})
+    -- (if (|n*{n <- `n*`}| = m))*{m <- `m*`, `n*` <- `n**`}+{`m*` <- `m**`, `n**` <- `n***`}
+
+== IL Validation after pass ite...
 == Running pass typefamily-removal...
 
 ;; test.spectec

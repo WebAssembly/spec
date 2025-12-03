@@ -675,8 +675,7 @@ syntax Fnn =
   | F64
 
 ;; ../../../../specification/wasm-3.0/1.2-syntax.types.spectec
-syntax Vnn = 
-  | V128
+syntax Vnn = vectype
 
 ;; ../../../../specification/wasm-3.0/1.2-syntax.types.spectec
 syntax Cnn = 
@@ -771,13 +770,7 @@ syntax Jnn =
   | I16
 
 ;; ../../../../specification/wasm-3.0/1.2-syntax.types.spectec
-syntax Lnn = 
-  | I32
-  | I64
-  | F32
-  | F64
-  | I8
-  | I16
+syntax Lnn = lanetype
 
 ;; ../../../../specification/wasm-3.0/1.2-syntax.types.spectec
 syntax limits = 
@@ -3287,7 +3280,7 @@ def $default_(valtype : valtype) : val?
   ;; ../../../../specification/wasm-3.0/4.1-execution.values.spectec
   def $default_{Fnn : Fnn}((Fnn : Fnn <: valtype)) = ?(CONST_val((Fnn : Fnn <: numtype), $fzero($size((Fnn : Fnn <: numtype)))))
   ;; ../../../../specification/wasm-3.0/4.1-execution.values.spectec
-  def $default_{Vnn : Vnn}((Vnn : Vnn <: valtype)) = ?(VCONST_val(Vnn, `%`_vec_(0)))
+  def $default_{Vnn : Vnn}((Vnn : vectype <: valtype)) = ?(VCONST_val(Vnn, `%`_vec_(0)))
   ;; ../../../../specification/wasm-3.0/4.1-execution.values.spectec
   def $default_{ht : heaptype}(REF_valtype(?(NULL_null), ht)) = ?(REF.NULL_val(ht))
   ;; ../../../../specification/wasm-3.0/4.1-execution.values.spectec

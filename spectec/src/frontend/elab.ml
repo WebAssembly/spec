@@ -1553,7 +1553,7 @@ and elab_exp_variant env tid e cases t at : Il.exp attempt =
   let* atom =
     match e.it with
     | AtomE atom
-    | SeqE ({it = AtomE atom; _}::_)
+    | SeqE ({it = (AtomE atom | BrackE (atom, _, _) | InfixE (_, atom, _)); _}::_)
     | InfixE (_, atom, _)
     | BrackE (atom, _, _) -> Ok atom
     | _ -> fail_typ env at "expression" t
