@@ -1,8 +1,7 @@
 open Util
 open Source
-open El
+open Il
 open Ast
-open Convert
 
 
 (* Errors *)
@@ -113,76 +112,64 @@ let rec check_iter env ctx iter =
 
 and check_typ env ctx t =
   match t.it with
-  | VarT (id, args) ->
-    check_typid env ctx (Convert.strip_var_suffix id);
-    check_varid env ctx `Impl id;
+  | VarT (x, args) ->
+    check_typid env ctx x;
     List.iter (check_arg env ctx) args
   | BoolT
   | NumT _
-  | TextT ->
-    check_varid env ctx `Impl (Convert.varid_of_typ t)
-  | AtomT _ -> ()
-  | ParenT t1
-  | BrackT (_, t1, _) -> check_typ env ctx t1
-  | TupT ts
-  | SeqT ts -> List.iter (check_typ env ctx) ts
+  | TextT -> ()
+  | TupT xts -> List.iter (check_typbind env ctx) xts
   | IterT (t1, iter) ->
     check_iter env ctx iter;
     check_typ env (strip_index iter::ctx) t1
-  | StrT (_, ts, tfs, _) ->
-    iter_nl_list (check_typ env ctx) ts;
-    iter_nl_list (fun (_, (tI, prems), _) ->
+
+and check_typbind env ctx (x, t) =
+  check_varid env ctx `Impl x;
+  check_typ env ctx t
+
+and check_deftyp env ctx dt =
+  match dt.it with
+  | AliasT t ->
+    check_typ env ctx t
+  | StructT tfs ->
+    List.iter (fun (_, (qs, tI, prems), _) ->
       let env' = ref Env.empty in
+      assert (qs = []);
       check_typ env' ctx tI;
-      iter_nl_list (check_prem env' ctx) prems
+      List.iter (check_prem env' ctx) prems
     ) tfs
-  | CaseT (_, ts, tcs, _) ->
-    iter_nl_list (check_typ env ctx) ts;
-    iter_nl_list (fun (_, (tI, prems), _) ->
+  | VariantT tcs ->
+    List.iter (fun (_, (qs, tI, prems), _) ->
       let env' = ref Env.empty in
+      assert (qs = []);
       check_typ env' ctx tI;
-      iter_nl_list (check_prem env' ctx) prems
+      List.iter (check_prem env' ctx) prems
     ) tcs
-  | ConT ((t1, prems), _) ->
-    let env' = ref Env.empty in
-    check_typ env' ctx t1;
-    iter_nl_list (check_prem env' ctx) prems
-  | RangeT tes ->
-    iter_nl_list (fun (eI1, eoI2) ->
-      let env' = ref Env.empty in
-      check_exp env' ctx eI1;
-      Option.iter (check_exp env' ctx) eoI2;
-    ) tes
-  | InfixT (t1, _, t2) ->
-    check_typ env ctx t1;
-    check_typ env ctx t2
+
+and check_iterexp env ctx (iter, xes) =
+  check_iter env ctx iter;
+  assert (xes = [])
 
 and check_exp env ctx e =
   match e.it with
-  | VarE (id, args) ->
-    check_varid env ctx `Expl id;
-    List.iter (check_arg env ctx) args
-  | AtomE _
+  | VarE x ->
+    check_varid env ctx `Expl x
   | BoolE _
   | NumE _
-  | TextE _
-  | SizeE _
-  | EpsE -> ()
-  | CvtE (e1, _)
-  | UnE (_, e1)
-  | DotE (e1, _)
+  | TextE _ -> ()
+  | CvtE (e1, _, _)
+  | UnE (_, _, e1)
   | LenE e1
-  | ParenE e1
-  | BrackE (_, e1, _)
-  | TypE (e1, _)
-  | ArithE e1 -> check_exp env ctx e1
-  | BinE (e1, _, e2)
-  | CmpE (e1, _, e2)
+  | ProjE (e1, _)
+  | TheE e1
+  | LiftE e1 ->
+    check_exp env ctx e1
+  | BinE (_, _, e1, e2)
+  | CmpE (_, _, e1, e2)
   | IdxE (e1, e2)
-  | CommaE (e1, e2)
   | CatE (e1, e2)
   | MemE (e1, e2)
-  | InfixE (e1, _, e2) ->
+  | CompE (e1, e2) ->
     check_exp env ctx e1;
     check_exp env ctx e2
   | SliceE (e1, e2, e3) ->
@@ -194,18 +181,31 @@ and check_exp env ctx e =
     check_exp env ctx e1;
     check_path env ctx p;
     check_exp env ctx e2
-  | SeqE es
+  | OptE eo ->
+    Option.iter (check_exp env ctx) eo
   | ListE es
-  | TupE es -> List.iter (check_exp env ctx) es
-  | StrE efs -> iter_nl_list (fun (_, eI) -> check_exp env ctx eI) efs
-  | CallE (_, args) -> List.iter (check_arg env ctx) args
-  | IterE (e1, iter) ->
-    check_iter env ctx iter;
-    check_exp env (strip_index iter::ctx) e1
-  | HoleE _
-  | FuseE _
-  | UnparenE _
-  | LatexE _ -> assert false
+  | TupE es ->
+    List.iter (check_exp env ctx) es
+  | StrE efs ->
+    List.iter (check_expfield env ctx) efs
+  | DotE (e1, _, as_)
+  | CaseE (_, as_, e1)
+  | UncaseE (e1, _, as_) ->
+    check_exp env ctx e1;
+    List.iter (check_arg env ctx) as_
+  | CallE (_, as_) ->
+    List.iter (check_arg env ctx) as_
+  | IterE (e1, ite) ->
+    check_iterexp env ctx ite;
+    check_exp env (strip_index (fst ite)::ctx) e1
+  | SubE (e1, t1, t2) ->
+    check_exp env ctx e1;
+    check_typ env ctx t1;
+    check_typ env ctx t2
+
+and check_expfield env ctx (_, as_, e) =
+    List.iter (check_arg env ctx) as_;
+    check_exp env ctx e
 
 and check_path env ctx p =
   match p.it with
@@ -217,142 +217,155 @@ and check_path env ctx p =
     check_path env ctx p1;
     check_exp env ctx e1;
     check_exp env ctx e2
-  | DotP (p1, _) ->
-    check_path env ctx p1
+  | DotP (p1, _, as_) ->
+    check_path env ctx p1;
+    List.iter (check_arg env ctx) as_
 
 and check_sym env ctx g =
   match g.it with
-  | VarG (id, args) ->
-    check_gramid env ctx id;
+  | VarG (x, args) ->
+    check_gramid env ctx x;
     List.iter (check_arg env ctx) args
   | NumG _
   | TextG _
   | EpsG -> ()
   | SeqG gs
-  | AltG gs -> iter_nl_list (check_sym env ctx) gs
+  | AltG gs ->
+    List.iter (check_sym env ctx) gs
   | RangeG (g1, g2) ->
     check_sym env ctx g1;
     check_sym env ctx g2
-  | ParenG g1 ->
-    check_sym env ctx g1
-  | TupG gs -> List.iter (check_sym env ctx) gs
-  | ArithG e -> check_exp env ctx e
   | AttrG (e, g1) ->
     check_exp env ctx e;
     check_sym env ctx g1
-  | IterG (g1, iter) ->
-    check_iter env ctx iter;
-    check_sym env (strip_index iter::ctx) g1
-  | FuseG _
-  | UnparenG _ -> assert false
+  | IterG (g1, ite) ->
+    check_iterexp env ctx ite;
+    check_sym env (strip_index (fst ite)::ctx) g1
 
-and check_prod env ctx prod =
-  match prod.it with
-  | SynthP (g, e, prems) ->
-    check_sym env ctx g;
-    check_exp env ctx e;
-    iter_nl_list (check_prem env ctx) prems
-  | RangeP (g1, e1, g2, e2) ->
-    check_sym env ctx g1;
-    check_exp env ctx e1;
-    check_sym env ctx g2;
-    check_exp env ctx e2
-  | EquivP (g1, g2, prems) ->
-    check_sym env ctx g1;
-    check_sym env ctx g2;
-    iter_nl_list (check_prem env ctx) prems
-
-and check_gram env ctx gram =
-  let (_dots1, prods, _dots2) = gram.it in
-  iter_nl_list (check_prod env ctx) prods
 
 and check_prem env ctx prem =
   match prem.it with
-  | VarPr _ -> ()  (* skip, since var decls need not be under iterations *)
-  | RulePr (_id, e) -> check_exp env ctx e
+  | RulePr (_x, _mixop, e) -> check_exp env ctx e
   | IfPr e -> check_exp env ctx e
   | ElsePr -> ()
-  | IterPr (prem', iter) ->
-    check_iter env ctx iter;
-    check_prem env (strip_index iter::ctx) prem'
+  | LetPr (e1, e2, _xs) ->
+    check_exp env ctx e1;
+    check_exp env ctx e2
+  | IterPr (prem', ite) ->
+    check_iterexp env ctx ite;
+    check_prem env (strip_index (fst ite)::ctx) prem'
 
 and check_arg env ctx a =
-  match !(a.it) with
+  match a.it with
   | ExpA e -> check_exp env ctx e
   | TypA t -> check_typ env ctx t
   | GramA g -> check_sym env ctx g
-  | DefA _id -> ()
+  | DefA _x -> ()
 
 and check_param env ctx p =
   match p.it with
-  | ExpP (id, t) ->
-    check_varid env ctx `Expl id;
+  | ExpP (x, t) ->
+    check_varid env ctx `Expl x;
     check_typ env ctx t
-  | TypP id ->
-    check_typid env ctx id;
-    check_varid env ctx `Impl id
-  | GramP (id, ps, t) ->
-    check_gramid env ctx id;
+  | TypP x ->
+    check_typid env ctx x;
+    check_varid env ctx `Impl x
+  | GramP (x, ps, t) ->
+    check_gramid env ctx x;
     List.iter (check_param env ctx) ps;
     check_typ env ctx t
-  | DefP (_id, ps, t) ->
+  | DefP (_x, ps, t) ->
     List.iter (check_param env ctx) ps;
     check_typ env ctx t
 
-let check_def d : env =
+let rec check_def d : env =
   let env = new_env [] in
   match d.it with
-  | FamD (_id, ps, _hints) ->
+  | TypD (_x, ps, insts) ->
     List.iter (check_param env []) ps;
+    List.iter (check_inst env) insts;
     check_env env
-  | TypD (_id1, _id2, args, t, _hints) ->
-    List.iter (check_arg env []) args;
+  | RelD (_x, _mixop, t, rules) ->
     check_typ env [] t;
+    List.iter (check_rule env) rules;
     check_env env
-  | GramD (_id1, _id2, ps, t, gram, _hints) ->
+  | DecD (_x, ps, t, clauses) ->
     List.iter (check_param env []) ps;
     check_typ env [] t;
-    check_gram env [] gram;
+    List.iter (check_clause env) clauses;
     check_env env
-  | RelD (_id, t, _hints) ->
+  | GramD (_x, ps, t, prods) ->
+    List.iter (check_param env []) ps;
     check_typ env [] t;
+    List.iter (check_prod env) prods;
     check_env env
-  | RuleD (_id1, _id2, e, prems) ->
+  | RecD _ds ->
+    assert false
+  | HintD _ ->
+    check_env env
+
+and check_inst env inst =
+  match inst.it with
+  | InstD (qs, as_, dt) ->
+    assert (qs = []);
+    List.iter (check_arg env []) as_;
+    check_deftyp env [] dt
+
+and check_rule env rule =
+  match rule.it with
+  | RuleD (_x, qs, _mixop, e, prems) ->
+    assert (qs = []);
     check_exp env [] e;
-    iter_nl_list (check_prem env []) prems;
-    check_env env
-  | VarD (_id, t, _hints) ->
-    check_typ env [] t;
-    check_env env
-  | DecD (_id, ps, t, _hints) ->
-    List.iter (check_param env []) ps;
-    check_typ env [] t;
-    check_env env
-  | DefD (_id, args, e, prems) ->
-    List.iter (check_arg env []) args;
+    List.iter (check_prem env []) prems
+
+and check_clause env clause =
+  match clause.it with
+  | DefD (qs, as_, e, prems) ->
+    assert (qs = []);
+    List.iter (check_arg env []) as_;
     check_exp env [] e;
-    iter_nl_list (check_prem env []) prems;
-    check_env env
-  | SepD | HintD _ -> Env.empty
+    List.iter (check_prem env []) prems
+
+and check_prod env prod =
+  match prod.it with
+  | ProdD (qs, g, e, prems) ->
+    assert (qs = []);
+    check_sym env [] g;
+    check_exp env [] e;
+    List.iter (check_prem env []) prems
 
 
-let check_prod outer prod : env =
+(* External interface *)
+
+let check_inst outer as_ dt : env =
   let env = new_env outer in
-  check_prod env [] prod;
+  List.iter (check_arg env []) as_;
+  check_deftyp env [] dt;
   localize outer (check_env env)
 
-let check_typdef outer t prems : env =
+let check_prod outer g e prems : env =
   let env = new_env outer in
-  check_typ env [] t;
-  iter_nl_list (check_prem env []) prems;
+  check_sym env [] g;
+  check_exp env [] e;
+  List.iter (check_prem env []) prems;
+  localize outer (check_env env)
+
+let check_abbr outer g1 g2 prems : env =
+  let env = new_env outer in
+  check_sym env [] g1;
+  check_sym env [] g2;
+  List.iter (check_prem env []) prems;
+  localize outer (check_env env)
+
+let check_deftyp outer ts prems : env =
+  let env = new_env outer in
+  List.iter (check_typ env []) ts;
+  List.iter (check_prem env []) prems;
   localize outer (check_env env)
 
 
 (* Annotating iterations *)
 
-open Il.Ast
-
-type env' = iter list Env.t
 type occur = (typ * iter list) Env.t
 
 let union = Env.union (fun _ (_, ctx1 as occ1) (_, ctx2 as occ2) ->
@@ -371,7 +384,7 @@ let rec annot_varid id = function
   | [] -> id
   | iter::iters -> annot_varid (annot_varid' id.it iter $ id.at) iters
 
-let rec annot_iter env iter : Il.Ast.iter * (occur * occur) =
+let rec annot_iter env iter : iter * (occur * occur) =
   Il.Debug.(log "il.annot_iter"
     (fun _ -> fmt "%s" (il_iter iter))
     (fun (iter', (occur1, occur2)) -> fmt "%s %s %s" (il_iter iter')
@@ -388,7 +401,7 @@ let rec annot_iter env iter : Il.Ast.iter * (occur * occur) =
     in
     ListN (e', id_opt), (occur1, occur2)
 
-and annot_typ env t : Il.Ast.typ * occur =
+and annot_typ env t : typ * occur =
   Il.Debug.(log "il.annot_typ"
     (fun _ -> fmt "%s" (il_typ t))
     (fun (t', occur') -> fmt "%s %s" (il_typ t') (il_occur occur'))
@@ -411,7 +424,7 @@ and annot_typ env t : Il.Ast.typ * occur =
       IterT (t', iter'), occur2
   in {t with it}, occur
 
-and annot_typbind env (x, t) : (Il.Ast.id * Il.Ast.typ) * occur =
+and annot_typbind env (x, t) : (id * typ) * occur =
   let occur1 =
     if x.it <> "_" && Env.mem x.it env then
       Env.singleton x.it (t, Env.find x.it env)
@@ -421,7 +434,8 @@ and annot_typbind env (x, t) : (Il.Ast.id * Il.Ast.typ) * occur =
   let t', occur2 = annot_typ env t in
   (x, t'), union occur1 occur2
 
-and annot_exp env e : Il.Ast.exp * occur =
+
+and annot_exp env e : exp * occur =
   Il.Debug.(log "il.annot_exp"
     (fun _ -> fmt "%s" (il_exp e))
     (fun (e', occur') -> fmt "%s %s" (il_exp e') (il_occur occur'))
@@ -529,12 +543,12 @@ and annot_exp env e : Il.Ast.exp * occur =
       SubE (e1', t1', t2'), union occur1 (union occur2 occur3)
   in {e with it}, occur
 
-and annot_expfield env (atom, as_, e) : Il.Ast.expfield * occur =
+and annot_expfield env (atom, as_, e) : expfield * occur =
   let as', occurs = List.split (List.map (annot_arg env) as_) in
   let e', occur = annot_exp env e in
   (atom, as', e'), List.fold_left union occur occurs
 
-and annot_path env p : Il.Ast.path * occur =
+and annot_path env p : path * occur =
   let it, occur =
     match p.it with
     | RootP -> RootP, Env.empty
@@ -553,7 +567,7 @@ and annot_path env p : Il.Ast.path * occur =
       DotP (p1', atom, as'), List.fold_left union occur1 occurs
   in {p with it}, occur
 
-and annot_iterexp env occur1 (iter, xes) at : Il.Ast.iterexp * occur =
+and annot_iterexp env occur1 (iter, xes) at : iterexp * occur =
   Il.Debug.(log "il.annot_iterexp"
     (fun _ -> fmt "%s %s" (il_iter iter) (il_occur occur1))
     (fun ((iter', _), occur') -> fmt "%s %s" (il_iter iter') (il_occur occur'))
@@ -581,7 +595,7 @@ and annot_iterexp env occur1 (iter, xes) at : Il.Ast.iterexp * occur =
     List.map (fun (x, (x', (t, _))) -> x $ at, VarE (x' $ at) $$ at % t) occur1'_l in
   (iter', xes'), union (Env.of_seq (List.to_seq (List.map snd occur1'_l))) occur2
 
-and annot_sym env g : Il.Ast.sym * occur =
+and annot_sym env g : sym * occur =
   Il.Debug.(log_in "il.annot_sym" (fun _ -> il_sym g));
   let it, occur =
     match g.it with
@@ -610,7 +624,7 @@ and annot_sym env g : Il.Ast.sym * occur =
       AttrG (e1', g2'), union occur1 occur2
   in {g with it}, occur
 
-and annot_arg env a : Il.Ast.arg * occur =
+and annot_arg env a : arg * occur =
   let it, occur =
     match a.it with
     | ExpA e ->
@@ -625,7 +639,7 @@ and annot_arg env a : Il.Ast.arg * occur =
       GramA g', occur1
   in {a with it}, occur
 
-and annot_prem env prem : Il.Ast.prem * occur =
+and annot_prem env prem : prem * occur =
   let it, occur =
     match prem.it with
     | RulePr (x, op, e) ->
@@ -646,6 +660,15 @@ and annot_prem env prem : Il.Ast.prem * occur =
       IterPr (prem1', iter'), occur'
   in {prem with it}, occur
 
+let annot_inst env inst : inst * occur =
+  let InstD (qs, as_, dt) = inst.it in
+  assert (qs = []);
+  let as', occurs = List.split (List.map (annot_arg env) as_) in
+  let dt', occur = dt, Env.empty in  (* assume dt was already annotated *)
+  {inst with it = InstD (qs, as', dt')}, List.fold_left union occur occurs
+
+
+(* Top-level entry points *)
 
 let annot_top annot_x env x =
   let x', occurs = annot_x env x in
@@ -657,3 +680,4 @@ let annot_exp = annot_top annot_exp
 let annot_sym = annot_top annot_sym
 let annot_arg = annot_top annot_arg
 let annot_prem = annot_top annot_prem
+let annot_inst = annot_top annot_inst

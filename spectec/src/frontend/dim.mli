@@ -1,18 +1,21 @@
+open Il.Ast
+
 module Env : Map.S with type key = string
 
-type outer = El.Ast.id list
-type env = El.Ast.iter list Env.t
-type env' = Il.Ast.iter list Env.t
+type outer = id list
+type env = iter list Env.t
 
-val annot_varid : Il.Ast.id -> Il.Ast.iter list -> Il.Ast.id
+val annot_varid : id -> iter list -> id
 
-val check_def : El.Ast.def -> env (* raises Error.Error *)
-val check_prod : outer -> El.Ast.prod -> env (* raises Error.Error *)
-val check_typdef : outer -> El.Ast.typ -> El.Ast.prem El.Ast.nl_list -> env
-  (* raises Error.Error *)
+val check_def : def -> env (* raises Error.Error *)
+val check_inst : outer -> arg list -> deftyp -> env (* raises Error.Error *)
+val check_prod : outer -> sym -> exp -> prem list -> env (* raises Error.Error *)
+val check_abbr : outer -> sym -> sym -> prem list -> env (* raises Error.Error *)
+val check_deftyp : outer -> typ list -> prem list -> env (* raises Error.Error *)
 
-val annot_iter : env' -> Il.Ast.iter -> Il.Ast.iter
-val annot_exp : env' -> Il.Ast.exp -> Il.Ast.exp
-val annot_sym : env' -> Il.Ast.sym -> Il.Ast.sym
-val annot_arg : env' -> Il.Ast.arg -> Il.Ast.arg
-val annot_prem : env' -> Il.Ast.prem -> Il.Ast.prem
+val annot_iter : env -> iter -> iter
+val annot_exp : env -> exp -> exp
+val annot_sym : env -> sym -> sym
+val annot_arg : env -> arg -> arg
+val annot_prem : env -> prem -> prem
+val annot_inst : env -> inst -> inst

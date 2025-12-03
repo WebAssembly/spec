@@ -933,7 +933,7 @@ and elab_typfield env tid at (tf : typfield) : Il.typfield =
   let atom, (t, prems), hints = tf in
   let _mixop, qs, t', prems' = elab_typ_notation' env tid at t prems in
   let hints' = elab_hints tid "" hints in
-  let t'' =  (* TODO(4, rossberg): remove this hack *)
+  let t'' =
     match t'.it with
     | Il.TupT [(_, t1')] when prems' = [] -> t1'
     | _ -> t'
@@ -1039,12 +1039,13 @@ and elab_typ_notation' env tid at (t : typ) (prems : prem nl_list) :
   assert (valid_tid tid);
   let env' = local_env env in
   let mixop, ts' = elab_typ_notation env' tid t in
-  let es' = pats'_of_typs ts' in
-  let dims = Dim.check_typdef (vars env) t prems in
-  let dims' = Dim.Env.map (List.map (elab_typiter env')) dims in
-  let es' = List.map (Dim.annot_exp dims') es' in
   let qss, premss' = List.split (map_filter_nl_list (elab_prem env') prems) in
-  let prems' = List.map (Dim.annot_prem dims') (List.concat premss') in
+  let es' = pats'_of_typs ts' in
+  let prems' = List.concat premss' in
+  let dims = Dim.check_deftyp (vars env) ts' prems' in
+  let es' = List.map (Dim.annot_exp dims) es' in
+  let t' = tup_typ_bind' es' ts' t.at in
+  let prems' = List.map (Dim.annot_prem dims) prems' in
   let det = Free.(diff (union (det_typ t) (det_prems prems)) (bound_env env)) in
   let free = Free.(diff (union (free_typ t) (free_prems prems)) (union det (bound_env env))) in
   if free <> Free.empty then
@@ -1054,11 +1055,11 @@ List.iteri (fun i e -> Printf.printf "[notation] e%d' = %s\n%!" i (Il.Print.stri
     error at ("premise contains indeterminate variable(s) `" ^
       String.concat "`, `" (Free.Set.elements free.varid) ^ "`");
 );
-  let acc_qs, (module Arg : Iter.Arg) = make_quants_iter_arg env' det dims in
-  let module Acc = Iter.Make(Arg) in
-  Acc.typ t;
-  Acc.prems prems;
-  mixop, !acc_qs @ List.concat qss, tup_typ_bind' es' ts' t.at, prems'
+  let acc_qs, (module Arg : Il.Iter.Arg) = make_quants_iter_arg env' det dims in
+  let module Acc = Il.Iter.Make(Arg) in
+  Acc.typ t';
+  Acc.prems prems';
+  mixop, !acc_qs @ List.concat qss, t', prems'
 
 and elab_typ_notation env tid (t : typ) : Il.mixop * Il.typ list =
   Debug.(log_at "el.elab_typ_notation" t.at
@@ -2338,10 +2339,7 @@ and elab_prod env (prod : prod) (t : Il.typ) : Il.prod list =
   | SynthP (g, e, prems) ->
     let env' = local_env env in
     env'.pm <- false;
-    let dims = Dim.check_prod (vars env) prod in
-    let dims' = Dim.Env.map (List.map (elab_typiter env')) dims in
-    let qs1, g', _t = checkpoint (infer_sym env' g) in
-    let g' = Dim.annot_sym dims' g' in
+    let qs1, g', _t' = checkpoint (infer_sym env' g) in
     let qs2, e' =
       checkpoint (
         let t_unit = Il.TupT [] $ e.at in
@@ -2358,19 +2356,22 @@ and elab_prod env (prod : prod) (t : Il.typ) : Il.prod list =
           elab_exp env' e t
       )
     in
-    let e' = Dim.annot_exp dims' e' in
     let qss3, premss' = List.split (map_filter_nl_list (elab_prem env') prems) in
-    let prems' = List.map (Dim.annot_prem dims') (List.concat premss') in
+    let prems' = List.concat premss' in
+    let dims = Dim.check_prod (vars env) g' e' prems' in
+    let g' = Dim.annot_sym dims g' in
+    let e' = Dim.annot_exp dims e' in
+    let prems' = List.map (Dim.annot_prem dims) prems' in
     let det = Free.(diff (union (det_sym g) (det_prems prems)) (bound_env env)) in
     let free = Free.(diff (free_prod prod) (union (det_prod prod) (bound_env env'))) in
     if free <> Free.empty then
       error prod.at ("grammar rule contains indeterminate variable(s) `" ^
         String.concat "`, `" (Free.Set.elements free.varid) ^ "`");
-    let acc_qs, (module Arg : Iter.Arg) = make_quants_iter_arg env' det dims in
-    let module Acc = Iter.Make(Arg) in
-    Acc.sym g;
-    Acc.exp e;
-    Acc.prems prems;
+    let acc_qs, (module Arg : Il.Iter.Arg) = make_quants_iter_arg env' det dims in
+    let module Acc = Il.Iter.Make(Arg) in
+    Acc.sym g';
+    Acc.exp e';
+    Acc.prems prems';
     let prod' = Il.ProdD (!acc_qs @ qs1 @ qs2 @ List.concat qss3, g', e', prems') $ prod.at in
     if not env'.pm then
       [prod']
@@ -2415,24 +2416,24 @@ and elab_prod env (prod : prod) (t : Il.typ) : Il.prod list =
   | EquivP (g1, g2, prems) ->
     let env' = local_env env in
     env'.pm <- false;
-    let dims = Dim.check_prod (vars env) prod in
-    let dims' = Dim.Env.map (List.map (elab_typiter env')) dims in
-    let qs1, g1', _t1 = checkpoint (infer_sym env' g1) in
-    let g1' = Dim.annot_sym dims' g1' in
-    let qs2, g2', _t2 = checkpoint (infer_sym env' g2) in
-    let g2' = Dim.annot_sym dims' g2' in
+    let qs1, g1', _t1' = checkpoint (infer_sym env' g1) in
+    let qs2, g2', _t2' = checkpoint (infer_sym env' g2) in
     let qss3, premss' = List.split (map_filter_nl_list (elab_prem env') prems) in
-    let prems' = List.map (Dim.annot_prem dims') (List.concat premss') in
+    let prems' = List.concat premss' in
+    let dims = Dim.check_abbr (vars env) g1' g2' prems' in
+    let g1' = Dim.annot_sym dims g1' in
+    let g2' = Dim.annot_sym dims g2' in
+    let prems' = List.map (Dim.annot_prem dims) prems' in
     let det = Free.(diff (union (det_sym g1) (det_prems prems)) (bound_env env)) in
     let free = Free.(diff (free_prod prod) (union (det_prod prod) (bound_env env'))) in
     if free <> Free.empty then
       error prod.at ("grammar rule contains indeterminate variable(s) `" ^
         String.concat "`, `" (Free.Set.elements free.varid) ^ "`");
-    let acc_qs, (module Arg : Iter.Arg) = make_quants_iter_arg env' det dims in
-    let module Acc = Iter.Make(Arg) in
-    Acc.sym g1;
-    Acc.sym g2;
-    Acc.prems prems;
+    let acc_qs, (module Arg : Il.Iter.Arg) = make_quants_iter_arg env' det dims in
+    let module Acc = Il.Iter.Make(Arg) in
+    Acc.sym g1';
+    Acc.sym g2';
+    Acc.prems prems';
     ignore (!acc_qs @ qs1 @ qs2 @ List.concat qss3, g1', g2', prems');
     []  (* TODO(4, rossberg): translate equiv grammars properly *)
 (*
@@ -2450,10 +2451,10 @@ and elab_gram env (gram : gram) (t : Il.typ) : Il.prod list =
 
 (* Definitions *)
 
-and make_quants_iter_arg env free dims : Il.quant list ref * (module Iter.Arg) =
+and make_quants_iter_arg env free dims : Il.quant list ref * (module Il.Iter.Arg) =
   let module Arg =
     struct
-      include Iter.Skip
+      include Il.Iter.Skip
 
       let left = ref free
       let acc = ref []
@@ -2478,7 +2479,7 @@ and make_quants_iter_arg env free dims : Il.quant list ref * (module Iter.Arg) =
                 String.concat ", " ) ^
               ", which only occur(s) to its right; try to reorder parameters or premises");
           let ctx' =
-            List.map (function Opt -> Il.Opt | _ -> Il.List)
+            List.map (function Il.Opt -> Il.Opt | _ -> Il.List)
               (Dim.Env.find id.it dims)
           in
           let t' =
@@ -2791,7 +2792,7 @@ let elab_hintdef _env (hd : hintdef) : Il.def list =
     []
 
 
-let infer_quants env env' dims (d : def) : Il.quant list =
+let infer_quants env env' dims (d : def) (d' : Il.def) : Il.quant list =
   Debug.(log_in_at "el.infer_quants" d.at
     (fun _ ->
       Map.fold (fun id _ ids ->
@@ -2804,13 +2805,13 @@ let infer_quants env env' dims (d : def) : Il.quant list =
   if free <> Free.empty then
     error d.at ("definition contains indeterminate variable(s) `" ^
       String.concat "`, `" (Free.Set.elements free.varid) ^ "`");
-  let acc_qs, (module Arg : Iter.Arg) = make_quants_iter_arg env' det dims in
-  let module Acc = Iter.Make(Arg) in
-  Acc.def d;
+  let acc_qs, (module Arg : Il.Iter.Arg) = make_quants_iter_arg env' det dims in
+  let module Acc = Il.Iter.Make(Arg) in
+  Acc.def d';
   !acc_qs
 
-let infer_no_quants env dims (d : def) =
-  let qs = infer_quants env env dims d in
+let infer_no_quants env dims (d : def) (d' : Il.def) =
+  let qs = infer_quants env env dims d d' in
   assert (qs = [])
 
 
@@ -2822,21 +2823,23 @@ let rec elab_def env (d : def) : Il.def list =
     env.pm <- false;
     let ps' = elab_params (local_env env) ps in
     if env.pm then error d.at "misplaced +- or -+ operator in syntax type declaration";
-    let dims = Dim.check_def d in
-    infer_no_quants env dims d;
+    let d' = Il.TypD (x, ps', []) $ d.at in
+    let dims = Dim.check_def d' in
+    infer_no_quants env dims d d';
     env.typs <- rebind "syntax type" env.typs x (ps', Family []);
-    [Il.TypD (x, ps', []) $ d.at]
-      @ elab_hintdef env (TypH (x, "" $ x.at, hints) $ d.at)
+    [d'] @ elab_hintdef env (TypH (x, "" $ x.at, hints) $ d.at)
   | TypD (x1, x2, as_, t, hints) ->
     let env' = local_env env in
     env'.pm <- false;
     let ps', k = find "syntax type" env.typs x1 in
     let qs1, as', _s = elab_args `Lhs env' as_ ps' d.at in
     let dots1, dt', dots2 = elab_typ_definition env' x1 t in
-    let dims = Dim.check_def d in
-    let dims' = Dim.Env.map (List.map (elab_typiter env')) dims in
-    let qs = infer_quants env env' dims d in
-    let inst' = Il.InstD (qs @ qs1, List.map (Dim.annot_arg dims') as', dt') $ d.at in
+    let inst' = Il.InstD ([], as', dt') $ d.at in  (* dummy *)
+    let d' = Il.TypD (x1, ps', [inst']) $ d.at in  (* dummy *)
+    let dims = Dim.check_inst [] as' dt' in
+    let as' = List.map (Dim.annot_arg dims) as' in
+    let qs = infer_quants env env' dims d d' in
+    let inst' = Il.InstD (qs @ qs1, as', dt') $ d.at in
     let k', last =
       match k with
       | (Opaque | Transp) ->
@@ -2853,7 +2856,7 @@ let rec elab_def env (d : def) : Il.def list =
       | Family insts ->
         if dots1 = Dots || dots2 = Dots then
           error_id x1 "syntax type family cases are not extensible";
-        Family (insts @ [Il.InstD (qs1 @ qs, as', dt') $ d.at]), false
+        Family (insts @ [inst']), false
     in
     (*
     Printf.eprintf "[syntax %s] %s ~> %s\n%!" id1.it
@@ -2869,9 +2872,11 @@ let rec elab_def env (d : def) : Il.def list =
     let ps' = elab_params env' ps in
     let t' = elab_typ env' t in
     if env'.pm then error d.at "misplaced +- or -+ operator in grammar";
-    let xprods2' = List.map (fun pr -> x2, pr) (elab_gram env' gram t') in
-    let dims = Dim.check_def d in
-    infer_no_quants env' dims d;
+    let prods' = elab_gram env' gram t' in
+    let xprods2' = List.map (fun pr -> x2, pr) prods' in
+    let d' = Il.GramD (x1, ps', t', prods') $ d.at in  (* dummy *)
+    let dims = Dim.check_def d' in
+    infer_no_quants env' dims d d';
     let ps1', t1', xprods1', dots_opt = find "grammar" env.grams x1 in
     let dots1, _, dots2 = gram.it in
     let xprods' =
@@ -2902,25 +2907,27 @@ let rec elab_def env (d : def) : Il.def list =
     let t' = tup_typ' ts' t.at in
     let not = Mixop.apply mixop ts' in
     if env.pm then error d.at "misplaced +- or -+ operator in relation";
-    let dims = Dim.check_def d in
-    infer_no_quants env dims d;
+    let d' = Il.RelD (x, mixop, t', []) $ d.at in
+    let dims = Dim.check_def d' in
+    infer_no_quants env dims d d';
     env.rels <- bind "relation" env.rels x (mixop, not, t', []);
-    [Il.RelD (x, mixop, t', []) $ d.at]
-      @ elab_hintdef env (RelH (x, hints) $ d.at)
+    [d'] @ elab_hintdef env (RelH (x, hints) $ d.at)
   | RuleD (x1, x2, e, prems) ->
     let env' = local_env env in
     env'.pm <- false;
-    let dims = Dim.check_def d in
-    let dims' = Dim.Env.map (List.map (elab_typiter env')) dims in
     let mixop, not', t', rules' = find "relation" env.rels x1 in
     if List.exists (fun (x, _) -> x.it = x2.it) rules' then
       error d.at ("duplicate rule name `" ^ x1.it ^
         (if x2.it = "" then "" else "/" ^ x2.it) ^ "`");
     let qs1, es', _ = checkpoint (elab_exp_notation' env' x1 e not') in
-    let es' = List.map (Dim.annot_exp dims') es' in
     let qss2, premss' = List.split (map_filter_nl_list (elab_prem env') prems) in
-    let prems' = List.map (Dim.annot_prem dims') (List.concat premss') in
-    let qs = infer_quants env env' dims d in
+    let prems' = List.concat premss' in
+    let rule' = Il.RuleD (x2, [], mixop, tup_exp' es' e.at, prems') $ d.at in  (* dummy *)
+    let d' = Il.RelD (x1, mixop, t', [rule']) $ d.at in  (* dummy *)
+    let dims = Dim.check_def d' in
+    let qs = infer_quants env env' dims d d' in
+    let es' = List.map (Dim.annot_exp dims) es' in
+    let prems' = List.map (Dim.annot_prem dims) prems' in
     let rule' = Il.RuleD (x2, qs @ qs1 @ List.concat qss2, mixop, tup_exp' es' e.at, prems') $ d.at in
     env.rels <- rebind "relation" env.rels x1 (mixop, not', t', rules' @ [x2, rule']);
     if not env'.pm then [] else elab_def env Subst.(subst_def pm_snd (Iter.clone_def d))
@@ -2928,8 +2935,9 @@ let rec elab_def env (d : def) : Il.def list =
     env.pm <- false;
     let t' = elab_typ env t in
     if env.pm then error d.at "misplaced +- or -+ operator in variable declaration";
-    let dims = Dim.check_def d in
-    infer_no_quants env dims d;
+    let d' = Il.DecD (x, [], t', []) $ d.at in  (* dummy *)
+    let dims = Dim.check_def d' in
+    infer_no_quants env dims d d';
     env.gvars <- rebind "variable" env.gvars x t';
     []
   | DecD (x, ps, t, hints) ->
@@ -2938,26 +2946,29 @@ let rec elab_def env (d : def) : Il.def list =
     let ps' = elab_params env' ps in
     let t' = elab_typ env' t in
     if env'.pm then error d.at "misplaced +- or -+ operator in declaration";
-    let dims = Dim.check_def d in
-    infer_no_quants env dims d;
+    let d' = Il.DecD (x, ps', t', []) $ d.at in
+    let dims = Dim.check_def d' in
+    infer_no_quants env dims d d';
     env.defs <- bind "definition" env.defs x (ps', t', []);
-    [Il.DecD (x, ps', t', []) $ d.at]
-      @ elab_hintdef env (DecH (x, hints) $ d.at)
+    [d'] @ elab_hintdef env (DecH (x, hints) $ d.at)
   | DefD (x, as_, e, prems) ->
     let env' = local_env env in
     env'.pm <- false;
-    let dims = Dim.check_def d in
-    let dims' = Dim.Env.map (List.map (elab_typiter env')) dims in
-    let ps, t, clauses' = find "definition" env.defs x in
-    let qs1, as', s = elab_args `Lhs env' as_ ps d.at in
-    let as' = List.map (Dim.annot_arg dims') as' in
-    let qss2, premss' = List.split (map_filter_nl_list (elab_prem env') prems) in
-    let prems' = List.map (Dim.annot_prem dims') (List.concat premss') in
-    let qs3, e' = checkpoint (elab_exp env' e (Il.Subst.subst_typ s t)) in
-    let e' = Dim.annot_exp dims' e' in
-    let qs = infer_quants env env' dims d in
-    let clause' = Il.DefD (qs @ qs1 @ List.concat qss2 @ qs3, as', e', prems') $ d.at in
-    env.defs <- rebind "definition" env.defs x (ps, t, clauses' @ [(d, clause')]);
+    let ps', t', clauses' = find "definition" env.defs x in
+    let qs1, as', s = elab_args `Lhs env' as_ ps' d.at in
+    let qss3, premss' = List.split (map_filter_nl_list (elab_prem env') prems) in
+    (* Elab e after premises, so that type information can flow to it *)
+    let qs2, e' = checkpoint (elab_exp env' e (Il.Subst.subst_typ s t')) in
+    let prems' = List.concat premss' in
+    let clause' = Il.DefD ([], as', e', prems') $ d.at in  (* dummy *)
+    let d' = Il.DecD (x, ps', t', [clause']) $ d.at in  (* dummy *)
+    let dims = Dim.check_def d' in
+    let qs = infer_quants env env' dims d d' in
+    let as' = List.map (Dim.annot_arg dims) as' in
+    let e' = Dim.annot_exp dims e' in
+    let prems' = List.map (Dim.annot_prem dims) prems' in
+    let clause' = Il.DefD (qs @ qs1 @ qs2 @ List.concat qss3, as', e', prems') $ d.at in
+    env.defs <- rebind "definition" env.defs x (ps', t', clauses' @ [(d, clause')]);
     if not env'.pm then [] else elab_def env Subst.(subst_def pm_snd (Iter.clone_def d))
   | SepD ->
     []
