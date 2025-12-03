@@ -124,7 +124,7 @@ let rec collect_userdef_exp iterexps e =
   | CompE (e1, e2) | MemE (e1, e2)
   | CatE (e1, e2) | IdxE (e1, e2) -> collect_userdef_exp iterexps e1 @ collect_userdef_exp iterexps e2
   | TupE exps | ListE exps -> List.concat_map (collect_userdef_exp iterexps) exps
-  | SliceE (e1, e2, e3) -> collect_userdef_exp iterexps e1 @ collect_userdef_exp iterexps e2 @ collect_userdef_exp iterexps e3
+  | SliceE (e1, e2, e3) | IfE (e1, e2, e3) -> collect_userdef_exp iterexps e1 @ collect_userdef_exp iterexps e2 @ collect_userdef_exp iterexps e3
   | UpdE (e1, p, e2) 
   | ExtE (e1, p, e2) -> collect_userdef_exp iterexps e1 @ collect_userdef_path iterexps p @ collect_userdef_exp iterexps e2
   | IterE (e1, ((_, id_exp_pairs) as iterexp)) -> 
@@ -188,6 +188,7 @@ and transform_exp env e =
   | CatE (e1, e2) -> CatE (t_func e1, t_func e2)
   | IdxE (e1, e2) -> IdxE (t_func e1, t_func e2)
   | SliceE (e1, e2, e3) -> SliceE (t_func e1, t_func e2, t_func e3)
+  | IfE (e1, e2, e3) -> IfE (t_func e1, t_func e2, t_func e3)
   | UpdE (e1, p, e2) -> UpdE (t_func e1, transform_path env p, t_func e2)
   | ExtE (e1, p, e2) -> ExtE (t_func e1, transform_path env p, t_func e2)
   | CallE (id, args) -> CallE (id, List.map (transform_arg env) args)

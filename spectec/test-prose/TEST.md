@@ -23581,7 +23581,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    a. Return :math:`({\mathit{valtype}}{.}\mathsf{const}~{+0})`.
 
-#. If :math:`{\mathit{valtype}}` is :math:`{\mathsf{v}}{N}`, then:
+#. If :math:`{\mathit{valtype}}` is vector type, then:
 
    a. Return :math:`({\mathit{valtype}}{.}\mathsf{const}~0)`.
 
@@ -31517,7 +31517,7 @@ default_ valtype
   a. Return ?((valtype.CONST 0)).
 2. If valtype is Fnn, then:
   a. Return ?((valtype.CONST $fzero($size(valtype)))).
-3. If valtype is Vnn, then:
+3. If valtype is vectype, then:
   a. Return ?((valtype.CONST 0)).
 4. Assert: Due to validation, valtype is some REF.
 5. Let (REF NULL_0? ht) be valtype.

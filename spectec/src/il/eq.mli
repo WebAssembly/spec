@@ -12,6 +12,7 @@ val eq_path : path -> path -> bool
 val eq_sym : sym -> sym -> bool
 val eq_prem : prem -> prem -> bool
 val eq_arg : arg -> arg -> bool
+val eq_bind : bind -> bind -> bool
 
 val eq_opt : ('a -> 'a -> bool) -> 'a option -> 'a option -> bool
 val eq_list : ('a -> 'a -> bool) -> 'a list -> 'a list -> bool

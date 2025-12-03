@@ -317,6 +317,13 @@ and infer_exp (env : Env.t) e : typ =
   | CaseE _ -> e.note (* error e.at "cannot infer type of case constructor" *)
   | CvtE (_, _, t2) -> NumT t2 $ e.at
   | SubE (_, _, t2) -> t2
+  | IfE (_, e2, e3) ->
+    let t2 = infer_exp env e2 in
+    let t3 = infer_exp env e3 in
+    if Eq.eq_typ t2 t3 then
+      t2
+    else
+      error e.at "cannot infer type of if expression: branches have different types"
 
 
 and valid_exp ?(side = `Rhs) env e t =
@@ -468,6 +475,10 @@ try
     valid_exp ~side env e1 t1;
     equiv_typ env t2 t e.at;
     sub_typ env t1 t2 e.at
+  | IfE (e1, e2, e3) ->
+    valid_exp ~side env e1 (BoolT $ e1.at);
+    valid_exp ~side env e2 t;
+    valid_exp ~side env e3 t
 with exn ->
   let bt = Printexc.get_raw_backtrace () in
   Printf.eprintf "[valid_exp] %s\n%!" (Debug.il_exp e);

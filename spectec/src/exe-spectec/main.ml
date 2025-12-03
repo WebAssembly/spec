@@ -24,6 +24,7 @@ type pass =
   | Undep
   | Uncaseremoval
   | AliasDemut
+  | Ite
 
 (* This list declares the intended order of passes.
 
@@ -32,7 +33,17 @@ passers (--all-passes, some targets), we do _not_ want to use the order of
 flags on the command line.
 *)
 let _skip_passes = [ Unthe ]  (* Not clear how to extend them to indexed types *)
-let all_passes = [ TypeFamilyRemoval; Undep; Totalize; Else; Uncaseremoval; Sideconditions; Sub; AliasDemut ]
+let all_passes = [
+  Ite;
+  TypeFamilyRemoval;
+  Undep;
+  Totalize;
+  Else;
+  Uncaseremoval;
+  Sideconditions;
+  Sub;
+  AliasDemut;
+]
 
 type file_kind =
   | Spec
@@ -94,6 +105,7 @@ let pass_flag = function
   | Else -> "else"
   | Undep -> "remove-indexed-types"
   | Uncaseremoval -> "uncase-removal"
+  | Ite -> "ite"
 
 let pass_desc = function
   | Sub -> "Synthesize explicit subtype coercions"
@@ -105,6 +117,7 @@ let pass_desc = function
   | Undep -> "Transform indexed types into types with well-formedness predicates"
   | Uncaseremoval -> "Eliminate the uncase expression"
   | AliasDemut -> "Lifts type aliases out of mutual groups"
+  | Ite -> "If-then-else introduction"
 
 
 let run_pass : pass -> Il.Ast.script -> Il.Ast.script = function
@@ -117,6 +130,7 @@ let run_pass : pass -> Il.Ast.script -> Il.Ast.script = function
   | Undep -> Middlend.Undep.transform
   | Uncaseremoval -> Middlend.Uncaseremoval.transform
   | AliasDemut -> Middlend.AliasDemut.transform
+  | Ite -> Middlend.Ite.transform
 
 
 (* Argument parsing *)
