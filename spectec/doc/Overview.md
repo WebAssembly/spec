@@ -198,7 +198,7 @@ rule Instr_ok/global.set:
 ```
 Each rule definition is headed by the name of its respective relation,
 plus a symbolic name for the rule itself,
-used later to reference individiual rules.
+used later to reference individual rules.
 The notation of a rule's body has to match the notation declared for the relation.
 
 The rule for `NOP` specifies that both input and output types of the instruction are empty
@@ -502,7 +502,7 @@ first pass one byte,
 whose value must be larger than or equal to 128,
 that is, its most-significant bit is set.
 It is also required that `N` is large enough to allow multiple bytes.
-The remainder than is parsed as a binary number of the remaining bitwidth `N-7`,
+The remainder then is parsed as a binary number of the remaining bitwidth `N-7`,
 and in the end, both parts of the result value are combined together to form the overall result.
 
 Finally, the grammar for floating point values is also parameterised over its bit-width,
