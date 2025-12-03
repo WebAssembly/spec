@@ -388,6 +388,39 @@ let rec annot_iter env iter : Il.Ast.iter * (occur * occur) =
     in
     ListN (e', id_opt), (occur1, occur2)
 
+and annot_typ env t : Il.Ast.typ * occur =
+  Il.Debug.(log "il.annot_typ"
+    (fun _ -> fmt "%s" (il_typ t))
+    (fun (t', occur') -> fmt "%s %s" (il_typ t') (il_occur occur'))
+  ) @@ fun _ ->
+  let it, occur =
+    match t.it with
+    | VarT (x, as1) ->
+      let as1', occurs = List.split (List.map (annot_arg env) as1) in
+      VarT (x, as1'), List.fold_left union Env.empty occurs
+    | BoolT | NumT _ | TextT ->
+      t.it, Env.empty
+    | TupT xts ->
+      let xts', occurs = List.split (List.map (annot_typbind env) xts) in
+      TupT xts', List.fold_left union Env.empty occurs
+    | IterT (t, iter) ->
+      let t', occur1 = annot_typ env t in
+      let iter', (occur2, occur3) = annot_iter env iter in
+      assert (occur1 = Env.empty);
+      assert (occur3 = Env.empty);
+      IterT (t', iter'), occur2
+  in {t with it}, occur
+
+and annot_typbind env (x, t) : (Il.Ast.id * Il.Ast.typ) * occur =
+  let occur1 =
+    if x.it <> "_" && Env.mem x.it env then
+      Env.singleton x.it (t, Env.find x.it env)
+    else
+      Env.empty
+  in
+  let t', occur2 = annot_typ env t in
+  (x, t'), union occur1 occur2
+
 and annot_exp env e : Il.Ast.exp * occur =
   Il.Debug.(log "il.annot_exp"
     (fun _ -> fmt "%s" (il_exp e))
@@ -395,8 +428,8 @@ and annot_exp env e : Il.Ast.exp * occur =
   ) @@ fun _ ->
   let it, occur =
     match e.it with
-    | VarE id when id.it <> "_" && Env.mem id.it env ->
-      VarE id, Env.singleton id.it (e.note, Env.find id.it env)
+    | VarE x when x.it <> "_" && Env.mem x.it env ->
+      VarE x, Env.singleton x.it (e.note, Env.find x.it env)
     | VarE _ | BoolE _ | NumE _ | TextE _ ->
       e.it, Env.empty
     | UnE (op, nt, e1) ->
@@ -491,7 +524,9 @@ and annot_exp env e : Il.Ast.exp * occur =
       CvtE (e1', nt1, nt2), occur1
     | SubE (e1, t1, t2) ->
       let e1', occur1 = annot_exp env e1 in
-      SubE (e1', t1, t2), occur1
+      let t1', occur2 = annot_typ env t1 in
+      let t2', occur3 = annot_typ env t2 in
+      SubE (e1', t1', t2'), union occur1 (union occur2 occur3)
   in {e with it}, occur
 
 and annot_expfield env (atom, as_, e) : Il.Ast.expfield * occur =
@@ -550,9 +585,9 @@ and annot_sym env g : Il.Ast.sym * occur =
   Il.Debug.(log_in "il.annot_sym" (fun _ -> il_sym g));
   let it, occur =
     match g.it with
-    | VarG (id, as1) ->
+    | VarG (x, as1) ->
       let as1', occurs = List.split (List.map (annot_arg env) as1) in
-      VarG (id, as1'), List.fold_left union Env.empty occurs
+      VarG (x, as1'), List.fold_left union Env.empty occurs
     | NumG _ | TextG _ | EpsG ->
       g.it, Env.empty
     | SeqG gs ->
@@ -581,7 +616,9 @@ and annot_arg env a : Il.Ast.arg * occur =
     | ExpA e ->
       let e', occur1 = annot_exp env e in
       ExpA e', occur1
-    | TypA t -> TypA t, Env.empty
+    | TypA t ->
+      let t', occur1 = annot_typ env t in
+      TypA t', occur1
     | DefA id -> DefA id, Env.empty
     | GramA g ->
       let g', occur1 = annot_sym env g in
@@ -591,9 +628,9 @@ and annot_arg env a : Il.Ast.arg * occur =
 and annot_prem env prem : Il.Ast.prem * occur =
   let it, occur =
     match prem.it with
-    | RulePr (id, op, e) ->
+    | RulePr (x, op, e) ->
       let e', occur = annot_exp env e in
-      RulePr (id, op, e'), occur
+      RulePr (x, op, e'), occur
     | IfPr e ->
       let e', occur = annot_exp env e in
       IfPr e', occur

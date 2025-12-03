@@ -21,7 +21,6 @@ val free_args : arg list -> sets
 val free_quants : param list -> sets
 val free_params : param list -> sets
 
-val bound_typbind : id * typ -> sets
 val bound_quant : quant -> sets
 val bound_param : param -> sets
 val bound_def : def -> sets

@@ -77,7 +77,11 @@ let tup_typ_bind' es' ts' at =
         | Il.VarE x -> x, s
         | _ ->
           let x' = Il.Fresh.fresh_varid "pat" $ e'.at in
-          x', decompose e' (Il.VarE x' $$ e'.at % e'.note) s
+          let s' = decompose e' (Il.VarE x' $$ e'.at % e'.note) Il.Subst.empty in
+          if s' = Il.Subst.empty then
+            "_" $ e'.at, s
+          else
+            x', Il.Subst.union s s'
       in
       let xts'' = combine es' ts' s' in
       (x', Il.Subst.subst_typ s t')::xts''

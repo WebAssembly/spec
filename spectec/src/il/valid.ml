@@ -203,8 +203,9 @@ and valid_typ env t =
 
 and valid_typbind env (x, t) =
   valid_typ env t;
-  let t' = Env.find_var env x in
-  equiv_typ env t' t x.at
+  if x.it <> "_" then
+    let t' = Env.find_var env x in
+    equiv_typ env t' t x.at
 
 and valid_deftyp envr dt =
   match dt.it with

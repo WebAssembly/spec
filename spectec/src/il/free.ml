@@ -30,15 +30,8 @@ and free_typ t =
   | TupT ets -> free_typbinds ets
   | IterT (t1, iter) -> free_typ t1 + free_iter iter
 
-and bound_typ t =
-  match t.it with
-  | VarT _ | BoolT | NumT _ | TextT -> empty
-  | TupT ets -> bound_list bound_typbind ets
-  | IterT (t1, _iter) -> bound_typ t1
-  
-and free_typbind (_x, t) = free_typ t
-and bound_typbind (x, _t) = free_varid x
-and free_typbinds xts = free_list_dep free_typbind bound_typbind xts
+and free_typbind (x, t) = bound_varid x + free_typ t
+and free_typbinds xts = free_list free_typbind xts
 
 and free_deftyp dt =
   match dt.it with
@@ -47,9 +40,9 @@ and free_deftyp dt =
   | VariantT tcs -> free_list free_typcase tcs
 
 and free_typfield (_, (qs, t, prems), _) =
-  free_quants qs + (free_typ t + (free_prems prems - bound_typ t) - bound_quants qs)
+  free_quants qs + (free_typ t + free_prems prems - bound_quants qs)
 and free_typcase (_, (qs, t, prems), _) =
-  free_quants qs + (free_typ t + (free_prems prems - bound_typ t) - bound_quants qs)
+  free_quants qs + (free_typ t + free_prems prems - bound_quants qs)
 
 
 (* Expressions *)
