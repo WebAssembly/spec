@@ -1315,7 +1315,7 @@ In practice, the choice depends on the <a class="reference internal" href="../ap
 <li><p>Trap.</p></li>
 </ol>
 </li>
-<li><p>If <span class="math notranslate nohighlight">\(j + n &gt; {|z{.}\href{../exec/runtime.html#syntax-state}{\mathsf{elems}}{}[y]{.}\href{../exec/runtime.html#syntax-eleminst}{\mathsf{elem}}|}\)</span>, then:</p>
+<li><p>If <span class="math notranslate nohighlight">\(j + n &gt; {|z{.}\href{../exec/runtime.html#syntax-state}{\mathsf{elems}}{}[y]{.}\href{../exec/runtime.html#syntax-eleminst}{\mathsf{refs}}|}\)</span>, then:</p>
 <ol class="loweralpha simple">
 <li><p>Trap.</p></li>
 </ol>
@@ -1327,9 +1327,9 @@ In practice, the choice depends on the <a class="reference internal" href="../ap
 </li>
 <li><p>Else:</p>
 <ol class="loweralpha simple">
-<li><p>Assert: Due to <a class="reference internal" href="../valid/instructions.html#valid-table-init"><span class="std std-ref">validation</span></a>, <span class="math notranslate nohighlight">\(j &lt; {|z{.}\href{../exec/runtime.html#syntax-state}{\mathsf{elems}}{}[y]{.}\href{../exec/runtime.html#syntax-eleminst}{\mathsf{elem}}|}\)</span>.</p></li>
+<li><p>Assert: Due to <a class="reference internal" href="../valid/instructions.html#valid-table-init"><span class="std std-ref">validation</span></a>, <span class="math notranslate nohighlight">\(j &lt; {|z{.}\href{../exec/runtime.html#syntax-state}{\mathsf{elems}}{}[y]{.}\href{../exec/runtime.html#syntax-eleminst}{\mathsf{refs}}|}\)</span>.</p></li>
 <li><p>Push the value <span class="math notranslate nohighlight">\(({\mathit{at}}{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~i)\)</span> to the stack.</p></li>
-<li><p>Push the value <span class="math notranslate nohighlight">\(z{.}\href{../exec/runtime.html#syntax-state}{\mathsf{elems}}{}[y]{.}\href{../exec/runtime.html#syntax-eleminst}{\mathsf{elem}}{}[j]\)</span> to the stack.</p></li>
+<li><p>Push the value <span class="math notranslate nohighlight">\(z{.}\href{../exec/runtime.html#syntax-state}{\mathsf{elems}}{}[y]{.}\href{../exec/runtime.html#syntax-eleminst}{\mathsf{refs}}{}[j]\)</span> to the stack.</p></li>
 <li><p>Execute the instruction <span class="math notranslate nohighlight">\((\href{../syntax/instructions.html#syntax-instr-table}{\mathsf{table{.}set}}~x)\)</span>.</p></li>
 <li><p>Push the value <span class="math notranslate nohighlight">\(({\mathit{at}}{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~i + 1)\)</span> to the stack.</p></li>
 <li><p>Push the value <span class="math notranslate nohighlight">\((\href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}}{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~j + 1)\)</span> to the stack.</p></li>
@@ -1342,13 +1342,13 @@ In practice, the choice depends on the <a class="reference internal" href="../ap
 \[\begin{split}\begin{array}[t]{&#64;{}l&#64;{}rcl&#64;{}l&#64;{}}
 &amp; z ; ({\mathit{at}}{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~i)~(\href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}}{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~j)~(\href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}}{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~n)~(\href{../syntax/instructions.html#syntax-instr-table}{\mathsf{table{.}init}}~x~y) &amp; \href{../exec/conventions.html#exec-notation}{\hookrightarrow} &amp; \href{../exec/runtime.html#syntax-trap}{\mathsf{trap}} &amp;  \\
 &amp; \multicolumn{4}{&#64;{}l&#64;{}}{\quad
-\quad \mbox{if}~ i + n &gt; {|z{.}\href{../exec/runtime.html#syntax-state}{\mathsf{tables}}{}[x]{.}\href{../exec/runtime.html#syntax-tableinst}{\mathsf{refs}}|} \lor j + n &gt; {|z{.}\href{../exec/runtime.html#syntax-state}{\mathsf{elems}}{}[y]{.}\href{../exec/runtime.html#syntax-eleminst}{\mathsf{elem}}|}
+\quad \mbox{if}~ i + n &gt; {|z{.}\href{../exec/runtime.html#syntax-state}{\mathsf{tables}}{}[x]{.}\href{../exec/runtime.html#syntax-tableinst}{\mathsf{refs}}|} \lor j + n &gt; {|z{.}\href{../exec/runtime.html#syntax-state}{\mathsf{elems}}{}[y]{.}\href{../exec/runtime.html#syntax-eleminst}{\mathsf{refs}}|}
 } \\
 &amp; z ; ({\mathit{at}}{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~i)~(\href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}}{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~j)~(\href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}}{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~n)~(\href{../syntax/instructions.html#syntax-instr-table}{\mathsf{table{.}init}}~x~y) &amp; \href{../exec/conventions.html#exec-notation}{\hookrightarrow} &amp; \epsilon &amp; \quad \mbox{otherwise, if}~ n = 0 \\
 &amp; z ; ({\mathit{at}}{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~i)~(\href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}}{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~j)~(\href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}}{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~n)~(\href{../syntax/instructions.html#syntax-instr-table}{\mathsf{table{.}init}}~x~y) &amp; \href{../exec/conventions.html#exec-notation}{\hookrightarrow} &amp; &amp; \\
 &amp; \multicolumn{4}{&#64;{}l&#64;{}}{\quad
 \begin{array}[t]{&#64;{}l&#64;{}l&#64;{}}
-\begin{array}[t]{&#64;{}l&#64;{}} ({\mathit{at}}{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~i)~z{.}\href{../exec/runtime.html#syntax-state}{\mathsf{elems}}{}[y]{.}\href{../exec/runtime.html#syntax-eleminst}{\mathsf{elem}}{}[j]~(\href{../syntax/instructions.html#syntax-instr-table}{\mathsf{table{.}set}}~x) \\
+\begin{array}[t]{&#64;{}l&#64;{}} ({\mathit{at}}{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~i)~z{.}\href{../exec/runtime.html#syntax-state}{\mathsf{elems}}{}[y]{.}\href{../exec/runtime.html#syntax-eleminst}{\mathsf{refs}}{}[j]~(\href{../syntax/instructions.html#syntax-instr-table}{\mathsf{table{.}set}}~x) \\
   ({\mathit{at}}{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~i + 1)~(\href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}}{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~j + 1)~(\href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}}{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~n - 1)~(\href{../syntax/instructions.html#syntax-instr-table}{\mathsf{table{.}init}}~x~y) \end{array} &amp; \quad \mbox{otherwise} \\
 \end{array}
 } \\
@@ -1362,7 +1362,7 @@ In practice, the choice depends on the <a class="reference internal" href="../ap
 </ol>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}[t]{&#64;{}l&#64;{}rcl&#64;{}l&#64;{}}
-&amp; z ; (\href{../syntax/instructions.html#syntax-instr-table}{\mathsf{elem{.}drop}}~x) &amp; \href{../exec/conventions.html#exec-notation}{\hookrightarrow} &amp; z{}[{.}\href{../exec/runtime.html#syntax-state}{\mathsf{elems}}{}[x]{.}\href{../exec/runtime.html#syntax-eleminst}{\mathsf{elem}} = \epsilon] ; \epsilon \\
+&amp; z ; (\href{../syntax/instructions.html#syntax-instr-table}{\mathsf{elem{.}drop}}~x) &amp; \href{../exec/conventions.html#exec-notation}{\hookrightarrow} &amp; z{}[{.}\href{../exec/runtime.html#syntax-state}{\mathsf{elems}}{}[x]{.}\href{../exec/runtime.html#syntax-eleminst}{\mathsf{refs}} = \epsilon] ; \epsilon \\
 \end{array}\end{split}\]</div>
 </section>
 </section>
@@ -2300,21 +2300,21 @@ since the instruction form is already a <a class="reference internal" href="runt
 <li><p>Pop the value <span class="math notranslate nohighlight">\((\href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}}{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~n)\)</span> from the stack.</p></li>
 <li><p>Assert: Due to <a class="reference internal" href="../valid/instructions.html#valid-array-new-elem"><span class="std std-ref">validation</span></a>, a value of <a class="reference internal" href="../syntax/types.html#syntax-numtype"><span class="std std-ref">number type</span></a> <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}}\)</span> is on the top of the stack.</p></li>
 <li><p>Pop the value <span class="math notranslate nohighlight">\((\href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}}{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~i)\)</span> from the stack.</p></li>
-<li><p>If <span class="math notranslate nohighlight">\(i + n &gt; {|z{.}\href{../exec/runtime.html#syntax-state}{\mathsf{elems}}{}[y]{.}\href{../exec/runtime.html#syntax-eleminst}{\mathsf{elem}}|}\)</span>, then:</p>
+<li><p>If <span class="math notranslate nohighlight">\(i + n &gt; {|z{.}\href{../exec/runtime.html#syntax-state}{\mathsf{elems}}{}[y]{.}\href{../exec/runtime.html#syntax-eleminst}{\mathsf{refs}}|}\)</span>, then:</p>
 <ol class="loweralpha simple">
 <li><p>Trap.</p></li>
 </ol>
 </li>
-<li><p>Let <span class="math notranslate nohighlight">\({{\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}}^{n}}\)</span> be <span class="math notranslate nohighlight">\(z{.}\href{../exec/runtime.html#syntax-state}{\mathsf{elems}}{}[y]{.}\href{../exec/runtime.html#syntax-eleminst}{\mathsf{elem}}{}[i : n]\)</span>.</p></li>
+<li><p>Let <span class="math notranslate nohighlight">\({{\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}}^{n}}\)</span> be <span class="math notranslate nohighlight">\(z{.}\href{../exec/runtime.html#syntax-state}{\mathsf{elems}}{}[y]{.}\href{../exec/runtime.html#syntax-eleminst}{\mathsf{refs}}{}[i : n]\)</span>.</p></li>
 <li><p>Push the values <span class="math notranslate nohighlight">\({{\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}}^{n}}\)</span> to the stack.</p></li>
 <li><p>Execute the instruction <span class="math notranslate nohighlight">\((\href{../syntax/instructions.html#syntax-instr-array}{\mathsf{array{.}new\_fixed}}~x~n)\)</span>.</p></li>
 </ol>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}[t]{&#64;{}l&#64;{}rcl&#64;{}l&#64;{}}
-&amp; z ; (\href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}}{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~i)~(\href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}}{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~n)~(\href{../syntax/instructions.html#syntax-instr-array}{\mathsf{array{.}new\_elem}}~x~y) &amp; \href{../exec/conventions.html#exec-notation}{\hookrightarrow} &amp; \href{../exec/runtime.html#syntax-trap}{\mathsf{trap}} &amp; \quad \mbox{if}~ i + n &gt; {|z{.}\href{../exec/runtime.html#syntax-state}{\mathsf{elems}}{}[y]{.}\href{../exec/runtime.html#syntax-eleminst}{\mathsf{elem}}|} \\
+&amp; z ; (\href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}}{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~i)~(\href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}}{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~n)~(\href{../syntax/instructions.html#syntax-instr-array}{\mathsf{array{.}new\_elem}}~x~y) &amp; \href{../exec/conventions.html#exec-notation}{\hookrightarrow} &amp; \href{../exec/runtime.html#syntax-trap}{\mathsf{trap}} &amp; \quad \mbox{if}~ i + n &gt; {|z{.}\href{../exec/runtime.html#syntax-state}{\mathsf{elems}}{}[y]{.}\href{../exec/runtime.html#syntax-eleminst}{\mathsf{refs}}|} \\
 &amp; z ; (\href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}}{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~i)~(\href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}}{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~n)~(\href{../syntax/instructions.html#syntax-instr-array}{\mathsf{array{.}new\_elem}}~x~y) &amp; \href{../exec/conventions.html#exec-notation}{\hookrightarrow} &amp; {{\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}}^{n}}~(\href{../syntax/instructions.html#syntax-instr-array}{\mathsf{array{.}new\_fixed}}~x~n) &amp;  \\
 &amp;&amp;&amp; \multicolumn{2}{&#64;{}l&#64;{}}{\quad
-\quad \mbox{if}~ {{\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}}^{n}} = z{.}\href{../exec/runtime.html#syntax-state}{\mathsf{elems}}{}[y]{.}\href{../exec/runtime.html#syntax-eleminst}{\mathsf{elem}}{}[i : n]
+\quad \mbox{if}~ {{\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}}^{n}} = z{.}\href{../exec/runtime.html#syntax-state}{\mathsf{elems}}{}[y]{.}\href{../exec/runtime.html#syntax-eleminst}{\mathsf{refs}}{}[i : n]
 } \\
 \end{array}\end{split}\]</div>
 </section>
@@ -2751,7 +2751,7 @@ since the instruction form is already a <a class="reference internal" href="runt
 <li><p>Trap.</p></li>
 </ol>
 </li>
-<li><p>If <span class="math notranslate nohighlight">\(j + n &gt; {|z{.}\href{../exec/runtime.html#syntax-state}{\mathsf{elems}}{}[y]{.}\href{../exec/runtime.html#syntax-eleminst}{\mathsf{elem}}|}\)</span>, then:</p>
+<li><p>If <span class="math notranslate nohighlight">\(j + n &gt; {|z{.}\href{../exec/runtime.html#syntax-state}{\mathsf{elems}}{}[y]{.}\href{../exec/runtime.html#syntax-eleminst}{\mathsf{refs}}|}\)</span>, then:</p>
 <ol class="loweralpha simple">
 <li><p>Trap.</p></li>
 </ol>
@@ -2761,9 +2761,9 @@ since the instruction form is already a <a class="reference internal" href="runt
 <li><p>Do nothing.</p></li>
 </ol>
 </li>
-<li><p>Else if <span class="math notranslate nohighlight">\(j &lt; {|z{.}\href{../exec/runtime.html#syntax-state}{\mathsf{elems}}{}[y]{.}\href{../exec/runtime.html#syntax-eleminst}{\mathsf{elem}}|}\)</span>, then:</p>
+<li><p>Else if <span class="math notranslate nohighlight">\(j &lt; {|z{.}\href{../exec/runtime.html#syntax-state}{\mathsf{elems}}{}[y]{.}\href{../exec/runtime.html#syntax-eleminst}{\mathsf{refs}}|}\)</span>, then:</p>
 <ol class="loweralpha simple">
-<li><p>Let <span class="math notranslate nohighlight">\({\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}}\)</span> be the <a class="reference internal" href="runtime.html#syntax-ref"><span class="std std-ref">reference value</span></a> <span class="math notranslate nohighlight">\(z{.}\href{../exec/runtime.html#syntax-state}{\mathsf{elems}}{}[y]{.}\href{../exec/runtime.html#syntax-eleminst}{\mathsf{elem}}{}[j]\)</span>.</p></li>
+<li><p>Let <span class="math notranslate nohighlight">\({\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}}\)</span> be the <a class="reference internal" href="runtime.html#syntax-ref"><span class="std std-ref">reference value</span></a> <span class="math notranslate nohighlight">\(z{.}\href{../exec/runtime.html#syntax-state}{\mathsf{elems}}{}[y]{.}\href{../exec/runtime.html#syntax-eleminst}{\mathsf{refs}}{}[j]\)</span>.</p></li>
 <li><p>Push the value <span class="math notranslate nohighlight">\((\href{../exec/runtime.html#syntax-ref}{\mathsf{ref{.}array}}~a)\)</span> to the stack.</p></li>
 <li><p>Push the value <span class="math notranslate nohighlight">\((\href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}}{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~i)\)</span> to the stack.</p></li>
 <li><p>Push the value <span class="math notranslate nohighlight">\({\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}}\)</span> to the stack.</p></li>
@@ -2785,7 +2785,7 @@ since the instruction form is already a <a class="reference internal" href="runt
 } \\
 &amp; z ; (\href{../exec/runtime.html#syntax-ref}{\mathsf{ref{.}array}}~a)~(\href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}}{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~i)~(\href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}}{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~j)~(\href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}}{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~n)~(\href{../syntax/instructions.html#syntax-instr-array}{\mathsf{array{.}init\_elem}}~x~y) &amp; \href{../exec/conventions.html#exec-notation}{\hookrightarrow} &amp; \href{../exec/runtime.html#syntax-trap}{\mathsf{trap}} &amp;  \\
 &amp; \multicolumn{4}{&#64;{}l&#64;{}}{\quad
-\quad \mbox{if}~ j + n &gt; {|z{.}\href{../exec/runtime.html#syntax-state}{\mathsf{elems}}{}[y]{.}\href{../exec/runtime.html#syntax-eleminst}{\mathsf{elem}}|}
+\quad \mbox{if}~ j + n &gt; {|z{.}\href{../exec/runtime.html#syntax-state}{\mathsf{elems}}{}[y]{.}\href{../exec/runtime.html#syntax-eleminst}{\mathsf{refs}}|}
 } \\
 &amp; z ; (\href{../exec/runtime.html#syntax-ref}{\mathsf{ref{.}array}}~a)~(\href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}}{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~i)~(\href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}}{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~j)~(\href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}}{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~n)~(\href{../syntax/instructions.html#syntax-instr-array}{\mathsf{array{.}init\_elem}}~x~y) &amp; \href{../exec/conventions.html#exec-notation}{\hookrightarrow} &amp; \epsilon &amp;  \\
 &amp; \multicolumn{4}{&#64;{}l&#64;{}}{\quad
@@ -2798,7 +2798,7 @@ since the instruction form is already a <a class="reference internal" href="runt
   (\href{../exec/runtime.html#syntax-ref}{\mathsf{ref{.}array}}~a)~(\href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}}{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~i + 1)~(\href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}}{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~j + 1)~(\href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}}{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~n - 1)~(\href{../syntax/instructions.html#syntax-instr-array}{\mathsf{array{.}init\_elem}}~x~y) \end{array} &amp; &amp; \\
  \multicolumn{3}{&#64;{}l&#64;{}}{\quad
 \begin{array}[t]{&#64;{}l&#64;{}}
-\quad \mbox{otherwise, if}~ {\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}} = z{.}\href{../exec/runtime.html#syntax-state}{\mathsf{elems}}{}[y]{.}\href{../exec/runtime.html#syntax-eleminst}{\mathsf{elem}}{}[j] \\
+\quad \mbox{otherwise, if}~ {\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}} = z{.}\href{../exec/runtime.html#syntax-state}{\mathsf{elems}}{}[y]{.}\href{../exec/runtime.html#syntax-eleminst}{\mathsf{refs}}{}[j] \\
 \end{array}
 } \\
 \end{array}

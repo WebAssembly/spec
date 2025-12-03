@@ -621,8 +621,8 @@ That way, the function itself is able to make sufficient assumptions about futur
   S \href{../appendix/properties.html#valid-datainst}{\vdash} \{ \href{../exec/runtime.html#syntax-datainst}{\mathsf{bytes}}~b^\ast \} : \href{../appendix/properties.html#valid-datainst}{\mathsf{ok}}
 }\]</div>
 </section>
-<section id="element-instances-xref-exec-runtime-syntax-eleminst-mathsf-type-t-xref-exec-runtime-syntax-eleminst-mathsf-elem-xref-exec-runtime-syntax-ref-mathit-ref-ast">
-<span id="valid-eleminst"></span><span id="index-15"></span><h3><a class="reference internal" href="../exec/runtime.html#syntax-eleminst"><span class="std std-ref">Element Instances</span></a> <span class="math notranslate nohighlight">\(\{ \href{../exec/runtime.html#syntax-eleminst}{\mathsf{type}}~t, \href{../exec/runtime.html#syntax-eleminst}{\mathsf{elem}}~\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}^\ast \}\)</span><a class="headerlink" href="#element-instances-xref-exec-runtime-syntax-eleminst-mathsf-type-t-xref-exec-runtime-syntax-eleminst-mathsf-elem-xref-exec-runtime-syntax-ref-mathit-ref-ast" title="Link to this heading">¶</a></h3>
+<section id="element-instances-xref-exec-runtime-syntax-eleminst-mathsf-type-t-xref-exec-runtime-syntax-eleminst-mathsf-refs-xref-exec-runtime-syntax-ref-mathit-ref-ast">
+<span id="valid-eleminst"></span><span id="index-15"></span><h3><a class="reference internal" href="../exec/runtime.html#syntax-eleminst"><span class="std std-ref">Element Instances</span></a> <span class="math notranslate nohighlight">\(\{ \href{../exec/runtime.html#syntax-eleminst}{\mathsf{type}}~t, \href{../exec/runtime.html#syntax-eleminst}{\mathsf{refs}}~\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}^\ast \}\)</span><a class="headerlink" href="#element-instances-xref-exec-runtime-syntax-eleminst-mathsf-type-t-xref-exec-runtime-syntax-eleminst-mathsf-refs-xref-exec-runtime-syntax-ref-mathit-ref-ast" title="Link to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>The <a class="reference internal" href="../syntax/types.html#syntax-reftype"><span class="std std-ref">reference type</span></a> <span class="math notranslate nohighlight">\(t\)</span> must be <a class="reference internal" href="../valid/types.html#valid-reftype"><span class="std std-ref">valid</span></a> under the empty <a class="reference internal" href="../valid/conventions.html#context"><span class="std std-ref">context</span></a>.</p></li>
 <li><p>For each <a class="reference internal" href="../exec/runtime.html#syntax-ref"><span class="std std-ref">reference</span></a> <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}_i\)</span> in the elements <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}^n\)</span>:</p>
@@ -641,7 +641,7 @@ That way, the function itself is able to make sufficient assumptions about futur
   \qquad
   (\href{../valid/matching.html#match-reftype}{\vdash} t' \href{../valid/matching.html#match-valtype}{\leq} t)^\ast
 }{
-  S \href{../appendix/properties.html#valid-eleminst}{\vdash} \{ \href{../exec/runtime.html#syntax-eleminst}{\mathsf{type}}~t, \href{../exec/runtime.html#syntax-eleminst}{\mathsf{elem}}~\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}^\ast \} : t
+  S \href{../appendix/properties.html#valid-eleminst}{\vdash} \{ \href{../exec/runtime.html#syntax-eleminst}{\mathsf{type}}~t, \href{../exec/runtime.html#syntax-eleminst}{\mathsf{refs}}~\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}^\ast \} : t
 }\]</div>
 </section>
 <section id="structure-instances-xref-exec-runtime-syntax-structinst-mathsf-type-xref-valid-conventions-syntax-deftype-mathit-deftype-xref-exec-runtime-syntax-structinst-mathsf-fields-xref-exec-runtime-syntax-fieldval-mathit-fieldval-ast">
@@ -1141,7 +1141,7 @@ a store state <span class="math notranslate nohighlight">\(S'\)</span> extends s
 <span id="extend-eleminst"></span><span id="index-40"></span><h3><a class="reference internal" href="../exec/runtime.html#syntax-eleminst"><span class="std std-ref">Element Instance</span></a> <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-eleminst}{\mathit{eleminst}}\)</span><a class="headerlink" href="#element-instance-xref-exec-runtime-syntax-eleminst-mathit-eleminst" title="Link to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>The <a class="reference internal" href="../syntax/types.html#syntax-reftype"><span class="std std-ref">reference type</span></a> <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-eleminst}{\mathit{eleminst}}.\href{../exec/runtime.html#syntax-eleminst}{\mathsf{type}}\)</span> must remain unchanged.</p></li>
-<li><p>The list <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-eleminst}{\mathit{eleminst}}.\href{../exec/runtime.html#syntax-eleminst}{\mathsf{elem}}\)</span> must:</p>
+<li><p>The list <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-eleminst}{\mathit{eleminst}}.\href{../exec/runtime.html#syntax-eleminst}{\mathsf{refs}}\)</span> must:</p>
 <ul>
 <li><p>either remain unchanged,</p></li>
 <li><p>or shrink to length <span class="math notranslate nohighlight">\(0\)</span>.</p></li>
@@ -1151,12 +1151,12 @@ a store state <span class="math notranslate nohighlight">\(S'\)</span> extends s
 <div class="math notranslate nohighlight">
 \[\frac{
 }{
-  \href{../appendix/properties.html#extend-eleminst}{\vdash} \{\href{../exec/runtime.html#syntax-eleminst}{\mathsf{type}}~t, \href{../exec/runtime.html#syntax-eleminst}{\mathsf{elem}}~a^\ast\} \href{../appendix/properties.html#extend}{\preceq} \{\href{../exec/runtime.html#syntax-eleminst}{\mathsf{type}}~t, \href{../exec/runtime.html#syntax-eleminst}{\mathsf{elem}}~a^\ast\}
+  \href{../appendix/properties.html#extend-eleminst}{\vdash} \{\href{../exec/runtime.html#syntax-eleminst}{\mathsf{type}}~t, \href{../exec/runtime.html#syntax-eleminst}{\mathsf{refs}}~a^\ast\} \href{../appendix/properties.html#extend}{\preceq} \{\href{../exec/runtime.html#syntax-eleminst}{\mathsf{type}}~t, \href{../exec/runtime.html#syntax-eleminst}{\mathsf{refs}}~a^\ast\}
 }\]</div>
 <div class="math notranslate nohighlight">
 \[\frac{
 }{
-  \href{../appendix/properties.html#extend-eleminst}{\vdash} \{\href{../exec/runtime.html#syntax-eleminst}{\mathsf{type}}~t, \href{../exec/runtime.html#syntax-eleminst}{\mathsf{elem}}~a^\ast\} \href{../appendix/properties.html#extend}{\preceq} \{\href{../exec/runtime.html#syntax-eleminst}{\mathsf{type}}~t, \href{../exec/runtime.html#syntax-eleminst}{\mathsf{elem}}~\epsilon\}
+  \href{../appendix/properties.html#extend-eleminst}{\vdash} \{\href{../exec/runtime.html#syntax-eleminst}{\mathsf{type}}~t, \href{../exec/runtime.html#syntax-eleminst}{\mathsf{refs}}~a^\ast\} \href{../appendix/properties.html#extend}{\preceq} \{\href{../exec/runtime.html#syntax-eleminst}{\mathsf{type}}~t, \href{../exec/runtime.html#syntax-eleminst}{\mathsf{refs}}~\epsilon\}
 }\]</div>
 </section>
 <section id="structure-instance-xref-exec-runtime-syntax-structinst-mathit-structinst">
