@@ -118,7 +118,7 @@ Identifiers
 ~~~~~~~~~~~
 
 :ref:`Indices <syntax-index>` can be given in both numeric and symbolic form.
-Symbolic *identifiers* that stand in lieu of indices start with ${:"$"}, followed by eiter a sequence of printable |ASCII|_ characters that does not contain a space, quotation mark, comma, semicolon, or bracket, or by a quoted :ref:`name <text-name>`.
+Symbolic *identifiers* that stand in lieu of indices start with ${:"$"}, followed by either a sequence of printable |ASCII|_ characters that does not contain a space, quotation mark, comma, semicolon, or bracket, or by a quoted :ref:`name <text-name>`.
 
 $${grammar: {Tid Tidchar}}
 
