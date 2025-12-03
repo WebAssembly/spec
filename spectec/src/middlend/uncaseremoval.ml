@@ -112,27 +112,28 @@ let create_projection_functions id params mixops inst =
   let fresh_name = Utils.generate_var param_ids "x" in
   let new_param = ExpP (fresh_name $ at, user_typ) $ at in
   let make_func m case_typs has_one_case idx = 
-    let new_params = params @ [new_param] in 
     let new_var_exps = List.mapi (fun idx (_, t) -> VarE (var_prefix ^ typ_name t ^ "_" ^ Int.to_string idx $ at) $$ at % t) case_typs in 
     let tupt = TupT case_typs $ at in
     let no_name_tupt = TupT (List.map (fun (e, t) -> ({e with it = VarE ("_" $ e.at)}, t)) case_typs) $ at in
     let new_tup = TupE (new_var_exps) $$ at % tupt in
     let new_case_exp = CaseE(m, new_tup) $$ at % user_typ in
-    let new_arg = ExpA new_case_exp $ at in 
-    let new_binds = List.mapi (fun idx (_, t) -> ExpB (var_prefix ^ typ_name t ^ "_" ^ Int.to_string idx $ at, t) $ at) case_typs in
-    let clause = DefD (List.map make_bind params @ new_binds, List.map make_arg params @ [new_arg], new_tup, []) $ at in 
-    let normal = DecD ((proj_prefix ^ id.it ^ "_" ^ Int.to_string idx) $ id.at, new_params, no_name_tupt, [clause]) in
 
-    if has_one_case then normal else
-    (* extra handling in case that it has more than one case *)
-    let extra_arg = ExpA (VarE (fresh_name $ at) $$ at % user_typ) $ at in
-    let new_bind = ExpB (fresh_name $ at, user_typ) $ at in 
-    let opt_type = IterT (no_name_tupt, Opt) $ at in
-    let none_exp = OptE (None) $$ at % no_name_tupt in
-    let opt_tup = OptE (Some new_tup) $$ at % opt_type in 
-    let clause' = DefD (List.map make_bind params @ new_binds, List.map make_arg params @ [new_arg], opt_tup, []) $ at in
-    let extra_clause = DefD (List.map make_bind params @ new_binds @ [new_bind], List.map make_arg params @ [extra_arg], none_exp, []) $ at in
-    DecD ((proj_prefix ^ id.it ^ "_" ^ Int.to_string idx) $ id.at, new_params, opt_type, [clause'; extra_clause])
+    let new_params = params @ [new_param] in 
+    let new_binds = List.mapi (fun idx (_, t) -> ExpB (var_prefix ^ typ_name t ^ "_" ^ Int.to_string idx $ at, t) $ at) case_typs in
+    let new_arg = ExpA new_case_exp $ at in 
+    if has_one_case then 
+      let clause = DefD (List.map make_bind params @ new_binds, List.map make_arg params @ [new_arg], new_tup, []) $ at in 
+      DecD ((proj_prefix ^ id.it ^ "_" ^ Int.to_string idx) $ id.at, new_params, no_name_tupt, [clause])
+    else
+      (* extra handling in case that it has more than one case *)
+      let extra_arg = ExpA (VarE (fresh_name $ at) $$ at % user_typ) $ at in
+      let new_bind = ExpB (fresh_name $ at, user_typ) $ at in 
+      let opt_type = IterT (no_name_tupt, Opt) $ at in
+      let none_exp = OptE (None) $$ at % no_name_tupt in
+      let opt_tup = OptE (Some new_tup) $$ at % opt_type in 
+      let clause' = DefD (List.map make_bind params @ new_binds, List.map make_arg params @ [new_arg], opt_tup, []) $ at in
+      let extra_clause = DefD (List.map make_bind params @ new_binds @ [new_bind], List.map make_arg params @ [extra_arg], none_exp, []) $ at in
+      DecD ((proj_prefix ^ id.it ^ "_" ^ Int.to_string idx) $ id.at, new_params, opt_type, [clause'; extra_clause])
   in
 
   List.map (fun m -> 
