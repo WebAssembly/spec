@@ -105,6 +105,21 @@ relation TestNestedIter: `%|-%`(nat***, nat**)
     -- (if (|n*{n <- `n*`}| = m))*{m <- `m*`, `n*` <- `n**`}+{`m*` <- `m**`, `n**` <- `n***`}
 
 == IL Validation after pass sideconditions...
+== Running pass sub-expansion...
+
+;; test.spectec
+relation HasSize: `%|-%`(nat, nat)
+
+;; test.spectec
+relation TestNestedIter: `%|-%`(nat***, nat**)
+  ;; test.spectec
+  rule _{`n***` : nat***, `m**` : nat**}:
+    `%|-%`(n*{n <- `n*`}*{`n*` <- `n**`}+{`n**` <- `n***`}, m*{m <- `m*`}+{`m*` <- `m**`})
+    -- if (|`m**`| = |`n***`|)
+    -- (if (|`m*`| = |`n**`|))+{`m*` <- `m**`, `n**` <- `n***`}
+    -- (if (|n*{n <- `n*`}| = m))*{m <- `m*`, `n*` <- `n**`}+{`m*` <- `m**`, `n**` <- `n***`}
+
+== IL Validation after pass sub-expansion...
 == Running pass sub...
 
 ;; test.spectec
