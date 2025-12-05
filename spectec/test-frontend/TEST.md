@@ -5671,114 +5671,124 @@ def $exninst(state : state) : exninst*
   def $exninst{s : store, f : frame}(`%;%`_state(s, f)) = s.EXNS_store
 
 ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
+def $fof(state : state) : frame
+  ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
+  def $fof{z : state}(z) = $frame(z)
+
+;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
 def $type(state : state, typeidx : typeidx) : deftype
   ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
-  def $type{s : store, f : frame, x : idx}(`%;%`_state(s, f), x) = f.MODULE_frame.TYPES_moduleinst[x!`%`_idx.0]
+  def $type{z : state, x : idx}(z, x) = $fof(z).MODULE_frame.TYPES_moduleinst[x!`%`_idx.0]
+
+;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
+def $sof(state : state) : store
+  ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
+  def $sof{z : state}(z) = $store(z)
 
 ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
 def $tag(state : state, tagidx : tagidx) : taginst
   ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
-  def $tag{s : store, f : frame, x : idx}(`%;%`_state(s, f), x) = s.TAGS_store[f.MODULE_frame.TAGS_moduleinst[x!`%`_idx.0]]
+  def $tag{z : state, x : idx}(z, x) = $sof(z).TAGS_store[$fof(z).MODULE_frame.TAGS_moduleinst[x!`%`_idx.0]]
 
 ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
 def $global(state : state, globalidx : globalidx) : globalinst
   ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
-  def $global{s : store, f : frame, x : idx}(`%;%`_state(s, f), x) = s.GLOBALS_store[f.MODULE_frame.GLOBALS_moduleinst[x!`%`_idx.0]]
+  def $global{z : state, x : idx}(z, x) = $sof(z).GLOBALS_store[$fof(z).MODULE_frame.GLOBALS_moduleinst[x!`%`_idx.0]]
 
 ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
 def $mem(state : state, memidx : memidx) : meminst
   ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
-  def $mem{s : store, f : frame, x : idx}(`%;%`_state(s, f), x) = s.MEMS_store[f.MODULE_frame.MEMS_moduleinst[x!`%`_idx.0]]
+  def $mem{z : state, x : idx}(z, x) = $sof(z).MEMS_store[$fof(z).MODULE_frame.MEMS_moduleinst[x!`%`_idx.0]]
 
 ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
 def $table(state : state, tableidx : tableidx) : tableinst
   ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
-  def $table{s : store, f : frame, x : idx}(`%;%`_state(s, f), x) = s.TABLES_store[f.MODULE_frame.TABLES_moduleinst[x!`%`_idx.0]]
+  def $table{z : state, x : idx}(z, x) = $sof(z).TABLES_store[$fof(z).MODULE_frame.TABLES_moduleinst[x!`%`_idx.0]]
 
 ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
 def $func(state : state, funcidx : funcidx) : funcinst
   ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
-  def $func{s : store, f : frame, x : idx}(`%;%`_state(s, f), x) = s.FUNCS_store[f.MODULE_frame.FUNCS_moduleinst[x!`%`_idx.0]]
+  def $func{z : state, x : idx}(z, x) = $sof(z).FUNCS_store[$fof(z).MODULE_frame.FUNCS_moduleinst[x!`%`_idx.0]]
 
 ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
 def $data(state : state, dataidx : dataidx) : datainst
   ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
-  def $data{s : store, f : frame, x : idx}(`%;%`_state(s, f), x) = s.DATAS_store[f.MODULE_frame.DATAS_moduleinst[x!`%`_idx.0]]
+  def $data{z : state, x : idx}(z, x) = $sof(z).DATAS_store[$fof(z).MODULE_frame.DATAS_moduleinst[x!`%`_idx.0]]
 
 ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
 def $elem(state : state, tableidx : tableidx) : eleminst
   ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
-  def $elem{s : store, f : frame, x : idx}(`%;%`_state(s, f), x) = s.ELEMS_store[f.MODULE_frame.ELEMS_moduleinst[x!`%`_idx.0]]
+  def $elem{z : state, x : idx}(z, x) = $sof(z).ELEMS_store[$fof(z).MODULE_frame.ELEMS_moduleinst[x!`%`_idx.0]]
 
 ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
 def $local(state : state, localidx : localidx) : val?
   ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
-  def $local{s : store, f : frame, x : idx}(`%;%`_state(s, f), x) = f.LOCALS_frame[x!`%`_idx.0]
+  def $local{z : state, x : idx}(z, x) = $fof(z).LOCALS_frame[x!`%`_idx.0]
 
 ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
 def $with_local(state : state, localidx : localidx, val : val) : state
   ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
-  def $with_local{s : store, f : frame, x : idx, v : val}(`%;%`_state(s, f), x, v) = `%;%`_state(s, f[LOCALS_frame[x!`%`_idx.0] = ?(v)])
+  def $with_local{z : state, x : idx, v : val}(z, x, v) = `%;%`_state($sof(z), $fof(z)[LOCALS_frame[x!`%`_idx.0] = ?(v)])
 
 ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
 def $with_global(state : state, globalidx : globalidx, val : val) : state
   ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
-  def $with_global{s : store, f : frame, x : idx, v : val}(`%;%`_state(s, f), x, v) = `%;%`_state(s[GLOBALS_store[f.MODULE_frame.GLOBALS_moduleinst[x!`%`_idx.0]].VALUE_globalinst = v], f)
+  def $with_global{z : state, x : idx, v : val}(z, x, v) = `%;%`_state($sof(z)[GLOBALS_store[$fof(z).MODULE_frame.GLOBALS_moduleinst[x!`%`_idx.0]].VALUE_globalinst = v], $fof(z))
 
 ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
 def $with_table(state : state, tableidx : tableidx, nat : nat, ref : ref) : state
   ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
-  def $with_table{s : store, f : frame, x : idx, i : nat, r : ref}(`%;%`_state(s, f), x, i, r) = `%;%`_state(s[TABLES_store[f.MODULE_frame.TABLES_moduleinst[x!`%`_idx.0]].REFS_tableinst[i] = r], f)
+  def $with_table{z : state, x : idx, i : nat, r : ref}(z, x, i, r) = `%;%`_state($sof(z)[TABLES_store[$fof(z).MODULE_frame.TABLES_moduleinst[x!`%`_idx.0]].REFS_tableinst[i] = r], $fof(z))
 
 ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
 def $with_tableinst(state : state, tableidx : tableidx, tableinst : tableinst) : state
   ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
-  def $with_tableinst{s : store, f : frame, x : idx, ti : tableinst}(`%;%`_state(s, f), x, ti) = `%;%`_state(s[TABLES_store[f.MODULE_frame.TABLES_moduleinst[x!`%`_idx.0]] = ti], f)
+  def $with_tableinst{z : state, x : idx, ti : tableinst}(z, x, ti) = `%;%`_state($sof(z)[TABLES_store[$fof(z).MODULE_frame.TABLES_moduleinst[x!`%`_idx.0]] = ti], $fof(z))
 
 ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
 def $with_mem(state : state, memidx : memidx, nat : nat, nat : nat, byte*) : state
   ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
-  def $with_mem{s : store, f : frame, x : idx, i : nat, j : nat, `b*` : byte*}(`%;%`_state(s, f), x, i, j, b*{b <- `b*`}) = `%;%`_state(s[MEMS_store[f.MODULE_frame.MEMS_moduleinst[x!`%`_idx.0]].BYTES_meminst[i : j] = b*{b <- `b*`}], f)
+  def $with_mem{z : state, x : idx, i : nat, j : nat, `b*` : byte*}(z, x, i, j, b*{b <- `b*`}) = `%;%`_state($sof(z)[MEMS_store[$fof(z).MODULE_frame.MEMS_moduleinst[x!`%`_idx.0]].BYTES_meminst[i : j] = b*{b <- `b*`}], $fof(z))
 
 ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
 def $with_meminst(state : state, memidx : memidx, meminst : meminst) : state
   ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
-  def $with_meminst{s : store, f : frame, x : idx, mi : meminst}(`%;%`_state(s, f), x, mi) = `%;%`_state(s[MEMS_store[f.MODULE_frame.MEMS_moduleinst[x!`%`_idx.0]] = mi], f)
+  def $with_meminst{z : state, x : idx, mi : meminst}(z, x, mi) = `%;%`_state($sof(z)[MEMS_store[$fof(z).MODULE_frame.MEMS_moduleinst[x!`%`_idx.0]] = mi], $fof(z))
 
 ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
 def $with_elem(state : state, elemidx : elemidx, ref*) : state
   ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
-  def $with_elem{s : store, f : frame, x : idx, `r*` : ref*}(`%;%`_state(s, f), x, r*{r <- `r*`}) = `%;%`_state(s[ELEMS_store[f.MODULE_frame.ELEMS_moduleinst[x!`%`_idx.0]].REFS_eleminst = r*{r <- `r*`}], f)
+  def $with_elem{z : state, x : idx, `r*` : ref*}(z, x, r*{r <- `r*`}) = `%;%`_state($sof(z)[ELEMS_store[$fof(z).MODULE_frame.ELEMS_moduleinst[x!`%`_idx.0]].REFS_eleminst = r*{r <- `r*`}], $fof(z))
 
 ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
 def $with_data(state : state, dataidx : dataidx, byte*) : state
   ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
-  def $with_data{s : store, f : frame, x : idx, `b*` : byte*}(`%;%`_state(s, f), x, b*{b <- `b*`}) = `%;%`_state(s[DATAS_store[f.MODULE_frame.DATAS_moduleinst[x!`%`_idx.0]].BYTES_datainst = b*{b <- `b*`}], f)
+  def $with_data{z : state, x : idx, `b*` : byte*}(z, x, b*{b <- `b*`}) = `%;%`_state($sof(z)[DATAS_store[$fof(z).MODULE_frame.DATAS_moduleinst[x!`%`_idx.0]].BYTES_datainst = b*{b <- `b*`}], $fof(z))
 
 ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
 def $with_struct(state : state, structaddr : structaddr, nat : nat, fieldval : fieldval) : state
   ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
-  def $with_struct{s : store, f : frame, a : addr, i : nat, fv : fieldval}(`%;%`_state(s, f), a, i, fv) = `%;%`_state(s[STRUCTS_store[a].FIELDS_structinst[i] = fv], f)
+  def $with_struct{z : state, a : addr, i : nat, fv : fieldval}(z, a, i, fv) = `%;%`_state($sof(z)[STRUCTS_store[a].FIELDS_structinst[i] = fv], $fof(z))
 
 ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
 def $with_array(state : state, arrayaddr : arrayaddr, nat : nat, fieldval : fieldval) : state
   ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
-  def $with_array{s : store, f : frame, a : addr, i : nat, fv : fieldval}(`%;%`_state(s, f), a, i, fv) = `%;%`_state(s[ARRAYS_store[a].FIELDS_arrayinst[i] = fv], f)
+  def $with_array{z : state, a : addr, i : nat, fv : fieldval}(z, a, i, fv) = `%;%`_state($sof(z)[ARRAYS_store[a].FIELDS_arrayinst[i] = fv], $fof(z))
 
 ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
 def $add_structinst(state : state, structinst*) : state
   ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
-  def $add_structinst{s : store, f : frame, `si*` : structinst*}(`%;%`_state(s, f), si*{si <- `si*`}) = `%;%`_state(s[STRUCTS_store =++ si*{si <- `si*`}], f)
+  def $add_structinst{z : state, `si*` : structinst*}(z, si*{si <- `si*`}) = `%;%`_state($sof(z)[STRUCTS_store =++ si*{si <- `si*`}], $fof(z))
 
 ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
 def $add_arrayinst(state : state, arrayinst*) : state
   ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
-  def $add_arrayinst{s : store, f : frame, `ai*` : arrayinst*}(`%;%`_state(s, f), ai*{ai <- `ai*`}) = `%;%`_state(s[ARRAYS_store =++ ai*{ai <- `ai*`}], f)
+  def $add_arrayinst{z : state, `ai*` : arrayinst*}(z, ai*{ai <- `ai*`}) = `%;%`_state($sof(z)[ARRAYS_store =++ ai*{ai <- `ai*`}], $fof(z))
 
 ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
 def $add_exninst(state : state, exninst*) : state
   ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
-  def $add_exninst{s : store, f : frame, `exn*` : exninst*}(`%;%`_state(s, f), exn*{exn <- `exn*`}) = `%;%`_state(s[EXNS_store =++ exn*{exn <- `exn*`}], f)
+  def $add_exninst{z : state, `exn*` : exninst*}(z, exn*{exn <- `exn*`}) = `%;%`_state($sof(z)[EXNS_store =++ exn*{exn <- `exn*`}], $fof(z))
 
 ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
 def $growtable(tableinst : tableinst, nat : nat, ref : ref) : tableinst
