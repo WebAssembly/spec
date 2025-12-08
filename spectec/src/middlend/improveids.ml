@@ -69,6 +69,11 @@ let is_atomid a =
   | Atom _ -> true
   | _ -> false
 
+let has_atom_hole m =
+  match m with
+  | [{it = Atom "_"; _}] -> true
+  | _ -> false
+
 (* Atom functions *)
 let transform_atom env typ_id a = 
   match a.it with
@@ -79,7 +84,7 @@ let transform_mixop env typ_id (m : mixop) =
   let m' = List.map (fun inner_m -> List.filter is_atomid inner_m) m in
   let len = List.length m' in 
   match m' with
-  | _ when List.for_all (fun l -> l = []) m' -> [(Atom (make_prefix ^ typ_id) $$ empty_info)] :: List.init (len - 1) (fun _ -> [])
+  | _ when List.for_all (fun l -> l = [] || has_atom_hole l) m' -> [(Atom (make_prefix ^ typ_id) $$ empty_info)] :: List.init (len - 1) (fun _ -> [])
   | _ -> List.map (List.map (transform_atom env typ_id)) m'
 
 let rec check_iteration_naming e iterexp = 
