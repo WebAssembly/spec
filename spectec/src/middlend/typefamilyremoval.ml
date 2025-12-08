@@ -466,6 +466,7 @@ and transform_exp bind_map env e =
   | CatE (e1, e2) -> CatE (t_func e1, t_func e2) 
   | IdxE (e1, e2) -> IdxE (t_func e1, t_func e2)
   | SliceE (e1, e2, e3) -> SliceE (t_func e1, t_func e2, t_func e3) 
+  | IfE (e1, e2, e3) -> IfE (t_func e1, t_func e2, t_func e3) 
   | UpdE (e1, p, e2) -> UpdE (t_func e1, transform_path bind_map env p, t_func e2) 
   | ExtE (e1, p, e2) -> ExtE (t_func e1, transform_path bind_map env p, t_func e2)  
   | CvtE (e1, nt1, nt2) -> CvtE (t_func e1, nt1, nt2) 

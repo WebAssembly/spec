@@ -129,6 +129,7 @@ and exp e =
   | CatE (e1, e2) -> Node ("cat", [exp e1; exp e2])
   | CvtE (e1, nt1, nt2) -> Node ("cvt", [numtyp nt1; numtyp nt2; exp e1])
   | SubE (e1, t1, t2) -> Node ("sub", [typ t1; typ t2; exp e1])
+  | IfE (e1, e2, e3) -> Node ("if", [exp e1; exp e2; exp e3])
 
 and expfield (at, e) =
   Node ("field", [mixop [[at]]; exp e])

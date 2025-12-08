@@ -159,6 +159,7 @@ and t_exp' n e : eqns * exp' =
     let eqns2, iterexp'' = t_iterexp n iterexp' in
     let iterexp''' = update_iterexp_vars (Il.Free.free_exp e') iterexp'' in
     eqns1' @ eqns2, IterE (e', iterexp''')
+  | IfE (e1, e2, e3) -> t_eee n (e1, e2, e3) (fun (e1', e2', e3') -> IfE (e1', e2', e3'))
 
 and t_field n ((a, e) : expfield) =
   unary t_exp n e (fun e' -> (a, e'))

@@ -108,6 +108,9 @@ let rec t_exp env e : prem list =
     t_iterexp env iterexp @
     let env' = env_under_iter env iterexp in
     List.map (fun pr -> iterPr (pr, iterexp) $ e.at) (t_exp env' e1)
+  | IfE (e1, e2, e3)
+  -> t_exp env e1 @ t_exp env e2 @ t_exp env e3
+     (* One could make the side-conditions from e2 and e3 have e1 or its negation as a premise *)
 
 and t_iterexp env (iter, _) = t_iter env iter
 
