@@ -230,6 +230,7 @@ and transform_exp p_env e =
   | IterE (e1, (iter, id_exp_pairs)) -> IterE (t_func e1, (transform_iter p_env iter, List.map (fun (id, exp) -> (id, t_func exp)) id_exp_pairs))
   | CvtE (e1, nt1, nt2) -> CvtE (t_func e1, nt1, nt2)
   | SubE (e1, t1, t2) -> SubE (t_func e1, transform_typ p_env t1, transform_typ p_env t2)
+  | IfE (e1, e2, e3) -> IfE (t_func e1, t_func e2, t_func e3)
   | exp -> exp
   ) $$ e.at % exp_type
 

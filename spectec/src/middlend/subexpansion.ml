@@ -83,7 +83,8 @@ let rec collect_sube_exp e =
   | CompE (e1, e2) | MemE (e1, e2)
   | CatE (e1, e2) | IdxE (e1, e2) -> c_func e1 @ c_func e2
   | TupE exps | ListE exps -> List.concat_map collect_sube_exp exps
-  | SliceE (e1, e2, e3) -> c_func e1 @ c_func e2 @ c_func e3
+  | SliceE (e1, e2, e3) 
+  | IfE (e1, e2, e3) -> c_func e1 @ c_func e2 @ c_func e3
   | UpdE (e1, p, e2) 
   | ExtE (e1, p, e2) -> c_func e1 @ collect_fcalls_path p @ c_func e2
   | IterE (e1, (iter, id_exp_pairs)) -> 

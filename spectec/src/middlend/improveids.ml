@@ -153,6 +153,7 @@ and transform_exp env e =
   | IterE (e1, (iter, id_exp_pairs)) -> IterE (t_func e1, (transform_iter env iter, List.map (fun (id', exp) -> (transform_var_id env id', t_func exp)) id_exp_pairs))
   | CvtE (e1, nt1, nt2) -> CvtE (t_func e1, nt1, nt2)
   | SubE (e1, t1, t2) -> SubE (t_func e1, transform_typ env t1, transform_typ env t2)
+  | IfE (b, e1, e2) -> IfE (t_func b, t_func e1, t_func e2)
   | exp -> exp
   ) $$ e.at % (transform_typ env e.note)
 
