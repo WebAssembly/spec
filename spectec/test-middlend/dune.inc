@@ -9,3 +9,4 @@
 (rule (alias runtest) (deps (alias dune.inc) (file specification.act) (glob_files_rec specification.exp/*)) (action (no-infer (diff specification.exp/08-sub-expansion.il specification.act/08-sub-expansion.il))))
 (rule (alias runtest) (deps (alias dune.inc) (file specification.act) (glob_files_rec specification.exp/*)) (action (no-infer (diff specification.exp/09-sub.il specification.act/09-sub.il))))
 (rule (alias runtest) (deps (alias dune.inc) (file specification.act) (glob_files_rec specification.exp/*)) (action (no-infer (diff specification.exp/10-alias-demut.il specification.act/10-alias-demut.il))))
+(rule (alias runtest) (deps (alias dune.inc) (file specification.act) (glob_files_rec specification.exp/*)) (action (no-infer (diff specification.exp/11-improve-ids.il specification.act/11-improve-ids.il))))
