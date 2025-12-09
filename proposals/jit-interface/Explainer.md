@@ -124,4 +124,20 @@ This implies AOT scenarios need to either disable the feature, e.g. reject code 
 
 In the future, we could consider additional restrictions, such as an explicit list of allowable bytecodes for new functions. That could allow a module to limit language features for new functions and greatly reduce the runtime system requirement. Since this is a restriction a module imposes on itself, it need not be standardized. As an example of the usefulness of this, a module could limit its `func.new` capabilities to only allow `i32` arithmetic and control flow. An AOT implementation could then provide a runtime execution tier that *only* supported that restricted set, keeping it both simple and optimized for the use case.
 
+## Binary format
 
+### Instructions
+
+The `func.new` instruction is encoded as follows:
+
+```
+instr ::= ...
+  | 0xFB 39:u32 0:byte x:memoryidx y:typeidx z:scopeidx =>
+      func_new x y z
+```
+
+The byte following the opcode is reserved to be `0`, to account for future extensibility, such as encoding asynchrony, TBD.
+
+### Scope section
+
+TBD.
