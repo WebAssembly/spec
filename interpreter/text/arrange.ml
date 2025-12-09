@@ -569,6 +569,7 @@ let rec instr e =
     | ArrayInitData (x, y) -> "array.init_data " ^ idx x ^ " " ^ idx y, []
     | ArrayInitElem (x, y) -> "array.init_elem " ^ idx x ^ " " ^ idx y, []
     | ExternConvert op -> externop op, []
+    | FuncNew (x, y, z) -> "func.new" ^ idx x ^ " " ^ idx y ^ " " ^ idx z, []
     | Const n -> constop n.it ^ " " ^ num n, []
     | Test op -> testop op, []
     | Compare op -> relop op, []

@@ -308,6 +308,7 @@ let parse_annots (m : module_) : Custom.section list =
 %token<Ast.instr'> I31_GET
 %token<Ast.idx -> Ast.instr'> STRUCT_NEW ARRAY_NEW ARRAY_GET
 %token STRUCT_SET
+%token<Ast.idx -> Ast.idx -> Ast.idx -> Ast.instr'> FUNC_NEW
 %token<Ast.idx -> int32 -> Ast.instr'> STRUCT_GET
 %token ARRAY_NEW_FIXED ARRAY_NEW_ELEM ARRAY_NEW_DATA
 %token ARRAY_SET ARRAY_LEN

@@ -158,6 +158,7 @@ type localidx = idx
 type labelidx = idx
 type fieldidx = I32.t
 type laneidx = I8.t
+type scopeidx = idx
 
 type num = Value.num Source.phrase
 type vec = Value.vec Source.phrase
@@ -240,6 +241,7 @@ and instr' =
   | ArrayInitData of typeidx * dataidx   (* fill array from data segment *)
   | ArrayInitElem of typeidx * elemidx   (* fill array from elem segment *)
   | ExternConvert of externop            (* extern conversion *)
+  | FuncNew of memoryidx * typeidx * scopeidx  (* create new function *)
   | Const of num                         (* numeric constant *)
   | Test of testop                       (* numeric test *)
   | Compare of relop                     (* numeric comparison *)
