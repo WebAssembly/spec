@@ -366,7 +366,7 @@ rule token = parse
       | "any.convert_extern" -> EXTERN_CONVERT any_convert_extern
       | "extern.convert_any" -> EXTERN_CONVERT extern_convert_any
 
-      | "func.new" -> FUNC_NEW func_new
+      | "func.new" -> FUNC_NEW
 
       | "i32.clz" -> UNARY i32_clz
       | "i32.ctz" -> UNARY i32_ctz
