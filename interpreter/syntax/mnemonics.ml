@@ -202,6 +202,8 @@ let array_init_elem x y = ArrayInitElem (x, y)
 let any_convert_extern = ExternConvert Internalize
 let extern_convert_any = ExternConvert Externalize
 
+let func_new x y z = FuncNew (x, y, z)
+
 let i32_clz = Unary (I32 I32Op.Clz)
 let i32_ctz = Unary (I32 I32Op.Ctz)
 let i32_popcnt = Unary (I32 I32Op.Popcnt)

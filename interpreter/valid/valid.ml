@@ -854,6 +854,12 @@ let rec check_instr (c : context) (e : instr) (s : infer_resulttype) : infer_ins
     let (nul, _ht) = peek_ref 0 s e.at in
     [RefT (nul, ht1)] --> [RefT (nul, ht2)], []
 
+  | FuncNew (x, y, z) -> (* TODO: validate scope index z *)
+    let MemoryT (at, _lim) = memory c x in
+    let _ft = func_type c y in
+    [NumT (numtype_of_addrtype at);
+     NumT (numtype_of_addrtype at)] --> [RefT (Null, UseHT (Def (type_ c y)))], []
+
   | Const v ->
     let t = NumT (type_num v.it) in
     [] --> [t], []

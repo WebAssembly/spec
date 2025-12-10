@@ -313,6 +313,7 @@ let parse_annots (m : module_) : Custom.section list =
 %token ARRAY_SET ARRAY_LEN
 %token ARRAY_COPY ARRAY_FILL ARRAY_INIT_DATA ARRAY_INIT_ELEM
 %token<Ast.instr'> EXTERN_CONVERT
+%token FUNC_NEW
 %token<Ast.idx -> int option -> Memory.offset -> Ast.instr'> VEC_LOAD VEC_STORE
 %token<Ast.idx -> int option -> Memory.offset -> Ast.laneidx -> Ast.instr'> VEC_LOAD_LANE VEC_STORE_LANE
 %token<V128.shape -> string Source.phrase list -> Source.region -> Ast.instr' * Value.vec> VEC_CONST

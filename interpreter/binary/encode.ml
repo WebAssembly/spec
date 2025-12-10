@@ -452,6 +452,8 @@ struct
     | ExternConvert Internalize -> op 0xfb; op 0x1a
     | ExternConvert Externalize -> op 0xfb; op 0x1b
 
+    | FuncNew (x, y, z) -> op 0xfb; op 0x27; byte 0x00; idx x; idx y; idx z
+
     | Const {it = I32 c; _} -> op 0x41; s32 c
     | Const {it = I64 c; _} -> op 0x42; s64 c
     | Const {it = F32 c; _} -> op 0x43; f32 c
