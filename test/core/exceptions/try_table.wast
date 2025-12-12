@@ -253,6 +253,18 @@
   (func (export "try-with-param")
     (i32.const 0) (try_table (param i32) (drop))
   )
+
+  (func (export "duplicated-catches") (result i32)
+    (block
+      (block
+        (try_table (catch $e0 0) (catch $e0 1)
+          (throw $e0)
+        )
+      )
+      (return (i32.const 2))
+    )
+    (return (i32.const 3))
+  )
 )
 
 (assert_return (invoke "simple-throw-catch" (i32.const 0)) (i32.const 23))
@@ -311,6 +323,8 @@
 (assert_exception (invoke "return-call-indirect-in-try-catch"))
 
 (assert_return (invoke "try-with-param"))
+
+(assert_return (invoke "duplicated-catches") (i32.const 2))
 
 (module
   (func $imported-throw (import "test" "throw"))
