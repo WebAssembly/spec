@@ -269,8 +269,8 @@
   (func (export "catch-all-before-catch") (result i32)
     (block
       (block
-        (try_table (catch_all 0) (catch $e 1)
-          (throw $e)
+        (try_table (catch_all 0) (catch $e0 1)
+          (throw $e0)
         )
       )
       (return (i32.const 2))
