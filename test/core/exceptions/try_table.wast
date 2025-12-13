@@ -265,6 +265,18 @@
     )
     (return (i32.const 3))
   )
+
+  (func (export "catch-all-before-catch") (result i32)
+    (block
+      (block
+        (try_table (catch_all 0) (catch $e 1)
+          (throw $e)
+        )
+      )
+      (return (i32.const 2))
+    )
+    (return (i32.const 3))
+  )
 )
 
 (assert_return (invoke "simple-throw-catch" (i32.const 0)) (i32.const 23))
@@ -325,6 +337,7 @@
 (assert_return (invoke "try-with-param"))
 
 (assert_return (invoke "duplicated-catches") (i32.const 2))
+(assert_return (invoke "catch-all-before-catch") (i32.const 2))
 
 (module
   (func $imported-throw (import "test" "throw"))
