@@ -47,6 +47,7 @@ Names were specifically chosen here for simplicity.
 
 open Il.Ast
 open Il
+open Il.Walk
 open Util.Source
 
 module StringMap = Map.Make(String)
@@ -171,24 +172,9 @@ let transform_tuple_type t =
   | TupT ts -> TupT (List.map (fun (e, t) -> (VarE ("_" $ e.at) $$ e.at % t, t)) ts) $ t.at
   | _ -> t
 
-let rec transform_iter p_env i =
-  match i with 
-  | ListN (exp, id_opt) -> ListN (transform_exp p_env exp, id_opt)
-  | _ -> i
-
-and transform_typ p_env t = 
-  (match t.it with
-  | VarT (id, args) -> VarT (id, List.map (transform_arg p_env) args)
-  | TupT exp_typ_pairs -> TupT (List.map (fun (e, t) -> (transform_exp p_env e, transform_typ p_env t)) exp_typ_pairs)
-  | IterT (typ, iter) -> IterT (transform_typ p_env typ, transform_iter p_env iter)
-  | typ -> typ
-  ) $ t.at
-
-and transform_exp p_env e = 
-  let t_func = transform_exp p_env in
-  let exp_type = transform_typ p_env e.note in
-  (match e.it with
-  | UncaseE(exp, m) -> 
+let t_exp p_env e = 
+  match e.it with
+  | UncaseE (exp, m) -> 
     (* Supplying the projection function for UncaseE removal *)
     let typ = Eval.reduce_typ p_env.env exp.note in 
     let typ_name = Print.string_of_typ_name typ in
@@ -197,159 +183,27 @@ and transform_exp p_env e =
       | VarT (_, args) -> args
       | _ -> error e.at ("Found non-variable type in uncase expression: " ^ Il.Print.string_of_typ typ)
     ) in 
-    let args' = List.map (transform_arg p_env) (args @ [ExpA exp $ e.at]) in
+    let args' = args @ [ExpA exp $ e.at] in
     let fun_id idx = proj_prefix ^ typ_name ^ "_" ^ Int.to_string idx $ e.at in
     begin match proj_info_opt with 
-    | Some (idx, _, true) -> CallE (fun_id idx, args')
+    | Some (idx, _, true) -> { e with it = CallE (fun_id idx, args') }
     | Some (idx, t, false) -> 
       let call_typ = IterT (transform_tuple_type t, Opt) $ e.at in
-      TheE (CallE (fun_id idx, args') $$ e.at % call_typ)
+      { e with it = TheE (CallE (fun_id idx, args') $$ e.at % call_typ) }
     | None -> error e.at ("Could not find mixop: " ^ Il.Print.string_of_mixop m)
     end
-  | CaseE (m, e1) -> CaseE (m, t_func e1)
-  | StrE fields -> StrE (List.map (fun (a, e1) -> (a, t_func e1)) fields)
-  | UnE (unop, optyp, e1) -> UnE (unop, optyp, t_func e1)
-  | BinE (binop, optyp, e1, e2) -> BinE (binop, optyp, t_func e1, t_func e2)
-  | CmpE (cmpop, optyp, e1, e2) -> CmpE (cmpop, optyp, t_func e1, t_func e2)
-  | TupE (exps) -> TupE (List.map t_func exps)
-  | ProjE (e1, n) -> ProjE (t_func e1, n)
-  | OptE e1 -> OptE (Option.map t_func e1)
-  | TheE e1 -> TheE (t_func e1)
-  | DotE (e1, a) -> DotE (t_func e1, a)
-  | CompE (e1, e2) -> CompE (t_func e1, t_func e2)
-  | ListE entries -> ListE (List.map t_func entries)
-  | LiftE e1 -> LiftE (t_func e1)
-  | MemE (e1, e2) -> MemE (t_func e1, t_func e2)
-  | LenE e1 -> LenE (t_func e1)
-  | CatE (e1, e2) -> CatE (t_func e1, t_func e2)
-  | IdxE (e1, e2) -> IdxE (t_func e1, t_func e2)
-  | SliceE (e1, e2, e3) -> SliceE (t_func e1, t_func e2, t_func e3)
-  | UpdE (e1, p, e2) -> UpdE (t_func e1, transform_path p_env p, t_func e2)
-  | ExtE (e1, p, e2) -> ExtE (t_func e1, transform_path p_env p, t_func e2)
-  | CallE (id, args) -> CallE (id, List.map (transform_arg p_env) args)
-  | IterE (e1, (iter, id_exp_pairs)) -> IterE (t_func e1, (transform_iter p_env iter, List.map (fun (id, exp) -> (id, t_func exp)) id_exp_pairs))
-  | CvtE (e1, nt1, nt2) -> CvtE (t_func e1, nt1, nt2)
-  | SubE (e1, t1, t2) -> SubE (t_func e1, transform_typ p_env t1, transform_typ p_env t2)
-  | exp -> exp
-  ) $$ e.at % exp_type
+  | _ -> e
 
-and transform_path p_env path = 
-  (match path.it with
-  | RootP -> RootP
-  | IdxP (p, e) -> IdxP (transform_path p_env p, transform_exp p_env e)
-  | SliceP (p, e1, e2) -> SliceP (transform_path p_env p, transform_exp p_env e1, transform_exp p_env e2)
-  | DotP (p, a) -> DotP (transform_path p_env p, a)
-  ) $$ path.at % (transform_typ p_env path.note)
-
-and transform_sym p_env s = 
-  (match s.it with
-  | VarG (id, args) -> VarG (id, List.map (transform_arg p_env) args)
-  | SeqG syms -> SeqG (List.map (transform_sym p_env) syms)
-  | AltG syms -> AltG (List.map (transform_sym p_env) syms)
-  | RangeG (syml, symu) -> RangeG (transform_sym p_env syml, transform_sym p_env symu)
-  | IterG (sym, (iter, id_exp_pairs)) -> IterG (transform_sym p_env sym, (transform_iter p_env iter, 
-      List.map (fun (id, exp) -> (id, transform_exp p_env exp)) id_exp_pairs)
-    )
-  | AttrG (e, sym) -> AttrG (transform_exp p_env e, transform_sym p_env sym)
-  | sym -> sym 
-  ) $ s.at 
-
-and transform_arg p_env a =
-  (match a.it with
-  | ExpA exp -> ExpA (transform_exp p_env exp)
-  | TypA typ -> TypA (transform_typ p_env typ)
-  | DefA id -> DefA id
-  | GramA sym -> GramA (transform_sym p_env sym)
-  ) $ a.at
-
-and transform_bind p_env b =
-  (match b.it with
-  | ExpB (id, typ) -> ExpB (id, transform_typ p_env typ)
-  | TypB id -> TypB id
-  | DefB (id, params, typ) -> DefB (id, List.map (transform_param p_env) params, transform_typ p_env typ)
-  | GramB (id, params, typ) -> GramB (id, List.map (transform_param p_env) params, transform_typ p_env typ)
-  ) $ b.at 
-  
-and transform_param p_env p =
-  (match p.it with
-  | ExpP (id, typ) -> ExpP (id, transform_typ p_env typ)
-  | TypP id -> TypP id
-  | DefP (id, params, typ) -> DefP (id, List.map (transform_param p_env) params, transform_typ p_env typ)
-  | GramP (id, typ) -> GramP (id, transform_typ p_env typ)
-  ) $ p.at 
-
-let rec transform_prem p_env prem = 
-  (match prem.it with
-  | RulePr (id, m, e) -> RulePr (id, m, transform_exp p_env e)
-  | IfPr e -> IfPr (transform_exp p_env e)
-  | LetPr (e1, e2, ids) -> LetPr (transform_exp p_env e1, transform_exp p_env e2, ids)
-  | ElsePr -> ElsePr
-  | IterPr (prem1, (iter, id_exp_pairs)) -> IterPr (transform_prem p_env prem1, 
-      (transform_iter p_env iter, List.map (fun (id, exp) -> (id, transform_exp p_env exp)) id_exp_pairs)
-    )
-  | NegPr p -> NegPr p
-  ) $ prem.at
-
-let transform_inst p_env inst = 
-  (match inst.it with
-  | InstD (binds, args, deftyp) -> InstD (List.map (transform_bind p_env) binds, List.map (transform_arg p_env) args, 
-    (match deftyp.it with 
-    | AliasT typ -> AliasT (transform_typ p_env typ)
-    | StructT typfields -> StructT (List.map (fun (a, (c_binds, typ, prems), hints) ->
-        (a, (List.map (transform_bind p_env) c_binds, transform_typ p_env typ, List.map (transform_prem p_env) prems), hints)  
-      ) typfields)
-    | VariantT typcases -> 
-      VariantT (List.map (fun (m, (c_binds, typ, prems), hints) -> 
-        (m, (List.map (transform_bind p_env) c_binds, transform_typ p_env typ, List.map (transform_prem p_env) prems), hints)  
-      ) typcases)
-    ) $ deftyp.at
-  )
-  ) $ inst.at
-
-let transform_rule p_env rule = 
-  (match rule.it with
-  | RuleD (id, binds, m, exp, prems) -> RuleD (id.it $ no_region, 
-    List.map (transform_bind p_env) binds, 
-    m, 
-    transform_exp p_env exp, 
-    List.map (transform_prem p_env) prems
-  )
-  ) $ rule.at
-
-let transform_clause p_env clause =
-  (match clause.it with 
-  | DefD (binds, args, exp, prems) -> DefD (List.map (transform_bind p_env) binds, 
-    List.map (transform_arg p_env) args,
-    transform_exp p_env exp, 
-    List.map (transform_prem p_env) prems
-  )
-  ) $ clause.at
-
-let transform_prod p_env prod = 
-  (match prod.it with 
-  | ProdD (binds, sym, exp, prems) -> ProdD (List.map (transform_bind p_env) binds,
-    transform_sym p_env sym,
-    transform_exp p_env exp,
-    List.map (transform_prem p_env) prems
-  )
-  ) $ prod.at
-
-let rec transform_def p_env def = 
+let t_def p_env def = 
+  let t = { base_transformer with transform_exp = t_exp p_env} in 
   (match def.it with
   | TypD (id, params, [inst]) -> 
-    let d = TypD (id, List.map (transform_param p_env) params, [transform_inst p_env inst]) in 
+    let d = TypD (id, List.map (transform_param t) params, [transform_inst t inst]) in 
     (match (StringMap.find_opt id.it p_env.uncase_map) with 
       | None -> [d]
       | Some ms -> d :: create_projection_functions id params ms inst
     )
-  | TypD (id, params, insts) -> 
-    [TypD (id, List.map (transform_param p_env) params, List.map (transform_inst p_env) insts)]
-  | RelD (id, m, typ, rules) -> 
-    [RelD (id, m, transform_typ p_env typ, List.map (transform_rule p_env) rules)]
-  | DecD (id, params, typ, clauses) -> [DecD (id, List.map (transform_param p_env) params, transform_typ p_env typ, List.map (transform_clause p_env) clauses)]
-  | GramD (id, params, typ, prods) -> [GramD (id, List.map (transform_param p_env) params, transform_typ p_env typ, List.map (transform_prod p_env) prods)]
-  | RecD defs -> [RecD (List.concat_map (transform_def p_env) defs)]
-  | HintD hintdef -> [HintD hintdef]
+  | _ -> [ (transform_def t def).it ]
   ) |> List.map (fun d -> d $ def.at)
 
 let collect_uncase_iter env: uncase_map ref * (module Iter.Arg) =
@@ -381,4 +235,4 @@ let transform (il : script): script =
   p_env.uncase_map <- !acc;
 
   (* Main transformation *)
-  List.concat_map (transform_def p_env) il 
+  List.concat_map (t_def p_env) il 

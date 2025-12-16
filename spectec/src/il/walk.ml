@@ -46,7 +46,7 @@ let rec transform_typ t typ =
   let it = 
     match typ.it with
     | VarT (id, args) -> VarT (id, List.map (transform_arg t) args)
-    | IterT (typ', iter) -> IterT (t_typ typ', iter)
+    | IterT (typ', iter) -> IterT (t_typ typ', transform_iter t iter)
     | TupT typs -> TupT (List.map (fun (e, typ') -> (transform_exp t e, transform_typ t typ')) typs)
     | t' -> t'
   in
@@ -67,8 +67,8 @@ and transform_exp t e =
     | CmpE (op, nt, e1, e2) -> CmpE (op, nt, t_exp e1, t_exp e2)
     | IdxE (e1, e2) -> IdxE (t_exp e1, t_exp e2)
     | SliceE (e1, e2, e3) -> SliceE (t_exp e1, t_exp e2, t_exp e3)
-    | UpdE (e1, p, e2) -> UpdE (t_exp e1, p, t_exp e2)
-    | ExtE (e1, p, e2) -> ExtE (t_exp e1, p, t_exp e2)
+    | UpdE (e1, p, e2) -> UpdE (t_exp e1, transform_path t p, t_exp e2)
+    | ExtE (e1, p, e2) -> ExtE (t_exp e1, transform_path t p, t_exp e2)
     | StrE efs -> StrE (List.map (fun (a, e) -> (a, t_exp e)) efs)
     | DotE (e1, atom) -> DotE (t_exp e1, atom)
     | CompE (e1, e2) -> CompE (t_exp e1, t_exp e2)
@@ -88,11 +88,16 @@ and transform_exp t e =
     | SubE (e1, _t1, t2) -> SubE (t_exp e1, _t1, t2)
     | IfE (e1, e2, e3) -> IfE (t_exp e1, t_exp e2, t_exp e3)
   in
-  f { e with it }
+  f { e with it; note = transform_typ t e.note }
+
+and transform_iter t iter =
+  match iter with
+  | ListN (exp, id) -> ListN (transform_exp t exp, id)
+  | _ -> iter
 
 and transform_iterexp t (iter, ides) =
   let f = t.transform_iterexp in
-  let iterexp' = (iter, List.map (fun (id, e) -> (id, transform_exp t e)) ides) in
+  let iterexp' = (transform_iter t iter, List.map (fun (id, e) -> (id, transform_exp t e)) ides) in
   f iterexp'
 
 and transform_path t p =
@@ -194,7 +199,7 @@ and transform_def t d =
     | RecD defs -> RecD (List.map (transform_def t) defs)
     | d' -> d'
   }
-  
+
 (* Collection traversal *)
 
 type 'a collector = {
@@ -231,7 +236,7 @@ let rec collect_typ c typ =
   let traverse_list = 
     match typ.it with
     | VarT (_, args) -> compose_list c (collect_arg c) args
-    | IterT (typ', _iter) -> c_typ typ'
+    | IterT (typ', iter) -> c_typ typ' $@ collect_iter c iter
     | TupT typs -> compose_list c (fun (e, typ') -> collect_exp c e $@ (c_typ typ')) typs
     | _ -> c.default
   in
@@ -261,12 +266,17 @@ and collect_exp c e =
   in
   f e $@ lst
 
+and collect_iter c iter = 
+  match iter with
+  | ListN (exp, _) -> collect_exp c exp
+  | _ -> []
+
 and collect_iterexp c iterexp =
-  let (_, ides) = iterexp in
+  let (iter, ides) = iterexp in
   let f = c.collect_iterexp in
   let ( $@ ) = c.compose in
   let lst = compose_list c (fun (_, e) -> collect_exp c e) ides in
-  f iterexp $@ lst
+  f iterexp $@ collect_iter c iter $@ lst
 
 and collect_path c p =
   let ( $@ ) = c.compose in
@@ -334,8 +344,6 @@ and collect_sym c s =
     | AttrG (e, s1) -> collect_exp c e $@ collect_sym c s1
 
 (* Concrete base collectors for convenience *)
-
-let list_base_collector = base_collector [] (@)
 
 let exists_base_checker = base_collector false (||)
 
