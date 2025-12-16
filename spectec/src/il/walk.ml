@@ -165,369 +165,148 @@ and transform_rule t r =
   let RuleD (id, binds, mixop, exp, prems) = r.it in
   RuleD (id, List.map (transform_bind t) binds, mixop, transform_exp t exp, List.map (transform_prem t) prems) $ r.at
 
-(* List collection traversal *)
+(* Collection traversal *)
 
 type 'a collector = {
-  collect_exp: exp -> 'a list;
-  collect_bind: bind -> 'a list;
-  collect_prem: prem -> 'a list;
-  collect_iterexp: iterexp -> 'a list;
-  collect_typ: typ -> 'a list;
-  collect_arg: arg -> 'a list
+  default: 'a;
+  compose: 'a -> 'a -> 'a;
+  collect_exp: exp -> 'a;
+  collect_bind: bind -> 'a;
+  collect_prem: prem -> 'a;
+  collect_iterexp: iterexp -> 'a;
+  collect_typ: typ -> 'a;
+  collect_arg: arg -> 'a
   }
 
-let no_collect = fun _ -> []
+let no_collect default = fun _ -> default
 
-let base_collector = {
-  collect_exp = no_collect;
-  collect_bind = no_collect;
-  collect_prem = no_collect;
-  collect_iterexp = no_collect;
-  collect_typ = no_collect;
-  collect_arg = no_collect
+let base_collector default compose = {
+  default = default;
+  compose = compose;
+  collect_exp = no_collect default;
+  collect_bind = no_collect default;
+  collect_prem = no_collect default;
+  collect_iterexp = no_collect default;
+  collect_typ = no_collect default;
+  collect_arg = no_collect default
 }
+
+let compose_list c (f : 'a -> 'b) (lst : 'a list): 'b = 
+  List.fold_right (fun v acc -> c.compose acc (f v)) lst c.default
 
 let rec collect_typ c typ = 
   let f = c.collect_typ in
   let c_typ = collect_typ c in 
+  let ( $@ ) = c.compose in
   let traverse_list = 
     match typ.it with
-    | VarT (_, args) -> List.concat_map (collect_arg c) args
+    | VarT (_, args) -> compose_list c (collect_arg c) args
     | IterT (typ', _iter) -> c_typ typ'
-    | TupT typs -> List.concat_map (fun (e, typ') -> collect_exp c e @ c_typ typ') typs
-    | _ -> []
+    | TupT typs -> compose_list c (fun (e, typ') -> collect_exp c e $@ (c_typ typ')) typs
+    | _ -> c.default
   in
-  f typ @ traverse_list
+  (f typ) $@ traverse_list
 
 and collect_exp c e =
   let f = c.collect_exp in
   let c_exp = collect_exp c in
+  let ( $@ ) = c.compose in
   let lst =
     match e.it with
     | VarE _ | BoolE _ | NumE _
-    | OptE None | TextE _ -> []
+    | OptE None | TextE _ -> c.default
     | CvtE (e1, _, _) | DotE (e1, _)| LenE e1
     | ProjE (e1, _) | UncaseE (e1, _) | OptE (Some e1)
     | TheE e1 | LiftE e1 | CaseE (_, e1) | UnE (_, _, e1) -> c_exp e1
     | BinE (_, _, e1, e2) | CmpE (_, _, e1, e2) | CompE (e1, e2) 
-    | CatE (e1, e2)| MemE (e1, e2) | IdxE (e1, e2) -> c_exp e1 @ c_exp e2
-    | IfE (e1, e2, e3) | SliceE (e1, e2, e3) -> c_exp e1 @ c_exp e2 @ c_exp e3
-    | UpdE (e1, p, e2) | ExtE (e1, p, e2) -> c_exp e1 @ collect_path c p @ c_exp e2
-    | StrE efs -> List.concat_map (fun (_, e) -> c_exp e) efs
+    | CatE (e1, e2)| MemE (e1, e2) | IdxE (e1, e2) -> c_exp e1 $@ c_exp e2
+    | IfE (e1, e2, e3) | SliceE (e1, e2, e3) -> c_exp e1 $@ c_exp e2 $@ c_exp e3
+    | UpdE (e1, p, e2) | ExtE (e1, p, e2) -> c_exp e1 $@ collect_path c p $@ c_exp e2
+    | StrE efs -> compose_list c (fun (_, e) -> c_exp e) efs
     | ListE es
-    | TupE es -> List.concat_map c_exp es
-    | CallE (_, as1) -> List.concat_map (collect_arg c) as1
-    | IterE (e1, iter) -> c_exp e1 @ collect_iterexp c iter
-    | SubE (e1, t1, t2) -> c_exp e1 @ collect_typ c t1 @ collect_typ c t2
+    | TupE es -> compose_list c c_exp es
+    | CallE (_, as1) -> compose_list c (collect_arg c) as1
+    | IterE (e1, iter) -> c_exp e1 $@ collect_iterexp c iter
+    | SubE (e1, t1, t2) -> c_exp e1 $@ collect_typ c t1 $@ collect_typ c t2
   in
-  f e @ lst
+  f e $@ lst
 
 and collect_iterexp c iterexp =
   let (_, ides) = iterexp in
   let f = c.collect_iterexp in
-  let lst = List.concat_map (fun (_, e) -> collect_exp c e) ides in
-  f iterexp @ lst
+  let ( $@ ) = c.compose in
+  let lst = compose_list c (fun (_, e) -> collect_exp c e) ides in
+  f iterexp $@ lst
 
 and collect_path c p =
+  let ( $@ ) = c.compose in
   match p.it with
-  | RootP -> []
+  | RootP -> c.default
   | DotP (p', _) -> collect_path c p'
-  | IdxP (p', e) -> collect_path c p' @ collect_exp c e
-  | SliceP (p', e1, e2) -> collect_path c p' @ collect_exp c e1 @ collect_exp c e2
+  | IdxP (p', e) -> collect_path c p' $@ collect_exp c e
+  | SliceP (p', e1, e2) -> collect_path c p' $@ collect_exp c e1 $@ collect_exp c e2
 
 and collect_arg c a =
   let f = c.collect_arg in
+  let ( $@ ) = c.compose in
   let lst =
     match a.it with
     | ExpA e -> collect_exp c e
     | TypA typ -> collect_typ c typ
     | GramA s -> collect_sym c s
-    | _ -> []
+    | _ -> c.default
   in
-  f a @ lst
+  f a $@ lst
 
 and collect_prem c p =
   let f = c.collect_prem in
+  let ( $@ ) = c.compose in
   let lst = match p.it with
     | RulePr (_, _, e)
     | IfPr e -> collect_exp c e
-    | LetPr (e1, e2, _) -> collect_exp c e1 @ collect_exp c e2
-    | ElsePr -> []
-    | IterPr (p, ie) -> collect_prem c p @ collect_iterexp c ie
+    | LetPr (e1, e2, _) -> collect_exp c e1 $@ collect_exp c e2
+    | ElsePr -> c.default
+    | IterPr (p, ie) -> collect_prem c p $@ collect_iterexp c ie
     | NegPr p -> collect_prem c p
   in
-  f p @ lst
+  f p $@ lst
 
 and collect_bind c b =
   let f = c.collect_bind in
+  let ( $@ ) = c.compose in
   let lst = match b.it with
     | ExpB (_, typ) -> collect_typ c typ
-    | TypB _ -> []
-    | DefB (_, params, typ) -> List.concat_map (collect_param c) params @ collect_typ c typ
-    | GramB (_, params, typ) -> List.concat_map (collect_param c) params @ collect_typ c typ
+    | TypB _ -> c.default
+    | DefB (_, params, typ) -> compose_list c (collect_param c) params $@ collect_typ c typ
+    | GramB (_, params, typ) -> compose_list c (collect_param c) params $@ collect_typ c typ
   in
-  f b @ lst
+  f b $@ lst
 
 and collect_param c p =
+  let ( $@ ) = c.compose in
   match p.it with
   | ExpP (_, typ) -> collect_typ c typ
-  | TypP _ -> []
-  | DefP (_, params, typ) -> List.concat_map (collect_param c) params @ collect_typ c typ
+  | TypP _ -> c.default
+  | DefP (_, params, typ) -> compose_list c (collect_param c) params $@ collect_typ c typ
   | GramP (_, typ) -> collect_typ c typ
 
 and collect_sym c s =
+  let ( $@ ) = c.compose in
   match s.it with
-    | VarG (_, args) -> List.concat_map (collect_arg c) args
+    | VarG (_, args) -> compose_list c (collect_arg c) args
     | NumG _
     | TextG _
-    | EpsG -> []
+    | EpsG -> c.default
     | SeqG syms 
-    | AltG syms -> List.concat_map (collect_sym c) syms
-    | RangeG (s1, s2) -> collect_sym c s1 @ collect_sym c s2
-    | IterG (s1, iterexp) -> collect_sym c s1 @ collect_iterexp c iterexp
-    | AttrG (e, s1) -> collect_exp c e @ collect_sym c s1
+    | AltG syms -> compose_list c (collect_sym c) syms
+    | RangeG (s1, s2) -> collect_sym c s1 $@ collect_sym c s2
+    | IterG (s1, iterexp) -> collect_sym c s1 $@ collect_iterexp c iterexp
+    | AttrG (e, s1) -> collect_exp c e $@ collect_sym c s1
 
+(* Concrete base collectors for convenience *)
 
-(* Exists traversal *)
+let list_base_collector = base_collector [] (@)
 
-type 'a exists_checker = {
-  exists_exp: exp -> bool;
-  exists_bind: bind -> bool;
-  exists_prem: prem -> bool;
-  exists_iterexp: iterexp -> bool;
-  exists_typ: typ -> bool;
-  exists_arg: arg -> bool
-  }
+let exists_base_checker = base_collector false (||)
 
-let falsity = fun _ -> false
-
-let base_exists_checker = {
-  exists_exp = falsity;
-  exists_bind = falsity;
-  exists_prem = falsity;
-  exists_iterexp = falsity;
-  exists_typ = falsity;
-  exists_arg = falsity
-}
-
-let rec exists_typ c typ = 
-  let f = c.exists_typ in
-  let c_typ = exists_typ c in 
-  let traverse_list = 
-    match typ.it with
-    | VarT (_, args) -> List.exists (exists_arg c) args
-    | IterT (typ', _iter) -> c_typ typ'
-    | TupT typs -> List.exists (fun (e, typ') -> exists_exp c e || c_typ typ') typs
-    | _ -> false
-  in
-  f typ || traverse_list
-
-and exists_exp c e =
-  let f = c.exists_exp in
-  let c_exp = exists_exp c in
-  let lst =
-    match e.it with
-    | VarE _ | BoolE _ | NumE _
-    | OptE None | TextE _ -> false
-    | CvtE (e1, _, _) | DotE (e1, _)| LenE e1
-    | ProjE (e1, _) | UncaseE (e1, _) | OptE (Some e1)
-    | TheE e1 | LiftE e1 | CaseE (_, e1) | UnE (_, _, e1) -> c_exp e1
-    | BinE (_, _, e1, e2) | CmpE (_, _, e1, e2) | CompE (e1, e2) 
-    | CatE (e1, e2)| MemE (e1, e2) | IdxE (e1, e2) -> c_exp e1 || c_exp e2
-    | IfE (e1, e2, e3) | SliceE (e1, e2, e3) -> c_exp e1 || c_exp e2 || c_exp e3
-    | UpdE (e1, p, e2) | ExtE (e1, p, e2) -> c_exp e1 || exists_path c p || c_exp e2
-    | StrE efs -> List.exists (fun (_, e) -> c_exp e) efs
-    | ListE es
-    | TupE es -> List.exists c_exp es
-    | CallE (_, as1) -> List.exists (exists_arg c) as1
-    | IterE (e1, iter) -> c_exp e1 || exists_iterexp c iter
-    | SubE (e1, t1, t2) -> c_exp e1 || exists_typ c t1 || exists_typ c t2
-  in
-  f e || lst
-
-and exists_iterexp c iterexp =
-  let (_, ides) = iterexp in
-  let f = c.exists_iterexp in
-  let lst = List.exists (fun (_, e) -> exists_exp c e) ides in
-  f iterexp || lst
-
-and exists_path c p =
-  match p.it with
-  | RootP -> false
-  | DotP (p', _) -> exists_path c p'
-  | IdxP (p', e) -> exists_path c p' || exists_exp c e
-  | SliceP (p', e1, e2) -> exists_path c p' || exists_exp c e1 || exists_exp c e2
-
-and exists_arg c a =
-  let f = c.exists_arg in
-  let lst =
-    match a.it with
-    | ExpA e -> exists_exp c e
-    | TypA typ -> exists_typ c typ
-    | GramA sym -> exists_sym c sym
-    | _ -> false
-  in
-  f a || lst
-
-and exists_prem c p =
-  let f = c.exists_prem in
-  let lst = match p.it with
-    | RulePr (_, _, e)
-    | IfPr e -> exists_exp c e
-    | LetPr (e1, e2, _) -> exists_exp c e1 || exists_exp c e2
-    | ElsePr -> false
-    | IterPr (p, ie) -> exists_prem c p || exists_iterexp c ie
-    | NegPr p -> exists_prem c p
-  in
-  f p || lst
-
-and exists_bind c b =
-  let f = c.exists_bind in
-  let lst = match b.it with
-    | ExpB (_, typ) -> exists_typ c typ
-    | TypB _ -> false
-    | DefB (_, params, typ) -> List.exists (exists_param c) params || exists_typ c typ
-    | GramB (_, params, typ) -> List.exists (exists_param c) params || exists_typ c typ
-  in
-  f b || lst
-
-and exists_param c p =
-  match p.it with
-  | ExpP (_, typ) -> exists_typ c typ
-  | TypP _ -> false
-  | DefP (_, params, typ) -> List.exists (exists_param c) params || exists_typ c typ
-  | GramP (_, typ) -> exists_typ c typ
-
-and exists_sym c s =
-  match s.it with
-    | VarG (_, args) -> List.exists (exists_arg c) args
-    | NumG _
-    | TextG _
-    | EpsG -> false
-    | SeqG syms 
-    | AltG syms -> List.exists (exists_sym c) syms
-    | RangeG (s1, s2) -> exists_sym c s1 || exists_sym c s2
-    | IterG (s1, iterexp) -> exists_sym c s1 || exists_iterexp c iterexp
-    | AttrG (e, s1) -> exists_exp c e || exists_sym c s1
-
-(* Forall traversal *)
-  
-type 'a forall_checker = {
-  forall_exp: exp -> bool;
-  forall_bind: bind -> bool;
-  forall_prem: prem -> bool;
-  forall_iterexp: iterexp -> bool;
-  forall_typ: typ -> bool;
-  forall_arg: arg -> bool
-  }
-
-let tauto = fun _ -> true
-
-let base_forall_checker = {
-  forall_exp = tauto;
-  forall_bind = tauto;
-  forall_prem = tauto;
-  forall_iterexp = tauto;
-  forall_typ = tauto;
-  forall_arg = tauto
-}
-
-let rec forall_typ c typ = 
-  let f = c.forall_typ in
-  let c_typ = forall_typ c in 
-  let traverse_list = 
-    match typ.it with
-    | VarT (_, args) -> List.for_all (forall_arg c) args
-    | IterT (typ', _iter) -> c_typ typ'
-    | TupT typs -> List.for_all (fun (e, typ') -> forall_exp c e && c_typ typ') typs
-    | _ -> true
-  in
-  f typ && traverse_list
-
-and forall_exp c e =
-  let f = c.forall_exp in
-  let c_exp = forall_exp c in
-  let lst =
-    match e.it with
-    | VarE _ | BoolE _ | NumE _
-    | OptE None | TextE _ -> true
-    | CvtE (e1, _, _) | DotE (e1, _)| LenE e1
-    | ProjE (e1, _) | UncaseE (e1, _) | OptE (Some e1)
-    | TheE e1 | LiftE e1 | CaseE (_, e1) | UnE (_, _, e1) -> c_exp e1
-    | BinE (_, _, e1, e2) | CmpE (_, _, e1, e2) | CompE (e1, e2) 
-    | CatE (e1, e2)| MemE (e1, e2) | IdxE (e1, e2) -> c_exp e1 && c_exp e2
-    | IfE (e1, e2, e3) | SliceE (e1, e2, e3) -> c_exp e1 && c_exp e2 && c_exp e3
-    | UpdE (e1, p, e2) | ExtE (e1, p, e2) -> c_exp e1 && forall_path c p && c_exp e2
-    | StrE efs -> List.for_all (fun (_, e) -> c_exp e) efs
-    | ListE es
-    | TupE es -> List.for_all c_exp es
-    | CallE (_, as1) -> List.for_all (forall_arg c) as1
-    | IterE (e1, iter) -> c_exp e1 && forall_iterexp c iter
-    | SubE (e1, t1, t2) -> c_exp e1 && forall_typ c t1 && forall_typ c t2
-  in
-  f e && lst
-
-and forall_iterexp c iterexp =
-  let (_, ides) = iterexp in
-  let f = c.forall_iterexp in
-  let lst = List.for_all (fun (_, e) -> forall_exp c e) ides in
-  f iterexp && lst
-
-and forall_path c p =
-  match p.it with
-  | RootP -> true
-  | DotP (p', _) -> forall_path c p'
-  | IdxP (p', e) -> forall_path c p' && forall_exp c e
-  | SliceP (p', e1, e2) -> forall_path c p' && forall_exp c e1 && forall_exp c e2
-
-and forall_arg c a =
-  let f = c.forall_arg in
-  let lst =
-    match a.it with
-    | ExpA e -> forall_exp c e
-    | TypA typ -> forall_typ c typ
-    | GramA sym -> forall_sym c sym
-    | _ -> true
-  in
-  f a && lst
-
-and forall_prem c p =
-  let f = c.forall_prem in
-  let lst = match p.it with
-    | RulePr (_, _, e)
-    | IfPr e -> forall_exp c e
-    | LetPr (e1, e2, _) -> forall_exp c e1 && forall_exp c e2
-    | ElsePr -> true
-    | IterPr (p, ie) -> forall_prem c p && forall_iterexp c ie
-    | NegPr p -> forall_prem c p
-  in
-  f p && lst
-
-and forall_bind c b =
-  let f = c.forall_bind in
-  let lst = match b.it with
-    | ExpB (_, typ) -> forall_typ c typ
-    | TypB _ -> true
-    | DefB (_, params, typ) -> List.for_all (forall_param c) params && forall_typ c typ
-    | GramB (_, params, typ) -> List.for_all (forall_param c) params && forall_typ c typ
-  in
-  f b && lst
-
-and forall_param c p =
-  match p.it with
-  | ExpP (_, typ) -> forall_typ c typ
-  | TypP _ -> true
-  | DefP (_, params, typ) -> List.for_all (forall_param c) params && forall_typ c typ
-  | GramP (_, typ) -> forall_typ c typ
-  
-and forall_sym c s =
-  match s.it with
-    | VarG (_, args) -> List.for_all (forall_arg c) args
-    | NumG _
-    | TextG _
-    | EpsG -> false
-    | SeqG syms 
-    | AltG syms -> List.for_all (forall_sym c) syms
-    | RangeG (s1, s2) -> forall_sym c s1 || forall_sym c s2
-    | IterG (s1, iterexp) -> forall_sym c s1 || forall_iterexp c iterexp
-    | AttrG (e, s1) -> forall_exp c e || forall_sym c s1
+let forall_base_checker = base_collector true (&&)
