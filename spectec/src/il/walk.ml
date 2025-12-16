@@ -20,7 +20,7 @@ open Ast
 
 (* Base traversal *)
 
-type transformer = {
+type 'env transformer = {
   transform_exp: exp -> exp;
   transform_bind: bind -> bind;
   transform_prem: prem -> prem;
@@ -156,6 +156,17 @@ and transform_sym t s =
     | AttrG (e, s1) -> AttrG (transform_exp t e, transform_sym t s1)
   }
 
+and transform_deftyp t dt = 
+  { dt with it = match dt.it with
+    | AliasT typ -> AliasT (transform_typ t typ)
+    | StructT typfields -> StructT (List.map (fun (a, (binds, typ, prems), hints) -> 
+        (a, (List.map (transform_bind t) binds, transform_typ t typ, List.map (transform_prem t) prems), hints)) typfields
+      )
+    | VariantT typcases -> VariantT (List.map (fun (m, (binds, typ, prems), hints) -> 
+        (m, (List.map (transform_bind t) binds, transform_typ t typ, List.map (transform_prem t) prems), hints)) typcases
+      )
+  }
+
 and transform_clause t c =
   { c with it = match c.it with
     | DefD (bs, args, e, ps) ->
@@ -165,6 +176,25 @@ and transform_rule t r =
   let RuleD (id, binds, mixop, exp, prems) = r.it in
   RuleD (id, List.map (transform_bind t) binds, mixop, transform_exp t exp, List.map (transform_prem t) prems) $ r.at
 
+and transform_inst t inst = 
+  { inst with it = match inst.it with
+    | InstD (binds, args, deftyp) -> InstD (List.map (transform_bind t) binds, List.map (transform_arg t) args, transform_deftyp t deftyp)
+  }
+
+and transform_prod t p = 
+  { p with it = match p.it with
+    | ProdD (binds, sym, exp, prems) -> ProdD (List.map (transform_bind t) binds, transform_sym t sym, transform_exp t exp, List.map (transform_prem t) prems)
+  }
+and transform_def t d = 
+  { d with it = match d.it with
+    | TypD (id, params, insts) -> TypD (id, List.map (transform_param t) params, List.map (transform_inst t) insts)
+    | RelD (id, m, typ, rules) -> RelD (id, m, transform_typ t typ, List.map (transform_rule t) rules)
+    | DecD (id, params, typ, clauses) -> DecD (id, List.map (transform_param t) params, transform_typ t typ, List.map (transform_clause t) clauses)
+    | GramD (id, params, typ, prods) -> GramD (id, List.map (transform_param t) params, transform_typ t typ, List.map (transform_prod t) prods)
+    | RecD defs -> RecD (List.map (transform_def t) defs)
+    | d' -> d'
+  }
+  
 (* Collection traversal *)
 
 type 'a collector = {
