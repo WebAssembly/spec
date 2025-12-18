@@ -205,15 +205,15 @@ and transform_def t d =
 type 'a collector = {
   default: 'a;
   compose: 'a -> 'a -> 'a;
-  collect_exp: exp -> 'a;
-  collect_bind: bind -> 'a;
-  collect_prem: prem -> 'a;
-  collect_iterexp: iterexp -> 'a;
-  collect_typ: typ -> 'a;
-  collect_arg: arg -> 'a
+  collect_exp: exp -> 'a * bool;
+  collect_bind: bind -> 'a * bool;
+  collect_prem: prem -> 'a * bool;
+  collect_iterexp: iterexp -> 'a * bool;
+  collect_typ: typ -> 'a * bool;
+  collect_arg: arg -> 'a * bool
   }
 
-let no_collect default = fun _ -> default
+let no_collect default = fun _ -> (default, true)
 
 let base_collector default compose = {
   default = default;
@@ -226,8 +226,8 @@ let base_collector default compose = {
   collect_arg = no_collect default
 }
 
-let compose_list c (f : 'a -> 'b) (lst : 'a list): 'b = 
-  List.fold_right (fun v acc -> c.compose acc (f v)) lst c.default
+let compose_list c (f : 'a -> 'b) (traverse_list : 'a list): 'b = 
+  List.fold_right (fun v acc -> c.compose acc (f v)) traverse_list c.default
 
 let rec collect_typ c typ = 
   let f = c.collect_typ in
@@ -240,13 +240,14 @@ let rec collect_typ c typ =
     | TupT typs -> compose_list c (fun (e, typ') -> collect_exp c e $@ (c_typ typ')) typs
     | _ -> c.default
   in
-  (f typ) $@ traverse_list
+  let (res, continue) = f typ in 
+  res $@ if continue then traverse_list else c.default
 
 and collect_exp c e =
   let f = c.collect_exp in
   let c_exp = collect_exp c in
   let ( $@ ) = c.compose in
-  let lst =
+  let traverse_list =
     match e.it with
     | VarE _ | BoolE _ | NumE _
     | OptE None | TextE _ -> c.default
@@ -264,19 +265,21 @@ and collect_exp c e =
     | IterE (e1, iter) -> c_exp e1 $@ collect_iterexp c iter
     | SubE (e1, t1, t2) -> c_exp e1 $@ collect_typ c t1 $@ collect_typ c t2
   in
-  f e $@ lst
+  let (res, continue) = f e in 
+  res $@ if continue then traverse_list else c.default
 
 and collect_iter c iter = 
   match iter with
   | ListN (exp, _) -> collect_exp c exp
-  | _ -> []
+  | _ -> c.default
 
 and collect_iterexp c iterexp =
   let (iter, ides) = iterexp in
   let f = c.collect_iterexp in
   let ( $@ ) = c.compose in
-  let lst = compose_list c (fun (_, e) -> collect_exp c e) ides in
-  f iterexp $@ collect_iter c iter $@ lst
+  let traverse_list = collect_iter c iter $@ compose_list c (fun (_, e) -> collect_exp c e) ides in
+  let (res, continue) = f iterexp in 
+  res $@ if continue then traverse_list else c.default
 
 and collect_path c p =
   let ( $@ ) = c.compose in
@@ -289,19 +292,20 @@ and collect_path c p =
 and collect_arg c a =
   let f = c.collect_arg in
   let ( $@ ) = c.compose in
-  let lst =
+  let traverse_list =
     match a.it with
     | ExpA e -> collect_exp c e
     | TypA typ -> collect_typ c typ
     | GramA s -> collect_sym c s
     | _ -> c.default
   in
-  f a $@ lst
+  let (res, continue) = f a in 
+  res $@ if continue then traverse_list else c.default
 
 and collect_prem c p =
   let f = c.collect_prem in
   let ( $@ ) = c.compose in
-  let lst = match p.it with
+  let traverse_list = match p.it with
     | RulePr (_, _, e)
     | IfPr e -> collect_exp c e
     | LetPr (e1, e2, _) -> collect_exp c e1 $@ collect_exp c e2
@@ -309,18 +313,20 @@ and collect_prem c p =
     | IterPr (p, ie) -> collect_prem c p $@ collect_iterexp c ie
     | NegPr p -> collect_prem c p
   in
-  f p $@ lst
+  let (res, continue) = f p in 
+  res $@ if continue then traverse_list else c.default
 
 and collect_bind c b =
   let f = c.collect_bind in
   let ( $@ ) = c.compose in
-  let lst = match b.it with
+  let traverse_list = match b.it with
     | ExpB (_, typ) -> collect_typ c typ
     | TypB _ -> c.default
     | DefB (_, params, typ) -> compose_list c (collect_param c) params $@ collect_typ c typ
     | GramB (_, params, typ) -> compose_list c (collect_param c) params $@ collect_typ c typ
   in
-  f b $@ lst
+  let (res, continue) = f b in 
+  res $@ if continue then traverse_list else c.default
 
 and collect_param c p =
   let ( $@ ) = c.compose in
@@ -333,15 +339,15 @@ and collect_param c p =
 and collect_sym c s =
   let ( $@ ) = c.compose in
   match s.it with
-    | VarG (_, args) -> compose_list c (collect_arg c) args
-    | NumG _
-    | TextG _
-    | EpsG -> c.default
-    | SeqG syms 
-    | AltG syms -> compose_list c (collect_sym c) syms
-    | RangeG (s1, s2) -> collect_sym c s1 $@ collect_sym c s2
-    | IterG (s1, iterexp) -> collect_sym c s1 $@ collect_iterexp c iterexp
-    | AttrG (e, s1) -> collect_exp c e $@ collect_sym c s1
+  | VarG (_, args) -> compose_list c (collect_arg c) args
+  | NumG _
+  | TextG _
+  | EpsG -> c.default
+  | SeqG syms 
+  | AltG syms -> compose_list c (collect_sym c) syms
+  | RangeG (s1, s2) -> collect_sym c s1 $@ collect_sym c s2
+  | IterG (s1, iterexp) -> collect_sym c s1 $@ collect_iterexp c iterexp
+  | AttrG (e, s1) -> collect_exp c e $@ collect_sym c s1
 
 (* Concrete base collectors for convenience *)
 

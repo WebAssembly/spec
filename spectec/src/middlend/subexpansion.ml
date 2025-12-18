@@ -73,8 +73,8 @@ let eq_sube (id, t1, t2) (id', t1', t2') =
 let collect_sube_exp e = 
   match e.it with
   (* Assumption - nested sub expressions do not exist. Must also be a varE. *)
-  | SubE ({it = VarE id; _}, t1, t2) -> [id, t1, t2]
-  | _ -> []
+  | SubE ({it = VarE id; _}, t1, t2) -> ([id, t1, t2], false)
+  | _ -> ([], true)
 
 let check_matching c_args match_args = 
   Option.is_some (try 
