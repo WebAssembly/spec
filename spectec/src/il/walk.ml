@@ -101,11 +101,12 @@ and transform_iterexp t (iter, ides) =
   f iterexp'
 
 and transform_path t p =
-  { p with it = match p.it with
+  { p with it = (match p.it with
     | RootP -> RootP
     | DotP (p', a) -> DotP (transform_path t p', a)
     | IdxP (p', e) -> IdxP (transform_path t p', transform_exp t e)
-    | SliceP (p', e1, e2) -> SliceP (transform_path t p', transform_exp t e1, transform_exp t e2) }
+    | SliceP (p', e1, e2) -> SliceP (transform_path t p', transform_exp t e1, transform_exp t e2)
+    ); note = transform_typ t p.note }
 
 and transform_arg t a =
   let f = t.transform_arg in
