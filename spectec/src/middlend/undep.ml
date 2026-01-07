@@ -44,18 +44,19 @@ open Il.Ast
 open Util.Source
 open Util.Error
 open Il
+open Il.Walk
 open Util
 
 module StringSet = Set.Make(String)
 
 type env = {
   mutable wf_set : StringSet.t;
-  mutable il_env : Il.Env.t;
+  mutable il : Il.Env.t;
 }
 
-let empty_env = {
+let empty = {
   wf_set = StringSet.empty;
-  il_env = Il.Env.empty
+  il = Il.Env.empty
 }
 
 let wf_pred_prefix = "wf_"
@@ -112,163 +113,55 @@ let filter_iter_binds exp iter_binds =
   ) (free_vars, []) iter_binds) 
   |> snd |> List.rev
 
-let rec collect_userdef_exp iterexps e = 
-  match e.it with
-  | CaseE _ | StrE _ -> [((e, e.note), filter_iter_binds e iterexps)]
-  | CallE (_, args) -> List.concat_map (collect_userdef_arg iterexps) args
-  | UnE (_, _, e1) | CvtE (e1, _, _) | LiftE e1 | TheE e1 | OptE (Some e1) 
-  | ProjE (e1, _) | UncaseE (e1, _)
-  | LenE e1 | DotE (e1, _)
-  | SubE (e1, _, _) -> collect_userdef_exp iterexps e1
-  | BinE (_, _, e1, e2) | CmpE (_, _, e1, e2)
-  | CompE (e1, e2) | MemE (e1, e2)
-  | CatE (e1, e2) | IdxE (e1, e2) -> collect_userdef_exp iterexps e1 @ collect_userdef_exp iterexps e2
-  | TupE exps | ListE exps -> List.concat_map (collect_userdef_exp iterexps) exps
-  | SliceE (e1, e2, e3) | IfE (e1, e2, e3) -> collect_userdef_exp iterexps e1 @ collect_userdef_exp iterexps e2 @ collect_userdef_exp iterexps e3
-  | UpdE (e1, p, e2) 
-  | ExtE (e1, p, e2) -> collect_userdef_exp iterexps e1 @ collect_userdef_path iterexps p @ collect_userdef_exp iterexps e2
-  | IterE (e1, ((_, id_exp_pairs) as iterexp)) -> 
-    collect_userdef_exp (iterexp :: iterexps) e1 @ 
-    List.concat_map (fun (_, exp) -> collect_userdef_exp iterexps exp) id_exp_pairs
-  | _ -> []
+let rec create_collector iterexps = 
+  let base_collector_iters: ((exp * typ) * iterexp list) list collector = base_collector [] (@) in
+  { base_collector_iters with collect_exp = collect_userdef_exp iterexps; collect_prem = collect_userdef_prem iterexps }
 
-and collect_userdef_arg iterexps a =
-  match a.it with
-  | ExpA exp -> collect_userdef_exp iterexps exp
-  | _ -> (* TODO - possibly need to go through all types of args *) 
-    []
+and collect_userdef_exp iterexps e = 
+  match e.it with
+  | CaseE _ | StrE _ -> ([((e, e.note), filter_iter_binds e iterexps)], false)
+  | IterE (e1, ((_, id_exp_pairs) as iterexp)) -> 
+    let c1 = create_collector iterexps in
+    let c2 = create_collector (iterexp :: iterexps) in 
+    (collect_exp c2 e1 @ 
+    List.concat_map (fun (_, exp) -> collect_exp c1 exp) id_exp_pairs, false)
+  | _ -> ([], true)
 
 and collect_userdef_prem iterexps p =
   match p.it with
-  | IfPr e | RulePr (_, _, e) -> collect_userdef_exp iterexps e
-  | LetPr (e1, e2, _) -> collect_userdef_exp iterexps e1 @ collect_userdef_exp iterexps e2
-  | IterPr (p', ((_, id_exp_pairs) as iterexp)) -> collect_userdef_prem (iterexp :: iterexps) p' @
-    List.concat_map (fun (_, exp) -> collect_userdef_exp iterexps exp) id_exp_pairs
-  | _ -> [] 
+  | IterPr (p', ((_, id_exp_pairs) as iterexp)) -> 
+    let c1 = create_collector iterexps in
+    let c2 = create_collector (iterexp :: iterexps) in 
+    (collect_prem c2 p' @
+    List.concat_map (fun (_, exp) -> collect_exp c1 exp) id_exp_pairs, false)
+  | _ -> ([], true) 
 
-and collect_userdef_path iterexps p =
-  match p.it with
-  | RootP -> []
-  | IdxP (p, e) -> collect_userdef_path iterexps p @ collect_userdef_exp iterexps e
-  | SliceP (p, e1, e2) -> collect_userdef_path iterexps p @ collect_userdef_exp iterexps e1 @ collect_userdef_exp iterexps e2
-  | DotP (p, _) -> collect_userdef_path iterexps p
-
-let rec transform_iter env i =
-  match i with 
-  | ListN (exp, id_opt) -> ListN (transform_exp env exp, id_opt)
-  | _ -> i
-
-and transform_typ env t = 
+and t_typ t = 
   (match t.it with
-  | VarT (id, args) -> VarT (id, List.filter is_type_arg (List.map (transform_arg env) args))
-  | TupT exp_typ_pairs -> TupT (List.map (fun (e, t) -> (transform_exp env e, transform_typ env t)) exp_typ_pairs)
-  | IterT (typ, iter) -> IterT (transform_typ env typ, transform_iter env iter)
+  | VarT (id, args) -> VarT (id, List.filter is_type_arg args)
   | typ -> typ
   ) $ t.at
 
-and transform_exp env e = 
-  let t_func = transform_exp env in
+and t_exp e = 
   (match e.it with
-  | CaseE (m, e1) -> CaseE (m, t_func e1)
-  | StrE fields -> StrE (List.map (fun (a, e1) -> (a, t_func e1)) fields)
-  | UnE (unop, optyp, e1) -> UnE (unop, optyp, t_func e1)
-  | BinE (binop, optyp, e1, e2) -> BinE (binop, optyp, t_func e1, t_func e2)
-  | CmpE (cmpop, optyp, e1, e2) -> CmpE (cmpop, optyp, t_func e1, t_func e2)
-  | TupE (exps) -> TupE (List.map t_func exps)
-  | ProjE (e1, n) -> ProjE (t_func e1, n)
-  | UncaseE (e1, m) -> UncaseE (t_func e1, m)
-  | OptE e1 -> OptE (Option.map t_func e1)
-  | TheE e1 -> TheE (t_func e1)
-  | DotE (e1, a) -> DotE (t_func e1, a)
-  | CompE (e1, e2) -> CompE (t_func e1, t_func e2)
-  | ListE entries -> ListE (List.map t_func entries)
-  | LiftE e1 -> LiftE (t_func e1)
-  | MemE (e1, e2) -> MemE (t_func e1, t_func e2)
-  | LenE e1 -> LenE (t_func e1)
-  | CatE (e1, e2) -> CatE (t_func e1, t_func e2)
-  | IdxE (e1, e2) -> IdxE (t_func e1, t_func e2)
-  | SliceE (e1, e2, e3) -> SliceE (t_func e1, t_func e2, t_func e3)
-  | IfE (e1, e2, e3) -> IfE (t_func e1, t_func e2, t_func e3)
-  | UpdE (e1, p, e2) -> UpdE (t_func e1, transform_path env p, t_func e2)
-  | ExtE (e1, p, e2) -> ExtE (t_func e1, transform_path env p, t_func e2)
-  | CallE (id, args) -> CallE (id, List.map (transform_arg env) args)
     (* HACK - Change IterE of option with no iteration variable into a OptE *)
   | IterE (e1, (Opt, [])) -> 
-    OptE (Some (t_func e1)) 
-  | IterE (e1, (iter, id_exp_pairs)) -> IterE (t_func e1, (transform_iter env iter, List.map (fun (id, exp) -> (id, t_func exp)) id_exp_pairs))
-  | CvtE (e1, nt1, nt2) -> CvtE (t_func e1, nt1, nt2)
-  | SubE (e1, t1, t2) -> SubE (t_func e1, transform_typ env t1, transform_typ env t2)
+    OptE (Some e1) 
   | exp -> exp
-  ) $$ e.at % transform_typ env e.note
+  ) $$ e.at % e.note
 
-and transform_path env path = 
-  (match path.it with
-  | RootP -> RootP
-  | IdxP (p, e) -> IdxP (transform_path env p, transform_exp env e)
-  | SliceP (p, e1, e2) -> SliceP (transform_path env p, transform_exp env e1, transform_exp env e2)
-  | DotP (p, a) -> DotP (transform_path env p, a)
-  ) $$ path.at % transform_typ env path.note
-
-and transform_sym env s = 
-  (match s.it with
-  | VarG (id, args) -> VarG (id, List.map (transform_arg env) args)
-  | SeqG syms -> SeqG (List.map (transform_sym env) syms)
-  | AltG syms -> AltG (List.map (transform_sym env) syms)
-  | RangeG (syml, symu) -> RangeG (transform_sym env syml, transform_sym env symu)
-  | IterG (sym, (iter, id_exp_pairs)) -> IterG (transform_sym env sym, (transform_iter env iter, 
-      List.map (fun (id, exp) -> (id, transform_exp env exp)) id_exp_pairs)
-    )
-  | AttrG (e, sym) -> AttrG (transform_exp env e, transform_sym env sym)
-  | sym -> sym 
-  ) $ s.at 
-
-and transform_arg env a =
-  (match a.it with
-  | ExpA exp -> ExpA (transform_exp env exp)
-  | TypA typ -> TypA (transform_typ env typ)
-  | DefA id -> DefA id
-  | GramA sym -> GramA (transform_sym env sym)
-  ) $ a.at
-
-and transform_bind env b =
-  (match b.it with
-  | ExpB (id, typ) -> ExpB (id, transform_typ env typ)
-  | TypB id -> TypB id
-  | DefB (id, params, typ) -> DefB (id, List.map (transform_param env) params, transform_typ env typ)
-  | GramB (id, params, typ) -> GramB (id, List.map (transform_param env) params, transform_typ env typ)
-  ) $ b.at 
-  
-and transform_param env p =
-  (match p.it with
-  | ExpP (id, typ) -> ExpP (id, transform_typ env typ)
-  | TypP id -> TypP id
-  | DefP (id, params, typ) -> DefP (id, List.map (transform_param env) params, transform_typ env typ)
-  | GramP (id, typ) -> GramP (id, transform_typ env typ)
-  ) $ p.at 
-
-let rec transform_prem env prem = 
-  (match prem.it with
-  | RulePr (id, m, e) -> RulePr (id, m, transform_exp env e)
-  | IfPr e -> IfPr (transform_exp env e)
-  | LetPr (e1, e2, ids) -> LetPr (transform_exp env e1, transform_exp env e2, ids)
-  | ElsePr -> ElsePr
-  | IterPr (prem1, (iter, id_exp_pairs)) -> IterPr (transform_prem env prem1, 
-      (transform_iter env iter, List.map (fun (id, exp) -> (id, transform_exp env exp)) id_exp_pairs)
-    )
-  | NegPr p -> NegPr p
-  ) $ prem.at
-
-let transform_inst env inst = 
+let t_inst inst = 
+  let tf = { base_transformer with transform_exp = t_exp; transform_typ = t_typ } in
   (match inst.it with
-  | InstD (binds, args, deftyp) -> InstD (List.map (transform_bind env) binds |> List.filter is_type_bind, List.map (transform_arg env) args |> List.filter is_type_arg, 
+  | InstD (binds, args, deftyp) -> InstD (List.map (transform_bind tf) binds |> List.filter is_type_bind, List.map (transform_arg tf) args |> List.filter is_type_arg, 
     (match deftyp.it with 
-    | AliasT typ -> AliasT (transform_typ env typ)
+    | AliasT typ -> AliasT (transform_typ tf typ)
     | StructT typfields -> StructT (List.map (fun (a, (c_binds, typ, _prems), hints) ->
-        (a, (List.map (transform_bind env) c_binds, transform_typ env typ, []), hints)  
+        (a, (List.map (transform_bind tf) c_binds, transform_typ tf typ, []), hints)  
       ) typfields)
     | VariantT typcases -> 
       VariantT (List.map (fun (m, (c_binds, typ, _prems), hints) -> 
-        (m, (List.map (transform_bind env) c_binds, transform_typ env typ, []), hints)  
+        (m, (List.map (transform_bind tf) c_binds, transform_typ tf typ, []), hints)  
       ) typcases)
     ) $ deftyp.at
   )) $ inst.at
@@ -296,7 +189,7 @@ let rec get_wf_pred env (exp, t) =
       (* This should never happen as long as the code doesn't change *)
       error exp.at ("Abnormal bind - does not have correct exp: " ^ Il.Print.string_of_exp exp)
   in
-  let t' = Utils.reduce_type_aliasing env.il_env t in
+  let t' = Utils.reduce_type_aliasing env.il t in
   let exp' = {exp with note = t'} in 
   match t'.it with
     | VarT (id, args) when StringSet.mem id.it env.wf_set ->
@@ -334,7 +227,8 @@ let get_exp_typ b =
   | ExpB (id, typ) -> Some (VarE id $$ id.at % typ, typ)
   | _ -> None
   
-let create_well_formed_predicate id env inst = 
+let create_well_formed_predicate env id inst = 
+  let tf = { base_transformer with transform_exp = t_exp; transform_typ = t_typ} in
   let at = id.at in 
   let user_typ = VarT(id, []) $ at in
   let new_mixop pairs = [] :: List.init (List.length pairs + 1) (fun _ -> []) in
@@ -359,9 +253,9 @@ let create_well_formed_predicate id env inst =
       let tuple_exp = TupE (List.map fst dep_exp_typ_pairs @ [case_exp]) $$ at % tupt pairs_without_names in
       let extra_prems = List.filter_map get_exp_typ new_binds |> List.concat_map (get_wf_pred env) in
       RuleD (id.it ^ "_" ^ rule_prefix ^ Int.to_string i $ at, 
-        List.map (transform_bind env) (binds @ new_binds), new_mixop dep_exp_typ_pairs, 
-        transform_exp env tuple_exp, 
-        List.map (transform_prem env) (extra_prems @ prems)
+        List.map (transform_bind tf) (binds @ new_binds), new_mixop dep_exp_typ_pairs, 
+        transform_exp tf tuple_exp, 
+        List.map (transform_prem tf) (extra_prems @ prems)
       ) $ at
     ) typcases
     in
@@ -396,10 +290,10 @@ let create_well_formed_predicate id env inst =
     ) atoms (List.combine pairs' is_wrapped)) $$ at % user_typ in 
     let tupe = TupE (List.map fst dep_exp_typ_pairs @ [str_exp]) $$ at % tupt pairs_without_names in
     let rule = RuleD (id.it ^ "_" ^ rule_prefix $ id.at, 
-      List.map (transform_bind env) (binds @ rule_binds), 
+      List.map (transform_bind tf) (binds @ rule_binds), 
       new_mixop dep_exp_typ_pairs, 
       tupe, 
-      List.map (transform_prem env) (new_prems)) $ at 
+      List.map (transform_prem tf) (new_prems)) $ at 
     in
   
     if new_prems = [] then None else 
@@ -410,7 +304,8 @@ let create_well_formed_predicate id env inst =
 
 let get_extra_prems env binds exp prems = 
   if deactivate_wfness then [] else 
-  let wf_terms = collect_userdef_exp [] exp @ List.concat_map (collect_userdef_prem []) prems in
+  let cl = create_collector [] in 
+  let wf_terms = collect_exp cl exp @ List.concat_map (collect_prem cl) prems in
   let unique_terms = Util.Lib.List.nub (fun ((e1, _t1), iterexp1) ((e2, _t2), iterexp2) -> 
     Il.Eq.eq_exp e1 e2 && Il.Eq.eq_list Il.Eq.eq_iterexp iterexp1 iterexp2
   ) wf_terms in
@@ -430,36 +325,30 @@ let get_extra_prems env binds exp prems =
   let bind_prems = (List.filter_map get_exp_typ binds_filtered) |> List.concat_map (get_wf_pred env) in
   bind_prems @ more_prems
     
-let transform_rule env rule = 
+let t_rule env rule = 
+  let tf = { base_transformer with transform_exp = t_exp; transform_typ = t_typ} in
   (match rule.it with
   | RuleD (id, binds, m, exp, prems) -> 
     let extra_prems = get_extra_prems env binds exp prems in 
     RuleD (id, 
-      List.map (transform_bind env) binds, 
+      List.map (transform_bind tf) binds, 
       m, 
-      transform_exp env exp, 
-      List.map (transform_prem env) (extra_prems @ prems) 
+      transform_exp tf exp, 
+      List.map (transform_prem tf) (extra_prems @ prems) 
     )
   ) $ rule.at
 
-let transform_clause env clause =
+let t_clause env clause =
+  let tf = { base_transformer with transform_exp = t_exp; transform_typ = t_typ} in
   (match clause.it with 
   | DefD (binds, args, exp, prems) -> 
     let extra_prems = get_extra_prems env binds exp prems in 
-    DefD (List.map (transform_bind env) binds, 
-      List.map (transform_arg env) args,
-      transform_exp env exp, 
-      List.map (transform_prem env) (extra_prems @ prems)
+    DefD (List.map (transform_bind tf) binds, 
+      List.map (transform_arg tf) args,
+      transform_exp tf exp, 
+      List.map (transform_prem tf) (extra_prems @ prems)
     )
   ) $ clause.at
-
-let transform_prod env prod = 
-  (match prod.it with 
-  | ProdD (binds, sym, exp, prems) -> ProdD (List.map (transform_bind env) binds,
-    transform_sym env sym,
-    transform_exp env exp,
-    List.map (transform_prem env) prems
-  )) $ prod.at
 
 let is_not_exp_param param =
   match param.it with
@@ -471,32 +360,33 @@ let get_def_id def =
   | TypD (id, _, _) -> id
   | _ -> "" $ def.at
 
-let rec transform_def env def = 
+let rec t_def env def = 
+  let tf = { base_transformer with transform_exp = t_exp; transform_typ = t_typ} in
   match def.it with
   | TypD (id, params, [inst]) when List.exists is_not_exp_param params -> 
-    (TypD (id, List.map (transform_param env) params |> List.filter is_type_param, [inst]) $ def.at, [])
+    (TypD (id, List.map (transform_param tf) params |> List.filter is_type_param, [inst]) $ def.at, [])
   | TypD (id, params, [inst]) -> 
-    let relation = create_well_formed_predicate id env inst in
-    (TypD (id, List.map (transform_param env) params |> List.filter is_type_param, [transform_inst env inst]) $ def.at, Option.to_list relation)
+    let relation = create_well_formed_predicate env id inst in
+    (TypD (id, List.map (transform_param tf) params |> List.filter is_type_param, [t_inst inst]) $ def.at, Option.to_list relation)
   | TypD (_, _, _) -> 
     error def.at "Multiples instances encountered, please run type family removal pass first."
   | RelD (id, m, typ, rules) -> 
-    (RelD (id, m, transform_typ env typ, List.map (transform_rule env) rules) $ def.at, [])
-  | DecD (id, params, typ, clauses) -> (DecD (id, List.map (transform_param env) params, transform_typ env typ, List.map (transform_clause env) clauses) $ def.at, [])
-  | GramD (id, params, typ, prods) -> (GramD (id, List.map (transform_param env) params, transform_typ env typ, List.map (transform_prod env) prods) $ def.at, [])
+    (RelD (id, m, transform_typ tf typ, List.map (t_rule env) rules) $ def.at, [])
+  | DecD (id, params, typ, clauses) -> (DecD (id, List.map (transform_param tf) params, transform_typ tf typ, List.map (t_clause env) clauses) $ def.at, [])
+  | GramD (id, params, typ, prods) -> (GramD (id, List.map (transform_param tf) params, transform_typ tf typ, List.map (transform_prod tf) prods) $ def.at, [])
   | RecD defs -> 
     if List.exists (needs_wfness env) defs 
       then List.iter (fun d -> bind_wf_set env (get_def_id d).it) defs; 
-    let defs', wf_relations = List.map (transform_def env) defs |> List.split in
+    let defs', wf_relations = List.map (t_def env) defs |> List.split in
     let rec_defs = RecD defs' $ def.at in
     if List.concat wf_relations = [] then (rec_defs, []) else
     (rec_defs, [RecD (List.concat wf_relations) $ def.at])
   | HintD hintdef -> (HintD hintdef $ def.at, [])
   
 let transform (il : script): script =
-  let env = empty_env in 
-  env.il_env <- Il.Env.env_of_script il;
+  let env = empty in 
+  env.il <- Il.Env.env_of_script il;
   List.concat_map (fun d -> 
-    let (t_d, wf_relations) = transform_def env d in 
+    let (t_d, wf_relations) = t_def env d in 
     t_d :: wf_relations
   ) il
