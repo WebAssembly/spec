@@ -227,7 +227,7 @@ let base_collector default compose = {
 }
 
 let compose_list c (f : 'a -> 'b) (traverse_list : 'a list): 'b = 
-  List.fold_right (fun v acc -> c.compose acc (f v)) traverse_list c.default
+  List.fold_right (fun v acc -> c.compose (f v) acc) traverse_list c.default
 
 let rec collect_typ c typ = 
   let f = c.collect_typ in
