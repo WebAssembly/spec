@@ -1,5 +1,5 @@
 (library
   (name il)
   (libraries util zarith xl el)
-  (modules ast eq free subst iter env eval print debug valid)
+  (modules ast eq free subst iter env eval print debug valid walk)
 )

@@ -25,6 +25,7 @@ This pass assumes that there is no name shadowing in the type definitions.
 open Util
 open Source
 open Il.Ast
+open Il.Walk
 
 (* Errors *)
 
@@ -98,8 +99,7 @@ let injection_name (sub : id) (sup : id) = sup.it ^ "_" ^ sub.it $ no_region
 
 (* The main transformation case *)
 let rec t_exp env exp =
-  let exp' = t_exp2 env exp in
-  match exp'.it with
+  match exp.it with
   | SubE (e, sub_ty, sup_ty) ->
 (
 (* Printf.eprintf "[sub @ %s] %s  <:  %s\n%!" (string_of_region exp'.at) (Il.Print.string_of_typ sub_ty) (Il.Print.string_of_typ sup_ty); *)
@@ -107,8 +107,8 @@ let rec t_exp env exp =
     | VarT (sub, args_sub), VarT (sup, args_sup) ->
       if env.pairs_mutable then
         env.pairs <- S.add (sub, sup) env.pairs;
-      { exp' with it = CallE (injection_name sub sup, args_sub @ args_sup @ [ExpA (t_exp env e) $ e.at])}
-    | NumT _, NumT _ -> exp'
+      { exp with it = CallE (injection_name sub sup, args_sub @ args_sup @ [ExpA (t_exp env e) $ e.at])}
+    | NumT _, NumT _ -> exp
     | TupT ts, TupT ts' when List.length ts = List.length ts' ->
       TupE (List.mapi (fun idx ((_, t), (_, t')) ->
         let proj_exp = ProjE (e, idx) $$ e.at % t in
@@ -120,171 +120,7 @@ let rec t_exp env exp =
       error sub_ty.at ("Non-variable or number type expression not supported `" ^ Il.Print.string_of_typ sub_ty ^ "`")
     end
 )
-  | _ -> exp'
-
-(* Traversal boilerplate *)
-
-and t_typ env x = { x with it = t_typ' env x.it }
-
-and t_typ' env = function
-  | VarT (id, args) -> VarT (id, t_args env args)
-  | (BoolT | NumT _ | TextT) as t -> t
-  | TupT xts -> TupT (List.map (fun (id, t) -> (id, t_typ env t)) xts)
-  | IterT (t, iter) -> IterT (t_typ env t, iter)
-
-and t_deftyp env x = { x with it = t_deftyp' env x.it }
-
-and t_deftyp' env = function
-  | AliasT t -> AliasT (t_typ env t)
-  | StructT typfields -> StructT (List.map (t_typfield env) typfields)
-  | VariantT typcases -> VariantT (List.map (t_typcase env) typcases)
-
-and t_typfield env (atom, (binds, t, prems), hints) =
-  (atom, (t_binds env binds, t_typ env t, t_prems env prems), hints)
-and t_typcase env (atom, (binds, t, prems), hints) =
-  (atom, (t_binds env binds, t_typ env t, t_prems env prems), hints)
-
-and t_exp2 env x = { x with it = t_exp' env x.it; note = t_typ env x.note }
-
-and t_exp' env = function
-  | (VarE _ | BoolE _ | NumE _ | TextE _) as e -> e
-  | UnE (unop, nto, exp) -> UnE (unop, nto, t_exp env exp)
-  | BinE (binop, nto, exp1, exp2) -> BinE (binop, nto, t_exp env exp1, t_exp env exp2)
-  | CmpE (cmpop, nto, exp1, exp2) -> CmpE (cmpop, nto, t_exp env exp1, t_exp env exp2)
-  | IdxE (exp1, exp2) -> IdxE (t_exp env exp1, t_exp env exp2)
-  | SliceE (exp1, exp2, exp3) -> SliceE (t_exp env exp1, t_exp env exp2, t_exp env exp3)
-  | UpdE (exp1, path, exp2) -> UpdE (t_exp env exp1, t_path env path, t_exp env exp2)
-  | ExtE (exp1, path, exp2) -> ExtE (t_exp env exp1, t_path env path, t_exp env exp2)
-  | StrE fields -> StrE (List.map (fun (a, e) -> a, t_exp env e) fields)
-  | DotE (e, a) -> DotE (t_exp env e, a)
-  | CompE (exp1, exp2) -> CompE (t_exp env exp1, t_exp env exp2)
-  | LiftE exp -> LiftE (t_exp env exp)
-  | LenE exp -> LenE (t_exp env exp)
-  | TupE es -> TupE (List.map (t_exp env) es)
-  | CallE (a, args) -> CallE (a, t_args env args)
-  | IterE (e, iterexp) -> IterE (t_exp env e, t_iterexp env iterexp)
-  | ProjE (e, i) -> ProjE (t_exp env e, i)
-  | UncaseE (e, mixop) -> UncaseE (t_exp env e, mixop)
-  | OptE None -> OptE None
-  | OptE (Some exp) -> OptE (Some (t_exp env exp))
-  | TheE exp -> TheE (t_exp env exp)
-  | ListE es -> ListE (List.map (t_exp env) es)
-  | CatE (exp1, exp2) -> CatE (t_exp env exp1, t_exp env exp2)
-  | MemE (exp1, exp2) -> MemE (t_exp env exp1, t_exp env exp2)
-  | CaseE (mixop, e) -> CaseE (mixop, t_exp env e)
-  | CvtE (exp, t1, t2) -> CvtE (t_exp env exp, t1, t2)
-  | SubE (e, t1, t2) -> SubE (e, t1, t2)
-  | IfE (e1, e2, e3) -> IfE (t_exp env e1, t_exp env e2, t_exp env e3)
-
-and t_iter env = function
-  | ListN (e, id_opt) -> ListN (t_exp env e, id_opt)
-  | i -> i
-
-and t_iterexp env (iter, vs) =
-  (t_iter env iter, List.map (fun (id, e) -> (id, t_exp env e)) vs)
-
-and t_path' env = function
-  | RootP -> RootP
-  | IdxP (path, e) -> IdxP (t_path env path, t_exp env e)
-  | SliceP (path, e1, e2) -> SliceP (t_path env path, t_exp env e1, t_exp env e2)
-  | DotP (path, a) -> DotP (t_path env path, a)
-
-and t_path env x = { x with it = t_path' env x.it; note = t_typ env x.note }
-
-and t_sym' env = function
-  | VarG (id, args) -> VarG (id, t_args env args)
-  | (NumG _ | TextG _ | EpsG) as g -> g
-  | SeqG syms -> SeqG (List.map (t_sym env) syms)
-  | AltG syms -> AltG (List.map (t_sym env) syms)
-  | RangeG (sym1, sym2) -> RangeG (t_sym env sym1, t_sym env sym2)
-  | IterG (sym, iter) -> IterG (t_sym env sym, t_iterexp env iter)
-  | AttrG (e, sym) -> AttrG (t_exp env e, t_sym env sym)
-
-and t_sym env x = { x with it = t_sym' env x.it }
-
-and t_arg' env = function
-  | ExpA exp -> ExpA (t_exp env exp)
-  | TypA t -> TypA t
-  | DefA id -> DefA id
-  | GramA sym -> GramA (t_sym env sym)
-
-and t_arg env x = { x with it = t_arg' env x.it }
-
-and t_bind' env = function
-  | ExpB (id, t) -> ExpB (id, t_typ env t)
-  | TypB id -> TypB id
-  | DefB (id, ps, t) -> DefB (id, t_params env ps, t_typ env t)
-  | GramB (id, ps, t) -> GramB (id, t_params env ps, t_typ env t)
-
-and t_bind env x = { x with it = t_bind' env x.it }
-
-and t_param' env = function
-  | ExpP (id, t) -> ExpP (id, t_typ env t)
-  | TypP id -> TypP id
-  | DefP (id, ps, t) -> DefP (id, t_params env ps, t_typ env t)
-  | GramP (id, t) -> GramP (id, t_typ env t)
-
-and t_param env x = { x with it = t_param' env x.it }
-
-and t_args env = List.map (t_arg env)
-and t_binds env = List.map (t_bind env)
-and t_params env = List.map (t_param env)
-
-and t_prem' env = function
-  | RulePr (id, mixop, exp) -> RulePr (id, mixop, t_exp env exp)
-  | NegPr prem -> NegPr (t_prem env prem)
-  | IfPr e -> IfPr (t_exp env e)
-  | LetPr (e1, e2, ids) -> LetPr (t_exp env e1, t_exp env e2, ids)
-  | ElsePr -> ElsePr
-  | IterPr (prem, iterexp) -> IterPr (t_prem env prem, t_iterexp env iterexp)
-
-and t_prem env x = { x with it = t_prem' env x.it }
-
-and t_prems env = List.map (t_prem env)
-
-let t_clause' env = function
- | DefD (binds, lhs, rhs, prems) ->
-   DefD (t_binds env binds, t_args env lhs, t_exp env rhs, t_prems env prems)
-
-let t_clause env (clause : clause) = { clause with it = t_clause' env clause.it }
-
-let t_clauses env = List.map (t_clause env)
-
-let t_inst' env = function
- | InstD (binds, args, deftyp) ->
-   InstD (t_binds env binds, t_args env args, t_deftyp env deftyp)
-
-let t_inst env (inst : inst) = { inst with it = t_inst' env inst.it }
-
-let t_insts env = List.map (t_inst env)
-
-let t_prod' env = function
- | ProdD (binds, lhs, rhs, prems) ->
-   ProdD (t_binds env binds, t_sym env lhs, t_exp env rhs, t_prems env prems)
-
-let t_prod env (prod : prod) = { prod with it = t_prod' env prod.it }
-
-let t_prods env = List.map (t_prod env)
-
-let t_rule' env = function
-  | RuleD (id, binds, mixop, exp, prems) ->
-    RuleD (id, t_binds env binds, mixop, t_exp env exp, t_prems env prems)
-
-let t_rule env x = { x with it = t_rule' env x.it }
-
-let rec t_def' env = function
-  | RecD defs -> RecD (List.map (t_def env) defs)
-  | DecD (id, params, typ, clauses) ->
-    DecD (id, t_params env params, typ, t_clauses env clauses)
-  | TypD (id, params, insts) ->
-    TypD (id, t_params env params, t_insts env insts)
-  | RelD (id, mixop, typ, rules) ->
-    RelD (id, mixop, t_typ env typ, List.map (t_rule env) rules)
-  | GramD (id, params, typ, prods) ->
-    GramD (id, t_params env params, typ, t_prods env prods)
-  | HintD _ as def -> def
-
-and t_def env (def : def) = { def with it = t_def' env def.it }
+  | _ -> exp
 
 (* Step 2 and 3: Traverse definitions, collect type information, insert as soon as possible *)
 
@@ -306,7 +142,6 @@ let ready_pairs (env : env) =
   let (ready, todo) = S.partition (is_ready env) env.pairs in
   env.pairs <- todo;
   S.elements ready
-
 
 (* Rename parameters to avoid name clashes *)
 let rec rename_params s = function
@@ -375,7 +210,8 @@ let insert_injections env (def : def) : def list =
 
 let transform (defs : script) =
   let env = new_env () in
-  let defs' = List.map (t_def env) defs in
+  let transformer = { base_transformer with transform_exp = t_exp env } in
+  let defs' = List.map (transform_def transformer) defs in
   env.pairs_mutable <- false;
   let defs'' =  List.concat_map (insert_injections env) defs' in
   S.iter (fun (sub, sup) -> error sup.at ("left-over subtype coercion `" ^ sub.it ^ "` <: `" ^ sup.it ^ "`")) env.pairs;
