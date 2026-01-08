@@ -38,6 +38,7 @@ open Util
 open Source
 open Il.Ast
 open Il
+open Il.Walk
 
 (* Errors *)
 
@@ -45,7 +46,7 @@ let error at msg = Error.error at "sub expression expansion" msg
 
 (* Environment *)
 
-(* Global IL env*)
+(* Global IL env *)
 let env_ref = ref Il.Env.empty
 
 let empty_tuple_exp at = TupE [] $$ at % (TupT [] $ at)
@@ -69,45 +70,11 @@ let get_bind_id b =
 let eq_sube (id, t1, t2) (id', t1', t2') =
   Eq.eq_id id id' && Eq.eq_typ t1 t1' && Eq.eq_typ t2 t2'
 
-let rec collect_sube_exp e = 
-  let c_func = collect_sube_exp in
+let collect_sube_exp e = 
   match e.it with
   (* Assumption - nested sub expressions do not exist. Must also be a varE. *)
-  | SubE ({it = VarE id; _}, t1, t2) -> [id, t1, t2]
-  | CallE (_, args) -> List.concat_map collect_sube_arg args
-  | StrE fields -> List.concat_map (fun (_a, e1) -> c_func e1) fields
-  | UnE (_, _, e1) | CvtE (e1, _, _) | LiftE e1 | TheE e1 | OptE (Some e1) 
-  | ProjE (e1, _) | UncaseE (e1, _)
-  | CaseE (_, e1) | LenE e1 | DotE (e1, _) -> c_func e1
-  | BinE (_, _, e1, e2) | CmpE (_, _, e1, e2)
-  | CompE (e1, e2) | MemE (e1, e2)
-  | CatE (e1, e2) | IdxE (e1, e2) -> c_func e1 @ c_func e2
-  | TupE exps | ListE exps -> List.concat_map collect_sube_exp exps
-  | SliceE (e1, e2, e3) 
-  | IfE (e1, e2, e3) -> c_func e1 @ c_func e2 @ c_func e3
-  | UpdE (e1, p, e2) 
-  | ExtE (e1, p, e2) -> c_func e1 @ collect_fcalls_path p @ c_func e2
-  | IterE (e1, (iter, id_exp_pairs)) -> 
-    c_func e1 @ collect_sube_iter iter @
-    List.concat_map (fun (_, exp) -> c_func exp) id_exp_pairs
-  | _ -> []
-
-and collect_sube_iter i = 
-  match i with
-  | ListN (e1, _) -> collect_sube_exp e1
-  | _ -> []
-    
-and collect_sube_arg a =
-  match a.it with
-  | ExpA exp -> collect_sube_exp exp
-  | _ -> []
-
-and collect_fcalls_path p =
-  match p.it with
-  | RootP -> []
-  | IdxP (p, e) -> collect_fcalls_path p @ collect_sube_exp e
-  | SliceP (p, e1, e2) -> collect_fcalls_path p @ collect_sube_exp e1 @ collect_sube_exp e2
-  | DotP (p, _) -> collect_fcalls_path p
+  | SubE ({it = VarE id; _}, t1, t2) -> ([id, t1, t2], false)
+  | _ -> ([], true)
 
 let check_matching c_args match_args = 
   Option.is_some (try 
@@ -164,9 +131,11 @@ let rec collect_all_instances_typ ids at typ =
   | _ -> []
 
 let generate_subst_list lhs binds =
+  let base_sube_collector : (id * typ * typ) list collector = base_collector [] (@) in
+  let collector = { base_sube_collector with collect_exp = collect_sube_exp } in
   (* Collect all unique sub expressions for each argument *)
   let subs = List.concat_map (fun a -> 
-    Lib.List.nub eq_sube (collect_sube_arg a)
+    Lib.List.nub eq_sube (collect_arg collector a)
   ) lhs in
   let ids = List.map get_bind_id binds in
 

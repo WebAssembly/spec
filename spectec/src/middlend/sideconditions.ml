@@ -14,6 +14,7 @@ open Util
 open Source
 open Il.Ast
 open Il.Free
+open Il.Walk
 
 (* Errors *)
 
@@ -54,100 +55,53 @@ let iter_side_conditions _env ((iter, vs) : iterexp) : prem list =
   | ListN _, _ -> []
   | _ -> []
 
-(* Expr traversal *)
-let rec t_exp env e : prem list =
-  (* First the conditions to be generated here *)
-  begin match e.it with
-  | CvtE (_exp, t1, t2) when t1 > t2 ->
-    []  (* TODO *)
-  | IdxE (exp1, exp2) ->
-    [IfPr (CmpE (`LtOp, `NatT, exp2, LenE exp1 $$ e.at % exp2.note) $$ e.at % (BoolT $ e.at)) $ e.at]
-  | TheE exp ->
-    [IfPr (CmpE (`NeOp, `BoolT, exp, OptE None $$ e.at % exp.note) $$ e.at % (BoolT $ e.at)) $ e.at]
-  | IterE ({it= CmpE (`EqOp, _,  _, _); _}, iterexp) -> iter_side_conditions env iterexp
-  | MemE (_exp, exp) ->
-    [IfPr (CmpE (`GtOp, `NatT, LenE exp $$ exp.at % (NumT `NatT $ exp.at), NumE (`Nat Z.zero) $$ no_region % (NumT `NatT $ no_region)) $$ e.at % (BoolT $ e.at)) $ e.at]
-  | _ -> []
-  end @
-  (* And now descend *)
+let is_eq_exp e = 
   match e.it with
-  | VarE _ | BoolE _ | NumE _ | TextE _ | OptE None
-  -> []
-  | UnE (_, _, exp)
-  | DotE (exp, _)
-  | LenE exp
-  | ProjE (exp, _)
-  | UncaseE (exp, _)
-  | OptE (Some exp)
-  | TheE exp
-  | LiftE exp
-  | CaseE (_, exp)
-  | CvtE (exp, _, _)
-  | SubE (exp, _, _)
-  -> t_exp env exp
-  | BinE (_, _, exp1, exp2)
-  | CmpE (_, _, exp1, exp2)
-  | IdxE (exp1, exp2)
-  | CompE (exp1, exp2)
-  | MemE (exp1, exp2)
-  | CatE (exp1, exp2)
-  -> t_exp env exp1 @ t_exp env exp2
-  | SliceE (exp1, exp2, exp3)
-  -> t_exp env exp1 @ t_exp env exp2 @ t_exp env exp3
-  | UpdE (exp1, path, exp2)
-  | ExtE (exp1, path, exp2)
-  -> t_exp env exp1 @ t_path env path @ t_exp env exp2
-  | CallE (_, args)
-  -> List.concat_map (t_arg env) args
-  | StrE fields
-  -> List.concat_map (fun (_, e) -> t_exp env e) fields
-  | TupE es | ListE es
-  -> List.concat_map (t_exp env) es
-  | IterE (e1, iterexp)
+  | CmpE (`EqOp, _,  _, _) -> true
+  | _ -> false
+  
+(* Expr traversal *)
+let rec t_exp env e =
+  match e.it with
+  | CvtE (_exp, t1, t2) when t1 > t2 ->
+    ([], true) (* TODO *)
+  | IdxE (exp1, exp2) ->
+    ([IfPr (CmpE (`LtOp, `NatT, exp2, LenE exp1 $$ e.at % exp2.note) $$ e.at % (BoolT $ e.at)) $ e.at], true)
+  | TheE exp ->
+    ([IfPr (CmpE (`NeOp, `BoolT, exp, OptE None $$ e.at % exp.note) $$ e.at % (BoolT $ e.at)) $ e.at], true) 
+  | MemE (_exp, exp) ->
+    ([IfPr (CmpE (`GtOp, `NatT, LenE exp $$ exp.at % (NumT `NatT $ exp.at), NumE (`Nat Z.zero) $$ no_region % (NumT `NatT $ no_region)) $$ e.at % (BoolT $ e.at)) $ e.at], true)
+  | IterE (e1, ((iter, _) as iterexp))
   ->
-    t_iterexp env iterexp @
     let env' = env_under_iter env iterexp in
-    List.map (fun pr -> iterPr (pr, iterexp) $ e.at) (t_exp env' e1)
-  | IfE (e1, e2, e3)
-  -> t_exp env e1 @ t_exp env e2 @ t_exp env e3
-     (* One could make the side-conditions from e2 and e3 have e1 or its negation as a premise *)
-
-and t_iterexp env (iter, _) = t_iter env iter
-
-and t_iter env = function
-  | ListN (e, _) -> t_exp env e
-  | _ -> []
-
-and t_path env path = match path.it with
-  | RootP -> []
-  | IdxP (path, e) -> t_path env path @ t_exp env e
-  | SliceP (path, e1, e2) -> t_path env path @ t_exp env e1 @ t_exp env e2
-  | DotP (path, _) -> t_path env path
-
-and t_arg env arg = match arg.it with
-  | ExpA exp -> t_exp env exp
-  | TypA _ -> []
-  | DefA _ -> []
-  | GramA _ -> []
-
-
-let rec t_prem env prem =
-  (match prem.it with
-  | RulePr (_, _, exp) -> t_exp env exp
-  | IfPr e -> t_exp env e
-  | LetPr (e1, e2, _) -> t_exp env e1 @ t_exp env e2
-  | ElsePr -> []
-  | IterPr (prem, iterexp)
-  -> iter_side_conditions env iterexp @
-     t_iterexp env iterexp @
-     let env' = env_under_iter env iterexp in
-     List.map (fun pr -> iterPr (pr, iterexp) $ prem.at) (t_prem env' prem)
-  | NegPr _prem' -> 
+    let collector1 = create_collector env in
+    let collector2 = create_collector env' in
+    let iter_prems = if is_eq_exp e1 then iter_side_conditions env iterexp else [] in 
+    (
+    iter_prems @ 
+    collect_iter collector1 iter @ 
+    List.map (fun pr -> iterPr (pr, iterexp) $ e.at) (collect_exp collector2 e1), false)
+  | _ -> ([], true)
+and t_prem env prem =
+  let res, continue = (match prem.it with
+  | IterPr (prem', ((iter, _) as iterexp))
+  -> 
+    let env' = env_under_iter env iterexp in
+    let collector1 = create_collector env in
+    let collector2 = create_collector env' in
+    (iter_side_conditions env iterexp @
+    collect_iter collector1 iter @
+    List.map (fun pr -> iterPr (pr, iterexp) $ prem'.at) (collect_prem collector2 prem' @ [prem']), false)
+  | NegPr _ -> 
     (* We do not want to infer anything from NegPr *)
-    []
-  ) @ [prem]
+    ([], false)
+  | _ -> ([], true)
+  ) in
+  res, continue
 
-let t_prems env = List.concat_map (t_prem env)
+and create_collector env = 
+  let base_prem_collector: prem list collector = base_collector [] (@) in
+  { base_prem_collector with collect_exp = t_exp env; collect_prem = t_prem env }
 
 let is_identity e =
   try
@@ -179,8 +133,9 @@ let t_rule' = function
       | ExpB (v, t) -> Env.add v.it t env
       | TypB _ | DefB _ | GramB _ -> error bind.at "unexpected type argument in rule") Env.empty binds
     in
-    let prems' = t_prems env prems in
-    let extra_prems = t_exp env exp in
+    let collector = create_collector env in
+    let prems' = List.concat_map (fun prem -> collect_prem collector prem @ [prem]) prems in
+    let extra_prems = collect_exp collector exp in
     let reduced_prems = reduce_prems (extra_prems @ prems') in
     RuleD (id, binds, mixop, exp, reduced_prems)
 

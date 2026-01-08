@@ -59,6 +59,9 @@ type family_data = (id * bind list * Subst.t * int * typ * typ)
 
 let error at msg = Error.error at "Type families removal" msg
 
+let projection_hint_id = "tf_projection_func"
+let projection_hint = { hintid = projection_hint_id $ no_region; hintexp = El.Ast.SeqE [] $ no_region}
+
 let bind_to_string bind = 
   match bind.it with
   | ExpB (id, _) -> id.it
@@ -648,7 +651,8 @@ let gen_family_projections id has_one_inst case_num inst =
       let none_exp = OptE (None) $$ id.at % return_type in  
       let extra_clause = DefD(binds @ [extra_bind], new_args @ [extra_arg], none_exp, []) $ id.at in 
       let clauses = new_clause :: if has_one_inst then [] else [extra_clause] in
-      DecD (proj_name id case_num, List.map make_param_from_bind binds @ [new_param], return_type, clauses)
+      let fun_id = proj_name id case_num in
+      fun_id, DecD (fun_id, List.map make_param_from_bind binds @ [new_param], return_type, clauses)
     | _ -> error inst.at "Type Family of variant or records should not exist" (* This should never occur *)
 
 let rec create_types_from_instances def =
@@ -696,7 +700,10 @@ let rec transform_type_family def =
       | [_] -> true
       | _ -> false
     in
-    TypD (id, params, [inst]) :: List.mapi (gen_family_projections id one_inst) insts
+    let proj_ids, projections = List.split (List.mapi (gen_family_projections id one_inst) insts) in
+
+    let hintdefs = List.map (fun id -> HintD (DecH (id, [projection_hint]) $ def.at)) proj_ids in
+    TypD (id, params, [inst]) :: projections @ hintdefs
   | RecD defs -> [RecD (List.concat_map transform_type_family defs)]
   | d -> [d]
   ) |> List.map (fun d -> d $ def.at)
