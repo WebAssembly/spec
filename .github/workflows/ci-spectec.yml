@@ -6,7 +6,6 @@ on:
     paths: [ spectec/**, document/** ]
 
   pull_request:
-    branches: [ main ]
     paths: [ spectec/**, document/** ]
 
   # Allows you to run this workflow manually from the Actions tab

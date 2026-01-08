@@ -30,7 +30,7 @@ let rec free_exp ignore_listN e =
     f e1
   | BinE (_, _, e1, e2) | CmpE (_, _, e1, e2) | IdxE (e1, e2) | CompE (e1, e2) | MemE (e1, e2) | CatE (e1, e2) ->
     free_list f [e1; e2]
-  | SliceE (e1, e2, e3) -> free_list f [e1; e2; e3]
+  | SliceE (e1, e2, e3) | IfE (e1, e2, e3) -> free_list f [e1; e2; e3]
   | OptE eo -> free_opt f eo
   | TupE es | ListE es -> free_list f es
   | UpdE (e1, p, e2) | ExtE (e1, p, e2) ->

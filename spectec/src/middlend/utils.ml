@@ -37,7 +37,7 @@ let generate_var ids id =
   let max = 1000 in
   let rec go prefix c =
     if max <= c then assert false else
-    let name = fresh_prefix ^ "_" ^ Int.to_string c in 
+    let name = prefix ^ "_" ^ Int.to_string c in 
     if (List.mem name ids) 
       then go prefix (c + 1) 
       else name
@@ -47,7 +47,7 @@ let generate_var ids id =
   | s when List.mem s ids -> go s start
   | _ -> id
 
-let improve_ids_binders generate_all_binds at exp_typ_pairs =
+let improve_ids_binders ids generate_all_binds at exp_typ_pairs =
   let get_id_from_exp e = 
     match e.it with
     | VarE id -> Some id.it
@@ -71,11 +71,27 @@ let improve_ids_binders generate_all_binds at exp_typ_pairs =
       let tupt = TupT pairs $ typ_at in
       let tupe = TupE (List.map fst pairs) $$ exp_at % tupt in 
       (binds' @ binds, (tupe, tupt) :: pairs')
+    | ({it = IterE (_, (_, iter_binds)); _}, {it = IterT _; _}) as b :: bs' ->
+      let new_binds = if generate_all_binds 
+        then 
+          List.filter_map (fun (_, e) -> 
+            match e.it with
+            | VarE id -> Some (ExpB (id, e.note) $ e.at)
+            | _ -> None
+          ) iter_binds 
+        else [] 
+      in 
+      let (binds, pairs) = improve_ids_helper ids bs' in
+      (new_binds @ binds, b :: pairs)
     | b :: bs' -> 
       let (binds, pairs) = improve_ids_helper ids bs' in
       (binds, b :: pairs)
   in
-  improve_ids_helper [] exp_typ_pairs
+  improve_ids_helper ids exp_typ_pairs
+
+let get_param_id p = 
+  match p.it with
+  | ExpP (id, _) | TypP id | DefP (id, _, _) | GramP (id, _) -> id
 
 let improve_ids_params params =
   let reconstruct_param id p = 
@@ -86,16 +102,13 @@ let improve_ids_params params =
     | GramP (_, typ) -> GramP (id, typ)
     ) $ p.at
   in
-  let get_id p = 
-    match p.it with
-    | ExpP (id, _) | TypP id | DefP (id, _, _) | GramP (id, _) -> id
-  in
   let rec improve_ids_helper ids ps = 
     match ps with
     | [] -> []
     | p :: ps' -> 
-      let p_id = get_id p in
+      let p_id = get_param_id p in
       let new_name = generate_var ids p_id.it $ p_id.at in 
       reconstruct_param new_name p :: improve_ids_helper (new_name.it :: ids) ps' 
   in
   improve_ids_helper [] params
+
