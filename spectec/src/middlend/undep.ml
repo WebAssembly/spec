@@ -51,12 +51,14 @@ module StringSet = Set.Make(String)
 
 type env = {
   mutable wf_set : StringSet.t;
-  mutable il : Il.Env.t;
+  mutable proj_set : StringSet.t;
+  mutable il_env : Il.Env.t;
 }
 
-let empty = {
+let empty () = {
   wf_set = StringSet.empty;
-  il = Il.Env.empty
+  proj_set = StringSet.empty;
+  il_env = Il.Env.empty
 }
 
 let wf_pred_prefix = "wf_"
@@ -82,6 +84,13 @@ let remove_last_char s =
 let bind_wf_set env id =
   if id <> "" && id <> "_" then
   env.wf_set <- StringSet.add id env.wf_set
+
+let is_part_of_bind (free_set : Free.sets) b =
+  match b.it with
+  | ExpB (id, _) -> Free.Set.mem id.it free_set.varid 
+  | TypB id -> Free.Set.mem id.it free_set.typid
+  | DefB (id, _, _) -> Free.Set.mem id.it free_set.defid
+  | GramB (id, _, _) -> Free.Set.mem id.it free_set.gramid
 
 let is_type_arg arg = 
   match arg.it with
@@ -142,16 +151,19 @@ and t_typ t =
   | typ -> typ
   ) $ t.at
 
-and t_exp e = 
+and t_exp env e = 
   (match e.it with
+    (* Remove every arg but last for family projections *)
+  | CallE (id, args) when StringSet.mem id.it env.proj_set && args <> [] -> 
+    CallE (id, [(Lib.List.last args)])
     (* HACK - Change IterE of option with no iteration variable into a OptE *)
   | IterE (e1, (Opt, [])) -> 
     OptE (Some e1) 
   | exp -> exp
   ) $$ e.at % e.note
 
-let t_inst inst = 
-  let tf = { base_transformer with transform_exp = t_exp; transform_typ = t_typ } in
+let t_inst env inst = 
+  let tf = { base_transformer with transform_exp = t_exp env; transform_typ = t_typ } in
   (match inst.it with
   | InstD (binds, args, deftyp) -> InstD (List.map (transform_bind tf) binds |> List.filter is_type_bind, List.map (transform_arg tf) args |> List.filter is_type_arg, 
     (match deftyp.it with 
@@ -182,14 +194,15 @@ let needs_wfness env def =
   | _ -> false
 
 let rec get_wf_pred env (exp, t) = 
-  let get_id exp =
+  let get_id iter exp =
     match exp.it with
     | VarE id -> id
     | _ -> 
-      (* This should never happen as long as the code doesn't change *)
-      error exp.at ("Abnormal bind - does not have correct exp: " ^ Il.Print.string_of_exp exp)
+      let s_iter = if iter = Opt then "?" else "*" in
+      let free_vars = (Free.free_exp exp).varid |> Free.Set.elements in
+      Utils.generate_var free_vars "iter" ^ s_iter $ exp.at 
   in
-  let t' = Utils.reduce_type_aliasing env.il t in
+  let t' = Utils.reduce_type_aliasing env.il_env t in
   let exp' = {exp with note = t'} in 
   match t'.it with
     | VarT (id, args) when StringSet.mem id.it env.wf_set ->
@@ -202,7 +215,7 @@ let rec get_wf_pred env (exp, t) =
       let tuple_exp = TupE (exp_args @ [exp']) $$ id.at % tupt in
       [RulePr (wf_pred_prefix ^ id.it $ id.at, new_mixop, tuple_exp) $ id.at]
     | IterT (typ, iter) ->
-      let name = get_id exp' in
+      let name = get_id iter exp' in
       let name' = remove_last_char name.it $ name.at in 
       let prems = get_wf_pred env (VarE name' $$ name.at % typ, typ) in
       List.map (fun prem -> IterPr (prem, (iter, [(name', exp')])) $ name.at) prems
@@ -228,7 +241,7 @@ let get_exp_typ b =
   | _ -> None
   
 let create_well_formed_predicate env id inst = 
-  let tf = { base_transformer with transform_exp = t_exp; transform_typ = t_typ} in
+  let tf = { base_transformer with transform_exp = t_exp env; transform_typ = t_typ} in
   let at = id.at in 
   let user_typ = VarT(id, []) $ at in
   let new_mixop pairs = [] :: List.init (List.length pairs + 1) (fun _ -> []) in
@@ -315,9 +328,9 @@ let get_extra_prems env binds exp prems =
       IterPr (acc, iterexp) $ acc.at   
     ) prem' iterexps) (get_wf_pred env pair) 
   ) unique_terms in
-
+    
   (* Leverage the fact that the wellformed predicates are "bubbled up" and remove unnecessary wf preds*)
-  let free_vars = (Free.free_list Free.free_prem more_prems).varid in
+  let free_vars = (Free.free_list Free.free_prem more_prems).varid in 
   let binds_filtered = Lib.List.filter_not (fun b -> match b.it with 
     | ExpB (id, _) -> Free.Set.mem id.it free_vars
     | _ -> true
@@ -326,7 +339,7 @@ let get_extra_prems env binds exp prems =
   bind_prems @ more_prems
     
 let t_rule env rule = 
-  let tf = { base_transformer with transform_exp = t_exp; transform_typ = t_typ} in
+  let tf = { base_transformer with transform_exp = t_exp env; transform_typ = t_typ} in
   (match rule.it with
   | RuleD (id, binds, m, exp, prems) -> 
     let extra_prems = get_extra_prems env binds exp prems in 
@@ -339,10 +352,13 @@ let t_rule env rule =
   ) $ rule.at
 
 let t_clause env clause =
-  let tf = { base_transformer with transform_exp = t_exp; transform_typ = t_typ} in
+  let tf = { base_transformer with transform_exp = t_exp env; transform_typ = t_typ} in
   (match clause.it with 
   | DefD (binds, args, exp, prems) -> 
-    let extra_prems = get_extra_prems env binds exp prems in 
+    let free_args = Free.free_list Free.free_arg args in 
+    (* Only focus on generating wf preds for variables not in the arguments *)
+    let filtered_binds = Lib.List.filter_not (is_part_of_bind free_args) binds in
+    let extra_prems = get_extra_prems env filtered_binds exp prems in 
     DefD (List.map (transform_bind tf) binds, 
       List.map (transform_arg tf) args,
       transform_exp tf exp, 
@@ -360,20 +376,43 @@ let get_def_id def =
   | TypD (id, _, _) -> id
   | _ -> "" $ def.at
 
+let remove_unused_params def =
+  match def.it with
+  | DecD (id, params, typ, clauses) -> 
+    let params' = [Lib.List.last params] in
+    let clauses' = List.map (fun clause -> match clause.it with
+      | DefD (binds, args, exp, prems) -> 
+        let a = Lib.List.last args in
+        let free_vars = Free.free_arg a in 
+        let filtered_binds = List.filter (is_part_of_bind free_vars) binds in
+        DefD (filtered_binds, [a], exp, prems) $ clause.at  
+    ) clauses in
+    { def with it = DecD (id, params', typ, clauses') }
+  | _ -> def
+
 let rec t_def env def = 
-  let tf = { base_transformer with transform_exp = t_exp; transform_typ = t_typ} in
+  let tf = { base_transformer with transform_exp = t_exp env; transform_typ = t_typ } in
   match def.it with
   | TypD (id, params, [inst]) when List.exists is_not_exp_param params -> 
     (TypD (id, List.map (transform_param tf) params |> List.filter is_type_param, [inst]) $ def.at, [])
   | TypD (id, params, [inst]) -> 
     let relation = create_well_formed_predicate env id inst in
-    (TypD (id, List.map (transform_param tf) params |> List.filter is_type_param, [t_inst inst]) $ def.at, Option.to_list relation)
+    (TypD (id, List.map (transform_param tf) params |> List.filter is_type_param, [t_inst env inst]) $ def.at, Option.to_list relation)
   | TypD (_, _, _) -> 
     error def.at "Multiples instances encountered, please run type family removal pass first."
   | RelD (id, m, typ, rules) -> 
     (RelD (id, m, transform_typ tf typ, List.map (t_rule env) rules) $ def.at, [])
-  | DecD (id, params, typ, clauses) -> (DecD (id, List.map (transform_param tf) params, transform_typ tf typ, List.map (t_clause env) clauses) $ def.at, [])
-  | GramD (id, params, typ, prods) -> (GramD (id, List.map (transform_param tf) params, transform_typ tf typ, List.map (transform_prod tf) prods) $ def.at, [])
+  | DecD (id, params, typ, clauses) -> 
+    let d = DecD (id, 
+      List.map (transform_param tf) params, 
+      transform_typ tf typ, 
+      List.map (t_clause env) clauses
+      ) $ def.at 
+    in
+    let t_d = if StringSet.mem id.it env.proj_set then remove_unused_params d else d in
+    (t_d, [])
+  | GramD (id, params, typ, prods) -> 
+    (GramD (id, List.map (transform_param tf) params, transform_typ tf typ, List.map (transform_prod tf) prods) $ def.at, [])
   | RecD defs -> 
     if List.exists (needs_wfness env) defs 
       then List.iter (fun d -> bind_wf_set env (get_def_id d).it) defs; 
@@ -383,9 +422,23 @@ let rec t_def env def =
     (rec_defs, [RecD (List.concat wf_relations) $ def.at])
   | HintD hintdef -> (HintD hintdef $ def.at, [])
   
+let has_proj_hint (hint : hint) = hint.hintid.it = Typefamilyremoval.projection_hint_id
+
+let create_proj_map_def set (d : def) = 
+  match d.it with
+  | HintD {it = DecH (id, hints); _} ->
+    (match (List.find_opt has_proj_hint hints) with
+    | Some _ -> set := StringSet.add id.it !set
+    | _ -> ()
+    ) 
+  | _ -> ()
+
 let transform (il : script): script =
-  let env = empty in 
-  env.il <- Il.Env.env_of_script il;
+  let env = empty () in 
+  env.il_env <- Il.Env.env_of_script il;
+  let proj_set = ref StringSet.empty in
+  List.iter (create_proj_map_def proj_set) il;
+  env.proj_set <- !proj_set;
   List.concat_map (fun d -> 
     let (t_d, wf_relations) = t_def env d in 
     t_d :: wf_relations
