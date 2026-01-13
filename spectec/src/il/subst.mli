@@ -1,6 +1,6 @@
 open Ast
 
-module Map : Map.S with type key = string with type 'a t = 'a Map.Make(String).t
+module Map : module type of Map.Make(String)
 
 type subst = {varid : exp Map.t; typid : typ Map.t; defid : id Map.t; gramid : sym Map.t}
 type t = subst
@@ -38,7 +38,6 @@ val subst_param : subst -> param -> param
 val subst_deftyp : subst -> deftyp -> deftyp
 val subst_typcase : subst -> typcase -> typcase
 val subst_typfield : subst -> typfield -> typfield
-val subst_typbind : subst -> id * typ -> id * typ
 
 val subst_args : subst -> arg list -> arg list
 val subst_params : subst -> param list -> param list * subst

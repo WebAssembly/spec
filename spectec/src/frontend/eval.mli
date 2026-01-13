@@ -1,6 +1,6 @@
 open El.Ast
 
-module Map : Map.S with type key = string with type 'a t = 'a Map.Make(String).t
+module Map : module type of Map.Make(String)
 
 type typ_def = (arg list * typ) list
 type def_def = (arg list * exp * prem list) list

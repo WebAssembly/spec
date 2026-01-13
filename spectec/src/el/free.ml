@@ -2,17 +2,13 @@ open Util.Source
 open Ast
 open Xl
 
-
 include Xl.Gen_free
-
-let (+) = union
-let (-) = diff
 
 
 (* Aggregates *)
 
 let free_nl_elem free_x = function Nl -> empty | Elem x -> free_x x
-let free_nl_list free_x xs = List.(fold_left (+) empty (map (free_nl_elem free_x) xs))
+let free_nl_list free_x xs = List.(fold_left (++) empty (map (free_nl_elem free_x) xs))
 
 
 (* Identifiers *)
@@ -32,43 +28,43 @@ let bound_op op = free_op op
 let rec free_iter iter =
   match iter with
   | Opt | List | List1 -> empty
-  | ListN (e, id_opt) -> free_exp e + free_opt free_varid id_opt
+  | ListN (e, id_opt) -> free_exp e ++ free_opt free_varid id_opt
 
 
 (* Types *)
 
 and free_typ t =
   match t.it with
-  | VarT (id, as_) -> free_typid id + free_args as_
+  | VarT (id, as_) -> free_typid id ++ free_args as_
   | BoolT | NumT _ | TextT -> empty
   | ParenT t1 -> free_typ t1
   | TupT ts -> free_list free_typ ts
-  | IterT (t1, iter) -> free_typ t1 + free_iter iter
+  | IterT (t1, iter) -> free_typ t1 ++ free_iter iter
   | StrT (_, ts, tfs, _) ->
-    free_nl_list free_typ ts +
-      free_nl_list (fun tf -> free_typfield tf - det_typfield tf) tfs
+    free_nl_list free_typ ts ++
+      free_nl_list (fun tf -> free_typfield tf -- det_typfield tf) tfs
   | CaseT (_, ts, tcs, _) ->
-    free_nl_list free_typ ts +
-      free_nl_list (fun tc -> free_typcase tc - det_typcase tc) tcs
-  | ConT tc -> free_typcon tc - det_typcon tc
+    free_nl_list free_typ ts ++
+      free_nl_list (fun tc -> free_typcase tc -- det_typcase tc) tcs
+  | ConT tc -> free_typcon tc -- det_typcon tc
   | RangeT tes -> free_nl_list free_typenum tes
   | AtomT _ -> empty
   | SeqT ts -> free_list free_typ ts
-  | InfixT (t1, _, t2) -> free_typ t1 + free_typ t2
+  | InfixT (t1, _, t2) -> free_typ t1 ++ free_typ t2
   | BrackT (_, t1, _) -> free_typ t1
 
-and free_typfield (_, (t, prems), _) = free_typ t + free_prems prems
-and free_typcase (_, (t, prems), _) = free_typ t + free_prems prems
-and free_typcon ((t, prems), _) = free_typ t + free_prems prems
-and free_typenum (e, eo) = free_exp e + free_opt free_exp eo
+and free_typfield (_, (t, prems), _) = free_typ t ++ free_prems prems
+and free_typcase (_, (t, prems), _) = free_typ t ++ free_prems prems
+and free_typcon ((t, prems), _) = free_typ t ++ free_prems prems
+and free_typenum (e, eo) = free_exp e ++ free_opt free_exp eo
 
 
 (* Variables can be determined by types through implicit binders *)
 and det_typ t = det_exp (Convert.pat_of_typ t)
 
-and det_typfield (_, (t, prems), _) = det_typ t + det_prems prems
-and det_typcase (_, (t, prems), _) = det_typ t + det_prems prems
-and det_typcon ((t, prems), _) = det_typ t + det_prems prems
+and det_typfield (_, (t, prems), _) = det_typ t ++ det_prems prems
+and det_typcase (_, (t, prems), _) = det_typ t ++ det_prems prems
+and det_typcon ((t, prems), _) = det_typ t ++ det_prems prems
 
 
 (* Expressions *)
@@ -79,38 +75,38 @@ and free_unop = function
 
 and free_exp e =
   match e.it with
-  | VarE (id, as_) -> free_varid id + free_list free_arg as_
+  | VarE (id, as_) -> free_varid id ++ free_list free_arg as_
   | AtomE _ | BoolE _ | NumE _ | TextE _ | EpsE | HoleE _ | LatexE _ -> empty
-  | UnE (op, e1) -> free_unop op + free_exp e1
+  | UnE (op, e1) -> free_unop op ++ free_exp e1
   | CvtE (e1, _) | DotE (e1, _) | LenE e1
   | ParenE e1 | BrackE (_, e1, _) | ArithE e1 | UnparenE e1 -> free_exp e1
   | SizeE id -> free_gramid id
   | BinE (e1, _, e2) | CmpE (e1, _, e2)
   | IdxE (e1, e2) | CommaE (e1, e2) | CatE (e1, e2) | MemE (e1, e2)
-  | InfixE (e1, _, e2) | FuseE (e1, e2) -> free_exp e1 + free_exp e2
-  | SliceE (e1, e2, e3) -> free_exp e1 + free_exp e2 + free_exp e3
+  | InfixE (e1, _, e2) | FuseE (e1, e2) -> free_exp e1 ++ free_exp e2
+  | SliceE (e1, e2, e3) -> free_exp e1 ++ free_exp e2 ++ free_exp e3
   | SeqE es | ListE es | TupE es -> free_list free_exp es
   | UpdE (e1, p, e2) | ExtE (e1, p, e2) ->
-    free_exp e1 + free_path p + free_exp e2
+    free_exp e1 ++ free_path p ++ free_exp e2
   | StrE efs -> free_nl_list free_expfield efs
-  | CallE (id, as_) -> free_defid id + free_list free_arg as_
-  | IterE (e1, iter) -> free_exp e1 + free_iter iter
-  | TypE (e1, t) -> free_exp e1 + free_typ t
+  | CallE (id, as_) -> free_defid id ++ free_list free_arg as_
+  | IterE (e1, iter) -> free_exp e1 ++ free_iter iter
+  | TypE (e1, t) -> free_exp e1 ++ free_typ t
 
 and free_expfield (_, e) = free_exp e
 
 and free_path p =
   match p.it with
   | RootP -> empty
-  | IdxP (p1, e) -> free_path p1 + free_exp e
-  | SliceP (p1, e1, e2) -> free_path p1 + free_exp e1 + free_exp e2
+  | IdxP (p1, e) -> free_path p1 ++ free_exp e
+  | SliceP (p1, e1, e2) -> free_path p1 ++ free_exp e1 ++ free_exp e2
   | DotP (p1, _) -> free_path p1
 
 
 and det_unop =
   function
   | #signop ->
-    bound_op (Print.string_of_unop `PlusMinusOp) +
+    bound_op (Print.string_of_unop `PlusMinusOp) ++
     bound_op (Print.string_of_unop `MinusPlusOp)
   | _ -> empty
 
@@ -118,21 +114,21 @@ and det_exp e =
   match e.it with
   | VarE (id, []) -> bound_varid id
   | VarE _ -> assert false
-  | UnE (#signop as op, e1) -> det_unop op + det_exp e1
+  | UnE (#signop as op, e1) -> det_unop op ++ det_exp e1
   | CvtE (e1, _) | UnE (#Num.unop, e1)
   | ParenE e1 | BrackE (_, e1, _) | ArithE e1 -> det_exp e1
   (* We consider arithmetic expressions determinate,
    * since we sometimes need to use invertible formulas. *)
   | BinE (e1, #Num.binop, e2)
-  | InfixE (e1, _, e2) -> det_exp e1 + det_exp e2
+  | InfixE (e1, _, e2) -> det_exp e1 ++ det_exp e2
   | SeqE es | ListE es | TupE es -> free_list det_exp es
   | StrE efs -> free_nl_list det_expfield efs
-  | IterE (e1, iter) -> det_exp e1 + det_iter iter
+  | IterE (e1, iter) -> det_exp e1 ++ det_iter iter
   (* As a special hack to work with bijective functions,
    * we treat last position of a call as a pattern, too. *)
   | CallE (_, []) -> empty
   | CallE (_, as_) ->
-    free_list idx_arg as_ + det_arg (Util.Lib.List.last as_)
+    free_list idx_arg as_ ++ det_arg (Util.Lib.List.last as_)
   | TypE (e1, _) -> det_exp e1
   | AtomE _ | BoolE _ | NumE _ | TextE _ | EpsE -> empty
   | UnE _ | BinE _ | CmpE _
@@ -145,16 +141,16 @@ and det_expfield (_, e) = det_exp e
 and det_iter iter =
   match iter with
   | Opt | List | List1 -> empty
-  | ListN (e, id_opt) -> det_exp e + free_opt bound_varid id_opt
+  | ListN (e, id_opt) -> det_exp e ++ free_opt bound_varid id_opt
 
 and idx_exp e =
   match e.it with
   | VarE _ -> empty
   | ParenE e1 | BrackE (_, e1, _) | ArithE e1 -> idx_exp e1
-  | InfixE (e1, _, e2) -> idx_exp e1 + idx_exp e2
+  | InfixE (e1, _, e2) -> idx_exp e1 ++ idx_exp e2
   | SeqE es | ListE es | TupE es -> free_list idx_exp es
   | StrE efs -> free_nl_list idx_expfield efs
-  | IterE (e1, iter) -> idx_exp e1 + idx_iter iter
+  | IterE (e1, iter) -> idx_exp e1 ++ idx_iter iter
   | CallE (_, as_) -> free_list idx_arg as_
   | TypE (e1, _) -> idx_exp e1
   | IdxE (_, e2) -> det_exp e2
@@ -165,13 +161,13 @@ and idx_expfield (_, e) = idx_exp e
 and idx_iter iter =
   match iter with
   | Opt | List | List1 -> empty
-  | ListN (e, id_opt) -> idx_exp e + free_opt bound_varid id_opt
+  | ListN (e, id_opt) -> idx_exp e ++ free_opt bound_varid id_opt
 
 and det_cond_exp e =
   match e.it with
   | UnE (#Bool.unop, e1) -> det_cond_exp e1
-  | BinE (e1, #Bool.binop, e2) -> det_cond_exp e1 + det_cond_exp e2
-  | CmpE (e1, `EqOp, e2) -> det_exp e1 + det_exp e2
+  | BinE (e1, #Bool.binop, e2) -> det_cond_exp e1 ++ det_cond_exp e2
+  | CmpE (e1, `EqOp, e2) -> det_exp e1 ++ det_exp e2
   | MemE (e1, _) -> det_exp e1
   | ParenE e1 | ArithE e1 -> det_cond_exp e1
   | _ -> empty
@@ -181,40 +177,40 @@ and det_cond_exp e =
 
 and free_sym g =
   match g.it with
-  | VarG (id, as_) -> free_gramid id + free_args as_
+  | VarG (id, as_) -> free_gramid id ++ free_args as_
   | NumG _ | TextG _ | EpsG -> empty
   | SeqG gs | AltG gs -> free_nl_list free_sym gs
-  | RangeG (g1, g2) | FuseG (g1, g2) -> free_sym g1 + free_sym g2
+  | RangeG (g1, g2) | FuseG (g1, g2) -> free_sym g1 ++ free_sym g2
   | ParenG g1 | UnparenG g1 -> free_sym g1
   | TupG gs -> free_list free_sym gs
-  | IterG (g1, iter) -> free_sym g1 + free_iter iter
+  | IterG (g1, iter) -> free_sym g1 ++ free_iter iter
   | ArithG e -> free_exp e
-  | AttrG (e, g1) -> free_exp e + free_sym g1
+  | AttrG (e, g1) -> free_exp e ++ free_sym g1
 
 and det_sym g =
   match g.it with
   | VarG _ | NumG _ | TextG _ | EpsG -> empty
   | SeqG gs | AltG gs -> free_nl_list det_sym gs
-  | RangeG (g1, g2) -> det_sym g1 + det_sym g2
+  | RangeG (g1, g2) -> det_sym g1 ++ det_sym g2
   | ParenG g1 -> det_sym g1
   | TupG gs -> free_list det_sym gs
-  | IterG (g1, iter) -> det_sym g1 + det_iter iter
+  | IterG (g1, iter) -> det_sym g1 ++ det_iter iter
   | ArithG e -> det_exp e
-  | AttrG (e, g1) -> det_exp e + det_sym g1
+  | AttrG (e, g1) -> det_exp e ++ det_sym g1
   | FuseG _ | UnparenG _ -> assert false
 
 and free_prod prod =
   match prod.it with
-  | SynthP (g, e, prems) -> free_sym g + free_exp e + free_prems prems
+  | SynthP (g, e, prems) -> free_sym g ++ free_exp e ++ free_prems prems
   | RangeP (g1, e1, g2, e2) ->
-    free_sym g1 + free_exp e1 + free_sym g2 + free_exp e2
-  | EquivP (g1, g2, prems) -> free_sym g1 + free_sym g2 + free_prems prems
+    free_sym g1 ++ free_exp e1 ++ free_sym g2 ++ free_exp e2
+  | EquivP (g1, g2, prems) -> free_sym g1 ++ free_sym g2 ++ free_prems prems
 
 and det_prod prod =
   match prod.it with
-  | SynthP (g, _e, prems) -> det_sym g + det_prems prems
-  | RangeP (g1, _e1, g2, _e2) -> det_sym g1 + det_sym g2
-  | EquivP (g1, _g2, prems) -> det_sym g1 + det_prems prems
+  | SynthP (g, _e, prems) -> det_sym g ++ det_prems prems
+  | RangeP (g1, _e1, g2, _e2) -> det_sym g1 ++ det_sym g2
+  | EquivP (g1, _g2, prems) -> det_sym g1 ++ det_prems prems
 
 and free_gram gram =
   let (_dots1, prods, _dots2) = gram.it in
@@ -226,11 +222,11 @@ and free_gram gram =
 
 and free_prem prem =
   match prem.it with
-  | VarPr (id, t) -> free_varid id + free_typ t
-  | RulePr (id, e) -> free_relid id + free_exp e
+  | VarPr (id, t) -> free_varid id ++ free_typ t
+  | RulePr (id, e) -> free_relid id ++ free_exp e
   | IfPr e -> free_exp e
   | ElsePr -> empty
-  | IterPr (prem1, iter) -> free_prem prem1 + free_iter iter
+  | IterPr (prem1, iter) -> free_prem prem1 ++ free_iter iter
 
 and det_prem prem =
   match prem.it with
@@ -238,7 +234,7 @@ and det_prem prem =
   | RulePr (_id, e) -> det_exp e
   | IfPr e -> det_cond_exp e
   | ElsePr -> empty
-  | IterPr (prem1, iter) -> det_prem prem1 + det_iter iter
+  | IterPr (prem1, iter) -> det_prem prem1 ++ det_iter iter
 
 and free_prems prems = free_nl_list free_prem prems
 and det_prems prems = free_nl_list det_prem prems
@@ -271,16 +267,16 @@ and free_param p =
   match p.it with
   | ExpP (_, t) -> free_typ t
   | TypP _ -> empty
-  | GramP (_, ps, t) -> free_params ps + free_typ t - bound_params ps - impl_bound_typ ps t
-  | DefP (_, ps, t) -> free_params ps + free_typ t - bound_params ps
+  | GramP (_, ps, t) -> free_params ps ++ free_typ t -- bound_params ps -- impl_bound_typ ps t
+  | DefP (_, ps, t) -> free_params ps ++ free_typ t -- bound_params ps
 
-and impl_bound_typ ps t = {empty with typid = (free_typ t).typid} - bound_params ps
+and impl_bound_typ ps t = {empty with typid = (free_typ t).typid} -- bound_params ps
 
 and bound_param p =
   match p.it with
   | ExpP (id, _) -> bound_varid id
   | TypP id -> bound_typid id
-  | GramP (id, ps, t) -> bound_gramid id + impl_bound_typ ps t
+  | GramP (id, ps, t) -> bound_gramid id ++ impl_bound_typ ps t
   | DefP (id, _, _) -> bound_defid id
 
 and free_args as_ = free_list free_arg as_
@@ -294,23 +290,23 @@ let free_def d =
   | FamD (_id, ps, _hints) ->
     free_list free_param ps
   | TypD (_id1, _id2, as_, t, _hints) ->
-    free_args as_ + free_typ t
+    free_args as_ ++ free_typ t
   | GramD (_id1, _id2, ps, t, gram, _hints) ->
-    free_params ps + (free_typ t + free_gram gram - bound_params ps - impl_bound_typ ps t)
+    free_params ps ++ (free_typ t ++ free_gram gram -- bound_params ps -- impl_bound_typ ps t)
   | VarD (_id, t, _hints) -> free_typ t
   | SepD -> empty
   | RelD (_id, t, _hints) -> free_typ t
   | RuleD (id1, _id2, e, prems) ->
-    free_relid id1 + free_exp e + free_prems prems
+    free_relid id1 ++ free_exp e ++ free_prems prems
   | DecD (_id, ps, t, _hints) ->
-    free_params ps + free_typ t - bound_params ps
+    free_params ps ++ free_typ t -- bound_params ps
   | DefD (id, as_, e, prems) ->
-    free_defid id + free_args as_ + free_exp e + free_prems prems
+    free_defid id ++ free_args as_ ++ free_exp e ++ free_prems prems
   | HintD _ -> empty
 
 let det_def d =
   match d.it with
   | FamD _ | GramD _ | VarD _ | SepD | RelD _ | DecD _ | HintD _ -> empty
   | TypD (_id1, _id2, as_, _t, _hints) -> det_args as_
-  | RuleD (_id1, _id2, e, prems) -> det_exp e + det_prems prems
-  | DefD (_id, as_, e, prems) -> det_args as_ + idx_exp e + det_prems prems
+  | RuleD (_id1, _id2, e, prems) -> det_exp e ++ det_prems prems
+  | DefD (_id, as_, e, prems) -> det_args as_ ++ idx_exp e ++ det_prems prems

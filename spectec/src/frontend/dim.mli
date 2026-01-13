@@ -1,21 +1,21 @@
 open Il.Ast
 
-module Env : Map.S with type key = string
+module Map : module type of Map.Make(String)
 
-type outer = id list
-type env = iter list Env.t
+type dims = (Util.Source.region * iter list) Map.t
+type outer = dims
 
 val annot_varid : id -> iter list -> id
 
-val check_def : def -> env (* raises Error.Error *)
-val check_inst : outer -> arg list -> deftyp -> env (* raises Error.Error *)
-val check_prod : outer -> sym -> exp -> prem list -> env (* raises Error.Error *)
-val check_abbr : outer -> sym -> sym -> prem list -> env (* raises Error.Error *)
-val check_deftyp : outer -> typ list -> prem list -> env (* raises Error.Error *)
+val check :
+  outer ->
+  param list -> arg list -> typ list -> exp list -> sym list -> prem list ->
+  dims (* raises Error.Error *)
 
-val annot_iter : env -> iter -> iter
-val annot_exp : env -> exp -> exp
-val annot_sym : env -> sym -> sym
-val annot_arg : env -> arg -> arg
-val annot_prem : env -> prem -> prem
-val annot_inst : env -> inst -> inst
+val annot_iter : dims -> iter -> iter
+val annot_typ : dims -> typ -> typ
+val annot_exp : dims -> exp -> exp
+val annot_sym : dims -> sym -> sym
+val annot_prem : dims -> prem -> prem
+val annot_arg : dims -> arg -> arg
+val annot_param : dims -> param -> param

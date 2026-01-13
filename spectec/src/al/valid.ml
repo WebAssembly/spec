@@ -175,7 +175,7 @@ and unify_typs_opt : typ list -> typ option = function
 and ground_typ_of (typ: typ) : typ =
   match typ.it with
   | VarT (id, _) when IlEnv.mem_var !il_env id ->
-    let typ' = IlEnv.find_var !il_env id in
+    let typ', _ = IlEnv.find_var !il_env id in
     if Il.Eq.eq_typ typ typ' then typ else ground_typ_of typ'
   (* NOTE: Consider `fN` as a `NumT` to prevent diverging ground type *)
   | VarT (id, _) when id.it = "fN" -> NumT `RealT $ typ.at
@@ -316,7 +316,7 @@ let check_call source id args result_typ =
       match arg.it, param.it with
       | ExpA expr, ExpP (_, typ') -> check_match source expr.note typ'
       (* Add local variable typ *)
-      | TypA typ1, TypP id -> il_env := IlEnv.bind_var !il_env id typ1
+      | TypA typ1, TypP id -> il_env := IlEnv.bind_var !il_env id (typ1, Reg)
       | DefA aid, DefP (_, pparams, ptyp) ->
         (match IlEnv.find_opt_def !il_env (aid $ no_region) with
         | Some (aparams, atyp, _) -> 

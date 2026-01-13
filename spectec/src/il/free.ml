@@ -1,11 +1,7 @@
 open Util.Source
 open Ast
 
-
 include Xl.Gen_free
-
-let (+) = union
-let (-) = diff
 
 
 (* Iterations *)
@@ -24,13 +20,17 @@ and bound_iter iter =
 (* Types *)
 
 and free_typ t =
+  Util.Debug_log.(log "il.free_typ"
+    (fun _ -> Print.string_of_typ t)
+    (fun s -> list quote (Set.elements s.typid @ Set.elements s.varid))
+  ) @@ fun _ ->
   match t.it with
-  | VarT (x, as_) -> free_typid x + free_args as_
+  | VarT (x, as_) -> free_typid x ++ free_args as_
   | BoolT | NumT _ | TextT -> empty
   | TupT ets -> free_typbinds ets
-  | IterT (t1, iter) -> free_typ t1 + free_iter iter
+  | IterT (t1, iter) -> free_typ t1 ++ free_iter iter
 
-and free_typbind (x, t) = bound_varid x + free_typ t
+and free_typbind (x, t) = bound_varid x (* exclude `_` *) ++ free_typ t
 and free_typbinds xts = free_list free_typbind xts
 
 and free_deftyp dt =
@@ -40,69 +40,73 @@ and free_deftyp dt =
   | VariantT tcs -> free_list free_typcase tcs
 
 and free_typfield (_, (qs, t, prems), _) =
-  free_quants qs + (free_typ t + free_prems prems - bound_quants qs)
+  free_quants qs ++ (free_typ t ++ free_prems prems -- bound_quants qs)
 and free_typcase (_, (qs, t, prems), _) =
-  free_quants qs + (free_typ t + free_prems prems - bound_quants qs)
+  free_quants qs ++ (free_typ t ++ free_prems prems -- bound_quants qs)
 
 
 (* Expressions *)
 
 and free_exp e =
+  Util.Debug_log.(log "il.free_exp"
+    (fun _ -> Print.string_of_exp e)
+    (fun s -> list quote (Set.elements s.typid @ Set.elements s.varid))
+  ) @@ fun _ ->
   match e.it with
   | VarE x -> free_varid x
   | BoolE _ | NumE _ | TextE _ -> empty
   | UnE (_, _, e1) | LiftE e1 | LenE e1 | ProjE (e1, _) | TheE e1 -> free_exp e1
   | BinE (_, _, e1, e2) | CmpE (_, _, e1, e2)
-  | IdxE (e1, e2) | CompE (e1, e2) | MemE (e1, e2) | CatE (e1, e2) -> free_exp e1 + free_exp e2
+  | IdxE (e1, e2) | CompE (e1, e2) | MemE (e1, e2) | CatE (e1, e2) -> free_exp e1 ++ free_exp e2
   | SliceE (e1, e2, e3) -> free_list free_exp [e1; e2; e3]
   | OptE eo -> free_opt free_exp eo
   | TupE es | ListE es -> free_list free_exp es
-  | UpdE (e1, p, e2) | ExtE (e1, p, e2) -> free_exp e1 + free_path p + free_exp e2
+  | UpdE (e1, p, e2) | ExtE (e1, p, e2) -> free_exp e1 ++ free_path p ++ free_exp e2
   | StrE efs -> free_list free_expfield efs
-  | DotE (e1, _, as_) -> free_exp e1 + free_args as_
-  | CaseE (_, as_, e1) | UncaseE (e1, _, as_) -> free_args as_ + free_exp e1
-  | CallE (x, as1) -> free_defid x + free_args as1
-  | IterE (e1, iter) -> (free_exp e1 - bound_iterexp iter) + free_iterexp iter
+  | DotE (e1, _, as_) -> free_exp e1 ++ free_args as_
+  | CaseE (_, as_, e1) | UncaseE (e1, _, as_) -> free_args as_ ++ free_exp e1
+  | CallE (x, as1) -> free_defid x ++ free_args as1
+  | IterE (e1, ite) -> (free_exp e1 -- bound_iterexp ite) ++ free_iterexp ite
   | CvtE (e1, _nt1, _nt2) -> free_exp e1
-  | SubE (e1, t1, t2) -> free_exp e1 + free_typ t1 + free_typ t2
+  | SubE (e1, t1, t2) -> free_exp e1 ++ free_typ t1 ++ free_typ t2
 
-and free_expfield (_, as_, e) = free_args as_ + free_exp e
+and free_expfield (_, as_, e) = free_args as_ ++ free_exp e
 
 and free_path p =
   match p.it with
   | RootP -> empty
-  | IdxP (p1, e) -> free_path p1 + free_exp e
-  | SliceP (p1, e1, e2) -> free_path p1 + free_exp e1 + free_exp e2
-  | DotP (p1, _atom, as_) -> free_path p1 + free_args as_
+  | IdxP (p1, e) -> free_path p1 ++ free_exp e
+  | SliceP (p1, e1, e2) -> free_path p1 ++ free_exp e1 ++ free_exp e2
+  | DotP (p1, _atom, as_) -> free_path p1 ++ free_args as_
 
 and free_iterexp (iter, xes) =
-  free_iter iter + free_list (free_pair free_varid free_exp) xes
+  free_iter iter ++ free_list free_exp (List.map snd xes)
 
 and bound_iterexp (iter, xes) =
-  bound_iter iter + free_list bound_varid (List.map fst xes)
+  bound_iter iter ++ free_list bound_varid (List.map fst xes)
 
 
 (* Grammars *)
 
 and free_sym g =
   match g.it with
-  | VarG (x, as_) -> free_gramid x + free_args as_
+  | VarG (x, as_) -> free_gramid x ++ free_args as_
   | NumG _ | TextG _ | EpsG -> empty
   | SeqG gs | AltG gs -> free_list free_sym gs
-  | RangeG (g1, g2) -> free_sym g1 + free_sym g2
-  | IterG (g1, iter) -> (free_sym g1 - bound_iterexp iter) + free_iterexp iter
-  | AttrG (e, g1) -> free_exp e + free_sym g1
+  | RangeG (g1, g2) -> free_sym g1 ++ free_sym g2
+  | IterG (g1, ite) -> (free_sym g1 -- bound_iterexp ite) ++ free_iterexp ite
+  | AttrG (e, g1) -> free_exp e ++ free_sym g1
 
 
 (* Premises *)
 
 and free_prem prem =
   match prem.it with
-  | RulePr (x, _op, e) -> free_relid x + free_exp e
+  | RulePr (x, _op, e) -> free_relid x ++ free_exp e
   | IfPr e -> free_exp e
-  | LetPr (e1, e2, _) -> free_exp e1 + free_exp e2
+  | LetPr (e1, e2, _) -> free_exp e1 ++ free_exp e2
   | ElsePr -> empty
-  | IterPr (prem1, iter) -> (free_prem prem1 - bound_iterexp iter) + free_iterexp iter
+  | IterPr (prem1, ite) -> (free_prem prem1 -- bound_iterexp ite) ++ free_iterexp ite
 
 and free_prems prems = free_list free_prem prems
 
@@ -117,11 +121,15 @@ and free_arg a =
   | GramA g -> free_sym g
 
 and free_param p =
+  Util.Debug_log.(log "il.free_param"
+    (fun _ -> Print.string_of_param p)
+    (fun s -> list quote (Set.elements s.typid @ Set.elements s.varid))
+  ) @@ fun _ ->
   match p.it with
   | ExpP (_, t) -> free_typ t
   | TypP _ -> empty
-  | DefP (_, ps, t) -> free_params ps + (free_typ t - bound_params ps)
-  | GramP (_, ps, t) -> free_params ps + (free_typ t - bound_params ps)
+  | DefP (_, ps, t) -> free_params ps ++ (free_typ t -- bound_params ps)
+  | GramP (_, ps, t) -> free_params ps ++ (free_typ t -- bound_params ps)
 
 and bound_param p =
   match p.it with
@@ -142,22 +150,22 @@ and bound_quants qs = free_list bound_quant qs
 let free_inst inst =
   match inst.it with
   | InstD (qs, as_, dt) ->
-    free_quants qs + (free_args as_ + free_deftyp dt - bound_quants qs)
+    free_quants qs ++ (free_args as_ ++ free_deftyp dt -- bound_quants qs)
 
 let free_rule rule =
   match rule.it with
   | RuleD (_x, qs, _op, e, prems) ->
-    free_quants qs + (free_exp e + free_prems prems - bound_quants qs)
+    free_quants qs ++ (free_exp e ++ free_prems prems -- bound_quants qs)
 
 let free_clause clause =
   match clause.it with
   | DefD (qs, as_, e, prems) ->
-    free_quants qs + (free_args as_ + free_exp e + free_prems prems - bound_quants qs)
+    free_quants qs ++ (free_args as_ ++ free_exp e ++ free_prems prems -- bound_quants qs)
 
 let free_prod prod =
   match prod.it with
   | ProdD (qs, g, e, prems) ->
-    free_quants qs + (free_sym g + free_exp e + free_prems prems - bound_quants qs)
+    free_quants qs ++ (free_sym g ++ free_exp e ++ free_prems prems -- bound_quants qs)
 
 let free_hintdef hd =
   match hd.it with
@@ -168,13 +176,13 @@ let free_hintdef hd =
 
 let rec free_def d =
   match d.it with
-  | TypD (_x, ps, insts) -> free_params ps + free_list free_inst insts
-  | RelD (_x, _mixop, t, rules) -> free_typ t + free_list free_rule rules
+  | TypD (_x, ps, insts) -> free_params ps ++ free_list free_inst insts
+  | RelD (_x, _mixop, t, rules) -> free_typ t ++ free_list free_rule rules
   | DecD (_x, ps, t, clauses) ->
-    free_params ps + (free_typ t - bound_params ps)
-      + free_list free_clause clauses
+    free_params ps ++ (free_typ t -- bound_params ps)
+      ++ free_list free_clause clauses
   | GramD (_x, ps, t, prods) ->
-    free_params ps + (free_typ t + free_list free_prod prods - bound_params ps)
+    free_params ps ++ (free_typ t ++ free_list free_prod prods -- bound_params ps)
   | RecD ds -> free_list free_def ds
   | HintD hd -> free_hintdef hd
 

@@ -11,19 +11,18 @@ let error at msg = Error.error at "dimension" msg
 
 (* Environment *)
 
-module Env = Map.Make(String)
+module Map = Map.Make(String)
 
-type outer = id list
 type ctx = iter list
-type env = ctx Env.t
-type renv = (region * ctx * [`Impl | `Expl]) list Env.t
+type dims = (region * ctx) Map.t
+type outer = dims
+type rdims = (region * ctx * [`Impl | `Expl | `Outer]) list Map.t
 
-let new_env outer =
-  List.fold_left (fun env id ->
-    Env.add id.it [(id.at, [], `Expl)] env) Env.empty outer |> ref
+let new_dims outer =
+  ref (Map.map (fun (at, ctx) -> [(at, ctx, `Outer)]) outer)
 
-let localize outer env =
-  List.fold_left (fun env id -> Env.remove id.it env) env outer
+let localize outer dims =
+  Map.fold (fun x _ dims -> Map.remove x dims) outer dims
 
 
 let il_occur occur =
@@ -31,7 +30,7 @@ let il_occur occur =
     List.map (fun (x, (t, iters)) ->
       x ^ ":" ^ Il.Debug.il_typ t ^
         String.concat "" (List.map Il.Debug.il_iter iters)
-    ) (Env.bindings occur)
+    ) (Map.bindings occur)
   in "{" ^ String.concat ", " ss ^ "}"
 
 
@@ -51,14 +50,15 @@ let rec is_prefix ctx1 ctx2 =
 let rec check_ctx id (at0, ctx0, mode0) = function
   | [] -> ()
   | (at, ctx, mode)::ctxs ->
-    if not (is_prefix ctx0 ctx) && (mode0 = `Expl || mode = `Expl) then
+    if not (is_prefix ctx0 ctx) && (mode0 <> `Impl || mode <> `Impl) then
       error at ("inconsistent variable context, " ^
         string_of_ctx id ctx0 ^ " vs " ^ string_of_ctx id ctx ^
         " (" ^ string_of_region at0 ^ ")");
     check_ctx id (at0, ctx0, mode0) ctxs
 
 
-let check_ctxs id ctxs : ctx =
+let check_ctxs id ctxs : region * ctx =
+  (* Invariant: there is at most one Outer occurrence per id. *)
   let sorted =
     if List.for_all (fun (_, _, mode) -> mode = `Impl) ctxs then
       (* Take first occurrence *)
@@ -67,18 +67,19 @@ let check_ctxs id ctxs : ctx =
         ctxs
     else
       let sorted = List.stable_sort
-        (fun (_, ctx1, _) (_, ctx2, _) ->
+        (fun (_, ctx1, mode1) (_, ctx2, mode2) ->
+          if mode1 = `Outer then -1 else if mode2 = `Outer then +1 else
           compare (List.length ctx1) (List.length ctx2))
         ctxs
       in
       check_ctx id (List.hd sorted) (List.tl sorted);
       sorted
   in
-  let _, ctx, _ = List.hd sorted in
-  ctx
+  let at, ctx, _ = List.hd sorted in
+  at, ctx
 
-let check_env (env : renv ref) : env =
-  Env.mapi check_ctxs !env
+let check_dims (dims : rdims ref) : dims =
+  Map.mapi check_ctxs !dims
 
 
 (* Collecting constraints *)
@@ -87,18 +88,18 @@ let strip_index = function
   | ListN (e, Some _) -> ListN (e, None)
   | iter -> iter
 
-let check_typid _env _ctx _id = ()   (* Types are always global *)
-let check_gramid _env _ctx _id = ()  (* Grammars are always global *)
+let check_typid _dims _ctx _id = ()   (* Types are always global *)
+let check_gramid _dims _ctx _id = ()  (* Grammars are always global *)
 
-let check_varid env ctx mode id =
-  let ctxs = Option.value (Env.find_opt id.it !env) ~default:[] in
-  env := Env.add id.it ((id.at, ctx, mode)::ctxs) !env
+let check_varid dims ctx mode id =
+  let ctxs = Option.value (Map.find_opt id.it !dims) ~default:[] in
+  dims := Map.add id.it ((id.at, ctx, mode)::ctxs) !dims
 
-let rec check_iter env ctx iter =
+let rec check_iter dims ctx iter =
   match iter with
   | Opt | List | List1 -> ()
   | ListN (e, id_opt) ->
-    check_exp env ctx e;
+    check_exp dims ctx e;
     (* TODO(2, rossberg): The dimension for id should match that of e:
      * for example, if we b^(i<n) and n's dimension turns out to be * itself,
      * then i should be **. But unfortunately, n's dimension is not known
@@ -108,52 +109,54 @@ let rec check_iter env ctx iter =
      * i.e., check id under context (strip_index iter :: ctx) below.
      * However, the interpreter backend cannot handle that.
      * We chicken out by assuming e is scalar, i.e., ignore outer ctx below. *)
-    Option.iter (fun id -> check_varid env [strip_index iter] `Expl id) id_opt
+    Option.iter (fun id -> check_varid dims [strip_index iter] `Expl id) id_opt
 
-and check_typ env ctx t =
+and check_typ dims ctx t =
   match t.it with
   | VarT (x, args) ->
-    check_typid env ctx x;
-    List.iter (check_arg env ctx) args
+    check_typid dims ctx x;
+    List.iter (check_arg dims ctx) args
   | BoolT
   | NumT _
   | TextT -> ()
-  | TupT xts -> List.iter (check_typbind env ctx) xts
+  | TupT xts -> List.iter (check_typbind dims ctx) xts
   | IterT (t1, iter) ->
-    check_iter env ctx iter;
-    check_typ env (strip_index iter::ctx) t1
+    check_iter dims ctx iter;
+    check_typ dims (strip_index iter::ctx) t1
 
-and check_typbind env ctx (x, t) =
-  check_varid env ctx `Impl x;
-  check_typ env ctx t
+and check_typbind dims ctx (x, t) =
+  check_varid dims ctx `Impl x;
+  check_typ dims ctx t
 
-and check_deftyp env ctx dt =
+(*
+and check_deftyp dims ctx dt =
   match dt.it with
   | AliasT t ->
-    check_typ env ctx t
+    check_typ dims ctx t
   | StructT tfs ->
     List.iter (fun (_, (qs, tI, prems), _) ->
-      let env' = ref Env.empty in
+      let dims' = ref Map.empty in
       assert (qs = []);
-      check_typ env' ctx tI;
-      List.iter (check_prem env' ctx) prems
+      check_typ dims' ctx tI;
+      List.iter (check_prem dims' ctx) prems
     ) tfs
   | VariantT tcs ->
     List.iter (fun (_, (qs, tI, prems), _) ->
-      let env' = ref Env.empty in
+      let dims' = ref Map.empty in
       assert (qs = []);
-      check_typ env' ctx tI;
-      List.iter (check_prem env' ctx) prems
+      check_typ dims' ctx tI;
+      List.iter (check_prem dims' ctx) prems
     ) tcs
+*)
 
-and check_iterexp env ctx (iter, xes) =
-  check_iter env ctx iter;
+and check_iterexp dims ctx (iter, xes) =
+  check_iter dims ctx iter;
   assert (xes = [])
 
-and check_exp env ctx e =
+and check_exp dims ctx e =
   match e.it with
   | VarE x ->
-    check_varid env ctx `Expl x
+    check_varid dims ctx `Expl x
   | BoolE _
   | NumE _
   | TextE _ -> ()
@@ -163,212 +166,225 @@ and check_exp env ctx e =
   | ProjE (e1, _)
   | TheE e1
   | LiftE e1 ->
-    check_exp env ctx e1
+    check_exp dims ctx e1
   | BinE (_, _, e1, e2)
   | CmpE (_, _, e1, e2)
   | IdxE (e1, e2)
   | CatE (e1, e2)
   | MemE (e1, e2)
   | CompE (e1, e2) ->
-    check_exp env ctx e1;
-    check_exp env ctx e2
+    check_exp dims ctx e1;
+    check_exp dims ctx e2
   | SliceE (e1, e2, e3) ->
-    check_exp env ctx e1;
-    check_exp env ctx e2;
-    check_exp env ctx e3
+    check_exp dims ctx e1;
+    check_exp dims ctx e2;
+    check_exp dims ctx e3
   | UpdE (e1, p, e2)
   | ExtE (e1, p, e2) ->
-    check_exp env ctx e1;
-    check_path env ctx p;
-    check_exp env ctx e2
+    check_exp dims ctx e1;
+    check_path dims ctx p;
+    check_exp dims ctx e2
   | OptE eo ->
-    Option.iter (check_exp env ctx) eo
+    Option.iter (check_exp dims ctx) eo
   | ListE es
   | TupE es ->
-    List.iter (check_exp env ctx) es
+    List.iter (check_exp dims ctx) es
   | StrE efs ->
-    List.iter (check_expfield env ctx) efs
+    List.iter (check_expfield dims ctx) efs
   | DotE (e1, _, as_)
   | CaseE (_, as_, e1)
   | UncaseE (e1, _, as_) ->
-    check_exp env ctx e1;
-    List.iter (check_arg env ctx) as_
+    check_exp dims ctx e1;
+    List.iter (check_arg dims ctx) as_
   | CallE (_, as_) ->
-    List.iter (check_arg env ctx) as_
+    List.iter (check_arg dims ctx) as_
   | IterE (e1, ite) ->
-    check_iterexp env ctx ite;
-    check_exp env (strip_index (fst ite)::ctx) e1
+    check_iterexp dims ctx ite;
+    check_exp dims (strip_index (fst ite)::ctx) e1
   | SubE (e1, t1, t2) ->
-    check_exp env ctx e1;
-    check_typ env ctx t1;
-    check_typ env ctx t2
+    check_exp dims ctx e1;
+    check_typ dims ctx t1;
+    check_typ dims ctx t2
 
-and check_expfield env ctx (_, as_, e) =
-    List.iter (check_arg env ctx) as_;
-    check_exp env ctx e
+and check_expfield dims ctx (_, as_, e) =
+    List.iter (check_arg dims ctx) as_;
+    check_exp dims ctx e
 
-and check_path env ctx p =
+and check_path dims ctx p =
   match p.it with
   | RootP -> ()
   | IdxP (p1, e) ->
-    check_path env ctx p1;
-    check_exp env ctx e
+    check_path dims ctx p1;
+    check_exp dims ctx e
   | SliceP (p1, e1, e2) ->
-    check_path env ctx p1;
-    check_exp env ctx e1;
-    check_exp env ctx e2
+    check_path dims ctx p1;
+    check_exp dims ctx e1;
+    check_exp dims ctx e2
   | DotP (p1, _, as_) ->
-    check_path env ctx p1;
-    List.iter (check_arg env ctx) as_
+    check_path dims ctx p1;
+    List.iter (check_arg dims ctx) as_
 
-and check_sym env ctx g =
+and check_sym dims ctx g =
   match g.it with
   | VarG (x, args) ->
-    check_gramid env ctx x;
-    List.iter (check_arg env ctx) args
+    check_gramid dims ctx x;
+    List.iter (check_arg dims ctx) args
   | NumG _
   | TextG _
   | EpsG -> ()
   | SeqG gs
   | AltG gs ->
-    List.iter (check_sym env ctx) gs
+    List.iter (check_sym dims ctx) gs
   | RangeG (g1, g2) ->
-    check_sym env ctx g1;
-    check_sym env ctx g2
+    check_sym dims ctx g1;
+    check_sym dims ctx g2
   | AttrG (e, g1) ->
-    check_exp env ctx e;
-    check_sym env ctx g1
+    check_exp dims ctx e;
+    check_sym dims ctx g1
   | IterG (g1, ite) ->
-    check_iterexp env ctx ite;
-    check_sym env (strip_index (fst ite)::ctx) g1
+    check_iterexp dims ctx ite;
+    check_sym dims (strip_index (fst ite)::ctx) g1
 
 
-and check_prem env ctx prem =
+and check_prem dims ctx prem =
   match prem.it with
-  | RulePr (_x, _mixop, e) -> check_exp env ctx e
-  | IfPr e -> check_exp env ctx e
+  | RulePr (_x, _mixop, e) -> check_exp dims ctx e
+  | IfPr e -> check_exp dims ctx e
   | ElsePr -> ()
   | LetPr (e1, e2, _xs) ->
-    check_exp env ctx e1;
-    check_exp env ctx e2
+    check_exp dims ctx e1;
+    check_exp dims ctx e2
   | IterPr (prem', ite) ->
-    check_iterexp env ctx ite;
-    check_prem env (strip_index (fst ite)::ctx) prem'
+    check_iterexp dims ctx ite;
+    check_prem dims (strip_index (fst ite)::ctx) prem'
 
-and check_arg env ctx a =
+and check_arg dims ctx a =
   match a.it with
-  | ExpA e -> check_exp env ctx e
-  | TypA t -> check_typ env ctx t
-  | GramA g -> check_sym env ctx g
+  | ExpA e -> check_exp dims ctx e
+  | TypA t -> check_typ dims ctx t
+  | GramA g -> check_sym dims ctx g
   | DefA _x -> ()
 
-and check_param env ctx p =
+and check_param dims p =
   match p.it with
   | ExpP (x, t) ->
-    check_varid env ctx `Expl x;
-    check_typ env ctx t
+    check_varid dims [] `Expl x;
+    check_typ dims [] t
   | TypP x ->
-    check_typid env ctx x;
-    check_varid env ctx `Impl x
+    check_typid dims [] x;
+    check_varid dims [] `Impl x
   | GramP (x, ps, t) ->
-    check_gramid env ctx x;
-    List.iter (check_param env ctx) ps;
-    check_typ env ctx t
+    check_gramid dims [] x;
+    List.iter (check_param dims) ps;
+    check_typ dims [] t
   | DefP (_x, ps, t) ->
-    List.iter (check_param env ctx) ps;
-    check_typ env ctx t
-
-let rec check_def d : env =
-  let env = new_env [] in
-  match d.it with
-  | TypD (_x, ps, insts) ->
-    List.iter (check_param env []) ps;
-    List.iter (check_inst env) insts;
-    check_env env
-  | RelD (_x, _mixop, t, rules) ->
-    check_typ env [] t;
-    List.iter (check_rule env) rules;
-    check_env env
-  | DecD (_x, ps, t, clauses) ->
-    List.iter (check_param env []) ps;
-    check_typ env [] t;
-    List.iter (check_clause env) clauses;
-    check_env env
-  | GramD (_x, ps, t, prods) ->
-    List.iter (check_param env []) ps;
-    check_typ env [] t;
-    List.iter (check_prod env) prods;
-    check_env env
-  | RecD _ds ->
-    assert false
-  | HintD _ ->
-    check_env env
-
-and check_inst env inst =
-  match inst.it with
-  | InstD (qs, as_, dt) ->
-    assert (qs = []);
-    List.iter (check_arg env []) as_;
-    check_deftyp env [] dt
-
-and check_rule env rule =
-  match rule.it with
-  | RuleD (_x, qs, _mixop, e, prems) ->
-    assert (qs = []);
-    check_exp env [] e;
-    List.iter (check_prem env []) prems
-
-and check_clause env clause =
-  match clause.it with
-  | DefD (qs, as_, e, prems) ->
-    assert (qs = []);
-    List.iter (check_arg env []) as_;
-    check_exp env [] e;
-    List.iter (check_prem env []) prems
-
-and check_prod env prod =
-  match prod.it with
-  | ProdD (qs, g, e, prems) ->
-    assert (qs = []);
-    check_sym env [] g;
-    check_exp env [] e;
-    List.iter (check_prem env []) prems
+    List.iter (check_param dims) ps;
+    check_typ dims [] t
 
 
 (* External interface *)
 
-let check_inst outer as_ dt : env =
-  let env = new_env outer in
-  List.iter (check_arg env []) as_;
-  check_deftyp env [] dt;
-  localize outer (check_env env)
+let check outer ps as_ ts es gs prs : dims =
+  let dims = new_dims outer in
+  List.iter (check_param dims) ps;
+  List.iter (check_arg dims []) as_;
+  List.iter (check_typ dims []) ts;
+  List.iter (check_exp dims []) es;
+  List.iter (check_sym dims []) gs;
+  List.iter (check_prem dims []) prs;
+  localize outer (check_dims dims)
 
-let check_prod outer g e prems : env =
-  let env = new_env outer in
-  check_sym env [] g;
-  check_exp env [] e;
-  List.iter (check_prem env []) prems;
-  localize outer (check_env env)
+(*
+let rec check_def d : dims =
+  let dims = new_dims Map.empty in
+  match d.it with
+  | TypD (_x, ps, insts) ->
+    List.iter (check_param dims) ps;
+    List.iter (check_inst dims) insts;
+    check_dims dims
+  | RelD (_x, _mixop, t, rules) ->
+    check_typ dims [] t;
+    List.iter (check_rule dims) rules;
+    check_dims dims
+  | DecD (_x, ps, t, clauses) ->
+    List.iter (check_param dims) ps;
+    check_typ dims [] t;
+    List.iter (check_clause dims) clauses;
+    check_dims dims
+  | GramD (_x, ps, t, prods) ->
+    List.iter (check_param dims) ps;
+    check_typ dims [] t;
+    List.iter (check_prod dims) prods;
+    check_dims dims
+  | RecD _ds ->
+    assert false
+  | HintD _ ->
+    check_dims dims
 
-let check_abbr outer g1 g2 prems : env =
-  let env = new_env outer in
-  check_sym env [] g1;
-  check_sym env [] g2;
-  List.iter (check_prem env []) prems;
-  localize outer (check_env env)
+and check_inst dims inst =
+  match inst.it with
+  | InstD (qs, as_, dt) ->
+    assert (qs = []);
+    List.iter (check_arg dims []) as_;
+    check_deftyp dims [] dt
 
-let check_deftyp outer ts prems : env =
-  let env = new_env outer in
-  List.iter (check_typ env []) ts;
-  List.iter (check_prem env []) prems;
-  localize outer (check_env env)
+and check_rule dims rule =
+  match rule.it with
+  | RuleD (_x, qs, _mixop, e, prems) ->
+    assert (qs = []);
+    check_exp dims [] e;
+    List.iter (check_prem dims []) prems
+
+and check_clause dims clause =
+  match clause.it with
+  | DefD (qs, as_, e, prems) ->
+    assert (qs = []);
+    List.iter (check_arg dims []) as_;
+    check_exp dims [] e;
+    List.iter (check_prem dims []) prems
+
+and check_prod dims prod =
+  match prod.it with
+  | ProdD (qs, g, e, prems) ->
+    assert (qs = []);
+    check_sym dims [] g;
+    check_exp dims [] e;
+    List.iter (check_prem dims []) prems
+
+
+let check_inst outer as_ dt : dims =
+  let dims = new_dims outer in
+  List.iter (check_arg dims []) as_;
+  check_deftyp dims [] dt;
+  localize outer (check_dims dims)
+
+let check_prod outer g e prems : dims =
+  let dims = new_dims outer in
+  check_sym dims [] g;
+  check_exp dims [] e;
+  List.iter (check_prem dims []) prems;
+  localize outer (check_dims dims)
+
+let check_abbr outer g1 g2 prems : dims =
+  let dims = new_dims outer in
+  check_sym dims [] g1;
+  check_sym dims [] g2;
+  List.iter (check_prem dims []) prems;
+  localize outer (check_dims dims)
+
+let check_deftyp outer ts prems : dims =
+  let dims = new_dims outer in
+  List.iter (check_typ dims []) ts;
+  List.iter (check_prem dims []) prems;
+  localize outer (check_dims dims)
+*)
 
 
 (* Annotating iterations *)
 
-type occur = (typ * iter list) Env.t
+type occur = (typ * iter list) Map.t
 
-let union = Env.union (fun _ (_, ctx1 as occ1) (_, ctx2 as occ2) ->
+let union = Map.union (fun _ (_, ctx1 as occ1) (_, ctx2 as occ2) ->
   (* For well-typed scripts, t1 == t2. *)
   Some (if List.length ctx1 < List.length ctx2 then occ1 else occ2))
 
@@ -384,24 +400,29 @@ let rec annot_varid id = function
   | [] -> id
   | iter::iters -> annot_varid (annot_varid' id.it iter $ id.at) iters
 
-let rec annot_iter env iter : iter * (occur * occur) =
+
+let rec annot_iter dims iter : iter * (occur * occur) =
   Il.Debug.(log "il.annot_iter"
     (fun _ -> fmt "%s" (il_iter iter))
     (fun (iter', (occur1, occur2)) -> fmt "%s %s %s" (il_iter iter')
       (il_occur occur1) (il_occur occur2))
   ) @@ fun _ ->
   match iter with
-  | Opt | List | List1 -> iter, Env.(empty, empty)
-  | ListN (e, id_opt) ->
-    let e', occur1 = annot_exp env e in
+  | Opt | List | List1 -> iter, Map.(empty, empty)
+  | ListN (e, x_opt) ->
+    let e', occur1 = annot_exp dims e in
     let occur2 =
-      match id_opt with
-      | None -> Env.empty
-      | Some id -> Env.singleton id.it (NumT `NatT $ id.at, Env.find id.it env)
+      match x_opt with
+      | None -> Map.empty
+      | Some x ->
+        if x.it <> "_" && Map.mem x.it dims then
+          Map.singleton x.it (NumT `NatT $ x.at, snd (Map.find x.it dims))
+        else
+          Map.empty
     in
-    ListN (e', id_opt), (occur1, occur2)
+    ListN (e', x_opt), (occur1, occur2)
 
-and annot_typ env t : typ * occur =
+and annot_typ dims t : typ * occur =
   Il.Debug.(log "il.annot_typ"
     (fun _ -> fmt "%s" (il_typ t))
     (fun (t', occur') -> fmt "%s %s" (il_typ t') (il_occur occur'))
@@ -409,171 +430,169 @@ and annot_typ env t : typ * occur =
   let it, occur =
     match t.it with
     | VarT (x, as1) ->
-      let as1', occurs = List.split (List.map (annot_arg env) as1) in
-      VarT (x, as1'), List.fold_left union Env.empty occurs
+      let as1', occurs = List.split (List.map (annot_arg dims) as1) in
+      VarT (x, as1'), List.fold_left union Map.empty occurs
     | BoolT | NumT _ | TextT ->
-      t.it, Env.empty
+      t.it, Map.empty
     | TupT xts ->
-      let xts', occurs = List.split (List.map (annot_typbind env) xts) in
-      TupT xts', List.fold_left union Env.empty occurs
-    | IterT (t, iter) ->
-      let t', occur1 = annot_typ env t in
-      let iter', (occur2, occur3) = annot_iter env iter in
-      assert (occur1 = Env.empty);
-      assert (occur3 = Env.empty);
-      IterT (t', iter'), occur2
+      let xts', occurs = List.split (List.map (annot_typbind dims) xts) in
+      TupT xts', List.fold_left union Map.empty occurs
+    | IterT (t1, iter) ->
+      let t1', occur1 = annot_typ dims t1 in
+      let (iter', _), occur = annot_iterexp dims occur1 (iter, []) t.at in
+      IterT (t1', iter'), occur
   in {t with it}, occur
 
-and annot_typbind env (x, t) : (id * typ) * occur =
+and annot_typbind dims (x, t) : (id * typ) * occur =
   let occur1 =
-    if x.it <> "_" && Env.mem x.it env then
-      Env.singleton x.it (t, Env.find x.it env)
+    if x.it <> "_" && Map.mem x.it dims then
+      Map.singleton x.it (t, snd (Map.find x.it dims))
     else
-      Env.empty
+      Map.empty
   in
-  let t', occur2 = annot_typ env t in
+  let t', occur2 = annot_typ dims t in
   (x, t'), union occur1 occur2
 
 
-and annot_exp env e : exp * occur =
+and annot_exp dims e : exp * occur =
   Il.Debug.(log "il.annot_exp"
     (fun _ -> fmt "%s" (il_exp e))
     (fun (e', occur') -> fmt "%s %s" (il_exp e') (il_occur occur'))
   ) @@ fun _ ->
   let it, occur =
     match e.it with
-    | VarE x when x.it <> "_" && Env.mem x.it env ->
-      VarE x, Env.singleton x.it (e.note, Env.find x.it env)
+    | VarE x when x.it <> "_" && Map.mem x.it dims ->
+      VarE x, Map.singleton x.it (e.note, snd (Map.find x.it dims))
     | VarE _ | BoolE _ | NumE _ | TextE _ ->
-      e.it, Env.empty
+      e.it, Map.empty
     | UnE (op, nt, e1) ->
-      let e1', occur1 = annot_exp env e1 in
+      let e1', occur1 = annot_exp dims e1 in
       UnE (op, nt, e1'), occur1
     | BinE (op, nt, e1, e2) ->
-      let e1', occur1 = annot_exp env e1 in
-      let e2', occur2 = annot_exp env e2 in
+      let e1', occur1 = annot_exp dims e1 in
+      let e2', occur2 = annot_exp dims e2 in
       BinE (op, nt, e1', e2'), union occur1 occur2
     | CmpE (op, nt, e1, e2) ->
-      let e1', occur1 = annot_exp env e1 in
-      let e2', occur2 = annot_exp env e2 in
+      let e1', occur1 = annot_exp dims e1 in
+      let e2', occur2 = annot_exp dims e2 in
       CmpE (op, nt, e1', e2'), union occur1 occur2
     | IdxE (e1, e2) ->
-      let e1', occur1 = annot_exp env e1 in
-      let e2', occur2 = annot_exp env e2 in
+      let e1', occur1 = annot_exp dims e1 in
+      let e2', occur2 = annot_exp dims e2 in
       IdxE (e1', e2'), union occur1 occur2
     | SliceE (e1, e2, e3) ->
-      let e1', occur1 = annot_exp env e1 in
-      let e2', occur2 = annot_exp env e2 in
-      let e3', occur3 = annot_exp env e3 in
+      let e1', occur1 = annot_exp dims e1 in
+      let e2', occur2 = annot_exp dims e2 in
+      let e3', occur3 = annot_exp dims e3 in
       SliceE (e1', e2', e3'), union (union occur1 occur2) occur3
     | UpdE (e1, p, e2) ->
-      let e1', occur1 = annot_exp env e1 in
-      let p', occur2 = annot_path env p in
-      let e2', occur3 = annot_exp env e2 in
+      let e1', occur1 = annot_exp dims e1 in
+      let p', occur2 = annot_path dims p in
+      let e2', occur3 = annot_exp dims e2 in
       UpdE (e1', p', e2'), union (union occur1 occur2) occur3
     | ExtE (e1, p, e2) ->
-      let e1', occur1 = annot_exp env e1 in
-      let p', occur2 = annot_path env p in
-      let e2', occur3 = annot_exp env e2 in
+      let e1', occur1 = annot_exp dims e1 in
+      let p', occur2 = annot_path dims p in
+      let e2', occur3 = annot_exp dims e2 in
       ExtE (e1', p', e2'), union (union occur1 occur2) occur3
     | StrE efs ->
-      let efs', occurs = List.split (List.map (annot_expfield env) efs) in
-      StrE efs', List.fold_left union Env.empty occurs
+      let efs', occurs = List.split (List.map (annot_expfield dims) efs) in
+      StrE efs', List.fold_left union Map.empty occurs
     | DotE (e1, atom, as_) ->
-      let e1', occur1 = annot_exp env e1 in
-      let as', occurs = List.split (List.map (annot_arg env) as_) in
+      let e1', occur1 = annot_exp dims e1 in
+      let as', occurs = List.split (List.map (annot_arg dims) as_) in
       DotE (e1', atom, as'), List.fold_left union occur1 occurs
     | CompE (e1, e2) ->
-      let e1', occur1 = annot_exp env e1 in
-      let e2', occur2 = annot_exp env e2 in
+      let e1', occur1 = annot_exp dims e1 in
+      let e2', occur2 = annot_exp dims e2 in
       CompE (e1', e2'), union occur1 occur2
     | LenE e1 ->
-      let e1', occur1 = annot_exp env e1 in
+      let e1', occur1 = annot_exp dims e1 in
       LenE e1', occur1
     | TupE es ->
-      let es', occurs = List.split (List.map (annot_exp env) es) in
-      TupE es', List.fold_left union Env.empty occurs
+      let es', occurs = List.split (List.map (annot_exp dims) es) in
+      TupE es', List.fold_left union Map.empty occurs
     | CallE (id, as1) ->
-      let as1', occurs = List.split (List.map (annot_arg env) as1) in
-      CallE (id, as1'), List.fold_left union Env.empty occurs
+      let as1', occurs = List.split (List.map (annot_arg dims) as1) in
+      CallE (id, as1'), List.fold_left union Map.empty occurs
     | IterE (e1, iter) ->
-      let e1', occur1 = annot_exp env e1 in
-      let iter', occur' = annot_iterexp env occur1 iter e.at in
+      let e1', occur1 = annot_exp dims e1 in
+      let iter', occur' = annot_iterexp dims occur1 iter e.at in
       IterE (e1', iter'), occur'
     | ProjE (e1, i) ->
-      let e1', occur1 = annot_exp env e1 in
+      let e1', occur1 = annot_exp dims e1 in
       ProjE (e1', i), occur1
     | UncaseE (e1, op, as_) ->
-      let e1', occur1 = annot_exp env e1 in
-      let as', occurs = List.split (List.map (annot_arg env) as_) in
+      let e1', occur1 = annot_exp dims e1 in
+      let as', occurs = List.split (List.map (annot_arg dims) as_) in
       UncaseE (e1', op, as'), List.fold_left union occur1 occurs
     | OptE None ->
-      OptE None, Env.empty
+      OptE None, Map.empty
     | OptE (Some e1) ->
-      let e1', occur1 = annot_exp env e1 in
+      let e1', occur1 = annot_exp dims e1 in
       OptE (Some e1'), occur1
     | TheE e1 ->
-      let e1', occur1 = annot_exp env e1 in
+      let e1', occur1 = annot_exp dims e1 in
       TheE e1', occur1
     | ListE es ->
-      let es', occurs = List.split (List.map (annot_exp env) es) in
-      ListE es', List.fold_left union Env.empty occurs
+      let es', occurs = List.split (List.map (annot_exp dims) es) in
+      ListE es', List.fold_left union Map.empty occurs
     | LiftE e1 ->
-      let e1', occur1 = annot_exp env e1 in
+      let e1', occur1 = annot_exp dims e1 in
       LiftE e1', occur1
     | MemE (e1, e2) ->
-      let e1', occur1 = annot_exp env e1 in
-      let e2', occur2 = annot_exp env e2 in
+      let e1', occur1 = annot_exp dims e1 in
+      let e2', occur2 = annot_exp dims e2 in
       MemE (e1', e2'), union occur1 occur2
     | CatE (e1, e2) ->
-      let e1', occur1 = annot_exp env e1 in
-      let e2', occur2 = annot_exp env e2 in
+      let e1', occur1 = annot_exp dims e1 in
+      let e2', occur2 = annot_exp dims e2 in
       CatE (e1', e2'), union occur1 occur2
     | CaseE (atom, as_, e1) ->
-      let as', occurs = List.split (List.map (annot_arg env) as_) in
-      let e1', occur1 = annot_exp env e1 in
+      let as', occurs = List.split (List.map (annot_arg dims) as_) in
+      let e1', occur1 = annot_exp dims e1 in
       CaseE (atom, as', e1'), List.fold_left union occur1 occurs
     | CvtE (e1, nt1, nt2) ->
-      let e1', occur1 = annot_exp env e1 in
+      let e1', occur1 = annot_exp dims e1 in
       CvtE (e1', nt1, nt2), occur1
     | SubE (e1, t1, t2) ->
-      let e1', occur1 = annot_exp env e1 in
-      let t1', occur2 = annot_typ env t1 in
-      let t2', occur3 = annot_typ env t2 in
+      let e1', occur1 = annot_exp dims e1 in
+      let t1', occur2 = annot_typ dims t1 in
+      let t2', occur3 = annot_typ dims t2 in
       SubE (e1', t1', t2'), union occur1 (union occur2 occur3)
   in {e with it}, occur
 
-and annot_expfield env (atom, as_, e) : expfield * occur =
-  let as', occurs = List.split (List.map (annot_arg env) as_) in
-  let e', occur = annot_exp env e in
+and annot_expfield dims (atom, as_, e) : expfield * occur =
+  let as', occurs = List.split (List.map (annot_arg dims) as_) in
+  let e', occur = annot_exp dims e in
   (atom, as', e'), List.fold_left union occur occurs
 
-and annot_path env p : path * occur =
+and annot_path dims p : path * occur =
   let it, occur =
     match p.it with
-    | RootP -> RootP, Env.empty
+    | RootP -> RootP, Map.empty
     | IdxP (p1, e) ->
-      let p1', occur1 = annot_path env p1 in
-      let e', occur2 = annot_exp env e in
+      let p1', occur1 = annot_path dims p1 in
+      let e', occur2 = annot_exp dims e in
       IdxP (p1', e'), union occur1 occur2
     | SliceP (p1, e1, e2) ->
-      let p1', occur1 = annot_path env p1 in
-      let e1', occur2 = annot_exp env e1 in
-      let e2', occur3 = annot_exp env e2 in
+      let p1', occur1 = annot_path dims p1 in
+      let e1', occur2 = annot_exp dims e1 in
+      let e2', occur3 = annot_exp dims e2 in
       SliceP (p1', e1', e2'), union occur1 (union occur2 occur3)
     | DotP (p1, atom, as_) ->
-      let p1', occur1 = annot_path env p1 in
-      let as', occurs = List.split (List.map (annot_arg env) as_) in
+      let p1', occur1 = annot_path dims p1 in
+      let as', occurs = List.split (List.map (annot_arg dims) as_) in
       DotP (p1', atom, as'), List.fold_left union occur1 occurs
   in {p with it}, occur
 
-and annot_iterexp env occur1 (iter, xes) at : iterexp * occur =
+and annot_iterexp dims occur1 (iter, xes) at : iterexp * occur =
   Il.Debug.(log "il.annot_iterexp"
     (fun _ -> fmt "%s %s" (il_iter iter) (il_occur occur1))
     (fun ((iter', _), occur') -> fmt "%s %s" (il_iter iter') (il_occur occur'))
   ) @@ fun _ ->
   assert (xes = []);
-  let iter', (occur2, occur3) = annot_iter env iter in
+  let iter', (occur2, occur3) = annot_iter dims iter in
   let occur1'_l =
     List.filter_map (fun (x, (t, iters)) ->
       match iters with
@@ -585,7 +604,7 @@ and annot_iterexp env occur1 (iter, xes) at : iterexp * occur =
 *)
         ignore strip_index;
         Some (x, (annot_varid' x iter, (IterT (t, iter) $ at, iters')))
-    ) (Env.bindings (union occur1 occur3))
+    ) (Map.bindings (union occur1 occur3))
   in
 (* TODO(2, rossberg): this should be active
   if occur1'_l = [] then
@@ -593,91 +612,119 @@ and annot_iterexp env occur1 (iter, xes) at : iterexp * occur =
 *)
   let xes' =
     List.map (fun (x, (x', (t, _))) -> x $ at, VarE (x' $ at) $$ at % t) occur1'_l in
-  (iter', xes'), union (Env.of_seq (List.to_seq (List.map snd occur1'_l))) occur2
+  (iter', xes'), union (Map.of_seq (List.to_seq (List.map snd occur1'_l))) occur2
 
-and annot_sym env g : sym * occur =
+and annot_sym dims g : sym * occur =
   Il.Debug.(log_in "il.annot_sym" (fun _ -> il_sym g));
   let it, occur =
     match g.it with
     | VarG (x, as1) ->
-      let as1', occurs = List.split (List.map (annot_arg env) as1) in
-      VarG (x, as1'), List.fold_left union Env.empty occurs
+      let as1', occurs = List.split (List.map (annot_arg dims) as1) in
+      VarG (x, as1'), List.fold_left union Map.empty occurs
     | NumG _ | TextG _ | EpsG ->
-      g.it, Env.empty
+      g.it, Map.empty
     | SeqG gs ->
-      let gs', occurs = List.split (List.map (annot_sym env) gs) in
-      SeqG gs', List.fold_left union Env.empty occurs
+      let gs', occurs = List.split (List.map (annot_sym dims) gs) in
+      SeqG gs', List.fold_left union Map.empty occurs
     | AltG gs ->
-      let gs', occurs = List.split (List.map (annot_sym env) gs) in
-      AltG gs', List.fold_left union Env.empty occurs
+      let gs', occurs = List.split (List.map (annot_sym dims) gs) in
+      AltG gs', List.fold_left union Map.empty occurs
     | RangeG (g1, g2) ->
-      let g1', occur1 = annot_sym env g1 in
-      let g2', occur2 = annot_sym env g2 in
+      let g1', occur1 = annot_sym dims g1 in
+      let g2', occur2 = annot_sym dims g2 in
       RangeG (g1', g2'), union occur1 occur2
     | IterG (g1, iter) ->
-      let g1', occur1 = annot_sym env g1 in
-      let iter', occur' = annot_iterexp env occur1 iter g.at in
+      let g1', occur1 = annot_sym dims g1 in
+      let iter', occur' = annot_iterexp dims occur1 iter g.at in
       IterG (g1', iter'), occur'
     | AttrG (e1, g2) ->
-      let e1', occur1 = annot_exp env e1 in
-      let g2', occur2 = annot_sym env g2 in
+      let e1', occur1 = annot_exp dims e1 in
+      let g2', occur2 = annot_sym dims g2 in
       AttrG (e1', g2'), union occur1 occur2
   in {g with it}, occur
 
-and annot_arg env a : arg * occur =
+and annot_arg dims a : arg * occur =
   let it, occur =
     match a.it with
     | ExpA e ->
-      let e', occur1 = annot_exp env e in
+      let e', occur1 = annot_exp dims e in
       ExpA e', occur1
     | TypA t ->
-      let t', occur1 = annot_typ env t in
+      let t', occur1 = annot_typ dims t in
       TypA t', occur1
-    | DefA id -> DefA id, Env.empty
+    | DefA x ->
+      DefA x, Map.empty
     | GramA g ->
-      let g', occur1 = annot_sym env g in
+      let g', occur1 = annot_sym dims g in
       GramA g', occur1
   in {a with it}, occur
 
-and annot_prem env prem : prem * occur =
+and annot_param dims p : param * occur =
+  let it, occur =
+    match p.it with
+    | ExpP (x, t) ->
+      let occur1 =
+        if x.it <> "_" && Map.mem x.it dims then
+          Map.singleton x.it (t, snd (Map.find x.it dims))
+        else
+          Map.empty
+      in
+      let t', occur2 = annot_typ dims t in
+      ExpP (x, t'), union occur1 occur2
+    | TypP x  ->
+      TypP x, Map.empty
+    | DefP (x, ps, t) ->
+      let ps', occurs = List.split (List.map (annot_param dims) ps) in
+      let t', occur2 = annot_typ dims t in
+      DefP (x, ps', t'), List.fold_left union occur2 occurs
+    | GramP (x, ps, t) ->
+      let ps', occurs = List.split (List.map (annot_param dims) ps) in
+      let t', occur2 = annot_typ dims t in
+      GramP (x, ps', t'), List.fold_left union occur2 occurs
+  in {p with it}, occur
+
+and annot_prem dims prem : prem * occur =
   let it, occur =
     match prem.it with
     | RulePr (x, op, e) ->
-      let e', occur = annot_exp env e in
+      let e', occur = annot_exp dims e in
       RulePr (x, op, e'), occur
     | IfPr e ->
-      let e', occur = annot_exp env e in
+      let e', occur = annot_exp dims e in
       IfPr e', occur
     | LetPr (e1, e2, ids) ->
-      let e1', occur1 = annot_exp env e1 in
-      let e2', occur2 = annot_exp env e2 in
+      let e1', occur1 = annot_exp dims e1 in
+      let e2', occur2 = annot_exp dims e2 in
       LetPr (e1', e2', ids), union occur1 occur2
     | ElsePr ->
-      ElsePr, Env.empty
+      ElsePr, Map.empty
     | IterPr (prem1, iter) ->
-      let prem1', occur1 = annot_prem env prem1 in
-      let iter', occur' = annot_iterexp env occur1 iter prem.at in
+      let prem1', occur1 = annot_prem dims prem1 in
+      let iter', occur' = annot_iterexp dims occur1 iter prem.at in
       IterPr (prem1', iter'), occur'
   in {prem with it}, occur
 
-let annot_inst env inst : inst * occur =
+(*
+let annot_inst dims inst : inst * occur =
   let InstD (qs, as_, dt) = inst.it in
   assert (qs = []);
-  let as', occurs = List.split (List.map (annot_arg env) as_) in
-  let dt', occur = dt, Env.empty in  (* assume dt was already annotated *)
+  let as', occurs = List.split (List.map (annot_arg dims) as_) in
+  let dt', occur = dt, Map.empty in  (* assume dt was already annotated *)
   {inst with it = InstD (qs, as', dt')}, List.fold_left union occur occurs
+*)
 
 
 (* Top-level entry points *)
 
-let annot_top annot_x env x =
-  let x', occurs = annot_x env x in
-  assert (Env.for_all (fun _ (_t, ctx) -> ctx = []) occurs);
+let annot_top annot_x dims x =
+  let x', occurs = annot_x dims x in
+  assert (Map.for_all (fun _ (_t, ctx) -> ctx = []) occurs);
   x'
 
-let annot_iter = annot_top (fun env x -> let x', (y, _) = annot_iter env x in x', y)
+let annot_iter = annot_top (fun dims x -> let x', (y, _) = annot_iter dims x in x', y)
+let annot_typ = annot_top annot_typ
 let annot_exp = annot_top annot_exp
 let annot_sym = annot_top annot_sym
-let annot_arg = annot_top annot_arg
 let annot_prem = annot_top annot_prem
-let annot_inst = annot_top annot_inst
+let annot_arg = annot_top annot_arg
+let annot_param = annot_top annot_param

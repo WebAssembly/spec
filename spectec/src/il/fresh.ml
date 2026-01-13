@@ -18,7 +18,13 @@ let fresh_id map s =
   map := Map.add s i !map;
   s ^ "#" ^ string_of_int i
 
-let refresh_id map x = fresh_id map x.it $ x.at
+let refresh_id map x =
+  let s =
+    match String.rindex_opt x.it '#' with
+    | None -> x.it
+    | Some i -> String.sub x.it 0 i
+  in
+  fresh_id map s $ x.at
 
 let fresh_typid = fresh_id typids
 let fresh_varid = fresh_id varids

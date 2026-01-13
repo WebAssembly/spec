@@ -6,6 +6,7 @@ val free_iter : iter -> sets
 val free_typ : typ -> sets
 val free_exp : exp -> sets
 val free_path : path -> sets
+val free_sym : sym -> sets
 val free_prem : prem -> sets
 val free_arg : arg -> sets
 val free_def : def -> sets
@@ -21,6 +22,7 @@ val free_args : arg list -> sets
 val free_quants : param list -> sets
 val free_params : param list -> sets
 
+val bound_iterexp : iterexp -> sets
 val bound_quant : quant -> sets
 val bound_param : param -> sets
 val bound_def : def -> sets

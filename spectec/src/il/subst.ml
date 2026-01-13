@@ -68,7 +68,9 @@ let subst_varid s x =
   match Map.find_opt x.it s.varid with
   | None -> x
   | Some {it = VarE x'; _} -> x'
-  | Some _ -> raise (Invalid_argument "subst_varid")
+  | Some e ->
+Printf.printf "!!!! e = %s\n%!" (Print.string_of_exp e);
+   raise (Invalid_argument "subst_varid")
 
 let subst_defid s x =
   match Map.find_opt x.it s.defid with
@@ -79,7 +81,7 @@ let subst_gramid s x =
   match Map.find_opt x.it s.gramid with
   | None -> x
   | Some {it = VarG (x', []); _} -> x'
-  | Some _ -> raise (Invalid_argument "subst_varid")
+  | Some _ -> raise (Invalid_argument "subst_gramid")
 
 
 (* Iterations *)
@@ -122,9 +124,6 @@ and subst_typfield s (atom, (qs, t, prems), hints) =
 and subst_typcase s (op, (qs, t, prems), hints) =
   let qs', s' = subst_quants s qs in
   (op, (qs', subst_typ s' t, subst_list subst_prem s' prems), hints)
-
-and subst_typbind s (x, t) =
-  (subst_varid s x, subst_typ s t)
 
 
 (* Expressions *)

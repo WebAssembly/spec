@@ -1,7 +1,7 @@
 (library
   (name frontend)
-  (libraries util el il)
-  (modules lexer id parser parse dim eval elab)
+  (libraries util el il xl)
+  (modules lexer id parser parse dim det eval elab)
 )
 
 (ocamllex

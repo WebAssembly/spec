@@ -1025,7 +1025,7 @@ param_ :
   | varid_bind_with_suffix COLON typ { ExpP ($1, $3) }
   | typ
     { let id =
-        try El.Convert.varid_of_typ $1 with Error.Error _ -> "" $ $sloc
+        try El.Convert.varid_of_typ $1 with Error.Error _ -> "_" $ $sloc
       in ExpP (id, $1) }
   | SYNTAX varid_bind { TypP $2 }
   | GRAMMAR gramid COLON typ { GramP ($2, [], $4) }
