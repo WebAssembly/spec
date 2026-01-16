@@ -5,11 +5,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Values &#8212; WebAssembly 3.0 (2025-12-08)</title>
+    <title>Values &#8212; WebAssembly 3.0 (2026-01-16)</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=686e5160" />
     <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=057308f9" />
-    <script src="../_static/documentation_options.js?v=3cf669ed"></script>
+    <script src="../_static/documentation_options.js?v=0488c526"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>window.MathJax = {"tex": {"maxBuffer": 30720, "macros": {"multicolumn": ["", 2]}}, "options": {"menuOptions": {"settings": {"enrich": false}}}}</script>
@@ -117,7 +117,7 @@ In the abstract syntax, they are represented as unsigned values.
 However, some operations <a class="reference internal" href="../exec/numerics.html#aux-signed"><span class="std std-ref">convert</span></a> them to signed based on a two’s complement interpretation.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The main integer types occurring in this specification are <span class="math notranslate nohighlight">\({\href{../syntax/values.html#syntax-int}{\mathit{u\scriptstyle\kern-0.1em8}}}\)</span>, <span class="math notranslate nohighlight">\({\href{../syntax/values.html#syntax-int}{\mathit{u\scriptstyle\kern-0.1em32}}}\)</span>, <span class="math notranslate nohighlight">\({\href{../syntax/values.html#syntax-int}{\mathit{u\scriptstyle\kern-0.1em64}}}\)</span>, and <span class="math notranslate nohighlight">\({\href{../syntax/values.html#syntax-int}{\mathit{u\scriptstyle\kern-0.1em128}}}\)</span>.
+<p>The main integer types occurring in this specification are <span class="math notranslate nohighlight">\({\href{../syntax/values.html#syntax-int}{\mathit{u\scriptstyle\kern-0.1em8}}}\)</span>, <span class="math notranslate nohighlight">\({\href{../syntax/values.html#syntax-int}{\mathit{u\scriptstyle\kern-0.1em32}}}\)</span>, <span class="math notranslate nohighlight">\({\href{../syntax/values.html#syntax-int}{\mathit{u\scriptstyle\kern-0.1em64}}}\)</span>, and <span class="math notranslate nohighlight">\({\mathit{u{\kern-0.1em\scriptstyle 128}}}\)</span>.
 However, other sizes occur as auxiliary constructions, e.g., in the definition of <a class="reference internal" href="#syntax-float"><span class="std std-ref">floating-point</span></a> numbers.</p>
 </div>
 <section id="id1">
@@ -177,7 +177,7 @@ No distinction is made between signalling and quiet NaNs.</p>
 <section id="vectors">
 <span id="syntax-vecnum"></span><span id="index-4"></span><h2>Vectors<a class="headerlink" href="#vectors" title="Link to this heading">¶</a></h2>
 <p><em>Numeric vectors</em> are 128-bit values that are processed by vector instructions (also known as <em>SIMD</em> instructions, single instruction multiple data).
-They are represented in the abstract syntax using <span class="math notranslate nohighlight">\({\href{../syntax/values.html#syntax-int}{\mathit{u\scriptstyle\kern-0.1em128}}}\)</span>. The interpretation of lane types (<a class="reference internal" href="#syntax-int"><span class="std std-ref">integer</span></a> or <a class="reference internal" href="#syntax-float"><span class="std std-ref">floating-point</span></a> numbers) and lane sizes are determined by the specific instruction operating on them.</p>
+They are represented in the abstract syntax using <span class="math notranslate nohighlight">\({\mathit{u{\kern-0.1em\scriptstyle 128}}}\)</span>. The interpretation of lane types (<a class="reference internal" href="#syntax-int"><span class="std std-ref">integer</span></a> or <a class="reference internal" href="#syntax-float"><span class="std std-ref">floating-point</span></a> numbers) and lane sizes are determined by the specific instruction operating on them.</p>
 </section>
 <section id="names">
 <span id="syntax-name"></span><span id="syntax-char"></span><span id="index-5"></span><h2>Names<a class="headerlink" href="#names" title="Link to this heading">¶</a></h2>
