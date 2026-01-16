@@ -359,6 +359,9 @@ warning: syntax `half` was never spliced
 warning: syntax `heaptype` was never spliced
 warning: syntax `hostaddr` was never spliced
 warning: syntax `hostfunc` was never spliced
+warning: syntax `i128` was never spliced
+warning: syntax `i32` was never spliced
+warning: syntax `i64` was never spliced
 warning: syntax `iN` was never spliced
 warning: syntax `idctxt` was never spliced
 warning: syntax `idx` was never spliced
@@ -467,7 +470,6 @@ warning: syntax `typeidx` was never spliced
 warning: syntax `typeuse/syn` was never spliced
 warning: syntax `typeuse/sem` was never spliced
 warning: syntax `typevar` was never spliced
-warning: syntax `u128` was never spliced
 warning: syntax `u16` was never spliced
 warning: syntax `u31` was never spliced
 warning: syntax `u32` was never spliced
@@ -544,6 +546,8 @@ warning: grammar `Bglobalidx` was never spliced
 warning: grammar `Bglobalsec` was never spliced
 warning: grammar `Bglobaltype` was never spliced
 warning: grammar `Bheaptype` was never spliced
+warning: grammar `Bi32` was never spliced
+warning: grammar `Bi64` was never spliced
 warning: grammar `BiN` was never spliced
 warning: grammar `Bimport` was never spliced
 warning: grammar `Bimportsec` was never spliced
@@ -752,7 +756,6 @@ warning: grammar `Thexfloat` was never spliced
 warning: grammar `Thexfrac` was never spliced
 warning: grammar `Thexmant` was never spliced
 warning: grammar `Thexnum` was never spliced
-warning: grammar `Ti128` was never spliced
 warning: grammar `Ti16` was never spliced
 warning: grammar `Ti32` was never spliced
 warning: grammar `Ti64` was never spliced
