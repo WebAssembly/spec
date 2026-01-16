@@ -1948,7 +1948,7 @@ The <dfn abstract-op lt="CharCodeAt">CharCodeAt(|string|, |index|)</dfn> abstrac
 
 <h4 id="js-string-cast">cast</h4>
 
-The |funcType| of this builtin is `(rec (type (func (param externref) (result externref)))).0`.
+The |funcType| of this builtin is `(rec (type (func (param externref) (result (ref extern))))).0`.
 
 <div algorithm="js-string-cast">
 
@@ -1976,7 +1976,7 @@ When this builtin is invoked with parameter |v|, the following steps must be run
 
 Let |arrayType| be `(rec (type (array (mut i16)))).0`.
 
-The |funcType| of this builtin is `(rec (type (func (param (ref null arrayType) i32 i32) (result externref)))).0`.
+The |funcType| of this builtin is `(rec (type (func (param (ref null arrayType) i32 i32) (result (ref extern))))).0`.
 
 <div algorithm="js-string-fromCharCodeArray">
 
@@ -2027,7 +2027,7 @@ When this builtin is invoked with parameters |string|, |array|, and |start|, the
 
 <h4 id="js-string-fromCharCode">fromCharCode</h4>
 
-The |funcType| of this builtin is `(rec (type (func (param i32) (result externref)))).0`.
+The |funcType| of this builtin is `(rec (type (func (param i32) (result (ref extern))))).0`.
 
 <div algorithm="js-string-fromCharCode">
 
@@ -2098,7 +2098,7 @@ When this builtin is invoked with parameter |v|, the following steps must be run
 
 <h4 id="js-string-concat">concat</h4>
 
-The |funcType| of this builtin is `(rec (type (func (param externref externref) (result externref)))).0`.
+The |funcType| of this builtin is `(rec (type (func (param externref externref) (result (ref extern))))).0`.
 
 <div algorithm="js-string-concat">
 
@@ -2112,7 +2112,7 @@ When this builtin is invoked with parameters |first| and |second|, the following
 
 <h4 id="js-string-substring">substring</h4>
 
-The |funcType| of this builtin is `(rec (type (func (param externref i32 i32) (result externref)))).0`.
+The |funcType| of this builtin is `(rec (type (func (param externref i32 i32) (result (ref extern))))).0`.
 
 <div algorithm="js-string-substring">
 
