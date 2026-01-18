@@ -40,6 +40,7 @@ let result f g = function Ok x -> f x | Error y -> g y
 let seq f xs = String.concat " " (List.map f xs)
 let list f xs = String.concat ", " (List.map f xs)
 let set s = seq Fun.id (MySet.elements s)
+let domain m = seq fst (MyMap.bindings m)
 let mapping f m = seq (fun (x, y) -> x ^ "=" ^ f y) (MyMap.bindings m)
 
 let qline _ = "--------------------"

@@ -1,6 +1,11 @@
 open Util.Source
 open Ast
 
+module Fresh =
+struct
+  let refresh_varid = ref (fun _ -> assert false)
+end
+
 
 (* Data Structure *)
 
@@ -52,7 +57,6 @@ let remove_varids s xs' = Free.Set.(fold (fun x' s -> remove_varid' s x') xs' s)
 
 let subst_opt subst_x s xo = Option.map (subst_x s) xo
 let subst_list subst_x s xs = List.map (subst_x s) xs
-let subst_pair subst_x subst_y s (x, y) = subst_x s x, subst_y s y
 
 let rec subst_list_dep subst_x bound_x s = function
   | [] -> [], s
@@ -88,10 +92,28 @@ let subst_gramid s x =
 
 let rec subst_iter s iter =
   match iter with
-  | Opt | List | List1 -> iter, s
-  | ListN (e, xo) ->
-    ListN (subst_exp s e, subst_opt subst_varid s xo),
-    Option.fold xo ~none:s ~some:(remove_varid s)
+  | Opt | List | List1 -> iter
+  | ListN (e, xo) -> ListN (subst_exp s e, subst_opt subst_varid s xo)
+
+and subst_iterexp : 'a. subst -> (subst -> 'a -> 'a) -> 'a -> _ -> 'a * _ =
+  fun s f body (it, xes) ->
+  let it', xxts1 =
+    match it with
+    | ListN (e, Some x) ->
+      let x' = !Fresh.refresh_varid x in
+      ListN (e, Some x'), [(x, x', NumT `NatT $ x.at)]
+    | _ -> it, []
+  in
+  let it'' = subst_iter s it' in
+  let xes' = List.map (fun (x, e) -> !Fresh.refresh_varid x, subst_exp s e) xes in
+  let xxts = List.map2 (fun (x, _) (x', e') -> x, x', e'.note) xes xes' in
+  let s' = 
+    List.fold_left (fun s (x, x', t) ->
+      add_varid s x (VarE x' $$ x'.at % t)
+    ) s (xxts1 @ xxts)
+  in
+  f s' body,
+  (it'', xes')
 
 
 (* Types *)
@@ -104,11 +126,23 @@ and subst_typ s t =
     | Some t' -> assert (as_ = []); t'.it  (* We do not support higher-order substitutions yet *)
     )
   | BoolT | NumT _ | TextT -> t.it
-  | TupT xts -> TupT (subst_list (subst_pair subst_varid subst_typ) s xts)
-  | IterT (t1, iter) ->
-    let iter', s' = subst_iter s iter in
-    IterT (subst_typ s' t1, iter')
+  | TupT xts -> TupT (fst (subst_tup_typ s xts))
+  | IterT (t1, it) -> IterT (subst_typ s t1, subst_iter s it)
   ) $ t.at
+
+and subst_typ' s t =
+  match t.it with
+  | TupT xts -> let xts', s' = subst_tup_typ s xts in TupT xts' $ t.at, s'
+  | _ -> subst_typ s t, s
+
+and subst_tup_typ s = function
+  | [] -> [], s
+  | (x, t)::xts ->
+    let x' = !Fresh.refresh_varid x in
+    let t' = subst_typ s t in
+    let s' = add_varid s x (VarE x' $$ x'.at % t') in
+    let xts', s'' = subst_tup_typ s' xts in
+    (x', t') :: xts', s''
 
 and subst_deftyp s dt =
   (match dt.it with
@@ -119,11 +153,13 @@ and subst_deftyp s dt =
 
 and subst_typfield s (atom, (qs, t, prems), hints) =
   let qs', s' = subst_quants s qs in
-  (atom, (qs', subst_typ s' t, subst_list subst_prem s' prems), hints)
+  let t', s'' = subst_typ' s' t in
+  (atom, (qs', t', subst_list subst_prem s'' prems), hints)
 
 and subst_typcase s (op, (qs, t, prems), hints) =
   let qs', s' = subst_quants s qs in
-  (op, (qs', subst_typ s' t, subst_list subst_prem s' prems), hints)
+  let t', s'' = subst_typ' s' t in
+  (op, (qs', t', subst_list subst_prem s'' prems), hints)
 
 
 (* Expressions *)
@@ -151,8 +187,8 @@ and subst_exp s e =
   | TupE es -> TupE (subst_list subst_exp s es)
   | CallE (x, as_) -> CallE (subst_defid s x, subst_args s as_)
   | IterE (e1, iterexp) ->
-    let it', s' = subst_iterexp s iterexp in
-    IterE (subst_exp s' e1, it')
+    let e1', it' = subst_iterexp s subst_exp e1 iterexp in
+    IterE (e1', it')
   | ProjE (e1, i) -> ProjE (subst_exp s e1, i)
   | UncaseE (e1, op, as_) ->
     let e1' = subst_exp s e1 in
@@ -181,12 +217,6 @@ and subst_path s p =
   | DotP (p1, atom, as_) -> DotP (subst_path s p1, atom, subst_args s as_)
   ) $$ p.at % subst_typ s p.note
 
-and subst_iterexp s (iter, xes) =
-  (* TODO(3, rossberg): This is assuming expressions in s are closed, is that okay? *)
-  let iter', s' = subst_iter s iter in
-  (iter', List.map (fun (x, e) -> (x, subst_exp s e)) xes),
-  List.fold_left remove_varid s' (List.map fst xes)
-
 
 (* Grammars *)
 
@@ -204,8 +234,8 @@ and subst_sym s g =
   | AltG gs -> AltG (subst_list subst_sym s gs)
   | RangeG (g1, g2) -> RangeG (subst_sym s g1, subst_sym s g2)
   | IterG (g1, iterexp) ->
-    let it', s' = subst_iterexp s iterexp in
-    IterG (subst_sym s' g1, it')
+    let g1', it' = subst_iterexp s subst_sym g1 iterexp in
+    IterG (g1', it')
   | AttrG (e, g1) -> AttrG (subst_exp s e, subst_sym s g1)
   ) $ g.at
 
@@ -218,8 +248,8 @@ and subst_prem s prem =
   | IfPr e -> IfPr (subst_exp s e)
   | ElsePr -> ElsePr
   | IterPr (prem1, iterexp) ->
-    let it', s' = subst_iterexp s iterexp in
-    IterPr (subst_prem s' prem1, it')
+    let prem1', it' = subst_iterexp s subst_prem prem1 iterexp in
+    IterPr (prem1', it')
   | LetPr (e1, e2, xs) -> LetPr (subst_exp s e1, subst_exp s e2, xs)
   ) $ prem.at
 

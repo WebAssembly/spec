@@ -59,11 +59,11 @@ and det_exp e =
   | IdxE _ | SliceE _ | UpdE _ | ExtE _ | CompE _ | MemE _
   | ProjE _ | DotE _ | LenE _ -> det_idx_exp e
 
-and det_expfield (_, _, e) = det_exp e
+and det_expfield (_, as_, e) = det_list det_quant_arg as_ ++ det_exp e
 
-and det_iterexp s1 (iter, xes) =
+and det_iterexp s1 (it, xes) =
   s1 -- free_list bound_varid (List.map fst xes) ++
-  det_iter iter ++
+  det_iter it ++
   det_list det_exp (List.filter_map
     (fun (x, e) -> if Set.mem x.it s1.varid then Some e else None) xes)
 
@@ -93,7 +93,7 @@ and det_idx_exp e =
   | OptE eo -> free_opt det_idx_exp eo
   | ListE es | TupE es -> det_list det_idx_exp es
   | StrE efs -> det_list det_idx_expfield efs
-  | IterE (e1, iter) -> det_idx_exp e1 ++ det_idx_iter (fst iter)
+  | IterE (e1, ite) -> det_idx_iterexp (det_idx_exp e1) ite
   | CallE (_, as_) -> det_list det_idx_arg as_
   | IdxE (e1, e2) -> det_quant_exp e1 ++ det_exp e2
   | _ -> det_quant_exp e
@@ -105,6 +105,12 @@ and det_idx_iter iter =
   | Opt | List | List1 -> empty
   | ListN (e, x_opt) -> det_idx_exp e ++ free_opt bound_varid x_opt
 
+and det_idx_iterexp s1 (it, xes) =
+  s1 -- free_list bound_varid (List.map fst xes) ++
+  det_idx_iter it ++
+  det_list det_idx_exp (List.filter_map
+    (fun (x, e) -> if Set.mem x.it s1.varid then Some e else None) xes)
+
 
 and det_quant_exp e =
   Il.Debug.(log_at "il.det_quant_exp" e.at
@@ -112,7 +118,8 @@ and det_quant_exp e =
     (fun s -> String.concat ", " (Set.elements s.varid))
   ) @@ fun _ ->
   match e.it with
-  | VarE _ | BoolE _ | NumE _ | TextE _ -> empty
+  | VarE x -> bound_varid x
+  | BoolE _ | NumE _ | TextE _ -> empty
   | UnE (_, _, e1) | ProjE (e1, _) | TheE e1 | LiftE e1 | LenE e1
   | CvtE (e1, _, _) | SubE (e1, _, _) ->
     det_quant_exp e1
@@ -128,10 +135,17 @@ and det_quant_exp e =
   | OptE eo -> free_opt det_quant_exp eo
   | ListE es | TupE es -> det_list det_quant_exp es
   | StrE efs -> det_list det_quant_expfield efs
-  | IterE (e1, iter) -> det_quant_exp e1 ++ det_quant_iter (fst iter)
+  | IterE (e1, ite) -> det_quant_iterexp (det_quant_exp e1) ite
   | CallE (_, as_) -> det_list det_quant_arg as_
 
-and det_quant_expfield (_, _, e) = det_quant_exp e
+and det_quant_expfield (_, as_, e) =
+  det_list det_quant_arg as_ ++ det_quant_exp e
+
+and det_quant_iterexp s1 (it, xes) =
+  s1 -- free_list bound_varid (List.map fst xes) ++
+  det_quant_iter it ++
+  det_list det_quant_exp (List.filter_map
+    (fun (x, e) -> if Set.mem x.it s1.varid then Some e else None) xes)
 
 and det_quant_path p =
   match p.it with

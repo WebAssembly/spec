@@ -5,6 +5,8 @@ open Xl
 
 module type Arg =
 sig
+  type scope
+
   val visit_atom : atom -> unit
   val visit_mixop : mixop -> unit
   val visit_typid : id -> unit
@@ -23,10 +25,15 @@ sig
   val visit_def : def -> unit
 
   val visit_hint : hint -> unit
+
+  val scope_enter : id -> typ -> scope
+  val scope_exit : id -> scope -> unit
 end
 
 module Skip =
 struct
+  type scope = unit
+
   let visit_atom _ = ()
   let visit_mixop _ = ()
   let visit_typid _ = ()
@@ -45,6 +52,9 @@ struct
   let visit_def _ = ()
 
   let visit_hint _ = ()
+
+  let scope_enter _ _ = ()
+  let scope_exit _ _ = ()
 end
 
 
@@ -86,6 +96,19 @@ let rec iter it =
   match it with
   | Opt | List | List1 -> ()
   | ListN (e, xo) -> exp e; opt varid xo
+
+and iterexp : 'a. ('a -> unit) -> 'a -> _ -> unit = fun f body (it, xes) ->
+  let xts1 =
+    match it with
+    | ListN (_, Some x) -> [(x, NumT `NatT $ x.at)]
+    | _ -> []
+  in
+  let xts = xts1 @ List.map (fun (x, e) -> x, e.note) xes in
+  let old_scopes = List.map (fun (x, t) -> scope_enter x t) xts in
+  f body;
+  List.iter2 (fun (x, _) scope -> scope_exit x scope)
+    (List.rev xts) (List.rev old_scopes);
+  iter it; list (pair varid exp) xes
 
 
 (* Types *)
@@ -137,10 +160,10 @@ and exp e =
   | SliceE (e1, e2, e3) -> exp e1; exp e2; exp e3
   | UpdE (e1, p, e2) | ExtE (e1, p, e2) -> exp e1; path p; exp e2
   | CallE (x, as_) -> defid x; args as_
-  | IterE (e1, it) -> exp e1; iterexp it
+  | IterE (e1, it) -> iterexp exp e1 it
   | CvtE (e1, nt1, nt2) -> exp e1; numtyp nt1; numtyp nt2
   | SubE (e1, t1, t2) -> exp e1; typ t1; typ t2
-
+ 
 and expfield (at, as_, e) = atom at; args as_; exp e
 
 and path p =
@@ -150,8 +173,6 @@ and path p =
   | IdxP (p1, e) -> path p1; exp e
   | SliceP (p1, e1, e2) -> path p1; exp e1; exp e2
   | DotP (p1, at, as_) -> path p1; atom at; args as_
-
-and iterexp (it, xes) = iter it; list (pair varid exp) xes
 
 
 (* Grammars *)
@@ -165,7 +186,7 @@ and sym g =
   | EpsG -> ()
   | SeqG gs | AltG gs -> list sym gs
   | RangeG (g1, g2) -> sym g1; sym g2
-  | IterG (g1, it) -> sym g1; iterexp it
+  | IterG (g1, it) -> iterexp sym g1 it
   | AttrG (e, g1) -> exp e; sym g1
 
 
@@ -177,7 +198,7 @@ and prem pr =
   | RulePr (x, op, e) -> relid x; mixop op; exp e
   | IfPr e -> exp e
   | ElsePr -> ()
-  | IterPr (pr1, it) -> prem pr1; iterexp it
+  | IterPr (pr1, it) -> iterexp prem pr1 it
   | LetPr (e1, e2, _) -> exp e1; exp e2
 
 and prems prs = list prem prs

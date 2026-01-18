@@ -79,6 +79,7 @@ let check_ctxs id ctxs : region * ctx =
   at, ctx
 
 let check_dims (dims : rdims ref) : dims =
+Printf.printf "[check_dims] %s\n%!" (Debug.domain !dims);
   Map.mapi check_ctxs !dims
 
 
@@ -92,24 +93,32 @@ let check_typid _dims _ctx _id = ()   (* Types are always global *)
 let check_gramid _dims _ctx _id = ()  (* Grammars are always global *)
 
 let check_varid dims ctx mode id =
-  let ctxs = Option.value (Map.find_opt id.it !dims) ~default:[] in
-  dims := Map.add id.it ((id.at, ctx, mode)::ctxs) !dims
+  dims := Map.add_to_list id.it (id.at, ctx, mode) !dims
 
-let rec check_iter dims ctx iter =
-  match iter with
+let uncheck_varid dims id =
+  dims := Map.add id.it (List.tl (Map.find id.it !dims)) !dims
+
+let rec check_iter dims ctx it =
+  match it with
   | Opt | List | List1 -> ()
-  | ListN (e, id_opt) ->
+  | ListN (e, x_opt) ->
     check_exp dims ctx e;
-    (* TODO(2, rossberg): The dimension for id should match that of e:
-     * for example, if we b^(i<n) and n's dimension turns out to be * itself,
-     * then i should be **. But unfortunately, n's dimension is not known
-     * at this point, so we cannot predict a choice for this use site of i.
-     * In general, this would require unification on dimension variables.
-     * Declaratively, it should be fine to always assume full dimensionality,
-     * i.e., check id under context (strip_index iter :: ctx) below.
-     * However, the interpreter backend cannot handle that.
-     * We chicken out by assuming e is scalar, i.e., ignore outer ctx below. *)
-    Option.iter (fun id -> check_varid dims [strip_index iter] `Expl id) id_opt
+    Option.iter (check_varid dims [] `Expl) x_opt
+
+and check_iterexp : 'a. _ -> _ -> (_ -> _ -> 'a -> unit) -> 'a -> _ -> unit =
+  fun dims ctx f body (it, xes) ->
+  check_iter dims ctx it;
+  List.iter (fun (x, e) -> check_varid dims [] `Expl x; check_exp dims ctx e) xes;
+  (* Only check body if iteration isn't annotated already.
+   * That may happen when e.g. an expression got substituted originating from
+   * a type definition already processed earlier. *)
+  if xes = [] then f dims (strip_index it::ctx) body;
+  (* Remove locals.
+   * All locals are scalar, so no checking or annotation is needed for them. *)
+  List.iter (fun (x, _) -> uncheck_varid dims x) xes;
+  match it with
+  | ListN (_, Some x) -> uncheck_varid dims x
+  | _ -> ()
 
 and check_typ dims ctx t =
   match t.it with
@@ -149,11 +158,11 @@ and check_deftyp dims ctx dt =
     ) tcs
 *)
 
-and check_iterexp dims ctx (iter, xes) =
-  check_iter dims ctx iter;
-  assert (xes = [])
-
 and check_exp dims ctx e =
+  Debug.(log "il.check_exp"
+    (fun _ -> il_exp e)
+    (fun _ -> domain !dims)
+  ) @@ fun _ ->
   match e.it with
   | VarE x ->
     check_varid dims ctx `Expl x
@@ -199,8 +208,7 @@ and check_exp dims ctx e =
   | CallE (_, as_) ->
     List.iter (check_arg dims ctx) as_
   | IterE (e1, ite) ->
-    check_iterexp dims ctx ite;
-    check_exp dims (strip_index (fst ite)::ctx) e1
+    check_iterexp dims ctx check_exp e1 ite
   | SubE (e1, t1, t2) ->
     check_exp dims ctx e1;
     check_typ dims ctx t1;
@@ -242,8 +250,7 @@ and check_sym dims ctx g =
     check_exp dims ctx e;
     check_sym dims ctx g1
   | IterG (g1, ite) ->
-    check_iterexp dims ctx ite;
-    check_sym dims (strip_index (fst ite)::ctx) g1
+    check_iterexp dims ctx check_sym g1 ite
 
 
 and check_prem dims ctx prem =
@@ -254,9 +261,8 @@ and check_prem dims ctx prem =
   | LetPr (e1, e2, _xs) ->
     check_exp dims ctx e1;
     check_exp dims ctx e2
-  | IterPr (prem', ite) ->
-    check_iterexp dims ctx ite;
-    check_prem dims (strip_index (fst ite)::ctx) prem'
+  | IterPr (prem1, ite) ->
+    check_iterexp dims ctx check_prem prem1 ite
 
 and check_arg dims ctx a =
   match a.it with
@@ -388,10 +394,6 @@ let union = Map.union (fun _ (_, ctx1 as occ1) (_, ctx2 as occ2) ->
   (* For well-typed scripts, t1 == t2. *)
   Some (if List.length ctx1 < List.length ctx2 then occ1 else occ2))
 
-let strip_index = function
-  | ListN (e, Some _) -> ListN (e, None)
-  | iter -> iter
-
 let annot_varid' id' = function
   | Opt -> id' ^ Il.Print.string_of_iter Opt
   | _ -> id' ^ Il.Print.string_of_iter List
@@ -401,26 +403,38 @@ let rec annot_varid id = function
   | iter::iters -> annot_varid (annot_varid' id.it iter $ id.at) iters
 
 
-let rec annot_iter dims iter : iter * (occur * occur) =
+let rec annot_iter side dims iter : iter * occur =
   Il.Debug.(log "il.annot_iter"
     (fun _ -> fmt "%s" (il_iter iter))
-    (fun (iter', (occur1, occur2)) -> fmt "%s %s %s" (il_iter iter')
-      (il_occur occur1) (il_occur occur2))
+    (fun (iter', occur) -> fmt "%s %s" (il_iter iter') (il_occur occur))
   ) @@ fun _ ->
   match iter with
-  | Opt | List | List1 -> iter, Map.(empty, empty)
+  | Opt | List | List1 -> iter, Map.empty
   | ListN (e, x_opt) ->
-    let e', occur1 = annot_exp dims e in
-    let occur2 =
-      match x_opt with
-      | None -> Map.empty
-      | Some x ->
-        if x.it <> "_" && Map.mem x.it dims then
-          Map.singleton x.it (NumT `NatT $ x.at, snd (Map.find x.it dims))
-        else
-          Map.empty
-    in
-    ListN (e', x_opt), (occur1, occur2)
+    let e', occur = annot_exp side dims e in
+    ListN (e', x_opt), occur
+
+and annot_iterexp side dims occur1 (it, xes) at : iterexp * occur =
+  Il.Debug.(log_at "il.annot_iterexp" at
+    (fun _ -> fmt "%s %s" (il_iter it) (il_occur occur1))
+    (fun ((it', _), occur') -> fmt "%s %s" (il_iter it') (il_occur occur'))
+  ) @@ fun _ ->
+  assert (xes = []);
+  let it', occur2 = annot_iter side dims it in
+  (* Remove locals and lower context level of non-locals *)
+  let occur1' =
+    List.filter_map (fun (x, (t, its)) ->
+      match its with
+      | [] -> None
+      | it::its' -> Some (x, (annot_varid' x it, (IterT (t, it) $ at, its')))
+    ) (Map.bindings occur1)
+  in
+  List.iter (fun (x, _) -> assert (not (Map.mem x.it dims))) xes;
+  if side = `Rhs && occur1' = [] && match it with Opt | ListN _ -> false | _ -> true then
+    error at "iteration does not contain iterable variable";
+  let xes' =
+    List.map (fun (x, (x', (t, _))) -> x $ at, VarE (x' $ at) $$ at % t) occur1' in
+  (it', xes'), union (Map.of_seq (List.to_seq (List.map snd occur1'))) occur2
 
 and annot_typ dims t : typ * occur =
   Il.Debug.(log "il.annot_typ"
@@ -439,7 +453,7 @@ and annot_typ dims t : typ * occur =
       TupT xts', List.fold_left union Map.empty occurs
     | IterT (t1, iter) ->
       let t1', occur1 = annot_typ dims t1 in
-      let (iter', _), occur = annot_iterexp dims occur1 (iter, []) t.at in
+      let (iter', _), occur = annot_iterexp `Lhs dims occur1 (iter, []) t.at in
       IterT (t1', iter'), occur
   in {t with it}, occur
 
@@ -454,7 +468,7 @@ and annot_typbind dims (x, t) : (id * typ) * occur =
   (x, t'), union occur1 occur2
 
 
-and annot_exp dims e : exp * occur =
+and annot_exp side dims e : exp * occur =
   Il.Debug.(log "il.annot_exp"
     (fun _ -> fmt "%s" (il_exp e))
     (fun (e', occur') -> fmt "%s %s" (il_exp e') (il_occur occur'))
@@ -466,105 +480,105 @@ and annot_exp dims e : exp * occur =
     | VarE _ | BoolE _ | NumE _ | TextE _ ->
       e.it, Map.empty
     | UnE (op, nt, e1) ->
-      let e1', occur1 = annot_exp dims e1 in
+      let e1', occur1 = annot_exp side dims e1 in
       UnE (op, nt, e1'), occur1
     | BinE (op, nt, e1, e2) ->
-      let e1', occur1 = annot_exp dims e1 in
-      let e2', occur2 = annot_exp dims e2 in
+      let e1', occur1 = annot_exp side dims e1 in
+      let e2', occur2 = annot_exp side dims e2 in
       BinE (op, nt, e1', e2'), union occur1 occur2
     | CmpE (op, nt, e1, e2) ->
-      let e1', occur1 = annot_exp dims e1 in
-      let e2', occur2 = annot_exp dims e2 in
+      let e1', occur1 = annot_exp side dims e1 in
+      let e2', occur2 = annot_exp side dims e2 in
       CmpE (op, nt, e1', e2'), union occur1 occur2
     | IdxE (e1, e2) ->
-      let e1', occur1 = annot_exp dims e1 in
-      let e2', occur2 = annot_exp dims e2 in
+      let e1', occur1 = annot_exp side dims e1 in
+      let e2', occur2 = annot_exp side dims e2 in
       IdxE (e1', e2'), union occur1 occur2
     | SliceE (e1, e2, e3) ->
-      let e1', occur1 = annot_exp dims e1 in
-      let e2', occur2 = annot_exp dims e2 in
-      let e3', occur3 = annot_exp dims e3 in
+      let e1', occur1 = annot_exp side dims e1 in
+      let e2', occur2 = annot_exp side dims e2 in
+      let e3', occur3 = annot_exp side dims e3 in
       SliceE (e1', e2', e3'), union (union occur1 occur2) occur3
     | UpdE (e1, p, e2) ->
-      let e1', occur1 = annot_exp dims e1 in
+      let e1', occur1 = annot_exp side dims e1 in
       let p', occur2 = annot_path dims p in
-      let e2', occur3 = annot_exp dims e2 in
+      let e2', occur3 = annot_exp side dims e2 in
       UpdE (e1', p', e2'), union (union occur1 occur2) occur3
     | ExtE (e1, p, e2) ->
-      let e1', occur1 = annot_exp dims e1 in
+      let e1', occur1 = annot_exp side dims e1 in
       let p', occur2 = annot_path dims p in
-      let e2', occur3 = annot_exp dims e2 in
+      let e2', occur3 = annot_exp side dims e2 in
       ExtE (e1', p', e2'), union (union occur1 occur2) occur3
     | StrE efs ->
-      let efs', occurs = List.split (List.map (annot_expfield dims) efs) in
+      let efs', occurs = List.split (List.map (annot_expfield side dims) efs) in
       StrE efs', List.fold_left union Map.empty occurs
     | DotE (e1, atom, as_) ->
-      let e1', occur1 = annot_exp dims e1 in
+      let e1', occur1 = annot_exp side dims e1 in
       let as', occurs = List.split (List.map (annot_arg dims) as_) in
       DotE (e1', atom, as'), List.fold_left union occur1 occurs
     | CompE (e1, e2) ->
-      let e1', occur1 = annot_exp dims e1 in
-      let e2', occur2 = annot_exp dims e2 in
+      let e1', occur1 = annot_exp side dims e1 in
+      let e2', occur2 = annot_exp side dims e2 in
       CompE (e1', e2'), union occur1 occur2
     | LenE e1 ->
-      let e1', occur1 = annot_exp dims e1 in
+      let e1', occur1 = annot_exp side dims e1 in
       LenE e1', occur1
     | TupE es ->
-      let es', occurs = List.split (List.map (annot_exp dims) es) in
+      let es', occurs = List.split (List.map (annot_exp side dims) es) in
       TupE es', List.fold_left union Map.empty occurs
     | CallE (id, as1) ->
       let as1', occurs = List.split (List.map (annot_arg dims) as1) in
       CallE (id, as1'), List.fold_left union Map.empty occurs
     | IterE (e1, iter) ->
-      let e1', occur1 = annot_exp dims e1 in
-      let iter', occur' = annot_iterexp dims occur1 iter e.at in
+      let e1', occur1 = annot_exp side dims e1 in
+      let iter', occur' = annot_iterexp side dims occur1 iter e.at in
       IterE (e1', iter'), occur'
     | ProjE (e1, i) ->
-      let e1', occur1 = annot_exp dims e1 in
+      let e1', occur1 = annot_exp side dims e1 in
       ProjE (e1', i), occur1
     | UncaseE (e1, op, as_) ->
-      let e1', occur1 = annot_exp dims e1 in
+      let e1', occur1 = annot_exp side dims e1 in
       let as', occurs = List.split (List.map (annot_arg dims) as_) in
       UncaseE (e1', op, as'), List.fold_left union occur1 occurs
     | OptE None ->
       OptE None, Map.empty
     | OptE (Some e1) ->
-      let e1', occur1 = annot_exp dims e1 in
+      let e1', occur1 = annot_exp side dims e1 in
       OptE (Some e1'), occur1
     | TheE e1 ->
-      let e1', occur1 = annot_exp dims e1 in
+      let e1', occur1 = annot_exp side dims e1 in
       TheE e1', occur1
     | ListE es ->
-      let es', occurs = List.split (List.map (annot_exp dims) es) in
+      let es', occurs = List.split (List.map (annot_exp side dims) es) in
       ListE es', List.fold_left union Map.empty occurs
     | LiftE e1 ->
-      let e1', occur1 = annot_exp dims e1 in
+      let e1', occur1 = annot_exp side dims e1 in
       LiftE e1', occur1
     | MemE (e1, e2) ->
-      let e1', occur1 = annot_exp dims e1 in
-      let e2', occur2 = annot_exp dims e2 in
+      let e1', occur1 = annot_exp side dims e1 in
+      let e2', occur2 = annot_exp side dims e2 in
       MemE (e1', e2'), union occur1 occur2
     | CatE (e1, e2) ->
-      let e1', occur1 = annot_exp dims e1 in
-      let e2', occur2 = annot_exp dims e2 in
+      let e1', occur1 = annot_exp side dims e1 in
+      let e2', occur2 = annot_exp side dims e2 in
       CatE (e1', e2'), union occur1 occur2
     | CaseE (atom, as_, e1) ->
       let as', occurs = List.split (List.map (annot_arg dims) as_) in
-      let e1', occur1 = annot_exp dims e1 in
+      let e1', occur1 = annot_exp side dims e1 in
       CaseE (atom, as', e1'), List.fold_left union occur1 occurs
     | CvtE (e1, nt1, nt2) ->
-      let e1', occur1 = annot_exp dims e1 in
+      let e1', occur1 = annot_exp side dims e1 in
       CvtE (e1', nt1, nt2), occur1
     | SubE (e1, t1, t2) ->
-      let e1', occur1 = annot_exp dims e1 in
+      let e1', occur1 = annot_exp side dims e1 in
       let t1', occur2 = annot_typ dims t1 in
       let t2', occur3 = annot_typ dims t2 in
       SubE (e1', t1', t2'), union occur1 (union occur2 occur3)
   in {e with it}, occur
 
-and annot_expfield dims (atom, as_, e) : expfield * occur =
+and annot_expfield side dims (atom, as_, e) : expfield * occur =
   let as', occurs = List.split (List.map (annot_arg dims) as_) in
-  let e', occur = annot_exp dims e in
+  let e', occur = annot_exp side dims e in
   (atom, as', e'), List.fold_left union occur occurs
 
 and annot_path dims p : path * occur =
@@ -573,46 +587,18 @@ and annot_path dims p : path * occur =
     | RootP -> RootP, Map.empty
     | IdxP (p1, e) ->
       let p1', occur1 = annot_path dims p1 in
-      let e', occur2 = annot_exp dims e in
+      let e', occur2 = annot_exp `Rhs dims e in
       IdxP (p1', e'), union occur1 occur2
     | SliceP (p1, e1, e2) ->
       let p1', occur1 = annot_path dims p1 in
-      let e1', occur2 = annot_exp dims e1 in
-      let e2', occur3 = annot_exp dims e2 in
+      let e1', occur2 = annot_exp `Rhs dims e1 in
+      let e2', occur3 = annot_exp `Rhs dims e2 in
       SliceP (p1', e1', e2'), union occur1 (union occur2 occur3)
     | DotP (p1, atom, as_) ->
       let p1', occur1 = annot_path dims p1 in
       let as', occurs = List.split (List.map (annot_arg dims) as_) in
       DotP (p1', atom, as'), List.fold_left union occur1 occurs
   in {p with it}, occur
-
-and annot_iterexp dims occur1 (iter, xes) at : iterexp * occur =
-  Il.Debug.(log "il.annot_iterexp"
-    (fun _ -> fmt "%s %s" (il_iter iter) (il_occur occur1))
-    (fun ((iter', _), occur') -> fmt "%s %s" (il_iter iter') (il_occur occur'))
-  ) @@ fun _ ->
-  assert (xes = []);
-  let iter', (occur2, occur3) = annot_iter dims iter in
-  let occur1'_l =
-    List.filter_map (fun (x, (t, iters)) ->
-      match iters with
-      | [] -> None
-      | iter::iters' ->
-(* TODO(2, rossberg): this doesn't quite work, since it's comparing
-   annotated and unannotated expressions:
-        assert (Il.Eq.eq_iter (strip_index iter') iter);
-*)
-        ignore strip_index;
-        Some (x, (annot_varid' x iter, (IterT (t, iter) $ at, iters')))
-    ) (Map.bindings (union occur1 occur3))
-  in
-(* TODO(2, rossberg): this should be active
-  if occur1'_l = [] then
-    error at "iteration does not contain iterable variable";
-*)
-  let xes' =
-    List.map (fun (x, (x', (t, _))) -> x $ at, VarE (x' $ at) $$ at % t) occur1'_l in
-  (iter', xes'), union (Map.of_seq (List.to_seq (List.map snd occur1'_l))) occur2
 
 and annot_sym dims g : sym * occur =
   Il.Debug.(log_in "il.annot_sym" (fun _ -> il_sym g));
@@ -635,10 +621,10 @@ and annot_sym dims g : sym * occur =
       RangeG (g1', g2'), union occur1 occur2
     | IterG (g1, iter) ->
       let g1', occur1 = annot_sym dims g1 in
-      let iter', occur' = annot_iterexp dims occur1 iter g.at in
+      let iter', occur' = annot_iterexp `Lhs dims occur1 iter g.at in
       IterG (g1', iter'), occur'
     | AttrG (e1, g2) ->
-      let e1', occur1 = annot_exp dims e1 in
+      let e1', occur1 = annot_exp `Lhs dims e1 in
       let g2', occur2 = annot_sym dims g2 in
       AttrG (e1', g2'), union occur1 occur2
   in {g with it}, occur
@@ -647,7 +633,7 @@ and annot_arg dims a : arg * occur =
   let it, occur =
     match a.it with
     | ExpA e ->
-      let e', occur1 = annot_exp dims e in
+      let e', occur1 = annot_exp `Rhs dims e in
       ExpA e', occur1
     | TypA t ->
       let t', occur1 = annot_typ dims t in
@@ -687,20 +673,20 @@ and annot_prem dims prem : prem * occur =
   let it, occur =
     match prem.it with
     | RulePr (x, op, e) ->
-      let e', occur = annot_exp dims e in
+      let e', occur = annot_exp `Rhs dims e in
       RulePr (x, op, e'), occur
     | IfPr e ->
-      let e', occur = annot_exp dims e in
+      let e', occur = annot_exp `Rhs dims e in
       IfPr e', occur
     | LetPr (e1, e2, ids) ->
-      let e1', occur1 = annot_exp dims e1 in
-      let e2', occur2 = annot_exp dims e2 in
+      let e1', occur1 = annot_exp `Lhs dims e1 in
+      let e2', occur2 = annot_exp `Rhs dims e2 in
       LetPr (e1', e2', ids), union occur1 occur2
     | ElsePr ->
       ElsePr, Map.empty
     | IterPr (prem1, iter) ->
       let prem1', occur1 = annot_prem dims prem1 in
-      let iter', occur' = annot_iterexp dims occur1 iter prem.at in
+      let iter', occur' = annot_iterexp `Rhs dims occur1 iter prem.at in
       IterPr (prem1', iter'), occur'
   in {prem with it}, occur
 
@@ -721,10 +707,16 @@ let annot_top annot_x dims x =
   assert (Map.for_all (fun _ (_t, ctx) -> ctx = []) occurs);
   x'
 
-let annot_iter = annot_top (fun dims x -> let x', (y, _) = annot_iter dims x in x', y)
+let annot_iter = annot_top (annot_iter `Rhs)
 let annot_typ = annot_top annot_typ
-let annot_exp = annot_top annot_exp
+let annot_exp = annot_top (annot_exp `Rhs)
 let annot_sym = annot_top annot_sym
 let annot_prem = annot_top annot_prem
 let annot_arg = annot_top annot_arg
 let annot_param = annot_top annot_param
+
+
+(* Restriction *)
+
+let restrict dims bound =
+  Map.filter Il.Free.(fun x _ -> Set.mem x bound.varid) dims

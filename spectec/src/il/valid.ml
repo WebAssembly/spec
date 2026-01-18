@@ -33,18 +33,6 @@ let typ_string env t =
     "`" ^ string_of_typ t ^ "` = `" ^ string_of_typ t' ^ "`"
 
 
-(* Quantifier variables *)
-
-let is_qvar env x =
-  let _, sort = Env.find_var env x in
-  sort = Quant
-
-let is_qvar_exp env e =
-  match e.it with
-  | VarE x -> is_qvar env x
-  | _ -> false
-
-
 (* Type Accessors *)
 
 let expand_typ (env : Env.t) t = (Eval.reduce_typ env t).it
@@ -109,6 +97,16 @@ let rec inst_tup_typ env s xts : (id * typ) list =
     let s' = Subst.add_varid s xI (VarE xI' $$ xI.at % tI') in
     (xI', tI') :: inst_tup_typ env s' xts'
 *)
+
+let proj_tup_typ i xts e at =
+  let rec loop i xts s =
+    match i, xts with
+    | _, [] -> error at "invalid tuple projection"
+    | 0, (_, tI)::_ -> Subst.subst_typ s tI
+    | i, (xI, tI)::xts' ->
+      let eI = ProjE (e, i) $$ at % Subst.subst_typ s tI in
+      loop (i - 1) xts' (Subst.add_varid s xI eI)
+ in loop i xts Subst.empty
 
 
 (* Type Equivalence and Subtyping *)
@@ -187,8 +185,25 @@ let rec valid_iter ?(side = `Rhs) env iter : Env.t =
   | ListN (e, id_opt) ->
     valid_exp ~side env e (NumT `NatT $ e.at);
     Option.fold id_opt ~none:env ~some:(fun id ->
-      Env.bind_var env id (NumT `NatT $ e.at, Reg)
+      Env.bind_var env id (NumT `NatT $ e.at)
     )
+
+and valid_iterexp ?(side = `Rhs) env (it, xes) at : iter * Env.t =
+  Debug.(log_at "il.valid_iterexp" at
+    (fun _ -> il_iter it)
+    (fun (it', _) -> il_iter it')
+  ) @@ fun _ ->
+  let env' = valid_iter ~side env it in
+  if xes = [] && it <= List1 && side = `Rhs then error at "empty iteration";
+  let it' = match it with Opt -> Opt | _ -> List in
+  it',
+  List.fold_left (fun env' (x, e) ->
+    let t = infer_exp env e in
+Printf.printf "[] %s %s\n%!" (Debug.il_typ t) (Debug.il_typ e.note);
+    valid_exp ~side env e t;
+    let t1 = as_iter_typ it' "iterator" env Check t e.at in
+    Env.bind_var env' x t1
+  ) env' xes
 
 
 (* Types *)
@@ -205,22 +220,17 @@ and valid_typ env t =
   | NumT _
   | TextT ->
     ()
-  | TupT xts ->
-    List.iter (valid_typbind env) xts
+  | TupT [] ->
+    ()
+  | TupT ((x, t)::xts) ->
+    valid_typ env t;
+    valid_typ (Env.bind_var env x t) (TupT xts $ t.at)
   | IterT (t1, iter) ->
     match iter with
     | ListN (e, _) -> error e.at "definite iterator not allowed in type"
     | _ ->
       let env' = valid_iter env iter in
       valid_typ env' t1
-
-and valid_typbind env (x, t) =
-  valid_typ env t;
-  if x.it <> "_" then
-    let t', sort = Env.find_var env x in
-    if sort <> Quant then
-      error x.at "field name must be quantifier variable";
-    equiv_typ env t' t x.at
 
 and valid_deftyp envr dt =
   match dt.it with
@@ -266,7 +276,7 @@ and infer_exp (env : Env.t) e : typ =
     (fun r -> fmt "%s" (il_typ r))
   ) @@ fun _ ->
   match e.it with
-  | VarE x -> fst (Env.find_var env x)
+  | VarE x -> Env.find_var env x
   | BoolE _ -> BoolT $ e.at
   | NumE n -> NumT (Num.to_typ n) $ e.at
   | TextE _ -> TextT $ e.at
@@ -282,7 +292,7 @@ and infer_exp (env : Env.t) e : typ =
   | DotE (e1, atom, as_) ->
     let tfs = as_struct_typ "expression" env Infer (infer_exp env e1) e1.at in
     let qs, t, _prems = find_field tfs atom e1.at in
-    let s = valid_qargs env as_ qs Subst.empty e.at in
+    let s = valid_args env as_ qs Subst.empty e.at in
     Subst.subst_typ s t
   | TupE es ->
     TupT (List.map (fun eI -> "_" $ eI.at, infer_exp env eI) es) $ e.at
@@ -290,26 +300,18 @@ and infer_exp (env : Env.t) e : typ =
     let ps, t, _ = Env.find_def env x in
     let s = valid_args env as_ ps Subst.empty e.at in
     Subst.subst_typ s t
-  | IterE (e1, iterexp) ->
-    let iter, env' = valid_iterexp env iterexp e.at in
-    IterT (infer_exp env' e1, iter) $ e.at
+  | IterE (e1, ite) ->
+    let it, env' = valid_iterexp env ite e.at in
+    IterT (infer_exp env' e1, it) $ e.at
   | ProjE (e1, i) ->
     let t1 = infer_exp env e1 in
     let xts = as_tup_typ "expression" env Infer t1 e1.at in
-    if i >= List.length xts then
-      error e.at "invalid tuple projection";
-(*
-    let xts' = inst_tup_typ env Subst.empty xts in
-*)
-    (match List.nth_opt xts i with
-    | Some (_, tI) -> tI
-    | None -> error e.at "cannot infer type of tuple projection"
-    )
+    proj_tup_typ i xts e1 e.at
   | UncaseE (e1, op, as_) ->
     let t1 = infer_exp env e1 in
     (match as_variant_typ "expression" env Infer t1 e1.at with
     | [(op', (qs, t, _), _)] when Eq.eq_mixop op op' ->
-      let s = valid_qargs env as_ qs Subst.empty e.at in
+      let s = valid_args env as_ qs Subst.empty e.at in
       Subst.subst_typ s t
     | _ -> error e.at "invalid case projection";
     )
@@ -356,7 +358,7 @@ try
   match e.it with
   | VarE x when x.it = "_" && side = `Lhs -> ()
   | VarE x ->
-    let t', _ = Env.find_var env x in
+    let t' = Env.find_var env x in
     equiv_typ env t' t e.at
   | BoolE _ | NumE _ | TextE _ ->
     let t' = infer_exp env e in
@@ -414,7 +416,7 @@ try
     valid_exp env e1 t1;
     let tfs = as_struct_typ "expression" env Check t1 e1.at in
     let qs, t', _prems = find_field tfs atom e1.at in
-    let s = valid_qargs env as_ qs Subst.empty e.at in
+    let s = valid_args env as_ qs Subst.empty e.at in
     equiv_typ env (Subst.subst_typ s t') t e.at
   | CompE (e1, e2) ->
     let _ = as_comp_typ "expression" env Check t e.at in
@@ -432,40 +434,39 @@ try
     valid_exp env e1 t1;
     equiv_typ env (NumT `NatT $ e.at) t e.at
   | TupE es ->
-    let ets = as_tup_typ "tuple" env Check t e.at in
-    if List.length es <> List.length ets then
-      error e.at ("arity mismatch for tuple, expected " ^
-        string_of_int (List.length ets) ^ ", got " ^ string_of_int (List.length es));
-    if not (valid_tup_exp ~side env Subst.empty es ets) then
-      as_error e.at "tuple" Check t ""
+    let xts = as_tup_typ "tuple" env Check t e.at in
+    let rec loop i es xts s =
+      match es, xts with
+      | [], [] -> ()
+      | eI::es', (xI, tI)::xts' ->
+        valid_exp ~side env eI (Subst.subst_typ s tI);
+        let s' = Subst.add_varid s xI eI in
+        loop (i + 1) es' xts' s'
+      | _, _ ->
+        error e.at ("arity mismatch for tuple, expected " ^
+          string_of_int (i + List.length xts) ^ ", got " ^
+          string_of_int (i + List.length es));
+    in loop 0 es xts Subst.empty
   | CallE (x, as_) ->
     let ps, t', _ = Env.find_def env x in
     let s = valid_args env as_ ps Subst.empty e.at in
     equiv_typ env (Subst.subst_typ s t') t e.at
-  | IterE (e1, iterexp) ->
-    let iter, env' = valid_iterexp ~side env iterexp e.at in
-    let t1 = as_iter_typ iter "iteration" env Check t e.at in
+  | IterE (e1, ite) ->
+    let it, env' = valid_iterexp ~side env ite e.at in
+    let t1 = as_iter_typ it "iteration" env Check t e.at in
     valid_exp ~side env' e1 t1
   | ProjE (e1, i) ->
     let t1 = infer_exp env e1 in
     let xts = as_tup_typ "expression" env Infer t1 e1.at in
-    if i >= List.length xts then
-      error e.at "invalid tuple projection";
     let side' = if List.length xts > 1 then `Rhs else side in
-(*
-    let xts' = inst_tup_typ env Subst.empty xts in
-*)
     valid_exp ~side:side' env e1 (TupT xts $ t1.at);
-    (match List.nth_opt xts i with
-    | Some (_, tI) -> equiv_typ env tI t e.at
-    | None -> error e.at "invalid tuple projection, cannot match pattern"
-    )
+    equiv_typ env (proj_tup_typ i xts e1 e.at) t e.at
   | UncaseE (e1, op, as_) ->
     let t1 = infer_exp env e1 in
     valid_exp ~side env e1 t1;
     (match as_variant_typ "expression" env Infer t1 e1.at with
     | [(op', (qs, t', _), _)] when Eq.eq_mixop op op' ->
-      let s = valid_qargs env as_ qs Subst.empty e.at in
+      let s = valid_args env as_ qs Subst.empty e.at in
       equiv_typ env (Subst.subst_typ s t') t e.at
     | _ -> error e.at "invalid case projection";
     )
@@ -492,7 +493,7 @@ try
   | CaseE (op, as_, e1) ->
     let cases = as_variant_typ "case" env Check t e.at in
     let qs, t1, _prems = find_case cases op e1.at in
-    let s = valid_qargs env as_ qs Subst.empty e.at in
+    let s = valid_args env as_ qs Subst.empty e.at in
     valid_exp ~side env e1 (Subst.subst_typ s t1)
   | CvtE (e1, nt1, nt2) ->
     valid_exp ~side env e1 (NumT nt1 $ e1.at);
@@ -517,20 +518,15 @@ and valid_expmix ?(side = `Rhs) env mixop e (mixop', t) at =
     );
   valid_exp ~side env e t
 
-and valid_tup_exp ?(side = `Rhs) env s es xts =
-  Debug.(log_in "il.valid_tup_exp"
-    (fun _ -> fmt "(%s) :%s (%s)[%s]" (list il_exp es) (il_side side) (list il_typ (List.map snd xts)) (il_subst s))
-  );
-  match es, xts with
-  | e::es', (x, t)::xts' ->
-    valid_exp ~side env e (Subst.subst_typ s t);
-    let s' = Subst.add_varid s x e in
-    valid_tup_exp ~side env s' es' xts'
-  | _, _ -> true
-
 and valid_expfield ~side env (atom1, as_, e) (atom2, (qs, t, _prems), _) =
+  Debug.(log_in_at "il.valid_expfield" e.at
+    (fun _ -> fmt "%s%s %s :%s %s%s %s"
+      (il_atom atom1) (il_args as_) (il_exp e) (il_side side)
+      (il_atom atom2) (il_quants qs) (il_typ t)
+    )
+  );
   if not (Eq.eq_atom atom1 atom2) then error e.at "unexpected record field";
-  let s = valid_qargs env as_ qs Subst.empty e.at in
+  let s = valid_args env as_ qs Subst.empty e.at in
   valid_exp ~side env e (Subst.subst_typ s t)
 
 and valid_path env p t : typ =
@@ -552,23 +548,11 @@ and valid_path env p t : typ =
       let t1 = valid_path env p1 t in
       let tfs = as_struct_typ "path" env Check t1 p1.at in
       let qs, t, _prems = find_field tfs atom p1.at in
-      let s = valid_qargs env as_ qs Subst.empty p.at in
+      let s = valid_args env as_ qs Subst.empty p.at in
       Subst.subst_typ s t
   in
   equiv_typ env p.note t' p.at;
   t'
-
-and valid_iterexp ?(side = `Rhs) env (iter, xes) at : iter * Env.t =
-  let env' = valid_iter ~side env iter in
-  if xes = [] && iter <= List1 && side = `Rhs then error at "empty iteration";
-  let iter' = match iter with Opt -> Opt | _ -> List in
-  iter',
-  List.fold_left (fun env' (x, e) ->
-    let t = infer_exp env e in
-    valid_exp ~side env e t;
-    let t1 = as_iter_typ iter' "iterator" env Check t e.at in
-    Env.bind_var env' x (t1, Reg)
-  ) env' xes
 
 
 (* Grammars *)
@@ -600,10 +584,10 @@ and valid_sym env g : typ =
     equiv_typ env t1 (NumT `NatT $ g1.at) g.at;
     equiv_typ env t2 (NumT `NatT $ g2.at) g.at;
     NumT `NatT $ g.at
-  | IterG (g1, iterexp) ->
-    let iter, env' = valid_iterexp ~side:`Lhs env iterexp g.at in
+  | IterG (g1, ite) ->
+    let it, env' = valid_iterexp ~side:`Lhs env ite g.at in
     let t1 = valid_sym env' g1 in
-    IterT (t1, iter) $ g.at
+    IterT (t1, it) $ g.at
   | AttrG (e, g1) ->
     let t1 = valid_sym env g1 in
     valid_exp ~side:`Lhs env e t1;
@@ -635,21 +619,19 @@ and valid_prem env prem =
         " do not occur in left-hand side expression")
   | ElsePr ->
     ()
-  | IterPr (prem', iterexp) ->
-    let _iter, env' = valid_iterexp env iterexp prem.at in
+  | IterPr (prem', ite) ->
+    let _it, env' = valid_iterexp env ite prem.at in
     valid_prem env' prem'
 
 
 (* Definitions *)
 
-and valid_arg' isq env a p s =
+and valid_arg env a p s =
   Debug.(log_at "il.valid_arg" a.at
     (fun _ -> fmt "%s : %s" (il_arg a) (il_param p)) (Fun.const "ok")
   ) @@ fun _ ->
   match a.it, (Subst.subst_param s p).it with
   | ExpA e, ExpP (x, t) ->
-    if isq && not (is_qvar_exp env e) then
-      error e.at "quantifier argument expression must be quantified variable";
     valid_exp ~side:`Lhs env e t; Subst.add_varid s x e
   | TypA t, TypP x -> valid_typ env t; Subst.add_typid s x t
   | DefA x', DefP (x, ps, t) ->
@@ -670,7 +652,7 @@ and valid_arg' isq env a p s =
     error a.at ("sort mismatch for argument, expected `" ^
       Print.string_of_param p ^ "`, got `" ^ Print.string_of_arg a ^ "`")
 
-and valid_args' isq env as_ ps s at : Subst.t =
+and valid_args env as_ ps s at : Subst.t =
   Debug.(log_if "il.valid_args" (as_ <> [] || ps <> [])
     (fun _ -> fmt "{%s} : {%s}" (il_args as_) (il_params ps)) (Fun.const "ok")
   ) @@ fun _ ->
@@ -679,17 +661,14 @@ and valid_args' isq env as_ ps s at : Subst.t =
   | a::_, [] -> error a.at "too many arguments"
   | [], _::_ -> error at "too few arguments"
   | a::as', p::ps' ->
-    let s' = valid_arg' isq env a p s in
-    valid_args' isq env as' ps' s' at
+    let s' = valid_arg env a p s in
+    valid_args env as' ps' s' at
 
-and valid_args env = valid_args' false env
-and valid_qargs env = valid_args' true env
-
-and valid_param' isq envr p =
+and valid_param envr p =
   match p.it with
   | ExpP (x, t) ->
     valid_typ !envr t;
-    envr := Env.bind_var !envr x (t, if isq then Quant else Reg)
+    envr := Env.bind_var !envr x t
   | TypP x ->
     envr := Env.bind_typ !envr x ([], [])
   | DefP (x, ps, t) ->
@@ -703,8 +682,7 @@ and valid_param' isq envr p =
     valid_typ !envr' t;
     envr := Env.bind_gram !envr x (ps, t, [])
 
-and valid_param envr = valid_param' false envr
-and valid_quant envr = valid_param' true envr
+and valid_quant envr q = valid_param envr q
 
 let valid_inst envr ps inst =
   Debug.(log_in "il.valid_inst" line);

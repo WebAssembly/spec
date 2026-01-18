@@ -43,3 +43,5 @@ val subst_args : subst -> arg list -> arg list
 val subst_params : subst -> param list -> param list * subst
 
 val subst_list : (subst -> 'a -> 'a) -> subst -> 'a list -> 'a list
+
+module Fresh : sig val refresh_varid : (id -> id) ref end

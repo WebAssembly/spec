@@ -8,6 +8,7 @@ let il_atom = string_of_atom
 let il_mixop = string_of_mixop
 let il_iter = string_of_iter
 let il_typ = string_of_typ
+let il_typbind (x, t) = "(" ^ il_id x ^ ":" ^ il_typ t ^ ")"
 let il_typfield = string_of_typfield
 let il_typcase = string_of_typcase
 let il_deftyp = string_of_deftyp `H

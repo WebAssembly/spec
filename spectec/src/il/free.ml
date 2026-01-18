@@ -27,11 +27,18 @@ and free_typ t =
   match t.it with
   | VarT (x, as_) -> free_typid x ++ free_args as_
   | BoolT | NumT _ | TextT -> empty
-  | TupT ets -> free_typbinds ets
+  | TupT xts -> free_typbinds xts
   | IterT (t1, iter) -> free_typ t1 ++ free_iter iter
 
-and free_typbind (x, t) = bound_varid x (* exclude `_` *) ++ free_typ t
-and free_typbinds xts = free_list free_typbind xts
+and bound_typ t =
+  match t.it with
+  | TupT xts -> bound_typbinds xts
+  | _ -> empty
+
+and free_typbind (_, t) = free_typ t
+and bound_typbind (x, _) = bound_varid x
+and free_typbinds xts = free_list_dep free_typbind bound_typbind xts
+and bound_typbinds xts = free_list bound_typbind xts
 
 and free_deftyp dt =
   match dt.it with
@@ -40,9 +47,9 @@ and free_deftyp dt =
   | VariantT tcs -> free_list free_typcase tcs
 
 and free_typfield (_, (qs, t, prems), _) =
-  free_quants qs ++ (free_typ t ++ free_prems prems -- bound_quants qs)
+  free_quants qs ++ (free_typ t ++ free_prems prems -- bound_quants qs -- bound_typ t)
 and free_typcase (_, (qs, t, prems), _) =
-  free_quants qs ++ (free_typ t ++ free_prems prems -- bound_quants qs)
+  free_quants qs ++ (free_typ t ++ free_prems prems -- bound_quants qs -- bound_typ t)
 
 
 (* Expressions *)

@@ -738,7 +738,7 @@ and match_exp' env s e1 e2 : subst option =
           | _ -> false
           )
         | VarE id1, _ ->
-          let t1, _ = Env.find_var env id1 in
+          let t1 = Env.find_var env id1 in
           sub_typ env (reduce_typ env t1) t21 || raise Irred
         | _, _ -> false
       then match_exp' env s {e1 with note = t21} e21

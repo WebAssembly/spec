@@ -41,9 +41,9 @@ let spectest () =
     "VALUE", v |> ref
   ] in
 
-  let create_tableinst t elems = StrV [
+  let create_tableinst t refs = StrV [
     "TYPE", t |> ref;
-    "REFS", elems |> ref
+    "REFS", refs |> ref
   ] in
 
   let create_meminst t bytes_ = StrV [

@@ -14,8 +14,7 @@ let error at msg = Util.Error.error at !phase msg
 module Set = Set.Make(String)
 module Map = Map.Make(String)
 
-type var_sort = Reg | Quant
-type var_def = typ * var_sort
+type var_def = typ
 type typ_def = param list * inst list
 type rel_def = mixop * typ * rule list
 type def_def = param list * typ * clause list

@@ -36,6 +36,8 @@ let refresh_varid = refresh_id varids
 let refresh_defid = refresh_id defids
 let refresh_gramid = refresh_id gramids
 
+let _ = Subst.Fresh.refresh_varid := refresh_varid
+
 
 let refresh_quant s q =
   match q.it with

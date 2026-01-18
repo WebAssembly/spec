@@ -51,26 +51,13 @@ let unseq_exp e =
 
 let untup_typ' t' =
   match t'.it with
-  | Il.TupT xts' -> List.map snd xts'
-  | _ -> [t']
+  | Il.TupT xts' -> xts'
+  | _ -> [("_" $ t'.at, t')]
 
 let tup_typ' ts' at =
   match ts' with
   | [t'] -> t'
   | _ -> Il.TupT (List.map (fun t' -> "_" $ t'.at, t') ts') $ at
-
-(* Like El.Convert but for IL *)
-let varid_of_typ' t =
-  (match t.it with
-  | Il.VarT (id, []) -> id.it
-  | Il.BoolT -> "bool"
-  | Il.NumT `NatT -> "nat"
-  | Il.NumT `IntT -> "int"
-  | Il.NumT `RatT -> "rat"
-  | Il.NumT `RealT -> "real"
-  | Il.TextT -> "text"
-  | _ -> "_"
-  ) $ t.at
 
 (*
 let tup_typ_bind' xts' at =
@@ -222,7 +209,7 @@ let cat_exp' e1' e2' =
 
 (* Environment *)
 
-type notation = Il.typ Mixop.mixop
+type notation = (Il.id * Il.typ) Mixop.mixop
 
 type kind =
   | Transp  (* forward alias types or notation types *)
@@ -361,7 +348,7 @@ let il_arg_of_param p =
 
 let il_args_of_params = List.map il_arg_of_param
 
-let to_il_var (_at, t) = (t, Il.Env.Reg)
+let to_il_var (_at, t) = t
 let to_il_def (_at, (ps, t, clauses)) = (ps, t, List.map snd clauses)
 let to_il_gram (_at, (ps, t, prods, _)) = (ps, t, List.map snd prods)
 
@@ -401,7 +388,10 @@ let annot_env env dims =
         | None -> x, t
         | Some (_at, ctx) ->
           (Dim.annot_varid (x $ at) ctx).it,
-          List.fold_left (fun t iter -> Il.IterT (t, iter) $ t.at) t ctx
+          List.fold_left (fun t iter ->
+            let iter' = match iter with Il.Opt -> Il.Opt | _ -> Il.List in
+            Il.IterT (t, iter') $ t.at
+          ) t ctx
       in Map.add x' (at, t') vars
     ) env.vars Map.empty
   in {env with vars}
@@ -410,6 +400,8 @@ let make_quants_iter_arg env (free : Il.Free.sets) dims : Il.quant list ref * (m
   let module Arg =
     struct
       include Il.Iter.Skip
+
+      type scope = var_typ env'
 
       let left = ref free
       let acc = ref []
@@ -420,7 +412,19 @@ let make_quants_iter_arg env (free : Il.Free.sets) dims : Il.quant list ref * (m
           left := Il.Free.{!left with typid = Set.remove id.it !left.typid};
         )
 
-let visit_exp e = Printf.printf "[visit_exp %s]\n%!" (Il.Debug.il_exp e)
+      let scope_enter x t =
+Printf.printf "[scope_enter %s]\n%!" x.it;
+        let varenv = env.vars in
+        env.vars <- bind "variable" env.vars x t;
+        varenv
+
+      let scope_exit x varenv =
+Printf.printf "[scope_exit %s]\n%!" x.it;
+        env.vars <- varenv
+
+let visit_exp e =
+Printf.printf "[visit_exp %s]\n%!" (Il.Debug.il_exp e)
+
       let visit_varid id =
 if not Il.Free.(Set.mem id.it !left.varid) then Printf.printf "[visit_id %s] not free\n%!" id.it;
 if not (Map.mem id.it dims) then Printf.printf "[visit_id %s] no dims\n%!" id.it;
@@ -484,22 +488,24 @@ Printf.printf "[visit_id %s]\n%!" id.it;
 
 let infer_quants env env' dims det ps' as' ts' es' gs' prs' at : Il.quant list =
   let env' = annot_env env' dims in
-  Debug.(log_in_at "il.infer_quants" at
+  Debug.(log_at "il.infer_quants" at
     (fun _ ->
-Printf.sprintf "as'=[%s] " Il.Debug.(list il_arg as') ^
-Printf.sprintf "es'=[%s] " Il.Debug.(list il_exp es') ^
-      "local: " ^
+Printf.sprintf "\n  as'=[%s]" Il.Debug.(list il_arg as') ^
+Printf.sprintf "\n  es'=[%s]" Il.Debug.(list il_exp es') ^
+Printf.sprintf "\n  prs'=[%s]" Il.Debug.(list il_prem prs') ^
+      "\n  locals=" ^
       (Map.fold (fun id _ ids ->
         if Map.mem id env.vars then ids else id::ids
       ) env'.vars [] |> List.rev |> String.concat " ") ^
-      " dims: " ^
+      "\n  dims=" ^
       (Map.fold (fun id (_, ctx) ids ->
         (id ^ ":" ^ String.concat "" (List.map Il.Print.string_of_iter ctx)) :: ids
       ) dims [] |> List.rev |> String.concat " ") ^
-      " det: " ^
+      "\n  dets=" ^
       (Set.elements det.Det.varid |> String.concat " ")
     )
-  );
+    (fun qs -> fmt "\n... %s" (il_quants qs))
+  ) @@ fun _ ->
   let bound = bound_env env in
   let free = Il.Free.(
       free_list free_param ps' ++
@@ -734,7 +740,9 @@ let expand_notation env t =
       Il.Eval.(match_list match_arg (to_il_env env) Il.Subst.empty as' as_) |>
         Option.map (fun s ->
           let mixop, (qs, t, _prems), _ = Il.Subst.subst_typcase s tc in
-          qs, t, mixop, Mixop.apply mixop (untup_typ' t)
+          let qs', s' = refresh_quants env qs in
+          let t' = Il.Subst.subst_typ s' t in
+          qs', t', mixop, Mixop.apply mixop (untup_typ' t')
         )
     | _, _ -> None
     )
@@ -1044,31 +1052,44 @@ let check_atoms phrase item to_atom list at =
 
 (* Iteration *)
 
-let rec elab_iter env (it : iter) : Il.quant list * Il.iter =
+let rec elab_iter env (it : iter) : Il.iter =
   match it with
-  | Opt -> [], Il.Opt
-  | List -> [], Il.List
-  | List1 -> [], Il.List1
+  | Opt -> Il.Opt
+  | List -> Il.List
+  | List1 -> Il.List1
   | ListN (e, xo) ->
     Option.iter (fun x ->
       let t = Il.NumT `NatT $ x.at in
-      let qs, e' = checkpoint (elab_exp env (VarE (x, []) $ x.at) t) in
+      let e' = checkpoint (elab_exp env (VarE (x, []) $ x.at) t) in
       match e'.it with
-      | Il.VarE _ -> assert (qs = [])
+      | Il.VarE _ -> ()
       | _ -> error_typ env x.at "iteration variable" t
     ) xo;
-    let qs, e' = checkpoint (elab_exp env e (Il.NumT `NatT $ e.at)) in
-    qs, Il.ListN (e', xo)
+    let e' = checkpoint (elab_exp env e (Il.NumT `NatT $ e.at)) in
+    Il.ListN (e', xo)
 
-and elab_typiter env (it : iter) : Il.iter =
+and elab_itertyp env (it : iter) : Il.iter =
   let it =
     match it with
     | List1 | ListN _ -> List
     | _ -> it
   in
-  let qs, it' = elab_iter env it in
-  assert (qs = []);
-  it'
+  elab_iter env it
+
+and elab_iterexp : 'a 'b. env -> (env -> 'a -> 'b attempt) -> 'a -> iter -> ('b * Il.iterexp * Il.iter) attempt =
+  fun env f body (it : iter) ->
+  let xo = match it with ListN (_, xo) -> xo | _ -> None in
+  let to_ = Option.join (Option.map (fun x -> Map.find_opt x.it env.vars) xo) in
+  let it' = elab_iter env it in
+  let* body' = f env body in
+  (* Remove local and restore outer if present *)
+  Option.iter (fun x ->
+    env.vars <-
+      match to_ with
+      | None -> Map.remove x.it env.vars
+      | Some t -> Map.add x.it t env.vars
+  ) xo;
+  Ok (body', (it', []), match it with Opt -> Il.Opt | _ -> Il.List)
 
 
 (* Types *)
@@ -1083,9 +1104,7 @@ and elab_typ env ?(fwd = true) (t : typ) : Il.typ =
       let ps, k = find "syntax type" env.typs x' in
       if not fwd && k = Transp then
         error_id x "invalid forward reference to syntax type";
-      let qs, as', _s = elab_args `Rhs env as_ ps t.at in
-      if qs <> [] then
-        error t.at "illegal expression form in type instantiation";
+      let as', _s = elab_args `Rhs env as_ ps t.at in
       Il.VarT (x', as') $ t.at
   | BoolT -> Il.BoolT $ t.at
   | NumT t' -> Il.NumT t' $ t.at
@@ -1094,14 +1113,14 @@ and elab_typ env ?(fwd = true) (t : typ) : Il.typ =
   | ParenT t1 -> elab_typ env t1
   | TupT ts -> tup_typ' (List.map (elab_typ env) ts) t.at
   | IterT (t1, iter) ->
-    let iter' = elab_typiter env iter in
+    let iter' = elab_itertyp env iter in
     let t1' = elab_typ env t1 in
     Il.IterT (t1', iter') $ t.at
   | StrT _ | CaseT _ | ConT _ | RangeT _
   | AtomT _ | SeqT _ | InfixT _ | BrackT _ ->
     error t.at "this type is only allowed in type definitions"
 
-and elab_typ_definition env dims tid (t : typ) : dots * Il.deftyp * dots =
+and elab_typ_definition env outer_dims tid (t : typ) : dots * Il.deftyp * dots =
   Debug.(log_at "el.elab_typ_definition" t.at
     (fun _ -> fmt "%s = %s" tid.it (el_typ t))
     (fun (_, dt, _) -> il_deftyp dt)
@@ -1128,7 +1147,7 @@ and elab_typ_definition env dims tid (t : typ) : dots * Il.deftyp * dots =
         List.map new_typfield tfs  (* ensure atom annotations are fresh *)
       ) ts
     in
-    let tfs' = tfs1 @ tfs2 @ map_filter_nl_list (elab_typfield env dims tid t.at) tfs in
+    let tfs' = tfs1 @ tfs2 @ map_filter_nl_list (elab_typfield env outer_dims tid t.at) tfs in
     check_atoms "record" "field" Fun.id tfs' t.at;
     dots1, Il.StructT tfs' $ t.at, dots2
   | CaseT (dots1, ts, tcs, dots2) ->
@@ -1151,14 +1170,14 @@ and elab_typ_definition env dims tid (t : typ) : dots * Il.deftyp * dots =
         List.map new_typcase tcs  (* ensure atom annotations are fresh *)
       ) ts
     in
-    let tcs' = tcs1 @ tcs2 @ map_filter_nl_list (elab_typcase env dims tid t.at) tcs in
+    let tcs' = tcs1 @ tcs2 @ map_filter_nl_list (elab_typcase env outer_dims tid t.at) tcs in
     check_atoms "variant" "case" (fun op -> Option.get (Mixop.head op)) tcs' t.at;
     dots1, Il.VariantT tcs' $ t.at, dots2
   | ConT tc ->
-    let tc' = elab_typcon env dims tid t.at tc in
+    let tc' = elab_typcon env outer_dims tid t.at tc in
     NoDots, Il.VariantT [tc'] $ t.at, NoDots
   | RangeT tes ->
-    let ts_fes' = map_filter_nl_list (elab_typenum env dims tid) tes in
+    let ts_fes' = map_filter_nl_list (elab_typenum env outer_dims tid) tes in
     let t', fe' =
       List.fold_left (fun (t, fe') (tI, feI') ->
         (if narrow_typ env tI t then t else tI),
@@ -1193,9 +1212,9 @@ and typ_rep env t : Il.typ =
   | Il.TupT [_, t1] -> typ_rep env t1
   | t' -> t' $ t.at
 
-and elab_typfield env dims tid at (tf : typfield) : Il.typfield =
+and elab_typfield env outer_dims tid at (tf : typfield) : Il.typfield =
   let atom, (t, prems), hints = tf in
-  let _mixop, qs, t', prems' = elab_typ_notation env dims tid at t prems in
+  let _mixop, qs, t', prems' = elab_typ_notation env outer_dims tid at t prems in
   let hints' = elab_hints tid "" hints in
   let t'' =
     match t'.it with
@@ -1204,15 +1223,15 @@ and elab_typfield env dims tid at (tf : typfield) : Il.typfield =
   in
   (elab_atom atom tid, (qs, t'', prems'), hints')
 
-and elab_typcase env dims tid at (tc : typcase) : Il.typcase =
+and elab_typcase env outer_dims tid at (tc : typcase) : Il.typcase =
   let _atom, (t, prems), hints = tc in
-  let mixop, qs, t', prems' = elab_typ_notation env dims tid at t prems in
+  let mixop, qs, t', prems' = elab_typ_notation env outer_dims tid at t prems in
   let hints' = elab_hints tid "" hints in
   (mixop, (qs, t', prems'), hints')
 
-and elab_typcon env dims tid at (tc : typcon) : Il.typcase =
+and elab_typcon env outer_dims tid at (tc : typcon) : Il.typcase =
   let (t, prems), hints = tc in
-  let mixop, qs, t', prems' = elab_typ_notation env dims tid at t prems in
+  let mixop, qs, t', prems' = elab_typ_notation env outer_dims tid at t prems in
   let hints' = elab_hints tid tid.it hints in
   (mixop, (qs, t', prems'), hints')
 
@@ -1220,34 +1239,28 @@ and elab_typenum env outer_dims tid (te : typenum) : Il.typ * (Il.exp -> numtyp 
   assert (valid_tid tid);
   let e1, e2o = te in
   let _e1' = elab_exp env e1 (Il.NumT `IntT $ e1.at) in (* ensure it's <= int *)
-  let _qs1, _, t1 = checkpoint (infer_exp env e1) in (* get precise type *)
+  let _, t1 = checkpoint (infer_exp env e1) in (* get precise type *)
   match e2o with
   | None ->
     t1,
     fun eid' nt ->
-    let qs1, e1' = checkpoint (elab_exp env e1 (Il.NumT nt $ e1.at)) in  (* redo with overall type *)
+    let e1' = checkpoint (elab_exp env e1 (Il.NumT nt $ e1.at)) in  (* redo with overall type *)
     let dims = Dim.check outer_dims [] [] [] [e1'] [] [] in
     let e1' = Dim.annot_exp dims e1' in
     infer_no_quants env dims Det.empty [] [] [] [e1'] [] [] e1.at;
-    if qs1 <> [] then
-      error e1.at "illegal expression form in range type";
     Il.(CmpE (`EqOp, `BoolT, eid', e1') $$ e1'.at % (Il.BoolT $ e1.at))
   | Some e2 ->
     let at = Source.over_region [e1.at; e2.at] in
-    let _qs21', _e2' = checkpoint (elab_exp env e2 (Il.NumT `IntT $ e2.at)) in
-    let _qs22, _, t2 = checkpoint (infer_exp env e2) in
+    let _e2' = checkpoint (elab_exp env e2 (Il.NumT `IntT $ e2.at)) in
+    let _, t2 = checkpoint (infer_exp env e2) in
     (if narrow_typ env t2 t1 then t1 else t2).it $ at,
     fun eid' nt ->
-    let qs1, e1' = checkpoint (elab_exp env e1 (Il.NumT nt $ e1.at)) in
-    let qs2, e2' = checkpoint (elab_exp env e2 (Il.NumT nt $ e2.at)) in
+    let e1' = checkpoint (elab_exp env e1 (Il.NumT nt $ e1.at)) in
+    let e2' = checkpoint (elab_exp env e2 (Il.NumT nt $ e2.at)) in
     let dims = Dim.check outer_dims [] [] [] [e1'; e2'] [] [] in
     let e1' = Dim.annot_exp dims e1' in
     let e2' = Dim.annot_exp dims e2' in
     infer_no_quants env dims Det.empty [] [] [] [e1'; e2'] [] [] at;
-    if qs1 <> [] then
-      error e1.at "illegal expression form in range type";
-    if qs2 <> [] then
-      error e2.at "illegal expression form in range type";
     Il.(BinE (`AndOp, `BoolT,
       CmpE (`GeOp, (nt :> Il.optyp), eid', e1') $$ e1'.at % (Il.BoolT $ e1.at),
       CmpE (`LeOp, (nt :> Il.optyp), eid', e2') $$ e2'.at % (Il.BoolT $ e2.at)
@@ -1260,8 +1273,7 @@ and elab_typ_notation env outer_dims tid at (t : typ) (prems : prem nl_list) :
   let env' = local_env env in
   let mixop, xts' = elab_typ_notation' env' tid t in
   let xs', ts' = List.split xts' in
-  let qss, premss' = List.split (map_filter_nl_list (elab_prem env') prems) in
-  let prems' = List.concat premss' in
+  let prems' = List.concat (map_filter_nl_list (elab_prem env') prems) in
 Printf.printf "--- 1 ---\n%!";
   let dims = Dim.check outer_dims [] [] ts' [] [] prems' in
 Printf.printf "--- 2 ---\n%!";
@@ -1272,7 +1284,7 @@ Printf.printf "--- 3 ---\n%!";
   let det = Det.(det_typ t' ++ det_list det_prem prems') in
 Printf.printf "--- 4 ---\n%!";
   let qs = infer_quants env env' dims det [] [] [t'] [] [] prems' at in
-  mixop, qs @ List.concat qss, t', prems'
+  mixop, qs, t', prems'
 (*
   Debug.(log_in_at "il.infer_quants" at
     (fun _ ->
@@ -1376,16 +1388,16 @@ and elab_typ_notation' env tid (t : typ) : Il.mixop * (Il.id * Il.typ) list =
  * - Fail (at, s) when it cannot, where s is the name of the failing construct
  * - raises Error.Error on fatal, unrecoverable errors
  *)
-and infer_exp env e : (Il.quant list * Il.exp * Il.typ) attempt =
+and infer_exp env e : (Il.exp * Il.typ) attempt =
   Debug.(log_at "el.infer_exp" e.at
     (fun _ -> fmt "%s" (el_exp e))
-    (function Ok (qs, e', t) -> fmt "%s%s : %s" (il_quants qs) (il_exp e') (il_typ t) | _ -> "fail")
+    (function Ok (e', t) -> fmt "%s : %s" (il_exp e') (il_typ t) | _ -> "fail")
   ) @@ fun _ ->
-  let* qs, e', t' = infer_exp' env e in
+  let* e', t' = infer_exp' env e in
   let t = t' $ e.at in
-  Ok (qs, e' $$ e.at % t, t)
+  Ok (e' $$ e.at % t, t)
 
-and infer_exp' env e : (Il.quant list * Il.exp' * Il.typ') attempt =
+and infer_exp' env e : (Il.exp' * Il.typ') attempt =
   match e.it with
   | VarE (x, args) ->
     (* Args may only occur due to syntactic overloading with types *)
@@ -1400,101 +1412,101 @@ and infer_exp' env e : (Il.quant list * Il.exp' * Il.typ') attempt =
         env.vars <- bind "variable" env.vars x t;
         Ok t
       else fail_infer e.at "variable"
-    in Ok ([], Il.VarE x, t.it)
+    in Ok (Il.VarE x, t.it)
   | AtomE _ ->
     fail_infer e.at "atom"
   | BoolE b ->
-    Ok ([], Il.BoolE b, Il.BoolT)
+    Ok (Il.BoolE b, Il.BoolT)
   | NumE (_op, n) ->
-    Ok ([], Il.NumE n, Il.NumT (Num.to_typ n))
+    Ok (Il.NumE n, Il.NumT (Num.to_typ n))
   | TextE s ->
-    Ok ([], Il.TextE s, Il.TextT)
+    Ok (Il.TextE s, Il.TextT)
   | CvtE (e1, nt) ->
-    let* qs1, e1', t1 = infer_exp env e1 in
+    let* e1', t1 = infer_exp env e1 in
     let* nt1 = as_num_typ "conversion" env Infer t1 e1.at in
-    let* qs1', e1'' = cast_exp "operand" env e1' t1 (Il.NumT nt1 $ e1.at) in
-    Ok (qs1 @ qs1', Il.CvtE (e1'', nt1, nt), Il.NumT nt)
+    let* e1'' = cast_exp "operand" env e1' t1 (Il.NumT nt1 $ e1.at) in
+    Ok (Il.CvtE (e1'', nt1, nt), Il.NumT nt)
   | UnE (op, e1) ->
-    let* qs1, e1', t1 = infer_exp env e1 in
+    let* e1', t1 = infer_exp env e1 in
     let* op', ot, t1', t = infer_unop env op (typ_rep env t1) e.at in
-    let* qs1', e1'' = cast_exp "operand" env e1' t1 t1' in
+    let* e1'' = cast_exp "operand" env e1' t1 t1' in
     if op = `PlusMinusOp || op = `MinusPlusOp then env.pm <- true;
-    Ok (qs1 @ qs1', Il.UnE (op', ot, e1''), t.it)
+    Ok (Il.UnE (op', ot, e1''), t.it)
   | BinE (e1, op, e2) ->
-    let* qs1, e1', t1 = infer_exp env e1 in
-    let* qs2, e2', t2 = infer_exp env e2 in
+    let* e1', t1 = infer_exp env e1 in
+    let* e2', t2 = infer_exp env e2 in
     let* op', ot, t1', t2', t = infer_binop env op (typ_rep env t1) (typ_rep env t2) e.at in
-    let* qs1', e1'' = cast_exp "operand" env e1' t1 t1' in
-    let* qs2', e2'' = cast_exp "operand" env e2' t2 t2' in
-    Ok (qs1 @ qs1' @ qs2 @ qs2', Il.BinE (op', ot, e1'', e2''), t.it)
+    let* e1'' = cast_exp "operand" env e1' t1 t1' in
+    let* e2'' = cast_exp "operand" env e2' t2 t2' in
+    Ok (Il.BinE (op', ot, e1'', e2''), t.it)
   | CmpE (e1, op, ({it = CmpE (e21, _, _); _} as e2)) ->
-    let* qs1, e1', _t1 = infer_exp env (CmpE (e1, op, e21) $ e.at) in
-    let* qs2, e2', _t2 = infer_exp env e2 in
-    Ok (qs1 @ qs2, Il.BinE (`AndOp, `BoolT, e1', e2'), Il.BoolT)
+    let* e1', _t1 = infer_exp env (CmpE (e1, op, e21) $ e.at) in
+    let* e2', _t2 = infer_exp env e2 in
+    Ok (Il.BinE (`AndOp, `BoolT, e1', e2'), Il.BoolT)
   | CmpE (e1, op, e2) ->
     (match infer_cmpop env op with
     | `Poly op' ->
-      let* qs, e1', e2' =
+      let* e1', e2' =
         choice env [
           (fun env ->
-            let* qs2, e2', t2 = infer_exp env e2 in
-            let* qs1, e1' = elab_exp env e1 t2 in
-            Ok (qs1 @ qs2, e1', e2')
+            let* e2', t2 = infer_exp env e2 in
+            let* e1' = elab_exp env e1 t2 in
+            Ok (e1', e2')
           );
           (fun env ->
-            let* qs1, e1', t1 = infer_exp env e1 in
-            let* qs2, e2' = elab_exp env e2 t1 in
-            Ok (qs1 @ qs2, e1', e2')
+            let* e1', t1 = infer_exp env e1 in
+            let* e2' = elab_exp env e2 t1 in
+            Ok (e1', e2')
           );
         ]
       in
-      Ok (qs, Il.CmpE (op', `BoolT, e1', e2'), Il.BoolT)
+      Ok (Il.CmpE (op', `BoolT, e1', e2'), Il.BoolT)
     | `Over elab_cmpop'  ->
-      let* qs1, e1', t1 = infer_exp env e1 in
-      let* qs2, e2', t2 = infer_exp env e2 in
+      let* e1', t1 = infer_exp env e1 in
+      let* e2', t2 = infer_exp env e2 in
       let* op', ot, t = elab_cmpop' (typ_rep env t1) (typ_rep env t2) e.at in
-      let* qs1', e1'' = cast_exp "operand" env e1' t1 t in
-      let* qs2', e2'' = cast_exp "operand" env e2' t2 t in
-      Ok (qs1 @ qs1' @ qs2 @ qs2', Il.CmpE (op', ot, e1'', e2''), Il.BoolT)
+      let* e1'' = cast_exp "operand" env e1' t1 t in
+      let* e2'' = cast_exp "operand" env e2' t2 t in
+      Ok (Il.CmpE (op', ot, e1'', e2''), Il.BoolT)
     )
   | IdxE (e1, e2) ->
-    let* qs1, e1', t1 = infer_exp env e1 in
+    let* e1', t1 = infer_exp env e1 in
     let* t = as_list_typ "expression" env Infer t1 e1.at in
-    let* qs2, e2' = elab_exp env e2 (Il.NumT `NatT $ e2.at) in
-    Ok (qs1 @ qs2, Il.IdxE (e1', e2'), t.it)
+    let* e2' = elab_exp env e2 (Il.NumT `NatT $ e2.at) in
+    Ok (Il.IdxE (e1', e2'), t.it)
   | SliceE (e1, e2, e3) ->
-    let* qs1, e1', t1 = infer_exp env e1 in
+    let* e1', t1 = infer_exp env e1 in
     let* _t' = as_list_typ "expression" env Infer t1 e1.at in
-    let* qs2, e2' = elab_exp env e2 (Il.NumT `NatT $ e2.at) in
-    let* qs3, e3' = elab_exp env e3 (Il.NumT `NatT $ e3.at) in
-    Ok (qs1 @ qs2 @ qs3, Il.SliceE (e1', e2', e3'), t1.it)
+    let* e2' = elab_exp env e2 (Il.NumT `NatT $ e2.at) in
+    let* e3' = elab_exp env e3 (Il.NumT `NatT $ e3.at) in
+    Ok (Il.SliceE (e1', e2', e3'), t1.it)
   | UpdE (e1, p, e2) ->
-    let* qs1, e1', t1 = infer_exp env e1 in
-    let* qsP, p', t2 = elab_path env p t1 in
-    let* qs2, e2' = elab_exp env e2 t2 in
-    Ok (qs1 @ qsP @ qs2, Il.UpdE (e1', p', e2'), t1.it)
+    let* e1', t1 = infer_exp env e1 in
+    let* p', t2 = elab_path env p t1 in
+    let* e2' = elab_exp env e2 t2 in
+    Ok (Il.UpdE (e1', p', e2'), t1.it)
   | ExtE (e1, p, e2) ->
-    let* qs1, e1', t1 = infer_exp env e1 in
-    let* qsP, p', t2 = elab_path env p t1 in
+    let* e1', t1 = infer_exp env e1 in
+    let* p', t2 = elab_path env p t1 in
     let* _ = as_list_typ "path" env Infer t2 p.at in
-    let* qs2, e2' = elab_exp env e2 t2 in
-    Ok (qs1 @ qsP @ qs2, Il.ExtE (e1', p', e2'), t1.it)
+    let* e2' = elab_exp env e2 t2 in
+    Ok (Il.ExtE (e1', p', e2'), t1.it)
   | StrE _ ->
     fail_infer e.at "record"
   | DotE (e1, atom) ->
-    let* qs1, e1', t1 = infer_exp env e1 in
+    let* e1', t1 = infer_exp env e1 in
     let* tfs, dots = as_struct_typ "expression" env Infer t1 e1.at in
     if dots = Dots then
       error e1.at "used record type is only partially defined at this point";
-    let* _, (qsF, tF, prems), _ = attempt (find_field tfs atom e1.at) t1 in
-    let qsF', s = refresh_quants env qsF in
-    let qas' = il_args_of_params qsF' in
+    let* _, (qs, tF, prems), _ = attempt (find_field tfs atom e1.at) t1 in
+    let qs', s = refresh_quants env qs in
+    let qas' = il_args_of_params qs' in
     let tF' = Il.Subst.subst_typ s tF in
     let e' = Il.DotE (e1', elab_atom atom (expand_id env t1), qas') in
     let e'' = if prems = [] then e' else Il.ProjE (e' $$ e.at % tF', 0) in
-    Ok (qs1 @ qsF', e'', tF'.it)
+    Ok (e'', tF'.it)
   | CommaE (e1, e2) ->
-    let* qs1, e1', t1 = infer_exp env e1 in
+    let* e1', t1 = infer_exp env e1 in
     let* tfs, dots = as_struct_typ "expression" env Infer t1 e1.at in
     if dots = Dots then
       error e1.at "used record type is only partially defined at this point";
@@ -1504,85 +1516,82 @@ and infer_exp' env e : (Il.quant list * Il.exp' * Il.typ') attempt =
     | SeqE ({it = AtomE atom; at; _} :: es2) ->
       let* _t2 = attempt (find_field tfs atom at) t1 in
       let e2 = match es2 with [e2] -> e2 | _ -> SeqE es2 $ e2.at in
-      let* qs2, e2' = elab_exp env (StrE [Elem (atom, e2)] $ e2.at) t1 in
-      Ok (qs1 @ qs2, Il.CompE (e2', e1'), t1.it)
+      let* e2' = elab_exp env (StrE [Elem (atom, e2)] $ e2.at) t1 in
+      Ok (Il.CompE (e2', e1'), t1.it)
     | _ -> error e.at "malformed comma operator"
     )
   | CatE (e1, e2) ->
-    let* qs1, e1', t1 = infer_exp env e1 in
+    let* e1', t1 = infer_exp env e1 in
     let* () = as_cat_typ "operand" env Infer t1 e1.at in
-    let* qs2, e2' = elab_exp env e2 t1 in
-    Ok (qs1 @ qs2,
-      (if is_iter_typ env t1 then Il.CatE (e1', e2') else Il.CompE (e1', e2')), t1.it)
+    let* e2' = elab_exp env e2 t1 in
+    Ok ((if is_iter_typ env t1 then Il.CatE (e1', e2') else Il.CompE (e1', e2')), t1.it)
   | MemE (e1, e2) ->
     choice env [
       (fun env ->
-        let* qs1, e1', t1 = infer_exp env e1 in
-        let* qs2, e2' = elab_exp env e2 (Il.IterT (t1, Il.List) $ e2.at) in
-        Ok (qs1 @ qs2, Il.MemE (e1', e2'), Il.BoolT)
+        let* e1', t1 = infer_exp env e1 in
+        let* e2' = elab_exp env e2 (Il.IterT (t1, Il.List) $ e2.at) in
+        Ok (Il.MemE (e1', e2'), Il.BoolT)
       );
       (fun env ->
-        let* qs2, e2', t2 = infer_exp env e2 in
+        let* e2', t2 = infer_exp env e2 in
         let* t1 = as_list_typ "operand" env Infer t2 e2.at in
-        let* qs1, e1' = elab_exp env e1 t1 in
-        Ok (qs1 @ qs2, Il.MemE (e1', e2'), Il.BoolT)
+        let* e1' = elab_exp env e1 t1 in
+        Ok (Il.MemE (e1', e2'), Il.BoolT)
       );
     ]
   | LenE e1 ->
-    let* qs1, e1', t1 = infer_exp env e1 in
+    let* e1', t1 = infer_exp env e1 in
     let* _t11 = as_list_typ "expression" env Infer t1 e1.at in
-    Ok (qs1, Il.LenE e1', Il.NumT `NatT)
+    Ok (Il.LenE e1', Il.NumT `NatT)
   | SizeE id ->
     let _ = find "grammar" env.grams id in
-    Ok ([], Il.NumE (`Nat Z.zero), Il.NumT `NatT)
+    Ok (Il.NumE (`Nat Z.zero), Il.NumT `NatT)
   | ParenE e1 | ArithE e1 ->
     infer_exp' env e1
   | TupE es ->
-    let* qs, es', ts = infer_exp_list env es in
-    Ok (qs, Il.TupE es', (tup_typ' ts e.at).it)
+    let* es', ts = infer_exp_list env es in
+    Ok (Il.TupE es', (tup_typ' ts e.at).it)
   | CallE (id, as_) ->
     let ps, t, _ = find "definition" env.defs id in
-    let qs, as', s = elab_args `Rhs env as_ ps e.at in
-    Ok (qs, Il.CallE (id, as'), (Il.Subst.subst_typ s t).it)
+    let as', s = elab_args `Rhs env as_ ps e.at in
+    Ok (Il.CallE (id, as'), (Il.Subst.subst_typ s t).it)
   | EpsE ->
     fail_infer e.at "empty sequence"
   | SeqE [] ->  (* treat as empty tuple, not principal *)
-    Ok ([], Il.TupE [], Il.TupT [])
+    Ok (Il.TupE [], Il.TupT [])
   | SeqE es | ListE es ->  (* treat as homogeneous sequence, not principal *)
-    let* qs, es', ts = infer_exp_list env es in
+    let* es', ts = infer_exp_list env es in
     let t = List.hd ts in
     if List.for_all (equiv_typ env t) (List.tl ts) then
-      Ok (qs, Il.ListE es', Il.IterT (t, Il.List))
+      Ok (Il.ListE es', Il.IterT (t, Il.List))
     else
       fail_infer e.at "expression sequence"
   | InfixE _ -> fail_infer e.at "infix expression"
   | BrackE _ -> fail_infer e.at "bracket expression"
-  | IterE (e1, iter) ->
-    let qs, iter' = elab_iterexp env iter in
-    let* qs1, e1', t1 = infer_exp env e1 in
-    let iter'' = match fst iter' with Il.Opt -> Il.Opt | _ -> Il.List in
-    Ok (qs1 @ qs, Il.IterE (e1', iter'), Il.IterT (t1, iter''))
+  | IterE (e1, it) ->
+    let* (e1', t1), ite', itt' = elab_iterexp env infer_exp e1 it in
+    Ok (Il.IterE (e1', ite'), Il.IterT (t1, itt'))
   | TypE (e1, t) ->
     let t' = elab_typ env t in
-    let* qs1, e1' = elab_exp env e1 t' in
-    Ok (qs1, e1'.it, t'.it)
+    let* e1' = elab_exp env e1 t' in
+    Ok (e1'.it, t'.it)
   | HoleE _ -> error e.at "misplaced hole"
   | FuseE _ -> error e.at "misplaced token concatenation"
   | UnparenE _ -> error e.at "misplaced unparenthesize"
   | LatexE _ -> error e.at "misplaced latex literal"
 
 and infer_exp_list env = function
-  | [] -> Ok ([], [], [])
+  | [] -> Ok ([], [])
   | e::es ->
-    let* qs1, e', t = infer_exp env e in
-    let* qs2, es', ts = infer_exp_list env es in
-    Ok (qs1 @ qs2, e'::es', t::ts)
+    let* e', t = infer_exp env e in
+    let* es', ts = infer_exp_list env es in
+    Ok (e'::es', t::ts)
 
 
-and elab_exp env (e : exp) (t : Il.typ) : (Il.quant list * Il.exp) attempt =
+and elab_exp env (e : exp) (t : Il.typ) : Il.exp attempt =
   Debug.(log_at "el.elab_exp" e.at
     (fun _ -> fmt "%s : %s" (el_exp e) (il_typ t))
-    (function Ok (qs, e') -> fmt "%s%s" (il_quants qs) (il_exp e') | _ -> "fail")
+    (function Ok e' -> fmt "%s" (il_exp e') | _ -> "fail")
   ) @@ fun _ ->
   nest e.at t (
     if is_iter_typ env t then
@@ -1598,8 +1607,8 @@ and elab_exp env (e : exp) (t : Il.typ) : (Il.quant list * Il.exp) attempt =
           match e.it with
           | VarE ({it = "_"; _}, []) | EpsE | SeqE [] -> fail_silent
           | _ ->
-            let* qs, e' = elab_exp env e t1 in
-            Ok (qs, lift_exp' e' iter $$ e.at % t)
+            let* e' = elab_exp env e t1 in
+            Ok (lift_exp' e' iter $$ e.at % t)
         );
         (fun env -> elab_exp_plain env e t);
       ]
@@ -1613,22 +1622,21 @@ and elab_exp env (e : exp) (t : Il.typ) : (Il.quant list * Il.exp) attempt =
       elab_exp_plain env e t
   )
 
-and elab_exp_plain env (e : exp) (t : Il.typ) : (Il.quant list * Il.exp) attempt =
+and elab_exp_plain env (e : exp) (t : Il.typ) : Il.exp attempt =
   Debug.(log_at "el.elab_exp_plain" e.at
     (fun _ -> fmt "%s : %s" (el_exp e) (il_typ t))
-    (function Ok (qs, e') -> fmt "%s%s" (il_quants qs) (il_exp e') | _ -> "fail")
+    (function Ok e' -> fmt "%s" (il_exp e') | _ -> "fail")
   ) @@ fun _ ->
-  let* qs, e' = elab_exp_plain' env e t in
-  Ok (qs, e' $$ e.at % t)
+  let* e' = elab_exp_plain' env e t in
+  Ok (e' $$ e.at % t)
 
-and elab_exp_plain' env (e : exp) (t : Il.typ) : (Il.quant list * Il.exp') attempt =
+and elab_exp_plain' env (e : exp) (t : Il.typ) : Il.exp' attempt =
   match e.it with
   | BoolE _ | NumE _ | CvtE _ | UnE _ | BinE _ | CmpE _
   | IdxE _ | DotE _ | MemE _ | LenE _ | SizeE _ | CallE _ | TypE _
   | HoleE _ | FuseE _ | UnparenE _ | LatexE _ ->
-    let* qs1, e', t' = infer_exp env e in
-    let* qs2, e'' = cast_exp' "expression" env e' t' t in
-    Ok (qs1 @ qs2, e'')
+    let* e', t' = infer_exp env e in
+    cast_exp' "expression" env e' t' t
   | TextE s ->
     let cs = try Utf8.decode s with Utf8.Utf8 -> [] in
     (* Allow treatment as character constant *)
@@ -1637,57 +1645,55 @@ and elab_exp_plain' env (e : exp) (t : Il.typ) : (Il.quant list * Il.exp') attem
         (Il.NumT `NatT $ e.at) in
       cast_exp' "character" env e' (Il.NumT `NatT $ e.at) t
     else
-      let* qs1, e', t' = infer_exp env e in
-      let* qs2, e'' = cast_exp' "expression" env e' t' t in
-      Ok (qs1 @ qs2, e'')
+      let* e', t' = infer_exp env e in
+      cast_exp' "expression" env e' t' t
   | VarE (id, _) when id.it = "_" ->
-    Ok ([], Il.VarE id)
+    Ok (Il.VarE id)
   | VarE (id, _) ->
     choice env [
       (fun env ->
-        let* qs1, e', t' = infer_exp env e in
-        let* qs2, e'' = cast_exp' "expression" env e' t' t in
-        Ok (qs1 @ qs2, e'')
+        let* e', t' = infer_exp env e in
+        cast_exp' "expression" env e' t' t
       );
       (fun env ->
         if is_iter_typ env t && id.it <> "_" then
           (* Never infer an iteration type for a variable *)
           let* t1, iter = as_iter_typ "" env Check t e.at in
-          let* qs, e' = elab_exp env e t1 in
-          Ok (qs, lift_exp' e' iter)
+          let* e' = elab_exp env e t1 in
+          Ok (lift_exp' e' iter)
         else if not (bound env.vars id || bound env.gvars (strip_var_suffix id)) then
           let _ = () in
           env.vars <- bind "variable" env.vars id t;
-          Ok ([], Il.VarE id)
+          Ok (Il.VarE id)
         else
           fail_silent  (* suitable error was produced by infer_exp already *)
       );
     ]
   | SliceE (e1, e2, e3) ->
     let* _t' = as_list_typ "expression" env Check t e1.at in
-    let* qs1, e1' = elab_exp env e1 t in
-    let* qs2, e2' = elab_exp env e2 (Il.NumT `NatT $ e2.at) in
-    let* qs3, e3' = elab_exp env e3 (Il.NumT `NatT $ e3.at) in
-    Ok (qs1 @ qs2 @ qs3, Il.SliceE (e1', e2', e3'))
+    let* e1' = elab_exp env e1 t in
+    let* e2' = elab_exp env e2 (Il.NumT `NatT $ e2.at) in
+    let* e3' = elab_exp env e3 (Il.NumT `NatT $ e3.at) in
+    Ok (Il.SliceE (e1', e2', e3'))
   | UpdE (e1, p, e2) ->
-    let* qs1, e1' = elab_exp env e1 t in
-    let* qsP, p', t2 = elab_path env p t in
-    let* qs2, e2' = elab_exp env e2 t2 in
-    Ok (qs1 @ qsP @ qs2, Il.UpdE (e1', p', e2'))
+    let* e1' = elab_exp env e1 t in
+    let* p', t2 = elab_path env p t in
+    let* e2' = elab_exp env e2 t2 in
+    Ok (Il.UpdE (e1', p', e2'))
   | ExtE (e1, p, e2) ->
-    let* qs1, e1' = elab_exp env e1 t in
-    let* qsP, p', t2 = elab_path env p t in
+    let* e1' = elab_exp env e1 t in
+    let* p', t2 = elab_path env p t in
     let* _ = as_list_typ "path" env Check t2 p.at in
-    let* qs2, e2' = elab_exp env e2 t2 in
-    Ok (qs1 @ qsP @ qs2, Il.ExtE (e1', p', e2'))
+    let* e2' = elab_exp env e2 t2 in
+    Ok (Il.ExtE (e1', p', e2'))
   | StrE efs ->
     let* tfs, dots = as_struct_typ "record" env Check t e.at in
     if dots = Dots then
       error e.at "used record type is only partially defined at this point";
-    let* qs, efs' = elab_expfields env (expand_id env t) (filter_nl efs) tfs t e.at in
-    Ok (qs, Il.StrE efs')
+    let* efs' = elab_expfields env (expand_id env t) (filter_nl efs) tfs t e.at in
+    Ok (Il.StrE efs')
   | CommaE (e1, e2) ->
-    let* qs1, e1' = elab_exp env e1 t in
+    let* e1' = elab_exp env e1 t in
     let* tfs, dots1 = as_struct_typ "expression" env Check t e1.at in
     if dots1 = Dots then
       error e1.at "used record type is only partially defined at this point";
@@ -1697,32 +1703,31 @@ and elab_exp_plain' env (e : exp) (t : Il.typ) : (Il.quant list * Il.exp') attem
     | SeqE ({it = AtomE atom; at; _} :: es2) ->
       let* _t2 = attempt (find_field tfs atom at) t in
       let e2 = match es2 with [e2] -> e2 | _ -> SeqE es2 $ e2.at in
-      let* qs2, e2' = elab_exp env (StrE [Elem (atom, e2)] $ e2.at) t in
-      Ok (qs1 @ qs2, Il.CompE (e2', e1'))
+      let* e2' = elab_exp env (StrE [Elem (atom, e2)] $ e2.at) t in
+      Ok (Il.CompE (e2', e1'))
     | _ -> error e.at "malformed comma operator"
     )
   | CatE (e1, e2) ->
     let* () = as_cat_typ "expression" env Check t e.at in
-    let* qs1, e1' = elab_exp env e1 t in
-    let* qs2, e2' = elab_exp env e2 t in
-    Ok (qs1 @ qs2,
-      if is_iter_typ env t then Il.CatE (e1', e2') else Il.CompE (e1', e2'))
+    let* e1' = elab_exp env e1 t in
+    let* e2' = elab_exp env e2 t in
+    Ok (if is_iter_typ env t then Il.CatE (e1', e2') else Il.CompE (e1', e2'))
   | ParenE e1 | ArithE e1 ->
     elab_exp_plain' env e1 t
   | TupE es ->
     let* xts = as_tup_typ "tuple" env Check t e.at in
-    let* qs, es' = elab_exp_list env es xts e.at in
-    Ok (qs, Il.TupE es')
+    let* es' = elab_exp_list env es xts e.at in
+    Ok (Il.TupE es')
   | ListE es ->
     let* t1, iter = as_iter_typ "list" env Check t e.at in
     if iter <> Il.List then fail_typ env e.at "list" t else
     let xts = List.init (List.length es) (fun _ -> "_" $ t1.at, t1) in
-    let* qs, es' = elab_exp_list env es xts e.at in
-    Ok (qs, Il.ListE es')
+    let* es' = elab_exp_list env es xts e.at in
+    Ok (Il.ListE es')
   | SeqE [] when is_empty_notation_typ env t ->
-    let* qs1, e', t' = infer_exp env e in
-    let* qs2, e'' = cast_exp' "empty expression" env e' t' t in
-    Ok (qs1 @ qs2, e'')
+    let* e', t' = infer_exp env e in
+    let* e'' = cast_exp' "empty expression" env e' t' t in
+    Ok (e'')
   | EpsE | SeqE _ when is_iter_typ env t ->
     let* t1, iter = as_iter_typ "" env Check t e.at in
     elab_exp_iter' env (unseq_exp e) (t1, iter) t e.at
@@ -1736,12 +1741,12 @@ and elab_exp_plain' env (e : exp) (t : Il.typ) : (Il.quant list * Il.exp') attem
      * the latter case is already captured above *)
     if is_notation_typ env t then
       let* not = as_notation_typ "" env Check t e.at in
-      let* qs, e' = elab_exp_notation env (expand_id env t) e not t in
-      Ok (qs, e'.it)
+      let* e' = elab_exp_notation env (expand_id env t) e not t in
+      Ok e'.it
     else if is_variant_typ env t then
       let* tcs, _ = as_variant_typ "" env Check t e.at in
-      let* qs, e' = elab_exp_variant env (expand_id env t) e tcs t e.at in
-      Ok (qs, e'.it)
+      let* e' = elab_exp_variant env (expand_id env t) e tcs t e.at in
+      Ok e'.it
     else
       let name =
         match e.it with
@@ -1752,111 +1757,112 @@ and elab_exp_plain' env (e : exp) (t : Il.typ) : (Il.quant list * Il.exp') attem
         | SeqE _ -> "expression sequence"
         | _ -> assert false
       in fail_typ env e.at name t
-  | IterE (e1, iter2) ->
-    let* t1, iter = as_iter_typ "iteration" env Check t e.at in
-    let qs2, iter2' = elab_iterexp env iter2 in
-    let* qs1, e1' = elab_exp env e1 t1 in
-    let qs = qs1 @ qs2 in
-    let e' = Il.IterE (e1', iter2') in
-    match iter2, iter with
-    | Opt, Il.Opt -> Ok (qs, e')
+  | IterE (e1, it2) ->
+    let* t1, it = as_iter_typ "iteration" env Check t e.at in
+    let* e1', ite2', itt2' = elab_iterexp env
+      (fun env (e, t) -> elab_exp env e t) (e1, t1) it2 in
+    let e' = Il.IterE (e1', ite2') in
+    match it2, it with
+    | Opt, Il.Opt -> Ok e'
     | Opt, Il.List ->
-      Ok (qs, Il.LiftE (e' $$ e.at % (Il.IterT (t1, Il.Opt) $ e1.at)))
+      Ok (Il.LiftE (e' $$ e.at % (Il.IterT (t1, itt2') $ e1.at)))
     | _, Il.Opt -> fail_typ env e.at "iteration" t
-    | _, _ -> Ok (qs, e')
+    | _, _ -> Ok e'
 
 and elab_exp_list env (es : exp list) (xts : (id * Il.typ) list) at
-  : (Il.quant list * Il.exp list) attempt =
+  : Il.exp list attempt =
   match es, xts with
-  | [], [] -> Ok ([], [])
+  | [], [] -> Ok []
   | e::es, (_x, t)::xts ->
-    let* qs1, e' = elab_exp env e t in
-    let* qs2, es' = elab_exp_list env es xts at in
-    Ok (qs1 @ qs2, e'::es')
+    let* e' = elab_exp env e t in
+    let* es' = elab_exp_list env es xts at in
+    Ok (e'::es')
   | _, _ ->
     fail at "arity mismatch for expression list"
 
 and elab_expfields env tid (efs : expfield list) (tfs : Il.typfield list) (t0 : Il.typ) at
-  : (Il.quant list * Il.expfield list) attempt =
+  : Il.expfield list attempt =
   Debug.(log_in_at "el.elab_expfields" at
     (fun _ -> fmt "{%s} : {%s} = %s" (list el_expfield efs) (list (il_typfield `H) tfs) (il_typ t0))
   );
   assert (valid_tid tid);
   match efs, tfs with
-  | [], [] -> Ok ([], [])
-  | (atom1, e)::efs2, (atom2, (qsF, tF, prems), _)::tfs2 when atom1.it = atom2.it ->
-    let* qs1, e' = elab_exp env e tF in
-    let qsF', s = refresh_quants env qsF in
-    let* qs2, efs2' = elab_expfields env tid efs2 (List.map (Il.Subst.subst_typfield s) tfs2) t0 at in
+  | [], [] -> Ok []
+  | (atom1, e)::efs2, (atom2, (qs, tF, prems), _)::tfs2 when atom1.it = atom2.it ->
+    let* e' = elab_exp env e tF in
+    let qs', s = refresh_quants env qs in
+    let* efs2' = elab_expfields env tid efs2 (List.map (Il.Subst.subst_typfield s) tfs2) t0 at in
     let e' = if prems = [] then e' else tup_exp' [e'] e.at in
-    let qas' = il_args_of_params qsF' in
-    Ok (qs1 @ qs2, (elab_atom atom1 tid, qas', e') :: efs2')
-  | _, (atom, (_qs, t, prems), _)::tfs2 ->
+    Ok ((elab_atom atom1 tid, il_args_of_params qs', e') :: efs2')
+  | _, (atom, (qs, t, prems), _)::tfs2 ->
     let atom' = string_of_atom atom in
-    let* qs1, e1' = cast_empty ("omitted record field `" ^ atom' ^ "`") env t at in
+    let qs', s = refresh_quants env qs in
+    let t' = Il.Subst.subst_typ s t in
+    let* e1' = cast_empty ("omitted record field `" ^ atom' ^ "`") env t' at in
     let e' = if prems = [] then e1' else tup_exp' [e1'] at in
-    let* qs2, efs2' = elab_expfields env tid efs tfs2 t0 at in
-    Ok (qs1 @ qs2, (elab_atom atom tid, [], e') :: efs2')
+    let* efs2' = elab_expfields env tid efs tfs2 t0 at in
+    Ok ((elab_atom atom tid, il_args_of_params qs', e') :: efs2')
   | (atom, e)::_, [] ->
     fail_atom e.at atom t0 "undefined or misplaced record field"
 
-and elab_exp_iter env (es : exp list) (t1, iter) t at : (Il.quant list * Il.exp) attempt =
-  let* qs, e' = elab_exp_iter' env es (t1, iter) t at in
-  Ok (qs, e' $$ at % t)
+and elab_exp_iter env (es : exp list) (t1, iter) t at : Il.exp attempt =
+  let* e' = elab_exp_iter' env es (t1, iter) t at in
+  Ok (e' $$ at % t)
 
-and elab_exp_iter' env (es : exp list) (t1, iter) t at : (Il.quant list * Il.exp') attempt =
+and elab_exp_iter' env (es : exp list) (t1, iter) t at : Il.exp' attempt =
   Debug.(log_at "el.elab_exp_iter" at
     (fun _ -> fmt "%s : %s = (%s)%s" (seq el_exp es) (il_typ t) (il_typ t1) (il_iter iter))
-    (function Ok (qs, e') -> fmt "%s%s" (il_quants qs) (il_exp (e' $$ at % t)) | _ -> "fail")
+    (function Ok e' -> fmt "%s" (il_exp (e' $$ at % t)) | _ -> "fail")
   ) @@ fun _ ->
   match es, iter with
   | [], Opt ->
-    Ok ([], Il.OptE None)
+    Ok (Il.OptE None)
   | [e1], Opt ->
-    let* qs1, e1' = elab_exp env e1 t1 in
-    Ok (qs1, Il.OptE (Some e1'))
+    let* e1' = elab_exp env e1 t1 in
+    Ok (Il.OptE (Some e1'))
   | _::_::_, Opt ->
     fail_typ env at "expression" t
 
   | [], List ->
-    Ok ([], Il.ListE [])
+    Ok (Il.ListE [])
   | e1::es2, List ->
-    let* qs1, e1' = elab_exp env e1 t in
+    let* e1' = elab_exp env e1 t in
     let at' = Source.over_region (after_region e1.at :: List.map Source.at es2) in
-    let* qs2, e2' = elab_exp_iter env es2 (t1, iter) t at' in
-    Ok (qs1 @ qs2, cat_exp' e1' e2')
+    let* e2' = elab_exp_iter env es2 (t1, iter) t at' in
+    Ok (cat_exp' e1' e2')
 
   | _, (List1 | ListN _) ->
     assert false
 
-and elab_exp_notation env tid (e : exp) (qs, t1, mixop, not) t : (Il.quant list * Il.exp) attempt =
+and elab_exp_notation env tid (e : exp) (qs, t1, mixop, not) t : Il.exp attempt =
   (* Convert notation into applications of mixin operators *)
   assert (valid_tid tid);
-  let* qs', es', s = elab_exp_notation' env tid e not in
+  let* es', s = elab_exp_notation' env tid e not in
   let qas' = Il.Subst.subst_args s (il_args_of_params qs) in
-  Ok (qs', Il.CaseE (mixop, qas', Il.TupE es' $$ e.at % t1) $$ e.at % t)
+  Ok (Il.CaseE (mixop, qas', Il.TupE es' $$ e.at % t1) $$ e.at % t)
 
-and elab_exp_notation' env tid (e : exp) not : (Il.quant list * Il.exp list * Il.Subst.t) attempt =
+and elab_exp_notation' env tid (e : exp) not : (Il.exp list * Il.Subst.t) attempt =
   Debug.(log_at "el.elab_exp_notation" e.at
-    (fun _ -> fmt "%s : %s" (el_exp e) (Mixop.to_string not))
-    (function Ok (qs, es', _) -> fmt "%s %s" (il_quants qs) (seq il_exp es') | _ -> "fail")
+    (fun _ -> fmt "%s : %s" (el_exp e) (Mixop.to_string_with il_typbind " " not))
+    (function Ok (es', s) -> fmt "{%s} [%s]" (seq il_exp es') (il_subst s) | _ -> "fail")
   ) @@ fun _ ->
   assert (valid_tid tid);
   match e.it, not with
   | AtomE atom, Atom atom' ->
     if atom.it <> atom'.it then fail_not env e.at "atom" not else
     let _ = elab_atom atom tid in
-    Ok ([], [], Il.Subst.empty)
+    Ok ([], Il.Subst.empty)
   | InfixE (e1, atom, e2), Infix (_, atom', _) when Atom.sub atom' atom ->
     let e21 = ParenE (SeqE [] $ e2.at) $ e2.at in
     elab_exp_notation' env tid
       (InfixE (e1, atom', SeqE [e21; e2] $ e2.at) $ e.at) not
   | InfixE (e1, atom, e2), Infix (not1, atom', not2) ->
     if atom.it <> atom'.it then fail_not env e.at "infix expression" not else
-    let* qs1, es1', s1 = elab_exp_notation' env tid e1 not1 in
-    let* qs2, es2', s2 = elab_exp_notation' env tid e2 (Mixop.map (Il.Subst.subst_typ s1) not2) in
+    let* es1', s1 = elab_exp_notation' env tid e1 not1 in
+    let not2' = Mixop.map (fun (x, t) -> x, Il.Subst.subst_typ s1 t) not2 in
+    let* es2', s2 = elab_exp_notation' env tid e2 not2' in
     let _ = elab_atom atom tid in
-    Ok (qs1 @ qs2, es1' @ es2', Il.Subst.union s1 s2)
+    Ok (es1' @ es2', Il.Subst.union s1 s2)
   | BrackE (l, e1, r), Brack (l', not1, r') ->
     if (l.it, r.it) <> (l'.it, r'.it) then fail_not env e.at "bracket expression" not else
     let _ = elab_atom l tid in
@@ -1864,39 +1870,43 @@ and elab_exp_notation' env tid (e : exp) not : (Il.quant list * Il.exp list * Il
     elab_exp_notation' env tid e1 not1
 
   | SeqE [], Seq [] ->
-    Ok ([], [], Il.Subst.empty)
-  | _, Seq ((Arg t1)::nots2) when is_iter_typ env t1 ->
+    Ok ([], Il.Subst.empty)
+  | _, Seq ((Arg (x1, t1))::nots2) when is_iter_typ env t1 ->
     let* t11, iter = as_iter_typ "iteration" env Check t1 e.at in
-    elab_exp_notation_iter env tid (unseq_exp e) (t11, iter) t1 nots2 e.at
+    elab_exp_notation_iter env tid (unseq_exp e) (t11, iter) x1 t1 nots2 e.at
   | SeqE ({it = AtomE atom; at; _}::es2), Seq ((Atom atom')::_)
     when Atom.sub atom' atom ->
     let e21 = ParenE (SeqE [] $ at) $ at in
     elab_exp_notation' env tid (SeqE ((AtomE atom' $ at) :: e21 :: es2) $ e.at) not
   (* Trailing notation can be flattened *)
-  | SeqE (e1::es2), Seq [Arg t1 as not1] ->
+  | SeqE (e1::es2), Seq [Arg (x1, t1) as not1] ->
     choice env [
       (fun env ->
-        let* qs1, es1', s1 = elab_exp_notation' env tid (unparen_exp e1) not1 in
+        let* es1', s1 = elab_exp_notation' env tid (unparen_exp e1) not1 in
         let e2 = SeqE es2 $ Source.over_region (after_region e1.at :: List.map Source.at es2) in
-        let* qs2, es2', s2 = elab_exp_notation' env tid e2 (Seq []) in
-        Ok (qs1 @ qs2, es1' @ es2', Il.Subst.union s1 s2)
+        let* es2', s2 = elab_exp_notation' env tid e2 (Seq []) in
+        Ok (es1' @ es2', Il.Subst.union s1 s2)
       );
       (fun env ->
-        let* qs, e' = elab_exp env e t1 in
-        Ok (qs, [e'], Il.Subst.empty)
+        let* e' = elab_exp env e t1 in
+        Ok ([e'], Il.Subst.add_varid Il.Subst.empty x1 e')
       )
     ]
   | SeqE (e1::es2), Seq (not1::nots2) ->
-    let* qs1, es1', s1 = elab_exp_notation' env tid (unparen_exp e1) not1 in
+    let* es1', s1 = elab_exp_notation' env tid (unparen_exp e1) not1 in
     let e2 = SeqE es2 $ Source.over_region (after_region e1.at :: List.map Source.at es2) in
     let not2 = Mixop.Seq nots2 in
-    let* qs2, es2', s2 = elab_exp_notation' env tid e2 (Mixop.map (Il.Subst.subst_typ s1) not2) in
-    Ok (qs1 @ qs2, es1' @ es2', Il.Subst.union s1 s2)
+    let not2' = Mixop.map (fun (x, t) -> x, Il.Subst.subst_typ s1 t) not2 in
+    let* es2', s2 = elab_exp_notation' env tid e2 not2' in
+    Ok (es1' @ es2', Il.Subst.union s1 s2)
   (* Trailing elements can be omitted if they can be eps *)
-  | SeqE [], Seq ((Arg t1)::nots2) ->
-    let* qs1, e1' = cast_empty "omitted sequence tail" env t1 e.at in
-    let* qs2, es2', s2 = elab_exp_notation' env tid e (Seq nots2) in
-    Ok (qs1 @ qs2, e1' :: es2', s2)
+  | SeqE [], Seq ((Arg (x1, t1))::nots2) ->
+    let* e1' = cast_empty "omitted sequence tail" env t1 e.at in
+    let s1 = Il.Subst.add_varid Il.Subst.empty x1 e1' in
+    let not2 = Mixop.Seq nots2 in
+    let not2' = Mixop.map (fun (x, t) -> x, Il.Subst.subst_typ s1 t) not2 in
+    let* es2', s2 = elab_exp_notation' env tid e not2' in
+    Ok (e1' :: es2', Il.Subst.union s1 s2)
   | SeqE (e1::_), Seq [] ->
     fail e1.at "expression is not empty"
   (* Since trailing elements can be omitted, a singleton may match a sequence *)
@@ -1909,65 +1919,108 @@ and elab_exp_notation' env tid (e : exp) not : (Il.quant list * Il.exp list * Il
     elab_exp_notation' env tid e1 not
 *)
 
-  | _, Arg t ->
-    let* qs, e' = elab_exp env e t in
-    Ok (qs, [e'], Il.Subst.add_varid Il.Subst.empty (varid_of_typ' t) e')
+  | _, Arg (x, t) ->
+    let* e' = elab_exp env e t in
+    Ok ([e'], Il.Subst.add_varid Il.Subst.empty x e')
 
   | _, (Atom _ | Brack _ | Infix _) ->
     fail e.at "expression does not match expected notation"
 
-and elab_exp_notation_iter env tid (es : exp list) (t1, iter) t nots at : (Il.quant list * Il.exp list * Il.Subst.t) attempt =
+and elab_exp_notation_iter env tid (es : exp list) (t1, iter) x t nots at
+  : (Il.exp list * Il.Subst.t) attempt =
   assert (valid_tid tid);
-  let* qs, e', es', s = elab_exp_notation_iter' env tid es (t1, iter) t nots at in
-  Ok (qs, e'::es', s)
+  let* e', es', s = elab_exp_notation_iter' env tid es (t1, iter) x t None nots at in
+  Ok (e'::es', s)
 
-and elab_exp_notation_iter' env tid (es : exp list) (t1, iter) t nots at : (Il.quant list * Il.exp * Il.exp list * Il.Subst.t) attempt =
+and elab_exp_notation_iter' env tid (es : exp list) (t1, iter) x t eo' nots at
+  : (Il.exp * Il.exp list * Il.Subst.t) attempt =
   Debug.(log_at "el.elab_exp_notation_iter" at
     (fun _ -> fmt "%s : %s = (%s)%s" (seq el_exp es) (il_typ t) (il_typ t1) (il_iter iter))
-    (function Ok (qs, e', es', _) -> fmt "%s %s" (il_quants qs) (seq il_exp (e'::es')) | _ -> "fail")
+    (function Ok (e', es', _) -> fmt "%s" (seq il_exp (e'::es')) | _ -> "fail")
   ) @@ fun _ ->
   match es, iter with
   | [], Il.Opt ->
-    let* qs, es', s = elab_exp_notation' env tid (SeqE [] $ at) (Seq nots) in
-    Ok (qs, Il.OptE None $$ at % t, es', s)
-  | e1::es2, Opt ->
+    (* Empty option *)
+    assert (eo' = None);
+    let e0' = Il.OptE None $$ at % t in
+    let s0 = Il.Subst.add_varid Il.Subst.empty x e0' in
+    let not = Mixop.Seq nots in
+    let not' = Mixop.map (fun (x, t) -> x, Il.Subst.subst_typ s0 t) not in
+    let* es', s = elab_exp_notation' env tid (SeqE [] $ at) not' in
+    Ok (e0', es', Il.Subst.union s0 s)
+  | e1::es2, Il.Opt ->
+    assert (eo' = None);
     choice env [
       (fun env ->
-        let* qs, es', s = elab_exp_notation' env tid (SeqE (e1::es2) $ at) (Seq nots) in
-        Ok (qs, Il.OptE None $$ Source.before_region e1.at % t, es', s)
+        (* Try parsing as empty option *)
+        let e0' = Il.OptE None $$ Source.before_region e1.at % t in
+        let s0 = Il.Subst.add_varid Il.Subst.empty x e0' in
+        let not = Mixop.Seq nots in
+        let not' = Mixop.map (fun (x, t) -> x, Il.Subst.subst_typ s0 t) not in
+        let* es', s = elab_exp_notation' env tid (SeqE es $ at) not' in
+        Ok (e0', es', Il.Subst.union s0 s)
       );
       (fun env ->
-        let* qs1, e1' = elab_exp env e1 t in
+        (* Parse as non-empty option *)
+        let* e1' = elab_exp env e1 t in
+        let s1 = Il.Subst.add_varid Il.Subst.empty x e1' in
+        let not = Mixop.Seq nots in
+        let not' = Mixop.map (fun (x, t) -> x, Il.Subst.subst_typ s1 t) not in
         let at' = Source.over_region (after_region e1.at :: List.map Source.at es2) in
-        let* qs2, es2', s = elab_exp_notation' env tid (SeqE es2 $ at') (Seq nots) in
-        Ok (qs1 @ qs2, e1', es2', s)
+        let* es2', s = elab_exp_notation' env tid (SeqE es2 $ at') not' in
+        Ok (e1', es2', Il.Subst.union s1 s)
       );
     ]
 
-  | [], List ->
-    let* qs, es', s = elab_exp_notation' env tid (SeqE [] $ at) (Seq nots) in
-    Ok (qs, Il.ListE [] $$ at % t, es', s)
-  | e1::es2, List ->
+  | [], Il.List ->
+    (* Empty list *)
+    let e' =
+      match eo' with
+      | Some e0' -> e0'
+      | None -> Il.ListE [] $$ at % t
+    in
+    let s1 = Il.Subst.add_varid Il.Subst.empty x e' in
+    let not = Mixop.Seq nots in
+    let not' = Mixop.map (fun (x, t) -> x, Il.Subst.subst_typ s1 t) not in
+    let* es', s2 = elab_exp_notation' env tid (SeqE [] $ at) not' in
+    Ok (e', es', Il.Subst.union s1 s2)
+  | e1::es2, Il.List ->
     choice env [
       (fun env ->
-        let* qs, es', s = elab_exp_notation' env tid (SeqE (e1::es2) $ at) (Seq nots) in
-        Ok (qs, Il.ListE [] $$ at % t, es', s)
+        (* Try parsing as empty list *)
+        let e' =
+          match eo' with
+          | Some e0' -> e0'
+          | None -> Il.ListE [] $$ at % t
+        in
+        let s1 = Il.Subst.add_varid Il.Subst.empty x e' in
+        let not = Mixop.Seq nots in
+        let not' = Mixop.map (fun (x, t) -> x, Il.Subst.subst_typ s1 t) not in
+        let* es', s2 = elab_exp_notation' env tid (SeqE es $ at) not' in
+        Ok (e', es', Il.Subst.union s1 s2)
       );
       (fun env ->
-        let* qs1, e1' = elab_exp env e1 t in
+        (* Try parsing as list element or concatenation *)
+        let* e1' = elab_exp env e1 t in
+        let e0'' =
+          match eo' with
+          | None -> e1'
+          | Some e0' -> cat_exp' e0' e1' $$ Source.over_region [e0'.at; e1'.at] % t
+        in
         let at' = Source.over_region (after_region e1.at :: List.map Source.at es2) in
-        let* qs2, e2', es2', s = elab_exp_notation_iter' env tid es2 (t1, iter) t nots at' in
-        Ok (qs1 @ qs2, cat_exp' e1' e2' $$ Source.over_region [e1'.at; e2'.at] % t, es2', s)
+        let* e', es2', s =
+          elab_exp_notation_iter' env tid es2 (t1, iter) x t (Some e0'') nots at' in
+        Ok (e', es2', s)
       );
     ]
 
-  | _, (List1 | ListN _) ->
+  | _, Il.(List1 | ListN _) ->
     assert false
 
-and elab_exp_variant env tid (e : exp) (tcs : Il.typcase list) t at : (Il.quant list * Il.exp) attempt =
+and elab_exp_variant env tid (e : exp) (tcs : Il.typcase list) t at : Il.exp attempt =
   Debug.(log_at "el.elab_exp_variant" e.at
     (fun _ -> fmt "%s : %s = %s" (el_exp e) tid.it (il_typ t))
-    (function Ok (qs, e') -> fmt "%s%s" (il_quants qs) (il_exp e') | _ -> "fail")
+    (function Ok e' -> fmt "%s" (il_exp e') | _ -> "fail")
   ) @@ fun _ ->
   assert (valid_tid tid);
   let rec head e =
@@ -1980,13 +2033,13 @@ and elab_exp_variant env tid (e : exp) (tcs : Il.typcase list) t at : (Il.quant 
     | _ -> fail_typ env at "expression" t
   in
   let* atom = head e in
-  let* mixop, (qsC, tC, _prems), _ = attempt (find_case_atom tcs atom atom.at) t in
-  let qsC', s = refresh_quants env qsC in
-  let* xtsC = as_tup_typ "tuple" env Check (Il.Subst.subst_typ s tC) e.at in
-  let not = Mixop.apply mixop (List.map snd xtsC) in
-  let* qs, es', s = elab_exp_notation' env tid e not in
-  let qas' = Il.Subst.subst_args s (il_args_of_params qsC') in
-  Ok (qs, Il.CaseE (mixop, qas', tup_exp' es' e.at) $$ at % t)
+  let* mixop, (qs, tC, _prems), _ = attempt (find_case_atom tcs atom atom.at) t in
+  let qs', s = refresh_quants env qs in
+  let* xts = as_tup_typ "tuple" env Check (Il.Subst.subst_typ s tC) e.at in
+  let not = Mixop.apply mixop xts in
+  let* es', s = elab_exp_notation' env tid e not in
+  let qas' = Il.Subst.subst_args s (il_args_of_params qs') in
+  Ok (Il.CaseE (mixop, qas', tup_exp' es' e.at) $$ at % t)
 
 
 (*
@@ -1995,49 +2048,49 @@ r[[i] = e]  ~>  [r0,...,e,...,rN]  if r = [r0,...,rN]
 r[.l = e]   ~>  {l0 a0*=r0,...,l a*=e,...,lN aN*=rN}  if r = {l0 a0*=r0,...,lN aN*=rN}
                     a* = q*
 *)
-and elab_path env (p : path) (t : Il.typ) : (Il.quant list * Il.path * Il.typ) attempt =
-  let* qs, p', t' = elab_path' env p t in
-  Ok (qs, p' $$ p.at % t', t')
+and elab_path env (p : path) (t : Il.typ) : (Il.path * Il.typ) attempt =
+  let* p', t' = elab_path' env p t in
+  Ok (p' $$ p.at % t', t')
 
-and elab_path' env (p : path) (t : Il.typ) : (Il.quant list * Il.path' * Il.typ) attempt =
+and elab_path' env (p : path) (t : Il.typ) : (Il.path' * Il.typ) attempt =
   match p.it with
   | RootP ->
-    Ok ([], Il.RootP, t)
+    Ok (Il.RootP, t)
   | IdxP (p1, e1) ->
-    let* qs1, p1', t1 = elab_path env p1 t in
-    let qs2, e1' = checkpoint (elab_exp env e1 (Il.NumT `NatT $ e1.at)) in
+    let* p1', t1 = elab_path env p1 t in
+    let e1' = checkpoint (elab_exp env e1 (Il.NumT `NatT $ e1.at)) in
     let* t' = as_list_typ "path" env Check t1 p1.at in
-    Ok (qs1 @ qs2, Il.IdxP (p1', e1'), t')
+    Ok (Il.IdxP (p1', e1'), t')
   | SliceP (p1, e1, e2) ->
-    let* qs, p1', t1 = elab_path env p1 t in
-    let qs1, e1' = checkpoint (elab_exp env e1 (Il.NumT `NatT $ e1.at)) in
-    let qs2, e2' = checkpoint (elab_exp env e2 (Il.NumT `NatT $ e2.at)) in
+    let* p1', t1 = elab_path env p1 t in
+    let e1' = checkpoint (elab_exp env e1 (Il.NumT `NatT $ e1.at)) in
+    let e2' = checkpoint (elab_exp env e2 (Il.NumT `NatT $ e2.at)) in
     let* _ = as_list_typ "path" env Check t1 p1.at in
-    Ok (qs @ qs1 @ qs2, Il.SliceP (p1', e1', e2'), t1)
+    Ok (Il.SliceP (p1', e1', e2'), t1)
   | DotP (p1, atom) ->
-    let* qs1, p1', t1 = elab_path env p1 t in
+    let* p1', t1 = elab_path env p1 t in
     let* tfs, dots = as_struct_typ "path" env Check t1 p1.at in
     if dots = Dots then
       error p1.at "used record type is only partially defined at this point";
-    let* _, (qsF, tF, _prems), _ = attempt (find_field tfs atom p1.at) t1 in
-    let qsF', s = refresh_quants env qsF in
-    let as' = il_args_of_params qsF' in
+    let* _, (qs, tF, _prems), _ = attempt (find_field tfs atom p1.at) t1 in
+    let qs', s = refresh_quants env qs in
+    let qas' = il_args_of_params qs' in
     let tF' = Il.Subst.subst_typ s tF in
-    Ok (qs1 @ qsF, Il.DotP (p1', elab_atom atom (expand_id env t1), as'), tF')
+    Ok (Il.DotP (p1', elab_atom atom (expand_id env t1), qas'), tF')
 
 
-and cast_empty phrase env (t : Il.typ) at : (Il.quant list * Il.exp) attempt =
+and cast_empty phrase env (t : Il.typ) at : Il.exp attempt =
   Debug.(log_at "el.elab_exp_cast_empty" at
     (fun _ -> fmt "%s  >>  (%s)" (il_typ t) (il_typ t))
-    (function Ok (qs, e') -> fmt "%s%s" (il_quants qs) (il_exp e') | _ -> "fail")
+    (function Ok e' -> fmt "%s" (il_exp e') | _ -> "fail")
   ) @@ fun _ ->
   nest at t (
     match expand env t with
-    | Il.IterT (_, Opt) -> Ok ([], Il.OptE None $$ at % t)
-    | Il.IterT (_, List) -> Ok ([], Il.ListE [] $$ at % t)
+    | Il.IterT (_, Opt) -> Ok (Il.OptE None $$ at % t)
+    | Il.IterT (_, List) -> Ok (Il.ListE [] $$ at % t)
     | VarT _ when is_notation_typ env t ->
       (match expand_notation env t with
-      | Some (_, _, _, Mixop.Seq []) -> Ok ([], Il.ListE [] $$ at % t)
+      | Some (_, _, _, Mixop.Seq []) -> Ok (Il.ListE [] $$ at % t)
       | _ -> fail_typ env at phrase t
       )
 (*
@@ -2055,29 +2108,29 @@ and cast_empty phrase env (t : Il.typ) at : (Il.quant list * Il.exp) attempt =
     | _ -> fail_typ env at phrase t
   )
 
-and cast_exp phrase env (e' : Il.exp) t1 t2 : (Il.quant list * Il.exp) attempt =
-  let* qs, e'' = nest e'.at t2 (cast_exp' phrase env e' t1 t2) in
-  Ok (qs, e'' $$ e'.at % t2)
+and cast_exp phrase env (e' : Il.exp) t1 t2 : Il.exp attempt =
+  let* e'' = nest e'.at t2 (cast_exp' phrase env e' t1 t2) in
+  Ok (e'' $$ e'.at % t2)
 
-and cast_exp' phrase env (e' : Il.exp) t1 t2 : (Il.quant list * Il.exp') attempt =
+and cast_exp' phrase env (e' : Il.exp) t1 t2 : Il.exp' attempt =
   Debug.(log_at "el.elab_exp_cast" e'.at
     (fun _ -> fmt "%s <: %s  >>  (%s) <: (%s) = (%s)" (il_typ t1) (il_typ t2)
       (il_deftyp (fst (expand_def env t1) $ t1.at))
       (il_deftyp (fst (expand_def env t2) $ t2.at))
       (il_typ (reduce env t2))
     )
-    (function Ok (qs, e'') -> fmt "%s%s" (il_quants qs) (il_exp (e'' $$ e'.at % t2)) | _ -> "fail")
+    (function Ok e'' -> fmt "%s" (il_exp (e'' $$ e'.at % t2)) | _ -> "fail")
   ) @@ fun _ ->
-  if equiv_typ env t1 t2 then Ok ([], e'.it) else
+  if equiv_typ env t1 t2 then Ok e'.it else
   let t1', t2' = reduce env t1, reduce env t2 in
   match t1'.it, t2'.it with
   | _, _ when sub_typ env t1' t2' ->
-    Ok ([], Il.SubE (e', t1', t2'))
+    Ok (Il.SubE (e', t1', t2'))
   | Il.NumT nt1, Il.NumT nt2 when nt1 < nt2 || lax_num && nt1 <> `RealT ->
-    Ok ([], Il.CvtE (e', nt1, nt2))
+    Ok (Il.CvtE (e', nt1, nt2))
 
   | Il.TupT [], Il.VarT _ when is_empty_notation_typ env t2' ->
-    Ok ([], e'.it)
+    Ok e'.it
 
   | Il.VarT _, Il.VarT _ ->
     (match expand_def env t1', expand_def env t2' with
@@ -2096,10 +2149,9 @@ and cast_exp' phrase env (e' : Il.exp) t1 t2 : (Il.quant list * Il.exp') attempt
         let ts2 = match tC2'.it with Il.TupT xts -> List.map snd xts | _ -> [tC2'] in
         let e'' = Il.UncaseE (e', mixop1, qas1') $$ e'.at % tC1' in
         let es' = List.mapi (fun i t1I -> Il.ProjE (e'', i) $$ e''.at % t1I) ts1 in
-        let* qss_es'' = map2_attempt (fun eI' (t1I, t2I) ->
+        let* es'' = map2_attempt (fun eI' (t1I, t2I) ->
           cast_exp phrase env eI' t1I t2I) es' (List.combine ts1 ts2) in
-        let qss, es'' = List.split qss_es'' in
-        Ok (qs1' @ qs2' @ List.concat qss, Il.CaseE (mixop2, qas2', tup_exp' es'' e'.at))
+        Ok (Il.CaseE (mixop2, qas2', tup_exp' es'' e'.at))
       )
       else
       (
@@ -2116,8 +2168,7 @@ and cast_exp' phrase env (e' : Il.exp) t1 t2 : (Il.quant list * Il.exp') attempt
         match expand env tC1' with
         | Il.TupT [_, t11'] ->
           let e'' = Il.UncaseE (e', mixop1, qas1') $$ e'.at % t11' in
-          let* qs, e''' = cast_exp' phrase env (Il.ProjE (e'', 0) $$ e'.at % t11') t11' t2' in
-          Ok (qs1' @ qs, e''')
+          cast_exp' phrase env (Il.ProjE (e'', 0) $$ e'.at % t11') t11' t2'
         | _ -> fail_typ2 env e'.at phrase t1 t2 ""
       )
 
@@ -2141,7 +2192,7 @@ and cast_exp' phrase env (e' : Il.exp) t1 t2 : (Il.quant list * Il.exp') attempt
         | Fail (Trace (_, msg, _) :: _) -> fail_typ2 env e'.at phrase t1 t2 (", " ^ msg)
         | Fail [] -> assert false
       in
-      Ok ([], Il.SubE (e', t1', t2'))
+      Ok (Il.SubE (e', t1', t2'))
 
     | _, _ ->
       fail_typ2 env e'.at phrase t1 t2 ""
@@ -2153,18 +2204,15 @@ and cast_exp' phrase env (e' : Il.exp) t1 t2 : (Il.quant list * Il.exp') attempt
       choice env [
         (fun env ->
           (* A ConT can always be cast to a (singleton) iteration *)
-          let* qs, e'' =
-            match t2'.it with
-            | Il.IterT (t21, iter) ->
-              let* qs1, e1' = cast_exp phrase env e' t1 t21 in
-              (match iter with
-              | Opt -> Ok (qs1, Il.OptE (Some e1'))
-              | List -> Ok (qs1, Il.ListE [e1'])
-              | _ -> assert false
-              )
-            | _ -> fail_silent
-          in
-          Ok (qs, e'')
+          match t2'.it with
+          | Il.IterT (t21, iter) ->
+            let* e1' = cast_exp phrase env e' t1 t21 in
+            (match iter with
+            | Opt -> Ok (Il.OptE (Some e1'))
+            | List -> Ok (Il.ListE [e1'])
+            | _ -> assert false
+            )
+          | _ -> fail_silent
         );
         (fun env ->
           (* A ConT can be cast to its payload *)
@@ -2182,8 +2230,7 @@ and cast_exp' phrase env (e' : Il.exp) t1 t2 : (Il.quant list * Il.exp') attempt
           match expand env tC1' with
           | Il.TupT [_, t11'] ->
             let e'' = Il.UncaseE (e', mixop1, qas1') $$ e'.at % t11' in
-            let* qs, e''' = cast_exp' phrase env (Il.ProjE (e'', 0) $$ e'.at % t11') t11' t2' in
-            Ok (qs1' @ qs, e''')
+            cast_exp' phrase env (Il.ProjE (e'', 0) $$ e'.at % t11') t11' t2'
           | _ -> fail_typ2 env e'.at phrase t1 t2 ""
         );
       ]
@@ -2201,8 +2248,8 @@ and cast_exp' phrase env (e' : Il.exp) t1 t2 : (Il.quant list * Il.exp') attempt
       let qas2' = il_args_of_params qs2' in
       (match expand env tC2' with
       | Il.TupT [_, t21'] ->
-        let* qs, e1' = cast_exp phrase env e' t1' t21' in
-        Ok (qs2' @ qs, Il.CaseE (mixop2, qas2', Il.TupE [e1'] $$ e'.at % tC2'))
+        let* e1' = cast_exp phrase env e' t1' t21' in
+        Ok (Il.CaseE (mixop2, qas2', Il.TupE [e1'] $$ e'.at % tC2'))
       | _ -> fail_typ2 env e'.at phrase t1 t2 ""
       )
 
@@ -2218,13 +2265,13 @@ and cast_exp' phrase env (e' : Il.exp) t1 t2 : (Il.quant list * Il.exp') attempt
         cast_exp' phrase env e'' t1' t2
       );
       (fun env ->
-        let* qs, e'' = cast_exp phrase env e' t1 t21 in
-        Ok (qs, Il.ListE [e''])
+        let* e'' = cast_exp phrase env e' t1 t21 in
+        Ok (Il.ListE [e''])
       );
     ]
   | _, Il.IterT (t21, (List | List1)) ->
-    let* qs, e'' = cast_exp phrase env e' t1 t21 in
-    Ok (qs, Il.ListE [e''])
+    let* e'' = cast_exp phrase env e' t1 t21 in
+    Ok (Il.ListE [e''])
 
   | _, _ ->
     fail_typ2 env e'.at phrase t1 t2 ""
@@ -2401,50 +2448,45 @@ Printf.printf "[4] %s => %s\n%!" (Debug.el_typ t11) (Debug.il_typ t11');
 *)
 
 
-and elab_iterexp env (it : iter) : Il.quant list * Il.iterexp =
-  let qs, it' = elab_iter env it in
-  (qs, (it', []))
-
-
 (* Premises *)
 
-and elab_prem env (pr : prem) : Il.quant list * Il.prem list =
+and elab_prem env (pr : prem) : Il.prem list =
   match pr.it with
   | VarPr (id, t) ->
     let t' = elab_typ env t in
     env.vars <- bind "variable" env.vars id t';
-    [], []
+    []
   | RulePr (id, e) ->
     let mixop, not, _, _ = find "relation" env.rels id in
-    let qs, es', _s = checkpoint (elab_exp_notation' env id e not) in
-    qs, [Il.RulePr (id, mixop, tup_exp_nary' es' e.at) $ pr.at]
+    let es', _s = checkpoint (elab_exp_notation' env id e not) in
+    [Il.RulePr (id, mixop, tup_exp_nary' es' e.at) $ pr.at]
   | IfPr e ->
-    let qs, e' = checkpoint (elab_exp env e (Il.BoolT $ e.at)) in
-    qs, [Il.IfPr e' $ pr.at]
+    let e' = checkpoint (elab_exp env e (Il.BoolT $ e.at)) in
+    [Il.IfPr e' $ pr.at]
   | ElsePr ->
-    [], [Il.ElsePr $ pr.at]
+    [Il.ElsePr $ pr.at]
   | IterPr ({it = VarPr _; at; _}, _iter) ->
     error at "misplaced variable premise"
-  | IterPr (pr1, iter) ->
-    let qs, iter' = elab_iterexp env iter in
-    let qs1, prs1' = elab_prem env pr1 in
+  | IterPr (pr1, it) ->
+    let prs1', ite', _itt' = checkpoint (elab_iterexp env
+      (fun env pr -> Ok (elab_prem env pr)) pr1 it) in
     assert (List.length prs1' = 1);
-    qs @ qs1, [Il.IterPr (List.hd prs1', iter') $ pr.at]
+    [Il.IterPr (List.hd prs1', ite') $ pr.at]
 
 
 (* Grammars *)
 
-and infer_sym env (g : sym) : (Il.quant list * Il.sym * Il.typ) attempt =
+and infer_sym env (g : sym) : (Il.sym * Il.typ) attempt =
   Debug.(log_at "el.infer_sym" g.at
     (fun _ -> fmt "%s" (el_sym g))
-    (function Ok (qs, g', t) -> fmt "%s %s : %s" (il_quants qs) (il_sym g') (il_typ t) | _ -> "fail")
+    (function Ok (g', t) -> fmt "%s : %s" (il_sym g') (il_typ t) | _ -> "fail")
   ) @@ fun _ ->
   nest g.at (Il.TupT [] $ g.at) (
     match g.it with
     | VarG (x, as_) ->
       let ps, t, _gram, _prods' = find "grammar" env.grams x in
-      let qs, as', s = elab_args `Rhs env as_ ps g.at in
-      Ok (qs, Il.VarG (x, as') $ g.at, Il.Subst.subst_typ s t)
+      let as', s = elab_args `Rhs env as_ ps g.at in
+      Ok (Il.VarG (x, as') $ g.at, Il.Subst.subst_typ s t)
     | NumG (`CharOp, n) ->
 (*
       let s = try Utf8.encode [Z.to_int n] with Z.Overflow | Utf8.Utf8 ->
@@ -2454,98 +2496,91 @@ and infer_sym env (g : sym) : (Il.quant list * Il.sym * Il.typ) attempt =
       if n < Z.of_int 0x00 || n > Z.of_int 0x10ffff then
         fail g.at "unicode value out of range"
       else
-        Ok ([], Il.NumG (Z.to_int n) $ g.at, Il.NumT `NatT $ g.at)
+        Ok (Il.NumG (Z.to_int n) $ g.at, Il.NumT `NatT $ g.at)
     | NumG (_, n) ->
       if n < Z.of_int 0x00 || n > Z.of_int 0xff then
         fail g.at "byte value out of range"
       else
-        Ok ([], Il.NumG (Z.to_int n) $ g.at, Il.NumT `NatT $ g.at)
+        Ok (Il.NumG (Z.to_int n) $ g.at, Il.NumT `NatT $ g.at)
     | TextG s ->
-      Ok ([], Il.TextG s $ g.at, Il.TextT $ g.at)
+      Ok (Il.TextG s $ g.at, Il.TextT $ g.at)
     | EpsG ->
-      Ok ([], Il.EpsG $ g.at, Il.TupT [] $ g.at)
+      Ok (Il.EpsG $ g.at, Il.TupT [] $ g.at)
     | SeqG gs ->
-      let* qs, gs' = elab_sym_list env (filter_nl gs) (Il.TupT [] $ g.at) in
-      Ok (qs, Il.SeqG gs' $ g.at, Il.TupT [] $ g.at)
+      let* gs' = elab_sym_list env (filter_nl gs) (Il.TupT [] $ g.at) in
+      Ok (Il.SeqG gs' $ g.at, Il.TupT [] $ g.at)
     | AltG gs ->
       choice env [
         (fun env ->
-          let* qs, gs', ts = infer_sym_list env (filter_nl gs) in
-          if qs <> [] then
-            fail g.at "invalid expressions in alternative"
-          else if  ts <> [] && List.for_all (equiv_typ env (List.hd ts)) ts then
-            Ok ([], Il.AltG gs' $ g.at, List.hd ts)
+          let* gs', ts = infer_sym_list env (filter_nl gs) in
+          if ts <> [] && List.for_all (equiv_typ env (List.hd ts)) ts then
+            Ok (Il.AltG gs' $ g.at, List.hd ts)
           else fail g.at "inconsistent types"
         );
         (fun env ->
           (* HACK to treat singleton strings in short grammar as characters *)
-          let* qs, g' = elab_sym env g (Il.NumT `NatT $ g.at) in
-          Ok (qs, g', Il.NumT `NatT $ g.at)
+          let* g' = elab_sym env g (Il.NumT `NatT $ g.at) in
+          Ok (g', Il.NumT `NatT $ g.at)
         );
         (fun env ->
-          let* qs, g' = elab_sym env g (Il.TupT [] $ g.at) in
-          Ok (qs, g', Il.TupT [] $ g.at)
+          let* g' = elab_sym env g (Il.TupT [] $ g.at) in
+          Ok (g', Il.TupT [] $ g.at)
         )
       ]
     | RangeG (g1, g2) ->
       let env1 = local_env env in
       let env2 = local_env env in
-      let* qs1, g1' = elab_sym env1 g1 (Il.NumT `NatT $ g1.at) in
-      let* qs2, g2' = elab_sym env2 g2 (Il.NumT `NatT $ g2.at) in
+      let* g1' = elab_sym env1 g1 (Il.NumT `NatT $ g1.at) in
+      let* g2' = elab_sym env2 g2 (Il.NumT `NatT $ g2.at) in
       if env1.vars != env.vars then
         error g1.at "invalid symbol in range";
       if env2.vars != env.vars then
         error g2.at "invalid symbol in range";
-      Ok (qs1 @ qs2, Il.RangeG (g1', g2') $ g.at, Il.NumT `NatT $ g.at)
+      Ok (Il.RangeG (g1', g2') $ g.at, Il.NumT `NatT $ g.at)
     | ParenG g1 ->
       infer_sym env g1
     | TupG _ -> error g.at "malformed grammar"
     | ArithG e ->
       infer_sym env (sym_of_exp e)
-    | IterG (g1, iter) ->
-      let qs, iterexp' = elab_iterexp env iter in
-      let* qs1, g1', t1 = infer_sym env g1 in
-      Ok (
-        qs1 @ qs,
-        Il.IterG (g1', iterexp') $ g.at,
-        Il.IterT (t1, match iter with Opt -> Il.Opt | _ -> Il.List) $ g.at
-      )
+    | IterG (g1, it) ->
+      let* (g1', t1), ite', itt' = elab_iterexp env infer_sym g1 it in
+      Ok (Il.IterG (g1', ite') $ g.at, Il.IterT (t1, itt') $ g.at)
     | AttrG (e, g1) ->
       choice env [
         (fun env ->
           (* HACK to treat singleton strings in short grammar as characters *)
           let t1 = Il.NumT `NatT $ g1.at in
-          let* qs1, g1' = elab_sym env g1 t1 in
-          let* qs2, e' = elab_exp env e t1 in
-          Ok (qs2 @ qs1, Il.AttrG (e', g1') $ g.at, t1)
+          let* g1' = elab_sym env g1 t1 in
+          let* e' = elab_exp env e t1 in
+          Ok (Il.AttrG (e', g1') $ g.at, t1)
         );
         (fun env ->
-          let* qs1, g1', t1 = infer_sym env g1 in
-          let* qs2, e' = elab_exp env e t1 in
-          Ok (qs1 @ qs2, Il.AttrG (e', g1') $ g.at, t1)
+          let* g1', t1 = infer_sym env g1 in
+          let* e' = elab_exp env e t1 in
+          Ok (Il.AttrG (e', g1') $ g.at, t1)
         );
       ]
   (*
-      let qs1, g1', t1 = infer_sym env g1 in
-      let qs2, e' = checkpoint (elab_exp env e t1) in
-      Ok (qs1 @ qs2, Il.AttrG (e', g1') $ g.at, t1)
+      let g1', t1 = infer_sym env g1 in
+      let e' = checkpoint (elab_exp env e t1) in
+      Ok (Il.AttrG (e', g1') $ g.at, t1)
   *)
     | FuseG _ -> error g.at "misplaced token concatenation"
     | UnparenG _ -> error g.at "misplaced token unparenthesize"
   )
 
-and infer_sym_list env (gs : sym list) : (Il.quant list * Il.sym list * Il.typ list) attempt =
+and infer_sym_list env (gs : sym list) : (Il.sym list * Il.typ list) attempt =
   match gs with
-  | [] -> Ok ([], [], [])
+  | [] -> Ok ([], [])
   | g::gs ->
-    let* qs1, g', t = infer_sym env g in
-    let* qs2, gs', ts = infer_sym_list env gs in
-    Ok (qs1 @ qs2, g'::gs', t::ts)
+    let* g', t = infer_sym env g in
+    let* gs', ts = infer_sym_list env gs in
+    Ok (g'::gs', t::ts)
 
-and elab_sym env (g : sym) (t : Il.typ) : (Il.quant list * Il.sym) attempt =
+and elab_sym env (g : sym) (t : Il.typ) : Il.sym attempt =
   Debug.(log_at "el.elab_sym" g.at
     (fun _ -> fmt "%s : %s" (el_sym g) (il_typ t))
-    (function Ok (qs, g') -> fmt "%s%s" (il_quants qs) (il_sym g') | _ -> "fail")
+    (function Ok g' -> fmt "%s" (il_sym g') | _ -> "fail")
   ) @@ fun _ ->
   nest g.at t (
     match g.it with
@@ -2553,40 +2588,38 @@ and elab_sym env (g : sym) (t : Il.typ) : (Il.quant list * Il.sym) attempt =
       let cs = try Utf8.decode s with Utf8.Utf8 -> [] in
       (* Allow treatment as character constant *)
       if List.length cs = 1 then
-        Ok ([], Il.NumG (List.hd cs) $ g.at)
+        Ok (Il.NumG (List.hd cs) $ g.at)
       else
-        let* qs1, g', t' = infer_sym env g in
-        let* qs2, g'' = cast_sym env g' t' t in
-        Ok (qs1 @ qs2, g'')
+        let* g', t' = infer_sym env g in
+        cast_sym env g' t' t
     | AltG gs ->
-      let* qs, gs' = elab_sym_list env (filter_nl gs) t in
-      Ok (qs, Il.AltG gs' $ g.at)
+      let* gs' = elab_sym_list env (filter_nl gs) t in
+      Ok (Il.AltG gs' $ g.at)
     | ParenG g1 ->
       elab_sym env g1 t
     | _ ->
-      let* qs1, g', t' = infer_sym env g in
-      let* qs2, g'' = cast_sym env g' t' t in
-      Ok (qs1 @ qs2, g'')
+      let* g', t' = infer_sym env g in
+      cast_sym env g' t' t
   )
 
-and elab_sym_list env (gs : sym list) (t : Il.typ) : (Il.quant list * Il.sym list) attempt =
+and elab_sym_list env (gs : sym list) (t : Il.typ) : Il.sym list attempt =
   match gs with
-  | [] -> Ok ([], [])
+  | [] -> Ok ([])
   | g::gs ->
-    let* qs1, g' = elab_sym env g t in
-    let* qs2, gs' = elab_sym_list env gs t in
-    Ok (qs1 @ qs2, g'::gs')
+    let* g' = elab_sym env g t in
+    let* gs' = elab_sym_list env gs t in
+    Ok (g'::gs')
 
-and cast_sym env (g' : Il.sym) t1 t2 : (Il.quant list * Il.sym) attempt =
+and cast_sym env (g' : Il.sym) t1 t2 : Il.sym attempt =
   Debug.(log_at "el.elab_cast_sym" g'.at
     (fun _ -> fmt "%s : %s :> %s" (il_sym g') (il_typ t1) (il_typ t2))
-    (function Ok (qs, g'') -> fmt "%s%s" (il_quants qs) (il_sym g'') | _ -> "fail")
+    (function Ok g'' -> fmt "%s" (il_sym g'') | _ -> "fail")
   ) @@ fun _ ->
   nest g'.at t2 (
     if equiv_typ env t1 t2 then
-      Ok ([], g')
+      Ok g'
     else if equiv_typ env t2 (Il.TupT [] $ t2.at) then
-      Ok ([], Il.SeqG [g'] $ g'.at)
+      Ok (Il.SeqG [g'] $ g'.at)
     else
       fail_typ2 env g'.at "symbol" t1 t2 ""
   )
@@ -2599,15 +2632,15 @@ and elab_prod env outer_dims (prod : prod) (t : Il.typ) : Il.prod list =
   | SynthP (g, e, prems) ->
     let env' = local_env env in
     env'.pm <- false;
-    let qs1, g', _t' = checkpoint (infer_sym env' g) in
-    let qs2, e' =
+    let g', _t' = checkpoint (infer_sym env' g) in
+    let e' =
       checkpoint (
         let t_unit = Il.TupT [] $ e.at in
         if equiv_typ env' t t_unit then
           (* Special case: ignore unit attributes *)
           (* TODO(4, rossberg): introduce proper top type? *)
-          let* qs, e', _t = infer_exp env' e in
-          Ok (qs, Il.ProjE (
+          let* e', _t = infer_exp env' e in
+          Ok (Il.ProjE (
             Il.TupE [
               e'; Il.TupE [] $$ e.at % t_unit
             ] $$ e.at % (Il.TupT ["_" $ e.at, e'.note; "_" $ e.at, t_unit] $ e.at), 1
@@ -2616,15 +2649,15 @@ and elab_prod env outer_dims (prod : prod) (t : Il.typ) : Il.prod list =
           elab_exp env' e t
       )
     in
-    let qss3, premss' = List.split (map_filter_nl_list (elab_prem env') prems) in
-    let prems' = List.concat premss' in
+    let prems' = List.concat (map_filter_nl_list (elab_prem env') prems) in
     let dims = Dim.check outer_dims [] [] [] [e'] [g'] prems' in
+Printf.printf "dims \\ %s = %s\n%!" (Debug.domain outer_dims) (Debug.(list Fun.id (List.map fst (Map.bindings dims))));
     let g' = Dim.annot_sym dims g' in
     let e' = Dim.annot_exp dims e' in
     let prems' = List.map (Dim.annot_prem dims) prems' in
     let det = Det.(det_exp e' ++ det_sym g' ++ det_list det_prem prems') in
     let qs = infer_quants env env' dims det [] [] [] [e'] [g'] prems' prod.at in
-    let prod' = Il.ProdD (qs @ qs1 @ qs2 @ List.concat qss3, g', e', prems') $ prod.at in
+    let prod' = Il.ProdD (qs, g', e', prems') $ prod.at in
     let free = Il.Free.(free_prod prod' -- bound_env env') in
     if free <> Il.Free.empty then
       error prod.at ("grammar rule contains indeterminate variable(s) " ^
@@ -2636,10 +2669,10 @@ and elab_prod env outer_dims (prod : prod) (t : Il.typ) : Il.prod list =
       elab_prod env outer_dims Subst.(subst_prod pm_snd (Iter.clone_prod prod)) t
   | RangeP (g1, e1, g2, e2) ->
     let t = Il.NumT `NatT $ prod.at in
-    let qs11', g1' = checkpoint (elab_sym env g1 t) in
-    let qs12', e1' = checkpoint (elab_exp env e1 t) in
-    let qs21', g2' = checkpoint (elab_sym env g2 t) in
-    let qs22', e2' = checkpoint (elab_exp env e2 t) in
+    let g1' = checkpoint (elab_sym env g1 t) in
+    let e1' = checkpoint (elab_exp env e1 t) in
+    let g2' = checkpoint (elab_sym env g2 t) in
+    let e2' = checkpoint (elab_exp env e2 t) in
     let dims = Dim.check outer_dims [] [] [] [e1'; e2'] [g1'; g2'] [] in
     let g1' = Dim.annot_sym dims g1' in
     let g2' = Dim.annot_sym dims g2' in
@@ -2675,15 +2708,14 @@ and elab_prod env outer_dims (prod : prod) (t : Il.typ) : Il.prod list =
       let n = `Nat Z.(n1 + Z.of_int i) in
       let g' = {(if i = 0 then g1' else g2') with it = Il.NumG (c1 + i)} in
       let e' = {(if i = 0 then e1' else e2') with it = Il.NumE n} in
-      Il.ProdD (qs11' @ qs12' @ qs21' @ qs22', g', e', []) $ prod.at
+      Il.ProdD ([], g', e', []) $ prod.at
     )
   | EquivP (g1, g2, prems) ->
     let env' = local_env env in
     env'.pm <- false;
-    let _qs1, g1', _t1' = checkpoint (infer_sym env' g1) in
-    let _qs2, g2', _t2' = checkpoint (infer_sym env' g2) in
-    let _qss3, premss' = List.split (map_filter_nl_list (elab_prem env') prems) in
-    let prems' = List.concat premss' in
+    let g1', _t1' = checkpoint (infer_sym env' g1) in
+    let g2', _t2' = checkpoint (infer_sym env' g2) in
+    let prems' = List.concat (map_filter_nl_list (elab_prem env') prems) in
     let dims = Dim.check outer_dims [] [] [] [] [g1'; g2'] prems' in
     let g1' = Dim.annot_sym dims g1' in
     let g2' = Dim.annot_sym dims g2' in
@@ -2699,14 +2731,14 @@ and elab_prod env outer_dims (prod : prod) (t : Il.typ) : Il.prod list =
       prod' :: elab_prod env Subst.(subst_prod pm_snd (Iter.clone_prod prod)) t
 *)
 
-and elab_gram env dims (gram : gram) (t : Il.typ) : Il.prod list =
+and elab_gram env outer_dims (gram : gram) (t : Il.typ) : Il.prod list =
   let (_dots1, prods, _dots2) = gram.it in
-  concat_map_filter_nl_list (fun prod -> elab_prod env dims prod t) prods
+  concat_map_filter_nl_list (fun prod -> elab_prod env outer_dims prod t) prods
 
 
 (* Definitions *)
 
-and elab_arg in_lhs env (a : arg) (p : Il.param) s : Il.quant list * Il.arg list * Il.Subst.subst =
+and elab_arg in_lhs env (a : arg) (p : Il.param) s : Il.arg list * Il.Subst.subst =
   (match !(a.it), p.it with  (* HACK: handle shorthands *)
   | ExpA e, Il.TypP _ -> a.it := TypA (typ_of_exp e)
   | ExpA e, Il.GramP _ -> a.it := GramA (sym_of_exp e)
@@ -2715,8 +2747,8 @@ and elab_arg in_lhs env (a : arg) (p : Il.param) s : Il.quant list * Il.arg list
   );
   match !(a.it), (Il.Subst.subst_param s p).it with
   | ExpA e, Il.ExpP (x, t) ->
-    let qs, e' = checkpoint (elab_exp env e t) in
-    qs, [Il.ExpA e' $ a.at], Il.Subst.add_varid s x e'
+    let e' = checkpoint (elab_exp env e t) in
+    [Il.ExpA e' $ a.at], Il.Subst.add_varid s x e'
   | TypA {it = VarT (x', []); _}, Il.TypP x when in_lhs = `Lhs ->
     let x'' = strip_var_suffix x' in
     let is_prim =
@@ -2728,21 +2760,21 @@ and elab_arg in_lhs env (a : arg) (p : Il.param) s : Il.quant list * Il.arg list
     env.typs <- bind "syntax type" env.typs x'' ([], Opaque);
     if not is_prim then
       env.gvars <- bind "variable" env.gvars (strip_var_sub x'') t';
-    [], [Il.TypA t' $ a.at], Il.Subst.add_typid s x t'
+    [Il.TypA t' $ a.at], Il.Subst.add_typid s x t'
   | TypA t, Il.TypP _ when in_lhs = `Lhs ->
     error t.at "misplaced syntax type"
   | TypA t, Il.TypP x ->
     let t' = elab_typ env t in
-    [], [Il.TypA t' $ a.at], Il.Subst.add_typid s x t'
+    [Il.TypA t' $ a.at], Il.Subst.add_typid s x t'
   | GramA g, Il.GramP _ when in_lhs = `Lhs ->
     error g.at "misplaced grammar symbol"
   | GramA g, Il.GramP (x', [], t) ->
-    let qs, g', t' = checkpoint (infer_sym env g) in
+    let g', t' = checkpoint (infer_sym env g) in
     let s' = subst_implicit env s t t' in
     if not (equiv_typ env t' (Il.Subst.subst_typ s' t)) then
       error_typ2 env a.at "argument" t' t "";
     let as' = List.map (fun (_x, t) -> Il.TypA t $ t.at) Il.Subst.(Map.bindings s'.typid) in
-    qs, as' @ [Il.GramA g' $ a.at], Il.Subst.add_gramid s' x' g'
+    as' @ [Il.GramA g' $ a.at], Il.Subst.add_gramid s' x' g'
   | GramA g, Il.GramP (x', ps', t') ->
     (match g.it with
     | VarG (x, []) ->
@@ -2754,13 +2786,13 @@ and elab_arg in_lhs env (a : arg) (p : Il.param) s : Il.quant list * Il.arg list
           (spaceid "grammar" x).it ^ Il.Print.(string_of_params ps ^ " : " ^ typ_string env t ^ "`")
         );
       let g' = Il.VarG (x, []) $ a.at in
-      [], [Il.GramA g' $ a.at], Il.Subst.add_gramid s x g'
+      [Il.GramA g' $ a.at], Il.Subst.add_gramid s x g'
     | _ ->
       error g.at "grammar identifier expected for paramaterised grammar parameter"
     )
   | DefA x, Il.DefP (x', ps', t') when in_lhs = `Lhs ->
     env.defs <- bind "definition" env.defs x (ps', t', []);
-    [], [Il.DefA x $ a.at], Il.Subst.add_defid s x' x
+    [Il.DefA x $ a.at], Il.Subst.add_defid s x' x
   | DefA x, Il.DefP (x', ps', t') ->
     let ps, t, _ = find "definition" env.defs x in
     if not (Il.Eval.equiv_functyp (to_il_env env) (ps, t) (ps', t')) then
@@ -2769,28 +2801,28 @@ and elab_arg in_lhs env (a : arg) (p : Il.param) s : Il.quant list * Il.arg list
         "` but got `" ^
         (spaceid "definition" x).it ^ Il.Print.(string_of_params ps ^ " : " ^ typ_string env t ^ "`")
       );
-    [], [Il.DefA x $ a.at], Il.Subst.add_defid s x x'
+    [Il.DefA x $ a.at], Il.Subst.add_defid s x x'
   | _, _ ->
     error a.at "sort mismatch for argument"
 
-and elab_args in_lhs env (as_ : arg list) (ps : Il.param list) at : Il.quant list * Il.arg list * Il.Subst.subst =
+and elab_args in_lhs env (as_ : arg list) (ps : Il.param list) at : Il.arg list * Il.Subst.subst =
   Debug.(log_at "el.elab_args" at
     (fun _ -> fmt "(%s) : (%s)" (list el_arg as_) (list il_param ps))
-    (fun (qs, as', _) -> fmt "%s(%s)" (il_quants qs) (list il_arg as'))
+    (fun (as', _) -> fmt "(%s)" (list il_arg as'))
   ) @@ fun _ ->
-  elab_args' in_lhs env as_ ps [] [] Il.Subst.empty at
+  elab_args' in_lhs env as_ ps [] Il.Subst.empty at
 
-and elab_args' in_lhs env (as_ : arg list) (ps : Il.param list) qs as' s at : Il.quant list * Il.arg list * Il.Subst.subst =
+and elab_args' in_lhs env (as_ : arg list) (ps : Il.param list) as' s at : Il.arg list * Il.Subst.subst =
   match as_, ps with
-  | [], [] -> qs, List.concat (List.rev as'), s
+  | [], [] -> List.concat (List.rev as'), s
   | a::_, [] -> error a.at "too many arguments"
   | [], _::_ -> error at "too few arguments"
   | _, {it = Il.TypP _; at; _}::ps1 when at = Source.no_region ->
     (* Implicitly inserted type parameter *)
-    elab_args' in_lhs env as_ ps1 qs as' s at
+    elab_args' in_lhs env as_ ps1 as' s at
   | a::as1, p::ps1 ->
-    let qs', a', s' = elab_arg in_lhs env a p s in
-    elab_args' in_lhs env as1 ps1 (qs @ qs') (a'::as') s' at
+    let a', s' = elab_arg in_lhs env a p s in
+    elab_args' in_lhs env as1 ps1 (a'::as') s' at
 
 and subst_implicit env s t t' : Il.Subst.subst =
   let free = Il.Free.(Set.filter (fun x -> not (Map.mem x env.typs)) (free_typ t).typid) in
@@ -2994,13 +3026,13 @@ let rec elab_def env (d : def) : Il.def list =
       @ elab_hintdef env (TypH (x, "" $ x.at, hints) $ d.at)
   | TypD (x1, x2, as_, t, hints) ->
     let ps', k = find "syntax type" env.typs x1 in
-    let qs1, as', _s = elab_args `Lhs env' as_ ps' d.at in
+    let as', _s = elab_args `Lhs env' as_ ps' d.at in
     let dims = Dim.check Map.empty [] as' [] [] [] [] in
     let dots1, dt', dots2 = elab_typ_definition env' dims x1 t in
     let as' = List.map (Dim.annot_arg dims) as' in
     let det = Det.(det_list det_arg as') in
     let qs = infer_quants env env' dims det [] as' [] [] [] [] d.at in
-    let inst' = Il.InstD (qs @ qs1, as', dt') $ d.at in
+    let inst' = Il.InstD (qs, as', dt') $ d.at in
     let k', last =
       match k with
       | (Opaque | Transp) ->
@@ -3030,12 +3062,14 @@ let rec elab_def env (d : def) : Il.def list =
   | GramD (x1, x2, ps, t, gram, hints) ->
     let ps' = elab_params env' ps in
     let t' = elab_typ env' t in
+Printf.printf "ps' = %s\n%!" (Debug.il_params ps');
     let dims = Dim.check Map.empty ps' [] [t'] [] [] [] in
-    let prods' = elab_gram env' dims gram t' in
+    let outer_dims = Dim.restrict dims (Il.Free.bound_params ps') in
+    let prods' = elab_gram env' outer_dims gram t' in
     let xprods2' = List.map (fun pr -> x2, pr) prods' in
     if env'.pm then error d.at "misplaced +- or -+ operator in grammar";
     let t' = Dim.annot_typ dims t' in
-    infer_no_quants env' dims Det.empty ps' [] [t'] [] [] [] d.at;
+    infer_no_quants env' outer_dims Det.empty ps' [] [t'] [] [] [] d.at;
     let ps1', t1', xprods1', dots_opt = find "grammar" env.grams x1 in
     let dots1, _, dots2 = gram.it in
     let xprods' =
@@ -3067,7 +3101,7 @@ let rec elab_def env (d : def) : Il.def list =
     let dims = Dim.check Map.empty [] [] ts' [] [] [] in
     let ts' = List.map (Dim.annot_typ dims) ts' in
     infer_no_quants env' dims Det.empty [] [] ts' [] [] [] d.at;
-    let not = Mixop.apply mixop ts' in
+    let not = Mixop.apply mixop (List.map (fun t' -> "_" $ d.at, t') ts') in
     let t' = tup_typ' ts' t.at in
     env.rels <- bind "relation" env.rels x (mixop, not, t', []);
     [Il.RelD (x, mixop, t', []) $ d.at]
@@ -3077,16 +3111,15 @@ let rec elab_def env (d : def) : Il.def list =
     if List.exists (fun (x, _) -> x.it = x2.it) rules' then
       error d.at ("duplicate rule name `" ^ x1.it ^
         (if x2.it = "" then "" else "/" ^ x2.it) ^ "`");
-    let qs1, es', _ = checkpoint (elab_exp_notation' env' x1 e not') in
-    let qss2, premss' = List.split (map_filter_nl_list (elab_prem env') prems) in
-    let prems' = List.concat premss' in
+    let es', _ = checkpoint (elab_exp_notation' env' x1 e not') in
+    let prems' = List.concat (map_filter_nl_list (elab_prem env') prems) in
     let dims = Dim.check Map.empty [] [] [] es' [] prems' in
     let es' = List.map (Dim.annot_exp dims) es' in
     let e' = tup_exp_nary' es' e.at in
     let prems' = List.map (Dim.annot_prem dims) prems' in
     let det = Det.(det_exp e' ++ det_list det_prem prems') in
     let qs = infer_quants env env' dims det [] [] [] es' [] prems' d.at in
-    let rule' = Il.RuleD (x2, qs @ qs1 @ List.concat qss2, mixop, e', prems') $ d.at in
+    let rule' = Il.RuleD (x2, qs, mixop, e', prems') $ d.at in
     env.rels <- rebind "relation" env.rels x1 (mixop, not', t', rules' @ [x2, rule']);
     if not env'.pm then [] else elab_def env Subst.(subst_def pm_snd (Iter.clone_def d))
   | VarD (x, t, _hints) ->
@@ -3111,18 +3144,17 @@ Printf.printf "DecD %s%s : %s\n%!" x.it (Il.Print.string_of_params ps') (Il.Prin
     [d'] @ elab_hintdef env (DecH (x, hints) $ d.at)
   | DefD (x, as_, e, prems) ->
     let ps', t', clauses' = find "definition" env.defs x in
-    let qs1, as', s = elab_args `Lhs env' as_ ps' d.at in
-    let qss3, premss' = List.split (map_filter_nl_list (elab_prem env') prems) in
+    let as', s = elab_args `Lhs env' as_ ps' d.at in
+    let prems' = List.concat (map_filter_nl_list (elab_prem env') prems) in
     (* Elab e after premises, so that type information can flow to it *)
-    let qs2, e' = checkpoint (elab_exp env' e (Il.Subst.subst_typ s t')) in
-    let prems' = List.concat premss' in
+    let e' = checkpoint (elab_exp env' e (Il.Subst.subst_typ s t')) in
     let dims = Dim.check Map.empty [] as' [] [e'] [] prems' in
     let as' = List.map (Dim.annot_arg dims) as' in
     let e' = Dim.annot_exp dims e' in
     let prems' = List.map (Dim.annot_prem dims) prems' in
     let det = Det.(det_list det_arg as' ++ det_exp e' ++ det_list det_prem prems') in
     let qs = infer_quants env env' dims det [] as' [] [e'] [] prems' d.at in
-    let clause' = Il.DefD (qs @ qs1 @ qs2 @ List.concat qss3, as', e', prems') $ d.at in
+    let clause' = Il.DefD (qs, as', e', prems') $ d.at in
 Printf.printf "=> %s\n%!" (Il.Print.string_of_clause ~suppress_pos: true x clause');
     env.defs <- rebind "definition" env.defs x (ps', t', clauses' @ [(d, clause')]);
     if not env'.pm then [] else elab_def env Subst.(subst_def pm_snd (Iter.clone_def d))
@@ -3260,10 +3292,10 @@ let elab (ds : script) : Il.script * env =
 let elab_exp env (e : exp) (t : typ) : Il.exp =
   let env' = local_env env in
   let t' = elab_typ env' t in
-  snd (checkpoint (elab_exp env' e t'))
+  checkpoint (elab_exp env' e t')
 
 let elab_rel env (e : exp) (x : id) : Il.exp =
   let env' = local_env env in
   match elab_prem env' (RulePr (x, e) $ e.at) with
-  | _, [{it = Il.RulePr (_, _, e'); _}] -> e'
+  | [{it = Il.RulePr (_, _, e'); _}] -> e'
   | _ -> assert false
