@@ -816,14 +816,11 @@ and sub_typ env t1 t2 =
 
 and find_field tfs atom =
   El.Convert.find_nl_list (fun (atom', _, _) -> atom'.it = atom.it) tfs
-  |> Option.map snd3
+  |> Option.map Lib.snd3
 
 and find_case tcs atom =
   El.Convert.find_nl_list (fun (atom', _, _) -> atom'.it = atom.it) tcs
-  |> Option.map snd3
-
-and fst3 (x, _, _) = x
-and snd3 (_, x, _) = x
+  |> Option.map Lib.snd3
 
 
 (* Type Disjointness *)
@@ -887,7 +884,7 @@ and narrow_typ env t1 t2 =
 
 and atoms xs =
   Set.of_list (List.map Print.string_of_atom
-    (El.Convert.map_filter_nl_list fst3 xs))
+    (El.Convert.map_filter_nl_list Lib.fst3 xs))
 
 and unordered s1 s2 = not Set.(subset s1 s2 || subset s2 s1)
 

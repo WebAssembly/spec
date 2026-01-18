@@ -18,7 +18,8 @@ val string_of_arg : arg -> string
 val string_of_args : arg list -> string
 val string_of_param : param -> string
 val string_of_params : param list -> string
-val string_of_quants : param list -> string
+val string_of_quant : quant -> string
+val string_of_quants : quant list -> string
 val string_of_typfield : [`H | `V] -> typfield -> string
 val string_of_typcase : [`H | `V] -> typcase -> string
 val string_of_deftyp : [`H | `V] -> deftyp -> string

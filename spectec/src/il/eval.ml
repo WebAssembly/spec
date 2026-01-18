@@ -25,9 +25,6 @@ let (let*) = Option.bind
 
 let ($>) it e = {e with it}
 
-let fst3 (x, _, _) = x
-let snd3 (_, x, _) = x
-
 let unordered s1 s2 = not Set.(subset s1 s2 || subset s2 s1)
 
 
@@ -769,7 +766,7 @@ and eta_tup_exp env e : exp list option =
       let eI' = ProjE (e, i) $$ e.at % Subst.subst_typ s tI in
       let s' = Subst.add_varid s xI eI' in
       Some (eI'::res', i + 1, s')
-    ) (Some ([], 0, Subst.empty)) xts |> Option.map fst3 |> Option.map List.rev
+    ) (Some ([], 0, Subst.empty)) xts |> Option.map Lib.fst3 |> Option.map List.rev
   in Some es'
 
 and eta_iter_exp env e : exp * iterexp =
@@ -957,10 +954,10 @@ and sub_tup env s xts1 xts2 =
 
 
 and find_field tfs atom =
-  List.find_opt (fun (atom', _, _) -> Eq.eq_atom atom' atom) tfs |> Option.map snd3
+  List.find_opt (fun (atom', _, _) -> Eq.eq_atom atom' atom) tfs |> Option.map Lib.snd3
 
 and find_case tcs op =
-  List.find_opt (fun (op', _, _) -> Eq.eq_mixop op' op) tcs |> Option.map snd3
+  List.find_opt (fun (op', _, _) -> Eq.eq_mixop op' op) tcs |> Option.map Lib.snd3
 
 
 (* Type Disjointness *)
@@ -1000,8 +997,8 @@ and disj_typ env t1 t2 =
   | _, _ ->
     t1.it <> t2.it
 
-and atoms xs = Set.of_list (List.map Print.string_of_atom (List.map fst3 xs))
-and mixops xs = Set.of_list (List.map Print.string_of_mixop (List.map fst3 xs))
+and atoms xs = Set.of_list (List.map Print.string_of_atom (List.map Lib.fst3 xs))
+and mixops xs = Set.of_list (List.map Print.string_of_mixop (List.map Lib.fst3 xs))
 
 and disj_tup env s xts1 xts2 =
   match xts1, xts2 with

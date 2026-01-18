@@ -403,14 +403,8 @@ let make_quants_iter_arg env (free : Il.Free.sets) dims : Il.quant list ref * (m
 
       type scope = var_typ env'
 
-      let left = ref free
-      let acc = ref []
-
-      let visit_typid id =
-        if Il.Free.Set.mem id.it !left.typid then (
-          acc := !acc @ [Il.TypP id $ id.at];
-          left := Il.Free.{!left with typid = Set.remove id.it !left.typid};
-        )
+      let left = ref free  (* free variables not yet quantified *)
+      let acc = ref []     (* quantifiers introduced so far *)
 
       let scope_enter x t =
 Printf.printf "[scope_enter %s]\n%!" x.it;
@@ -421,6 +415,12 @@ Printf.printf "[scope_enter %s]\n%!" x.it;
       let scope_exit x varenv =
 Printf.printf "[scope_exit %s]\n%!" x.it;
         env.vars <- varenv
+
+      let visit_typid id =
+        if Il.Free.Set.mem id.it !left.typid then (
+          acc := !acc @ [Il.TypP id $ id.at];
+          left := Il.Free.{!left with typid = Set.remove id.it !left.typid};
+        )
 
 let visit_exp e =
 Printf.printf "[visit_exp %s]\n%!" (Il.Debug.il_exp e)
@@ -434,6 +434,8 @@ Printf.printf "[visit_id %s]\n%!" id.it;
             try find "variable" env.vars id with Error _ ->
               find "variable" env.gvars (strip_var_suffix id)
           in
+(*
+          (* Check that quantifier will not depend on later ones *)
           let fwd = Il.Free.(inter (free_typ t) !left) in
           if fwd <> Il.Free.empty then
             error id.at ("the type of `" ^ id.it ^ "` depends on " ^
@@ -441,16 +443,15 @@ Printf.printf "[visit_id %s]\n%!" id.it;
                 List.map (fun id -> "`" ^ id ^ "`") |>
                 String.concat ", " ) ^
               ", which only occur(s) to its right; try to reorder parameters or premises");
+*)
+          (* Raise variable type to its inferred dimension *)
           let ctx' =
             match Map.find_opt id.it dims with
             | None -> []  (* for inherited variables *)
             | Some (_, ctx) -> List.map Il.(function Opt -> Opt | _ -> List) ctx
           in
           let t' =
-            List.fold_left (fun t iter ->
-              Il.IterT (t, iter) $ t.at
-            ) t ctx'
-          in
+            List.fold_left (fun t iter -> Il.IterT (t, iter) $ t.at) t ctx' in
           acc := !acc @ [Il.ExpP (Dim.annot_varid id ctx', t') $ id.at];
           left := Il.Free.{!left with varid = Set.remove id.it !left.varid};
         )
@@ -458,7 +459,9 @@ Printf.printf "[visit_id %s]\n%!" id.it;
       let visit_gramid id =
         if Il.Free.(Set.mem id.it !left.gramid) then (
           let ps, t, _gram, _prods' = find "grammar" env.grams id in
-          let free' = Il.Free.(union (free_params ps) (diff (free_typ t) (bound_params ps))) in
+(*
+          (* Check that quantifier will not depend on later ones *)
+          let free' = Il.Free.(free_params ps ++ (free_typ t -- bound_params ps)) in
           let fwd = Il.Free.(inter free' !left) in
           if fwd <> Il.Free.empty then
             error id.at ("the type of `" ^ id.it ^ "` depends on " ^
@@ -466,13 +469,17 @@ Printf.printf "[visit_id %s]\n%!" id.it;
                 List.map (fun id -> "`" ^ id ^ "`") |>
                 String.concat ", " ) ^
               ", which only occur(s) to its right; try to reorder parameters or premises");
+*)
+          acc := !acc @ [Il.GramP (id, ps, t) $ id.at];
           left := Free.{!left with varid = Set.remove id.it !left.gramid};
         )
 
       let visit_defid id =
         if Il.Free.Set.mem id.it !left.defid then (
           let ps, t, _ = find "definition" env.defs id in
-          let free' = Il.Free.(union (free_params ps) (diff (free_typ t) (bound_params ps))) in
+(*
+          (* Check that quantifier will not depend on later ones *)
+          let free' = Il.Free.(free_params ps ++ (free_typ t -- bound_params ps)) in
           let fwd = Il.Free.(inter free' !left) in
           if fwd <> Il.Free.empty then
             error id.at ("the type of `" ^ (spaceid "definition" id).it ^ "` depends on " ^
@@ -480,6 +487,7 @@ Printf.printf "[visit_id %s]\n%!" id.it;
                 List.map (fun id -> "`" ^ id ^ "`") |>
                 String.concat ", " ) ^
               ", which only occur(s) to its right; try to reorder parameters or premises");
+*)
           acc := !acc @ [Il.DefP (id, ps, t) $ id.at];
           left := Il.Free.{!left with defid = Set.remove id.it !left.defid};
         )
@@ -506,6 +514,8 @@ Printf.sprintf "\n  prs'=[%s]" Il.Debug.(list il_prem prs') ^
     )
     (fun qs -> fmt "\n... %s" (il_quants qs))
   ) @@ fun _ ->
+
+  (* Check that everything is determined (this is an approximation!) *)
   let bound = bound_env env in
   let free = Il.Free.(
       free_list free_param ps' ++
@@ -517,10 +527,12 @@ Printf.sprintf "\n  prs'=[%s]" Il.Debug.(list il_prem prs') ^
       -- bound -- bound_list bound_param ps' -- det
     )
   in
-  let det' = Il.Free.(det -- bound) in
   if free <> Free.empty then
     error at ("definition contains indeterminate variable(s) " ^
       String.concat ", " (List.map quote (Il.Free.Set.elements free.varid)));
+
+  (* Gather quantifiers *)
+  let det' = Il.Free.(det -- bound) in
   let acc_qs, (module Arg : Il.Iter.Arg) = make_quants_iter_arg env' det' dims in
   let module Acc = Il.Iter.Make(Arg) in
   Acc.(list param ps');
@@ -529,7 +541,28 @@ Printf.sprintf "\n  prs'=[%s]" Il.Debug.(list il_prem prs') ^
   Acc.(list exp es');
   Acc.(list sym gs');
   Acc.(list prem prs');
-  !acc_qs
+
+  (* Order quantifiers for dependencies by simple fixpoint iteration *)
+  let qsf = List.map Il.Free.(fun q -> q, bound_quant q, free_quant q) !acc_qs in
+  let rec iterate bound_ok ok qfs defer progress =
+    match qfs with
+    | (q, bound, free)::qfs when Il.Free.subset free bound_ok ->
+      iterate Il.Free.(bound_ok ++ bound) (q::ok) qfs defer true
+    | qf1::qfs -> iterate bound_ok ok qfs (qf1::defer) progress
+    | [] ->
+      match defer with
+      | [] -> List.rev ok
+      | _ when progress -> iterate bound_ok ok (List.rev defer) [] false
+      | (q, _, free)::_ ->
+        let fwd = Il.Free.(free -- bound_ok) in
+        error q.at ("the type of `" ^ Il.Print.string_of_quant q ^ "` depends on " ^
+          ( Il.Free.Set.(elements fwd.typid @ elements fwd.gramid @ elements fwd.varid @ elements fwd.defid) |>
+            List.map (fun id -> "`" ^ id ^ "`") |>
+            String.concat ", " ) ^
+          ", which only occur(s) to its right; " ^
+          "try to reorder parameters or premises or introduce an extra parameter")
+  in
+  iterate bound [] qsf [] false
 
 let infer_no_quants env dims det ps' as' ts' es' gs' prs' at =
   let qs = infer_quants env env dims det ps' as' ts' es' gs' prs' at in
@@ -1089,6 +1122,7 @@ and elab_iterexp : 'a 'b. env -> (env -> 'a -> 'b attempt) -> 'a -> iter -> ('b 
       | None -> Map.remove x.it env.vars
       | Some t -> Map.add x.it t env.vars
   ) xo;
+  (* Iterator list is injected after dimension analysis, leave it empty here *)
   Ok (body', (it', []), match it with Opt -> Il.Opt | _ -> Il.List)
 
 

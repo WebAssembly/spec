@@ -255,13 +255,15 @@ and string_of_param p =
   | GramP (x, ps, t) ->
     "grammar " ^ string_of_id x ^ string_of_params ps ^ " : " ^ string_of_typ t
 
+and string_of_quant q = string_of_param q
+
 and string_of_params = function
   | [] -> ""
   | ps -> "(" ^ concat ", " (List.map string_of_param ps) ^ ")"
 
 and string_of_quants = function
   | [] -> ""
-  | ps -> "{" ^ concat ", " (List.map string_of_param ps) ^ "}"
+  | ps -> "{" ^ concat ", " (List.map string_of_quant ps) ^ "}"
 
 
 let region_comment ?(suppress_pos = false) indent at =
