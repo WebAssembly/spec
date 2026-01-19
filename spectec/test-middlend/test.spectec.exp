@@ -150,4 +150,19 @@ relation TestNestedIter: `%|-%`(nat***, nat**)
     -- (if (|n*{n <- `n*`}| = m))*{m <- `m*`, `n*` <- `n**`}+{`m*` <- `m**`, `n**` <- `n***`}
 
 == IL Validation after pass alias-demut...
+== Running pass improve-ids...
+
+;; test.spectec
+relation HasSize: `%|-%`(nat, nat)
+
+;; test.spectec
+relation TestNestedIter: `%|-%`(nat***, nat**)
+  ;; test.spectec
+  rule mk_TestNestedIter{n_lst_lst_lst : nat***, m_lst_lst : nat**}:
+    `%|-%`(n_lst_lst_lst, m_lst_lst)
+    -- if (|m_lst_lst| = |n_lst_lst_lst|)
+    -- (if (|m_lst| = |n_lst_lst|))+{m_lst <- m_lst_lst, n_lst_lst <- n_lst_lst_lst}
+    -- (if (|n_lst| = m))*{m <- m_lst, n_lst <- n_lst_lst}+{m_lst <- m_lst_lst, n_lst_lst <- n_lst_lst_lst}
+
+== IL Validation after pass improve-ids...
 == Complete.

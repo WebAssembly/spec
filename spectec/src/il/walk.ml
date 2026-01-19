@@ -26,7 +26,15 @@ type 'env transformer = {
   transform_prem: prem -> prem;
   transform_iterexp: iterexp -> iterexp;
   transform_typ: typ -> typ;
-  transform_arg: arg -> arg
+  transform_arg: arg -> arg;
+  transform_path: path -> path;
+
+  (* IDs *)
+  transform_var_id: id -> id;
+  transform_typ_id: id -> id;
+  transform_rel_id: id -> id;
+  transform_def_id: id -> id;
+  transform_gram_id: id -> id
   }
 
 let id = Fun.id
@@ -37,7 +45,14 @@ let base_transformer = {
   transform_prem = id;
   transform_iterexp = id;
   transform_typ = id;
-  transform_arg = id
+  transform_arg = id;
+  transform_path = id;
+  
+  transform_var_id = id;
+  transform_typ_id = id;
+  transform_rel_id = id;
+  transform_def_id = id;
+  transform_gram_id = id
 }
 
 let rec transform_typ t typ = 
@@ -45,7 +60,7 @@ let rec transform_typ t typ =
   let t_typ = transform_typ t in 
   let it = 
     match typ.it with
-    | VarT (id, args) -> VarT (id, List.map (transform_arg t) args)
+    | VarT (id, args) -> VarT (t.transform_typ_id id, List.map (transform_arg t) args)
     | IterT (typ', iter) -> IterT (t_typ typ', transform_iter t iter)
     | TupT typs -> TupT (List.map (fun (e, typ') -> (transform_exp t e, transform_typ t typ')) typs)
     | t' -> t'
@@ -57,10 +72,10 @@ and transform_exp t e =
   let t_exp = transform_exp t in
   let it =
     match e.it with
-    | VarE _
     | BoolE _
     | NumE _
     | TextE _ -> e.it
+    | VarE id -> VarE (t.transform_var_id id)
     | CvtE (e1, nt1, nt2) -> CvtE (t_exp e1, nt1, nt2)
     | UnE (op, nt, e1) -> UnE (op, nt, t_exp e1)
     | BinE (op, nt, e1, e2) -> BinE (op, nt, t_exp e1, t_exp e2)
@@ -74,7 +89,7 @@ and transform_exp t e =
     | CompE (e1, e2) -> CompE (t_exp e1, t_exp e2)
     | LenE e1 -> LenE (t_exp e1)
     | TupE es -> TupE ((List.map t_exp) es)
-    | CallE (id, as1) -> CallE (id, List.map (transform_arg t) as1)
+    | CallE (id, as1) -> CallE (t.transform_def_id id, List.map (transform_arg t) as1)
     | IterE (e1, iter) -> IterE (t_exp e1, transform_iterexp t iter)
     | ProjE (e1, i) -> ProjE (t_exp e1, i)
     | UncaseE (e1, op) -> UncaseE (t_exp e1, op)
@@ -92,21 +107,25 @@ and transform_exp t e =
 
 and transform_iter t iter =
   match iter with
+  | ListN (exp, Some id) -> ListN (transform_exp t exp, Some (t.transform_var_id id))
   | ListN (exp, id) -> ListN (transform_exp t exp, id)
   | _ -> iter
 
 and transform_iterexp t (iter, ides) =
   let f = t.transform_iterexp in
-  let iterexp' = (transform_iter t iter, List.map (fun (id, e) -> (id, transform_exp t e)) ides) in
+  let iterexp' = (transform_iter t iter, List.map (fun (id, e) -> (t.transform_var_id id, transform_exp t e)) ides) in
   f iterexp'
 
 and transform_path t p =
-  { p with it = (match p.it with
+  let f = t.transform_path in
+  let it = (match p.it with
     | RootP -> RootP
     | DotP (p', a) -> DotP (transform_path t p', a)
     | IdxP (p', e) -> IdxP (transform_path t p', transform_exp t e)
     | SliceP (p', e1, e2) -> SliceP (transform_path t p', transform_exp t e1, transform_exp t e2)
-    ); note = transform_typ t p.note }
+    )
+  in
+  f { p with it = it; note = transform_typ t p.note }
 
 and transform_arg t a =
   let f = t.transform_arg in
@@ -114,7 +133,7 @@ and transform_arg t a =
     match a.it with
     | ExpA e -> ExpA (transform_exp t e)
     | TypA typ -> TypA (transform_typ t typ)
-    | DefA id -> DefA id
+    | DefA id -> DefA (t.transform_def_id id)
     | GramA sym -> GramA (transform_sym t sym)
   in
   f { a with it }
@@ -122,7 +141,7 @@ and transform_arg t a =
 and transform_prem t p =
   let f = t.transform_prem in
   let it = match p.it with
-    | RulePr (id, op, e) -> RulePr (id, op, transform_exp t e)
+    | RulePr (id, op, e) -> RulePr (t.transform_rel_id id, op, transform_exp t e)
     | IfPr e -> IfPr (transform_exp t e)
     | LetPr (e1, e2, ss) -> LetPr (transform_exp t e1, transform_exp t e2, ss)
     | ElsePr -> ElsePr
@@ -134,24 +153,24 @@ and transform_prem t p =
 and transform_bind t b =
   let f = t.transform_bind in
   let it = match b.it with
-    | ExpB (id, typ) -> ExpB (id, transform_typ t typ)
-    | TypB id -> TypB id
-    | DefB (id, params, typ) -> DefB (id, List.map (transform_param t) params, transform_typ t typ)
-    | GramB (id, params, typ) -> GramB (id, List.map (transform_param t) params, transform_typ t typ)
+    | ExpB (id, typ) -> ExpB (t.transform_var_id id, transform_typ t typ)
+    | TypB id -> TypB (t.transform_typ_id id)
+    | DefB (id, params, typ) -> DefB (t.transform_def_id id, List.map (transform_param t) params, transform_typ t typ)
+    | GramB (id, params, typ) -> GramB (t.transform_gram_id id, List.map (transform_param t) params, transform_typ t typ)
   in
   f { b with it }
 
 and transform_param t p =
   { p with it = match p.it with
-    | ExpP (id, typ) -> ExpP (id, transform_typ t typ)
-    | TypP id -> TypP id
-    | DefP (id, params, typ) -> DefP (id, List.map (transform_param t) params, transform_typ t typ)
-    | GramP (id, typ) -> GramP (id, transform_typ t typ)
+    | ExpP (id, typ) -> ExpP (t.transform_var_id id, transform_typ t typ)
+    | TypP id -> TypP (t.transform_typ_id id)
+    | DefP (id, params, typ) -> DefP (t.transform_def_id id, List.map (transform_param t) params, transform_typ t typ)
+    | GramP (id, typ) -> GramP (t.transform_gram_id id, transform_typ t typ)
   }
 
 and transform_sym t s =
   { s with it = match s.it with
-    | VarG (id, args) -> VarG (id, List.map (transform_arg t) args)
+    | VarG (id, args) -> VarG (t.transform_gram_id id, List.map (transform_arg t) args)
     | NumG i -> NumG i
     | TextG st -> TextG st
     | EpsG -> EpsG
@@ -180,23 +199,23 @@ and transform_clause t c =
 
 and transform_rule t r =
   let RuleD (id, binds, mixop, exp, prems) = r.it in
-  RuleD (id, List.map (transform_bind t) binds, mixop, transform_exp t exp, List.map (transform_prem t) prems) $ r.at
+  RuleD (t.transform_rel_id id, List.map (transform_bind t) binds, mixop, transform_exp t exp, List.map (transform_prem t) prems) $ r.at
 
 and transform_inst t inst = 
   { inst with it = match inst.it with
     | InstD (binds, args, deftyp) -> InstD (List.map (transform_bind t) binds, List.map (transform_arg t) args, transform_deftyp t deftyp)
   }
-
+  
 and transform_prod t p = 
   { p with it = match p.it with
     | ProdD (binds, sym, exp, prems) -> ProdD (List.map (transform_bind t) binds, transform_sym t sym, transform_exp t exp, List.map (transform_prem t) prems)
   }
 and transform_def t d = 
   { d with it = match d.it with
-    | TypD (id, params, insts) -> TypD (id, List.map (transform_param t) params, List.map (transform_inst t) insts)
-    | RelD (id, m, typ, rules) -> RelD (id, m, transform_typ t typ, List.map (transform_rule t) rules)
-    | DecD (id, params, typ, clauses) -> DecD (id, List.map (transform_param t) params, transform_typ t typ, List.map (transform_clause t) clauses)
-    | GramD (id, params, typ, prods) -> GramD (id, List.map (transform_param t) params, transform_typ t typ, List.map (transform_prod t) prods)
+    | TypD (id, params, insts) -> TypD (t.transform_typ_id id, List.map (transform_param t) params, List.map (transform_inst t) insts)
+    | RelD (id, m, typ, rules) -> RelD (t.transform_rel_id id, m, transform_typ t typ, List.map (transform_rule t) rules)
+    | DecD (id, params, typ, clauses) -> DecD (t.transform_def_id id, List.map (transform_param t) params, transform_typ t typ, List.map (transform_clause t) clauses)
+    | GramD (id, params, typ, prods) -> GramD (t.transform_gram_id id, List.map (transform_param t) params, transform_typ t typ, List.map (transform_prod t) prods)
     | RecD defs -> RecD (List.map (transform_def t) defs)
     | d' -> d'
   }
