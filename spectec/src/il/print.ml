@@ -10,6 +10,8 @@ let concat = String.concat
 let prefix s f x = s ^ f x
 let space f x = " " ^ f x ^ " "
 
+let print_notes = ref false
+
 
 (* Identifiers *)
 
@@ -17,7 +19,7 @@ let is_alphanum = function
   | '0'..'9'
   | 'A'..'Z'
   | 'a'..'z'
-  | '_' | '.' | '\'' -> true
+  | '_' | '.' | '\'' | '#' -> true
   | _ -> false
 
 let string_of_id x =
@@ -81,25 +83,25 @@ and string_of_typbind (x, t) =
   | "_" -> string_of_typ t
   | _ -> string_of_id x ^ " : " ^ string_of_typ t
 
-and string_of_deftyp layout dt =
+and string_of_deftyp ?(layout = `H) dt =
   match dt.it with
   | AliasT t -> string_of_typ t
   | StructT tfs when layout = `H ->
-    "{" ^ concat ", " (List.map (string_of_typfield layout) tfs) ^ "}"
+    "{" ^ concat ", " (List.map (string_of_typfield ~layout) tfs) ^ "}"
   | StructT tfs ->
-    "\n{\n  " ^ concat ",\n  " (List.map (string_of_typfield layout) tfs) ^ "\n}"
+    "\n{\n  " ^ concat ",\n  " (List.map (string_of_typfield ~layout) tfs) ^ "\n}"
   | VariantT tcs when layout = `H ->
-    "| " ^ concat " | " (List.map (string_of_typcase layout) tcs)
+    "| " ^ concat " | " (List.map (string_of_typcase ~layout) tcs)
   | VariantT tcs ->
-    "\n  | " ^ concat "\n  | " (List.map (string_of_typcase layout) tcs)
+    "\n  | " ^ concat "\n  | " (List.map (string_of_typcase ~layout) tcs)
 
-and string_of_typfield layout (atom, (qs, t, prems), _hints) =
+and string_of_typfield ?(layout = `H) (atom, (qs, t, prems), _hints) =
   string_of_mixop (Mixop.Atom atom) ^
   string_of_quants qs ^ " " ^ string_of_typ t ^
   if layout = `H && prems <> [] then " -- .." else
     concat "" (List.map (prefix "\n    -- " string_of_prem) prems)
 
-and string_of_typcase layout (op, (qs, t, prems), _hints) =
+and string_of_typcase ?(layout = `H) (op, (qs, t, prems), _hints) =
   string_of_mixop op ^ string_of_quants qs ^ string_of_typ_args t ^
   if layout = `H && prems <> [] then " -- .." else
     concat "" (List.map (prefix "\n    -- " string_of_prem) prems)
@@ -108,8 +110,8 @@ and string_of_typcase layout (op, (qs, t, prems), _hints) =
 (* Expressions *)
 
 and string_of_exp e =
-"(" ^ (
-  match e.it with
+  (if !print_notes then "(" else "") ^
+  (match e.it with
   | VarE x -> string_of_id x
   | BoolE b -> string_of_bool b
   | NumE n -> Num.to_string n
@@ -158,7 +160,8 @@ and string_of_exp e =
     "(" ^ string_of_exp e1 ^ " : " ^ string_of_numtyp nt1 ^ " <:> " ^ string_of_numtyp nt2 ^ ")"
   | SubE (e1, t1, t2) ->
     "(" ^ string_of_exp e1 ^ " : " ^ string_of_typ t1 ^ " <: " ^ string_of_typ t2 ^ ")"
-) ^ ")@[" ^ string_of_typ e.note ^ "]"
+  ) ^
+  (if !print_notes then ")@[" ^ string_of_typ e.note ^ "]" else "")
 
 and string_of_exp_args e =
   match e.it with
@@ -175,7 +178,8 @@ and string_of_expfield (atom, as_, e) =
   " " ^ string_of_exp e
 
 and string_of_path p =
-  match p.it with
+  (if !print_notes then "(" else "") ^
+  (match p.it with
   | RootP -> ""
   | IdxP (p1, e) ->
     string_of_path p1 ^ "[" ^ string_of_exp e ^ "]"
@@ -188,6 +192,8 @@ and string_of_path p =
     string_of_path p1 ^ "." ^
     string_of_mixop (Mixop.Atom atom) ^ "_" ^ string_of_typ_name p1.note ^
     string_of_quantargs as_
+  ) ^
+  (if !print_notes then ")@[" ^ string_of_typ p.note ^ "]" else "")
 
 and string_of_iterexp (iter, xes) =
   string_of_iter iter ^ "{" ^ String.concat ", "
@@ -276,7 +282,7 @@ let string_of_inst ?(suppress_pos = false) x inst =
   | InstD (qs, as_, dt) ->
     "\n" ^ region_comment ~suppress_pos "  " inst.at ^
     "  syntax " ^ string_of_id x ^ string_of_quants qs ^ string_of_args as_ ^ " = " ^
-      string_of_deftyp `V dt ^ "\n"
+      string_of_deftyp ~layout: `V dt ^ "\n"
 
 let string_of_rule ?(suppress_pos = false) rule =
   match rule.it with
@@ -308,7 +314,7 @@ let rec string_of_def ?(suppress_pos = false) d =
   match d.it with
   | TypD (x, _ps, [{it = InstD (ps, as_, dt); _}]) ->
     pre ^ "syntax " ^ string_of_id x ^ string_of_params ps ^ string_of_args as_ ^ " = " ^
-      string_of_deftyp `V dt ^ "\n"
+      string_of_deftyp ~layout: `V dt ^ "\n"
   | TypD (x, ps, insts) ->
     pre ^ "syntax " ^ string_of_id x ^ string_of_params ps ^
      concat "\n" (List.map (string_of_inst ~suppress_pos x) insts) ^ "\n"

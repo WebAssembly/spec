@@ -1817,7 +1817,7 @@ and elab_exp_list env (es : exp list) (xts : (id * Il.typ) list) at
 and elab_expfields env tid (efs : expfield list) (tfs : Il.typfield list) (t0 : Il.typ) at
   : Il.expfield list attempt =
   Debug.(log_in_at "el.elab_expfields" at
-    (fun _ -> fmt "{%s} : {%s} = %s" (list el_expfield efs) (list (il_typfield `H) tfs) (il_typ t0))
+    (fun _ -> fmt "{%s} : {%s} = %s" (list el_expfield efs) (list il_typfield tfs) (il_typ t0))
   );
   assert (valid_tid tid);
   match efs, tfs with
@@ -2166,7 +2166,7 @@ and cast_exp' phrase env (e' : Il.exp) t1 t2 : Il.exp' attempt =
   | Il.TupT [], Il.VarT _ when is_empty_notation_typ env t2' ->
     Ok e'.it
 
-  | Il.VarT _, Il.VarT _ ->
+  | Il.VarT (x1, _), Il.VarT (x2, _) ->
     (match expand_def env t1', expand_def env t2' with
     | (Il.VariantT [mixop1, (qs1, tC1, _), _], NoDots),
       (Il.VariantT [mixop2, (qs2, tC2, _), _], NoDots) ->
@@ -2207,8 +2207,12 @@ and cast_exp' phrase env (e' : Il.exp) t1 t2 : Il.exp' attempt =
       )
 
     | (Il.VariantT tcs1, dots1), (Il.VariantT tcs2, dots2) ->
-      if dots1 = Dots || dots2 = Dots then
-        error e'.at "used variant type is only partially defined at this point";
+      if dots1 = Dots then
+        error e'.at ("used variant type `" ^ x1.it ^
+          "` is only partially defined at this point")
+      else if dots2 = Dots then
+        error e'.at ("used variant type `" ^ x2.it ^
+          "` is only partially defined at this point");
       let* () =
         (* Shallow breadth subtyping on variants *)
         match

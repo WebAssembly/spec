@@ -108,7 +108,7 @@ and det_idx_iter iter =
 and det_idx_iterexp s1 (it, xes) =
   s1 -- free_list bound_varid (List.map fst xes) ++
   det_idx_iter it ++
-  det_list det_idx_exp (List.filter_map
+  det_list det_exp (List.filter_map
     (fun (x, e) -> if Set.mem x.it s1.varid then Some e else None) xes)
 
 
@@ -144,7 +144,7 @@ and det_quant_expfield (_, as_, e) =
 and det_quant_iterexp s1 (it, xes) =
   s1 -- free_list bound_varid (List.map fst xes) ++
   det_quant_iter it ++
-  det_list det_quant_exp (List.filter_map
+  det_list det_exp (List.filter_map
     (fun (x, e) -> if Set.mem x.it s1.varid then Some e else None) xes)
 
 and det_quant_path p =
