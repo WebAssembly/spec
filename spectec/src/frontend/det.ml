@@ -98,7 +98,8 @@ and det_idx_exp e =
   | IdxE (e1, e2) -> det_quant_exp e1 ++ det_exp e2
   | _ -> det_quant_exp e
 
-and det_idx_expfield (_, _, e) = det_idx_exp e
+and det_idx_expfield (_, as_, e) =
+  det_list det_quant_arg as_ ++ det_idx_exp e
 
 and det_idx_iter iter =
   match iter with
@@ -164,8 +165,13 @@ and det_quant_iter iter =
 (* Grammars *)
 
 and det_sym g =
+  Il.Debug.(log_at "il.det_sym" g.at
+    (fun _ -> fmt "%s" (il_sym g))
+    (fun s -> String.concat ", " (Set.elements s.varid))
+  ) @@ fun _ ->
   match g.it with
-  | VarG _ | NumG _ | TextG _ | EpsG -> empty
+  | VarG (_x, as_) -> det_list det_arg as_
+  | NumG _ | TextG _ | EpsG -> empty
   | SeqG gs | AltG gs -> det_list det_sym gs
   | RangeG (g1, g2) -> det_sym g1 ++ det_sym g2
   | IterG (g1, ite) -> det_iterexp (det_sym g1) ite

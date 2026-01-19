@@ -86,26 +86,26 @@ and eq_exp e1 e2 =
   | TupE es1, TupE es2
   | ListE es1, ListE es2 -> eq_list eq_exp es1 es2
   | StrE efs1, StrE efs2 -> eq_list eq_expfield efs1 efs2
-  | DotE (e11, atom1, as1), DotE (e21, atom2, as2) ->
-    eq_exp e11 e21 && eq_atom atom1 atom2 && eq_list eq_arg as1 as2
-  | UncaseE (e1, op1, as1), UncaseE (e2, op2, as2) ->
-    eq_mixop op1 op2 && eq_exp e1 e2 && eq_list eq_arg as1 as2
+  | DotE (e11, atom1, _as1), DotE (e21, atom2, _as2) ->
+    eq_exp e11 e21 && eq_atom atom1 atom2 (*&& eq_list eq_arg as1 as2*)
+  | UncaseE (e1, op1, _as1), UncaseE (e2, op2, _as2) ->
+    eq_mixop op1 op2 && eq_exp e1 e2 (*&& eq_list eq_arg as1 as2*)
   | CallE (x1, as1), CallE (x2, as2) -> eq_id x1 x2 && eq_list eq_arg as1 as2
   | IterE (e11, iter1), IterE (e21, iter2) ->
     eq_exp e11 e21 && eq_iterexp iter1 iter2
   | OptE eo1, OptE eo2 -> eq_opt eq_exp eo1 eo2
   | ProjE (e1, i1), ProjE (e2, i2) -> eq_exp e1 e2 && i1 = i2
   | TheE e1, TheE e2 -> eq_exp e1 e2
-  | CaseE (op1, as1, e1), CaseE (op2, as2, e2) ->
-    eq_mixop op1 op2 && eq_list eq_arg as1 as2 && eq_exp e1 e2
+  | CaseE (op1, _as1, e1), CaseE (op2, _as2, e2) ->
+    eq_mixop op1 op2 (*&& eq_list eq_arg as1 as2*) && eq_exp e1 e2
   | CvtE (e1, nt11, nt12), CvtE (e2, nt21, nt22) ->
     eq_exp e1 e2 && nt11 = nt21 && nt12 = nt22
   | SubE (e1, t11, t12), SubE (e2, t21, t22) ->
     eq_exp e1 e2 && eq_typ t11 t21 && eq_typ t12 t22
   | _, _ -> e1.it = e2.it
 
-and eq_expfield (atom1, as1, e1) (atom2, as2, e2) =
-  eq_atom atom1 atom2 && eq_list eq_arg as1 as2 && eq_exp e1 e2
+and eq_expfield (atom1, _as1, e1) (atom2, _as2, e2) =
+  eq_atom atom1 atom2 (*&& eq_list eq_arg as1 as2*) && eq_exp e1 e2
 
 and eq_path p1 p2 =
   match p1.it, p2.it with
@@ -113,8 +113,8 @@ and eq_path p1 p2 =
   | IdxP (p11, e1), IdxP (p21, e2) -> eq_path p11 p21 && eq_exp e1 e2
   | SliceP (p11, e11, e12), SliceP (p21, e21, e22) ->
     eq_path p11 p21 && eq_exp e11 e21 && eq_exp e12 e22
-  | DotP (p11, atom1, as1), DotP (p21, atom2, as2) ->
-    eq_path p11 p21 && eq_atom atom1 atom2 && eq_list eq_arg as1 as2
+  | DotP (p11, atom1, _as1), DotP (p21, atom2, _as2) ->
+    eq_path p11 p21 && eq_atom atom1 atom2 (*&& eq_list eq_arg as1 as2*)
   | _, _ -> p1.it = p2.it
 
 and eq_iterexp (iter1, xes1) (iter2, xes2) =

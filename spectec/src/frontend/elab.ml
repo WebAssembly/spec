@@ -500,6 +500,7 @@ let infer_quants env env' dims det ps' as' ts' es' gs' prs' at : Il.quant list =
     (fun _ ->
 Printf.sprintf "\n  as'=[%s]" Il.Debug.(list il_arg as') ^
 Printf.sprintf "\n  es'=[%s]" Il.Debug.(list il_exp es') ^
+Printf.sprintf "\n  gs'=[%s]" Il.Debug.(list il_sym gs') ^
 Printf.sprintf "\n  prs'=[%s]" Il.Debug.(list il_prem prs') ^
       "\n  locals=" ^
       (Map.fold (fun id _ ids ->
@@ -2207,12 +2208,6 @@ and cast_exp' phrase env (e' : Il.exp) t1 t2 : Il.exp' attempt =
       )
 
     | (Il.VariantT tcs1, dots1), (Il.VariantT tcs2, dots2) ->
-      if dots1 = Dots then
-        error e'.at ("used variant type `" ^ x1.it ^
-          "` is only partially defined at this point")
-      else if dots2 = Dots then
-        error e'.at ("used variant type `" ^ x2.it ^
-          "` is only partially defined at this point");
       let* () =
         (* Shallow breadth subtyping on variants *)
         match
@@ -2230,6 +2225,12 @@ and cast_exp' phrase env (e' : Il.exp) t1 t2 : Il.exp' attempt =
         | Fail (Trace (_, msg, _) :: _) -> fail_typ2 env e'.at phrase t1 t2 (", " ^ msg)
         | Fail [] -> assert false
       in
+      if dots1 = Dots then
+        error e'.at ("used variant type `" ^ x1.it ^
+          "` is only partially defined at this point")
+      else if dots2 = Dots then
+        error e'.at ("used variant type `" ^ x2.it ^
+          "` is only partially defined at this point");
       Ok (Il.SubE (e', t1', t2'))
 
     | _, _ ->
@@ -2758,7 +2759,7 @@ Printf.printf "dims \\ %s = %s\n%!" (Debug.domain outer_dims) (Debug.(list Fun.i
     let g1' = Dim.annot_sym dims g1' in
     let g2' = Dim.annot_sym dims g2' in
     let prems' = List.map (Dim.annot_prem dims) prems' in
-    let det = Det.(det_sym g1' ++ det_list det_prem prems') in
+    let det = Det.(det_sym g1' ++ det_sym g2' ++ det_list det_prem prems') in
     ignore (infer_quants env env' dims det [] [] [] [] [g1'; g2'] prems' prod.at);
     []  (* TODO(4, rossberg): translate equiv grammars properly *)
 (*

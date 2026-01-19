@@ -384,6 +384,7 @@ syntax instr/vec hint(desc "vector instruction") = ...
   | VEXTRACT_LANE shape sx? laneidx     hint(show ##%.EXTRACT_LANE %) hint(show ##%.EXTRACT_LANE#_#% %) hint(macro "VEXTRACT_LANE")
     -- if sx? = eps <=> $lanetype(shape) <- I32 I64 F32 F64
   | VREPLACE_LANE shape laneidx         hint(show ##%.REPLACE_LANE %) hint(macro "VREPLACE_LANE")
+  | ...
 
 
 ;; Expressions
