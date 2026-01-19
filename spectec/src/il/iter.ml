@@ -95,20 +95,23 @@ let hints = list hint
 let rec iter it =
   match it with
   | Opt | List | List1 -> ()
-  | ListN (e, xo) -> exp e; opt varid xo
+  | ListN _ -> assert false
 
 and iterexp : 'a. ('a -> unit) -> 'a -> _ -> unit = fun f body (it, xes) ->
-  let xts1 =
+  let eo, xo, xts1 =
     match it with
-    | ListN (_, Some x) -> [(x, NumT `NatT $ x.at)]
-    | _ -> []
+    | ListN (e, Some x) -> Some e, Some x, [(x, NumT `NatT $ x.at)]
+    | ListN (e, None) -> Some e, None, []
+    | _ -> None, None, []
   in
   let xts = xts1 @ List.map (fun (x, e) -> x, e.note) xes in
   let old_scopes = List.map (fun (x, t) -> scope_enter x t) xts in
   f body;
+  opt varid xo;
+  list (pair varid ignore) xes;
   List.iter2 (fun (x, _) scope -> scope_exit x scope)
     (List.rev xts) (List.rev old_scopes);
-  iter it; list (pair varid exp) xes
+  opt exp eo; list (pair ignore exp) xes
 
 
 (* Types *)

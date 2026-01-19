@@ -96,7 +96,12 @@ let check_varid dims ctx mode id =
   dims := Map.add_to_list id.it (id.at, ctx, mode) !dims
 
 let uncheck_varid dims id =
-  dims := Map.add id.it (List.tl (Map.find id.it !dims)) !dims
+  let ctxs' = List.tl (Map.find id.it !dims) in
+  dims :=
+    if ctxs' = [] then
+      Map.remove id.it !dims
+    else
+      Map.add id.it ctxs' !dims
 
 let rec check_iter dims ctx it =
   match it with
