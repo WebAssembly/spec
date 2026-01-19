@@ -180,7 +180,7 @@ and subst_exp s e =
   | UpdE (e1, p, e2) -> UpdE (subst_exp s e1, subst_path s p, subst_exp s e2)
   | ExtE (e1, p, e2) -> ExtE (subst_exp s e1, subst_path s p, subst_exp s e2)
   | StrE efs -> StrE (subst_list subst_expfield s efs)
-  | DotE (e1, atom, as_) -> DotE (subst_exp s e1, atom, subst_args s as_)
+  | DotE (e1, atom) -> DotE (subst_exp s e1, atom)
   | CompE (e1, e2) -> CompE (subst_exp s e1, subst_exp s e2)
   | MemE (e1, e2) -> MemE (subst_exp s e1, subst_exp s e2)
   | LenE e1 -> LenE (subst_exp s e1)
@@ -190,23 +190,23 @@ and subst_exp s e =
     let e1', it' = subst_iterexp s subst_exp e1 iterexp in
     IterE (e1', it')
   | ProjE (e1, i) -> ProjE (subst_exp s e1, i)
-  | UncaseE (e1, op, as_) ->
+  | UncaseE (e1, op) ->
     let e1' = subst_exp s e1 in
     assert (match e1'.note.it with VarT _ -> true | _ -> false);
-    UncaseE (subst_exp s e1, op, subst_args s as_)
+    UncaseE (subst_exp s e1, op)
   | OptE eo -> OptE (subst_opt subst_exp s eo)
   | TheE e -> TheE (subst_exp s e)
   | ListE es -> ListE (subst_list subst_exp s es)
   | LiftE e -> LiftE (subst_exp s e)
   | CatE (e1, e2) -> CatE (subst_exp s e1, subst_exp s e2)
-  | CaseE (op, as_, e1) ->
+  | CaseE (op, e1) ->
     assert (match e.note.it with VarT _ -> true | _ -> false);
-    CaseE (op, subst_args s as_, subst_exp s e1)
+    CaseE (op, subst_exp s e1)
   | CvtE (e1, nt1, nt2) -> CvtE (subst_exp s e1, nt1, nt2)
   | SubE (e1, t1, t2) -> SubE (subst_exp s e1, subst_typ s t1, subst_typ s t2)
   ) $$ e.at % subst_typ s e.note
 
-and subst_expfield s (atom, as_, e) = (atom, subst_args s as_, subst_exp s e)
+and subst_expfield s (atom, e) = (atom, subst_exp s e)
 
 and subst_path s p =
   (match p.it with
@@ -214,7 +214,7 @@ and subst_path s p =
   | IdxP (p1, e) -> IdxP (subst_path s p1, subst_exp s e)
   | SliceP (p1, e1, e2) ->
     SliceP (subst_path s p1, subst_exp s e1, subst_exp s e2)
-  | DotP (p1, atom, as_) -> DotP (subst_path s p1, atom, subst_args s as_)
+  | DotP (p1, atom) -> DotP (subst_path s p1, atom)
   ) $$ p.at % subst_typ s p.note
 
 

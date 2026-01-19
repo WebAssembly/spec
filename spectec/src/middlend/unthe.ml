@@ -117,7 +117,6 @@ and t_exp2 n = phrase t_exp' n
 
 and t_e n x k = unary t_exp n x k
 and t_ee n x k = binary t_exp t_exp n x k
-and t_eas n x k = binary t_exp (fun n xs -> t_list t_arg n xs Fun.id) n x k
 and t_eee n x k = ternary t_exp t_exp t_exp n x k
 and t_epe n x k = ternary t_exp t_path t_exp n x k
 
@@ -126,15 +125,15 @@ and t_exp' n e : eqns * exp' =
   | VarE _ | BoolE _ | NumE _ | TextE _ | OptE None -> [], e
 
   | UnE (uo, nto, exp) -> t_e n exp (fun exp' -> UnE (uo, nto, exp'))
-  | DotE (exp, a, args) -> t_eas n (exp, args) (fun (exp', args') -> DotE (exp', a, args'))
+  | DotE (exp, a) -> t_e n exp (fun exp' -> DotE (exp', a))
   | LenE exp -> t_e n exp (fun exp' -> LenE exp')
   | CallE (f, args) -> t_list t_arg n args (fun args' -> CallE (f, args'))
   | ProjE (exp, i) -> t_e n exp (fun exp' -> ProjE (exp', i))
-  | UncaseE (exp, mo, args) -> t_eas n (exp, args) (fun (exp', args') -> UncaseE (exp', mo, args'))
+  | UncaseE (exp, mo) -> t_e n exp (fun exp' -> UncaseE (exp', mo))
   | OptE (Some exp) -> t_e n exp (fun exp' -> OptE (Some exp'))
   | TheE exp -> t_e n exp (fun exp' -> TheE exp')
   | LiftE exp -> t_e n exp (fun exp' -> LiftE exp')
-  | CaseE (mixop, args, exp) -> t_eas n (exp, args) (fun (exp', args') -> CaseE (mixop, args', exp'))
+  | CaseE (mixop, exp) -> t_e n exp (fun exp' -> CaseE (mixop, exp'))
   | CvtE (exp, a, b) -> t_e n exp (fun exp' -> CvtE (exp', a, b))
   | SubE (exp, a, b) -> t_e n exp (fun exp' -> SubE (exp', a, b))
 
@@ -161,8 +160,8 @@ and t_exp' n e : eqns * exp' =
     let iterexp''' = update_iterexp_vars (Il.Free.free_exp e') iterexp'' in
     eqns1' @ eqns2, IterE (e', iterexp''')
 
-and t_field n ((a, args, e) : expfield) =
-  binary (fun n xs -> t_list t_arg n xs Fun.id) t_exp n (args, e) (fun (args', e') -> (a, args', e'))
+and t_field n ((a, e) : expfield) =
+  unary t_exp n e (fun e' -> (a, e'))
 
 and t_iterexp n iterexp =
   binary t_iter t_iterparams n iterexp Fun.id
@@ -183,7 +182,7 @@ and t_path' n path = match path with
   | RootP -> [], path
   | IdxP (path, e) -> binary t_path t_exp n (path, e) (fun (path', e') -> IdxP (path', e'))
   | SliceP (path, e1, e2) -> ternary t_path t_exp t_exp n (path, e1, e2) (fun (path', e1', e2') -> SliceP (path', e1', e2'))
-  | DotP (path, a, args) -> binary t_path (fun n xs -> t_list t_arg n xs Fun.id) n (path, args) (fun (path', args') -> DotP (path', a, args'))
+  | DotP (path, a) -> unary t_path n path (fun path' -> DotP (path', a))
 
 and t_arg n = phrase t_arg' n
 

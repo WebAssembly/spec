@@ -70,21 +70,20 @@ and free_exp e =
   | TupE es | ListE es -> free_list free_exp es
   | UpdE (e1, p, e2) | ExtE (e1, p, e2) -> free_exp e1 ++ free_path p ++ free_exp e2
   | StrE efs -> free_list free_expfield efs
-  | DotE (e1, _, as_) -> free_exp e1 ++ free_args as_
-  | CaseE (_, as_, e1) | UncaseE (e1, _, as_) -> free_args as_ ++ free_exp e1
+  | DotE (e1, _) | CaseE (_, e1) | UncaseE (e1, _) -> free_exp e1
   | CallE (x, as1) -> free_defid x ++ free_args as1
   | IterE (e1, ite) -> (free_exp e1 -- bound_iterexp ite) ++ free_iterexp ite
   | CvtE (e1, _nt1, _nt2) -> free_exp e1
   | SubE (e1, t1, t2) -> free_exp e1 ++ free_typ t1 ++ free_typ t2
 
-and free_expfield (_, as_, e) = free_args as_ ++ free_exp e
+and free_expfield (_, e) = free_exp e
 
 and free_path p =
   match p.it with
   | RootP -> empty
   | IdxP (p1, e) -> free_path p1 ++ free_exp e
   | SliceP (p1, e1, e2) -> free_path p1 ++ free_exp e1 ++ free_exp e2
-  | DotP (p1, _atom, as_) -> free_path p1 ++ free_args as_
+  | DotP (p1, _atom) -> free_path p1
 
 and free_iterexp (iter, xes) =
   free_iter iter ++ free_list free_exp (List.map snd xes)

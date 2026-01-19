@@ -293,11 +293,10 @@ and infer_exp (env : Env.t) e : typ =
   | ExtE (e1, _, _)
   | CompE (e1, _) -> infer_exp env e1
   | StrE _ -> error e.at "cannot infer type of record"
-  | DotE (e1, atom, _as_) ->
+  | DotE (e1, atom) ->
     let tfs = as_struct_typ "expression" env Infer (infer_exp env e1) e1.at in
     let _qs, t, _prems = find_field tfs atom e1.at in
-    (*let s = valid_args env as_ qs Subst.empty e.at in
-    Subst.subst_typ s*) t
+    t
   | TupE es ->
     TupT (List.map (fun eI -> "_" $ eI.at, infer_exp env eI) es) $ e.at
   | CallE (x, as_) ->
@@ -311,12 +310,10 @@ and infer_exp (env : Env.t) e : typ =
     let t1 = infer_exp env e1 in
     let xts = as_tup_typ "expression" env Infer t1 e1.at in
     proj_tup_typ i xts e1 e.at
-  | UncaseE (e1, op, _as_) ->
+  | UncaseE (e1, op) ->
     let t1 = infer_exp env e1 in
     (match as_variant_typ "expression" env Infer t1 e1.at with
-    | [(op', (_qs, t, _), _)] when Eq.eq_mixop op op' ->
-      (*let s = valid_args env as_ qs Subst.empty e.at in
-      Subst.subst_typ s*) t
+    | [(op', (_, t, _), _)] when Eq.eq_mixop op op' -> t
     | _ -> error e.at "invalid case projection";
     )
   | OptE _ -> error e.at "cannot infer type of option"
@@ -415,13 +412,12 @@ try
   | StrE efs ->
     let tfs = as_struct_typ "record" env Check t e.at in
     valid_list (valid_expfield ~side) env efs tfs e.at
-  | DotE (e1, atom, _as_) ->
+  | DotE (e1, atom) ->
     let t1 = infer_exp env e1 in
     valid_exp env e1 t1;
     let tfs = as_struct_typ "expression" env Check t1 e1.at in
     let _qs, t', _prems = find_field tfs atom e1.at in
-    (*let s = valid_args env as_ qs Subst.empty e.at in*)
-    equiv_typ env ((*Subst.subst_typ s*) t') t e.at
+    equiv_typ env t' t e.at
   | CompE (e1, e2) ->
     let _ = as_comp_typ "expression" env Check t e.at in
     valid_exp env e1 t;
@@ -465,13 +461,12 @@ try
     let side' = if List.length xts > 1 then `Rhs else side in
     valid_exp ~side:side' env e1 (TupT xts $ t1.at);
     equiv_typ env (proj_tup_typ i xts e1 e.at) t e.at
-  | UncaseE (e1, op, _as_) ->
+  | UncaseE (e1, op) ->
     let t1 = infer_exp env e1 in
     valid_exp ~side env e1 t1;
     (match as_variant_typ "expression" env Infer t1 e1.at with
     | [(op', (_qs, t', _), _)] when Eq.eq_mixop op op' ->
-      (*let s = valid_args env as_ qs Subst.empty e.at in*)
-      equiv_typ env ((*Subst.subst_typ s*) t') t e.at
+      equiv_typ env t' t e.at
     | _ -> error e.at "invalid case projection";
     )
   | OptE eo ->
@@ -494,11 +489,10 @@ try
     let _typ1 = as_iter_typ List "list" env Check t e.at in
     valid_exp env e1 t;
     valid_exp env e2 t
-  | CaseE (op, _as_, e1) ->
+  | CaseE (op, e1) ->
     let cases = as_variant_typ "case" env Check t e.at in
     let _qs, t1, _prems = find_case cases op e1.at in
-    (*let s = valid_args env as_ qs Subst.empty e.at in*)
-    valid_exp ~side env e1 ((*Subst.subst_typ s*) t1)
+    valid_exp ~side env e1 t1
   | CvtE (e1, nt1, nt2) ->
     valid_exp ~side env e1 (NumT nt1 $ e1.at);
     equiv_typ env (NumT nt2 $e.at) t e.at;
@@ -522,16 +516,15 @@ and valid_expmix ?(side = `Rhs) env mixop e (mixop', t) at =
     );
   valid_exp ~side env e t
 
-and valid_expfield ~side env (atom1, as_, e) (atom2, (qs, t, _prems), _) =
+and valid_expfield ~side env (atom1, e) (atom2, (qs, t, _prems), _) =
   Debug.(log_in_at "il.valid_expfield" e.at
-    (fun _ -> fmt "%s%s %s :%s %s%s %s"
-      (il_atom atom1) (il_args as_) (il_exp e) (il_side side)
+    (fun _ -> fmt "%s %s :%s %s%s %s"
+      (il_atom atom1) (il_exp e) (il_side side)
       (il_atom atom2) (il_quants qs) (il_typ t)
     )
   );
   if not (Eq.eq_atom atom1 atom2) then error e.at "unexpected record field";
-  (*let s = valid_args env as_ qs Subst.empty e.at in*)
-  valid_exp ~side env e ((*Subst.subst_typ s*) t)
+  valid_exp ~side env e t
 
 and valid_path env p t : typ =
   valid_typ env t;
@@ -548,12 +541,11 @@ and valid_path env p t : typ =
       valid_exp env e2 (NumT `NatT $ e2.at);
       let _ = as_list_typ "path" env Check t1 p1.at in
       t1
-    | DotP (p1, atom, _as_) ->
+    | DotP (p1, atom) ->
       let t1 = valid_path env p1 t in
       let tfs = as_struct_typ "path" env Check t1 p1.at in
       let _qs, t, _prems = find_field tfs atom p1.at in
-      (*let s = valid_args env as_ qs Subst.empty p.at in
-      Subst.subst_typ s*) t
+      t
   in
   equiv_typ env p.note t' p.at;
   t'

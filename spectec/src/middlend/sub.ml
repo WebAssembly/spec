@@ -148,8 +148,8 @@ and t_exp' env = function
   | SliceE (exp1, exp2, exp3) -> SliceE (t_exp env exp1, t_exp env exp2, t_exp env exp3)
   | UpdE (exp1, path, exp2) -> UpdE (t_exp env exp1, t_path env path, t_exp env exp2)
   | ExtE (exp1, path, exp2) -> ExtE (t_exp env exp1, t_path env path, t_exp env exp2)
-  | StrE fields -> StrE (List.map (fun (a, args, e) -> a, t_args env args, t_exp env e) fields)
-  | DotE (e, a, args) -> DotE (t_exp env e, a, t_args env args)
+  | StrE fields -> StrE (List.map (fun (a, e) -> a, t_exp env e) fields)
+  | DotE (e, a) -> DotE (t_exp env e, a)
   | CompE (exp1, exp2) -> CompE (t_exp env exp1, t_exp env exp2)
   | LiftE exp -> LiftE (t_exp env exp)
   | LenE exp -> LenE (t_exp env exp)
@@ -157,14 +157,14 @@ and t_exp' env = function
   | CallE (a, args) -> CallE (a, t_args env args)
   | IterE (e, iterexp) -> IterE (t_exp env e, t_iterexp env iterexp)
   | ProjE (e, i) -> ProjE (t_exp env e, i)
-  | UncaseE (e, mixop, args) -> UncaseE (t_exp env e, mixop, t_args env args)
+  | UncaseE (e, mixop) -> UncaseE (t_exp env e, mixop)
   | OptE None -> OptE None
   | OptE (Some exp) -> OptE (Some exp)
   | TheE exp -> TheE exp
   | ListE es -> ListE (List.map (t_exp env) es)
   | CatE (exp1, exp2) -> CatE (t_exp env exp1, t_exp env exp2)
   | MemE (exp1, exp2) -> MemE (t_exp env exp1, t_exp env exp2)
-  | CaseE (mixop, args, e) -> CaseE (mixop, t_args env args, t_exp env e)
+  | CaseE (mixop, e) -> CaseE (mixop, t_exp env e)
   | CvtE (exp, t1, t2) -> CvtE (t_exp env exp, t1, t2)
   | SubE (e, t1, t2) -> SubE (e, t1, t2)
 
@@ -179,7 +179,7 @@ and t_path' env = function
   | RootP -> RootP
   | IdxP (path, e) -> IdxP (t_path env path, t_exp env e)
   | SliceP (path, e1, e2) -> SliceP (t_path env path, t_exp env e1, t_exp env e2)
-  | DotP (path, a, args) -> DotP (t_path env path, a, t_args env args)
+  | DotP (path, a) -> DotP (t_path env path, a)
 
 and t_path env x = { x with it = t_path' env x.it; note = t_typ env x.note }
 
@@ -334,14 +334,14 @@ let insert_injections env (def : def) : def list =
         in
         let xe = TupE xes $$ no_region % arg_typ in
         DefD (params,
-          [ExpA (CaseE (a, [], xe) $$ no_region % real_ty) $ no_region],
-          CaseE (a, [], xe) $$ no_region % sup_ty, []) $ no_region
+          [ExpA (CaseE (a, xe) $$ no_region % real_ty) $ no_region],
+          CaseE (a, xe) $$ no_region % sup_ty, []) $ no_region
       | _ ->
         let x = "x" $ no_region in
         let xe = VarE x $$ no_region % arg_typ in
         DefD ([ExpP (x, arg_typ) $ x.at],
-          [ExpA (CaseE (a, [], xe) $$ no_region % real_ty) $ no_region],
-          CaseE (a, [], xe) $$ no_region % sup_ty, []) $ no_region
+          [ExpA (CaseE (a, xe) $$ no_region % real_ty) $ no_region],
+          CaseE (a, xe) $$ no_region % sup_ty, []) $ no_region
       ) cases_sub in
     DecD (name, params_sub @ params_sup' @ [ExpP ("_" $ no_region, sub_ty) $ no_region], sup_ty, clauses) $ no_region
   ) pairs

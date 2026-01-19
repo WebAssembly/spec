@@ -61,12 +61,12 @@ and exp' =
   | CmpE of cmpop * optyp * exp * exp       (* exp cmpop exp *)
   | TupE of exp list                        (* ( exp* ) *)
   | ProjE of exp * int                      (* exp.i *)
-  | CaseE of mixop * arg list * exp         (* atom exp? *)
-  | UncaseE of exp * mixop * arg list       (* exp!mixop *)
+  | CaseE of mixop * exp                    (* atom exp? *)
+  | UncaseE of exp * mixop                  (* exp!mixop *)
   | OptE of exp option                      (* exp? *)
   | TheE of exp                             (* exp! *)
   | StrE of expfield list                   (* { expfield* } *)
-  | DotE of exp * atom * arg list           (* exp.atom *)
+  | DotE of exp * atom                      (* exp.atom *)
   | CompE of exp * exp                      (* exp @ exp *)
   | ListE of exp list                       (* [exp ... exp] *)
   | LiftE of exp                            (* exp : _? <: _* *)
@@ -82,14 +82,14 @@ and exp' =
   | CvtE of exp * numtyp * numtyp           (* exp : typ1 <:> typ2 *)
   | SubE of exp * typ * typ                 (* exp : typ1 <: typ2 *)
 
-and expfield = atom * arg list * exp        (* atom exp *)
+and expfield = atom * exp                   (* atom exp *)
 
 and path = (path', typ) note_phrase
 and path' =
   | RootP                                   (*  *)
   | IdxP of path * exp                      (* path[exp] *)
   | SliceP of path * exp * exp              (* path[exp : exp] *)
-  | DotP of path * atom * arg list          (* path.atom *)
+  | DotP of path * atom                     (* path.atom *)
 
 and iterexp = iter * (id * exp) list
 

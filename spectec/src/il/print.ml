@@ -132,10 +132,9 @@ and string_of_exp e =
     string_of_exp e1 ^
       "[" ^ string_of_path p ^ " =++ " ^ string_of_exp e2 ^ "]"
   | StrE efs -> "{" ^ concat ", " (List.map string_of_expfield efs) ^ "}"
-  | DotE (e1, atom, as_) ->
+  | DotE (e1, atom) ->
     string_of_exp e1 ^ "." ^
-    string_of_mixop (Mixop.Atom atom) ^ "_" ^ string_of_typ_name e1.note ^
-    string_of_quantargs as_
+    string_of_mixop (Mixop.Atom atom) ^ "_" ^ string_of_typ_name e1.note
   | CompE (e1, e2) -> string_of_exp e1 ^ " +++ " ^ string_of_exp e2
   | MemE (e1, e2) -> "(" ^ string_of_exp e1 ^ " <- " ^ string_of_exp e2 ^ ")"
   | LenE e1 -> "|" ^ string_of_exp e1 ^ "|"
@@ -143,19 +142,16 @@ and string_of_exp e =
   | CallE (x, as1) -> "$" ^ string_of_id x ^ string_of_args as1
   | IterE (e1, iter) -> string_of_exp e1 ^ string_of_iterexp iter
   | ProjE (e1, i) -> string_of_exp e1 ^ "." ^ string_of_int i
-  | UncaseE (e1, op, as_) ->
+  | UncaseE (e1, op) ->
     string_of_exp e1 ^ "!" ^
-    string_of_mixop op ^ "_" ^ string_of_typ_name e1.note ^
-    string_of_quantargs as_
+    string_of_mixop op ^ "_" ^ string_of_typ_name e1.note
   | OptE eo -> "?(" ^ string_of_exps "" (Option.to_list eo) ^ ")"
   | TheE e1 -> "!(" ^ string_of_exp e1 ^ ")"
   | ListE es -> "[" ^ string_of_exps " " es ^ "]"
   | LiftE e1 -> "lift(" ^ string_of_exp e1 ^ ")"
   | CatE (e1, e2) -> string_of_exp e1 ^ " ++ " ^ string_of_exp e2
-  | CaseE (op, as_, e1) ->
-    string_of_mixop op ^ "_" ^ string_of_typ_name e.note ^
-    string_of_quantargs as_ ^
-    string_of_exp_args e1
+  | CaseE (op, e1) ->
+    string_of_mixop op ^ "_" ^ string_of_typ_name e.note ^ string_of_exp_args e1
   | CvtE (e1, nt1, nt2) ->
     "(" ^ string_of_exp e1 ^ " : " ^ string_of_numtyp nt1 ^ " <:> " ^ string_of_numtyp nt2 ^ ")"
   | SubE (e1, t1, t2) ->
@@ -172,10 +168,8 @@ and string_of_exp_args e =
 and string_of_exps sep es =
   concat sep (List.map string_of_exp es)
 
-and string_of_expfield (atom, as_, e) =
-  string_of_mixop (Mixop.Atom atom) ^
-  string_of_quantargs as_ ^
-  " " ^ string_of_exp e
+and string_of_expfield (atom, e) =
+  string_of_mixop (Mixop.Atom atom) ^ " " ^ string_of_exp e
 
 and string_of_path p =
   (if !print_notes then "(" else "") ^
@@ -185,13 +179,11 @@ and string_of_path p =
     string_of_path p1 ^ "[" ^ string_of_exp e ^ "]"
   | SliceP (p1, e1, e2) ->
     string_of_path p1 ^ "[" ^ string_of_exp e1 ^ " : " ^ string_of_exp e2 ^ "]"
-  | DotP ({it = RootP; note; _}, atom, as_) ->
-    string_of_mixop (Mixop.Atom atom) ^ "_" ^ string_of_typ_name note ^
-    string_of_quantargs as_
-  | DotP (p1, atom, as_) ->
+  | DotP ({it = RootP; note; _}, atom) ->
+    string_of_mixop (Mixop.Atom atom) ^ "_" ^ string_of_typ_name note
+  | DotP (p1, atom) ->
     string_of_path p1 ^ "." ^
-    string_of_mixop (Mixop.Atom atom) ^ "_" ^ string_of_typ_name p1.note ^
-    string_of_quantargs as_
+    string_of_mixop (Mixop.Atom atom) ^ "_" ^ string_of_typ_name p1.note
   ) ^
   (if !print_notes then ")@[" ^ string_of_typ p.note ^ "]" else "")
 
@@ -245,10 +237,6 @@ and string_of_arg a =
 and string_of_args = function
   | [] -> ""
   | as_ -> "(" ^ concat ", " (List.map string_of_arg as_) ^ ")"
-
-and string_of_quantargs = function
-  | [] -> ""
-  | as_ -> "{" ^ concat ", " (List.map string_of_arg as_) ^ "}"
 
 and string_of_param p =
   match p.it with

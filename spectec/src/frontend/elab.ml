@@ -346,8 +346,6 @@ let il_arg_of_param p =
   | Il.GramP (id, _, _) -> Il.GramA (Il.VarG (id, []) $ id.at)
   ) $ p.at
 
-let il_args_of_params = List.map il_arg_of_param
-
 let to_il_var (_at, t) = t
 let to_il_def (_at, (ps, t, clauses)) = (ps, t, List.map snd clauses)
 let to_il_gram (_at, (ps, t, prods, _)) = (ps, t, List.map snd prods)
@@ -1540,13 +1538,10 @@ and infer_exp' env e : (Il.exp' * Il.typ') attempt =
     let* tfs, dots = as_struct_typ "expression" env Infer t1 e1.at in
     if dots = Dots then
       error e1.at "used record type is only partially defined at this point";
-    let* _, (qs, tF, prems), _ = attempt (find_field tfs atom e1.at) t1 in
-    let qs', _s = refresh_quants env qs in
-    let _qas' = il_args_of_params qs' in
-    let tF' = (*Il.Subst.subst_typ s*) tF in
-    let e' = Il.DotE (e1', elab_atom atom (expand_id env t1), [](*qas'*)) in
-    let e'' = if prems = [] then e' else Il.ProjE (e' $$ e.at % tF', 0) in
-    Ok (e'', tF'.it)
+    let* _, (_qs, tF, prems), _ = attempt (find_field tfs atom e1.at) t1 in
+    let e' = Il.DotE (e1', elab_atom atom (expand_id env t1)) in
+    let e'' = if prems = [] then e' else Il.ProjE (e' $$ e.at % tF, 0) in
+    Ok (e'', tF.it)
   | CommaE (e1, e2) ->
     let* e1', t1 = infer_exp env e1 in
     let* tfs, dots = as_struct_typ "expression" env Infer t1 e1.at in
@@ -1556,7 +1551,7 @@ and infer_exp' env e : (Il.exp' * Il.typ') attempt =
     (* TODO(4, rossberg): this is a bit of a hack, can we avoid it? *)
     (match e2.it with
     | SeqE ({it = AtomE atom; at; _} :: es2) ->
-      let* _t2 = attempt (find_field tfs atom at) t1 in
+      let* _ = attempt (find_field tfs atom at) t1 in
       let e2 = match es2 with [e2] -> e2 | _ -> SeqE es2 $ e2.at in
       let* e2' = elab_exp env (StrE [Elem (atom, e2)] $ e2.at) t1 in
       Ok (Il.CompE (e2', e1'), t1.it)
@@ -1743,7 +1738,7 @@ and elab_exp_plain' env (e : exp) (t : Il.typ) : Il.exp' attempt =
     (* TODO(4, rossberg): this is a bit of a hack, can we avoid it? *)
     (match e2.it with
     | SeqE ({it = AtomE atom; at; _} :: es2) ->
-      let* _t2 = attempt (find_field tfs atom at) t in
+      let* _ = attempt (find_field tfs atom at) t in
       let e2 = match es2 with [e2] -> e2 | _ -> SeqE es2 $ e2.at in
       let* e2' = elab_exp env (StrE [Elem (atom, e2)] $ e2.at) t in
       Ok (Il.CompE (e2', e1'))
@@ -1830,20 +1825,17 @@ and elab_expfields env tid (efs : expfield list) (tfs : Il.typfield list) (t0 : 
   assert (valid_tid tid);
   match efs, tfs with
   | [], [] -> Ok []
-  | (atom1, e)::efs2, (atom2, (qs, tF, prems), _)::tfs2 when atom1.it = atom2.it ->
+  | (atom1, e)::efs2, (atom2, (_qs, tF, prems), _)::tfs2 when atom1.it = atom2.it ->
     let* e' = elab_exp env e tF in
-    let _qs', _s = refresh_quants env qs in
-    let* efs2' = elab_expfields env tid efs2 ((*List.map (Il.Subst.subst_typfield s)*) tfs2) t0 at in
+    let* efs2' = elab_expfields env tid efs2 tfs2 t0 at in
     let e' = if prems = [] then e' else tup_exp' [e'] e.at in
-    Ok ((elab_atom atom1 tid, [](*il_args_of_params qs'*), e') :: efs2')
-  | _, (atom, (qs, t, prems), _)::tfs2 ->
+    Ok ((elab_atom atom1 tid, e') :: efs2')
+  | _, (atom, (_qs, tF, prems), _)::tfs2 ->
     let atom' = string_of_atom atom in
-    let _qs', _s = refresh_quants env qs in
-    let t' = (*Il.Subst.subst_typ s*) t in
-    let* e1' = cast_empty ("omitted record field `" ^ atom' ^ "`") env t' at in
+    let* e1' = cast_empty ("omitted record field `" ^ atom' ^ "`") env tF at in
     let e' = if prems = [] then e1' else tup_exp' [e1'] at in
     let* efs2' = elab_expfields env tid efs tfs2 t0 at in
-    Ok ((elab_atom atom tid, [](*il_args_of_params qs'*), e') :: efs2')
+    Ok ((elab_atom atom tid, e') :: efs2')
   | (atom, e)::_, [] ->
     fail_atom e.at atom t0 "undefined or misplaced record field"
 
@@ -1876,12 +1868,11 @@ and elab_exp_iter' env (es : exp list) (t1, iter) t at : Il.exp' attempt =
   | _, (List1 | ListN _) ->
     assert false
 
-and elab_exp_notation env tid (e : exp) (qs, t1, mixop, not) t : Il.exp attempt =
+and elab_exp_notation env tid (e : exp) (_qs, t1, mixop, not) t : Il.exp attempt =
   (* Convert notation into applications of mixin operators *)
   assert (valid_tid tid);
-  let* es', s = elab_exp_notation' env tid e not in
-  let _qas' = Il.Subst.subst_args s (il_args_of_params qs) in
-  Ok (Il.CaseE (mixop, [](*qas'*), Il.TupE es' $$ e.at % t1) $$ e.at % t)
+  let* es', _s = elab_exp_notation' env tid e not in
+  Ok (Il.CaseE (mixop, Il.TupE es' $$ e.at % t1) $$ e.at % t)
 
 and elab_exp_notation' env tid (e : exp) not : (Il.exp list * Il.Subst.t) attempt =
   Debug.(log_at "el.elab_exp_notation" e.at
@@ -2075,13 +2066,11 @@ and elab_exp_variant env tid (e : exp) (tcs : Il.typcase list) t at : Il.exp att
     | _ -> fail_typ env at "expression" t
   in
   let* atom = head e in
-  let* mixop, (qs, tC, _prems), _ = attempt (find_case_atom tcs atom atom.at) t in
-  let qs', _s = refresh_quants env qs in
-  let* xts = as_tup_typ "tuple" env Check ((*Il.Subst.subst_typ s*) tC) e.at in
+  let* mixop, (_qs, tC, _prems), _ = attempt (find_case_atom tcs atom atom.at) t in
+  let* xts = as_tup_typ "tuple" env Check tC e.at in
   let not = Mixop.apply mixop xts in
-  let* es', s = elab_exp_notation' env tid e not in
-  let _qas' = Il.Subst.subst_args s (il_args_of_params qs') in
-  Ok (Il.CaseE (mixop, [](*qas'*), tup_exp' es' e.at) $$ at % t)
+  let* es', _s = elab_exp_notation' env tid e not in
+  Ok (Il.CaseE (mixop, tup_exp' es' e.at) $$ at % t)
 
 
 (*
@@ -2114,11 +2103,8 @@ and elab_path' env (p : path) (t : Il.typ) : (Il.path' * Il.typ) attempt =
     let* tfs, dots = as_struct_typ "path" env Check t1 p1.at in
     if dots = Dots then
       error p1.at "used record type is only partially defined at this point";
-    let* _, (qs, tF, _prems), _ = attempt (find_field tfs atom p1.at) t1 in
-    let qs', _s = refresh_quants env qs in
-    let _qas' = il_args_of_params qs' in
-    let tF' = (*Il.Subst.subst_typ s*) tF in
-    Ok (Il.DotP (p1', elab_atom atom (expand_id env t1), [](*qas'*)), tF')
+    let* _, (_qs, tF, _prems), _ = attempt (find_field tfs atom p1.at) t1 in
+    Ok (Il.DotP (p1', elab_atom atom (expand_id env t1)), tF)
 
 
 and cast_empty phrase env (t : Il.typ) at : Il.exp attempt =
@@ -2176,24 +2162,18 @@ and cast_exp' phrase env (e' : Il.exp) t1 t2 : Il.exp' attempt =
 
   | Il.VarT (x1, _), Il.VarT (x2, _) ->
     (match expand_def env t1', expand_def env t2' with
-    | (Il.VariantT [mixop1, (qs1, tC1, _), _], NoDots),
-      (Il.VariantT [mixop2, (qs2, tC2, _), _], NoDots) ->
-      let qs1', _s1 = refresh_quants env qs1 in
-      let qs2', _s2 = refresh_quants env qs2 in
-      let tC1' = (*Il.Subst.subst_typ s1*) tC1 in
-      let tC2' = (*Il.Subst.subst_typ s2*) tC2 in
-      let _qas1' = il_args_of_params qs1' in
-      let _qas2' = il_args_of_params qs2' in
+    | (Il.VariantT [mixop1, (_qs1, tC1, _), _], NoDots),
+      (Il.VariantT [mixop2, (_qs2, tC2, _), _], NoDots) ->
       if mixop1 = mixop2 then
       (
         (* Two ConT's with the same operator can be cast pointwise *)
-        let ts1 = match tC1'.it with Il.TupT xts -> List.map snd xts | _ -> [tC1'] in
-        let ts2 = match tC2'.it with Il.TupT xts -> List.map snd xts | _ -> [tC2'] in
-        let e'' = Il.UncaseE (e', mixop1, [](*qas1'*)) $$ e'.at % tC1' in
+        let ts1 = match tC1.it with Il.TupT xts -> List.map snd xts | _ -> [tC1] in
+        let ts2 = match tC2.it with Il.TupT xts -> List.map snd xts | _ -> [tC2] in
+        let e'' = Il.UncaseE (e', mixop1) $$ e'.at % tC1 in
         let es' = List.mapi (fun i t1I -> Il.ProjE (e'', i) $$ e''.at % t1I) ts1 in
         let* es'' = map2_attempt (fun eI' (t1I, t2I) ->
           cast_exp phrase env eI' t1I t2I) es' (List.combine ts1 ts2) in
-        Ok (Il.CaseE (mixop2, [](*qas2'*), tup_exp' es'' e'.at))
+        Ok (Il.CaseE (mixop2, tup_exp' es'' e'.at))
       )
       else
       (
@@ -2207,9 +2187,9 @@ and cast_exp' phrase env (e' : Il.exp) t1 t2 : Il.exp' attempt =
             (il_typ (reduce env t2))
           )
         ) in
-        match expand env tC1' with
+        match expand env tC1 with
         | Il.TupT [_, t11'] ->
-          let e'' = Il.UncaseE (e', mixop1, [](*qas1'*)) $$ e'.at % t11' in
+          let e'' = Il.UncaseE (e', mixop1) $$ e'.at % t11' in
           cast_exp' phrase env (Il.ProjE (e'', 0) $$ e'.at % t11') t11' t2'
         | _ -> fail_typ2 env e'.at phrase t1 t2 ""
       )
@@ -2246,7 +2226,7 @@ and cast_exp' phrase env (e' : Il.exp) t1 t2 : Il.exp' attempt =
 
   | Il.VarT _, _ ->
     (match expand_def env t1' with
-    | Il.VariantT [mixop1, (qs1, tC1, _), _], NoDots ->
+    | Il.VariantT [mixop1, (_qs1, tC1, _), _], NoDots ->
       choice env [
         (fun env ->
           (* A ConT can always be cast to a (singleton) iteration *)
@@ -2270,12 +2250,9 @@ and cast_exp' phrase env (e' : Il.exp) t1 t2 : Il.exp' attempt =
               (il_typ (reduce env t2))
             )
           );
-          let qs1', _s1 = refresh_quants env qs1 in
-          let tC1' = (*Il.Subst.subst_typ s1*) tC1 in
-          let _qas1' = il_args_of_params qs1' in
-          match expand env tC1' with
+          match expand env tC1 with
           | Il.TupT [_, t11'] ->
-            let e'' = Il.UncaseE (e', mixop1, [](*qas1'*)) $$ e'.at % t11' in
+            let e'' = Il.UncaseE (e', mixop1) $$ e'.at % t11' in
             cast_exp' phrase env (Il.ProjE (e'', 0) $$ e'.at % t11') t11' t2'
           | _ -> fail_typ2 env e'.at phrase t1 t2 ""
         );
@@ -2287,15 +2264,12 @@ and cast_exp' phrase env (e' : Il.exp) t1 t2 : Il.exp' attempt =
 
   | _, Il.VarT _ ->
     (match expand_def env t2' with
-    | Il.VariantT [mixop2, (qs2, tC2, _), _], NoDots ->
+    | Il.VariantT [mixop2, (_qs2, tC2, _), _], NoDots ->
       (* A ConT payload can be cast to the ConT *)
-      let qs2', _s2 = refresh_quants env qs2 in
-      let tC2' = (*Il.Subst.subst_typ s2*) tC2 in
-      let _qas2' = il_args_of_params qs2' in
-      (match expand env tC2' with
+      (match expand env tC2 with
       | Il.TupT [_, t21'] ->
         let* e1' = cast_exp phrase env e' t1' t21' in
-        Ok (Il.CaseE (mixop2, [](*qas2'*), Il.TupE [e1'] $$ e'.at % tC2'))
+        Ok (Il.CaseE (mixop2, Il.TupE [e1'] $$ e'.at % tC2))
       | _ -> fail_typ2 env e'.at phrase t1 t2 ""
       )
 

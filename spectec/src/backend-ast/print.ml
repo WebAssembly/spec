@@ -109,7 +109,7 @@ and exp e =
   | UpdE (e1, p, e2) -> Node ("upd", [exp e1; path p; exp e2])
   | ExtE (e1, p, e2) -> Node ("ext", [exp e1; path p; exp e2])
   | StrE efs -> Node ("struct", List.map expfield efs)
-  | DotE (e1, at, as_) -> Node ("dot", [exp e1; mixop (Mixop.Atom at)] @ List.map arg as_)
+  | DotE (e1, at) -> Node ("dot", [exp e1; mixop (Mixop.Atom at)])
   | CompE (e1, e2) -> Node ("comp", [exp e1; exp e2])
   | MemE (e1, e2) -> Node ("mem", [exp e1; exp e2])
   | LenE e1 -> Node ("len", [exp e1])
@@ -117,8 +117,8 @@ and exp e =
   | CallE (x, as1) -> Node ("call", id x :: List.map arg as1)
   | IterE (e1, it) -> Node ("iter", [exp e1] @ iterexp it)
   | ProjE (e1, i) -> Node ("proj", [exp e1; Atom (string_of_int i)])
-  | CaseE (op, as_, e1) -> Node ("case", [mixop op] @ List.map arg as_ @ [exp e1])
-  | UncaseE (e1, op, as_) -> Node ("uncase", [exp e1; mixop op] @ List.map arg as_)
+  | CaseE (op, e1) -> Node ("case", [mixop op; exp e1])
+  | UncaseE (e1, op) -> Node ("uncase", [exp e1; mixop op])
   | OptE eo -> Node ("opt", List.map exp (Option.to_list eo))
   | TheE e1 -> Node ("unopt", [exp e1])
   | ListE es -> Node ("list", List.map exp es)
@@ -127,15 +127,15 @@ and exp e =
   | CvtE (e1, nt1, nt2) -> Node ("cvt", [numtyp nt1; numtyp nt2; exp e1])
   | SubE (e1, t1, t2) -> Node ("sub", [typ t1; typ t2; exp e1])
 
-and expfield (at, as_, e) =
-  Node ("field", [mixop (Mixop.Atom at)] @ List.map arg as_ @ [exp e])
+and expfield (at, e) =
+  Node ("field", [mixop (Mixop.Atom at); exp e])
 
 and path p =
   match p.it with
   | RootP -> Atom "root"
   | IdxP (p1, e) -> Node ("idx", [path p1; exp e])
   | SliceP (p1, e1, e2) -> Node ("slice", [path p1; exp e1; exp e2])
-  | DotP (p1, at, as_) -> Node ("dot", [path p1; mixop (Mixop.Atom at)] @ List.map arg as_)
+  | DotP (p1, at) -> Node ("dot", [path p1; mixop (Mixop.Atom at)])
 
 and iterexp (it, xes) =
   iter it :: List.map (fun (x, e) -> Node ("dom", [id x; exp e])) xes

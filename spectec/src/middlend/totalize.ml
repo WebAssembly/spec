@@ -86,15 +86,15 @@ and t_exp' env = function
   | SliceE (exp1, exp2, exp3) -> SliceE (t_exp env exp1, t_exp env exp2, t_exp env exp3)
   | UpdE (exp1, path, exp2) -> UpdE (t_exp env exp1, t_path env path, t_exp env exp2)
   | ExtE (exp1, path, exp2) -> ExtE (t_exp env exp1, t_path env path, t_exp env exp2)
-  | StrE fields -> StrE (List.map (fun (a, args, e) -> a, List.map (t_arg env) args, t_exp env e) fields)
-  | DotE (e, a, args) -> DotE (t_exp env e, a, List.map (t_arg env) args)
+  | StrE fields -> StrE (List.map (fun (a, e) -> a, t_exp env e) fields)
+  | DotE (e, a) -> DotE (t_exp env e, a)
   | CompE (exp1, exp2) -> CompE (t_exp env exp1, t_exp env exp2)
   | LenE exp -> LenE (t_exp env exp)
   | TupE es -> TupE (List.map (t_exp env) es)
   | CallE (a, args) -> CallE (a, List.map (t_arg env) args)
   | IterE (e, iterexp) -> IterE (t_exp env e, t_iterexp env iterexp)
   | ProjE (e, i) -> ProjE (t_exp env e, i)
-  | UncaseE (e, mixop, args) -> UncaseE (t_exp env e, mixop, List.map (t_arg env) args)
+  | UncaseE (e, mixop) -> UncaseE (t_exp env e, mixop)
   | OptE None -> OptE None
   | OptE (Some exp) -> OptE (Some (t_exp env exp))
   | TheE exp -> TheE (t_exp env exp)
@@ -102,7 +102,7 @@ and t_exp' env = function
   | LiftE exp -> LiftE (t_exp env exp)
   | CatE (exp1, exp2) -> CatE (t_exp env exp1, t_exp env exp2)
   | MemE (exp1, exp2) -> MemE (t_exp env exp1, t_exp env exp2)
-  | CaseE (mixop, args, e) -> CaseE (mixop, List.map (t_arg env) args, t_exp env e)
+  | CaseE (mixop, e) -> CaseE (mixop, t_exp env e)
   | CvtE (exp, t1, t2) -> CvtE (t_exp env exp, t1, t2)
   | SubE (exp, t1, t2) -> SubE (t_exp env exp, t_typ env t1, t_typ env t2)
 
@@ -117,7 +117,7 @@ and t_path' env = function
   | RootP -> RootP
   | IdxP (path, e) -> IdxP (t_path env path, t_exp env e)
   | SliceP (path, e1, e2) -> SliceP (t_path env path, t_exp env e1, t_exp env e2)
-  | DotP (path, a, args) -> DotP (t_path env path, a, List.map (t_arg env) args)
+  | DotP (path, a) -> DotP (t_path env path, a)
 
 and t_path env x = { x with it = t_path' env x.it; note = t_typ env x.note }
 

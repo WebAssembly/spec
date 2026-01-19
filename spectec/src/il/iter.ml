@@ -162,11 +162,11 @@ and exp e =
   | CmpE (op, ot, e1, e2) -> cmpop op; optyp ot; exp e1; exp e2
   | TupE es | ListE es -> list exp es
   | ProjE (e1, _) | TheE e1 | LiftE e1 | LenE e1 -> exp e1
-  | CaseE (op, as_, e1) -> mixop op; args as_; exp e1
-  | UncaseE (e1, op, as_) -> exp e1; mixop op; args as_
+  | CaseE (op, e1) -> mixop op; exp e1
+  | UncaseE (e1, op) -> exp e1; mixop op
   | OptE eo -> opt exp eo
   | StrE efs -> list expfield efs
-  | DotE (e1, at, as_) -> exp e1; atom at; args as_
+  | DotE (e1, at) -> exp e1; atom at
   | CompE (e1, e2) | MemE (e1, e2) | CatE (e1, e2) | IdxE (e1, e2) -> exp e1; exp e2
   | SliceE (e1, e2, e3) -> exp e1; exp e2; exp e3
   | UpdE (e1, p, e2) | ExtE (e1, p, e2) -> exp e1; path p; exp e2
@@ -175,7 +175,7 @@ and exp e =
   | CvtE (e1, nt1, nt2) -> exp e1; numtyp nt1; numtyp nt2
   | SubE (e1, t1, t2) -> exp e1; typ t1; typ t2
  
-and expfield (at, as_, e) = atom at; args as_; exp e
+and expfield (at, e) = atom at; exp e
 
 and path p =
   visit_path p;
@@ -183,7 +183,7 @@ and path p =
   | RootP -> ()
   | IdxP (p1, e) -> path p1; exp e
   | SliceP (p1, e1, e2) -> path p1; exp e1; exp e2
-  | DotP (p1, at, as_) -> path p1; atom at; args as_
+  | DotP (p1, at) -> path p1; atom at
 
 
 (* Grammars *)

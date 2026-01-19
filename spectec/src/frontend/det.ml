@@ -50,7 +50,7 @@ and det_exp e =
   | BinE (#Xl.Num.binop, _, e1, e2) | CatE (e1, e2) -> det_exp e1 ++ det_exp e2
   | OptE eo -> free_opt det_exp eo
   | ListE es | TupE es -> det_list det_exp es
-  | CaseE (_, as_, e1) | UncaseE (e1, _, as_) -> det_exp e1 ++ det_list det_arg as_
+  | CaseE (_, e1) | UncaseE (e1, _) -> det_exp e1
   | StrE efs -> det_list det_expfield efs
   | IterE (e1, ite) -> det_iterexp (det_exp e1) ite
   (* As a special hack to work with bijective functions,
@@ -61,7 +61,7 @@ and det_exp e =
   | IdxE _ | SliceE _ | UpdE _ | ExtE _ | CompE _ | MemE _
   | ProjE _ | DotE _ | LenE _ -> det_idx_exp e
 
-and det_expfield (_, as_, e) = det_list det_quant_arg as_ ++ det_exp e
+and det_expfield (_, e) = det_exp e
 
 and det_iterexp s1 (it, xes) =
   s1 -- free_list bound_varid (List.map fst xes) ++
@@ -90,8 +90,7 @@ and det_idx_exp e =
   ) @@ fun _ ->
   match e.it with
   | VarE _ -> empty
-  | LiftE e1 | SubE (e1, _, _) -> det_idx_exp e1
-  | CaseE (_, as_, e1) -> det_list det_quant_arg as_ ++ det_idx_exp e1
+  | LiftE e1 | SubE (e1, _, _) | CaseE (_, e1) -> det_idx_exp e1
   | OptE eo -> free_opt det_idx_exp eo
   | ListE es | TupE es -> det_list det_idx_exp es
   | StrE efs -> det_list det_idx_expfield efs
@@ -100,8 +99,8 @@ and det_idx_exp e =
   | IdxE (e1, e2) -> det_quant_exp e1 ++ det_exp e2
   | _ -> det_quant_exp e
 
-and det_idx_expfield (_, as_, e) =
-  det_list det_quant_arg as_ ++ det_idx_exp e
+and det_idx_expfield (_, e) =
+  det_idx_exp e
 
 and det_idx_iter iter =
   match iter with
@@ -133,16 +132,15 @@ and det_quant_exp e =
     det_quant_exp e1 ++ det_quant_exp e2 ++ det_quant_exp e3
   | UpdE (e1, p, e2) | ExtE (e1, p, e2) ->
     det_quant_exp e1 ++ det_quant_path p ++ det_quant_exp e2
-  | DotE (e1, _, as_) | CaseE (_, as_, e1) | UncaseE(e1, _, as_) ->
-    det_list det_arg as_ ++ det_quant_exp e1
+  | DotE (e1, _) | CaseE (_, e1) | UncaseE (e1, _) -> det_quant_exp e1
   | OptE eo -> free_opt det_quant_exp eo
   | ListE es | TupE es -> det_list det_quant_exp es
   | StrE efs -> det_list det_quant_expfield efs
   | IterE (e1, ite) -> det_quant_iterexp (det_quant_exp e1) ite
   | CallE (_, as_) -> det_list det_quant_arg as_
 
-and det_quant_expfield (_, as_, e) =
-  det_list det_quant_arg as_ ++ det_quant_exp e
+and det_quant_expfield (_, e) =
+  det_quant_exp e
 
 and det_quant_iterexp s1 (it, xes) =
   s1 -- free_list bound_varid (List.map fst xes) ++
@@ -156,7 +154,7 @@ and det_quant_path p =
   | IdxP (p1, e) -> det_quant_path p1 ++ det_quant_exp e
   | SliceP (p1, e1, e2) ->
     det_quant_path p1 ++ det_quant_exp e1 ++ det_quant_exp e2
-  | DotP (p1, _, as_) -> det_quant_path p1 ++ det_list det_quant_arg as_
+  | DotP (p1, _) -> det_quant_path p1
 
 and det_quant_iter iter =
   match iter with

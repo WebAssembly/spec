@@ -96,13 +96,12 @@ let rec t_exp env e : prem list =
   -> t_exp env exp1 @ t_path env path @ t_exp env exp2
   | CallE (_, args)
   -> List.concat_map (t_arg env) args
-  | CaseE (_, args, exp)
-  | UncaseE (exp, _, args)
-  | DotE (exp, _, args)
-  -> List.concat_map (t_arg env) args @ t_exp env exp
+  | CaseE (_, exp)
+  | UncaseE (exp, _)
+  | DotE (exp, _)
+  -> t_exp env exp
   | StrE fields
-  -> List.concat_map (fun (_, args, exp) ->
-    List.concat_map (t_arg env) args @ t_exp env exp) fields
+  -> List.concat_map (fun (_, exp) -> t_exp env exp) fields
   | TupE es | ListE es
   -> List.concat_map (t_exp env) es
   | IterE (e1, iterexp)
@@ -121,7 +120,7 @@ and t_path env path = match path.it with
   | RootP -> []
   | IdxP (path, e) -> t_path env path @ t_exp env e
   | SliceP (path, e1, e2) -> t_path env path @ t_exp env e1 @ t_exp env e2
-  | DotP (path, _, args) -> t_path env path @ List.concat_map (t_arg env) args
+  | DotP (path, _) -> t_path env path
 
 and t_arg env arg = match arg.it with
   | ExpA exp -> t_exp env exp

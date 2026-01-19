@@ -205,11 +205,10 @@ and check_exp dims ctx e =
     List.iter (check_exp dims ctx) es
   | StrE efs ->
     List.iter (check_expfield dims ctx) efs
-  | DotE (e1, _, as_)
-  | CaseE (_, as_, e1)
-  | UncaseE (e1, _, as_) ->
-    check_exp dims ctx e1;
-    List.iter (check_arg dims ctx) as_
+  | DotE (e1, _)
+  | CaseE (_, e1)
+  | UncaseE (e1, _) ->
+    check_exp dims ctx e1
   | CallE (_, as_) ->
     List.iter (check_arg dims ctx) as_
   | IterE (e1, ite) ->
@@ -219,9 +218,8 @@ and check_exp dims ctx e =
     check_typ dims ctx t1;
     check_typ dims ctx t2
 
-and check_expfield dims ctx (_, as_, e) =
-    List.iter (check_arg dims ctx) as_;
-    check_exp dims ctx e
+and check_expfield dims ctx (_, e) =
+  check_exp dims ctx e
 
 and check_path dims ctx p =
   match p.it with
@@ -233,9 +231,8 @@ and check_path dims ctx p =
     check_path dims ctx p1;
     check_exp dims ctx e1;
     check_exp dims ctx e2
-  | DotP (p1, _, as_) ->
-    check_path dims ctx p1;
-    List.iter (check_arg dims ctx) as_
+  | DotP (p1, _) ->
+    check_path dims ctx p1
 
 and check_sym dims ctx g =
   match g.it with
@@ -518,10 +515,9 @@ and annot_exp side dims e : exp * occur =
     | StrE efs ->
       let efs', occurs = List.split (List.map (annot_expfield side dims) efs) in
       StrE efs', List.fold_left union Map.empty occurs
-    | DotE (e1, atom, as_) ->
+    | DotE (e1, atom) ->
       let e1', occur1 = annot_exp side dims e1 in
-      let as', occurs = List.split (List.map (annot_arg dims) as_) in
-      DotE (e1', atom, as'), List.fold_left union occur1 occurs
+      DotE (e1', atom), occur1
     | CompE (e1, e2) ->
       let e1', occur1 = annot_exp side dims e1 in
       let e2', occur2 = annot_exp side dims e2 in
@@ -542,10 +538,9 @@ and annot_exp side dims e : exp * occur =
     | ProjE (e1, i) ->
       let e1', occur1 = annot_exp side dims e1 in
       ProjE (e1', i), occur1
-    | UncaseE (e1, op, as_) ->
+    | UncaseE (e1, op) ->
       let e1', occur1 = annot_exp side dims e1 in
-      let as', occurs = List.split (List.map (annot_arg dims) as_) in
-      UncaseE (e1', op, as'), List.fold_left union occur1 occurs
+      UncaseE (e1', op), occur1
     | OptE None ->
       OptE None, Map.empty
     | OptE (Some e1) ->
@@ -568,10 +563,9 @@ and annot_exp side dims e : exp * occur =
       let e1', occur1 = annot_exp side dims e1 in
       let e2', occur2 = annot_exp side dims e2 in
       CatE (e1', e2'), union occur1 occur2
-    | CaseE (atom, as_, e1) ->
-      let as', occurs = List.split (List.map (annot_arg dims) as_) in
+    | CaseE (atom, e1) ->
       let e1', occur1 = annot_exp side dims e1 in
-      CaseE (atom, as', e1'), List.fold_left union occur1 occurs
+      CaseE (atom, e1'), occur1
     | CvtE (e1, nt1, nt2) ->
       let e1', occur1 = annot_exp side dims e1 in
       CvtE (e1', nt1, nt2), occur1
@@ -582,10 +576,9 @@ and annot_exp side dims e : exp * occur =
       SubE (e1', t1', t2'), union occur1 (union occur2 occur3)
   in {e with it}, occur
 
-and annot_expfield side dims (atom, as_, e) : expfield * occur =
-  let as', occurs = List.split (List.map (annot_arg dims) as_) in
+and annot_expfield side dims (atom, e) : expfield * occur =
   let e', occur = annot_exp side dims e in
-  (atom, as', e'), List.fold_left union occur occurs
+  (atom, e'), occur
 
 and annot_path dims p : path * occur =
   let it, occur =
@@ -600,10 +593,9 @@ and annot_path dims p : path * occur =
       let e1', occur2 = annot_exp `Rhs dims e1 in
       let e2', occur3 = annot_exp `Rhs dims e2 in
       SliceP (p1', e1', e2'), union occur1 (union occur2 occur3)
-    | DotP (p1, atom, as_) ->
+    | DotP (p1, atom) ->
       let p1', occur1 = annot_path dims p1 in
-      let as', occurs = List.split (List.map (annot_arg dims) as_) in
-      DotP (p1', atom, as'), List.fold_left union occur1 occurs
+      DotP (p1', atom), occur1
   in {p with it}, occur
 
 and annot_sym dims g : sym * occur =
