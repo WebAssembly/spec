@@ -5,6 +5,7 @@ open Il.Free
 include Xl.Gen_free
 
 let det_list = free_list
+let det_list_dep = free_list_dep
 
 
 (* Iterations *)
@@ -25,10 +26,11 @@ and det_typ t =
   match t.it with
   | VarT (_x, as_) -> det_list det_arg as_
   | BoolT | NumT _ | TextT -> empty
-  | TupT xts -> det_list det_typbind xts
+  | TupT xts -> det_list_dep det_typbind bound_typbind xts
   | IterT (t1, iter) -> det_typ t1 ++ det_iter iter
 
-and det_typbind (x, t) = bound_varid x ++ det_typ t
+and det_typbind (_x, t) = det_typ t
+and bound_typbind (x, _t) = bound_varid x
 
 
 (* Expressions *)

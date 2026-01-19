@@ -492,8 +492,9 @@ and annot_exp side dims e : exp * occur =
       let e2', occur2 = annot_exp side dims e2 in
       BinE (op, nt, e1', e2'), union occur1 occur2
     | CmpE (op, nt, e1, e2) ->
-      let e1', occur1 = annot_exp side dims e1 in
-      let e2', occur2 = annot_exp side dims e2 in
+      let side' = if op = `EqOp then `Lhs else side in
+      let e1', occur1 = annot_exp side' dims e1 in
+      let e2', occur2 = annot_exp side' dims e2 in
       CmpE (op, nt, e1', e2'), union occur1 occur2
     | IdxE (e1, e2) ->
       let e1', occur1 = annot_exp side dims e1 in
@@ -721,7 +722,10 @@ let annot_arg = annot_top annot_arg
 let annot_param = annot_top annot_param
 
 
-(* Restriction *)
+(* Environment manipulation *)
+
+let union dims1 dims2 =
+  Map.union (fun _ _ y -> Some y) dims1 dims2
 
 let restrict dims bound =
   Map.filter Il.Free.(fun x _ -> Set.mem x bound.varid) dims

@@ -12,8 +12,6 @@ let error at msg = Error.error at "validation" msg
 
 (* Environment *)
 
-let local_env envr = ref !envr
-
 let find_field fs atom at =
   match List.find_opt (fun (atom', _, _) -> Eq.eq_atom atom' atom) fs with
   | Some (_, x, _) -> x
@@ -178,6 +176,10 @@ let valid_list valid_x_y env xs ys at =
       string_of_int (List.length ys) ^ ", got " ^ string_of_int (List.length xs));
   List.iter2 (valid_x_y env) xs ys
 
+let rec valid_binders valid_x env xs : Env.t =
+  match xs with
+  | [] -> env
+  | x::xs -> valid_binders valid_x (valid_x env x) xs
 
 let rec valid_iter ?(side = `Rhs) env iter : Env.t =
   match iter with
@@ -208,48 +210,51 @@ Printf.printf "[] %s %s\n%!" (Debug.il_typ t) (Debug.il_typ e.note);
 
 (* Types *)
 
-and valid_typ env t =
+and valid_typ env t = ignore (valid_typ_bind env t)
+
+and valid_typ_bind env t : Env.t =
   Debug.(log_at "il.valid_typ" t.at
     (fun _ -> fmt "%s" (il_typ t)) (Fun.const "ok")
   ) @@ fun _ ->
   match t.it with
   | VarT (id, as_) ->
     let ps, _insts = Env.find_typ env id in
-    ignore (valid_args env as_ ps Subst.empty t.at)
+    ignore (valid_args env as_ ps Subst.empty t.at);
+    env
   | BoolT
   | NumT _
   | TextT ->
-    ()
+    env
   | TupT [] ->
-    ()
-  | TupT ((x, t)::xts) ->
-    valid_typ env t;
-    valid_typ (Env.bind_var env x t) (TupT xts $ t.at)
+    env
+  | TupT ((x1, t1)::xts) ->
+    valid_typ env t1;
+    valid_typ_bind (Env.bind_var env x1 t1) (TupT xts $ t.at)
   | IterT (t1, iter) ->
     match iter with
     | ListN (e, _) -> error e.at "definite iterator not allowed in type"
     | _ ->
       let env' = valid_iter env iter in
-      valid_typ env' t1
+      valid_typ env' t1;
+      env
 
-and valid_deftyp envr dt =
+and valid_deftyp env dt =
   match dt.it with
   | AliasT t ->
-    valid_typ !envr t
+    valid_typ env t
   | StructT tfs ->
     check_mixops "record" "field" (List.map (fun (atom, _, _) -> Mixop.Atom atom) tfs) dt.at;
-    List.iter (valid_typfield envr) tfs
+    List.iter (valid_typfield env) tfs
   | VariantT tcs ->
     check_mixops "variant" "case" (List.map (fun (op, _, _) -> op) tcs) dt.at;
-    List.iter (valid_typcase envr) tcs
+    List.iter (valid_typcase env) tcs
 
-and valid_typfield envr (_atom, (qs, t, prems), _hints) =
-  let envr' = local_env envr in
-  List.iter (valid_quant envr') qs;
-  valid_typ !envr' t;
-  List.iter (valid_prem !envr') prems
+and valid_typfield env (_atom, (qs, t, prems), _hints) =
+  let env' = valid_typ_bind env t in
+  let env'' = valid_quants env' qs in
+  List.iter (valid_prem env'') prems
 
-and valid_typcase envr (mixop, (qs, t, prems), _hints) =
+and valid_typcase env (mixop, (qs, t, prems), _hints) =
   Debug.(log_at "il.valid_typcase" t.at
     (fun _ -> fmt "%s %s" (il_quants qs) (il_typ t))
     (fun _ -> "ok")
@@ -261,11 +266,10 @@ and valid_typcase envr (mixop, (qs, t, prems), _hints) =
   in
   if Mixop.arity mixop <> arity then
     error t.at ("inconsistent arity in mixin notation, `" ^ string_of_mixop mixop ^
-      "` applied to " ^ typ_string !envr t);
-  let envr' = local_env envr in
-  List.iter (valid_quant envr') qs;
-  valid_typ !envr' t;
-  List.iter (valid_prem !envr') prems
+      "` applied to " ^ typ_string env t);
+  let env' = valid_typ_bind env t in
+  let env'' = valid_quants env' qs in
+  List.iter (valid_prem env'') prems
 
 
 (* Expressions *)
@@ -289,11 +293,11 @@ and infer_exp (env : Env.t) e : typ =
   | ExtE (e1, _, _)
   | CompE (e1, _) -> infer_exp env e1
   | StrE _ -> error e.at "cannot infer type of record"
-  | DotE (e1, atom, as_) ->
+  | DotE (e1, atom, _as_) ->
     let tfs = as_struct_typ "expression" env Infer (infer_exp env e1) e1.at in
-    let qs, t, _prems = find_field tfs atom e1.at in
-    let s = valid_args env as_ qs Subst.empty e.at in
-    Subst.subst_typ s t
+    let _qs, t, _prems = find_field tfs atom e1.at in
+    (*let s = valid_args env as_ qs Subst.empty e.at in
+    Subst.subst_typ s*) t
   | TupE es ->
     TupT (List.map (fun eI -> "_" $ eI.at, infer_exp env eI) es) $ e.at
   | CallE (x, as_) ->
@@ -307,12 +311,12 @@ and infer_exp (env : Env.t) e : typ =
     let t1 = infer_exp env e1 in
     let xts = as_tup_typ "expression" env Infer t1 e1.at in
     proj_tup_typ i xts e1 e.at
-  | UncaseE (e1, op, as_) ->
+  | UncaseE (e1, op, _as_) ->
     let t1 = infer_exp env e1 in
     (match as_variant_typ "expression" env Infer t1 e1.at with
-    | [(op', (qs, t, _), _)] when Eq.eq_mixop op op' ->
-      let s = valid_args env as_ qs Subst.empty e.at in
-      Subst.subst_typ s t
+    | [(op', (_qs, t, _), _)] when Eq.eq_mixop op op' ->
+      (*let s = valid_args env as_ qs Subst.empty e.at in
+      Subst.subst_typ s*) t
     | _ -> error e.at "invalid case projection";
     )
   | OptE _ -> error e.at "cannot infer type of option"
@@ -411,13 +415,13 @@ try
   | StrE efs ->
     let tfs = as_struct_typ "record" env Check t e.at in
     valid_list (valid_expfield ~side) env efs tfs e.at
-  | DotE (e1, atom, as_) ->
+  | DotE (e1, atom, _as_) ->
     let t1 = infer_exp env e1 in
     valid_exp env e1 t1;
     let tfs = as_struct_typ "expression" env Check t1 e1.at in
-    let qs, t', _prems = find_field tfs atom e1.at in
-    let s = valid_args env as_ qs Subst.empty e.at in
-    equiv_typ env (Subst.subst_typ s t') t e.at
+    let _qs, t', _prems = find_field tfs atom e1.at in
+    (*let s = valid_args env as_ qs Subst.empty e.at in*)
+    equiv_typ env ((*Subst.subst_typ s*) t') t e.at
   | CompE (e1, e2) ->
     let _ = as_comp_typ "expression" env Check t e.at in
     valid_exp env e1 t;
@@ -461,13 +465,13 @@ try
     let side' = if List.length xts > 1 then `Rhs else side in
     valid_exp ~side:side' env e1 (TupT xts $ t1.at);
     equiv_typ env (proj_tup_typ i xts e1 e.at) t e.at
-  | UncaseE (e1, op, as_) ->
+  | UncaseE (e1, op, _as_) ->
     let t1 = infer_exp env e1 in
     valid_exp ~side env e1 t1;
     (match as_variant_typ "expression" env Infer t1 e1.at with
-    | [(op', (qs, t', _), _)] when Eq.eq_mixop op op' ->
-      let s = valid_args env as_ qs Subst.empty e.at in
-      equiv_typ env (Subst.subst_typ s t') t e.at
+    | [(op', (_qs, t', _), _)] when Eq.eq_mixop op op' ->
+      (*let s = valid_args env as_ qs Subst.empty e.at in*)
+      equiv_typ env ((*Subst.subst_typ s*) t') t e.at
     | _ -> error e.at "invalid case projection";
     )
   | OptE eo ->
@@ -490,11 +494,11 @@ try
     let _typ1 = as_iter_typ List "list" env Check t e.at in
     valid_exp env e1 t;
     valid_exp env e2 t
-  | CaseE (op, as_, e1) ->
+  | CaseE (op, _as_, e1) ->
     let cases = as_variant_typ "case" env Check t e.at in
-    let qs, t1, _prems = find_case cases op e1.at in
-    let s = valid_args env as_ qs Subst.empty e.at in
-    valid_exp ~side env e1 (Subst.subst_typ s t1)
+    let _qs, t1, _prems = find_case cases op e1.at in
+    (*let s = valid_args env as_ qs Subst.empty e.at in*)
+    valid_exp ~side env e1 ((*Subst.subst_typ s*) t1)
   | CvtE (e1, nt1, nt2) ->
     valid_exp ~side env e1 (NumT nt1 $ e1.at);
     equiv_typ env (NumT nt2 $e.at) t e.at;
@@ -526,8 +530,8 @@ and valid_expfield ~side env (atom1, as_, e) (atom2, (qs, t, _prems), _) =
     )
   );
   if not (Eq.eq_atom atom1 atom2) then error e.at "unexpected record field";
-  let s = valid_args env as_ qs Subst.empty e.at in
-  valid_exp ~side env e (Subst.subst_typ s t)
+  (*let s = valid_args env as_ qs Subst.empty e.at in*)
+  valid_exp ~side env e ((*Subst.subst_typ s*) t)
 
 and valid_path env p t : typ =
   valid_typ env t;
@@ -544,12 +548,12 @@ and valid_path env p t : typ =
       valid_exp env e2 (NumT `NatT $ e2.at);
       let _ = as_list_typ "path" env Check t1 p1.at in
       t1
-    | DotP (p1, atom, as_) ->
+    | DotP (p1, atom, _as_) ->
       let t1 = valid_path env p1 t in
       let tfs = as_struct_typ "path" env Check t1 p1.at in
-      let qs, t, _prems = find_field tfs atom p1.at in
-      let s = valid_args env as_ qs Subst.empty p.at in
-      Subst.subst_typ s t
+      let _qs, t, _prems = find_field tfs atom p1.at in
+      (*let s = valid_args env as_ qs Subst.empty p.at in
+      Subst.subst_typ s*) t
   in
   equiv_typ env p.note t' p.at;
   t'
@@ -664,51 +668,50 @@ and valid_args env as_ ps s at : Subst.t =
     let s' = valid_arg env a p s in
     valid_args env as' ps' s' at
 
-and valid_param envr p =
+and valid_param env p : Env.t =
   match p.it with
   | ExpP (x, t) ->
-    valid_typ !envr t;
-    envr := Env.bind_var !envr x t
+    valid_typ env t;
+    Env.bind_var env x t
   | TypP x ->
-    envr := Env.bind_typ !envr x ([], [])
+    Env.bind_typ env x ([], [])
   | DefP (x, ps, t) ->
-    let envr' = local_env envr in
-    List.iter (valid_param envr') ps;
-    valid_typ !envr' t;
-    envr := Env.bind_def !envr x (ps, t, [])
+    let env' = valid_params env ps in
+    valid_typ env' t;
+    Env.bind_def env x (ps, t, [])
   | GramP (x, ps, t) ->
-    let envr' = local_env envr in
-    List.iter (valid_param envr') ps;
-    valid_typ !envr' t;
-    envr := Env.bind_gram !envr x (ps, t, [])
+    let env' = valid_params env ps in
+    valid_typ env' t;
+    Env.bind_gram env x (ps, t, [])
 
-and valid_quant envr q = valid_param envr q
+and valid_quant env q = valid_param env q
 
-let valid_inst envr ps inst =
+and valid_params env ps = valid_binders valid_param env ps
+and valid_quants env qs = valid_binders valid_quant env qs
+
+let valid_inst env ps inst =
   Debug.(log_in "il.valid_inst" line);
   Debug.(log_in_at "il.valid_inst" inst.at
     (fun _ -> fmt "(%s) = ..." (il_params ps))
   );
   match inst.it with
   | InstD (qs, as_, dt) ->
-    let envr' = local_env envr in
-    List.iter (valid_quant envr') qs;
-    let _s = valid_args !envr' as_ ps Subst.empty inst.at in
-    valid_deftyp envr' dt
+    let env' = valid_quants env qs in
+    let _s = valid_args env' as_ ps Subst.empty inst.at in
+    valid_deftyp env' dt
 
-let valid_rule envr mixop t rule =
+let valid_rule env mixop t rule =
   Debug.(log_in "il.valid_rule" line);
   Debug.(log_in_at "il.valid_rule" rule.at
     (fun _ -> fmt "%s : %s = ..." (il_mixop mixop) (il_typ t))
   );
   match rule.it with
   | RuleD (_x, qs, mixop', e, prems) ->
-    let envr' = local_env envr in
-    List.iter (valid_quant envr') qs;
-    valid_expmix ~side:`Lhs !envr' mixop' e (mixop, t) e.at;
-    List.iter (valid_prem !envr') prems
+    let env' = valid_quants env qs in
+    valid_expmix ~side:`Lhs env' mixop' e (mixop, t) e.at;
+    List.iter (valid_prem env') prems
 
-let valid_clause envr x ps t clause =
+let valid_clause env x ps t clause =
   Debug.(log_in "il.valid_clause" line);
   Debug.(log_in_at "il.valid_clause" clause.at
     (fun _ -> fmt ": (%s) -> %s" (il_params ps) (il_typ t))
@@ -716,79 +719,71 @@ let valid_clause envr x ps t clause =
 try
   match clause.it with
   | DefD (qs, as_, e, prems) ->
-    let envr' = local_env envr in
-    List.iter (valid_quant envr') qs;
-    let s = valid_args !envr' as_ ps Subst.empty clause.at in
-    valid_exp !envr' e (Subst.subst_typ s t);
-    List.iter (valid_prem !envr') prems
+    let env' = valid_quants env qs in
+    let s = valid_args env' as_ ps Subst.empty clause.at in
+    valid_exp env' e (Subst.subst_typ s t);
+    List.iter (valid_prem env') prems
 with exn ->
   let bt = Printexc.get_raw_backtrace () in
   Printf.eprintf "[valid_clause] %s\n%!" (Debug.il_clause x clause);
   Printexc.raise_with_backtrace exn bt
 
-let valid_prod envr ps t prod =
+let valid_prod env ps t prod =
   Debug.(log_in "il.valid_prod" line);
   Debug.(log_in_at "il.valid_prod" prod.at
     (fun _ -> fmt ": (%s) -> %s" (il_params ps) (il_typ t))
   );
   match prod.it with
   | ProdD (qs, g, e, prems) ->
-    let envr' = local_env envr in
-    List.iter (valid_quant envr') qs;
-    let _t' = valid_sym !envr' g in
-    valid_exp !envr' e t;
-    List.iter (valid_prem !envr') prems
+    let env' = valid_quants env qs in
+    let _t' = valid_sym env' g in
+    valid_exp env' e t;
+    List.iter (valid_prem env') prems
 
-let infer_def envr d =
+let infer_def env d : Env.t =
   match d.it with
   | TypD (x, ps, _insts) ->
-    let envr' = local_env envr in
-    List.iter (valid_param envr') ps;
-    envr := Env.bind_typ !envr x (ps, [])
+    let _env' = valid_params env ps in
+    Env.bind_typ env x (ps, [])
   | RelD (x, mixop, t, rules) ->
-    valid_typcase envr (mixop, ([], t, []), []);
-    envr := Env.bind_rel !envr x (mixop, t, rules)
+    valid_typ env t;
+    Env.bind_rel env x (mixop, t, rules)
   | DecD (x, ps, t, clauses) ->
-    let envr' = local_env envr in
-    List.iter (valid_param envr') ps;
-    valid_typ !envr' t;
-    envr := Env.bind_def !envr x (ps, t, clauses)
+    let env' = valid_params env ps in
+    valid_typ env' t;
+    Env.bind_def env x (ps, t, clauses)
   | GramD (x, ps, t, prods) ->
-    let envr' = local_env envr in
-    List.iter (valid_param envr') ps;
-    valid_typ !envr' t;
-    envr := Env.bind_gram !envr x (ps, t, prods)
-  | _ -> ()
+    let env' = valid_params env ps in
+    valid_typ env' t;
+    Env.bind_gram env x (ps, t, prods)
+  | _ -> env
 
 
-let rec valid_def envr d =
+let rec valid_def env d : Env.t =
   Debug.(log_in "il.valid_def" line);
   Debug.(log_in_at "il.valid_def" d.at (fun _ -> il_def d));
   match d.it with
   | TypD (x, ps, insts) ->
-    let envr' = local_env envr in
-    List.iter (valid_param envr') ps;
-    List.iter (valid_inst envr ps) insts;
-    envr := Env.bind_typ !envr x (ps, insts);
+    let env' = valid_params env ps in
+    List.iter (valid_inst env' ps) insts;
+    Env.bind_typ env x (ps, insts);
   | RelD (x, mixop, t, rules) ->
-    valid_typcase envr (mixop, ([], t, []), []);
-    List.iter (valid_rule envr mixop t) rules;
-    envr := Env.bind_rel !envr x (mixop, t, rules)
+    valid_typcase env (mixop, ([], t, []), []);
+    List.iter (valid_rule env mixop t) rules;
+    Env.bind_rel env x (mixop, t, rules)
   | DecD (x, ps, t, clauses) ->
-    let envr' = local_env envr in
-    List.iter (valid_param envr') ps;
-    valid_typ !envr' t;
-    List.iter (valid_clause envr x ps t) clauses;
-    envr := Env.bind_def !envr x (ps, t, clauses)
+    let env' = valid_params env ps in
+    valid_typ env' t;
+    List.iter (valid_clause env' x ps t) clauses;
+    Env.bind_def env x (ps, t, clauses)
   | GramD (x, ps, t, prods) ->
-    let envr' = local_env envr in
-    List.iter (valid_param envr') ps;
-    valid_typ !envr' t;
-    List.iter (valid_prod envr' ps t) prods;
-    envr := Env.bind_gram !envr x (ps, t, prods)
+    let env' = valid_params env ps in
+    valid_typ env' t;
+    List.iter (valid_prod env' ps t) prods;
+    Env.bind_gram env x (ps, t, prods)
   | RecD ds ->
-    List.iter (infer_def envr) ds;
-    List.iter (valid_def envr) ds;
+    let env' = valid_binders infer_def env ds in
+    let env' = valid_binders valid_def env' ds in
     List.iter (fun d ->
       match (List.hd ds).it, d.it with
       | HintD _, _ | _, HintD _
@@ -799,13 +794,13 @@ let rec valid_def envr d =
       | _, _ ->
         error (List.hd ds).at (" " ^ string_of_region d.at ^
           ": invalid recursion between definitions of different sort")
-    ) ds
+    ) ds;
+    env'
   | HintD _ ->
-    ()
+    env
 
 
 (* Scripts *)
 
 let valid ds =
-  let envr = ref Env.empty in
-  List.iter (valid_def envr) ds
+  ignore (valid_binders valid_def Env.empty ds)

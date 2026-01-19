@@ -20,4 +20,5 @@ val annot_prem : dims -> prem -> prem
 val annot_arg : dims -> arg -> arg
 val annot_param : dims -> param -> param
 
+val union : dims -> dims -> dims
 val restrict : dims -> Il.Free.sets -> dims
