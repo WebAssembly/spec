@@ -46,10 +46,10 @@ and free_deftyp dt =
   | StructT tfs -> free_list free_typfield tfs
   | VariantT tcs -> free_list free_typcase tcs
 
-and free_typfield (_, (qs, t, prems), _) =
-  free_quants qs ++ (free_typ t ++ free_prems prems -- bound_quants qs -- bound_typ t)
-and free_typcase (_, (qs, t, prems), _) =
-  free_quants qs ++ (free_typ t ++ free_prems prems -- bound_quants qs -- bound_typ t)
+and free_typfield (_, (t, qs, prems), _) =
+  free_typ t ++ (free_quants qs ++ (free_prems prems -- bound_quants qs) -- bound_typ t)
+and free_typcase (_, (t, qs, prems), _) =
+  free_typ t ++ (free_quants qs ++ (free_prems prems -- bound_quants qs) -- bound_typ t)
 
 
 (* Expressions *)

@@ -1,11 +1,6 @@
 open Util.Source
 open Ast
 
-module Fresh =
-struct
-  let refresh_varid = ref (fun _ -> assert false)
-end
-
 
 (* Data Structure *)
 
@@ -100,12 +95,12 @@ and subst_iterexp : 'a. subst -> (subst -> 'a -> 'a) -> 'a -> _ -> 'a * _ =
   let it', xxts1 =
     match it with
     | ListN (e, Some x) ->
-      let x' = !Fresh.refresh_varid x in
+      let x' = Fresh.refresh_varid x in
       ListN (e, Some x'), [(x, x', NumT `NatT $ x.at)]
     | _ -> it, []
   in
   let it'' = subst_iter s it' in
-  let xes' = List.map (fun (x, e) -> !Fresh.refresh_varid x, subst_exp s e) xes in
+  let xes' = List.map (fun (x, e) -> Fresh.refresh_varid x, subst_exp s e) xes in
   let xxts = List.map2 (fun (x, _) (x', e') -> x, x', e'.note) xes xes' in
   let s' = 
     List.fold_left (fun s (x, x', t) ->
@@ -138,7 +133,7 @@ and subst_typ' s t =
 and subst_tup_typ s = function
   | [] -> [], s
   | (x, t)::xts ->
-    let x' = !Fresh.refresh_varid x in
+    let x' = Fresh.refresh_varid x in
     let t' = subst_typ s t in
     let s' = add_varid s x (VarE x' $$ x'.at % t') in
     let xts', s'' = subst_tup_typ s' xts in
@@ -151,15 +146,15 @@ and subst_deftyp s dt =
   | VariantT tcs -> VariantT (subst_list subst_typcase s tcs)
   ) $ dt.at
 
-and subst_typfield s (atom, (qs, t, prems), hints) =
-  let qs', s' = subst_quants s qs in
-  let t', s'' = subst_typ' s' t in
-  (atom, (qs', t', subst_list subst_prem s'' prems), hints)
+and subst_typfield s (atom, (t, qs, prems), hints) =
+  let t', s' = subst_typ' s t in
+  let qs', s'' = subst_quants s' qs in
+  (atom, (t', qs', subst_list subst_prem s'' prems), hints)
 
-and subst_typcase s (op, (qs, t, prems), hints) =
-  let qs', s' = subst_quants s qs in
-  let t', s'' = subst_typ' s' t in
-  (op, (qs', t', subst_list subst_prem s'' prems), hints)
+and subst_typcase s (op, (t, qs, prems), hints) =
+  let t', s' = subst_typ' s t in
+  let qs', s'' = subst_quants s' qs in
+  (op, (t', qs', subst_list subst_prem s'' prems), hints)
 
 
 (* Expressions *)

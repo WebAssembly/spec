@@ -132,10 +132,10 @@ and t_deftyp' env = function
   | StructT typfields -> StructT (List.map (t_typfield env) typfields)
   | VariantT typcases -> VariantT (List.map (t_typcase env) typcases)
 
-and t_typfield env (atom, (params, t, prems), hints) =
-  (atom, (t_params env params, t_typ env t, t_prems env prems), hints)
-and t_typcase env (atom, (params, t, prems), hints) =
-  (atom, (t_params env params, t_typ env t, t_prems env prems), hints)
+and t_typfield env (atom, (t, quants, prems), hints) =
+  (atom, (t_typ env t, t_params env quants, t_prems env prems), hints)
+and t_typcase env (atom, (t, quants, prems), hints) =
+  (atom, (t_typ env t, t_params env quants, t_prems env prems), hints)
 
 and t_exp2 env x = { x with it = t_exp' env x.it; note = t_typ env x.note }
 
@@ -323,7 +323,7 @@ let insert_injections env (def : def) : def list =
     let sub_ty = VarT (sub, List.map arg_of_param params_sub) $ no_region in
     let sup_ty = VarT (sup, List.map arg_of_param params_sup') $ no_region in
     let real_ty = VarT (real_id_sub, args_sub) $ no_region in
-    let clauses = List.map (fun (a, (_params, arg_typ, _prems), _hints) ->
+    let clauses = List.map (fun (a, (arg_typ, _quants, _prems), _hints) ->
       match arg_typ.it with
       | TupT ts ->
         let params = List.mapi (fun i (_, arg_typ_i) -> ExpP ("x" ^ string_of_int i $ no_region, arg_typ_i) $ no_region) ts in

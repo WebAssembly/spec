@@ -81,7 +81,7 @@ let rec as_comp_typ phrase env dir t at =
   match expand_typdef env t with
   | AliasT {it = IterT _; _} -> ()
   | StructT tfs ->
-    List.iter (fun (_, (_, t, _), _) -> as_comp_typ phrase env dir t at) tfs
+    List.iter (fun (_, (t, _, _), _) -> as_comp_typ phrase env dir t at) tfs
   | _ ->
     error at (phrase ^ "'s type `" ^ string_of_typ t ^ "` is not composable")
 
@@ -249,14 +249,14 @@ and valid_deftyp env dt =
     check_mixops "variant" "case" (List.map (fun (op, _, _) -> op) tcs) dt.at;
     List.iter (valid_typcase env) tcs
 
-and valid_typfield env (_atom, (qs, t, prems), _hints) =
+and valid_typfield env (_atom, (t, qs, prems), _hints) =
   let env' = valid_typ_bind env t in
   let env'' = valid_quants env' qs in
   List.iter (valid_prem env'') prems
 
-and valid_typcase env (mixop, (qs, t, prems), _hints) =
+and valid_typcase env (mixop, (t, qs, prems), _hints) =
   Debug.(log_at "il.valid_typcase" t.at
-    (fun _ -> fmt "%s %s" (il_quants qs) (il_typ t))
+    (fun _ -> fmt "%s" (il_typ t))
     (fun _ -> "ok")
   ) @@ fun _ ->
   let arity =
@@ -295,7 +295,7 @@ and infer_exp (env : Env.t) e : typ =
   | StrE _ -> error e.at "cannot infer type of record"
   | DotE (e1, atom) ->
     let tfs = as_struct_typ "expression" env Infer (infer_exp env e1) e1.at in
-    let _qs, t, _prems = find_field tfs atom e1.at in
+    let t, _qs, _prems = find_field tfs atom e1.at in
     t
   | TupE es ->
     TupT (List.map (fun eI -> "_" $ eI.at, infer_exp env eI) es) $ e.at
@@ -313,7 +313,7 @@ and infer_exp (env : Env.t) e : typ =
   | UncaseE (e1, op) ->
     let t1 = infer_exp env e1 in
     (match as_variant_typ "expression" env Infer t1 e1.at with
-    | [(op', (_, t, _), _)] when Eq.eq_mixop op op' -> t
+    | [(op', (t, _, _), _)] when Eq.eq_mixop op op' -> t
     | _ -> error e.at "invalid case projection";
     )
   | OptE _ -> error e.at "cannot infer type of option"
@@ -416,7 +416,7 @@ try
     let t1 = infer_exp env e1 in
     valid_exp env e1 t1;
     let tfs = as_struct_typ "expression" env Check t1 e1.at in
-    let _qs, t', _prems = find_field tfs atom e1.at in
+    let t', _qs, _prems = find_field tfs atom e1.at in
     equiv_typ env t' t e.at
   | CompE (e1, e2) ->
     let _ = as_comp_typ "expression" env Check t e.at in
@@ -465,7 +465,7 @@ try
     let t1 = infer_exp env e1 in
     valid_exp ~side env e1 t1;
     (match as_variant_typ "expression" env Infer t1 e1.at with
-    | [(op', (_qs, t', _), _)] when Eq.eq_mixop op op' ->
+    | [(op', (t', _, _), _)] when Eq.eq_mixop op op' ->
       equiv_typ env t' t e.at
     | _ -> error e.at "invalid case projection";
     )
@@ -491,7 +491,7 @@ try
     valid_exp env e2 t
   | CaseE (op, e1) ->
     let cases = as_variant_typ "case" env Check t e.at in
-    let _qs, t1, _prems = find_case cases op e1.at in
+    let t1, _qs, _prems = find_case cases op e1.at in
     valid_exp ~side env e1 t1
   | CvtE (e1, nt1, nt2) ->
     valid_exp ~side env e1 (NumT nt1 $ e1.at);
@@ -516,11 +516,11 @@ and valid_expmix ?(side = `Rhs) env mixop e (mixop', t) at =
     );
   valid_exp ~side env e t
 
-and valid_expfield ~side env (atom1, e) (atom2, (qs, t, _prems), _) =
+and valid_expfield ~side env (atom1, e) (atom2, (t, _qs, _prems), _) =
   Debug.(log_in_at "il.valid_expfield" e.at
-    (fun _ -> fmt "%s %s :%s %s%s %s"
+    (fun _ -> fmt "%s %s :%s %s %s"
       (il_atom atom1) (il_exp e) (il_side side)
-      (il_atom atom2) (il_quants qs) (il_typ t)
+      (il_atom atom2) (il_typ t)
     )
   );
   if not (Eq.eq_atom atom1 atom2) then error e.at "unexpected record field";
@@ -544,7 +544,7 @@ and valid_path env p t : typ =
     | DotP (p1, atom) ->
       let t1 = valid_path env p1 t in
       let tfs = as_struct_typ "path" env Check t1 p1.at in
-      let _qs, t, _prems = find_field tfs atom p1.at in
+      let t, _qs, _prems = find_field tfs atom p1.at in
       t
   in
   equiv_typ env p.note t' p.at;
@@ -760,7 +760,7 @@ let rec valid_def env d : Env.t =
     List.iter (valid_inst env' ps) insts;
     Env.bind_typ env x (ps, insts);
   | RelD (x, mixop, t, rules) ->
-    valid_typcase env (mixop, ([], t, []), []);
+    valid_typcase env (mixop, (t, [], []), []);
     List.iter (valid_rule env mixop t) rules;
     Env.bind_rel env x (mixop, t, rules)
   | DecD (x, ps, t, clauses) ->

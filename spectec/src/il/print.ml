@@ -95,15 +95,16 @@ and string_of_deftyp ?(layout = `H) dt =
   | VariantT tcs ->
     "\n  | " ^ concat "\n  | " (List.map (string_of_typcase ~layout) tcs)
 
-and string_of_typfield ?(layout = `H) (atom, (qs, t, prems), _hints) =
-  string_of_mixop (Mixop.Atom atom) ^
-  string_of_quants qs ^ " " ^ string_of_typ t ^
+and string_of_typfield ?(layout = `H) (atom, (t, qs, prems), _hints) =
+  string_of_mixop (Mixop.Atom atom) ^ " " ^ string_of_typ t ^
   if layout = `H && prems <> [] then " -- .." else
+    string_of_quants qs ^ " " ^
     concat "" (List.map (prefix "\n    -- " string_of_prem) prems)
 
-and string_of_typcase ?(layout = `H) (op, (qs, t, prems), _hints) =
-  string_of_mixop op ^ string_of_quants qs ^ string_of_typ_args t ^
+and string_of_typcase ?(layout = `H) (op, (t, qs, prems), _hints) =
+  string_of_mixop op ^ string_of_typ_args t ^
   if layout = `H && prems <> [] then " -- .." else
+    string_of_quants qs ^ " " ^
     concat "" (List.map (prefix "\n    -- " string_of_prem) prems)
 
 

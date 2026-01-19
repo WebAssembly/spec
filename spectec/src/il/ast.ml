@@ -40,8 +40,8 @@ and deftyp' =
   | StructT of typfield list     (* record type *)
   | VariantT of typcase list     (* variant type *)
 
-and typfield = atom * (quant list * typ * prem list) * hint list  (* record field *)
-and typcase = mixop * (quant list * typ * prem list) * hint list  (* variant case *)
+and typfield = atom * (typ * quant list * prem list) * hint list  (* record field *)
+and typcase = mixop * (typ * quant list * prem list) * hint list  (* variant case *)
 
 
 (* Expressions *)

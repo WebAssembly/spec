@@ -67,10 +67,10 @@ and t_deftyp' env = function
   | StructT typfields -> StructT (List.map (t_typfield env) typfields)
   | VariantT typcases -> VariantT (List.map (t_typcase env) typcases)
 
-and t_typfield env (atom, (params, t, prems), hints) =
-  (atom, (t_params env params, t_typ env t, t_prems env prems), hints)
-and t_typcase env (atom, (params, t, prems), hints) =
-  (atom, (t_params env params, t_typ env t, t_prems env prems), hints)
+and t_typfield env (atom, (t, quants, prems), hints) =
+  (atom, (t_typ env t, t_params env quants, t_prems env prems), hints)
+and t_typcase env (atom, (t, quants, prems), hints) =
+  (atom, (t_typ env t, t_params env quants, t_prems env prems), hints)
 
 
 (* Expr traversal *)

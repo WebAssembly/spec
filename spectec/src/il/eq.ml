@@ -54,11 +54,13 @@ and eq_deftyp dt1 dt2 =
   | VariantT tcs1, VariantT tcs2 -> eq_list eq_typcase tcs1 tcs2
   | _, _ -> false
 
-and eq_typfield (atom1, (_binds1, t1, prems1), _) (atom2, (_binds2, t2, prems2), _) =
-  eq_atom atom1 atom2 && eq_typ t1 t2 && eq_list eq_prem prems1 prems2
+and eq_typfield (atom1, (t1, qs1, prems1), _) (atom2, (t2, qs2, prems2), _) =
+  eq_atom atom1 atom2 && eq_typ t1 t2 &&
+  eq_list eq_param qs1 qs2 && eq_list eq_prem prems1 prems2
 
-and eq_typcase (op1, (_binds1, t1, prems1), _) (op2, (_binds2, t2, prems2), _) =
-  eq_mixop op1 op2 && eq_typ t1 t2 && eq_list eq_prem prems1 prems2
+and eq_typcase (op1, (t1, qs1, prems1), _) (op2, (t2, qs2, prems2), _) =
+  eq_mixop op1 op2 && eq_typ t1 t2 &&
+  eq_list eq_param qs1 qs2 && eq_list eq_prem prems1 prems2
 
 
 (* Expressions *)

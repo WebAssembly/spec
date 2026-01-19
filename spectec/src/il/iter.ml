@@ -120,18 +120,18 @@ and dots _ = ()
 and numtyp _nt = ()
 and optyp = function #Bool.typ -> () | #Num.typ as nt -> numtyp nt
 
-and typ ?(prems = []) t =
+and typ ?(quants = []) ?(prems = []) t =
   visit_typ t;
   match t.it with
   | VarT (x, as_) -> typid x; args as_
   | BoolT | TextT -> ()
   | NumT nt -> numtyp nt
-  | TupT [] -> list prem prems
+  | TupT [] -> params quants; list prem prems
   | TupT ((x, t)::xts) ->
     typ t;
     let scope = scope_enter x t in
     varid x;
-    typ (TupT xts $ t.at) ~prems;
+    typ (TupT xts $ t.at) ~quants ~prems;
     scope_exit x scope
   | IterT (t1, it) -> typ t1; iter it
 
@@ -142,10 +142,10 @@ and deftyp t =
   | StructT tfs -> list typfield tfs
   | VariantT tcs -> list typcase tcs
 
-and typfield (at, (ps, t, prems), hs) =
-  atom at; params ps; typ t ~prems; hints hs
-and typcase (op, (ps, t, prems), hs) =
-  mixop op; params ps; typ t ~prems; hints hs
+and typfield (at, (t, quants, prems), hs) =
+  atom at; typ t ~quants ~prems; hints hs
+and typcase (op, (t, quants, prems), hs) =
+  mixop op; typ t ~quants ~prems; hints hs
 
 
 (* Expressions *)

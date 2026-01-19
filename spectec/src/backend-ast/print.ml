@@ -86,11 +86,11 @@ and deftyp dt =
 and typbind (x, t) =
   Node ("bind", [id x; typ t])
 
-and typfield (at, (ps, t, prs), _hints) =
-  Node ("field", mixop (Mixop.Atom at) :: List.map param ps @ typ t :: List.map prem prs)
+and typfield (at, (t, qs, prs), _hints) =
+  Node ("field", mixop (Mixop.Atom at) :: typ t :: List.map param qs @ List.map prem prs)
 
-and typcase (op, (ps, t, prs), _hints) =
-  Node ("case", mixop op :: List.map param ps @ typ t :: List.map prem prs)
+and typcase (op, (t, qs, prs), _hints) =
+  Node ("case", mixop op :: typ t :: List.map param qs @ List.map prem prs)
 
 
 (* Expressions *)

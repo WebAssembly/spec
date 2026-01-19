@@ -921,16 +921,16 @@ and sub_typ env t1 t2 =
   | VarT _, VarT _ ->
     (match (reduce_typdef env t1').it, (reduce_typdef env t2').it with
     | StructT tfs1, StructT tfs2 ->
-      List.for_all (fun (atom, (_ps2, t2, prems2), _) ->
+      List.for_all (fun (atom, (t2, _qs2, prems2), _) ->
         match find_field tfs1 atom with
-        | Some (_ps1, t1, prems1) ->
+        | Some (t1, _qs1, prems1) ->
           sub_typ env t1 t2 && sub_prems env prems1 prems2
         | None -> false
       ) tfs2
     | VariantT tcs1, VariantT tcs2 ->
-      List.for_all (fun (mixop, (_ps1, t1, prems1), _) ->
+      List.for_all (fun (mixop, (t1, _qs1, prems1), _) ->
         match find_case tcs2 mixop with
-        | Some (_ps2, t2, prems2) ->
+        | Some (t2, _qs2, prems2) ->
           sub_typ env t1 t2 && sub_prems env prems1 prems2
         | None -> false
       ) tcs1
@@ -965,16 +965,16 @@ and disj_typ env t1 t2 =
     (match (reduce_typdef env t1).it, (reduce_typdef env t2).it with
     | StructT tfs1, StructT tfs2 ->
       unordered (atoms tfs1) (atoms tfs2) ||
-      List.exists (fun (atom, (_ps2, t2, _prems2), _) ->
+      List.exists (fun (atom, (t2, _qs2, _prems2), _) ->
         match find_field tfs1 atom with
-        | Some (_ps1, t1, _prems1) -> disj_typ env t1 t2
+        | Some (t1, _qs1, _prems1) -> disj_typ env t1 t2
         | None -> true
       ) tfs2
     | VariantT tcs1, VariantT tcs2 ->
       Set.disjoint (mixops tcs1) (mixops tcs2) ||
-      List.exists (fun (atom, (_ps1, t1, _prems1), _) ->
+      List.exists (fun (atom, (t1, _qs1, _prems1), _) ->
         match find_case tcs2 atom with
-        | Some (_ps2, t2, _prems2) -> disj_typ env t1 t2
+        | Some (t2, _qs2, _prems2) -> disj_typ env t1 t2
         | None -> false
       ) tcs1
     | _, _ -> true
