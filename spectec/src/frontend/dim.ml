@@ -79,7 +79,6 @@ let check_ctxs id ctxs : region * ctx =
   at, ctx
 
 let check_dims (dims : rdims ref) : dims =
-Printf.printf "[check_dims] %s\n%!" (Debug.domain !dims);
   Map.mapi check_ctxs !dims
 
 
@@ -96,12 +95,7 @@ let check_varid dims ctx mode id =
   dims := Map.add_to_list id.it (id.at, ctx, mode) !dims
 
 let uncheck_varid dims id =
-  let ctxs' = List.tl (Map.find id.it !dims) in
-  dims :=
-    if ctxs' = [] then
-      Map.remove id.it !dims
-    else
-      Map.add id.it ctxs' !dims
+  dims := Map.remove id.it !dims
 
 let rec check_iter dims ctx it =
   match it with
@@ -112,6 +106,10 @@ let rec check_iter dims ctx it =
 
 and check_iterexp : 'a. _ -> _ -> (_ -> _ -> 'a -> unit) -> 'a -> _ -> unit =
   fun dims ctx f body (it, xes) ->
+  Debug.(log "il.check_iterexp"
+    (fun _ -> fmt "%s |- %s" (domain !dims) (il_iterexp (it, xes)))
+    (fun _ -> domain !dims)
+  ) @@ fun _ ->
   check_iter dims ctx it;
   List.iter (fun (x, e) -> check_varid dims [] `Expl x; check_exp dims ctx e) xes;
   (* Only check body if iteration isn't annotated already.

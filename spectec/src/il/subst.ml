@@ -63,14 +63,6 @@ let rec subst_list_dep subst_x bound_x s = function
 
 (* Identifiers *)
 
-let subst_varid s x =
-  match Map.find_opt x.it s.varid with
-  | None -> x
-  | Some {it = VarE x'; _} -> x'
-  | Some e ->
-Printf.printf "!!!! e = %s\n%!" (Print.string_of_exp e);
-   raise (Invalid_argument "subst_varid")
-
 let subst_defid s x =
   match Map.find_opt x.it s.defid with
   | None -> x
@@ -88,7 +80,7 @@ let subst_gramid s x =
 let rec subst_iter s iter =
   match iter with
   | Opt | List | List1 -> iter
-  | ListN (e, xo) -> ListN (subst_exp s e, subst_opt subst_varid s xo)
+  | ListN (e, xo) -> ListN (subst_exp s e, xo)
 
 and subst_iterexp : 'a. subst -> (subst -> 'a -> 'a) -> 'a -> _ -> 'a * _ =
   fun s f body (it, xes) ->

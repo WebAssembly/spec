@@ -13,7 +13,7 @@ let det_list_dep = free_list_dep
 let rec det_iter iter =
   match iter with
   | Opt | List | List1 -> empty
-  | ListN (e, x_opt) -> det_exp e ++ free_opt bound_varid x_opt
+  | ListN (e, _xo) -> det_exp e
 
 
 (* Types *)
@@ -64,7 +64,7 @@ and det_exp e =
 and det_expfield (_, e) = det_exp e
 
 and det_iterexp s1 (it, xes) =
-  s1 -- free_list bound_varid (List.map fst xes) ++
+  s1 -- bound_iter it -- free_list bound_varid (List.map fst xes) ++
   det_iter it ++
   det_list det_exp (List.filter_map
     (fun (x, e) -> if Set.mem x.it s1.varid then Some e else None) xes)
@@ -143,7 +143,7 @@ and det_quant_expfield (_, e) =
   det_quant_exp e
 
 and det_quant_iterexp s1 (it, xes) =
-  s1 -- free_list bound_varid (List.map fst xes) ++
+  s1 -- bound_iter it -- free_list bound_varid (List.map fst xes) ++
   det_quant_iter it ++
   det_list det_exp (List.filter_map
     (fun (x, e) -> if Set.mem x.it s1.varid then Some e else None) xes)

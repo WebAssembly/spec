@@ -201,7 +201,6 @@ and valid_iterexp ?(side = `Rhs) env (it, xes) at : iter * Env.t =
   it',
   List.fold_left (fun env' (x, e) ->
     let t = infer_exp env e in
-Printf.printf "[] %s %s\n%!" (Debug.il_typ t) (Debug.il_typ e.note);
     valid_exp ~side env e t;
     let t1 = as_iter_typ it' "iterator" env Check t e.at in
     Env.bind_var env' x t1
@@ -348,14 +347,7 @@ and valid_exp ?(side = `Rhs) env e t =
     (fun _ -> fmt "%s :%s %s == %s" (il_exp e) (il_side side) (il_typ e.note) (il_typ t))
     (Fun.const "ok")
   ) @@ fun _ ->
-try
-  (try
-    valid_typ env t
-  with exn ->
-    let bt = Printexc.get_raw_backtrace () in
-    Printf.eprintf "[valid_exp] %s : %s\n%!" (Debug.il_exp e) (Debug.il_typ t);
-    Printexc.raise_with_backtrace exn bt
-  );
+  valid_typ env t;
   match e.it with
   | VarE x when x.it = "_" && side = `Lhs -> ()
   | VarE x ->
@@ -502,10 +494,6 @@ try
     valid_exp ~side env e1 t1;
     equiv_typ env t2 t e.at;
     sub_typ env t1 t2 e.at
-with exn ->
-  let bt = Printexc.get_raw_backtrace () in
-  Printf.eprintf "[valid_exp] %s\n%!" (Debug.il_exp e);
-  Printexc.raise_with_backtrace exn bt
 
 
 and valid_expmix ?(side = `Rhs) env mixop e (mixop', t) at =
@@ -706,19 +694,14 @@ let valid_rule env mixop t rule =
 let valid_clause env x ps t clause =
   Debug.(log_in "il.valid_clause" line);
   Debug.(log_in_at "il.valid_clause" clause.at
-    (fun _ -> fmt ": (%s) -> %s" (il_params ps) (il_typ t))
+    (fun _ -> fmt "%s : (%s) -> %s" (il_id x) (il_params ps) (il_typ t))
   );
-try
   match clause.it with
   | DefD (qs, as_, e, prems) ->
     let env' = valid_quants env qs in
     let s = valid_args env' as_ ps Subst.empty clause.at in
     valid_exp env' e (Subst.subst_typ s t);
     List.iter (valid_prem env') prems
-with exn ->
-  let bt = Printexc.get_raw_backtrace () in
-  Printf.eprintf "[valid_clause] %s\n%!" (Debug.il_clause x clause);
-  Printexc.raise_with_backtrace exn bt
 
 let valid_prod env ps t prod =
   Debug.(log_in "il.valid_prod" line);

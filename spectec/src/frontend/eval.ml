@@ -719,11 +719,6 @@ and equiv_arg env a1 a2 =
   Debug.(log "el.equiv_arg"
     (fun _ -> fmt "%s == %s" (el_arg a1) (el_arg a2)) Bool.to_string
   ) @@ fun _ ->
-  (*
-  Printf.eprintf "[el.equiv_arg] %s == %s\n%!"
-    (Print.string_of_arg a1)
-    (Print.string_of_arg a2);
-  *)
   match !(a1.it), !(a2.it) with
   | ExpA e1, ExpA e2 -> equiv_exp env e1 e2
   | TypA t1, TypA t2 -> equiv_typ env t1 t2

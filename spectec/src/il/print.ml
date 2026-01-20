@@ -19,13 +19,11 @@ let is_alphanum = function
   | '0'..'9'
   | 'A'..'Z'
   | 'a'..'z'
-  | '_' | '.' | '\'' | '#' -> true
+  | '_' | '\'' | '#' -> true
   | _ -> false
 
 let string_of_id x =
-  if String.for_all is_alphanum x.it
-  then x.it
-  else "`" ^ x.it ^ "`"
+  if String.for_all is_alphanum x.it then x.it else "`" ^ x.it ^ "`"
 
 
 (* Operators *)
@@ -43,7 +41,9 @@ let string_of_cmpop = function
   | #Num.cmpop as op -> Num.string_of_cmpop op
 
 let string_of_atom = Atom.to_string
-let string_of_mixop mixop = "`" ^ Mixop.to_string mixop ^ "`"
+let string_of_mixop mixop =
+  let s = Mixop.to_string mixop in
+  if String.for_all is_alphanum s then s else "`" ^ s ^ "`"
 
 
 (* Types *)
@@ -97,15 +97,17 @@ and string_of_deftyp ?(layout = `H) dt =
 
 and string_of_typfield ?(layout = `H) (atom, (t, qs, prems), _hints) =
   string_of_mixop (Mixop.Atom atom) ^ " " ^ string_of_typ t ^
-  if layout = `H && prems <> [] then " -- .." else
-    string_of_quants qs ^ " " ^
-    concat "" (List.map (prefix "\n    -- " string_of_prem) prems)
+  if prems = [] then "" else
+  if layout = `H then " -- .." else
+  (if qs = [] then "" else " " ^ string_of_quants qs) ^
+  concat "" (List.map (prefix "\n    -- " string_of_prem) prems)
 
 and string_of_typcase ?(layout = `H) (op, (t, qs, prems), _hints) =
   string_of_mixop op ^ string_of_typ_args t ^
-  if layout = `H && prems <> [] then " -- .." else
-    string_of_quants qs ^ " " ^
-    concat "" (List.map (prefix "\n    -- " string_of_prem) prems)
+  if prems = [] then "" else
+  if layout = `H then " -- .." else
+  (if qs = [] then "" else " " ^ string_of_quants qs) ^
+  concat "" (List.map (prefix "\n    -- " string_of_prem) prems)
 
 
 (* Expressions *)
@@ -301,8 +303,8 @@ let string_of_prod ?(suppress_pos = false) prod =
 let rec string_of_def ?(suppress_pos = false) d =
   let pre = "\n" ^ region_comment ~suppress_pos "" d.at in
   match d.it with
-  | TypD (x, _ps, [{it = InstD (ps, as_, dt); _}]) ->
-    pre ^ "syntax " ^ string_of_id x ^ string_of_params ps ^ string_of_args as_ ^ " = " ^
+  | TypD (x, _ps, [{it = InstD (qs, as_, dt); _}]) ->
+    pre ^ "syntax " ^ string_of_id x ^ string_of_quants qs ^ string_of_args as_ ^ " = " ^
       string_of_deftyp ~layout: `V dt ^ "\n"
   | TypD (x, ps, insts) ->
     pre ^ "syntax " ^ string_of_id x ^ string_of_params ps ^
