@@ -2495,8 +2495,10 @@ $$
 & {\mathit{u{\kern-0.1em\scriptstyle 31}}} & ::= & {u}{\mathsf{{\scriptstyle 31}}} \\
 & {\mathit{u{\kern-0.1em\scriptstyle 32}}} & ::= & {u}{\mathsf{{\scriptstyle 32}}} \\
 & {\mathit{u{\kern-0.1em\scriptstyle 64}}} & ::= & {u}{\mathsf{{\scriptstyle 64}}} \\
-& {\mathit{u{\kern-0.1em\scriptstyle 128}}} & ::= & {u}{\mathsf{{\scriptstyle 128}}} \\
 & {\mathit{s{\kern-0.1em\scriptstyle 33}}} & ::= & {s}{\mathsf{{\scriptstyle 33}}} \\
+& {\mathit{i{\kern-0.1em\scriptstyle 32}}} & ::= & {i}{\mathsf{{\scriptstyle 32}}} \\
+& {\mathit{i{\kern-0.1em\scriptstyle 64}}} & ::= & {i}{\mathsf{{\scriptstyle 64}}} \\
+& {\mathit{i{\kern-0.1em\scriptstyle 128}}} & ::= & {i}{\mathsf{{\scriptstyle 128}}} \\
 \end{array}
 $$
 
@@ -11203,7 +11205,7 @@ $$
 & & | & n{:}{\mathtt{byte}}~~m{:}{{\mathtt{u}}}{(N - 7)} & \quad\Rightarrow\quad{} & {2^{7}} \cdot m + (n - {2^{7}}) & \quad \mbox{if}~ n \geq {2^{7}} \land N > 7 \\
 & {{\mathtt{s}}}{N} & ::= & n{:}{\mathtt{byte}} & \quad\Rightarrow\quad{} & n & \quad \mbox{if}~ n < {2^{6}} \land n < {2^{N - 1}} \\
 & & | & n{:}{\mathtt{byte}} & \quad\Rightarrow\quad{} & n - {2^{7}} & \quad \mbox{if}~ {2^{6}} \leq n < {2^{7}} \land n \geq {2^{7}} - {2^{N - 1}} \\
-& & | & n{:}{\mathtt{byte}}~~i{:}{{\mathtt{u}}}{(N - 7)} & \quad\Rightarrow\quad{} & {2^{7}} \cdot i + (n - {2^{7}}) & \quad \mbox{if}~ n \geq {2^{7}} \land N > 7 \\
+& & | & n{:}{\mathtt{byte}}~~i{:}{{\mathtt{s}}}{(N - 7)} & \quad\Rightarrow\quad{} & {2^{7}} \cdot i + (n - {2^{7}}) & \quad \mbox{if}~ n \geq {2^{7}} \land N > 7 \\
 & {{\mathtt{i}}}{N} & ::= & i{:}{{\mathtt{s}}}{N} & \quad\Rightarrow\quad{} & {{{{\mathrm{signed}}}_{N}^{{-1}}}}{(i)} \\
 \end{array}
 $$
@@ -11220,11 +11222,13 @@ $$
 
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
-& {\mathtt{u32}} & ::= & n{:}{{\mathtt{u}}}{32} & \quad\Rightarrow\quad{} & n \\
-& {\mathtt{u64}} & ::= & n{:}{{\mathtt{u}}}{64} & \quad\Rightarrow\quad{} & n \\
-& {\mathtt{s33}} & ::= & i{:}{{\mathtt{s}}}{33} & \quad\Rightarrow\quad{} & i \\
-& {\mathtt{f32}} & ::= & p{:}{{\mathtt{f}}}{32} & \quad\Rightarrow\quad{} & p \\
-& {\mathtt{f64}} & ::= & p{:}{{\mathtt{f}}}{64} & \quad\Rightarrow\quad{} & p \\
+& {\mathtt{u32}} & ::= & {{\mathtt{u}}}{32} \\
+& {\mathtt{u64}} & ::= & {{\mathtt{u}}}{64} \\
+& {\mathtt{s33}} & ::= & {{\mathtt{s}}}{33} \\
+& {\mathtt{i32}} & ::= & {{\mathtt{u}}}{32} \\
+& {\mathtt{i64}} & ::= & {{\mathtt{u}}}{64} \\
+& {\mathtt{f32}} & ::= & {{\mathtt{f}}}{32} \\
+& {\mathtt{f64}} & ::= & {{\mathtt{f}}}{64} \\
 \end{array}
 $$
 
@@ -11569,8 +11573,8 @@ $$
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
 & {\mathtt{instr}} & ::= & \dots \\
-& & | & \mathtt{0x41}~~n{:}{\mathtt{u32}} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n \\
-& & | & \mathtt{0x42}~~n{:}{\mathtt{u64}} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 64}}{.}\mathsf{const}~n \\
+& & | & \mathtt{0x41}~~i{:}{\mathtt{i32}} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i \\
+& & | & \mathtt{0x42}~~i{:}{\mathtt{i64}} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 64}}{.}\mathsf{const}~i \\
 & & | & \mathtt{0x43}~~p{:}{\mathtt{f32}} & \quad\Rightarrow\quad{} & \mathsf{f{\scriptstyle 32}}{.}\mathsf{const}~p \\
 & & | & \mathtt{0x44}~~p{:}{\mathtt{f64}} & \quad\Rightarrow\quad{} & \mathsf{f{\scriptstyle 64}}{.}\mathsf{const}~p \\
 & & | & \mathtt{0x45} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 32}} {.} \mathsf{eqz} \\
@@ -12379,7 +12383,6 @@ $$
 & {\mathtt{i16}} & ::= & {{\mathtt{i}}}{\mathsf{{\scriptstyle 16}}} \\
 & {\mathtt{i32}} & ::= & {{\mathtt{i}}}{\mathsf{{\scriptstyle 32}}} \\
 & {\mathtt{i64}} & ::= & {{\mathtt{i}}}{\mathsf{{\scriptstyle 64}}} \\
-& {\mathtt{i128}} & ::= & {{\mathtt{i}}}{\mathsf{{\scriptstyle 128}}} \\
 & {\mathtt{f32}} & ::= & {{\mathtt{f}}}{\mathsf{{\scriptstyle 32}}} \\
 & {\mathtt{f64}} & ::= & {{\mathtt{f}}}{\mathsf{{\scriptstyle 64}}} \\
 \end{array}

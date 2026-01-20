@@ -4448,6 +4448,8 @@ DecD ND : bool
 [check_dims]
 [check_dims]
 [check_dims]
+[check_dims]
+[check_dims]
 [check_dims] N
 DecD signif(N : N) : nat
 [visit_id N] not free
@@ -58894,16 +58896,17 @@ dims \ N = n
 [visit_exp 1]
 [check_dims] N i n
 dims \ N = i, n
-[visit_exp `%`_sN(((((2 ^ 7) * i!`%`_uN.0) + (((n : nat <:> int) - ((2 ^ 7) : nat <:> int)) : int <:> nat)) : nat <:> int))]
-[visit_exp (((((2 ^ 7) * i!`%`_uN.0) + (((n : nat <:> int) - ((2 ^ 7) : nat <:> int)) : int <:> nat)) : nat <:> int))]
-[visit_exp ((((2 ^ 7) * i!`%`_uN.0) + (((n : nat <:> int) - ((2 ^ 7) : nat <:> int)) : int <:> nat)) : nat <:> int)]
-[visit_exp (((2 ^ 7) * i!`%`_uN.0) + (((n : nat <:> int) - ((2 ^ 7) : nat <:> int)) : int <:> nat))]
-[visit_exp ((2 ^ 7) * i!`%`_uN.0)]
+[visit_exp `%`_sN(((((2 ^ 7) * (i!`%`_sN.0 : int <:> nat)) + (((n : nat <:> int) - ((2 ^ 7) : nat <:> int)) : int <:> nat)) : nat <:> int))]
+[visit_exp (((((2 ^ 7) * (i!`%`_sN.0 : int <:> nat)) + (((n : nat <:> int) - ((2 ^ 7) : nat <:> int)) : int <:> nat)) : nat <:> int))]
+[visit_exp ((((2 ^ 7) * (i!`%`_sN.0 : int <:> nat)) + (((n : nat <:> int) - ((2 ^ 7) : nat <:> int)) : int <:> nat)) : nat <:> int)]
+[visit_exp (((2 ^ 7) * (i!`%`_sN.0 : int <:> nat)) + (((n : nat <:> int) - ((2 ^ 7) : nat <:> int)) : int <:> nat))]
+[visit_exp ((2 ^ 7) * (i!`%`_sN.0 : int <:> nat))]
 [visit_exp (2 ^ 7)]
 [visit_exp 2]
 [visit_exp 7]
-[visit_exp i!`%`_uN.0]
-[visit_exp i!`%`_uN]
+[visit_exp (i!`%`_sN.0 : int <:> nat)]
+[visit_exp i!`%`_sN.0]
+[visit_exp i!`%`_sN]
 [visit_exp i]
 [visit_id i]
 [visit_exp (((n : nat <:> int) - ((2 ^ 7) : nat <:> int)) : int <:> nat)]
@@ -59005,56 +59008,66 @@ dims \ N = b
 [visit_id N] not free
 ps' =
 [check_dims]
-[check_dims] n
-dims \  = n
-[visit_exp `%`_u32(n)]
-[visit_exp (n)]
-[visit_exp n]
-[visit_id n]
-[visit_exp `%`_uN(n)]
-[visit_exp (n)]
-[visit_exp n]
-[visit_id n] not free
+[check_dims] <implicit-prod-result>
+dims \  = <implicit-prod-result>
+[visit_exp `<implicit-prod-result>`]
+[visit_id <implicit-prod-result>]
+[visit_exp `<implicit-prod-result>`]
+[visit_id <implicit-prod-result>] not free
 [visit_exp 32]
 ps' =
 [check_dims]
-[check_dims] n
-dims \  = n
-[visit_exp `%`_u64(n)]
-[visit_exp (n)]
-[visit_exp n]
-[visit_id n]
-[visit_exp `%`_uN(n)]
-[visit_exp (n)]
-[visit_exp n]
-[visit_id n] not free
+[check_dims] <implicit-prod-result>
+dims \  = <implicit-prod-result>
+[visit_exp `<implicit-prod-result>`]
+[visit_id <implicit-prod-result>]
+[visit_exp `<implicit-prod-result>`]
+[visit_id <implicit-prod-result>] not free
 [visit_exp 64]
 ps' =
 [check_dims]
-[check_dims] i
-dims \  = i
-[visit_exp i]
-[visit_id i]
-[visit_exp i]
-[visit_id i] not free
+[check_dims] <implicit-prod-result>
+dims \  = <implicit-prod-result>
+[visit_exp `<implicit-prod-result>`]
+[visit_id <implicit-prod-result>]
+[visit_exp `<implicit-prod-result>`]
+[visit_id <implicit-prod-result>] not free
 [visit_exp 33]
 ps' =
 [check_dims]
-[check_dims] p
-dims \  = p
-[visit_exp p]
-[visit_id p]
-[visit_exp p]
-[visit_id p] not free
+[check_dims] <implicit-prod-result>
+dims \  = <implicit-prod-result>
+[visit_exp `<implicit-prod-result>`]
+[visit_id <implicit-prod-result>]
+[visit_exp `<implicit-prod-result>`]
+[visit_id <implicit-prod-result>] not free
 [visit_exp 32]
 ps' =
 [check_dims]
-[check_dims] p
-dims \  = p
-[visit_exp p]
-[visit_id p]
-[visit_exp p]
-[visit_id p] not free
+[check_dims] <implicit-prod-result>
+dims \  = <implicit-prod-result>
+[visit_exp `<implicit-prod-result>`]
+[visit_id <implicit-prod-result>]
+[visit_exp `<implicit-prod-result>`]
+[visit_id <implicit-prod-result>] not free
+[visit_exp 64]
+ps' =
+[check_dims]
+[check_dims] <implicit-prod-result>
+dims \  = <implicit-prod-result>
+[visit_exp `<implicit-prod-result>`]
+[visit_id <implicit-prod-result>]
+[visit_exp `<implicit-prod-result>`]
+[visit_id <implicit-prod-result>] not free
+[visit_exp 32]
+ps' =
+[check_dims]
+[check_dims] <implicit-prod-result>
+dims \  = <implicit-prod-result>
+[visit_exp `<implicit-prod-result>`]
+[visit_id <implicit-prod-result>]
+[visit_exp `<implicit-prod-result>`]
+[visit_id <implicit-prod-result>] not free
 [visit_exp 64]
 ps' = (syntax el, grammar BX : el)
 [check_dims] el
@@ -61888,34 +61901,26 @@ dims \  =
 [visit_exp 30]
 ps' =
 [check_dims]
-[check_dims] n
-dims \  = n
-[visit_exp `CONST`_instr(`I32`_numtype, `%`_num_(n))]
-[visit_exp (`I32`_numtype, `%`_num_(n))]
+[check_dims] i
+dims \  = i
+[visit_exp `CONST`_instr(`I32`_numtype, i)]
+[visit_exp (`I32`_numtype, i)]
 [visit_exp `I32`_numtype]
 [visit_exp ()]
-[visit_exp `%`_num_(n)]
-[visit_exp (n)]
-[visit_exp n]
-[visit_id n]
-[visit_exp `%`_u32(n)]
-[visit_exp (n)]
-[visit_exp n]
-[visit_id n] not free
-[check_dims] n
-dims \  = n
-[visit_exp `CONST`_instr(`I64`_numtype, `%`_num_(n))]
-[visit_exp (`I64`_numtype, `%`_num_(n))]
+[visit_exp i]
+[visit_id i]
+[visit_exp i]
+[visit_id i] not free
+[check_dims] i
+dims \  = i
+[visit_exp `CONST`_instr(`I64`_numtype, i)]
+[visit_exp (`I64`_numtype, i)]
 [visit_exp `I64`_numtype]
 [visit_exp ()]
-[visit_exp `%`_num_(n)]
-[visit_exp (n)]
-[visit_exp n]
-[visit_id n]
-[visit_exp `%`_u64(n)]
-[visit_exp (n)]
-[visit_exp n]
-[visit_id n] not free
+[visit_exp i]
+[visit_id i]
+[visit_exp i]
+[visit_id i] not free
 [check_dims] p
 dims \  = p
 [visit_exp `CONST`_instr(`F32`_numtype, p)]
@@ -70875,15 +70880,6 @@ dims \  = <implicit-prod-result>
 [visit_exp `<implicit-prod-result>`]
 [visit_id <implicit-prod-result>] not free
 [visit_exp 64]
-ps' =
-[check_dims]
-[check_dims] <implicit-prod-result>
-dims \  = <implicit-prod-result>
-[visit_exp `<implicit-prod-result>`]
-[visit_id <implicit-prod-result>]
-[visit_exp `<implicit-prod-result>`]
-[visit_id <implicit-prod-result>] not free
-[visit_exp 128]
 ps' =
 [check_dims]
 [check_dims] <implicit-prod-result>
@@ -87025,10 +87021,16 @@ syntax u32 = uN(32)
 syntax u64 = uN(64)
 
 ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec
-syntax u128 = uN(128)
+syntax s33 = sN(33)
 
 ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec
-syntax s33 = sN(33)
+syntax i32 = iN(32)
+
+;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec
+syntax i64 = iN(64)
+
+;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec
+syntax i128 = iN(128)
 
 ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec
 def $signif(N : N) : nat
@@ -87123,23 +87125,23 @@ def $cont(byte : byte) : nat
 ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec
 rec {
 
-;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:89.1-89.25
+;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:91.1-91.25
 def $utf8(char*) : byte*
-  ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec:48.1-48.44
+  ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec:52.1-52.44
   def $utf8{`ch*` : char*}(ch*{ch <- `ch*`}) = $concat_(syntax byte, $utf8([ch])*{ch <- `ch*`})
-  ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec:49.1-51.15
+  ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec:53.1-55.15
   def $utf8{ch : char, b : byte}([ch]) = [b]
     -- if (ch!`%`_char.0 < 128)
     -- if (`%`_byte(ch!`%`_char.0) = b)
-  ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec:52.1-54.46
+  ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec:56.1-58.46
   def $utf8{ch : char, b_1 : byte, b_2 : byte}([ch]) = [b_1 b_2]
     -- if ((128 <= ch!`%`_char.0) /\ (ch!`%`_char.0 < 2048))
     -- if (ch!`%`_char.0 = (((2 ^ 6) * (((b_1!`%`_byte.0 : nat <:> int) - (192 : nat <:> int)) : int <:> nat)) + $cont(b_2)))
-  ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec:55.1-57.64
+  ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec:59.1-61.64
   def $utf8{ch : char, b_1 : byte, b_2 : byte, b_3 : byte}([ch]) = [b_1 b_2 b_3]
     -- if (((2048 <= ch!`%`_char.0) /\ (ch!`%`_char.0 < 55296)) \/ ((57344 <= ch!`%`_char.0) /\ (ch!`%`_char.0 < 65536)))
     -- if (ch!`%`_char.0 = ((((2 ^ 12) * (((b_1!`%`_byte.0 : nat <:> int) - (224 : nat <:> int)) : int <:> nat)) + ((2 ^ 6) * $cont(b_2))) + $cont(b_3)))
-  ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec:58.1-60.82
+  ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec:62.1-64.82
   def $utf8{ch : char, b_1 : byte, b_2 : byte, b_3 : byte, b_4 : byte}([ch]) = [b_1 b_2 b_3 b_4]
     -- if ((65536 <= ch!`%`_char.0) /\ (ch!`%`_char.0 < 69632))
     -- if (ch!`%`_char.0 = (((((2 ^ 18) * (((b_1!`%`_byte.0 : nat <:> int) - (240 : nat <:> int)) : int <:> nat)) + ((2 ^ 12) * $cont(b_2))) + ((2 ^ 6) * $cont(b_3))) + $cont(b_4)))
@@ -87200,13 +87202,13 @@ syntax externidx =
 ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec
 rec {
 
-;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:127.1-127.86
+;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:129.1-129.86
 def $funcsxx(externidx*) : typeidx*
-  ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:133.1-133.24
+  ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:135.1-135.24
   def $funcsxx([]) = []
-  ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:134.1-134.45
+  ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:136.1-136.45
   def $funcsxx{x : idx, `xx*` : externidx*}([`FUNC`_externidx(x)] ++ xx*{xx <- `xx*`}) = [x] ++ $funcsxx(xx*{xx <- `xx*`})
-  ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:135.1-135.58
+  ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:137.1-137.58
   def $funcsxx{externidx : externidx, `xx*` : externidx*}([externidx] ++ xx*{xx <- `xx*`}) = $funcsxx(xx*{xx <- `xx*`})
     -- otherwise
 }
@@ -87214,13 +87216,13 @@ def $funcsxx(externidx*) : typeidx*
 ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec
 rec {
 
-;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:128.1-128.88
+;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:130.1-130.88
 def $globalsxx(externidx*) : globalidx*
-  ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:137.1-137.26
+  ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:139.1-139.26
   def $globalsxx([]) = []
-  ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:138.1-138.51
+  ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:140.1-140.51
   def $globalsxx{x : idx, `xx*` : externidx*}([`GLOBAL`_externidx(x)] ++ xx*{xx <- `xx*`}) = [x] ++ $globalsxx(xx*{xx <- `xx*`})
-  ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:139.1-139.62
+  ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:141.1-141.62
   def $globalsxx{externidx : externidx, `xx*` : externidx*}([externidx] ++ xx*{xx <- `xx*`}) = $globalsxx(xx*{xx <- `xx*`})
     -- otherwise
 }
@@ -87228,13 +87230,13 @@ def $globalsxx(externidx*) : globalidx*
 ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec
 rec {
 
-;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:129.1-129.87
+;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:131.1-131.87
 def $tablesxx(externidx*) : tableidx*
-  ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:141.1-141.25
+  ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:143.1-143.25
   def $tablesxx([]) = []
-  ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:142.1-142.48
+  ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:144.1-144.48
   def $tablesxx{x : idx, `xx*` : externidx*}([`TABLE`_externidx(x)] ++ xx*{xx <- `xx*`}) = [x] ++ $tablesxx(xx*{xx <- `xx*`})
-  ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:143.1-143.60
+  ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:145.1-145.60
   def $tablesxx{externidx : externidx, `xx*` : externidx*}([externidx] ++ xx*{xx <- `xx*`}) = $tablesxx(xx*{xx <- `xx*`})
     -- otherwise
 }
@@ -87242,13 +87244,13 @@ def $tablesxx(externidx*) : tableidx*
 ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec
 rec {
 
-;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:130.1-130.85
+;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:132.1-132.85
 def $memsxx(externidx*) : memidx*
-  ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:145.1-145.23
+  ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:147.1-147.23
   def $memsxx([]) = []
-  ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:146.1-146.42
+  ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:148.1-148.42
   def $memsxx{x : idx, `xx*` : externidx*}([`MEM`_externidx(x)] ++ xx*{xx <- `xx*`}) = [x] ++ $memsxx(xx*{xx <- `xx*`})
-  ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:147.1-147.56
+  ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:149.1-149.56
   def $memsxx{externidx : externidx, `xx*` : externidx*}([externidx] ++ xx*{xx <- `xx*`}) = $memsxx(xx*{xx <- `xx*`})
     -- otherwise
 }
@@ -87256,13 +87258,13 @@ def $memsxx(externidx*) : memidx*
 ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec
 rec {
 
-;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:131.1-131.85
+;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:133.1-133.85
 def $tagsxx(externidx*) : tagidx*
-  ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:149.1-149.23
+  ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:151.1-151.23
   def $tagsxx([]) = []
-  ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:150.1-150.42
+  ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:152.1-152.42
   def $tagsxx{x : idx, `xx*` : externidx*}([`TAG`_externidx(x)] ++ xx*{xx <- `xx*`}) = [x] ++ $tagsxx(xx*{xx <- `xx*`})
-  ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:151.1-151.56
+  ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:153.1-153.56
   def $tagsxx{externidx : externidx, `xx*` : externidx*}([externidx] ++ xx*{xx <- `xx*`}) = $tagsxx(xx*{xx <- `xx*`})
     -- otherwise
 }
@@ -87291,11 +87293,11 @@ def $free_opt(free?) : free
 ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec
 rec {
 
-;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:170.1-170.29
+;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:172.1-172.29
 def $free_list(free*) : free
-  ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:175.1-175.25
+  ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:177.1-177.25
   def $free_list([]) = {`TYPES` [], `FUNCS` [], `GLOBALS` [], `TABLES` [], `MEMS` [], `ELEMS` [], `DATAS` [], `LOCALS` [], `LABELS` []}
-  ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:176.1-176.57
+  ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:178.1-178.57
   def $free_list{free : free, `free'*` : free*}([free] ++ free'*{free' <- `free'*`}) = free +++ $free_list(free'*{free' <- `free'*`})
 }
 
@@ -94140,16 +94142,20 @@ grammar BuN(N : N) : uN(N)
 }
 
 ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec
+rec {
+
+;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec:13.1-16.82
 grammar BsN(N : N) : sN(N)
-  ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec
+  ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec:14.5-14.87
   prod{n : n} `%`_byte(n):Bbyte => `%`_sN((n : nat <:> int))
     -- if ((n < (2 ^ 6)) /\ (n < (2 ^ (((N : nat <:> int) - (1 : nat <:> int)) : int <:> nat))))
-  ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec
+  ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec:15.5-15.101
   prod{n : n} `%`_byte(n):Bbyte => `%`_sN(((n : nat <:> int) - ((2 ^ 7) : nat <:> int)))
     -- if ((((2 ^ 6) <= n) /\ (n < (2 ^ 7))) /\ ((n : nat <:> int) >= (((2 ^ 7) : nat <:> int) - ((2 ^ (((N : nat <:> int) - (1 : nat <:> int)) : int <:> nat)) : nat <:> int))))
-  ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec
-  prod{i : uN((((N : nat <:> int) - (7 : nat <:> int)) : int <:> nat)), n : n} {{`%`_byte(n):Bbyte} {i:BuN((((N : nat <:> int) - (7 : nat <:> int)) : int <:> nat))}} => `%`_sN(((((2 ^ 7) * i!`%`_uN.0) + (((n : nat <:> int) - ((2 ^ 7) : nat <:> int)) : int <:> nat)) : nat <:> int))
+  ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec:16.5-16.82
+  prod{i : sN((((N : nat <:> int) - (7 : nat <:> int)) : int <:> nat)), n : n} {{`%`_byte(n):Bbyte} {i:BsN((((N : nat <:> int) - (7 : nat <:> int)) : int <:> nat))}} => `%`_sN(((((2 ^ 7) * (i!`%`_sN.0 : int <:> nat)) + (((n : nat <:> int) - ((2 ^ 7) : nat <:> int)) : int <:> nat)) : nat <:> int))
     -- if ((n >= (2 ^ 7)) /\ (N > 7))
+}
 
 ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec
 grammar BiN(N : N) : iN(N)
@@ -94164,27 +94170,37 @@ grammar BfN(N : N) : fN(N)
 ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec
 grammar Bu32 : u32
   ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec
-  prod{n : n} `%`_uN(n):BuN(32) => `%`_u32(n)
+  prod{`<implicit-prod-result>` : uN(32)} `<implicit-prod-result>`:BuN(32) => `<implicit-prod-result>`
 
 ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec
 grammar Bu64 : u64
   ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec
-  prod{n : n} `%`_uN(n):BuN(64) => `%`_u64(n)
+  prod{`<implicit-prod-result>` : uN(64)} `<implicit-prod-result>`:BuN(64) => `<implicit-prod-result>`
 
 ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec
 grammar Bs33 : s33
   ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec
-  prod{i : sN(33)} i:BsN(33) => i
+  prod{`<implicit-prod-result>` : sN(33)} `<implicit-prod-result>`:BsN(33) => `<implicit-prod-result>`
+
+;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec
+grammar Bi32 : i32
+  ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec
+  prod{`<implicit-prod-result>` : uN(32)} `<implicit-prod-result>`:BuN(32) => `<implicit-prod-result>`
+
+;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec
+grammar Bi64 : i64
+  ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec
+  prod{`<implicit-prod-result>` : uN(64)} `<implicit-prod-result>`:BuN(64) => `<implicit-prod-result>`
 
 ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec
 grammar Bf32 : f32
   ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec
-  prod{p : fN(32)} p:BfN(32) => p
+  prod{`<implicit-prod-result>` : fN(32)} `<implicit-prod-result>`:BfN(32) => `<implicit-prod-result>`
 
 ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec
 grammar Bf64 : f64
   ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec
-  prod{p : fN(64)} p:BfN(64) => p
+  prod{`<implicit-prod-result>` : fN(64)} `<implicit-prod-result>`:BfN(64) => `<implicit-prod-result>`
 
 ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec
 grammar Blist(syntax el, grammar BX : el) : el*
@@ -94691,9 +94707,9 @@ grammar Binstr : instr
   ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:185.5-185.30
   prod {{0xFB} {`%`_u32(30):Bu32}} => `I31.GET`_instr(`U`_sx)
   ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:192.5-192.31
-  prod{n : n} {{0x41} {`%`_u32(n):Bu32}} => `CONST`_instr(`I32`_numtype, `%`_num_(n))
+  prod{i : i32} {{0x41} {i:Bi32}} => `CONST`_instr(`I32`_numtype, i)
   ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:193.5-193.31
-  prod{n : n} {{0x42} {`%`_u64(n):Bu64}} => `CONST`_instr(`I64`_numtype, `%`_num_(n))
+  prod{i : i64} {{0x42} {i:Bi64}} => `CONST`_instr(`I64`_numtype, i)
   ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:194.5-194.31
   prod{p : f32} {{0x43} {p:Bf32}} => `CONST`_instr(`F32`_numtype, p)
   ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:195.5-195.31
@@ -96154,11 +96170,6 @@ grammar Ti64 : u64
   prod{`<implicit-prod-result>` : iN(64)} `<implicit-prod-result>`:TiN(64) => `<implicit-prod-result>`
 
 ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Ti128 : u128
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{`<implicit-prod-result>` : iN(128)} `<implicit-prod-result>`:TiN(128) => `<implicit-prod-result>`
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
 grammar Tf32 : f32
   ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
   prod{`<implicit-prod-result>` : fN(32)} `<implicit-prod-result>`:TfN(32) => `<implicit-prod-result>`
@@ -96197,11 +96208,11 @@ syntax I = idctxt
 ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
 rec {
 
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:155.1-155.56
+;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:154.1-154.56
 def $concat_idctxt(idctxt*) : idctxt
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:156.1-156.29
+  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:155.1-155.29
   def $concat_idctxt([]) = {`TYPES` [], `TAGS` [], `GLOBALS` [], `MEMS` [], `TABLES` [], `FUNCS` [], `DATAS` [], `ELEMS` [], `LOCALS` [], `LABELS` [], `FIELDS` [], `TYPEDEFS` []}
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:157.1-157.53
+  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:156.1-156.53
   def $concat_idctxt{I : I, `I'*` : I*}([I] ++ I'*{I' <- `I'*`}) = I +++ $concat_idctxt(I'*{I' <- `I'*`})
 }
 

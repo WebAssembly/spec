@@ -270,7 +270,7 @@ Results
      \qquad
      \vdashresulttype [t^\ast] : \OKresulttype
    }{
-     S \vdashresult (\REFEXNADDR~a)~\THROWREF : [{t'}^\ast]
+     S \vdashresult (\REFEXNADDR~a)~\THROWREF : [t^\ast]
    }
 
 
