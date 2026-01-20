@@ -8,7 +8,7 @@ open Print
 
 module Il = struct include Il include Ast include Print end
 
-module Set = Free.Set
+module Set = Il.Free.Set
 module Map = Map.Make (String)
 
 module Debug = struct include El.Debug include Il.Debug end
@@ -182,9 +182,9 @@ let find_case_atom tcs atom at t =
   | Some tc -> tc
   | None -> error_atom at atom t "unknown case"
 
-let bound_env' env' = Map.fold (fun id _ s -> Free.Set.add id s) env' Free.Set.empty
+let bound_env' env' = Map.fold (fun id _ s -> Il.Free.Set.add id s) env' Il.Free.Set.empty
 let bound_env env =
-  Free.{
+  Il.Free.{
     varid = bound_env' env.vars;
     typid = bound_env' env.typs;
     relid = bound_env' env.rels;
@@ -295,7 +295,7 @@ let make_quants_iter_arg env (free : Il.Free.sets) dims : Il.quant list ref * (m
         if Il.Free.(Set.mem id.it !left.gramid) then (
           let ps, t, _gram, _prods' = find "grammar" env.grams id in
           acc := !acc @ [Il.GramP (id, ps, t) $ id.at];
-          left := Free.{!left with varid = Set.remove id.it !left.gramid};
+          left := Il.Free.{!left with varid = Set.remove id.it !left.gramid};
         )
 
       let visit_defid id =
@@ -343,7 +343,7 @@ let infer_quants env env' dims det ps' as' ts' es' gs' prs' at : Il.quant list =
       -- bound -- bound_list bound_param ps' -- det
     )
   in
-  if free <> Free.empty then
+  if free <> Il.Free.empty then
     error at ("definition contains indeterminate variable(s) " ^
       String.concat ", " (List.map quote (Il.Free.Set.elements free.varid)));
 
@@ -2133,7 +2133,7 @@ and elab_prod env outer_dims (prod : prod) (t : Il.typ) : Il.prod list =
     let free = Il.Free.(free_prod prod' -- bound_env env') in
     if free <> Il.Free.empty then
       error prod.at ("grammar rule contains indeterminate variable(s) " ^
-        String.concat ", " (List.map quote (Free.Set.elements free.varid)));
+        String.concat ", " (List.map quote (Il.Free.Set.elements free.varid)));
     if not env'.pm then
       [prod']
     else
@@ -2332,10 +2332,12 @@ and elab_param env (p : param) : Il.param list =
     else
       env.vars <- bind "variable" env.vars x t';
     [Il.ExpP (x, t') $ p.at]
+
   | TypP x ->
     env.typs <- bind "syntax type" env.typs x ([], Opaque);
     env.gvars <- bind "variable" env.gvars (strip_var_sub x) (Il.VarT (x, []) $ x.at);
     [Il.TypP x $ p.at]
+
   | GramP (x, ps, t) ->
     let env' = local_env env in
     let ps' = elab_params env' ps in
@@ -2359,6 +2361,7 @@ and elab_param env (p : param) : Il.param list =
     let t' = elab_typ env' t in
     env.grams <- bind "grammar" env.grams x ([], t', [], None);
     ps_implicit' @ [Il.GramP (x, ps', t') $ p.at]
+
   | DefP (x, ps, t) ->
     let env' = local_env env in
     let ps' = elab_params env' ps in

@@ -85,17 +85,6 @@ let rec as_comp_typ phrase env dir t at =
   | _ ->
     error at (phrase ^ "'s type `" ^ string_of_typ t ^ "` is not composable")
 
-(*
-let rec inst_tup_typ env s xts : (id * typ) list =
-  match xts with
-  | [] -> []
-  | (xI, tI)::xts' ->
-    let xI' = Fresh.refresh_varid xI in
-    let tI' = Subst.subst_typ s tI in
-    let s' = Subst.add_varid s xI (VarE xI' $$ xI.at % tI') in
-    (xI', tI') :: inst_tup_typ env s' xts'
-*)
-
 let proj_tup_typ i xts e at =
   let rec loop i xts s =
     match i, xts with
