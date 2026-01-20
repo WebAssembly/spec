@@ -25,6 +25,9 @@ syntax u31 = uN(31)
 syntax u32 = uN(32)
 syntax u64 = uN(64)
 
+syntax i32 = iN(32)
+syntax i64 = iN(64)
+
 var b : byte
 
 

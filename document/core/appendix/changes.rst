@@ -367,7 +367,7 @@ Added instructions to perform tail calls. [#proposal-tailcall]_
 Exception Handling
 ..................
 
-Added tag definitions, imports, and exports, and instructions to throw and catch exceptions [#proposal-exn]_
+Added tag definitions, imports, and exports, and instructions to throw and catch exceptions. [#proposal-exn]_
 
 * :ref:`Modules <syntax-module>` may
 
@@ -500,7 +500,7 @@ Added more precise types for references. [#proposal-typedref]_
 
 * Refined typing of :ref:`local instructions <valid-instr-variable>` and :ref:`instruction sequences <valid-instrs>` to track the :ref:`initialization status <syntax-init>` of :ref:`locals <syntax-local>` with non-defaultable type
 
-* Refined decoding of :ref:`active <syntax-elemmode>` :ref:`element segments <binary-elem>` with implicit element type and plain function indices (opcode :math:`0`) to produce :ref:`non-null <syntax-null>` :ref:`reference type <syntax-reftype>`.
+* Refined decoding of :ref:`active <syntax-elemmode>` :ref:`element segments <binary-elem>` with implicit element type and plain function indices (opcode :math:`0`) to produce :ref:`non-null <syntax-null>` :ref:`reference type <syntax-reftype>`
 
 * Extended :ref:`table definitions <syntax-table>` with optional initializer expression
 

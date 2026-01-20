@@ -72,7 +72,7 @@ repo = 'spec'
 proposal = ''
 
 # The draft version string (clear out for release cuts)
-draft = ' (Draft ' + date.today().strftime("%Y-%m-%d") + ')'
+draft = ' (' + date.today().strftime("%Y-%m-%d") + ')'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -517,6 +517,13 @@ mathjax3_config = {
       'maxBuffer': 30*1024,
       'macros': {
         'multicolumn': ['', 2]   # Bummer, MathJax can't handle multicolumn, ignore it
+      }
+    },
+    'options': {
+      'menuOptions': {
+        'settings': {
+          'enrich': False,  # Activating this apparently increases page load times by 4x
+        }
       }
     }
 }

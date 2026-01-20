@@ -71,7 +71,7 @@ let rec typ_of_exp e =
   | ParenE e1 -> ParenT (typ_of_exp e1)
   | TupE es -> TupT (List.map typ_of_exp es)
   | IterE (e1, iter) -> IterT (typ_of_exp e1, iter)
-  | StrE efs -> StrT (map_nl_list typfield_of_expfield efs)
+  | StrE efs -> StrT (NoDots, [], map_nl_list typfield_of_expfield efs, NoDots)
   | AtomE atom -> AtomT atom
   | SeqE es -> SeqT (List.map typ_of_exp es)
   | InfixE (e1, atom, e2) -> InfixT (typ_of_exp e1, atom, typ_of_exp e2)
@@ -90,12 +90,12 @@ let rec exp_of_typ t =
   | ParenT t1 -> ParenE (exp_of_typ t1)
   | TupT ts -> TupE (List.map exp_of_typ ts)
   | IterT (t1, iter) -> IterE (exp_of_typ t1, iter)
-  | StrT tfs -> StrE (map_nl_list expfield_of_typfield tfs)
+  | StrT (NoDots, [], tfs, NoDots) -> StrE (map_nl_list expfield_of_typfield tfs)
   | AtomT atom -> AtomE atom
   | SeqT ts -> SeqE (List.map exp_of_typ ts)
   | InfixT (t1, atom, t2) -> InfixE (exp_of_typ t1, atom, exp_of_typ t2)
   | BrackT (l, t1, r) -> BrackE (l, exp_of_typ t1, r)
-  | CaseT _ | ConT _ | RangeT _ -> error t.at "malformed expression"
+  | StrT _ | CaseT _ | ConT _ | RangeT _ -> error t.at "malformed expression"
   ) $ t.at
 
 and expfield_of_typfield (atom, (t, _prems), _) =

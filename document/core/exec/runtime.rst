@@ -378,7 +378,7 @@ It is an invariant of the semantics that all elements of a segment have a type :
 Data Instances
 ~~~~~~~~~~~~~~
 
-An *data instance* is the runtime representation of a :ref:`data segment <syntax-data>`.
+A *data instance* is the runtime representation of a :ref:`data segment <syntax-data>`.
 It holds a list of :ref:`bytes <syntax-byte>`.
 
 $${syntax: datainst}
@@ -621,7 +621,7 @@ Traps are bubbled up through nested instruction sequences, ultimately reducing t
 .. _syntax-config:
 
 Configurations
-..............
+~~~~~~~~~~~~~~
 
 A *configuration* describes the current computation.
 It consists of the computations's *state* and the sequence of :ref:`instructions <syntax-instr>` left to execute.
@@ -646,3 +646,28 @@ $${syntax: config state}
 .. note::
    The current version of WebAssembly is single-threaded,
    but configurations with multiple threads may be supported in the future.
+
+
+Conventions
+...........
+
+* The meta variable ${state: z} ranges over frame states where clear from context.
+
+* The following shorthands are defined for accessing a state ${:z = (s; f)}:
+
+  - ${definition: type}
+  - ${definition: tag}
+  - ${definition: global}
+  - ${definition: mem}
+  - ${definition: table}
+  - ${definition: func}
+  - ${definition: data}
+  - ${definition: elem}
+  - ${definition: local}
+
+* These shorthands also extend to :ref:`notation <notation-replace>` for updating state:
+
+  - ${definition: with_global}
+  - ${definition: with_mem}
+  - ${definition: with_table}
+  - ${definition: with_local}

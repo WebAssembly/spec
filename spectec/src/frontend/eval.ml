@@ -691,7 +691,8 @@ and equiv_typ env t1 t2 =
     equiv_typ env t11 t21 && atom1.it = atom2.it && equiv_typ env t12 t22
   | BrackT (atom11, t11, atom12), BrackT (atom21, t21, atom22) ->
     atom11.it = atom21.it && equiv_typ env t11 t21 && atom12 = atom22
-  | StrT tfs1, StrT tfs2 -> equiv_nl_list equiv_typfield env tfs1 tfs2
+  | StrT (NoDots, [], tfs1, NoDots), StrT (NoDots, [], tfs2, NoDots) ->
+    equiv_nl_list equiv_typfield env tfs1 tfs2
   | CaseT (NoDots, [], tcs1, NoDots), CaseT (NoDots, [], tcs2, NoDots) ->
     equiv_nl_list equiv_typcase env tcs1 tcs2
   | ConT tc1, ConT tc2 -> equiv_typcon env tc1 tc2
@@ -773,7 +774,7 @@ and sub_typ env t1 t2 =
   let t2 = reduce_typ env t2 in
   match t1.it, t2.it with
 (*| NumT nt1, NumT nt2 -> Num.sub nt1 nt2*)
-  | StrT tfs1, StrT tfs2 ->
+  | StrT (NoDots, [], tfs1, NoDots), StrT (NoDots, [], tfs2, NoDots) ->
     El.Convert.forall_nl_list (fun (atom, (t2, prems2), _) ->
       match find_field tfs1 atom with
       | Some (t1, prems1) ->
@@ -856,7 +857,7 @@ and disj_typ env t1 t2 =
     disj_typ env t11 t21 || atom1.it <> atom2.it || disj_typ env t12 t22
   | BrackT (atom11, t11, atom12), BrackT (atom21, t21, atom22) ->
     atom11.it <> atom21.it || disj_typ env t11 t21 || atom12 = atom22
-  | StrT tfs1, StrT tfs2 ->
+  | StrT (NoDots, [], tfs1, NoDots), StrT (NoDots, [], tfs2, NoDots) ->
     unordered (atoms tfs1) (atoms tfs2) ||
     El.Convert.exists_nl_list (fun (atom, (t2, _prems2), _) ->
       match find_field tfs1 atom with

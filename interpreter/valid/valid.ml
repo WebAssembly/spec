@@ -769,7 +769,7 @@ let rec check_instr (c : context) (e : instr) (s : infer_resulttype) : infer_ins
     require (i < Lib.List32.length fts) e.at
       ("unknown field " ^ I32.to_string_u i);
     let FieldT (mut, st) = Lib.List32.nth fts i in
-    require (mut == Var) e.at "field is immutable";
+    require (mut == Var) e.at "immutable field";
     let t = unpacked_storagetype st in
     [RefT (Null, UseHT (Def (type_ c x))); t] --> [], []
 
@@ -811,7 +811,7 @@ let rec check_instr (c : context) (e : instr) (s : infer_resulttype) : infer_ins
 
   | ArraySet x ->
     let FieldT (mut, st) = array_type c x in
-    require (mut == Var) e.at "array is immutable";
+    require (mut == Var) e.at "immutable array";
     let t = unpacked_storagetype st in
     [RefT (Null, UseHT (Def (type_ c x))); NumT I32T; t] --> [], []
 
@@ -821,19 +821,19 @@ let rec check_instr (c : context) (e : instr) (s : infer_resulttype) : infer_ins
   | ArrayCopy (x, y) ->
     let FieldT (mutd, std) = array_type c x in
     let FieldT (_muts, sts) = array_type c y in
-    require (mutd = Var) e.at "array is immutable";
+    require (mutd = Var) e.at "immutable array";
     require (match_storagetype c.types sts std) e.at "array types do not match";
     [RefT (Null, UseHT (Def (type_ c x))); NumT I32T; RefT (Null, UseHT (Def (type_ c y))); NumT I32T; NumT I32T] --> [], []
 
   | ArrayFill x ->
     let FieldT (mut, st) = array_type c x in
-    require (mut = Var) e.at "array is immutable";
+    require (mut = Var) e.at "immutable array";
     let t = unpacked_storagetype st in
     [RefT (Null, UseHT (Def (type_ c x))); NumT I32T; t; NumT I32T] --> [], []
 
   | ArrayInitData (x, y) ->
     let FieldT (mut, st) = array_type c x in
-    require (mut = Var) e.at "array is immutable";
+    require (mut = Var) e.at "immutable array";
     let () = data c y in
     let t = unpacked_storagetype st in
     require (is_numtype t || is_vectype t) x.at
@@ -842,7 +842,7 @@ let rec check_instr (c : context) (e : instr) (s : infer_resulttype) : infer_ins
 
   | ArrayInitElem (x, y) ->
     let FieldT (mut, st) = array_type c x in
-    require (mut = Var) e.at "array is immutable";
+    require (mut = Var) e.at "immutable array";
     let rt = elem c y in
     require (match_valtype c.types (RefT rt) (unpacked_storagetype st)) x.at
       ("type mismatch: element segment's type " ^ string_of_reftype rt ^

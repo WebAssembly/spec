@@ -592,7 +592,7 @@ The integer result of predicates -- i.e., :ref:`tests <syntax-testop>` and :ref:
 
 .. math::
    \begin{array}{@{}lcll}
-   \inez_N(i) &=& \tobool(i =/= 0)
+   \inez_N(i) &=& \tobool(i \neq 0)
    \end{array}
 
 

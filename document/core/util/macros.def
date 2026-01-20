@@ -1253,6 +1253,8 @@
 .. |subexterntypematch| mathdef:: \xref{valid/matching}{match-externtype}{\leq}
 .. |sublimitsmatch| mathdef:: \xref{valid/matching}{match-limits}{\leq}
 
+.. |arrowmemarg| mathdef:: \xref{valid/instructions}{valid-memarg}{\rightarrow}
+.. |vdashmemarg| mathdef:: \xref{valid/instructions}{valid-memarg}{\vdash}
 .. |vdashinstr| mathdef:: \xref{valid/instructions}{valid-instr}{\vdash}
 .. |vdashinstrs| mathdef:: \xref{valid/instructions}{valid-instrs}{\vdash}
 .. |vdashcatch| mathdef:: \xref{valid/instructions}{valid-catch}{\vdash}
@@ -1371,7 +1373,7 @@
 .. |FIdots| mathdef:: \dots
 
 .. |TITYPE| mathdef:: \xref{exec/runtime}{syntax-tableinst}{\K{type}}
-.. |TIREFS| mathdef:: \xref{exec/runtime}{syntax-tableinst}{\K{elem}}
+.. |TIREFS| mathdef:: \xref{exec/runtime}{syntax-tableinst}{\K{refs}}
 
 .. |MITYPE| mathdef:: \xref{exec/runtime}{syntax-meminst}{\K{type}}
 .. |MIBYTES| mathdef:: \xref{exec/runtime}{syntax-meminst}{\K{bytes}}
@@ -1382,7 +1384,7 @@
 .. |HITYPE| mathdef:: \xref{exec/runtime}{syntax-taginst}{\K{type}}
 
 .. |EITYPE| mathdef:: \xref{exec/runtime}{syntax-eleminst}{\K{type}}
-.. |EIREFS| mathdef:: \xref{exec/runtime}{syntax-eleminst}{\K{elem}}
+.. |EIREFS| mathdef:: \xref{exec/runtime}{syntax-eleminst}{\K{refs}}
 
 .. |DITYPE| mathdef:: \xref{exec/runtime}{syntax-datainst}{\K{data}}
 .. |DIBYTES| mathdef:: \xref{exec/runtime}{syntax-datainst}{\K{bytes}}
@@ -1419,21 +1421,21 @@
 .. |I8PACK| mathdef:: \xref{exec/runtime}{syntax-packval}{\K{i8.pack}}
 .. |I16PACK| mathdef:: \xref{exec/runtime}{syntax-packval}{\K{i16.pack}}
 
-.. |ZSTORE| mathdef:: \xref{exec/runtime}{syntax-store}{\K{store}}
-.. |ZFRAME| mathdef:: \xref{exec/runtime}{syntax-store}{\K{frame}}
-.. |ZMODULE| mathdef:: \xref{exec/runtime}{syntax-store}{\K{module}}
-.. |ZTYPES| mathdef:: \xref{exec/runtime}{syntax-store}{\K{types}}
-.. |ZFUNCS| mathdef:: \xref{exec/runtime}{syntax-store}{\K{funcs}}
-.. |ZGLOBALS| mathdef:: \xref{exec/runtime}{syntax-store}{\K{globals}}
-.. |ZTABLES| mathdef:: \xref{exec/runtime}{syntax-store}{\K{tables}}
-.. |ZMEMS| mathdef:: \xref{exec/runtime}{syntax-store}{\K{mems}}
-.. |ZTAGS| mathdef:: \xref{exec/runtime}{syntax-store}{\K{tags}}
-.. |ZELEMS| mathdef:: \xref{exec/runtime}{syntax-store}{\K{elems}}
-.. |ZDATAS| mathdef:: \xref{exec/runtime}{syntax-store}{\K{datas}}
-.. |ZSTRUCTS| mathdef:: \xref{exec/runtime}{syntax-store}{\K{structs}}
-.. |ZARRAYS| mathdef:: \xref{exec/runtime}{syntax-store}{\K{arrays}}
-.. |ZEXNS| mathdef:: \xref{exec/runtime}{syntax-store}{\K{exns}}
-.. |ZLOCALS| mathdef:: \xref{exec/runtime}{syntax-store}{\K{locals}}
+.. |ZSTORE| mathdef:: \xref{exec/runtime}{syntax-state}{\K{store}}
+.. |ZFRAME| mathdef:: \xref{exec/runtime}{syntax-state}{\K{frame}}
+.. |ZMODULE| mathdef:: \xref{exec/runtime}{syntax-state}{\K{module}}
+.. |ZTYPES| mathdef:: \xref{exec/runtime}{syntax-state}{\K{types}}
+.. |ZFUNCS| mathdef:: \xref{exec/runtime}{syntax-state}{\K{funcs}}
+.. |ZGLOBALS| mathdef:: \xref{exec/runtime}{syntax-state}{\K{globals}}
+.. |ZTABLES| mathdef:: \xref{exec/runtime}{syntax-state}{\K{tables}}
+.. |ZMEMS| mathdef:: \xref{exec/runtime}{syntax-state}{\K{mems}}
+.. |ZTAGS| mathdef:: \xref{exec/runtime}{syntax-state}{\K{tags}}
+.. |ZELEMS| mathdef:: \xref{exec/runtime}{syntax-state}{\K{elems}}
+.. |ZDATAS| mathdef:: \xref{exec/runtime}{syntax-state}{\K{datas}}
+.. |ZSTRUCTS| mathdef:: \xref{exec/runtime}{syntax-state}{\K{structs}}
+.. |ZARRAYS| mathdef:: \xref{exec/runtime}{syntax-state}{\K{arrays}}
+.. |ZEXNS| mathdef:: \xref{exec/runtime}{syntax-state}{\K{exns}}
+.. |ZLOCALS| mathdef:: \xref{exec/runtime}{syntax-state}{\K{locals}}
 
 .. |ZGGLOBALS| mathdef:: \ZGLOBALS
 .. |ZGVALUE| mathdef:: \GIVALUE
@@ -1536,10 +1538,6 @@
 .. |REFHOSTADDR| mathdef:: \xref{exec/runtime}{syntax-ref}{\K{ref{.}host}}
 .. |REFEXTERN| mathdef:: \xref{exec/runtime}{syntax-ref}{\K{ref{.}extern}}
 .. |TRAP| mathdef:: \xref{exec/runtime}{syntax-trap}{\K{trap}}
-
-.. TODO remove these
-.. |INVOKE| mathdef:: \xref{exec/instructions}{exec-invoke}{\K{invoke}}
-.. |RETURNINVOKE| mathdef:: \xref{exec/instructions}{exec-invoke}{\K{return\_invoke}}
 
 
 .. Values & Results, non-terminals

@@ -88,7 +88,7 @@ Convention
 .. note::
    This definition computes an approximation of the reference type that is inhabited by all values from ${:rt_1} except those from ${:rt_2}.
    Since the type system does not have general union types,
-   the defnition only affects the presence of null and cannot express the absence of other values.
+   the definition only affects the presence of null and cannot express the absence of other values.
 
 
 .. index:: ! defined type, recursive type

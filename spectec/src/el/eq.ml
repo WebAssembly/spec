@@ -47,7 +47,9 @@ and eq_typ t1 t2 =
   | TupT ts1, TupT ts2 -> eq_list eq_typ ts1 ts2
   | IterT (t11, iter1), IterT (t21, iter2) ->
     eq_typ t11 t21 && eq_iter iter1 iter2
-  | StrT tfs1, StrT tfs2 -> eq_nl_list eq_typfield tfs1 tfs2
+  | StrT (dots11, ts1, tfs1, dots12), StrT (dots21, ts2, tfs2, dots22) ->
+    dots11 = dots21 && eq_nl_list eq_typ ts1 ts2 &&
+    eq_nl_list eq_typfield tfs1 tfs2 && dots12 = dots22
   | CaseT (dots11, ts1, tcs1, dots12), CaseT (dots21, ts2, tcs2, dots22) ->
     dots11 = dots21 && eq_nl_list eq_typ ts1 ts2 &&
     eq_nl_list eq_typcase tcs1 tcs2 && dots12 = dots22

@@ -46,7 +46,7 @@ and typ' =
   | TupT of typ list             (* `(` list2(typ, `,`) `)` *)
   | IterT of typ * iter          (* typ iter *)
   (* The forms below are only allowed in type definitions *)
-  | StrT of typfield nl_list     (* `{` list(typfield,`,`') `}` *)
+  | StrT of dots * typ nl_list * typfield nl_list * dots (* `{` list(`...`|typ|typfield, `,`) `}` *)
   | CaseT of dots * typ nl_list * typcase nl_list * dots (* `|` list(`...`|typ|typcase, `|`) *)
   | ConT of typcon               (* typ prem* *)
   | RangeT of typenum nl_list    (* exp `|` `...` `|` exp *)

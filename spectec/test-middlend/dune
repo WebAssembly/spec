@@ -17,7 +17,7 @@
 ; 
 ; It stores each pass's output in a separate directory.
 ;
-; This requires a dynamic dune rule to enumerate the files. Whe this changes, then running
+; This requires a dynamic dune rule to enumerate the files. When this changes, then running
 ;
 ; rm specification.exp/*
 ; dune runtest test-middlend --auto-promote --diff-command "diff -Nur"

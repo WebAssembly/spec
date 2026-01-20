@@ -167,5 +167,29 @@ test(() => {
 
 test(() => {
   const argument = { "value": "v128" };
-  assert_throws_js(TypeError, () =>new WebAssembly.Global(argument));
+  assert_throws_js(TypeError, () => new WebAssembly.Global(argument));
 }, "Construct v128 global");
+
+test(() => {
+  for (let value of [
+    undefined,
+    null,
+    true,
+    1,
+    -0,
+    1.5,
+    -2n,
+    Symbol("test"),
+    "string",
+    {"an": "object"},
+    () => null
+  ]) {
+    let global = new WebAssembly.Global({value: "externref"}, value);
+    assert_Global(global, value);
+  }
+}, "externref global");
+
+test(() => {
+  let global = new WebAssembly.Global({value: "externref"});
+  assert_Global(global, undefined);
+}, "externref global with default value");

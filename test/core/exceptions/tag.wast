@@ -53,7 +53,7 @@
     )
     (tag (import "M" "tag") (type $t2))
   )
-  "incompatible import"
+  "incompatible import type"
 )
 
 (assert_unlinkable
@@ -61,5 +61,5 @@
     (type $t (func))
     (tag (import "M" "tag") (type $t))
   )
-  "incompatible import"
+  "incompatible import type"
 )

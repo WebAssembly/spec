@@ -9,8 +9,6 @@ $ (../src/exe-spectec/main.exe ../../../../specification/wasm-3.0/*.spectec -l -
 == IL Validation after pass sideconditions...
 == Translating to AL...
 == Prose Generation...
-Untranslated relation Expand: `%~~%`(deftype, comptype)
-Untranslated relation Expand_use: `%~~_%%`(typeuse, context, comptype)
 == Splicing...
 \documentclass[a4paper]{scrartcl}
 
@@ -44,7 +42,7 @@ $$
 
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}}
-\mbox{(limits range)} & {\mathit{limits}} & ::= & {}[ {\mathit{u{\kern-0.1em\scriptstyle 64}}}~..~{{\mathit{u{\kern-0.1em\scriptstyle 64}}}^?} ] \\[0.8ex]
+\mbox{(limits range)} & {\mathit{limits}} & ::= & {}[ {\mathit{u{\kern-0.1em\scriptstyle 64}}} .. {{\mathit{u{\kern-0.1em\scriptstyle 64}}}^?} ] \\[0.8ex]
 \mbox{(global type)} & {\mathit{globaltype}} & ::= & {\mathsf{mut}^?}~{\mathit{valtype}} \\
 \mbox{(table type)} & {\mathit{tabletype}} & ::= & {\mathit{addrtype}}~{\mathit{limits}}~{\mathit{reftype}} \\
 \mbox{(memory type)} & {\mathit{memtype}} & ::= & {\mathit{addrtype}}~{\mathit{limits}}~\mathsf{page} \\[0.8ex]
@@ -66,11 +64,11 @@ $$
 \begin{array}[t]{@{}l@{}rrl@{}l@{}}
 & {\mathit{instr}} & ::= & \dots \\
 & & | & {\mathit{numtype}}{.}\mathsf{const}~{{\mathit{num}}}_{{\mathit{numtype}}} \\
-& & | & {\mathit{numtype}}~{.}~{{\mathit{unop}}}_{{\mathit{numtype}}} \\
-& & | & {\mathit{numtype}}~{.}~{{\mathit{binop}}}_{{\mathit{numtype}}} \\
-& & | & {\mathit{numtype}}~{.}~{{\mathit{testop}}}_{{\mathit{numtype}}} \\
-& & | & {\mathit{numtype}}~{.}~{{\mathit{relop}}}_{{\mathit{numtype}}} \\
-& & | & {{\mathit{numtype}}_1~{.}~{{\mathit{cvtop}}}_{{\mathit{numtype}}_2, {\mathit{numtype}}_1}}{\mathsf{\_}}{{\mathit{numtype}}_2} \\
+& & | & {\mathit{numtype}} {.} {{\mathit{unop}}}_{{\mathit{numtype}}} \\
+& & | & {\mathit{numtype}} {.} {{\mathit{binop}}}_{{\mathit{numtype}}} \\
+& & | & {\mathit{numtype}} {.} {{\mathit{testop}}}_{{\mathit{numtype}}} \\
+& & | & {\mathit{numtype}} {.} {{\mathit{relop}}}_{{\mathit{numtype}}} \\
+& & | & {\mathit{numtype}}_1 {.} {{{\mathit{cvtop}}}_{{\mathit{numtype}}_2, {\mathit{numtype}}_1}}{\mathsf{\_}}{{\mathit{numtype}}_2} \\
 & & | & \mathsf{local{.}get}~{\mathit{localidx}} \\
 & & | & \mathsf{local{.}set}~{\mathit{localidx}} \\
 & & | & \mathsf{local{.}tee}~{\mathit{localidx}} \\
@@ -185,7 +183,7 @@ C \vdash {\mathit{bt}} : {t_1^\ast} \rightarrow {t_2^\ast}
 \{ \mathsf{labels}~({t_2^\ast}) \} \oplus C \vdash {{\mathit{instr}}^\ast} : {t_1^\ast} \rightarrow_{{x^\ast}} {t_2^\ast}
 }{
 C \vdash \mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}^\ast} : {t_1^\ast} \rightarrow {t_2^\ast}
-} \, {[\textsc{\scriptsize T{-}block}]}
+} \, {[\textsc{\scriptsize T{-}instr{-}block}]}
 \qquad
 \end{array}
 $$
@@ -198,7 +196,7 @@ C \vdash {\mathit{bt}} : {t_1^\ast} \rightarrow {t_2^\ast}
 \{ \mathsf{labels}~({t_1^\ast}) \} \oplus C \vdash {{\mathit{instr}}^\ast} : {t_1^\ast} \rightarrow_{{x^\ast}} {t_2^\ast}
 }{
 C \vdash \mathsf{loop}~{\mathit{bt}}~{{\mathit{instr}}^\ast} : {t_1^\ast} \rightarrow {t_2^\ast}
-} \, {[\textsc{\scriptsize T{-}loop}]}
+} \, {[\textsc{\scriptsize T{-}instr{-}loop}]}
 \qquad
 \end{array}
 $$
@@ -213,7 +211,7 @@ C \vdash {\mathit{bt}} : {t_1^\ast} \rightarrow {t_2^\ast}
 \{ \mathsf{labels}~({t_2^\ast}) \} \oplus C \vdash {{\mathit{instr}}_2^\ast} : {t_1^\ast} \rightarrow_{{x_2^\ast}} {t_2^\ast}
 }{
 C \vdash \mathsf{if}~{\mathit{bt}}~{{\mathit{instr}}_1^\ast}~\mathsf{else}~{{\mathit{instr}}_2^\ast} : {t_1^\ast}~\mathsf{i{\scriptstyle 32}} \rightarrow {t_2^\ast}
-} \, {[\textsc{\scriptsize T{-}if}]}
+} \, {[\textsc{\scriptsize T{-}instr{-}if}]}
 \qquad
 \end{array}
 $$
@@ -361,6 +359,9 @@ warning: syntax `half` was never spliced
 warning: syntax `heaptype` was never spliced
 warning: syntax `hostaddr` was never spliced
 warning: syntax `hostfunc` was never spliced
+warning: syntax `i128` was never spliced
+warning: syntax `i32` was never spliced
+warning: syntax `i64` was never spliced
 warning: syntax `iN` was never spliced
 warning: syntax `idctxt` was never spliced
 warning: syntax `idx` was never spliced
@@ -469,7 +470,6 @@ warning: syntax `typeidx` was never spliced
 warning: syntax `typeuse/syn` was never spliced
 warning: syntax `typeuse/sem` was never spliced
 warning: syntax `typevar` was never spliced
-warning: syntax `u128` was never spliced
 warning: syntax `u16` was never spliced
 warning: syntax `u31` was never spliced
 warning: syntax `u32` was never spliced
@@ -546,6 +546,8 @@ warning: grammar `Bglobalidx` was never spliced
 warning: grammar `Bglobalsec` was never spliced
 warning: grammar `Bglobaltype` was never spliced
 warning: grammar `Bheaptype` was never spliced
+warning: grammar `Bi32` was never spliced
+warning: grammar `Bi64` was never spliced
 warning: grammar `BiN` was never spliced
 warning: grammar `Bimport` was never spliced
 warning: grammar `Bimportsec` was never spliced
@@ -559,7 +561,6 @@ warning: grammar `Binstr/memory` was never spliced
 warning: grammar `Binstr/ref` was never spliced
 warning: grammar `Binstr/struct` was never spliced
 warning: grammar `Binstr/array` was never spliced
-warning: grammar `Binstr/cast` was never spliced
 warning: grammar `Binstr/extern` was never spliced
 warning: grammar `Binstr/i31` was never spliced
 warning: grammar `Binstr/num-const` was never spliced
@@ -755,7 +756,6 @@ warning: grammar `Thexfloat` was never spliced
 warning: grammar `Thexfrac` was never spliced
 warning: grammar `Thexmant` was never spliced
 warning: grammar `Thexnum` was never spliced
-warning: grammar `Ti128` was never spliced
 warning: grammar `Ti16` was never spliced
 warning: grammar `Ti32` was never spliced
 warning: grammar `Ti64` was never spliced
@@ -1152,10 +1152,12 @@ warning: rule `Instrs_ok/frame` was spliced more than once
 warning: rule `Instrtype_ok` was never spliced
 warning: rule `Instrtype_sub` was never spliced
 warning: rule `Limits_ok` was never spliced
-warning: rule `Limits_sub` was never spliced
+warning: rule `Limits_sub/max` was never spliced
+warning: rule `Limits_sub/eps` was never spliced
 warning: rule `Local_ok/set` was never spliced
 warning: rule `Local_ok/unset` was never spliced
 warning: rule `Mem_ok` was never spliced
+warning: rule `Memarg_ok` was never spliced
 warning: rule `Memtype_ok` was never spliced
 warning: rule `Memtype_sub` was never spliced
 warning: rule `Module_ok` was never spliced
@@ -1631,7 +1633,6 @@ warning: definition `funcsxx` was never spliced
 warning: definition `fvbinop_` was never spliced
 warning: definition `fvrelop_` was never spliced
 warning: definition `fvternop_` was never spliced
-warning: definition `fvtestop_` was never spliced
 warning: definition `fvunop_` was never spliced
 warning: definition `fzero` was never spliced
 warning: definition `global` was never spliced
@@ -1730,7 +1731,6 @@ warning: definition `ivshiftopsx_` was never spliced
 warning: definition `ivshufflop_` was never spliced
 warning: definition `ivswizzlop_` was never spliced
 warning: definition `ivternopnd_` was never spliced
-warning: definition `ivtestop_` was never spliced
 warning: definition `ivunop_` was never spliced
 warning: definition `ixor_` was never spliced
 warning: definition `jsize` was never spliced
@@ -1868,7 +1868,6 @@ warning: definition `vsize` was never spliced
 warning: definition `vsizenn` was never spliced
 warning: definition `vswizzlop_` was never spliced
 warning: definition `vternop_` was never spliced
-warning: definition `vtestop_` was never spliced
 warning: definition `vunop_` was never spliced
 warning: definition `vunpack` was never spliced
 warning: definition `vvbinop_` was never spliced
@@ -1921,6 +1920,10 @@ warning: rule prose `Elemmode_ok/active` was never spliced
 warning: rule prose `Elemmode_ok/declare` was never spliced
 warning: rule prose `Elemmode_ok/passive` was never spliced
 warning: rule prose `Eval_expr` was never spliced
+warning: rule prose `Expand` was never spliced
+warning: rule prose `Expand_use` was never spliced
+warning: rule prose `Expand_use/deftype` was never spliced
+warning: rule prose `Expand_use/typeidx` was never spliced
 warning: rule prose `Export_ok` was never spliced
 warning: rule prose `Expr_const` was never spliced
 warning: rule prose `Expr_ok` was never spliced
@@ -2121,10 +2124,13 @@ warning: rule prose `Instrtype_ok` was never spliced
 warning: rule prose `Instrtype_sub` was never spliced
 warning: rule prose `Limits_ok` was never spliced
 warning: rule prose `Limits_sub` was never spliced
+warning: rule prose `Limits_sub/eps` was never spliced
+warning: rule prose `Limits_sub/max` was never spliced
 warning: rule prose `Local_ok` was never spliced
 warning: rule prose `Local_ok/set` was never spliced
 warning: rule prose `Local_ok/unset` was never spliced
 warning: rule prose `Mem_ok` was never spliced
+warning: rule prose `Memarg_ok` was never spliced
 warning: rule prose `Memtype_ok` was never spliced
 warning: rule prose `Memtype_sub` was never spliced
 warning: rule prose `Module_ok` was never spliced
@@ -2473,7 +2479,6 @@ warning: definition prose `funcsxx` was never spliced
 warning: definition prose `fvbinop_` was never spliced
 warning: definition prose `fvrelop_` was never spliced
 warning: definition prose `fvternop_` was never spliced
-warning: definition prose `fvtestop_` was never spliced
 warning: definition prose `fvunop_` was never spliced
 warning: definition prose `fzero` was never spliced
 warning: definition prose `global` was never spliced
@@ -2540,7 +2545,6 @@ warning: definition prose `ivshiftopsx_` was never spliced
 warning: definition prose `ivshufflop_` was never spliced
 warning: definition prose `ivswizzlop_` was never spliced
 warning: definition prose `ivternopnd_` was never spliced
-warning: definition prose `ivtestop_` was never spliced
 warning: definition prose `ivunop_` was never spliced
 warning: definition prose `jsize` was never spliced
 warning: definition prose `jsizenn` was never spliced
@@ -2667,7 +2671,6 @@ warning: definition prose `vsize` was never spliced
 warning: definition prose `vsizenn` was never spliced
 warning: definition prose `vswizzlop_` was never spliced
 warning: definition prose `vternop_` was never spliced
-warning: definition prose `vtestop_` was never spliced
 warning: definition prose `vunop_` was never spliced
 warning: definition prose `vunpack` was never spliced
 warning: definition prose `vvbinop_` was never spliced

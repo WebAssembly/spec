@@ -100,7 +100,8 @@ and typ t =
   | ParenT t1 -> typ t1
   | TupT ts -> list typ ts
   | IterT (t1, it) -> typ t1; iter it
-  | StrT tfs -> nl_list typfield tfs
+  | StrT (dots1, ts, tfs, dots2) ->
+    dots dots1; nl_list typ ts; nl_list typfield tfs; dots dots2
   | CaseT (dots1, ts, tcs, dots2) ->
     dots dots1; nl_list typ ts; nl_list typcase tcs; dots dots2
   | ConT tc -> typcon tc
@@ -263,7 +264,7 @@ and clone_typ t =
   | SeqT ts -> SeqT (List.map clone_typ ts)
   | InfixT (t1, atom, t2) -> InfixT (clone_typ t1, clone_atom atom, clone_typ t2)
   | BrackT (atom1, t1, atom2) -> BrackT (clone_atom atom1, clone_typ t1, clone_atom atom2)
-  | StrT tfs -> StrT (Convert.map_nl_list clone_typfield tfs)
+  | StrT (dots1, ts, tfs, dots2) -> StrT (dots1, Convert.map_nl_list clone_typ ts, Convert.map_nl_list clone_typfield tfs, dots2)
   | CaseT (dots1, ts, tcs, dots2) -> CaseT (dots1, Convert.map_nl_list clone_typ ts, Convert.map_nl_list clone_typcase tcs, dots2)
   | ConT tc -> ConT (clone_typcon tc)
   | RangeT tes -> RangeT (Convert.map_nl_list clone_typenum tes)

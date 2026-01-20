@@ -24,13 +24,16 @@ jobs:
           ocaml-compiler: 4.14.x
       - name: Setup OCaml tools
         run: opam install --yes ocamlfind.1.9.5 js_of_ocaml.4.0.0 js_of_ocaml-ppx.4.0.0
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20.x
       - name: Build interpreter
         run: cd interpreter && opam exec make
+      # Neither V8 nor SpiderMonkey can currently handle all 3.0 tests, so we disable checking JS translation for now.
+      #- name: Setup Node.js
+      #  uses: actions/setup-node@v4
+      #  with:
+      #    node-version: 25-nightly
+      #- name: Setup SpiderMonkey
+      #  run: curl -O https://archive.mozilla.org/pub/firefox/nightly/latest-mozilla-central/jsshell-linux-x86_64.zip && unzip jsshell-linux-x86_64.zip
       - name: Run tests
-        # TODO: reactivate node once it supports all of Wasm 3.0
-        # run: cd interpreter && opam exec make JS=node ci
-        run: cd interpreter && opam exec make ci
+        run: cd interpreter && opam exec make ci           # don't test JS translation
+      # run: cd interpreter && opam exec make JS=node ci   # test with V8
+      # run: cd interpreter && opam exec make JS=../js ci  # test with SM

@@ -24,7 +24,7 @@ grammar BuN(N) : uN(N) hint(show Bu#%) =
 grammar BsN(N) : sN(N) hint(show Bs#%) =
   | n:Bbyte                 => n                       -- if $(n < 2^6 /\ n < 2^(N-1))
   | n:Bbyte                 => $(n - 2^7)              -- if $(2^6 <= n < 2^7 /\ n >= 2^7 - 2^(N-1))
-  | n:Bbyte i:BuN(($(N-7))) => $(2^7 * i + (n - 2^7))  -- if $(n >= 2^7 /\ N > 7)
+  | n:Bbyte i:BsN(($(N-7))) => $(2^7 * i + (n - 2^7))  -- if $(n >= 2^7 /\ N > 7)
 
 grammar BiN(N) : iN(N) hint(show Bi#%) =
   | i:BsN(N)                => $inv_signed_(N, i)
@@ -34,12 +34,16 @@ grammar BfN(N) : fN(N) hint(show Bf#%) =
   | b*:Bbyte^(N/8)  => $inv_fbytes_(N, b*)
 
 
-grammar Bu32 : u32 = n:BuN(32) => n
-grammar Bu64 : u64 = n:BuN(64) => n
-grammar Bs33 : s33 = i:BsN(33) => i
+grammar Bu32 : u32 = BuN(32)
+grammar Bu64 : u64 = BuN(64)
 
-grammar Bf32 : f32 = p:BfN(32) => p
-grammar Bf64 : f64 = p:BfN(64) => p
+grammar Bs33 : s33 = BsN(33)
+
+grammar Bi32 : i32 = BiN(32)
+grammar Bi64 : i64 = BiN(64)
+
+grammar Bf32 : f32 = BfN(32)
+grammar Bf64 : f64 = BfN(64)
 
 
 ;; Names
@@ -118,7 +122,7 @@ grammar Bmut : mut =
   | 0x01 => MUT
 
 grammar Blimits : limits =
-  | 0x00 n:Bu32 => `[n .. ]
+  | 0x00 n:Bu32 => `[n .. eps]
   | 0x01 n:Bu32 m:Bu32 => `[n .. m]
 
 grammar Bglobaltype : globaltype =
@@ -253,8 +257,8 @@ grammar Binstr/memory : instr = ...
 ;; Numeric instructions
 
 grammar Binstr/numeric-const : instr = ...
-  | 0x41 n:Bu32 => CONST I32 n
-  | 0x42 n:Bu64 => CONST I64 n
+  | 0x41 i:Bi32 => CONST I32 i
+  | 0x42 i:Bi64 => CONST I64 i
   | 0x43 p:Bf32 => CONST F32 p
   | 0x44 p:Bf64 => CONST F64 p
   | ...

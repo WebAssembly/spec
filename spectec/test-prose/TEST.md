@@ -341,27 +341,27 @@ The instruction :math:`(t{.}\mathsf{const}~c_t)` is :ref:`valid <valid-val>` wit
 
 
 
-The instruction :math:`(t~{.}~{\mathit{unop}}_t)` is :ref:`valid <valid-val>` with the function type :math:`t~\rightarrow~t`.
+The instruction :math:`(t {.} {\mathit{unop}}_t)` is :ref:`valid <valid-val>` with the function type :math:`t~\rightarrow~t`.
 
 
 
 
-The instruction :math:`(t~{.}~{\mathit{binop}}_t)` is :ref:`valid <valid-val>` with the function type :math:`t~t~\rightarrow~t`.
+The instruction :math:`(t {.} {\mathit{binop}}_t)` is :ref:`valid <valid-val>` with the function type :math:`t~t~\rightarrow~t`.
 
 
 
 
-The instruction :math:`(t~{.}~{\mathit{testop}}_t)` is :ref:`valid <valid-val>` with the function type :math:`t~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
+The instruction :math:`(t {.} {\mathit{testop}}_t)` is :ref:`valid <valid-val>` with the function type :math:`t~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
 
 
 
 
-The instruction :math:`(t~{.}~{\mathit{relop}}_t)` is :ref:`valid <valid-val>` with the function type :math:`t~t~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
+The instruction :math:`(t {.} {\mathit{relop}}_t)` is :ref:`valid <valid-val>` with the function type :math:`t~t~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
 
 
 
 
-The instruction :math:`({{\mathit{nt}}_1~{.}~{\mathit{cvtop}}}{\mathsf{\_}}{{\mathit{nt}}_2})` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{nt}}_2~\rightarrow~{\mathit{nt}}_1` if:
+The instruction :math:`({\mathit{nt}}_1 {.} {{\mathit{cvtop}}}{\mathsf{\_}}{{\mathit{nt}}_2})` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{nt}}_2~\rightarrow~{\mathit{nt}}_1` if:
 
 
    * Either:
@@ -483,7 +483,7 @@ The instruction :math:`({t{.}\mathsf{store}}{{{\mathit{sz}}^?}}~{\mathit{memarg}
 
 
 
-The instruction :math:`({{\mathit{nt}}_1~{.}~\mathsf{reinterpret}}{\mathsf{\_}}{{\mathit{nt}}_2})` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{nt}}_2~\rightarrow~{\mathit{nt}}_1` if:
+The instruction :math:`({\mathit{nt}}_1 {.} {\mathsf{reinterpret}}{\mathsf{\_}}{{\mathit{nt}}_2})` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{nt}}_2~\rightarrow~{\mathit{nt}}_1` if:
 
 
    * :math:`{|{\mathit{nt}}_1|}` is of the form :math:`{|{\mathit{nt}}_2|}`.
@@ -491,7 +491,7 @@ The instruction :math:`({{\mathit{nt}}_1~{.}~\mathsf{reinterpret}}{\mathsf{\_}}{
 
 
 
-The instruction :math:`({{\mathit{nt}}_1~{.}~{\mathit{cvtop}}}{\mathsf{\_}}{{\mathit{nt}}_2})` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{nt}}_2~\rightarrow~{\mathit{nt}}_1`.
+The instruction :math:`({\mathit{nt}}_1 {.} {{\mathit{cvtop}}}{\mathsf{\_}}{{\mathit{nt}}_2})` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{nt}}_2~\rightarrow~{\mathit{nt}}_1`.
 
 
 
@@ -1172,7 +1172,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
    #. Execute the instruction :math:`\mathsf{return}`.
 
 
-:math:`t~{.}~{\mathit{unop}}`
+:math:`t {.} {\mathit{unop}}`
 .............................
 
 
@@ -1189,7 +1189,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Push the value :math:`(t{.}\mathsf{const}~c)` to the stack.
 
 
-:math:`t~{.}~{\mathit{binop}}`
+:math:`t {.} {\mathit{binop}}`
 ..............................
 
 
@@ -1210,7 +1210,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Push the value :math:`(t{.}\mathsf{const}~c)` to the stack.
 
 
-:math:`t~{.}~{\mathit{testop}}`
+:math:`t {.} {\mathit{testop}}`
 ...............................
 
 
@@ -1223,7 +1223,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` to the stack.
 
 
-:math:`t~{.}~{\mathit{relop}}`
+:math:`t {.} {\mathit{relop}}`
 ..............................
 
 
@@ -1240,7 +1240,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` to the stack.
 
 
-:math:`{t_2~{.}~{\mathit{cvtop}}}{\mathsf{\_}}{t_1}`
+:math:`t_2 {.} {{\mathit{cvtop}}}{\mathsf{\_}}{t_1}`
 ....................................................
 
 
@@ -4915,27 +4915,27 @@ The instruction :math:`({\mathit{nt}}{.}\mathsf{const}~c_{\mathit{nt}})` is :ref
 
 
 
-The instruction :math:`({\mathit{nt}}~{.}~{\mathit{unop}}_{\mathit{nt}})` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{nt}}~\rightarrow~{\mathit{nt}}`.
+The instruction :math:`({\mathit{nt}} {.} {\mathit{unop}}_{\mathit{nt}})` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{nt}}~\rightarrow~{\mathit{nt}}`.
 
 
 
 
-The instruction :math:`({\mathit{nt}}~{.}~{\mathit{binop}}_{\mathit{nt}})` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{nt}}~{\mathit{nt}}~\rightarrow~{\mathit{nt}}`.
+The instruction :math:`({\mathit{nt}} {.} {\mathit{binop}}_{\mathit{nt}})` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{nt}}~{\mathit{nt}}~\rightarrow~{\mathit{nt}}`.
 
 
 
 
-The instruction :math:`({\mathit{nt}}~{.}~{\mathit{testop}}_{\mathit{nt}})` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{nt}}~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
+The instruction :math:`({\mathit{nt}} {.} {\mathit{testop}}_{\mathit{nt}})` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{nt}}~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
 
 
 
 
-The instruction :math:`({\mathit{nt}}~{.}~{\mathit{relop}}_{\mathit{nt}})` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{nt}}~{\mathit{nt}}~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
+The instruction :math:`({\mathit{nt}} {.} {\mathit{relop}}_{\mathit{nt}})` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{nt}}~{\mathit{nt}}~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
 
 
 
 
-The instruction :math:`({{\mathit{nt}}_1~{.}~{\mathit{cvtop}}}{\mathsf{\_}}{{\mathit{nt}}_2})` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{nt}}_2~\rightarrow~{\mathit{nt}}_1` if:
+The instruction :math:`({\mathit{nt}}_1 {.} {{\mathit{cvtop}}}{\mathsf{\_}}{{\mathit{nt}}_2})` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{nt}}_2~\rightarrow~{\mathit{nt}}_1` if:
 
 
    * Either:
@@ -4972,47 +4972,47 @@ The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` is :re
 
 
 
-The instruction :math:`(\mathsf{v{\scriptstyle 128}}~{.}~{\mathit{vvunop}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+The instruction :math:`(\mathsf{v{\scriptstyle 128}} {.} {\mathit{vvunop}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
 
 
-The instruction :math:`(\mathsf{v{\scriptstyle 128}}~{.}~{\mathit{vvbinop}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+The instruction :math:`(\mathsf{v{\scriptstyle 128}} {.} {\mathit{vvbinop}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
 
 
-The instruction :math:`(\mathsf{v{\scriptstyle 128}}~{.}~{\mathit{vvternop}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+The instruction :math:`(\mathsf{v{\scriptstyle 128}} {.} {\mathit{vvternop}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
 
 
-The instruction :math:`(\mathsf{v{\scriptstyle 128}}~{.}~{\mathit{vvtestop}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
+The instruction :math:`(\mathsf{v{\scriptstyle 128}} {.} {\mathit{vvtestop}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
 
 
 
 
-The instruction :math:`({\mathit{sh}}~{.}~{\mathit{vunop}}_{\mathit{sh}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+The instruction :math:`({\mathit{sh}} {.} {\mathit{vunop}}_{\mathit{sh}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
 
 
-The instruction :math:`({\mathit{sh}}~{.}~{\mathit{vbinop}}_{\mathit{sh}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+The instruction :math:`({\mathit{sh}} {.} {\mathit{vbinop}}_{\mathit{sh}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
 
 
-The instruction :math:`({\mathit{sh}}~{.}~{\mathit{vtestop}}_{\mathit{sh}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
+The instruction :math:`({\mathit{sh}} {.} {\mathit{vtestop}}_{\mathit{sh}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
 
 
 
 
-The instruction :math:`({\mathit{sh}}~{.}~{\mathit{vrelop}}_{\mathit{sh}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+The instruction :math:`({\mathit{sh}} {.} {\mathit{vrelop}}_{\mathit{sh}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
 
 
-The instruction :math:`({\mathit{sh}}~{.}~{\mathit{vshiftop}}_{\mathit{sh}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+The instruction :math:`({\mathit{sh}} {.} {\mathit{vshiftop}}_{\mathit{sh}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
 
@@ -5080,7 +5080,7 @@ The instruction :math:`({{\mathit{sh}}_1{.}\mathsf{narrow}}{\mathsf{\_}}{{\mathi
 
 
 
-The instruction :math:`({{\mathit{sh}}_1~{.}~{\mathit{vcvtop}}}{\mathsf{\_}}{{\mathit{sh}}_2})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+The instruction :math:`({\mathit{sh}}_1 {.} {{\mathit{vcvtop}}}{\mathsf{\_}}{{\mathit{sh}}_2})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
 
@@ -5375,7 +5375,7 @@ The instruction :math:`(\mathsf{select})` is :ref:`valid <valid-val>` with the f
 
 
 
-The instruction :math:`({{\mathit{nt}}_1~{.}~\mathsf{reinterpret}}{\mathsf{\_}}{{\mathit{nt}}_2})` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{nt}}_2~\rightarrow~{\mathit{nt}}_1` if:
+The instruction :math:`({\mathit{nt}}_1 {.} {\mathsf{reinterpret}}{\mathsf{\_}}{{\mathit{nt}}_2})` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{nt}}_2~\rightarrow~{\mathit{nt}}_1` if:
 
 
    * :math:`{|{\mathit{nt}}_1|}` is of the form :math:`{|{\mathit{nt}}_2|}`.
@@ -5383,7 +5383,7 @@ The instruction :math:`({{\mathit{nt}}_1~{.}~\mathsf{reinterpret}}{\mathsf{\_}}{
 
 
 
-The instruction :math:`({{\mathit{nt}}_1~{.}~{\mathit{cvtop}}}{\mathsf{\_}}{{\mathit{nt}}_2})` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{nt}}_2~\rightarrow~{\mathit{nt}}_1`.
+The instruction :math:`({\mathit{nt}}_1 {.} {{\mathit{cvtop}}}{\mathsf{\_}}{{\mathit{nt}}_2})` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{nt}}_2~\rightarrow~{\mathit{nt}}_1`.
 
 
 
@@ -6392,7 +6392,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
    #. Execute the instruction :math:`\mathsf{return}`.
 
 
-:math:`{\mathit{nt}}~{.}~{\mathit{unop}}`
+:math:`{\mathit{nt}} {.} {\mathit{unop}}`
 .........................................
 
 
@@ -6409,7 +6409,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Push the value :math:`({\mathit{nt}}{.}\mathsf{const}~c)` to the stack.
 
 
-:math:`{\mathit{nt}}~{.}~{\mathit{binop}}`
+:math:`{\mathit{nt}} {.} {\mathit{binop}}`
 ..........................................
 
 
@@ -6430,7 +6430,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Push the value :math:`({\mathit{nt}}{.}\mathsf{const}~c)` to the stack.
 
 
-:math:`{\mathit{nt}}~{.}~{\mathit{testop}}`
+:math:`{\mathit{nt}} {.} {\mathit{testop}}`
 ...........................................
 
 
@@ -6443,7 +6443,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` to the stack.
 
 
-:math:`{\mathit{nt}}~{.}~{\mathit{relop}}`
+:math:`{\mathit{nt}} {.} {\mathit{relop}}`
 ..........................................
 
 
@@ -6460,7 +6460,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` to the stack.
 
 
-:math:`{{\mathit{nt}}_2~{.}~{\mathit{cvtop}}}{\mathsf{\_}}{{\mathit{nt}}_1}`
+:math:`{\mathit{nt}}_2 {.} {{\mathit{cvtop}}}{\mathsf{\_}}{{\mathit{nt}}_1}`
 ............................................................................
 
 
@@ -6494,7 +6494,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
    a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~0)` to the stack.
 
 
-:math:`\mathsf{v{\scriptstyle 128}}~{.}~{\mathit{vvunop}}`
+:math:`\mathsf{v{\scriptstyle 128}} {.} {\mathit{vvunop}}`
 ..........................................................
 
 
@@ -6507,7 +6507,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
 
-:math:`\mathsf{v{\scriptstyle 128}}~{.}~{\mathit{vvbinop}}`
+:math:`\mathsf{v{\scriptstyle 128}} {.} {\mathit{vvbinop}}`
 ...........................................................
 
 
@@ -6524,7 +6524,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
 
-:math:`\mathsf{v{\scriptstyle 128}}~{.}~{\mathit{vvternop}}`
+:math:`\mathsf{v{\scriptstyle 128}} {.} {\mathit{vvternop}}`
 ............................................................
 
 
@@ -6545,7 +6545,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
 
-:math:`\mathsf{v{\scriptstyle 128}}~{.}~\mathsf{any\_true}`
+:math:`\mathsf{v{\scriptstyle 128}} {.} \mathsf{any\_true}`
 ...........................................................
 
 
@@ -6558,7 +6558,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` to the stack.
 
 
-:math:`{\mathit{sh}}~{.}~{\mathit{vunop}}`
+:math:`{\mathit{sh}} {.} {\mathit{vunop}}`
 ..........................................
 
 
@@ -6575,7 +6575,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
 
-:math:`{\mathit{sh}}~{.}~{\mathit{vbinop}}`
+:math:`{\mathit{sh}} {.} {\mathit{vbinop}}`
 ...........................................
 
 
@@ -6596,7 +6596,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
 
-:math:`{{\mathsf{i}}{n}}{\mathsf{x}}{N}~{.}~\mathsf{all\_true}`
+:math:`{{\mathsf{i}}{n}}{\mathsf{x}}{N} {.} \mathsf{all\_true}`
 ...............................................................
 
 
@@ -6615,7 +6615,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
    a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~0)` to the stack.
 
 
-:math:`{\mathit{sh}}~{.}~{\mathit{vrelop}}`
+:math:`{\mathit{sh}} {.} {\mathit{vrelop}}`
 ...........................................
 
 
@@ -6632,7 +6632,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
 
-:math:`{{\mathsf{i}}{n}}{\mathsf{x}}{N}~{.}~{\mathit{vshiftop}}`
+:math:`{{\mathsf{i}}{n}}{\mathsf{x}}{N} {.} {\mathit{vshiftop}}`
 ................................................................
 
 
@@ -6846,7 +6846,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
 
-:math:`{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M}~{.}~{\mathit{vcvtop}}}{\mathsf{\_}}{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{{M'}}}`
+:math:`{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M} {.} {{\mathit{vcvtop}}}{\mathsf{\_}}{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{{M'}}}`
 ..........................................................................................................................
 
 
@@ -10129,7 +10129,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       #) Return :math:`\epsilon~\rightarrow~t`.
 
-#. Assert: Due to validation, :math:`{\mathit{blocktype}}` is some :math:`{\mathit{funcidx}}`.
+#. Assert: Due to validation, :math:`{\mathit{blocktype}}` is some :math:`{\mathit{typeidx}}`.
 
 #. Let :math:`x` be the block type :math:`{\mathit{blocktype}}`.
 
@@ -13742,8 +13742,6 @@ spectec 0.5 generator
 == IL Validation after pass sideconditions...
 == Translating to AL...
 == Prose Generation...
-Untranslated relation Expand: `%~~%`(deftype, comptype)
-Untranslated relation Expand_use: `%~~_%%`(typeuse, context, comptype)
 
 
 
@@ -13768,6 +13766,14 @@ The packed type :math:`{\mathit{packtype}}` :ref:`matches <match>` only itself.
 
 
 The number type :math:`{\mathit{numtype}}` :ref:`matches <match>` only itself.
+
+
+
+
+The :ref:`expansion <aux-expand-deftype>` of :math:`{\mathit{deftype}}` is :math:`{\mathit{comptype}}` if:
+
+
+   * The composite type :math:`{\mathrm{expand}}({\mathit{deftype}})` is of the form :math:`{\mathit{comptype}}`.
 
 
 
@@ -13880,7 +13886,7 @@ The type use :math:`{\mathit{typeuse}}` is :ref:`valid <valid-val>` if:
 
    * Or:
 
-      * The type use :math:`{\mathit{typeuse}}` is of the form :math:`(\mathsf{rec}~{.}~{.})`.
+      * The type use :math:`{\mathit{typeuse}}` is of the form :math:`(\mathsf{rec} {.} i)`.
 
       * The recursive type :math:`C{.}\mathsf{recs}{}[i]` exists.
    * Or:
@@ -13900,7 +13906,7 @@ The type use :math:`{\mathit{typeidx}}` is :ref:`valid <valid-val>` if:
 
 
 
-The type use :math:`(\mathsf{rec}~{.}~{.})` is :ref:`valid <valid-val>` if:
+The type use :math:`(\mathsf{rec} {.} i)` is :ref:`valid <valid-val>` if:
 
 
    * The recursive type :math:`C{.}\mathsf{recs}{}[i]` exists.
@@ -14135,7 +14141,7 @@ The recursive type :math:`(\mathsf{rec}~{\mathit{subtype}}_1~{{\mathit{subtype}}
 
 
 
-The defined type :math:`({\mathit{rectype}}~{.}~i)` is :ref:`valid <valid-val>` if:
+The defined type :math:`({\mathit{rectype}} {.} i)` is :ref:`valid <valid-val>` if:
 
 
    * The recursive type :math:`{\mathit{rectype}}` is :ref:`valid <valid-val>` for the type index :math:`x`.
@@ -14324,7 +14330,7 @@ The heap type :math:`{\mathit{heaptype}}_1` :ref:`matches <match>` the heap type
       * The heap type :math:`{\mathit{heaptype}}_1` :ref:`matches <match>` the type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]`.
    * Or:
 
-      * The heap type :math:`{\mathit{heaptype}}_1` is of the form :math:`(\mathsf{rec}~{.}~{.})`.
+      * The heap type :math:`{\mathit{heaptype}}_1` is of the form :math:`(\mathsf{rec} {.} i)`.
 
       * The length of :math:`{{\mathit{typeuse}}^\ast}` is greater than :math:`j`.
 
@@ -14449,7 +14455,7 @@ The heap type :math:`{\mathit{heaptype}}` :ref:`matches <match>` the heap type :
 
 
 
-The heap type :math:`(\mathsf{rec}~{.}~{.})` :ref:`matches <match>` the type use :math:`{{\mathit{typeuse}}^\ast}{}[j]` if:
+The heap type :math:`(\mathsf{rec} {.} i)` :ref:`matches <match>` the type use :math:`{{\mathit{typeuse}}^\ast}{}[j]` if:
 
 
    * The length of :math:`{{\mathit{typeuse}}^\ast}` is greater than :math:`j`.
@@ -14697,6 +14703,44 @@ The instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}` is 
 
 
 
+The :ref:`expansion <aux-expand-typeuse>` of :math:`C` is :math:`{\mathit{comptype}}` if:
+
+
+   * Either:
+
+      * The type use :math:`{\mathit{typeuse}}` is of the form :math:`{\mathit{deftype}}`.
+
+      * The :ref:`expansion <aux-expand-deftype>` of :math:`{\mathit{deftype}}` is :math:`{\mathit{comptype}}`.
+
+   * Or:
+
+      * The type use :math:`{\mathit{typeuse}}` is of the form :math:`{\mathit{typeidx}}`.
+
+      * The type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
+
+      * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is :math:`{\mathit{comptype}}`.
+
+
+
+
+The :ref:`expansion <aux-expand-typeuse>` of :math:`C` is :math:`{\mathit{comptype}}` if:
+
+
+   * The :ref:`expansion <aux-expand-deftype>` of :math:`{\mathit{deftype}}` is :math:`{\mathit{comptype}}`.
+
+
+
+
+The :ref:`expansion <aux-expand-typeuse>` of :math:`C` is :math:`{\mathit{comptype}}` if:
+
+
+   * The type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
+
+   * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is :math:`{\mathit{comptype}}`.
+
+
+
+
 The limits range :math:`{}[ n .. {m^?} ]` is :ref:`valid <valid-val>` within :math:`k` if:
 
 
@@ -14842,12 +14886,44 @@ The instruction type :math:`{t_{11}^\ast}~{\rightarrow}_{{x_1^\ast}}\,{t_{12}^\a
 
 
 
-The limits range :math:`{}[ n_1 .. m_1 ]` :ref:`matches <match>` the limits range :math:`{}[ n_2 .. m_2 ]` if:
+The limits range :math:`{}[ n_1 .. {{\mathit{u{\kern-0.1em\scriptstyle 64}}}_1^?} ]` :ref:`matches <match>` the limits range :math:`{}[ n_2 .. {{\mathit{u{\kern-0.1em\scriptstyle 64}}}_2^?} ]` if:
 
 
    * :math:`n_1` is greater than or equal to :math:`n_2`.
 
-   * :math:`m_1` is less than or equal to :math:`m_2`.
+   * Either:
+
+      * :math:`{{\mathit{u{\kern-0.1em\scriptstyle 64}}}_1^?}` is of the form :math:`m_1`.
+
+      * If :math:`{\mathit{u{\kern-0.1em\scriptstyle 64}}}_2` is defined, then:
+
+         * :math:`m_1` is less than or equal to :math:`{\mathit{u{\kern-0.1em\scriptstyle 64}}}_2`.
+
+   * Or:
+
+      * :math:`{{\mathit{u{\kern-0.1em\scriptstyle 64}}}_1^?}` is absent.
+
+      * :math:`{{\mathit{u{\kern-0.1em\scriptstyle 64}}}_2^?}` is absent.
+
+
+
+
+The limits range :math:`{}[ n_1 .. m_1 ]` :ref:`matches <match>` the limits range :math:`{}[ n_2 .. {m_2^?} ]` if:
+
+
+   * :math:`n_1` is greater than or equal to :math:`n_2`.
+
+   * If :math:`m_2` is defined, then:
+
+      * :math:`m_1` is less than or equal to :math:`m_2`.
+
+
+
+
+The limits range :math:`{}[ n_1~.. ]` :ref:`matches <match>` the limits range :math:`{}[ n_2~.. ]` if:
+
+
+   * :math:`n_1` is greater than or equal to :math:`n_2`.
 
 
 
@@ -15141,6 +15217,16 @@ The value type :math:`t` is defaultable if:
 
 
    * The value :math:`{{\mathrm{default}}}_{t}` is not absent.
+
+
+
+
+:math:`\{ \mathsf{align}~n,\;\allowbreak \mathsf{offset}~m \}` is valid for :math:`{\mathit{at}}` and :math:`N` if:
+
+
+   * :math:`{2^{n}}` is less than or equal to :math:`N / 8`.
+
+   * :math:`m` is less than :math:`{2^{{|{\mathit{at}}|}}}`.
 
 
 
@@ -15991,7 +16077,7 @@ The instruction :math:`({{\mathit{nt}}{.}\mathsf{load}}{{{\mathit{loadop}}^?}}~x
 
       * The value type :math:`{\mathit{valtype}}` is of the form :math:`{\mathit{nt}}`.
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
+      * :math:`{\mathit{memarg}}` is valid for :math:`{\mathit{at}}` and :math:`{|{\mathit{nt}}|}`.
 
    * Or:
 
@@ -16001,7 +16087,7 @@ The instruction :math:`({{\mathit{nt}}{.}\mathsf{load}}{{{\mathit{loadop}}^?}}~x
 
       * The value type :math:`{\mathit{valtype}}` is of the form :math:`{\mathsf{i}}{N}`.
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
+      * :math:`{\mathit{memarg}}` is valid for :math:`{\mathit{at}}` and :math:`M`.
 
 
 
@@ -16019,7 +16105,7 @@ The instruction :math:`({{\mathit{nt}}{.}\mathsf{store}}{{{\mathit{storeop}}^?}}
 
       * The value type :math:`{\mathit{valtype}}` is of the form :math:`{\mathit{nt}}`.
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
+      * :math:`{\mathit{memarg}}` is valid for :math:`{\mathit{at}}` and :math:`{|{\mathit{nt}}|}`.
 
    * Or:
 
@@ -16029,7 +16115,7 @@ The instruction :math:`({{\mathit{nt}}{.}\mathsf{store}}{{{\mathit{storeop}}^?}}
 
       * The value type :math:`{\mathit{valtype}}` is of the form :math:`{\mathsf{i}}{N}`.
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
+      * :math:`{\mathit{memarg}}` is valid for :math:`{\mathit{at}}` and :math:`M`.
 
 
 
@@ -16045,23 +16131,23 @@ The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{{\mathit
 
       * :math:`{{\mathit{vloadop}}^?}` is absent.
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|\mathsf{v{\scriptstyle 128}}|} / 8`.
+      * :math:`{\mathit{memarg}}` is valid for :math:`{\mathit{at}}` and :math:`{|\mathsf{v{\scriptstyle 128}}|}`.
 
    * Or:
 
       * :math:`{{\mathit{vloadop}}^?}` is of the form :math:`({M}{\mathsf{x}}{N}{\mathsf{\_}}{{\mathit{sx}}})`.
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8 \cdot N`.
+      * :math:`{\mathit{memarg}}` is valid for :math:`{\mathit{at}}` and :math:`M \cdot N`.
    * Or:
 
       * :math:`{{\mathit{vloadop}}^?}` is of the form :math:`({N}{\mathsf{\_}}{\mathsf{splat}})`.
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`N / 8`.
+      * :math:`{\mathit{memarg}}` is valid for :math:`{\mathit{at}}` and :math:`N`.
    * Or:
 
       * :math:`{{\mathit{vloadop}}^?}` is of the form :math:`({N}{\mathsf{\_}}{\mathsf{zero}})`.
 
-      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`N / 8`.
+      * :math:`{\mathit{memarg}}` is valid for :math:`{\mathit{at}}` and :math:`N`.
 
 
 
@@ -16073,7 +16159,7 @@ The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{N}{\maths
 
    * The memory :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
 
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`N / 8`.
+   * :math:`{\mathit{memarg}}` is valid for :math:`{\mathit{at}}` and :math:`N`.
 
    * :math:`i` is less than :math:`128 / N`.
 
@@ -16087,7 +16173,7 @@ The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{store}~x~{\mathit
 
    * The memory :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
 
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|\mathsf{v{\scriptstyle 128}}|} / 8`.
+   * :math:`{\mathit{memarg}}` is valid for :math:`{\mathit{at}}` and :math:`{|\mathsf{v{\scriptstyle 128}}|}`.
 
 
 
@@ -16099,7 +16185,7 @@ The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{store}}{N}{\math
 
    * The memory :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
 
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`N / 8`.
+   * :math:`{\mathit{memarg}}` is valid for :math:`{\mathit{at}}` and :math:`N`.
 
    * :math:`i` is less than :math:`128 / N`.
 
@@ -16111,27 +16197,27 @@ The instruction :math:`({\mathit{nt}}{.}\mathsf{const}~c_{\mathit{nt}})` is :ref
 
 
 
-The instruction :math:`({\mathit{nt}}~{.}~{\mathit{unop}}_{\mathit{nt}})` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{nt}}~\rightarrow~{\mathit{nt}}`.
+The instruction :math:`({\mathit{nt}} {.} {\mathit{unop}}_{\mathit{nt}})` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{nt}}~\rightarrow~{\mathit{nt}}`.
 
 
 
 
-The instruction :math:`({\mathit{nt}}~{.}~{\mathit{binop}}_{\mathit{nt}})` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{nt}}~{\mathit{nt}}~\rightarrow~{\mathit{nt}}`.
+The instruction :math:`({\mathit{nt}} {.} {\mathit{binop}}_{\mathit{nt}})` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{nt}}~{\mathit{nt}}~\rightarrow~{\mathit{nt}}`.
 
 
 
 
-The instruction :math:`({\mathit{nt}}~{.}~{\mathit{testop}}_{\mathit{nt}})` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{nt}}~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
+The instruction :math:`({\mathit{nt}} {.} {\mathit{testop}}_{\mathit{nt}})` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{nt}}~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
 
 
 
 
-The instruction :math:`({\mathit{nt}}~{.}~{\mathit{relop}}_{\mathit{nt}})` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{nt}}~{\mathit{nt}}~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
+The instruction :math:`({\mathit{nt}} {.} {\mathit{relop}}_{\mathit{nt}})` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{nt}}~{\mathit{nt}}~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
 
 
 
 
-The instruction :math:`({{\mathit{nt}}_1~{.}~{\mathit{cvtop}}}{\mathsf{\_}}{{\mathit{nt}}_2})` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{nt}}_2~\rightarrow~{\mathit{nt}}_1`.
+The instruction :math:`({\mathit{nt}}_1 {.} {{\mathit{cvtop}}}{\mathsf{\_}}{{\mathit{nt}}_2})` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{nt}}_2~\rightarrow~{\mathit{nt}}_1`.
 
 
 
@@ -16141,52 +16227,52 @@ The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` is :re
 
 
 
-The instruction :math:`(\mathsf{v{\scriptstyle 128}}~{.}~{\mathit{vvunop}})` is :ref:`valid <valid-val>` with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+The instruction :math:`(\mathsf{v{\scriptstyle 128}} {.} {\mathit{vvunop}})` is :ref:`valid <valid-val>` with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
 
 
-The instruction :math:`(\mathsf{v{\scriptstyle 128}}~{.}~{\mathit{vvbinop}})` is :ref:`valid <valid-val>` with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+The instruction :math:`(\mathsf{v{\scriptstyle 128}} {.} {\mathit{vvbinop}})` is :ref:`valid <valid-val>` with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
 
 
-The instruction :math:`(\mathsf{v{\scriptstyle 128}}~{.}~{\mathit{vvternop}})` is :ref:`valid <valid-val>` with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+The instruction :math:`(\mathsf{v{\scriptstyle 128}} {.} {\mathit{vvternop}})` is :ref:`valid <valid-val>` with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
 
 
-The instruction :math:`(\mathsf{v{\scriptstyle 128}}~{.}~{\mathit{vvtestop}})` is :ref:`valid <valid-val>` with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
+The instruction :math:`(\mathsf{v{\scriptstyle 128}} {.} {\mathit{vvtestop}})` is :ref:`valid <valid-val>` with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
 
 
 
 
-The instruction :math:`({\mathit{sh}}~{.}~{\mathit{vunop}})` is :ref:`valid <valid-val>` with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+The instruction :math:`({\mathit{sh}} {.} {\mathit{vunop}})` is :ref:`valid <valid-val>` with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
 
 
-The instruction :math:`({\mathit{sh}}~{.}~{\mathit{vbinop}})` is :ref:`valid <valid-val>` with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+The instruction :math:`({\mathit{sh}} {.} {\mathit{vbinop}})` is :ref:`valid <valid-val>` with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
 
 
-The instruction :math:`({\mathit{sh}}~{.}~{\mathit{vternop}})` is :ref:`valid <valid-val>` with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+The instruction :math:`({\mathit{sh}} {.} {\mathit{vternop}})` is :ref:`valid <valid-val>` with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
 
 
-The instruction :math:`({\mathit{sh}}~{.}~{\mathit{vtestop}})` is :ref:`valid <valid-val>` with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
+The instruction :math:`({\mathit{sh}} {.} {\mathit{vtestop}})` is :ref:`valid <valid-val>` with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
 
 
 
 
-The instruction :math:`({\mathit{sh}}~{.}~{\mathit{vrelop}})` is :ref:`valid <valid-val>` with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+The instruction :math:`({\mathit{sh}} {.} {\mathit{vrelop}})` is :ref:`valid <valid-val>` with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
 
 
-The instruction :math:`({\mathit{sh}}~{.}~{\mathit{vshiftop}})` is :ref:`valid <valid-val>` with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+The instruction :math:`({\mathit{sh}} {.} {\mathit{vshiftop}})` is :ref:`valid <valid-val>` with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
 
@@ -16196,7 +16282,7 @@ The instruction :math:`({\mathit{sh}}{.}\mathsf{bitmask})` is :ref:`valid <valid
 
 
 
-The instruction :math:`({\mathit{sh}}~{.}~{\mathit{vswizzlop}})` is :ref:`valid <valid-val>` with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+The instruction :math:`({\mathit{sh}} {.} {\mathit{vswizzlop}})` is :ref:`valid <valid-val>` with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
 
@@ -16239,17 +16325,17 @@ The instruction :math:`({\mathit{sh}}{.}\mathsf{replace\_lane}~i)` is :ref:`vali
 
 
 
-The instruction :math:`({{\mathit{sh}}_1~{.}~{\mathit{vextunop}}}{\mathsf{\_}}{{\mathit{sh}}_2})` is :ref:`valid <valid-val>` with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+The instruction :math:`({\mathit{sh}}_1 {.} {{\mathit{vextunop}}}{\mathsf{\_}}{{\mathit{sh}}_2})` is :ref:`valid <valid-val>` with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
 
 
-The instruction :math:`({{\mathit{sh}}_1~{.}~{\mathit{vextbinop}}}{\mathsf{\_}}{{\mathit{sh}}_2})` is :ref:`valid <valid-val>` with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+The instruction :math:`({\mathit{sh}}_1 {.} {{\mathit{vextbinop}}}{\mathsf{\_}}{{\mathit{sh}}_2})` is :ref:`valid <valid-val>` with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
 
 
-The instruction :math:`({{\mathit{sh}}_1~{.}~{\mathit{vextternop}}}{\mathsf{\_}}{{\mathit{sh}}_2})` is :ref:`valid <valid-val>` with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+The instruction :math:`({\mathit{sh}}_1 {.} {{\mathit{vextternop}}}{\mathsf{\_}}{{\mathit{sh}}_2})` is :ref:`valid <valid-val>` with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
 
@@ -16259,7 +16345,7 @@ The instruction :math:`({{\mathit{sh}}_1{.}\mathsf{narrow}}{\mathsf{\_}}{{\mathi
 
 
 
-The instruction :math:`({{\mathit{sh}}_1~{.}~{\mathit{vcvtop}}}{\mathsf{\_}}{{\mathit{sh}}_2})` is :ref:`valid <valid-val>` with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
+The instruction :math:`({\mathit{sh}}_1 {.} {{\mathit{vcvtop}}}{\mathsf{\_}}{{\mathit{sh}}_2})` is :ref:`valid <valid-val>` with the instruction type :math:`\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
 
@@ -16291,7 +16377,7 @@ The instruction :math:`({\mathit{nt}}{.}\mathsf{load}~x~{\mathit{memarg}})` is :
 
    * The memory :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
 
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
+   * :math:`{\mathit{memarg}}` is valid for :math:`{\mathit{at}}` and :math:`{|{\mathit{nt}}|}`.
 
 
 
@@ -16303,7 +16389,7 @@ The instruction :math:`({{\mathsf{i}}{N}{.}\mathsf{load}}{{M}{\mathsf{\_}}{{\mat
 
    * The memory :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
 
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
+   * :math:`{\mathit{memarg}}` is valid for :math:`{\mathit{at}}` and :math:`M`.
 
 
 
@@ -16315,7 +16401,7 @@ The instruction :math:`({\mathit{nt}}{.}\mathsf{store}~x~{\mathit{memarg}})` is 
 
    * The memory :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
 
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
+   * :math:`{\mathit{memarg}}` is valid for :math:`{\mathit{at}}` and :math:`{|{\mathit{nt}}|}`.
 
 
 
@@ -16327,7 +16413,7 @@ The instruction :math:`({{\mathsf{i}}{N}{.}\mathsf{store}}{M}~x~{\mathit{memarg}
 
    * The memory :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
 
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
+   * :math:`{\mathit{memarg}}` is valid for :math:`{\mathit{at}}` and :math:`M`.
 
 
 
@@ -16339,7 +16425,7 @@ The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~x~{\mathit{
 
    * The memory :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
 
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|\mathsf{v{\scriptstyle 128}}|} / 8`.
+   * :math:`{\mathit{memarg}}` is valid for :math:`{\mathit{at}}` and :math:`{|\mathsf{v{\scriptstyle 128}}|}`.
 
 
 
@@ -16351,7 +16437,7 @@ The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{M}{\math
 
    * The memory :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
 
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8 \cdot N`.
+   * :math:`{\mathit{memarg}}` is valid for :math:`{\mathit{at}}` and :math:`M \cdot N`.
 
 
 
@@ -16363,7 +16449,7 @@ The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{N}{\math
 
    * The memory :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
 
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`N / 8`.
+   * :math:`{\mathit{memarg}}` is valid for :math:`{\mathit{at}}` and :math:`N`.
 
 
 
@@ -16375,7 +16461,7 @@ The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{N}{\math
 
    * The memory :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
 
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`N / 8`.
+   * :math:`{\mathit{memarg}}` is valid for :math:`{\mathit{at}}` and :math:`N`.
 
 
 
@@ -16532,7 +16618,7 @@ The value type :math:`t` is not defaultable if:
       * The global :math:`C{.}\mathsf{globals}{}[x]` is of the form :math:`(\epsilon~t)`.
    * Or:
 
-      * The value :math:`{\mathit{val}}` is of the form :math:`({\mathsf{i}}{N}~{.}~{\mathit{binop}})`.
+      * The value :math:`{\mathit{val}}` is of the form :math:`({\mathsf{i}}{N} {.} {\mathit{binop}})`.
 
       * :math:`{\mathsf{i}}{N}` is contained in [:math:`\mathsf{i{\scriptstyle 32}}`; :math:`\mathsf{i{\scriptstyle 64}}`].
 
@@ -16611,7 +16697,7 @@ The value type :math:`t` is not defaultable if:
 
 
 
-:math:`({\mathsf{i}}{N}~{.}~{\mathit{binop}})` is constant if:
+:math:`({\mathsf{i}}{N} {.} {\mathit{binop}})` is constant if:
 
 
    * :math:`{\mathsf{i}}{N}` is contained in [:math:`\mathsf{i{\scriptstyle 32}}`; :math:`\mathsf{i{\scriptstyle 64}}`].
@@ -17521,7 +17607,7 @@ The instruction sequence :math:`{\mathit{instr}}` is :ref:`valid <valid-val>` wi
 
    * Either:
 
-      * The instruction :math:`{\mathit{instr}}` is of the form :math:`(\mathsf{i{\scriptstyle 32}}~{.}~\mathsf{add})`.
+      * The instruction :math:`{\mathit{instr}}` is of the form :math:`(\mathsf{i{\scriptstyle 32}} {.} \mathsf{add})`.
 
       * The value type sequence :math:`{{\mathit{valtype}}^\ast}` is of the form :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}`.
 
@@ -17551,7 +17637,7 @@ The instruction sequence :math:`{\mathit{instr}}` is :ref:`valid <valid-val>` wi
 
 
 
-The instruction sequence :math:`(\mathsf{i{\scriptstyle 32}}~{.}~\mathsf{add})` is :ref:`valid <valid-val>` with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
+The instruction sequence :math:`(\mathsf{i{\scriptstyle 32}} {.} \mathsf{add})` is :ref:`valid <valid-val>` with the instruction type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{i{\scriptstyle 32}}`.
 
 
 
@@ -18536,7 +18622,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
    #. Push the value :math:`{\mathit{addrref}}` to the stack.
 
 
-:math:`{\mathit{nt}}~{.}~{\mathit{unop}}`
+:math:`{\mathit{nt}} {.} {\mathit{unop}}`
 .........................................
 
 
@@ -18553,7 +18639,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Push the value :math:`({\mathit{nt}}{.}\mathsf{const}~c)` to the stack.
 
 
-:math:`{\mathit{nt}}~{.}~{\mathit{binop}}`
+:math:`{\mathit{nt}} {.} {\mathit{binop}}`
 ..........................................
 
 
@@ -18574,7 +18660,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Push the value :math:`({\mathit{nt}}{.}\mathsf{const}~c)` to the stack.
 
 
-:math:`{\mathit{nt}}~{.}~{\mathit{testop}}`
+:math:`{\mathit{nt}} {.} {\mathit{testop}}`
 ...........................................
 
 
@@ -18587,7 +18673,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` to the stack.
 
 
-:math:`{\mathit{nt}}~{.}~{\mathit{relop}}`
+:math:`{\mathit{nt}} {.} {\mathit{relop}}`
 ..........................................
 
 
@@ -18604,7 +18690,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` to the stack.
 
 
-:math:`{{\mathit{nt}}_2~{.}~{\mathit{cvtop}}}{\mathsf{\_}}{{\mathit{nt}}_1}`
+:math:`{\mathit{nt}}_2 {.} {{\mathit{cvtop}}}{\mathsf{\_}}{{\mathit{nt}}_1}`
 ............................................................................
 
 
@@ -18621,7 +18707,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Push the value :math:`({\mathit{nt}}_2{.}\mathsf{const}~c)` to the stack.
 
 
-:math:`\mathsf{v{\scriptstyle 128}}~{.}~{\mathit{vvunop}}`
+:math:`\mathsf{v{\scriptstyle 128}} {.} {\mathit{vvunop}}`
 ..........................................................
 
 
@@ -18636,7 +18722,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
 
-:math:`\mathsf{v{\scriptstyle 128}}~{.}~{\mathit{vvbinop}}`
+:math:`\mathsf{v{\scriptstyle 128}} {.} {\mathit{vvbinop}}`
 ...........................................................
 
 
@@ -18655,7 +18741,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
 
-:math:`\mathsf{v{\scriptstyle 128}}~{.}~{\mathit{vvternop}}`
+:math:`\mathsf{v{\scriptstyle 128}} {.} {\mathit{vvternop}}`
 ............................................................
 
 
@@ -18678,7 +18764,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
 
-:math:`\mathsf{v{\scriptstyle 128}}~{.}~\mathsf{any\_true}`
+:math:`\mathsf{v{\scriptstyle 128}} {.} \mathsf{any\_true}`
 ...........................................................
 
 
@@ -18686,12 +18772,12 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
-#. Let :math:`c` be :math:`{{\mathrm{ine}}}_{{|\mathsf{v{\scriptstyle 128}}|}}(c_1, 0)`.
+#. Let :math:`c` be :math:`{{\mathrm{inez}}}_{{|\mathsf{v{\scriptstyle 128}}|}}(c_1)`.
 
 #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` to the stack.
 
 
-:math:`{\mathit{sh}}~{.}~{\mathit{vunop}}`
+:math:`{\mathit{sh}} {.} {\mathit{vunop}}`
 ..........................................
 
 
@@ -18708,7 +18794,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
 
-:math:`{\mathit{sh}}~{.}~{\mathit{vbinop}}`
+:math:`{\mathit{sh}} {.} {\mathit{vbinop}}`
 ...........................................
 
 
@@ -18729,7 +18815,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
 
-:math:`{\mathit{sh}}~{.}~{\mathit{vternop}}`
+:math:`{\mathit{sh}} {.} {\mathit{vternop}}`
 ............................................
 
 
@@ -18754,20 +18840,22 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
 
-:math:`{\mathit{sh}}~{.}~{\mathit{vtestop}}`
-............................................
+:math:`{{\mathsf{i}}{N}}{\mathsf{x}}{M} {.} \mathsf{all\_true}`
+...............................................................
 
 
 1. Assert: Due to validation, a value of vector type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
-#. Let :math:`i` be :math:`{{\mathit{vtestop}}}{{}_{{\mathit{sh}}}(c_1)}`.
+#. Let :math:`{i^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}(c_1)`.
 
-#. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` to the stack.
+#. Let :math:`c` be :math:`{\Pi}\, {{{\mathrm{inez}}}_{N}(i)^\ast}`.
+
+#. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` to the stack.
 
 
-:math:`{\mathit{sh}}~{.}~{\mathit{vrelop}}`
+:math:`{\mathit{sh}} {.} {\mathit{vrelop}}`
 ...........................................
 
 
@@ -18784,7 +18872,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
 
-:math:`{\mathit{sh}}~{.}~{\mathit{vshiftop}}`
+:math:`{\mathit{sh}} {.} {\mathit{vshiftop}}`
 .............................................
 
 
@@ -18814,7 +18902,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` to the stack.
 
 
-:math:`{\mathit{sh}}~{.}~{\mathit{swizzlop}}`
+:math:`{\mathit{sh}} {.} {\mathit{swizzlop}}`
 .............................................
 
 
@@ -18913,7 +19001,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
 
-:math:`{{\mathit{sh}}_2~{.}~{\mathit{vextunop}}}{\mathsf{\_}}{{\mathit{sh}}_1}`
+:math:`{\mathit{sh}}_2 {.} {{\mathit{vextunop}}}{\mathsf{\_}}{{\mathit{sh}}_1}`
 ...............................................................................
 
 
@@ -18926,7 +19014,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
 
-:math:`{{\mathit{sh}}_2~{.}~{\mathit{vextbinop}}}{\mathsf{\_}}{{\mathit{sh}}_1}`
+:math:`{\mathit{sh}}_2 {.} {{\mathit{vextbinop}}}{\mathsf{\_}}{{\mathit{sh}}_1}`
 ................................................................................
 
 
@@ -18943,7 +19031,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
 
-:math:`{{\mathit{sh}}_2~{.}~{\mathit{vextternop}}}{\mathsf{\_}}{{\mathit{sh}}_1}`
+:math:`{\mathit{sh}}_2 {.} {{\mathit{vextternop}}}{\mathsf{\_}}{{\mathit{sh}}_1}`
 .................................................................................
 
 
@@ -18981,7 +19069,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
 
-:math:`{{\mathit{sh}}_2~{.}~{\mathit{vcvtop}}}{\mathsf{\_}}{{\mathit{sh}}_1}`
+:math:`{\mathit{sh}}_2 {.} {{\mathit{vcvtop}}}{\mathsf{\_}}{{\mathit{sh}}_1}`
 .............................................................................
 
 
@@ -19272,7 +19360,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
          #) Execute the instruction :math:`\mathsf{throw\_ref}`.
 
-      #) Else if not the first non-value entry of the stack is a :math:`\mathsf{handler}`, then:
+      #) Else if the first non-value entry of the stack is not a :math:`\mathsf{handler}`, then:
 
          a) Throw the exception :math:`{\mathit{val}'}` as a result.
 
@@ -19424,11 +19512,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Else:
 
-   a. Assert: Due to validation, not the first non-value entry of the stack is a :math:`\mathsf{label}`.
+   a. Assert: Due to validation, the first non-value entry of the stack is not a :math:`\mathsf{label}`.
 
-   #. Assert: Due to validation, not the first non-value entry of the stack is a :math:`\mathsf{frame}`.
+   #. Assert: Due to validation, the first non-value entry of the stack is not a :math:`\mathsf{frame}`.
 
-   #. Assert: Due to validation, not the first non-value entry of the stack is a :math:`\mathsf{handler}`.
+   #. Assert: Due to validation, the first non-value entry of the stack is not a :math:`\mathsf{handler}`.
 
    #. Throw the exception :math:`{\mathit{val}'}` as a result.
 
@@ -21973,7 +22061,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    a. Let :math:`{\mathit{typevar}}_0~{{\mathit{tv}}^\ast}` be :math:`{{\mathit{typevar}}^\ast}`.
 
-   #. If :math:`{\mathit{typevar}}_0` is some :math:`\mathsf{rec}~{.}~n` and :math:`{|{{\mathit{typeuse}}^\ast}|} \geq 1`, then:
+   #. If :math:`{\mathit{typevar}}_0` is some :math:`\mathsf{rec} {.} n` and :math:`{|{{\mathit{typeuse}}^\ast}|} \geq 1`, then:
 
       1) Let :math:`{\mathit{tu}}_1~{{\mathit{tu}}^\ast}` be :math:`{{\mathit{typeuse}}^\ast}`.
 
@@ -22132,11 +22220,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`(\mathsf{rec}~{{{\mathit{st}}}{{}[ {{\mathit{tv}'}^\ast} := {{\mathit{tu}'}^\ast} ]}^\ast})`.
 
 
-:math:`{{\mathit{qt}}~{.}~i}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`
+:math:`{{\mathit{qt}} {.} i}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`
 .................................................................................
 
 
-1. Return :math:`({{\mathit{qt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}~{.}~i)`.
+1. Return :math:`({{\mathit{qt}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]} {.} i)`.
 
 
 :math:`{{\mathit{at}}}{{}[ {{\mathit{tv}}^\ast} := {{\mathit{tu}}^\ast} ]}`
@@ -22298,7 +22386,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`(\mathsf{rec}~{{\mathit{subtype}}^{n}})` be the destructuring of :math:`{\mathit{rectype}}`.
 
-#. Return :math:`(\mathsf{rec}~{{{\mathit{subtype}}}{{}[ {x + i^{i<n}} := {(\mathsf{rec}~{.}~{.})^{i<n}} ]}^{n}})`.
+#. Return :math:`(\mathsf{rec}~{{{\mathit{subtype}}}{{}[ {x + i^{i<n}} := {(\mathsf{rec} {.} i)^{i<n}} ]}^{n}})`.
 
 
 :math:`{\mathrm{unroll}}({\mathit{rectype}})`
@@ -22307,7 +22395,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`(\mathsf{rec}~{{\mathit{subtype}}^{n}})` be the destructuring of :math:`{\mathit{rectype}}`.
 
-#. Return :math:`(\mathsf{rec}~{{{\mathit{subtype}}}{{}[ {(\mathsf{rec}~{.}~i)^{i<n}} := {({\mathit{rectype}}~{.}~i)^{i<n}} ]}^{n}})`.
+#. Return :math:`(\mathsf{rec}~{{{\mathit{subtype}}}{{}[ {(\mathsf{rec} {.} i)^{i<n}} := {({\mathit{rectype}} {.} i)^{i<n}} ]}^{n}})`.
 
 
 :math:`{{{{\mathrm{roll}}}_{x}^\ast}}{({\mathit{rectype}})}`
@@ -22316,10 +22404,10 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`(\mathsf{rec}~{{\mathit{subtype}}^{n}})` be the destructuring of :math:`{{\mathrm{roll}}}_{x}({\mathit{rectype}})`.
 
-#. Return :math:`{((\mathsf{rec}~{{\mathit{subtype}}^{n}})~{.}~i)^{i<n}}`.
+#. Return :math:`{((\mathsf{rec}~{{\mathit{subtype}}^{n}}) {.} i)^{i<n}}`.
 
 
-:math:`{\mathrm{unroll}}({\mathit{rectype}}~{.}~i)`
+:math:`{\mathrm{unroll}}({\mathit{rectype}} {.} i)`
 ...................................................
 
 
@@ -22408,7 +22496,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. Return :math:`{\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}})`.
 
-#. Assert: Due to validation, :math:`{\mathit{typevar}}` is some :math:`\mathsf{rec}~{.}~n`.
+#. Assert: Due to validation, :math:`{\mathit{typevar}}` is some :math:`\mathsf{rec} {.} n`.
 
 #. Return :math:`\{  \}`.
 
@@ -22531,7 +22619,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return :math:`{\mathrm{free}}_{\mathit{list}}({{\mathrm{free}}_{\mathit{subtype}}({\mathit{subtype}})^\ast})`.
 
 
-:math:`{\mathrm{free}}_{\mathit{deftype}}({\mathit{rectype}}~{.}~n)`
+:math:`{\mathrm{free}}_{\mathit{deftype}}({\mathit{rectype}} {.} n)`
 ....................................................................
 
 
@@ -22680,11 +22768,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. Return :math:`{\mathrm{free}}_{\mathit{opt}}({{\mathrm{free}}_{\mathit{valtype}}({\mathit{valtype}})^?})`.
 
-#. Assert: Due to validation, :math:`{\mathit{blocktype}}` is some :math:`{\mathit{funcidx}}`.
+#. Assert: Due to validation, :math:`{\mathit{blocktype}}` is some :math:`{\mathit{typeidx}}`.
 
-#. Let :math:`{\mathit{funcidx}}` be the block type :math:`{\mathit{blocktype}}`.
+#. Let :math:`{\mathit{typeidx}}` be the block type :math:`{\mathit{blocktype}}`.
 
-#. Return :math:`{\mathrm{free}}_{\mathit{funcidx}}({\mathit{funcidx}})`.
+#. Return :math:`{\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}})`.
 
 
 :math:`{\mathrm{shift}}_{\mathit{labelidxs}}({{\mathit{labelidx}''}^\ast})`
@@ -22834,33 +22922,33 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. Return :math:`{\mathrm{free}}_{\mathit{numtype}}({\mathit{numtype}})`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`{\mathit{numtype}}~{.}~{{\mathit{unop}}}_{{\mathit{numtype}}}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`{\mathit{numtype}} {.} {{\mathit{unop}}}_{{\mathit{numtype}}}`, then:
 
-   a. Let :math:`({\mathit{numtype}}~{.}~{\mathit{unop}})` be the destructuring of :math:`{\mathit{instr}'}`.
-
-   #. Return :math:`{\mathrm{free}}_{\mathit{numtype}}({\mathit{numtype}})`.
-
-#. If :math:`{\mathit{instr}'}` is some :math:`{\mathit{numtype}}~{.}~{{\mathit{binop}}}_{{\mathit{numtype}}}`, then:
-
-   a. Let :math:`({\mathit{numtype}}~{.}~{\mathit{binop}})` be the destructuring of :math:`{\mathit{instr}'}`.
+   a. Let :math:`({\mathit{numtype}} {.} {\mathit{unop}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{numtype}}({\mathit{numtype}})`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`{\mathit{numtype}}~{.}~{{\mathit{testop}}}_{{\mathit{numtype}}}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`{\mathit{numtype}} {.} {{\mathit{binop}}}_{{\mathit{numtype}}}`, then:
 
-   a. Let :math:`({\mathit{numtype}}~{.}~{\mathit{testop}})` be the destructuring of :math:`{\mathit{instr}'}`.
-
-   #. Return :math:`{\mathrm{free}}_{\mathit{numtype}}({\mathit{numtype}})`.
-
-#. If :math:`{\mathit{instr}'}` is some :math:`{\mathit{numtype}}~{.}~{{\mathit{relop}}}_{{\mathit{numtype}}}`, then:
-
-   a. Let :math:`({\mathit{numtype}}~{.}~{\mathit{relop}})` be the destructuring of :math:`{\mathit{instr}'}`.
+   a. Let :math:`({\mathit{numtype}} {.} {\mathit{binop}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{numtype}}({\mathit{numtype}})`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`{{\mathit{numtype}}_1~{.}~{{\mathit{cvtop}}}_{{\mathit{numtype}}_2, {\mathit{numtype}}_1}}{\mathsf{\_}}{{\mathit{numtype}}_2}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`{\mathit{numtype}} {.} {{\mathit{testop}}}_{{\mathit{numtype}}}`, then:
 
-   a. Let :math:`({{\mathit{numtype}}_1~{.}~{\mathit{cvtop}}}{\mathsf{\_}}{{\mathit{numtype}}_2})` be the destructuring of :math:`{\mathit{instr}'}`.
+   a. Let :math:`({\mathit{numtype}} {.} {\mathit{testop}})` be the destructuring of :math:`{\mathit{instr}'}`.
+
+   #. Return :math:`{\mathrm{free}}_{\mathit{numtype}}({\mathit{numtype}})`.
+
+#. If :math:`{\mathit{instr}'}` is some :math:`{\mathit{numtype}} {.} {{\mathit{relop}}}_{{\mathit{numtype}}}`, then:
+
+   a. Let :math:`({\mathit{numtype}} {.} {\mathit{relop}})` be the destructuring of :math:`{\mathit{instr}'}`.
+
+   #. Return :math:`{\mathrm{free}}_{\mathit{numtype}}({\mathit{numtype}})`.
+
+#. If :math:`{\mathit{instr}'}` is some :math:`{\mathit{numtype}}_1 {.} {{{\mathit{cvtop}}}_{{\mathit{numtype}}_2, {\mathit{numtype}}_1}}{\mathsf{\_}}{{\mathit{numtype}}_2}`, then:
+
+   a. Let :math:`({\mathit{numtype}}_1 {.} {{\mathit{cvtop}}}{\mathsf{\_}}{{\mathit{numtype}}_2})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return `$free_numtype(numtype_1) ++ $free_numtype(numtype_2)`.
 
@@ -22870,63 +22958,63 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. Return :math:`{\mathrm{free}}_{\mathit{vectype}}({\mathit{vectype}})`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`{\mathit{vectype}}~{.}~{\mathit{vvunop}}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`{\mathit{vectype}} {.} {\mathit{vvunop}}`, then:
 
-   a. Let :math:`({\mathit{vectype}}~{.}~{\mathit{vvunop}})` be the destructuring of :math:`{\mathit{instr}'}`.
-
-   #. Return :math:`{\mathrm{free}}_{\mathit{vectype}}({\mathit{vectype}})`.
-
-#. If :math:`{\mathit{instr}'}` is some :math:`{\mathit{vectype}}~{.}~{\mathit{vvbinop}}`, then:
-
-   a. Let :math:`({\mathit{vectype}}~{.}~{\mathit{vvbinop}})` be the destructuring of :math:`{\mathit{instr}'}`.
+   a. Let :math:`({\mathit{vectype}} {.} {\mathit{vvunop}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{vectype}}({\mathit{vectype}})`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`{\mathit{vectype}}~{.}~{\mathit{vvternop}}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`{\mathit{vectype}} {.} {\mathit{vvbinop}}`, then:
 
-   a. Let :math:`({\mathit{vectype}}~{.}~{\mathit{vvternop}})` be the destructuring of :math:`{\mathit{instr}'}`.
-
-   #. Return :math:`{\mathrm{free}}_{\mathit{vectype}}({\mathit{vectype}})`.
-
-#. If :math:`{\mathit{instr}'}` is some :math:`{\mathit{vectype}}~{.}~{\mathit{vvtestop}}`, then:
-
-   a. Let :math:`({\mathit{vectype}}~{.}~{\mathit{vvtestop}})` be the destructuring of :math:`{\mathit{instr}'}`.
+   a. Let :math:`({\mathit{vectype}} {.} {\mathit{vvbinop}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{vectype}}({\mathit{vectype}})`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`{\mathit{shape}}~{.}~{{\mathit{vunop}}}_{{\mathit{shape}}}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`{\mathit{vectype}} {.} {\mathit{vvternop}}`, then:
 
-   a. Let :math:`({\mathit{shape}}~{.}~{\mathit{vunop}})` be the destructuring of :math:`{\mathit{instr}'}`.
+   a. Let :math:`({\mathit{vectype}} {.} {\mathit{vvternop}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{shape}}({\mathit{shape}})`.
+   #. Return :math:`{\mathrm{free}}_{\mathit{vectype}}({\mathit{vectype}})`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`{\mathit{shape}}~{.}~{{\mathit{vbinop}}}_{{\mathit{shape}}}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`{\mathit{vectype}} {.} {\mathit{vvtestop}}`, then:
 
-   a. Let :math:`({\mathit{shape}}~{.}~{\mathit{vbinop}})` be the destructuring of :math:`{\mathit{instr}'}`.
+   a. Let :math:`({\mathit{vectype}} {.} {\mathit{vvtestop}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{shape}}({\mathit{shape}})`.
+   #. Return :math:`{\mathrm{free}}_{\mathit{vectype}}({\mathit{vectype}})`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`{\mathit{shape}}~{.}~{{\mathit{vternop}}}_{{\mathit{shape}}}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`{\mathit{shape}} {.} {{\mathit{vunop}}}_{{\mathit{shape}}}`, then:
 
-   a. Let :math:`({\mathit{shape}}~{.}~{\mathit{vternop}})` be the destructuring of :math:`{\mathit{instr}'}`.
-
-   #. Return :math:`{\mathrm{free}}_{\mathit{shape}}({\mathit{shape}})`.
-
-#. If :math:`{\mathit{instr}'}` is some :math:`{\mathit{shape}}~{.}~{{\mathit{vtestop}}}_{{\mathit{shape}}}`, then:
-
-   a. Let :math:`({\mathit{shape}}~{.}~{\mathit{vtestop}})` be the destructuring of :math:`{\mathit{instr}'}`.
+   a. Let :math:`({\mathit{shape}} {.} {\mathit{vunop}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{shape}}({\mathit{shape}})`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`{\mathit{shape}}~{.}~{{\mathit{vrelop}}}_{{\mathit{shape}}}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`{\mathit{shape}} {.} {{\mathit{vbinop}}}_{{\mathit{shape}}}`, then:
 
-   a. Let :math:`({\mathit{shape}}~{.}~{\mathit{vrelop}})` be the destructuring of :math:`{\mathit{instr}'}`.
+   a. Let :math:`({\mathit{shape}} {.} {\mathit{vbinop}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{shape}}({\mathit{shape}})`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`{\mathit{ishape}}~{.}~{{\mathit{vshiftop}}}_{{\mathit{ishape}}}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`{\mathit{shape}} {.} {{\mathit{vternop}}}_{{\mathit{shape}}}`, then:
 
-   a. Let :math:`({\mathit{ishape}}~{.}~{\mathit{vshiftop}})` be the destructuring of :math:`{\mathit{instr}'}`.
+   a. Let :math:`({\mathit{shape}} {.} {\mathit{vternop}})` be the destructuring of :math:`{\mathit{instr}'}`.
+
+   #. Return :math:`{\mathrm{free}}_{\mathit{shape}}({\mathit{shape}})`.
+
+#. If :math:`{\mathit{instr}'}` is some :math:`{\mathit{shape}} {.} {{\mathit{vtestop}}}_{{\mathit{shape}}}`, then:
+
+   a. Let :math:`({\mathit{shape}} {.} {\mathit{vtestop}})` be the destructuring of :math:`{\mathit{instr}'}`.
+
+   #. Return :math:`{\mathrm{free}}_{\mathit{shape}}({\mathit{shape}})`.
+
+#. If :math:`{\mathit{instr}'}` is some :math:`{\mathit{shape}} {.} {{\mathit{vrelop}}}_{{\mathit{shape}}}`, then:
+
+   a. Let :math:`({\mathit{shape}} {.} {\mathit{vrelop}})` be the destructuring of :math:`{\mathit{instr}'}`.
+
+   #. Return :math:`{\mathrm{free}}_{\mathit{shape}}({\mathit{shape}})`.
+
+#. If :math:`{\mathit{instr}'}` is some :math:`{\mathit{ishape}} {.} {{\mathit{vshiftop}}}_{{\mathit{ishape}}}`, then:
+
+   a. Let :math:`({\mathit{ishape}} {.} {\mathit{vshiftop}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{shape}}({\mathit{ishape}})`.
 
@@ -22936,9 +23024,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. Return :math:`{\mathrm{free}}_{\mathit{shape}}({\mathit{ishape}})`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`{\mathit{bshape}}~{.}~{{\mathit{vswizzlop}}}_{{\mathit{bshape}}}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`{\mathit{bshape}} {.} {{\mathit{vswizzlop}}}_{{\mathit{bshape}}}`, then:
 
-   a. Let :math:`({\mathit{bshape}}~{.}~{\mathit{vswizzlop}})` be the destructuring of :math:`{\mathit{instr}'}`.
+   a. Let :math:`({\mathit{bshape}} {.} {\mathit{vswizzlop}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{shape}}({\mathit{bshape}})`.
 
@@ -22948,21 +23036,21 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. Return :math:`{\mathrm{free}}_{\mathit{shape}}({\mathit{bshape}})`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`{{\mathit{ishape}}_1~{.}~{{\mathit{vextunop}}}_{{\mathit{ishape}}_2, {\mathit{ishape}}_1}}{\mathsf{\_}}{{\mathit{ishape}}_2}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`{\mathit{ishape}}_1 {.} {{{\mathit{vextunop}}}_{{\mathit{ishape}}_2, {\mathit{ishape}}_1}}{\mathsf{\_}}{{\mathit{ishape}}_2}`, then:
 
-   a. Let :math:`({{\mathit{ishape}}_1~{.}~{\mathit{vextunop}}}{\mathsf{\_}}{{\mathit{ishape}}_2})` be the destructuring of :math:`{\mathit{instr}'}`.
-
-   #. Return `$free_shape(ishape_1) ++ $free_shape(ishape_2)`.
-
-#. If :math:`{\mathit{instr}'}` is some :math:`{{\mathit{ishape}}_1~{.}~{{\mathit{vextbinop}}}_{{\mathit{ishape}}_2, {\mathit{ishape}}_1}}{\mathsf{\_}}{{\mathit{ishape}}_2}`, then:
-
-   a. Let :math:`({{\mathit{ishape}}_1~{.}~{\mathit{vextbinop}}}{\mathsf{\_}}{{\mathit{ishape}}_2})` be the destructuring of :math:`{\mathit{instr}'}`.
+   a. Let :math:`({\mathit{ishape}}_1 {.} {{\mathit{vextunop}}}{\mathsf{\_}}{{\mathit{ishape}}_2})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return `$free_shape(ishape_1) ++ $free_shape(ishape_2)`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`{{\mathit{ishape}}_1~{.}~{{\mathit{vextternop}}}_{{\mathit{ishape}}_2, {\mathit{ishape}}_1}}{\mathsf{\_}}{{\mathit{ishape}}_2}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`{\mathit{ishape}}_1 {.} {{{\mathit{vextbinop}}}_{{\mathit{ishape}}_2, {\mathit{ishape}}_1}}{\mathsf{\_}}{{\mathit{ishape}}_2}`, then:
 
-   a. Let :math:`({{\mathit{ishape}}_1~{.}~{\mathit{vextternop}}}{\mathsf{\_}}{{\mathit{ishape}}_2})` be the destructuring of :math:`{\mathit{instr}'}`.
+   a. Let :math:`({\mathit{ishape}}_1 {.} {{\mathit{vextbinop}}}{\mathsf{\_}}{{\mathit{ishape}}_2})` be the destructuring of :math:`{\mathit{instr}'}`.
+
+   #. Return `$free_shape(ishape_1) ++ $free_shape(ishape_2)`.
+
+#. If :math:`{\mathit{instr}'}` is some :math:`{\mathit{ishape}}_1 {.} {{{\mathit{vextternop}}}_{{\mathit{ishape}}_2, {\mathit{ishape}}_1}}{\mathsf{\_}}{{\mathit{ishape}}_2}`, then:
+
+   a. Let :math:`({\mathit{ishape}}_1 {.} {{\mathit{vextternop}}}{\mathsf{\_}}{{\mathit{ishape}}_2})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return `$free_shape(ishape_1) ++ $free_shape(ishape_2)`.
 
@@ -22972,9 +23060,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. Return `$free_shape(ishape_1) ++ $free_shape(ishape_2)`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`{{\mathit{shape}}_1~{.}~{{\mathit{vcvtop}}}_{{\mathit{shape}}_2, {\mathit{shape}}_1}}{\mathsf{\_}}{{\mathit{shape}}_2}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`{\mathit{shape}}_1 {.} {{{\mathit{vcvtop}}}_{{\mathit{shape}}_2, {\mathit{shape}}_1}}{\mathsf{\_}}{{\mathit{shape}}_2}`, then:
 
-   a. Let :math:`({{\mathit{shape}}_1~{.}~{\mathit{vcvtop}}}{\mathsf{\_}}{{\mathit{shape}}_2})` be the destructuring of :math:`{\mathit{instr}'}`.
+   a. Let :math:`({\mathit{shape}}_1 {.} {{\mathit{vcvtop}}}{\mathsf{\_}}{{\mathit{shape}}_2})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return `$free_shape(shape_1) ++ $free_shape(shape_2)`.
 
@@ -23541,9 +23629,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. Return :math:`{\mathit{typeidx}} < x`.
 
-#. Assert: Due to validation, :math:`{\mathit{typeuse}}` is some :math:`\mathsf{rec}~{.}~{.}`.
+#. Assert: Due to validation, :math:`{\mathit{typeuse}}` is some :math:`\mathsf{rec} {.} n`.
 
-#. Let :math:`(\mathsf{rec}~{.}~{.})` be the destructuring of :math:`{\mathit{typeuse}}`.
+#. Let :math:`(\mathsf{rec} {.} j)` be the destructuring of :math:`{\mathit{typeuse}}`.
 
 #. Return :math:`j < i`.
 
@@ -23562,9 +23650,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. Return :math:`{\mathrm{unroll}}(C{.}\mathsf{types}{}[{\mathit{typeidx}}])`.
 
-#. Assert: Due to validation, :math:`{\mathit{heaptype}}` is some :math:`\mathsf{rec}~{.}~{.}`.
+#. Assert: Due to validation, :math:`{\mathit{heaptype}}` is some :math:`\mathsf{rec} {.} n`.
 
-#. Let :math:`(\mathsf{rec}~{.}~{.})` be the destructuring of :math:`{\mathit{heaptype}}`.
+#. Let :math:`(\mathsf{rec} {.} i)` be the destructuring of :math:`{\mathit{heaptype}}`.
 
 #. Return :math:`C{.}\mathsf{recs}{}[i]`.
 
@@ -24324,7 +24412,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       1) Return :math:`\epsilon`.
 
-   #. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{f}}{N}` and :math:`{\mathit{vcvtop}}` is some :math:`{\mathsf{convert}}{\mathsf{\_}}{{{\mathit{half}}^?}}`, then:
+   #. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{f}}{N}` and :math:`{\mathit{vcvtop}}` is some :math:`{\mathsf{convert}}{\mathsf{\_}}{{{\mathit{half}}^?}}{\mathsf{\_}}{{\mathit{sx}}}`, then:
 
       1) Return :math:`\epsilon`.
 
@@ -24332,23 +24420,23 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{i}}{N}`, then:
 
-   a. If :math:`{\mathit{vcvtop}}` is some :math:`{\mathsf{trunc\_sat}}{\mathsf{\_}}{{\mathit{sx}}}`, then:
+   a. If :math:`{\mathit{vcvtop}}` is some :math:`{\mathsf{trunc\_sat}}{\mathsf{\_}}{{\mathit{sx}}}{\mathsf{\_}}{{{\mathit{zero}}^?}}`, then:
 
-      1) Let :math:`({\mathsf{trunc\_sat}}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{vcvtop}}`.
+      1) Let :math:`({\mathsf{trunc\_sat}}{\mathsf{\_}}{{\mathit{sx}}}{\mathsf{\_}}{{{\mathit{zero}}^?}})` be the destructuring of :math:`{\mathit{vcvtop}}`.
 
       #) Return :math:`{{\mathit{zero}}^?}`.
 
-   #. If :math:`{\mathit{vcvtop}}` is some :math:`{\mathsf{relaxed\_trunc}}{\mathsf{\_}}{{\mathit{sx}}}`, then:
+   #. If :math:`{\mathit{vcvtop}}` is some :math:`{\mathsf{relaxed\_trunc}}{\mathsf{\_}}{{\mathit{sx}}}{\mathsf{\_}}{{{\mathit{zero}}^?}}`, then:
 
-      1) Let :math:`({\mathsf{relaxed\_trunc}}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{vcvtop}}`.
+      1) Let :math:`({\mathsf{relaxed\_trunc}}{\mathsf{\_}}{{\mathit{sx}}}{\mathsf{\_}}{{{\mathit{zero}}^?}})` be the destructuring of :math:`{\mathit{vcvtop}}`.
 
       #) Return :math:`{{\mathit{zero}}^?}`.
 
 #. Assert: Due to validation, :math:`{\mathit{lanetype}}` is :math:`{\mathsf{f}}{N}`.
 
-#. If :math:`{\mathit{vcvtop}}` is some :math:`{\mathsf{demote}}{\mathsf{\_}}{\mathsf{zero}}~{\mathit{zero}}`, then:
+#. If :math:`{\mathit{vcvtop}}` is some :math:`{\mathsf{demote}}{\mathsf{\_}}{\mathsf{zero}}`, then:
 
-   a. Let :math:`({\mathsf{demote}}{\mathsf{\_}}{\mathsf{zero}}~{\mathit{zero}})` be the destructuring of :math:`{\mathit{vcvtop}}`.
+   a. Let :math:`({\mathsf{demote}}{\mathsf{\_}}{\mathsf{zero}})` be the destructuring of :math:`{\mathit{vcvtop}}`.
 
    #. Return :math:`{\mathit{zero}}`.
 
@@ -24369,9 +24457,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       #) Return :math:`{\mathit{half}}`.
 
-   #. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{f}}{N}` and :math:`{\mathit{vcvtop}}` is some :math:`{\mathsf{convert}}{\mathsf{\_}}{{{\mathit{half}}^?}}`, then:
+   #. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{f}}{N}` and :math:`{\mathit{vcvtop}}` is some :math:`{\mathsf{convert}}{\mathsf{\_}}{{{\mathit{half}}^?}}{\mathsf{\_}}{{\mathit{sx}}}`, then:
 
-      1) Let :math:`({\mathsf{convert}}{\mathsf{\_}}{{{\mathit{half}}^?}})` be the destructuring of :math:`{\mathit{vcvtop}}`.
+      1) Let :math:`({\mathsf{convert}}{\mathsf{\_}}{{{\mathit{half}}^?}}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{vcvtop}}`.
 
       #) Return :math:`{{\mathit{half}}^?}`.
 
@@ -24379,17 +24467,17 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{i}}{N}`, then:
 
-   a. If :math:`{\mathit{vcvtop}}` is some :math:`{\mathsf{trunc\_sat}}{\mathsf{\_}}{{\mathit{sx}}}`, then:
+   a. If :math:`{\mathit{vcvtop}}` is some :math:`{\mathsf{trunc\_sat}}{\mathsf{\_}}{{\mathit{sx}}}{\mathsf{\_}}{{{\mathit{zero}}^?}}`, then:
 
       1) Return :math:`\epsilon`.
 
-   #. If :math:`{\mathit{vcvtop}}` is some :math:`{\mathsf{relaxed\_trunc}}{\mathsf{\_}}{{\mathit{sx}}}`, then:
+   #. If :math:`{\mathit{vcvtop}}` is some :math:`{\mathsf{relaxed\_trunc}}{\mathsf{\_}}{{\mathit{sx}}}{\mathsf{\_}}{{{\mathit{zero}}^?}}`, then:
 
       1) Return :math:`\epsilon`.
 
 #. Assert: Due to validation, :math:`{\mathit{lanetype}}` is :math:`{\mathsf{f}}{N}`.
 
-#. If :math:`{\mathit{vcvtop}}` is some :math:`{\mathsf{demote}}{\mathsf{\_}}{\mathsf{zero}}~{\mathit{zero}}`, then:
+#. If :math:`{\mathit{vcvtop}}` is some :math:`{\mathsf{demote}}{\mathsf{\_}}{\mathsf{zero}}`, then:
 
    a. Return :math:`\epsilon`.
 
@@ -24557,40 +24645,6 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Let :math:`{{c^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{f}}}_{N}(c_1, c_2, c_3)^\ast}`.
 
 #. Return :math:`{{{{{\mathrm{lanes}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}^{{-1}}}}{({c^\ast})}^\ast}`.
-
-
-:math:`{{\mathrm{ivtestop}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{f}}, v_1)`
-...................................................................................
-
-
-1. Let :math:`{c_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}(v_1)`.
-
-#. Let :math:`{c^\ast}` be :math:`\epsilon`.
-
-#. For each :math:`c_1` in :math:`{c_1^\ast}`, do:
-
-   a. Let :math:`c` be :math:`{{\mathrm{f}}}_{N}(c_1)`.
-
-   #. Append :math:`c` to :math:`{c^\ast}`.
-
-#. Return :math:`{\Pi}\, {c^\ast}`.
-
-
-:math:`{{\mathrm{fvtestop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}({\mathrm{f}}, v_1)`
-...................................................................................
-
-
-1. Let :math:`{c_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}}(v_1)`.
-
-#. Let :math:`{c^\ast}` be :math:`\epsilon`.
-
-#. For each :math:`c_1` in :math:`{c_1^\ast}`, do:
-
-   a. Let :math:`c` be :math:`{{\mathrm{f}}}_{N}(c_1)`.
-
-   #. Append :math:`c` to :math:`{c^\ast}`.
-
-#. Return :math:`{\Pi}\, {c^\ast}`.
 
 
 :math:`{{\mathrm{ivrelop}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{f}}, v_1, v_2)`
@@ -24935,13 +24989,6 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`{{\mathrm{fvternop}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}({\mathrm{frelaxed}}_{{\mathit{nmadd}}}, v_1, v_2, v_3)`.
 
 
-:math:`{\mathsf{all\_true}}{{}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}(v)}`
-......................................................................
-
-
-1. Return :math:`{{\mathrm{ivtestop}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{inez}}, v)`.
-
-
 :math:`{{\mathit{vrelop}}}{{}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}(v_1, v_2)}`
 ................................................................................
 
@@ -25021,9 +25068,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       #) Return :math:`c`.
 
-   #. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{f}}{N}` and :math:`{\mathit{vcvtop}}` is some :math:`{\mathsf{convert}}{\mathsf{\_}}{{{\mathit{half}}^?}}`, then:
+   #. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{f}}{N}` and :math:`{\mathit{vcvtop}}` is some :math:`{\mathsf{convert}}{\mathsf{\_}}{{{\mathit{half}}^?}}{\mathsf{\_}}{{\mathit{sx}}}`, then:
 
-      1) Let :math:`({\mathsf{convert}}{\mathsf{\_}}{{{\mathit{half}}^?}})` be the destructuring of :math:`{\mathit{vcvtop}}`.
+      1) Let :math:`({\mathsf{convert}}{\mathsf{\_}}{{{\mathit{half}}^?}}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{vcvtop}}`.
 
       #) Let :math:`c` be :math:`{{{{\mathrm{convert}}}_{N_1, N_2}^{{\mathit{sx}}}}}{(c_1)}`.
 
@@ -25033,17 +25080,17 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. If :math:`{\mathit{lanetype}}` is address type, then:
 
-   a. If :math:`{\mathit{vcvtop}}` is some :math:`{\mathsf{trunc\_sat}}{\mathsf{\_}}{{\mathit{sx}}}`, then:
+   a. If :math:`{\mathit{vcvtop}}` is some :math:`{\mathsf{trunc\_sat}}{\mathsf{\_}}{{\mathit{sx}}}{\mathsf{\_}}{{{\mathit{zero}}^?}}`, then:
 
-      1) Let :math:`({\mathsf{trunc\_sat}}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{vcvtop}}`.
+      1) Let :math:`({\mathsf{trunc\_sat}}{\mathsf{\_}}{{\mathit{sx}}}{\mathsf{\_}}{{{\mathit{zero}}^?}})` be the destructuring of :math:`{\mathit{vcvtop}}`.
 
       #) Let :math:`{c^?}` be :math:`{{{{\mathrm{trunc\_sat}}}_{N_1, N_2}^{{\mathit{sx}}}}}{(c_1)}`.
 
       #) Return :math:`{c^?}`.
 
-   #. If :math:`{\mathit{vcvtop}}` is some :math:`{\mathsf{relaxed\_trunc}}{\mathsf{\_}}{{\mathit{sx}}}`, then:
+   #. If :math:`{\mathit{vcvtop}}` is some :math:`{\mathsf{relaxed\_trunc}}{\mathsf{\_}}{{\mathit{sx}}}{\mathsf{\_}}{{{\mathit{zero}}^?}}`, then:
 
-      1) Let :math:`({\mathsf{relaxed\_trunc}}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{vcvtop}}`.
+      1) Let :math:`({\mathsf{relaxed\_trunc}}{\mathsf{\_}}{{\mathit{sx}}}{\mathsf{\_}}{{{\mathit{zero}}^?}})` be the destructuring of :math:`{\mathit{vcvtop}}`.
 
       #) Let :math:`{c^?}` be :math:`{{{{\mathrm{relaxed\_trunc}}}_{N_1, N_2}^{{\mathit{sx}}}}}{(c_1)}`.
 
@@ -25051,7 +25098,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Assert: Due to validation, :math:`{\mathit{lanetype}}` is :math:`{\mathsf{f}}{N}`.
 
-#. If :math:`{\mathit{vcvtop}} = ({\mathsf{demote}}{\mathsf{\_}}{\mathsf{zero}}~\mathsf{zero})`, then:
+#. If :math:`{\mathit{vcvtop}} = ({\mathsf{demote}}{\mathsf{\_}}{\mathsf{zero}})`, then:
 
    a. Let :math:`{c^\ast}` be :math:`{{\mathrm{demote}}}_{N_1, N_2}(c_1)`.
 
@@ -25784,7 +25831,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ........................................................
 
 
-1. If :math:`{\mathit{blocktype}}` is some :math:`{\mathit{funcidx}}`, then:
+1. If :math:`{\mathit{blocktype}}` is some :math:`{\mathit{typeidx}}`, then:
 
    a. Let :math:`x` be the block type :math:`{\mathit{blocktype}}`.
 
@@ -26711,8 +26758,6 @@ spectec 0.5 generator
 == IL Validation after pass sideconditions...
 == Translating to AL...
 == Prose Generation...
-Untranslated relation Expand: `%~~%`(deftype, comptype)
-Untranslated relation Expand_use: `%~~_%%`(typeuse, context, comptype)
 Numtype_ok
 - the number type numtype is always valid.
 
@@ -26728,8 +26773,12 @@ Packtype_sub
 Numtype_sub
 - numtype matches only itself.
 
+Expand
+- The :ref:`expansion <aux-expand-deftype>` of deftype is comptype if:
+  - the composite type $expanddt(deftype) is comptype.
+
 Vectype_sub
-- vectype matches only itself.
+- the vector type vectype matches only itself.
 
 Heaptype_ok
 - the heap type heaptype is valid if:
@@ -27208,6 +27257,25 @@ Instrtype_ok
   - For all x in x*:
     - the local C.LOCALS[x] exists.
 
+Expand_use
+- The :ref:`expansion <aux-expand-typeuse>` of C is comptype if:
+  - Either:
+    - the type use typeuse is deftype.
+    - The :ref:`expansion <aux-expand-deftype>` of deftype is comptype.
+  - Or:
+    - typeuse is (_IDX typeidx).
+    - the type C.TYPES[typeidx] exists.
+    - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[typeidx] is comptype.
+
+Expand_use/deftype
+- The :ref:`expansion <aux-expand-typeuse>` of C is comptype if:
+  - The :ref:`expansion <aux-expand-deftype>` of deftype is comptype.
+
+Expand_use/typeidx
+- The :ref:`expansion <aux-expand-typeuse>` of C is comptype if:
+  - the type C.TYPES[typeidx] exists.
+  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[typeidx] is comptype.
+
 Limits_ok
 - the limits range ([ n .. m? ]) is valid within k if:
   - n is less than or equal to k.
@@ -27283,9 +27351,25 @@ Instrtype_sub
     - C.LOCALS[x] is (SET t).
 
 Limits_sub
-- the limits range ([ n_1 .. ?(m_1) ]) matches the limits range ([ n_2 .. ?(m_2) ]) if:
+- the limits range ([ n_1 .. u64_1? ]) matches the limits range ([ n_2 .. u64_2? ]) if:
   - n_1 is greater than or equal to n_2.
-  - m_1 is less than or equal to m_2.
+  - Either:
+    - u64_1? is ?(m_1).
+    - If u64_2 is defined, then:
+      - m_1 is less than or equal to u64_2.
+  - Or:
+    - u64_1? is ?().
+    - u64_2? is ?().
+
+Limits_sub/max
+- the limits range ([ n_1 .. ?(m_1) ]) matches the limits range ([ n_2 .. m_2? ]) if:
+  - n_1 is greater than or equal to n_2.
+  - If m_2 is defined, then:
+    - m_1 is less than or equal to m_2.
+
+Limits_sub/eps
+- the limits range ([ n_1 .. ?() ]) matches the limits range ([ n_2 .. ?() ]) if:
+  - n_1 is greater than or equal to n_2.
 
 Tagtype_sub
 - the tag type deftype_1 matches the tag type deftype_2 if:
@@ -27435,6 +27519,11 @@ Catch_ok/catch_all_ref
 Defaultable
 - the value type t is defaultable if:
   - the value $default_(t) is not ?().
+
+Memarg_ok
+- { ALIGN: n; OFFSET: m } is valid for at and N if:
+  - (2 ^ n) is less than or equal to (N / 8).
+  - m is less than (2 ^ $size(at)).
 
 Instr_ok/nop
 - the instruction NOP is valid with the instruction type [] -> [].
@@ -27862,12 +27951,12 @@ Instr_ok/load
   - Either:
     - loadop_? is ?().
     - the value type valtype is nt.
-    - (2 ^ memarg.ALIGN) is less than or equal to ($size(nt) / 8).
+    - memarg is valid for at and $size(nt).
   - Or:
     - the number type nt is Inn.
     - loadop_? is ?(M _ sx).
     - valtype is Inn.
-    - (2 ^ memarg.ALIGN) is less than or equal to (M / 8).
+    - memarg is valid for at and M.
 
 Instr_ok/store
 - the instruction (STORE nt storeop_? x memarg) is valid with the instruction type [at, valtype] -> [] if:
@@ -27876,12 +27965,12 @@ Instr_ok/store
   - Either:
     - storeop_? is ?().
     - the value type valtype is nt.
-    - (2 ^ memarg.ALIGN) is less than or equal to ($size(nt) / 8).
+    - memarg is valid for at and $size(nt).
   - Or:
     - the number type nt is Inn.
     - storeop_? is ?(M).
     - valtype is Inn.
-    - (2 ^ memarg.ALIGN) is less than or equal to (M / 8).
+    - memarg is valid for at and M.
 
 Instr_ok/vload
 - the instruction (VLOAD V128 vloadop_? x memarg) is valid with the instruction type [at] -> [V128] if:
@@ -27889,35 +27978,35 @@ Instr_ok/vload
   - C.MEMS[x] is at lim PAGE.
   - Either:
     - vloadop_? is ?().
-    - (2 ^ memarg.ALIGN) is less than or equal to ($vsize(V128) / 8).
+    - memarg is valid for at and $vsize(V128).
   - Or:
     - vloadop_? is ?((SHAPE M X N _ sx)).
-    - (2 ^ memarg.ALIGN) is less than or equal to ((M / 8) * N).
+    - memarg is valid for at and (M * N).
   - Or:
     - vloadop_? is ?((SPLAT N)).
-    - (2 ^ memarg.ALIGN) is less than or equal to (N / 8).
+    - memarg is valid for at and N.
   - Or:
     - vloadop_? is ?((ZERO N)).
-    - (2 ^ memarg.ALIGN) is less than or equal to (N / 8).
+    - memarg is valid for at and N.
 
 Instr_ok/vload_lane
 - the instruction (VLOAD_LANE V128 N x memarg i) is valid with the instruction type [at, V128] -> [V128] if:
   - the memory C.MEMS[x] exists.
   - C.MEMS[x] is at lim PAGE.
-  - (2 ^ memarg.ALIGN) is less than or equal to (N / 8).
+  - memarg is valid for at and N.
   - i is less than (128 / N).
 
 Instr_ok/vstore
 - the instruction (VSTORE V128 x memarg) is valid with the instruction type [at, V128] -> [] if:
   - the memory C.MEMS[x] exists.
   - C.MEMS[x] is at lim PAGE.
-  - (2 ^ memarg.ALIGN) is less than or equal to ($vsize(V128) / 8).
+  - memarg is valid for at and $vsize(V128).
 
 Instr_ok/vstore_lane
 - the instruction (VSTORE_LANE V128 N x memarg i) is valid with the instruction type [at, V128] -> [] if:
   - the memory C.MEMS[x] exists.
   - C.MEMS[x] is at lim PAGE.
-  - (2 ^ memarg.ALIGN) is less than or equal to (N / 8).
+  - memarg is valid for at and N.
   - i is less than (128 / N).
 
 Instr_ok/const
@@ -28025,49 +28114,49 @@ Instr_ok/load-val
 - the instruction (LOAD nt ?() x memarg) is valid with the instruction type [at] -> [nt] if:
   - the memory C.MEMS[x] exists.
   - C.MEMS[x] is at lim PAGE.
-  - (2 ^ memarg.ALIGN) is less than or equal to ($size(nt) / 8).
+  - memarg is valid for at and $size(nt).
 
 Instr_ok/load-pack
 - the instruction (LOAD Inn ?(M _ sx) x memarg) is valid with the instruction type [at] -> [Inn] if:
   - the memory C.MEMS[x] exists.
   - C.MEMS[x] is at lim PAGE.
-  - (2 ^ memarg.ALIGN) is less than or equal to (M / 8).
+  - memarg is valid for at and M.
 
 Instr_ok/store-val
 - the instruction (STORE nt ?() x memarg) is valid with the instruction type [at, nt] -> [] if:
   - the memory C.MEMS[x] exists.
   - C.MEMS[x] is at lim PAGE.
-  - (2 ^ memarg.ALIGN) is less than or equal to ($size(nt) / 8).
+  - memarg is valid for at and $size(nt).
 
 Instr_ok/store-pack
 - the instruction (STORE Inn ?(M) x memarg) is valid with the instruction type [at, Inn] -> [] if:
   - the memory C.MEMS[x] exists.
   - C.MEMS[x] is at lim PAGE.
-  - (2 ^ memarg.ALIGN) is less than or equal to (M / 8).
+  - memarg is valid for at and M.
 
 Instr_ok/vload-val
 - the instruction (VLOAD V128 ?() x memarg) is valid with the instruction type [at] -> [V128] if:
   - the memory C.MEMS[x] exists.
   - C.MEMS[x] is at lim PAGE.
-  - (2 ^ memarg.ALIGN) is less than or equal to ($vsize(V128) / 8).
+  - memarg is valid for at and $vsize(V128).
 
 Instr_ok/vload-pack
 - the instruction (VLOAD V128 ?((SHAPE M X N _ sx)) x memarg) is valid with the instruction type [at] -> [V128] if:
   - the memory C.MEMS[x] exists.
   - C.MEMS[x] is at lim PAGE.
-  - (2 ^ memarg.ALIGN) is less than or equal to ((M / 8) * N).
+  - memarg is valid for at and (M * N).
 
 Instr_ok/vload-splat
 - the instruction (VLOAD V128 ?((SPLAT N)) x memarg) is valid with the instruction type [at] -> [V128] if:
   - the memory C.MEMS[x] exists.
   - C.MEMS[x] is at lim PAGE.
-  - (2 ^ memarg.ALIGN) is less than or equal to (N / 8).
+  - memarg is valid for at and N.
 
 Instr_ok/vload-zero
 - the instruction (VLOAD V128 ?((ZERO N)) x memarg) is valid with the instruction type [at] -> [V128] if:
   - the memory C.MEMS[x] exists.
   - C.MEMS[x] is at lim PAGE.
-  - (2 ^ memarg.ALIGN) is less than or equal to (N / 8).
+  - memarg is valid for at and N.
 
 Instrs_ok
 - the instruction sequence instr* is valid with the instruction type it if:
@@ -29214,7 +29303,7 @@ Step_pure/vvternop V128 vvternop
 Step_pure/vvtestop V128 ANY_TRUE
 1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_1) from the stack.
-3. Let c be $ine_($vsize(V128), c_1, 0).
+3. Let c be $inez_($vsize(V128), c_1).
 4. Push the value (I32.CONST c) to the stack.
 
 Step_pure/vunop sh vunop
@@ -29247,11 +29336,12 @@ Step_pure/vternop sh vternop
 8. Let c be an element of $vternop_(sh, vternop, c_1, c_2, c_3).
 9. Push the value (V128.CONST c) to the stack.
 
-Step_pure/vtestop sh vtestop
+Step_pure/vtestop Jnn X M ALL_TRUE
 1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_1) from the stack.
-3. Let i be $vtestop_(sh, vtestop, c_1).
-4. Push the value (I32.CONST i) to the stack.
+3. Let i* be $lanes_(Jnn X M, c_1).
+4. Let c be $prod($inez_($jsizenn(Jnn), i)*).
+5. Push the value (I32.CONST c) to the stack.
 
 Step_pure/vrelop sh vrelop
 1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
@@ -29489,7 +29579,7 @@ Step_read/throw_ref
     1) Pop the frame (FRAME_ _ { _ }) from the stack.
     2) Push the value (REF.EXN_ADDR a) to the stack.
     3) Execute the instruction THROW_REF.
-  f. Else if not the first non-value entry of the stack is a HANDLER_, then:
+  f. Else if the first non-value entry of the stack is not a HANDLER_, then:
     1) Throw the exception val' as a result.
   g. Else:
     1) Let (HANDLER_ n { catch''* }) be the topmost HANDLER_.
@@ -29558,9 +29648,9 @@ Step_read/throw_ref
         3. Push the value (REF.EXN_ADDR a) to the stack.
         4. Execute the instruction (BR l).
 6. Else:
-  a. Assert: Due to validation, not the first non-value entry of the stack is a LABEL_.
-  b. Assert: Due to validation, not the first non-value entry of the stack is a FRAME_.
-  c. Assert: Due to validation, not the first non-value entry of the stack is a HANDLER_.
+  a. Assert: Due to validation, the first non-value entry of the stack is not a LABEL_.
+  b. Assert: Due to validation, the first non-value entry of the stack is not a FRAME_.
+  c. Assert: Due to validation, the first non-value entry of the stack is not a HANDLER_.
   d. Throw the exception val' as a result.
 
 Step_read/try_table bt catch* instr*
@@ -31083,8 +31173,8 @@ free_blocktype blocktype
   a. Let (_RESULT valtype?) be blocktype.
   b. Return $free_opt($free_valtype(valtype)?).
 2. Assert: Due to validation, blocktype is some _IDX.
-3. Let (_IDX funcidx) be blocktype.
-4. Return $free_funcidx(funcidx).
+3. Let (_IDX typeidx) be blocktype.
+4. Return $free_typeidx(typeidx).
 
 shift_labelidxs labelidx''*
 1. If (labelidx''* = []), then:
@@ -31980,22 +32070,6 @@ fvternop_ Fnn X M $f_ v_1 v_2 v_3
 4. Let c** be $setproduct_(`lane_((Fnn : Fnn <: lanetype)), $f_($sizenn(Fnn), c_1, c_2, c_3)*).
 5. Return $inv_lanes_(Fnn X M, c*)*.
 
-ivtestop_ Jnn X M $f_ v_1
-1. Let c_1* be $lanes_(Jnn X M, v_1).
-2. Let c* be [].
-3. For each c_1 in c_1*, do:
-  a. Let c be $f_($lsizenn(Jnn), c_1).
-  b. Append c to the c*.
-4. Return $prod(c*).
-
-fvtestop_ Fnn X M $f_ v_1
-1. Let c_1* be $lanes_(Fnn X M, v_1).
-2. Let c* be [].
-3. For each c_1 in c_1*, do:
-  a. Let c be $f_($sizenn(Fnn), c_1).
-  b. Append c to the c*.
-4. Return $prod(c*).
-
 ivrelop_ Jnn X M $f_ v_1 v_2
 1. Let c_1* be $lanes_(Jnn X M, v_1).
 2. Let c_2* be $lanes_(Jnn X M, v_2).
@@ -32159,9 +32233,6 @@ vternop_ lanetype X M vternop_ v_1 v_2 v_3
   a. Return $fvternop_(lanetype X M, $frelaxed_madd_, v_1, v_2, v_3).
 4. Assert: Due to validation, (vternop_ = RELAXED_NMADD).
 5. Return $fvternop_(lanetype X M, $frelaxed_nmadd_, v_1, v_2, v_3).
-
-vtestop_ Jnn X M ALL_TRUE v
-1. Return $ivtestop_(Jnn X M, $inez_, v).
 
 vrelop_ lanetype X M vrelop_ v_1 v_2
 1. If lanetype is Jnn, then:

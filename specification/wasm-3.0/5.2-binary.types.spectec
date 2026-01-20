@@ -81,9 +81,9 @@ grammar Brectype : rectype =
 ;; External types
 
 grammar Blimits : (addrtype, limits) =
-  | 0x00 n:Bu64 => (I32, `[n .. ])
+  | 0x00 n:Bu64 => (I32, `[n .. eps])
   | 0x01 n:Bu64 m:Bu64 => (I32, `[n .. m])
-  | 0x04 n:Bu64 => (I64, `[n .. ])
+  | 0x04 n:Bu64 => (I64, `[n .. eps])
   | 0x05 n:Bu64 m:Bu64 => (I64, `[n .. m])
 
 grammar Btagtype : tagtype =

@@ -84,7 +84,7 @@ let env_hintdef ?(partial = false) hd =
 let env_typ id t =
   let open El.Ast in
   match t.it with
-  | El.Ast.StrT l ->
+  | El.Ast.StrT (_, _, l, _) ->
     List.iter (function
     | Nl -> ()
     | Elem (atom, _, hints) ->

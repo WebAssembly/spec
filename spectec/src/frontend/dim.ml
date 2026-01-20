@@ -129,7 +129,8 @@ and check_typ env ctx t =
   | IterT (t1, iter) ->
     check_iter env ctx iter;
     check_typ env (strip_index iter::ctx) t1
-  | StrT tfs ->
+  | StrT (_, ts, tfs, _) ->
+    iter_nl_list (check_typ env ctx) ts;
     iter_nl_list (fun (_, (tI, prems), _) ->
       let env' = ref Env.empty in
       check_typ env' ctx tI;

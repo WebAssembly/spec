@@ -281,6 +281,26 @@ function assert_trap(action, source) {
     .catch(_ => {});
 }
 
+function assert_exception(action, source) {
+  const test = `Test that a WebAssembly code throws an exception (${source})`;
+  const loc = new Error().stack.toString().replace("Error", "");
+  chain = Promise.all([chain, action()])
+    .then(
+      result => {
+        uniqueTest(_ => {
+          assert_true(false, loc);
+        }, test);
+      },
+      error => {
+        uniqueTest(_ => {
+          // Pass
+        }, test);
+      }
+    )
+    // Clear all exceptions, so that subsequent tests get executed.
+    .catch(_ => {});
+}
+
 function assert_return(action, source, ...expected) {
   const test = `Test that a WebAssembly code returns a specific result (${source})`;
   const loc = new Error().stack.toString().replace("Error", "");
@@ -298,16 +318,18 @@ function assert_return(action, source, ...expected) {
             throw new Error(expected.length + " value(s) expected, got " + actual.length);
           }
           for (let i = 0; i < actual.length; ++i) {
+            let actual_i;
+            try { actual_i = "" + actual[i] } catch (e) { actual_i = typeof actual[i] }
             switch (expected[i]) {
               case "nan:canonical":
               case "nan:arithmetic":
               case "nan:any":
                 // Note that JS can't reliably distinguish different NaN values,
                 // so there's no good way to test that it's a canonical NaN.
-                assert_true(Number.isNaN(actual[i]), `expected NaN, observed ${actual[i]}.`);
+                assert_true(Number.isNaN(actual[i]), `expected NaN, observed ${actual_i}.`);
                 return;
               case "ref.i31":
-                assert_true(typeof actual[i] === "number" && (actual[i] & 0x7fffffff) === actual[i], `expected Wasm i31, got ${actual[i]}`);
+                assert_true(typeof actual[i] === "number" && (actual[i] & 0x7fffffff) === actual[i], `expected Wasm i31, got ${actual_i}`);
                 return;
               case "ref.any":
               case "ref.eq":
@@ -315,16 +337,16 @@ function assert_return(action, source, ...expected) {
               case "ref.array":
                 // For now, JS can't distinguish exported Wasm GC values,
                 // so we only test for object.
-                assert_true(typeof actual[i] === "object", `expected Wasm GC object, got ${actual[i]}`);
+                assert_true(typeof actual[i] === "object", `expected Wasm GC object, got ${actual_i}`);
                 return;
               case "ref.func":
-                assert_true(typeof actual[i] === "function", `expected Wasm function, got ${actual[i]}`);
+                assert_true(typeof actual[i] === "function", `expected Wasm function, got ${actual_i}`);
                 return;
               case "ref.extern":
-                assert_true(actual[i] !== null, `expected Wasm reference, got ${actual[i]}`);
+                assert_true(actual[i] !== null, `expected Wasm reference, got ${actual_i}`);
                 return;
               case "ref.null":
-                assert_true(actual[i] === null, `expected Wasm null reference, got ${actual[i]}`);
+                assert_true(actual[i] === null, `expected Wasm null reference, got ${actual_i}`);
                 return;
               default:
                 assert_equals(actual[i], expected[i], loc);
@@ -355,7 +377,7 @@ try {
 }
 
 function assert_exhaustion(action) {
-  const test = "Test that a WebAssembly code exhauts the stack space";
+  const test = "Test that a WebAssembly code exhausts the stack space";
   const loc = new Error().stack.toString().replace("Error", "");
   chain = Promise.all([action(), chain])
     .then(

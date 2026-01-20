@@ -339,6 +339,14 @@ let rec prem_to_instrs prem =
     let s = Il.Print.string_of_prem prem in
     print_yet_prem prem "prem_to_instrs"; [ YetS s ]
 
+let extract_args rule =
+  match rule.it with
+  | Ast.RuleD (_, _, _, exp, _) ->
+    match exp.it with
+    | Ast.TupE es -> es
+    | _ -> [exp]
+
+
 let extract_single_rule rule =
   match rule.it with
   | Ast.RuleD (_, _, _, exp, _) ->
@@ -542,11 +550,26 @@ let proses_of_defaultable_rel cmpop = proses_of_rel (fun rule ->
   IsDefaultableS (exp_to_expr e, cmpop))
 
 (** 9. Others **)
-let proses_of_other_rel rel = ( match rel.it with
+let proses_of_other_rel rel =
+  match rel.it with
   | Ast.RelD (rel_id, mixop, args, _) ->
-    "Untranslated relation " ^ rel_id.it ^ ": " ^ Print.string_of_mixop mixop ^ Print.string_of_typ args |> print_endline;
-  | _ -> ());
-  []
+    (match extract_rel_hint rel_id "prose" with
+    | Some hint ->
+      (* Relation with prose hint *)
+      proses_of_rel (fun rule ->
+        let args = extract_args rule in
+        RelS (hint, List.map exp_to_expr args)
+      ) rel
+    | None ->
+      "Untranslated relation "
+      ^ rel_id.it
+      ^ ": "
+      ^ Print.string_of_mixop mixop
+      ^ Print.string_of_typ args
+      |> print_endline;
+      []
+    )
+  | _ -> assert false (* RelD expected *)
 
 let prose_of_rel rel = match get_rel_kind rel with
   | ValidRel      -> proses_of_valid_rel rel

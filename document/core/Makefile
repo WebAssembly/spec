@@ -76,7 +76,7 @@ spectec:
 
 SPECTECPAT = $(SPECTECSPEC)/*.$(SPECTECEXT)
 SPECTECFILES = $(shell ls $(SPECTECPAT))
-RSTDIRS = $(shell ls -d [a-z]*/ util/[a-z]*/)
+RSTDIRS = $(shell ls -d [a-z]*/ util/[a-z]*/ | grep -v util/katex)
 RSTFILES = $(shell ls -d *.rst [a-z]*/*.rst) $(GENERATED)
 CTRLFILES = $(shell ls Makefile *.* util/*.* util/bikeshed/*.*) $(shell ls static/*)
 ALLFILES = $(RSTDIRS) $(CTRLFILES) _splice  #$(RSTFILES)
@@ -97,11 +97,8 @@ $(SPLICEDIR)/$(BUILDDIR): $(SPLICEDIR)
 $(BUILDDIR): $(SPLICEDIR)/$(BUILDDIR)
 	ln -s $< $@
 
-$(RSTDIRS:%=$(SPLICEDIR)/%):: $(SPLICEDIR)
+$(RSTDIRS:%=$(SPLICEDIR)/%): $(SPLICEDIR)
 	mkdir -p $@
-
-$(SPLICEDIR)/util/katex:: util/katex
-	cp -R $< $@   # F it!
 
 $(SPLICEDIR)/_splice: $(SPLICEDIR) $(RSTFILES) $(SPECTECFILES)
 	@echo Modified $?
@@ -120,14 +117,6 @@ $(CTRLFILES:%=$(SPLICEDIR)/%): $(SPLICEDIR)/%: %
 .PHONY: macrosok
 macrosok:	$(GENERATED)
 	sh util/check_macros.sh
-
-# Dirty hack to avoid rebuilding the Bikeshed version for every push.
-.PHONY: bikeshed-keep
-bikeshed-keep:
-	test -e $(BUILDDIR)/html/bikeshed || \
-	  wget -r -nH --cut-dirs=2 -P $(BUILDDIR)/html --no-check-certificate \
-	    https://webassembly.github.io/spec/core/bikeshed || \
-	  echo Downloaded Bikeshed.
 
 .PHONY: pdf pdf-nested
 pdf:	$(SPLICEDFILES)
@@ -170,7 +159,7 @@ html-nested: $(GENERATED)
 dirhtml:	$(SPLICEDFILES)
 	(cd $(SPLICEDIR) && make dirhtml-nested)
 	@echo
-	@echo "Build finished. The HTML pages are in $(BUILDDIR)/dirhtml."
+	@echo "Build finished. The HTML pages are in `pwd`/$(BUILDDIR)/dirhtml."
 
 dirhtml-nested: $(GENERATED)
 	$(SPHINXBUILD) -b dirhtml $(ALLSPHINXOPTS) $(BUILDDIR)/dirhtml
@@ -179,16 +168,33 @@ dirhtml-nested: $(GENERATED)
 singlehtml:	$(SPLICEDFILES)
 	(cd $(SPLICEDIR) && make singlehtml-nested)
 	@echo
-	@echo "Build finished. The HTML page is in $(BUILDDIR)/singlehtml."
+	@echo "Build finished. The HTML page is in `pwd`/$(BUILDDIR)/singlehtml."
 
 singlehtml-nested: $(GENERATED)
 	$(SPHINXBUILD) -b singlehtml $(ALLSPHINXOPTS) $(BUILDDIR)/singlehtml
 
+# Dirty hack to avoid rebuilding the Bikeshed version for every push.
+.PHONY: bikeshed-keep bikeshed-keep-nested
+bikeshed-keep:
+	(cd $(SPLICEDIR) && make bikeshed-keep-nested)
+
+bikeshed-keep-nested:
+	test -e $(BUILDDIR)/html/bikeshed || \
+	  wget -r -nH --cut-dirs=2 -P $(BUILDDIR)/html --no-check-certificate \
+	    https://webassembly.github.io/spec/core/bikeshed || \
+	  echo Downloaded Bikeshed.
+
+.PHONY: katex-install
+katex-install:
+	(cd util/katex/ && yarn && yarn build && npm install --only=prod)
+
 .PHONY: bikeshed bikeshed-nested
-bikeshed:	$(SPLICEDFILES)
+bikeshed:	$(SPLICEDFILES) katex-install
+	mkdir -p $(SPLICEDIR)/util/katex
+	cp -Rf util/katex/* $(SPLICEDIR)/util/katex
 	(cd $(SPLICEDIR) && make bikeshed-nested)
 	@echo
-	@echo "Build finished. The HTML page is in $(BUILDDIR)/html/bikeshed/."
+	@echo "Build finished. The HTML page is in `pwd`/$(BUILDDIR)/html/bikeshed/."
 
 bikeshed-nested: $(GENERATED)
 	$(SPHINXBUILD) -b singlehtml -c util/bikeshed \
@@ -204,7 +210,6 @@ bikeshed-nested: $(GENERATED)
 	mkdir -p $(BUILDDIR)/bikeshed_mathjax/
 	bikeshed spec --md-status=$(W3C_STATUS) --md-deadline=$(DEADLINE) index.bs $(BUILDDIR)/bikeshed_mathjax/index.html
 	mkdir -p $(BUILDDIR)/html/bikeshed/
-	(cd util/katex/ && yarn && yarn build && npm install --only=prod)
 	python3 util/mathjax2katex.py $(BUILDDIR)/bikeshed_mathjax/index.html \
 		>$(BUILDDIR)/html/bikeshed/index.html
 	mkdir -p $(BUILDDIR)/html/bikeshed/katex/dist/
@@ -214,10 +219,13 @@ bikeshed-nested: $(GENERATED)
 	cp $(BUILDDIR)/bikeshed_singlehtml/_static/pygments.css \
 		$(BUILDDIR)/html/bikeshed/
 
-.PHONY: WD-tar
+.PHONY: WD-tar WD-tar-nested
+WD-tar: bikeshed
+	(cd $(SPLICEDIR) && make WD-tar-nested)
+
 # macOS tar has no “--transform” option (only GNU tar does), so on macOS,
 # do “brew install tar” & run “make” like this: “TAR=gtar make -e WD-tar”
-WD-tar: bikeshed
+WD-tar-nested:
 	@echo "Building tar file..."
 	$(TAR) cvf \
 		$(BUILDDIR)/WD.tar \
@@ -227,7 +235,7 @@ WD-tar: bikeshed
 		$(BUILDDIR)/html/bikeshed/pygments.css \
 		$(BUILDDIR)/html/bikeshed/katex/dist/katex.css \
 		$(BUILDDIR)/html/bikeshed/katex/dist/fonts
-	@echo "Built $(BUILDDIR)/WD.tar."
+	@echo "Built `pwd`/$(BUILDDIR)/WD.tar."
 
 .PHONY: WD-echidna
 WD-echidna: WD-tar
@@ -242,7 +250,7 @@ WD-echidna: WD-tar
 		-F "tar=@$(BUILDDIR)/WD.tar" \
 		-F "decision=$(DECISION_URL)" \
 		-F "dry-run=$(ECHIDNA_DRYRUN)" | tee $(BUILDDIR)/WD-echidna-id.txt
-	python3 ../util/check-echidna-status.py $(BUILDDIR)
+	python3 ../util/check-echidna-status.py --ignore-failure $(BUILDDIR)
 	@echo
 	@echo "Uploaded $(W3C_STATUS). Check its status at https://labs.w3.org/echidna/api/status?id=`cat $(BUILDDIR)/WD-echidna-id.txt`"
 
@@ -258,7 +266,7 @@ WD-echidna-CI: WD-tar
 		-F "token=$(W3C_ECHIDNA_TOKEN_CORE)" \
 		-F "decision=$(DECISION_URL)" \
 		-F "dry-run=$(ECHIDNA_DRYRUN)" | tee $(BUILDDIR)/WD-echidna-id.txt
-	python3 ../util/check-echidna-status.py $(BUILDDIR)
+	python3 ../util/check-echidna-status.py --ignore-failure $(BUILDDIR)
 	@echo
 	@echo "Uploaded $(W3C_STATUS). Check its status at https://labs.w3.org/echidna/api/status?id=`cat $(BUILDDIR)/WD-echidna-id.txt`"
 

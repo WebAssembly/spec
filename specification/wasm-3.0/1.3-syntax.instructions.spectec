@@ -165,14 +165,14 @@ syntax vcvtop__(Jnn_1 X M_1, Jnn_2 X M_2) =
   | EXTEND half sx hint(show EXTEND#_#%#_#%)
     -- if $lsizenn2(Jnn_2) = $(2 * $lsizenn1(Jnn_1))
 syntax vcvtop__(Jnn_1 X M_1, Fnn_2 X M_2) =
-  | CONVERT half? sx hint(show CONVERT#_#%#_#%) hint(show CONVERT#_#%)
+  | CONVERT half? sx hint(show CONVERT#_#%) hint(show CONVERT#_#%#_#%)
     -- if $sizenn2(Fnn_2) = $lsizenn1(Jnn_1) = `32 /\ half? = eps
        \/ $sizenn2(Fnn_2) = $(2 * $lsizenn1(Jnn_1)) /\ half? = LOW
 syntax vcvtop__(Fnn_1 X M_1, Jnn_2 X M_2) =
-  | TRUNC_SAT sx zero? hint(show TRUNC_SAT#_#%#_#%) hint(show TRUNC_SAT#_#%)
+  | TRUNC_SAT sx zero? hint(show TRUNC_SAT#_#%) hint(show TRUNC_SAT#_#%#_#%)
     -- if $sizenn1(Fnn_1) = $lsizenn2(Jnn_2) = `32 /\ zero? = eps
        \/ $sizenn1(Fnn_1) = $(2 * $lsizenn2(Jnn_2)) /\ zero? = ZERO
-  | RELAXED_TRUNC sx zero? hint(show RELAXED_TRUNC#_#%#_#%) hint(show RELAXED_TRUNC#_#%)
+  | RELAXED_TRUNC sx zero? hint(show RELAXED_TRUNC#_#%) hint(show RELAXED_TRUNC#_#%#_#%)
     -- if $sizenn1(Fnn_1) = $lsizenn2(Jnn_2) = `32 /\ zero? = eps
        \/ $sizenn1(Fnn_1) = $(2 * $lsizenn2(Jnn_2)) /\ zero? = ZERO
 syntax vcvtop__(Fnn_1 X M_1, Fnn_2 X M_2) =
@@ -184,7 +184,7 @@ syntax vcvtop__(Fnn_1 X M_1, Fnn_2 X M_2) =
 
 ;; Memory operators
 
-syntax memarg hint(desc "memory argument") = {ALIGN u32, OFFSET u32}
+syntax memarg hint(desc "memory argument") = {ALIGN u32, OFFSET u64}
 
 var ao : memarg
 
@@ -204,7 +204,7 @@ syntax vloadop_(vectype) hint(macro "%" "L%") =
 
 syntax blocktype hint(desc "block type") =
   | _RESULT valtype?
-  | _IDX funcidx
+  | _IDX typeidx
 
 var bt : blocktype
 
@@ -422,7 +422,7 @@ def $free_expr(expr) : free
 def $free_shape(lanetype X dim) = $free_lanetype(lanetype)
 
 def $free_blocktype(_RESULT valtype?) = $free_opt($free_valtype(valtype)?)
-def $free_blocktype(_IDX funcidx) = $free_funcidx(funcidx)
+def $free_blocktype(_IDX typeidx) = $free_typeidx(typeidx)
 
 
 def $free_instr(NOP) = {}

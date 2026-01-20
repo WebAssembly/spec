@@ -19,8 +19,10 @@ syntax u16 = uN(`16)
 syntax u31 = uN(`31)
 syntax u32 = uN(`32)
 syntax u64 = uN(`64)
-syntax u128 = uN(`128)
 syntax s33 = sN(`33)
+syntax i32 = iN(`32)
+syntax i64 = iN(`64)
+syntax i128 = iN(`128)
 
 var b : byte
 

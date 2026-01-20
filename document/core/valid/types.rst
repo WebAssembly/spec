@@ -82,6 +82,8 @@ Value Types
 
 $${rule-prose: Valtype_ok}
 
+$${rule: Valtype_ok/bot}
+
 
 .. index:: result type, value type
    pair: validation; result type

@@ -196,10 +196,15 @@ relation Tabletype_sub: context |- tabletype <: tabletype    hint(name "S-table"
 relation Externtype_sub: context |- externtype <: externtype hint(name "S-extern") hint(macro "%externtypematch")
 
 
-rule Limits_sub:
-  C |- `[n_1 .. m_1] <: `[n_2 .. m_2]
+rule Limits_sub/max:
+  C |- `[n_1 .. m_1] <: `[n_2 .. m_2?]
   -- if n_1 >= n_2
-  -- if m_1 <= m_2
+  -- (if m_1 <= m_2)?
+
+rule Limits_sub/eps:
+  C |- `[n_1 .. eps] <: `[n_2 .. eps]
+  -- if n_1 >= n_2
+
 
 rule Tagtype_sub:
   C |- deftype_1 <: deftype_2

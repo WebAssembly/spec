@@ -401,7 +401,7 @@ Furthermore, the resulting store must be :ref:`valid <valid-store>`, i.e., all d
    ~\\[-1ex]
    \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
-   S; \val^n~(\INVOKE~a) &\stepto& S'; \result
+   S; \val^n~(\REFFUNCADDR~a)~\CALLREF &\stepto& S'; \result
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
@@ -410,7 +410,7 @@ Furthermore, the resulting store must be :ref:`valid <valid-store>`, i.e., all d
      \wedge & (S'; \result) \in \X{hf}(S; \val^n) \\
      \end{array} \\
    \begin{array}{lcl@{\qquad}l}
-   S; \val^n~(\INVOKE~a) &\stepto& S; \val^n~(\INVOKE~a)
+   S; \val^n~(\REFFUNCADDR~a)~\CALLREF &\stepto& S; \val^n~(\REFFUNCADDR~a)~\CALLREF
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}

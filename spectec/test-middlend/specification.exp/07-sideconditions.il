@@ -230,10 +230,16 @@ syntax u32 = uN
 syntax u64 = uN
 
 ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec
-syntax u128 = uN
+syntax s33 = sN
 
 ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec
-syntax s33 = sN
+syntax i32 = iN
+
+;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec
+syntax i64 = iN
+
+;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec
+syntax i128 = iN
 
 ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec
 def $signif(N : N) : nat
@@ -377,30 +383,30 @@ def $cont(byte : byte) : nat
 ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec
 rec {
 
-;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:89.1-89.25
+;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:91.1-91.25
 def $utf8(char*) : byte*
-  ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec:48.1-48.44
+  ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec:52.1-52.44
   def $utf8{`ch*` : char*}(ch*{ch <- `ch*`}) = $concat_(syntax byte, $utf8([ch])*{ch <- `ch*`})
-  ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec:49.1-51.15
+  ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec:53.1-55.15
   def $utf8{ch : char, b : byte}([ch]) = [b]
     -- wf_byte: `%`(b)
     -- wf_byte: `%`(`%`_byte($proj_char_0(ch).0))
     -- if ($proj_char_0(ch).0 < 128)
     -- if (`%`_byte($proj_char_0(ch).0) = b)
-  ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec:52.1-54.46
+  ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec:56.1-58.46
   def $utf8{ch : char, b_1 : byte, b_2 : byte}([ch]) = [b_1 b_2]
     -- wf_byte: `%`(b_1)
     -- wf_byte: `%`(b_2)
     -- if ((128 <= $proj_char_0(ch).0) /\ ($proj_char_0(ch).0 < 2048))
     -- if ($proj_char_0(ch).0 = (((2 ^ 6) * ((($proj_byte_0(b_1).0 : nat <:> int) - (192 : nat <:> int)) : int <:> nat)) + $cont(b_2)))
-  ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec:55.1-57.64
+  ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec:59.1-61.64
   def $utf8{ch : char, b_1 : byte, b_2 : byte, b_3 : byte}([ch]) = [b_1 b_2 b_3]
     -- wf_byte: `%`(b_1)
     -- wf_byte: `%`(b_2)
     -- wf_byte: `%`(b_3)
     -- if (((2048 <= $proj_char_0(ch).0) /\ ($proj_char_0(ch).0 < 55296)) \/ ((57344 <= $proj_char_0(ch).0) /\ ($proj_char_0(ch).0 < 65536)))
     -- if ($proj_char_0(ch).0 = ((((2 ^ 12) * ((($proj_byte_0(b_1).0 : nat <:> int) - (224 : nat <:> int)) : int <:> nat)) + ((2 ^ 6) * $cont(b_2))) + $cont(b_3)))
-  ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec:58.1-60.82
+  ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec:62.1-64.82
   def $utf8{ch : char, b_1 : byte, b_2 : byte, b_3 : byte, b_4 : byte}([ch]) = [b_1 b_2 b_3 b_4]
     -- wf_byte: `%`(b_1)
     -- wf_byte: `%`(b_2)
@@ -504,65 +510,65 @@ relation wf_externidx: `%`(externidx)
 ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec
 rec {
 
-;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:127.1-127.86
+;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:129.1-129.86
 def $funcsxx(externidx*) : typeidx*
-  ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:133.1-133.24
+  ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:135.1-135.24
   def $funcsxx([]) = []
-  ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:134.1-134.45
+  ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:136.1-136.45
   def $funcsxx{x : uN, `xx*` : externidx*}([FUNC_externidx(x)] ++ xx*{xx <- `xx*`}) = [x] ++ $funcsxx(xx*{xx <- `xx*`})
-  ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:135.1-135.58
+  ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:137.1-137.58
   def $funcsxx{externidx : externidx, `xx*` : externidx*}([externidx] ++ xx*{xx <- `xx*`}) = $funcsxx(xx*{xx <- `xx*`})
 }
 
 ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec
 rec {
 
-;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:128.1-128.88
+;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:130.1-130.88
 def $globalsxx(externidx*) : globalidx*
-  ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:137.1-137.26
+  ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:139.1-139.26
   def $globalsxx([]) = []
-  ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:138.1-138.51
+  ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:140.1-140.51
   def $globalsxx{x : uN, `xx*` : externidx*}([GLOBAL_externidx(x)] ++ xx*{xx <- `xx*`}) = [x] ++ $globalsxx(xx*{xx <- `xx*`})
-  ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:139.1-139.62
+  ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:141.1-141.62
   def $globalsxx{externidx : externidx, `xx*` : externidx*}([externidx] ++ xx*{xx <- `xx*`}) = $globalsxx(xx*{xx <- `xx*`})
 }
 
 ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec
 rec {
 
-;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:129.1-129.87
+;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:131.1-131.87
 def $tablesxx(externidx*) : tableidx*
-  ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:141.1-141.25
+  ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:143.1-143.25
   def $tablesxx([]) = []
-  ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:142.1-142.48
+  ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:144.1-144.48
   def $tablesxx{x : uN, `xx*` : externidx*}([TABLE_externidx(x)] ++ xx*{xx <- `xx*`}) = [x] ++ $tablesxx(xx*{xx <- `xx*`})
-  ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:143.1-143.60
+  ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:145.1-145.60
   def $tablesxx{externidx : externidx, `xx*` : externidx*}([externidx] ++ xx*{xx <- `xx*`}) = $tablesxx(xx*{xx <- `xx*`})
 }
 
 ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec
 rec {
 
-;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:130.1-130.85
+;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:132.1-132.85
 def $memsxx(externidx*) : memidx*
-  ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:145.1-145.23
+  ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:147.1-147.23
   def $memsxx([]) = []
-  ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:146.1-146.42
+  ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:148.1-148.42
   def $memsxx{x : uN, `xx*` : externidx*}([MEM_externidx(x)] ++ xx*{xx <- `xx*`}) = [x] ++ $memsxx(xx*{xx <- `xx*`})
-  ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:147.1-147.56
+  ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:149.1-149.56
   def $memsxx{externidx : externidx, `xx*` : externidx*}([externidx] ++ xx*{xx <- `xx*`}) = $memsxx(xx*{xx <- `xx*`})
 }
 
 ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec
 rec {
 
-;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:131.1-131.85
+;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:133.1-133.85
 def $tagsxx(externidx*) : tagidx*
-  ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:149.1-149.23
+  ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:151.1-151.23
   def $tagsxx([]) = []
-  ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:150.1-150.42
+  ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:152.1-152.42
   def $tagsxx{x : uN, `xx*` : externidx*}([TAG_externidx(x)] ++ xx*{xx <- `xx*`}) = [x] ++ $tagsxx(xx*{xx <- `xx*`})
-  ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:151.1-151.56
+  ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:153.1-153.56
   def $tagsxx{externidx : externidx, `xx*` : externidx*}([externidx] ++ xx*{xx <- `xx*`}) = $tagsxx(xx*{xx <- `xx*`})
 }
 
@@ -606,12 +612,12 @@ def $free_opt(free?) : free
 ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec
 rec {
 
-;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:170.1-170.29
+;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:172.1-172.29
 def $free_list(free*) : free
-  ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:175.1-175.25
+  ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:177.1-177.25
   def $free_list([]) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
     -- wf_free: `%`({TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []})
-  ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:176.1-176.57
+  ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:178.1-178.57
   def $free_list{free : free, `free'*` : free*}([free] ++ free'*{free' <- `free'*`}) = free +++ $free_list(free'*{free' <- `free'*`})
 }
 
@@ -3142,16 +3148,16 @@ def $proj_vcvtop___3(var_x : vcvtop__) : vcvtop__Fnn_1_M_1_Fnn_2_M_2?
 syntax memarg = 
 {
   ALIGN{u32 : u32} u32,
-  OFFSET{u32 : u32} u32
+  OFFSET{u64 : u64} u64
 }
 
 ;; ../../../../specification/wasm-3.0/1.3-syntax.instructions.spectec
 relation wf_memarg: `%`(memarg)
   ;; ../../../../specification/wasm-3.0/1.3-syntax.instructions.spectec
-  rule memarg_case_{var_0 : u32, var_1 : u32}:
+  rule memarg_case_{var_0 : u32, var_1 : u64}:
     `%`({ALIGN var_0, OFFSET var_1})
     -- wf_uN: `%%`(32, var_0)
-    -- wf_uN: `%%`(32, var_1)
+    -- wf_uN: `%%`(64, var_1)
 
 ;; ../../../../specification/wasm-3.0/1.3-syntax.instructions.spectec
 syntax loadop_Inn = 
@@ -3239,7 +3245,7 @@ relation wf_vloadop_: `%%`(vectype, vloadop_)
 ;; ../../../../specification/wasm-3.0/1.3-syntax.instructions.spectec
 syntax blocktype = 
   | _RESULT{`valtype?` : valtype?}(valtype?{valtype <- `valtype?`} : valtype?)
-  | _IDX{funcidx : funcidx}(funcidx : funcidx)
+  | _IDX{typeidx : typeidx}(typeidx : typeidx)
 
 ;; ../../../../specification/wasm-3.0/1.3-syntax.instructions.spectec
 relation wf_blocktype: `%`(blocktype)
@@ -3249,9 +3255,9 @@ relation wf_blocktype: `%`(blocktype)
     -- (wf_valtype: `%`(valtype))?{valtype <- `valtype?`}
 
   ;; ../../../../specification/wasm-3.0/1.3-syntax.instructions.spectec
-  rule blocktype_case_1{funcidx : funcidx}:
-    `%`(_IDX_blocktype(funcidx))
-    -- wf_uN: `%%`(32, funcidx)
+  rule blocktype_case_1{typeidx : typeidx}:
+    `%`(_IDX_blocktype(typeidx))
+    -- wf_uN: `%%`(32, typeidx)
 
 ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
 syntax addr = nat
@@ -4235,8 +4241,8 @@ syntax expr = instr*
 ;; ../../../../specification/wasm-3.0/1.3-syntax.instructions.spectec
 def $memarg0 : memarg
   ;; ../../../../specification/wasm-3.0/1.3-syntax.instructions.spectec
-  def $memarg0 = {ALIGN `%`_u32(0), OFFSET `%`_u32(0)}
-    -- wf_memarg: `%`({ALIGN `%`_u32(0), OFFSET `%`_u32(0)})
+  def $memarg0 = {ALIGN `%`_u32(0), OFFSET `%`_u64(0)}
+    -- wf_memarg: `%`({ALIGN `%`_u32(0), OFFSET `%`_u64(0)})
 
 ;; ../../../../specification/wasm-3.0/1.3-syntax.instructions.spectec
 def $const(consttype : consttype, lit_ : lit_) : instr
@@ -4257,7 +4263,7 @@ def $free_blocktype(blocktype : blocktype) : free
   ;; ../../../../specification/wasm-3.0/1.3-syntax.instructions.spectec
   def $free_blocktype{`valtype?` : valtype?}(_RESULT_blocktype(valtype?{valtype <- `valtype?`})) = $free_opt($free_valtype(valtype)?{valtype <- `valtype?`})
   ;; ../../../../specification/wasm-3.0/1.3-syntax.instructions.spectec
-  def $free_blocktype{funcidx : uN}(_IDX_blocktype(funcidx)) = $free_funcidx(funcidx)
+  def $free_blocktype{typeidx : uN}(_IDX_blocktype(typeidx)) = $free_typeidx(typeidx)
 
 ;; ../../../../specification/wasm-3.0/1.3-syntax.instructions.spectec
 rec {
@@ -5654,13 +5660,21 @@ relation Instrtype_sub: `%|-%<:%`(context, instrtype, instrtype)
 ;; ../../../../specification/wasm-3.0/2.2-validation.subtyping.spectec
 relation Limits_sub: `%|-%<:%`(context, limits, limits)
   ;; ../../../../specification/wasm-3.0/2.2-validation.subtyping.spectec
-  rule _{C : context, n_1 : n, m_1 : m, n_2 : n, m_2 : m}:
-    `%|-%<:%`(C, `[%..%]`_limits(`%`_u64(n_1), ?(`%`_u64(m_1))), `[%..%]`_limits(`%`_u64(n_2), ?(`%`_u64(m_2))))
+  rule max{C : context, n_1 : n, m_1 : m, n_2 : n, `m_2?` : m?}:
+    `%|-%<:%`(C, `[%..%]`_limits(`%`_u64(n_1), ?(`%`_u64(m_1))), `[%..%]`_limits(`%`_u64(n_2), `%`_u64(m_2)?{m_2 <- `m_2?`}))
     -- wf_context: `%`(C)
     -- wf_limits: `%`(`[%..%]`_limits(`%`_u64(n_1), ?(`%`_u64(m_1))))
-    -- wf_limits: `%`(`[%..%]`_limits(`%`_u64(n_2), ?(`%`_u64(m_2))))
+    -- wf_limits: `%`(`[%..%]`_limits(`%`_u64(n_2), `%`_u64(m_2)?{m_2 <- `m_2?`}))
     -- if (n_1 >= n_2)
-    -- if (m_1 <= m_2)
+    -- (if (m_1 <= m_2))?{m_2 <- `m_2?`}
+
+  ;; ../../../../specification/wasm-3.0/2.2-validation.subtyping.spectec
+  rule eps{C : context, n_1 : n, n_2 : n}:
+    `%|-%<:%`(C, `[%..%]`_limits(`%`_u64(n_1), ?()), `[%..%]`_limits(`%`_u64(n_2), ?()))
+    -- wf_context: `%`(C)
+    -- wf_limits: `%`(`[%..%]`_limits(`%`_u64(n_1), ?()))
+    -- wf_limits: `%`(`[%..%]`_limits(`%`_u64(n_2), ?()))
+    -- if (n_1 >= n_2)
 
 ;; ../../../../specification/wasm-3.0/2.2-validation.subtyping.spectec
 relation Tagtype_sub: `%|-%<:%`(context, tagtype, tagtype)
@@ -5838,6 +5852,15 @@ relation Defaultable: `|-%DEFAULTABLE`(valtype)
     `|-%DEFAULTABLE`(t)
     -- wf_valtype: `%`(t)
     -- if ($default_(t) =/= ?())
+
+;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec
+relation Memarg_ok: `|-%:%->%`(memarg, addrtype, N)
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec
+  rule _{n : n, m : m, at : addrtype, N : N}:
+    `|-%:%->%`({ALIGN `%`_u32(n), OFFSET `%`_u64(m)}, at, N)
+    -- wf_memarg: `%`({ALIGN `%`_u32(n), OFFSET `%`_u64(m)})
+    -- if (((2 ^ n) : nat <:> rat) <= ((N : nat <:> rat) / (8 : nat <:> rat)))
+    -- if (m < (2 ^ $size((at : addrtype <: numtype))))
 
 ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec
 def $is_packtype(storagetype : storagetype) : bool
@@ -6545,7 +6568,7 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
     -- if ($proj_uN_0(x).0 < |C.ELEMS_context|)
     -- if (C.ELEMS_context[$proj_uN_0(x).0] = rt)
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:408.1-410.32
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:416.1-418.32
   rule memory.size{C : context, x : idx, at : addrtype, lim : limits}:
     `%|-%:%`(C, MEMORY.SIZE_instr(x), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([(at : addrtype <: valtype)])))
     -- wf_context: `%`(C)
@@ -6555,7 +6578,7 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
     -- if ($proj_uN_0(x).0 < |C.MEMS_context|)
     -- if (C.MEMS_context[$proj_uN_0(x).0] = `%%PAGE`_memtype(at, lim))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:412.1-414.32
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:420.1-422.32
   rule memory.grow{C : context, x : idx, at : addrtype, lim : limits}:
     `%|-%:%`(C, MEMORY.GROW_instr(x), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype)]), [], `%`_resulttype([(at : addrtype <: valtype)])))
     -- wf_context: `%`(C)
@@ -6565,7 +6588,7 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
     -- if ($proj_uN_0(x).0 < |C.MEMS_context|)
     -- if (C.MEMS_context[$proj_uN_0(x).0] = `%%PAGE`_memtype(at, lim))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:416.1-418.32
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:424.1-426.32
   rule memory.fill{C : context, x : idx, at : addrtype, lim : limits}:
     `%|-%:%`(C, MEMORY.FILL_instr(x), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype) I32_valtype (at : addrtype <: valtype)]), [], `%`_resulttype([])))
     -- wf_context: `%`(C)
@@ -6575,7 +6598,7 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
     -- if ($proj_uN_0(x).0 < |C.MEMS_context|)
     -- if (C.MEMS_context[$proj_uN_0(x).0] = `%%PAGE`_memtype(at, lim))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:420.1-423.38
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:428.1-431.38
   rule memory.copy{C : context, x_1 : idx, x_2 : idx, at_1 : addrtype, at_2 : addrtype, lim_1 : limits, lim_2 : limits}:
     `%|-%:%`(C, MEMORY.COPY_instr(x_1, x_2), `%->_%%`_instrtype(`%`_resulttype([(at_1 : addrtype <: valtype) (at_2 : addrtype <: valtype) ($minat(at_1, at_2) : addrtype <: valtype)]), [], `%`_resulttype([])))
     -- wf_context: `%`(C)
@@ -6588,7 +6611,7 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
     -- if ($proj_uN_0(x_2).0 < |C.MEMS_context|)
     -- if (C.MEMS_context[$proj_uN_0(x_2).0] = `%%PAGE`_memtype(at_2, lim_2))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:425.1-428.24
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:433.1-436.24
   rule memory.init{C : context, x : idx, y : idx, at : addrtype, lim : limits}:
     `%|-%:%`(C, MEMORY.INIT_instr(x, y), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype) I32_valtype I32_valtype]), [], `%`_resulttype([])))
     -- wf_context: `%`(C)
@@ -6600,7 +6623,7 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
     -- if ($proj_uN_0(y).0 < |C.DATAS_context|)
     -- if (C.DATAS_context[$proj_uN_0(y).0] = OK_datatype)
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:430.1-432.24
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:438.1-440.24
   rule data.drop{C : context, x : idx}:
     `%|-%:%`(C, DATA.DROP_instr(x), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([])))
     -- wf_context: `%`(C)
@@ -6609,7 +6632,7 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
     -- if ($proj_uN_0(x).0 < |C.DATAS_context|)
     -- if (C.DATAS_context[$proj_uN_0(x).0] = OK_datatype)
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:443.1-446.43
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:451.1-454.44
   rule `load-val`{C : context, nt : numtype, x : idx, memarg : memarg, at : addrtype, lim : limits}:
     `%|-%:%`(C, LOAD_instr(nt, ?(), x, memarg), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype)]), [], `%`_resulttype([(nt : numtype <: valtype)])))
     -- wf_context: `%`(C)
@@ -6618,9 +6641,9 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
     -- wf_memtype: `%`(`%%PAGE`_memtype(at, lim))
     -- if ($proj_uN_0(x).0 < |C.MEMS_context|)
     -- if (C.MEMS_context[$proj_uN_0(x).0] = `%%PAGE`_memtype(at, lim))
-    -- if (((2 ^ $proj_uN_0(memarg.ALIGN_memarg).0) : nat <:> rat) <= (($size(nt) : nat <:> rat) / (8 : nat <:> rat)))
+    -- Memarg_ok: `|-%:%->%`(memarg, at, $size(nt))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:448.1-451.35
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:456.1-459.36
   rule `load-pack`{C : context, Inn : Inn, M : M, sx : sx, x : idx, memarg : memarg, at : addrtype, lim : limits}:
     `%|-%:%`(C, LOAD_instr((Inn : addrtype <: numtype), ?(mk_loadop__0_loadop_(Inn, `%_%`_loadop_Inn(`%`_sz(M), sx))), x, memarg), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype)]), [], `%`_resulttype([(Inn : addrtype <: valtype)])))
     -- wf_context: `%`(C)
@@ -6629,9 +6652,9 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
     -- wf_memtype: `%`(`%%PAGE`_memtype(at, lim))
     -- if ($proj_uN_0(x).0 < |C.MEMS_context|)
     -- if (C.MEMS_context[$proj_uN_0(x).0] = `%%PAGE`_memtype(at, lim))
-    -- if (((2 ^ $proj_uN_0(memarg.ALIGN_memarg).0) : nat <:> rat) <= ((M : nat <:> rat) / (8 : nat <:> rat)))
+    -- Memarg_ok: `|-%:%->%`(memarg, at, M)
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:462.1-465.43
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:470.1-473.44
   rule `store-val`{C : context, nt : numtype, x : idx, memarg : memarg, at : addrtype, lim : limits}:
     `%|-%:%`(C, STORE_instr(nt, ?(), x, memarg), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype) (nt : numtype <: valtype)]), [], `%`_resulttype([])))
     -- wf_context: `%`(C)
@@ -6640,9 +6663,9 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
     -- wf_memtype: `%`(`%%PAGE`_memtype(at, lim))
     -- if ($proj_uN_0(x).0 < |C.MEMS_context|)
     -- if (C.MEMS_context[$proj_uN_0(x).0] = `%%PAGE`_memtype(at, lim))
-    -- if (((2 ^ $proj_uN_0(memarg.ALIGN_memarg).0) : nat <:> rat) <= (($size(nt) : nat <:> rat) / (8 : nat <:> rat)))
+    -- Memarg_ok: `|-%:%->%`(memarg, at, $size(nt))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:467.1-470.35
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:475.1-478.36
   rule `store-pack`{C : context, Inn : Inn, M : M, x : idx, memarg : memarg, at : addrtype, lim : limits}:
     `%|-%:%`(C, STORE_instr((Inn : addrtype <: numtype), ?(mk_storeop__0_storeop_(Inn, `%`_storeop_Inn(`%`_sz(M)))), x, memarg), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype) (Inn : addrtype <: valtype)]), [], `%`_resulttype([])))
     -- wf_context: `%`(C)
@@ -6651,9 +6674,9 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
     -- wf_memtype: `%`(`%%PAGE`_memtype(at, lim))
     -- if ($proj_uN_0(x).0 < |C.MEMS_context|)
     -- if (C.MEMS_context[$proj_uN_0(x).0] = `%%PAGE`_memtype(at, lim))
-    -- if (((2 ^ $proj_uN_0(memarg.ALIGN_memarg).0) : nat <:> rat) <= ((M : nat <:> rat) / (8 : nat <:> rat)))
+    -- Memarg_ok: `|-%:%->%`(memarg, at, M)
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:472.1-475.46
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:480.1-483.47
   rule `vload-val`{C : context, x : idx, memarg : memarg, at : addrtype, lim : limits}:
     `%|-%:%`(C, VLOAD_instr(V128_vectype, ?(), x, memarg), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype)]), [], `%`_resulttype([V128_valtype])))
     -- wf_context: `%`(C)
@@ -6662,9 +6685,9 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
     -- wf_memtype: `%`(`%%PAGE`_memtype(at, lim))
     -- if ($proj_uN_0(x).0 < |C.MEMS_context|)
     -- if (C.MEMS_context[$proj_uN_0(x).0] = `%%PAGE`_memtype(at, lim))
-    -- if (((2 ^ $proj_uN_0(memarg.ALIGN_memarg).0) : nat <:> rat) <= (($vsize(V128_vectype) : nat <:> rat) / (8 : nat <:> rat)))
+    -- Memarg_ok: `|-%:%->%`(memarg, at, $vsize(V128_vectype))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:477.1-480.39
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:485.1-488.41
   rule `vload-pack`{C : context, M : M, N : N, sx : sx, x : idx, memarg : memarg, at : addrtype, lim : limits}:
     `%|-%:%`(C, VLOAD_instr(V128_vectype, ?(`SHAPE%X%_%`_vloadop_(`%`_sz(M), N, sx)), x, memarg), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype)]), [], `%`_resulttype([V128_valtype])))
     -- wf_context: `%`(C)
@@ -6673,9 +6696,9 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
     -- wf_memtype: `%`(`%%PAGE`_memtype(at, lim))
     -- if ($proj_uN_0(x).0 < |C.MEMS_context|)
     -- if (C.MEMS_context[$proj_uN_0(x).0] = `%%PAGE`_memtype(at, lim))
-    -- if (((2 ^ $proj_uN_0(memarg.ALIGN_memarg).0) : nat <:> rat) <= (((M : nat <:> rat) / (8 : nat <:> rat)) * (N : nat <:> rat)))
+    -- Memarg_ok: `|-%:%->%`(memarg, at, (M * N))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:482.1-485.35
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:490.1-493.36
   rule `vload-splat`{C : context, N : N, x : idx, memarg : memarg, at : addrtype, lim : limits}:
     `%|-%:%`(C, VLOAD_instr(V128_vectype, ?(SPLAT_vloadop_(`%`_sz(N))), x, memarg), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype)]), [], `%`_resulttype([V128_valtype])))
     -- wf_context: `%`(C)
@@ -6684,9 +6707,9 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
     -- wf_memtype: `%`(`%%PAGE`_memtype(at, lim))
     -- if ($proj_uN_0(x).0 < |C.MEMS_context|)
     -- if (C.MEMS_context[$proj_uN_0(x).0] = `%%PAGE`_memtype(at, lim))
-    -- if (((2 ^ $proj_uN_0(memarg.ALIGN_memarg).0) : nat <:> rat) <= ((N : nat <:> rat) / (8 : nat <:> rat)))
+    -- Memarg_ok: `|-%:%->%`(memarg, at, N)
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:487.1-490.35
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:495.1-498.36
   rule `vload-zero`{C : context, N : N, x : idx, memarg : memarg, at : addrtype, lim : limits}:
     `%|-%:%`(C, VLOAD_instr(V128_vectype, ?(ZERO_vloadop_(`%`_sz(N))), x, memarg), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype)]), [], `%`_resulttype([V128_valtype])))
     -- wf_context: `%`(C)
@@ -6695,9 +6718,9 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
     -- wf_memtype: `%`(`%%PAGE`_memtype(at, lim))
     -- if ($proj_uN_0(x).0 < |C.MEMS_context|)
     -- if (C.MEMS_context[$proj_uN_0(x).0] = `%%PAGE`_memtype(at, lim))
-    -- if (((2 ^ $proj_uN_0(memarg.ALIGN_memarg).0) : nat <:> rat) <= ((N : nat <:> rat) / (8 : nat <:> rat)))
+    -- Memarg_ok: `|-%:%->%`(memarg, at, N)
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:492.1-496.21
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:500.1-504.21
   rule vload_lane{C : context, N : N, x : idx, memarg : memarg, i : laneidx, at : addrtype, lim : limits}:
     `%|-%:%`(C, VLOAD_LANE_instr(V128_vectype, `%`_sz(N), x, memarg, i), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype) V128_valtype]), [], `%`_resulttype([V128_valtype])))
     -- wf_context: `%`(C)
@@ -6706,10 +6729,10 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
     -- wf_memtype: `%`(`%%PAGE`_memtype(at, lim))
     -- if ($proj_uN_0(x).0 < |C.MEMS_context|)
     -- if (C.MEMS_context[$proj_uN_0(x).0] = `%%PAGE`_memtype(at, lim))
-    -- if (((2 ^ $proj_uN_0(memarg.ALIGN_memarg).0) : nat <:> rat) <= ((N : nat <:> rat) / (8 : nat <:> rat)))
+    -- Memarg_ok: `|-%:%->%`(memarg, at, N)
     -- if (($proj_uN_0(i).0 : nat <:> rat) < ((128 : nat <:> rat) / (N : nat <:> rat)))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:498.1-501.46
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:506.1-509.47
   rule vstore{C : context, x : idx, memarg : memarg, at : addrtype, lim : limits}:
     `%|-%:%`(C, VSTORE_instr(V128_vectype, x, memarg), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype) V128_valtype]), [], `%`_resulttype([])))
     -- wf_context: `%`(C)
@@ -6718,9 +6741,9 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
     -- wf_memtype: `%`(`%%PAGE`_memtype(at, lim))
     -- if ($proj_uN_0(x).0 < |C.MEMS_context|)
     -- if (C.MEMS_context[$proj_uN_0(x).0] = `%%PAGE`_memtype(at, lim))
-    -- if (((2 ^ $proj_uN_0(memarg.ALIGN_memarg).0) : nat <:> rat) <= (($vsize(V128_vectype) : nat <:> rat) / (8 : nat <:> rat)))
+    -- Memarg_ok: `|-%:%->%`(memarg, at, $vsize(V128_vectype))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:503.1-507.21
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:511.1-515.21
   rule vstore_lane{C : context, N : N, x : idx, memarg : memarg, i : laneidx, at : addrtype, lim : limits}:
     `%|-%:%`(C, VSTORE_LANE_instr(V128_vectype, `%`_sz(N), x, memarg, i), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype) V128_valtype]), [], `%`_resulttype([])))
     -- wf_context: `%`(C)
@@ -6729,143 +6752,143 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
     -- wf_memtype: `%`(`%%PAGE`_memtype(at, lim))
     -- if ($proj_uN_0(x).0 < |C.MEMS_context|)
     -- if (C.MEMS_context[$proj_uN_0(x).0] = `%%PAGE`_memtype(at, lim))
-    -- if (((2 ^ $proj_uN_0(memarg.ALIGN_memarg).0) : nat <:> rat) <= ((N : nat <:> rat) / (8 : nat <:> rat)))
+    -- Memarg_ok: `|-%:%->%`(memarg, at, N)
     -- if (($proj_uN_0(i).0 : nat <:> rat) < ((128 : nat <:> rat) / (N : nat <:> rat)))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:512.1-513.33
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:520.1-521.33
   rule const{C : context, nt : numtype, c_nt : num_}:
     `%|-%:%`(C, CONST_instr(nt, c_nt), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([(nt : numtype <: valtype)])))
     -- wf_context: `%`(C)
     -- wf_instr: `%`(CONST_instr(nt, c_nt))
     -- wf_instrtype: `%`(`%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([(nt : numtype <: valtype)])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:515.1-516.34
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:523.1-524.34
   rule unop{C : context, nt : numtype, unop_nt : unop_}:
     `%|-%:%`(C, UNOP_instr(nt, unop_nt), `%->_%%`_instrtype(`%`_resulttype([(nt : numtype <: valtype)]), [], `%`_resulttype([(nt : numtype <: valtype)])))
     -- wf_context: `%`(C)
     -- wf_instr: `%`(UNOP_instr(nt, unop_nt))
     -- wf_instrtype: `%`(`%->_%%`_instrtype(`%`_resulttype([(nt : numtype <: valtype)]), [], `%`_resulttype([(nt : numtype <: valtype)])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:518.1-519.39
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:526.1-527.39
   rule binop{C : context, nt : numtype, binop_nt : binop_}:
     `%|-%:%`(C, BINOP_instr(nt, binop_nt), `%->_%%`_instrtype(`%`_resulttype([(nt : numtype <: valtype) (nt : numtype <: valtype)]), [], `%`_resulttype([(nt : numtype <: valtype)])))
     -- wf_context: `%`(C)
     -- wf_instr: `%`(BINOP_instr(nt, binop_nt))
     -- wf_instrtype: `%`(`%->_%%`_instrtype(`%`_resulttype([(nt : numtype <: valtype) (nt : numtype <: valtype)]), [], `%`_resulttype([(nt : numtype <: valtype)])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:521.1-522.39
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:529.1-530.39
   rule testop{C : context, nt : numtype, testop_nt : testop_}:
     `%|-%:%`(C, TESTOP_instr(nt, testop_nt), `%->_%%`_instrtype(`%`_resulttype([(nt : numtype <: valtype)]), [], `%`_resulttype([I32_valtype])))
     -- wf_context: `%`(C)
     -- wf_instr: `%`(TESTOP_instr(nt, testop_nt))
     -- wf_instrtype: `%`(`%->_%%`_instrtype(`%`_resulttype([(nt : numtype <: valtype)]), [], `%`_resulttype([I32_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:524.1-525.40
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:532.1-533.40
   rule relop{C : context, nt : numtype, relop_nt : relop_}:
     `%|-%:%`(C, RELOP_instr(nt, relop_nt), `%->_%%`_instrtype(`%`_resulttype([(nt : numtype <: valtype) (nt : numtype <: valtype)]), [], `%`_resulttype([I32_valtype])))
     -- wf_context: `%`(C)
     -- wf_instr: `%`(RELOP_instr(nt, relop_nt))
     -- wf_instrtype: `%`(`%->_%%`_instrtype(`%`_resulttype([(nt : numtype <: valtype) (nt : numtype <: valtype)]), [], `%`_resulttype([I32_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:527.1-528.44
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:535.1-536.44
   rule cvtop{C : context, nt_1 : numtype, nt_2 : numtype, cvtop : cvtop__}:
     `%|-%:%`(C, CVTOP_instr(nt_1, nt_2, cvtop), `%->_%%`_instrtype(`%`_resulttype([(nt_2 : numtype <: valtype)]), [], `%`_resulttype([(nt_1 : numtype <: valtype)])))
     -- wf_context: `%`(C)
     -- wf_instr: `%`(CVTOP_instr(nt_1, nt_2, cvtop))
     -- wf_instrtype: `%`(`%->_%%`_instrtype(`%`_resulttype([(nt_2 : numtype <: valtype)]), [], `%`_resulttype([(nt_1 : numtype <: valtype)])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:533.1-534.35
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:541.1-542.35
   rule vconst{C : context, c : vec_}:
     `%|-%:%`(C, VCONST_instr(V128_vectype, c), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([V128_valtype])))
     -- wf_context: `%`(C)
     -- wf_instr: `%`(VCONST_instr(V128_vectype, c))
     -- wf_instrtype: `%`(`%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([V128_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:536.1-537.41
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:544.1-545.41
   rule vvunop{C : context, vvunop : vvunop}:
     `%|-%:%`(C, VVUNOP_instr(V128_vectype, vvunop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype]), [], `%`_resulttype([V128_valtype])))
     -- wf_context: `%`(C)
     -- wf_instr: `%`(VVUNOP_instr(V128_vectype, vvunop))
     -- wf_instrtype: `%`(`%->_%%`_instrtype(`%`_resulttype([V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:539.1-540.48
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:547.1-548.48
   rule vvbinop{C : context, vvbinop : vvbinop}:
     `%|-%:%`(C, VVBINOP_instr(V128_vectype, vvbinop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
     -- wf_context: `%`(C)
     -- wf_instr: `%`(VVBINOP_instr(V128_vectype, vvbinop))
     -- wf_instrtype: `%`(`%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:542.1-543.55
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:550.1-551.55
   rule vvternop{C : context, vvternop : vvternop}:
     `%|-%:%`(C, VVTERNOP_instr(V128_vectype, vvternop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
     -- wf_context: `%`(C)
     -- wf_instr: `%`(VVTERNOP_instr(V128_vectype, vvternop))
     -- wf_instrtype: `%`(`%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:545.1-546.44
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:553.1-554.44
   rule vvtestop{C : context, vvtestop : vvtestop}:
     `%|-%:%`(C, VVTESTOP_instr(V128_vectype, vvtestop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype]), [], `%`_resulttype([I32_valtype])))
     -- wf_context: `%`(C)
     -- wf_instr: `%`(VVTESTOP_instr(V128_vectype, vvtestop))
     -- wf_instrtype: `%`(`%->_%%`_instrtype(`%`_resulttype([V128_valtype]), [], `%`_resulttype([I32_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:548.1-549.37
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:556.1-557.37
   rule vunop{C : context, sh : shape, vunop : vunop_}:
     `%|-%:%`(C, VUNOP_instr(sh, vunop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype]), [], `%`_resulttype([V128_valtype])))
     -- wf_context: `%`(C)
     -- wf_instr: `%`(VUNOP_instr(sh, vunop))
     -- wf_instrtype: `%`(`%->_%%`_instrtype(`%`_resulttype([V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:551.1-552.44
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:559.1-560.44
   rule vbinop{C : context, sh : shape, vbinop : vbinop_}:
     `%|-%:%`(C, VBINOP_instr(sh, vbinop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
     -- wf_context: `%`(C)
     -- wf_instr: `%`(VBINOP_instr(sh, vbinop))
     -- wf_instrtype: `%`(`%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:554.1-555.51
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:562.1-563.51
   rule vternop{C : context, sh : shape, vternop : vternop_}:
     `%|-%:%`(C, VTERNOP_instr(sh, vternop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
     -- wf_context: `%`(C)
     -- wf_instr: `%`(VTERNOP_instr(sh, vternop))
     -- wf_instrtype: `%`(`%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:557.1-558.40
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:565.1-566.40
   rule vtestop{C : context, sh : shape, vtestop : vtestop_}:
     `%|-%:%`(C, VTESTOP_instr(sh, vtestop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype]), [], `%`_resulttype([I32_valtype])))
     -- wf_context: `%`(C)
     -- wf_instr: `%`(VTESTOP_instr(sh, vtestop))
     -- wf_instrtype: `%`(`%->_%%`_instrtype(`%`_resulttype([V128_valtype]), [], `%`_resulttype([I32_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:560.1-561.44
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:568.1-569.44
   rule vrelop{C : context, sh : shape, vrelop : vrelop_}:
     `%|-%:%`(C, VRELOP_instr(sh, vrelop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
     -- wf_context: `%`(C)
     -- wf_instr: `%`(VRELOP_instr(sh, vrelop))
     -- wf_instrtype: `%`(`%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:563.1-564.47
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:571.1-572.47
   rule vshiftop{C : context, sh : ishape, vshiftop : vshiftop_}:
     `%|-%:%`(C, VSHIFTOP_instr(sh, vshiftop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype I32_valtype]), [], `%`_resulttype([V128_valtype])))
     -- wf_context: `%`(C)
     -- wf_instr: `%`(VSHIFTOP_instr(sh, vshiftop))
     -- wf_instrtype: `%`(`%->_%%`_instrtype(`%`_resulttype([V128_valtype I32_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:566.1-567.33
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:574.1-575.33
   rule vbitmask{C : context, sh : ishape}:
     `%|-%:%`(C, VBITMASK_instr(sh), `%->_%%`_instrtype(`%`_resulttype([V128_valtype]), [], `%`_resulttype([I32_valtype])))
     -- wf_context: `%`(C)
     -- wf_instr: `%`(VBITMASK_instr(sh))
     -- wf_instrtype: `%`(`%->_%%`_instrtype(`%`_resulttype([V128_valtype]), [], `%`_resulttype([I32_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:569.1-570.50
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:577.1-578.50
   rule vswizzlop{C : context, sh : bshape, vswizzlop : vswizzlop_}:
     `%|-%:%`(C, VSWIZZLOP_instr(sh, vswizzlop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
     -- wf_context: `%`(C)
     -- wf_instr: `%`(VSWIZZLOP_instr(sh, vswizzlop))
     -- wf_instrtype: `%`(`%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:572.1-574.29
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:580.1-582.29
   rule vshuffle{C : context, sh : bshape, `i*` : laneidx*}:
     `%|-%:%`(C, VSHUFFLE_instr(sh, i*{i <- `i*`}), `%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
     -- wf_context: `%`(C)
@@ -6873,14 +6896,14 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
     -- wf_instrtype: `%`(`%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
     -- (if ($proj_uN_0(i).0 < (2 * $proj_dim_0($dim($proj_bshape_0(sh).0)).0)))*{i <- `i*`}
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:576.1-577.44
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:584.1-585.44
   rule vsplat{C : context, sh : shape}:
     `%|-%:%`(C, VSPLAT_instr(sh), `%->_%%`_instrtype(`%`_resulttype([($unpackshape(sh) : numtype <: valtype)]), [], `%`_resulttype([V128_valtype])))
     -- wf_context: `%`(C)
     -- wf_instr: `%`(VSPLAT_instr(sh))
     -- wf_instrtype: `%`(`%->_%%`_instrtype(`%`_resulttype([($unpackshape(sh) : numtype <: valtype)]), [], `%`_resulttype([V128_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:579.1-581.21
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:587.1-589.21
   rule vextract_lane{C : context, sh : shape, `sx?` : sx?, i : laneidx}:
     `%|-%:%`(C, VEXTRACT_LANE_instr(sh, sx?{sx <- `sx?`}, i), `%->_%%`_instrtype(`%`_resulttype([V128_valtype]), [], `%`_resulttype([($unpackshape(sh) : numtype <: valtype)])))
     -- wf_context: `%`(C)
@@ -6888,7 +6911,7 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
     -- wf_instrtype: `%`(`%->_%%`_instrtype(`%`_resulttype([V128_valtype]), [], `%`_resulttype([($unpackshape(sh) : numtype <: valtype)])))
     -- if ($proj_uN_0(i).0 < $proj_dim_0($dim(sh)).0)
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:583.1-585.21
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:591.1-593.21
   rule vreplace_lane{C : context, sh : shape, i : laneidx}:
     `%|-%:%`(C, VREPLACE_LANE_instr(sh, i), `%->_%%`_instrtype(`%`_resulttype([V128_valtype ($unpackshape(sh) : numtype <: valtype)]), [], `%`_resulttype([V128_valtype])))
     -- wf_context: `%`(C)
@@ -6896,35 +6919,35 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
     -- wf_instrtype: `%`(`%->_%%`_instrtype(`%`_resulttype([V128_valtype ($unpackshape(sh) : numtype <: valtype)]), [], `%`_resulttype([V128_valtype])))
     -- if ($proj_uN_0(i).0 < $proj_dim_0($dim(sh)).0)
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:587.1-588.50
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:595.1-596.50
   rule vextunop{C : context, sh_1 : ishape, sh_2 : ishape, vextunop : vextunop__}:
     `%|-%:%`(C, VEXTUNOP_instr(sh_1, sh_2, vextunop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype]), [], `%`_resulttype([V128_valtype])))
     -- wf_context: `%`(C)
     -- wf_instr: `%`(VEXTUNOP_instr(sh_1, sh_2, vextunop))
     -- wf_instrtype: `%`(`%->_%%`_instrtype(`%`_resulttype([V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:590.1-591.57
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:598.1-599.57
   rule vextbinop{C : context, sh_1 : ishape, sh_2 : ishape, vextbinop : vextbinop__}:
     `%|-%:%`(C, VEXTBINOP_instr(sh_1, sh_2, vextbinop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
     -- wf_context: `%`(C)
     -- wf_instr: `%`(VEXTBINOP_instr(sh_1, sh_2, vextbinop))
     -- wf_instrtype: `%`(`%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:593.1-594.64
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:601.1-602.64
   rule vextternop{C : context, sh_1 : ishape, sh_2 : ishape, vextternop : vextternop__}:
     `%|-%:%`(C, VEXTTERNOP_instr(sh_1, sh_2, vextternop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
     -- wf_context: `%`(C)
     -- wf_instr: `%`(VEXTTERNOP_instr(sh_1, sh_2, vextternop))
     -- wf_instrtype: `%`(`%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:596.1-597.48
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:604.1-605.48
   rule vnarrow{C : context, sh_1 : ishape, sh_2 : ishape, sx : sx}:
     `%|-%:%`(C, VNARROW_instr(sh_1, sh_2, sx), `%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
     -- wf_context: `%`(C)
     -- wf_instr: `%`(VNARROW_instr(sh_1, sh_2, sx))
     -- wf_instrtype: `%`(`%->_%%`_instrtype(`%`_resulttype([V128_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:599.1-600.46
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:607.1-608.46
   rule vcvtop{C : context, sh_1 : shape, sh_2 : shape, vcvtop : vcvtop__}:
     `%|-%:%`(C, VCVTOP_instr(sh_1, sh_2, vcvtop), `%->_%%`_instrtype(`%`_resulttype([V128_valtype]), [], `%`_resulttype([V128_valtype])))
     -- wf_context: `%`(C)
@@ -6933,13 +6956,13 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
 
 ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:6.1-6.96
 relation Instrs_ok: `%|-%:%`(context, instr*, instrtype)
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:605.1-606.24
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:613.1-614.24
   rule empty{C : context}:
     `%|-%:%`(C, [], `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([])))
     -- wf_context: `%`(C)
     -- wf_instrtype: `%`(`%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([])))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:609.1-613.82
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:617.1-621.82
   rule seq{C : context, instr_1 : instr, `instr_2*` : instr*, `t_1*` : valtype*, `x_1*` : idx*, `x_2*` : idx*, `t_3*` : valtype*, `t_2*` : valtype*, `init*` : init*, `t*` : valtype*}:
     `%|-%:%`(C, [instr_1] ++ instr_2*{instr_2 <- `instr_2*`}, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), x_1*{x_1 <- `x_1*`} ++ x_2*{x_2 <- `x_2*`}, `%`_resulttype(t_3*{t_3 <- `t_3*`})))
     -- wf_context: `%`(C)
@@ -6957,7 +6980,7 @@ relation Instrs_ok: `%|-%:%`(context, instr*, instrtype)
     -- (if (C.LOCALS_context[$proj_uN_0(x_1).0] = `%%`_localtype(init, t)))*{init <- `init*`, t <- `t*`, x_1 <- `x_1*`}
     -- Instrs_ok: `%|-%:%`($with_locals(C, x_1*{x_1 <- `x_1*`}, `%%`_localtype(SET_init, t)*{t <- `t*`}), instr_2*{instr_2 <- `instr_2*`}, `%->_%%`_instrtype(`%`_resulttype(t_2*{t_2 <- `t_2*`}), x_2*{x_2 <- `x_2*`}, `%`_resulttype(t_3*{t_3 <- `t_3*`})))
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:615.1-619.33
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:623.1-627.33
   rule sub{C : context, `instr*` : instr*, it' : instrtype, it : instrtype}:
     `%|-%:%`(C, instr*{instr <- `instr*`}, it')
     -- wf_context: `%`(C)
@@ -6968,7 +6991,7 @@ relation Instrs_ok: `%|-%:%`(context, instr*, instrtype)
     -- Instrtype_sub: `%|-%<:%`(C, it, it')
     -- Instrtype_ok: `%|-%:OK`(C, it')
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:622.1-625.33
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:630.1-633.33
   rule frame{C : context, `instr*` : instr*, `t*` : valtype*, `t_1*` : valtype*, `x*` : idx*, `t_2*` : valtype*}:
     `%|-%:%`(C, instr*{instr <- `instr*`}, `%->_%%`_instrtype(`%`_resulttype(t*{t <- `t*`} ++ t_1*{t_1 <- `t_1*`}), x*{x <- `x*`}, `%`_resulttype(t*{t <- `t*`} ++ t_2*{t_2 <- `t_2*`})))
     -- wf_context: `%`(C)
@@ -8293,26 +8316,6 @@ def $fvternop_(shape : shape, def $f_(N : N, fN : fN, fN : fN, fN : fN) : fN*, v
     -- if (c*{c <- `c*`}*{`c*` <- `c**`} = $setproduct_(syntax lane_, mk_lane__0_lane_((Fnn : Fnn <: numtype), mk_num__1_num_(Fnn, iter_0))*{iter_0 <- $f_($sizenn((Fnn : Fnn <: numtype)), !($proj_num__1(!($proj_lane__0(c_1)))), !($proj_num__1(!($proj_lane__0(c_2)))), !($proj_num__1(!($proj_lane__0(c_3)))))}*{c_1 <- `c_1*`, c_2 <- `c_2*`, c_3 <- `c_3*`}))
 
 ;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
-def $ivtestop_(shape : shape, def $f_(N : N, iN : iN) : u32, vec_ : vec_) : u32
-  ;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
-  def $ivtestop_{Jnn : Jnn, M : nat, def $f_(N : N, iN : iN) : u32, v_1 : uN, `c*` : u32*, `c_1*` : lane_*}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $f_, v_1) = `%`_u32($prod($proj_uN_0(c).0*{c <- `c*`}))
-    -- (wf_lane_: `%%`($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))), c_1))*{c_1 <- `c_1*`}
-    -- wf_uN: `%%`(32, `%`_uN($prod($proj_uN_0(c).0*{c <- `c*`})))
-    -- wf_shape: `%`(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)))
-    -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), v_1))
-    -- if (c*{c <- `c*`} = $f_($lsizenn((Jnn : Jnn <: lanetype)), !($proj_lane__2(c_1)))*{c_1 <- `c_1*`})
-
-;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
-def $fvtestop_(shape : shape, def $f_(N : N, fN : fN) : u32, vec_ : vec_) : u32
-  ;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
-  def $fvtestop_{Fnn : Fnn, M : nat, def $f_(N : N, fN : fN) : u32, v_1 : uN, `c*` : u32*, `c_1*` : lane_*}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $f_, v_1) = `%`_u32($prod($proj_uN_0(c).0*{c <- `c*`}))
-    -- (wf_lane_: `%%`($lanetype(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M))), c_1))*{c_1 <- `c_1*`}
-    -- wf_uN: `%%`(32, `%`_uN($prod($proj_uN_0(c).0*{c <- `c*`})))
-    -- wf_shape: `%`(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)))
-    -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), v_1))
-    -- if (c*{c <- `c*`} = $f_($sizenn((Fnn : Fnn <: numtype)), !($proj_num__1(!($proj_lane__0(c_1)))))*{c_1 <- `c_1*`})
-
-;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
 def $ivrelop_(shape : shape, def $f_(N : N, iN : iN, iN : iN) : u32, vec_ : vec_, vec_ : vec_) : vec_
   ;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
   def $ivrelop_{Jnn : Jnn, M : nat, def $f_(N : N, iN : iN, iN : iN) : u32, v_1 : uN, v_2 : uN, `c*` : iN*, `c_1*` : lane_*, `c_2*` : lane_*}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $f_, v_1, v_2) = $inv_lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), mk_lane__2_lane_(Jnn, c)*{c <- `c*`})
@@ -8530,12 +8533,6 @@ def $vternop_(shape : shape, vternop_ : vternop_, vec_ : vec_, vec_ : vec_, vec_
   ;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
   def $vternop_{Fnn : Fnn, M : nat, v_1 : uN, v_2 : uN, v_3 : uN}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), mk_vternop__1_vternop_(Fnn, M, RELAXED_NMADD_vternop_Fnn_M), v_1, v_2, v_3) = $fvternop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $frelaxed_nmadd_, v_1, v_2, v_3)
     -- wf_shape: `%`(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)))
-
-;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
-def $vtestop_(shape : shape, vtestop_ : vtestop_, vec_ : vec_) : u32
-  ;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
-  def $vtestop_{Jnn : Jnn, M : nat, v : uN}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), mk_vtestop__0_vtestop_(Jnn, M, ALL_TRUE_vtestop_Jnn_M), v) = $ivtestop_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $inez_, v)
-    -- wf_shape: `%`(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)))
 
 ;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
 def $vrelop_(shape : shape, vrelop_ : vrelop_, vec_ : vec_, vec_ : vec_) : vec_
@@ -10223,9 +10220,8 @@ relation Step_pure: `%~>%`(instr*, instr*)
     -- wf_instr: `%`(VCONST_instr(V128_vectype, c_1))
     -- wf_instr: `%`(VVTESTOP_instr(V128_vectype, ANY_TRUE_vvtestop))
     -- wf_instr: `%`(CONST_instr(I32_numtype, c))
-    -- wf_uN: `%%`(128, `%`_uN(0))
     -- if ($proj_num__0(c) =/= ?())
-    -- if (!($proj_num__0(c)) = $ine_($vsize(V128_vectype), c_1, `%`_iN(0)))
+    -- if (!($proj_num__0(c)) = $inez_($vsize(V128_vectype), c_1))
 
   ;; ../../../../specification/wasm-3.0/4.3-execution.instructions.spectec
   rule `vunop-val`{c_1 : vec_, sh : shape, vunop : vunop_, c : vec_}:
@@ -10285,13 +10281,17 @@ relation Step_pure: `%~>%`(instr*, instr*)
     -- if ($vternop_(sh, vternop, c_1, c_2, c_3) = [])
 
   ;; ../../../../specification/wasm-3.0/4.3-execution.instructions.spectec
-  rule vtestop{c_1 : vec_, sh : shape, vtestop : vtestop_, i : num_}:
-    `%~>%`([VCONST_instr(V128_vectype, c_1) VTESTOP_instr(sh, vtestop)], [CONST_instr(I32_numtype, i)])
+  rule vtestop{c_1 : vec_, Jnn : Jnn, M : M, c : num_, `i*` : lane_*}:
+    `%~>%`([VCONST_instr(V128_vectype, c_1) VTESTOP_instr(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), mk_vtestop__0_vtestop_(Jnn, M, ALL_TRUE_vtestop_Jnn_M))], [CONST_instr(I32_numtype, c)])
+    -- (wf_lane_: `%%`($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))), i))*{i <- `i*`}
     -- wf_instr: `%`(VCONST_instr(V128_vectype, c_1))
-    -- wf_instr: `%`(VTESTOP_instr(sh, vtestop))
-    -- wf_instr: `%`(CONST_instr(I32_numtype, i))
-    -- if ($proj_num__0(i) =/= ?())
-    -- if (!($proj_num__0(i)) = $vtestop_(sh, vtestop, c_1))
+    -- wf_instr: `%`(VTESTOP_instr(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), mk_vtestop__0_vtestop_(Jnn, M, ALL_TRUE_vtestop_Jnn_M)))
+    -- wf_instr: `%`(CONST_instr(I32_numtype, c))
+    -- wf_shape: `%`(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)))
+    -- if (i*{i <- `i*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), c_1))
+    -- if ($proj_num__0(c) =/= ?())
+    -- (if ($proj_lane__2(i) =/= ?()))*{i <- `i*`}
+    -- if ($proj_uN_0(!($proj_num__0(c))).0 = $prod($proj_uN_0($inez_($jsizenn(Jnn), !($proj_lane__2(i)))).0*{i <- `i*`}))
 
   ;; ../../../../specification/wasm-3.0/4.3-execution.instructions.spectec
   rule vrelop{c_1 : vec_, c_2 : vec_, sh : shape, vrelop : vrelop_, c : vec_}:
@@ -12592,16 +12592,20 @@ grammar BuN(N : N) : uN
 }
 
 ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec
+rec {
+
+;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec:13.1-16.82
 grammar BsN(N : N) : sN
-  ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec
+  ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec:14.5-14.87
   prod{n : n} `%`_byte(n):Bbyte => `%`_sN((n : nat <:> int))
     -- if ((n < (2 ^ 6)) /\ (n < (2 ^ (((N : nat <:> int) - (1 : nat <:> int)) : int <:> nat))))
-  ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec
+  ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec:15.5-15.101
   prod{n : n} `%`_byte(n):Bbyte => `%`_sN(((n : nat <:> int) - ((2 ^ 7) : nat <:> int)))
     -- if ((((2 ^ 6) <= n) /\ (n < (2 ^ 7))) /\ ((n : nat <:> int) >= (((2 ^ 7) : nat <:> int) - ((2 ^ (((N : nat <:> int) - (1 : nat <:> int)) : int <:> nat)) : nat <:> int))))
-  ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec
-  prod{n : n, i : uN} {{`%`_byte(n):Bbyte} {i:BuN((((N : nat <:> int) - (7 : nat <:> int)) : int <:> nat))}} => `%`_sN(((((2 ^ 7) * $proj_uN_0(i).0) + (((n : nat <:> int) - ((2 ^ 7) : nat <:> int)) : int <:> nat)) : nat <:> int))
+  ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec:16.5-16.82
+  prod{n : n, i : sN} {{`%`_byte(n):Bbyte} {i:BsN((((N : nat <:> int) - (7 : nat <:> int)) : int <:> nat))}} => `%`_sN(((((2 ^ 7) * ($proj_sN_0(i).0 : int <:> nat)) + (((n : nat <:> int) - ((2 ^ 7) : nat <:> int)) : int <:> nat)) : nat <:> int))
     -- if ((n >= (2 ^ 7)) /\ (N > 7))
+}
 
 ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec
 grammar BiN(N : N) : iN
@@ -12616,27 +12620,37 @@ grammar BfN(N : N) : fN
 ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec
 grammar Bu32 : u32
   ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec
-  prod{n : n} `%`_uN(n):BuN(32) => `%`_u32(n)
+  prod{`<implicit-prod-result>` : uN} `<implicit-prod-result>`:BuN(32) => `<implicit-prod-result>`
 
 ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec
 grammar Bu64 : u64
   ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec
-  prod{n : n} `%`_uN(n):BuN(64) => `%`_u64(n)
+  prod{`<implicit-prod-result>` : uN} `<implicit-prod-result>`:BuN(64) => `<implicit-prod-result>`
 
 ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec
 grammar Bs33 : s33
   ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec
-  prod{i : sN} i:BsN(33) => i
+  prod{`<implicit-prod-result>` : sN} `<implicit-prod-result>`:BsN(33) => `<implicit-prod-result>`
+
+;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec
+grammar Bi32 : i32
+  ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec
+  prod{`<implicit-prod-result>` : uN} `<implicit-prod-result>`:BuN(32) => `<implicit-prod-result>`
+
+;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec
+grammar Bi64 : i64
+  ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec
+  prod{`<implicit-prod-result>` : uN} `<implicit-prod-result>`:BuN(64) => `<implicit-prod-result>`
 
 ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec
 grammar Bf32 : f32
   ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec
-  prod{p : fN} p:BfN(32) => p
+  prod{`<implicit-prod-result>` : fN} `<implicit-prod-result>`:BfN(32) => `<implicit-prod-result>`
 
 ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec
 grammar Bf64 : f64
   ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec
-  prod{p : fN} p:BfN(64) => p
+  prod{`<implicit-prod-result>` : fN} `<implicit-prod-result>`:BfN(64) => `<implicit-prod-result>`
 
 ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec
 grammar Blist(syntax el, grammar BX : el) : el*
@@ -12882,13 +12896,27 @@ grammar Bexterntype : externtype
   prod{jt : tagtype} {{0x04} {jt:Btagtype}} => TAG_externtype(jt)
 
 ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec
+syntax castop = (null?, null?)
+
+;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec
+grammar Bcastop : castop
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec
+  prod 0x00 => (?(), ?())
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec
+  prod 0x01 => (?(NULL_null), ?())
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec
+  prod 0x02 => (?(), ?(NULL_null))
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec
+  prod 0x03 => (?(NULL_null), ?(NULL_null))
+
+;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec
 grammar Bblocktype : blocktype
   ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec
   prod 0x40 => _RESULT_blocktype(?())
   ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec
   prod{t : valtype} t:Bvaltype => _RESULT_blocktype(?(t))
   ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec
-  prod{i : s33} i:Bs33 => _IDX_blocktype(`%`_funcidx(($proj_sN_0(i).0 : int <:> nat)))
+  prod{i : s33} i:Bs33 => _IDX_blocktype(`%`_typeidx(($proj_sN_0(i).0 : int <:> nat)))
     -- if ($proj_sN_0(i).0 >= (0 : nat <:> int))
 
 ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec
@@ -12908,25 +12936,11 @@ syntax memidxop = (memidx, memarg)
 ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec
 grammar Bmemarg : memidxop
   ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec
-  prod{n : n, m : m} {{`%`_u32(n):Bu32} {`%`_u32(m):Bu32}} => (`%`_memidx(0), {ALIGN `%`_u32(n), OFFSET `%`_u32(m)})
+  prod{n : n, m : m} {{`%`_u32(n):Bu32} {`%`_u64(m):Bu64}} => (`%`_memidx(0), {ALIGN `%`_u32(n), OFFSET `%`_u64(m)})
     -- if (n < (2 ^ 6))
   ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec
-  prod{n : n, x : idx, m : m} {{`%`_u32(n):Bu32} {x:Bmemidx} {`%`_u32(m):Bu32}} => (x, {ALIGN `%`_u32((((n : nat <:> int) - ((2 ^ 6) : nat <:> int)) : int <:> nat)), OFFSET `%`_u32(m)})
+  prod{n : n, x : idx, m : m} {{`%`_u32(n):Bu32} {x:Bmemidx} {`%`_u64(m):Bu64}} => (x, {ALIGN `%`_u32((((n : nat <:> int) - ((2 ^ 6) : nat <:> int)) : int <:> nat)), OFFSET `%`_u64(m)})
     -- if (((2 ^ 6) <= n) /\ (n < (2 ^ 7)))
-
-;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec
-syntax castop = (null?, null?)
-
-;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec
-grammar Bcastop : castop
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec
-  prod 0x00 => (?(), ?())
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec
-  prod 0x01 => (?(NULL_null), ?())
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec
-  prod 0x02 => (?(), ?(NULL_null))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec
-  prod 0x03 => (?(NULL_null), ?(NULL_null))
 
 ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec
 grammar Blaneidx : laneidx
@@ -12936,7 +12950,7 @@ grammar Blaneidx : laneidx
 ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec
 rec {
 
-;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:794.1-808.71
+;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:793.1-807.71
 grammar Binstr : instr
   ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:8.5-8.24
   prod 0x00 => UNREACHABLE_instr
@@ -12948,987 +12962,991 @@ grammar Binstr : instr
   prod 0x1B => SELECT_instr(?())
   ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:12.5-12.41
   prod{`t*` : valtype*} {{0x1C} {t*{t <- `t*`}:Blist(syntax valtype, grammar Bvaltype)}} => SELECT_instr(?(t*{t <- `t*`}))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:24.5-24.57
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:32.5-32.57
   prod{bt : blocktype, `in*` : instr*} {{0x02} {bt:Bblocktype} {in:Binstr*{in <- `in*`}} {0x0B}} => BLOCK_instr(bt, in*{in <- `in*`})
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:25.5-25.56
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:33.5-33.56
   prod{bt : blocktype, `in*` : instr*} {{0x03} {bt:Bblocktype} {in:Binstr*{in <- `in*`}} {0x0B}} => LOOP_instr(bt, in*{in <- `in*`})
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:26.5-26.63
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:34.5-34.63
   prod{bt : blocktype, `in*` : instr*} {{0x04} {bt:Bblocktype} {in:Binstr*{in <- `in*`}} {0x0B}} => `IF%%ELSE%`_instr(bt, in*{in <- `in*`}, [])
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:27.5-28.55
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:35.5-36.55
   prod{bt : blocktype, `in_1*` : instr*, `in_2*` : instr*} {{0x04} {bt:Bblocktype} {in_1:Binstr*{in_1 <- `in_1*`}} {0x05} {in_2:Binstr*{in_2 <- `in_2*`}} {0x0B}} => `IF%%ELSE%`_instr(bt, in_1*{in_1 <- `in_1*`}, in_2*{in_2 <- `in_2*`})
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:32.5-32.30
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:40.5-40.30
   prod{x : idx} {{0x08} {x:Btagidx}} => THROW_instr(x)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:33.5-33.22
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:41.5-41.22
   prod 0x0A => THROW_REF_instr
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:34.5-34.29
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:42.5-42.29
   prod{l : labelidx} {{0x0C} {l:Blabelidx}} => BR_instr(l)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:35.5-35.32
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:43.5-43.32
   prod{l : labelidx} {{0x0D} {l:Blabelidx}} => BR_IF_instr(l)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:36.5-36.62
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:44.5-44.62
   prod{`l*` : labelidx*, l_n : labelidx} {{0x0E} {l*{l <- `l*`}:Blist(syntax labelidx, grammar Blabelidx)} {l_n:Blabelidx}} => BR_TABLE_instr(l*{l <- `l*`}, l_n)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:37.5-37.19
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:45.5-45.19
   prod 0x0F => RETURN_instr
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:38.5-38.30
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:46.5-46.30
   prod{x : idx} {{0x10} {x:Bfuncidx}} => CALL_instr(x)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:39.5-39.60
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:47.5-47.60
   prod{y : idx, x : idx} {{0x11} {y:Btypeidx} {x:Btableidx}} => CALL_INDIRECT_instr(x, _IDX_typeuse(y))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:40.5-40.37
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:48.5-48.37
   prod{x : idx} {{0x12} {x:Bfuncidx}} => RETURN_CALL_instr(x)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:41.5-41.67
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:49.5-49.67
   prod{y : idx, x : idx} {{0x13} {y:Btypeidx} {x:Btableidx}} => RETURN_CALL_INDIRECT_instr(x, _IDX_typeuse(y))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:42.5-42.81
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:50.5-50.41
+  prod{x : idx} {{0x14} {x:Btypeidx}} => CALL_REF_instr(_IDX_typeuse(x))
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:51.5-51.48
+  prod{x : idx} {{0x15} {x:Btypeidx}} => RETURN_CALL_REF_instr(_IDX_typeuse(x))
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:52.5-52.81
   prod{bt : blocktype, `c*` : catch*, `in*` : instr*} {{0x1F} {bt:Bblocktype} {c*{c <- `c*`}:Blist(syntax catch, grammar Bcatch)} {in:Binstr*{in <- `in*`}} {0x0B}} => TRY_TABLE_instr(bt, `%`_list(c*{c <- `c*`}), in*{in <- `in*`})
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:55.5-55.36
-  prod{x : idx} {{0x20} {x:Blocalidx}} => LOCAL.GET_instr(x)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:56.5-56.36
-  prod{x : idx} {{0x21} {x:Blocalidx}} => LOCAL.SET_instr(x)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:57.5-57.36
-  prod{x : idx} {{0x22} {x:Blocalidx}} => LOCAL.TEE_instr(x)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:61.5-61.38
-  prod{x : idx} {{0x23} {x:Bglobalidx}} => GLOBAL.GET_instr(x)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:62.5-62.38
-  prod{x : idx} {{0x24} {x:Bglobalidx}} => GLOBAL.SET_instr(x)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:69.5-69.36
-  prod{x : idx} {{0x25} {x:Btableidx}} => TABLE.GET_instr(x)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:70.5-70.36
-  prod{x : idx} {{0x26} {x:Btableidx}} => TABLE.SET_instr(x)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:71.5-71.58
-  prod{y : idx, x : idx} {{0xFC} {`%`_u32(12):Bu32} {y:Belemidx} {x:Btableidx}} => TABLE.INIT_instr(x, y)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:72.5-72.43
-  prod{x : idx} {{0xFC} {`%`_u32(13):Bu32} {x:Belemidx}} => ELEM.DROP_instr(x)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:73.5-73.67
-  prod{x_1 : idx, x_2 : idx} {{0xFC} {`%`_u32(14):Bu32} {x_1:Btableidx} {x_2:Btableidx}} => TABLE.COPY_instr(x_1, x_2)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:74.5-74.45
-  prod{x : idx} {{0xFC} {`%`_u32(15):Bu32} {x:Btableidx}} => TABLE.GROW_instr(x)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:75.5-75.45
-  prod{x : idx} {{0xFC} {`%`_u32(16):Bu32} {x:Btableidx}} => TABLE.SIZE_instr(x)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:76.5-76.45
-  prod{x : idx} {{0xFC} {`%`_u32(17):Bu32} {x:Btableidx}} => TABLE.FILL_instr(x)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:89.5-89.41
-  prod{x : idx, ao : memarg} {{0x28} {(x, ao):Bmemarg}} => LOAD_instr(I32_numtype, ?(), x, ao)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:90.5-90.41
-  prod{x : idx, ao : memarg} {{0x29} {(x, ao):Bmemarg}} => LOAD_instr(I64_numtype, ?(), x, ao)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:91.5-91.41
-  prod{x : idx, ao : memarg} {{0x2A} {(x, ao):Bmemarg}} => LOAD_instr(F32_numtype, ?(), x, ao)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:92.5-92.41
-  prod{x : idx, ao : memarg} {{0x2B} {(x, ao):Bmemarg}} => LOAD_instr(F64_numtype, ?(), x, ao)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:93.5-93.50
-  prod{x : idx, ao : memarg} {{0x2C} {(x, ao):Bmemarg}} => LOAD_instr(I32_numtype, ?(mk_loadop__0_loadop_(I32_Inn, `%_%`_loadop_Inn(`%`_sz(8), S_sx))), x, ao)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:94.5-94.50
-  prod{x : idx, ao : memarg} {{0x2D} {(x, ao):Bmemarg}} => LOAD_instr(I32_numtype, ?(mk_loadop__0_loadop_(I32_Inn, `%_%`_loadop_Inn(`%`_sz(8), U_sx))), x, ao)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:95.5-95.51
-  prod{x : idx, ao : memarg} {{0x2E} {(x, ao):Bmemarg}} => LOAD_instr(I32_numtype, ?(mk_loadop__0_loadop_(I32_Inn, `%_%`_loadop_Inn(`%`_sz(16), S_sx))), x, ao)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:96.5-96.51
-  prod{x : idx, ao : memarg} {{0x2F} {(x, ao):Bmemarg}} => LOAD_instr(I32_numtype, ?(mk_loadop__0_loadop_(I32_Inn, `%_%`_loadop_Inn(`%`_sz(16), U_sx))), x, ao)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:97.5-97.50
-  prod{x : idx, ao : memarg} {{0x30} {(x, ao):Bmemarg}} => LOAD_instr(I64_numtype, ?(mk_loadop__0_loadop_(I64_Inn, `%_%`_loadop_Inn(`%`_sz(8), S_sx))), x, ao)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:98.5-98.50
-  prod{x : idx, ao : memarg} {{0x31} {(x, ao):Bmemarg}} => LOAD_instr(I64_numtype, ?(mk_loadop__0_loadop_(I64_Inn, `%_%`_loadop_Inn(`%`_sz(8), U_sx))), x, ao)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:99.5-99.51
-  prod{x : idx, ao : memarg} {{0x32} {(x, ao):Bmemarg}} => LOAD_instr(I64_numtype, ?(mk_loadop__0_loadop_(I64_Inn, `%_%`_loadop_Inn(`%`_sz(16), S_sx))), x, ao)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:100.5-100.51
-  prod{x : idx, ao : memarg} {{0x33} {(x, ao):Bmemarg}} => LOAD_instr(I64_numtype, ?(mk_loadop__0_loadop_(I64_Inn, `%_%`_loadop_Inn(`%`_sz(16), U_sx))), x, ao)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:101.5-101.51
-  prod{x : idx, ao : memarg} {{0x34} {(x, ao):Bmemarg}} => LOAD_instr(I64_numtype, ?(mk_loadop__0_loadop_(I64_Inn, `%_%`_loadop_Inn(`%`_sz(32), S_sx))), x, ao)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:102.5-102.51
-  prod{x : idx, ao : memarg} {{0x35} {(x, ao):Bmemarg}} => LOAD_instr(I64_numtype, ?(mk_loadop__0_loadop_(I64_Inn, `%_%`_loadop_Inn(`%`_sz(32), U_sx))), x, ao)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:103.5-103.42
-  prod{x : idx, ao : memarg} {{0x36} {(x, ao):Bmemarg}} => STORE_instr(I32_numtype, ?(), x, ao)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:104.5-104.42
-  prod{x : idx, ao : memarg} {{0x37} {(x, ao):Bmemarg}} => STORE_instr(I64_numtype, ?(), x, ao)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:105.5-105.42
-  prod{x : idx, ao : memarg} {{0x38} {(x, ao):Bmemarg}} => STORE_instr(F32_numtype, ?(), x, ao)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:106.5-106.42
-  prod{x : idx, ao : memarg} {{0x39} {(x, ao):Bmemarg}} => STORE_instr(F64_numtype, ?(), x, ao)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:107.5-107.45
-  prod{x : idx, ao : memarg} {{0x3A} {(x, ao):Bmemarg}} => STORE_instr(I32_numtype, ?(mk_storeop__0_storeop_(I32_Inn, `%`_storeop_Inn(`%`_sz(8)))), x, ao)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:108.5-108.46
-  prod{x : idx, ao : memarg} {{0x3B} {(x, ao):Bmemarg}} => STORE_instr(I32_numtype, ?(mk_storeop__0_storeop_(I32_Inn, `%`_storeop_Inn(`%`_sz(16)))), x, ao)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:109.5-109.45
-  prod{x : idx, ao : memarg} {{0x3C} {(x, ao):Bmemarg}} => STORE_instr(I64_numtype, ?(mk_storeop__0_storeop_(I64_Inn, `%`_storeop_Inn(`%`_sz(8)))), x, ao)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:110.5-110.46
-  prod{x : idx, ao : memarg} {{0x3D} {(x, ao):Bmemarg}} => STORE_instr(I64_numtype, ?(mk_storeop__0_storeop_(I64_Inn, `%`_storeop_Inn(`%`_sz(16)))), x, ao)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:111.5-111.46
-  prod{x : idx, ao : memarg} {{0x3E} {(x, ao):Bmemarg}} => STORE_instr(I64_numtype, ?(mk_storeop__0_storeop_(I64_Inn, `%`_storeop_Inn(`%`_sz(32)))), x, ao)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:112.5-112.36
-  prod{x : idx} {{0x3F} {x:Bmemidx}} => MEMORY.SIZE_instr(x)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:113.5-113.36
-  prod{x : idx} {{0x40} {x:Bmemidx}} => MEMORY.GROW_instr(x)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:114.5-114.56
-  prod{y : idx, x : idx} {{0xFC} {`%`_u32(8):Bu32} {y:Bdataidx} {x:Bmemidx}} => MEMORY.INIT_instr(x, y)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:115.5-115.42
-  prod{x : idx} {{0xFC} {`%`_u32(9):Bu32} {x:Bdataidx}} => DATA.DROP_instr(x)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:116.5-116.64
-  prod{x_1 : idx, x_2 : idx} {{0xFC} {`%`_u32(10):Bu32} {x_1:Bmemidx} {x_2:Bmemidx}} => MEMORY.COPY_instr(x_1, x_2)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:117.5-117.44
-  prod{x : idx} {{0xFC} {`%`_u32(11):Bu32} {x:Bmemidx}} => MEMORY.FILL_instr(x)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:132.5-132.37
-  prod{ht : heaptype} {{0xD0} {ht:Bheaptype}} => REF.NULL_instr(ht)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:133.5-133.24
-  prod 0xD1 => REF.IS_NULL_instr
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:134.5-134.34
-  prod{x : idx} {{0xD2} {x:Bfuncidx}} => REF.FUNC_instr(x)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:135.5-135.19
-  prod 0xD3 => REF.EQ_instr
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:136.5-136.28
-  prod 0xD4 => REF.AS_NON_NULL_instr
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:137.5-137.37
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:53.5-53.37
   prod{l : labelidx} {{0xD5} {l:Blabelidx}} => BR_ON_NULL_instr(l)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:138.5-138.41
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:54.5-54.41
   prod{l : labelidx} {{0xD6} {l:Blabelidx}} => BR_ON_NON_NULL_instr(l)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:142.5-142.43
-  prod{x : idx} {{0xFB} {`%`_u32(0):Bu32} {x:Btypeidx}} => STRUCT.NEW_instr(x)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:143.5-143.51
-  prod{x : idx} {{0xFB} {`%`_u32(1):Bu32} {x:Btypeidx}} => STRUCT.NEW_DEFAULT_instr(x)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:144.5-144.52
-  prod{x : idx, i : u32} {{0xFB} {`%`_u32(2):Bu32} {x:Btypeidx} {i:Bu32}} => STRUCT.GET_instr(?(), x, i)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:145.5-145.54
-  prod{x : idx, i : u32} {{0xFB} {`%`_u32(3):Bu32} {x:Btypeidx} {i:Bu32}} => STRUCT.GET_instr(?(S_sx), x, i)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:146.5-146.54
-  prod{x : idx, i : u32} {{0xFB} {`%`_u32(4):Bu32} {x:Btypeidx} {i:Bu32}} => STRUCT.GET_instr(?(U_sx), x, i)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:147.5-147.52
-  prod{x : idx, i : u32} {{0xFB} {`%`_u32(5):Bu32} {x:Btypeidx} {i:Bu32}} => STRUCT.SET_instr(x, i)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:151.5-151.42
-  prod{x : idx} {{0xFB} {`%`_u32(6):Bu32} {x:Btypeidx}} => ARRAY.NEW_instr(x)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:152.5-152.50
-  prod{x : idx} {{0xFB} {`%`_u32(7):Bu32} {x:Btypeidx}} => ARRAY.NEW_DEFAULT_instr(x)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:153.5-153.57
-  prod{x : idx, n : n} {{0xFB} {`%`_u32(8):Bu32} {x:Btypeidx} {`%`_u32(n):Bu32}} => ARRAY.NEW_FIXED_instr(x, `%`_u32(n))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:154.5-154.60
-  prod{x : idx, y : idx} {{0xFB} {`%`_u32(9):Bu32} {x:Btypeidx} {y:Bdataidx}} => ARRAY.NEW_DATA_instr(x, y)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:155.5-155.61
-  prod{x : idx, y : idx} {{0xFB} {`%`_u32(10):Bu32} {x:Btypeidx} {y:Belemidx}} => ARRAY.NEW_ELEM_instr(x, y)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:156.5-156.43
-  prod{x : idx} {{0xFB} {`%`_u32(11):Bu32} {x:Btypeidx}} => ARRAY.GET_instr(?(), x)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:157.5-157.45
-  prod{x : idx} {{0xFB} {`%`_u32(12):Bu32} {x:Btypeidx}} => ARRAY.GET_instr(?(S_sx), x)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:158.5-158.45
-  prod{x : idx} {{0xFB} {`%`_u32(13):Bu32} {x:Btypeidx}} => ARRAY.GET_instr(?(U_sx), x)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:159.5-159.43
-  prod{x : idx} {{0xFB} {`%`_u32(14):Bu32} {x:Btypeidx}} => ARRAY.SET_instr(x)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:160.5-160.30
-  prod {{0xFB} {`%`_u32(15):Bu32}} => ARRAY.LEN_instr
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:161.5-161.44
-  prod{x : idx} {{0xFB} {`%`_u32(16):Bu32} {x:Btypeidx}} => ARRAY.FILL_instr(x)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:162.5-162.65
-  prod{x_1 : idx, x_2 : idx} {{0xFB} {`%`_u32(17):Bu32} {x_1:Btypeidx} {x_2:Btypeidx}} => ARRAY.COPY_instr(x_1, x_2)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:163.5-163.62
-  prod{x : idx, y : idx} {{0xFB} {`%`_u32(18):Bu32} {x:Btypeidx} {y:Bdataidx}} => ARRAY.INIT_DATA_instr(x, y)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:164.5-164.62
-  prod{x : idx, y : idx} {{0xFB} {`%`_u32(19):Bu32} {x:Btypeidx} {y:Belemidx}} => ARRAY.INIT_ELEM_instr(x, y)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:168.5-168.51
-  prod{ht : heaptype} {{0xFB} {`%`_u32(20):Bu32} {ht:Bheaptype}} => REF.TEST_instr(REF_reftype(?(), ht))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:169.5-169.56
-  prod{ht : heaptype} {{0xFB} {`%`_u32(21):Bu32} {ht:Bheaptype}} => REF.TEST_instr(REF_reftype(?(NULL_null), ht))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:170.5-170.51
-  prod{ht : heaptype} {{0xFB} {`%`_u32(22):Bu32} {ht:Bheaptype}} => REF.CAST_instr(REF_reftype(?(), ht))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:171.5-171.56
-  prod{ht : heaptype} {{0xFB} {`%`_u32(23):Bu32} {ht:Bheaptype}} => REF.CAST_instr(REF_reftype(?(NULL_null), ht))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:172.5-173.100
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:55.5-56.100
   prod{`null_1?` : null?, `null_2?` : null?, l : labelidx, ht_1 : heaptype, ht_2 : heaptype} {{0xFB} {`%`_u32(24):Bu32} {(null_1?{null_1 <- `null_1?`}, null_2?{null_2 <- `null_2?`}):Bcastop} {l:Blabelidx} {ht_1:Bheaptype} {ht_2:Bheaptype}} => BR_ON_CAST_instr(l, REF_reftype(null_1?{null_1 <- `null_1?`}, ht_1), REF_reftype(null_2?{null_2 <- `null_2?`}, ht_2))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:174.5-175.105
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:57.5-58.105
   prod{`null_1?` : null?, `null_2?` : null?, l : labelidx, ht_1 : heaptype, ht_2 : heaptype} {{0xFB} {`%`_u32(25):Bu32} {(null_1?{null_1 <- `null_1?`}, null_2?{null_2 <- `null_2?`}):Bcastop} {l:Blabelidx} {ht_1:Bheaptype} {ht_2:Bheaptype}} => BR_ON_CAST_FAIL_instr(l, REF_reftype(null_1?{null_1 <- `null_1?`}, ht_1), REF_reftype(null_2?{null_2 <- `null_2?`}, ht_2))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:179.5-179.39
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:71.5-71.36
+  prod{x : idx} {{0x20} {x:Blocalidx}} => LOCAL.GET_instr(x)
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:72.5-72.36
+  prod{x : idx} {{0x21} {x:Blocalidx}} => LOCAL.SET_instr(x)
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:73.5-73.36
+  prod{x : idx} {{0x22} {x:Blocalidx}} => LOCAL.TEE_instr(x)
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:77.5-77.38
+  prod{x : idx} {{0x23} {x:Bglobalidx}} => GLOBAL.GET_instr(x)
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:78.5-78.38
+  prod{x : idx} {{0x24} {x:Bglobalidx}} => GLOBAL.SET_instr(x)
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:85.5-85.36
+  prod{x : idx} {{0x25} {x:Btableidx}} => TABLE.GET_instr(x)
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:86.5-86.36
+  prod{x : idx} {{0x26} {x:Btableidx}} => TABLE.SET_instr(x)
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:87.5-87.58
+  prod{y : idx, x : idx} {{0xFC} {`%`_u32(12):Bu32} {y:Belemidx} {x:Btableidx}} => TABLE.INIT_instr(x, y)
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:88.5-88.43
+  prod{x : idx} {{0xFC} {`%`_u32(13):Bu32} {x:Belemidx}} => ELEM.DROP_instr(x)
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:89.5-89.67
+  prod{x_1 : idx, x_2 : idx} {{0xFC} {`%`_u32(14):Bu32} {x_1:Btableidx} {x_2:Btableidx}} => TABLE.COPY_instr(x_1, x_2)
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:90.5-90.45
+  prod{x : idx} {{0xFC} {`%`_u32(15):Bu32} {x:Btableidx}} => TABLE.GROW_instr(x)
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:91.5-91.45
+  prod{x : idx} {{0xFC} {`%`_u32(16):Bu32} {x:Btableidx}} => TABLE.SIZE_instr(x)
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:92.5-92.45
+  prod{x : idx} {{0xFC} {`%`_u32(17):Bu32} {x:Btableidx}} => TABLE.FILL_instr(x)
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:105.5-105.41
+  prod{x : idx, ao : memarg} {{0x28} {(x, ao):Bmemarg}} => LOAD_instr(I32_numtype, ?(), x, ao)
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:106.5-106.41
+  prod{x : idx, ao : memarg} {{0x29} {(x, ao):Bmemarg}} => LOAD_instr(I64_numtype, ?(), x, ao)
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:107.5-107.41
+  prod{x : idx, ao : memarg} {{0x2A} {(x, ao):Bmemarg}} => LOAD_instr(F32_numtype, ?(), x, ao)
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:108.5-108.41
+  prod{x : idx, ao : memarg} {{0x2B} {(x, ao):Bmemarg}} => LOAD_instr(F64_numtype, ?(), x, ao)
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:109.5-109.50
+  prod{x : idx, ao : memarg} {{0x2C} {(x, ao):Bmemarg}} => LOAD_instr(I32_numtype, ?(mk_loadop__0_loadop_(I32_Inn, `%_%`_loadop_Inn(`%`_sz(8), S_sx))), x, ao)
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:110.5-110.50
+  prod{x : idx, ao : memarg} {{0x2D} {(x, ao):Bmemarg}} => LOAD_instr(I32_numtype, ?(mk_loadop__0_loadop_(I32_Inn, `%_%`_loadop_Inn(`%`_sz(8), U_sx))), x, ao)
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:111.5-111.51
+  prod{x : idx, ao : memarg} {{0x2E} {(x, ao):Bmemarg}} => LOAD_instr(I32_numtype, ?(mk_loadop__0_loadop_(I32_Inn, `%_%`_loadop_Inn(`%`_sz(16), S_sx))), x, ao)
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:112.5-112.51
+  prod{x : idx, ao : memarg} {{0x2F} {(x, ao):Bmemarg}} => LOAD_instr(I32_numtype, ?(mk_loadop__0_loadop_(I32_Inn, `%_%`_loadop_Inn(`%`_sz(16), U_sx))), x, ao)
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:113.5-113.50
+  prod{x : idx, ao : memarg} {{0x30} {(x, ao):Bmemarg}} => LOAD_instr(I64_numtype, ?(mk_loadop__0_loadop_(I64_Inn, `%_%`_loadop_Inn(`%`_sz(8), S_sx))), x, ao)
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:114.5-114.50
+  prod{x : idx, ao : memarg} {{0x31} {(x, ao):Bmemarg}} => LOAD_instr(I64_numtype, ?(mk_loadop__0_loadop_(I64_Inn, `%_%`_loadop_Inn(`%`_sz(8), U_sx))), x, ao)
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:115.5-115.51
+  prod{x : idx, ao : memarg} {{0x32} {(x, ao):Bmemarg}} => LOAD_instr(I64_numtype, ?(mk_loadop__0_loadop_(I64_Inn, `%_%`_loadop_Inn(`%`_sz(16), S_sx))), x, ao)
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:116.5-116.51
+  prod{x : idx, ao : memarg} {{0x33} {(x, ao):Bmemarg}} => LOAD_instr(I64_numtype, ?(mk_loadop__0_loadop_(I64_Inn, `%_%`_loadop_Inn(`%`_sz(16), U_sx))), x, ao)
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:117.5-117.51
+  prod{x : idx, ao : memarg} {{0x34} {(x, ao):Bmemarg}} => LOAD_instr(I64_numtype, ?(mk_loadop__0_loadop_(I64_Inn, `%_%`_loadop_Inn(`%`_sz(32), S_sx))), x, ao)
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:118.5-118.51
+  prod{x : idx, ao : memarg} {{0x35} {(x, ao):Bmemarg}} => LOAD_instr(I64_numtype, ?(mk_loadop__0_loadop_(I64_Inn, `%_%`_loadop_Inn(`%`_sz(32), U_sx))), x, ao)
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:119.5-119.42
+  prod{x : idx, ao : memarg} {{0x36} {(x, ao):Bmemarg}} => STORE_instr(I32_numtype, ?(), x, ao)
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:120.5-120.42
+  prod{x : idx, ao : memarg} {{0x37} {(x, ao):Bmemarg}} => STORE_instr(I64_numtype, ?(), x, ao)
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:121.5-121.42
+  prod{x : idx, ao : memarg} {{0x38} {(x, ao):Bmemarg}} => STORE_instr(F32_numtype, ?(), x, ao)
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:122.5-122.42
+  prod{x : idx, ao : memarg} {{0x39} {(x, ao):Bmemarg}} => STORE_instr(F64_numtype, ?(), x, ao)
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:123.5-123.45
+  prod{x : idx, ao : memarg} {{0x3A} {(x, ao):Bmemarg}} => STORE_instr(I32_numtype, ?(mk_storeop__0_storeop_(I32_Inn, `%`_storeop_Inn(`%`_sz(8)))), x, ao)
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:124.5-124.46
+  prod{x : idx, ao : memarg} {{0x3B} {(x, ao):Bmemarg}} => STORE_instr(I32_numtype, ?(mk_storeop__0_storeop_(I32_Inn, `%`_storeop_Inn(`%`_sz(16)))), x, ao)
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:125.5-125.45
+  prod{x : idx, ao : memarg} {{0x3C} {(x, ao):Bmemarg}} => STORE_instr(I64_numtype, ?(mk_storeop__0_storeop_(I64_Inn, `%`_storeop_Inn(`%`_sz(8)))), x, ao)
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:126.5-126.46
+  prod{x : idx, ao : memarg} {{0x3D} {(x, ao):Bmemarg}} => STORE_instr(I64_numtype, ?(mk_storeop__0_storeop_(I64_Inn, `%`_storeop_Inn(`%`_sz(16)))), x, ao)
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:127.5-127.46
+  prod{x : idx, ao : memarg} {{0x3E} {(x, ao):Bmemarg}} => STORE_instr(I64_numtype, ?(mk_storeop__0_storeop_(I64_Inn, `%`_storeop_Inn(`%`_sz(32)))), x, ao)
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:128.5-128.36
+  prod{x : idx} {{0x3F} {x:Bmemidx}} => MEMORY.SIZE_instr(x)
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:129.5-129.36
+  prod{x : idx} {{0x40} {x:Bmemidx}} => MEMORY.GROW_instr(x)
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:130.5-130.56
+  prod{y : idx, x : idx} {{0xFC} {`%`_u32(8):Bu32} {y:Bdataidx} {x:Bmemidx}} => MEMORY.INIT_instr(x, y)
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:131.5-131.42
+  prod{x : idx} {{0xFC} {`%`_u32(9):Bu32} {x:Bdataidx}} => DATA.DROP_instr(x)
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:132.5-132.64
+  prod{x_1 : idx, x_2 : idx} {{0xFC} {`%`_u32(10):Bu32} {x_1:Bmemidx} {x_2:Bmemidx}} => MEMORY.COPY_instr(x_1, x_2)
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:133.5-133.44
+  prod{x : idx} {{0xFC} {`%`_u32(11):Bu32} {x:Bmemidx}} => MEMORY.FILL_instr(x)
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:140.5-140.37
+  prod{ht : heaptype} {{0xD0} {ht:Bheaptype}} => REF.NULL_instr(ht)
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:141.5-141.24
+  prod 0xD1 => REF.IS_NULL_instr
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:142.5-142.34
+  prod{x : idx} {{0xD2} {x:Bfuncidx}} => REF.FUNC_instr(x)
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:143.5-143.19
+  prod 0xD3 => REF.EQ_instr
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:144.5-144.28
+  prod 0xD4 => REF.AS_NON_NULL_instr
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:145.5-145.51
+  prod{ht : heaptype} {{0xFB} {`%`_u32(20):Bu32} {ht:Bheaptype}} => REF.TEST_instr(REF_reftype(?(), ht))
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:146.5-146.56
+  prod{ht : heaptype} {{0xFB} {`%`_u32(21):Bu32} {ht:Bheaptype}} => REF.TEST_instr(REF_reftype(?(NULL_null), ht))
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:147.5-147.51
+  prod{ht : heaptype} {{0xFB} {`%`_u32(22):Bu32} {ht:Bheaptype}} => REF.CAST_instr(REF_reftype(?(), ht))
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:148.5-148.56
+  prod{ht : heaptype} {{0xFB} {`%`_u32(23):Bu32} {ht:Bheaptype}} => REF.CAST_instr(REF_reftype(?(NULL_null), ht))
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:152.5-152.43
+  prod{x : idx} {{0xFB} {`%`_u32(0):Bu32} {x:Btypeidx}} => STRUCT.NEW_instr(x)
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:153.5-153.51
+  prod{x : idx} {{0xFB} {`%`_u32(1):Bu32} {x:Btypeidx}} => STRUCT.NEW_DEFAULT_instr(x)
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:154.5-154.52
+  prod{x : idx, i : u32} {{0xFB} {`%`_u32(2):Bu32} {x:Btypeidx} {i:Bu32}} => STRUCT.GET_instr(?(), x, i)
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:155.5-155.54
+  prod{x : idx, i : u32} {{0xFB} {`%`_u32(3):Bu32} {x:Btypeidx} {i:Bu32}} => STRUCT.GET_instr(?(S_sx), x, i)
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:156.5-156.54
+  prod{x : idx, i : u32} {{0xFB} {`%`_u32(4):Bu32} {x:Btypeidx} {i:Bu32}} => STRUCT.GET_instr(?(U_sx), x, i)
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:157.5-157.52
+  prod{x : idx, i : u32} {{0xFB} {`%`_u32(5):Bu32} {x:Btypeidx} {i:Bu32}} => STRUCT.SET_instr(x, i)
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:161.5-161.42
+  prod{x : idx} {{0xFB} {`%`_u32(6):Bu32} {x:Btypeidx}} => ARRAY.NEW_instr(x)
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:162.5-162.50
+  prod{x : idx} {{0xFB} {`%`_u32(7):Bu32} {x:Btypeidx}} => ARRAY.NEW_DEFAULT_instr(x)
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:163.5-163.57
+  prod{x : idx, n : n} {{0xFB} {`%`_u32(8):Bu32} {x:Btypeidx} {`%`_u32(n):Bu32}} => ARRAY.NEW_FIXED_instr(x, `%`_u32(n))
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:164.5-164.60
+  prod{x : idx, y : idx} {{0xFB} {`%`_u32(9):Bu32} {x:Btypeidx} {y:Bdataidx}} => ARRAY.NEW_DATA_instr(x, y)
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:165.5-165.61
+  prod{x : idx, y : idx} {{0xFB} {`%`_u32(10):Bu32} {x:Btypeidx} {y:Belemidx}} => ARRAY.NEW_ELEM_instr(x, y)
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:166.5-166.43
+  prod{x : idx} {{0xFB} {`%`_u32(11):Bu32} {x:Btypeidx}} => ARRAY.GET_instr(?(), x)
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:167.5-167.45
+  prod{x : idx} {{0xFB} {`%`_u32(12):Bu32} {x:Btypeidx}} => ARRAY.GET_instr(?(S_sx), x)
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:168.5-168.45
+  prod{x : idx} {{0xFB} {`%`_u32(13):Bu32} {x:Btypeidx}} => ARRAY.GET_instr(?(U_sx), x)
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:169.5-169.43
+  prod{x : idx} {{0xFB} {`%`_u32(14):Bu32} {x:Btypeidx}} => ARRAY.SET_instr(x)
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:170.5-170.30
+  prod {{0xFB} {`%`_u32(15):Bu32}} => ARRAY.LEN_instr
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:171.5-171.44
+  prod{x : idx} {{0xFB} {`%`_u32(16):Bu32} {x:Btypeidx}} => ARRAY.FILL_instr(x)
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:172.5-172.65
+  prod{x_1 : idx, x_2 : idx} {{0xFB} {`%`_u32(17):Bu32} {x_1:Btypeidx} {x_2:Btypeidx}} => ARRAY.COPY_instr(x_1, x_2)
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:173.5-173.62
+  prod{x : idx, y : idx} {{0xFB} {`%`_u32(18):Bu32} {x:Btypeidx} {y:Bdataidx}} => ARRAY.INIT_DATA_instr(x, y)
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:174.5-174.62
+  prod{x : idx, y : idx} {{0xFB} {`%`_u32(19):Bu32} {x:Btypeidx} {y:Belemidx}} => ARRAY.INIT_ELEM_instr(x, y)
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:178.5-178.39
   prod {{0xFB} {`%`_u32(26):Bu32}} => ANY.CONVERT_EXTERN_instr
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:180.5-180.39
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:179.5-179.39
   prod {{0xFB} {`%`_u32(27):Bu32}} => EXTERN.CONVERT_ANY_instr
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:184.5-184.28
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:183.5-183.28
   prod {{0xFB} {`%`_u32(28):Bu32}} => REF.I31_instr
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:185.5-185.30
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:184.5-184.30
   prod {{0xFB} {`%`_u32(29):Bu32}} => I31.GET_instr(S_sx)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:186.5-186.30
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:185.5-185.30
   prod {{0xFB} {`%`_u32(30):Bu32}} => I31.GET_instr(U_sx)
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:192.5-192.31
+  prod{i : i32} {{0x41} {i:Bi32}} => CONST_instr(I32_numtype, mk_num__0_num_(I32_Inn, i))
   ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:193.5-193.31
-  prod{n : n} {{0x41} {`%`_u32(n):Bu32}} => CONST_instr(I32_numtype, mk_num__0_num_(I32_Inn, `%`_uN(n)))
+  prod{i : i64} {{0x42} {i:Bi64}} => CONST_instr(I64_numtype, mk_num__0_num_(I64_Inn, i))
   ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:194.5-194.31
-  prod{n : n} {{0x42} {`%`_u64(n):Bu64}} => CONST_instr(I64_numtype, mk_num__0_num_(I64_Inn, `%`_uN(n)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:195.5-195.31
   prod{p : f32} {{0x43} {p:Bf32}} => CONST_instr(F32_numtype, mk_num__1_num_(F32_Fnn, p))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:196.5-196.31
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:195.5-195.31
   prod{p : f64} {{0x44} {p:Bf64}} => CONST_instr(F64_numtype, mk_num__1_num_(F64_Fnn, p))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:200.5-200.27
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:199.5-199.27
   prod 0x45 => TESTOP_instr(I32_numtype, mk_testop__0_testop_(I32_Inn, EQZ_testop_Inn))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:204.5-204.25
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:203.5-203.25
   prod 0x46 => RELOP_instr(I32_numtype, mk_relop__0_relop_(I32_Inn, EQ_relop_Inn))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:205.5-205.25
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:204.5-204.25
   prod 0x47 => RELOP_instr(I32_numtype, mk_relop__0_relop_(I32_Inn, NE_relop_Inn))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:206.5-206.27
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:205.5-205.27
   prod 0x48 => RELOP_instr(I32_numtype, mk_relop__0_relop_(I32_Inn, LT_relop_Inn(S_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:207.5-207.27
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:206.5-206.27
   prod 0x49 => RELOP_instr(I32_numtype, mk_relop__0_relop_(I32_Inn, LT_relop_Inn(U_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:208.5-208.27
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:207.5-207.27
   prod 0x4A => RELOP_instr(I32_numtype, mk_relop__0_relop_(I32_Inn, GT_relop_Inn(S_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:209.5-209.27
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:208.5-208.27
   prod 0x4B => RELOP_instr(I32_numtype, mk_relop__0_relop_(I32_Inn, GT_relop_Inn(U_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:210.5-210.27
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:209.5-209.27
   prod 0x4C => RELOP_instr(I32_numtype, mk_relop__0_relop_(I32_Inn, LE_relop_Inn(S_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:211.5-211.27
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:210.5-210.27
   prod 0x4D => RELOP_instr(I32_numtype, mk_relop__0_relop_(I32_Inn, LE_relop_Inn(U_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:212.5-212.27
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:211.5-211.27
   prod 0x4E => RELOP_instr(I32_numtype, mk_relop__0_relop_(I32_Inn, GE_relop_Inn(S_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:213.5-213.27
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:212.5-212.27
   prod 0x4F => RELOP_instr(I32_numtype, mk_relop__0_relop_(I32_Inn, GE_relop_Inn(U_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:217.5-217.27
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:216.5-216.27
   prod 0x50 => TESTOP_instr(I64_numtype, mk_testop__0_testop_(I64_Inn, EQZ_testop_Inn))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:221.5-221.25
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:220.5-220.25
   prod 0x51 => RELOP_instr(I64_numtype, mk_relop__0_relop_(I64_Inn, EQ_relop_Inn))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:222.5-222.25
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:221.5-221.25
   prod 0x52 => RELOP_instr(I64_numtype, mk_relop__0_relop_(I64_Inn, NE_relop_Inn))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:223.5-223.27
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:222.5-222.27
   prod 0x53 => RELOP_instr(I64_numtype, mk_relop__0_relop_(I64_Inn, LT_relop_Inn(S_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:224.5-224.27
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:223.5-223.27
   prod 0x54 => RELOP_instr(I64_numtype, mk_relop__0_relop_(I64_Inn, LT_relop_Inn(U_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:225.5-225.27
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:224.5-224.27
   prod 0x55 => RELOP_instr(I64_numtype, mk_relop__0_relop_(I64_Inn, GT_relop_Inn(S_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:226.5-226.27
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:225.5-225.27
   prod 0x56 => RELOP_instr(I64_numtype, mk_relop__0_relop_(I64_Inn, GT_relop_Inn(U_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:227.5-227.27
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:226.5-226.27
   prod 0x57 => RELOP_instr(I64_numtype, mk_relop__0_relop_(I64_Inn, LE_relop_Inn(S_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:228.5-228.27
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:227.5-227.27
   prod 0x58 => RELOP_instr(I64_numtype, mk_relop__0_relop_(I64_Inn, LE_relop_Inn(U_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:229.5-229.27
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:228.5-228.27
   prod 0x59 => RELOP_instr(I64_numtype, mk_relop__0_relop_(I64_Inn, GE_relop_Inn(S_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:230.5-230.27
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:229.5-229.27
   prod 0x5A => RELOP_instr(I64_numtype, mk_relop__0_relop_(I64_Inn, GE_relop_Inn(U_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:234.5-234.25
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:233.5-233.25
   prod 0x5B => RELOP_instr(F32_numtype, mk_relop__1_relop_(F32_Fnn, EQ_relop_Fnn))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:235.5-235.25
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:234.5-234.25
   prod 0x5C => RELOP_instr(F32_numtype, mk_relop__1_relop_(F32_Fnn, NE_relop_Fnn))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:236.5-236.25
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:235.5-235.25
   prod 0x5D => RELOP_instr(F32_numtype, mk_relop__1_relop_(F32_Fnn, LT_relop_Fnn))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:237.5-237.25
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:236.5-236.25
   prod 0x5E => RELOP_instr(F32_numtype, mk_relop__1_relop_(F32_Fnn, GT_relop_Fnn))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:238.5-238.25
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:237.5-237.25
   prod 0x5F => RELOP_instr(F32_numtype, mk_relop__1_relop_(F32_Fnn, LE_relop_Fnn))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:239.5-239.25
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:238.5-238.25
   prod 0x60 => RELOP_instr(F32_numtype, mk_relop__1_relop_(F32_Fnn, GE_relop_Fnn))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:243.5-243.25
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:242.5-242.25
   prod 0x61 => RELOP_instr(F64_numtype, mk_relop__1_relop_(F64_Fnn, EQ_relop_Fnn))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:244.5-244.25
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:243.5-243.25
   prod 0x62 => RELOP_instr(F64_numtype, mk_relop__1_relop_(F64_Fnn, NE_relop_Fnn))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:245.5-245.25
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:244.5-244.25
   prod 0x63 => RELOP_instr(F64_numtype, mk_relop__1_relop_(F64_Fnn, LT_relop_Fnn))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:246.5-246.25
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:245.5-245.25
   prod 0x64 => RELOP_instr(F64_numtype, mk_relop__1_relop_(F64_Fnn, GT_relop_Fnn))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:247.5-247.25
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:246.5-246.25
   prod 0x65 => RELOP_instr(F64_numtype, mk_relop__1_relop_(F64_Fnn, LE_relop_Fnn))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:248.5-248.25
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:247.5-247.25
   prod 0x66 => RELOP_instr(F64_numtype, mk_relop__1_relop_(F64_Fnn, GE_relop_Fnn))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:252.5-252.25
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:251.5-251.25
   prod 0x67 => UNOP_instr(I32_numtype, mk_unop__0_unop_(I32_Inn, CLZ_unop_Inn))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:253.5-253.25
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:252.5-252.25
   prod 0x68 => UNOP_instr(I32_numtype, mk_unop__0_unop_(I32_Inn, CTZ_unop_Inn))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:254.5-254.28
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:253.5-253.28
   prod 0x69 => UNOP_instr(I32_numtype, mk_unop__0_unop_(I32_Inn, POPCNT_unop_Inn))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:258.5-258.26
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:257.5-257.26
   prod 0x6A => BINOP_instr(I32_numtype, mk_binop__0_binop_(I32_Inn, ADD_binop_Inn))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:259.5-259.26
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:258.5-258.26
   prod 0x6B => BINOP_instr(I32_numtype, mk_binop__0_binop_(I32_Inn, SUB_binop_Inn))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:260.5-260.26
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:259.5-259.26
   prod 0x6C => BINOP_instr(I32_numtype, mk_binop__0_binop_(I32_Inn, MUL_binop_Inn))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:261.5-261.28
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:260.5-260.28
   prod 0x6D => BINOP_instr(I32_numtype, mk_binop__0_binop_(I32_Inn, DIV_binop_Inn(S_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:262.5-262.28
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:261.5-261.28
   prod 0x6E => BINOP_instr(I32_numtype, mk_binop__0_binop_(I32_Inn, DIV_binop_Inn(U_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:263.5-263.28
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:262.5-262.28
   prod 0x6F => BINOP_instr(I32_numtype, mk_binop__0_binop_(I32_Inn, REM_binop_Inn(S_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:264.5-264.28
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:263.5-263.28
   prod 0x70 => BINOP_instr(I32_numtype, mk_binop__0_binop_(I32_Inn, REM_binop_Inn(U_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:265.5-265.26
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:264.5-264.26
   prod 0x71 => BINOP_instr(I32_numtype, mk_binop__0_binop_(I32_Inn, AND_binop_Inn))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:266.5-266.25
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:265.5-265.25
   prod 0x72 => BINOP_instr(I32_numtype, mk_binop__0_binop_(I32_Inn, OR_binop_Inn))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:267.5-267.26
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:266.5-266.26
   prod 0x73 => BINOP_instr(I32_numtype, mk_binop__0_binop_(I32_Inn, XOR_binop_Inn))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:268.5-268.26
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:267.5-267.26
   prod 0x74 => BINOP_instr(I32_numtype, mk_binop__0_binop_(I32_Inn, SHL_binop_Inn))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:269.5-269.28
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:268.5-268.28
   prod 0x75 => BINOP_instr(I32_numtype, mk_binop__0_binop_(I32_Inn, SHR_binop_Inn(S_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:270.5-270.28
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:269.5-269.28
   prod 0x76 => BINOP_instr(I32_numtype, mk_binop__0_binop_(I32_Inn, SHR_binop_Inn(U_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:271.5-271.27
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:270.5-270.27
   prod 0x77 => BINOP_instr(I32_numtype, mk_binop__0_binop_(I32_Inn, ROTL_binop_Inn))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:272.5-272.27
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:271.5-271.27
   prod 0x78 => BINOP_instr(I32_numtype, mk_binop__0_binop_(I32_Inn, ROTR_binop_Inn))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:276.5-276.25
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:275.5-275.25
   prod 0x79 => UNOP_instr(I64_numtype, mk_unop__0_unop_(I64_Inn, CLZ_unop_Inn))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:277.5-277.25
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:276.5-276.25
   prod 0x7A => UNOP_instr(I64_numtype, mk_unop__0_unop_(I64_Inn, CTZ_unop_Inn))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:278.5-278.28
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:277.5-277.28
   prod 0x7B => UNOP_instr(I64_numtype, mk_unop__0_unop_(I64_Inn, POPCNT_unop_Inn))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:282.5-282.31
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:281.5-281.31
   prod 0xC0 => UNOP_instr(I32_numtype, mk_unop__0_unop_(I32_Inn, EXTEND_unop_Inn(`%`_sz(8))))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:283.5-283.32
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:282.5-282.32
   prod 0xC1 => UNOP_instr(I32_numtype, mk_unop__0_unop_(I32_Inn, EXTEND_unop_Inn(`%`_sz(16))))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:287.5-287.31
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:286.5-286.31
   prod 0xC2 => UNOP_instr(I64_numtype, mk_unop__0_unop_(I64_Inn, EXTEND_unop_Inn(`%`_sz(8))))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:288.5-288.32
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:287.5-287.32
   prod 0xC3 => UNOP_instr(I64_numtype, mk_unop__0_unop_(I64_Inn, EXTEND_unop_Inn(`%`_sz(16))))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:289.5-289.32
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:288.5-288.32
   prod 0xC4 => UNOP_instr(I64_numtype, mk_unop__0_unop_(I64_Inn, EXTEND_unop_Inn(`%`_sz(32))))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:293.5-293.26
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:292.5-292.26
   prod 0x7C => BINOP_instr(I64_numtype, mk_binop__0_binop_(I64_Inn, ADD_binop_Inn))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:294.5-294.26
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:293.5-293.26
   prod 0x7D => BINOP_instr(I64_numtype, mk_binop__0_binop_(I64_Inn, SUB_binop_Inn))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:295.5-295.26
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:294.5-294.26
   prod 0x7E => BINOP_instr(I64_numtype, mk_binop__0_binop_(I64_Inn, MUL_binop_Inn))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:296.5-296.28
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:295.5-295.28
   prod 0x7F => BINOP_instr(I64_numtype, mk_binop__0_binop_(I64_Inn, DIV_binop_Inn(S_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:297.5-297.28
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:296.5-296.28
   prod 0x80 => BINOP_instr(I64_numtype, mk_binop__0_binop_(I64_Inn, DIV_binop_Inn(U_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:298.5-298.28
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:297.5-297.28
   prod 0x81 => BINOP_instr(I64_numtype, mk_binop__0_binop_(I64_Inn, REM_binop_Inn(S_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:299.5-299.28
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:298.5-298.28
   prod 0x82 => BINOP_instr(I64_numtype, mk_binop__0_binop_(I64_Inn, REM_binop_Inn(U_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:300.5-300.26
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:299.5-299.26
   prod 0x83 => BINOP_instr(I64_numtype, mk_binop__0_binop_(I64_Inn, AND_binop_Inn))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:301.5-301.25
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:300.5-300.25
   prod 0x84 => BINOP_instr(I64_numtype, mk_binop__0_binop_(I64_Inn, OR_binop_Inn))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:302.5-302.26
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:301.5-301.26
   prod 0x85 => BINOP_instr(I64_numtype, mk_binop__0_binop_(I64_Inn, XOR_binop_Inn))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:303.5-303.26
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:302.5-302.26
   prod 0x86 => BINOP_instr(I64_numtype, mk_binop__0_binop_(I64_Inn, SHL_binop_Inn))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:304.5-304.28
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:303.5-303.28
   prod 0x87 => BINOP_instr(I64_numtype, mk_binop__0_binop_(I64_Inn, SHR_binop_Inn(S_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:305.5-305.28
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:304.5-304.28
   prod 0x88 => BINOP_instr(I64_numtype, mk_binop__0_binop_(I64_Inn, SHR_binop_Inn(U_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:306.5-306.27
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:305.5-305.27
   prod 0x89 => BINOP_instr(I64_numtype, mk_binop__0_binop_(I64_Inn, ROTL_binop_Inn))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:307.5-307.27
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:306.5-306.27
   prod 0x8A => BINOP_instr(I64_numtype, mk_binop__0_binop_(I64_Inn, ROTR_binop_Inn))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:311.5-311.25
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:310.5-310.25
   prod 0x8B => UNOP_instr(F32_numtype, mk_unop__1_unop_(F32_Fnn, ABS_unop_Fnn))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:312.5-312.25
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:311.5-311.25
   prod 0x8C => UNOP_instr(F32_numtype, mk_unop__1_unop_(F32_Fnn, NEG_unop_Fnn))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:313.5-313.26
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:312.5-312.26
   prod 0x8D => UNOP_instr(F32_numtype, mk_unop__1_unop_(F32_Fnn, CEIL_unop_Fnn))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:314.5-314.27
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:313.5-313.27
   prod 0x8E => UNOP_instr(F32_numtype, mk_unop__1_unop_(F32_Fnn, FLOOR_unop_Fnn))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:315.5-315.27
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:314.5-314.27
   prod 0x8F => UNOP_instr(F32_numtype, mk_unop__1_unop_(F32_Fnn, TRUNC_unop_Fnn))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:316.5-316.29
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:315.5-315.29
   prod 0x90 => UNOP_instr(F32_numtype, mk_unop__1_unop_(F32_Fnn, NEAREST_unop_Fnn))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:317.5-317.26
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:316.5-316.26
   prod 0x91 => UNOP_instr(F32_numtype, mk_unop__1_unop_(F32_Fnn, SQRT_unop_Fnn))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:321.5-321.26
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:320.5-320.26
   prod 0x92 => BINOP_instr(F32_numtype, mk_binop__1_binop_(F32_Fnn, ADD_binop_Fnn))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:322.5-322.26
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:321.5-321.26
   prod 0x93 => BINOP_instr(F32_numtype, mk_binop__1_binop_(F32_Fnn, SUB_binop_Fnn))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:323.5-323.26
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:322.5-322.26
   prod 0x94 => BINOP_instr(F32_numtype, mk_binop__1_binop_(F32_Fnn, MUL_binop_Fnn))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:324.5-324.26
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:323.5-323.26
   prod 0x95 => BINOP_instr(F32_numtype, mk_binop__1_binop_(F32_Fnn, DIV_binop_Fnn))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:325.5-325.26
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:324.5-324.26
   prod 0x96 => BINOP_instr(F32_numtype, mk_binop__1_binop_(F32_Fnn, MIN_binop_Fnn))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:326.5-326.26
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:325.5-325.26
   prod 0x97 => BINOP_instr(F32_numtype, mk_binop__1_binop_(F32_Fnn, MAX_binop_Fnn))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:327.5-327.31
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:326.5-326.31
   prod 0x98 => BINOP_instr(F32_numtype, mk_binop__1_binop_(F32_Fnn, COPYSIGN_binop_Fnn))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:331.5-331.25
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:330.5-330.25
   prod 0x99 => UNOP_instr(F64_numtype, mk_unop__1_unop_(F64_Fnn, ABS_unop_Fnn))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:332.5-332.25
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:331.5-331.25
   prod 0x9A => UNOP_instr(F64_numtype, mk_unop__1_unop_(F64_Fnn, NEG_unop_Fnn))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:333.5-333.26
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:332.5-332.26
   prod 0x9B => UNOP_instr(F64_numtype, mk_unop__1_unop_(F64_Fnn, CEIL_unop_Fnn))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:334.5-334.27
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:333.5-333.27
   prod 0x9C => UNOP_instr(F64_numtype, mk_unop__1_unop_(F64_Fnn, FLOOR_unop_Fnn))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:335.5-335.27
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:334.5-334.27
   prod 0x9D => UNOP_instr(F64_numtype, mk_unop__1_unop_(F64_Fnn, TRUNC_unop_Fnn))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:336.5-336.29
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:335.5-335.29
   prod 0x9E => UNOP_instr(F64_numtype, mk_unop__1_unop_(F64_Fnn, NEAREST_unop_Fnn))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:337.5-337.26
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:336.5-336.26
   prod 0x9F => UNOP_instr(F64_numtype, mk_unop__1_unop_(F64_Fnn, SQRT_unop_Fnn))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:341.5-341.26
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:340.5-340.26
   prod 0xA0 => BINOP_instr(F64_numtype, mk_binop__1_binop_(F64_Fnn, ADD_binop_Fnn))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:342.5-342.26
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:341.5-341.26
   prod 0xA1 => BINOP_instr(F64_numtype, mk_binop__1_binop_(F64_Fnn, SUB_binop_Fnn))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:343.5-343.26
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:342.5-342.26
   prod 0xA2 => BINOP_instr(F64_numtype, mk_binop__1_binop_(F64_Fnn, MUL_binop_Fnn))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:344.5-344.26
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:343.5-343.26
   prod 0xA3 => BINOP_instr(F64_numtype, mk_binop__1_binop_(F64_Fnn, DIV_binop_Fnn))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:345.5-345.26
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:344.5-344.26
   prod 0xA4 => BINOP_instr(F64_numtype, mk_binop__1_binop_(F64_Fnn, MIN_binop_Fnn))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:346.5-346.26
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:345.5-345.26
   prod 0xA5 => BINOP_instr(F64_numtype, mk_binop__1_binop_(F64_Fnn, MAX_binop_Fnn))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:347.5-347.31
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:346.5-346.31
   prod 0xA6 => BINOP_instr(F64_numtype, mk_binop__1_binop_(F64_Fnn, COPYSIGN_binop_Fnn))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:352.5-352.31
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:351.5-351.31
   prod 0xA7 => CVTOP_instr(I32_numtype, I64_numtype, mk_cvtop___0_cvtop__(I64_Inn, I32_Inn, WRAP_cvtop__Inn_1_Inn_2))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:353.5-353.34
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:352.5-352.34
   prod 0xA8 => CVTOP_instr(I32_numtype, F32_numtype, mk_cvtop___2_cvtop__(F32_Fnn, I32_Inn, TRUNC_cvtop__Fnn_1_Inn_2(S_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:354.5-354.34
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:353.5-353.34
   prod 0xA9 => CVTOP_instr(I32_numtype, F32_numtype, mk_cvtop___2_cvtop__(F32_Fnn, I32_Inn, TRUNC_cvtop__Fnn_1_Inn_2(U_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:355.5-355.34
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:354.5-354.34
   prod 0xAA => CVTOP_instr(I32_numtype, F64_numtype, mk_cvtop___2_cvtop__(F64_Fnn, I32_Inn, TRUNC_cvtop__Fnn_1_Inn_2(S_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:356.5-356.34
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:355.5-355.34
   prod 0xAB => CVTOP_instr(I32_numtype, F64_numtype, mk_cvtop___2_cvtop__(F64_Fnn, I32_Inn, TRUNC_cvtop__Fnn_1_Inn_2(U_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:357.5-357.35
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:356.5-356.35
   prod 0xAC => CVTOP_instr(I64_numtype, I32_numtype, mk_cvtop___0_cvtop__(I32_Inn, I64_Inn, EXTEND_cvtop__Inn_1_Inn_2(S_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:358.5-358.35
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:357.5-357.35
   prod 0xAD => CVTOP_instr(I64_numtype, I32_numtype, mk_cvtop___0_cvtop__(I32_Inn, I64_Inn, EXTEND_cvtop__Inn_1_Inn_2(U_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:359.5-359.34
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:358.5-358.34
   prod 0xAE => CVTOP_instr(I64_numtype, F32_numtype, mk_cvtop___2_cvtop__(F32_Fnn, I64_Inn, TRUNC_cvtop__Fnn_1_Inn_2(S_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:360.5-360.34
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:359.5-359.34
   prod 0xAF => CVTOP_instr(I64_numtype, F32_numtype, mk_cvtop___2_cvtop__(F32_Fnn, I64_Inn, TRUNC_cvtop__Fnn_1_Inn_2(U_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:361.5-361.34
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:360.5-360.34
   prod 0xB0 => CVTOP_instr(I64_numtype, F64_numtype, mk_cvtop___2_cvtop__(F64_Fnn, I64_Inn, TRUNC_cvtop__Fnn_1_Inn_2(S_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:362.5-362.34
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:361.5-361.34
   prod 0xB1 => CVTOP_instr(I64_numtype, F64_numtype, mk_cvtop___2_cvtop__(F64_Fnn, I64_Inn, TRUNC_cvtop__Fnn_1_Inn_2(U_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:363.5-363.36
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:362.5-362.36
   prod 0xB2 => CVTOP_instr(F32_numtype, I32_numtype, mk_cvtop___1_cvtop__(I32_Inn, F32_Fnn, CONVERT_cvtop__Inn_1_Fnn_2(S_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:364.5-364.36
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:363.5-363.36
   prod 0xB3 => CVTOP_instr(F32_numtype, I32_numtype, mk_cvtop___1_cvtop__(I32_Inn, F32_Fnn, CONVERT_cvtop__Inn_1_Fnn_2(U_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:365.5-365.36
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:364.5-364.36
   prod 0xB4 => CVTOP_instr(F32_numtype, I64_numtype, mk_cvtop___1_cvtop__(I64_Inn, F32_Fnn, CONVERT_cvtop__Inn_1_Fnn_2(S_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:366.5-366.36
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:365.5-365.36
   prod 0xB5 => CVTOP_instr(F32_numtype, I64_numtype, mk_cvtop___1_cvtop__(I64_Inn, F32_Fnn, CONVERT_cvtop__Inn_1_Fnn_2(U_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:367.5-367.33
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:366.5-366.33
   prod 0xB6 => CVTOP_instr(F32_numtype, F64_numtype, mk_cvtop___3_cvtop__(F64_Fnn, F32_Fnn, DEMOTE_cvtop__Fnn_1_Fnn_2))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:368.5-368.36
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:367.5-367.36
   prod 0xB7 => CVTOP_instr(F64_numtype, I32_numtype, mk_cvtop___1_cvtop__(I32_Inn, F64_Fnn, CONVERT_cvtop__Inn_1_Fnn_2(S_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:369.5-369.36
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:368.5-368.36
   prod 0xB8 => CVTOP_instr(F64_numtype, I32_numtype, mk_cvtop___1_cvtop__(I32_Inn, F64_Fnn, CONVERT_cvtop__Inn_1_Fnn_2(U_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:370.5-370.36
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:369.5-369.36
   prod 0xB9 => CVTOP_instr(F64_numtype, I64_numtype, mk_cvtop___1_cvtop__(I64_Inn, F64_Fnn, CONVERT_cvtop__Inn_1_Fnn_2(S_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:371.5-371.36
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:370.5-370.36
   prod 0xBA => CVTOP_instr(F64_numtype, I64_numtype, mk_cvtop___1_cvtop__(I64_Inn, F64_Fnn, CONVERT_cvtop__Inn_1_Fnn_2(U_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:372.5-372.34
-  prod 0xBB => CVTOP_instr(F32_numtype, F64_numtype, mk_cvtop___3_cvtop__(F64_Fnn, F32_Fnn, PROMOTE_cvtop__Fnn_1_Fnn_2))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:373.5-373.38
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:371.5-371.34
+  prod 0xBB => CVTOP_instr(F64_numtype, F32_numtype, mk_cvtop___3_cvtop__(F32_Fnn, F64_Fnn, PROMOTE_cvtop__Fnn_1_Fnn_2))
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:372.5-372.38
   prod 0xBC => CVTOP_instr(I32_numtype, F32_numtype, mk_cvtop___2_cvtop__(F32_Fnn, I32_Inn, REINTERPRET_cvtop__Fnn_1_Inn_2))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:374.5-374.38
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:373.5-373.38
   prod 0xBD => CVTOP_instr(I64_numtype, F64_numtype, mk_cvtop___2_cvtop__(F64_Fnn, I64_Inn, REINTERPRET_cvtop__Fnn_1_Inn_2))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:375.5-375.38
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:374.5-374.38
   prod 0xBE => CVTOP_instr(F32_numtype, I32_numtype, mk_cvtop___1_cvtop__(I32_Inn, F32_Fnn, REINTERPRET_cvtop__Inn_1_Fnn_2))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:376.5-376.38
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:375.5-375.38
   prod 0xBF => CVTOP_instr(F64_numtype, I64_numtype, mk_cvtop___1_cvtop__(I64_Inn, F64_Fnn, REINTERPRET_cvtop__Inn_1_Fnn_2))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:380.5-380.45
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:379.5-379.45
   prod {{0xFC} {`%`_u32(0):Bu32}} => CVTOP_instr(I32_numtype, F32_numtype, mk_cvtop___2_cvtop__(F32_Fnn, I32_Inn, TRUNC_SAT_cvtop__Fnn_1_Inn_2(S_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:381.5-381.45
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:380.5-380.45
   prod {{0xFC} {`%`_u32(1):Bu32}} => CVTOP_instr(I32_numtype, F32_numtype, mk_cvtop___2_cvtop__(F32_Fnn, I32_Inn, TRUNC_SAT_cvtop__Fnn_1_Inn_2(U_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:382.5-382.45
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:381.5-381.45
   prod {{0xFC} {`%`_u32(2):Bu32}} => CVTOP_instr(I32_numtype, F64_numtype, mk_cvtop___2_cvtop__(F64_Fnn, I32_Inn, TRUNC_SAT_cvtop__Fnn_1_Inn_2(S_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:383.5-383.45
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:382.5-382.45
   prod {{0xFC} {`%`_u32(3):Bu32}} => CVTOP_instr(I32_numtype, F64_numtype, mk_cvtop___2_cvtop__(F64_Fnn, I32_Inn, TRUNC_SAT_cvtop__Fnn_1_Inn_2(U_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:384.5-384.45
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:383.5-383.45
   prod {{0xFC} {`%`_u32(4):Bu32}} => CVTOP_instr(I64_numtype, F32_numtype, mk_cvtop___2_cvtop__(F32_Fnn, I64_Inn, TRUNC_SAT_cvtop__Fnn_1_Inn_2(S_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:385.5-385.45
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:384.5-384.45
   prod {{0xFC} {`%`_u32(5):Bu32}} => CVTOP_instr(I64_numtype, F32_numtype, mk_cvtop___2_cvtop__(F32_Fnn, I64_Inn, TRUNC_SAT_cvtop__Fnn_1_Inn_2(U_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:386.5-386.45
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:385.5-385.45
   prod {{0xFC} {`%`_u32(6):Bu32}} => CVTOP_instr(I64_numtype, F64_numtype, mk_cvtop___2_cvtop__(F64_Fnn, I64_Inn, TRUNC_SAT_cvtop__Fnn_1_Inn_2(S_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:387.5-387.45
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:386.5-386.45
   prod {{0xFC} {`%`_u32(7):Bu32}} => CVTOP_instr(I64_numtype, F64_numtype, mk_cvtop___2_cvtop__(F64_Fnn, I64_Inn, TRUNC_SAT_cvtop__Fnn_1_Inn_2(U_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:397.5-397.50
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:396.5-396.50
   prod{x : idx, ao : memarg} {{0xFD} {`%`_u32(0):Bu32} {(x, ao):Bmemarg}} => VLOAD_instr(V128_vectype, ?(), x, ao)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:398.5-398.70
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:397.5-397.70
   prod{x : idx, ao : memarg} {{0xFD} {`%`_u32(1):Bu32} {(x, ao):Bmemarg}} => VLOAD_instr(V128_vectype, ?(`SHAPE%X%_%`_vloadop_(`%`_sz(8), 8, S_sx)), x, ao)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:399.5-399.70
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:398.5-398.70
   prod{x : idx, ao : memarg} {{0xFD} {`%`_u32(2):Bu32} {(x, ao):Bmemarg}} => VLOAD_instr(V128_vectype, ?(`SHAPE%X%_%`_vloadop_(`%`_sz(8), 8, U_sx)), x, ao)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:400.5-400.71
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:399.5-399.71
   prod{x : idx, ao : memarg} {{0xFD} {`%`_u32(3):Bu32} {(x, ao):Bmemarg}} => VLOAD_instr(V128_vectype, ?(`SHAPE%X%_%`_vloadop_(`%`_sz(16), 4, S_sx)), x, ao)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:401.5-401.71
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:400.5-400.71
   prod{x : idx, ao : memarg} {{0xFD} {`%`_u32(4):Bu32} {(x, ao):Bmemarg}} => VLOAD_instr(V128_vectype, ?(`SHAPE%X%_%`_vloadop_(`%`_sz(16), 4, U_sx)), x, ao)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:402.5-402.71
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:401.5-401.71
   prod{x : idx, ao : memarg} {{0xFD} {`%`_u32(5):Bu32} {(x, ao):Bmemarg}} => VLOAD_instr(V128_vectype, ?(`SHAPE%X%_%`_vloadop_(`%`_sz(32), 2, S_sx)), x, ao)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:403.5-403.71
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:402.5-402.71
   prod{x : idx, ao : memarg} {{0xFD} {`%`_u32(6):Bu32} {(x, ao):Bmemarg}} => VLOAD_instr(V128_vectype, ?(`SHAPE%X%_%`_vloadop_(`%`_sz(32), 2, U_sx)), x, ao)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:404.5-404.61
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:403.5-403.61
   prod{x : idx, ao : memarg} {{0xFD} {`%`_u32(7):Bu32} {(x, ao):Bmemarg}} => VLOAD_instr(V128_vectype, ?(SPLAT_vloadop_(`%`_sz(8))), x, ao)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:405.5-405.62
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:404.5-404.62
   prod{x : idx, ao : memarg} {{0xFD} {`%`_u32(8):Bu32} {(x, ao):Bmemarg}} => VLOAD_instr(V128_vectype, ?(SPLAT_vloadop_(`%`_sz(16))), x, ao)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:406.5-406.62
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:405.5-405.62
   prod{x : idx, ao : memarg} {{0xFD} {`%`_u32(9):Bu32} {(x, ao):Bmemarg}} => VLOAD_instr(V128_vectype, ?(SPLAT_vloadop_(`%`_sz(32))), x, ao)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:407.5-407.63
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:406.5-406.63
   prod{x : idx, ao : memarg} {{0xFD} {`%`_u32(10):Bu32} {(x, ao):Bmemarg}} => VLOAD_instr(V128_vectype, ?(SPLAT_vloadop_(`%`_sz(64))), x, ao)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:408.5-408.52
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:407.5-407.52
   prod{x : idx, ao : memarg} {{0xFD} {`%`_u32(11):Bu32} {(x, ao):Bmemarg}} => VSTORE_instr(V128_vectype, x, ao)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:409.5-409.72
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:408.5-408.72
   prod{x : idx, ao : memarg, i : laneidx} {{0xFD} {`%`_u32(84):Bu32} {(x, ao):Bmemarg} {i:Blaneidx}} => VLOAD_LANE_instr(V128_vectype, `%`_sz(8), x, ao, i)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:410.5-410.73
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:409.5-409.73
   prod{x : idx, ao : memarg, i : laneidx} {{0xFD} {`%`_u32(85):Bu32} {(x, ao):Bmemarg} {i:Blaneidx}} => VLOAD_LANE_instr(V128_vectype, `%`_sz(16), x, ao, i)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:411.5-411.73
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:410.5-410.73
   prod{x : idx, ao : memarg, i : laneidx} {{0xFD} {`%`_u32(86):Bu32} {(x, ao):Bmemarg} {i:Blaneidx}} => VLOAD_LANE_instr(V128_vectype, `%`_sz(32), x, ao, i)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:412.5-412.73
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:411.5-411.73
   prod{x : idx, ao : memarg, i : laneidx} {{0xFD} {`%`_u32(87):Bu32} {(x, ao):Bmemarg} {i:Blaneidx}} => VLOAD_LANE_instr(V128_vectype, `%`_sz(64), x, ao, i)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:413.5-413.73
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:412.5-412.73
   prod{x : idx, ao : memarg, i : laneidx} {{0xFD} {`%`_u32(88):Bu32} {(x, ao):Bmemarg} {i:Blaneidx}} => VSTORE_LANE_instr(V128_vectype, `%`_sz(8), x, ao, i)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:414.5-414.74
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:413.5-413.74
   prod{x : idx, ao : memarg, i : laneidx} {{0xFD} {`%`_u32(89):Bu32} {(x, ao):Bmemarg} {i:Blaneidx}} => VSTORE_LANE_instr(V128_vectype, `%`_sz(16), x, ao, i)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:415.5-415.74
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:414.5-414.74
   prod{x : idx, ao : memarg, i : laneidx} {{0xFD} {`%`_u32(90):Bu32} {(x, ao):Bmemarg} {i:Blaneidx}} => VSTORE_LANE_instr(V128_vectype, `%`_sz(32), x, ao, i)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:416.5-416.74
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:415.5-415.74
   prod{x : idx, ao : memarg, i : laneidx} {{0xFD} {`%`_u32(91):Bu32} {(x, ao):Bmemarg} {i:Blaneidx}} => VSTORE_LANE_instr(V128_vectype, `%`_sz(64), x, ao, i)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:417.5-417.62
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:416.5-416.62
   prod{x : idx, ao : memarg} {{0xFD} {`%`_u32(92):Bu32} {(x, ao):Bmemarg}} => VLOAD_instr(V128_vectype, ?(ZERO_vloadop_(`%`_sz(32))), x, ao)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:418.5-418.62
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:417.5-417.62
   prod{x : idx, ao : memarg} {{0xFD} {`%`_u32(93):Bu32} {(x, ao):Bmemarg}} => VLOAD_instr(V128_vectype, ?(ZERO_vloadop_(`%`_sz(64))), x, ao)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:422.5-422.72
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:421.5-421.72
   prod{`b*` : byte*} {{0xFD} {`%`_u32(12):Bu32} {b:Bbyte^16{b <- `b*`}}} => VCONST_instr(V128_vectype, $inv_ibytes_(128, b^16{b <- `b*`}))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:426.5-426.61
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:425.5-425.61
   prod{`l*` : labelidx*} {{0xFD} {`%`_u32(13):Bu32} {`%`_laneidx($proj_uN_0(l).0):Blaneidx^16{l <- `l*`}}} => VSHUFFLE_instr(`%`_bshape(`%X%`_shape(I8_lanetype, `%`_dim(16))), `%`_laneidx($proj_uN_0(l).0)^16{l <- `l*`})
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:427.5-427.49
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:426.5-426.49
   prod {{0xFD} {`%`_u32(14):Bu32}} => VSWIZZLOP_instr(`%`_bshape(`%X%`_shape(I8_lanetype, `%`_dim(16))), mk_vswizzlop__0_vswizzlop_(16, SWIZZLE_vswizzlop_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:428.5-428.58
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:427.5-427.58
   prod {{0xFD} {`%`_u32(256):Bu32}} => VSWIZZLOP_instr(`%`_bshape(`%X%`_shape(I8_lanetype, `%`_dim(16))), mk_vswizzlop__0_vswizzlop_(16, RELAXED_SWIZZLE_vswizzlop_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:432.5-432.38
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:431.5-431.38
   prod {{0xFD} {`%`_u32(15):Bu32}} => VSPLAT_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:433.5-433.38
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:432.5-432.38
   prod {{0xFD} {`%`_u32(16):Bu32}} => VSPLAT_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:434.5-434.38
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:433.5-433.38
   prod {{0xFD} {`%`_u32(17):Bu32}} => VSPLAT_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:435.5-435.38
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:434.5-434.38
   prod {{0xFD} {`%`_u32(18):Bu32}} => VSPLAT_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:436.5-436.38
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:435.5-435.38
   prod {{0xFD} {`%`_u32(19):Bu32}} => VSPLAT_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:437.5-437.38
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:436.5-436.38
   prod {{0xFD} {`%`_u32(20):Bu32}} => VSPLAT_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:441.5-441.60
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:440.5-440.60
   prod{l : labelidx} {{0xFD} {`%`_u32(21):Bu32} {`%`_laneidx($proj_uN_0(l).0):Blaneidx}} => VEXTRACT_LANE_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), ?(S_sx), `%`_laneidx($proj_uN_0(l).0))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:442.5-442.60
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:441.5-441.60
   prod{l : labelidx} {{0xFD} {`%`_u32(22):Bu32} {`%`_laneidx($proj_uN_0(l).0):Blaneidx}} => VEXTRACT_LANE_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), ?(U_sx), `%`_laneidx($proj_uN_0(l).0))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:443.5-443.58
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:442.5-442.58
   prod{l : labelidx} {{0xFD} {`%`_u32(23):Bu32} {`%`_laneidx($proj_uN_0(l).0):Blaneidx}} => VREPLACE_LANE_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), `%`_laneidx($proj_uN_0(l).0))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:444.5-444.60
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:443.5-443.60
   prod{l : labelidx} {{0xFD} {`%`_u32(24):Bu32} {`%`_laneidx($proj_uN_0(l).0):Blaneidx}} => VEXTRACT_LANE_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), ?(S_sx), `%`_laneidx($proj_uN_0(l).0))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:445.5-445.60
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:444.5-444.60
   prod{l : labelidx} {{0xFD} {`%`_u32(25):Bu32} {`%`_laneidx($proj_uN_0(l).0):Blaneidx}} => VEXTRACT_LANE_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), ?(U_sx), `%`_laneidx($proj_uN_0(l).0))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:446.5-446.58
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:445.5-445.58
   prod{l : labelidx} {{0xFD} {`%`_u32(26):Bu32} {`%`_laneidx($proj_uN_0(l).0):Blaneidx}} => VREPLACE_LANE_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), `%`_laneidx($proj_uN_0(l).0))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:447.5-447.58
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:446.5-446.58
   prod{l : labelidx} {{0xFD} {`%`_u32(27):Bu32} {`%`_laneidx($proj_uN_0(l).0):Blaneidx}} => VEXTRACT_LANE_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), ?(), `%`_laneidx($proj_uN_0(l).0))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:448.5-448.58
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:447.5-447.58
   prod{l : labelidx} {{0xFD} {`%`_u32(28):Bu32} {`%`_laneidx($proj_uN_0(l).0):Blaneidx}} => VREPLACE_LANE_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%`_laneidx($proj_uN_0(l).0))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:449.5-449.58
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:448.5-448.58
   prod{l : labelidx} {{0xFD} {`%`_u32(29):Bu32} {`%`_laneidx($proj_uN_0(l).0):Blaneidx}} => VEXTRACT_LANE_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), ?(), `%`_laneidx($proj_uN_0(l).0))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:450.5-450.58
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:449.5-449.58
   prod{l : labelidx} {{0xFD} {`%`_u32(30):Bu32} {`%`_laneidx($proj_uN_0(l).0):Blaneidx}} => VREPLACE_LANE_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), `%`_laneidx($proj_uN_0(l).0))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:451.5-451.58
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:450.5-450.58
   prod{l : labelidx} {{0xFD} {`%`_u32(31):Bu32} {`%`_laneidx($proj_uN_0(l).0):Blaneidx}} => VEXTRACT_LANE_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), ?(), `%`_laneidx($proj_uN_0(l).0))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:452.5-452.58
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:451.5-451.58
   prod{l : labelidx} {{0xFD} {`%`_u32(32):Bu32} {`%`_laneidx($proj_uN_0(l).0):Blaneidx}} => VREPLACE_LANE_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), `%`_laneidx($proj_uN_0(l).0))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:453.5-453.58
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:452.5-452.58
   prod{l : labelidx} {{0xFD} {`%`_u32(33):Bu32} {`%`_laneidx($proj_uN_0(l).0):Blaneidx}} => VEXTRACT_LANE_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), ?(), `%`_laneidx($proj_uN_0(l).0))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:454.5-454.58
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:453.5-453.58
   prod{l : labelidx} {{0xFD} {`%`_u32(34):Bu32} {`%`_laneidx($proj_uN_0(l).0):Blaneidx}} => VREPLACE_LANE_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), `%`_laneidx($proj_uN_0(l).0))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:458.5-458.41
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:457.5-457.41
   prod {{0xFD} {`%`_u32(35):Bu32}} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), mk_vrelop__0_vrelop_(I8_Jnn, 16, EQ_vrelop_Jnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:459.5-459.41
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:458.5-458.41
   prod {{0xFD} {`%`_u32(36):Bu32}} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), mk_vrelop__0_vrelop_(I8_Jnn, 16, NE_vrelop_Jnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:460.5-460.43
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:459.5-459.43
   prod {{0xFD} {`%`_u32(37):Bu32}} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), mk_vrelop__0_vrelop_(I8_Jnn, 16, LT_vrelop_Jnn_M(S_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:461.5-461.43
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:460.5-460.43
   prod {{0xFD} {`%`_u32(38):Bu32}} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), mk_vrelop__0_vrelop_(I8_Jnn, 16, LT_vrelop_Jnn_M(U_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:462.5-462.43
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:461.5-461.43
   prod {{0xFD} {`%`_u32(39):Bu32}} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), mk_vrelop__0_vrelop_(I8_Jnn, 16, GT_vrelop_Jnn_M(S_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:463.5-463.43
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:462.5-462.43
   prod {{0xFD} {`%`_u32(40):Bu32}} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), mk_vrelop__0_vrelop_(I8_Jnn, 16, GT_vrelop_Jnn_M(U_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:464.5-464.43
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:463.5-463.43
   prod {{0xFD} {`%`_u32(41):Bu32}} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), mk_vrelop__0_vrelop_(I8_Jnn, 16, LE_vrelop_Jnn_M(S_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:465.5-465.43
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:464.5-464.43
   prod {{0xFD} {`%`_u32(42):Bu32}} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), mk_vrelop__0_vrelop_(I8_Jnn, 16, LE_vrelop_Jnn_M(U_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:466.5-466.43
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:465.5-465.43
   prod {{0xFD} {`%`_u32(43):Bu32}} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), mk_vrelop__0_vrelop_(I8_Jnn, 16, GE_vrelop_Jnn_M(S_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:467.5-467.43
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:466.5-466.43
   prod {{0xFD} {`%`_u32(44):Bu32}} => VRELOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), mk_vrelop__0_vrelop_(I8_Jnn, 16, GE_vrelop_Jnn_M(U_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:471.5-471.41
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:470.5-470.41
   prod {{0xFD} {`%`_u32(45):Bu32}} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), mk_vrelop__0_vrelop_(I16_Jnn, 8, EQ_vrelop_Jnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:472.5-472.41
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:471.5-471.41
   prod {{0xFD} {`%`_u32(46):Bu32}} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), mk_vrelop__0_vrelop_(I16_Jnn, 8, NE_vrelop_Jnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:473.5-473.43
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:472.5-472.43
   prod {{0xFD} {`%`_u32(47):Bu32}} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), mk_vrelop__0_vrelop_(I16_Jnn, 8, LT_vrelop_Jnn_M(S_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:474.5-474.43
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:473.5-473.43
   prod {{0xFD} {`%`_u32(48):Bu32}} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), mk_vrelop__0_vrelop_(I16_Jnn, 8, LT_vrelop_Jnn_M(U_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:475.5-475.43
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:474.5-474.43
   prod {{0xFD} {`%`_u32(49):Bu32}} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), mk_vrelop__0_vrelop_(I16_Jnn, 8, GT_vrelop_Jnn_M(S_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:476.5-476.43
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:475.5-475.43
   prod {{0xFD} {`%`_u32(50):Bu32}} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), mk_vrelop__0_vrelop_(I16_Jnn, 8, GT_vrelop_Jnn_M(U_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:477.5-477.43
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:476.5-476.43
   prod {{0xFD} {`%`_u32(51):Bu32}} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), mk_vrelop__0_vrelop_(I16_Jnn, 8, LE_vrelop_Jnn_M(S_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:478.5-478.43
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:477.5-477.43
   prod {{0xFD} {`%`_u32(52):Bu32}} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), mk_vrelop__0_vrelop_(I16_Jnn, 8, LE_vrelop_Jnn_M(U_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:479.5-479.43
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:478.5-478.43
   prod {{0xFD} {`%`_u32(53):Bu32}} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), mk_vrelop__0_vrelop_(I16_Jnn, 8, GE_vrelop_Jnn_M(S_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:480.5-480.43
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:479.5-479.43
   prod {{0xFD} {`%`_u32(54):Bu32}} => VRELOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), mk_vrelop__0_vrelop_(I16_Jnn, 8, GE_vrelop_Jnn_M(U_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:484.5-484.41
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:483.5-483.41
   prod {{0xFD} {`%`_u32(55):Bu32}} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), mk_vrelop__0_vrelop_(I32_Jnn, 4, EQ_vrelop_Jnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:485.5-485.41
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:484.5-484.41
   prod {{0xFD} {`%`_u32(56):Bu32}} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), mk_vrelop__0_vrelop_(I32_Jnn, 4, NE_vrelop_Jnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:486.5-486.43
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:485.5-485.43
   prod {{0xFD} {`%`_u32(57):Bu32}} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), mk_vrelop__0_vrelop_(I32_Jnn, 4, LT_vrelop_Jnn_M(S_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:487.5-487.43
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:486.5-486.43
   prod {{0xFD} {`%`_u32(58):Bu32}} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), mk_vrelop__0_vrelop_(I32_Jnn, 4, LT_vrelop_Jnn_M(U_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:488.5-488.43
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:487.5-487.43
   prod {{0xFD} {`%`_u32(59):Bu32}} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), mk_vrelop__0_vrelop_(I32_Jnn, 4, GT_vrelop_Jnn_M(S_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:489.5-489.43
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:488.5-488.43
   prod {{0xFD} {`%`_u32(60):Bu32}} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), mk_vrelop__0_vrelop_(I32_Jnn, 4, GT_vrelop_Jnn_M(U_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:490.5-490.43
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:489.5-489.43
   prod {{0xFD} {`%`_u32(61):Bu32}} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), mk_vrelop__0_vrelop_(I32_Jnn, 4, LE_vrelop_Jnn_M(S_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:491.5-491.43
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:490.5-490.43
   prod {{0xFD} {`%`_u32(62):Bu32}} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), mk_vrelop__0_vrelop_(I32_Jnn, 4, LE_vrelop_Jnn_M(U_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:492.5-492.43
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:491.5-491.43
   prod {{0xFD} {`%`_u32(63):Bu32}} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), mk_vrelop__0_vrelop_(I32_Jnn, 4, GE_vrelop_Jnn_M(S_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:493.5-493.43
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:492.5-492.43
   prod {{0xFD} {`%`_u32(64):Bu32}} => VRELOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), mk_vrelop__0_vrelop_(I32_Jnn, 4, GE_vrelop_Jnn_M(U_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:497.5-497.41
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:496.5-496.41
   prod {{0xFD} {`%`_u32(65):Bu32}} => VRELOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), mk_vrelop__1_vrelop_(F32_Fnn, 4, EQ_vrelop_Fnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:498.5-498.41
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:497.5-497.41
   prod {{0xFD} {`%`_u32(66):Bu32}} => VRELOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), mk_vrelop__1_vrelop_(F32_Fnn, 4, NE_vrelop_Fnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:499.5-499.41
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:498.5-498.41
   prod {{0xFD} {`%`_u32(67):Bu32}} => VRELOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), mk_vrelop__1_vrelop_(F32_Fnn, 4, LT_vrelop_Fnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:500.5-500.41
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:499.5-499.41
   prod {{0xFD} {`%`_u32(68):Bu32}} => VRELOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), mk_vrelop__1_vrelop_(F32_Fnn, 4, GT_vrelop_Fnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:501.5-501.41
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:500.5-500.41
   prod {{0xFD} {`%`_u32(69):Bu32}} => VRELOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), mk_vrelop__1_vrelop_(F32_Fnn, 4, LE_vrelop_Fnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:502.5-502.41
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:501.5-501.41
   prod {{0xFD} {`%`_u32(70):Bu32}} => VRELOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), mk_vrelop__1_vrelop_(F32_Fnn, 4, GE_vrelop_Fnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:506.5-506.41
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:505.5-505.41
   prod {{0xFD} {`%`_u32(71):Bu32}} => VRELOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), mk_vrelop__1_vrelop_(F64_Fnn, 2, EQ_vrelop_Fnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:507.5-507.41
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:506.5-506.41
   prod {{0xFD} {`%`_u32(72):Bu32}} => VRELOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), mk_vrelop__1_vrelop_(F64_Fnn, 2, NE_vrelop_Fnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:508.5-508.41
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:507.5-507.41
   prod {{0xFD} {`%`_u32(73):Bu32}} => VRELOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), mk_vrelop__1_vrelop_(F64_Fnn, 2, LT_vrelop_Fnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:509.5-509.41
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:508.5-508.41
   prod {{0xFD} {`%`_u32(74):Bu32}} => VRELOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), mk_vrelop__1_vrelop_(F64_Fnn, 2, GT_vrelop_Fnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:510.5-510.41
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:509.5-509.41
   prod {{0xFD} {`%`_u32(75):Bu32}} => VRELOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), mk_vrelop__1_vrelop_(F64_Fnn, 2, LE_vrelop_Fnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:511.5-511.41
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:510.5-510.41
   prod {{0xFD} {`%`_u32(76):Bu32}} => VRELOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), mk_vrelop__1_vrelop_(F64_Fnn, 2, GE_vrelop_Fnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:515.5-515.36
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:514.5-514.36
   prod {{0xFD} {`%`_u32(77):Bu32}} => VVUNOP_instr(V128_vectype, NOT_vvunop)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:519.5-519.37
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:518.5-518.37
   prod {{0xFD} {`%`_u32(78):Bu32}} => VVBINOP_instr(V128_vectype, AND_vvbinop)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:520.5-520.40
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:519.5-519.40
   prod {{0xFD} {`%`_u32(79):Bu32}} => VVBINOP_instr(V128_vectype, ANDNOT_vvbinop)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:521.5-521.36
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:520.5-520.36
   prod {{0xFD} {`%`_u32(80):Bu32}} => VVBINOP_instr(V128_vectype, OR_vvbinop)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:522.5-522.37
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:521.5-521.37
   prod {{0xFD} {`%`_u32(81):Bu32}} => VVBINOP_instr(V128_vectype, XOR_vvbinop)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:526.5-526.44
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:525.5-525.44
   prod {{0xFD} {`%`_u32(82):Bu32}} => VVTERNOP_instr(V128_vectype, BITSELECT_vvternop)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:530.5-530.43
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:529.5-529.43
   prod {{0xFD} {`%`_u32(83):Bu32}} => VVTESTOP_instr(V128_vectype, ANY_TRUE_vvtestop)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:534.5-534.41
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:533.5-533.41
   prod {{0xFD} {`%`_u32(96):Bu32}} => VUNOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), mk_vunop__0_vunop_(I8_Jnn, 16, ABS_vunop_Jnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:535.5-535.41
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:534.5-534.41
   prod {{0xFD} {`%`_u32(97):Bu32}} => VUNOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), mk_vunop__0_vunop_(I8_Jnn, 16, NEG_vunop_Jnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:536.5-536.44
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:535.5-535.44
   prod {{0xFD} {`%`_u32(98):Bu32}} => VUNOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), mk_vunop__0_vunop_(I8_Jnn, 16, POPCNT_vunop_Jnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:540.5-540.48
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:539.5-539.48
   prod {{0xFD} {`%`_u32(99):Bu32}} => VTESTOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), mk_vtestop__0_vtestop_(I8_Jnn, 16, ALL_TRUE_vtestop_Jnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:544.5-544.41
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:543.5-543.41
   prod {{0xFD} {`%`_u32(100):Bu32}} => VBITMASK_instr(`%`_ishape(`%X%`_shape(I8_lanetype, `%`_dim(16))))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:548.5-548.53
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:547.5-547.53
   prod {{0xFD} {`%`_u32(101):Bu32}} => VNARROW_instr(`%`_ishape(`%X%`_shape(I8_lanetype, `%`_dim(16))), `%`_ishape(`%X%`_shape(I16_lanetype, `%`_dim(8))), S_sx)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:549.5-549.53
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:548.5-548.53
   prod {{0xFD} {`%`_u32(102):Bu32}} => VNARROW_instr(`%`_ishape(`%X%`_shape(I8_lanetype, `%`_dim(16))), `%`_ishape(`%X%`_shape(I16_lanetype, `%`_dim(8))), U_sx)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:553.5-553.45
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:552.5-552.45
   prod {{0xFD} {`%`_u32(107):Bu32}} => VSHIFTOP_instr(`%`_ishape(`%X%`_shape(I8_lanetype, `%`_dim(16))), mk_vshiftop__0_vshiftop_(I8_Jnn, 16, SHL_vshiftop_Jnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:554.5-554.47
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:553.5-553.47
   prod {{0xFD} {`%`_u32(108):Bu32}} => VSHIFTOP_instr(`%`_ishape(`%X%`_shape(I8_lanetype, `%`_dim(16))), mk_vshiftop__0_vshiftop_(I8_Jnn, 16, SHR_vshiftop_Jnn_M(S_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:555.5-555.47
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:554.5-554.47
   prod {{0xFD} {`%`_u32(109):Bu32}} => VSHIFTOP_instr(`%`_ishape(`%X%`_shape(I8_lanetype, `%`_dim(16))), mk_vshiftop__0_vshiftop_(I8_Jnn, 16, SHR_vshiftop_Jnn_M(U_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:559.5-559.43
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:558.5-558.43
   prod {{0xFD} {`%`_u32(110):Bu32}} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), mk_vbinop__0_vbinop_(I8_Jnn, 16, ADD_vbinop_Jnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:560.5-560.49
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:559.5-559.49
   prod {{0xFD} {`%`_u32(111):Bu32}} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), mk_vbinop__0_vbinop_(I8_Jnn, 16, ADD_SAT_vbinop_Jnn_M(S_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:561.5-561.49
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:560.5-560.49
   prod {{0xFD} {`%`_u32(112):Bu32}} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), mk_vbinop__0_vbinop_(I8_Jnn, 16, ADD_SAT_vbinop_Jnn_M(U_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:562.5-562.43
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:561.5-561.43
   prod {{0xFD} {`%`_u32(113):Bu32}} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), mk_vbinop__0_vbinop_(I8_Jnn, 16, SUB_vbinop_Jnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:563.5-563.49
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:562.5-562.49
   prod {{0xFD} {`%`_u32(114):Bu32}} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), mk_vbinop__0_vbinop_(I8_Jnn, 16, SUB_SAT_vbinop_Jnn_M(S_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:564.5-564.49
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:563.5-563.49
   prod {{0xFD} {`%`_u32(115):Bu32}} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), mk_vbinop__0_vbinop_(I8_Jnn, 16, SUB_SAT_vbinop_Jnn_M(U_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:565.5-565.45
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:564.5-564.45
   prod {{0xFD} {`%`_u32(118):Bu32}} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), mk_vbinop__0_vbinop_(I8_Jnn, 16, MIN_vbinop_Jnn_M(S_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:566.5-566.45
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:565.5-565.45
   prod {{0xFD} {`%`_u32(119):Bu32}} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), mk_vbinop__0_vbinop_(I8_Jnn, 16, MIN_vbinop_Jnn_M(U_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:567.5-567.45
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:566.5-566.45
   prod {{0xFD} {`%`_u32(120):Bu32}} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), mk_vbinop__0_vbinop_(I8_Jnn, 16, MAX_vbinop_Jnn_M(S_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:568.5-568.45
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:567.5-567.45
   prod {{0xFD} {`%`_u32(121):Bu32}} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), mk_vbinop__0_vbinop_(I8_Jnn, 16, MAX_vbinop_Jnn_M(U_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:569.5-569.46
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:568.5-568.46
   prod {{0xFD} {`%`_u32(123):Bu32}} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), mk_vbinop__0_vbinop_(I8_Jnn, 16, `AVGRU`_vbinop_Jnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:573.5-573.70
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:572.5-572.70
   prod {{0xFD} {`%`_u32(124):Bu32}} => VEXTUNOP_instr(`%`_ishape(`%X%`_shape(I16_lanetype, `%`_dim(8))), `%`_ishape(`%X%`_shape(I8_lanetype, `%`_dim(16))), mk_vextunop___0_vextunop__(I8_Jnn, 16, I16_Jnn, 8, EXTADD_PAIRWISE_vextunop__Jnn_1_M_1_Jnn_2_M_2(S_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:574.5-574.70
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:573.5-573.70
   prod {{0xFD} {`%`_u32(125):Bu32}} => VEXTUNOP_instr(`%`_ishape(`%X%`_shape(I16_lanetype, `%`_dim(8))), `%`_ishape(`%X%`_shape(I8_lanetype, `%`_dim(16))), mk_vextunop___0_vextunop__(I8_Jnn, 16, I16_Jnn, 8, EXTADD_PAIRWISE_vextunop__Jnn_1_M_1_Jnn_2_M_2(U_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:578.5-578.42
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:577.5-577.42
   prod {{0xFD} {`%`_u32(128):Bu32}} => VUNOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), mk_vunop__0_vunop_(I16_Jnn, 8, ABS_vunop_Jnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:579.5-579.42
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:578.5-578.42
   prod {{0xFD} {`%`_u32(129):Bu32}} => VUNOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), mk_vunop__0_vunop_(I16_Jnn, 8, NEG_vunop_Jnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:583.5-583.53
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:582.5-582.53
   prod {{0xFD} {`%`_u32(130):Bu32}} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), mk_vbinop__0_vbinop_(I16_Jnn, 8, `Q15MULR_SATS`_vbinop_Jnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:584.5-584.43
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:583.5-583.43
   prod {{0xFD} {`%`_u32(142):Bu32}} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), mk_vbinop__0_vbinop_(I16_Jnn, 8, ADD_vbinop_Jnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:585.5-585.49
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:584.5-584.49
   prod {{0xFD} {`%`_u32(143):Bu32}} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), mk_vbinop__0_vbinop_(I16_Jnn, 8, ADD_SAT_vbinop_Jnn_M(S_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:586.5-586.49
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:585.5-585.49
   prod {{0xFD} {`%`_u32(144):Bu32}} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), mk_vbinop__0_vbinop_(I16_Jnn, 8, ADD_SAT_vbinop_Jnn_M(U_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:587.5-587.43
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:586.5-586.43
   prod {{0xFD} {`%`_u32(145):Bu32}} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), mk_vbinop__0_vbinop_(I16_Jnn, 8, SUB_vbinop_Jnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:588.5-588.49
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:587.5-587.49
   prod {{0xFD} {`%`_u32(146):Bu32}} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), mk_vbinop__0_vbinop_(I16_Jnn, 8, SUB_SAT_vbinop_Jnn_M(S_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:589.5-589.49
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:588.5-588.49
   prod {{0xFD} {`%`_u32(147):Bu32}} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), mk_vbinop__0_vbinop_(I16_Jnn, 8, SUB_SAT_vbinop_Jnn_M(U_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:590.5-590.43
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:589.5-589.43
   prod {{0xFD} {`%`_u32(149):Bu32}} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), mk_vbinop__0_vbinop_(I16_Jnn, 8, MUL_vbinop_Jnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:591.5-591.45
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:590.5-590.45
   prod {{0xFD} {`%`_u32(150):Bu32}} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), mk_vbinop__0_vbinop_(I16_Jnn, 8, MIN_vbinop_Jnn_M(S_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:592.5-592.45
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:591.5-591.45
   prod {{0xFD} {`%`_u32(151):Bu32}} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), mk_vbinop__0_vbinop_(I16_Jnn, 8, MIN_vbinop_Jnn_M(U_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:593.5-593.45
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:592.5-592.45
   prod {{0xFD} {`%`_u32(152):Bu32}} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), mk_vbinop__0_vbinop_(I16_Jnn, 8, MAX_vbinop_Jnn_M(S_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:594.5-594.45
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:593.5-593.45
   prod {{0xFD} {`%`_u32(153):Bu32}} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), mk_vbinop__0_vbinop_(I16_Jnn, 8, MAX_vbinop_Jnn_M(U_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:595.5-595.46
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:594.5-594.46
   prod {{0xFD} {`%`_u32(155):Bu32}} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), mk_vbinop__0_vbinop_(I16_Jnn, 8, `AVGRU`_vbinop_Jnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:596.5-596.57
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:595.5-595.57
   prod {{0xFD} {`%`_u32(273):Bu32}} => VBINOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), mk_vbinop__0_vbinop_(I16_Jnn, 8, `RELAXED_Q15MULRS`_vbinop_Jnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:600.5-600.49
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:599.5-599.49
   prod {{0xFD} {`%`_u32(131):Bu32}} => VTESTOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), mk_vtestop__0_vtestop_(I16_Jnn, 8, ALL_TRUE_vtestop_Jnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:604.5-604.41
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:603.5-603.41
   prod {{0xFD} {`%`_u32(132):Bu32}} => VBITMASK_instr(`%`_ishape(`%X%`_shape(I16_lanetype, `%`_dim(8))))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:608.5-608.53
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:607.5-607.53
   prod {{0xFD} {`%`_u32(133):Bu32}} => VNARROW_instr(`%`_ishape(`%X%`_shape(I16_lanetype, `%`_dim(8))), `%`_ishape(`%X%`_shape(I32_lanetype, `%`_dim(4))), S_sx)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:609.5-609.53
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:608.5-608.53
   prod {{0xFD} {`%`_u32(134):Bu32}} => VNARROW_instr(`%`_ishape(`%X%`_shape(I16_lanetype, `%`_dim(8))), `%`_ishape(`%X%`_shape(I32_lanetype, `%`_dim(4))), U_sx)
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:613.5-613.63
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:612.5-612.63
   prod {{0xFD} {`%`_u32(135):Bu32}} => VCVTOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), `%X%`_shape(I8_lanetype, `%`_dim(16)), mk_vcvtop___0_vcvtop__(I8_Jnn, 16, I16_Jnn, 8, EXTEND_vcvtop__Jnn_1_M_1_Jnn_2_M_2(LOW_half, S_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:614.5-614.64
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:613.5-613.64
   prod {{0xFD} {`%`_u32(136):Bu32}} => VCVTOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), `%X%`_shape(I8_lanetype, `%`_dim(16)), mk_vcvtop___0_vcvtop__(I8_Jnn, 16, I16_Jnn, 8, EXTEND_vcvtop__Jnn_1_M_1_Jnn_2_M_2(HIGH_half, S_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:615.5-615.63
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:614.5-614.63
   prod {{0xFD} {`%`_u32(137):Bu32}} => VCVTOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), `%X%`_shape(I8_lanetype, `%`_dim(16)), mk_vcvtop___0_vcvtop__(I8_Jnn, 16, I16_Jnn, 8, EXTEND_vcvtop__Jnn_1_M_1_Jnn_2_M_2(LOW_half, U_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:616.5-616.64
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:615.5-615.64
   prod {{0xFD} {`%`_u32(138):Bu32}} => VCVTOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), `%X%`_shape(I8_lanetype, `%`_dim(16)), mk_vcvtop___0_vcvtop__(I8_Jnn, 16, I16_Jnn, 8, EXTEND_vcvtop__Jnn_1_M_1_Jnn_2_M_2(HIGH_half, U_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:620.5-620.45
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:619.5-619.45
   prod {{0xFD} {`%`_u32(139):Bu32}} => VSHIFTOP_instr(`%`_ishape(`%X%`_shape(I16_lanetype, `%`_dim(8))), mk_vshiftop__0_vshiftop_(I16_Jnn, 8, SHL_vshiftop_Jnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:621.5-621.47
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:620.5-620.47
   prod {{0xFD} {`%`_u32(140):Bu32}} => VSHIFTOP_instr(`%`_ishape(`%X%`_shape(I16_lanetype, `%`_dim(8))), mk_vshiftop__0_vshiftop_(I16_Jnn, 8, SHR_vshiftop_Jnn_M(S_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:622.5-622.47
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:621.5-621.47
   prod {{0xFD} {`%`_u32(141):Bu32}} => VSHIFTOP_instr(`%`_ishape(`%X%`_shape(I16_lanetype, `%`_dim(8))), mk_vshiftop__0_vshiftop_(I16_Jnn, 8, SHR_vshiftop_Jnn_M(U_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:626.5-626.66
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:625.5-625.66
   prod {{0xFD} {`%`_u32(156):Bu32}} => VEXTBINOP_instr(`%`_ishape(`%X%`_shape(I16_lanetype, `%`_dim(8))), `%`_ishape(`%X%`_shape(I8_lanetype, `%`_dim(16))), mk_vextbinop___0_vextbinop__(I8_Jnn, 16, I16_Jnn, 8, EXTMUL_vextbinop__Jnn_1_M_1_Jnn_2_M_2(LOW_half, S_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:627.5-627.67
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:626.5-626.67
   prod {{0xFD} {`%`_u32(157):Bu32}} => VEXTBINOP_instr(`%`_ishape(`%X%`_shape(I16_lanetype, `%`_dim(8))), `%`_ishape(`%X%`_shape(I8_lanetype, `%`_dim(16))), mk_vextbinop___0_vextbinop__(I8_Jnn, 16, I16_Jnn, 8, EXTMUL_vextbinop__Jnn_1_M_1_Jnn_2_M_2(HIGH_half, S_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:628.5-628.66
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:627.5-627.66
   prod {{0xFD} {`%`_u32(158):Bu32}} => VEXTBINOP_instr(`%`_ishape(`%X%`_shape(I16_lanetype, `%`_dim(8))), `%`_ishape(`%X%`_shape(I8_lanetype, `%`_dim(16))), mk_vextbinop___0_vextbinop__(I8_Jnn, 16, I16_Jnn, 8, EXTMUL_vextbinop__Jnn_1_M_1_Jnn_2_M_2(LOW_half, U_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:629.5-629.67
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:628.5-628.67
   prod {{0xFD} {`%`_u32(159):Bu32}} => VEXTBINOP_instr(`%`_ishape(`%X%`_shape(I16_lanetype, `%`_dim(8))), `%`_ishape(`%X%`_shape(I8_lanetype, `%`_dim(16))), mk_vextbinop___0_vextbinop__(I8_Jnn, 16, I16_Jnn, 8, EXTMUL_vextbinop__Jnn_1_M_1_Jnn_2_M_2(HIGH_half, U_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:630.5-630.67
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:629.5-629.67
   prod {{0xFD} {`%`_u32(274):Bu32}} => VEXTBINOP_instr(`%`_ishape(`%X%`_shape(I16_lanetype, `%`_dim(8))), `%`_ishape(`%X%`_shape(I8_lanetype, `%`_dim(16))), mk_vextbinop___0_vextbinop__(I8_Jnn, 16, I16_Jnn, 8, `RELAXED_DOTS`_vextbinop__Jnn_1_M_1_Jnn_2_M_2))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:634.5-634.70
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:633.5-633.70
   prod {{0xFD} {`%`_u32(126):Bu32}} => VEXTUNOP_instr(`%`_ishape(`%X%`_shape(I32_lanetype, `%`_dim(4))), `%`_ishape(`%X%`_shape(I16_lanetype, `%`_dim(8))), mk_vextunop___0_vextunop__(I16_Jnn, 8, I32_Jnn, 4, EXTADD_PAIRWISE_vextunop__Jnn_1_M_1_Jnn_2_M_2(S_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:635.5-635.70
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:634.5-634.70
   prod {{0xFD} {`%`_u32(127):Bu32}} => VEXTUNOP_instr(`%`_ishape(`%X%`_shape(I32_lanetype, `%`_dim(4))), `%`_ishape(`%X%`_shape(I16_lanetype, `%`_dim(8))), mk_vextunop___0_vextunop__(I16_Jnn, 8, I32_Jnn, 4, EXTADD_PAIRWISE_vextunop__Jnn_1_M_1_Jnn_2_M_2(U_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:639.5-639.42
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:638.5-638.42
   prod {{0xFD} {`%`_u32(160):Bu32}} => VUNOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), mk_vunop__0_vunop_(I32_Jnn, 4, ABS_vunop_Jnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:640.5-640.42
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:639.5-639.42
   prod {{0xFD} {`%`_u32(161):Bu32}} => VUNOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), mk_vunop__0_vunop_(I32_Jnn, 4, NEG_vunop_Jnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:644.5-644.49
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:643.5-643.49
   prod {{0xFD} {`%`_u32(163):Bu32}} => VTESTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), mk_vtestop__0_vtestop_(I32_Jnn, 4, ALL_TRUE_vtestop_Jnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:648.5-648.41
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:647.5-647.41
   prod {{0xFD} {`%`_u32(164):Bu32}} => VBITMASK_instr(`%`_ishape(`%X%`_shape(I32_lanetype, `%`_dim(4))))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:652.5-652.63
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:651.5-651.63
   prod {{0xFD} {`%`_u32(167):Bu32}} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(I16_lanetype, `%`_dim(8)), mk_vcvtop___0_vcvtop__(I16_Jnn, 8, I32_Jnn, 4, EXTEND_vcvtop__Jnn_1_M_1_Jnn_2_M_2(LOW_half, S_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:653.5-653.64
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:652.5-652.64
   prod {{0xFD} {`%`_u32(168):Bu32}} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(I16_lanetype, `%`_dim(8)), mk_vcvtop___0_vcvtop__(I16_Jnn, 8, I32_Jnn, 4, EXTEND_vcvtop__Jnn_1_M_1_Jnn_2_M_2(HIGH_half, S_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:654.5-654.63
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:653.5-653.63
   prod {{0xFD} {`%`_u32(169):Bu32}} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(I16_lanetype, `%`_dim(8)), mk_vcvtop___0_vcvtop__(I16_Jnn, 8, I32_Jnn, 4, EXTEND_vcvtop__Jnn_1_M_1_Jnn_2_M_2(LOW_half, U_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:655.5-655.64
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:654.5-654.64
   prod {{0xFD} {`%`_u32(170):Bu32}} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(I16_lanetype, `%`_dim(8)), mk_vcvtop___0_vcvtop__(I16_Jnn, 8, I32_Jnn, 4, EXTEND_vcvtop__Jnn_1_M_1_Jnn_2_M_2(HIGH_half, U_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:659.5-659.45
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:658.5-658.45
   prod {{0xFD} {`%`_u32(171):Bu32}} => VSHIFTOP_instr(`%`_ishape(`%X%`_shape(I32_lanetype, `%`_dim(4))), mk_vshiftop__0_vshiftop_(I32_Jnn, 4, SHL_vshiftop_Jnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:660.5-660.49
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:659.5-659.49
   prod {{0xFD} {`%`_u32(172):Bu32}} => VSHIFTOP_instr(`%`_ishape(`%X%`_shape(I32_lanetype, `%`_dim(4))), mk_vshiftop__0_vshiftop_(I32_Jnn, 4, SHR_vshiftop_Jnn_M(S_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:661.5-661.49
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:660.5-660.49
   prod {{0xFD} {`%`_u32(173):Bu32}} => VSHIFTOP_instr(`%`_ishape(`%X%`_shape(I32_lanetype, `%`_dim(4))), mk_vshiftop__0_vshiftop_(I32_Jnn, 4, SHR_vshiftop_Jnn_M(U_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:665.5-665.43
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:664.5-664.43
   prod {{0xFD} {`%`_u32(174):Bu32}} => VBINOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), mk_vbinop__0_vbinop_(I32_Jnn, 4, ADD_vbinop_Jnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:666.5-666.43
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:665.5-665.43
   prod {{0xFD} {`%`_u32(177):Bu32}} => VBINOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), mk_vbinop__0_vbinop_(I32_Jnn, 4, SUB_vbinop_Jnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:667.5-667.43
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:666.5-666.43
   prod {{0xFD} {`%`_u32(181):Bu32}} => VBINOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), mk_vbinop__0_vbinop_(I32_Jnn, 4, MUL_vbinop_Jnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:668.5-668.45
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:667.5-667.45
   prod {{0xFD} {`%`_u32(182):Bu32}} => VBINOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), mk_vbinop__0_vbinop_(I32_Jnn, 4, MIN_vbinop_Jnn_M(S_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:669.5-669.45
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:668.5-668.45
   prod {{0xFD} {`%`_u32(183):Bu32}} => VBINOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), mk_vbinop__0_vbinop_(I32_Jnn, 4, MIN_vbinop_Jnn_M(U_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:670.5-670.45
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:669.5-669.45
   prod {{0xFD} {`%`_u32(184):Bu32}} => VBINOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), mk_vbinop__0_vbinop_(I32_Jnn, 4, MAX_vbinop_Jnn_M(S_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:671.5-671.45
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:670.5-670.45
   prod {{0xFD} {`%`_u32(185):Bu32}} => VBINOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), mk_vbinop__0_vbinop_(I32_Jnn, 4, MAX_vbinop_Jnn_M(U_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:675.5-675.59
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:674.5-674.59
   prod {{0xFD} {`%`_u32(186):Bu32}} => VEXTBINOP_instr(`%`_ishape(`%X%`_shape(I32_lanetype, `%`_dim(4))), `%`_ishape(`%X%`_shape(I16_lanetype, `%`_dim(8))), mk_vextbinop___0_vextbinop__(I16_Jnn, 8, I32_Jnn, 4, `DOTS`_vextbinop__Jnn_1_M_1_Jnn_2_M_2))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:676.5-676.66
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:675.5-675.66
   prod {{0xFD} {`%`_u32(188):Bu32}} => VEXTBINOP_instr(`%`_ishape(`%X%`_shape(I32_lanetype, `%`_dim(4))), `%`_ishape(`%X%`_shape(I16_lanetype, `%`_dim(8))), mk_vextbinop___0_vextbinop__(I16_Jnn, 8, I32_Jnn, 4, EXTMUL_vextbinop__Jnn_1_M_1_Jnn_2_M_2(LOW_half, S_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:677.5-677.67
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:676.5-676.67
   prod {{0xFD} {`%`_u32(189):Bu32}} => VEXTBINOP_instr(`%`_ishape(`%X%`_shape(I32_lanetype, `%`_dim(4))), `%`_ishape(`%X%`_shape(I16_lanetype, `%`_dim(8))), mk_vextbinop___0_vextbinop__(I16_Jnn, 8, I32_Jnn, 4, EXTMUL_vextbinop__Jnn_1_M_1_Jnn_2_M_2(HIGH_half, S_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:678.5-678.66
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:677.5-677.66
   prod {{0xFD} {`%`_u32(190):Bu32}} => VEXTBINOP_instr(`%`_ishape(`%X%`_shape(I32_lanetype, `%`_dim(4))), `%`_ishape(`%X%`_shape(I16_lanetype, `%`_dim(8))), mk_vextbinop___0_vextbinop__(I16_Jnn, 8, I32_Jnn, 4, EXTMUL_vextbinop__Jnn_1_M_1_Jnn_2_M_2(LOW_half, U_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:679.5-679.67
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:678.5-678.67
   prod {{0xFD} {`%`_u32(191):Bu32}} => VEXTBINOP_instr(`%`_ishape(`%X%`_shape(I32_lanetype, `%`_dim(4))), `%`_ishape(`%X%`_shape(I16_lanetype, `%`_dim(8))), mk_vextbinop___0_vextbinop__(I16_Jnn, 8, I32_Jnn, 4, EXTMUL_vextbinop__Jnn_1_M_1_Jnn_2_M_2(HIGH_half, U_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:683.5-683.72
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:682.5-682.72
   prod {{0xFD} {`%`_u32(275):Bu32}} => VEXTTERNOP_instr(`%`_ishape(`%X%`_shape(I32_lanetype, `%`_dim(4))), `%`_ishape(`%X%`_shape(I16_lanetype, `%`_dim(8))), mk_vextternop___0_vextternop__(I16_Jnn, 8, I32_Jnn, 4, `RELAXED_DOT_ADDS`_vextternop__Jnn_1_M_1_Jnn_2_M_2))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:687.5-687.42
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:686.5-686.42
   prod {{0xFD} {`%`_u32(192):Bu32}} => VUNOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), mk_vunop__0_vunop_(I64_Jnn, 2, ABS_vunop_Jnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:688.5-688.42
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:687.5-687.42
   prod {{0xFD} {`%`_u32(193):Bu32}} => VUNOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), mk_vunop__0_vunop_(I64_Jnn, 2, NEG_vunop_Jnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:692.5-692.49
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:691.5-691.49
   prod {{0xFD} {`%`_u32(195):Bu32}} => VTESTOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), mk_vtestop__0_vtestop_(I64_Jnn, 2, ALL_TRUE_vtestop_Jnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:696.5-696.41
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:695.5-695.41
   prod {{0xFD} {`%`_u32(196):Bu32}} => VBITMASK_instr(`%`_ishape(`%X%`_shape(I64_lanetype, `%`_dim(2))))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:700.5-700.63
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:699.5-699.63
   prod {{0xFD} {`%`_u32(199):Bu32}} => VCVTOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), `%X%`_shape(I32_lanetype, `%`_dim(4)), mk_vcvtop___0_vcvtop__(I32_Jnn, 4, I64_Jnn, 2, EXTEND_vcvtop__Jnn_1_M_1_Jnn_2_M_2(LOW_half, S_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:701.5-701.64
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:700.5-700.64
   prod {{0xFD} {`%`_u32(200):Bu32}} => VCVTOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), `%X%`_shape(I32_lanetype, `%`_dim(4)), mk_vcvtop___0_vcvtop__(I32_Jnn, 4, I64_Jnn, 2, EXTEND_vcvtop__Jnn_1_M_1_Jnn_2_M_2(HIGH_half, S_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:702.5-702.63
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:701.5-701.63
   prod {{0xFD} {`%`_u32(201):Bu32}} => VCVTOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), `%X%`_shape(I32_lanetype, `%`_dim(4)), mk_vcvtop___0_vcvtop__(I32_Jnn, 4, I64_Jnn, 2, EXTEND_vcvtop__Jnn_1_M_1_Jnn_2_M_2(LOW_half, U_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:703.5-703.64
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:702.5-702.64
   prod {{0xFD} {`%`_u32(202):Bu32}} => VCVTOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), `%X%`_shape(I32_lanetype, `%`_dim(4)), mk_vcvtop___0_vcvtop__(I32_Jnn, 4, I64_Jnn, 2, EXTEND_vcvtop__Jnn_1_M_1_Jnn_2_M_2(HIGH_half, U_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:707.5-707.45
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:706.5-706.45
   prod {{0xFD} {`%`_u32(203):Bu32}} => VSHIFTOP_instr(`%`_ishape(`%X%`_shape(I64_lanetype, `%`_dim(2))), mk_vshiftop__0_vshiftop_(I64_Jnn, 2, SHL_vshiftop_Jnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:708.5-708.49
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:707.5-707.49
   prod {{0xFD} {`%`_u32(204):Bu32}} => VSHIFTOP_instr(`%`_ishape(`%X%`_shape(I64_lanetype, `%`_dim(2))), mk_vshiftop__0_vshiftop_(I64_Jnn, 2, SHR_vshiftop_Jnn_M(S_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:709.5-709.49
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:708.5-708.49
   prod {{0xFD} {`%`_u32(205):Bu32}} => VSHIFTOP_instr(`%`_ishape(`%X%`_shape(I64_lanetype, `%`_dim(2))), mk_vshiftop__0_vshiftop_(I64_Jnn, 2, SHR_vshiftop_Jnn_M(U_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:713.5-713.43
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:712.5-712.43
   prod {{0xFD} {`%`_u32(206):Bu32}} => VBINOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), mk_vbinop__0_vbinop_(I64_Jnn, 2, ADD_vbinop_Jnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:714.5-714.43
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:713.5-713.43
   prod {{0xFD} {`%`_u32(209):Bu32}} => VBINOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), mk_vbinop__0_vbinop_(I64_Jnn, 2, SUB_vbinop_Jnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:715.5-715.43
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:714.5-714.43
   prod {{0xFD} {`%`_u32(213):Bu32}} => VBINOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), mk_vbinop__0_vbinop_(I64_Jnn, 2, MUL_vbinop_Jnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:719.5-719.42
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:718.5-718.42
   prod {{0xFD} {`%`_u32(214):Bu32}} => VRELOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), mk_vrelop__0_vrelop_(I64_Jnn, 2, EQ_vrelop_Jnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:720.5-720.42
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:719.5-719.42
   prod {{0xFD} {`%`_u32(215):Bu32}} => VRELOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), mk_vrelop__0_vrelop_(I64_Jnn, 2, NE_vrelop_Jnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:721.5-721.46
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:720.5-720.46
   prod {{0xFD} {`%`_u32(216):Bu32}} => VRELOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), mk_vrelop__0_vrelop_(I64_Jnn, 2, LT_vrelop_Jnn_M(S_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:722.5-722.46
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:721.5-721.46
   prod {{0xFD} {`%`_u32(217):Bu32}} => VRELOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), mk_vrelop__0_vrelop_(I64_Jnn, 2, GT_vrelop_Jnn_M(S_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:723.5-723.46
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:722.5-722.46
   prod {{0xFD} {`%`_u32(218):Bu32}} => VRELOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), mk_vrelop__0_vrelop_(I64_Jnn, 2, LE_vrelop_Jnn_M(S_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:724.5-724.46
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:723.5-723.46
   prod {{0xFD} {`%`_u32(219):Bu32}} => VRELOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), mk_vrelop__0_vrelop_(I64_Jnn, 2, GE_vrelop_Jnn_M(S_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:728.5-728.66
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:727.5-727.66
   prod {{0xFD} {`%`_u32(220):Bu32}} => VEXTBINOP_instr(`%`_ishape(`%X%`_shape(I64_lanetype, `%`_dim(2))), `%`_ishape(`%X%`_shape(I32_lanetype, `%`_dim(4))), mk_vextbinop___0_vextbinop__(I32_Jnn, 4, I64_Jnn, 2, EXTMUL_vextbinop__Jnn_1_M_1_Jnn_2_M_2(LOW_half, S_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:729.5-729.67
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:728.5-728.67
   prod {{0xFD} {`%`_u32(221):Bu32}} => VEXTBINOP_instr(`%`_ishape(`%X%`_shape(I64_lanetype, `%`_dim(2))), `%`_ishape(`%X%`_shape(I32_lanetype, `%`_dim(4))), mk_vextbinop___0_vextbinop__(I32_Jnn, 4, I64_Jnn, 2, EXTMUL_vextbinop__Jnn_1_M_1_Jnn_2_M_2(HIGH_half, S_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:730.5-730.66
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:729.5-729.66
   prod {{0xFD} {`%`_u32(222):Bu32}} => VEXTBINOP_instr(`%`_ishape(`%X%`_shape(I64_lanetype, `%`_dim(2))), `%`_ishape(`%X%`_shape(I32_lanetype, `%`_dim(4))), mk_vextbinop___0_vextbinop__(I32_Jnn, 4, I64_Jnn, 2, EXTMUL_vextbinop__Jnn_1_M_1_Jnn_2_M_2(LOW_half, U_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:731.5-731.67
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:730.5-730.67
   prod {{0xFD} {`%`_u32(223):Bu32}} => VEXTBINOP_instr(`%`_ishape(`%X%`_shape(I64_lanetype, `%`_dim(2))), `%`_ishape(`%X%`_shape(I32_lanetype, `%`_dim(4))), mk_vextbinop___0_vextbinop__(I32_Jnn, 4, I64_Jnn, 2, EXTMUL_vextbinop__Jnn_1_M_1_Jnn_2_M_2(HIGH_half, U_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:735.5-735.43
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:734.5-734.43
   prod {{0xFD} {`%`_u32(103):Bu32}} => VUNOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), mk_vunop__1_vunop_(F32_Fnn, 4, CEIL_vunop_Fnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:736.5-736.44
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:735.5-735.44
   prod {{0xFD} {`%`_u32(104):Bu32}} => VUNOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), mk_vunop__1_vunop_(F32_Fnn, 4, FLOOR_vunop_Fnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:737.5-737.44
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:736.5-736.44
   prod {{0xFD} {`%`_u32(105):Bu32}} => VUNOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), mk_vunop__1_vunop_(F32_Fnn, 4, TRUNC_vunop_Fnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:738.5-738.46
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:737.5-737.46
   prod {{0xFD} {`%`_u32(106):Bu32}} => VUNOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), mk_vunop__1_vunop_(F32_Fnn, 4, NEAREST_vunop_Fnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:739.5-739.42
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:738.5-738.42
   prod {{0xFD} {`%`_u32(224):Bu32}} => VUNOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), mk_vunop__1_vunop_(F32_Fnn, 4, ABS_vunop_Fnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:740.5-740.42
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:739.5-739.42
   prod {{0xFD} {`%`_u32(225):Bu32}} => VUNOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), mk_vunop__1_vunop_(F32_Fnn, 4, NEG_vunop_Fnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:741.5-741.43
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:740.5-740.43
   prod {{0xFD} {`%`_u32(227):Bu32}} => VUNOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), mk_vunop__1_vunop_(F32_Fnn, 4, SQRT_vunop_Fnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:745.5-745.43
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:744.5-744.43
   prod {{0xFD} {`%`_u32(228):Bu32}} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), mk_vbinop__1_vbinop_(F32_Fnn, 4, ADD_vbinop_Fnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:746.5-746.43
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:745.5-745.43
   prod {{0xFD} {`%`_u32(229):Bu32}} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), mk_vbinop__1_vbinop_(F32_Fnn, 4, SUB_vbinop_Fnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:747.5-747.43
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:746.5-746.43
   prod {{0xFD} {`%`_u32(230):Bu32}} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), mk_vbinop__1_vbinop_(F32_Fnn, 4, MUL_vbinop_Fnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:748.5-748.43
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:747.5-747.43
   prod {{0xFD} {`%`_u32(231):Bu32}} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), mk_vbinop__1_vbinop_(F32_Fnn, 4, DIV_vbinop_Fnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:749.5-749.43
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:748.5-748.43
   prod {{0xFD} {`%`_u32(232):Bu32}} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), mk_vbinop__1_vbinop_(F32_Fnn, 4, MIN_vbinop_Fnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:750.5-750.43
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:749.5-749.43
   prod {{0xFD} {`%`_u32(233):Bu32}} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), mk_vbinop__1_vbinop_(F32_Fnn, 4, MAX_vbinop_Fnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:751.5-751.44
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:750.5-750.44
   prod {{0xFD} {`%`_u32(234):Bu32}} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), mk_vbinop__1_vbinop_(F32_Fnn, 4, PMIN_vbinop_Fnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:752.5-752.44
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:751.5-751.44
   prod {{0xFD} {`%`_u32(235):Bu32}} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), mk_vbinop__1_vbinop_(F32_Fnn, 4, PMAX_vbinop_Fnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:753.5-753.51
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:752.5-752.51
   prod {{0xFD} {`%`_u32(269):Bu32}} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), mk_vbinop__1_vbinop_(F32_Fnn, 4, RELAXED_MIN_vbinop_Fnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:754.5-754.51
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:753.5-753.51
   prod {{0xFD} {`%`_u32(270):Bu32}} => VBINOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), mk_vbinop__1_vbinop_(F32_Fnn, 4, RELAXED_MAX_vbinop_Fnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:758.5-758.53
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:757.5-757.53
   prod {{0xFD} {`%`_u32(261):Bu32}} => VTERNOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), mk_vternop__1_vternop_(F32_Fnn, 4, RELAXED_MADD_vternop_Fnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:759.5-759.54
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:758.5-758.54
   prod {{0xFD} {`%`_u32(262):Bu32}} => VTERNOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), mk_vternop__1_vternop_(F32_Fnn, 4, RELAXED_NMADD_vternop_Fnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:763.5-763.43
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:762.5-762.43
   prod {{0xFD} {`%`_u32(116):Bu32}} => VUNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), mk_vunop__1_vunop_(F64_Fnn, 2, CEIL_vunop_Fnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:764.5-764.44
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:763.5-763.44
   prod {{0xFD} {`%`_u32(117):Bu32}} => VUNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), mk_vunop__1_vunop_(F64_Fnn, 2, FLOOR_vunop_Fnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:765.5-765.44
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:764.5-764.44
   prod {{0xFD} {`%`_u32(122):Bu32}} => VUNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), mk_vunop__1_vunop_(F64_Fnn, 2, TRUNC_vunop_Fnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:766.5-766.46
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:765.5-765.46
   prod {{0xFD} {`%`_u32(148):Bu32}} => VUNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), mk_vunop__1_vunop_(F64_Fnn, 2, NEAREST_vunop_Fnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:767.5-767.42
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:766.5-766.42
   prod {{0xFD} {`%`_u32(236):Bu32}} => VUNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), mk_vunop__1_vunop_(F64_Fnn, 2, ABS_vunop_Fnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:768.5-768.42
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:767.5-767.42
   prod {{0xFD} {`%`_u32(237):Bu32}} => VUNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), mk_vunop__1_vunop_(F64_Fnn, 2, NEG_vunop_Fnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:769.5-769.43
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:768.5-768.43
   prod {{0xFD} {`%`_u32(239):Bu32}} => VUNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), mk_vunop__1_vunop_(F64_Fnn, 2, SQRT_vunop_Fnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:773.5-773.43
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:772.5-772.43
   prod {{0xFD} {`%`_u32(240):Bu32}} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), mk_vbinop__1_vbinop_(F64_Fnn, 2, ADD_vbinop_Fnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:774.5-774.43
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:773.5-773.43
   prod {{0xFD} {`%`_u32(241):Bu32}} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), mk_vbinop__1_vbinop_(F64_Fnn, 2, SUB_vbinop_Fnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:775.5-775.43
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:774.5-774.43
   prod {{0xFD} {`%`_u32(242):Bu32}} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), mk_vbinop__1_vbinop_(F64_Fnn, 2, MUL_vbinop_Fnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:776.5-776.43
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:775.5-775.43
   prod {{0xFD} {`%`_u32(243):Bu32}} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), mk_vbinop__1_vbinop_(F64_Fnn, 2, DIV_vbinop_Fnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:777.5-777.43
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:776.5-776.43
   prod {{0xFD} {`%`_u32(244):Bu32}} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), mk_vbinop__1_vbinop_(F64_Fnn, 2, MIN_vbinop_Fnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:778.5-778.43
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:777.5-777.43
   prod {{0xFD} {`%`_u32(245):Bu32}} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), mk_vbinop__1_vbinop_(F64_Fnn, 2, MAX_vbinop_Fnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:779.5-779.44
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:778.5-778.44
   prod {{0xFD} {`%`_u32(246):Bu32}} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), mk_vbinop__1_vbinop_(F64_Fnn, 2, PMIN_vbinop_Fnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:780.5-780.44
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:779.5-779.44
   prod {{0xFD} {`%`_u32(247):Bu32}} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), mk_vbinop__1_vbinop_(F64_Fnn, 2, PMAX_vbinop_Fnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:781.5-781.51
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:780.5-780.51
   prod {{0xFD} {`%`_u32(271):Bu32}} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), mk_vbinop__1_vbinop_(F64_Fnn, 2, RELAXED_MIN_vbinop_Fnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:782.5-782.51
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:781.5-781.51
   prod {{0xFD} {`%`_u32(272):Bu32}} => VBINOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), mk_vbinop__1_vbinop_(F64_Fnn, 2, RELAXED_MAX_vbinop_Fnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:786.5-786.53
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:785.5-785.53
   prod {{0xFD} {`%`_u32(263):Bu32}} => VTERNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), mk_vternop__1_vternop_(F64_Fnn, 2, RELAXED_MADD_vternop_Fnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:787.5-787.54
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:786.5-786.54
   prod {{0xFD} {`%`_u32(264):Bu32}} => VTERNOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), mk_vternop__1_vternop_(F64_Fnn, 2, RELAXED_NMADD_vternop_Fnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:788.5-788.59
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:787.5-787.59
   prod {{0xFD} {`%`_u32(265):Bu32}} => VTERNOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16)), mk_vternop__0_vternop_(I8_Jnn, 16, RELAXED_LANESELECT_vternop_Jnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:789.5-789.59
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:788.5-788.59
   prod {{0xFD} {`%`_u32(266):Bu32}} => VTERNOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8)), mk_vternop__0_vternop_(I16_Jnn, 8, RELAXED_LANESELECT_vternop_Jnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:790.5-790.59
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:789.5-789.59
   prod {{0xFD} {`%`_u32(267):Bu32}} => VTERNOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), mk_vternop__0_vternop_(I32_Jnn, 4, RELAXED_LANESELECT_vternop_Jnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:791.5-791.59
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:790.5-790.59
   prod {{0xFD} {`%`_u32(268):Bu32}} => VTERNOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2)), mk_vternop__0_vternop_(I64_Jnn, 2, RELAXED_LANESELECT_vternop_Jnn_M))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:795.5-795.61
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:794.5-794.61
   prod {{0xFD} {`%`_u32(94):Bu32}} => VCVTOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), `%X%`_shape(F64_lanetype, `%`_dim(2)), mk_vcvtop___3_vcvtop__(F64_Fnn, 2, F32_Fnn, 4, DEMOTE_vcvtop__Fnn_1_M_1_Fnn_2_M_2(ZERO_zero)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:796.5-796.61
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:795.5-795.61
   prod {{0xFD} {`%`_u32(95):Bu32}} => VCVTOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), `%X%`_shape(F32_lanetype, `%`_dim(4)), mk_vcvtop___3_vcvtop__(F32_Fnn, 4, F64_Fnn, 2, `PROMOTELOW`_vcvtop__Fnn_1_M_1_Fnn_2_M_2))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:797.5-797.62
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:796.5-796.62
   prod {{0xFD} {`%`_u32(248):Bu32}} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(F32_lanetype, `%`_dim(4)), mk_vcvtop___2_vcvtop__(F32_Fnn, 4, I32_Jnn, 4, TRUNC_SAT_vcvtop__Fnn_1_M_1_Jnn_2_M_2(S_sx, ?())))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:798.5-798.62
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:797.5-797.62
   prod {{0xFD} {`%`_u32(249):Bu32}} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(F32_lanetype, `%`_dim(4)), mk_vcvtop___2_vcvtop__(F32_Fnn, 4, I32_Jnn, 4, TRUNC_SAT_vcvtop__Fnn_1_M_1_Jnn_2_M_2(U_sx, ?())))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:799.5-799.60
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:798.5-798.60
   prod {{0xFD} {`%`_u32(250):Bu32}} => VCVTOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), `%X%`_shape(I32_lanetype, `%`_dim(4)), mk_vcvtop___1_vcvtop__(I32_Jnn, 4, F32_Fnn, 4, CONVERT_vcvtop__Jnn_1_M_1_Fnn_2_M_2(?(), S_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:800.5-800.60
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:799.5-799.60
   prod {{0xFD} {`%`_u32(251):Bu32}} => VCVTOP_instr(`%X%`_shape(F32_lanetype, `%`_dim(4)), `%X%`_shape(I32_lanetype, `%`_dim(4)), mk_vcvtop___1_vcvtop__(I32_Jnn, 4, F32_Fnn, 4, CONVERT_vcvtop__Jnn_1_M_1_Fnn_2_M_2(?(), U_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:801.5-801.67
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:800.5-800.67
   prod {{0xFD} {`%`_u32(252):Bu32}} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(F64_lanetype, `%`_dim(2)), mk_vcvtop___2_vcvtop__(F64_Fnn, 2, I32_Jnn, 4, TRUNC_SAT_vcvtop__Fnn_1_M_1_Jnn_2_M_2(S_sx, ?(ZERO_zero))))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:802.5-802.67
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:801.5-801.67
   prod {{0xFD} {`%`_u32(253):Bu32}} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(F64_lanetype, `%`_dim(2)), mk_vcvtop___2_vcvtop__(F64_Fnn, 2, I32_Jnn, 4, TRUNC_SAT_vcvtop__Fnn_1_M_1_Jnn_2_M_2(U_sx, ?(ZERO_zero))))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:803.5-803.64
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:802.5-802.64
   prod {{0xFD} {`%`_u32(254):Bu32}} => VCVTOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), `%X%`_shape(I32_lanetype, `%`_dim(4)), mk_vcvtop___1_vcvtop__(I32_Jnn, 4, F64_Fnn, 2, CONVERT_vcvtop__Jnn_1_M_1_Fnn_2_M_2(?(LOW_half), S_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:804.5-804.64
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:803.5-803.64
   prod {{0xFD} {`%`_u32(255):Bu32}} => VCVTOP_instr(`%X%`_shape(F64_lanetype, `%`_dim(2)), `%X%`_shape(I32_lanetype, `%`_dim(4)), mk_vcvtop___1_vcvtop__(I32_Jnn, 4, F64_Fnn, 2, CONVERT_vcvtop__Jnn_1_M_1_Fnn_2_M_2(?(LOW_half), U_sx)))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:805.5-805.66
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:804.5-804.66
   prod {{0xFD} {`%`_u32(257):Bu32}} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(F32_lanetype, `%`_dim(4)), mk_vcvtop___2_vcvtop__(F32_Fnn, 4, I32_Jnn, 4, RELAXED_TRUNC_vcvtop__Fnn_1_M_1_Jnn_2_M_2(S_sx, ?())))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:806.5-806.66
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:805.5-805.66
   prod {{0xFD} {`%`_u32(258):Bu32}} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(F32_lanetype, `%`_dim(4)), mk_vcvtop___2_vcvtop__(F32_Fnn, 4, I32_Jnn, 4, RELAXED_TRUNC_vcvtop__Fnn_1_M_1_Jnn_2_M_2(U_sx, ?())))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:807.5-807.71
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:806.5-806.71
   prod {{0xFD} {`%`_u32(259):Bu32}} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(F64_lanetype, `%`_dim(2)), mk_vcvtop___2_vcvtop__(F64_Fnn, 2, I32_Jnn, 4, RELAXED_TRUNC_vcvtop__Fnn_1_M_1_Jnn_2_M_2(S_sx, ?(ZERO_zero))))
-  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:808.5-808.71
+  ;; ../../../../specification/wasm-3.0/5.3-binary.instructions.spectec:807.5-807.71
   prod {{0xFD} {`%`_u32(260):Bu32}} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4)), `%X%`_shape(F64_lanetype, `%`_dim(2)), mk_vcvtop___2_vcvtop__(F64_Fnn, 2, I32_Jnn, 4, RELAXED_TRUNC_vcvtop__Fnn_1_M_1_Jnn_2_M_2(U_sx, ?(ZERO_zero))))
 }
 
@@ -14602,11 +14620,6 @@ grammar Ti64 : u64
   prod{`<implicit-prod-result>` : iN} `<implicit-prod-result>`:TiN(64) => `<implicit-prod-result>`
 
 ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-grammar Ti128 : u128
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
-  prod{`<implicit-prod-result>` : iN} `<implicit-prod-result>`:TiN(128) => `<implicit-prod-result>`
-
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
 grammar Tf32 : f32
   ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
   prod{`<implicit-prod-result>` : fN} `<implicit-prod-result>`:TfN(32) => `<implicit-prod-result>`
@@ -14662,12 +14675,12 @@ syntax I = idctxt
 ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
 rec {
 
-;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:155.1-155.56
+;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:154.1-154.56
 def $concat_idctxt(idctxt*) : idctxt
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:156.1-156.29
+  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:155.1-155.29
   def $concat_idctxt([]) = {TYPES [], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [], FIELDS [], TYPEDEFS []}
     -- wf_idctxt: `%`({TYPES [], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [], FIELDS [], TYPEDEFS []})
-  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:157.1-157.52
+  ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec:156.1-156.52
   def $concat_idctxt{I : idctxt, I' : idctxt}([I I']) = I +++ $concat_idctxt(I'*{})
 }
 
@@ -15020,7 +15033,7 @@ grammar Toffset : u64
 ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec
 grammar Tmemarg_(N : N) : memarg
   ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec
-  prod{n : n, m : m} {{`%`_u64(n):Toffset} {`%`_u64(m):Talign_(N)}} => {ALIGN `%`_u32(n), OFFSET `%`_u32(m)}
+  prod{n : n, m : m} {{`%`_u64(n):Toffset} {`%`_u64(m):Talign_(N)}} => {ALIGN `%`_u32(n), OFFSET `%`_u64(m)}
 
 ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec
 grammar Tplaininstr_(I : I) : instr

@@ -639,15 +639,17 @@ The verification of WebAssembly type requirements is deferred to the
   To <dfn>instantiate a promise of a module</dfn> |promiseOfModule| with imports |importObject|, perform the following steps:
 
     1. Let |promise| be [=a new promise=].
-    1. [=Upon fulfillment=] of |promiseOfModule| with value |module|:
-        1. [=asynchronously instantiate a WebAssembly module|Instantiate the WebAssembly module=] |module| importing |importObject|, and let |innerPromise| be the result.
-        1. [=Upon fulfillment=] of |innerPromise| with value |instance|.
-            1. Let |result| be the {{WebAssemblyInstantiatedSource}} value «[ "{{WebAssemblyInstantiatedSource/module}}" → |module|, "{{WebAssemblyInstantiatedSource/instance}}" → |instance| ]».
-            1. [=Resolve=] |promise| with |result|.
-        1. [=Upon rejection=] of |innerPromise| with reason |reason|:
+    1. [=React=] to |promiseOfModule|:
+        * If |promiseOfModule| was fulfilled with value |module|:
+            1. [=asynchronously instantiate a WebAssembly module|Instantiate the WebAssembly module=] |module| importing |importObject|, and let |innerPromise| be the result.
+            1. [=React=] to |innerPromise|:
+                * If |innerPromise| was fulfilled with value |instance|.
+                    1. Let |result| be the {{WebAssemblyInstantiatedSource}} value «[ "{{WebAssemblyInstantiatedSource/module}}" → |module|, "{{WebAssemblyInstantiatedSource/instance}}" → |instance| ]».
+                    1. [=Resolve=] |promise| with |result|.
+                * If |innerPromise| was rejected with reason |reason|:
+                    1. [=Reject=] |promise| with |reason|.
+        * If |promiseOfModule| was rejected with reason |reason|:
             1. [=Reject=] |promise| with |reason|.
-    1. [=Upon rejection=] of |promiseOfModule| with reason |reason|:
-        1. [=Reject=] |promise| with |reason|.
     1. Return |promise|.
 </div>
 

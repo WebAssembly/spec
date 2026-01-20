@@ -78,10 +78,20 @@ and string_of_typ ?(short=false) t =
   | ParenT t -> "(" ^ string_of_typ t ^ ")"
   | TupT ts -> "(" ^ string_of_typs ", " ts ^ ")"
   | IterT (t1, iter) -> string_of_typ t1 ^ string_of_iter iter
-  | StrT tfs when short && List.length tfs > 3 ->
-    "{" ^ concat ", " (map_filter_nl_list (string_of_typfield ~short) (Lib.List.take 3 tfs)) ^ ", ..}"
-  | StrT tfs ->
-    "{" ^ concat ", " (map_filter_nl_list (string_of_typfield ~short) tfs) ^ "}"
+  | StrT (dots1, ts, tfs, dots2) when short && List.length tfs > 3 ->
+    "{" ^ concat ", " (
+      strings_of_dots dots1 @
+      map_filter_nl_list string_of_typ ts @
+      map_filter_nl_list (string_of_typfield ~short) (Lib.List.take 3 tfs) @
+      ".." :: strings_of_dots dots2
+    ) ^ "}"
+  | StrT (dots1, ts, tfs, dots2) ->
+    "{" ^ concat ", " (
+      strings_of_dots dots1 @
+      map_filter_nl_list string_of_typ ts @
+      map_filter_nl_list (string_of_typfield ~short) tfs @
+      strings_of_dots dots2
+    ) ^ "}"
   | CaseT (dots1, ts, tcs, dots2) when short && List.length tcs > 3 ->
     "| " ^ concat " | " (
       strings_of_dots dots1 @

@@ -81,7 +81,6 @@ grammar Ti8 : u8 = TiN(`8)
 grammar Ti16 : u16 = TiN(`16)
 grammar Ti32 : u32 = TiN(`32)
 grammar Ti64 : u64 = TiN(`64)
-grammar Ti128 : u128 = TiN(`128)
 grammar Tf32 : f32 = TfN(`32)
 grammar Tf64 : f64 = TfN(`64)
 

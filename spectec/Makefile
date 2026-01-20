@@ -23,10 +23,15 @@ ROOTDIR = ..
 INTERPRETERDIR = $(ROOTDIR)/interpreter
 CLONEDIR = src/backend-interpreter/reference-interpreter
 CLONERM = dune-project jslib
+OPAMPACKAGES = zarith menhir mdx
+
 
 .PHONY: exe
 
-exe: $(CLONEDIR)
+packages:
+	opam install $(OPAMPACKAGES)
+
+exe: $(CLONEDIR) packages
 	rm -f ./$(NAME)
 	dune build $(SRCDIR)/$(EXE)
 	ln -f $(OUTDIR)/$(EXE) ./$(NAME)
@@ -108,10 +113,7 @@ clean:
 	rm -f src/frontend/parser.{automaton,conflicts}
 	for dir in $(TESTDIRS); do (cd $$dir && make clean); done
 
-distclean: clean
+distclean: clean spec-clean
 	rm -f ./$(NAME)
 	rm -rf $(CLONEDIR)
 	for dir in $(TESTDIRS); do (cd $$dir && make distclean); done
-
-specclean:
-	(cd ../document/core && make clean)

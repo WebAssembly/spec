@@ -548,7 +548,7 @@ $${rule-prose: Instr_ok/elem.drop}
 $${rule: Instr_ok/elem.drop}
 
 
-.. index:: memory instruction, memory index, context
+.. index:: memory instruction, memory index, context, memmory argument
    pair: validation; instruction
    single: abstract syntax; instruction
 .. _valid-memarg:
@@ -556,6 +556,18 @@ $${rule: Instr_ok/elem.drop}
 
 Memory Instructions
 ~~~~~~~~~~~~~~~~~~~
+
+Memory instructions use :ref:`memory arguments <syntax-memarg>`,
+which are classified by the :ref:`address type <syntax-addrtype>` and the
+and :ref:`bit width <bitwidth-valtype>` of the access they are suitable for.
+
+:math:`\memarg`
+...............
+
+$${rule-prose: Memarg_ok}
+
+$${rule: Memarg_ok}
+
 
 .. _valid-load-val:
 

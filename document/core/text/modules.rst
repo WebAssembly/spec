@@ -74,7 +74,7 @@ $${grammar: Ttype_}
 Tags
 ~~~~
 
-An tag definition can bind a symbolic :ref:`tag identifier <text-id>`.
+A tag definition can bind a symbolic :ref:`tag identifier <text-id>`.
 
 $${grammar: Ttag_}
 

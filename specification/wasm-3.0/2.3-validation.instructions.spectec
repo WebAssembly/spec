@@ -2,7 +2,7 @@
 ;; Validation of Instructions
 ;;
 
-relation Instr_ok: context |- instr : instrtype     hint(name "T")        hint(macro "%instr")
+relation Instr_ok: context |- instr : instrtype     hint(name "T-instr")  hint(macro "%instr")
 relation Instrs_ok: context |- instr* : instrtype   hint(name "T-instr*") hint(macro "%instrs")
 relation Expr_ok: context |- expr : resulttype      hint(name "T-expr")   hint(macro "%expr")
 
@@ -405,6 +405,14 @@ rule Instr_ok/elem.drop:
 
 ;; Memory instructions
 
+relation Memarg_ok: |- memarg : addrtype -> N  hint(name "T-memarg") hint(macro "%memarg") hint(prose "%1 is valid for %2 and %3")
+
+rule Memarg_ok:
+  |- {ALIGN n, OFFSET m} : at -> N
+  -- if $(2^n <= N/8)
+  -- if $(m < 2^$size(at))
+
+
 rule Instr_ok/memory.size:
   C |- MEMORY.SIZE x : eps -> at
   -- if C.MEMS[x] = at lim PAGE
@@ -443,12 +451,12 @@ rule Instr_ok/load:
 rule Instr_ok/load-val:
   C |- LOAD nt x memarg : at -> nt
   -- if C.MEMS[x] = at lim PAGE
-  -- if $(2^(memarg.ALIGN) <= $size(nt)/8)
+  -- Memarg_ok: |- memarg : at -> $size(nt)
 
 rule Instr_ok/load-pack:
   C |- LOAD Inn (M _ sx) x memarg : at -> Inn
   -- if C.MEMS[x] = at lim PAGE
-  -- if $(2^(memarg.ALIGN) <= M/8)
+  -- Memarg_ok: |- memarg : at -> M
 
 (;
 rule Instr_ok/store:
@@ -462,48 +470,48 @@ rule Instr_ok/store:
 rule Instr_ok/store-val:
   C |- STORE nt x memarg : at nt -> eps
   -- if C.MEMS[x] = at lim PAGE
-  -- if $(2^(memarg.ALIGN) <= $size(nt)/8)
+  -- Memarg_ok: |- memarg : at -> $size(nt)
 
 rule Instr_ok/store-pack:
   C |- STORE Inn M x memarg : at Inn -> eps
   -- if C.MEMS[x] = at lim PAGE
-  -- if $(2^(memarg.ALIGN) <= M/8)
+  -- Memarg_ok: |- memarg : at -> M
 
 rule Instr_ok/vload-val:
   C |- VLOAD V128 x memarg : at -> V128
   -- if C.MEMS[x] = at lim PAGE
-  -- if $(2^(memarg.ALIGN) <= $vsize(V128)/8)
+  -- Memarg_ok: |- memarg : at -> $vsize(V128)
 
 rule Instr_ok/vload-pack:
   C |- VLOAD V128 (SHAPE M X N _ sx) x memarg : at -> V128
   -- if C.MEMS[x] = at lim PAGE
-  -- if $(2^(memarg.ALIGN) <= M/8 * N)
+  -- Memarg_ok: |- memarg : at -> $(M*N)
 
 rule Instr_ok/vload-splat:
   C |- VLOAD V128 (SPLAT N) x memarg : at -> V128
   -- if C.MEMS[x] = at lim PAGE
-  -- if $(2^(memarg.ALIGN) <= N/8)
+  -- Memarg_ok: |- memarg : at -> N
 
 rule Instr_ok/vload-zero:
   C |- VLOAD V128 (ZERO N) x memarg : at -> V128
   -- if C.MEMS[x] = at lim PAGE
-  -- if $(2^(memarg.ALIGN) <= N/8)
+  -- Memarg_ok: |- memarg : at -> N
 
 rule Instr_ok/vload_lane:
   C |- VLOAD_LANE V128 N x memarg i : at V128 -> V128
   -- if C.MEMS[x] = at lim PAGE
-  -- if $(2^(memarg.ALIGN) <= N/8)
+  -- Memarg_ok: |- memarg : at -> N
   -- if $(i < 128/N)
 
 rule Instr_ok/vstore:
   C |- VSTORE V128 x memarg : at V128 -> eps
   -- if C.MEMS[x] = at lim PAGE
-  -- if $(2^(memarg.ALIGN) <= $vsize(V128)/8)
+  -- Memarg_ok: |- memarg : at -> $vsize(V128)
 
 rule Instr_ok/vstore_lane:
   C |- VSTORE_LANE V128 N x memarg i : at V128 -> eps
   -- if C.MEMS[x] = at lim PAGE
-  -- if $(2^(memarg.ALIGN) <= N/8)
+  -- Memarg_ok: |- memarg : at -> N
   -- if $(i < 128/N)
 
 

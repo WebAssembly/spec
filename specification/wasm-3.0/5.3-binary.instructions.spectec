@@ -15,6 +15,14 @@ grammar Binstr/parametric : instr =
 
 ;; Control instructions
 
+syntax castop = (null?, null?)
+
+grammar Bcastop : castop =
+  | 0x00 => (eps, eps)
+  | 0x01 => (NULL, eps)
+  | 0x02 => (eps, NULL)
+  | 0x03 => (NULL, NULL)
+
 grammar Bblocktype : blocktype =
   | 0x40 => _RESULT eps
   | t:Bvaltype => _RESULT t
@@ -39,7 +47,15 @@ grammar Binstr/control : instr = ...
   | 0x11 y:Btypeidx x:Btableidx => CALL_INDIRECT x (_IDX y)
   | 0x12 x:Bfuncidx => RETURN_CALL x
   | 0x13 y:Btypeidx x:Btableidx => RETURN_CALL_INDIRECT x (_IDX y)
+  | 0x14 x:Btypeidx => CALL_REF (_IDX x)
+  | 0x15 x:Btypeidx => RETURN_CALL_REF (_IDX x)
   | 0x1F bt:Bblocktype c*:Blist(Bcatch) (in:Binstr)* 0x0B => TRY_TABLE bt c* in*
+  | 0xD5 l:Blabelidx => BR_ON_NULL l
+  | 0xD6 l:Blabelidx => BR_ON_NON_NULL l
+  | 0xFB 24:Bu32 (null_1?, null_2?):Bcastop
+    l:Blabelidx ht_1:Bheaptype ht_2:Bheaptype => BR_ON_CAST l (REF null_1? ht_1) (REF null_2? ht_2)
+  | 0xFB 25:Bu32 (null_1?, null_2?):Bcastop
+    l:Blabelidx ht_1:Bheaptype ht_2:Bheaptype => BR_ON_CAST_FAIL l (REF null_1? ht_1) (REF null_2? ht_2)
   | ...
 
 grammar Bcatch : catch =
@@ -82,8 +98,8 @@ grammar Binstr/table : instr = ...
 syntax memidxop = (memidx, memarg)
 
 grammar Bmemarg : memidxop =
-  | n:Bu32 m:Bu32 => (0, {ALIGN n, OFFSET m})                       -- if $(n < 2^6)
-  | n:Bu32 x:Bmemidx m:Bu32 => (x, {ALIGN $((n - 2^6)), OFFSET m})  -- if $(2^6 <= n < 2^7)
+  | n:Bu32 m:Bu64 => (0, {ALIGN n, OFFSET m})                       -- if $(n < 2^6)
+  | n:Bu32 x:Bmemidx m:Bu64 => (x, {ALIGN $((n - 2^6)), OFFSET m})  -- if $(2^6 <= n < 2^7)
 
 grammar Binstr/memory : instr = ...
   | 0x28 (x,ao):Bmemarg => LOAD I32 x ao
@@ -120,22 +136,16 @@ grammar Binstr/memory : instr = ...
 
 ;; Reference instructions
 
-syntax castop = (null?, null?)
-
-grammar Bcastop : castop =
-  | 0x00 => (eps, eps)
-  | 0x01 => (NULL, eps)
-  | 0x02 => (eps, NULL)
-  | 0x03 => (NULL, NULL)
-
 grammar Binstr/ref : instr = ...
   | 0xD0 ht:Bheaptype => REF.NULL ht
   | 0xD1 => REF.IS_NULL
   | 0xD2 x:Bfuncidx => REF.FUNC x
   | 0xD3 => REF.EQ
   | 0xD4 => REF.AS_NON_NULL
-  | 0xD5 l:Blabelidx => BR_ON_NULL l
-  | 0xD6 l:Blabelidx => BR_ON_NON_NULL l
+  | 0xFB 20:Bu32 ht:Bheaptype => REF.TEST (REF ht)
+  | 0xFB 21:Bu32 ht:Bheaptype => REF.TEST (REF NULL ht)
+  | 0xFB 22:Bu32 ht:Bheaptype => REF.CAST (REF ht)
+  | 0xFB 23:Bu32 ht:Bheaptype => REF.CAST (REF NULL ht)
   | ...
 
 grammar Binstr/struct : instr = ...
@@ -164,17 +174,6 @@ grammar Binstr/array : instr = ...
   | 0xFB 19:Bu32 x:Btypeidx y:Belemidx => ARRAY.INIT_ELEM x y
   | ...
 
-grammar Binstr/cast : instr = ...
-  | 0xFB 20:Bu32 ht:Bheaptype => REF.TEST (REF ht)
-  | 0xFB 21:Bu32 ht:Bheaptype => REF.TEST (REF NULL ht)
-  | 0xFB 22:Bu32 ht:Bheaptype => REF.CAST (REF ht)
-  | 0xFB 23:Bu32 ht:Bheaptype => REF.CAST (REF NULL ht)
-  | 0xFB 24:Bu32 (null_1?, null_2?):Bcastop
-    l:Blabelidx ht_1:Bheaptype ht_2:Bheaptype => BR_ON_CAST l (REF null_1? ht_1) (REF null_2? ht_2)
-  | 0xFB 25:Bu32 (null_1?, null_2?):Bcastop
-    l:Blabelidx ht_1:Bheaptype ht_2:Bheaptype => BR_ON_CAST_FAIL l (REF null_1? ht_1) (REF null_2? ht_2)
-  | ...
-
 grammar Binstr/extern : instr = ...
   | 0xFB 26:Bu32 => ANY.CONVERT_EXTERN
   | 0xFB 27:Bu32 => EXTERN.CONVERT_ANY
@@ -190,8 +189,8 @@ grammar Binstr/i31 : instr = ...
 ;; Numeric instructions
 
 grammar Binstr/num-const : instr = ...
-  | 0x41 n:Bu32 => CONST I32 n
-  | 0x42 n:Bu64 => CONST I64 n
+  | 0x41 i:Bi32 => CONST I32 i
+  | 0x42 i:Bi64 => CONST I64 i
   | 0x43 p:Bf32 => CONST F32 p
   | 0x44 p:Bf64 => CONST F64 p
   | ...
@@ -369,7 +368,7 @@ grammar Binstr/num-cvt : instr = ...
   | 0xB8 => CVTOP F64 I32 CONVERT U
   | 0xB9 => CVTOP F64 I64 CONVERT S
   | 0xBA => CVTOP F64 I64 CONVERT U
-  | 0xBB => CVTOP F32 F64 PROMOTE
+  | 0xBB => CVTOP F64 F32 PROMOTE
   | 0xBC => CVTOP I32 F32 REINTERPRET
   | 0xBD => CVTOP I64 F64 REINTERPRET
   | 0xBE => CVTOP F32 I32 REINTERPRET

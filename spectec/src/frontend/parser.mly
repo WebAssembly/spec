@@ -73,6 +73,19 @@ let is_post_exp e =
   | HoleE _ -> true
   | _ -> false
 
+let is_atom t =
+  match t.it with
+  | AtomT _ -> true
+  | _ -> false
+
+let is_typfield t =
+  match t.it with
+  | SeqT [t1; _] -> is_atom t1
+  | VarT _ | BoolT | NumT _ | TextT | TupT _ | SeqT _
+  | AtomT _ | InfixT _ | BrackT _
+  | ParenT _ | IterT _ -> false
+  | StrT _ | CaseT _ | ConT _ | RangeT _ -> assert false
+
 let rec is_typcase t =
   match t.it with
   | AtomT _ | InfixT _ | BrackT _ -> true
@@ -185,7 +198,7 @@ and short_alt_prod' = function
 %right EQ NE LT GT LE GE MEM NOTMEM EQSUB
 %right ARROW ARROWSUB
 %left SEMICOLON
-%left DOTDOTDOT
+%left DOT DOTDOT DOTDOTDOT
 %left PLUS MINUS CAT
 %left STAR SLASH BACKSLASH
 
@@ -231,20 +244,30 @@ nl_dash_list1(X) :
   | DASH DASH nl_dash_list(X) { Nl::$3 }
   | DASH X nl_dash_list(X) { (Elem $2)::$3 }
 
-%inline dots :
+%inline bar_dots :
   | DOTDOTDOT {}
-  | bar(dots) DOTDOTDOT {}
+  | bar(bar_dots) DOTDOTDOT {}
 
-dots_list(X) :
-  | dots_list1(X) { let x, y = $1 in (NoDots, x, y) }
-  | bar(X) dots_list1(X) { let x, y = $2 in (NoDots, x, y) }
-  | dots bar(X) dots_list1(X) { let x, y = $3 in (Dots, $2 @ x, y) }
+dots_bar_list(X) :
+  | dots_bar_list1(X) { let x, y = $1 in (NoDots, x, y) }
+  | bar(X) dots_bar_list1(X) { let x, y = $2 in (NoDots, x, y) }
+  | bar_dots bar(X) dots_bar_list1(X) { let x, y = $3 in (Dots, $2 @ x, y) }
 
-dots_list1(X) :
+dots_bar_list1(X) :
   | (* empty *) { [], NoDots }
   | DOTDOTDOT { [], Dots }
   | X { (Elem $1)::[], NoDots }
-  | X bar(X) dots_list1(X) { let x, y = $3 in (Elem $1)::$2 @ x, y }
+  | X bar(X) dots_bar_list1(X) { let x, y = $3 in (Elem $1)::$2 @ x, y }
+
+dots_comma_list(X) :
+  | dots_comma_list1(X) { let x, y = $1 in (NoDots, x, y) }
+  | DOTDOTDOT comma(X) dots_comma_list1(X) { let x, y = $3 in (Dots, $2 @ x, y) }
+
+dots_comma_list1(X) :
+  | (* empty *) { [], NoDots }
+  | DOTDOTDOT { [], Dots }
+  | X { (Elem $1)::[], NoDots }
+  | X comma(X) dots_comma_list1(X) { let x, y = $3 in (Elem $1)::$2 @ x, y }
 
 
 (* Identifiers *)
@@ -309,10 +332,6 @@ atom_escape :
   | BOT { Atom.Bot }
   | TOP { Atom.Top }
   | INFINITY { Atom.Infinity }
-  | DOT { Atom.Dot }
-  | DOTDOT { Atom.Dot2 }
-  | TICK DOT { Atom.Dot }
-  | TICK DOTDOT { Atom.Dot2 }
 
 varid_bind_with_suffix :
   | varid { $1 }
@@ -365,6 +384,8 @@ check_atom :
 %inline infixop :
   | infixop_ { $1 $$ $sloc }
 %inline infixop_ :
+  | DOT { Atom.Dot }
+  | DOTDOT { Atom.Dot2 }
   | DOTDOTDOT { Atom.Dot3 }
   | SEMICOLON { Atom.Semicolon }
   | BACKSLASH { Atom.Backslash }
@@ -446,8 +467,37 @@ typ : typ_post { $1 }
 
 deftyp : deftyp_ { $1 $ $sloc }
 deftyp_ :
-  | LBRACE comma_nl_list(fieldtyp) RBRACE { StrT $2 }
-  | dots_list(casetyp)
+  | LBRACE dots_comma_list(fieldtyp) RBRACE
+    { let dots1, tfs, dots2 = $2 in
+      match dots1, El.Convert.filter_nl tfs, dots2 with
+      | NoDots, [(t, prems, hints)], NoDots when not (is_typfield t) ->
+        if prems <> [] then
+          error t.at "misplaced premise"
+        else if hints <> [] then
+          error (List.hd hints).hintid.at "misplaced hint"
+        else
+          t.it
+      | _ ->
+        let y1, y2, _ =
+          List.fold_right
+            (fun elem (y1, y2, at) ->
+              (* at is the position of leftmost id element so far *)
+              match elem with
+              | Nl -> if at = None then y1, Nl::y2, at else Nl::y1, y2, at
+              | Elem (t, prems, hints) ->
+                match t.it with
+                | SeqT [{it = AtomT atom; _}; t2] when at = None ->
+                  y1, (Elem (atom, (t2, prems), hints))::y2, None
+                | AtomT _ | InfixT _ | BrackT _ | SeqT _ ->
+                  error t.at "malformed field type"
+                | _ when prems = [] && hints = [] ->
+                  (Elem t)::y1, y2, Some t.at
+                | _ ->
+                  let at = Option.value at ~default: t.at in
+                  error at "misplaced type"
+            ) tfs ([], [], None)
+        in StrT (dots1, y1, y2, dots2) }
+  | dots_bar_list(casetyp)
     { let dots1, tcs, dots2 = $1 in
       match dots1, El.Convert.filter_nl tcs, dots2 with
       | NoDots, [(t, prems, hints)], NoDots when not (is_typcase t) ->
@@ -472,12 +522,12 @@ deftyp_ :
                 | SeqT ({it = AtomT atom; _}::_)
                 | SeqT ({it = InfixT (_, atom, _); _}::_)
                 | SeqT ({it = BrackT (atom, _, _); _}::_) when at = None ->
-                  y1, (Elem (atom, (t, prems), hints))::y2, at
+                  y1, (Elem (atom, (t, prems), hints))::y2, None
                 | _ when prems = [] && hints = [] ->
                   (Elem t)::y1, y2, Some t.at
                 | _ ->
-                  let at = Option.value at ~default:t.at in
-                  error at "misplaced type";
+                  let at = Option.value at ~default: t.at in
+                  error at "misplaced type"
             ) tcs ([], [], None)
         in CaseT (dots1, y1, y2, dots2) }
   | nl_bar_list1(enumtyp(enum1), enumtyp(arith)) { RangeT $1 }
@@ -533,7 +583,7 @@ nottyp_rel_ :
 nottyp : nottyp_rel { $1 }
 
 fieldtyp :
-  | fieldid typ_post hint* prem_bin_list { ($1, ($2, $4), $3) }
+  | nottyp hint* prem_bin_list { $1, $3, $2 }
 
 casetyp :
   | nottyp hint* prem_list { $1, $3, $2 }
@@ -837,7 +887,7 @@ prod_ :
   | sym EQUIV sym prem_list { EquivP ($1, $3, $4) }
 
 gram :
-  | dots_list(prod) { $1 $ $sloc }
+  | dots_bar_list(prod) { $1 $ $sloc }
 
 
 prod_short : prod_short_ { $1 $ $sloc }
@@ -848,18 +898,18 @@ prod_short_ :
     }
 
 gram_short :
-  | dots_list(prod_short) { $1 $ $sloc }
+  | dots_bar_list(prod_short) { $1 $ $sloc }
 *)
 
 
 gram : gram_ { $1 $ $sloc }
-gram_ :  (* dots * prod nl_list * dots *)
-  (* Inline and transform dots_list to avoid conflicts *)
+gram_ :  (* bar_dots * prod nl_list * bar_dots *)
+  (* Inline and transform dots_bar_list to avoid conflicts *)
   | gram_long_or_short { let x, y = $1 [] in (NoDots, x, y) }
   | bar(sym) gram_long_or_short { let x, y = $2 [] in (NoDots, x, y) }
-  | dots bar(gram) gram_long_or_short { let x, y = $3 [] in (Dots, $2 @ x, y) }
+  | bar_dots bar(gram) gram_long_or_short { let x, y = $3 [] in (Dots, $2 @ x, y) }
 
-gram_long_or_short :  (* prod nl_list * dots *)
+gram_long_or_short :  (* prod nl_list * bar_dots *)
   | gram_empty { fun alts -> short_alt_prod (alts, []), $1 }
   | gram_long1 { $1 }
   | gram_short1 { $1 }
