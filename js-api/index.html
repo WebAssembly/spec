@@ -6,7 +6,7 @@
   <meta content="ED" name="w3c-status">
   <meta content="Bikeshed version 0ef803fdf, updated Tue Jan 6 11:59:39 2026 -0800" name="generator">
   <link href="https://www.w3.org/TR/wasm-js-api-2/" rel="canonical">
-  <meta content="f2d26ea8db765a35cfc14e9ffee3edb8ffdd0908" name="revision">
+  <meta content="777e9c4c2744c82c7a6489496473cfa070db5489" name="revision">
   <meta content="dark light" name="color-scheme">
 <style>
 emu-const {
@@ -747,7 +747,7 @@ var[data-var-color="6"] { --var-vg: #FFBCF2; }
 </p>
    <h1 class="no-ref p-name" id="title">WebAssembly JavaScript Interface</h1>
    <p id="w3c-state"><a href="https://www.w3.org/standards/types/#ED">Editor’s Draft</a>,
-    <time class="dt-updated" datetime="2026-01-16">16 January 2026</time></p>
+    <time class="dt-updated" datetime="2026-01-21">21 January 2026</time></p>
    <details open>
     <summary>More details about this document</summary>
     <div data-fill-with="spec-metadata">
@@ -3703,7 +3703,7 @@ They expose the same interface as native JavaScript errors like <code class="idl
     </ol>
    </div>
    <h4 class="heading settled" data-level="6.1.2" id="js-string-cast"><span class="secno">6.1.2. </span><span class="content">cast</span><a class="self-link" href="#js-string-cast"></a></h4>
-   <p>The <var>funcType</var> of this builtin is <code>(rec (type (func (param externref) (result externref)))).0</code>.</p>
+   <p>The <var>funcType</var> of this builtin is <code>(rec (type (func (param externref) (result (ref extern))))).0</code>.</p>
    <div class="algorithm" data-algorithm="js-string-cast">
     <p>When this builtin is invoked with parameter <var>v</var>, the following steps must be run:</p>
     <ol>
@@ -3728,7 +3728,7 @@ They expose the same interface as native JavaScript errors like <code class="idl
    </div>
    <h4 class="heading settled" data-level="6.1.4" id="js-string-fromCharCodeArray"><span class="secno">6.1.4. </span><span class="content">fromCharCodeArray</span><a class="self-link" href="#js-string-fromCharCodeArray"></a></h4>
    <p>Let <var>arrayType</var> be <code>(rec (type (array (mut i16)))).0</code>.</p>
-   <p>The <var>funcType</var> of this builtin is <code>(rec (type (func (param (ref null arrayType) i32 i32) (result externref)))).0</code>.</p>
+   <p>The <var>funcType</var> of this builtin is <code>(rec (type (func (param (ref null arrayType) i32 i32) (result (ref extern))))).0</code>.</p>
    <div class="algorithm" data-algorithm="js-string-fromCharCodeArray">
     <p>When this builtin is invoked with parameters <var>array</var>, <var>start</var>, and <var>end</var>, the following steps must be run:</p>
     <ol>
@@ -3807,7 +3807,7 @@ They expose the same interface as native JavaScript errors like <code class="idl
     </ol>
    </div>
    <h4 class="heading settled" data-level="6.1.6" id="js-string-fromCharCode"><span class="secno">6.1.6. </span><span class="content">fromCharCode</span><a class="self-link" href="#js-string-fromCharCode"></a></h4>
-   <p>The <var>funcType</var> of this builtin is <code>(rec (type (func (param i32) (result externref)))).0</code>.</p>
+   <p>The <var>funcType</var> of this builtin is <code>(rec (type (func (param i32) (result (ref extern))))).0</code>.</p>
    <div class="algorithm" data-algorithm="js-string-fromCharCode">
     <p>When this builtin is invoked with parameter <var>v</var>, the following steps must be run:</p>
     <ol>
@@ -3880,7 +3880,7 @@ They expose the same interface as native JavaScript errors like <code class="idl
     </ol>
    </div>
    <h4 class="heading settled" data-level="6.1.11" id="js-string-concat"><span class="secno">6.1.11. </span><span class="content">concat</span><a class="self-link" href="#js-string-concat"></a></h4>
-   <p>The <var>funcType</var> of this builtin is <code>(rec (type (func (param externref externref) (result externref)))).0</code>.</p>
+   <p>The <var>funcType</var> of this builtin is <code>(rec (type (func (param externref externref) (result (ref extern))))).0</code>.</p>
    <div class="algorithm" data-algorithm="js-string-concat">
     <p>When this builtin is invoked with parameters <var>first</var> and <var>second</var>, the following steps must be run:</p>
     <ol>
@@ -3893,7 +3893,7 @@ They expose the same interface as native JavaScript errors like <code class="idl
     </ol>
    </div>
    <h4 class="heading settled" data-level="6.1.12" id="js-string-substring"><span class="secno">6.1.12. </span><span class="content">substring</span><a class="self-link" href="#js-string-substring"></a></h4>
-   <p>The <var>funcType</var> of this builtin is <code>(rec (type (func (param externref i32 i32) (result externref)))).0</code>.</p>
+   <p>The <var>funcType</var> of this builtin is <code>(rec (type (func (param externref i32 i32) (result (ref extern))))).0</code>.</p>
    <div class="algorithm" data-algorithm="js-string-substring">
     <p>When this builtin is invoked with parameters <var>string</var>, <var>start</var>, and <var>end</var>, the following steps must be run:</p>
     <ol>
