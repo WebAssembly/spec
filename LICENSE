@@ -3,6 +3,8 @@ Please see the LICENSE file in each top-level directory for the terms applicable
 The relevant directories and licenses are:
 
 document/    - W3C Software and Document Notice and License
+spectec/     - Apache License 2.0
 interpreter/ - Apache License 2.0
 test/        - Apache License 2.0
+proposals/   - Creative Commons Attribution 4.0 International License
 papers/      - Creative Commons Attribution 4.0 International License
