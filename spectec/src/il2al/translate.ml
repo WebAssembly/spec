@@ -928,6 +928,15 @@ let rec translate_iterpr pr (iter, xes) =
   let iter' = translate_iter iter in
   let lhs_iter = match iter' with | ListN (e, _) -> ListN (e, None) | _ -> iter' in
 
+  (* HARDCODE: Handle the case where iterated variable of ListN is not in xes *)
+  let xes =
+    match iter with
+    | ListN (_, Some x) when List.for_all (fun (x', _) -> x.it <> x'.it) xes ->
+      let dummy_expr = Il.Ast.VarE ("_" $ no_region) $$ no_region % (Il.Ast.VarT ("_" $ no_region, []) $ no_region) in
+      (x, dummy_expr) :: xes
+    | _ -> xes
+  in
+
   let handle_iter_ty ty =
     match iter' with
     | Opt -> iterT ty Il.Opt
