@@ -370,6 +370,12 @@ and eval_expr env expr =
       raise Exception.OutOfMemory
     else
       Array.make i v |> listV
+  (* HARDCODE: The case where itered variable does not appear in xes.
+    --> Insert itered variable. This was instroduced due to the change of IrerE's ListN. *)
+  | IterE (e1, (ListN (e2, Some x), [])) ->
+    let dummy_expr =VarE "_" $$ no_region % (Il.Ast.VarT ("_" $ no_region, []) $ no_region) in
+    let expr' = {expr with it = IterE (e1, (ListN (e2, Some x), [(x, dummy_expr)]))} in
+    eval_expr env expr'
   | IterE (inner_e, (iter, xes)) ->
     let vs =
       env
