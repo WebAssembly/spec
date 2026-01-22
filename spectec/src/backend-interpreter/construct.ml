@@ -126,7 +126,7 @@ and al_to_comptype: value -> comptype = function
   | CaseV ("ARRAY", [ ft ]) -> ArrayT (al_to_fieldtype ft)
   | CaseV ("FUNC", [ CaseV ("->", [ rt1; rt2 ]) ]) when !version <= 2 ->
     FuncT (al_to_resulttype rt1, (al_to_resulttype rt2))
-  | CaseV ("FUNC", [ rt1; rt2 ]) ->
+  | CaseV ("->", [ rt1; rt2 ]) ->
     FuncT (al_to_resulttype rt1, (al_to_resulttype rt2))
   | v -> error_value "comptype" v
 
@@ -1143,7 +1143,7 @@ and al_of_comptype = function
     if !version <= 2 then
       CaseV ("FUNC", [ CaseV ("->", [ al_of_resulttype rt1; al_of_resulttype rt2 ])])
     else
-      CaseV ("FUNC", [ al_of_resulttype rt1; al_of_resulttype rt2 ])
+      CaseV ("->", [ al_of_resulttype rt1; al_of_resulttype rt2 ])
 
 and al_of_subtype = function
   | SubT (fin, tul, st) ->
