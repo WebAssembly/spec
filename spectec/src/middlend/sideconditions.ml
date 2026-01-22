@@ -32,9 +32,7 @@ let iterPr (pr, (iter, vars)) =
   let vars' = List.filter (fun (id, _) ->
     Set.mem id.it frees.varid
   ) vars in
-  (* Must keep at least one variable to keep the iteration well-formed *)
-  let vars'' = if vars' <> [] then vars' else [List.hd vars] in
-  IterPr (pr, (iter, vars''))
+  IterPr (pr, (iter, vars'))
 
 let is_null e = CmpE (`EqOp, `BoolT, e, OptE None $$ e.at % e.note) $$ e.at % (BoolT $ e.at)
 let iffE e1 e2 = IfPr (BinE (`EquivOp, `BoolT, e1, e2) $$ e1.at % (BoolT $ e1.at)) $ e1.at
