@@ -124,10 +124,7 @@ and al_to_resulttype: value -> resulttype = function
 and al_to_comptype: value -> comptype = function
   | CaseV ("STRUCT", [ ftl ]) -> StructT (al_to_list al_to_fieldtype ftl)
   | CaseV ("ARRAY", [ ft ]) -> ArrayT (al_to_fieldtype ft)
-  | CaseV ("FUNC", [ CaseV ("->", [ rt1; rt2 ]) ]) when !version <= 2 ->
-    FuncT (al_to_resulttype rt1, (al_to_resulttype rt2))
-  | CaseV ("->", [ rt1; rt2 ]) ->
-    FuncT (al_to_resulttype rt1, (al_to_resulttype rt2))
+  | CaseV ("->", [ rt1; rt2 ]) -> FuncT (al_to_resulttype rt1, (al_to_resulttype rt2))
   | v -> error_value "comptype" v
 
 and al_to_subtype: value -> subtype = function
@@ -1139,11 +1136,7 @@ and al_of_resulttype rt = al_of_list al_of_valtype rt
 and al_of_comptype = function
   | StructT ftl -> CaseV ("STRUCT", [ al_of_list al_of_fieldtype ftl ])
   | ArrayT ft -> CaseV ("ARRAY", [ al_of_fieldtype ft ])
-  | FuncT (rt1, rt2) ->
-    if !version <= 2 then
-      CaseV ("FUNC", [ CaseV ("->", [ al_of_resulttype rt1; al_of_resulttype rt2 ])])
-    else
-      CaseV ("->", [ al_of_resulttype rt1; al_of_resulttype rt2 ])
+  | FuncT (rt1, rt2) -> CaseV ("->", [ al_of_resulttype rt1; al_of_resulttype rt2 ])
 
 and al_of_subtype = function
   | SubT (fin, tul, st) ->
@@ -1900,7 +1893,7 @@ let al_of_type ty =
 
     match subtypes with
     | [ subtype ] ->
-      let rt = subtype |> arg_of_case "SUB" 2 |> arg_of_case "FUNC" 0 in
+      let rt = subtype |> arg_of_case "SUB" 2 in
       CaseV ("TYPE", [ rt ])
     | _ -> failwith ("Rectype is not supported in Wasm " ^ (string_of_int !version))
   else
