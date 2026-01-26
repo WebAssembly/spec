@@ -214,7 +214,7 @@ and t_args env = List.map (t_arg env)
 and t_params env = List.map (t_param env)
 
 and t_prem' env = function
-  | RulePr (id, mixop, exp) -> RulePr (id, mixop, t_exp env exp)
+  | RulePr (id, args, mixop, exp) -> RulePr (id, t_args env args, mixop, t_exp env exp)
   | IfPr e -> IfPr (t_exp env e)
   | LetPr (e1, e2, ids) -> LetPr (t_exp env e1, t_exp env e2, ids)
   | ElsePr -> ElsePr
@@ -260,8 +260,8 @@ let rec t_def' env = function
     DecD (id, t_params env params, typ, t_clauses env clauses)
   | TypD (id, params, insts) ->
     TypD (id, t_params env params, t_insts env insts)
-  | RelD (id, mixop, typ, rules) ->
-    RelD (id, mixop, t_typ env typ, List.map (t_rule env) rules)
+  | RelD (id, params, mixop, typ, rules) ->
+    RelD (id, t_params env params, mixop, t_typ env typ, List.map (t_rule env) rules)
   | GramD (id, params, typ, prods) ->
     GramD (id, t_params env params, typ, t_prods env prods)
   | HintD _ as def -> def

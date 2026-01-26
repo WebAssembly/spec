@@ -177,9 +177,9 @@ let encode_rule r =
 (* Encode defs *)
 let rec encode_def d =
   match d.it with
-  | RelD (id, mixop, t, rules) ->
+  | RelD (id, ps, mixop, t, rules) ->
     let rules' = List.map encode_rule rules in
-    RelD (id, mixop, t, rules') $ d.at
+    RelD (id, ps, mixop, t, rules') $ d.at
   | RecD ds -> RecD (List.map encode_def ds) $ d.at
   | DecD _ | TypD _ | GramD _ | HintD _ -> d
 

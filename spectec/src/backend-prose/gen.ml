@@ -17,6 +17,10 @@ let print_yet_prem prem fname =
   let s = Il.Print.string_of_prem prem in
   print_yet prem.at fname ("`" ^ s ^ "`")
 
+let print_yet_rel def fname =
+  let s = Il.Print.string_of_def def in
+  print_yet def.at fname ("`" ^ s ^ "`")
+
 (* Helpers *)
 
 module Map = Map.Make(String)
@@ -32,12 +36,12 @@ let flatten_rec def =
 
 let is_validation_helper_relation def =
   match def.it with
-  | Ast.RelD (id, _, _, _) -> id.it = "Expand" || id.it = "Expand_use"
+  | Ast.RelD (id, _, _, _, _) -> id.it = "Expand" || id.it = "Expand_use"
   | _ -> false
 (* NOTE: Assume validation relation is `|-` *)
 let is_validation_relation def =
   match def.it with
-  | Ast.RelD (_, mixop, _, _) ->
+  | Ast.RelD (_, _, mixop, _, _) ->
     List.exists (List.exists (fun atom -> atom.it = Atom.Turnstile)) (Mixop.flatten mixop)
   | _ -> false
 
@@ -49,7 +53,7 @@ let extract_validation_il il =
 
 let rel_has_id id rel =
   match rel.it with
-  | Ast.RelD (id', _, _, _) -> id.it = id'.it
+  | Ast.RelD (id', _, _, _, _) -> id.it = id'.it
   | _ -> false
 
 let extract_prose_hint hintexp =
@@ -150,7 +154,8 @@ let get_rel_kind def =
   let extract_pphint relid = extract_rel_hint relid "prosepp" in
 
   match def.it with
-  | Ast.RelD (id, mixop, typ, _) ->
+  | Ast.RelD (id, params, mixop, typ, _) ->
+      if params <> [] then (print_yet_rel def "get_rel_kind"; OtherRel) else
       let mixop' = List.map (List.map Util.Source.it) (Mixop.flatten mixop) in
       let match_mixop pattern = mixop' = pattern || mixop' = List.tl pattern in
       if match_mixop valid_pattern then
@@ -288,7 +293,8 @@ let rec prem_to_instrs prem =
     [ LetS (exp_to_expr e1, exp_to_expr e2) ]
   | Ast.IfPr e ->
     if_expr_to_instrs e
-  | Ast.RulePr (id, _, e) ->
+  | Ast.RulePr (id, args, _, e) ->
+    if args <> [] then (print_yet_prem prem "prem_to_instrs"; [ YetS "TODO: prem_to_instrs for RulePr" ]) else
     let rel =
       match List.find_opt (rel_has_id id) !Langs.validation_il with
       | Some rel -> rel
@@ -450,7 +456,8 @@ let prose_of_rules name mk_concl rules =
 
 let proses_of_rel mk_concl def =
   match def.it with
-  | Ast.RelD (rel_id, _, _, rules) ->
+  | Ast.RelD (rel_id, params, _, _, rules) ->
+    if params <> [] then (print_yet_rel def "proses_of_rel"; []) else
     let rules = List.filter (fun r -> not (is_hidden_rule r)) rules in
     let frees = (Il2al.Free.free_rules rules).varid in
     let unified_rules = Il2al.Unify.(unify_rules (init_env frees) rules) in
@@ -476,7 +483,7 @@ type vrule_group =
 let rec extract_vrules def =
   match def.it with
   | Ast.RecD defs -> List.concat_map extract_vrules defs
-  | Ast.RelD (id, _, _, rules) when id.it = "Instr_ok" ->
+  | Ast.RelD (id, _, _, _, rules) when id.it = "Instr_ok" ->
       List.map (fun rule -> (id, rule)) rules
   | _ -> []
 (* group typing rules that have same name *)
@@ -551,7 +558,8 @@ let proses_of_defaultable_rel cmpop = proses_of_rel (fun rule ->
 (** 9. Others **)
 let proses_of_other_rel rel =
   match rel.it with
-  | Ast.RelD (rel_id, mixop, args, _) ->
+  | Ast.RelD (rel_id, params, mixop, args, _) ->
+    if params <> [] then (print_yet_rel rel "proses_of_other_rel"; []) else
     (match extract_rel_hint rel_id "prose" with
     | Some hint ->
       (* Relation with prose hint *)

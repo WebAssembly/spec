@@ -160,7 +160,7 @@ and sym g =
 
 and prem pr =
   match pr.it with
-  | RulePr (x, op, e) -> Node ("rule", [id x; mixop op; exp e])
+  | RulePr (x, as1, op, e) -> Node ("rule", id x :: List.map arg as1 @ [mixop op; exp e])
   | IfPr e -> Node ("if", [exp e])
   | LetPr (e1, e2, _xs) -> Node ("let", [exp e1; exp e2])
   | ElsePr -> Atom "else"
@@ -207,8 +207,8 @@ let rec def d =
   match d.it with
   | TypD (x, ps, insts) ->
     Node ("typ", [id x] @ List.map param ps @ List.map inst insts)
-  | RelD (x, op, t, rules) ->
-    Node ("rel", [id x; mixop op; typ t] @ List.map rule rules)
+  | RelD (x, ps, op, t, rules) ->
+    Node ("rel", [id x] @ List.map param ps @ [mixop op; typ t] @ List.map rule rules)
   | DecD (x, ps, t, clauses) ->
     Node ("def", [id x] @ List.map param ps @ [typ t] @ List.map clause clauses)
   | GramD (x, ps, t, prods) ->

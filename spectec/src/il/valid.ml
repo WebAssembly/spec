@@ -572,10 +572,11 @@ and valid_sym env g : typ =
 and valid_prem env prem =
   Debug.(log_in_at "il.valid_prem" prem.at (fun _ -> il_prem prem));
   match prem.it with
-  | RulePr (x, mixop, e) ->
-    let mixop', t, _rules = Env.find_rel env x in
+  | RulePr (x, as_, mixop, e) ->
+    let ps, mixop', t, _rules = Env.find_rel env x in
     assert (Mixop.eq mixop mixop');
-    valid_expmix env mixop e (mixop, t) e.at
+    let s = valid_args env as_ ps Subst.empty prem.at in
+    valid_expmix env mixop e (mixop, Subst.subst_typ s t) e.at
   | IfPr e ->
     valid_exp env e (BoolT $ e.at)
   | LetPr (e1, e2, xs) ->
@@ -709,9 +710,10 @@ let infer_def env d : Env.t =
   | TypD (x, ps, _insts) ->
     let _env' = valid_params env ps in
     Env.bind_typ env x (ps, [])
-  | RelD (x, mixop, t, rules) ->
-    valid_typ env t;
-    Env.bind_rel env x (mixop, t, rules)
+  | RelD (x, ps, mixop, t, rules) ->
+    let env' = valid_params env ps in
+    valid_typ env' t;
+    Env.bind_rel env x (ps, mixop, t, rules)
   | DecD (x, ps, t, clauses) ->
     let env' = valid_params env ps in
     valid_typ env' t;
@@ -731,10 +733,11 @@ let rec valid_def env d : Env.t =
     let env' = valid_params env ps in
     List.iter (valid_inst env' ps) insts;
     Env.bind_typ env x (ps, insts);
-  | RelD (x, mixop, t, rules) ->
-    valid_typcase env (mixop, (t, [], []), []);
-    List.iter (valid_rule env mixop t) rules;
-    Env.bind_rel env x (mixop, t, rules)
+  | RelD (x, ps, mixop, t, rules) ->
+    let env' = valid_params env ps in
+    valid_typcase env' (mixop, (t, [], []), []);
+    List.iter (valid_rule env' mixop t) rules;
+    Env.bind_rel env x (ps, mixop, t, rules)
   | DecD (x, ps, t, clauses) ->
     let env' = valid_params env ps in
     valid_typ env' t;

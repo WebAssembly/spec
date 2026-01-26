@@ -130,7 +130,7 @@ and quant = param
 and def = def' phrase
 and def' =
   | TypD of id * param list * inst list               (* syntax type (family) *)
-  | RelD of id * mixop * typ * rule list              (* relation *)
+  | RelD of id * param list * mixop * typ * rule list (* relation *)
   | DecD of id * param list * typ * clause list       (* definition *)
   | GramD of id * param list * typ * prod list        (* grammar *)
   | RecD of def list                                  (* recursive *)
@@ -154,7 +154,7 @@ and prod' =
 
 and prem = prem' phrase
 and prem' =
-  | RulePr of id * mixop * exp                        (* premise *)
+  | RulePr of id * arg list * mixop * exp             (* premise *)
   | IfPr of exp                                       (* side condition *)
   | LetPr of exp * exp * string list                  (* binding *)
   | ElsePr                                            (* otherwise *)

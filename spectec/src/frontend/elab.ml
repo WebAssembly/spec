@@ -1932,7 +1932,7 @@ and elab_prem env (pr : prem) : Il.prem list =
   | RulePr (id, e) ->
     let mixop, not, _, _ = find "relation" env.rels id in
     let es', _s = checkpoint (elab_exp_notation' env id e not) in
-    [Il.RulePr (id, mixop, tup_exp_nary' es' e.at) $ pr.at]
+    [Il.RulePr (id, [], mixop, tup_exp_nary' es' e.at) $ pr.at]
   | IfPr e ->
     let e' = checkpoint (elab_exp env e (Il.BoolT $ e.at)) in
     [Il.IfPr e' $ pr.at]
@@ -2576,7 +2576,7 @@ let rec elab_def env (d : def) : Il.def list =
     let not = Mixop.apply mixop (List.map (fun t' -> "_" $ d.at, t') ts') in
     let t' = tup_typ' ts' t.at in
     env.rels <- bind "relation" env.rels x (mixop, not, t', []);
-    [Il.RelD (x, mixop, t', []) $ d.at]
+    [Il.RelD (x, [], mixop, t', []) $ d.at]
       @ elab_hintdef env (RelH (x, hints) $ d.at)
 
   | RuleD (x1, x2, e, prems) ->
@@ -2675,9 +2675,9 @@ let populate_def env (d' : Il.def) : Il.def =
     | _ps, Family insts' -> Il.TypD (x, ps', insts') $ d'.at
     | _ps, _k -> d'
     )
-  | Il.RelD (x, mixop, t', []) ->
+  | Il.RelD (x, ps', mixop, t', []) ->
     let _, _, _, rules' = find "relation" env.rels x in
-    Il.RelD (x, mixop, t', List.map snd rules') $ d'.at
+    Il.RelD (x, ps', mixop, t', List.map snd rules') $ d'.at
   | Il.DecD (x, ps', t', []) ->
     let _, _, clauses' = find "definition" env.defs x in
     Il.DecD (x, ps', t', List.map snd clauses') $ d'.at
@@ -2773,5 +2773,5 @@ let elab_exp env (e : exp) (t : typ) : Il.exp =
 let elab_rel env (e : exp) (x : id) : Il.exp =
   let env' = local_env env in
   match elab_prem env' (RulePr (x, e) $ e.at) with
-  | [{it = Il.RulePr (_, _, e'); _}] -> e'
+  | [{it = Il.RulePr (_, _, _, e'); _}] -> e'
   | _ -> assert false

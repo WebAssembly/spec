@@ -206,7 +206,7 @@ and sym g =
 and prem pr =
   visit_prem pr;
   match pr.it with
-  | RulePr (x, op, e) -> relid x; mixop op; exp e
+  | RulePr (x, as_, op, e) -> relid x; args as_; mixop op; exp e
   | IfPr e -> exp e
   | ElsePr -> ()
   | IterPr (pr1, it) -> iterexp prem pr1 it
@@ -261,7 +261,7 @@ let rec def d =
   visit_def d;
   match d.it with
   | TypD (x, ps, insts) -> typid x; params ps; list inst insts
-  | RelD (x, op, t, rules) -> relid x; mixop op; typ t; list rule rules
+  | RelD (x, ps, op, t, rules) -> relid x; params ps; mixop op; typ t; list rule rules
   | DecD (x, ps, t, clauses) -> defid x; params ps; typ t; list clause clauses
   | GramD (x, ps, t, prods) -> gramid x; params ps; typ t; list prod prods
   | RecD ds -> list def ds

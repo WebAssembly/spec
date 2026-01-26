@@ -978,7 +978,9 @@ and translate_prem prem =
   | Il.LetPr (exp1, exp2, ids) ->
     init_lhs_id ();
     translate_letpr exp1 exp2 ids
-  | Il.RulePr (id, _, exp) -> translate_rulepr id exp
+  | Il.RulePr (id, args, _, exp) ->
+    if args <> [] then error prem.at "Cannot handle rule arguments";
+    translate_rulepr id exp
   | Il.IterPr (pr, iterexp) -> translate_iterpr pr iterexp
 
 

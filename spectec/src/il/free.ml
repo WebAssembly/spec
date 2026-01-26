@@ -108,7 +108,7 @@ and free_sym g =
 
 and free_prem prem =
   match prem.it with
-  | RulePr (x, _op, e) -> free_relid x ++ free_exp e
+  | RulePr (x, as_, _op, e) -> free_relid x ++ free_args as_ ++ free_exp e
   | IfPr e -> free_exp e
   | LetPr (e1, e2, _) -> free_exp e1 ++ free_exp e2
   | ElsePr -> empty
@@ -182,20 +182,24 @@ let free_hintdef hd =
 
 let rec free_def d =
   match d.it with
-  | TypD (_x, ps, insts) -> free_params ps ++ free_list free_inst insts
-  | RelD (_x, _mixop, t, rules) -> free_typ t ++ free_list free_rule rules
+  | TypD (_x, ps, insts) ->
+    free_params ps ++ (free_list free_inst insts -- bound_params ps)
+  | RelD (_x, ps, _mixop, t, rules) ->
+    free_params ps ++
+    (free_typ t ++ free_list free_rule rules -- bound_params ps)
   | DecD (_x, ps, t, clauses) ->
-    free_params ps ++ (free_typ t -- bound_params ps)
-      ++ free_list free_clause clauses
+    free_params ps ++
+    (free_typ t ++ free_list free_clause clauses -- bound_params ps)
   | GramD (_x, ps, t, prods) ->
-    free_params ps ++ (free_typ t ++ free_list free_prod prods -- bound_params ps)
+    free_params ps ++
+    (free_typ t ++ free_list free_prod prods -- bound_params ps)
   | RecD ds -> free_list free_def ds
   | HintD hd -> free_hintdef hd
 
 let rec bound_def d =
   match d.it with
   | TypD (x, _, _) -> bound_typid x
-  | RelD (x, _, _, _) -> bound_relid x
+  | RelD (x, _, _, _, _) -> bound_relid x
   | DecD (x, _, _, _) -> bound_defid x
   | GramD (x, _, _, _) -> bound_gramid x
   | RecD ds -> free_list bound_def ds

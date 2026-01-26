@@ -72,7 +72,7 @@ let rec rewrite_iterexp' iterexp pr =
     { Il_walk.base_transformer with transform_exp = rewrite iterexp } in
   let new_ = Il_walk.transform_exp transformer in
   match pr with
-  | RulePr (id, mixop, e) -> RulePr (id, mixop, new_ e)
+  | RulePr (id, args, mixop, e) -> RulePr (id, args, mixop, new_ e)
   | IfPr e -> IfPr (new_ e)
   | LetPr (e1, e2, ids) ->
     let new_ids = List.map (rewrite_id iterexp) ids in
@@ -102,7 +102,7 @@ let rec recover_iterexp' iterexp pr =
     { Il_walk.base_transformer with transform_exp = recover iterexp } in
   let new_ = Il_walk.transform_exp transformer in
   match pr with
-  | RulePr (id, mixop, e) -> RulePr (id, mixop, new_ e)
+  | RulePr (id, args, mixop, e) -> RulePr (id, args, mixop, new_ e)
   | IfPr e -> IfPr (new_ e)
   | LetPr (e1, e2, ids) ->
     let new_ids = List.map (recover_id iterexp) ids in
@@ -293,7 +293,7 @@ let rec rows_of_prem vars len i p =
   | LetPr (_, _, targets) ->
     let covering_vars = List.filter_map (index_of len vars) targets in
     [ Assign targets, p, [i] @ covering_vars ]
-  | RulePr (_, _, { it = TupE args; _ }) ->
+  | RulePr (_, _, _, { it = TupE args; _ }) ->
     (* Assumpton: the only possible assigned-value is the last arg (i.e. ... |- lhs ) *)
     let _, l = Util.Lib.List.split_last args in
     let frees = (free_exp_list l) in
@@ -364,9 +364,9 @@ let animate_clause c = match c.it with
 
 (* Animate defs *)
 let rec animate_def d = match d.it with
-  | RelD (id, mixop, t, rules) ->
+  | RelD (id, ps, mixop, t, rules) ->
     let rules' = List.map animate_rule rules in
-    RelD (id, mixop, t, rules') $ d.at
+    RelD (id, ps, mixop, t, rules') $ d.at
   | DecD (id, t1, t2, clauses) ->
     let new_clauses = List.map animate_clause clauses in
     DecD (id, t1, t2, new_clauses) $ d.at
