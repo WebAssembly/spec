@@ -409,7 +409,7 @@ let rec group_rules : (id * rule) list -> rule_def list = function
 (* extract reduction rules for wasm instructions *)
 let extract_rules def =
   match def.it with
-  | RelD (id, _, _, rules) -> List.map (fun rule -> id, rule) rules
+  | RelD (id, _, _, _, rules) -> List.map (fun rule -> id, rule) rules
   | _ -> []
 
 let unify_ctxt (env: env) (input_vars: string list) (clauses: rule_clause list) : rule_clause list =

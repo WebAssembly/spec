@@ -199,7 +199,7 @@ and string_of_iterexp (iter, xes) =
 
 and string_of_sym g =
   match g.it with
-  | VarG (x, args) -> string_of_id x ^ string_of_args args
+  | VarG (x, as1) -> string_of_id x ^ string_of_args as1
   | NumG n -> Printf.sprintf "0x%02X" n
   | TextG t -> "\"" ^ String.escaped t ^ "\""
   | EpsG -> "eps"
@@ -214,8 +214,9 @@ and string_of_sym g =
 
 and string_of_prem prem =
   match prem.it with
-  | RulePr (x, mixop, e) ->
-    string_of_id x ^ ": " ^ string_of_mixop mixop ^ string_of_exp_args e
+  | RulePr (x, as1, mixop, e) ->
+    string_of_id x ^ string_of_args as1 ^ ": " ^
+    string_of_mixop mixop ^ string_of_exp_args e
   | IfPr e -> "if " ^ string_of_exp e
   | LetPr (e1, e2, xs) ->
     let xs' = List.map (fun x -> x $ no_region) xs in
@@ -309,8 +310,8 @@ let rec string_of_def ?(suppress_pos = false) d =
   | TypD (x, ps, insts) ->
     pre ^ "syntax " ^ string_of_id x ^ string_of_params ps ^
      concat "\n" (List.map (string_of_inst ~suppress_pos x) insts) ^ "\n"
-  | RelD (x, mixop, t, rules) ->
-    pre ^ "relation " ^ string_of_id x ^ ": " ^
+  | RelD (x, ps, mixop, t, rules) ->
+    pre ^ "relation " ^ string_of_id x ^ string_of_params ps ^ ": " ^
     string_of_mixop mixop ^ string_of_typ_args t ^
       concat "\n" (List.map (string_of_rule ~suppress_pos) rules) ^ "\n"
   | DecD (x, ps, t, clauses) ->

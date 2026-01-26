@@ -196,8 +196,7 @@ let rec t_prem n : prem -> eqns * prem = phrase t_prem' n
 
 and t_prem' n prem : eqns * prem' =
   match prem with
-  | RulePr (a, b, exp) ->
-    unary t_exp n exp (fun exp' -> RulePr (a, b, exp'))
+  | RulePr (a, args, b, exp) -> binary (fun n x -> t_list t_arg n x Fun.id) t_exp n (args, exp) (fun (args', exp') -> RulePr (a, args', b, exp'))
   | IfPr e -> unary t_exp n e (fun e' -> IfPr e')
   | LetPr (e1, e2, ids) -> binary t_exp t_exp n (e1, e2) (fun (e1', e2') -> LetPr (e1', e2', ids))
   | ElsePr -> [], prem
@@ -222,7 +221,7 @@ let t_rule x = { x with it = t_rule' x.it }
 
 let rec t_def' = function
   | RecD defs -> RecD (List.map t_def defs)
-  | RelD (id, mixop, typ, rules) -> RelD (id, mixop, typ, List.map t_rule rules)
+  | RelD (id, params, mixop, typ, rules) -> RelD (id, params, mixop, typ, List.map t_rule rules)
   | def -> def
 
 and t_def x = { x with it = t_def' x.it }

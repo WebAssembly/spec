@@ -186,7 +186,7 @@ and det_prem pr =
     (fun s -> String.concat ", " (Set.elements s.varid))
   ) @@ fun _ ->
   match pr.it with
-  | RulePr (_x, _mixop, e) -> det_exp e
+  | RulePr (_x, _as, _mixop, e) -> det_exp e
   | IfPr e -> det_cond_exp e
   | LetPr (e1, _e2, _xs) -> det_exp e1
   | ElsePr -> empty

@@ -79,8 +79,9 @@ let rec free_prem ignore_listN prem =
   let f = free_exp ignore_listN in
   let fp = free_prem ignore_listN in
   let fi = free_iterexp ignore_listN in
+  let fa = free_arg ignore_listN in
   match prem.it with
-  | RulePr (_id, _op, e) -> f e
+  | RulePr (_id, args, _op, e) -> free_list fa args ++ f e
   | IfPr e -> f e
   | LetPr (e1, e2, _ids) -> f e1 ++ f e2
   | ElsePr -> empty

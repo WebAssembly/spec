@@ -129,7 +129,7 @@ and t_arg env arg = match arg.it with
 
 let rec t_prem env prem =
   (match prem.it with
-  | RulePr (_, _, exp) -> t_exp env exp
+  | RulePr (_, args, _, exp) -> List.concat_map (t_arg env) args @ t_exp env exp
   | IfPr e -> t_exp env e
   | LetPr (e1, e2, _) -> t_exp env e1 @ t_exp env e2
   | ElsePr -> []
@@ -165,27 +165,30 @@ let reduce_prems prems = prems
   |> Util.Lib.List.filter_not is_true
   |> Util.Lib.List.nub implies
 
-let t_rule' = function
+let t_params env =
+  List.fold_left (fun env param ->
+    match param.it with
+    | ExpP (v, t) -> Env.add v.it t env
+    | TypP _ | DefP _ | GramP _ -> error param.at "unexpected type argument in rule"
+  ) env
+
+let t_rule' env = function
   | RuleD (id, params, mixop, exp, prems) ->
-    let env = List.fold_left (fun env param ->
-      match param.it with
-      | ExpP (v, t) -> Env.add v.it t env
-      | TypP _ | DefP _ | GramP _ -> error param.at "unexpected type argument in rule"
-      ) Env.empty params
-    in
-    let prems' = t_prems env prems in
-    let extra_prems = t_exp env exp in
+    let env' = t_params env params in
+    let prems' = t_prems env' prems in
+    let extra_prems = t_exp env' exp in
     let reduced_prems = reduce_prems (extra_prems @ prems') in
     RuleD (id, params, mixop, exp, reduced_prems)
 
-let t_rule x = { x with it = t_rule' x.it }
+let t_rule env x = { x with it = t_rule' env x.it }
 
-let t_rules = List.map t_rule
+let t_rules env = List.map (t_rule env)
 
 let rec t_def' = function
   | RecD defs -> RecD (List.map t_def defs)
-  | RelD (id, mixop, typ, rules) ->
-    RelD (id, mixop, typ, t_rules rules)
+  | RelD (id, params, mixop, typ, rules) ->
+    let env = t_params Env.empty params in
+    RelD (id, params, mixop, typ, t_rules env rules)
   | def -> def
 
 and t_def x = { x with it = t_def' x.it }

@@ -70,7 +70,7 @@ and transform_arg t a =
 and transform_prem t p =
   let f = t.transform_prem in
   let it = match p.it with
-    | RulePr (id, op, e) -> RulePr (id, op, transform_exp t e)
+    | RulePr (id, as1, op, e) -> RulePr (id, List.map (transform_arg t) as1, op, transform_exp t e)
     | IfPr e -> IfPr (transform_exp t e)
     | LetPr (e1, e2, ss) -> LetPr (transform_exp t e1, transform_exp t e2, ss)
     | ElsePr -> ElsePr

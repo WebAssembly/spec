@@ -255,7 +255,9 @@ and check_sym dims ctx g =
 
 and check_prem dims ctx prem =
   match prem.it with
-  | RulePr (_x, _mixop, e) -> check_exp dims ctx e
+  | RulePr (_x, as_, _mixop, e) ->
+    List.iter (check_arg dims ctx) as_;
+    check_exp dims ctx e
   | IfPr e -> check_exp dims ctx e
   | ElsePr -> ()
   | LetPr (e1, e2, _xs) ->
@@ -308,7 +310,8 @@ let rec check_def d : dims =
     List.iter (check_param dims) ps;
     List.iter (check_inst dims) insts;
     check_dims dims
-  | RelD (_x, _mixop, t, rules) ->
+  | RelD (_x, ps, _mixop, t, rules) ->
+    List.iter (check_param dims) ps;
     check_typ dims [] t;
     List.iter (check_rule dims) rules;
     check_dims dims
@@ -668,9 +671,10 @@ and annot_param dims p : param * occur =
 and annot_prem dims prem : prem * occur =
   let it, occur =
     match prem.it with
-    | RulePr (x, op, e) ->
-      let e', occur = annot_exp `Rhs dims e in
-      RulePr (x, op, e'), occur
+    | RulePr (x, as1, op, e) ->
+      let as1', occurs = List.split (List.map (annot_arg dims) as1) in
+      let e', occur2 = annot_exp `Rhs dims e in
+      RulePr (x, as1', op, e'), List.fold_left union occur2 occurs
     | IfPr e ->
       let e', occur = annot_exp `Rhs dims e in
       IfPr e', occur
