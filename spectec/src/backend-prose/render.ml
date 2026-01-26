@@ -1112,8 +1112,7 @@ let render_rhs env lhs rhs =
     sprintf "the result for which %s" (render_expr env eiter)
   | Al.Ast.IterE (e, (Al.Ast.ListN (ie, Some id), xes)) ->
     let se = render_expr env e in
-    let ids = List.map fst xes in
-    assert (ids = [ id ]);
+    assert (xes = []);
     let eid = Al.Al_util.varE id ~note:Al.Al_util.no_note in
     let sid = render_expr env eid in
     let elb = Al.Al_util.natE Z.zero ~note:Al.Al_util.no_note in

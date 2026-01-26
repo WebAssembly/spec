@@ -256,7 +256,8 @@ let apply_prose_hint hint args =
    ) template;
   |> String.concat ""
 
-let mixop_name mixop = "`" ^ Xl.Atom.to_string (Option.get (Xl.Mixop.head mixop)) ^ "`"
+let mixop_name mixop default =
+  Xl.Mixop.head mixop |> Option.map Xl.Atom.to_string |> Option.value ~default
 
 let string_of_stack_prefix expr =
   let open Al.Ast in
@@ -265,7 +266,7 @@ let string_of_stack_prefix expr =
   | VarE ("F" | "L") -> ""
   | _ when Il.Eq.eq_typ expr.note Al.Al_util.frameT -> "the :ref:`frame <syntax-frame>`"
   | CaseE (mixop, _) when Il.Eq.eq_typ expr.note Al.Al_util.evalctxT ->
-    let evalctx_name = mixop_name mixop
+    let evalctx_name = mixop_name mixop "context"
     |> fun s -> String.sub s 0 (String.length s - 1)
     |> String.lowercase_ascii in
     Printf.sprintf "the %s" evalctx_name
@@ -317,7 +318,7 @@ let find_case_typ s a: El.Ast.typ =
 
 let extract_case_hint t mixop =
   let id1 = Il.Print.string_of_typ t in
-  let id2 = mixop_name mixop in
+  let id2 = mixop_name mixop id1 in
   let id = id1 ^ "." ^ id2 in
   match Map.find_opt id !(hintenv.prose_hints) with
   | Some (Some e, _) -> Some e
