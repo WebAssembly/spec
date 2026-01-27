@@ -14776,7 +14776,7 @@ The global type :math:`({\mathsf{mut}^?}~t)` is :ref:`valid <valid-val>` if:
 The memory type :math:`({\mathit{addrtype}}~{\mathit{limits}}~\mathsf{page})` is :ref:`valid <valid-val>` if:
 
 
-   * The limits range :math:`{\mathit{limits}}` is :ref:`valid <valid-val>` within :math:`{2^{16}}`.
+   * The limits range :math:`{\mathit{limits}}` is :ref:`valid <valid-val>` within :math:`{2^{{|{\mathit{addrtype}}|} - 16}}`.
 
 
 
@@ -14784,7 +14784,7 @@ The memory type :math:`({\mathit{addrtype}}~{\mathit{limits}}~\mathsf{page})` is
 The table type :math:`({\mathit{addrtype}}~{\mathit{limits}}~{\mathit{reftype}})` is :ref:`valid <valid-val>` if:
 
 
-   * The limits range :math:`{\mathit{limits}}` is :ref:`valid <valid-val>` within :math:`{2^{32}} - 1`.
+   * The limits range :math:`{\mathit{limits}}` is :ref:`valid <valid-val>` within :math:`{2^{{|{\mathit{addrtype}}|}}} - 1`.
 
    * The reference type :math:`{\mathit{reftype}}` is :ref:`valid <valid-val>`.
 
@@ -27294,11 +27294,11 @@ Globaltype_ok
 
 Memtype_ok
 - the memory type addrtype limits PAGE is valid if:
-  - the limits range limits is valid within (2 ^ 16).
+  - the limits range limits is valid within (2 ^ ($size(addrtype) - 16)).
 
 Tabletype_ok
 - the table type (addrtype limits reftype) is valid if:
-  - the limits range limits is valid within ((2 ^ 32) - 1).
+  - the limits range limits is valid within ((2 ^ $size(addrtype)) - 1).
   - the reference type reftype is valid.
 
 Externtype_ok

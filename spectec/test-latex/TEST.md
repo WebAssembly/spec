@@ -5072,7 +5072,7 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C \vdash {\mathit{limits}} : {2^{16}}
+C \vdash {\mathit{limits}} : {2^{{|{\mathit{addrtype}}|} - 16}}
 }{
 C \vdash {\mathit{addrtype}}~{\mathit{limits}}~\mathsf{page} : \mathsf{ok}
 } \, {[\textsc{\scriptsize K{-}mem}]}
@@ -5083,7 +5083,7 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C \vdash {\mathit{limits}} : {2^{32}} - 1
+C \vdash {\mathit{limits}} : {2^{{|{\mathit{addrtype}}|}}} - 1
  \qquad
 C \vdash {\mathit{reftype}} : \mathsf{ok}
 }{
