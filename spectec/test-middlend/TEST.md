@@ -3138,14 +3138,14 @@ relation Memtype_ok: `%|-%:OK`(context, memtype)
   ;; ../../../../specification/wasm-3.0/2.1-validation.types.spectec
   rule _{C : context, addrtype : addrtype, limits : limits}:
     `%|-%:OK`(C, `%%PAGE`_memtype(addrtype, limits))
-    -- Limits_ok: `%|-%:%`(C, limits, (2 ^ 16))
+    -- Limits_ok: `%|-%:%`(C, limits, (2 ^ ((($size((addrtype : addrtype <: numtype)) : nat <:> int) - (16 : nat <:> int)) : int <:> nat)))
 
 ;; ../../../../specification/wasm-3.0/2.1-validation.types.spectec
 relation Tabletype_ok: `%|-%:OK`(context, tabletype)
   ;; ../../../../specification/wasm-3.0/2.1-validation.types.spectec
   rule _{C : context, addrtype : addrtype, limits : limits, reftype : reftype}:
     `%|-%:OK`(C, `%%%`_tabletype(addrtype, limits, reftype))
-    -- Limits_ok: `%|-%:%`(C, limits, ((((2 ^ 32) : nat <:> int) - (1 : nat <:> int)) : int <:> nat))
+    -- Limits_ok: `%|-%:%`(C, limits, ((((2 ^ $size((addrtype : addrtype <: numtype))) : nat <:> int) - (1 : nat <:> int)) : int <:> nat))
     -- Reftype_ok: `%|-%:OK`(C, reftype)
 
 ;; ../../../../specification/wasm-3.0/2.1-validation.types.spectec
@@ -14492,14 +14492,14 @@ relation Memtype_ok: `%|-%:OK`(context, memtype)
   ;; ../../../../specification/wasm-3.0/2.1-validation.types.spectec
   rule _{C : context, addrtype : addrtype, limits : limits}:
     `%|-%:OK`(C, `%%PAGE`_memtype(addrtype, limits))
-    -- Limits_ok: `%|-%:%`(C, limits, (2 ^ 16))
+    -- Limits_ok: `%|-%:%`(C, limits, (2 ^ ((($size((addrtype : addrtype <: numtype)) : nat <:> int) - (16 : nat <:> int)) : int <:> nat)))
 
 ;; ../../../../specification/wasm-3.0/2.1-validation.types.spectec
 relation Tabletype_ok: `%|-%:OK`(context, tabletype)
   ;; ../../../../specification/wasm-3.0/2.1-validation.types.spectec
   rule _{C : context, addrtype : addrtype, limits : limits, reftype : reftype}:
     `%|-%:OK`(C, `%%%`_tabletype(addrtype, limits, reftype))
-    -- Limits_ok: `%|-%:%`(C, limits, ((((2 ^ 32) : nat <:> int) - (1 : nat <:> int)) : int <:> nat))
+    -- Limits_ok: `%|-%:%`(C, limits, ((((2 ^ $size((addrtype : addrtype <: numtype))) : nat <:> int) - (1 : nat <:> int)) : int <:> nat))
     -- Reftype_ok: `%|-%:OK`(C, reftype)
 
 ;; ../../../../specification/wasm-3.0/2.1-validation.types.spectec
@@ -25865,14 +25865,14 @@ relation Memtype_ok: `%|-%:OK`(context, memtype)
   ;; ../../../../specification/wasm-3.0/2.1-validation.types.spectec
   rule _{C : context, addrtype : addrtype, limits : limits}:
     `%|-%:OK`(C, `%%PAGE`_memtype(addrtype, limits))
-    -- Limits_ok: `%|-%:%`(C, limits, (2 ^ 16))
+    -- Limits_ok: `%|-%:%`(C, limits, (2 ^ ((($size((addrtype : addrtype <: numtype)) : nat <:> int) - (16 : nat <:> int)) : int <:> nat)))
 
 ;; ../../../../specification/wasm-3.0/2.1-validation.types.spectec
 relation Tabletype_ok: `%|-%:OK`(context, tabletype)
   ;; ../../../../specification/wasm-3.0/2.1-validation.types.spectec
   rule _{C : context, addrtype : addrtype, limits : limits, reftype : reftype}:
     `%|-%:OK`(C, `%%%`_tabletype(addrtype, limits, reftype))
-    -- Limits_ok: `%|-%:%`(C, limits, ((((2 ^ 32) : nat <:> int) - (1 : nat <:> int)) : int <:> nat))
+    -- Limits_ok: `%|-%:%`(C, limits, ((((2 ^ $size((addrtype : addrtype <: numtype))) : nat <:> int) - (1 : nat <:> int)) : int <:> nat))
     -- Reftype_ok: `%|-%:OK`(C, reftype)
 
 ;; ../../../../specification/wasm-3.0/2.1-validation.types.spectec

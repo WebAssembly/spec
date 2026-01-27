@@ -222,11 +222,11 @@ rule Globaltype_ok:
 
 rule Memtype_ok:
   C |- addrtype limits PAGE : OK
-  -- Limits_ok: C |- limits : $(2^16)
+  -- Limits_ok: C |- limits : $(2^($size(addrtype) - 16))
 
 rule Tabletype_ok:
   C |- addrtype limits reftype : OK
-  -- Limits_ok: C |- limits : $(2^32 - 1)
+  -- Limits_ok: C |- limits : $(2^$size(addrtype) - 1)
   -- Reftype_ok: C |- reftype : OK
 
 
