@@ -335,7 +335,7 @@ let env_def env d : (id * typ list) list =
     env_macro env.macro_gram id1;
     env_hintdef env (GramH (id1, id2, hints) $ d.at);
     []
-  | RelD (id, t, hints) ->
+  | RelD (id, _ps, t, hints) ->
     env_hintdef env (RelH (id, hints) $ d.at);
     env_typcon env id ((t, []), hints);
     []
@@ -1448,7 +1448,7 @@ and render_fieldname env atom =
 and render_prem env prem =
   match prem.it with
   | VarPr _ -> assert false
-  | RulePr (_id, e) -> render_exp env e
+  | RulePr (_id, _ps, e) -> render_exp env e
   | IfPr e -> render_exp env e
   | ElsePr -> error prem.at "misplaced `otherwise` premise"
   | IterPr ({it = IterPr _; _} as prem', iter) ->
@@ -1760,7 +1760,7 @@ let render_gramdef env d : row list =
 
 let render_ruledef_infer env d =
   match d.it with
-  | RuleD (id1, id2, e, prems) ->
+  | RuleD (id1, _ps, id2, e, prems) ->
     let prems' = filter_nl_list (function {it = VarPr _; _} -> false | _ -> true) prems in
     "\\frac{\n" ^
       (if has_nl prems then "\\begin{array}{@{}c@{}}\n" else "") ^
@@ -1774,7 +1774,7 @@ let render_ruledef_infer env d =
 
 let render_ruledef env d : row list =
   match d.it with
-  | RuleD (id1, id2, e, prems) ->
+  | RuleD (id1, _ps, id2, e, prems) ->
     let e1, op, e2 =
       match e.it with
       | InfixE (e1, op, ({it = SeqE (e21::es22); _} as e2)) when Atom.is_sub op ->
@@ -1837,10 +1837,10 @@ let rec render_defs env = function
       let sp_deco = if env.deco_gram then sp else "@{}" in
       render_table env sp ["l"; sp_deco ^ "r"; "r"; "l"; "@{}l"; "@{}l"; "@{}l"] 1 3
         (render_sep_defs (render_gramdef env) ds')
-    | RelD (_, t, _) ->
+    | RelD (_, _ps, t, _) ->
       "\\boxed{" ^ render_typ env t ^ "}" ^
       (if ds' = [] then "" else " \\; " ^ render_defs env ds')
-    | RuleD (id1, _, _, _) ->
+    | RuleD (id1, _, _, _, _) ->
       if Map.mem id1.it !(env.tab_rel) then
         (* Columns: decorator & lhs & op & rhs & premise *)
         let sp_deco = if env.deco_rule then sp else "@{}" in
@@ -1884,7 +1884,7 @@ let rec split_tabdefs id tabdefs = function
   | [] -> List.rev tabdefs, []
   | d::ds ->
     match d.it with
-    | RuleD (id1, _, _, _) when id1.it = id ->
+    | RuleD (id1, _, _, _, _) when id1.it = id ->
       split_tabdefs id (d::tabdefs) ds
     | _ -> List.rev tabdefs, d::ds
 
@@ -1910,7 +1910,7 @@ let rec render_script env = function
     | RelD _ ->
       "$" ^ render_def env d ^ "$\n\n" ^
       render_script env ds
-    | RuleD (id1, _, _, _) ->
+    | RuleD (id1, _, _, _, _) ->
       if Map.mem id1.it !(env.tab_rel) then
         let tabdefs, ds' = split_tabdefs id1.it [d] ds in
         "$$\n" ^ render_defs env tabdefs ^ "\n$$\n\n" ^

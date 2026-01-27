@@ -263,7 +263,8 @@ and string_of_gram gram =
 and string_of_prem prem =
   match prem.it with
   | VarPr (id, t) -> "var " ^ string_of_varid id ^ ": " ^ string_of_typ t
-  | RulePr (id, e) -> string_of_relid id ^ ": " ^ string_of_exp e
+  | RulePr (id, as_, e) ->
+    string_of_relid id ^ string_of_args as_ ^ ": " ^ string_of_exp e
   | IfPr e -> "if " ^ string_of_exp e
   | ElsePr -> "otherwise"
   | IterPr ({it = IterPr _; _} as prem', iter) ->
@@ -307,10 +308,10 @@ let string_of_def d =
     "grammar " ^ string_of_gramid id1 ^ string_of_ruleid id2 ^
       string_of_params ps ^ " : " ^
       string_of_typ t ^ " = " ^ string_of_gram gram
-  | RelD (id, t, _hints) ->
-    "relation " ^ string_of_relid id ^ ": " ^ string_of_typ t
-  | RuleD (id1, id2, e, prems) ->
-    "rule " ^ string_of_relid id1 ^ string_of_ruleid id2 ^ ":\n  " ^
+  | RelD (id, ps, t, _hints) ->
+    "relation " ^ string_of_relid id ^ string_of_params ps ^ ": " ^ string_of_typ t
+  | RuleD (id1, ps, id2, e, prems) ->
+    "rule " ^ string_of_relid id1 ^ string_of_params ps ^ string_of_ruleid id2 ^ ":\n  " ^
       string_of_exp e ^
       string_of_nl_list "" "" (prefix "\n  -- " string_of_prem) prems
   | VarD (id, t, _hints) ->
