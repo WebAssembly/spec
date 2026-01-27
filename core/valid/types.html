@@ -5,11 +5,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Types &#8212; WebAssembly 3.0 (2026-01-21)</title>
+    <title>Types &#8212; WebAssembly 3.0 (2026-01-27)</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=686e5160" />
     <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=057308f9" />
-    <script src="../_static/documentation_options.js?v=bd9970c6"></script>
+    <script src="../_static/documentation_options.js?v=4217cb51"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>window.MathJax = {"tex": {"maxBuffer": 30720, "macros": {"multicolumn": ["", 2]}}, "options": {"menuOptions": {"settings": {"enrich": false}}}}</script>
@@ -552,13 +552,13 @@ C \href{../valid/types.html#valid-globaltype}{\vdash} {\href{../syntax/types.htm
 <p>The <a class="reference internal" href="../syntax/types.html#syntax-memtype"><span class="std std-ref">memory type</span></a> <span class="math notranslate nohighlight">\(({\href{../syntax/types.html#syntax-addrtype}{\mathit{addrtype}}}~{\href{../syntax/types.html#syntax-limits}{\mathit{limits}}}~\href{../syntax/types.html#syntax-memtype}{\mathsf{page}})\)</span> is <a class="reference internal" href="#valid-memtype"><span class="std std-ref">valid</span></a> if:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>The <a class="reference internal" href="../syntax/types.html#syntax-limits"><span class="std std-ref">limits range</span></a> <span class="math notranslate nohighlight">\({\href{../syntax/types.html#syntax-limits}{\mathit{limits}}}\)</span> is <a class="reference internal" href="#valid-limits"><span class="std std-ref">valid</span></a> within <span class="math notranslate nohighlight">\({2^{16}}\)</span>.</p></li>
+<li><p>The <a class="reference internal" href="../syntax/types.html#syntax-limits"><span class="std std-ref">limits range</span></a> <span class="math notranslate nohighlight">\({\href{../syntax/types.html#syntax-limits}{\mathit{limits}}}\)</span> is <a class="reference internal" href="#valid-limits"><span class="std std-ref">valid</span></a> within <span class="math notranslate nohighlight">\({2^{{|{\href{../syntax/types.html#syntax-addrtype}{\mathit{addrtype}}}|} - 16}}\)</span>.</p></li>
 </ul>
 </div></blockquote>
 <div class="math notranslate nohighlight">
 \[\begin{array}{&#64;{}c&#64;{}}\displaystyle
 \frac{
-C \href{../valid/types.html#valid-limits}{\vdash} {\href{../syntax/types.html#syntax-limits}{\mathit{limits}}} : {2^{16}}
+C \href{../valid/types.html#valid-limits}{\vdash} {\href{../syntax/types.html#syntax-limits}{\mathit{limits}}} : {2^{{|{\href{../syntax/types.html#syntax-addrtype}{\mathit{addrtype}}}|} - 16}}
 }{
 C \href{../valid/types.html#valid-memtype}{\vdash} {\href{../syntax/types.html#syntax-addrtype}{\mathit{addrtype}}}~{\href{../syntax/types.html#syntax-limits}{\mathit{limits}}}~\href{../syntax/types.html#syntax-memtype}{\mathsf{page}} : \href{../valid/types.html#valid-memtype}{\mathsf{ok}}
 }
@@ -570,14 +570,14 @@ C \href{../valid/types.html#valid-memtype}{\vdash} {\href{../syntax/types.html#s
 <p>The <a class="reference internal" href="../syntax/types.html#syntax-tabletype"><span class="std std-ref">table type</span></a> <span class="math notranslate nohighlight">\(({\href{../syntax/types.html#syntax-addrtype}{\mathit{addrtype}}}~{\href{../syntax/types.html#syntax-limits}{\mathit{limits}}}~{\href{../syntax/types.html#syntax-reftype}{\mathit{reftype}}})\)</span> is <a class="reference internal" href="#valid-tabletype"><span class="std std-ref">valid</span></a> if:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>The <a class="reference internal" href="../syntax/types.html#syntax-limits"><span class="std std-ref">limits range</span></a> <span class="math notranslate nohighlight">\({\href{../syntax/types.html#syntax-limits}{\mathit{limits}}}\)</span> is <a class="reference internal" href="#valid-limits"><span class="std std-ref">valid</span></a> within <span class="math notranslate nohighlight">\({2^{32}} - 1\)</span>.</p></li>
+<li><p>The <a class="reference internal" href="../syntax/types.html#syntax-limits"><span class="std std-ref">limits range</span></a> <span class="math notranslate nohighlight">\({\href{../syntax/types.html#syntax-limits}{\mathit{limits}}}\)</span> is <a class="reference internal" href="#valid-limits"><span class="std std-ref">valid</span></a> within <span class="math notranslate nohighlight">\({2^{{|{\href{../syntax/types.html#syntax-addrtype}{\mathit{addrtype}}}|}}} - 1\)</span>.</p></li>
 <li><p>The <a class="reference internal" href="../syntax/types.html#syntax-reftype"><span class="std std-ref">reference type</span></a> <span class="math notranslate nohighlight">\({\href{../syntax/types.html#syntax-reftype}{\mathit{reftype}}}\)</span> is <a class="reference internal" href="#valid-reftype"><span class="std std-ref">valid</span></a>.</p></li>
 </ul>
 </div></blockquote>
 <div class="math notranslate nohighlight">
 \[\begin{array}{&#64;{}c&#64;{}}\displaystyle
 \frac{
-C \href{../valid/types.html#valid-limits}{\vdash} {\href{../syntax/types.html#syntax-limits}{\mathit{limits}}} : {2^{32}} - 1
+C \href{../valid/types.html#valid-limits}{\vdash} {\href{../syntax/types.html#syntax-limits}{\mathit{limits}}} : {2^{{|{\href{../syntax/types.html#syntax-addrtype}{\mathit{addrtype}}}|}}} - 1
  \qquad
 C \href{../valid/types.html#valid-reftype}{\vdash} {\href{../syntax/types.html#syntax-reftype}{\mathit{reftype}}} : \href{../valid/types.html#valid-reftype}{\mathsf{ok}}
 }{
