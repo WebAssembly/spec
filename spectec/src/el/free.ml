@@ -125,7 +125,7 @@ and free_gram gram =
 and free_prem prem =
   match prem.it with
   | VarPr (id, t) -> free_varid id ++ free_typ t
-  | RulePr (id, e) -> free_relid id ++ free_exp e
+  | RulePr (id, as_, e) -> free_relid id ++ free_args as_ ++ free_exp e
   | IfPr e -> free_exp e
   | ElsePr -> empty
   | IterPr (prem1, iter) -> free_prem prem1 ++ free_iter iter
@@ -172,9 +172,9 @@ let free_def d =
     free_params ps ++ (free_typ t ++ free_gram gram -- bound_params ps -- impl_bound_typ ps t)
   | VarD (_id, t, _hints) -> free_typ t
   | SepD -> empty
-  | RelD (_id, t, _hints) -> free_typ t
-  | RuleD (id1, _id2, e, prems) ->
-    free_relid id1 ++ free_exp e ++ free_prems prems
+  | RelD (_id, ps, t, _hints) -> free_typ t -- bound_params ps
+  | RuleD (id1, ps, _id2, e, prems) ->
+    free_relid id1 ++ (free_exp e ++ free_prems prems -- bound_params ps)
   | DecD (_id, ps, t, _hints) ->
     free_params ps ++ free_typ t -- bound_params ps
   | DefD (id, as_, e, prems) ->

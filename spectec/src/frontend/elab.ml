@@ -94,7 +94,7 @@ type kind =
 type var_typ = Il.typ
 type typ_typ = Il.param list * kind
 type gram_typ = Il.param list * Il.typ * (id * Il.prod) list * dots option
-type rel_typ = Il.mixop * notation * Il.typ * (id * Il.rule) list
+type rel_typ = Il.param list * Il.typ * (id * Il.rule) list * Il.mixop * notation
 type def_typ = Il.param list * Il.typ * (def * Il.clause) list
 
 type 'a env' = (region * 'a) Map.t
@@ -1929,10 +1929,12 @@ and elab_prem env (pr : prem) : Il.prem list =
     let t' = elab_typ env t in
     env.vars <- bind "variable" env.vars id t';
     []
-  | RulePr (id, e) ->
-    let mixop, not, _, _ = find "relation" env.rels id in
-    let es', _s = checkpoint (elab_exp_notation' env id e not) in
-    [Il.RulePr (id, [], mixop, tup_exp_nary' es' e.at) $ pr.at]
+  | RulePr (id, as_, e) ->
+    let ps', _, _, mixop, not = find "relation" env.rels id in
+    let as', s = elab_args `Rhs env as_ ps' pr.at in
+    let not' = Xl.Mixop.map (fun (x, t) -> x, Il.Subst.subst_typ s t) not in
+    let es', _s = checkpoint (elab_exp_notation' env id e not') in
+    [Il.RulePr (id, as', mixop, tup_exp_nary' es' e.at) $ pr.at]
   | IfPr e ->
     let e' = checkpoint (elab_exp env e (Il.BoolT $ e.at)) in
     [Il.IfPr e' $ pr.at]
@@ -2566,7 +2568,8 @@ let rec elab_def env (d : def) : Il.def list =
     (if dots2 = Dots then [] else [Il.GramD (x1, ps', t', []) $ d.at])
       @ elab_hintdef env (GramH (x1, x2, hints) $ d.at)
 
-  | RelD (x, t, hints) ->
+  | RelD (x, ps, t, hints) ->
+    let ps' = elab_params env' ps in
     let mixop, xts' = elab_typ_notation' env' x t in
     let ts' = List.map snd xts' in
     if env'.pm then error d.at "misplaced +- or -+ operator in relation";
@@ -2575,15 +2578,18 @@ let rec elab_def env (d : def) : Il.def list =
     infer_no_quants env' dims Det.empty [] [] ts' [] [] [] d.at;
     let not = Mixop.apply mixop (List.map (fun t' -> "_" $ d.at, t') ts') in
     let t' = tup_typ' ts' t.at in
-    env.rels <- bind "relation" env.rels x (mixop, not, t', []);
-    [Il.RelD (x, [], mixop, t', []) $ d.at]
+    env.rels <- bind "relation" env.rels x (ps', t', [], mixop, not);
+    [Il.RelD (x, ps', mixop, t', []) $ d.at]
       @ elab_hintdef env (RelH (x, hints) $ d.at)
 
-  | RuleD (x1, x2, e, prems) ->
-    let mixop, not', t', rules' = find "relation" env.rels x1 in
+  | RuleD (x1, ps, x2, e, prems) ->
+    let ps', t', rules', mixop, not' = find "relation" env.rels x1 in
     if List.exists (fun (x, _) -> x.it = x2.it) rules' then
       error d.at ("duplicate rule name `" ^ x1.it ^
         (if x2.it = "" then "" else "/" ^ x2.it) ^ "`");
+    let ps'' = elab_params env' ps in
+    if not Il.Eq.(eq_list eq_param ps' ps'') then
+      error d.at ("parameter list on rule differs from relation");
     let es', _ = checkpoint (elab_exp_notation' env' x1 e not') in
     let prems' = List.concat (map_filter_nl_list (elab_prem env') prems) in
     let dims = Dim.check Map.empty [] [] [] es' [] prems' in
@@ -2593,7 +2599,7 @@ let rec elab_def env (d : def) : Il.def list =
     let det = Det.(det_exp e' ++ det_list det_prem prems') in
     let qs = infer_quants env env' dims det [] [] [] es' [] prems' d.at in
     let rule' = Il.RuleD (x2, qs, mixop, e', prems') $ d.at in
-    env.rels <- rebind "relation" env.rels x1 (mixop, not', t', rules' @ [x2, rule']);
+    env.rels <- rebind "relation" env.rels x1 (ps', t', rules' @ [x2, rule'], mixop, not');
     if not env'.pm then [] else elab_def env Subst.(subst_def pm_snd (Iter.clone_def d))
 
   | VarD (x, t, _hints) ->
@@ -2676,7 +2682,7 @@ let populate_def env (d' : Il.def) : Il.def =
     | _ps, _k -> d'
     )
   | Il.RelD (x, ps', mixop, t', []) ->
-    let _, _, _, rules' = find "relation" env.rels x in
+    let _, _, rules', _, _ = find "relation" env.rels x in
     Il.RelD (x, ps', mixop, t', List.map snd rules') $ d'.at
   | Il.DecD (x, ps', t', []) ->
     let _, _, clauses' = find "definition" env.defs x in
@@ -2772,6 +2778,6 @@ let elab_exp env (e : exp) (t : typ) : Il.exp =
 
 let elab_rel env (e : exp) (x : id) : Il.exp =
   let env' = local_env env in
-  match elab_prem env' (RulePr (x, e) $ e.at) with
+  match elab_prem env' (RulePr (x, [], e) $ e.at) with
   | [{it = Il.RulePr (_, _, _, e'); _}] -> e'
   | _ -> assert false

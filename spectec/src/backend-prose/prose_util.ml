@@ -125,7 +125,7 @@ let env_def d =
   | GramD (id1, id2, _ps, t, _gram, hints) ->
     env_hintdef (GramH (id1, id2, hints) $ d.at);
     env_typ id1 t;
-  | RelD (id, t, hints) ->
+  | RelD (id, _ps, t, hints) ->
     env_hintdef (RelH (id, hints) $ d.at);
     env_typ id t;
   | VarD (id, t, hints) ->
@@ -148,7 +148,7 @@ let find_relation name =
   let open El.Ast in
   List.find_opt (fun def ->
   match def.it with
-  | RelD (id, _, _) when id.it = name -> true
+  | RelD (id, _, _, _) when id.it = name -> true
   | _ -> false
   ) !Langs.el
 

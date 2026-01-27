@@ -810,7 +810,8 @@ prem_post_ :
 prem_bin : prem_bin_ { $1 $ $sloc }
 prem_bin_ :
   | prem_post_ { $1 }
-  | relid COLON exp_bin { RulePr ($1, $3) }
+  | relid COLON exp_bin { RulePr ($1, [], $3) }
+  | relid LPAREN comma_list(arg) RPAREN COLON exp_bin { RulePr ($1, $3, $6) }
   | IF exp_bin
     { let rec iters e =
         match e.it with
@@ -821,7 +822,8 @@ prem_bin_ :
 prem : prem_ { $1 $ $sloc }
 prem_ :
   | prem_post_ { $1 }
-  | relid COLON exp { RulePr ($1, $3) }
+  | relid COLON exp { RulePr ($1, [], $3) }
+  | relid LPAREN comma_list(arg) RPAREN COLON exp_bin { RulePr ($1, $3, $6) }
   | VAR varid_bind_with_suffix COLON typ { VarPr ($2, $4) }
   | IF exp
     { let rec iters e =
@@ -1061,10 +1063,15 @@ def_ :
     { let id = if $6 = "" then "" else String.sub $6 1 (String.length $6 - 1) in
       GramD ($2, id $ $loc($6), $4, TupT [] $ $loc($1), $9, $7) }
   | RELATION relid COLON nottyp hint*
-    { RelD ($2, $4, $5) }
+    { RelD ($2, [], $4, $5) }
+  | RELATION relid LPAREN comma_list(param) RPAREN COLON nottyp hint*
+    { RelD ($2, $4, $7, $8) }
   | RULE relid ruleid_list COLON exp prem_list
     { let id = if $3 = "" then "" else String.sub $3 1 (String.length $3 - 1) in
-      RuleD ($2, id $ $loc($3), $5, $6) }
+      RuleD ($2, [], id $ $loc($3), $5, $6) }
+  | RULE relid LPAREN comma_list(param) RPAREN ruleid_list COLON exp prem_list
+    { let id = if $6 = "" then "" else String.sub $6 1 (String.length $6 - 1) in
+      RuleD ($2, $4, id $ $loc($6), $8, $9) }
   | VAR varid_bind COLON typ hint*
     { VarD ($2, $4, $5) }
   | DEF DOLLAR defid COLON typ hint*
