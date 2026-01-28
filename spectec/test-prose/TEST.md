@@ -15216,7 +15216,7 @@ The catch clause :math:`(\mathsf{catch\_all\_ref}~l)` is :ref:`valid <valid-val>
 The value type :math:`t` is defaultable if:
 
 
-   * The value :math:`{{\mathrm{default}}}_{t}` is not absent.
+   * The value :math:`{{\mathrm{default}}}_{t}` is present.
 
 
 
@@ -15658,7 +15658,7 @@ The instruction :math:`({\mathsf{struct{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~
 
    * The field type :math:`{{\mathit{ft}}^\ast}{}[i]` is of the form :math:`({\mathsf{mut}^?}~{\mathit{zt}})`.
 
-   * The signedness :math:`{{\mathit{sx}}^?}` is absent if and only if :math:`{\mathit{zt}}` is a packed type.
+   * The signedness :math:`{{\mathit{sx}}^?}` is present if and only if :math:`{\mathit{zt}}` is a packed type.
 
    * The value type :math:`t` is :math:`{\mathrm{unpack}}({\mathit{zt}})`.
 
@@ -23690,7 +23690,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ......................................
 
 
-1. Return :math:`{\mathit{zt}} = {\mathrm{unpack}}({\mathit{zt}})`.
+1. Return :math:`{\mathit{zt}} \neq {\mathrm{unpack}}({\mathit{zt}})`.
 
 
 :math:`{\mathrm{funcidx}}({{\mathit{global}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{elem}}^\ast})`
@@ -27741,7 +27741,7 @@ Instr_ok/struct.get
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is (STRUCT ft*).
   - |ft*| is greater than i.
   - the field type ft*[i] is (mut? zt).
-  - the signedness sx? is ?() if and only if $is_packtype(zt).
+  - the signedness sx? is not ?() if and only if $is_packtype(zt).
   - the value type t is $unpack(zt).
 
 Instr_ok/struct.set
@@ -31617,7 +31617,7 @@ default_ valtype
 8. Return ?().
 
 is_packtype zt
-1. Return (zt = $unpack(zt)).
+1. Return (zt =/= $unpack(zt)).
 
 funcidx_nonfuncs (global* mem* table* elem*)
 1. Return $funcidx_module((MODULE [] [] [] global* mem* table* [] [] elem* ?() [])).
