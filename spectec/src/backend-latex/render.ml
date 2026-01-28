@@ -1676,7 +1676,7 @@ let render_param env p =
   match p.it with
   | ExpP (id, t) -> if id.it = "_" then render_typ env t else render_varid env id
   | TypP id -> render_typid env id
-  | GramP (id, _t) -> render_gramid env id
+  | GramP (id, _ps, _t) -> render_gramid env id
   | DefP (id, _ps, _t) -> render_defid env id
 
 let _render_params env = function

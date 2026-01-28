@@ -252,7 +252,7 @@ and subst_param s p =
   (match p.it with
   | ExpP (id, t) -> ExpP (id, subst_typ s t)
   | TypP id -> TypP id
-  | GramP (id, t) -> GramP (id, subst_typ s t)
+  | GramP (id, ps, t) -> GramP (id, List.map (subst_param s) ps, subst_typ s t)
   | DefP (id, ps, t) -> DefP (id, List.map (subst_param s) ps, subst_typ s t)
   ) $ p.at
 

@@ -1680,15 +1680,15 @@ $$
 
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}}
-& {\parentimplicit}(t) & ::= & \PP \\
+& {\parentimplicit}(t) & ::= & \PPimpl \\
 & & | & \PPX \\
 & & | & \PPYxPPY \\
 & & | & \mathsf{ppz} \\
-& & | & \QQQ \\
+& & | & \QQQimpl \\
 & & | & \QQQX \\
 & & | & \QQQYxQQQY \\
 & & | & \mathsf{qqqz} \\
-& & | & {t}{\mathsf{\_}}{\RA}{\RR}~z \\
+& & | & {t}{\mathsf{\_}}{\RAimpl}{\RRimpl}~{\mathit{zimpl}} \\
 & & | & {t}{\mathsf{\_}}{\RB}{\RRX}~z \\
 & & | & {t}{\mathsf{\_}}{\RCxRC}{\RRYxRRY}~{\mathit{zxz}} \\
 & & | & {t}{\mathsf{\_}}{\mathsf{rd}}{\mathsf{rrz}}~z \\
@@ -1737,7 +1737,7 @@ $$
 
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}}
-& {\family}(0) & ::= & \FF \\
+& {\family}(0) & ::= & \FFfamily \\
 & {\family}(1) & ::= & \GGfamily \\
 & {\family}(2) & ::= & \xHHy \\
 \end{array}
@@ -12461,7 +12461,7 @@ $$
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
 {\bigoplus}\, \epsilon & = & \{  \} \\
-{\bigoplus}\, I~{I'} & = & I \oplus {\bigoplus}\, {{I'}^\ast} \\
+{\bigoplus}\, I~{{I'}^\ast} & = & I \oplus {\bigoplus}\, {{I'}^\ast} \\
 \end{array}
 $$
 
@@ -13506,7 +13506,7 @@ $$
 (\mathsf{local}~t, \{ \mathsf{locals}~({{\mathit{id}}^?}) \}) \\
 \end{array}
 } \\
-& & | & \mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{local}’}~~t{:}{{{\mathtt{valtype}}}_{I}^\ast}~~\mbox{‘\texttt{{)}}’} & \quad\equiv\quad{} & {(\mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{local}’}~~t{:}{{\mathtt{valtype}}}_{I}~~\mbox{‘\texttt{{)}}’})^\ast} \\
+& & | & \mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{local}’}~~{{{\mathtt{valtype}}}_{I}^\ast}~~\mbox{‘\texttt{{)}}’} & \quad\equiv\quad{} & {(\mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{local}’}~~{{\mathtt{valtype}}}_{I}~~\mbox{‘\texttt{{)}}’})^\ast} \\
 \end{array}
 $$
 
@@ -13556,10 +13556,10 @@ $$
 (\mathsf{elem}~{\mathit{rt}}~{e^\ast}~\mathsf{declare}, \{ \mathsf{elems}~({{\mathit{id}}^?}) \}) \\
 \end{array}
 } \\
-& & | & \mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{elem}’}~~{e'}{:}{{\mathtt{offset}}}_{I}~~{\mathtt{list}}({{\mathtt{funcidx}}}_{I})~~\mbox{‘\texttt{{)}}’} & \quad\equiv\quad{} & & \\
+& & | & \mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{elem}’}~~{{\mathtt{offset}}}_{I}~~{\mathtt{list}}({{\mathtt{funcidx}}}_{I})~~\mbox{‘\texttt{{)}}’} & \quad\equiv\quad{} & & \\
 &&& \multicolumn{4}{@{}l@{}}{\quad
 \begin{array}[t]{@{}l@{}}
-\mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{elem}’}~~{e'}{:}{{\mathtt{offset}}}_{I}~~\mbox{‘\texttt{func}’}~~{\mathtt{list}}({{\mathtt{funcidx}}}_{I})~~\mbox{‘\texttt{{)}}’} \\
+\mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{elem}’}~~{{\mathtt{offset}}}_{I}~~\mbox{‘\texttt{func}’}~~{\mathtt{list}}({{\mathtt{funcidx}}}_{I})~~\mbox{‘\texttt{{)}}’} \\
 \end{array}
 } \\
 & {{\mathtt{elemlist}}}_{I} & ::= & {\mathit{rt}}{:}{{\mathtt{reftype}}}_{I}~~{e^\ast}{:}{\mathtt{list}}({{\mathtt{expr}}}_{I}) & \quad\Rightarrow\quad{} & ({\mathit{rt}}, {e^\ast}) \\

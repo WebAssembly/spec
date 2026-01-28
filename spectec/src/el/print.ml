@@ -69,7 +69,7 @@ let rec string_of_iter iter =
 
 and string_of_numtyp = Num.string_of_typ
 
-and string_of_typ ?(short=false) t =
+and string_of_typ ?(short = false) t =
   match t.it with
   | VarT (id, args) -> string_of_typid id ^ string_of_args args
   | BoolT -> "bool"
@@ -120,17 +120,17 @@ and string_of_typ ?(short=false) t =
 and string_of_typs sep ts =
   concat sep (List.map string_of_typ ts)
 
-and string_of_typfield ?(short=false) (atom, (t, prems), _hints) =
+and string_of_typfield ?(short = false) (atom, (t, prems), _hints) =
   string_of_atom atom ^ " " ^ string_of_typ t ^
   if short && prems <> [] then " -- .." else
     concat "" (map_filter_nl_list (prefix "\n  -- " string_of_prem) prems)
 
-and string_of_typcase ?(short=false) (_atom, (t, prems), _hints) =
+and string_of_typcase ?(short = false) (_atom, (t, prems), _hints) =
   string_of_typ t ^
   if short && prems <> [] then " -- .." else
     concat "" (map_filter_nl_list (prefix "\n  -- " string_of_prem) prems)
 
-and string_of_typcon ?(short=false) ((t, prems), _hints) =
+and string_of_typcon ?(short = false) ((t, prems), _hints) =
   string_of_typ t ^
   if short && prems <> [] then " -- .." else
     concat "" (map_filter_nl_list (prefix "\n  -- " string_of_prem) prems)
@@ -289,7 +289,7 @@ let rec string_of_param p =
   match p.it with
   | ExpP (id, t) -> (if id.it = "_" then "" else string_of_varid id ^ " : ") ^ string_of_typ t
   | TypP id -> "syntax " ^ string_of_typid id
-  | GramP (id, t) -> "grammar " ^ string_of_gramid id ^ " : " ^ string_of_typ t
+  | GramP (id, ps, t) -> "grammar " ^ string_of_gramid id ^ string_of_params ps ^ " : " ^ string_of_typ t
   | DefP (id, ps, t) -> "def " ^ string_of_defid id ^ string_of_params ps ^ " : " ^ string_of_typ t
 
 and string_of_params = function

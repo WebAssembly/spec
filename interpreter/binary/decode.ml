@@ -920,6 +920,7 @@ let rec instr s =
     | 0xebl -> f32x4_pmax
     | 0xecl -> f64x2_abs
     | 0xedl -> f64x2_neg
+    | 0xeel as n -> illegal s pos (I32.to_int_u n)
     | 0xefl -> f64x2_sqrt
     | 0xf0l -> f64x2_add
     | 0xf1l -> f64x2_sub

@@ -136,13 +136,13 @@ and string_of_expr expr =
   | VarE id -> id
   | SubE (id, _) -> id
   | IterE (e, ie) -> string_of_expr e ^ string_of_iterexp ie
-  | CaseE ([{ it=Atom.Atom ("CONST" | "VCONST"); _ }]::_tl, hd::tl) ->
+  | CaseE (op, hd::tl) when Xl.Mixop.head op <> None && List.mem (Option.get (Xl.Mixop.head op)).it Xl.Atom.[Atom "CONST"; Atom "VCONST"] ->
     "(" ^ string_of_expr hd ^ ".CONST " ^ string_of_exprs " " tl ^ ")"
   | CaseE (op, el) ->
     (* Current rules for omitting parenthesis around a CaseE:
        1) Has no argument
        2) Is infix notation *)
-    let op' = List.map (string_of_list string_of_atom "" "" "") op in
+    let op' = List.map (string_of_list string_of_atom "" "" "") (Mixop.flatten op) in
     let el' = List.map string_of_expr el in
 
     let s = Prose_util.alternate op' el'

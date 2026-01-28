@@ -206,7 +206,7 @@ let rec param_of_arg a =
       error id.at "invalid identifer suffix in binding position";
     TypP id
   | GramA {it = AttrG ({it = VarE (id, []); _}, g); _} ->
-    GramP (id, typ_of_exp (exp_of_sym g))
+    GramP (id, [], typ_of_exp (exp_of_sym g))
   | _ -> error a.at "malformed parameter"
   ) $ a.at
 
@@ -214,6 +214,6 @@ let arg_of_param p =
   (match p.it with
   | ExpP (id, _t) -> ExpA ((*TypE ( *)VarE (id, []) $ id.at(*, t) $ p.at*))
   | TypP id -> TypA (VarT (id, []) $ id.at)
-  | GramP (id, _t) -> GramA (VarG (id, []) $ id.at)
-  | DefP (id, _params, _t) -> DefA id
+  | GramP (id, _ps, _t) -> GramA (VarG (id, []) $ id.at)
+  | DefP (id, _ps, _t) -> DefA id
   ) |> ref $ p.at

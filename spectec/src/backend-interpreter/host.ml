@@ -22,7 +22,7 @@ let spectest () =
     let code = nullary winstr_tag in
     let ptype = Array.map nullary type_tags in
     let arrow = CaseV ("->", [ listV ptype; listV [||] ]) in
-    let ftype = CaseV ("FUNC", [ listV ptype; listV [||] ]) in
+    let ftype = CaseV ("->", [ listV ptype; listV [||] ]) in
     let dtype =
       CaseV ("_DEF", [
         CaseV ("REC", [
@@ -41,9 +41,9 @@ let spectest () =
     "VALUE", v |> ref
   ] in
 
-  let create_tableinst t elems = StrV [
+  let create_tableinst t refs = StrV [
     "TYPE", t |> ref;
-    "REFS", elems |> ref
+    "REFS", refs |> ref
   ] in
 
   let create_meminst t bytes_ = StrV [

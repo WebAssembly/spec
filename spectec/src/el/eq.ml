@@ -179,7 +179,8 @@ and eq_param p1 p2 =
   match p1.it, p2.it with
   | ExpP (id1, t1), ExpP (id2, t2) -> eq_id id1 id2 && eq_typ t1 t2
   | TypP id1, TypP id2 -> eq_id id1 id2
-  | GramP (id1, t1), GramP (id2, t2) -> eq_id id1 id2 && eq_typ t1 t2
+  | GramP (id1, ps1, t1), GramP (id2, ps2, t2) ->
+    eq_id id1 id2 && eq_list eq_param ps1 ps2 && eq_typ t1 t2
   | DefP (id1, ps1, t1), DefP (id2, ps2, t2) ->
     eq_id id1 id2 && eq_list eq_param ps1 ps2 && eq_typ t1 t2
   | _, _ -> false

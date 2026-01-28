@@ -19,18 +19,3 @@ let el_params = list el_param
 let el_def = string_of_def
 
 let nl_list f xs = list f (Convert.filter_nl xs)
-
-let el_free s = String.concat " "
-  Free.[
-    set s.typid;
-    set s.varid;
-    set s.gramid;
-    set s.defid;
-  ]
-let el_subst s = String.concat " "
-  Subst.[
-    mapping el_typ s.typid;
-    mapping el_exp s.varid;
-    mapping el_sym s.gramid;
-    mapping el_id s.defid;
-  ]

@@ -130,7 +130,7 @@ let rec preprocess_prem prem =
     |> List.map (fun new_prem -> IterPr (new_prem, iterexp) $ prem.at)
   | RulePr (id, mixop, exp) ->
     let lhs_rhs_opt = 
-      match mixop, exp.it with
+      match Xl.Mixop.flatten mixop, exp.it with
       (* `id`: |- `lhs` : `rhs` *)
       | [[turnstile]; [colon]; []], TupE [lhs; rhs]
       (* `id`: C |- `lhs` : `rhs` *)

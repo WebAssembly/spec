@@ -158,7 +158,7 @@ and param = param' phrase
 and param' =
   | ExpP of id * typ                         (* varid `:` typ *)
   | TypP of id                               (* `syntax` varid *)
-  | GramP of id * typ                        (* `grammar` gramid `:` typ *)
+  | GramP of id * param list * typ           (* `grammar` gramid `:` typ *)
   | DefP of id * param list * typ            (* `def` `$` defid params `:` typ *)
 
 and arg = arg' ref phrase

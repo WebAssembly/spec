@@ -152,11 +152,11 @@ and string_of_expr expr =
   | VarE id -> id
   | SubE (id, _) -> id
   | IterE (e, ie) -> string_of_expr e ^ string_of_iterexp ie
-  | CaseE ([{ it=Atom.Atom ("CONST" | "VCONST"); _ }]::_tl, hd::tl) ->
+  | CaseE (Mixop.(Seq (Atom { it=Atom.Atom ("CONST" | "VCONST"); _ }::_tl)), hd::tl) ->
     "(" ^ string_of_expr hd ^ ".CONST " ^ string_of_exprs " " tl ^ ")"
-  | CaseE ([[ atom ]], []) -> string_of_atom atom
+  | CaseE (Mixop.Atom atom, []) -> string_of_atom atom
   | CaseE (op, el) ->
-    let op' = List.map (fun al -> String.concat "" (List.map string_of_atom al)) op in
+    let op' = List.map (fun al -> String.concat "" (List.map string_of_atom al)) (Mixop.flatten op) in
     (match op' with
     | [] -> "()"
     | _::tl when List.length tl != List.length el ->

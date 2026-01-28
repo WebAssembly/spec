@@ -1,18 +1,24 @@
-module Env : Map.S with type key = string
+open Il.Ast
 
-type outer = El.Ast.id list
-type env = El.Ast.iter list Env.t
-type env' = Il.Ast.iter list Env.t
+module Map : module type of Map.Make(String)
 
-val annot_varid : Il.Ast.id -> Il.Ast.iter list -> Il.Ast.id
+type dims = (Util.Source.region * iter list) Map.t
+type outer = dims
 
-val check_def : El.Ast.def -> env (* raises Error.Error *)
-val check_prod : outer -> El.Ast.prod -> env (* raises Error.Error *)
-val check_typdef : outer -> El.Ast.typ -> El.Ast.prem El.Ast.nl_list -> env
-  (* raises Error.Error *)
+val check :
+  outer ->
+  param list -> arg list -> typ list -> exp list -> sym list -> prem list ->
+  dims (* raises Error.Error *)
 
-val annot_iter : env' -> Il.Ast.iter -> Il.Ast.iter
-val annot_exp : env' -> Il.Ast.exp -> Il.Ast.exp
-val annot_sym : env' -> Il.Ast.sym -> Il.Ast.sym
-val annot_arg : env' -> Il.Ast.arg -> Il.Ast.arg
-val annot_prem : env' -> Il.Ast.prem -> Il.Ast.prem
+val annot_varid : id -> iter list -> id
+
+val annot_iter : dims -> iter -> iter
+val annot_typ : dims -> typ -> typ
+val annot_exp : dims -> exp -> exp
+val annot_sym : dims -> sym -> sym
+val annot_prem : dims -> prem -> prem
+val annot_arg : dims -> arg -> arg
+val annot_param : dims -> param -> param
+
+val union : dims -> dims -> dims
+val restrict : dims -> Il.Free.sets -> dims
