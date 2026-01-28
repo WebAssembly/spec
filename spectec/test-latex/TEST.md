@@ -6360,7 +6360,7 @@ $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-{\mathit{zt}} = {\mathrm{unpack}}({\mathit{zt}}) & = & {\mathit{zt}} = {\mathrm{unpack}}({\mathit{zt}}) \\
+{\mathit{zt}} = {\mathrm{unpack}}({\mathit{zt}}) & = & {\mathit{zt}} \neq {\mathrm{unpack}}({\mathit{zt}}) \\
 \end{array}
 $$
 
@@ -6371,7 +6371,7 @@ C{.}\mathsf{types}{}[x] \approx \mathsf{struct}~{{\mathit{ft}}^\ast}
  \qquad
 {{\mathit{ft}}^\ast}{}[i] = {\mathsf{mut}^?}~{\mathit{zt}}
  \qquad
-{{\mathit{sx}}^?} = \epsilon \Leftrightarrow {\mathit{zt}} = {\mathrm{unpack}}({\mathit{zt}})
+{{\mathit{sx}}^?} \neq \epsilon \Leftrightarrow {\mathit{zt}} = {\mathrm{unpack}}({\mathit{zt}})
 }{
 C \vdash {\mathsf{struct{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~x~i : (\mathsf{ref}~\mathsf{null}~x) \rightarrow {\mathrm{unpack}}({\mathit{zt}})
 } \, {[\textsc{\scriptsize T{-}instr{-}struct.get}]}

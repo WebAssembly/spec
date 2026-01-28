@@ -3340,7 +3340,7 @@ relation Memarg_ok: `|-%:%->%`(memarg, addrtype, N)
 ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec
 def $is_packtype(storagetype : storagetype) : bool
   ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec
-  def $is_packtype{zt : storagetype}(zt) = (zt = ($unpack(zt) : valtype <: storagetype))
+  def $is_packtype{zt : storagetype}(zt) = (zt =/= ($unpack(zt) : valtype <: storagetype))
 
 ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec
 rec {
@@ -3564,12 +3564,12 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
     -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], STRUCT_comptype(`%`_list(`%%`_fieldtype(mut?{mut <- `mut?`}, zt)*{`mut?` <- `mut?*`, zt <- `zt*`})))
     -- (Defaultable: `|-%DEFAULTABLE`($unpack(zt)))*{zt <- `zt*`}
 
-  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:258.1-262.39
+  ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:258.1-262.41
   rule struct.get{C : context, `sx?` : sx?, x : idx, i : u32, zt : storagetype, `ft*` : fieldtype*, `mut?` : mut?}:
     `%|-%:%`(C, STRUCT.GET_instr(sx?{sx <- `sx?`}, x, i), `%->_%%`_instrtype(`%`_resulttype([REF_valtype(?(NULL_null), _IDX_heaptype(x))]), [], `%`_resulttype([$unpack(zt)])))
     -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], STRUCT_comptype(`%`_list(ft*{ft <- `ft*`})))
     -- if (ft*{ft <- `ft*`}[i!`%`_u32.0] = `%%`_fieldtype(mut?{mut <- `mut?`}, zt))
-    -- if ((sx?{sx <- `sx?`} = ?()) <=> $is_packtype(zt))
+    -- if ((sx?{sx <- `sx?`} =/= ?()) <=> $is_packtype(zt))
 
   ;; ../../../../specification/wasm-3.0/2.3-validation.instructions.spectec:264.1-267.24
   rule struct.set{C : context, x : idx, i : u32, zt : storagetype, `ft*` : fieldtype*}:
