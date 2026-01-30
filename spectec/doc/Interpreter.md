@@ -15,9 +15,9 @@ The AL interpreter then executes the specification, ultimately producing a retur
 ### Usage
 
 - Instantiate a Wasm module
-  The following command instantiates the Wasm module `sample.wasm` using the input specification located in `spec/wasm-3.0` and prints the instantiation result to stdout:
+  The following command instantiates the Wasm module `sample.wasm` using the input specification located in `spec/wasm-latest` and prints the instantiation result to stdout:
   ```sh
-  ./spectec spec/wasm-3.0/*.spectec --interpreter sample.wasm
+  ./spectec spec/wasm-latest/*.spectec --interpreter sample.wasm
   ```
   - If the instantiation succeeds, execution terminates normally.
   - If a trap occurs during execution, the message `Backend_interpreter.Exception.Trap` is printed.
@@ -25,14 +25,14 @@ The AL interpreter then executes the specification, ultimately producing a retur
 - Run a Wasm test script
   The following command executes the test script `sample.wast`:
   ```sh
-  ./spectec spec/wasm-3.0/*.spectec --interpreter sample.wast
+  ./spectec spec/wasm-latest/*.spectec --interpreter sample.wast
   ```
   - The output indicates the number of successful tests.
 
 - Run all Wasm tests in a directory
-  The following command runs **all** Wasm tests located in `test-interpreter/wasm-3.0`:
+  The following command runs **all** Wasm tests located in `test-interpreter/wasm-latest`:
   ```sh
-  ./spectec spec/wasm-3.0/*.spectec --interpreter test-interpreter/wasm-3.0
+  ./spectec spec/wasm-latest/*.spectec --interpreter test-interpreter/wasm-latest
   ```
 
 ### Interpreting Prose
