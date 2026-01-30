@@ -2372,7 +2372,7 @@ $$
 # Preview
 
 ```sh
-$ (../src/exe-spectec/main.exe ../../../../specification/wasm-3.0/*.spectec --latex)
+$ (../src/exe-spectec/main.exe ../../../../specification/wasm-latest/*.spectec --latex)
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}}
 & N & ::= & 0 ~~|~~ 1 ~~|~~ 2 ~~|~~ \dots \\
