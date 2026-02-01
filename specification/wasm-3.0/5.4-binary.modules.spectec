@@ -110,8 +110,8 @@ grammar Belem : elem =
       ELEM (REF NULL FUNC) e* (ACTIVE 0 e_O)
   | 5:Bu32 rt:Breftype e*:Blist(Bexpr) =>
       ELEM rt e* PASSIVE
-  | 6:Bu32 x:Btableidx e_O:Bexpr e*:Blist(Bexpr) =>
-      ELEM (REF NULL FUNC) e* (ACTIVE x e_O)
+  | 6:Bu32 x:Btableidx e_O:Bexpr rt:Breftype e*:Blist(Bexpr) =>
+      ELEM rt e* (ACTIVE x e_O)
   | 7:Bu32 rt:Breftype e*:Blist(Bexpr) =>
       ELEM rt e* DECLARE
 
