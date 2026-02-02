@@ -70,9 +70,9 @@ let typ_unop op t1 t2 : bool =
 let typ_binop op t1 t2 t3 : bool =
 	match op with
   | `AddOp | `MulOp -> t1 = t2 && t1 = t3
-  | `SubOp -> t1 = t2 && sub `IntT t1
-  | `DivOp -> t1 = t2 && sub `RatT t1
-  | `ModOp -> t1 = t2 && sub t1 `IntT
+  | `SubOp -> t1 = t2 && sub `IntT t3
+  | `DivOp -> t1 = t2 && sub `RatT t3
+  | `ModOp -> t1 = t2 && t1 = t3 && sub t1 `IntT
   | `PowOp -> t1 = t3 && (t2 = `NatT || t2 = `IntT && sub `RatT t1)
 
 
