@@ -31,7 +31,7 @@ check-3.0: $(EXE)
 check-latest: $(EXE)
 	$(EXE) wasm-latest/*
 	@echo Wasm latest spec checked OK.
-	@echo =========================
+	@echo ============================
 
 check-all: check-1.0 check-2.0 check-3.0 check-latest
 	@echo All Wasm specs checked OK.
@@ -42,17 +42,17 @@ check-all: check-1.0 check-2.0 check-3.0 check-latest
 spec:
 	(cd ../document/core && make main)
 	@echo Wasm latest specs all built OK.
-	@echo ============================
+	@echo ===============================
 
 spec-pdf:
 	(cd ../document/core && make pdf)
 	@echo Wasm latest PDF spec built OK.
-	@echo ===========================
+	@echo ==============================
 
 spec-html:
 	(cd ../document/core && make html)
 	@echo Wasm latest HTML spec built OK.
-	@echo ============================
+	@echo ===============================
 
 spec-clean:
 	(cd ../document/core && make clean)
@@ -63,7 +63,7 @@ spec-clean:
 test:
 	@((cd ../spectec/src && make test) || @echo Backend tests failed. Perhaps run `make testpromote` to update test output.)
 	@echo Wasm latest backend tests ran OK.
-	@echo ==============================
+	@echo =================================
 
 test-clean:
 	@(cd ../spectec/src && make clean)
