@@ -12139,10 +12139,10 @@ $$
 \mathsf{elem}~{\mathit{rt}}~{e^\ast}~\mathsf{passive} \\
 \end{array}
 } \\
-& & | & 6{:}{\mathtt{u32}}~~x{:}{\mathtt{tableidx}}~~e_{\mathsf{o}}{:}{\mathtt{expr}}~~{e^\ast}{:}{\mathtt{list}}({\mathtt{expr}}) & \quad\Rightarrow\quad{} & & \\
+& & | & 6{:}{\mathtt{u32}}~~x{:}{\mathtt{tableidx}}~~e_{\mathsf{o}}{:}{\mathtt{expr}}~~{\mathit{rt}}{:}{\mathtt{reftype}}~~{e^\ast}{:}{\mathtt{list}}({\mathtt{expr}}) & \quad\Rightarrow\quad{} & & \\
 &&& \multicolumn{4}{@{}l@{}}{\quad
 \begin{array}[t]{@{}l@{}}
-\mathsf{elem}~(\mathsf{ref}~\mathsf{null}~\mathsf{func})~{e^\ast}~(\mathsf{active}~x~e_{\mathsf{o}}) \\
+\mathsf{elem}~{\mathit{rt}}~{e^\ast}~(\mathsf{active}~x~e_{\mathsf{o}}) \\
 \end{array}
 } \\
 & & | & 7{:}{\mathtt{u32}}~~{\mathit{rt}}{:}{\mathtt{reftype}}~~{e^\ast}{:}{\mathtt{list}}({\mathtt{expr}}) & \quad\Rightarrow\quad{} & & \\
