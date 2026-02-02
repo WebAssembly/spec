@@ -344,10 +344,10 @@ It decodes into the list of <a class="reference internal" href="../syntax/module
 \href{../syntax/modules.html#syntax-elem}{\mathsf{elem}}~{\mathit{rt}}~{e^\ast}~\href{../syntax/modules.html#syntax-elemmode}{\mathsf{passive}} \\
 \end{array}
 } \\
-&amp; &amp; | &amp; 6{:}{\href{../binary/values.html#binary-int}{\def\mathdef1591#1{{\mathtt{u}#1}}\mathdef1591{\mathtt{32}}}}~~x{:}{\href{../binary/modules.html#binary-tableidx}{\mathtt{tableidx}}}~~e_{\mathsf{o}}{:}{\href{../binary/instructions.html#binary-expr}{\mathtt{expr}}}~~{e^\ast}{:}{\href{../binary/conventions.html#binary-list}{\mathtt{list}}}({\href{../binary/instructions.html#binary-expr}{\mathtt{expr}}}) &amp; \quad\Rightarrow\quad{} &amp; &amp; \\
+&amp; &amp; | &amp; 6{:}{\href{../binary/values.html#binary-int}{\def\mathdef1591#1{{\mathtt{u}#1}}\mathdef1591{\mathtt{32}}}}~~x{:}{\href{../binary/modules.html#binary-tableidx}{\mathtt{tableidx}}}~~e_{\mathsf{o}}{:}{\href{../binary/instructions.html#binary-expr}{\mathtt{expr}}}~~{\mathit{rt}}{:}{\href{../binary/types.html#binary-reftype}{\mathtt{reftype}}}~~{e^\ast}{:}{\href{../binary/conventions.html#binary-list}{\mathtt{list}}}({\href{../binary/instructions.html#binary-expr}{\mathtt{expr}}}) &amp; \quad\Rightarrow\quad{} &amp; &amp; \\
 &amp;&amp;&amp; \multicolumn{4}{&#64;{}l&#64;{}}{\quad
 \begin{array}[t]{&#64;{}l&#64;{}}
-\href{../syntax/modules.html#syntax-elem}{\mathsf{elem}}~(\href{../syntax/types.html#syntax-reftype}{\mathsf{ref}}~\href{../syntax/types.html#syntax-reftype}{\mathsf{null}}~\href{../syntax/types.html#syntax-heaptype}{\mathsf{func}})~{e^\ast}~(\href{../syntax/modules.html#syntax-elemmode}{\mathsf{active}}~x~e_{\mathsf{o}}) \\
+\href{../syntax/modules.html#syntax-elem}{\mathsf{elem}}~{\mathit{rt}}~{e^\ast}~(\href{../syntax/modules.html#syntax-elemmode}{\mathsf{active}}~x~e_{\mathsf{o}}) \\
 \end{array}
 } \\
 &amp; &amp; | &amp; 7{:}{\href{../binary/values.html#binary-int}{\def\mathdef1591#1{{\mathtt{u}#1}}\mathdef1591{\mathtt{32}}}}~~{\mathit{rt}}{:}{\href{../binary/types.html#binary-reftype}{\mathtt{reftype}}}~~{e^\ast}{:}{\href{../binary/conventions.html#binary-list}{\mathtt{list}}}({\href{../binary/instructions.html#binary-expr}{\mathtt{expr}}}) &amp; \quad\Rightarrow\quad{} &amp; &amp; \\
