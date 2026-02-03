@@ -14,7 +14,11 @@ and atom' =
   | Dot2                         (* `..` *)
   | Dot3                         (* `...` *)
   | Semicolon                    (* `;` *)
-  | Backslash                    (* `\` *)
+  | Slash                        (* ``/` *)
+  | Backslash                    (* ``\` *)
+  | Not                          (* ``~` *)
+  | And                          (* ``/\` *)
+  | Or                           (* ``\/` *)
   | Mem                          (* `<-` *)
   | NotMem                       (* `</-` *)
   | Arrow                        (* `->` *)
@@ -47,9 +51,14 @@ and atom' =
   | TurnstileSub                 (* `|-_` *)
   | Tilesturn                    (* `-|` *)
   | TilesturnSub                 (* `-|_` *)
-  | Quest                        (* ``?` *)
+  | Quest                        (* ``^?` *)
+  | Star                         (* ``^*` *)
+  | Iter                         (* ``^+` *)
   | Plus                         (* ``+` *)
-  | Star                         (* ``*` *)
+  | Minus                        (* ``-` *)
+  | PlusMinus                    (* ``+-` *)
+  | MinusPlus                    (* ``-+` *)
+  | Times                        (* ``*` *)
   | Comma                        (* ``,` *)
   | Cat                          (* ``++` *)
   | Bar                          (* ``|` *)
@@ -103,6 +112,7 @@ let to_string atom =
   | Dot2 -> ".."
   | Dot3 -> "..."
   | Semicolon -> ";"
+  | Slash -> "/"
   | Backslash -> "\\"
   | Mem -> "<-"
   | NotMem -> "</-"
@@ -136,9 +146,17 @@ let to_string atom =
   | TilesturnSub -> "-|_"
   | Turnstile -> "|-"
   | TurnstileSub -> "|-_"
-  | Quest -> "?"
+  | Quest -> "^?"
+  | Star -> "^*"
+  | Iter -> "^+"
   | Plus -> "+"
-  | Star -> "*"
+  | Minus -> "-"
+  | PlusMinus -> "+-"
+  | MinusPlus -> "-+"
+  | Times -> "*"
+  | Not -> "~"
+  | And -> "/\\"
+  | Or -> "\\/"
   | Comma -> ","
   | Cat -> "++"
   | Bar -> "|"
@@ -168,6 +186,7 @@ let name atom =
   | Dot2 -> "dotdot"              (* Latex: .. *)
   | Dot3 -> "dots"                (* Latex: \ldots *)
   | Semicolon -> "semicolon"      (* Latex: ; *)
+  | Slash -> "slash"              (* Latex: / *)
   | Backslash -> "setminus"
   | Mem -> "in"
   | NotMem -> "notin"
@@ -201,9 +220,17 @@ let name atom =
   | TilesturnSub -> "dashv_"      (* Latex: \dashv with subscript *)
   | Turnstile -> "vdash"
   | TurnstileSub -> "vdash_"      (* Latex: \vdash with subscript *)
-  | Quest -> "quest"              (* Latex: ? *)
+  | Quest -> "quest"              (* Latex: ^? *)
+  | Star -> "ast"                 (* Latex: ^\ast *)
+  | Iter -> "iter"                (* Latex: ^+ *)
   | Plus -> "plus"                (* Latex: + *)
-  | Star -> "ast"
+  | Minus -> "minus"              (* Latex: - *)
+  | PlusMinus -> "plusminus"      (* Latex: \pm *)
+  | MinusPlus -> "minusplus"      (* Latex: \mp *)
+  | Times -> "times"
+  | Not -> "not"                  (* Latex: neg *)
+  | And -> "and"                  (* Latex: land *)
+  | Or -> "or"                    (* Latex: lor *)
   | Comma -> "comma"              (* Latex: , *)
   | Cat -> "cat"                  (* Latex: \oplus *)
   | Bar -> "bar"                  (* Latex: | *)

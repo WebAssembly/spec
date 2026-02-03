@@ -320,9 +320,18 @@ atom_escape :
   | TICK GE { Atom.GreaterEqual }
   | TICK MEM { Atom.Mem }
   | TICK NOTMEM { Atom.NotMem }
-  | TICK QUEST { Atom.Quest }
+  | TICK UP QUEST { Atom.Quest }
+  | TICK UP STAR { Atom.Star }
+  | TICK UP PLUS { Atom.Iter }
   | TICK PLUS { Atom.Plus }
-  | TICK STAR { Atom.Star }
+  | TICK MINUS { Atom.Minus }
+  | TICK PLUSMINUS { Atom.PlusMinus }
+  | TICK MINUSPLUS { Atom.MinusPlus }
+  | TICK STAR { Atom.Times }
+  | TICK SLASH { Atom.Slash }
+  | TICK NOT { Atom.Not }
+  | TICK AND { Atom.And }
+  | TICK OR { Atom.Or }
   | TICK BAR { Atom.Bar }
   | TICK CAT { Atom.Cat }
   | TICK COMMA { Atom.Comma }
@@ -641,7 +650,7 @@ exp_prim_ :
   | exp_hole_ { $1 }
   | EPS { EpsE }
   | LBRACE comma_nl_list(fieldexp) RBRACE { StrE $2 }
-  | LPAREN comma_list(exp_bin) RPAREN
+  | LPAREN comma_list(exp_rel) RPAREN
     { match $2 with
       | [] -> ParenE (SeqE [] $ $sloc)
       | [e] -> ParenE e
@@ -710,12 +719,18 @@ exp_bin_ :
 exp_rel : exp_rel_ { $1 $ $sloc }
 exp_rel_ :
   | exp_bin_ { $1 }
-  | comma(exp) exp_rel { CommaE (SeqE [] $ $loc($1), $2) }
   | relop exp_rel { InfixE (SeqE [] $ $loc($1), $1, $2) }
-  | exp_rel comma(exp) exp_rel { CommaE ($1, $3) }
   | exp_rel relop exp_rel { InfixE ($1, $2, $3) }
 
-exp : exp_rel { $1 }
+exp_comma : exp_comma_ { $1 $ $sloc }
+exp_comma_ :
+  | exp_bin_ { $1 }
+  | comma(exp) exp_comma { CommaE (SeqE [] $ $loc($1), $2) }
+  | relop exp_comma { InfixE (SeqE [] $ $loc($1), $1, $2) }
+  | exp_comma comma(exp) exp_comma { CommaE ($1, $3) }
+  | exp_comma relop exp_comma { InfixE ($1, $2, $3) }
+
+exp : exp_comma { $1 }
 
 fieldexp :
   | fieldid exp_atom+
