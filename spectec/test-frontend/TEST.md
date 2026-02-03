@@ -11132,8 +11132,8 @@ def $exportsd(decl*) : export*
 ;; ../../../../specification/wasm-latest/6.4-text.modules.spectec
 def $ordered(decl*) : bool
   ;; ../../../../specification/wasm-latest/6.4-text.modules.spectec
-  def $ordered{`decl'*` : decl*}(decl'*{decl' <- `decl'*`}) = true
-    -- if ($importsd(decl'*{decl' <- `decl'*`}) = [])
+  def $ordered{`decl*` : decl*}(decl*{decl <- `decl*`}) = true
+    -- if ($importsd(decl*{decl <- `decl*`}) = [])
   ;; ../../../../specification/wasm-latest/6.4-text.modules.spectec
   def $ordered{`decl_1*` : decl*, import : import, `decl_2*` : decl*}(decl_1*{decl_1 <- `decl_1*`} ++ [(import : import <: decl)] ++ decl_2*{decl_2 <- `decl_2*`}) = (((((($importsd(decl_1*{decl_1 <- `decl_1*`}) = []) /\ ($tagsd(decl_1*{decl_1 <- `decl_1*`}) = [])) /\ ($globalsd(decl_1*{decl_1 <- `decl_1*`}) = [])) /\ ($memsd(decl_1*{decl_1 <- `decl_1*`}) = [])) /\ ($tablesd(decl_1*{decl_1 <- `decl_1*`}) = [])) /\ ($funcsd(decl_1*{decl_1 <- `decl_1*`}) = []))
 

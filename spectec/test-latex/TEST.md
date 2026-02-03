@@ -13850,7 +13850,7 @@ $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-{\mathrm{ordered}}({{\mathit{decl}'}^\ast}) & = & \mathsf{true} & \quad \mbox{if}~ {\mathrm{imports}}({{\mathit{decl}'}^\ast}) = \epsilon \\
+{\mathrm{ordered}}({{\mathit{decl}}^\ast}) & = & \mathsf{true} & \quad \mbox{if}~ {\mathrm{imports}}({{\mathit{decl}}^\ast}) = \epsilon \\
 {\mathrm{ordered}}({{\mathit{decl}}_1^\ast}~{\mathit{import}}~{{\mathit{decl}}_2^\ast}) & = & & \\
  \multicolumn{4}{@{}l@{}}{\quad
 \begin{array}[t]{@{}l@{}}
