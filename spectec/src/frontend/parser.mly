@@ -169,9 +169,9 @@ and short_alt_prod' = function
 %token BIGAND BIGOR BIGADD BIGMUL BIGCAT
 %token COMMA_NL NL_BAR NL_NL NL_NL_NL
 %token EQ NE LT GT LE GE APPROX EQUIV ASSIGN SUB SUP EQCAT EQSUB EQUIVSUB APPROXSUB
-%token NOT AND OR
+%token NOT AND OR IMPL DIMPL
 %token QUEST PLUS MINUS STAR SLASH BACKSLASH UP CAT PLUSMINUS MINUSPLUS
-%token ARROW ARROW2 ARROWSUB ARROW2SUB DARROW2 SQARROW SQARROWSUB SQARROWSTAR SQARROWSTARSUB
+%token ARROW ARROW2 ARROWSUB ARROW2SUB SQARROW SQARROWSUB SQARROWSTAR SQARROWSTARSUB
 %token MEM NOTMEM PREC SUCC TURNSTILE TILESTURN TURNSTILESUB TILESTURNSUB
 %token DOLLAR TICK
 %token BOT TOP
@@ -187,7 +187,7 @@ and short_alt_prod' = function
 %token<string> UPID LOID DOTID UPID_LPAREN LOID_LPAREN
 %token EOF
 
-%right ARROW2 DARROW2 ARROW2SUB
+%right ARROW2 ARROW2SUB IMPL DIMPL
 %left OR
 %left AND
 %nonassoc TURNSTILE TURNSTILESUB
@@ -296,6 +296,12 @@ ruleid_ :
   | BOOLLIT { Bool.to_string $1 }
   | INFINITY { "infinity" }
   | EPS { "eps" }
+  | BOOL { "bool" }
+  | NAT { "nat" }
+  | INT { "int" }
+  | RAT { "rat" }
+  | REAL { "real" }
+  | TEXT { "text" }
   | IF { "if" }
   | VAR { "var" }
   | DEF { "def" }
@@ -332,10 +338,11 @@ atom_escape :
   | TICK NOT { Atom.Not }
   | TICK AND { Atom.And }
   | TICK OR { Atom.Or }
+  | TICK IMPL { Atom.Arrow2 }
+  | TICK DIMPL { Atom.Equiv }
   | TICK BAR { Atom.Bar }
   | TICK CAT { Atom.Cat }
   | TICK COMMA { Atom.Comma }
-  | TICK ARROW2 { Atom.Arrow2 }
   | TICK infixop_ { $2 }
   | TICK relop_ { $2 }
   | BOT { Atom.Bot }
@@ -387,8 +394,8 @@ check_atom :
 %inline boolop :
   | AND { `AndOp }
   | OR { `OrOp }
-  | ARROW2 { `ImplOp }
-  | DARROW2 { `EquivOp }
+  | IMPL { `ImplOp }
+  | DIMPL { `EquivOp }
 
 %inline infixop :
   | infixop_ { $1 $$ $sloc }
@@ -397,8 +404,8 @@ check_atom :
   | DOTDOT { Atom.Dot2 }
   | DOTDOTDOT { Atom.Dot3 }
   | SEMICOLON { Atom.Semicolon }
-  | BACKSLASH { Atom.Backslash }
   | ARROW { Atom.Arrow }
+  | ARROW2 { Atom.Arrow2 }
   | ARROWSUB { Atom.ArrowSub }
   | ARROW2SUB { Atom.Arrow2Sub }
   | BIGAND { Atom.BigAnd }

@@ -4,6 +4,9 @@ open Print
 
 let el_id = Util.Source.it
 let el_atom = string_of_atom
+let el_unop = string_of_unop
+let el_binop = string_of_binop
+let el_cmpop = string_of_cmpop
 let el_iter = string_of_iter
 let el_typ = string_of_typ ~short:true
 let el_typfield = string_of_typfield ~short:true

@@ -1018,42 +1018,48 @@ and equiv_params env ps1 ps2 =
 and sub_prems _env prems1 prems2 =
   List.for_all (fun prem2 -> List.exists (Eq.eq_prem prem2) prems1) prems2
 
-and sub_typ env t1 t2 =
+and sub_typ env t1 t2 = sub_typ' env [] t1 t2
+
+and sub_typ' env assum t1 t2 =
   Debug.(log "il.sub_typ"
     (fun _ -> fmt "%s <: %s" (il_typ t1) (il_typ t2)) Bool.to_string
   ) @@ fun _ ->
   equiv_typ env t1 t2 ||
+  List.exists (fun (t1', t2') -> Eq.eq_typ t1 t1' && Eq.eq_typ t2 t2') assum ||
   let t1' = reduce_typ env t1 in
   let t2' = reduce_typ env t2 in
+  let assum' = (t1, t2)::assum in
   match t1'.it, t2'.it with
 (*| NumT nt1, NumT nt2 -> Num.sub nt1 nt2*)
-  | TupT ets1, TupT ets2 -> sub_tup env Subst.empty ets1 ets2
+  | TupT ets1, TupT ets2 -> sub_tup env assum' Subst.empty ets1 ets2
   | VarT _, VarT _ ->
     (match (reduce_typdef env t1').it, (reduce_typdef env t2').it with
     | StructT tfs1, StructT tfs2 ->
-      List.for_all (fun (atom, (t2, _qs2, prems2), _) ->
+      List.for_all (fun (atom, (t21, _qs2, prems2), _) ->
         match find_field tfs1 atom with
-        | Some (t1, _qs1, prems1) ->
-          sub_typ env t1 t2 && sub_prems env prems1 prems2
+        | Some (t11, _qs1, prems1) ->
+          sub_typ' env assum' t11 t21 && sub_prems env prems1 prems2
         | None -> false
       ) tfs2
     | VariantT tcs1, VariantT tcs2 ->
-      List.for_all (fun (mixop, (t1, _qs1, prems1), _) ->
+      List.for_all (fun (mixop, (t11, _qs1, prems1), _) ->
         match find_case tcs2 mixop with
-        | Some (t2, _qs2, prems2) ->
-          sub_typ env t1 t2 && sub_prems env prems1 prems2
+        | Some (t21, _qs2, prems2) ->
+          sub_typ' env assum' t11 t21 && sub_prems env prems1 prems2
         | None -> false
       ) tcs1
     | _, _ -> false
     )
+  | IterT (t11, it1), IterT (t21, it2) ->
+    sub_typ' env assum' t11 t21 && Eq.eq_iter it1 it2
   | _, _ ->
     false
 
-and sub_tup env s xts1 xts2 =
+and sub_tup env assum s xts1 xts2 =
   match xts1, xts2 with
   | (x1, t1)::xts1', (x2, t2)::xts2' ->
-    sub_typ env t1 (Subst.subst_typ s t2) &&
-    sub_tup env (Subst.add_varid s x2 (VarE x1 $$ x1.at % t1)) xts1' xts2'
+    sub_typ' env assum t1 (Subst.subst_typ s t2) &&
+    sub_tup env assum (Subst.add_varid s x2 (VarE x1 $$ x1.at % t1)) xts1' xts2'
   | _, _ -> xts1 = xts2
 
 
