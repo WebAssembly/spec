@@ -1683,7 +1683,7 @@ dictionary ExceptionOptions {
 [LegacyNamespace=WebAssembly, Exposed=(Window,Worker,Worklet)]
 interface Exception {
   constructor(Tag exceptionTag, sequence&lt;any> payload, optional ExceptionOptions options = {});
-  any getArg([EnforceRange] unsigned long index);
+  any getArg(Tag exceptionTag, [EnforceRange] unsigned long index);
   boolean is(Tag exceptionTag);
   readonly attribute (DOMString or undefined) stack;
 };
@@ -1751,9 +1751,11 @@ constructor steps are:
 
 <div algorithm>
 
-The <dfn method for="Exception">getArg(|index|)</dfn> method steps are:
+The <dfn method for="Exception">getArg(|exceptionTag|, |index|)</dfn> method steps are:
 
 1. Let |store| be the [=surrounding agent=]'s [=associated store=].
+1. If **this**.\[[Type]] is not equal to |exceptionTag|.\[[Address]],
+    1. Throw a {{TypeError}}.
 1. Let |tagaddr| be [=exn_tag=](|store|, **this**.\[[Address]]).
 1. Let |payload| be [=exn_read=](|store|, **this**.\[[Address]]).
 1. Assert: |tagaddr| is equal to **this**.\[[Type]].
