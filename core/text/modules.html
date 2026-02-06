@@ -432,11 +432,6 @@ The data is written as a <a class="reference internal" href="values.html#text-st
 &amp; {{\href{../text/modules.html#text-memuse}{\mathtt{memuse}}}}_{{\href{../text/conventions.html#text-context}{I}}} &amp; ::= &amp; \mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{memory}’}~~x{:}{{\href{../text/modules.html#text-memidx}{\mathtt{memidx}}}}_{{\href{../text/conventions.html#text-context}{I}}}~~\mbox{‘\texttt{{)}}’} &amp; \quad\Rightarrow\quad{} &amp; x \\
 &amp; {{\href{../text/instructions.html#text-memarg}{\mathtt{offset}}}}_{{\href{../text/conventions.html#text-context}{I}}} &amp; ::= &amp; \mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{offset}’}~~e{:}{{\href{../text/instructions.html#text-expr}{\mathtt{expr}}}}_{{\href{../text/conventions.html#text-context}{I}}}~~\mbox{‘\texttt{{)}}’} &amp; \quad\Rightarrow\quad{} &amp; e \\
 \end{array}\end{split}\]</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>In the current version of WebAssembly, the only valid memory index is 0
-or a symbolic <a class="reference internal" href="values.html#text-id"><span class="std std-ref">memory identifier</span></a> resolving to the same value.</p>
-</div>
 <section id="id5">
 <h3>Abbreviations<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h3>
 <p>As an abbreviation, a single <a class="reference internal" href="instructions.html#text-foldedinstr"><span class="std std-ref">folded instruction</span></a> may occur in place of the offset of an active segment:</p>
