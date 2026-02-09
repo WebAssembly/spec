@@ -298,7 +298,7 @@ let atom_of_atom' atom' typ = atom' $$ no_region % (Atom.info typ)
 
 let frame_atom = atom_of_name "FRAME_" "evalctx"
 let frameE ?(at = no) ~note (arity, e) =
-  let frame_mixop = Mixop.(Seq [Atom frame_atom; Brack (atom_of_atom' Atom.LBrace "evalctx", Arg (), atom_of_atom' Atom.RBrace "evalctx")]) in
+  let frame_mixop = Mixop.(Seq [Atom frame_atom; Arg (); Brack (atom_of_atom' Atom.LBrace "evalctx", Arg (), atom_of_atom' Atom.RBrace "evalctx")]) in
   caseE (frame_mixop, [arity; e]) ~at:at ~note:note
 
 (* Il Types *)
