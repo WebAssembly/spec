@@ -375,8 +375,29 @@ rule Step_exp/SUB-SUB:
   S |- SUB (SUB e' t'_1 t'_2) t_1 t_2 ~> SUB e' t'_1 t_2
 
 rule Step_exp/SUB-TUP:
-  S |- SUB (TUP e*) (TUP (x_1 `: t'_1)*) (TUP (x_2 `: t'_2)*) ~> TUP (SUB e t'_1 t'_2)*
-  ;; TODO: substitute x's
+  S |- SUB (TUP e^n) (TUP (x_1 `: t_1)^n) (TUP (x_2 `: t_2)^n) ~> TUP (SUB e $subst_typ(s_1, t_1) $subst_typ(s_2, t_2))^n
+  -- if s_1 = {EXP (x_1, e^n[i])^(i<n)}
+  -- if s_2 = {EXP (x_2, e^n[i])^(i<n)}
+
+rule Step_exp/SUB-OPT:
+  S |- SUB (OPT e?) (ITER t_1 QUEST) (ITER t_2 QUEST) ~> OPT (SUB e t_1 t_2)?
+
+rule Step_exp/SUB-LIST:
+  S |- SUB (LIST e*) (ITER t_1 STAR) (ITER t_2 STAR) ~> LIST (SUB e t_1 t_2)*
+
+rule Step_exp/SUB-STR:
+  S |- SUB (STR (at `= e)*) (VAR x_1 a_1*) (VAR x_2 a_2*) ~> STR (at' `= SUB e t_1 t_2)*
+  -- Expand_typ: S |- VAR x_1 a_1* => STRUCT tf_1*
+  -- Expand_typ: S |- VAR x_2 a_2* => STRUCT tf_2*
+  -- (if (at' `: t_1 `- `{q_1*} pr_1*) <- tf_1*)*
+  -- (if (at' `: t_2 `- `{q_2*} pr_2*) = tf_2)*
+
+rule Step_exp/SUB-CASE:
+  S |- SUB (INJ op e) (VAR x_1 a_1*) (VAR x_2 a_2*) ~> INJ op (SUB e t_1 t_2)
+  -- Expand_typ: S |- VAR x_1 a_1* => VARIANT tc_1*
+  -- Expand_typ: S |- VAR x_2 a_2* => VARIANT tc_2*
+  -- if (op `: t_1 `- `{q_1*} pr_1*) <- tc_1*
+  -- if (op `: t_2 `- `{q_2*} pr_2*) <- tc_2*
 
 
 ;; Arguments
