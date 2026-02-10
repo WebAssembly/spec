@@ -359,17 +359,23 @@ rule Step_exp/CVT-NUM:
   S |- CVT num nt_1 nt_2 ~> $numcvt(nt_2, num)
 
 
-rule Step_exp/SUB-ctx:
+rule Step_exp/SUB-ctx1:
   S |- SUB e t_1 t_2 ~> SUB e' t_1 t_2
   -- Step_exp: S |- e ~> e'
+
+rule Step_exp/SUB-ctx2:
+  S |- SUB e t_1 t_2 ~> SUB e t'_1 t_2
+  -- Step_typ: S |- t_1 ~> t'_1
+
+rule Step_exp/SUB-ctx3:
+  S |- SUB e t_1 t_2 ~> SUB e t_1 t'_2
+  -- Step_typ: S |- t_2 ~> t'_2
 
 rule Step_exp/SUB-SUB:
   S |- SUB (SUB e' t'_1 t'_2) t_1 t_2 ~> SUB e' t'_1 t_2
 
 rule Step_exp/SUB-TUP:
-  S |- SUB (TUP e*) t_1 t_2 ~> TUP (SUB e t'_1 t'_2)*
-  -- Reduce_typ: S |- t_1 ~>* TUP (x_1 `: t'_1)*
-  -- Reduce_typ: S |- t_2 ~>* TUP (x_2 `: t'_2)*
+  S |- SUB (TUP e*) (TUP (x_1 `: t'_1)*) (TUP (x_2 `: t'_2)*) ~> TUP (SUB e t'_1 t'_2)*
   ;; TODO: substitute x's
 
 
