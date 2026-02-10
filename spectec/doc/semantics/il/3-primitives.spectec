@@ -1,0 +1,116 @@
+;; Booleans
+
+def $boolun(boolunop, bool) : bool
+
+def $boolun(NOT, b) = ~b
+
+
+def $boolbin(boolbinop, bool, bool) : bool
+
+def $boolbin(AND, b_1, b_2) = b_1 /\ b_2
+def $boolbin(OR, b_1, b_2) = b_1 \/ b_2
+def $boolbin(IMPL, b_1, b_2) = b_1 ==> b_2
+def $boolbin(EQUIV, b_1, b_2) = b_1 <=> b_2
+
+
+;; Numerics
+
+def $iszero(num) : bool
+def $isone(num) : bool
+
+def $iszero(NAT n) = (n = 0)
+def $iszero(INT i) = (i = 0)
+def $iszero(RAT q) = (q = 0)
+def $iszero(REAL r) = (r = 0)
+
+def $isone(NAT n) = (n = 1)
+def $isone(INT i) = (i = 1)
+def $isone(RAT q) = (q = 1)
+def $isone(REAL r) = (r = 1)
+
+
+def $numcvt(numtyp, num) : num  hint(partial)
+
+def $numcvt(NAT, NAT n) = NAT n
+def $numcvt(NAT, INT i) = NAT $nat$(i)  -- if i >= 0
+def $numcvt(NAT, RAT q) = $numcvt(NAT, $numcvt(INT, RAT q))
+def $numcvt(NAT, REAL r) = $numcvt(NAT, $numcvt(RAT, REAL r))
+
+def $numcvt(INT, NAT n) = INT n
+def $numcvt(INT, INT i) = INT i
+def $numcvt(INT, RAT q) = INT $int$(q)  -- if q = $int$(q)
+def $numcvt(INT, REAL r) = $numcvt(INT, $numcvt(RAT, REAL r))
+
+def $numcvt(RAT, NAT n) = RAT n
+def $numcvt(RAT, INT i) = RAT i
+def $numcvt(RAT, RAT q) = RAT q
+def $numcvt(RAT, REAL r) = RAT $rat$(r)  -- if r = $rat$(r)
+
+def $numcvt(REAL, NAT n) = REAL n
+def $numcvt(REAL, INT i) = REAL i
+def $numcvt(REAL, RAT q) = REAL q
+def $numcvt(REAL, REAL r) = REAL r
+
+
+def $numun(numunop, num) : num  hint(partial)
+
+def $numun(PLUS, num) = num
+
+def $numun(MINUS, NAT n) = INT $(-n)
+def $numun(MINUS, INT i) = INT $(-i)
+def $numun(MINUS, RAT q) = RAT $(-q)
+def $numun(MINUS, REAL r) = REAL $(-r)
+
+
+def $numbin(numbinop, num, num) : num  hint(partial)
+
+def $numbin(ADD, NAT n_1, NAT n_2) = NAT $(n_1 + n_2)
+def $numbin(ADD, INT i_1, INT i_2) = INT $(i_1 + i_2)
+def $numbin(ADD, RAT q_1, RAT q_2) = RAT $(q_1 + q_2)
+def $numbin(ADD, REAL r_1, REAL r_2) = REAL $(r_1 + r_2)
+
+def $numbin(SUB, NAT n_1, NAT n_2) = NAT $nat$(n_1 - n_2)  -- if n_1 >= n_2
+def $numbin(SUB, INT i_1, INT i_2) = INT $(i_1 - i_2)
+def $numbin(SUB, RAT q_1, RAT q_2) = RAT $(q_1 - q_2)
+def $numbin(SUB, REAL r_1, REAL r_2) = REAL $(r_1 - r_2)
+
+def $numbin(MUL, NAT n_1, NAT n_2) = NAT $(n_1 * n_2)
+def $numbin(MUL, INT i_1, INT i_2) = INT $(i_1 * i_2)
+def $numbin(MUL, RAT q_1, RAT q_2) = RAT $(q_1 * q_2)
+def $numbin(MUL, REAL r_1, REAL r_2) = REAL $(r_1 * r_2)
+
+def $numbin(DIV, NAT n_1, NAT n_2) = NAT $nat$(n_1 / n_2)  -- if n_2 =/= 0 /\ $(n_1 \ n_2) = 0
+def $numbin(DIV, INT i_1, INT i_2) = INT $nat$(i_1 / i_2)  -- if i_2 =/= 0 /\ $(i_1 \ i_2) = 0
+def $numbin(DIV, RAT q_1, RAT q_2) = RAT $(q_1 / q_2)      -- if q_2 =/= 0
+def $numbin(DIV, REAL r_1, REAL r_2) = REAL $(r_1 / r_2)   -- if r_2 =/= 0
+
+def $numbin(MOD, NAT n_1, NAT n_2) = NAT $(n_1 / n_2)      -- if n_2 =/= 0
+def $numbin(MOD, INT i_1, INT i_2) = INT $(i_1 / i_2)      -- if i_2 =/= 0
+
+def $numbin(POW, NAT n_1, NAT n_2) = NAT $(n_1^n_2)
+def $numbin(POW, INT i_1, INT i_2) = INT $(i_1^i_2)        -- if i_2 >= 0
+def $numbin(POW, RAT q_1, RAT q_2) = RAT $(q_1^q_2)        -- if q_2 = $int$(q_2)
+def $numbin(POW, REAL r_1, REAL r_2) = REAL $(r_1^r_2)
+
+
+def $numcmp(numcmpop, num, num) : bool  hint(partial)
+
+def $numcmp(LT, NAT n_1, NAT n_2) = $(n_1 < n_2)
+def $numcmp(LT, INT i_1, INT i_2) = $(i_1 < i_2)
+def $numcmp(LT, RAT q_1, RAT q_2) = $(q_1 < q_2)
+def $numcmp(LT, REAL r_1, REAL r_2) = $(r_1 < r_2)
+
+def $numcmp(GT, NAT n_1, NAT n_2) = $(n_1 > n_2)
+def $numcmp(GT, INT i_1, INT i_2) = $(i_1 > i_2)
+def $numcmp(GT, RAT q_1, RAT q_2) = $(q_1 > q_2)
+def $numcmp(GT, REAL r_1, REAL r_2) = $(r_1 > r_2)
+
+def $numcmp(LE, NAT n_1, NAT n_2) = $(n_1 <= n_2)
+def $numcmp(LE, INT i_1, INT i_2) = $(i_1 <= i_2)
+def $numcmp(LE, RAT q_1, RAT q_2) = $(q_1 <= q_2)
+def $numcmp(LE, REAL r_1, REAL r_2) = $(r_1 <= r_2)
+
+def $numcmp(GE, NAT n_1, NAT n_2) = $(n_1 >= n_2)
+def $numcmp(GE, INT i_1, INT i_2) = $(i_1 >= i_2)
+def $numcmp(GE, RAT q_1, RAT q_2) = $(q_1 >= q_2)
+def $numcmp(GE, REAL r_1, REAL r_2) = $(r_1 >= r_2)
