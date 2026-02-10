@@ -2204,227 +2204,227 @@ def $free_blocktype(blocktype : blocktype) : free
 ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec
 rec {
 
-;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:572.1-572.44
+;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:574.1-574.44
 def $shift_labelidxs(labelidx*) : labelidx*
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:573.1-573.32
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:575.1-575.32
   def $shift_labelidxs([]) = []
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:574.1-574.66
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:576.1-576.66
   def $shift_labelidxs{`labelidx'*` : labelidx*}([`%`_labelidx(0)] ++ labelidx'*{labelidx' <- `labelidx'*`}) = $shift_labelidxs(labelidx'*{labelidx' <- `labelidx'*`})
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:575.1-575.91
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:577.1-577.91
   def $shift_labelidxs{labelidx : labelidx, `labelidx'*` : labelidx*}([labelidx] ++ labelidx'*{labelidx' <- `labelidx'*`}) = [`%`_labelidx((((labelidx!`%`_labelidx.0 : nat <:> int) - (1 : nat <:> int)) : int <:> nat))] ++ $shift_labelidxs(labelidx'*{labelidx' <- `labelidx'*`})
 }
 
 ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec
 rec {
 
-;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:417.1-417.30
+;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:419.1-419.30
 def $free_instr(instr : instr) : free
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:428.1-428.26
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:430.1-430.26
   def $free_instr(NOP_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:429.1-429.34
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:431.1-431.34
   def $free_instr(UNREACHABLE_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:430.1-430.27
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:432.1-432.27
   def $free_instr(DROP_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:431.1-431.86
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:433.1-433.86
   def $free_instr{`valtype*?` : valtype*?}(SELECT_instr(valtype*{valtype <- `valtype*`}?{`valtype*` <- `valtype*?`})) = $free_opt($free_list($free_valtype(valtype)*{valtype <- `valtype*`})?{`valtype*` <- `valtype*?`})
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:433.1-433.92
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:435.1-435.92
   def $free_instr{blocktype : blocktype, `instr*` : instr*}(BLOCK_instr(blocktype, instr*{instr <- `instr*`})) = $free_blocktype(blocktype) +++ $free_block(instr*{instr <- `instr*`})
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:434.1-434.91
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:436.1-436.91
   def $free_instr{blocktype : blocktype, `instr*` : instr*}(LOOP_instr(blocktype, instr*{instr <- `instr*`})) = $free_blocktype(blocktype) +++ $free_block(instr*{instr <- `instr*`})
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:435.1-436.79
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:437.1-438.79
   def $free_instr{blocktype : blocktype, `instr_1*` : instr*, `instr_2*` : instr*}(`IF%%ELSE%`_instr(blocktype, instr_1*{instr_1 <- `instr_1*`}, instr_2*{instr_2 <- `instr_2*`})) = $free_blocktype(blocktype) +++ $free_block(instr_1*{instr_1 <- `instr_1*`}) +++ $free_block(instr_2*{instr_2 <- `instr_2*`})
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:438.1-438.56
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:440.1-440.56
   def $free_instr{labelidx : labelidx}(BR_instr(labelidx)) = $free_labelidx(labelidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:439.1-439.59
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:441.1-441.59
   def $free_instr{labelidx : labelidx}(BR_IF_instr(labelidx)) = $free_labelidx(labelidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:440.1-441.69
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:442.1-443.69
   def $free_instr{`labelidx*` : labelidx*, labelidx' : labelidx}(BR_TABLE_instr(labelidx*{labelidx <- `labelidx*`}, labelidx')) = $free_list($free_labelidx(labelidx)*{labelidx <- `labelidx*`}) +++ $free_labelidx(labelidx')
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:442.1-442.64
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:444.1-444.64
   def $free_instr{labelidx : labelidx}(BR_ON_NULL_instr(labelidx)) = $free_labelidx(labelidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:443.1-443.68
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:445.1-445.68
   def $free_instr{labelidx : labelidx}(BR_ON_NON_NULL_instr(labelidx)) = $free_labelidx(labelidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:444.1-445.83
-  def $free_instr{labelidx : labelidx, reftype_1 : reftype, reftype_2 : reftype}(BR_ON_CAST_instr(labelidx, reftype_1, reftype_2)) = $free_labelidx(labelidx) +++ $free_reftype(reftype_1) +++ $free_reftype(reftype_2)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:446.1-447.83
+  def $free_instr{labelidx : labelidx, reftype_1 : reftype, reftype_2 : reftype}(BR_ON_CAST_instr(labelidx, reftype_1, reftype_2)) = $free_labelidx(labelidx) +++ $free_reftype(reftype_1) +++ $free_reftype(reftype_2)
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:448.1-449.83
   def $free_instr{labelidx : labelidx, reftype_1 : reftype, reftype_2 : reftype}(BR_ON_CAST_FAIL_instr(labelidx, reftype_1, reftype_2)) = $free_labelidx(labelidx) +++ $free_reftype(reftype_1) +++ $free_reftype(reftype_2)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:449.1-449.55
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:451.1-451.55
   def $free_instr{funcidx : funcidx}(CALL_instr(funcidx)) = $free_funcidx(funcidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:450.1-450.59
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:452.1-452.59
   def $free_instr{typeuse : typeuse}(CALL_REF_instr(typeuse)) = $free_typeuse(typeuse)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:451.1-452.53
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:453.1-454.53
   def $free_instr{tableidx : tableidx, typeuse : typeuse}(CALL_INDIRECT_instr(tableidx, typeuse)) = $free_tableidx(tableidx) +++ $free_typeuse(typeuse)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:453.1-453.29
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:455.1-455.29
   def $free_instr(RETURN_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:454.1-454.62
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:456.1-456.62
   def $free_instr{funcidx : funcidx}(RETURN_CALL_instr(funcidx)) = $free_funcidx(funcidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:455.1-455.66
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:457.1-457.66
   def $free_instr{typeuse : typeuse}(RETURN_CALL_REF_instr(typeuse)) = $free_typeuse(typeuse)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:456.1-457.53
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:458.1-459.53
   def $free_instr{tableidx : tableidx, typeuse : typeuse}(RETURN_CALL_INDIRECT_instr(tableidx, typeuse)) = $free_tableidx(tableidx) +++ $free_typeuse(typeuse)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:459.1-459.63
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:461.1-461.63
   def $free_instr{numtype : numtype, numlit : num_(numtype)}(CONST_instr(numtype, numlit)) = $free_numtype(numtype)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:460.1-460.60
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:462.1-462.60
   def $free_instr{numtype : numtype, unop : unop_(numtype)}(UNOP_instr(numtype, unop)) = $free_numtype(numtype)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:461.1-461.62
-  def $free_instr{numtype : numtype, binop : binop_(numtype)}(BINOP_instr(numtype, binop)) = $free_numtype(numtype)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:462.1-462.64
-  def $free_instr{numtype : numtype, testop : testop_(numtype)}(TESTOP_instr(numtype, testop)) = $free_numtype(numtype)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:463.1-463.62
+  def $free_instr{numtype : numtype, binop : binop_(numtype)}(BINOP_instr(numtype, binop)) = $free_numtype(numtype)
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:464.1-464.64
+  def $free_instr{numtype : numtype, testop : testop_(numtype)}(TESTOP_instr(numtype, testop)) = $free_numtype(numtype)
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:465.1-465.62
   def $free_instr{numtype : numtype, relop : relop_(numtype)}(RELOP_instr(numtype, relop)) = $free_numtype(numtype)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:464.1-465.55
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:466.1-467.55
   def $free_instr{numtype_1 : numtype, numtype_2 : numtype, cvtop : cvtop__(numtype_2, numtype_1)}(CVTOP_instr(numtype_1, numtype_2, cvtop)) = $free_numtype(numtype_1) +++ $free_numtype(numtype_2)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:467.1-467.64
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:469.1-469.64
   def $free_instr{vectype : vectype, veclit : vec_(vectype)}(VCONST_instr(vectype, veclit)) = $free_vectype(vectype)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:468.1-468.64
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:470.1-470.64
   def $free_instr{vectype : vectype, vvunop : vvunop}(VVUNOP_instr(vectype, vvunop)) = $free_vectype(vectype)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:469.1-469.66
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:471.1-471.66
   def $free_instr{vectype : vectype, vvbinop : vvbinop}(VVBINOP_instr(vectype, vvbinop)) = $free_vectype(vectype)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:470.1-470.68
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:472.1-472.68
   def $free_instr{vectype : vectype, vvternop : vvternop}(VVTERNOP_instr(vectype, vvternop)) = $free_vectype(vectype)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:471.1-471.68
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:473.1-473.68
   def $free_instr{vectype : vectype, vvtestop : vvtestop}(VVTESTOP_instr(vectype, vvtestop)) = $free_vectype(vectype)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:472.1-472.56
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:474.1-474.56
   def $free_instr{shape : shape, vunop : vunop_(shape)}(VUNOP_instr(shape, vunop)) = $free_shape(shape)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:473.1-473.58
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:475.1-475.58
   def $free_instr{shape : shape, vbinop : vbinop_(shape)}(VBINOP_instr(shape, vbinop)) = $free_shape(shape)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:474.1-474.60
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:476.1-476.60
   def $free_instr{shape : shape, vternop : vternop_(shape)}(VTERNOP_instr(shape, vternop)) = $free_shape(shape)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:475.1-475.60
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:477.1-477.60
   def $free_instr{shape : shape, vtestop : vtestop_(shape)}(VTESTOP_instr(shape, vtestop)) = $free_shape(shape)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:476.1-476.58
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:478.1-478.58
   def $free_instr{shape : shape, vrelop : vrelop_(shape)}(VRELOP_instr(shape, vrelop)) = $free_shape(shape)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:477.1-477.64
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:479.1-479.64
   def $free_instr{ishape : ishape, vshiftop : vshiftop_(ishape)}(VSHIFTOP_instr(ishape, vshiftop)) = $free_shape(ishape!`%`_ishape.0)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:478.1-478.55
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:480.1-480.55
   def $free_instr{ishape : ishape}(VBITMASK_instr(ishape)) = $free_shape(ishape!`%`_ishape.0)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:479.1-479.66
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:481.1-481.66
   def $free_instr{bshape : bshape, vswizzlop : vswizzlop_(bshape)}(VSWIZZLOP_instr(bshape, vswizzlop)) = $free_shape(bshape!`%`_bshape.0)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:480.1-480.64
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:482.1-482.64
   def $free_instr{bshape : bshape, `laneidx*` : laneidx*}(VSHUFFLE_instr(bshape, laneidx*{laneidx <- `laneidx*`})) = $free_shape(bshape!`%`_bshape.0)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:481.1-482.49
-  def $free_instr{ishape_1 : ishape, ishape_2 : ishape, vextunop : vextunop__(ishape_2, ishape_1)}(VEXTUNOP_instr(ishape_1, ishape_2, vextunop)) = $free_shape(ishape_1!`%`_ishape.0) +++ $free_shape(ishape_2!`%`_ishape.0)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:483.1-484.49
-  def $free_instr{ishape_1 : ishape, ishape_2 : ishape, vextbinop : vextbinop__(ishape_2, ishape_1)}(VEXTBINOP_instr(ishape_1, ishape_2, vextbinop)) = $free_shape(ishape_1!`%`_ishape.0) +++ $free_shape(ishape_2!`%`_ishape.0)
+  def $free_instr{ishape_1 : ishape, ishape_2 : ishape, vextunop : vextunop__(ishape_2, ishape_1)}(VEXTUNOP_instr(ishape_1, ishape_2, vextunop)) = $free_shape(ishape_1!`%`_ishape.0) +++ $free_shape(ishape_2!`%`_ishape.0)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:485.1-486.49
-  def $free_instr{ishape_1 : ishape, ishape_2 : ishape, vextternop : vextternop__(ishape_2, ishape_1)}(VEXTTERNOP_instr(ishape_1, ishape_2, vextternop)) = $free_shape(ishape_1!`%`_ishape.0) +++ $free_shape(ishape_2!`%`_ishape.0)
+  def $free_instr{ishape_1 : ishape, ishape_2 : ishape, vextbinop : vextbinop__(ishape_2, ishape_1)}(VEXTBINOP_instr(ishape_1, ishape_2, vextbinop)) = $free_shape(ishape_1!`%`_ishape.0) +++ $free_shape(ishape_2!`%`_ishape.0)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:487.1-488.49
+  def $free_instr{ishape_1 : ishape, ishape_2 : ishape, vextternop : vextternop__(ishape_2, ishape_1)}(VEXTTERNOP_instr(ishape_1, ishape_2, vextternop)) = $free_shape(ishape_1!`%`_ishape.0) +++ $free_shape(ishape_2!`%`_ishape.0)
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:489.1-490.49
   def $free_instr{ishape_1 : ishape, ishape_2 : ishape, sx : sx}(VNARROW_instr(ishape_1, ishape_2, sx)) = $free_shape(ishape_1!`%`_ishape.0) +++ $free_shape(ishape_2!`%`_ishape.0)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:489.1-490.47
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:491.1-492.47
   def $free_instr{shape_1 : shape, shape_2 : shape, vcvtop : vcvtop__(shape_2, shape_1)}(VCVTOP_instr(shape_1, shape_2, vcvtop)) = $free_shape(shape_1) +++ $free_shape(shape_2)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:491.1-491.51
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:493.1-493.51
   def $free_instr{shape : shape}(VSPLAT_instr(shape)) = $free_shape(shape)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:492.1-492.70
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:494.1-494.70
   def $free_instr{shape : shape, `sx?` : sx?, laneidx : laneidx}(VEXTRACT_LANE_instr(shape, sx?{sx <- `sx?`}, laneidx)) = $free_shape(shape)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:493.1-493.66
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:495.1-495.66
   def $free_instr{shape : shape, laneidx : laneidx}(VREPLACE_LANE_instr(shape, laneidx)) = $free_shape(shape)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:495.1-495.62
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:497.1-497.62
   def $free_instr{heaptype : heaptype}(REF.NULL_instr(heaptype)) = $free_heaptype(heaptype)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:496.1-496.34
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:498.1-498.34
   def $free_instr(REF.IS_NULL_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:497.1-497.38
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:499.1-499.38
   def $free_instr(REF.AS_NON_NULL_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:498.1-498.29
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:500.1-500.29
   def $free_instr(REF.EQ_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:499.1-499.59
-  def $free_instr{reftype : reftype}(REF.TEST_instr(reftype)) = $free_reftype(reftype)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:500.1-500.59
-  def $free_instr{reftype : reftype}(REF.CAST_instr(reftype)) = $free_reftype(reftype)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:501.1-501.59
+  def $free_instr{reftype : reftype}(REF.TEST_instr(reftype)) = $free_reftype(reftype)
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:502.1-502.59
+  def $free_instr{reftype : reftype}(REF.CAST_instr(reftype)) = $free_reftype(reftype)
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:503.1-503.59
   def $free_instr{funcidx : funcidx}(REF.FUNC_instr(funcidx)) = $free_funcidx(funcidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:502.1-502.30
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:504.1-504.30
   def $free_instr(REF.I31_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:504.1-504.33
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:506.1-506.33
   def $free_instr{sx : sx}(I31.GET_instr(sx)) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:506.1-506.41
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:508.1-508.41
   def $free_instr{typeidx : typeidx}(STRUCT.NEW_instr(typeidx)) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:507.1-507.69
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:509.1-509.69
   def $free_instr{typeidx : typeidx}(STRUCT.NEW_DEFAULT_instr(typeidx)) = $free_typeidx(typeidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:508.1-508.69
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:510.1-510.69
   def $free_instr{`sx?` : sx?, typeidx : typeidx, u32 : u32}(STRUCT.GET_instr(sx?{sx <- `sx?`}, typeidx, u32)) = $free_typeidx(typeidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:509.1-509.65
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:511.1-511.65
   def $free_instr{typeidx : typeidx, u32 : u32}(STRUCT.SET_instr(typeidx, u32)) = $free_typeidx(typeidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:511.1-511.60
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:513.1-513.60
   def $free_instr{typeidx : typeidx}(ARRAY.NEW_instr(typeidx)) = $free_typeidx(typeidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:512.1-512.68
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:514.1-514.68
   def $free_instr{typeidx : typeidx}(ARRAY.NEW_DEFAULT_instr(typeidx)) = $free_typeidx(typeidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:513.1-513.70
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:515.1-515.70
   def $free_instr{typeidx : typeidx, u32 : u32}(ARRAY.NEW_FIXED_instr(typeidx, u32)) = $free_typeidx(typeidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:514.1-515.51
-  def $free_instr{typeidx : typeidx, dataidx : dataidx}(ARRAY.NEW_DATA_instr(typeidx, dataidx)) = $free_typeidx(typeidx) +++ $free_dataidx(dataidx)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:516.1-517.51
+  def $free_instr{typeidx : typeidx, dataidx : dataidx}(ARRAY.NEW_DATA_instr(typeidx, dataidx)) = $free_typeidx(typeidx) +++ $free_dataidx(dataidx)
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:518.1-519.51
   def $free_instr{typeidx : typeidx, elemidx : elemidx}(ARRAY.NEW_ELEM_instr(typeidx, elemidx)) = $free_typeidx(typeidx) +++ $free_elemidx(elemidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:518.1-518.64
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:520.1-520.64
   def $free_instr{`sx?` : sx?, typeidx : typeidx}(ARRAY.GET_instr(sx?{sx <- `sx?`}, typeidx)) = $free_typeidx(typeidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:519.1-519.60
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:521.1-521.60
   def $free_instr{typeidx : typeidx}(ARRAY.SET_instr(typeidx)) = $free_typeidx(typeidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:520.1-520.32
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:522.1-522.32
   def $free_instr(ARRAY.LEN_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:521.1-521.61
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:523.1-523.61
   def $free_instr{typeidx : typeidx}(ARRAY.FILL_instr(typeidx)) = $free_typeidx(typeidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:522.1-523.55
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:524.1-525.55
   def $free_instr{typeidx_1 : typeidx, typeidx_2 : typeidx}(ARRAY.COPY_instr(typeidx_1, typeidx_2)) = $free_typeidx(typeidx_1) +++ $free_typeidx(typeidx_2)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:524.1-525.51
-  def $free_instr{typeidx : typeidx, dataidx : dataidx}(ARRAY.INIT_DATA_instr(typeidx, dataidx)) = $free_typeidx(typeidx) +++ $free_dataidx(dataidx)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:526.1-527.51
+  def $free_instr{typeidx : typeidx, dataidx : dataidx}(ARRAY.INIT_DATA_instr(typeidx, dataidx)) = $free_typeidx(typeidx) +++ $free_dataidx(dataidx)
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:528.1-529.51
   def $free_instr{typeidx : typeidx, elemidx : elemidx}(ARRAY.INIT_ELEM_instr(typeidx, elemidx)) = $free_typeidx(typeidx) +++ $free_elemidx(elemidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:529.1-529.41
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:531.1-531.41
   def $free_instr(EXTERN.CONVERT_ANY_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:530.1-530.41
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:532.1-532.41
   def $free_instr(ANY.CONVERT_EXTERN_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:532.1-532.63
-  def $free_instr{localidx : localidx}(LOCAL.GET_instr(localidx)) = $free_localidx(localidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:533.1-533.63
-  def $free_instr{localidx : localidx}(LOCAL.SET_instr(localidx)) = $free_localidx(localidx)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:534.1-534.63
+  def $free_instr{localidx : localidx}(LOCAL.GET_instr(localidx)) = $free_localidx(localidx)
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:535.1-535.63
+  def $free_instr{localidx : localidx}(LOCAL.SET_instr(localidx)) = $free_localidx(localidx)
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:536.1-536.63
   def $free_instr{localidx : localidx}(LOCAL.TEE_instr(localidx)) = $free_localidx(localidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:536.1-536.67
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:538.1-538.67
   def $free_instr{globalidx : globalidx}(GLOBAL.GET_instr(globalidx)) = $free_globalidx(globalidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:537.1-537.67
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:539.1-539.67
   def $free_instr{globalidx : globalidx}(GLOBAL.SET_instr(globalidx)) = $free_globalidx(globalidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:539.1-539.63
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:541.1-541.63
   def $free_instr{tableidx : tableidx}(TABLE.GET_instr(tableidx)) = $free_tableidx(tableidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:540.1-540.63
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:542.1-542.63
   def $free_instr{tableidx : tableidx}(TABLE.SET_instr(tableidx)) = $free_tableidx(tableidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:541.1-541.64
-  def $free_instr{tableidx : tableidx}(TABLE.SIZE_instr(tableidx)) = $free_tableidx(tableidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:542.1-542.64
-  def $free_instr{tableidx : tableidx}(TABLE.GROW_instr(tableidx)) = $free_tableidx(tableidx)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:543.1-543.64
+  def $free_instr{tableidx : tableidx}(TABLE.SIZE_instr(tableidx)) = $free_tableidx(tableidx)
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:544.1-544.64
+  def $free_instr{tableidx : tableidx}(TABLE.GROW_instr(tableidx)) = $free_tableidx(tableidx)
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:545.1-545.64
   def $free_instr{tableidx : tableidx}(TABLE.FILL_instr(tableidx)) = $free_tableidx(tableidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:544.1-545.59
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:546.1-547.59
   def $free_instr{tableidx_1 : tableidx, tableidx_2 : tableidx}(TABLE.COPY_instr(tableidx_1, tableidx_2)) = $free_tableidx(tableidx_1) +++ $free_tableidx(tableidx_2)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:546.1-547.53
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:548.1-549.53
   def $free_instr{tableidx : tableidx, elemidx : elemidx}(TABLE.INIT_instr(tableidx, elemidx)) = $free_tableidx(tableidx) +++ $free_elemidx(elemidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:548.1-548.60
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:550.1-550.60
   def $free_instr{elemidx : elemidx}(ELEM.DROP_instr(elemidx)) = $free_elemidx(elemidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:550.1-551.49
-  def $free_instr{numtype : numtype, `loadop?` : loadop_(numtype)?, memidx : memidx, memarg : memarg}(LOAD_instr(numtype, loadop?{loadop <- `loadop?`}, memidx, memarg)) = $free_numtype(numtype) +++ $free_memidx(memidx)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:552.1-553.49
-  def $free_instr{numtype : numtype, `storeop?` : storeop_(numtype)?, memidx : memidx, memarg : memarg}(STORE_instr(numtype, storeop?{storeop <- `storeop?`}, memidx, memarg)) = $free_numtype(numtype) +++ $free_memidx(memidx)
+  def $free_instr{numtype : numtype, `loadop?` : loadop_(numtype)?, memidx : memidx, memarg : memarg}(LOAD_instr(numtype, loadop?{loadop <- `loadop?`}, memidx, memarg)) = $free_numtype(numtype) +++ $free_memidx(memidx)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:554.1-555.49
-  def $free_instr{vectype : vectype, `vloadop?` : vloadop_(vectype)?, memidx : memidx, memarg : memarg}(VLOAD_instr(vectype, vloadop?{vloadop <- `vloadop?`}, memidx, memarg)) = $free_vectype(vectype) +++ $free_memidx(memidx)
+  def $free_instr{numtype : numtype, `storeop?` : storeop_(numtype)?, memidx : memidx, memarg : memarg}(STORE_instr(numtype, storeop?{storeop <- `storeop?`}, memidx, memarg)) = $free_numtype(numtype) +++ $free_memidx(memidx)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:556.1-557.49
-  def $free_instr{vectype : vectype, sz : sz, memidx : memidx, memarg : memarg, laneidx : laneidx}(VLOAD_LANE_instr(vectype, sz, memidx, memarg, laneidx)) = $free_vectype(vectype) +++ $free_memidx(memidx)
+  def $free_instr{vectype : vectype, `vloadop?` : vloadop_(vectype)?, memidx : memidx, memarg : memarg}(VLOAD_instr(vectype, vloadop?{vloadop <- `vloadop?`}, memidx, memarg)) = $free_vectype(vectype) +++ $free_memidx(memidx)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:558.1-559.49
-  def $free_instr{vectype : vectype, memidx : memidx, memarg : memarg}(VSTORE_instr(vectype, memidx, memarg)) = $free_vectype(vectype) +++ $free_memidx(memidx)
+  def $free_instr{vectype : vectype, sz : sz, memidx : memidx, memarg : memarg, laneidx : laneidx}(VLOAD_LANE_instr(vectype, sz, memidx, memarg, laneidx)) = $free_vectype(vectype) +++ $free_memidx(memidx)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:560.1-561.49
+  def $free_instr{vectype : vectype, memidx : memidx, memarg : memarg}(VSTORE_instr(vectype, memidx, memarg)) = $free_vectype(vectype) +++ $free_memidx(memidx)
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:562.1-563.49
   def $free_instr{vectype : vectype, sz : sz, memidx : memidx, memarg : memarg, laneidx : laneidx}(VSTORE_LANE_instr(vectype, sz, memidx, memarg, laneidx)) = $free_vectype(vectype) +++ $free_memidx(memidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:562.1-562.59
-  def $free_instr{memidx : memidx}(MEMORY.SIZE_instr(memidx)) = $free_memidx(memidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:563.1-563.59
-  def $free_instr{memidx : memidx}(MEMORY.GROW_instr(memidx)) = $free_memidx(memidx)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:564.1-564.59
+  def $free_instr{memidx : memidx}(MEMORY.SIZE_instr(memidx)) = $free_memidx(memidx)
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:565.1-565.59
+  def $free_instr{memidx : memidx}(MEMORY.GROW_instr(memidx)) = $free_memidx(memidx)
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:566.1-566.59
   def $free_instr{memidx : memidx}(MEMORY.FILL_instr(memidx)) = $free_memidx(memidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:565.1-566.51
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:567.1-568.51
   def $free_instr{memidx_1 : memidx, memidx_2 : memidx}(MEMORY.COPY_instr(memidx_1, memidx_2)) = $free_memidx(memidx_1) +++ $free_memidx(memidx_2)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:567.1-568.49
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:569.1-570.49
   def $free_instr{memidx : memidx, dataidx : dataidx}(MEMORY.INIT_instr(memidx, dataidx)) = $free_memidx(memidx) +++ $free_dataidx(dataidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:569.1-569.60
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:571.1-571.60
   def $free_instr{dataidx : dataidx}(DATA.DROP_instr(dataidx)) = $free_dataidx(dataidx)
 
-;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:418.1-418.31
+;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:420.1-420.31
 def $free_block(instr*) : free
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:577.1-578.47
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:579.1-580.47
   def $free_block{`instr*` : instr*, free : free}(instr*{instr <- `instr*`}) = free[LABELS_free = $shift_labelidxs(free.LABELS_free)]
     -- if (free = $free_list($free_instr(instr)*{instr <- `instr*`}))
 }
@@ -13567,227 +13567,227 @@ def $free_blocktype(blocktype : blocktype) : free
 ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec
 rec {
 
-;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:572.1-572.44
+;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:574.1-574.44
 def $shift_labelidxs(labelidx*) : labelidx*
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:573.1-573.32
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:575.1-575.32
   def $shift_labelidxs([]) = []
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:574.1-574.66
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:576.1-576.66
   def $shift_labelidxs{`labelidx'*` : labelidx*}([`%`_labelidx(0)] ++ labelidx'*{labelidx' <- `labelidx'*`}) = $shift_labelidxs(labelidx'*{labelidx' <- `labelidx'*`})
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:575.1-575.91
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:577.1-577.91
   def $shift_labelidxs{labelidx : labelidx, `labelidx'*` : labelidx*}([labelidx] ++ labelidx'*{labelidx' <- `labelidx'*`}) = [`%`_labelidx((((labelidx!`%`_labelidx.0 : nat <:> int) - (1 : nat <:> int)) : int <:> nat))] ++ $shift_labelidxs(labelidx'*{labelidx' <- `labelidx'*`})
 }
 
 ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec
 rec {
 
-;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:417.1-417.30
+;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:419.1-419.30
 def $free_instr(instr : instr) : free
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:428.1-428.26
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:430.1-430.26
   def $free_instr(NOP_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:429.1-429.34
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:431.1-431.34
   def $free_instr(UNREACHABLE_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:430.1-430.27
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:432.1-432.27
   def $free_instr(DROP_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:431.1-431.86
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:433.1-433.86
   def $free_instr{`valtype*?` : valtype*?}(SELECT_instr(valtype*{valtype <- `valtype*`}?{`valtype*` <- `valtype*?`})) = $free_opt($free_list($free_valtype(valtype)*{valtype <- `valtype*`})?{`valtype*` <- `valtype*?`})
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:433.1-433.92
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:435.1-435.92
   def $free_instr{blocktype : blocktype, `instr*` : instr*}(BLOCK_instr(blocktype, instr*{instr <- `instr*`})) = $free_blocktype(blocktype) +++ $free_block(instr*{instr <- `instr*`})
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:434.1-434.91
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:436.1-436.91
   def $free_instr{blocktype : blocktype, `instr*` : instr*}(LOOP_instr(blocktype, instr*{instr <- `instr*`})) = $free_blocktype(blocktype) +++ $free_block(instr*{instr <- `instr*`})
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:435.1-436.79
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:437.1-438.79
   def $free_instr{blocktype : blocktype, `instr_1*` : instr*, `instr_2*` : instr*}(`IF%%ELSE%`_instr(blocktype, instr_1*{instr_1 <- `instr_1*`}, instr_2*{instr_2 <- `instr_2*`})) = $free_blocktype(blocktype) +++ $free_block(instr_1*{instr_1 <- `instr_1*`}) +++ $free_block(instr_2*{instr_2 <- `instr_2*`})
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:438.1-438.56
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:440.1-440.56
   def $free_instr{labelidx : labelidx}(BR_instr(labelidx)) = $free_labelidx(labelidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:439.1-439.59
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:441.1-441.59
   def $free_instr{labelidx : labelidx}(BR_IF_instr(labelidx)) = $free_labelidx(labelidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:440.1-441.69
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:442.1-443.69
   def $free_instr{`labelidx*` : labelidx*, labelidx' : labelidx}(BR_TABLE_instr(labelidx*{labelidx <- `labelidx*`}, labelidx')) = $free_list($free_labelidx(labelidx)*{labelidx <- `labelidx*`}) +++ $free_labelidx(labelidx')
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:442.1-442.64
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:444.1-444.64
   def $free_instr{labelidx : labelidx}(BR_ON_NULL_instr(labelidx)) = $free_labelidx(labelidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:443.1-443.68
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:445.1-445.68
   def $free_instr{labelidx : labelidx}(BR_ON_NON_NULL_instr(labelidx)) = $free_labelidx(labelidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:444.1-445.83
-  def $free_instr{labelidx : labelidx, reftype_1 : reftype, reftype_2 : reftype}(BR_ON_CAST_instr(labelidx, reftype_1, reftype_2)) = $free_labelidx(labelidx) +++ $free_reftype(reftype_1) +++ $free_reftype(reftype_2)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:446.1-447.83
+  def $free_instr{labelidx : labelidx, reftype_1 : reftype, reftype_2 : reftype}(BR_ON_CAST_instr(labelidx, reftype_1, reftype_2)) = $free_labelidx(labelidx) +++ $free_reftype(reftype_1) +++ $free_reftype(reftype_2)
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:448.1-449.83
   def $free_instr{labelidx : labelidx, reftype_1 : reftype, reftype_2 : reftype}(BR_ON_CAST_FAIL_instr(labelidx, reftype_1, reftype_2)) = $free_labelidx(labelidx) +++ $free_reftype(reftype_1) +++ $free_reftype(reftype_2)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:449.1-449.55
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:451.1-451.55
   def $free_instr{funcidx : funcidx}(CALL_instr(funcidx)) = $free_funcidx(funcidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:450.1-450.59
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:452.1-452.59
   def $free_instr{typeuse : typeuse}(CALL_REF_instr(typeuse)) = $free_typeuse(typeuse)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:451.1-452.53
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:453.1-454.53
   def $free_instr{tableidx : tableidx, typeuse : typeuse}(CALL_INDIRECT_instr(tableidx, typeuse)) = $free_tableidx(tableidx) +++ $free_typeuse(typeuse)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:453.1-453.29
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:455.1-455.29
   def $free_instr(RETURN_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:454.1-454.62
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:456.1-456.62
   def $free_instr{funcidx : funcidx}(RETURN_CALL_instr(funcidx)) = $free_funcidx(funcidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:455.1-455.66
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:457.1-457.66
   def $free_instr{typeuse : typeuse}(RETURN_CALL_REF_instr(typeuse)) = $free_typeuse(typeuse)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:456.1-457.53
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:458.1-459.53
   def $free_instr{tableidx : tableidx, typeuse : typeuse}(RETURN_CALL_INDIRECT_instr(tableidx, typeuse)) = $free_tableidx(tableidx) +++ $free_typeuse(typeuse)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:459.1-459.63
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:461.1-461.63
   def $free_instr{numtype : numtype, numlit : num_(numtype)}(CONST_instr(numtype, numlit)) = $free_numtype(numtype)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:460.1-460.60
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:462.1-462.60
   def $free_instr{numtype : numtype, unop : unop_(numtype)}(UNOP_instr(numtype, unop)) = $free_numtype(numtype)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:461.1-461.62
-  def $free_instr{numtype : numtype, binop : binop_(numtype)}(BINOP_instr(numtype, binop)) = $free_numtype(numtype)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:462.1-462.64
-  def $free_instr{numtype : numtype, testop : testop_(numtype)}(TESTOP_instr(numtype, testop)) = $free_numtype(numtype)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:463.1-463.62
+  def $free_instr{numtype : numtype, binop : binop_(numtype)}(BINOP_instr(numtype, binop)) = $free_numtype(numtype)
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:464.1-464.64
+  def $free_instr{numtype : numtype, testop : testop_(numtype)}(TESTOP_instr(numtype, testop)) = $free_numtype(numtype)
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:465.1-465.62
   def $free_instr{numtype : numtype, relop : relop_(numtype)}(RELOP_instr(numtype, relop)) = $free_numtype(numtype)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:464.1-465.55
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:466.1-467.55
   def $free_instr{numtype_1 : numtype, numtype_2 : numtype, cvtop : cvtop__(numtype_2, numtype_1)}(CVTOP_instr(numtype_1, numtype_2, cvtop)) = $free_numtype(numtype_1) +++ $free_numtype(numtype_2)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:467.1-467.64
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:469.1-469.64
   def $free_instr{vectype : vectype, veclit : vec_(vectype)}(VCONST_instr(vectype, veclit)) = $free_vectype(vectype)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:468.1-468.64
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:470.1-470.64
   def $free_instr{vectype : vectype, vvunop : vvunop}(VVUNOP_instr(vectype, vvunop)) = $free_vectype(vectype)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:469.1-469.66
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:471.1-471.66
   def $free_instr{vectype : vectype, vvbinop : vvbinop}(VVBINOP_instr(vectype, vvbinop)) = $free_vectype(vectype)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:470.1-470.68
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:472.1-472.68
   def $free_instr{vectype : vectype, vvternop : vvternop}(VVTERNOP_instr(vectype, vvternop)) = $free_vectype(vectype)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:471.1-471.68
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:473.1-473.68
   def $free_instr{vectype : vectype, vvtestop : vvtestop}(VVTESTOP_instr(vectype, vvtestop)) = $free_vectype(vectype)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:472.1-472.56
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:474.1-474.56
   def $free_instr{shape : shape, vunop : vunop_(shape)}(VUNOP_instr(shape, vunop)) = $free_shape(shape)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:473.1-473.58
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:475.1-475.58
   def $free_instr{shape : shape, vbinop : vbinop_(shape)}(VBINOP_instr(shape, vbinop)) = $free_shape(shape)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:474.1-474.60
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:476.1-476.60
   def $free_instr{shape : shape, vternop : vternop_(shape)}(VTERNOP_instr(shape, vternop)) = $free_shape(shape)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:475.1-475.60
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:477.1-477.60
   def $free_instr{shape : shape, vtestop : vtestop_(shape)}(VTESTOP_instr(shape, vtestop)) = $free_shape(shape)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:476.1-476.58
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:478.1-478.58
   def $free_instr{shape : shape, vrelop : vrelop_(shape)}(VRELOP_instr(shape, vrelop)) = $free_shape(shape)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:477.1-477.64
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:479.1-479.64
   def $free_instr{ishape : ishape, vshiftop : vshiftop_(ishape)}(VSHIFTOP_instr(ishape, vshiftop)) = $free_shape(ishape!`%`_ishape.0)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:478.1-478.55
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:480.1-480.55
   def $free_instr{ishape : ishape}(VBITMASK_instr(ishape)) = $free_shape(ishape!`%`_ishape.0)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:479.1-479.66
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:481.1-481.66
   def $free_instr{bshape : bshape, vswizzlop : vswizzlop_(bshape)}(VSWIZZLOP_instr(bshape, vswizzlop)) = $free_shape(bshape!`%`_bshape.0)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:480.1-480.64
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:482.1-482.64
   def $free_instr{bshape : bshape, `laneidx*` : laneidx*}(VSHUFFLE_instr(bshape, laneidx*{laneidx <- `laneidx*`})) = $free_shape(bshape!`%`_bshape.0)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:481.1-482.49
-  def $free_instr{ishape_1 : ishape, ishape_2 : ishape, vextunop : vextunop__(ishape_2, ishape_1)}(VEXTUNOP_instr(ishape_1, ishape_2, vextunop)) = $free_shape(ishape_1!`%`_ishape.0) +++ $free_shape(ishape_2!`%`_ishape.0)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:483.1-484.49
-  def $free_instr{ishape_1 : ishape, ishape_2 : ishape, vextbinop : vextbinop__(ishape_2, ishape_1)}(VEXTBINOP_instr(ishape_1, ishape_2, vextbinop)) = $free_shape(ishape_1!`%`_ishape.0) +++ $free_shape(ishape_2!`%`_ishape.0)
+  def $free_instr{ishape_1 : ishape, ishape_2 : ishape, vextunop : vextunop__(ishape_2, ishape_1)}(VEXTUNOP_instr(ishape_1, ishape_2, vextunop)) = $free_shape(ishape_1!`%`_ishape.0) +++ $free_shape(ishape_2!`%`_ishape.0)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:485.1-486.49
-  def $free_instr{ishape_1 : ishape, ishape_2 : ishape, vextternop : vextternop__(ishape_2, ishape_1)}(VEXTTERNOP_instr(ishape_1, ishape_2, vextternop)) = $free_shape(ishape_1!`%`_ishape.0) +++ $free_shape(ishape_2!`%`_ishape.0)
+  def $free_instr{ishape_1 : ishape, ishape_2 : ishape, vextbinop : vextbinop__(ishape_2, ishape_1)}(VEXTBINOP_instr(ishape_1, ishape_2, vextbinop)) = $free_shape(ishape_1!`%`_ishape.0) +++ $free_shape(ishape_2!`%`_ishape.0)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:487.1-488.49
+  def $free_instr{ishape_1 : ishape, ishape_2 : ishape, vextternop : vextternop__(ishape_2, ishape_1)}(VEXTTERNOP_instr(ishape_1, ishape_2, vextternop)) = $free_shape(ishape_1!`%`_ishape.0) +++ $free_shape(ishape_2!`%`_ishape.0)
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:489.1-490.49
   def $free_instr{ishape_1 : ishape, ishape_2 : ishape, sx : sx}(VNARROW_instr(ishape_1, ishape_2, sx)) = $free_shape(ishape_1!`%`_ishape.0) +++ $free_shape(ishape_2!`%`_ishape.0)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:489.1-490.47
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:491.1-492.47
   def $free_instr{shape_1 : shape, shape_2 : shape, vcvtop : vcvtop__(shape_2, shape_1)}(VCVTOP_instr(shape_1, shape_2, vcvtop)) = $free_shape(shape_1) +++ $free_shape(shape_2)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:491.1-491.51
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:493.1-493.51
   def $free_instr{shape : shape}(VSPLAT_instr(shape)) = $free_shape(shape)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:492.1-492.70
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:494.1-494.70
   def $free_instr{shape : shape, `sx?` : sx?, laneidx : laneidx}(VEXTRACT_LANE_instr(shape, sx?{sx <- `sx?`}, laneidx)) = $free_shape(shape)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:493.1-493.66
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:495.1-495.66
   def $free_instr{shape : shape, laneidx : laneidx}(VREPLACE_LANE_instr(shape, laneidx)) = $free_shape(shape)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:495.1-495.62
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:497.1-497.62
   def $free_instr{heaptype : heaptype}(REF.NULL_instr(heaptype)) = $free_heaptype(heaptype)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:496.1-496.34
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:498.1-498.34
   def $free_instr(REF.IS_NULL_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:497.1-497.38
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:499.1-499.38
   def $free_instr(REF.AS_NON_NULL_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:498.1-498.29
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:500.1-500.29
   def $free_instr(REF.EQ_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:499.1-499.59
-  def $free_instr{reftype : reftype}(REF.TEST_instr(reftype)) = $free_reftype(reftype)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:500.1-500.59
-  def $free_instr{reftype : reftype}(REF.CAST_instr(reftype)) = $free_reftype(reftype)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:501.1-501.59
+  def $free_instr{reftype : reftype}(REF.TEST_instr(reftype)) = $free_reftype(reftype)
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:502.1-502.59
+  def $free_instr{reftype : reftype}(REF.CAST_instr(reftype)) = $free_reftype(reftype)
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:503.1-503.59
   def $free_instr{funcidx : funcidx}(REF.FUNC_instr(funcidx)) = $free_funcidx(funcidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:502.1-502.30
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:504.1-504.30
   def $free_instr(REF.I31_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:504.1-504.33
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:506.1-506.33
   def $free_instr{sx : sx}(I31.GET_instr(sx)) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:506.1-506.41
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:508.1-508.41
   def $free_instr{typeidx : typeidx}(STRUCT.NEW_instr(typeidx)) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:507.1-507.69
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:509.1-509.69
   def $free_instr{typeidx : typeidx}(STRUCT.NEW_DEFAULT_instr(typeidx)) = $free_typeidx(typeidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:508.1-508.69
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:510.1-510.69
   def $free_instr{`sx?` : sx?, typeidx : typeidx, u32 : u32}(STRUCT.GET_instr(sx?{sx <- `sx?`}, typeidx, u32)) = $free_typeidx(typeidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:509.1-509.65
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:511.1-511.65
   def $free_instr{typeidx : typeidx, u32 : u32}(STRUCT.SET_instr(typeidx, u32)) = $free_typeidx(typeidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:511.1-511.60
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:513.1-513.60
   def $free_instr{typeidx : typeidx}(ARRAY.NEW_instr(typeidx)) = $free_typeidx(typeidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:512.1-512.68
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:514.1-514.68
   def $free_instr{typeidx : typeidx}(ARRAY.NEW_DEFAULT_instr(typeidx)) = $free_typeidx(typeidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:513.1-513.70
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:515.1-515.70
   def $free_instr{typeidx : typeidx, u32 : u32}(ARRAY.NEW_FIXED_instr(typeidx, u32)) = $free_typeidx(typeidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:514.1-515.51
-  def $free_instr{typeidx : typeidx, dataidx : dataidx}(ARRAY.NEW_DATA_instr(typeidx, dataidx)) = $free_typeidx(typeidx) +++ $free_dataidx(dataidx)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:516.1-517.51
+  def $free_instr{typeidx : typeidx, dataidx : dataidx}(ARRAY.NEW_DATA_instr(typeidx, dataidx)) = $free_typeidx(typeidx) +++ $free_dataidx(dataidx)
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:518.1-519.51
   def $free_instr{typeidx : typeidx, elemidx : elemidx}(ARRAY.NEW_ELEM_instr(typeidx, elemidx)) = $free_typeidx(typeidx) +++ $free_elemidx(elemidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:518.1-518.64
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:520.1-520.64
   def $free_instr{`sx?` : sx?, typeidx : typeidx}(ARRAY.GET_instr(sx?{sx <- `sx?`}, typeidx)) = $free_typeidx(typeidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:519.1-519.60
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:521.1-521.60
   def $free_instr{typeidx : typeidx}(ARRAY.SET_instr(typeidx)) = $free_typeidx(typeidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:520.1-520.32
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:522.1-522.32
   def $free_instr(ARRAY.LEN_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:521.1-521.61
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:523.1-523.61
   def $free_instr{typeidx : typeidx}(ARRAY.FILL_instr(typeidx)) = $free_typeidx(typeidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:522.1-523.55
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:524.1-525.55
   def $free_instr{typeidx_1 : typeidx, typeidx_2 : typeidx}(ARRAY.COPY_instr(typeidx_1, typeidx_2)) = $free_typeidx(typeidx_1) +++ $free_typeidx(typeidx_2)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:524.1-525.51
-  def $free_instr{typeidx : typeidx, dataidx : dataidx}(ARRAY.INIT_DATA_instr(typeidx, dataidx)) = $free_typeidx(typeidx) +++ $free_dataidx(dataidx)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:526.1-527.51
+  def $free_instr{typeidx : typeidx, dataidx : dataidx}(ARRAY.INIT_DATA_instr(typeidx, dataidx)) = $free_typeidx(typeidx) +++ $free_dataidx(dataidx)
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:528.1-529.51
   def $free_instr{typeidx : typeidx, elemidx : elemidx}(ARRAY.INIT_ELEM_instr(typeidx, elemidx)) = $free_typeidx(typeidx) +++ $free_elemidx(elemidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:529.1-529.41
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:531.1-531.41
   def $free_instr(EXTERN.CONVERT_ANY_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:530.1-530.41
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:532.1-532.41
   def $free_instr(ANY.CONVERT_EXTERN_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:532.1-532.63
-  def $free_instr{localidx : localidx}(LOCAL.GET_instr(localidx)) = $free_localidx(localidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:533.1-533.63
-  def $free_instr{localidx : localidx}(LOCAL.SET_instr(localidx)) = $free_localidx(localidx)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:534.1-534.63
+  def $free_instr{localidx : localidx}(LOCAL.GET_instr(localidx)) = $free_localidx(localidx)
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:535.1-535.63
+  def $free_instr{localidx : localidx}(LOCAL.SET_instr(localidx)) = $free_localidx(localidx)
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:536.1-536.63
   def $free_instr{localidx : localidx}(LOCAL.TEE_instr(localidx)) = $free_localidx(localidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:536.1-536.67
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:538.1-538.67
   def $free_instr{globalidx : globalidx}(GLOBAL.GET_instr(globalidx)) = $free_globalidx(globalidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:537.1-537.67
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:539.1-539.67
   def $free_instr{globalidx : globalidx}(GLOBAL.SET_instr(globalidx)) = $free_globalidx(globalidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:539.1-539.63
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:541.1-541.63
   def $free_instr{tableidx : tableidx}(TABLE.GET_instr(tableidx)) = $free_tableidx(tableidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:540.1-540.63
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:542.1-542.63
   def $free_instr{tableidx : tableidx}(TABLE.SET_instr(tableidx)) = $free_tableidx(tableidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:541.1-541.64
-  def $free_instr{tableidx : tableidx}(TABLE.SIZE_instr(tableidx)) = $free_tableidx(tableidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:542.1-542.64
-  def $free_instr{tableidx : tableidx}(TABLE.GROW_instr(tableidx)) = $free_tableidx(tableidx)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:543.1-543.64
+  def $free_instr{tableidx : tableidx}(TABLE.SIZE_instr(tableidx)) = $free_tableidx(tableidx)
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:544.1-544.64
+  def $free_instr{tableidx : tableidx}(TABLE.GROW_instr(tableidx)) = $free_tableidx(tableidx)
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:545.1-545.64
   def $free_instr{tableidx : tableidx}(TABLE.FILL_instr(tableidx)) = $free_tableidx(tableidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:544.1-545.59
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:546.1-547.59
   def $free_instr{tableidx_1 : tableidx, tableidx_2 : tableidx}(TABLE.COPY_instr(tableidx_1, tableidx_2)) = $free_tableidx(tableidx_1) +++ $free_tableidx(tableidx_2)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:546.1-547.53
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:548.1-549.53
   def $free_instr{tableidx : tableidx, elemidx : elemidx}(TABLE.INIT_instr(tableidx, elemidx)) = $free_tableidx(tableidx) +++ $free_elemidx(elemidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:548.1-548.60
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:550.1-550.60
   def $free_instr{elemidx : elemidx}(ELEM.DROP_instr(elemidx)) = $free_elemidx(elemidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:550.1-551.49
-  def $free_instr{numtype : numtype, `loadop?` : loadop_(numtype)?, memidx : memidx, memarg : memarg}(LOAD_instr(numtype, loadop?{loadop <- `loadop?`}, memidx, memarg)) = $free_numtype(numtype) +++ $free_memidx(memidx)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:552.1-553.49
-  def $free_instr{numtype : numtype, `storeop?` : storeop_(numtype)?, memidx : memidx, memarg : memarg}(STORE_instr(numtype, storeop?{storeop <- `storeop?`}, memidx, memarg)) = $free_numtype(numtype) +++ $free_memidx(memidx)
+  def $free_instr{numtype : numtype, `loadop?` : loadop_(numtype)?, memidx : memidx, memarg : memarg}(LOAD_instr(numtype, loadop?{loadop <- `loadop?`}, memidx, memarg)) = $free_numtype(numtype) +++ $free_memidx(memidx)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:554.1-555.49
-  def $free_instr{vectype : vectype, `vloadop?` : vloadop_(vectype)?, memidx : memidx, memarg : memarg}(VLOAD_instr(vectype, vloadop?{vloadop <- `vloadop?`}, memidx, memarg)) = $free_vectype(vectype) +++ $free_memidx(memidx)
+  def $free_instr{numtype : numtype, `storeop?` : storeop_(numtype)?, memidx : memidx, memarg : memarg}(STORE_instr(numtype, storeop?{storeop <- `storeop?`}, memidx, memarg)) = $free_numtype(numtype) +++ $free_memidx(memidx)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:556.1-557.49
-  def $free_instr{vectype : vectype, sz : sz, memidx : memidx, memarg : memarg, laneidx : laneidx}(VLOAD_LANE_instr(vectype, sz, memidx, memarg, laneidx)) = $free_vectype(vectype) +++ $free_memidx(memidx)
+  def $free_instr{vectype : vectype, `vloadop?` : vloadop_(vectype)?, memidx : memidx, memarg : memarg}(VLOAD_instr(vectype, vloadop?{vloadop <- `vloadop?`}, memidx, memarg)) = $free_vectype(vectype) +++ $free_memidx(memidx)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:558.1-559.49
-  def $free_instr{vectype : vectype, memidx : memidx, memarg : memarg}(VSTORE_instr(vectype, memidx, memarg)) = $free_vectype(vectype) +++ $free_memidx(memidx)
+  def $free_instr{vectype : vectype, sz : sz, memidx : memidx, memarg : memarg, laneidx : laneidx}(VLOAD_LANE_instr(vectype, sz, memidx, memarg, laneidx)) = $free_vectype(vectype) +++ $free_memidx(memidx)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:560.1-561.49
+  def $free_instr{vectype : vectype, memidx : memidx, memarg : memarg}(VSTORE_instr(vectype, memidx, memarg)) = $free_vectype(vectype) +++ $free_memidx(memidx)
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:562.1-563.49
   def $free_instr{vectype : vectype, sz : sz, memidx : memidx, memarg : memarg, laneidx : laneidx}(VSTORE_LANE_instr(vectype, sz, memidx, memarg, laneidx)) = $free_vectype(vectype) +++ $free_memidx(memidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:562.1-562.59
-  def $free_instr{memidx : memidx}(MEMORY.SIZE_instr(memidx)) = $free_memidx(memidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:563.1-563.59
-  def $free_instr{memidx : memidx}(MEMORY.GROW_instr(memidx)) = $free_memidx(memidx)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:564.1-564.59
+  def $free_instr{memidx : memidx}(MEMORY.SIZE_instr(memidx)) = $free_memidx(memidx)
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:565.1-565.59
+  def $free_instr{memidx : memidx}(MEMORY.GROW_instr(memidx)) = $free_memidx(memidx)
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:566.1-566.59
   def $free_instr{memidx : memidx}(MEMORY.FILL_instr(memidx)) = $free_memidx(memidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:565.1-566.51
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:567.1-568.51
   def $free_instr{memidx_1 : memidx, memidx_2 : memidx}(MEMORY.COPY_instr(memidx_1, memidx_2)) = $free_memidx(memidx_1) +++ $free_memidx(memidx_2)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:567.1-568.49
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:569.1-570.49
   def $free_instr{memidx : memidx, dataidx : dataidx}(MEMORY.INIT_instr(memidx, dataidx)) = $free_memidx(memidx) +++ $free_dataidx(dataidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:569.1-569.60
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:571.1-571.60
   def $free_instr{dataidx : dataidx}(DATA.DROP_instr(dataidx)) = $free_dataidx(dataidx)
 
-;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:418.1-418.31
+;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:420.1-420.31
 def $free_block(instr*) : free
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:577.1-578.47
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:579.1-580.47
   def $free_block{`instr*` : instr*, free : free}(instr*{instr <- `instr*`}) = free[LABELS_free = $shift_labelidxs(free.LABELS_free)]
     -- if (free = $free_list($free_instr(instr)*{instr <- `instr*`}))
 }
@@ -24932,227 +24932,227 @@ def $free_blocktype(blocktype : blocktype) : free
 ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec
 rec {
 
-;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:572.1-572.44
+;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:574.1-574.44
 def $shift_labelidxs(labelidx*) : labelidx*
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:573.1-573.32
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:575.1-575.32
   def $shift_labelidxs([]) = []
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:574.1-574.66
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:576.1-576.66
   def $shift_labelidxs{`labelidx'*` : labelidx*}([`%`_labelidx(0)] ++ labelidx'*{labelidx' <- `labelidx'*`}) = $shift_labelidxs(labelidx'*{labelidx' <- `labelidx'*`})
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:575.1-575.91
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:577.1-577.91
   def $shift_labelidxs{labelidx : labelidx, `labelidx'*` : labelidx*}([labelidx] ++ labelidx'*{labelidx' <- `labelidx'*`}) = [`%`_labelidx((((labelidx!`%`_labelidx.0 : nat <:> int) - (1 : nat <:> int)) : int <:> nat))] ++ $shift_labelidxs(labelidx'*{labelidx' <- `labelidx'*`})
 }
 
 ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec
 rec {
 
-;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:417.1-417.30
+;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:419.1-419.30
 def $free_instr(instr : instr) : free
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:428.1-428.26
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:430.1-430.26
   def $free_instr(NOP_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:429.1-429.34
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:431.1-431.34
   def $free_instr(UNREACHABLE_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:430.1-430.27
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:432.1-432.27
   def $free_instr(DROP_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:431.1-431.86
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:433.1-433.86
   def $free_instr{`valtype*?` : valtype*?}(SELECT_instr(valtype*{valtype <- `valtype*`}?{`valtype*` <- `valtype*?`})) = $free_opt($free_list($free_valtype(valtype)*{valtype <- `valtype*`})?{`valtype*` <- `valtype*?`})
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:433.1-433.92
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:435.1-435.92
   def $free_instr{blocktype : blocktype, `instr*` : instr*}(BLOCK_instr(blocktype, instr*{instr <- `instr*`})) = $free_blocktype(blocktype) +++ $free_block(instr*{instr <- `instr*`})
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:434.1-434.91
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:436.1-436.91
   def $free_instr{blocktype : blocktype, `instr*` : instr*}(LOOP_instr(blocktype, instr*{instr <- `instr*`})) = $free_blocktype(blocktype) +++ $free_block(instr*{instr <- `instr*`})
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:435.1-436.79
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:437.1-438.79
   def $free_instr{blocktype : blocktype, `instr_1*` : instr*, `instr_2*` : instr*}(`IF%%ELSE%`_instr(blocktype, instr_1*{instr_1 <- `instr_1*`}, instr_2*{instr_2 <- `instr_2*`})) = $free_blocktype(blocktype) +++ $free_block(instr_1*{instr_1 <- `instr_1*`}) +++ $free_block(instr_2*{instr_2 <- `instr_2*`})
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:438.1-438.56
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:440.1-440.56
   def $free_instr{labelidx : labelidx}(BR_instr(labelidx)) = $free_labelidx(labelidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:439.1-439.59
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:441.1-441.59
   def $free_instr{labelidx : labelidx}(BR_IF_instr(labelidx)) = $free_labelidx(labelidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:440.1-441.69
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:442.1-443.69
   def $free_instr{`labelidx*` : labelidx*, labelidx' : labelidx}(BR_TABLE_instr(labelidx*{labelidx <- `labelidx*`}, labelidx')) = $free_list($free_labelidx(labelidx)*{labelidx <- `labelidx*`}) +++ $free_labelidx(labelidx')
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:442.1-442.64
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:444.1-444.64
   def $free_instr{labelidx : labelidx}(BR_ON_NULL_instr(labelidx)) = $free_labelidx(labelidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:443.1-443.68
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:445.1-445.68
   def $free_instr{labelidx : labelidx}(BR_ON_NON_NULL_instr(labelidx)) = $free_labelidx(labelidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:444.1-445.83
-  def $free_instr{labelidx : labelidx, reftype_1 : reftype, reftype_2 : reftype}(BR_ON_CAST_instr(labelidx, reftype_1, reftype_2)) = $free_labelidx(labelidx) +++ $free_reftype(reftype_1) +++ $free_reftype(reftype_2)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:446.1-447.83
+  def $free_instr{labelidx : labelidx, reftype_1 : reftype, reftype_2 : reftype}(BR_ON_CAST_instr(labelidx, reftype_1, reftype_2)) = $free_labelidx(labelidx) +++ $free_reftype(reftype_1) +++ $free_reftype(reftype_2)
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:448.1-449.83
   def $free_instr{labelidx : labelidx, reftype_1 : reftype, reftype_2 : reftype}(BR_ON_CAST_FAIL_instr(labelidx, reftype_1, reftype_2)) = $free_labelidx(labelidx) +++ $free_reftype(reftype_1) +++ $free_reftype(reftype_2)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:449.1-449.55
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:451.1-451.55
   def $free_instr{funcidx : funcidx}(CALL_instr(funcidx)) = $free_funcidx(funcidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:450.1-450.59
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:452.1-452.59
   def $free_instr{typeuse : typeuse}(CALL_REF_instr(typeuse)) = $free_typeuse(typeuse)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:451.1-452.53
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:453.1-454.53
   def $free_instr{tableidx : tableidx, typeuse : typeuse}(CALL_INDIRECT_instr(tableidx, typeuse)) = $free_tableidx(tableidx) +++ $free_typeuse(typeuse)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:453.1-453.29
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:455.1-455.29
   def $free_instr(RETURN_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:454.1-454.62
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:456.1-456.62
   def $free_instr{funcidx : funcidx}(RETURN_CALL_instr(funcidx)) = $free_funcidx(funcidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:455.1-455.66
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:457.1-457.66
   def $free_instr{typeuse : typeuse}(RETURN_CALL_REF_instr(typeuse)) = $free_typeuse(typeuse)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:456.1-457.53
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:458.1-459.53
   def $free_instr{tableidx : tableidx, typeuse : typeuse}(RETURN_CALL_INDIRECT_instr(tableidx, typeuse)) = $free_tableidx(tableidx) +++ $free_typeuse(typeuse)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:459.1-459.63
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:461.1-461.63
   def $free_instr{numtype : numtype, numlit : num_(numtype)}(CONST_instr(numtype, numlit)) = $free_numtype(numtype)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:460.1-460.60
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:462.1-462.60
   def $free_instr{numtype : numtype, unop : unop_(numtype)}(UNOP_instr(numtype, unop)) = $free_numtype(numtype)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:461.1-461.62
-  def $free_instr{numtype : numtype, binop : binop_(numtype)}(BINOP_instr(numtype, binop)) = $free_numtype(numtype)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:462.1-462.64
-  def $free_instr{numtype : numtype, testop : testop_(numtype)}(TESTOP_instr(numtype, testop)) = $free_numtype(numtype)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:463.1-463.62
+  def $free_instr{numtype : numtype, binop : binop_(numtype)}(BINOP_instr(numtype, binop)) = $free_numtype(numtype)
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:464.1-464.64
+  def $free_instr{numtype : numtype, testop : testop_(numtype)}(TESTOP_instr(numtype, testop)) = $free_numtype(numtype)
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:465.1-465.62
   def $free_instr{numtype : numtype, relop : relop_(numtype)}(RELOP_instr(numtype, relop)) = $free_numtype(numtype)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:464.1-465.55
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:466.1-467.55
   def $free_instr{numtype_1 : numtype, numtype_2 : numtype, cvtop : cvtop__(numtype_2, numtype_1)}(CVTOP_instr(numtype_1, numtype_2, cvtop)) = $free_numtype(numtype_1) +++ $free_numtype(numtype_2)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:467.1-467.64
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:469.1-469.64
   def $free_instr{vectype : vectype, veclit : vec_(vectype)}(VCONST_instr(vectype, veclit)) = $free_vectype(vectype)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:468.1-468.64
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:470.1-470.64
   def $free_instr{vectype : vectype, vvunop : vvunop}(VVUNOP_instr(vectype, vvunop)) = $free_vectype(vectype)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:469.1-469.66
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:471.1-471.66
   def $free_instr{vectype : vectype, vvbinop : vvbinop}(VVBINOP_instr(vectype, vvbinop)) = $free_vectype(vectype)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:470.1-470.68
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:472.1-472.68
   def $free_instr{vectype : vectype, vvternop : vvternop}(VVTERNOP_instr(vectype, vvternop)) = $free_vectype(vectype)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:471.1-471.68
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:473.1-473.68
   def $free_instr{vectype : vectype, vvtestop : vvtestop}(VVTESTOP_instr(vectype, vvtestop)) = $free_vectype(vectype)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:472.1-472.56
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:474.1-474.56
   def $free_instr{shape : shape, vunop : vunop_(shape)}(VUNOP_instr(shape, vunop)) = $free_shape(shape)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:473.1-473.58
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:475.1-475.58
   def $free_instr{shape : shape, vbinop : vbinop_(shape)}(VBINOP_instr(shape, vbinop)) = $free_shape(shape)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:474.1-474.60
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:476.1-476.60
   def $free_instr{shape : shape, vternop : vternop_(shape)}(VTERNOP_instr(shape, vternop)) = $free_shape(shape)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:475.1-475.60
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:477.1-477.60
   def $free_instr{shape : shape, vtestop : vtestop_(shape)}(VTESTOP_instr(shape, vtestop)) = $free_shape(shape)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:476.1-476.58
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:478.1-478.58
   def $free_instr{shape : shape, vrelop : vrelop_(shape)}(VRELOP_instr(shape, vrelop)) = $free_shape(shape)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:477.1-477.64
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:479.1-479.64
   def $free_instr{ishape : ishape, vshiftop : vshiftop_(ishape)}(VSHIFTOP_instr(ishape, vshiftop)) = $free_shape(ishape!`%`_ishape.0)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:478.1-478.55
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:480.1-480.55
   def $free_instr{ishape : ishape}(VBITMASK_instr(ishape)) = $free_shape(ishape!`%`_ishape.0)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:479.1-479.66
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:481.1-481.66
   def $free_instr{bshape : bshape, vswizzlop : vswizzlop_(bshape)}(VSWIZZLOP_instr(bshape, vswizzlop)) = $free_shape(bshape!`%`_bshape.0)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:480.1-480.64
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:482.1-482.64
   def $free_instr{bshape : bshape, `laneidx*` : laneidx*}(VSHUFFLE_instr(bshape, laneidx*{laneidx <- `laneidx*`})) = $free_shape(bshape!`%`_bshape.0)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:481.1-482.49
-  def $free_instr{ishape_1 : ishape, ishape_2 : ishape, vextunop : vextunop__(ishape_2, ishape_1)}(VEXTUNOP_instr(ishape_1, ishape_2, vextunop)) = $free_shape(ishape_1!`%`_ishape.0) +++ $free_shape(ishape_2!`%`_ishape.0)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:483.1-484.49
-  def $free_instr{ishape_1 : ishape, ishape_2 : ishape, vextbinop : vextbinop__(ishape_2, ishape_1)}(VEXTBINOP_instr(ishape_1, ishape_2, vextbinop)) = $free_shape(ishape_1!`%`_ishape.0) +++ $free_shape(ishape_2!`%`_ishape.0)
+  def $free_instr{ishape_1 : ishape, ishape_2 : ishape, vextunop : vextunop__(ishape_2, ishape_1)}(VEXTUNOP_instr(ishape_1, ishape_2, vextunop)) = $free_shape(ishape_1!`%`_ishape.0) +++ $free_shape(ishape_2!`%`_ishape.0)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:485.1-486.49
-  def $free_instr{ishape_1 : ishape, ishape_2 : ishape, vextternop : vextternop__(ishape_2, ishape_1)}(VEXTTERNOP_instr(ishape_1, ishape_2, vextternop)) = $free_shape(ishape_1!`%`_ishape.0) +++ $free_shape(ishape_2!`%`_ishape.0)
+  def $free_instr{ishape_1 : ishape, ishape_2 : ishape, vextbinop : vextbinop__(ishape_2, ishape_1)}(VEXTBINOP_instr(ishape_1, ishape_2, vextbinop)) = $free_shape(ishape_1!`%`_ishape.0) +++ $free_shape(ishape_2!`%`_ishape.0)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:487.1-488.49
+  def $free_instr{ishape_1 : ishape, ishape_2 : ishape, vextternop : vextternop__(ishape_2, ishape_1)}(VEXTTERNOP_instr(ishape_1, ishape_2, vextternop)) = $free_shape(ishape_1!`%`_ishape.0) +++ $free_shape(ishape_2!`%`_ishape.0)
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:489.1-490.49
   def $free_instr{ishape_1 : ishape, ishape_2 : ishape, sx : sx}(VNARROW_instr(ishape_1, ishape_2, sx)) = $free_shape(ishape_1!`%`_ishape.0) +++ $free_shape(ishape_2!`%`_ishape.0)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:489.1-490.47
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:491.1-492.47
   def $free_instr{shape_1 : shape, shape_2 : shape, vcvtop : vcvtop__(shape_2, shape_1)}(VCVTOP_instr(shape_1, shape_2, vcvtop)) = $free_shape(shape_1) +++ $free_shape(shape_2)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:491.1-491.51
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:493.1-493.51
   def $free_instr{shape : shape}(VSPLAT_instr(shape)) = $free_shape(shape)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:492.1-492.70
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:494.1-494.70
   def $free_instr{shape : shape, `sx?` : sx?, laneidx : laneidx}(VEXTRACT_LANE_instr(shape, sx?{sx <- `sx?`}, laneidx)) = $free_shape(shape)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:493.1-493.66
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:495.1-495.66
   def $free_instr{shape : shape, laneidx : laneidx}(VREPLACE_LANE_instr(shape, laneidx)) = $free_shape(shape)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:495.1-495.62
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:497.1-497.62
   def $free_instr{heaptype : heaptype}(REF.NULL_instr(heaptype)) = $free_heaptype(heaptype)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:496.1-496.34
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:498.1-498.34
   def $free_instr(REF.IS_NULL_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:497.1-497.38
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:499.1-499.38
   def $free_instr(REF.AS_NON_NULL_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:498.1-498.29
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:500.1-500.29
   def $free_instr(REF.EQ_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:499.1-499.59
-  def $free_instr{reftype : reftype}(REF.TEST_instr(reftype)) = $free_reftype(reftype)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:500.1-500.59
-  def $free_instr{reftype : reftype}(REF.CAST_instr(reftype)) = $free_reftype(reftype)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:501.1-501.59
+  def $free_instr{reftype : reftype}(REF.TEST_instr(reftype)) = $free_reftype(reftype)
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:502.1-502.59
+  def $free_instr{reftype : reftype}(REF.CAST_instr(reftype)) = $free_reftype(reftype)
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:503.1-503.59
   def $free_instr{funcidx : funcidx}(REF.FUNC_instr(funcidx)) = $free_funcidx(funcidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:502.1-502.30
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:504.1-504.30
   def $free_instr(REF.I31_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:504.1-504.33
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:506.1-506.33
   def $free_instr{sx : sx}(I31.GET_instr(sx)) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:506.1-506.41
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:508.1-508.41
   def $free_instr{typeidx : typeidx}(STRUCT.NEW_instr(typeidx)) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:507.1-507.69
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:509.1-509.69
   def $free_instr{typeidx : typeidx}(STRUCT.NEW_DEFAULT_instr(typeidx)) = $free_typeidx(typeidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:508.1-508.69
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:510.1-510.69
   def $free_instr{`sx?` : sx?, typeidx : typeidx, u32 : u32}(STRUCT.GET_instr(sx?{sx <- `sx?`}, typeidx, u32)) = $free_typeidx(typeidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:509.1-509.65
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:511.1-511.65
   def $free_instr{typeidx : typeidx, u32 : u32}(STRUCT.SET_instr(typeidx, u32)) = $free_typeidx(typeidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:511.1-511.60
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:513.1-513.60
   def $free_instr{typeidx : typeidx}(ARRAY.NEW_instr(typeidx)) = $free_typeidx(typeidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:512.1-512.68
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:514.1-514.68
   def $free_instr{typeidx : typeidx}(ARRAY.NEW_DEFAULT_instr(typeidx)) = $free_typeidx(typeidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:513.1-513.70
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:515.1-515.70
   def $free_instr{typeidx : typeidx, u32 : u32}(ARRAY.NEW_FIXED_instr(typeidx, u32)) = $free_typeidx(typeidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:514.1-515.51
-  def $free_instr{typeidx : typeidx, dataidx : dataidx}(ARRAY.NEW_DATA_instr(typeidx, dataidx)) = $free_typeidx(typeidx) +++ $free_dataidx(dataidx)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:516.1-517.51
+  def $free_instr{typeidx : typeidx, dataidx : dataidx}(ARRAY.NEW_DATA_instr(typeidx, dataidx)) = $free_typeidx(typeidx) +++ $free_dataidx(dataidx)
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:518.1-519.51
   def $free_instr{typeidx : typeidx, elemidx : elemidx}(ARRAY.NEW_ELEM_instr(typeidx, elemidx)) = $free_typeidx(typeidx) +++ $free_elemidx(elemidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:518.1-518.64
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:520.1-520.64
   def $free_instr{`sx?` : sx?, typeidx : typeidx}(ARRAY.GET_instr(sx?{sx <- `sx?`}, typeidx)) = $free_typeidx(typeidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:519.1-519.60
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:521.1-521.60
   def $free_instr{typeidx : typeidx}(ARRAY.SET_instr(typeidx)) = $free_typeidx(typeidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:520.1-520.32
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:522.1-522.32
   def $free_instr(ARRAY.LEN_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:521.1-521.61
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:523.1-523.61
   def $free_instr{typeidx : typeidx}(ARRAY.FILL_instr(typeidx)) = $free_typeidx(typeidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:522.1-523.55
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:524.1-525.55
   def $free_instr{typeidx_1 : typeidx, typeidx_2 : typeidx}(ARRAY.COPY_instr(typeidx_1, typeidx_2)) = $free_typeidx(typeidx_1) +++ $free_typeidx(typeidx_2)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:524.1-525.51
-  def $free_instr{typeidx : typeidx, dataidx : dataidx}(ARRAY.INIT_DATA_instr(typeidx, dataidx)) = $free_typeidx(typeidx) +++ $free_dataidx(dataidx)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:526.1-527.51
+  def $free_instr{typeidx : typeidx, dataidx : dataidx}(ARRAY.INIT_DATA_instr(typeidx, dataidx)) = $free_typeidx(typeidx) +++ $free_dataidx(dataidx)
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:528.1-529.51
   def $free_instr{typeidx : typeidx, elemidx : elemidx}(ARRAY.INIT_ELEM_instr(typeidx, elemidx)) = $free_typeidx(typeidx) +++ $free_elemidx(elemidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:529.1-529.41
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:531.1-531.41
   def $free_instr(EXTERN.CONVERT_ANY_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:530.1-530.41
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:532.1-532.41
   def $free_instr(ANY.CONVERT_EXTERN_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:532.1-532.63
-  def $free_instr{localidx : localidx}(LOCAL.GET_instr(localidx)) = $free_localidx(localidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:533.1-533.63
-  def $free_instr{localidx : localidx}(LOCAL.SET_instr(localidx)) = $free_localidx(localidx)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:534.1-534.63
+  def $free_instr{localidx : localidx}(LOCAL.GET_instr(localidx)) = $free_localidx(localidx)
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:535.1-535.63
+  def $free_instr{localidx : localidx}(LOCAL.SET_instr(localidx)) = $free_localidx(localidx)
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:536.1-536.63
   def $free_instr{localidx : localidx}(LOCAL.TEE_instr(localidx)) = $free_localidx(localidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:536.1-536.67
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:538.1-538.67
   def $free_instr{globalidx : globalidx}(GLOBAL.GET_instr(globalidx)) = $free_globalidx(globalidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:537.1-537.67
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:539.1-539.67
   def $free_instr{globalidx : globalidx}(GLOBAL.SET_instr(globalidx)) = $free_globalidx(globalidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:539.1-539.63
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:541.1-541.63
   def $free_instr{tableidx : tableidx}(TABLE.GET_instr(tableidx)) = $free_tableidx(tableidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:540.1-540.63
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:542.1-542.63
   def $free_instr{tableidx : tableidx}(TABLE.SET_instr(tableidx)) = $free_tableidx(tableidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:541.1-541.64
-  def $free_instr{tableidx : tableidx}(TABLE.SIZE_instr(tableidx)) = $free_tableidx(tableidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:542.1-542.64
-  def $free_instr{tableidx : tableidx}(TABLE.GROW_instr(tableidx)) = $free_tableidx(tableidx)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:543.1-543.64
+  def $free_instr{tableidx : tableidx}(TABLE.SIZE_instr(tableidx)) = $free_tableidx(tableidx)
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:544.1-544.64
+  def $free_instr{tableidx : tableidx}(TABLE.GROW_instr(tableidx)) = $free_tableidx(tableidx)
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:545.1-545.64
   def $free_instr{tableidx : tableidx}(TABLE.FILL_instr(tableidx)) = $free_tableidx(tableidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:544.1-545.59
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:546.1-547.59
   def $free_instr{tableidx_1 : tableidx, tableidx_2 : tableidx}(TABLE.COPY_instr(tableidx_1, tableidx_2)) = $free_tableidx(tableidx_1) +++ $free_tableidx(tableidx_2)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:546.1-547.53
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:548.1-549.53
   def $free_instr{tableidx : tableidx, elemidx : elemidx}(TABLE.INIT_instr(tableidx, elemidx)) = $free_tableidx(tableidx) +++ $free_elemidx(elemidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:548.1-548.60
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:550.1-550.60
   def $free_instr{elemidx : elemidx}(ELEM.DROP_instr(elemidx)) = $free_elemidx(elemidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:550.1-551.49
-  def $free_instr{numtype : numtype, `loadop?` : loadop_(numtype)?, memidx : memidx, memarg : memarg}(LOAD_instr(numtype, loadop?{loadop <- `loadop?`}, memidx, memarg)) = $free_numtype(numtype) +++ $free_memidx(memidx)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:552.1-553.49
-  def $free_instr{numtype : numtype, `storeop?` : storeop_(numtype)?, memidx : memidx, memarg : memarg}(STORE_instr(numtype, storeop?{storeop <- `storeop?`}, memidx, memarg)) = $free_numtype(numtype) +++ $free_memidx(memidx)
+  def $free_instr{numtype : numtype, `loadop?` : loadop_(numtype)?, memidx : memidx, memarg : memarg}(LOAD_instr(numtype, loadop?{loadop <- `loadop?`}, memidx, memarg)) = $free_numtype(numtype) +++ $free_memidx(memidx)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:554.1-555.49
-  def $free_instr{vectype : vectype, `vloadop?` : vloadop_(vectype)?, memidx : memidx, memarg : memarg}(VLOAD_instr(vectype, vloadop?{vloadop <- `vloadop?`}, memidx, memarg)) = $free_vectype(vectype) +++ $free_memidx(memidx)
+  def $free_instr{numtype : numtype, `storeop?` : storeop_(numtype)?, memidx : memidx, memarg : memarg}(STORE_instr(numtype, storeop?{storeop <- `storeop?`}, memidx, memarg)) = $free_numtype(numtype) +++ $free_memidx(memidx)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:556.1-557.49
-  def $free_instr{vectype : vectype, sz : sz, memidx : memidx, memarg : memarg, laneidx : laneidx}(VLOAD_LANE_instr(vectype, sz, memidx, memarg, laneidx)) = $free_vectype(vectype) +++ $free_memidx(memidx)
+  def $free_instr{vectype : vectype, `vloadop?` : vloadop_(vectype)?, memidx : memidx, memarg : memarg}(VLOAD_instr(vectype, vloadop?{vloadop <- `vloadop?`}, memidx, memarg)) = $free_vectype(vectype) +++ $free_memidx(memidx)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:558.1-559.49
-  def $free_instr{vectype : vectype, memidx : memidx, memarg : memarg}(VSTORE_instr(vectype, memidx, memarg)) = $free_vectype(vectype) +++ $free_memidx(memidx)
+  def $free_instr{vectype : vectype, sz : sz, memidx : memidx, memarg : memarg, laneidx : laneidx}(VLOAD_LANE_instr(vectype, sz, memidx, memarg, laneidx)) = $free_vectype(vectype) +++ $free_memidx(memidx)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:560.1-561.49
+  def $free_instr{vectype : vectype, memidx : memidx, memarg : memarg}(VSTORE_instr(vectype, memidx, memarg)) = $free_vectype(vectype) +++ $free_memidx(memidx)
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:562.1-563.49
   def $free_instr{vectype : vectype, sz : sz, memidx : memidx, memarg : memarg, laneidx : laneidx}(VSTORE_LANE_instr(vectype, sz, memidx, memarg, laneidx)) = $free_vectype(vectype) +++ $free_memidx(memidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:562.1-562.59
-  def $free_instr{memidx : memidx}(MEMORY.SIZE_instr(memidx)) = $free_memidx(memidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:563.1-563.59
-  def $free_instr{memidx : memidx}(MEMORY.GROW_instr(memidx)) = $free_memidx(memidx)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:564.1-564.59
+  def $free_instr{memidx : memidx}(MEMORY.SIZE_instr(memidx)) = $free_memidx(memidx)
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:565.1-565.59
+  def $free_instr{memidx : memidx}(MEMORY.GROW_instr(memidx)) = $free_memidx(memidx)
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:566.1-566.59
   def $free_instr{memidx : memidx}(MEMORY.FILL_instr(memidx)) = $free_memidx(memidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:565.1-566.51
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:567.1-568.51
   def $free_instr{memidx_1 : memidx, memidx_2 : memidx}(MEMORY.COPY_instr(memidx_1, memidx_2)) = $free_memidx(memidx_1) +++ $free_memidx(memidx_2)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:567.1-568.49
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:569.1-570.49
   def $free_instr{memidx : memidx, dataidx : dataidx}(MEMORY.INIT_instr(memidx, dataidx)) = $free_memidx(memidx) +++ $free_dataidx(dataidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:569.1-569.60
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:571.1-571.60
   def $free_instr{dataidx : dataidx}(DATA.DROP_instr(dataidx)) = $free_dataidx(dataidx)
 
-;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:418.1-418.31
+;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:420.1-420.31
 def $free_block(instr*) : free
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:577.1-578.47
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:579.1-580.47
   def $free_block{`instr*` : instr*, free : free}(instr*{instr <- `instr*`}) = free[LABELS_free = $shift_labelidxs(free.LABELS_free)]
     -- if (free = $free_list($free_instr(instr)*{instr <- `instr*`}))
 }

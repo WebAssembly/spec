@@ -3785,7 +3785,8 @@ $$
 \begin{array}[t]{@{}lrrl@{}l@{}}
 & {{\mathit{vunop}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}} & ::= & \mathsf{abs} ~~|~~ \mathsf{neg} \\
 & & | & \mathsf{popcnt} & \quad \mbox{if}~ N = \mathsf{{\scriptstyle 8}} \\
-& {{\mathit{vunop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}} & ::= & \mathsf{abs} ~~|~~ \mathsf{neg} ~~|~~ \mathsf{sqrt} ~~|~~ \mathsf{ceil} ~~|~~ \mathsf{floor} ~~|~~ \mathsf{trunc} ~~|~~ \mathsf{nearest} \\
+& {{\mathit{vunop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}} & ::= & \mathsf{abs} ~~|~~ \mathsf{neg} ~~|~~ \mathsf{sqrt} \\
+& & | & \mathsf{ceil} ~~|~~ \mathsf{floor} ~~|~~ \mathsf{trunc} ~~|~~ \mathsf{nearest} \\
 \end{array}
 $$
 
@@ -3801,7 +3802,8 @@ $$
 & & | & {\mathsf{relaxed\_q{\scriptstyle 15}mulr}}{\mathsf{\_}}{\mathsf{s}} & \quad \mbox{if}~ N = \mathsf{{\scriptstyle 16}} \\
 & & | & {\mathsf{min}}{\mathsf{\_}}{{\mathit{sx}}} & \quad \mbox{if}~ N \leq \mathsf{{\scriptstyle 32}} \\
 & & | & {\mathsf{max}}{\mathsf{\_}}{{\mathit{sx}}} & \quad \mbox{if}~ N \leq \mathsf{{\scriptstyle 32}} \\
-& {{\mathit{vbinop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}} & ::= & \mathsf{add} ~~|~~ \mathsf{sub} ~~|~~ \mathsf{mul} ~~|~~ \mathsf{div} ~~|~~ \mathsf{min} ~~|~~ \mathsf{max} ~~|~~ \mathsf{pmin} ~~|~~ \mathsf{pmax} \\
+& {{\mathit{vbinop}}}_{{{\mathsf{f}}{N}}{\mathsf{x}}{M}} & ::= & \mathsf{add} ~~|~~ \mathsf{sub} ~~|~~ \mathsf{mul} ~~|~~ \mathsf{div} \\
+& & | & \mathsf{min} ~~|~~ \mathsf{max} ~~|~~ \mathsf{pmin} ~~|~~ \mathsf{pmax} \\
 & & | & \mathsf{relaxed\_min} ~~|~~ \mathsf{relaxed\_max} \\
 \end{array}
 $$

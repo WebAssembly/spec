@@ -134,6 +134,7 @@ clean:
 	rm -rf $(SPLICEDIR)
 	rm -rf $(BUILDDIR)
 	rm -rf $(STATICDIR)
+	rm -rf $(SPLICEDIR)
 	rm -f $(GENERATED)
 
 .PHONY: html html-nested
