@@ -277,9 +277,9 @@ let rec find_case_atom typ =
   let open El.Ast in
   match typ.it with
   | AtomT atom
-  | BrackT (atom, _, _) -> Some atom
-  | SeqT (typ1::_)
-  | InfixT (typ1, _, _) -> find_case_atom typ1
+  | BrackT (atom, _, _)
+  | InfixT (_, atom, _) -> Some atom
+  | SeqT (typ1::_) -> find_case_atom typ1
   | _ -> None
 
 let rec find_case_typ' s a: El.Ast.typ option =
