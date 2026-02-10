@@ -581,14 +581,14 @@
 <span id="exec-throw"></span><h3><span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{throw}}~x\)</span><a class="headerlink" href="#xref-syntax-instructions-syntax-instr-control-mathsf-throw-x" title="Link to this heading">¶</a></h3>
 <ol class="arabic simple">
 <li><p>Let <span class="math notranslate nohighlight">\(z\)</span> be the current state.</p></li>
-<li><p>Assert: Due to <a class="reference internal" href="../valid/instructions.html#valid-throw"><span class="std std-ref">validation</span></a>, <span class="math notranslate nohighlight">\(x &lt; {|z{.}\href{../exec/runtime.html#syntax-state}{\mathsf{tags}}|}\)</span>.</p></li>
+<li><p>Assert: Due to <a class="reference internal" href="../valid/instructions.html#valid-throw"><span class="std std-ref">validation</span></a>, <span class="math notranslate nohighlight">\(x &lt; {|z{.}\href{../exec/runtime.html#syntax-state}{\mathsf{module}}{.}\href{../exec/runtime.html#syntax-state}{\mathsf{tags}}|}\)</span>.</p></li>
 <li><p>Assert: Due to <a class="reference internal" href="../valid/instructions.html#valid-throw"><span class="std std-ref">validation</span></a>, the <a class="reference internal" href="../valid/conventions.html#aux-expand-deftype"><span class="std std-ref">expansion</span></a> of <span class="math notranslate nohighlight">\(z{.}\href{../exec/runtime.html#syntax-state}{\mathsf{tags}}{}[x]{.}\href{../exec/runtime.html#syntax-taginst}{\mathsf{type}}\)</span> is some <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-comptype}{\mathsf{func}}~{\href{../syntax/types.html#syntax-resulttype}{\mathit{resulttype}}} \href{../syntax/types.html#syntax-comptype}{\rightarrow} {\href{../syntax/types.html#syntax-resulttype}{\mathit{resulttype}}}\)</span>.</p></li>
 <li><p>Let <span class="math notranslate nohighlight">\((\href{../syntax/types.html#syntax-comptype}{\mathsf{func}}~{t^{n}}~\href{../syntax/types.html#syntax-comptype}{\rightarrow}~{\href{../syntax/types.html#syntax-resulttype}{\mathit{resulttype}}}_0)\)</span> be the destructuring of the <a class="reference internal" href="../valid/conventions.html#aux-expand-deftype"><span class="std std-ref">expansion</span></a> of <span class="math notranslate nohighlight">\(z{.}\href{../exec/runtime.html#syntax-state}{\mathsf{tags}}{}[x]{.}\href{../exec/runtime.html#syntax-taginst}{\mathsf{type}}\)</span>.</p></li>
 <li><p>Assert: Due to <a class="reference internal" href="../valid/instructions.html#valid-throw"><span class="std std-ref">validation</span></a>, <span class="math notranslate nohighlight">\({\href{../syntax/types.html#syntax-resulttype}{\mathit{resulttype}}}_0 = \epsilon\)</span>.</p></li>
 <li><p>Let <span class="math notranslate nohighlight">\(a\)</span> be the length of <span class="math notranslate nohighlight">\(z{.}\href{../exec/runtime.html#syntax-state}{\mathsf{exns}}\)</span>.</p></li>
 <li><p>Assert: Due to <a class="reference internal" href="../valid/instructions.html#valid-throw"><span class="std std-ref">validation</span></a>, there are at least <span class="math notranslate nohighlight">\(n\)</span> values on the top of the stack.</p></li>
 <li><p>Pop the values <span class="math notranslate nohighlight">\({{\href{../exec/runtime.html#syntax-val}{\mathit{val}}}^{n}}\)</span> from the stack.</p></li>
-<li><p>Let <span class="math notranslate nohighlight">\({\mathit{exn}}\)</span> be the <a class="reference internal" href="runtime.html#syntax-exninst"><span class="std std-ref">exception instance</span></a> <span class="math notranslate nohighlight">\(\{ \href{../exec/runtime.html#syntax-exninst}{\mathsf{tag}}~z{.}\href{../exec/runtime.html#syntax-state}{\mathsf{tags}}{}[x],\;\allowbreak \href{../exec/runtime.html#syntax-exninst}{\mathsf{fields}}~{{\href{../exec/runtime.html#syntax-val}{\mathit{val}}}^{n}} \}\)</span>.</p></li>
+<li><p>Let <span class="math notranslate nohighlight">\({\mathit{exn}}\)</span> be the <a class="reference internal" href="runtime.html#syntax-exninst"><span class="std std-ref">exception instance</span></a> <span class="math notranslate nohighlight">\(\{ \href{../exec/runtime.html#syntax-exninst}{\mathsf{tag}}~z{.}\href{../exec/runtime.html#syntax-state}{\mathsf{module}}{.}\href{../exec/runtime.html#syntax-state}{\mathsf{tags}}{}[x],\;\allowbreak \href{../exec/runtime.html#syntax-exninst}{\mathsf{fields}}~{{\href{../exec/runtime.html#syntax-val}{\mathit{val}}}^{n}} \}\)</span>.</p></li>
 <li><p>Append <span class="math notranslate nohighlight">\({\mathit{exn}}\)</span> to <span class="math notranslate nohighlight">\(z{.}\href{../exec/runtime.html#syntax-state}{\mathsf{exns}}\)</span>.</p></li>
 <li><p>Push the value <span class="math notranslate nohighlight">\((\href{../exec/runtime.html#syntax-ref}{\mathsf{ref{.}exn}}~a)\)</span> to the stack.</p></li>
 <li><p>Execute the instruction <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{throw\_ref}}\)</span>.</p></li>
@@ -599,7 +599,7 @@
 \begin{array}[t]{&#64;{}l&#64;{}}
 \mbox{if}~ z{.}\href{../exec/runtime.html#syntax-state}{\mathsf{tags}}{}[x]{.}\href{../exec/runtime.html#syntax-taginst}{\mathsf{type}} \mathrel{\href{../valid/conventions.html#aux-expand-deftype}{\approx}} \href{../syntax/types.html#syntax-comptype}{\mathsf{func}}~{t^{n}} \href{../syntax/types.html#syntax-comptype}{\rightarrow} \epsilon \\
 {\land}~ a = {|z{.}\href{../exec/runtime.html#syntax-state}{\mathsf{exns}}|} \\
-{\land}~ {\mathit{exn}} = \{ \href{../exec/runtime.html#syntax-exninst}{\mathsf{tag}}~z{.}\href{../exec/runtime.html#syntax-state}{\mathsf{tags}}{}[x],\;\allowbreak \href{../exec/runtime.html#syntax-exninst}{\mathsf{fields}}~{{\href{../exec/runtime.html#syntax-val}{\mathit{val}}}^{n}} \} \\
+{\land}~ {\mathit{exn}} = \{ \href{../exec/runtime.html#syntax-exninst}{\mathsf{tag}}~z{.}\href{../exec/runtime.html#syntax-state}{\mathsf{module}}{.}\href{../exec/runtime.html#syntax-state}{\mathsf{tags}}{}[x],\;\allowbreak \href{../exec/runtime.html#syntax-exninst}{\mathsf{fields}}~{{\href{../exec/runtime.html#syntax-val}{\mathit{val}}}^{n}} \} \\
 \end{array} \\
 \end{array}\end{split}\]</div>
 </section>
@@ -694,7 +694,7 @@
 <li><p>If <span class="math notranslate nohighlight">\({\href{../syntax/instructions.html#syntax-catch}{\mathit{catch}}}_0\)</span> is some <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{catch}}~{\href{../syntax/modules.html#syntax-tagidx}{\mathit{tagidx}}}~{\href{../syntax/modules.html#syntax-labelidx}{\mathit{labelidx}}}\)</span>, then:</p>
 <ol class="loweralpha simple">
 <li><p>Let <span class="math notranslate nohighlight">\((\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{catch}}~x~l)\)</span> be the destructuring of <span class="math notranslate nohighlight">\({\href{../syntax/instructions.html#syntax-catch}{\mathit{catch}}}_0\)</span>.</p></li>
-<li><p>If <span class="math notranslate nohighlight">\(x &lt; {|z{.}\href{../exec/runtime.html#syntax-state}{\mathsf{tags}}|}\)</span> and <span class="math notranslate nohighlight">\(z{.}\href{../exec/runtime.html#syntax-state}{\mathsf{exns}}{}[a]{.}\href{../exec/runtime.html#syntax-exninst}{\mathsf{tag}} = z{.}\href{../exec/runtime.html#syntax-state}{\mathsf{tags}}{}[x]\)</span>, then:</p>
+<li><p>If <span class="math notranslate nohighlight">\(x &lt; {|z{.}\href{../exec/runtime.html#syntax-state}{\mathsf{module}}{.}\href{../exec/runtime.html#syntax-state}{\mathsf{tags}}|}\)</span> and <span class="math notranslate nohighlight">\(z{.}\href{../exec/runtime.html#syntax-state}{\mathsf{exns}}{}[a]{.}\href{../exec/runtime.html#syntax-exninst}{\mathsf{tag}} = z{.}\href{../exec/runtime.html#syntax-state}{\mathsf{module}}{.}\href{../exec/runtime.html#syntax-state}{\mathsf{tags}}{}[x]\)</span>, then:</p>
 <ol class="arabic simple">
 <li><p>Pop the <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-handler}{\mathsf{handler}}\)</span> from the stack.</p></li>
 <li><p>Push the values <span class="math notranslate nohighlight">\({{\href{../exec/runtime.html#syntax-val}{\mathit{val}}}^\ast}\)</span> to the stack.</p></li>
@@ -716,7 +716,7 @@
 <li><p>Else if <span class="math notranslate nohighlight">\({\href{../syntax/instructions.html#syntax-catch}{\mathit{catch}}}_0\)</span> is some <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{catch\_ref}}~{\href{../syntax/modules.html#syntax-tagidx}{\mathit{tagidx}}}~{\href{../syntax/modules.html#syntax-labelidx}{\mathit{labelidx}}}\)</span>, then:</p>
 <ol class="loweralpha simple">
 <li><p>Let <span class="math notranslate nohighlight">\((\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{catch\_ref}}~x~l)\)</span> be the destructuring of <span class="math notranslate nohighlight">\({\href{../syntax/instructions.html#syntax-catch}{\mathit{catch}}}_0\)</span>.</p></li>
-<li><p>If <span class="math notranslate nohighlight">\(x \geq {|z{.}\href{../exec/runtime.html#syntax-state}{\mathsf{tags}}|}\)</span> or <span class="math notranslate nohighlight">\(z{.}\href{../exec/runtime.html#syntax-state}{\mathsf{exns}}{}[a]{.}\href{../exec/runtime.html#syntax-exninst}{\mathsf{tag}} \neq z{.}\href{../exec/runtime.html#syntax-state}{\mathsf{tags}}{}[x]\)</span>, then:</p>
+<li><p>If <span class="math notranslate nohighlight">\(x \geq {|z{.}\href{../exec/runtime.html#syntax-state}{\mathsf{module}}{.}\href{../exec/runtime.html#syntax-state}{\mathsf{tags}}|}\)</span> or <span class="math notranslate nohighlight">\(z{.}\href{../exec/runtime.html#syntax-state}{\mathsf{exns}}{}[a]{.}\href{../exec/runtime.html#syntax-exninst}{\mathsf{tag}} \neq z{.}\href{../exec/runtime.html#syntax-state}{\mathsf{module}}{.}\href{../exec/runtime.html#syntax-state}{\mathsf{tags}}{}[x]\)</span>, then:</p>
 <ol class="arabic simple">
 <li><p>Let <span class="math notranslate nohighlight">\({\href{../syntax/instructions.html#syntax-catch}{\mathit{catch}}}~{{\href{../syntax/instructions.html#syntax-catch}{\mathit{catch}}'}^\ast}\)</span> be <span class="math notranslate nohighlight">\({{\href{../syntax/instructions.html#syntax-catch}{\mathit{catch}}''}^\ast}\)</span>.</p></li>
 <li><p>Pop the <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-handler}{\mathsf{handler}}\)</span> from the stack.</p></li>
@@ -796,7 +796,7 @@
 &amp;&amp;&amp; \multicolumn{2}{&#64;{}l&#64;{}}{\quad
 \quad
 \begin{array}[t]{&#64;{}l&#64;{}}
-\mbox{if}~ z{.}\href{../exec/runtime.html#syntax-state}{\mathsf{exns}}{}[a]{.}\href{../exec/runtime.html#syntax-exninst}{\mathsf{tag}} = z{.}\href{../exec/runtime.html#syntax-state}{\mathsf{tags}}{}[x] \\
+\mbox{if}~ z{.}\href{../exec/runtime.html#syntax-state}{\mathsf{exns}}{}[a]{.}\href{../exec/runtime.html#syntax-exninst}{\mathsf{tag}} = z{.}\href{../exec/runtime.html#syntax-state}{\mathsf{module}}{.}\href{../exec/runtime.html#syntax-state}{\mathsf{tags}}{}[x] \\
 {\land}~ {{\href{../exec/runtime.html#syntax-val}{\mathit{val}}}^\ast} = z{.}\href{../exec/runtime.html#syntax-state}{\mathsf{exns}}{}[a]{.}\href{../exec/runtime.html#syntax-exninst}{\mathsf{fields}} \\
 \end{array}
 } \\[0.8ex]
@@ -804,7 +804,7 @@
 &amp;&amp;&amp; \multicolumn{2}{&#64;{}l&#64;{}}{\quad
 \quad
 \begin{array}[t]{&#64;{}l&#64;{}}
-\mbox{if}~ z{.}\href{../exec/runtime.html#syntax-state}{\mathsf{exns}}{}[a]{.}\href{../exec/runtime.html#syntax-exninst}{\mathsf{tag}} = z{.}\href{../exec/runtime.html#syntax-state}{\mathsf{tags}}{}[x] \\
+\mbox{if}~ z{.}\href{../exec/runtime.html#syntax-state}{\mathsf{exns}}{}[a]{.}\href{../exec/runtime.html#syntax-exninst}{\mathsf{tag}} = z{.}\href{../exec/runtime.html#syntax-state}{\mathsf{module}}{.}\href{../exec/runtime.html#syntax-state}{\mathsf{tags}}{}[x] \\
 {\land}~ {{\href{../exec/runtime.html#syntax-val}{\mathit{val}}}^\ast} = z{.}\href{../exec/runtime.html#syntax-state}{\mathsf{exns}}{}[a]{.}\href{../exec/runtime.html#syntax-exninst}{\mathsf{fields}} \\
 \end{array}
 } \\[0.8ex]
