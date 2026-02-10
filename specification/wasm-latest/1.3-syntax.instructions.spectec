@@ -102,7 +102,8 @@ syntax vvtestop hint(macro "%" "V%") = ANY_TRUE
 syntax vunop_(shape) hint(macro "%" "V%")
 syntax vunop_(Jnn X M) = ABS | NEG
   | POPCNT -- if $lsizenn(Jnn) = `8
-syntax vunop_(Fnn X M) = ABS | NEG | SQRT | CEIL | FLOOR | TRUNC | NEAREST
+syntax vunop_(Fnn X M) = ABS | NEG | SQRT
+  | CEIL | FLOOR | TRUNC | NEAREST
 
 syntax vbinop_(shape) hint(macro "%" "V%")
 syntax vbinop_(Jnn X M) =
@@ -116,7 +117,8 @@ syntax vbinop_(Jnn X M) =
   | RELAXED_Q15MULR S hint(show RELAXED_Q15MULR#_#%) -- if $lsizenn(Jnn) = `16
   | MIN sx hint(show MIN#_#%)                -- if $lsizenn(Jnn) <= `32
   | MAX sx hint(show MAX#_#%)                -- if $lsizenn(Jnn) <= `32
-syntax vbinop_(Fnn X M) = ADD | SUB | MUL | DIV | MIN | MAX | PMIN | PMAX
+syntax vbinop_(Fnn X M) = ADD | SUB | MUL | DIV
+  | MIN | MAX | PMIN | PMAX
   | RELAXED_MIN | RELAXED_MAX
 
 syntax vternop_(shape) hint(macro "%" "V%")

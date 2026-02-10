@@ -407,7 +407,8 @@ Instructions prefixed with ${:V128} do not involve a specific interpretation, an
 
 $${syntax:
   vvunop vvbinop vvternop vvtestop
-  vunop_ vbinop_ vternop_ vtestop_ vrelop_ vswizzlop_ vshiftop_ vextunop__ vextbinop__ vextternop__ vcvtop__
+  vunop_ vbinop_ vternop_ vtestop_ vrelop_ vswizzlop_ vshiftop_
+  vextunop__ vextbinop__ vextternop__ vcvtop__
 }
 
 Vector instructions can be grouped into several subcategories:
