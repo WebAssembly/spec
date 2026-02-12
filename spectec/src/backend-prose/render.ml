@@ -930,7 +930,11 @@ let rec render_single_stmt ?(with_type=true) env stmt  =
     | CmpS (e1, cmpop, e2) ->
       let cmpop, rhs =
         match e2.it with
-        | OptE None -> render_prose_cmpop_eps cmpop, "absent"
+        | OptE None ->
+          if cmpop = `NeOp then
+            render_prose_cmpop_eps `EqOp, "present"
+          else
+            render_prose_cmpop_eps cmpop, "absent"
         | ListE [] -> render_prose_cmpop_eps cmpop, "empty"
         | BoolE _ -> render_prose_cmpop_eps cmpop, render_expr env e2
         | _ -> render_prose_cmpop cmpop, render_expr env e2

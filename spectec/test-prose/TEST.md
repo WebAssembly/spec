@@ -14776,7 +14776,7 @@ The global type :math:`({\mathsf{mut}^?}~t)` is :ref:`valid <valid-val>` if:
 The memory type :math:`({\mathit{addrtype}}~{\mathit{limits}}~\mathsf{page})` is :ref:`valid <valid-val>` if:
 
 
-   * The limits range :math:`{\mathit{limits}}` is :ref:`valid <valid-val>` within :math:`{2^{16}}`.
+   * The limits range :math:`{\mathit{limits}}` is :ref:`valid <valid-val>` within :math:`{2^{{|{\mathit{addrtype}}|} - 16}}`.
 
 
 
@@ -14784,7 +14784,7 @@ The memory type :math:`({\mathit{addrtype}}~{\mathit{limits}}~\mathsf{page})` is
 The table type :math:`({\mathit{addrtype}}~{\mathit{limits}}~{\mathit{reftype}})` is :ref:`valid <valid-val>` if:
 
 
-   * The limits range :math:`{\mathit{limits}}` is :ref:`valid <valid-val>` within :math:`{2^{32}} - 1`.
+   * The limits range :math:`{\mathit{limits}}` is :ref:`valid <valid-val>` within :math:`{2^{{|{\mathit{addrtype}}|}}} - 1`.
 
    * The reference type :math:`{\mathit{reftype}}` is :ref:`valid <valid-val>`.
 
@@ -15216,7 +15216,7 @@ The catch clause :math:`(\mathsf{catch\_all\_ref}~l)` is :ref:`valid <valid-val>
 The value type :math:`t` is defaultable if:
 
 
-   * The value :math:`{{\mathrm{default}}}_{t}` is not absent.
+   * The value :math:`{{\mathrm{default}}}_{t}` is present.
 
 
 
@@ -15658,7 +15658,7 @@ The instruction :math:`({\mathsf{struct{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~
 
    * The field type :math:`{{\mathit{ft}}^\ast}{}[i]` is of the form :math:`({\mathsf{mut}^?}~{\mathit{zt}})`.
 
-   * The signedness :math:`{{\mathit{sx}}^?}` is absent if and only if :math:`{\mathit{zt}}` is a packed type.
+   * The signedness :math:`{{\mathit{sx}}^?}` is present if and only if :math:`{\mathit{zt}}` is a packed type.
 
    * The value type :math:`t` is :math:`{\mathrm{unpack}}({\mathit{zt}})`.
 
@@ -23690,7 +23690,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ......................................
 
 
-1. Return :math:`{\mathit{zt}} = {\mathrm{unpack}}({\mathit{zt}})`.
+1. Return :math:`{\mathit{zt}} \neq {\mathrm{unpack}}({\mathit{zt}})`.
 
 
 :math:`{\mathrm{funcidx}}({{\mathit{global}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{elem}}^\ast})`
@@ -27294,11 +27294,11 @@ Globaltype_ok
 
 Memtype_ok
 - the memory type addrtype limits PAGE is valid if:
-  - the limits range limits is valid within (2 ^ 16).
+  - the limits range limits is valid within (2 ^ ($size(addrtype) - 16)).
 
 Tabletype_ok
 - the table type (addrtype limits reftype) is valid if:
-  - the limits range limits is valid within ((2 ^ 32) - 1).
+  - the limits range limits is valid within ((2 ^ $size(addrtype)) - 1).
   - the reference type reftype is valid.
 
 Externtype_ok
@@ -27741,7 +27741,7 @@ Instr_ok/struct.get
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is (STRUCT ft*).
   - |ft*| is greater than i.
   - the field type ft*[i] is (mut? zt).
-  - the signedness sx? is ?() if and only if $is_packtype(zt).
+  - the signedness sx? is not ?() if and only if $is_packtype(zt).
   - the value type t is $unpack(zt).
 
 Instr_ok/struct.set
@@ -31617,7 +31617,7 @@ default_ valtype
 8. Return ?().
 
 is_packtype zt
-1. Return (zt = $unpack(zt)).
+1. Return (zt =/= $unpack(zt)).
 
 funcidx_nonfuncs (global* mem* table* elem*)
 1. Return $funcidx_module((MODULE [] [] [] global* mem* table* [] [] elem* ?() [])).

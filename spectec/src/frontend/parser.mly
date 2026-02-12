@@ -510,10 +510,10 @@ deftyp_ :
       | _ ->
         let y1, y2, _ =
           List.fold_right
-            (fun elem (y1, y2, at) ->
-              (* at is the position of leftmost id element so far *)
+            (fun elem (y1, y2, b) ->
+              (* b is true when the last type to the right was a constructor *)
               match elem with
-              | Nl -> if at = None then y1, Nl::y2, at else Nl::y1, y2, at
+              | Nl -> if b then y1, Nl::y2, b else Nl::y1, y2, b
               | Elem (t, prems, hints) ->
                 match t.it with
                 | AtomT atom
@@ -521,14 +521,13 @@ deftyp_ :
                 | BrackT (atom, _, _)
                 | SeqT ({it = AtomT atom; _}::_)
                 | SeqT ({it = InfixT (_, atom, _); _}::_)
-                | SeqT ({it = BrackT (atom, _, _); _}::_) when at = None ->
-                  y1, (Elem (atom, (t, prems), hints))::y2, None
+                | SeqT ({it = BrackT (atom, _, _); _}::_) ->
+                  y1, (Elem (atom, (t, prems), hints))::y2, true
                 | _ when prems = [] && hints = [] ->
-                  (Elem t)::y1, y2, Some t.at
+                  (Elem t)::y1, y2, false
                 | _ ->
-                  let at = Option.value at ~default: t.at in
-                  error at "misplaced type"
-            ) tcs ([], [], None)
+                  error t.at "misplaced type"
+            ) tcs ([], [], true)
         in CaseT (dots1, y1, y2, dots2) }
   | nl_bar_list1(enumtyp(enum1), enumtyp(arith)) { RangeT $1 }
 
