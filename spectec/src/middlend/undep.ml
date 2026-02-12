@@ -85,12 +85,12 @@ let bind_wf_set env id =
   if id <> "" && id <> "_" then
   env.wf_set <- StringSet.add id env.wf_set
 
-let is_part_of_bind (free_set : Free.sets) b =
-  match b.it with
-  | ExpB (id, _) -> Free.Set.mem id.it free_set.varid 
-  | TypB id -> Free.Set.mem id.it free_set.typid
-  | DefB (id, _, _) -> Free.Set.mem id.it free_set.defid
-  | GramB (id, _, _) -> Free.Set.mem id.it free_set.gramid
+let is_part_of_quant (free_set : Free.sets) p =
+  match p.it with
+  | ExpP (id, _) -> Free.Set.mem id.it free_set.varid 
+  | TypP id -> Free.Set.mem id.it free_set.typid
+  | DefP (id, _, _) -> Free.Set.mem id.it free_set.defid
+  | GramP (id, _, _) -> Free.Set.mem id.it free_set.gramid
 
 let is_type_arg arg = 
   match arg.it with
@@ -102,12 +102,7 @@ let is_type_param param =
   | TypP _ -> true
   | _ -> false
 
-let is_type_bind bind = 
-  match bind.it with
-  | TypB _ -> true
-  | _ -> false
-
-let filter_iter_binds exp iter_binds = 
+let filter_iter_quants exp iter_quants = 
   let free_vars = (Free.free_exp exp).varid in
   (List.fold_left (fun (free_set, acc) (iter, id_exp_pairs) -> 
     let new_id_exp_pairs = List.filter (fun (id, _) -> 
@@ -119,7 +114,7 @@ let filter_iter_binds exp iter_binds =
     ) Free.Set.empty new_id_exp_pairs in 
     let new_set = Free.Set.union iter_vars free_set in
     (new_set, (iter, new_id_exp_pairs) :: acc)
-  ) (free_vars, []) iter_binds) 
+  ) (free_vars, []) iter_quants) 
   |> snd |> List.rev
 
 let rec create_collector iterexps = 
@@ -128,7 +123,7 @@ let rec create_collector iterexps =
 
 and collect_userdef_exp iterexps e = 
   match e.it with
-  | CaseE _ | StrE _ -> ([((e, e.note), filter_iter_binds e iterexps)], false)
+  | CaseE _ | StrE _ -> ([((e, e.note), filter_iter_quants e iterexps)], false)
   | IterE (e1, ((_, id_exp_pairs) as iterexp)) -> 
     let c1 = create_collector iterexps in
     let c2 = create_collector (iterexp :: iterexps) in 
@@ -165,31 +160,31 @@ and t_exp env e =
 let t_inst env inst = 
   let tf = { base_transformer with transform_exp = t_exp env; transform_typ = t_typ } in
   (match inst.it with
-  | InstD (binds, args, deftyp) -> InstD (List.map (transform_bind tf) binds |> List.filter is_type_bind, List.map (transform_arg tf) args |> List.filter is_type_arg, 
+  | InstD (quants, args, deftyp) -> InstD (List.map (transform_param tf) quants |> List.filter is_type_param, List.map (transform_arg tf) args |> List.filter is_type_arg, 
     (match deftyp.it with 
     | AliasT typ -> AliasT (transform_typ tf typ)
-    | StructT typfields -> StructT (List.map (fun (a, (c_binds, typ, _prems), hints) ->
-        (a, (List.map (transform_bind tf) c_binds, transform_typ tf typ, []), hints)  
+    | StructT typfields -> StructT (List.map (fun (a, (typ, c_quants, _prems), hints) ->
+        (a, (transform_typ tf typ, List.map (transform_param tf) c_quants, []), hints)  
       ) typfields)
     | VariantT typcases -> 
-      VariantT (List.map (fun (m, (c_binds, typ, _prems), hints) -> 
-        (m, (List.map (transform_bind tf) c_binds, transform_typ tf typ, []), hints)  
+      VariantT (List.map (fun (m, (typ, c_quants, _prems), hints) -> 
+        (m, (transform_typ tf typ, List.map (transform_param tf) c_quants, []), hints)  
       ) typcases)
     ) $ deftyp.at
   )) $ inst.at
 
 let needs_wfness env def = 
   match def.it with
-  | TypD (_, _, [{it = InstD (binds, _, deftyp); _}]) ->
+  | TypD (_, _, [{it = InstD (quants, _, deftyp); _}]) ->
     let prems_list = match deftyp.it with
     | StructT typfields -> List.map (fun (_, (_, _, prems), _) -> prems) typfields
     | VariantT typcases -> List.map (fun (_, (_, _, prems), _) -> prems) typcases
     | _ -> []
     in
     List.exists (fun b -> match b.it with
-      | ExpB (id, _) -> StringSet.mem id.it env.wf_set
+      | ExpP (id, _) -> StringSet.mem id.it env.wf_set
       | _ -> false 
-    ) binds ||
+    ) quants ||
     List.exists (fun prems -> prems <> []) prems_list
   | _ -> false
 
@@ -206,14 +201,14 @@ let rec get_wf_pred env (exp, t) =
   let exp' = {exp with note = t'} in 
   match t'.it with
     | VarT (id, args) when StringSet.mem id.it env.wf_set ->
-      let new_mixop = [] :: List.init (List.length args + 1) (fun _ -> []) in
+      let new_mixop = Xl.Mixop.(Seq (List.map (fun _ -> Arg ()) args)) in
       let exp_args = List.filter_map (fun a -> match a.it with 
         | ExpA exp -> Some exp
         | _ -> None
       ) args in
-      let tupt = TupT (List.map (fun e -> (VarE ("" $ id.at) $$ id.at % e.note), e.note) exp_args) $ id.at in
+      let tupt = TupT (List.map (fun e -> "_" $ id.at, e.note) exp_args) $ id.at in
       let tuple_exp = TupE (exp_args @ [exp']) $$ id.at % tupt in
-      [RulePr (wf_pred_prefix ^ id.it $ id.at, new_mixop, tuple_exp) $ id.at]
+      [RulePr (wf_pred_prefix ^ id.it $ id.at, [], new_mixop, tuple_exp) $ id.at]
     | IterT (typ, iter) ->
       let name = get_id iter exp' in
       let name' = remove_last_char name.it $ name.at in 
@@ -228,45 +223,40 @@ let rec get_wf_pred env (exp, t) =
       prems
     | _ -> []
 
-let rec non_empty_var e = 
-  match e.it with
-  | VarE id -> id.it <> "" && id.it <> "_"
-  | IterE (e, _) -> non_empty_var e 
-  | TupE exps -> List.exists non_empty_var exps
-  | _ -> false
+let non_empty_var id = id.it <> "" && id.it <> "_"
 
-let get_exp_typ b = 
-  match b.it with
-  | ExpB (id, typ) -> Some (VarE id $$ id.at % typ, typ)
+let get_exp_typ q = 
+  match q.it with
+  | ExpP (id, typ) -> Some (VarE id $$ id.at % typ, typ)
   | _ -> None
   
 let create_well_formed_predicate env id inst = 
   let tf = { base_transformer with transform_exp = t_exp env; transform_typ = t_typ} in
   let at = id.at in 
   let user_typ = VarT(id, []) $ at in
-  let new_mixop pairs = [] :: List.init (List.length pairs + 1) (fun _ -> []) in
-  let create_pairs binds = List.split (List.filter_map (fun b -> match b.it with 
-      | ExpB (id', typ) -> Some ((VarE ("_" $ id'.at) $$ id'.at % typ, typ), (VarE id' $$ id'.at % typ, typ))
+  let new_mixop pairs = Xl.Mixop.(Seq (List.map (fun _ -> Arg ()) pairs)) in
+  let create_pairs quants = List.split (List.filter_map (fun b -> match b.it with 
+      | ExpP (id', typ) -> Some (("_" $ id'.at, typ), (id', typ))
       | _ -> None
-    ) binds) in
-  let tupt pairs = TupT (pairs @ [(VarE ("_" $ at) $$ at % user_typ, user_typ)]) $ at in
+    ) quants) in
+  let tupt pairs = TupT (pairs @ [("_" $ at, user_typ)]) $ at in
   match inst.it with
   (* Variant well formedness predicate creation *)
-  | InstD (binds, _args, {it = VariantT typcases; _}) -> 
-    let pairs_without_names, dep_exp_typ_pairs = create_pairs binds in
-    let rules = List.mapi (fun i (m, (case_binds, case_typ, prems), _) ->
+  | InstD (quants, _args, {it = VariantT typcases; _}) -> 
+    let pairs_without_names, dep_exp_typ_pairs = create_pairs quants in
+    let rules = List.mapi (fun i (m, (case_typ, case_quants, prems), _) ->
       let exp_typ_pairs = match case_typ.it with
         | TupT tups -> tups
-        | _ -> [(VarE ("_" $ id.at) $$ id.at % case_typ, case_typ)] 
+        | _ -> [("_" $ id.at, case_typ)] 
       in 
-      let extra_binds, t_pairs = Utils.improve_ids_binders [] false id.at exp_typ_pairs in
-      let new_binds = case_binds @ extra_binds in 
-      let exp = TupE (List.map fst t_pairs) $$ at % (TupT t_pairs $ at) in 
+      let extra_quants, t_pairs = Utils.improve_ids_quants [] false id.at exp_typ_pairs in
+      let new_quants = case_quants @ extra_quants in 
+      let exp = TupE (List.map (fun (id, t) -> VarE id $$ id.at % t) t_pairs) $$ at % (TupT t_pairs $ at) in 
       let case_exp = CaseE (m, exp) $$ at % user_typ in
-      let tuple_exp = TupE (List.map fst dep_exp_typ_pairs @ [case_exp]) $$ at % tupt pairs_without_names in
-      let extra_prems = List.filter_map get_exp_typ new_binds |> List.concat_map (get_wf_pred env) in
+      let tuple_exp = TupE (List.map (fun (id, t) -> VarE id $$ id.at % t) dep_exp_typ_pairs @ [case_exp]) $$ at % tupt pairs_without_names in
+      let extra_prems = List.filter_map get_exp_typ new_quants |> List.concat_map (get_wf_pred env) in
       RuleD (id.it ^ "_" ^ rule_prefix ^ Int.to_string i $ at, 
-        List.map (transform_bind tf) (binds @ new_binds), new_mixop dep_exp_typ_pairs, 
+        List.map (transform_param tf) (quants @ new_quants), new_mixop dep_exp_typ_pairs, 
         transform_exp tf tuple_exp, 
         List.map (transform_prem tf) (extra_prems @ prems)
       ) $ at
@@ -276,46 +266,46 @@ let create_well_formed_predicate env id inst =
       | RuleD (_, _, _, _, prems) -> prems = []   
     ) rules in
     if has_no_prems then None else 
-    let relation = RelD (wf_pred_prefix ^ id.it $ id.at, new_mixop dep_exp_typ_pairs, tupt pairs_without_names, rules) $ at in 
+    let relation = RelD (wf_pred_prefix ^ id.it $ id.at, [], new_mixop dep_exp_typ_pairs, tupt pairs_without_names, rules) $ at in 
     bind_wf_set env id.it;
     Some relation
 
   (* Struct/Record well formedness predicate creation *)
-  | InstD (binds, _args, {it = StructT typfields; _}) -> 
-    let pairs_without_names, dep_exp_typ_pairs = create_pairs binds in
+  | InstD (quants, _args, {it = StructT typfields; _}) -> 
+    let pairs_without_names, dep_exp_typ_pairs = create_pairs quants in
     let atoms = List.map (fun (a, _, _) -> a) typfields in
-    let is_wrapped, pairs, rule_prems = split3concat (List.map (fun (_, (_, t, prems), _) ->
+    let is_wrapped, pairs, rule_prems = split3concat (List.map (fun (_, (t, _, prems), _) ->
       let tups, wrapped = match t.it with 
-        | TupT tups when List.exists (fun (e, _) -> non_empty_var e) tups -> tups, true
+        | TupT tups when List.exists (fun (id, _) -> non_empty_var id) tups -> tups, true
         | TupT [] -> [], false
-        | _ -> [(VarE ("_" $ id.at) $$ id.at % t, t)], false
+        | _ -> [("_" $ id.at, t)], false
       in 
       ([wrapped], tups, prems)
     ) typfields) in
 
-    let (rule_binds, pairs') = Utils.improve_ids_binders [] true at pairs in
-    let new_prems = (List.filter_map get_exp_typ rule_binds |> List.concat_map (get_wf_pred env)) @ rule_prems in
-    let str_exp = StrE (List.map2 (fun a ((e, t), wrapped) -> 
-      let tupt = TupT [(e, t)] $ at in
-      let tupe = TupE [e] $$ at % tupt in 
+    let (rule_quants, pairs') = Utils.improve_ids_quants [] true at pairs in
+    let new_prems = (List.filter_map get_exp_typ rule_quants |> List.concat_map (get_wf_pred env)) @ rule_prems in
+    let str_exp = StrE (List.map2 (fun a ((id, t), wrapped) -> 
+      let tupt = TupT [(id, t)] $ at in
+      let tupe = TupE [VarE id $$ id.at % t] $$ at % tupt in 
       if wrapped then (a, tupe) else 
-      (a, e)
+      (a, VarE id $$ id.at % t)
     ) atoms (List.combine pairs' is_wrapped)) $$ at % user_typ in 
-    let tupe = TupE (List.map fst dep_exp_typ_pairs @ [str_exp]) $$ at % tupt pairs_without_names in
+    let tupe = TupE (List.map (fun (id, t) -> VarE id $$ id.at % t) dep_exp_typ_pairs @ [str_exp]) $$ at % tupt pairs_without_names in
     let rule = RuleD (id.it ^ "_" ^ rule_prefix $ id.at, 
-      List.map (transform_bind tf) (binds @ rule_binds), 
+      List.map (transform_param tf) (quants @ rule_quants), 
       new_mixop dep_exp_typ_pairs, 
       tupe, 
       List.map (transform_prem tf) (new_prems)) $ at 
     in
   
     if new_prems = [] then None else 
-    let relation = RelD (wf_pred_prefix ^ id.it $ id.at, new_mixop dep_exp_typ_pairs, tupt pairs_without_names, [rule]) $ at in 
+    let relation = RelD (wf_pred_prefix ^ id.it $ id.at, [], new_mixop dep_exp_typ_pairs, tupt pairs_without_names, [rule]) $ at in 
     bind_wf_set env id.it;
     Some relation
   | _ -> None
 
-let get_extra_prems env binds exp prems = 
+let get_extra_prems env quants exp prems = 
   if deactivate_wfness then [] else 
   let cl = create_collector [] in 
   let wf_terms = collect_exp cl exp @ List.concat_map (collect_prem cl) prems in
@@ -331,20 +321,20 @@ let get_extra_prems env binds exp prems =
     
   (* Leverage the fact that the wellformed predicates are "bubbled up" and remove unnecessary wf preds*)
   let free_vars = (Free.free_list Free.free_prem more_prems).varid in 
-  let binds_filtered = Lib.List.filter_not (fun b -> match b.it with 
-    | ExpB (id, _) -> Free.Set.mem id.it free_vars
+  let quants_filtered = Lib.List.filter_not (fun q -> match q.it with 
+    | ExpP (id, _) -> Free.Set.mem id.it free_vars
     | _ -> true
-  ) binds in
-  let bind_prems = (List.filter_map get_exp_typ binds_filtered) |> List.concat_map (get_wf_pred env) in
-  bind_prems @ more_prems
+  ) quants in
+  let quant_prems = (List.filter_map get_exp_typ quants_filtered) |> List.concat_map (get_wf_pred env) in
+  quant_prems @ more_prems
     
 let t_rule env rule = 
   let tf = { base_transformer with transform_exp = t_exp env; transform_typ = t_typ} in
   (match rule.it with
-  | RuleD (id, binds, m, exp, prems) -> 
-    let extra_prems = get_extra_prems env binds exp prems in 
+  | RuleD (id, quants, m, exp, prems) -> 
+    let extra_prems = get_extra_prems env quants exp prems in 
     RuleD (id, 
-      List.map (transform_bind tf) binds, 
+      List.map (transform_param tf) quants, 
       m, 
       transform_exp tf exp, 
       List.map (transform_prem tf) (extra_prems @ prems) 
@@ -354,12 +344,12 @@ let t_rule env rule =
 let t_clause env clause =
   let tf = { base_transformer with transform_exp = t_exp env; transform_typ = t_typ} in
   (match clause.it with 
-  | DefD (binds, args, exp, prems) -> 
+  | DefD (quants, args, exp, prems) -> 
     let free_args = Free.free_list Free.free_arg args in 
     (* Only focus on generating wf preds for variables not in the arguments *)
-    let filtered_binds = Lib.List.filter_not (is_part_of_bind free_args) binds in
-    let extra_prems = get_extra_prems env filtered_binds exp prems in 
-    DefD (List.map (transform_bind tf) binds, 
+    let filtered_quants = Lib.List.filter_not (is_part_of_quant free_args) quants in
+    let extra_prems = get_extra_prems env filtered_quants exp prems in 
+    DefD (List.map (transform_param tf) quants, 
       List.map (transform_arg tf) args,
       transform_exp tf exp, 
       List.map (transform_prem tf) (extra_prems @ prems)
@@ -381,11 +371,11 @@ let remove_unused_params def =
   | DecD (id, params, typ, clauses) -> 
     let params' = [Lib.List.last params] in
     let clauses' = List.map (fun clause -> match clause.it with
-      | DefD (binds, args, exp, prems) -> 
+      | DefD (quants, args, exp, prems) -> 
         let a = Lib.List.last args in
         let free_vars = Free.free_arg a in 
-        let filtered_binds = List.filter (is_part_of_bind free_vars) binds in
-        DefD (filtered_binds, [a], exp, prems) $ clause.at  
+        let filtered_quants = List.filter (is_part_of_quant free_vars) quants in
+        DefD (filtered_quants, [a], exp, prems) $ clause.at  
     ) clauses in
     { def with it = DecD (id, params', typ, clauses') }
   | _ -> def
@@ -400,8 +390,8 @@ let rec t_def env def =
     (TypD (id, List.map (transform_param tf) params |> List.filter is_type_param, [t_inst env inst]) $ def.at, Option.to_list relation)
   | TypD (_, _, _) -> 
     error def.at "Multiples instances encountered, please run type family removal pass first."
-  | RelD (id, m, typ, rules) -> 
-    (RelD (id, m, transform_typ tf typ, List.map (t_rule env) rules) $ def.at, [])
+  | RelD (id, params, m, typ, rules) -> 
+    (RelD (id, List.map (transform_param tf) params |> List.filter is_type_param, m, transform_typ tf typ, List.map (t_rule env) rules) $ def.at, [])
   | DecD (id, params, typ, clauses) -> 
     let d = DecD (id, 
       List.map (transform_param tf) params, 

@@ -165,7 +165,7 @@ let rec rename_params s = function
       rename_params (Il.Subst.add_gramid s id (VarG (id', []) $ id.at)) params
 
 let lookup_arg_typ typcases m = 
-  List.find_map (fun (m', (_, arg_typ, _), _) -> if Il.Eq.eq_mixop m m' then Some arg_typ else None) typcases
+  List.find_map (fun (m', (arg_typ, _, _), _) -> if Il.Eq.eq_mixop m m' then Some arg_typ else None) typcases
 
 let insert_injections env (def : def) : def list =
   add_type_info env def;
@@ -179,28 +179,28 @@ let insert_injections env (def : def) : def list =
     let sub_ty = VarT (sub, List.map arg_of_param params_sub) $ no_region in
     let sup_ty = VarT (sup, List.map arg_of_param params_sup') $ no_region in
     let real_ty = VarT (real_id_sub, args_sub) $ no_region in
-    let clauses = List.map (fun (m, (_binds, arg_typ, _prems), _hints) ->
+    let clauses = List.map (fun (m, (arg_typ, _quants, _prems), _hints) ->
       let arg_typ2 = lookup_arg_typ cases_sub2 m in
       match arg_typ.it, arg_typ2 with
       | TupT ts, Some {it = TupT ts'; _} ->
-        let binds = List.mapi (fun i (_, arg_typ_i) -> ExpB ("x" ^ string_of_int i $ no_region, arg_typ_i) $ no_region) ts in
-        let xes is_lhs = List.map2 (fun bind (_, arg_typ_i2) ->
-          match bind.it with
-          | ExpB (x, arg_typ_i) -> 
+        let quants = List.mapi (fun i (_, arg_typ_i) -> ExpP ("x" ^ string_of_int i $ no_region, arg_typ_i) $ no_region) ts in
+        let xes is_lhs = List.map2 (fun quant (_, arg_typ_i2) ->
+          match quant.it with
+          | ExpP (x, arg_typ_i) -> 
             let base_exp = VarE x $$ no_region % arg_typ_i in
             if is_lhs || Il.Eq.eq_typ arg_typ_i arg_typ_i2
             then base_exp
             else SubE (base_exp, arg_typ_i, arg_typ_i2) $$ no_region % arg_typ_i2
-          | TypB _ | DefB _ | GramB _ -> assert false) binds ts'
+          | TypP _ | DefP _ | GramP _ -> assert false) quants ts'
         in
         let xe is_lhs = TupE (xes is_lhs) $$ no_region % arg_typ in
-        DefD (binds,
+        DefD (quants,
           [ExpA (CaseE (m, xe true) $$ no_region % real_ty) $ no_region],
           t_exp env (CaseE (m, xe false) $$ no_region % sup_ty), []) $ no_region
       | _ ->
         let x = "x" $ no_region in
         let xe = VarE x $$ no_region % arg_typ in
-        DefD ([ExpB (x, arg_typ) $ x.at],
+        DefD ([ExpP (x, arg_typ) $ x.at],
           [ExpA (CaseE (m, xe) $$ no_region % real_ty) $ no_region],
           CaseE (m, xe) $$ no_region % sup_ty, []) $ no_region
       ) cases_sub in

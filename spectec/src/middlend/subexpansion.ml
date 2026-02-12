@@ -6,13 +6,13 @@
     * For each argument, we collect every unique sub expression.
     * Then, for each sub expression, we collect every case that is
     possible in the subtype. If the specific case additionally carries
-    values, then we generate binds to add in the function scope. 
+    values, then we generate quants to add in the function scope. 
     * With all of these cases, for each unique sub expression, we compute
     the cartesian product in order to absolutely grab all the possible cases.
     See $cvtop to see how this might be done.
     * Once we have calculated the product, we generate a subst for each product
     and proceed to generate the clause/type instance.
-    * Finally, we filter out binds that appear in the subst.
+    * Finally, we filter out quants that appear in the subst.
 
   For example, take the following types and function:
 
@@ -62,10 +62,10 @@ let product_of_lists_append (lists : 'a list list) =
     List.concat_map (fun existing -> 
       List.map (fun v -> existing @ [v]) lst) acc) [[]] lists
 
-let get_bind_id b =
-  match b.it with
-  | ExpB (id, _) | TypB id 
-  | DefB (id, _, _) | GramB (id, _, _) -> id.it
+let get_quant_id q =
+  match q.it with
+  | ExpP (id, _) | TypP id 
+  | DefP (id, _, _) | GramP (id, _, _) -> id.it
 
 let eq_sube (id, t1, t2) (id', t1', t2') =
   Eq.eq_id id id' && Eq.eq_typ t1 t1' && Eq.eq_typ t2 t2'
@@ -84,23 +84,23 @@ let check_matching c_args match_args =
 let get_case_typ t = 
   match t.it with
   | TupT typs -> typs
-  | _ -> [VarE ("_" $ t.at) $$ t.at % t, t]
+  | _ -> ["_" $ t.at, t]
 
 let collect_all_instances case_typ ids at inst =
   match inst.it with
   | InstD (_, _, {it = VariantT typcases; _}) when 
-    List.for_all (fun (_, (_, t, _), _) -> t.it = TupT []) typcases  -> 
+    List.for_all (fun (_, (t, _, _), _) -> t.it = TupT []) typcases  -> 
     List.map (fun (m, _, _) -> ([], CaseE (m, empty_tuple_exp no_region) $$ at % case_typ)) typcases
   | InstD (_, _, {it = VariantT typcases; _}) -> 
     let _, new_cases = 
-      List.fold_left (fun (ids', acc) (m, (_, t, _), _) ->
+      List.fold_left (fun (ids', acc) (m, (t, _, _), _) ->
         let typs = get_case_typ t in
-        let new_binds, typs' = Utils.improve_ids_binders ids' true t.at typs in
-        let exps = List.map fst typs' in 
+        let new_quants, typs' = Utils.improve_ids_quants ids' true t.at typs in
+        let exps = List.map (fun (id, t) -> VarE id $$ id.at % t) typs' in 
         let tup_exp = TupE exps $$ at % t in
         let case_exp = CaseE (m, tup_exp) $$ at % case_typ in
-        let new_ids = List.map get_bind_id new_binds in 
-        (new_ids @ ids', (new_binds, case_exp) :: acc)  
+        let new_ids = List.map get_quant_id new_quants in 
+        (new_ids @ ids', (new_quants, case_exp) :: acc)  
       ) (ids, []) typcases
     in
     new_cases
@@ -126,74 +126,74 @@ let rec collect_all_instances_typ ids at typ =
     ) exp_typ_pairs in
     let product = product_of_lists_append instances_list in
     List.map (fun lst -> 
-      let binds, exps = List.split lst in 
-      List.concat binds, TupE exps $$ at % typ) product
+      let quants, exps = List.split lst in 
+      List.concat quants, TupE exps $$ at % typ) product
   | _ -> []
 
-let generate_subst_list lhs binds =
+let generate_subst_list lhs quants =
   let base_sube_collector : (id * typ * typ) list collector = base_collector [] (@) in
   let collector = { base_sube_collector with collect_exp = collect_sube_exp } in
   (* Collect all unique sub expressions for each argument *)
   let subs = List.concat_map (fun a -> 
     Lib.List.nub eq_sube (collect_arg collector a)
   ) lhs in
-  let ids = List.map get_bind_id binds in
+  let ids = List.map get_quant_id quants in
 
-  (* Collect all cases for the specific subtype, generating any potential binds in the process *)
+  (* Collect all cases for the specific subtype, generating any potential quantifiers in the process *)
   let _, cases = 
-    List.fold_left (fun (binds, cases) (id, t1, _) -> 
-      let ids' = List.map get_bind_id binds @ ids in
+    List.fold_left (fun (quants, cases) (id, t1, _) -> 
+      let ids' = List.map get_quant_id quants @ ids in
       let instances = collect_all_instances_typ ids' id.at t1 in 
-      let new_binds = List.concat_map fst instances in
+      let new_quants = List.concat_map fst instances in
       let cases'' = List.map (fun case_data -> (id, case_data)) instances in
-      (new_binds @ binds, cases'' :: cases)
-    ) (binds, []) subs 
+      (new_quants @ quants, cases'' :: cases)
+    ) (quants, []) subs 
   in
 
   (* Compute cartesian product for all cases and generate a subst *)
   let cases' = product_of_lists cases in
-  List.map (List.fold_left (fun (binds, subst) (id, (binds', exp)) -> 
-    (binds' @ binds, Il.Subst.add_varid subst id exp)) ([], Il.Subst.empty)
+  List.map (List.fold_left (fun (quants, subst) (id, (quants', exp)) -> 
+    (quants' @ quants, Il.Subst.add_varid subst id exp)) ([], Il.Subst.empty)
   ) cases' 
 
 let t_clause clause =
   match clause.it with 
-  | DefD (binds, lhs, rhs, prems) ->
-    let subst_list = generate_subst_list lhs binds in
-    List.map (fun (binds', subst) -> 
+  | DefD (quants, lhs, rhs, prems) ->
+    let subst_list = generate_subst_list lhs quants in
+    List.map (fun (quants', subst) -> 
       (* Subst all occurrences of the subE id *)
       let new_lhs = Il.Subst.subst_args subst lhs in
       let new_prems = Il.Subst.subst_list Il.Subst.subst_prem subst prems in
       let new_rhs = Il.Subst.subst_exp subst rhs in
 
-      (* Filtering binds - only the subst ids *)
-      let binds_filtered = Lib.List.filter_not (fun b -> match b.it with
-        | ExpB (id, _) -> Il.Subst.mem_varid subst id
+      (* Filtering quants - only the subst ids *)
+      let quants_filtered = Lib.List.filter_not (fun b -> match b.it with
+        | ExpP (id, _) -> Il.Subst.mem_varid subst id
         | _ -> false
-      ) (binds' @ binds) in 
-      let new_binds, _ = Il.Subst.subst_binds subst binds_filtered in
+      ) (quants' @ quants) in 
+      let new_quants, _ = Il.Subst.subst_params subst quants_filtered in
       (* Reduction is done here to remove subtyping expressions *)
-      DefD (new_binds, List.map (Il.Eval.reduce_arg !env_ref) new_lhs, new_rhs, new_prems) $ clause.at
+      DefD (new_quants, List.map (Il.Eval.reduce_arg !env_ref) new_lhs, new_rhs, new_prems) $ clause.at
     ) subst_list
 
 let t_inst inst =
   match inst.it with 
-  | InstD (binds, lhs, deftyp) ->
-    let subst_list = generate_subst_list lhs binds in
-    List.map (fun (binds', subst) -> 
+  | InstD (quants, lhs, deftyp) ->
+    let subst_list = generate_subst_list lhs quants in
+    List.map (fun (quants', subst) -> 
       (* Subst all occurrences of the subE id *)
       let new_lhs = Il.Subst.subst_args subst lhs in
       let new_rhs = Il.Subst.subst_deftyp subst deftyp in
 
-      (* Filtering binds - only the subst ids *)
-      let binds_filtered = Lib.List.filter_not (fun b -> match b.it with
-        | ExpB (id, _) -> Il.Subst.mem_varid subst id
+      (* Filtering quants - only the subst ids *)
+      let quants_filtered = Lib.List.filter_not (fun b -> match b.it with
+        | ExpP (id, _) -> Il.Subst.mem_varid subst id
         | _ -> false
-      ) (binds' @ binds) in 
+      ) (quants' @ quants) in 
 
-      let new_binds, _ = Il.Subst.subst_binds subst binds_filtered in
+      let new_quants, _ = Il.Subst.subst_params subst quants_filtered in
       (* Reduction is done here to remove subtyping expressions *)
-      InstD (new_binds, List.map (Il.Eval.reduce_arg !env_ref) new_lhs, new_rhs) $ inst.at
+      InstD (new_quants, List.map (Il.Eval.reduce_arg !env_ref) new_lhs, new_rhs) $ inst.at
     ) subst_list
 
 

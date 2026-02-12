@@ -22,7 +22,6 @@ open Ast
 
 type 'env transformer = {
   transform_exp: exp -> exp;
-  transform_bind: bind -> bind;
   transform_prem: prem -> prem;
   transform_iterexp: iterexp -> iterexp;
   transform_typ: typ -> typ;
@@ -35,13 +34,12 @@ type 'env transformer = {
   transform_rel_id: id -> id;
   transform_def_id: id -> id;
   transform_gram_id: id -> id
-  }
+}
 
 let id = Fun.id
 
 let base_transformer = {
   transform_exp = id;
-  transform_bind = id;
   transform_prem = id;
   transform_iterexp = id;
   transform_typ = id;
@@ -62,7 +60,7 @@ let rec transform_typ t typ =
     match typ.it with
     | VarT (id, args) -> VarT (t.transform_typ_id id, List.map (transform_arg t) args)
     | IterT (typ', iter) -> IterT (t_typ typ', transform_iter t iter)
-    | TupT typs -> TupT (List.map (fun (e, typ') -> (transform_exp t e, transform_typ t typ')) typs)
+    | TupT idtyps -> TupT (List.map (fun (id, typ') -> (t.transform_var_id id, transform_typ t typ')) idtyps)
     | t' -> t'
   in
   f { typ with it } 
@@ -141,7 +139,7 @@ and transform_arg t a =
 and transform_prem t p =
   let f = t.transform_prem in
   let it = match p.it with
-    | RulePr (id, op, e) -> RulePr (t.transform_rel_id id, op, transform_exp t e)
+    | RulePr (id, args, op, e) -> RulePr (t.transform_rel_id id, List.map (transform_arg t) args, op, transform_exp t e)
     | IfPr e -> IfPr (transform_exp t e)
     | LetPr (e1, e2, ss) -> LetPr (transform_exp t e1, transform_exp t e2, ss)
     | ElsePr -> ElsePr
@@ -150,22 +148,12 @@ and transform_prem t p =
   in
   f { p with it }
 
-and transform_bind t b =
-  let f = t.transform_bind in
-  let it = match b.it with
-    | ExpB (id, typ) -> ExpB (t.transform_var_id id, transform_typ t typ)
-    | TypB id -> TypB (t.transform_typ_id id)
-    | DefB (id, params, typ) -> DefB (t.transform_def_id id, List.map (transform_param t) params, transform_typ t typ)
-    | GramB (id, params, typ) -> GramB (t.transform_gram_id id, List.map (transform_param t) params, transform_typ t typ)
-  in
-  f { b with it }
-
 and transform_param t p =
   { p with it = match p.it with
     | ExpP (id, typ) -> ExpP (t.transform_var_id id, transform_typ t typ)
     | TypP id -> TypP (t.transform_typ_id id)
     | DefP (id, params, typ) -> DefP (t.transform_def_id id, List.map (transform_param t) params, transform_typ t typ)
-    | GramP (id, typ) -> GramP (t.transform_gram_id id, transform_typ t typ)
+    | GramP (id, params, typ) -> GramP (t.transform_gram_id id, List.map (transform_param t) params, transform_typ t typ)
   }
 
 and transform_sym t s =
@@ -184,36 +172,36 @@ and transform_sym t s =
 and transform_deftyp t dt = 
   { dt with it = match dt.it with
     | AliasT typ -> AliasT (transform_typ t typ)
-    | StructT typfields -> StructT (List.map (fun (a, (binds, typ, prems), hints) -> 
-        (a, (List.map (transform_bind t) binds, transform_typ t typ, List.map (transform_prem t) prems), hints)) typfields
+    | StructT typfields -> StructT (List.map (fun (a, (typ, quants, prems), hints) -> 
+        (a, (transform_typ t typ, List.map (transform_param t) quants, List.map (transform_prem t) prems), hints)) typfields
       )
-    | VariantT typcases -> VariantT (List.map (fun (m, (binds, typ, prems), hints) -> 
-        (m, (List.map (transform_bind t) binds, transform_typ t typ, List.map (transform_prem t) prems), hints)) typcases
+    | VariantT typcases -> VariantT (List.map (fun (m, (typ, quants, prems), hints) -> 
+        (m, (transform_typ t typ, List.map (transform_param t) quants, List.map (transform_prem t) prems), hints)) typcases
       )
   }
 
 and transform_clause t c =
   { c with it = match c.it with
-    | DefD (bs, args, e, ps) ->
-      DefD (List.map (transform_bind t) bs, List.map (transform_arg t) args, transform_exp t e, List.map (transform_prem t) ps) }
+    | DefD (quants, args, exp, prems) ->
+      DefD (List.map (transform_param t) quants, List.map (transform_arg t) args, transform_exp t exp, List.map (transform_prem t) prems) }
 
 and transform_rule t r =
-  let RuleD (id, binds, mixop, exp, prems) = r.it in
-  RuleD (t.transform_rel_id id, List.map (transform_bind t) binds, mixop, transform_exp t exp, List.map (transform_prem t) prems) $ r.at
+  let RuleD (id, quants, mixop, exp, prems) = r.it in
+  RuleD (t.transform_rel_id id, List.map (transform_param t) quants, mixop, transform_exp t exp, List.map (transform_prem t) prems) $ r.at
 
 and transform_inst t inst = 
   { inst with it = match inst.it with
-    | InstD (binds, args, deftyp) -> InstD (List.map (transform_bind t) binds, List.map (transform_arg t) args, transform_deftyp t deftyp)
+    | InstD (quants, args, deftyp) -> InstD (List.map (transform_param t) quants, List.map (transform_arg t) args, transform_deftyp t deftyp)
   }
   
 and transform_prod t p = 
   { p with it = match p.it with
-    | ProdD (binds, sym, exp, prems) -> ProdD (List.map (transform_bind t) binds, transform_sym t sym, transform_exp t exp, List.map (transform_prem t) prems)
+    | ProdD (quants, sym, exp, prems) -> ProdD (List.map (transform_param t) quants, transform_sym t sym, transform_exp t exp, List.map (transform_prem t) prems)
   }
 and transform_def t d = 
   { d with it = match d.it with
     | TypD (id, params, insts) -> TypD (t.transform_typ_id id, List.map (transform_param t) params, List.map (transform_inst t) insts)
-    | RelD (id, m, typ, rules) -> RelD (t.transform_rel_id id, m, transform_typ t typ, List.map (transform_rule t) rules)
+    | RelD (id, params, m, typ, rules) -> RelD (t.transform_rel_id id, List.map (transform_param t) params, m, transform_typ t typ, List.map (transform_rule t) rules)
     | DecD (id, params, typ, clauses) -> DecD (t.transform_def_id id, List.map (transform_param t) params, transform_typ t typ, List.map (transform_clause t) clauses)
     | GramD (id, params, typ, prods) -> GramD (t.transform_gram_id id, List.map (transform_param t) params, transform_typ t typ, List.map (transform_prod t) prods)
     | RecD defs -> RecD (List.map (transform_def t) defs)
@@ -226,12 +214,11 @@ type 'a collector = {
   default: 'a;
   compose: 'a -> 'a -> 'a;
   collect_exp: exp -> 'a * bool;
-  collect_bind: bind -> 'a * bool;
   collect_prem: prem -> 'a * bool;
   collect_iterexp: iterexp -> 'a * bool;
   collect_typ: typ -> 'a * bool;
   collect_arg: arg -> 'a * bool
-  }
+}
 
 let no_collect default = fun _ -> (default, true)
 
@@ -239,7 +226,6 @@ let base_collector default compose = {
   default = default;
   compose = compose;
   collect_exp = no_collect default;
-  collect_bind = no_collect default;
   collect_prem = no_collect default;
   collect_iterexp = no_collect default;
   collect_typ = no_collect default;
@@ -257,7 +243,7 @@ let rec collect_typ c typ =
     match typ.it with
     | VarT (_, args) -> compose_list c (collect_arg c) args
     | IterT (typ', iter) -> c_typ typ' $@ collect_iter c iter
-    | TupT typs -> compose_list c (fun (e, typ') -> collect_exp c e $@ (c_typ typ')) typs
+    | TupT idtyps -> compose_list c (fun (_, typ') -> c_typ typ') idtyps
     | _ -> c.default
   in
   let (res, continue) = f typ in 
@@ -326,7 +312,7 @@ and collect_prem c p =
   let f = c.collect_prem in
   let ( $@ ) = c.compose in
   let traverse_list = match p.it with
-    | RulePr (_, _, e)
+    | RulePr (_, args, _, e) -> compose_list c (collect_arg c) args $@ collect_exp c e
     | IfPr e -> collect_exp c e
     | LetPr (e1, e2, _) -> collect_exp c e1 $@ collect_exp c e2
     | ElsePr -> c.default
@@ -336,25 +322,13 @@ and collect_prem c p =
   let (res, continue) = f p in 
   res $@ if continue then traverse_list else c.default
 
-and collect_bind c b =
-  let f = c.collect_bind in
-  let ( $@ ) = c.compose in
-  let traverse_list = match b.it with
-    | ExpB (_, typ) -> collect_typ c typ
-    | TypB _ -> c.default
-    | DefB (_, params, typ) -> compose_list c (collect_param c) params $@ collect_typ c typ
-    | GramB (_, params, typ) -> compose_list c (collect_param c) params $@ collect_typ c typ
-  in
-  let (res, continue) = f b in 
-  res $@ if continue then traverse_list else c.default
-
 and collect_param c p =
   let ( $@ ) = c.compose in
   match p.it with
   | ExpP (_, typ) -> collect_typ c typ
   | TypP _ -> c.default
   | DefP (_, params, typ) -> compose_list c (collect_param c) params $@ collect_typ c typ
-  | GramP (_, typ) -> collect_typ c typ
+  | GramP (_, params, typ) -> compose_list c (collect_param c) params $@ collect_typ c typ
 
 and collect_sym c s =
   let ( $@ ) = c.compose in

@@ -60,15 +60,15 @@ let rec t_def env d =
     if is_partial env id then
       let typ'' = IterT (typ', Opt) $ no_region in
       let clauses'' = List.map (fun clause -> match clause.it with
-        DefD (params, lhs, rhs, prems) ->
+        DefD (quants, lhs, rhs, prems) ->
           { clause with
-            it = DefD (List.map (transform_bind t) binds, lhs, OptE (Some rhs) $$ no_region % typ'', prems) }
+            it = DefD (List.map (transform_param t) quants, lhs, OptE (Some rhs) $$ no_region % typ'', prems) }
         ) clauses' in
       let params, args = List.mapi (fun i param -> match param.it with
         | ExpP (_, typI) ->
           let x = ("x" ^ string_of_int i) $ no_region in
-          [ExpB (x, typI) $ x.at], ExpA (VarE x $$ no_region % typI) $ no_region
-        | TypP id -> [TypB id $ no_region], TypA (VarT (id, []) $ no_region) $ no_region
+          [ExpP (x, typI) $ x.at], ExpA (VarE x $$ no_region % typI) $ no_region
+        | TypP id -> [TypP id $ no_region], TypA (VarT (id, []) $ no_region) $ no_region
         | DefP (id, _, _) -> [], DefA id $ no_region
         | GramP (id, _, _) -> [], GramA (VarG (id, []) $ no_region) $ no_region
         ) params' |> List.split in

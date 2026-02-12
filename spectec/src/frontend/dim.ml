@@ -187,7 +187,8 @@ and check_exp dims ctx e =
   | CompE (e1, e2) ->
     check_exp dims ctx e1;
     check_exp dims ctx e2
-  | SliceE (e1, e2, e3) ->
+  | SliceE (e1, e2, e3)
+  | IfE (e1, e2, e3) ->
     check_exp dims ctx e1;
     check_exp dims ctx e2;
     check_exp dims ctx e3
@@ -265,6 +266,8 @@ and check_prem dims ctx prem =
     check_exp dims ctx e2
   | IterPr (prem1, ite) ->
     check_iterexp dims ctx check_prem prem1 ite
+  | NegPr prem1 ->
+    check_prem dims ctx prem1
 
 and check_arg dims ctx a =
   match a.it with
@@ -568,9 +571,9 @@ and annot_exp side dims e : exp * occur =
       let e1', occur1 = annot_exp side dims e1 in
       CaseE (atom, e1'), occur1
     | IfE (e1, e2, e3) ->
-      let e1', occur1 = annot_exp env e1 in
-      let e2', occur2 = annot_exp env e2 in
-      let e3', occur3 = annot_exp env e3 in
+      let e1', occur1 = annot_exp side dims e1 in
+      let e2', occur2 = annot_exp side dims e2 in
+      let e3', occur3 = annot_exp side dims e3 in
       IfE (e1', e2', e3'), union occur1 (union occur2 occur3)
     | CvtE (e1, nt1, nt2) ->
       let e1', occur1 = annot_exp side dims e1 in
@@ -694,7 +697,7 @@ and annot_prem dims prem : prem * occur =
       let iter', occur' = annot_iterexp `Rhs dims occur1 iter prem.at in
       IterPr (prem1', iter'), occur'
     | NegPr prem1 ->
-      let prem1', occur1 = annot_prem env prem1 in
+      let prem1', occur1 = annot_prem dims prem1 in
       NegPr prem1', occur1
   in {prem with it}, occur
 

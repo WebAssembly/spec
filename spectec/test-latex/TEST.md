@@ -2794,9 +2794,9 @@ $$
 
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}}
-& {\mathsf{i}}{N} & ::= & {\mathit{addrtype}} \\
+& {\mathsf{i}}{N} & ::= & \mathsf{i{\scriptstyle 32}} ~~|~~ \mathsf{i{\scriptstyle 64}} \\
 & {\mathsf{f}}{N} & ::= & \mathsf{f{\scriptstyle 32}} ~~|~~ \mathsf{f{\scriptstyle 64}} \\
-& {\mathsf{v}}{N} & ::= & {\mathit{vectype}} \\
+& {\mathsf{v}}{N} & ::= & \mathsf{v{\scriptstyle 128}} \\
 & t & ::= & {\mathsf{i}}{N} ~~|~~ {\mathsf{f}}{N} ~~|~~ {\mathsf{v}}{N} \\
 \end{array}
 $$
@@ -2891,7 +2891,7 @@ $$
 \begin{array}[t]{@{}lrrl@{}l@{}}
 & {\mathsf{i}}{N} & ::= & {\mathit{packtype}} \\
 & {\mathsf{i}}{N} & ::= & {\mathsf{i}}{N} ~~|~~ {\mathsf{i}}{N} \\
-& {\mathsf{i}}{N} & ::= & {\mathit{lanetype}} \\
+& {\mathsf{i}}{N} & ::= & {\mathsf{i}}{N} ~~|~~ {\mathsf{f}}{N} ~~|~~ {\mathsf{i}}{N} \\
 \end{array}
 $$
 

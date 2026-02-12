@@ -42,7 +42,7 @@ and det_exp e =
   ) @@ fun _ ->
   match e.it with
   | VarE x -> bound_varid x
-  | BoolE _ | NumE _ | TextE _ -> empty
+  | BoolE _ | NumE _ | TextE _ | IfE _ -> empty
   (* We consider arithmetic expressions determinate,
    * since we sometimes need to use invertible formulas. *)
   | CvtE (e1, _, _) | UnE (#Xl.Num.unop, _, e1) | TheE e1 | LiftE e1
@@ -121,7 +121,7 @@ and det_quant_exp e =
   ) @@ fun _ ->
   match e.it with
   | VarE x -> bound_varid x
-  | BoolE _ | NumE _ | TextE _ -> empty
+  | BoolE _ | NumE _ | TextE _ | IfE _ -> empty
   | UnE (_, _, e1) | ProjE (e1, _) | TheE e1 | LiftE e1 | LenE e1
   | CvtE (e1, _, _) | SubE (e1, _, _) ->
     det_quant_exp e1
@@ -189,7 +189,7 @@ and det_prem pr =
   | RulePr (_x, _as, _mixop, e) -> det_exp e
   | IfPr e -> det_cond_exp e
   | LetPr (e1, _e2, _xs) -> det_exp e1
-  | ElsePr -> empty
+  | ElsePr | NegPr _ -> empty
   | IterPr (pr1, ite) -> det_iterexp (det_prem pr1) ite
 
 

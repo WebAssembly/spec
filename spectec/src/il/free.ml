@@ -112,7 +112,7 @@ and free_prem prem =
   | IfPr e -> free_exp e
   | LetPr (e1, e2, _) -> free_exp e1 ++ free_exp e2
   | ElsePr -> empty
-  | IterPr (prem1, ite) -> (free_prem prem1 - bound_iterexp iter) ++ free_iterexp ite
+  | IterPr (prem1, ite) -> (free_prem prem1 -- bound_iterexp ite) ++ free_iterexp ite
   | NegPr prem1 -> free_prem prem1
 
 and free_prems prems = free_list free_prem prems
