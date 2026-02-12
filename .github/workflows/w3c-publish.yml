@@ -48,7 +48,7 @@ jobs:
       - name: Setup OCaml
         uses: ocaml/setup-ocaml@v3
         with:
-          ocaml-compiler: 4.14.x
+          ocaml-compiler: 5.04.x
       - name: Setup Dune
         if: ${{ matrix.spec == 'core' }}
         run: opam install --yes dune menhir mdx zarith && opam exec dune --version
