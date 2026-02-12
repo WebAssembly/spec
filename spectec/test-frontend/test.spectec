@@ -11,6 +11,20 @@ def $testmixfix(nat_1 -> nat_2) = nat_1 nat_2
 
 
 ;;
+;; Variant extension
+;;
+
+syntax basea = A nat
+syntax baseb = B nat
+syntax extc1 = basea | baseb | C nat | D
+syntax extc2 = basea | C nat | baseb | D
+syntax extc3 = basea | C nat | D | baseb
+syntax extc4 = C nat | basea | baseb | D
+syntax extc5 = C nat | basea | D | baseb
+syntax extc6 = C nat | D | basea | baseb
+
+
+;;
 ;; Empty iterations
 ;;
 
@@ -116,6 +130,9 @@ def $testemptyn6(eps 0) = 0
 def $testemptyn6(0) = 0
 def $testemptyn6("" 0) = 0
 def $testemptyn6("" "" "" 0) = 0
+def $testemptyn6([] 0) = 0
+def $testemptyn6([""] 0) = 0
+def $testemptyn6(["" "" ""] 0) = 0
 def $testemptyn6(([]) 0) = 0
 def $testemptyn6(([""]) 0) = 0
 def $testemptyn6((["" "" ""]) 0) = 0

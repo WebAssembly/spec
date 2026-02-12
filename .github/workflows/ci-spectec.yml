@@ -20,7 +20,11 @@ jobs:
       - name: Setup OCaml
         uses: ocaml/setup-ocaml@v3
         with:
+<<<<<<< HEAD
           ocaml-compiler: 5.3.x
+=======
+          ocaml-compiler: 5.04.x
+>>>>>>> upstream/main
       - name: Setup Dune
         run: opam install --yes dune menhir mdx zarith
       - name: Setup Latex

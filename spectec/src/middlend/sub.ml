@@ -67,7 +67,7 @@ let arg_of_param param =
   | ExpP (id, t) -> ExpA (VarE id $$ param.at % t) $ param.at
   | TypP id -> TypA (VarT (id, []) $ param.at) $ param.at
   | DefP (id, _ps, _t) -> DefA id $ param.at
-  | GramP (id, _t) -> GramA (VarG (id, []) $ param.at) $ param.at
+  | GramP (id, _ps, _t) -> GramA (VarG (id, []) $ param.at) $ param.at
 
 let register_variant (env : env) (id : id) params (cases : typcase list) =
   if M.mem id.it env.typ then
@@ -159,9 +159,9 @@ let rec rename_params s = function
     let id' = (id.it ^ "_2") $ id.at in
     (DefP (id', ps, t) $ at) ::
       rename_params (Il.Subst.add_defid s id id') params
-  | { it = GramP (id, t); at; _ } :: params ->
+  | { it = GramP (id, ps, t); at; _ } :: params ->
     let id' = (id.it ^ "_2") $ id.at in
-    (GramP (id', t) $ at) ::
+    (GramP (id', ps, t) $ at) ::
       rename_params (Il.Subst.add_gramid s id (VarG (id', []) $ id.at)) params
 
 let lookup_arg_typ typcases m = 

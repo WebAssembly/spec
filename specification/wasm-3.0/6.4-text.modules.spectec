@@ -56,7 +56,7 @@ grammar Tlocal_(I)/plain : (local*, idctxt) =
   | ...
 
 grammar Tlocal_(I)/abbrev : (local*, idctxt) =
-  ... | "(" "local" t:Tvaltype_(I)* ")" == ("(" "local" t:Tvaltype_(I) ")")*
+  ... | "(" "local" Tvaltype_(I)* ")" == ("(" "local" Tvaltype_(I) ")")*
 
 
 ;; Data segments
@@ -97,8 +97,8 @@ grammar Telem_(I)/plain : (elem, idctxt) =
   | ...
 
 grammar Telem_(I)/abbrev : (elem, idctxt) = ...
-  | "(" "elem" e':Toffset_(I) Tlist(Tfuncidx_(I)) ")" ==
-    "(" "elem" e':Toffset_(I) "func" Tlist(Tfuncidx_(I)) ")"
+  | "(" "elem" Toffset_(I) Tlist(Tfuncidx_(I)) ")" ==
+    "(" "elem" Toffset_(I) "func" Tlist(Tfuncidx_(I)) ")"
 
 grammar Telemlist_(I)/plain : (reftype, expr*) =
   | rt:Treftype_(I) e*:Tlist(Texpr_(I)) => (rt, e*)
@@ -312,7 +312,7 @@ def $exportsd(export decl'*) = export $exportsd(decl'*)
 def $exportsd(decl decl'*) = $exportsd(decl'*)  -- otherwise
 
 def $ordered(decl*) : bool
-def $ordered(decl'*) = true  -- if $importsd(decl'*) = eps
+def $ordered(decl*) = true  -- if $importsd(decl*) = eps
 def $ordered(decl_1* import decl_2*) =
   $importsd(decl_1*) = eps /\ $tagsd(decl_1*) = eps /\
   $globalsd(decl_1*) = eps /\ $memsd(decl_1*) = eps /\

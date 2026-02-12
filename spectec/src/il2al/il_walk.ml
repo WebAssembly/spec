@@ -5,7 +5,7 @@ open Il.Ast
 
 type transformer = {
   transform_exp: exp -> exp;
-  transform_bind: bind -> bind;
+  transform_param: param -> param;
   transform_prem: prem -> prem;
   transform_iterexp: iterexp -> iterexp;
   }
@@ -13,7 +13,7 @@ type transformer = {
 let id = Fun.id
 let base_transformer = {
   transform_exp = id;
-  transform_bind = id;
+  transform_param = id;
   transform_prem = id;
   transform_iterexp = id;
 }
@@ -71,7 +71,7 @@ and transform_arg t a =
 and transform_prem t p =
   let f = t.transform_prem in
   let it = match p.it with
-    | RulePr (id, op, e) -> RulePr (id, op, transform_exp t e)
+    | RulePr (id, as1, op, e) -> RulePr (id, List.map (transform_arg t) as1, op, transform_exp t e)
     | IfPr e -> IfPr (transform_exp t e)
     | LetPr (e1, e2, ss) -> LetPr (transform_exp t e1, transform_exp t e2, ss)
     | ElsePr -> ElsePr
@@ -80,20 +80,20 @@ and transform_prem t p =
   in
   f { p with it }
 
-and transform_bind t b =
-  let f = t.transform_bind in
-  let it = match b.it with
-    | ExpB (id, typ) -> ExpB (id, typ)
-    | TypB id -> TypB id
-    | DefB (id, params, typ) -> DefB (id, params, typ)
-    | GramB (id, params, typ) -> GramB (id, params, typ)
+and transform_param t p =
+  let f = t.transform_param in
+  let it = match p.it with
+    | ExpP (id, typ) -> ExpP (id, typ)
+    | TypP id -> TypP id
+    | DefP (id, params, typ) -> DefP (id, params, typ)
+    | GramP (id, params, typ) -> GramP (id, params, typ)
   in
-  f { b with it }
+  f { p with it }
 
 and transform_clause t c =
   { c with it = match c.it with
     | DefD (bs, args, e, ps) ->
-      DefD (List.map (transform_bind t) bs, List.map (transform_arg t) args, transform_exp t e, List.map (transform_prem t) ps) }
+      DefD (List.map (transform_param t) bs, List.map (transform_arg t) args, transform_exp t e, List.map (transform_prem t) ps) }
 
 
 (* For unification *)
@@ -111,5 +111,5 @@ and transform_helper_def t hd =
     | (id, cs, partial) -> (id, List.map (transform_clause t) cs, partial) }
 
 and transform_rule t r =
-  let RuleD (id, binds, mixop, exp, prems) = r.it in
-  RuleD (id, binds, mixop, transform_exp t exp, List.map (transform_prem t) prems) $ r.at
+  let RuleD (id, params, mixop, exp, prems) = r.it in
+  RuleD (id, params, mixop, transform_exp t exp, List.map (transform_prem t) prems) $ r.at

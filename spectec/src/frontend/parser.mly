@@ -510,10 +510,10 @@ deftyp_ :
       | _ ->
         let y1, y2, _ =
           List.fold_right
-            (fun elem (y1, y2, at) ->
-              (* at is the position of leftmost id element so far *)
+            (fun elem (y1, y2, b) ->
+              (* b is true when the last type to the right was a constructor *)
               match elem with
-              | Nl -> if at = None then y1, Nl::y2, at else Nl::y1, y2, at
+              | Nl -> if b then y1, Nl::y2, b else Nl::y1, y2, b
               | Elem (t, prems, hints) ->
                 match t.it with
                 | AtomT atom
@@ -521,14 +521,13 @@ deftyp_ :
                 | BrackT (atom, _, _)
                 | SeqT ({it = AtomT atom; _}::_)
                 | SeqT ({it = InfixT (_, atom, _); _}::_)
-                | SeqT ({it = BrackT (atom, _, _); _}::_) when at = None ->
-                  y1, (Elem (atom, (t, prems), hints))::y2, None
+                | SeqT ({it = BrackT (atom, _, _); _}::_) ->
+                  y1, (Elem (atom, (t, prems), hints))::y2, true
                 | _ when prems = [] && hints = [] ->
-                  (Elem t)::y1, y2, Some t.at
+                  (Elem t)::y1, y2, false
                 | _ ->
-                  let at = Option.value at ~default: t.at in
-                  error at "misplaced type"
-            ) tcs ([], [], None)
+                  error t.at "misplaced type"
+            ) tcs ([], [], true)
         in CaseT (dots1, y1, y2, dots2) }
   | nl_bar_list1(enumtyp(enum1), enumtyp(arith)) { RangeT $1 }
 
@@ -810,7 +809,8 @@ prem_post_ :
 prem_bin : prem_bin_ { $1 $ $sloc }
 prem_bin_ :
   | prem_post_ { $1 }
-  | relid COLON exp_bin { RulePr ($1, $3) }
+  | relid COLON exp_bin { RulePr ($1, [], $3) }
+  | relid LPAREN comma_list(arg) RPAREN COLON exp_bin { RulePr ($1, $3, $6) }
   | IF exp_bin
     { let rec iters e =
         match e.it with
@@ -821,7 +821,8 @@ prem_bin_ :
 prem : prem_ { $1 $ $sloc }
 prem_ :
   | prem_post_ { $1 }
-  | relid COLON exp { RulePr ($1, $3) }
+  | relid COLON exp { RulePr ($1, [], $3) }
+  | relid LPAREN comma_list(arg) RPAREN COLON exp_bin { RulePr ($1, $3, $6) }
   | VAR varid_bind_with_suffix COLON typ { VarPr ($2, $4) }
   | IF exp
     { let rec iters e =
@@ -1025,10 +1026,12 @@ param_ :
   | varid_bind_with_suffix COLON typ { ExpP ($1, $3) }
   | typ
     { let id =
-        try El.Convert.varid_of_typ $1 with Error.Error _ -> "" $ $sloc
+        try El.Convert.varid_of_typ $1 with Error.Error _ -> "_" $ $sloc
       in ExpP (id, $1) }
   | SYNTAX varid_bind { TypP $2 }
-  | GRAMMAR gramid COLON typ { GramP ($2, $4) }
+  | GRAMMAR gramid COLON typ { GramP ($2, [], $4) }
+  | GRAMMAR gramid_lparen enter_scope comma_list(param) RPAREN COLON typ exit_scope
+    { GramP ($2, $4, $7) }
   | DEF DOLLAR defid COLON typ
     { DefP ($3, [], $5) }
   | DEF DOLLAR defid_lparen enter_scope comma_list(param) RPAREN COLON typ exit_scope
@@ -1059,10 +1062,15 @@ def_ :
     { let id = if $6 = "" then "" else String.sub $6 1 (String.length $6 - 1) in
       GramD ($2, id $ $loc($6), $4, TupT [] $ $loc($1), $9, $7) }
   | RELATION relid COLON nottyp hint*
-    { RelD ($2, $4, $5) }
+    { RelD ($2, [], $4, $5) }
+  | RELATION relid LPAREN comma_list(param) RPAREN COLON nottyp hint*
+    { RelD ($2, $4, $7, $8) }
   | RULE relid ruleid_list COLON exp prem_list
     { let id = if $3 = "" then "" else String.sub $3 1 (String.length $3 - 1) in
-      RuleD ($2, id $ $loc($3), $5, $6) }
+      RuleD ($2, [], id $ $loc($3), $5, $6) }
+  | RULE relid LPAREN comma_list(param) RPAREN ruleid_list COLON exp prem_list
+    { let id = if $6 = "" then "" else String.sub $6 1 (String.length $6 - 1) in
+      RuleD ($2, $4, id $ $loc($6), $8, $9) }
   | VAR varid_bind COLON typ hint*
     { VarD ($2, $4, $5) }
   | DEF DOLLAR defid COLON typ hint*

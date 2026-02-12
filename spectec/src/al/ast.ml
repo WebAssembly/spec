@@ -4,7 +4,7 @@ open Xl
 (* Terminals *)
 
 type atom = Atom.atom
-type mixop = Mixop.mixop
+type mixop = unit Mixop.mixop
 
 (* Types *)
 

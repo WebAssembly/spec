@@ -230,7 +230,7 @@ and subst_gram s gram =
 and subst_prem s prem =
   (match prem.it with
   | VarPr (id, t) -> VarPr (id, subst_typ s t)
-  | RulePr (id, e) -> RulePr (id, subst_exp s e)
+  | RulePr (id, as_, e) -> RulePr (id, List.map (subst_arg s) as_, subst_exp s e)
   | IfPr e -> IfPr (subst_exp s e)
   | ElsePr -> ElsePr
   | IterPr (prem1, iter) -> IterPr (subst_prem s prem1, subst_iter s iter)
@@ -252,7 +252,7 @@ and subst_param s p =
   (match p.it with
   | ExpP (id, t) -> ExpP (id, subst_typ s t)
   | TypP id -> TypP id
-  | GramP (id, t) -> GramP (id, subst_typ s t)
+  | GramP (id, ps, t) -> GramP (id, List.map (subst_param s) ps, subst_typ s t)
   | DefP (id, ps, t) -> DefP (id, List.map (subst_param s) ps, subst_typ s t)
   ) $ p.at
 
@@ -263,8 +263,8 @@ let subst_def s d =
   | GramD (x1, x2, ps, t, gr, hs) -> GramD (x1, x2, List.map (subst_param s) ps, subst_typ s t, subst_gram s gr, hs)
   | VarD (x, t, hs) -> VarD (x, subst_typ s t, hs)
   | SepD -> SepD
-  | RelD (x, t, hs) -> RelD (x, subst_typ s t, hs)
-  | RuleD (x1, x2, e, prs) -> RuleD (x1, x2, subst_exp s e, Convert.map_nl_list (subst_prem s) prs)
+  | RelD (x, ps, t, hs) -> RelD (x, List.map (subst_param s) ps, subst_typ s t, hs)
+  | RuleD (x1, ps, x2, e, prs) -> RuleD (x1, List.map (subst_param s) ps, x2, subst_exp s e, Convert.map_nl_list (subst_prem s) prs)
   | DecD (x, ps, t, hs) -> DecD (x, List.map (subst_param s) ps, subst_typ s t, hs)
   | DefD (x, as_, e, prs) -> DefD (x, List.map (subst_arg s) as_, subst_exp s e, Convert.map_nl_list (subst_prem s) prs)
   | HintD hd -> HintD hd

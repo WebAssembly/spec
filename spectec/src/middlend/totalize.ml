@@ -60,19 +60,19 @@ let rec t_def env d =
     if is_partial env id then
       let typ'' = IterT (typ', Opt) $ no_region in
       let clauses'' = List.map (fun clause -> match clause.it with
-        DefD (binds, lhs, rhs, prems) ->
+        DefD (params, lhs, rhs, prems) ->
           { clause with
             it = DefD (List.map (transform_bind t) binds, lhs, OptE (Some rhs) $$ no_region % typ'', prems) }
         ) clauses' in
-      let binds, args = List.mapi (fun i param -> match param.it with
+      let params, args = List.mapi (fun i param -> match param.it with
         | ExpP (_, typI) ->
           let x = ("x" ^ string_of_int i) $ no_region in
           [ExpB (x, typI) $ x.at], ExpA (VarE x $$ no_region % typI) $ no_region
         | TypP id -> [TypB id $ no_region], TypA (VarT (id, []) $ no_region) $ no_region
         | DefP (id, _, _) -> [], DefA id $ no_region
-        | GramP (id, _) -> [], GramA (VarG (id, []) $ no_region) $ no_region
+        | GramP (id, _, _) -> [], GramA (VarG (id, []) $ no_region) $ no_region
         ) params' |> List.split in
-      let catch_all = DefD (List.concat binds, args,
+      let catch_all = DefD (List.concat params, args,
         OptE None $$ no_region % typ'', []) $ no_region in
       DecD (id, params', typ'', clauses'' @ [ catch_all ]) $ d.at
     else
@@ -91,4 +91,3 @@ let transform (defs : script) =
   let env = new_env () in
   List.iter (register_hints env) defs;
   List.map (t_def env) defs
-

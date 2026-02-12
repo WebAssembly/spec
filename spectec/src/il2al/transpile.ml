@@ -158,7 +158,7 @@ let is_case e =
 
 let atom_of_case e =
   match e.it with
-  | CaseE ((atom :: _) :: _, _) -> atom
+  | CaseE (op, _) when Mixop.head op <> None -> Option.get (Mixop.head op)
   | _ -> Error.error e.at "prose transformation" "expected a CaseE"
 
 let rec replace_names binds instr =
@@ -795,7 +795,7 @@ let remove_trivial_case_check instr =
     | IsCaseOfE (expr, atom) ->
       (match get_typ_cases expr.note with
       | Some [ mixop, _, _ ] ->
-        List.exists (List.mem atom) mixop
+        List.exists (List.mem atom) (Mixop.flatten mixop)
       | _  -> false
       )
     | _ -> false
@@ -1166,8 +1166,9 @@ let handle_unframed_algo instrs =
 
   let post_instr instr =
     let ret =
-    match !frame_arg with
-    | Some { it = ExpA f; _ } ->
+    match instr.it, !frame_arg with
+    | IfI _, _ -> [instr]
+    | _, Some { it = ExpA f; _ } -> (* Ignore if current instr is IfI *)
       let zeroE = natE Z.zero ~note:natT in
       let frame = frameE (zeroE, postprocess_frame f) ~at:f.at ~note:evalctxT in
       let _f = frameE (zeroE, varE "_f" ~note:f.note) ~note:evalctxT in
@@ -1292,7 +1293,7 @@ let remove_exit algo =
       let unused_var = varE "_" ~note:no_note in
       let control_frame_expr =
         caseE (
-          [[atom]; [{ atom with it=Atom.LBrace}]; [{ atom with it=Atom.RBrace}]; []],
+          Mixop.(Seq [Atom atom; Arg (); Brack ({ atom with it=Atom.LBrace}, Arg (), { atom with it=Atom.RBrace}); Arg ()]),
           [ unused_var; unused_var ]
         ) ~note:evalctxT
       in
@@ -1313,7 +1314,8 @@ let remove_exit algo =
 let remove_enter algo =
   let enter_frame_to_push instr =
     match instr.it with
-    | EnterI (e_frame, { it = ListE ([ { it = CaseE ([[{ it = Atom.Atom "FRAME_"; _ }]], []); _ } ]); _ }, il) ->
+    | EnterI (e_frame, { it = ListE ([ { it = CaseE (op, []); _ } ]); _ }, il)
+      when case_head op = "FRAME_" ->
         pushI e_frame ~at:instr.at :: il
     | _ -> [ instr ]
   in
@@ -1322,13 +1324,13 @@ let remove_enter algo =
     match instr.it with
     | EnterI (
       e_label,
-      { it = CatE (e_instrs, { it = ListE ([ { it = CaseE ([[{ it = Atom.Atom "LABEL_"; _ }]], []); _ } ]); _ }); note; _ },
-      [ { it = PushI e_vals; _ } ]) ->
+      { it = CatE (e_instrs, { it = ListE ([ { it = CaseE (op, []); _ } ]); _ }); note; _ },
+      [ { it = PushI e_vals; _ } ]) when case_head op = "LABEL_" ->
         enterI (e_label, catE (e_vals, e_instrs) ~note:note, []) ~at:instr.at
     | EnterI (
       e_label,
-      { it = CatE (e_instrs, { it = ListE ([ { it = CaseE ([[{ it = Atom.Atom "LABEL_"; _ }]], []); _ } ]); _ }); _ },
-      []) ->
+      { it = CatE (e_instrs, { it = ListE ([ { it = CaseE (op, []); _ } ]); _ }); _ },
+      []) when case_head op = "LABEL_" ->
         enterI (e_label, e_instrs, []) ~at:instr.at
     | _ -> instr
   in
@@ -1382,7 +1384,7 @@ let prosify_control_frame algo =
 
   let walk_instr walker instr =
     match instr.it with
-    | LetI ({ it = CaseE ([{ it = Atom "LABEL_"; _ }] :: _, [ _; cont ]); _ }, _) ->
+    | LetI ({ it = CaseE (op, [ _; cont ]); _ }, _) when case_head op = "LABEL_" ->
       cont_ref := cont; [ instr ]
     | ExecuteSeqI expr when Eq.eq_expr expr !cont_ref ->
       [ { instr with it = ExecuteSeqI (callE ("__prose:_jump_to_the_cont", [expA expr]) ~note:no_note) } ]

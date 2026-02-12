@@ -1,0 +1,73 @@
+;;
+;; Lexical syntax
+;;
+
+;; Source
+
+grammar Tchar : char =
+  | U+0000 | ... | U+D7FF | U+E000 | ... | U+10FFFF
+
+grammar Tsource =
+  | Tchar*
+
+
+;; Tokens
+
+grammar TuNplain hint(show TuN) hint(macro TuN) = eps  ;; HACK
+grammar TsNplain hint(show TsN) hint(macro TsN) = eps  ;; HACK
+grammar TfNplain hint(show TfN) hint(macro TfN) = eps  ;; HACK
+
+grammar Ttoken =
+  | Tkeyword | TuNplain | TsNplain | TfNplain | Tstring | Tid | "(" | ")" | Treserved
+
+grammar Tkeyword =
+  | ("a" | ... | "z") Tidchar*
+
+grammar Treserved =
+  | (Tidchar | Tstring | "," | ";" | "[" | "]" | "{" | "}")+
+
+
+;; White Space
+
+grammar Tspace =
+  | (" " | Tformat | Tcomment | Tannot)*
+
+grammar Tformat =
+  | Tnewline | U+09
+
+grammar Tnewline =
+  | U+0A | U+0D | U+0D U+0A
+
+
+;; Comments
+
+grammar Tcomment =
+  | Tlinecomment | Tblockcomment
+
+
+grammar Tlinecomment =
+  | ";;" Tlinechar* (Tnewline | Teof)
+
+grammar Teof = ""  ;; dummy
+
+grammar Tlinechar =
+  | c:Tchar  -- if c =/= U+0A /\ c =/= U+0D
+
+grammar Tblockcomment =
+  | "(;" Tblockchar* ";)"
+
+
+grammar Tblockchar =
+  | c:Tchar       -- if c =/= ";" /\ c =/= "("
+  | ";"+ c:Tchar  -- if c =/= ";" /\ c =/= ")"
+  | "("+ c:Tchar  -- if c =/= ";" /\ c =/= "("
+  | Tblockcomment
+
+
+;; Annotations
+
+grammar Tannot =
+  | "(@" Tannotid (Tspace | Ttoken)* ")"
+
+grammar Tannotid =
+  | Tidchar+ | Tname

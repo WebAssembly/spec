@@ -72,7 +72,7 @@ let rec rewrite_iterexp' iterexp pr =
     { Il_walk.base_transformer with transform_exp = rewrite iterexp } in
   let new_ = Il_walk.transform_exp transformer in
   match pr with
-  | RulePr (id, mixop, e) -> RulePr (id, mixop, new_ e)
+  | RulePr (id, args, mixop, e) -> RulePr (id, args, mixop, new_ e)
   | IfPr e -> IfPr (new_ e)
   | LetPr (e1, e2, ids) ->
     let new_ids = List.map (rewrite_id iterexp) ids in
@@ -103,7 +103,7 @@ let rec recover_iterexp' iterexp pr =
     { Il_walk.base_transformer with transform_exp = recover iterexp } in
   let new_ = Il_walk.transform_exp transformer in
   match pr with
-  | RulePr (id, mixop, e) -> RulePr (id, mixop, new_ e)
+  | RulePr (id, args, mixop, e) -> RulePr (id, args, mixop, new_ e)
   | IfPr e -> IfPr (new_ e)
   | LetPr (e1, e2, ids) ->
     let new_ids = List.map (recover_id iterexp) ids in
@@ -253,7 +253,8 @@ let is_not_lhs e = match e.it with
 
 (* Hack to handle RETURN_CALL_ADDR, eventually should be removed *)
 let is_atomic_lhs e = match e.it with
-| CaseE ([{it = Atom "FUNC"; _}]::_, { it = CaseE ([[]; [{it = Arrow; _}]; []], { it = TupE [ { it = IterE (_, (ListN _, _)); _} ; { it = IterE (_, (ListN _, _)); _} ] ; _} ); _ }) -> true
+| CaseE (op, { it = CaseE (Xl.Mixop.(Infix (Arg (), {it = Arrow; _}, Arg ())), { it = TupE [ { it = IterE (_, (ListN _, _)); _} ; { it = IterE (_, (ListN _, _)); _} ] ; _} ); _ }) ->
+  Il2al_util.case_head op = "FUNC"
 | _ -> false
 
 (* Hack to handle ARRAY.INIT_DATA, eventually should be removed *)
@@ -294,7 +295,7 @@ let rec rows_of_prem vars len i p =
   | LetPr (_, _, targets) ->
     let covering_vars = List.filter_map (index_of len vars) targets in
     [ Assign targets, p, [i] @ covering_vars ]
-  | RulePr (_, _, { it = TupE args; _ }) ->
+  | RulePr (_, _, _, { it = TupE args; _ }) ->
     (* Assumpton: the only possible assigned-value is the last arg (i.e. ... |- lhs ) *)
     let _, l = Util.Lib.List.split_last args in
     let frees = (free_exp_list l) in
@@ -351,7 +352,7 @@ let animate_rule r = match r.it with
   | RuleD(id, binds, mixop, args, prems) -> (
     match (mixop, args.it) with
     (* lhs ~> rhs *)
-    | ([ [] ; [{it = SqArrow; _}] ; []] , TupE ([_lhs; _rhs])) ->
+    | (Xl.Mixop.(Infix (Arg (), {it = SqArrow; _}, Arg ())) , TupE ([_lhs; _rhs])) ->
       let new_prems = animate_prems {empty with varid = Set.of_list Encode.input_vars} prems in
       RuleD(id, binds, mixop, args, new_prems) $ r.at
     | _ -> r
@@ -365,9 +366,9 @@ let animate_clause c = match c.it with
 
 (* Animate defs *)
 let rec animate_def d = match d.it with
-  | RelD (id, mixop, t, rules) ->
+  | RelD (id, ps, mixop, t, rules) ->
     let rules' = List.map animate_rule rules in
-    RelD (id, mixop, t, rules') $ d.at
+    RelD (id, ps, mixop, t, rules') $ d.at
   | DecD (id, t1, t2, clauses) ->
     let new_clauses = List.map animate_clause clauses in
     DecD (id, t1, t2, new_clauses) $ d.at

@@ -378,7 +378,7 @@ INSTRUCTIONS = [
     Instruction(2.0, r'\TABLEGROW~x', r'\hex{FC}~\hex{0F}', r'[t~\X{at}] \to [\X{at}]', r'valid-table.grow', r'exec-table.grow'),
     Instruction(2.0, r'\TABLESIZE~x', r'\hex{FC}~\hex{10}', r'[] \to [\X{at}]', r'valid-table.size', r'exec-table.size'),
     Instruction(2.0, r'\TABLEFILL~x', r'\hex{FC}~\hex{11}', r'[\X{at}~t~\X{at}] \to []', r'valid-table.fill', r'exec-table.fill'),
-    Instruction(0.0, None, r'\hex{FC}~\hex{1E} \dots'),
+    Instruction(0.0, None, r'\hex{FC}~\hex{12} \dots'),
     Instruction(2.0, r'\V128.\VLOAD~x~\memarg', r'\hex{FD}~~\hex{00}', r'[\X{at}] \to [\V128]', r'valid-vload-val', r'exec-vload-val'),
     Instruction(2.0, r'\V128.\VLOAD\K{8x8\_s}~x~\memarg', r'\hex{FD}~~\hex{01}', r'[\X{at}] \to [\V128]', r'valid-vload-pack', r'exec-vload-pack'),
     Instruction(2.0, r'\V128.\VLOAD\K{8x8\_u}~x~\memarg', r'\hex{FD}~~\hex{02}', r'[\X{at}] \to [\V128]', r'valid-vload-pack', r'exec-vload-pack'),

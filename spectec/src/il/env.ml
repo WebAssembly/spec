@@ -16,7 +16,7 @@ module Map = Map.Make(String)
 
 type var_def = typ
 type typ_def = param list * inst list
-type rel_def = mixop * typ * rule list
+type rel_def = param list * mixop * typ * rule list
 type def_def = param list * typ * clause list
 type gram_def = param list * typ * prod list
 
@@ -100,7 +100,7 @@ let rec env_of_def env d =
   match d.it with
   | TypD (id, ps, insts) -> bind_typ env id (ps, insts)
   | DecD (id, ps, t, clauses) -> bind_def env id (ps, t, clauses)
-  | RelD (id, mixop, t, rules) -> bind_rel env id (mixop, t, rules)
+  | RelD (id, ps, mixop, t, rules) -> bind_rel env id (ps, mixop, t, rules)
   | GramD (id, ps, t, prods) -> bind_gram env id (ps, t, prods)
   | RecD ds -> List.fold_left env_of_def env ds
   | HintD _ -> env

@@ -68,7 +68,10 @@ let il_env: IlEnv.t ref = ref IlEnv.empty
 
 let varT s = VarT (s $ no_region, []) $ no_region
 
-let is_trivial_mixop = List.for_all (fun atoms -> List.length atoms = 0)
+let rec is_trivial_mixop = function
+  | Mixop.Arg () -> true
+  | Mixop.Seq mixops -> List.for_all is_trivial_mixop mixops
+  | _ -> false
 
 
 (* Subtyping *)
@@ -128,7 +131,7 @@ let rec unify_deftyp_opt (deftyp: deftyp) : typ option =
   | StructT _ -> None
   | VariantT typcases
   when List.for_all (fun (mixop', _, _) -> is_trivial_mixop mixop') typcases ->
-    typcases |> List.map (fun (_mixop, (_bs, typ, _ps), _hs) -> typ) |> unify_typs_opt
+    typcases |> List.map (fun (_mixop, (typ, _qs, _ps), _hs) -> typ) |> unify_typs_opt
   | _ -> None
 
 and unify_deftyps_opt : deftyp list -> typ option = function
@@ -226,7 +229,7 @@ let rec get_typfields_of_inst (inst: inst) : typfield list =
   match dt.it with
   | StructT typfields -> typfields
   | AliasT typ -> get_typfields typ
-  | VariantT [mixop, (_, typ, _), _] when is_trivial_mixop mixop ->
+  | VariantT [mixop, (typ, _, _), _] when is_trivial_mixop mixop ->
     get_typfields typ
   (* TODO: some variants of struct type *)
   | VariantT _ -> []
@@ -279,7 +282,7 @@ let check_evalctx source typ =
   | _ -> error_mismatch source typ (varT "evalctx")
 
 let check_field source source_typ expr_record typfield =
-  let atom, (_, typ, _), _ = typfield in
+  let atom, (typ, _, _), _ = typfield in
   (* TODO: Use record api *)
   let f e = e |> fst |> Atom.eq atom in
   match List.find_opt f expr_record with
@@ -402,7 +405,7 @@ let check_inv_call source id indices args result_typ =
     | _ ->
       let arg2typ arg = (
         match arg.it with
-        | ExpA exp -> (Il.Ast.VarE ("" $ no_region) $$ no_region % exp.note, exp.note)
+        | ExpA exp -> ("_" $ no_region, exp.note)
         | a -> error_valid (Printf.sprintf "wrong result argument")
           source (Print.string_of_arg (a $ no_region))
       ) in
@@ -443,7 +446,7 @@ let access (source: source) (typ: typ) (path: path) : typ =
   | DotP atom ->
     let typfields = get_typfields typ in
     match List.find_opt (fun (field, _, _) -> Atom.eq field atom) typfields with
-    | Some (_, (_, typ', _), _) -> typ'
+    | Some (_, (typ', _, _), _) -> typ'
     | None -> error_field source typ atom
 
 
@@ -555,20 +558,20 @@ and valid_expr env (expr: expr) : unit =
   | CaseE (op, exprs) ->
     let is_evalctx_id id =
       let evalctx_ids = List.filter_map (fun (mixop, _, _) ->
-        let atom = mixop |> List.hd |> List.hd in
+        let atom = Mixop.flatten mixop |> List.hd |> List.hd in
         match atom.it with
         | Atom.Atom s -> Some s
         | _ -> None
       ) (get_typcases source evalctxT) in
       List.mem id evalctx_ids
     in
-    (match op with
+    (match Mixop.flatten op with
     | [[{ it=Atom id; _ }]] when is_evalctx_id id ->
       check_case source exprs (TupT [] $ no_region)
     | _ -> 
       List.iter (valid_expr env) exprs;
       let tcs = get_typcases source expr.note in
-      let _binds, typ, _prems = find_case source tcs op in
+      let typ, _qs, _prems = find_case source tcs op in
       check_case source exprs typ;
     )
   | CallE (id, args) ->

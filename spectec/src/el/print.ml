@@ -69,7 +69,7 @@ let rec string_of_iter iter =
 
 and string_of_numtyp = Num.string_of_typ
 
-and string_of_typ ?(short=false) t =
+and string_of_typ ?(short = false) t =
   match t.it with
   | VarT (id, args) -> string_of_typid id ^ string_of_args args
   | BoolT -> "bool"
@@ -120,17 +120,17 @@ and string_of_typ ?(short=false) t =
 and string_of_typs sep ts =
   concat sep (List.map string_of_typ ts)
 
-and string_of_typfield ?(short=false) (atom, (t, prems), _hints) =
+and string_of_typfield ?(short = false) (atom, (t, prems), _hints) =
   string_of_atom atom ^ " " ^ string_of_typ t ^
   if short && prems <> [] then " -- .." else
     concat "" (map_filter_nl_list (prefix "\n  -- " string_of_prem) prems)
 
-and string_of_typcase ?(short=false) (_atom, (t, prems), _hints) =
+and string_of_typcase ?(short = false) (_atom, (t, prems), _hints) =
   string_of_typ t ^
   if short && prems <> [] then " -- .." else
     concat "" (map_filter_nl_list (prefix "\n  -- " string_of_prem) prems)
 
-and string_of_typcon ?(short=false) ((t, prems), _hints) =
+and string_of_typcon ?(short = false) ((t, prems), _hints) =
   string_of_typ t ^
   if short && prems <> [] then " -- .." else
     concat "" (map_filter_nl_list (prefix "\n  -- " string_of_prem) prems)
@@ -263,7 +263,8 @@ and string_of_gram gram =
 and string_of_prem prem =
   match prem.it with
   | VarPr (id, t) -> "var " ^ string_of_varid id ^ ": " ^ string_of_typ t
-  | RulePr (id, e) -> string_of_relid id ^ ": " ^ string_of_exp e
+  | RulePr (id, as_, e) ->
+    string_of_relid id ^ string_of_args as_ ^ ": " ^ string_of_exp e
   | IfPr e -> "if " ^ string_of_exp e
   | ElsePr -> "otherwise"
   | IterPr ({it = IterPr _; _} as prem', iter) ->
@@ -289,7 +290,7 @@ let rec string_of_param p =
   match p.it with
   | ExpP (id, t) -> (if id.it = "_" then "" else string_of_varid id ^ " : ") ^ string_of_typ t
   | TypP id -> "syntax " ^ string_of_typid id
-  | GramP (id, t) -> "grammar " ^ string_of_gramid id ^ " : " ^ string_of_typ t
+  | GramP (id, ps, t) -> "grammar " ^ string_of_gramid id ^ string_of_params ps ^ " : " ^ string_of_typ t
   | DefP (id, ps, t) -> "def " ^ string_of_defid id ^ string_of_params ps ^ " : " ^ string_of_typ t
 
 and string_of_params = function
@@ -307,10 +308,10 @@ let string_of_def d =
     "grammar " ^ string_of_gramid id1 ^ string_of_ruleid id2 ^
       string_of_params ps ^ " : " ^
       string_of_typ t ^ " = " ^ string_of_gram gram
-  | RelD (id, t, _hints) ->
-    "relation " ^ string_of_relid id ^ ": " ^ string_of_typ t
-  | RuleD (id1, id2, e, prems) ->
-    "rule " ^ string_of_relid id1 ^ string_of_ruleid id2 ^ ":\n  " ^
+  | RelD (id, ps, t, _hints) ->
+    "relation " ^ string_of_relid id ^ string_of_params ps ^ ": " ^ string_of_typ t
+  | RuleD (id1, ps, id2, e, prems) ->
+    "rule " ^ string_of_relid id1 ^ string_of_params ps ^ string_of_ruleid id2 ^ ":\n  " ^
       string_of_exp e ^
       string_of_nl_list "" "" (prefix "\n  -- " string_of_prem) prems
   | VarD (id, t, _hints) ->
