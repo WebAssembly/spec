@@ -17830,7 +17830,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       1) Let :math:`(\mathsf{catch}~x~l)` be the destructuring of :math:`{\mathit{catch}}_0`.
 
-      #) If :math:`x < {|z{.}\mathsf{tags}|}` and :math:`z{.}\mathsf{exns}{}[a]{.}\mathsf{tag} = z{.}\mathsf{tags}{}[x]`, then:
+      #) If :math:`x < {|z{.}\mathsf{module}{.}\mathsf{tags}|}` and :math:`z{.}\mathsf{exns}{}[a]{.}\mathsf{tag} = z{.}\mathsf{module}{.}\mathsf{tags}{}[x]`, then:
 
          a) Pop the :math:`\mathsf{handler}` from the stack.
 
@@ -17856,7 +17856,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       1) Let :math:`(\mathsf{catch\_ref}~x~l)` be the destructuring of :math:`{\mathit{catch}}_0`.
 
-      #) If :math:`x \geq {|z{.}\mathsf{tags}|}` or :math:`z{.}\mathsf{exns}{}[a]{.}\mathsf{tag} \neq z{.}\mathsf{tags}{}[x]`, then:
+      #) If :math:`x \geq {|z{.}\mathsf{module}{.}\mathsf{tags}|}` or :math:`z{.}\mathsf{exns}{}[a]{.}\mathsf{tag} \neq z{.}\mathsf{module}{.}\mathsf{tags}{}[x]`, then:
 
          a) Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}''}^\ast}`.
 
@@ -19429,7 +19429,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
                a. Let :math:`(\mathsf{catch}~x~l)` be the destructuring of :math:`{\mathit{catch}}_0`.
 
-               #. If :math:`x < {|z{.}\mathsf{tags}|}` and :math:`z{.}\mathsf{exns}{}[a]{.}\mathsf{tag} = z{.}\mathsf{tags}{}[x]`, then:
+               #. If :math:`x < {|z{.}\mathsf{module}{.}\mathsf{tags}|}` and :math:`z{.}\mathsf{exns}{}[a]{.}\mathsf{tag} = z{.}\mathsf{module}{.}\mathsf{tags}{}[x]`, then:
 
                   1) Pop the :math:`\mathsf{handler}` from the stack.
 
@@ -19455,7 +19455,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
                a. Let :math:`(\mathsf{catch\_ref}~x~l)` be the destructuring of :math:`{\mathit{catch}}_0`.
 
-               #. If :math:`x \geq {|z{.}\mathsf{tags}|}` or :math:`z{.}\mathsf{exns}{}[a]{.}\mathsf{tag} \neq z{.}\mathsf{tags}{}[x]`, then:
+               #. If :math:`x \geq {|z{.}\mathsf{module}{.}\mathsf{tags}|}` or :math:`z{.}\mathsf{exns}{}[a]{.}\mathsf{tag} \neq z{.}\mathsf{module}{.}\mathsf{tags}{}[x]`, then:
 
                   1) Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}''}^\ast}`.
 
@@ -20656,7 +20656,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, :math:`x < {|z{.}\mathsf{tags}|}`.
+#. Assert: Due to validation, :math:`x < {|z{.}\mathsf{module}{.}\mathsf{tags}|}`.
 
 #. Assert: Due to validation, the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{tags}{}[x]{.}\mathsf{type}` is some :math:`\mathsf{func}~{\mathit{resulttype}} \rightarrow {\mathit{resulttype}}`.
 
@@ -20670,7 +20670,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
 
-#. Let :math:`{\mathit{exn}}` be the exception instance :math:`\{ \mathsf{tag}~z{.}\mathsf{tags}{}[x],\;\allowbreak \mathsf{fields}~{{\mathit{val}}^{n}} \}`.
+#. Let :math:`{\mathit{exn}}` be the exception instance :math:`\{ \mathsf{tag}~z{.}\mathsf{module}{.}\mathsf{tags}{}[x],\;\allowbreak \mathsf{fields}~{{\mathit{val}}^{n}} \}`.
 
 #. Append :math:`{\mathit{exn}}` to :math:`z{.}\mathsf{exns}`.
 
@@ -25513,8 +25513,8 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return :math:`f`.
 
 
-:math:`(s, f){.}\mathsf{tags}`
-..............................
+:math:`(s, f){.}\mathsf{module}{.}\mathsf{tags}`
+................................................
 
 
 1. Return :math:`f{.}\mathsf{module}{.}\mathsf{tags}`.
