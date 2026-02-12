@@ -5,8 +5,6 @@ on:
     # Disable on forks!
     branches: [ main ]
     paths: [ .github/**, document/**, specification/** ]
-  pull_request:
-    paths: [ .github/**, document/**, specification/** ]
 
   # Allows you to run this workflow manually from the Actions tab, gh CLI tool,
   # or REST API. THe w3c-status options correspond to the valid options for
@@ -36,6 +34,7 @@ env:
 
 jobs:
   publish-to-w3c-TR:
+    if: ${{ github.repository == 'WebAssembly/spec' }}
     strategy:
       fail-fast: false
       matrix:
