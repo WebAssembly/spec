@@ -66,18 +66,6 @@ let extract_rel_hint relid hintid =
 
 let swap = function `LtOp -> `GtOp | `GtOp -> `LtOp | `LeOp -> `GeOp | `GeOp -> `LeOp | op -> op
 
-(* CASE (?(())) ~> CASE
-   CASE (?()) ~> () *)
-let recover_optional_singleton_constructor e =
-  match e.it with
-  | Al.Ast.CaseE (Mixop.(Seq [Atom atom; Arg ()]), [{it = OptE opt; _ }]) ->
-    (
-      match opt with
-      | Some _ -> Al.Ast.CaseE (Mixop.Atom atom, [])
-      | None   -> Al.Ast.CaseE (Mixop.Seq [], [])
-    ) |> (fun it -> {e with it})
-  | _ -> e
-
 (* l ->_ [] r  ~>  l -> r *)
 let remove_empty_arrow_sub e =
   match e.it with
@@ -181,7 +169,6 @@ let transpile_expr =
   let post_expr =
     Il2al.Transpile.simplify_record_concat
     >> Il2al.Transpile.reduce_comp
-    >> recover_optional_singleton_constructor
     >> remove_empty_arrow_sub
   in
   let walk_expr walker expr =
