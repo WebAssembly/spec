@@ -606,7 +606,6 @@ rule Ok_dec/GRAM:
 rule Ok_dec/REC:
   E |- REC d* : OK -| E'
   -- Ok_decs: E ++ E' |- d* : OK -| E'
-  ;; TODO: this doesn't quite work with just ++
 
 rule Ok_decs/empty:
   E |- eps : OK -| {}
