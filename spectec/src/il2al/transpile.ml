@@ -1166,8 +1166,9 @@ let handle_unframed_algo instrs =
 
   let post_instr instr =
     let ret =
-    match !frame_arg with
-    | Some { it = ExpA f; _ } ->
+    match instr.it, !frame_arg with
+    | IfI _, _ -> [instr]
+    | _, Some { it = ExpA f; _ } -> (* Ignore if current instr is IfI *)
       let zeroE = natE Z.zero ~note:natT in
       let frame = frameE (zeroE, postprocess_frame f) ~at:f.at ~note:evalctxT in
       let _f = frameE (zeroE, varE "_f" ~note:f.note) ~note:evalctxT in

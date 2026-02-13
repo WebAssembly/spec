@@ -801,7 +801,7 @@ and handle_special_lhs lhs rhs free_ids =
       | _ -> IsCaseOfE (expr, tag) $$ rhs.at % boolT
     in
     (match tag_opt with
-    | Some ({ it = Atom.Atom _; _} as tag) ->
+    | Some tag ->
       [ ifI (
         inject_isCaseOf tag rhs,
         letI (caseE (op, es') ~at:lhs.at ~note:lhs.note, rhs) ~at:at

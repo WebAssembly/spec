@@ -38,6 +38,8 @@ let rec map_atoms f mixop =
     Infix (map_atoms f mixop1, f at, map_atoms f mixop2)
   | Seq mixops -> Seq (List.map (map_atoms f) mixops)
 
+let iter_atoms f mixop =
+  ignore (map_atoms (fun at -> f at; at) mixop)
 
 let arity mixop = fold (fun n _ -> n + 1) 0 mixop
 

@@ -143,7 +143,15 @@ let infer_cmpop at op ot =
   | _, _ -> error at ("malformed comparison operator annotation")
 
 
-(* Atom Bindings *)
+(* Atoms and Mixops *)
+
+let valid_atom _env atom =
+  if atom.note.Atom.def = "" then
+    error atom.at ("missing definition name for atom " ^ Atom.to_string atom)
+
+let valid_mixop env mixop =
+  Mixop.iter_atoms (valid_atom env) mixop
+
 
 let check_mixops phrase item list at =
   let _, dups =
@@ -237,7 +245,8 @@ and valid_deftyp env dt =
     check_mixops "variant" "case" (List.map (fun (op, _, _) -> op) tcs) dt.at;
     List.iter (valid_typcase env) tcs
 
-and valid_typfield env (_atom, (t, qs, prems), _hints) =
+and valid_typfield env (atom, (t, qs, prems), _hints) =
+  valid_atom env atom;
   let env' = valid_typ_bind env t in
   let env'' = valid_quants env' qs in
   List.iter (valid_prem env'') prems
@@ -255,6 +264,7 @@ and valid_typcase env (mixop, (t, qs, prems), _hints) =
   if Mixop.arity mixop <> arity then
     error t.at ("inconsistent arity in mixin notation, `" ^ string_of_mixop mixop ^
       "` applied to " ^ typ_string env t);
+  valid_mixop env mixop;
   let env' = valid_typ_bind env t in
   let env'' = valid_quants env' qs in
   List.iter (valid_prem env'') prems
@@ -396,6 +406,7 @@ and valid_exp ?(side = `Rhs) env e t =
   | DotE (e1, atom) ->
     let t1 = infer_exp env e1 in
     valid_exp env e1 t1;
+    valid_atom env atom;
     let tfs = as_struct_typ "expression" env Check t1 e1.at in
     let t', _qs, _prems = find_field tfs atom e1.at in
     equiv_typ env t' t e.at
@@ -445,6 +456,7 @@ and valid_exp ?(side = `Rhs) env e t =
   | UncaseE (e1, op) ->
     let t1 = infer_exp env e1 in
     valid_exp ~side env e1 t1;
+    valid_mixop env op;
     (match as_variant_typ "expression" env Infer t1 e1.at with
     | [(op', (t', _, _), _)] when Eq.eq_mixop op op' ->
       equiv_typ env t' t e.at
@@ -473,6 +485,7 @@ and valid_exp ?(side = `Rhs) env e t =
   | CaseE (op, e1) ->
     let cases = as_variant_typ "case" env Check t e.at in
     let t1, _qs, _prems = find_case cases op e1.at in
+    valid_mixop env op;
     valid_exp ~side env e1 t1
   | CvtE (e1, nt1, nt2) ->
     valid_exp ~side env e1 (NumT nt1 $ e1.at);
@@ -491,6 +504,7 @@ and valid_expmix ?(side = `Rhs) env mixop e (mixop', t) at =
       "mixin notation `" ^ string_of_mixop mixop ^
       "` does not match expected notation `" ^ string_of_mixop mixop' ^ "`"
     );
+  valid_mixop env mixop;
   valid_exp ~side env e t
 
 and valid_expfield ~side env (atom1, e) (atom2, (t, _qs, _prems), _) =
@@ -501,6 +515,7 @@ and valid_expfield ~side env (atom1, e) (atom2, (t, _qs, _prems), _) =
     )
   );
   if not (Eq.eq_atom atom1 atom2) then error e.at "unexpected record field";
+  valid_atom env atom1;
   valid_exp ~side env e t
 
 and valid_path env p t : typ =
@@ -520,6 +535,7 @@ and valid_path env p t : typ =
       t1
     | DotP (p1, atom) ->
       let t1 = valid_path env p1 t in
+      valid_atom env atom;
       let tfs = as_struct_typ "path" env Check t1 p1.at in
       let t, _qs, _prems = find_field tfs atom p1.at in
       t

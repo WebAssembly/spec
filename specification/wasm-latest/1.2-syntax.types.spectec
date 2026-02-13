@@ -1,0 +1,579 @@
+;;
+;; Syntax of Types
+;;
+
+;; Value types
+
+;; TODO(3, rossberg): add ability to do this inline
+syntax null hint(show NULL) hint(macro "%" "%") = NULL
+
+syntax addrtype hint(desc "address type") =
+  | I32 | I64
+
+syntax numtype hint(desc "number type") =
+  | I32 | I64 | F32 | F64
+
+syntax vectype hint(desc "vector type") =
+  | V128
+
+syntax consttype hint(desc "constant type") =
+  | numtype | vectype
+
+syntax absheaptype/syn hint(desc "abstract heap type") =
+  | ANY | EQ hint(macro "EQT") | I31 | STRUCT | ARRAY | NONE
+  | FUNC hint(macro "FUNCT") | NOFUNC
+  | EXN | NOEXN
+  | EXTERN | NOEXTERN
+  | ...
+syntax absheaptype/sem =
+  | ... | BOT
+
+syntax rectype hint(desc "recursive type")  ;; forward decl
+syntax deftype hint(desc "defined type") =
+  | _DEF rectype n hint(show %.%)
+
+syntax typeuse/syn hint(desc "type use") =
+  | _IDX typeidx | ...
+syntax typeuse/sem =
+  | ... | deftype | REC n hint(show REC.%)
+
+syntax typevar hint(desc "type variable") =
+  | _IDX typeidx | REC n hint(show REC.%)
+
+syntax heaptype hint(desc "heap type") =
+  | absheaptype | typeuse
+
+syntax reftype hint(desc "reference type") =
+  | REF null? heaptype
+
+syntax valtype/syn hint(desc "value type") =
+  | numtype | vectype | reftype | ...
+syntax valtype/sem =
+  | ... | BOT
+
+
+syntax Inn hint(show I#N) hint(macro "nt%") = I32 | I64
+syntax Fnn hint(show F#N) hint(macro "nt%") = F32 | F64
+syntax Vnn hint(show V#N) hint(macro "nt%") = V128
+syntax Cnn hint(show t) = Inn | Fnn | Vnn
+
+
+def $ANYREF    : reftype hint(show ANYREF)
+def $EQREF     : reftype hint(show EQREF)
+def $I31REF    : reftype hint(show I31REF)
+def $STRUCTREF : reftype hint(show STRUCTREF)
+def $ARRAYREF  : reftype hint(show ARRAYREF)
+def $FUNCREF   : reftype hint(show FUNCREF)
+def $EXNREF    : reftype hint(show EXNREF)
+def $EXTERNREF : reftype hint(show EXTERNREF)
+def $NULLREF   : reftype hint(show NULLREF)
+def $NULLFUNCREF : reftype hint(show NULLFUNCREF)
+def $NULLEXNREF  : reftype hint(show NULLEXNREF)
+def $NULLEXTERNREF : reftype hint(show NULLEXTERNREF)
+
+def $ANYREF    = (REF NULL ANY)
+def $EQREF     = (REF NULL EQ)
+def $I31REF    = (REF NULL I31)
+def $STRUCTREF = (REF NULL STRUCT)
+def $ARRAYREF  = (REF NULL ARRAY)
+def $FUNCREF   = (REF NULL FUNC)
+def $EXNREF    = (REF NULL EXN)
+def $EXTERNREF = (REF NULL EXTERN)
+def $NULLREF   = (REF NULL NONE)
+def $NULLFUNCREF = (REF NULL NOFUNC)
+def $NULLEXNREF  = (REF NULL NOEXN)
+def $NULLEXTERNREF = (REF NULL NOEXTERN)
+
+
+;; Packed types
+
+syntax packtype hint(desc "packed type") = I8 | I16
+syntax lanetype hint(desc "lane type") = numtype | packtype
+syntax storagetype hint(desc "storage type") = valtype | packtype
+
+
+syntax Pnn hint(show I#N) hint(macro "nt%") = packtype
+syntax Jnn hint(show I#N) hint(macro "nt%") = Inn | Pnn
+syntax Lnn hint(show I#N) hint(macro "nt%") = Inn | Fnn | Pnn
+
+
+;; Result types
+
+syntax resulttype hint(desc "result type") =
+  list(valtype)
+
+
+;; Type definitions
+
+;; TODO(3, rossberg): add ability to do this inline
+syntax mut hint(show MUT) hint(macro "T%" "T%") = MUT
+syntax final hint(show FINAL) hint(macro "T%" "T%") = FINAL
+
+syntax fieldtype  hint(desc "field type") = mut? storagetype
+
+syntax comptype hint(desc "composite type") hint(macro "%" "T%") =
+  | STRUCT list(fieldtype)
+  | ARRAY fieldtype
+  | FUNC resulttype -> resulttype
+
+syntax subtype hint(desc "sub type") hint(macro "%" "T%") =
+  | SUB final? typeuse* comptype
+
+syntax rectype hint(desc "recursive type") hint(macro "%" "T%") =
+  | REC list(subtype)
+
+
+;; External types
+
+syntax limits hint(desc "limits range") = `[u64 .. u64?] hint(macro "L%")
+
+syntax tagtype hint(desc "tag type") = typeuse
+syntax globaltype hint(desc "global type") = mut? valtype
+syntax memtype hint(desc "memory type") = addrtype limits PAGE
+syntax tabletype hint(desc "table type") = addrtype limits reftype
+syntax datatype hint(desc "data type") = OK hint(macro "%data")
+syntax elemtype hint(desc "element type") = reftype
+
+syntax externtype hint(desc "external type") hint(macro "%" "XT%") =
+  | TAG tagtype | GLOBAL globaltype | MEM memtype | TABLE tabletype | FUNC typeuse
+
+syntax moduletype hint(desc "module type") =
+  externtype* -> externtype* hint(macro "toM")
+
+
+;; Meta variables
+
+var lim : limits
+
+var t : valtype
+var at : addrtype
+;; var bt : blocktype  ;; defined below
+var ct : comptype
+var dt : deftype
+var et : elemtype
+var ft : fieldtype
+var gt : globaltype
+var ht : heaptype
+;; var it : instrtype  ;; defined in typing
+var jt : tagtype
+;; var kt : conttype   ;; future extension
+var lt : lanetype
+var mt : memtype
+var nt : numtype
+var pt : packtype
+var rt : reftype
+var st : subtype
+var tt : tabletype
+var vt : vectype
+var xt : externtype
+var zt : storagetype
+var ok : datatype
+
+var tv : typevar
+var yy : typeuse hint(show y)
+var tu : typeuse
+
+
+;; Computed types
+
+def $IN(N) : Inn  hint(show I#%) hint(macro "INX")
+def $IN(32) = I32
+def $IN(64) = I64
+
+def $FN(N) : Fnn  hint(show F#%) hint(macro "FNX")
+def $FN(32) = F32
+def $FN(64) = F64
+
+def $JN(N) : Jnn  hint(show I#%) hint(macro "INX")
+def $JN(8) = I8
+def $JN(16) = I16
+def $JN(32) = I32
+def $JN(64) = I64
+
+
+;; Size
+
+def $size(numtype) : nat       hint(show |%|)
+def $vsize(vectype) : nat      hint(show |%|)
+def $psize(packtype) : nat     hint(show |%|)
+def $lsize(lanetype) : nat     hint(show |%|)
+def $zsize(storagetype) : nat  hint(show |%|)
+def $isize(Inn) : nat          hint(show |%|) hint(inverse $inv_isize)
+def $jsize(Jnn) : nat          hint(show |%|) hint(inverse $inv_jsize)
+def $fsize(Fnn) : nat          hint(show |%|) hint(inverse $inv_fsize)
+
+def $size(I32) = 32
+def $size(I64) = 64
+def $size(F32) = 32
+def $size(F64) = 64
+
+def $vsize(V128) = 128
+
+def $psize(I8) = 8
+def $psize(I16) = 16
+
+def $lsize(numtype) = $size(numtype)
+def $lsize(packtype) = $psize(packtype)
+
+def $zsize(numtype) = $size(numtype)
+def $zsize(vectype) = $vsize(vectype)
+def $zsize(packtype) = $psize(packtype)
+
+def $isize(Inn) = $size(Inn)
+def $fsize(Fnn) = $size(Fnn)
+def $jsize(Jnn) = $lsize(Jnn)
+
+def $inv_isize(nat) : Inn hint(partial)
+def $inv_jsize(nat) : Jnn hint(partial)
+def $inv_fsize(nat) : Fnn hint(partial)
+
+def $inv_isize(32) = I32
+def $inv_isize(64) = I64
+def $inv_fsize(32) = F32
+def $inv_fsize(64) = F64
+def $inv_jsize(8)  = I8
+def $inv_jsize(16) = I16
+def $inv_jsize(n)  = $inv_isize(n)
+
+;; TODO(2, rossberg): get rid of these terrible hacks by defining $Inn(nat) hint(show I#%)
+def $sizenn(numtype) : nat     hint(show N)   hint(macro none)  ;; HACK!
+def $sizenn1(numtype) : nat    hint(show N_1) hint(macro none)  ;; HACK!
+def $sizenn2(numtype) : nat    hint(show N_2) hint(macro none)  ;; HACK!
+def $sizenn(nt) = $size(nt)
+def $sizenn1(nt) = $size(nt)
+def $sizenn2(nt) = $size(nt)
+
+def $vsizenn(vectype) : nat    hint(show N)   hint(macro none)  ;; HACK!
+def $vsizenn(vt) = $vsize(vt)
+
+def $psizenn(packtype) : nat   hint(show N)   hint(macro none)  ;; HACK!
+def $psizenn(pt) = $psize(pt)
+
+def $lsizenn(lanetype) : nat   hint(show N)   hint(macro none)  ;; HACK!
+def $lsizenn1(lanetype) : nat  hint(show N_1) hint(macro none)  ;; HACK!
+def $lsizenn2(lanetype) : nat  hint(show N_2) hint(macro none)  ;; HACK!
+def $lsizenn(lt) = $lsize(lt)
+def $lsizenn1(lt) = $lsize(lt)
+def $lsizenn2(lt) = $lsize(lt)
+
+def $jsizenn(Jnn) : nat   hint(show N) hint(macro none) hint(inverse $inv_jsizenn) ;; HACK!
+def $jsizenn(Jnn) = $lsize(Jnn)
+
+def $inv_jsizenn(nat) : Jnn hint(partial)
+def $inv_jsizenn(n)  = $inv_jsize(n)
+
+
+;; Unpacking
+
+def $lunpack(lanetype) : numtype  hint(show $unpack(%))
+def $lunpack(numtype) = numtype
+def $lunpack(packtype) = I32
+
+def $unpack(storagetype) : valtype
+def $unpack(valtype) = valtype
+def $unpack(packtype) = I32
+
+def $nunpack(storagetype) : numtype  hint(show $unpack(%)) hint(partial)
+def $nunpack(numtype) = numtype
+def $nunpack(packtype) = I32
+
+def $vunpack(storagetype) : vectype  hint(show $unpack(%)) hint(partial)
+def $vunpack(vectype) = vectype
+
+def $cunpack(storagetype) : consttype hint(show $unpack(%)) hint(partial)
+def $cunpack(consttype) = consttype
+def $cunpack(packtype) = I32
+def $cunpack(lanetype) = $lunpack(lanetype)  ;; HACK
+
+
+;; Type auxiliaries
+
+def $minat(addrtype, addrtype) : addrtype  hint(show $min(%,%)) hint(macro "addrtypemin")
+def $minat(at_1, at_2) = at_1  -- if $size(at_1) <= $size(at_2)
+def $minat(at_1, at_2) = at_2  -- otherwise
+
+def $diffrt(reftype, reftype) : reftype  hint(show %\%) hint(macro "reftypediff")
+def $diffrt((REF null_1? ht_1), (REF NULL ht_2)) = (REF ht_1)
+def $diffrt((REF null_1? ht_1), (REF ht_2)) = (REF null_1? ht_1)
+
+;; TODO(3, rossberg): Could this be inferable as a narrowing coercion?
+def $as_deftype(typeuse) : deftype  hint(show %)
+def $as_deftype(dt) = dt
+
+
+;; Sort projection
+
+;; TODO(3, rossberg): add built-in notation for comprehensions?
+
+def $tagsxt(externtype*) : tagtype*        hint(show $tags(%))    hint(macro "tagsxt")
+def $globalsxt(externtype*) : globaltype*  hint(show $globals(%)) hint(macro "globalsxt")
+def $memsxt(externtype*) : memtype*        hint(show $mems(%))    hint(macro "memsxt")
+def $tablesxt(externtype*) : tabletype*    hint(show $tables(%))  hint(macro "tablesxt")
+def $funcsxt(externtype*) : deftype*       hint(show $funcs(%))   hint(macro "funcsxt")
+
+def $tagsxt(eps) = eps
+def $tagsxt((TAG jt) xt*) = jt $tagsxt(xt*)
+def $tagsxt(externtype xt*) = $tagsxt(xt*)  -- otherwise
+
+def $globalsxt(eps) = eps
+def $globalsxt((GLOBAL gt) xt*) = gt $globalsxt(xt*)
+def $globalsxt(externtype xt*) = $globalsxt(xt*)  -- otherwise
+
+def $memsxt(eps) = eps
+def $memsxt((MEM mt) xt*) = mt $memsxt(xt*)
+def $memsxt(externtype xt*) = $memsxt(xt*)  -- otherwise
+
+def $tablesxt(eps) = eps
+def $tablesxt((TABLE tt) xt*) = tt $tablesxt(xt*)
+def $tablesxt(externtype xt*) = $tablesxt(xt*)  -- otherwise
+
+def $funcsxt(eps) = eps
+def $funcsxt((FUNC dt) xt*) = dt $funcsxt(xt*)
+def $funcsxt(externtype xt*) = $funcsxt(xt*)  -- otherwise
+
+
+;; Substitution
+
+def $subst_typevar(typevar, typevar*, typeuse*) : typeuse             hint(show %#`[%:=%]) hint(macro "%subst")
+def $subst_typeuse(typeuse, typevar*, typeuse*) : typeuse             hint(show %#`[%:=%]) hint(macro "%subst")
+
+def $subst_addrtype(addrtype, typevar*, typeuse*) : addrtype          hint(show %#`[%:=%]) hint(macro "%subst")
+def $subst_numtype(numtype, typevar*, typeuse*) : numtype             hint(show %#`[%:=%]) hint(macro "%subst")
+def $subst_vectype(vectype, typevar*, typeuse*) : vectype             hint(show %#`[%:=%]) hint(macro "%subst")
+def $subst_heaptype(heaptype, typevar*, typeuse*) : heaptype          hint(show %#`[%:=%]) hint(macro "%subst")
+def $subst_reftype(reftype, typevar*, typeuse*) : reftype             hint(show %#`[%:=%]) hint(macro "%subst")
+def $subst_valtype(valtype, typevar*, typeuse*) : valtype             hint(show %#`[%:=%]) hint(macro "%subst")
+
+def $subst_packtype(packtype, typevar*, typeuse*) : packtype          hint(show %#`[%:=%]) hint(macro "%subst")
+def $subst_storagetype(storagetype, typevar*, typeuse*) : storagetype hint(show %#`[%:=%]) hint(macro "%subst")
+def $subst_fieldtype(fieldtype, typevar*, typeuse*) : fieldtype       hint(show %#`[%:=%]) hint(macro "%subst")
+
+def $subst_comptype(comptype, typevar*, typeuse*) : comptype          hint(show %#`[%:=%]) hint(macro "%subst")
+def $subst_subtype(subtype, typevar*, typeuse*) : subtype             hint(show %#`[%:=%]) hint(macro "%subst")
+def $subst_rectype(rectype, typevar*, typeuse*) : rectype             hint(show %#`[%:=%]) hint(macro "%subst")
+def $subst_deftype(deftype, typevar*, typeuse*) : deftype             hint(show %#`[%:=%]) hint(macro "%subst")
+
+def $subst_tagtype(tagtype, typevar*, typeuse*) : tagtype             hint(show %#`[%:=%]) hint(macro "%subst")
+def $subst_globaltype(globaltype, typevar*, typeuse*) : globaltype    hint(show %#`[%:=%]) hint(macro "%subst")
+def $subst_memtype(memtype, typevar*, typeuse*) : memtype             hint(show %#`[%:=%]) hint(macro "%subst")
+def $subst_tabletype(tabletype, typevar*, typeuse*) : tabletype       hint(show %#`[%:=%]) hint(macro "%subst")
+
+def $subst_externtype(externtype, typevar*, typeuse*) : externtype    hint(show %#`[%:=%]) hint(macro "%subst")
+def $subst_moduletype(moduletype, typevar*, typeuse*) : moduletype    hint(show %#`[%:=%]) hint(macro "%subst")
+
+
+def $subst_typevar(tv, eps, eps) = tv
+def $subst_typevar(tv, tv_1 tv'*, tu_1 tu'*) = tu_1                            -- if tv = tv_1
+def $subst_typevar(tv, tv_1 tv'*, tu_1 tu'*) = $subst_typevar(tv, tv'*, tu'*)  -- otherwise
+
+def $subst_typeuse(tv', tv*, tu*) = $subst_typevar(tv', tv*, tu*)
+def $subst_typeuse(dt, tv*, tu*) = $subst_deftype(dt, tv*, tu*)
+
+def $subst_addrtype(at, tv*, tu*) = at
+def $subst_numtype(nt, tv*, tu*) = nt
+def $subst_vectype(vt, tv*, tu*) = vt
+
+def $subst_heaptype(tv', tv*, tu*) = $subst_typevar(tv', tv*, tu*)
+def $subst_heaptype(dt, tv*, tu*) = $subst_deftype(dt, tv*, tu*)
+def $subst_heaptype(ht, tv*, tu*) = ht  -- otherwise
+
+def $subst_reftype((REF null? ht), tv*, tu*) = REF null? $subst_heaptype(ht, tv*, tu*)
+
+def $subst_valtype(nt, tv*, tu*) = $subst_numtype(nt, tv*, tu*)
+def $subst_valtype(vt, tv*, tu*) = $subst_vectype(vt, tv*, tu*)
+def $subst_valtype(rt, tv*, tu*) = $subst_reftype(rt, tv*, tu*)
+def $subst_valtype(BOT, tv*, tu*) = BOT
+
+def $subst_packtype(pt, tv*, tu*) = pt
+
+def $subst_storagetype(t, tv*, tu*) = $subst_valtype(t, tv*, tu*)
+def $subst_storagetype(pt, tv*, tu*) = $subst_packtype(pt, tv*, tu*)
+
+def $subst_fieldtype((mut? zt), tv*, tu*) = mut? $subst_storagetype(zt, tv*, tu*)
+
+def $subst_comptype((STRUCT ft*), tv*, tu*) = STRUCT $subst_fieldtype(ft, tv*, tu*)*
+def $subst_comptype((ARRAY ft), tv*, tu*) = ARRAY $subst_fieldtype(ft, tv*, tu*)
+def $subst_comptype((FUNC t_1* -> t_2*), tv*, tu*) = FUNC $subst_valtype(t_1, tv*, tu*)* -> $subst_valtype(t_2, tv*, tu*)*
+
+def $subst_subtype((SUB final? tu'* ct), tv*, tu*) =
+  SUB final? $subst_typeuse(tu', tv*, tu*)* $subst_comptype(ct, tv*, tu*)
+
+def $minus_recs(typevar*, typeuse*) : (typevar*, typeuse*)
+def $minus_recs(eps, eps) = (eps, eps)
+def $minus_recs((REC n) tv*, tu_1 tu*) = $minus_recs(tv*, tu*)
+def $minus_recs((_IDX x) tv*, tu_1 tu*) = ((_IDX x) tv'*, tu_1 tu'*)
+  -- if (tv'*, tu'*) = $minus_recs(tv*, tu*)
+
+def $subst_rectype((REC st*), tv*, tu*) = REC $subst_subtype(st, tv'*, tu'*)*
+  -- if (tv'*, tu'*) = $minus_recs(tv*, tu*)
+;; TODO(4, rossberg): animation cannot handle this declarative formulation:
+;;  -- if tv'* = $setminus_(typevar, tv*, (REC i)^(i<|st*|))
+;;  -- (if (tv', tu') <- (tv, tu)*)*
+
+def $subst_deftype((_DEF qt i), tv*, tu*) = _DEF $subst_rectype(qt, tv*, tu*) i
+
+def $subst_tagtype(tu', tv*, tu*) = $subst_typeuse(tu', tv*, tu*)
+def $subst_globaltype((mut? t), tv*, tu*) = mut? $subst_valtype(t, tv*, tu*)
+def $subst_memtype((at lim PAGE), tv*, tu*) = at lim PAGE
+def $subst_tabletype((at lim rt), tv*, tu*) = at lim $subst_reftype(rt, tv*, tu*)
+
+def $subst_externtype((TAG jt), tv*, tu*) = TAG $subst_tagtype(jt, tv*, tu*)
+def $subst_externtype((GLOBAL gt), tv*, tu*) = GLOBAL $subst_globaltype(gt, tv*, tu*)
+def $subst_externtype((TABLE tt), tv*, tu*) = TABLE $subst_tabletype(tt, tv*, tu*)
+def $subst_externtype((MEM mt), tv*, tu*) = MEM $subst_memtype(mt, tv*, tu*)
+def $subst_externtype((FUNC dt), tv*, tu*) = FUNC $subst_deftype(dt, tv*, tu*)
+
+def $subst_moduletype(xt_1* -> xt_2*, tv*, tu*) = $subst_externtype(xt_1, tv*, tu*)* -> $subst_externtype(xt_2, tv*, tu*)*
+
+
+;; Complete substitution
+
+def $subst_all_valtype(valtype, typeuse*) : valtype  hint(show %#`[:=%]) hint(macro "%subst")
+def $subst_all_reftype(reftype, typeuse*) : reftype  hint(show %#`[:=%]) hint(macro "%subst")
+def $subst_all_deftype(deftype, typeuse*) : deftype  hint(show %#`[:=%]) hint(macro "%subst")
+def $subst_all_tagtype(tagtype, typeuse*) : tagtype  hint(show %#`[:=%]) hint(macro "%subst")
+def $subst_all_globaltype(globaltype, typeuse*) : globaltype  hint(show %#`[:=%]) hint(macro "%subst")
+def $subst_all_memtype(memtype, typeuse*) : memtype  hint(show %#`[:=%]) hint(macro "%subst")
+def $subst_all_tabletype(tabletype, typeuse*) : tabletype  hint(show %#`[:=%]) hint(macro "%subst")
+def $subst_all_externtype(externtype, typeuse*) : externtype  hint(show %#`[:=%]) hint(macro "%subst")
+def $subst_all_moduletype(moduletype, typeuse*) : moduletype  hint(show %#`[:=%]) hint(macro "%subst")
+
+def $subst_all_valtype(t, tu^n) = $subst_valtype(t, (_IDX i)^(i<n), tu^n)
+def $subst_all_reftype(rt, tu^n) = $subst_reftype(rt, (_IDX i)^(i<n), tu^n)
+def $subst_all_deftype(dt, tu^n) = $subst_deftype(dt, (_IDX i)^(i<n), tu^n)
+def $subst_all_tagtype(jt, tu^n) = $subst_tagtype(jt, (_IDX i)^(i<n), tu^n)
+def $subst_all_globaltype(gt, tu^n) = $subst_globaltype(gt, (_IDX i)^(i<n), tu^n)
+def $subst_all_memtype(mt, tu^n) = $subst_memtype(mt, (_IDX i)^(i<n), tu^n)
+def $subst_all_tabletype(tt, tu^n) = $subst_tabletype(tt, (_IDX i)^(i<n), tu^n)
+def $subst_all_externtype(xt, tu^n) = $subst_externtype(xt, (_IDX i)^(i<n), tu^n)
+def $subst_all_moduletype(mmt, tu^n) = $subst_moduletype(mmt, (_IDX i)^(i<n), tu^n)
+
+def $subst_all_deftypes(deftype*, typeuse*) : deftype*  hint(show %#`[:=%]) hint(macro "%subst")
+def $subst_all_deftypes(eps, tu*) = eps
+def $subst_all_deftypes(dt_1 dt*, tu*) = $subst_all_deftype(dt_1, tu*) $subst_all_deftypes(dt*, tu*)
+
+
+;; Rolling & unrolling
+
+def $rollrt(typeidx, rectype) : rectype  hint(show $roll_(%, %))   hint(macro "rollrt")
+def $unrollrt(rectype) : rectype         hint(show $unroll(%))     hint(macro "unrollrt")
+def $rolldt(typeidx, rectype) : deftype* hint(show $roll_(%)*#((%))) hint(macro "rolldt")
+def $unrolldt(deftype) : subtype         hint(show $unroll(%))     hint(macro "unrolldt")
+def $expanddt(deftype) : comptype        hint(show $expand(%))     hint(macro "expanddt")
+
+def $rollrt(x, rectype) = REC ($subst_subtype(subtype, ((_IDX $(x + i)))^(i<n), (REC i)^(i<n)))^n
+  -- if rectype = REC subtype^n
+def $unrollrt(rectype) = REC ($subst_subtype(subtype, (REC i)^(i<n), (_DEF rectype i)^(i<n)))^n
+  -- if rectype = REC subtype^n
+
+def $rolldt(x, rectype) = (_DEF (REC subtype^n) i)^(i<n)  -- if $rollrt(x, rectype) = REC subtype^n
+def $unrolldt(_DEF rectype i) = subtype*[i]               -- if $unrollrt(rectype) = REC subtype*
+
+def $expanddt(deftype) = comptype                         -- if $unrolldt(deftype) = SUB final? typeuse* comptype
+
+
+;; Free indices
+
+def $free_addrtype(numtype) : free
+def $free_numtype(numtype) : free
+def $free_packtype(packtype) : free
+def $free_lanetype(lanetype) : free
+def $free_vectype(vectype) : free
+def $free_consttype(consttype) : free
+def $free_absheaptype(absheaptype) : free
+def $free_heaptype(heaptype) : free
+def $free_reftype(reftype) : free
+def $free_typevar(typevar) : free
+def $free_typeuse(typeuse) : free
+def $free_valtype(valtype) : free
+
+def $free_resulttype(resulttype) : free
+def $free_storagetype(storagetype) : free
+def $free_fieldtype(fieldtype) : free
+def $free_comptype(comptype) : free
+def $free_subtype(subtype) : free
+def $free_rectype(rectype) : free
+
+def $free_tagtype(tagtype) : free
+def $free_globaltype(globaltype) : free
+def $free_memtype(memtype) : free
+def $free_tabletype(tabletype) : free
+def $free_datatype(datatype) : free
+def $free_elemtype(elemtype) : free
+def $free_externtype(externtype) : free
+def $free_moduletype(moduletype) : free
+
+
+def $free_addrtype(addrtype) = {}
+
+def $free_numtype(numtype) = {}
+
+def $free_packtype(packtype) = {}
+
+def $free_lanetype(numtype) = $free_numtype(numtype)
+def $free_lanetype(packtype) = $free_packtype(packtype)
+
+def $free_vectype(vectype) = {}
+
+def $free_consttype(numtype) = $free_numtype(numtype)
+def $free_consttype(vectype) = $free_vectype(vectype)
+
+def $free_absheaptype(absheaptype) = {}
+
+def $free_deftype(deftype) : free
+def $free_deftype(_DEF rectype n) = $free_rectype(rectype)
+
+def $free_typevar(_IDX typeidx) = $free_typeidx(typeidx)
+def $free_typevar(REC n) = {}
+
+def $free_typeuse(typevar) = $free_typevar(typevar)
+def $free_typeuse(deftype) = $free_deftype(deftype)
+
+def $free_heaptype(absheaptype) = $free_absheaptype(absheaptype)
+def $free_heaptype(typeuse) = $free_typeuse(typeuse)
+
+def $free_reftype(REF null? heaptype) = $free_heaptype(heaptype)
+
+def $free_valtype(numtype) = $free_numtype(numtype)
+def $free_valtype(vectype) = $free_vectype(vectype)
+def $free_valtype(reftype) = $free_reftype(reftype)
+def $free_valtype(BOT) = {}
+
+def $free_resulttype(valtype*) = $free_list($free_valtype(valtype)*)
+
+def $free_storagetype(valtype) = $free_valtype(valtype)
+def $free_storagetype(packtype) = $free_packtype(packtype)
+
+def $free_fieldtype(mut? storagetype) = $free_storagetype(storagetype)
+
+def $free_comptype(STRUCT fieldtype*) = $free_list($free_fieldtype(fieldtype)*)
+def $free_comptype(ARRAY fieldtype) = $free_fieldtype(fieldtype)
+def $free_comptype(FUNC resulttype_1 -> resulttype_2) = $free_resulttype(resulttype_1) ++ $free_resulttype(resulttype_2)
+
+def $free_subtype(SUB final? typeuse* comptype) =
+  $free_list($free_typeuse(typeuse)*) ++ $free_comptype(comptype)
+
+def $free_rectype(REC subtype*) = $free_list($free_subtype(subtype)*)
+
+def $free_tagtype(deftype) = $free_deftype(deftype)
+
+def $free_globaltype(mut? valtype) = $free_valtype(valtype)
+
+def $free_memtype(addrtype limits PAGE) = $free_addrtype(addrtype)
+ 
+def $free_tabletype(addrtype limits reftype) =
+  $free_addrtype(addrtype) ++ $free_reftype(reftype)
+
+def $free_datatype(OK) = {}
+
+def $free_elemtype(reftype) = $free_reftype(reftype)
+
+def $free_externtype(TAG tagtype) = $free_tagtype(tagtype)
+def $free_externtype(GLOBAL globaltype) = $free_globaltype(globaltype)
+def $free_externtype(MEM memtype) = $free_memtype(memtype)
+def $free_externtype(TABLE tabletype) = $free_tabletype(tabletype)
+def $free_externtype(FUNC typeuse) = $free_typeuse(typeuse)
+
+def $free_moduletype(externtype_1* -> externtype_2*) =
+  $free_list($free_externtype(externtype_1)*) ++
+  $free_list($free_externtype(externtype_2)*)

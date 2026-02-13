@@ -674,12 +674,6 @@ let elab_hints tid case = List.map (elab_hint tid case)
 
 (* Atoms and Operators *)
 
-let new_note note = Atom.{note with def = ""}
-let new_atom atom = {atom with note = new_note atom.note}
-let new_mixop mixop = Mixop.map_atoms new_atom mixop
-let new_typfield (atom, t_prs, hints) = (new_atom atom, t_prs, hints)
-let new_typcase (mixop, t_prs, hints) = (new_mixop mixop, t_prs, hints)
-
 let elab_atom atom tid =
   assert (valid_tid tid);
   atom.note.Atom.def <- tid.it;
@@ -862,7 +856,7 @@ and elab_typ_definition env outer_dims tid (t : typ) : dots * Il.deftyp * dots =
       let tfs1, dots = checkpoint (as_struct_typ "own type" env Check t1 t1.at) in
       if dots = NoDots then
         error t.at "extension of non-extensible syntax type";
-      List.map new_typfield tfs1  (* ensure atom annotations are fresh *)
+      tfs1
     in
     let tfs2 =
       concat_map_filter_nl_list (fun t ->
@@ -870,7 +864,7 @@ and elab_typ_definition env outer_dims tid (t : typ) : dots * Il.deftyp * dots =
         let tfs, dots = checkpoint (as_struct_typ "parent type" env Infer t' t'.at) in
         if dots = Dots then
           error t.at "inclusion of incomplete syntax type";
-        List.map new_typfield tfs  (* ensure atom annotations are fresh *)
+        tfs
       ) ts
     in
     let tfs' = tfs1 @ tfs2 @ map_filter_nl_list (elab_typfield env outer_dims tid t.at) tfs in
@@ -885,7 +879,7 @@ and elab_typ_definition env outer_dims tid (t : typ) : dots * Il.deftyp * dots =
       let tcs1, dots = checkpoint (as_variant_typ "own type" env Check t1 t1.at) in
       if dots = NoDots then
         error t.at "extension of non-extensible syntax type";
-      List.map new_typcase tcs1  (* ensure atom annotations are fresh *)
+      tcs1
     in
     let tcs2 =
       concat_map_filter_nl_list (fun t ->
@@ -893,7 +887,7 @@ and elab_typ_definition env outer_dims tid (t : typ) : dots * Il.deftyp * dots =
         let tcs, dots = checkpoint (as_variant_typ "parent type" env Infer t' t'.at) in
         if dots = Dots then
           error t.at "inclusion of incomplete syntax type";
-        List.map new_typcase tcs  (* ensure atom annotations are fresh *)
+        tcs
       ) ts
     in
     let tcs' = tcs1 @ tcs2 @ map_filter_nl_list (elab_typcase env outer_dims tid t.at) tcs in
