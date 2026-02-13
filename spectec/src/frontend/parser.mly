@@ -404,6 +404,7 @@ check_atom :
   | DOTDOT { Atom.Dot2 }
   | DOTDOTDOT { Atom.Dot3 }
   | SEMICOLON { Atom.Semicolon }
+  | BACKSLASH { Atom.Backslash }
   | ARROW { Atom.Arrow }
   | ARROW2 { Atom.Arrow2 }
   | ARROWSUB { Atom.ArrowSub }
