@@ -310,7 +310,7 @@ let string_of_def d =
       string_of_typ t ^ " = " ^ string_of_gram gram
   | RelD (id, ps, t, _hints) ->
     "relation " ^ string_of_relid id ^ string_of_params ps ^ ": " ^ string_of_typ t
-  | RuleD (id1, ps, id2, e, prems) ->
+  | RuleD (id1, ps, id2, e, prems, _hints) ->
     "rule " ^ string_of_relid id1 ^ string_of_params ps ^ string_of_ruleid id2 ^ ":\n  " ^
       string_of_exp e ^
       string_of_nl_list "" "" (prefix "\n  -- " string_of_prem) prems

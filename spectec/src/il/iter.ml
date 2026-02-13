@@ -240,6 +240,7 @@ let hintdef d =
   | RelH (x, hs) -> relid x; hints hs
   | DecH (x, hs) -> defid x; hints hs
   | GramH (x, hs) -> gramid x; hints hs
+  | RuleH (x, _, hs) -> relid x; hints hs
 
 let inst i =
   match i.it with

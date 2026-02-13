@@ -179,6 +179,7 @@ let free_hintdef hd =
   | RelH (x, _) -> free_relid x
   | DecH (x, _) -> free_defid x
   | GramH (x, _) -> free_gramid x
+  | RuleH (x, _, _) -> free_relid x
 
 let rec free_def d =
   match d.it with

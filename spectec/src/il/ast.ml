@@ -166,6 +166,7 @@ and hintdef' =
   | RelH of id * hint list
   | DecH of id * hint list
   | GramH of id * hint list
+  | RuleH of id * id * hint list
 
 and hint = {hintid : id; hintexp : El.Ast.exp}        (* hint *)
 

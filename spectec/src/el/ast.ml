@@ -174,7 +174,7 @@ and def' =
   | TypD of id * id * arg list * typ * hint list   (* `syntax` typid args hint* `=` typ *)
   | GramD of id * id * param list * typ * gram * hint list (* `grammar` gramid params hint* `:` type `=` gram *)
   | RelD of id * param list * typ * hint list              (* `relation` relid params `:` typ hint* *)
-  | RuleD of id * param list * id * exp * prem nl_list     (* `rule` relid params ruleid? `:` exp (`--` prem)* *)
+  | RuleD of id * param list * id * exp * prem nl_list * hint list (* `rule` relid params ruleid? `:` exp (`--` prem)* *)
   | VarD of id * typ * hint list                   (* `var` varid `:` typ *)
   | DecD of id * param list * typ * hint list      (* `def` `$` defid params `:` typ hint* *)
   | DefD of id * arg list * exp * prem nl_list     (* `def` `$` defid args `=` exp (`--` prem)* *)
@@ -195,6 +195,7 @@ and hintdef' =
   | TypH of id * id * hint list
   | GramH of id * id * hint list
   | RelH of id * hint list
+  | RuleH of id * id * hint list
   | VarH of id * hint list
   | DecH of id * hint list
 

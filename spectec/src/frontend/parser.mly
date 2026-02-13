@@ -1088,12 +1088,12 @@ def_ :
     { RelD ($2, [], $4, $5) }
   | RELATION relid LPAREN comma_list(param) RPAREN COLON nottyp hint*
     { RelD ($2, $4, $7, $8) }
-  | RULE relid ruleid_list COLON exp prem_list
+  | RULE relid ruleid_list COLON exp prem_list hint*
     { let id = if $3 = "" then "" else String.sub $3 1 (String.length $3 - 1) in
-      RuleD ($2, [], id $ $loc($3), $5, $6) }
-  | RULE relid LPAREN comma_list(param) RPAREN ruleid_list COLON exp prem_list
+      RuleD ($2, [], id $ $loc($3), $5, $6, $7) }
+  | RULE relid LPAREN comma_list(param) RPAREN ruleid_list COLON exp prem_list hint*
     { let id = if $6 = "" then "" else String.sub $6 1 (String.length $6 - 1) in
-      RuleD ($2, $4, id $ $loc($6), $8, $9) }
+      RuleD ($2, $4, id $ $loc($6), $8, $9, $10) }
   | VAR varid_bind COLON typ hint*
     { VarD ($2, $4, $5) }
   | DEF DOLLAR defid COLON typ hint*
@@ -1122,6 +1122,9 @@ def_ :
       HintD (GramH ($2, id $ $loc($3), $4) $ $sloc) }
   | RELATION relid hint*
     { HintD (RelH ($2, $3) $ $sloc) }
+  | RULE relid ruleid_list hint*
+    { let id = if $3 = "" then "" else String.sub $3 1 (String.length $3 - 1) in
+      HintD (RuleH ($2, id $ $loc($3), $4) $ $sloc) }
   | VAR varid_bind hint*
     { HintD (VarH ($2, $3) $ $sloc) }
   | DEF DOLLAR defid hint*

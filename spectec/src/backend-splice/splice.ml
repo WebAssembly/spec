@@ -87,7 +87,7 @@ let env_def env def =
     env.gram <- Map.add id1.it {grammar with gfragments} env.gram
   | RelD (id, _, _, _) ->
     env.rel <- Map.add id.it {rdef = def; rules = []} env.rel
-  | RuleD (id1, _, id2, _, _) ->
+  | RuleD (id1, _, id2, _, _, _) ->
     let relation = Map.find id1.it env.rel in
     let rules = relation.rules @ [(id2.it, def, ref 0)] in
     env.rel <- Map.add id1.it {relation with rules} env.rel

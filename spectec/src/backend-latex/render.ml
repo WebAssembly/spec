@@ -232,6 +232,8 @@ let env_hintdef env hd =
     env_hints "show" env.show_rel id hints;
     env_hints "name" env.name_rel id hints;
     env_hints "tabular" env.tab_rel id hints
+  | RuleH (_id1, _id2, _hints) ->
+    ()
   | VarH (id, hints) ->
     env_hints "macro" env.macro_var id hints;
     env_hints "show" env.show_var id hints
@@ -1768,7 +1770,7 @@ let render_gramdef env d : row list =
 
 let render_ruledef_infer env d =
   match d.it with
-  | RuleD (id1, _ps, id2, e, prems) ->
+  | RuleD (id1, _ps, id2, e, prems, _hints) ->
     let prems' = filter_nl_list (function {it = VarPr _; _} -> false | _ -> true) prems in
     "\\frac{\n" ^
       (if has_nl prems then "\\begin{array}{@{}c@{}}\n" else "") ^
@@ -1782,7 +1784,7 @@ let render_ruledef_infer env d =
 
 let render_ruledef env d : row list =
   match d.it with
-  | RuleD (id1, _ps, id2, e, prems) ->
+  | RuleD (id1, _ps, id2, e, prems, _hints) ->
     let e1, op, e2 =
       match e.it with
       | InfixE (e1, op, ({it = SeqE (e21::es22); _} as e2)) when Atom.is_sub op ->
@@ -1848,7 +1850,7 @@ let rec render_defs env = function
     | RelD (_, _ps, t, _) ->
       "\\boxed{" ^ render_typ env t ^ "}" ^
       (if ds' = [] then "" else " \\; " ^ render_defs env ds')
-    | RuleD (id1, _, _, _, _) ->
+    | RuleD (id1, _, _, _, _, _) ->
       if Map.mem id1.it !(env.tab_rel) then
         (* Columns: decorator & lhs & op & rhs & premise *)
         let sp_deco = if env.deco_rule then sp else "@{}" in
@@ -1892,7 +1894,7 @@ let rec split_tabdefs id tabdefs = function
   | [] -> List.rev tabdefs, []
   | d::ds ->
     match d.it with
-    | RuleD (id1, _, _, _, _) when id1.it = id ->
+    | RuleD (id1, _, _, _, _, _) when id1.it = id ->
       split_tabdefs id (d::tabdefs) ds
     | _ -> List.rev tabdefs, d::ds
 
@@ -1918,7 +1920,7 @@ let rec render_script env = function
     | RelD _ ->
       "$" ^ render_def env d ^ "$\n\n" ^
       render_script env ds
-    | RuleD (id1, _, _, _, _) ->
+    | RuleD (id1, _, _, _, _, _) ->
       if Map.mem id1.it !(env.tab_rel) then
         let tabdefs, ds' = split_tabdefs id1.it [d] ds in
         "$$\n" ^ render_defs env tabdefs ^ "\n$$\n\n" ^

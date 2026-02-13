@@ -2470,7 +2470,13 @@ let elab_hintdef _env (hd : hintdef) : Il.def list =
     [Il.HintD (Il.DecH (id, elab_hints id "" hints) $ hd.at) $ hd.at]
   | AtomH (id, atom, _hints) ->
     let _ = elab_atom atom id in []
-  | GramH _ | VarH _ ->
+  | GramH (id1, _id2, hints) ->
+    if hints = [] then [] else
+    [Il.HintD (Il.GramH (id1, elab_hints id1 "" hints) $ hd.at) $ hd.at]
+  | RuleH (id1, id2, hints) ->
+    if hints = [] then [] else
+    [Il.HintD (Il.RuleH (id1, id2, elab_hints id1 "" hints) $ hd.at) $ hd.at]
+  | VarH _ ->
     []
 
 
@@ -2624,7 +2630,7 @@ let rec elab_def_pass2 env (d : def) : Il.def list =
 
   | RelD _ -> []
 
-  | RuleD (x1, ps, x2, e, prems) ->
+  | RuleD (x1, ps, x2, e, prems, hints) ->
     let ps', t', rules', mixop, not' = find "relation" env.rels x1 in
     if List.exists (fun (x, _) -> x.it = x2.it) rules' then
       error d.at ("duplicate rule name `" ^ x1.it ^
@@ -2642,7 +2648,8 @@ let rec elab_def_pass2 env (d : def) : Il.def list =
     let qs = infer_quants env env' dims det [] [] [] es' [] prems' d.at in
     let rule' = Il.RuleD (x2, qs, mixop, e', prems') $ d.at in
     env.rels <- rebind "relation" env.rels x1 (ps', t', rules' @ [x2, rule'], mixop, not');
-    if not env'.pm then [] else elab_def_pass2 env Subst.(subst_def pm_snd (Iter.clone_def d))
+    (if not env'.pm then [] else elab_def_pass2 env Subst.(subst_def pm_snd (Iter.clone_def d)))
+      @ elab_hintdef env (RuleH (x1, x2, hints) $ d.at)
 
   | VarD _ -> []
 
@@ -2694,6 +2701,7 @@ let populate_hint env (hd' : Il.hintdef) =
   | Il.RelH (x, _) -> ignore (find "relation" env.rels x)
   | Il.DecH (x, _) -> ignore (find "definition" env.defs x)
   | Il.GramH (x, _) -> ignore (find "grammar" env.grams x)
+  | Il.RuleH (x, _, _) -> ignore (find "relation" env.rels x)
 
 let populate_def env (d' : Il.def) : Il.def =
   Debug.(log_in "el.populate_def" dline);

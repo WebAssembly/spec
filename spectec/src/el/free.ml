@@ -173,7 +173,7 @@ let free_def d =
   | VarD (_id, t, _hints) -> free_typ t
   | SepD -> empty
   | RelD (_id, ps, t, _hints) -> free_typ t -- bound_params ps
-  | RuleD (id1, ps, _id2, e, prems) ->
+  | RuleD (id1, ps, _id2, e, prems, _hints) ->
     free_relid id1 ++ (free_exp e ++ free_prems prems -- bound_params ps)
   | DecD (_id, ps, t, _hints) ->
     free_params ps ++ free_typ t -- bound_params ps

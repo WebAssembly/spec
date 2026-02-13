@@ -264,7 +264,7 @@ let subst_def s d =
   | VarD (x, t, hs) -> VarD (x, subst_typ s t, hs)
   | SepD -> SepD
   | RelD (x, ps, t, hs) -> RelD (x, List.map (subst_param s) ps, subst_typ s t, hs)
-  | RuleD (x1, ps, x2, e, prs) -> RuleD (x1, List.map (subst_param s) ps, x2, subst_exp s e, Convert.map_nl_list (subst_prem s) prs)
+  | RuleD (x1, ps, x2, e, prs, hs) -> RuleD (x1, List.map (subst_param s) ps, x2, subst_exp s e, Convert.map_nl_list (subst_prem s) prs, hs)
   | DecD (x, ps, t, hs) -> DecD (x, List.map (subst_param s) ps, subst_typ s t, hs)
   | DefD (x, as_, e, prs) -> DefD (x, List.map (subst_arg s) as_, subst_exp s e, Convert.map_nl_list (subst_prem s) prs)
   | HintD hd -> HintD hd
