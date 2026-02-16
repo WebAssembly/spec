@@ -71,7 +71,6 @@
 ;; DLB_MAX * 2 - DLB_MAX ==
 ;;   DLB_MAX (if fma)
 ;;   0       (if no fma)
-;; form https://www.vinc17.net/software/fma-tests.c
 ;; from https://www.vinc17.net/software/fma-tests.c
 (assert_return (invoke "f64x2.relaxed_madd"
                        (v128.const f64x2 0x1.fffffffffffffp+1023 0x1.fffffffffffffp+1023)
@@ -154,7 +153,6 @@
 ;; DLB_MAX * 2 - DLB_MAX ==
 ;;   DLB_MAX (if fma)
 ;;   0       (if no fma)
-;; form https://www.vinc17.net/software/fma-tests.c
 ;; from https://www.vinc17.net/software/fma-tests.c
 (assert_return (invoke "f64x2.relaxed_madd_cmp"
                        (v128.const f64x2 0x1.fffffffffffffp+1023 0x1.fffffffffffffp+1023)
