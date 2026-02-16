@@ -57,6 +57,7 @@ $$
 & & | & \mathsf{block}~{\mathit{blocktype}}~{{\mathit{instr}}^\ast} \\
 & & | & \mathsf{loop}~{\mathit{blocktype}}~{{\mathit{instr}}^\ast} \\
 & & | & \mathsf{if}~{\mathit{blocktype}}~{{\mathit{instr}}^\ast}~\mathsf{else}~{{\mathit{instr}}^\ast} \\
+& & | & \dots \\
 \end{array}
 $$
 
@@ -84,7 +85,8 @@ $$
 & & | & \mathsf{memory{.}grow}~{\mathit{memidx}} \\
 & & | & \mathsf{memory{.}fill}~{\mathit{memidx}} \\
 & & | & \mathsf{memory{.}copy}~{\mathit{memidx}}~{\mathit{memidx}} \\
-& & | & \mathsf{memory{.}init}~{\mathit{memidx}}~{\mathit{dataidx}} \\[0.8ex]
+& & | & \mathsf{memory{.}init}~{\mathit{memidx}}~{\mathit{dataidx}} \\
+& & | & \dots \\[0.8ex]
 & {\mathit{expr}} & ::= & {{\mathit{instr}}^\ast} \\
 \end{array}
 $$

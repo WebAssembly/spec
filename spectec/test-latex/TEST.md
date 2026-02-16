@@ -881,17 +881,18 @@ $$
 
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}}
-& {\mathit{dotstypex}} & ::= & {\mathit{argh}} ~~|~~ \mathsf{dx{\scriptstyle 1}} \\
-& {\mathit{dotstypey}} & ::= & {\mathit{argh}} ~~|~~ \mathsf{dy{\scriptstyle 1}} \\
-& {\mathit{dotstypex}} & ::= & \dots ~~|~~ {\mathit{borg}} ~~|~~ \mathsf{dx{\scriptstyle 2}} \\
+& {\mathit{dotstypex}} & ::= & {\mathit{argh}} ~~|~~ \mathsf{dx{\scriptstyle 1}} ~~|~~ \dots \\
+& {\mathit{dotstypey}} & ::= & {\mathit{argh}} ~~|~~ \mathsf{dy{\scriptstyle 1}} ~~|~~ \dots \\
+& {\mathit{dotstypex}} & ::= & \dots ~~|~~ {\mathit{borg}} ~~|~~ \mathsf{dx{\scriptstyle 2}} ~~|~~ \dots \\
 & {\mathit{dotstypesep}} & ::= & {\mathit{borg}} \\
 & {\mathit{dotstypex}} & ::= & \dots \\
 & & | & {\mathit{curb}} ~~|~~ \mathsf{dx{\scriptstyle 3}} \\
 & & | & \mathsf{dx{\scriptstyle 4}} ~~|~~ \mathsf{dx{\scriptstyle 5}} \\
-& & | & \mathsf{dx{\scriptstyle 6}} \\
+& & | & \mathsf{dx{\scriptstyle 6}} ~~|~~ \dots \\
 & {\mathit{dotstypey}} & ::= & \dots \\
 & & | & {\mathit{borg}} ~~|~~ \mathsf{dy{\scriptstyle 2}} \\
 & & | & \mathsf{dy{\scriptstyle 3}} ~~|~~ \mathsf{dy{\scriptstyle 4}} \\
+& & | & \dots \\
 & {\mathit{dotstypex}} & ::= & \dots ~~|~~ {\mathit{dork}} ~~|~~ \mathsf{dx{\scriptstyle 7}} \\
 & {\mathit{dotstypey}} & ::= & \dots \\
 & & | & {\mathit{dork}} \\
@@ -2065,17 +2066,18 @@ $$
 
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}}
-& {\dotstypex} & ::= & {\argh} ~~|~~ \DX1 \\
-& {\dotstypey} & ::= & {\argh} ~~|~~ \DY1 \\
-& {\dotstypex} & ::= & \dots ~~|~~ {\borg} ~~|~~ \DX2 \\
+& {\dotstypex} & ::= & {\argh} ~~|~~ \DX1 ~~|~~ \dots \\
+& {\dotstypey} & ::= & {\argh} ~~|~~ \DY1 ~~|~~ \dots \\
+& {\dotstypex} & ::= & \dots ~~|~~ {\borg} ~~|~~ \DX2 ~~|~~ \dots \\
 & {\dotstypesep} & ::= & {\borg} \\
 & {\dotstypex} & ::= & \dots \\
 & & | & {\curb} ~~|~~ \DX3 \\
 & & | & \DX4 ~~|~~ \DX5 \\
-& & | & \DX6 \\
+& & | & \DX6 ~~|~~ \dots \\
 & {\dotstypey} & ::= & \dots \\
 & & | & {\borg} ~~|~~ \DY2 \\
 & & | & \DY3 ~~|~~ \DY4 \\
+& & | & \dots \\
 & {\dotstypex} & ::= & \dots ~~|~~ {\dork} ~~|~~ \DX7 \\
 & {\dotstypey} & ::= & \dots \\
 & & | & {\dork} \\
@@ -3937,6 +3939,7 @@ $$
 & & | & \mathsf{throw}~{\mathit{tagidx}} \\
 & & | & \mathsf{throw\_ref} \\
 & & | & \mathsf{try\_table}~{\mathit{blocktype}}~{\mathit{list}}({\mathit{catch}})~{{\mathit{instr}}^\ast} \\
+& & | & \dots \\
 \mbox{(catch clause)} & {\mathit{catch}} & ::= & \mathsf{catch}~{\mathit{tagidx}}~{\mathit{labelidx}} \\
 & & | & \mathsf{catch\_ref}~{\mathit{tagidx}}~{\mathit{labelidx}} \\
 & & | & \mathsf{catch\_all}~{\mathit{labelidx}} \\
@@ -4022,6 +4025,7 @@ $$
 & & | & {\mathit{shape}}{.}\mathsf{splat} \\
 & & | & {{\mathit{shape}}{.}\mathsf{extract\_lane}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~{\mathit{laneidx}} & \quad \mbox{if}~ {{\mathit{sx}}^?} = \epsilon \Leftrightarrow {\mathrm{lanetype}}({\mathit{shape}}) \in \mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 64}}~\mathsf{f{\scriptstyle 32}}~\mathsf{f{\scriptstyle 64}} \\
 & & | & {\mathit{shape}}{.}\mathsf{replace\_lane}~{\mathit{laneidx}} \\
+& & | & \dots \\
 \end{array}
 $$
 

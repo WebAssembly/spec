@@ -1184,7 +1184,7 @@ and render_nottyp env t : table =
     (string_of_region t.at) (El.Print.string_of_typ t);
   *)
   match t.it with
-  | StrT (dots1, ts, tfs, _dots2) ->
+  | StrT (dots1, ts, tfs, dots2) ->
     let render env = function
       | `Dots -> render_dots Dots
       | `Typ t -> render_nottyp env t
@@ -1197,10 +1197,10 @@ and render_nottyp env t : table =
           (match dots1 with Dots -> [Elem `Dots] | NoDots -> []) @
           map_nl_list (fun t -> `Typ t) ts @
           map_nl_list (fun tf -> `TypField tf) tfs @
-          [] (* (match dots2 with Dots -> [Elem `Dots] | NoDots -> []) *)
+          (match dots2 with Dots -> [Elem `Dots] | NoDots -> [])
         )) [Row [Col " \\}"]])
     )]]
-  | CaseT (dots1, ts, tcs, _dots2) ->
+  | CaseT (dots1, ts, tcs, dots2) ->
     let render env = function
       | `Dots -> render_dots Dots
       | `Typ t -> render_nottyp env t
@@ -1211,7 +1211,7 @@ and render_nottyp env t : table =
         (match dots1 with Dots -> [Elem `Dots] | NoDots -> []) @
         map_nl_list (fun t -> `Typ t) ts @
         map_nl_list (fun tc -> `TypCase tc) tcs @
-        [] (* (match dots2 with Dots -> [Elem `Dots] | NoDots -> []) *)
+        (match dots2 with Dots -> [Elem `Dots] | NoDots -> [])
       )
     in
     if env.config.display then

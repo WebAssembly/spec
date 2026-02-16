@@ -15757,7 +15757,7 @@ The instruction :math:`({\mathsf{array{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~x
 
    * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[x]` is :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`.
 
-   * The signedness :math:`{{\mathit{sx}}^?}` is absent if and only if :math:`{\mathit{zt}}` is a packed type.
+   * The signedness :math:`{{\mathit{sx}}^?}` is present if and only if :math:`{\mathit{zt}}` is a packed type.
 
    * The value type :math:`t` is :math:`{\mathrm{unpack}}({\mathit{zt}})`.
 
@@ -27792,7 +27792,7 @@ Instr_ok/array.get
 - the instruction (ARRAY.GET sx? x) is valid with the instruction type [(REF ?(NULL) (_IDX x)), I32] -> [t] if:
   - the type C.TYPES[x] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is (ARRAY (mut? zt)).
-  - the signedness sx? is ?() if and only if $is_packtype(zt).
+  - the signedness sx? is not ?() if and only if $is_packtype(zt).
   - the value type t is $unpack(zt).
 
 Instr_ok/array.set
