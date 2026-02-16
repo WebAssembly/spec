@@ -3596,11 +3596,11 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
     -- if (($unpack(zt) = (numtype : numtype <: valtype)) \/ ($unpack(zt) = (vectype : vectype <: valtype)))
     -- if (C.DATAS_context[y!`%`_idx.0] = OK_datatype)
 
-  ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec:296.1-299.39
+  ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec:296.1-299.41
   rule `array.get`{C : context, `sx?` : sx?, x : idx, zt : storagetype, `mut?` : mut?}:
     `%|-%:%`(C, `ARRAY.GET`_instr(sx?{sx <- `sx?`}, x), `%->_%%`_instrtype(`%`_resulttype([REF_valtype(?(NULL_null), _IDX_heaptype(x)) I32_valtype]), [], `%`_resulttype([$unpack(zt)])))
     -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], ARRAY_comptype(`%%`_fieldtype(mut?{mut <- `mut?`}, zt)))
-    -- if ((sx?{sx <- `sx?`} = ?()) <=> $is_packtype(zt))
+    -- if ((sx?{sx <- `sx?`} =/= ?()) <=> $is_packtype(zt))
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec:301.1-303.42
   rule `array.set`{C : context, x : idx, zt : storagetype}:
@@ -14959,11 +14959,11 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
     -- if (($unpack(zt) = (numtype : numtype <: valtype)) \/ ($unpack(zt) = (vectype : vectype <: valtype)))
     -- if (C.DATAS_context[y!`%`_idx.0] = OK_datatype)
 
-  ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec:296.1-299.39
+  ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec:296.1-299.41
   rule `array.get`{C : context, `sx?` : sx?, x : idx, zt : storagetype, `mut?` : mut?}:
     `%|-%:%`(C, `ARRAY.GET`_instr(sx?{sx <- `sx?`}, x), `%->_%%`_instrtype(`%`_resulttype([REF_valtype(?(NULL_null), _IDX_heaptype(x)) I32_valtype]), [], `%`_resulttype([$unpack(zt)])))
     -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], ARRAY_comptype(`%%`_fieldtype(mut?{mut <- `mut?`}, zt)))
-    -- if ((sx?{sx <- `sx?`} = ?()) <=> $is_packtype(zt))
+    -- if ((sx?{sx <- `sx?`} =/= ?()) <=> $is_packtype(zt))
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec:301.1-303.42
   rule `array.set`{C : context, x : idx, zt : storagetype}:
@@ -26382,12 +26382,12 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
     -- if (y!`%`_idx.0 < |C.DATAS_context|)
     -- if (C.DATAS_context[y!`%`_idx.0] = OK_datatype)
 
-  ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec:296.1-299.39
+  ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec:296.1-299.41
   rule `array.get`{C : context, `sx?` : sx?, x : idx, zt : storagetype, `mut?` : mut?}:
     `%|-%:%`(C, `ARRAY.GET`_instr(sx?{sx <- `sx?`}, x), `%->_%%`_instrtype(`%`_resulttype([REF_valtype(?(NULL_null), _IDX_heaptype(x)) I32_valtype]), [], `%`_resulttype([$unpack(zt)])))
     -- if (x!`%`_idx.0 < |C.TYPES_context|)
     -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], ARRAY_comptype(`%%`_fieldtype(mut?{mut <- `mut?`}, zt)))
-    -- if ((sx?{sx <- `sx?`} = ?()) <=> $is_packtype(zt))
+    -- if ((sx?{sx <- `sx?`} =/= ?()) <=> $is_packtype(zt))
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec:301.1-303.42
   rule `array.set`{C : context, x : idx, zt : storagetype}:
