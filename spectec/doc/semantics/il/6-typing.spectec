@@ -311,7 +311,7 @@ rule Ok_exp/STR:
   ;; Note: premises need not hold!
 
 rule Ok_exp/SEL:
-  E |- SEL e n : $subst_typ({EXP (x_i, e_i)^(i<n)}, t_n)
+  E |- SEL e n : $subst_typ({EXP (x_i, e_i)^n}, t_n)
   -- Ok_exp: E |- e : TUP (x `: t)*
   -- if t_n = t*[n]
   -- (if x_i = x*[i])^(i<n)
