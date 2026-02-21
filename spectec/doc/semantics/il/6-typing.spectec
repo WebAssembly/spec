@@ -53,8 +53,8 @@ rule Sub_typ/variant:
   E |- t_1 <: t_2
   -- Expand_typ: E |- t_1 => VARIANT tc_1*
   -- Expand_typ: E |- t_2 => VARIANT tc_2*
-  -- (if (a `: t_1a `- `{q*} pr*) = tc_1)*
-  -- (if (a `: t_2a `- `{q*} pr*) <- tc_2*)*
+  -- (if (m `: t_1a `- `{q*} pr*) = tc_1)*
+  -- (if (m `: t_2a `- `{q*} pr*) <- tc_2*)*
   -- (Sub_typ: E |- t_1a <: t_2a)*
 
 rule Sub_typ/iter:
@@ -311,7 +311,7 @@ rule Ok_exp/STR:
   ;; Note: premises need not hold!
 
 rule Ok_exp/SEL:
-  E |- SEL e n : $subst_typ({EXP (x_i, e_i)^n}, t_n)
+  E |- SEL e n : $subst_typ({EXP (x_i, e_i)^(i<n)}, t_n)
   -- Ok_exp: E |- e : TUP (x `: t)*
   -- if t_n = t*[n]
   -- (if x_i = x*[i])^(i<n)
@@ -460,7 +460,7 @@ rule Ok_sym/RANGE:
 rule Ok_sym/ITER:
   E |- ITER g it (x `<- e)* : ITER t it'
   -- Ok_iter: E |- it : it' -| E'
-  -- (Ok_exp: E |- e' : ITER t' it')*
+  -- (Ok_exp: E |- e : ITER t' it')*
   -- Ok_sym: E ++ {EXP (x, t')*} ++ E' |- g : t
   -- Ok_typ: E |- t : OK
 
@@ -502,8 +502,8 @@ rule Ok_prem/LET:
 rule Ok_prem/ITER:
   E |- ITER pr it (x `<- e)* : OK
   -- Ok_iter: E |- it : it' -| E'
-  -- (Ok_exp: E |- e' : ITER t' it')*
-  -- Ok_prem: E ++ {EXP (x, t_x)*} ++ E' |- pr : OK
+  -- (Ok_exp: E |- e : ITER t' it')*
+  -- Ok_prem: E ++ {EXP (x, t')*} ++ E' |- pr : OK
 
 
 rule Ok_prems:
