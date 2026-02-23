@@ -243,7 +243,7 @@ let large_enough_subsets xs =
   let min = if n >= 2 then n-1 else n in
   List.filter ( fun ys -> min <= List.length ys ) yss
 
-let (@@) f g x = f x @ g x
+let (@@@) f g x = f x @ g x
 
 let is_not_lhs e = match e.it with
 | LenE _ | IterE (_, (ListN (_, Some _), _)) | DotE _ -> true
@@ -261,7 +261,7 @@ let is_call e = match e.it with
 
 let subset_selector e =
   if is_not_lhs e then (fun _ -> [])
-  else if is_call e then singletons @@ group_arg e
+  else if is_call e then singletons @@@ group_arg e
   else if is_atomic_lhs e then wrap
   else large_enough_subsets
 
@@ -292,13 +292,22 @@ let rec rows_of_prem vars len i p =
   | LetPr (_, _, targets) ->
     let covering_vars = List.filter_map (index_of len vars) targets in
     [ Assign targets, p, [i] @ covering_vars ]
+  | RulePr (id, _, { it = TupE args; _ }) when id.it = "Eval_expr" ->
+    (* HARDCODE: The output of the relation Eval_expr (%;%~>*%;%) is last two *)
+    let args', l = Util.Lib.List.split_last args in
+    let _, l' = Util.Lib.List.split_last args' in
+    let frees = (union (free_exp false l) (free_exp false l')).varid |> Set.elements in
+    [
+      Condition, p, [i];
+      Assign frees, p, [i] @ List.filter_map (index_of len vars) frees
+    ]
   | RulePr (_, _, { it = TupE args; _ }) ->
     (* Assumpton: the only possible assigned-value is the last arg (i.e. ... |- lhs ) *)
     let _, l = Util.Lib.List.split_last args in
-    let frees = (free_exp_list l) in
+    let frees = free_exp_list l in
     [
       Condition, p, [i];
-      Assign frees, p, [i] @ List.filter_map (index_of len vars) (free_exp_list l)
+      Assign frees, p, [i] @ List.filter_map (index_of len vars) frees
     ]
   | IterPr (p', iterexp) ->
     let p_r = rewrite_iterexp iterexp p' in
