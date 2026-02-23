@@ -17,7 +17,7 @@ rule Expand_typ/alias:
 
 rule Expand_typ/step:
   S |- VAR x a* => $subst_deftyp(s, dt)
-  -- if (x, p* `-> OK `= inst*) <- E.TYP
+  -- if (x, p* `-> OK `= inst*) <- S.TYP
   -- if (INST `{q*} a* `= dt) <- inst*
   -- Match_args: S |- a* `/ `{q*} a'* => s
 
@@ -123,7 +123,7 @@ rule Step_exp/CMP-EQ-true:
 
 rule Step_exp/CMP-NE-false:
   S |- CMP NE e_1 e_2 ~> BOOL false
-  -- if e_1 = e_2
+  -- if e_1 =/= e_2
 
 rule Step_exp/CMP-NUM:
   S |- CMP numcmpop num_1 num_2 ~> BOOL $numcmp(numcmpop, num_1, num_2)
@@ -344,7 +344,7 @@ rule Step_exp/CALL-ctx:
 
 rule Step_exp/CALL-apply:
   S |- CALL x a* ~> $subst_exp(s, e)
-  -- if (x, p* `-> t `= clause*) <- E.FUN
+  -- if (x, p* `-> t `= clause*) <- S.FUN
   -- if (CLAUSE `{q*} a'* `= e `- pr*) <- clause*
   -- Match_args: S |- a* `/ `{q*} a'* => s
   -- Reduce_prems: S |- $subst_prem(s, pr)* ~>* eps
