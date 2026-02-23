@@ -946,6 +946,7 @@ let hide_state_expr expr =
       | CallE (f, args) -> CallE (f, hide_state_args args)
       | TupE [ s; e ] when is_store s -> e.it
       | TupE [ z; e ] when is_state z -> e.it
+      | VarE id when is_state expr && String.starts_with ~prefix:"z" id -> VarE "z"
       | e -> e
     in
     { expr with it = expr' }
