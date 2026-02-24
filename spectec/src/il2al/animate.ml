@@ -243,7 +243,7 @@ let large_enough_subsets xs =
   let min = if n >= 2 then n-1 else n in
   List.filter ( fun ys -> min <= List.length ys ) yss
 
-let (@@) f g x = f x @ g x
+let (@@@) f g x = f x @ g x
 
 let is_not_lhs e = match e.it with
 | LenE _ | IterE (_, (ListN (_, Some _), _)) | DotE _ -> true
@@ -262,7 +262,7 @@ let is_call e = match e.it with
 
 let subset_selector e =
   if is_not_lhs e then (fun _ -> [])
-  else if is_call e then singletons @@ group_arg e
+  else if is_call e then singletons @@@ group_arg e
   else if is_atomic_lhs e then wrap
   else large_enough_subsets
 
@@ -294,13 +294,24 @@ let rec rows_of_prem vars len i p =
     let covering_vars = List.filter_map (index_of len vars) targets in
     [ Assign targets, p, [i] @ covering_vars ]
   | RulePr (_, _, _, { it = TupE args; _ }) ->
-    (* Assumpton: the only possible assigned-value is the last arg (i.e. ... |- lhs ) *)
-    let _, l = Util.Lib.List.split_last args in
-    let frees = (free_exp_list l) in
-    [
-      Condition, p, [i];
-      Assign frees, p, [i] @ List.filter_map (index_of len vars) (free_exp_list l)
-    ]
+    (* Assumption:
+     * The only possible set of output variable
+     * is the last arg (i.e. ... |- lhs )
+     * or the last two args (i.e. ... ~>* z; v) *)
+    let assign_last n =
+      if List.length args <= n then [] else
+      let outs, ins = Lib.List.split n (List.rev args) in
+      let free_exps es = es |> List.map (free_exp false) |> List.fold_left union empty in
+      let free_set = free_exps outs in
+      let bound_set = free_exps ins in
+      if not (disjoint free_set bound_set) then [] else
+      let frees = free_set.varid |> Set.elements in
+      [ Assign frees, p, [i] @ List.filter_map (index_of len vars) frees ]
+    in
+
+    [ Condition, p, [i] ]
+      @ assign_last 1
+      @ assign_last 2
   | IterPr (p', iterexp) ->
     let p_r = rewrite_iterexp iterexp p' in
     let to_iter (tag, p, coverings) = tag, IterPr (recover_iterexp iterexp p, iterexp) $ p.at, coverings in
@@ -342,7 +353,7 @@ let animate_prems known_vars prems =
       Error.error (over_region (List.map at unhandled_prems)) "prose translation" "There might be a cyclic binding"
     else
       snd !best'
-  | Some x -> x
+  | Some prems -> prems
 
 (* Animate rule *)
 let animate_rule r = match r.it with

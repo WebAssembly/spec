@@ -11144,15 +11144,13 @@ $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-{{{\mathrm{evalglobal}}^\ast}}{(z, \epsilon, \epsilon)} & = & (z, \epsilon) \\
-{{{\mathrm{evalglobal}}^\ast}}{(z, {\mathit{gt}}~{{\mathit{gt}'}^\ast}, {\mathit{expr}}~{{\mathit{expr}'}^\ast})} & = & ({z'}, {\mathit{val}}~{{\mathit{val}'}^\ast}) &  \\
+{{{\mathrm{evalexpr}}^\ast}}{(z, \epsilon)} & = & (z, \epsilon) \\
+{{{\mathrm{evalexpr}}^\ast}}{(z, {\mathit{expr}}~{{\mathit{expr}'}^\ast})} & = & ({z''}, {\mathit{ref}}~{{\mathit{ref}'}^\ast}) &  \\
 && \multicolumn{2}{@{}l@{}}{\quad
 \quad
 \begin{array}[t]{@{}l@{}}
-\mbox{if}~ z ; {\mathit{expr}} \hookrightarrow^\ast z ; {\mathit{val}} \\
-{\land}~ z = s ; f \\
-{\land}~ ({s'}, a) = {\mathrm{allocglobal}}(s, {\mathit{gt}}, {\mathit{val}}) \\
-{\land}~ ({z'}, {{\mathit{val}'}^\ast}) = {{{\mathrm{evalglobal}}^\ast}}{(({s'} ; f{}[{.}\mathsf{module}{.}\mathsf{globals} \mathrel{{=}{\oplus}} a]), {{\mathit{gt}'}^\ast}, {{\mathit{expr}'}^\ast})} \\
+\mbox{if}~ z ; {\mathit{expr}} \hookrightarrow^\ast {z'} ; {\mathit{ref}} \\
+{\land}~ ({z''}, {{\mathit{ref}'}^\ast}) = {{{\mathrm{evalexpr}}^\ast}}{({z'}, {{\mathit{expr}'}^\ast})} \\
 \end{array}
 } \\
 \end{array}
@@ -11160,7 +11158,37 @@ $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-{\mathrm{instantiate}}(s, {\mathit{module}}, {{\mathit{externaddr}}^\ast}) & = & {s'} ; \{ \mathsf{module}~{\mathit{moduleinst}} \} ; {{\mathit{instr}}_{\mathsf{e}}^\ast}~{{\mathit{instr}}_{\mathsf{d}}^\ast}~{{\mathit{instr}}_{\mathsf{s}}^?} &  \\
+{{{{\mathrm{evalexpr}}^\ast}^\ast}}{(z, \epsilon)} & = & (z, \epsilon) \\
+{{{{\mathrm{evalexpr}}^\ast}^\ast}}{(z, {{\mathit{expr}}^\ast}~{{{\mathit{expr}'}^\ast}^\ast})} & = & ({z''}, {{\mathit{ref}}^\ast}~{{{\mathit{ref}'}^\ast}^\ast}) &  \\
+&& \multicolumn{2}{@{}l@{}}{\quad
+\quad
+\begin{array}[t]{@{}l@{}}
+\mbox{if}~ ({z'}, {{\mathit{ref}}^\ast}) = {{{\mathrm{evalexpr}}^\ast}}{(z, {{\mathit{expr}}^\ast})} \\
+{\land}~ ({z''}, {{{\mathit{ref}'}^\ast}^\ast}) = {{{{\mathrm{evalexpr}}^\ast}^\ast}}{({z'}, {{{\mathit{expr}'}^\ast}^\ast})} \\
+\end{array}
+} \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+{{{\mathrm{evalglobal}}^\ast}}{(z, \epsilon, \epsilon)} & = & (z, \epsilon) \\
+{{{\mathrm{evalglobal}}^\ast}}{(z, {\mathit{gt}}~{{\mathit{gt}'}^\ast}, {\mathit{expr}}~{{\mathit{expr}'}^\ast})} & = & ({z''}, {\mathit{val}}~{{\mathit{val}'}^\ast}) &  \\
+&& \multicolumn{2}{@{}l@{}}{\quad
+\quad
+\begin{array}[t]{@{}l@{}}
+\mbox{if}~ z ; {\mathit{expr}} \hookrightarrow^\ast {z'} ; {\mathit{val}} \\
+{\land}~ {z'} = s ; f \\
+{\land}~ ({s'}, a) = {\mathrm{allocglobal}}(s, {\mathit{gt}}, {\mathit{val}}) \\
+{\land}~ ({z''}, {{\mathit{val}'}^\ast}) = {{{\mathrm{evalglobal}}^\ast}}{(({s'} ; f{}[{.}\mathsf{module}{.}\mathsf{globals} \mathrel{{=}{\oplus}} a]), {{\mathit{gt}'}^\ast}, {{\mathit{expr}'}^\ast})} \\
+\end{array}
+} \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+{\mathrm{instantiate}}(s, {\mathit{module}}, {{\mathit{externaddr}}^\ast}) & = & {s''''} ; \{ \mathsf{module}~{\mathit{moduleinst}} \} ; {{\mathit{instr}}_{\mathsf{e}}^\ast}~{{\mathit{instr}}_{\mathsf{d}}^\ast}~{{\mathit{instr}}_{\mathsf{s}}^?} &  \\
  \multicolumn{4}{@{}l@{}}{\quad
 \quad
 \begin{array}[t]{@{}l@{}}
@@ -11178,9 +11206,10 @@ $$
   \mathsf{funcs}~{\mathrm{funcs}}({{\mathit{externaddr}}^\ast})~{({|s{.}\mathsf{funcs}|} + i_{\mathsf{f}})^{i_{\mathsf{f}}<{|{{\mathit{func}}^\ast}|}}} \}\end{array} \\
 {\land}~ z = s ; \{ \mathsf{module}~{\mathit{moduleinst}}_0 \} \\
 {\land}~ ({z'}, {{\mathit{val}}_{\mathsf{g}}^\ast}) = {{{\mathrm{evalglobal}}^\ast}}{(z, {{\mathit{globaltype}}^\ast}, {{\mathit{expr}}_{\mathsf{g}}^\ast})} \\
-{\land}~ ({z'} ; {\mathit{expr}}_{\mathsf{t}} \hookrightarrow^\ast {z'} ; {\mathit{ref}}_{\mathsf{t}})^\ast \\
-{\land}~ {({z'} ; {\mathit{expr}}_{\mathsf{e}} \hookrightarrow^\ast {z'} ; {\mathit{ref}}_{\mathsf{e}})^\ast}^\ast \\
-{\land}~ ({s'}, {\mathit{moduleinst}}) = {\mathrm{allocmodule}}(s, {\mathit{module}}, {{\mathit{externaddr}}^\ast}, {{\mathit{val}}_{\mathsf{g}}^\ast}, {{\mathit{ref}}_{\mathsf{t}}^\ast}, {({{\mathit{ref}}_{\mathsf{e}}^\ast})^\ast}) \\
+{\land}~ ({z''}, {{\mathit{ref}}_{\mathsf{t}}^\ast}) = {{{\mathrm{evalexpr}}^\ast}}{({z'}, {{\mathit{expr}}_{\mathsf{t}}^\ast})} \\
+{\land}~ ({z'''}, {{{\mathit{ref}}_{\mathsf{e}}^\ast}^\ast}) = {{{{\mathrm{evalexpr}}^\ast}^\ast}}{({z''}, {{{\mathit{expr}}_{\mathsf{e}}^\ast}^\ast})} \\
+{\land}~ {z'''} = {s'''} ; f \\
+{\land}~ ({s''''}, {\mathit{moduleinst}}) = {\mathrm{allocmodule}}({s'''}, {\mathit{module}}, {{\mathit{externaddr}}^\ast}, {{\mathit{val}}_{\mathsf{g}}^\ast}, {{\mathit{ref}}_{\mathsf{t}}^\ast}, {({{\mathit{ref}}_{\mathsf{e}}^\ast})^\ast}) \\
 {\land}~ {{\mathit{instr}}_{\mathsf{d}}^\ast} = {\bigoplus}\, {{{\mathrm{rundata}}}_{i_{\mathsf{d}}}({{\mathit{data}}^\ast}{}[i_{\mathsf{d}}])^{i_{\mathsf{d}}<{|{{\mathit{data}}^\ast}|}}} \\
 {\land}~ {{\mathit{instr}}_{\mathsf{e}}^\ast} = {\bigoplus}\, {{{\mathrm{runelem}}}_{i_{\mathsf{e}}}({{\mathit{elem}}^\ast}{}[i_{\mathsf{e}}])^{i_{\mathsf{e}}<{|{{\mathit{elem}}^\ast}|}}} \\
 {\land}~ {{\mathit{instr}}_{\mathsf{s}}^?} = {(\mathsf{call}~x)^?} \\

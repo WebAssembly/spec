@@ -121,9 +121,17 @@ rule Step_exp/CMP-EQ-true:
   S |- CMP EQ e_1 e_2 ~> BOOL true
   -- if e_1 = e_2
 
+rule Step_exp/CMP-EQ-false:
+  S |- CMP EQ val_1 val_2 ~> BOOL false
+  -- if val_1 =/= val_2
+
 rule Step_exp/CMP-NE-false:
   S |- CMP NE e_1 e_2 ~> BOOL false
   -- if e_1 =/= e_2
+
+rule Step_exp/CMP-NE-true:
+  S |- CMP NE val_1 val_2 ~> BOOL true
+  -- if val_1 =/= val_2
 
 rule Step_exp/CMP-NUM:
   S |- CMP numcmpop num_1 num_2 ~> BOOL $numcmp(numcmpop, num_1, num_2)
