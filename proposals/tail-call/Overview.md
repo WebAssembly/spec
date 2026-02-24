@@ -73,7 +73,7 @@ This can be applied to any form of call, that is:
 ## Examples
 
 A simple boring example of a tail-recursive factorial funciton.
-```
+```wasm
 (func $fac (param $x i64) (result i64)
   (return_call $fac-aux (get_local $x) (i64.const 1))
 )
