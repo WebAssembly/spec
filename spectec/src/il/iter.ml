@@ -5,6 +5,8 @@ open Xl
 
 module type Arg =
 sig
+  type scope
+
   val visit_atom : atom -> unit
   val visit_mixop : mixop -> unit
   val visit_typid : id -> unit
@@ -23,10 +25,15 @@ sig
   val visit_def : def -> unit
 
   val visit_hint : hint -> unit
+
+  val scope_enter : id -> typ -> scope
+  val scope_exit : id -> scope -> unit
 end
 
 module Skip =
 struct
+  type scope = unit
+
   let visit_atom _ = ()
   let visit_mixop _ = ()
   let visit_typid _ = ()
@@ -45,6 +52,9 @@ struct
   let visit_def _ = ()
 
   let visit_hint _ = ()
+
+  let scope_enter _ _ = ()
+  let scope_exit _ _ = ()
 end
 
 
@@ -85,7 +95,23 @@ let hints = list hint
 let rec iter it =
   match it with
   | Opt | List | List1 -> ()
-  | ListN (e, xo) -> exp e; opt varid xo
+  | ListN _ -> assert false
+
+and iterexp : 'a. ('a -> unit) -> 'a -> _ -> unit = fun f body (it, xes) ->
+  let eo, xo, xts1 =
+    match it with
+    | ListN (e, Some x) -> Some e, Some x, [(x, NumT `NatT $ x.at)]
+    | ListN (e, None) -> Some e, None, []
+    | _ -> None, None, []
+  in
+  let xts = xts1 @ List.map (fun (x, e) -> x, e.note) xes in
+  let old_scopes = List.map (fun (x, t) -> scope_enter x t) xts in
+  f body;
+  opt varid xo;
+  list (pair varid ignore) xes;
+  List.iter2 (fun (x, _) scope -> scope_exit x scope)
+    (List.rev xts) (List.rev old_scopes);
+  opt exp eo; list (pair ignore exp) xes
 
 
 (* Types *)
@@ -94,13 +120,19 @@ and dots _ = ()
 and numtyp _nt = ()
 and optyp = function #Bool.typ -> () | #Num.typ as nt -> numtyp nt
 
-and typ t =
+and typ ?(quants = []) ?(prems = []) t =
   visit_typ t;
   match t.it with
   | VarT (x, as_) -> typid x; args as_
   | BoolT | TextT -> ()
   | NumT nt -> numtyp nt
-  | TupT ets -> list (pair exp typ) ets
+  | TupT [] -> params quants; list prem prems
+  | TupT ((x, t)::xts) ->
+    typ t;
+    let scope = scope_enter x t in
+    varid x;
+    typ (TupT xts $ t.at) ~quants ~prems;
+    scope_exit x scope
   | IterT (t1, it) -> typ t1; iter it
 
 and deftyp t =
@@ -110,8 +142,10 @@ and deftyp t =
   | StructT tfs -> list typfield tfs
   | VariantT tcs -> list typcase tcs
 
-and typfield (at, (bs, t, prs), hs) = atom at; binds bs; typ t; prems prs; hints hs
-and typcase (op, (bs, t, prs), hs) = mixop op; binds bs; typ t; prems prs; hints hs
+and typfield (at, (t, quants, prems), hs) =
+  atom at; typ t ~quants ~prems; hints hs
+and typcase (op, (t, quants, prems), hs) =
+  mixop op; typ t ~quants ~prems; hints hs
 
 
 (* Expressions *)
@@ -137,10 +171,10 @@ and exp e =
   | SliceE (e1, e2, e3) -> exp e1; exp e2; exp e3
   | UpdE (e1, p, e2) | ExtE (e1, p, e2) -> exp e1; path p; exp e2
   | CallE (x, as_) -> defid x; args as_
-  | IterE (e1, it) -> exp e1; iterexp it
+  | IterE (e1, it) -> iterexp exp e1 it
   | CvtE (e1, nt1, nt2) -> exp e1; numtyp nt1; numtyp nt2
   | SubE (e1, t1, t2) -> exp e1; typ t1; typ t2
-
+ 
 and expfield (at, e) = atom at; exp e
 
 and path p =
@@ -150,8 +184,6 @@ and path p =
   | IdxP (p1, e) -> path p1; exp e
   | SliceP (p1, e1, e2) -> path p1; exp e1; exp e2
   | DotP (p1, at) -> path p1; atom at
-
-and iterexp (it, xes) = iter it; list (pair varid exp) xes
 
 
 (* Grammars *)
@@ -165,7 +197,7 @@ and sym g =
   | EpsG -> ()
   | SeqG gs | AltG gs -> list sym gs
   | RangeG (g1, g2) -> sym g1; sym g2
-  | IterG (g1, it) -> sym g1; iterexp it
+  | IterG (g1, it) -> iterexp sym g1 it
   | AttrG (e, g1) -> exp e; sym g1
 
 
@@ -174,10 +206,10 @@ and sym g =
 and prem pr =
   visit_prem pr;
   match pr.it with
-  | RulePr (x, op, e) -> relid x; mixop op; exp e
+  | RulePr (x, as_, op, e) -> relid x; args as_; mixop op; exp e
   | IfPr e -> exp e
   | ElsePr -> ()
-  | IterPr (pr1, it) -> prem pr1; iterexp it
+  | IterPr (pr1, it) -> iterexp prem pr1 it
   | LetPr (e1, e2, _) -> exp e1; exp e2
 
 and prems prs = list prem prs
@@ -192,22 +224,14 @@ and arg a =
   | DefA x -> defid x
   | GramA g -> sym g
 
-and bind b =
-  match b.it with
-  | ExpB (id, t) -> varid id; typ t
-  | TypB id -> typid id
-  | DefB (id, ps, t) -> defid id; params ps; typ t
-  | GramB (id, ps, t) -> gramid id; params ps; typ t
-
 and param p =
   match p.it with
   | ExpP (x, t) -> varid x; typ t
   | TypP x -> typid x
   | DefP (x, ps, t) -> defid x; params ps; typ t
-  | GramP (x, t) -> gramid x; typ t
+  | GramP (x, ps, t) -> gramid x; params ps; typ t
 
 and args as_ = list arg as_
-and binds bs = list bind bs
 and params ps = list param ps
 
 let hintdef d =
@@ -216,28 +240,29 @@ let hintdef d =
   | RelH (x, hs) -> relid x; hints hs
   | DecH (x, hs) -> defid x; hints hs
   | GramH (x, hs) -> gramid x; hints hs
+  | RuleH (x, _, hs) -> relid x; hints hs
 
 let inst i =
   match i.it with
-  | InstD (bs, as_, dt) -> binds bs; args as_; deftyp dt
+  | InstD (ps, as_, dt) -> params ps; args as_; deftyp dt
 
 let rule r =
   match r.it with
-  | RuleD (x, bs, op, e, prs) -> ruleid x; binds bs; mixop op; exp e; prems prs
+  | RuleD (x, ps, op, e, prs) -> ruleid x; params ps; mixop op; exp e; prems prs
 
 let clause c =
   match c.it with
-  | DefD (bs, as_, e, prs) -> binds bs; args as_; exp e; prems prs
+  | DefD (ps, as_, e, prs) -> params ps; args as_; exp e; prems prs
 
 let prod p =
   match p.it with
-  | ProdD (bs, g, e, prs) -> binds bs; sym g; exp e; prems prs
+  | ProdD (ps, g, e, prs) -> params ps; sym g; exp e; prems prs
 
 let rec def d =
   visit_def d;
   match d.it with
   | TypD (x, ps, insts) -> typid x; params ps; list inst insts
-  | RelD (x, op, t, rules) -> relid x; mixop op; typ t; list rule rules
+  | RelD (x, ps, op, t, rules) -> relid x; params ps; mixop op; typ t; list rule rules
   | DecD (x, ps, t, clauses) -> defid x; params ps; typ t; list clause clauses
   | GramD (x, ps, t, prods) -> gramid x; params ps; typ t; list prod prods
   | RecD ds -> list def ds

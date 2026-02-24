@@ -1,0 +1,518 @@
+;; Types
+
+relation Expand_typ: S |- typ => deftyp
+relation Reduce_typ: S |- typ ~>* typ
+relation Step_typ: S |- typ ~> typ
+relation Eq_typ: S |- typ == typ
+
+
+rule Expand_typ/plain:
+  S |- t => ALIAS t
+  -- if t = plaintyp
+
+rule Expand_typ/alias:
+  S |- VAR x a* => dt
+  -- Expand_typ: S |- VAR x a* => ALIAS t
+  -- Expand_typ: S |- t => dt
+
+rule Expand_typ/step:
+  S |- VAR x a* => $subst_deftyp(s, dt)
+  -- if (x, p* `-> OK `= inst*) <- E.TYP
+  -- if (INST `{q*} a* `= dt) <- inst*
+  -- Match_args: S |- a* `/ `{q*} a'* => s
+
+
+rule Eq_typ:
+  S |- t_1 == t_2
+  -- Reduce_typ: S |- t_1 ~>* t'_1
+  -- Reduce_typ: S |- t_2 ~>* t'_2
+  -- if t'_1 = t'_2
+
+
+rule Reduce_typ/normal:
+  S |- t ~>* t
+
+rule Reduce_typ/step:
+  S |- t ~>* t''
+  -- Step_typ: S |- t ~> t'
+  -- Reduce_typ: S |- t' ~>* t''
+
+
+rule Step_typ/VAR-ctx:
+  S |- VAR x a* ~> VAR x a*[[n] = a'_n]
+  -- Step_arg: S |- a*[n] ~> a'_n
+
+rule Step_typ/VAR-apply:
+  S |- VAR x a* ~> t
+  -- Expand_typ: S |- VAR x a* => ALIAS t
+
+
+rule Step_typ/TUP-ctx:
+  S |- TUP (x `: t)* ~> TUP (x `: t)*[[n] = (x*[n] `: t'_n)]
+  -- Step_typ: S |- t*[n] ~> t'_n
+
+
+rule Step_typ/ITER-ctx:
+  S |- ITER t it ~> ITER t' it
+  -- Step_typ: S |- t ~> t'
+
+
+;; Expressions
+
+relation Reduce_exp: S |- exp ~>* exp
+relation Step_exp: S |- exp ~> exp
+relation Step_path: S |- path ~> path
+relation Step_iter: S |- iter ~> iter
+relation Step_exppull: S |- exppull ~> exppull
+relation Eq_exp: S |- exp == exp
+
+
+rule Eq_exp:
+  S |- e_1 == e_2
+  -- Reduce_exp: S |- e_1 ~>* e'_1
+  -- Reduce_exp: S |- e_2 ~>* e'_2
+  -- if e'_1 = e'_2
+
+
+rule Reduce_exp/normal:
+  S |- e ~>* e
+
+rule Reduce_exp/step:
+  S |- e ~>* e''
+  -- Step_exp: S |- e ~> e'
+  -- Reduce_exp: S |- e' ~>* e''
+
+
+rule Step_exp/UN-ctx:
+  S |- UN op e ~> UN op e'
+  -- Step_exp: S |- e ~> e'
+
+rule Step_exp/UN-BOOL:
+  S |- UN boolunop (BOOL b) ~> BOOL $boolun(boolunop, b)
+
+rule Step_exp/UN-NUM:
+  S |- UN numunop num ~> $numun(numunop, num)
+
+
+rule Step_exp/BIN-ctx1:
+  S |- BIN op e_1 e_2 ~> BIN op e_1' e_2
+  -- Step_exp: S |- e_1 ~> e_1'
+
+rule Step_exp/BIN-ctx2:
+  S |- BIN op e_1 e_2 ~> BIN op e_1' e_2
+  -- Step_exp: S |- e_2 ~> e_2'
+
+rule Step_exp/BIN-BOOL:
+  S |- BIN boolbinop (BOOL b_1) (BOOL b_2) ~> BOOL $boolbin(boolbinop, b_1, b_2)
+
+rule Step_exp/BIN-NUM:
+  S |- BIN numbinop num_1 num_2 ~> $numbin(numbinop, num_1, num_2)
+
+
+rule Step_exp/CMP-ctx1:
+  S |- CMP op e_1 e_2 ~> CMP op e_1' e_2
+  -- Step_exp: S |- e_1 ~> e_1'
+
+rule Step_exp/CMP-ctx2:
+  S |- CMP op e_1 e_2 ~> CMP op e_1' e_2
+  -- Step_exp: S |- e_2 ~> e_2'
+
+rule Step_exp/CMP-EQ-true:
+  S |- CMP EQ e_1 e_2 ~> BOOL true
+  -- if e_1 = e_2
+
+rule Step_exp/CMP-NE-false:
+  S |- CMP NE e_1 e_2 ~> BOOL false
+  -- if e_1 = e_2
+
+rule Step_exp/CMP-NUM:
+  S |- CMP numcmpop num_1 num_2 ~> BOOL $numcmp(numcmpop, num_1, num_2)
+
+
+rule Step_exp/OPT-ctx:
+  S |- OPT e ~> OPT e'
+  -- Step_exp: S |- e ~> e'
+
+rule Step_exp/LIST-ctx:
+  S |- LIST e* ~> LIST e*[[n] = e'_n]
+  -- Step_exp: S |- e*[n] ~> e'_n
+
+rule Step_exp/TUP-ctx:
+  S |- TUP e* ~> TUP e*[[n] = e'_n]
+  -- Step_exp: S |- e*[n] ~> e'_n
+
+rule Step_exp/STR-ctx:
+  S |- STR (a `= e)* ~> STR (a `= e)*[[n] = (a*[n] `= e'_n)]
+  -- Step_exp: S |- e*[n] ~> e'_n
+
+rule Step_exp/INJ-ctx:
+  S |- INJ mixop e ~> INJ mixop e'
+  -- Step_exp: S |- e ~> e'
+
+
+rule Step_exp/LIFT-ctx:
+  S |- LIFT e ~> LIFT e'
+  -- Step_exp: S |- e ~> e'
+
+rule Step_exp/LIFT-none:
+  S |- LIFT (OPT eps) ~> LIST eps
+
+rule Step_exp/LIFT-some:
+  S |- LIFT (OPT (e)) ~> LIST e
+
+
+rule Step_exp/SEL-ctx:
+  S |- SEL e n ~> SEL e' n
+  -- Step_exp: S |- e ~> e'
+
+rule Step_exp/SEL-tup:
+  S |- SEL (TUP e*) n ~> e_n
+  -- if e_n = e*[n]
+
+
+rule Step_exp/LEN-ctx:
+  S |- LEN e ~> LEN e'
+  -- Step_exp: S |- e ~> e'
+
+rule Step_exp/LEN-list:
+  S |- LEN (LIST e^n) ~> NAT n
+
+
+rule Step_exp/MEM-ctx1:
+  S |- MEM e_1 e_2 ~> MEM e'_1 e_2
+  -- Step_exp: S |- e_1 ~> e'_1
+
+rule Step_exp/MEM-ctx2:
+  S |- MEM e_1 e_2 ~> MEM e_1 e'_2
+  -- Step_exp: S |- e_2 ~> e'_2
+
+rule Step_exp/MEM-OPT-true:
+  S |- MEM e_1 (OPT (e_2)) ~> BOOL true
+  -- if e_1 = e_2
+
+rule Step_exp/MEM-OPT-false:
+  S |- MEM val_1 (OPT val_2?) ~> BOOL false
+  -- (if val_1 =/= val_2)?
+
+rule Step_exp/MEM-LIST-true:
+  S |- MEM e_1 (LIST e_2*) ~> BOOL true
+  -- if e_1 = e_2*[n]
+
+rule Step_exp/MEM-LIST-false:
+  S |- MEM val_1 (LIST val_2*) ~> BOOL false
+  -- (if val_1 =/= val_2)*
+
+
+rule Step_exp/CAT-ctx1:
+  S |- CAT e_1 e_2 ~> CAT e'_1 e_2
+  -- Step_exp: S |- e_1 ~> e'_1
+
+rule Step_exp/CAT-ctx2:
+  S |- CAT e_1 e_2 ~> CAT e_1 e'_2
+  -- Step_exp: S |- e_2 ~> e'_2
+
+rule Step_exp/CAT-opt1:
+  S |- CAT (OPT e_1) (OPT eps) ~> OPT e_1
+
+rule Step_exp/CAT-opt2:
+  S |- CAT (OPT eps) (OPT e_2) ~> OPT e_2
+
+rule Step_exp/CAT-list:
+  S |- CAT (LIST e_1*) (LIST e_2*) ~> LIST e_1* e_2*
+
+rule Step_exp/CAT-str:
+  S |- CAT (STR (a `= e_1)*) (STR (a `= e_2)*) ~> STR (a `= CAT e_1 e_2)*
+
+
+rule Step_exp/ACC-ctxt1:
+  S |- ACC e p ~> ACC e' p
+  -- Step_exp: S |- e ~> e'
+
+rule Step_exp/ACC-ctxt2:
+  S |- ACC e p ~> ACC e p'
+  -- Step_path: S |- p ~> p'
+
+rule Step_exp/ACC-ROOT:
+  S |- ACC e ROOT ~> e
+
+rule Step_exp/ACC-THE:
+  S |- ACC e (THE p) ~> e'
+  -- Step_exp: S |- ACC e p ~> OPT e'
+
+rule Step_exp/ACC-IDX:
+  S |- ACC e (IDX p (NAT n)) ~> e'_n
+  -- Step_exp: S |- ACC e p ~> LIST e'*
+  -- if n < |e'*|
+  -- if e'_n = e'*[n]
+
+rule Step_exp/ACC-SLICE:
+  S |- ACC e (SLICE p (NAT n) (NAT m)) ~> LIST e''*
+  -- Step_exp: S |- ACC e p ~> LIST e'*
+  -- if n <= $(n + m) < |e'*|
+  -- if e''* = e'*[n : m]
+
+rule Step_exp/ACC-DOT:
+  S |- ACC e (DOT p a) ~> e'_n
+  -- Step_exp: S |- ACC e p ~> STR (a' `= e')*
+  -- if a'*[n] = a
+  -- if e'*[n] = e'_n
+
+rule Step_exp/ACC-PROJ:
+  S |- ACC e (PROJ p mixop) ~> e'
+  -- Step_exp: S |- ACC e p ~> INJ mixop e'
+
+
+rule Step_exp/UPD-ctxt1:
+  S |- UPD e_1 p e_2 ~> UPD e_1' p e_2
+  -- Step_exp: S |- e_1 ~> e_1'
+
+rule Step_exp/UPD-ctxt2:
+  S |- UPD e_1 p e_2 ~> UPD e_1 p' e_2
+  -- Step_path: S |- p ~> p'
+
+rule Step_exp/UPD-ctxt3:
+  S |- UPD e_1 p e_2 ~> UPD e_1 p e_2'
+  -- Step_exp: S |- e_2 ~> e_2'
+
+rule Step_exp/UPD-ROOT:
+  S |- UPD e_1 ROOT e_2 ~> e_2
+
+rule Step_exp/UPD-THE:
+  S |- UPD e_1 (THE p) e_2 ~> UPD e_1 p (OPT e_2)
+  -- Step_exp: S |- ACC e_1 p ~> OPT e'
+
+rule Step_exp/UPD-IDX:
+  S |- UPD e_1 (IDX p (NAT n)) e_2 ~> UPD e_1 p (LIST e'*[[n] = e_2])
+  -- Step_exp: S |- ACC e_1 p ~> LIST e'*
+  -- if n < |e'*|
+
+rule Step_exp/UPD-SLICE:
+  S |- UPD e_1 (SLICE p (NAT n) (NAT m)) (LIST e_2*) ~> UPD e_1 p (LIST e'*[[n : m] = e_2*])
+  -- Step_exp: S |- ACC e_1 p ~> LIST e'*
+  -- if n <= $(n + m) < |e'*|
+
+rule Step_exp/UPD-DOT:
+  S |- UPD e_1 (DOT p a) e_2 ~> UPD e_1 p (STR (a' `= e')*[[n] = (a `= e_2)])
+  -- Step_exp: S |- ACC e_1 p ~> STR (a' `= e')*
+  -- if a'*[n] = a
+
+rule Step_exp/UPD-PROJ:
+  S |- UPD e_1 (PROJ p mixop) e_2 ~> UPD e_1 p (INJ mixop e_2)
+  -- Step_exp: S |- ACC e_1 p ~> INJ mixop e'
+
+
+rule Step_exp/EXT:
+  S |- EXT e_1 p e_2 ~> UPD e_1 p (CAT (ACC e_1 p) e_2)
+
+
+rule Step_exp/ITER-ctx1:
+  S |- ITER e it ep* ~> ITER e' it ep*
+  -- Step_exp: S |- e ~> e'
+
+rule Step_exp/ITER-ctx2:
+  S |- ITER e it ep* ~> ITER e it' ep*
+  -- Step_iter: S |- it ~> it'
+
+rule Step_exp/ITER-ctx3:
+  S |- ITER e it ep* ~> ITER e it ep*[[n] = ep'_n]
+  -- Step_exppull: S |- ep*[n] ~> ep'_n
+
+rule Step_exp/ITER-QUEST:
+  S |- ITER e QUEST (x `<- OPT e'?)* ~> OPT $subst_exp({EXP (x, e'')*}, e)?
+  -- if e''*? = $transpose_(exp, e'?*)
+
+rule Step_exp/ITER-PLUS:
+  S |- ITER e PLUS (x `<- LIST e'*)* ~> ITER e STAR (x `<- LIST e'*)*
+  -- if |e'**[0]| >= 1
+
+rule Step_exp/ITER-STAR:
+  S |- ITER e STAR (x `<- LIST e'*)* ~> ITER e (SUP (NAT n)) (x `<- LIST e'*)*
+  -- if |e'**[0]| = n
+
+rule Step_exp/ITER-SUP-eps:
+  S |- ITER e (SUP eps e_n) (x `<- LIST e'*)* ~> ITER e (SUP y n) (x `<- LIST e'*)*
+  ;; TODO: y fresh
+
+rule Step_exp/ITER-SUP:
+  S |- ITER e (SUP x_i (NAT n)) (x `<- LIST e'^n)* ~> LIST $subst_exp({EXP (x, e'')* (x_i, NAT i)}, e)^(i<n)
+  -- if e''*^n = $transpose_(exp, e'^n*)
+
+
+rule Step_exp/CALL-ctx:
+  S |- CALL x a* ~> CALL x a*[[n] = a'_n]
+  -- Step_arg: S |- a*[n] ~> a'_n
+
+rule Step_exp/CALL-apply:
+  S |- CALL x a* ~> $subst_exp(s, e)
+  -- if (x, p* `-> t `= clause*) <- E.FUN
+  -- if (CLAUSE `{q*} a'* `= e `- pr*) <- clause*
+  -- Match_args: S |- a* `/ `{q*} a'* => s
+  -- Reduce_prems: S |- $subst_prem(s, pr)* ~>* eps
+  ;; TODO: need to try in order for ELSE to behave correctly
+
+
+rule Step_exp/CVT-ctx:
+  S |- CVT e nt_1 nt_2 ~> CVT e' nt_1 nt_2
+  -- Step_exp: S |- e ~> e'
+
+rule Step_exp/CVT-NUM:
+  S |- CVT num nt_1 nt_2 ~> $numcvt(nt_2, num)
+
+
+rule Step_exp/SUB-ctx1:
+  S |- SUB e t_1 t_2 ~> SUB e' t_1 t_2
+  -- Step_exp: S |- e ~> e'
+
+rule Step_exp/SUB-ctx2:
+  S |- SUB e t_1 t_2 ~> SUB e t'_1 t_2
+  -- Step_typ: S |- t_1 ~> t'_1
+
+rule Step_exp/SUB-ctx3:
+  S |- SUB e t_1 t_2 ~> SUB e t_1 t'_2
+  -- Step_typ: S |- t_2 ~> t'_2
+
+rule Step_exp/SUB-SUB:
+  S |- SUB (SUB e' t'_1 t'_2) t_1 t_2 ~> SUB e' t'_1 t_2
+
+rule Step_exp/SUB-TUP:
+  S |- SUB (TUP e^n) (TUP (x_1 `: t_1)^n) (TUP (x_2 `: t_2)^n) ~> TUP (SUB e $subst_typ(s_1, t_1) $subst_typ(s_2, t_2))^n
+  -- if s_1 = {EXP (x_1, e^n[i])^(i<n)}
+  -- if s_2 = {EXP (x_2, e^n[i])^(i<n)}
+
+rule Step_exp/SUB-OPT:
+  S |- SUB (OPT e?) (ITER t_1 QUEST) (ITER t_2 QUEST) ~> OPT (SUB e t_1 t_2)?
+
+rule Step_exp/SUB-LIST:
+  S |- SUB (LIST e*) (ITER t_1 STAR) (ITER t_2 STAR) ~> LIST (SUB e t_1 t_2)*
+
+rule Step_exp/SUB-STR:
+  S |- SUB (STR (at `= e)*) (VAR x_1 a_1*) (VAR x_2 a_2*) ~> STR (at' `= SUB e t_1 t_2)*
+  -- Expand_typ: S |- VAR x_1 a_1* => STRUCT tf_1*
+  -- Expand_typ: S |- VAR x_2 a_2* => STRUCT tf_2*
+  -- (if (at' `: t_1 `- `{q_1*} pr_1*) <- tf_1*)*
+  -- (if (at' `: t_2 `- `{q_2*} pr_2*) = tf_2)*
+
+rule Step_exp/SUB-CASE:
+  S |- SUB (INJ op e) (VAR x_1 a_1*) (VAR x_2 a_2*) ~> INJ op (SUB e t_1 t_2)
+  -- Expand_typ: S |- VAR x_1 a_1* => VARIANT tc_1*
+  -- Expand_typ: S |- VAR x_2 a_2* => VARIANT tc_2*
+  -- if (op `: t_1 `- `{q_1*} pr_1*) <- tc_1*
+  -- if (op `: t_2 `- `{q_2*} pr_2*) <- tc_2*
+
+
+;; Arguments
+
+relation Reduce_arg: S |- arg ~>* arg
+relation Step_arg: S |- arg ~> arg
+relation Eq_arg: S |- arg == arg
+relation Match_args: S |- arg* `/ `{quant*} arg* => subst
+
+
+rule Match_args:
+  S |- a* `/ `{q*} a' => s
+  -- Ok_subst: $storeenv(S) |- s : q*
+  -- if a* = $subst_arg(s, a')*
+
+
+rule Eq_arg:
+  S |- a_1 == a_2
+  -- Reduce_arg: S |- a_1 ~>* a'_1
+  -- Reduce_arg: S |- a_2 ~>* a'_2
+  -- if a'_1 = a'_2
+
+
+rule Reduce_arg/normal:
+  S |- a ~>* a
+
+rule Reduce_arg/step:
+  S |- a ~>* a''
+  -- Step_arg: S |- a ~> a'
+  -- Reduce_arg: S |- a' ~>* a''
+
+
+rule Step_arg/EXP-ctx:
+  S |- EXP e ~> EXP e'
+  -- Step_exp: S |- e ~> e'
+
+rule Step_arg/TYP-ctx:
+  S |- TYP t ~> TYP t'
+  -- Step_typ: S |- t ~> t'
+
+
+;; Premises
+
+relation Reduce_prems: S |- prem* ~>* prem*
+relation Step_prems: S |- prem* ~> prem*
+relation Eq_prems: S |- prem* == prem*
+
+
+rule Eq_prems:
+  S |- pr_1* == pr_2*
+  -- Reduce_prems: S |- pr_1* ~>* pr'_1*
+  -- Reduce_prems: S |- pr_2* ~>* pr'_2*
+  -- if pr'_1* = pr'_2*
+
+
+rule Reduce_prems/normal:
+  S |- pr* ~>* pr*
+
+rule Reduce_prems/step:
+  S |- pr* ~>* pr''*
+  -- Step_prems: S |- pr* ~> pr'*
+  -- Reduce_prems: S |- pr'* ~>* pr''*
+
+
+rule Step_prems/ctx:
+  S |- pr_1 pr* ~> pr_1'* pr*
+  -- Step_prems: S |- pr_1 ~> pr_1'*
+
+
+rule Step_prems/IF-ctx:
+  S |- IF e ~> IF e'
+  -- Step_exp: S |- e ~> e'
+
+rule Step_prems/IF-true:
+  S |- IF (BOOL true) ~> eps
+
+rule Step_prems/ELSE:
+  S |- ELSE ~> eps
+
+rule Step_prems/LET-ctx:
+  S |- LET e_1 `= e_2 ~> LET e_1 `= e'_2
+  -- Step_exp: S |- e_2 ~> e'_2
+
+rule Step_prems/LET:
+  S |- LET e_1 `= e_2 ~> eps
+  -- Eq_exp: S |- e_1 == e_2
+
+rule Step_prems/ITER-ctx1:
+  S |- ITER pr it ep* ~> ITER pr' it ep*
+  -- Step_prems: S |- pr ~> pr'
+
+rule Step_prems/ITER-ctx2:
+  S |- ITER pr it ep* ~> ITER pr it' ep*
+  -- Step_iter: S |- it ~> it'
+
+rule Step_prems/ITER-ctx3:
+  S |- ITER pr it ep* ~> ITER pr it ep*[[n] = ep'_n]
+  -- Step_exppull: S |- ep*[n] ~> ep'_n
+
+rule Step_prems/ITER-QUEST:
+  S |- ITER pr QUEST (x `<- OPT e?)* ~> $subst_prem({EXP (x, e')*}, pr)?
+  -- if e'*? = $transpose_(exp, e?*)
+
+rule Step_prems/ITER-PLUS:
+  S |- ITER pr PLUS (x `<- LIST e*)* ~> ITER pr STAR (x `<- LIST e*)*
+  -- if |e**[0]| >= 1
+
+rule Step_prems/ITER-STAR:
+  S |- ITER pr STAR (x `<- LIST e*)* ~> ITER pr (SUP (NAT n)) (x `<- LIST e*)*
+  -- if |e**[0]| = n
+
+rule Step_prems/ITER-SUP-eps:
+  S |- ITER pr (SUP eps e_n) (x `<- LIST e*)* ~> ITER pr (SUP y n) (x `<- LIST e*)*
+  ;; TODO: y fresh
+
+rule Step_prems/ITER-SUP:
+  S |- ITER pr (SUP x_i (NAT n)) (x `<- LIST e^n)* ~> $subst_prem({EXP (x, e')* (x_i, NAT i)}, pr)^(i<n)
+  -- if e'*^n = $transpose_(exp, e^n*)

@@ -42,14 +42,7 @@ let args_of_case e =
   | _ -> error e.at "cannot get arguments of case expression"
 
 let is_context e =
-  is_case e &&
-  match case_of_case e with
-  | (atom :: _) :: _ ->
-    (match it atom with
-
-  | Atom a -> List.mem a Al.Al_util.context_names
-    | _ -> false)
-  | _ -> false
+  is_case e && List.mem (Il2al_util.case_head (case_of_case e)) Al.Al_util.context_names
 
 let rec stack_to_list e =
   match e.it with
@@ -140,7 +133,7 @@ let encode_stack stack =
 
     (* ASSUMPTION: the inner stack of the ctxt instruction is always the last arg *)
     let args', inner_stack = Lib.List.split_last args in
-    let mixop', _ = Lib.List.split_last mixop in
+    let mixop' = Il2al_util.split_last_case mixop in
 
     let e1 = { e with it = CaseE (mixop', TupE args' $$ no_region % (mk_varT "")) } in
     let e2 = (mk_varE "ctxt" "contextT") in
@@ -159,7 +152,7 @@ let encode_stack stack =
 (* Encode lhs *)
 let encode_lhs lhs =
   match lhs.it with
-  | CaseE ([[]; [{it = Semicolon; _}]; []], {it = TupE [z; stack]; _}) ->
+  | CaseE (Xl.Mixop.(Infix (Arg (), {it = Semicolon; _}, Arg ())), {it = TupE [z; stack]; _}) ->
     let prem = LetPr (z, mk_varE "state" "stateT", free_ids z) $ z.at in
     prem :: encode_stack stack
   | _ ->
@@ -172,7 +165,7 @@ let encode_rule r =
   | RuleD(id, binds, mixop, args, prems) ->
     match (mixop, args.it) with
     (* lhs ~> rhs *)
-    | ([ [] ; [{it = SqArrow; _}] ; []] , TupE ([lhs; _rhs])) ->
+    | (Xl.Mixop.(Infix (Arg (), {it = SqArrow; _}, Arg ())), TupE ([lhs; _rhs])) ->
       let name = String.split_on_char '-' id.it |> List.hd in
       if List.mem name ["pure"; "read"; "trap"; "ctxt"] then (* Administrative rules *)
         r
@@ -184,9 +177,9 @@ let encode_rule r =
 (* Encode defs *)
 let rec encode_def d =
   match d.it with
-  | RelD (id, mixop, t, rules) ->
+  | RelD (id, ps, mixop, t, rules) ->
     let rules' = List.map encode_rule rules in
-    RelD (id, mixop, t, rules') $ d.at
+    RelD (id, ps, mixop, t, rules') $ d.at
   | RecD ds -> RecD (List.map encode_def ds) $ d.at
   | DecD _ | TypD _ | GramD _ | HintD _ -> d
 

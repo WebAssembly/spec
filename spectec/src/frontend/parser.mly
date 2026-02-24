@@ -169,9 +169,9 @@ and short_alt_prod' = function
 %token BIGAND BIGOR BIGADD BIGMUL BIGCAT
 %token COMMA_NL NL_BAR NL_NL NL_NL_NL
 %token EQ NE LT GT LE GE APPROX EQUIV ASSIGN SUB SUP EQCAT EQSUB EQUIVSUB APPROXSUB
-%token NOT AND OR
+%token NOT AND OR IMPL DIMPL
 %token QUEST PLUS MINUS STAR SLASH BACKSLASH UP CAT PLUSMINUS MINUSPLUS
-%token ARROW ARROW2 ARROWSUB ARROW2SUB DARROW2 SQARROW SQARROWSUB SQARROWSTAR SQARROWSTARSUB
+%token ARROW ARROW2 ARROWSUB ARROW2SUB SQARROW SQARROWSUB SQARROWSTAR SQARROWSTARSUB
 %token MEM NOTMEM PREC SUCC TURNSTILE TILESTURN TURNSTILESUB TILESTURNSUB
 %token DOLLAR TICK
 %token BOT TOP
@@ -187,7 +187,7 @@ and short_alt_prod' = function
 %token<string> UPID LOID DOTID UPID_LPAREN LOID_LPAREN
 %token EOF
 
-%right ARROW2 DARROW2 ARROW2SUB
+%right ARROW2 ARROW2SUB IMPL DIMPL
 %left OR
 %left AND
 %nonassoc TURNSTILE TURNSTILESUB
@@ -296,6 +296,12 @@ ruleid_ :
   | BOOLLIT { Bool.to_string $1 }
   | INFINITY { "infinity" }
   | EPS { "eps" }
+  | BOOL { "bool" }
+  | NAT { "nat" }
+  | INT { "int" }
+  | RAT { "rat" }
+  | REAL { "real" }
+  | TEXT { "text" }
   | IF { "if" }
   | VAR { "var" }
   | DEF { "def" }
@@ -320,13 +326,23 @@ atom_escape :
   | TICK GE { Atom.GreaterEqual }
   | TICK MEM { Atom.Mem }
   | TICK NOTMEM { Atom.NotMem }
-  | TICK QUEST { Atom.Quest }
+  | TICK UP QUEST { Atom.Quest }
+  | TICK UP STAR { Atom.Star }
+  | TICK UP PLUS { Atom.Iter }
   | TICK PLUS { Atom.Plus }
-  | TICK STAR { Atom.Star }
+  | TICK MINUS { Atom.Minus }
+  | TICK PLUSMINUS { Atom.PlusMinus }
+  | TICK MINUSPLUS { Atom.MinusPlus }
+  | TICK STAR { Atom.Times }
+  | TICK SLASH { Atom.Slash }
+  | TICK NOT { Atom.Not }
+  | TICK AND { Atom.And }
+  | TICK OR { Atom.Or }
+  | TICK IMPL { Atom.Arrow2 }
+  | TICK DIMPL { Atom.Equiv }
   | TICK BAR { Atom.Bar }
   | TICK CAT { Atom.Cat }
   | TICK COMMA { Atom.Comma }
-  | TICK ARROW2 { Atom.Arrow2 }
   | TICK infixop_ { $2 }
   | TICK relop_ { $2 }
   | BOT { Atom.Bot }
@@ -378,8 +394,8 @@ check_atom :
 %inline boolop :
   | AND { `AndOp }
   | OR { `OrOp }
-  | ARROW2 { `ImplOp }
-  | DARROW2 { `EquivOp }
+  | IMPL { `ImplOp }
+  | DIMPL { `EquivOp }
 
 %inline infixop :
   | infixop_ { $1 $$ $sloc }
@@ -390,6 +406,7 @@ check_atom :
   | SEMICOLON { Atom.Semicolon }
   | BACKSLASH { Atom.Backslash }
   | ARROW { Atom.Arrow }
+  | ARROW2 { Atom.Arrow2 }
   | ARROWSUB { Atom.ArrowSub }
   | ARROW2SUB { Atom.Arrow2Sub }
   | BIGAND { Atom.BigAnd }
@@ -640,7 +657,7 @@ exp_prim_ :
   | exp_hole_ { $1 }
   | EPS { EpsE }
   | LBRACE comma_nl_list(fieldexp) RBRACE { StrE $2 }
-  | LPAREN comma_list(exp_bin) RPAREN
+  | LPAREN comma_list(exp_rel) RPAREN
     { match $2 with
       | [] -> ParenE (SeqE [] $ $sloc)
       | [e] -> ParenE e
@@ -709,12 +726,18 @@ exp_bin_ :
 exp_rel : exp_rel_ { $1 $ $sloc }
 exp_rel_ :
   | exp_bin_ { $1 }
-  | comma(exp) exp_rel { CommaE (SeqE [] $ $loc($1), $2) }
   | relop exp_rel { InfixE (SeqE [] $ $loc($1), $1, $2) }
-  | exp_rel comma(exp) exp_rel { CommaE ($1, $3) }
   | exp_rel relop exp_rel { InfixE ($1, $2, $3) }
 
-exp : exp_rel { $1 }
+exp_comma : exp_comma_ { $1 $ $sloc }
+exp_comma_ :
+  | exp_bin_ { $1 }
+  | comma(exp) exp_comma { CommaE (SeqE [] $ $loc($1), $2) }
+  | relop exp_comma { InfixE (SeqE [] $ $loc($1), $1, $2) }
+  | exp_comma comma(exp) exp_comma { CommaE ($1, $3) }
+  | exp_comma relop exp_comma { InfixE ($1, $2, $3) }
+
+exp : exp_comma { $1 }
 
 fieldexp :
   | fieldid exp_atom+
@@ -809,7 +832,8 @@ prem_post_ :
 prem_bin : prem_bin_ { $1 $ $sloc }
 prem_bin_ :
   | prem_post_ { $1 }
-  | relid COLON exp_bin { RulePr ($1, $3) }
+  | relid COLON exp_bin { RulePr ($1, [], $3) }
+  | relid LPAREN comma_list(arg) RPAREN COLON exp_bin { RulePr ($1, $3, $6) }
   | IF exp_bin
     { let rec iters e =
         match e.it with
@@ -820,7 +844,8 @@ prem_bin_ :
 prem : prem_ { $1 $ $sloc }
 prem_ :
   | prem_post_ { $1 }
-  | relid COLON exp { RulePr ($1, $3) }
+  | relid COLON exp { RulePr ($1, [], $3) }
+  | relid LPAREN comma_list(arg) RPAREN COLON exp_bin { RulePr ($1, $3, $6) }
   | VAR varid_bind_with_suffix COLON typ { VarPr ($2, $4) }
   | IF exp
     { let rec iters e =
@@ -1024,10 +1049,12 @@ param_ :
   | varid_bind_with_suffix COLON typ { ExpP ($1, $3) }
   | typ
     { let id =
-        try El.Convert.varid_of_typ $1 with Error.Error _ -> "" $ $sloc
+        try El.Convert.varid_of_typ $1 with Error.Error _ -> "_" $ $sloc
       in ExpP (id, $1) }
   | SYNTAX varid_bind { TypP $2 }
-  | GRAMMAR gramid COLON typ { GramP ($2, $4) }
+  | GRAMMAR gramid COLON typ { GramP ($2, [], $4) }
+  | GRAMMAR gramid_lparen enter_scope comma_list(param) RPAREN COLON typ exit_scope
+    { GramP ($2, $4, $7) }
   | DEF DOLLAR defid COLON typ
     { DefP ($3, [], $5) }
   | DEF DOLLAR defid_lparen enter_scope comma_list(param) RPAREN COLON typ exit_scope
@@ -1058,10 +1085,15 @@ def_ :
     { let id = if $6 = "" then "" else String.sub $6 1 (String.length $6 - 1) in
       GramD ($2, id $ $loc($6), $4, TupT [] $ $loc($1), $9, $7) }
   | RELATION relid COLON nottyp hint*
-    { RelD ($2, $4, $5) }
-  | RULE relid ruleid_list COLON exp prem_list
+    { RelD ($2, [], $4, $5) }
+  | RELATION relid LPAREN comma_list(param) RPAREN COLON nottyp hint*
+    { RelD ($2, $4, $7, $8) }
+  | RULE relid ruleid_list COLON exp prem_list hint*
     { let id = if $3 = "" then "" else String.sub $3 1 (String.length $3 - 1) in
-      RuleD ($2, id $ $loc($3), $5, $6) }
+      RuleD ($2, [], id $ $loc($3), $5, $6, $7) }
+  | RULE relid LPAREN comma_list(param) RPAREN ruleid_list COLON exp prem_list hint*
+    { let id = if $6 = "" then "" else String.sub $6 1 (String.length $6 - 1) in
+      RuleD ($2, $4, id $ $loc($6), $8, $9, $10) }
   | VAR varid_bind COLON typ hint*
     { VarD ($2, $4, $5) }
   | DEF DOLLAR defid COLON typ hint*
@@ -1090,6 +1122,9 @@ def_ :
       HintD (GramH ($2, id $ $loc($3), $4) $ $sloc) }
   | RELATION relid hint*
     { HintD (RelH ($2, $3) $ $sloc) }
+  | RULE relid ruleid_list hint*
+    { let id = if $3 = "" then "" else String.sub $3 1 (String.length $3 - 1) in
+      HintD (RuleH ($2, id $ $loc($3), $4) $ $sloc) }
   | VAR varid_bind hint*
     { HintD (VarH ($2, $3) $ $sloc) }
   | DEF DOLLAR defid hint*

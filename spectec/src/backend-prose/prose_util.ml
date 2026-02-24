@@ -125,7 +125,7 @@ let env_def d =
   | GramD (id1, id2, _ps, t, _gram, hints) ->
     env_hintdef (GramH (id1, id2, hints) $ d.at);
     env_typ id1 t;
-  | RelD (id, t, hints) ->
+  | RelD (id, _ps, t, hints) ->
     env_hintdef (RelH (id, hints) $ d.at);
     env_typ id t;
   | VarD (id, t, hints) ->
@@ -148,7 +148,7 @@ let find_relation name =
   let open El.Ast in
   List.find_opt (fun def ->
   match def.it with
-  | RelD (id, _, _) when id.it = name -> true
+  | RelD (id, _, _, _) when id.it = name -> true
   | _ -> false
   ) !Langs.el
 
@@ -256,6 +256,9 @@ let apply_prose_hint hint args =
    ) template;
   |> String.concat ""
 
+let mixop_name mixop default =
+  Xl.Mixop.head mixop |> Option.map Xl.Atom.to_string |> Option.value ~default
+
 let string_of_stack_prefix expr =
   let open Al.Ast in
   match expr.it with
@@ -263,7 +266,7 @@ let string_of_stack_prefix expr =
   | VarE ("F" | "L") -> ""
   | _ when Il.Eq.eq_typ expr.note Al.Al_util.frameT -> "the :ref:`frame <syntax-frame>`"
   | CaseE (mixop, _) when Il.Eq.eq_typ expr.note Al.Al_util.evalctxT ->
-    let evalctx_name = Xl.Mixop.name (List.nth mixop 0)
+    let evalctx_name = mixop_name mixop "context"
     |> fun s -> String.sub s 0 (String.length s - 1)
     |> String.lowercase_ascii in
     Printf.sprintf "the %s" evalctx_name
@@ -274,9 +277,9 @@ let rec find_case_atom typ =
   let open El.Ast in
   match typ.it with
   | AtomT atom
-  | BrackT (atom, _, _) -> Some atom
-  | SeqT (typ1::_)
-  | InfixT (typ1, _, _) -> find_case_atom typ1
+  | BrackT (atom, _, _)
+  | InfixT (_, atom, _) -> Some atom
+  | SeqT (typ1::_) -> find_case_atom typ1
   | _ -> None
 
 let rec find_case_typ' s a: El.Ast.typ option =
@@ -315,7 +318,7 @@ let find_case_typ s a: El.Ast.typ =
 
 let extract_case_hint t mixop =
   let id1 = Il.Print.string_of_typ t in
-  let id2 = Xl.Mixop.name (List.nth mixop 0) in
+  let id2 = mixop_name mixop id1 in
   let id = id1 ^ "." ^ id2 in
   match Map.find_opt id !(hintenv.prose_hints) with
   | Some (Some e, _) -> Some e

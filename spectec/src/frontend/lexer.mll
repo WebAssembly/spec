@@ -197,7 +197,6 @@ and token = parse
   | "=>" { ARROW2 }
   | "->_" { ARROWSUB }
   | "=>_" { ARROW2SUB }
-  | "<=>" { DARROW2 }
   | "~>" { SQARROW }
   | "~>_" { SQARROWSUB }
   | "~>*" { SQARROWSTAR }
@@ -208,6 +207,8 @@ and token = parse
   | "-|" { TILESTURN }
   | "|-_" { TURNSTILESUB }
   | "-|_" { TILESTURNSUB }
+  | "==>" { IMPL }
+  | "<=>" { DIMPL }
 
   | "$" { DOLLAR }
 

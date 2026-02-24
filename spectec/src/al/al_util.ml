@@ -298,21 +298,13 @@ let atom_of_atom' atom' typ = atom' $$ no_region % (Atom.info typ)
 
 let frame_atom = atom_of_name "FRAME_" "evalctx"
 let frameE ?(at = no) ~note (arity, e) =
-  let frame_mixop = [[frame_atom]; [atom_of_atom' Atom.LBrace "evalctx"]; [atom_of_atom' Atom.RBrace "evalctx"]] in
+  let frame_mixop = Mixop.(Seq [Atom frame_atom; Arg (); Brack (atom_of_atom' Atom.LBrace "evalctx", Arg (), atom_of_atom' Atom.RBrace "evalctx")]) in
   caseE (frame_mixop, [arity; e]) ~at:at ~note:note
-
-
-let get_atom op =
-  match List.find_opt (fun al -> al <> []) op with
-  | Some al -> Some (List.hd al)
-  | None -> None
-
-let name_of_mixop = Mixop.name
 
 (* Il Types *)
 
 (* name for tuple type *)
-let no_name = Il.Ast.VarE ("_" $ no_region) $$ no_region % (Il.Ast.TextT $ no_region)
+let no_name = "_" $ no_region
 let varT id args = Il.Ast.VarT (id $ no_region, args) $ no_region
 let iterT ty iter = Il.Ast.IterT (ty, iter) $ no_region
 let listT ty = iterT ty Il.Ast.List

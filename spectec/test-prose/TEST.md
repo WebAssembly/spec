@@ -255,7 +255,9 @@ The instruction :math:`(\mathsf{block}~{t^?}~{{\mathit{instr}}^\ast})` is :ref:`
 The instruction :math:`(\mathsf{loop}~{t^?}~{{\mathit{instr}}^\ast})` is :ref:`valid <valid-val>` with the function type :math:`\epsilon~\rightarrow~{t^?}` if:
 
 
-   * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` with the function type :math:`\epsilon~\rightarrow~\epsilon`.
+   * Let :math:`{C'}` be the same context as :math:`C`, but with the result type sequence :math:`\epsilon` prepended to the field :math:`\mathsf{labels}`.
+
+   * Under the context :math:`{C'}`, the instruction sequence :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` with the function type :math:`\epsilon~\rightarrow~\epsilon`.
 
 
 
@@ -3161,7 +3163,8 @@ Instr_ok/block
 
 Instr_ok/loop
 - the instruction (LOOP t? instr*) is valid with the function type [] -> t? if:
-  - the instruction sequence instr* is valid with the function type [] -> [].
+  - the context C' is the context C with .LABELS prepended by [?()].
+  - Under the context C', the instruction sequence instr* is valid with the function type [] -> [].
 
 Instr_ok/if
 - the instruction (IF t? instr_1* ELSE instr_2*) is valid with the function type [I32] -> t? if:
@@ -15754,7 +15757,7 @@ The instruction :math:`({\mathsf{array{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~x
 
    * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[x]` is :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`.
 
-   * The signedness :math:`{{\mathit{sx}}^?}` is absent if and only if :math:`{\mathit{zt}}` is a packed type.
+   * The signedness :math:`{{\mathit{sx}}^?}` is present if and only if :math:`{\mathit{zt}}` is a packed type.
 
    * The value type :math:`t` is :math:`{\mathrm{unpack}}({\mathit{zt}})`.
 
@@ -17827,7 +17830,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       1) Let :math:`(\mathsf{catch}~x~l)` be the destructuring of :math:`{\mathit{catch}}_0`.
 
-      #) If :math:`x < {|z{.}\mathsf{tags}|}` and :math:`z{.}\mathsf{exns}{}[a]{.}\mathsf{tag} = z{.}\mathsf{tags}{}[x]`, then:
+      #) If :math:`x < {|z{.}\mathsf{module}{.}\mathsf{tags}|}` and :math:`z{.}\mathsf{exns}{}[a]{.}\mathsf{tag} = z{.}\mathsf{module}{.}\mathsf{tags}{}[x]`, then:
 
          a) Pop the :math:`\mathsf{handler}` from the stack.
 
@@ -17853,7 +17856,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       1) Let :math:`(\mathsf{catch\_ref}~x~l)` be the destructuring of :math:`{\mathit{catch}}_0`.
 
-      #) If :math:`x \geq {|z{.}\mathsf{tags}|}` or :math:`z{.}\mathsf{exns}{}[a]{.}\mathsf{tag} \neq z{.}\mathsf{tags}{}[x]`, then:
+      #) If :math:`x \geq {|z{.}\mathsf{module}{.}\mathsf{tags}|}` or :math:`z{.}\mathsf{exns}{}[a]{.}\mathsf{tag} \neq z{.}\mathsf{module}{.}\mathsf{tags}{}[x]`, then:
 
          a) Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}''}^\ast}`.
 
@@ -19426,7 +19429,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
                a. Let :math:`(\mathsf{catch}~x~l)` be the destructuring of :math:`{\mathit{catch}}_0`.
 
-               #. If :math:`x < {|z{.}\mathsf{tags}|}` and :math:`z{.}\mathsf{exns}{}[a]{.}\mathsf{tag} = z{.}\mathsf{tags}{}[x]`, then:
+               #. If :math:`x < {|z{.}\mathsf{module}{.}\mathsf{tags}|}` and :math:`z{.}\mathsf{exns}{}[a]{.}\mathsf{tag} = z{.}\mathsf{module}{.}\mathsf{tags}{}[x]`, then:
 
                   1) Pop the :math:`\mathsf{handler}` from the stack.
 
@@ -19452,7 +19455,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
                a. Let :math:`(\mathsf{catch\_ref}~x~l)` be the destructuring of :math:`{\mathit{catch}}_0`.
 
-               #. If :math:`x \geq {|z{.}\mathsf{tags}|}` or :math:`z{.}\mathsf{exns}{}[a]{.}\mathsf{tag} \neq z{.}\mathsf{tags}{}[x]`, then:
+               #. If :math:`x \geq {|z{.}\mathsf{module}{.}\mathsf{tags}|}` or :math:`z{.}\mathsf{exns}{}[a]{.}\mathsf{tag} \neq z{.}\mathsf{module}{.}\mathsf{tags}{}[x]`, then:
 
                   1) Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}''}^\ast}`.
 
@@ -20653,7 +20656,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, :math:`x < {|z{.}\mathsf{tags}|}`.
+#. Assert: Due to validation, :math:`x < {|z{.}\mathsf{module}{.}\mathsf{tags}|}`.
 
 #. Assert: Due to validation, the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{tags}{}[x]{.}\mathsf{type}` is some :math:`\mathsf{func}~{\mathit{resulttype}} \rightarrow {\mathit{resulttype}}`.
 
@@ -20667,7 +20670,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
 
-#. Let :math:`{\mathit{exn}}` be the exception instance :math:`\{ \mathsf{tag}~z{.}\mathsf{tags}{}[x],\;\allowbreak \mathsf{fields}~{{\mathit{val}}^{n}} \}`.
+#. Let :math:`{\mathit{exn}}` be the exception instance :math:`\{ \mathsf{tag}~z{.}\mathsf{module}{.}\mathsf{tags}{}[x],\;\allowbreak \mathsf{fields}~{{\mathit{val}}^{n}} \}`.
 
 #. Append :math:`{\mathit{exn}}` to :math:`z{.}\mathsf{exns}`.
 
@@ -25510,8 +25513,8 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return :math:`f`.
 
 
-:math:`(s, f){.}\mathsf{tags}`
-..............................
+:math:`(s, f){.}\mathsf{module}{.}\mathsf{tags}`
+................................................
 
 
 1. Return :math:`f{.}\mathsf{module}{.}\mathsf{tags}`.
@@ -26356,6 +26359,40 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`{{\mathit{instr}}^\ast}~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~0)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)~(\mathsf{table{.}init}~y~x)~(\mathsf{elem{.}drop}~x)`.
 
 
+:math:`{{{\mathrm{evalexpr}}^\ast}}{(z, {{\mathit{expr}''}^\ast})}`
+...................................................................
+
+
+1. If :math:`{{\mathit{expr}''}^\ast} = \epsilon`, then:
+
+   a. Return :math:`\epsilon`.
+
+#. Let :math:`{\mathit{expr}}~{{\mathit{expr}'}^\ast}` be :math:`{{\mathit{expr}''}^\ast}`.
+
+#. Let :math:`{\mathit{ref}}` be the result of :ref:`evaluating <exec-expr>` :math:`{\mathit{expr}}` with state :math:`z`.
+
+#. Let :math:`{{\mathit{ref}'}^\ast}` be :math:`{{{\mathrm{evalexpr}}^\ast}}{(z, {{\mathit{expr}'}^\ast})}`.
+
+#. Return :math:`{\mathit{ref}}~{{\mathit{ref}'}^\ast}`.
+
+
+:math:`{{{{\mathrm{evalexpr}}^\ast}^\ast}}{(z, {{\mathit{expr}''}^\ast})}`
+..........................................................................
+
+
+1. If :math:`{{\mathit{expr}''}^\ast} = \epsilon`, then:
+
+   a. Return :math:`\epsilon`.
+
+#. Let :math:`{{\mathit{expr}}^\ast}~{{{\mathit{expr}'}^\ast}^\ast}` be :math:`{{\mathit{expr}''}^\ast}`.
+
+#. Let :math:`{{\mathit{ref}}^\ast}` be :math:`{{{\mathrm{evalexpr}}^\ast}}{(z, {{\mathit{expr}}^\ast})}`.
+
+#. Let :math:`{{{\mathit{ref}'}^\ast}^\ast}` be :math:`{{{{\mathrm{evalexpr}}^\ast}^\ast}}{(z, {{{\mathit{expr}'}^\ast}^\ast})}`.
+
+#. Return :math:`{{\mathit{ref}}^\ast}~{{{\mathit{ref}'}^\ast}^\ast}`.
+
+
 :math:`{{{\mathrm{evalglobal}}^\ast}}{(z, {{\mathit{globaltype}}^\ast}, {{\mathit{expr}''}^\ast})}`
 ...................................................................................................
 
@@ -26374,9 +26411,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. Let :math:`{\mathit{gt}}~{{\mathit{gt}'}^\ast}` be :math:`{{\mathit{globaltype}}^\ast}`.
 
-   #. Let :math:`(s, f)` be the destructuring of :math:`z`.
-
    #. Let :math:`{\mathit{val}}` be the result of :ref:`evaluating <exec-expr>` :math:`{\mathit{expr}}` with state :math:`z`.
+
+   #. Let :math:`(s, f)` be the destructuring of :math:`z`.
 
    #. Let :math:`a` be :math:`{\mathrm{allocglobal}}(s, {\mathit{gt}}, {\mathit{val}})`.
 
@@ -26451,29 +26488,13 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{{\mathit{val}}_{\mathsf{g}}^\ast}` be :math:`{{{\mathrm{evalglobal}}^\ast}}{(z, {{\mathit{globaltype}}^\ast}, {{\mathit{expr}}_{\mathsf{g}}^\ast})}`.
 
-#. Let :math:`{{\mathit{ref}}_{\mathsf{t}}^\ast}` be the reference value sequence :math:`\epsilon`.
+#. Let :math:`{{\mathit{ref}}_{\mathsf{t}}^\ast}` be :math:`{{{\mathrm{evalexpr}}^\ast}}{(z, {{\mathit{expr}}_{\mathsf{t}}^\ast})}`.
 
-#. For each :math:`{\mathit{expr}}_{\mathsf{t}}` in :math:`{{\mathit{expr}}_{\mathsf{t}}^\ast}`, do:
-
-   a. Let :math:`{\mathit{ref}}_{\mathsf{t}}` be the result of :ref:`evaluating <exec-expr>` :math:`{\mathit{expr}}_{\mathsf{t}}` with state :math:`z`.
-
-   #. Append :math:`{\mathit{ref}}_{\mathsf{t}}` to :math:`{{\mathit{ref}}_{\mathsf{t}}^\ast}`.
-
-#. Let :math:`{{{\mathit{ref}}_{\mathsf{e}}^\ast}^\ast}` be the reference value sequence sequence :math:`\epsilon`.
-
-#. For each :math:`{{\mathit{expr}}_{\mathsf{e}}^\ast}` in :math:`{{{\mathit{expr}}_{\mathsf{e}}^\ast}^\ast}`, do:
-
-   a. Let :math:`{{\mathit{ref}}_{\mathsf{e}}^\ast}` be the reference value sequence :math:`\epsilon`.
-
-   #. For each :math:`{\mathit{expr}}_{\mathsf{e}}` in :math:`{{\mathit{expr}}_{\mathsf{e}}^\ast}`, do:
-
-      1) Let :math:`{\mathit{ref}}_{\mathsf{e}}` be the result of :ref:`evaluating <exec-expr>` :math:`{\mathit{expr}}_{\mathsf{e}}` with state :math:`z`.
-
-      #) Append :math:`{\mathit{ref}}_{\mathsf{e}}` to :math:`{{\mathit{ref}}_{\mathsf{e}}^\ast}`.
-
-   #. Append :math:`{{\mathit{ref}}_{\mathsf{e}}^\ast}` to :math:`{{{\mathit{ref}}_{\mathsf{e}}^\ast}^\ast}`.
+#. Let :math:`{{{\mathit{ref}}_{\mathsf{e}}^\ast}^\ast}` be :math:`{{{{\mathrm{evalexpr}}^\ast}^\ast}}{(z, {{{\mathit{expr}}_{\mathsf{e}}^\ast}^\ast})}`.
 
 #. Pop the :math:`\mathsf{frame}` from the stack.
+
+#. Let :math:`(s, f)` be the destructuring of :math:`z`.
 
 #. Let :math:`{\mathit{moduleinst}}` be :math:`{\mathrm{allocmodule}}(s, {\mathit{module}}, {{\mathit{externaddr}}^\ast}, {{\mathit{val}}_{\mathsf{g}}^\ast}, {{\mathit{ref}}_{\mathsf{t}}^\ast}, {{{\mathit{ref}}_{\mathsf{e}}^\ast}^\ast})`.
 
@@ -26543,9 +26564,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    a. Return :math:`\{  \}`.
 
-#. Let :math:`I~{I'}` be :math:`{{\mathit{idctxt}}^\ast}`.
+#. Let :math:`I~{{I'}^\ast}` be :math:`{{\mathit{idctxt}}^\ast}`.
 
-#. Return `I ++ $concat_idctxt(I'*{})`.
+#. Return `I ++ $concat_idctxt(I'*{I' <- I'*})`.
 
 
 :math:`{\mathrm{types}}({{\mathit{decl}'}^\ast})`
@@ -27789,7 +27810,7 @@ Instr_ok/array.get
 - the instruction (ARRAY.GET sx? x) is valid with the instruction type [(REF ?(NULL) (_IDX x)), I32] -> [t] if:
   - the type C.TYPES[x] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is (ARRAY (mut? zt)).
-  - the signedness sx? is ?() if and only if $is_packtype(zt).
+  - the signedness sx? is not ?() if and only if $is_packtype(zt).
   - the value type t is $unpack(zt).
 
 Instr_ok/array.set
@@ -28810,7 +28831,7 @@ Step_read/return_call_ref-frame-* yy
 6. Assert: Due to validation, val'' is some REF.FUNC_ADDR.
 7. Let (REF.FUNC_ADDR a) be val''.
 8. Assert: Due to validation, (a < |$funcinst(z)|).
-9. Assert: Due to validation, $Expand($funcinst(z)[a].TYPE) is some FUNC.
+9. Assert: Due to validation, $Expand($funcinst(z)[a].TYPE) is some ->.
 10. Let (FUNC t_1^n -> t_2^m) be $Expand($funcinst(z)[a].TYPE).
 11. Assert: Due to validation, there are at least n values on the top of the stack.
 12. Pop the values val^n from the stack.
@@ -29512,7 +29533,7 @@ Step_read/call_ref yy
 12. For each local_0 in local_0*, do:
   a. Let (LOCAL t) be local_0.
   b. Append t to the t*.
-13. Assert: Due to validation, $Expand(fi.TYPE) is some FUNC.
+13. Assert: Due to validation, $Expand(fi.TYPE) is some ->.
 14. Let (FUNC t_1^n -> t_2^m) be $Expand(fi.TYPE).
 15. Assert: Due to validation, there are at least n values on the top of the stack.
 16. Pop the values val^n from the stack.
@@ -29549,7 +29570,7 @@ Step_read/return_call_ref yy
   e. Assert: Due to validation, val'' is some REF.FUNC_ADDR.
   f. Let (REF.FUNC_ADDR a) be val''.
   g. Assert: Due to validation, (a < |$funcinst(z)|).
-  h. Assert: Due to validation, $Expand($funcinst(z)[a].TYPE) is some FUNC.
+  h. Assert: Due to validation, $Expand($funcinst(z)[a].TYPE) is some ->.
   i. Let (FUNC t_1^n -> t_2^m) be $Expand($funcinst(z)[a].TYPE).
   j. Assert: Due to validation, there are at least n values on the top of the stack.
   k. Pop the values val^n from the stack.
@@ -30202,7 +30223,7 @@ Step_read/array.init_data x y
 Step/throw x
 1. Let z be the current state.
 2. Assert: Due to validation, (x < |$tagaddr(z)|).
-3. Assert: Due to validation, $Expand($as_deftype($tag(z, x).TYPE)) is some FUNC.
+3. Assert: Due to validation, $Expand($as_deftype($tag(z, x).TYPE)) is some ->.
 4. Let (FUNC t^n -> resulttype_0) be $Expand($as_deftype($tag(z, x).TYPE)).
 5. Assert: Due to validation, (resulttype_0 = []).
 6. Let a be |$exninst(z)|.
@@ -30916,7 +30937,7 @@ subst_comptype comptype tv* tu*
 2. If comptype is some ARRAY, then:
   a. Let (ARRAY ft) be comptype.
   b. Return (ARRAY $subst_fieldtype(ft, tv*, tu*)).
-3. Assert: Due to validation, comptype is some FUNC.
+3. Assert: Due to validation, comptype is some ->.
 4. Let (FUNC t_1* -> t_2*) be comptype.
 5. Return (FUNC $subst_valtype(t_1, tv*, tu*)* -> $subst_valtype(t_2, tv*, tu*)*).
 
@@ -31096,7 +31117,7 @@ free_comptype comptype
 2. If comptype is some ARRAY, then:
   a. Let (ARRAY fieldtype) be comptype.
   b. Return $free_fieldtype(fieldtype).
-3. Assert: Due to validation, comptype is some FUNC.
+3. Assert: Due to validation, comptype is some ->.
 4. Let (FUNC resulttype_1 -> resulttype_2) be comptype.
 5. Return $free_resulttype(resulttype_1) ++ $free_resulttype(resulttype_2).
 
@@ -32622,7 +32643,7 @@ inst_tabletype moduleinst tt
 blocktype_ z blocktype
 1. If blocktype is some _IDX, then:
   a. Let (_IDX x) be blocktype.
-  b. Assert: Due to validation, $Expand($type(z, x)) is some FUNC.
+  b. Assert: Due to validation, $Expand($type(z, x)) is some ->.
   c. Let (FUNC t_1* -> t_2*) be $Expand($type(z, x)).
   d. Return t_1* ->_ [] t_2*.
 2. Assert: Due to validation, blocktype is some _RESULT.
@@ -32873,6 +32894,22 @@ runelem_ x (ELEM rt e^n elemmode)
 4. Let (ACTIVE y instr*) be elemmode.
 5. Return instr* :: [(I32.CONST 0), (I32.CONST n), (TABLE.INIT y x), (ELEM.DROP x)].
 
+evalexprs z expr''*
+1. If (expr''* = []), then:
+  a. Return [].
+2. Let [expr] :: expr'* be expr''*.
+3. Let [ref] be $Eval_expr(z, expr).
+4. Let ref'* be $evalexprs(z, expr'*).
+5. Return [ref] :: ref'*.
+
+evalexprss z expr''*
+1. If (expr''* = []), then:
+  a. Return [].
+2. Let [expr*] :: expr'** be expr''*.
+3. Let ref* be $evalexprs(z, expr*).
+4. Let ref'** be $evalexprss(z, expr'**).
+5. Return [ref*] :: ref'**.
+
 evalglobals z globaltype* expr''*
 1. If (expr''* = []), then:
   a. Assert: Due to validation, (globaltype* = []).
@@ -32881,8 +32918,8 @@ evalglobals z globaltype* expr''*
   a. Let [expr] :: expr'* be expr''*.
   b. Assert: Due to validation, (|globaltype*| >= 1).
   c. Let [gt] :: gt'* be globaltype*.
-  d. Let (s, f) be z.
-  e. Let [val] be $Eval_expr(z, expr).
+  d. Let [val] be $Eval_expr(z, expr).
+  e. Let (s, f) be z.
   f. Let a be $allocglobal(s, gt, val).
   g. Append a to the f.MODULE.GLOBALS.
   h. Let val'* be $evalglobals((s, f), gt'*, expr'*).
@@ -32913,31 +32950,23 @@ instantiate s module externaddr*
 14. Let z be (s, { MODULE: moduleinst_0 }).
 15. Push the frame (FRAME_ 0 { $frame(z) }) to the stack.
 16. Let val_G* be $evalglobals(z, globaltype*, expr_G*).
-17. Let ref_T* be [].
-18. For each expr_T in expr_T*, do:
-  a. Let [ref_T] be $Eval_expr(z, expr_T).
-  b. Append ref_T to the ref_T*.
-19. Let ref_E** be [].
-20. For each expr_E* in expr_E**, do:
-  a. Let ref_E* be [].
-  b. For each expr_E in expr_E*, do:
-    1) Let [ref_E] be $Eval_expr(z, expr_E).
-    2) Append ref_E to the ref_E*.
-  c. Append ref_E* to the ref_E**.
-21. Pop the frame (FRAME_ 0 { f }) from the stack.
-22. Let moduleinst be $allocmodule(s, module, externaddr*, val_G*, ref_T*, ref_E**).
-23. Push the frame (FRAME_ 0 { { MODULE: moduleinst } }) to the stack.
-24. Execute the sequence instr_E*.
-25. Execute the sequence instr_D*.
-26. If start? is defined, then:
+17. Let ref_T* be $evalexprs(z, expr_T*).
+18. Let ref_E** be $evalexprss(z, expr_E**).
+19. Pop the frame (FRAME_ 0 { f }) from the stack.
+20. Let (s, f) be z.
+21. Let moduleinst be $allocmodule(s, module, externaddr*, val_G*, ref_T*, ref_E**).
+22. Push the frame (FRAME_ 0 { { MODULE: moduleinst } }) to the stack.
+23. Execute the sequence instr_E*.
+24. Execute the sequence instr_D*.
+25. If start? is defined, then:
   a. Let ?((START x)) be start?.
   b. Let instr_S be (CALL x).
   c. Execute the instruction instr_S.
-27. Pop the frame (FRAME_ 0 { { MODULE: moduleinst } }) from the stack.
-28. Return moduleinst.
+26. Pop the frame (FRAME_ 0 { { MODULE: moduleinst } }) from the stack.
+27. Return moduleinst.
 
 invoke s funcaddr val*
-1. Assert: Due to validation, $Expand(s.FUNCS[funcaddr].TYPE) is some FUNC.
+1. Assert: Due to validation, $Expand(s.FUNCS[funcaddr].TYPE) is some ->.
 2. Let (FUNC t_1* -> t_2*) be $Expand(s.FUNCS[funcaddr].TYPE).
 3. If not $Val_ok(val, t_1)*, then:
   a. Fail.
@@ -32953,7 +32982,7 @@ invoke s funcaddr val*
 concat_idctxt idctxt*
 1. If (idctxt* = []), then:
   a. Return {}.
-2. Let [I, I'] be idctxt*.
+2. Let [I] :: I'* be idctxt*.
 3. Return I ++ $concat_idctxt(I'*).
 
 typesd decl'*

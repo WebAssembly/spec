@@ -296,7 +296,7 @@ rule Instr_ok/array.new_data:
 rule Instr_ok/array.get:
   C |- ARRAY.GET sx? x : (REF NULL (_IDX x)) I32 -> $unpack(zt)
   -- Expand: C.TYPES[x] ~~ ARRAY (mut? zt)
-  -- if sx? = eps <=> $is_packtype(zt)
+  -- if sx? =/= eps <=> $is_packtype(zt)
 
 rule Instr_ok/array.set:
   C |- ARRAY.SET x : (REF NULL (_IDX x)) I32 $unpack(zt) -> eps

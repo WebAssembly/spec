@@ -17,36 +17,35 @@ let empty =
     gramid = Map.empty;
   }
 
-let mem_varid s id = Map.mem id.it s.varid
-let mem_typid s id = Map.mem id.it s.typid
-let mem_defid s id = Map.mem id.it s.defid
-let mem_gramid s id = Map.mem id.it s.gramid
+let mem_varid s x = Map.mem x.it s.varid
+let mem_typid s x = Map.mem x.it s.typid
+let mem_defid s x = Map.mem x.it s.defid
+let mem_gramid s x = Map.mem x.it s.gramid
 
-let find_varid s id = Map.find id.it s.varid
-let find_typid s id = Map.find id.it s.typid
-let find_defid s id = Map.find id.it s.defid
-let find_gramid s id = Map.find id.it s.gramid
+let find_varid s x = Map.find x.it s.varid
+let find_typid s x = Map.find x.it s.typid
+let find_defid s x = Map.find x.it s.defid
+let find_gramid s x = Map.find x.it s.gramid
 
-let add_varid s id e = if id.it = "_" then s else {s with varid = Map.add id.it e s.varid}
-let add_typid s id t = if id.it = "_" then s else {s with typid = Map.add id.it t s.typid}
-let add_defid s id x = if id.it = "_" then s else {s with defid = Map.add id.it x s.defid}
-let add_gramid s id g = if id.it = "_" then s else {s with gramid = Map.add id.it g s.gramid}
+let add_varid s x e = if x.it = "_" then s else {s with varid = Map.add x.it e s.varid}
+let add_typid s x t = if x.it = "_" then s else {s with typid = Map.add x.it t s.typid}
+let add_defid s x x' = if x.it = "_" then s else {s with defid = Map.add x.it x' s.defid}
+let add_gramid s x g = if x.it = "_" then s else {s with gramid = Map.add x.it g s.gramid}
 
-let remove_varid s id = if id.it = "_" then s else {s with varid = Map.remove id.it s.varid}
-let remove_typid s id = if id.it = "_" then s else {s with typid = Map.remove id.it s.typid}
-let remove_defid s id = if id.it = "_" then s else {s with defid = Map.remove id.it s.defid}
-let remove_gramid s id = if id.it = "_" then s else {s with gramid = Map.remove id.it s.gramid}
+let remove_varid s x = if x.it = "_" then s else {s with varid = Map.remove x.it s.varid}
+let remove_typid s x = if x.it = "_" then s else {s with typid = Map.remove x.it s.typid}
+let remove_defid s x = if x.it = "_" then s else {s with defid = Map.remove x.it s.defid}
+let remove_gramid s x = if x.it = "_" then s else {s with gramid = Map.remove x.it s.gramid}
 
 let union s1 s2 =
   { varid = Map.union (fun _ _e1 e2 -> Some e2) s1.varid s2.varid;
     typid = Map.union (fun _ _t1 t2 -> Some t2) s1.typid s2.typid;
     defid = Map.union (fun _ _x1 x2 -> Some x2) s1.defid s2.defid;
-    gramid = Map.union (fun _ _x1 x2 -> Some x2) s1.gramid s2.gramid;
+    gramid = Map.union (fun _ _g1 g2 -> Some g2) s1.gramid s2.gramid;
   }
 
-let remove_varid' s id' = {s with varid = Map.remove id' s.varid}
-let remove_varids s ids' =
-  Free.Set.(fold (fun id' s -> remove_varid' s id') ids' s)
+let remove_varid' s x' = {s with varid = Map.remove x' s.varid}
+let remove_varids s xs' = Free.Set.(fold (fun x' s -> remove_varid' s x') xs' s)
 
 
 (* Helpers *)
@@ -64,52 +63,73 @@ let rec subst_list_dep subst_x bound_x s = function
 
 (* Identifiers *)
 
-let subst_varid s id =
-  match Map.find_opt id.it s.varid with
-  | None -> id
-  | Some {it = VarE id'; _} -> id'
-  | Some _ -> raise (Invalid_argument "subst_varid")
+let subst_defid s x =
+  match Map.find_opt x.it s.defid with
+  | None -> x
+  | Some x' -> x'
 
-let subst_defid s id =
-  match Map.find_opt id.it s.defid with
-  | None -> id
-  | Some id' -> id'
-
-let subst_gramid s id =
-  match Map.find_opt id.it s.gramid with
-  | None -> id
-  | Some {it = VarG (id', []); _} -> id'
-  | Some _ -> raise (Invalid_argument "subst_varid")
+let subst_gramid s x =
+  match Map.find_opt x.it s.gramid with
+  | None -> x
+  | Some {it = VarG (x', []); _} -> x'
+  | Some _ -> raise (Invalid_argument "subst_gramid")
 
 
 (* Iterations *)
 
 let rec subst_iter s iter =
   match iter with
-  | Opt | List | List1 -> iter, s
-  | ListN (e, id_opt) ->
-    ListN (subst_exp s e, subst_opt subst_varid s id_opt),
-    Option.fold id_opt ~none:s ~some:(remove_varid s)
+  | Opt | List | List1 -> iter
+  | ListN (e, xo) -> ListN (subst_exp s e, xo)
+
+and subst_iterexp : 'a. subst -> (subst -> 'a -> 'a) -> 'a -> _ -> 'a * _ =
+  fun s f body (it, xes) ->
+  let it', xxts1 =
+    match it with
+    | ListN (e, Some x) ->
+      let x' = Fresh.refresh_varid x in
+      ListN (e, Some x'), [(x, x', NumT `NatT $ x.at)]
+    | _ -> it, []
+  in
+  let it'' = subst_iter s it' in
+  let xes' = List.map (fun (x, e) -> Fresh.refresh_varid x, subst_exp s e) xes in
+  let xxts = List.map2 (fun (x, _) (x', e') -> x, x', e'.note) xes xes' in
+  let s' = 
+    List.fold_left (fun s (x, x', t) ->
+      add_varid s x (VarE x' $$ x'.at % t)
+    ) s (xxts1 @ xxts)
+  in
+  f s' body,
+  (it'', xes')
 
 
 (* Types *)
 
 and subst_typ s t =
   (match t.it with
-  | VarT (id, as_) ->
-    (match Map.find_opt id.it s.typid with
-    | None -> VarT (id, subst_args s as_)
+  | VarT (x, as_) ->
+    (match Map.find_opt x.it s.typid with
+    | None -> VarT (x, subst_args s as_)
     | Some t' -> assert (as_ = []); t'.it  (* We do not support higher-order substitutions yet *)
     )
   | BoolT | NumT _ | TextT -> t.it
-  | TupT ets -> TupT (fst (subst_list_dep subst_typbind Free.bound_typbind s ets))
-  | IterT (t1, iter) ->
-    let iter', s' = subst_iter s iter in
-    IterT (subst_typ s' t1, iter')
+  | TupT xts -> TupT (fst (subst_tup_typ s xts))
+  | IterT (t1, it) -> IterT (subst_typ s t1, subst_iter s it)
   ) $ t.at
 
-and subst_typbind s (e, t) =
-  (e, subst_typ s t)
+and subst_typ' s t =
+  match t.it with
+  | TupT xts -> let xts', s' = subst_tup_typ s xts in TupT xts' $ t.at, s'
+  | _ -> subst_typ s t, s
+
+and subst_tup_typ s = function
+  | [] -> [], s
+  | (x, t)::xts ->
+    let x' = Fresh.refresh_varid x in
+    let t' = subst_typ s t in
+    let s' = add_varid s x (VarE x' $$ x'.at % t') in
+    let xts', s'' = subst_tup_typ s' xts in
+    (x', t') :: xts', s''
 
 and subst_deftyp s dt =
   (match dt.it with
@@ -118,22 +138,24 @@ and subst_deftyp s dt =
   | VariantT tcs -> VariantT (subst_list subst_typcase s tcs)
   ) $ dt.at
 
-and subst_typfield s (atom, (bs, t, prems), hints) =
-  let bs', s' = subst_binds s bs in
-  (atom, (bs', subst_typ s' t, subst_list subst_prem s' prems), hints)
+and subst_typfield s (atom, (t, qs, prems), hints) =
+  let t', s' = subst_typ' s t in
+  let qs', s'' = subst_quants s' qs in
+  (atom, (t', qs', subst_list subst_prem s'' prems), hints)
 
-and subst_typcase s (op, (bs, t, prems), hints) =
-  let bs', s' = subst_binds s bs in
-  (op, (bs', subst_typ s' t, subst_list subst_prem s' prems), hints)
+and subst_typcase s (op, (t, qs, prems), hints) =
+  let t', s' = subst_typ' s t in
+  let qs', s'' = subst_quants s' qs in
+  (op, (t', qs', subst_list subst_prem s'' prems), hints)
 
 
 (* Expressions *)
 
 and subst_exp s e =
   (match e.it with
-  | VarE id ->
-    (match Map.find_opt id.it s.varid with
-    | None -> VarE id
+  | VarE x ->
+    (match Map.find_opt x.it s.varid with
+    | None -> VarE x
     | Some e' -> e'.it
     )
   | BoolE _ | NumE _ | TextE _ -> e.it
@@ -150,10 +172,10 @@ and subst_exp s e =
   | MemE (e1, e2) -> MemE (subst_exp s e1, subst_exp s e2)
   | LenE e1 -> LenE (subst_exp s e1)
   | TupE es -> TupE (subst_list subst_exp s es)
-  | CallE (id, as_) -> CallE (subst_defid s id, subst_args s as_)
+  | CallE (x, as_) -> CallE (subst_defid s x, subst_args s as_)
   | IterE (e1, iterexp) ->
-    let it', s' = subst_iterexp s iterexp in
-    IterE (subst_exp s' e1, it')
+    let e1', it' = subst_iterexp s subst_exp e1 iterexp in
+    IterE (e1', it')
   | ProjE (e1, i) -> ProjE (subst_exp s e1, i)
   | UncaseE (e1, op) ->
     let e1' = subst_exp s e1 in
@@ -182,26 +204,25 @@ and subst_path s p =
   | DotP (p1, atom) -> DotP (subst_path s p1, atom)
   ) $$ p.at % subst_typ s p.note
 
-and subst_iterexp s (iter, xes) =
-  (* TODO(3, rossberg): This is assuming expressions in s are closed, is that okay? *)
-  let iter', s' = subst_iter s iter in
-  (iter', List.map (fun (id, e) -> (id, subst_exp s e)) xes),
-  List.fold_left remove_varid s' (List.map fst xes)
-
 
 (* Grammars *)
 
 and subst_sym s g =
   (match g.it with
-  | VarG (id, args) -> VarG (subst_gramid s id, List.map (subst_arg s) args)
+  | VarG (x, []) ->
+    (match Map.find_opt x.it s.gramid with
+    | None -> VarG (x, [])
+    | Some g' -> g'.it
+    )
+  | VarG (x, args) -> VarG (subst_gramid s x, List.map (subst_arg s) args)
   | NumG _ | TextG _ -> g.it
   | EpsG -> EpsG
   | SeqG gs -> SeqG (subst_list subst_sym s gs)
   | AltG gs -> AltG (subst_list subst_sym s gs)
   | RangeG (g1, g2) -> RangeG (subst_sym s g1, subst_sym s g2)
   | IterG (g1, iterexp) ->
-    let it', s' = subst_iterexp s iterexp in
-    IterG (subst_sym s' g1, it')
+    let g1', it' = subst_iterexp s subst_sym g1 iterexp in
+    IterG (g1', it')
   | AttrG (e, g1) -> AttrG (subst_exp s e, subst_sym s g1)
   ) $ g.at
 
@@ -210,13 +231,13 @@ and subst_sym s g =
 
 and subst_prem s prem =
   (match prem.it with
-  | RulePr (id, op, e) -> RulePr (id, op, subst_exp s e)
+  | RulePr (x, as_, op, e) -> RulePr (x, subst_args s as_, op, subst_exp s e)
   | IfPr e -> IfPr (subst_exp s e)
   | ElsePr -> ElsePr
   | IterPr (prem1, iterexp) ->
-    let it', s' = subst_iterexp s iterexp in
-    IterPr (subst_prem s' prem1, it')
-  | LetPr (e1, e2, ids) -> LetPr (subst_exp s e1, subst_exp s e2, ids)
+    let prem1', it' = subst_iterexp s subst_prem prem1 iterexp in
+    IterPr (prem1', it')
+  | LetPr (e1, e2, xs) -> LetPr (subst_exp s e1, subst_exp s e2, xs)
   ) $ prem.at
 
 
@@ -226,35 +247,25 @@ and subst_arg s a =
   (match a.it with
   | ExpA e -> ExpA (subst_exp s e)
   | TypA t -> TypA (subst_typ s t)
-  | DefA id -> DefA (subst_defid s id)
+  | DefA x -> DefA (subst_defid s x)
   | GramA g -> GramA (subst_sym s g)
   ) $ a.at
 
-and subst_bind s b =
-  (match b.it with
-  | ExpB (id, t) -> ExpB (id, subst_typ s t)
-  | TypB id -> TypB id
-  | DefB (id, ps, t) ->
-    let ps', s' = subst_params s ps in
-    DefB (id, ps', subst_typ s' t)
-  | GramB (id, ps, t) ->
-    let ps', s' = subst_params s ps in
-    GramB (id, ps', subst_typ s' t)
-  ) $ b.at
-
 and subst_param s p =
   (match p.it with
-  | ExpP (id, t) -> ExpP (id, subst_typ s t)
-  | TypP id -> TypP id
-  | DefP (id, ps, t) ->
+  | ExpP (x, t) -> ExpP (x, subst_typ s t)
+  | TypP x -> TypP x
+  | DefP (x, ps, t) ->
     let ps', s' = subst_params s ps in
-    DefP (id, ps', subst_typ s' t)
-  | GramP (id, t) -> GramP (id, subst_typ s t)
+    DefP (x, ps', subst_typ s' t)
+  | GramP (x, ps, t) ->
+    let ps', s' = subst_params s ps in
+    GramP (x, ps', subst_typ s' t)
   ) $ p.at
 
 and subst_args s as_ = subst_list subst_arg s as_
-and subst_binds s bs = subst_list_dep subst_bind Free.bound_bind s bs
 and subst_params s ps = subst_list_dep subst_param Free.bound_param s ps
+and subst_quants s ps = subst_list_dep subst_param Free.bound_quant s ps
 
 
 (* Optimizations *)

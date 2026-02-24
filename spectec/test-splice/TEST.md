@@ -57,6 +57,7 @@ $$
 & & | & \mathsf{block}~{\mathit{blocktype}}~{{\mathit{instr}}^\ast} \\
 & & | & \mathsf{loop}~{\mathit{blocktype}}~{{\mathit{instr}}^\ast} \\
 & & | & \mathsf{if}~{\mathit{blocktype}}~{{\mathit{instr}}^\ast}~\mathsf{else}~{{\mathit{instr}}^\ast} \\
+& & | & \dots \\
 \end{array}
 $$
 
@@ -84,7 +85,8 @@ $$
 & & | & \mathsf{memory{.}grow}~{\mathit{memidx}} \\
 & & | & \mathsf{memory{.}fill}~{\mathit{memidx}} \\
 & & | & \mathsf{memory{.}copy}~{\mathit{memidx}}~{\mathit{memidx}} \\
-& & | & \mathsf{memory{.}init}~{\mathit{memidx}}~{\mathit{dataidx}} \\[0.8ex]
+& & | & \mathsf{memory{.}init}~{\mathit{memidx}}~{\mathit{dataidx}} \\
+& & | & \dots \\[0.8ex]
 & {\mathit{expr}} & ::= & {{\mathit{instr}}^\ast} \\
 \end{array}
 $$
@@ -1529,6 +1531,8 @@ warning: definition `dots` was never spliced
 warning: definition `elem` was never spliced
 warning: definition `eleminst` was never spliced
 warning: definition `elemsd` was never spliced
+warning: definition `evalexprs` was never spliced
+warning: definition `evalexprss` was never spliced
 warning: definition `evalglobals` was never spliced
 warning: definition `exninst` was never spliced
 warning: definition `expanddt` was never spliced
@@ -2402,6 +2406,8 @@ warning: definition prose `disjoint_` was never spliced
 warning: definition prose `elem` was never spliced
 warning: definition prose `eleminst` was never spliced
 warning: definition prose `elemsd` was never spliced
+warning: definition prose `evalexprs` was never spliced
+warning: definition prose `evalexprss` was never spliced
 warning: definition prose `evalglobals` was never spliced
 warning: definition prose `exninst` was never spliced
 warning: definition prose `expanddt` was never spliced

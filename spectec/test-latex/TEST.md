@@ -881,17 +881,18 @@ $$
 
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}}
-& {\mathit{dotstypex}} & ::= & {\mathit{argh}} ~~|~~ \mathsf{dx{\scriptstyle 1}} \\
-& {\mathit{dotstypey}} & ::= & {\mathit{argh}} ~~|~~ \mathsf{dy{\scriptstyle 1}} \\
-& {\mathit{dotstypex}} & ::= & \dots ~~|~~ {\mathit{borg}} ~~|~~ \mathsf{dx{\scriptstyle 2}} \\
+& {\mathit{dotstypex}} & ::= & {\mathit{argh}} ~~|~~ \mathsf{dx{\scriptstyle 1}} ~~|~~ \dots \\
+& {\mathit{dotstypey}} & ::= & {\mathit{argh}} ~~|~~ \mathsf{dy{\scriptstyle 1}} ~~|~~ \dots \\
+& {\mathit{dotstypex}} & ::= & \dots ~~|~~ {\mathit{borg}} ~~|~~ \mathsf{dx{\scriptstyle 2}} ~~|~~ \dots \\
 & {\mathit{dotstypesep}} & ::= & {\mathit{borg}} \\
 & {\mathit{dotstypex}} & ::= & \dots \\
 & & | & {\mathit{curb}} ~~|~~ \mathsf{dx{\scriptstyle 3}} \\
 & & | & \mathsf{dx{\scriptstyle 4}} ~~|~~ \mathsf{dx{\scriptstyle 5}} \\
-& & | & \mathsf{dx{\scriptstyle 6}} \\
+& & | & \mathsf{dx{\scriptstyle 6}} ~~|~~ \dots \\
 & {\mathit{dotstypey}} & ::= & \dots \\
 & & | & {\mathit{borg}} ~~|~~ \mathsf{dy{\scriptstyle 2}} \\
 & & | & \mathsf{dy{\scriptstyle 3}} ~~|~~ \mathsf{dy{\scriptstyle 4}} \\
+& & | & \dots \\
 & {\mathit{dotstypex}} & ::= & \dots ~~|~~ {\mathit{dork}} ~~|~~ \mathsf{dx{\scriptstyle 7}} \\
 & {\mathit{dotstypey}} & ::= & \dots \\
 & & | & {\mathit{dork}} \\
@@ -1680,15 +1681,15 @@ $$
 
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}}
-& {\parentimplicit}(t) & ::= & \PP \\
+& {\parentimplicit}(t) & ::= & \PPimpl \\
 & & | & \PPX \\
 & & | & \PPYxPPY \\
 & & | & \mathsf{ppz} \\
-& & | & \QQQ \\
+& & | & \QQQimpl \\
 & & | & \QQQX \\
 & & | & \QQQYxQQQY \\
 & & | & \mathsf{qqqz} \\
-& & | & {t}{\mathsf{\_}}{\RA}{\RR}~z \\
+& & | & {t}{\mathsf{\_}}{\RAimpl}{\RRimpl}~{\mathit{zimpl}} \\
 & & | & {t}{\mathsf{\_}}{\RB}{\RRX}~z \\
 & & | & {t}{\mathsf{\_}}{\RCxRC}{\RRYxRRY}~{\mathit{zxz}} \\
 & & | & {t}{\mathsf{\_}}{\mathsf{rd}}{\mathsf{rrz}}~z \\
@@ -1737,7 +1738,7 @@ $$
 
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}}
-& {\family}(0) & ::= & \FF \\
+& {\family}(0) & ::= & \FFfamily \\
 & {\family}(1) & ::= & \GGfamily \\
 & {\family}(2) & ::= & \xHHy \\
 \end{array}
@@ -2065,17 +2066,18 @@ $$
 
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}}
-& {\dotstypex} & ::= & {\argh} ~~|~~ \DX1 \\
-& {\dotstypey} & ::= & {\argh} ~~|~~ \DY1 \\
-& {\dotstypex} & ::= & \dots ~~|~~ {\borg} ~~|~~ \DX2 \\
+& {\dotstypex} & ::= & {\argh} ~~|~~ \DX1 ~~|~~ \dots \\
+& {\dotstypey} & ::= & {\argh} ~~|~~ \DY1 ~~|~~ \dots \\
+& {\dotstypex} & ::= & \dots ~~|~~ {\borg} ~~|~~ \DX2 ~~|~~ \dots \\
 & {\dotstypesep} & ::= & {\borg} \\
 & {\dotstypex} & ::= & \dots \\
 & & | & {\curb} ~~|~~ \DX3 \\
 & & | & \DX4 ~~|~~ \DX5 \\
-& & | & \DX6 \\
+& & | & \DX6 ~~|~~ \dots \\
 & {\dotstypey} & ::= & \dots \\
 & & | & {\borg} ~~|~~ \DY2 \\
 & & | & \DY3 ~~|~~ \DY4 \\
+& & | & \dots \\
 & {\dotstypex} & ::= & \dots ~~|~~ {\dork} ~~|~~ \DX7 \\
 & {\dotstypey} & ::= & \dots \\
 & & | & {\dork} \\
@@ -3937,6 +3939,7 @@ $$
 & & | & \mathsf{throw}~{\mathit{tagidx}} \\
 & & | & \mathsf{throw\_ref} \\
 & & | & \mathsf{try\_table}~{\mathit{blocktype}}~{\mathit{list}}({\mathit{catch}})~{{\mathit{instr}}^\ast} \\
+& & | & \dots \\
 \mbox{(catch clause)} & {\mathit{catch}} & ::= & \mathsf{catch}~{\mathit{tagidx}}~{\mathit{labelidx}} \\
 & & | & \mathsf{catch\_ref}~{\mathit{tagidx}}~{\mathit{labelidx}} \\
 & & | & \mathsf{catch\_all}~{\mathit{labelidx}} \\
@@ -4022,6 +4025,7 @@ $$
 & & | & {\mathit{shape}}{.}\mathsf{splat} \\
 & & | & {{\mathit{shape}}{.}\mathsf{extract\_lane}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~{\mathit{laneidx}} & \quad \mbox{if}~ {{\mathit{sx}}^?} = \epsilon \Leftrightarrow {\mathrm{lanetype}}({\mathit{shape}}) \in \mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 64}}~\mathsf{f{\scriptstyle 32}}~\mathsf{f{\scriptstyle 64}} \\
 & & | & {\mathit{shape}}{.}\mathsf{replace\_lane}~{\mathit{laneidx}} \\
+& & | & \dots \\
 \end{array}
 $$
 
@@ -6464,7 +6468,7 @@ $$
 \frac{
 C{.}\mathsf{types}{}[x] \approx \mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}})
  \qquad
-{{\mathit{sx}}^?} = \epsilon \Leftrightarrow {\mathit{zt}} = {\mathrm{unpack}}({\mathit{zt}})
+{{\mathit{sx}}^?} \neq \epsilon \Leftrightarrow {\mathit{zt}} = {\mathrm{unpack}}({\mathit{zt}})
 }{
 C \vdash {\mathsf{array{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~x : (\mathsf{ref}~\mathsf{null}~x)~\mathsf{i{\scriptstyle 32}} \rightarrow {\mathrm{unpack}}({\mathit{zt}})
 } \, {[\textsc{\scriptsize T{-}instr{-}array.get}]}
@@ -9071,7 +9075,7 @@ $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-(s ; f){.}\mathsf{tags} & = & f{.}\mathsf{module}{.}\mathsf{tags} \\
+(s ; f){.}\mathsf{module}{.}\mathsf{tags} & = & f{.}\mathsf{module}{.}\mathsf{tags} \\
 \end{array}
 $$
 
@@ -9841,7 +9845,7 @@ $$
 \begin{array}[t]{@{}l@{}}
 \mbox{if}~ z{.}\mathsf{tags}{}[x]{.}\mathsf{type} \approx \mathsf{func}~{t^{n}} \rightarrow \epsilon \\
 {\land}~ a = {|z{.}\mathsf{exns}|} \\
-{\land}~ {\mathit{exn}} = \{ \mathsf{tag}~z{.}\mathsf{tags}{}[x],\;\allowbreak \mathsf{fields}~{{\mathit{val}}^{n}} \} \\
+{\land}~ {\mathit{exn}} = \{ \mathsf{tag}~z{.}\mathsf{module}{.}\mathsf{tags}{}[x],\;\allowbreak \mathsf{fields}~{{\mathit{val}}^{n}} \} \\
 \end{array} \\
 \end{array}
 $$
@@ -9860,7 +9864,7 @@ $$
 &&& \multicolumn{2}{@{}l@{}}{\quad
 \quad
 \begin{array}[t]{@{}l@{}}
-\mbox{if}~ z{.}\mathsf{exns}{}[a]{.}\mathsf{tag} = z{.}\mathsf{tags}{}[x] \\
+\mbox{if}~ z{.}\mathsf{exns}{}[a]{.}\mathsf{tag} = z{.}\mathsf{module}{.}\mathsf{tags}{}[x] \\
 {\land}~ {{\mathit{val}}^\ast} = z{.}\mathsf{exns}{}[a]{.}\mathsf{fields} \\
 \end{array}
 } \\
@@ -9868,7 +9872,7 @@ $$
 &&& \multicolumn{2}{@{}l@{}}{\quad
 \quad
 \begin{array}[t]{@{}l@{}}
-\mbox{if}~ z{.}\mathsf{exns}{}[a]{.}\mathsf{tag} = z{.}\mathsf{tags}{}[x] \\
+\mbox{if}~ z{.}\mathsf{exns}{}[a]{.}\mathsf{tag} = z{.}\mathsf{module}{.}\mathsf{tags}{}[x] \\
 {\land}~ {{\mathit{val}}^\ast} = z{.}\mathsf{exns}{}[a]{.}\mathsf{fields} \\
 \end{array}
 } \\
@@ -11140,15 +11144,13 @@ $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-{{{\mathrm{evalglobal}}^\ast}}{(z, \epsilon, \epsilon)} & = & (z, \epsilon) \\
-{{{\mathrm{evalglobal}}^\ast}}{(z, {\mathit{gt}}~{{\mathit{gt}'}^\ast}, {\mathit{expr}}~{{\mathit{expr}'}^\ast})} & = & ({z'}, {\mathit{val}}~{{\mathit{val}'}^\ast}) &  \\
+{{{\mathrm{evalexpr}}^\ast}}{(z, \epsilon)} & = & (z, \epsilon) \\
+{{{\mathrm{evalexpr}}^\ast}}{(z, {\mathit{expr}}~{{\mathit{expr}'}^\ast})} & = & ({z''}, {\mathit{ref}}~{{\mathit{ref}'}^\ast}) &  \\
 && \multicolumn{2}{@{}l@{}}{\quad
 \quad
 \begin{array}[t]{@{}l@{}}
-\mbox{if}~ z ; {\mathit{expr}} \hookrightarrow^\ast z ; {\mathit{val}} \\
-{\land}~ z = s ; f \\
-{\land}~ ({s'}, a) = {\mathrm{allocglobal}}(s, {\mathit{gt}}, {\mathit{val}}) \\
-{\land}~ ({z'}, {{\mathit{val}'}^\ast}) = {{{\mathrm{evalglobal}}^\ast}}{(({s'} ; f{}[{.}\mathsf{module}{.}\mathsf{globals} \mathrel{{=}{\oplus}} a]), {{\mathit{gt}'}^\ast}, {{\mathit{expr}'}^\ast})} \\
+\mbox{if}~ z ; {\mathit{expr}} \hookrightarrow^\ast {z'} ; {\mathit{ref}} \\
+{\land}~ ({z''}, {{\mathit{ref}'}^\ast}) = {{{\mathrm{evalexpr}}^\ast}}{({z'}, {{\mathit{expr}'}^\ast})} \\
 \end{array}
 } \\
 \end{array}
@@ -11156,7 +11158,37 @@ $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-{\mathrm{instantiate}}(s, {\mathit{module}}, {{\mathit{externaddr}}^\ast}) & = & {s'} ; \{ \mathsf{module}~{\mathit{moduleinst}} \} ; {{\mathit{instr}}_{\mathsf{e}}^\ast}~{{\mathit{instr}}_{\mathsf{d}}^\ast}~{{\mathit{instr}}_{\mathsf{s}}^?} &  \\
+{{{{\mathrm{evalexpr}}^\ast}^\ast}}{(z, \epsilon)} & = & (z, \epsilon) \\
+{{{{\mathrm{evalexpr}}^\ast}^\ast}}{(z, {{\mathit{expr}}^\ast}~{{{\mathit{expr}'}^\ast}^\ast})} & = & ({z''}, {{\mathit{ref}}^\ast}~{{{\mathit{ref}'}^\ast}^\ast}) &  \\
+&& \multicolumn{2}{@{}l@{}}{\quad
+\quad
+\begin{array}[t]{@{}l@{}}
+\mbox{if}~ ({z'}, {{\mathit{ref}}^\ast}) = {{{\mathrm{evalexpr}}^\ast}}{(z, {{\mathit{expr}}^\ast})} \\
+{\land}~ ({z''}, {{{\mathit{ref}'}^\ast}^\ast}) = {{{{\mathrm{evalexpr}}^\ast}^\ast}}{({z'}, {{{\mathit{expr}'}^\ast}^\ast})} \\
+\end{array}
+} \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+{{{\mathrm{evalglobal}}^\ast}}{(z, \epsilon, \epsilon)} & = & (z, \epsilon) \\
+{{{\mathrm{evalglobal}}^\ast}}{(z, {\mathit{gt}}~{{\mathit{gt}'}^\ast}, {\mathit{expr}}~{{\mathit{expr}'}^\ast})} & = & ({z''}, {\mathit{val}}~{{\mathit{val}'}^\ast}) &  \\
+&& \multicolumn{2}{@{}l@{}}{\quad
+\quad
+\begin{array}[t]{@{}l@{}}
+\mbox{if}~ z ; {\mathit{expr}} \hookrightarrow^\ast {z'} ; {\mathit{val}} \\
+{\land}~ {z'} = s ; f \\
+{\land}~ ({s'}, a) = {\mathrm{allocglobal}}(s, {\mathit{gt}}, {\mathit{val}}) \\
+{\land}~ ({z''}, {{\mathit{val}'}^\ast}) = {{{\mathrm{evalglobal}}^\ast}}{(({s'} ; f{}[{.}\mathsf{module}{.}\mathsf{globals} \mathrel{{=}{\oplus}} a]), {{\mathit{gt}'}^\ast}, {{\mathit{expr}'}^\ast})} \\
+\end{array}
+} \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+{\mathrm{instantiate}}(s, {\mathit{module}}, {{\mathit{externaddr}}^\ast}) & = & {s''''} ; \{ \mathsf{module}~{\mathit{moduleinst}} \} ; {{\mathit{instr}}_{\mathsf{e}}^\ast}~{{\mathit{instr}}_{\mathsf{d}}^\ast}~{{\mathit{instr}}_{\mathsf{s}}^?} &  \\
  \multicolumn{4}{@{}l@{}}{\quad
 \quad
 \begin{array}[t]{@{}l@{}}
@@ -11174,9 +11206,10 @@ $$
   \mathsf{funcs}~{\mathrm{funcs}}({{\mathit{externaddr}}^\ast})~{({|s{.}\mathsf{funcs}|} + i_{\mathsf{f}})^{i_{\mathsf{f}}<{|{{\mathit{func}}^\ast}|}}} \}\end{array} \\
 {\land}~ z = s ; \{ \mathsf{module}~{\mathit{moduleinst}}_0 \} \\
 {\land}~ ({z'}, {{\mathit{val}}_{\mathsf{g}}^\ast}) = {{{\mathrm{evalglobal}}^\ast}}{(z, {{\mathit{globaltype}}^\ast}, {{\mathit{expr}}_{\mathsf{g}}^\ast})} \\
-{\land}~ ({z'} ; {\mathit{expr}}_{\mathsf{t}} \hookrightarrow^\ast {z'} ; {\mathit{ref}}_{\mathsf{t}})^\ast \\
-{\land}~ {({z'} ; {\mathit{expr}}_{\mathsf{e}} \hookrightarrow^\ast {z'} ; {\mathit{ref}}_{\mathsf{e}})^\ast}^\ast \\
-{\land}~ ({s'}, {\mathit{moduleinst}}) = {\mathrm{allocmodule}}(s, {\mathit{module}}, {{\mathit{externaddr}}^\ast}, {{\mathit{val}}_{\mathsf{g}}^\ast}, {{\mathit{ref}}_{\mathsf{t}}^\ast}, {({{\mathit{ref}}_{\mathsf{e}}^\ast})^\ast}) \\
+{\land}~ ({z''}, {{\mathit{ref}}_{\mathsf{t}}^\ast}) = {{{\mathrm{evalexpr}}^\ast}}{({z'}, {{\mathit{expr}}_{\mathsf{t}}^\ast})} \\
+{\land}~ ({z'''}, {{{\mathit{ref}}_{\mathsf{e}}^\ast}^\ast}) = {{{{\mathrm{evalexpr}}^\ast}^\ast}}{({z''}, {{{\mathit{expr}}_{\mathsf{e}}^\ast}^\ast})} \\
+{\land}~ {z'''} = {s'''} ; f \\
+{\land}~ ({s''''}, {\mathit{moduleinst}}) = {\mathrm{allocmodule}}({s'''}, {\mathit{module}}, {{\mathit{externaddr}}^\ast}, {{\mathit{val}}_{\mathsf{g}}^\ast}, {{\mathit{ref}}_{\mathsf{t}}^\ast}, {({{\mathit{ref}}_{\mathsf{e}}^\ast})^\ast}) \\
 {\land}~ {{\mathit{instr}}_{\mathsf{d}}^\ast} = {\bigoplus}\, {{{\mathrm{rundata}}}_{i_{\mathsf{d}}}({{\mathit{data}}^\ast}{}[i_{\mathsf{d}}])^{i_{\mathsf{d}}<{|{{\mathit{data}}^\ast}|}}} \\
 {\land}~ {{\mathit{instr}}_{\mathsf{e}}^\ast} = {\bigoplus}\, {{{\mathrm{runelem}}}_{i_{\mathsf{e}}}({{\mathit{elem}}^\ast}{}[i_{\mathsf{e}}])^{i_{\mathsf{e}}<{|{{\mathit{elem}}^\ast}|}}} \\
 {\land}~ {{\mathit{instr}}_{\mathsf{s}}^?} = {(\mathsf{call}~x)^?} \\
@@ -12465,7 +12498,7 @@ $$
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
 {\bigoplus}\, \epsilon & = & \{  \} \\
-{\bigoplus}\, I~{I'} & = & I \oplus {\bigoplus}\, {{I'}^\ast} \\
+{\bigoplus}\, I~{{I'}^\ast} & = & I \oplus {\bigoplus}\, {{I'}^\ast} \\
 \end{array}
 $$
 
@@ -13510,7 +13543,7 @@ $$
 (\mathsf{local}~t, \{ \mathsf{locals}~({{\mathit{id}}^?}) \}) \\
 \end{array}
 } \\
-& & | & \mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{local}’}~~t{:}{{{\mathtt{valtype}}}_{I}^\ast}~~\mbox{‘\texttt{{)}}’} & \quad\equiv\quad{} & {(\mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{local}’}~~t{:}{{\mathtt{valtype}}}_{I}~~\mbox{‘\texttt{{)}}’})^\ast} \\
+& & | & \mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{local}’}~~{{{\mathtt{valtype}}}_{I}^\ast}~~\mbox{‘\texttt{{)}}’} & \quad\equiv\quad{} & {(\mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{local}’}~~{{\mathtt{valtype}}}_{I}~~\mbox{‘\texttt{{)}}’})^\ast} \\
 \end{array}
 $$
 
@@ -13560,10 +13593,10 @@ $$
 (\mathsf{elem}~{\mathit{rt}}~{e^\ast}~\mathsf{declare}, \{ \mathsf{elems}~({{\mathit{id}}^?}) \}) \\
 \end{array}
 } \\
-& & | & \mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{elem}’}~~{e'}{:}{{\mathtt{offset}}}_{I}~~{\mathtt{list}}({{\mathtt{funcidx}}}_{I})~~\mbox{‘\texttt{{)}}’} & \quad\equiv\quad{} & & \\
+& & | & \mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{elem}’}~~{{\mathtt{offset}}}_{I}~~{\mathtt{list}}({{\mathtt{funcidx}}}_{I})~~\mbox{‘\texttt{{)}}’} & \quad\equiv\quad{} & & \\
 &&& \multicolumn{4}{@{}l@{}}{\quad
 \begin{array}[t]{@{}l@{}}
-\mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{elem}’}~~{e'}{:}{{\mathtt{offset}}}_{I}~~\mbox{‘\texttt{func}’}~~{\mathtt{list}}({{\mathtt{funcidx}}}_{I})~~\mbox{‘\texttt{{)}}’} \\
+\mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{elem}’}~~{{\mathtt{offset}}}_{I}~~\mbox{‘\texttt{func}’}~~{\mathtt{list}}({{\mathtt{funcidx}}}_{I})~~\mbox{‘\texttt{{)}}’} \\
 \end{array}
 } \\
 & {{\mathtt{elemlist}}}_{I} & ::= & {\mathit{rt}}{:}{{\mathtt{reftype}}}_{I}~~{e^\ast}{:}{\mathtt{list}}({{\mathtt{expr}}}_{I}) & \quad\Rightarrow\quad{} & ({\mathit{rt}}, {e^\ast}) \\

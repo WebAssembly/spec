@@ -1,0 +1,37 @@
+;; Store
+
+syntax typdef = param* `-> OK `= inst*
+syntax fundef = param* `-> typ `= clause*
+syntax reldef = param* `-> typ `= rul*
+syntax gramdef = param* `-> typ `= prod*
+
+syntax S =
+  { TYP (id, typdef)*,
+    FUN (id, fundef)*,
+    REL (id, reldef)*,
+    GRAM (id, gramdef)*
+  }
+
+
+;; Environment
+
+syntax E = {S, EXP (id, typ)*}
+
+
+def $composeenvs(E*) : E  hint(show (++)%)
+def $composeenvs(eps) = {}
+def $composeenvs(E_1 E*) = E_1 ++ $composeenvs(E*)
+
+def $storeenv(S) : E
+def $storeenv(S) = {TYP S.TYP, FUN S.FUN, REL S.REL, GRAM S.GRAM}
+
+def $tupenv(typ) : E
+def $tupenv(TUP (x `: t)*) = {EXP (x, t)*}
+def $tupenv(t) = {}  -- otherwise
+
+def $paramenv(param*) : E
+def $paramenv(EXP x `: t) = {EXP (x, t)}
+def $paramenv(TYP x) = {TYP (x, eps `-> OK `= eps)}
+def $paramenv(FUN x `: p* `-> t) = {FUN (x, p* `-> t `= eps)}
+def $paramenv(GRAM x `: p* `-> t) = {GRAM (x, p* `-> t `= eps)}
+def $paramenv(param*) = $composeenvs($paramenv(param)*)  -- otherwise
