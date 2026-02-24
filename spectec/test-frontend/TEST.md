@@ -7285,7 +7285,7 @@ def $runelem_(elemidx : elemidx, elem : elem) : instr*
 ;; ../../../../specification/wasm-latest/4.4-execution.modules.spectec
 rec {
 
-;; ../../../../specification/wasm-latest/4.4-execution.modules.spectec:160.1-160.75
+;; ../../../../specification/wasm-latest/4.4-execution.modules.spectec:160.1-160.92
 def $evalexprs(state : state, expr*) : (state, ref*)
   ;; ../../../../specification/wasm-latest/4.4-execution.modules.spectec:161.1-161.34
   def $evalexprs{z : state}(z, []) = (z, [])
@@ -7298,7 +7298,7 @@ def $evalexprs(state : state, expr*) : (state, ref*)
 ;; ../../../../specification/wasm-latest/4.4-execution.modules.spectec
 rec {
 
-;; ../../../../specification/wasm-latest/4.4-execution.modules.spectec:167.1-167.79
+;; ../../../../specification/wasm-latest/4.4-execution.modules.spectec:167.1-167.96
 def $evalexprss(state : state, expr**) : (state, ref**)
   ;; ../../../../specification/wasm-latest/4.4-execution.modules.spectec:168.1-168.35
   def $evalexprss{z : state}(z, []) = (z, [])
@@ -7311,7 +7311,7 @@ def $evalexprss(state : state, expr**) : (state, ref**)
 ;; ../../../../specification/wasm-latest/4.4-execution.modules.spectec
 rec {
 
-;; ../../../../specification/wasm-latest/4.4-execution.modules.spectec:174.1-174.94
+;; ../../../../specification/wasm-latest/4.4-execution.modules.spectec:174.1-174.111
 def $evalglobals(state : state, globaltype*, expr*) : (state, val*)
   ;; ../../../../specification/wasm-latest/4.4-execution.modules.spectec:175.1-175.41
   def $evalglobals{z : state}(z, [], []) = (z, [])
