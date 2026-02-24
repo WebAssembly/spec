@@ -180,7 +180,6 @@ def $evalglobals(z, gt gt'*, expr expr'*) = (z'', val val'*)
   -- if (s', a) = $allocglobal(s, gt, val)
   -- if (z'', val'*) = $evalglobals((s'; f[.MODULE.GLOBALS =++ a]), gt'*, expr'*)
 
-
 def $instantiate(store, module, externaddr*) : config
 def $instantiate(s, module, externaddr*) = s''''; {MODULE moduleinst}; instr_E* instr_D* instr_S?
   ---- ----
