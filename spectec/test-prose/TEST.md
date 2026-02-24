@@ -26359,6 +26359,40 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`{{\mathit{instr}}^\ast}~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~0)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)~(\mathsf{table{.}init}~y~x)~(\mathsf{elem{.}drop}~x)`.
 
 
+:math:`{{{\mathrm{evalexpr}}^\ast}}{(z, {{\mathit{expr}''}^\ast})}`
+...................................................................
+
+
+1. If :math:`{{\mathit{expr}''}^\ast} = \epsilon`, then:
+
+   a. Return :math:`\epsilon`.
+
+#. Let :math:`{\mathit{expr}}~{{\mathit{expr}'}^\ast}` be :math:`{{\mathit{expr}''}^\ast}`.
+
+#. Let :math:`{\mathit{ref}}` be the result of :ref:`evaluating <exec-expr>` :math:`{\mathit{expr}}` with state :math:`z`.
+
+#. Let :math:`{{\mathit{ref}'}^\ast}` be :math:`{{{\mathrm{evalexpr}}^\ast}}{(z, {{\mathit{expr}'}^\ast})}`.
+
+#. Return :math:`{\mathit{ref}}~{{\mathit{ref}'}^\ast}`.
+
+
+:math:`{{{{\mathrm{evalexpr}}^\ast}^\ast}}{(z, {{\mathit{expr}''}^\ast})}`
+..........................................................................
+
+
+1. If :math:`{{\mathit{expr}''}^\ast} = \epsilon`, then:
+
+   a. Return :math:`\epsilon`.
+
+#. Let :math:`{{\mathit{expr}}^\ast}~{{{\mathit{expr}'}^\ast}^\ast}` be :math:`{{\mathit{expr}''}^\ast}`.
+
+#. Let :math:`{{\mathit{ref}}^\ast}` be :math:`{{{\mathrm{evalexpr}}^\ast}}{(z, {{\mathit{expr}}^\ast})}`.
+
+#. Let :math:`{{{\mathit{ref}'}^\ast}^\ast}` be :math:`{{{{\mathrm{evalexpr}}^\ast}^\ast}}{(z, {{{\mathit{expr}'}^\ast}^\ast})}`.
+
+#. Return :math:`{{\mathit{ref}}^\ast}~{{{\mathit{ref}'}^\ast}^\ast}`.
+
+
 :math:`{{{\mathrm{evalglobal}}^\ast}}{(z, {{\mathit{globaltype}}^\ast}, {{\mathit{expr}''}^\ast})}`
 ...................................................................................................
 
@@ -26377,9 +26411,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. Let :math:`{\mathit{gt}}~{{\mathit{gt}'}^\ast}` be :math:`{{\mathit{globaltype}}^\ast}`.
 
-   #. Let :math:`(s, f)` be the destructuring of :math:`z`.
-
    #. Let :math:`{\mathit{val}}` be the result of :ref:`evaluating <exec-expr>` :math:`{\mathit{expr}}` with state :math:`z`.
+
+   #. Let :math:`(s, f)` be the destructuring of :math:`z`.
 
    #. Let :math:`a` be :math:`{\mathrm{allocglobal}}(s, {\mathit{gt}}, {\mathit{val}})`.
 
@@ -26454,29 +26488,13 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{{\mathit{val}}_{\mathsf{g}}^\ast}` be :math:`{{{\mathrm{evalglobal}}^\ast}}{(z, {{\mathit{globaltype}}^\ast}, {{\mathit{expr}}_{\mathsf{g}}^\ast})}`.
 
-#. Let :math:`{{\mathit{ref}}_{\mathsf{t}}^\ast}` be the reference value sequence :math:`\epsilon`.
+#. Let :math:`{{\mathit{ref}}_{\mathsf{t}}^\ast}` be :math:`{{{\mathrm{evalexpr}}^\ast}}{(z, {{\mathit{expr}}_{\mathsf{t}}^\ast})}`.
 
-#. For each :math:`{\mathit{expr}}_{\mathsf{t}}` in :math:`{{\mathit{expr}}_{\mathsf{t}}^\ast}`, do:
-
-   a. Let :math:`{\mathit{ref}}_{\mathsf{t}}` be the result of :ref:`evaluating <exec-expr>` :math:`{\mathit{expr}}_{\mathsf{t}}` with state :math:`z`.
-
-   #. Append :math:`{\mathit{ref}}_{\mathsf{t}}` to :math:`{{\mathit{ref}}_{\mathsf{t}}^\ast}`.
-
-#. Let :math:`{{{\mathit{ref}}_{\mathsf{e}}^\ast}^\ast}` be the reference value sequence sequence :math:`\epsilon`.
-
-#. For each :math:`{{\mathit{expr}}_{\mathsf{e}}^\ast}` in :math:`{{{\mathit{expr}}_{\mathsf{e}}^\ast}^\ast}`, do:
-
-   a. Let :math:`{{\mathit{ref}}_{\mathsf{e}}^\ast}` be the reference value sequence :math:`\epsilon`.
-
-   #. For each :math:`{\mathit{expr}}_{\mathsf{e}}` in :math:`{{\mathit{expr}}_{\mathsf{e}}^\ast}`, do:
-
-      1) Let :math:`{\mathit{ref}}_{\mathsf{e}}` be the result of :ref:`evaluating <exec-expr>` :math:`{\mathit{expr}}_{\mathsf{e}}` with state :math:`z`.
-
-      #) Append :math:`{\mathit{ref}}_{\mathsf{e}}` to :math:`{{\mathit{ref}}_{\mathsf{e}}^\ast}`.
-
-   #. Append :math:`{{\mathit{ref}}_{\mathsf{e}}^\ast}` to :math:`{{{\mathit{ref}}_{\mathsf{e}}^\ast}^\ast}`.
+#. Let :math:`{{{\mathit{ref}}_{\mathsf{e}}^\ast}^\ast}` be :math:`{{{{\mathrm{evalexpr}}^\ast}^\ast}}{(z, {{{\mathit{expr}}_{\mathsf{e}}^\ast}^\ast})}`.
 
 #. Pop the :math:`\mathsf{frame}` from the stack.
+
+#. Let :math:`(s, f)` be the destructuring of :math:`z`.
 
 #. Let :math:`{\mathit{moduleinst}}` be :math:`{\mathrm{allocmodule}}(s, {\mathit{module}}, {{\mathit{externaddr}}^\ast}, {{\mathit{val}}_{\mathsf{g}}^\ast}, {{\mathit{ref}}_{\mathsf{t}}^\ast}, {{{\mathit{ref}}_{\mathsf{e}}^\ast}^\ast})`.
 
@@ -32876,6 +32894,22 @@ runelem_ x (ELEM rt e^n elemmode)
 4. Let (ACTIVE y instr*) be elemmode.
 5. Return instr* :: [(I32.CONST 0), (I32.CONST n), (TABLE.INIT y x), (ELEM.DROP x)].
 
+evalexprs z expr''*
+1. If (expr''* = []), then:
+  a. Return [].
+2. Let [expr] :: expr'* be expr''*.
+3. Let [ref] be $Eval_expr(z, expr).
+4. Let ref'* be $evalexprs(z, expr'*).
+5. Return [ref] :: ref'*.
+
+evalexprss z expr''*
+1. If (expr''* = []), then:
+  a. Return [].
+2. Let [expr*] :: expr'** be expr''*.
+3. Let ref* be $evalexprs(z, expr*).
+4. Let ref'** be $evalexprss(z, expr'**).
+5. Return [ref*] :: ref'**.
+
 evalglobals z globaltype* expr''*
 1. If (expr''* = []), then:
   a. Assert: Due to validation, (globaltype* = []).
@@ -32884,8 +32918,8 @@ evalglobals z globaltype* expr''*
   a. Let [expr] :: expr'* be expr''*.
   b. Assert: Due to validation, (|globaltype*| >= 1).
   c. Let [gt] :: gt'* be globaltype*.
-  d. Let (s, f) be z.
-  e. Let [val] be $Eval_expr(z, expr).
+  d. Let [val] be $Eval_expr(z, expr).
+  e. Let (s, f) be z.
   f. Let a be $allocglobal(s, gt, val).
   g. Append a to the f.MODULE.GLOBALS.
   h. Let val'* be $evalglobals((s, f), gt'*, expr'*).
@@ -32916,28 +32950,20 @@ instantiate s module externaddr*
 14. Let z be (s, { MODULE: moduleinst_0 }).
 15. Push the frame (FRAME_ 0 { $frame(z) }) to the stack.
 16. Let val_G* be $evalglobals(z, globaltype*, expr_G*).
-17. Let ref_T* be [].
-18. For each expr_T in expr_T*, do:
-  a. Let [ref_T] be $Eval_expr(z, expr_T).
-  b. Append ref_T to the ref_T*.
-19. Let ref_E** be [].
-20. For each expr_E* in expr_E**, do:
-  a. Let ref_E* be [].
-  b. For each expr_E in expr_E*, do:
-    1) Let [ref_E] be $Eval_expr(z, expr_E).
-    2) Append ref_E to the ref_E*.
-  c. Append ref_E* to the ref_E**.
-21. Pop the frame (FRAME_ 0 { f }) from the stack.
-22. Let moduleinst be $allocmodule(s, module, externaddr*, val_G*, ref_T*, ref_E**).
-23. Push the frame (FRAME_ 0 { { MODULE: moduleinst } }) to the stack.
-24. Execute the sequence instr_E*.
-25. Execute the sequence instr_D*.
-26. If start? is defined, then:
+17. Let ref_T* be $evalexprs(z, expr_T*).
+18. Let ref_E** be $evalexprss(z, expr_E**).
+19. Pop the frame (FRAME_ 0 { f }) from the stack.
+20. Let (s, f) be z.
+21. Let moduleinst be $allocmodule(s, module, externaddr*, val_G*, ref_T*, ref_E**).
+22. Push the frame (FRAME_ 0 { { MODULE: moduleinst } }) to the stack.
+23. Execute the sequence instr_E*.
+24. Execute the sequence instr_D*.
+25. If start? is defined, then:
   a. Let ?((START x)) be start?.
   b. Let instr_S be (CALL x).
   c. Execute the instruction instr_S.
-27. Pop the frame (FRAME_ 0 { { MODULE: moduleinst } }) from the stack.
-28. Return moduleinst.
+26. Pop the frame (FRAME_ 0 { { MODULE: moduleinst } }) from the stack.
+27. Return moduleinst.
 
 invoke s funcaddr val*
 1. Assert: Due to validation, $Expand(s.FUNCS[funcaddr].TYPE) is some ->.
