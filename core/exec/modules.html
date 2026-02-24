@@ -597,28 +597,11 @@ It is up to the <a class="reference internal" href="../intro/overview.html#embed
 <li><p>Let <span class="math notranslate nohighlight">\(z\)</span> be the <a class="reference internal" href="runtime.html#syntax-state"><span class="std std-ref">state</span></a> <span class="math notranslate nohighlight">\((s, \{ \href{../exec/runtime.html#syntax-frame}{\mathsf{module}}~{\href{../exec/runtime.html#syntax-moduleinst}{\mathit{moduleinst}}}_0 \})\)</span>.</p></li>
 <li><p>Let <span class="math notranslate nohighlight">\(F\)</span> be the <span class="math notranslate nohighlight">\(\mathsf{frame}\)</span> <span class="math notranslate nohighlight">\(z{.}\href{../exec/runtime.html#syntax-state}{\mathsf{frame}}\)</span>.</p></li>
 <li><p>Push the <span class="math notranslate nohighlight">\(\mathsf{frame}\)</span> <span class="math notranslate nohighlight">\(F\)</span>.</p></li>
-<li><p>Let <span class="math notranslate nohighlight">\({{\href{../exec/runtime.html#syntax-val}{\mathit{val}}}_{\mathsf{g}}^\ast}\)</span> be <span class="math notranslate nohighlight">\({{{\href{../exec/modules.html#eval-globals}{\mathrm{evalglobal}}}^\ast}}{(z, {{\href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}}}^\ast}, {{\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}}_{\mathsf{g}}^\ast})}\)</span>.</p></li>
-<li><p>Let <span class="math notranslate nohighlight">\({{\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}}_{\mathsf{t}}^\ast}\)</span> be the reference value sequence <span class="math notranslate nohighlight">\(\epsilon\)</span>.</p></li>
-<li><p>For each <span class="math notranslate nohighlight">\({\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}}_{\mathsf{t}}\)</span> in <span class="math notranslate nohighlight">\({{\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}}_{\mathsf{t}}^\ast}\)</span>, do:</p>
-<ol class="loweralpha simple">
-<li><p>Let <span class="math notranslate nohighlight">\({\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}}_{\mathsf{t}}\)</span> be the result of <a class="reference internal" href="instructions.html#exec-expr"><span class="std std-ref">evaluating</span></a> <span class="math notranslate nohighlight">\({\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}}_{\mathsf{t}}\)</span> with state <span class="math notranslate nohighlight">\(z\)</span>.</p></li>
-<li><p>Append <span class="math notranslate nohighlight">\({\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}}_{\mathsf{t}}\)</span> to <span class="math notranslate nohighlight">\({{\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}}_{\mathsf{t}}^\ast}\)</span>.</p></li>
-</ol>
-</li>
-<li><p>Let <span class="math notranslate nohighlight">\({{{\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}}_{\mathsf{e}}^\ast}^\ast}\)</span> be the reference value sequence sequence <span class="math notranslate nohighlight">\(\epsilon\)</span>.</p></li>
-<li><p>For each <span class="math notranslate nohighlight">\({{\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}}_{\mathsf{e}}^\ast}\)</span> in <span class="math notranslate nohighlight">\({{{\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}}_{\mathsf{e}}^\ast}^\ast}\)</span>, do:</p>
-<ol class="loweralpha simple">
-<li><p>Let <span class="math notranslate nohighlight">\({{\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}}_{\mathsf{e}}^\ast}\)</span> be the reference value sequence <span class="math notranslate nohighlight">\(\epsilon\)</span>.</p></li>
-<li><p>For each <span class="math notranslate nohighlight">\({\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}}_{\mathsf{e}}\)</span> in <span class="math notranslate nohighlight">\({{\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}}_{\mathsf{e}}^\ast}\)</span>, do:</p>
-<ol class="arabic simple">
-<li><p>Let <span class="math notranslate nohighlight">\({\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}}_{\mathsf{e}}\)</span> be the result of <a class="reference internal" href="instructions.html#exec-expr"><span class="std std-ref">evaluating</span></a> <span class="math notranslate nohighlight">\({\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}}_{\mathsf{e}}\)</span> with state <span class="math notranslate nohighlight">\(z\)</span>.</p></li>
-<li><p>Append <span class="math notranslate nohighlight">\({\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}}_{\mathsf{e}}\)</span> to <span class="math notranslate nohighlight">\({{\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}}_{\mathsf{e}}^\ast}\)</span>.</p></li>
-</ol>
-</li>
-<li><p>Append <span class="math notranslate nohighlight">\({{\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}}_{\mathsf{e}}^\ast}\)</span> to <span class="math notranslate nohighlight">\({{{\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}}_{\mathsf{e}}^\ast}^\ast}\)</span>.</p></li>
-</ol>
-</li>
+<li><p>Let <span class="math notranslate nohighlight">\({{\href{../exec/runtime.html#syntax-val}{\mathit{val}}}_{\mathsf{g}}^\ast}\)</span> be <span class="math notranslate nohighlight">\({{{\mathrm{evalglobal}}^\ast}}{(z, {{\href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}}}^\ast}, {{\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}}_{\mathsf{g}}^\ast})}\)</span>.</p></li>
+<li><p>Let <span class="math notranslate nohighlight">\({{\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}}_{\mathsf{t}}^\ast}\)</span> be <span class="math notranslate nohighlight">\({{{\mathrm{evalexpr}}^\ast}}{(z, {{\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}}_{\mathsf{t}}^\ast})}\)</span>.</p></li>
+<li><p>Let <span class="math notranslate nohighlight">\({{{\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}}_{\mathsf{e}}^\ast}^\ast}\)</span> be <span class="math notranslate nohighlight">\({{{{\mathrm{evalexpr}}^\ast}^\ast}}{(z, {{{\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}}_{\mathsf{e}}^\ast}^\ast})}\)</span>.</p></li>
 <li><p>Pop the <span class="math notranslate nohighlight">\(\mathsf{frame}\)</span> from the stack.</p></li>
+<li><p>Let <span class="math notranslate nohighlight">\((s, f)\)</span> be the destructuring of <span class="math notranslate nohighlight">\(z\)</span>.</p></li>
 <li><p>Let <span class="math notranslate nohighlight">\({\href{../exec/runtime.html#syntax-moduleinst}{\mathit{moduleinst}}}\)</span> be <span class="math notranslate nohighlight">\({\href{../exec/modules.html#alloc-module}{\mathrm{allocmodule}}}(s, {\href{../syntax/modules.html#syntax-module}{\mathit{module}}}, {{\href{../exec/runtime.html#syntax-externaddr}{\mathit{externaddr}}}^\ast}, {{\href{../exec/runtime.html#syntax-val}{\mathit{val}}}_{\mathsf{g}}^\ast}, {{\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}}_{\mathsf{t}}^\ast}, {{{\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}}_{\mathsf{e}}^\ast}^\ast})\)</span>.</p></li>
 <li><p>Let <span class="math notranslate nohighlight">\({F'}\)</span> be the <span class="math notranslate nohighlight">\(\mathsf{frame}\)</span> <span class="math notranslate nohighlight">\(\{ \href{../exec/runtime.html#syntax-frame}{\mathsf{module}}~{\href{../exec/runtime.html#syntax-moduleinst}{\mathit{moduleinst}}} \}\)</span>.</p></li>
 <li><p>Push the <span class="math notranslate nohighlight">\(\mathsf{frame}\)</span> <span class="math notranslate nohighlight">\({F'}\)</span>.</p></li>
@@ -636,7 +619,7 @@ It is up to the <a class="reference internal" href="../intro/overview.html#embed
 </ol>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}[t]{&#64;{}lcl&#64;{}l&#64;{}}
-{\href{../exec/modules.html#exec-instantiation}{\mathrm{instantiate}}}(s, {\href{../syntax/modules.html#syntax-module}{\mathit{module}}}, {{\href{../exec/runtime.html#syntax-externaddr}{\mathit{externaddr}}}^\ast}) &amp; = &amp; {s'} ; \{ \href{../exec/runtime.html#syntax-frame}{\mathsf{module}}~{\href{../exec/runtime.html#syntax-moduleinst}{\mathit{moduleinst}}} \} ; {{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}}_{\mathsf{e}}^\ast}~{{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}}_{\mathsf{d}}^\ast}~{{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}}_{\mathsf{s}}^?} &amp;  \\
+{\href{../exec/modules.html#exec-instantiation}{\mathrm{instantiate}}}(s, {\href{../syntax/modules.html#syntax-module}{\mathit{module}}}, {{\href{../exec/runtime.html#syntax-externaddr}{\mathit{externaddr}}}^\ast}) &amp; = &amp; {s''''} ; \{ \href{../exec/runtime.html#syntax-frame}{\mathsf{module}}~{\href{../exec/runtime.html#syntax-moduleinst}{\mathit{moduleinst}}} \} ; {{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}}_{\mathsf{e}}^\ast}~{{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}}_{\mathsf{d}}^\ast}~{{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}}_{\mathsf{s}}^?} &amp;  \\
  \multicolumn{4}{&#64;{}l&#64;{}}{\quad
 \quad
 \begin{array}[t]{&#64;{}l&#64;{}}
@@ -653,10 +636,11 @@ It is up to the <a class="reference internal" href="../intro/overview.html#embed
   \href{../exec/runtime.html#syntax-moduleinst}{\mathsf{globals}}~{\href{../exec/runtime.html#syntax-externaddr}{\mathrm{globals}}}({{\href{../exec/runtime.html#syntax-externaddr}{\mathit{externaddr}}}^\ast}),\; \\
   \href{../exec/runtime.html#syntax-moduleinst}{\mathsf{funcs}}~{\href{../exec/runtime.html#syntax-externaddr}{\mathrm{funcs}}}({{\href{../exec/runtime.html#syntax-externaddr}{\mathit{externaddr}}}^\ast})~{({|s{.}\href{../exec/runtime.html#syntax-store}{\mathsf{funcs}}|} + i_{\mathsf{f}})^{i_{\mathsf{f}}&lt;{|{{\href{../syntax/modules.html#syntax-func}{\mathit{func}}}^\ast}|}}} \}\end{array} \\
 {\land}~ z = s ; \{ \href{../exec/runtime.html#syntax-frame}{\mathsf{module}}~{\href{../exec/runtime.html#syntax-moduleinst}{\mathit{moduleinst}}}_0 \} \\
-{\land}~ ({z'}, {{\href{../exec/runtime.html#syntax-val}{\mathit{val}}}_{\mathsf{g}}^\ast}) = {{{\href{../exec/modules.html#eval-globals}{\mathrm{evalglobal}}}^\ast}}{(z, {{\href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}}}^\ast}, {{\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}}_{\mathsf{g}}^\ast})} \\
-{\land}~ ({z'} ; {\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}}_{\mathsf{t}} \href{../exec/conventions.html#exec-notation}{\hookrightarrow^\ast} {z'} ; {\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}}_{\mathsf{t}})^\ast \\
-{\land}~ {({z'} ; {\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}}_{\mathsf{e}} \href{../exec/conventions.html#exec-notation}{\hookrightarrow^\ast} {z'} ; {\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}}_{\mathsf{e}})^\ast}^\ast \\
-{\land}~ ({s'}, {\href{../exec/runtime.html#syntax-moduleinst}{\mathit{moduleinst}}}) = {\href{../exec/modules.html#alloc-module}{\mathrm{allocmodule}}}(s, {\href{../syntax/modules.html#syntax-module}{\mathit{module}}}, {{\href{../exec/runtime.html#syntax-externaddr}{\mathit{externaddr}}}^\ast}, {{\href{../exec/runtime.html#syntax-val}{\mathit{val}}}_{\mathsf{g}}^\ast}, {{\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}}_{\mathsf{t}}^\ast}, {({{\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}}_{\mathsf{e}}^\ast})^\ast}) \\
+{\land}~ ({z'}, {{\href{../exec/runtime.html#syntax-val}{\mathit{val}}}_{\mathsf{g}}^\ast}) = {{{\mathrm{evalglobal}}^\ast}}{(z, {{\href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}}}^\ast}, {{\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}}_{\mathsf{g}}^\ast})} \\
+{\land}~ ({z''}, {{\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}}_{\mathsf{t}}^\ast}) = {{{\mathrm{evalexpr}}^\ast}}{({z'}, {{\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}}_{\mathsf{t}}^\ast})} \\
+{\land}~ ({z'''}, {{{\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}}_{\mathsf{e}}^\ast}^\ast}) = {{{{\mathrm{evalexpr}}^\ast}^\ast}}{({z''}, {{{\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}}_{\mathsf{e}}^\ast}^\ast})} \\
+{\land}~ {z'''} = {s'''} ; f \\
+{\land}~ ({s''''}, {\href{../exec/runtime.html#syntax-moduleinst}{\mathit{moduleinst}}}) = {\href{../exec/modules.html#alloc-module}{\mathrm{allocmodule}}}({s'''}, {\href{../syntax/modules.html#syntax-module}{\mathit{module}}}, {{\href{../exec/runtime.html#syntax-externaddr}{\mathit{externaddr}}}^\ast}, {{\href{../exec/runtime.html#syntax-val}{\mathit{val}}}_{\mathsf{g}}^\ast}, {{\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}}_{\mathsf{t}}^\ast}, {({{\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}}_{\mathsf{e}}^\ast})^\ast}) \\
 {\land}~ {{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}}_{\mathsf{d}}^\ast} = {\href{../syntax/conventions.html#notation-concat}{\bigoplus}}\, {{{\href{../exec/modules.html#aux-rundata}{\mathrm{rundata}}}}_{i_{\mathsf{d}}}({{\href{../syntax/modules.html#syntax-data}{\mathit{data}}}^\ast}{}[i_{\mathsf{d}}])^{i_{\mathsf{d}}&lt;{|{{\href{../syntax/modules.html#syntax-data}{\mathit{data}}}^\ast}|}}} \\
 {\land}~ {{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}}_{\mathsf{e}}^\ast} = {\href{../syntax/conventions.html#notation-concat}{\bigoplus}}\, {{{\href{../exec/modules.html#aux-runelem}{\mathrm{runelem}}}}_{i_{\mathsf{e}}}({{\href{../syntax/modules.html#syntax-elem}{\mathit{elem}}}^\ast}{}[i_{\mathsf{e}}])^{i_{\mathsf{e}}&lt;{|{{\href{../syntax/modules.html#syntax-elem}{\mathit{elem}}}^\ast}|}}} \\
 {\land}~ {{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}}_{\mathsf{s}}^?} = {(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{call}}~x)^?} \\
@@ -665,8 +649,35 @@ It is up to the <a class="reference internal" href="../intro/overview.html#embed
 \end{array}\end{split}\]</div>
 <p>where:</p>
 </section>
-<section id="xref-exec-modules-eval-globals-mathrm-evalglobal-ast-z-xref-syntax-types-syntax-globaltype-mathit-globaltype-ast-xref-syntax-instructions-syntax-expr-mathit-expr-ast">
-<span id="eval-globals"></span><h3><span class="math notranslate nohighlight">\({{{\href{../exec/modules.html#eval-globals}{\mathrm{evalglobal}}}^\ast}}{(z, {{\href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}}}^\ast}, {{\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}''}^\ast})}\)</span><a class="headerlink" href="#xref-exec-modules-eval-globals-mathrm-evalglobal-ast-z-xref-syntax-types-syntax-globaltype-mathit-globaltype-ast-xref-syntax-instructions-syntax-expr-mathit-expr-ast" title="Link to this heading">¶</a></h3>
+<section id="mathrm-evalexpr-ast-z-xref-syntax-instructions-syntax-expr-mathit-expr-ast">
+<span id="eval-exprs"></span><h3><span class="math notranslate nohighlight">\({{{\mathrm{evalexpr}}^\ast}}{(z, {{\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}''}^\ast})}\)</span><a class="headerlink" href="#mathrm-evalexpr-ast-z-xref-syntax-instructions-syntax-expr-mathit-expr-ast" title="Link to this heading">¶</a></h3>
+<ol class="arabic simple">
+<li><p>If <span class="math notranslate nohighlight">\({{\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}''}^\ast} = \epsilon\)</span>, then:</p>
+<ol class="loweralpha simple">
+<li><p>Return <span class="math notranslate nohighlight">\(\epsilon\)</span>.</p></li>
+</ol>
+</li>
+<li><p>Let <span class="math notranslate nohighlight">\({\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}}~{{\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}'}^\ast}\)</span> be <span class="math notranslate nohighlight">\({{\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}''}^\ast}\)</span>.</p></li>
+<li><p>Let <span class="math notranslate nohighlight">\({\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}}\)</span> be the result of <a class="reference internal" href="instructions.html#exec-expr"><span class="std std-ref">evaluating</span></a> <span class="math notranslate nohighlight">\({\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}}\)</span> with state <span class="math notranslate nohighlight">\(z\)</span>.</p></li>
+<li><p>Let <span class="math notranslate nohighlight">\({{\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}'}^\ast}\)</span> be <span class="math notranslate nohighlight">\({{{\mathrm{evalexpr}}^\ast}}{(z, {{\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}'}^\ast})}\)</span>.</p></li>
+<li><p>Return <span class="math notranslate nohighlight">\({\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}}~{{\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}'}^\ast}\)</span>.</p></li>
+</ol>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{array}[t]{&#64;{}lcl&#64;{}l&#64;{}}
+{{{\mathrm{evalexpr}}^\ast}}{(z, \epsilon)} &amp; = &amp; (z, \epsilon) \\
+{{{\mathrm{evalexpr}}^\ast}}{(z, {\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}}~{{\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}'}^\ast})} &amp; = &amp; ({z''}, {\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}}~{{\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}'}^\ast}) &amp;  \\
+&amp;&amp; \multicolumn{2}{&#64;{}l&#64;{}}{\quad
+\quad
+\begin{array}[t]{&#64;{}l&#64;{}}
+\mbox{if}~ z ; {\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}} \href{../exec/conventions.html#exec-notation}{\hookrightarrow^\ast} {z'} ; {\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}} \\
+{\land}~ ({z''}, {{\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}'}^\ast}) = {{{\mathrm{evalexpr}}^\ast}}{({z'}, {{\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}'}^\ast})} \\
+\end{array}
+} \\
+\end{array}\end{split}\]</div>
+<p>and:</p>
+</section>
+<section id="mathrm-evalglobal-ast-z-xref-syntax-types-syntax-globaltype-mathit-globaltype-ast-xref-syntax-instructions-syntax-expr-mathit-expr-ast">
+<span id="eval-globals"></span><h3><span class="math notranslate nohighlight">\({{{\mathrm{evalglobal}}^\ast}}{(z, {{\href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}}}^\ast}, {{\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}''}^\ast})}\)</span><a class="headerlink" href="#mathrm-evalglobal-ast-z-xref-syntax-types-syntax-globaltype-mathit-globaltype-ast-xref-syntax-instructions-syntax-expr-mathit-expr-ast" title="Link to this heading">¶</a></h3>
 <ol class="arabic simple">
 <li><p>If <span class="math notranslate nohighlight">\({{\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}''}^\ast} = \epsilon\)</span>, then:</p>
 <ol class="loweralpha simple">
@@ -679,26 +690,26 @@ It is up to the <a class="reference internal" href="../intro/overview.html#embed
 <li><p>Let <span class="math notranslate nohighlight">\({\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}}~{{\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}'}^\ast}\)</span> be <span class="math notranslate nohighlight">\({{\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}''}^\ast}\)</span>.</p></li>
 <li><p>Assert: Due to validation, <span class="math notranslate nohighlight">\({|{{\href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}}}^\ast}|} \geq 1\)</span>.</p></li>
 <li><p>Let <span class="math notranslate nohighlight">\({\mathit{gt}}~{{\mathit{gt}'}^\ast}\)</span> be <span class="math notranslate nohighlight">\({{\href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}}}^\ast}\)</span>.</p></li>
-<li><p>Let <span class="math notranslate nohighlight">\((s, f)\)</span> be the destructuring of <span class="math notranslate nohighlight">\(z\)</span>.</p></li>
 <li><p>Let <span class="math notranslate nohighlight">\({\href{../exec/runtime.html#syntax-val}{\mathit{val}}}\)</span> be the result of <a class="reference internal" href="instructions.html#exec-expr"><span class="std std-ref">evaluating</span></a> <span class="math notranslate nohighlight">\({\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}}\)</span> with state <span class="math notranslate nohighlight">\(z\)</span>.</p></li>
+<li><p>Let <span class="math notranslate nohighlight">\((s, f)\)</span> be the destructuring of <span class="math notranslate nohighlight">\(z\)</span>.</p></li>
 <li><p>Let <span class="math notranslate nohighlight">\(a\)</span> be <span class="math notranslate nohighlight">\({\href{../exec/modules.html#alloc-global}{\mathrm{allocglobal}}}(s, {\mathit{gt}}, {\href{../exec/runtime.html#syntax-val}{\mathit{val}}})\)</span>.</p></li>
 <li><p>Append <span class="math notranslate nohighlight">\(a\)</span> to <span class="math notranslate nohighlight">\(f{.}\href{../exec/runtime.html#syntax-frame}{\mathsf{module}}{.}\href{../exec/runtime.html#syntax-moduleinst}{\mathsf{globals}}\)</span>.</p></li>
-<li><p>Let <span class="math notranslate nohighlight">\({{\href{../exec/runtime.html#syntax-val}{\mathit{val}}'}^\ast}\)</span> be <span class="math notranslate nohighlight">\({{{\href{../exec/modules.html#eval-globals}{\mathrm{evalglobal}}}^\ast}}{((s, f), {{\mathit{gt}'}^\ast}, {{\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}'}^\ast})}\)</span>.</p></li>
+<li><p>Let <span class="math notranslate nohighlight">\({{\href{../exec/runtime.html#syntax-val}{\mathit{val}}'}^\ast}\)</span> be <span class="math notranslate nohighlight">\({{{\mathrm{evalglobal}}^\ast}}{((s, f), {{\mathit{gt}'}^\ast}, {{\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}'}^\ast})}\)</span>.</p></li>
 <li><p>Return <span class="math notranslate nohighlight">\({\href{../exec/runtime.html#syntax-val}{\mathit{val}}}~{{\href{../exec/runtime.html#syntax-val}{\mathit{val}}'}^\ast}\)</span>.</p></li>
 </ol>
 </li>
 </ol>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}[t]{&#64;{}lcl&#64;{}l&#64;{}}
-{{{\href{../exec/modules.html#eval-globals}{\mathrm{evalglobal}}}^\ast}}{(z, \epsilon, \epsilon)} &amp; = &amp; (z, \epsilon) \\
-{{{\href{../exec/modules.html#eval-globals}{\mathrm{evalglobal}}}^\ast}}{(z, {\mathit{gt}}~{{\mathit{gt}'}^\ast}, {\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}}~{{\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}'}^\ast})} &amp; = &amp; ({z'}, {\href{../exec/runtime.html#syntax-val}{\mathit{val}}}~{{\href{../exec/runtime.html#syntax-val}{\mathit{val}}'}^\ast}) &amp;  \\
+{{{\mathrm{evalglobal}}^\ast}}{(z, \epsilon, \epsilon)} &amp; = &amp; (z, \epsilon) \\
+{{{\mathrm{evalglobal}}^\ast}}{(z, {\mathit{gt}}~{{\mathit{gt}'}^\ast}, {\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}}~{{\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}'}^\ast})} &amp; = &amp; ({z''}, {\href{../exec/runtime.html#syntax-val}{\mathit{val}}}~{{\href{../exec/runtime.html#syntax-val}{\mathit{val}}'}^\ast}) &amp;  \\
 &amp;&amp; \multicolumn{2}{&#64;{}l&#64;{}}{\quad
 \quad
 \begin{array}[t]{&#64;{}l&#64;{}}
-\mbox{if}~ z ; {\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}} \href{../exec/conventions.html#exec-notation}{\hookrightarrow^\ast} z ; {\href{../exec/runtime.html#syntax-val}{\mathit{val}}} \\
-{\land}~ z = s ; f \\
+\mbox{if}~ z ; {\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}} \href{../exec/conventions.html#exec-notation}{\hookrightarrow^\ast} {z'} ; {\href{../exec/runtime.html#syntax-val}{\mathit{val}}} \\
+{\land}~ {z'} = s ; f \\
 {\land}~ ({s'}, a) = {\href{../exec/modules.html#alloc-global}{\mathrm{allocglobal}}}(s, {\mathit{gt}}, {\href{../exec/runtime.html#syntax-val}{\mathit{val}}}) \\
-{\land}~ ({z'}, {{\href{../exec/runtime.html#syntax-val}{\mathit{val}}'}^\ast}) = {{{\href{../exec/modules.html#eval-globals}{\mathrm{evalglobal}}}^\ast}}{(({s'} ; f{}[{.}\href{../exec/runtime.html#syntax-frame}{\mathsf{module}}{.}\href{../exec/runtime.html#syntax-moduleinst}{\mathsf{globals}} \mathrel{{=}{\oplus}} a]), {{\mathit{gt}'}^\ast}, {{\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}'}^\ast})} \\
+{\land}~ ({z''}, {{\href{../exec/runtime.html#syntax-val}{\mathit{val}}'}^\ast}) = {{{\mathrm{evalglobal}}^\ast}}{(({s'} ; f{}[{.}\href{../exec/runtime.html#syntax-frame}{\mathsf{module}}{.}\href{../exec/runtime.html#syntax-moduleinst}{\mathsf{globals}} \mathrel{{=}{\oplus}} a]), {{\mathit{gt}'}^\ast}, {{\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}'}^\ast})} \\
 \end{array}
 } \\
 \end{array}\end{split}\]</div>
