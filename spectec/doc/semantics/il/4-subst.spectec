@@ -149,20 +149,6 @@ def $subst_prem(s, LET e_1 `= e_2) = LET $subst_exp(s, e_1) `= $subst_exp(s, e_2
 def $subst_prem(s, ITER pr it (x `<- e)*) = ITER $subst_prem(s, pr) $subst_iter(s, it) (x `<- $subst_exp(s, e))*  ;; TODO: avoid capture
 
 
-;; Constructing substitutions for parameters
-
-def $arg_for_param(arg, param) : subst
-def $arg_for_param(EXP e, EXP x `: t) = {EXP (x, e)}
-def $arg_for_param(TYP t, TYP x) = {TYP (x, t)}
-def $arg_for_param(FUN y, FUN x `: p* `-> t) = {FUN (x, y)}
-def $arg_for_param(GRAM g, GRAM x `: p* `-> t) = {GRAM (x, g)}
-
-def $args_for_params(arg*, param*) : subst
-def $args_for_params(eps, eps) = {}
-def $args_for_params(a_1 a*, p_1 p*) = s ++ $args_for_params(a*, $subst_param(s, p)*)
-  -- if s = $arg_for_param(a_1, p_1)
-
-
 ;; Well-formedness
 
 def $paramarg(param) : arg
