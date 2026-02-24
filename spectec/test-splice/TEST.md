@@ -1368,7 +1368,7 @@ warning: rule `Step_read/memory.copy-gt` was never spliced
 warning: rule `Step_read/memory.init-oob` was never spliced
 warning: rule `Step_read/memory.init-zero` was never spliced
 warning: rule `Step_read/memory.init-succ` was never spliced
-warning: rule `Step_read/ref.null-idx` was never spliced
+warning: rule `Step_read/ref.null` was never spliced
 warning: rule `Step_read/ref.func` was never spliced
 warning: rule `Step_read/ref.test-true` was never spliced
 warning: rule `Step_read/ref.test-false` was never spliced

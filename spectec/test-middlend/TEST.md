@@ -2041,6 +2041,7 @@ syntax val =
   | `REF.HOST_ADDR`(hostaddr : hostaddr)
   | `REF.EXTERN`(addrref : addrref)
   | `REF.NULL`(heaptype : heaptype)
+    -- if ($free_heaptype(heaptype) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []})
 
 ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
 syntax frame =
@@ -5381,6 +5382,7 @@ syntax ref =
   | `REF.HOST_ADDR`(hostaddr : hostaddr)
   | `REF.EXTERN`(addrref : addrref)
   | `REF.NULL`(heaptype : heaptype)
+    -- if ($free_heaptype(heaptype) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []})
 
 ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
 syntax result =
@@ -5461,6 +5463,7 @@ syntax fieldval =
   | `REF.HOST_ADDR`(hostaddr : hostaddr)
   | `REF.EXTERN`(addrref : addrref)
   | `REF.NULL`(heaptype : heaptype)
+    -- if ($free_heaptype(heaptype) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []})
   | PACK(packtype : packtype, iN($psizenn(packtype)))
 
 ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
@@ -6666,7 +6669,7 @@ relation Step_read: `%~>%`(config, instr*)
     -- otherwise
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
-  rule `ref.null-idx`{z : state, x : idx}:
+  rule `ref.null`{z : state, x : idx}:
     `%~>%`(`%;%`_config(z, [`REF.NULL`_instr(_IDX_heaptype(x))]), [`REF.NULL`_instr(($type(z, x) : deftype <: heaptype))])
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
@@ -13431,6 +13434,7 @@ syntax val =
   | `REF.HOST_ADDR`(hostaddr : hostaddr)
   | `REF.EXTERN`(addrref : addrref)
   | `REF.NULL`(heaptype : heaptype)
+    -- if ($free_heaptype(heaptype) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []})
 
 ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
 syntax frame =
@@ -16771,6 +16775,7 @@ syntax ref =
   | `REF.HOST_ADDR`(hostaddr : hostaddr)
   | `REF.EXTERN`(addrref : addrref)
   | `REF.NULL`(heaptype : heaptype)
+    -- if ($free_heaptype(heaptype) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []})
 
 ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
 syntax result =
@@ -16851,6 +16856,7 @@ syntax fieldval =
   | `REF.HOST_ADDR`(hostaddr : hostaddr)
   | `REF.EXTERN`(addrref : addrref)
   | `REF.NULL`(heaptype : heaptype)
+    -- if ($free_heaptype(heaptype) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []})
   | PACK(packtype : packtype, iN($psizenn(packtype)))
 
 ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
@@ -18058,7 +18064,7 @@ relation Step_read: `%~>%`(config, instr*)
     -- otherwise
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
-  rule `ref.null-idx`{z : state, x : idx}:
+  rule `ref.null`{z : state, x : idx}:
     `%~>%`(`%;%`_config(z, [`REF.NULL`_instr(_IDX_heaptype(x))]), [`REF.NULL`_instr(($type(z, x) : deftype <: heaptype))])
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
@@ -24823,6 +24829,7 @@ syntax val =
   | `REF.HOST_ADDR`(hostaddr : hostaddr)
   | `REF.EXTERN`(addrref : addrref)
   | `REF.NULL`(heaptype : heaptype)
+    -- if ($free_heaptype(heaptype) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []})
 
 ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
 syntax frame =
@@ -28287,6 +28294,7 @@ syntax ref =
   | `REF.HOST_ADDR`(hostaddr : hostaddr)
   | `REF.EXTERN`(addrref : addrref)
   | `REF.NULL`(heaptype : heaptype)
+    -- if ($free_heaptype(heaptype) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []})
 
 ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
 syntax result =
@@ -28367,6 +28375,7 @@ syntax fieldval =
   | `REF.HOST_ADDR`(hostaddr : hostaddr)
   | `REF.EXTERN`(addrref : addrref)
   | `REF.NULL`(heaptype : heaptype)
+    -- if ($free_heaptype(heaptype) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []})
   | PACK(packtype : packtype, iN($psizenn(packtype)))
 
 ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
@@ -29606,7 +29615,7 @@ relation Step_read: `%~>%`(config, instr*)
     -- otherwise
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
-  rule `ref.null-idx`{z : state, x : idx}:
+  rule `ref.null`{z : state, x : idx}:
     `%~>%`(`%;%`_config(z, [`REF.NULL`_instr(_IDX_heaptype(x))]), [`REF.NULL`_instr(($type(z, x) : deftype <: heaptype))])
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec

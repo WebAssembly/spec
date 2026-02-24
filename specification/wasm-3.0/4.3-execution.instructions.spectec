@@ -622,7 +622,7 @@ rule Step/data.drop:
 
 ;; Reference instructions
 
-rule Step_read/ref.null-idx:
+rule Step_read/ref.null:
   z; (REF.NULL (_IDX x))  ~>  (REF.NULL $type(z, x))
 
 rule Step_read/ref.func:

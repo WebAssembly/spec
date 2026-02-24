@@ -8872,7 +8872,7 @@ $$
 & & | & \mathsf{ref{.}host}~{\mathit{hostaddr}} \\
 & & | & \mathsf{ref{.}extern}~{\mathit{addrref}} \\
 \mbox{(reference value)} & {\mathit{ref}} & ::= & {\mathit{addrref}} \\
-& & | & \mathsf{ref{.}null}~{\mathit{heaptype}} \\
+& & | & \mathsf{ref{.}null}~{\mathit{heaptype}} & \quad \mbox{if}~ {\mathrm{free}}_{\mathit{heaptype}}({\mathit{heaptype}}) = \{  \} \\
 \mbox{(value)} & {\mathit{val}} & ::= & {\mathit{num}} ~~|~~ {\mathit{vec}} ~~|~~ {\mathit{ref}} \\
 \mbox{(result)} & {\mathit{result}} & ::= & {{\mathit{val}}^\ast} ~~|~~ ( \mathsf{ref{.}exn\_addr}~{\mathit{exnaddr}} )~\mathsf{throw\_ref} ~~|~~ \mathsf{trap} \\
 \end{array}
@@ -10292,7 +10292,7 @@ $$
 
 $$
 \begin{array}[t]{@{}lrcl@{}l@{}}
-{[\textsc{\scriptsize E{-}ref.null{-}idx}]} \quad & z ; (\mathsf{ref{.}null}~x) & \hookrightarrow & (\mathsf{ref{.}null}~z{.}\mathsf{types}{}[x]) \\
+{[\textsc{\scriptsize E{-}ref.null}]} \quad & z ; (\mathsf{ref{.}null}~x) & \hookrightarrow & (\mathsf{ref{.}null}~z{.}\mathsf{types}{}[x]) \\
 {[\textsc{\scriptsize E{-}ref.func}]} \quad & z ; (\mathsf{ref{.}func}~x) & \hookrightarrow & (\mathsf{ref{.}func}~z{.}\mathsf{module}{.}\mathsf{funcs}{}[x]) \\
 \end{array}
 $$
