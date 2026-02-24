@@ -292,23 +292,25 @@ let rec rows_of_prem vars len i p =
   | LetPr (_, _, targets) ->
     let covering_vars = List.filter_map (index_of len vars) targets in
     [ Assign targets, p, [i] @ covering_vars ]
-  | RulePr (id, _, { it = TupE args; _ }) when id.it = "Eval_expr" ->
-    (* HARDCODE: The output of the relation Eval_expr (%;%~>*%;%) is last two *)
-    let args', l = Util.Lib.List.split_last args in
-    let _, l' = Util.Lib.List.split_last args' in
-    let frees = (union (free_exp false l) (free_exp false l')).varid |> Set.elements in
-    [
-      Condition, p, [i];
-      Assign frees, p, [i] @ List.filter_map (index_of len vars) frees
-    ]
   | RulePr (_, _, { it = TupE args; _ }) ->
-    (* Assumpton: the only possible assigned-value is the last arg (i.e. ... |- lhs ) *)
-    let _, l = Util.Lib.List.split_last args in
-    let frees = free_exp_list l in
-    [
-      Condition, p, [i];
-      Assign frees, p, [i] @ List.filter_map (index_of len vars) frees
-    ]
+    (* Assumption:
+     * The only possible set of output variable
+     * is the last arg (i.e. ... |- lhs )
+     * or the last two args (i.e. ... ~>* z; v) *)
+    let assign_last n =
+      if List.length args <= n then [] else
+      let outs, ins = Lib.List.split n (List.rev args) in
+      let free_exps es = es |> List.map (free_exp false) |> List.fold_left union empty in
+      let free_set = free_exps outs in
+      let bound_set = free_exps ins in
+      if not (disjoint free_set bound_set) then [] else
+      let frees = free_set.varid |> Set.elements in
+      [ Assign frees, p, [i] @ List.filter_map (index_of len vars) frees ]
+    in
+
+    [ Condition, p, [i] ]
+      @ assign_last 1
+      @ assign_last 2
   | IterPr (p', iterexp) ->
     let p_r = rewrite_iterexp iterexp p' in
     let to_iter (tag, p, coverings) = tag, IterPr (recover_iterexp iterexp p, iterexp) $ p.at, coverings in
@@ -350,7 +352,7 @@ let animate_prems known_vars prems =
       Error.error (over_region (List.map at unhandled_prems)) "prose translation" "There might be a cyclic binding"
     else
       snd !best'
-  | Some x -> x
+  | Some prems -> prems
 
 (* Animate rule *)
 let animate_rule r = match r.it with
