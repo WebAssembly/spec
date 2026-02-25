@@ -1016,8 +1016,9 @@ and al_to_funcinst: value -> Instance.funcinst = function
   | v -> error_value "funcinst" v
 
 and al_to_ref: value -> ref_ = function
-  | CaseV ("REF.NULL", [ ht ]) -> NullRef (al_to_heaptype ht)
   | CaseV ("REF.I31_NUM", [ i ]) -> I31.I31Ref (al_to_nat i)
+  | CaseV ("REF.NULL_ADDR", []) -> NullRef
+  | CaseV ("REF.NULL", [ _ht ]) when !version <= 2 -> NullRef
   | CaseV ("REF.STRUCT_ADDR", [ addr ]) ->
     let struct_insts = Ds.Store.access "STRUCTS" in
     let struct_ = addr |> al_to_nat |> listv_nth struct_insts |> al_to_struct in
@@ -1237,7 +1238,8 @@ let al_of_vec_shape shape (lanes: int64 list) =
   ))
 
 let rec al_of_ref = function
-  | NullRef ht -> CaseV ("REF.NULL", [ al_of_heaptype ht ])
+  | NullRef when !version <= 2 -> CaseV ("REF.NULL", [ al_of_heaptype NoneHT ])
+  | NullRef -> CaseV ("REF.NULL_ADDR", [])
   (*
   | I31.I31Ref i ->
     CaseV ("REF.I31_NUM", [ NumV (Int64.of_int i) ])

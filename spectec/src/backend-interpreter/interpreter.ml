@@ -165,10 +165,12 @@ and check_type ty v expr =
   ] in
   match v with
   (* addrref *)
-  | CaseV (ar, _) when List.mem ar addr_refs->
-    boolV (ty = "addrref" ||ty = "ref" || ty = "val")
+  | CaseV (ar, _) when List.mem ar addr_refs ->
+    boolV (ty = "addrref" || ty = "ref" || ty = "val")
   (* nul *)
-  | CaseV ("REF.NULL", _) ->
+  | CaseV ("REF.NULL_ADDR", _) ->
+    boolV (ty = "nul" || ty = "ref" || ty = "val")
+  | CaseV ("REF.NULL", _) when !Construct.version <= 2 ->
     boolV (ty = "nul" || ty = "ref" || ty = "val")
   (* values *)
   | CaseV ("CONST", CaseV (nt, []) ::_) when List.mem nt inn_types ->
@@ -707,9 +709,10 @@ and try_step_instr fname ctx env instr =
   try_with_error fname instr.at string_of_instr (step_instr fname ctx env) instr
 
 and step_wasm (ctx: AlContext.t) : value -> AlContext.t = function
-  | CaseV ("REF.NULL" as name, ([ CaseV ("_IDX", _) ] as args)) ->
+  | CaseV ("REF.NULL" as name, ([ CaseV ("_IDX", _) ] as args)) when !Construct.version <= 2 ->
     create_context name args :: ctx
-  | CaseV ("REF.NULL", _)
+  | CaseV ("REF.NULL", _) as v when !Construct.version <= 2 ->
+    WasmContext.push_value v; ctx
   | CaseV ("CONST", _)
   | CaseV ("VCONST", _) as v -> WasmContext.push_value v; ctx
   | CaseV (name, []) when Host.is_host name -> Host.call name; ctx

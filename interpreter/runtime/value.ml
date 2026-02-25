@@ -17,7 +17,7 @@ type ref_ = ..
 type value = Num of num | Vec of vec | Ref of ref_
 type t = value
 
-type ref_ += NullRef of heaptype
+type ref_ += NullRef
 
 type address = I64.t
 
@@ -89,7 +89,7 @@ struct
 end
 
 let is_null_ref = function
-  | NullRef _ -> true
+  | NullRef -> true
   | _ -> false
 
 
@@ -109,7 +109,7 @@ let type_of_vec = type_of_vecop
 
 let type_of_ref' = ref (function _ -> assert false)
 let type_of_ref = function
-  | NullRef t -> (Null, Match.bot_of_heaptype [] t)
+  | NullRef -> (Null, BotHT)
   | r -> (NoNull, !type_of_ref' r)
 
 let type_of_value = function
@@ -124,11 +124,7 @@ let eq_num n1 n2 = n1 = n2
 
 let eq_vec v1 v2 = v1 = v2
 
-let eq_ref' = ref (fun r1 r2 ->
-  match r1, r2 with
-  | NullRef _, NullRef _ -> true
-  | _, _ -> r1 == r2
-)
+let eq_ref' = ref (==)
 
 let eq_ref r1 r2 = !eq_ref' r1 r2
 
@@ -152,7 +148,7 @@ let default_vec = function
   | V128T -> Some (Vec (V128 V128.zero))
 
 let default_ref = function
-  | (Null, t) -> Some (Ref (NullRef t))
+  | (Null, _) -> Some (Ref NullRef)
   | (NoNull, _) -> None
 
 let default_value = function
@@ -323,7 +319,7 @@ let hex_string_of_vec = function
 
 let string_of_ref' = ref (function _ -> "ref")
 let string_of_ref = function
-  | NullRef _ -> "null"
+  | NullRef -> "null"
   | r -> !string_of_ref' r
 
 let string_of_value = function

@@ -32,18 +32,15 @@ syntax num hint(desc "number value") =
 syntax vec hint(desc "vector value") =
   | VCONST vectype vec_(vectype)         hint(show %.CONST %%)    hint(macro "VCONST")
 
-syntax addrref hint(desc "address value") =
+syntax ref hint(desc "reference value") hint(macro "reff") =
   | REF.I31_NUM u31                      hint(show REF.I31 %%)    hint(macro "%NUM")
+  | REF.NULL_ADDR                        hint(show REF.NULL)      hint(macro "%ADDR")
   | REF.STRUCT_ADDR structaddr           hint(show REF.STRUCT %%) hint(macro "%ADDR")
   | REF.ARRAY_ADDR arrayaddr             hint(show REF.ARRAY %%)  hint(macro "%ADDR")
   | REF.FUNC_ADDR funcaddr               hint(show REF.FUNC %%)   hint(macro "%ADDR")
   | REF.EXN_ADDR exnaddr                 hint(show REF.EXN %%)    hint(macro "%ADDR")
   | REF.HOST_ADDR hostaddr               hint(show REF.HOST %%)   hint(macro "%ADDR")
-  | REF.EXTERN addrref
-
-syntax ref hint(desc "reference value")  hint(macro "reff") =
-  | addrref
-  | REF.NULL heaptype  -- if $free_heaptype(heaptype) = {}
+  | REF.EXTERN ref
 
 syntax val hint(desc "value") =
   | num | vec | ref
@@ -135,7 +132,7 @@ syntax frame hint(desc "frame") hint(macro "%" "A%") =
 
 syntax instr/admin hint(desc "administrative instruction") =
   | ...
-  | addrref
+  | ref
   | LABEL_ n `{instr*} instr*   hint(show LABEL_%#% %%)
   | FRAME_ n `{frame} instr*    hint(show FRAME_%#% %%)
   | HANDLER_ n `{catch*} instr* hint(show HANDLER_%#% %%)
