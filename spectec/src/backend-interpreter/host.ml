@@ -69,14 +69,13 @@ let spectest () =
     "global_f64", 666.6 |> F64.of_float |> f64_to_const |> create_globalinst (TupV [none "MUT"; nullary "F64"]);
   ] in
   (* Builtin tables *)
-  let nullref, funcref =
+  let null, funcref =
     if !Construct.version <= 2 then
-      nullary "REF.NULL_ADDR", nullary "FUNCREF"
+      CaseV ("REF.NULL", [ nullary "FUNC" ]), nullary "FUNCREF"
     else
-      CaseV ("REF.NULL", [ nullary "FUNC" ]),
-      CaseV ("REF", [some "NULL"; nullary "FUNC"])
+      nullary "REF.NULL_ADDR", CaseV ("REF", [some "NULL"; nullary "FUNC"])
   in
-  let nulls = Array.make 10 nullref in
+  let nulls = Array.make 10 null in
   let mk_ttype nt =
     let args = [ CaseV ("[", [ natV (Z.of_int 10); someV (natV (Z.of_int 20)) ]); funcref ] in
     if !Construct.version <= 2 then
