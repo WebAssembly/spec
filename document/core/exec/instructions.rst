@@ -695,7 +695,7 @@ Reference Instructions
 
 4. Push the value :math:`\REFNULL~\deftype` to the stack.
 
-$${rule: {Step_read/ref.null-*}}
+$${rule: {Step_read/ref.null}}
 
 .. note::
    No formal reduction rule is required for the case |REFNULL| |ABSHEAPTYPE|,
