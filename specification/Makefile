@@ -37,7 +37,13 @@ check-all: check-1.0 check-2.0 check-3.0 check-latest
 	@echo All Wasm specs checked OK.
 
 check-diff:
-	./diff-wasm-latest.sh
+	bash ./diff-wasm-latest.sh
+
+
+# Sync
+
+sync-diff:
+	bash ./sync-wasm-latest.sh
 
 
 # Build
