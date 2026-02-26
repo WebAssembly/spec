@@ -372,11 +372,11 @@ dictionary WebAssemblyCompileOptions {
 
 [Exposed=*]
 namespace WebAssembly {
-    boolean validate(BufferSource bytes, optional WebAssemblyCompileOptions options = {});
-    Promise&lt;Module> compile(BufferSource bytes, optional WebAssemblyCompileOptions options = {});
+    boolean validate([AllowResizable] AllowSharedBufferSource bytes, optional WebAssemblyCompileOptions options = {});
+    Promise&lt;Module> compile([AllowResizable] AllowSharedBufferSource bytes, optional WebAssemblyCompileOptions options = {});
 
     Promise&lt;WebAssemblyInstantiatedSource> instantiate(
-        BufferSource bytes, optional object importObject, optional WebAssemblyCompileOptions options = {});
+        [AllowResizable] AllowSharedBufferSource bytes, optional object importObject, optional WebAssemblyCompileOptions options = {});
 
     Promise&lt;Instance> instantiate(
         Module moduleObject, optional object importObject);
@@ -704,7 +704,7 @@ dictionary ModuleImportDescriptor {
 
 [LegacyNamespace=WebAssembly, Exposed=*]
 interface Module {
-  constructor(BufferSource bytes, optional WebAssemblyCompileOptions options = {});
+  constructor([AllowResizable] AllowSharedBufferSource bytes, optional WebAssemblyCompileOptions options = {});
   static sequence&lt;ModuleExportDescriptor> exports(Module moduleObject);
   static sequence&lt;ModuleImportDescriptor> imports(Module moduleObject);
   static sequence&lt;ArrayBuffer> customSections(Module moduleObject, DOMString sectionName);
