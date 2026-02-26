@@ -2222,6 +2222,10 @@ and elab_arg in_lhs env (a : arg) (p : Il.param) s : Il.arg list * Il.Subst.subs
   | ExpA {it = CallE (id, []); _}, Il.DefP _ -> a.it := DefA id
   | _, _ -> ()
   );
+  Debug.(log_at "el.elab_arg" a.at
+    (fun _ -> fmt "%s : %s" (el_arg a) (il_param p))
+    (fun (as', _) -> fmt "%s" (list il_arg as'))
+  ) @@ fun _ ->
   match !(a.it), (Il.Subst.subst_param s p).it with
   | ExpA e, Il.ExpP (x, t) ->
     let e' = checkpoint (elab_exp env e t) in
