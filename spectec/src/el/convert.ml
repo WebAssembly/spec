@@ -73,6 +73,18 @@ let rec typ_of_exp e =
   | IterE (e1, iter) -> IterT (typ_of_exp e1, iter)
   | StrE efs -> StrT (NoDots, [], map_nl_list typfield_of_expfield efs, NoDots)
   | AtomE atom -> AtomT atom
+  | SeqE [{it = VarE (id, []); at = at1; _}; {it = ParenE e1; at = at2; _}]
+    when at1.right = at2.left ->  (* HACK! *)
+    VarT (id, [ref (ExpA e1) $ e1.at])
+  | SeqE [{it = VarE (id, []); at = at1; _}; {it = TupE es; at = at2; _}]
+    when at1.right = at2.left ->  (* HACK! *)
+    VarT (id, List.map (fun ei -> ref (ExpA ei) $ ei.at) es)
+  | SeqE [{it = AtomE {it = Xl.Atom.Atom id; at; _}; at = at1; _}; {it = ParenE e1; at = at2; _}]
+    when at1.right = at2.left ->  (* HACK! *)
+    VarT (id $ at, [ref (ExpA e1) $ e1.at])
+  | SeqE [{it = AtomE {it = Xl.Atom.Atom id; at; _}; at = at1; _}; {it = TupE es; at = at2; _}]
+    when at1.right = at2.left ->  (* HACK! *)
+    VarT (id $ at, List.map (fun ei -> ref (ExpA ei) $ ei.at) es)
   | SeqE es -> SeqT (List.map typ_of_exp es)
   | InfixE (e1, atom, e2) -> InfixT (typ_of_exp e1, atom, typ_of_exp e2)
   | BrackE (l, e1, r) -> BrackT (l, typ_of_exp e1, r)
@@ -156,6 +168,18 @@ let rec sym_of_exp e =
   | NumE (op, `Nat n) -> NumG (op, n)
   | TextE s -> TextG s
   | EpsE -> EpsG
+  | SeqE [{it = VarE (id, []); at = at1; _}; {it = ParenE e1; at = at2; _}]
+    when at1.right = at2.left ->  (* HACK! *)
+    VarG (id, [ref (ExpA e1) $ e1.at])
+  | SeqE [{it = VarE (id, []); at = at1; _}; {it = TupE es; at = at2; _}]
+    when at1.right = at2.left ->  (* HACK! *)
+    VarG (id, List.map (fun ei -> ref (ExpA ei) $ ei.at) es)
+  | SeqE [{it = AtomE {it = Xl.Atom.Atom id; at; _}; at = at1; _}; {it = ParenE e1; at = at2; _}]
+    when at1.right = at2.left ->  (* HACK! *)
+    VarG (id $ at, [ref (ExpA e1) $ e1.at])
+  | SeqE [{it = AtomE {it = Xl.Atom.Atom id; at; _}; at = at1; _}; {it = TupE es; at = at2; _}]
+    when at1.right = at2.left ->  (* HACK! *)
+    VarG (id $ at, List.map (fun ei -> ref (ExpA ei) $ ei.at) es)
   | SeqE es -> SeqG (List.map (fun e -> Elem (sym_of_exp e)) es)
   | ParenE e1 -> ParenG (sym_of_exp e1)
   | TupE es -> TupG (List.map sym_of_exp es)

@@ -3,7 +3,7 @@ name: CI for specs
 on:
   push:
     branches: [ main ]
-    paths: [ .github/**, document/**, spectec/**, specification/** ]
+    paths: [ .github/**, document/**, spectec/src/**, specification/** ]
 
   pull_request:
     branches: [ main ]
