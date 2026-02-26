@@ -109,6 +109,9 @@ spec-clean:
 check%:
 	(cd ../specification && make $@)
 
+sync%:
+	(cd ../specification && make $@)
+
 
 # Cleanup
 

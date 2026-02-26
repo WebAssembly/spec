@@ -46,11 +46,6 @@ $${rule-prose: Ref_ok/null}
 
 $${rule: Ref_ok/null}
 
-.. note::
-   A null reference can be typed with any smaller type.
-   In particular, that allows it to be typed with the least type in its respective hierarchy.
-   That ensures that the value is compatible with any nullable type in that hierarchy.
-
 
 .. _valid-ref.i31num:
 

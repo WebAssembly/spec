@@ -8,7 +8,7 @@ def $default_(valtype) : val?
 def $default_(Inn) = (CONST Inn 0)
 def $default_(Fnn) = (CONST Fnn $fzero($size(Fnn)))
 def $default_(Vnn) = (VCONST Vnn 0)
-def $default_(REF NULL ht) = (REF.NULL ht)
+def $default_(REF NULL ht) = REF.NULL_ADDR
 def $default_(REF ht) = eps
 
 ;;relation Defaultable: |- valtype DEFAULTABLE ;; forward-declared in validation.instructions
@@ -33,8 +33,7 @@ rule Vec_ok:
 
 
 rule Ref_ok/null:
-  s |- REF.NULL ht : (REF NULL ht')
-  -- Heaptype_sub: {} |- ht' <: ht
+  s |- REF.NULL_ADDR : (REF NULL BOT)
 
 rule Ref_ok/i31:
   s |- REF.I31_NUM i : (REF I31)
@@ -59,8 +58,9 @@ rule Ref_ok/host:
   s |- REF.HOST_ADDR a : (REF ANY)
 
 rule Ref_ok/extern:
-  s |- REF.EXTERN addrref : (REF EXTERN)
-  -- Ref_ok: s |- addrref : (REF ANY)
+  s |- REF.EXTERN ref : (REF EXTERN)
+  -- Ref_ok: s |- ref : (REF ANY)
+  -- if ref =/= REF.NULL_ADDR
 
 rule Ref_ok/sub:
   s |- ref : rt

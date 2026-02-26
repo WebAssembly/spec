@@ -12,7 +12,6 @@ Runtime Structure
 .. _syntax-num:
 .. _syntax-vec:
 .. _syntax-ref:
-.. _syntax-addrref:
 .. _syntax-ref.i31num:
 .. _syntax-ref.struct:
 .. _syntax-ref.array:
@@ -34,6 +33,7 @@ It is convenient to reuse the same notation as for the ${:CONST} :ref:`instructi
 
 References other than null are represented with additional :ref:`administrative instructions <syntax-instr-admin>`.
 They either are *scalar references*, containing a 31-bit :ref:`integer <syntax-int>`,
+*null references*,
 *structure references*, pointing to a specific :ref:`structure address <syntax-structaddr>`,
 *array references*, pointing to a specific :ref:`array address <syntax-arrayaddr>`,
 *function references*, pointing to a specific :ref:`function address <syntax-funcaddr>`,
@@ -41,7 +41,7 @@ They either are *scalar references*, containing a 31-bit :ref:`integer <syntax-i
 or *host references* pointing to an uninterpreted form of :ref:`host address <syntax-hostaddr>` defined by the :ref:`embedder <embedder>`.
 Any of the aformentioned references can furthermore be wrapped up as an *external reference*.
 
-$${syntax: val num vec ref addrref}
+$${syntax: val num vec ref}
 
 .. note::
    Future versions of WebAssembly may add additional forms of values.
@@ -590,7 +590,7 @@ In order to express the reduction of :ref:`traps <trap>`, :ref:`calls <syntax-ca
 
 $${syntax: {instr/admin}}
 
-An :ref:`address reference <syntax-addrref>` represents an allocated :ref:`reference <syntax-ref>` value of respective form :ref:`"on the stack" <exec-notation>`.
+A :ref:`reference <syntax-ref>` represents a :ref:`reference <syntax-ref>` value of respective form :ref:`"on the stack" <exec-notation>`.
 
 The ${:LABEL}, ${:FRAME}, and ${:HANDLER} instructions model :ref:`labels <syntax-label>`, :ref:`frames <syntax-frame>`, and active :ref:`exception handlers <syntax-handler>`, respectively, :ref:`"on the stack" <exec-notation>`.
 Moreover, the administrative syntax maintains the nesting structure of the original :ref:`structured control instruction <syntax-instr-control>` or :ref:`function body <syntax-func>` and their :ref:`instruction sequences <syntax-instrs>`.

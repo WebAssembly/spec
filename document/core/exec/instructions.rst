@@ -687,19 +687,9 @@ Reference Instructions
 :math:`\REFNULL~x`
 .......................
 
-1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
+$${rule-prose: Step_read/ref.null}
 
-2. Assert: due to :ref:`validation <valid-ref.null>`, the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]` exists.
-
-3. Let :math:`\deftype` be the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]`.
-
-4. Push the value :math:`\REFNULL~\deftype` to the stack.
-
-$${rule: {Step_read/ref.null-*}}
-
-.. note::
-   No formal reduction rule is required for the case |REFNULL| |ABSHEAPTYPE|,
-   since the instruction form is already a :ref:`value <syntax-val>`.
+$${rule: {Step_read/ref.null}}
 
 
 .. _exec-ref.func:
