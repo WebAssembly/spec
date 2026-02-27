@@ -123,7 +123,7 @@ rule Step_exp/CMP-EQ-true:
 
 rule Step_exp/CMP-EQ-false:
   S |- CMP EQ val_1 val_2 ~> BOOL false
-  -- if val_1 =/= val_2
+  -- if val_1 = val_2
 
 rule Step_exp/CMP-NE-false:
   S |- CMP NE e_1 e_2 ~> BOOL false
