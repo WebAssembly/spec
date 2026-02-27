@@ -338,7 +338,7 @@ rule Step_exp/ITER-STAR:
   -- if |e'**[0]| = n
 
 rule Step_exp/ITER-SUP-eps:
-  S |- ITER e (SUP eps e_n) (x `<- LIST e'*)* ~> ITER e (SUP y n) (x `<- LIST e'*)*
+  S |- ITER e (SUP eps e_n) (x `<- LIST e'*)* ~> ITER e (SUP y e_n) (x `<- LIST e'*)*
   ;; TODO: y fresh
 
 rule Step_exp/ITER-SUP:
@@ -519,7 +519,7 @@ rule Step_prems/ITER-STAR:
   -- if |e**[0]| = n
 
 rule Step_prems/ITER-SUP-eps:
-  S |- ITER pr (SUP eps e_n) (x `<- LIST e*)* ~> ITER pr (SUP y n) (x `<- LIST e*)*
+  S |- ITER pr (SUP eps e_n) (x `<- LIST e*)* ~> ITER pr (SUP y e_n) (x `<- LIST e*)*
   ;; TODO: y fresh
 
 rule Step_prems/ITER-SUP:
