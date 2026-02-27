@@ -394,11 +394,12 @@ rule Step_exp/SUB-LIST:
   S |- SUB (LIST e*) (ITER t_1 STAR) (ITER t_2 STAR) ~> LIST (SUB e t_1 t_2)*
 
 rule Step_exp/SUB-STR:
-  S |- SUB (STR (at `= e)*) (VAR x_1 a_1*) (VAR x_2 a_2*) ~> STR (at' `= SUB e t_1 t_2)*
+  S |- SUB (STR ef*) (VAR x_1 a_1*) (VAR x_2 a_2*) ~> STR (at `= SUB e t_1 t_2)*
   -- Expand_typ: S |- VAR x_1 a_1* => STRUCT tf_1*
   -- Expand_typ: S |- VAR x_2 a_2* => STRUCT tf_2*
-  -- (if (at' `: t_1 `- `{q_1*} pr_1*) <- tf_1*)*
-  -- (if (at' `: t_2 `- `{q_2*} pr_2*) = tf_2)*
+  -- (if (at `: t_2 `- `{q_2*} pr_2*) = tf_2)*
+  -- (if (at `: t_1 `- `{q_1*} pr_1*) <- tf_1*)*
+  -- (if (at `= e) <- ef*)*
 
 rule Step_exp/SUB-CASE:
   S |- SUB (INJ op e) (VAR x_1 a_1*) (VAR x_2 a_2*) ~> INJ op (SUB e t_1 t_2)
