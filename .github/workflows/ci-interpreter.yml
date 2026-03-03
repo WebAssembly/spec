@@ -23,7 +23,7 @@ jobs:
         with:
           ocaml-compiler: 5.04.x
       - name: Build interpreter
-        run: cd interpreter && opam exec make wasm-deps wasm
+        run: cd interpreter && opam exec make jsdeps wasm
       # Neither V8 nor SpiderMonkey can currently handle all 3.0 tests, so we disable checking JS translation for now.
       #- name: Setup Node.js
       #  uses: actions/setup-node@v4

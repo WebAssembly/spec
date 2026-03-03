@@ -40,7 +40,7 @@ zip:		$(ZIP)
 
 .PHONY:		$(NAME) $(JSLIB)
 
-$(NAME)-deps:
+deps:
 	opam install --yes $(DEPS)
 
 $(NAME):
@@ -48,7 +48,7 @@ $(NAME):
 	dune build $@.exe
 	ln $(BUILDDIR)/$@.exe $@
 
-$(JSLIB)-deps:	$(NAME)-deps
+jsdeps:	deps
 	opam install --yes $(JSDEPS)
 
 $(JSLIB):
