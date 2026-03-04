@@ -100,6 +100,7 @@ urlPrefix: https://tc39.github.io/ecma262/; spec: ECMASCRIPT
         text: String.prototype.substring; url: sec-string.prototype.substring
         text: Array; url: sec-array-exotic-objects
         text: BigInt; url: sec-ecmascript-language-types-bigint-type
+        text: safe integer; url: #safe-integer
 urlPrefix: https://webassembly.github.io/spec/core/; spec: WebAssembly; type: dfn
     text: embedding interface; url: appending/embedding.html
     text: scope; url: intro/introduction.html#scope
@@ -399,6 +400,7 @@ Note:
   To <dfn>compile a WebAssembly module</dfn> from source bytes |bytes|, perform the following steps:
     1. Let |module| be [=module_decode=](|bytes|). If |module| is [=error=], return [=error=].
     1. If [=module_validate=](|module|) is [=error=], return [=error=].
+    1. If any <a href="#limits-compile-time">compile-time limits</a> are exceeded, return [=error=].
     1. Return |module|.
 </div>
 
@@ -608,6 +610,7 @@ The verification of WebAssembly type requirements is deferred to the
     1. Let |result| be [=module_instantiate=](|store|, |module|, |imports|).
     1. If |result| is [=error=], throw an appropriate exception type:
         * A {{LinkError}} exception for most cases which occur during linking.
+        * If a <a href="#limits-runtime">runtime implementation limit</a> is exceeded, throw a {{RangeError}}.
         * If the error came when running the start function, throw a {{RuntimeError}} for most errors which occur from WebAssembly, or the error object propagated from inner ECMAScript code.
         * Another error type if appropriate, for example an out-of-memory exception, as documented in <a href="#errors">the WebAssembly error mapping</a>.
     1. Let (|store|, |instance|) be |result|.
@@ -879,6 +882,8 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
     1. If |descriptor|["maximum"] [=map/exists=], let |maximum| be [=?=] [=AddressValueToU64=](|descriptor|["maximum"], |addrtype|); otherwise, let |maximum| be empty.
     1. Let |memtype| be [=memory type=] |addrtype| { **min** |initial|, **max** |maximum| }.
     1. If |memtype| is not [=valid memtype|valid=], throw a {{RangeError}} exception.
+    1. If |maximum| is not empty:
+        1. If |addrtype| is "i64" and |maximum| exceeds the [=memory type size limit=], throw a {{RangeError}} exception.
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
     1. Let (|store|, |memaddr|) be [=mem_alloc=](|store|, |memtype|). If allocation fails, throw a {{RangeError}} exception.
     1. Set the [=surrounding agent=]'s [=associated store=] to |store|.
@@ -908,6 +913,8 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
     1. Let |ret| be the [=mem_size=](|store|, |memaddr|).
     1. Let |store| be [=mem_grow=](|store|, |memaddr|, |delta|).
+
+        Note: This should check the <a href="#limits-runtime">runtime implementation limits</a>.
     1. If |store| is [=error=], throw a {{RangeError}} exception.
     1. Set the [=surrounding agent=]'s [=associated store=] to |store|.
     1. [=Refresh the memory buffer=] of |memaddr|.
@@ -1070,10 +1077,9 @@ Each {{Table}} object has a \[[Table]] internal slot, which is a [=table address
     1. Otherwise,
         1. Let |ref| be [=?=] [=ToWebAssemblyValue=](|value|, |elementtype|).
     1. Let |result| be [=table_grow=](|store|, |tableaddr|, |delta64|, |ref|).
+
+        Note: This should check the <a href="#limits-runtime">runtime implementation limits</a>.
     1. If |result| is [=error=], throw a {{RangeError}} exception.
-
-        Note: The above exception can happen due to either insufficient memory or an invalid size parameter.
-
     1. Set the [=surrounding agent=]'s [=associated store=] to |result|.
     1. Return |initialSize|.
 </div>
@@ -2211,47 +2217,53 @@ Note: ECMAScript doesn't specify any sort of behavior on out-of-memory condition
 
 <h2 id="limits">Implementation-defined Limits</h2>
 
-The WebAssembly core specification allows an implementation to define limits on the syntactic structure of the module.
+The WebAssembly core specification allows an implementation to define limits on the syntactic structure of a module and on runtime resources.
 While each embedding of WebAssembly may choose to define its own limits, for predictability the standard WebAssembly JavaScript Interface described in this document defines the following exact limits.
-An implementation must reject a module that exceeds one of the following limits with a {{CompileError}}.
-In practice, an implementation may run out of resources for valid modules below these limits.
+
+<h3 id="limits-compile-time">Compile-time Limits</h3>
+
+An implementation must reject a module or other resource that exceeds one of the following limits.
+In practice, an implementation may run out of resources below these limits.
 
 <ul>
 <li>The maximum size of a module is 1,073,741,824 bytes (1 GiB).</li>
-<li>The maximum number of types defined in the types section is 1,000,000.</li>
-<li>The maximum number of recursion groups defined in the types sections is 1,000,000.</li>
+<li>The maximum number of types defined in the type section is 1,000,000.</li>
+<li>The maximum number of recursion groups defined in the type section is 1,000,000.</li>
 <li>The maximum number of types defined in a recursion group is 1,000,000.</li>
 <li>The maximum depth of a defined subtype hierarchy is 63 (where a type defined with no supertype has depth 0).
-<li>The maximum number of functions defined in a module is 1,000,000.</li>
+<li>The maximum number of functions defined or imported in a module is 1,000,000.</li>
 <li>The maximum number of imports declared in a module is 1,000,000.</li>
 <li>The maximum number of exports declared in a module is 1,000,000.</li>
-<li>The maximum number of globals defined in a module is 1,000,000.</li>
-<li>The maximum number of tags defined in a module is 1,000,000.</li>
+<li>The maximum number of globals defined or imported in a module is 1,000,000.</li>
+<li>The maximum number of tags defined or imported in a module is 1,000,000.</li>
 <li>The maximum number of data segments defined in a module is 100,000.</li>
-
-<li>The maximum number of tables, including declared or imported tables, is 100,000.</li>
-<li>The maximum size of a table is 10,000,000.</li>
-<li>The maximum number of table entries in any table initialization is 10,000,000.</li>
-
-<li>The maximum number of memories, including defined and imported memories, is 100.</li>
-<li>The maximum `min` or `max` field of a 32-bit memory is 65,536 pages (4 GiB).</li>
-<li>The maximum `min` or `max` field of a 64-bit memory is 2^37-1 pages (2^53 - 2^16 bytes).</li>
-
+<li>The maximum number of tables defined or imported in a module is 100,000.</li>
+<li>The maximum number of element segments defined in a module is 10,000,000.</li>
+<li>The maximum number of elements in any element segment is 10,000,000.</li>
+<li>The maximum number of memories defined or imported in a module is 100.</li>
 <li>The maximum number of parameters to any function or block is 1,000.</li>
 <li>The maximum number of return values for any function or block is 1,000.</li>
 <li>The maximum size of a function body, including locals declarations, is 7,654,321 bytes.</li>
-<li>The maximum number of locals declared in a function, including implicitly declared as parameters, is 50,000.</li>
+<li>The maximum number of locals declared in a function, including those implicitly declared as parameters, is 50,000.</li>
 <li>The maximum number of fields in a struct is 10,000.</li>
 <li>The maximum number of operands to `array.new_fixed` is 10,000.</li>
 </ul>
 
-An implementation must throw a {{RuntimeError}} if one of the following limits is exceeded during runtime:
-In practice, an implementation may run out of resources for valid modules below these limits.
+<h3 id="limits-runtime">Runtime Limits</h3>
+
+The following limits are enforced when instantiating a module, when creating a standalone resource like a {{Memory}} or {{Table}} object, and at all times during runtime.
+An implementation must throw if any of these limits is exceeded; the specific type of error thrown is up to the specific operation.
+In practice, an implementation may run out of resources below these limits.
 
 <ul>
-<li>The maximum size of a table is 10,000,000.</li>
+<li>The maximum size of a table is 10,000,000 elements.</li>
 <li>The maximum size of a 32-bit memory is 65,536 pages (4 GiB).</li>
 <li>The maximum size of a 64-bit memory is 262,144 pages (16 GiB).</li>
+<li>
+    A 64-bit memory cannot be allocated if its `min` or `max` field exceeds the <dfn>memory type size limit</dfn> of 2^37-1 pages (2^53 - 2^16 bytes).
+
+    Note: This ensures that the maximum size of a memory's buffer is representable as a [=safe integer=]. This is enforced at runtime because the WebAssembly spec does not allow implementations to restrict the size of memory during validation.
+</li>
 </ul>
 
 <h2 id="security-considerations">Security and Privacy Considerations</h2>
