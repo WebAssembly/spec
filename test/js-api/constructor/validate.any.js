@@ -1,9 +1,42 @@
 // META: global=window,dedicatedworker,jsshell
 // META: script=/wasm/jsapi/wasm-module-builder.js
 
+function copyToSharedBuffer(buffer) {
+  const sab = new SharedArrayBuffer(buffer.byteLength);
+  new Uint8Array(sab).set(buffer);
+  return new Uint8Array(sab);
+}
+
+function copyToResizableBuffer(buffer) {
+  const rab = new ArrayBuffer(buffer.byteLength, { maxByteLength: buffer.byteLength * 2 });
+  new Uint8Array(rab).set(buffer);
+  return new Uint8Array(rab);
+}
+
+function copyToGrowableSharedBuffer(buffer) {
+  const gsab = new SharedArrayBuffer(buffer.byteLength, { maxByteLength: buffer.byteLength * 2 });
+  new Uint8Array(gsab).set(buffer);
+  return new Uint8Array(gsab);
+}
+
 let emptyModuleBinary;
+let emptyModuleSharedBuffer;
+let emptyModuleResizableBuffer;
+let emptyModuleGrowableSharedBuffer;
+let invalidModuleBinary;
+let invalidModuleSharedBuffer;
+let invalidModuleResizableBuffer;
+let invalidModuleGrowableSharedBuffer;
 setup(() => {
   emptyModuleBinary = new WasmModuleBuilder().toBuffer();
+  emptyModuleSharedBuffer = copyToSharedBuffer(emptyModuleBinary);
+  emptyModuleResizableBuffer = copyToResizableBuffer(emptyModuleBinary);
+  emptyModuleGrowableSharedBuffer = copyToGrowableSharedBuffer(emptyModuleBinary);
+
+  invalidModuleBinary = new Uint8Array(Array.from(emptyModuleBinary).concat([0, 0]));
+  invalidModuleSharedBuffer = copyToSharedBuffer(invalidModuleBinary);
+  invalidModuleResizableBuffer = copyToResizableBuffer(invalidModuleBinary);
+  invalidModuleGrowableSharedBuffer = copyToGrowableSharedBuffer(invalidModuleBinary);
 });
 
 test(() => {
@@ -97,3 +130,27 @@ for (const [module, expected] of modules) {
 test(() => {
   assert_true(WebAssembly.validate(emptyModuleBinary, {}));
 }, "Stray argument");
+
+test(() => {
+  assert_true(WebAssembly.validate(emptyModuleSharedBuffer));
+}, "SharedArrayBuffer-backed view");
+
+test(() => {
+  assert_false(WebAssembly.validate(invalidModuleSharedBuffer));
+}, "Invalid module in SharedArrayBuffer");
+
+test(() => {
+  assert_true(WebAssembly.validate(emptyModuleResizableBuffer));
+}, "Resizable ArrayBuffer-backed view");
+
+test(() => {
+  assert_false(WebAssembly.validate(invalidModuleResizableBuffer));
+}, "Invalid module in resizable ArrayBuffer");
+
+test(() => {
+  assert_true(WebAssembly.validate(emptyModuleGrowableSharedBuffer));
+}, "Growable SharedArrayBuffer-backed view");
+
+test(() => {
+  assert_false(WebAssembly.validate(invalidModuleGrowableSharedBuffer));
+}, "Invalid module in growable SharedArrayBuffer");
