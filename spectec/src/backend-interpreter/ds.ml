@@ -205,7 +205,7 @@ module AlContext = struct
 
   let string_of_context = function
     | Al (s, args, il, _, _) ->
-      Printf.sprintf "Al %s (%s):%s"
+      Printf.sprintf "Al %s(%s):%s"
         s
         (args |> List.map string_of_arg |> String.concat ", ")
         (string_of_instrs il)
