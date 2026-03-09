@@ -5,11 +5,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Instructions &#8212; WebAssembly 3.0 (2026-02-26)</title>
+    <title>Instructions &#8212; WebAssembly 3.0 (2026-03-09)</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=686e5160" />
     <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=057308f9" />
-    <script src="../_static/documentation_options.js?v=49743ae7"></script>
+    <script src="../_static/documentation_options.js?v=45a979cd"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>window.MathJax = {"tex": {"maxBuffer": 30720, "macros": {"multicolumn": ["", 2]}}, "options": {"menuOptions": {"settings": {"enrich": false}}}}</script>
@@ -249,7 +249,7 @@ The offset defaults to <span class="math notranslate nohighlight">\(0\)</span>, 
 Lexically, an <span class="math notranslate nohighlight">\({\href{../text/instructions.html#text-memarg}{\mathtt{offset}}}\)</span> or <span class="math notranslate nohighlight">\({\href{../text/instructions.html#text-memarg}{\mathtt{align}}}\)</span> phrase is considered a single <a class="reference internal" href="lexical.html#text-keyword"><span class="std std-ref">keyword token</span></a>, so no <a class="reference internal" href="lexical.html#text-space"><span class="std std-ref">white space</span></a> is allowed around the <span class="math notranslate nohighlight">\(\mbox{‘\texttt{{=}}’}\)</span>.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}[t]{&#64;{}l&#64;{}rrl&#64;{}l&#64;{}l&#64;{}l&#64;{}}
-&amp; {{\href{../text/instructions.html#text-memarg}{\mathtt{memarg}}}}_{N} &amp; ::= &amp; n{:}{\href{../text/instructions.html#text-memarg}{\mathtt{offset}}}~~m{:}{{\href{../text/instructions.html#text-memarg}{\mathtt{align}}}}_{N} &amp; \quad\Rightarrow\quad{} &amp; \{ \href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{align}}~n,\;\allowbreak \href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{offset}}~m \} \\
+&amp; {{\href{../text/instructions.html#text-memarg}{\mathtt{memarg}}}}_{N} &amp; ::= &amp; n{:}{{\href{../text/instructions.html#text-memarg}{\mathtt{align}}}}_{N}~~m{:}{\href{../text/instructions.html#text-memarg}{\mathtt{offset}}} &amp; \quad\Rightarrow\quad{} &amp; \{ \href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{align}}~n,\;\allowbreak \href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{offset}}~m \} \\
 &amp; {\href{../text/instructions.html#text-memarg}{\mathtt{offset}}} &amp; ::= &amp; \mbox{‘\texttt{offset{=}}’}~~n{:}{\href{../text/values.html#text-int}{\mathtt{u64}}} &amp; \quad\Rightarrow\quad{} &amp; n \\
 &amp; &amp; | &amp; \epsilon &amp; \quad\Rightarrow\quad{} &amp; 0 \\
 &amp; {{\href{../text/instructions.html#text-memarg}{\mathtt{align}}}}_{N} &amp; ::= &amp; \mbox{‘\texttt{align{=}}’}~~m{:}{\href{../text/values.html#text-int}{\mathtt{u64}}} &amp; \quad\Rightarrow\quad{} &amp; m &amp; \quad \mbox{if}~ m = {2^{n}} \\
