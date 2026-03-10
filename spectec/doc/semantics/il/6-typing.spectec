@@ -364,8 +364,9 @@ rule Ok_exp/CALL:
 
 
 rule Ok_exp/ITER:
-  E |- ITER e it (x `<- e')* : ITER t it'
+  E |- ITER e it (x `: t' `<- e')* : ITER t it'
   -- Ok_iter: E |- it : it' -| E'
+  -- Ok_typ: E |- t' : OK
   -- (Ok_exp: E |- e' : ITER t' it')*
   -- Ok_exp: E ++ {EXP (x, t')*} ++ E' |- e : t
   -- Ok_typ: E |- t : OK
@@ -465,8 +466,9 @@ rule Ok_sym/RANGE:
   -- Ok_sym: E |- g_2 : NAT
 
 rule Ok_sym/ITER:
-  E |- ITER g it (x `<- e)* : ITER t it'
+  E |- ITER g it (x `: t' `<- e)* : ITER t it'
   -- Ok_iter: E |- it : it' -| E'
+  -- Ok_typ: E |- t' : OK
   -- (Ok_exp: E |- e : ITER t' it')*
   -- Ok_sym: E ++ {EXP (x, t')*} ++ E' |- g : t
   -- Ok_typ: E |- t : OK
@@ -511,10 +513,11 @@ rule Ok_prem/LET:
   -- Ok_exp: E |- e_2 : t
 
 rule Ok_prem/ITER:
-  E |- ITER pr it (x `<- e)* : OK
+  E |- ITER pr it (x `: t `<- e)* : OK
   -- Ok_iter: E |- it : it' -| E'
-  -- (Ok_exp: E |- e : ITER t' it')*
-  -- Ok_prem: E ++ {EXP (x, t')*} ++ E' |- pr : OK
+  -- Ok_typ: E |- t : OK
+  -- (Ok_exp: E |- e : ITER t it')*
+  -- Ok_prem: E ++ {EXP (x, t)*} ++ E' |- pr : OK
 
 
 rule Ok_prems:

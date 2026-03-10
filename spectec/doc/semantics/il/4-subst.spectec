@@ -101,7 +101,7 @@ def $subst_exp(s, ACC e_1 p) = ACC $subst_exp(s, e_1) $subst_path(s, p)
 def $subst_exp(s, UPD e_1 p e_2) = UPD $subst_exp(s, e_1) $subst_path(s, p) $subst_exp(s, e_2)
 def $subst_exp(s, EXT e_1 p e_2) = EXT $subst_exp(s, e_1) $subst_path(s, p) $subst_exp(s, e_2)
 def $subst_exp(s, CALL x a*) = CALL $subst_fun(s, x) $subst_arg(s, a)*
-def $subst_exp(s, ITER e it (x `<- e')*) = ITER $subst_exp(s, e) $subst_iter(s, it) (x `<- $subst_exp(s, e'))*  ;; TODO: avoid capture
+def $subst_exp(s, ITER e it (x `: t `<- e')*) = ITER $subst_exp(s, e) $subst_iter(s, it) (x `: $subst_typ(s, t) `<- $subst_exp(s, e'))*  ;; TODO: avoid capture
 def $subst_exp(s, CVT e nt_1 nt_2) = CVT $subst_exp(s, e) nt_1 nt_2
 def $subst_exp(s, SUB e t_1 t_2) = SUB $subst_exp(s, e) $subst_typ(s, t_1) $subst_typ(s, t_2)
 def $subst_exp(s, MATCH a* WITH clause*) = MATCH $subst_arg(s, a)* WITH $subst_clause(s, clause)*
@@ -127,7 +127,7 @@ def $subst_sym(s, SEQ g*) = SEQ $subst_sym(s, g)*
 def $subst_sym(s, ALT g*) = ALT $subst_sym(s, g)*
 def $subst_sym(s, RANGE g_1 g_2) = RANGE $subst_sym(s, g_1) $subst_sym(s, g_2)
 def $subst_sym(s, ATTR e g) = ATTR $subst_exp(s, e) $subst_sym(s, g)
-def $subst_sym(s, ITER g it (x `<- e)*) = ITER $subst_sym(s, g) $subst_iter(s, it) (x `<- $subst_exp(s, e))*  ;; TODO: avoid capture
+def $subst_sym(s, ITER g it (x `: t `<- e)*) = ITER $subst_sym(s, g) $subst_iter(s, it) (x `: $subst_typ(s, t) `<- $subst_exp(s, e))*  ;; TODO: avoid capture
 
 
 ;; Definitions
@@ -152,7 +152,7 @@ def $subst_prem(s, RULE x a* `: e) = RULE x $subst_arg(s, a)* `: $subst_exp(s, e
 def $subst_prem(s, IF e) = IF $subst_exp(s, e)
 def $subst_prem(s, ELSE) = ELSE
 def $subst_prem(s, LET e_1 `= e_2) = LET $subst_exp(s, e_1) `= $subst_exp(s, e_2)  ;; TODO: avoid capture
-def $subst_prem(s, ITER pr it (x `<- e)*) = ITER $subst_prem(s, pr) $subst_iter(s, it) (x `<- $subst_exp(s, e))*  ;; TODO: avoid capture
+def $subst_prem(s, ITER pr it (x `: t `<- e)*) = ITER $subst_prem(s, pr) $subst_iter(s, it) (x `: $subst_typ(s, t) `<- $subst_exp(s, e))*  ;; TODO: avoid capture
 
 
 def $subst_inst(subst, inst) : inst

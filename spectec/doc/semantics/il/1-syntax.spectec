@@ -138,7 +138,7 @@ syntax exp =
   | MATCH arg* WITH clause* ;; `match` arg* `with` clause*
 
 syntax expfield = atom `= exp
-syntax exppull = id `<- exp
+syntax exppull = id `: typ `<- exp
 
 syntax path =
   | ROOT               ;;
