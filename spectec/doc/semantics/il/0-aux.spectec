@@ -10,6 +10,15 @@ def $equiv_(syntax X, x_1*, x_2*) = true   -- (if x_1 <- x_2*)* -- (if x_2 <- x_
 def $equiv_(syntax X, x_1*, x_2*) = false  -- otherwise
 
 
+def $concat_(syntax X, X**) : X*  hint(show (++)%2)
+def $concat_(syntax X, eps) = eps
+def $concat_(syntax X, x_1* x**) = x_1* $concat_(X, x**)
+
+
 def $transpose_(syntax X, X**) : X**
 def $transpose_(syntax X, eps^n) = eps
 def $transpose_(syntax X, (x_1 x*)*) = x_1* $transpose_(X, x**)
+
+def $transposeq_(syntax X, X*?) : X?*
+def $transposeq_(syntax X, (eps)) = eps
+def $transposeq_(syntax X, (x_1 x*)?) = x_1? $transposeq_(X, x*?)
