@@ -5,11 +5,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Instructions &#8212; WebAssembly 3.0 (2026-03-09)</title>
+    <title>Instructions &#8212; WebAssembly 3.0 (2026-03-10)</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=686e5160" />
     <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=057308f9" />
-    <script src="../_static/documentation_options.js?v=45a979cd"></script>
+    <script src="../_static/documentation_options.js?v=1ef251c4"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>window.MathJax = {"tex": {"maxBuffer": 30720, "macros": {"multicolumn": ["", 2]}}, "options": {"menuOptions": {"settings": {"enrich": false}}}}</script>
@@ -250,9 +250,9 @@ Lexically, an <span class="math notranslate nohighlight">\({\href{../text/instru
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}[t]{&#64;{}l&#64;{}rrl&#64;{}l&#64;{}l&#64;{}l&#64;{}}
 &amp; {{\href{../text/instructions.html#text-memarg}{\mathtt{memarg}}}}_{N} &amp; ::= &amp; n{:}{{\href{../text/instructions.html#text-memarg}{\mathtt{align}}}}_{N}~~m{:}{\href{../text/instructions.html#text-memarg}{\mathtt{offset}}} &amp; \quad\Rightarrow\quad{} &amp; \{ \href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{align}}~n,\;\allowbreak \href{../syntax/instructions.html#syntax-instr-memory}{\mathsf{offset}}~m \} \\
-&amp; {\href{../text/instructions.html#text-memarg}{\mathtt{offset}}} &amp; ::= &amp; \mbox{‘\texttt{offset{=}}’}~~n{:}{\href{../text/values.html#text-int}{\mathtt{u64}}} &amp; \quad\Rightarrow\quad{} &amp; n \\
+&amp; {\href{../text/instructions.html#text-memarg}{\mathtt{offset}}} &amp; ::= &amp; \mbox{‘\texttt{offset{=}}’}~~m{:}{\href{../text/values.html#text-int}{\mathtt{u64}}} &amp; \quad\Rightarrow\quad{} &amp; m \\
 &amp; &amp; | &amp; \epsilon &amp; \quad\Rightarrow\quad{} &amp; 0 \\
-&amp; {{\href{../text/instructions.html#text-memarg}{\mathtt{align}}}}_{N} &amp; ::= &amp; \mbox{‘\texttt{align{=}}’}~~m{:}{\href{../text/values.html#text-int}{\mathtt{u64}}} &amp; \quad\Rightarrow\quad{} &amp; m &amp; \quad \mbox{if}~ m = {2^{n}} \\
+&amp; {{\href{../text/instructions.html#text-memarg}{\mathtt{align}}}}_{N} &amp; ::= &amp; \mbox{‘\texttt{align{=}}’}~~m{:}{\href{../text/values.html#text-int}{\mathtt{u64}}} &amp; \quad\Rightarrow\quad{} &amp; n &amp; \quad \mbox{if}~ m = {2^{n}} \\
 &amp; &amp; | &amp; \epsilon &amp; \quad\Rightarrow\quad{} &amp; N \\
 &amp; {\href{../text/instructions.html#text-laneidx}{\mathtt{laneidx}}} &amp; ::= &amp; i{:}{\href{../text/values.html#text-int}{\mathtt{u8}}} &amp; \quad\Rightarrow\quad{} &amp; i \\
 &amp; {{\href{../text/instructions.html#text-plaininstr}{\mathtt{plaininstr}}}}_{{\href{../text/conventions.html#text-context}{I}}} &amp; ::= &amp; \dots \\
@@ -356,9 +356,9 @@ Lexically, an <span class="math notranslate nohighlight">\({\href{../text/instru
 &amp; &amp; | &amp; \mbox{‘\texttt{i64.store32}’}~~{{\href{../text/instructions.html#text-memarg}{\mathtt{memarg}}}}_{4} &amp; \quad\equiv\quad{} &amp; \mbox{‘\texttt{i64.store32}’}~~\mbox{‘\texttt{0}’}~~{{\href{../text/instructions.html#text-memarg}{\mathtt{memarg}}}}_{4} \\
 &amp; &amp; | &amp; \mbox{‘\texttt{v128.store}’}~~{{\href{../text/instructions.html#text-memarg}{\mathtt{memarg}}}}_{16} &amp; \quad\equiv\quad{} &amp; \mbox{‘\texttt{v128.store}’}~~\mbox{‘\texttt{0}’}~~{{\href{../text/instructions.html#text-memarg}{\mathtt{memarg}}}}_{16} \\
 &amp; &amp; | &amp; \mbox{‘\texttt{v128.store8\_lane}’}~~{{\href{../text/instructions.html#text-memarg}{\mathtt{memarg}}}}_{1}~~{\href{../text/instructions.html#text-laneidx}{\mathtt{laneidx}}} &amp; \quad\equiv\quad{} &amp; \mbox{‘\texttt{v128.store8\_lane}’}~~\mbox{‘\texttt{0}’}~~{{\href{../text/instructions.html#text-memarg}{\mathtt{memarg}}}}_{1}~~{\href{../text/instructions.html#text-laneidx}{\mathtt{laneidx}}} \\
-&amp; &amp; | &amp; \mbox{‘\texttt{v128.store16\_lane}’}~~{{\href{../text/instructions.html#text-memarg}{\mathtt{memarg}}}}_{2}~~{\href{../text/instructions.html#text-laneidx}{\mathtt{laneidx}}} &amp; \quad\equiv\quad{} &amp; \mbox{‘\texttt{v128.store16\_lane}’}~~\mbox{‘\texttt{0}’}~~{{\href{../text/instructions.html#text-memarg}{\mathtt{memarg}}}}_{1}~~{\href{../text/instructions.html#text-laneidx}{\mathtt{laneidx}}} \\
-&amp; &amp; | &amp; \mbox{‘\texttt{v128.store32\_lane}’}~~{{\href{../text/instructions.html#text-memarg}{\mathtt{memarg}}}}_{4}~~{\href{../text/instructions.html#text-laneidx}{\mathtt{laneidx}}} &amp; \quad\equiv\quad{} &amp; \mbox{‘\texttt{v128.store32\_lane}’}~~\mbox{‘\texttt{0}’}~~{{\href{../text/instructions.html#text-memarg}{\mathtt{memarg}}}}_{1}~~{\href{../text/instructions.html#text-laneidx}{\mathtt{laneidx}}} \\
-&amp; &amp; | &amp; \mbox{‘\texttt{v128.store64\_lane}’}~~{{\href{../text/instructions.html#text-memarg}{\mathtt{memarg}}}}_{8}~~{\href{../text/instructions.html#text-laneidx}{\mathtt{laneidx}}} &amp; \quad\equiv\quad{} &amp; \mbox{‘\texttt{v128.store64\_lane}’}~~\mbox{‘\texttt{0}’}~~{{\href{../text/instructions.html#text-memarg}{\mathtt{memarg}}}}_{1}~~{\href{../text/instructions.html#text-laneidx}{\mathtt{laneidx}}} \\
+&amp; &amp; | &amp; \mbox{‘\texttt{v128.store16\_lane}’}~~{{\href{../text/instructions.html#text-memarg}{\mathtt{memarg}}}}_{2}~~{\href{../text/instructions.html#text-laneidx}{\mathtt{laneidx}}} &amp; \quad\equiv\quad{} &amp; \mbox{‘\texttt{v128.store16\_lane}’}~~\mbox{‘\texttt{0}’}~~{{\href{../text/instructions.html#text-memarg}{\mathtt{memarg}}}}_{2}~~{\href{../text/instructions.html#text-laneidx}{\mathtt{laneidx}}} \\
+&amp; &amp; | &amp; \mbox{‘\texttt{v128.store32\_lane}’}~~{{\href{../text/instructions.html#text-memarg}{\mathtt{memarg}}}}_{4}~~{\href{../text/instructions.html#text-laneidx}{\mathtt{laneidx}}} &amp; \quad\equiv\quad{} &amp; \mbox{‘\texttt{v128.store32\_lane}’}~~\mbox{‘\texttt{0}’}~~{{\href{../text/instructions.html#text-memarg}{\mathtt{memarg}}}}_{4}~~{\href{../text/instructions.html#text-laneidx}{\mathtt{laneidx}}} \\
+&amp; &amp; | &amp; \mbox{‘\texttt{v128.store64\_lane}’}~~{{\href{../text/instructions.html#text-memarg}{\mathtt{memarg}}}}_{8}~~{\href{../text/instructions.html#text-laneidx}{\mathtt{laneidx}}} &amp; \quad\equiv\quad{} &amp; \mbox{‘\texttt{v128.store64\_lane}’}~~\mbox{‘\texttt{0}’}~~{{\href{../text/instructions.html#text-memarg}{\mathtt{memarg}}}}_{8}~~{\href{../text/instructions.html#text-laneidx}{\mathtt{laneidx}}} \\
 &amp; &amp; | &amp; \mbox{‘\texttt{memory.size}’} &amp; \quad\equiv\quad{} &amp; \mbox{‘\texttt{memory.size}’}~~\mbox{‘\texttt{0}’} \\
 &amp; &amp; | &amp; \mbox{‘\texttt{memory.grow}’} &amp; \quad\equiv\quad{} &amp; \mbox{‘\texttt{memory.grow}’}~~\mbox{‘\texttt{0}’} \\
 &amp; &amp; | &amp; \mbox{‘\texttt{memory.fill}’} &amp; \quad\equiv\quad{} &amp; \mbox{‘\texttt{memory.fill}’}~~\mbox{‘\texttt{0}’} \\

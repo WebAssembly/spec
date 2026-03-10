@@ -5,11 +5,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Modules &#8212; WebAssembly 3.0 (2026-03-09)</title>
+    <title>Modules &#8212; WebAssembly 3.0 (2026-03-10)</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=686e5160" />
     <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=057308f9" />
-    <script src="../_static/documentation_options.js?v=45a979cd"></script>
+    <script src="../_static/documentation_options.js?v=1ef251c4"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>window.MathJax = {"tex": {"maxBuffer": 30720, "macros": {"multicolumn": ["", 2]}}, "options": {"menuOptions": {"settings": {"enrich": false}}}}</script>
@@ -307,7 +307,7 @@ It decodes into the list of <a class="reference internal" href="../syntax/module
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}[t]{&#64;{}l&#64;{}rrl&#64;{}l&#64;{}l&#64;{}l&#64;{}}
 &amp; {\href{../binary/modules.html#binary-elemsec}{\mathtt{elemsec}}} &amp; ::= &amp; {{\href{../syntax/modules.html#syntax-elem}{\mathit{elem}}}^\ast}{:}{{\href{../binary/modules.html#binary-section}{\mathtt{section}}}}_{9}({\href{../binary/conventions.html#binary-list}{\mathtt{list}}}({\href{../binary/modules.html#binary-elem}{\mathtt{elem}}})) &amp; \quad\Rightarrow\quad{} &amp; {{\href{../syntax/modules.html#syntax-elem}{\mathit{elem}}}^\ast} \\
-&amp; {\href{../binary/modules.html#binary-elemkind}{\mathtt{elemkind}}} &amp; ::= &amp; \mathtt{0x00} &amp; \quad\Rightarrow\quad{} &amp; \href{../syntax/types.html#syntax-reftype}{\mathsf{ref}}~\href{../syntax/types.html#syntax-reftype}{\mathsf{null}}~\href{../syntax/types.html#syntax-heaptype}{\mathsf{func}} \\
+&amp; {\href{../binary/modules.html#binary-elemkind}{\mathtt{elemkind}}} &amp; ::= &amp; \mathtt{0x00} &amp; \quad\Rightarrow\quad{} &amp; \href{../syntax/types.html#syntax-reftype}{\mathsf{ref}}~\href{../syntax/types.html#syntax-heaptype}{\mathsf{func}} \\
 &amp; {\href{../binary/modules.html#binary-elem}{\mathtt{elem}}} &amp; ::= &amp; 0{:}{\href{../binary/values.html#binary-int}{\def\mathdef1591#1{{\mathtt{u}#1}}\mathdef1591{\mathtt{32}}}}~~e_o{:}{\href{../binary/instructions.html#binary-expr}{\mathtt{expr}}}~~{y^\ast}{:}{\href{../binary/conventions.html#binary-list}{\mathtt{list}}}({\href{../binary/modules.html#binary-funcidx}{\mathtt{funcidx}}}) &amp; \quad\Rightarrow\quad{} &amp; &amp; \\
 &amp;&amp;&amp; \multicolumn{4}{&#64;{}l&#64;{}}{\quad
 \begin{array}[t]{&#64;{}l&#64;{}}
