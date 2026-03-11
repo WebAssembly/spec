@@ -318,9 +318,11 @@ def $growtable(tableinst, n, r) = tableinst'
   -- if tableinst' = { TYPE (at `[i' .. j?] rt), REFS r'* r^n }
   -- if $(i' = |r'*| + n)
   -- (if i' <= j)?
+  -- if i' <= $(2^$size(at) - 1)
 
 def $growmem(meminst, n) = meminst'
   -- if meminst = { TYPE (at `[i .. j?] PAGE), BYTES b* }
   -- if meminst' = { TYPE (at `[i' .. j?] PAGE), BYTES b* (0x00)^(n * $($(64 * $Ki))) }
   -- if $(i' = |b*| / (64 * $Ki) + n)
   -- (if i' <= j)?
+  -- if i' <= $(2^($size(at) - 16))
