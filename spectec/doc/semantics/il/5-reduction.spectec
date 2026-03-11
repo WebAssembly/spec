@@ -807,7 +807,7 @@ rule Step_prems/ctx:
 
 
 rule Step_prems/RULE:
-  S |- RULE x a* `: e ~> $subst_prem(s, pr)* (IF (CMP EQ $subst_exp(s, e') e))
+  S |- REL x a* `: e ~> $subst_prem(s, pr)* (IF (CMP EQ $subst_exp(s, e') e))
   -- if (x, p* `-> t `= rul*) <- S.REL
   -- if (RULE `{q*} e' `- pr*) <- $subst_rule($args_for_params(a*, p*), rul)*
   -- Ok_subst: $storeenv(S) |- s : q*

@@ -148,7 +148,7 @@ def $subst_quant(subst, quant) : quant
 def $subst_quant(s, q) = $subst_param(s, q)
 
 def $subst_prem(subst, prem) : prem
-def $subst_prem(s, RULE x a* `: e) = RULE x $subst_arg(s, a)* `: $subst_exp(s, e)
+def $subst_prem(s, REL x a* `: e) = REL x $subst_arg(s, a)* `: $subst_exp(s, e)
 def $subst_prem(s, IF e) = IF $subst_exp(s, e)
 def $subst_prem(s, ELSE) = ELSE
 def $subst_prem(s, LET e_1 `= e_2) = LET $subst_exp(s, e_1) `= $subst_exp(s, e_2)  ;; TODO: avoid capture

@@ -179,7 +179,7 @@ syntax param =
 syntax quant = param
 
 syntax prem =
-  | RULE id arg* `: exp
+  | REL id arg* `: exp
   | IF exp
   | ELSE
   | NOT prem
