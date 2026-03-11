@@ -13,7 +13,7 @@ rule Expand_typ/plain:
 
 rule Expand_typ/def:
   S |- t ~~ dt
-  -- Reduce_typ: S |- t ~>* MATCH x eps WITH (INST `{} eps `= dt) inst*
+  -- Reduce_typ: S |- t ~>* MATCH x WITH (INST `{} `= dt) inst*
 
 
 rule Eq_typ:
@@ -42,7 +42,7 @@ rule Step_typ/VAR-apply:
   -- if (x, p* `-> OK `= inst*) <- E.TYP
 
 
-rule Step_typ/MATCH-ctx:
+rule Step_typ/MATCH-ctx1:
   S |- MATCH x a* WITH inst* ~> MATCH x a*[[n] = a'_n] WITH inst*
   -- Step_arg: S |- a*[n] ~> a'_n
 
@@ -416,15 +416,15 @@ rule Step_exp/SUB-LIST:
 
 rule Step_exp/SUB-STR:
   S |- SUB (STR (at `= e)*) t_1 t_2 ~> STR (at' `= SUB e t'_1 t'_2)*
-  -- if t_1 = MATCH x_1 eps WITH (INST `{} eps `= STRUCT tf_1*)
-  -- if t_2 = MATCH x_2 eps WITH (INST `{} eps `= STRUCT tf_2*)
+  -- if t_1 = MATCH x_1 WITH (INST `{} `= STRUCT tf_1*)
+  -- if t_2 = MATCH x_2 WITH (INST `{} `= STRUCT tf_2*)
   -- (if (at' `: t'_1 `- `{q_1*} pr_1*) <- tf_1*)*
   -- (if (at' `: t'_2 `- `{q_2*} pr_2*) = tf_2)*
 
 rule Step_exp/SUB-CASE:
   S |- SUB (INJ op e) t_1 t_2 ~> INJ op (SUB e t'_1 t'_2)
-  -- if t_1 = MATCH x_1 eps WITH (INST `{} eps `= VARIANT tc_1*)
-  -- if t_2 = MATCH x_2 eps WITH (INST `{} eps `= VARIANT tc_2*)
+  -- if t_1 = MATCH x_1 WITH (INST `{} `= VARIANT tc_1*)
+  -- if t_2 = MATCH x_2 WITH (INST `{} `= VARIANT tc_2*)
   -- if (op `: t'_1 `- `{q_1*} pr_1*) <- tc_1*
   -- if (op `: t'_2 `- `{q_2*} pr_2*) <- tc_2*
 
