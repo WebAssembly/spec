@@ -806,7 +806,7 @@ rule Step_prems/ctx:
   -- Step_prems: S |- pr*[n] ~> pr'_n*
 
 
-rule Step_prems/RULE:
+rule Step_prems/REL:
   S |- REL x a* `: e ~> $subst_prem(s, pr)* (IF (CMP EQ $subst_exp(s, e') e))
   -- if (x, p* `-> t `= rul*) <- S.REL
   -- if (RULE `{q*} e' `- pr*) <- $subst_rule($args_for_params(a*, p*), rul)*
@@ -866,5 +866,5 @@ rule Step_prems/ITER-STAR:
   ;; TODO: y fresh
 
 rule Step_prems/ITER-SUP:
-  S |- ITER pr (SUP y (NAT n)) (x `: t `<- LIST e^n)* ~> $subst_prem({EXP (x, e_x)* (y, NAT i)}, pr)^(i<n)
+  S |- ITER pr (SUP y (NAT n)) (x `: t `<- LIST e^n)* ~> $subst_prem({EXP (x, e')* (y, NAT i)}, pr)^(i<n)
   -- if e'*^n = $transpose_(exp, e^n*)
