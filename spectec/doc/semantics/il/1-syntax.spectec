@@ -139,6 +139,7 @@ syntax exp =
 
 syntax expfield = atom `= exp
 syntax exppull = id `: typ `<- exp
+syntax exppush = exp `-> id `: typ
 
 syntax path =
   | ROOT               ;;
@@ -183,8 +184,8 @@ syntax prem =
   | IF exp
   | ELSE
   | NOT prem
-  | LET exp `= exp  ;; TODO: variables/quantifiers?
-  | ITER prem iter exppull*
+  | LET `{quant*} exp `= exp
+  | ITER prem iter exppull* exppush*
 
 syntax dec =
   | TYP id param* `= inst*

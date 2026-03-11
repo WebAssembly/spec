@@ -151,8 +151,12 @@ def $subst_prem(subst, prem) : prem
 def $subst_prem(s, REL x a* `: e) = REL x $subst_arg(s, a)* `: $subst_exp(s, e)
 def $subst_prem(s, IF e) = IF $subst_exp(s, e)
 def $subst_prem(s, ELSE) = ELSE
-def $subst_prem(s, LET e_1 `= e_2) = LET $subst_exp(s, e_1) `= $subst_exp(s, e_2)  ;; TODO: avoid capture
-def $subst_prem(s, ITER pr it (x `: t `<- e)*) = ITER $subst_prem(s, pr) $subst_iter(s, it) (x `: $subst_typ(s, t) `<- $subst_exp(s, e))*  ;; TODO: avoid capture
+def $subst_prem(s, LET `{q*} e_1 `= e_2) = LET `{$subst_param(s, q)*} $subst_exp(s, e_1) `= $subst_exp(s, e_2)  ;; TODO: avoid capture
+def $subst_prem(s, ITER pr it (x_1 `: t_1 `<- e_1)* (e_2 `-> x_2 `: t_2)*) =  ;; TODO: avoid capture
+  ITER $subst_prem(s, pr) $subst_iter(s, it) (x_1 `: $subst_typ(s, t_1) `<- $subst_exp(s, e_1))* ($subst_exp(s, e_2) `-> x_2 `: $subst_typ(s, t_2))*
+
+def $subst_exppush(subst, exppush) : exppush
+def $subst_exppush(s, e `-> x `: t) = $subst_exp(s, e) `-> x `: $subst_typ(s, t)
 
 
 def $subst_inst(subst, inst) : inst

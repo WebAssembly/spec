@@ -156,14 +156,14 @@ rule Ok_typfield:
   E |- (a `: t `- `{q*} pr*) : OK
   -- Ok_typ: E |- t : OK
   -- Ok_params: E ++ $tupenv(t) |- q* : OK
-  -- Ok_prems: E ++ $tupenv(t) ++ $paramenv(q*) |- pr* : OK
+  -- Ok_prems: E ++ $tupenv(t) ++ $paramenv(q*) |- pr* : OK -| E'
 
 
 rule Ok_typcase:
   E |- (m `: t `- `{q*} pr*) : OK
   -- Ok_typ: E |- t : OK
   -- Ok_params: E ++ $tupenv(t) |- q* : OK
-  -- Ok_prems: E ++ $tupenv(t) ++ $paramenv(q*) |- pr* : OK
+  -- Ok_prems: E ++ $tupenv(t) ++ $paramenv(q*) |- pr* : OK -| E'
 
 
 ;; Iterators
@@ -487,42 +487,50 @@ rule Ok_sym/conv:
 
 ;; Premises
 
-relation Ok_prem: E |- prem : OK
-relation Ok_prems: E |- prem* : OK
+relation Ok_prem: E |- prem : OK -| E
+relation Ok_prems: E |- prem* : OK -| E
+
+
+rule Ok_prems/eps:
+  E |- eps : OK -| {}
+
+rule Ok_prems/cons:
+  E |- pr_1 pr* : OK -| E_1 ++ E'
+  -- Ok_prem: E |- pr_1 : OK -| E_1
+  -- Ok_prems: E ++ E_1 |- pr* : OK -| E'
+
 
 rule Ok_prem/REL:
-  E |- REL x a* `: e : OK
+  E |- REL x a* `: e : OK -| {}
   -- if (x, (p* `-> t `= rul*)) <- E.REL
   -- Ok_args: E |- a* : p* => s
   -- Ok_exp: E |- e : $subst_typ(s, t)
 
 rule Ok_prem/IF:
-  E |- IF e : OK
+  E |- IF e : OK -| {}
   -- Ok_exp: E |- e : BOOL
 
 rule Ok_prem/ELSE:
-  E |- ELSE : OK
+  E |- ELSE : OK -| {}
 
 rule Ok_prem/NOT:
-  E |- NOT pr : OK
-  -- Ok_prem: E |- pr : OK
+  E |- NOT pr : OK -| {}
+  -- Ok_prem: E |- pr : OK -| {}
 
 rule Ok_prem/LET:
-  E |- LET e_1 `= e_2 : OK
-  -- Ok_exp: E |- e_1 : t
+  E |- LET `{q*} e_1 `= e_2 : OK -| $paramenv(q*)
+  -- Ok_exp: E ++ $paramenv(q*) |- e_1 : t
   -- Ok_exp: E |- e_2 : t
 
 rule Ok_prem/ITER:
-  E |- ITER pr it (x `: t `<- e)* : OK
+  E |- ITER pr it (x_1 `: t_1 `<- e_1)* (e_2 `-> x_2 `: t_2)* : OK -| {EXP (x_2, t_2)*}
   -- Ok_iter: E |- it : it' -| E'
-  -- (Ok_typ: E |- t : OK)*
-  -- (Ok_exp: E |- e : ITER t it')*
-  -- Ok_prem: E ++ {EXP (x, t)*} ++ E' |- pr : OK
-
-
-rule Ok_prems:
-  E |- prem* : OK
-  -- (Ok_prem: E |- prem : OK)*
+  -- (Ok_typ: E |- t_1 : OK)*
+  -- (Ok_exp: E |- e_1 : ITER t_1 it')*
+  -- Ok_prem: E ++ {EXP (x_1, t_1)*} ++ E' |- pr : OK -| E'
+  -- (Ok_typ: E |- t_2 : OK)*
+  -- (Eq_typ: E |- t_2 == ITER t'_2 it')*
+  -- (Ok_exp: E ++ E' |- e_2 : t'_2)*
 
 
 ;; Parameters and Arguments
@@ -644,7 +652,7 @@ rule Ok_rule:
   E |- RULE `{q*} e `- pr* : t
   -- Ok_params: E |- q* : OK
   -- Ok_exp: E ++ $paramenv(q*) |- e : t
-  -- Ok_prems: E ++ $paramenv(q*) |- pr* : OK
+  -- Ok_prems: E ++ $paramenv(q*) |- pr* : OK -| E'
 
 relation Ok_clause: E |- clause : param* -> typ
 
@@ -653,7 +661,7 @@ rule Ok_clause:
   -- Ok_params: E |- q* : OK
   -- Ok_args: E ++ $paramenv(q*) |- a* : p* => s
   -- Ok_exp: E ++ $paramenv(q*) |- e : t
-  -- Ok_prems: E ++ $paramenv(q*) |- pr* : OK
+  -- Ok_prems: E ++ $paramenv(q*) |- pr* : OK -| E'
 
 relation Ok_prod: E |- prod : typ
 
@@ -662,7 +670,7 @@ rule Ok_prod:
   -- Ok_params: E |- q* : OK
   -- Ok_sym: E ++ $paramenv(q*) |- g : t'
   -- Ok_exp: E ++ $paramenv(q*) |- e : t
-  -- Ok_prems: E ++ $paramenv(q*) |- pr* : OK
+  -- Ok_prems: E ++ $paramenv(q*) |- pr* : OK -| E'
 
 
 ;; Scripts
