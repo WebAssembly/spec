@@ -86,7 +86,11 @@ rule Step_iter/SUP-ctx:
   -- Step_exp: S |- e ~> e'
 
 
-rule Step_exppull/ctx:
+rule Step_exppull/ctx1:
+  S |- x `: t `<- e  ~>  x `: t' `<- e
+  -- Step_typ: S |- t ~> t'
+
+rule Step_exppull/ctx2:
   S |- x `: t `<- e  ~>  x `: t `<- e'
   -- Step_exp: S |- e ~> e'
 
