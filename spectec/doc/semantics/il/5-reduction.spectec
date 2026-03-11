@@ -755,7 +755,7 @@ rule Step_clause/CLAUSE-ctx2:
   -- Step_exp: S |- e ~> e'
 
 rule Step_clause/CLAUSE-ctx3:
-  S |- CLAUSE `{q*} a* `= e `- pr* ~> CLAUSE `{q*} a* `= e `- pr'*
+  S |- CLAUSE `{q*} a* `= e `- pr* ~> CLAUSE `{q*} a* `= $subst_exp(s, e) `- pr'*
   -- Step_prems: S |- pr* ~>_s pr'*
 
 

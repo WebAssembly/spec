@@ -660,8 +660,8 @@ rule Ok_clause:
   E |- CLAUSE `{q*} a* `= e `- pr* : p* -> t
   -- Ok_params: E |- q* : OK
   -- Ok_args: E ++ $paramenv(q*) |- a* : p* => s
-  -- Ok_exp: E ++ $paramenv(q*) |- e : t
   -- Ok_prems: E ++ $paramenv(q*) |- pr* : OK -| E'
+  -- Ok_exp: E ++ $paramenv(q*) ++ E' |- e : t
 
 relation Ok_prod: E |- prod : typ
 
@@ -669,8 +669,8 @@ rule Ok_prod:
   E |- PROD `{q*} g `=> e `- pr* : t
   -- Ok_params: E |- q* : OK
   -- Ok_sym: E ++ $paramenv(q*) |- g : t'
-  -- Ok_exp: E ++ $paramenv(q*) |- e : t
   -- Ok_prems: E ++ $paramenv(q*) |- pr* : OK -| E'
+  -- Ok_exp: E ++ $paramenv(q*) ++ E' |- e : t
 
 
 ;; Scripts
