@@ -56,6 +56,19 @@ let help_msg =
     Print help message
   "
 
+let print_path path =
+  if int_of_string_opt path <> None then
+    "[" ^ path ^ "]"
+  else
+    "." ^ path
+
+let print_value access root paths =
+  print_endline (
+    root ^ String.concat "" (List.map print_path paths) ^
+    try " = " ^ string_of_value (access paths)
+    with _ -> " does not exist"
+  )
+
 let allow_command ctx =
   let is_entry name il = name |> lookup_algo |> body_of_algo = il in
 
@@ -81,57 +94,6 @@ let allow_command ctx =
     | _ -> false
     )
   | _ -> false
-
-let rec access_paths paths v =
-  match paths with
-  | [] -> v
-  | path :: t when int_of_string_opt path <> None ->
-    v
-    |> unwrap_listv
-    |> (fun arr -> Array.get !arr (int_of_string path))
-    |> access_paths t
-  | path :: t ->
-    v
-    |> unwrap_strv
-    |> List.assoc path
-    |> (!)
-    |> access_paths t
-
-let access_store paths =
-  Store.access (List.hd paths)
-  |> access_paths (List.tl paths)
-
-let access_frame paths =
-  WasmContext.get_current_context "FRAME_"
-  |> args_of_casev
-  |> Fun.flip List.nth 1
-  |> access_paths paths
-
-let access_state paths =
-  if List.length paths < 2 then access_frame ("MODULE" :: paths) else
-  let field = List.hd paths in
-  access_frame ["MODULE"; field; List.nth paths 1]
-  |> unwrap_natv_to_int
-  |> (fun i -> access_store (field :: string_of_int i :: Util.Lib.List.drop 2 paths))
-
-let access_env (ctx : AlContext.t) s paths =
-  match ctx with
-  | (Al (_, _, _, env, _) | Enter (_, _, env)) :: _ ->
-    lookup_env_opt s env |> Option.get |> access_paths paths
-  | _ -> failwith "not in scope"
-
-let print_path path =
-  if int_of_string_opt path <> None then
-    "[" ^ path ^ "]"
-  else
-    "." ^ path
-
-let print_value access root paths =
-  print_endline (
-    root ^ String.concat "" (List.map print_path paths) ^
-    try " = " ^ string_of_value (access paths)
-    with _ -> " does not exist"
-  )
 
 let rec do_debug ctx =
   let _ = print_string "\ndebugger> " in
@@ -196,22 +158,22 @@ and handle_command ctx = function
     WasmContext.string_of_context_stack () |> print_endline;
     do_debug ctx
   | ("st" | "store") :: t ->
-    print_value access_store "store" t;
+    print_value Access.access_store "store" t;
     do_debug ctx
   | ("f" | "frame") :: t ->
-    print_value access_frame "frame" t;
+    print_value Access.access_frame "frame" t;
     do_debug ctx
   | ("l" | "local") :: t ->
-    print_value access_frame "frame" ("LOCALS" :: t);
+    print_value Access.access_frame "frame" ("LOCALS" :: t);
     do_debug ctx
   | ("m" | "module") :: t ->
-    print_value access_frame "frame" ("MODULE" :: t);
+    print_value Access.access_frame "frame" ("MODULE" :: t);
     do_debug ctx
   | ("z" | "state") :: t ->
-    print_value access_state "state" t;
+    print_value Access.access_state "state" t;
     do_debug ctx
   | ("v" | "var") :: s :: t ->
-    print_value (access_env ctx s) s t;
+    print_value (Access.access_env ctx s) s t;
     do_debug ctx
   | ("q" | "quit") :: [] ->
     debug := false
