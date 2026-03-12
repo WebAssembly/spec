@@ -62,7 +62,7 @@ rule Step_typ/MATCH-match:
 
 rule Step_typ/MATCH-match-fail:
   S |- MATCH x a* WITH (INST `{q*} a'* `= dt) inst* ~>
-    MATCH x a''* WITH inst*
+    MATCH x a* WITH inst*
   -- Step_argmatch: S |- `{q*} (a / a')* ~>_s `{} FAIL
 
 
