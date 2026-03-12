@@ -91,12 +91,12 @@ grammar Tresult_(I)/base : valtype =
   | "(" "result" t:Tvaltype_(I) ")" => t
   | ...
 
-grammar Tresult_(I)/abbrev : valtype = ... | "(" "result" Tvaltype_(I)* ")" == ("(" "param" Tvaltype_(I) ")")*
+grammar Tresult_(I)/abbrev : valtype = ... | "(" "result" Tvaltype_(I)* ")" == ("(" "result" Tvaltype_(I) ")")*
 
 grammar Tcomptype_(I) : (comptype, idctxt) =
-  | "(" "struct" (ft,id?)*:Tlist(Tfield_(I)) ")" => (STRUCT ft*, {FIELDS (id?)*})
-  | "(" "array" ft:Tfieldtype_(I) ")" => (ARRAY ft, {})
-  | "(" "func" (t_1,id?)*:Tlist(Tparam_(I)) t_2*:Tlist(Tresult_(I)) ")" => (FUNC t_1* -> t_2*, {})
+  | "(" "struct" (ft,id?)*:Tlist(Tfield_(I)) ")" => (STRUCT ft*, {FIELDS ((id?)*)})
+  | "(" "array" ft:Tfieldtype_(I) ")" => (ARRAY ft, {FIELDS (eps)})
+  | "(" "func" (t_1,id?)*:Tlist(Tparam_(I)) t_2*:Tlist(Tresult_(I)) ")" => (FUNC t_1* -> t_2*, {FIELDS (eps)})
 
 
 grammar Tfinal : final =

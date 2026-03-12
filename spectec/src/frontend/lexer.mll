@@ -180,6 +180,8 @@ and token = parse
   | "\\/" { OR }
   | "(/\\)" { BIGAND }
   | "(\\/)" { BIGOR }
+  | "(!)" { BIGFORALL }
+  | "(?)" { BIGEXISTS }
   | "(+)" { BIGADD }
   | "(*)" { BIGMUL }
   | "(++)" { BIGCAT }
@@ -207,6 +209,8 @@ and token = parse
   | "~>*_" { SQARROWSTARSUB }
   | "<<" { PREC }
   | ">>" { SUCC }
+  | "<<_" { PRECSUB }
+  | ">>_" { SUCCSUB }
   | "|-" { TURNSTILE }
   | "-|" { TILESTURN }
   | "|-_" { TURNSTILESUB }
