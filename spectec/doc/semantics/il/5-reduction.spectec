@@ -39,7 +39,7 @@ rule Step_typ/VAR-ctx:
 
 rule Step_typ/VAR-apply:
   S |- VAR x a* ~> MATCH x a* WITH inst*
-  -- if (x, p* `-> OK `= inst*) <- E.TYP
+  -- if (x, p* `-> OK `= inst*) <- S.TYP
 
 
 rule Step_typ/MATCH-ctx1:
@@ -378,7 +378,7 @@ rule Step_exp/CALL-ctx:
 
 rule Step_exp/CALL-apply:
   S |- CALL x a* ~> MATCH a* WITH clause*
-  -- if (x, p* `-> t `= clause*) <- E.FUN
+  -- if (x, p* `-> t `= clause*) <- S.FUN
 
 
 rule Step_exp/CVT-ctx:
