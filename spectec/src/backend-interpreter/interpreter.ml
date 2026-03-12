@@ -726,7 +726,7 @@ and step (ctx: AlContext.t) : AlContext.t =
   Debugger.run ctx;
 
   try
-    (match ctx with
+    match ctx with
     | Al (name, args, il, env, n) :: ctx ->
       (match il with
       | [] -> ctx
@@ -756,11 +756,10 @@ and step (ctx: AlContext.t) : AlContext.t =
       )
     | Execute v :: ctx -> try_step_wasm ctx v
     | _ -> assert false
-    )
-  with exn ->
+  with exn when !Debugger.debug ->
     let bt = Printexc.get_raw_backtrace () in
     print_endline (Printexc.to_string exn);
-    if !Debugger.debug then Debugger.do_debug ctx;
+    Debugger.do_debug ctx;
     Printexc.raise_with_backtrace exn bt
 
 
