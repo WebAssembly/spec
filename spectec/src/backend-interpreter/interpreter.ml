@@ -725,36 +725,43 @@ and step (ctx: AlContext.t) : AlContext.t =
 
   Debugger.run ctx;
 
-  match ctx with
-  | Al (name, args, il, env, n) :: ctx ->
-    (match il with
-    | [] -> ctx
-    | [ instr ]
-    when can_tail_call instr && n = 0 && not !Debugger.debug ->
-      try_step_instr name ctx env instr
-    | h :: t ->
-      let new_ctx = Al (name, args, t, env, n) :: ctx in
-      try_step_instr name new_ctx env h
-    )
-  | Wasm n :: ctx ->
-    if n = 0 then
-      ctx
-    else
-      try_step_wasm (Wasm n :: ctx) (WasmContext.pop_instr ())
-  | Enter (name, il, env) :: ctx ->
-    (match il with
-    | [] ->
-      (match ctx with
-      | Wasm n :: t when not !Debugger.debug -> Wasm (n + 1) :: t
-      | Enter (_, [], _) :: t -> Wasm 2 :: t
-      | ctx -> Wasm 1 :: ctx
+  try
+    (match ctx with
+    | Al (name, args, il, env, n) :: ctx ->
+      (match il with
+      | [] -> ctx
+      | [ instr ]
+      when can_tail_call instr && n = 0 && not !Debugger.debug ->
+        try_step_instr name ctx env instr
+      | h :: t ->
+        let new_ctx = Al (name, args, t, env, n) :: ctx in
+        try_step_instr name new_ctx env h
       )
-    | h :: t ->
-      let new_ctx = Enter (name, t, env) :: ctx in
-      try_step_instr name new_ctx env h
+    | Wasm n :: ctx ->
+      if n = 0 then
+        ctx
+      else
+        try_step_wasm (Wasm n :: ctx) (WasmContext.pop_instr ())
+    | Enter (name, il, env) :: ctx ->
+      (match il with
+      | [] ->
+        (match ctx with
+        | Wasm n :: t when not !Debugger.debug -> Wasm (n + 1) :: t
+        | Enter (_, [], _) :: t -> Wasm 2 :: t
+        | ctx -> Wasm 1 :: ctx
+        )
+      | h :: t ->
+        let new_ctx = Enter (name, t, env) :: ctx in
+        try_step_instr name new_ctx env h
+      )
+    | Execute v :: ctx -> try_step_wasm ctx v
+    | _ -> assert false
     )
-  | Execute v :: ctx -> try_step_wasm ctx v
-  | _ -> assert false
+  with exn ->
+    let bt = Printexc.get_raw_backtrace () in
+    print_endline (Printexc.to_string exn);
+    if !Debugger.debug then Debugger.do_debug ctx;
+    Printexc.raise_with_backtrace exn bt
 
 
 (* AL interpreter Entry *)
