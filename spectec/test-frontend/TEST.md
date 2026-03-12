@@ -9231,7 +9231,7 @@ grammar Bstartsec : start?
 ;; ../../../../specification/wasm-latest/5.4-binary.modules.spectec
 grammar Belemkind : reftype
   ;; ../../../../specification/wasm-latest/5.4-binary.modules.spectec
-  prod 0x00 => REF_reftype(?(NULL_null), FUNC_heaptype)
+  prod 0x00 => REF_reftype(?(), FUNC_heaptype)
 
 ;; ../../../../specification/wasm-latest/5.4-binary.modules.spectec
 grammar Belem : elem
@@ -9986,9 +9986,9 @@ grammar Tcomptype_(I : I) : (comptype, idctxt)
   ;; ../../../../specification/wasm-latest/6.2-text.types.spectec
   prod{`ft*` : fieldtype*, `id?*` : char?*} {{"("} {"struct"} {(ft, ?(`%`_name(lift(id?{id <- `id?`}))))*{ft <- `ft*`, `id?` <- `id?*`}:Tlist(syntax (fieldtype, name?), grammar Tfield_(I))} {")"}} => (STRUCT_comptype(`%`_list(ft*{ft <- `ft*`})), {TYPES [], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [], FIELDS [?(`%`_name(lift(id?{id <- `id?`})))*{`id?` <- `id?*`}], TYPEDEFS []})
   ;; ../../../../specification/wasm-latest/6.2-text.types.spectec
-  prod{ft : fieldtype} {{"("} {"array"} {ft:Tfieldtype_(I)} {")"}} => (ARRAY_comptype(ft), {TYPES [], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [], FIELDS [], TYPEDEFS []})
+  prod{ft : fieldtype} {{"("} {"array"} {ft:Tfieldtype_(I)} {")"}} => (ARRAY_comptype(ft), {TYPES [], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [], FIELDS [[?(`%`_name([]))]], TYPEDEFS []})
   ;; ../../../../specification/wasm-latest/6.2-text.types.spectec
-  prod{`t_1*` : valtype*, `t_2*` : valtype*, `id?*` : char?*} {{"("} {"func"} {(t_1, ?(`%`_name(lift(id?{id <- `id?`}))))*{`id?` <- `id?*`, t_1 <- `t_1*`}:Tlist(syntax (valtype, name?), grammar Tparam_(I))} {t_2*{t_2 <- `t_2*`}:Tlist(syntax valtype, grammar Tresult_(I))} {")"}} => (`FUNC%->%`_comptype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), `%`_resulttype(t_2*{t_2 <- `t_2*`})), {TYPES [], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [], FIELDS [], TYPEDEFS []})
+  prod{`t_1*` : valtype*, `t_2*` : valtype*, `id?*` : char?*} {{"("} {"func"} {(t_1, ?(`%`_name(lift(id?{id <- `id?`}))))*{`id?` <- `id?*`, t_1 <- `t_1*`}:Tlist(syntax (valtype, name?), grammar Tparam_(I))} {t_2*{t_2 <- `t_2*`}:Tlist(syntax valtype, grammar Tresult_(I))} {")"}} => (`FUNC%->%`_comptype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), `%`_resulttype(t_2*{t_2 <- `t_2*`})), {TYPES [], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [], FIELDS [[?(`%`_name([]))]], TYPEDEFS []})
 
 ;; ../../../../specification/wasm-latest/6.2-text.types.spectec
 grammar Tfinal : final
@@ -10112,24 +10112,24 @@ grammar Tlaneidx : laneidx
   prod{i : u8} i:Tu8 => i
 
 ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-grammar Talign_(N : N) : u64
+grammar Talign_(N : N) : u32
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod{m : m, n : n} {{"align="} {`%`_u64(m):Tu64}} => `%`_u64(m)
+  prod{n : n, m : m} {{"align="} {`%`_u64(m):Tu64}} => `%`_u32(n)
     -- if (m = (2 ^ n))
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod eps => `%`_u64(N)
+  prod eps => `%`_u32(N)
 
 ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
 grammar Toffset : u64
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod{n : n} {{"offset="} {`%`_u64(n):Tu64}} => `%`_u64(n)
+  prod{m : m} {{"offset="} {`%`_u64(m):Tu64}} => `%`_u64(m)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
   prod eps => `%`_u64(0)
 
 ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
 grammar Tmemarg_(N : N) : memarg
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod{n : n, m : m} {{`%`_u64(n):Talign_(N)} {`%`_u64(m):Toffset}} => {ALIGN `%`_u32(n), OFFSET `%`_u64(m)}
+  prod{n : n, m : m} {{`%`_u32(n):Talign_(N)} {`%`_u64(m):Toffset}} => {ALIGN `%`_u32(n), OFFSET `%`_u64(m)}
 
 ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
 grammar Tplaininstr_(I : I) : instr

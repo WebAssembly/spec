@@ -178,11 +178,11 @@ grammar Tmemarg_(N) : memarg =
   | n:Talign_(N) m:Toffset => {ALIGN n, OFFSET m}
 
 grammar Toffset : u64 =
-  | "offset=" n:Tu64 => n
+  | "offset=" m:Tu64 => m
   | eps => 0
 
-grammar Talign_(N) : u64 =
-  | "align=" m:Tu64 => m  -- if $(m = 2^n)
+grammar Talign_(N) : u32 =
+  | "align=" m:Tu64 => n  -- if $(m = 2^n)
   | eps => N
 
 grammar Tlaneidx : laneidx =
@@ -284,9 +284,9 @@ grammar Tplaininstr_(I)/memory-abbrev : instr = ...
   | "i64.store32" Tmemarg_(4) == "i64.store32" "0" Tmemarg_(4)
   | "v128.store" Tmemarg_(16) == "v128.store" "0" Tmemarg_(16)
   | "v128.store8_lane" Tmemarg_(1) Tlaneidx == "v128.store8_lane" "0" Tmemarg_(1) Tlaneidx
-  | "v128.store16_lane" Tmemarg_(2) Tlaneidx == "v128.store16_lane" "0" Tmemarg_(1) Tlaneidx
-  | "v128.store32_lane" Tmemarg_(4) Tlaneidx == "v128.store32_lane" "0" Tmemarg_(1) Tlaneidx
-  | "v128.store64_lane" Tmemarg_(8) Tlaneidx == "v128.store64_lane" "0" Tmemarg_(1) Tlaneidx
+  | "v128.store16_lane" Tmemarg_(2) Tlaneidx == "v128.store16_lane" "0" Tmemarg_(2) Tlaneidx
+  | "v128.store32_lane" Tmemarg_(4) Tlaneidx == "v128.store32_lane" "0" Tmemarg_(4) Tlaneidx
+  | "v128.store64_lane" Tmemarg_(8) Tlaneidx == "v128.store64_lane" "0" Tmemarg_(8) Tlaneidx
   | "memory.size" == "memory.size" "0"
   | "memory.grow" == "memory.grow" "0"
   | "memory.fill" == "memory.fill" "0"

@@ -7,30 +7,21 @@ syntax mixop = atom**
 
 ;; Types
 
-syntax booltyp =
-  | BOOL               ;; `bool`
-
 syntax numtyp =
   | NAT                ;; `nat`
   | INT                ;; `int`
   | RAT                ;; `rat`
   | REAL               ;; `real`
 
-syntax texttyp =
-  | TEXT               ;; `text`
-
 syntax optyp =
-  | booltyp
+  | BOOL               ;; `bool`
+  | TEXT               ;; `text`
   | numtyp
-  | texttyp
 
-syntax plaintyp =
+syntax typ =
   | optyp
   | TUP typbind*       ;; (id : typ , ... , id : typ)
   | ITER typ iter      ;; typ iter
-
-syntax typ =
-  | plaintyp
   | VAR id arg*        ;; typid(arg*)
   | MATCH id arg* WITH inst*  ;; `match` typid(arg*) `with` inst*
 

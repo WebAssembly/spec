@@ -9,7 +9,7 @@ relation Expand_typ: S |- typ ~~ deftyp
 rule Expand_typ/plain:
   S |- t ~~ ALIAS t'
   -- Reduce_typ: S |- t ~>* t'
-  -- if t = plaintyp
+  ;; Note: this rule is a nop if t is VAR
 
 rule Expand_typ/def:
   S |- t ~~ dt

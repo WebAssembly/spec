@@ -12142,7 +12142,7 @@ $$
 
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
-\mbox{(element kind)} & {\mathtt{elemkind}} & ::= & \mathtt{0x00} & \quad\Rightarrow\quad{} & \mathsf{ref}~\mathsf{null}~\mathsf{func} \\
+\mbox{(element kind)} & {\mathtt{elemkind}} & ::= & \mathtt{0x00} & \quad\Rightarrow\quad{} & \mathsf{ref}~\mathsf{func} \\
 & {\mathtt{elem}} & ::= & 0{:}{\mathtt{u32}}~~e_o{:}{\mathtt{expr}}~~{y^\ast}{:}{\mathtt{list}}({\mathtt{funcidx}}) & \quad\Rightarrow\quad{} & & \\
 &&& \multicolumn{4}{@{}l@{}}{\quad
 \begin{array}[t]{@{}l@{}}
@@ -12632,10 +12632,10 @@ $$
 & {{\mathtt{param}}}_{I} & ::= & \mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{param}’}~~{{\mathit{id}}^?}{:}{{\mathtt{id}}^?}~~t{:}{{\mathtt{valtype}}}_{I}~~\mbox{‘\texttt{{)}}’} & \quad\Rightarrow\quad{} & (t, {{\mathit{id}}^?}) \\
 & & | & \mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{param}’}~~{{{\mathtt{valtype}}}_{I}^\ast}~~\mbox{‘\texttt{{)}}’} & \quad\equiv\quad{} & {(\mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{param}’}~~{{\mathtt{valtype}}}_{I}~~\mbox{‘\texttt{{)}}’})^\ast} \\
 & {{\mathtt{result}}}_{I} & ::= & \mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{result}’}~~t{:}{{\mathtt{valtype}}}_{I}~~\mbox{‘\texttt{{)}}’} & \quad\Rightarrow\quad{} & t \\
-& & | & \mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{result}’}~~{{{\mathtt{valtype}}}_{I}^\ast}~~\mbox{‘\texttt{{)}}’} & \quad\equiv\quad{} & {(\mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{param}’}~~{{\mathtt{valtype}}}_{I}~~\mbox{‘\texttt{{)}}’})^\ast} \\
-& {{\mathtt{comptype}}}_{I} & ::= & \mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{struct}’}~~{({\mathit{ft}}, {{\mathit{id}}^?})^\ast}{:}{\mathtt{list}}({{\mathtt{field}}}_{I})~~\mbox{‘\texttt{{)}}’} & \quad\Rightarrow\quad{} & (\mathsf{struct}~{{\mathit{ft}}^\ast}, \{ \mathsf{fields}~{({{\mathit{id}}^?})^\ast} \}) \\
-& & | & \mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{array}’}~~{\mathit{ft}}{:}{{\mathtt{fieldtype}}}_{I}~~\mbox{‘\texttt{{)}}’} & \quad\Rightarrow\quad{} & (\mathsf{array}~{\mathit{ft}}, \{  \}) \\
-& & | & \mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{func}’}~~{(t_1, {{\mathit{id}}^?})^\ast}{:}{\mathtt{list}}({{\mathtt{param}}}_{I})~~{t_2^\ast}{:}{\mathtt{list}}({{\mathtt{result}}}_{I})~~\mbox{‘\texttt{{)}}’} & \quad\Rightarrow\quad{} & (\mathsf{func}~{t_1^\ast} \rightarrow {t_2^\ast}, \{  \}) \\
+& & | & \mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{result}’}~~{{{\mathtt{valtype}}}_{I}^\ast}~~\mbox{‘\texttt{{)}}’} & \quad\equiv\quad{} & {(\mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{result}’}~~{{\mathtt{valtype}}}_{I}~~\mbox{‘\texttt{{)}}’})^\ast} \\
+& {{\mathtt{comptype}}}_{I} & ::= & \mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{struct}’}~~{({\mathit{ft}}, {{\mathit{id}}^?})^\ast}{:}{\mathtt{list}}({{\mathtt{field}}}_{I})~~\mbox{‘\texttt{{)}}’} & \quad\Rightarrow\quad{} & (\mathsf{struct}~{{\mathit{ft}}^\ast}, \{ \mathsf{fields}~({({{\mathit{id}}^?})^\ast}) \}) \\
+& & | & \mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{array}’}~~{\mathit{ft}}{:}{{\mathtt{fieldtype}}}_{I}~~\mbox{‘\texttt{{)}}’} & \quad\Rightarrow\quad{} & (\mathsf{array}~{\mathit{ft}}, \{ \mathsf{fields}~(\epsilon) \}) \\
+& & | & \mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{func}’}~~{(t_1, {{\mathit{id}}^?})^\ast}{:}{\mathtt{list}}({{\mathtt{param}}}_{I})~~{t_2^\ast}{:}{\mathtt{list}}({{\mathtt{result}}}_{I})~~\mbox{‘\texttt{{)}}’} & \quad\Rightarrow\quad{} & (\mathsf{func}~{t_1^\ast} \rightarrow {t_2^\ast}, \{ \mathsf{fields}~(\epsilon) \}) \\
 \end{array}
 $$
 
@@ -12915,9 +12915,9 @@ $$
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
 & {{\mathtt{memarg}}}_{N} & ::= & n{:}{{\mathtt{align}}}_{N}~~m{:}{\mathtt{offset}} & \quad\Rightarrow\quad{} & \{ \mathsf{align}~n,\;\allowbreak \mathsf{offset}~m \} \\
-& {\mathtt{offset}} & ::= & \mbox{‘\texttt{offset{=}}’}~~n{:}{\mathtt{u64}} & \quad\Rightarrow\quad{} & n \\
+& {\mathtt{offset}} & ::= & \mbox{‘\texttt{offset{=}}’}~~m{:}{\mathtt{u64}} & \quad\Rightarrow\quad{} & m \\
 & & | & \epsilon & \quad\Rightarrow\quad{} & 0 \\
-& {{\mathtt{align}}}_{N} & ::= & \mbox{‘\texttt{align{=}}’}~~m{:}{\mathtt{u64}} & \quad\Rightarrow\quad{} & m & \quad \mbox{if}~ m = {2^{n}} \\
+& {{\mathtt{align}}}_{N} & ::= & \mbox{‘\texttt{align{=}}’}~~m{:}{\mathtt{u64}} & \quad\Rightarrow\quad{} & n & \quad \mbox{if}~ m = {2^{n}} \\
 & & | & \epsilon & \quad\Rightarrow\quad{} & N \\
 & {\mathtt{laneidx}} & ::= & i{:}{\mathtt{u8}} & \quad\Rightarrow\quad{} & i \\
 & {{\mathtt{plaininstr}}}_{I} & ::= & \dots \\
@@ -13013,9 +13013,9 @@ $$
 & & | & \mbox{‘\texttt{i64.store32}’}~~{{\mathtt{memarg}}}_{4} & \quad\equiv\quad{} & \mbox{‘\texttt{i64.store32}’}~~\mbox{‘\texttt{0}’}~~{{\mathtt{memarg}}}_{4} \\
 & & | & \mbox{‘\texttt{v128.store}’}~~{{\mathtt{memarg}}}_{16} & \quad\equiv\quad{} & \mbox{‘\texttt{v128.store}’}~~\mbox{‘\texttt{0}’}~~{{\mathtt{memarg}}}_{16} \\
 & & | & \mbox{‘\texttt{v128.store8\_lane}’}~~{{\mathtt{memarg}}}_{1}~~{\mathtt{laneidx}} & \quad\equiv\quad{} & \mbox{‘\texttt{v128.store8\_lane}’}~~\mbox{‘\texttt{0}’}~~{{\mathtt{memarg}}}_{1}~~{\mathtt{laneidx}} \\
-& & | & \mbox{‘\texttt{v128.store16\_lane}’}~~{{\mathtt{memarg}}}_{2}~~{\mathtt{laneidx}} & \quad\equiv\quad{} & \mbox{‘\texttt{v128.store16\_lane}’}~~\mbox{‘\texttt{0}’}~~{{\mathtt{memarg}}}_{1}~~{\mathtt{laneidx}} \\
-& & | & \mbox{‘\texttt{v128.store32\_lane}’}~~{{\mathtt{memarg}}}_{4}~~{\mathtt{laneidx}} & \quad\equiv\quad{} & \mbox{‘\texttt{v128.store32\_lane}’}~~\mbox{‘\texttt{0}’}~~{{\mathtt{memarg}}}_{1}~~{\mathtt{laneidx}} \\
-& & | & \mbox{‘\texttt{v128.store64\_lane}’}~~{{\mathtt{memarg}}}_{8}~~{\mathtt{laneidx}} & \quad\equiv\quad{} & \mbox{‘\texttt{v128.store64\_lane}’}~~\mbox{‘\texttt{0}’}~~{{\mathtt{memarg}}}_{1}~~{\mathtt{laneidx}} \\
+& & | & \mbox{‘\texttt{v128.store16\_lane}’}~~{{\mathtt{memarg}}}_{2}~~{\mathtt{laneidx}} & \quad\equiv\quad{} & \mbox{‘\texttt{v128.store16\_lane}’}~~\mbox{‘\texttt{0}’}~~{{\mathtt{memarg}}}_{2}~~{\mathtt{laneidx}} \\
+& & | & \mbox{‘\texttt{v128.store32\_lane}’}~~{{\mathtt{memarg}}}_{4}~~{\mathtt{laneidx}} & \quad\equiv\quad{} & \mbox{‘\texttt{v128.store32\_lane}’}~~\mbox{‘\texttt{0}’}~~{{\mathtt{memarg}}}_{4}~~{\mathtt{laneidx}} \\
+& & | & \mbox{‘\texttt{v128.store64\_lane}’}~~{{\mathtt{memarg}}}_{8}~~{\mathtt{laneidx}} & \quad\equiv\quad{} & \mbox{‘\texttt{v128.store64\_lane}’}~~\mbox{‘\texttt{0}’}~~{{\mathtt{memarg}}}_{8}~~{\mathtt{laneidx}} \\
 & & | & \mbox{‘\texttt{memory.size}’} & \quad\equiv\quad{} & \mbox{‘\texttt{memory.size}’}~~\mbox{‘\texttt{0}’} \\
 & & | & \mbox{‘\texttt{memory.grow}’} & \quad\equiv\quad{} & \mbox{‘\texttt{memory.grow}’}~~\mbox{‘\texttt{0}’} \\
 & & | & \mbox{‘\texttt{memory.fill}’} & \quad\equiv\quad{} & \mbox{‘\texttt{memory.fill}’}~~\mbox{‘\texttt{0}’} \\
