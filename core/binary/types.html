@@ -169,7 +169,7 @@ Thus, the binary format for types corresponds to the <a class="reference externa
 \end{array}\end{split}\]</div>
 </section>
 <section id="composite-types">
-<span id="binary-packtype"></span><span id="binary-storagetype"></span><span id="binary-fieldtype"></span><span id="binary-arraytype"></span><span id="binary-structtype"></span><span id="binary-functype"></span><span id="binary-aggrtype"></span><span id="binary-comptype"></span><span id="index-7"></span><h2>Composite Types<a class="headerlink" href="#composite-types" title="Link to this heading">¶</a></h2>
+<span id="binary-packtype"></span><span id="binary-storagetype"></span><span id="binary-fieldtype"></span><span id="binary-arraytype"></span><span id="binary-structtype"></span><span id="binary-functype"></span><span id="binary-aggrtype"></span><span id="binary-comptype"></span><span id="binary-mut"></span><span id="index-7"></span><h2>Composite Types<a class="headerlink" href="#composite-types" title="Link to this heading">¶</a></h2>
 <p><a class="reference internal" href="../syntax/types.html#syntax-comptype"><span class="std std-ref">Composite types</span></a> are encoded by a distinct byte followed by a type encoding of the respective form.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}[t]{&#64;{}l&#64;{}rrl&#64;{}l&#64;{}l&#64;{}l&#64;{}}
@@ -223,7 +223,7 @@ the preceding zero byte may encode additional attributes.</p>
 </div>
 </section>
 <section id="global-types">
-<span id="binary-globaltype"></span><span id="binary-mut"></span><span id="index-11"></span><h2>Global Types<a class="headerlink" href="#global-types" title="Link to this heading">¶</a></h2>
+<span id="binary-globaltype"></span><span id="index-11"></span><h2>Global Types<a class="headerlink" href="#global-types" title="Link to this heading">¶</a></h2>
 <p><a class="reference internal" href="../syntax/types.html#syntax-globaltype"><span class="std std-ref">Global types</span></a> are encoded by their <a class="reference internal" href="#binary-valtype"><span class="std std-ref">value type</span></a> and a flag for their <a class="reference internal" href="../syntax/types.html#syntax-mut"><span class="std std-ref">mutability</span></a>.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}[t]{&#64;{}l&#64;{}rrl&#64;{}l&#64;{}l&#64;{}l&#64;{}}
