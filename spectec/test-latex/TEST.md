@@ -5341,6 +5341,8 @@ $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
 C \vdash {\mathit{heaptype}} \leq \mathsf{any}
+ \qquad
+{\mathit{heaptype}} \neq \mathsf{bot}
 }{
 C \vdash \mathsf{none} \leq {\mathit{heaptype}}
 } \, {[\textsc{\scriptsize S{-}heap{-}none}]}
@@ -5352,6 +5354,8 @@ $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
 C \vdash {\mathit{heaptype}} \leq \mathsf{func}
+ \qquad
+{\mathit{heaptype}} \neq \mathsf{bot}
 }{
 C \vdash \mathsf{nofunc} \leq {\mathit{heaptype}}
 } \, {[\textsc{\scriptsize S{-}heap{-}nofunc}]}
@@ -5363,6 +5367,8 @@ $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
 C \vdash {\mathit{heaptype}} \leq \mathsf{exn}
+ \qquad
+{\mathit{heaptype}} \neq \mathsf{bot}
 }{
 C \vdash \mathsf{noexn} \leq {\mathit{heaptype}}
 } \, {[\textsc{\scriptsize S{-}heap{-}noexn}]}
@@ -5374,6 +5380,8 @@ $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
 C \vdash {\mathit{heaptype}} \leq \mathsf{extern}
+ \qquad
+{\mathit{heaptype}} \neq \mathsf{bot}
 }{
 C \vdash \mathsf{noextern} \leq {\mathit{heaptype}}
 } \, {[\textsc{\scriptsize S{-}heap{-}noextern}]}

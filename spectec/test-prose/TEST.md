@@ -14347,21 +14347,29 @@ The heap type :math:`{\mathit{heaptype}}_1` :ref:`matches <match>` the heap type
       * The heap type :math:`{\mathit{heaptype}}_1` is of the form :math:`\mathsf{none}`.
 
       * The heap type :math:`{\mathit{heaptype}}_2` :ref:`matches <match>` the heap type :math:`\mathsf{any}`.
+
+      * The heap type :math:`{\mathit{heaptype}}_2` is not of the form :math:`\mathsf{bot}`.
    * Or:
 
       * The heap type :math:`{\mathit{heaptype}}_1` is of the form :math:`\mathsf{nofunc}`.
 
       * The heap type :math:`{\mathit{heaptype}}_2` :ref:`matches <match>` the heap type :math:`\mathsf{func}`.
+
+      * The heap type :math:`{\mathit{heaptype}}_2` is not of the form :math:`\mathsf{bot}`.
    * Or:
 
       * The heap type :math:`{\mathit{heaptype}}_1` is of the form :math:`\mathsf{noexn}`.
 
       * The heap type :math:`{\mathit{heaptype}}_2` :ref:`matches <match>` the heap type :math:`\mathsf{exn}`.
+
+      * The heap type :math:`{\mathit{heaptype}}_2` is not of the form :math:`\mathsf{bot}`.
    * Or:
 
       * The heap type :math:`{\mathit{heaptype}}_1` is of the form :math:`\mathsf{noextern}`.
 
       * The heap type :math:`{\mathit{heaptype}}_2` :ref:`matches <match>` the heap type :math:`\mathsf{extern}`.
+
+      * The heap type :math:`{\mathit{heaptype}}_2` is not of the form :math:`\mathsf{bot}`.
    * Or:
 
       * The heap type :math:`{\mathit{heaptype}}_1` is of the form :math:`\mathsf{bot}`.
@@ -14475,6 +14483,8 @@ The heap type :math:`\mathsf{none}` :ref:`matches <match>` the heap type :math:`
 
    * The heap type :math:`{\mathit{heaptype}}` :ref:`matches <match>` the heap type :math:`\mathsf{any}`.
 
+   * The heap type :math:`{\mathit{heaptype}}` is not of the form :math:`\mathsf{bot}`.
+
 
 
 
@@ -14482,6 +14492,8 @@ The heap type :math:`\mathsf{nofunc}` :ref:`matches <match>` the heap type :math
 
 
    * The heap type :math:`{\mathit{heaptype}}` :ref:`matches <match>` the heap type :math:`\mathsf{func}`.
+
+   * The heap type :math:`{\mathit{heaptype}}` is not of the form :math:`\mathsf{bot}`.
 
 
 
@@ -14491,6 +14503,8 @@ The heap type :math:`\mathsf{noexn}` :ref:`matches <match>` the heap type :math:
 
    * The heap type :math:`{\mathit{heaptype}}` :ref:`matches <match>` the heap type :math:`\mathsf{exn}`.
 
+   * The heap type :math:`{\mathit{heaptype}}` is not of the form :math:`\mathsf{bot}`.
+
 
 
 
@@ -14498,6 +14512,8 @@ The heap type :math:`\mathsf{noextern}` :ref:`matches <match>` the heap type :ma
 
 
    * The heap type :math:`{\mathit{heaptype}}` :ref:`matches <match>` the heap type :math:`\mathsf{extern}`.
+
+   * The heap type :math:`{\mathit{heaptype}}` is not of the form :math:`\mathsf{bot}`.
 
 
 
@@ -27151,15 +27167,19 @@ Heaptype_sub
   - Or:
     - heaptype_1 is NONE.
     - heaptype_2 matches the heap type ANY.
+    - heaptype_2 is not BOT.
   - Or:
     - heaptype_1 is NOFUNC.
     - heaptype_2 matches the heap type FUNC.
+    - heaptype_2 is not BOT.
   - Or:
     - heaptype_1 is NOEXN.
     - heaptype_2 matches the heap type EXN.
+    - heaptype_2 is not BOT.
   - Or:
     - heaptype_1 is NOEXTERN.
     - heaptype_2 matches the heap type EXTERN.
+    - heaptype_2 is not BOT.
   - Or:
     - heaptype_1 is BOT.
 
@@ -27219,18 +27239,22 @@ Heaptype_sub/rec
 Heaptype_sub/none
 - the heap type NONE matches the heap type heaptype if:
   - heaptype matches the heap type ANY.
+  - heaptype is not BOT.
 
 Heaptype_sub/nofunc
 - the heap type NOFUNC matches the heap type heaptype if:
   - heaptype matches the heap type FUNC.
+  - heaptype is not BOT.
 
 Heaptype_sub/noexn
 - the heap type NOEXN matches the heap type heaptype if:
   - heaptype matches the heap type EXN.
+  - heaptype is not BOT.
 
 Heaptype_sub/noextern
 - the heap type NOEXTERN matches the heap type heaptype if:
   - heaptype matches the heap type EXTERN.
+  - heaptype is not BOT.
 
 Heaptype_sub/bot
 - the heap type BOT matches heaptype.
