@@ -7,30 +7,21 @@ syntax mixop = atom**
 
 ;; Types
 
-syntax booltyp =
-  | BOOL               ;; `bool`
-
 syntax numtyp =
   | NAT                ;; `nat`
   | INT                ;; `int`
   | RAT                ;; `rat`
   | REAL               ;; `real`
 
-syntax texttyp =
-  | TEXT               ;; `text`
-
 syntax optyp =
-  | booltyp
+  | BOOL               ;; `bool`
+  | TEXT               ;; `text`
   | numtyp
-  | texttyp
 
-syntax plaintyp =
+syntax typ =
   | optyp
   | TUP typbind*       ;; (id : typ , ... , id : typ)
   | ITER typ iter      ;; typ iter
-
-syntax typ =
-  | plaintyp
   | VAR id arg*        ;; typid(arg*)
 
 syntax deftyp =
@@ -127,7 +118,6 @@ syntax exp =
   | LEN exp            ;; | exp |
   | MEM exp exp        ;; exp `<-` exp
   | CAT exp exp        ;; exp `++` exp
-  | COMP exp exp       ;; exp `@` exp
   | ACC exp path       ;; exp[ path ]
   | UPD exp path exp   ;; exp[ path = exp ]
   | EXT exp path exp   ;; exp[ path =.. exp ]

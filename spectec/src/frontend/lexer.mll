@@ -69,16 +69,20 @@ let hex = hexdigit ('_'? hexdigit)*
 let upletter = ['A'-'Z']
 let loletter = ['a'-'z']
 let letter = upletter | loletter
-let idchar = letter | digit | '_' | '\''
+let idchar = letter | digit | '\''
+let idcharsub = idchar | '_'
 
-let upid = (upletter | '_') idchar*
-let loid = loletter idchar*
+let upid = upletter (idcharsub* idchar)? | '_' idcharsub* idchar | '_'
+let loid = loletter (idcharsub* idchar)?
 let id = upid | loid
-let atomid = upid
-let typid = loid
-let expid = loid
-let defid = id
-let metaid = id
+let upidsub = upletter idcharsub* '_' | '_' idcharsub* '_'
+let loidsub = loletter idcharsub* '_'
+let idsub = upidsub | loidsub
+let atomid = upid | upidsub
+let typid = loid | loidsub
+let expid = loid | loidsub
+let defid = id | idsub
+let metaid = id | idsub
 
 let symbol =
   ['+''-''*''/''\\''^''~''=''<''>''!''?''@''#''$''%''&''|'':''`''.''\'']
@@ -176,6 +180,8 @@ and token = parse
   | "\\/" { OR }
   | "(/\\)" { BIGAND }
   | "(\\/)" { BIGOR }
+  | "(!)" { BIGFORALL }
+  | "(?)" { BIGEXISTS }
   | "(+)" { BIGADD }
   | "(*)" { BIGMUL }
   | "(++)" { BIGCAT }
@@ -203,6 +209,8 @@ and token = parse
   | "~>*_" { SQARROWSTARSUB }
   | "<<" { PREC }
   | ">>" { SUCC }
+  | "<<_" { PRECSUB }
+  | ">>_" { SUCCSUB }
   | "|-" { TURNSTILE }
   | "-|" { TILESTURN }
   | "|-_" { TURNSTILESUB }
@@ -258,13 +266,16 @@ and token = parse
 
   | upid as s { if is_var s then LOID s else UPID s }
   | loid as s { LOID s }
-  | (upid as s) "(" { if is_var s then LOID_LPAREN s else UPID_LPAREN s }
-  | (loid as s) "(" { LOID_LPAREN s }
-  | "`"(upid as s) { LOID s }
-  | "`"(loid as s) { UPID s }
-  | "`"(upid as s) "(" { LOID_LPAREN s }
-  | "`"(loid as s) "(" { UPID_LPAREN s }
+  | upidsub as s { if is_var s then LOID_SUB s else UPID_SUB s }
+  | loidsub as s { LOID_SUB s }
+  | (upid|upidsub as s) "(" { if is_var s then LOID_LPAREN s else UPID_LPAREN s }
+  | (loid|loidsub as s) "(" { LOID_LPAREN s }
+  | "`"(upid|upidsub as s) { LOID s }
+  | "`"(loid|loidsub as s) { UPID s }
+  | "`"(upid|upidsub as s) "(" { LOID_LPAREN s }
+  | "`"(loid|loidsub as s) "(" { UPID_LPAREN s }
   | "."(id as s) { DOTID s }
+  | "."(idsub as s) { DOTID_SUB s }
 
   | line_comment eof { EOF }
   | line_comment '\n' { Lexing.new_line lexbuf; token lexbuf }

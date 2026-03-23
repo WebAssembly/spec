@@ -101,7 +101,7 @@ grammar Telem_(I)/abbrev : (elem, idctxt) = ...
     "(" "elem" Toffset_(I) "func" Tlist(Tfuncidx_(I)) ")"
 
 grammar Telemlist_(I)/plain : (reftype, expr*) =
-  | rt:Treftype_(I) e*:Tlist(Texpr_(I)) => (rt, e*)
+  | rt:Treftype_(I) e*:Tlist(Telemexpr_(I)) => (rt, e*)
   | ...
 
 grammar Telemlist_(I)/abbrev : (reftype, expr*) =

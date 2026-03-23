@@ -1,15 +1,15 @@
-;; Type Expansion
+;; Type Classification
 
-relation Composable_typ: E |- typ COMPOSABLE
+relation Catable_typ: E |- typ CATABLE
 
-rule Composable_typ/ITER:
-  E |- t COMPOSABLE
+rule Catable_typ/ITER:
+  E |- t CATABLE
   -- Expand_typ: E |- t => ALIAS (ITER t' it)
 
-rule Composable_typ/STRUCT:
-  E |- t COMPOSABLE
+rule Catable_typ/STRUCT:
+  E |- t CATABLE
   -- Expand_typ: E |- t => STRUCT (atom `: t' `- `{q*} pr*)*
-  -- (Composable_typ: E |- t' COMPOSABLE)*
+  -- (Catable_typ: E |- t' CATABLE)*
 
 
 ;; Subtyping
@@ -327,15 +327,10 @@ rule Ok_exp/MEM:
   -- Ok_exp: E |- e_2 : ITER t_1 STAR
 
 rule Ok_exp/CAT:
-  E |- CAT e_1 e_2 : ITER t STAR
-  -- Ok_exp: E |- e_1 : ITER t STAR
-  -- Ok_exp: E |- e_2 : ITER t STAR
-
-rule Ok_exp/COMP:
-  E |- COMP e_1 e_2 : t
+  E |- CAT e_1 e_2 : t
   -- Ok_exp: E |- e_1 : t
   -- Ok_exp: E |- e_2 : t
-  -- Composable_typ: E |- t COMPOSABLE
+  -- Catable_typ: E |- t CATABLE
 
 
 rule Ok_exp/ACC:

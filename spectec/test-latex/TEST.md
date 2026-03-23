@@ -43,7 +43,6 @@ $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-{\mathrm{InfixArrow}}(a \rightarrow_{c} {}) & = & 0 \\
 {\mathrm{InfixArrow}}(a \rightarrow_{c} b) & = & 0 \\
 {\mathrm{InfixArrow}}(a \rightarrow_{{c^\ast}} b) & = & 0 \\
 {\mathrm{InfixArrow}}(a \rightarrow_{c} b_1~b_2) & = & 0 \\
@@ -55,7 +54,6 @@ $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-{\mathrm{InfixArrow{\kern-0.1em\scriptstyle 2}}}(a \Rightarrow_{c} {}) & = & 0 \\
 {\mathrm{InfixArrow{\kern-0.1em\scriptstyle 2}}}(a \Rightarrow_{c} b) & = & 0 \\
 {\mathrm{InfixArrow{\kern-0.1em\scriptstyle 2}}}(a \Rightarrow_{{c^\ast}} b) & = & 0 \\
 {\mathrm{InfixArrow{\kern-0.1em\scriptstyle 2}}}(a \Rightarrow_{c} b_1~b_2) & = & 0 \\
@@ -67,7 +65,6 @@ $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-{\mathrm{AtomArrow}}(a~{\rightarrow}_{c}) & = & 0 \\
 {\mathrm{AtomArrow}}(a~{\rightarrow}_{c}\,b) & = & 0 \\
 {\mathrm{AtomArrow}}(a~{\rightarrow}_{{c^\ast}}\,b) & = & 0 \\
 {\mathrm{AtomArrow}}(a~{\rightarrow}_{c}\,b_1~b_2) & = & 0 \\
@@ -79,7 +76,6 @@ $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-{\mathrm{AtomArrow{\kern-0.1em\scriptstyle 2}}}(a~{\Rightarrow}_{c}) & = & 0 \\
 {\mathrm{AtomArrow{\kern-0.1em\scriptstyle 2}}}(a~{\Rightarrow}_{c}\,b) & = & 0 \\
 {\mathrm{AtomArrow{\kern-0.1em\scriptstyle 2}}}(a~{\Rightarrow}_{{c^\ast}}\,b) & = & 0 \\
 {\mathrm{AtomArrow{\kern-0.1em\scriptstyle 2}}}(a~{\Rightarrow}_{c}\,b_1~b_2) & = & 0 \\
@@ -98,7 +94,6 @@ $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-{\mathrm{MacroInfixArrow}}(a \rightarrow_{c} {}) & = & 0 \\
 {\mathrm{MacroInfixArrow}}(a \rightarrow_{c} b) & = & 0 \\
 {\mathrm{MacroInfixArrow}}(a \rightarrow_{{c^\ast}} b) & = & 0 \\
 {\mathrm{MacroInfixArrow}}(a \rightarrow_{c} b_1~b_2) & = & 0 \\
@@ -110,7 +105,6 @@ $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-{\mathrm{MacroAtomArrow}}(a \rightarrow_{c} {}) & = & 0 \\
 {\mathrm{MacroAtomArrow}}(a \rightarrow_{c} b) & = & 0 \\
 {\mathrm{MacroAtomArrow}}(a \rightarrow_{{c^\ast}} b) & = & 0 \\
 {\mathrm{MacroAtomArrow}}(a \rightarrow_{c} b_1~b_2) & = & 0 \\
@@ -129,25 +123,23 @@ $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-{\mathrm{ShowInfixArrow}}(a \rightarrow_{c} ) & = & 0 \\
 {\mathrm{ShowInfixArrow}}(a \rightarrow_{c} b) & = & 0 \\
-{\mathrm{ShowInfixArrow}}(a \rightarrow_{({c^\ast})} b) & = & 0 \\
+{\mathrm{ShowInfixArrow}}(a \rightarrow_{{c^\ast}} b) & = & 0 \\
 {\mathrm{ShowInfixArrow}}(a \rightarrow_{c} b_1~b_2) & = & 0 \\
-{\mathrm{ShowInfixArrow}}(a \rightarrow_{({c^\ast})} b_1~b_2) & = & 0 \\
-{\mathrm{ShowInfixArrow}}(a \rightarrow_{(c_1~c_2)} b_1~b_2) & = & 0 \\
-{\mathrm{ShowInfixArrow}}({\rightarrow}_{(c_1~c_2)} b_1~b_2) & = & 0 \\
+{\mathrm{ShowInfixArrow}}(a \rightarrow_{{c^\ast}} b_1~b_2) & = & 0 \\
+{\mathrm{ShowInfixArrow}}(a \rightarrow_{c_1~c_2} b_1~b_2) & = & 0 \\
+{\mathrm{ShowInfixArrow}}({\rightarrow}_{c_1~c_2} b_1~b_2) & = & 0 \\
 \end{array}
 $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-{\mathrm{ShowAtomArrow}}(a~{\rightarrow}_{c}) & = & 0 \\
 {\mathrm{ShowAtomArrow}}(a~{\rightarrow}_{c}\,b) & = & 0 \\
-{\mathrm{ShowAtomArrow}}(a~{\rightarrow}_{({c^\ast})}\,b) & = & 0 \\
+{\mathrm{ShowAtomArrow}}(a~{\rightarrow}_{{c^\ast}}\,b) & = & 0 \\
 {\mathrm{ShowAtomArrow}}(a~{\rightarrow}_{c}\,b_1~b_2) & = & 0 \\
-{\mathrm{ShowAtomArrow}}(a~{\rightarrow}_{({c^\ast})}\,b_1~b_2) & = & 0 \\
-{\mathrm{ShowAtomArrow}}(a~{\rightarrow}_{(c_1~c_2)}\,b_1~b_2) & = & 0 \\
-{\mathrm{ShowAtomArrow}}({\rightarrow}_{(c_1~c_2)}\,b_1~b_2) & = & 0 \\
+{\mathrm{ShowAtomArrow}}(a~{\rightarrow}_{{c^\ast}}\,b_1~b_2) & = & 0 \\
+{\mathrm{ShowAtomArrow}}(a~{\rightarrow}_{c_1~c_2}\,b_1~b_2) & = & 0 \\
+{\mathrm{ShowAtomArrow}}({\rightarrow}_{c_1~c_2}\,b_1~b_2) & = & 0 \\
 \end{array}
 $$
 
@@ -160,25 +152,23 @@ $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-{\mathrm{ShowMacroInfixArrow}}(a \rightarrow_{c} ) & = & 0 \\
 {\mathrm{ShowMacroInfixArrow}}(a \rightarrow_{c} b) & = & 0 \\
-{\mathrm{ShowMacroInfixArrow}}(a \rightarrow_{({c^\ast})} b) & = & 0 \\
+{\mathrm{ShowMacroInfixArrow}}(a \rightarrow_{{c^\ast}} b) & = & 0 \\
 {\mathrm{ShowMacroInfixArrow}}(a \rightarrow_{c} b_1~b_2) & = & 0 \\
-{\mathrm{ShowMacroInfixArrow}}(a \rightarrow_{({c^\ast})} b_1~b_2) & = & 0 \\
-{\mathrm{ShowMacroInfixArrow}}(a \rightarrow_{(c_1~c_2)} b_1~b_2) & = & 0 \\
-{\mathrm{ShowMacroInfixArrow}}({\rightarrow}_{(c_1~c_2)} b_1~b_2) & = & 0 \\
+{\mathrm{ShowMacroInfixArrow}}(a \rightarrow_{{c^\ast}} b_1~b_2) & = & 0 \\
+{\mathrm{ShowMacroInfixArrow}}(a \rightarrow_{c_1~c_2} b_1~b_2) & = & 0 \\
+{\mathrm{ShowMacroInfixArrow}}({\rightarrow}_{c_1~c_2} b_1~b_2) & = & 0 \\
 \end{array}
 $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-{\mathrm{ShowMacroAtomArrow}}(a~{\rightarrow}_{c}) & = & 0 \\
 {\mathrm{ShowMacroAtomArrow}}(a~{\rightarrow}_{c}\,b) & = & 0 \\
-{\mathrm{ShowMacroAtomArrow}}(a~{\rightarrow}_{({c^\ast})}\,b) & = & 0 \\
+{\mathrm{ShowMacroAtomArrow}}(a~{\rightarrow}_{{c^\ast}}\,b) & = & 0 \\
 {\mathrm{ShowMacroAtomArrow}}(a~{\rightarrow}_{c}\,b_1~b_2) & = & 0 \\
-{\mathrm{ShowMacroAtomArrow}}(a~{\rightarrow}_{({c^\ast})}\,b_1~b_2) & = & 0 \\
-{\mathrm{ShowMacroAtomArrow}}(a~{\rightarrow}_{(c_1~c_2)}\,b_1~b_2) & = & 0 \\
-{\mathrm{ShowMacroAtomArrow}}({\rightarrow}_{(c_1~c_2)}\,b_1~b_2) & = & 0 \\
+{\mathrm{ShowMacroAtomArrow}}(a~{\rightarrow}_{{c^\ast}}\,b_1~b_2) & = & 0 \\
+{\mathrm{ShowMacroAtomArrow}}(a~{\rightarrow}_{c_1~c_2}\,b_1~b_2) & = & 0 \\
+{\mathrm{ShowMacroAtomArrow}}({\rightarrow}_{c_1~c_2}\,b_1~b_2) & = & 0 \\
 \end{array}
 $$
 
@@ -1228,7 +1218,6 @@ $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-{\InfixArrow}(a \rightarrow_{c} {}) & = & 0 \\
 {\InfixArrow}(a \rightarrow_{c} b) & = & 0 \\
 {\InfixArrow}(a \rightarrow_{{c^\ast}} b) & = & 0 \\
 {\InfixArrow}(a \rightarrow_{c} b_1~b_2) & = & 0 \\
@@ -1240,7 +1229,6 @@ $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-{\InfixArrow2}(a \Rightarrow_{c} {}) & = & 0 \\
 {\InfixArrow2}(a \Rightarrow_{c} b) & = & 0 \\
 {\InfixArrow2}(a \Rightarrow_{{c^\ast}} b) & = & 0 \\
 {\InfixArrow2}(a \Rightarrow_{c} b_1~b_2) & = & 0 \\
@@ -1252,7 +1240,6 @@ $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-{\AtomArrow}(a~{\rightarrow}_{c}) & = & 0 \\
 {\AtomArrow}(a~{\rightarrow}_{c}\,b) & = & 0 \\
 {\AtomArrow}(a~{\rightarrow}_{{c^\ast}}\,b) & = & 0 \\
 {\AtomArrow}(a~{\rightarrow}_{c}\,b_1~b_2) & = & 0 \\
@@ -1264,7 +1251,6 @@ $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-{\AtomArrow2}(a~{\Rightarrow}_{c}) & = & 0 \\
 {\AtomArrow2}(a~{\Rightarrow}_{c}\,b) & = & 0 \\
 {\AtomArrow2}(a~{\Rightarrow}_{{c^\ast}}\,b) & = & 0 \\
 {\AtomArrow2}(a~{\Rightarrow}_{c}\,b_1~b_2) & = & 0 \\
@@ -1283,7 +1269,6 @@ $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-{\MacroInfixArrow}(a \to_{c} {}) & = & 0 \\
 {\MacroInfixArrow}(a \to_{c} b) & = & 0 \\
 {\MacroInfixArrow}(a \to_{{c^\ast}} b) & = & 0 \\
 {\MacroInfixArrow}(a \to_{c} b_1~b_2) & = & 0 \\
@@ -1295,7 +1280,6 @@ $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-{\MacroAtomArrow}(a \to_{c} {}) & = & 0 \\
 {\MacroAtomArrow}(a \to_{c} b) & = & 0 \\
 {\MacroAtomArrow}(a \to_{{c^\ast}} b) & = & 0 \\
 {\MacroAtomArrow}(a \to_{c} b_1~b_2) & = & 0 \\
@@ -1314,25 +1298,23 @@ $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-{\ShowInfixArrow}(a \rightarrow_{c} ) & = & 0 \\
 {\ShowInfixArrow}(a \rightarrow_{c} b) & = & 0 \\
-{\ShowInfixArrow}(a \rightarrow_{({c^\ast})} b) & = & 0 \\
+{\ShowInfixArrow}(a \rightarrow_{{c^\ast}} b) & = & 0 \\
 {\ShowInfixArrow}(a \rightarrow_{c} b_1~b_2) & = & 0 \\
-{\ShowInfixArrow}(a \rightarrow_{({c^\ast})} b_1~b_2) & = & 0 \\
-{\ShowInfixArrow}(a \rightarrow_{(c_1~c_2)} b_1~b_2) & = & 0 \\
-{\ShowInfixArrow}({\rightarrow}_{(c_1~c_2)} b_1~b_2) & = & 0 \\
+{\ShowInfixArrow}(a \rightarrow_{{c^\ast}} b_1~b_2) & = & 0 \\
+{\ShowInfixArrow}(a \rightarrow_{c_1~c_2} b_1~b_2) & = & 0 \\
+{\ShowInfixArrow}({\rightarrow}_{c_1~c_2} b_1~b_2) & = & 0 \\
 \end{array}
 $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-{\ShowAtomArrow}(a~{\rightarrow}_{c}) & = & 0 \\
 {\ShowAtomArrow}(a~{\rightarrow}_{c}\,b) & = & 0 \\
-{\ShowAtomArrow}(a~{\rightarrow}_{({c^\ast})}\,b) & = & 0 \\
+{\ShowAtomArrow}(a~{\rightarrow}_{{c^\ast}}\,b) & = & 0 \\
 {\ShowAtomArrow}(a~{\rightarrow}_{c}\,b_1~b_2) & = & 0 \\
-{\ShowAtomArrow}(a~{\rightarrow}_{({c^\ast})}\,b_1~b_2) & = & 0 \\
-{\ShowAtomArrow}(a~{\rightarrow}_{(c_1~c_2)}\,b_1~b_2) & = & 0 \\
-{\ShowAtomArrow}({\rightarrow}_{(c_1~c_2)}\,b_1~b_2) & = & 0 \\
+{\ShowAtomArrow}(a~{\rightarrow}_{{c^\ast}}\,b_1~b_2) & = & 0 \\
+{\ShowAtomArrow}(a~{\rightarrow}_{c_1~c_2}\,b_1~b_2) & = & 0 \\
+{\ShowAtomArrow}({\rightarrow}_{c_1~c_2}\,b_1~b_2) & = & 0 \\
 \end{array}
 $$
 
@@ -1345,25 +1327,23 @@ $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-{\ShowMacroInfixArrow}(a \to_{c} ) & = & 0 \\
 {\ShowMacroInfixArrow}(a \to_{c} b) & = & 0 \\
-{\ShowMacroInfixArrow}(a \to_{({c^\ast})} b) & = & 0 \\
+{\ShowMacroInfixArrow}(a \to_{{c^\ast}} b) & = & 0 \\
 {\ShowMacroInfixArrow}(a \to_{c} b_1~b_2) & = & 0 \\
-{\ShowMacroInfixArrow}(a \to_{({c^\ast})} b_1~b_2) & = & 0 \\
-{\ShowMacroInfixArrow}(a \to_{(c_1~c_2)} b_1~b_2) & = & 0 \\
-{\ShowMacroInfixArrow}({\to}_{(c_1~c_2)} b_1~b_2) & = & 0 \\
+{\ShowMacroInfixArrow}(a \to_{{c^\ast}} b_1~b_2) & = & 0 \\
+{\ShowMacroInfixArrow}(a \to_{c_1~c_2} b_1~b_2) & = & 0 \\
+{\ShowMacroInfixArrow}({\to}_{c_1~c_2} b_1~b_2) & = & 0 \\
 \end{array}
 $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-{\ShowMacroAtomArrow}(a~{\to}_{c}) & = & 0 \\
 {\ShowMacroAtomArrow}(a~{\to}_{c}\,b) & = & 0 \\
-{\ShowMacroAtomArrow}(a~{\to}_{({c^\ast})}\,b) & = & 0 \\
+{\ShowMacroAtomArrow}(a~{\to}_{{c^\ast}}\,b) & = & 0 \\
 {\ShowMacroAtomArrow}(a~{\to}_{c}\,b_1~b_2) & = & 0 \\
-{\ShowMacroAtomArrow}(a~{\to}_{({c^\ast})}\,b_1~b_2) & = & 0 \\
-{\ShowMacroAtomArrow}(a~{\to}_{(c_1~c_2)}\,b_1~b_2) & = & 0 \\
-{\ShowMacroAtomArrow}({\to}_{(c_1~c_2)}\,b_1~b_2) & = & 0 \\
+{\ShowMacroAtomArrow}(a~{\to}_{{c^\ast}}\,b_1~b_2) & = & 0 \\
+{\ShowMacroAtomArrow}(a~{\to}_{c_1~c_2}\,b_1~b_2) & = & 0 \\
+{\ShowMacroAtomArrow}({\to}_{c_1~c_2}\,b_1~b_2) & = & 0 \\
 \end{array}
 $$
 
@@ -2678,7 +2658,8 @@ $$
 \mathsf{elems}~{{\mathit{elemidx}}^\ast} \\
 \mathsf{datas}~{{\mathit{dataidx}}^\ast} \\
 \mathsf{locals}~{{\mathit{localidx}}^\ast} \\
-\mathsf{labels}~{{\mathit{labelidx}}^\ast} \} \\
+\mathsf{labels}~{{\mathit{labelidx}}^\ast} \\
+\mathsf{tags}~{{\mathit{tagidx}}^\ast} \} \\
 \end{array} \\
 \end{array}
 $$
@@ -2757,10 +2738,17 @@ $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
+{\mathrm{free}}_{\mathit{tagidx}}({\mathit{tagidx}}) & = & \{ \mathsf{tags}~{\mathit{tagidx}} \} \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
 {\mathrm{free}}_{\mathit{externidx}}(\mathsf{func}~{\mathit{funcidx}}) & = & {\mathrm{free}}_{\mathit{funcidx}}({\mathit{funcidx}}) \\
 {\mathrm{free}}_{\mathit{externidx}}(\mathsf{global}~{\mathit{globalidx}}) & = & {\mathrm{free}}_{\mathit{globalidx}}({\mathit{globalidx}}) \\
 {\mathrm{free}}_{\mathit{externidx}}(\mathsf{table}~{\mathit{tableidx}}) & = & {\mathrm{free}}_{\mathit{tableidx}}({\mathit{tableidx}}) \\
 {\mathrm{free}}_{\mathit{externidx}}(\mathsf{mem}~{\mathit{memidx}}) & = & {\mathrm{free}}_{\mathit{memidx}}({\mathit{memidx}}) \\
+{\mathrm{free}}_{\mathit{externidx}}(\mathsf{tag}~{\mathit{tagidx}}) & = & {\mathrm{free}}_{\mathit{tagidx}}({\mathit{tagidx}}) \\
 \end{array}
 $$
 
@@ -4071,7 +4059,14 @@ $$
 \end{array}
 $$
 
-\vspace{1ex}
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+{\mathrm{free}}_{\mathit{catch}}(\mathsf{catch}~{\mathit{tagidx}}~{\mathit{labelidx}}) & = & {\mathrm{free}}_{\mathit{tagidx}}({\mathit{tagidx}}) \oplus {\mathrm{free}}_{\mathit{labelidx}}({\mathit{labelidx}}) \\
+{\mathrm{free}}_{\mathit{catch}}(\mathsf{catch\_ref}~{\mathit{tagidx}}~{\mathit{labelidx}}) & = & {\mathrm{free}}_{\mathit{tagidx}}({\mathit{tagidx}}) \oplus {\mathrm{free}}_{\mathit{labelidx}}({\mathit{labelidx}}) \\
+{\mathrm{free}}_{\mathit{catch}}(\mathsf{catch\_all}~{\mathit{labelidx}}) & = & {\mathrm{free}}_{\mathit{labelidx}}({\mathit{labelidx}}) \\
+{\mathrm{free}}_{\mathit{catch}}(\mathsf{catch\_all\_ref}~{\mathit{labelidx}}) & = & {\mathrm{free}}_{\mathit{labelidx}}({\mathit{labelidx}}) \\
+\end{array}
+$$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
@@ -4124,6 +4119,14 @@ $$
  \multicolumn{4}{@{}l@{}}{\quad
 \begin{array}[t]{@{}l@{}}
 {\mathrm{free}}_{\mathit{tableidx}}({\mathit{tableidx}}) \oplus {\mathrm{free}}_{\mathit{typeuse}}({\mathit{typeuse}}) \\
+\end{array}
+} \\
+{\mathrm{free}}_{\mathit{instr}}(\mathsf{throw}~{\mathit{tagidx}}) & = & {\mathrm{free}}_{\mathit{tagidx}}({\mathit{tagidx}}) \\
+{\mathrm{free}}_{\mathit{instr}}(\mathsf{throw\_ref}) & = & \{  \} \\
+{\mathrm{free}}_{\mathit{instr}}(\mathsf{try\_table}~{\mathit{blocktype}}~{{\mathit{catch}}^\ast}~{{\mathit{instr}}^\ast}) & = & & \\
+ \multicolumn{4}{@{}l@{}}{\quad
+\begin{array}[t]{@{}l@{}}
+{\mathrm{free}}_{\mathit{blocktype}}({\mathit{blocktype}}) \oplus {\mathrm{free}}_{\mathit{list}}({{\mathrm{free}}_{\mathit{catch}}({\mathit{catch}})^\ast}) \oplus {\mathrm{free}}_{\mathit{list}}({{\mathrm{free}}_{\mathit{instr}}({\mathit{instr}})^\ast}) \\
 \end{array}
 } \\
 {\mathrm{free}}_{\mathit{instr}}({\mathit{numtype}}{.}\mathsf{const}~{\mathit{numlit}}) & = & {\mathrm{free}}_{\mathit{numtype}}({\mathit{numtype}}) \\
@@ -4193,7 +4196,7 @@ $$
 {\mathrm{free}}_{\mathit{instr}}(\mathsf{ref{.}func}~{\mathit{funcidx}}) & = & {\mathrm{free}}_{\mathit{funcidx}}({\mathit{funcidx}}) \\
 {\mathrm{free}}_{\mathit{instr}}(\mathsf{ref{.}i{\scriptstyle 31}}) & = & \{  \} \\
 {\mathrm{free}}_{\mathit{instr}}({\mathsf{i{\scriptstyle 31}{.}get}}{\mathsf{\_}}{{\mathit{sx}}}) & = & \{  \} \\
-{\mathrm{free}}_{\mathit{instr}}(\mathsf{struct{.}new}~{\mathit{typeidx}}) & = & \{  \} \\
+{\mathrm{free}}_{\mathit{instr}}(\mathsf{struct{.}new}~{\mathit{typeidx}}) & = & {\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}}) \\
 {\mathrm{free}}_{\mathit{instr}}(\mathsf{struct{.}new\_default}~{\mathit{typeidx}}) & = & {\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}}) \\
 {\mathrm{free}}_{\mathit{instr}}({\mathsf{struct{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~{\mathit{typeidx}}~{\mathit{u{\kern-0.1em\scriptstyle 32}}}) & = & {\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}}) \\
 {\mathrm{free}}_{\mathit{instr}}(\mathsf{struct{.}set}~{\mathit{typeidx}}~{\mathit{u{\kern-0.1em\scriptstyle 32}}}) & = & {\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}}) \\
@@ -5338,6 +5341,8 @@ $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
 C \vdash {\mathit{heaptype}} \leq \mathsf{any}
+ \qquad
+{\mathit{heaptype}} \neq \mathsf{bot}
 }{
 C \vdash \mathsf{none} \leq {\mathit{heaptype}}
 } \, {[\textsc{\scriptsize S{-}heap{-}none}]}
@@ -5349,6 +5354,8 @@ $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
 C \vdash {\mathit{heaptype}} \leq \mathsf{func}
+ \qquad
+{\mathit{heaptype}} \neq \mathsf{bot}
 }{
 C \vdash \mathsf{nofunc} \leq {\mathit{heaptype}}
 } \, {[\textsc{\scriptsize S{-}heap{-}nofunc}]}
@@ -5360,6 +5367,8 @@ $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
 C \vdash {\mathit{heaptype}} \leq \mathsf{exn}
+ \qquad
+{\mathit{heaptype}} \neq \mathsf{bot}
 }{
 C \vdash \mathsf{noexn} \leq {\mathit{heaptype}}
 } \, {[\textsc{\scriptsize S{-}heap{-}noexn}]}
@@ -5371,6 +5380,8 @@ $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
 C \vdash {\mathit{heaptype}} \leq \mathsf{extern}
+ \qquad
+{\mathit{heaptype}} \neq \mathsf{bot}
 }{
 C \vdash \mathsf{noextern} \leq {\mathit{heaptype}}
 } \, {[\textsc{\scriptsize S{-}heap{-}noextern}]}
@@ -6674,7 +6685,7 @@ $$
 \frac{
 C{.}\mathsf{tables}{}[x] = {\mathit{at}}~{\mathit{lim}}~{\mathit{rt}}
 }{
-C \vdash \mathsf{table{.}grow}~x : {\mathit{rt}}~{\mathit{at}} \rightarrow \mathsf{i{\scriptstyle 32}}
+C \vdash \mathsf{table{.}grow}~x : {\mathit{rt}}~{\mathit{at}} \rightarrow {\mathit{at}}
 } \, {[\textsc{\scriptsize T{-}instr{-}table.grow}]}
 \qquad
 \end{array}
@@ -12139,7 +12150,7 @@ $$
 
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
-\mbox{(element kind)} & {\mathtt{elemkind}} & ::= & \mathtt{0x00} & \quad\Rightarrow\quad{} & \mathsf{ref}~\mathsf{null}~\mathsf{func} \\
+\mbox{(element kind)} & {\mathtt{elemkind}} & ::= & \mathtt{0x00} & \quad\Rightarrow\quad{} & \mathsf{ref}~\mathsf{func} \\
 & {\mathtt{elem}} & ::= & 0{:}{\mathtt{u32}}~~e_o{:}{\mathtt{expr}}~~{y^\ast}{:}{\mathtt{list}}({\mathtt{funcidx}}) & \quad\Rightarrow\quad{} & & \\
 &&& \multicolumn{4}{@{}l@{}}{\quad
 \begin{array}[t]{@{}l@{}}
@@ -12629,10 +12640,10 @@ $$
 & {{\mathtt{param}}}_{I} & ::= & \mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{param}’}~~{{\mathit{id}}^?}{:}{{\mathtt{id}}^?}~~t{:}{{\mathtt{valtype}}}_{I}~~\mbox{‘\texttt{{)}}’} & \quad\Rightarrow\quad{} & (t, {{\mathit{id}}^?}) \\
 & & | & \mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{param}’}~~{{{\mathtt{valtype}}}_{I}^\ast}~~\mbox{‘\texttt{{)}}’} & \quad\equiv\quad{} & {(\mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{param}’}~~{{\mathtt{valtype}}}_{I}~~\mbox{‘\texttt{{)}}’})^\ast} \\
 & {{\mathtt{result}}}_{I} & ::= & \mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{result}’}~~t{:}{{\mathtt{valtype}}}_{I}~~\mbox{‘\texttt{{)}}’} & \quad\Rightarrow\quad{} & t \\
-& & | & \mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{result}’}~~{{{\mathtt{valtype}}}_{I}^\ast}~~\mbox{‘\texttt{{)}}’} & \quad\equiv\quad{} & {(\mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{param}’}~~{{\mathtt{valtype}}}_{I}~~\mbox{‘\texttt{{)}}’})^\ast} \\
-& {{\mathtt{comptype}}}_{I} & ::= & \mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{struct}’}~~{({\mathit{ft}}, {{\mathit{id}}^?})^\ast}{:}{\mathtt{list}}({{\mathtt{field}}}_{I})~~\mbox{‘\texttt{{)}}’} & \quad\Rightarrow\quad{} & (\mathsf{struct}~{{\mathit{ft}}^\ast}, \{ \mathsf{fields}~{({{\mathit{id}}^?})^\ast} \}) \\
-& & | & \mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{array}’}~~{\mathit{ft}}{:}{{\mathtt{fieldtype}}}_{I}~~\mbox{‘\texttt{{)}}’} & \quad\Rightarrow\quad{} & (\mathsf{array}~{\mathit{ft}}, \{  \}) \\
-& & | & \mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{func}’}~~{(t_1, {{\mathit{id}}^?})^\ast}{:}{\mathtt{list}}({{\mathtt{param}}}_{I})~~{t_2^\ast}{:}{\mathtt{list}}({{\mathtt{result}}}_{I})~~\mbox{‘\texttt{{)}}’} & \quad\Rightarrow\quad{} & (\mathsf{func}~{t_1^\ast} \rightarrow {t_2^\ast}, \{  \}) \\
+& & | & \mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{result}’}~~{{{\mathtt{valtype}}}_{I}^\ast}~~\mbox{‘\texttt{{)}}’} & \quad\equiv\quad{} & {(\mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{result}’}~~{{\mathtt{valtype}}}_{I}~~\mbox{‘\texttt{{)}}’})^\ast} \\
+& {{\mathtt{comptype}}}_{I} & ::= & \mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{struct}’}~~{({\mathit{ft}}, {{\mathit{id}}^?})^\ast}{:}{\mathtt{list}}({{\mathtt{field}}}_{I})~~\mbox{‘\texttt{{)}}’} & \quad\Rightarrow\quad{} & (\mathsf{struct}~{{\mathit{ft}}^\ast}, \{ \mathsf{fields}~({({{\mathit{id}}^?})^\ast}) \}) \\
+& & | & \mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{array}’}~~{\mathit{ft}}{:}{{\mathtt{fieldtype}}}_{I}~~\mbox{‘\texttt{{)}}’} & \quad\Rightarrow\quad{} & (\mathsf{array}~{\mathit{ft}}, \{ \mathsf{fields}~(\epsilon) \}) \\
+& & | & \mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{func}’}~~{(t_1, {{\mathit{id}}^?})^\ast}{:}{\mathtt{list}}({{\mathtt{param}}}_{I})~~{t_2^\ast}{:}{\mathtt{list}}({{\mathtt{result}}}_{I})~~\mbox{‘\texttt{{)}}’} & \quad\Rightarrow\quad{} & (\mathsf{func}~{t_1^\ast} \rightarrow {t_2^\ast}, \{ \mathsf{fields}~(\epsilon) \}) \\
 \end{array}
 $$
 
@@ -12911,10 +12922,10 @@ $$
 
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
-& {{\mathtt{memarg}}}_{N} & ::= & n{:}{\mathtt{offset}}~~m{:}{{\mathtt{align}}}_{N} & \quad\Rightarrow\quad{} & \{ \mathsf{align}~n,\;\allowbreak \mathsf{offset}~m \} \\
-& {\mathtt{offset}} & ::= & \mbox{‘\texttt{offset{=}}’}~~n{:}{\mathtt{u64}} & \quad\Rightarrow\quad{} & n \\
+& {{\mathtt{memarg}}}_{N} & ::= & n{:}{{\mathtt{align}}}_{N}~~m{:}{\mathtt{offset}} & \quad\Rightarrow\quad{} & \{ \mathsf{align}~n,\;\allowbreak \mathsf{offset}~m \} \\
+& {\mathtt{offset}} & ::= & \mbox{‘\texttt{offset{=}}’}~~m{:}{\mathtt{u64}} & \quad\Rightarrow\quad{} & m \\
 & & | & \epsilon & \quad\Rightarrow\quad{} & 0 \\
-& {{\mathtt{align}}}_{N} & ::= & \mbox{‘\texttt{align{=}}’}~~m{:}{\mathtt{u64}} & \quad\Rightarrow\quad{} & m & \quad \mbox{if}~ m = {2^{n}} \\
+& {{\mathtt{align}}}_{N} & ::= & \mbox{‘\texttt{align{=}}’}~~m{:}{\mathtt{u64}} & \quad\Rightarrow\quad{} & n & \quad \mbox{if}~ m = {2^{n}} \\
 & & | & \epsilon & \quad\Rightarrow\quad{} & N \\
 & {\mathtt{laneidx}} & ::= & i{:}{\mathtt{u8}} & \quad\Rightarrow\quad{} & i \\
 & {{\mathtt{plaininstr}}}_{I} & ::= & \dots \\
@@ -13010,9 +13021,9 @@ $$
 & & | & \mbox{‘\texttt{i64.store32}’}~~{{\mathtt{memarg}}}_{4} & \quad\equiv\quad{} & \mbox{‘\texttt{i64.store32}’}~~\mbox{‘\texttt{0}’}~~{{\mathtt{memarg}}}_{4} \\
 & & | & \mbox{‘\texttt{v128.store}’}~~{{\mathtt{memarg}}}_{16} & \quad\equiv\quad{} & \mbox{‘\texttt{v128.store}’}~~\mbox{‘\texttt{0}’}~~{{\mathtt{memarg}}}_{16} \\
 & & | & \mbox{‘\texttt{v128.store8\_lane}’}~~{{\mathtt{memarg}}}_{1}~~{\mathtt{laneidx}} & \quad\equiv\quad{} & \mbox{‘\texttt{v128.store8\_lane}’}~~\mbox{‘\texttt{0}’}~~{{\mathtt{memarg}}}_{1}~~{\mathtt{laneidx}} \\
-& & | & \mbox{‘\texttt{v128.store16\_lane}’}~~{{\mathtt{memarg}}}_{2}~~{\mathtt{laneidx}} & \quad\equiv\quad{} & \mbox{‘\texttt{v128.store16\_lane}’}~~\mbox{‘\texttt{0}’}~~{{\mathtt{memarg}}}_{1}~~{\mathtt{laneidx}} \\
-& & | & \mbox{‘\texttt{v128.store32\_lane}’}~~{{\mathtt{memarg}}}_{4}~~{\mathtt{laneidx}} & \quad\equiv\quad{} & \mbox{‘\texttt{v128.store32\_lane}’}~~\mbox{‘\texttt{0}’}~~{{\mathtt{memarg}}}_{1}~~{\mathtt{laneidx}} \\
-& & | & \mbox{‘\texttt{v128.store64\_lane}’}~~{{\mathtt{memarg}}}_{8}~~{\mathtt{laneidx}} & \quad\equiv\quad{} & \mbox{‘\texttt{v128.store64\_lane}’}~~\mbox{‘\texttt{0}’}~~{{\mathtt{memarg}}}_{1}~~{\mathtt{laneidx}} \\
+& & | & \mbox{‘\texttt{v128.store16\_lane}’}~~{{\mathtt{memarg}}}_{2}~~{\mathtt{laneidx}} & \quad\equiv\quad{} & \mbox{‘\texttt{v128.store16\_lane}’}~~\mbox{‘\texttt{0}’}~~{{\mathtt{memarg}}}_{2}~~{\mathtt{laneidx}} \\
+& & | & \mbox{‘\texttt{v128.store32\_lane}’}~~{{\mathtt{memarg}}}_{4}~~{\mathtt{laneidx}} & \quad\equiv\quad{} & \mbox{‘\texttt{v128.store32\_lane}’}~~\mbox{‘\texttt{0}’}~~{{\mathtt{memarg}}}_{4}~~{\mathtt{laneidx}} \\
+& & | & \mbox{‘\texttt{v128.store64\_lane}’}~~{{\mathtt{memarg}}}_{8}~~{\mathtt{laneidx}} & \quad\equiv\quad{} & \mbox{‘\texttt{v128.store64\_lane}’}~~\mbox{‘\texttt{0}’}~~{{\mathtt{memarg}}}_{8}~~{\mathtt{laneidx}} \\
 & & | & \mbox{‘\texttt{memory.size}’} & \quad\equiv\quad{} & \mbox{‘\texttt{memory.size}’}~~\mbox{‘\texttt{0}’} \\
 & & | & \mbox{‘\texttt{memory.grow}’} & \quad\equiv\quad{} & \mbox{‘\texttt{memory.grow}’}~~\mbox{‘\texttt{0}’} \\
 & & | & \mbox{‘\texttt{memory.fill}’} & \quad\equiv\quad{} & \mbox{‘\texttt{memory.fill}’}~~\mbox{‘\texttt{0}’} \\
@@ -13183,8 +13194,8 @@ $$
 & & | & \mbox{‘\texttt{i32.trunc\_sat\_f32\_u}’} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 32}} {.} {{\mathsf{trunc\_sat}}{\mathsf{\_}}{\mathsf{u}}}{\mathsf{\_}}{\mathsf{f{\scriptstyle 32}}} \\
 & & | & \mbox{‘\texttt{i32.trunc\_sat\_f64\_s}’} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 32}} {.} {{\mathsf{trunc\_sat}}{\mathsf{\_}}{\mathsf{s}}}{\mathsf{\_}}{\mathsf{f{\scriptstyle 64}}} \\
 & & | & \mbox{‘\texttt{i32.trunc\_sat\_f64\_u}’} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 32}} {.} {{\mathsf{trunc\_sat}}{\mathsf{\_}}{\mathsf{u}}}{\mathsf{\_}}{\mathsf{f{\scriptstyle 64}}} \\
-& & | & \mbox{‘\texttt{i64.extend\_i64\_s}’} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 64}} {.} {{\mathsf{extend}}{\mathsf{\_}}{\mathsf{s}}}{\mathsf{\_}}{\mathsf{i{\scriptstyle 64}}} \\
-& & | & \mbox{‘\texttt{i64.extend\_i64\_u}’} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 64}} {.} {{\mathsf{extend}}{\mathsf{\_}}{\mathsf{u}}}{\mathsf{\_}}{\mathsf{i{\scriptstyle 64}}} \\
+& & | & \mbox{‘\texttt{i64.extend\_i32\_s}’} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 64}} {.} {{\mathsf{extend}}{\mathsf{\_}}{\mathsf{s}}}{\mathsf{\_}}{\mathsf{i{\scriptstyle 32}}} \\
+& & | & \mbox{‘\texttt{i64.extend\_i32\_u}’} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 64}} {.} {{\mathsf{extend}}{\mathsf{\_}}{\mathsf{u}}}{\mathsf{\_}}{\mathsf{i{\scriptstyle 32}}} \\
 & & | & \mbox{‘\texttt{i64.trunc\_f32\_s}’} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 64}} {.} {{\mathsf{trunc}}{\mathsf{\_}}{\mathsf{s}}}{\mathsf{\_}}{\mathsf{f{\scriptstyle 32}}} \\
 & & | & \mbox{‘\texttt{i64.trunc\_f32\_u}’} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 64}} {.} {{\mathsf{trunc}}{\mathsf{\_}}{\mathsf{u}}}{\mathsf{\_}}{\mathsf{f{\scriptstyle 32}}} \\
 & & | & \mbox{‘\texttt{i64.trunc\_f64\_s}’} & \quad\Rightarrow\quad{} & \mathsf{i{\scriptstyle 64}} {.} {{\mathsf{trunc}}{\mathsf{\_}}{\mathsf{s}}}{\mathsf{\_}}{\mathsf{f{\scriptstyle 64}}} \\
@@ -13599,7 +13610,7 @@ $$
 \mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{elem}’}~~{{\mathtt{offset}}}_{I}~~\mbox{‘\texttt{func}’}~~{\mathtt{list}}({{\mathtt{funcidx}}}_{I})~~\mbox{‘\texttt{{)}}’} \\
 \end{array}
 } \\
-& {{\mathtt{elemlist}}}_{I} & ::= & {\mathit{rt}}{:}{{\mathtt{reftype}}}_{I}~~{e^\ast}{:}{\mathtt{list}}({{\mathtt{expr}}}_{I}) & \quad\Rightarrow\quad{} & ({\mathit{rt}}, {e^\ast}) \\
+& {{\mathtt{elemlist}}}_{I} & ::= & {\mathit{rt}}{:}{{\mathtt{reftype}}}_{I}~~{e^\ast}{:}{\mathtt{list}}({{\mathtt{elemexpr}}}_{I}) & \quad\Rightarrow\quad{} & ({\mathit{rt}}, {e^\ast}) \\
 & & | & \mbox{‘\texttt{func}’}~~{x^\ast}{:}{{{\mathtt{funcidx}}}_{I}^\ast} & \quad\equiv\quad{} & \mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{ref}’}~~\mbox{‘\texttt{func}’}~~\mbox{‘\texttt{{)}}’}~~{(\mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{ref.func}’}~~{{\mathtt{funcidx}}}_{I}~~\mbox{‘\texttt{{)}}’})^\ast} \\
 & {{\mathtt{elemexpr}}}_{I} & ::= & \mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{item}’}~~e{:}{{\mathtt{expr}}}_{I}~~\mbox{‘\texttt{{)}}’} & \quad\Rightarrow\quad{} & e \\
 & & | & {{\mathtt{foldedinstr}}}_{I} & \quad\equiv\quad{} & \mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{item}’}~~{{\mathtt{foldedinstr}}}_{I}~~\mbox{‘\texttt{{)}}’} \\

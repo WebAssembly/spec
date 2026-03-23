@@ -162,8 +162,8 @@ atomop ::=
   "`=" | "`=/=" | "`<" | "`>" | "`<=" | "`>="
   "`~" | "`/\" | "`\/" | "`==>" | "`<=>"
   "`<-"
-  "(/\)" | "(\/)" | "(+)" | "(*)" | "(++)"
-  ":_" | "=_" | "==_" | "~~_" | "->_" | "=>_" | "~>_" | "~>*_" | "|-_" | "-|_"
+  "(/\)" | "(\/)" | "(!)" | "(?)" | "(+)" | "(*)" | "(++)"
+  ":_" | "=_" | "==_" | "~~_" | "->_" | "=>_" | "~>_" | "~>*_" | "<<_" | ">>_" | "|-_" | "-|_"
 ```
 
 ##### Type Aliases
@@ -402,12 +402,10 @@ SpecTec also employs a weak form of shallow subtyping:
   except that the larger type may drop some premises.
 
 * Variant types are in a subtype relation if the smaller type has fewer or the same number of cases,
-  and for each of its cases there is an equivalent case in the larger type,
-  except that the case in the larger type may drop some premises.
+  and for each of its cases there is an equivalent case in the larger type.
 
 * Record types are in a subtype relation if the larger type has fewer or the same number of fields,
-  and for each of its fields there is an equivalent case in the smaller type,
-  except that the field in the larger type may drop some premises.
+  and for each of its fields there is an equivalent case in the smaller type.
 
 
 ### Expressions
@@ -1384,8 +1382,8 @@ atomop ::=
   "`=" | "`=/=" | "`<" | "`>" | "`<=" | "`>="
   "`~" | "`/\" | "`\/" | "`==>" | "`<=>"
   "`<-"
-  "(/\)" | "(\/)" | "(+)" | "(*)" | "(++)"
-  ":_" | "=_" | "==_" | "~~_" | "->_" | "=>_" | "~>_" | "~>*_" | "|-_" | "-|_"
+  "(/\)" | "(\/)" | "(!)" | "(?)" | "(+)" | "(*)" | "(++)"
+  ":_" | "=_" | "==_" | "~~_" | "->_" | "=>_" | "~>_" | "~>*_" | "<<_" | ">>_" | "|-_" | "-|_"
 ```
 
 

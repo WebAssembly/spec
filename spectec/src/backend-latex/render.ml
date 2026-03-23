@@ -73,10 +73,11 @@ let as_paren_exp e =
   | ParenE e1 -> e1
   | _ -> e
 
-let as_tup_exp e =
+let rec as_tup_exp e =
   match e.it with
   | TupE es -> es
   | ParenE e1 -> [e1]
+  | ArithE e1 -> as_tup_exp e1
   | _ -> [e]
 
 let as_seq_exp e =
@@ -89,6 +90,7 @@ let rec fuse_exp e deep =
   | ParenE e1 when deep -> ParenE (fuse_exp e1 false) $ e.at
   | IterE (e1, iter) -> IterE (fuse_exp e1 deep, iter) $ e.at
   | SeqE (e1::es) -> List.fold_left (fun e1 e2 -> FuseE (e1, e2) $ e.at) e1 es
+  | InfixE (e1, atom, e2) -> fuse_exp (SeqE [e1; AtomE atom $ atom.at; e2] $ e.at) deep
   | _ -> e
 
 let as_tup_arg a =

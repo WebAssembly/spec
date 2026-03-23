@@ -164,7 +164,8 @@ syntax free =
     ELEMS elemidx*,
     DATAS dataidx*,
     LOCALS localidx*,
-    LABELS labelidx*
+    LABELS labelidx*,
+    TAGS tagidx*
   }
 
 
@@ -188,6 +189,7 @@ def $free_dataidx(dataidx) : free
 def $free_localidx(localidx) : free
 def $free_labelidx(labelidx) : free
 def $free_externidx(externidx) : free
+def $free_tagidx(tagidx) : free
 
 def $free_typeidx(typeidx) = {TYPES typeidx}
 def $free_funcidx(funcidx) = {FUNCS funcidx}
@@ -198,8 +200,10 @@ def $free_elemidx(elemidx) = {ELEMS elemidx}
 def $free_dataidx(dataidx) = {DATAS dataidx}
 def $free_localidx(localidx) = {LOCALS localidx}
 def $free_labelidx(labelidx) = {LABELS labelidx}
+def $free_tagidx(tagidx) = {TAGS tagidx}
 
 def $free_externidx(FUNC funcidx) = $free_funcidx(funcidx)
 def $free_externidx(GLOBAL globalidx) = $free_globalidx(globalidx)
 def $free_externidx(TABLE tableidx) = $free_tableidx(tableidx)
 def $free_externidx(MEM memidx) = $free_memidx(memidx)
+def $free_externidx(TAG tagidx) = $free_tagidx(tagidx)

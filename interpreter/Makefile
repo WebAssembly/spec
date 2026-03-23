@@ -14,6 +14,9 @@ LIB =		$(NAME)
 JSLIB =		wast.js
 ZIP =		$(NAME).zip
 
+DEPS =		dune menhir
+JSDEPS =	ocamlfind js_of_ocaml js_of_ocaml-ppx
+
 BUILDDIR =	_build/default
 
 JS =		# set to JS shell command to run JS tests, empty to skip
@@ -26,6 +29,7 @@ JS =		# set to JS shell command to run JS tests, empty to skip
 default:	$(NAME)
 all:		default alltest
 alltest:	unittest partest custompartest
+alldeps:	$(NAME)-deps $(JSLIB)-deps
 ci:		all jslib zip
 
 jslib:		$(JSLIB)
@@ -36,10 +40,16 @@ zip:		$(ZIP)
 
 .PHONY:		$(NAME) $(JSLIB)
 
+deps:
+	opam install --yes $(DEPS)
+
 $(NAME):
 	rm -f $@
 	dune build $@.exe
 	ln $(BUILDDIR)/$@.exe $@
+
+jsdeps:	deps
+	opam install --yes $(JSDEPS)
 
 $(JSLIB):
 	rm -f $@

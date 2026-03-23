@@ -415,6 +415,7 @@ def $const(vectype, c) = (VCONST vectype c)
 
 def $free_shape(shape) : free
 def $free_blocktype(blocktype) : free
+def $free_catch(catch) : free
 
 def $free_instr(instr) : free
 def $free_block(instr*) : free
@@ -426,6 +427,10 @@ def $free_shape(lanetype X dim) = $free_lanetype(lanetype)
 def $free_blocktype(_RESULT valtype?) = $free_opt($free_valtype(valtype)?)
 def $free_blocktype(_IDX typeidx) = $free_typeidx(typeidx)
 
+def $free_catch(CATCH tagidx labelidx) = $free_tagidx(tagidx) ++ $free_labelidx(labelidx)
+def $free_catch(CATCH_REF tagidx labelidx) = $free_tagidx(tagidx) ++ $free_labelidx(labelidx)
+def $free_catch(CATCH_ALL labelidx) = $free_labelidx(labelidx)
+def $free_catch(CATCH_ALL_REF labelidx) = $free_labelidx(labelidx)
 
 def $free_instr(NOP) = {}
 def $free_instr(UNREACHABLE) = {}
@@ -457,6 +462,11 @@ def $free_instr(RETURN_CALL funcidx) = $free_funcidx(funcidx)
 def $free_instr(RETURN_CALL_REF typeuse) = $free_typeuse(typeuse)
 def $free_instr(RETURN_CALL_INDIRECT tableidx typeuse) =
   $free_tableidx(tableidx) ++ $free_typeuse(typeuse)
+
+def $free_instr(THROW tagidx) = $free_tagidx(tagidx)
+def $free_instr(THROW_REF) = {}
+def $free_instr(TRY_TABLE blocktype catch* instr*) =
+  $free_blocktype(blocktype) ++ $free_list($free_catch(catch)*) ++ $free_list($free_instr(instr)*)
 
 def $free_instr(CONST numtype numlit) = $free_numtype(numtype)
 def $free_instr(UNOP numtype unop) = $free_numtype(numtype)
@@ -505,7 +515,7 @@ def $free_instr(REF.I31) = {}
 
 def $free_instr(I31.GET sx) = {}
 
-def $free_instr(STRUCT.NEW typeidx) = {}
+def $free_instr(STRUCT.NEW typeidx) = $free_typeidx(typeidx)
 def $free_instr(STRUCT.NEW_DEFAULT typeidx) = $free_typeidx(typeidx)
 def $free_instr(STRUCT.GET sx? typeidx u32) = $free_typeidx(typeidx)
 def $free_instr(STRUCT.SET typeidx u32) = $free_typeidx(typeidx)
