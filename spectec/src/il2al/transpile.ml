@@ -332,8 +332,22 @@ let extract_last_ifs il =
   in
   extract_first_ifs [] (List.rev il)
 
-(* Unify more than 3 ifs at once, by extracting the common conditions *)
-let unify_multi_if instrs =
+(* Unify more than 3 ifs at once, by extracting the common conditions
+  if (... if A ...); if (... if A ...)
+  -->
+  if A (...; ...)
+*)
+let rec unify_multi_if instrs =
+  (* Apply recursively *)
+  let instrs = List.map (fun instr ->
+    let at = instr.at in
+    match instr.it with
+    | IfI (c, il1, il2) -> ifI (c, unify_multi_if il1, unify_multi_if il2) ~at
+    | OtherwiseI il -> otherwiseI (unify_multi_if il) ~at
+    | EitherI (il1, il2) -> eitherI (unify_multi_if il1, unify_multi_if il2) ~at
+    | _ -> instr
+  ) instrs in
+
   let hd, ifs = extract_last_ifs instrs in
   hd @ merge_disjoint_ifs ifs
 
