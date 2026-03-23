@@ -1,7 +1,7 @@
 # Preview
 
 ```sh
-$ ../src/exe-spectec/main.exe ../../../_specification/wasm-3.0/*.spectec -v -l --interpreter ../test-interpreter/sample.wat addTwo 30 12 2>&1
+$ ../src/exe-spectec/main.exe ../../../_specification/wasm-latest/*.spectec -v -l --interpreter ../test-interpreter/sample.wat addTwo 30 12 2>&1
 spectec 0.5 generator
 == Parsing...
 == Elaboration...
@@ -13,7 +13,7 @@ spectec 0.5 generator
 == Interpreting...
 42
 == Complete.
-$ ../src/exe-spectec/main.exe ../../../_specification/wasm-3.0/*.spectec -v -l --interpreter ../test-interpreter/sample.wasm addTwo 40 2 2>&1
+$ ../src/exe-spectec/main.exe ../../../_specification/wasm-latest/*.spectec -v -l --interpreter ../test-interpreter/sample.wasm addTwo 40 2 2>&1
 spectec 0.5 generator
 == Parsing...
 == Elaboration...
@@ -25,7 +25,7 @@ spectec 0.5 generator
 == Interpreting...
 42
 == Complete.
-$ ../src/exe-spectec/main.exe ../../../_specification/wasm-3.0/*.spectec -v -l --interpreter ../test-interpreter/sample.wast 2>&1
+$ ../src/exe-spectec/main.exe ../../../_specification/wasm-latest/*.spectec -v -l --interpreter ../test-interpreter/sample.wast 2>&1
 spectec 0.5 generator
 == Parsing...
 == Elaboration...

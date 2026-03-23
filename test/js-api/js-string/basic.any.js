@@ -3,6 +3,9 @@
 // META: script=/wasm/jsapi/wasm-module-builder.js
 // META: script=/wasm/jsapi/js-string/polyfill.js
 
+// The list of builtins and their signatures.
+let builtins;
+
 // Generate two sets of exports, one from a polyfill implementation and another
 // from the builtins provided by the host.
 let polyfillExports;
@@ -14,7 +17,7 @@ setup(() => {
   // a known builtin function from wasm.
   const builder = new WasmModuleBuilder();
   const arrayIndex = builder.addArray(kWasmI16, true, kNoSuperType, true);
-  const builtins = [
+  builtins = [
     {
       name: "test",
       params: [kWasmExternRef],
@@ -381,3 +384,35 @@ test(() => {
     }
   }
 });
+
+// Test that incorrect import types are rejected, even if they have correct
+// signatures.
+test(() => {
+  for (let builtin of builtins) {
+    const builder = new WasmModuleBuilder();
+    // The type is wrong because it is in a nontrivial rec group.
+    const typeIndex = builder.nextTypeIndex();
+    builder.startRecGroup();
+    builder.addType({
+      params: builtin.params,
+      results: builtin.results
+    });
+    builder.addStruct([]);
+    builder.endRecGroup();
+
+    builder.addImport(
+      "wasm:js-string",
+      builtin.name,
+      typeIndex);
+
+    const buffer = builder.toBuffer();
+
+    // Validation should fail.
+    assert_false(WebAssembly.validate(buffer, { builtins: ["js-string"] }));
+
+    // Compilation should fail.
+    assert_throws_js(WebAssembly.CompileError, () => {
+      new WebAssembly.Module(buffer, { builtins: ["js-string"] });
+    });
+  }
+}, "Incorrect types");

@@ -119,8 +119,8 @@ let get_context_var e =
   | Al.Ast.CaseE (_, [_; {it = Al.Ast.VarE x; _} as e']) when x <> "_" -> e' (* HARDCODE for frame *)
   | Al.Ast.CaseE (mixop, _) ->
     let x = mixop
-      |> List.hd
-      |> List.hd
+      |> Mixop.head
+      |> Option.get
       |> Atom.to_string
       |> (fun s -> String.sub s 0 1)
     in
@@ -370,17 +370,6 @@ and al_to_el_expr expr =
           2) Is infix notation
           3) Is bracketed -> render into BrackE
           4) Is argument of CallE -> add first, omit later at CallE *)
-        let atom_of atom = atom $$ no_region % (Atom.info "") in
-        let find_brace_opt mixop =
-          let s = Mixop.to_string mixop in
-          let first = String.get s 1 in
-          let last = String.get s (String.length s - 2) in
-          match first, last with
-          | '(', ')' -> Some (atom_of Atom.LParen, atom_of Atom.RParen)
-          | '[', ']' -> Some (atom_of Atom.LBrack, atom_of Atom.RBrack)
-          | '{', '}' -> Some (atom_of Atom.LBrace, atom_of Atom.RBrace)
-          | _ -> None
-        in
         let elal = mixop_to_el_exprs op in
         let* elel = al_to_el_exprs el in
         let eles = case_to_el_exprs elal elel in
@@ -389,8 +378,8 @@ and al_to_el_expr expr =
         | _, [] -> Some ele
         | None :: Some _ :: _, _ -> Some ele
         | _ ->
-          (match find_brace_opt op with
-          | Some (lbr, rbr) ->
+          (match op with
+          | Mixop.Brack (lbr, _, rbr) ->
             (* Split braces of el expressions *)
             let _, eles = Util.Lib.List.split_hd eles in
             let eles, _ = Util.Lib.List.split_last eles in
@@ -402,7 +391,7 @@ and al_to_el_expr expr =
               | _ -> El.Ast.SeqE eles
               ) in
             Some (El.Ast.BrackE (lbr, eles $ no_region, rbr))
-          | None -> Some (El.Ast.ParenE (ele $ no_region))
+          | _ -> Some (El.Ast.ParenE (ele $ no_region))
           )
         )
       )
@@ -438,7 +427,7 @@ and mixop_to_el_exprs op =
       | [ a ] -> Some((El.Ast.AtomE a) $ no_region)
       | _ -> None
     )
-  op
+  (Mixop.flatten op)
 
 and al_to_el_exprs exprs =
   List.fold_left
@@ -721,7 +710,7 @@ and render_expr' env expr =
       (render_math "=")
       (render_expr env erhs)
   | Al.Ast.CaseE (mixop, [ arity; arg ]) when Al.Valid.sub_typ expr.note Al.Al_util.evalctxT ->
-    let atom_name = mixop |> List.hd |> List.hd |> Atom.to_string in
+    let atom_name = mixop |> Mixop.head |> Option.get |> Atom.to_string in
     let context_var = get_context_var expr in
     let rendered_arity =
       match arity.it with
@@ -941,7 +930,11 @@ let rec render_single_stmt ?(with_type=true) env stmt  =
     | CmpS (e1, cmpop, e2) ->
       let cmpop, rhs =
         match e2.it with
-        | OptE None -> render_prose_cmpop_eps cmpop, "absent"
+        | OptE None ->
+          if cmpop = `NeOp then
+            render_prose_cmpop_eps `EqOp, "present"
+          else
+            render_prose_cmpop_eps cmpop, "absent"
         | ListE [] -> render_prose_cmpop_eps cmpop, "empty"
         | BoolE _ -> render_prose_cmpop_eps cmpop, render_expr env e2
         | _ -> render_prose_cmpop cmpop, render_expr env e2
@@ -1047,7 +1040,7 @@ let render_control_frame env expr =
   let open Al in
   match expr.it with
   | Ast.CaseE (mixop, [ arity; arg ]) ->
-    let atom = mixop |> List.hd |> List.hd in
+    let atom = mixop |> Mixop.head |> Option.get in
     let atom_name = Atom.to_string atom in
     let control_frame_name, rendered_arg =
       match atom_name with
@@ -1123,8 +1116,7 @@ let render_rhs env lhs rhs =
     sprintf "the result for which %s" (render_expr env eiter)
   | Al.Ast.IterE (e, (Al.Ast.ListN (ie, Some id), xes)) ->
     let se = render_expr env e in
-    let ids = List.map fst xes in
-    assert (ids = [ id ]);
+    assert (xes = []);
     let eid = Al.Al_util.varE id ~note:Al.Al_util.no_note in
     let sid = render_expr env eid in
     let elb = Al.Al_util.natE Z.zero ~note:Al.Al_util.no_note in
@@ -1322,7 +1314,7 @@ let rec render_instr env algoname index depth instr =
     )
   | Al.Ast.PushI ({ it = Al.Ast.CaseE (mixop, _); _ } as e)
   when Al.Valid.sub_typ e.note Al.Al_util.evalctxT ->
-    let atom = mixop |> List.hd |> List.hd in
+    let atom = mixop |> Mixop.head |> Option.get in
     let context_var = get_context_var e in
     let context_var' = to_fresh_var env context_var in
     sprintf "%s Let %s be %s.\n\n%s%s Push the %s %s."
@@ -1338,7 +1330,7 @@ let rec render_instr env algoname index depth instr =
       (render_stack_prefix e) (render_expr env e)
   | Al.Ast.PopI ({ it = Al.Ast.CaseE (mixop, _); _ } as expr)
   when Al.Valid.sub_typ expr.note Al.Al_util.evalctxT ->
-    let atom = mixop |> List.hd |> List.hd in
+    let atom = mixop |> Mixop.head |> Option.get in
     let control_frame_kind = render_atom env atom in
     sprintf "%s Pop the %s from the stack."
       (render_order index depth)
@@ -1357,7 +1349,7 @@ let rec render_instr env algoname index depth instr =
     (match e1.it with
     (* NOTE: This assumes that the first argument of control frame is arity *)
     | Al.Ast.CaseE (mixop, [ arity; arg ] ) when Al.Valid.sub_typ e1.note Al.Al_util.evalctxT ->
-      let atom_name = mixop |> List.hd |> List.hd |> Atom.to_string in
+      let atom_name = mixop |> Mixop.head |> Option.get |> Atom.to_string in
       let context_var = get_context_var e1 in
       let rendered_let =
         sprintf "%s Let %s be %s."
@@ -1437,7 +1429,7 @@ let rec render_instr env algoname index depth instr =
     sprintf "%s Return%s." (render_order index depth)
       (render_opt " " (render_expr env) "" e_opt)
   | Al.Ast.EnterI ({ it = Al.Ast.CaseE (mixop, _); _ } as e1, e2, il) ->
-    let atom = mixop |> List.hd |> List.hd in
+    let atom = mixop |> Mixop.head |> Option.get in
     let context_var = (get_context_var e1) in
     sprintf "%s Let %s be %s.\n\n%s%s Enter the block %s with the %s %s.%s"
       (render_order index depth)
@@ -1500,7 +1492,7 @@ let render_atom_title env name params =
     | _ -> name.it
   in
   let name = name' $$ no_region % name.note in
-  let op = [name] :: List.init (List.length params) (fun _ -> []) in
+  let op = Mixop.(Seq (Atom name :: List.init (List.length params) (fun _ -> Arg ()))) in
   let params = List.filter_map (fun a -> match a.it with Al.Ast.ExpA e -> Some e | _ -> None) params in
   let expr = Al.Al_util.caseE (op, params) ~at:no_region ~note:Al.Al_util.no_note in
   match al_to_el_expr expr with

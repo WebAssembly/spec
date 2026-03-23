@@ -83,10 +83,10 @@ let rec match_heaptype c t1 t2 =
   | I31HT, EqHT -> true
   | StructHT, EqHT -> true
   | ArrayHT, EqHT -> true
-  | NoneHT, t -> match_heaptype c t AnyHT
-  | NoFuncHT, t -> match_heaptype c t FuncHT
-  | NoExnHT, t -> match_heaptype c t ExnHT
-  | NoExternHT, t -> match_heaptype c t ExternHT
+  | NoneHT, t when t <> BotHT -> match_heaptype c t AnyHT
+  | NoFuncHT, t when t <> BotHT -> match_heaptype c t FuncHT
+  | NoExnHT, t when t <> BotHT -> match_heaptype c t ExnHT
+  | NoExternHT, t when t <> BotHT -> match_heaptype c t ExternHT
   | UseHT (Idx x1), _ -> match_heaptype c (UseHT (Def (lookup c x1))) t2
   | _, UseHT (Idx x2) -> match_heaptype c t1 (UseHT (Def (lookup c x2)))
   | UseHT (Def dt1), UseHT (Def dt2) -> match_deftype c dt1 dt2

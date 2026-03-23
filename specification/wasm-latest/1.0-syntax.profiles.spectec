@@ -1,0 +1,5 @@
+;;
+;; Profiles
+;;
+
+def $ND : bool hint(builtin)  ;; non-determinism

@@ -1,0 +1,134 @@
+;;
+;; Syntax of Modules
+;;
+
+syntax elemmode hint(desc "element mode") hint(macro "%" "E%") =
+  ACTIVE tableidx expr | PASSIVE | DECLARE
+syntax datamode hint(desc "data mode") hint(macro "%" "D%") =
+  ACTIVE memidx expr | PASSIVE
+
+syntax type hint(desc "type definition") =
+  TYPE rectype
+
+syntax tag hint(desc "tag") =
+  TAG tagtype
+
+syntax global hint(desc "global") =
+  GLOBAL globaltype expr
+
+syntax mem hint(desc "memory") =
+  MEMORY memtype
+
+syntax table hint(desc "table") =
+  TABLE tabletype expr
+
+syntax data hint(desc "memory segment") =
+  DATA byte* datamode
+
+syntax local hint(desc "local") =
+  LOCAL valtype
+
+syntax func hint(desc "function") =
+  FUNC typeidx local* expr
+
+syntax elem hint(desc "table segment") =
+  ELEM reftype expr* elemmode
+
+syntax start hint(desc "start function") =
+  START funcidx
+
+syntax import hint(desc "import") =
+  IMPORT name name externtype
+
+syntax export hint(desc "export") =
+  EXPORT name externidx
+
+syntax module hint(desc "module") =
+  MODULE type* import* tag* global* mem* table* func* data* elem* start? export*
+
+
+;; Meta variables
+
+var ty : type
+var loc : local
+var glob : global
+var tab : table
+var im : import
+var ex : export
+
+
+;; Free indices
+
+def $free_type(type) : free
+def $free_tag(tag) : free
+def $free_global(global) : free
+def $free_mem(mem) : free
+def $free_table(table) : free
+def $free_local(local) : free
+def $free_func(func) : free
+def $free_data(data) : free
+def $free_elem(elem) : free
+def $free_datamode(datamode) : free
+def $free_elemmode(elemmode) : free
+def $free_start(start) : free
+def $free_import(import) : free
+def $free_export(export) : free
+def $free_module(module) : free
+
+
+def $free_type(TYPE rectype) = $free_rectype(rectype)
+
+def $free_tag(TAG tagtype) = $free_tagtype(tagtype)
+
+def $free_global(GLOBAL globaltype expr) =
+  $free_globaltype(globaltype) ++ $free_expr(expr)
+
+def $free_mem(MEMORY memtype) = $free_memtype(memtype)
+
+def $free_table(TABLE tabletype expr) =
+  $free_tabletype(tabletype) ++ $free_expr(expr)
+
+def $free_local(LOCAL t) = $free_valtype(t)
+
+def $free_func(FUNC typeidx local* expr) =
+  $free_typeidx(typeidx) ++ $free_list($free_local(local)*) ++
+  $free_block(expr)[.LOCALS = eps]
+
+def $free_data(DATA byte* datamode) = $free_datamode(datamode)
+
+def $free_elem(ELEM reftype expr* elemmode) =
+  $free_reftype(reftype) ++ $free_list($free_expr(expr)*) ++
+  $free_elemmode(elemmode)
+
+def $free_elemmode(ACTIVE tableidx expr) = $free_tableidx(tableidx) ++ $free_expr(expr)
+def $free_elemmode(PASSIVE) = {}
+def $free_elemmode(DECLARE) = {}
+
+def $free_datamode(ACTIVE memidx expr) = $free_memidx(memidx) ++ $free_expr(expr)
+def $free_datamode(PASSIVE) = {}
+
+def $free_start(START funcidx) = $free_funcidx(funcidx)
+
+def $free_import(IMPORT name_1 name_2 externtype) = $free_externtype(externtype)
+
+def $free_export(EXPORT name externidx) = $free_externidx(externidx)
+
+def $free_module(MODULE type* import* tag* global* mem* table* func* data* elem* start? export*) =
+  $free_list($free_type(type)*) ++
+  $free_list($free_tag(tag)*) ++
+  $free_list($free_global(global)*) ++
+  $free_list($free_mem(mem)*) ++
+  $free_list($free_table(table)*) ++
+  $free_list($free_func(func)*) ++
+  $free_list($free_data(data)*) ++
+  $free_list($free_elem(elem)*) ++
+  $free_opt($free_start(start)?) ++
+  $free_list($free_import(import)*) ++
+  $free_list($free_export(export)*)
+
+
+def $funcidx_module(module) : funcidx*  hint(show $funcidx(%)) hint(macro "freefuncidx")
+def $funcidx_module(module) = $free_module(module).FUNCS
+
+def $dataidx_funcs(func*) : dataidx*  hint(show $dataidx(%)) hint(macro "freedataidx")
+def $dataidx_funcs(func*) = $free_list($free_func(func)*).DATAS

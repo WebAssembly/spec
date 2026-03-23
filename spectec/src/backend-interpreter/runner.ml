@@ -122,6 +122,10 @@ let get_export_addr name modulename =
   try List.hd vl with Failure _ ->
     failwith ("Function export doesn't contain function address")
 
+(* Flags *)
+
+let err_exit = ref true
+
 (** Main functions **)
 
 let invoke module_name funcname args =
@@ -266,11 +270,15 @@ let run_wast name script =
   (* Intialize spectest *)
   Register.add "spectest" (Host.spectest ());
 
-  let result =
-    script
-    |> List.map run_command
-    |> sum_results_with_time
+  let _, results = List.fold_left_map (fun err cmd ->
+    if err && !err_exit then
+      err, (fail, 0.0)
+    else
+      let cmd_result = run_command cmd in
+      (fst cmd_result = fail), cmd_result
+  ) false script
   in
+  let result = sum_results_with_time results in
   print_runner_result name result; result
 
 

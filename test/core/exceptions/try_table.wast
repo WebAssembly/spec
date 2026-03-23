@@ -253,6 +253,30 @@
   (func (export "try-with-param")
     (i32.const 0) (try_table (param i32) (drop))
   )
+
+  (func (export "duplicated-catches") (result i32)
+    (block
+      (block
+        (try_table (catch $e0 0) (catch $e0 1)
+          (throw $e0)
+        )
+      )
+      (return (i32.const 2))
+    )
+    (return (i32.const 3))
+  )
+
+  (func (export "catch-all-before-catch") (result i32)
+    (block
+      (block
+        (try_table (catch_all 0) (catch $e0 1)
+          (throw $e0)
+        )
+      )
+      (return (i32.const 2))
+    )
+    (return (i32.const 3))
+  )
 )
 
 (assert_return (invoke "simple-throw-catch" (i32.const 0)) (i32.const 23))
@@ -311,6 +335,9 @@
 (assert_exception (invoke "return-call-indirect-in-try-catch"))
 
 (assert_return (invoke "try-with-param"))
+
+(assert_return (invoke "duplicated-catches") (i32.const 2))
+(assert_return (invoke "catch-all-before-catch") (i32.const 2))
 
 (module
   (func $imported-throw (import "test" "throw"))
@@ -466,3 +493,31 @@
   )
   "type mismatch"
 )
+
+;; try_table acts a regular block for br, etc.
+
+(module
+  (func (export "as-br-target") (result i32)
+    (block
+      (try_table
+        (br 0)
+        (unreachable)
+      )
+      (return (i32.const 111))
+    )
+    (i32.const 222)
+  )
+
+  (func (export "as-value-provider") (result i32)
+    (block
+      (try_table (result i32)
+        (br 0 (i32.const 333))
+      )
+      (return)
+    )
+    (unreachable)
+  )
+)
+
+(assert_return (invoke "as-br-target") (i32.const 111))
+(assert_return (invoke "as-value-provider") (i32.const 333))

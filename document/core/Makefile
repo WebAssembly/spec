@@ -8,7 +8,7 @@ SPHINXBUILD   = sphinx-build
 PAPER         = a4
 ROOTDIR       = $(shell dirname `ls -d ../core 2>/dev/null || ls -d ../../core`)/..
 SPECTECDIR    = $(ROOTDIR)/spectec
-SPECTECSPEC   = $(ROOTDIR)/specification/wasm-3.0
+SPECTECSPEC   = $(ROOTDIR)/specification/wasm-latest
 SPECTECEXT    = spectec
 SPECTEC       = $(SPECTECDIR)/spectec
 SPLICEDIR     = _spectec
@@ -134,6 +134,7 @@ clean:
 	rm -rf $(SPLICEDIR)
 	rm -rf $(BUILDDIR)
 	rm -rf $(STATICDIR)
+	rm -rf $(SPLICEDIR)
 	rm -f $(GENERATED)
 
 .PHONY: html html-nested

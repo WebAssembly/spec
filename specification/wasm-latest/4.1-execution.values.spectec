@@ -1,0 +1,111 @@
+;;
+;; Runtime Inspection of Values
+;;
+
+;; Default values
+
+def $default_(valtype) : val?
+def $default_(Inn) = (CONST Inn 0)
+def $default_(Fnn) = (CONST Fnn $fzero($size(Fnn)))
+def $default_(Vnn) = (VCONST Vnn 0)
+def $default_(REF NULL ht) = (REF.NULL ht)
+def $default_(REF ht) = eps
+
+;;relation Defaultable: |- valtype DEFAULTABLE ;; forward-declared in validation.instructions
+rule Defaultable: |- t DEFAULTABLE -- if $default_(t) =/= eps
+
+;;relation Nondefaultable: |- valtype NONDEFAULTABLE ;; forward-declared in validation.instructions
+rule Nondefaultable: |- t NONDEFAULTABLE -- if $default_(t) = eps
+
+
+;; Values
+
+relation Num_ok: store |- num : numtype  hint(macro "%num")
+relation Vec_ok: store |- vec : vectype  hint(macro "%vec")
+relation Ref_ok: store |- ref : reftype  hint(macro "%ref")
+relation Val_ok: store |- val : valtype  hint(macro "%val")
+
+rule Num_ok:
+  s |- CONST nt c : nt
+
+rule Vec_ok:
+  s |- VCONST vt c : vt
+
+
+rule Ref_ok/null:
+  s |- REF.NULL ht : (REF NULL ht')
+  -- Heaptype_sub: {} |- ht' <: ht
+
+rule Ref_ok/i31:
+  s |- REF.I31_NUM i : (REF I31)
+
+rule Ref_ok/struct:
+  s |- REF.STRUCT_ADDR a : (REF dt)
+  -- if s.STRUCTS[a].TYPE = dt
+
+rule Ref_ok/array:
+  s |- REF.ARRAY_ADDR a : (REF dt)
+  -- if s.ARRAYS[a].TYPE = dt
+
+rule Ref_ok/func:
+  s |- REF.FUNC_ADDR a : (REF dt)
+  -- if s.FUNCS[a].TYPE = dt
+
+rule Ref_ok/exn:
+  s |- REF.EXN_ADDR a : (REF EXN)
+  -- if s.EXNS[a] = exn
+
+rule Ref_ok/host:
+  s |- REF.HOST_ADDR a : (REF ANY)
+
+rule Ref_ok/extern:
+  s |- REF.EXTERN addrref : (REF EXTERN)
+  -- Ref_ok: s |- addrref : (REF ANY)
+
+rule Ref_ok/sub:
+  s |- ref : rt
+  -- Ref_ok: s |- ref : rt'
+  -- Reftype_sub: {} |- rt' <: rt
+
+
+rule Val_ok/num:
+  s |- num : nt
+  -- Num_ok: s |- num : nt
+
+rule Val_ok/vec:
+  s |- vec : vt
+  -- Vec_ok: s |- vec : vt
+
+rule Val_ok/ref:
+  s |- ref : rt
+  -- Ref_ok: s |- ref : rt
+
+
+;; External addresses
+
+relation Externaddr_ok: store |- externaddr : externtype  hint(macro "%externaddr")
+
+rule Externaddr_ok/tag:
+  s |- TAG a : TAG taginst.TYPE
+  -- if s.TAGS[a] = taginst
+
+rule Externaddr_ok/global:
+  s |- GLOBAL a : GLOBAL globalinst.TYPE
+  -- if s.GLOBALS[a] = globalinst
+
+rule Externaddr_ok/mem:
+  s |- MEM a : MEM meminst.TYPE
+  -- if s.MEMS[a] = meminst
+
+rule Externaddr_ok/table:
+  s |- TABLE a : TABLE tableinst.TYPE
+  -- if s.TABLES[a] = tableinst
+
+rule Externaddr_ok/func:
+  s |- FUNC a : FUNC funcinst.TYPE
+  -- if s.FUNCS[a] = funcinst
+
+rule Externaddr_ok/sub:
+  s |- externaddr : xt
+  -- Externaddr_ok: s |- externaddr : xt'
+  -- Externtype_sub: {} |- xt' <: xt

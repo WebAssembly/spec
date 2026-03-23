@@ -1384,7 +1384,7 @@
 .. |HITYPE| mathdef:: \xref{exec/runtime}{syntax-taginst}{\K{type}}
 
 .. |EITYPE| mathdef:: \xref{exec/runtime}{syntax-eleminst}{\K{type}}
-.. |EIREFS| mathdef:: \xref{exec/runtime}{syntax-eleminst}{\K{elem}}
+.. |EIREFS| mathdef:: \xref{exec/runtime}{syntax-eleminst}{\K{refs}}
 
 .. |DITYPE| mathdef:: \xref{exec/runtime}{syntax-datainst}{\K{data}}
 .. |DIBYTES| mathdef:: \xref{exec/runtime}{syntax-datainst}{\K{bytes}}

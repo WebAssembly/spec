@@ -342,7 +342,7 @@ and eval_expr env expr =
       | [] -> eval_expr env e2 in
     eval_expr env e1 |> replace ps
   | CaseE (op, el) ->
-    (match (get_atom op) with
+    (match Mixop.head op with
     | Some a -> caseV (Print.string_of_atom a, List.map (eval_expr env) el)
     | None -> caseV ("", List.map (eval_expr env) el)
     )
@@ -370,6 +370,12 @@ and eval_expr env expr =
       raise Exception.OutOfMemory
     else
       Array.make i v |> listV
+  (* HARDCODE: The case where itered variable does not appear in xes.
+    --> Insert itered variable. This was instroduced due to the change of IrerE's ListN. *)
+  | IterE (e1, (ListN (e2, Some x), [])) ->
+    let dummy_expr = VarE "_" $$ no_region % (Il.Ast.VarT ("_" $ no_region, []) $ no_region) in
+    let expr' = {expr with it = IterE (e1, (ListN (e2, Some x), [(x, dummy_expr)]))} in
+    eval_expr env expr'
   | IterE (inner_e, (iter, xes)) ->
     let vs =
       env
@@ -480,7 +486,7 @@ and assign lhs rhs env =
     when List.length lhs_s = Array.length !rhs_s ->
     List.fold_right2 assign lhs_s (Array.to_list !rhs_s) env
   | CaseE (op, lhs_s), CaseV (rhs_tag, rhs_s) when List.length lhs_s = List.length rhs_s ->
-    (match get_atom op with
+    (match Mixop.head op with
     | Some lhs_tag when (Print.string_of_atom lhs_tag) = rhs_tag ->
       List.fold_right2 assign lhs_s rhs_s env
     | None when "" = rhs_tag ->
@@ -600,7 +606,7 @@ and step_instr (fname: string) (ctx: AlContext.t) (env: value Env.t) (instr: ins
     )
   | PopI e ->
     (match e.it with
-    | CaseE ([{it = Atom.Atom "FRAME_"; _}] :: _, [_; inner_e]) ->
+    | CaseE (op, [_; inner_e]) when (Option.get (Mixop.head op)).it = Atom.Atom "FRAME_" ->
       (match WasmContext.pop_context () with
       | CaseV ("FRAME_", [_; inner_v]), _, _ ->
         let new_env = assign inner_e inner_v env in
@@ -719,36 +725,42 @@ and step (ctx: AlContext.t) : AlContext.t =
 
   Debugger.run ctx;
 
-  match ctx with
-  | Al (name, args, il, env, n) :: ctx ->
-    (match il with
-    | [] -> ctx
-    | [ instr ]
-    when can_tail_call instr && n = 0 && not !Debugger.debug ->
-      try_step_instr name ctx env instr
-    | h :: t ->
-      let new_ctx = Al (name, args, t, env, n) :: ctx in
-      try_step_instr name new_ctx env h
-    )
-  | Wasm n :: ctx ->
-    if n = 0 then
-      ctx
-    else
-      try_step_wasm (Wasm n :: ctx) (WasmContext.pop_instr ())
-  | Enter (name, il, env) :: ctx ->
-    (match il with
-    | [] ->
-      (match ctx with
-      | Wasm n :: t when not !Debugger.debug -> Wasm (n + 1) :: t
-      | Enter (_, [], _) :: t -> Wasm 2 :: t
-      | ctx -> Wasm 1 :: ctx
+  try
+    match ctx with
+    | Al (name, args, il, env, n) :: ctx ->
+      (match il with
+      | [] -> ctx
+      | [ instr ]
+      when can_tail_call instr && n = 0 && not !Debugger.debug ->
+        try_step_instr name ctx env instr
+      | h :: t ->
+        let new_ctx = Al (name, args, t, env, n) :: ctx in
+        try_step_instr name new_ctx env h
       )
-    | h :: t ->
-      let new_ctx = Enter (name, t, env) :: ctx in
-      try_step_instr name new_ctx env h
-    )
-  | Execute v :: ctx -> try_step_wasm ctx v
-  | _ -> assert false
+    | Wasm n :: ctx ->
+      if n = 0 then
+        ctx
+      else
+        try_step_wasm (Wasm n :: ctx) (WasmContext.pop_instr ())
+    | Enter (name, il, env) :: ctx ->
+      (match il with
+      | [] ->
+        (match ctx with
+        | Wasm n :: t when not !Debugger.debug -> Wasm (n + 1) :: t
+        | Enter (_, [], _) :: t -> Wasm 2 :: t
+        | ctx -> Wasm 1 :: ctx
+        )
+      | h :: t ->
+        let new_ctx = Enter (name, t, env) :: ctx in
+        try_step_instr name new_ctx env h
+      )
+    | Execute v :: ctx -> try_step_wasm ctx v
+    | _ -> assert false
+  with exn when !Debugger.debug ->
+    let bt = Printexc.get_raw_backtrace () in
+    print_endline (Printexc.to_string exn);
+    Debugger.do_debug ctx;
+    Printexc.raise_with_backtrace exn bt
 
 
 (* AL interpreter Entry *)

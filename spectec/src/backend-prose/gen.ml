@@ -17,6 +17,10 @@ let print_yet_prem prem fname =
   let s = Il.Print.string_of_prem prem in
   print_yet prem.at fname ("`" ^ s ^ "`")
 
+let print_yet_rel def fname =
+  let s = Il.Print.string_of_def def in
+  print_yet def.at fname ("`" ^ s ^ "`")
+
 (* Helpers *)
 
 module Map = Map.Make(String)
@@ -32,13 +36,13 @@ let flatten_rec def =
 
 let is_validation_helper_relation def =
   match def.it with
-  | Ast.RelD (id, _, _, _) -> id.it = "Expand" || id.it = "Expand_use"
+  | Ast.RelD (id, _, _, _, _) -> id.it = "Expand" || id.it = "Expand_use"
   | _ -> false
 (* NOTE: Assume validation relation is `|-` *)
 let is_validation_relation def =
   match def.it with
-  | Ast.RelD (_, mixop, _, _) ->
-    List.exists (List.exists (fun atom -> atom.it = Atom.Turnstile)) mixop
+  | Ast.RelD (_, _, mixop, _, _) ->
+    List.exists (List.exists (fun atom -> atom.it = Atom.Turnstile)) (Mixop.flatten mixop)
   | _ -> false
 
 let extract_validation_il il =
@@ -47,11 +51,9 @@ let extract_validation_il il =
   |> List.filter
     (fun rel -> is_validation_relation rel || is_validation_helper_relation rel)
 
-let atomize atom' = atom' $$ no_region % (Atom.info "")
-
 let rel_has_id id rel =
   match rel.it with
-  | Ast.RelD (id', _, _, _) -> id.it = id'.it
+  | Ast.RelD (id', _, _, _, _) -> id.it = id'.it
   | _ -> false
 
 let extract_prose_hint hintexp =
@@ -68,26 +70,14 @@ let extract_rel_hint relid hintid =
 
 let swap = function `LtOp -> `GtOp | `GtOp -> `LtOp | `LeOp -> `GeOp | `GeOp -> `LeOp | op -> op
 
-(* CASE (?(())) ~> CASE
-   CASE (?()) ~> () *)
-let recover_optional_singleton_constructor e =
-  match e.it with
-  | Al.Ast.CaseE ([[atom]; [{it = Quest; _}]], [{it = OptE opt; _ }]) ->
-    (
-      match opt with
-      | None   -> Al.Ast.CaseE ([[]], [])
-      | Some _ -> Al.Ast.CaseE ([[atom]], [])
-    ) |> (fun it -> {e with it})
-  | _ -> e
-
 (* l ->_ [] r  ~>  l -> r *)
 let remove_empty_arrow_sub e =
   match e.it with
   | Al.Ast.CaseE (
-      [[]; [{it = ArrowSub; _} as arrow]; []; []],
+      Mixop.(Infix (Arg (), ({it = ArrowSub; _} as arrow), Seq [Arg (); Arg ()])),
       [lhs; {it = ListE []; _}; rhs]
     ) ->
-    let it = Al.Ast.CaseE ([[];[{arrow with it = Arrow}];[]], [lhs; rhs]) in
+    let it = Al.Ast.CaseE (Mixop.(Infix (Arg (), {arrow with it = Arrow}, Arg ())), [lhs; rhs]) in
     {e with it}
   | _ -> e
 
@@ -135,14 +125,14 @@ type rel_kind =
 
 let get_rel_kind def =
   let open Atom in
-  let valid_pattern = [[]; [atomize Turnstile]; [atomize Colon; atomize (Atom "OK")]] in
-  let valid_with_pattern = [[]; [atomize Turnstile]; [atomize Colon]; []] in
-  let match_pattern = [[]; [atomize Turnstile]; [atomize Sub]; []] in
-  let const_pattern = [[]; [atomize Turnstile]; [atomize (Atom "CONST")]] in
-  let valid_const_pattern = [[]; [atomize Turnstile]; [atomize Colon]; [atomize (Atom "CONST")]] in
-  let valid_with2_pattern = [[]; [atomize Turnstile]; [atomize Colon]; []; []] in
-  let defaultable_pattern = [[]; [atomize Turnstile]; [atomize (Atom "DEFAULTABLE")]] in
-  let nondefaultable_pattern = [[]; [atomize Turnstile]; [atomize (Atom "NONDEFAULTABLE")]] in
+  let valid_pattern = [[]; [Turnstile]; [Colon; Atom "OK"]] in
+  let valid_with_pattern = [[]; [Turnstile]; [Colon]; []] in
+  let match_pattern = [[]; [Turnstile]; [Sub]; []] in
+  let const_pattern = [[]; [Turnstile]; [Atom "CONST"]] in
+  let valid_const_pattern = [[]; [Turnstile]; [Colon]; [Atom "CONST"]] in
+  let valid_with2_pattern = [[]; [Turnstile]; [Colon]; []; []] in
+  let defaultable_pattern = [[]; [Turnstile]; [Atom "DEFAULTABLE"]] in
+  let nondefaultable_pattern = [[]; [Turnstile]; [Atom "NONDEFAULTABLE"]] in
 
   let has_instr_as_second typ =
     match typ.it with
@@ -152,8 +142,10 @@ let get_rel_kind def =
   let extract_pphint relid = extract_rel_hint relid "prosepp" in
 
   match def.it with
-  | Ast.RelD (id, mixop, typ, _) ->
-      let match_mixop pattern = Mixop.(eq mixop pattern || eq mixop (List.tl pattern)) in
+  | Ast.RelD (id, params, mixop, typ, _) ->
+      if params <> [] then (print_yet_rel def "get_rel_kind"; OtherRel) else
+      let mixop' = List.map (List.map Util.Source.it) (Mixop.flatten mixop) in
+      let match_mixop pattern = mixop' = pattern || mixop' = List.tl pattern in
       if match_mixop valid_pattern then
         ValidRel
       else if match_mixop valid_with_pattern then
@@ -182,7 +174,6 @@ let transpile_expr =
   let post_expr =
     Il2al.Transpile.simplify_record_concat
     >> Il2al.Transpile.reduce_comp
-    >> recover_optional_singleton_constructor
     >> remove_empty_arrow_sub
   in
   let walk_expr walker expr =
@@ -289,7 +280,8 @@ let rec prem_to_instrs prem =
     [ LetS (exp_to_expr e1, exp_to_expr e2) ]
   | Ast.IfPr e ->
     if_expr_to_instrs e
-  | Ast.RulePr (id, _, e) ->
+  | Ast.RulePr (id, args, _, e) ->
+    if args <> [] then (print_yet_prem prem "prem_to_instrs"; [ YetS "TODO: prem_to_instrs for RulePr" ]) else
     let rel =
       match List.find_opt (rel_has_id id) !Langs.validation_il with
       | Some rel -> rel
@@ -410,9 +402,9 @@ let preprocess_exp frees m exp =
 
 let preprocess_rule m rule =
   { rule with it = match rule.it with
-    | Ast.RuleD (id, bs, ops, exp, prems) ->
-      let frees = Free.(union (free_rule rule) (free_list bound_bind bs)).varid in
-      Ast.RuleD (id, bs, ops, preprocess_exp frees m exp, prems)}
+    | Ast.RuleD (id, ps, ops, exp, prems) ->
+      let frees = Free.(union (free_rule rule) (free_list bound_param ps)).varid in
+      Ast.RuleD (id, ps, ops, preprocess_exp frees m exp, prems)}
 
 let postprocess_rules m rule =
   let binds = Map.fold (fun _ (v, e) acc ->
@@ -451,7 +443,8 @@ let prose_of_rules name mk_concl rules =
 
 let proses_of_rel mk_concl def =
   match def.it with
-  | Ast.RelD (rel_id, _, _, rules) ->
+  | Ast.RelD (rel_id, params, _, _, rules) ->
+    if params <> [] then (print_yet_rel def "proses_of_rel"; []) else
     let rules = List.filter (fun r -> not (is_hidden_rule r)) rules in
     let frees = (Il2al.Free.free_rules rules).varid in
     let unified_rules = Il2al.Unify.(unify_rules (init_env frees) rules) in
@@ -477,7 +470,7 @@ type vrule_group =
 let rec extract_vrules def =
   match def.it with
   | Ast.RecD defs -> List.concat_map extract_vrules defs
-  | Ast.RelD (id, _, _, rules) when id.it = "Instr_ok" ->
+  | Ast.RelD (id, _, _, _, rules) when id.it = "Instr_ok" ->
       List.map (fun rule -> (id, rule)) rules
   | _ -> []
 (* group typing rules that have same name *)
@@ -552,7 +545,8 @@ let proses_of_defaultable_rel cmpop = proses_of_rel (fun rule ->
 (** 9. Others **)
 let proses_of_other_rel rel =
   match rel.it with
-  | Ast.RelD (rel_id, mixop, args, _) ->
+  | Ast.RelD (rel_id, params, mixop, args, _) ->
+    if params <> [] then (print_yet_rel rel "proses_of_other_rel"; []) else
     (match extract_rel_hint rel_id "prose" with
     | Some hint ->
       (* Relation with prose hint *)

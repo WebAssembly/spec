@@ -225,7 +225,7 @@ def $frame(state) : frame             hint(show %.FRAME) hint(macro "Z%")
 def $store((s; f)) = s
 def $frame((s; f)) = f
 
-def $tagaddr(state) : tagaddr*        hint(show %.TAGS)    hint(macro "Z%")
+def $tagaddr(state) : tagaddr*        hint(show %.MODULE.TAGS) hint(macro "Z%")
 def $tagaddr((s; f)) = f.MODULE.TAGS
 
 def $moduleinst(state) : moduleinst   hint(show %.MODULE)  hint(macro "Z%")

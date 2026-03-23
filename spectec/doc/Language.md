@@ -151,13 +151,19 @@ atomid ::=
   "_|_" | "^|^"
 
 atomop ::=
-  ":" | ";" | "\" | <:"
+  ":" | ";" | "\" | "<:" | ":>"
   "<<" | ">>"
   "|-" | "-|"
-  ":=" | "~~"
+  ":=" | "==" | "~~"
   "->" | "~>" | "~>*" | "=>"
-  "`." | ".." | "..."
-  "?" | "*"
+  "." | ".." | "..."
+  "`^?" | "`^+" | "`^*"
+  "`+" | "`-" | "`+-" | "`-+" | "`*" | "`/" | "`\"
+  "`=" | "`=/=" | "`<" | "`>" | "`<=" | "`>="
+  "`~" | "`/\" | "`\/" | "`==>" | "`<=>"
+  "`<-"
+  "(/\)" | "(\/)" | "(!)" | "(?)" | "(+)" | "(*)" | "(++)"
+  ":_" | "=_" | "==_" | "~~_" | "->_" | "=>_" | "~>_" | "~>*_" | "<<_" | ">>_" | "|-_" | "-|_"
 ```
 
 ##### Type Aliases
@@ -334,7 +340,7 @@ premise ::=
   "var" id ":" typ                                          local variable declaration
   "if" exp                                                  side condition
   "otherwise"                                               fallback side condition
-  relid ":" exp                                             relational premise
+  relid args ":" exp                                        relational premise
   "(" premise ")" iter*                                     iterated relational premise
 ```
 
@@ -396,12 +402,10 @@ SpecTec also employs a weak form of shallow subtyping:
   except that the larger type may drop some premises.
 
 * Variant types are in a subtype relation if the smaller type has fewer or the same number of cases,
-  and for each of its cases there is an equivalent case in the larger type,
-  except that the case in the larger type may drop some premises.
+  and for each of its cases there is an equivalent case in the larger type.
 
 * Record types are in a subtype relation if the larger type has fewer or the same number of fields,
-  and for each of its fields there is an equivalent case in the smaller type,
-  except that the field in the larger type may drop some premises.
+  and for each of its fields there is an equivalent case in the smaller type.
 
 
 ### Expressions
@@ -465,7 +469,7 @@ exp ::= ...
   exp cmpop exp                        comparison
 
 notop ::= "~"
-logop ::= "/\" | "\/" | "=>"
+logop ::= "/\" | "\/" | "==>" | "<=>"
 cmpop ::= "=" | "=/=" | "<" | ">" | "<=" | ">="
 ```
 
@@ -1098,8 +1102,8 @@ While functions are used to algorithmically compute on a meta-level,
 
 ```
 def ::=
-  "relation" relid ":" nottyp                   relation declaration
-  "rule" relid subid* ":" exp ("--" premise)*   rule
+  "relation" relid params ":" nottyp                   relation declaration
+  "rule" relid params subid* ":" exp ("--" premise)*   rule
 ```
 
 Relations are declared with a type that specifies their notation,
@@ -1367,15 +1371,19 @@ ruleid ::= id
 subid ::= ("/" | "-") ruleid
 
 atomop ::=
-  "in" | ":" | ";" | "\" | <:"
+  ":" | ";" | "\" | "<:" | ":>"
   "<<" | ">>"
   "|-" | "-|"
-  ":=" | "~~" | "~~_"
+  ":=" | "==" | "~~"
   "->" | "~>" | "~>*" | "=>"
-  "`." | ".." | "..."
-  "`?" | "`+" | "`*"
-  "(/\)" | "(\/)" | "(+)" | "(*)" | "(++)"
-  ":_" | "=_" | "==_" | "->_" | "=>_" | "~>_" | "~>*_" | "|-_" | "-|_"
+  "." | ".." | "..."
+  "`^?" | "`^+" | "`^*"
+  "`+" | "`-" | "`+-" | "`-+" | "`*" | "`/" | "`\"
+  "`=" | "`=/=" | "`<" | "`>" | "`<=" | "`>="
+  "`~" | "`/\" | "`\/" | "`==>" | "`<=>"
+  "`<-"
+  "(/\)" | "(\/)" | "(!)" | "(?)" | "(+)" | "(*)" | "(++)"
+  ":_" | "=_" | "==_" | "~~_" | "->_" | "=>_" | "~>_" | "~>*_" | "<<_" | ">>_" | "|-_" | "-|_"
 ```
 
 
@@ -1438,7 +1446,7 @@ nottyp ::=
 
 ```
 notop ::= "~"
-logop ::= "/\" | "\/" | "=>"
+logop ::= "/\" | "\/" | "==>" | "<=>"
 cmpop ::= "=" | "=/=" | "<" | ">" | "<=" | ">="
 exp ::=
   varid                                meta variable
@@ -1547,15 +1555,15 @@ params ::= ("(" param*"," ")")?
 param ::=
   (varid ":") typ
   "syntax" synid
-  "grammar" gramid ":" typ
+  "grammar" gramid params ":" typ
   "def" "$" defid params ":" typ
 
 def ::=
   "syntax" varid params hint*                               syntax declaration
   "syntax" varid subid* params hint* "=" deftyp             syntax definition
   "grammar" gramid subid* params ":" typ hint* "=" gram     grammar definition
-  "relation" relid hint* ":" nottyp                         relation declaration
-  "rule" relid subid* hint* ":" exp ("--" premise)*  rule
+  "relation" relid params hint* ":" nottyp                  relation declaration
+  "rule" relid params subid* hint* ":" exp ("--" premise)*  rule
   "var" varid ":" typ hint*                                 variable declaration
   "def" "$" defid params ":" typ hint*                      function declaration
   "def" "$" defid args "=" exp ("--" premise)*              function clause
@@ -1568,7 +1576,7 @@ def ::=
 
 premise ::=
   "var" id ":" typ                                          local variable declaration
-  relid ":" exp                                             relational premise
+  relid args ":" exp                                        relational premise
   "if" exp                                                  side condition
   "otherwise"                                               fallback side condition
   "(" premise ")" iter*                                     iterated relational premise
