@@ -5,11 +5,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Values &#8212; WebAssembly 3.0 (2026-03-18)</title>
+    <title>Values &#8212; WebAssembly 3.0 (2026-03-23)</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=686e5160" />
     <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=057308f9" />
-    <script src="../_static/documentation_options.js?v=26ba0f8e"></script>
+    <script src="../_static/documentation_options.js?v=bbc7cb01"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>window.MathJax = {"tex": {"maxBuffer": 30720, "macros": {"multicolumn": ["", 2]}}, "options": {"menuOptions": {"settings": {"enrich": false}}}}</script>
@@ -118,27 +118,15 @@ s \href{../exec/values.html#valid-vec}{\vdash} {\mathit{vt}}{.}\href{../syntax/i
 </section>
 <section id="null-references">
 <span id="valid-ref"></span><h3>Null References<a class="headerlink" href="#null-references" title="Link to this heading">¶</a></h3>
-<p>The <a class="reference internal" href="runtime.html#syntax-ref"><span class="std std-ref">reference value</span></a> <span class="math notranslate nohighlight">\((\href{../syntax/instructions.html#syntax-instr-ref}{\mathsf{ref{.}null}}~{\mathit{ht}})\)</span> is <a class="reference internal" href="#valid-ref"><span class="std std-ref">valid</span></a> with the <a class="reference internal" href="../syntax/types.html#syntax-reftype"><span class="std std-ref">reference type</span></a> <span class="math notranslate nohighlight">\((\href{../syntax/types.html#syntax-reftype}{\mathsf{ref}}~\href{../syntax/types.html#syntax-reftype}{\mathsf{null}}~{\mathit{ht}'})\)</span> if:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>The <a class="reference internal" href="../syntax/types.html#syntax-heaptype"><span class="std std-ref">heap type</span></a> <span class="math notranslate nohighlight">\({\mathit{ht}'}\)</span> <a class="reference internal" href="../valid/matching.html#match-heaptype"><span class="std std-ref">matches</span></a> the <a class="reference internal" href="../syntax/types.html#syntax-heaptype"><span class="std std-ref">heap type</span></a> <span class="math notranslate nohighlight">\({\mathit{ht}}\)</span>.</p></li>
-</ul>
-</div></blockquote>
+<p>The <a class="reference internal" href="runtime.html#syntax-ref"><span class="std std-ref">reference value</span></a> <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-ref}{\mathsf{ref{.}null}}\)</span> is <a class="reference internal" href="#valid-ref"><span class="std std-ref">valid</span></a> with the <a class="reference internal" href="../syntax/types.html#syntax-reftype"><span class="std std-ref">reference type</span></a> <span class="math notranslate nohighlight">\((\href{../syntax/types.html#syntax-reftype}{\mathsf{ref}}~\href{../syntax/types.html#syntax-reftype}{\mathsf{null}}~\href{../valid/conventions.html#syntax-valtype-ext}{\mathsf{bot}})\)</span>.</p>
 <div class="math notranslate nohighlight">
 \[\begin{array}{&#64;{}c&#64;{}}\displaystyle
 \frac{
-\{  \} \href{../valid/matching.html#match-heaptype}{\vdash} {\mathit{ht}'} \href{../valid/matching.html#match-heaptype}{\leq} {\mathit{ht}}
 }{
-s \href{../exec/values.html#valid-ref}{\vdash} \href{../syntax/instructions.html#syntax-instr-ref}{\mathsf{ref{.}null}}~{\mathit{ht}} : (\href{../syntax/types.html#syntax-reftype}{\mathsf{ref}}~\href{../syntax/types.html#syntax-reftype}{\mathsf{null}}~{\mathit{ht}'})
+s \href{../exec/values.html#valid-ref}{\vdash} \href{../exec/runtime.html#syntax-ref}{\mathsf{ref{.}null}} : (\href{../syntax/types.html#syntax-reftype}{\mathsf{ref}}~\href{../syntax/types.html#syntax-reftype}{\mathsf{null}}~\href{../valid/conventions.html#syntax-valtype-ext}{\mathsf{bot}})
 }
 \qquad
 \end{array}\]</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>A null reference can be typed with any smaller type.
-In particular, that allows it to be typed with the least type in its respective hierarchy.
-That ensures that the value is compatible with any nullable type in that hierarchy.</p>
-</div>
 </section>
 <section id="scalar-references">
 <span id="valid-ref-i31num"></span><h3>Scalar References<a class="headerlink" href="#scalar-references" title="Link to this heading">¶</a></h3>
@@ -245,18 +233,21 @@ s \href{../exec/values.html#valid-ref}{\vdash} \href{../exec/runtime.html#syntax
 </section>
 <section id="external-references">
 <h3>External References<a class="headerlink" href="#external-references" title="Link to this heading">¶</a></h3>
-<p>The <a class="reference internal" href="runtime.html#syntax-ref"><span class="std std-ref">reference value</span></a> <span class="math notranslate nohighlight">\((\href{../exec/runtime.html#syntax-ref}{\mathsf{ref{.}extern}}~{\href{../exec/runtime.html#syntax-addrref}{\mathit{addrref}}})\)</span> is <a class="reference internal" href="#valid-ref"><span class="std std-ref">valid</span></a> with the <a class="reference internal" href="../syntax/types.html#syntax-reftype"><span class="std std-ref">reference type</span></a> <span class="math notranslate nohighlight">\((\href{../syntax/types.html#syntax-reftype}{\mathsf{ref}}~\href{../syntax/types.html#syntax-heaptype}{\mathsf{extern}})\)</span> if:</p>
+<p>The <a class="reference internal" href="runtime.html#syntax-ref"><span class="std std-ref">reference value</span></a> <span class="math notranslate nohighlight">\((\href{../exec/runtime.html#syntax-ref}{\mathsf{ref{.}extern}}~{\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}})\)</span> is <a class="reference internal" href="#valid-ref"><span class="std std-ref">valid</span></a> with the <a class="reference internal" href="../syntax/types.html#syntax-reftype"><span class="std std-ref">reference type</span></a> <span class="math notranslate nohighlight">\((\href{../syntax/types.html#syntax-reftype}{\mathsf{ref}}~\href{../syntax/types.html#syntax-heaptype}{\mathsf{extern}})\)</span> if:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>The <a class="reference internal" href="runtime.html#syntax-ref"><span class="std std-ref">reference value</span></a> <span class="math notranslate nohighlight">\({\href{../exec/runtime.html#syntax-addrref}{\mathit{addrref}}}\)</span> is <a class="reference internal" href="#valid-ref"><span class="std std-ref">valid</span></a> with the <a class="reference internal" href="../syntax/types.html#syntax-reftype"><span class="std std-ref">reference type</span></a> <span class="math notranslate nohighlight">\((\href{../syntax/types.html#syntax-reftype}{\mathsf{ref}}~\href{../syntax/types.html#syntax-heaptype}{\mathsf{any}})\)</span>.</p></li>
+<li><p>The <a class="reference internal" href="runtime.html#syntax-ref"><span class="std std-ref">reference value</span></a> <span class="math notranslate nohighlight">\({\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}}\)</span> is <a class="reference internal" href="#valid-ref"><span class="std std-ref">valid</span></a> with the <a class="reference internal" href="../syntax/types.html#syntax-reftype"><span class="std std-ref">reference type</span></a> <span class="math notranslate nohighlight">\((\href{../syntax/types.html#syntax-reftype}{\mathsf{ref}}~\href{../syntax/types.html#syntax-heaptype}{\mathsf{any}})\)</span>.</p></li>
+<li><p>The <a class="reference internal" href="runtime.html#syntax-ref"><span class="std std-ref">reference value</span></a> <span class="math notranslate nohighlight">\({\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}}\)</span> is not of the form <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-ref}{\mathsf{ref{.}null}}\)</span>.</p></li>
 </ul>
 </div></blockquote>
 <div class="math notranslate nohighlight">
 \[\begin{array}{&#64;{}c&#64;{}}\displaystyle
 \frac{
-s \href{../exec/values.html#valid-ref}{\vdash} {\href{../exec/runtime.html#syntax-addrref}{\mathit{addrref}}} : (\href{../syntax/types.html#syntax-reftype}{\mathsf{ref}}~\href{../syntax/types.html#syntax-heaptype}{\mathsf{any}})
+s \href{../exec/values.html#valid-ref}{\vdash} {\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}} : (\href{../syntax/types.html#syntax-reftype}{\mathsf{ref}}~\href{../syntax/types.html#syntax-heaptype}{\mathsf{any}})
+ \qquad
+{\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}} \neq \href{../exec/runtime.html#syntax-ref}{\mathsf{ref{.}null}}
 }{
-s \href{../exec/values.html#valid-ref}{\vdash} \href{../exec/runtime.html#syntax-ref}{\mathsf{ref{.}extern}}~{\href{../exec/runtime.html#syntax-addrref}{\mathit{addrref}}} : (\href{../syntax/types.html#syntax-reftype}{\mathsf{ref}}~\href{../syntax/types.html#syntax-heaptype}{\mathsf{extern}})
+s \href{../exec/values.html#valid-ref}{\vdash} \href{../exec/runtime.html#syntax-ref}{\mathsf{ref{.}extern}}~{\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}} : (\href{../syntax/types.html#syntax-reftype}{\mathsf{ref}}~\href{../syntax/types.html#syntax-heaptype}{\mathsf{extern}})
 }
 \qquad
 \end{array}\]</div>
