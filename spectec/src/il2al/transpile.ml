@@ -665,6 +665,9 @@ let simplify_dot_access e =
     )
   | _ -> e
 
+(* If there is exactly one form of case check (i.e. fi.CODE is some FUNC)
+   regard it as an assertion *)
+
 type count = One of string | Many
 module Counter = Map.Make (String)
 let infer_case_assert instrs =
@@ -672,6 +675,7 @@ let infer_case_assert instrs =
 
   let rec handle_cond c mt_then mt_else =
     match c.it with
+    | BinE (`EqOp, e, {it = CaseE (Atom atom, _); _})
     | IsCaseOfE (e, atom) ->
       let k = Print.string_of_expr e in
       let v = One (Print.string_of_atom atom) in
