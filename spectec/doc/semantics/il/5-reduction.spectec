@@ -847,6 +847,7 @@ rule Step_prems/LET-ctx:
 rule Step_prems/LET:
   S |- LET `{(EXP x `: t)*} e_1 `= e_2 ~>_{EXP (x, e)*} eps
   -- (if e = MATCH (EXP e_2) WITH (CLAUSE `{(EXP x `: t)*} (EXP e_1) `= (VAR x) `- eps))*
+  ;; TODO: Propagate false in case of match failure
 
 rule Step_prems/NOT-ctx:
   S |- NOT pr ~>_{} NOT pr'
