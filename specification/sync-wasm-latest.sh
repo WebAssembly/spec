@@ -30,9 +30,14 @@ for FILE in $HIGHEST_FILES; do
     if [ ! -f "$LATEST/$FILE" ]; then
         echo "Added file $HIGHEST/$FILE"
         ((++HIGHEST_CHANGED))
-    elif [ "$HIGHEST/$FILE" -nt "$LATEST/$FILE" ] && ! diff -q "$HIGHEST/$FILE" "$LATEST/$FILE" >/dev/null; then
-        echo "Modified file $HIGHEST/$FILE"
-        ((++HIGHEST_CHANGED))
+    elif ! diff -q "$HIGHEST/$FILE" "$LATEST/$FILE" >/dev/null; then
+        if [ "$HIGHEST/$FILE" -nt "$LATEST/$FILE" ]; then
+            echo "Modified file $HIGHEST/$FILE"
+            ((++HIGHEST_CHANGED))
+        elif ! [ "$HIGHEST/$FILE" -ot "$LATEST/$FILE" ]; then
+            echo "❌ Error: Changes in both $HIGHEST/$FILE and $LATEST/$FILE with same date."
+            exit 1
+        fi
     fi
 done
 
@@ -40,9 +45,11 @@ for FILE in $LATEST_FILES; do
     if [ ! -f "$HIGHEST/$FILE" ]; then
         echo "Added file $LATEST/$FILE"
         ((++LATEST_CHANGED))
-    elif [ "$LATEST/$FILE" -nt "$HIGHEST/$FILE" ] && ! diff -q "$HIGHEST/$FILE" "$LATEST/$FILE" >/dev/null; then
-        echo "Modified file $LATEST/$FILE"
-        ((++LATEST_CHANGED))
+    elif ! diff -q "$HIGHEST/$FILE" "$LATEST/$FILE" >/dev/null; then
+        if [ "$LATEST/$FILE" -nt "$HIGHEST/$FILE" ]; then
+            echo "Modified file $LATEST/$FILE"
+            ((++LATEST_CHANGED))
+        fi
     fi
 done
 

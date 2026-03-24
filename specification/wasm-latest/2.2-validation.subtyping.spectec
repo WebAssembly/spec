@@ -69,18 +69,22 @@ rule Heaptype_sub/rec:
 rule Heaptype_sub/none:
   C |- NONE <: heaptype
   -- Heaptype_sub: C |- heaptype <: ANY
+  -- if heaptype =/= BOT
 
 rule Heaptype_sub/nofunc:
   C |- NOFUNC <: heaptype
   -- Heaptype_sub: C |- heaptype <: FUNC
+  -- if heaptype =/= BOT
 
 rule Heaptype_sub/noexn:
   C |- NOEXN <: heaptype
   -- Heaptype_sub: C |- heaptype <: EXN
+  -- if heaptype =/= BOT
 
 rule Heaptype_sub/noextern:
   C |- NOEXTERN <: heaptype
   -- Heaptype_sub: C |- heaptype <: EXTERN
+  -- if heaptype =/= BOT
 
 rule Heaptype_sub/bot:
   C |- BOT <: heaptype

@@ -463,7 +463,7 @@ let assert_ref_pat r p =
   | RefTypePat Types.FuncHT, Instance.FuncRef _
   | RefTypePat Types.ExnHT, Exn.ExnRef _
   | RefTypePat Types.ExternHT, _ -> true
-  | NullPat, Value.NullRef _ -> true
+  | NullPat, Value.NullRef -> true
   | _ -> false
 
 let rec assert_result v r =

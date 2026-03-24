@@ -515,7 +515,7 @@ def $free_instr(REF.I31) = {}
 
 def $free_instr(I31.GET sx) = {}
 
-def $free_instr(STRUCT.NEW typeidx) = {}
+def $free_instr(STRUCT.NEW typeidx) = $free_typeidx(typeidx)
 def $free_instr(STRUCT.NEW_DEFAULT typeidx) = $free_typeidx(typeidx)
 def $free_instr(STRUCT.GET sx? typeidx u32) = $free_typeidx(typeidx)
 def $free_instr(STRUCT.SET typeidx u32) = $free_typeidx(typeidx)

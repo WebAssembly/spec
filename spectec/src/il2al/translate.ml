@@ -16,6 +16,9 @@ struct
   include Print
 end
 
+let version = ref 3
+
+
 (* Errors *)
 
 let error at msg = Error.error at "prose translation" msg
@@ -151,14 +154,15 @@ let rec is_wasm_value e =
       "CONST";
       "VCONST";
       "REF.I31_NUM";
+      "REF.NULL_ADDR";
       "REF.STRUCT_ADDR";
       "REF.ARRAY_ADDR";
       "REF.EXN_ADDR";
       "REF.FUNC_ADDR";
       "REF.HOST_ADDR";
       "REF.EXTERN";
-      "REF.NULL"
     ] -> true
+  | Il.CaseE (op, _) when !version <= 2 && case_head op = "REF.NULL" -> true
   | Il.CallE (id, _) when id.it = "const" -> true
   | _ -> Valid.sub_typ e.note valT
 let is_wasm_instr e =

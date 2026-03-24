@@ -113,6 +113,12 @@ sync%:
 	(cd ../specification && make $@)
 
 
+# Semantics checks
+
+sem:
+	(cd doc/semantics/il && make check)
+
+
 # Cleanup
 
 .PHONY: clean distclean

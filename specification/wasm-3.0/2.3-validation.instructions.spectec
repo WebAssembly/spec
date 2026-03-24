@@ -379,7 +379,7 @@ rule Instr_ok/table.size:
   -- if C.TABLES[x] = at lim rt
 
 rule Instr_ok/table.grow:
-  C |- TABLE.GROW x : rt at -> I32
+  C |- TABLE.GROW x : rt at -> at
   -- if C.TABLES[x] = at lim rt
 
 rule Instr_ok/table.fill:

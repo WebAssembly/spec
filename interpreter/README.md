@@ -453,7 +453,7 @@ action:
 const:
   ( <num_type>.const <num> )                 ;; number value
   ( <vec_type> <vec_shape> <num>+ )          ;; vector value
-  ( ref.null <ref_kind> )                    ;; null reference
+  ( ref.null <ref_kind>? )                   ;; null reference
   ( ref.host <nat> )                         ;; host reference
   ( ref.extern <nat> )                       ;; external host reference
 

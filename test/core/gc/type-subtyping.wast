@@ -224,6 +224,60 @@
 )
 
 
+;; Invalid abstract subtyping
+
+(assert_invalid
+  (module (func (param (ref null nofunc)) (result (ref null none)) (local.get 0)))
+  "type mismatch"
+)
+(assert_invalid
+  (module (func (param (ref null nofunc)) (result (ref null any)) (local.get 0)))
+  "type mismatch"
+)
+(assert_invalid
+  (module (func (param (ref null none)) (result (ref null nofunc)) (local.get 0)))
+  "type mismatch"
+)
+(assert_invalid
+  (module (func (param (ref null none)) (result (ref null func)) (local.get 0)))
+  "type mismatch"
+)
+
+(assert_invalid
+  (module (func (param (ref null none)) (result (ref null noextern)) (local.get 0)))
+  "type mismatch"
+)
+(assert_invalid
+  (module (func (param (ref null none)) (result (ref null extern)) (local.get 0)))
+  "type mismatch"
+)
+(assert_invalid
+  (module (func (param (ref null noextern)) (result (ref null none)) (local.get 0)))
+  "type mismatch"
+)
+(assert_invalid
+  (module (func (param (ref null noextern)) (result (ref null any)) (local.get 0)))
+  "type mismatch"
+)
+
+(assert_invalid
+  (module (func (param (ref null nofunc)) (result (ref null noextern)) (local.get 0)))
+  "type mismatch"
+)
+(assert_invalid
+  (module (func (param (ref null nofunc)) (result (ref null extern)) (local.get 0)))
+  "type mismatch"
+)
+(assert_invalid
+  (module (func (param (ref null noextern)) (result (ref null nofunc)) (local.get 0)))
+  "type mismatch"
+)
+(assert_invalid
+  (module (func (param (ref null noextern)) (result (ref null func)) (local.get 0)))
+  "type mismatch"
+)
+
+
 ;; Runtime types
 
 (module
@@ -755,7 +809,6 @@
   )
   "sub type"
 )
-
 
 
 ;; Invalid subtyping definitions
