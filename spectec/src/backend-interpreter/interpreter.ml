@@ -212,6 +212,8 @@ and eval_expr env expr =
   let rec to_bool source = function
     | BoolV b -> b
     | ListV _ as v -> List.for_all (to_bool source) (unwrap_listv_to_list v)
+    | OptV None -> true
+    | OptV Some v -> to_bool source v
     | _ -> fail_expr source "type mismatch for boolean value"
   in
 
