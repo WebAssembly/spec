@@ -1007,7 +1007,7 @@ let hide_state instr =
     let access = { (mk_access ps s) with note } in
     [ appendI (access, e) ~at:at ]
   (* Return *)
-  | ReturnI (Some e) when is_state e || is_store e -> [ returnI None ~at:at ]
+  | ReturnI (Some ({it = VarE _; _} as e)) when is_state e || is_store e -> [ returnI None ~at:at ]
   | _ -> [ instr ]
 
 let remove_state algo =
