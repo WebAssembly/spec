@@ -237,8 +237,8 @@ $$
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
 (s ; f){.}\mathsf{funcs} & = & s{.}\mathsf{funcs} \\[0.8ex]
-(s ; f){.}\mathsf{funcs}{}[x] & = & s{.}\mathsf{funcs}{}[f{.}\mathsf{module}{.}\mathsf{funcs}{}[x]] \\
-(s ; f){.}\mathsf{tables}{}[x] & = & s{.}\mathsf{tables}{}[f{.}\mathsf{module}{.}\mathsf{tables}{}[x]] \\
+z{.}\mathsf{funcs}{}[x] & = & s{.}\mathsf{funcs}{}[f{.}\mathsf{module}{.}\mathsf{funcs}{}[x]] \\
+z{.}\mathsf{tables}{}[x] & = & s{.}\mathsf{tables}{}[f{.}\mathsf{module}{.}\mathsf{tables}{}[x]] \\
 \end{array}
 $$
 
@@ -1558,6 +1558,7 @@ warning: definition `fnat` was never spliced
 warning: definition `fne_` was never spliced
 warning: definition `fnearest_` was never spliced
 warning: definition `fneg_` was never spliced
+warning: definition `fof` was never spliced
 warning: definition `fone` was never spliced
 warning: definition `fpmax_` was never spliced
 warning: definition `fpmin_` was never spliced
@@ -1797,6 +1798,7 @@ warning: definition `signif` was never spliced
 warning: definition `sizenn` was never spliced
 warning: definition `sizenn1` was never spliced
 warning: definition `sizenn2` was never spliced
+warning: definition `sof` was never spliced
 warning: definition `startsd` was never spliced
 warning: definition `store` was never spliced
 warning: definition `structinst` was never spliced
@@ -2415,6 +2417,7 @@ warning: definition prose `expanddt` was never spliced
 warning: definition prose `expon` was never spliced
 warning: definition prose `exportsd` was never spliced
 warning: definition prose `fnat` was never spliced
+warning: definition prose `fof` was never spliced
 warning: definition prose `fone` was never spliced
 warning: definition prose `frame` was never spliced
 warning: definition prose `free_absheaptype` was never spliced
@@ -2608,6 +2611,7 @@ warning: definition prose `size` was never spliced
 warning: definition prose `sizenn` was never spliced
 warning: definition prose `sizenn1` was never spliced
 warning: definition prose `sizenn2` was never spliced
+warning: definition prose `sof` was never spliced
 warning: definition prose `startsd` was never spliced
 warning: definition prose `store` was never spliced
 warning: definition prose `structinst` was never spliced

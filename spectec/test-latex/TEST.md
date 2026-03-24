@@ -9159,117 +9159,67 @@ $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-(s ; f){.}\mathsf{types}{}[x] & = & f{.}\mathsf{module}{.}\mathsf{types}{}[x] \\
+s & = & z{.}\mathsf{store} \\
 \end{array}
 $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-(s ; f){.}\mathsf{tags}{}[x] & = & s{.}\mathsf{tags}{}[f{.}\mathsf{module}{.}\mathsf{tags}{}[x]] \\
+f & = & z{.}\mathsf{frame} \\
 \end{array}
 $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-(s ; f){.}\mathsf{globals}{}[x] & = & s{.}\mathsf{globals}{}[f{.}\mathsf{module}{.}\mathsf{globals}{}[x]] \\
+z{.}\mathsf{types}{}[x] & = & f{.}\mathsf{module}{.}\mathsf{types}{}[x] \\
 \end{array}
 $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-(s ; f){.}\mathsf{mems}{}[x] & = & s{.}\mathsf{mems}{}[f{.}\mathsf{module}{.}\mathsf{mems}{}[x]] \\
+z{.}\mathsf{tags}{}[x] & = & s{.}\mathsf{tags}{}[f{.}\mathsf{module}{.}\mathsf{tags}{}[x]] \\
 \end{array}
 $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-(s ; f){.}\mathsf{tables}{}[x] & = & s{.}\mathsf{tables}{}[f{.}\mathsf{module}{.}\mathsf{tables}{}[x]] \\
+z{.}\mathsf{globals}{}[x] & = & s{.}\mathsf{globals}{}[f{.}\mathsf{module}{.}\mathsf{globals}{}[x]] \\
 \end{array}
 $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-(s ; f){.}\mathsf{funcs}{}[x] & = & s{.}\mathsf{funcs}{}[f{.}\mathsf{module}{.}\mathsf{funcs}{}[x]] \\
+z{.}\mathsf{mems}{}[x] & = & s{.}\mathsf{mems}{}[f{.}\mathsf{module}{.}\mathsf{mems}{}[x]] \\
 \end{array}
 $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-(s ; f){.}\mathsf{datas}{}[x] & = & s{.}\mathsf{datas}{}[f{.}\mathsf{module}{.}\mathsf{datas}{}[x]] \\
+z{.}\mathsf{tables}{}[x] & = & s{.}\mathsf{tables}{}[f{.}\mathsf{module}{.}\mathsf{tables}{}[x]] \\
 \end{array}
 $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-(s ; f){.}\mathsf{elems}{}[x] & = & s{.}\mathsf{elems}{}[f{.}\mathsf{module}{.}\mathsf{elems}{}[x]] \\
+z{.}\mathsf{funcs}{}[x] & = & s{.}\mathsf{funcs}{}[f{.}\mathsf{module}{.}\mathsf{funcs}{}[x]] \\
 \end{array}
 $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-(s ; f){.}\mathsf{locals}{}[x] & = & f{.}\mathsf{locals}{}[x] \\
-\end{array}
-$$
-
-\vspace{1ex}
-
-$$
-\begin{array}[t]{@{}lcl@{}l@{}}
-(s ; f){}[{.}\mathsf{locals}{}[x] = v] & = & s ; f{}[{.}\mathsf{locals}{}[x] = v] \\
+z{.}\mathsf{datas}{}[x] & = & s{.}\mathsf{datas}{}[f{.}\mathsf{module}{.}\mathsf{datas}{}[x]] \\
 \end{array}
 $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-(s ; f){}[{.}\mathsf{globals}{}[x]{.}\mathsf{value} = v] & = & s{}[{.}\mathsf{globals}{}[f{.}\mathsf{module}{.}\mathsf{globals}{}[x]]{.}\mathsf{value} = v] ; f \\
+z{.}\mathsf{elems}{}[x] & = & s{.}\mathsf{elems}{}[f{.}\mathsf{module}{.}\mathsf{elems}{}[x]] \\
 \end{array}
 $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-(s ; f){}[{.}\mathsf{tables}{}[x]{.}\mathsf{refs}{}[i] = r] & = & s{}[{.}\mathsf{tables}{}[f{.}\mathsf{module}{.}\mathsf{tables}{}[x]]{.}\mathsf{refs}{}[i] = r] ; f \\
-\end{array}
-$$
-
-$$
-\begin{array}[t]{@{}lcl@{}l@{}}
-(s ; f){}[{.}\mathsf{tables}{}[x] = {\mathit{ti}}] & = & s{}[{.}\mathsf{tables}{}[f{.}\mathsf{module}{.}\mathsf{tables}{}[x]] = {\mathit{ti}}] ; f \\
-\end{array}
-$$
-
-$$
-\begin{array}[t]{@{}lcl@{}l@{}}
-(s ; f){}[{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i : j] = {b^\ast}] & = & s{}[{.}\mathsf{mems}{}[f{.}\mathsf{module}{.}\mathsf{mems}{}[x]]{.}\mathsf{bytes}{}[i : j] = {b^\ast}] ; f \\
-\end{array}
-$$
-
-$$
-\begin{array}[t]{@{}lcl@{}l@{}}
-(s ; f){}[{.}\mathsf{mems}{}[x] = {\mathit{mi}}] & = & s{}[{.}\mathsf{mems}{}[f{.}\mathsf{module}{.}\mathsf{mems}{}[x]] = {\mathit{mi}}] ; f \\
-\end{array}
-$$
-
-$$
-\begin{array}[t]{@{}lcl@{}l@{}}
-(s ; f){}[{.}\mathsf{elems}{}[x]{.}\mathsf{refs} = {r^\ast}] & = & s{}[{.}\mathsf{elems}{}[f{.}\mathsf{module}{.}\mathsf{elems}{}[x]]{.}\mathsf{refs} = {r^\ast}] ; f \\
-\end{array}
-$$
-
-$$
-\begin{array}[t]{@{}lcl@{}l@{}}
-(s ; f){}[{.}\mathsf{datas}{}[x]{.}\mathsf{bytes} = {b^\ast}] & = & s{}[{.}\mathsf{datas}{}[f{.}\mathsf{module}{.}\mathsf{datas}{}[x]]{.}\mathsf{bytes} = {b^\ast}] ; f \\
-\end{array}
-$$
-
-$$
-\begin{array}[t]{@{}lcl@{}l@{}}
-(s ; f){}[{.}\mathsf{structs}{}[a]{.}\mathsf{fields}{}[i] = {\mathit{fv}}] & = & s{}[{.}\mathsf{structs}{}[a]{.}\mathsf{fields}{}[i] = {\mathit{fv}}] ; f \\
-\end{array}
-$$
-
-$$
-\begin{array}[t]{@{}lcl@{}l@{}}
-(s ; f){}[{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}{}[i] = {\mathit{fv}}] & = & s{}[{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}{}[i] = {\mathit{fv}}] ; f \\
+z{.}\mathsf{locals}{}[x] & = & f{.}\mathsf{locals}{}[x] \\
 \end{array}
 $$
 
@@ -9277,19 +9227,81 @@ $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-(s ; f){}[{.}\mathsf{structs} \mathrel{{=}{\oplus}} {{\mathit{si}}^\ast}] & = & s{}[{.}\mathsf{structs} \mathrel{{=}{\oplus}} {{\mathit{si}}^\ast}] ; f \\
+z{}[{.}\mathsf{locals}{}[x] = v] & = & s ; f{}[{.}\mathsf{locals}{}[x] = v] \\
 \end{array}
 $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-(s ; f){}[{.}\mathsf{arrays} \mathrel{{=}{\oplus}} {{\mathit{ai}}^\ast}] & = & s{}[{.}\mathsf{arrays} \mathrel{{=}{\oplus}} {{\mathit{ai}}^\ast}] ; f \\
+z{}[{.}\mathsf{globals}{}[x]{.}\mathsf{value} = v] & = & s{}[{.}\mathsf{globals}{}[f{.}\mathsf{module}{.}\mathsf{globals}{}[x]]{.}\mathsf{value} = v] ; f \\
 \end{array}
 $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-(s ; f){}[{.}\mathsf{exns} \mathrel{{=}{\oplus}} {{\mathit{exn}}^\ast}] & = & s{}[{.}\mathsf{exns} \mathrel{{=}{\oplus}} {{\mathit{exn}}^\ast}] ; f \\
+z{}[{.}\mathsf{tables}{}[x]{.}\mathsf{refs}{}[i] = r] & = & s{}[{.}\mathsf{tables}{}[f{.}\mathsf{module}{.}\mathsf{tables}{}[x]]{.}\mathsf{refs}{}[i] = r] ; f \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+z{}[{.}\mathsf{tables}{}[x] = {\mathit{ti}}] & = & s{}[{.}\mathsf{tables}{}[f{.}\mathsf{module}{.}\mathsf{tables}{}[x]] = {\mathit{ti}}] ; f \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+z{}[{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i : j] = {b^\ast}] & = & s{}[{.}\mathsf{mems}{}[f{.}\mathsf{module}{.}\mathsf{mems}{}[x]]{.}\mathsf{bytes}{}[i : j] = {b^\ast}] ; f \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+z{}[{.}\mathsf{mems}{}[x] = {\mathit{mi}}] & = & s{}[{.}\mathsf{mems}{}[f{.}\mathsf{module}{.}\mathsf{mems}{}[x]] = {\mathit{mi}}] ; f \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+z{}[{.}\mathsf{elems}{}[x]{.}\mathsf{refs} = {r^\ast}] & = & s{}[{.}\mathsf{elems}{}[f{.}\mathsf{module}{.}\mathsf{elems}{}[x]]{.}\mathsf{refs} = {r^\ast}] ; f \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+z{}[{.}\mathsf{datas}{}[x]{.}\mathsf{bytes} = {b^\ast}] & = & s{}[{.}\mathsf{datas}{}[f{.}\mathsf{module}{.}\mathsf{datas}{}[x]]{.}\mathsf{bytes} = {b^\ast}] ; f \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+z{}[{.}\mathsf{structs}{}[a]{.}\mathsf{fields}{}[i] = {\mathit{fv}}] & = & s{}[{.}\mathsf{structs}{}[a]{.}\mathsf{fields}{}[i] = {\mathit{fv}}] ; f \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+z{}[{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}{}[i] = {\mathit{fv}}] & = & s{}[{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}{}[i] = {\mathit{fv}}] ; f \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+z{}[{.}\mathsf{structs} \mathrel{{=}{\oplus}} {{\mathit{si}}^\ast}] & = & s{}[{.}\mathsf{structs} \mathrel{{=}{\oplus}} {{\mathit{si}}^\ast}] ; f \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+z{}[{.}\mathsf{arrays} \mathrel{{=}{\oplus}} {{\mathit{ai}}^\ast}] & = & s{}[{.}\mathsf{arrays} \mathrel{{=}{\oplus}} {{\mathit{ai}}^\ast}] ; f \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+z{}[{.}\mathsf{exns} \mathrel{{=}{\oplus}} {{\mathit{exn}}^\ast}] & = & s{}[{.}\mathsf{exns} \mathrel{{=}{\oplus}} {{\mathit{exn}}^\ast}] ; f \\
 \end{array}
 $$
 
