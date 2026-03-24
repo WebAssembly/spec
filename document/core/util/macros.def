@@ -1531,6 +1531,7 @@
 .. Administrative Instructions, terminals
 
 .. |REFI31NUM| mathdef:: \xref{exec/runtime}{syntax-ref}{\K{ref{.}i\scriptstyle31}}
+.. |REFNULLADDR| mathdef:: \xref{exec/runtime}{syntax-ref}{\K{ref{.}null}}
 .. |REFFUNCADDR| mathdef:: \xref{exec/runtime}{syntax-ref}{\K{ref{.}func}}
 .. |REFSTRUCTADDR| mathdef:: \xref{exec/runtime}{syntax-ref}{\K{ref{.}struct}}
 .. |REFARRAYADDR| mathdef:: \xref{exec/runtime}{syntax-ref}{\K{ref{.}array}}
@@ -1545,7 +1546,6 @@
 .. |num| mathdef:: \xref{exec/runtime}{syntax-num}{\X{num}}
 .. |vec| mathdef:: \xref{exec/runtime}{syntax-vec}{\X{vec}}
 .. |reff| mathdef:: \xref{exec/runtime}{syntax-ref}{\X{ref}}
-.. |addrref| mathdef:: \xref{exec/runtime}{syntax-addrref}{\X{addrref}}
 .. |val| mathdef:: \xref{exec/runtime}{syntax-val}{\X{val}}
 .. |result| mathdef:: \xref{exec/runtime}{syntax-result}{\X{result}}
 

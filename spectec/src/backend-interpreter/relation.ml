@@ -10,30 +10,10 @@ let ref_ok =
   (* TODO: some / none *)
   let null = some "NULL" in
   let nonull = none "NULL" in
-  let none = nullary "NONE" in
-  let nofunc = nullary "NOFUNC" in
-  let noexn = nullary "NOEXN" in
-  let noextern = nullary "NOEXTERN" in
-
-  let match_heaptype v1 v2 =
-    let ht1 = Construct.al_to_heaptype v1 in
-    let ht2 = Construct.al_to_heaptype v2 in
-    Match.match_reftype [] (Types.Null, ht1) (Types.Null, ht2)
-  in
 
   function
   (* null *)
-  | [CaseV ("REF.NULL", [ ht ]) as v] ->
-    if match_heaptype none ht then
-      CaseV ("REF", [ null; none])
-    else if match_heaptype nofunc ht then
-      CaseV ("REF", [ null; nofunc])
-    else if match_heaptype noexn ht then
-      CaseV ("REF", [ null; noexn])
-    else if match_heaptype noextern ht then
-      CaseV ("REF", [ null; noextern])
-    else
-      Numerics.error_typ_value "$Reftype" "null reference" v
+  | [CaseV ("REF.NULL_ADDR", [])] -> CaseV ("REF", [ null; nullary "BOT"])
   (* i31 *)
   | [CaseV ("REF.I31_NUM", [ _ ])] -> CaseV ("REF", [ nonull; nullary "I31"])
   (* host *)

@@ -23,6 +23,7 @@ syntax typ =
   | TUP typbind*       ;; (id : typ , ... , id : typ)
   | ITER typ iter      ;; typ iter
   | VAR id arg*        ;; typid(arg*)
+  | MATCH id arg* WITH inst*  ;; `match` typid(arg*) `with` inst*
 
 syntax deftyp =
   | ALIAS typ
@@ -40,7 +41,7 @@ syntax iter =
   | QUEST              ;; `?`
   | STAR               ;; `*`
   | PLUS               ;; `+`
-  | SUP id? exp        ;; `^` (id `<`)? exp
+  | SUP id exp         ;; `^` id `<` exp
 
 
 ;; Expressions
@@ -101,33 +102,34 @@ syntax valfield = atom `= val  ;; atom `=` val
 
 
 syntax exp =
-  | num                ;; num
-  | VAR id             ;; varid
-  | BOOL bool          ;; bool
-  | TEXT text          ;; text
-  | UN unop exp        ;; unop exp
-  | BIN binop exp exp  ;; exp binop exp
-  | CMP cmpop exp exp  ;; exp cmpop exp
-  | TUP exp*           ;; ( exp* )
-  | INJ mixop exp      ;; mixop exp
-  | OPT exp?           ;; exp?
-  | LIST exp*          ;; [ exp* ]
-  | LIFT exp           ;; exp : _? <: _*
-  | STR expfield*      ;; { expfield* }
-  | SEL exp nat        ;; exp.i
-  | LEN exp            ;; | exp |
-  | MEM exp exp        ;; exp `<-` exp
-  | CAT exp exp        ;; exp `++` exp
-  | ACC exp path       ;; exp[ path ]
-  | UPD exp path exp   ;; exp[ path = exp ]
-  | EXT exp path exp   ;; exp[ path =.. exp ]
-  | CALL id arg*       ;; defid( arg* )
+  | num                     ;; num
+  | VAR id                  ;; varid
+  | BOOL bool               ;; bool
+  | TEXT text               ;; text
+  | UN unop exp             ;; unop exp
+  | BIN binop exp exp       ;; exp binop exp
+  | CMP cmpop exp exp       ;; exp cmpop exp
+  | TUP exp*                ;; ( exp* )
+  | INJ mixop exp           ;; mixop exp
+  | OPT exp?                ;; exp?
+  | LIST exp*               ;; [ exp* ]
+  | LIFT exp                ;; exp : _? <: _*
+  | STR expfield*           ;; { expfield* }
+  | SEL exp nat             ;; exp.i
+  | LEN exp                 ;; | exp |
+  | MEM exp exp             ;; exp `<-` exp
+  | CAT exp exp             ;; exp `++` exp
+  | ACC exp path            ;; exp[ path ]
+  | UPD exp path exp        ;; exp[ path = exp ]
+  | EXT exp path exp        ;; exp[ path =.. exp ]
+  | CALL id arg*            ;; defid( arg* )
   | ITER exp iter exppull*  ;; exp iter{ expiter* }
   | CVT exp numtyp numtyp   ;; exp : typ1 <:> typ2
   | SUB exp typ typ         ;; exp : typ1 <: typ2
+  | MATCH arg* WITH clause* ;; `match` arg* `with` clause*
 
-syntax expfield = atom `= exp  ;; atom `=` exp
-syntax exppull = id `<- exp    ;; id `<-` exp
+syntax expfield = atom `= exp
+syntax exppull = id `: typ `<- exp
 
 syntax path =
   | ROOT               ;;
@@ -154,23 +156,24 @@ syntax sym =
 ;; Definitions
 
 syntax arg =
-  | EXP exp
   | TYP typ
+  | EXP exp
   | FUN id
   | GRAM sym
 
 syntax param =
-  | EXP id `: typ
   | TYP id
+  | EXP id `: typ
   | FUN id `: param* `-> typ
   | GRAM id `: param* `-> typ
 
 syntax quant = param
 
 syntax prem =
-  | RULE id arg* `: exp
+  | REL id arg* `: exp
   | IF exp
   | ELSE
+  | NOT prem
   | LET exp `= exp  ;; TODO: variables/quantifiers?
   | ITER prem iter exppull*
 

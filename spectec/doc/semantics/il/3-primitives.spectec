@@ -17,6 +17,7 @@ def $boolbin(EQUIV, b_1, b_2) = b_1 <=> b_2
 
 def $iszero(num) : bool
 def $isone(num) : bool
+def $isneg(num) : bool
 
 def $iszero(NAT n) = (n = 0)
 def $iszero(INT i) = (i = 0)
@@ -27,6 +28,11 @@ def $isone(NAT n) = (n = 1)
 def $isone(INT i) = (i = 1)
 def $isone(RAT q) = (q = 1)
 def $isone(REAL r) = (r = 1)
+
+def $isneg(NAT n) = false
+def $isneg(INT i) = (i < 0)
+def $isneg(RAT q) = (q < 0)
+def $isneg(REAL r) = (r < 0)
 
 
 def $numcvt(numtyp, num) : num  hint(partial)

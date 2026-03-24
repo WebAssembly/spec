@@ -8406,11 +8406,11 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
       1) Return :math:`{{\mathrm{ipopcnt}}}_{N}({\mathit{iN}})`.
 
-   #. Assert: Due to validation, :math:`{\mathit{unop}}` is some :math:`\mathsf{extend}~n`.
+   #. If :math:`{\mathit{unop}}` is some :math:`\mathsf{extend}~n`, then:
 
-   #. Let :math:`(\mathsf{extend}~M)` be the destructuring of :math:`{\mathit{unop}}`.
+      1) Let :math:`(\mathsf{extend}~M)` be the destructuring of :math:`{\mathit{unop}}`.
 
-   #. Return :math:`{{{{\mathrm{extend}}}_{M, N}^{\mathsf{s}}}}{({{\mathrm{wrap}}}_{N, M}({\mathit{iN}}))}`.
+      #) Return :math:`{{{{\mathrm{extend}}}_{M, N}^{\mathsf{s}}}}{({{\mathrm{wrap}}}_{N, M}({\mathit{iN}}))}`.
 
 #. Assert: Due to validation, :math:`{\mathit{numtype}}` is :math:`{\mathsf{f}}{n}`.
 
@@ -12633,9 +12633,9 @@ unop_ numtype unop_ iN
     1) Return [$ictz_($sizenn(numtype), iN)].
   c. If (unop_ = POPCNT), then:
     1) Return [$ipopcnt_($sizenn(numtype), iN)].
-  d. Assert: Due to validation, unop_ is some EXTEND.
-  e. Let (EXTEND M) be unop_.
-  f. Return [$extend__(M, $sizenn(numtype), S, $wrap__($sizenn(numtype), M, iN))].
+  d. If unop_ is some EXTEND, then:
+    1) Let (EXTEND M) be unop_.
+    2) Return [$extend__(M, $sizenn(numtype), S, $wrap__($sizenn(numtype), M, iN))].
 2. Assert: Due to validation, numtype is Fnn.
 3. If (unop_ = ABS), then:
   a. Return $fabs_($sizenn(numtype), iN).
@@ -17278,11 +17278,9 @@ The reference value :math:`{\mathit{ref}}` is :ref:`valid <valid-val>` with the 
 
    * Either:
 
-      * The reference value :math:`{\mathit{ref}}` is of the form :math:`(\mathsf{ref{.}null}~{\mathit{ht}})`.
+      * The reference value :math:`{\mathit{ref}}` is of the form :math:`\mathsf{ref{.}null}`.
 
-      * The reference type :math:`{\mathit{rt}}` is of the form :math:`(\mathsf{ref}~\mathsf{null}~{\mathit{ht}'})`.
-
-      * The heap type :math:`{\mathit{ht}'}` :ref:`matches <match>` the heap type :math:`{\mathit{ht}}`.
+      * The reference type :math:`{\mathit{rt}}` is of the form :math:`(\mathsf{ref}~\mathsf{null}~\mathsf{bot})`.
 
    * Or:
 
@@ -17330,11 +17328,13 @@ The reference value :math:`{\mathit{ref}}` is :ref:`valid <valid-val>` with the 
       * The reference type :math:`{\mathit{rt}}` is of the form :math:`(\mathsf{ref}~\mathsf{any})`.
    * Or:
 
-      * The reference value :math:`{\mathit{ref}}` is of the form :math:`(\mathsf{ref{.}extern}~{\mathit{addrref}})`.
+      * The reference value :math:`{\mathit{ref}}` is of the form :math:`(\mathsf{ref{.}extern}~{\mathit{ref}'})`.
 
       * The reference type :math:`{\mathit{rt}}` is of the form :math:`(\mathsf{ref}~\mathsf{extern})`.
 
-      * The reference value :math:`{\mathit{addrref}}` is :ref:`valid <valid-val>` with the reference type :math:`(\mathsf{ref}~\mathsf{any})`.
+      * The reference value :math:`{\mathit{ref}'}` is :ref:`valid <valid-val>` with the reference type :math:`(\mathsf{ref}~\mathsf{any})`.
+
+      * The reference value :math:`{\mathit{ref}'}` is not of the form :math:`\mathsf{ref{.}null}`.
    * Or:
 
       * The reference value :math:`{\mathit{ref}}` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{rt}'}`.
@@ -17344,10 +17344,7 @@ The reference value :math:`{\mathit{ref}}` is :ref:`valid <valid-val>` with the 
 
 
 
-The reference value :math:`(\mathsf{ref{.}null}~{\mathit{ht}})` is :ref:`valid <valid-val>` with the reference type :math:`(\mathsf{ref}~\mathsf{null}~{\mathit{ht}'})` if:
-
-
-   * The heap type :math:`{\mathit{ht}'}` :ref:`matches <match>` the heap type :math:`{\mathit{ht}}`.
+The reference value :math:`\mathsf{ref{.}null}` is :ref:`valid <valid-val>` with the reference type :math:`(\mathsf{ref}~\mathsf{null}~\mathsf{bot})`.
 
 
 
@@ -17400,10 +17397,12 @@ The reference value :math:`(\mathsf{ref{.}host}~a)` is :ref:`valid <valid-val>` 
 
 
 
-The reference value :math:`(\mathsf{ref{.}extern}~{\mathit{addrref}})` is :ref:`valid <valid-val>` with the reference type :math:`(\mathsf{ref}~\mathsf{extern})` if:
+The reference value :math:`(\mathsf{ref{.}extern}~{\mathit{ref}})` is :ref:`valid <valid-val>` with the reference type :math:`(\mathsf{ref}~\mathsf{extern})` if:
 
 
-   * The reference value :math:`{\mathit{addrref}}` is :ref:`valid <valid-val>` with the reference type :math:`(\mathsf{ref}~\mathsf{any})`.
+   * The reference value :math:`{\mathit{ref}}` is :ref:`valid <valid-val>` with the reference type :math:`(\mathsf{ref}~\mathsf{any})`.
+
+   * The reference value :math:`{\mathit{ref}}` is not of the form :math:`\mathsf{ref{.}null}`.
 
 
 
@@ -17728,7 +17727,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Assert: Due to validation, the first non-value entry of the stack is a :math:`\mathsf{frame}`.
 
-#. If :math:`{\mathit{val}''}` is some :math:`\mathsf{ref{.}null}~{\mathit{heaptype}}`, then:
+#. If :math:`{\mathit{val}''} = \mathsf{ref{.}null}`, then:
 
    a. Trap.
 
@@ -18359,7 +18358,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`{\mathit{val}}` from the stack.
 
-#. If :math:`{\mathit{val}}` is some :math:`\mathsf{ref{.}null}~{\mathit{heaptype}}`, then:
+#. If :math:`{\mathit{val}} = \mathsf{ref{.}null}`, then:
 
    a. Execute the instruction :math:`(\mathsf{br}~l)`.
 
@@ -18376,7 +18375,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`{\mathit{val}}` from the stack.
 
-#. If :math:`{\mathit{val}}` is some :math:`\mathsf{ref{.}null}~{\mathit{heaptype}}`, then:
+#. If :math:`{\mathit{val}} = \mathsf{ref{.}null}`, then:
 
    a. Do nothing.
 
@@ -18520,7 +18519,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`{\mathit{ref}}` from the stack.
 
-#. If :math:`{\mathit{ref}}` is some :math:`\mathsf{ref{.}null}~{\mathit{heaptype}}`, then:
+#. If :math:`{\mathit{ref}} = \mathsf{ref{.}null}`, then:
 
    a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~1)` to the stack.
 
@@ -18537,7 +18536,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`{\mathit{ref}}` from the stack.
 
-#. If :math:`{\mathit{ref}}` is some :math:`\mathsf{ref{.}null}~{\mathit{heaptype}}`, then:
+#. If :math:`{\mathit{ref}} = \mathsf{ref{.}null}`, then:
 
    a. Trap.
 
@@ -18556,7 +18555,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`{\mathit{ref}}_1` from the stack.
 
-#. If :math:`{\mathit{ref}}_1` is some :math:`\mathsf{ref{.}null}~{\mathit{heaptype}}` and :math:`{\mathit{ref}}_2` is some :math:`\mathsf{ref{.}null}~{\mathit{heaptype}}`, then:
+#. If :math:`{\mathit{ref}}_1 = \mathsf{ref{.}null}` and :math:`{\mathit{ref}}_2 = \mathsf{ref{.}null}`, then:
 
    a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~1)` to the stack.
 
@@ -18577,7 +18576,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`{\mathit{val}}` from the stack.
 
-#. If :math:`{\mathit{val}}` is some :math:`\mathsf{ref{.}null}~{\mathit{heaptype}}`, then:
+#. If :math:`{\mathit{val}} = \mathsf{ref{.}null}`, then:
 
    a. Trap.
 
@@ -18609,17 +18608,17 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ......................................
 
 
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a reference value is on the top of the stack.
 
-#. Pop the value :math:`{\mathit{val}}` from the stack.
+#. Pop the value :math:`{\mathit{ref}}` from the stack.
 
-#. If :math:`{\mathit{val}}` is some :math:`\mathsf{ref{.}null}~{\mathit{heaptype}}`, then:
+#. If :math:`{\mathit{ref}} = \mathsf{ref{.}null}`, then:
 
-   a. Push the value :math:`(\mathsf{ref{.}null}~\mathsf{extern})` to the stack.
+   a. Push the value :math:`\mathsf{ref{.}null}` to the stack.
 
-#. If :math:`{\mathit{val}}` is address value, then:
+#. Else:
 
-   a. Push the value :math:`(\mathsf{ref{.}extern}~{\mathit{val}})` to the stack.
+   a. Push the value :math:`(\mathsf{ref{.}extern}~{\mathit{ref}})` to the stack.
 
 
 :math:`\mathsf{any{.}convert\_extern}`
@@ -18630,15 +18629,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`{\mathit{val}}` from the stack.
 
-#. If :math:`{\mathit{val}}` is some :math:`\mathsf{ref{.}null}~{\mathit{heaptype}}`, then:
+#. If :math:`{\mathit{val}} = \mathsf{ref{.}null}`, then:
 
-   a. Push the value :math:`(\mathsf{ref{.}null}~\mathsf{any})` to the stack.
+   a. Push the value :math:`\mathsf{ref{.}null}` to the stack.
 
-#. If :math:`{\mathit{val}}` is some :math:`\mathsf{ref{.}extern}~{\mathit{addrref}}`, then:
+#. If :math:`{\mathit{val}}` is some :math:`\mathsf{ref{.}extern}~{\mathit{ref}}`, then:
 
-   a. Let :math:`(\mathsf{ref{.}extern}~{\mathit{addrref}})` be the destructuring of :math:`{\mathit{val}}`.
+   a. Let :math:`(\mathsf{ref{.}extern}~{\mathit{ref}})` be the destructuring of :math:`{\mathit{val}}`.
 
-   #. Push the value :math:`{\mathit{addrref}}` to the stack.
+   #. Push the value :math:`{\mathit{ref}}` to the stack.
 
 
 :math:`{\mathit{nt}} {.} {\mathit{unop}}`
@@ -19212,7 +19211,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`{\mathit{val}'}` from the stack.
 
-#. If :math:`{\mathit{val}'}` is some :math:`\mathsf{ref{.}null}~{\mathit{heaptype}}`, then:
+#. If :math:`{\mathit{val}'} = \mathsf{ref{.}null}`, then:
 
    a. Trap.
 
@@ -19306,7 +19305,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. Pop the value :math:`{\mathit{val}''}` from the stack.
 
-   #. If :math:`{\mathit{val}''}` is some :math:`\mathsf{ref{.}null}~{\mathit{heaptype}}`, then:
+   #. If :math:`{\mathit{val}''} = \mathsf{ref{.}null}`, then:
 
       1) Trap.
 
@@ -19345,7 +19344,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`{\mathit{val}'}` from the stack.
 
-#. If :math:`{\mathit{val}'}` is some :math:`\mathsf{ref{.}null}~{\mathit{heaptype}}`, then:
+#. If :math:`{\mathit{val}'} = \mathsf{ref{.}null}`, then:
 
    a. Trap.
 
@@ -20083,13 +20082,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
    #. Execute the instruction :math:`(\mathsf{memory{.}init}~x~y)`.
 
 
-:math:`\mathsf{ref{.}null}~x`
-.............................
+:math:`\mathsf{ref{.}null}~{\mathit{ht}}`
+.........................................
 
 
-1. Let :math:`z` be the current state.
-
-#. Push the value :math:`(\mathsf{ref{.}null}~z{.}\mathsf{types}{}[x])` to the stack.
+1. Push the value :math:`\mathsf{ref{.}null}` to the stack.
 
 
 :math:`\mathsf{ref{.}func}~x`
@@ -20182,7 +20179,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`{\mathit{val}}` from the stack.
 
-#. If :math:`{\mathit{val}}` is some :math:`\mathsf{ref{.}null}~{\mathit{heaptype}}`, then:
+#. If :math:`{\mathit{val}} = \mathsf{ref{.}null}`, then:
 
    a. Trap.
 
@@ -20302,7 +20299,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`{\mathit{val}}` from the stack.
 
-#. If :math:`{\mathit{val}}` is some :math:`\mathsf{ref{.}null}~{\mathit{heaptype}}`, then:
+#. If :math:`{\mathit{val}} = \mathsf{ref{.}null}`, then:
 
    a. Trap.
 
@@ -20310,19 +20307,19 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`(\mathsf{ref{.}array}~a)` be the destructuring of :math:`{\mathit{val}}`.
 
-#. If :math:`a < {|z{.}\mathsf{arrays}|}` and :math:`i \geq {|z{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}|}`, then:
+#. Assert: Due to validation, :math:`a < {|z{.}\mathsf{arrays}|}`.
+
+#. If :math:`i \geq {|z{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}|}`, then:
 
    a. Trap.
 
-#. If :math:`i < {|z{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}|}` and :math:`a < {|z{.}\mathsf{arrays}|}`, then:
+#. Assert: Due to validation, the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{types}{}[x]` is some :math:`\mathsf{array}~{\mathit{fieldtype}}`.
 
-   a. Assert: Due to validation, the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{types}{}[x]` is some :math:`\mathsf{array}~{\mathit{fieldtype}}`.
+#. Let :math:`(\mathsf{array}~{\mathit{fieldtype}}_0)` be the destructuring of the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{types}{}[x]`.
 
-   #. Let :math:`(\mathsf{array}~{\mathit{fieldtype}}_0)` be the destructuring of the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{types}{}[x]`.
+#. Let :math:`({\mathsf{mut}^?}~{\mathit{zt}})` be the destructuring of :math:`{\mathit{fieldtype}}_0`.
 
-   #. Let :math:`({\mathsf{mut}^?}~{\mathit{zt}})` be the destructuring of :math:`{\mathit{fieldtype}}_0`.
-
-   #. Push the value :math:`{{{{\mathrm{unpack}}}_{{\mathit{zt}}}^{{{\mathit{sx}}^?}}}}{(z{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}{}[i])}` to the stack.
+#. Push the value :math:`{{{{\mathrm{unpack}}}_{{\mathit{zt}}}^{{{\mathit{sx}}^?}}}}{(z{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}{}[i])}` to the stack.
 
 
 :math:`\mathsf{array{.}len}`
@@ -20335,7 +20332,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`{\mathit{val}}` from the stack.
 
-#. If :math:`{\mathit{val}}` is some :math:`\mathsf{ref{.}null}~{\mathit{heaptype}}`, then:
+#. If :math:`{\mathit{val}} = \mathsf{ref{.}null}`, then:
 
    a. Trap.
 
@@ -20370,7 +20367,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`{\mathit{val}'}` from the stack.
 
-#. If :math:`{\mathit{val}'}` is some :math:`\mathsf{ref{.}null}~{\mathit{heaptype}}`, then:
+#. If :math:`{\mathit{val}'} = \mathsf{ref{.}null}`, then:
 
    a. Trap.
 
@@ -20437,11 +20434,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`{\mathit{val}'}` from the stack.
 
-#. If :math:`{\mathit{val}'}` is some :math:`\mathsf{ref{.}null}~{\mathit{heaptype}}` and :math:`{\mathit{val}}` is reference value, then:
+#. If :math:`{\mathit{val}'} = \mathsf{ref{.}null}` and :math:`{\mathit{val}}` is reference value, then:
 
    a. Trap.
 
-#. If :math:`{\mathit{val}}` is some :math:`\mathsf{ref{.}null}~{\mathit{heaptype}}` and :math:`{\mathit{val}'}` is reference value, then:
+#. If :math:`{\mathit{val}} = \mathsf{ref{.}null}` and :math:`{\mathit{val}'}` is reference value, then:
 
    a. Trap.
 
@@ -20548,7 +20545,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`{\mathit{val}}` from the stack.
 
-#. If :math:`{\mathit{val}}` is some :math:`\mathsf{ref{.}null}~{\mathit{heaptype}}`, then:
+#. If :math:`{\mathit{val}} = \mathsf{ref{.}null}`, then:
 
    a. Trap.
 
@@ -20613,7 +20610,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`{\mathit{val}}` from the stack.
 
-#. If :math:`{\mathit{val}}` is some :math:`\mathsf{ref{.}null}~{\mathit{heaptype}}`, then:
+#. If :math:`{\mathit{val}} = \mathsf{ref{.}null}`, then:
 
    a. Trap.
 
@@ -20942,7 +20939,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`{\mathit{val}'}` from the stack.
 
-#. If :math:`{\mathit{val}'}` is some :math:`\mathsf{ref{.}null}~{\mathit{heaptype}}`, then:
+#. If :math:`{\mathit{val}'} = \mathsf{ref{.}null}`, then:
 
    a. Trap.
 
@@ -21004,7 +21001,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`{\mathit{val}'}` from the stack.
 
-#. If :math:`{\mathit{val}'}` is some :math:`\mathsf{ref{.}null}~{\mathit{heaptype}}`, then:
+#. If :math:`{\mathit{val}'} = \mathsf{ref{.}null}`, then:
 
    a. Trap.
 
@@ -23758,7 +23755,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. If :math:`{{\mathit{NULL}}_0^?} = \mathsf{null}`, then:
 
-   a. Return :math:`(\mathsf{ref{.}null}~{\mathit{ht}})`.
+   a. Return :math:`\mathsf{ref{.}null}`.
 
 #. Assert: Due to validation, :math:`{{\mathit{NULL}}_0^?}` is not defined.
 
@@ -24220,11 +24217,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       1) Return :math:`{{\mathrm{ipopcnt}}}_{N}(i)`.
 
-   #. Assert: Due to validation, :math:`{\mathit{unop}}` is some :math:`{\mathsf{extend}}{{\mathit{sz}}}{\mathsf{\_}}{\mathsf{s}}`.
+   #. If :math:`{\mathit{unop}}` is some :math:`{\mathsf{extend}}{{\mathit{sz}}}{\mathsf{\_}}{\mathsf{s}}`, then:
 
-   #. Let :math:`({\mathsf{extend}}{M}{\mathsf{\_}}{\mathsf{s}})` be the destructuring of :math:`{\mathit{unop}}`.
+      1) Let :math:`({\mathsf{extend}}{M}{\mathsf{\_}}{\mathsf{s}})` be the destructuring of :math:`{\mathit{unop}}`.
 
-   #. Return :math:`{{{{\mathrm{iextend}}}_{N, M}^{\mathsf{s}}}}{(i)}`.
+      #) Return :math:`{{{{\mathrm{iextend}}}_{N, M}^{\mathsf{s}}}}{(i)}`.
 
 #. Assert: Due to validation, :math:`{\mathit{numtype}}` is :math:`{\mathsf{f}}{N}`.
 
@@ -28693,9 +28690,8 @@ Vec_ok
 Ref_ok
 - the reference value ref is valid with the reference type rt if:
   - Either:
-    - ref is (REF.NULL ht).
-    - rt is (REF ?(NULL) ht').
-    - the heap type ht' matches the heap type ht.
+    - ref is REF.NULL_ADDR.
+    - rt is (REF ?(NULL) BOT).
   - Or:
     - ref is (REF.I31_NUM i).
     - rt is (REF ?() I31).
@@ -28722,16 +28718,16 @@ Ref_ok
     - ref is (REF.HOST_ADDR a).
     - rt is (REF ?() ANY).
   - Or:
-    - ref is (REF.EXTERN addrref).
+    - ref is (REF.EXTERN ref').
     - rt is (REF ?() EXTERN).
-    - the reference value addrref is valid with the reference type (REF ?() ANY).
+    - the reference value ref' is valid with the reference type (REF ?() ANY).
+    - ref' is not REF.NULL_ADDR.
   - Or:
     - ref is valid with the reference type rt'.
     - rt' matches rt.
 
 Ref_ok/null
-- the reference value (REF.NULL ht) is valid with the reference type (REF ?(NULL) ht') if:
-  - the heap type ht' matches the heap type ht.
+- the reference value REF.NULL_ADDR is valid with the reference type (REF ?(NULL) BOT).
 
 Ref_ok/i31
 - the reference value (REF.I31_NUM i) is valid with the reference type (REF ?() I31).
@@ -28759,8 +28755,9 @@ Ref_ok/host
 - the reference value (REF.HOST_ADDR a) is valid with the reference type (REF ?() ANY).
 
 Ref_ok/extern
-- the reference value (REF.EXTERN addrref) is valid with the reference type (REF ?() EXTERN) if:
-  - the reference value addrref is valid with the reference type (REF ?() ANY).
+- the reference value (REF.EXTERN ref) is valid with the reference type (REF ?() EXTERN) if:
+  - the reference value ref is valid with the reference type (REF ?() ANY).
+  - ref is not REF.NULL_ADDR.
 
 Ref_ok/sub
 - the reference value ref is valid with the reference type rt if:
@@ -28924,7 +28921,7 @@ Step_read/return_call_ref-frame-* yy
 2. Assert: Due to validation, a value is on the top of the stack.
 3. Pop the value val'' from the stack.
 4. Assert: Due to validation, the first non-value entry of the stack is a FRAME_.
-5. If val'' is some REF.NULL, then:
+5. If (val'' = REF.NULL_ADDR), then:
   a. Trap.
 6. Assert: Due to validation, val'' is some REF.FUNC_ADDR.
 7. Let (REF.FUNC_ADDR a) be val''.
@@ -29220,7 +29217,7 @@ Step_pure/br_table l* l'
 Step_pure/br_on_null l
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop the value val from the stack.
-3. If val is some REF.NULL, then:
+3. If (val = REF.NULL_ADDR), then:
   a. Execute the instruction (BR l).
 4. Else:
   a. Push the value val to the stack.
@@ -29228,7 +29225,7 @@ Step_pure/br_on_null l
 Step_pure/br_on_non_null l
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop the value val from the stack.
-3. If val is some REF.NULL, then:
+3. If (val = REF.NULL_ADDR), then:
   a. Do nothing.
 4. Else:
   a. Push the value val to the stack.
@@ -29294,7 +29291,7 @@ Step_pure/ref.i31
 Step_pure/ref.is_null
 1. Assert: Due to validation, a value of value type ref is on the top of the stack.
 2. Pop the value ref from the stack.
-3. If ref is some REF.NULL, then:
+3. If (ref = REF.NULL_ADDR), then:
   a. Push the value (I32.CONST 1) to the stack.
 4. Else:
   a. Push the value (I32.CONST 0) to the stack.
@@ -29302,7 +29299,7 @@ Step_pure/ref.is_null
 Step_pure/ref.as_non_null
 1. Assert: Due to validation, a value of value type ref is on the top of the stack.
 2. Pop the value ref from the stack.
-3. If ref is some REF.NULL, then:
+3. If (ref = REF.NULL_ADDR), then:
   a. Trap.
 4. Push the value ref to the stack.
 
@@ -29311,7 +29308,7 @@ Step_pure/ref.eq
 2. Pop the value ref_2 from the stack.
 3. Assert: Due to validation, a value of value type ref is on the top of the stack.
 4. Pop the value ref_1 from the stack.
-5. If (ref_1 is some REF.NULL /\ ref_2 is some REF.NULL), then:
+5. If ((ref_1 = REF.NULL_ADDR) /\ (ref_2 = REF.NULL_ADDR)), then:
   a. Push the value (I32.CONST 1) to the stack.
 6. Else if (ref_1 = ref_2), then:
   a. Push the value (I32.CONST 1) to the stack.
@@ -29321,7 +29318,7 @@ Step_pure/ref.eq
 Step_pure/i31.get sx
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop the value val from the stack.
-3. If val is some REF.NULL, then:
+3. If (val = REF.NULL_ADDR), then:
   a. Trap.
 4. Assert: Due to validation, val is some REF.I31_NUM.
 5. Let (REF.I31_NUM i) be val.
@@ -29336,21 +29333,21 @@ Step_pure/array.new x
 6. Execute the instruction (ARRAY.NEW_FIXED x n).
 
 Step_pure/extern.convert_any
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value val from the stack.
-3. If val is some REF.NULL, then:
-  a. Push the value (REF.NULL EXTERN) to the stack.
-4. If val is addrref, then:
-  a. Push the value (REF.EXTERN val) to the stack.
+1. Assert: Due to validation, a value of value type ref is on the top of the stack.
+2. Pop the value ref from the stack.
+3. If (ref = REF.NULL_ADDR), then:
+  a. Push the value REF.NULL_ADDR to the stack.
+4. Else:
+  a. Push the value (REF.EXTERN ref) to the stack.
 
 Step_pure/any.convert_extern
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop the value val from the stack.
-3. If val is some REF.NULL, then:
-  a. Push the value (REF.NULL ANY) to the stack.
+3. If (val = REF.NULL_ADDR), then:
+  a. Push the value REF.NULL_ADDR to the stack.
 4. If val is some REF.EXTERN, then:
-  a. Let (REF.EXTERN addrref) be val.
-  b. Push the value addrref to the stack.
+  a. Let (REF.EXTERN ref) be val.
+  b. Push the value ref to the stack.
 
 Step_pure/unop nt unop
 1. Assert: Due to validation, a value of value type nt is on the top of the stack.
@@ -29619,7 +29616,7 @@ Step_read/call_ref yy
 1. Let z be the current state.
 2. Assert: Due to validation, a value is on the top of the stack.
 3. Pop the value val' from the stack.
-4. If val' is some REF.NULL, then:
+4. If (val' = REF.NULL_ADDR), then:
   a. Trap.
 5. Assert: Due to validation, val' is some REF.FUNC_ADDR.
 6. Let (REF.FUNC_ADDR a) be val'.
@@ -29663,7 +29660,7 @@ Step_read/return_call_ref yy
   a. Assert: Due to validation, the first non-value entry of the stack is a FRAME_.
   b. Assert: Due to validation, a value is on the top of the stack.
   c. Pop the value val'' from the stack.
-  d. If val'' is some REF.NULL, then:
+  d. If (val'' = REF.NULL_ADDR), then:
     1) Trap.
   e. Assert: Due to validation, val'' is some REF.FUNC_ADDR.
   f. Let (REF.FUNC_ADDR a) be val''.
@@ -29682,7 +29679,7 @@ Step_read/throw_ref
 1. Let z be the current state.
 2. Assert: Due to validation, a value is on the top of the stack.
 3. Pop the value val' from the stack.
-4. If val' is some REF.NULL, then:
+4. If (val' = REF.NULL_ADDR), then:
   a. Trap.
 5. If val' is some REF.EXN_ADDR, then:
   a. Let (REF.EXN_ADDR a) be val'.
@@ -30034,9 +30031,8 @@ Step_read/memory.init x y
   g. Push the value (I32.CONST (n - 1)) to the stack.
   h. Execute the instruction (MEMORY.INIT x y).
 
-Step_read/ref.null (_IDX x)
-1. Let z be the current state.
-2. Push the value (REF.NULL $type(z, x)) to the stack.
+Step_read/ref.null ht
+1. Push the value REF.NULL_ADDR to the stack.
 
 Step_read/ref.func x
 1. Let z be the current state.
@@ -30080,7 +30076,7 @@ Step_read/struct.get sx? x i
 1. Let z be the current state.
 2. Assert: Due to validation, a value is on the top of the stack.
 3. Pop the value val from the stack.
-4. If val is some REF.NULL, then:
+4. If (val = REF.NULL_ADDR), then:
   a. Trap.
 5. Assert: Due to validation, val is some REF.STRUCT_ADDR.
 6. Let (REF.STRUCT_ADDR a) be val.
@@ -30138,23 +30134,23 @@ Step_read/array.get sx? x
 3. Pop the value (I32.CONST i) from the stack.
 4. Assert: Due to validation, a value is on the top of the stack.
 5. Pop the value val from the stack.
-6. If val is some REF.NULL, then:
+6. If (val = REF.NULL_ADDR), then:
   a. Trap.
 7. Assert: Due to validation, val is some REF.ARRAY_ADDR.
 8. Let (REF.ARRAY_ADDR a) be val.
-9. If ((a < |$arrayinst(z)|) /\ (i >= |$arrayinst(z)[a].FIELDS|)), then:
+9. Assert: Due to validation, (a < |$arrayinst(z)|).
+10. If (i >= |$arrayinst(z)[a].FIELDS|), then:
   a. Trap.
-10. If ((i < |$arrayinst(z)[a].FIELDS|) /\ (a < |$arrayinst(z)|)), then:
-  a. Assert: Due to validation, $Expand($type(z, x)) is some ARRAY.
-  b. Let (ARRAY fieldtype_0) be $Expand($type(z, x)).
-  c. Let (mut? zt) be fieldtype_0.
-  d. Push the value $unpackfield_(zt, sx?, $arrayinst(z)[a].FIELDS[i]) to the stack.
+11. Assert: Due to validation, $Expand($type(z, x)) is some ARRAY.
+12. Let (ARRAY fieldtype_0) be $Expand($type(z, x)).
+13. Let (mut? zt) be fieldtype_0.
+14. Push the value $unpackfield_(zt, sx?, $arrayinst(z)[a].FIELDS[i]) to the stack.
 
 Step_read/array.len
 1. Let z be the current state.
 2. Assert: Due to validation, a value is on the top of the stack.
 3. Pop the value val from the stack.
-4. If val is some REF.NULL, then:
+4. If (val = REF.NULL_ADDR), then:
   a. Trap.
 5. Assert: Due to validation, val is some REF.ARRAY_ADDR.
 6. Let (REF.ARRAY_ADDR a) be val.
@@ -30171,7 +30167,7 @@ Step_read/array.fill x
 7. Pop the value (I32.CONST i) from the stack.
 8. Assert: Due to validation, a value is on the top of the stack.
 9. Pop the value val' from the stack.
-10. If val' is some REF.NULL, then:
+10. If (val' = REF.NULL_ADDR), then:
   a. Trap.
 11. Assert: Due to validation, val' is some REF.ARRAY_ADDR.
 12. Let (REF.ARRAY_ADDR a) be val'.
@@ -30204,9 +30200,9 @@ Step_read/array.copy x_1 x_2
 9. Pop the value (I32.CONST i_1) from the stack.
 10. Assert: Due to validation, a value is on the top of the stack.
 11. Pop the value val' from the stack.
-12. If (val' is some REF.NULL /\ val is ref), then:
+12. If ((val' = REF.NULL_ADDR) /\ val is ref), then:
   a. Trap.
-13. If (val is some REF.NULL /\ val' is ref), then:
+13. If ((val = REF.NULL_ADDR) /\ val' is ref), then:
   a. Trap.
 14. If val' is some REF.ARRAY_ADDR, then:
   a. Let (REF.ARRAY_ADDR a_1) be val'.
@@ -30259,7 +30255,7 @@ Step_read/array.init_elem x y
 7. Pop the value (I32.CONST i) from the stack.
 8. Assert: Due to validation, a value is on the top of the stack.
 9. Pop the value val from the stack.
-10. If val is some REF.NULL, then:
+10. If (val = REF.NULL_ADDR), then:
   a. Trap.
 11. Assert: Due to validation, val is some REF.ARRAY_ADDR.
 12. Let (REF.ARRAY_ADDR a) be val.
@@ -30291,7 +30287,7 @@ Step_read/array.init_data x y
 7. Pop the value (I32.CONST i) from the stack.
 8. Assert: Due to validation, a value is on the top of the stack.
 9. Pop the value val from the stack.
-10. If val is some REF.NULL, then:
+10. If (val = REF.NULL_ADDR), then:
   a. Trap.
 11. Assert: Due to validation, val is some REF.ARRAY_ADDR.
 12. Let (REF.ARRAY_ADDR a) be val.
@@ -30449,7 +30445,7 @@ Step/struct.set x i
 3. Pop the value val from the stack.
 4. Assert: Due to validation, a value is on the top of the stack.
 5. Pop the value val' from the stack.
-6. If val' is some REF.NULL, then:
+6. If (val' = REF.NULL_ADDR), then:
   a. Trap.
 7. Assert: Due to validation, val' is some REF.STRUCT_ADDR.
 8. Let (REF.STRUCT_ADDR a) be val'.
@@ -30479,7 +30475,7 @@ Step/array.set x
 5. Pop the value (I32.CONST i) from the stack.
 6. Assert: Due to validation, a value is on the top of the stack.
 7. Pop the value val' from the stack.
-8. If val' is some REF.NULL, then:
+8. If (val' = REF.NULL_ADDR), then:
   a. Trap.
 9. Assert: Due to validation, val' is some REF.ARRAY_ADDR.
 10. Let (REF.ARRAY_ADDR a) be val'.
@@ -31760,7 +31756,7 @@ default_ valtype
 4. Assert: Due to validation, valtype is some REF.
 5. Let (REF NULL_0? ht) be valtype.
 6. If (NULL_0? = ?(NULL)), then:
-  a. Return ?((REF.NULL ht)).
+  a. Return ?(REF.NULL_ADDR).
 7. Assert: Due to validation, NULL_0? is not defined.
 8. Return ?().
 
@@ -31973,9 +31969,9 @@ unop_ numtype unop_ i
     1) Return [$ictz_($sizenn(numtype), i)].
   c. If (unop_ = POPCNT), then:
     1) Return [$ipopcnt_($sizenn(numtype), i)].
-  d. Assert: Due to validation, unop_ is some EXTEND.
-  e. Let (EXTEND M) be unop_.
-  f. Return [$iextend_($sizenn(numtype), M, S, i)].
+  d. If unop_ is some EXTEND, then:
+    1) Let (EXTEND M) be unop_.
+    2) Return [$iextend_($sizenn(numtype), M, S, i)].
 2. Assert: Due to validation, numtype is Fnn.
 3. If (unop_ = ABS), then:
   a. Return $fabs_($sizenn(numtype), i).

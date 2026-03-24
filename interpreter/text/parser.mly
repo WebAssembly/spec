@@ -1500,7 +1500,7 @@ literal_vec :
   | LPAR VEC_CONST VECSHAPE list(num) RPAR { snd (vec $2 $3 $4 $sloc) }
 
 literal_ref :
-  | LPAR REF_NULL heaptype RPAR { Value.NullRef ($3 (empty_context ())) }
+  | LPAR REF_NULL heaptype? RPAR { Value.NullRef }
   | LPAR REF_HOST NAT RPAR { Script.HostRef (nat32 $3 $loc($3)) }
   | LPAR REF_EXTERN NAT RPAR { Extern.ExternRef (Script.HostRef (nat32 $3 $loc($3))) }
 
@@ -1525,7 +1525,6 @@ result :
   | LPAR REF_FUNC RPAR { RefResult (RefTypePat FuncHT) @@ $sloc }
   | LPAR REF_EXN RPAR { RefResult (RefTypePat ExnHT) @@ $sloc }
   | LPAR REF_EXTERN RPAR { RefResult (RefTypePat ExternHT) @@ $sloc }
-  | LPAR REF_NULL RPAR { RefResult NullPat @@ $sloc }
   | LPAR VEC_CONST VECSHAPE list(numpat) RPAR
     { if V128.num_lanes $3 <> List.length $4 then
         error (at $sloc) "wrong number of lane literals";

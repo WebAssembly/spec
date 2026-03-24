@@ -1,25 +1,19 @@
 ;; Types
 
-relation Expand_typ: S |- typ => deftyp
 relation Reduce_typ: S |- typ ~>* typ
 relation Step_typ: S |- typ ~> typ
 relation Eq_typ: S |- typ == typ
+relation Expand_typ: S |- typ ~~ deftyp
 
 
 rule Expand_typ/plain:
-  S |- t => ALIAS t
-  ;; nop if t is VAR
+  S |- t ~~ ALIAS t'
+  -- Reduce_typ: S |- t ~>* t'
+  ;; Note: this rule is a nop if t is VAR
 
-rule Expand_typ/alias:
-  S |- VAR x a* => dt
-  -- Expand_typ: S |- VAR x a* => ALIAS t
-  -- Expand_typ: S |- t => dt
-
-rule Expand_typ/step:
-  S |- VAR x a* => $subst_deftyp(s, dt)
-  -- if (x, p* `-> OK `= inst*) <- S.TYP
-  -- if (INST `{q*} a'* `= dt) <- inst*
-  -- Match_args: S |- a* `/ `{q*} a'* => s
+rule Expand_typ/def:
+  S |- t ~~ dt
+  -- Reduce_typ: S |- t ~>* MATCH x WITH (INST `{} `= dt) inst*
 
 
 rule Eq_typ:
@@ -27,9 +21,10 @@ rule Eq_typ:
   -- Reduce_typ: S |- t_1 ~>* t'_1
   -- Reduce_typ: S |- t_2 ~>* t'_2
   -- if t'_1 = t'_2
+  ;; Note: defined types are nominal
 
 
-rule Reduce_typ/normal:
+rule Reduce_typ/refl:
   S |- t ~>* t
 
 rule Reduce_typ/step:
@@ -43,8 +38,32 @@ rule Step_typ/VAR-ctx:
   -- Step_arg: S |- a*[n] ~> a'_n
 
 rule Step_typ/VAR-apply:
-  S |- VAR x a* ~> t
-  -- Expand_typ: S |- VAR x a* => ALIAS t
+  S |- VAR x a* ~> MATCH x a* WITH inst*
+  -- if (x, p* `-> OK `= inst*) <- S.TYP
+
+
+rule Step_typ/MATCH-ctx1:
+  S |- MATCH x a* WITH inst* ~> MATCH x a*[[n] = a'_n] WITH inst*
+  -- Step_arg: S |- a*[n] ~> a'_n
+
+rule Step_typ/MATCH-ctx2:
+  S |- MATCH x a* WITH inst* ~> MATCH x a* WITH inst*[[n] = inst'_n]
+  -- Step_inst: S |- inst*[n] ~> inst'_n
+
+rule Step_typ/MATCH-alias:
+  S |- MATCH x eps WITH (INST `{} eps `= ALIAS t) inst* ~> t
+
+rule Step_typ/MATCH-match:
+  S |- MATCH x a* WITH (INST `{q*} a'* `= dt) inst* ~>
+    MATCH x a''* WITH
+      (INST `{q'*} a'''* `= $subst_deftyp(s, dt))
+      (INST `{} a''* `= ALIAS (MATCH x a* WITH inst*))
+  -- Step_argmatch: S |- `{q*} (a / a')* ~>_s `{q'*} (a'' / a''')*
+
+rule Step_typ/MATCH-match-fail:
+  S |- MATCH x a* WITH (INST `{q*} a'* `= dt) inst* ~>
+    MATCH x a* WITH inst*
+  -- Step_argmatch: S |- `{q*} (a / a')* ~>_s `{} FAIL
 
 
 rule Step_typ/TUP-ctx:
@@ -57,13 +76,31 @@ rule Step_typ/ITER-ctx:
   -- Step_typ: S |- t ~> t'
 
 
+;; Iterators
+
+relation Step_iter: S |- iter ~> iter
+relation Step_exppull: S |- exppull ~> exppull
+
+rule Step_iter/SUP-ctx:
+  S |- SUP x e ~> SUP x e'
+  -- Step_exp: S |- e ~> e'
+
+
+rule Step_exppull/ctx1:
+  S |- x `: t `<- e  ~>  x `: t' `<- e
+  -- Step_typ: S |- t ~> t'
+
+rule Step_exppull/ctx2:
+  S |- x `: t `<- e  ~>  x `: t `<- e'
+  -- Step_exp: S |- e ~> e'
+
+
 ;; Expressions
 
 relation Reduce_exp: S |- exp ~>* exp
 relation Step_exp: S |- exp ~> exp
+relation Step_expfield: S |- expfield ~> expfield
 relation Step_path: S |- path ~> path
-relation Step_iter: S |- iter ~> iter
-relation Step_exppull: S |- exppull ~> exppull
 relation Eq_exp: S |- exp == exp
 
 
@@ -74,7 +111,7 @@ rule Eq_exp:
   -- if e'_1 = e'_2
 
 
-rule Reduce_exp/normal:
+rule Reduce_exp/refl:
   S |- e ~>* e
 
 rule Reduce_exp/step:
@@ -150,8 +187,8 @@ rule Step_exp/TUP-ctx:
   -- Step_exp: S |- e*[n] ~> e'_n
 
 rule Step_exp/STR-ctx:
-  S |- STR (a `= e)* ~> STR (a `= e)*[[n] = (a*[n] `= e'_n)]
-  -- Step_exp: S |- e*[n] ~> e'_n
+  S |- STR ef* ~> STR ef*[[n] = ef'_n]
+  -- Step_expfield: S |- ef*[n] ~> ef'_n
 
 rule Step_exp/INJ-ctx:
   S |- INJ mixop e ~> INJ mixop e'
@@ -318,23 +355,20 @@ rule Step_exp/ITER-ctx3:
   -- Step_exppull: S |- ep*[n] ~> ep'_n
 
 rule Step_exp/ITER-QUEST:
-  S |- ITER e QUEST (x `<- OPT e'?)* ~> OPT $subst_exp({EXP (x, e'')*}, e)?
+  S |- ITER e QUEST (x `: t `<- OPT e'?)* ~> OPT $subst_exp({EXP (x, e'')*}, e)?
   -- if e''*? = $transpose_(exp, e'?*)
 
 rule Step_exp/ITER-PLUS:
-  S |- ITER e PLUS (x `<- LIST e'*)* ~> ITER e STAR (x `<- LIST e'*)*
+  S |- ITER e PLUS (x `: t `<- LIST e'*)* ~> ITER e STAR (x `: t `<- LIST e'*)*
   -- if |e'**[0]| >= 1
 
 rule Step_exp/ITER-STAR:
-  S |- ITER e STAR (x `<- LIST e'*)* ~> ITER e (SUP (NAT n)) (x `<- LIST e'*)*
+  S |- ITER e STAR (x `: t `<- LIST e'*)* ~> ITER e (SUP y (NAT n)) (x `: t `<- LIST e'*)*
   -- if |e'**[0]| = n
-
-rule Step_exp/ITER-SUP-eps:
-  S |- ITER e (SUP eps e_n) (x `<- LIST e'*)* ~> ITER e (SUP y e_n) (x `<- LIST e'*)*
   ;; TODO: y fresh
 
 rule Step_exp/ITER-SUP:
-  S |- ITER e (SUP x_i (NAT n)) (x `<- LIST e'^n)* ~> LIST $subst_exp({EXP (x, e'')* (x_i, NAT i)}, e)^(i<n)
+  S |- ITER e (SUP y (NAT n)) (x `: t `<- LIST e'^n)* ~> LIST $subst_exp({EXP (x, e'')* (y, NAT i)}, e)^(i<n)
   -- if e''*^n = $transpose_(exp, e'^n*)
 
 
@@ -343,12 +377,8 @@ rule Step_exp/CALL-ctx:
   -- Step_arg: S |- a*[n] ~> a'_n
 
 rule Step_exp/CALL-apply:
-  S |- CALL x a* ~> $subst_exp(s, e)
+  S |- CALL x a* ~> MATCH a* WITH clause*
   -- if (x, p* `-> t `= clause*) <- S.FUN
-  -- if (CLAUSE `{q*} a'* `= e `- pr*) <- clause*
-  -- Match_args: S |- a* `/ `{q*} a'* => s
-  -- Reduce_prems: S |- $subst_prem(s, pr)* ~>* eps
-  ;; TODO: need to try in order for ELSE to behave correctly
 
 
 rule Step_exp/CVT-ctx:
@@ -371,6 +401,9 @@ rule Step_exp/SUB-ctx3:
   S |- SUB e t_1 t_2 ~> SUB e t_1 t'_2
   -- Step_typ: S |- t_2 ~> t'_2
 
+rule Step_exp/SUB-refl:
+  S |- SUB e t t ~> e
+
 rule Step_exp/SUB-SUB:
   S |- SUB (SUB e' t'_1 t'_2) t_1 t_2 ~> SUB e' t'_1 t_2
 
@@ -386,19 +419,335 @@ rule Step_exp/SUB-LIST:
   S |- SUB (LIST e*) (ITER t_1 STAR) (ITER t_2 STAR) ~> LIST (SUB e t_1 t_2)*
 
 rule Step_exp/SUB-STR:
-  S |- SUB (STR ef*) (VAR x_1 a_1*) (VAR x_2 a_2*) ~> STR (at `= SUB e t_1 t_2)*
-  -- Expand_typ: S |- VAR x_1 a_1* => STRUCT tf_1*
-  -- Expand_typ: S |- VAR x_2 a_2* => STRUCT tf_2*
-  -- (if (at `: t_2 `- `{q_2*} pr_2*) = tf_2)*
-  -- (if (at `: t_1 `- `{q_1*} pr_1*) <- tf_1*)*
-  -- (if (at `= e) <- ef*)*
+  S |- SUB (STR (at `= e)*) t_1 t_2 ~> STR (at' `= SUB e t'_1 t'_2)*
+  -- if t_1 = MATCH x_1 WITH (INST `{} `= STRUCT tf_1*)
+  -- if t_2 = MATCH x_2 WITH (INST `{} `= STRUCT tf_2*)
+  -- (if (at' `: t'_1 `- `{q_1*} pr_1*) <- tf_1*)*
+  -- (if (at' `: t'_2 `- `{q_2*} pr_2*) = tf_2)*
 
 rule Step_exp/SUB-CASE:
-  S |- SUB (INJ op e) (VAR x_1 a_1*) (VAR x_2 a_2*) ~> INJ op (SUB e t_1 t_2)
-  -- Expand_typ: S |- VAR x_1 a_1* => VARIANT tc_1*
-  -- Expand_typ: S |- VAR x_2 a_2* => VARIANT tc_2*
-  -- if (op `: t_1 `- `{q_1*} pr_1*) <- tc_1*
-  -- if (op `: t_2 `- `{q_2*} pr_2*) <- tc_2*
+  S |- SUB (INJ op e) t_1 t_2 ~> INJ op (SUB e t'_1 t'_2)
+  -- if t_1 = MATCH x_1 WITH (INST `{} `= VARIANT tc_1*)
+  -- if t_2 = MATCH x_2 WITH (INST `{} `= VARIANT tc_2*)
+  -- if (op `: t'_1 `- `{q_1*} pr_1*) <- tc_1*
+  -- if (op `: t'_2 `- `{q_2*} pr_2*) <- tc_2*
+
+
+rule Step_exp/MATCH-ctx1:
+  S |- MATCH a* WITH clause* ~> MATCH a*[[n] = a'_n] WITH clause*
+  -- Step_arg: S |- a*[n] ~> a'_n
+
+rule Step_exp/MATCH-ctx2:
+  S |- MATCH a* WITH clause* ~> MATCH a* WITH clause*[[n] = clause'_n]
+  -- Step_clause: S |- clause*[n] ~> clause'_n
+
+rule Step_exp/MATCH-match:
+  S |- MATCH a* WITH (CLAUSE `{q*} a'* `= e `- pr*) clause* ~>
+    MATCH a''* WITH
+      (CLAUSE `{q'*} a'''* `= $subst_exp(s, e) `- $subst_prem(s, pr)*)
+      (CLAUSE `{} a''* `= (MATCH a* WITH clause*) `- eps)
+  -- Step_argmatch: S |- `{q*} (a / a')*  ~>_s  `{q'*} (a'' / a''')*
+
+rule Step_exp/MATCH-match-fail:
+  S |- MATCH a* WITH (CLAUSE `{q*} a'* `= e `- pr*) clause* ~>
+    MATCH a''* WITH clause*
+  -- Step_argmatch: S |- `{q*} (a / a')*  ~>_s  `{} FAIL
+
+rule Step_exp/MATCH-guess:
+  S |- MATCH a* WITH (CLAUSE `{q*} a'* `= e `- pr*) clause* ~>
+    MATCH a* WITH (CLAUSE `{} $subst_arg(s, a')* `= e `- pr*) clause*
+  -- Ok_subst: $storeenv(S) |- s : q*
+  ;; Note: non-computational rule
+
+rule Step_exp/MATCH-true:
+  S |- MATCH eps WITH (CLAUSE `{} eps `= e `- eps) clause* ~> e
+
+rule Step_exp/MATCH-false:
+  S |- MATCH eps WITH (CLAUSE `{} eps `= e `- (IF (BOOL false)) pr*) clause* ~>
+    MATCH eps WITH clause*
+
+
+rule Step_expfield/ctx:
+  S |- a `= e ~> a `= e'
+  -- Step_exp: S |- e ~> e'
+
+
+;; Paths
+
+rule Step_path/THE-ctx:
+  S |- THE p ~> THE p'
+  -- Step_path: S |- p ~> p'
+
+rule Step_path/IDX-ctx1:
+  S |- IDX p e ~> IDX p' e
+  -- Step_path: S |- p ~> p'
+
+rule Step_path/IDX-ctx2:
+  S |- IDX p e ~> IDX p e'
+  -- Step_exp: S |- e ~> e'
+
+rule Step_path/SLICE-ctx1:
+  S |- SLICE p e_1 e_2 ~> SLICE p' e_1 e_2
+  -- Step_path: S |- p ~> p'
+
+rule Step_path/SLICE-ctx2:
+  S |- SLICE p e_1 e_2 ~> SLICE p e'_1 e_2
+  -- Step_exp: S |- e_1 ~> e'_1
+
+rule Step_path/SLICE-ctx3:
+  S |- SLICE p e_1 e_2 ~> SLICE p e_1 e'_2
+  -- Step_exp: S |- e_2 ~> e'_2
+
+rule Step_path/DOT-ctx:
+  S |- DOT p a ~> DOT p' a
+  -- Step_path: S |- p ~> p'
+
+rule Step_path/PROJ-ctx:
+  S |- PROJ p m ~> PROJ p' m
+  -- Step_path: S |- p ~> p'
+
+
+;; Matches
+
+syntax argmatch = arg / arg | FAIL
+syntax expmatch = exp / exp | FAIL
+
+relation Step_argmatch: S |- `{quant*} argmatch* ~>_subst `{quant*} argmatch*
+relation Step_expmatch: S |- `{quant*} expmatch* ~>_subst `{quant*} expmatch*
+relation Step_argmatch_plain: S |- argmatch* ~> argmatch*
+relation Step_expmatch_plain: S |- expmatch* ~> expmatch*
+
+def $subst_argmatch(subst, argmatch) : argmatch
+def $subst_expmatch(subst, expmatch) : expmatch
+
+def $subst_argmatch(s, a / a') = $subst_arg(s, a) / $subst_arg(s, a')
+def $subst_expmatch(s, e / e') = $subst_exp(s, e) / $subst_exp(s, e')
+
+
+rule Step_argmatch/plain:
+  S |- `{q*} (a / a')*  ~>_{}  `{q*} (a'' / a''')*
+  -- Step_argmatch_plain: S |- (a / a')*  ~>  (a'' / a''')*
+
+rule Step_argmatch/seq:
+  S |- `{q_1* q* q_2*} am_1* am am_2*  ~>_s 
+    `{q_1* q'* $subst_quant(s, q_2)*} am_1* am'* $subst_argmatch(s, am_2)*
+  -- Step_argmatch: S |- `{q*} am ~>_s `{q'*} am'*
+
+rule Step_argmatch/seq-fail:
+  S |- `{q_1* q* q_2*} am_1* am am_2*  ~>_s  `{} FAIL
+  -- Step_argmatch: S |- `{q*} am ~>_s  `{} FAIL
+
+rule Step_argmatch/TYP:
+  S |- `{TYP x} (TYP t / TYP (VAR x))  ~>_{TYP (x, t)}  `{} eps
+
+rule Step_argmatch/EXP:
+  S |- `{EXP x `: t} (EXP e / EXP (VAR x))  ~>_{EXP (x, e)}  `{} eps
+
+rule Step_argmatch/FUN:
+  S |- `{FUN x `: p* `-> t} (FUN y / FUN x)  ~>_{FUN (x, y)}  `{} eps
+
+rule Step_argmatch/GRAM:
+  S |- `{GRAM x `: p* `-> t} (GRAM g / GRAM (VAR x))  ~>_{GRAM (x, g)}  `{} eps
+
+rule Step_argmatch/EXP-exp:
+  S |- `{q*} (EXP e / EXP e')  ~>_s  `{q'*} (EXP e'' / EXP e''')*
+  -- Step_expmatch: S |- `{q*} (e / e')  ~>_s  `{q'*} (e'' / e''')*
+
+rule Step_argmatch/EXP-fail:
+  S |- `{q*} (EXP e / EXP e')  ~>_s  `{} FAIL
+  -- Step_expmatch: S |- `{q*} (e / e')  ~>_s  `{} FAIL
+
+
+rule Step_argmatch_plain/ctx1:
+  S |- a / a'  ~>  a'' / a'
+  -- Step_arg: S |- a ~> a''
+
+rule Step_argmatch_plain/ctx2:
+  S |- a / a'  ~>  a / a''
+  -- Step_arg: S |- a' ~> a''
+
+rule Step_argmatch_plain/eq:
+  S |- a / a  ~>  eps
+
+;; TODO: disjoint
+;;rule Step_argmatch_plain/neq:
+;;  S |- a / a' ~> FAIL
+;;  -- Disj_arg: S |- a =/= a'
+
+
+rule Step_expmatch/plain:
+  S |- `{q*} (e / e')*  ~>_{}  `{q*} (e'' / e''')*
+  -- Step_expmatch_plain: S |- (e / e')*  ~>  (e'' / e''')*
+
+rule Step_expmatch/seq:
+  S |- `{q_1* q* q_2*} em_1* em em_2*  ~>_s 
+    `{q_1* q'* $subst_quant(s, q_2)*} em_1* em'* $subst_expmatch(s, em_2)*
+  -- Step_expmatch: S |- `{q*} em ~>_s `{q'*} em'*
+
+rule Step_expmatch/seq-fail:
+  S |- `{q_1* q* q_2*} em_1* em em_2*  ~>_s  `{} FAIL
+  -- Step_expmatch: S |- `{q*} em ~>_s `{} FAIL
+
+rule Step_expmatch/ITER-QUEST:
+  S |- `{q*} (OPT e? / ITER e' QUEST (x `: t `<- e_p)*) ~>_{}
+    `{$concat_(quant, (EXP x' `: t)*?) q*}
+      (e / $subst_exp({EXP (x, VAR x')*}, e'))?
+      (OPT (VAR x'')? / e_p)*
+  -- if x''?* = $transposeq_(id, x'*?)
+  ;; TODO: x'*? fresh
+  ;; Note: inner match can only instantiate iteration variables
+
+rule Step_expmatch/ITER-SUP:
+  S |- `{q*} (LIST e^n / ITER e' (SUP y e_n) (x `: t `<- e_p)*) ~>_{}
+    `{$concat_(quant, (EXP x' `: t)*^n) q*}
+      (e / $subst_exp({EXP (y, NAT i) (x, VAR x')*}, e'))^(i<n)
+      (NAT n / e_n) (LIST (VAR x'')^n / e_p)*
+  -- if x''^n* = $transpose_(id, x'*^n)
+  ;; TODO: x'*^n fresh
+  ;; Note: inner match can only instantiate iteration variables
+
+
+rule Step_expmatch_plain/ctx1:
+  S |- e / e'  ~>  e'' / e'
+  -- Step_exp: S |- e ~> e''
+
+rule Step_expmatch_plain/ctx2:
+  S |- e / e'  ~>  e' / e''
+  -- Step_exp: S |- e' ~> e''
+
+rule Step_expmatch_plain/eq:
+  S |- e / e  ~>  eps
+
+rule Step_expmatch_plain/UN-PLUS:
+  S |- num / UN PLUS e ~> num / e
+  -- if ~ $isneg(num)
+
+rule Step_expmatch_plain/UN-PLUS-fail:
+  S |- num / UN PLUS e ~> FAIL
+  -- otherwise
+
+rule Step_expmatch_plain/UN-MINUS:
+  S |- num / UN MINUS e ~> $numun(MINUS, num) / e
+  -- if $isneg(num)
+
+rule Step_expmatch_plain/UN-MINUS-fail:
+  S |- num / UN MINUS e ~> FAIL
+  -- otherwise
+
+rule Step_expmatch_plain/CVT:
+  S |- num / CVT e nt_1 nt_2 ~> num' / e
+  -- if num' = $numcvt(nt_1, num)
+
+rule Step_expmatch_plain/CVT-fail:
+  S |- num / CVT e nt_1 nt_2 ~> FAIL
+  -- otherwise
+
+rule Step_expmatch_plain/TUP:
+  S |- TUP e* / TUP e'* ~> (e / e')*
+
+rule Step_expmatch_plain/INJ:
+  S |- INJ op e / INJ op' e' ~> e / e'
+  -- if op = op'
+
+rule Step_expmatch_plain/INJ-fail:
+  S |- INJ op e / INJ op' e' ~> FAIL
+  -- otherwise
+
+rule Step_expmatch_plain/OPT:
+  S |- OPT e? / OPT e'? ~> (e / e')?
+  -- if |e?| = |e'?|
+
+rule Step_expmatch_plain/OPT-fail:
+  S |- OPT e? / OPT e'? ~> FAIL
+  -- otherwise
+
+rule Step_expmatch_plain/LIST:
+  S |- LIST e* / LIST e'* ~> (e / e')*
+  -- if |e*| = |e'*|
+
+rule Step_expmatch_plain/LIST-fail:
+  S |- LIST e* / LIST e'* ~> FAIL
+  -- otherwise
+
+rule Step_expmatch_plain/LIFT:
+  S |- LIST e? / LIFT e' ~> OPT e? / e'
+
+rule Step_expmatch_plain/LIFT-fail:
+  S |- LIST e* / LIFT e' ~> FAIL
+  -- if |e*| > 1
+
+rule Step_expmatch_plain/CAT-left:
+  S |- LIST e_1* e_2* / CAT (LIST e'_1*) e'_2 ~> (LIST e_1* / LIST e'_1*) (LIST e_2* / e'_2)
+  -- if |e_1*| = |e'_1*|
+
+rule Step_expmatch_plain/CAT-left-fail:
+  S |- LIST e_1* e_2* / CAT (LIST e'_1*) e'_2 ~> FAIL
+  -- otherwise
+
+rule Step_expmatch_plain/CAT-right:
+  S |- LIST e_1* e_2* / CAT e'_1 (LIST e'_2*) ~> (LIST e_1* / e'_1) (LIST e_2* / LIST e'_2*)
+  -- if |e_2*| = |e'_2*|
+
+rule Step_expmatch_plain/CAT-right-fail:
+  S |- LIST e_1* e_2* / CAT e'_1 (LIST e'_2*) ~> FAIL
+  -- otherwise
+
+rule Step_expmatch_plain/STR:
+  S |- STR ef* / STR ef'* ~> (e / e')*
+  -- (if (l `= e') = ef')*
+  -- (if (l `= e) <- ef*)*
+
+
+rule Step_expmatch_plain/ITER-PLUS:
+  S |- LIST e* / ITER e' PLUS (x `: t `<- e_p)* ~>
+    LIST e* / ITER e' STAR (x `: t `<- e_p)*
+  -- if |e*| >= 1
+
+rule Step_expmatch_plain/ITER-PLUS-fail:
+  S |- LIST eps / ITER e' PLUS (x `: t `<- e_p)* ~> FAIL
+
+rule Step_expmatch_plain/ITER-STAR:
+  S |- LIST e* / ITER e' STAR (x `: t `<- e_p)* ~>
+    LIST e* / ITER e' (SUP y (NAT n)) (x `: t `<- e_p)*
+  -- if |e*| = n
+  ;; TODO: y fresh
+
+
+rule Step_expmatch_plain/SUB-SUB:
+  S |- SUB e t_1 t_2 / SUB e' t'_1 t'_2 ~>
+    SUB e t_1 t'_1 / e'
+  -- Sub_typ: $storeenv(S) |- t_1 <: t'_1
+
+;; TODO: disjointness
+
+rule Step_expmatch_plain/SUB-TUP:
+  S |- TUP e^n / SUB e' (TUP (x_1 `: t'_1)^n) (TUP (x_2 `: t'_2)^n) ~>
+    TUP (SUB e' $subst_typ(s_1, t'_1) $subst_typ(s_2, t'_2))^n / e'
+  -- if s_1 = {EXP (x_1, SEL e i)^(i<n)}
+  -- if s_2 = {EXP (x_2, SEL e i)^(i<n)}
+
+
+;; Definitions
+
+relation Step_inst: S |- inst ~> inst
+relation Step_clause: S |- clause ~> clause
+
+rule Step_inst/INST-ctx:
+  S |- INST `{q*} a* `= t ~> INST `{q*} a*[[n] = a'_n] `= t
+  -- Step_arg: S |- a*[n] ~> a'_n
+
+
+rule Step_clause/CLAUSE-ctx1:
+  S |- CLAUSE `{q*} a* `= e `- pr* ~> CLAUSE `{q*} a*[[n] = a'_n] `= e `- pr*
+  -- Step_arg: S |- a*[n] ~> a'_n
+
+rule Step_clause/CLAUSE-ctx2:
+  S |- CLAUSE `{q*} a* `= e `- pr* ~> CLAUSE `{q*} a* `= e' `- pr*
+  -- Step_exp: S |- e ~> e'
+
+rule Step_clause/CLAUSE-ctx3:
+  S |- CLAUSE `{q*} a* `= e `- pr* ~> CLAUSE `{q*} a* `= e `- pr'*
+  -- Step_prems: S |- pr* ~> pr'*
 
 
 ;; Arguments
@@ -406,13 +755,6 @@ rule Step_exp/SUB-CASE:
 relation Reduce_arg: S |- arg ~>* arg
 relation Step_arg: S |- arg ~> arg
 relation Eq_arg: S |- arg == arg
-relation Match_args: S |- arg* `/ `{quant*} arg* => subst
-
-
-rule Match_args:
-  S |- a* `/ `{q*} a' => s
-  -- Ok_subst: $storeenv(S) |- s : q*
-  -- if a* = $subst_arg(s, a')*
 
 
 rule Eq_arg:
@@ -422,7 +764,7 @@ rule Eq_arg:
   -- if a'_1 = a'_2
 
 
-rule Reduce_arg/normal:
+rule Reduce_arg/refl:
   S |- a ~>* a
 
 rule Reduce_arg/step:
@@ -454,7 +796,7 @@ rule Eq_prems:
   -- if pr'_1* = pr'_2*
 
 
-rule Reduce_prems/normal:
+rule Reduce_prems/refl:
   S |- pr* ~>* pr*
 
 rule Reduce_prems/step:
@@ -464,9 +806,16 @@ rule Reduce_prems/step:
 
 
 rule Step_prems/ctx:
-  S |- pr_1 pr* ~> pr_1'* pr*
-  -- Step_prems: S |- pr_1 ~> pr_1'*
+  S |- pr* ~> pr*[0 : n] pr'_n* pr*[n : |pr*| - n]
+  -- Step_prems: S |- pr*[n] ~> pr'_n*
 
+
+rule Step_prems/REL:
+  S |- REL x a* `: e ~> $subst_prem(s, pr)* (IF (CMP EQ $subst_exp(s, e') e))
+  -- if (x, p* `-> t `= rul*) <- S.REL
+  -- if (RULE `{q*} e' `- pr*) <- $subst_rule($args_for_params(a*, p*), rul)*
+  -- Ok_subst: $storeenv(S) |- s : q*
+  ;; Note: non-computational rule
 
 rule Step_prems/IF-ctx:
   S |- IF e ~> IF e'
@@ -476,15 +825,24 @@ rule Step_prems/IF-true:
   S |- IF (BOOL true) ~> eps
 
 rule Step_prems/ELSE:
-  S |- ELSE ~> eps
+  S |- ELSE ~> IF (BOOL true)
 
 rule Step_prems/LET-ctx:
   S |- LET e_1 `= e_2 ~> LET e_1 `= e'_2
   -- Step_exp: S |- e_2 ~> e'_2
 
 rule Step_prems/LET:
-  S |- LET e_1 `= e_2 ~> eps
-  -- Eq_exp: S |- e_1 == e_2
+  S |- LET e `= e ~> eps
+
+rule Step_prems/NOT-ctx:
+  S |- NOT pr ~> NOT pr'
+  -- Step_prems: S |- pr ~> pr'
+
+rule Step_prems/NOT-true:
+  S |- NOT (IF (BOOL true)) ~> IF (BOOL false)
+
+rule Step_prems/NOT-false:
+  S |- NOT (IF (BOOL false)) ~> IF (BOOL true)
 
 rule Step_prems/ITER-ctx1:
   S |- ITER pr it ep* ~> ITER pr' it ep*
@@ -499,21 +857,18 @@ rule Step_prems/ITER-ctx3:
   -- Step_exppull: S |- ep*[n] ~> ep'_n
 
 rule Step_prems/ITER-QUEST:
-  S |- ITER pr QUEST (x `<- OPT e?)* ~> $subst_prem({EXP (x, e')*}, pr)?
+  S |- ITER pr QUEST (x `: t `<- OPT e?)* ~> $subst_prem({EXP (x, e')*}, pr)?
   -- if e'*? = $transpose_(exp, e?*)
 
 rule Step_prems/ITER-PLUS:
-  S |- ITER pr PLUS (x `<- LIST e*)* ~> ITER pr STAR (x `<- LIST e*)*
+  S |- ITER pr PLUS (x `: t `<- LIST e*)* ~> ITER pr STAR (x `: t `<- LIST e*)*
   -- if |e**[0]| >= 1
 
 rule Step_prems/ITER-STAR:
-  S |- ITER pr STAR (x `<- LIST e*)* ~> ITER pr (SUP (NAT n)) (x `<- LIST e*)*
+  S |- ITER pr STAR (x `: t `<- LIST e*)* ~> ITER pr (SUP y (NAT n)) (x `: t `<- LIST e*)*
   -- if |e**[0]| = n
-
-rule Step_prems/ITER-SUP-eps:
-  S |- ITER pr (SUP eps e_n) (x `<- LIST e*)* ~> ITER pr (SUP y e_n) (x `<- LIST e*)*
   ;; TODO: y fresh
 
 rule Step_prems/ITER-SUP:
-  S |- ITER pr (SUP x_i (NAT n)) (x `<- LIST e^n)* ~> $subst_prem({EXP (x, e')* (x_i, NAT i)}, pr)^(i<n)
+  S |- ITER pr (SUP y (NAT n)) (x `: t `<- LIST e^n)* ~> $subst_prem({EXP (x, e')* (y, NAT i)}, pr)^(i<n)
   -- if e'*^n = $transpose_(exp, e^n*)
