@@ -9296,6 +9296,7 @@ $$
 {\land}~ {\mathit{tableinst}'} = \{ \mathsf{type}~({\mathit{at}}~{}[ {i'} .. {j^?} ]~{\mathit{rt}}),\; \mathsf{refs}~{{r'}^\ast}~{r^{n}} \} \\
 {\land}~ {i'} = {|{{r'}^\ast}|} + n \\
 {\land}~ ({i'} \leq j)^? \\
+{\land}~ {i'} \leq {2^{{|{\mathit{at}}|}}} - 1 \\
 \end{array} \\
 \end{array}
 $$
@@ -9308,6 +9309,7 @@ $$
 {\land}~ {\mathit{meminst}'} = \{ \mathsf{type}~({\mathit{at}}~{}[ {i'} .. {j^?} ]~\mathsf{page}),\; \mathsf{bytes}~{b^\ast}~{(\mathtt{0x00})^{n \cdot 64 \, {\mathrm{Ki}}}} \} \\
 {\land}~ {i'} = {|{b^\ast}|} / (64 \, {\mathrm{Ki}}) + n \\
 {\land}~ ({i'} \leq j)^? \\
+{\land}~ {i'} \leq {2^{{|{\mathit{at}}|} - 16}} \\
 \end{array} \\
 \end{array}
 $$

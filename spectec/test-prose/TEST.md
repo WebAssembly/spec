@@ -25817,7 +25817,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{i'}` be :math:`{|{{r'}^\ast}|} + n`.
 
-#. If :math:`{({i'} \leq j)^?}`, then:
+#. If not :math:`{({i'} \leq j)^?}`, then:
+
+   a. Fail.
+
+#. If :math:`{i'} \leq {2^{{|{\mathit{at}}|}}} - 1`, then:
 
    a. Let :math:`{\mathit{tableinst}'}` be the table instance :math:`\{ \mathsf{type}~({\mathit{at}}~{}[ {i'} .. {j^?} ]~{\mathit{rt}}),\;\allowbreak \mathsf{refs}~{{r'}^\ast}~{r^{n}} \}`.
 
@@ -25834,7 +25838,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{i'}` be :math:`{|{b^\ast}|} / (64 \, {\mathrm{Ki}}) + n`.
 
-#. If :math:`{({i'} \leq j)^?}`, then:
+#. If not :math:`{({i'} \leq j)^?}`, then:
+
+   a. Fail.
+
+#. If :math:`{i'} \leq {2^{{|{\mathit{at}}|} - 16}}`, then:
 
    a. Let :math:`{\mathit{meminst}'}` be the memory instance :math:`\{ \mathsf{type}~({\mathit{at}}~{}[ {i'} .. {j^?} ]~\mathsf{page}),\;\allowbreak \mathsf{bytes}~{b^\ast}~{\mathtt{0x00}^{n \cdot 64 \, {\mathrm{Ki}}}} \}`.
 
@@ -32693,18 +32701,22 @@ add_exninst (s, f) exn*
 growtable tableinst n r
 1. Let { TYPE: (at ([ i .. j? ]) rt); REFS: r'* } be tableinst.
 2. Let i' be (|r'*| + n).
-3. If (i' <= j)?, then:
+3. If not (i' <= j)?, then:
+  a. Fail.
+4. If (i' <= ((2 ^ $size(at)) - 1)), then:
   a. Let tableinst' be { TYPE: (at ([ i' .. j? ]) rt); REFS: r'* :: r^n }.
   b. Return tableinst'.
-4. Fail.
+5. Fail.
 
 growmem meminst n
 1. Let { TYPE: at ([ i .. j? ]) PAGE; BYTES: b* } be meminst.
 2. Let i' be ((|b*| / (64 * $Ki())) + n).
-3. If (i' <= j)?, then:
+3. If not (i' <= j)?, then:
+  a. Fail.
+4. If (i' <= (2 ^ ($size(at) - 16))), then:
   a. Let meminst' be { TYPE: at ([ i' .. j? ]) PAGE; BYTES: b* :: 0^(n * (64 * $Ki())) }.
   b. Return meminst'.
-4. Fail.
+5. Fail.
 
 inst_valtype moduleinst t
 1. Let dt* be moduleinst.TYPES.
