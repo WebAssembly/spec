@@ -25673,155 +25673,169 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return :math:`s{.}\mathsf{exns}`.
 
 
-:math:`(s, f){.}\mathsf{types}{}[x]`
-....................................
+:math:`f`
+.........
+
+
+1. Return :math:`z{.}\mathsf{frame}`.
+
+
+:math:`z{.}\mathsf{types}{}[x]`
+...............................
 
 
 1. Return :math:`f{.}\mathsf{module}{.}\mathsf{types}{}[x]`.
 
 
-:math:`(s, f){.}\mathsf{tags}{}[x]`
-...................................
+:math:`s`
+.........
+
+
+1. Return :math:`z{.}\mathsf{store}`.
+
+
+:math:`z{.}\mathsf{tags}{}[x]`
+..............................
 
 
 1. Return :math:`s{.}\mathsf{tags}{}[f{.}\mathsf{module}{.}\mathsf{tags}{}[x]]`.
 
 
-:math:`(s, f){.}\mathsf{globals}{}[x]`
-......................................
+:math:`z{.}\mathsf{globals}{}[x]`
+.................................
 
 
 1. Return :math:`s{.}\mathsf{globals}{}[f{.}\mathsf{module}{.}\mathsf{globals}{}[x]]`.
 
 
-:math:`(s, f){.}\mathsf{mems}{}[x]`
-...................................
+:math:`z{.}\mathsf{mems}{}[x]`
+..............................
 
 
 1. Return :math:`s{.}\mathsf{mems}{}[f{.}\mathsf{module}{.}\mathsf{mems}{}[x]]`.
 
 
-:math:`(s, f){.}\mathsf{tables}{}[x]`
-.....................................
+:math:`z{.}\mathsf{tables}{}[x]`
+................................
 
 
 1. Return :math:`s{.}\mathsf{tables}{}[f{.}\mathsf{module}{.}\mathsf{tables}{}[x]]`.
 
 
-:math:`(s, f){.}\mathsf{funcs}{}[x]`
-....................................
+:math:`z{.}\mathsf{funcs}{}[x]`
+...............................
 
 
 1. Return :math:`s{.}\mathsf{funcs}{}[f{.}\mathsf{module}{.}\mathsf{funcs}{}[x]]`.
 
 
-:math:`(s, f){.}\mathsf{datas}{}[x]`
-....................................
+:math:`z{.}\mathsf{datas}{}[x]`
+...............................
 
 
 1. Return :math:`s{.}\mathsf{datas}{}[f{.}\mathsf{module}{.}\mathsf{datas}{}[x]]`.
 
 
-:math:`(s, f){.}\mathsf{elems}{}[x]`
-....................................
+:math:`z{.}\mathsf{elems}{}[x]`
+...............................
 
 
 1. Return :math:`s{.}\mathsf{elems}{}[f{.}\mathsf{module}{.}\mathsf{elems}{}[x]]`.
 
 
-:math:`(s, f){.}\mathsf{locals}{}[x]`
-.....................................
+:math:`z{.}\mathsf{locals}{}[x]`
+................................
 
 
 1. Return :math:`f{.}\mathsf{locals}{}[x]`.
 
 
-:math:`(s, f){}[{.}\mathsf{locals}{}[x] = v]`
-.............................................
+:math:`z{}[{.}\mathsf{locals}{}[x] = v]`
+........................................
 
 
 1. Replace :math:`f{.}\mathsf{locals}{}[x]` with :math:`v`.
 
 
-:math:`(s, f){}[{.}\mathsf{globals}{}[x]{.}\mathsf{value} = v]`
-...............................................................
+:math:`z{}[{.}\mathsf{globals}{}[x]{.}\mathsf{value} = v]`
+..........................................................
 
 
 1. Replace :math:`s{.}\mathsf{globals}{}[f{.}\mathsf{module}{.}\mathsf{globals}{}[x]]{.}\mathsf{value}` with :math:`v`.
 
 
-:math:`(s, f){}[{.}\mathsf{tables}{}[x]{.}\mathsf{refs}{}[i] = r]`
-..................................................................
+:math:`z{}[{.}\mathsf{tables}{}[x]{.}\mathsf{refs}{}[i] = r]`
+.............................................................
 
 
 1. Replace :math:`s{.}\mathsf{tables}{}[f{.}\mathsf{module}{.}\mathsf{tables}{}[x]]{.}\mathsf{refs}{}[i]` with :math:`r`.
 
 
-:math:`(s, f){}[{.}\mathsf{tables}{}[x] = {\mathit{ti}}]`
-.........................................................
+:math:`z{}[{.}\mathsf{tables}{}[x] = {\mathit{ti}}]`
+....................................................
 
 
 1. Replace :math:`s{.}\mathsf{tables}{}[f{.}\mathsf{module}{.}\mathsf{tables}{}[x]]` with :math:`{\mathit{ti}}`.
 
 
-:math:`(s, f){}[{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i : j] = {b^\ast}]`
-............................................................................
+:math:`z{}[{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i : j] = {b^\ast}]`
+.......................................................................
 
 
 1. Replace :math:`s{.}\mathsf{mems}{}[f{.}\mathsf{module}{.}\mathsf{mems}{}[x]]{.}\mathsf{bytes}{}[i : j]` with :math:`{b^\ast}`.
 
 
-:math:`(s, f){}[{.}\mathsf{mems}{}[x] = {\mathit{mi}}]`
-.......................................................
+:math:`z{}[{.}\mathsf{mems}{}[x] = {\mathit{mi}}]`
+..................................................
 
 
 1. Replace :math:`s{.}\mathsf{mems}{}[f{.}\mathsf{module}{.}\mathsf{mems}{}[x]]` with :math:`{\mathit{mi}}`.
 
 
-:math:`(s, f){}[{.}\mathsf{elems}{}[x]{.}\mathsf{refs} = {r^\ast}]`
-...................................................................
+:math:`z{}[{.}\mathsf{elems}{}[x]{.}\mathsf{refs} = {r^\ast}]`
+..............................................................
 
 
 1. Replace :math:`s{.}\mathsf{elems}{}[f{.}\mathsf{module}{.}\mathsf{elems}{}[x]]{.}\mathsf{refs}` with :math:`{r^\ast}`.
 
 
-:math:`(s, f){}[{.}\mathsf{datas}{}[x]{.}\mathsf{bytes} = {b^\ast}]`
-....................................................................
+:math:`z{}[{.}\mathsf{datas}{}[x]{.}\mathsf{bytes} = {b^\ast}]`
+...............................................................
 
 
 1. Replace :math:`s{.}\mathsf{datas}{}[f{.}\mathsf{module}{.}\mathsf{datas}{}[x]]{.}\mathsf{bytes}` with :math:`{b^\ast}`.
 
 
-:math:`(s, f){}[{.}\mathsf{structs}{}[a]{.}\mathsf{fields}{}[i] = {\mathit{fv}}]`
-.................................................................................
+:math:`z{}[{.}\mathsf{structs}{}[a]{.}\mathsf{fields}{}[i] = {\mathit{fv}}]`
+............................................................................
 
 
 1. Replace :math:`s{.}\mathsf{structs}{}[a]{.}\mathsf{fields}{}[i]` with :math:`{\mathit{fv}}`.
 
 
-:math:`(s, f){}[{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}{}[i] = {\mathit{fv}}]`
-................................................................................
+:math:`z{}[{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}{}[i] = {\mathit{fv}}]`
+...........................................................................
 
 
 1. Replace :math:`s{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}{}[i]` with :math:`{\mathit{fv}}`.
 
 
-:math:`(s, f){}[{.}\mathsf{structs} \mathrel{{=}{\oplus}} {{\mathit{si}}^\ast}]`
-................................................................................
+:math:`z{}[{.}\mathsf{structs} \mathrel{{=}{\oplus}} {{\mathit{si}}^\ast}]`
+...........................................................................
 
 
 1. Append :math:`{{\mathit{si}}^\ast}` to :math:`s{.}\mathsf{structs}`.
 
 
-:math:`(s, f){}[{.}\mathsf{arrays} \mathrel{{=}{\oplus}} {{\mathit{ai}}^\ast}]`
-...............................................................................
+:math:`z{}[{.}\mathsf{arrays} \mathrel{{=}{\oplus}} {{\mathit{ai}}^\ast}]`
+..........................................................................
 
 
 1. Append :math:`{{\mathit{ai}}^\ast}` to :math:`s{.}\mathsf{arrays}`.
 
 
-:math:`(s, f){}[{.}\mathsf{exns} \mathrel{{=}{\oplus}} {{\mathit{exn}}^\ast}]`
-..............................................................................
+:math:`z{}[{.}\mathsf{exns} \mathrel{{=}{\oplus}} {{\mathit{exn}}^\ast}]`
+.........................................................................
 
 
 1. Append :math:`{{\mathit{exn}}^\ast}` to :math:`s{.}\mathsf{exns}`.
@@ -32651,71 +32665,77 @@ arrayinst (s, f)
 exninst (s, f)
 1. Return s.EXNS.
 
-type (s, f) x
-1. Return f.MODULE.TYPES[x].
+fof z
+1. Return $frame(z).
 
-tag (s, f) x
-1. Return s.TAGS[f.MODULE.TAGS[x]].
+type z x
+1. Return $fof(z).MODULE.TYPES[x].
 
-global (s, f) x
-1. Return s.GLOBALS[f.MODULE.GLOBALS[x]].
+sof z
+1. Return $store(z).
 
-mem (s, f) x
-1. Return s.MEMS[f.MODULE.MEMS[x]].
+tag z x
+1. Return $sof(z).TAGS[$fof(z).MODULE.TAGS[x]].
 
-table (s, f) x
-1. Return s.TABLES[f.MODULE.TABLES[x]].
+global z x
+1. Return $sof(z).GLOBALS[$fof(z).MODULE.GLOBALS[x]].
 
-func (s, f) x
-1. Return s.FUNCS[f.MODULE.FUNCS[x]].
+mem z x
+1. Return $sof(z).MEMS[$fof(z).MODULE.MEMS[x]].
 
-data (s, f) x
-1. Return s.DATAS[f.MODULE.DATAS[x]].
+table z x
+1. Return $sof(z).TABLES[$fof(z).MODULE.TABLES[x]].
 
-elem (s, f) x
-1. Return s.ELEMS[f.MODULE.ELEMS[x]].
+func z x
+1. Return $sof(z).FUNCS[$fof(z).MODULE.FUNCS[x]].
 
-local (s, f) x
-1. Return f.LOCALS[x].
+data z x
+1. Return $sof(z).DATAS[$fof(z).MODULE.DATAS[x]].
 
-with_local (s, f) x v
-1. Replace f.LOCALS[x] with ?(v).
+elem z x
+1. Return $sof(z).ELEMS[$fof(z).MODULE.ELEMS[x]].
 
-with_global (s, f) x v
-1. Replace s.GLOBALS[f.MODULE.GLOBALS[x]].VALUE with v.
+local z x
+1. Return $fof(z).LOCALS[x].
 
-with_table (s, f) x i r
-1. Replace s.TABLES[f.MODULE.TABLES[x]].REFS[i] with r.
+with_local z x v
+1. Replace $fof(z).LOCALS[x] with ?(v).
 
-with_tableinst (s, f) x ti
-1. Replace s.TABLES[f.MODULE.TABLES[x]] with ti.
+with_global z x v
+1. Replace $sof(z).GLOBALS[$fof(z).MODULE.GLOBALS[x]].VALUE with v.
 
-with_mem (s, f) x i j b*
-1. Replace s.MEMS[f.MODULE.MEMS[x]].BYTES[i : j] with b*.
+with_table z x i r
+1. Replace $sof(z).TABLES[$fof(z).MODULE.TABLES[x]].REFS[i] with r.
 
-with_meminst (s, f) x mi
-1. Replace s.MEMS[f.MODULE.MEMS[x]] with mi.
+with_tableinst z x ti
+1. Replace $sof(z).TABLES[$fof(z).MODULE.TABLES[x]] with ti.
 
-with_elem (s, f) x r*
-1. Replace s.ELEMS[f.MODULE.ELEMS[x]].REFS with r*.
+with_mem z x i j b*
+1. Replace $sof(z).MEMS[$fof(z).MODULE.MEMS[x]].BYTES[i : j] with b*.
 
-with_data (s, f) x b*
-1. Replace s.DATAS[f.MODULE.DATAS[x]].BYTES with b*.
+with_meminst z x mi
+1. Replace $sof(z).MEMS[$fof(z).MODULE.MEMS[x]] with mi.
 
-with_struct (s, f) a i fv
-1. Replace s.STRUCTS[a].FIELDS[i] with fv.
+with_elem z x r*
+1. Replace $sof(z).ELEMS[$fof(z).MODULE.ELEMS[x]].REFS with r*.
 
-with_array (s, f) a i fv
-1. Replace s.ARRAYS[a].FIELDS[i] with fv.
+with_data z x b*
+1. Replace $sof(z).DATAS[$fof(z).MODULE.DATAS[x]].BYTES with b*.
 
-add_structinst (s, f) si*
-1. Append si* to the s.STRUCTS.
+with_struct z a i fv
+1. Replace $sof(z).STRUCTS[a].FIELDS[i] with fv.
 
-add_arrayinst (s, f) ai*
-1. Append ai* to the s.ARRAYS.
+with_array z a i fv
+1. Replace $sof(z).ARRAYS[a].FIELDS[i] with fv.
 
-add_exninst (s, f) exn*
-1. Append exn* to the s.EXNS.
+add_structinst z si*
+1. Append si* to the $sof(z).STRUCTS.
+
+add_arrayinst z ai*
+1. Append ai* to the $sof(z).ARRAYS.
+
+add_exninst z exn*
+1. Append exn* to the $sof(z).EXNS.
 
 growtable tableinst n r
 1. Let { TYPE: (at ([ i .. j? ]) rt); REFS: r'* } be tableinst.
