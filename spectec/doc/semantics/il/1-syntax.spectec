@@ -115,7 +115,7 @@ syntax exp =
   | LIST exp*               ;; [ exp* ]
   | LIFT exp                ;; exp : _? <: _*
   | STR expfield*           ;; { expfield* }
-  | SEL exp nat             ;; exp.i
+  | SEL exp nat             ;; exp.n
   | LEN exp                 ;; | exp |
   | MEM exp exp             ;; exp `<-` exp
   | CAT exp exp             ;; exp `++` exp
@@ -123,8 +123,8 @@ syntax exp =
   | UPD exp path exp        ;; exp[ path = exp ]
   | EXT exp path exp        ;; exp[ path =.. exp ]
   | CALL id arg*            ;; defid( arg* )
-  | ITER exp iter exppull*  ;; exp iter{ expiter* }
-  | CVT exp numtyp numtyp   ;; exp : typ1 <:> typ2
+  | ITER exp iter exppull*  ;; exp iter{ exppull* }
+  | CVT exp numtyp numtyp   ;; exp : numtyp1 <:> numtyp2
   | SUB exp typ typ         ;; exp : typ1 <: typ2
   | MATCH arg* WITH clause* ;; `match` arg* `with` clause*
 
@@ -149,7 +149,7 @@ syntax sym =
   | SEQ sym*           ;; sym*
   | ALT sym*           ;; sym `|` sym
   | RANGE sym sym      ;; sym `|` `...` `|` sym
-  | ITER sym iter exppull*   ;; sym iter{ expiter* }
+  | ITER sym iter exppull*   ;; sym iter{ exppull* }
   | ATTR exp sym       ;; exp `:` sym
 
 

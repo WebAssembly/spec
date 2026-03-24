@@ -697,6 +697,9 @@ rule Step_expmatch_plain/STR:
   -- (if (l `= e') = ef')*
   -- (if (l `= e) <- ef*)*
 
+rule Step_expmatch_plain/STR-fail:
+  S |- STR ef* / STR ef'* ~> FAIL
+  -- otherwise
 
 rule Step_expmatch_plain/ITER-PLUS:
   S |- LIST e* / ITER e' PLUS (x `: t `<- e_p)* ~>
