@@ -240,7 +240,12 @@ are <em>allocated</em> in a <a class="reference internal" href="runtime.html#syn
 <ol class="arabic simple">
 <li><p>Let <span class="math notranslate nohighlight">\(\{ \href{../exec/runtime.html#syntax-meminst}{\mathsf{type}}~({\mathit{at}}~{}[ i \href{../syntax/types.html#syntax-limits}{\,{..}\,} {j^?} ]~\href{../syntax/types.html#syntax-memtype}{\mathsf{page}}),\;\allowbreak \href{../exec/runtime.html#syntax-meminst}{\mathsf{bytes}}~{b^\ast} \}\)</span> be the destructuring of <span class="math notranslate nohighlight">\({\href{../exec/runtime.html#syntax-meminst}{\mathit{meminst}}}\)</span>.</p></li>
 <li><p>Let <span class="math notranslate nohighlight">\({i'}\)</span> be <span class="math notranslate nohighlight">\({|{b^\ast}|} / (64 \, {\mathrm{Ki}}) + n\)</span>.</p></li>
-<li><p>If <span class="math notranslate nohighlight">\({({i'} \leq j)^?}\)</span>, then:</p>
+<li><p>If not <span class="math notranslate nohighlight">\({({i'} \leq j)^?}\)</span>, then:</p>
+<ol class="loweralpha simple">
+<li><p>Fail.</p></li>
+</ol>
+</li>
+<li><p>If <span class="math notranslate nohighlight">\({i'} \leq {2^{{|{\mathit{at}}|} - 16}}\)</span>, then:</p>
 <ol class="loweralpha simple">
 <li><p>Let <span class="math notranslate nohighlight">\({\href{../exec/runtime.html#syntax-meminst}{\mathit{meminst}}'}\)</span> be the <a class="reference internal" href="runtime.html#syntax-meminst"><span class="std std-ref">memory instance</span></a> <span class="math notranslate nohighlight">\(\{ \href{../exec/runtime.html#syntax-meminst}{\mathsf{type}}~({\mathit{at}}~{}[ {i'} \href{../syntax/types.html#syntax-limits}{\,{..}\,} {j^?} ]~\href{../syntax/types.html#syntax-memtype}{\mathsf{page}}),\;\allowbreak \href{../exec/runtime.html#syntax-meminst}{\mathsf{bytes}}~{b^\ast}~{\mathtt{0x00}^{n \cdot 64 \, {\mathrm{Ki}}}} \}\)</span>.</p></li>
 <li><p>Return <span class="math notranslate nohighlight">\({\href{../exec/runtime.html#syntax-meminst}{\mathit{meminst}}'}\)</span>.</p></li>
@@ -256,6 +261,7 @@ are <em>allocated</em> in a <a class="reference internal" href="runtime.html#syn
 {\land}~ {\href{../exec/runtime.html#syntax-meminst}{\mathit{meminst}}'} = \{ \href{../exec/runtime.html#syntax-meminst}{\mathsf{type}}~({\mathit{at}}~{}[ {i'} \href{../syntax/types.html#syntax-limits}{\,{..}\,} {j^?} ]~\href{../syntax/types.html#syntax-memtype}{\mathsf{page}}),\; \href{../exec/runtime.html#syntax-meminst}{\mathsf{bytes}}~{b^\ast}~{(\mathtt{0x00})^{n \cdot 64 \, {\mathrm{Ki}}}} \} \\
 {\land}~ {i'} = {|{b^\ast}|} / (64 \, {\mathrm{Ki}}) + n \\
 {\land}~ ({i'} \leq j)^? \\
+{\land}~ {i'} \leq {2^{{|{\mathit{at}}|} - 16}} \\
 \end{array} \\
 \end{array}\end{split}\]</div>
 </section>
@@ -267,7 +273,12 @@ are <em>allocated</em> in a <a class="reference internal" href="runtime.html#syn
 <ol class="arabic simple">
 <li><p>Let <span class="math notranslate nohighlight">\(\{ \href{../exec/runtime.html#syntax-tableinst}{\mathsf{type}}~({\mathit{at}}~{}[ i \href{../syntax/types.html#syntax-limits}{\,{..}\,} {j^?} ]~{\mathit{rt}}),\;\allowbreak \href{../exec/runtime.html#syntax-tableinst}{\mathsf{refs}}~{{r'}^\ast} \}\)</span> be the destructuring of <span class="math notranslate nohighlight">\({\href{../exec/runtime.html#syntax-tableinst}{\mathit{tableinst}}}\)</span>.</p></li>
 <li><p>Let <span class="math notranslate nohighlight">\({i'}\)</span> be <span class="math notranslate nohighlight">\({|{{r'}^\ast}|} + n\)</span>.</p></li>
-<li><p>If <span class="math notranslate nohighlight">\({({i'} \leq j)^?}\)</span>, then:</p>
+<li><p>If not <span class="math notranslate nohighlight">\({({i'} \leq j)^?}\)</span>, then:</p>
+<ol class="loweralpha simple">
+<li><p>Fail.</p></li>
+</ol>
+</li>
+<li><p>If <span class="math notranslate nohighlight">\({i'} \leq {2^{{|{\mathit{at}}|}}} - 1\)</span>, then:</p>
 <ol class="loweralpha simple">
 <li><p>Let <span class="math notranslate nohighlight">\({\href{../exec/runtime.html#syntax-tableinst}{\mathit{tableinst}}'}\)</span> be the <a class="reference internal" href="runtime.html#syntax-tableinst"><span class="std std-ref">table instance</span></a> <span class="math notranslate nohighlight">\(\{ \href{../exec/runtime.html#syntax-tableinst}{\mathsf{type}}~({\mathit{at}}~{}[ {i'} \href{../syntax/types.html#syntax-limits}{\,{..}\,} {j^?} ]~{\mathit{rt}}),\;\allowbreak \href{../exec/runtime.html#syntax-tableinst}{\mathsf{refs}}~{{r'}^\ast}~{r^{n}} \}\)</span>.</p></li>
 <li><p>Return <span class="math notranslate nohighlight">\({\href{../exec/runtime.html#syntax-tableinst}{\mathit{tableinst}}'}\)</span>.</p></li>
@@ -283,6 +294,7 @@ are <em>allocated</em> in a <a class="reference internal" href="runtime.html#syn
 {\land}~ {\href{../exec/runtime.html#syntax-tableinst}{\mathit{tableinst}}'} = \{ \href{../exec/runtime.html#syntax-tableinst}{\mathsf{type}}~({\mathit{at}}~{}[ {i'} \href{../syntax/types.html#syntax-limits}{\,{..}\,} {j^?} ]~{\mathit{rt}}),\; \href{../exec/runtime.html#syntax-tableinst}{\mathsf{refs}}~{{r'}^\ast}~{r^{n}} \} \\
 {\land}~ {i'} = {|{{r'}^\ast}|} + n \\
 {\land}~ ({i'} \leq j)^? \\
+{\land}~ {i'} \leq {2^{{|{\mathit{at}}|}}} - 1 \\
 \end{array} \\
 \end{array}\end{split}\]</div>
 </section>
