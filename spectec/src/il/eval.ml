@@ -1021,7 +1021,8 @@ and equiv_params env ps1 ps2 =
 (* Subtyping *)
 
 and sub_prems _env prems1 prems2 =
-  List.for_all (fun prem2 -> List.exists (Eq.eq_prem prem2) prems1) prems2
+  List.length prems1 = List.length prems2 &&
+  List.for_all2 Eq.eq_prem prems1 prems2
 
 and sub_typ env t1 t2 = sub_typ' env [] t1 t2
 

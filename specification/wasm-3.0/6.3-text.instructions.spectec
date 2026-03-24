@@ -516,8 +516,8 @@ grammar Tplaininstr_(I)/num-cvt-i32 : instr = ...
   | ...
 
 grammar Tplaininstr_(I)/num-cvt-i64 : instr = ...
-  | "i64.extend_i64_s" => CVTOP I64 I64 EXTEND S
-  | "i64.extend_i64_u" => CVTOP I64 I64 EXTEND U
+  | "i64.extend_i32_s" => CVTOP I64 I32 EXTEND S
+  | "i64.extend_i32_u" => CVTOP I64 I32 EXTEND U
   | "i64.trunc_f32_s" => CVTOP I64 F32 TRUNC S
   | "i64.trunc_f32_u" => CVTOP I64 F32 TRUNC U
   | "i64.trunc_f64_s" => CVTOP I64 F64 TRUNC S

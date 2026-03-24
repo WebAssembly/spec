@@ -10,6 +10,11 @@ syntax subst =
   }
 
 
+def $composesubsts(subst*) : subst  hint(show (++)%)
+def $composesubsts(eps) = {}
+def $composesubsts(s_1 s*) = s_1 ++ $composesubsts(s*)
+
+
 ;; Domain
 
 syntax dom =
@@ -54,6 +59,7 @@ def $subst_typ(s, VAR x a*) = VAR x $subst_arg(s, a)*  -- otherwise
 def $subst_typ(s, optyp) = optyp
 def $subst_typ(s, TUP (x `: t)*) = TUP (x `: $subst_typ(s, t))*  ;; TODO: avoid capture
 def $subst_typ(s, ITER t it) = ITER $subst_typ(s, t) $subst_iter(s, it)
+def $subst_typ(s, MATCH x a* WITH inst*) = MATCH x $subst_arg(s, a)*  WITH $subst_inst(s, inst)*
 
 def $subst_deftyp(subst, deftyp) : deftyp
 def $subst_deftyp(s, ALIAS t) = ALIAS $subst_typ(s, t)
@@ -67,7 +73,7 @@ def $subst_iter(subst, iter) : iter
 def $subst_iter(s, QUEST) = QUEST
 def $subst_iter(s, STAR) = STAR
 def $subst_iter(s, PLUS) = PLUS
-def $subst_iter(s, SUP x? e) = SUP x? $subst_exp(s, e)  ;; TODO: avoid capture
+def $subst_iter(s, SUP x e) = SUP x $subst_exp(s, e)  ;; TODO: avoid capture
 
 
 ;; Expressions
@@ -95,9 +101,10 @@ def $subst_exp(s, ACC e_1 p) = ACC $subst_exp(s, e_1) $subst_path(s, p)
 def $subst_exp(s, UPD e_1 p e_2) = UPD $subst_exp(s, e_1) $subst_path(s, p) $subst_exp(s, e_2)
 def $subst_exp(s, EXT e_1 p e_2) = EXT $subst_exp(s, e_1) $subst_path(s, p) $subst_exp(s, e_2)
 def $subst_exp(s, CALL x a*) = CALL $subst_fun(s, x) $subst_arg(s, a)*
-def $subst_exp(s, ITER e it (x `<- e')*) = ITER $subst_exp(s, e) $subst_iter(s, it) (x `<- $subst_exp(s, e'))*  ;; TODO: avoid capture
+def $subst_exp(s, ITER e it (x `: t `<- e')*) = ITER $subst_exp(s, e) $subst_iter(s, it) (x `: $subst_typ(s, t) `<- $subst_exp(s, e'))*  ;; TODO: avoid capture
 def $subst_exp(s, CVT e nt_1 nt_2) = CVT $subst_exp(s, e) nt_1 nt_2
 def $subst_exp(s, SUB e t_1 t_2) = SUB $subst_exp(s, e) $subst_typ(s, t_1) $subst_typ(s, t_2)
+def $subst_exp(s, MATCH a* WITH clause*) = MATCH $subst_arg(s, a)* WITH $subst_clause(s, clause)*
 
 def $subst_path(subst, path) : path
 def $subst_path(s, ROOT) = ROOT
@@ -120,20 +127,20 @@ def $subst_sym(s, SEQ g*) = SEQ $subst_sym(s, g)*
 def $subst_sym(s, ALT g*) = ALT $subst_sym(s, g)*
 def $subst_sym(s, RANGE g_1 g_2) = RANGE $subst_sym(s, g_1) $subst_sym(s, g_2)
 def $subst_sym(s, ATTR e g) = ATTR $subst_exp(s, e) $subst_sym(s, g)
-def $subst_sym(s, ITER g it (x `<- e)*) = ITER $subst_sym(s, g) $subst_iter(s, it) (x `<- $subst_exp(s, e))*  ;; TODO: avoid capture
+def $subst_sym(s, ITER g it (x `: t `<- e)*) = ITER $subst_sym(s, g) $subst_iter(s, it) (x `: $subst_typ(s, t) `<- $subst_exp(s, e))*  ;; TODO: avoid capture
 
 
 ;; Definitions
 
 def $subst_arg(subst, arg) : arg
-def $subst_arg(s, EXP e) = EXP $subst_exp(s, e)
 def $subst_arg(s, TYP t) = TYP $subst_typ(s, t)
+def $subst_arg(s, EXP e) = EXP $subst_exp(s, e)
 def $subst_arg(s, FUN x) = FUN $subst_fun(s, x)
 def $subst_arg(s, GRAM g) = GRAM $subst_sym(s, g)
 
 def $subst_param(subst, param) : param
-def $subst_param(s, EXP x `: t) = EXP x `: $subst_typ(s, t)
 def $subst_param(s, TYP x) = TYP x
+def $subst_param(s, EXP x `: t) = EXP x `: $subst_typ(s, t)
 def $subst_param(s, FUN x `: p* `-> t) = FUN x `: $subst_param(s, p)* `-> $subst_typ(s, t)   ;; TODO: avoid capture
 def $subst_param(s, GRAM x `: p* `-> t) = GRAM x `: $subst_param(s, p)* `-> $subst_typ(s, t) ;; TODO: avoid capture
 
@@ -141,18 +148,45 @@ def $subst_quant(subst, quant) : quant
 def $subst_quant(s, q) = $subst_param(s, q)
 
 def $subst_prem(subst, prem) : prem
-def $subst_prem(s, RULE x a* `: e) = RULE x $subst_arg(s, a)* `: $subst_exp(s, e)
+def $subst_prem(s, REL x a* `: e) = REL x $subst_arg(s, a)* `: $subst_exp(s, e)
 def $subst_prem(s, IF e) = IF $subst_exp(s, e)
 def $subst_prem(s, ELSE) = ELSE
 def $subst_prem(s, LET e_1 `= e_2) = LET $subst_exp(s, e_1) `= $subst_exp(s, e_2)  ;; TODO: avoid capture
-def $subst_prem(s, ITER pr it (x `<- e)*) = ITER $subst_prem(s, pr) $subst_iter(s, it) (x `<- $subst_exp(s, e))*  ;; TODO: avoid capture
+def $subst_prem(s, ITER pr it (x `: t `<- e)*) = ITER $subst_prem(s, pr) $subst_iter(s, it) (x `: $subst_typ(s, t) `<- $subst_exp(s, e))*  ;; TODO: avoid capture
+
+
+def $subst_inst(subst, inst) : inst
+def $subst_inst(s, INST `{q*} a* `= dt) = INST `{$subst_param(s, q)*} $subst_arg(s, a)* `= $subst_deftyp(s, dt)  ;; TODO: avoid capture
+
+def $subst_rule(subst, rul) : rul
+def $subst_rule(s, RULE `{q*} e `- pr*) = RULE `{$subst_param(s, q)*} $subst_exp(s, e) `- $subst_prem(s, pr)*  ;; TODO: avoid capture
+
+def $subst_clause(subst, clause) : clause
+def $subst_clause(s, CLAUSE `{q*} a* `= e `- pr*) = CLAUSE `{$subst_param(s, q)*} $subst_arg(s, a)* `= $subst_exp(s, e) `- $subst_prem(s, pr)*  ;; TODO: avoid capture
+
+def $subst_prod(subst, prod) : prod
+def $subst_prod(s, PROD `{q*} g `=> e `- pr*) = PROD `{$subst_param(s, q)*} $subst_sym(s, g) `=> $subst_exp(s, e) `- $subst_prem(s, pr)*  ;; TODO: avoid capture
+
+
+;; Constructing substitutions for parameters
+
+def $arg_for_param(arg, param) : subst
+def $arg_for_param(TYP t, TYP x) = {TYP (x, t)}
+def $arg_for_param(EXP e, EXP x `: t) = {EXP (x, e)}
+def $arg_for_param(FUN y, FUN x `: p* `-> t) = {FUN (x, y)}
+def $arg_for_param(GRAM g, GRAM x `: p* `-> t) = {GRAM (x, g)}
+
+def $args_for_params(arg*, param*) : subst
+def $args_for_params(eps, eps) = {}
+def $args_for_params(a_1 a*, p_1 p*) = s ++ $args_for_params(a*, $subst_param(s, p)*)
+  -- if s = $arg_for_param(a_1, p_1)
 
 
 ;; Well-formedness
 
 def $paramarg(param) : arg
-def $paramarg(EXP x `: t) = EXP (VAR x)
 def $paramarg(TYP x) = TYP (VAR x)
+def $paramarg(EXP x `: t) = EXP (VAR x)
 def $paramarg(FUN x `: p* `-> t) = FUN x
 def $paramarg(GRAM x `: p* `-> t) = GRAM (VAR x)
 

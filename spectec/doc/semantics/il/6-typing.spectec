@@ -4,11 +4,11 @@ relation Catable_typ: E |- typ CATABLE
 
 rule Catable_typ/ITER:
   E |- t CATABLE
-  -- Expand_typ: E |- t => ALIAS (ITER t' it)
+  -- Expand_typ: E |- t ~~ ALIAS (ITER t' it)
 
 rule Catable_typ/STRUCT:
   E |- t CATABLE
-  -- Expand_typ: E |- t => STRUCT (atom `: t' `- `{q*} pr*)*
+  -- Expand_typ: E |- t ~~ STRUCT (atom `: t' `- `{q*} pr*)*
   -- (Catable_typ: E |- t' CATABLE)*
 
 
@@ -43,18 +43,18 @@ rule Sub_typ/tup:
 
 rule Sub_typ/struct:
   E |- t_1 <: t_2
-  -- Expand_typ: E |- t_1 => STRUCT tf_1*
-  -- Expand_typ: E |- t_2 => STRUCT tf_2*
+  -- Expand_typ: E |- t_1 ~~ STRUCT tf_1*
+  -- Expand_typ: E |- t_2 ~~ STRUCT tf_2*
   -- (if (a `: t_2a `- `{q*} pr*) = tf_2)*
   -- (if (a `: t_1a `- `{q*} pr*) <- tf_1*)*
   -- (Sub_typ: E |- t_1a <: t_2a)*
 
 rule Sub_typ/variant:
   E |- t_1 <: t_2
-  -- Expand_typ: E |- t_1 => VARIANT tc_1*
-  -- Expand_typ: E |- t_2 => VARIANT tc_2*
-  -- (if (m `: t_1a `- `{q*} pr*) = tc_1)*
-  -- (if (m `: t_2a `- `{q*} pr*) <- tc_2*)*
+  -- Expand_typ: E |- t_1 ~~ VARIANT tc_1*
+  -- Expand_typ: E |- t_2 ~~ VARIANT tc_2*
+  -- (if (a `: t_1a `- `{q*} pr*) = tc_1)*
+  -- (if (a `: t_2a `- `{q*} pr*) <- tc_2*)*
   -- (Sub_typ: E |- t_1a <: t_2a)*
 
 rule Sub_typ/iter:
@@ -124,6 +124,12 @@ rule Ok_typ/ITER:
   -- Ok_typ: E |- t : OK
   -- if it <- [QUEST STAR]
 
+rule Ok_typ/MATCH:
+  E |- MATCH x a* WITH inst* : OK
+  -- if (x, p* `-> OK `= inst'*) <- E.TYP
+  -- Ok_args: E |- a* : p* => s
+  -- (Ok_inst: E |- inst : p* -> OK)*
+
 
 relation Ok_deftyp: E |- deftyp : OK
 relation Ok_typfield: E |- typfield : OK
@@ -174,7 +180,7 @@ rule Ok_iter/PLUS:
   E |- PLUS : STAR -| {}
 
 rule Ok_iter/SUP:
-  E |- SUP x? e : STAR -| {EXP (x, NAT)?}
+  E |- SUP x e : STAR -| {EXP (x, NAT)}
   -- Ok_exp: E |- e : NAT
 
 
@@ -297,14 +303,14 @@ rule Ok_exp/LIFT:
 
 rule Ok_exp/INJ:
   E |- INJ op e : VAR x a*
-  -- Expand_typ: E |- VAR x a* => VARIANT tc*
+  -- Expand_typ: E |- VAR x a* ~~ VARIANT tc*
   -- if (op `: t `- `{q*} pr*) <- tc*
   -- Ok_exp: E |- e : t
   ;; Note: premises need not hold!
 
 rule Ok_exp/STR:
   E |- STR ef* : VAR x a*
-  -- Expand_typ: E |- VAR x a* => STRUCT tf*
+  -- Expand_typ: E |- VAR x a* ~~ STRUCT tf*
   -- if (at `: t `- `{q*} pr*)* = tf*
   -- if (at `= e)* = ef*
   -- (Ok_exp: E |- e : t)*
@@ -358,8 +364,9 @@ rule Ok_exp/CALL:
 
 
 rule Ok_exp/ITER:
-  E |- ITER e it (x `<- e')* : ITER t it'
+  E |- ITER e it (x `: t' `<- e')* : ITER t it'
   -- Ok_iter: E |- it : it' -| E'
+  -- (Ok_typ: E |- t' : OK)*
   -- (Ok_exp: E |- e' : ITER t' it')*
   -- Ok_exp: E ++ {EXP (x, t')*} ++ E' |- e : t
   -- Ok_typ: E |- t : OK
@@ -373,6 +380,12 @@ rule Ok_exp/SUB:
   E |- CVT e t_1 t_2 : t_2
   -- Ok_exp: E |- e : t_1
   -- Sub_typ: E |- t_1 <: t_2
+
+rule Ok_exp/MATCH:
+  E |- MATCH a* WITH clause* : t
+  -- Ok_args: E |- a* : p* => s
+  -- Ok_params: E |- p* : OK
+  -- (Ok_clause: E ++ $paramenv(p*) |- clause : p* -> t)*
 
 
 rule Ok_exp/conv:
@@ -407,14 +420,14 @@ rule Ok_path/SLICE:
 rule Ok_path/DOT:
   E |- DOT p atom : t -> t'
   -- Ok_path: E |- p : t -> VAR x a*
-  -- Expand_typ: E |- VAR x a* => STRUCT tf*
+  -- Expand_typ: E |- VAR x a* ~~ STRUCT tf*
   -- if (atom `: t' `- `{q*} pr*) <- tf*
   ;; Note: premises cannot be used
 
 rule Ok_path/PROJ:
   E |- PROJ p mixop : t -> t'
   -- Ok_path: E |- p : t -> VAR x a*
-  -- Expand_typ: E |- VAR x a* => VARIANT tc*
+  -- Expand_typ: E |- VAR x a* ~~ VARIANT tc*
   -- if (mixop `: t' `- `{q*} pr*) <- tc*
   ;; Note: premises cannot be used
 
@@ -453,8 +466,9 @@ rule Ok_sym/RANGE:
   -- Ok_sym: E |- g_2 : NAT
 
 rule Ok_sym/ITER:
-  E |- ITER g it (x `<- e)* : ITER t it'
+  E |- ITER g it (x `: t' `<- e)* : ITER t it'
   -- Ok_iter: E |- it : it' -| E'
+  -- (Ok_typ: E |- t' : OK)*
   -- (Ok_exp: E |- e : ITER t' it')*
   -- Ok_sym: E ++ {EXP (x, t')*} ++ E' |- g : t
   -- Ok_typ: E |- t : OK
@@ -476,8 +490,8 @@ rule Ok_sym/conv:
 relation Ok_prem: E |- prem : OK
 relation Ok_prems: E |- prem* : OK
 
-rule Ok_prem/RULE:
-  E |- RULE x a* `: e : OK
+rule Ok_prem/REL:
+  E |- REL x a* `: e : OK
   -- if (x, (p* `-> t `= rul*)) <- E.REL
   -- Ok_args: E |- a* : p* => s
   -- Ok_exp: E |- e : $subst_typ(s, t)
@@ -489,16 +503,21 @@ rule Ok_prem/IF:
 rule Ok_prem/ELSE:
   E |- ELSE : OK
 
+rule Ok_prem/NOT:
+  E |- NOT pr : OK
+  -- Ok_prem: E |- pr : OK
+
 rule Ok_prem/LET:
   E |- LET e_1 `= e_2 : OK
   -- Ok_exp: E |- e_1 : t
   -- Ok_exp: E |- e_2 : t
 
 rule Ok_prem/ITER:
-  E |- ITER pr it (x `<- e)* : OK
+  E |- ITER pr it (x `: t `<- e)* : OK
   -- Ok_iter: E |- it : it' -| E'
-  -- (Ok_exp: E |- e : ITER t' it')*
-  -- Ok_prem: E ++ {EXP (x, t')*} ++ E' |- pr : OK
+  -- (Ok_typ: E |- t : OK)*
+  -- (Ok_exp: E |- e : ITER t it')*
+  -- Ok_prem: E ++ {EXP (x, t)*} ++ E' |- pr : OK
 
 
 rule Ok_prems:
@@ -511,12 +530,12 @@ rule Ok_prems:
 relation Ok_param: E |- param : OK
 relation Ok_params: E |- param* : OK
 
+rule Ok_param/TYP:
+  E |- TYP x : OK
+
 rule Ok_param/EXP:
   E |- EXP x `: t : OK
   -- Ok_typ: E |- t : OK
-
-rule Ok_param/TYP:
-  E |- TYP x : OK
 
 rule Ok_param/FUN:
   E |- FUN x `: p* `-> t : OK
@@ -540,13 +559,13 @@ rule Ok_params/cons:
 relation Ok_arg: E |- arg : param => subst
 relation Ok_args: E |- arg* : param* => subst
 
-rule Ok_arg/EXP:
-  E |- EXP e : EXP x `: t => {EXP (x, e)}
-  -- Ok_exp: E |- e : t
-
 rule Ok_arg/TYP:
   E |- TYP t : TYP x => {TYP (x, t)}
   -- Ok_typ: E |- t : OK
+
+rule Ok_arg/EXP:
+  E |- EXP e : EXP x `: t => {EXP (x, e)}
+  -- Ok_exp: E |- e : t
 
 rule Ok_arg/FUN:
   E |- FUN y : FUN x `: p* `-> t => {FUN (x, y)}

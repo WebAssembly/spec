@@ -91,4 +91,11 @@ module WasmContext : sig
   val pop_instr : unit -> value
 end
 
+module Access : sig
+  val access_store : string list -> value
+  val access_frame : string list -> value
+  val access_state : string list -> value
+  val access_env : AlContext.t -> string -> string list -> value
+end
+
 val init : algorithm list -> unit

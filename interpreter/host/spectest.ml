@@ -15,17 +15,17 @@ let global (GlobalT (_, t) as gt) =
     | NumT F32T -> Num (F32 (F32.of_float 666.6))
     | NumT F64T -> Num (F64 (F64.of_float 666.6))
     | VecT V128T -> Vec (V128 (V128.I32x4.of_lanes [666l; 666l; 666l; 666l]))
-    | RefT (_, t) -> Ref (NullRef t)
+    | RefT _ -> Ref NullRef
     | BotT -> assert false
   in Some (ExternGlobal (Global.alloc gt v))
 
 let table =
   let tt = TableT (I32AT, {min = 10L; max = Some 20L}, (Null, FuncHT)) in
-  Some (ExternTable (Table.alloc tt (NullRef FuncHT)))
+  Some (ExternTable (Table.alloc tt NullRef))
 
 let table64 =
   let tt = TableT (I64AT, {min = 10L; max = Some 20L}, (Null, FuncHT)) in
-  Some (ExternTable (Table.alloc tt (NullRef FuncHT)))
+  Some (ExternTable (Table.alloc tt NullRef))
 
 let memory =
   let mt = MemoryT (I32AT, {min = 1L; max = Some 2L}) in

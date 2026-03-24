@@ -771,7 +771,7 @@ let num mode = if mode = `Binary then hex_string_of_num else string_of_num
 let vec mode = if mode = `Binary then hex_string_of_vec else string_of_vec
 
 let ref_ = function
-  | NullRef t -> Node ("ref.null " ^ heaptype t, [])
+  | NullRef -> Node ("ref.null", [])
   | Script.HostRef n -> Node ("ref.host " ^ nat32 n, [])
   | Extern.ExternRef (Script.HostRef n) -> Node ("ref.extern " ^ nat32 n, [])
   | _ -> assert false
