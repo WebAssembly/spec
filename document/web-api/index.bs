@@ -9,6 +9,7 @@ TR: https://www.w3.org/TR/wasm-web-api-2/
 ED: https://webassembly.github.io/spec/web-api/
 Implementation Report: https://webassembly.org/features/
 Editor: Ms2ger, w3cid 46309, Igalia
+Editor: Ryan Hunt, w3cid 112030, Mozilla Foundation
 Repository: WebAssembly/spec
 Abstract: This document describes the integration of WebAssembly with the broader web platform.
 Markup Shorthands: css no, markdown yes
