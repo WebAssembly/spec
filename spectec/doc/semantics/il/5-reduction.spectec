@@ -374,7 +374,7 @@ rule Step_exp/ITER-PLUS:
 rule Step_exp/ITER-STAR:
   S |- ITER e STAR (x `: t `<- LIST e'*)* ~> ITER e (SUP y (NAT n)) (x `: t `<- LIST e'*)*
   -- if |e'**[0]| = n
-  ;; TODO: y fresh
+  -- Fresh_id: y FRESH
 
 rule Step_exp/ITER-SUP:
   S |- ITER e (SUP y (NAT n)) (x `: t `<- LIST e'^n)* ~> LIST $subst_exp({EXP (x, e'')* (y, NAT i)}, e)^(i<n)
@@ -453,9 +453,10 @@ rule Step_exp/MATCH-ctx2:
 rule Step_exp/MATCH-match:
   S |- MATCH a* WITH (CLAUSE `{q*} a'* `= e `- pr*) clause* ~>
     MATCH a''* WITH
-      (CLAUSE `{q'*} a'''* `= $subst_exp(s, e) `- $subst_prem(s, pr)*)
+      (CLAUSE `{q'*} a'''* `= $subst_exp(s ++ s', e) `- pr'*)
       (CLAUSE `{} a''* `= (MATCH a* WITH clause*) `- eps)
   -- Step_argmatch: S |- `{q*} (a / a')*  ~>_s  `{q'*} (a'' / a''')*
+  -- if (pr'*, s') = $subst_refresh_prems(s, pr*)
 
 rule Step_exp/MATCH-match-fail:
   S |- MATCH a* WITH (CLAUSE `{q*} a'* `= e `- pr*) clause* ~>
@@ -539,7 +540,7 @@ rule Step_argmatch/plain:
 
 rule Step_argmatch/seq:
   S |- `{q_1* q* q_2*} am_1* am am_2*  ~>_s 
-    `{q_1* q'* $subst_quant(s, q_2)*} am_1* am'* $subst_argmatch(s, am_2)*
+    `{q_1* q'* $subst_param(s, q_2)*} am_1* am'* $subst_argmatch(s, am_2)*
   -- Step_argmatch: S |- `{q*} am ~>_s `{q'*} am'*
 
 rule Step_argmatch/seq-fail:
@@ -578,7 +579,7 @@ rule Step_argmatch_plain/ctx2:
 rule Step_argmatch_plain/eq:
   S |- a / a  ~>  eps
 
-;; TODO: disjoint
+;; TODO: disjointness
 ;;rule Step_argmatch_plain/neq:
 ;;  S |- a / a' ~> FAIL
 ;;  -- Disj_arg: S |- a =/= a'
@@ -590,7 +591,7 @@ rule Step_expmatch/plain:
 
 rule Step_expmatch/seq:
   S |- `{q_1* q* q_2*} em_1* em em_2*  ~>_s 
-    `{q_1* q'* $subst_quant(s, q_2)*} em_1* em'* $subst_expmatch(s, em_2)*
+    `{q_1* q'* $subst_param(s, q_2)*} em_1* em'* $subst_expmatch(s, em_2)*
   -- Step_expmatch: S |- `{q*} em ~>_s `{q'*} em'*
 
 rule Step_expmatch/seq-fail:
@@ -603,7 +604,7 @@ rule Step_expmatch/ITER-QUEST:
       (e / $subst_exp({EXP (x, VAR x')*}, e'))?
       (OPT (VAR x'')? / e_p)*
   -- if x''?* = $transposeq_(id, x'*?)
-  ;; TODO: x'*? fresh
+  -- (Fresh_id: x' FRESH)*?
   ;; Note: inner match can only instantiate iteration variables
 
 rule Step_expmatch/ITER-SUP:
@@ -612,7 +613,7 @@ rule Step_expmatch/ITER-SUP:
       (e / $subst_exp({EXP (y, NAT i) (x, VAR x')*}, e'))^(i<n)
       (NAT n / e_n) (LIST (VAR x'')^n / e_p)*
   -- if x''^n* = $transpose_(id, x'*^n)
-  ;; TODO: x'*^n fresh
+  -- (Fresh_id: x' FRESH)*^n
   ;; Note: inner match can only instantiate iteration variables
 
 
@@ -723,7 +724,7 @@ rule Step_expmatch_plain/ITER-STAR:
   S |- LIST e* / ITER e' STAR (x `: t `<- e_p)* ~>
     LIST e* / ITER e' (SUP y (NAT n)) (x `: t `<- e_p)*
   -- if |e*| = n
-  ;; TODO: y fresh
+  -- Fresh_id: y FRESH
 
 
 rule Step_expmatch_plain/SUB-SUB:
@@ -819,15 +820,17 @@ rule Reduce_prems/step:
 
 
 rule Step_prems/seq:
-  S |- pr_1* pr pr_2* ~>_s pr_1* pr'* $subst_prem(s, pr_2)*
+  S |- pr_1* pr pr_2* ~>_(s ++ s') pr_1* pr'* pr'_2
   -- Step_prems: S |- pr ~>_s pr'*
+  -- if (pr'_2, s') = $subst_refresh_prems(s, pr_2*)
 
 
 rule Step_prems/REL:
-  S |- REL x a* `: e ~>_{} $subst_prem(s, pr)* (IF (CMP EQ $subst_exp(s, e') e))
+  S |- REL x a* `: e ~>_{} pr'* (IF (CMP EQ $subst_exp(s ++ s', e') e))
   -- if (x, p* `-> t `= rul*) <- S.REL
   -- if (RULE `{q*} e' `- pr*) <- $subst_rule($args_for_params(a*, p*), rul)*
   -- Ok_subst: $storeenv(S) |- s : q*
+  -- if (pr'*, s') = $subst_refresh_prems(s, pr*)
   ;; Note: non-computational rule
 
 rule Step_prems/IF-ctx:
@@ -879,12 +882,12 @@ rule Step_prems/ITER-ctx4:
   -- Step_exppush: S |- eq*[n] ~> eq'_n
 
 rule Step_prems/ITER-QUEST:
-  S |- ITER pr QUEST (x_1 `: t_1 `<- OPT e_1?)* (e_2 `-> x_2 `: t_2)* ~>_{EXP (x_2, OPT e''_2?)*}
-    $subst_prem({EXP (x_1, e'_1)*}, pr)?
+  S |- ITER pr QUEST (x_1 `: t_1 `<- OPT e_1?)* (e_2 `-> x_2 `: t_2)* ~>_{EXP (x_2, OPT $subst_exp(s, e''_2)?)*} pr'?
   -- if e'_1*? = $transpose_(exp, e_1?*)
   -- if e'_2*? = $transpose_(exp, e''_2?*)
   -- (if |e_1?| = |e''_2?|)*
   -- (if e'_2 = e_2)*?
+  -- (if (pr', s) = $subst_refresh_prems({EXP (x_1, e'_1)*}, pr))?
 
 rule Step_prems/ITER-PLUS:
   S |- ITER pr PLUS (x_1 `: t_1 `<- LIST e_1*)* (e_2 `-> x_2 `: t_2)* ~>_{}
@@ -895,11 +898,11 @@ rule Step_prems/ITER-STAR:
   S |- ITER pr STAR (x_1 `: t_1 `<- LIST e_1*)* (e_2 `-> x_2 `: t_2)* ~>_{}
     ITER pr (SUP y (NAT n)) (x_1 `: t_1 `<- LIST e_1*)* (e_2 `-> x_2 `: t_2)*
   -- if |e_1**[0]| = n
-  ;; TODO: y fresh
+  -- Fresh_id: y FRESH
 
 rule Step_prems/ITER-SUP:
-  S |- ITER pr (SUP y (NAT n)) (x_1 `: t_1 `<- LIST e_1^n)* ~>_{EXP (x_2, LIST e''_2^n)*}
-    $subst_prem({EXP (x_1, e'_1)* (y, NAT i)}, pr)^(i<n)
+  S |- ITER pr (SUP y (NAT n)) (x_1 `: t_1 `<- LIST e_1^n)* ~>_{EXP (x_2, LIST e''_2^n)*} pr'
   -- if e'_1*^n = $transpose_(exp, e_1^n*)
   -- if e'_2*^n = $transpose_(exp, e''_2^n*)
   -- (if e'_2 = e_2)*^n
+  -- (if (pr', s) = $subst_refresh_prems({EXP (x_1, e'_1)* (y, NAT i)}, pr))^(i<n)
