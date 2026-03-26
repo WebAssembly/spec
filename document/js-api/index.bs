@@ -1372,6 +1372,7 @@ Note: Exported Functions do not have a \[[Construct]] method and thus it is not 
                 1. Set the [=surrounding agent=]'s [=associated store=] to |store|.
             1. Execute the WebAssembly instructions ([=ref.exn=] |address|) ([=throw_ref=]).
         1. Otherwise, return |result|.\[[Value]].
+    1. Let |store| be the [=surrounding agent=]'s [=associated store=].
     1. Let (|store|, |funcaddr|) be [=func_alloc=](|store|, |functype|, |hostfunc|).
     1. Set the [=surrounding agent=]'s [=associated store=] to |store|.
     1. Return |funcaddr|.
