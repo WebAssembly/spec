@@ -1076,7 +1076,7 @@ Each {{Table}} object has a \[[Table]] internal slot, which is a [=table address
         Note: The above exception can happen due to either insufficient memory or an invalid size parameter.
 
     1. Set the [=surrounding agent=]'s [=associated store=] to |result|.
-    1. Return |initialSize|.
+    1. Return [=U64ToAddressValue=](|initialSize|, |addrtype|).
 </div>
 
 <div algorithm>
