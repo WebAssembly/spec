@@ -168,6 +168,7 @@ urlPrefix: https://webassembly.github.io/spec/core/; spec: WebAssembly; type: df
     text: match_valtype; url: appendix/embedding.html#embed-match-valtype
     text: match_externtype; url: appendix/embedding.html#embed-match-externtype
     text: error; url: appendix/embedding.html#embed-error
+    text: exception; url: appendix/embedding.html#embed-error
     text: store; url: exec/runtime.html#syntax-store
     text: address type; url: syntax/types.html#syntax-addrtype
     text: limits; url: syntax/types.html#syntax-limits
@@ -1299,7 +1300,7 @@ This slot holds a [=function address=] relative to the [=surrounding agent=]'s [
     1. Let (|store|, |ret|) be the result of [=func_invoke=](|store|, |funcaddr|, |args|).
     1. Set the [=surrounding agent=]'s [=associated store=] to |store|.
     1. If |ret| is [=error=], throw an exception. This exception should be a WebAssembly {{RuntimeError}} exception, unless otherwise indicated by <a href="#errors">the WebAssembly error mapping</a>.
-    1. If |ret| is [=THROW=] [=ref.exn=] |exnaddr|, then
+    1. If |ret| is [=exception=] |exnaddr|, then
         1. Let |tagaddr| be [=exn_tag=](|store|, |exnaddr|).
         1. Let |payload| be [=exn_read=](|store|, |exnaddr|).
         1. Let |jsTagAddr| be the result of [=get the JavaScript exception tag |getting the JavaScript exception tag=].
