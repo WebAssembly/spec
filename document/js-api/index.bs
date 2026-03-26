@@ -1458,8 +1458,8 @@ The algorithm <dfn>ToWebAssemblyValue</dfn>(|v|, |type|) coerces a JavaScript va
         1. Let |funcaddr| be the value of |v|'s \[[FunctionAddress]] internal slot.
         1. Let |r| be [=ref.func=] |funcaddr|.
     1. Else if |v| [=is a Number=] and |v| is equal to [=?=] [$ToInt32$](|v|) and [=ℝ=](|v|) < 2<sup>30</sup> and [=ℝ=](|v|) ⩾ -2<sup>30</sup>,
-        1. Let |i31| [=?=] [$ToInt32$](|v|).
-        1. Let |u31| be the unsigned integer such that |i31| is [=signed_31=](|i31|).
+        1. Let |i31| be [=?=] [$ToInt32$](|v|).
+        1. Let |u31| be the unsigned integer such that |i31| is [=signed_31=](|u31|).
         1. Let |r| be [=ref.i31=] |u31|.
     1. Else if |v| is an [=Exported GC Object=],
         1. Let |objectaddr| be the value of |v|'s \[[ObjectAddress]] internal slot.
