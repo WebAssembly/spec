@@ -1513,8 +1513,6 @@ The algorithm <dfn>U64ToAddressValue</dfn>(|v|, |addrtype|) converts a [=u64=] v
 
 <h3 id="tags">Tags</h3>
 
-The <dfn>tag_alloc</dfn>(|store|, |parameters|) algorithm creates a new [=tag address=] for |parameters| in |store| and returns the updated store and the [=tag address=].
-
 <h4 id="tag-types">Tag types</h4>
 
 <pre class="idl">
@@ -1562,7 +1560,7 @@ The <dfn constructor for="Tag" lt="Tag(type)">new Tag(|type|)</dfn> constructor 
 1. [=list/iterate|For each=] |paramType| of |parameters|,
     1. [=list/Append=] [=ToValueType=](|paramType|) to |wasmParameters|.
 1. Let |store| be the current agent's [=associated store=].
-1. Let (|store|, |tagAddress|) be [=tag_alloc=](|store|, |wasmParameters|).
+1. Let (|store|, |tagAddress|) be [=tag_alloc=](|store|, |wasmParameters| → « »).
 1. Set the current agent's [=associated store=] to |store|.
 1. [=initialize a Tag object|Initialize=] **this** from |tagAddress|.
 
