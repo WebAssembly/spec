@@ -788,9 +788,9 @@ interface Instance {
 
 <div algorithm>
   The <dfn constructor for="Instance">Instance(|module|, |importObject|)</dfn> constructor, when invoked, runs the following steps:
-    1. Let |module| be |module|.\[[Module]].
     1. Let |builtinSetNames| be |module|.\[[BuiltinSets]].
     1. Let |importedStringModule| be |module|.\[[ImportedStringModule]].
+    1. Let |module| be |module|.\[[Module]].
     1. [=Read the imports=] of |module| with imports |importObject|, |builtinSetNames|, and |importedStringModule|, and let |imports| be the result.
     1. [=Instantiate the core of a WebAssembly module=] |module| with |imports|, and let |instance| be the result.
     1. [=initialize an instance object|Initialize=] **this** from |module| and |instance|.
