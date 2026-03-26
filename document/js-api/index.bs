@@ -1304,7 +1304,7 @@ This slot holds a [=function address=] relative to the [=surrounding agent=]'s [
         1. Let |payload| be [=exn_read=](|store|, |exnaddr|).
         1. Let |jsTagAddr| be the result of [=get the JavaScript exception tag |getting the JavaScript exception tag=].
         1. If |tagaddr| is equal to |jsTagAddr|,
-            1. Throw the result of [=retrieving a host value=] from |payload|[0].
+            1. Throw [=!=] [=ToJSValue=](|payload|[0]).
         1. Otherwise,
             1. Let |exception| be [=create an Exception object|a new Exception=] created from |exnaddr|.
             1. Throw |exception|.
