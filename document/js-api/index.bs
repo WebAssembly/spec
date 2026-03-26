@@ -1656,7 +1656,7 @@ The internal methods of an [=Exported GC Object=] use the following implementati
     1. Let |map| be the [=surrounding agent=]'s associated [=exported GC object cache=].
     1. If |map|[|objectaddr|] [=map/exists=],
         1. Return |map|[|objectaddr|].
-    1. Let |object| be [=MakeBasicObject=](« \[[ObjectAddress]] »).
+    1. Let |object| be [=MakeBasicObject=](« \[[ObjectAddress]], \[[ObjectKind]] »).
     1. Set |object|.\[[ObjectAddress]] to |objectaddr|.
     1. Set |object|.\[[ObjectKind]] to |objectkind|.
     1. Set |object|.\[[GetPrototypeOf]] as specified in [=[[GetPrototypeOf]] internal method of an Exported GC Object=].
