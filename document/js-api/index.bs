@@ -454,8 +454,8 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
     1. Let |promise| be [=a new promise=].
     1. Run the following steps [=in parallel=]:
         1. [=compile a WebAssembly module|Compile the WebAssembly module=] |bytes| and store the result as |module|.
-        1. [=Queue a task=] to perform the following steps. If |taskSource| was provided, queue the task on that task source.
-            1. If |module| is [=error=], reject |promise| with a {{CompileError}} exception.
+        1. [=Queue a task=] on |taskSource|, if provided, to perform the following steps:
+            1. If |module| is [=error=], reject |promise| with a {{CompileError}} exception and return.
             1. Let |builtinSetNames| be |options|["builtins"].
             1. Let |importedStringModule| be |options|["importedStringConstants"].
             1. If [=validate builtins and imported string for a WebAssembly module|validating builtins and imported strings=] for |module| with |builtinSetNames| and |importedStringModule| is false, reject |promise| with a {{CompileError}} exception.
