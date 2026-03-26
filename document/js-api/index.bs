@@ -1907,7 +1907,7 @@ To <dfn>validate an import for builtins</dfn> with |import|, enabled builtins |b
 1. Let |maybeBuiltin| be the result of [=find a builtin|finding a builtin=] for |import| and |builtinSetNames|.
 1. If |maybeBuiltin| is null, return true.
 1. Let |importExternType| be |import|[2].
-1. Let |builtinFuncType| be |maybeBuiltin|[0][1].
+1. Let |builtinFuncType| be |maybeBuiltin|[1][1].
 1. Let |builtinExternType| be `func |builtinFuncType|`.
 1. Return [=match_externtype=](|builtinExternType|, |importExternType|).
 
