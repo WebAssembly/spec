@@ -2020,7 +2020,7 @@ When this builtin is invoked with parameters |string|, |array|, and |start|, the
 1. Let |i| be 0.
 1. While |i| < |stringLength|:
     1. Let |charCode| be [$CharCodeAt$](|string|, |i|).
-    1. Set the element at index |start| + |i| in |array| to [=ToWebAssemblyValue=](|charCode|).
+    1. Set the element at index |start| + |i| in |array| to [=ToWebAssemblyValue=](|charCode|, [=i32=]).
     1. Set |i| to |i| + 1.
 1. Return |stringLength|.
 
