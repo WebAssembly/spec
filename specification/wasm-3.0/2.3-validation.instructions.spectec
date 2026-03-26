@@ -637,7 +637,7 @@ rule Instrs_ok/frame:
 
 rule Expr_ok:
   C |- instr* : t*
-  -- Instrs_ok: C |- instr* : eps ->_(eps) t*
+  -- Instrs_ok: C |- instr* : eps -> t*
 
 
 ;; Constant expressions

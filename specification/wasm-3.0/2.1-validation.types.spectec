@@ -24,6 +24,9 @@ rule Heaptype_ok/typeuse:
   C |- typeuse : OK
   -- Typeuse_ok: C |- typeuse : OK
 
+rule Heaptype_ok/bot:
+  C |- BOT : OK
+
 rule Reftype_ok:
   C |- REF NULL? heaptype : OK
   -- Heaptype_ok: C |- heaptype : OK

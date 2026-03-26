@@ -2792,98 +2792,102 @@ relation Heaptype_ok: `%|-%:OK`(context, heaptype)
     `%|-%:OK`(C, (typeuse : typeuse <: heaptype))
     -- Typeuse_ok: `%|-%:OK`(C, typeuse)
 
+  ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:27.1-28.16
+  rule bot{C : context}:
+    `%|-%:OK`(C, BOT_heaptype)
+
 ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:10.1-10.91
 relation Reftype_ok: `%|-%:OK`(context, reftype)
-  ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:27.1-29.37
+  ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:30.1-32.37
   rule _{C : context, heaptype : heaptype}:
     `%|-%:OK`(C, REF_reftype(NULL_null?{}, heaptype))
     -- Heaptype_ok: `%|-%:OK`(C, heaptype)
 
 ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:11.1-11.91
 relation Valtype_ok: `%|-%:OK`(context, valtype)
-  ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:31.1-33.35
+  ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:34.1-36.35
   rule num{C : context, numtype : numtype}:
     `%|-%:OK`(C, (numtype : numtype <: valtype))
     -- Numtype_ok: `%|-%:OK`(C, numtype)
 
-  ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:35.1-37.35
+  ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:38.1-40.35
   rule vec{C : context, vectype : vectype}:
     `%|-%:OK`(C, (vectype : vectype <: valtype))
     -- Vectype_ok: `%|-%:OK`(C, vectype)
 
-  ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:39.1-41.35
+  ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:42.1-44.35
   rule ref{C : context, reftype : reftype}:
     `%|-%:OK`(C, (reftype : reftype <: valtype))
     -- Reftype_ok: `%|-%:OK`(C, reftype)
 
-  ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:43.1-44.16
+  ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:46.1-47.16
   rule bot{C : context}:
     `%|-%:OK`(C, BOT_valtype)
 
 ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:12.1-12.94
 relation Typeuse_ok: `%|-%:OK`(context, typeuse)
-  ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:99.1-101.30
+  ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:102.1-104.30
   rule typeidx{C : context, typeidx : typeidx, dt : deftype}:
     `%|-%:OK`(C, _IDX_typeuse(typeidx))
     -- if (C.TYPES_context[typeidx!`%`_typeidx.0] = dt)
 
-  ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:103.1-105.23
+  ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:106.1-108.23
   rule rec{C : context, i : n, st : subtype}:
     `%|-%:OK`(C, REC_typeuse(i))
     -- if (C.RECS_context[i] = st)
 
-  ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:107.1-109.35
+  ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:110.1-112.35
   rule deftype{C : context, deftype : deftype}:
     `%|-%:OK`(C, (deftype : deftype <: typeuse))
     -- Deftype_ok: `%|-%:OK`(C, deftype)
 
-;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:49.1-49.100
+;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:52.1-52.100
 relation Resulttype_ok: `%|-%:OK`(context, resulttype)
-  ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:52.1-54.32
+  ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:55.1-57.32
   rule _{C : context, `t*` : valtype*}:
     `%|-%:OK`(C, `%`_resulttype(t*{t <- `t*`}))
     -- (Valtype_ok: `%|-%:OK`(C, t))*{t <- `t*`}
 
-;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:85.1-85.104
+;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:88.1-88.104
 relation Fieldtype_ok: `%|-%:OK`(context, fieldtype)
-  ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:123.1-125.43
+  ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:126.1-128.43
   rule _{C : context, storagetype : storagetype}:
     `%|-%:OK`(C, `%%`_fieldtype(MUT_mut?{}, storagetype))
     -- Storagetype_ok: `%|-%:OK`(C, storagetype)
 
-;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:86.1-86.106
+;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:89.1-89.106
 relation Storagetype_ok: `%|-%:OK`(context, storagetype)
-  ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:115.1-117.35
+  ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:118.1-120.35
   rule val{C : context, valtype : valtype}:
     `%|-%:OK`(C, (valtype : valtype <: storagetype))
     -- Valtype_ok: `%|-%:OK`(C, valtype)
 
-  ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:119.1-121.37
+  ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:122.1-124.37
   rule pack{C : context, packtype : packtype}:
     `%|-%:OK`(C, (packtype : packtype <: storagetype))
     -- Packtype_ok: `%|-%:OK`(C, packtype)
 
-;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:87.1-87.103
+;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:90.1-90.103
 relation Comptype_ok: `%|-%:OK`(context, comptype)
-  ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:128.1-130.42
+  ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:131.1-133.42
   rule struct{C : context, `fieldtype*` : fieldtype*}:
     `%|-%:OK`(C, STRUCT_comptype(`%`_list(fieldtype*{fieldtype <- `fieldtype*`})))
     -- (Fieldtype_ok: `%|-%:OK`(C, fieldtype))*{fieldtype <- `fieldtype*`}
 
-  ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:132.1-134.39
+  ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:135.1-137.39
   rule array{C : context, fieldtype : fieldtype}:
     `%|-%:OK`(C, ARRAY_comptype(fieldtype))
     -- Fieldtype_ok: `%|-%:OK`(C, fieldtype)
 
-  ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:136.1-139.35
+  ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:139.1-142.35
   rule func{C : context, `t_1*` : valtype*, `t_2*` : valtype*}:
     `%|-%:OK`(C, `FUNC%->%`_comptype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), `%`_resulttype(t_2*{t_2 <- `t_2*`})))
     -- Resulttype_ok: `%|-%:OK`(C, `%`_resulttype(t_1*{t_1 <- `t_1*`}))
     -- Resulttype_ok: `%|-%:OK`(C, `%`_resulttype(t_2*{t_2 <- `t_2*`}))
 
-;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:88.1-88.126
+;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:91.1-91.126
 relation Subtype_ok: `%|-%:%`(context, subtype, oktypeidx)
-  ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:142.1-149.49
+  ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:145.1-152.49
   rule _{C : context, `x*` : idx*, comptype : comptype, x_0 : idx, `comptype'*` : comptype*, `x'**` : idx**}:
     `%|-%:%`(C, SUB_subtype(FINAL_final?{}, _IDX_typeuse(x)*{x <- `x*`}, comptype), OK_oktypeidx(x_0))
     -- if (|x*{x <- `x*`}| <= 1)
@@ -2892,26 +2896,26 @@ relation Subtype_ok: `%|-%:%`(context, subtype, oktypeidx)
     -- Comptype_ok: `%|-%:OK`(C, comptype)
     -- (Comptype_sub: `%|-%<:%`(C, comptype, comptype'))*{comptype' <- `comptype'*`}
 
-;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:89.1-89.126
+;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:92.1-92.126
 relation Rectype_ok: `%|-%:%`(context, rectype, oktypeidx)
-  ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:171.1-172.23
+  ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:174.1-175.23
   rule empty{C : context, x : idx}:
     `%|-%:%`(C, REC_rectype(`%`_list([])), OK_oktypeidx(x))
 
-  ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:174.1-177.48
+  ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:177.1-180.48
   rule cons{C : context, subtype_1 : subtype, `subtype*` : subtype*, x : idx}:
     `%|-%:%`(C, REC_rectype(`%`_list([subtype_1] ++ subtype*{subtype <- `subtype*`})), OK_oktypeidx(x))
     -- Subtype_ok: `%|-%:%`(C, subtype_1, OK_oktypeidx(x))
     -- Rectype_ok: `%|-%:%`(C, REC_rectype(`%`_list(subtype*{subtype <- `subtype*`})), OK_oktypeidx(`%`_typeidx((x!`%`_idx.0 + 1))))
 
-  ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:179.1-181.60
+  ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:182.1-184.60
   rule _rec2{C : context, `subtype*` : subtype*, x : idx}:
     `%|-%:%`(C, REC_rectype(`%`_list(subtype*{subtype <- `subtype*`})), OK_oktypeidx(x))
     -- Rectype_ok2: `%|-%:%`({TYPES [], RECS subtype*{subtype <- `subtype*`}, TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [], RETURN ?(), REFS []} +++ C, REC_rectype(`%`_list(subtype*{subtype <- `subtype*`})), OK_oktypeidxnat(x, 0))
 
-;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:90.1-90.126
+;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:93.1-93.126
 relation Subtype_ok2: `%|-%:%`(context, subtype, oktypeidxnat)
-  ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:161.1-168.49
+  ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:164.1-171.49
   rule _{C : context, `typeuse*` : typeuse*, compttype : comptype, x : idx, i : nat, `comptype'*` : comptype*, `typeuse'**` : typeuse**, comptype : comptype}:
     `%|-%:%`(C, SUB_subtype(FINAL_final?{}, typeuse*{typeuse <- `typeuse*`}, compttype), OK_oktypeidxnat(x, i))
     -- if (|typeuse*{typeuse <- `typeuse*`}| <= 1)
@@ -2920,28 +2924,28 @@ relation Subtype_ok2: `%|-%:%`(context, subtype, oktypeidxnat)
     -- Comptype_ok: `%|-%:OK`(C, comptype)
     -- (Comptype_sub: `%|-%<:%`(C, comptype, comptype'))*{comptype' <- `comptype'*`}
 
-;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:91.1-91.126
+;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:94.1-94.126
 relation Rectype_ok2: `%|-%:%`(context, rectype, oktypeidxnat)
-  ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:183.1-184.24
+  ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:186.1-187.24
   rule empty{C : context, x : idx, i : nat}:
     `%|-%:%`(C, REC_rectype(`%`_list([])), OK_oktypeidxnat(x, i))
 
-  ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:186.1-189.55
+  ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:189.1-192.55
   rule cons{C : context, subtype_1 : subtype, `subtype*` : subtype*, x : idx, i : nat}:
     `%|-%:%`(C, REC_rectype(`%`_list([subtype_1] ++ subtype*{subtype <- `subtype*`})), OK_oktypeidxnat(x, i))
     -- Subtype_ok2: `%|-%:%`(C, subtype_1, OK_oktypeidxnat(x, i))
     -- Rectype_ok2: `%|-%:%`(C, REC_rectype(`%`_list(subtype*{subtype <- `subtype*`})), OK_oktypeidxnat(`%`_typeidx((x!`%`_idx.0 + 1)), (i + 1)))
 
-;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:92.1-92.102
+;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:95.1-95.102
 relation Deftype_ok: `%|-%:OK`(context, deftype)
-  ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:192.1-196.14
+  ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:195.1-199.14
   rule _{C : context, rectype : rectype, i : n, x : idx, n : n, `subtype*` : subtype*}:
     `%|-%:OK`(C, _DEF_deftype(rectype, i))
     -- Rectype_ok: `%|-%:%`(C, rectype, OK_oktypeidx(x))
     -- if (rectype = REC_rectype(`%`_list(subtype^n{subtype <- `subtype*`})))
     -- if (i < n)
 
-;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:95.1-95.108
+;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:98.1-98.108
 relation Comptype_sub: `%|-%<:%`(context, comptype, comptype)
   ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:169.1-171.41
   rule struct{C : context, `ft_1*` : fieldtype*, `ft'_1*` : fieldtype*, `ft_2*` : fieldtype*}:
@@ -2959,7 +2963,7 @@ relation Comptype_sub: `%|-%<:%`(context, comptype, comptype)
     -- Resulttype_sub: `%|-%<:%`(C, `%`_resulttype(t_21*{t_21 <- `t_21*`}), `%`_resulttype(t_11*{t_11 <- `t_11*`}))
     -- Resulttype_sub: `%|-%<:%`(C, `%`_resulttype(t_12*{t_12 <- `t_12*`}), `%`_resulttype(t_22*{t_22 <- `t_22*`}))
 
-;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:96.1-96.107
+;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:99.1-99.107
 relation Deftype_sub: `%|-%<:%`(context, deftype, deftype)
   ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:183.1-185.66
   rule refl{C : context, deftype_1 : deftype, deftype_2 : deftype}:
@@ -5916,36 +5920,54 @@ relation Val_ok: `%|-%:%`(store, val, valtype)
     -- Ref_ok: `%|-%:%`(s, ref, rt)
 
 ;; ../../../../specification/wasm-latest/4.1-execution.values.spectec
+relation Packval_ok: `%|-%:%`(store, packval, packtype)
+  ;; ../../../../specification/wasm-latest/4.1-execution.values.spectec
+  rule _{s : store, pt : packtype, c : iN($psizenn(pt))}:
+    `%|-%:%`(s, PACK_packval(pt, c), pt)
+
+;; ../../../../specification/wasm-latest/4.1-execution.values.spectec
+relation Fieldval_ok: `%|-%:%`(store, fieldval, storagetype)
+  ;; ../../../../specification/wasm-latest/4.1-execution.values.spectec
+  rule val{s : store, val : val, t : valtype}:
+    `%|-%:%`(s, (val : val <: fieldval), (t : valtype <: storagetype))
+    -- Val_ok: `%|-%:%`(s, val, t)
+
+  ;; ../../../../specification/wasm-latest/4.1-execution.values.spectec
+  rule packval{s : store, packval : packval, pt : packtype}:
+    `%|-%:%`(s, (packval : packval <: fieldval), (pt : packtype <: storagetype))
+    -- Packval_ok: `%|-%:%`(s, packval, pt)
+
+;; ../../../../specification/wasm-latest/4.1-execution.values.spectec
 rec {
 
-;; ../../../../specification/wasm-latest/4.1-execution.values.spectec:86.1-86.84
+;; ../../../../specification/wasm-latest/4.1-execution.values.spectec:103.1-103.84
 relation Externaddr_ok: `%|-%:%`(store, externaddr, externtype)
-  ;; ../../../../specification/wasm-latest/4.1-execution.values.spectec:88.1-90.28
+  ;; ../../../../specification/wasm-latest/4.1-execution.values.spectec:105.1-107.28
   rule tag{s : store, a : addr, taginst : taginst}:
     `%|-%:%`(s, TAG_externaddr(a), TAG_externtype(taginst.TYPE_taginst))
     -- if (s.TAGS_store[a] = taginst)
 
-  ;; ../../../../specification/wasm-latest/4.1-execution.values.spectec:92.1-94.34
+  ;; ../../../../specification/wasm-latest/4.1-execution.values.spectec:109.1-111.34
   rule global{s : store, a : addr, globalinst : globalinst}:
     `%|-%:%`(s, GLOBAL_externaddr(a), GLOBAL_externtype(globalinst.TYPE_globalinst))
     -- if (s.GLOBALS_store[a] = globalinst)
 
-  ;; ../../../../specification/wasm-latest/4.1-execution.values.spectec:96.1-98.28
+  ;; ../../../../specification/wasm-latest/4.1-execution.values.spectec:113.1-115.28
   rule mem{s : store, a : addr, meminst : meminst}:
     `%|-%:%`(s, MEM_externaddr(a), MEM_externtype(meminst.TYPE_meminst))
     -- if (s.MEMS_store[a] = meminst)
 
-  ;; ../../../../specification/wasm-latest/4.1-execution.values.spectec:100.1-102.32
+  ;; ../../../../specification/wasm-latest/4.1-execution.values.spectec:117.1-119.32
   rule table{s : store, a : addr, tableinst : tableinst}:
     `%|-%:%`(s, TABLE_externaddr(a), TABLE_externtype(tableinst.TYPE_tableinst))
     -- if (s.TABLES_store[a] = tableinst)
 
-  ;; ../../../../specification/wasm-latest/4.1-execution.values.spectec:104.1-106.30
+  ;; ../../../../specification/wasm-latest/4.1-execution.values.spectec:121.1-123.30
   rule func{s : store, a : addr, funcinst : funcinst}:
     `%|-%:%`(s, FUNC_externaddr(a), FUNC_externtype((funcinst.TYPE_funcinst : deftype <: typeuse)))
     -- if (s.FUNCS_store[a] = funcinst)
 
-  ;; ../../../../specification/wasm-latest/4.1-execution.values.spectec:108.1-111.37
+  ;; ../../../../specification/wasm-latest/4.1-execution.values.spectec:125.1-128.37
   rule sub{s : store, externaddr : externaddr, xt : externtype, xt' : externtype}:
     `%|-%:%`(s, externaddr, xt)
     -- Externaddr_ok: `%|-%:%`(s, externaddr, xt')
@@ -7632,6 +7654,372 @@ def $ordered(decl*) : bool
     -- if ($importsd(decl*{decl <- `decl*`}) = [])
   ;; ../../../../specification/wasm-latest/6.4-text.modules.spectec
   def $ordered{`decl_1*` : decl*, import : import, `decl_2*` : decl*}(decl_1*{decl_1 <- `decl_1*`} ++ [(import : import <: decl)] ++ decl_2*{decl_2 <- `decl_2*`}) = (((((($importsd(decl_1*{decl_1 <- `decl_1*`}) = []) /\ ($tagsd(decl_1*{decl_1 <- `decl_1*`}) = [])) /\ ($globalsd(decl_1*{decl_1 <- `decl_1*`}) = [])) /\ ($memsd(decl_1*{decl_1 <- `decl_1*`}) = [])) /\ ($tablesd(decl_1*{decl_1 <- `decl_1*`}) = [])) /\ ($funcsd(decl_1*{decl_1 <- `decl_1*`}) = []))
+
+;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
+relation Localval_ok: `%|-%:%`(store, val?, localtype)
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
+  rule set{s : store, val : val, t : valtype}:
+    `%|-%:%`(s, ?(val), `%%`_localtype(SET_init, t))
+    -- Val_ok: `%|-%:%`(s, val, t)
+
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
+  rule unset{s : store}:
+    `%|-%:%`(s, ?(), `%%`_localtype(UNSET_init, BOT_valtype))
+
+;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
+relation Datainst_ok: `%|-%:%`(store, datainst, datatype)
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
+  rule _{s : store, `b*` : byte*}:
+    `%|-%:%`(s, {BYTES b*{b <- `b*`}}, OK_datatype)
+
+;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
+relation Eleminst_ok: `%|-%:%`(store, eleminst, elemtype)
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
+  rule _{s : store, rt : reftype, `ref*` : ref*}:
+    `%|-%:%`(s, {TYPE rt, REFS ref*{ref <- `ref*`}}, rt)
+    -- Reftype_ok: `%|-%:OK`({TYPES [], RECS [], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [], RETURN ?(), REFS []}, rt)
+    -- (Ref_ok: `%|-%:%`(s, ref, rt))*{ref <- `ref*`}
+
+;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
+relation Exportinst_ok: `%|-%:OK`(store, exportinst)
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
+  rule _{s : store, nm : name, xa : externaddr, xt : externtype}:
+    `%|-%:OK`(s, {NAME nm, ADDR xa})
+    -- Externaddr_ok: `%|-%:%`(s, xa, xt)
+
+;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
+relation Moduleinst_ok: `%|-%:%`(store, moduleinst, context)
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
+  rule _{s : store, `deftype*` : deftype*, `tagaddr*` : tagaddr*, `globaladdr*` : globaladdr*, `memaddr*` : memaddr*, `tableaddr*` : tableaddr*, `funcaddr*` : funcaddr*, `dataaddr*` : dataaddr*, `elemaddr*` : elemaddr*, `exportinst*` : exportinst*, `subtype*` : subtype*, `tagtype*` : tagtype*, `globaltype*` : globaltype*, `memtype*` : memtype*, `tabletype*` : tabletype*, `deftype_F*` : deftype*, `datatype*` : datatype*, `elemtype*` : elemtype*}:
+    `%|-%:%`(s, {TYPES deftype*{deftype <- `deftype*`}, TAGS tagaddr*{tagaddr <- `tagaddr*`}, GLOBALS globaladdr*{globaladdr <- `globaladdr*`}, MEMS memaddr*{memaddr <- `memaddr*`}, TABLES tableaddr*{tableaddr <- `tableaddr*`}, FUNCS funcaddr*{funcaddr <- `funcaddr*`}, DATAS dataaddr*{dataaddr <- `dataaddr*`}, ELEMS elemaddr*{elemaddr <- `elemaddr*`}, EXPORTS exportinst*{exportinst <- `exportinst*`}}, {TYPES deftype*{deftype <- `deftype*`}, RECS subtype*{subtype <- `subtype*`}, TAGS tagtype*{tagtype <- `tagtype*`}, GLOBALS globaltype*{globaltype <- `globaltype*`}, MEMS memtype*{memtype <- `memtype*`}, TABLES tabletype*{tabletype <- `tabletype*`}, FUNCS deftype_F*{deftype_F <- `deftype_F*`}, DATAS datatype*{datatype <- `datatype*`}, ELEMS elemtype*{elemtype <- `elemtype*`}, LOCALS [], LABELS [], RETURN ?(), REFS `%`_funcidx(i)^(i<|funcaddr*{funcaddr <- `funcaddr*`}|){}})
+    -- (Deftype_ok: `%|-%:OK`({TYPES [], RECS [], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [], RETURN ?(), REFS []}, deftype))*{deftype <- `deftype*`}
+    -- (Externaddr_ok: `%|-%:%`(s, TAG_externaddr(tagaddr), TAG_externtype(tagtype)))*{tagaddr <- `tagaddr*`, tagtype <- `tagtype*`}
+    -- (Externaddr_ok: `%|-%:%`(s, GLOBAL_externaddr(globaladdr), GLOBAL_externtype(globaltype)))*{globaladdr <- `globaladdr*`, globaltype <- `globaltype*`}
+    -- (Externaddr_ok: `%|-%:%`(s, FUNC_externaddr(funcaddr), FUNC_externtype((deftype_F : deftype <: typeuse))))*{deftype_F <- `deftype_F*`, funcaddr <- `funcaddr*`}
+    -- (Externaddr_ok: `%|-%:%`(s, MEM_externaddr(memaddr), MEM_externtype(memtype)))*{memaddr <- `memaddr*`, memtype <- `memtype*`}
+    -- (Externaddr_ok: `%|-%:%`(s, TABLE_externaddr(tableaddr), TABLE_externtype(tabletype)))*{tableaddr <- `tableaddr*`, tabletype <- `tabletype*`}
+    -- (Datainst_ok: `%|-%:%`(s, s.DATAS_store[dataaddr], datatype))*{dataaddr <- `dataaddr*`, datatype <- `datatype*`}
+    -- (Eleminst_ok: `%|-%:%`(s, s.ELEMS_store[elemaddr], elemtype))*{elemaddr <- `elemaddr*`, elemtype <- `elemtype*`}
+    -- (Exportinst_ok: `%|-%:OK`(s, exportinst))*{exportinst <- `exportinst*`}
+    -- if $disjoint_(syntax name, exportinst.NAME_exportinst*{exportinst <- `exportinst*`})
+    -- (if (exportinst.ADDR_exportinst <- TAG_externaddr(tagaddr)*{tagaddr <- `tagaddr*`} ++ GLOBAL_externaddr(globaladdr)*{globaladdr <- `globaladdr*`} ++ MEM_externaddr(memaddr)*{memaddr <- `memaddr*`} ++ TABLE_externaddr(tableaddr)*{tableaddr <- `tableaddr*`} ++ FUNC_externaddr(funcaddr)*{funcaddr <- `funcaddr*`}))*{exportinst <- `exportinst*`}
+
+;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
+relation Frame_ok: `%|-%:%`(store, frame, context)
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
+  rule _{s : store, `val?*` : val?*, moduleinst : moduleinst, C : context, `lct*` : localtype*}:
+    `%|-%:%`(s, {LOCALS val?{val <- `val?`}*{`val?` <- `val?*`}, MODULE moduleinst}, C +++ {TYPES [], RECS [], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS lct*{lct <- `lct*`}, LABELS [], RETURN ?(), REFS []})
+    -- Moduleinst_ok: `%|-%:%`(s, moduleinst, C)
+    -- (Localval_ok: `%|-%:%`(s, val?{val <- `val?`}, lct))*{lct <- `lct*`, `val?` <- `val?*`}
+
+;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
+rec {
+
+;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:3.1-3.56
+relation Instr_ok2: `%;%|-%:%`(store, context, instr, instrtype)
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:7.1-9.46
+  rule plain{s : store, C : context, instr : instr, `t_1*` : valtype*, `x*` : idx*, `t_2*` : valtype*}:
+    `%;%|-%:%`(s, C, instr, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), x*{x <- `x*`}, `%`_resulttype(t_2*{t_2 <- `t_2*`})))
+    -- Instr_ok: `%|-%:%`(C, instr, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), x*{x <- `x*`}, `%`_resulttype(t_2*{t_2 <- `t_2*`})))
+
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:11.1-13.27
+  rule ref{s : store, C : context, ref : ref, rt : reftype}:
+    `%;%|-%:%`(s, C, (ref : ref <: instr), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([(rt : reftype <: valtype)])))
+    -- Ref_ok: `%|-%:%`(s, ref, rt)
+
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:15.1-18.68
+  rule label{s : store, C : context, n : n, `instr'*` : instr*, `instr*` : instr*, `t*` : valtype*, `t'*` : valtype*, `x'*` : idx*, `x*` : idx*}:
+    `%;%|-%:%`(s, C, `LABEL_%{%}%`_instr(n, instr'*{instr' <- `instr'*`}, instr*{instr <- `instr*`}), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype(t*{t <- `t*`})))
+    -- Instrs_ok2: `%;%|-%:%`(s, C, instr'*{instr' <- `instr'*`}, `%->_%%`_instrtype(`%`_resulttype(t'^n{t' <- `t'*`}), x'*{x' <- `x'*`}, `%`_resulttype(t*{t <- `t*`})))
+    -- Instrs_ok2: `%;%|-%:%`(s, {TYPES [], RECS [], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [`%`_resulttype(t'^n{t' <- `t'*`})], RETURN ?(), REFS []} +++ C, instr*{instr <- `instr*`}, `%->_%%`_instrtype(`%`_resulttype([]), x*{x <- `x*`}, `%`_resulttype(t*{t <- `t*`})))
+
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:20.1-23.37
+  rule frame{s : store, C : context, n : n, f : frame, `instr*` : instr*, `t*` : valtype*, C' : context}:
+    `%;%|-%:%`(s, C, `FRAME_%{%}%`_instr(n, f, instr*{instr <- `instr*`}), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype(t^n{t <- `t*`})))
+    -- Frame_ok: `%|-%:%`(s, f, C')
+    -- Expr_ok2: `%;%|-%:%`(s, C', instr*{instr <- `instr*`}, `%`_resulttype(t^n{t <- `t*`}))
+
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:25.1-28.52
+  rule handler{s : store, C : context, n : n, `catch*` : catch*, `instr*` : instr*, `t_1*` : valtype*, `t_2*` : valtype*, `x*` : idx*}:
+    `%;%|-%:%`(s, C, `HANDLER_%{%}%`_instr(n, catch*{catch <- `catch*`}, instr*{instr <- `instr*`}), `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), [], `%`_resulttype(t_2*{t_2 <- `t_2*`})))
+    -- (Catch_ok: `%|-%:OK`(C, catch))*{catch <- `catch*`}
+    -- Instrs_ok2: `%;%|-%:%`(s, C, instr*{instr <- `instr*`}, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), x*{x <- `x*`}, `%`_resulttype(t_2*{t_2 <- `t_2*`})))
+
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:30.1-32.42
+  rule trap{s : store, C : context, `t_1*` : valtype*, `t_2*` : valtype*}:
+    `%;%|-%:%`(s, C, TRAP_instr, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), [], `%`_resulttype(t_2*{t_2 <- `t_2*`})))
+    -- Instrtype_ok: `%|-%:OK`(C, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), [], `%`_resulttype(t_2*{t_2 <- `t_2*`})))
+
+;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:4.1-4.58
+relation Instrs_ok2: `%;%|-%:%`(store, context, instr*, instrtype)
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:35.1-36.27
+  rule empty{s : store, C : context}:
+    `%;%|-%:%`(s, C, [], `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([])))
+
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:38.1-42.86
+  rule seq{s : store, C : context, instr_1 : instr, `instr_2*` : instr*, `t_1*` : valtype*, `x_1*` : idx*, `x_2*` : idx*, `t_3*` : valtype*, `t_2*` : valtype*, `init*` : init*, `t*` : valtype*}:
+    `%;%|-%:%`(s, C, [instr_1] ++ instr_2*{instr_2 <- `instr_2*`}, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), x_1*{x_1 <- `x_1*`} ++ x_2*{x_2 <- `x_2*`}, `%`_resulttype(t_3*{t_3 <- `t_3*`})))
+    -- Instr_ok2: `%;%|-%:%`(s, C, instr_1, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), x_1*{x_1 <- `x_1*`}, `%`_resulttype(t_2*{t_2 <- `t_2*`})))
+    -- (if (C.LOCALS_context[x_1!`%`_idx.0] = `%%`_localtype(init, t)))*{init <- `init*`, t <- `t*`, x_1 <- `x_1*`}
+    -- Instrs_ok2: `%;%|-%:%`(s, $with_locals(C, x_1*{x_1 <- `x_1*`}, `%%`_localtype(SET_init, t)*{t <- `t*`}), instr_2*{instr_2 <- `instr_2*`}, `%->_%%`_instrtype(`%`_resulttype(t_2*{t_2 <- `t_2*`}), x_2*{x_2 <- `x_2*`}, `%`_resulttype(t_3*{t_3 <- `t_3*`})))
+
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:44.1-48.33
+  rule sub{s : store, C : context, `instr*` : instr*, it' : instrtype, it : instrtype}:
+    `%;%|-%:%`(s, C, instr*{instr <- `instr*`}, it')
+    -- Instrs_ok2: `%;%|-%:%`(s, C, instr*{instr <- `instr*`}, it)
+    -- Instrtype_sub: `%|-%<:%`(C, it, it')
+    -- Instrtype_ok: `%|-%:OK`(C, it')
+
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:51.1-54.33
+  rule frame{s : store, C : context, `instr*` : instr*, `t*` : valtype*, `t_1*` : valtype*, `x*` : idx*, `t_2*` : valtype*}:
+    `%;%|-%:%`(s, C, instr*{instr <- `instr*`}, `%->_%%`_instrtype(`%`_resulttype(t*{t <- `t*`} ++ t_1*{t_1 <- `t_1*`}), x*{x <- `x*`}, `%`_resulttype(t*{t <- `t*`} ++ t_2*{t_2 <- `t_2*`})))
+    -- Instrs_ok2: `%;%|-%:%`(s, C, instr*{instr <- `instr*`}, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), x*{x <- `x*`}, `%`_resulttype(t_2*{t_2 <- `t_2*`})))
+    -- Resulttype_ok: `%|-%:OK`(C, `%`_resulttype(t*{t <- `t*`}))
+
+;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:5.1-5.55
+relation Expr_ok2: `%;%|-%:%`(store, context, expr, resulttype)
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:57.1-59.44
+  rule _{s : store, C : context, `instr*` : instr*, `t*` : valtype*}:
+    `%;%|-%:%`(s, C, instr*{instr <- `instr*`}, `%`_resulttype(t*{t <- `t*`}))
+    -- Instrs_ok2: `%;%|-%:%`(s, C, instr*{instr <- `instr*`}, `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype(t*{t <- `t*`})))
+}
+
+;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
+relation Taginst_ok: `%|-%:%`(store, taginst, tagtype)
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
+  rule _{s : store, jt : tagtype}:
+    `%|-%:%`(s, {TYPE jt}, jt)
+    -- Tagtype_ok: `%|-%:OK`({TYPES [], RECS [], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [], RETURN ?(), REFS []}, jt)
+
+;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
+relation Globalinst_ok: `%|-%:%`(store, globalinst, globaltype)
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
+  rule _{s : store, `mut?` : mut?, t : valtype, val : val}:
+    `%|-%:%`(s, {TYPE `%%`_globaltype(mut?{mut <- `mut?`}, t), VALUE val}, `%%`_globaltype(mut?{mut <- `mut?`}, t))
+    -- Globaltype_ok: `%|-%:OK`({TYPES [], RECS [], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [], RETURN ?(), REFS []}, `%%`_globaltype(mut?{mut <- `mut?`}, t))
+    -- Val_ok: `%|-%:%`(s, val, t)
+
+;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
+relation Meminst_ok: `%|-%:%`(store, meminst, memtype)
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
+  rule _{s : store, at : addrtype, n : n, m : m, `b*` : byte*}:
+    `%|-%:%`(s, {TYPE `%%PAGE`_memtype(at, `[%..%]`_limits(`%`_u64(n), ?(`%`_u64(m)))), BYTES b*{b <- `b*`}}, `%%PAGE`_memtype(at, `[%..%]`_limits(`%`_u64(n), ?(`%`_u64(m)))))
+    -- Memtype_ok: `%|-%:OK`({TYPES [], RECS [], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [], RETURN ?(), REFS []}, `%%PAGE`_memtype(at, `[%..%]`_limits(`%`_u64(n), ?(`%`_u64(m)))))
+    -- if (|b*{b <- `b*`}| = (n * (64 * $Ki)))
+
+;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
+relation Tableinst_ok: `%|-%:%`(store, tableinst, tabletype)
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
+  rule _{s : store, at : addrtype, n : n, m : m, rt : reftype, `ref*` : ref*}:
+    `%|-%:%`(s, {TYPE `%%%`_tabletype(at, `[%..%]`_limits(`%`_u64(n), ?(`%`_u64(m))), rt), REFS ref*{ref <- `ref*`}}, `%%%`_tabletype(at, `[%..%]`_limits(`%`_u64(n), ?(`%`_u64(m))), rt))
+    -- Tabletype_ok: `%|-%:OK`({TYPES [], RECS [], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [], RETURN ?(), REFS []}, `%%%`_tabletype(at, `[%..%]`_limits(`%`_u64(n), ?(`%`_u64(m))), rt))
+    -- if (|ref*{ref <- `ref*`}| = n)
+    -- (Ref_ok: `%|-%:%`(s, ref, rt))*{ref <- `ref*`}
+
+;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
+relation Funcinst_ok: `%|-%:%`(store, funcinst, deftype)
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
+  rule _{s : store, dt : deftype, moduleinst : moduleinst, func : func, C : context, dt' : deftype}:
+    `%|-%:%`(s, {TYPE dt, MODULE moduleinst, CODE (func : func <: funccode)}, dt)
+    -- Deftype_ok: `%|-%:OK`({TYPES [], RECS [], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [], RETURN ?(), REFS []}, dt)
+    -- Moduleinst_ok: `%|-%:%`(s, moduleinst, C)
+    -- Func_ok: `%|-%:%`(C, func, dt')
+    -- Deftype_sub: `%|-%<:%`(C, dt', dt)
+
+;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
+relation Structinst_ok: `%|-%:OK`(store, structinst)
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
+  rule _{s : store, dt : deftype, `fv*` : fieldval*, `mut?*` : mut?*, `zt*` : storagetype*}:
+    `%|-%:OK`(s, {TYPE dt, FIELDS fv*{fv <- `fv*`}})
+    -- Expand: `%~~%`(dt, STRUCT_comptype(`%`_list(`%%`_fieldtype(mut?{mut <- `mut?`}, zt)*{`mut?` <- `mut?*`, zt <- `zt*`})))
+    -- (Fieldval_ok: `%|-%:%`(s, fv, zt))*{fv <- `fv*`, zt <- `zt*`}
+
+;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
+relation Arrayinst_ok: `%|-%:OK`(store, arrayinst)
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
+  rule _{s : store, dt : deftype, `fv*` : fieldval*, `mut?` : mut?, zt : storagetype}:
+    `%|-%:OK`(s, {TYPE dt, FIELDS fv*{fv <- `fv*`}})
+    -- Expand: `%~~%`(dt, ARRAY_comptype(`%%`_fieldtype(mut?{mut <- `mut?`}, zt)))
+    -- (Fieldval_ok: `%|-%:%`(s, fv, zt))*{fv <- `fv*`}
+
+;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
+relation Exninst_ok: `%|-%:OK`(store, exninst)
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
+  rule _{s : store, ta : tagaddr, `val*` : val*, dt : deftype, `t*` : valtype*}:
+    `%|-%:OK`(s, {TAG ta, FIELDS val*{val <- `val*`}})
+    -- if ((dt : deftype <: typeuse) = s.TAGS_store[ta].TYPE_taginst)
+    -- Expand: `%~~%`(dt, `FUNC%->%`_comptype(`%`_resulttype(t*{t <- `t*`}), `%`_resulttype([])))
+    -- (Val_ok: `%|-%:%`(s, val, t))*{t <- `t*`, val <- `val*`}
+
+;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
+rec {
+
+;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:205.1-205.50
+relation ImmReachable: `%>>_%%`(fieldval, store, fieldval)
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:217.1-220.33
+  rule trans{fv_1 : fieldval, s : store, fv_2 : fieldval, fv' : fieldval}:
+    `%>>_%%`(fv_1, s, fv_2)
+    -- ImmReachable: `%>>_%%`(fv_1, s, fv')
+    -- ImmReachable: `%>>_%%`(fv', s, fv_2)
+
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:222.1-225.20
+  rule `ref.struct`{a : addr, s : store, i : nat, `ft*` : fieldtype*, zt : storagetype}:
+    `%>>_%%`(`REF.STRUCT_ADDR`_fieldval(a), s, s.STRUCTS_store[a].FIELDS_structinst[i])
+    -- Expand: `%~~%`(s.STRUCTS_store[a].TYPE_structinst, STRUCT_comptype(`%`_list(ft*{ft <- `ft*`})))
+    -- if (ft*{ft <- `ft*`}[i] = `%%`_fieldtype(?(), zt))
+
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:227.1-229.42
+  rule `ref.array`{a : addr, s : store, i : nat, zt : storagetype}:
+    `%>>_%%`(`REF.ARRAY_ADDR`_fieldval(a), s, s.ARRAYS_store[a].FIELDS_arrayinst[i])
+    -- Expand: `%~~%`(s.ARRAYS_store[a].TYPE_arrayinst, ARRAY_comptype(`%%`_fieldtype(?(), zt)))
+
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:231.1-232.44
+  rule `ref.exn`{a : addr, s : store, i : nat}:
+    `%>>_%%`(`REF.EXN_ADDR`_fieldval(a), s, (s.EXNS_store[a].FIELDS_exninst[i] : val <: fieldval))
+
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:234.1-235.28
+  rule `ref.extern`{ref : ref, s : store}:
+    `%>>_%%`(`REF.EXTERN`_fieldval(ref), s, (ref : ref <: fieldval))
+}
+
+;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
+def $NotImmReachable(fieldval : fieldval, store : store, fieldval : fieldval) : bool
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
+  def $NotImmReachable{fv_1 : fieldval, s : store, fv_2 : fieldval}(fv_1, s, fv_2) = false
+    -- ImmReachable: `%>>_%%`(fv_1, s, fv_2)
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
+  def $NotImmReachable{fv_1 : fieldval, s : store, fv_2 : fieldval}(fv_1, s, fv_2) = true
+    -- otherwise
+
+;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
+relation NotImmReachable: `~%>>_%%`(fieldval, store, fieldval)
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
+  rule _{fv_1 : fieldval, s : store, fv_2 : fieldval}:
+    `~%>>_%%`(fv_1, s, fv_2)
+    -- if $NotImmReachable(fv_1, s, fv_2)
+
+;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
+relation Store_ok: `|-%:OK`(store)
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
+  rule _{s : store, `taginst*` : taginst*, `tagtype*` : tagtype*, `globalinst*` : globalinst*, `globaltype*` : globaltype*, `meminst*` : meminst*, `memtype*` : memtype*, `tableinst*` : tableinst*, `tabletype*` : tabletype*, `deftype*` : deftype*, `funcinst*` : funcinst*, `datainst*` : datainst*, `datatype*` : datatype*, `eleminst*` : eleminst*, `elemtype*` : elemtype*, `structinst*` : structinst*, `arrayinst*` : arrayinst*, `exninst*` : exninst*}:
+    `|-%:OK`(s)
+    -- (Taginst_ok: `%|-%:%`(s, taginst, tagtype))*{taginst <- `taginst*`, tagtype <- `tagtype*`}
+    -- (Globalinst_ok: `%|-%:%`(s, globalinst, globaltype))*{globalinst <- `globalinst*`, globaltype <- `globaltype*`}
+    -- (Meminst_ok: `%|-%:%`(s, meminst, memtype))*{meminst <- `meminst*`, memtype <- `memtype*`}
+    -- (Tableinst_ok: `%|-%:%`(s, tableinst, tabletype))*{tableinst <- `tableinst*`, tabletype <- `tabletype*`}
+    -- (Funcinst_ok: `%|-%:%`(s, funcinst, deftype))*{deftype <- `deftype*`, funcinst <- `funcinst*`}
+    -- (Datainst_ok: `%|-%:%`(s, datainst, datatype))*{datainst <- `datainst*`, datatype <- `datatype*`}
+    -- (Eleminst_ok: `%|-%:%`(s, eleminst, elemtype))*{eleminst <- `eleminst*`, elemtype <- `elemtype*`}
+    -- (Structinst_ok: `%|-%:OK`(s, structinst))*{structinst <- `structinst*`}
+    -- (Arrayinst_ok: `%|-%:OK`(s, arrayinst))*{arrayinst <- `arrayinst*`}
+    -- (Exninst_ok: `%|-%:OK`(s, exninst))*{exninst <- `exninst*`}
+    -- (NotImmReachable: `~%>>_%%`(`REF.STRUCT_ADDR`_fieldval(a), s, `REF.STRUCT_ADDR`_fieldval(a)))^(a<|structinst*{structinst <- `structinst*`}|){}
+    -- (NotImmReachable: `~%>>_%%`(`REF.ARRAY_ADDR`_fieldval(a), s, `REF.ARRAY_ADDR`_fieldval(a)))^(a<|arrayinst*{arrayinst <- `arrayinst*`}|){}
+    -- (NotImmReachable: `~%>>_%%`(`REF.EXN_ADDR`_fieldval(a), s, `REF.EXN_ADDR`_fieldval(a)))^(a<|exninst*{exninst <- `exninst*`}|){}
+    -- if (s = {TAGS taginst*{taginst <- `taginst*`}, GLOBALS globalinst*{globalinst <- `globalinst*`}, MEMS meminst*{meminst <- `meminst*`}, TABLES tableinst*{tableinst <- `tableinst*`}, FUNCS funcinst*{funcinst <- `funcinst*`}, DATAS datainst*{datainst <- `datainst*`}, ELEMS eleminst*{eleminst <- `eleminst*`}, STRUCTS structinst*{structinst <- `structinst*`}, ARRAYS arrayinst*{arrayinst <- `arrayinst*`}, EXNS exninst*{exninst <- `exninst*`}})
+
+;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
+relation Extend_taginst: `%<=%`(taginst, taginst)
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
+  rule _{jt : tagtype}:
+    `%<=%`({TYPE jt}, {TYPE jt})
+
+;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
+relation Extend_globalinst: `%<=%`(globalinst, globalinst)
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
+  rule _{`mut?` : mut?, t : valtype, val : val, val' : val}:
+    `%<=%`({TYPE `%%`_globaltype(mut?{mut <- `mut?`}, t), VALUE val}, {TYPE `%%`_globaltype(mut?{mut <- `mut?`}, t), VALUE val'})
+    -- if ((mut?{mut <- `mut?`} = ?(MUT_mut)) \/ (val = val'))
+
+;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
+relation Extend_meminst: `%<=%`(meminst, meminst)
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
+  rule _{at : addrtype, n : n, m : m, `b*` : byte*, n' : n, `b'*` : byte*}:
+    `%<=%`({TYPE `%%PAGE`_memtype(at, `[%..%]`_limits(`%`_u64(n), ?(`%`_u64(m)))), BYTES b*{b <- `b*`}}, {TYPE `%%PAGE`_memtype(at, `[%..%]`_limits(`%`_u64(n'), ?(`%`_u64(m)))), BYTES b'*{b' <- `b'*`}})
+    -- if (n <= n')
+    -- if (|b*{b <- `b*`}| <= |b'*{b' <- `b'*`}|)
+
+;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
+relation Extend_tableinst: `%<=%`(tableinst, tableinst)
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
+  rule _{at : addrtype, n : n, m : m, rt : reftype, `ref*` : ref*, n' : n, `ref'*` : ref*}:
+    `%<=%`({TYPE `%%%`_tabletype(at, `[%..%]`_limits(`%`_u64(n), ?(`%`_u64(m))), rt), REFS ref*{ref <- `ref*`}}, {TYPE `%%%`_tabletype(at, `[%..%]`_limits(`%`_u64(n'), ?(`%`_u64(m))), rt), REFS ref'*{ref' <- `ref'*`}})
+    -- if (n <= n')
+    -- if (|ref*{ref <- `ref*`}| <= |ref'*{ref' <- `ref'*`}|)
+
+;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
+relation Extend_funcinst: `%<=%`(funcinst, funcinst)
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
+  rule _{dt : deftype, mm : moduleinst, fc : funccode}:
+    `%<=%`({TYPE dt, MODULE mm, CODE fc}, {TYPE dt, MODULE mm, CODE fc})
+
+;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
+relation Extend_datainst: `%<=%`(datainst, datainst)
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
+  rule _{`b*` : byte*, `b'*` : byte*}:
+    `%<=%`({BYTES b*{b <- `b*`}}, {BYTES b'*{b' <- `b'*`}})
+    -- if ((b*{b <- `b*`} = b'*{b' <- `b'*`}) \/ (b'*{b' <- `b'*`} = []))
+
+;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
+relation Extend_eleminst: `%<=%`(eleminst, eleminst)
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
+  rule _{rt : reftype, `ref*` : ref*, `ref'*` : ref*}:
+    `%<=%`({TYPE rt, REFS ref*{ref <- `ref*`}}, {TYPE rt, REFS ref'*{ref' <- `ref'*`}})
+    -- if ((ref*{ref <- `ref*`} = ref'*{ref' <- `ref'*`}) \/ (ref'*{ref' <- `ref'*`} = []))
+
+;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
+relation Extend_structinst: `%<=%`(structinst, structinst)
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
+  rule _{dt : deftype, `fv*` : fieldval*, `fv'*` : fieldval*, `mut?*` : mut?*, `zt*` : storagetype*}:
+    `%<=%`({TYPE dt, FIELDS fv*{fv <- `fv*`}}, {TYPE dt, FIELDS fv'*{fv' <- `fv'*`}})
+    -- Expand: `%~~%`(dt, STRUCT_comptype(`%`_list(`%%`_fieldtype(mut?{mut <- `mut?`}, zt)*{`mut?` <- `mut?*`, zt <- `zt*`})))
+    -- (if ((mut?{mut <- `mut?`} = ?(MUT_mut)) \/ (fv = fv')))*{fv <- `fv*`, fv' <- `fv'*`, `mut?` <- `mut?*`}
+
+;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
+relation Extend_arrayinst: `%<=%`(arrayinst, arrayinst)
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
+  rule _{dt : deftype, `fv*` : fieldval*, `fv'*` : fieldval*, `mut?` : mut?, zt : storagetype}:
+    `%<=%`({TYPE dt, FIELDS fv*{fv <- `fv*`}}, {TYPE dt, FIELDS fv'*{fv' <- `fv'*`}})
+    -- Expand: `%~~%`(dt, ARRAY_comptype(`%%`_fieldtype(mut?{mut <- `mut?`}, zt)))
+    -- (if ((mut?{mut <- `mut?`} = ?(MUT_mut)) \/ (fv = fv')))*{fv <- `fv*`, fv' <- `fv'*`}
+
+;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
+relation Extend_exninst: `%<=%`(exninst, exninst)
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
+  rule _{ta : tagaddr, `val*` : val*}:
+    `%<=%`({TAG ta, FIELDS val*{val <- `val*`}}, {TAG ta, FIELDS val*{val <- `val*`}})
+
+;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
+relation Extend_store: `%<=%`(store, store)
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
+  rule _{s : store, s' : store}:
+    `%<=%`(s, s')
+    -- (Extend_taginst: `%<=%`(s.TAGS_store[a], s'.TAGS_store[a]))^(a<|s.TAGS_store|){}
+    -- (Extend_globalinst: `%<=%`(s.GLOBALS_store[a], s'.GLOBALS_store[a]))^(a<|s.GLOBALS_store|){}
+    -- (Extend_meminst: `%<=%`(s.MEMS_store[a], s'.MEMS_store[a]))^(a<|s.MEMS_store|){}
+    -- (Extend_tableinst: `%<=%`(s.TABLES_store[a], s'.TABLES_store[a]))^(a<|s.TABLES_store|){}
+    -- (Extend_funcinst: `%<=%`(s.FUNCS_store[a], s'.FUNCS_store[a]))^(a<|s.FUNCS_store|){}
+    -- (Extend_datainst: `%<=%`(s.DATAS_store[a], s'.DATAS_store[a]))^(a<|s.DATAS_store|){}
+    -- (Extend_eleminst: `%<=%`(s.ELEMS_store[a], s'.ELEMS_store[a]))^(a<|s.ELEMS_store|){}
+    -- (Extend_structinst: `%<=%`(s.STRUCTS_store[a], s'.STRUCTS_store[a]))^(a<|s.STRUCTS_store|){}
+    -- (Extend_arrayinst: `%<=%`(s.ARRAYS_store[a], s'.ARRAYS_store[a]))^(a<|s.ARRAYS_store|){}
+    -- (Extend_exninst: `%<=%`(s.EXNS_store[a], s'.EXNS_store[a]))^(a<|s.EXNS_store|){}
+
+;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
+relation State_ok: `|-%:%`(state, context)
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
+  rule _{s : store, f : frame, C : context}:
+    `|-%:%`(`%;%`_state(s, f), C)
+    -- Store_ok: `|-%:OK`(s)
+    -- Frame_ok: `%|-%:%`(s, f, C)
+
+;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
+relation Config_ok: `|-%:OK`(config)
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
+  rule _{z : state, `instr*` : instr*, C : context, `t*` : valtype*}:
+    `|-%:OK`(`%;%`_config(z, instr*{instr <- `instr*`}))
+    -- State_ok: `|-%:%`(z, C)
+    -- Expr_ok: `%|-%:%`(C, instr*{instr <- `instr*`}, `%`_resulttype(t*{t <- `t*`}))
 
 ;; ../../../../specification/wasm-latest/X.1-notation.syntax.spectec
 syntax A = nat
