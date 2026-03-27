@@ -81,6 +81,7 @@ and exp' =
   | IterE of exp * iterexp                  (* exp iter *)
   | CvtE of exp * numtyp * numtyp           (* exp : typ1 <:> typ2 *)
   | SubE of exp * typ * typ                 (* exp : typ1 <: typ2 *)
+  | AnnE of exp * typ                       (* exp : typ *)
 
 and expfield = atom * exp                   (* atom exp *)
 

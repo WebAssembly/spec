@@ -136,6 +136,7 @@ and t_exp' n e : eqns * exp' =
   | CaseE (mixop, exp) -> t_e n exp (fun exp' -> CaseE (mixop, exp'))
   | CvtE (exp, a, b) -> t_e n exp (fun exp' -> CvtE (exp', a, b))
   | SubE (exp, a, b) -> t_e n exp (fun exp' -> SubE (exp', a, b))
+  | AnnE (exp, a) -> t_e n exp (fun exp' -> AnnE (exp', a))
 
   | BinE (bo, nto, exp1, exp2) -> t_ee n (exp1, exp2) (fun (e1', e2') -> BinE (bo, nto, e1', e2'))
   | CmpE (co, nto, exp1, exp2) -> t_ee n (exp1, exp2) (fun (e1', e2') -> CmpE (co, nto, e1', e2'))

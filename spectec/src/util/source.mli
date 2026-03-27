@@ -24,6 +24,7 @@ type 'a phrase = ('a, unit) note_phrase
 val ($) : 'a -> region -> 'a phrase
 val ($$) : 'a -> region * 'b -> ('a, 'b) note_phrase
 val (%) : region -> 'b -> region * 'b
+val ($>) : 'a -> ('a, 'b) note_phrase -> ('a, 'b) note_phrase 
 
 val it : ('a, 'b) note_phrase -> 'a
 val at : ('a, 'b) note_phrase -> region
@@ -33,3 +34,5 @@ val note : ('a, 'b) note_phrase -> 'b
 (* Utilities *)
 
 val map : ('a -> 'b) -> ('a, 'c) note_phrase -> ('b, 'c) note_phrase
+val map_note : ('a -> 'b) -> ('x, 'a) note_phrase -> ('x, 'b) note_phrase
+val erase_note : ('a, 'b) note_phrase -> 'a phrase

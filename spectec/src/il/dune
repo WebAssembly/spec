@@ -3,3 +3,5 @@
   (libraries util zarith xl el)
   (modules ast eq free fresh subst iter env eval print debug valid)
 )
+
+(env (dev (flags :standard -w -8-26-27-32-33-34)))

@@ -159,6 +159,7 @@ and string_of_exp e =
     "(" ^ string_of_exp e1 ^ " : " ^ string_of_numtyp nt1 ^ " <:> " ^ string_of_numtyp nt2 ^ ")"
   | SubE (e1, t1, t2) ->
     "(" ^ string_of_exp e1 ^ " : " ^ string_of_typ t1 ^ " <: " ^ string_of_typ t2 ^ ")"
+  | AnnE (e1, t1) -> "(" ^ string_of_exp e1 ^ " : " ^ string_of_typ t1 ^ ")"
   ) ^
   (if !print_notes then ")@[" ^ string_of_typ e.note ^ "]" else "")
 

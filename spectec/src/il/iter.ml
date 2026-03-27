@@ -174,6 +174,7 @@ and exp e =
   | IterE (e1, it) -> iterexp exp e1 it
   | CvtE (e1, nt1, nt2) -> exp e1; numtyp nt1; numtyp nt2
   | SubE (e1, t1, t2) -> exp e1; typ t1; typ t2
+  | AnnE (e1, t1) -> exp e1; typ t1
  
 and expfield (at, e) = atom at; exp e
 

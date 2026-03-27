@@ -79,6 +79,7 @@ let rec t_exp env e : prem list =
   | LiftE exp
   | CvtE (exp, _, _)
   | SubE (exp, _, _)
+  | AnnE (exp, _)
   -> t_exp env exp
   | BinE (_, _, exp1, exp2)
   | CmpE (_, _, exp1, exp2)

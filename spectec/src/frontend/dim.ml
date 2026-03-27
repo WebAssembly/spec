@@ -215,6 +215,9 @@ and check_exp dims ctx e =
     check_exp dims ctx e1;
     check_typ dims ctx t1;
     check_typ dims ctx t2
+  | AnnE (e1, t1) ->
+    check_exp dims ctx e1;
+    check_typ dims ctx t1
 
 and check_expfield dims ctx (_, e) =
   check_exp dims ctx e
@@ -575,6 +578,10 @@ and annot_exp side dims e : exp * occur =
       let t1', occur2 = annot_typ dims t1 in
       let t2', occur3 = annot_typ dims t2 in
       SubE (e1', t1', t2'), union occur1 (union occur2 occur3)
+    | AnnE (e1, t1) ->
+      let e1', occur1 = annot_exp side dims e1 in
+      let t1', occur2 = annot_typ dims t1 in
+      AnnE (e1', t1'), union occur1 occur2
   in {e with it}, occur
 
 and annot_expfield side dims (atom, e) : expfield * occur =

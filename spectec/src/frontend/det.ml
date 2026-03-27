@@ -46,7 +46,7 @@ and det_exp e =
   (* We consider arithmetic expressions determinate,
    * since we sometimes need to use invertible formulas. *)
   | CvtE (e1, _, _) | UnE (#Xl.Num.unop, _, e1) | TheE e1 | LiftE e1
-  | SubE (e1, _, _) -> det_exp e1
+  | SubE (e1, _, _) | AnnE (e1, _) -> det_exp e1
   | BinE (#Xl.Num.binop, _, e1, e2) | CatE (e1, e2) -> det_exp e1 ++ det_exp e2
   | OptE eo -> free_opt det_exp eo
   | ListE es | TupE es -> det_list det_exp es
@@ -123,7 +123,7 @@ and det_quant_exp e =
   | VarE x -> bound_varid x
   | BoolE _ | NumE _ | TextE _ -> empty
   | UnE (_, _, e1) | ProjE (e1, _) | TheE e1 | LiftE e1 | LenE e1
-  | CvtE (e1, _, _) | SubE (e1, _, _) ->
+  | CvtE (e1, _, _) | SubE (e1, _, _) | AnnE (e1, _) ->
     det_quant_exp e1
   | BinE (_, _, e1, e2) | CmpE (_, _, e1, e2)
   | IdxE (e1, e2) | MemE (e1, e2) | CatE (e1, e2) | CompE (e1, e2) ->

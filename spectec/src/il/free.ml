@@ -75,6 +75,7 @@ and free_exp e =
   | IterE (e1, ite) -> (free_exp e1 -- bound_iterexp ite) ++ free_iterexp ite
   | CvtE (e1, _nt1, _nt2) -> free_exp e1
   | SubE (e1, t1, t2) -> free_exp e1 ++ free_typ t1 ++ free_typ t2
+  | AnnE (e1, t1) -> free_exp e1 ++ free_typ t1
 
 and free_expfield (_, e) = free_exp e
 

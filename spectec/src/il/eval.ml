@@ -398,6 +398,7 @@ and reduce_exp env e : exp =
       {e1' with note = e.note}
     | _ -> SubE (e1', t1', t2') $> e
     )
+  | AnnE (e1, _) -> reduce_exp env e1
 
 and reduce_iter env = function
   | ListN (e, ido) -> ListN (reduce_exp env e, ido)
