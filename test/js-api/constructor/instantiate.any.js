@@ -150,3 +150,35 @@ promise_test(() => {
   buffer[0] = 1;
   return promise.then(assert_WebAssemblyInstantiatedSource);
 }, "Changing the buffer");
+
+promise_test(t => {
+  const originalThen = WebAssembly.Module.prototype.then;
+  const otherModule = new WebAssembly.Module(emptyModuleBinary);
+  t.add_cleanup(() => {
+    WebAssembly.Module.prototype.then = originalThen;
+  });
+  let thenCalledCount = 0;
+  WebAssembly.Module.prototype.then = function(resolve) {
+    thenCalledCount++;
+    WebAssembly.Module.prototype.then = originalThen;
+    resolve(otherModule);
+  };
+  return WebAssembly.instantiate(emptyModuleBinary).then(result => {
+    assert_equals(thenCalledCount, 1, "then was called exactly once");
+    assert_WebAssemblyInstantiatedSource(result);
+    assert_equals(result.module, otherModule, "The module from 'then' was used");
+  });
+}, "instantiate(bytes) with a thenable WebAssembly.Module returning a different Module");
+
+promise_test(t => {
+  const originalThen = WebAssembly.Module.prototype.then;
+  t.add_cleanup(() => {
+    if (originalThen === undefined) {
+      delete WebAssembly.Module.prototype.then;
+    } else {
+      WebAssembly.Module.prototype.then = originalThen;
+    }
+  });
+  WebAssembly.Module.prototype.then = (resolve) => resolve(17);
+  return promise_rejects_js(t, TypeError, WebAssembly.instantiate(emptyModuleBinary));
+}, "instantiate(bytes) with a thenable WebAssembly.Module returning a non-Module value");
