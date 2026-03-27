@@ -193,7 +193,7 @@ and valid_iterexp ?(side = `Rhs) env (it, xes) at : iter * Env.t =
     (fun (it', _) -> il_iter it')
   ) @@ fun _ ->
   let env' = valid_iter ~side env it in
-  if xes = [] && it <= List1 && side = `Rhs then error at "empty iteration";
+  if xes = [] && it <= List1 && side = `Rhs then error at "vacuous iteration";
   let it' = match it with Opt -> Opt | _ -> List in
   it',
   List.fold_left (fun env' (x, e) ->

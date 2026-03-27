@@ -48,7 +48,7 @@ $(GENOUTNAME)-%.tex: $(GENOUTNAME).tex
 
 $(GENOUTNAME)-%.pdf: $(GENOUTNAME)-%.tex $(EXE) $(GENINNAME)-%.tex
 	ln -f $(GENINNAME)-$*.tex $(GENINNAME).tex
-	pdflatex $<
+	pdflatex -halt-on-error -file-line-error $<
 	rm $(GENINNAME).tex
 
 test-test: $(TESTFILES:%.$(EXT)=test-%.pdf)
@@ -59,7 +59,7 @@ test-%.tex: %.$(EXT) $(EXE)
 test-%.pdf: test-%.tex $(GENOUTNAME).tex
 	ln -f $< $(GENINNAME).tex
 	ln -f $(GENOUTNAME).tex $<
-	pdflatex $<
+	pdflatex -halt-on-error -file-line-error $<
 	rm $(GENINNAME).tex $<
 
 
