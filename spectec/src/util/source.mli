@@ -34,5 +34,3 @@ val note : ('a, 'b) note_phrase -> 'b
 (* Utilities *)
 
 val map : ('a -> 'b) -> ('a, 'c) note_phrase -> ('b, 'c) note_phrase
-val map_note : ('a -> 'b) -> ('x, 'a) note_phrase -> ('x, 'b) note_phrase
-val erase_note : ('a, 'b) note_phrase -> 'a phrase

@@ -53,7 +53,3 @@ let note {note; _} = note
 (* Utilities *)
 
 let map f {it; at; note} = {it = f it; at; note}
-
-let map_note f {it; at; note} = {it; at; note = f note}
-
-let erase_note (x: ('a, 'b) note_phrase) = map_note (Fun.const ()) x
