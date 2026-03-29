@@ -315,7 +315,8 @@ and infer_exp (env : Env.t) e : typ =
     | [(op', (t, _, _), _)] when Eq.eq_mixop op op' -> t
     | _ -> error e.at "invalid case projection";
     )
-  | OptE _ -> error e.at "cannot infer type of option"
+  | OptE (Some e1) -> let t1 = infer_exp env e1 in IterT (t1, Opt) $ e1.at
+  | OptE None -> error e.at "cannot infer type of option"
   | TheE e1 -> as_iter_typ Opt "option" env Check (infer_exp env e1) e1.at
   | ListE es ->
     (match List.map (infer_exp env) es with
@@ -337,7 +338,7 @@ and infer_exp (env : Env.t) e : typ =
       t1
     else
       error e.at "cannot infer type of concatenation"
-  | CaseE _ -> e.note (* error e.at "cannot infer type of case constructor" *)
+  | CaseE _ -> error e.at "cannot infer type of case constructor"
   | CvtE (_, _, t2) -> NumT t2 $ e.at
   | SubE (_, _, t2) -> t2
   | AnnE (_, t1) -> t1
@@ -499,341 +500,6 @@ and valid_exp ?(side = `Rhs) env e t =
     equiv_typ env t2 t e.at;
     sub_typ env t1 t2 e.at
   | AnnE (e1, t1) -> valid_typ env t1; valid_exp ~side env e1 t1
-
-
-and elab_inf_exp (env : Env.t) (e : exp) : exp' * typ =
-  match e.it with
-  | VarE x -> e.it, Env.find_var env x
-  | BoolE _ -> e.it, BoolT $ e.at
-  | NumE n -> e.it, NumT (Num.to_typ n) $ e.at
-  | TextE _ -> e.it, TextT $ e.at
-  | UnE (op, ot, e1) ->
-    let t1, t' = infer_unop e.at op ot in
-    let e1' = elab_chk_exp env e1 (t1 $ e.at) in
-    UnE (op, ot, e1'), t' $ e.at
-  | BinE (op, ot, e1, e2) ->
-    let t1, t2, t' = infer_binop e.at op ot in
-    let e1' = elab_chk_exp env e1 (t1 $ e.at) in
-    let e2' = elab_chk_exp env e2 (t2 $ e.at) in
-    BinE (op, ot, e1', e2'), t' $ e.at
-  | CmpE (op, ot, e1, e2) ->
-    (match infer_cmpop e.at op ot with
-    | Some t ->
-      let e1' = elab_chk_exp env e1 (t $ e.at) in
-      let e2' = elab_chk_exp env e2 (t $ e.at) in
-      CmpE (op, ot, e1', e2'), BoolT $ e.at
-    | None -> (
-      try
-        let e1', t1 = elab_inf_exp env e1 in
-        let e2' = elab_chk_exp env e2 t1 in
-        CmpE (op, ot, e1' $$ e1.at % t1, e2'), BoolT $ e.at
-      with _ ->
-        let e2', t2 = elab_inf_exp env e2 in
-        let e1' = elab_chk_exp env e1 t2 in
-        CmpE (op, ot, e1', e2' $$ e2.at % t2), BoolT $ e.at
-      )
-    )
-  | MemE (e1, e2) -> (
-    try
-      (* Infer e2, check e1 *)
-      let e2', t2 = elab_inf_exp env e2 in
-      let t1 = as_list_typ "expression" env Check t2 e2.at in
-      let e1' = elab_chk_exp env e1 t1 in
-      valid_exp env e2 t2;  (* QUEST(zilinc): why check again? *)
-      MemE (e1', e2' $$ e2.at % t2), BoolT $ e.at
-    with _ ->
-      (* Infer e1, check e2 *)
-      let e1', t1 = elab_inf_exp env e1 in
-      let t2 = IterT (t1, List) $ e2.at in
-      let e2' = elab_chk_exp env e2 t2 in
-      MemE (e1' $$ e1.at % t1, e2'), BoolT $ e.at
-    )
-  | IdxE (e1, e2) ->
-    let e1', t1 = elab_inf_exp env e1 in
-    let t = as_list_typ "expression" env Infer t1 e1.at in
-    let e2' = elab_chk_exp env e2 (NumT `NatT $ e2.at) in
-    IdxE (e1' $$ e1.at % t1, e2'), t
-  | SliceE (e1, e2, e3) ->
-    let e1', t1 = elab_inf_exp env e1 in
-    let e2' = elab_chk_exp env e2 (NumT `NatT $ e.at) in
-    let e3' = elab_chk_exp env e3 (NumT `NatT $ e.at) in
-    SliceE (e1' $$ e1.at % t1, e2', e3'), t1
-  | UpdE (e1, p, e2) ->
-    let e1', t1 = elab_inf_exp env e1 in
-    let t2 = valid_path env p t1 in (* TODO(zilinc) *)
-    let e2' = elab_chk_exp env e2 t2 in
-    UpdE (e1' $$ e1.at % t1, p, e2'), t1
-  | ExtE (e1, p, e2) ->
-    let e1', t1 = elab_inf_exp env e1 in
-    let t2 = valid_path env p t1 in (* TODO(zilinc) *)
-    let _typ21 = as_list_typ "path" env Check t2 p.at in
-    let e2' = elab_chk_exp env e2 t2 in
-    ExtE (e1' $$ e1.at % t1, p, e2'), t1
-  | CompE (e1, e2) -> (
-    try
-      let e1', t1' = elab_inf_exp env e1 in
-      let e2' = elab_chk_exp env e2 t1' in
-      CompE (e1' $$ e1.at % t1', e2'), t1'
-    with _ ->
-      let e2', t2' = elab_inf_exp env e2 in
-      let e1' = elab_chk_exp env e1 t2' in
-      CompE (e1', e2' $$ e2.at % t2'), t2'
-    )
-  | StrE _ -> error e.at "cannot infer type of record"
-  | DotE (e1, atom) ->
-    let e1', t1 = elab_inf_exp env e1 in
-    let tfs = as_struct_typ "expression" env Infer t1 e1.at in
-    let t, _qs, _prems = find_field tfs atom e1.at in
-    DotE (e1' $$ e1.at % t1, atom), t
-  | TupE es ->
-    (* TODO(zilinc): what would be the inference rule for tuples? Do we infer non-dep
-       tuples, or doesn't infer at all?
-     *)
-    let es', xts = List.map (fun eI ->
-      let x = "_" $ eI.at in
-      let eI', t = elab_inf_exp env eI in
-      eI' $$ eI.at % t, (x, t)
-    ) es |> List.split in
-    TupE es', TupT xts $ e.at
-  | CallE (x, as_) ->
-    let ps, t, _ = Env.find_def env x in
-    let s = valid_args env as_ ps Subst.empty e.at in  (* TODO(zilinc) *)
-    CallE (x, as_), Subst.subst_typ s t
-  | IterE (e1, ite) ->
-    let it, env' = valid_iterexp env ite e.at in  (* TODO(zilinc) *)
-    let e1', t1 = elab_inf_exp env' e1 in
-    IterE (e1' $$ e1.at % t1, ite), IterT (t1, it) $ e.at
-  | ProjE (e1, i) ->
-    let e1', t1 = elab_inf_exp env e1 in
-    let xts = as_tup_typ "expression" env Infer t1 e1.at in
-    ProjE (e1' $$ e1.at % t1, i), proj_tup_typ i xts e1 e.at
-  | UncaseE (e1, op) ->
-    let e1', t1 = elab_inf_exp env e1 in
-    let t = (match as_variant_typ "expression" env Infer t1 e1.at with
-    | [(op', (t, _, _), _)] when Eq.eq_mixop op op' -> t
-    | _ -> error e.at "invalid case projection"
-    )
-    in
-    UncaseE (e1' $$ e1.at % t1, op), t
-  | OptE (Some e1) ->
-    let e1', t1 = elab_inf_exp env e1 in
-    OptE (Some (e1' $$ e1.at % t1)), IterT (t1, Opt) $ e.at
-  | OptE None -> error e.at "cannot infer type of option"
-  | TheE e1 ->
-    let e1', t1 = elab_inf_exp env e1 in
-    TheE (e1' $$ e1.at % t1), as_iter_typ Opt "option" env Check t1 e1.at
-  | ListE es ->
-    let es', t = (match List.map (elab_inf_exp env) es with
-    | [] -> error e.at "cannot infer type of list"
-    | (eI, tI) :: ets ->
-      if List.for_all (Eq.eq_typ tI) (List.map snd ets) then
-        eI :: List.map fst ets, tI
-      else
-        error e.at "cannot infer type of list"
-    )
-    in
-    ListE (List.map (fun (e', e) -> e' $$ e.at % t) (List.combine es' es)), IterT (t, List) $ e.at
-  | LiftE e1 ->
-    let e1', t1 = elab_inf_exp env e1 in
-    let t1' = as_iter_typ Opt "lifting" env Check t1 e1.at in
-    LiftE (e1' $$ e1.at % t1), IterT (t1', List) $ e.at
-  | LenE e1 ->
-    let e1', t1 = elab_inf_exp env e1 in
-    LenE (e1' $$ e1.at % t1), NumT `NatT $ e.at
-  | CatE (e1, e2) -> (
-    try
-      let e1', t1 = elab_inf_exp env e1 in
-      let e2' = elab_chk_exp env e2 t1 in
-      CatE (e1' $$ e1.at % t1, e2'), t1
-    with _ ->
-      let e2', t2 = elab_inf_exp env e2 in
-      let e1' = elab_chk_exp env e1 t2 in
-      CatE (e1', e2' $$ e2.at % t2), t2
-    )
-  | CaseE _ -> error e.at "cannot infer type of case constructor"
-  | CvtE (e1, nt1, nt2) ->
-    let e1' = elab_chk_exp env e1 (NumT nt1 $ e.at) in
-    CvtE (e1', nt1, nt2), NumT nt2 $ e.at
-  | SubE (e1, t1, t2) ->
-    let e1' = elab_chk_exp env e1 t1 in
-    SubE (e1', t1, t2), t2
-  | AnnE (e1, t1) ->
-    let e1' = elab_chk_exp env e1 t1 in
-    AnnE (e1', t1), t1
-
-and elab_chk_exp ?(side = `Rhs) env (e: exp) t : exp =
-  valid_typ env t;
-  (match e.it with
-  | VarE x when x.it = "_" && side = `Lhs -> VarE x
-  | VarE x ->
-    let t' = Env.find_var env x in
-    equiv_typ env t' t e.at;
-    VarE x
-  | BoolE _ | NumE _ | TextE _ ->
-    let e', t' = elab_inf_exp env e in
-    equiv_typ env t' t e.at;
-    e'
-  | UnE (op, nt, e1) ->
-    let t1, t' = infer_unop e.at op nt in
-    let e1' = elab_chk_exp ~side env e1 (t1 $ e.at) in
-    equiv_typ env (t' $ e.at) t e.at;
-    UnE (op, nt, e1')
-  | BinE ((`AddOp | `SubOp) as op, nt, e1, ({it = NumE (`Nat _); _} as e2))
-  | BinE ((`AddOp | `SubOp) as op, nt, ({it = NumE (`Nat _); _} as e1), e2) when side = `Lhs ->
-    let t1, t2, t' = infer_binop e.at op nt in
-    let e1' = elab_chk_exp ~side env e1 (t1 $ e.at) in
-    let e2' = elab_chk_exp ~side env e2 (t2 $ e.at) in
-    equiv_typ env (t' $ e.at) t e.at;
-    BinE (op, nt, e1', e2')
-  | BinE (op, nt, e1, e2) ->
-    let t1, t2, t' = infer_binop e.at op nt in
-    let e1' = elab_chk_exp env e1 (t1 $ e.at) in
-    let e2' = elab_chk_exp env e2 (t2 $ e.at) in
-    equiv_typ env (t' $ e.at) t e.at;
-    BinE (op, nt, e1', e2')
-  | CmpE (op, nt, e1, e2) ->
-    let t' =
-      match infer_cmpop e.at op nt with
-      | Some t' -> t' $ e.at
-      | None -> try elab_inf_exp env e1 |> snd with _ -> elab_inf_exp env e2 |> snd
-    in
-    let side' = if op = `EqOp then `Lhs else `Rhs in (* HACK *)
-    let e1' = elab_chk_exp ~side:side' env e1 t' in
-    let e2' = elab_chk_exp ~side:side' env e2 t' in
-    equiv_typ env (BoolT $ e.at) t e.at;
-    CmpE (op, nt, e1', e2')
-  | IdxE (e1, e2) ->
-    let e1' = elab_chk_exp env e1 (IterT (t, List) $ e1.at) in
-    let e2' = elab_chk_exp env e2 (NumT `NatT $ e2.at) in
-    IdxE (e1', e2')
-  | SliceE (e1, e2, e3) ->
-    let _typ' = as_list_typ "expression" env Check t e1.at in
-    let e1' = elab_chk_exp env e1 t in
-    let e2' = elab_chk_exp env e2 (NumT `NatT $ e2.at) in
-    let e3' = elab_chk_exp env e3 (NumT `NatT $ e3.at) in
-    SliceE (e1', e2', e3')
-  | UpdE (e1, p, e2) ->
-    let e1' = elab_chk_exp env e1 t in
-    let t2 = valid_path env p t in (* TODO(zilinc) *)
-    let e2' = elab_chk_exp env e2 t2 in
-    UpdE (e1', p, e2')
-  | ExtE (e1, p, e2) ->
-    let e1' = elab_chk_exp env e1 t in
-    let t2 = valid_path env p t in (* TODO(zilinc) *)
-    let _typ21 = as_list_typ "path" env Check t2 p.at in
-    let e2' = elab_chk_exp env e2 t2 in
-    ExtE (e1', p, e2')
-  | StrE efs ->
-    let tfs = as_struct_typ "record" env Check t e.at in
-    valid_list (valid_expfield ~side) env efs tfs e.at;
-    let efs' = efs in (* TODO(zilinc) *)
-    StrE efs'
-  | DotE (e1, atom) ->
-    let e1', t1 = elab_inf_exp env e1 in
-    valid_atom env atom;
-    let tfs = as_struct_typ "expression" env Check t1 e1.at in
-    let t', _qs, _prems = find_field tfs atom e1.at in
-    equiv_typ env t' t e.at;
-    DotE (e1' $$ e1.at % t1, atom)
-  | CompE (e1, e2) ->
-    let _ = as_comp_typ "expression" env Check t e.at in
-    let e1' = elab_chk_exp env e1 t in
-    let e2' = elab_chk_exp env e2 t in
-    CompE (e1', e2')
-  | MemE _ ->
-    equiv_typ env (BoolT $ e.at) t e.at;
-    elab_inf_exp env e |> fst
-  | LenE e1 ->
-    let e1', t1 = elab_inf_exp env e1 in
-    let _typ11 = as_list_typ "expression" env Infer t1 e1.at in
-    equiv_typ env (NumT `NatT $ e.at) t e.at;
-    LenE (e1' $$ e1.at % t1)
-  | TupE es ->
-    let xts = as_tup_typ "tuple" env Check t e.at in
-    let rec loop i es xts s =
-      match es, xts with
-      | [], [] -> []
-      | eI::es', (xI, tI)::xts' ->
-        let eI' = elab_chk_exp ~side env eI (Subst.subst_typ s tI) in
-        let s' = Subst.add_varid s xI eI in
-        eI' :: loop (i + 1) es' xts' s'
-      | _, _ ->
-        error e.at ("arity mismatch for tuple, expected " ^
-          string_of_int (i + List.length xts) ^ ", got " ^
-          string_of_int (i + List.length es));
-    in
-    TupE (loop 0 es xts Subst.empty)
-  | CallE (x, as_) ->
-    let ps, t', _ = Env.find_def env x in
-    let s = valid_args env as_ ps Subst.empty e.at in  (* TODO(zilinc) *)
-    equiv_typ env (Subst.subst_typ s t') t e.at;
-    CallE (x, as_)
-  | IterE (e1, ite) ->
-    let it, env' = valid_iterexp ~side env ite e.at in  (* TODO(zilinc) *)
-    let t1 = as_iter_typ it "iteration" env Check t e.at in
-    let e1' = elab_chk_exp ~side env' e1 t1 in
-    IterE (e1', ite)
-  | ProjE (e1, i) ->
-    let e1', t1 = elab_inf_exp env e1 in
-    let xts = as_tup_typ "expression" env Infer t1 e1.at in
-    equiv_typ env (proj_tup_typ i xts e1 e.at) t e.at;
-    ProjE (e1' $$ e1.at % t1, i)
-  | UncaseE (e1, op) ->
-    let e1', t1 = elab_inf_exp env e1 in
-    valid_mixop env op;
-    (match as_variant_typ "expression" env Infer t1 e1.at with
-    | [(op', (t', _, _), _)] when Eq.eq_mixop op op' ->
-      equiv_typ env t' t e.at
-    | _ -> error e.at "invalid case projection";
-    );
-    UncaseE (e1' $$ e1.at % t1, op)
-  | OptE eo ->
-    let t1 = as_iter_typ Opt "option" env Check t e.at in
-    let eo' = Option.map (fun e1 -> elab_chk_exp ~side env e1 t1) eo in
-    OptE eo'
-  | TheE e1 ->
-    TheE (elab_chk_exp ~side env e1 (IterT (t, Opt) $ e1.at))
-  | ListE es ->
-    let t1 = as_iter_typ List "list" env Check t e.at in
-    ListE (List.map (fun eI -> elab_chk_exp ~side env eI t1) es)
-  | LiftE e1 ->
-    let t1 = as_iter_typ List "lifting" env Check t e.at in
-    LiftE (elab_chk_exp ~side env e1 (IterT (t1, Opt) $ e1.at))
-  | CatE (e1, ({it = ListE _ | CatE ({it = ListE _; _}, _); _} as e2))
-  | CatE (({it = ListE _ | CatE ({it = ListE _; _}, _); _} as e1), e2) when side = `Lhs ->
-    let _typ1 = as_iter_typ List "list" env Check t e.at in
-    let e1' = elab_chk_exp ~side env e1 t in
-    let e2' = elab_chk_exp ~side env e2 t in
-    CatE (e1', e2')
-  | CatE (e1, e2) ->
-    let _typ1 = as_iter_typ List "list" env Check t e.at in
-    let e1' = elab_chk_exp env e1 t in
-    let e2' = elab_chk_exp env e2 t in
-    CatE (e1', e2')
-  | CaseE (op, e1) ->
-    let cases = as_variant_typ "case" env Check t e.at in
-    let t1, _qs, _prems = find_case cases op e1.at in
-    valid_mixop env op;
-    let e1' = elab_chk_exp ~side env e1 t1 in
-    CaseE (op, e1')
-  | CvtE (e1, nt1, nt2) ->
-    let e1' = elab_chk_exp ~side env e1 (NumT nt1 $ e1.at) in
-    equiv_typ env (NumT nt2 $e.at) t e.at;
-    CvtE (e1', nt1, nt2)
-  | SubE (e1, t1, t2) ->
-    valid_typ env t1;
-    valid_typ env t2;
-    let e1' = elab_chk_exp ~side env e1 t1 in
-    equiv_typ env t2 t e.at;
-    sub_typ env t1 t2 e.at;
-    SubE (e1', t1, t2)
-  | AnnE (e1, t1) ->
-    valid_typ env t1;
-    equiv_typ env t1 t e.at;
-    let e1' = elab_chk_exp ~side env e1 t1 in
-    AnnE (e1', t1)
-  ) $$ e.at % t
-
 
 and valid_expmix ?(side = `Rhs) env mixop e (mixop', t) at =
   if not (Eq.eq_mixop mixop mixop') then
@@ -1124,3 +790,527 @@ let rec valid_def env d : Env.t =
 
 let valid ds =
   ignore (valid_binders valid_def Env.empty ds)
+
+
+(* Elaboration *)
+
+let elab_list elab_x_y env xs ys at =
+  if List.length xs <> List.length ys then
+    error at ("arity mismatch for expression list, expected " ^
+      string_of_int (List.length ys) ^ ", got " ^ string_of_int (List.length xs));
+  List.map2 (elab_x_y env) xs ys
+
+let rec elab_binders elab_f env (xs: 'a list) : 'a list * Env.t =
+  match xs with
+  | [] -> [], env
+  | x::xs -> let x', env' = elab_f env x in 
+             let xs', env'' = elab_binders elab_f env' xs in
+             x'::xs', env''
+
+let rec elab_inf_exp (env : Env.t) (e : exp) : exp' * typ =
+  match e.it with
+  | VarE x -> e.it, Env.find_var env x
+  | BoolE _ -> e.it, BoolT $ e.at
+  | NumE n -> e.it, NumT (Num.to_typ n) $ e.at
+  | TextE _ -> e.it, TextT $ e.at
+  | UnE (op, ot, e1) ->
+    let t1, t' = infer_unop e.at op ot in
+    let e1' = elab_chk_exp env e1 (t1 $ e.at) in
+    UnE (op, ot, e1'), t' $ e.at
+  | BinE (op, ot, e1, e2) ->
+    let t1, t2, t' = infer_binop e.at op ot in
+    let e1' = elab_chk_exp env e1 (t1 $ e.at) in
+    let e2' = elab_chk_exp env e2 (t2 $ e.at) in
+    BinE (op, ot, e1', e2'), t' $ e.at
+  | CmpE (op, ot, e1, e2) ->
+    (match infer_cmpop e.at op ot with
+    | Some t ->
+      let e1' = elab_chk_exp env e1 (t $ e.at) in
+      let e2' = elab_chk_exp env e2 (t $ e.at) in
+      CmpE (op, ot, e1', e2'), BoolT $ e.at
+    | None -> (
+      try
+        let e1', t1 = elab_inf_exp env e1 in
+        let e2' = elab_chk_exp env e2 t1 in
+        CmpE (op, ot, e1' $$ e1.at % t1, e2'), BoolT $ e.at
+      with _ ->
+        let e2', t2 = elab_inf_exp env e2 in
+        let e1' = elab_chk_exp env e1 t2 in
+        CmpE (op, ot, e1', e2' $$ e2.at % t2), BoolT $ e.at
+      )
+    )
+  | MemE (e1, e2) -> (
+    try
+      (* Infer e2, check e1 *)
+      let e2', t2 = elab_inf_exp env e2 in
+      let t1 = as_list_typ "expression" env Check t2 e2.at in
+      let e1' = elab_chk_exp env e1 t1 in
+      MemE (e1', e2' $$ e2.at % t2), BoolT $ e.at
+    with _ ->
+      (* Infer e1, check e2 *)
+      let e1', t1 = elab_inf_exp env e1 in
+      let t2 = IterT (t1, List) $ e2.at in
+      let e2' = elab_chk_exp env e2 t2 in
+      MemE (e1' $$ e1.at % t1, e2'), BoolT $ e.at
+    )
+  | IdxE (e1, e2) ->
+    let e1', t1 = elab_inf_exp env e1 in
+    let t = as_list_typ "expression" env Infer t1 e1.at in
+    let e2' = elab_chk_exp env e2 (NumT `NatT $ e2.at) in
+    IdxE (e1' $$ e1.at % t1, e2'), t
+  | SliceE (e1, e2, e3) ->
+    let e1', t1 = elab_inf_exp env e1 in
+    let e2' = elab_chk_exp env e2 (NumT `NatT $ e.at) in
+    let e3' = elab_chk_exp env e3 (NumT `NatT $ e.at) in
+    SliceE (e1' $$ e1.at % t1, e2', e3'), t1
+  | UpdE (e1, p, e2) ->
+    let e1', t1 = elab_inf_exp env e1 in
+    let p', t2 = elab_path env p t1 in
+    let e2' = elab_chk_exp env e2 t2 in
+    UpdE (e1' $$ e1.at % t1, p' $$ p.at % t2, e2'), t1
+  | ExtE (e1, p, e2) ->
+    let e1', t1 = elab_inf_exp env e1 in
+    let p', t2 = elab_path env p t1 in
+    let _typ21 = as_list_typ "path" env Check t2 p.at in
+    let e2' = elab_chk_exp env e2 t2 in
+    ExtE (e1' $$ e1.at % t1, p' $$ p.at % t2, e2'), t1
+  | CompE (e1, e2) -> (
+    try
+      let e1', t1' = elab_inf_exp env e1 in
+      let e2' = elab_chk_exp env e2 t1' in
+      CompE (e1' $$ e1.at % t1', e2'), t1'
+    with _ ->
+      let e2', t2' = elab_inf_exp env e2 in
+      let e1' = elab_chk_exp env e1 t2' in
+      CompE (e1', e2' $$ e2.at % t2'), t2'
+    )
+  | StrE _ -> error e.at "cannot infer type of record"
+  | DotE (e1, atom) ->
+    let e1', t1 = elab_inf_exp env e1 in
+    let tfs = as_struct_typ "expression" env Infer t1 e1.at in
+    let t, _qs, _prems = find_field tfs atom e1.at in
+    DotE (e1' $$ e1.at % t1, atom), t
+  | TupE es ->
+    (* TODO(zilinc): what would be the inference rule for tuples? Do we infer non-dep
+       tuples, or does it fail to infer?
+     *)
+    let es', xts = List.map (fun eI ->
+      let x = "_" $ eI.at in
+      let eI', t = elab_inf_exp env eI in
+      eI' $$ eI.at % t, (x, t)
+    ) es |> List.split in
+    TupE es', TupT xts $ e.at
+  | CallE (x, as_) ->
+    let ps, t, _ = Env.find_def env x in
+    let as', s = elab_args env as_ ps Subst.empty e.at in
+    CallE (x, as'), Subst.subst_typ s t
+  | IterE (e1, ite) ->
+    let (it, _) as ite', env' = elab_iterexp env ite e.at in
+    let e1', t1 = elab_inf_exp env' e1 in
+    IterE (e1' $$ e1.at % t1, ite'), IterT (t1, it) $ e.at
+  | ProjE (e1, i) ->
+    let e1', t1 = elab_inf_exp env e1 in
+    let xts = as_tup_typ "expression" env Infer t1 e1.at in
+    ProjE (e1' $$ e1.at % t1, i), proj_tup_typ i xts e1 e.at
+  | UncaseE (e1, op) ->
+    let e1', t1 = elab_inf_exp env e1 in
+    let t = (match as_variant_typ "expression" env Infer t1 e1.at with
+    | [(op', (t, _, _), _)] when Eq.eq_mixop op op' -> t
+    | _ -> error e.at "invalid case projection"
+    )
+    in
+    UncaseE (e1' $$ e1.at % t1, op), t
+  | OptE (Some e1) ->
+    let e1', t1 = elab_inf_exp env e1 in
+    OptE (Some (e1' $$ e1.at % t1)), IterT (t1, Opt) $ e.at
+  | OptE None -> error e.at "cannot infer type of option"
+  | TheE e1 ->
+    let e1', t1 = elab_inf_exp env e1 in
+    TheE (e1' $$ e1.at % t1), as_iter_typ Opt "option" env Check t1 e1.at
+  | ListE es ->
+    let es', t = (match List.map (elab_inf_exp env) es with
+    | [] -> error e.at "cannot infer type of list"
+    | (eI, tI) :: ets ->
+      if List.for_all (Eq.eq_typ tI) (List.map snd ets) then
+        eI :: List.map fst ets, tI
+      else
+        error e.at "cannot infer type of list"
+    )
+    in
+    ListE (List.map (fun (e', e) -> e' $$ e.at % t) (List.combine es' es)), IterT (t, List) $ e.at
+  | LiftE e1 ->
+    let e1', t1 = elab_inf_exp env e1 in
+    let t1' = as_iter_typ Opt "lifting" env Check t1 e1.at in
+    LiftE (e1' $$ e1.at % t1), IterT (t1', List) $ e.at
+  | LenE e1 ->
+    let e1', t1 = elab_inf_exp env e1 in
+    LenE (e1' $$ e1.at % t1), NumT `NatT $ e.at
+  | CatE (e1, e2) -> (
+    try
+      let e1', t1 = elab_inf_exp env e1 in
+      let e2' = elab_chk_exp env e2 t1 in
+      CatE (e1' $$ e1.at % t1, e2'), t1
+    with _ ->
+      let e2', t2 = elab_inf_exp env e2 in
+      let e1' = elab_chk_exp env e1 t2 in
+      CatE (e1', e2' $$ e2.at % t2), t2
+    )
+  | CaseE _ -> error e.at "cannot infer type of case constructor"
+  | CvtE (e1, nt1, nt2) ->
+    let e1' = elab_chk_exp env e1 (NumT nt1 $ e.at) in
+    CvtE (e1', nt1, nt2), NumT nt2 $ e.at
+  | SubE (e1, t1, t2) ->
+    let e1' = elab_chk_exp env e1 t1 in
+    SubE (e1', t1, t2), t2
+  | AnnE (e1, t1) ->
+    let e1' = elab_chk_exp env e1 t1 in
+    AnnE (e1', t1), t1
+
+and elab_chk_exp ?(side = `Rhs) env (e: exp) t : exp =
+  valid_typ env t;
+  (match e.it with
+  | VarE x when x.it = "_" && side = `Lhs -> VarE x
+  | VarE x ->
+    let t' = Env.find_var env x in
+    equiv_typ env t' t e.at;
+    VarE x
+  | BoolE _ | NumE _ | TextE _ ->
+    let e', t' = elab_inf_exp env e in
+    equiv_typ env t' t e.at;
+    e'
+  | UnE (op, nt, e1) ->
+    let t1, t' = infer_unop e.at op nt in
+    let e1' = elab_chk_exp ~side env e1 (t1 $ e.at) in
+    equiv_typ env (t' $ e.at) t e.at;
+    UnE (op, nt, e1')
+  | BinE ((`AddOp | `SubOp) as op, nt, e1, ({it = NumE (`Nat _); _} as e2))
+  | BinE ((`AddOp | `SubOp) as op, nt, ({it = NumE (`Nat _); _} as e1), e2) when side = `Lhs ->
+    let t1, t2, t' = infer_binop e.at op nt in
+    let e1' = elab_chk_exp ~side env e1 (t1 $ e.at) in
+    let e2' = elab_chk_exp ~side env e2 (t2 $ e.at) in
+    equiv_typ env (t' $ e.at) t e.at;
+    BinE (op, nt, e1', e2')
+  | BinE (op, nt, e1, e2) ->
+    let t1, t2, t' = infer_binop e.at op nt in
+    let e1' = elab_chk_exp env e1 (t1 $ e.at) in
+    let e2' = elab_chk_exp env e2 (t2 $ e.at) in
+    equiv_typ env (t' $ e.at) t e.at;
+    BinE (op, nt, e1', e2')
+  | CmpE (op, nt, e1, e2) ->
+    let t' =
+      match infer_cmpop e.at op nt with
+      | Some t' -> t' $ e.at
+      | None -> try elab_inf_exp env e1 |> snd with _ -> elab_inf_exp env e2 |> snd
+    in
+    let side' = if op = `EqOp then `Lhs else `Rhs in  (* HACK *)
+    let e1' = elab_chk_exp ~side:side' env e1 t' in
+    let e2' = elab_chk_exp ~side:side' env e2 t' in
+    equiv_typ env (BoolT $ e.at) t e.at;
+    CmpE (op, nt, e1', e2')
+  | IdxE (e1, e2) ->
+    let e1' = elab_chk_exp env e1 (IterT (t, List) $ e1.at) in
+    let e2' = elab_chk_exp env e2 (NumT `NatT $ e2.at) in
+    IdxE (e1', e2')
+  | SliceE (e1, e2, e3) ->
+    let _typ' = as_list_typ "expression" env Check t e1.at in
+    let e1' = elab_chk_exp env e1 t in
+    let e2' = elab_chk_exp env e2 (NumT `NatT $ e2.at) in
+    let e3' = elab_chk_exp env e3 (NumT `NatT $ e3.at) in
+    SliceE (e1', e2', e3')
+  | UpdE (e1, p, e2) ->
+    let e1' = elab_chk_exp env e1 t in
+    let p', t2 = elab_path env p t in
+    let e2' = elab_chk_exp env e2 t2 in
+    UpdE (e1', p' $$ p.at % t2, e2')
+  | ExtE (e1, p, e2) ->
+    let e1' = elab_chk_exp env e1 t in
+    let p', t2 = elab_path env p t in
+    let _typ21 = as_list_typ "path" env Check t2 p.at in
+    let e2' = elab_chk_exp env e2 t2 in
+    ExtE (e1', p' $$ p.at % t2, e2')
+  | StrE efs ->
+    let tfs = as_struct_typ "record" env Check t e.at in
+    let efs' = elab_list (elab_expfield ~side) env efs tfs e.at in
+    StrE efs'
+  | DotE (e1, atom) ->
+    let e1', t1 = elab_inf_exp env e1 in
+    valid_atom env atom;
+    let tfs = as_struct_typ "expression" env Check t1 e1.at in
+    let t', _qs, _prems = find_field tfs atom e1.at in
+    equiv_typ env t' t e.at;
+    DotE (e1' $$ e1.at % t1, atom)
+  | CompE (e1, e2) ->
+    let _ = as_comp_typ "expression" env Check t e.at in
+    let e1' = elab_chk_exp env e1 t in
+    let e2' = elab_chk_exp env e2 t in
+    CompE (e1', e2')
+  | MemE _ ->
+    equiv_typ env (BoolT $ e.at) t e.at;
+    elab_inf_exp env e |> fst
+  | LenE e1 ->
+    let e1', t1 = elab_inf_exp env e1 in
+    let _typ11 = as_list_typ "expression" env Infer t1 e1.at in
+    equiv_typ env (NumT `NatT $ e.at) t e.at;
+    LenE (e1' $$ e1.at % t1)
+  | TupE es ->
+    let xts = as_tup_typ "tuple" env Check t e.at in
+    let rec loop i es xts s =
+      match es, xts with
+      | [], [] -> []
+      | eI::es', (xI, tI)::xts' ->
+        let eI' = elab_chk_exp ~side env eI (Subst.subst_typ s tI) in
+        let s' = Subst.add_varid s xI eI in
+        eI' :: loop (i + 1) es' xts' s'
+      | _, _ ->
+        error e.at ("arity mismatch for tuple, expected " ^
+          string_of_int (i + List.length xts) ^ ", got " ^
+          string_of_int (i + List.length es));
+    in
+    TupE (loop 0 es xts Subst.empty)
+  | CallE (x, as_) ->
+    let ps, t', _ = Env.find_def env x in
+    let as', s = elab_args env as_ ps Subst.empty e.at in
+    equiv_typ env (Subst.subst_typ s t') t e.at;
+    CallE (x, as')
+  | IterE (e1, ite) ->
+    let (it, xes) as ite', env' = elab_iterexp ~side env ite e.at in
+    let t1 = as_iter_typ it "iteration" env Check t e.at in
+    let e1' = elab_chk_exp ~side env' e1 t1 in
+    IterE (e1', ite')
+  | ProjE (e1, i) ->
+    let e1', t1 = elab_inf_exp env e1 in
+    let xts = as_tup_typ "expression" env Infer t1 e1.at in
+    equiv_typ env (proj_tup_typ i xts e1 e.at) t e.at;
+    ProjE (e1' $$ e1.at % t1, i)
+  | UncaseE (e1, op) ->
+    let e1', t1 = elab_inf_exp env e1 in
+    valid_mixop env op;
+    (match as_variant_typ "expression" env Infer t1 e1.at with
+    | [(op', (t', _, _), _)] when Eq.eq_mixop op op' ->
+      equiv_typ env t' t e.at
+    | _ -> error e.at "invalid case projection";
+    );
+    UncaseE (e1' $$ e1.at % t1, op)
+  | OptE eo ->
+    let t1 = as_iter_typ Opt "option" env Check t e.at in
+    let eo' = Option.map (fun e1 -> elab_chk_exp ~side env e1 t1) eo in
+    OptE eo'
+  | TheE e1 ->
+    TheE (elab_chk_exp ~side env e1 (IterT (t, Opt) $ e1.at))
+  | ListE es ->
+    let t1 = as_iter_typ List "list" env Check t e.at in
+    ListE (List.map (fun eI -> elab_chk_exp ~side env eI t1) es)
+  | LiftE e1 ->
+    let t1 = as_iter_typ List "lifting" env Check t e.at in
+    LiftE (elab_chk_exp ~side env e1 (IterT (t1, Opt) $ e1.at))
+  | CatE (e1, ({it = ListE _ | CatE ({it = ListE _; _}, _); _} as e2))
+  | CatE (({it = ListE _ | CatE ({it = ListE _; _}, _); _} as e1), e2) when side = `Lhs ->
+    let _typ1 = as_iter_typ List "list" env Check t e.at in
+    let e1' = elab_chk_exp ~side env e1 t in
+    let e2' = elab_chk_exp ~side env e2 t in
+    CatE (e1', e2')
+  | CatE (e1, e2) ->
+    let _typ1 = as_iter_typ List "list" env Check t e.at in
+    let e1' = elab_chk_exp env e1 t in
+    let e2' = elab_chk_exp env e2 t in
+    CatE (e1', e2')
+  | CaseE (op, e1) ->
+    let cases = as_variant_typ "case" env Check t e.at in
+    let t1, _qs, _prems = find_case cases op e1.at in
+    valid_mixop env op;
+    let e1' = elab_chk_exp ~side env e1 t1 in
+    CaseE (op, e1')
+  | CvtE (e1, nt1, nt2) ->
+    let e1' = elab_chk_exp ~side env e1 (NumT nt1 $ e1.at) in
+    equiv_typ env (NumT nt2 $e.at) t e.at;
+    CvtE (e1', nt1, nt2)
+  | SubE (e1, t1, t2) ->
+    valid_typ env t1;
+    valid_typ env t2;
+    let e1' = elab_chk_exp ~side env e1 t1 in
+    equiv_typ env t2 t e.at;
+    sub_typ env t1 t2 e.at;
+    SubE (e1', t1, t2)
+  | AnnE (e1, t1) ->
+    valid_typ env t1;
+    equiv_typ env t1 t e.at;
+    let e1' = elab_chk_exp ~side env e1 t1 in
+    AnnE (e1', t1)
+  ) $$ e.at % t
+
+and elab_expmix ?(side = `Rhs) env mixop e (mixop', t) at : exp =
+  if not (Eq.eq_mixop mixop mixop') then
+    error at (
+      "mixin notation `" ^ string_of_mixop mixop ^
+      "` does not match expected notation `" ^ string_of_mixop mixop' ^ "`"
+    );
+  valid_mixop env mixop;
+  elab_chk_exp ~side env e t
+
+and elab_iterexp ?(side = `Rhs) env (it, xes) at : iterexp * Env.t =
+  let env' = valid_iter ~side env it in
+  if xes = [] && it <= List1 && side = `Rhs then error at "empty iteration";
+  let it' = match it with Opt -> Opt | _ -> List in
+  let xes', env' = elab_binders (fun env' (x, e) ->
+    let e', t = elab_inf_exp env e in
+    let t1 = as_iter_typ it' "iterator" env Check t e.at in
+    (x, e' $$ e.at % t), Env.bind_var env' x t1
+  ) env' xes
+  in
+  (it', xes'), env'
+
+and elab_arg env a p s : arg * Subst.t =
+  match a.it, (Subst.subst_param s p).it with
+  | ExpA e, ExpP (x, t) ->
+    let e' = elab_chk_exp ~side:`Lhs env e t in
+    let s = Subst.add_varid s x e' in
+    ExpA e' $ a.at, s
+  | TypA t, TypP x -> valid_typ env t; a, Subst.add_typid s x t
+  | DefA x', DefP (x, ps, t) ->
+    let ps', t', _ = Env.find_def env x' in
+    if not (Eval.equiv_functyp env (ps', t') (ps, t)) then
+      error a.at "type mismatch in function argument";
+    a, Subst.add_defid s x x'
+  | GramA g, GramP (x, [], t) ->
+    let t' = valid_sym env g in
+    equiv_typ env t' t a.at;
+    a, Subst.add_gramid s x g
+  | GramA ({it = VarG (x', as'); _} as g), GramP (x, ps, t) ->
+    let ps', t', _ = Env.find_gram env x' in
+    if as' <> [] || not (Eval.equiv_functyp env (ps', t') (ps, t)) then
+      error a.at "type mismatch in grammar argument";
+    a, Subst.add_gramid s x g
+  | _, _ ->
+    error a.at ("sort mismatch for argument, expected `" ^
+      Print.string_of_param p ^ "`, got `" ^ Print.string_of_arg a ^ "`")
+
+and elab_args env as_ ps s at : arg list * Subst.t =
+  match as_, ps with
+  | [], [] -> [], s
+  | a::_, [] -> error a.at "too many arguments"
+  | [], _::_ -> error at "too few arguments"
+  | a::as', p::ps' ->
+    let a', s' = elab_arg env a p s in
+    let as', s'' = elab_args env as' ps' s' at in
+    a'::as', s''
+
+and elab_path env p t : path' * typ =
+  valid_typ env t;
+  match p.it with
+  | RootP -> RootP, t
+  | IdxP (p1, e1) ->
+    let p1', t1 = elab_path env p1 t in
+    let e1' = elab_chk_exp env e1 (NumT `NatT $ e1.at) in
+    IdxP (p1' $$ p1.at % t1, e1'), as_list_typ "path" env Check t1 p1.at
+  | SliceP (p1, e1, e2) ->
+    let p1', t1 = elab_path env p1 t in
+    let e1' = elab_chk_exp env e1 (NumT `NatT $ e1.at) in
+    let e2' = elab_chk_exp env e2 (NumT `NatT $ e2.at) in
+    let _ = as_list_typ "path" env Check t1 p1.at in
+    SliceP (p1' $$ p1.at % t1, e1', e2'), t1
+  | DotP (p1, atom) ->
+    let p1', t1 = elab_path env p1 t in
+    valid_atom env atom;
+    let tfs = as_struct_typ "path" env Check t1 p1.at in
+    let t, _qs, _prems = find_field tfs atom p1.at in
+    DotP (p1' $$ p1.at % t1, atom), t
+
+and elab_expfield ~side env (atom1, e) (atom2, (t, _qs, _prems), _) : expfield =
+  if not (Eq.eq_atom atom1 atom2) then error e.at "unexpected record field";
+  valid_atom env atom1;
+  let e' = elab_chk_exp ~side env e t in
+  (atom1, e')
+
+and elab_prem env prem : prem =
+  match prem.it with
+  | RulePr (x, as_, mixop, e) ->
+    let ps, mixop', t, _rules = Env.find_rel env x in
+    assert (Mixop.eq mixop mixop');
+    let s = valid_args env as_ ps Subst.empty prem.at in
+    let e' = elab_expmix env mixop e (mixop, Subst.subst_typ s t) e.at in
+    RulePr (x, as_, mixop, e') $ prem.at
+  | IfPr e ->
+    let e' = elab_chk_exp env e (BoolT $ e.at) in
+    IfPr e' $ prem.at
+  | LetPr (e1, e2, xs) ->
+    let prem' =
+      (try
+        let e1', t1 = elab_inf_exp env e1 in
+        let e2' = elab_chk_exp ~side:`Rhs env e2 t1 in
+        LetPr (e1' $$ e1.at % t1, e2', xs) $ prem.at
+      with _ ->
+        let e2', t2 = elab_inf_exp env e2 in
+        let e1' = elab_chk_exp ~side:`Lhs env e1 t2 in
+        LetPr (e1', e2' $$ e2.at % t2, xs) $ prem.at
+      ) in
+    let target_ids = Free.{empty with varid = Set.of_list xs} in
+    let free_ids = Free.(free_exp e1) in
+    if not (Free.subset target_ids free_ids) then
+      error prem.at ("target identifier(s) " ^
+        ( Free.Set.elements (Free.diff target_ids free_ids).varid |>
+          List.map (fun x -> "`" ^ x ^ "`") |>
+          String.concat ", " ) ^
+        " do not occur in left-hand side expression");
+    prem'
+  | ElsePr -> prem
+  | IterPr (prem', ite) ->
+    let ite', env' = elab_iterexp env ite prem.at in
+    let prem'' = elab_prem env' prem' in
+    IterPr (prem'', ite') $ prem.at
+
+and elab_rule env mixop t rule : rule =
+  let RuleD (x, qs, mixop', e, prems) = rule.it in
+  let env' = valid_quants env qs in
+  let e' = elab_expmix ~side:`Lhs env' mixop' e (mixop, t) e.at in
+  let prems' = List.map (elab_prem env') prems in
+  RuleD (x, qs, mixop', e', prems') $ rule.at
+
+and elab_clause env x ps t clause : clause =
+  let DefD (qs, as_, e, prems) = clause.it in
+  let env' = valid_quants env qs in
+  let as', s = elab_args env' as_ ps Subst.empty clause.at in
+  let e' = elab_chk_exp env' e (Subst.subst_typ s t) in
+  let prems' = List.map (elab_prem env') prems in
+  DefD (qs, as', e', prems') $ clause.at
+
+let rec elab_def env d : def * Env.t =
+  match d.it with
+  | TypD (x, ps, insts) ->
+    let env' = valid_params env ps in
+    List.iter (valid_inst env' ps) insts;  (* TODO(zilinc) *)
+    d, Env.bind_typ env x (ps, insts)
+  | RelD (x, ps, mixop, t, rules) ->
+    let env' = valid_params env ps in
+    valid_typcase env' (mixop, (t, [], []), []);
+    let rules' = List.map (elab_rule env' mixop t) rules in
+    let env' = Env.bind_rel env x (ps, mixop, t, rules') in
+    RelD (x, ps, mixop, t, rules') $ d.at, env'
+  | DecD (x, ps, t, clauses) ->
+    let env' = valid_params env ps in
+    valid_typ env' t;
+    let clauses' = List.map (elab_clause env' x ps t) clauses in
+    let env' = Env.bind_def env x (ps, t, clauses') in
+    DecD (x, ps, t, clauses') $ d.at, env'
+  | GramD (x, ps, t, prods) ->
+    let env' = valid_params env ps in
+    valid_typ env' t;
+    List.iter (valid_prod env' ps t) prods;  (* TODO(zilinc) *)
+    d, Env.bind_gram env x (ps, t, prods)
+  | RecD ds ->
+    List.iter (fun d ->
+      match (List.hd ds).it, d.it with
+      | HintD _, _ | _, HintD _
+      | TypD _, TypD _
+      | RelD _, RelD _
+      | DecD _, DecD _
+      | GramD _, GramD _ -> ()
+      | _, _ ->
+        error (List.hd ds).at (" " ^ string_of_region d.at ^
+          ": invalid recursion between definitions of different sort")
+    ) ds;
+    let ds', env' = elab_binders elab_def env ds in
+    RecD ds' $ d.at, env'
+  | HintD _ -> d, env
+
+let elab ds =
+  elab_binders elab_def Env.empty ds
