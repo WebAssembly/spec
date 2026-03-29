@@ -1313,4 +1313,4 @@ let rec elab_def env d : def * Env.t =
   | HintD _ -> d, env
 
 let elab ds =
-  elab_binders elab_def Env.empty ds
+  elab_binders elab_def Env.empty ds |> fst
