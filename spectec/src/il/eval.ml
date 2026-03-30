@@ -398,7 +398,14 @@ and reduce_exp env e : exp =
       {e1' with note = e.note}
     | _ -> SubE (e1', t1', t2') $> e
     )
-  | AnnE (e1, t) -> reduce_exp env e1  (* FIXME(zilinc) *)
+  | AnnE (e1, t1) ->
+    let e1' = reduce_exp env e1 in
+    let t1' = reduce_typ env t1 in
+    (match e1'.it with
+    | BoolE _ | NumE _ | TextE _ | UnE _ | BinE _ | CmpE _
+    | MemE _ | LenE _ | SubE _ | CvtE _ | AnnE _ -> e1'
+    | _ -> AnnE (e1', t1') $> e
+    )
 
 and reduce_iter env = function
   | ListN (e, ido) -> ListN (reduce_exp env e, ido)
