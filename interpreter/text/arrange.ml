@@ -771,6 +771,7 @@ let num mode = if mode = `Binary then hex_string_of_num else string_of_num
 let vec mode = if mode = `Binary then hex_string_of_vec else string_of_vec
 
 let ref_ = function
+  | Value.NullRef -> Node ("ref.null", [])
   | Script.HostRef n -> Node ("ref.host " ^ nat32 n, [])
   | Extern.ExternRef (Script.HostRef n) -> Node ("ref.extern " ^ nat32 n, [])
   | _ -> assert false
@@ -784,7 +785,7 @@ let value mode v =
 let literal mode lit =
   match lit.it with
   | ValLit v -> value mode v
-  | NullLit ht -> Node ("ref.null " ^ heaptype ht, [])
+  | NullLit t -> Node ("ref.null " ^ heaptype t, [])
 
 let definition mode isdef x_opt def =
   try
@@ -855,7 +856,7 @@ let vec_pat mode = function
 let ref_pat = function
   | RefPat r -> ref_ r.it
   | RefTypePat t -> Node ("ref." ^ heaptype t, [])
-  | NullPat -> Node ("ref.null", [])
+  | NullPat t -> Node ("ref.null " ^ heaptype t, [])
 
 let rec result mode res =
   match res.it with

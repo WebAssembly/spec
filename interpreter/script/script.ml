@@ -34,7 +34,7 @@ type vec_pat =
 type ref_pat =
   | RefPat of ref_
   | RefTypePat of Types.heaptype
-  | NullPat
+  | NullPat of Types.heaptype
 
 type result = result' Source.phrase
 and result' =

@@ -1520,7 +1520,8 @@ result :
   | literal_num { NumResult (NumPat ($1 @@ $sloc)) @@ $sloc }
   | LPAR CONST NAN RPAR { NumResult (NanPat (nanop $2 ($3 @@ $loc($3)))) @@ $sloc }
   | literal_ref { RefResult (RefPat ($1 @@ $sloc)) @@ $sloc }
-  | LPAR REF_NULL heaptype? RPAR { RefResult NullPat @@ $sloc }
+  | LPAR REF_NULL RPAR { RefResult (RefPat (Value.NullRef @@ $sloc)) @@ $sloc }
+  | LPAR REF_NULL heaptype RPAR { RefResult (NullPat ($3 (empty_context ()))) @@ $sloc }
   | LPAR REF RPAR { RefResult (RefTypePat AnyHT) @@ $sloc }
   | LPAR REF_EQ RPAR { RefResult (RefTypePat EqHT) @@ $sloc }
   | LPAR REF_I31 RPAR { RefResult (RefTypePat I31HT) @@ $sloc }

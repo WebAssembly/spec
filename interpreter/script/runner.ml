@@ -265,7 +265,7 @@ let string_of_ref_pat (p : ref_pat) =
   match p with
   | RefPat r -> Value.string_of_ref r.it
   | RefTypePat t -> Types.string_of_heaptype t
-  | NullPat -> "null"
+  | NullPat t -> "null"
 
 let rec string_of_result r =
   match r.it with
@@ -286,7 +286,7 @@ let rec type_of_result r =
   | VecResult (VecPat v) -> Types.VecT (Value.type_of_vec v)
   | RefResult (RefPat r) -> Types.RefT (Value.type_of_ref r.it)
   | RefResult (RefTypePat t) -> Types.(RefT (NoNull, t))  (* assume closed *)
-  | RefResult (NullPat) -> Types.(RefT (Null, ExternHT))
+  | RefResult (NullPat t) -> Types.(RefT (Null, t))
   | EitherResult rs ->
     let ts = List.map type_of_result rs in
     List.fold_left (fun t1 t2 ->
@@ -473,7 +473,7 @@ let assert_ref_pat r p =
   | RefTypePat Types.FuncHT, Instance.FuncRef _
   | RefTypePat Types.ExnHT, Exn.ExnRef _
   | RefTypePat Types.ExternHT, _ -> true
-  | NullPat, Value.NullRef -> true
+  | NullPat _, Value.NullRef -> true
   | _ -> false
 
 let rec assert_result v r =
