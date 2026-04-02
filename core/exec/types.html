@@ -5,11 +5,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Types &#8212; WebAssembly 3.0 (2026-03-31)</title>
+    <title>Types &#8212; WebAssembly 3.0 (2026-04-02)</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=686e5160" />
     <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=057308f9" />
-    <script src="../_static/documentation_options.js?v=4aab63a9"></script>
+    <script src="../_static/documentation_options.js?v=85b11a28"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>window.MathJax = {"tex": {"maxBuffer": 30720, "macros": {"multicolumn": ["", 2]}}, "options": {"menuOptions": {"settings": {"enrich": false}}}}</script>
@@ -99,7 +99,7 @@ such that any module-local <a class="reference internal" href="../syntax/modules
 <p>Any form of <a class="reference internal" href="../syntax/modules.html#syntax-type"><span class="std std-ref">type</span></a> can be <em>instantiated</em> into a <a class="reference internal" href="../valid/conventions.html#type-closed"><span class="std std-ref">closed</span></a> type inside a <a class="reference internal" href="runtime.html#syntax-moduleinst"><span class="std std-ref">module instance</span></a> by <a class="reference internal" href="../valid/conventions.html#notation-subst"><span class="std std-ref">substituting</span></a> each <a class="reference internal" href="../syntax/modules.html#syntax-typeidx"><span class="std std-ref">type index</span></a> <span class="math notranslate nohighlight">\(x\)</span> occurring in it with the corresponding <a class="reference internal" href="../valid/conventions.html#syntax-deftype"><span class="std std-ref">defined type</span></a> <span class="math notranslate nohighlight">\({\href{../exec/runtime.html#syntax-moduleinst}{\mathit{moduleinst}}}{.}\href{../exec/runtime.html#syntax-moduleinst}{\mathsf{types}}{}[x]\)</span>.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}[t]{&#64;{}lcl&#64;{}l&#64;{}}
-{{\href{../exec/types.html#type-inst}{\mathrm{clos}}}}_{{\href{../exec/runtime.html#syntax-moduleinst}{\mathit{moduleinst}}}}(t) &amp; = &amp; {t}{{}[ {\href{../valid/conventions.html#notation-subst}{\mathrel{:=}}}\, {{\mathit{dt}}^\ast} ]} &amp; \quad \mbox{if}~ {{\mathit{dt}}^\ast} = {\href{../exec/runtime.html#syntax-moduleinst}{\mathit{moduleinst}}}{.}\href{../exec/runtime.html#syntax-moduleinst}{\mathsf{types}} \\
+{{\href{../exec/types.html#type-inst}{\mathrm{clos}}}}_{{\href{../exec/runtime.html#syntax-moduleinst}{\mathit{moduleinst}}}}(t) &amp; = &amp; {t}{{}[ {\href{../valid/conventions.html#notation-subst}{\mathrel{:=}}}\, {\href{../exec/runtime.html#syntax-moduleinst}{\mathit{moduleinst}}}{.}\href{../exec/runtime.html#syntax-moduleinst}{\mathsf{types}} ]} \\
 \end{array}\end{split}\]</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
