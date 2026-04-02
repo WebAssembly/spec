@@ -9608,31 +9608,31 @@ $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-{{\mathrm{inst}}}_{{\mathit{moduleinst}}}(t) & = & {t}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]} & \quad \mbox{if}~ {{\mathit{dt}}^\ast} = {\mathit{moduleinst}}{.}\mathsf{types} \\
+{{\mathrm{inst}}}_{{\mathit{moduleinst}}}(t) & = & {t}{{}[ {:=}\, {\mathit{moduleinst}}{.}\mathsf{types} ]} \\
 \end{array}
 $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-{{\mathrm{inst}}}_{{\mathit{moduleinst}}}({\mathit{rt}}) & = & {{\mathit{rt}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]} & \quad \mbox{if}~ {{\mathit{dt}}^\ast} = {\mathit{moduleinst}}{.}\mathsf{types} \\
+{{\mathrm{inst}}}_{{\mathit{moduleinst}}}({\mathit{rt}}) & = & {{\mathit{rt}}}{{}[ {:=}\, {\mathit{moduleinst}}{.}\mathsf{types} ]} \\
 \end{array}
 $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-{{\mathrm{inst}}}_{{\mathit{moduleinst}}}({\mathit{gt}}) & = & {{\mathit{gt}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]} & \quad \mbox{if}~ {{\mathit{dt}}^\ast} = {\mathit{moduleinst}}{.}\mathsf{types} \\
+{{\mathrm{inst}}}_{{\mathit{moduleinst}}}({\mathit{gt}}) & = & {{\mathit{gt}}}{{}[ {:=}\, {\mathit{moduleinst}}{.}\mathsf{types} ]} \\
 \end{array}
 $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-{{\mathrm{inst}}}_{{\mathit{moduleinst}}}({\mathit{mt}}) & = & {{\mathit{mt}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]} & \quad \mbox{if}~ {{\mathit{dt}}^\ast} = {\mathit{moduleinst}}{.}\mathsf{types} \\
+{{\mathrm{inst}}}_{{\mathit{moduleinst}}}({\mathit{mt}}) & = & {{\mathit{mt}}}{{}[ {:=}\, {\mathit{moduleinst}}{.}\mathsf{types} ]} \\
 \end{array}
 $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-{{\mathrm{inst}}}_{{\mathit{moduleinst}}}({\mathit{tt}}) & = & {{\mathit{tt}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]} & \quad \mbox{if}~ {{\mathit{dt}}^\ast} = {\mathit{moduleinst}}{.}\mathsf{types} \\
+{{\mathrm{inst}}}_{{\mathit{moduleinst}}}({\mathit{tt}}) & = & {{\mathit{tt}}}{{}[ {:=}\, {\mathit{moduleinst}}{.}\mathsf{types} ]} \\
 \end{array}
 $$
 
