@@ -25884,45 +25884,35 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ....................................................
 
 
-1. Let :math:`{{\mathit{dt}}^\ast}` be :math:`{\mathit{moduleinst}}{.}\mathsf{types}`.
-
-#. Return :math:`{t}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}`.
+1. Return :math:`{t}{{}[ {:=}\, {\mathit{moduleinst}}{.}\mathsf{types} ]}`.
 
 
 :math:`{{\mathrm{inst}}}_{{\mathit{moduleinst}}}({\mathit{rt}})`
 ................................................................
 
 
-1. Let :math:`{{\mathit{dt}}^\ast}` be :math:`{\mathit{moduleinst}}{.}\mathsf{types}`.
-
-#. Return :math:`{{\mathit{rt}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}`.
+1. Return :math:`{{\mathit{rt}}}{{}[ {:=}\, {\mathit{moduleinst}}{.}\mathsf{types} ]}`.
 
 
 :math:`{{\mathrm{inst}}}_{{\mathit{moduleinst}}}({\mathit{gt}})`
 ................................................................
 
 
-1. Let :math:`{{\mathit{dt}}^\ast}` be :math:`{\mathit{moduleinst}}{.}\mathsf{types}`.
-
-#. Return :math:`{{\mathit{gt}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}`.
+1. Return :math:`{{\mathit{gt}}}{{}[ {:=}\, {\mathit{moduleinst}}{.}\mathsf{types} ]}`.
 
 
 :math:`{{\mathrm{inst}}}_{{\mathit{moduleinst}}}({\mathit{mt}})`
 ................................................................
 
 
-1. Let :math:`{{\mathit{dt}}^\ast}` be :math:`{\mathit{moduleinst}}{.}\mathsf{types}`.
-
-#. Return :math:`{{\mathit{mt}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}`.
+1. Return :math:`{{\mathit{mt}}}{{}[ {:=}\, {\mathit{moduleinst}}{.}\mathsf{types} ]}`.
 
 
 :math:`{{\mathrm{inst}}}_{{\mathit{moduleinst}}}({\mathit{tt}})`
 ................................................................
 
 
-1. Let :math:`{{\mathit{dt}}^\ast}` be :math:`{\mathit{moduleinst}}{.}\mathsf{types}`.
-
-#. Return :math:`{{\mathit{tt}}}{{}[ {:=}\, {{\mathit{dt}}^\ast} ]}`.
+1. Return :math:`{{\mathit{tt}}}{{}[ {:=}\, {\mathit{moduleinst}}{.}\mathsf{types} ]}`.
 
 
 :math:`{{\mathrm{blocktype}}}_{z}({\mathit{blocktype}})`
@@ -32762,24 +32752,19 @@ growmem meminst n
 5. Fail.
 
 inst_valtype moduleinst t
-1. Let dt* be moduleinst.TYPES.
-2. Return $subst_all_valtype(t, dt*).
+1. Return $subst_all_valtype(t, moduleinst.TYPES).
 
 inst_reftype moduleinst rt
-1. Let dt* be moduleinst.TYPES.
-2. Return $subst_all_reftype(rt, dt*).
+1. Return $subst_all_reftype(rt, moduleinst.TYPES).
 
 inst_globaltype moduleinst gt
-1. Let dt* be moduleinst.TYPES.
-2. Return $subst_all_globaltype(gt, dt*).
+1. Return $subst_all_globaltype(gt, moduleinst.TYPES).
 
 inst_memtype moduleinst mt
-1. Let dt* be moduleinst.TYPES.
-2. Return $subst_all_memtype(mt, dt*).
+1. Return $subst_all_memtype(mt, moduleinst.TYPES).
 
 inst_tabletype moduleinst tt
-1. Let dt* be moduleinst.TYPES.
-2. Return $subst_all_tabletype(tt, dt*).
+1. Return $subst_all_tabletype(tt, moduleinst.TYPES).
 
 blocktype_ z blocktype
 1. If blocktype is some _IDX, then:
