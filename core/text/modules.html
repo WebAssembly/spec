@@ -5,11 +5,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Modules &#8212; WebAssembly 3.0 (2026-04-03)</title>
+    <title>Modules &#8212; WebAssembly 3.0 (2026-04-07)</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=686e5160" />
     <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=057308f9" />
-    <script src="../_static/documentation_options.js?v=f4645071"></script>
+    <script src="../_static/documentation_options.js?v=e8407f54"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>window.MathJax = {"tex": {"maxBuffer": 30720, "macros": {"multicolumn": ["", 2]}}, "options": {"menuOptions": {"settings": {"enrich": false}}}}</script>
@@ -628,7 +628,7 @@ in a sequence of declarations:</p>
 \end{array}\end{split}\]</div>
 <section id="id10">
 <h3>Abbreviations<a class="headerlink" href="#id10" title="Link to this heading">¶</a></h3>
-<p>In a source file, the toplevel <span class="math notranslate nohighlight">\(\mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{module}’}~~{\mathtt{decldots}}~~\mbox{‘\texttt{{)}}’}\)</span> surrounding the module body may be omitted.</p>
+<p>In a source file, the toplevel <span class="math notranslate nohighlight">\(\mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{module}’}~~\dots~~\mbox{‘\texttt{{)}}’}\)</span> surrounding the module body may be omitted.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}[t]{&#64;{}l&#64;{}rrl&#64;{}l&#64;{}l&#64;{}l&#64;{}}
 &amp; {\href{../text/modules.html#text-module}{\mathtt{module}}} &amp; ::= &amp; \dots ~~|~~ {{{\href{../text/modules.html#text-decl}{\mathtt{decl}}}}_{{\href{../text/conventions.html#text-context}{I}}}^\ast} &amp; \quad\equiv\quad{} &amp; \mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{module}’}~~{{{\href{../text/modules.html#text-decl}{\mathtt{decl}}}}_{{\href{../text/conventions.html#text-context}{I}}}^\ast}~~\mbox{‘\texttt{{)}}’} \\
