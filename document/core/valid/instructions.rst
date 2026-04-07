@@ -43,7 +43,7 @@ In both cases, the unconstrained types or type sequences can be chosen arbitrari
 
    and
 
-   $${instr*: (CONST F64 $fnat(64, 1)) (CONST F64 $fnat(64, 2)) (CONST F64 $fnat(64, 3)) (SELECT)}
+   $${instr*: (CONST F64 $fnat(64, 1)) (CONST F64 $fnat(64, 2)) (CONST I32 3) (SELECT)}
 
    are valid, with ${:t} in the typing of ${:SELECT} being instantiated to ${:I32} or ${:F64}, respectively.
 

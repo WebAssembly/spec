@@ -21242,7 +21242,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return :math:`({+((0 + 0 \cdot {2^{{-M}}}) \cdot {2^{e}})})`.
 
 
-:math:`{+N}`
+:math:`{+n}`
 ............
 
 
