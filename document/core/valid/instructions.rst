@@ -1375,7 +1375,7 @@ $${rule: {Instrs_ok/sub Instrs_ok/frame}}
 
    To type this sequence, its subsequence ${instr*: (CONST I32 2) (BINOP I32 ADD)} needs to be valid with an intermediate type.
    But the direct type of ${instr: (CONST I32 2)} is ${instrtype: eps -> I32}, not matching the two inputs expected by ${instr: $($(BINOP I32 ADD))}.
-   The subsumption rule allows to weaken the type of ${:(CONST I32 2)} to the supertype ${instrtype: I32 -> I32 I32}, such that it can be composed with ${instr: $($(BINOP I32 ADD))} and yields the intermediate type ${instrtype: I32 -> I32 I32} for the subsequence. That can in turn be composed with the first constant.
+   The subsumption rule allows to weaken the type of ${instr: (CONST I32 2)} to the supertype ${instrtype: I32 -> I32 I32}, such that it can be composed with ${instr: $($(BINOP I32 ADD))} and yields the intermediate type ${instrtype: I32 -> I32 I32} for the subsequence. That can in turn be composed with the first constant.
 
    Furthermore, subsumption allows to drop init variables ${:x*} from the instruction type in a context where they are not needed, for example, at the end of the body of a :ref:`block <valid-block>`.
 
