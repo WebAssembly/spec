@@ -287,6 +287,14 @@ Results
    }
 
 
+.. _valid-localtype:
+.. _valid-context:
+
+.. todo
+   Context Validity
+   ~~~~~~~~~~~~~~~~
+
+
 .. _module-context:
 .. _valid-store:
 

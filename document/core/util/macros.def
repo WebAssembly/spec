@@ -1183,6 +1183,7 @@
 .. |vdashtabletype| mathdef:: \xref{valid/types}{valid-tabletype}{\vdash}
 .. |vdashmemtype| mathdef:: \xref{valid/types}{valid-memtype}{\vdash}
 .. |vdashglobaltype| mathdef:: \xref{valid/types}{valid-globaltype}{\vdash}
+.. |vdashlocaltype| mathdef:: \xref{appendix/properties}{valid-localtype}{\vdash}
 .. |vdashtagtype| mathdef:: \xref{valid/types}{valid-tagtype}{\vdash}
 .. |vdashexterntype| mathdef:: \xref{valid/types}{valid-externtype}{\vdash}
 .. |vdashdeftype| mathdef:: \xref{appendix/properties}{valid-deftype}{\vdash}
@@ -1209,6 +1210,7 @@
 .. |OKtabletype| mathdef:: \xref{valid/types}{valid-tabletype}{\K{ok}}
 .. |OKmemtype| mathdef:: \xref{valid/types}{valid-memtype}{\K{ok}}
 .. |OKglobaltype| mathdef:: \xref{valid/types}{valid-globaltype}{\K{ok}}
+.. |OKlocaltype| mathdef:: \xref{appendix/properties}{valid-localtype}{\K{ok}}
 .. |OKtagtype| mathdef:: \xref{valid/types}{valid-tagtype}{\K{ok}}
 .. |OKexterntype| mathdef:: \xref{valid/types}{valid-externtype}{\K{ok}}
 .. |OKlimits| mathdef:: \xref{valid/types}{valid-limits}{\K{ok}}
@@ -1301,6 +1303,9 @@
 .. |shdim| mathdef:: \xref{syntax/instructions}{aux-dim}{\F{dim}}
 .. |zeroop| mathdef:: \xref{syntax/instructions}{aux-zeroop}{\F{zeroop}}
 .. |halfop| mathdef:: \xref{syntax/instructions}{aux-halfop}{\F{halfop}}
+
+.. |vdashcontext| mathdef:: \xref{appendix/properties}{valid-context}{\vdash}
+.. |OKcontext| mathdef:: \xref{appendix/properties}{valid-context}{\K{ok}}
 
 
 .. Execution

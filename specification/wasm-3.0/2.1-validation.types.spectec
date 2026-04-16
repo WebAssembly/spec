@@ -49,8 +49,13 @@ rule Valtype_ok/bot:
 
 ;; Result & instruction types
 
+relation Localtype_ok: context |- localtype : OK  hint(name "K-local") hint(macro "%localtype")
 relation Resulttype_ok: context |- resulttype : OK  hint(name "K-result") hint(macro "%resulttype")
 relation Instrtype_ok: context |- instrtype : OK    hint(name "K-instr")  hint(macro "%instrtype")
+
+rule Localtype_ok:
+  C |- init t : OK
+  -- Valtype_ok: C |- t : OK
 
 rule Resulttype_ok:
   C |- t* : OK

@@ -1,0 +1,35 @@
+;; Contexts
+
+relation Context_ok: |- context : OK  hint(macro "%context")
+
+rule Context_ok:
+  |- C : OK
+  -- if C =
+    { TYPES dt^n,
+      RECS st^m,
+      TAGS jt*,
+      GLOBALS gt*,
+      MEMS mt*,
+      TABLES tt*,
+      FUNCS dt_F*,
+      DATAS ok*,
+      ELEMS et*,
+      LOCALS lct*,
+      LABELS rt*,
+      RETURN rt'?,
+      REFS x*
+    }
+  -- if C_0 = {TYPES dt^n}
+  -- (Deftype_ok: {TYPES dt^n[0 : i]} |- dt : OK)^(i<n)
+  -- (Subtype_ok2: {TYPES dt^n, RECS st^m} |- st : OK n i)^(i<m)
+  -- (Tagtype_ok: C_0 |- jt : OK)*
+  -- (Globaltype_ok: C_0 |- gt : OK)*
+  -- (Memtype_ok: C_0 |- mt : OK)*
+  -- (Tabletype_ok: C_0 |- tt : OK)*
+  -- (Deftype_ok: C_0 |- dt_F : OK)*
+  -- (Expand: dt_F ~~ FUNC t_1 -> t_2)*
+  -- (Reftype_ok: C_0 |- et : OK)*
+  -- (Localtype_ok: C_0 |- lct : OK)*
+  -- (Resulttype_ok: C_0 |- rt : OK)*
+  -- (Resulttype_ok: C_0 |- rt' : OK)?
+  -- (if x < |dt_F*|)*

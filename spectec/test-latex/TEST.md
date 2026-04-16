@@ -4702,9 +4702,22 @@ $$
 
 \vspace{1ex}
 
+$\boxed{{\mathit{context}} \vdash {\mathit{localtype}} : \mathsf{ok}}$
+
 $\boxed{{\mathit{context}} \vdash {\mathit{resulttype}} : \mathsf{ok}}$
 
 $\boxed{{\mathit{context}} \vdash {\mathit{instrtype}} : \mathsf{ok}}$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+C \vdash t : \mathsf{ok}
+}{
+C \vdash {\mathit{init}}~t : \mathsf{ok}
+} \, {[\textsc{\scriptsize K{-}local}]}
+\qquad
+\end{array}
+$$
 
 $$
 \begin{array}{@{}c@{}}\displaystyle
@@ -14012,6 +14025,60 @@ $$
 } \\
 & & | & {{{\mathtt{decl}}}_{I}^\ast} & \quad\equiv\quad{} & \mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{module}’}~~{{{\mathtt{decl}}}_{I}^\ast}~~\mbox{‘\texttt{{)}}’} \\
 & \ldots & ::= & {{{\mathtt{decl}}}_{I}^\ast} \\
+\end{array}
+$$
+
+$\boxed{{\vdash}\, {\mathit{context}} : \mathsf{ok}}$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+C = \{ \begin{array}[t]{@{}l@{}}
+\mathsf{types}~{{\mathit{dt}}^{n}},\; \\
+  \mathsf{recs}~{{\mathit{st}}^{m}},\; \\
+  \mathsf{tags}~{{\mathit{jt}}^\ast},\; \\
+  \mathsf{globals}~{{\mathit{gt}}^\ast},\; \\
+  \mathsf{mems}~{{\mathit{mt}}^\ast},\; \\
+  \mathsf{tables}~{{\mathit{tt}}^\ast},\; \\
+  \mathsf{funcs}~{{\mathit{dt}}_{\mathsf{f}}^\ast},\; \\
+  \mathsf{datas}~{{\mathit{ok}}^\ast},\; \\
+  \mathsf{elems}~{{\mathit{et}}^\ast},\; \\
+  \mathsf{locals}~{{{\mathit{lt}}}^\ast},\; \\
+  \mathsf{labels}~{{\mathit{rt}}^\ast},\; \\
+  \mathsf{return}~{{\mathit{rt}'}^?},\; \\
+  \mathsf{refs}~{x^\ast} \}\end{array}
+ \qquad
+C_0 = \{ \mathsf{types}~{{\mathit{dt}}^{n}} \}
+ \qquad
+(\{ \mathsf{types}~{{\mathit{dt}}^{n}}{}[0 : i] \} \vdash {\mathit{dt}} : \mathsf{ok})^{i<n}
+ \qquad
+(\{ \mathsf{types}~{{\mathit{dt}}^{n}},\;\allowbreak \mathsf{recs}~{{\mathit{st}}^{m}} \} \vdash {\mathit{st}} : {\mathsf{ok}}{(n, i)})^{i<m}
+ \qquad
+(C_0 \vdash {\mathit{jt}} : \mathsf{ok})^\ast
+ \qquad
+(C_0 \vdash {\mathit{gt}} : \mathsf{ok})^\ast
+ \qquad
+(C_0 \vdash {\mathit{mt}} : \mathsf{ok})^\ast
+ \qquad
+(C_0 \vdash {\mathit{tt}} : \mathsf{ok})^\ast
+ \qquad
+(C_0 \vdash {\mathit{dt}}_{\mathsf{f}} : \mathsf{ok})^\ast
+ \qquad
+({\mathit{dt}}_{\mathsf{f}} \approx \mathsf{func}~t_1 \rightarrow t_2)^\ast
+ \qquad
+(C_0 \vdash {\mathit{et}} : \mathsf{ok})^\ast
+ \qquad
+(C_0 \vdash {{\mathit{lt}}} : \mathsf{ok})^\ast
+ \qquad
+(C_0 \vdash {\mathit{rt}} : \mathsf{ok})^\ast
+ \qquad
+(C_0 \vdash {\mathit{rt}'} : \mathsf{ok})^?
+ \qquad
+(x < {|{{\mathit{dt}}_{\mathsf{f}}^\ast}|})^\ast
+}{
+{\vdash}\, C : \mathsf{ok}
+} \, {[\textsc{\scriptsize Context\_ok}]}
+\qquad
 \end{array}
 $$
 
