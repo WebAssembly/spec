@@ -1,3 +1,13 @@
+;; IL Subsets
+
+def $with_higher_order : bool
+def $with_polymorphic_types : bool
+def $with_dependent_types : bool
+def $with_family_types : bool
+def $with_grammars : bool
+def $with_noncomputational : bool  ;; semantic restriction
+
+
 ;; Identifiers
 
 syntax id = text
@@ -23,7 +33,10 @@ syntax typ =
   | TUP typbind*       ;; (id : typ , ... , id : typ)
   | ITER typ iter      ;; typ iter
   | VAR id arg*        ;; typid(arg*)
+    -- if arg* = eps \/ $with_polymorphic_types \/ $with_dependent_types
   | MATCH id arg* WITH inst*  ;; `match` typid(arg*) `with` inst*
+    -- if arg* = eps \/ $with_polymorphic_types \/ $with_dependent_types
+    -- if |inst*| <= 1 \/ $with_family_types
 
 syntax deftyp =
   | ALIAS typ
@@ -132,62 +145,65 @@ syntax expfield = atom `= exp
 syntax exppull = id `: typ `<- exp
 
 syntax path =
-  | ROOT               ;;
-  | THE path           ;; path!
-  | IDX path exp       ;; path[ exp ]
-  | SLICE path exp exp ;; path[ exp : exp ]
-  | DOT path atom      ;; path.atom
-  | PROJ path mixop    ;; path!mixop
+  | ROOT                    ;;
+  | THE path                ;; path!
+  | IDX path exp            ;; path[ exp ]
+  | SLICE path exp exp      ;; path[ exp : exp ]
+  | DOT path atom           ;; path.atom
+  | PROJ path mixop         ;; path!mixop
 
 
 ;; Grammars
 
-syntax sym =
-  | VAR id arg*        ;; gramid( arg* )
-  | NUM nat            ;; num
-  | TEXT text          ;; text
-  | SEQ sym*           ;; sym*
-  | ALT sym*           ;; sym `|` sym
-  | RANGE sym sym      ;; sym `|` `...` `|` sym
-  | ITER sym iter exppull*   ;; sym iter{ exppull* }
-  | ATTR exp sym       ;; exp `:` sym
+syntax sym =                ;; only used if $with_grammars
+  | VAR id arg*             ;; gramid( arg* )
+    -- if arg* = eps \/ $with_polymorphic_types \/ $with_dependent_types
+  | NUM nat                 ;; num
+  | TEXT text               ;; text
+  | SEQ sym*                ;; sym*
+  | ALT sym*                ;; sym `|` sym
+  | RANGE sym sym           ;; sym `|` `...` `|` sym
+  | ITER sym iter exppull*  ;; sym iter{ exppull* }
+  | ATTR exp sym            ;; exp `:` sym
 
 
 ;; Definitions
 
 syntax arg =
-  | TYP typ
+  | TYP typ                         -- if $with_polymorphic_types
   | EXP exp
-  | FUN id
-  | GRAM sym
+  | FUN id                          -- if $with_higher_order
+  | GRAM sym                        -- if $with_grammars
 
 syntax param =
-  | TYP id
+  | TYP id                          -- if $with_polymorphic_types
   | EXP id `: typ
-  | FUN id `: param* `-> typ
-  | GRAM id `: param* `-> typ
+  | FUN id `: param* `-> typ        -- if $with_higher_order
+  | GRAM id `: param* `-> typ       -- if $with_grammars
 
 syntax quant = param
 
 syntax prem =
-  | REL id arg* `: exp
+  | REL id arg* `: exp              -- if $with_noncomputational
   | IF exp
   | ELSE
   | NOT prem
-  | LET exp `= exp  ;; TODO: variables/quantifiers?
+  | LET exp `= exp                  ;; TODO: variables/quantifiers?
   | ITER prem iter exppull*
 
 syntax dec =
-  | TYP id param* `= inst*
+  | TYP id param* `= inst*          -- if |inst*| <= 1 \/ $with_family_types
   | REL id param* `: typ `= rul*
   | FUN id param* `: typ `= clause*
-  | GRAM id param* `: typ `= prod*
+  | GRAM id param* `: typ `= prod*  -- if $with_grammars
   | REC dec*
 
 syntax inst = INST `{quant*} arg* `=> deftyp
+  -- if arg* = (TYP typ)* \/ $with_dependent_types
 syntax rul = RULE `{quant*} exp `- prem*
 syntax clause = CLAUSE `{quant*} arg* `=> exp `- prem*
-syntax prod = PROD `{quant*} sym `=> exp `- prem*
+syntax prod = PROD `{quant*} sym `=> exp `- prem* 
+  -- if $with_grammars
 
 
 ;; Scripts
