@@ -5003,7 +5003,7 @@ $$
 C, \mathsf{recs}~{{\mathit{subtype}}^\ast} \vdash \mathsf{rec}~{{\mathit{subtype}}^\ast} : {\mathsf{ok}}{(x, 0)}
 }{
 C \vdash \mathsf{rec}~{{\mathit{subtype}}^\ast} : {\mathsf{ok}}{(x)}
-} \, {[\textsc{\scriptsize K{-}rect{-}\_rec2}]}
+} \, {[\textsc{\scriptsize K{-}rect{-}rec2}]}
 \qquad
 \end{array}
 $$
@@ -14052,7 +14052,7 @@ C_0 = \{ \mathsf{types}~{{\mathit{dt}}^{n}} \}
  \qquad
 (\{ \mathsf{types}~{{\mathit{dt}}^{n}}{}[0 : i] \} \vdash {\mathit{dt}} : \mathsf{ok})^{i<n}
  \qquad
-(\{ \mathsf{types}~{{\mathit{dt}}^{n}},\;\allowbreak \mathsf{recs}~{{\mathit{st}}^{m}} \} \vdash {\mathit{st}} : {\mathsf{ok}}{(n, i)})^{i<m}
+(\{ \mathsf{types}~{{\mathit{dt}}^{n}},\;\allowbreak \mathsf{recs}~{{\mathit{st}}^{m}} \} \vdash {\mathit{st}} : {\mathsf{ok}}{(n + i, i)})^{i<m}
  \qquad
 (C_0 \vdash {\mathit{jt}} : \mathsf{ok})^\ast
  \qquad
