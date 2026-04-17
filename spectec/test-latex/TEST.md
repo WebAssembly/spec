@@ -4957,6 +4957,8 @@ $$
 \begin{array}{@{}c@{}}
 {|{{\mathit{typeuse}}^\ast}|} \leq 1
  \qquad
+(C \vdash {\mathit{typeuse}} : \mathsf{ok})^\ast
+ \qquad
 ({\mathit{typeuse}} \prec x, i)^\ast
  \qquad
 ({{\mathrm{unroll}}}_{C}({\mathit{typeuse}}) = \mathsf{sub}~{{\mathit{typeuse}'}^\ast}~{\mathit{comptype}'})^\ast

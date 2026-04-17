@@ -2898,27 +2898,28 @@ relation Subtype_ok: `%|-%:%`(context, subtype, oktypeidx)
 
 ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:97.1-97.126
 relation Rectype_ok: `%|-%:%`(context, rectype, oktypeidx)
-  ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:179.1-180.23
+  ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:180.1-181.23
   rule empty{C : context, x : idx}:
     `%|-%:%`(C, REC_rectype(`%`_list([])), OK_oktypeidx(x))
 
-  ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:182.1-185.48
+  ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:183.1-186.48
   rule cons{C : context, subtype_1 : subtype, `subtype*` : subtype*, x : idx}:
     `%|-%:%`(C, REC_rectype(`%`_list([subtype_1] ++ subtype*{subtype <- `subtype*`})), OK_oktypeidx(x))
     -- Subtype_ok: `%|-%:%`(C, subtype_1, OK_oktypeidx(x))
     -- Rectype_ok: `%|-%:%`(C, REC_rectype(`%`_list(subtype*{subtype <- `subtype*`})), OK_oktypeidx(`%`_typeidx((x!`%`_idx.0 + 1))))
 
-  ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:187.1-189.60
+  ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:188.1-190.60
   rule rec2{C : context, `subtype*` : subtype*, x : idx}:
     `%|-%:%`(C, REC_rectype(`%`_list(subtype*{subtype <- `subtype*`})), OK_oktypeidx(x))
     -- Rectype_ok2: `%|-%:%`({TYPES [], RECS subtype*{subtype <- `subtype*`}, TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [], RETURN ?(), REFS []} +++ C, REC_rectype(`%`_list(subtype*{subtype <- `subtype*`})), OK_oktypeidxnat(x, 0))
 
 ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:98.1-98.126
 relation Subtype_ok2: `%|-%:%`(context, subtype, oktypeidxnat)
-  ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:169.1-176.49
+  ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:169.1-177.49
   rule _{C : context, `typeuse*` : typeuse*, compttype : comptype, x : idx, i : nat, `comptype'*` : comptype*, `typeuse'**` : typeuse**, comptype : comptype}:
     `%|-%:%`(C, SUB_subtype(FINAL_final?{}, typeuse*{typeuse <- `typeuse*`}, compttype), OK_oktypeidxnat(x, i))
     -- if (|typeuse*{typeuse <- `typeuse*`}| <= 1)
+    -- (Typeuse_ok: `%|-%:OK`(C, typeuse))*{typeuse <- `typeuse*`}
     -- (if $before(typeuse, x, i))*{typeuse <- `typeuse*`}
     -- (if ($unrollht(C, (typeuse : typeuse <: heaptype)) = SUB_subtype(?(), typeuse'*{typeuse' <- `typeuse'*`}, comptype')))*{comptype' <- `comptype'*`, typeuse <- `typeuse*`, `typeuse'*` <- `typeuse'**`}
     -- Comptype_ok: `%|-%:OK`(C, comptype)
@@ -2926,11 +2927,11 @@ relation Subtype_ok2: `%|-%:%`(context, subtype, oktypeidxnat)
 
 ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:99.1-99.126
 relation Rectype_ok2: `%|-%:%`(context, rectype, oktypeidxnat)
-  ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:191.1-192.24
+  ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:192.1-193.24
   rule empty{C : context, x : idx, i : nat}:
     `%|-%:%`(C, REC_rectype(`%`_list([])), OK_oktypeidxnat(x, i))
 
-  ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:194.1-197.55
+  ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:195.1-198.55
   rule cons{C : context, subtype_1 : subtype, `subtype*` : subtype*, x : idx, i : nat}:
     `%|-%:%`(C, REC_rectype(`%`_list([subtype_1] ++ subtype*{subtype <- `subtype*`})), OK_oktypeidxnat(x, i))
     -- Subtype_ok2: `%|-%:%`(C, subtype_1, OK_oktypeidxnat(x, i))
@@ -2938,7 +2939,7 @@ relation Rectype_ok2: `%|-%:%`(context, rectype, oktypeidxnat)
 
 ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:100.1-100.102
 relation Deftype_ok: `%|-%:OK`(context, deftype)
-  ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:200.1-204.14
+  ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:201.1-205.14
   rule _{C : context, rectype : rectype, i : n, x : idx, n : n, `subtype*` : subtype*}:
     `%|-%:OK`(C, _DEF_deftype(rectype, i))
     -- Rectype_ok: `%|-%:%`(C, rectype, OK_oktypeidx(x))
