@@ -159,7 +159,7 @@ def $unrollht(C, _IDX typeidx) = $unrolldt(C.TYPES[typeidx])
 def $unrollht(C, REC i) = C.RECS[i]
 
 rule Subtype_ok2:
-  C |- SUB FINAL? typeuse* compttype : OK x i
+  C |- SUB FINAL? typeuse* comptype : OK x i
   -- if |typeuse*| <= 1
   -- (if $before(typeuse, x, i))*
   -- (if $unrollht(C, typeuse) = SUB typeuse'* comptype')*
