@@ -14089,7 +14089,7 @@ The recursive type :math:`(\mathsf{rec}~{\mathit{subtype}}_1~{{\mathit{subtype}}
 
 
 
-The sub type :math:`(\mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~{\mathit{compttype}})` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x, i)})` if:
+The sub type :math:`(\mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~{\mathit{comptype}})` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x, i)})` if:
 
 
    * The length of :math:`{{\mathit{typeuse}}^\ast}` is less than or equal to :math:`1`.
@@ -27042,7 +27042,7 @@ Rectype_ok/cons
   - the recursive type (REC subtype*) is valid for the type index (OK (x + 1)).
 
 Subtype_ok2
-- the sub type (SUB FINAL? typeuse* compttype) is valid for (OK x i) if:
+- the sub type (SUB FINAL? typeuse* comptype) is valid for (OK x i) if:
   - |typeuse*| is less than or equal to 1.
   - For all typeuse in typeuse*:
     - $before(typeuse, x, i) is true.
