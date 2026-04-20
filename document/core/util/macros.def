@@ -1259,15 +1259,15 @@
 .. |vdashinstrs| mathdef:: \xref{valid/instructions}{valid-instrs}{\vdash}
 .. |vdashcatch| mathdef:: \xref{valid/instructions}{valid-catch}{\vdash}
 .. |vdashexpr| mathdef:: \xref{valid/instructions}{valid-expr}{\vdash}
-.. |vdashinstrconst| mathdef:: \xref{valid/instructions}{valid-const}{\vdash}
-.. |vdashexprconst| mathdef:: \xref{valid/instructions}{valid-const}{\vdash}
-.. |vdashexprokconst| mathdef:: \xref{valid/instructions}{valid-const}{\vdash}
+.. |vdashinstrconst| mathdef:: \xref{valid/instructions}{valid-constant}{\vdash}
+.. |vdashexprconst| mathdef:: \xref{valid/instructions}{valid-constant}{\vdash}
+.. |vdashexprokconst| mathdef:: \xref{valid/instructions}{valid-constant}{\vdash}
 
 .. |OKcatch| mathdef:: \xref{valid/instructions}{valid-catch}{\K{ok}}
 
-.. |CONSTinstrconst| mathdef:: \xref{valid/instructions}{valid-const}{\K{const}}
-.. |CONSTexprconst| mathdef:: \xref{valid/instructions}{valid-const}{\K{const}}
-.. |CONSTexprokconst| mathdef:: \xref{valid/instructions}{valid-const}{\K{const}}
+.. |CONSTinstrconst| mathdef:: \xref{valid/instructions}{valid-constant}{\K{const}}
+.. |CONSTexprconst| mathdef:: \xref{valid/instructions}{valid-constant}{\K{const}}
+.. |CONSTexprokconst| mathdef:: \xref{valid/instructions}{valid-constant}{\K{const}}
 
 .. |vdashexternidx| mathdef:: \xref{valid/modules}{valid-externidx}{\vdash}
 
