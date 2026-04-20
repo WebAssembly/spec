@@ -185,9 +185,6 @@ rule Rectype_ok/cons:
   -- Subtype_ok: C |- subtype_1 : OK(x)
   -- Rectype_ok: C |- REC subtype* : OK($(x+1))
 
-rule Rectype_ok/rec2:
-  C |- REC subtype* : OK(x)
-  -- Rectype_ok2: C, RECS subtype* |- REC subtype* : OK x 0
 
 rule Rectype_ok2/empty:
   C |- REC eps : OK x i
@@ -195,12 +192,12 @@ rule Rectype_ok2/empty:
 rule Rectype_ok2/cons:
   C |- REC (subtype_1 subtype*) : OK x i
   -- Subtype_ok2: C |- subtype_1 : OK x i
-  -- Rectype_ok2: C |- REC subtype* : OK $(x+1) $(i+1)
+  -- Rectype_ok2: C |- REC subtype* : OK x $(i+1)
 
 
 rule Deftype_ok:
   C |- _DEF rectype i : OK
-  -- Rectype_ok: C |- rectype : OK(x)
+  -- Rectype_ok2: C, RECS subtype^n |- rectype : OK x 0
   -- if rectype = REC subtype^n
   -- if i < n
 

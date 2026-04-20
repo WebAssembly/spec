@@ -4999,16 +4999,7 @@ C \vdash \mathsf{rec}~({\mathit{subtype}}_1~{{\mathit{subtype}}^\ast}) : {\maths
 \end{array}
 $$
 
-$$
-\begin{array}{@{}c@{}}\displaystyle
-\frac{
-C, \mathsf{recs}~{{\mathit{subtype}}^\ast} \vdash \mathsf{rec}~{{\mathit{subtype}}^\ast} : {\mathsf{ok}}{(x, 0)}
-}{
-C \vdash \mathsf{rec}~{{\mathit{subtype}}^\ast} : {\mathsf{ok}}{(x)}
-} \, {[\textsc{\scriptsize K{-}rect{-}rec2}]}
-\qquad
-\end{array}
-$$
+\vspace{1ex}
 
 $$
 \begin{array}{@{}c@{}}\displaystyle
@@ -5025,7 +5016,7 @@ $$
 \frac{
 C \vdash {\mathit{subtype}}_1 : {\mathsf{ok}}{(x, i)}
  \qquad
-C \vdash \mathsf{rec}~{{\mathit{subtype}}^\ast} : {\mathsf{ok}}{(x + 1, i + 1)}
+C \vdash \mathsf{rec}~{{\mathit{subtype}}^\ast} : {\mathsf{ok}}{(x, i + 1)}
 }{
 C \vdash \mathsf{rec}~({\mathit{subtype}}_1~{{\mathit{subtype}}^\ast}) : {\mathsf{ok}}{(x, i)}
 } \, {[\textsc{\scriptsize K{-}rec2{-}cons}]}
@@ -5038,7 +5029,7 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C \vdash {\mathit{rectype}} : {\mathsf{ok}}{(x)}
+C, \mathsf{recs}~{{\mathit{subtype}}^{n}} \vdash {\mathit{rectype}} : {\mathsf{ok}}{(x, 0)}
  \qquad
 {\mathit{rectype}} = \mathsf{rec}~{{\mathit{subtype}}^{n}}
  \qquad
@@ -14054,7 +14045,7 @@ C_0 = \{ \mathsf{types}~{{\mathit{dt}}^{n}} \}
  \qquad
 (\{ \mathsf{types}~{{\mathit{dt}}^{n}}{}[0 : i] \} \vdash {\mathit{dt}} : \mathsf{ok})^{i<n}
  \qquad
-(\{ \mathsf{types}~{{\mathit{dt}}^{n}},\;\allowbreak \mathsf{recs}~{{\mathit{st}}^{m}} \} \vdash {\mathit{st}} : {\mathsf{ok}}{(n + i, i)})^{i<m}
+(\{ \mathsf{types}~{{\mathit{dt}}^{n}},\;\allowbreak \mathsf{recs}~{{\mathit{st}}^{m}} \} \vdash {\mathit{st}} : {\mathsf{ok}}{(n, i)})^{i<m}
  \qquad
 (C_0 \vdash {\mathit{jt}} : \mathsf{ok})^\ast
  \qquad
