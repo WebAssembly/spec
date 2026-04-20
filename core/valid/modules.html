@@ -193,7 +193,7 @@ C \href{../valid/types.html#valid-globaltype}{\vdash} {\href{../syntax/types.htm
  \qquad
 {\href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}}} = {\href{../syntax/types.html#syntax-mut}{\mathsf{mut}}^?}~t
  \qquad
-C \href{../valid/instructions.html#valid-const}{\vdash} {\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}} : t~\href{../valid/instructions.html#valid-const}{\mathsf{const}}
+C \href{../valid/instructions.html#valid-constant}{\vdash} {\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}} : t~\href{../valid/instructions.html#valid-constant}{\mathsf{const}}
 }{
 C \href{../valid/modules.html#valid-global}{\vdash} \href{../syntax/modules.html#syntax-global}{\mathsf{global}}~{\href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}}}~{\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}} : {\href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}}}
 }
@@ -279,7 +279,7 @@ C \href{../valid/types.html#valid-tabletype}{\vdash} {\href{../syntax/types.html
  \qquad
 {\href{../syntax/types.html#syntax-tabletype}{\mathit{tabletype}}} = {\mathit{at}}~{\mathit{lim}}~{\mathit{rt}}
  \qquad
-C \href{../valid/instructions.html#valid-const}{\vdash} {\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}} : {\mathit{rt}}~\href{../valid/instructions.html#valid-const}{\mathsf{const}}
+C \href{../valid/instructions.html#valid-constant}{\vdash} {\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}} : {\mathit{rt}}~\href{../valid/instructions.html#valid-constant}{\mathsf{const}}
 }{
 C \href{../valid/modules.html#valid-table}{\vdash} \href{../syntax/modules.html#syntax-table}{\mathsf{table}}~{\href{../syntax/types.html#syntax-tabletype}{\mathit{tabletype}}}~{\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}} : {\href{../syntax/types.html#syntax-tabletype}{\mathit{tabletype}}}
 }
@@ -416,7 +416,7 @@ C \href{../valid/modules.html#valid-datamode}{\vdash} \href{../syntax/modules.ht
 \frac{
 C{.}\href{../valid/conventions.html#context}{\mathsf{mems}}{}[x] = {\mathit{at}}~{\mathit{lim}}~\href{../syntax/types.html#syntax-memtype}{\mathsf{page}}
  \qquad
-C \href{../valid/instructions.html#valid-const}{\vdash} {\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}} : {\mathit{at}}~\href{../valid/instructions.html#valid-const}{\mathsf{const}}
+C \href{../valid/instructions.html#valid-constant}{\vdash} {\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}} : {\mathit{at}}~\href{../valid/instructions.html#valid-constant}{\mathsf{const}}
 }{
 C \href{../valid/modules.html#valid-datamode}{\vdash} \href{../syntax/modules.html#syntax-datamode}{\mathsf{active}}~x~{\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}} : \href{../valid/modules.html#valid-data}{\mathsf{ok}}
 }
@@ -446,7 +446,7 @@ C \href{../valid/modules.html#valid-datamode}{\vdash} \href{../syntax/modules.ht
 \frac{
 C \href{../valid/types.html#valid-reftype}{\vdash} {\href{../syntax/types.html#syntax-elemtype}{\mathit{elemtype}}} : \href{../valid/types.html#valid-reftype}{\mathsf{ok}}
  \qquad
-(C \href{../valid/instructions.html#valid-const}{\vdash} {\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}} : {\href{../syntax/types.html#syntax-elemtype}{\mathit{elemtype}}}~\href{../valid/instructions.html#valid-const}{\mathsf{const}})^\ast
+(C \href{../valid/instructions.html#valid-constant}{\vdash} {\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}} : {\href{../syntax/types.html#syntax-elemtype}{\mathit{elemtype}}}~\href{../valid/instructions.html#valid-constant}{\mathsf{const}})^\ast
  \qquad
 C \href{../valid/modules.html#valid-elemmode}{\vdash} {\href{../syntax/modules.html#syntax-elemmode}{\mathit{elemmode}}} : {\href{../syntax/types.html#syntax-elemtype}{\mathit{elemtype}}}
 }{
@@ -502,7 +502,7 @@ C{.}\href{../valid/conventions.html#context}{\mathsf{tables}}{}[x] = {\mathit{at
  \qquad
 C \href{../valid/matching.html#match-reftype}{\vdash} {\mathit{rt}} \href{../valid/matching.html#match-reftype}{\leq} {\mathit{rt}'}
  \qquad
-C \href{../valid/instructions.html#valid-const}{\vdash} {\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}} : {\mathit{at}}~\href{../valid/instructions.html#valid-const}{\mathsf{const}}
+C \href{../valid/instructions.html#valid-constant}{\vdash} {\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}} : {\mathit{at}}~\href{../valid/instructions.html#valid-constant}{\mathsf{const}}
 }{
 C \href{../valid/modules.html#valid-elemmode}{\vdash} \href{../syntax/modules.html#syntax-elemmode}{\mathsf{active}}~x~{\href{../syntax/instructions.html#syntax-expr}{\mathit{expr}}} : {\mathit{rt}}
 }
@@ -815,7 +815,7 @@ it depends on the outcome of validation of the function, table, memory, and glob
 which itself depends on <span class="math notranslate nohighlight">\(C\)</span>.
 However, this recursion is just a specification device.
 All types needed to construct <span class="math notranslate nohighlight">\(C\)</span> can easily be determined from a simple pre-pass over the module that does not perform any actual validation.</p>
-<p>Globals, however, are not recursive but evaluated sequentially, such that each <a class="reference internal" href="instructions.html#valid-const"><span class="std std-ref">constant expressions</span></a> only has access to imported or previously defined globals.</p>
+<p>Globals, however, are not recursive but evaluated sequentially, such that each <a class="reference internal" href="instructions.html#valid-constant"><span class="std std-ref">constant expressions</span></a> only has access to imported or previously defined globals.</p>
 </div>
 </section>
 </section>

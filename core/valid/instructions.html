@@ -2739,9 +2739,9 @@ C \href{../valid/instructions.html#valid-expr}{\vdash} {{\href{../syntax/instruc
 <div class="math notranslate nohighlight">
 \[\begin{array}{&#64;{}c&#64;{}}\displaystyle
 \frac{
-(C \href{../valid/instructions.html#valid-const}{\vdash} {\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}}~\href{../valid/instructions.html#valid-const}{\mathsf{const}})^\ast
+(C \href{../valid/instructions.html#valid-constant}{\vdash} {\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}}~\href{../valid/instructions.html#valid-constant}{\mathsf{const}})^\ast
 }{
-C \href{../valid/instructions.html#valid-const}{\vdash} {{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}}^\ast}~\href{../valid/instructions.html#valid-const}{\mathsf{const}}
+C \href{../valid/instructions.html#valid-constant}{\vdash} {{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}}^\ast}~\href{../valid/instructions.html#valid-constant}{\mathsf{const}}
 }
 \qquad
 \end{array}\]</div>
@@ -2749,12 +2749,12 @@ C \href{../valid/instructions.html#valid-const}{\vdash} {{\href{../syntax/instru
 \[\begin{split}\begin{array}{&#64;{}c&#64;{}}\displaystyle
 \frac{
 }{
-C \href{../valid/instructions.html#valid-const}{\vdash} ({\mathit{nt}}{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c_{\mathit{nt}})~\href{../valid/instructions.html#valid-const}{\mathsf{const}}
+C \href{../valid/instructions.html#valid-constant}{\vdash} ({\mathit{nt}}{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c_{\mathit{nt}})~\href{../valid/instructions.html#valid-constant}{\mathsf{const}}
 }
 \qquad
 \frac{
 }{
-C \href{../valid/instructions.html#valid-const}{\vdash} ({\mathit{vt}}{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c_{\mathit{vt}})~\href{../valid/instructions.html#valid-const}{\mathsf{const}}
+C \href{../valid/instructions.html#valid-constant}{\vdash} ({\mathit{vt}}{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c_{\mathit{vt}})~\href{../valid/instructions.html#valid-constant}{\mathsf{const}}
 }
 \qquad
 \frac{
@@ -2762,63 +2762,63 @@ C \href{../valid/instructions.html#valid-const}{\vdash} ({\mathit{vt}}{.}\href{.
  \qquad
 {\href{../syntax/instructions.html#syntax-binop}{\mathit{binop}}} \in \href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{add}}~\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{sub}}~\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{mul}}
 }{
-C \href{../valid/instructions.html#valid-const}{\vdash} ({\href{../syntax/types.html#syntax-numtype}{\mathsf{i}}}{{\href{../syntax/types.html#syntax-numtype}{\scriptstyle\kern-0.1emN}}} {.} {\href{../syntax/instructions.html#syntax-binop}{\mathit{binop}}})~\href{../valid/instructions.html#valid-const}{\mathsf{const}}
+C \href{../valid/instructions.html#valid-constant}{\vdash} ({\href{../syntax/types.html#syntax-numtype}{\mathsf{i}}}{{\href{../syntax/types.html#syntax-numtype}{\scriptstyle\kern-0.1emN}}} {.} {\href{../syntax/instructions.html#syntax-binop}{\mathit{binop}}})~\href{../valid/instructions.html#valid-constant}{\mathsf{const}}
 }
 \\[3ex]\displaystyle
 \frac{
 }{
-C \href{../valid/instructions.html#valid-const}{\vdash} (\href{../syntax/instructions.html#syntax-instr-ref}{\mathsf{ref{.}null}}~{\mathit{ht}})~\href{../valid/instructions.html#valid-const}{\mathsf{const}}
+C \href{../valid/instructions.html#valid-constant}{\vdash} (\href{../syntax/instructions.html#syntax-instr-ref}{\mathsf{ref{.}null}}~{\mathit{ht}})~\href{../valid/instructions.html#valid-constant}{\mathsf{const}}
 }
 \qquad
 \frac{
 }{
-C \href{../valid/instructions.html#valid-const}{\vdash} (\href{../syntax/instructions.html#syntax-instr-i31}{\mathsf{ref{.}i\scriptstyle31}})~\href{../valid/instructions.html#valid-const}{\mathsf{const}}
+C \href{../valid/instructions.html#valid-constant}{\vdash} (\href{../syntax/instructions.html#syntax-instr-i31}{\mathsf{ref{.}i\scriptstyle31}})~\href{../valid/instructions.html#valid-constant}{\mathsf{const}}
 }
 \qquad
 \frac{
 }{
-C \href{../valid/instructions.html#valid-const}{\vdash} (\href{../syntax/instructions.html#syntax-instr-ref}{\mathsf{ref{.}func}}~x)~\href{../valid/instructions.html#valid-const}{\mathsf{const}}
+C \href{../valid/instructions.html#valid-constant}{\vdash} (\href{../syntax/instructions.html#syntax-instr-ref}{\mathsf{ref{.}func}}~x)~\href{../valid/instructions.html#valid-constant}{\mathsf{const}}
 }
 \\[3ex]\displaystyle
 \frac{
 }{
-C \href{../valid/instructions.html#valid-const}{\vdash} (\href{../syntax/instructions.html#syntax-instr-struct}{\mathsf{struct{.}new}}~x)~\href{../valid/instructions.html#valid-const}{\mathsf{const}}
+C \href{../valid/instructions.html#valid-constant}{\vdash} (\href{../syntax/instructions.html#syntax-instr-struct}{\mathsf{struct{.}new}}~x)~\href{../valid/instructions.html#valid-constant}{\mathsf{const}}
 }
 \qquad
 \frac{
 }{
-C \href{../valid/instructions.html#valid-const}{\vdash} (\href{../syntax/instructions.html#syntax-instr-struct}{\mathsf{struct{.}new\_default}}~x)~\href{../valid/instructions.html#valid-const}{\mathsf{const}}
+C \href{../valid/instructions.html#valid-constant}{\vdash} (\href{../syntax/instructions.html#syntax-instr-struct}{\mathsf{struct{.}new\_default}}~x)~\href{../valid/instructions.html#valid-constant}{\mathsf{const}}
 }
 \\[3ex]\displaystyle
 \frac{
 }{
-C \href{../valid/instructions.html#valid-const}{\vdash} (\href{../syntax/instructions.html#syntax-instr-array}{\mathsf{array{.}new}}~x)~\href{../valid/instructions.html#valid-const}{\mathsf{const}}
+C \href{../valid/instructions.html#valid-constant}{\vdash} (\href{../syntax/instructions.html#syntax-instr-array}{\mathsf{array{.}new}}~x)~\href{../valid/instructions.html#valid-constant}{\mathsf{const}}
 }
 \qquad
 \frac{
 }{
-C \href{../valid/instructions.html#valid-const}{\vdash} (\href{../syntax/instructions.html#syntax-instr-array}{\mathsf{array{.}new\_default}}~x)~\href{../valid/instructions.html#valid-const}{\mathsf{const}}
+C \href{../valid/instructions.html#valid-constant}{\vdash} (\href{../syntax/instructions.html#syntax-instr-array}{\mathsf{array{.}new\_default}}~x)~\href{../valid/instructions.html#valid-constant}{\mathsf{const}}
 }
 \qquad
 \frac{
 }{
-C \href{../valid/instructions.html#valid-const}{\vdash} (\href{../syntax/instructions.html#syntax-instr-array}{\mathsf{array{.}new\_fixed}}~x~n)~\href{../valid/instructions.html#valid-const}{\mathsf{const}}
+C \href{../valid/instructions.html#valid-constant}{\vdash} (\href{../syntax/instructions.html#syntax-instr-array}{\mathsf{array{.}new\_fixed}}~x~n)~\href{../valid/instructions.html#valid-constant}{\mathsf{const}}
 }
 \\[3ex]\displaystyle
 \frac{
 }{
-C \href{../valid/instructions.html#valid-const}{\vdash} (\href{../syntax/instructions.html#syntax-instr-extern}{\mathsf{any{.}convert\_extern}})~\href{../valid/instructions.html#valid-const}{\mathsf{const}}
+C \href{../valid/instructions.html#valid-constant}{\vdash} (\href{../syntax/instructions.html#syntax-instr-extern}{\mathsf{any{.}convert\_extern}})~\href{../valid/instructions.html#valid-constant}{\mathsf{const}}
 }
 \qquad
 \frac{
 }{
-C \href{../valid/instructions.html#valid-const}{\vdash} (\href{../syntax/instructions.html#syntax-instr-extern}{\mathsf{extern{.}convert\_any}})~\href{../valid/instructions.html#valid-const}{\mathsf{const}}
+C \href{../valid/instructions.html#valid-constant}{\vdash} (\href{../syntax/instructions.html#syntax-instr-extern}{\mathsf{extern{.}convert\_any}})~\href{../valid/instructions.html#valid-constant}{\mathsf{const}}
 }
 \\[3ex]\displaystyle
 \frac{
 C{.}\href{../valid/conventions.html#context}{\mathsf{globals}}{}[x] = t
 }{
-C \href{../valid/instructions.html#valid-const}{\vdash} (\href{../syntax/instructions.html#syntax-instr-variable}{\mathsf{global{.}get}}~x)~\href{../valid/instructions.html#valid-const}{\mathsf{const}}
+C \href{../valid/instructions.html#valid-constant}{\vdash} (\href{../syntax/instructions.html#syntax-instr-variable}{\mathsf{global{.}get}}~x)~\href{../valid/instructions.html#valid-constant}{\mathsf{const}}
 }
 \qquad
 \end{array}\end{split}\]</div>
