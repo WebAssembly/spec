@@ -771,16 +771,21 @@ let num mode = if mode = `Binary then hex_string_of_num else string_of_num
 let vec mode = if mode = `Binary then hex_string_of_vec else string_of_vec
 
 let ref_ = function
-  | NullRef -> Node ("ref.null", [])
+  | Value.NullRef -> Node ("ref.null", [])
   | Script.HostRef n -> Node ("ref.host " ^ nat32 n, [])
   | Extern.ExternRef (Script.HostRef n) -> Node ("ref.extern " ^ nat32 n, [])
   | _ -> assert false
 
-let literal mode lit =
-  match lit.it with
+let value mode v =
+  match v with
   | Num n -> Node (constop n ^ " " ^ num mode n, [])
   | Vec v -> Node (vconstop v ^ " " ^ vec mode v, [])
   | Ref r -> ref_ r
+
+let literal mode lit =
+  match lit.it with
+  | ValLit v -> value mode v
+  | NullLit t -> Node ("ref.null " ^ heaptype t, [])
 
 let definition mode isdef x_opt def =
   try
@@ -830,7 +835,7 @@ let nanop (n : nanop) =
   | _ -> .
 
 let num_pat mode = function
-  | NumPat n -> literal mode (Value.Num n.it @@ n.at)
+  | NumPat n -> literal mode (ValLit (Value.Num n.it) @@ n.at)
   | NanPat nan -> Node (constop nan.it ^ " " ^ nanop nan, [])
 
 let lane_pat mode pat shape =
@@ -851,7 +856,7 @@ let vec_pat mode = function
 let ref_pat = function
   | RefPat r -> ref_ r.it
   | RefTypePat t -> Node ("ref." ^ heaptype t, [])
-  | NullPat -> Node ("ref.null", [])
+  | NullPat t -> Node ("ref.null " ^ heaptype t, [])
 
 let rec result mode res =
   match res.it with

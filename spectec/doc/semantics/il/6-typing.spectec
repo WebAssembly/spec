@@ -633,7 +633,7 @@ rule Ok_decs/cons:
 relation Ok_inst: E |- inst : param* -> OK
 
 rule Ok_inst:
-  E |- INST `{q*} a* `= dt : p* -> OK
+  E |- INST `{q*} a* `=> dt : p* -> OK
   -- Ok_params: E |- q* : OK
   -- Ok_args: E ++ $paramenv(q*) |- a* : p* => s
   -- Ok_deftyp: E ++ $paramenv(q*) |- dt : OK
@@ -649,7 +649,7 @@ rule Ok_rule:
 relation Ok_clause: E |- clause : param* -> typ
 
 rule Ok_clause:
-  E |- CLAUSE `{q*} a* `= e `- pr* : p* -> t
+  E |- CLAUSE `{q*} a* `=> e `- pr* : p* -> t
   -- Ok_params: E |- q* : OK
   -- Ok_args: E ++ $paramenv(q*) |- a* : p* => s
   -- Ok_exp: E ++ $paramenv(q*) |- e : t

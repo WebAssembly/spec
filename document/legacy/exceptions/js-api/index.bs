@@ -1213,8 +1213,8 @@ The <dfn constructor for="Tag" lt="Tag(type)">new Tag(|type|)</dfn> constructor 
 
 1. Let |parameters| be |type|["parameters"].
 1. Let |wasmParameters| be «».
-1. [=list/iterate|For each=] |type| of |parameters|,
-    1. [=list/Append=] [=ToValueType=](|type|) to |wasmParameters|.
+1. [=list/iterate|For each=] |paramType| of |parameters|,
+    1. [=list/Append=] [=ToValueType=](|paramType|) to |wasmParameters|.
 1. Let |store| be the current agent's [=associated store=].
 1. Let (|store|, |tagAddress|) be [=tag_alloc=](|store|, |wasmParameters|).
 1. Set the current agent's [=associated store=] to |store|.

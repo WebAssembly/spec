@@ -10,6 +10,7 @@ project = 'NanoWasm'
 title = 'NanoWasm Specification'
 author = 'The SpecTec Team'
 language = 'en'
+today = ' '  # Avoid spurious diffs
 
 exclude_patterns = ['_build', 'output', 'Thumbs.db', '.DS_Store']
 

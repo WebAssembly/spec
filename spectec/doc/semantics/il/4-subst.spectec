@@ -250,7 +250,7 @@ def $subst_prem(s, ITER pr it ep*) = ITER $subst_prem(s ++ s' ++ s'', pr) $subst
 
 
 def $subst_inst(subst, inst) : inst
-def $subst_inst(s, INST `{q*} a* `= dt) = INST `{$subst_param(s, q')*} $subst_arg(s ++ s', a)* `= $subst_deftyp(s ++ s', dt)
+def $subst_inst(s, INST `{q*} a* `=> dt) = INST `{$subst_param(s, q')*} $subst_arg(s ++ s', a)* `=> $subst_deftyp(s ++ s', dt)
   -- if (q'*, s') = $refresh_params(q*)
 
 def $subst_rule(subst, rul) : rul
@@ -258,7 +258,7 @@ def $subst_rule(s, RULE `{q*} e `- pr*) = RULE `{$subst_param(s, q')*} $subst_ex
   -- if (q'*, s') = $refresh_params(q*)
 
 def $subst_clause(subst, clause) : clause
-def $subst_clause(s, CLAUSE `{q*} a* `= e `- pr*) = CLAUSE `{$subst_param(s, q')*} $subst_arg(s ++ s', a)* `= $subst_exp(s ++ s', e) `- $subst_prem(s ++ s', pr)*
+def $subst_clause(s, CLAUSE `{q*} a* `=> e `- pr*) = CLAUSE `{$subst_param(s, q')*} $subst_arg(s ++ s', a)* `=> $subst_exp(s ++ s', e) `- $subst_prem(s ++ s', pr)*
   -- if (q'*, s') = $refresh_params(q*)
 
 def $subst_prod(subst, prod) : prod

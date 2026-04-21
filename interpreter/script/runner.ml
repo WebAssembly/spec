@@ -265,7 +265,7 @@ let string_of_ref_pat (p : ref_pat) =
   match p with
   | RefPat r -> Value.string_of_ref r.it
   | RefTypePat t -> Types.string_of_heaptype t
-  | NullPat -> "null"
+  | NullPat t -> "null"
 
 let rec string_of_result r =
   match r.it with
@@ -286,7 +286,7 @@ let rec type_of_result r =
   | VecResult (VecPat v) -> Types.VecT (Value.type_of_vec v)
   | RefResult (RefPat r) -> Types.RefT (Value.type_of_ref r.it)
   | RefResult (RefTypePat t) -> Types.(RefT (NoNull, t))  (* assume closed *)
-  | RefResult (NullPat) -> Types.(RefT (Null, ExternHT))
+  | RefResult (NullPat t) -> Types.(RefT (Null, t))
   | EitherResult rs ->
     let ts = List.map type_of_result rs in
     List.fold_left (fun t1 t2 ->
@@ -359,6 +359,16 @@ let register_instance name inst =
 
 (* Running *)
 
+let value_of_lit lit =
+  match lit.it with
+  | ValLit v -> v
+  | NullLit ht -> Value.(Ref NullRef)
+
+let type_of_lit lit =
+  match lit.it with
+  | ValLit v -> Value.type_of_value v
+  | NullLit ht -> Types.RefT (Types.Null, ht)
+
 let validity = function
   | Ok t -> ()
   | Error (at, msg) -> Invalid.error at msg
@@ -391,20 +401,20 @@ let run_instantiation m =
 
 let run_action act : Value.t list =
   match act.it with
-  | Invoke (x_opt, name, vs) ->
+  | Invoke (x_opt, name, lits) ->
     trace ("Invoking function \"" ^ Types.string_of_name name ^ "\"...");
     let inst = lookup_instance x_opt act.at in
     (match Engine.module_export inst name with
     | Some (Engine.ExternFunc f) ->
       let (ts1, _ts2) =
         Types.(functype_of_comptype (expand_deftype (Engine.func_type f))) in
-      if List.length vs <> List.length ts1 then
+      if List.length lits <> List.length ts1 then
         Script.error act.at "wrong number of arguments";
-      List.iter2 (fun v t ->
-        if not (Match.match_valtype [] (Value.type_of_value v.it) t) then
-          Script.error v.at "wrong type of argument"
-      ) vs ts1;
-      result (Engine.func_call f (List.map (fun v -> v.it) vs))
+      List.iter2 (fun lit t ->
+        if not (Match.match_valtype [] (type_of_lit lit) t) then
+          Script.error lit.at "wrong type of argument"
+      ) lits ts1;
+      result (Engine.func_call f (List.map value_of_lit lits))
     | Some _ -> Assert.error act.at "export is not a function"
     | None -> Assert.error act.at "undefined export"
     )
@@ -463,7 +473,7 @@ let assert_ref_pat r p =
   | RefTypePat Types.FuncHT, Instance.FuncRef _
   | RefTypePat Types.ExnHT, Exn.ExnRef _
   | RefTypePat Types.ExternHT, _ -> true
-  | NullPat, Value.NullRef -> true
+  | NullPat _, Value.NullRef -> true
   | _ -> false
 
 let rec assert_result v r =

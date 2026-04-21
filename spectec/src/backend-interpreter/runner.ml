@@ -128,11 +128,16 @@ let err_exit = ref true
 
 (** Main functions **)
 
+let value_of_arg = function
+  | ValLit v -> v
+  | NullLit _ -> Value.(Ref NullRef)
+
 let invoke module_name funcname args =
-  log "[Invoking %s %s...]\n" funcname (Value.string_of_values args);
+  let values = List.map value_of_arg args in
+  log "[Invoking %s %s...]\n" funcname (Value.string_of_values values);
 
   let funcaddr = get_export_addr funcname module_name in
-  Interpreter.invoke [funcaddr; al_of_list al_of_value args]
+  Interpreter.invoke [funcaddr; al_of_list al_of_value values]
 
 
 let get_global_value module_name globalname =
@@ -296,10 +301,10 @@ let run_wasm' args module_ =
   (* TODO: Only Int32 arguments/results are acceptable *)
   match args with
   | funcname :: args' ->
-    let make_value s = Value.Num (I32 (Int32.of_string s)) in
+    let make_lit s = ValLit (Value.Num (I32 (Int32.of_string s))) in
 
     (* Invoke *)
-    invoke (Register.get_module_name None) funcname (List.map make_value args')
+    invoke (Register.get_module_name None) funcname (List.map make_lit args')
     (* Print invocation result *)
     |> al_to_list al_to_value
     |> Value.string_of_values

@@ -1122,8 +1122,7 @@ let rec step (c : config) : config =
       | Func.AstFunc (_, inst', func) ->
         let Func (_x, ls, es) = func.it in
         let m = Lib.Promise.value inst' in
-        let s = subst_of m in
-        let ts = List.map (fun {it = Local t; _} -> subst_valtype s t) ls in
+        let ts = List.map (fun {it = Local t; _} -> t) ls in
         let lvs = List.(rev (map Option.some args) @ map default_value ts) in
         let frame' = {inst = m; locals = List.map ref lvs} in
         let instr' = [Label (n2, [], ([], List.map plain es)) @@ func.at] in

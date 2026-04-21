@@ -1500,14 +1500,17 @@ literal_vec :
   | LPAR VEC_CONST VECSHAPE list(num) RPAR { snd (vec $2 $3 $4 $sloc) }
 
 literal_ref :
-  | LPAR REF_NULL heaptype? RPAR { Value.NullRef }
   | LPAR REF_HOST NAT RPAR { Script.HostRef (nat32 $3 $loc($3)) }
   | LPAR REF_EXTERN NAT RPAR { Extern.ExternRef (Script.HostRef (nat32 $3 $loc($3))) }
 
+literal_null :
+  | LPAR REF_NULL heaptype RPAR { $3 (empty_context ()) }
+
 literal :
-  | literal_num { Value.Num $1 @@ $sloc }
-  | literal_vec { Value.Vec $1 @@ $sloc }
-  | literal_ref { Value.Ref $1 @@ $sloc }
+  | literal_num { ValLit (Value.Num $1) @@ $sloc }
+  | literal_vec { ValLit (Value.Vec $1) @@ $sloc }
+  | literal_ref { ValLit (Value.Ref $1) @@ $sloc }
+  | literal_null { NullLit $1 @@ $sloc }
 
 numpat :
   | num { fun sh -> vec_lane_lit sh $1.it $1.at }
@@ -1517,6 +1520,8 @@ result :
   | literal_num { NumResult (NumPat ($1 @@ $sloc)) @@ $sloc }
   | LPAR CONST NAN RPAR { NumResult (NanPat (nanop $2 ($3 @@ $loc($3)))) @@ $sloc }
   | literal_ref { RefResult (RefPat ($1 @@ $sloc)) @@ $sloc }
+  | LPAR REF_NULL RPAR { RefResult (RefPat (Value.NullRef @@ $sloc)) @@ $sloc }
+  | LPAR REF_NULL heaptype RPAR { RefResult (NullPat ($3 (empty_context ()))) @@ $sloc }
   | LPAR REF RPAR { RefResult (RefTypePat AnyHT) @@ $sloc }
   | LPAR REF_EQ RPAR { RefResult (RefTypePat EqHT) @@ $sloc }
   | LPAR REF_I31 RPAR { RefResult (RefTypePat I31HT) @@ $sloc }

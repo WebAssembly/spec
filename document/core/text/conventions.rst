@@ -42,8 +42,8 @@ In order to distinguish symbols of the textual syntax from symbols of the abstra
 * ${grammar-case: $(T)*} is a possibly empty sequence of iterations of ${:T}.
   (This is a shorthand for ${grammar-case: $(T)^n} used where ${:n} is not relevant.)
 
-* ${grammar-case: $(T)+} is a possibly empty sequence of iterations of ${:T}.
-  (This is a shorthand for ${grammar-case: $(T)^n} used where ${:n} is not relevant.)
+* ${grammar-case: $(T)+} is a non-empty sequence of iterations of ${:T}.
+  (This is a shorthand for ${grammar-case: $(T)^n} where ${:n >= 1}.)
 
 * ${grammar-case: $(T)?} is an optional occurrence of ${:T}.
   (This is a shorthand for ${grammar-case: $(T)^n} where ${:n<=1}.)

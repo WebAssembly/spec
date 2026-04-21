@@ -184,9 +184,9 @@ syntax dec =
   | GRAM id param* `: typ `= prod*
   | REC dec*
 
-syntax inst = INST `{quant*} arg* `= deftyp
+syntax inst = INST `{quant*} arg* `=> deftyp
 syntax rul = RULE `{quant*} exp `- prem*
-syntax clause = CLAUSE `{quant*} arg* `= exp `- prem*
+syntax clause = CLAUSE `{quant*} arg* `=> exp `- prem*
 syntax prod = PROD `{quant*} sym `=> exp `- prem*
 
 
