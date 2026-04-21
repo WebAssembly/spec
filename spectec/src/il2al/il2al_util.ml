@@ -34,20 +34,26 @@ let prems_of_rule rule =
 
 let lhs_of_prem pr =
   match pr.it with
-  | LetPr (lhs, _, _) -> lhs
+  | LetPr (_, lhs, _) -> lhs
   | _ -> error pr.at "expected a LetPr"
 let rhs_of_prem pr =
   match pr.it with
-  | LetPr (_, rhs, _) -> rhs
+  | LetPr (_, _, rhs) -> rhs
   | _ -> error pr.at "expected a LetPr"
 let replace_lhs lhs pr =
   let open Il.Free in
   match pr.it with
-  | LetPr (lhs', rhs, _) ->
+  | LetPr (qs, lhs', rhs) ->
     if Il.Eq.eq_exp lhs lhs' then
       pr
     else
-      { pr with it = LetPr (lhs, rhs, (free_exp lhs).varid |> Set.elements) }
+      let free = free_exp lhs in
+      let qs' = List.filter (fun q ->
+        match q.it with
+        | ExpP (id, _) -> Set.mem id.it free.varid
+        | _ -> true
+      ) qs in
+      { pr with it = LetPr (qs', lhs, rhs) }
   | _ -> error pr.at "expected a LetPr"
 
 let case_of_case e =
@@ -87,7 +93,7 @@ let split_last_case mixop = Option.get (split_last_case' mixop)
 
 let is_let_prem_with_rhs_type t prem =
   match prem.it with
-  | LetPr (_, e, _) ->
+  | LetPr (_, _, e) ->
     (match e.note.it with
     | VarT (id, []) -> id.it = t
     | _ -> false

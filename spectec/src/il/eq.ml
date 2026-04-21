@@ -147,8 +147,8 @@ and eq_prem prem1 prem2 =
   | IfPr e1, IfPr e2 -> eq_exp e1 e2
   | IterPr (prem1, e1), IterPr (prem2, e2) ->
     eq_prem prem1 prem2 && eq_iterexp e1 e2
-  | LetPr (e1, e1', xs1), LetPr (e2, e2', xs2) ->
-    eq_exp e1 e2 && eq_exp e1' e2' && xs1 = xs2
+  | LetPr (qs1, e11, e12), LetPr (qs2, e21, e22) ->
+    eq_list eq_param qs1 qs2 && eq_exp e11 e21 && eq_exp e12 e22
   | _, _ -> prem1.it = prem2.it
 
 

@@ -249,7 +249,7 @@ and valid_typfield env (atom, (t, qs, prems), _hints) =
   valid_atom env atom;
   let env' = valid_typ_bind env t in
   let env'' = valid_quants env' qs in
-  List.iter (valid_prem env'') prems
+  ignore (valid_prems env'' prems)
 
 and valid_typcase env (mixop, (t, qs, prems), _hints) =
   Debug.(log_at "il.valid_typcase" t.at
@@ -267,7 +267,7 @@ and valid_typcase env (mixop, (t, qs, prems), _hints) =
   valid_mixop env mixop;
   let env' = valid_typ_bind env t in
   let env'' = valid_quants env' qs in
-  List.iter (valid_prem env'') prems
+  ignore (valid_prems env'' prems)
 
 
 (* Expressions *)
@@ -592,26 +592,33 @@ and valid_prem env prem =
     let ps, mixop', t, _rules = Env.find_rel env x in
     assert (Mixop.eq mixop mixop');
     let s = valid_args env as_ ps Subst.empty prem.at in
-    valid_expmix env mixop e (mixop, Subst.subst_typ s t) e.at
+    valid_expmix env mixop e (mixop, Subst.subst_typ s t) e.at;
+    env
   | IfPr e ->
-    valid_exp env e (BoolT $ e.at)
-  | LetPr (e1, e2, xs) ->
+    valid_exp env e (BoolT $ e.at);
+    env
+  | LetPr (qs, e1, e2) ->
+    let env' = valid_quants env qs in
     let t = infer_exp env e2 in
-    valid_exp ~side:`Lhs env e1 t;
+    valid_exp ~side:`Lhs env' e1 t;
     valid_exp env e2 t;
-    let target_ids = Free.{empty with varid = Set.of_list xs} in
-    let free_ids = Free.(free_exp e1) in
-    if not (Free.subset target_ids free_ids) then
-      error prem.at ("target identifier(s) " ^
-        ( Free.Set.elements (Free.diff target_ids free_ids).varid |>
+    let bound = Free.(bound_quants qs) in
+    let free = Free.(free_exp e1) in
+    if not (Free.subset bound free) then
+      error prem.at ("quantified identifier(s) " ^
+        ( Free.Set.elements (Free.diff bound free).varid |>
           List.map (fun x -> "`" ^ x ^ "`") |>
           String.concat ", " ) ^
-        " do not occur in left-hand side expression")
+        " do not occur in left-hand side expression");
+    env'
   | ElsePr ->
-    ()
+    env
   | IterPr (prem', ite) ->
     let _it, env' = valid_iterexp env ite prem.at in
-    valid_prem env' prem'
+    let _env'' = valid_prem env' prem' in
+    env  (* TODO: out it *)
+
+and valid_prems env prems = List.fold_left valid_prem env prems
 
 
 (* Definitions *)
@@ -695,7 +702,7 @@ let valid_rule env mixop t rule =
   | RuleD (_x, qs, mixop', e, prems) ->
     let env' = valid_quants env qs in
     valid_expmix ~side:`Lhs env' mixop' e (mixop, t) e.at;
-    List.iter (valid_prem env') prems
+    ignore (valid_prems env' prems)
 
 let valid_clause env x ps t clause =
   Debug.(log_in "il.valid_clause" line);
@@ -706,8 +713,8 @@ let valid_clause env x ps t clause =
   | DefD (qs, as_, e, prems) ->
     let env' = valid_quants env qs in
     let s = valid_args env' as_ ps Subst.empty clause.at in
-    valid_exp env' e (Subst.subst_typ s t);
-    List.iter (valid_prem env') prems
+    let env'' = valid_prems env' prems in
+    valid_exp env'' e (Subst.subst_typ s t)
 
 let valid_prod env ps t prod =
   Debug.(log_in "il.valid_prod" line);
@@ -718,8 +725,8 @@ let valid_prod env ps t prod =
   | ProdD (qs, g, e, prems) ->
     let env' = valid_quants env qs in
     let _t' = valid_sym env' g in
-    valid_exp env' e t;
-    List.iter (valid_prem env') prems
+    let env'' = valid_prems env' prems in
+    valid_exp env'' e t
 
 let infer_def env d : Env.t =
   match d.it with

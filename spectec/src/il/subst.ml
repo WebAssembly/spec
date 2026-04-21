@@ -141,12 +141,12 @@ and subst_deftyp s dt =
 and subst_typfield s (atom, (t, qs, prems), hints) =
   let t', s' = subst_typ' s t in
   let qs', s'' = subst_quants s' qs in
-  (atom, (t', qs', subst_list subst_prem s'' prems), hints)
+  (atom, (t', qs', subst_prems s'' prems), hints)
 
 and subst_typcase s (op, (t, qs, prems), hints) =
   let t', s' = subst_typ' s t in
   let qs', s'' = subst_quants s' qs in
-  (op, (t', qs', subst_list subst_prem s'' prems), hints)
+  (op, (t', qs', subst_prems s'' prems), hints)
 
 
 (* Expressions *)
@@ -237,8 +237,13 @@ and subst_prem s prem =
   | IterPr (prem1, iterexp) ->
     let prem1', it' = subst_iterexp s subst_prem prem1 iterexp in
     IterPr (prem1', it')
-  | LetPr (e1, e2, xs) -> LetPr (subst_exp s e1, subst_exp s e2, xs)
+  | LetPr (qs, e1, e2) ->
+    let s' = remove_varids s (Free.bound_quants qs).Free.varid in
+    LetPr (qs, subst_exp s' e1, subst_exp s e2)
   ) $ prem.at
+
+and subst_prems s prems =
+  fst (subst_list_dep subst_prem Free.bound_prem s prems)
 
 
 (* Definitions *)
@@ -274,4 +279,4 @@ let subst_typ s t = if s = empty then t else subst_typ s t
 let subst_deftyp s dt = if s = empty then dt else subst_deftyp s dt
 let subst_exp s e = if s = empty then e else subst_exp s e
 let subst_sym s g = if s = empty then g else subst_sym s g
-let subst_prem s pr = if s = empty then pr else subst_prem s pr
+let subst_prems s prs = if s = empty then prs else subst_prems s prs

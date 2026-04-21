@@ -72,7 +72,7 @@ and transform_prem t p =
   let it = match p.it with
     | RulePr (id, as1, op, e) -> RulePr (id, List.map (transform_arg t) as1, op, transform_exp t e)
     | IfPr e -> IfPr (transform_exp t e)
-    | LetPr (e1, e2, ss) -> LetPr (transform_exp t e1, transform_exp t e2, ss)
+    | LetPr (qs, e1, e2) -> LetPr (qs, transform_exp t e1, transform_exp t e2)
     | ElsePr -> ElsePr
     | IterPr (p, ie) -> IterPr (transform_prem t p, transform_iterexp t ie)
   in

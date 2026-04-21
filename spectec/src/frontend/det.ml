@@ -188,7 +188,7 @@ and det_prem pr =
   match pr.it with
   | RulePr (_x, _as, _mixop, e) -> det_exp e
   | IfPr e -> det_cond_exp e
-  | LetPr (e1, _e2, _xs) -> det_exp e1
+  | LetPr (_qs, e1, _e2) -> det_exp e1
   | ElsePr -> empty
   | IterPr (pr1, ite) -> det_iterexp (det_prem pr1) ite
 

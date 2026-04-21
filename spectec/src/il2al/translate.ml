@@ -142,7 +142,7 @@ let is_winstr_prem = is_let_prem_with_rhs_type "inputT"
 
 let lhs_of_prem pr =
   match pr.it with
-  | Il.LetPr (lhs, _, _) -> lhs
+  | Il.LetPr (_, lhs, _) -> lhs
   | _ -> Error.error pr.at "prose translation" "expected a LetPr"
 
 let rec is_wasm_value e =
@@ -979,7 +979,8 @@ and translate_prem prem =
   match prem.it with
   | Il.IfPr exp -> [ ifI (translate_exp exp, [], []) ~at ]
   | Il.ElsePr -> [ otherwiseI [] ~at ]
-  | Il.LetPr (exp1, exp2, ids) ->
+  | Il.LetPr (qs, exp1, exp2) ->
+    let ids = List.filter_map (fun q -> match q.it with (Il.ExpP (id, _)) -> Some id.it | _ -> None) qs in
     init_lhs_id ();
     translate_letpr exp1 exp2 ids
   | Il.RulePr (id, args, _, exp) ->

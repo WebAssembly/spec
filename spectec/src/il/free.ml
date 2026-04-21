@@ -110,11 +110,16 @@ and free_prem prem =
   match prem.it with
   | RulePr (x, as_, _op, e) -> free_relid x ++ free_args as_ ++ free_exp e
   | IfPr e -> free_exp e
-  | LetPr (e1, e2, _) -> free_exp e1 ++ free_exp e2
+  | LetPr (qs, e1, e2) -> (free_exp e1 -- bound_quants qs) ++ free_exp e2
   | ElsePr -> empty
   | IterPr (prem1, ite) -> (free_prem prem1 -- bound_iterexp ite) ++ free_iterexp ite
 
-and free_prems prems = free_list free_prem prems
+and bound_prem prem =
+  match prem.it with
+  | LetPr (qs, _e1, _e2) -> bound_quants qs
+  | _ -> empty
+
+and free_prems prems = free_list_dep free_prem bound_prem prems
 
 
 (* Definitions *)

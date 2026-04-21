@@ -39,6 +39,7 @@ val subst_deftyp : subst -> deftyp -> deftyp
 val subst_typcase : subst -> typcase -> typcase
 val subst_typfield : subst -> typfield -> typfield
 
+val subst_prems : subst -> prem list -> prem list
 val subst_args : subst -> arg list -> arg list
 val subst_params : subst -> param list -> param list * subst
 

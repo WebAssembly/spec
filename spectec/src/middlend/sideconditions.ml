@@ -131,7 +131,7 @@ let rec t_prem env prem =
   (match prem.it with
   | RulePr (_, args, _, exp) -> List.concat_map (t_arg env) args @ t_exp env exp
   | IfPr e -> t_exp env e
-  | LetPr (e1, e2, _) -> t_exp env e1 @ t_exp env e2
+  | LetPr (_qs, e1, e2) -> t_exp env e1 @ t_exp env e2
   | ElsePr -> []
   | IterPr (prem, iterexp)
   -> iter_side_conditions env iterexp @

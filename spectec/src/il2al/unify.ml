@@ -40,6 +40,13 @@ let imap : idxs ref = ref Map.empty
 let init_env frees = { idxs = !imap; frees }
 
 
+let ids_of_quants qs =
+  List.filter_map (fun q ->
+    match q.it with
+    | ExpP (id, _) -> Some id.it
+    | _ -> None
+  ) qs
+
 let gen_new_unified ?prefix env ty =
   let var =
     match prefix with
@@ -58,6 +65,11 @@ let rename_string _env s =
 
 let rename_id env id = { id with it = rename_string env id.it }
 
+let rename_quant env q =
+  match q.it with
+  | ExpP (id, t) -> ExpP (rename_id env id, t) $ q.at
+  | _ -> q
+
 let rename_iterexp env (iter, ides) = (iter, List.map (fun (id, e) -> (rename_id env id, e)) ides)
 
 let rename_exp env exp =
@@ -68,7 +80,7 @@ let rename_exp env exp =
 
 let rename_prem env p =
   {p with it = match p.it with
-  | LetPr (e1, e2, ss) -> LetPr (e1, e2, List.map (rename_string env) ss)
+  | LetPr (qs, e1, e2) -> LetPr (List.map (rename_quant env) qs, e1, e2)
   | p' -> p' }
 
 let rename_rule_def (env, rd) =
@@ -319,14 +331,14 @@ let unify_enc env premss encs =
 
 let is_encoded_ctxt pr =
   match pr.it with
-  | LetPr (_, e, _) ->
+  | LetPr (_, _, e) ->
     (match e.note.it with
     | VarT (id, []) -> List.mem id.it ["inputT"; "stackT"; "contextT"]
     | _ -> false)
   | _ -> false
 let is_encoded_pop_or_winstr pr =
   match pr.it with
-  | LetPr (_, e, _) ->
+  | LetPr (_, _, e) ->
     (match e.note.it with
     | VarT (id, []) -> List.mem id.it ["inputT"; "stackT"]
     | _ -> false)
@@ -433,7 +445,7 @@ let unify_rule_def (env: env) (rule: rule_def) : rule_def =
             List.concat_map
               (fun p ->
                 match p.it with
-                | LetPr (_, _, ids) -> ids
+                | LetPr (qs, _, _) -> ids_of_quants qs
                 | _ -> assert false
               )
               pops
@@ -461,7 +473,7 @@ let reorder_unified_args args prems =
   (* Helpers *)
   let has_uarg_on_rhs p =
     match p.it with
-    | LetPr (_, {it = VarE id; _}, _) -> is_unified_id id.it
+    | LetPr (_, _, {it = VarE id; _}) -> is_unified_id id.it
     | _ -> false
   in
   let on_rhs p a =

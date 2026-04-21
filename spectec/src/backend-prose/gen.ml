@@ -276,7 +276,7 @@ let inject_ctx frees c stmts =
 
 let rec prem_to_instrs prem =
   match prem.it with
-  | Ast.LetPr (e1, e2, _) ->
+  | Ast.LetPr (_, e1, e2) ->
     [ LetS (exp_to_expr e1, exp_to_expr e2) ]
   | Ast.IfPr e ->
     if_expr_to_instrs e

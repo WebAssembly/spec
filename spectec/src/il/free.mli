@@ -24,6 +24,7 @@ val free_params : param list -> sets
 
 val bound_iter : iter -> sets
 val bound_iterexp : iterexp -> sets
+val bound_prem : prem -> sets
 val bound_quant : quant -> sets
 val bound_param : param -> sets
 val bound_def : def -> sets

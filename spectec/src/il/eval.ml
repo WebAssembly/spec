@@ -498,7 +498,7 @@ and reduce_prem env prem : [`True of Subst.t | `False | `None] =
     | _ -> `None
     )
   | ElsePr -> `True Subst.empty
-  | LetPr (e1, e2, _ids) ->
+  | LetPr (_qs, e1, e2) ->
     (match match_exp env Subst.empty e2 e1 with
     | Some s -> `True s
     | None -> `None
@@ -510,7 +510,7 @@ and reduce_prem env prem : [`True of Subst.t | `False | `None] =
      * and others, which are assumed to flow inwards. *)
     let rec is_let_bound prem (x, _) =
       match prem.it with
-      | LetPr (_, _, xs) -> List.mem x.it xs
+      | LetPr (qs, _, _) -> Free.(Set.mem x.it (bound_quants qs).varid)
       | IterPr (premI, iterexpI) ->
         let _iter1', xes1' = reduce_iterexp env iterexpI in
         let xes1_out, _ = List.partition (is_let_bound premI) xes1' in
@@ -961,7 +961,7 @@ and equiv_prem env pr1 pr2 =
   | RulePr (id1, mixop1, e1), RulePr (id2, mixop2, e2) ->
     id1.it = id2.it && Eq.eq_mixop mixop1 mixop2 && equiv_exp env e1 e2
   | IfPr e1, IfPr e2 -> equiv_exp env e1 e2
-  | LetPr (e11, e12, _ids1), LetPr (e21, e22, _id2) ->
+  | LetPr (_qs1, e11, e12), LetPr (_qs2, e21, e22) ->
     equiv_exp env e11 e21 && equiv_exp env e12 e22
   | IterPr (pr11, iter1), IterPr (pr21, iter2) ->
     equiv_prem env pr11 pr21 && equiv_iter env (fst iter1) (fst iter2)

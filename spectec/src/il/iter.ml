@@ -210,7 +210,7 @@ and prem pr =
   | IfPr e -> exp e
   | ElsePr -> ()
   | IterPr (pr1, it) -> iterexp prem pr1 it
-  | LetPr (e1, e2, _) -> exp e1; exp e2
+  | LetPr (qs, e1, e2) -> params qs; exp e1; exp e2
 
 and prems prs = list prem prs
 
@@ -244,19 +244,19 @@ let hintdef d =
 
 let inst i =
   match i.it with
-  | InstD (ps, as_, dt) -> params ps; args as_; deftyp dt
+  | InstD (qs, as_, dt) -> params qs; args as_; deftyp dt
 
 let rule r =
   match r.it with
-  | RuleD (x, ps, op, e, prs) -> ruleid x; params ps; mixop op; exp e; prems prs
+  | RuleD (x, qs, op, e, prs) -> ruleid x; params qs; mixop op; exp e; prems prs
 
 let clause c =
   match c.it with
-  | DefD (ps, as_, e, prs) -> params ps; args as_; exp e; prems prs
+  | DefD (qs, as_, e, prs) -> params qs; args as_; exp e; prems prs
 
 let prod p =
   match p.it with
-  | ProdD (ps, g, e, prs) -> params ps; sym g; exp e; prems prs
+  | ProdD (qs, g, e, prs) -> params qs; sym g; exp e; prems prs
 
 let rec def d =
   visit_def d;
