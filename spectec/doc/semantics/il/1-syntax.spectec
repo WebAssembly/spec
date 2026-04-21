@@ -4,6 +4,8 @@ def $with_higher_order : bool
 def $with_polymorphic_types : bool
 def $with_dependent_types : bool
 def $with_family_types : bool
+def $with_negation : bool
+def $with_else : bool
 def $with_grammars : bool
 def $with_noncomputational : bool  ;; semantic restriction
 
@@ -186,8 +188,8 @@ syntax quant = param
 syntax prem =
   | REL id arg* `: exp              ;; can only occur in relations
   | IF exp
-  | ELSE
-  | NOT prem
+  | ELSE                            -- if $with_negation /\ $with_else
+  | NOT prem                        -- if $with_negation
   | LET exp `= exp                  ;; TODO: variables/quantifiers?
   | ITER prem iter exppull*
 
