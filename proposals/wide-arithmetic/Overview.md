@@ -290,6 +290,7 @@ Engines:
 * [x] [Wasmi](https://github.com/wasmi-labs/wasmi/pull/1383)
 * [x] [Chasm](https://github.com/CharlieTap/chasm/pull/110)
 * [x] [JavaScriptCore](https://commits.webkit.org/311366@main)
+* [x] [SpiderMonkey](https://bugzilla.mozilla.org/show_bug.cgi?id=1949081)
 
 Toolchains:
 
