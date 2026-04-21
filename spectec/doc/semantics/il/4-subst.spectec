@@ -294,7 +294,7 @@ def $subst_expprems(s, e `- pr*) = $subst_exp(s ++ s', e) `- $subst_prem(s, pr)*
 ;; Definitions
 
 def $subst_inst(subst, inst) : inst
-def $subst_inst(s, INST `{q*} a* `= dt) = INST `{$subst_param(s, q')*} $subst_arg(s ++ s', a)* `= $subst_deftyp(s ++ s', dt)
+def $subst_inst(s, INST `{q*} a* `=> dt) = INST `{$subst_param(s, q')*} $subst_arg(s ++ s', a)* `=> $subst_deftyp(s ++ s', dt)
   -- if (q'*, s') = $refresh_params(q*)
 
 def $subst_rule(subst, rul) : rul
@@ -302,7 +302,7 @@ def $subst_rule(s, RULE `{q*} epr) = RULE `{$subst_param(s, q')*} $subst_expprem
   -- if (q'*, s') = $refresh_params(q*)
 
 def $subst_clause(subst, clause) : clause
-def $subst_clause(s, CLAUSE `{q*} a* `= epr) = CLAUSE `{$subst_param(s, q')*} $subst_arg(s ++ s', a)* `= $subst_expprems(s ++ s', epr)
+def $subst_clause(s, CLAUSE `{q*} a* `=> epr) = CLAUSE `{$subst_param(s, q')*} $subst_arg(s ++ s', a)* `=> $subst_expprems(s ++ s', epr)
   -- if (q'*, s') = $refresh_params(q*)
 
 def $subst_prod(subst, prod) : prod

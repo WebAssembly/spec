@@ -60,7 +60,7 @@ syntax f64 = fN(`64)
 def $fzero(N) : fN(N) hint(show $(+0))
 def $fzero(N) = POS (SUBNORM 0)
 
-def $fnat(N, nat) : fN(N)  hint(show $(+%))
+def $fnat(N, nat) : fN(N)  hint(show $(+%2))
 def $fnat(N, n) = POS (NORM n 0)
 
 def $fone(N) : fN(N)  hint(show $(+1))

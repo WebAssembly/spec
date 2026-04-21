@@ -430,6 +430,6 @@ $${definition-ignore: typesd importsd tagsd globalsd memsd tablesd funcsd datasd
 Abbreviations
 .............
 
-In a source file, the toplevel ${grammar-case: "(" "module" Tdecldots ")"} surrounding the module body may be omitted.
+In a source file, the toplevel ${grammar-case: "(" "module" Tdecldots_(I) ")"} surrounding the module body may be omitted.
 
 $${grammar: Tmodule/abbrev}
