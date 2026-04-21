@@ -184,7 +184,7 @@ syntax param =
 syntax quant = param
 
 syntax prem =
-  | REL id arg* `: exp              -- if $with_noncomputational
+  | REL id arg* `: exp              ;; can only occur in relations
   | IF exp
   | ELSE
   | NOT prem
