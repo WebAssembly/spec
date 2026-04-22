@@ -34,18 +34,6 @@ let flatten_rec def =
   | Ast.RecD defs -> defs
   | _ -> [ def ]
 
-(* List of relation names that appear in the prose of the validation rules *)
-let validation_helper_relations = [
-  "Expand";
-  "Expand_use";
-  "ImmutReachable";
-  "NotImmutReachable"
-]
-let is_validation_helper_relation def =
-  match def.it with
-  | Ast.RelD (id, _, _, _, _) ->
-    List.mem id.it validation_helper_relations
-  | _ -> false
 (* NOTE: Assume validation relation is `|-` *)
 let is_validation_relation def =
   match def.it with
@@ -53,16 +41,59 @@ let is_validation_relation def =
     List.exists (List.exists (fun atom -> atom.it = Atom.Turnstile)) (Mixop.flatten mixop)
   | _ -> false
 
-let extract_validation_il il =
-  il
-  |> List.concat_map flatten_rec
-  |> List.filter
-    (fun rel -> is_validation_relation rel || is_validation_helper_relation rel)
+let rec dependent_rel_id_of_prem prem =
+  match prem.it with
+  | Ast.RulePr (id, _, _, _) -> [id]
+  | Ast.IterPr (prem', _) -> dependent_rel_id_of_prem prem'
+  | _ -> []
+
+let dependent_rel_ids_of_rule rule =
+  match rule.it with
+  | Ast.RuleD (_, _, _, _, prems) -> List.concat_map dependent_rel_id_of_prem prems
+
+let dependent_rel_ids_of_rel rel =
+  match rel.it with
+  | Ast.RelD (_, _, _, _, rules) -> List.concat_map dependent_rel_ids_of_rule rules
+  | _ -> []
 
 let rel_has_id id rel =
   match rel.it with
-  | Ast.RelD (id', _, _, _, _) -> id.it = id'.it
+  | Ast.RelD (id', _, _, _, _) -> Eq.eq_id id id'
   | _ -> false
+
+let id_to_rel rels id =
+  List.find (rel_has_id id) rels
+
+let rec dedup ids =
+  match ids with
+  | [] -> []
+  | hd :: tl ->
+    let tl' = List.filter (fun id -> not (Eq.eq_id hd id)) tl in
+    hd :: dedup tl'
+
+let extract_validation_il il =
+  let all_rels = List.concat_map flatten_rec il in
+  let validation_rels = List.filter is_validation_relation all_rels in
+
+  (* Expand according to the premise dependency *)
+  let rec expand prev_rels new_rels =
+    let rels = new_rels @ prev_rels in
+    let is_new_rel_id id = List.for_all (Fun.negate (rel_has_id id)) rels in
+
+    match new_rels with
+    | [] -> rels
+    | _ ->
+      let prem_rels =
+        new_rels
+        |> List.concat_map dependent_rel_ids_of_rel
+        |> dedup
+        |> List.filter is_new_rel_id
+        |> List.map (id_to_rel all_rels)
+      in
+      expand rels prem_rels
+  in
+
+  expand [] validation_rels
 
 let extract_prose_hint hintexp =
   match hintexp.it with
@@ -293,7 +324,8 @@ let rec prem_to_instrs prem =
     let rel =
       match List.find_opt (rel_has_id id) !Langs.validation_il with
       | Some rel -> rel
-      | None -> failwith ("Unknown relation id: " ^ id.it)
+      | None -> failwith (
+        Printf.sprintf "The relation %s is supposed to be included in `validation_il`. Hint: Plese fix `extract_validation_il`." id.it)
     in
     let frees = (Free.free_prem prem).varid in
     let args = exp_to_argexpr e in
