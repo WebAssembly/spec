@@ -5,11 +5,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Type Soundness &#8212; WebAssembly 3.0 (2026-04-20)</title>
+    <title>Type Soundness &#8212; WebAssembly 3.0 (2026-04-22)</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=686e5160" />
     <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=057308f9" />
-    <script src="../_static/documentation_options.js?v=4397f6ae"></script>
+    <script src="../_static/documentation_options.js?v=a03d621c"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>window.MathJax = {"tex": {"maxBuffer": 30720, "macros": {"multicolumn": ["", 2]}}, "options": {"menuOptions": {"settings": {"enrich": false}}}}</script>
@@ -250,7 +250,8 @@ the <a class="reference internal" href="../valid/conventions.html#context"><span
 <p>The <a class="reference internal" href="../valid/conventions.html#syntax-deftype"><span class="std std-ref">defined type</span></a> <span class="math notranslate nohighlight">\(({\href{../syntax/types.html#syntax-rectype}{\mathit{rectype}}} {.} i)\)</span> is <a class="reference internal" href="#valid-deftype"><span class="std std-ref">valid</span></a> if:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>The <a class="reference internal" href="../syntax/types.html#syntax-rectype"><span class="std std-ref">recursive type</span></a> <span class="math notranslate nohighlight">\({\href{../syntax/types.html#syntax-rectype}{\mathit{rectype}}}\)</span> is <a class="reference internal" href="../valid/types.html#valid-rectype"><span class="std std-ref">valid</span></a> for the type index <span class="math notranslate nohighlight">\(x\)</span>.</p></li>
+<li><p>Let <span class="math notranslate nohighlight">\({C'}\)</span> be the same context as <span class="math notranslate nohighlight">\(C\)</span>, but with the sub type sequence <span class="math notranslate nohighlight">\({{\href{../syntax/types.html#syntax-subtype}{\mathit{subtype}}}^{n}}\)</span> prepended to the field <span class="math notranslate nohighlight">\(\href{../appendix/properties.html#context-ext}{\mathsf{recs}}\)</span>.</p></li>
+<li><p>Under the context <span class="math notranslate nohighlight">\({C'}\)</span>, the <a class="reference internal" href="../syntax/types.html#syntax-rectype"><span class="std std-ref">recursive type</span></a> <span class="math notranslate nohighlight">\({\href{../syntax/types.html#syntax-rectype}{\mathit{rectype}}}\)</span> is <a class="reference internal" href="../valid/types.html#valid-rectype"><span class="std std-ref">valid</span></a> for <span class="math notranslate nohighlight">\(({\href{../valid/types.html#valid-subtype}{\mathsf{ok}}}{(x, 0)})\)</span>.</p></li>
 <li><p>The <a class="reference internal" href="../syntax/types.html#syntax-rectype"><span class="std std-ref">recursive type</span></a> <span class="math notranslate nohighlight">\({\href{../syntax/types.html#syntax-rectype}{\mathit{rectype}}}\)</span> is of the form <span class="math notranslate nohighlight">\((\href{../syntax/types.html#syntax-rectype}{\mathsf{rec}}~{{\href{../syntax/types.html#syntax-subtype}{\mathit{subtype}}}^{n}})\)</span>.</p></li>
 <li><p><span class="math notranslate nohighlight">\(i\)</span> is less than <span class="math notranslate nohighlight">\(n\)</span>.</p></li>
 </ul>
@@ -258,7 +259,7 @@ the <a class="reference internal" href="../valid/conventions.html#context"><span
 <div class="math notranslate nohighlight">
 \[\begin{array}{&#64;{}c&#64;{}}\displaystyle
 \frac{
-C \href{../valid/types.html#valid-rectype}{\vdash} {\href{../syntax/types.html#syntax-rectype}{\mathit{rectype}}} : {\href{../valid/types.html#valid-subtype}{\mathsf{ok}}}{(x)}
+C, \href{../appendix/properties.html#context-ext}{\mathsf{recs}}~{{\href{../syntax/types.html#syntax-subtype}{\mathit{subtype}}}^{n}} \href{../valid/types.html#valid-rectype}{\vdash} {\href{../syntax/types.html#syntax-rectype}{\mathit{rectype}}} : {\href{../valid/types.html#valid-subtype}{\mathsf{ok}}}{(x, 0)}
  \qquad
 {\href{../syntax/types.html#syntax-rectype}{\mathit{rectype}}} = \href{../syntax/types.html#syntax-rectype}{\mathsf{rec}}~{{\href{../syntax/types.html#syntax-subtype}{\mathit{subtype}}}^{n}}
  \qquad
@@ -335,7 +336,7 @@ C \href{../appendix/properties.html#valid-deftype}{\vdash} {\href{../syntax/type
 }{
   S \href{../appendix/properties.html#valid-result}{\vdash} \href{../exec/runtime.html#syntax-trap}{\mathsf{trap}} : [t^\ast]
 }\]</div>
-</section>
+<span class="target" id="valid-context"><span id="valid-localtype"></span></span></section>
 </section>
 <section id="store-validity">
 <span id="valid-store"></span><span id="module-context"></span><h2>Store Validity<a class="headerlink" href="#store-validity" title="Link to this heading">¶</a></h2>
