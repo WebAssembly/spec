@@ -2061,6 +2061,12 @@ warning: rule prose `Heaptype_sub/struct` was never spliced
 warning: rule prose `Heaptype_sub/trans` was never spliced
 warning: rule prose `Heaptype_sub/typeidx` was never spliced
 warning: rule prose `Idctxt_ok` was never spliced
+warning: rule prose `ImmutReachable` was never spliced
+warning: rule prose `ImmutReachable/ref.array` was never spliced
+warning: rule prose `ImmutReachable/ref.exn` was never spliced
+warning: rule prose `ImmutReachable/ref.extern` was never spliced
+warning: rule prose `ImmutReachable/ref.struct` was never spliced
+warning: rule prose `ImmutReachable/trans` was never spliced
 warning: rule prose `Import_ok` was never spliced
 warning: rule prose `Instr_const` was never spliced
 warning: rule prose `Instr_const/any.convert_extern` was never spliced
