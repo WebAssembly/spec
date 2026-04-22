@@ -14502,18 +14502,18 @@ $\boxed{\neg~{\mathit{fieldval}} \succ_{{\mathit{store}}} {\mathit{fieldval}}}$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-{\mathrm{NotImmReachable}}({\mathit{fv}}_1, s, {\mathit{fv}}_2) & = & \mathsf{false} & \quad \mbox{if}~ {\mathit{fv}}_1 \succ_{s} {\mathit{fv}}_2 \\
-{\mathrm{NotImmReachable}}({\mathit{fv}}_1, s, {\mathit{fv}}_2) & = & \mathsf{true} & \quad \mbox{otherwise} \\
+{\mathrm{NotImmutReachable}}({\mathit{fv}}_1, s, {\mathit{fv}}_2) & = & \mathsf{false} & \quad \mbox{if}~ {\mathit{fv}}_1 \succ_{s} {\mathit{fv}}_2 \\
+{\mathrm{NotImmutReachable}}({\mathit{fv}}_1, s, {\mathit{fv}}_2) & = & \mathsf{true} & \quad \mbox{otherwise} \\
 \end{array}
 $$
 
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-{\mathrm{NotImmReachable}}({\mathit{fv}}_1, s, {\mathit{fv}}_2)
+{\mathrm{NotImmutReachable}}({\mathit{fv}}_1, s, {\mathit{fv}}_2)
 }{
 \neg~{\mathit{fv}}_1 \succ_{s} {\mathit{fv}}_2
-} \, {[\textsc{\scriptsize NotImmReachable}]}
+} \, {[\textsc{\scriptsize NotImmutReachable}]}
 \qquad
 \end{array}
 $$
@@ -14528,7 +14528,7 @@ $$
 {\mathit{fv}'} \succ_{s} {\mathit{fv}}_2
 }{
 {\mathit{fv}}_1 \succ_{s} {\mathit{fv}}_2
-} \, {[\textsc{\scriptsize ImmReachable{-}trans}]}
+} \, {[\textsc{\scriptsize ImmutReachable{-}trans}]}
 \qquad
 \end{array}
 $$
@@ -14541,7 +14541,7 @@ s{.}\mathsf{structs}{}[a]{.}\mathsf{type} \approx \mathsf{struct}~{{\mathit{ft}}
 {{\mathit{ft}}^\ast}{}[i] = {\mathit{zt}}
 }{
 (\mathsf{ref{.}struct}~a) \succ_{s} s{.}\mathsf{structs}{}[a]{.}\mathsf{fields}{}[i]
-} \, {[\textsc{\scriptsize ImmReachable{-}ref.struct}]}
+} \, {[\textsc{\scriptsize ImmutReachable{-}ref.struct}]}
 \qquad
 \end{array}
 $$
@@ -14552,7 +14552,7 @@ $$
 s{.}\mathsf{arrays}{}[a]{.}\mathsf{type} \approx \mathsf{array}~{\mathit{zt}}
 }{
 (\mathsf{ref{.}array}~a) \succ_{s} s{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}{}[i]
-} \, {[\textsc{\scriptsize ImmReachable{-}ref.array}]}
+} \, {[\textsc{\scriptsize ImmutReachable{-}ref.array}]}
 \qquad
 \end{array}
 $$
@@ -14562,7 +14562,7 @@ $$
 \frac{
 }{
 (\mathsf{ref{.}exn}~a) \succ_{s} s{.}\mathsf{exns}{}[a]{.}\mathsf{fields}{}[i]
-} \, {[\textsc{\scriptsize ImmReachable{-}ref.exn}]}
+} \, {[\textsc{\scriptsize ImmutReachable{-}ref.exn}]}
 \qquad
 \end{array}
 $$
@@ -14572,7 +14572,7 @@ $$
 \frac{
 }{
 (\mathsf{ref{.}extern}~{\mathit{ref}}) \succ_{s} {\mathit{ref}}
-} \, {[\textsc{\scriptsize ImmReachable{-}ref.extern}]}
+} \, {[\textsc{\scriptsize ImmutReachable{-}ref.extern}]}
 \qquad
 \end{array}
 $$

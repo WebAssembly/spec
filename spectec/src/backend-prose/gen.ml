@@ -38,8 +38,8 @@ let flatten_rec def =
 let validation_helper_relations = [
   "Expand";
   "Expand_use";
-  "ImmReachable";
-  "NotImmReachable"
+  "ImmutReachable";
+  "NotImmutReachable"
 ]
 let is_validation_helper_relation def =
   match def.it with

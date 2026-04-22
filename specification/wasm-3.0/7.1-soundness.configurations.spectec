@@ -197,46 +197,46 @@ rule Store_ok:
   -- (Arrayinst_ok: s |- arrayinst : OK)*
   -- (Exninst_ok: s |- exninst : OK)*
   ----
-  -- (NotImmReachable: `~ (REF.STRUCT_ADDR a) >>_s (REF.STRUCT_ADDR a))^(a<|structinst*|)
-  -- (NotImmReachable: `~ (REF.ARRAY_ADDR a) >>_s (REF.ARRAY_ADDR a))^(a<|arrayinst*|)
-  -- (NotImmReachable: `~ (REF.EXN_ADDR a) >>_s (REF.EXN_ADDR a))^(a<|exninst*|)
+  -- (NotImmutReachable: `~ (REF.STRUCT_ADDR a) >>_s (REF.STRUCT_ADDR a))^(a<|structinst*|)
+  -- (NotImmutReachable: `~ (REF.ARRAY_ADDR a) >>_s (REF.ARRAY_ADDR a))^(a<|arrayinst*|)
+  -- (NotImmutReachable: `~ (REF.EXN_ADDR a) >>_s (REF.EXN_ADDR a))^(a<|exninst*|)
   ----
   -- if s = {TAGS taginst*, GLOBALS globalinst*, MEMS meminst*, TABLES tableinst*, FUNCS funcinst*,
              DATAS datainst*, ELEMS eleminst*, STRUCTS structinst*, ARRAYS arrayinst*, EXNS exninst*}
 
 
-relation ImmReachable: fieldval >>_store fieldval
-  hint(prose "%3 is immediately reachable from %1")
-relation NotImmReachable: `~ fieldval >>_store fieldval
-  hint(prose "%3 is not immediately reachable from %1")
+relation ImmutReachable: fieldval >>_store fieldval
+  hint(prose "%3 is immutably reachable from %1")
+relation NotImmutReachable: `~ fieldval >>_store fieldval
+  hint(prose "%3 is not immutably reachable from %1")
 
 ;; HACK: emulate premise negation
-;; TODO(rossberg): directly support negation in IL
-def $NotImmReachable(fieldval, store, fieldval) : bool
-def $NotImmReachable(fv_1, s, fv_2) = false -- ImmReachable: fv_1 >>_s fv_2
-def $NotImmReachable(fv_1, s, fv_2) = true  -- otherwise
+;; TODO(rossberg): directly support negation in EL
+def $NotImmutReachable(fieldval, store, fieldval) : bool
+def $NotImmutReachable(fv_1, s, fv_2) = false -- ImmutReachable: fv_1 >>_s fv_2
+def $NotImmutReachable(fv_1, s, fv_2) = true  -- otherwise
 
-rule NotImmReachable: `~ fv_1 >>_s fv_2 -- if $NotImmReachable(fv_1, s, fv_2)
+rule NotImmutReachable: `~ fv_1 >>_s fv_2 -- if $NotImmutReachable(fv_1, s, fv_2)
 
 
-rule ImmReachable/trans:
+rule ImmutReachable/trans:
   fv_1 >>_s fv_2
-  -- ImmReachable: fv_1 >>_s fv'
-  -- ImmReachable: fv' >>_s fv_2
+  -- ImmutReachable: fv_1 >>_s fv'
+  -- ImmutReachable: fv' >>_s fv_2
 
-rule ImmReachable/ref.struct:
+rule ImmutReachable/ref.struct:
   (REF.STRUCT_ADDR a) >>_s s.STRUCTS[a].FIELDS[i]
   -- Expand: s.STRUCTS[a].TYPE ~~ STRUCT ft*
   -- if ft*[i] = zt
 
-rule ImmReachable/ref.array:
+rule ImmutReachable/ref.array:
   (REF.ARRAY_ADDR a) >>_s s.ARRAYS[a].FIELDS[i]
   -- Expand: s.ARRAYS[a].TYPE ~~ ARRAY zt
 
-rule ImmReachable/ref.exn:
+rule ImmutReachable/ref.exn:
   (REF.EXN_ADDR a) >>_s s.EXNS[a].FIELDS[i]
 
-rule ImmReachable/ref.extern:
+rule ImmutReachable/ref.extern:
   (REF.EXTERN ref) >>_s ref
 
 

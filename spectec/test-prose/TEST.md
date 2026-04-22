@@ -13798,6 +13798,9 @@ The heap type :math:`{\mathit{heaptype}}` is :ref:`valid <valid-val>` if:
       * The heap type :math:`{\mathit{heaptype}}` is of the form :math:`{\mathit{typeuse}}`.
 
       * The type use :math:`{\mathit{typeuse}}` is :ref:`valid <valid-val>`.
+   * Or:
+
+      * The heap type :math:`{\mathit{heaptype}}` is of the form :math:`\mathsf{bot}`.
 
 
 
@@ -13811,6 +13814,11 @@ The heap type :math:`{\mathit{typeuse}}` is :ref:`valid <valid-val>` if:
 
 
    * The type use :math:`{\mathit{typeuse}}` is :ref:`valid <valid-val>`.
+
+
+
+
+The heap type :math:`\mathsf{bot}` is always :ref:`valid <valid-val>`.
 
 
 
@@ -14032,69 +14040,14 @@ The composite type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})` is 
 
 
 
-The sub type :math:`(\mathsf{sub}~{\mathsf{final}^?}~{x^\ast}~{\mathit{comptype}})` is :ref:`valid <valid-val>` for the type index :math:`x_0` if:
-
-
-   * The length of :math:`{x^\ast}` is less than or equal to :math:`1`.
-
-   * For all :math:`x` in :math:`{x^\ast}`:
-
-      * The index :math:`x` is less than :math:`x_0`.
-
-      * The type :math:`C{.}\mathsf{types}{}[x]` exists.
-
-      * The sub type :math:`{\mathrm{unroll}}(C{.}\mathsf{types}{}[x])` is of the form :math:`(\mathsf{sub}~{{x'}^\ast}~{\mathit{comptype}'})`.
-
-   * :math:`{{\mathit{comptype}'}^\ast}` is the concatenation of all such :math:`{\mathit{comptype}'}`.
-
-   * The composite type :math:`{\mathit{comptype}}` is :ref:`valid <valid-val>`.
-
-   * For all :math:`{\mathit{comptype}'}` in :math:`{{\mathit{comptype}'}^\ast}`:
-
-      * The composite type :math:`{\mathit{comptype}}` :ref:`matches <match>` the composite type :math:`{\mathit{comptype}'}`.
-
-
-
-
-The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is :ref:`valid <valid-val>` for the type index :math:`x` if:
-
-
-   * Either:
-
-      * The sub type sequence :math:`{{\mathit{subtype}}^\ast}` is empty.
-
-   * Or:
-
-      * The sub type sequence :math:`{{\mathit{subtype}}^\ast}` is of the form :math:`{\mathit{subtype}}_1~{{\mathit{subtype}'}^\ast}`.
-
-      * The sub type :math:`{\mathit{subtype}}_1` is :ref:`valid <valid-val>` for the type index :math:`x`.
-
-      * The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}'}^\ast})` is :ref:`valid <valid-val>` for the type index :math:`x + 1`.
-
-
-
-
-The recursive type :math:`(\mathsf{rec})` is :ref:`valid <valid-val>` for the type index :math:`x`.
-
-
-
-
-The recursive type :math:`(\mathsf{rec}~{\mathit{subtype}}_1~{{\mathit{subtype}}^\ast})` is :ref:`valid <valid-val>` for the type index :math:`x` if:
-
-
-   * The sub type :math:`{\mathit{subtype}}_1` is :ref:`valid <valid-val>` for the type index :math:`x`.
-
-   * The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is :ref:`valid <valid-val>` for the type index :math:`x + 1`.
-
-
-
-
 The sub type :math:`(\mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~{\mathit{comptype}})` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x, i)})` if:
 
 
    * The length of :math:`{{\mathit{typeuse}}^\ast}` is less than or equal to :math:`1`.
 
    * For all :math:`{\mathit{typeuse}}` in :math:`{{\mathit{typeuse}}^\ast}`:
+
+      * The type use :math:`{\mathit{typeuse}}` is :ref:`valid <valid-val>`.
 
       * :math:`{\mathit{typeuse}} \prec x, i` is true.
 
@@ -14124,7 +14077,7 @@ The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is :ref:`val
 
       * The sub type :math:`{\mathit{subtype}}_1` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x, i)})`.
 
-      * The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}'}^\ast})` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x + 1, i + 1)})`.
+      * The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}'}^\ast})` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x, i + 1)})`.
 
 
 
@@ -14139,7 +14092,7 @@ The recursive type :math:`(\mathsf{rec}~{\mathit{subtype}}_1~{{\mathit{subtype}}
 
    * The sub type :math:`{\mathit{subtype}}_1` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x, i)})`.
 
-   * The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x + 1, i + 1)})`.
+   * The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x, i + 1)})`.
 
 
 
@@ -14147,7 +14100,9 @@ The recursive type :math:`(\mathsf{rec}~{\mathit{subtype}}_1~{{\mathit{subtype}}
 The defined type :math:`({\mathit{rectype}} {.} i)` is :ref:`valid <valid-val>` if:
 
 
-   * The recursive type :math:`{\mathit{rectype}}` is :ref:`valid <valid-val>` for the type index :math:`x`.
+   * Let :math:`{C'}` be the same context as :math:`C`, but with the sub type sequence :math:`{{\mathit{subtype}}^{n}}` prepended to the field :math:`\mathsf{recs}`.
+
+   * Under the context :math:`{C'}`, the recursive type :math:`{\mathit{rectype}}` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(x, 0)})`.
 
    * The recursive type :math:`{\mathit{rectype}}` is of the form :math:`(\mathsf{rec}~{{\mathit{subtype}}^{n}})`.
 
@@ -14708,6 +14663,14 @@ The field type :math:`(\mathsf{mut}~{\mathit{zt}}_1)` :ref:`matches <match>` the
 
 
 
+The local type :math:`({\mathit{init}}~t)` is :ref:`valid <valid-val>` if:
+
+
+   * The value type :math:`t` is :ref:`valid <valid-val>`.
+
+
+
+
 The instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}` is :ref:`valid <valid-val>` if:
 
 
@@ -14756,6 +14719,63 @@ The :ref:`expansion <aux-expand-typeuse>` of :math:`C` is :math:`{\mathit{compty
    * The type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
 
    * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is :math:`{\mathit{comptype}}`.
+
+
+
+
+The sub type :math:`(\mathsf{sub}~{\mathsf{final}^?}~{x^\ast}~{\mathit{comptype}})` is :ref:`valid <valid-val>` for the type index :math:`x_0` if:
+
+
+   * The length of :math:`{x^\ast}` is less than or equal to :math:`1`.
+
+   * For all :math:`x` in :math:`{x^\ast}`:
+
+      * The index :math:`x` is less than :math:`x_0`.
+
+      * The type :math:`C{.}\mathsf{types}{}[x]` exists.
+
+      * The sub type :math:`{\mathrm{unroll}}(C{.}\mathsf{types}{}[x])` is of the form :math:`(\mathsf{sub}~{{x'}^\ast}~{\mathit{comptype}'})`.
+
+   * :math:`{{\mathit{comptype}'}^\ast}` is the concatenation of all such :math:`{\mathit{comptype}'}`.
+
+   * The composite type :math:`{\mathit{comptype}}` is :ref:`valid <valid-val>`.
+
+   * For all :math:`{\mathit{comptype}'}` in :math:`{{\mathit{comptype}'}^\ast}`:
+
+      * The composite type :math:`{\mathit{comptype}}` :ref:`matches <match>` the composite type :math:`{\mathit{comptype}'}`.
+
+
+
+
+The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is :ref:`valid <valid-val>` for the type index :math:`x` if:
+
+
+   * Either:
+
+      * The sub type sequence :math:`{{\mathit{subtype}}^\ast}` is empty.
+
+   * Or:
+
+      * The sub type sequence :math:`{{\mathit{subtype}}^\ast}` is of the form :math:`{\mathit{subtype}}_1~{{\mathit{subtype}'}^\ast}`.
+
+      * The sub type :math:`{\mathit{subtype}}_1` is :ref:`valid <valid-val>` for the type index :math:`x`.
+
+      * The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}'}^\ast})` is :ref:`valid <valid-val>` for the type index :math:`x + 1`.
+
+
+
+
+The recursive type :math:`(\mathsf{rec})` is :ref:`valid <valid-val>` for the type index :math:`x`.
+
+
+
+
+The recursive type :math:`(\mathsf{rec}~{\mathit{subtype}}_1~{{\mathit{subtype}}^\ast})` is :ref:`valid <valid-val>` for the type index :math:`x` if:
+
+
+   * The sub type :math:`{\mathit{subtype}}_1` is :ref:`valid <valid-val>` for the type index :math:`x`.
+
+   * The recursive type :math:`(\mathsf{rec}~{{\mathit{subtype}}^\ast})` is :ref:`valid <valid-val>` for the type index :math:`x + 1`.
 
 
 
@@ -17470,6 +17490,49 @@ The value :math:`{\mathit{ref}}` is :ref:`valid <valid-val>` with the value type
 
 
 
+The packed value :math:`({\mathit{pt}}{.}\mathsf{pack}~c)` is :ref:`valid <valid-val>` with the packed type :math:`{\mathit{pt}}`.
+
+
+
+
+The field value :math:`{\mathit{fieldval}}` is :ref:`valid <valid-val>` with the storage type :math:`{\mathit{storagetype}}` if:
+
+
+   * Either:
+
+      * The field value :math:`{\mathit{fieldval}}` is of the form :math:`{\mathit{val}}`.
+
+      * The storage type :math:`{\mathit{storagetype}}` is of the form :math:`t`.
+
+      * The value :math:`{\mathit{val}}` is :ref:`valid <valid-val>` with the value type :math:`t`.
+
+   * Or:
+
+      * The field value :math:`{\mathit{fieldval}}` is of the form :math:`{\mathit{packval}}`.
+
+      * The storage type :math:`{\mathit{storagetype}}` is of the form :math:`{\mathit{pt}}`.
+
+      * The packed value :math:`{\mathit{packval}}` is :ref:`valid <valid-val>` with the packed type :math:`{\mathit{pt}}`.
+
+
+
+
+The field value :math:`{\mathit{val}}` is :ref:`valid <valid-val>` with the storage type :math:`t` if:
+
+
+   * The value :math:`{\mathit{val}}` is :ref:`valid <valid-val>` with the value type :math:`t`.
+
+
+
+
+The field value :math:`{\mathit{packval}}` is :ref:`valid <valid-val>` with the storage type :math:`{\mathit{pt}}` if:
+
+
+   * The packed value :math:`{\mathit{packval}}` is :ref:`valid <valid-val>` with the packed type :math:`{\mathit{pt}}`.
+
+
+
+
 The external address :math:`{\mathit{externaddr}}` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{externtype}}` if:
 
 
@@ -17616,6 +17679,709 @@ The identifier context :math:`I` is :ref:`valid <valid-val>` if:
       * :math:`{\bigoplus}\, {{\mathit{field}}^\ast}~{\mathrm{disjoint}}` is true.
 
    * The name sequence sequence :math:`{{{\mathit{field}}^\ast}^\ast}` is of the form :math:`I{.}\mathsf{fields}`.
+
+
+
+
+The context :math:`C` is :ref:`valid <valid-val>` if:
+
+
+   * The context :math:`C` is of the form :math:`\{ \mathsf{types}~{{\mathit{dt}}^{n}},\;\allowbreak \mathsf{recs}~{{\mathit{st}}^{m}},\;\allowbreak \mathsf{tags}~{{\mathit{jt}}^\ast},\;\allowbreak \mathsf{globals}~{{\mathit{gt}}^\ast},\;\allowbreak \mathsf{mems}~{{\mathit{mt}}^\ast},\;\allowbreak \mathsf{tables}~{{\mathit{tt}}^\ast},\;\allowbreak \mathsf{funcs}~{{\mathit{dt}}_{\mathsf{f}}^\ast},\;\allowbreak \mathsf{datas}~{{\mathit{ok}}^\ast},\;\allowbreak \mathsf{elems}~{{\mathit{et}}^\ast},\;\allowbreak \mathsf{locals}~{{{\mathit{lt}}}^\ast},\;\allowbreak \mathsf{labels}~{{\mathit{rt}}^\ast},\;\allowbreak \mathsf{return}~{{\mathit{rt}'}^?},\;\allowbreak \mathsf{refs}~{x^\ast} \}`.
+
+   * The context :math:`C_0` is of the form :math:`\{ \mathsf{types}~{{\mathit{dt}}^{n}},\;\allowbreak \mathsf{return}~\epsilon \}`.
+
+   * For all :math:`{\mathit{dt}}` in :math:`{{\mathit{dt}}^\ast}`:
+
+      * Under the context :math:`\{ \mathsf{types}~{{\mathit{dt}}^{n}}{}[0 : i],\;\allowbreak \mathsf{return}~\epsilon \}`, the defined type :math:`{\mathit{dt}}` is :ref:`valid <valid-val>`.
+
+   * For all :math:`{\mathit{st}}` in :math:`{{\mathit{st}}^\ast}`:
+
+      * Under the context :math:`\{ \mathsf{types}~{{\mathit{dt}}^{n}},\;\allowbreak \mathsf{recs}~{{\mathit{st}}^{m}},\;\allowbreak \mathsf{return}~\epsilon \}`, the sub type :math:`{\mathit{st}}` is :ref:`valid <valid-val>` for :math:`({\mathsf{ok}}{(n, i)})`.
+
+   * For all :math:`{\mathit{jt}}` in :math:`{{\mathit{jt}}^\ast}`:
+
+      * Under the context :math:`C_0`, the tag type :math:`{\mathit{jt}}` is :ref:`valid <valid-val>`.
+
+   * For all :math:`{\mathit{gt}}` in :math:`{{\mathit{gt}}^\ast}`:
+
+      * Under the context :math:`C_0`, the global type :math:`{\mathit{gt}}` is :ref:`valid <valid-val>`.
+
+   * For all :math:`{\mathit{mt}}` in :math:`{{\mathit{mt}}^\ast}`:
+
+      * Under the context :math:`C_0`, the memory type :math:`{\mathit{mt}}` is :ref:`valid <valid-val>`.
+
+   * For all :math:`{\mathit{tt}}` in :math:`{{\mathit{tt}}^\ast}`:
+
+      * Under the context :math:`C_0`, the table type :math:`{\mathit{tt}}` is :ref:`valid <valid-val>`.
+
+   * For all :math:`{\mathit{dt}}_{\mathsf{f}}` in :math:`{{\mathit{dt}}_{\mathsf{f}}^\ast}`:
+
+      * Under the context :math:`C_0`, the defined type :math:`{\mathit{dt}}_{\mathsf{f}}` is :ref:`valid <valid-val>`.
+
+      * The :ref:`expansion <aux-expand-deftype>` of :math:`{\mathit{dt}}_{\mathsf{f}}` is :math:`(\mathsf{func}~t_1~\rightarrow~t_2)`.
+
+   * For all :math:`{\mathit{et}}` in :math:`{{\mathit{et}}^\ast}`:
+
+      * Under the context :math:`C_0`, the reference type :math:`{\mathit{et}}` is :ref:`valid <valid-val>`.
+
+   * For all :math:`{{\mathit{lt}}}` in :math:`{{{\mathit{lt}}}^\ast}`:
+
+      * Under the context :math:`C_0`, the local type :math:`{{\mathit{lt}}}` is :ref:`valid <valid-val>`.
+
+   * For all :math:`{\mathit{rt}}` in :math:`{{\mathit{rt}}^\ast}`:
+
+      * Under the context :math:`C_0`, the result type :math:`{\mathit{rt}}` is :ref:`valid <valid-val>`.
+
+   * If :math:`{\mathit{rt}'}` is defined, then:
+
+      * Under the context :math:`C_0`, the result type :math:`{\mathit{rt}'}` is :ref:`valid <valid-val>`.
+
+   * For all :math:`x` in :math:`{x^\ast}`:
+
+      * The length of :math:`{{\mathit{dt}}_{\mathsf{f}}^\ast}` is greater than :math:`x`.
+
+
+
+
+The value :math:`{{\mathit{val}}^?}` is :ref:`valid <valid-val>` with the local type :math:`({\mathit{init}}~t)` if:
+
+
+   * Either:
+
+      * The value :math:`{{\mathit{val}}^?}` is of the form :math:`{\mathit{val}'}`.
+
+      * The initialization status :math:`{\mathit{init}}` is of the form :math:`\mathsf{set}`.
+
+      * The value :math:`{\mathit{val}'}` is :ref:`valid <valid-val>` with the value type :math:`t`.
+
+   * Or:
+
+      * The value :math:`{{\mathit{val}}^?}` is absent.
+
+      * The initialization status :math:`{\mathit{init}}` is of the form :math:`\mathsf{unset}`.
+
+      * The value type :math:`t` is of the form :math:`\mathsf{bot}`.
+
+
+
+
+The value :math:`{\mathit{val}}` is :ref:`valid <valid-val>` with the local type :math:`(\mathsf{set}~t)` if:
+
+
+   * The value :math:`{\mathit{val}}` is :ref:`valid <valid-val>` with the value type :math:`t`.
+
+
+
+
+The value :math:`\epsilon` is :ref:`valid <valid-val>` with the local type :math:`(\mathsf{unset}~\mathsf{bot})`.
+
+
+
+
+The data instance :math:`\{ \mathsf{bytes}~{b^\ast} \}` is :ref:`valid <valid-val>` with the data type :math:`\mathsf{ok}`.
+
+
+
+
+The element instance :math:`\{ \mathsf{type}~{\mathit{rt}},\;\allowbreak \mathsf{refs}~{{\mathit{ref}}^\ast} \}` is :ref:`valid <valid-val>` with the element type :math:`{\mathit{rt}}` if:
+
+
+   * Under the context :math:`\{ \mathsf{return}~\epsilon \}`, the reference type :math:`{\mathit{rt}}` is :ref:`valid <valid-val>`.
+
+   * For all :math:`{\mathit{ref}}` in :math:`{{\mathit{ref}}^\ast}`:
+
+      * The reference value :math:`{\mathit{ref}}` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{rt}}`.
+
+
+
+
+The export instance :math:`\{ \mathsf{name}~{\mathit{nm}},\;\allowbreak \mathsf{addr}~{\mathit{xa}} \}` is :ref:`valid <valid-val>` if:
+
+
+   * The external address :math:`{\mathit{xa}}` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{xt}}`.
+
+
+
+
+The module instance :math:`\{ \mathsf{types}~{{\mathit{deftype}}^\ast},\;\allowbreak \mathsf{tags}~{{\mathit{tagaddr}}^\ast},\;\allowbreak \mathsf{globals}~{{\mathit{globaladdr}}^\ast},\;\allowbreak \mathsf{mems}~{{\mathit{memaddr}}^\ast},\;\allowbreak \mathsf{tables}~{{\mathit{tableaddr}}^\ast},\;\allowbreak \mathsf{funcs}~{{\mathit{funcaddr}}^\ast},\;\allowbreak \mathsf{datas}~{{\mathit{dataaddr}}^\ast},\;\allowbreak \mathsf{elems}~{{\mathit{elemaddr}}^\ast},\;\allowbreak \mathsf{exports}~{{\mathit{exportinst}}^\ast} \}` is :ref:`valid <valid-val>` with the context :math:`\{ \mathsf{types}~{{\mathit{deftype}}^\ast},\;\allowbreak \mathsf{recs}~{{\mathit{subtype}}^\ast},\;\allowbreak \mathsf{tags}~{{\mathit{tagtype}}^\ast},\;\allowbreak \mathsf{globals}~{{\mathit{globaltype}}^\ast},\;\allowbreak \mathsf{mems}~{{\mathit{memtype}}^\ast},\;\allowbreak \mathsf{tables}~{{\mathit{tabletype}}^\ast},\;\allowbreak \mathsf{funcs}~{{\mathit{deftype}}_{\mathsf{f}}^\ast},\;\allowbreak \mathsf{datas}~{{\mathit{datatype}}^\ast},\;\allowbreak \mathsf{elems}~{{\mathit{elemtype}}^\ast},\;\allowbreak \mathsf{return}~\epsilon,\;\allowbreak \mathsf{refs}~{i^{i<{|{{\mathit{funcaddr}}^\ast}|}}} \}` if:
+
+
+   * For all :math:`{\mathit{deftype}}` in :math:`{{\mathit{deftype}}^\ast}`:
+
+      * Under the context :math:`\{ \mathsf{return}~\epsilon \}`, the defined type :math:`{\mathit{deftype}}` is :ref:`valid <valid-val>`.
+
+   * For all :math:`{\mathit{tagaddr}}` in :math:`{{\mathit{tagaddr}}^\ast}`, and corresponding :math:`{\mathit{tagtype}}` in :math:`{{\mathit{tagtype}}^\ast}`:
+
+      * The external address :math:`(\mathsf{tag}~{\mathit{tagaddr}})` is :ref:`valid <valid-val>` with the external type :math:`(\mathsf{tag}~{\mathit{tagtype}})`.
+
+   * For all :math:`{\mathit{globaladdr}}` in :math:`{{\mathit{globaladdr}}^\ast}`, and corresponding :math:`{\mathit{globaltype}}` in :math:`{{\mathit{globaltype}}^\ast}`:
+
+      * The external address :math:`(\mathsf{global}~{\mathit{globaladdr}})` is :ref:`valid <valid-val>` with the external type :math:`(\mathsf{global}~{\mathit{globaltype}})`.
+
+   * For all :math:`{\mathit{deftype}}_{\mathsf{f}}` in :math:`{{\mathit{deftype}}_{\mathsf{f}}^\ast}`, and corresponding :math:`{\mathit{funcaddr}}` in :math:`{{\mathit{funcaddr}}^\ast}`:
+
+      * The external address :math:`(\mathsf{func}~{\mathit{funcaddr}})` is :ref:`valid <valid-val>` with the external type :math:`(\mathsf{func}~{\mathit{deftype}}_{\mathsf{f}})`.
+
+   * For all :math:`{\mathit{memaddr}}` in :math:`{{\mathit{memaddr}}^\ast}`, and corresponding :math:`{\mathit{memtype}}` in :math:`{{\mathit{memtype}}^\ast}`:
+
+      * The external address :math:`(\mathsf{mem}~{\mathit{memaddr}})` is :ref:`valid <valid-val>` with the external type :math:`(\mathsf{mem}~{\mathit{memtype}})`.
+
+   * For all :math:`{\mathit{tableaddr}}` in :math:`{{\mathit{tableaddr}}^\ast}`, and corresponding :math:`{\mathit{tabletype}}` in :math:`{{\mathit{tabletype}}^\ast}`:
+
+      * The external address :math:`(\mathsf{table}~{\mathit{tableaddr}})` is :ref:`valid <valid-val>` with the external type :math:`(\mathsf{table}~{\mathit{tabletype}})`.
+
+   * For all :math:`{\mathit{dataaddr}}` in :math:`{{\mathit{dataaddr}}^\ast}`:
+
+      * The data instance :math:`s{.}\mathsf{datas}{}[{\mathit{dataaddr}}]` exists.
+
+   * For all :math:`{\mathit{dataaddr}}` in :math:`{{\mathit{dataaddr}}^\ast}`, and corresponding :math:`{\mathit{datatype}}` in :math:`{{\mathit{datatype}}^\ast}`:
+
+      * The data instance :math:`s{.}\mathsf{datas}{}[{\mathit{dataaddr}}]` is :ref:`valid <valid-val>` with the data type :math:`{\mathit{datatype}}`.
+
+   * For all :math:`{\mathit{elemaddr}}` in :math:`{{\mathit{elemaddr}}^\ast}`:
+
+      * The element instance :math:`s{.}\mathsf{elems}{}[{\mathit{elemaddr}}]` exists.
+
+   * For all :math:`{\mathit{elemaddr}}` in :math:`{{\mathit{elemaddr}}^\ast}`, and corresponding :math:`{\mathit{elemtype}}` in :math:`{{\mathit{elemtype}}^\ast}`:
+
+      * The element instance :math:`s{.}\mathsf{elems}{}[{\mathit{elemaddr}}]` is :ref:`valid <valid-val>` with the element type :math:`{\mathit{elemtype}}`.
+
+   * For all :math:`{\mathit{exportinst}}` in :math:`{{\mathit{exportinst}}^\ast}`:
+
+      * The export instance :math:`{\mathit{exportinst}}` is :ref:`valid <valid-val>`.
+
+   * :math:`{{\mathit{exportinst}}{.}\mathsf{name}^\ast}~{\mathrm{disjoint}}` is true.
+
+   * The length of :math:`{(\mathsf{tag}~{\mathit{tagaddr}})^\ast}~{(\mathsf{global}~{\mathit{globaladdr}})^\ast}~{(\mathsf{mem}~{\mathit{memaddr}})^\ast}~{(\mathsf{table}~{\mathit{tableaddr}})^\ast}~{(\mathsf{func}~{\mathit{funcaddr}})^\ast}` is greater than :math:`0`.
+
+   * For all :math:`{\mathit{exportinst}}` in :math:`{{\mathit{exportinst}}^\ast}`:
+
+      * :math:`{\mathit{exportinst}}{.}\mathsf{addr}` is contained in :math:`{(\mathsf{tag}~{\mathit{tagaddr}})^\ast}~{(\mathsf{global}~{\mathit{globaladdr}})^\ast}~{(\mathsf{mem}~{\mathit{memaddr}})^\ast}~{(\mathsf{table}~{\mathit{tableaddr}})^\ast}~{(\mathsf{func}~{\mathit{funcaddr}})^\ast}`.
+
+
+
+
+The frame :math:`\{ \mathsf{locals}~{({{\mathit{val}}^?})^\ast},\;\allowbreak \mathsf{module}~{\mathit{moduleinst}} \}` is :ref:`valid <valid-val>` with the context :math:`C` with the field :math:`\mathsf{locals}` appended by :math:`{{{\mathit{lt}}}^\ast}` if:
+
+
+   * The module instance :math:`{\mathit{moduleinst}}` is :ref:`valid <valid-val>` with the context :math:`C`.
+
+   * For all :math:`{{\mathit{lt}}}` in :math:`{{{\mathit{lt}}}^\ast}`, and corresponding :math:`{\mathit{val?}}` in :math:`{{\mathit{val?}}^\ast}`:
+
+      * The value :math:`{{\mathit{val}}^?}` is :ref:`valid <valid-val>` with the local type :math:`{{\mathit{lt}}}`.
+
+
+
+
+:math:`{\mathit{instr}}` is valid with :math:`{{\mathit{valtype}}^\ast}~{\rightarrow}_{{{\mathit{localidx}}^\ast}}\,{{\mathit{valtype}'}^\ast}` if:
+
+
+   * Either:
+
+      * The instruction :math:`{\mathit{instr}}` is :ref:`valid <valid-val>` with the instruction type :math:`{{\mathit{valtype}}^\ast}~{\rightarrow}_{{{\mathit{localidx}}^\ast}}\,{{\mathit{valtype}'}^\ast}`.
+
+   * Or:
+
+      * The instruction :math:`{\mathit{instr}}` is of the form :math:`{\mathit{ref}}`.
+
+      * The value type sequence :math:`{{\mathit{valtype}}^\ast}` is empty.
+
+      * The local index sequence :math:`{{\mathit{localidx}}^\ast}` is empty.
+
+      * The value type sequence :math:`{{\mathit{valtype}'}^\ast}` is of the form :math:`{\mathit{rt}}`.
+
+      * The reference value :math:`{\mathit{ref}}` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{rt}}`.
+   * Or:
+
+      * The instruction :math:`{\mathit{instr}}` is of the form :math:`({{\mathsf{label}}_{n}}{\{}~{{\mathit{instr}'}^\ast}~\}~{{\mathit{instr}''}^\ast})`.
+
+      * The value type sequence :math:`{{\mathit{valtype}}^\ast}` is empty.
+
+      * The local index sequence :math:`{{\mathit{localidx}}^\ast}` is empty.
+
+      * :math:`{{\mathit{instr}'}^\ast}` is valid with :math:`{{t'}^{n}}~{\rightarrow}_{{{x'}^\ast}}\,{{\mathit{valtype}'}^\ast}`.
+
+      * :math:`{{\mathit{instr}''}^\ast}` is valid with :math:`\epsilon~{\rightarrow}_{{x^\ast}}\,{{\mathit{valtype}'}^\ast}`.
+   * Or:
+
+      * The instruction :math:`{\mathit{instr}}` is of the form :math:`({{\mathsf{frame}}_{n}}{\{}~f~\}~{{\mathit{instr}''}^\ast})`.
+
+      * The value type sequence :math:`{{\mathit{valtype}}^\ast}` is empty.
+
+      * The local index sequence :math:`{{\mathit{localidx}}^\ast}` is empty.
+
+      * The frame :math:`f` is :ref:`valid <valid-val>` with the context :math:`{C'}`.
+
+      * :math:`{{\mathit{instr}''}^\ast}` is valid with :math:`{{\mathit{valtype}'}^{n}}`.
+   * Or:
+
+      * The instruction :math:`{\mathit{instr}}` is of the form :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}}^\ast}~\}~{{\mathit{instr}''}^\ast})`.
+
+      * The local index sequence :math:`{{\mathit{localidx}}^\ast}` is empty.
+
+      * For all :math:`{\mathit{catch}}` in :math:`{{\mathit{catch}}^\ast}`:
+
+         * The catch clause :math:`{\mathit{catch}}` is :ref:`valid <valid-val>`.
+
+      * :math:`{{\mathit{instr}''}^\ast}` is valid with :math:`{{\mathit{valtype}}^\ast}~{\rightarrow}_{{x^\ast}}\,{{\mathit{valtype}'}^\ast}`.
+   * Or:
+
+      * The instruction :math:`{\mathit{instr}}` is of the form :math:`\mathsf{trap}`.
+
+      * The local index sequence :math:`{{\mathit{localidx}}^\ast}` is empty.
+
+      * The instruction type :math:`{{\mathit{valtype}}^\ast}~\rightarrow~{{\mathit{valtype}'}^\ast}` is :ref:`valid <valid-val>`.
+
+
+
+
+:math:`{\mathit{instr}}` is valid with :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}` if:
+
+
+   * The instruction :math:`{\mathit{instr}}` is :ref:`valid <valid-val>` with the instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}`.
+
+
+
+
+:math:`{\mathit{ref}}` is valid with :math:`\epsilon~\rightarrow~{\mathit{rt}}` if:
+
+
+   * The reference value :math:`{\mathit{ref}}` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{rt}}`.
+
+
+
+
+:math:`({{\mathsf{label}}_{n}}{\{}~{{\mathit{instr}'}^\ast}~\}~{{\mathit{instr}}^\ast})` is valid with :math:`\epsilon~\rightarrow~{t^\ast}` if:
+
+
+   * :math:`{{\mathit{instr}'}^\ast}` is valid with :math:`{{t'}^{n}}~{\rightarrow}_{{{x'}^\ast}}\,{t^\ast}`.
+
+   * :math:`{{\mathit{instr}}^\ast}` is valid with :math:`\epsilon~{\rightarrow}_{{x^\ast}}\,{t^\ast}`.
+
+
+
+
+:math:`({{\mathsf{frame}}_{n}}{\{}~f~\}~{{\mathit{instr}}^\ast})` is valid with :math:`\epsilon~\rightarrow~{t^{n}}` if:
+
+
+   * The frame :math:`f` is :ref:`valid <valid-val>` with the context :math:`{C'}`.
+
+   * :math:`{{\mathit{instr}}^\ast}` is valid with :math:`{t^{n}}`.
+
+
+
+
+:math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}}^\ast}~\}~{{\mathit{instr}}^\ast})` is valid with :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
+
+
+   * For all :math:`{\mathit{catch}}` in :math:`{{\mathit{catch}}^\ast}`:
+
+      * The catch clause :math:`{\mathit{catch}}` is :ref:`valid <valid-val>`.
+
+   * :math:`{{\mathit{instr}}^\ast}` is valid with :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}`.
+
+
+
+
+:math:`\mathsf{trap}` is valid with :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
+
+
+   * The instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is :ref:`valid <valid-val>`.
+
+
+
+
+:math:`{{\mathit{instr}}^\ast}` is valid with :math:`{\mathit{it}}` if:
+
+
+   * Either:
+
+      * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is empty.
+
+      * The instruction type :math:`{\mathit{it}}` is of the form :math:`\epsilon~\rightarrow~\epsilon`.
+
+   * Or:
+
+      * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is of the form :math:`{\mathit{instr}}_1~{{\mathit{instr}}_2^\ast}`.
+
+      * The instruction type :math:`{\mathit{it}}` is of the form :math:`{t_1^\ast}~{\rightarrow}_{{x_1^\ast}~{x_2^\ast}}\,{t_3^\ast}`.
+
+      * :math:`{\mathit{instr}}_1` is valid with :math:`{t_1^\ast}~{\rightarrow}_{{x_1^\ast}}\,{t_2^\ast}`.
+
+      * For all :math:`x_1` in :math:`{x_1^\ast}`:
+
+         * The local :math:`C{.}\mathsf{locals}{}[x_1]` exists.
+
+         * The local :math:`C{.}\mathsf{locals}{}[x_1]` is of the form :math:`({\mathit{init}}~t)`.
+
+      * :math:`{{\mathit{instr}}_2^\ast}` is valid with :math:`{t_2^\ast}~{\rightarrow}_{{x_2^\ast}}\,{t_3^\ast}`.
+   * Or:
+
+      * :math:`{{\mathit{instr}}^\ast}` is valid with :math:`{\mathit{it}''}`.
+
+      * The instruction type :math:`{\mathit{it}''}` :ref:`matches <match>` the instruction type :math:`{\mathit{it}}`.
+
+      * The instruction type :math:`{\mathit{it}}` is :ref:`valid <valid-val>`.
+   * Or:
+
+      * The instruction type :math:`{\mathit{it}}` is of the form :math:`{t^\ast}~{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t^\ast}~{t_2^\ast}`.
+
+      * :math:`{{\mathit{instr}}^\ast}` is valid with :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}`.
+
+      * The result type :math:`{t^\ast}` is :ref:`valid <valid-val>`.
+
+
+
+
+:math:`\epsilon` is valid with :math:`\epsilon~\rightarrow~\epsilon`.
+
+
+
+
+:math:`{\mathit{instr}}_1~{{\mathit{instr}}_2^\ast}` is valid with :math:`{t_1^\ast}~{\rightarrow}_{{x_1^\ast}~{x_2^\ast}}\,{t_3^\ast}` if:
+
+
+   * :math:`{\mathit{instr}}_1` is valid with :math:`{t_1^\ast}~{\rightarrow}_{{x_1^\ast}}\,{t_2^\ast}`.
+
+   * For all :math:`x_1` in :math:`{x_1^\ast}`:
+
+      * The local :math:`C{.}\mathsf{locals}{}[x_1]` exists.
+
+      * The local :math:`C{.}\mathsf{locals}{}[x_1]` is of the form :math:`({\mathit{init}}~t)`.
+
+   * :math:`{t^\ast}` is the concatenation of all such :math:`t`.
+
+   * :math:`{{\mathit{instr}}_2^\ast}` is valid with :math:`{t_2^\ast}~{\rightarrow}_{{x_2^\ast}}\,{t_3^\ast}`.
+
+
+
+
+:math:`{{\mathit{instr}}^\ast}` is valid with :math:`{\mathit{it}}` if:
+
+
+   * :math:`{{\mathit{instr}}^\ast}` is valid with :math:`{\mathit{it}'}`.
+
+   * The instruction type :math:`{\mathit{it}'}` :ref:`matches <match>` the instruction type :math:`{\mathit{it}}`.
+
+   * The instruction type :math:`{\mathit{it}}` is :ref:`valid <valid-val>`.
+
+
+
+
+:math:`{{\mathit{instr}}^\ast}` is valid with :math:`{t^\ast}~{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t^\ast}~{t_2^\ast}` if:
+
+
+   * :math:`{{\mathit{instr}}^\ast}` is valid with :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}`.
+
+   * The result type :math:`{t^\ast}` is :ref:`valid <valid-val>`.
+
+
+
+
+:math:`{{\mathit{instr}}^\ast}` is valid with :math:`{t^\ast}` if:
+
+
+   * :math:`{{\mathit{instr}}^\ast}` is valid with :math:`\epsilon~\rightarrow~{t^\ast}`.
+
+
+
+
+The tag instance :math:`\{ \mathsf{type}~{\mathit{jt}} \}` is :ref:`valid <valid-val>` with the tag type :math:`{\mathit{jt}}` if:
+
+
+   * Under the context :math:`\{ \mathsf{return}~\epsilon \}`, the tag type :math:`{\mathit{jt}}` is :ref:`valid <valid-val>`.
+
+
+
+
+The global instance :math:`\{ \mathsf{type}~({\mathsf{mut}^?}~t),\;\allowbreak \mathsf{value}~{\mathit{val}} \}` is :ref:`valid <valid-val>` with the global type :math:`({\mathsf{mut}^?}~t)` if:
+
+
+   * Under the context :math:`\{ \mathsf{return}~\epsilon \}`, the global type :math:`({\mathsf{mut}^?}~t)` is :ref:`valid <valid-val>`.
+
+   * The value :math:`{\mathit{val}}` is :ref:`valid <valid-val>` with the value type :math:`t`.
+
+
+
+
+The memory instance :math:`\{ \mathsf{type}~({\mathit{at}}~{}[ n .. m ]~\mathsf{page}),\;\allowbreak \mathsf{bytes}~{b^\ast} \}` is :ref:`valid <valid-val>` with the memory type :math:`({\mathit{at}}~{}[ n .. m ]~\mathsf{page})` if:
+
+
+   * Under the context :math:`\{ \mathsf{return}~\epsilon \}`, the memory type :math:`({\mathit{at}}~{}[ n .. m ]~\mathsf{page})` is :ref:`valid <valid-val>`.
+
+   * The length of :math:`{b^\ast}` is equal to :math:`n \cdot 64 \, {\mathrm{Ki}}`.
+
+
+
+
+The table instance :math:`\{ \mathsf{type}~({\mathit{at}}~{}[ n .. m ]~{\mathit{rt}}),\;\allowbreak \mathsf{refs}~{{\mathit{ref}}^\ast} \}` is :ref:`valid <valid-val>` with the table type :math:`({\mathit{at}}~{}[ n .. m ]~{\mathit{rt}})` if:
+
+
+   * Under the context :math:`\{ \mathsf{return}~\epsilon \}`, the table type :math:`({\mathit{at}}~{}[ n .. m ]~{\mathit{rt}})` is :ref:`valid <valid-val>`.
+
+   * The length of :math:`{{\mathit{ref}}^\ast}` is equal to :math:`n`.
+
+   * For all :math:`{\mathit{ref}}` in :math:`{{\mathit{ref}}^\ast}`:
+
+      * The reference value :math:`{\mathit{ref}}` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{rt}}`.
+
+
+
+
+The function instance :math:`\{ \mathsf{type}~{\mathit{dt}},\;\allowbreak \mathsf{module}~{\mathit{moduleinst}},\;\allowbreak \mathsf{code}~{\mathit{func}} \}` is :ref:`valid <valid-val>` with the defined type :math:`{\mathit{dt}}` if:
+
+
+   * Under the context :math:`\{ \mathsf{return}~\epsilon \}`, the defined type :math:`{\mathit{dt}}` is :ref:`valid <valid-val>`.
+
+   * The module instance :math:`{\mathit{moduleinst}}` is :ref:`valid <valid-val>` with the context :math:`C`.
+
+   * The function :math:`{\mathit{func}}` is :ref:`valid <valid-val>` with the defined type :math:`{\mathit{dt}'}`.
+
+   * The defined type :math:`{\mathit{dt}'}` :ref:`matches <match>` the defined type :math:`{\mathit{dt}}`.
+
+
+
+
+The structure instance :math:`\{ \mathsf{type}~{\mathit{dt}},\;\allowbreak \mathsf{fields}~{{\mathit{fv}}^\ast} \}` is :ref:`valid <valid-val>` if:
+
+
+   * The :ref:`expansion <aux-expand-deftype>` of :math:`{\mathit{dt}}` is :math:`(\mathsf{struct}~{({\mathsf{mut}^?}~{\mathit{zt}})^\ast})`.
+
+   * For all :math:`{\mathit{fv}}` in :math:`{{\mathit{fv}}^\ast}`, and corresponding :math:`{\mathit{zt}}` in :math:`{{\mathit{zt}}^\ast}`:
+
+      * The field value :math:`{\mathit{fv}}` is :ref:`valid <valid-val>` with the storage type :math:`{\mathit{zt}}`.
+
+
+
+
+The array instance :math:`\{ \mathsf{type}~{\mathit{dt}},\;\allowbreak \mathsf{fields}~{{\mathit{fv}}^\ast} \}` is :ref:`valid <valid-val>` if:
+
+
+   * The :ref:`expansion <aux-expand-deftype>` of :math:`{\mathit{dt}}` is :math:`(\mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}}))`.
+
+   * For all :math:`{\mathit{fv}}` in :math:`{{\mathit{fv}}^\ast}`:
+
+      * The field value :math:`{\mathit{fv}}` is :ref:`valid <valid-val>` with the storage type :math:`{\mathit{zt}}`.
+
+
+
+
+The exception instance :math:`\{ \mathsf{tag}~{\mathit{ta}},\;\allowbreak \mathsf{fields}~{{\mathit{val}}^\ast} \}` is :ref:`valid <valid-val>` if:
+
+
+   * The tag instance :math:`s{.}\mathsf{tags}{}[{\mathit{ta}}]` exists.
+
+   * The tag type :math:`{\mathit{dt}}` is of the form :math:`s{.}\mathsf{tags}{}[{\mathit{ta}}]{.}\mathsf{type}`.
+
+   * The :ref:`expansion <aux-expand-deftype>` of :math:`{\mathit{dt}}` is :math:`(\mathsf{func}~{t^\ast}~\rightarrow)`.
+
+   * For all :math:`t` in :math:`{t^\ast}`, and corresponding :math:`{\mathit{val}}` in :math:`{{\mathit{val}}^\ast}`:
+
+      * The value :math:`{\mathit{val}}` is :ref:`valid <valid-val>` with the value type :math:`t`.
+
+
+
+
+:math:`{\mathit{fv}}_2` is immutably reachable from :math:`{\mathit{fv}}_1` if:
+
+
+   * Either:
+
+      * :math:`{\mathit{fv}'}` is immutably reachable from :math:`{\mathit{fv}}_1`.
+
+      * :math:`{\mathit{fv}}_2` is immutably reachable from :math:`{\mathit{fv}'}`.
+
+   * Or:
+
+      * The field value :math:`{\mathit{fv}}_1` is of the form :math:`(\mathsf{ref{.}struct}~a)`.
+
+      * The field value :math:`{\mathit{fv}}_2` is of the form :math:`s{.}\mathsf{structs}{}[a]{.}\mathsf{fields}{}[i]`.
+
+      * The field value :math:`s{.}\mathsf{structs}{}[a]{.}\mathsf{fields}{}[i]` exists.
+
+      * The structure instance :math:`s{.}\mathsf{structs}{}[a]` exists.
+
+      * The :ref:`expansion <aux-expand-deftype>` of :math:`s{.}\mathsf{structs}{}[a]{.}\mathsf{type}` is :math:`(\mathsf{struct}~{{\mathit{ft}}^\ast})`.
+
+      * The length of :math:`{{\mathit{ft}}^\ast}` is greater than :math:`i`.
+
+      * The field type :math:`{{\mathit{ft}}^\ast}{}[i]` is of the form :math:`(\epsilon~{\mathit{zt}})`.
+   * Or:
+
+      * The field value :math:`{\mathit{fv}}_1` is of the form :math:`(\mathsf{ref{.}array}~a)`.
+
+      * The field value :math:`{\mathit{fv}}_2` is of the form :math:`s{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}{}[i]`.
+
+      * The field value :math:`s{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}{}[i]` exists.
+
+      * The array instance :math:`s{.}\mathsf{arrays}{}[a]` exists.
+
+      * The :ref:`expansion <aux-expand-deftype>` of :math:`s{.}\mathsf{arrays}{}[a]{.}\mathsf{type}` is :math:`(\mathsf{array}~(\epsilon~{\mathit{zt}}))`.
+   * Or:
+
+      * The field value :math:`{\mathit{fv}}_1` is of the form :math:`(\mathsf{ref{.}exn}~a)`.
+
+      * The field value :math:`{\mathit{fv}}_2` is of the form :math:`s{.}\mathsf{exns}{}[a]{.}\mathsf{fields}{}[i]`.
+
+      * The value :math:`s{.}\mathsf{exns}{}[a]{.}\mathsf{fields}{}[i]` exists.
+
+      * The exception instance :math:`s{.}\mathsf{exns}{}[a]` exists.
+   * Or:
+
+      * The field value :math:`{\mathit{fv}}_1` is of the form :math:`(\mathsf{ref{.}extern}~{\mathit{ref}})`.
+
+      * The field value :math:`{\mathit{fv}}_2` is of the form :math:`{\mathit{ref}}`.
+
+
+
+
+:math:`{\mathit{fv}}_2` is immutably reachable from :math:`{\mathit{fv}}_1` if:
+
+
+   * :math:`{\mathit{fv}'}` is immutably reachable from :math:`{\mathit{fv}}_1`.
+
+   * :math:`{\mathit{fv}}_2` is immutably reachable from :math:`{\mathit{fv}'}`.
+
+
+
+
+:math:`s{.}\mathsf{structs}{}[a]{.}\mathsf{fields}{}[i]` is immutably reachable from :math:`(\mathsf{ref{.}struct}~a)` if:
+
+
+   * The field value :math:`s{.}\mathsf{structs}{}[a]{.}\mathsf{fields}{}[i]` exists.
+
+   * The structure instance :math:`s{.}\mathsf{structs}{}[a]` exists.
+
+   * The :ref:`expansion <aux-expand-deftype>` of :math:`s{.}\mathsf{structs}{}[a]{.}\mathsf{type}` is :math:`(\mathsf{struct}~{{\mathit{ft}}^\ast})`.
+
+   * The length of :math:`{{\mathit{ft}}^\ast}` is greater than :math:`i`.
+
+   * The field type :math:`{{\mathit{ft}}^\ast}{}[i]` is of the form :math:`(\epsilon~{\mathit{zt}})`.
+
+
+
+
+:math:`s{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}{}[i]` is immutably reachable from :math:`(\mathsf{ref{.}array}~a)` if:
+
+
+   * The field value :math:`s{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}{}[i]` exists.
+
+   * The array instance :math:`s{.}\mathsf{arrays}{}[a]` exists.
+
+   * The :ref:`expansion <aux-expand-deftype>` of :math:`s{.}\mathsf{arrays}{}[a]{.}\mathsf{type}` is :math:`(\mathsf{array}~(\epsilon~{\mathit{zt}}))`.
+
+
+
+
+:math:`s{.}\mathsf{exns}{}[a]{.}\mathsf{fields}{}[i]` is immutably reachable from :math:`(\mathsf{ref{.}exn}~a)` if:
+
+
+   * The value :math:`s{.}\mathsf{exns}{}[a]{.}\mathsf{fields}{}[i]` exists.
+
+   * The exception instance :math:`s{.}\mathsf{exns}{}[a]` exists.
+
+
+
+
+:math:`{\mathit{ref}}` is immutably reachable from :math:`(\mathsf{ref{.}extern}~{\mathit{ref}})`.
+
+
+
+
+:math:`{\mathit{fv}}_2` is not immutably reachable from :math:`{\mathit{fv}}_1` if:
+
+
+   * NotImmutReachable(:math:`{\mathit{fv}}_1`, :math:`s`, :math:`{\mathit{fv}}_2`) is true.
+
+
+
+
+The store :math:`s` is :ref:`valid <valid-val>` if:
+
+
+   * For all :
+
+      * The tag instance :math:`{\mathit{taginst}}` is :ref:`valid <valid-val>` with the tag type :math:`{\mathit{tagtype}}`.
+
+   * :math:`{{\mathit{taginst}}^\ast}` is the concatenation of all such :math:`{\mathit{taginst}}`.
+
+   * For all :
+
+      * The global instance :math:`{\mathit{globalinst}}` is :ref:`valid <valid-val>` with the global type :math:`{\mathit{globaltype}}`.
+
+   * :math:`{{\mathit{globalinst}}^\ast}` is the concatenation of all such :math:`{\mathit{globalinst}}`.
+
+   * For all :
+
+      * The memory instance :math:`{\mathit{meminst}}` is :ref:`valid <valid-val>` with the memory type :math:`{\mathit{memtype}}`.
+
+   * :math:`{{\mathit{meminst}}^\ast}` is the concatenation of all such :math:`{\mathit{meminst}}`.
+
+   * For all :
+
+      * The table instance :math:`{\mathit{tableinst}}` is :ref:`valid <valid-val>` with the table type :math:`{\mathit{tabletype}}`.
+
+   * :math:`{{\mathit{tableinst}}^\ast}` is the concatenation of all such :math:`{\mathit{tableinst}}`.
+
+   * For all :
+
+      * The function instance :math:`{\mathit{funcinst}}` is :ref:`valid <valid-val>` with the defined type :math:`{\mathit{deftype}}`.
+
+   * :math:`{{\mathit{funcinst}}^\ast}` is the concatenation of all such :math:`{\mathit{funcinst}}`.
+
+   * For all :
+
+      * The data instance :math:`{\mathit{datainst}}` is :ref:`valid <valid-val>` with the data type :math:`{\mathit{datatype}}`.
+
+   * :math:`{{\mathit{datainst}}^\ast}` is the concatenation of all such :math:`{\mathit{datainst}}`.
+
+   * For all :
+
+      * The element instance :math:`{\mathit{eleminst}}` is :ref:`valid <valid-val>` with the element type :math:`{\mathit{elemtype}}`.
+
+   * :math:`{{\mathit{eleminst}}^\ast}` is the concatenation of all such :math:`{\mathit{eleminst}}`.
+
+   * For all :math:`{\mathit{structinst}}` in :math:`{{\mathit{structinst}}^\ast}`:
+
+      * The structure instance :math:`{\mathit{structinst}}` is :ref:`valid <valid-val>`.
+
+   * For all :math:`{\mathit{arrayinst}}` in :math:`{{\mathit{arrayinst}}^\ast}`:
+
+      * The array instance :math:`{\mathit{arrayinst}}` is :ref:`valid <valid-val>`.
+
+   * For all :math:`{\mathit{exninst}}` in :math:`{{\mathit{exninst}}^\ast}`:
+
+      * The exception instance :math:`{\mathit{exninst}}` is :ref:`valid <valid-val>`.
+
+   * For all :
+
+      * :math:`(\mathsf{ref{.}struct}~a)` is not immutably reachable from :math:`(\mathsf{ref{.}struct}~a)`.
+
+      * :math:`(\mathsf{ref{.}array}~a)` is not immutably reachable from :math:`(\mathsf{ref{.}array}~a)`.
+
+      * :math:`(\mathsf{ref{.}exn}~a)` is not immutably reachable from :math:`(\mathsf{ref{.}exn}~a)`.
+
+   * The store :math:`s` is of the form :math:`\{ \mathsf{tags}~{{\mathit{taginst}}^\ast},\;\allowbreak \mathsf{globals}~{{\mathit{globalinst}}^\ast},\;\allowbreak \mathsf{mems}~{{\mathit{meminst}}^\ast},\;\allowbreak \mathsf{tables}~{{\mathit{tableinst}}^\ast},\;\allowbreak \mathsf{funcs}~{{\mathit{funcinst}}^\ast},\;\allowbreak \mathsf{datas}~{{\mathit{datainst}}^\ast},\;\allowbreak \mathsf{elems}~{{\mathit{eleminst}}^\ast},\;\allowbreak \mathsf{structs}~{{\mathit{structinst}}^\ast},\;\allowbreak \mathsf{arrays}~{{\mathit{arrayinst}}^\ast},\;\allowbreak \mathsf{exns}~{{\mathit{exninst}}^\ast} \}`.
+
+
+
+
+The state :math:`(s, f)` is :ref:`valid <valid-val>` with the context :math:`C` if:
+
+
+   * The store :math:`s` is :ref:`valid <valid-val>`.
+
+   * The frame :math:`f` is :ref:`valid <valid-val>` with the context :math:`C`.
+
+
+
+
+The configuration :math:`z~;~{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` if:
+
+
+   * The state :math:`z` is :ref:`valid <valid-val>` with the context :math:`C`.
+
+   * The expression :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` with the result type :math:`{t^\ast}`.
 
 
 
@@ -26812,6 +27578,17 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`{\mathrm{imports}}({{\mathit{decl}}_1^\ast}) = \epsilon` and :math:`{\mathrm{tags}}({{\mathit{decl}}_1^\ast}) = \epsilon` and :math:`{\mathrm{globals}}({{\mathit{decl}}_1^\ast}) = \epsilon` and :math:`{\mathrm{mems}}({{\mathit{decl}}_1^\ast}) = \epsilon` and :math:`{\mathrm{tables}}({{\mathit{decl}}_1^\ast}) = \epsilon` and :math:`{\mathrm{funcs}}({{\mathit{decl}}_1^\ast}) = \epsilon`.
 
 
+NotImmutReachable(:math:`{\mathit{fv}}_1`, :math:`s`, :math:`{\mathit{fv}}_2`)
+..............................................................................
+
+
+1. If `rel(ImmutReachable, [fv_1, s, fv_2])`, then:
+
+   a. Return false.
+
+#. Return true.
+
+
 :math:`{{{\mathrm{allocX}}^\ast}}{(s, {{X''}^\ast}, {{Y''}^\ast})}`
 ...................................................................
 
@@ -26893,6 +27670,8 @@ Heaptype_ok
   - Or:
     - heaptype is typeuse.
     - the type use typeuse is valid.
+  - Or:
+    - heaptype is BOT.
 
 Heaptype_ok/abs
 - the heap type absheaptype is always valid.
@@ -26900,6 +27679,9 @@ Heaptype_ok/abs
 Heaptype_ok/typeuse
 - the heap type typeuse is valid if:
   - typeuse is valid.
+
+Heaptype_ok/bot
+- the heap type BOT is always valid.
 
 Reftype_ok
 - the reference type (REF NULL? heaptype) is valid if:
@@ -27012,39 +27794,11 @@ Comptype_ok/func
   - the result type t_1* is valid.
   - the result type t_2* is valid.
 
-Subtype_ok
-- the sub type (SUB FINAL? (_IDX x)* comptype) is valid for the type index (OK x_0) if:
-  - |x*| is less than or equal to 1.
-  - For all x in x*:
-    - the index x is less than x_0.
-    - the type C.TYPES[x] exists.
-    - the sub type $unrolldt(C.TYPES[x]) is (SUB ?() (_IDX x')* comptype').
-  - comptype'* is the concatenation of all such comptype'.
-  - the composite type comptype is valid.
-  - For all comptype' in comptype'*:
-    - comptype matches the composite type comptype'.
-
-Rectype_ok
-- the recursive type (REC subtype*) is valid for the type index (OK x) if:
-  - Either:
-    - the sub type sequence subtype* is [].
-  - Or:
-    - subtype* is [subtype_1] :: subtype'*.
-    - the sub type subtype_1 is valid for (OK x).
-    - the recursive type (REC subtype'*) is valid for the type index (OK (x + 1)).
-
-Rectype_ok/empty
-- the recursive type (REC []) is valid for (OK x).
-
-Rectype_ok/cons
-- the recursive type (REC [subtype_1] :: subtype*) is valid for the type index (OK x) if:
-  - the sub type subtype_1 is valid for (OK x).
-  - the recursive type (REC subtype*) is valid for the type index (OK (x + 1)).
-
 Subtype_ok2
 - the sub type (SUB FINAL? typeuse* comptype) is valid for (OK x i) if:
   - |typeuse*| is less than or equal to 1.
   - For all typeuse in typeuse*:
+    - the type use typeuse is valid.
     - $before(typeuse, x, i) is true.
     - the sub type $unrollht(C, typeuse) is (SUB ?() typeuse'* comptype').
   - comptype'* is the concatenation of all such comptype'.
@@ -27059,7 +27813,7 @@ Rectype_ok2
   - Or:
     - subtype* is [subtype_1] :: subtype'*.
     - the sub type subtype_1 is valid for (OK x i).
-    - the recursive type (REC subtype'*) is valid for (OK (x + 1) (i + 1)).
+    - the recursive type (REC subtype'*) is valid for (OK x (i + 1)).
 
 Rectype_ok2/empty
 - the recursive type (REC []) is valid for (OK x i).
@@ -27067,11 +27821,12 @@ Rectype_ok2/empty
 Rectype_ok2/cons
 - the recursive type (REC [subtype_1] :: subtype*) is valid for (OK x i) if:
   - the sub type subtype_1 is valid for (OK x i).
-  - the recursive type (REC subtype*) is valid for (OK (x + 1) (i + 1)).
+  - the recursive type (REC subtype*) is valid for (OK x (i + 1)).
 
 Deftype_ok
 - the defined type (_DEF rectype i) is valid if:
-  - the recursive type rectype is valid for the type index (OK x).
+  - the context C' is the context C with .RECS prepended by subtype^n.
+  - Under the context C', the recursive type rectype is valid for (OK x 0).
   - rectype is (REC subtype^n).
   - i is less than n.
 
@@ -27364,6 +28119,10 @@ Fieldtype_sub/var
   - the storage type zt_1 matches the storage type zt_2.
   - zt_2 matches zt_1.
 
+Localtype_ok
+- the local type (init t) is valid if:
+  - the value type t is valid.
+
 Instrtype_ok
 - the instruction type t_1* ->_ x* t_2* is valid if:
   - the result type t_1* is valid.
@@ -27389,6 +28148,35 @@ Expand_use/typeidx
 - The :ref:`expansion <aux-expand-typeuse>` of C is comptype if:
   - the type C.TYPES[typeidx] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[typeidx] is comptype.
+
+Subtype_ok
+- the sub type (SUB FINAL? (_IDX x)* comptype) is valid for the type index (OK x_0) if:
+  - |x*| is less than or equal to 1.
+  - For all x in x*:
+    - the index x is less than x_0.
+    - the type C.TYPES[x] exists.
+    - the sub type $unrolldt(C.TYPES[x]) is (SUB ?() (_IDX x')* comptype').
+  - comptype'* is the concatenation of all such comptype'.
+  - the composite type comptype is valid.
+  - For all comptype' in comptype'*:
+    - comptype matches the composite type comptype'.
+
+Rectype_ok
+- the recursive type (REC subtype*) is valid for the type index (OK x) if:
+  - Either:
+    - the sub type sequence subtype* is [].
+  - Or:
+    - subtype* is [subtype_1] :: subtype'*.
+    - the sub type subtype_1 is valid for (OK x).
+    - the recursive type (REC subtype'*) is valid for the type index (OK (x + 1)).
+
+Rectype_ok/empty
+- the recursive type (REC []) is valid for (OK x).
+
+Rectype_ok/cons
+- the recursive type (REC [subtype_1] :: subtype*) is valid for the type index (OK x) if:
+  - the sub type subtype_1 is valid for (OK x).
+  - the recursive type (REC subtype*) is valid for the type index (OK (x + 1)).
 
 Limits_ok
 - the limits range ([ n .. m? ]) is valid within k if:
@@ -28789,6 +29577,28 @@ Val_ok/ref
 - the value ref is valid with the value type rt if:
   - ref is valid with rt.
 
+Packval_ok
+- the packed value (PACK pt c) is valid with the packed type pt.
+
+Fieldval_ok
+- the field value fieldval is valid with the storage type storagetype if:
+  - Either:
+    - fieldval is val.
+    - storagetype is t.
+    - the value val is valid with the value type t.
+  - Or:
+    - fieldval is packval.
+    - storagetype is pt.
+    - the packed value packval is valid with the packed type pt.
+
+Fieldval_ok/val
+- the field value val is valid with the storage type t if:
+  - val is valid with t.
+
+Fieldval_ok/packval
+- the field value packval is valid with the storage type pt if:
+  - packval is valid with pt.
+
 Externaddr_ok
 - the external address externaddr is valid with the external type externtype if:
   - Either:
@@ -28865,6 +29675,364 @@ Idctxt_ok
   - For all field* in field**:
     - $disjoint_(`name, $concatopt_(`name, [?(field*)])) is true.
   - the name sequence sequence [?(field*)*] is I.FIELDS.
+
+Context_ok
+- the context C is valid if:
+  - C is { TYPES: dt^n; RECS: st^m; TAGS: jt*; GLOBALS: gt*; MEMS: mt*; TABLES: tt*; FUNCS: dt_F*; DATAS: ok*; ELEMS: et*; LOCALS: lct*; LABELS: [rt*]; RETURN: ?(rt'?); REFS: x* }.
+  - the context C_0 is { TYPES: dt^n; RETURN: ?() }.
+  - For all dt in dt*:
+    - Under the context { TYPES: dt^n[0 : i]; RETURN: ?() }, the defined type dt is valid.
+  - For all st in st*:
+    - Under the context { TYPES: dt^n; RECS: st^m; RETURN: ?() }, the sub type st is valid for (OK n i).
+  - For all jt in jt*:
+    - Under the context C_0, the tag type jt is valid.
+  - For all gt in gt*:
+    - Under the context C_0, the global type gt is valid.
+  - For all mt in mt*:
+    - Under the context C_0, the memory type mt is valid.
+  - For all tt in tt*:
+    - Under the context C_0, the table type tt is valid.
+  - For all dt_F in dt_F*:
+    - Under the context C_0, the defined type dt_F is valid.
+    - The :ref:`expansion <aux-expand-deftype>` of dt_F is (FUNC [t_1] -> [t_2]).
+  - For all et in et*:
+    - Under the context C_0, the reference type et is valid.
+  - For all lct in lct*:
+    - Under the context C_0, the local type lct is valid.
+  - For all rt in rt*:
+    - Under the context C_0, the result type [rt] is valid.
+  - If rt' is defined, then:
+    - Under the context C_0, the result type [rt'] is valid.
+  - For all x in x*:
+    - |dt_F*| is greater than x.
+
+Localval_ok
+- the value val? is valid with the local type (init t) if:
+  - Either:
+    - val? is ?(val').
+    - the initialization status init is SET.
+    - the value val' is valid with the value type t.
+  - Or:
+    - val? is ?().
+    - init is UNSET.
+    - t is BOT.
+
+Localval_ok/set
+- the value ?(val) is valid with the local type (SET t) if:
+  - the value val is valid with the value type t.
+
+Localval_ok/unset
+- the value ?() is valid with the local type (UNSET BOT).
+
+Datainst_ok
+- the data instance { BYTES: b* } is valid with the data type OK.
+
+Eleminst_ok
+- the element instance { TYPE: rt; REFS: ref* } is valid with the element type rt if:
+  - Under the context { RETURN: ?() }, rt is valid.
+  - For all ref in ref*:
+    - the reference value ref is valid with rt.
+
+Exportinst_ok
+- the export instance { NAME: nm; ADDR: xa } is valid if:
+  - the external address xa is valid with the external type xt.
+
+Moduleinst_ok
+- the module instance { TYPES: deftype*; TAGS: tagaddr*; GLOBALS: globaladdr*; MEMS: memaddr*; TABLES: tableaddr*; FUNCS: funcaddr*; DATAS: dataaddr*; ELEMS: elemaddr*; EXPORTS: exportinst* } is valid with the context { TYPES: deftype*; RECS: subtype*; TAGS: tagtype*; GLOBALS: globaltype*; MEMS: memtype*; TABLES: tabletype*; FUNCS: deftype_F*; DATAS: datatype*; ELEMS: elemtype*; RETURN: ?(); REFS: i^(i<|funcaddr*|) } if:
+  - For all deftype in deftype*:
+    - Under the context { RETURN: ?() }, the defined type deftype is valid.
+  - For all tagaddr in tagaddr*, and corresponding tagtype in tagtype*:
+    - the external address (TAG tagaddr) is valid with the external type (TAG tagtype).
+  - For all globaladdr in globaladdr*, and corresponding globaltype in globaltype*:
+    - the external address (GLOBAL globaladdr) is valid with the external type (GLOBAL globaltype).
+  - For all deftype_F in deftype_F*, and corresponding funcaddr in funcaddr*:
+    - the external address (FUNC funcaddr) is valid with the external type (FUNC deftype_F).
+  - For all memaddr in memaddr*, and corresponding memtype in memtype*:
+    - the external address (MEM memaddr) is valid with the external type (MEM memtype).
+  - For all tableaddr in tableaddr*, and corresponding tabletype in tabletype*:
+    - the external address (TABLE tableaddr) is valid with the external type (TABLE tabletype).
+  - For all dataaddr in dataaddr*:
+    - the data instance s.DATAS[dataaddr] exists.
+  - For all dataaddr in dataaddr*, and corresponding datatype in datatype*:
+    - s.DATAS[dataaddr] is valid with the data type datatype.
+  - For all elemaddr in elemaddr*:
+    - the element instance s.ELEMS[elemaddr] exists.
+  - For all elemaddr in elemaddr*, and corresponding elemtype in elemtype*:
+    - s.ELEMS[elemaddr] is valid with the element type elemtype.
+  - For all exportinst in exportinst*:
+    - the export instance exportinst is valid.
+  - $disjoint_(`name, exportinst.NAME*) is true.
+  - |(TAG tagaddr)* :: (GLOBAL globaladdr)* :: (MEM memaddr)* :: (TABLE tableaddr)* :: (FUNC funcaddr)*| is greater than 0.
+  - For all exportinst in exportinst*:
+    - exportinst.ADDR is contained in (TAG tagaddr)* :: (GLOBAL globaladdr)* :: (MEM memaddr)* :: (TABLE tableaddr)* :: (FUNC funcaddr)*.
+
+Frame_ok
+- the frame { LOCALS: val?*; MODULE: moduleinst } is valid with the context C with .LOCALS appended by lct* if:
+  - the module instance moduleinst is valid with the context C.
+  - For all lct in lct*, and corresponding val? in val?*:
+    - the value val? is valid with the local type lct.
+
+Instr_ok2
+- instr is valid with valtype* ->_ localidx* valtype'* if:
+  - Either:
+    - the instruction instr is valid with the instruction type valtype* ->_ localidx* valtype'*.
+  - Or:
+    - instr is ref.
+    - the value type sequence valtype* is [].
+    - the local index sequence localidx* is [].
+    - the value type sequence valtype'* is [rt].
+    - the reference value ref is valid with the reference type rt.
+  - Or:
+    - instr is (LABEL_ n { instr'* } instr''*).
+    - valtype* is [].
+    - localidx* is [].
+    - instr'* is valid with t'^n ->_ x'* valtype'*.
+    - instr''* is valid with [] ->_ x* valtype'*.
+  - Or:
+    - instr is (FRAME_ n { f } instr''*).
+    - valtype* is [].
+    - localidx* is [].
+    - the frame f is valid with the context C'.
+    - instr''* is valid with valtype'^n.
+  - Or:
+    - instr is (HANDLER_ n { catch* } instr''*).
+    - localidx* is [].
+    - For all catch in catch*:
+      - the catch clause catch is valid.
+    - instr''* is valid with valtype* ->_ x* valtype'*.
+  - Or:
+    - instr is TRAP.
+    - localidx* is [].
+    - the instruction type valtype* -> valtype'* is valid.
+
+Instr_ok2/plain
+- instr is valid with t_1* ->_ x* t_2* if:
+  - the instruction instr is valid with the instruction type t_1* ->_ x* t_2*.
+
+Instr_ok2/ref
+- ref is valid with [] -> [rt] if:
+  - the reference value ref is valid with the reference type rt.
+
+Instr_ok2/label
+- (LABEL_ n { instr'* } instr*) is valid with [] -> t* if:
+  - instr'* is valid with t'^n ->_ x'* t*.
+  - instr* is valid with [] ->_ x* t*.
+
+Instr_ok2/frame
+- (FRAME_ n { f } instr*) is valid with [] -> t^n if:
+  - the frame f is valid with the context C'.
+  - instr* is valid with t^n.
+
+Instr_ok2/handler
+- (HANDLER_ n { catch* } instr*) is valid with t_1* -> t_2* if:
+  - For all catch in catch*:
+    - the catch clause catch is valid.
+  - instr* is valid with t_1* ->_ x* t_2*.
+
+Instr_ok2/trap
+- TRAP is valid with t_1* -> t_2* if:
+  - the instruction type t_1* -> t_2* is valid.
+
+Instrs_ok2
+- instr* is valid with it if:
+  - Either:
+    - the instruction sequence instr* is [].
+    - the instruction type it is [] -> [].
+  - Or:
+    - instr* is [instr_1] :: instr_2*.
+    - it is t_1* ->_ x_1* :: x_2* t_3*.
+    - instr_1 is valid with t_1* ->_ x_1* t_2*.
+    - For all x_1 in x_1*:
+      - the local C.LOCALS[x_1] exists.
+      - C.LOCALS[x_1] is (init t).
+    - instr_2* is valid with t_2* ->_ x_2* t_3*.
+  - Or:
+    - instr* is valid with it''.
+    - the instruction type it'' matches it.
+    - it is valid.
+  - Or:
+    - it is t* :: t_1* ->_ x* t* :: t_2*.
+    - instr* is valid with t_1* ->_ x* t_2*.
+    - the result type t* is valid.
+
+Instrs_ok2/empty
+- [] is valid with [] -> [].
+
+Instrs_ok2/seq
+- [instr_1] :: instr_2* is valid with t_1* ->_ x_1* :: x_2* t_3* if:
+  - instr_1 is valid with t_1* ->_ x_1* t_2*.
+  - For all x_1 in x_1*:
+    - the local C.LOCALS[x_1] exists.
+    - C.LOCALS[x_1] is (init t).
+  - t* is the concatenation of all such t.
+  - instr_2* is valid with t_2* ->_ x_2* t_3*.
+
+Instrs_ok2/sub
+- instr* is valid with it if:
+  - instr* is valid with it'.
+  - the instruction type it' matches the instruction type it.
+  - it is valid.
+
+Instrs_ok2/frame
+- instr* is valid with t* :: t_1* ->_ x* t* :: t_2* if:
+  - instr* is valid with t_1* ->_ x* t_2*.
+  - the result type t* is valid.
+
+Expr_ok2
+- instr* is valid with t* if:
+  - instr* is valid with [] -> t*.
+
+Taginst_ok
+- the tag instance { TYPE: jt } is valid with the tag type jt if:
+  - Under the context { RETURN: ?() }, jt is valid.
+
+Globalinst_ok
+- the global instance { TYPE: (mut? t); VALUE: val } is valid with the global type (mut? t) if:
+  - Under the context { RETURN: ?() }, (mut? t) is valid.
+  - the value val is valid with the value type t.
+
+Meminst_ok
+- the memory instance { TYPE: at ([ n .. ?(m) ]) PAGE; BYTES: b* } is valid with the memory type at ([ n .. ?(m) ]) PAGE if:
+  - Under the context { RETURN: ?() }, at ([ n .. ?(m) ]) PAGE is valid.
+  - |b*| is (n * (64 * $Ki())).
+
+Tableinst_ok
+- the table instance { TYPE: (at ([ n .. ?(m) ]) rt); REFS: ref* } is valid with the table type (at ([ n .. ?(m) ]) rt) if:
+  - Under the context { RETURN: ?() }, (at ([ n .. ?(m) ]) rt) is valid.
+  - |ref*| is n.
+  - For all ref in ref*:
+    - the reference value ref is valid with the reference type rt.
+
+Funcinst_ok
+- the function instance { TYPE: dt; MODULE: moduleinst; CODE: func } is valid with the defined type dt if:
+  - Under the context { RETURN: ?() }, dt is valid.
+  - the module instance moduleinst is valid with the context C.
+  - the function func is valid with the defined type dt'.
+  - dt' matches dt.
+
+Structinst_ok
+- the structure instance { TYPE: dt; FIELDS: fv* } is valid if:
+  - The :ref:`expansion <aux-expand-deftype>` of dt is (STRUCT (mut? zt)*).
+  - For all fv in fv*, and corresponding zt in zt*:
+    - the field value fv is valid with the storage type zt.
+
+Arrayinst_ok
+- the array instance { TYPE: dt; FIELDS: fv* } is valid if:
+  - The :ref:`expansion <aux-expand-deftype>` of dt is (ARRAY (mut? zt)).
+  - For all fv in fv*:
+    - the field value fv is valid with the storage type zt.
+
+Exninst_ok
+- the exception instance { TAG: ta; FIELDS: val* } is valid if:
+  - the tag instance s.TAGS[ta] exists.
+  - the tag type dt is s.TAGS[ta].TYPE.
+  - The :ref:`expansion <aux-expand-deftype>` of dt is (FUNC t* -> []).
+  - For all t in t*, and corresponding val in val*:
+    - the value val is valid with the value type t.
+
+ImmutReachable
+- fv_2 is immutably reachable from fv_1 if:
+  - Either:
+    - fv' is immutably reachable from fv_1.
+    - fv_2 is immutably reachable from fv'.
+  - Or:
+    - the field value fv_1 is (REF.STRUCT_ADDR a).
+    - the field value fv_2 is s.STRUCTS[a].FIELDS[i].
+    - the field value s.STRUCTS[a].FIELDS[i] exists.
+    - the structure instance s.STRUCTS[a] exists.
+    - The :ref:`expansion <aux-expand-deftype>` of s.STRUCTS[a].TYPE is (STRUCT ft*).
+    - |ft*| is greater than i.
+    - the field type ft*[i] is (?() zt).
+  - Or:
+    - fv_1 is (REF.ARRAY_ADDR a).
+    - fv_2 is s.ARRAYS[a].FIELDS[i].
+    - the field value s.ARRAYS[a].FIELDS[i] exists.
+    - the array instance s.ARRAYS[a] exists.
+    - The :ref:`expansion <aux-expand-deftype>` of s.ARRAYS[a].TYPE is (ARRAY (?() zt)).
+  - Or:
+    - fv_1 is (REF.EXN_ADDR a).
+    - fv_2 is s.EXNS[a].FIELDS[i].
+    - the value s.EXNS[a].FIELDS[i] exists.
+    - the exception instance s.EXNS[a] exists.
+  - Or:
+    - fv_1 is (REF.EXTERN ref).
+    - fv_2 is ref.
+
+ImmutReachable/trans
+- fv_2 is immutably reachable from fv_1 if:
+  - fv' is immutably reachable from fv_1.
+  - fv_2 is immutably reachable from fv'.
+
+ImmutReachable/ref.struct
+- s.STRUCTS[a].FIELDS[i] is immutably reachable from (REF.STRUCT_ADDR a) if:
+  - the field value s.STRUCTS[a].FIELDS[i] exists.
+  - the structure instance s.STRUCTS[a] exists.
+  - The :ref:`expansion <aux-expand-deftype>` of s.STRUCTS[a].TYPE is (STRUCT ft*).
+  - |ft*| is greater than i.
+  - the field type ft*[i] is (?() zt).
+
+ImmutReachable/ref.array
+- s.ARRAYS[a].FIELDS[i] is immutably reachable from (REF.ARRAY_ADDR a) if:
+  - the field value s.ARRAYS[a].FIELDS[i] exists.
+  - the array instance s.ARRAYS[a] exists.
+  - The :ref:`expansion <aux-expand-deftype>` of s.ARRAYS[a].TYPE is (ARRAY (?() zt)).
+
+ImmutReachable/ref.exn
+- s.EXNS[a].FIELDS[i] is immutably reachable from (REF.EXN_ADDR a) if:
+  - the value s.EXNS[a].FIELDS[i] exists.
+  - the exception instance s.EXNS[a] exists.
+
+ImmutReachable/ref.extern
+- ref is immutably reachable from (REF.EXTERN ref).
+
+NotImmutReachable
+- fv_2 is not immutably reachable from fv_1 if:
+  - $NotImmutReachable(fv_1, s, fv_2) is true.
+
+Store_ok
+- the store s is valid if:
+  - For all :
+    - the tag instance taginst is valid with the tag type tagtype.
+  - taginst* is the concatenation of all such taginst.
+  - For all :
+    - the global instance globalinst is valid with the global type globaltype.
+  - globalinst* is the concatenation of all such globalinst.
+  - For all :
+    - the memory instance meminst is valid with the memory type memtype.
+  - meminst* is the concatenation of all such meminst.
+  - For all :
+    - the table instance tableinst is valid with the table type tabletype.
+  - tableinst* is the concatenation of all such tableinst.
+  - For all :
+    - the function instance funcinst is valid with the defined type deftype.
+  - funcinst* is the concatenation of all such funcinst.
+  - For all :
+    - the data instance datainst is valid with the data type datatype.
+  - datainst* is the concatenation of all such datainst.
+  - For all :
+    - the element instance eleminst is valid with the element type elemtype.
+  - eleminst* is the concatenation of all such eleminst.
+  - For all structinst in structinst*:
+    - the structure instance structinst is valid.
+  - For all arrayinst in arrayinst*:
+    - the array instance arrayinst is valid.
+  - For all exninst in exninst*:
+    - the exception instance exninst is valid.
+  - For all :
+    - (REF.STRUCT_ADDR a) is not immutably reachable from (REF.STRUCT_ADDR a).
+    - (REF.ARRAY_ADDR a) is not immutably reachable from (REF.ARRAY_ADDR a).
+    - (REF.EXN_ADDR a) is not immutably reachable from (REF.EXN_ADDR a).
+  - s is { TAGS: taginst*; GLOBALS: globalinst*; MEMS: meminst*; TABLES: tableinst*; FUNCS: funcinst*; DATAS: datainst*; ELEMS: eleminst*; STRUCTS: structinst*; ARRAYS: arrayinst*; EXNS: exninst* }.
+
+State_ok
+- the state (s, f) is valid with the context C if:
+  - the store s is valid.
+  - the frame f is valid with C.
+
+Config_ok
+- the configuration z ; instr* is valid if:
+  - the state z is valid with the context C.
+  - the expression instr* is valid with the result type t*.
 
 NotationTypingInstrScheme
 - the instruction sequence [instr] is valid with the instruction type valtype* -> valtype'* if:
@@ -33183,6 +34351,11 @@ ordered decl*
 2. Assert: Due to validation, YetE (Nondeterministic assignment target: decl_1*{decl_1 <- decl_1*} :: [import] :: decl_2*{decl_2 <- decl_2*}).
 3. Let decl_1* :: [import] :: decl_2* be decl*.
 4. Return (((((($importsd(decl_1*) = []) /\ ($tagsd(decl_1*) = [])) /\ ($globalsd(decl_1*) = [])) /\ ($memsd(decl_1*) = [])) /\ ($tablesd(decl_1*) = [])) /\ ($funcsd(decl_1*) = [])).
+
+NotImmutReachable fv_1 s fv_2
+1. If the relation ImmutReachable(fv_1, s, fv_2) holds, then:
+  a. Return false.
+2. Return true.
 
 allocXs `X `Y s X''* Y''*
 1. If (X''* = []), then:

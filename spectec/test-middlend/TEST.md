@@ -7728,70 +7728,70 @@ relation Frame_ok: `%|-%:%`(store, frame, context)
 ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
 rec {
 
-;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:3.1-3.56
+;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:3.1-4.36
 relation Instr_ok2: `%;%|-%:%`(store, context, instr, instrtype)
-  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:7.1-9.46
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:10.1-12.46
   rule plain{s : store, C : context, instr : instr, `t_1*` : valtype*, `x*` : idx*, `t_2*` : valtype*}:
     `%;%|-%:%`(s, C, instr, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), x*{x <- `x*`}, `%`_resulttype(t_2*{t_2 <- `t_2*`})))
     -- Instr_ok: `%|-%:%`(C, instr, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), x*{x <- `x*`}, `%`_resulttype(t_2*{t_2 <- `t_2*`})))
 
-  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:11.1-13.27
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:14.1-16.27
   rule ref{s : store, C : context, ref : ref, rt : reftype}:
     `%;%|-%:%`(s, C, (ref : ref <: instr), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([(rt : reftype <: valtype)])))
     -- Ref_ok: `%|-%:%`(s, ref, rt)
 
-  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:15.1-18.68
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:18.1-21.68
   rule label{s : store, C : context, n : n, `instr'*` : instr*, `instr*` : instr*, `t*` : valtype*, `t'*` : valtype*, `x'*` : idx*, `x*` : idx*}:
     `%;%|-%:%`(s, C, `LABEL_%{%}%`_instr(n, instr'*{instr' <- `instr'*`}, instr*{instr <- `instr*`}), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype(t*{t <- `t*`})))
     -- Instrs_ok2: `%;%|-%:%`(s, C, instr'*{instr' <- `instr'*`}, `%->_%%`_instrtype(`%`_resulttype(t'^n{t' <- `t'*`}), x'*{x' <- `x'*`}, `%`_resulttype(t*{t <- `t*`})))
     -- Instrs_ok2: `%;%|-%:%`(s, {TYPES [], RECS [], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [`%`_resulttype(t'^n{t' <- `t'*`})], RETURN ?(), REFS []} +++ C, instr*{instr <- `instr*`}, `%->_%%`_instrtype(`%`_resulttype([]), x*{x <- `x*`}, `%`_resulttype(t*{t <- `t*`})))
 
-  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:20.1-23.37
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:23.1-26.37
   rule frame{s : store, C : context, n : n, f : frame, `instr*` : instr*, `t*` : valtype*, C' : context}:
     `%;%|-%:%`(s, C, `FRAME_%{%}%`_instr(n, f, instr*{instr <- `instr*`}), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype(t^n{t <- `t*`})))
     -- Frame_ok: `%|-%:%`(s, f, C')
     -- Expr_ok2: `%;%|-%:%`(s, C', instr*{instr <- `instr*`}, `%`_resulttype(t^n{t <- `t*`}))
 
-  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:25.1-28.52
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:28.1-31.52
   rule handler{s : store, C : context, n : n, `catch*` : catch*, `instr*` : instr*, `t_1*` : valtype*, `t_2*` : valtype*, `x*` : idx*}:
     `%;%|-%:%`(s, C, `HANDLER_%{%}%`_instr(n, catch*{catch <- `catch*`}, instr*{instr <- `instr*`}), `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), [], `%`_resulttype(t_2*{t_2 <- `t_2*`})))
     -- (Catch_ok: `%|-%:OK`(C, catch))*{catch <- `catch*`}
     -- Instrs_ok2: `%;%|-%:%`(s, C, instr*{instr <- `instr*`}, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), x*{x <- `x*`}, `%`_resulttype(t_2*{t_2 <- `t_2*`})))
 
-  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:30.1-32.42
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:33.1-35.42
   rule trap{s : store, C : context, `t_1*` : valtype*, `t_2*` : valtype*}:
     `%;%|-%:%`(s, C, TRAP_instr, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), [], `%`_resulttype(t_2*{t_2 <- `t_2*`})))
     -- Instrtype_ok: `%|-%:OK`(C, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), [], `%`_resulttype(t_2*{t_2 <- `t_2*`})))
 
-;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:4.1-4.58
+;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:5.1-6.36
 relation Instrs_ok2: `%;%|-%:%`(store, context, instr*, instrtype)
-  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:35.1-36.27
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:38.1-39.27
   rule empty{s : store, C : context}:
     `%;%|-%:%`(s, C, [], `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([])))
 
-  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:38.1-42.86
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:41.1-45.86
   rule seq{s : store, C : context, instr_1 : instr, `instr_2*` : instr*, `t_1*` : valtype*, `x_1*` : idx*, `x_2*` : idx*, `t_3*` : valtype*, `t_2*` : valtype*, `init*` : init*, `t*` : valtype*}:
     `%;%|-%:%`(s, C, [instr_1] ++ instr_2*{instr_2 <- `instr_2*`}, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), x_1*{x_1 <- `x_1*`} ++ x_2*{x_2 <- `x_2*`}, `%`_resulttype(t_3*{t_3 <- `t_3*`})))
     -- Instr_ok2: `%;%|-%:%`(s, C, instr_1, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), x_1*{x_1 <- `x_1*`}, `%`_resulttype(t_2*{t_2 <- `t_2*`})))
     -- (if (C.LOCALS_context[x_1!`%`_idx.0] = `%%`_localtype(init, t)))*{init <- `init*`, t <- `t*`, x_1 <- `x_1*`}
     -- Instrs_ok2: `%;%|-%:%`(s, $with_locals(C, x_1*{x_1 <- `x_1*`}, `%%`_localtype(SET_init, t)*{t <- `t*`}), instr_2*{instr_2 <- `instr_2*`}, `%->_%%`_instrtype(`%`_resulttype(t_2*{t_2 <- `t_2*`}), x_2*{x_2 <- `x_2*`}, `%`_resulttype(t_3*{t_3 <- `t_3*`})))
 
-  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:44.1-48.33
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:47.1-51.33
   rule sub{s : store, C : context, `instr*` : instr*, it' : instrtype, it : instrtype}:
     `%;%|-%:%`(s, C, instr*{instr <- `instr*`}, it')
     -- Instrs_ok2: `%;%|-%:%`(s, C, instr*{instr <- `instr*`}, it)
     -- Instrtype_sub: `%|-%<:%`(C, it, it')
     -- Instrtype_ok: `%|-%:OK`(C, it')
 
-  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:51.1-54.33
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:54.1-57.33
   rule frame{s : store, C : context, `instr*` : instr*, `t*` : valtype*, `t_1*` : valtype*, `x*` : idx*, `t_2*` : valtype*}:
     `%;%|-%:%`(s, C, instr*{instr <- `instr*`}, `%->_%%`_instrtype(`%`_resulttype(t*{t <- `t*`} ++ t_1*{t_1 <- `t_1*`}), x*{x <- `x*`}, `%`_resulttype(t*{t <- `t*`} ++ t_2*{t_2 <- `t_2*`})))
     -- Instrs_ok2: `%;%|-%:%`(s, C, instr*{instr <- `instr*`}, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), x*{x <- `x*`}, `%`_resulttype(t_2*{t_2 <- `t_2*`})))
     -- Resulttype_ok: `%|-%:OK`(C, `%`_resulttype(t*{t <- `t*`}))
 
-;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:5.1-5.55
+;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:7.1-8.36
 relation Expr_ok2: `%;%|-%:%`(store, context, expr, resulttype)
-  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:57.1-59.44
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:60.1-62.44
   rule _{s : store, C : context, `instr*` : instr*, `t*` : valtype*}:
     `%;%|-%:%`(s, C, instr*{instr <- `instr*`}, `%`_resulttype(t*{t <- `t*`}))
     -- Instrs_ok2: `%;%|-%:%`(s, C, instr*{instr <- `instr*`}, `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype(t*{t <- `t*`})))
@@ -7867,49 +7867,49 @@ relation Exninst_ok: `%|-%:OK`(store, exninst)
 ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
 rec {
 
-;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:205.1-205.50
-relation ImmReachable: `%>>_%%`(fieldval, store, fieldval)
-  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:217.1-220.33
+;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:208.1-209.50
+relation ImmutReachable: `%>>_%%`(fieldval, store, fieldval)
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:222.1-225.35
   rule trans{fv_1 : fieldval, s : store, fv_2 : fieldval, fv' : fieldval}:
     `%>>_%%`(fv_1, s, fv_2)
-    -- ImmReachable: `%>>_%%`(fv_1, s, fv')
-    -- ImmReachable: `%>>_%%`(fv', s, fv_2)
+    -- ImmutReachable: `%>>_%%`(fv_1, s, fv')
+    -- ImmutReachable: `%>>_%%`(fv', s, fv_2)
 
-  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:222.1-225.20
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:227.1-230.20
   rule `ref.struct`{a : addr, s : store, i : nat, `ft*` : fieldtype*, zt : storagetype}:
     `%>>_%%`(`REF.STRUCT_ADDR`_fieldval(a), s, s.STRUCTS_store[a].FIELDS_structinst[i])
     -- Expand: `%~~%`(s.STRUCTS_store[a].TYPE_structinst, STRUCT_comptype(`%`_list(ft*{ft <- `ft*`})))
     -- if (ft*{ft <- `ft*`}[i] = `%%`_fieldtype(?(), zt))
 
-  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:227.1-229.42
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:232.1-234.42
   rule `ref.array`{a : addr, s : store, i : nat, zt : storagetype}:
     `%>>_%%`(`REF.ARRAY_ADDR`_fieldval(a), s, s.ARRAYS_store[a].FIELDS_arrayinst[i])
     -- Expand: `%~~%`(s.ARRAYS_store[a].TYPE_arrayinst, ARRAY_comptype(`%%`_fieldtype(?(), zt)))
 
-  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:231.1-232.44
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:236.1-237.44
   rule `ref.exn`{a : addr, s : store, i : nat}:
     `%>>_%%`(`REF.EXN_ADDR`_fieldval(a), s, (s.EXNS_store[a].FIELDS_exninst[i] : val <: fieldval))
 
-  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:234.1-235.28
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:239.1-240.28
   rule `ref.extern`{ref : ref, s : store}:
     `%>>_%%`(`REF.EXTERN`_fieldval(ref), s, (ref : ref <: fieldval))
 }
 
 ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
-def $NotImmReachable(fieldval : fieldval, store : store, fieldval : fieldval) : bool
+def $NotImmutReachable(fieldval : fieldval, store : store, fieldval : fieldval) : bool
   ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
-  def $NotImmReachable{fv_1 : fieldval, s : store, fv_2 : fieldval}(fv_1, s, fv_2) = false
-    -- ImmReachable: `%>>_%%`(fv_1, s, fv_2)
+  def $NotImmutReachable{fv_1 : fieldval, s : store, fv_2 : fieldval}(fv_1, s, fv_2) = false
+    -- ImmutReachable: `%>>_%%`(fv_1, s, fv_2)
   ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
-  def $NotImmReachable{fv_1 : fieldval, s : store, fv_2 : fieldval}(fv_1, s, fv_2) = true
+  def $NotImmutReachable{fv_1 : fieldval, s : store, fv_2 : fieldval}(fv_1, s, fv_2) = true
     -- otherwise
 
 ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
-relation NotImmReachable: `~%>>_%%`(fieldval, store, fieldval)
+relation NotImmutReachable: `~%>>_%%`(fieldval, store, fieldval)
   ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
   rule _{fv_1 : fieldval, s : store, fv_2 : fieldval}:
     `~%>>_%%`(fv_1, s, fv_2)
-    -- if $NotImmReachable(fv_1, s, fv_2)
+    -- if $NotImmutReachable(fv_1, s, fv_2)
 
 ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
 relation Store_ok: `|-%:OK`(store)
@@ -7926,9 +7926,9 @@ relation Store_ok: `|-%:OK`(store)
     -- (Structinst_ok: `%|-%:OK`(s, structinst))*{structinst <- `structinst*`}
     -- (Arrayinst_ok: `%|-%:OK`(s, arrayinst))*{arrayinst <- `arrayinst*`}
     -- (Exninst_ok: `%|-%:OK`(s, exninst))*{exninst <- `exninst*`}
-    -- (NotImmReachable: `~%>>_%%`(`REF.STRUCT_ADDR`_fieldval(a), s, `REF.STRUCT_ADDR`_fieldval(a)))^(a<|structinst*{structinst <- `structinst*`}|){}
-    -- (NotImmReachable: `~%>>_%%`(`REF.ARRAY_ADDR`_fieldval(a), s, `REF.ARRAY_ADDR`_fieldval(a)))^(a<|arrayinst*{arrayinst <- `arrayinst*`}|){}
-    -- (NotImmReachable: `~%>>_%%`(`REF.EXN_ADDR`_fieldval(a), s, `REF.EXN_ADDR`_fieldval(a)))^(a<|exninst*{exninst <- `exninst*`}|){}
+    -- (NotImmutReachable: `~%>>_%%`(`REF.STRUCT_ADDR`_fieldval(a), s, `REF.STRUCT_ADDR`_fieldval(a)))^(a<|structinst*{structinst <- `structinst*`}|){}
+    -- (NotImmutReachable: `~%>>_%%`(`REF.ARRAY_ADDR`_fieldval(a), s, `REF.ARRAY_ADDR`_fieldval(a)))^(a<|arrayinst*{arrayinst <- `arrayinst*`}|){}
+    -- (NotImmutReachable: `~%>>_%%`(`REF.EXN_ADDR`_fieldval(a), s, `REF.EXN_ADDR`_fieldval(a)))^(a<|exninst*{exninst <- `exninst*`}|){}
     -- if (s = {TAGS taginst*{taginst <- `taginst*`}, GLOBALS globalinst*{globalinst <- `globalinst*`}, MEMS meminst*{meminst <- `meminst*`}, TABLES tableinst*{tableinst <- `tableinst*`}, FUNCS funcinst*{funcinst <- `funcinst*`}, DATAS datainst*{datainst <- `datainst*`}, ELEMS eleminst*{eleminst <- `eleminst*`}, STRUCTS structinst*{structinst <- `structinst*`}, ARRAYS arrayinst*{arrayinst <- `arrayinst*`}, EXNS exninst*{exninst <- `exninst*`}})
 
 ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
@@ -19565,70 +19565,70 @@ relation Frame_ok: `%|-%:%`(store, frame, context)
 ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
 rec {
 
-;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:3.1-3.56
+;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:3.1-4.36
 relation Instr_ok2: `%;%|-%:%`(store, context, instr, instrtype)
-  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:7.1-9.46
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:10.1-12.46
   rule plain{s : store, C : context, instr : instr, `t_1*` : valtype*, `x*` : idx*, `t_2*` : valtype*}:
     `%;%|-%:%`(s, C, instr, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), x*{x <- `x*`}, `%`_resulttype(t_2*{t_2 <- `t_2*`})))
     -- Instr_ok: `%|-%:%`(C, instr, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), x*{x <- `x*`}, `%`_resulttype(t_2*{t_2 <- `t_2*`})))
 
-  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:11.1-13.27
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:14.1-16.27
   rule ref{s : store, C : context, ref : ref, rt : reftype}:
     `%;%|-%:%`(s, C, (ref : ref <: instr), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([(rt : reftype <: valtype)])))
     -- Ref_ok: `%|-%:%`(s, ref, rt)
 
-  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:15.1-18.68
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:18.1-21.68
   rule label{s : store, C : context, n : n, `instr'*` : instr*, `instr*` : instr*, `t*` : valtype*, `t'*` : valtype*, `x'*` : idx*, `x*` : idx*}:
     `%;%|-%:%`(s, C, `LABEL_%{%}%`_instr(n, instr'*{instr' <- `instr'*`}, instr*{instr <- `instr*`}), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype(t*{t <- `t*`})))
     -- Instrs_ok2: `%;%|-%:%`(s, C, instr'*{instr' <- `instr'*`}, `%->_%%`_instrtype(`%`_resulttype(t'^n{t' <- `t'*`}), x'*{x' <- `x'*`}, `%`_resulttype(t*{t <- `t*`})))
     -- Instrs_ok2: `%;%|-%:%`(s, {TYPES [], RECS [], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [`%`_resulttype(t'^n{t' <- `t'*`})], RETURN ?(), REFS []} +++ C, instr*{instr <- `instr*`}, `%->_%%`_instrtype(`%`_resulttype([]), x*{x <- `x*`}, `%`_resulttype(t*{t <- `t*`})))
 
-  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:20.1-23.37
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:23.1-26.37
   rule frame{s : store, C : context, n : n, f : frame, `instr*` : instr*, `t*` : valtype*, C' : context}:
     `%;%|-%:%`(s, C, `FRAME_%{%}%`_instr(n, f, instr*{instr <- `instr*`}), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype(t^n{t <- `t*`})))
     -- Frame_ok: `%|-%:%`(s, f, C')
     -- Expr_ok2: `%;%|-%:%`(s, C', instr*{instr <- `instr*`}, `%`_resulttype(t^n{t <- `t*`}))
 
-  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:25.1-28.52
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:28.1-31.52
   rule handler{s : store, C : context, n : n, `catch*` : catch*, `instr*` : instr*, `t_1*` : valtype*, `t_2*` : valtype*, `x*` : idx*}:
     `%;%|-%:%`(s, C, `HANDLER_%{%}%`_instr(n, catch*{catch <- `catch*`}, instr*{instr <- `instr*`}), `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), [], `%`_resulttype(t_2*{t_2 <- `t_2*`})))
     -- (Catch_ok: `%|-%:OK`(C, catch))*{catch <- `catch*`}
     -- Instrs_ok2: `%;%|-%:%`(s, C, instr*{instr <- `instr*`}, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), x*{x <- `x*`}, `%`_resulttype(t_2*{t_2 <- `t_2*`})))
 
-  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:30.1-32.42
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:33.1-35.42
   rule trap{s : store, C : context, `t_1*` : valtype*, `t_2*` : valtype*}:
     `%;%|-%:%`(s, C, TRAP_instr, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), [], `%`_resulttype(t_2*{t_2 <- `t_2*`})))
     -- Instrtype_ok: `%|-%:OK`(C, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), [], `%`_resulttype(t_2*{t_2 <- `t_2*`})))
 
-;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:4.1-4.58
+;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:5.1-6.36
 relation Instrs_ok2: `%;%|-%:%`(store, context, instr*, instrtype)
-  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:35.1-36.27
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:38.1-39.27
   rule empty{s : store, C : context}:
     `%;%|-%:%`(s, C, [], `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([])))
 
-  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:38.1-42.86
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:41.1-45.86
   rule seq{s : store, C : context, instr_1 : instr, `instr_2*` : instr*, `t_1*` : valtype*, `x_1*` : idx*, `x_2*` : idx*, `t_3*` : valtype*, `t_2*` : valtype*, `init*` : init*, `t*` : valtype*}:
     `%;%|-%:%`(s, C, [instr_1] ++ instr_2*{instr_2 <- `instr_2*`}, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), x_1*{x_1 <- `x_1*`} ++ x_2*{x_2 <- `x_2*`}, `%`_resulttype(t_3*{t_3 <- `t_3*`})))
     -- Instr_ok2: `%;%|-%:%`(s, C, instr_1, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), x_1*{x_1 <- `x_1*`}, `%`_resulttype(t_2*{t_2 <- `t_2*`})))
     -- (if (C.LOCALS_context[x_1!`%`_idx.0] = `%%`_localtype(init, t)))*{init <- `init*`, t <- `t*`, x_1 <- `x_1*`}
     -- Instrs_ok2: `%;%|-%:%`(s, $with_locals(C, x_1*{x_1 <- `x_1*`}, `%%`_localtype(SET_init, t)*{t <- `t*`}), instr_2*{instr_2 <- `instr_2*`}, `%->_%%`_instrtype(`%`_resulttype(t_2*{t_2 <- `t_2*`}), x_2*{x_2 <- `x_2*`}, `%`_resulttype(t_3*{t_3 <- `t_3*`})))
 
-  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:44.1-48.33
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:47.1-51.33
   rule sub{s : store, C : context, `instr*` : instr*, it' : instrtype, it : instrtype}:
     `%;%|-%:%`(s, C, instr*{instr <- `instr*`}, it')
     -- Instrs_ok2: `%;%|-%:%`(s, C, instr*{instr <- `instr*`}, it)
     -- Instrtype_sub: `%|-%<:%`(C, it, it')
     -- Instrtype_ok: `%|-%:OK`(C, it')
 
-  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:51.1-54.33
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:54.1-57.33
   rule frame{s : store, C : context, `instr*` : instr*, `t*` : valtype*, `t_1*` : valtype*, `x*` : idx*, `t_2*` : valtype*}:
     `%;%|-%:%`(s, C, instr*{instr <- `instr*`}, `%->_%%`_instrtype(`%`_resulttype(t*{t <- `t*`} ++ t_1*{t_1 <- `t_1*`}), x*{x <- `x*`}, `%`_resulttype(t*{t <- `t*`} ++ t_2*{t_2 <- `t_2*`})))
     -- Instrs_ok2: `%;%|-%:%`(s, C, instr*{instr <- `instr*`}, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), x*{x <- `x*`}, `%`_resulttype(t_2*{t_2 <- `t_2*`})))
     -- Resulttype_ok: `%|-%:OK`(C, `%`_resulttype(t*{t <- `t*`}))
 
-;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:5.1-5.55
+;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:7.1-8.36
 relation Expr_ok2: `%;%|-%:%`(store, context, expr, resulttype)
-  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:57.1-59.44
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:60.1-62.44
   rule _{s : store, C : context, `instr*` : instr*, `t*` : valtype*}:
     `%;%|-%:%`(s, C, instr*{instr <- `instr*`}, `%`_resulttype(t*{t <- `t*`}))
     -- Instrs_ok2: `%;%|-%:%`(s, C, instr*{instr <- `instr*`}, `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype(t*{t <- `t*`})))
@@ -19704,49 +19704,49 @@ relation Exninst_ok: `%|-%:OK`(store, exninst)
 ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
 rec {
 
-;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:205.1-205.50
-relation ImmReachable: `%>>_%%`(fieldval, store, fieldval)
-  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:217.1-220.33
+;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:208.1-209.50
+relation ImmutReachable: `%>>_%%`(fieldval, store, fieldval)
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:222.1-225.35
   rule trans{fv_1 : fieldval, s : store, fv_2 : fieldval, fv' : fieldval}:
     `%>>_%%`(fv_1, s, fv_2)
-    -- ImmReachable: `%>>_%%`(fv_1, s, fv')
-    -- ImmReachable: `%>>_%%`(fv', s, fv_2)
+    -- ImmutReachable: `%>>_%%`(fv_1, s, fv')
+    -- ImmutReachable: `%>>_%%`(fv', s, fv_2)
 
-  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:222.1-225.20
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:227.1-230.20
   rule `ref.struct`{a : addr, s : store, i : nat, `ft*` : fieldtype*, zt : storagetype}:
     `%>>_%%`(`REF.STRUCT_ADDR`_fieldval(a), s, s.STRUCTS_store[a].FIELDS_structinst[i])
     -- Expand: `%~~%`(s.STRUCTS_store[a].TYPE_structinst, STRUCT_comptype(`%`_list(ft*{ft <- `ft*`})))
     -- if (ft*{ft <- `ft*`}[i] = `%%`_fieldtype(?(), zt))
 
-  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:227.1-229.42
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:232.1-234.42
   rule `ref.array`{a : addr, s : store, i : nat, zt : storagetype}:
     `%>>_%%`(`REF.ARRAY_ADDR`_fieldval(a), s, s.ARRAYS_store[a].FIELDS_arrayinst[i])
     -- Expand: `%~~%`(s.ARRAYS_store[a].TYPE_arrayinst, ARRAY_comptype(`%%`_fieldtype(?(), zt)))
 
-  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:231.1-232.44
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:236.1-237.44
   rule `ref.exn`{a : addr, s : store, i : nat}:
     `%>>_%%`(`REF.EXN_ADDR`_fieldval(a), s, (s.EXNS_store[a].FIELDS_exninst[i] : val <: fieldval))
 
-  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:234.1-235.28
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:239.1-240.28
   rule `ref.extern`{ref : ref, s : store}:
     `%>>_%%`(`REF.EXTERN`_fieldval(ref), s, (ref : ref <: fieldval))
 }
 
 ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
-def $NotImmReachable(fieldval : fieldval, store : store, fieldval : fieldval) : bool
+def $NotImmutReachable(fieldval : fieldval, store : store, fieldval : fieldval) : bool
   ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
-  def $NotImmReachable{fv_1 : fieldval, s : store, fv_2 : fieldval}(fv_1, s, fv_2) = false
-    -- ImmReachable: `%>>_%%`(fv_1, s, fv_2)
+  def $NotImmutReachable{fv_1 : fieldval, s : store, fv_2 : fieldval}(fv_1, s, fv_2) = false
+    -- ImmutReachable: `%>>_%%`(fv_1, s, fv_2)
   ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
-  def $NotImmReachable{fv_1 : fieldval, s : store, fv_2 : fieldval}(fv_1, s, fv_2) = true
+  def $NotImmutReachable{fv_1 : fieldval, s : store, fv_2 : fieldval}(fv_1, s, fv_2) = true
     -- otherwise
 
 ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
-relation NotImmReachable: `~%>>_%%`(fieldval, store, fieldval)
+relation NotImmutReachable: `~%>>_%%`(fieldval, store, fieldval)
   ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
   rule _{fv_1 : fieldval, s : store, fv_2 : fieldval}:
     `~%>>_%%`(fv_1, s, fv_2)
-    -- if $NotImmReachable(fv_1, s, fv_2)
+    -- if $NotImmutReachable(fv_1, s, fv_2)
 
 ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
 relation Store_ok: `|-%:OK`(store)
@@ -19763,9 +19763,9 @@ relation Store_ok: `|-%:OK`(store)
     -- (Structinst_ok: `%|-%:OK`(s, structinst))*{structinst <- `structinst*`}
     -- (Arrayinst_ok: `%|-%:OK`(s, arrayinst))*{arrayinst <- `arrayinst*`}
     -- (Exninst_ok: `%|-%:OK`(s, exninst))*{exninst <- `exninst*`}
-    -- (NotImmReachable: `~%>>_%%`(`REF.STRUCT_ADDR`_fieldval(a), s, `REF.STRUCT_ADDR`_fieldval(a)))^(a<|structinst*{structinst <- `structinst*`}|){}
-    -- (NotImmReachable: `~%>>_%%`(`REF.ARRAY_ADDR`_fieldval(a), s, `REF.ARRAY_ADDR`_fieldval(a)))^(a<|arrayinst*{arrayinst <- `arrayinst*`}|){}
-    -- (NotImmReachable: `~%>>_%%`(`REF.EXN_ADDR`_fieldval(a), s, `REF.EXN_ADDR`_fieldval(a)))^(a<|exninst*{exninst <- `exninst*`}|){}
+    -- (NotImmutReachable: `~%>>_%%`(`REF.STRUCT_ADDR`_fieldval(a), s, `REF.STRUCT_ADDR`_fieldval(a)))^(a<|structinst*{structinst <- `structinst*`}|){}
+    -- (NotImmutReachable: `~%>>_%%`(`REF.ARRAY_ADDR`_fieldval(a), s, `REF.ARRAY_ADDR`_fieldval(a)))^(a<|arrayinst*{arrayinst <- `arrayinst*`}|){}
+    -- (NotImmutReachable: `~%>>_%%`(`REF.EXN_ADDR`_fieldval(a), s, `REF.EXN_ADDR`_fieldval(a)))^(a<|exninst*{exninst <- `exninst*`}|){}
     -- if (s = {TAGS taginst*{taginst <- `taginst*`}, GLOBALS globalinst*{globalinst <- `globalinst*`}, MEMS meminst*{meminst <- `meminst*`}, TABLES tableinst*{tableinst <- `tableinst*`}, FUNCS funcinst*{funcinst <- `funcinst*`}, DATAS datainst*{datainst <- `datainst*`}, ELEMS eleminst*{eleminst <- `eleminst*`}, STRUCTS structinst*{structinst <- `structinst*`}, ARRAYS arrayinst*{arrayinst <- `arrayinst*`}, EXNS exninst*{exninst <- `exninst*`}})
 
 ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
@@ -31594,48 +31594,48 @@ relation Frame_ok: `%|-%:%`(store, frame, context)
 ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
 rec {
 
-;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:3.1-3.56
+;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:3.1-4.36
 relation Instr_ok2: `%;%|-%:%`(store, context, instr, instrtype)
-  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:7.1-9.46
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:10.1-12.46
   rule plain{s : store, C : context, instr : instr, `t_1*` : valtype*, `x*` : idx*, `t_2*` : valtype*}:
     `%;%|-%:%`(s, C, instr, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), x*{x <- `x*`}, `%`_resulttype(t_2*{t_2 <- `t_2*`})))
     -- Instr_ok: `%|-%:%`(C, instr, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), x*{x <- `x*`}, `%`_resulttype(t_2*{t_2 <- `t_2*`})))
 
-  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:11.1-13.27
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:14.1-16.27
   rule ref{s : store, C : context, ref : ref, rt : reftype}:
     `%;%|-%:%`(s, C, (ref : ref <: instr), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([(rt : reftype <: valtype)])))
     -- Ref_ok: `%|-%:%`(s, ref, rt)
 
-  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:15.1-18.68
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:18.1-21.68
   rule label{s : store, C : context, n : n, `instr'*` : instr*, `instr*` : instr*, `t*` : valtype*, `t'*` : valtype*, `x'*` : idx*, `x*` : idx*}:
     `%;%|-%:%`(s, C, `LABEL_%{%}%`_instr(n, instr'*{instr' <- `instr'*`}, instr*{instr <- `instr*`}), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype(t*{t <- `t*`})))
     -- Instrs_ok2: `%;%|-%:%`(s, C, instr'*{instr' <- `instr'*`}, `%->_%%`_instrtype(`%`_resulttype(t'^n{t' <- `t'*`}), x'*{x' <- `x'*`}, `%`_resulttype(t*{t <- `t*`})))
     -- Instrs_ok2: `%;%|-%:%`(s, {TYPES [], RECS [], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [`%`_resulttype(t'^n{t' <- `t'*`})], RETURN ?(), REFS []} +++ C, instr*{instr <- `instr*`}, `%->_%%`_instrtype(`%`_resulttype([]), x*{x <- `x*`}, `%`_resulttype(t*{t <- `t*`})))
 
-  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:20.1-23.37
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:23.1-26.37
   rule frame{s : store, C : context, n : n, f : frame, `instr*` : instr*, `t*` : valtype*, C' : context}:
     `%;%|-%:%`(s, C, `FRAME_%{%}%`_instr(n, f, instr*{instr <- `instr*`}), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype(t^n{t <- `t*`})))
     -- Frame_ok: `%|-%:%`(s, f, C')
     -- Expr_ok2: `%;%|-%:%`(s, C', instr*{instr <- `instr*`}, `%`_resulttype(t^n{t <- `t*`}))
 
-  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:25.1-28.52
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:28.1-31.52
   rule handler{s : store, C : context, n : n, `catch*` : catch*, `instr*` : instr*, `t_1*` : valtype*, `t_2*` : valtype*, `x*` : idx*}:
     `%;%|-%:%`(s, C, `HANDLER_%{%}%`_instr(n, catch*{catch <- `catch*`}, instr*{instr <- `instr*`}), `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), [], `%`_resulttype(t_2*{t_2 <- `t_2*`})))
     -- (Catch_ok: `%|-%:OK`(C, catch))*{catch <- `catch*`}
     -- Instrs_ok2: `%;%|-%:%`(s, C, instr*{instr <- `instr*`}, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), x*{x <- `x*`}, `%`_resulttype(t_2*{t_2 <- `t_2*`})))
 
-  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:30.1-32.42
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:33.1-35.42
   rule trap{s : store, C : context, `t_1*` : valtype*, `t_2*` : valtype*}:
     `%;%|-%:%`(s, C, TRAP_instr, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), [], `%`_resulttype(t_2*{t_2 <- `t_2*`})))
     -- Instrtype_ok: `%|-%:OK`(C, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), [], `%`_resulttype(t_2*{t_2 <- `t_2*`})))
 
-;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:4.1-4.58
+;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:5.1-6.36
 relation Instrs_ok2: `%;%|-%:%`(store, context, instr*, instrtype)
-  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:35.1-36.27
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:38.1-39.27
   rule empty{s : store, C : context}:
     `%;%|-%:%`(s, C, [], `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([])))
 
-  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:38.1-42.86
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:41.1-45.86
   rule seq{s : store, C : context, instr_1 : instr, `instr_2*` : instr*, `t_1*` : valtype*, `x_1*` : idx*, `x_2*` : idx*, `t_3*` : valtype*, `t_2*` : valtype*, `init*` : init*, `t*` : valtype*}:
     `%;%|-%:%`(s, C, [instr_1] ++ instr_2*{instr_2 <- `instr_2*`}, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), x_1*{x_1 <- `x_1*`} ++ x_2*{x_2 <- `x_2*`}, `%`_resulttype(t_3*{t_3 <- `t_3*`})))
     -- Instr_ok2: `%;%|-%:%`(s, C, instr_1, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), x_1*{x_1 <- `x_1*`}, `%`_resulttype(t_2*{t_2 <- `t_2*`})))
@@ -31645,22 +31645,22 @@ relation Instrs_ok2: `%;%|-%:%`(store, context, instr*, instrtype)
     -- (if (C.LOCALS_context[x_1!`%`_idx.0] = `%%`_localtype(init, t)))*{init <- `init*`, t <- `t*`, x_1 <- `x_1*`}
     -- Instrs_ok2: `%;%|-%:%`(s, $with_locals(C, x_1*{x_1 <- `x_1*`}, `%%`_localtype(SET_init, t)*{t <- `t*`}), instr_2*{instr_2 <- `instr_2*`}, `%->_%%`_instrtype(`%`_resulttype(t_2*{t_2 <- `t_2*`}), x_2*{x_2 <- `x_2*`}, `%`_resulttype(t_3*{t_3 <- `t_3*`})))
 
-  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:44.1-48.33
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:47.1-51.33
   rule sub{s : store, C : context, `instr*` : instr*, it' : instrtype, it : instrtype}:
     `%;%|-%:%`(s, C, instr*{instr <- `instr*`}, it')
     -- Instrs_ok2: `%;%|-%:%`(s, C, instr*{instr <- `instr*`}, it)
     -- Instrtype_sub: `%|-%<:%`(C, it, it')
     -- Instrtype_ok: `%|-%:OK`(C, it')
 
-  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:51.1-54.33
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:54.1-57.33
   rule frame{s : store, C : context, `instr*` : instr*, `t*` : valtype*, `t_1*` : valtype*, `x*` : idx*, `t_2*` : valtype*}:
     `%;%|-%:%`(s, C, instr*{instr <- `instr*`}, `%->_%%`_instrtype(`%`_resulttype(t*{t <- `t*`} ++ t_1*{t_1 <- `t_1*`}), x*{x <- `x*`}, `%`_resulttype(t*{t <- `t*`} ++ t_2*{t_2 <- `t_2*`})))
     -- Instrs_ok2: `%;%|-%:%`(s, C, instr*{instr <- `instr*`}, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), x*{x <- `x*`}, `%`_resulttype(t_2*{t_2 <- `t_2*`})))
     -- Resulttype_ok: `%|-%:OK`(C, `%`_resulttype(t*{t <- `t*`}))
 
-;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:5.1-5.55
+;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:7.1-8.36
 relation Expr_ok2: `%;%|-%:%`(store, context, expr, resulttype)
-  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:57.1-59.44
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:60.1-62.44
   rule _{s : store, C : context, `instr*` : instr*, `t*` : valtype*}:
     `%;%|-%:%`(s, C, instr*{instr <- `instr*`}, `%`_resulttype(t*{t <- `t*`}))
     -- Instrs_ok2: `%;%|-%:%`(s, C, instr*{instr <- `instr*`}, `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype(t*{t <- `t*`})))
@@ -31739,15 +31739,15 @@ relation Exninst_ok: `%|-%:OK`(store, exninst)
 ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
 rec {
 
-;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:205.1-205.50
-relation ImmReachable: `%>>_%%`(fieldval, store, fieldval)
-  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:217.1-220.33
+;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:208.1-209.50
+relation ImmutReachable: `%>>_%%`(fieldval, store, fieldval)
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:222.1-225.35
   rule trans{fv_1 : fieldval, s : store, fv_2 : fieldval, fv' : fieldval}:
     `%>>_%%`(fv_1, s, fv_2)
-    -- ImmReachable: `%>>_%%`(fv_1, s, fv')
-    -- ImmReachable: `%>>_%%`(fv', s, fv_2)
+    -- ImmutReachable: `%>>_%%`(fv_1, s, fv')
+    -- ImmutReachable: `%>>_%%`(fv', s, fv_2)
 
-  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:222.1-225.20
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:227.1-230.20
   rule `ref.struct`{a : addr, s : store, i : nat, `ft*` : fieldtype*, zt : storagetype}:
     `%>>_%%`(`REF.STRUCT_ADDR`_fieldval(a), s, s.STRUCTS_store[a].FIELDS_structinst[i])
     -- if (i < |s.STRUCTS_store[a].FIELDS_structinst|)
@@ -31756,39 +31756,39 @@ relation ImmReachable: `%>>_%%`(fieldval, store, fieldval)
     -- if (i < |ft*{ft <- `ft*`}|)
     -- if (ft*{ft <- `ft*`}[i] = `%%`_fieldtype(?(), zt))
 
-  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:227.1-229.42
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:232.1-234.42
   rule `ref.array`{a : addr, s : store, i : nat, zt : storagetype}:
     `%>>_%%`(`REF.ARRAY_ADDR`_fieldval(a), s, s.ARRAYS_store[a].FIELDS_arrayinst[i])
     -- if (i < |s.ARRAYS_store[a].FIELDS_arrayinst|)
     -- if (a < |s.ARRAYS_store|)
     -- Expand: `%~~%`(s.ARRAYS_store[a].TYPE_arrayinst, ARRAY_comptype(`%%`_fieldtype(?(), zt)))
 
-  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:231.1-232.44
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:236.1-237.44
   rule `ref.exn`{a : addr, s : store, i : nat}:
     `%>>_%%`(`REF.EXN_ADDR`_fieldval(a), s, (s.EXNS_store[a].FIELDS_exninst[i] : val <: fieldval))
     -- if (i < |s.EXNS_store[a].FIELDS_exninst|)
     -- if (a < |s.EXNS_store|)
 
-  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:234.1-235.28
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:239.1-240.28
   rule `ref.extern`{ref : ref, s : store}:
     `%>>_%%`(`REF.EXTERN`_fieldval(ref), s, (ref : ref <: fieldval))
 }
 
 ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
-def $NotImmReachable(fieldval : fieldval, store : store, fieldval : fieldval) : bool
+def $NotImmutReachable(fieldval : fieldval, store : store, fieldval : fieldval) : bool
   ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
-  def $NotImmReachable{fv_1 : fieldval, s : store, fv_2 : fieldval}(fv_1, s, fv_2) = false
-    -- ImmReachable: `%>>_%%`(fv_1, s, fv_2)
+  def $NotImmutReachable{fv_1 : fieldval, s : store, fv_2 : fieldval}(fv_1, s, fv_2) = false
+    -- ImmutReachable: `%>>_%%`(fv_1, s, fv_2)
   ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
-  def $NotImmReachable{fv_1 : fieldval, s : store, fv_2 : fieldval}(fv_1, s, fv_2) = true
+  def $NotImmutReachable{fv_1 : fieldval, s : store, fv_2 : fieldval}(fv_1, s, fv_2) = true
     -- otherwise
 
 ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
-relation NotImmReachable: `~%>>_%%`(fieldval, store, fieldval)
+relation NotImmutReachable: `~%>>_%%`(fieldval, store, fieldval)
   ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
   rule _{fv_1 : fieldval, s : store, fv_2 : fieldval}:
     `~%>>_%%`(fv_1, s, fv_2)
-    -- if $NotImmReachable(fv_1, s, fv_2)
+    -- if $NotImmutReachable(fv_1, s, fv_2)
 
 ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
 relation Store_ok: `|-%:OK`(store)
@@ -31812,9 +31812,9 @@ relation Store_ok: `|-%:OK`(store)
     -- (Structinst_ok: `%|-%:OK`(s, structinst))*{structinst <- `structinst*`}
     -- (Arrayinst_ok: `%|-%:OK`(s, arrayinst))*{arrayinst <- `arrayinst*`}
     -- (Exninst_ok: `%|-%:OK`(s, exninst))*{exninst <- `exninst*`}
-    -- (NotImmReachable: `~%>>_%%`(`REF.STRUCT_ADDR`_fieldval(a), s, `REF.STRUCT_ADDR`_fieldval(a)))^(a<|structinst*{structinst <- `structinst*`}|){}
-    -- (NotImmReachable: `~%>>_%%`(`REF.ARRAY_ADDR`_fieldval(a), s, `REF.ARRAY_ADDR`_fieldval(a)))^(a<|arrayinst*{arrayinst <- `arrayinst*`}|){}
-    -- (NotImmReachable: `~%>>_%%`(`REF.EXN_ADDR`_fieldval(a), s, `REF.EXN_ADDR`_fieldval(a)))^(a<|exninst*{exninst <- `exninst*`}|){}
+    -- (NotImmutReachable: `~%>>_%%`(`REF.STRUCT_ADDR`_fieldval(a), s, `REF.STRUCT_ADDR`_fieldval(a)))^(a<|structinst*{structinst <- `structinst*`}|){}
+    -- (NotImmutReachable: `~%>>_%%`(`REF.ARRAY_ADDR`_fieldval(a), s, `REF.ARRAY_ADDR`_fieldval(a)))^(a<|arrayinst*{arrayinst <- `arrayinst*`}|){}
+    -- (NotImmutReachable: `~%>>_%%`(`REF.EXN_ADDR`_fieldval(a), s, `REF.EXN_ADDR`_fieldval(a)))^(a<|exninst*{exninst <- `exninst*`}|){}
     -- if (s = {TAGS taginst*{taginst <- `taginst*`}, GLOBALS globalinst*{globalinst <- `globalinst*`}, MEMS meminst*{meminst <- `meminst*`}, TABLES tableinst*{tableinst <- `tableinst*`}, FUNCS funcinst*{funcinst <- `funcinst*`}, DATAS datainst*{datainst <- `datainst*`}, ELEMS eleminst*{eleminst <- `eleminst*`}, STRUCTS structinst*{structinst <- `structinst*`}, ARRAYS arrayinst*{arrayinst <- `arrayinst*`}, EXNS exninst*{exninst <- `exninst*`}})
 
 ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec

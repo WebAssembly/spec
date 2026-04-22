@@ -946,6 +946,7 @@ warning: grammar `TuNplain` was never spliced
 warning: grammar `Tvaltype_` was never spliced
 warning: grammar `Tvar` was never spliced
 warning: grammar `Tvectype` was never spliced
+warning: rule `Arrayinst_ok` was never spliced
 warning: rule `Blocktype_ok/valtype` was never spliced
 warning: rule `Blocktype_ok/typeidx` was never spliced
 warning: rule `Catch_ok/catch` was never spliced
@@ -958,7 +959,10 @@ warning: rule `Comptype_ok/func` was never spliced
 warning: rule `Comptype_sub/struct` was never spliced
 warning: rule `Comptype_sub/array` was never spliced
 warning: rule `Comptype_sub/func` was never spliced
+warning: rule `Config_ok` was never spliced
+warning: rule `Context_ok` was never spliced
 warning: rule `Data_ok` was never spliced
+warning: rule `Datainst_ok` was never spliced
 warning: rule `Datamode_ok/passive` was never spliced
 warning: rule `Datamode_ok/active` was never spliced
 warning: rule `Defaultable` was never spliced
@@ -966,17 +970,32 @@ warning: rule `Deftype_ok` was never spliced
 warning: rule `Deftype_sub/refl` was never spliced
 warning: rule `Deftype_sub/super` was never spliced
 warning: rule `Elem_ok` was never spliced
+warning: rule `Eleminst_ok` was never spliced
 warning: rule `Elemmode_ok/passive` was never spliced
 warning: rule `Elemmode_ok/declare` was never spliced
 warning: rule `Elemmode_ok/active` was never spliced
 warning: rule `Eval_expr` was never spliced
+warning: rule `Exninst_ok` was never spliced
 warning: rule `Expand` was never spliced
 warning: rule `Expand_use/deftype` was never spliced
 warning: rule `Expand_use/typeidx` was never spliced
 warning: rule `Export_ok` was never spliced
+warning: rule `Exportinst_ok` was never spliced
 warning: rule `Expr_const` was never spliced
 warning: rule `Expr_ok` was never spliced
+warning: rule `Expr_ok2` was never spliced
 warning: rule `Expr_ok_const` was never spliced
+warning: rule `Extend_arrayinst` was never spliced
+warning: rule `Extend_datainst` was never spliced
+warning: rule `Extend_eleminst` was never spliced
+warning: rule `Extend_exninst` was never spliced
+warning: rule `Extend_funcinst` was never spliced
+warning: rule `Extend_globalinst` was never spliced
+warning: rule `Extend_meminst` was never spliced
+warning: rule `Extend_store` was never spliced
+warning: rule `Extend_structinst` was never spliced
+warning: rule `Extend_tableinst` was never spliced
+warning: rule `Extend_taginst` was never spliced
 warning: rule `Externaddr_ok/tag` was never spliced
 warning: rule `Externaddr_ok/global` was never spliced
 warning: rule `Externaddr_ok/mem` was never spliced
@@ -1001,8 +1020,13 @@ warning: rule `Externtype_sub/func` was never spliced
 warning: rule `Fieldtype_ok` was never spliced
 warning: rule `Fieldtype_sub/const` was never spliced
 warning: rule `Fieldtype_sub/var` was never spliced
+warning: rule `Fieldval_ok/val` was never spliced
+warning: rule `Fieldval_ok/packval` was never spliced
+warning: rule `Frame_ok` was never spliced
 warning: rule `Func_ok` was never spliced
+warning: rule `Funcinst_ok` was never spliced
 warning: rule `Global_ok` was never spliced
+warning: rule `Globalinst_ok` was never spliced
 warning: rule `Globals_ok/empty` was never spliced
 warning: rule `Globals_ok/cons` was never spliced
 warning: rule `Globaltype_ok` was never spliced
@@ -1010,6 +1034,7 @@ warning: rule `Globaltype_sub/const` was never spliced
 warning: rule `Globaltype_sub/var` was never spliced
 warning: rule `Heaptype_ok/abs` was never spliced
 warning: rule `Heaptype_ok/typeuse` was never spliced
+warning: rule `Heaptype_ok/bot` was never spliced
 warning: rule `Heaptype_sub/refl` was never spliced
 warning: rule `Heaptype_sub/trans` was never spliced
 warning: rule `Heaptype_sub/eq-any` was never spliced
@@ -1029,6 +1054,11 @@ warning: rule `Heaptype_sub/noexn` was never spliced
 warning: rule `Heaptype_sub/noextern` was never spliced
 warning: rule `Heaptype_sub/bot` was never spliced
 warning: rule `Idctxt_ok` was never spliced
+warning: rule `ImmutReachable/trans` was never spliced
+warning: rule `ImmutReachable/ref.struct` was never spliced
+warning: rule `ImmutReachable/ref.array` was never spliced
+warning: rule `ImmutReachable/ref.exn` was never spliced
+warning: rule `ImmutReachable/ref.extern` was never spliced
 warning: rule `Import_ok` was never spliced
 warning: rule `Instr_const/const` was never spliced
 warning: rule `Instr_const/vconst` was never spliced
@@ -1147,9 +1177,19 @@ warning: rule `Instr_ok/vextbinop` was never spliced
 warning: rule `Instr_ok/vextternop` was never spliced
 warning: rule `Instr_ok/vnarrow` was never spliced
 warning: rule `Instr_ok/vcvtop` was never spliced
+warning: rule `Instr_ok2/plain` was never spliced
+warning: rule `Instr_ok2/ref` was never spliced
+warning: rule `Instr_ok2/label` was never spliced
+warning: rule `Instr_ok2/frame` was never spliced
+warning: rule `Instr_ok2/handler` was never spliced
+warning: rule `Instr_ok2/trap` was never spliced
 warning: rule `Instrs_ok/empty` was spliced more than once
 warning: rule `Instrs_ok/sub` was never spliced
 warning: rule `Instrs_ok/frame` was spliced more than once
+warning: rule `Instrs_ok2/empty` was never spliced
+warning: rule `Instrs_ok2/seq` was never spliced
+warning: rule `Instrs_ok2/sub` was never spliced
+warning: rule `Instrs_ok2/frame` was never spliced
 warning: rule `Instrtype_ok` was never spliced
 warning: rule `Instrtype_sub` was never spliced
 warning: rule `Limits_ok` was never spliced
@@ -1157,12 +1197,18 @@ warning: rule `Limits_sub/max` was never spliced
 warning: rule `Limits_sub/eps` was never spliced
 warning: rule `Local_ok/set` was never spliced
 warning: rule `Local_ok/unset` was never spliced
+warning: rule `Localtype_ok` was never spliced
+warning: rule `Localval_ok/set` was never spliced
+warning: rule `Localval_ok/unset` was never spliced
 warning: rule `Mem_ok` was never spliced
 warning: rule `Memarg_ok` was never spliced
+warning: rule `Meminst_ok` was never spliced
 warning: rule `Memtype_ok` was never spliced
 warning: rule `Memtype_sub` was never spliced
 warning: rule `Module_ok` was never spliced
+warning: rule `Moduleinst_ok` was never spliced
 warning: rule `Nondefaultable` was never spliced
+warning: rule `NotImmutReachable` was never spliced
 warning: rule `NotationReduct/2` was never spliced
 warning: rule `NotationReduct/3` was never spliced
 warning: rule `NotationReduct/4` was never spliced
@@ -1175,9 +1221,9 @@ warning: rule `Numtype_ok` was never spliced
 warning: rule `Numtype_sub` was never spliced
 warning: rule `Packtype_ok` was never spliced
 warning: rule `Packtype_sub` was never spliced
+warning: rule `Packval_ok` was never spliced
 warning: rule `Rectype_ok/empty` was never spliced
 warning: rule `Rectype_ok/cons` was never spliced
-warning: rule `Rectype_ok/_rec2` was never spliced
 warning: rule `Rectype_ok2/empty` was never spliced
 warning: rule `Rectype_ok2/cons` was never spliced
 warning: rule `Ref_ok/null` was never spliced
@@ -1195,6 +1241,7 @@ warning: rule `Reftype_sub/null` was never spliced
 warning: rule `Resulttype_ok` was never spliced
 warning: rule `Resulttype_sub` was never spliced
 warning: rule `Start_ok` was never spliced
+warning: rule `State_ok` was never spliced
 warning: rule `Step/ctxt-instrs` was never spliced
 warning: rule `Step/ctxt-label` was never spliced
 warning: rule `Step/ctxt-handler` was never spliced
@@ -1413,12 +1460,16 @@ warning: rule `Storagetype_ok/val` was never spliced
 warning: rule `Storagetype_ok/pack` was never spliced
 warning: rule `Storagetype_sub/val` was never spliced
 warning: rule `Storagetype_sub/pack` was never spliced
+warning: rule `Store_ok` was never spliced
+warning: rule `Structinst_ok` was never spliced
 warning: rule `Subtype_ok` was never spliced
 warning: rule `Subtype_ok2` was never spliced
 warning: rule `Table_ok` was never spliced
+warning: rule `Tableinst_ok` was never spliced
 warning: rule `Tabletype_ok` was never spliced
 warning: rule `Tabletype_sub` was never spliced
 warning: rule `Tag_ok` was never spliced
+warning: rule `Taginst_ok` was never spliced
 warning: rule `Tagtype_ok` was never spliced
 warning: rule `Tagtype_sub` was never spliced
 warning: rule `Type_ok` was never spliced
@@ -1459,6 +1510,7 @@ warning: definition `NULLEXNREF` was never spliced
 warning: definition `NULLEXTERNREF` was never spliced
 warning: definition `NULLFUNCREF` was never spliced
 warning: definition `NULLREF` was never spliced
+warning: definition `NotImmutReachable` was never spliced
 warning: definition `R_fmadd` was never spliced
 warning: definition `R_fmax` was never spliced
 warning: definition `R_fmin` was never spliced
@@ -1898,6 +1950,7 @@ warning: definition `zbytes_` was never spliced
 warning: definition `zero` was never spliced
 warning: definition `zeroop` was never spliced
 warning: definition `zsize` was never spliced
+warning: rule prose `Arrayinst_ok` was never spliced
 warning: rule prose `Blocktype_ok` was never spliced
 warning: rule prose `Blocktype_ok/typeidx` was never spliced
 warning: rule prose `Blocktype_ok/valtype` was never spliced
@@ -1914,7 +1967,10 @@ warning: rule prose `Comptype_sub` was never spliced
 warning: rule prose `Comptype_sub/array` was never spliced
 warning: rule prose `Comptype_sub/func` was never spliced
 warning: rule prose `Comptype_sub/struct` was never spliced
+warning: rule prose `Config_ok` was never spliced
+warning: rule prose `Context_ok` was never spliced
 warning: rule prose `Data_ok` was never spliced
+warning: rule prose `Datainst_ok` was never spliced
 warning: rule prose `Datamode_ok` was never spliced
 warning: rule prose `Datamode_ok/active` was never spliced
 warning: rule prose `Datamode_ok/passive` was never spliced
@@ -1924,18 +1980,22 @@ warning: rule prose `Deftype_sub` was never spliced
 warning: rule prose `Deftype_sub/refl` was never spliced
 warning: rule prose `Deftype_sub/super` was never spliced
 warning: rule prose `Elem_ok` was never spliced
+warning: rule prose `Eleminst_ok` was never spliced
 warning: rule prose `Elemmode_ok` was never spliced
 warning: rule prose `Elemmode_ok/active` was never spliced
 warning: rule prose `Elemmode_ok/declare` was never spliced
 warning: rule prose `Elemmode_ok/passive` was never spliced
 warning: rule prose `Eval_expr` was never spliced
+warning: rule prose `Exninst_ok` was never spliced
 warning: rule prose `Expand` was never spliced
 warning: rule prose `Expand_use` was never spliced
 warning: rule prose `Expand_use/deftype` was never spliced
 warning: rule prose `Expand_use/typeidx` was never spliced
 warning: rule prose `Export_ok` was never spliced
+warning: rule prose `Exportinst_ok` was never spliced
 warning: rule prose `Expr_const` was never spliced
 warning: rule prose `Expr_ok` was never spliced
+warning: rule prose `Expr_ok2` was never spliced
 warning: rule prose `Externaddr_ok` was never spliced
 warning: rule prose `Externaddr_ok/func` was never spliced
 warning: rule prose `Externaddr_ok/global` was never spliced
@@ -1965,8 +2025,14 @@ warning: rule prose `Fieldtype_ok` was never spliced
 warning: rule prose `Fieldtype_sub` was never spliced
 warning: rule prose `Fieldtype_sub/const` was never spliced
 warning: rule prose `Fieldtype_sub/var` was never spliced
+warning: rule prose `Fieldval_ok` was never spliced
+warning: rule prose `Fieldval_ok/packval` was never spliced
+warning: rule prose `Fieldval_ok/val` was never spliced
+warning: rule prose `Frame_ok` was never spliced
 warning: rule prose `Func_ok` was never spliced
+warning: rule prose `Funcinst_ok` was never spliced
 warning: rule prose `Global_ok` was never spliced
+warning: rule prose `Globalinst_ok` was never spliced
 warning: rule prose `Globals_ok` was never spliced
 warning: rule prose `Globals_ok/cons` was never spliced
 warning: rule prose `Globals_ok/empty` was never spliced
@@ -1976,6 +2042,7 @@ warning: rule prose `Globaltype_sub/const` was never spliced
 warning: rule prose `Globaltype_sub/var` was never spliced
 warning: rule prose `Heaptype_ok` was never spliced
 warning: rule prose `Heaptype_ok/abs` was never spliced
+warning: rule prose `Heaptype_ok/bot` was never spliced
 warning: rule prose `Heaptype_ok/typeuse` was never spliced
 warning: rule prose `Heaptype_sub` was never spliced
 warning: rule prose `Heaptype_sub/array` was never spliced
@@ -1994,6 +2061,12 @@ warning: rule prose `Heaptype_sub/struct` was never spliced
 warning: rule prose `Heaptype_sub/trans` was never spliced
 warning: rule prose `Heaptype_sub/typeidx` was never spliced
 warning: rule prose `Idctxt_ok` was never spliced
+warning: rule prose `ImmutReachable` was never spliced
+warning: rule prose `ImmutReachable/ref.array` was never spliced
+warning: rule prose `ImmutReachable/ref.exn` was never spliced
+warning: rule prose `ImmutReachable/ref.extern` was never spliced
+warning: rule prose `ImmutReachable/ref.struct` was never spliced
+warning: rule prose `ImmutReachable/trans` was never spliced
 warning: rule prose `Import_ok` was never spliced
 warning: rule prose `Instr_const` was never spliced
 warning: rule prose `Instr_const/any.convert_extern` was never spliced
@@ -2124,11 +2197,23 @@ warning: rule prose `Instr_ok/vvbinop` was never spliced
 warning: rule prose `Instr_ok/vvternop` was never spliced
 warning: rule prose `Instr_ok/vvtestop` was never spliced
 warning: rule prose `Instr_ok/vvunop` was never spliced
+warning: rule prose `Instr_ok2` was never spliced
+warning: rule prose `Instr_ok2/frame` was never spliced
+warning: rule prose `Instr_ok2/handler` was never spliced
+warning: rule prose `Instr_ok2/label` was never spliced
+warning: rule prose `Instr_ok2/plain` was never spliced
+warning: rule prose `Instr_ok2/ref` was never spliced
+warning: rule prose `Instr_ok2/trap` was never spliced
 warning: rule prose `Instrs_ok` was never spliced
 warning: rule prose `Instrs_ok/empty` was never spliced
 warning: rule prose `Instrs_ok/frame` was never spliced
 warning: rule prose `Instrs_ok/seq` was never spliced
 warning: rule prose `Instrs_ok/sub` was never spliced
+warning: rule prose `Instrs_ok2` was never spliced
+warning: rule prose `Instrs_ok2/empty` was never spliced
+warning: rule prose `Instrs_ok2/frame` was never spliced
+warning: rule prose `Instrs_ok2/seq` was never spliced
+warning: rule prose `Instrs_ok2/sub` was never spliced
 warning: rule prose `Instrtype_ok` was never spliced
 warning: rule prose `Instrtype_sub` was never spliced
 warning: rule prose `Limits_ok` was never spliced
@@ -2138,12 +2223,19 @@ warning: rule prose `Limits_sub/max` was never spliced
 warning: rule prose `Local_ok` was never spliced
 warning: rule prose `Local_ok/set` was never spliced
 warning: rule prose `Local_ok/unset` was never spliced
+warning: rule prose `Localtype_ok` was never spliced
+warning: rule prose `Localval_ok` was never spliced
+warning: rule prose `Localval_ok/set` was never spliced
+warning: rule prose `Localval_ok/unset` was never spliced
 warning: rule prose `Mem_ok` was never spliced
 warning: rule prose `Memarg_ok` was never spliced
+warning: rule prose `Meminst_ok` was never spliced
 warning: rule prose `Memtype_ok` was never spliced
 warning: rule prose `Memtype_sub` was never spliced
 warning: rule prose `Module_ok` was never spliced
+warning: rule prose `Moduleinst_ok` was never spliced
 warning: rule prose `Nondefaultable` was never spliced
+warning: rule prose `NotImmutReachable` was never spliced
 warning: rule prose `NotationTypingInstrScheme` was never spliced
 warning: rule prose `NotationTypingInstrScheme/block` was never spliced
 warning: rule prose `NotationTypingInstrScheme/global.get` was never spliced
@@ -2153,6 +2245,7 @@ warning: rule prose `Numtype_ok` was never spliced
 warning: rule prose `Numtype_sub` was never spliced
 warning: rule prose `Packtype_ok` was never spliced
 warning: rule prose `Packtype_sub` was never spliced
+warning: rule prose `Packval_ok` was never spliced
 warning: rule prose `Rectype_ok` was never spliced
 warning: rule prose `Rectype_ok/cons` was never spliced
 warning: rule prose `Rectype_ok/empty` was never spliced
@@ -2176,6 +2269,7 @@ warning: rule prose `Reftype_sub/null` was never spliced
 warning: rule prose `Resulttype_ok` was never spliced
 warning: rule prose `Resulttype_sub` was never spliced
 warning: rule prose `Start_ok` was never spliced
+warning: rule prose `State_ok` was never spliced
 warning: rule prose `Step/array.new_fixed` was never spliced
 warning: rule prose `Step/array.set` was never spliced
 warning: rule prose `Step/data.drop` was never spliced
@@ -2302,12 +2396,16 @@ warning: rule prose `Storagetype_ok/val` was never spliced
 warning: rule prose `Storagetype_sub` was never spliced
 warning: rule prose `Storagetype_sub/pack` was never spliced
 warning: rule prose `Storagetype_sub/val` was never spliced
+warning: rule prose `Store_ok` was never spliced
+warning: rule prose `Structinst_ok` was never spliced
 warning: rule prose `Subtype_ok` was never spliced
 warning: rule prose `Subtype_ok2` was never spliced
 warning: rule prose `Table_ok` was never spliced
+warning: rule prose `Tableinst_ok` was never spliced
 warning: rule prose `Tabletype_ok` was never spliced
 warning: rule prose `Tabletype_sub` was never spliced
 warning: rule prose `Tag_ok` was never spliced
+warning: rule prose `Taginst_ok` was never spliced
 warning: rule prose `Tagtype_ok` was never spliced
 warning: rule prose `Tagtype_sub` was never spliced
 warning: rule prose `Type_ok` was never spliced
@@ -2352,6 +2450,7 @@ warning: definition prose `NULLEXNREF` was never spliced
 warning: definition prose `NULLEXTERNREF` was never spliced
 warning: definition prose `NULLFUNCREF` was never spliced
 warning: definition prose `NULLREF` was never spliced
+warning: definition prose `NotImmutReachable` was never spliced
 warning: definition prose `STRUCTREF` was never spliced
 warning: definition prose `add_arrayinst` was never spliced
 warning: definition prose `add_exninst` was never spliced
