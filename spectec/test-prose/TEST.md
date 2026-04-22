@@ -13748,6 +13748,60 @@ spectec 0.5 generator
 
 
 
+The :ref:`expansion <aux-expand-deftype>` of :math:`{\mathit{deftype}}` is :math:`{\mathit{comptype}}` if:
+
+
+   * The composite type :math:`{\mathrm{expand}}({\mathit{deftype}})` is of the form :math:`{\mathit{comptype}}`.
+
+
+
+
+The :ref:`expansion <aux-expand-typeuse>` of :math:`C` is :math:`{\mathit{comptype}}` if:
+
+
+   * Either:
+
+      * The type use :math:`{\mathit{typeuse}}` is of the form :math:`{\mathit{deftype}}`.
+
+      * The :ref:`expansion <aux-expand-deftype>` of :math:`{\mathit{deftype}}` is :math:`{\mathit{comptype}}`.
+
+   * Or:
+
+      * The type use :math:`{\mathit{typeuse}}` is of the form :math:`{\mathit{typeidx}}`.
+
+      * The type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
+
+      * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is :math:`{\mathit{comptype}}`.
+
+
+
+
+The :ref:`expansion <aux-expand-typeuse>` of :math:`C` is :math:`{\mathit{comptype}}` if:
+
+
+   * The :ref:`expansion <aux-expand-deftype>` of :math:`{\mathit{deftype}}` is :math:`{\mathit{comptype}}`.
+
+
+
+
+The :ref:`expansion <aux-expand-typeuse>` of :math:`C` is :math:`{\mathit{comptype}}` if:
+
+
+   * The type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
+
+   * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is :math:`{\mathit{comptype}}`.
+
+
+
+
+:math:`{\mathit{fv}}_2` is not immutably reachable from :math:`{\mathit{fv}}_1` if:
+
+
+   * NotImmutReachable(:math:`{\mathit{fv}}_1`, :math:`s`, :math:`{\mathit{fv}}_2`) is true.
+
+
+
+
 The number type :math:`{\mathit{numtype}}` is always :ref:`valid <valid-val>`.
 
 
@@ -13769,14 +13823,6 @@ The packed type :math:`{\mathit{packtype}}` :ref:`matches <match>` only itself.
 
 
 The number type :math:`{\mathit{numtype}}` :ref:`matches <match>` only itself.
-
-
-
-
-The :ref:`expansion <aux-expand-deftype>` of :math:`{\mathit{deftype}}` is :math:`{\mathit{comptype}}` if:
-
-
-   * The composite type :math:`{\mathrm{expand}}({\mathit{deftype}})` is of the form :math:`{\mathit{comptype}}`.
 
 
 
@@ -14681,44 +14727,6 @@ The instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}` is 
    * For all :math:`x` in :math:`{x^\ast}`:
 
       * The local :math:`C{.}\mathsf{locals}{}[x]` exists.
-
-
-
-
-The :ref:`expansion <aux-expand-typeuse>` of :math:`C` is :math:`{\mathit{comptype}}` if:
-
-
-   * Either:
-
-      * The type use :math:`{\mathit{typeuse}}` is of the form :math:`{\mathit{deftype}}`.
-
-      * The :ref:`expansion <aux-expand-deftype>` of :math:`{\mathit{deftype}}` is :math:`{\mathit{comptype}}`.
-
-   * Or:
-
-      * The type use :math:`{\mathit{typeuse}}` is of the form :math:`{\mathit{typeidx}}`.
-
-      * The type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
-
-      * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is :math:`{\mathit{comptype}}`.
-
-
-
-
-The :ref:`expansion <aux-expand-typeuse>` of :math:`C` is :math:`{\mathit{comptype}}` if:
-
-
-   * The :ref:`expansion <aux-expand-deftype>` of :math:`{\mathit{deftype}}` is :math:`{\mathit{comptype}}`.
-
-
-
-
-The :ref:`expansion <aux-expand-typeuse>` of :math:`C` is :math:`{\mathit{comptype}}` if:
-
-
-   * The type :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` exists.
-
-   * The :ref:`expansion <aux-expand-deftype>` of :math:`C{.}\mathsf{types}{}[{\mathit{typeidx}}]` is :math:`{\mathit{comptype}}`.
 
 
 
@@ -18178,120 +18186,6 @@ The exception instance :math:`\{ \mathsf{tag}~{\mathit{ta}},\;\allowbreak \maths
    * For all :math:`t` in :math:`{t^\ast}`, and corresponding :math:`{\mathit{val}}` in :math:`{{\mathit{val}}^\ast}`:
 
       * The value :math:`{\mathit{val}}` is :ref:`valid <valid-val>` with the value type :math:`t`.
-
-
-
-
-:math:`{\mathit{fv}}_2` is immutably reachable from :math:`{\mathit{fv}}_1` if:
-
-
-   * Either:
-
-      * :math:`{\mathit{fv}'}` is immutably reachable from :math:`{\mathit{fv}}_1`.
-
-      * :math:`{\mathit{fv}}_2` is immutably reachable from :math:`{\mathit{fv}'}`.
-
-   * Or:
-
-      * The field value :math:`{\mathit{fv}}_1` is of the form :math:`(\mathsf{ref{.}struct}~a)`.
-
-      * The field value :math:`{\mathit{fv}}_2` is of the form :math:`s{.}\mathsf{structs}{}[a]{.}\mathsf{fields}{}[i]`.
-
-      * The field value :math:`s{.}\mathsf{structs}{}[a]{.}\mathsf{fields}{}[i]` exists.
-
-      * The structure instance :math:`s{.}\mathsf{structs}{}[a]` exists.
-
-      * The :ref:`expansion <aux-expand-deftype>` of :math:`s{.}\mathsf{structs}{}[a]{.}\mathsf{type}` is :math:`(\mathsf{struct}~{{\mathit{ft}}^\ast})`.
-
-      * The length of :math:`{{\mathit{ft}}^\ast}` is greater than :math:`i`.
-
-      * The field type :math:`{{\mathit{ft}}^\ast}{}[i]` is of the form :math:`(\epsilon~{\mathit{zt}})`.
-   * Or:
-
-      * The field value :math:`{\mathit{fv}}_1` is of the form :math:`(\mathsf{ref{.}array}~a)`.
-
-      * The field value :math:`{\mathit{fv}}_2` is of the form :math:`s{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}{}[i]`.
-
-      * The field value :math:`s{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}{}[i]` exists.
-
-      * The array instance :math:`s{.}\mathsf{arrays}{}[a]` exists.
-
-      * The :ref:`expansion <aux-expand-deftype>` of :math:`s{.}\mathsf{arrays}{}[a]{.}\mathsf{type}` is :math:`(\mathsf{array}~(\epsilon~{\mathit{zt}}))`.
-   * Or:
-
-      * The field value :math:`{\mathit{fv}}_1` is of the form :math:`(\mathsf{ref{.}exn}~a)`.
-
-      * The field value :math:`{\mathit{fv}}_2` is of the form :math:`s{.}\mathsf{exns}{}[a]{.}\mathsf{fields}{}[i]`.
-
-      * The value :math:`s{.}\mathsf{exns}{}[a]{.}\mathsf{fields}{}[i]` exists.
-
-      * The exception instance :math:`s{.}\mathsf{exns}{}[a]` exists.
-   * Or:
-
-      * The field value :math:`{\mathit{fv}}_1` is of the form :math:`(\mathsf{ref{.}extern}~{\mathit{ref}})`.
-
-      * The field value :math:`{\mathit{fv}}_2` is of the form :math:`{\mathit{ref}}`.
-
-
-
-
-:math:`{\mathit{fv}}_2` is immutably reachable from :math:`{\mathit{fv}}_1` if:
-
-
-   * :math:`{\mathit{fv}'}` is immutably reachable from :math:`{\mathit{fv}}_1`.
-
-   * :math:`{\mathit{fv}}_2` is immutably reachable from :math:`{\mathit{fv}'}`.
-
-
-
-
-:math:`s{.}\mathsf{structs}{}[a]{.}\mathsf{fields}{}[i]` is immutably reachable from :math:`(\mathsf{ref{.}struct}~a)` if:
-
-
-   * The field value :math:`s{.}\mathsf{structs}{}[a]{.}\mathsf{fields}{}[i]` exists.
-
-   * The structure instance :math:`s{.}\mathsf{structs}{}[a]` exists.
-
-   * The :ref:`expansion <aux-expand-deftype>` of :math:`s{.}\mathsf{structs}{}[a]{.}\mathsf{type}` is :math:`(\mathsf{struct}~{{\mathit{ft}}^\ast})`.
-
-   * The length of :math:`{{\mathit{ft}}^\ast}` is greater than :math:`i`.
-
-   * The field type :math:`{{\mathit{ft}}^\ast}{}[i]` is of the form :math:`(\epsilon~{\mathit{zt}})`.
-
-
-
-
-:math:`s{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}{}[i]` is immutably reachable from :math:`(\mathsf{ref{.}array}~a)` if:
-
-
-   * The field value :math:`s{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}{}[i]` exists.
-
-   * The array instance :math:`s{.}\mathsf{arrays}{}[a]` exists.
-
-   * The :ref:`expansion <aux-expand-deftype>` of :math:`s{.}\mathsf{arrays}{}[a]{.}\mathsf{type}` is :math:`(\mathsf{array}~(\epsilon~{\mathit{zt}}))`.
-
-
-
-
-:math:`s{.}\mathsf{exns}{}[a]{.}\mathsf{fields}{}[i]` is immutably reachable from :math:`(\mathsf{ref{.}exn}~a)` if:
-
-
-   * The value :math:`s{.}\mathsf{exns}{}[a]{.}\mathsf{fields}{}[i]` exists.
-
-   * The exception instance :math:`s{.}\mathsf{exns}{}[a]` exists.
-
-
-
-
-:math:`{\mathit{ref}}` is immutably reachable from :math:`(\mathsf{ref{.}extern}~{\mathit{ref}})`.
-
-
-
-
-:math:`{\mathit{fv}}_2` is not immutably reachable from :math:`{\mathit{fv}}_1` if:
-
-
-   * NotImmutReachable(:math:`{\mathit{fv}}_1`, :math:`s`, :math:`{\mathit{fv}}_2`) is true.
 
 
 
@@ -27641,6 +27535,33 @@ spectec 0.5 generator
 == IL Validation after pass sideconditions...
 == Translating to AL...
 == Prose Generation...
+Expand
+- The :ref:`expansion <aux-expand-deftype>` of deftype is comptype if:
+  - the composite type $expanddt(deftype) is comptype.
+
+Expand_use
+- The :ref:`expansion <aux-expand-typeuse>` of C is comptype if:
+  - Either:
+    - the type use typeuse is deftype.
+    - The :ref:`expansion <aux-expand-deftype>` of deftype is comptype.
+  - Or:
+    - typeuse is (_IDX typeidx).
+    - the type C.TYPES[typeidx] exists.
+    - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[typeidx] is comptype.
+
+Expand_use/deftype
+- The :ref:`expansion <aux-expand-typeuse>` of C is comptype if:
+  - The :ref:`expansion <aux-expand-deftype>` of deftype is comptype.
+
+Expand_use/typeidx
+- The :ref:`expansion <aux-expand-typeuse>` of C is comptype if:
+  - the type C.TYPES[typeidx] exists.
+  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[typeidx] is comptype.
+
+NotImmutReachable
+- fv_2 is not immutably reachable from fv_1 if:
+  - $NotImmutReachable(fv_1, s, fv_2) is true.
+
 Numtype_ok
 - the number type numtype is always valid.
 
@@ -27656,12 +27577,8 @@ Packtype_sub
 Numtype_sub
 - numtype matches only itself.
 
-Expand
-- The :ref:`expansion <aux-expand-deftype>` of deftype is comptype if:
-  - the composite type $expanddt(deftype) is comptype.
-
 Vectype_sub
-- the vector type vectype matches only itself.
+- vectype matches only itself.
 
 Heaptype_ok
 - the heap type heaptype is valid if:
@@ -28129,25 +28046,6 @@ Instrtype_ok
   - the result type t_2* is valid.
   - For all x in x*:
     - the local C.LOCALS[x] exists.
-
-Expand_use
-- The :ref:`expansion <aux-expand-typeuse>` of C is comptype if:
-  - Either:
-    - the type use typeuse is deftype.
-    - The :ref:`expansion <aux-expand-deftype>` of deftype is comptype.
-  - Or:
-    - typeuse is (_IDX typeidx).
-    - the type C.TYPES[typeidx] exists.
-    - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[typeidx] is comptype.
-
-Expand_use/deftype
-- The :ref:`expansion <aux-expand-typeuse>` of C is comptype if:
-  - The :ref:`expansion <aux-expand-deftype>` of deftype is comptype.
-
-Expand_use/typeidx
-- The :ref:`expansion <aux-expand-typeuse>` of C is comptype if:
-  - the type C.TYPES[typeidx] exists.
-  - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[typeidx] is comptype.
 
 Subtype_ok
 - the sub type (SUB FINAL? (_IDX x)* comptype) is valid for the type index (OK x_0) if:
@@ -29929,65 +29827,6 @@ Exninst_ok
   - The :ref:`expansion <aux-expand-deftype>` of dt is (FUNC t* -> []).
   - For all t in t*, and corresponding val in val*:
     - the value val is valid with the value type t.
-
-ImmutReachable
-- fv_2 is immutably reachable from fv_1 if:
-  - Either:
-    - fv' is immutably reachable from fv_1.
-    - fv_2 is immutably reachable from fv'.
-  - Or:
-    - the field value fv_1 is (REF.STRUCT_ADDR a).
-    - the field value fv_2 is s.STRUCTS[a].FIELDS[i].
-    - the field value s.STRUCTS[a].FIELDS[i] exists.
-    - the structure instance s.STRUCTS[a] exists.
-    - The :ref:`expansion <aux-expand-deftype>` of s.STRUCTS[a].TYPE is (STRUCT ft*).
-    - |ft*| is greater than i.
-    - the field type ft*[i] is (?() zt).
-  - Or:
-    - fv_1 is (REF.ARRAY_ADDR a).
-    - fv_2 is s.ARRAYS[a].FIELDS[i].
-    - the field value s.ARRAYS[a].FIELDS[i] exists.
-    - the array instance s.ARRAYS[a] exists.
-    - The :ref:`expansion <aux-expand-deftype>` of s.ARRAYS[a].TYPE is (ARRAY (?() zt)).
-  - Or:
-    - fv_1 is (REF.EXN_ADDR a).
-    - fv_2 is s.EXNS[a].FIELDS[i].
-    - the value s.EXNS[a].FIELDS[i] exists.
-    - the exception instance s.EXNS[a] exists.
-  - Or:
-    - fv_1 is (REF.EXTERN ref).
-    - fv_2 is ref.
-
-ImmutReachable/trans
-- fv_2 is immutably reachable from fv_1 if:
-  - fv' is immutably reachable from fv_1.
-  - fv_2 is immutably reachable from fv'.
-
-ImmutReachable/ref.struct
-- s.STRUCTS[a].FIELDS[i] is immutably reachable from (REF.STRUCT_ADDR a) if:
-  - the field value s.STRUCTS[a].FIELDS[i] exists.
-  - the structure instance s.STRUCTS[a] exists.
-  - The :ref:`expansion <aux-expand-deftype>` of s.STRUCTS[a].TYPE is (STRUCT ft*).
-  - |ft*| is greater than i.
-  - the field type ft*[i] is (?() zt).
-
-ImmutReachable/ref.array
-- s.ARRAYS[a].FIELDS[i] is immutably reachable from (REF.ARRAY_ADDR a) if:
-  - the field value s.ARRAYS[a].FIELDS[i] exists.
-  - the array instance s.ARRAYS[a] exists.
-  - The :ref:`expansion <aux-expand-deftype>` of s.ARRAYS[a].TYPE is (ARRAY (?() zt)).
-
-ImmutReachable/ref.exn
-- s.EXNS[a].FIELDS[i] is immutably reachable from (REF.EXN_ADDR a) if:
-  - the value s.EXNS[a].FIELDS[i] exists.
-  - the exception instance s.EXNS[a] exists.
-
-ImmutReachable/ref.extern
-- ref is immutably reachable from (REF.EXTERN ref).
-
-NotImmutReachable
-- fv_2 is not immutably reachable from fv_1 if:
-  - $NotImmutReachable(fv_1, s, fv_2) is true.
 
 Store_ok
 - the store s is valid if:
