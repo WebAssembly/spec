@@ -85,9 +85,9 @@ rule Expand_use/typeidx: _IDX typeidx ~~_C comptype  -- Expand: C.TYPES[typeidx]
 ;; Type definitions
 
 syntax oktypeidx hint(show OK#((typeidx))) hint(prose_desc "type index") =
-  | OK typeidx      hint(show OK#(%))     hint(macro "%subtype")    hint(prose "%1")
-syntax oktypeidxnat hint(show OK#(typeidx,n)) =
-  | OK typeidx nat  hint(show OK#(%,%))   hint(macro "%subtypeext")
+  | OK typeidx   hint(show OK#(%))      hint(macro "%subtype") hint(prose "%1")
+syntax oktypenat hint(show OK#(n)) =
+  | OK nat       hint(show OK#(%))      hint(macro "%subtypeext")
 
 relation Packtype_ok: context |- packtype : OK          hint(name "K-pack")    hint(macro "%packtype")
 relation Fieldtype_ok: context |- fieldtype : OK        hint(name "K-field")   hint(macro "%fieldtype")
@@ -95,8 +95,8 @@ relation Storagetype_ok: context |- storagetype : OK    hint(name "K-storage") h
 relation Comptype_ok: context |- comptype : OK          hint(name "K-comp")    hint(macro "%comptype")
 relation Subtype_ok: context |- subtype : oktypeidx     hint(name "K-sub")     hint(macro "%subtype")     hint(prosepp "for")
 relation Rectype_ok: context |- rectype : oktypeidx     hint(name "K-rect")    hint(macro "%rectype")     hint(prosepp "for")
-relation Subtype_ok2: context |- subtype : oktypeidxnat hint(name "K-sub2")    hint(macro "%subtypeext")  hint(prosepp "for")
-relation Rectype_ok2: context |- rectype : oktypeidxnat hint(name "K-rec2")    hint(macro "%rectypeext")  hint(prosepp "for")
+relation Subtype_ok2: context |- subtype : oktypenat    hint(name "K-sub2")    hint(macro "%subtypeext")  hint(prosepp "for")
+relation Rectype_ok2: context |- rectype : oktypenat    hint(name "K-rec2")    hint(macro "%rectypeext")  hint(prosepp "for")
 relation Deftype_ok: context |- deftype : OK            hint(name "K-def")     hint(macro "%deftype")
 
 ;; Forward declarations for validation.subtyping
@@ -156,10 +156,9 @@ rule Subtype_ok:
   -- Comptype_ok: C |- comptype : OK
   -- (Comptype_sub: C |- comptype <: comptype')*
 
-def $before(typeuse, typeidx, nat) : bool   hint(show % << %,%) hint(macro "before")
-def $before(deftype, x, i) = true
-def $before(_IDX typeidx, x, i) = typeidx < x
-def $before(REC j, x, i) = j < i
+def $before(typeuse, nat) : bool   hint(show % << %) hint(macro "before")
+def $before(REC j, i) = j < i
+def $before(typeuse, i) = true  -- otherwise
 
 def $unrollht(context, heaptype) : subtype  hint(show $unroll_(%,%))
 def $unrollht(C, deftype) = $unrolldt(deftype)
@@ -167,10 +166,10 @@ def $unrollht(C, _IDX typeidx) = $unrolldt(C.TYPES[typeidx])
 def $unrollht(C, REC i) = C.RECS[i]
 
 rule Subtype_ok2:
-  C |- SUB FINAL? typeuse* comptype : OK x i
+  C |- SUB FINAL? typeuse* comptype : OK(i)
   -- if |typeuse*| <= 1
   -- (Typeuse_ok: C |- typeuse : OK)*
-  -- (if $before(typeuse, x, i))*
+  -- (if $before(typeuse, i))*
   -- (if $unrollht(C, typeuse) = SUB typeuse'* comptype')*
   ----
   -- Comptype_ok: C |- comptype : OK
@@ -187,17 +186,17 @@ rule Rectype_ok/cons:
 
 
 rule Rectype_ok2/empty:
-  C |- REC eps : OK x i
+  C |- REC eps : OK(i)
 
 rule Rectype_ok2/cons:
-  C |- REC (subtype_1 subtype*) : OK x i
-  -- Subtype_ok2: C |- subtype_1 : OK x i
-  -- Rectype_ok2: C |- REC subtype* : OK x $(i+1)
+  C |- REC (subtype_1 subtype*) : OK(i)
+  -- Subtype_ok2: C |- subtype_1 : OK(i)
+  -- Rectype_ok2: C |- REC subtype* : OK($(i+1))
 
 
 rule Deftype_ok:
   C |- _DEF rectype i : OK
-  -- Rectype_ok2: C, RECS subtype^n |- rectype : OK x 0
+  -- Rectype_ok2: C, RECS subtype^n |- rectype : OK(0)
   -- if rectype = REC subtype^n
   -- if i < n
 

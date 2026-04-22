@@ -421,7 +421,7 @@ warning: syntax `num_` was never spliced
 warning: syntax `num_` was never spliced
 warning: syntax `numtype` was never spliced
 warning: syntax `oktypeidx` was never spliced
-warning: syntax `oktypeidxnat` was never spliced
+warning: syntax `oktypenat` was never spliced
 warning: syntax `pack_` was never spliced
 warning: syntax `packtype` was never spliced
 warning: syntax `packval` was never spliced

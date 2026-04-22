@@ -21,7 +21,7 @@ rule Context_ok:
     }
   -- if C_0 = {TYPES dt^n}
   -- (Deftype_ok: {TYPES dt^n[0 : i]} |- dt : OK)^(i<n)
-  -- (Subtype_ok2: {TYPES dt^n, RECS st^m} |- st : OK n i)^(i<m)
+  -- (Subtype_ok2: {TYPES dt^n, RECS st^m} |- st : OK(i))^(i<m)
   -- (Tagtype_ok: C_0 |- jt : OK)*
   -- (Globaltype_ok: C_0 |- gt : OK)*
   -- (Memtype_ok: C_0 |- mt : OK)*
