@@ -23980,13 +23980,13 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. Return :math:`{\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}})`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`{\mathsf{struct{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~{\mathit{typeidx}}~{\mathit{u{\kern-0.1em\scriptstyle 32}}}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`{\mathsf{struct{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~{\mathit{typeidx}}~{\mathit{fieldidx}}`, then:
 
    a. Let :math:`({\mathsf{struct{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~{\mathit{typeidx}}~{\mathit{u{\kern-0.1em\scriptstyle 32}}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
    #. Return :math:`{\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}})`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{struct{.}set}~{\mathit{typeidx}}~{\mathit{u{\kern-0.1em\scriptstyle 32}}}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{struct{.}set}~{\mathit{typeidx}}~{\mathit{fieldidx}}`, then:
 
    a. Let :math:`(\mathsf{struct{.}set}~{\mathit{typeidx}}~{\mathit{u{\kern-0.1em\scriptstyle 32}}})` be the destructuring of :math:`{\mathit{instr}'}`.
 

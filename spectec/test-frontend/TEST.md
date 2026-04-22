@@ -1,9 +1,476 @@
 # Test
 
 ```sh
-$ (../src/exe-spectec/main.exe test.spectec -o test.tex && cat test.tex)
-cat: test.tex: No such file or directory
-[1]
+$ (../src/exe-spectec/main.exe test.spectec --latex -o test.tex && cat test.tex)
+$$
+\begin{array}[t]{@{}lrrl@{}l@{}}
+& {\mathit{testmixfix}} & ::= & \{ {\mathbb{N}^\ast} \} ~~|~~ {}[ {\mathbb{N}^\ast} ] ~~|~~ \mathbb{N} \rightarrow \mathbb{N} \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+{\mathrm{testmixfix}}(\{ {\mathbb{N}^\ast} \}) & = & {\mathbb{N}^\ast} \\
+{\mathrm{testmixfix}}({}[ {\mathbb{N}^\ast} ]) & = & {\mathbb{N}^\ast} \\
+{\mathrm{testmixfix}}({\mathit{nat}}_1 \rightarrow {\mathit{nat}}_2) & = & {\mathit{nat}}_1~{\mathit{nat}}_2 \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}[t]{@{}lrrl@{}l@{}}
+& {\mathit{basea}} & ::= & \mathsf{a}~\mathbb{N} \\
+& {\mathit{baseb}} & ::= & \mathsf{b}~\mathbb{N} \\
+& {\mathit{extc{\kern-0.1em\scriptstyle 1}}} & ::= & {\mathit{basea}} ~~|~~ {\mathit{baseb}} ~~|~~ \mathsf{c}~\mathbb{N} ~~|~~ \mathsf{d} \\
+& {\mathit{extc{\kern-0.1em\scriptstyle 2}}} & ::= & {\mathit{basea}} ~~|~~ {\mathit{baseb}} ~~|~~ \mathsf{c}~\mathbb{N} ~~|~~ \mathsf{d} \\
+& {\mathit{extc{\kern-0.1em\scriptstyle 3}}} & ::= & {\mathit{basea}} ~~|~~ {\mathit{baseb}} ~~|~~ \mathsf{c}~\mathbb{N} ~~|~~ \mathsf{d} \\
+& {\mathit{extc{\kern-0.1em\scriptstyle 4}}} & ::= & {\mathit{basea}} ~~|~~ {\mathit{baseb}} ~~|~~ \mathsf{c}~\mathbb{N} ~~|~~ \mathsf{d} \\
+& {\mathit{extc{\kern-0.1em\scriptstyle 5}}} & ::= & {\mathit{basea}} ~~|~~ {\mathit{baseb}} ~~|~~ \mathsf{c}~\mathbb{N} ~~|~~ \mathsf{d} \\
+& {\mathit{extc{\kern-0.1em\scriptstyle 6}}} & ::= & {\mathit{basea}} ~~|~~ {\mathit{baseb}} ~~|~~ \mathsf{c}~\mathbb{N} ~~|~~ \mathsf{d} \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}[t]{@{}lrrl@{}l@{}}
+& {\mathit{opt}} & ::= & {\mathsf{o}^?} \\
+& {\mathit{list}} & ::= & {\mathsf{l}^\ast} \\
+& {\mathit{variant}} & ::= & \mathsf{v{\scriptstyle 1}}~{\mathit{opt}}~\mathbb{N} \\
+& & | & \mathsf{v{\scriptstyle 2}}~{\mathsf{o}^?}~\mathbb{N} \\
+& & | & \mathsf{v{\scriptstyle 3}}~{\mathbb{T}^?}~\mathbb{N} \\
+& & | & \mathsf{v{\scriptstyle 4}}~{\mathit{list}}~\mathbb{N} \\
+& & | & \mathsf{v{\scriptstyle 5}}~{\mathsf{l}^\ast}~\mathbb{N} \\
+& & | & \mathsf{v{\scriptstyle 6}}~{\mathbb{T}^\ast}~\mathbb{N} \\
+& {\mathit{notation{\kern-0.1em\scriptstyle 1}}} & ::= & {\mathit{opt}}~\mathbb{N} \\
+& {\mathit{notation{\kern-0.1em\scriptstyle 2}}} & ::= & {\mathsf{o}^?}~\mathbb{N} \\
+& {\mathit{notation{\kern-0.1em\scriptstyle 3}}} & ::= & {\mathbb{T}^?}~\mathbb{N} \\
+& {\mathit{notation{\kern-0.1em\scriptstyle 4}}} & ::= & {\mathit{list}}~\mathbb{N} \\
+& {\mathit{notation{\kern-0.1em\scriptstyle 5}}} & ::= & {\mathsf{l}^\ast}~\mathbb{N} \\
+& {\mathit{notation{\kern-0.1em\scriptstyle 6}}} & ::= & {\mathbb{T}^\ast}~\mathbb{N} \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+{\mathrm{testemptyv{\kern-0.1em\scriptstyle 1}}}(\mathsf{v{\scriptstyle 1}}~{\mathit{opt}}~0) & = & 0 \\
+{\mathrm{testemptyv{\kern-0.1em\scriptstyle 1}}}(\mathsf{v{\scriptstyle 1}}~\epsilon~0) & = & 0 \\
+{\mathrm{testemptyv{\kern-0.1em\scriptstyle 1}}}(\mathsf{v{\scriptstyle 1}}~0) & = & 0 \\
+{\mathrm{testemptyv{\kern-0.1em\scriptstyle 1}}}(\mathsf{v{\scriptstyle 1}}~\mathsf{o}~0) & = & 0 \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+{\mathrm{testemptyv{\kern-0.1em\scriptstyle 2}}}(\mathsf{v{\scriptstyle 2}}~\epsilon~0) & = & 0 \\
+{\mathrm{testemptyv{\kern-0.1em\scriptstyle 2}}}(\mathsf{v{\scriptstyle 2}}~0) & = & 0 \\
+{\mathrm{testemptyv{\kern-0.1em\scriptstyle 2}}}(\mathsf{v{\scriptstyle 2}}~\mathsf{o}~0) & = & 0 \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+{\mathrm{testemptyv{\kern-0.1em\scriptstyle 3}}}(\mathsf{v{\scriptstyle 3}}~\epsilon~0) & = & 0 \\
+{\mathrm{testemptyv{\kern-0.1em\scriptstyle 3}}}(\mathsf{v{\scriptstyle 3}}~0) & = & 0 \\
+{\mathrm{testemptyv{\kern-0.1em\scriptstyle 3}}}(\mathsf{v{\scriptstyle 3}}~\mbox{‘\texttt{}’}~0) & = & 0 \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+{\mathrm{testemptyv{\kern-0.1em\scriptstyle 4}}}(\mathsf{v{\scriptstyle 4}}~{\mathit{list}}~0) & = & 0 \\
+{\mathrm{testemptyv{\kern-0.1em\scriptstyle 4}}}(\mathsf{v{\scriptstyle 4}}~\epsilon~0) & = & 0 \\
+{\mathrm{testemptyv{\kern-0.1em\scriptstyle 4}}}(\mathsf{v{\scriptstyle 4}}~0) & = & 0 \\
+{\mathrm{testemptyv{\kern-0.1em\scriptstyle 4}}}(\mathsf{v{\scriptstyle 4}}~\mathsf{l}~0) & = & 0 \\
+{\mathrm{testemptyv{\kern-0.1em\scriptstyle 4}}}(\mathsf{v{\scriptstyle 4}}~\mathsf{l}~\mathsf{l}~\mathsf{l}~0) & = & 0 \\
+{\mathrm{testemptyv{\kern-0.1em\scriptstyle 4}}}(\mathsf{v{\scriptstyle 4}}~({}[])~0) & = & 0 \\
+{\mathrm{testemptyv{\kern-0.1em\scriptstyle 4}}}(\mathsf{v{\scriptstyle 4}}~({}[\mathsf{l}])~0) & = & 0 \\
+{\mathrm{testemptyv{\kern-0.1em\scriptstyle 4}}}(\mathsf{v{\scriptstyle 4}}~({}[\mathsf{l}~\mathsf{l}~\mathsf{l}])~0) & = & 0 \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+{\mathrm{testemptyv{\kern-0.1em\scriptstyle 5}}}(\mathsf{v{\scriptstyle 5}}~\epsilon~0) & = & 0 \\
+{\mathrm{testemptyv{\kern-0.1em\scriptstyle 5}}}(\mathsf{v{\scriptstyle 5}}~0) & = & 0 \\
+{\mathrm{testemptyv{\kern-0.1em\scriptstyle 5}}}(\mathsf{v{\scriptstyle 5}}~\mathsf{l}~0) & = & 0 \\
+{\mathrm{testemptyv{\kern-0.1em\scriptstyle 5}}}(\mathsf{v{\scriptstyle 5}}~\mathsf{l}~\mathsf{l}~\mathsf{l}~0) & = & 0 \\
+{\mathrm{testemptyv{\kern-0.1em\scriptstyle 5}}}(\mathsf{v{\scriptstyle 5}}~({}[])~0) & = & 0 \\
+{\mathrm{testemptyv{\kern-0.1em\scriptstyle 5}}}(\mathsf{v{\scriptstyle 5}}~({}[\mathsf{l}])~0) & = & 0 \\
+{\mathrm{testemptyv{\kern-0.1em\scriptstyle 5}}}(\mathsf{v{\scriptstyle 5}}~({}[\mathsf{l}~\mathsf{l}~\mathsf{l}])~0) & = & 0 \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+{\mathrm{testemptyv{\kern-0.1em\scriptstyle 6}}}(\mathsf{v{\scriptstyle 6}}~\epsilon~0) & = & 0 \\
+{\mathrm{testemptyv{\kern-0.1em\scriptstyle 6}}}(\mathsf{v{\scriptstyle 6}}~0) & = & 0 \\
+{\mathrm{testemptyv{\kern-0.1em\scriptstyle 6}}}(\mathsf{v{\scriptstyle 6}}~\mbox{‘\texttt{}’}~0) & = & 0 \\
+{\mathrm{testemptyv{\kern-0.1em\scriptstyle 6}}}(\mathsf{v{\scriptstyle 6}}~\mbox{‘\texttt{}’}~\mbox{‘\texttt{}’}~0) & = & 0 \\
+{\mathrm{testemptyv{\kern-0.1em\scriptstyle 6}}}(\mathsf{v{\scriptstyle 6}}~({}[])~0) & = & 0 \\
+{\mathrm{testemptyv{\kern-0.1em\scriptstyle 6}}}(\mathsf{v{\scriptstyle 6}}~({}[\mbox{‘\texttt{}’}])~0) & = & 0 \\
+{\mathrm{testemptyv{\kern-0.1em\scriptstyle 6}}}(\mathsf{v{\scriptstyle 6}}~({}[\mbox{‘\texttt{}’}~\mbox{‘\texttt{}’}])~0) & = & 0 \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+{\mathrm{testemptyn{\kern-0.1em\scriptstyle 1}}}({\mathit{opt}}~0) & = & 0 \\
+{\mathrm{testemptyn{\kern-0.1em\scriptstyle 1}}}(\epsilon~0) & = & 0 \\
+{\mathrm{testemptyn{\kern-0.1em\scriptstyle 1}}}(0) & = & 0 \\
+{\mathrm{testemptyn{\kern-0.1em\scriptstyle 1}}}(\mathsf{o}~0) & = & 0 \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+{\mathrm{testemptyn{\kern-0.1em\scriptstyle 2}}}(\epsilon~0) & = & 0 \\
+{\mathrm{testemptyn{\kern-0.1em\scriptstyle 2}}}(0) & = & 0 \\
+{\mathrm{testemptyn{\kern-0.1em\scriptstyle 2}}}(\mathsf{o}~0) & = & 0 \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+{\mathrm{testemptyn{\kern-0.1em\scriptstyle 3}}}(\epsilon~0) & = & 0 \\
+{\mathrm{testemptyn{\kern-0.1em\scriptstyle 3}}}(0) & = & 0 \\
+{\mathrm{testemptyn{\kern-0.1em\scriptstyle 3}}}(\mbox{‘\texttt{}’}~0) & = & 0 \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+{\mathrm{testemptyn{\kern-0.1em\scriptstyle 4}}}({\mathit{list}}~0) & = & 0 \\
+{\mathrm{testemptyn{\kern-0.1em\scriptstyle 4}}}(\epsilon~0) & = & 0 \\
+{\mathrm{testemptyn{\kern-0.1em\scriptstyle 4}}}(0) & = & 0 \\
+{\mathrm{testemptyn{\kern-0.1em\scriptstyle 4}}}(\mathsf{l}~0) & = & 0 \\
+{\mathrm{testemptyn{\kern-0.1em\scriptstyle 4}}}(\mathsf{l}~\mathsf{l}~\mathsf{l}~0) & = & 0 \\
+{\mathrm{testemptyn{\kern-0.1em\scriptstyle 4}}}(({}[])~0) & = & 0 \\
+{\mathrm{testemptyn{\kern-0.1em\scriptstyle 4}}}(({}[\mathsf{l}])~0) & = & 0 \\
+{\mathrm{testemptyn{\kern-0.1em\scriptstyle 4}}}(({}[\mathsf{l}~\mathsf{l}~\mathsf{l}])~0) & = & 0 \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+{\mathrm{testemptyn{\kern-0.1em\scriptstyle 5}}}(\epsilon~0) & = & 0 \\
+{\mathrm{testemptyn{\kern-0.1em\scriptstyle 5}}}(0) & = & 0 \\
+{\mathrm{testemptyn{\kern-0.1em\scriptstyle 5}}}(\mathsf{l}~0) & = & 0 \\
+{\mathrm{testemptyn{\kern-0.1em\scriptstyle 5}}}(\mathsf{l}~\mathsf{l}~\mathsf{l}~0) & = & 0 \\
+{\mathrm{testemptyn{\kern-0.1em\scriptstyle 5}}}(({}[])~0) & = & 0 \\
+{\mathrm{testemptyn{\kern-0.1em\scriptstyle 5}}}(({}[\mathsf{l}])~0) & = & 0 \\
+{\mathrm{testemptyn{\kern-0.1em\scriptstyle 5}}}(({}[\mathsf{l}~\mathsf{l}~\mathsf{l}])~0) & = & 0 \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+{\mathrm{testemptyn{\kern-0.1em\scriptstyle 6}}}(\epsilon~0) & = & 0 \\
+{\mathrm{testemptyn{\kern-0.1em\scriptstyle 6}}}(0) & = & 0 \\
+{\mathrm{testemptyn{\kern-0.1em\scriptstyle 6}}}(\mbox{‘\texttt{}’}~0) & = & 0 \\
+{\mathrm{testemptyn{\kern-0.1em\scriptstyle 6}}}(\mbox{‘\texttt{}’}~\mbox{‘\texttt{}’}~\mbox{‘\texttt{}’}~0) & = & 0 \\
+{\mathrm{testemptyn{\kern-0.1em\scriptstyle 6}}}({}[]~0) & = & 0 \\
+{\mathrm{testemptyn{\kern-0.1em\scriptstyle 6}}}({}[\mbox{‘\texttt{}’}]~0) & = & 0 \\
+{\mathrm{testemptyn{\kern-0.1em\scriptstyle 6}}}({}[\mbox{‘\texttt{}’}~\mbox{‘\texttt{}’}~\mbox{‘\texttt{}’}]~0) & = & 0 \\
+{\mathrm{testemptyn{\kern-0.1em\scriptstyle 6}}}(({}[])~0) & = & 0 \\
+{\mathrm{testemptyn{\kern-0.1em\scriptstyle 6}}}(({}[\mbox{‘\texttt{}’}])~0) & = & 0 \\
+{\mathrm{testemptyn{\kern-0.1em\scriptstyle 6}}}(({}[\mbox{‘\texttt{}’}~\mbox{‘\texttt{}’}~\mbox{‘\texttt{}’}])~0) & = & 0 \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+{\mathrm{fnest}}({({n^{i<k}})^{j}}) & = & {l^{j}} & \quad \mbox{if}~ (l = {|{n^{k}}|})^{j} \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+{\mathrm{f}}(X, x) & = & x \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+{\mathrm{g}}({\mathrm{h}}, Y, y) & = & {\mathrm{h}}(Y, y) \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+{\mathrm{x}} & = & {\mathrm{g}}({\mathrm{f}}, \mathbb{N}, 1) + {\mathrm{g}}({\mathrm{f}}, \mathbb{N}, 2) \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+{\mathrm{pppp}}({\pmn}, {\pmm}) & = & ({\pmn}) + ({\pmm}) \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+{\mathrm{pppm}}({\pmn}, {\pmm}) & = & ({\pmn}) + ({\mpm}) \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+{\mathrm{ppmp}}({\pmn}, {\pmm}) & = & ({\mpn}) + ({\pmm}) \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+{\mathrm{ppmm}}({\pmn}, {\pmm}) & = & ({\mpn}) + ({\mpm}) \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+{\mathrm{pmpp}}({\pmn}, {\mpm}) & = & ({\pmn}) + ({\pmm}) \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+{\mathrm{pmpm}}({\pmn}, {\mpm}) & = & ({\pmn}) + ({\mpm}) \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+{\mathrm{pmmp}}({\pmn}, {\mpm}) & = & ({\mpn}) + ({\pmm}) \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+{\mathrm{pmmm}}({\pmn}, {\mpm}) & = & ({\mpn}) + ({\mpm}) \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+{\mathrm{mppp}}({\mpn}, {\pmm}) & = & ({\pmn}) + ({\pmm}) \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+{\mathrm{mppm}}({\mpn}, {\pmm}) & = & ({\pmn}) + ({\mpm}) \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+{\mathrm{mpmp}}({\mpn}, {\pmm}) & = & ({\mpn}) + ({\pmm}) \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+{\mathrm{mpmm}}({\mpn}, {\pmm}) & = & ({\mpn}) + ({\mpm}) \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+{\mathrm{mmpp}}({\mpn}, {\mpm}) & = & ({\pmn}) + ({\pmm}) \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+{\mathrm{mmpm}}({\mpn}, {\mpm}) & = & ({\pmn}) + ({\mpm}) \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+{\mathrm{mmmp}}({\mpn}, {\mpm}) & = & ({\mpn}) + ({\pmm}) \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+{\mathrm{mmmm}}({\mpn}, {\mpm}) & = & ({\mpn}) + ({\mpm}) \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lrrl@{}l@{}}
+& {\mathit{val}}({+1}) & ::= & \mathsf{val{\scriptstyle 1}} \\
+& {\mathit{val}}({+7}) & ::= & \mathsf{val{\scriptstyle 7}} \\
+& {\mathit{val}}({-1}) & ::= & \mathsf{valm{\scriptstyle 1}} \\
+& {\mathit{val}}({-7}) & ::= & \mathsf{valm{\scriptstyle 7}} \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+{\mathrm{eq}}(1, 1, x) & = & x \\
+{\mathrm{eq}}({\mathrm{pppp}}(3, 4), 7, x) & = & x \\
+{\mathrm{eq}}({\mathrm{pppp}}({-3}, {-4}), {-7}, x) & = & x \\
+{\mathrm{eq}}({\mathrm{pppm}}(3, 4), {-1}, x) & = & x \\
+{\mathrm{eq}}({\mathrm{pppm}}({-3}, {-4}), 1, x) & = & x \\
+{\mathrm{eq}}({\mathrm{ppmp}}(3, 4), 1, x) & = & x \\
+{\mathrm{eq}}({\mathrm{ppmp}}({-3}, {-4}), {-1}, x) & = & x \\
+{\mathrm{eq}}({\mathrm{ppmm}}(3, 4), {-7}, x) & = & x \\
+{\mathrm{eq}}({\mathrm{ppmm}}({-3}, {-4}), 7, x) & = & x \\
+{\mathrm{eq}}({\mathrm{pmpp}}(3, {-4}), 7, x) & = & x \\
+{\mathrm{eq}}({\mathrm{pmpp}}({-3}, 4), {-7}, x) & = & x \\
+{\mathrm{eq}}({\mathrm{pmpm}}(3, {-4}), {-1}, x) & = & x \\
+{\mathrm{eq}}({\mathrm{pmpm}}({-3}, 4), 1, x) & = & x \\
+{\mathrm{eq}}({\mathrm{pmmp}}(3, {-4}), 1, x) & = & x \\
+{\mathrm{eq}}({\mathrm{pmmp}}({-3}, 4), {-1}, x) & = & x \\
+{\mathrm{eq}}({\mathrm{pmmm}}(3, {-4}), {-7}, x) & = & x \\
+{\mathrm{eq}}({\mathrm{pmmm}}({-3}, 4), 7, x) & = & x \\
+{\mathrm{eq}}({\mathrm{mppp}}(3, {-4}), {-7}, x) & = & x \\
+{\mathrm{eq}}({\mathrm{mppp}}({-3}, 4), 7, x) & = & x \\
+{\mathrm{eq}}({\mathrm{mppm}}(3, {-4}), 1, x) & = & x \\
+{\mathrm{eq}}({\mathrm{mppm}}({-3}, 4), {-1}, x) & = & x \\
+{\mathrm{eq}}({\mathrm{mpmp}}(3, {-4}), {-1}, x) & = & x \\
+{\mathrm{eq}}({\mathrm{mpmp}}({-3}, 4), 1, x) & = & x \\
+{\mathrm{eq}}({\mathrm{mpmm}}(3, {-4}), 7, x) & = & x \\
+{\mathrm{eq}}({\mathrm{mpmm}}({-3}, 4), {-7}, x) & = & x \\
+{\mathrm{eq}}({\mathrm{mmpp}}(3, 4), {-7}, x) & = & x \\
+{\mathrm{eq}}({\mathrm{mmpp}}({-3}, {-4}), 7, x) & = & x \\
+{\mathrm{eq}}({\mathrm{mmpm}}(3, 4), 1, x) & = & x \\
+{\mathrm{eq}}({\mathrm{mmpm}}({-3}, {-4}), {-1}, x) & = & x \\
+{\mathrm{eq}}({\mathrm{mmmp}}(3, 4), {-1}, x) & = & x \\
+{\mathrm{eq}}({\mathrm{mmmp}}({-3}, {-4}), 1, x) & = & x \\
+{\mathrm{eq}}({\mathrm{mmmm}}(3, 4), 7, x) & = & x \\
+{\mathrm{eq}}({\mathrm{mmmm}}({-3}, {-4}), {-7}, x) & = & x \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+\vspace{1ex}
+
+$$
+\begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
+& {\mathtt{char1}} & ::= & \mathtt{0x00} \\
+& {\mathtt{char2}} & ::= & \mathrm{U{+}00} \\
+& {\mathtt{char3}} & ::= & \mbox{‘\texttt{X}’} \\
+& {\mathtt{char4}} & ::= & \mathtt{0x00} \\
+& {\mathtt{char5}} & ::= & \mathrm{U{+}00} \\
+& {\mathtt{char6}} & ::= & \mbox{‘\texttt{X}’} \\
+& {\mathtt{alt1}} & ::= & \mathtt{0x00} ~~|~~ \mathtt{0x01} ~~|~~ \mathtt{0x02} \\
+& {\mathtt{alt2}} & ::= & \mathrm{U{+}00} ~~|~~ \mathrm{U{+}01} ~~|~~ \mathrm{U{+}02} \\
+& {\mathtt{alt3}} & ::= & \mbox{‘\texttt{X}’} ~~|~~ \mbox{‘\texttt{Y}’} ~~|~~ \mbox{‘\texttt{Z}’} \\
+& {\mathtt{alt4}} & ::= & \mathrm{U{+}00} ~~|~~ \mbox{‘\texttt{A}’} ~~|~~ \mathrm{U{+}02} \\
+& {\mathtt{alt5}} & ::= & \mbox{‘\texttt{X}’} ~~|~~ \mathrm{U{+}00} ~~|~~ \mbox{‘\texttt{Z}’} \\
+& {\mathtt{alt6}} & ::= & \mathtt{0x00} ~~|~~ \mathtt{0x01} ~~|~~ \mathtt{0x02} \\
+& {\mathtt{alt7}} & ::= & \mathrm{U{+}00} ~~|~~ \mathrm{U{+}01} ~~|~~ \mathrm{U{+}02} \\
+& {\mathtt{alt8}} & ::= & \mbox{‘\texttt{X}’} ~~|~~ \mbox{‘\texttt{Y}’} ~~|~~ \mbox{‘\texttt{Z}’} \\
+& {\mathtt{range1}} & ::= & \mathtt{0x00} ~~|~~ \ldots ~~|~~ \mathtt{0xFF} \\
+& {\mathtt{range2}} & ::= & \mathrm{U{+}00} ~~|~~ \ldots ~~|~~ \mathrm{U{+}FF} \\
+& {\mathtt{range3}} & ::= & \mbox{‘\texttt{A}’} ~~|~~ \ldots ~~|~~ \mbox{‘\texttt{Z}’} \\
+& {\mathtt{range4}} & ::= & \mathrm{U{+}00} ~~|~~ \ldots ~~|~~ \mbox{‘\texttt{A}’} \\
+& {\mathtt{range5}} & ::= & \mbox{‘\texttt{A}’} ~~|~~ \ldots ~~|~~ \mathrm{U{+}FF} \\
+& {\mathtt{range6}} & ::= & \mathtt{0x00} ~~|~~ \ldots ~~|~~ \mathtt{0xFF} \\
+& {\mathtt{range7}} & ::= & \mathrm{U{+}00} ~~|~~ \ldots ~~|~~ \mathrm{U{+}FF} \\
+& {\mathtt{range8}} & ::= & \mbox{‘\texttt{A}’} ~~|~~ \ldots ~~|~~ \mbox{‘\texttt{Z}’} \\
+& {\mathtt{rangechar1}} & ::= & \mathtt{0x00} ~~|~~ \ldots ~~|~~ \mathtt{0x7F} ~~|~~ \mathtt{0xFF} \\
+& {\mathtt{rangechar2}} & ::= & \mathrm{U{+}00} ~~|~~ \ldots ~~|~~ \mathrm{U{+}7F} ~~|~~ \mathrm{U{+}FF} \\
+& {\mathtt{rangechar3}} & ::= & \mbox{‘\texttt{A}’} ~~|~~ \ldots ~~|~~ \mbox{‘\texttt{F}’} ~~|~~ \mbox{‘\texttt{X}’} \\
+& {\mathtt{rangechar4}} & ::= & \mathtt{0x00} ~~|~~ \ldots ~~|~~ \mathtt{0x7F} ~~|~~ \mathtt{0xFF} \\
+& {\mathtt{rangechar5}} & ::= & \mathrm{U{+}00} ~~|~~ \ldots ~~|~~ \mathrm{U{+}7F} ~~|~~ \mathrm{U{+}FF} \\
+& {\mathtt{rangechar6}} & ::= & \mbox{‘\texttt{A}’} ~~|~~ \ldots ~~|~~ \mbox{‘\texttt{F}’} ~~|~~ \mbox{‘\texttt{X}’} \\
+& {\mathtt{charrange1}} & ::= & \mathtt{0xFF} ~~|~~ \mathtt{0x00} ~~|~~ \ldots ~~|~~ \mathtt{0x7F} \\
+& {\mathtt{charrange2}} & ::= & \mathrm{U{+}FF} ~~|~~ \mathrm{U{+}00} ~~|~~ \ldots ~~|~~ \mathrm{U{+}7F} \\
+& {\mathtt{charrange3}} & ::= & \mbox{‘\texttt{X}’} ~~|~~ \mbox{‘\texttt{A}’} ~~|~~ \ldots ~~|~~ \mbox{‘\texttt{F}’} \\
+& {\mathtt{charrange4}} & ::= & \mathtt{0xFF} ~~|~~ \mathtt{0x00} ~~|~~ \ldots ~~|~~ \mathtt{0x7F} \\
+& {\mathtt{charrange5}} & ::= & \mathrm{U{+}FF} ~~|~~ \mathrm{U{+}00} ~~|~~ \ldots ~~|~~ \mathrm{U{+}7F} \\
+& {\mathtt{charrange6}} & ::= & \mbox{‘\texttt{X}’} ~~|~~ \mbox{‘\texttt{A}’} ~~|~~ \ldots ~~|~~ \mbox{‘\texttt{F}’} \\
+& {\mathtt{rangerange1}} & ::= & \mathtt{0x00} ~~|~~ \ldots ~~|~~ \mathtt{0x1F} ~~|~~ \mathtt{0x7F} ~~|~~ \ldots ~~|~~ \mathtt{0x8F} \\
+& {\mathtt{rangerange2}} & ::= & \mathrm{U{+}00} ~~|~~ \ldots ~~|~~ \mathrm{U{+}1F} ~~|~~ \mathrm{U{+}7F} ~~|~~ \ldots ~~|~~ \mathrm{U{+}8F} \\
+& {\mathtt{rangerange3}} & ::= & \mbox{‘\texttt{A}’} ~~|~~ \ldots ~~|~~ \mbox{‘\texttt{F}’} ~~|~~ \mbox{‘\texttt{a}’} ~~|~~ \ldots ~~|~~ \mbox{‘\texttt{f}’} \\
+& {\mathtt{rangerange4}} & ::= & \mathtt{0x00} ~~|~~ \ldots ~~|~~ \mathtt{0x1F} ~~|~~ \mathtt{0x7F} ~~|~~ \ldots ~~|~~ \mathtt{0x8F} \\
+& {\mathtt{rangerange5}} & ::= & \mathrm{U{+}00} ~~|~~ \ldots ~~|~~ \mathrm{U{+}1F} ~~|~~ \mathrm{U{+}7F} ~~|~~ \ldots ~~|~~ \mathrm{U{+}8F} \\
+& {\mathtt{rangerange6}} & ::= & \mbox{‘\texttt{A}’} ~~|~~ \ldots ~~|~~ \mbox{‘\texttt{F}’} ~~|~~ \mbox{‘\texttt{a}’} ~~|~~ \ldots ~~|~~ \mbox{‘\texttt{f}’} \\
+& {\mathtt{rangecharrange1}} & ::= & \mathtt{0x00} ~~|~~ \ldots ~~|~~ \mathtt{0x1F} ~~|~~ \mathtt{0x50} ~~|~~ \mathtt{0x7F} ~~|~~ \ldots ~~|~~ \mathtt{0x8F} \\
+& {\mathtt{rangecharrange2}} & ::= & \mathrm{U{+}00} ~~|~~ \ldots ~~|~~ \mathrm{U{+}1F} ~~|~~ \mbox{‘\texttt{A}’} ~~|~~ \mbox{‘\texttt{Z}’} ~~|~~ \ldots ~~|~~ \mathrm{U{+}8F} \\
+& {\mathtt{mixed}} & ::= & \mathrm{U{+}00} ~~|~~ \mathrm{U{+}01} ~~|~~ \mbox{‘\texttt{0}’} ~~|~~ \ldots ~~|~~ \mbox{‘\texttt{9}’} ~~|~~ \mbox{‘\texttt{A}’} ~~|~~ \ldots ~~|~~ \mbox{‘\texttt{Z}’} ~~|~~ \mbox{‘\texttt{\_}’} ~~|~~ \mathtt{0x7F} \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
+& {\mathtt{lchar1}} & ::= & \mathtt{0x00} & \quad\Rightarrow\quad{} & 0 \\
+& {\mathtt{lchar2}} & ::= & \mathrm{U{+}00} & \quad\Rightarrow\quad{} & 0 \\
+& {\mathtt{lchar3}} & ::= & \mbox{‘\texttt{X}’} & \quad\Rightarrow\quad{} & 0 \\
+& {\mathtt{lchar4}} & ::= & \mathtt{0x00} & \quad\Rightarrow\quad{} & 0 \\
+& {\mathtt{lchar5}} & ::= & \mathrm{U{+}00} & \quad\Rightarrow\quad{} & 0 \\
+& {\mathtt{lchar6}} & ::= & \mbox{‘\texttt{X}’} & \quad\Rightarrow\quad{} & 0 \\
+& {\mathtt{lialt1}} & ::= & \mathtt{0x00} ~~|~~ \mathtt{0x01} ~~|~~ \mathtt{0x02} & \quad\Rightarrow\quad{} & 0 \\
+& {\mathtt{lialt2}} & ::= & \mathrm{U{+}00} ~~|~~ \mathrm{U{+}01} ~~|~~ \mathrm{U{+}02} & \quad\Rightarrow\quad{} & 0 \\
+& {\mathtt{lialt3}} & ::= & \mbox{‘\texttt{X}’} ~~|~~ \mbox{‘\texttt{Y}’} ~~|~~ \mbox{‘\texttt{Z}’} & \quad\Rightarrow\quad{} & 0 \\
+& {\mathtt{lialt4}} & ::= & \mathrm{U{+}00} ~~|~~ \mbox{‘\texttt{A}’} ~~|~~ \mathrm{U{+}02} & \quad\Rightarrow\quad{} & 0 \\
+& {\mathtt{lialt5}} & ::= & \mbox{‘\texttt{X}’} ~~|~~ \mathrm{U{+}00} ~~|~~ \mbox{‘\texttt{Z}’} & \quad\Rightarrow\quad{} & 0 \\
+& {\mathtt{lialt6}} & ::= & \mathtt{0x00} ~~|~~ \mathtt{0x01} ~~|~~ \mathtt{0x02} & \quad\Rightarrow\quad{} & 0 \\
+& {\mathtt{lialt7}} & ::= & \mathrm{U{+}00} ~~|~~ \mathrm{U{+}01} ~~|~~ \mathrm{U{+}02} & \quad\Rightarrow\quad{} & 0 \\
+& {\mathtt{lialt8}} & ::= & \mbox{‘\texttt{X}’} ~~|~~ \mbox{‘\texttt{Y}’} ~~|~~ \mbox{‘\texttt{Z}’} & \quad\Rightarrow\quad{} & 0 \\
+& {\mathtt{lirange1}} & ::= & \mathtt{0x00} ~~|~~ \ldots ~~|~~ \mathtt{0xFF} & \quad\Rightarrow\quad{} & 0 \\
+& {\mathtt{lirange2}} & ::= & \mathrm{U{+}00} ~~|~~ \ldots ~~|~~ \mathrm{U{+}FF} & \quad\Rightarrow\quad{} & 0 \\
+& {\mathtt{lirange3}} & ::= & \mbox{‘\texttt{A}’} ~~|~~ \ldots ~~|~~ \mbox{‘\texttt{Z}’} & \quad\Rightarrow\quad{} & 0 \\
+& {\mathtt{lirange4}} & ::= & \mathrm{U{+}00} ~~|~~ \ldots ~~|~~ \mbox{‘\texttt{A}’} & \quad\Rightarrow\quad{} & 0 \\
+& {\mathtt{lirange5}} & ::= & \mbox{‘\texttt{A}’} ~~|~~ \ldots ~~|~~ \mathrm{U{+}FF} & \quad\Rightarrow\quad{} & 0 \\
+& {\mathtt{lirange6}} & ::= & \mathtt{0x00} ~~|~~ \ldots ~~|~~ \mathtt{0xFF} & \quad\Rightarrow\quad{} & 0 \\
+& {\mathtt{lirange7}} & ::= & \mathrm{U{+}00} ~~|~~ \ldots ~~|~~ \mathrm{U{+}FF} & \quad\Rightarrow\quad{} & 0 \\
+& {\mathtt{lirange8}} & ::= & \mbox{‘\texttt{A}’} ~~|~~ \ldots ~~|~~ \mbox{‘\texttt{Z}’} & \quad\Rightarrow\quad{} & 0 \\
+& {\mathtt{lalt1}} & ::= & \mathtt{0x00} ~\Rightarrow~ 0 ~~|~~ \mathtt{0x01} ~\Rightarrow~ 1 ~~|~~ \mathtt{0x02} ~\Rightarrow~ 2 \\
+& {\mathtt{lalt2}} & ::= & \mathrm{U{+}00} ~\Rightarrow~ 0 ~~|~~ \mathrm{U{+}01} ~\Rightarrow~ 1 ~~|~~ \mathrm{U{+}02} ~\Rightarrow~ 2 \\
+& {\mathtt{lalt3}} & ::= & \mbox{‘\texttt{X}’} ~\Rightarrow~ 0 ~~|~~ \mbox{‘\texttt{Y}’} ~\Rightarrow~ 1 ~~|~~ \mbox{‘\texttt{Z}’} ~\Rightarrow~ 2 \\
+& {\mathtt{lalt4}} & ::= & \mathrm{U{+}00} ~\Rightarrow~ 0 ~~|~~ \mbox{‘\texttt{A}’} ~\Rightarrow~ 1 ~~|~~ \mathrm{U{+}02} ~\Rightarrow~ 2 \\
+& {\mathtt{lalt5}} & ::= & \mbox{‘\texttt{X}’} ~\Rightarrow~ 0 ~~|~~ \mathrm{U{+}00} ~\Rightarrow~ 1 ~~|~~ \mbox{‘\texttt{Z}’} ~\Rightarrow~ 2 \\
+& {\mathtt{lalt6}} & ::= & \mathtt{0x00} ~\Rightarrow~ 0 ~~|~~ \mathtt{0x01} ~\Rightarrow~ 1 ~~|~~ \mathtt{0x02} ~\Rightarrow~ 2 \\
+& {\mathtt{lalt7}} & ::= & \mathrm{U{+}00} ~\Rightarrow~ 0 ~~|~~ \mathrm{U{+}01} ~\Rightarrow~ 1 ~~|~~ \mathrm{U{+}02} ~\Rightarrow~ 2 \\
+& {\mathtt{lalt8}} & ::= & \mbox{‘\texttt{X}’} ~\Rightarrow~ 0 ~~|~~ \mbox{‘\texttt{Y}’} ~\Rightarrow~ 1 ~~|~~ \mbox{‘\texttt{Z}’} ~\Rightarrow~ 2 \\
+& {\mathtt{lrange1}} & ::= & \mathtt{0x00} ~\Rightarrow~ 0 ~~|~~ \ldots ~~|~~ \mathtt{0xFF} ~\Rightarrow~ 255 \\
+& {\mathtt{lrange2}} & ::= & \mathrm{U{+}00} ~\Rightarrow~ 0 ~~|~~ \ldots ~~|~~ \mathrm{U{+}FF} ~\Rightarrow~ 255 \\
+& {\mathtt{lrange3}} & ::= & \mbox{‘\texttt{A}’} ~\Rightarrow~ 1 ~~|~~ \ldots ~~|~~ \mbox{‘\texttt{Z}’} ~\Rightarrow~ 26 \\
+& {\mathtt{lrange4}} & ::= & \mathrm{U{+}00} ~\Rightarrow~ 0 ~~|~~ \ldots ~~|~~ \mbox{‘\texttt{A}’} ~\Rightarrow~ 65 \\
+& {\mathtt{lrange5}} & ::= & \mbox{‘\texttt{A}’} ~\Rightarrow~ 65 ~~|~~ \ldots ~~|~~ \mathrm{U{+}FF} ~\Rightarrow~ 255 \\
+& {\mathtt{lrange6}} & ::= & \mathtt{0x00} ~\Rightarrow~ 0 ~~|~~ \ldots ~~|~~ \mathtt{0xFF} ~\Rightarrow~ 255 \\
+& {\mathtt{lrange7}} & ::= & \mathrm{U{+}00} ~\Rightarrow~ 0 ~~|~~ \ldots ~~|~~ \mathrm{U{+}FF} ~\Rightarrow~ 255 \\
+& {\mathtt{lrange8}} & ::= & \mbox{‘\texttt{A}’} ~\Rightarrow~ 1 ~~|~~ \ldots ~~|~~ \mbox{‘\texttt{Z}’} ~\Rightarrow~ 26 \\
+& {\mathtt{lrangechar1}} & ::= & \mathtt{0x00} ~\Rightarrow~ 0 ~~|~~ \ldots ~~|~~ \mathtt{0x7F} ~\Rightarrow~ 127 ~~|~~ \mathtt{0xFF} ~\Rightarrow~ 255 \\
+& {\mathtt{lrangechar2}} & ::= & \mathrm{U{+}00} ~\Rightarrow~ 0 ~~|~~ \ldots ~~|~~ \mathrm{U{+}7F} ~\Rightarrow~ 127 ~~|~~ \mathrm{U{+}FF} ~\Rightarrow~ 255 \\
+& {\mathtt{lrangechar3}} & ::= & \mbox{‘\texttt{A}’} ~\Rightarrow~ 0 ~~|~~ \ldots ~~|~~ \mbox{‘\texttt{F}’} ~\Rightarrow~ 5 ~~|~~ \mbox{‘\texttt{X}’} ~\Rightarrow~ 10 \\
+& {\mathtt{lrangechar4}} & ::= & \mathtt{0x00} ~\Rightarrow~ 0 ~~|~~ \ldots ~~|~~ \mathtt{0x7F} ~\Rightarrow~ 127 ~~|~~ \mathtt{0xFF} ~\Rightarrow~ 255 \\
+& {\mathtt{lrangechar5}} & ::= & \mathrm{U{+}00} ~\Rightarrow~ 0 ~~|~~ \ldots ~~|~~ \mathrm{U{+}7F} ~\Rightarrow~ 127 ~~|~~ \mathrm{U{+}FF} ~\Rightarrow~ 255 \\
+& {\mathtt{lrangechar6}} & ::= & \mbox{‘\texttt{A}’} ~\Rightarrow~ 0 ~~|~~ \ldots ~~|~~ \mbox{‘\texttt{F}’} ~\Rightarrow~ 5 ~~|~~ \mbox{‘\texttt{X}’} ~\Rightarrow~ 10 \\
+& {\mathtt{lcharrange1}} & ::= & \mathtt{0xFF} ~\Rightarrow~ 255 ~~|~~ \mathtt{0x00} ~\Rightarrow~ 0 ~~|~~ \ldots ~~|~~ \mathtt{0x7F} ~\Rightarrow~ 127 \\
+& {\mathtt{lcharrange2}} & ::= & \mathrm{U{+}FF} ~\Rightarrow~ 255 ~~|~~ \mathrm{U{+}00} ~\Rightarrow~ 0 ~~|~~ \ldots ~~|~~ \mathrm{U{+}7F} ~\Rightarrow~ 127 \\
+& {\mathtt{lcharrange3}} & ::= & \mbox{‘\texttt{X}’} ~\Rightarrow~ 10 ~~|~~ \mbox{‘\texttt{A}’} ~\Rightarrow~ 0 ~~|~~ \ldots ~~|~~ \mbox{‘\texttt{F}’} ~\Rightarrow~ 5 \\
+& {\mathtt{lcharrange4}} & ::= & \mathtt{0xFF} ~\Rightarrow~ 255 ~~|~~ \mathtt{0x00} ~\Rightarrow~ 0 ~~|~~ \ldots ~~|~~ \mathtt{0x7F} ~\Rightarrow~ 127 \\
+& {\mathtt{lcharrange5}} & ::= & \mathrm{U{+}FF} ~\Rightarrow~ 255 ~~|~~ \mathrm{U{+}00} ~\Rightarrow~ 0 ~~|~~ \ldots ~~|~~ \mathrm{U{+}7F} ~\Rightarrow~ 127 \\
+& {\mathtt{lcharrange6}} & ::= & \mbox{‘\texttt{X}’} ~\Rightarrow~ 10 ~~|~~ \mbox{‘\texttt{A}’} ~\Rightarrow~ 0 ~~|~~ \ldots ~~|~~ \mbox{‘\texttt{F}’} ~\Rightarrow~ 5 \\
+& {\mathtt{lrangerange1}} & ::= & \mathtt{0x00} ~\Rightarrow~ 0 ~~|~~ \ldots ~~|~~ \mathtt{0x1F} ~\Rightarrow~ 31 ~~|~~ \mathtt{0x80} ~\Rightarrow~ 128 ~~|~~ \ldots ~~|~~ \mathtt{0x8F} ~\Rightarrow~ 143 \\
+& {\mathtt{lrangerange2}} & ::= & \mathrm{U{+}00} ~\Rightarrow~ 0 ~~|~~ \ldots ~~|~~ \mathrm{U{+}1F} ~\Rightarrow~ 31 ~~|~~ \mathrm{U{+}80} ~\Rightarrow~ 128 ~~|~~ \ldots ~~|~~ \mathrm{U{+}8F} ~\Rightarrow~ 143 \\
+& {\mathtt{lrangerange3}} & ::= & \mbox{‘\texttt{A}’} ~\Rightarrow~ 0 ~~|~~ \ldots ~~|~~ \mbox{‘\texttt{F}’} ~\Rightarrow~ 5 ~~|~~ \mbox{‘\texttt{a}’} ~\Rightarrow~ 0 ~~|~~ \ldots ~~|~~ \mbox{‘\texttt{f}’} ~\Rightarrow~ 5 \\
+& {\mathtt{lrangerange4}} & ::= & \mathtt{0x00} ~\Rightarrow~ 0 ~~|~~ \ldots ~~|~~ \mathtt{0x1F} ~\Rightarrow~ 31 ~~|~~ \mathtt{0x80} ~\Rightarrow~ 128 ~~|~~ \ldots ~~|~~ \mathtt{0x8F} ~\Rightarrow~ 143 \\
+& {\mathtt{lrangerange5}} & ::= & \mathrm{U{+}00} ~\Rightarrow~ 0 ~~|~~ \ldots ~~|~~ \mathrm{U{+}1F} ~\Rightarrow~ 31 ~~|~~ \mathrm{U{+}80} ~\Rightarrow~ 128 ~~|~~ \ldots ~~|~~ \mathrm{U{+}8F} ~\Rightarrow~ 143 \\
+& {\mathtt{lrangerange6}} & ::= & \mbox{‘\texttt{A}’} ~\Rightarrow~ 0 ~~|~~ \ldots ~~|~~ \mbox{‘\texttt{F}’} ~\Rightarrow~ 5 ~~|~~ \mbox{‘\texttt{a}’} ~\Rightarrow~ 0 ~~|~~ \ldots ~~|~~ \mbox{‘\texttt{f}’} ~\Rightarrow~ 5 \\
+& {\mathtt{lrangecharrange1}} & ::= & \mathtt{0x00} ~\Rightarrow~ 0 ~~|~~ \ldots ~~|~~ \mathtt{0x1F} ~\Rightarrow~ 31 ~~|~~ \mathtt{0x50} ~\Rightarrow~ 0 ~~|~~ \mathtt{0x7F} ~\Rightarrow~ 127 ~~|~~ \ldots ~~|~~ \mathtt{0x8F} ~\Rightarrow~ 143 \\
+& {\mathtt{lrangecharrange2}} & ::= & \mathrm{U{+}00} ~\Rightarrow~ 0 ~~|~~ \ldots ~~|~~ \mathrm{U{+}1F} ~\Rightarrow~ 31 ~~|~~ \mbox{‘\texttt{A}’} ~\Rightarrow~ 0 ~~|~~ \mbox{‘\texttt{Z}’} ~\Rightarrow~ 90 ~~|~~ \ldots ~~|~~ \mathrm{U{+}8F} ~\Rightarrow~ 143 \\
+& {\mathtt{lmixed1}} & ::= & \mathrm{U{+}00} ~\Rightarrow~ 0 ~~|~~ \mathrm{U{+}01} ~\Rightarrow~ 1 ~~|~~ \mbox{‘\texttt{0}’} ~\Rightarrow~ 0 ~~|~~ \ldots ~~|~~ \mbox{‘\texttt{9}’} ~\Rightarrow~ 9 ~~|~~ \mbox{‘\texttt{A}’} ~\Rightarrow~ 10 ~~|~~ \ldots ~~|~~ \mbox{‘\texttt{Z}’} ~\Rightarrow~ 35 ~~|~~ \mbox{‘\texttt{\_}’} ~\Rightarrow~ 0 ~~|~~ \mathtt{0x7F} ~\Rightarrow~ 0 \\
+& {\mathtt{lmixed2}} & ::= & \mathrm{U{+}00} ~~|~~ \mathrm{U{+}01} ~\Rightarrow~ 0 ~~|~~ \mbox{‘\texttt{0}’} ~\Rightarrow~ 0 ~~|~~ \ldots ~~|~~ \mbox{‘\texttt{9}’} ~\Rightarrow~ 9 ~~|~~ \mbox{‘\texttt{A}’} ~\Rightarrow~ 10 ~~|~~ \ldots ~~|~~ \mbox{‘\texttt{Z}’} ~\Rightarrow~ 35 ~~|~~ \mbox{‘\texttt{\_}’} ~~|~~ \mbox{‘\texttt{.}’} ~\Rightarrow~ 0 ~~|~~ \mathtt{0x7F} ~\Rightarrow~ 0 \\
+\end{array}
+$$
+
 ```
 
 
@@ -2133,8 +2600,8 @@ syntax instr =
   | `I31.GET`(sx : sx)
   | `STRUCT.NEW`(typeidx : typeidx)
   | `STRUCT.NEW_DEFAULT`(typeidx : typeidx)
-  | `STRUCT.GET`(`sx?` : sx?, typeidx : typeidx, u32 : u32)
-  | `STRUCT.SET`(typeidx : typeidx, u32 : u32)
+  | `STRUCT.GET`(`sx?` : sx?, typeidx : typeidx, fieldidx : fieldidx)
+  | `STRUCT.SET`(typeidx : typeidx, fieldidx : fieldidx)
   | `ARRAY.NEW`(typeidx : typeidx)
   | `ARRAY.NEW_DEFAULT`(typeidx : typeidx)
   | `ARRAY.NEW_FIXED`(typeidx : typeidx, u32 : u32)
@@ -3606,17 +4073,17 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
     -- (Defaultable: `|-%DEFAULTABLE`($unpack(zt)))*{zt <- `zt*`}
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec:258.1-262.41
-  rule `struct.get`{C : context, `sx?` : sx?, x : idx, i : u32, zt : storagetype, `ft*` : fieldtype*, `mut?` : mut?}:
+  rule `struct.get`{C : context, `sx?` : sx?, x : idx, i : fieldidx, zt : storagetype, `ft*` : fieldtype*, `mut?` : mut?}:
     `%|-%:%`(C, `STRUCT.GET`_instr(sx?{sx <- `sx?`}, x, i), `%->_%%`_instrtype(`%`_resulttype([REF_valtype(?(NULL_null), _IDX_heaptype(x))]), [], `%`_resulttype([$unpack(zt)])))
     -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], STRUCT_comptype(`%`_list(ft*{ft <- `ft*`})))
-    -- if (ft*{ft <- `ft*`}[i!`%`_u32.0] = `%%`_fieldtype(mut?{mut <- `mut?`}, zt))
+    -- if (ft*{ft <- `ft*`}[i!`%`_fieldidx.0] = `%%`_fieldtype(mut?{mut <- `mut?`}, zt))
     -- if ((sx?{sx <- `sx?`} =/= ?()) <=> $is_packtype(zt))
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec:264.1-267.24
-  rule `struct.set`{C : context, x : idx, i : u32, zt : storagetype, `ft*` : fieldtype*}:
+  rule `struct.set`{C : context, x : idx, i : fieldidx, zt : storagetype, `ft*` : fieldtype*}:
     `%|-%:%`(C, `STRUCT.SET`_instr(x, i), `%->_%%`_instrtype(`%`_resulttype([REF_valtype(?(NULL_null), _IDX_heaptype(x)) $unpack(zt)]), [], `%`_resulttype([])))
     -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], STRUCT_comptype(`%`_list(ft*{ft <- `ft*`})))
-    -- if (ft*{ft <- `ft*`}[i!`%`_u32.0] = `%%`_fieldtype(?(MUT_mut), zt))
+    -- if (ft*{ft <- `ft*`}[i!`%`_fieldidx.0] = `%%`_fieldtype(?(MUT_mut), zt))
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec:272.1-274.43
   rule `array.new`{C : context, x : idx, zt : storagetype, `mut?` : mut?}:
@@ -6769,12 +7236,12 @@ relation Step_read: `%~>%`(config, instr*)
     -- (if ($default_($unpack(zt)) = ?(val)))*{val <- `val*`, zt <- `zt*`}
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
-  rule `struct.get-null`{z : state, `sx?` : sx?, x : idx, i : u32}:
+  rule `struct.get-null`{z : state, `sx?` : sx?, x : idx, i : fieldidx}:
     `%~>%`(`%;%`_config(z, [`REF.NULL_ADDR`_instr `STRUCT.GET`_instr(sx?{sx <- `sx?`}, x, i)]), [TRAP_instr])
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
-  rule `struct.get-struct`{z : state, a : addr, `sx?` : sx?, x : idx, i : u32, `zt*` : storagetype*, `mut?*` : mut?*}:
-    `%~>%`(`%;%`_config(z, [`REF.STRUCT_ADDR`_instr(a) `STRUCT.GET`_instr(sx?{sx <- `sx?`}, x, i)]), [($unpackfield_(zt*{zt <- `zt*`}[i!`%`_u32.0], sx?{sx <- `sx?`}, $structinst(z)[a].FIELDS_structinst[i!`%`_u32.0]) : val <: instr)])
+  rule `struct.get-struct`{z : state, a : addr, `sx?` : sx?, x : idx, i : fieldidx, `zt*` : storagetype*, `mut?*` : mut?*}:
+    `%~>%`(`%;%`_config(z, [`REF.STRUCT_ADDR`_instr(a) `STRUCT.GET`_instr(sx?{sx <- `sx?`}, x, i)]), [($unpackfield_(zt*{zt <- `zt*`}[i!`%`_fieldidx.0], sx?{sx <- `sx?`}, $structinst(z)[a].FIELDS_structinst[i!`%`_fieldidx.0]) : val <: instr)])
     -- Expand: `%~~%`($type(z, x), STRUCT_comptype(`%`_list(`%%`_fieldtype(mut?{mut <- `mut?`}, zt)*{`mut?` <- `mut?*`, zt <- `zt*`})))
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
@@ -7076,12 +7543,12 @@ relation Step: `%~>%`(config, config)
     -- if (si = {TYPE $type(z, x), FIELDS $packfield_(zt, val)^n{val <- `val*`, zt <- `zt*`}})
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec:721.1-722.55
-  rule `struct.set-null`{z : state, val : val, x : idx, i : u32}:
+  rule `struct.set-null`{z : state, val : val, x : idx, i : fieldidx}:
     `%~>%`(`%;%`_config(z, [`REF.NULL_ADDR`_instr (val : val <: instr) `STRUCT.SET`_instr(x, i)]), `%;%`_config(z, [TRAP_instr]))
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec:724.1-727.46
-  rule `struct.set-struct`{z : state, a : addr, val : val, x : idx, i : u32, `zt*` : storagetype*, `mut?*` : mut?*}:
-    `%~>%`(`%;%`_config(z, [`REF.STRUCT_ADDR`_instr(a) (val : val <: instr) `STRUCT.SET`_instr(x, i)]), `%;%`_config($with_struct(z, a, i!`%`_u32.0, $packfield_(zt*{zt <- `zt*`}[i!`%`_u32.0], val)), []))
+  rule `struct.set-struct`{z : state, a : addr, val : val, x : idx, i : fieldidx, `zt*` : storagetype*, `mut?*` : mut?*}:
+    `%~>%`(`%;%`_config(z, [`REF.STRUCT_ADDR`_instr(a) (val : val <: instr) `STRUCT.SET`_instr(x, i)]), `%;%`_config($with_struct(z, a, i!`%`_fieldidx.0, $packfield_(zt*{zt <- `zt*`}[i!`%`_fieldidx.0], val)), []))
     -- Expand: `%~~%`($type(z, x), STRUCT_comptype(`%`_list(`%%`_fieldtype(mut?{mut <- `mut?`}, zt)*{`mut?` <- `mut?*`, zt <- `zt*`})))
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec:740.1-745.65
@@ -8311,6 +8778,11 @@ grammar Blocalidx : localidx
   prod{x : idx} x:Bu32 => x
 
 ;; ../../../../specification/wasm-latest/5.1-binary.values.spectec
+grammar Bfieldidx : fieldidx
+  ;; ../../../../specification/wasm-latest/5.1-binary.values.spectec
+  prod{x : idx} x:Bu32 => x
+
+;; ../../../../specification/wasm-latest/5.1-binary.values.spectec
 grammar Blabelidx : labelidx
   ;; ../../../../specification/wasm-latest/5.1-binary.values.spectec
   prod{l : labelidx} l:Bu32 => l
@@ -8706,14 +9178,14 @@ grammar Binstr : instr
   prod{x : idx} {{0xFB} {`%`_u32(0):Bu32} {x:Btypeidx}} => `STRUCT.NEW`_instr(x)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:153.5-153.51
   prod{x : idx} {{0xFB} {`%`_u32(1):Bu32} {x:Btypeidx}} => `STRUCT.NEW_DEFAULT`_instr(x)
-  ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:154.5-154.52
-  prod{x : idx, i : u32} {{0xFB} {`%`_u32(2):Bu32} {x:Btypeidx} {i:Bu32}} => `STRUCT.GET`_instr(?(), x, i)
-  ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:155.5-155.54
-  prod{x : idx, i : u32} {{0xFB} {`%`_u32(3):Bu32} {x:Btypeidx} {i:Bu32}} => `STRUCT.GET`_instr(?(S_sx), x, i)
-  ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:156.5-156.54
-  prod{x : idx, i : u32} {{0xFB} {`%`_u32(4):Bu32} {x:Btypeidx} {i:Bu32}} => `STRUCT.GET`_instr(?(U_sx), x, i)
-  ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:157.5-157.52
-  prod{x : idx, i : u32} {{0xFB} {`%`_u32(5):Bu32} {x:Btypeidx} {i:Bu32}} => `STRUCT.SET`_instr(x, i)
+  ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:154.5-154.57
+  prod{x : idx, i : fieldidx} {{0xFB} {`%`_u32(2):Bu32} {x:Btypeidx} {i:Bfieldidx}} => `STRUCT.GET`_instr(?(), x, i)
+  ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:155.5-155.59
+  prod{x : idx, i : fieldidx} {{0xFB} {`%`_u32(3):Bu32} {x:Btypeidx} {i:Bfieldidx}} => `STRUCT.GET`_instr(?(S_sx), x, i)
+  ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:156.5-156.59
+  prod{x : idx, i : fieldidx} {{0xFB} {`%`_u32(4):Bu32} {x:Btypeidx} {i:Bfieldidx}} => `STRUCT.GET`_instr(?(U_sx), x, i)
+  ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:157.5-157.57
+  prod{x : idx, i : fieldidx} {{0xFB} {`%`_u32(5):Bu32} {x:Btypeidx} {i:Bfieldidx}} => `STRUCT.SET`_instr(x, i)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:161.5-161.42
   prod{x : idx} {{0xFB} {`%`_u32(6):Bu32} {x:Btypeidx}} => `ARRAY.NEW`_instr(x)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:162.5-162.50

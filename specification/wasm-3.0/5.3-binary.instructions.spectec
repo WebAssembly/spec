@@ -151,10 +151,10 @@ grammar Binstr/ref : instr = ...
 grammar Binstr/struct : instr = ...
   | 0xFB 0:Bu32 x:Btypeidx => STRUCT.NEW x
   | 0xFB 1:Bu32 x:Btypeidx => STRUCT.NEW_DEFAULT x
-  | 0xFB 2:Bu32 x:Btypeidx i:Bu32 => STRUCT.GET x i
-  | 0xFB 3:Bu32 x:Btypeidx i:Bu32 => STRUCT.GET S x i
-  | 0xFB 4:Bu32 x:Btypeidx i:Bu32 => STRUCT.GET U x i
-  | 0xFB 5:Bu32 x:Btypeidx i:Bu32 => STRUCT.SET x i
+  | 0xFB 2:Bu32 x:Btypeidx i:Bfieldidx => STRUCT.GET x i
+  | 0xFB 3:Bu32 x:Btypeidx i:Bfieldidx => STRUCT.GET S x i
+  | 0xFB 4:Bu32 x:Btypeidx i:Bfieldidx => STRUCT.GET U x i
+  | 0xFB 5:Bu32 x:Btypeidx i:Bfieldidx => STRUCT.SET x i
   | ...
 
 grammar Binstr/array : instr = ...

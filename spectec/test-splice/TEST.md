@@ -538,6 +538,7 @@ warning: grammar `Bexterntype` was never spliced
 warning: grammar `Bf32` was never spliced
 warning: grammar `Bf64` was never spliced
 warning: grammar `BfN` was never spliced
+warning: grammar `Bfieldidx` was never spliced
 warning: grammar `Bfieldtype` was never spliced
 warning: grammar `Bfunc` was never spliced
 warning: grammar `Bfuncidx` was never spliced

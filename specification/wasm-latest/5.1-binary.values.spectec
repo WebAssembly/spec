@@ -78,6 +78,7 @@ grammar Bfuncidx : funcidx = x:Bu32 => x
 grammar Bdataidx : dataidx = x:Bu32 => x
 grammar Belemidx : elemidx = x:Bu32 => x
 grammar Blocalidx : localidx = x:Bu32 => x
+grammar Bfieldidx : fieldidx = x:Bu32 => x
 grammar Blabelidx : labelidx = l:Bu32 => l
 
 grammar Bexternidx : externidx =
