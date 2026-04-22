@@ -251,7 +251,7 @@ the <a class="reference internal" href="../valid/conventions.html#context"><span
 <blockquote>
 <div><ul class="simple">
 <li><p>Let <span class="math notranslate nohighlight">\({C'}\)</span> be the same context as <span class="math notranslate nohighlight">\(C\)</span>, but with the sub type sequence <span class="math notranslate nohighlight">\({{\href{../syntax/types.html#syntax-subtype}{\mathit{subtype}}}^{n}}\)</span> prepended to the field <span class="math notranslate nohighlight">\(\href{../appendix/properties.html#context-ext}{\mathsf{recs}}\)</span>.</p></li>
-<li><p>Under the context <span class="math notranslate nohighlight">\({C'}\)</span>, the <a class="reference internal" href="../syntax/types.html#syntax-rectype"><span class="std std-ref">recursive type</span></a> <span class="math notranslate nohighlight">\({\href{../syntax/types.html#syntax-rectype}{\mathit{rectype}}}\)</span> is <a class="reference internal" href="../valid/types.html#valid-rectype"><span class="std std-ref">valid</span></a> for <span class="math notranslate nohighlight">\(({\href{../valid/types.html#valid-subtype}{\mathsf{ok}}}{(x, 0)})\)</span>.</p></li>
+<li><p>Under the context <span class="math notranslate nohighlight">\({C'}\)</span>, the <a class="reference internal" href="../syntax/types.html#syntax-rectype"><span class="std std-ref">recursive type</span></a> <span class="math notranslate nohighlight">\({\href{../syntax/types.html#syntax-rectype}{\mathit{rectype}}}\)</span> is <a class="reference internal" href="../valid/types.html#valid-rectype"><span class="std std-ref">valid</span></a> for <span class="math notranslate nohighlight">\(({\href{../valid/types.html#valid-subtype}{\mathsf{ok}}}{0})\)</span>.</p></li>
 <li><p>The <a class="reference internal" href="../syntax/types.html#syntax-rectype"><span class="std std-ref">recursive type</span></a> <span class="math notranslate nohighlight">\({\href{../syntax/types.html#syntax-rectype}{\mathit{rectype}}}\)</span> is of the form <span class="math notranslate nohighlight">\((\href{../syntax/types.html#syntax-rectype}{\mathsf{rec}}~{{\href{../syntax/types.html#syntax-subtype}{\mathit{subtype}}}^{n}})\)</span>.</p></li>
 <li><p><span class="math notranslate nohighlight">\(i\)</span> is less than <span class="math notranslate nohighlight">\(n\)</span>.</p></li>
 </ul>
@@ -259,7 +259,7 @@ the <a class="reference internal" href="../valid/conventions.html#context"><span
 <div class="math notranslate nohighlight">
 \[\begin{array}{&#64;{}c&#64;{}}\displaystyle
 \frac{
-C, \href{../appendix/properties.html#context-ext}{\mathsf{recs}}~{{\href{../syntax/types.html#syntax-subtype}{\mathit{subtype}}}^{n}} \href{../valid/types.html#valid-rectype}{\vdash} {\href{../syntax/types.html#syntax-rectype}{\mathit{rectype}}} : {\href{../valid/types.html#valid-subtype}{\mathsf{ok}}}{(x, 0)}
+C, \href{../appendix/properties.html#context-ext}{\mathsf{recs}}~{{\href{../syntax/types.html#syntax-subtype}{\mathit{subtype}}}^{n}} \href{../valid/types.html#valid-rectype}{\vdash} {\href{../syntax/types.html#syntax-rectype}{\mathit{rectype}}} : {\href{../valid/types.html#valid-subtype}{\mathsf{ok}}}{(0)}
  \qquad
 {\href{../syntax/types.html#syntax-rectype}{\mathit{rectype}}} = \href{../syntax/types.html#syntax-rectype}{\mathsf{rec}}~{{\href{../syntax/types.html#syntax-subtype}{\mathit{subtype}}}^{n}}
  \qquad
