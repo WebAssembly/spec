@@ -923,9 +923,8 @@ let translate_rulepr id exp =
   | name, el
     when String.ends_with ~suffix: "_const" name ->
     [ assertI (callE (name, el |> List.map expA) ~at ~note:boolT) ~at:at]
-  | _ ->
-    print_yet exp.at "translate_rulepr" ("`" ^ Il.Print.string_of_exp exp ^ "`");
-    [ yetI ("TODO: translate_rulepr " ^ id.it) ~at ]
+  | name, el ->
+    [ ifI (relE (name, el) ~at ~note:boolT, [], []) ~at ]
 
 let rec translate_iterpr pr (iter, xes) =
   let instrs = translate_prem pr in

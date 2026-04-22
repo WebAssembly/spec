@@ -46,7 +46,7 @@ let walk_expr (walker: unit_walker) (expr: expr) : unit =
     walker.walk_expr walker e1; walker.walk_expr walker e2
   | CallE (_, al) | InvCallE (_, _, al) ->
     List.iter (walker.walk_arg walker) al
-  | TupE el | ListE el | CaseE (_, el) ->
+  | TupE el | ListE el | CaseE (_, el) | RelE (_, el) ->
     List.iter (walker.walk_expr walker) el
   | StrE r -> List.iter (fun (_, e) -> walker.walk_expr walker !e) r
   | AccE (e, p) -> walker.walk_expr walker e; walk_path walker p
@@ -163,6 +163,7 @@ let walk_expr (walker: walker) (expr: expr) : expr =
     | TopValueE e_opt -> TopValueE (Option.map walk_expr e_opt)
     | TopValuesE e -> TopValuesE (walk_expr e)
     | MatchE (e1, e2) -> MatchE (walk_expr e1, walk_expr e2)
+    | RelE (id, el) -> RelE (id, List.map walk_expr el)
   in
   { expr with it }
 

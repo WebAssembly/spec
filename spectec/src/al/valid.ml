@@ -632,6 +632,8 @@ and valid_expr env (expr: expr) : unit =
     valid_expr env expr1;
     check_bool source expr.note;
     check_num source expr1.note
+  | RelE (_, exprs) ->
+    List.iter (valid_expr env) exprs
   | SubE _ | YetE _ -> error_valid "invalid expression" source ""
   )
 

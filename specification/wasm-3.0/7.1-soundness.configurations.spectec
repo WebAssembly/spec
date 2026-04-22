@@ -1,8 +1,11 @@
 ;; Administrative instructions
 
 relation Instr_ok2: store; context |- instr : instrtype
+  hint(prose "%3 is valid with %4")
 relation Instrs_ok2: store; context |- instr* : instrtype
+  hint(prose "%3 is valid with %4")
 relation Expr_ok2: store; context |- expr : resulttype
+  hint(prose "%3 is valid with %4")
 
 rule Instr_ok2/plain:
   s; C |- instr : t_1* ->_(x*) t_2*
@@ -203,7 +206,9 @@ rule Store_ok:
 
 
 relation ImmReachable: fieldval >>_store fieldval
+  hint(prose "%3 is immediately reachable from %1")
 relation NotImmReachable: `~ fieldval >>_store fieldval
+  hint(prose "%3 is not immediately reachable from %1")
 
 ;; HACK: emulate premise negation
 ;; TODO(rossberg): directly support negation in IL

@@ -34,9 +34,17 @@ let flatten_rec def =
   | Ast.RecD defs -> defs
   | _ -> [ def ]
 
+(* List of relation names that appear in the prose of the validation rules *)
+let validation_helper_relations = [
+  "Expand";
+  "Expand_use";
+  "ImmReachable";
+  "NotImmReachable"
+]
 let is_validation_helper_relation def =
   match def.it with
-  | Ast.RelD (id, _, _, _, _) -> id.it = "Expand" || id.it = "Expand_use"
+  | Ast.RelD (id, _, _, _, _) ->
+    List.mem id.it validation_helper_relations
   | _ -> false
 (* NOTE: Assume validation relation is `|-` *)
 let is_validation_relation def =

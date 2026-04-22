@@ -78,6 +78,7 @@ let hasTypeE ?(at = no) ~note (e, ty) = HasTypeE (e, ty) |> mk_expr at note
 let topValueE ?(at = no) ~note e_opt = TopValueE e_opt |> mk_expr at note
 let topValuesE ?(at = no) ~note e = TopValuesE e |> mk_expr at note
 let subE ?(at = no) ~note (id, ty) = SubE (id, ty) |> mk_expr at note
+let relE ?(at = no) ~note (id, el) = RelE (id, el) |> mk_expr at note
 let yetE ?(at = no) ~note s = YetE s |> mk_expr at note
 
 let expA ?(at = no) e = ExpA e $ at

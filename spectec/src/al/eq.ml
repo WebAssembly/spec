@@ -50,6 +50,7 @@ let rec eq_expr e1 e2 =
   | TopValueE eo1, TopValueE eo2 -> eq_expr_opt eo1 eo2
   | TopValuesE e1, TopValuesE e2 -> eq_expr e1 e2
   | SubE (i1, t1), SubE (i2, t2) -> i1 = i2 && Il.Eq.eq_typ t1 t2
+  | RelE (id1, el1), RelE (id2, el2) -> id1 = id2 && eq_exprs el1 el2
   | YetE s1, YetE s2 -> s1 = s2
   | _ -> false
 

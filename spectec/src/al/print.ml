@@ -186,6 +186,7 @@ and string_of_expr expr =
     sprintf "%s <: %s"
       (string_of_expr e1)
       (string_of_expr e2)
+  | RelE (id, es) -> sprintf "rel(%s, [%s])" id (string_of_exprs ", " es)
   | YetE s -> sprintf "YetE (%s)" s
 
 and string_of_exprs sep = string_of_list string_of_expr sep
@@ -504,6 +505,10 @@ and structured_string_of_expr expr =
     Printf.sprintf "Matches (%s, %s)"
       (structured_string_of_expr e1)
       (structured_string_of_expr e2)
+  | RelE (id, el) ->
+    Printf.sprintf "RelE (%s, [%s])"
+      id
+      (structured_string_of_exprs el)
   | YetE s -> "YetE (" ^ s ^ ")"
 
 and structured_string_of_exprs el = string_of_list structured_string_of_expr ", " el

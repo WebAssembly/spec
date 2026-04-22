@@ -166,6 +166,7 @@ and string_of_expr expr =
     sprintf "%s matches %s"
       (string_of_expr e1)
       (string_of_expr e2)
+  | RelE (id, el) -> sprintf "the relation %s(%s) holds" id (string_of_exprs ", " el)
   | YetE s -> sprintf "YetE (%s)" s
 
 and string_of_exprs sep =

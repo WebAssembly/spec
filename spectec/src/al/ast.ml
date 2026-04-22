@@ -98,6 +98,7 @@ and expr' =
   | TopValuesE of expr                            (* "at least expr number of values on the top of the stack" *)
   (* Administrative Instructions *)
   | SubE of id * typ                              (* varid, with specific type *)
+  | RelE of id * expr list                        (* Placeholder for untranslated relations *)
   | YetE of string                                (* for future not yet implemented feature *)
 
 and path = path' phrase

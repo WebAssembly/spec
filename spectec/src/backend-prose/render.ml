@@ -680,7 +680,9 @@ and render_expr' env expr =
         | [arg] -> sprintf "the type of %s" arg
         | _ -> error expr.at "Invalid arity for relation call";
         )
-      else error expr.at ("Not supported relation call: " ^ id)
+      else
+        (* error expr.at ("Not supported relation call: " ^ id) *)
+        sprintf "%s(%s)" id (String.concat ", " args)
     )
   | Al.Ast.InvCallE (id, nl, al) ->
     let lhs_variable =
