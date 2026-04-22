@@ -101,7 +101,18 @@ and provide initialization in the form of
 or a <a class="reference internal" href="#syntax-start"><span class="std std-ref">start function</span></a>.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}[t]{&#64;{}l&#64;{}rrl&#64;{}l&#64;{}}
-&amp; {\href{../syntax/modules.html#syntax-module}{\mathit{module}}} &amp; ::= &amp; \href{../syntax/modules.html#syntax-module}{\mathsf{module}}~{{\href{../syntax/types.html#syntax-rectype}{\mathit{type}}}^\ast}~{{\href{../syntax/modules.html#syntax-import}{\mathit{import}}}^\ast}~{{\href{../syntax/modules.html#syntax-tag}{\mathit{tag}}}^\ast}~{{\href{../syntax/modules.html#syntax-global}{\mathit{global}}}^\ast}~{{\href{../syntax/modules.html#syntax-mem}{\mathit{mem}}}^\ast}~{{\href{../syntax/modules.html#syntax-table}{\mathit{table}}}^\ast}~{{\href{../syntax/modules.html#syntax-func}{\mathit{func}}}^\ast}~{{\href{../syntax/modules.html#syntax-data}{\mathit{data}}}^\ast}~{{\href{../syntax/modules.html#syntax-elem}{\mathit{elem}}}^\ast}~{{\href{../syntax/modules.html#syntax-start}{\mathit{start}}}^?}~{{\href{../syntax/modules.html#syntax-export}{\mathit{export}}}^\ast} \\
+&amp; {\href{../syntax/modules.html#syntax-module}{\mathit{module}}} &amp; ::= &amp; \begin{array}[t]{&#64;{}l&#64;{}} \href{../syntax/modules.html#syntax-module}{\mathsf{module}} \\
+  {\href{../syntax/conventions.html#syntax-list}{\mathit{list}}}({\href{../syntax/types.html#syntax-rectype}{\mathit{type}}}) \\
+  {\href{../syntax/conventions.html#syntax-list}{\mathit{list}}}({\href{../syntax/modules.html#syntax-import}{\mathit{import}}}) \\
+  {\href{../syntax/conventions.html#syntax-list}{\mathit{list}}}({\href{../syntax/modules.html#syntax-tag}{\mathit{tag}}}) \\
+  {\href{../syntax/conventions.html#syntax-list}{\mathit{list}}}({\href{../syntax/modules.html#syntax-global}{\mathit{global}}}) \\
+  {\href{../syntax/conventions.html#syntax-list}{\mathit{list}}}({\href{../syntax/modules.html#syntax-mem}{\mathit{mem}}}) \\
+  {\href{../syntax/conventions.html#syntax-list}{\mathit{list}}}({\href{../syntax/modules.html#syntax-table}{\mathit{table}}}) \\
+  {\href{../syntax/conventions.html#syntax-list}{\mathit{list}}}({\href{../syntax/modules.html#syntax-func}{\mathit{func}}}) \\
+  {\href{../syntax/conventions.html#syntax-list}{\mathit{list}}}({\href{../syntax/modules.html#syntax-data}{\mathit{data}}}) \\
+  {\href{../syntax/conventions.html#syntax-list}{\mathit{list}}}({\href{../syntax/modules.html#syntax-elem}{\mathit{elem}}}) \\
+  {{\href{../syntax/modules.html#syntax-start}{\mathit{start}}}^?} \\
+  {\href{../syntax/conventions.html#syntax-list}{\mathit{list}}}({\href{../syntax/modules.html#syntax-export}{\mathit{export}}}) \end{array} \\
 \end{array}\end{split}\]</div>
 <p>Each of the lists — and thus the entire module — may be empty.</p>
 <section id="indices">
