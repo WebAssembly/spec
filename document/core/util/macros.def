@@ -419,7 +419,7 @@
 
 .. |module| mathdef:: \xref{syntax/modules}{syntax-module}{\X{module}}
 .. |decl| mathdef:: \xref{text/modules}{syntax-decl}{\X{decl}}
-.. |type| mathdef:: \xref{syntax/types}{syntax-rectype}{\X{type}}
+.. |type| mathdef:: \xref{syntax/modules}{syntax-type}{\X{type}}
 .. |func| mathdef:: \xref{syntax/modules}{syntax-func}{\X{func}}
 .. |local| mathdef:: \xref{syntax/modules}{syntax-local}{\X{local}}
 .. |table| mathdef:: \xref{syntax/modules}{syntax-table}{\X{table}}
@@ -1304,7 +1304,6 @@
 .. |zeroop| mathdef:: \xref{syntax/instructions}{aux-zeroop}{\F{zeroop}}
 .. |halfop| mathdef:: \xref{syntax/instructions}{aux-halfop}{\F{halfop}}
 
-.. |vdashcontext| mathdef:: \xref{appendix/properties}{valid-context}{\vdash}
 .. |OKcontext| mathdef:: \xref{appendix/properties}{valid-context}{\K{ok}}
 
 
