@@ -102,7 +102,7 @@ or a <a class="reference internal" href="#syntax-start"><span class="std std-ref
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}[t]{&#64;{}l&#64;{}rrl&#64;{}l&#64;{}}
 &amp; {\href{../syntax/modules.html#syntax-module}{\mathit{module}}} &amp; ::= &amp; \begin{array}[t]{&#64;{}l&#64;{}} \href{../syntax/modules.html#syntax-module}{\mathsf{module}} \\
-  {\href{../syntax/conventions.html#syntax-list}{\mathit{list}}}({\href{../syntax/types.html#syntax-rectype}{\mathit{type}}}) \\
+  {\href{../syntax/conventions.html#syntax-list}{\mathit{list}}}({\href{../syntax/modules.html#syntax-type}{\mathit{type}}}) \\
   {\href{../syntax/conventions.html#syntax-list}{\mathit{list}}}({\href{../syntax/modules.html#syntax-import}{\mathit{import}}}) \\
   {\href{../syntax/conventions.html#syntax-list}{\mathit{list}}}({\href{../syntax/modules.html#syntax-tag}{\mathit{tag}}}) \\
   {\href{../syntax/conventions.html#syntax-list}{\mathit{list}}}({\href{../syntax/modules.html#syntax-global}{\mathit{global}}}) \\
@@ -163,11 +163,11 @@ The indices of these imports precede the indices of other definitions in the sam
 </section>
 <section id="types">
 <span id="syntax-typedef"></span><span id="syntax-type"></span><span id="index-2"></span><h2>Types<a class="headerlink" href="#types" title="Link to this heading">¶</a></h2>
-<p>The <span class="math notranslate nohighlight">\({\href{../syntax/types.html#syntax-rectype}{\mathit{type}}}\)</span> section of a module defines a list of <a class="reference internal" href="types.html#syntax-rectype"><span class="std std-ref">recursive types</span></a>, each consisting of a list of <a class="reference internal" href="types.html#syntax-subtype"><span class="std std-ref">sub types</span></a> referenced by individual <a class="reference internal" href="#syntax-typeidx"><span class="std std-ref">type indices</span></a>.
+<p>The <span class="math notranslate nohighlight">\({\href{../syntax/modules.html#syntax-type}{\mathit{type}}}\)</span> section of a module defines a list of <a class="reference internal" href="types.html#syntax-rectype"><span class="std std-ref">recursive types</span></a>, each consisting of a list of <a class="reference internal" href="types.html#syntax-subtype"><span class="std std-ref">sub types</span></a> referenced by individual <a class="reference internal" href="#syntax-typeidx"><span class="std std-ref">type indices</span></a>.
 All <a class="reference internal" href="types.html#syntax-functype"><span class="std std-ref">function</span></a>, <a class="reference internal" href="types.html#syntax-structtype"><span class="std std-ref">structure</span></a>, or <a class="reference internal" href="types.html#syntax-arraytype"><span class="std std-ref">array</span></a> types used in a module must be defined in this section.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}[t]{&#64;{}l&#64;{}rrl&#64;{}l&#64;{}}
-&amp; {\href{../syntax/types.html#syntax-rectype}{\mathit{type}}} &amp; ::= &amp; \href{../syntax/modules.html#syntax-type}{\mathsf{type}}~{\href{../syntax/types.html#syntax-rectype}{\mathit{rectype}}} \\
+&amp; {\href{../syntax/modules.html#syntax-type}{\mathit{type}}} &amp; ::= &amp; \href{../syntax/modules.html#syntax-type}{\mathsf{type}}~{\href{../syntax/types.html#syntax-rectype}{\mathit{rectype}}} \\
 \end{array}\end{split}\]</div>
 </section>
 <section id="tags">
