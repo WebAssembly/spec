@@ -457,7 +457,7 @@ rule Step_exp/MATCH-guess:
   S |- MATCH a* WITH (CLAUSE `{q*} a'* `=> e `- pr*) clause* ~>
     MATCH a* WITH (CLAUSE `{} $subst_arg(s, a')* `=> e `- pr*) clause*
   -- Ok_subst: $storeenv(S) |- s : q*
-  ;; Note: non-computational rule
+  -- if $with_noncomputational
 
 rule Step_exp/MATCH-true:
   S |- MATCH eps WITH (CLAUSE `{} eps `=> e `- eps) clause* ~> e
@@ -812,7 +812,7 @@ rule Step_prems/REL:
   -- if (x, p* `-> t `= rul*) <- S.REL
   -- if (RULE `{q*} e' `- pr*) <- $subst_rule($args_for_params(a*, p*), rul)*
   -- Ok_subst: $storeenv(S) |- s : q*
-  ;; Note: non-computational rule
+  -- if $with_noncomputational
 
 rule Step_prems/IF-ctx:
   S |- IF e ~> IF e'
