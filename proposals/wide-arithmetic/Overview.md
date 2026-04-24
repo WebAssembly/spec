@@ -291,6 +291,7 @@ Engines:
 * [x] [Chasm](https://github.com/CharlieTap/chasm/pull/110)
 * [x] [JavaScriptCore](https://commits.webkit.org/311366@main)
 * [x] [SpiderMonkey](https://bugzilla.mozilla.org/show_bug.cgi?id=1949081)
+* [x] [Wasmer](https://github.com/wasmerio/wasmer/pull/6243)
 
 Toolchains:
 
