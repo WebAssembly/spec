@@ -5,6 +5,15 @@
 [![CI for specs](https://github.com/WebAssembly/spec/actions/workflows/ci-spec.yml/badge.svg)](https://github.com/WebAssembly/spec/actions/workflows/ci-spec.yml)
 [![CI for interpreter & tests](https://github.com/WebAssembly/spec/actions/workflows/ci-interpreter.yml/badge.svg)](https://github.com/WebAssembly/spec/actions/workflows/ci-interpreter.yml)
 
+# JS Text Encoding Builtins Proposal for WebAssembly
+
+This repository is a clone of [github.com/WebAssembly/spec/](https://github.com/WebAssembly/spec/).
+It is meant for discussion, prototype specification and implementation of a proposal to
+add support for de/encoding strings between Wasm and JS to WebAssembly.
+
+* See the [overview](proposals/js-text-encoding-builtins/Overview.md) for a summary of the proposal.
+
+* See the [modified spec](https://webassembly.github.io/js-text-encoding-builtins/) for details.
 
 # spec
 
