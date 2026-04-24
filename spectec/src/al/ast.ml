@@ -146,9 +146,9 @@ and instr' =
 (* Algorithms *)
 
 type algorithm = algorithm' phrase
-and algorithm' =                                    (* `algorithm` f`(`expr*`)` `{`instr*`}` *)
-  | RuleA of atom * anchor * arg list * instr list  (* reduction rule *)
-  | FuncA of id * arg list * instr list             (* helper function *)
+and algorithm' =                                     (* `algorithm` f`(`expr*`)` `{`instr*`}` *)
+  | RuleA of mixop * anchor * arg list * instr list  (* reduction rule *)
+  | FuncA of id * arg list * instr list              (* helper function *)
 
 
 (* Scripts *)

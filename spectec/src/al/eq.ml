@@ -142,8 +142,8 @@ and eq_instrs il1 il2 = eq_list eq_instr il1 il2
 
 let eq_algos al1 al2 =
   match al1.it, al2.it with
-  | RuleA (a1, an1, al1, il1), RuleA (a2, an2, al2, il2) ->
-    Atom.eq a1 a2 && an1 = an2 && eq_args al1 al2 && eq_instrs il1 il2
+  | RuleA (m1, an1, al1, il1), RuleA (m2, an2, al2, il2) ->
+    Mixop.eq m1 m2 && an1 = an2 && eq_args al1 al2 && eq_instrs il1 il2
   | FuncA (i1, al1, il1), FuncA (i2, al2, il2) ->
     i1 = i2 && eq_args al1 al2 && eq_instrs il1 il2
   | _ -> false

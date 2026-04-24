@@ -1483,20 +1483,22 @@ and render_instrs env algoname depth instrs =
 
 (* Prose *)
 
-let render_atom_title env name params =
-  (* TODO a workaround, for algorithms named label or name
-     that are defined as LABEL_ or FRAME_ in the dsl *)
-  let name' =
-    match name.it with
-    | Atom.Atom "label" -> Atom.Atom "LABEL_"
-    | Atom.Atom "frame" -> Atom.Atom "FRAME_"
-    | Atom.Atom s -> Atom.Atom (String.uppercase_ascii s)
-    | _ -> name.it
+let render_mixop_title env mixop params =
+  let head = Mixop.head mixop in
+  (* HARDCODE: Tweak for these instructinos *)
+  let mixop =
+    match head with
+    | Some atom ->
+      (match atom.it with
+      | Atom ("LABEL_" | "FRAME_" | "HANDLER_") -> Mixop.Atom atom
+      | _ -> mixop
+      )
+    | _ -> mixop
   in
-  let name = name' $$ no_region % name.note in
-  let op = Mixop.(Seq (Atom name :: List.init (List.length params) (fun _ -> Arg ()))) in
   let params = List.filter_map (fun a -> match a.it with Al.Ast.ExpA e -> Some e | _ -> None) params in
-  let expr = Al.Al_util.caseE (op, params) ~at:no_region ~note:Al.Al_util.no_note in
+  if List.length params + 1 <> List.length (Mixop.flatten mixop) then
+    error (match head with | Some atom -> atom.at | None -> no_region) "Failed to render prose header";
+  let expr = Al.Al_util.caseE (mixop, params) ~at:no_region ~note:Al.Al_util.no_note in
   match al_to_el_expr expr with
   | Some ({ it = El.Ast.ParenE exp; _ }) -> render_el_exp env exp
   | Some exp -> render_el_exp env exp
@@ -1504,12 +1506,6 @@ let render_atom_title env name params =
 
 let render_funcname_title env fname params =
   render_expr env (Al.Al_util.callE (fname, params) ~at:no_region ~note:Al.Al_util.no_note)
-
-let _render_pred env name params instrs =
-  let title = render_atom_title env name params in
-  title ^ "\n" ^
-  String.make (String.length title) '.' ^ "\n" ^
-  render_stmts env 0 instrs
 
 let render_rule env concl prems =
   init_typs ();
@@ -1523,8 +1519,8 @@ let render_rule env concl prems =
     sprintf "%s if:\n%s" sconcl sprems
 
 let render_rule_algo env name params instrs =
-  let title = render_atom_title env name params in
-  let rname = Al.Print.string_of_atom name in
+  let title = render_mixop_title env name params in
+  let rname = Al.Print.string_of_mixop name in
   title ^ "\n" ^
   String.make (String.length title) '.' ^ "\n" ^
   render_instrs env rname 0 instrs
