@@ -279,7 +279,7 @@ C \href{../valid/matching.html#match-vectype}{\vdash} {\href{../syntax/types.htm
 }{
 C \href{../valid/matching.html#match-heaptype}{\vdash} {\href{../syntax/types.html#syntax-heaptype}{\mathit{heaptype}}} \href{../valid/matching.html#match-heaptype}{\leq} {\href{../syntax/types.html#syntax-heaptype}{\mathit{heaptype}}}
 }
-\qquad
+\\[3ex]\displaystyle
 \frac{
 C \href{../valid/types.html#valid-heaptype}{\vdash} {\href{../syntax/types.html#syntax-heaptype}{\mathit{heaptype}}'} : \href{../valid/types.html#valid-heaptype}{\mathsf{ok}}
  \qquad
@@ -338,12 +338,6 @@ C \href{../valid/matching.html#match-heaptype}{\vdash} {\href{../syntax/modules.
 C \href{../valid/matching.html#match-heaptype}{\vdash} {\href{../syntax/types.html#syntax-heaptype}{\mathit{heaptype}}} \href{../valid/matching.html#match-heaptype}{\leq} C{.}\href{../valid/conventions.html#context}{\mathsf{types}}{}[{\href{../syntax/modules.html#syntax-typeidx}{\mathit{typeidx}}}]
 }{
 C \href{../valid/matching.html#match-heaptype}{\vdash} {\href{../syntax/types.html#syntax-heaptype}{\mathit{heaptype}}} \href{../valid/matching.html#match-heaptype}{\leq} {\href{../syntax/modules.html#syntax-typeidx}{\mathit{typeidx}}}
-}
-\\[3ex]\displaystyle
-\frac{
-C{.}\href{../appendix/properties.html#context-ext}{\mathsf{recs}}{}[i] = \href{../syntax/types.html#syntax-subtype}{\mathsf{sub}}~{\href{../syntax/types.html#syntax-subtype}{\mathsf{final}}^?}~{{\href{../syntax/types.html#syntax-typeuse}{\mathit{typeuse}}}^\ast}~{\mathit{ct}}
-}{
-C \href{../valid/matching.html#match-heaptype}{\vdash} \href{../syntax/types.html#syntax-heaptype}{\mathsf{rec}} {.} i \href{../valid/matching.html#match-heaptype}{\leq} {{\href{../syntax/types.html#syntax-typeuse}{\mathit{typeuse}}}^\ast}{}[j]
 }
 \\[3ex]\displaystyle
 \frac{

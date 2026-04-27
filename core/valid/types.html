@@ -386,8 +386,6 @@ C \href{../valid/types.html#valid-packtype}{\vdash} {\href{../syntax/types.html#
 <section id="recursive-types">
 <span id="valid-subtype"></span><span id="valid-rectype"></span><span id="index-10"></span><h2>Recursive Types<a class="headerlink" href="#recursive-types" title="Link to this heading">¶</a></h2>
 <p><a class="reference internal" href="../syntax/types.html#syntax-rectype"><span class="std std-ref">Recursive types</span></a> are validated with respect to the first <a class="reference internal" href="../syntax/modules.html#syntax-typeidx"><span class="std std-ref">type index</span></a> defined by the recursive group.</p>
-<section id="xref-syntax-types-syntax-rectype-mathsf-rec-xref-syntax-types-syntax-subtype-mathit-subtype-ast">
-<h3><span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-rectype}{\mathsf{rec}}~\href{../syntax/types.html#syntax-subtype}{\mathit{subtype}}^\ast\)</span><a class="headerlink" href="#xref-syntax-types-syntax-rectype-mathsf-rec-xref-syntax-types-syntax-subtype-mathit-subtype-ast" title="Link to this heading">¶</a></h3>
 <p>The <a class="reference internal" href="../syntax/types.html#syntax-rectype"><span class="std std-ref">recursive type</span></a> <span class="math notranslate nohighlight">\((\href{../syntax/types.html#syntax-rectype}{\mathsf{rec}}~{{\href{../syntax/types.html#syntax-subtype}{\mathit{subtype}}}^\ast})\)</span> is <a class="reference internal" href="#valid-rectype"><span class="std std-ref">valid</span></a> for the type index <span class="math notranslate nohighlight">\(x\)</span> if:</p>
 <blockquote>
 <div><ul>
@@ -425,9 +423,6 @@ C \href{../valid/types.html#valid-rectype}{\vdash} \href{../syntax/types.html#sy
 }
 \qquad
 \end{array}\]</div>
-</section>
-<section id="xref-syntax-types-syntax-subtype-mathsf-sub-xref-syntax-types-syntax-subtype-mathsf-final-y-ast-xref-syntax-types-syntax-comptype-mathit-comptype">
-<h3><span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-subtype}{\mathsf{sub}}~\href{../syntax/types.html#syntax-subtype}{\mathsf{final}}^?~y^\ast~\href{../syntax/types.html#syntax-comptype}{\mathit{comptype}}\)</span><a class="headerlink" href="#xref-syntax-types-syntax-subtype-mathsf-sub-xref-syntax-types-syntax-subtype-mathsf-final-y-ast-xref-syntax-types-syntax-comptype-mathit-comptype" title="Link to this heading">¶</a></h3>
 <p>The <a class="reference internal" href="../syntax/types.html#syntax-subtype"><span class="std std-ref">sub type</span></a> <span class="math notranslate nohighlight">\((\href{../syntax/types.html#syntax-subtype}{\mathsf{sub}}~{\href{../syntax/types.html#syntax-subtype}{\mathsf{final}}^?}~{x^\ast}~{\href{../syntax/types.html#syntax-comptype}{\mathit{comptype}}})\)</span> is <a class="reference internal" href="#valid-subtype"><span class="std std-ref">valid</span></a> for the type index <span class="math notranslate nohighlight">\(x_0\)</span> if:</p>
 <blockquote>
 <div><ul>
@@ -477,7 +472,6 @@ C \href{../valid/types.html#valid-subtype}{\vdash} \href{../syntax/types.html#sy
 preventing cyclic subtype hierarchies.</p>
 <p>Future versions of WebAssembly may allow more than one supertype.</p>
 </div>
-</section>
 </section>
 <section id="limits">
 <span id="valid-limits"></span><span id="index-11"></span><h2>Limits<a class="headerlink" href="#limits" title="Link to this heading">¶</a></h2>

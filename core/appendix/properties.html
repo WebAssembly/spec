@@ -116,143 +116,142 @@ the <a class="reference internal" href="../valid/conventions.html#context"><span
 <section id="types">
 <span id="valid-types-ext"></span><span id="index-2"></span><h2>Types<a class="headerlink" href="#types" title="Link to this heading">¶</a></h2>
 <p>Well-formedness for <a class="reference internal" href="../valid/conventions.html#type-ext"><span class="std std-ref">extended type forms</span></a> is defined as follows.</p>
-<section id="heap-type-xref-valid-conventions-syntax-heaptype-ext-mathsf-bot">
-<span id="valid-heaptype-ext"></span><h3><a class="reference internal" href="../valid/conventions.html#syntax-heaptype-ext"><span class="std std-ref">Heap Type</span></a> <span class="math notranslate nohighlight">\(\href{../valid/conventions.html#syntax-heaptype-ext}{\mathsf{bot}}\)</span><a class="headerlink" href="#heap-type-xref-valid-conventions-syntax-heaptype-ext-mathsf-bot" title="Link to this heading">¶</a></h3>
-<ul class="simple">
-<li><p>The heap type is valid.</p></li>
+<p id="valid-typeuse-ext">The <a class="reference internal" href="../syntax/types.html#syntax-typeuse"><span class="std std-ref">type use</span></a> <span class="math notranslate nohighlight">\((\href{../syntax/types.html#syntax-heaptype}{\mathsf{rec}} {.} i)\)</span> is <a class="reference internal" href="../valid/types.html#valid-typeuse"><span class="std std-ref">valid</span></a> if:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>The <a class="reference internal" href="../syntax/types.html#syntax-subtype"><span class="std std-ref">recursive type</span></a> <span class="math notranslate nohighlight">\(C{.}\href{../appendix/properties.html#context-ext}{\mathsf{recs}}{}[i]\)</span> exists.</p></li>
 </ul>
+</div></blockquote>
 <div class="math notranslate nohighlight">
-\[\frac{
+\[\begin{array}{&#64;{}c&#64;{}}\displaystyle
+\frac{
+C{.}\href{../appendix/properties.html#context-ext}{\mathsf{recs}}{}[i] = {\mathit{st}}
 }{
-  C \href{../valid/types.html#valid-heaptype}{\vdash} \href{../valid/conventions.html#syntax-heaptype-ext}{\mathsf{bot}} : \href{../valid/types.html#valid-heaptype}{\mathsf{ok}}
-}\]</div>
-</section>
-<section id="heap-type-xref-syntax-types-syntax-heaptype-mathsf-rec-i">
-<h3><a class="reference internal" href="../valid/conventions.html#syntax-heaptype-ext"><span class="std std-ref">Heap Type</span></a> <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-heaptype}{\mathsf{rec}}~i\)</span><a class="headerlink" href="#heap-type-xref-syntax-types-syntax-heaptype-mathsf-rec-i" title="Link to this heading">¶</a></h3>
-<ul class="simple">
-<li><p>The recursive type index <span class="math notranslate nohighlight">\(i\)</span> must exist in <span class="math notranslate nohighlight">\(C.\href{../appendix/properties.html#context-ext}{\mathsf{recs}}\)</span>.</p></li>
-<li><p>Then the heap type is valid.</p></li>
-</ul>
+C \href{../valid/types.html#valid-typeuse}{\vdash} \href{../syntax/types.html#syntax-heaptype}{\mathsf{rec}} {.} i : \href{../valid/types.html#valid-typeuse}{\mathsf{ok}}
+}
+\qquad
+\end{array}\]</div>
+<p id="valid-heaptype-ext">The <a class="reference internal" href="../syntax/types.html#syntax-heaptype"><span class="std std-ref">heap type</span></a> <span class="math notranslate nohighlight">\(\href{../valid/conventions.html#syntax-valtype-ext}{\mathsf{bot}}\)</span> is always <a class="reference internal" href="../valid/types.html#valid-heaptype"><span class="std std-ref">valid</span></a>.</p>
 <div class="math notranslate nohighlight">
-\[\frac{
-  C.\href{../appendix/properties.html#context-ext}{\mathsf{recs}}[i] = \href{../syntax/types.html#syntax-subtype}{\mathit{subtype}}
+\[\begin{array}{&#64;{}c&#64;{}}\displaystyle
+\frac{
 }{
-  C \href{../valid/types.html#valid-heaptype}{\vdash} \href{../syntax/types.html#syntax-heaptype}{\mathsf{rec}}~i : \href{../valid/types.html#valid-heaptype}{\mathsf{ok}}
-}\]</div>
-</section>
-<section id="value-type-xref-valid-conventions-syntax-valtype-ext-mathsf-bot">
-<span id="valid-valtype-ext"></span><h3><a class="reference internal" href="../valid/conventions.html#syntax-valtype-ext"><span class="std std-ref">Value Type</span></a> <span class="math notranslate nohighlight">\(\href{../valid/conventions.html#syntax-valtype-ext}{\mathsf{bot}}\)</span><a class="headerlink" href="#value-type-xref-valid-conventions-syntax-valtype-ext-mathsf-bot" title="Link to this heading">¶</a></h3>
-<ul class="simple">
-<li><p>The value type is valid.</p></li>
-</ul>
+C \href{../valid/types.html#valid-heaptype}{\vdash} \href{../valid/conventions.html#syntax-valtype-ext}{\mathsf{bot}} : \href{../valid/types.html#valid-heaptype}{\mathsf{ok}}
+}
+\qquad
+\end{array}\]</div>
+<p id="valid-valtype-ext">The <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">value type</span></a> <span class="math notranslate nohighlight">\(\href{../valid/conventions.html#syntax-valtype-ext}{\mathsf{bot}}\)</span> is always <a class="reference internal" href="../valid/types.html#valid-valtype"><span class="std std-ref">valid</span></a>.</p>
 <div class="math notranslate nohighlight">
-\[\frac{
+\[\begin{array}{&#64;{}c&#64;{}}\displaystyle
+\frac{
 }{
-  C \href{../valid/types.html#valid-valtype}{\vdash} \href{../valid/conventions.html#syntax-valtype-ext}{\mathsf{bot}} : \href{../valid/types.html#valid-valtype}{\mathsf{ok}}
-}\]</div>
-</section>
-<section id="recursive-types-xref-syntax-types-syntax-rectype-mathsf-rec-xref-syntax-types-syntax-subtype-mathit-subtype-ast">
-<span id="valid-rectype-ext"></span><h3><a class="reference internal" href="../syntax/types.html#syntax-rectype"><span class="std std-ref">Recursive Types</span></a> <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-rectype}{\mathsf{rec}}~\href{../syntax/types.html#syntax-subtype}{\mathit{subtype}}^\ast\)</span><a class="headerlink" href="#recursive-types-xref-syntax-types-syntax-rectype-mathsf-rec-xref-syntax-types-syntax-subtype-mathit-subtype-ast" title="Link to this heading">¶</a></h3>
-<ul class="simple">
-<li><p>Let <span class="math notranslate nohighlight">\(C'\)</span> be the current <a class="reference internal" href="../valid/conventions.html#context"><span class="std std-ref">context</span></a> <span class="math notranslate nohighlight">\(C\)</span>, but where <span class="math notranslate nohighlight">\(\href{../appendix/properties.html#context-ext}{\mathsf{recs}}\)</span> is <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-subtype}{\mathit{subtype}}^\ast\)</span>.</p></li>
-<li><p>There must be a <a class="reference internal" href="../syntax/modules.html#syntax-typeidx"><span class="std std-ref">type index</span></a> <span class="math notranslate nohighlight">\(x\)</span>, such that for each <a class="reference internal" href="../syntax/types.html#syntax-subtype"><span class="std std-ref">sub type</span></a> <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-subtype}{\mathit{subtype}}_i\)</span> in <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-subtype}{\mathit{subtype}}^\ast\)</span>:</p>
-<ul>
-<li><p>Under the context <span class="math notranslate nohighlight">\(C'\)</span>, the <a class="reference internal" href="../syntax/types.html#syntax-subtype"><span class="std std-ref">sub type</span></a> <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-subtype}{\mathit{subtype}}_i\)</span> must be <a class="reference internal" href="../valid/types.html#valid-subtype"><span class="std std-ref">valid</span></a> for <a class="reference internal" href="../syntax/modules.html#syntax-typeidx"><span class="std std-ref">type index</span></a> <span class="math notranslate nohighlight">\(x+i\)</span> and <a class="reference internal" href="../valid/conventions.html#syntax-rectypeidx"><span class="std std-ref">recursive type index</span></a> <span class="math notranslate nohighlight">\(i\)</span>.</p></li>
+C \href{../valid/types.html#valid-valtype}{\vdash} \href{../valid/conventions.html#syntax-valtype-ext}{\mathsf{bot}} : \href{../valid/types.html#valid-valtype}{\mathsf{ok}}
+}
+\qquad
+\end{array}\]</div>
+<p id="valid-rectype-ext">The <a class="reference internal" href="../syntax/types.html#syntax-rectype"><span class="std std-ref">recursive type</span></a> <span class="math notranslate nohighlight">\((\href{../syntax/types.html#syntax-rectype}{\mathsf{rec}}~{{\href{../syntax/types.html#syntax-subtype}{\mathit{subtype}}}^\ast})\)</span> is <a class="reference internal" href="../valid/types.html#valid-rectype"><span class="std std-ref">valid</span></a> for <span class="math notranslate nohighlight">\(i\)</span> if:</p>
+<blockquote>
+<div><ul>
+<li><p>Either:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>The sub type sequence <span class="math notranslate nohighlight">\({{\href{../syntax/types.html#syntax-subtype}{\mathit{subtype}}}^\ast}\)</span> is empty.</p></li>
 </ul>
+</div></blockquote>
 </li>
-<li><p>Then the recursive type is valid for the <a class="reference internal" href="../syntax/modules.html#syntax-typeidx"><span class="std std-ref">type index</span></a> <span class="math notranslate nohighlight">\(x\)</span>.</p></li>
+<li><p>Or:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>The sub type sequence <span class="math notranslate nohighlight">\({{\href{../syntax/types.html#syntax-subtype}{\mathit{subtype}}}^\ast}\)</span> is of the form <span class="math notranslate nohighlight">\({\href{../syntax/types.html#syntax-subtype}{\mathit{subtype}}}_1~{{\href{../syntax/types.html#syntax-subtype}{\mathit{subtype}}'}^\ast}\)</span>.</p></li>
+<li><p>The <a class="reference internal" href="../syntax/types.html#syntax-subtype"><span class="std std-ref">sub type</span></a> <span class="math notranslate nohighlight">\({\href{../syntax/types.html#syntax-subtype}{\mathit{subtype}}}_1\)</span> is <a class="reference internal" href="../valid/types.html#valid-subtype"><span class="std std-ref">valid</span></a> for <span class="math notranslate nohighlight">\(i\)</span>.</p></li>
+<li><p>The <a class="reference internal" href="../syntax/types.html#syntax-rectype"><span class="std std-ref">recursive type</span></a> <span class="math notranslate nohighlight">\((\href{../syntax/types.html#syntax-rectype}{\mathsf{rec}}~{{\href{../syntax/types.html#syntax-subtype}{\mathit{subtype}}'}^\ast})\)</span> is <a class="reference internal" href="../valid/types.html#valid-rectype"><span class="std std-ref">valid</span></a> for <span class="math notranslate nohighlight">\(i + 1\)</span>.</p></li>
 </ul>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
 <div class="math notranslate nohighlight">
-\[\frac{
-  C,\href{../appendix/properties.html#context-ext}{\mathsf{recs}}~\href{../syntax/types.html#syntax-subtype}{\mathit{subtype}}^\ast \href{../valid/types.html#valid-rectype}{\vdash} \href{../syntax/types.html#syntax-rectype}{\mathsf{rec}}~\href{../syntax/types.html#syntax-subtype}{\mathit{subtype}}^\ast : {\href{../valid/types.html#valid-rectype}{\mathsf{ok}}}(x,0)
+\[\begin{array}{&#64;{}c&#64;{}}\displaystyle
+\frac{
 }{
-  C \href{../valid/types.html#valid-rectype}{\vdash} \href{../syntax/types.html#syntax-rectype}{\mathsf{rec}}~\href{../syntax/types.html#syntax-subtype}{\mathit{subtype}}^\ast : {\href{../valid/types.html#valid-rectype}{\mathsf{ok}}}(x)
-}\]</div>
-<div class="math notranslate nohighlight">
-\[\frac{
-}{
-  C \href{../valid/types.html#valid-rectype}{\vdash} \href{../syntax/types.html#syntax-rectype}{\mathsf{rec}}~\epsilon : {\href{../valid/types.html#valid-rectype}{\mathsf{ok}}}(x,i)
+C \href{../valid/types.html#valid-rectype}{\vdash} \href{../syntax/types.html#syntax-rectype}{\mathsf{rec}}~\epsilon : {\href{../valid/types.html#valid-subtype}{\mathsf{ok}}}{(i)}
 }
 \qquad
 \frac{
-  C \href{../valid/types.html#valid-subtype}{\vdash} \href{../syntax/types.html#syntax-subtype}{\mathit{subtype}} : {\href{../valid/types.html#valid-subtype}{\mathsf{ok}}}(x,i)
-  \qquad
-  C \href{../valid/types.html#valid-rectype}{\vdash} \href{../syntax/types.html#syntax-rectype}{\mathsf{rec}}~{\href{../syntax/types.html#syntax-subtype}{\mathit{subtype}}'}^\ast : {\href{../valid/types.html#valid-rectype}{\mathsf{ok}}}(x+1,i+1)
+C \href{../valid/types.html#valid-subtype}{\vdash} {\href{../syntax/types.html#syntax-subtype}{\mathit{subtype}}}_1 : {\href{../valid/types.html#valid-subtype}{\mathsf{ok}}}{(i)}
+ \qquad
+C \href{../valid/types.html#valid-rectype}{\vdash} \href{../syntax/types.html#syntax-rectype}{\mathsf{rec}}~{{\href{../syntax/types.html#syntax-subtype}{\mathit{subtype}}}^\ast} : {\href{../valid/types.html#valid-subtype}{\mathsf{ok}}}{(i + 1)}
 }{
-  C \href{../valid/types.html#valid-rectype}{\vdash} \href{../syntax/types.html#syntax-rectype}{\mathsf{rec}}~\href{../syntax/types.html#syntax-subtype}{\mathit{subtype}}~{\href{../syntax/types.html#syntax-subtype}{\mathit{subtype}}'}^\ast : {\href{../valid/types.html#valid-rectype}{\mathsf{ok}}}(x,i)
-}\]</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>These rules are a generalisation of the ones <a class="reference internal" href="../valid/types.html#valid-rectype"><span class="std std-ref">previously given</span></a>.</p>
-</div>
-</section>
-<section id="sub-types-xref-syntax-types-syntax-subtype-mathsf-sub-xref-syntax-types-syntax-subtype-mathsf-final-mathit-ht-ast-xref-syntax-types-syntax-comptype-mathit-comptype">
-<span id="valid-subtype-ext"></span><h3><a class="reference internal" href="../syntax/types.html#syntax-subtype"><span class="std std-ref">Sub types</span></a> <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-subtype}{\mathsf{sub}}~\href{../syntax/types.html#syntax-subtype}{\mathsf{final}}^?~\mathit{ht}^\ast~\href{../syntax/types.html#syntax-comptype}{\mathit{comptype}}\)</span><a class="headerlink" href="#sub-types-xref-syntax-types-syntax-subtype-mathsf-sub-xref-syntax-types-syntax-subtype-mathsf-final-mathit-ht-ast-xref-syntax-types-syntax-comptype-mathit-comptype" title="Link to this heading">¶</a></h3>
-<ul class="simple">
-<li><p>The <a class="reference internal" href="../syntax/types.html#syntax-comptype"><span class="std std-ref">composite type</span></a> <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-comptype}{\mathit{comptype}}\)</span> must be <a class="reference internal" href="../valid/types.html#valid-comptype"><span class="std std-ref">valid</span></a>.</p></li>
-<li><p>The sequence <span class="math notranslate nohighlight">\(\mathit{ht}^\ast\)</span> may be no longer than <span class="math notranslate nohighlight">\(1\)</span>.</p></li>
-<li><p>For every <a class="reference internal" href="../syntax/types.html#syntax-heaptype"><span class="std std-ref">heap type</span></a> <span class="math notranslate nohighlight">\(\mathit{ht}_k\)</span> in <span class="math notranslate nohighlight">\(\mathit{ht}^\ast\)</span>:</p>
-<ul>
-<li><p>The <a class="reference internal" href="../syntax/types.html#syntax-heaptype"><span class="std std-ref">heap type</span></a> <span class="math notranslate nohighlight">\(\mathit{ht}_k\)</span> must be ordered before a <a class="reference internal" href="../syntax/modules.html#syntax-typeidx"><span class="std std-ref">type index</span></a> <span class="math notranslate nohighlight">\(x\)</span> and <a class="reference internal" href="../valid/conventions.html#syntax-rectypeidx"><span class="std std-ref">recursive type index</span></a> a <span class="math notranslate nohighlight">\(i\)</span>, meaning:</p>
-<ul>
-<li><p>Either <span class="math notranslate nohighlight">\(\mathit{ht}_k\)</span> is a <a class="reference internal" href="../valid/conventions.html#syntax-deftype"><span class="std std-ref">defined type</span></a>.</p></li>
-<li><p>Or <span class="math notranslate nohighlight">\(\mathit{ht}_k\)</span> is a <a class="reference internal" href="../syntax/modules.html#syntax-typeidx"><span class="std std-ref">type index</span></a> <span class="math notranslate nohighlight">\(y_k\)</span> that is smaller than <span class="math notranslate nohighlight">\(x\)</span>.</p></li>
-<li><p>Or <span class="math notranslate nohighlight">\(\mathit{ht}_k\)</span> is a <a class="reference internal" href="../valid/conventions.html#syntax-rectypeidx"><span class="std std-ref">recursive type index</span></a> <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-heaptype}{\mathsf{rec}}~j_k\)</span> where <span class="math notranslate nohighlight">\(j_k\)</span> is smaller than <span class="math notranslate nohighlight">\(i\)</span>.</p></li>
+C \href{../valid/types.html#valid-rectype}{\vdash} \href{../syntax/types.html#syntax-rectype}{\mathsf{rec}}~({\href{../syntax/types.html#syntax-subtype}{\mathit{subtype}}}_1~{{\href{../syntax/types.html#syntax-subtype}{\mathit{subtype}}}^\ast}) : {\href{../valid/types.html#valid-subtype}{\mathsf{ok}}}{(i)}
+}
+\qquad
+\end{array}\]</div>
+<p id="valid-subtype-ext">The <a class="reference internal" href="../syntax/types.html#syntax-subtype"><span class="std std-ref">sub type</span></a> <span class="math notranslate nohighlight">\((\href{../syntax/types.html#syntax-subtype}{\mathsf{sub}}~{\href{../syntax/types.html#syntax-subtype}{\mathsf{final}}^?}~{{\href{../syntax/types.html#syntax-typeuse}{\mathit{typeuse}}}^\ast}~{\href{../syntax/types.html#syntax-comptype}{\mathit{comptype}}})\)</span> is <a class="reference internal" href="../valid/types.html#valid-subtype"><span class="std std-ref">valid</span></a> for <span class="math notranslate nohighlight">\(i\)</span> if:</p>
+<blockquote>
+<div><ul>
+<li><p>The length of <span class="math notranslate nohighlight">\({{\href{../syntax/types.html#syntax-typeuse}{\mathit{typeuse}}}^\ast}\)</span> is less than or equal to <span class="math notranslate nohighlight">\(1\)</span>.</p></li>
+<li><p>For all <span class="math notranslate nohighlight">\({\href{../syntax/types.html#syntax-typeuse}{\mathit{typeuse}}}\)</span> in <span class="math notranslate nohighlight">\({{\href{../syntax/types.html#syntax-typeuse}{\mathit{typeuse}}}^\ast}\)</span>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>The <a class="reference internal" href="../syntax/types.html#syntax-typeuse"><span class="std std-ref">type use</span></a> <span class="math notranslate nohighlight">\({\href{../syntax/types.html#syntax-typeuse}{\mathit{typeuse}}}\)</span> is <a class="reference internal" href="../valid/types.html#valid-typeuse"><span class="std std-ref">valid</span></a>.</p></li>
+<li><p><span class="math notranslate nohighlight">\({\href{../syntax/types.html#syntax-typeuse}{\mathit{typeuse}}} \prec i\)</span> is true.</p></li>
+<li><p>The <a class="reference internal" href="../syntax/types.html#syntax-subtype"><span class="std std-ref">sub type</span></a> <span class="math notranslate nohighlight">\({{\href{../appendix/properties.html#aux-unroll-heaptype}{\mathrm{unroll}}}}_{C}({\href{../syntax/types.html#syntax-typeuse}{\mathit{typeuse}}})\)</span> is of the form <span class="math notranslate nohighlight">\((\href{../syntax/types.html#syntax-subtype}{\mathsf{sub}}~{{\href{../syntax/types.html#syntax-typeuse}{\mathit{typeuse}}'}^\ast}~{\href{../syntax/types.html#syntax-comptype}{\mathit{comptype}}'})\)</span>.</p></li>
 </ul>
+</div></blockquote>
 </li>
-<li><p>Let <a class="reference internal" href="../syntax/types.html#syntax-subtype"><span class="std std-ref">sub type</span></a> <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-subtype}{\mathit{subtype}}_k\)</span> be the <a class="reference internal" href="#aux-unroll-heaptype"><span class="std std-ref">unrolling</span></a> of the <a class="reference internal" href="../syntax/types.html#syntax-heaptype"><span class="std std-ref">heap type</span></a> <span class="math notranslate nohighlight">\(\mathit{ht}_k\)</span>, meaning:</p>
-<ul>
-<li><p>Either <span class="math notranslate nohighlight">\(\mathit{ht}_k\)</span> is a <a class="reference internal" href="../valid/conventions.html#syntax-deftype"><span class="std std-ref">defined type</span></a> <span class="math notranslate nohighlight">\(\href{../valid/conventions.html#syntax-deftype}{\mathit{deftype}}_k\)</span>, then <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-subtype}{\mathit{subtype}}_k\)</span> must be the <a class="reference internal" href="../valid/conventions.html#aux-unroll-deftype"><span class="std std-ref">unrolling</span></a> of <span class="math notranslate nohighlight">\(\href{../valid/conventions.html#syntax-deftype}{\mathit{deftype}}_k\)</span>.</p></li>
-<li><p>Or <span class="math notranslate nohighlight">\(\mathit{ht}_k\)</span> is a <a class="reference internal" href="../syntax/modules.html#syntax-typeidx"><span class="std std-ref">type index</span></a> <span class="math notranslate nohighlight">\(y_k\)</span>, then <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-subtype}{\mathit{subtype}}_k\)</span> must be the <a class="reference internal" href="../valid/conventions.html#aux-unroll-deftype"><span class="std std-ref">unrolling</span></a> of the <a class="reference internal" href="../valid/conventions.html#syntax-deftype"><span class="std std-ref">defined type</span></a> <span class="math notranslate nohighlight">\(C.\href{../valid/conventions.html#context}{\mathsf{types}}[y_k]\)</span>.</p></li>
-<li><p>Or <span class="math notranslate nohighlight">\(\mathit{ht}_k\)</span> is a <a class="reference internal" href="../valid/conventions.html#syntax-rectypeidx"><span class="std std-ref">recursive type index</span></a> <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-heaptype}{\mathsf{rec}}~j_k\)</span>, then <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-subtype}{\mathit{subtype}}_k\)</span> must be <span class="math notranslate nohighlight">\(C.\href{../appendix/properties.html#context-ext}{\mathsf{recs}}[j_k]\)</span>.</p></li>
+<li><p><span class="math notranslate nohighlight">\({{\href{../syntax/types.html#syntax-comptype}{\mathit{comptype}}'}^\ast}\)</span> is the concatenation of all such <span class="math notranslate nohighlight">\({\href{../syntax/types.html#syntax-comptype}{\mathit{comptype}}'}\)</span>.</p></li>
+<li><p>The <a class="reference internal" href="../syntax/types.html#syntax-comptype"><span class="std std-ref">composite type</span></a> <span class="math notranslate nohighlight">\({\href{../syntax/types.html#syntax-comptype}{\mathit{comptype}}}\)</span> is <a class="reference internal" href="../valid/types.html#valid-comptype"><span class="std std-ref">valid</span></a>.</p></li>
+<li><p>For all <span class="math notranslate nohighlight">\({\href{../syntax/types.html#syntax-comptype}{\mathit{comptype}}'}\)</span> in <span class="math notranslate nohighlight">\({{\href{../syntax/types.html#syntax-comptype}{\mathit{comptype}}'}^\ast}\)</span>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>The <a class="reference internal" href="../syntax/types.html#syntax-comptype"><span class="std std-ref">composite type</span></a> <span class="math notranslate nohighlight">\({\href{../syntax/types.html#syntax-comptype}{\mathit{comptype}}}\)</span> <a class="reference internal" href="../valid/matching.html#match-comptype"><span class="std std-ref">matches</span></a> the <a class="reference internal" href="../syntax/types.html#syntax-comptype"><span class="std std-ref">composite type</span></a> <span class="math notranslate nohighlight">\({\href{../syntax/types.html#syntax-comptype}{\mathit{comptype}}'}\)</span>.</p></li>
 </ul>
+</div></blockquote>
 </li>
-<li><p>The <a class="reference internal" href="../syntax/types.html#syntax-subtype"><span class="std std-ref">sub type</span></a> <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-subtype}{\mathit{subtype}}_k\)</span> must not contain <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-subtype}{\mathsf{final}}\)</span>.</p></li>
-<li><p>Let <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-comptype}{\mathit{comptype}}'_k\)</span> be the <a class="reference internal" href="../syntax/types.html#syntax-comptype"><span class="std std-ref">composite type</span></a> in <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-subtype}{\mathit{subtype}}_k\)</span>.</p></li>
-<li><p>The <a class="reference internal" href="../syntax/types.html#syntax-comptype"><span class="std std-ref">composite type</span></a> <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-comptype}{\mathit{comptype}}\)</span> must <a class="reference internal" href="../valid/matching.html#match-comptype"><span class="std std-ref">match</span></a> <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-comptype}{\mathit{comptype}}'_k\)</span>.</p></li>
 </ul>
-</li>
-<li><p>Then the sub type is valid for the <a class="reference internal" href="../syntax/modules.html#syntax-typeidx"><span class="std std-ref">type index</span></a> <span class="math notranslate nohighlight">\(x\)</span> and <a class="reference internal" href="../valid/conventions.html#syntax-rectypeidx"><span class="std std-ref">recursive type index</span></a> <span class="math notranslate nohighlight">\(i\)</span>.</p></li>
-</ul>
+</div></blockquote>
 <div class="math notranslate nohighlight">
-\[\begin{split}\frac{
-  \begin{array}{&#64;{}c&#64;{}}
-  |\mathit{ht}^\ast| \leq 1
-  \qquad
-  (\mathit{ht} \prec x,i)^\ast
-  \qquad
-  (\href{../appendix/properties.html#aux-unroll-heaptype}{\mathrm{unroll}}_{C}(\mathit{ht}) = \href{../syntax/types.html#syntax-subtype}{\mathsf{sub}}~{\mathit{ht}'}^\ast~\href{../syntax/types.html#syntax-comptype}{\mathit{comptype}}')^\ast
-  \\
-  C \href{../valid/types.html#valid-comptype}{\vdash} \href{../syntax/types.html#syntax-comptype}{\mathit{comptype}} : \href{../valid/types.html#valid-comptype}{\mathsf{ok}}
-  \qquad
-  (C \href{../valid/matching.html#match-comptype}{\vdash} \href{../syntax/types.html#syntax-comptype}{\mathit{comptype}} \href{../valid/matching.html#match-comptype}{\leq} \href{../syntax/types.html#syntax-comptype}{\mathit{comptype}}')^\ast
-  \end{array}
+\[\begin{split}\begin{array}{&#64;{}c&#64;{}}\displaystyle
+\frac{
+\begin{array}{&#64;{}c&#64;{}}
+{|{{\href{../syntax/types.html#syntax-typeuse}{\mathit{typeuse}}}^\ast}|} \leq 1
+ \qquad
+(C \href{../valid/types.html#valid-typeuse}{\vdash} {\href{../syntax/types.html#syntax-typeuse}{\mathit{typeuse}}} : \href{../valid/types.html#valid-typeuse}{\mathsf{ok}})^\ast
+ \qquad
+({\href{../syntax/types.html#syntax-typeuse}{\mathit{typeuse}}} \prec i)^\ast
+ \\
+({{\href{../appendix/properties.html#aux-unroll-heaptype}{\mathrm{unroll}}}}_{C}({\href{../syntax/types.html#syntax-typeuse}{\mathit{typeuse}}}) = \href{../syntax/types.html#syntax-subtype}{\mathsf{sub}}~{{\href{../syntax/types.html#syntax-typeuse}{\mathit{typeuse}}'}^\ast}~{\href{../syntax/types.html#syntax-comptype}{\mathit{comptype}}'})^\ast
+ \\
+C \href{../valid/types.html#valid-comptype}{\vdash} {\href{../syntax/types.html#syntax-comptype}{\mathit{comptype}}} : \href{../valid/types.html#valid-comptype}{\mathsf{ok}}
+ \qquad
+(C \href{../valid/matching.html#match-comptype}{\vdash} {\href{../syntax/types.html#syntax-comptype}{\mathit{comptype}}} \href{../valid/matching.html#match-comptype}{\leq} {\href{../syntax/types.html#syntax-comptype}{\mathit{comptype}}'})^\ast
+\end{array}
 }{
-  C \href{../valid/types.html#valid-subtype}{\vdash} \href{../syntax/types.html#syntax-subtype}{\mathsf{sub}}~\href{../syntax/types.html#syntax-subtype}{\mathsf{final}}^?~\mathit{ht}^\ast~\href{../syntax/types.html#syntax-comptype}{\mathit{comptype}} : {\href{../valid/types.html#valid-subtype}{\mathsf{ok}}}(x,i)
-}\end{split}\]</div>
-<p id="aux-unroll-heaptype">where:</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}\begin{array}{&#64;{}lll&#64;{}}
-(\href{../valid/conventions.html#syntax-deftype}{\mathit{deftype}} \prec x,i) &amp;=&amp; {\mathrm{true}} \\
-(y \prec x,i) &amp;=&amp; y &lt; x \\
-(\href{../syntax/types.html#syntax-heaptype}{\mathsf{rec}}~j \prec x,i) &amp;=&amp; j &lt; i \\
-[2ex]
-\href{../appendix/properties.html#aux-unroll-heaptype}{\mathrm{unroll}}_{C}(\href{../valid/conventions.html#syntax-deftype}{\mathit{deftype}}) &amp;=&amp; \href{../valid/conventions.html#aux-unroll-deftype}{\mathrm{unroll}}(\href{../valid/conventions.html#syntax-deftype}{\mathit{deftype}}) \\
-\href{../appendix/properties.html#aux-unroll-heaptype}{\mathrm{unroll}}_{C}(y) &amp;=&amp; \href{../valid/conventions.html#aux-unroll-deftype}{\mathrm{unroll}}(C.\href{../valid/conventions.html#context}{\mathsf{types}}[y]) \\
-\href{../appendix/properties.html#aux-unroll-heaptype}{\mathrm{unroll}}_{C}(\href{../syntax/types.html#syntax-heaptype}{\mathsf{rec}}~j) &amp;=&amp; C.\href{../appendix/properties.html#context-ext}{\mathsf{recs}}[j] \\
+C \href{../valid/types.html#valid-subtype}{\vdash} \href{../syntax/types.html#syntax-subtype}{\mathsf{sub}}~{\href{../syntax/types.html#syntax-subtype}{\mathsf{final}}^?}~{{\href{../syntax/types.html#syntax-typeuse}{\mathit{typeuse}}}^\ast}~{\href{../syntax/types.html#syntax-comptype}{\mathit{comptype}}} : {\href{../valid/types.html#valid-subtype}{\mathsf{ok}}}{(i)}
+}
+\qquad
+\end{array}\end{split}\]</div>
+<p>where:</p>
+<div class="math notranslate nohighlight" id="aux-unroll-heaptype">
+\[\begin{split}\begin{array}[t]{&#64;{}lcl&#64;{}l&#64;{}}
+{{\href{../appendix/properties.html#aux-unroll-heaptype}{\mathrm{unroll}}}}_{C}({\href{../valid/conventions.html#syntax-deftype}{\mathit{deftype}}}) &amp; = &amp; {\href{../valid/conventions.html#aux-unroll-deftype}{\mathrm{unroll}}}({\href{../valid/conventions.html#syntax-deftype}{\mathit{deftype}}}) \\
+{{\href{../appendix/properties.html#aux-unroll-heaptype}{\mathrm{unroll}}}}_{C}({\href{../syntax/modules.html#syntax-typeidx}{\mathit{typeidx}}}) &amp; = &amp; {\href{../valid/conventions.html#aux-unroll-deftype}{\mathrm{unroll}}}(C{.}\href{../valid/conventions.html#context}{\mathsf{types}}{}[{\href{../syntax/modules.html#syntax-typeidx}{\mathit{typeidx}}}]) \\
+{{\href{../appendix/properties.html#aux-unroll-heaptype}{\mathrm{unroll}}}}_{C}(\href{../syntax/types.html#syntax-heaptype}{\mathsf{rec}} {.} i) &amp; = &amp; C{.}\href{../appendix/properties.html#context-ext}{\mathsf{recs}}{}[i] \\[0.8ex]
+\href{../syntax/types.html#syntax-heaptype}{\mathsf{rec}} {.} j \prec i &amp; = &amp; j &lt; i \\
+{\href{../syntax/types.html#syntax-typeuse}{\mathit{typeuse}}} \prec i &amp; = &amp; \mathsf{true} &amp; \quad \mbox{otherwise} \\
 \end{array}\end{split}\]</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>This rule is a generalisation of the ones <a class="reference internal" href="../valid/types.html#valid-subtype"><span class="std std-ref">previously given</span></a>, which only allowed type indices as supertypes.</p>
+<p>The new rules for <a class="reference internal" href="../syntax/types.html#syntax-rectype"><span class="std std-ref">recursive types</span></a> and <a class="reference internal" href="../syntax/types.html#syntax-subtype"><span class="std std-ref">sub types</span></a> complement the ones <a class="reference internal" href="../valid/types.html#valid-subtype"><span class="std std-ref">previously given</span></a>,
+which only allowed regular <a class="reference internal" href="../syntax/modules.html#syntax-typeidx"><span class="std std-ref">type indices</span></a> as supertypes.
+They define validity of <a class="reference internal" href="../valid/conventions.html#aux-roll-rectype"><span class="std std-ref">rolled-up</span></a> recursive types,
+like they occur in <a class="reference internal" href="../valid/conventions.html#syntax-deftype"><span class="std std-ref">defined types</span></a>.</p>
 </div>
-</section>
-<section id="defined-types-xref-syntax-types-syntax-rectype-mathit-rectype-i">
-<span id="valid-deftype"></span><span id="index-3"></span><h3><a class="reference internal" href="../valid/conventions.html#syntax-deftype"><span class="std std-ref">Defined types</span></a> <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-rectype}{\mathit{rectype}}.i\)</span><a class="headerlink" href="#defined-types-xref-syntax-types-syntax-rectype-mathit-rectype-i" title="Link to this heading">¶</a></h3>
-<p>The <a class="reference internal" href="../valid/conventions.html#syntax-deftype"><span class="std std-ref">defined type</span></a> <span class="math notranslate nohighlight">\(({\href{../syntax/types.html#syntax-rectype}{\mathit{rectype}}} {.} i)\)</span> is <a class="reference internal" href="#valid-deftype"><span class="std std-ref">valid</span></a> if:</p>
+<p id="valid-deftype"><span id="index-3"></span>The <a class="reference internal" href="../valid/conventions.html#syntax-deftype"><span class="std std-ref">defined type</span></a> <span class="math notranslate nohighlight">\(({\href{../syntax/types.html#syntax-rectype}{\mathit{rectype}}} {.} i)\)</span> is <a class="reference internal" href="#valid-deftype"><span class="std std-ref">valid</span></a> if:</p>
 <blockquote>
 <div><ul class="simple">
 <li><p>Let <span class="math notranslate nohighlight">\({C'}\)</span> be the same context as <span class="math notranslate nohighlight">\(C\)</span>, but with the sub type sequence <span class="math notranslate nohighlight">\({{\href{../syntax/types.html#syntax-subtype}{\mathit{subtype}}}^{n}}\)</span> prepended to the field <span class="math notranslate nohighlight">\(\href{../appendix/properties.html#context-ext}{\mathsf{recs}}\)</span>.</p></li>
-<li><p>Under the context <span class="math notranslate nohighlight">\({C'}\)</span>, the <a class="reference internal" href="../syntax/types.html#syntax-rectype"><span class="std std-ref">recursive type</span></a> <span class="math notranslate nohighlight">\({\href{../syntax/types.html#syntax-rectype}{\mathit{rectype}}}\)</span> is <a class="reference internal" href="../valid/types.html#valid-rectype"><span class="std std-ref">valid</span></a> for <span class="math notranslate nohighlight">\(({\href{../valid/types.html#valid-subtype}{\mathsf{ok}}}{0})\)</span>.</p></li>
+<li><p>Under the context <span class="math notranslate nohighlight">\({C'}\)</span>, the <a class="reference internal" href="../syntax/types.html#syntax-rectype"><span class="std std-ref">recursive type</span></a> <span class="math notranslate nohighlight">\({\href{../syntax/types.html#syntax-rectype}{\mathit{rectype}}}\)</span> is <a class="reference internal" href="../valid/types.html#valid-rectype"><span class="std std-ref">valid</span></a> for <span class="math notranslate nohighlight">\(0\)</span>.</p></li>
 <li><p>The <a class="reference internal" href="../syntax/types.html#syntax-rectype"><span class="std std-ref">recursive type</span></a> <span class="math notranslate nohighlight">\({\href{../syntax/types.html#syntax-rectype}{\mathit{rectype}}}\)</span> is of the form <span class="math notranslate nohighlight">\((\href{../syntax/types.html#syntax-rectype}{\mathsf{rec}}~{{\href{../syntax/types.html#syntax-subtype}{\mathit{subtype}}}^{n}})\)</span>.</p></li>
 <li><p><span class="math notranslate nohighlight">\(i\)</span> is less than <span class="math notranslate nohighlight">\(n\)</span>.</p></li>
 </ul>
@@ -271,23 +270,22 @@ C \href{../appendix/properties.html#valid-deftype}{\vdash} {\href{../syntax/type
 \qquad
 \end{array}\]</div>
 </section>
-</section>
 <section id="subtyping">
 <span id="match-heaptype-ext"></span><span id="index-4"></span><h2>Subtyping<a class="headerlink" href="#subtyping" title="Link to this heading">¶</a></h2>
-<p>In a <a class="reference internal" href="../valid/conventions.html#aux-roll-rectype"><span class="std std-ref">rolled-up</span></a> <a class="reference internal" href="../syntax/types.html#syntax-rectype"><span class="std std-ref">recursive type</span></a>, a <a class="reference internal" href="../valid/conventions.html#syntax-rectypeidx"><span class="std std-ref">recursive type indices</span></a> <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-heaptype}{\mathsf{rec}}~i\)</span> <a class="reference internal" href="../valid/matching.html#match-heaptype"><span class="std std-ref">matches</span></a> another <a class="reference internal" href="../syntax/types.html#syntax-heaptype"><span class="std std-ref">heap type</span></a> <span class="math notranslate nohighlight">\(\mathit{ht}\)</span> if:</p>
-<ul class="simple">
-<li><p>Let <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-subtype}{\mathsf{sub}}~\href{../syntax/types.html#syntax-subtype}{\mathsf{final}}^?~{\mathit{ht}'}^\ast~\href{../syntax/types.html#syntax-comptype}{\mathit{comptype}}\)</span> be the <a class="reference internal" href="../syntax/types.html#syntax-subtype"><span class="std std-ref">sub type</span></a> <span class="math notranslate nohighlight">\(C.\href{../appendix/properties.html#context-ext}{\mathsf{recs}}[i]\)</span>.</p></li>
-<li><p>The heap type <span class="math notranslate nohighlight">\(\mathit{ht}\)</span> is contained in <span class="math notranslate nohighlight">\({\mathit{ht}'}^\ast\)</span>.</p></li>
-</ul>
+<p>Inside a <a class="reference internal" href="../valid/conventions.html#aux-roll-rectype"><span class="std std-ref">rolled-up</span></a> <a class="reference internal" href="../syntax/types.html#syntax-rectype"><span class="std std-ref">recursive type</span></a>, a <a class="reference internal" href="../valid/conventions.html#syntax-rectypeidx"><span class="std std-ref">recursive type index</span></a> can <a class="reference internal" href="../valid/matching.html#match-heaptype"><span class="std std-ref">match</span></a> another <a class="reference internal" href="../syntax/types.html#syntax-heaptype"><span class="std std-ref">heap type</span></a>.</p>
 <div class="math notranslate nohighlight">
-\[\frac{
-  C.\href{../appendix/properties.html#context-ext}{\mathsf{recs}}[i] = \href{../syntax/types.html#syntax-subtype}{\mathsf{sub}}~\href{../syntax/types.html#syntax-subtype}{\mathsf{final}}^?~(\mathit{ht}_1^\ast~\mathit{ht}~\mathit{ht}_2^\ast)~\href{../syntax/types.html#syntax-comptype}{\mathit{comptype}}
+\[\begin{array}{&#64;{}c&#64;{}}\displaystyle
+\frac{
+C{.}\href{../appendix/properties.html#context-ext}{\mathsf{recs}}{}[i] = \href{../syntax/types.html#syntax-subtype}{\mathsf{sub}}~{\href{../syntax/types.html#syntax-subtype}{\mathsf{final}}^?}~{{\href{../syntax/types.html#syntax-typeuse}{\mathit{typeuse}}}^\ast}~{\mathit{ct}}
 }{
-  C \href{../valid/matching.html#match-heaptype}{\vdash} \href{../syntax/types.html#syntax-heaptype}{\mathsf{rec}}~i \href{../valid/matching.html#match-heaptype}{\leq} \mathit{ht}
-}\]</div>
+C \href{../valid/matching.html#match-heaptype}{\vdash} \href{../syntax/types.html#syntax-heaptype}{\mathsf{rec}} {.} i \href{../valid/matching.html#match-heaptype}{\leq} {{\href{../syntax/types.html#syntax-typeuse}{\mathit{typeuse}}}^\ast}{}[j]
+}
+\qquad
+\end{array}\]</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>This rule is only invoked when checking <a class="reference internal" href="#valid-rectype-ext"><span class="std std-ref">validity</span></a> of <a class="reference internal" href="../valid/conventions.html#aux-roll-rectype"><span class="std std-ref">rolled-up</span></a> <a class="reference internal" href="../syntax/types.html#syntax-rectype"><span class="std std-ref">recursive types</span></a>.</p>
+<p>This rule complements the previously given rules for <a class="reference internal" href="../valid/matching.html#match-heaptype"><span class="std std-ref">matching heap types</span></a>.
+It is only invoked when checking <a class="reference internal" href="#valid-rectype-ext"><span class="std std-ref">validity</span></a> of <a class="reference internal" href="../valid/conventions.html#aux-roll-rectype"><span class="std std-ref">rolled-up</span></a> <a class="reference internal" href="../syntax/types.html#syntax-rectype"><span class="std std-ref">recursive types</span></a>.</p>
 </div>
 </section>
 <section id="results">
