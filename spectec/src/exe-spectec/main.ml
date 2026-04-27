@@ -223,8 +223,8 @@ let () =
     let match_algo_name algo_name al_elt =
       algo_name = "" ||
       (match al_elt.Util.Source.it with
-      | Al.Ast.RuleA (a, _, _, _) ->
-        Al.Print.string_of_atom a = String.uppercase_ascii algo_name
+      | Al.Ast.RuleA (m, _, _, _) ->
+        Al.Print.string_of_mixop m = String.uppercase_ascii algo_name
       | Al.Ast.FuncA (id , _, _) ->
         id = String.lowercase_ascii algo_name)
     in

@@ -1353,10 +1353,6 @@ Instruction Sequences
 
 Typing of instruction sequences is defined recursively.
 
-
-Empty Instruction Sequence: :math:`\epsilon`
-............................................
-
 $${rule-prose: Instrs_ok}
 
 

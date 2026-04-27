@@ -421,7 +421,7 @@ warning: syntax `num_` was never spliced
 warning: syntax `num_` was never spliced
 warning: syntax `numtype` was never spliced
 warning: syntax `oktypeidx` was never spliced
-warning: syntax `oktypeidxnat` was never spliced
+warning: syntax `oktypenat` was never spliced
 warning: syntax `pack_` was never spliced
 warning: syntax `packtype` was never spliced
 warning: syntax `packval` was never spliced
@@ -1586,7 +1586,6 @@ warning: definition `evalexprs` was never spliced
 warning: definition `evalexprss` was never spliced
 warning: definition `evalglobals` was never spliced
 warning: definition `exninst` was never spliced
-warning: definition `expanddt` was never spliced
 warning: definition `expon` was never spliced
 warning: definition `exportsd` was never spliced
 warning: definition `extend__` was never spliced
@@ -2512,7 +2511,6 @@ warning: definition prose `evalexprs` was never spliced
 warning: definition prose `evalexprss` was never spliced
 warning: definition prose `evalglobals` was never spliced
 warning: definition prose `exninst` was never spliced
-warning: definition prose `expanddt` was never spliced
 warning: definition prose `expon` was never spliced
 warning: definition prose `exportsd` was never spliced
 warning: definition prose `fnat` was never spliced

@@ -167,7 +167,6 @@ In addition, the following auxiliary relation denotes the *expansion* of a :ref:
 $${rule: Expand {Expand_use/*}}
 
 $${relation-ignore: Expand Expand_use}
-$${definition-ignore: expanddt}
 
 
 .. index:: ! instruction type, value type, result type, instruction, local, local index

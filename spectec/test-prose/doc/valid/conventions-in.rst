@@ -260,14 +260,6 @@ $${definition: unrolldt}
 
 $${definition: unrollht}
 
-.. _def-expanddt:
-
-$${definition-prose: expanddt}
-
-\
-
-$${definition: expanddt}
-
 $${rule: Expand}
 
 .. _syntax-instrtype:

@@ -3440,12 +3440,6 @@ $$
 \end{array}
 $$
 
-$$
-\begin{array}[t]{@{}lcl@{}l@{}}
-{\mathrm{expand}}({\mathit{deftype}}) & = & {\mathit{comptype}} & \quad \mbox{if}~ {\mathrm{unroll}}({\mathit{deftype}}) = \mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~{\mathit{comptype}} \\
-\end{array}
-$$
-
 \vspace{1ex}
 
 \vspace{1ex}
@@ -4357,7 +4351,18 @@ $$
 \mbox{(start function)} & {\mathit{start}} & ::= & \mathsf{start}~{\mathit{funcidx}} \\
 \mbox{(import)} & {\mathit{import}} & ::= & \mathsf{import}~{\mathit{name}}~{\mathit{name}}~{\mathit{externtype}} \\
 \mbox{(export)} & {\mathit{export}} & ::= & \mathsf{export}~{\mathit{name}}~{\mathit{externidx}} \\
-\mbox{(module)} & {\mathit{module}} & ::= & \mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{tag}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast} \\
+\mbox{(module)} & {\mathit{module}} & ::= & \begin{array}[t]{@{}l@{}} \mathsf{module} \\
+  {\mathit{list}}({\mathit{type}}) \\
+  {\mathit{list}}({\mathit{import}}) \\
+  {\mathit{list}}({\mathit{tag}}) \\
+  {\mathit{list}}({\mathit{global}}) \\
+  {\mathit{list}}({\mathit{mem}}) \\
+  {\mathit{list}}({\mathit{table}}) \\
+  {\mathit{list}}({\mathit{func}}) \\
+  {\mathit{list}}({\mathit{data}}) \\
+  {\mathit{list}}({\mathit{elem}}) \\
+  {{\mathit{start}}^?} \\
+  {\mathit{list}}({\mathit{export}}) \end{array} \\
 \end{array}
 $$
 
@@ -4753,7 +4758,7 @@ $\boxed{{\mathit{typeuse}} \approx_{{\mathit{context}}} {\mathit{comptype}}}$
 
 $$
 \begin{array}[t]{@{}lrcl@{}l@{}}
-{[\textsc{\scriptsize Expand}]} \quad & {\mathit{deftype}} & \approx & {\mathit{comptype}} & \quad \mbox{if}~ {\mathrm{expand}}({\mathit{deftype}}) = {\mathit{comptype}} \\
+{[\textsc{\scriptsize Expand}]} \quad & {\mathit{deftype}} & \approx & {\mathit{comptype}} & \quad \mbox{if}~ {\mathrm{unroll}}({\mathit{deftype}}) = \mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~{\mathit{comptype}} \\
 \end{array}
 $$
 
@@ -4769,7 +4774,7 @@ $$
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}}
 & {\mathsf{ok}}{({\mathit{typeidx}})} & ::= & {\mathsf{ok}}{{\mathit{typeidx}}} \\
-& {\mathsf{ok}}{({\mathit{typeidx}}, n)} & ::= & {\mathsf{ok}}{({\mathit{typeidx}}, \mathbb{N})} \\
+& {\mathsf{ok}}{n} & ::= & {\mathsf{ok}}{\mathbb{N}} \\
 \end{array}
 $$
 
@@ -4785,9 +4790,9 @@ $\boxed{{\mathit{context}} \vdash {\mathit{subtype}} : {\mathsf{ok}}{({\mathit{t
 
 $\boxed{{\mathit{context}} \vdash {\mathit{rectype}} : {\mathsf{ok}}{({\mathit{typeidx}})}}$
 
-$\boxed{{\mathit{context}} \vdash {\mathit{subtype}} : {\mathsf{ok}}{({\mathit{typeidx}}, n)}}$
+$\boxed{{\mathit{context}} \vdash {\mathit{subtype}} : {\mathsf{ok}}{n}}$
 
-$\boxed{{\mathit{context}} \vdash {\mathit{rectype}} : {\mathsf{ok}}{({\mathit{typeidx}}, n)}}$
+$\boxed{{\mathit{context}} \vdash {\mathit{rectype}} : {\mathsf{ok}}{n}}$
 
 $\boxed{{\mathit{context}} \vdash {\mathit{deftype}} : \mathsf{ok}}$
 
@@ -4937,9 +4942,8 @@ $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-{\mathit{deftype}} \prec x, i & = & \mathsf{true} \\
-{\mathit{typeidx}} \prec x, i & = & {\mathit{typeidx}} < x \\
-\mathsf{rec} {.} j \prec x, i & = & j < i \\
+\mathsf{rec} {.} j \prec i & = & j < i \\
+{\mathit{typeuse}} \prec i & = & \mathsf{true} & \quad \mbox{otherwise} \\
 \end{array}
 $$
 
@@ -4959,7 +4963,7 @@ $$
  \qquad
 (C \vdash {\mathit{typeuse}} : \mathsf{ok})^\ast
  \qquad
-({\mathit{typeuse}} \prec x, i)^\ast
+({\mathit{typeuse}} \prec i)^\ast
  \qquad
 ({{\mathrm{unroll}}}_{C}({\mathit{typeuse}}) = \mathsf{sub}~{{\mathit{typeuse}'}^\ast}~{\mathit{comptype}'})^\ast
  \\
@@ -4968,7 +4972,7 @@ C \vdash {\mathit{comptype}} : \mathsf{ok}
 (C \vdash {\mathit{comptype}} \leq {\mathit{comptype}'})^\ast
 \end{array}
 }{
-C \vdash \mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~{\mathit{comptype}} : {\mathsf{ok}}{(x, i)}
+C \vdash \mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~{\mathit{comptype}} : {\mathsf{ok}}{(i)}
 } \, {[\textsc{\scriptsize K{-}sub2}]}
 \qquad
 \end{array}
@@ -5005,7 +5009,7 @@ $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
 }{
-C \vdash \mathsf{rec}~\epsilon : {\mathsf{ok}}{(x, i)}
+C \vdash \mathsf{rec}~\epsilon : {\mathsf{ok}}{(i)}
 } \, {[\textsc{\scriptsize K{-}rec2{-}empty}]}
 \qquad
 \end{array}
@@ -5014,11 +5018,11 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C \vdash {\mathit{subtype}}_1 : {\mathsf{ok}}{(x, i)}
+C \vdash {\mathit{subtype}}_1 : {\mathsf{ok}}{(i)}
  \qquad
-C \vdash \mathsf{rec}~{{\mathit{subtype}}^\ast} : {\mathsf{ok}}{(x, i + 1)}
+C \vdash \mathsf{rec}~{{\mathit{subtype}}^\ast} : {\mathsf{ok}}{(i + 1)}
 }{
-C \vdash \mathsf{rec}~({\mathit{subtype}}_1~{{\mathit{subtype}}^\ast}) : {\mathsf{ok}}{(x, i)}
+C \vdash \mathsf{rec}~({\mathit{subtype}}_1~{{\mathit{subtype}}^\ast}) : {\mathsf{ok}}{(i)}
 } \, {[\textsc{\scriptsize K{-}rec2{-}cons}]}
 \qquad
 \end{array}
@@ -5029,7 +5033,7 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C, \mathsf{recs}~{{\mathit{subtype}}^{n}} \vdash {\mathit{rectype}} : {\mathsf{ok}}{(x, 0)}
+C, \mathsf{recs}~{{\mathit{subtype}}^{n}} \vdash {\mathit{rectype}} : {\mathsf{ok}}{(0)}
  \qquad
 {\mathit{rectype}} = \mathsf{rec}~{{\mathit{subtype}}^{n}}
  \qquad
@@ -14045,7 +14049,7 @@ C_0 = \{ \mathsf{types}~{{\mathit{dt}}^{n}} \}
  \qquad
 (\{ \mathsf{types}~{{\mathit{dt}}^{n}}{}[0 : i] \} \vdash {\mathit{dt}} : \mathsf{ok})^{i<n}
  \qquad
-(\{ \mathsf{types}~{{\mathit{dt}}^{n}},\;\allowbreak \mathsf{recs}~{{\mathit{st}}^{m}} \} \vdash {\mathit{st}} : {\mathsf{ok}}{(n, i)})^{i<m}
+(\{ \mathsf{types}~{{\mathit{dt}}^{n}},\;\allowbreak \mathsf{recs}~{{\mathit{st}}^{m}} \} \vdash {\mathit{st}} : {\mathsf{ok}}{(i)})^{i<m}
  \qquad
 (C_0 \vdash {\mathit{jt}} : \mathsf{ok})^\ast
  \qquad

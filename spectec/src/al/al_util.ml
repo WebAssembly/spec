@@ -268,7 +268,7 @@ let unwrap_cate e =
   | _ -> fail_expr "unwrap_cate" e
 
 let name_of_algo algo = match algo.it with
-  | RuleA (name, _, _, _) -> Print.string_of_atom name
+  | RuleA (mixop, _, _, _) -> Print.string_of_mixop mixop
   | FuncA (name, _, _) -> name
 
 let params_of_algo algo = match algo.it with
