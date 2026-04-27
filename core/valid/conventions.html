@@ -259,7 +259,6 @@ they do not occur in programs.</p>
 which collects relevant information about the surrounding <a class="reference internal" href="../syntax/modules.html#syntax-module"><span class="std std-ref">module</span></a> and the definitions in scope:</p>
 <ul class="simple">
 <li><p><em>Types</em>: the list of <a class="reference internal" href="../syntax/modules.html#syntax-type"><span class="std std-ref">types</span></a> defined in the current module.</p></li>
-<li><p><em>Recursive Types</em>: the list of <a class="reference internal" href="../syntax/types.html#syntax-subtype"><span class="std std-ref">sub types</span></a> in the current group of recursive types.</p></li>
 <li><p><em>Functions</em>: the list of <a class="reference internal" href="../syntax/modules.html#syntax-func"><span class="std std-ref">functions</span></a> declared in the current module, represented by a <a class="reference internal" href="#syntax-deftype"><span class="std std-ref">defined type</span></a> that <a class="reference internal" href="#aux-expand-deftype"><span class="std std-ref">expands</span></a> to their <a class="reference internal" href="../syntax/types.html#syntax-functype"><span class="std std-ref">function type</span></a>.</p></li>
 <li><p><em>Tables</em>: the list of <a class="reference internal" href="../syntax/modules.html#syntax-table"><span class="std std-ref">tables</span></a> declared in the current module, represented by their <a class="reference internal" href="../syntax/types.html#syntax-tabletype"><span class="std std-ref">table type</span></a>.</p></li>
 <li><p><em>Memories</em>: the list of <a class="reference internal" href="../syntax/modules.html#syntax-mem"><span class="std std-ref">memories</span></a> declared in the current module, represented by their <a class="reference internal" href="../syntax/types.html#syntax-memtype"><span class="std std-ref">memory type</span></a>.</p></li>
@@ -281,7 +280,6 @@ The label stack is the only part of the context that changes as validation of an
 \[\begin{split}\begin{array}[t]{&#64;{}l&#64;{}rrl&#64;{}l&#64;{}}
 &amp; {\href{../valid/conventions.html#context}{\mathit{context}}} &amp; ::= &amp; \{ \begin{array}[t]{&#64;{}l&#64;{}l&#64;{}}
 \href{../valid/conventions.html#context}{\mathsf{types}}~{{\href{../valid/conventions.html#syntax-deftype}{\mathit{deftype}}}^\ast} \\
-\href{../appendix/properties.html#context-ext}{\mathsf{recs}}~{{\href{../syntax/types.html#syntax-subtype}{\mathit{subtype}}}^\ast} \\
 \href{../valid/conventions.html#context}{\mathsf{tags}}~{{\href{../syntax/types.html#syntax-tagtype}{\mathit{tagtype}}}^\ast} \\
 \href{../valid/conventions.html#context}{\mathsf{globals}}~{{\href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}}}^\ast} \\
 \href{../valid/conventions.html#context}{\mathsf{mems}}~{{\href{../syntax/types.html#syntax-memtype}{\mathit{memtype}}}^\ast} \\
@@ -292,9 +290,14 @@ The label stack is the only part of the context that changes as validation of an
 \href{../valid/conventions.html#context}{\mathsf{locals}}~{{\href{../valid/conventions.html#syntax-localtype}{\mathit{localtype}}}^\ast} \\
 \href{../valid/conventions.html#context}{\mathsf{labels}}~{{\href{../syntax/types.html#syntax-resulttype}{\mathit{resulttype}}}^\ast} \\
 \href{../valid/conventions.html#context}{\mathsf{return}}~{{\href{../syntax/types.html#syntax-resulttype}{\mathit{resulttype}}}^?} \\
-\href{../valid/conventions.html#context}{\mathsf{refs}}~{{\href{../syntax/modules.html#syntax-funcidx}{\mathit{funcidx}}}^\ast} \} \\
+\href{../valid/conventions.html#context}{\mathsf{refs}}~{{\href{../syntax/modules.html#syntax-funcidx}{\mathit{funcidx}}}^\ast} \\
+\dots \} \\
 \end{array} \\
 \end{array}\end{split}\]</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The definition of contexts needs to be <a class="reference internal" href="../appendix/properties.html#context-ext"><span class="std std-ref">extended</span></a> with additional fields for the purpose of proving <a class="reference internal" href="../appendix/properties.html#soundness"><span class="std std-ref">type soundness</span></a>.</p>
+</div>
 <section id="aux-clostype">
 <span id="type-closure"></span><span id="index-8"></span><span id="id3"></span><h3>Convention<a class="headerlink" href="#aux-clostype" title="Link to this heading">¶</a></h3>
 <p>A type of any shape can be <em>closed</em> to bring it into <a class="reference internal" href="#type-closed"><span class="std std-ref">closed</span></a> form relative to a <a class="reference internal" href="#context"><span class="std std-ref">context</span></a> it is <a class="reference internal" href="modules.html#valid-type"><span class="std std-ref">valid</span></a> in, by <a class="reference internal" href="#notation-subst"><span class="std std-ref">substituting</span></a> each <a class="reference internal" href="../syntax/modules.html#syntax-typeidx"><span class="std std-ref">type index</span></a> <span class="math notranslate nohighlight">\(x\)</span> occurring in it with its own corresponding <a class="reference internal" href="#syntax-deftype"><span class="std std-ref">defined type</span></a> <span class="math notranslate nohighlight">\(C{.}\href{../valid/conventions.html#context}{\mathsf{types}}{}[x]\)</span>, after first closing the types in <span class="math notranslate nohighlight">\(C{.}\href{../valid/conventions.html#context}{\mathsf{types}}\)</span> themselves.</p>

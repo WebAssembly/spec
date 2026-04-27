@@ -105,11 +105,12 @@ In order to state and prove soundness precisely, the typing rules must be extend
 <section id="contexts">
 <span id="context-ext"></span><span id="index-1"></span><h2>Contexts<a class="headerlink" href="#contexts" title="Link to this heading">¶</a></h2>
 <p>In order to check <a class="reference internal" href="../valid/conventions.html#aux-roll-rectype"><span class="std std-ref">rolled up</span></a> recursive types,
-the <a class="reference internal" href="../valid/conventions.html#context"><span class="std std-ref">context</span></a> is locally extended with an additional component that records the <a class="reference internal" href="../syntax/types.html#syntax-subtype"><span class="std std-ref">sub type</span></a> corresponding to each <a class="reference internal" href="../valid/conventions.html#syntax-rectypeidx"><span class="std std-ref">recursive type index</span></a> within the current <a class="reference internal" href="../syntax/types.html#syntax-rectype"><span class="std std-ref">recursive type</span></a>:</p>
+the <a class="reference internal" href="../valid/conventions.html#context"><span class="std std-ref">context</span></a> is locally extended with an additional component that records the <a class="reference internal" href="../syntax/types.html#syntax-subtype"><span class="std std-ref">sub type</span></a> corresponding to each <a class="reference internal" href="../valid/conventions.html#syntax-rectypeidx"><span class="std std-ref">recursive type index</span></a> within the current group of <a class="reference internal" href="../syntax/types.html#syntax-rectype"><span class="std std-ref">recursive types</span></a>:</p>
 <div class="math notranslate nohighlight">
-\[\begin{split}\begin{array}{llll}
-\def\mathdef1460#1{{}}\mathdef1460{context} &amp; C &amp;::=&amp;
-  \{~ \dots, \href{../appendix/properties.html#context-ext}{\mathsf{recs}} ~ \href{../syntax/types.html#syntax-subtype}{\mathit{subtype}}^\ast ~\} \\
+\[\begin{split}\begin{array}[t]{&#64;{}l&#64;{}rrl&#64;{}l&#64;{}}
+&amp; {\href{../valid/conventions.html#context}{\mathit{context}}} &amp; ::= &amp; \{ \begin{array}[t]{&#64;{}l&#64;{}l&#64;{}}
+\dots ,  \href{../appendix/properties.html#context-ext}{\mathsf{recs}}~{{\href{../syntax/types.html#syntax-subtype}{\mathit{subtype}}}^\ast} \} \\
+\end{array} \\
 \end{array}\end{split}\]</div>
 </section>
 <section id="types">
