@@ -33,7 +33,7 @@ Two degrees of polymorphism can be distinguished:
   the entire (or most of the) :ref:`instruction type <syntax-instrtype>` ${instrtype: t_1* -> t_2*} of the instruction is unconstrained.
   That is the case for all :ref:`control instructions <valid-instr-control>` that perform an *unconditional control transfer*, such as ${:UNREACHABLE}, ${:BR}, or ${:RETURN}.
 
-In both cases, the unconstrained types or type sequences can be chosen arbitrarily, as long as they meet the constraints imposed for the surrounding parts of the program.
+In both cases, the unconstrained types or type sequences can be chosen arbitrarily, as long as they are valid in the current :ref:`context <context>` and meet the constraints imposed for the surrounding parts of the program.
 
 .. note::
    For example, the ${:SELECT} instruction is valid with type ${instrtype: t t I32 -> t}, for any possible :ref:`number type <syntax-numtype>` ${:t}.
@@ -1352,10 +1352,6 @@ Instruction Sequences
 ~~~~~~~~~~~~~~~~~~~~~
 
 Typing of instruction sequences is defined recursively.
-
-
-Empty Instruction Sequence: :math:`\epsilon`
-............................................
 
 $${rule-prose: Instrs_ok}
 

@@ -39,11 +39,10 @@ Heap Types
 $${rule-prose: Heaptype_sub}
 
 $${rule:
-  {Heaptype_sub/refl Heaptype_sub/trans}
+  {Heaptype_sub/refl} {Heaptype_sub/trans}
   {Heaptype_sub/eq-any Heaptype_sub/i31-eq Heaptype_sub/struct-eq Heaptype_sub/array-eq}
   {Heaptype_sub/struct Heaptype_sub/array Heaptype_sub/func}
   {Heaptype_sub/typeidx-l Heaptype_sub/typeidx-r}
-  {Heaptype_sub/rec}
   {Heaptype_sub/none Heaptype_sub/nofunc} {Heaptype_sub/noexn Heaptype_sub/noextern}
   {Heaptype_sub/bot}
 }

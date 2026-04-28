@@ -27,13 +27,9 @@ Contexts
 ~~~~~~~~
 
 In order to check :ref:`rolled up <aux-roll-rectype>` recursive types,
-the :ref:`context <context>` is locally extended with an additional component that records the :ref:`sub type <syntax-subtype>` corresponding to each :ref:`recursive type index <syntax-rectypeidx>` within the current :ref:`recursive type <syntax-rectype>`:
+the :ref:`context <context>` is locally extended with an additional component that records the :ref:`sub type <syntax-subtype>` corresponding to each :ref:`recursive type index <syntax-rectypeidx>` within the current group of :ref:`recursive types <syntax-rectype>`:
 
-.. math::
-   \begin{array}{llll}
-   \production{context} & C &::=&
-     \{~ \dots, \CRECS ~ \subtype^\ast ~\} \\
-   \end{array}
+$${syntax: context/sem}
 
 
 .. index:: value type, reference type, heap type, bottom type, sub type, recursive type, recursive type index
@@ -44,163 +40,55 @@ Types
 
 Well-formedness for :ref:`extended type forms <type-ext>` is defined as follows.
 
+.. _valid-typeuse-ext:
+
+$${rule-prose: Typeuse_ok/rec}
+
+$${rule: Typeuse_ok/rec}
+
 
 .. _valid-heaptype-ext:
 
-:ref:`Heap Type <syntax-heaptype-ext>` :math:`\BOTH`
-....................................................
+$${rule-prose: Heaptype_ok/bot}
 
-* The heap type is valid.
-
-.. math::
-   \frac{
-   }{
-     C \vdashheaptype \BOTH : \OKheaptype
-   }
-
-:ref:`Heap Type <syntax-heaptype-ext>` :math:`\REC~i`
-.....................................................
-
-* The recursive type index :math:`i` must exist in :math:`C.\CRECS`.
-
-* Then the heap type is valid.
-
-.. math::
-   \frac{
-     C.\CRECS[i] = \subtype
-   }{
-     C \vdashheaptype \REC~i : \OKheaptype
-   }
+$${rule: Heaptype_ok/bot}
 
 
 .. _valid-valtype-ext:
 
-:ref:`Value Type <syntax-valtype-ext>` :math:`\BOT`
-...................................................
+$${rule-prose: Valtype_ok/bot}
 
-* The value type is valid.
-
-.. math::
-   \frac{
-   }{
-     C \vdashvaltype \BOT : \OKvaltype
-   }
+$${rule: Valtype_ok/bot}
 
 
 .. _valid-rectype-ext:
 
-:ref:`Recursive Types <syntax-rectype>` :math:`\TREC~\subtype^\ast`
-...................................................................
+$${rule-prose: Rectype_ok2}
 
-* Let :math:`C'` be the current :ref:`context <context>` :math:`C`, but where |CRECS| is :math:`\subtype^\ast`.
-
-* There must be a :ref:`type index <syntax-typeidx>` :math:`x`, such that for each :ref:`sub type <syntax-subtype>` :math:`\subtype_i` in :math:`\subtype^\ast`:
-
-  * Under the context :math:`C'`, the :ref:`sub type <syntax-subtype>` :math:`\subtype_i` must be :ref:`valid <valid-subtype>` for :ref:`type index <syntax-typeidx>` :math:`x+i` and :ref:`recursive type index <syntax-rectypeidx>` :math:`i`.
-
-* Then the recursive type is valid for the :ref:`type index <syntax-typeidx>` :math:`x`.
-
-.. math::
-   \frac{
-     C,\CRECS~\subtype^\ast \vdashrectype \TREC~\subtype^\ast : {\OKrectype}(x,0)
-   }{
-     C \vdashrectype \TREC~\subtype^\ast : {\OKrectype}(x)
-   }
-
-.. math::
-   \frac{
-   }{
-     C \vdashrectype \TREC~\epsilon : {\OKrectype}(x,i)
-   }
-   \qquad
-   \frac{
-     C \vdashsubtype \subtype : {\OKsubtype}(x,i)
-     \qquad
-     C \vdashrectype \TREC~{\subtype'}^\ast : {\OKrectype}(x+1,i+1)
-   }{
-     C \vdashrectype \TREC~\subtype~{\subtype'}^\ast : {\OKrectype}(x,i)
-   }
-
-.. note::
-   These rules are a generalisation of the ones :ref:`previously given <valid-rectype>`.
+$${rule: {Rectype_ok2/empty Rectype_ok2/cons}}
 
 
 .. _valid-subtype-ext:
 
-:ref:`Sub types <syntax-subtype>` :math:`\TSUB~\TFINAL^?~\X{ht}^\ast~\comptype`
-...............................................................................
+$${rule-prose: Subtype_ok2}
 
-* The :ref:`composite type <syntax-comptype>` :math:`\comptype` must be :ref:`valid <valid-comptype>`.
-
-* The sequence :math:`\X{ht}^\ast` may be no longer than :math:`1`.
-
-* For every :ref:`heap type <syntax-heaptype>` :math:`\X{ht}_k` in :math:`\X{ht}^\ast`:
-
-  * The :ref:`heap type <syntax-heaptype>` :math:`\X{ht}_k` must be ordered before a :ref:`type index <syntax-typeidx>` :math:`x` and :ref:`recursive type index <syntax-rectypeidx>` a :math:`i`, meaning:
-
-    - Either :math:`\X{ht}_k` is a :ref:`defined type <syntax-deftype>`.
-
-    - Or :math:`\X{ht}_k` is a :ref:`type index <syntax-typeidx>` :math:`y_k` that is smaller than :math:`x`.
-
-    - Or :math:`\X{ht}_k` is a :ref:`recursive type index <syntax-rectypeidx>` :math:`\REC~j_k` where :math:`j_k` is smaller than :math:`i`.
-
-  * Let :ref:`sub type <syntax-subtype>` :math:`\subtype_k` be the :ref:`unrolling <aux-unroll-heaptype>` of the :ref:`heap type <syntax-heaptype>` :math:`\X{ht}_k`, meaning:
-
-    - Either :math:`\X{ht}_k` is a :ref:`defined type <syntax-deftype>` :math:`\deftype_k`, then :math:`\subtype_k` must be the :ref:`unrolling <aux-unroll-deftype>` of :math:`\deftype_k`.
-
-    - Or :math:`\X{ht}_k` is a :ref:`type index <syntax-typeidx>` :math:`y_k`, then :math:`\subtype_k` must be the :ref:`unrolling <aux-unroll-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`C.\CTYPES[y_k]`.
-
-    - Or :math:`\X{ht}_k` is a :ref:`recursive type index <syntax-rectypeidx>` :math:`\REC~j_k`, then :math:`\subtype_k` must be :math:`C.\CRECS[j_k]`.
-
-  * The :ref:`sub type <syntax-subtype>` :math:`\subtype_k` must not contain :math:`\TFINAL`.
-
-  * Let :math:`\comptype'_k` be the :ref:`composite type <syntax-comptype>` in :math:`\subtype_k`.
-
-  * The :ref:`composite type <syntax-comptype>` :math:`\comptype` must :ref:`match <match-comptype>` :math:`\comptype'_k`.
-
-* Then the sub type is valid for the :ref:`type index <syntax-typeidx>` :math:`x` and :ref:`recursive type index <syntax-rectypeidx>` :math:`i`.
-
-.. math::
-   \frac{
-     \begin{array}{@{}c@{}}
-     |\X{ht}^\ast| \leq 1
-     \qquad
-     (\X{ht} \prec x,i)^\ast
-     \qquad
-     (\unrollht_{C}(\X{ht}) = \TSUB~{\X{ht}'}^\ast~\comptype')^\ast
-     \\
-     C \vdashcomptype \comptype : \OKcomptype
-     \qquad
-     (C \vdashcomptypematch \comptype \subcomptypematch \comptype')^\ast
-     \end{array}
-   }{
-     C \vdashsubtype \TSUB~\TFINAL^?~\X{ht}^\ast~\comptype : {\OKsubtype}(x,i)
-   }
-
-.. _aux-unroll-heaptype:
+$${rule: Subtype_ok2}
 
 where:
 
-.. math::
-   \begin{array}{@{}lll@{}}
-   (\deftype \prec x,i) &=& {\F{true}} \\
-   (y \prec x,i) &=& y < x \\
-   (\REC~j \prec x,i) &=& j < i \\
-   [2ex]
-   \unrollht_{C}(\deftype) &=& \unrolldt(\deftype) \\
-   \unrollht_{C}(y) &=& \unrolldt(C.\CTYPES[y]) \\
-   \unrollht_{C}(\REC~j) &=& C.\CRECS[j] \\
-   \end{array}
+.. _aux-unroll-heaptype:
+
+$${definition: unrollht_ before}
 
 .. note::
-   This rule is a generalisation of the ones :ref:`previously given <valid-subtype>`, which only allowed type indices as supertypes.
+   The new rules for :ref:`recursive types <syntax-rectype>` and :ref:`sub types <syntax-subtype>` complement the ones :ref:`previously given <valid-subtype>`,
+   which only allowed regular :ref:`type indices <syntax-typeidx>` as supertypes.
+   They define validity of :ref:`rolled-up <aux-roll-rectype>` recursive types,
+   like they occur in :ref:`defined types <syntax-deftype>`.
 
 
 .. index:: defined type, recursive type, unroll, expand
 .. _valid-deftype:
-
-:ref:`Defined types <syntax-deftype>` :math:`\rectype.i`
-........................................................
 
 $${rule-prose: Deftype_ok}
 
@@ -213,21 +101,13 @@ $${rule: Deftype_ok}
 Subtyping
 ~~~~~~~~~
 
-In a :ref:`rolled-up <aux-roll-rectype>` :ref:`recursive type <syntax-rectype>`, a :ref:`recursive type indices <syntax-rectypeidx>` :math:`\REC~i` :ref:`matches <match-heaptype>` another :ref:`heap type <syntax-heaptype>` :math:`\X{ht}` if:
+Inside a :ref:`rolled-up <aux-roll-rectype>` :ref:`recursive type <syntax-rectype>`, a :ref:`recursive type index <syntax-rectypeidx>` can :ref:`match <match-heaptype>` another :ref:`heap type <syntax-heaptype>`.
 
-* Let :math:`\TSUB~\TFINAL^?~{\X{ht}'}^\ast~\comptype` be the :ref:`sub type <syntax-subtype>` :math:`C.\CRECS[i]`.
-
-* The heap type :math:`\X{ht}` is contained in :math:`{\X{ht}'}^\ast`.
-
-.. math::
-   \frac{
-     C.\CRECS[i] = \TSUB~\TFINAL^?~(\X{ht}_1^\ast~\X{ht}~\X{ht}_2^\ast)~\comptype
-   }{
-     C \vdashheaptypematch \REC~i \subheaptypematch \X{ht}
-   }
+$${rule: Heaptype_sub/rec}
 
 .. note::
-   This rule is only invoked when checking :ref:`validity <valid-rectype-ext>` of :ref:`rolled-up <aux-roll-rectype>` :ref:`recursive types <syntax-rectype>`.
+   This rule complements the previously given rules for :ref:`matching heap types <match-heaptype>`.
+   It is only invoked when checking :ref:`validity <valid-rectype-ext>` of :ref:`rolled-up <aux-roll-rectype>` :ref:`recursive types <syntax-rectype>`.
 
 
 .. index:: value, value type, result, result type, trap, exception, throw
@@ -285,6 +165,14 @@ Results
    }{
      S \vdashresult \TRAP : [t^\ast]
    }
+
+
+.. _valid-localtype:
+.. _valid-context:
+
+.. todo
+   Context Validity
+   ~~~~~~~~~~~~~~~~
 
 
 .. _module-context:

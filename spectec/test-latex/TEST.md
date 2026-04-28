@@ -3440,12 +3440,6 @@ $$
 \end{array}
 $$
 
-$$
-\begin{array}[t]{@{}lcl@{}l@{}}
-{\mathrm{expand}}({\mathit{deftype}}) & = & {\mathit{comptype}} & \quad \mbox{if}~ {\mathrm{unroll}}({\mathit{deftype}}) = \mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~{\mathit{comptype}} \\
-\end{array}
-$$
-
 \vspace{1ex}
 
 \vspace{1ex}
@@ -4357,7 +4351,18 @@ $$
 \mbox{(start function)} & {\mathit{start}} & ::= & \mathsf{start}~{\mathit{funcidx}} \\
 \mbox{(import)} & {\mathit{import}} & ::= & \mathsf{import}~{\mathit{name}}~{\mathit{name}}~{\mathit{externtype}} \\
 \mbox{(export)} & {\mathit{export}} & ::= & \mathsf{export}~{\mathit{name}}~{\mathit{externidx}} \\
-\mbox{(module)} & {\mathit{module}} & ::= & \mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{tag}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast} \\
+\mbox{(module)} & {\mathit{module}} & ::= & \begin{array}[t]{@{}l@{}} \mathsf{module} \\
+  {\mathit{list}}({\mathit{type}}) \\
+  {\mathit{list}}({\mathit{import}}) \\
+  {\mathit{list}}({\mathit{tag}}) \\
+  {\mathit{list}}({\mathit{global}}) \\
+  {\mathit{list}}({\mathit{mem}}) \\
+  {\mathit{list}}({\mathit{table}}) \\
+  {\mathit{list}}({\mathit{func}}) \\
+  {\mathit{list}}({\mathit{data}}) \\
+  {\mathit{list}}({\mathit{elem}}) \\
+  {{\mathit{start}}^?} \\
+  {\mathit{list}}({\mathit{export}}) \end{array} \\
 \end{array}
 $$
 
@@ -4515,9 +4520,8 @@ $$
 
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}}
-\mbox{(context)} & {\mathit{context}} & ::= & \{ \begin{array}[t]{@{}l@{}l@{}}
+& {\mathit{context}} & ::= & \{ \begin{array}[t]{@{}l@{}l@{}}
 \mathsf{types}~{{\mathit{deftype}}^\ast} \\
-\mathsf{recs}~{{\mathit{subtype}}^\ast} \\
 \mathsf{tags}~{{\mathit{tagtype}}^\ast} \\
 \mathsf{globals}~{{\mathit{globaltype}}^\ast} \\
 \mathsf{mems}~{{\mathit{memtype}}^\ast} \\
@@ -4528,7 +4532,8 @@ $$
 \mathsf{locals}~{{\mathit{localtype}}^\ast} \\
 \mathsf{labels}~{{\mathit{resulttype}}^\ast} \\
 \mathsf{return}~{{\mathit{resulttype}}^?} \\
-\mathsf{refs}~{{\mathit{funcidx}}^\ast} \} \\
+\mathsf{refs}~{{\mathit{funcidx}}^\ast} \\
+\mathsf{recs}~{{\mathit{subtype}}^\ast} \} \\
 \end{array} \\
 \end{array}
 $$
@@ -4639,6 +4644,16 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
+}{
+C \vdash \mathsf{bot} : \mathsf{ok}
+} \, {[\textsc{\scriptsize K{-}heap{-}bot}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
 C \vdash {\mathit{heaptype}} : \mathsf{ok}
 }{
 C \vdash \mathsf{ref}~{\mathsf{null}^?}~{\mathit{heaptype}} : \mathsf{ok}
@@ -4692,9 +4707,22 @@ $$
 
 \vspace{1ex}
 
+$\boxed{{\mathit{context}} \vdash {\mathit{localtype}} : \mathsf{ok}}$
+
 $\boxed{{\mathit{context}} \vdash {\mathit{resulttype}} : \mathsf{ok}}$
 
 $\boxed{{\mathit{context}} \vdash {\mathit{instrtype}} : \mathsf{ok}}$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+C \vdash t : \mathsf{ok}
+}{
+C \vdash {\mathit{init}}~t : \mathsf{ok}
+} \, {[\textsc{\scriptsize K{-}local}]}
+\qquad
+\end{array}
+$$
 
 $$
 \begin{array}{@{}c@{}}\displaystyle
@@ -4730,7 +4758,7 @@ $\boxed{{\mathit{typeuse}} \approx_{{\mathit{context}}} {\mathit{comptype}}}$
 
 $$
 \begin{array}[t]{@{}lrcl@{}l@{}}
-{[\textsc{\scriptsize Expand}]} \quad & {\mathit{deftype}} & \approx & {\mathit{comptype}} & \quad \mbox{if}~ {\mathrm{expand}}({\mathit{deftype}}) = {\mathit{comptype}} \\
+{[\textsc{\scriptsize Expand}]} \quad & {\mathit{deftype}} & \approx & {\mathit{comptype}} & \quad \mbox{if}~ {\mathrm{unroll}}({\mathit{deftype}}) = \mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~{\mathit{comptype}} \\
 \end{array}
 $$
 
@@ -4746,7 +4774,7 @@ $$
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}}
 & {\mathsf{ok}}{({\mathit{typeidx}})} & ::= & {\mathsf{ok}}{{\mathit{typeidx}}} \\
-& {\mathsf{ok}}{({\mathit{typeidx}}, n)} & ::= & {\mathsf{ok}}{({\mathit{typeidx}}, \mathbb{N})} \\
+& {\mathsf{ok}}{n} & ::= & {\mathsf{ok}}{\mathbb{N}} \\
 \end{array}
 $$
 
@@ -4762,9 +4790,9 @@ $\boxed{{\mathit{context}} \vdash {\mathit{subtype}} : {\mathsf{ok}}{({\mathit{t
 
 $\boxed{{\mathit{context}} \vdash {\mathit{rectype}} : {\mathsf{ok}}{({\mathit{typeidx}})}}$
 
-$\boxed{{\mathit{context}} \vdash {\mathit{subtype}} : {\mathsf{ok}}{({\mathit{typeidx}}, n)}}$
+$\boxed{{\mathit{context}} \vdash {\mathit{subtype}} : {\mathsf{ok}}{n}}$
 
-$\boxed{{\mathit{context}} \vdash {\mathit{rectype}} : {\mathsf{ok}}{({\mathit{typeidx}}, n)}}$
+$\boxed{{\mathit{context}} \vdash {\mathit{rectype}} : {\mathsf{ok}}{n}}$
 
 $\boxed{{\mathit{context}} \vdash {\mathit{deftype}} : \mathsf{ok}}$
 
@@ -4914,17 +4942,16 @@ $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-{\mathit{deftype}} \prec x, i & = & \mathsf{true} \\
-{\mathit{typeidx}} \prec x, i & = & {\mathit{typeidx}} < x \\
-\mathsf{rec} {.} j \prec x, i & = & j < i \\
+\mathsf{rec} {.} j \prec i & = & j < i \\
+{\mathit{typeuse}} \prec i & = & \mathsf{true} & \quad \mbox{otherwise} \\
 \end{array}
 $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-{{\mathrm{unroll}}}_{C}({\mathit{deftype}}) & = & {\mathrm{unroll}}({\mathit{deftype}}) \\
-{{\mathrm{unroll}}}_{C}({\mathit{typeidx}}) & = & {\mathrm{unroll}}(C{.}\mathsf{types}{}[{\mathit{typeidx}}]) \\
-{{\mathrm{unroll}}}_{C}(\mathsf{rec} {.} i) & = & C{.}\mathsf{recs}{}[i] \\
+{{\mathrm{unrollht}}}_{C}({\mathit{deftype}}) & = & {\mathrm{unroll}}({\mathit{deftype}}) \\
+{{\mathrm{unrollht}}}_{C}({\mathit{typeidx}}) & = & {\mathrm{unroll}}(C{.}\mathsf{types}{}[{\mathit{typeidx}}]) \\
+{{\mathrm{unrollht}}}_{C}(\mathsf{rec} {.} i) & = & C{.}\mathsf{recs}{}[i] \\
 \end{array}
 $$
 
@@ -4934,16 +4961,18 @@ $$
 \begin{array}{@{}c@{}}
 {|{{\mathit{typeuse}}^\ast}|} \leq 1
  \qquad
-({\mathit{typeuse}} \prec x, i)^\ast
+(C \vdash {\mathit{typeuse}} : \mathsf{ok})^\ast
  \qquad
-({{\mathrm{unroll}}}_{C}({\mathit{typeuse}}) = \mathsf{sub}~{{\mathit{typeuse}'}^\ast}~{\mathit{comptype}'})^\ast
+({\mathit{typeuse}} \prec i)^\ast
+ \\
+({{\mathrm{unrollht}}}_{C}({\mathit{typeuse}}) = \mathsf{sub}~{{\mathit{typeuse}'}^\ast}~{\mathit{comptype}'})^\ast
  \\
 C \vdash {\mathit{comptype}} : \mathsf{ok}
  \qquad
 (C \vdash {\mathit{comptype}} \leq {\mathit{comptype}'})^\ast
 \end{array}
 }{
-C \vdash \mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~{\mathit{comptype}} : {\mathsf{ok}}{(x, i)}
+C \vdash \mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~{\mathit{comptype}} : {\mathsf{ok}}{(i)}
 } \, {[\textsc{\scriptsize K{-}sub2}]}
 \qquad
 \end{array}
@@ -4974,22 +5003,13 @@ C \vdash \mathsf{rec}~({\mathit{subtype}}_1~{{\mathit{subtype}}^\ast}) : {\maths
 \end{array}
 $$
 
-$$
-\begin{array}{@{}c@{}}\displaystyle
-\frac{
-C, \mathsf{recs}~{{\mathit{subtype}}^\ast} \vdash \mathsf{rec}~{{\mathit{subtype}}^\ast} : {\mathsf{ok}}{(x, 0)}
-}{
-C \vdash \mathsf{rec}~{{\mathit{subtype}}^\ast} : {\mathsf{ok}}{(x)}
-} \, {[\textsc{\scriptsize K{-}rect{-}\_rec2}]}
-\qquad
-\end{array}
-$$
+\vspace{1ex}
 
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
 }{
-C \vdash \mathsf{rec}~\epsilon : {\mathsf{ok}}{(x, i)}
+C \vdash \mathsf{rec}~\epsilon : {\mathsf{ok}}{(i)}
 } \, {[\textsc{\scriptsize K{-}rec2{-}empty}]}
 \qquad
 \end{array}
@@ -4998,11 +5018,11 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C \vdash {\mathit{subtype}}_1 : {\mathsf{ok}}{(x, i)}
+C \vdash {\mathit{subtype}}_1 : {\mathsf{ok}}{(i)}
  \qquad
-C \vdash \mathsf{rec}~{{\mathit{subtype}}^\ast} : {\mathsf{ok}}{(x + 1, i + 1)}
+C \vdash \mathsf{rec}~{{\mathit{subtype}}^\ast} : {\mathsf{ok}}{(i + 1)}
 }{
-C \vdash \mathsf{rec}~({\mathit{subtype}}_1~{{\mathit{subtype}}^\ast}) : {\mathsf{ok}}{(x, i)}
+C \vdash \mathsf{rec}~({\mathit{subtype}}_1~{{\mathit{subtype}}^\ast}) : {\mathsf{ok}}{(i)}
 } \, {[\textsc{\scriptsize K{-}rec2{-}cons}]}
 \qquad
 \end{array}
@@ -5013,7 +5033,7 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C \vdash {\mathit{rectype}} : {\mathsf{ok}}{(x)}
+C, \mathsf{recs}~{{\mathit{subtype}}^{n}} \vdash {\mathit{rectype}} : {\mathsf{ok}}{(0)}
  \qquad
 {\mathit{rectype}} = \mathsf{rec}~{{\mathit{subtype}}^{n}}
  \qquad
@@ -7326,7 +7346,7 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C \vdash {{\mathit{instr}}^\ast} : \epsilon \rightarrow_{\epsilon} {t^\ast}
+C \vdash {{\mathit{instr}}^\ast} : \epsilon \rightarrow {t^\ast}
 }{
 C \vdash {{\mathit{instr}}^\ast} : {t^\ast}
 } \, {[\textsc{\scriptsize T{-}expr}]}
@@ -9530,6 +9550,44 @@ s \vdash {\mathit{ref}} : {\mathit{rt}}
 }{
 s \vdash {\mathit{ref}} : {\mathit{rt}}
 } \, {[\textsc{\scriptsize Val\_ok{-}ref}]}
+\qquad
+\end{array}
+$$
+
+\vspace{1ex}
+
+$\boxed{{\mathit{store}} \vdash {\mathit{packval}} : {\mathit{packtype}}}$
+
+$\boxed{{\mathit{store}} \vdash {\mathit{fieldval}} : {\mathit{storagetype}}}$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+}{
+s \vdash {\mathit{pt}}{.}\mathsf{pack}~c : {\mathit{pt}}
+} \, {[\textsc{\scriptsize Packval\_ok}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+s \vdash {\mathit{val}} : t
+}{
+s \vdash {\mathit{val}} : t
+} \, {[\textsc{\scriptsize Fieldval\_ok{-}val}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+s \vdash {\mathit{packval}} : {\mathit{pt}}
+}{
+s \vdash {\mathit{packval}} : {\mathit{pt}}
+} \, {[\textsc{\scriptsize Fieldval\_ok{-}packval}]}
 \qquad
 \end{array}
 $$
@@ -13964,6 +14022,804 @@ $$
 } \\
 & & | & {{{\mathtt{decl}}}_{I}^\ast} & \quad\equiv\quad{} & \mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{module}’}~~{{{\mathtt{decl}}}_{I}^\ast}~~\mbox{‘\texttt{{)}}’} \\
 & \ldots & ::= & {{{\mathtt{decl}}}_{I}^\ast} \\
+\end{array}
+$$
+
+$\boxed{{\vdash}\, {\mathit{context}} : \mathsf{ok}}$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+C = \{ \begin{array}[t]{@{}l@{}}
+\mathsf{types}~{{\mathit{dt}}^{n}},\; \\
+  \mathsf{recs}~{{\mathit{st}}^{m}},\; \\
+  \mathsf{tags}~{{\mathit{jt}}^\ast},\; \\
+  \mathsf{globals}~{{\mathit{gt}}^\ast},\; \\
+  \mathsf{mems}~{{\mathit{mt}}^\ast},\; \\
+  \mathsf{tables}~{{\mathit{tt}}^\ast},\; \\
+  \mathsf{funcs}~{{\mathit{dt}}_{\mathsf{f}}^\ast},\; \\
+  \mathsf{datas}~{{\mathit{ok}}^\ast},\; \\
+  \mathsf{elems}~{{\mathit{et}}^\ast},\; \\
+  \mathsf{locals}~{{{\mathit{lt}}}^\ast},\; \\
+  \mathsf{labels}~{{\mathit{rt}}^\ast},\; \\
+  \mathsf{return}~{{\mathit{rt}'}^?},\; \\
+  \mathsf{refs}~{x^\ast} \}\end{array}
+ \qquad
+C_0 = \{ \mathsf{types}~{{\mathit{dt}}^{n}} \}
+ \qquad
+(\{ \mathsf{types}~{{\mathit{dt}}^{n}}{}[0 : i] \} \vdash {\mathit{dt}} : \mathsf{ok})^{i<n}
+ \qquad
+(\{ \mathsf{types}~{{\mathit{dt}}^{n}},\;\allowbreak \mathsf{recs}~{{\mathit{st}}^{m}} \} \vdash {\mathit{st}} : {\mathsf{ok}}{(i)})^{i<m}
+ \qquad
+(C_0 \vdash {\mathit{jt}} : \mathsf{ok})^\ast
+ \qquad
+(C_0 \vdash {\mathit{gt}} : \mathsf{ok})^\ast
+ \qquad
+(C_0 \vdash {\mathit{mt}} : \mathsf{ok})^\ast
+ \qquad
+(C_0 \vdash {\mathit{tt}} : \mathsf{ok})^\ast
+ \qquad
+(C_0 \vdash {\mathit{dt}}_{\mathsf{f}} : \mathsf{ok})^\ast
+ \qquad
+({\mathit{dt}}_{\mathsf{f}} \approx \mathsf{func}~t_1 \rightarrow t_2)^\ast
+ \qquad
+(C_0 \vdash {\mathit{et}} : \mathsf{ok})^\ast
+ \qquad
+(C_0 \vdash {{\mathit{lt}}} : \mathsf{ok})^\ast
+ \qquad
+(C_0 \vdash {\mathit{rt}} : \mathsf{ok})^\ast
+ \qquad
+(C_0 \vdash {\mathit{rt}'} : \mathsf{ok})^?
+ \qquad
+(x < {|{{\mathit{dt}}_{\mathsf{f}}^\ast}|})^\ast
+}{
+{\vdash}\, C : \mathsf{ok}
+} \, {[\textsc{\scriptsize Context\_ok}]}
+\qquad
+\end{array}
+$$
+
+$\boxed{{\mathit{store}} ; {\mathit{context}} \vdash {\mathit{instr}} : {\mathit{instrtype}}}$
+
+$\boxed{{\mathit{store}} ; {\mathit{context}} \vdash {{\mathit{instr}}^\ast} : {\mathit{instrtype}}}$
+
+$\boxed{{\mathit{store}} ; {\mathit{context}} \vdash {\mathit{expr}} : {\mathit{resulttype}}}$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+C \vdash {\mathit{instr}} : {t_1^\ast} \rightarrow_{{x^\ast}} {t_2^\ast}
+}{
+s ; C \vdash {\mathit{instr}} : {t_1^\ast} \rightarrow_{{x^\ast}} {t_2^\ast}
+} \, {[\textsc{\scriptsize Instr\_ok2{-}plain}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+s \vdash {\mathit{ref}} : {\mathit{rt}}
+}{
+s ; C \vdash {\mathit{ref}} : \epsilon \rightarrow {\mathit{rt}}
+} \, {[\textsc{\scriptsize Instr\_ok2{-}ref}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+s ; C \vdash {{\mathit{instr}'}^\ast} : {{t'}^{n}} \rightarrow_{{{x'}^\ast}} {t^\ast}
+ \qquad
+s ; \{ \mathsf{labels}~{({t'})^{n}} \} \oplus C \vdash {{\mathit{instr}}^\ast} : \epsilon \rightarrow_{{x^\ast}} {t^\ast}
+}{
+s ; C \vdash {{\mathsf{label}}_{n}}{\{ {{\mathit{instr}'}^\ast} \}}~{{\mathit{instr}}^\ast} : \epsilon \rightarrow {t^\ast}
+} \, {[\textsc{\scriptsize Instr\_ok2{-}label}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+s \vdash f : {C'}
+ \qquad
+s ; {C'} \vdash {{\mathit{instr}}^\ast} : {t^{n}}
+}{
+s ; C \vdash {{\mathsf{frame}}_{n}}{\{ f \}}~{{\mathit{instr}}^\ast} : \epsilon \rightarrow {t^{n}}
+} \, {[\textsc{\scriptsize Instr\_ok2{-}frame}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+(C \vdash {\mathit{catch}} : \mathsf{ok})^\ast
+ \qquad
+s ; C \vdash {{\mathit{instr}}^\ast} : {t_1^\ast} \rightarrow_{{x^\ast}} {t_2^\ast}
+}{
+s ; C \vdash {{\mathsf{handler}}_{n}}{\{ {{\mathit{catch}}^\ast} \}}~{{\mathit{instr}}^\ast} : {t_1^\ast} \rightarrow {t_2^\ast}
+} \, {[\textsc{\scriptsize Instr\_ok2{-}handler}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+C \vdash {t_1^\ast} \rightarrow {t_2^\ast} : \mathsf{ok}
+}{
+s ; C \vdash \mathsf{trap} : {t_1^\ast} \rightarrow {t_2^\ast}
+} \, {[\textsc{\scriptsize Instr\_ok2{-}trap}]}
+\qquad
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+}{
+s ; C \vdash \epsilon : \epsilon \rightarrow \epsilon
+} \, {[\textsc{\scriptsize Instrs\_ok2{-}empty}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+s ; C \vdash {\mathit{instr}}_1 : {t_1^\ast} \rightarrow_{{x_1^\ast}} {t_2^\ast}
+ \qquad
+(C{.}\mathsf{locals}{}[x_1] = {\mathit{init}}~t)^\ast
+ \qquad
+s ; C{}[{.}\mathsf{local}{}[{x_1^\ast}] = {(\mathsf{set}~t)^\ast}] \vdash {{\mathit{instr}}_2^\ast} : {t_2^\ast} \rightarrow_{{x_2^\ast}} {t_3^\ast}
+}{
+s ; C \vdash {\mathit{instr}}_1~{{\mathit{instr}}_2^\ast} : {t_1^\ast} \rightarrow_{{x_1^\ast}~{x_2^\ast}} {t_3^\ast}
+} \, {[\textsc{\scriptsize Instrs\_ok2{-}seq}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+s ; C \vdash {{\mathit{instr}}^\ast} : {\mathit{it}}
+ \qquad
+C \vdash {\mathit{it}} \leq {\mathit{it}'}
+ \qquad
+C \vdash {\mathit{it}'} : \mathsf{ok}
+}{
+s ; C \vdash {{\mathit{instr}}^\ast} : {\mathit{it}'}
+} \, {[\textsc{\scriptsize Instrs\_ok2{-}sub}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+s ; C \vdash {{\mathit{instr}}^\ast} : {t_1^\ast} \rightarrow_{{x^\ast}} {t_2^\ast}
+ \qquad
+C \vdash {t^\ast} : \mathsf{ok}
+}{
+s ; C \vdash {{\mathit{instr}}^\ast} : ({t^\ast}~{t_1^\ast}) \rightarrow_{{x^\ast}} ({t^\ast}~{t_2^\ast})
+} \, {[\textsc{\scriptsize Instrs\_ok2{-}frame}]}
+\qquad
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+s ; C \vdash {{\mathit{instr}}^\ast} : \epsilon \rightarrow {t^\ast}
+}{
+s ; C \vdash {{\mathit{instr}}^\ast} : {t^\ast}
+} \, {[\textsc{\scriptsize Expr\_ok2}]}
+\qquad
+\end{array}
+$$
+
+\vspace{1ex}
+
+$\boxed{{\mathit{store}} \vdash {\mathit{taginst}} : {\mathit{tagtype}}}$
+
+$\boxed{{\mathit{store}} \vdash {\mathit{globalinst}} : {\mathit{globaltype}}}$
+
+$\boxed{{\mathit{store}} \vdash {\mathit{meminst}} : {\mathit{memtype}}}$
+
+$\boxed{{\mathit{store}} \vdash {\mathit{tableinst}} : {\mathit{tabletype}}}$
+
+$\boxed{{\mathit{store}} \vdash {\mathit{funcinst}} : {\mathit{deftype}}}$
+
+$\boxed{{\mathit{store}} \vdash {\mathit{datainst}} : {\mathit{datatype}}}$
+
+$\boxed{{\mathit{store}} \vdash {\mathit{eleminst}} : {\mathit{elemtype}}}$
+
+$\boxed{{\mathit{store}} \vdash {\mathit{exportinst}} : \mathsf{ok}}$
+
+$\boxed{{\mathit{store}} \vdash {\mathit{structinst}} : \mathsf{ok}}$
+
+$\boxed{{\mathit{store}} \vdash {\mathit{arrayinst}} : \mathsf{ok}}$
+
+$\boxed{{\mathit{store}} \vdash {\mathit{exninst}} : \mathsf{ok}}$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+\{  \} \vdash {\mathit{jt}} : \mathsf{ok}
+}{
+s \vdash \{ \mathsf{type}~{\mathit{jt}} \} : {\mathit{jt}}
+} \, {[\textsc{\scriptsize Taginst\_ok}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+\{  \} \vdash {\mathsf{mut}^?}~t : \mathsf{ok}
+ \qquad
+s \vdash {\mathit{val}} : t
+}{
+s \vdash \{ \mathsf{type}~{\mathsf{mut}^?}~t,\;\allowbreak \mathsf{value}~{\mathit{val}} \} : {\mathsf{mut}^?}~t
+} \, {[\textsc{\scriptsize Globalinst\_ok}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+\{  \} \vdash {\mathit{at}}~{}[ n .. m ]~\mathsf{page} : \mathsf{ok}
+ \qquad
+{|{b^\ast}|} = n \cdot 64 \, {\mathrm{Ki}}
+}{
+s \vdash \{ \mathsf{type}~{\mathit{at}}~{}[ n .. m ]~\mathsf{page},\;\allowbreak \mathsf{bytes}~{b^\ast} \} : {\mathit{at}}~{}[ n .. m ]~\mathsf{page}
+} \, {[\textsc{\scriptsize Meminst\_ok}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+\{  \} \vdash {\mathit{at}}~{}[ n .. m ]~{\mathit{rt}} : \mathsf{ok}
+ \qquad
+{|{{\mathit{ref}}^\ast}|} = n
+ \qquad
+(s \vdash {\mathit{ref}} : {\mathit{rt}})^\ast
+}{
+s \vdash \{ \mathsf{type}~{\mathit{at}}~{}[ n .. m ]~{\mathit{rt}},\;\allowbreak \mathsf{refs}~{{\mathit{ref}}^\ast} \} : {\mathit{at}}~{}[ n .. m ]~{\mathit{rt}}
+} \, {[\textsc{\scriptsize Tableinst\_ok}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+\begin{array}{@{}c@{}}
+\{  \} \vdash {\mathit{dt}} : \mathsf{ok}
+ \qquad
+s \vdash {\mathit{moduleinst}} : C
+ \\
+C \vdash {\mathit{func}} : {\mathit{dt}'}
+ \qquad
+C \vdash {\mathit{dt}'} \leq {\mathit{dt}}
+\end{array}
+}{
+s \vdash \{ \mathsf{type}~{\mathit{dt}},\;\allowbreak \mathsf{module}~{\mathit{moduleinst}},\;\allowbreak \mathsf{code}~{\mathit{func}} \} : {\mathit{dt}}
+} \, {[\textsc{\scriptsize Funcinst\_ok}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+}{
+s \vdash \{ \mathsf{bytes}~{b^\ast} \} : \mathsf{ok}
+} \, {[\textsc{\scriptsize Datainst\_ok}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+\{  \} \vdash {\mathit{rt}} : \mathsf{ok}
+ \qquad
+(s \vdash {\mathit{ref}} : {\mathit{rt}})^\ast
+}{
+s \vdash \{ \mathsf{type}~{\mathit{rt}},\;\allowbreak \mathsf{refs}~{{\mathit{ref}}^\ast} \} : {\mathit{rt}}
+} \, {[\textsc{\scriptsize Eleminst\_ok}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+s \vdash {\mathit{xa}} : {\mathit{xt}}
+}{
+s \vdash \{ \mathsf{name}~{\mathit{nm}},\;\allowbreak \mathsf{addr}~{\mathit{xa}} \} : \mathsf{ok}
+} \, {[\textsc{\scriptsize Exportinst\_ok}]}
+\qquad
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+{\mathit{dt}} \approx \mathsf{struct}~{({\mathsf{mut}^?}~{\mathit{zt}})^\ast}
+ \qquad
+(s \vdash {\mathit{fv}} : {\mathit{zt}})^\ast
+}{
+s \vdash \{ \mathsf{type}~{\mathit{dt}},\;\allowbreak \mathsf{fields}~{{\mathit{fv}}^\ast} \} : \mathsf{ok}
+} \, {[\textsc{\scriptsize Structinst\_ok}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+{\mathit{dt}} \approx \mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}})
+ \qquad
+(s \vdash {\mathit{fv}} : {\mathit{zt}})^\ast
+}{
+s \vdash \{ \mathsf{type}~{\mathit{dt}},\;\allowbreak \mathsf{fields}~{{\mathit{fv}}^\ast} \} : \mathsf{ok}
+} \, {[\textsc{\scriptsize Arrayinst\_ok}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+{\mathit{dt}} = s{.}\mathsf{tags}{}[{\mathit{ta}}]{.}\mathsf{type}
+ \qquad
+{\mathit{dt}} \approx \mathsf{func}~{t^\ast} \rightarrow \epsilon
+ \qquad
+(s \vdash {\mathit{val}} : t)^\ast
+}{
+s \vdash \{ \mathsf{tag}~{\mathit{ta}},\;\allowbreak \mathsf{fields}~{{\mathit{val}}^\ast} \} : \mathsf{ok}
+} \, {[\textsc{\scriptsize Exninst\_ok}]}
+\qquad
+\end{array}
+$$
+
+\vspace{1ex}
+
+$\boxed{{\mathit{store}} \vdash {\mathit{moduleinst}} : {\mathit{context}}}$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+\begin{array}{@{}c@{}}
+(\{  \} \vdash {\mathit{deftype}} : \mathsf{ok})^\ast
+ \qquad
+(s \vdash \mathsf{tag}~{\mathit{tagaddr}} : \mathsf{tag}~{\mathit{tagtype}})^\ast
+ \\
+(s \vdash \mathsf{global}~{\mathit{globaladdr}} : \mathsf{global}~{\mathit{globaltype}})^\ast
+ \qquad
+(s \vdash \mathsf{func}~{\mathit{funcaddr}} : \mathsf{func}~{\mathit{deftype}}_{\mathsf{f}})^\ast
+ \\
+(s \vdash \mathsf{mem}~{\mathit{memaddr}} : \mathsf{mem}~{\mathit{memtype}})^\ast
+ \qquad
+(s \vdash \mathsf{table}~{\mathit{tableaddr}} : \mathsf{table}~{\mathit{tabletype}})^\ast
+ \\
+(s \vdash s{.}\mathsf{datas}{}[{\mathit{dataaddr}}] : {\mathit{datatype}})^\ast
+ \qquad
+(s \vdash s{.}\mathsf{elems}{}[{\mathit{elemaddr}}] : {\mathit{elemtype}})^\ast
+ \\
+(s \vdash {\mathit{exportinst}} : \mathsf{ok})^\ast
+ \qquad
+{({\mathit{exportinst}}{.}\mathsf{name})^\ast}~{\mathrm{disjoint}}
+ \\
+({\mathit{exportinst}}{.}\mathsf{addr} \in {(\mathsf{tag}~{\mathit{tagaddr}})^\ast}~{(\mathsf{global}~{\mathit{globaladdr}})^\ast}~{(\mathsf{mem}~{\mathit{memaddr}})^\ast}~{(\mathsf{table}~{\mathit{tableaddr}})^\ast}~{(\mathsf{func}~{\mathit{funcaddr}})^\ast})^\ast
+\end{array}
+}{
+s \vdash \{ \begin{array}[t]{@{}l@{}}
+\mathsf{types}~{{\mathit{deftype}}^\ast},\; \\
+  \mathsf{tags}~{{\mathit{tagaddr}}^\ast},\; \\
+  \mathsf{globals}~{{\mathit{globaladdr}}^\ast},\; \\
+  \mathsf{mems}~{{\mathit{memaddr}}^\ast},\; \\
+  \mathsf{tables}~{{\mathit{tableaddr}}^\ast},\; \\
+  \mathsf{funcs}~{{\mathit{funcaddr}}^\ast},\; \\
+  \mathsf{datas}~{{\mathit{dataaddr}}^\ast},\; \\
+  \mathsf{elems}~{{\mathit{elemaddr}}^\ast},\; \\
+  \mathsf{exports}~{{\mathit{exportinst}}^\ast} \}\end{array} : \{ \begin{array}[t]{@{}l@{}}
+\mathsf{types}~{{\mathit{deftype}}^\ast},\; \\
+  \mathsf{recs}~{{\mathit{subtype}}^\ast},\; \\
+  \mathsf{tags}~{{\mathit{tagtype}}^\ast},\; \\
+  \mathsf{globals}~{{\mathit{globaltype}}^\ast},\; \\
+  \mathsf{mems}~{{\mathit{memtype}}^\ast},\; \\
+  \mathsf{tables}~{{\mathit{tabletype}}^\ast},\; \\
+  \mathsf{funcs}~{{\mathit{deftype}}_{\mathsf{f}}^\ast},\; \\
+  \mathsf{datas}~{{\mathit{datatype}}^\ast},\; \\
+  \mathsf{elems}~{{\mathit{elemtype}}^\ast},\; \\
+  \mathsf{refs}~{(i)^{i<{|{{\mathit{funcaddr}}^\ast}|}}} \}\end{array}
+} \, {[\textsc{\scriptsize Moduleinst\_ok}]}
+\qquad
+\end{array}
+$$
+
+\vspace{1ex}
+
+$\boxed{{\vdash}\, {\mathit{store}} : \mathsf{ok}}$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+\begin{array}{@{}c@{}}
+(s \vdash {\mathit{taginst}} : {\mathit{tagtype}})^\ast
+ \qquad
+(s \vdash {\mathit{globalinst}} : {\mathit{globaltype}})^\ast
+ \\
+(s \vdash {\mathit{meminst}} : {\mathit{memtype}})^\ast
+ \qquad
+(s \vdash {\mathit{tableinst}} : {\mathit{tabletype}})^\ast
+ \\
+(s \vdash {\mathit{funcinst}} : {\mathit{deftype}})^\ast
+ \qquad
+(s \vdash {\mathit{datainst}} : {\mathit{datatype}})^\ast
+ \qquad
+(s \vdash {\mathit{eleminst}} : {\mathit{elemtype}})^\ast
+ \\
+(s \vdash {\mathit{structinst}} : \mathsf{ok})^\ast
+ \qquad
+(s \vdash {\mathit{arrayinst}} : \mathsf{ok})^\ast
+ \qquad
+(s \vdash {\mathit{exninst}} : \mathsf{ok})^\ast
+ \\
+(\neg~(\mathsf{ref{.}struct}~a) \succ_{s} (\mathsf{ref{.}struct}~a))^{a<{|{{\mathit{structinst}}^\ast}|}}
+ \qquad
+(\neg~(\mathsf{ref{.}array}~a) \succ_{s} (\mathsf{ref{.}array}~a))^{a<{|{{\mathit{arrayinst}}^\ast}|}}
+ \qquad
+(\neg~(\mathsf{ref{.}exn}~a) \succ_{s} (\mathsf{ref{.}exn}~a))^{a<{|{{\mathit{exninst}}^\ast}|}}
+ \\
+s = \{ \begin{array}[t]{@{}l@{}}
+\mathsf{tags}~{{\mathit{taginst}}^\ast},\; \mathsf{globals}~{{\mathit{globalinst}}^\ast},\; \mathsf{mems}~{{\mathit{meminst}}^\ast},\; \mathsf{tables}~{{\mathit{tableinst}}^\ast},\; \mathsf{funcs}~{{\mathit{funcinst}}^\ast},\; \\
+  \mathsf{datas}~{{\mathit{datainst}}^\ast},\; \mathsf{elems}~{{\mathit{eleminst}}^\ast},\; \mathsf{structs}~{{\mathit{structinst}}^\ast},\; \mathsf{arrays}~{{\mathit{arrayinst}}^\ast},\; \mathsf{exns}~{{\mathit{exninst}}^\ast} \}\end{array}
+\end{array}
+}{
+{\vdash}\, s : \mathsf{ok}
+} \, {[\textsc{\scriptsize Store\_ok}]}
+\qquad
+\end{array}
+$$
+
+\vspace{1ex}
+
+$\boxed{{\mathit{fieldval}} \succ_{{\mathit{store}}} {\mathit{fieldval}}}$
+
+$\boxed{\neg~{\mathit{fieldval}} \succ_{{\mathit{store}}} {\mathit{fieldval}}}$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+{\mathrm{NotImmutReachable}}({\mathit{fv}}_1, s, {\mathit{fv}}_2) & = & \mathsf{false} & \quad \mbox{if}~ {\mathit{fv}}_1 \succ_{s} {\mathit{fv}}_2 \\
+{\mathrm{NotImmutReachable}}({\mathit{fv}}_1, s, {\mathit{fv}}_2) & = & \mathsf{true} & \quad \mbox{otherwise} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+{\mathrm{NotImmutReachable}}({\mathit{fv}}_1, s, {\mathit{fv}}_2)
+}{
+\neg~{\mathit{fv}}_1 \succ_{s} {\mathit{fv}}_2
+} \, {[\textsc{\scriptsize NotImmutReachable}]}
+\qquad
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+{\mathit{fv}}_1 \succ_{s} {\mathit{fv}'}
+ \qquad
+{\mathit{fv}'} \succ_{s} {\mathit{fv}}_2
+}{
+{\mathit{fv}}_1 \succ_{s} {\mathit{fv}}_2
+} \, {[\textsc{\scriptsize ImmutReachable{-}trans}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+s{.}\mathsf{structs}{}[a]{.}\mathsf{type} \approx \mathsf{struct}~{{\mathit{ft}}^\ast}
+ \qquad
+{{\mathit{ft}}^\ast}{}[i] = {\mathit{zt}}
+}{
+(\mathsf{ref{.}struct}~a) \succ_{s} s{.}\mathsf{structs}{}[a]{.}\mathsf{fields}{}[i]
+} \, {[\textsc{\scriptsize ImmutReachable{-}ref.struct}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+s{.}\mathsf{arrays}{}[a]{.}\mathsf{type} \approx \mathsf{array}~{\mathit{zt}}
+}{
+(\mathsf{ref{.}array}~a) \succ_{s} s{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}{}[i]
+} \, {[\textsc{\scriptsize ImmutReachable{-}ref.array}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+}{
+(\mathsf{ref{.}exn}~a) \succ_{s} s{.}\mathsf{exns}{}[a]{.}\mathsf{fields}{}[i]
+} \, {[\textsc{\scriptsize ImmutReachable{-}ref.exn}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+}{
+(\mathsf{ref{.}extern}~{\mathit{ref}}) \succ_{s} {\mathit{ref}}
+} \, {[\textsc{\scriptsize ImmutReachable{-}ref.extern}]}
+\qquad
+\end{array}
+$$
+
+\vspace{1ex}
+
+$\boxed{{\mathit{taginst}}~\leq~{\mathit{taginst}}}$
+
+$\boxed{{\mathit{globalinst}}~\leq~{\mathit{globalinst}}}$
+
+$\boxed{{\mathit{meminst}}~\leq~{\mathit{meminst}}}$
+
+$\boxed{{\mathit{tableinst}}~\leq~{\mathit{tableinst}}}$
+
+$\boxed{{\mathit{funcinst}}~\leq~{\mathit{funcinst}}}$
+
+$\boxed{{\mathit{datainst}}~\leq~{\mathit{datainst}}}$
+
+$\boxed{{\mathit{eleminst}}~\leq~{\mathit{eleminst}}}$
+
+$\boxed{{\mathit{structinst}}~\leq~{\mathit{structinst}}}$
+
+$\boxed{{\mathit{arrayinst}}~\leq~{\mathit{arrayinst}}}$
+
+$\boxed{{\mathit{exninst}}~\leq~{\mathit{exninst}}}$
+
+$\boxed{{\mathit{store}}~\leq~{\mathit{store}}}$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+}{
+\{ \mathsf{type}~{\mathit{jt}} \}~\leq~\{ \mathsf{type}~{\mathit{jt}} \}
+} \, {[\textsc{\scriptsize Extend\_taginst}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+{\mathsf{mut}^?} = \mathsf{mut} \lor {\mathit{val}} = {\mathit{val}'}
+}{
+\{ \mathsf{type}~{\mathsf{mut}^?}~t,\;\allowbreak \mathsf{value}~{\mathit{val}} \}~\leq~\{ \mathsf{type}~{\mathsf{mut}^?}~t,\;\allowbreak \mathsf{value}~{\mathit{val}'} \}
+} \, {[\textsc{\scriptsize Extend\_globalinst}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+n \leq {n'}
+ \qquad
+{|{b^\ast}|} \leq {|{{b'}^\ast}|}
+}{
+\{ \mathsf{type}~{\mathit{at}}~{}[ n .. m ]~\mathsf{page},\;\allowbreak \mathsf{bytes}~{b^\ast} \}~\leq~\{ \mathsf{type}~{\mathit{at}}~{}[ {n'} .. m ]~\mathsf{page},\;\allowbreak \mathsf{bytes}~{{b'}^\ast} \}
+} \, {[\textsc{\scriptsize Extend\_meminst}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+n \leq {n'}
+ \qquad
+{|{{\mathit{ref}}^\ast}|} \leq {|{{\mathit{ref}'}^\ast}|}
+}{
+\{ \mathsf{type}~{\mathit{at}}~{}[ n .. m ]~{\mathit{rt}},\;\allowbreak \mathsf{refs}~{{\mathit{ref}}^\ast} \}~\leq~\{ \mathsf{type}~{\mathit{at}}~{}[ {n'} .. m ]~{\mathit{rt}},\;\allowbreak \mathsf{refs}~{{\mathit{ref}'}^\ast} \}
+} \, {[\textsc{\scriptsize Extend\_tableinst}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+}{
+\{ \mathsf{type}~{\mathit{dt}},\;\allowbreak \mathsf{module}~{\mathit{mm}},\;\allowbreak \mathsf{code}~{\mathit{fc}} \}~\leq~\{ \mathsf{type}~{\mathit{dt}},\;\allowbreak \mathsf{module}~{\mathit{mm}},\;\allowbreak \mathsf{code}~{\mathit{fc}} \}
+} \, {[\textsc{\scriptsize Extend\_funcinst}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+{b^\ast} = {{b'}^\ast} \lor {{b'}^\ast} = \epsilon
+}{
+\{ \mathsf{bytes}~{b^\ast} \}~\leq~\{ \mathsf{bytes}~{{b'}^\ast} \}
+} \, {[\textsc{\scriptsize Extend\_datainst}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+{{\mathit{ref}}^\ast} = {{\mathit{ref}'}^\ast} \lor {{\mathit{ref}'}^\ast} = \epsilon
+}{
+\{ \mathsf{type}~{\mathit{rt}},\;\allowbreak \mathsf{refs}~{{\mathit{ref}}^\ast} \}~\leq~\{ \mathsf{type}~{\mathit{rt}},\;\allowbreak \mathsf{refs}~{{\mathit{ref}'}^\ast} \}
+} \, {[\textsc{\scriptsize Extend\_eleminst}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+{\mathit{dt}} \approx \mathsf{struct}~{({\mathsf{mut}^?}~{\mathit{zt}})^\ast}
+ \qquad
+({\mathsf{mut}^?} = \mathsf{mut} \lor {\mathit{fv}} = {\mathit{fv}'})^\ast
+}{
+\{ \mathsf{type}~{\mathit{dt}},\;\allowbreak \mathsf{fields}~{{\mathit{fv}}^\ast} \}~\leq~\{ \mathsf{type}~{\mathit{dt}},\;\allowbreak \mathsf{fields}~{{\mathit{fv}'}^\ast} \}
+} \, {[\textsc{\scriptsize Extend\_structinst}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+{\mathit{dt}} \approx \mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}})
+ \qquad
+({\mathsf{mut}^?} = \mathsf{mut} \lor {\mathit{fv}} = {\mathit{fv}'})^\ast
+}{
+\{ \mathsf{type}~{\mathit{dt}},\;\allowbreak \mathsf{fields}~{{\mathit{fv}}^\ast} \}~\leq~\{ \mathsf{type}~{\mathit{dt}},\;\allowbreak \mathsf{fields}~{{\mathit{fv}'}^\ast} \}
+} \, {[\textsc{\scriptsize Extend\_arrayinst}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+}{
+\{ \mathsf{tag}~{\mathit{ta}},\;\allowbreak \mathsf{fields}~{{\mathit{val}}^\ast} \}~\leq~\{ \mathsf{tag}~{\mathit{ta}},\;\allowbreak \mathsf{fields}~{{\mathit{val}}^\ast} \}
+} \, {[\textsc{\scriptsize Extend\_exninst}]}
+\qquad
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+\begin{array}{@{}c@{}}
+(s{.}\mathsf{tags}{}[a]~\leq~{s'}{.}\mathsf{tags}{}[a])^{a<{|s{.}\mathsf{tags}|}}
+ \qquad
+(s{.}\mathsf{globals}{}[a]~\leq~{s'}{.}\mathsf{globals}{}[a])^{a<{|s{.}\mathsf{globals}|}}
+ \\
+(s{.}\mathsf{mems}{}[a]~\leq~{s'}{.}\mathsf{mems}{}[a])^{a<{|s{.}\mathsf{mems}|}}
+ \qquad
+(s{.}\mathsf{tables}{}[a]~\leq~{s'}{.}\mathsf{tables}{}[a])^{a<{|s{.}\mathsf{tables}|}}
+ \\
+(s{.}\mathsf{funcs}{}[a]~\leq~{s'}{.}\mathsf{funcs}{}[a])^{a<{|s{.}\mathsf{funcs}|}}
+ \qquad
+(s{.}\mathsf{datas}{}[a]~\leq~{s'}{.}\mathsf{datas}{}[a])^{a<{|s{.}\mathsf{datas}|}}
+ \\
+(s{.}\mathsf{elems}{}[a]~\leq~{s'}{.}\mathsf{elems}{}[a])^{a<{|s{.}\mathsf{elems}|}}
+ \qquad
+(s{.}\mathsf{structs}{}[a]~\leq~{s'}{.}\mathsf{structs}{}[a])^{a<{|s{.}\mathsf{structs}|}}
+ \\
+(s{.}\mathsf{arrays}{}[a]~\leq~{s'}{.}\mathsf{arrays}{}[a])^{a<{|s{.}\mathsf{arrays}|}}
+ \qquad
+(s{.}\mathsf{exns}{}[a]~\leq~{s'}{.}\mathsf{exns}{}[a])^{a<{|s{.}\mathsf{exns}|}}
+\end{array}
+}{
+s~\leq~{s'}
+} \, {[\textsc{\scriptsize Extend\_store}]}
+\qquad
+\end{array}
+$$
+
+\vspace{1ex}
+
+$\boxed{{\mathit{store}} \vdash {{\mathit{val}}^?} : {\mathit{localtype}}}$
+
+$\boxed{{\mathit{store}} \vdash {\mathit{frame}} : {\mathit{context}}}$
+
+$\boxed{{\vdash}\, {\mathit{state}} : {\mathit{context}}}$
+
+$\boxed{{\vdash}\, {\mathit{config}} : \mathsf{ok}}$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+s \vdash {\mathit{val}} : t
+}{
+s \vdash {\mathit{val}} : \mathsf{set}~t
+} \, {[\textsc{\scriptsize Localval\_ok{-}set}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+}{
+s \vdash \epsilon : \mathsf{unset}~\mathsf{bot}
+} \, {[\textsc{\scriptsize Localval\_ok{-}unset}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+s \vdash {\mathit{moduleinst}} : C
+ \qquad
+(s \vdash {{\mathit{val}}^?} : {{\mathit{lt}}})^\ast
+}{
+s \vdash \{ \mathsf{locals}~{({{\mathit{val}}^?})^\ast},\;\allowbreak \mathsf{module}~{\mathit{moduleinst}} \} : C \oplus \{ \mathsf{locals}~{{{\mathit{lt}}}^\ast} \}
+} \, {[\textsc{\scriptsize Frame\_ok}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+{\vdash}\, s : \mathsf{ok}
+ \qquad
+s \vdash f : C
+}{
+{\vdash}\, s ; f : C
+} \, {[\textsc{\scriptsize State\_ok}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+{\vdash}\, z : C
+ \qquad
+C \vdash {{\mathit{instr}}^\ast} : {t^\ast}
+}{
+{\vdash}\, z ; {{\mathit{instr}}^\ast} : \mathsf{ok}
+} \, {[\textsc{\scriptsize Config\_ok}]}
+\qquad
 \end{array}
 $$
 

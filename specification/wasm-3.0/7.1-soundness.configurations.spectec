@@ -1,0 +1,344 @@
+;; Administrative instructions
+
+relation Instr_ok2: store; context |- instr : instrtype
+  hint(prose "%3 is valid with %4")
+relation Instrs_ok2: store; context |- instr* : instrtype
+  hint(prose "%3 is valid with %4")
+relation Expr_ok2: store; context |- expr : resulttype
+  hint(prose "%3 is valid with %4")
+
+rule Instr_ok2/plain:
+  s; C |- instr : t_1* ->_(x*) t_2*
+  -- Instr_ok: C |- instr : t_1* ->_(x*) t_2*
+
+rule Instr_ok2/ref:
+  s; C |- ref : eps -> rt
+  -- Ref_ok: s |- ref : rt
+
+rule Instr_ok2/label:
+  s; C |- LABEL_ n `{instr'*} instr* : eps -> t*
+  -- Instrs_ok2: s; C |- instr'* : t'^n ->_(x'*) t*
+  -- Instrs_ok2: s; {LABELS (t')^n} ++ C |- instr* : eps ->_(x*) t*
+
+rule Instr_ok2/frame:
+  s; C |- FRAME_ n `{f} instr* : eps -> t^n
+  -- Frame_ok: s |- f : C'
+  -- Expr_ok2: s; C' |- instr* : t^n
+
+rule Instr_ok2/handler:
+  s; C |- HANDLER_ n `{catch*} instr* : t_1* -> t_2*
+  -- (Catch_ok: C |- catch : OK)*
+  -- Instrs_ok2: s; C |- instr* : t_1* ->_(x*) t_2*
+
+rule Instr_ok2/trap:
+  s; C |- TRAP : t_1* -> t_2*
+  -- Instrtype_ok: C |- t_1* -> t_2* : OK
+
+
+rule Instrs_ok2/empty:
+  s; C |- eps : eps -> eps
+
+rule Instrs_ok2/seq:
+  s; C |- instr_1 instr_2* : t_1* ->_(x_1* x_2*) t_3*
+  -- Instr_ok2: s; C |- instr_1 : t_1* ->_(x_1*) t_2*
+  -- (if C.LOCALS[x_1] = init t)*
+  -- Instrs_ok2: s; $with_locals(C, x_1*, (SET t)*) |- instr_2* : t_2* ->_(x_2*) t_3*
+
+rule Instrs_ok2/sub:
+  s; C |- instr* : it'
+  -- Instrs_ok2: s; C |- instr* : it
+  -- Instrtype_sub: C |- it <: it'
+  -- Instrtype_ok: C |- it' : OK
+
+;; TODO(3, rossberg): allow omitting parens
+rule Instrs_ok2/frame:
+  s; C |- instr* : (t* t_1*) ->_(x*) (t* t_2*)
+  -- Instrs_ok2: s; C |- instr* : t_1* ->_(x*) t_2*
+  -- Resulttype_ok: C |- t* : OK
+
+
+rule Expr_ok2:
+  s; C |- instr* : t*
+  -- Instrs_ok2: s; C |- instr* : eps -> t*
+
+
+;; Instances
+
+relation Taginst_ok: store |- taginst : tagtype
+relation Globalinst_ok: store |- globalinst : globaltype
+relation Meminst_ok: store |- meminst : memtype
+relation Tableinst_ok: store |- tableinst : tabletype
+relation Funcinst_ok: store |- funcinst : deftype
+relation Datainst_ok: store |- datainst : datatype
+relation Eleminst_ok: store |- eleminst : elemtype
+relation Exportinst_ok: store |- exportinst : OK
+relation Structinst_ok: store |- structinst : OK
+relation Arrayinst_ok: store |- arrayinst : OK
+relation Exninst_ok: store |- exninst : OK
+
+rule Taginst_ok:
+  s |- {TYPE jt} : jt
+  -- Tagtype_ok: {} |- jt : OK
+
+rule Globalinst_ok:
+  s |- {TYPE mut? t, VALUE val} : mut? t
+  -- Globaltype_ok: {} |- mut? t : OK
+  -- Val_ok: s |- val : t
+
+rule Meminst_ok:
+  s |- {TYPE at `[n..m] PAGE, BYTES b*} : at `[n..m] PAGE
+  -- Memtype_ok: {} |- at `[n..m] PAGE : OK
+  -- if |b*| = $(n * $($(64 * $Ki)))
+
+rule Tableinst_ok:
+  s |- {TYPE at `[n..m] rt, REFS ref*} : at `[n..m] rt
+  -- Tabletype_ok: {} |- at `[n..m] rt : OK
+  -- if |ref*| = n
+  -- (Ref_ok: s |- ref : rt)*
+
+rule Funcinst_ok:
+  s |- {TYPE dt, MODULE moduleinst, CODE func} : dt
+  -- Deftype_ok: {} |- dt : OK
+  -- Moduleinst_ok: s |- moduleinst : C
+  ----
+  -- Func_ok: C |- func : dt'
+  -- Deftype_sub: C |- dt' <: dt
+
+rule Datainst_ok:
+  s |- {BYTES b*} : OK
+
+rule Eleminst_ok:
+  s |- {TYPE rt, REFS ref*} : rt
+  -- Reftype_ok: {} |- rt : OK
+  -- (Ref_ok: s |- ref : rt)*
+
+rule Exportinst_ok:
+  s |- {NAME nm, ADDR xa} : OK
+  -- Externaddr_ok: s |- xa : xt
+
+
+rule Structinst_ok:
+  s |- {TYPE dt, FIELDS fv*} : OK
+  -- Expand: dt ~~ STRUCT (mut? zt)*
+  -- (Fieldval_ok: s |- fv : zt)*
+
+rule Arrayinst_ok:
+  s |- {TYPE dt, FIELDS fv*} : OK
+  -- Expand: dt ~~ ARRAY (mut? zt)
+  -- (Fieldval_ok: s |- fv : zt)*
+
+rule Exninst_ok:
+  s |- {TAG ta, FIELDS val*} : OK
+  -- if dt = s.TAGS[ta].TYPE
+  -- Expand: dt ~~ FUNC t* -> eps
+  -- (Val_ok: s |- val : t)*
+
+
+;; Modules
+
+relation Moduleinst_ok: store |- moduleinst : context
+
+rule Moduleinst_ok:
+  s |- { TYPES deftype*,
+         TAGS tagaddr*,
+         GLOBALS globaladdr*,
+         MEMS memaddr*,
+         TABLES tableaddr*,
+         FUNCS funcaddr*,
+         DATAS dataaddr*,
+         ELEMS elemaddr*,
+         EXPORTS exportinst* } :
+           { TYPES deftype*,
+             RECS subtype*,
+             TAGS tagtype*,
+             GLOBALS globaltype*,
+             MEMS memtype*,
+             TABLES tabletype*,
+             FUNCS deftype_F*,
+             DATAS datatype*,
+             ELEMS elemtype*,
+             REFS (i)^(i<|funcaddr*|)
+           }
+  -- (Deftype_ok: {} |- deftype : OK)*
+  -- (Externaddr_ok: s |- TAG tagaddr : TAG tagtype)*
+  ----
+  -- (Externaddr_ok: s |- GLOBAL globaladdr : GLOBAL globaltype)*
+  -- (Externaddr_ok: s |- FUNC funcaddr : FUNC deftype_F)*
+  ----
+  -- (Externaddr_ok: s |- MEM memaddr : MEM memtype)*
+  -- (Externaddr_ok: s |- TABLE tableaddr : TABLE tabletype)*
+  ----
+  -- (Datainst_ok: s |- s.DATAS[dataaddr] : datatype)*
+  -- (Eleminst_ok: s |- s.ELEMS[elemaddr] : elemtype)*
+  ----
+  -- (Exportinst_ok: s |- exportinst : OK)*
+  -- if $disjoint_(name, (exportinst.NAME)*)
+  ----
+  -- (if exportinst.ADDR <- (TAG tagaddr)* (GLOBAL globaladdr)* (MEM memaddr)* (TABLE tableaddr)* (FUNC funcaddr)*)*
+
+
+;; Store
+
+relation Store_ok: |- store : OK
+
+rule Store_ok:
+  |- s : OK
+  -- (Taginst_ok: s |- taginst : tagtype)*
+  -- (Globalinst_ok: s |- globalinst : globaltype)*
+  ----
+  -- (Meminst_ok: s |- meminst : memtype)*
+  -- (Tableinst_ok: s |- tableinst : tabletype)*
+  ----
+  -- (Funcinst_ok: s |- funcinst : deftype)*
+  -- (Datainst_ok: s |- datainst : datatype)*
+  -- (Eleminst_ok: s |- eleminst : elemtype)*
+  ----
+  -- (Structinst_ok: s |- structinst : OK)*
+  -- (Arrayinst_ok: s |- arrayinst : OK)*
+  -- (Exninst_ok: s |- exninst : OK)*
+  ----
+  -- (NotImmutReachable: `~ (REF.STRUCT_ADDR a) >>_s (REF.STRUCT_ADDR a))^(a<|structinst*|)
+  -- (NotImmutReachable: `~ (REF.ARRAY_ADDR a) >>_s (REF.ARRAY_ADDR a))^(a<|arrayinst*|)
+  -- (NotImmutReachable: `~ (REF.EXN_ADDR a) >>_s (REF.EXN_ADDR a))^(a<|exninst*|)
+  ----
+  -- if s = {TAGS taginst*, GLOBALS globalinst*, MEMS meminst*, TABLES tableinst*, FUNCS funcinst*,
+             DATAS datainst*, ELEMS eleminst*, STRUCTS structinst*, ARRAYS arrayinst*, EXNS exninst*}
+
+
+relation ImmutReachable: fieldval >>_store fieldval
+  hint(prose "%3 is immutably reachable from %1")
+relation NotImmutReachable: `~ fieldval >>_store fieldval
+  hint(prose "%3 is not immutably reachable from %1")
+
+;; HACK: emulate premise negation
+;; TODO(rossberg): directly support negation in EL
+def $NotImmutReachable(fieldval, store, fieldval) : bool
+def $NotImmutReachable(fv_1, s, fv_2) = false -- ImmutReachable: fv_1 >>_s fv_2
+def $NotImmutReachable(fv_1, s, fv_2) = true  -- otherwise
+
+rule NotImmutReachable: `~ fv_1 >>_s fv_2 -- if $NotImmutReachable(fv_1, s, fv_2)
+
+
+rule ImmutReachable/trans:
+  fv_1 >>_s fv_2
+  -- ImmutReachable: fv_1 >>_s fv'
+  -- ImmutReachable: fv' >>_s fv_2
+
+rule ImmutReachable/ref.struct:
+  (REF.STRUCT_ADDR a) >>_s s.STRUCTS[a].FIELDS[i]
+  -- Expand: s.STRUCTS[a].TYPE ~~ STRUCT ft*
+  -- if ft*[i] = zt
+
+rule ImmutReachable/ref.array:
+  (REF.ARRAY_ADDR a) >>_s s.ARRAYS[a].FIELDS[i]
+  -- Expand: s.ARRAYS[a].TYPE ~~ ARRAY zt
+
+rule ImmutReachable/ref.exn:
+  (REF.EXN_ADDR a) >>_s s.EXNS[a].FIELDS[i]
+
+rule ImmutReachable/ref.extern:
+  (REF.EXTERN ref) >>_s ref
+
+
+;; Store extension
+
+relation Extend_taginst: taginst `<= taginst
+relation Extend_globalinst: globalinst `<= globalinst
+relation Extend_meminst: meminst `<= meminst
+relation Extend_tableinst: tableinst `<= tableinst
+relation Extend_funcinst: funcinst `<= funcinst
+relation Extend_datainst: datainst `<= datainst
+relation Extend_eleminst: eleminst `<= eleminst
+relation Extend_structinst: structinst `<= structinst
+relation Extend_arrayinst: arrayinst `<= arrayinst
+relation Extend_exninst: exninst `<= exninst
+relation Extend_store: store `<= store
+
+rule Extend_taginst:
+  {TYPE jt} `<= {TYPE jt}
+
+rule Extend_globalinst:
+  {TYPE mut? t, VALUE val} `<= {TYPE mut? t, VALUE val'}
+  -- if mut? = MUT \/ val = val'
+
+rule Extend_meminst:
+  {TYPE at `[n..m] PAGE, BYTES b*} `<= {TYPE at `[n'..m] PAGE, BYTES b'*}
+  -- if n <= n'
+  -- if |b*| <= |b'*|
+
+rule Extend_tableinst:
+  {TYPE at `[n..m] rt, REFS ref*} `<= {TYPE at `[n'..m] rt, REFS ref'*}
+  -- if n <= n'
+  -- if |ref*| <= |ref'*|
+
+rule Extend_funcinst:
+  {TYPE dt, MODULE mm, CODE fc} `<= {TYPE dt, MODULE mm, CODE fc}
+
+rule Extend_datainst:
+  {BYTES b*} `<= {BYTES b'*}
+  -- if b* = b'* \/ b'* = eps
+
+rule Extend_eleminst:
+  {TYPE rt, REFS ref*} `<= {TYPE rt, REFS ref'*}
+  -- if ref* = ref'* \/ ref'* = eps
+
+rule Extend_structinst:
+  {TYPE dt, FIELDS fv*} `<= {TYPE dt, FIELDS fv'*}
+  -- Expand: dt ~~ STRUCT (mut? zt)*
+  -- (if mut? = MUT \/ fv = fv')*
+
+rule Extend_arrayinst:
+  {TYPE dt, FIELDS fv*} `<= {TYPE dt, FIELDS fv'*}
+  -- Expand: dt ~~ ARRAY (mut? zt)
+  -- (if mut? = MUT \/ fv = fv')*
+
+rule Extend_exninst:
+  {TAG ta, FIELDS val*} `<= {TAG ta, FIELDS val*}
+
+
+rule Extend_store:
+  s `<= s'
+  -- (Extend_taginst: s.TAGS[a] `<= s'.TAGS[a] )^(a<|s.TAGS|)
+  -- (Extend_globalinst: s.GLOBALS[a] `<= s'.GLOBALS[a] )^(a<|s.GLOBALS|)
+  ----
+  -- (Extend_meminst: s.MEMS[a] `<= s'.MEMS[a] )^(a<|s.MEMS|)
+  -- (Extend_tableinst: s.TABLES[a] `<= s'.TABLES[a] )^(a<|s.TABLES|)
+  ----
+  -- (Extend_funcinst: s.FUNCS[a] `<= s'.FUNCS[a] )^(a<|s.FUNCS|)
+  -- (Extend_datainst: s.DATAS[a] `<= s'.DATAS[a] )^(a<|s.DATAS|)
+  ----
+  -- (Extend_eleminst: s.ELEMS[a] `<= s'.ELEMS[a] )^(a<|s.ELEMS|)
+  -- (Extend_structinst: s.STRUCTS[a] `<= s'.STRUCTS[a] )^(a<|s.STRUCTS|)
+  ----
+  -- (Extend_arrayinst: s.ARRAYS[a] `<= s'.ARRAYS[a] )^(a<|s.ARRAYS|)
+  -- (Extend_exninst: s.EXNS[a] `<= s'.EXNS[a] )^(a<|s.EXNS|)
+
+
+;; Configurations
+
+relation Localval_ok: store |- val? : localtype
+relation Frame_ok: store |- frame : context
+relation State_ok: |- state : context
+relation Config_ok: |- config : OK
+
+rule Localval_ok/set:
+  s |- val : SET t
+  -- Val_ok: s |- val : t
+
+rule Localval_ok/unset:
+  s |- eps : UNSET BOT
+
+rule Frame_ok:
+  s |- {LOCALS (val?)*, MODULE moduleinst} : C ++ {LOCALS lct*}
+  -- Moduleinst_ok: s |- moduleinst : C
+  -- (Localval_ok: s |- val? : lct)*
+
+rule State_ok:
+  |- s; f : C
+  -- Store_ok: |- s : OK
+  -- Frame_ok: s |- f : C
+
+rule Config_ok:
+  |- z; instr* : OK
+  -- State_ok: |- z : C
+  -- Expr_ok: C |- instr* : t*

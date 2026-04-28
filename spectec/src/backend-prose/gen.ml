@@ -34,10 +34,6 @@ let flatten_rec def =
   | Ast.RecD defs -> defs
   | _ -> [ def ]
 
-let is_validation_helper_relation def =
-  match def.it with
-  | Ast.RelD (id, _, _, _, _) -> id.it = "Expand" || id.it = "Expand_use"
-  | _ -> false
 (* NOTE: Assume validation relation is `|-` *)
 let is_validation_relation def =
   match def.it with
@@ -45,16 +41,111 @@ let is_validation_relation def =
     List.exists (List.exists (fun atom -> atom.it = Atom.Turnstile)) (Mixop.flatten mixop)
   | _ -> false
 
-let extract_validation_il il =
-  il
-  |> List.concat_map flatten_rec
-  |> List.filter
-    (fun rel -> is_validation_relation rel || is_validation_helper_relation rel)
+let pairwise_concat xyss =
+  (* [(xs1, ys1); (xs2, ys2)] ==> (xs1@xs2, ys1@ys2) *)
+  let xss, yss = List.split xyss in
+  List.concat xss, List.concat yss
+
+let pairwise_concat_map f xs = List.map f xs |> pairwise_concat
+
+(* dependent_rei_id_of_X: (x:X) -> (rel_id list, func_id list) *)
+
+let dependent_rel_id_of_exp exp =
+  let func_ids = ref [] in
+  let collect_func_call e =
+    (match e.it with
+    | Ast.CallE (id, _) -> func_ids := id :: !func_ids
+    | _ -> ()
+    );
+    e
+  in
+
+  let open Il2al.Il_walk in
+  let transformer = { base_transformer with
+    transform_exp = collect_func_call;
+  } in
+  ignore (transform_exp transformer exp);
+
+  [], !func_ids
+
+let rec dependent_rel_id_of_prem prem =
+  match prem.it with
+  | Ast.IfPr exp -> dependent_rel_id_of_exp exp
+  | Ast.LetPr (_, exp1, exp2) -> pairwise_concat_map dependent_rel_id_of_exp [exp1; exp2]
+  | Ast.RulePr (id, _, _, exp) -> pairwise_concat [([id], []); dependent_rel_id_of_exp exp]
+  | Ast.IterPr (prem', _) -> dependent_rel_id_of_prem prem'
+  | _ -> ([], [])
+
+let dependent_ids_of_rule rule =
+  match rule.it with
+  | Ast.RuleD (_, _, _, _, prems) -> pairwise_concat_map dependent_rel_id_of_prem prems
+
+let dependent_ids_of_clause clause =
+  match clause.it with
+  | Ast.DefD (_, _, _, prems) -> pairwise_concat_map dependent_rel_id_of_prem prems
+
+let dependent_ids_of_def def =
+  match def.it with
+  | Ast.RelD (_, _, _, _, rules) -> pairwise_concat_map dependent_ids_of_rule rules
+  | Ast.DecD (_, _, _, clauses) -> pairwise_concat_map dependent_ids_of_clause clauses
+  | _ -> ([], [])
 
 let rel_has_id id rel =
   match rel.it with
-  | Ast.RelD (id', _, _, _, _) -> id.it = id'.it
+  | Ast.RelD (id', _, _, _, _) -> Eq.eq_id id id'
   | _ -> false
+
+let func_has_id id func =
+  match func.it with
+  | Ast.DecD (id', _, _, _) -> Eq.eq_id id id'
+  | _ -> false
+
+let id_to_rel defs id =
+  List.find (rel_has_id id) defs
+
+let id_to_func funcs id =
+  List.find (func_has_id id) funcs
+
+let rec dedup ids =
+  match ids with
+  | [] -> []
+  | hd :: tl ->
+    let tl' = List.filter (fun id -> not (Eq.eq_id hd id)) tl in
+    hd :: dedup tl'
+
+let extract_validation_il il =
+  let all_defs = List.concat_map flatten_rec il in
+  let validation_rels = List.filter is_validation_relation all_defs in
+
+  (* Expand according to the premise dependency *)
+  let rec expand (prev_rels, prev_funcs) (new_rels, new_funcs) =
+    let rels = new_rels @ prev_rels in
+    let is_new_rel_id id = List.for_all (Fun.negate (rel_has_id id)) rels in
+    let funcs = new_funcs @ prev_funcs in
+    let is_new_func_id id = List.for_all (Fun.negate (func_has_id id)) funcs in
+
+    match new_rels @ new_funcs with
+    | [] -> rels
+    | defs ->
+      let (rel_ids, func_ids) = pairwise_concat_map dependent_ids_of_def defs in
+
+      let prem_rels =
+        rel_ids
+        |> dedup
+        |> List.filter is_new_rel_id
+        |> List.map (id_to_rel all_defs)
+      in
+      let prem_funcs =
+        func_ids
+        |> dedup
+        |> List.filter is_new_func_id
+        |> List.map (id_to_func all_defs)
+      in
+
+      expand (rels, funcs) (prem_rels, prem_funcs)
+  in
+
+  expand ([], []) (validation_rels, [])
 
 let extract_prose_hint hintexp =
   match hintexp.it with
@@ -285,7 +376,8 @@ let rec prem_to_instrs prem =
     let rel =
       match List.find_opt (rel_has_id id) !Langs.validation_il with
       | Some rel -> rel
-      | None -> failwith ("Unknown relation id: " ^ id.it)
+      | None -> failwith (
+        Printf.sprintf "The relation %s is supposed to be included in `validation_il`. Hint: Plese fix `extract_validation_il`." id.it)
     in
     let frees = (Free.free_prem prem).varid in
     let args = exp_to_argexpr e in

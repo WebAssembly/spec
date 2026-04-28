@@ -640,6 +640,30 @@ let is_variant_typ = is_x_typ as_variant_typ
 let is_notation_typ = is_x_typ as_notation_typ
 let is_empty_notation_typ = is_x_typ as_empty_notation_typ
 
+let rec find_typfield atom = function
+  | [] -> None
+  | ((atom', _, _) as tf1)::tfs when atom'.it = atom.it -> Some (tf1, tfs)
+  | tf1::tfs ->
+    match find_typfield atom tfs with
+    | None -> None
+    | Some (tf, tfs') -> Some (tf, tf1::tfs')
+
+let rec find_expfield atom = function
+  | [] -> None
+  | ((atom', _) as ef1)::efs when atom'.it = atom.it -> Some (ef1, efs)
+  | ef1::efs ->
+    match find_expfield atom efs with
+    | None -> None
+    | Some (ef, efs') -> Some (ef, ef1::efs')
+
+let rec order_expfields efs = function
+  | [] -> []
+  | (atom, _, _)::tfs' ->
+    (* TODO(4, rossberg): make this not quadratic *)
+    match find_expfield atom efs with
+    | None -> assert false
+    | Some (ef1, efs') -> ef1 :: order_expfields efs' tfs'
+
 
 (* Type Equivalence and Shallow Numeric Subtyping *)
 
@@ -1470,25 +1494,31 @@ and elab_exp_list env (es : exp list) (xts : (id * Il.typ) list) at
 
 and elab_expfields env tid (efs : expfield list) (tfs : Il.typfield list) (t0 : Il.typ) at
   : Il.expfield list attempt =
+  let* efs = elab_expfields' env tid efs tfs t0 at in
+  Ok (order_expfields efs tfs)
+
+and elab_expfields' env tid (efs : expfield list) (tfs : Il.typfield list) (t0 : Il.typ) at
+  : Il.expfield list attempt =
   Debug.(log_in_at "el.elab_expfields" at
     (fun _ -> fmt "{%s} : {%s} = %s" (list el_expfield efs) (list il_typfield tfs) (il_typ t0))
   );
   assert (valid_tid tid);
   match efs, tfs with
   | [], [] -> Ok []
-  | (atom1, e)::efs2, (atom2, (tF, _qs, prems), _)::tfs2 when atom1.it = atom2.it ->
-    let* e' = elab_exp env e tF in
-    let* efs2' = elab_expfields env tid efs2 tfs2 t0 at in
-    let e' = if prems = [] then e' else tup_exp' [e'] e.at in
-    Ok ((elab_atom atom1 tid, e') :: efs2')
-  | _, (atom, (tF, _qs, prems), _)::tfs2 ->
+  | [], (atom, (tF, _qs, prems), _)::tfs2 ->
     let atom' = string_of_atom atom in
     let* e1' = cast_empty ("omitted record field `" ^ atom' ^ "`") env tF at in
     let e' = if prems = [] then e1' else tup_exp' [e1'] at in
     let* efs2' = elab_expfields env tid efs tfs2 t0 at in
     Ok ((elab_atom atom tid, e') :: efs2')
-  | (atom, e)::_, [] ->
-    fail_atom e.at atom t0 "undefined or misplaced record field"
+  | (atom, e)::efs2, tfs ->
+    match find_typfield atom tfs with
+    | None -> fail_atom e.at atom t0 "undefined or misplaced record field"
+    | Some ((_, (tF, _qs, prems), _), tfs2) ->
+      let* e' = elab_exp env e tF in
+      let* efs2' = elab_expfields env tid efs2 tfs2 t0 at in
+      let e' = if prems = [] then e' else tup_exp' [e'] e.at in
+      Ok ((elab_atom atom tid, e') :: efs2')
 
 and elab_exp_iter env (es : exp list) (t1, iter) t at : Il.exp attempt =
   let* e' = elab_exp_iter' env es (t1, iter) t at in

@@ -161,7 +161,18 @@ let rec implies prem1 prem2 = Il.Eq.eq_prem prem1 prem2 ||
   | IterPr (prem2', _) -> implies prem1 prem2'
   | _ -> false
 
+(* Remove empty premise iterators *)
+let rec flatten_empty_iter prem =
+  match prem.it with
+  | IterPr (prem', iterexp) ->
+    let prem'' = flatten_empty_iter prem' in
+    (match iterexp with
+    | ((Opt | List | List1), []) -> prem''
+    | _ -> IterPr (prem'', iterexp) $ prem.at)
+  | _ -> prem
+
 let reduce_prems prems = prems
+  |> List.map flatten_empty_iter
   |> Util.Lib.List.filter_not is_true
   |> Util.Lib.List.nub implies
 

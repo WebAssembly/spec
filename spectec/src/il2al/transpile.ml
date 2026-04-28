@@ -894,7 +894,7 @@ let rec enhance_readability instrs =
   in
 
   if !loop_cnt = 0 || Eq.eq_instrs instrs instrs' then (
-    if !loop_cnt = 0 then print_endline "[WARNING] enhance_readability did not reach fixpoint. (Hint: Missed case for eq.ml?)";
+    if !loop_cnt = 0 then print_endline "[WARNING] enhance_readability did not reach fixpoint. (Hint: Missed case for al/eq.ml?)";
     loop_cnt := loop_max;
     instrs
   ) else (

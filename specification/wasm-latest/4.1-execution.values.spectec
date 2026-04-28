@@ -81,6 +81,23 @@ rule Val_ok/ref:
   -- Ref_ok: s |- ref : rt
 
 
+;; Field values
+
+relation Packval_ok: store |- packval : packtype
+relation Fieldval_ok: store |- fieldval : storagetype
+
+rule Packval_ok:
+  s |- PACK pt c : pt
+
+rule Fieldval_ok/val:
+  s |- val : t
+  -- Val_ok: s |- val : t
+
+rule Fieldval_ok/packval:
+  s |- packval : pt
+  -- Packval_ok: s |- packval : pt
+
+
 ;; External addresses
 
 relation Externaddr_ok: store |- externaddr : externtype  hint(macro "%externaddr")

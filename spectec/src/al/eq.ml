@@ -50,6 +50,7 @@ let rec eq_expr e1 e2 =
   | TopValueE eo1, TopValueE eo2 -> eq_expr_opt eo1 eo2
   | TopValuesE e1, TopValuesE e2 -> eq_expr e1 e2
   | SubE (i1, t1), SubE (i2, t2) -> i1 = i2 && Il.Eq.eq_typ t1 t2
+  | RelE (id1, el1), RelE (id2, el2) -> id1 = id2 && eq_exprs el1 el2
   | YetE s1, YetE s2 -> s1 = s2
   | _ -> false
 
@@ -141,8 +142,8 @@ and eq_instrs il1 il2 = eq_list eq_instr il1 il2
 
 let eq_algos al1 al2 =
   match al1.it, al2.it with
-  | RuleA (a1, an1, al1, il1), RuleA (a2, an2, al2, il2) ->
-    Atom.eq a1 a2 && an1 = an2 && eq_args al1 al2 && eq_instrs il1 il2
+  | RuleA (m1, an1, al1, il1), RuleA (m2, an2, al2, il2) ->
+    Mixop.eq m1 m2 && an1 = an2 && eq_args al1 al2 && eq_instrs il1 il2
   | FuncA (i1, al1, il1), FuncA (i2, al2, il2) ->
     i1 = i2 && eq_args al1 al2 && eq_instrs il1 il2
   | _ -> false

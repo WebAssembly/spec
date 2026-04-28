@@ -459,7 +459,6 @@ def $rollrt(typeidx, rectype) : rectype  hint(show $roll_(%, %))   hint(macro "r
 def $unrollrt(rectype) : rectype         hint(show $unroll(%))     hint(macro "unrollrt")
 def $rolldt(typeidx, rectype) : deftype* hint(show $roll_(%)*#((%))) hint(macro "rolldt")
 def $unrolldt(deftype) : subtype         hint(show $unroll(%))     hint(macro "unrolldt")
-def $expanddt(deftype) : comptype        hint(show $expand(%))     hint(macro "expanddt")
 
 def $rollrt(x, rectype) = REC ($subst_subtype(subtype, ((_IDX $(x + i)))^(i<n), (REC i)^(i<n)))^n
   -- if rectype = REC subtype^n
@@ -468,8 +467,6 @@ def $unrollrt(rectype) = REC ($subst_subtype(subtype, (REC i)^(i<n), (_DEF recty
 
 def $rolldt(x, rectype) = (_DEF (REC subtype^n) i)^(i<n)  -- if $rollrt(x, rectype) = REC subtype^n
 def $unrolldt(_DEF rectype i) = subtype*[i]               -- if $unrollrt(rectype) = REC subtype*
-
-def $expanddt(deftype) = comptype                         -- if $unrolldt(deftype) = SUB final? typeuse* comptype
 
 
 ;; Free indices

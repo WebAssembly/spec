@@ -923,9 +923,8 @@ let translate_rulepr id exp =
   | name, el
     when String.ends_with ~suffix: "_const" name ->
     [ assertI (callE (name, el |> List.map expA) ~at ~note:boolT) ~at:at]
-  | _ ->
-    print_yet exp.at "translate_rulepr" ("`" ^ Il.Print.string_of_exp exp ^ "`");
-    [ yetI ("TODO: translate_rulepr " ^ id.it) ~at ]
+  | name, el ->
+    [ ifI (relE (name, el) ~at ~note:boolT, [], []) ~at ]
 
 let rec translate_iterpr pr (iter, xes) =
   let instrs = translate_prem pr in
@@ -1218,13 +1217,7 @@ and translate_rgroup (rule: rule_def) =
   let winstr = extract_winstr (List.hd rgroup) rule.at in
   let instrs = translate_rgroup' rule in
 
-  let name =
-    try
-      match Mixop.head (case_of_case winstr) with
-      | Some atom -> atom
-      | _ -> failwith ""
-    with _ -> error rule.at "The reduction rules do not have valid or consistent target Wasm instructions."
-  in
+  let name = case_of_case winstr in
   let anchor = rel_id.it ^ "/" ^ instr_name in
   let al_params =
     if List.mem instr_name ["frame"; "label"; "handler"] then [] else

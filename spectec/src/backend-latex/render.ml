@@ -1084,6 +1084,8 @@ Printf.eprintf "[render_atom %s @ %s] id=%s def=%s macros: %s (%s)\n%!"
           | Sup -> "\\geq"
           | SqArrow | SqArrowSub -> "\\hookrightarrow"
           | SqArrowStar | SqArrowStarSub -> "\\hookrightarrow^\\ast"
+          | Prec | PrecSub -> "\\prec"
+          | Succ | SuccSub -> "\\succ"
           | Cat -> "\\oplus"
           | Bar -> "\\mid"
           | BigAnd -> "\\bigwedge"
@@ -1702,6 +1704,8 @@ let () = render_args_fwd := render_args
 
 let merge_typ t1 t2 =
   match t1.it, t2.it with
+  | StrT (dots1, ids1, fields1, _), StrT (_, ids2, fields2, dots2) ->
+    StrT (dots1, ids1 @ strip_nl ids2, fields1 @ strip_nl fields2, dots2) $ t1.at
   | CaseT (dots1, ids1, cases1, _), CaseT (_, ids2, cases2, dots2) ->
     CaseT (dots1, ids1 @ strip_nl ids2, cases1 @ strip_nl cases2, dots2) $ t1.at
   | _, _ -> assert false

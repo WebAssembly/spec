@@ -21,9 +21,8 @@ var it : instrtype
 
 ;; Contexts
 
-syntax context hint(desc "context") hint(macro "%" "C%") =
+syntax context/syn hint(desc "context") hint(macro "%" "C%") =
   { TYPES deftype*          hint(desc "type"),
-    RECS subtype*           hint(desc "recursive type"),
     TAGS tagtype*           hint(desc "tag"),
     GLOBALS globaltype*     hint(desc "global"),
     MEMS memtype*           hint(desc "memory"),
@@ -34,8 +33,12 @@ syntax context hint(desc "context") hint(macro "%" "C%") =
     LOCALS localtype*       hint(desc "local"),
     LABELS resulttype*      hint(desc "label"),
     RETURN resulttype?      hint(desc "result"),
-    REFS funcidx*
+    REFS funcidx*           hint(desc "references"),
+    ...
   }
+
+syntax context/sem hint(macro "%" "C%") =
+  { ..., RECS subtype*      hint(desc "recursive type") }
 
 var C : context
 
