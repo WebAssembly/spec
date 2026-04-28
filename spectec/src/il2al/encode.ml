@@ -12,6 +12,8 @@ ex)
 open Util
 open Source
 
+open Il2al_util
+
 open Free
 open Il
 open Ast
@@ -19,13 +21,6 @@ open Ast
 
 (* Helpers *)
 let error at msg = Error.error at "prose translation" msg
-
-let mk_id x =
-  x $ no_region
-let mk_varT xt =
-  VarT (mk_id xt, []) $ no_region
-let mk_varE xe xt =
-  VarE (mk_id xe) $$ no_region % (mk_varT xt)
 
 let is_case e =
   match e.it with
@@ -61,7 +56,7 @@ let free_ids e =
   (free_exp false e)
   .varid
   |> Set.elements
-  |> List.map (fun id -> ExpP (id $ no_region, mk_varT "?") $ no_region)
+  |> List.map id_to_quant
 
 let dim e =
   let t = (NumT `NatT $ no_region) in

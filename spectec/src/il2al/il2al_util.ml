@@ -32,6 +32,15 @@ let prems_of_rule rule =
   match rule.it with
   | RuleD (_, _, _, _, prems) -> prems
 
+let mk_id x =
+  x $ no_region
+let mk_varT xt =
+  VarT (mk_id xt, []) $ no_region
+let mk_varE xe xt =
+  VarE (mk_id xe) $$ no_region % (mk_varT xt)
+
+let id_to_quant id = ExpP (id $ no_region, mk_varT "?") $ no_region
+
 let lhs_of_prem pr =
   match pr.it with
   | LetPr (_, lhs, _) -> lhs
@@ -43,17 +52,17 @@ let rhs_of_prem pr =
 let replace_lhs lhs pr =
   let open Il.Free in
   match pr.it with
-  | LetPr (qs, lhs', rhs) ->
+  | LetPr (_qs, lhs', rhs) ->
     if Il.Eq.eq_exp lhs lhs' then
       pr
     else
-      let free = free_exp lhs in
-      let qs' = List.filter (fun q ->
-        match q.it with
-        | ExpP (id, _) -> Set.mem id.it free.varid
-        | _ -> true
-      ) qs in
-      { pr with it = LetPr (qs', lhs, rhs) }
+      let qs =
+        (free_exp lhs)
+        .varid
+        |> Set.elements
+        |> List.map id_to_quant
+      in
+      { pr with it = LetPr (qs, lhs, rhs) }
   | _ -> error pr.at "expected a LetPr"
 
 let case_of_case e =
