@@ -5,11 +5,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Matching &#8212; WebAssembly 3.0 (2026-04-30)</title>
+    <title>Matching &#8212; WebAssembly 3.0 (2026-05-05)</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=686e5160" />
     <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=057308f9" />
-    <script src="../_static/documentation_options.js?v=5151cab4"></script>
+    <script src="../_static/documentation_options.js?v=94a87f7c"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>window.MathJax = {"tex": {"maxBuffer": 30720, "macros": {"multicolumn": ["", 2]}}, "options": {"menuOptions": {"settings": {"enrich": false}}}}</script>
@@ -214,6 +214,36 @@ C \href{../valid/matching.html#match-vectype}{\vdash} {\href{../syntax/types.htm
 <li><p>The <a class="reference internal" href="../syntax/types.html#syntax-heaptype"><span class="std std-ref">heap type</span></a> <span class="math notranslate nohighlight">\({\href{../syntax/types.html#syntax-heaptype}{\mathit{heaptype}}}_2\)</span> is of the form <span class="math notranslate nohighlight">\({\href{../syntax/modules.html#syntax-typeidx}{\mathit{typeidx}}}\)</span>.</p></li>
 <li><p>The <a class="reference internal" href="conventions.html#syntax-deftype"><span class="std std-ref">type</span></a> <span class="math notranslate nohighlight">\(C{.}\href{../valid/conventions.html#context}{\mathsf{types}}{}[{\href{../syntax/modules.html#syntax-typeidx}{\mathit{typeidx}}}]\)</span> exists.</p></li>
 <li><p>The <a class="reference internal" href="../syntax/types.html#syntax-heaptype"><span class="std std-ref">heap type</span></a> <span class="math notranslate nohighlight">\({\href{../syntax/types.html#syntax-heaptype}{\mathit{heaptype}}}_1\)</span> <a class="reference internal" href="#match-heaptype"><span class="std std-ref">matches</span></a> the <a class="reference internal" href="conventions.html#syntax-deftype"><span class="std std-ref">type</span></a> <span class="math notranslate nohighlight">\(C{.}\href{../valid/conventions.html#context}{\mathsf{types}}{}[{\href{../syntax/modules.html#syntax-typeidx}{\mathit{typeidx}}}]\)</span>.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>Or:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>The <a class="reference internal" href="../syntax/types.html#syntax-heaptype"><span class="std std-ref">heap type</span></a> <span class="math notranslate nohighlight">\({\href{../syntax/types.html#syntax-heaptype}{\mathit{heaptype}}}_1\)</span> is of the form <span class="math notranslate nohighlight">\((\href{../syntax/types.html#syntax-heaptype}{\mathsf{rec}} {.} i)\)</span>.</p></li>
+<li><p>The <a class="reference internal" href="../syntax/types.html#syntax-heaptype"><span class="std std-ref">heap type</span></a> <span class="math notranslate nohighlight">\({\href{../syntax/types.html#syntax-heaptype}{\mathit{heaptype}}}_2\)</span> is of the form <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-heaptype}{\mathsf{struct}}\)</span>.</p></li>
+<li><p>The <a class="reference internal" href="../syntax/types.html#syntax-subtype"><span class="std std-ref">recursive type</span></a> <span class="math notranslate nohighlight">\(C{.}\href{../appendix/properties.html#context-ext}{\mathsf{recs}}{}[i]\)</span> exists.</p></li>
+<li><p>The <a class="reference internal" href="../syntax/types.html#syntax-subtype"><span class="std std-ref">recursive type</span></a> <span class="math notranslate nohighlight">\(C{.}\href{../appendix/properties.html#context-ext}{\mathsf{recs}}{}[i]\)</span> is of the form <span class="math notranslate nohighlight">\((\href{../syntax/types.html#syntax-subtype}{\mathsf{sub}}~{\href{../syntax/types.html#syntax-subtype}{\mathsf{final}}^?}~(\href{../syntax/types.html#syntax-comptype}{\mathsf{struct}}~{{\href{../syntax/types.html#syntax-fieldtype}{\mathit{fieldtype}}}^\ast}))\)</span>.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>Or:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>The <a class="reference internal" href="../syntax/types.html#syntax-heaptype"><span class="std std-ref">heap type</span></a> <span class="math notranslate nohighlight">\({\href{../syntax/types.html#syntax-heaptype}{\mathit{heaptype}}}_1\)</span> is of the form <span class="math notranslate nohighlight">\((\href{../syntax/types.html#syntax-heaptype}{\mathsf{rec}} {.} i)\)</span>.</p></li>
+<li><p>The <a class="reference internal" href="../syntax/types.html#syntax-heaptype"><span class="std std-ref">heap type</span></a> <span class="math notranslate nohighlight">\({\href{../syntax/types.html#syntax-heaptype}{\mathit{heaptype}}}_2\)</span> is of the form <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-heaptype}{\mathsf{array}}\)</span>.</p></li>
+<li><p>The <a class="reference internal" href="../syntax/types.html#syntax-subtype"><span class="std std-ref">recursive type</span></a> <span class="math notranslate nohighlight">\(C{.}\href{../appendix/properties.html#context-ext}{\mathsf{recs}}{}[i]\)</span> exists.</p></li>
+<li><p>The <a class="reference internal" href="../syntax/types.html#syntax-subtype"><span class="std std-ref">recursive type</span></a> <span class="math notranslate nohighlight">\(C{.}\href{../appendix/properties.html#context-ext}{\mathsf{recs}}{}[i]\)</span> is of the form <span class="math notranslate nohighlight">\((\href{../syntax/types.html#syntax-subtype}{\mathsf{sub}}~{\href{../syntax/types.html#syntax-subtype}{\mathsf{final}}^?}~(\href{../syntax/types.html#syntax-comptype}{\mathsf{array}}~{\href{../syntax/types.html#syntax-fieldtype}{\mathit{fieldtype}}}))\)</span>.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>Or:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>The <a class="reference internal" href="../syntax/types.html#syntax-heaptype"><span class="std std-ref">heap type</span></a> <span class="math notranslate nohighlight">\({\href{../syntax/types.html#syntax-heaptype}{\mathit{heaptype}}}_1\)</span> is of the form <span class="math notranslate nohighlight">\((\href{../syntax/types.html#syntax-heaptype}{\mathsf{rec}} {.} i)\)</span>.</p></li>
+<li><p>The <a class="reference internal" href="../syntax/types.html#syntax-heaptype"><span class="std std-ref">heap type</span></a> <span class="math notranslate nohighlight">\({\href{../syntax/types.html#syntax-heaptype}{\mathit{heaptype}}}_2\)</span> is of the form <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-heaptype}{\mathsf{func}}\)</span>.</p></li>
+<li><p>The <a class="reference internal" href="../syntax/types.html#syntax-subtype"><span class="std std-ref">recursive type</span></a> <span class="math notranslate nohighlight">\(C{.}\href{../appendix/properties.html#context-ext}{\mathsf{recs}}{}[i]\)</span> exists.</p></li>
+<li><p>The <a class="reference internal" href="../syntax/types.html#syntax-subtype"><span class="std std-ref">recursive type</span></a> <span class="math notranslate nohighlight">\(C{.}\href{../appendix/properties.html#context-ext}{\mathsf{recs}}{}[i]\)</span> is of the form <span class="math notranslate nohighlight">\((\href{../syntax/types.html#syntax-subtype}{\mathsf{sub}}~{\href{../syntax/types.html#syntax-subtype}{\mathsf{final}}^?}~(\href{../syntax/types.html#syntax-comptype}{\mathsf{func}}~{t_1^\ast}~\href{../syntax/types.html#syntax-comptype}{\rightarrow}~{t_2^\ast}))\)</span>.</p></li>
 </ul>
 </div></blockquote>
 </li>
