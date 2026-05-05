@@ -3376,17 +3376,17 @@ relation Deftype_ok: `%|-%:OK`(context, deftype)
 
 ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:102.1-102.108
 relation Comptype_sub: `%|-%<:%`(context, comptype, comptype)
-  ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:169.1-171.41
+  ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:181.1-183.41
   rule struct{C : context, `ft_1*` : fieldtype*, `ft'_1*` : fieldtype*, `ft_2*` : fieldtype*}:
     `%|-%<:%`(C, STRUCT_comptype(`%`_list(ft_1*{ft_1 <- `ft_1*`} ++ ft'_1*{ft'_1 <- `ft'_1*`})), STRUCT_comptype(`%`_list(ft_2*{ft_2 <- `ft_2*`})))
     -- (Fieldtype_sub: `%|-%<:%`(C, ft_1, ft_2))*{ft_1 <- `ft_1*`, ft_2 <- `ft_2*`}
 
-  ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:173.1-175.38
+  ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:185.1-187.38
   rule array{C : context, ft_1 : fieldtype, ft_2 : fieldtype}:
     `%|-%<:%`(C, ARRAY_comptype(ft_1), ARRAY_comptype(ft_2))
     -- Fieldtype_sub: `%|-%<:%`(C, ft_1, ft_2)
 
-  ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:177.1-180.41
+  ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:189.1-192.41
   rule func{C : context, `t_11*` : valtype*, `t_12*` : valtype*, `t_21*` : valtype*, `t_22*` : valtype*}:
     `%|-%<:%`(C, `FUNC%->%`_comptype(`%`_resulttype(t_11*{t_11 <- `t_11*`}), `%`_resulttype(t_12*{t_12 <- `t_12*`})), `FUNC%->%`_comptype(`%`_resulttype(t_21*{t_21 <- `t_21*`}), `%`_resulttype(t_22*{t_22 <- `t_22*`})))
     -- Resulttype_sub: `%|-%<:%`(C, `%`_resulttype(t_21*{t_21 <- `t_21*`}), `%`_resulttype(t_11*{t_11 <- `t_11*`}))
@@ -3394,12 +3394,12 @@ relation Comptype_sub: `%|-%<:%`(context, comptype, comptype)
 
 ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:103.1-103.107
 relation Deftype_sub: `%|-%<:%`(context, deftype, deftype)
-  ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:183.1-185.66
+  ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:195.1-197.66
   rule refl{C : context, deftype_1 : deftype, deftype_2 : deftype}:
     `%|-%<:%`(C, deftype_1, deftype_2)
     -- if ($clos_deftype(C, deftype_1) = $clos_deftype(C, deftype_2))
 
-  ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:187.1-190.49
+  ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:199.1-202.49
   rule super{C : context, deftype_1 : deftype, deftype_2 : deftype, `final?` : final?, `typeuse*` : typeuse*, ct : comptype, i : nat}:
     `%|-%<:%`(C, deftype_1, deftype_2)
     -- if ($unrolldt(deftype_1) = SUB_subtype(final?{final <- `final?`}, typeuse*{typeuse <- `typeuse*`}, ct))
@@ -3464,99 +3464,114 @@ relation Heaptype_sub: `%|-%<:%`(context, heaptype, heaptype)
     `%|-%<:%`(C, heaptype, _IDX_heaptype(typeidx))
     -- Heaptype_sub: `%|-%<:%`(C, heaptype, (C.TYPES_context[typeidx!`%`_typeidx.0] : deftype <: heaptype))
 
-  ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:65.1-67.43
-  rule rec{C : context, i : n, `typeuse*` : typeuse*, j : nat, `final?` : final?, ct : comptype}:
+  ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:65.1-67.51
+  rule `rec-struct`{C : context, i : n, `final?` : final?, `fieldtype*` : fieldtype*}:
+    `%|-%<:%`(C, REC_heaptype(i), STRUCT_heaptype)
+    -- if (C.RECS_context[i] = SUB_subtype(final?{final <- `final?`}, [], STRUCT_comptype(`%`_list(fieldtype*{fieldtype <- `fieldtype*`}))))
+
+  ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:69.1-71.49
+  rule `rec-array`{C : context, i : n, `final?` : final?, fieldtype : fieldtype}:
+    `%|-%<:%`(C, REC_heaptype(i), ARRAY_heaptype)
+    -- if (C.RECS_context[i] = SUB_subtype(final?{final <- `final?`}, [], ARRAY_comptype(fieldtype)))
+
+  ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:73.1-75.51
+  rule `rec-func`{C : context, i : n, `final?` : final?, `t_1*` : valtype*, `t_2*` : valtype*}:
+    `%|-%<:%`(C, REC_heaptype(i), FUNC_heaptype)
+    -- if (C.RECS_context[i] = SUB_subtype(final?{final <- `final?`}, [], `FUNC%->%`_comptype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), `%`_resulttype(t_2*{t_2 <- `t_2*`}))))
+
+  ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:77.1-79.43
+  rule `rec-sub`{C : context, i : n, `typeuse*` : typeuse*, j : nat, `final?` : final?, ct : comptype}:
     `%|-%<:%`(C, REC_heaptype(i), (typeuse*{typeuse <- `typeuse*`}[j] : typeuse <: heaptype))
     -- if (C.RECS_context[i] = SUB_subtype(final?{final <- `final?`}, typeuse*{typeuse <- `typeuse*`}, ct))
 
-  ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:69.1-72.25
+  ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:81.1-84.25
   rule none{C : context, heaptype : heaptype}:
     `%|-%<:%`(C, NONE_heaptype, heaptype)
     -- Heaptype_sub: `%|-%<:%`(C, heaptype, ANY_heaptype)
     -- if (heaptype =/= BOT_heaptype)
 
-  ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:74.1-77.25
+  ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:86.1-89.25
   rule nofunc{C : context, heaptype : heaptype}:
     `%|-%<:%`(C, NOFUNC_heaptype, heaptype)
     -- Heaptype_sub: `%|-%<:%`(C, heaptype, FUNC_heaptype)
     -- if (heaptype =/= BOT_heaptype)
 
-  ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:79.1-82.25
+  ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:91.1-94.25
   rule noexn{C : context, heaptype : heaptype}:
     `%|-%<:%`(C, NOEXN_heaptype, heaptype)
     -- Heaptype_sub: `%|-%<:%`(C, heaptype, EXN_heaptype)
     -- if (heaptype =/= BOT_heaptype)
 
-  ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:84.1-87.25
+  ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:96.1-99.25
   rule noextern{C : context, heaptype : heaptype}:
     `%|-%<:%`(C, NOEXTERN_heaptype, heaptype)
     -- Heaptype_sub: `%|-%<:%`(C, heaptype, EXTERN_heaptype)
     -- if (heaptype =/= BOT_heaptype)
 
-  ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:89.1-90.23
+  ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:101.1-102.23
   rule bot{C : context, heaptype : heaptype}:
     `%|-%<:%`(C, BOT_heaptype, heaptype)
 
 ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:10.1-10.103
 relation Reftype_sub: `%|-%<:%`(context, reftype, reftype)
-  ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:93.1-95.37
+  ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:105.1-107.37
   rule nonnull{C : context, ht_1 : heaptype, ht_2 : heaptype}:
     `%|-%<:%`(C, REF_reftype(?(), ht_1), REF_reftype(?(), ht_2))
     -- Heaptype_sub: `%|-%<:%`(C, ht_1, ht_2)
 
-  ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:97.1-99.37
+  ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:109.1-111.37
   rule null{C : context, ht_1 : heaptype, ht_2 : heaptype}:
     `%|-%<:%`(C, REF_reftype(NULL_null?{}, ht_1), REF_reftype(?(NULL_null), ht_2))
     -- Heaptype_sub: `%|-%<:%`(C, ht_1, ht_2)
 
 ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:11.1-11.103
 relation Valtype_sub: `%|-%<:%`(context, valtype, valtype)
-  ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:102.1-104.46
+  ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:114.1-116.46
   rule num{C : context, numtype_1 : numtype, numtype_2 : numtype}:
     `%|-%<:%`(C, (numtype_1 : numtype <: valtype), (numtype_2 : numtype <: valtype))
     -- Numtype_sub: `%|-%<:%`(C, numtype_1, numtype_2)
 
-  ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:106.1-108.46
+  ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:118.1-120.46
   rule vec{C : context, vectype_1 : vectype, vectype_2 : vectype}:
     `%|-%<:%`(C, (vectype_1 : vectype <: valtype), (vectype_2 : vectype <: valtype))
     -- Vectype_sub: `%|-%<:%`(C, vectype_1, vectype_2)
 
-  ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:110.1-112.46
+  ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:122.1-124.46
   rule ref{C : context, reftype_1 : reftype, reftype_2 : reftype}:
     `%|-%<:%`(C, (reftype_1 : reftype <: valtype), (reftype_2 : reftype <: valtype))
     -- Reftype_sub: `%|-%<:%`(C, reftype_1, reftype_2)
 
-  ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:114.1-115.22
+  ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:126.1-127.22
   rule bot{C : context, valtype : valtype}:
     `%|-%<:%`(C, BOT_valtype, valtype)
 
-;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:120.1-120.115
+;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:132.1-132.115
 relation Resulttype_sub: `%|-%<:%`(context, resulttype, resulttype)
-  ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:123.1-125.37
+  ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:135.1-137.37
   rule _{C : context, `t_1*` : valtype*, `t_2*` : valtype*}:
     `%|-%<:%`(C, `%`_resulttype(t_1*{t_1 <- `t_1*`}), `%`_resulttype(t_2*{t_2 <- `t_2*`}))
     -- (Valtype_sub: `%|-%<:%`(C, t_1, t_2))*{t_1 <- `t_1*`, t_2 <- `t_2*`}
 
-;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:138.1-138.119
+;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:150.1-150.119
 relation Storagetype_sub: `%|-%<:%`(context, storagetype, storagetype)
-  ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:150.1-152.46
+  ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:162.1-164.46
   rule val{C : context, valtype_1 : valtype, valtype_2 : valtype}:
     `%|-%<:%`(C, (valtype_1 : valtype <: storagetype), (valtype_2 : valtype <: storagetype))
     -- Valtype_sub: `%|-%<:%`(C, valtype_1, valtype_2)
 
-  ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:154.1-156.49
+  ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:166.1-168.49
   rule pack{C : context, packtype_1 : packtype, packtype_2 : packtype}:
     `%|-%<:%`(C, (packtype_1 : packtype <: storagetype), (packtype_2 : packtype <: storagetype))
     -- Packtype_sub: `%|-%<:%`(C, packtype_1, packtype_2)
 
-;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:139.1-139.117
+;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:151.1-151.117
 relation Fieldtype_sub: `%|-%<:%`(context, fieldtype, fieldtype)
-  ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:159.1-161.40
+  ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:171.1-173.40
   rule const{C : context, zt_1 : storagetype, zt_2 : storagetype}:
     `%|-%<:%`(C, `%%`_fieldtype(?(), zt_1), `%%`_fieldtype(?(), zt_2))
     -- Storagetype_sub: `%|-%<:%`(C, zt_1, zt_2)
 
-  ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:163.1-166.40
+  ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:175.1-178.40
   rule var{C : context, zt_1 : storagetype, zt_2 : storagetype}:
     `%|-%<:%`(C, `%%`_fieldtype(?(MUT_mut), zt_1), `%%`_fieldtype(?(MUT_mut), zt_2))
     -- Storagetype_sub: `%|-%<:%`(C, zt_1, zt_2)

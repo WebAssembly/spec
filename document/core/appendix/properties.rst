@@ -84,7 +84,9 @@ $${definition: unrollht_ before}
    The new rules for :ref:`recursive types <syntax-rectype>` and :ref:`sub types <syntax-subtype>` complement the ones :ref:`previously given <valid-subtype>`,
    which only allowed regular :ref:`type indices <syntax-typeidx>` as supertypes.
    They define validity of :ref:`rolled-up <aux-roll-rectype>` recursive types,
-   like they occur in :ref:`defined types <syntax-deftype>`.
+   like they occur in :ref:`defined types <syntax-deftype>`,
+   in turn needed to define :ref:`validity <valid-context>` of :ref:`contexts <context>`.
+   None of these rules are needed in the implementation of a validator.
 
 
 .. index:: defined type, recursive type, unroll, expand
@@ -103,11 +105,11 @@ Subtyping
 
 Inside a :ref:`rolled-up <aux-roll-rectype>` :ref:`recursive type <syntax-rectype>`, a :ref:`recursive type index <syntax-rectypeidx>` can :ref:`match <match-heaptype>` another :ref:`heap type <syntax-heaptype>`.
 
-$${rule: Heaptype_sub/rec}
+$${rule: Heaptype_sub/rec-*}
 
 .. note::
-   This rule complements the previously given rules for :ref:`matching heap types <match-heaptype>`.
-   It is only invoked when checking :ref:`validity <valid-rectype-ext>` of :ref:`rolled-up <aux-roll-rectype>` :ref:`recursive types <syntax-rectype>`.
+   These rules complement the previously given rules for :ref:`matching heap types <match-heaptype>`.
+   They are only invoked when checking :ref:`validity <valid-rectype-ext>` of :ref:`rolled-up <aux-roll-rectype>` :ref:`recursive types <syntax-rectype>`.
 
 
 .. index:: value, value type, result, result type, trap, exception, throw
