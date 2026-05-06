@@ -302,19 +302,21 @@ rule Ok_exp/LIFT:
   -- Ok_exp: E |- e : ITER t QUEST
 
 rule Ok_exp/INJ:
-  E |- INJ op e : VAR x a*
-  -- Expand_typ: E |- VAR x a* ~~ VARIANT tc*
-  -- if (op `: t `- `{q*} pr*) <- tc*
-  -- Ok_exp: E |- e : t
-  ;; Note: premises need not hold!
+  E |- INJ t op e `- qpr? : t
+  -- Ok_typ: E |- t : OK
+  -- Expand_typ: E |- t ~~ VARIANT tc*
+  -- if (op `: t' `- qpr') <- tc*
+  -- Ok_exp: E |- e : t'
+  -- (Ok_quantprems: E |- qpr : OK)?
 
 rule Ok_exp/STR:
-  E |- STR ef* : VAR x a*
-  -- Expand_typ: E |- VAR x a* ~~ STRUCT tf*
-  -- if (at `: t `- `{q*} pr*)* = tf*
-  -- if (at `= e)* = ef*
-  -- (Ok_exp: E |- e : t)*
-  ;; Note: premises need not hold!
+  E |- STR t ef* : t
+  -- Ok_typ: E |- t : OK
+  -- Expand_typ: E |- t ~~ STRUCT tf*
+  -- if (at `: t' `- qpr')* = tf*
+  -- if (at `= e `- qpr?)* = ef*
+  -- (Ok_exp: E |- e : t')*
+  -- (Ok_quantprems: E |- qpr : OK)?*
 
 rule Ok_exp/SEL:
   E |- SEL e n : $subst_typ({EXP (x_i, e_i)^n}, t_n)
@@ -489,6 +491,13 @@ rule Ok_sym/conv:
 
 relation Ok_prem: E |- prem : OK -| E
 relation Ok_prems: E |- prem* : OK -| E
+relation Ok_quantprems: E |- quantprems : OK
+
+
+rule Ok_quantprems:
+  E |- `{q*} pr* : OK
+  -- Ok_params: E |- q* : OK
+  -- Ok_prems: E ++ $paramenv(q*) |- pr* : OK -| E'
 
 
 rule Ok_prems/eps:
