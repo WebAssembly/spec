@@ -1062,6 +1062,7 @@ and equiv_params env ps1 ps2 =
 (* Subtyping *)
 
 and sub_prems _env prems1 prems2 =
+  prems2 = [] ||
   List.length prems1 = List.length prems2 &&
   List.for_all2 Eq.eq_prem prems1 prems2
 

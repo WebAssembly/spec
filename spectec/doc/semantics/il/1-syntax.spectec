@@ -98,12 +98,12 @@ syntax val =
   | BOOL bool               ;; bool
   | TEXT text               ;; text
   | TUP val*                ;; ( val* )
-  | INJ typ mixop val `- quantprems?  ;; mixop val
+  | INJ typ mixop val `- quantprems?  -- if quantprems? = $trueqpr  ;; mixop val
   | OPT val?                ;; val?
   | LIST val*               ;; [ val* ]
   | STR typ valfield*       ;; { valfield* }
 
-syntax valfield = atom `= val `- quantprems?  ;; atom `=` val
+syntax valfield = atom `= val `- quantprems?  -- if quantprems? = $trueqpr  ;; atom `=` val
 
 
 syntax exp =
