@@ -150,7 +150,7 @@ rule Subtype_ok:
   C |- SUB FINAL? (_IDX x)* comptype : OK(x_0)
   -- if |x*| <= 1
   -- (if x < x_0)*
-  -- (if $unrolldt(C.TYPES[x]) = SUB (_IDX x')* comptype')*
+  -- (if $unrolldt(C.TYPES[x]) = SUB yy* comptype')*
   ----
   -- Comptype_ok: C |- comptype : OK
   -- (Comptype_sub: C |- comptype <: comptype')*
