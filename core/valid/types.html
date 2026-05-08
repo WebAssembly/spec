@@ -5,11 +5,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Types &#8212; WebAssembly 3.0 (2026-05-07)</title>
+    <title>Types &#8212; WebAssembly 3.0 (2026-05-08)</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=686e5160" />
     <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=057308f9" />
-    <script src="../_static/documentation_options.js?v=7702ebce"></script>
+    <script src="../_static/documentation_options.js?v=c111444a"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>window.MathJax = {"tex": {"maxBuffer": 30720, "macros": {"multicolumn": ["", 2]}}, "options": {"menuOptions": {"settings": {"enrich": false}}}}</script>
@@ -432,7 +432,7 @@ C \href{../valid/types.html#valid-rectype}{\vdash} \href{../syntax/types.html#sy
 <div><ul class="simple">
 <li><p>The <a class="reference internal" href="../syntax/modules.html#syntax-idx"><span class="std std-ref">index</span></a> <span class="math notranslate nohighlight">\(x\)</span> is less than <span class="math notranslate nohighlight">\(x_0\)</span>.</p></li>
 <li><p>The <a class="reference internal" href="conventions.html#syntax-deftype"><span class="std std-ref">type</span></a> <span class="math notranslate nohighlight">\(C{.}\href{../valid/conventions.html#context}{\mathsf{types}}{}[x]\)</span> exists.</p></li>
-<li><p>The <a class="reference internal" href="../syntax/types.html#syntax-subtype"><span class="std std-ref">sub type</span></a> <span class="math notranslate nohighlight">\({\href{../valid/conventions.html#aux-unroll-deftype}{\mathrm{unroll}}}(C{.}\href{../valid/conventions.html#context}{\mathsf{types}}{}[x])\)</span> is of the form <span class="math notranslate nohighlight">\((\href{../syntax/types.html#syntax-subtype}{\mathsf{sub}}~{{x'}^\ast}~{\href{../syntax/types.html#syntax-comptype}{\mathit{comptype}}'})\)</span>.</p></li>
+<li><p>The <a class="reference internal" href="../syntax/types.html#syntax-subtype"><span class="std std-ref">sub type</span></a> <span class="math notranslate nohighlight">\({\href{../valid/conventions.html#aux-unroll-deftype}{\mathrm{unroll}}}(C{.}\href{../valid/conventions.html#context}{\mathsf{types}}{}[x])\)</span> is of the form <span class="math notranslate nohighlight">\((\href{../syntax/types.html#syntax-subtype}{\mathsf{sub}}~{y^\ast}~{\href{../syntax/types.html#syntax-comptype}{\mathit{comptype}}'})\)</span>.</p></li>
 </ul>
 </div></blockquote>
 </li>
@@ -455,7 +455,7 @@ C \href{../valid/types.html#valid-rectype}{\vdash} \href{../syntax/types.html#sy
  \qquad
 (x &lt; x_0)^\ast
  \qquad
-({\href{../valid/conventions.html#aux-unroll-deftype}{\mathrm{unroll}}}(C{.}\href{../valid/conventions.html#context}{\mathsf{types}}{}[x]) = \href{../syntax/types.html#syntax-subtype}{\mathsf{sub}}~{{x'}^\ast}~{\href{../syntax/types.html#syntax-comptype}{\mathit{comptype}}'})^\ast
+({\href{../valid/conventions.html#aux-unroll-deftype}{\mathrm{unroll}}}(C{.}\href{../valid/conventions.html#context}{\mathsf{types}}{}[x]) = \href{../syntax/types.html#syntax-subtype}{\mathsf{sub}}~{y^\ast}~{\href{../syntax/types.html#syntax-comptype}{\mathit{comptype}}'})^\ast
  \\
 C \href{../valid/types.html#valid-comptype}{\vdash} {\href{../syntax/types.html#syntax-comptype}{\mathit{comptype}}} : \href{../valid/types.html#valid-comptype}{\mathsf{ok}}
  \qquad
