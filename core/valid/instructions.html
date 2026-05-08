@@ -2626,97 +2626,97 @@ C \href{../valid/instructions.html#valid-expr}{\vdash} {{\href{../syntax/instruc
 </li>
 </ul>
 </div></blockquote>
-<p><span class="math notranslate nohighlight">\({\href{../exec/runtime.html#syntax-val}{\mathit{val}}}\)</span> is constant if:</p>
+<p><span class="math notranslate nohighlight">\({\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}}\)</span> is constant if:</p>
 <blockquote>
 <div><ul>
 <li><p>Either:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>The <a class="reference internal" href="../exec/runtime.html#syntax-val"><span class="std std-ref">value</span></a> <span class="math notranslate nohighlight">\({\href{../exec/runtime.html#syntax-val}{\mathit{val}}}\)</span> is of the form <span class="math notranslate nohighlight">\(({\mathit{nt}}{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c_{\mathit{nt}})\)</span>.</p></li>
+<li><p>The <a class="reference internal" href="../syntax/instructions.html#syntax-instr"><span class="std std-ref">instruction</span></a> <span class="math notranslate nohighlight">\({\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}}\)</span> is of the form <span class="math notranslate nohighlight">\(({\mathit{nt}}{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c_{\mathit{nt}})\)</span>.</p></li>
 </ul>
 </div></blockquote>
 </li>
 <li><p>Or:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>The <a class="reference internal" href="../exec/runtime.html#syntax-val"><span class="std std-ref">value</span></a> <span class="math notranslate nohighlight">\({\href{../exec/runtime.html#syntax-val}{\mathit{val}}}\)</span> is of the form <span class="math notranslate nohighlight">\(({\mathit{vt}}{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c_{\mathit{vt}})\)</span>.</p></li>
+<li><p>The <a class="reference internal" href="../syntax/instructions.html#syntax-instr"><span class="std std-ref">instruction</span></a> <span class="math notranslate nohighlight">\({\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}}\)</span> is of the form <span class="math notranslate nohighlight">\(({\mathit{vt}}{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c_{\mathit{vt}})\)</span>.</p></li>
 </ul>
 </div></blockquote>
 </li>
 <li><p>Or:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>The <a class="reference internal" href="../exec/runtime.html#syntax-val"><span class="std std-ref">value</span></a> <span class="math notranslate nohighlight">\({\href{../exec/runtime.html#syntax-val}{\mathit{val}}}\)</span> is of the form <span class="math notranslate nohighlight">\((\href{../syntax/instructions.html#syntax-instr-ref}{\mathsf{ref{.}null}}~{\mathit{ht}})\)</span>.</p></li>
+<li><p>The <a class="reference internal" href="../syntax/instructions.html#syntax-instr"><span class="std std-ref">instruction</span></a> <span class="math notranslate nohighlight">\({\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}}\)</span> is of the form <span class="math notranslate nohighlight">\((\href{../syntax/instructions.html#syntax-instr-ref}{\mathsf{ref{.}null}}~{\mathit{ht}})\)</span>.</p></li>
 </ul>
 </div></blockquote>
 </li>
 <li><p>Or:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>The <a class="reference internal" href="../exec/runtime.html#syntax-val"><span class="std std-ref">value</span></a> <span class="math notranslate nohighlight">\({\href{../exec/runtime.html#syntax-val}{\mathit{val}}}\)</span> is of the form <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-i31}{\mathsf{ref{.}i\scriptstyle31}}\)</span>.</p></li>
+<li><p>The <a class="reference internal" href="../syntax/instructions.html#syntax-instr"><span class="std std-ref">instruction</span></a> <span class="math notranslate nohighlight">\({\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}}\)</span> is of the form <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-i31}{\mathsf{ref{.}i\scriptstyle31}}\)</span>.</p></li>
 </ul>
 </div></blockquote>
 </li>
 <li><p>Or:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>The <a class="reference internal" href="../exec/runtime.html#syntax-val"><span class="std std-ref">value</span></a> <span class="math notranslate nohighlight">\({\href{../exec/runtime.html#syntax-val}{\mathit{val}}}\)</span> is of the form <span class="math notranslate nohighlight">\((\href{../syntax/instructions.html#syntax-instr-ref}{\mathsf{ref{.}func}}~x)\)</span>.</p></li>
+<li><p>The <a class="reference internal" href="../syntax/instructions.html#syntax-instr"><span class="std std-ref">instruction</span></a> <span class="math notranslate nohighlight">\({\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}}\)</span> is of the form <span class="math notranslate nohighlight">\((\href{../syntax/instructions.html#syntax-instr-ref}{\mathsf{ref{.}func}}~x)\)</span>.</p></li>
 </ul>
 </div></blockquote>
 </li>
 <li><p>Or:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>The <a class="reference internal" href="../exec/runtime.html#syntax-val"><span class="std std-ref">value</span></a> <span class="math notranslate nohighlight">\({\href{../exec/runtime.html#syntax-val}{\mathit{val}}}\)</span> is of the form <span class="math notranslate nohighlight">\((\href{../syntax/instructions.html#syntax-instr-struct}{\mathsf{struct{.}new}}~x)\)</span>.</p></li>
+<li><p>The <a class="reference internal" href="../syntax/instructions.html#syntax-instr"><span class="std std-ref">instruction</span></a> <span class="math notranslate nohighlight">\({\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}}\)</span> is of the form <span class="math notranslate nohighlight">\((\href{../syntax/instructions.html#syntax-instr-struct}{\mathsf{struct{.}new}}~x)\)</span>.</p></li>
 </ul>
 </div></blockquote>
 </li>
 <li><p>Or:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>The <a class="reference internal" href="../exec/runtime.html#syntax-val"><span class="std std-ref">value</span></a> <span class="math notranslate nohighlight">\({\href{../exec/runtime.html#syntax-val}{\mathit{val}}}\)</span> is of the form <span class="math notranslate nohighlight">\((\href{../syntax/instructions.html#syntax-instr-struct}{\mathsf{struct{.}new\_default}}~x)\)</span>.</p></li>
+<li><p>The <a class="reference internal" href="../syntax/instructions.html#syntax-instr"><span class="std std-ref">instruction</span></a> <span class="math notranslate nohighlight">\({\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}}\)</span> is of the form <span class="math notranslate nohighlight">\((\href{../syntax/instructions.html#syntax-instr-struct}{\mathsf{struct{.}new\_default}}~x)\)</span>.</p></li>
 </ul>
 </div></blockquote>
 </li>
 <li><p>Or:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>The <a class="reference internal" href="../exec/runtime.html#syntax-val"><span class="std std-ref">value</span></a> <span class="math notranslate nohighlight">\({\href{../exec/runtime.html#syntax-val}{\mathit{val}}}\)</span> is of the form <span class="math notranslate nohighlight">\((\href{../syntax/instructions.html#syntax-instr-array}{\mathsf{array{.}new}}~x)\)</span>.</p></li>
+<li><p>The <a class="reference internal" href="../syntax/instructions.html#syntax-instr"><span class="std std-ref">instruction</span></a> <span class="math notranslate nohighlight">\({\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}}\)</span> is of the form <span class="math notranslate nohighlight">\((\href{../syntax/instructions.html#syntax-instr-array}{\mathsf{array{.}new}}~x)\)</span>.</p></li>
 </ul>
 </div></blockquote>
 </li>
 <li><p>Or:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>The <a class="reference internal" href="../exec/runtime.html#syntax-val"><span class="std std-ref">value</span></a> <span class="math notranslate nohighlight">\({\href{../exec/runtime.html#syntax-val}{\mathit{val}}}\)</span> is of the form <span class="math notranslate nohighlight">\((\href{../syntax/instructions.html#syntax-instr-array}{\mathsf{array{.}new\_default}}~x)\)</span>.</p></li>
+<li><p>The <a class="reference internal" href="../syntax/instructions.html#syntax-instr"><span class="std std-ref">instruction</span></a> <span class="math notranslate nohighlight">\({\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}}\)</span> is of the form <span class="math notranslate nohighlight">\((\href{../syntax/instructions.html#syntax-instr-array}{\mathsf{array{.}new\_default}}~x)\)</span>.</p></li>
 </ul>
 </div></blockquote>
 </li>
 <li><p>Or:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>The <a class="reference internal" href="../exec/runtime.html#syntax-val"><span class="std std-ref">value</span></a> <span class="math notranslate nohighlight">\({\href{../exec/runtime.html#syntax-val}{\mathit{val}}}\)</span> is of the form <span class="math notranslate nohighlight">\((\href{../syntax/instructions.html#syntax-instr-array}{\mathsf{array{.}new\_fixed}}~x~n)\)</span>.</p></li>
+<li><p>The <a class="reference internal" href="../syntax/instructions.html#syntax-instr"><span class="std std-ref">instruction</span></a> <span class="math notranslate nohighlight">\({\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}}\)</span> is of the form <span class="math notranslate nohighlight">\((\href{../syntax/instructions.html#syntax-instr-array}{\mathsf{array{.}new\_fixed}}~x~n)\)</span>.</p></li>
 </ul>
 </div></blockquote>
 </li>
 <li><p>Or:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>The <a class="reference internal" href="../exec/runtime.html#syntax-val"><span class="std std-ref">value</span></a> <span class="math notranslate nohighlight">\({\href{../exec/runtime.html#syntax-val}{\mathit{val}}}\)</span> is of the form <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-extern}{\mathsf{any{.}convert\_extern}}\)</span>.</p></li>
+<li><p>The <a class="reference internal" href="../syntax/instructions.html#syntax-instr"><span class="std std-ref">instruction</span></a> <span class="math notranslate nohighlight">\({\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}}\)</span> is of the form <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-extern}{\mathsf{any{.}convert\_extern}}\)</span>.</p></li>
 </ul>
 </div></blockquote>
 </li>
 <li><p>Or:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>The <a class="reference internal" href="../exec/runtime.html#syntax-val"><span class="std std-ref">value</span></a> <span class="math notranslate nohighlight">\({\href{../exec/runtime.html#syntax-val}{\mathit{val}}}\)</span> is of the form <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-extern}{\mathsf{extern{.}convert\_any}}\)</span>.</p></li>
+<li><p>The <a class="reference internal" href="../syntax/instructions.html#syntax-instr"><span class="std std-ref">instruction</span></a> <span class="math notranslate nohighlight">\({\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}}\)</span> is of the form <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-extern}{\mathsf{extern{.}convert\_any}}\)</span>.</p></li>
 </ul>
 </div></blockquote>
 </li>
 <li><p>Or:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>The <a class="reference internal" href="../exec/runtime.html#syntax-val"><span class="std std-ref">value</span></a> <span class="math notranslate nohighlight">\({\href{../exec/runtime.html#syntax-val}{\mathit{val}}}\)</span> is of the form <span class="math notranslate nohighlight">\((\href{../syntax/instructions.html#syntax-instr-variable}{\mathsf{global{.}get}}~x)\)</span>.</p></li>
+<li><p>The <a class="reference internal" href="../syntax/instructions.html#syntax-instr"><span class="std std-ref">instruction</span></a> <span class="math notranslate nohighlight">\({\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}}\)</span> is of the form <span class="math notranslate nohighlight">\((\href{../syntax/instructions.html#syntax-instr-variable}{\mathsf{global{.}get}}~x)\)</span>.</p></li>
 <li><p>The <a class="reference internal" href="../syntax/types.html#syntax-globaltype"><span class="std std-ref">global</span></a> <span class="math notranslate nohighlight">\(C{.}\href{../valid/conventions.html#context}{\mathsf{globals}}{}[x]\)</span> exists.</p></li>
 <li><p>The <a class="reference internal" href="../syntax/types.html#syntax-globaltype"><span class="std std-ref">global</span></a> <span class="math notranslate nohighlight">\(C{.}\href{../valid/conventions.html#context}{\mathsf{globals}}{}[x]\)</span> is of the form <span class="math notranslate nohighlight">\((\epsilon~t)\)</span>.</p></li>
 </ul>
@@ -2725,7 +2725,7 @@ C \href{../valid/instructions.html#valid-expr}{\vdash} {{\href{../syntax/instruc
 <li><p>Or:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>The <a class="reference internal" href="../exec/runtime.html#syntax-val"><span class="std std-ref">value</span></a> <span class="math notranslate nohighlight">\({\href{../exec/runtime.html#syntax-val}{\mathit{val}}}\)</span> is of the form <span class="math notranslate nohighlight">\(({\href{../syntax/types.html#syntax-numtype}{\mathsf{i}}}{{\href{../syntax/types.html#syntax-numtype}{\scriptstyle\kern-0.1emN}}} {.} {\href{../syntax/instructions.html#syntax-binop}{\mathit{binop}}})\)</span>.</p></li>
+<li><p>The <a class="reference internal" href="../syntax/instructions.html#syntax-instr"><span class="std std-ref">instruction</span></a> <span class="math notranslate nohighlight">\({\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}}\)</span> is of the form <span class="math notranslate nohighlight">\(({\href{../syntax/types.html#syntax-numtype}{\mathsf{i}}}{{\href{../syntax/types.html#syntax-numtype}{\scriptstyle\kern-0.1emN}}} {.} {\href{../syntax/instructions.html#syntax-binop}{\mathit{binop}}})\)</span>.</p></li>
 <li><p><span class="math notranslate nohighlight">\({\href{../syntax/types.html#syntax-numtype}{\mathsf{i}}}{{\href{../syntax/types.html#syntax-numtype}{\scriptstyle\kern-0.1emN}}}\)</span> is contained in [<span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}}\)</span>; <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle64}}\)</span>].</p></li>
 <li><p><span class="math notranslate nohighlight">\({\href{../syntax/instructions.html#syntax-binop}{\mathit{binop}}}\)</span> is contained in [<span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{add}}\)</span>; <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{sub}}\)</span>; <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{mul}}\)</span>].</p></li>
 </ul>
