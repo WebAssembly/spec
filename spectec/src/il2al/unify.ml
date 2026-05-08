@@ -115,7 +115,7 @@ let rec overlap env e1 e2 = if eq_exp e1 e2 then e1 else
   match e1.it, e2.it with
     (* Already unified *)
     | VarE _, _ when is_unified_exp e1 ->
-      e1
+      generalize_unified_wasm_val env e1 e2
     | IterE ({ it = VarE id; _} as e, i), _ when is_unified_id id.it ->
       let t = overlap_typ env e1.note e2.note in
       { e1 with it = IterE (e, i); note = t }
@@ -201,6 +201,13 @@ let rec overlap env e1 e2 = if eq_exp e1 e2 then e1 else
         | _ -> VarE id
       in
       { e1 with it; note = ty }
+
+(* HARDCODE: Prevent falsely unifying mixture of instr and val into `__unify:val` *)
+and generalize_unified_wasm_val env u e =
+  if Il2al_util.is_val u && not (Il2al_util.is_val e) then (
+    let new_var = VarE ("instr" $ no_region) $$ no_region % e.note in
+    overlap env new_var e
+  ) else u
 
 and overlap_arg env a1 a2 = if eq_arg a1 a2 then a1 else
   (match a1.it, a2.it with

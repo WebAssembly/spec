@@ -5526,25 +5526,25 @@ The expression :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` with 
 
 
 
-:math:`{\mathit{val}}` is constant if:
+:math:`{\mathit{instr}}` is constant if:
 
 
    * Either:
 
-      * The value :math:`{\mathit{val}}` is of the form :math:`({\mathit{nt}}{.}\mathsf{const}~c)`.
+      * The instruction :math:`{\mathit{instr}}` is of the form :math:`({\mathit{nt}}{.}\mathsf{const}~c)`.
 
    * Or:
 
-      * The value :math:`{\mathit{val}}` is of the form :math:`({\mathit{vt}}{.}\mathsf{const}~{\mathit{vc}})`.
+      * The instruction :math:`{\mathit{instr}}` is of the form :math:`({\mathit{vt}}{.}\mathsf{const}~{\mathit{vc}})`.
    * Or:
 
-      * The value :math:`{\mathit{val}}` is of the form :math:`(\mathsf{ref{.}null}~{\mathit{rt}})`.
+      * The instruction :math:`{\mathit{instr}}` is of the form :math:`(\mathsf{ref{.}null}~{\mathit{rt}})`.
    * Or:
 
-      * The value :math:`{\mathit{val}}` is of the form :math:`(\mathsf{ref{.}func}~x)`.
+      * The instruction :math:`{\mathit{instr}}` is of the form :math:`(\mathsf{ref{.}func}~x)`.
    * Or:
 
-      * The value :math:`{\mathit{val}}` is of the form :math:`(\mathsf{global{.}get}~x)`.
+      * The instruction :math:`{\mathit{instr}}` is of the form :math:`(\mathsf{global{.}get}~x)`.
 
       * The global type :math:`C{.}\mathsf{globals}{}[x]` exists.
 
@@ -11260,17 +11260,17 @@ Expr_ok
   - instr* is valid with the function type [] -> t*.
 
 Instr_const
-- the value val is constant if:
+- the instruction instr is constant if:
   - Either:
-    - val is (nt.CONST c).
+    - instr is (nt.CONST c).
   - Or:
-    - val is (vt.CONST vc).
+    - instr is (vt.CONST vc).
   - Or:
-    - val is (REF.NULL rt).
+    - instr is (REF.NULL rt).
   - Or:
-    - val is (REF.FUNC x).
+    - instr is (REF.FUNC x).
   - Or:
-    - val is (GLOBAL.GET x).
+    - instr is (GLOBAL.GET x).
     - the global type C.GLOBALS[x] exists.
     - C.GLOBALS[x] is (?() t).
 
@@ -16779,56 +16779,56 @@ The value type :math:`t` is not defaultable if:
 
 
 
-:math:`{\mathit{val}}` is constant if:
+:math:`{\mathit{instr}}` is constant if:
 
 
    * Either:
 
-      * The value :math:`{\mathit{val}}` is of the form :math:`({\mathit{nt}}{.}\mathsf{const}~c_{\mathit{nt}})`.
+      * The instruction :math:`{\mathit{instr}}` is of the form :math:`({\mathit{nt}}{.}\mathsf{const}~c_{\mathit{nt}})`.
 
    * Or:
 
-      * The value :math:`{\mathit{val}}` is of the form :math:`({\mathit{vt}}{.}\mathsf{const}~c_{\mathit{vt}})`.
+      * The instruction :math:`{\mathit{instr}}` is of the form :math:`({\mathit{vt}}{.}\mathsf{const}~c_{\mathit{vt}})`.
    * Or:
 
-      * The value :math:`{\mathit{val}}` is of the form :math:`(\mathsf{ref{.}null}~{\mathit{ht}})`.
+      * The instruction :math:`{\mathit{instr}}` is of the form :math:`(\mathsf{ref{.}null}~{\mathit{ht}})`.
    * Or:
 
-      * The value :math:`{\mathit{val}}` is of the form :math:`\mathsf{ref{.}i{\scriptstyle 31}}`.
+      * The instruction :math:`{\mathit{instr}}` is of the form :math:`\mathsf{ref{.}i{\scriptstyle 31}}`.
    * Or:
 
-      * The value :math:`{\mathit{val}}` is of the form :math:`(\mathsf{ref{.}func}~x)`.
+      * The instruction :math:`{\mathit{instr}}` is of the form :math:`(\mathsf{ref{.}func}~x)`.
    * Or:
 
-      * The value :math:`{\mathit{val}}` is of the form :math:`(\mathsf{struct{.}new}~x)`.
+      * The instruction :math:`{\mathit{instr}}` is of the form :math:`(\mathsf{struct{.}new}~x)`.
    * Or:
 
-      * The value :math:`{\mathit{val}}` is of the form :math:`(\mathsf{struct{.}new\_default}~x)`.
+      * The instruction :math:`{\mathit{instr}}` is of the form :math:`(\mathsf{struct{.}new\_default}~x)`.
    * Or:
 
-      * The value :math:`{\mathit{val}}` is of the form :math:`(\mathsf{array{.}new}~x)`.
+      * The instruction :math:`{\mathit{instr}}` is of the form :math:`(\mathsf{array{.}new}~x)`.
    * Or:
 
-      * The value :math:`{\mathit{val}}` is of the form :math:`(\mathsf{array{.}new\_default}~x)`.
+      * The instruction :math:`{\mathit{instr}}` is of the form :math:`(\mathsf{array{.}new\_default}~x)`.
    * Or:
 
-      * The value :math:`{\mathit{val}}` is of the form :math:`(\mathsf{array{.}new\_fixed}~x~n)`.
+      * The instruction :math:`{\mathit{instr}}` is of the form :math:`(\mathsf{array{.}new\_fixed}~x~n)`.
    * Or:
 
-      * The value :math:`{\mathit{val}}` is of the form :math:`\mathsf{any{.}convert\_extern}`.
+      * The instruction :math:`{\mathit{instr}}` is of the form :math:`\mathsf{any{.}convert\_extern}`.
    * Or:
 
-      * The value :math:`{\mathit{val}}` is of the form :math:`\mathsf{extern{.}convert\_any}`.
+      * The instruction :math:`{\mathit{instr}}` is of the form :math:`\mathsf{extern{.}convert\_any}`.
    * Or:
 
-      * The value :math:`{\mathit{val}}` is of the form :math:`(\mathsf{global{.}get}~x)`.
+      * The instruction :math:`{\mathit{instr}}` is of the form :math:`(\mathsf{global{.}get}~x)`.
 
       * The global :math:`C{.}\mathsf{globals}{}[x]` exists.
 
       * The global :math:`C{.}\mathsf{globals}{}[x]` is of the form :math:`(\epsilon~t)`.
    * Or:
 
-      * The value :math:`{\mathit{val}}` is of the form :math:`({\mathsf{i}}{N} {.} {\mathit{binop}})`.
+      * The instruction :math:`{\mathit{instr}}` is of the form :math:`({\mathsf{i}}{N} {.} {\mathit{binop}})`.
 
       * :math:`{\mathsf{i}}{N}` is contained in [:math:`\mathsf{i{\scriptstyle 32}}`; :math:`\mathsf{i{\scriptstyle 64}}`].
 
@@ -29243,37 +29243,37 @@ Nondefaultable
   - the value $default_(t) is ?().
 
 Instr_const
-- the value val is constant if:
+- the instruction instr is constant if:
   - Either:
-    - val is (nt.CONST c_nt).
+    - instr is (nt.CONST c_nt).
   - Or:
-    - val is (vt.CONST c_vt).
+    - instr is (vt.CONST c_vt).
   - Or:
-    - val is (REF.NULL ht).
+    - instr is (REF.NULL ht).
   - Or:
-    - val is REF.I31.
+    - instr is REF.I31.
   - Or:
-    - val is (REF.FUNC x).
+    - instr is (REF.FUNC x).
   - Or:
-    - val is (STRUCT.NEW x).
+    - instr is (STRUCT.NEW x).
   - Or:
-    - val is (STRUCT.NEW_DEFAULT x).
+    - instr is (STRUCT.NEW_DEFAULT x).
   - Or:
-    - val is (ARRAY.NEW x).
+    - instr is (ARRAY.NEW x).
   - Or:
-    - val is (ARRAY.NEW_DEFAULT x).
+    - instr is (ARRAY.NEW_DEFAULT x).
   - Or:
-    - val is (ARRAY.NEW_FIXED x n).
+    - instr is (ARRAY.NEW_FIXED x n).
   - Or:
-    - val is ANY.CONVERT_EXTERN.
+    - instr is ANY.CONVERT_EXTERN.
   - Or:
-    - val is EXTERN.CONVERT_ANY.
+    - instr is EXTERN.CONVERT_ANY.
   - Or:
-    - val is (GLOBAL.GET x).
+    - instr is (GLOBAL.GET x).
     - the global C.GLOBALS[x] exists.
     - C.GLOBALS[x] is (?() t).
   - Or:
-    - val is (BINOP Inn binop).
+    - instr is (BINOP Inn binop).
     - Inn is contained in [I32, I64].
     - binop is contained in [ADD, SUB, MUL].
 
