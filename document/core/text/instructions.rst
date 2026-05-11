@@ -403,6 +403,7 @@ $${grammar: {
   Tplaininstr_/vec-extbin-i16x8
   Tplaininstr_/vec-extun-i32x4
   Tplaininstr_/vec-extbin-i32x4
+  Tplaininstr_/vec-exttern-i32x4
   Tplaininstr_/vec-extbin-i64x2
 }}
 

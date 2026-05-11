@@ -903,6 +903,7 @@ warning: grammar `Tplaininstr_/vec-extun-i32x4` was never spliced
 warning: grammar `Tplaininstr_/vec-extbin-i16x8` was never spliced
 warning: grammar `Tplaininstr_/vec-extbin-i32x4` was never spliced
 warning: grammar `Tplaininstr_/vec-extbin-i64x2` was never spliced
+warning: grammar `Tplaininstr_/vec-exttern-i32x4` was never spliced
 warning: grammar `Trectype_/base` was never spliced
 warning: grammar `Trectype_/abbrev` was never spliced
 warning: grammar `Treftype_/base` was never spliced
