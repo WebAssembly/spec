@@ -672,7 +672,7 @@ rule Step_exp/TUP-ctx-fail:
   -- Step_exp: S |- e*[n] ~> eps
 
 rule Step_exp/STR-ctx1:
-  S |- STR t ef* ~> STR t ef*
+  S |- STR t ef* ~> STR t' ef*
   -- Step_typ: S |- t ~> t'
 
 rule Step_exp/STR-ctx-fail1:
