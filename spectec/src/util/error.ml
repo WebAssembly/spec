@@ -2,7 +2,7 @@ open Source
 
 exception Error of region * string
 
-let debug_errors = false
+let debug_errors = false  (* Note: includes false positives from backtracking *)
 
 let string_of_error at msg = string_of_region at ^ ": " ^ msg
 

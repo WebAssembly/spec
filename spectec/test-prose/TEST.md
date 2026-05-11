@@ -13748,112 +13748,6 @@ spectec 0.5 generator
 
 
 
-:math:`{\mathit{fv}}_2` is immutably reachable from :math:`{\mathit{fv}}_1` if:
-
-
-   * Either:
-
-      * :math:`{\mathit{fv}'}` is immutably reachable from :math:`{\mathit{fv}}_1`.
-
-      * :math:`{\mathit{fv}}_2` is immutably reachable from :math:`{\mathit{fv}'}`.
-
-   * Or:
-
-      * The field value :math:`{\mathit{fv}}_1` is of the form :math:`(\mathsf{ref{.}struct}~a)`.
-
-      * The field value :math:`{\mathit{fv}}_2` is of the form :math:`s{.}\mathsf{structs}{}[a]{.}\mathsf{fields}{}[i]`.
-
-      * The field value :math:`s{.}\mathsf{structs}{}[a]{.}\mathsf{fields}{}[i]` exists.
-
-      * The structure instance :math:`s{.}\mathsf{structs}{}[a]` exists.
-
-      * The :ref:`expansion <aux-expand-deftype>` of :math:`s{.}\mathsf{structs}{}[a]{.}\mathsf{type}` is :math:`(\mathsf{struct}~{{\mathit{ft}}^\ast})`.
-
-      * The length of :math:`{{\mathit{ft}}^\ast}` is greater than :math:`i`.
-
-      * The field type :math:`{{\mathit{ft}}^\ast}{}[i]` is of the form :math:`(\epsilon~{\mathit{zt}})`.
-   * Or:
-
-      * The field value :math:`{\mathit{fv}}_1` is of the form :math:`(\mathsf{ref{.}array}~a)`.
-
-      * The field value :math:`{\mathit{fv}}_2` is of the form :math:`s{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}{}[i]`.
-
-      * The field value :math:`s{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}{}[i]` exists.
-
-      * The array instance :math:`s{.}\mathsf{arrays}{}[a]` exists.
-
-      * The :ref:`expansion <aux-expand-deftype>` of :math:`s{.}\mathsf{arrays}{}[a]{.}\mathsf{type}` is :math:`(\mathsf{array}~(\epsilon~{\mathit{zt}}))`.
-   * Or:
-
-      * The field value :math:`{\mathit{fv}}_1` is of the form :math:`(\mathsf{ref{.}exn}~a)`.
-
-      * The field value :math:`{\mathit{fv}}_2` is of the form :math:`s{.}\mathsf{exns}{}[a]{.}\mathsf{fields}{}[i]`.
-
-      * The value :math:`s{.}\mathsf{exns}{}[a]{.}\mathsf{fields}{}[i]` exists.
-
-      * The exception instance :math:`s{.}\mathsf{exns}{}[a]` exists.
-   * Or:
-
-      * The field value :math:`{\mathit{fv}}_1` is of the form :math:`(\mathsf{ref{.}extern}~{\mathit{ref}})`.
-
-      * The field value :math:`{\mathit{fv}}_2` is of the form :math:`{\mathit{ref}}`.
-
-
-
-
-:math:`{\mathit{fv}}_2` is immutably reachable from :math:`{\mathit{fv}}_1` if:
-
-
-   * :math:`{\mathit{fv}'}` is immutably reachable from :math:`{\mathit{fv}}_1`.
-
-   * :math:`{\mathit{fv}}_2` is immutably reachable from :math:`{\mathit{fv}'}`.
-
-
-
-
-:math:`s{.}\mathsf{structs}{}[a]{.}\mathsf{fields}{}[i]` is immutably reachable from :math:`(\mathsf{ref{.}struct}~a)` if:
-
-
-   * The field value :math:`s{.}\mathsf{structs}{}[a]{.}\mathsf{fields}{}[i]` exists.
-
-   * The structure instance :math:`s{.}\mathsf{structs}{}[a]` exists.
-
-   * The :ref:`expansion <aux-expand-deftype>` of :math:`s{.}\mathsf{structs}{}[a]{.}\mathsf{type}` is :math:`(\mathsf{struct}~{{\mathit{ft}}^\ast})`.
-
-   * The length of :math:`{{\mathit{ft}}^\ast}` is greater than :math:`i`.
-
-   * The field type :math:`{{\mathit{ft}}^\ast}{}[i]` is of the form :math:`(\epsilon~{\mathit{zt}})`.
-
-
-
-
-:math:`s{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}{}[i]` is immutably reachable from :math:`(\mathsf{ref{.}array}~a)` if:
-
-
-   * The field value :math:`s{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}{}[i]` exists.
-
-   * The array instance :math:`s{.}\mathsf{arrays}{}[a]` exists.
-
-   * The :ref:`expansion <aux-expand-deftype>` of :math:`s{.}\mathsf{arrays}{}[a]{.}\mathsf{type}` is :math:`(\mathsf{array}~(\epsilon~{\mathit{zt}}))`.
-
-
-
-
-:math:`s{.}\mathsf{exns}{}[a]{.}\mathsf{fields}{}[i]` is immutably reachable from :math:`(\mathsf{ref{.}exn}~a)` if:
-
-
-   * The value :math:`s{.}\mathsf{exns}{}[a]{.}\mathsf{fields}{}[i]` exists.
-
-   * The exception instance :math:`s{.}\mathsf{exns}{}[a]` exists.
-
-
-
-
-:math:`{\mathit{ref}}` is immutably reachable from :math:`(\mathsf{ref{.}extern}~{\mathit{ref}})`.
-
-
-
-
 The :ref:`expansion <aux-expand-deftype>` of :math:`{\mathit{deftype}}` is :math:`{\mathit{comptype}}` if:
 
 
@@ -13900,10 +13794,7 @@ The :ref:`expansion <aux-expand-typeuse>` of :math:`C` is :math:`{\mathit{compty
 
 
 
-:math:`{\mathit{fv}}_2` is not immutably reachable from :math:`{\mathit{fv}}_1` if:
-
-
-   * NotImmutReachable(:math:`{\mathit{fv}}_1`, :math:`s`, :math:`{\mathit{fv}}_2`) is true.
+:math:`{\mathit{fv}}_2` is not immutably reachable from :math:`{\mathit{fv}}_1`.
 
 
 
@@ -16830,11 +16721,7 @@ The value type :math:`t` is not defaultable if:
 
       * The instruction :math:`{\mathit{instr}}` is of the form :math:`({\mathsf{i}}{N} {.} {\mathit{binop}})`.
 
-      * The length of :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 64}}` is greater than :math:`0`.
-
       * :math:`{\mathsf{i}}{N}` is contained in [:math:`\mathsf{i{\scriptstyle 32}}`; :math:`\mathsf{i{\scriptstyle 64}}`].
-
-      * The length of :math:`\mathsf{add}~\mathsf{sub}~\mathsf{mul}` is greater than :math:`0`.
 
       * :math:`{\mathit{binop}}` is contained in [:math:`\mathsf{add}`; :math:`\mathsf{sub}`; :math:`\mathsf{mul}`].
 
@@ -16914,11 +16801,7 @@ The value type :math:`t` is not defaultable if:
 :math:`({\mathsf{i}}{N} {.} {\mathit{binop}})` is constant if:
 
 
-   * The length of :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 64}}` is greater than :math:`0`.
-
    * :math:`{\mathsf{i}}{N}` is contained in [:math:`\mathsf{i{\scriptstyle 32}}`; :math:`\mathsf{i{\scriptstyle 64}}`].
-
-   * The length of :math:`\mathsf{add}~\mathsf{sub}~\mathsf{mul}` is greater than :math:`0`.
 
    * :math:`{\mathit{binop}}` is contained in [:math:`\mathsf{add}`; :math:`\mathsf{sub}`; :math:`\mathsf{mul}`].
 
@@ -27689,61 +27572,6 @@ spectec 0.5 generator
 == IL Validation after pass sideconditions...
 == Translating to AL...
 == Prose Generation...
-ImmutReachable
-- fv_2 is immutably reachable from fv_1 if:
-  - Either:
-    - fv' is immutably reachable from fv_1.
-    - fv_2 is immutably reachable from fv'.
-  - Or:
-    - the field value fv_1 is (REF.STRUCT_ADDR a).
-    - the field value fv_2 is s.STRUCTS[a].FIELDS[i].
-    - the field value s.STRUCTS[a].FIELDS[i] exists.
-    - the structure instance s.STRUCTS[a] exists.
-    - The :ref:`expansion <aux-expand-deftype>` of s.STRUCTS[a].TYPE is (STRUCT ft*).
-    - |ft*| is greater than i.
-    - the field type ft*[i] is (?() zt).
-  - Or:
-    - fv_1 is (REF.ARRAY_ADDR a).
-    - fv_2 is s.ARRAYS[a].FIELDS[i].
-    - the field value s.ARRAYS[a].FIELDS[i] exists.
-    - the array instance s.ARRAYS[a] exists.
-    - The :ref:`expansion <aux-expand-deftype>` of s.ARRAYS[a].TYPE is (ARRAY (?() zt)).
-  - Or:
-    - fv_1 is (REF.EXN_ADDR a).
-    - fv_2 is s.EXNS[a].FIELDS[i].
-    - the value s.EXNS[a].FIELDS[i] exists.
-    - the exception instance s.EXNS[a] exists.
-  - Or:
-    - fv_1 is (REF.EXTERN ref).
-    - fv_2 is ref.
-
-ImmutReachable/trans
-- fv_2 is immutably reachable from fv_1 if:
-  - fv' is immutably reachable from fv_1.
-  - fv_2 is immutably reachable from fv'.
-
-ImmutReachable/ref.struct
-- s.STRUCTS[a].FIELDS[i] is immutably reachable from (REF.STRUCT_ADDR a) if:
-  - the field value s.STRUCTS[a].FIELDS[i] exists.
-  - the structure instance s.STRUCTS[a] exists.
-  - The :ref:`expansion <aux-expand-deftype>` of s.STRUCTS[a].TYPE is (STRUCT ft*).
-  - |ft*| is greater than i.
-  - the field type ft*[i] is (?() zt).
-
-ImmutReachable/ref.array
-- s.ARRAYS[a].FIELDS[i] is immutably reachable from (REF.ARRAY_ADDR a) if:
-  - the field value s.ARRAYS[a].FIELDS[i] exists.
-  - the array instance s.ARRAYS[a] exists.
-  - The :ref:`expansion <aux-expand-deftype>` of s.ARRAYS[a].TYPE is (ARRAY (?() zt)).
-
-ImmutReachable/ref.exn
-- s.EXNS[a].FIELDS[i] is immutably reachable from (REF.EXN_ADDR a) if:
-  - the value s.EXNS[a].FIELDS[i] exists.
-  - the exception instance s.EXNS[a] exists.
-
-ImmutReachable/ref.extern
-- ref is immutably reachable from (REF.EXTERN ref).
-
 Expand
 - The :ref:`expansion <aux-expand-deftype>` of deftype is comptype if:
   - the sub type $unrolldt(deftype) is (SUB final? typeuse* comptype).
@@ -27768,8 +27596,7 @@ Expand_use/typeidx
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[typeidx] is comptype.
 
 NotImmutReachable
-- fv_2 is not immutably reachable from fv_1 if:
-  - $NotImmutReachable(fv_1, s, fv_2) is true.
+- fv_2 is not immutably reachable from fv_1.
 
 Numtype_ok
 - the number type numtype is always valid.
@@ -29282,9 +29109,7 @@ Instr_const
     - C.GLOBALS[x] is (?() t).
   - Or:
     - instr is (BINOP Inn binop).
-    - |[I32, I64]| is greater than 0.
     - Inn is contained in [I32, I64].
-    - |[ADD, SUB, MUL]| is greater than 0.
     - binop is contained in [ADD, SUB, MUL].
 
 Instr_const/const
@@ -29330,9 +29155,7 @@ Instr_const/global.get
 
 Instr_const/binop
 - the instruction (BINOP Inn binop) is constant if:
-  - |[I32, I64]| is greater than 0.
   - Inn is contained in [I32, I64].
-  - |[ADD, SUB, MUL]| is greater than 0.
   - binop is contained in [ADD, SUB, MUL].
 
 Expr_const

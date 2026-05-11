@@ -303,10 +303,13 @@ rule Step_exp/MEM-false:
   -- (if val_1 =/= val_2)*
 
 rule Step_exp/CAT-opt1:
-  S |- CAT (OPT e_1) (OPT eps) ~> OPT e_1
+  S |- CAT (OPT e_1?) (OPT eps) ~> OPT e_1?
 
 rule Step_exp/CAT-opt2:
-  S |- CAT (OPT eps) (OPT e_2) ~> OPT e_2
+  S |- CAT (OPT eps) (OPT e_2?) ~> OPT e_2?
+
+rule Step_exp/CAT-opt-bad:
+  S |- CAT (OPT e_1) (OPT e_2) ~> eps
 
 rule Step_exp/CAT-list:
   S |- CAT (LIST e_1*) (LIST e_2*) ~> LIST e_1* e_2*

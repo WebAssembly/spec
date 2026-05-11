@@ -96,6 +96,15 @@ let rebind_gram env id rhs = {env with grams = rebind "grammar" env.grams id rhs
 
 (* Extraction *)
 
+let env_of_param env p =
+  match p.it with
+  | ExpP (id, t) -> bind_var env id t
+  | TypP id -> bind_typ env id ([], [])
+  | DefP (id, ps, t) -> bind_def env id (ps, t, [])
+  | GramP (id, ps, t) -> bind_gram env id (ps, t, [])
+
+let env_of_params env ps = List.fold_left env_of_param env ps
+
 let rec env_of_def env d =
   match d.it with
   | TypD (id, ps, insts) -> bind_typ env id (ps, insts)

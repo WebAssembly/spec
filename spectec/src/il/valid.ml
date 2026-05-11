@@ -24,7 +24,7 @@ let find_case cases op at =
 
 
 let typ_string env t =
-  let t' = Eval.reduce_typ env t in
+  let Ok t' | Error t' = Eval.reduce_typ env t in
   if Eq.eq_typ t t' then
     "`" ^ string_of_typ t ^ "`"
   else
@@ -33,8 +33,14 @@ let typ_string env t =
 
 (* Type Accessors *)
 
-let expand_typ (env : Env.t) t = (Eval.reduce_typ env t).it
-let expand_typdef (env : Env.t) t = (Eval.reduce_typdef env t).it
+let expand' reduce env t at =
+  match reduce env t with
+  | Ok x -> x.it
+  | Error _ ->
+    error at ("expression's type `" ^ string_of_typ t ^ "` is not defined")
+
+let expand_typ env t at = expand' Eval.reduce_typ env t at
+let expand_typdef env t at = expand' Eval.reduce_typdef env t at
 
 type direction = Infer | Check
 
@@ -52,33 +58,33 @@ let as_error at phrase dir t expected =
     )
 
 let as_iter_typ iter phrase env dir t at : typ =
-  match expand_typ env t with
+  match expand_typ env t at with
   | IterT (t1, iter2) when iter = iter2 -> t1
   | _ -> as_error at phrase dir t ("(_)" ^ string_of_iter iter)
 
 let as_list_typ phrase env dir t at : typ =
-  match expand_typ env t with
+  match expand_typ env t at with
   | IterT (t1, (List | List1 | ListN _)) -> t1
   | _ -> as_error at phrase dir t "(_)*"
 
 let as_tup_typ phrase env dir t at : (id * typ) list =
-  match expand_typ env t with
+  match expand_typ env t at with
   | TupT xts -> xts
   | _ -> as_error at phrase dir t "(_,...,_)"
 
 
 let as_struct_typ phrase env dir t at : typfield list =
-  match expand_typdef env t with
+  match expand_typdef env t at with
   | StructT tfs -> tfs
   | _ -> as_error at phrase dir t "{...}"
 
 let as_variant_typ phrase env dir t at : typcase list =
-  match expand_typdef env t with
+  match expand_typdef env t at with
   | VariantT tcs -> tcs
   | _ -> as_error at phrase dir t "| ..."
 
 let rec as_comp_typ phrase env dir t at =
-  match expand_typdef env t with
+  match expand_typdef env t at with
   | AliasT {it = IterT _; _} -> ()
   | StructT tfs ->
     List.iter (fun (_, (t, _, _), _) -> as_comp_typ phrase env dir t at) tfs

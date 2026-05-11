@@ -466,7 +466,7 @@ let attempt f x =
 (* More Errors *)
 
 let typ_string env t =
-  let t' = Il.Eval.reduce_typ (to_il_env env) t in
+  let Ok t' | Error t' = Il.Eval.reduce_typ (to_il_env env) t in
   let s = Il.string_of_typ t in
   let s' = Il.string_of_typ t' in
   if s = s' then
@@ -513,7 +513,14 @@ let fail_dir_typ env at phrase dir t expected =
 (* Type Accessors *)
 
 (* TODO(2, rossberg): avoid repeated env conversion *)
-let reduce env t : Il.typ = Il.Eval.reduce_typ (to_il_env env) t
+let reduce' reduce env t =
+    match reduce (to_il_env env) t with
+    | Result.Ok t -> t
+    | Result.Error _ -> error_typ env t.at "term" t
+
+let reduce env t : Il.typ = reduce' Il.Eval.reduce_typ env t
+let reduce_def env t : Il.deftyp = reduce' Il.Eval.reduce_typdef env t
+
 let expand env t : Il.typ' = (reduce env t).it
 
 let expand_def env t : Il.deftyp' * dots =
@@ -521,7 +528,7 @@ let expand_def env t : Il.deftyp' * dots =
   | Il.VarT (x, as') ->
     let x' = strip_var_suffix x in
     let _ps, k = find "syntax type" env.typs x' in
-    (Il.Eval.reduce_typdef (to_il_env env) (Il.VarT (x', as') $ x.at)).it,
+    (reduce_def env (Il.VarT (x', as') $ x.at)).it,
     (match k with Defined (_, _, dots) -> dots | _ -> NoDots)
   | t' -> Il.AliasT (t' $ t.at), NoDots
 
@@ -532,11 +539,13 @@ let expand_notation env t =
     (match find "syntax type" env.typs x' with
     | ps, Defined ({it = Il.VariantT [tc]; _}, _, _) ->
       let as_ = List.map il_arg_of_param ps in
-      Il.Eval.(match_list match_arg (to_il_env env) Il.Subst.empty as' as_) |>
-        Option.map (fun s ->
-          let mixop, (t, _qs, _prems), _ = Il.Subst.subst_typcase s tc in
-          t, mixop, Mixop.apply mixop (untup_typ' t)
-        )
+      (match Il.Eval.(match_list match_arg (to_il_env env) Il.Subst.empty as' as_) with
+      | Ok (Some s) ->
+        let mixop, (t, _qs, _prems), _ = Il.Subst.subst_typcase s tc in
+        Some (t, mixop, Mixop.apply mixop (untup_typ' t))
+      | Ok None -> None
+      | Error _ -> error_typ env t.at "term" t
+      )
     | _, _ -> None
     )
   | _ -> None

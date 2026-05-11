@@ -8,19 +8,26 @@ let log_exn _exn =
   if !active <> [] then
     Printf.eprintf "\n%s\n%!" (Printexc.get_backtrace ())
 
+let indent = ref 0
+let indentation () = String.make (!indent*2) ' '
+
 let log_at' (type a) label at (arg_f : unit -> string) (res_f : a -> string option) (f : unit -> a) : a =
   if not (label = "" || List.exists (fun s -> String.starts_with ~prefix: s label) !active) then f () else
   let ats = if at = Source.no_region then "" else " " ^ Source.string_of_region at in
   let arg = arg_f () in
-  Printf.eprintf "[%s%s] %s\n%!" label ats arg;
+  Printf.eprintf "%s[%s%s] %s\n%!" (indentation ()) label ats arg;
+  incr indent;
   match f () with
   | exception exn ->
+    decr indent;
     let bt = Printexc.get_raw_backtrace () in
-    Printf.eprintf "[%s%s] %s => raise %s\n%!" label ats arg (Printexc.to_string exn);
+    Printf.eprintf "%s[%s%s] %s => raise %s\n%!"
+      (indentation ()) label ats arg (Printexc.to_string exn);
     Printexc.raise_with_backtrace exn bt
   | x ->
+    decr indent;
     res_f x |> Option.iter (fun res ->
-      Printf.eprintf "[%s%s] %s => %s\n%!" label ats arg res);
+      Printf.eprintf "%s[%s%s] %s => %s\n%!" (indentation ()) label ats arg res);
     x
 
 let log_at label at arg_f res_f = log_at' label at arg_f (fun x -> Some (res_f x))

@@ -170,7 +170,9 @@ let rec subst_hint hintexp args =
   match hintexp.it with
   | El.Ast.HoleE `Next ->
     (match args with
-    | h :: args' -> args', Il.Print.string_of_arg (Il.Eval.reduce_arg !Al.Valid.il_env h)
+    | h :: args' ->
+      let Ok h' | Error h' = Il.Eval.reduce_arg !Al.Valid.il_env h in
+      args', Il.Print.string_of_arg h'
     | _ -> failwith "not sufficient args")
   | El.Ast.FuseE (e1, e2) ->
     let args', t = subst_hint e1 args in
