@@ -136,9 +136,10 @@ relation Types_ok: context |- type* : deftype*        hint(name "T-types")   hin
 relation Globals_ok: context |- global* : globaltype* hint(name "T-globals") hint(macro "%globals")
 
 ;; HACK for notation
-syntax nonfuncs = global* mem* table* elem*
+syntax nonfuncs = global* mem* table* elem* start? export*
 def $funcidx_nonfuncs(nonfuncs) : funcidx*  hint(show $funcidx(%)) hint(macro "freefuncidx")
-def $funcidx_nonfuncs(global* mem* table* elem*) = $funcidx_module(MODULE eps eps eps global* mem* table* eps eps elem* eps eps)
+def $funcidx_nonfuncs(global* mem* table* elem* start? export*) =
+  $funcidx_module(MODULE eps eps eps global* mem* table* eps eps elem* start? export*)
 
 rule Module_ok:
   |- MODULE type* import* tag* global* mem* table* func* data* elem* start? export* : $clos_moduletype(C, xt_I* -> xt_E*)
@@ -160,7 +161,7 @@ rule Module_ok:
   -- if C = C' ++ {TAGS jt_I* jt*, GLOBALS gt*, MEMS mt_I* mt*, TABLES tt_I* tt*, DATAS ok*, ELEMS rt*}
   ----
   -- if C' = {TYPES dt'*, GLOBALS gt_I*, FUNCS dt_I* dt*, REFS x*}
-  -- if x* = $funcidx_nonfuncs(global* mem* table* elem*)
+  -- if x* = $funcidx_nonfuncs(global* mem* table* elem* start? export*)
   ----
   -- if jt_I* = $tagsxt(xt_I*)
   -- if gt_I* = $globalsxt(xt_I*)

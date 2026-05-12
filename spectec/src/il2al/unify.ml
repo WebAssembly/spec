@@ -48,10 +48,7 @@ let ids_of_quants qs =
   ) qs
 
 let gen_new_unified ?prefix env ty =
-  let var =
-    match prefix with
-    | Some prefix -> introduce_fresh_variable ~prefix env.frees ty
-    | _ -> introduce_fresh_variable env.frees ty in
+  let var = introduce_fresh_variable ?prefix env.frees ty in
   env.frees <- Set.add var env.frees;
   unified_prefix ^ var $ ty.at
 
@@ -110,12 +107,19 @@ let rename_rule (env, r) =
     } in
   Il_walk.transform_rule transformer r
 
+(* HARDCODE: Prevent falsely unifying mixture of instr and val into `__unify:val` *)
+let generalize_unified_wasm_val env u e =
+  if Il2al_util.is_val u && not (Il2al_util.is_val e) then (
+    let t = e.note in
+    VarE (gen_new_unified env t) $$ no_region % t
+  ) else u
+
 let rec overlap env e1 e2 = if eq_exp e1 e2 then e1 else
   let replace_it it = { e1 with it = it } in
   match e1.it, e2.it with
     (* Already unified *)
     | VarE _, _ when is_unified_exp e1 ->
-      e1
+      generalize_unified_wasm_val env e1 e2
     | IterE ({ it = VarE id; _} as e, i), _ when is_unified_id id.it ->
       let t = overlap_typ env e1.note e2.note in
       { e1 with it = IterE (e, i); note = t }

@@ -310,6 +310,7 @@ latex_elements = {
       \setlist[enumerate,4]{label=\Alph*.}
       \setlist[enumerate,5]{label=\Roman*.}
       \renewcommand\sphinxcrossref[1]{#1}
+      \hypersetup{bookmarksnumbered=true,bookmarksdepth=2}
    ''',
 
    # Latex figure (float) alignment
