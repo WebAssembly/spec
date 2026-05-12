@@ -313,7 +313,7 @@ rule Step_exp/CAT-list:
 
 rule Step_exp/CAT-str:
   S |- CAT (STR t (a `= e_1 `- $trueqpr)*) (STR t (a `= e_2 `- $trueqpr)*) ~> STR t (a `= (CAT e_1 e_2) `- eps)*
-  ;; Note: premises reset on result for recheck
+  ;; Note: premises reset on result to trigger recheck
 
 
 rule Step_exp/STR:
@@ -418,7 +418,7 @@ rule Step_exp/UPD-DOT:
 rule Step_exp/UPD-PROJ-good:
   S |- UPD e_1 (PROJ p mixop) e_2 ~> UPD e_1 p (INJ t mixop e_2 `- eps)
   -- Step_exp: S |- ACC e_1 p ~> INJ t mixop e' `- $trueqpr
-  ;; Note: premises reset on result for recheck
+  ;; Note: premises reset on result to trigger recheck
 
 rule Step_exp/UPD-PROJ-bad:
   S |- UPD e_1 (PROJ p mixop) e_2 ~> eps
@@ -488,7 +488,7 @@ rule Step_exp/SUB-STR:
   -- if t_2 = MATCH x_2 WITH (INST `{} `=> STRUCT tf_2*)
   -- (if (at' `: t'_1 `- `{q_1*} pr_1*) <- tf_1*)*
   -- (if (at' `: t'_2 `- `{q_2*} pr_2*) = tf_2)*
-  ;; Note: premises reset on result for recheck
+  ;; Note: premises reset on result to trigger recheck
 
 rule Step_exp/SUB-INJ:
   S |- SUB (INJ t_1 op e `- $trueqpr) t_1 t_2 ~> INJ t_2 op (SUB e t'_1 t'_2) `- eps
@@ -496,7 +496,7 @@ rule Step_exp/SUB-INJ:
   -- if t_2 = MATCH x_2 WITH (INST `{} `=> VARIANT tc_2*)
   -- if (op `: t'_1 `- `{q_1*} pr_1*) <- tc_1*
   -- if (op `: t'_2 `- `{q_2*} pr_2*) <- tc_2*
-  ;; Note: premises reset on result for recheck
+  ;; Note: premises reset on result to trigger recheck
 
 
 rule Step_exp/MATCH-match:
