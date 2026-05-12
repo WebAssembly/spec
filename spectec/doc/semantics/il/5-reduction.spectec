@@ -319,7 +319,7 @@ rule Step_exp/CAT-str:
 rule Step_exp/STR:
   S |- STR t (a `= e `- eps)* ~> STR t (a `= e `- $subst_quantprems($tupsubst(e, t'), `{q*} pr*))*
   -- Expand_typ: S |- t ~~ STRUCT tf*
-  -- if (op `: t' `- `{q*} pr*) = tf*
+  -- if (a `: t' `- `{q*} pr*) = tf*
   ;; Note: inject premises for yet unchecked intro form
 
 rule Step_exp/INJ:
