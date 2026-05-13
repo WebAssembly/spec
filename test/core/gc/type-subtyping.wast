@@ -974,3 +974,16 @@
 (assert_return (invoke "f4") (f32.const 0))
 (assert_return (invoke "f5") (f32.const 0))
 (assert_return (invoke "f6") (f32.const 0))
+
+
+;; Transitive equivalent subtyping
+(module
+  (type $a1 (sub (struct)))
+  (type $b1 (sub (struct)))
+  (type $a2 (sub $a1 (struct)))
+  (type $b2 (sub $b1 (struct)))
+  (type $a3 (sub $a2 (struct)))
+  (type $b3 (sub $b2 (struct)))
+  (type $t (sub (struct (field (ref $a3)))))
+  (type $u (sub $t (struct (field (ref $b3)))))
+)
