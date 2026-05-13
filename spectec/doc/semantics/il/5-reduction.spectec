@@ -312,7 +312,21 @@ rule Step_exp/CAT-list:
   S |- CAT (LIST e_1*) (LIST e_2*) ~> LIST e_1* e_2*
 
 rule Step_exp/CAT-str:
-  S |- CAT (STR (a `= e_1)*) (STR (a `= e_2)*) ~> STR (a `= CAT e_1 e_2)*
+  S |- CAT (STR t (a `= e_1 `- $trueqpr)*) (STR t (a `= e_2 `- $trueqpr)*) ~> STR t (a `= (CAT e_1 e_2) `- eps)*
+  ;; Note: premises reset on result to trigger recheck
+
+
+rule Step_exp/STR:
+  S |- STR t (a `= e `- eps)* ~> STR t (a `= e `- $subst_quantprems($tupsubst(e, t'), `{q*} pr*))*
+  -- Expand_typ: S |- t ~~ STRUCT tf*
+  -- if (a `: t' `- `{q*} pr*) = tf*
+  ;; Note: inject premises for yet unchecked intro form
+
+rule Step_exp/INJ:
+  S |- INJ t op e `- eps ~> INJ t op e `- $subst_quantprems($tupsubst(e, t'), `{q*} pr*)
+  -- Expand_typ: S |- t ~~ VARIANT tc*
+  -- if (op `: t' `- `{q*} pr*) <- tc*
+  ;; Note: inject premises for yet unchecked intro form
 
 
 rule Step_exp/ACC-ROOT:
@@ -350,17 +364,17 @@ rule Step_exp/ACC-SLICE-oob:
 
 rule Step_exp/ACC-DOT:
   S |- ACC e (DOT p a) ~> e'_n
-  -- Step_exp: S |- ACC e p ~> STR (a' `= e')*
+  -- Step_exp: S |- ACC e p ~> STR t (a' `= e' `- $trueqpr)*
   -- if a'*[n] = a
   -- if e'*[n] = e'_n
 
 rule Step_exp/ACC-PROJ-good:
   S |- ACC e (PROJ p mixop) ~> e'
-  -- Step_exp: S |- ACC e p ~> INJ mixop e'
+  -- Step_exp: S |- ACC e p ~> INJ t mixop e' `- $trueqpr
 
 rule Step_exp/ACC-PROJ-bad:
   S |- ACC e (PROJ p mixop) ~> eps
-  -- Step_exp: S |- ACC e p ~> INJ mixop' e'
+  -- Step_exp: S |- ACC e p ~> INJ t mixop' e' `- $trueqpr
   -- if mixop' =/= mixop
 
 
@@ -396,17 +410,19 @@ rule Step_exp/UPD-SLICE-oob:
   -- if $(n + m) > |e'*|
 
 rule Step_exp/UPD-DOT:
-  S |- UPD e_1 (DOT p a) e_2 ~> UPD e_1 p (STR (a' `= e')*[[n] = (a `= e_2)])
-  -- Step_exp: S |- ACC e_1 p ~> STR (a' `= e')*
+  S |- UPD e_1 (DOT p a) e_2 ~> UPD e_1 p (STR t (a' `= e' `- $trueqpr)*[[n] = (a `= e_2 `- eps)])
+  -- Step_exp: S |- ACC e_1 p ~> STR t (a' `= e' `- $trueqpr)*
   -- if a'*[n] = a
+  ;; Note: premises reset on result for recheck
 
 rule Step_exp/UPD-PROJ-good:
-  S |- UPD e_1 (PROJ p mixop) e_2 ~> UPD e_1 p (INJ mixop e_2)
-  -- Step_exp: S |- ACC e_1 p ~> INJ mixop e'
+  S |- UPD e_1 (PROJ p mixop) e_2 ~> UPD e_1 p (INJ t mixop e_2 `- eps)
+  -- Step_exp: S |- ACC e_1 p ~> INJ t mixop e' `- $trueqpr
+  ;; Note: premises reset on result to trigger recheck
 
 rule Step_exp/UPD-PROJ-bad:
   S |- UPD e_1 (PROJ p mixop) e_2 ~> eps
-  -- Step_exp: S |- ACC e_1 p ~> INJ mixop' e'
+  -- Step_exp: S |- ACC e_1 p ~> INJ t mixop' e' `- $trueqpr
   -- if mixop' =/= mixop
 
 rule Step_exp/EXT:
@@ -467,18 +483,20 @@ rule Step_exp/SUB-LIST:
   S |- SUB (LIST e*) (ITER t_1 STAR) (ITER t_2 STAR) ~> LIST (SUB e t_1 t_2)*
 
 rule Step_exp/SUB-STR:
-  S |- SUB (STR (at `= e)*) t_1 t_2 ~> STR (at' `= SUB e t'_1 t'_2)*
+  S |- SUB (STR t_1 (at `= e `- $trueqpr)*) t_1 t_2 ~> STR t_2 (at' `= (SUB e t'_1 t'_2) `- eps)*
   -- if t_1 = MATCH x_1 WITH (INST `{} `=> STRUCT tf_1*)
   -- if t_2 = MATCH x_2 WITH (INST `{} `=> STRUCT tf_2*)
   -- (if (at' `: t'_1 `- `{q_1*} pr_1*) <- tf_1*)*
   -- (if (at' `: t'_2 `- `{q_2*} pr_2*) = tf_2)*
+  ;; Note: premises reset on result to trigger recheck
 
-rule Step_exp/SUB-CASE:
-  S |- SUB (INJ op e) t_1 t_2 ~> INJ op (SUB e t'_1 t'_2)
+rule Step_exp/SUB-INJ:
+  S |- SUB (INJ t_1 op e `- $trueqpr) t_1 t_2 ~> INJ t_2 op (SUB e t'_1 t'_2) `- eps
   -- if t_1 = MATCH x_1 WITH (INST `{} `=> VARIANT tc_1*)
   -- if t_2 = MATCH x_2 WITH (INST `{} `=> VARIANT tc_2*)
   -- if (op `: t'_1 `- `{q_1*} pr_1*) <- tc_1*
   -- if (op `: t'_2 `- `{q_2*} pr_2*) <- tc_2*
+  ;; Note: premises reset on result to trigger recheck
 
 
 rule Step_exp/MATCH-match:
@@ -515,8 +533,8 @@ rule Step_exp/MATCH-false:
 ;;   | OPT Exp(X)
 ;;   | LIST e_1* Exp(X) e_2*
 ;;   | TUP e_1* Exp(X) e_2*
-;;   | STR ef_1* (l `= Exp(X)) ef_2*
-;;   | INJ op Exp(X)
+;;   | STR t ef_1* (l `= Exp(X) `= qpr?) ef_2*
+;;   | INJ t op Exp(X) `- qpr
 ;;   | LIFT Exp(X)
 ;;   | LEN Exp(X)
 ;;   | MEM e_1 Exp(X) | MEM Exp(X) e_2
@@ -528,6 +546,8 @@ rule Step_exp/MATCH-false:
 ;;
 ;; context ExpTyp(X : typ) : exp =
 ;;   | Exp(ExpTyp(X))
+;;   | STR X ef*
+;;   | INJ X op e `- qpr
 ;;   | ITER e it ep_1* (x `: X `<- e) ep_2*
 ;;   | CVT e X t_2 | CVT e t_1 X
 ;;   | SUB e X t_2 | SUB e t_1 X
@@ -651,21 +671,45 @@ rule Step_exp/TUP-ctx-fail:
   S |- TUP e* ~> eps
   -- Step_exp: S |- e*[n] ~> eps
 
-rule Step_exp/STR-ctx:
-  S |- STR ef* ~> STR ef*[[n] = ef'_n]
+rule Step_exp/STR-ctx1:
+  S |- STR t ef* ~> STR t' ef*
+  -- Step_typ: S |- t ~> t'
+
+rule Step_exp/STR-ctx-fail1:
+  S |- STR t ef* ~> eps
+  -- Step_typ: S |- t ~> eps
+
+rule Step_exp/STR-ctx2:
+  S |- STR t ef* ~> STR t ef*[[n] = ef'_n]
   -- Step_expfield: S |- ef*[n] ~> ef'_n
 
-rule Step_exp/STR-ctx-fail:
-  S |- STR ef* ~> eps
+rule Step_exp/STR-ctx-fail2:
+  S |- STR t ef* ~> eps
   -- Step_expfield: S |- ef*[n] ~> eps
 
-rule Step_exp/INJ-ctx:
-  S |- INJ mixop e ~> INJ mixop e'
+rule Step_exp/INJ-ctx1:
+  S |- INJ t mixop e `- qpr? ~> INJ t' mixop e `- qpr?
+  -- Step_typ: S |- t ~> t'
+
+rule Step_exp/INJ-ctx-fail1:
+  S |- INJ t mixop e `- qpr? ~> eps
+  -- Step_typ: S |- t ~> eps
+
+rule Step_exp/INJ-ctx2:
+  S |- INJ t mixop e `- qpr? ~> INJ t mixop e' `- qpr?
   -- Step_exp: S |- e ~> e'
 
-rule Step_exp/INJ-ctx-fail:
-  S |- INJ mixop e ~> eps
+rule Step_exp/INJ-ctx-fail2:
+  S |- INJ t mixop e `- qpr? ~> eps
   -- Step_exp: S |- e ~> eps
+
+rule Step_exp/INJ-ctx3:
+  S |- INJ t mixop e `- qpr ~> INJ t mixop e `- qpr'
+  -- Step_quantprems: S |- qpr ~> qpr'
+
+rule Step_exp/INJ-ctx-fail3:
+  S |- INJ t mixop e `- qpr ~> eps
+  -- Step_quantprems: S |- qpr ~> eps
 
 
 rule Step_exp/LIFT-ctx:
@@ -850,13 +894,21 @@ rule Step_exp/MATCH-ctx-fail2:
   -- Step_clause: S |- clause*[n] ~> eps
 
 
-rule Step_expfield/ctx:
-  S |- a `= e ~> a `= e'
+rule Step_expfield/ctx1:
+  S |- a `= e `- qpr?  ~> a `= e' `- qpr?
   -- Step_exp: S |- e ~> e'
 
-rule Step_expfield/ctx-fail:
-  S |- a `= e ~> eps
+rule Step_expfield/ctx-fail1:
+  S |- a `= e `- qpr? ~> eps
   -- Step_exp: S |- e ~> eps
+
+rule Step_expfield/ctx2:
+  S |- a `= e `- qpr  ~> a `= e `- qpr'
+  -- Step_quantprems: S |- qpr ~> qpr'
+
+rule Step_expfield/ctx-fail2:
+  S |- a `= e `- qpr ~> eps
+  -- Step_quantprems: S |- qpr ~> eps
 
 
 ;; Paths
@@ -1075,99 +1127,99 @@ rule Step_expmatch_plain/ctx-fail2:
   S |- e / e'  ~>  eps
   -- Step_exp: S |- e' ~> eps
 
+
 rule Step_expmatch_plain/eq:
   S |- val / val  ~>  eps
 
-rule Step_expmatch_plain/UN-PLUS:
+rule Step_expmatch_plain/UN-PLUS-good:
   S |- num / UN PLUS e ~> num / e
   -- if ~ $isneg(num)
 
-rule Step_expmatch_plain/UN-PLUS-fail:
+rule Step_expmatch_plain/UN-PLUS-bad:
   S |- num / UN PLUS e ~> eps
   -- otherwise
 
-rule Step_expmatch_plain/UN-MINUS:
+rule Step_expmatch_plain/UN-MINUS-good:
   S |- num / UN MINUS e ~> $numun(MINUS, num) / e
   -- if $isneg(num)
 
-rule Step_expmatch_plain/UN-MINUS-fail:
+rule Step_expmatch_plain/UN-MINUS-bad:
   S |- num / UN MINUS e ~> eps
   -- otherwise
 
-rule Step_expmatch_plain/CVT:
+rule Step_expmatch_plain/CVT-good:
   S |- num / CVT e nt_1 nt_2 ~> num' / e
   -- if num' = $numcvt(nt_1, num)
 
-rule Step_expmatch_plain/CVT-fail:
+rule Step_expmatch_plain/CVT-bad:
   S |- num / CVT e nt_1 nt_2 ~> eps
   -- otherwise
 
 rule Step_expmatch_plain/TUP:
   S |- TUP e* / TUP e'* ~> (e / e')*
 
-rule Step_expmatch_plain/INJ:
-  S |- INJ op e / INJ op' e' ~> e / e'
+rule Step_expmatch_plain/INJ-good:
+  S |- INJ t op e `- $trueqpr / INJ t' op' e' `- qpr? ~> e / e'
   -- if op = op'
+  ;; Note: premises on pattern don't matter
 
-rule Step_expmatch_plain/INJ-fail:
-  S |- INJ op e / INJ op' e' ~> eps
+rule Step_expmatch_plain/INJ-bad:
+  S |- INJ t op e `- $trueqpr / INJ t' op' e' `- qpr? ~> eps
   -- otherwise
+  ;; Note: premises on pattern don't matter
 
-rule Step_expmatch_plain/OPT:
+rule Step_expmatch_plain/OPT-good:
   S |- OPT e? / OPT e'? ~> ((e / e')?)
   -- if |e?| = |e'?|
 
-rule Step_expmatch_plain/OPT-fail:
+rule Step_expmatch_plain/OPT-bad:
   S |- OPT e? / OPT e'? ~> eps
   -- otherwise
 
-rule Step_expmatch_plain/LIST:
+rule Step_expmatch_plain/LIST-good:
   S |- LIST e* / LIST e'* ~> (e / e')*
   -- if |e*| = |e'*|
 
-rule Step_expmatch_plain/LIST-fail:
+rule Step_expmatch_plain/LIST-bad:
   S |- LIST e* / LIST e'* ~> eps
   -- otherwise
 
-rule Step_expmatch_plain/LIFT:
+rule Step_expmatch_plain/LIFT-good:
   S |- LIST e? / LIFT e' ~> OPT e? / e'
 
-rule Step_expmatch_plain/LIFT-fail:
+rule Step_expmatch_plain/LIFT-bad:
   S |- LIST e* / LIFT e' ~> eps
   -- if |e*| > 1
 
-rule Step_expmatch_plain/CAT-left:
+rule Step_expmatch_plain/CAT-left-good:
   S |- LIST e_1* e_2* / CAT (LIST e'_1*) e'_2 ~> (LIST e_1* / LIST e'_1*) (LIST e_2* / e'_2)
   -- if |e_1*| = |e'_1*|
 
-rule Step_expmatch_plain/CAT-left-fail:
+rule Step_expmatch_plain/CAT-left-bad:
   S |- LIST e_1* e_2* / CAT (LIST e'_1*) e'_2 ~> eps
   -- otherwise
 
-rule Step_expmatch_plain/CAT-right:
+rule Step_expmatch_plain/CAT-right-good:
   S |- LIST e_1* e_2* / CAT e'_1 (LIST e'_2*) ~> (LIST e_1* / e'_1) (LIST e_2* / LIST e'_2*)
   -- if |e_2*| = |e'_2*|
 
-rule Step_expmatch_plain/CAT-right-fail:
+rule Step_expmatch_plain/CAT-right-bad:
   S |- LIST e_1* e_2* / CAT e'_1 (LIST e'_2*) ~> eps
   -- otherwise
 
 rule Step_expmatch_plain/STR:
-  S |- STR ef* / STR ef'* ~> (e / e')*
-  -- (if (l `= e') = ef')*
-  -- (if (l `= e) <- ef*)*
-
-rule Step_expmatch_plain/STR-fail:
-  S |- STR ef* / STR ef'* ~> eps
-  -- otherwise
+  S |- STR t ef* / STR t' ef'* ~> (e / e')*
+  -- (if (l `= e' `- qpr'?) = ef')*
+  -- (if (l `= e `- $trueqpr) <- ef*)*
+  ;; Note: premises on pattern don't matter
 
 
-rule Step_expmatch_plain/ITER-PLUS:
+rule Step_expmatch_plain/ITER-PLUS-good:
   S |- LIST e* / ITER e' PLUS (x `: t `<- e_p)* ~>
     LIST e* / ITER e' STAR (x `: t `<- e_p)*
   -- if |e*| >= 1
 
-rule Step_expmatch_plain/ITER-PLUS-fail:
+rule Step_expmatch_plain/ITER-PLUS-bad:
   S |- LIST eps / ITER e' PLUS (x `: t `<- e_p)* ~> eps
 
 rule Step_expmatch_plain/ITER-STAR:
@@ -1394,7 +1446,7 @@ rule Step_prems/NOT-false:
 var ep : exppull
 var eq : exppush
 
-rule Step_prems/ITER-QUEST:
+rule Step_prems/ITER-QUEST-good:
   S |- ITER pr QUEST (x_1 `: t_1 `<- OPT e_1?)* (e_2 `-> x_2 `: t_2)*
     ~>_{EXP (x_2, OPT $subst_exp(s', e'_2)?)*}
       $subst_prem({EXP (x_1, e'_1)*}, pr')?
@@ -1556,6 +1608,23 @@ rule Step_prems/ITER-ctx4:
 rule Step_prems/ITER-ctx-fail4:
   S |- ITER pr it ep* eq* ~>_{} eps
   -- Step_exppush: S |- eq*[n] ~> eps
+
+
+relation Step_quantprems: S |- quantprems ~> quantprems?
+
+rule Step_quantprems/guess:
+  S |- `{q*} pr* ~> `{eps} $subst_prem(s, pr')*
+  -- Ok_subst: $storeenv(S) |- s : q*
+  -- if (pr'*, s') = $refresh_prems(pr*)
+  ;; Note: non-computational rule
+
+rule Step_quantprems/ctx:
+  S |- `{q*} pr* ~> `{q*} pr'*
+  -- Step_prems: S |- pr* ~>_s pr'*
+
+rule Step_quantprems/ctx-fail:
+  S |- `{q*} pr* ~> eps
+  -- Step_prems: S |- pr* ~>_s eps
 
 
 ;; Definitions

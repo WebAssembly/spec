@@ -33,7 +33,11 @@ syntax deftyp =
 syntax typbind = id `: typ
 syntax typfield = atom `: typprems
 syntax typcase = mixop `: typprems
-syntax typprems = typ `- `{quant*} prem*
+syntax typprems = typ `- quantprems
+syntax quantprems = `{quant*} prem*
+
+def $trueqpr : quantprems
+def $trueqpr = `{eps} eps
 
 
 ;; Iterators
@@ -90,16 +94,16 @@ syntax cmpop = polycmpop | numcmpop
 
 
 syntax val =
-  | num                ;; num
-  | BOOL bool          ;; bool
-  | TEXT text          ;; text
-  | TUP val*           ;; ( val* )
-  | INJ mixop val      ;; mixop val
-  | OPT val?           ;; val?
-  | LIST val*          ;; [ val* ]
-  | STR valfield*      ;; { valfield* }
+  | num                     ;; num
+  | BOOL bool               ;; bool
+  | TEXT text               ;; text
+  | TUP val*                ;; ( val* )
+  | INJ typ mixop val `- quantprems?  -- if quantprems? = $trueqpr  ;; mixop val
+  | OPT val?                ;; val?
+  | LIST val*               ;; [ val* ]
+  | STR typ valfield*       ;; { valfield* }
 
-syntax valfield = atom `= val  ;; atom `=` val
+syntax valfield = atom `= val `- quantprems?  -- if quantprems? = $trueqpr  ;; atom `=` val
 
 
 syntax exp =
@@ -111,11 +115,11 @@ syntax exp =
   | BIN binop exp exp       ;; exp binop exp
   | CMP cmpop exp exp       ;; exp cmpop exp
   | TUP exp*                ;; ( exp* )
-  | INJ mixop exp           ;; mixop exp
+  | INJ typ mixop exp `- quantprems? ;; mixop exp (no prems = not yet checked)
   | OPT exp?                ;; exp?
   | LIST exp*               ;; [ exp* ]
   | LIFT exp                ;; exp : _? <: _*
-  | STR expfield*           ;; { expfield* }
+  | STR typ expfield*       ;; { expfield* }
   | SEL exp nat             ;; exp.n
   | LEN exp                 ;; | exp |
   | MEM exp exp             ;; exp `<-` exp
@@ -129,7 +133,7 @@ syntax exp =
   | SUB exp typ typ         ;; exp : typ1 <: typ2
   | MATCH arg* WITH clause* ;; `match` arg* `with` clause*
 
-syntax expfield = atom `= exp
+syntax expfield = atom `= exp `- quantprems?  ;; atom `=` val (no prems = not yet checked)
 syntax exppull = id `: typ `<- exp
 syntax exppush = exp `-> id `: typ
 syntax expprems = exp `- prem*

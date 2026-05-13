@@ -122,6 +122,33 @@ and reduce_typ_app' env id args at = function
     | Some s -> Some (Subst.subst_deftyp s dt)
 
 
+and as_struct_typ env t at : typfield list =
+  match (reduce_typdef env t).it with
+  | StructT tfs -> tfs
+  | _ ->
+    Error.error at "validation"
+      ("expression's type `" ^ Print.string_of_typ t ^ "` is not a record")
+
+and as_variant_typ env t at : typcase list =
+  match (reduce_typdef env t).it with
+  | VariantT tcs -> tcs
+  | _ ->
+    Error.error at "validation"
+      ("expression's type `" ^ Print.string_of_typ t ^ "` is not a variant")
+
+and find_typfield tfs atom at =
+  match List.find_opt (fun (atom', _, _) -> Eq.eq_atom atom' atom) tfs with
+  | Some (_, x, _) -> x
+  | None ->
+    Error.error at "validation" ("unbound field `" ^ Print.string_of_atom atom ^ "`")
+
+and find_typcase tcs op at =
+  match List.find_opt (fun (op', _, _) -> Eq.eq_mixop op' op) tcs with
+  | Some (_, x, _) -> x
+  | None ->
+    Error.error at "validation" ("unknown case `" ^ Print.string_of_mixop op ^ "`")
+
+
 (* Expression Reduction *)
 
 and is_head_normal_exp e =
@@ -218,7 +245,9 @@ and reduce_exp env e : exp =
         then reduce_exp env (CatE (e', e2') $> e')
         else ExtE (e', p', e2') $> e'
       )
-  | StrE efs -> StrE (List.map (reduce_expfield env) efs) $> e
+  | StrE efs ->
+    let tfs = as_struct_typ env e.note e.at in
+    StrE (List.map (reduce_expfield env tfs) efs) $> e
   | DotE (e1, atom) ->
     let e1' = reduce_exp env e1 in
     (match e1'.it with
@@ -234,12 +263,13 @@ and reduce_exp env e : exp =
     | OptE None, OptE _ -> e2'.it
     | OptE _, OptE None -> e1'.it
     | StrE efs1, StrE efs2 ->
+      let tfs = as_struct_typ env e.note e.at in
       let merge (atom1, e1) (atom2, e2) =
         assert (Atom.eq atom1 atom2);
         (atom1, reduce_exp env (CompE (e1, e2) $> e1))
       in
       (try
-        StrE (List.map2 merge efs1 efs2)
+        StrE (List.map (reduce_expfield env tfs) (List.map2 merge efs1 efs2))
       with Irred | Failure _ ->
         CompE (e1', e2')
       )
@@ -354,7 +384,14 @@ and reduce_exp env e : exp =
     | OptE _, OptE None -> e1'.it
     | _ -> CatE (e1', e2')
     ) $> e
-  | CaseE (op, e1) -> CaseE (op, reduce_exp env e1) $> e
+  | CaseE (op, e1) ->
+    let e1' = reduce_exp env e1 in
+    let tcs = as_variant_typ env e.note e.at in
+    let _t, _qs, prems = find_typcase tcs op e.at in
+    (match reduce_prems env Subst.empty prems with
+    | Some false -> raise Irred
+    | _ -> CaseE (op, e1') $> e
+    )
   | CvtE (e1, nt1, nt2) ->
     let e1' = reduce_exp env e1 in
     (match e1'.it with
@@ -404,8 +441,12 @@ and reduce_iter env = function
 and reduce_iterexp env (iter, xes) =
   (reduce_iter env iter, List.map (fun (id, e) -> id, reduce_exp env e) xes)
 
-and reduce_expfield env (atom, e) : expfield =
-  (atom, reduce_exp env e)
+and reduce_expfield env tfs (atom, e) : expfield =
+  let e' = reduce_exp env e in
+  let _t, _qs, prems = find_typfield tfs atom atom.at in
+  match reduce_prems env Subst.empty prems with
+  | Some false -> raise Irred
+  | _ -> (atom, e')
 
 and reduce_path env e p f =
   match p.it with
@@ -438,9 +479,10 @@ and reduce_path env e p f =
     let f' e' p1' =
       match e'.it with
       | StrE efs ->
+        let tfs = as_struct_typ env e'.note e'.at in
         StrE (List.map (fun (atomI, eI) ->
           if Eq.eq_atom atomI atom
-          then (atomI, f eI p1')
+          then reduce_expfield env tfs (atomI, f eI p1')
           else (atomI, eI)
         ) efs) $> e'
       | _ ->
@@ -1020,6 +1062,7 @@ and equiv_params env ps1 ps2 =
 (* Subtyping *)
 
 and sub_prems _env prems1 prems2 =
+  prems2 = [] ||
   List.length prems1 = List.length prems2 &&
   List.for_all2 Eq.eq_prem prems1 prems2
 

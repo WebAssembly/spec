@@ -202,11 +202,11 @@ def $subst_exp(s, UN op e) = UN op $subst_exp(s, e)
 def $subst_exp(s, BIN op e_1 e_2) = BIN op $subst_exp(s, e_1) $subst_exp(s, e_2)
 def $subst_exp(s, CMP op e_1 e_2) = CMP op $subst_exp(s, e_1) $subst_exp(s, e_2)
 def $subst_exp(s, TUP e*) = TUP $subst_exp(s, e)*
-def $subst_exp(s, INJ m e) = INJ m $subst_exp(s, e)
+def $subst_exp(s, INJ t m e `- qpr?) = INJ $subst_typ(s, t) m $subst_exp(s, e) `- $subst_quantprems(s, qpr)?
 def $subst_exp(s, OPT e?) = OPT $subst_exp(s, e)?
 def $subst_exp(s, LIST e*) = LIST $subst_exp(s, e)*
 def $subst_exp(s, LIFT e) = LIFT $subst_exp(s, e)
-def $subst_exp(s, STR (a `= e)*) = STR (a `= $subst_exp(s, e))*
+def $subst_exp(s, STR t (a `= e `- qpr?)*) = STR $subst_typ(s, t) (a `= $subst_exp(s, e) `- $subst_quantprems(s, qpr)?)*
 def $subst_exp(s, SEL e n) = SEL $subst_exp(s, e) n
 def $subst_exp(s, LEN e) = LEN $subst_exp(s, e)
 def $subst_exp(s, MEM e_1 e_2) = MEM $subst_exp(s, e_1) $subst_exp(s, e_2)
@@ -279,6 +279,9 @@ def $subst_prem(s, ITER pr it ep* eq*) = ITER $subst_prem(s ++ s' ++ s'', pr') $
   -- if (ep'*, s'') = $refresh_exppulls(ep*)
   -- if (pr', s''') = $refresh_prem(pr)
 
+def $subst_quantprems(subst, quantprems) : quantprems
+def $subst_quantprems(s, `{q*} pr*) = `{$subst_param(s, q')*} $subst_prem(s ++ s', pr)*
+  -- if (q'*, s') = $refresh_params(q*)
 
 def $subst_typprems(subst, typprems) : typprems
 def $subst_typprems(s, t `- `{q*} pr*) = $subst_typ(s, t') `- `{$subst_param(s ++ s', q')*} $subst_prem(s ++ s' ++ s'', pr')*
@@ -322,6 +325,11 @@ def $args_for_params(arg*, param*) : subst
 def $args_for_params(eps, eps) = {}
 def $args_for_params(a_1 a*, p_1 p*) = s ++ $args_for_params(a*, $subst_param(s, p)*)
   -- if s = $arg_for_param(a_1, p_1)
+
+
+def $tupsubst(exp, typ) : subst
+def $tupsubst(e, TUP (x `: t)^n) = {EXP (x, SEL e i)^(i<n)}
+def $tupsubst(e, t) = {}  -- otherwise
 
 
 ;; Well-formedness

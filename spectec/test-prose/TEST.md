@@ -16830,7 +16830,11 @@ The value type :math:`t` is not defaultable if:
 
       * The instruction :math:`{\mathit{instr}}` is of the form :math:`({\mathsf{i}}{N} {.} {\mathit{binop}})`.
 
+      * The length of :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 64}}` is greater than :math:`0`.
+
       * :math:`{\mathsf{i}}{N}` is contained in [:math:`\mathsf{i{\scriptstyle 32}}`; :math:`\mathsf{i{\scriptstyle 64}}`].
+
+      * The length of :math:`\mathsf{add}~\mathsf{sub}~\mathsf{mul}` is greater than :math:`0`.
 
       * :math:`{\mathit{binop}}` is contained in [:math:`\mathsf{add}`; :math:`\mathsf{sub}`; :math:`\mathsf{mul}`].
 
@@ -16910,7 +16914,11 @@ The value type :math:`t` is not defaultable if:
 :math:`({\mathsf{i}}{N} {.} {\mathit{binop}})` is constant if:
 
 
+   * The length of :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 64}}` is greater than :math:`0`.
+
    * :math:`{\mathsf{i}}{N}` is contained in [:math:`\mathsf{i{\scriptstyle 32}}`; :math:`\mathsf{i{\scriptstyle 64}}`].
+
+   * The length of :math:`\mathsf{add}~\mathsf{sub}~\mathsf{mul}` is greater than :math:`0`.
 
    * :math:`{\mathit{binop}}` is contained in [:math:`\mathsf{add}`; :math:`\mathsf{sub}`; :math:`\mathsf{mul}`].
 
@@ -29274,7 +29282,9 @@ Instr_const
     - C.GLOBALS[x] is (?() t).
   - Or:
     - instr is (BINOP Inn binop).
+    - |[I32, I64]| is greater than 0.
     - Inn is contained in [I32, I64].
+    - |[ADD, SUB, MUL]| is greater than 0.
     - binop is contained in [ADD, SUB, MUL].
 
 Instr_const/const
@@ -29320,7 +29330,9 @@ Instr_const/global.get
 
 Instr_const/binop
 - the instruction (BINOP Inn binop) is constant if:
+  - |[I32, I64]| is greater than 0.
   - Inn is contained in [I32, I64].
+  - |[ADD, SUB, MUL]| is greater than 0.
   - binop is contained in [ADD, SUB, MUL].
 
 Expr_const

@@ -684,9 +684,6 @@ Reference Instructions
 
 .. _exec-ref.null:
 
-:math:`\REFNULL~x`
-.......................
-
 $${rule-prose: Step_read/ref.null}
 
 $${rule: {Step_read/ref.null}}
