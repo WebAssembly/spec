@@ -146,8 +146,8 @@ Convention
 .. _syntax-elemaddr:
 .. _syntax-dataaddr:
 .. _syntax-structaddr:
-.. _syntax-exnaddr:
 .. _syntax-arrayaddr:
+.. _syntax-exnaddr:
 .. _syntax-hostaddr:
 .. _syntax-addr:
 
@@ -169,7 +169,7 @@ in the :ref:`store <syntax-store>` are referenced with abstract *addresses*.
 These are simply indices into the respective store component.
 In addition, an :ref:`embedder <embedder>` may supply an uninterpreted set of *host addresses*.
 
-$${syntax: {addr funcaddr tableaddr memaddr globaladdr tagaddr elemaddr dataaddr structaddr arrayaddr hostaddr}}
+$${syntax: {addr funcaddr tableaddr memaddr globaladdr tagaddr elemaddr dataaddr structaddr arrayaddr exnaddr hostaddr}}
 
 An :ref:`embedder <embedder>` may assign identity to :ref:`exported <syntax-export>` store objects corresponding to their addresses,
 even where this identity is not observable from within WebAssembly code itself
