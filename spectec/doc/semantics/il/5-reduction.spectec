@@ -379,7 +379,7 @@ rule Step_exp/ACC-PROJ-bad:
 
 
 rule Step_exp/UPD-ROOT:
-  S |- UPD e_1 ROOT e_2 ~> e_2
+  S |- UPD val_1 ROOT e_2 ~> e_2
 
 rule Step_exp/UPD-THE-some:
   S |- UPD e_1 (THE p) e_2 ~> UPD e_1 p (OPT e_2)
