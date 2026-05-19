@@ -288,11 +288,11 @@ rule Step_exp/LIFT-some:
   S |- LIFT (OPT (e)) ~> LIST e
 
 rule Step_exp/SEL-tup:
-  S |- SEL (TUP e*) n ~> e_n
-  -- if e_n = e*[n]
+  S |- SEL (TUP val*) n ~> val_n
+  -- if val_n = val*[n]
 
 rule Step_exp/LEN-list:
-  S |- LEN (LIST e^n) ~> NAT n
+  S |- LEN (LIST val^n) ~> NAT n
 
 rule Step_exp/MEM-true:
   S |- MEM val_1 (LIST val_2*) ~> BOOL true
@@ -341,10 +341,10 @@ rule Step_exp/ACC-THE-none:
   -- Step_exp: S |- ACC e p ~> OPT eps
 
 rule Step_exp/ACC-IDX-inb:
-  S |- ACC e (IDX p (NAT n)) ~> e'_n
-  -- Step_exp: S |- ACC e p ~> LIST e'*
-  -- if n < |e'*|
-  -- if e'_n = e'*[n]
+  S |- ACC e (IDX p (NAT n)) ~> val'_n
+  -- Step_exp: S |- ACC e p ~> LIST val'*
+  -- if n < |val'*|
+  -- if val'_n = val'*[n]
 
 rule Step_exp/ACC-IDX-oob:
   S |- ACC e (IDX p (NAT n)) ~> eps
@@ -352,10 +352,10 @@ rule Step_exp/ACC-IDX-oob:
   -- if n >= |e'*|
 
 rule Step_exp/ACC-SLICE-inb:
-  S |- ACC e (SLICE p (NAT n) (NAT m)) ~> LIST e''*
-  -- Step_exp: S |- ACC e p ~> LIST e'*
-  -- if $(n + m) <= |e'*|
-  -- if e''* = e'*[n : m]
+  S |- ACC e (SLICE p (NAT n) (NAT m)) ~> LIST val''*
+  -- Step_exp: S |- ACC e p ~> LIST val'*
+  -- if $(n + m) <= |val'*|
+  -- if val''* = val'*[n : m]
 
 rule Step_exp/ACC-SLICE-oob:
   S |- ACC e (SLICE p (NAT n) (NAT m)) ~> eps
@@ -363,10 +363,10 @@ rule Step_exp/ACC-SLICE-oob:
   -- if $(n + m) > |e'*|
 
 rule Step_exp/ACC-DOT:
-  S |- ACC e (DOT p a) ~> e'_n
-  -- Step_exp: S |- ACC e p ~> STR t (a' `= e' `- $trueqpr)*
+  S |- ACC e (DOT p a) ~> val'_n
+  -- Step_exp: S |- ACC e p ~> STR t (a' `= val' `- $trueqpr)*
   -- if a'*[n] = a
-  -- if e'*[n] = e'_n
+  -- if val'*[n] = val'_n
 
 rule Step_exp/ACC-PROJ-good:
   S |- ACC e (PROJ p mixop) ~> e'
@@ -383,16 +383,16 @@ rule Step_exp/UPD-ROOT:
 
 rule Step_exp/UPD-THE-some:
   S |- UPD e_1 (THE p) e_2 ~> UPD e_1 p (OPT e_2)
-  -- Step_exp: S |- ACC e_1 p ~> OPT e'
+  -- Step_exp: S |- ACC e_1 p ~> OPT val'
 
 rule Step_exp/UPD-THE-none:
   S |- UPD e_1 (THE p) e_2 ~> eps
   -- Step_exp: S |- ACC e_1 p ~> eps
 
 rule Step_exp/UPD-IDX-inb:
-  S |- UPD e_1 (IDX p (NAT n)) e_2 ~> UPD e_1 p (LIST e'*[[n] = e_2])
-  -- Step_exp: S |- ACC e_1 p ~> LIST e'*
-  -- if n < |e'*|
+  S |- UPD e_1 (IDX p (NAT n)) e_2 ~> UPD e_1 p (LIST val'*[[n] = e_2])
+  -- Step_exp: S |- ACC e_1 p ~> LIST val'*
+  -- if n < |val'*|
 
 rule Step_exp/UPD-IDX-outb:
   S |- UPD e_1 (IDX p (NAT n)) e_2 ~> eps
@@ -400,9 +400,9 @@ rule Step_exp/UPD-IDX-outb:
   -- if n >= |e'*|
 
 rule Step_exp/UPD-SLICE-inb:
-  S |- UPD e_1 (SLICE p (NAT n) (NAT m)) (LIST e_2*) ~> UPD e_1 p (LIST e'*[[n : m] = e_2*])
-  -- Step_exp: S |- ACC e_1 p ~> LIST e'*
-  -- if $(n + m) <= |e'*|
+  S |- UPD e_1 (SLICE p (NAT n) (NAT m)) (LIST e_2*) ~> UPD e_1 p (LIST val'*[[n : m] = e_2*])
+  -- Step_exp: S |- ACC e_1 p ~> LIST val'*
+  -- if $(n + m) <= |val'*|
 
 rule Step_exp/UPD-SLICE-oob:
   S |- UPD e_1 (SLICE p (NAT n) (NAT m)) (LIST e_2*) ~> eps
@@ -410,14 +410,14 @@ rule Step_exp/UPD-SLICE-oob:
   -- if $(n + m) > |e'*|
 
 rule Step_exp/UPD-DOT:
-  S |- UPD e_1 (DOT p a) e_2 ~> UPD e_1 p (STR t (a' `= e' `- $trueqpr)*[[n] = (a `= e_2 `- eps)])
-  -- Step_exp: S |- ACC e_1 p ~> STR t (a' `= e' `- $trueqpr)*
+  S |- UPD e_1 (DOT p a) e_2 ~> UPD e_1 p (STR t (a' `= val' `- $trueqpr)*[[n] = (a `= e_2 `- eps)])
+  -- Step_exp: S |- ACC e_1 p ~> STR t (a' `= val' `- $trueqpr)*
   -- if a'*[n] = a
   ;; Note: premises reset on result for recheck
 
 rule Step_exp/UPD-PROJ-good:
   S |- UPD e_1 (PROJ p mixop) e_2 ~> UPD e_1 p (INJ t mixop e_2 `- eps)
-  -- Step_exp: S |- ACC e_1 p ~> INJ t mixop e' `- $trueqpr
+  -- Step_exp: S |- ACC e_1 p ~> INJ t mixop val' `- $trueqpr
   ;; Note: premises reset on result to trigger recheck
 
 rule Step_exp/UPD-PROJ-bad:
