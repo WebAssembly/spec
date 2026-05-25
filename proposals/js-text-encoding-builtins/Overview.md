@@ -14,7 +14,7 @@ When encoding JS strings to linear memory, memory has to be pre-allocated on the
 
 ## API
 
-### "wasm:text-encoding" "decodeStringFromUTF8Array"
+### "wasm:js/TextEncoder" "decodeStringFromUTF8Array"
 
 ```js
 /// Decode the specified GC `array` range using UTF-8 into a JS string.
@@ -50,7 +50,7 @@ func decodeStringFromUTF8Array(
 }
 ```
 
-### "wasm:text-encoding" "decodeStringFromUTF8Memory"
+### "wasm:js/TextEncoder" "decodeStringFromUTF8Memory"
 
 ```js
 /// Decode the specified `WebAssembly.Memory` range using UTF-8 into a JS string.
@@ -86,7 +86,7 @@ func decodeStringFromUTF8Memory(
 }
 ```
 
-### "wasm:text-encoding" "measureStringAsUTF8"
+### "wasm:js/TextEncoder" "measureStringAsUTF8"
 
 ```js
 /// Returns the number of bytes a JS string would occupy when encoded as UTF-8.
@@ -106,7 +106,7 @@ func measureStringAsUTF8(
 }
 ```
 
-### "wasm:text-encoding" "encodeStringIntoUTF8Array"
+### "wasm:js/TextEncoder" "encodeStringIntoUTF8Array"
 
 ```js
 /// Encode a JS string into a GC `array` using
@@ -149,7 +149,7 @@ func encodeStringIntoUTF8Array(
 }
 ```
 
-### "wasm:text-encoding" "encodeStringIntoUTF8Memory"
+### "wasm:js/TextEncoder" "encodeStringIntoUTF8Memory"
 
 ```js
 /// Encode a JS string into `WebAssembly.Memory` using
@@ -209,7 +209,3 @@ While according to the WHATWG Encoding Standard the Text Encoding API should be 
 ### What about substring de/encoding?
 
 The JS String Builtins proposal already exposes [`"wasm:js-string" "substring"`](https://github.com/WebAssembly/js-string-builtins/blob/81bfc5fb7b8277c6b7d1b0a8f6e57cb31a7bf080/proposals/js-string-builtins/Overview.md#wasmjs-string-substring). So instead of making the API more complex, we can let users extract a desirable substring.
-
-### `"wasm:text-encoding"` vs `"wasm:js/text-encoding"`.
-
-There is an [ongoing discussion](https://github.com/WebAssembly/esm-integration/issues/118) to change the mapping for JS builtins. Either convention works for us in this proposal.
