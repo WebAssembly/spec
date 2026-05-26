@@ -296,7 +296,7 @@ and infer_exp (env : Env.t) e : typ =
   | UpdE (e1, _, _)
   | ExtE (e1, _, _)
   | CompE (e1, _) -> infer_exp env e1
-  | StrE _ -> error e.at "cannot infer type of record"
+  | StrE _ -> e.note  (* error e.at "cannot infer type of record" *)
   | DotE (e1, atom) ->
     let tfs = as_struct_typ "expression" env Infer (infer_exp env e1) e1.at in
     let t, _qs, _prems = find_field tfs atom e1.at in
@@ -406,7 +406,7 @@ and valid_exp ?(side = `Rhs) env e t =
     let t2 = valid_path env p t in
     let _typ21 = as_list_typ "path" env Check t2 p.at in
     valid_exp env e2 t2
-  | StrE efs ->
+  | StrE (efs, _ch) ->
     let tfs = as_struct_typ "record" env Check t e.at in
     valid_list (valid_expfield ~side) env efs tfs e.at
   | DotE (e1, atom) ->
@@ -488,7 +488,7 @@ and valid_exp ?(side = `Rhs) env e t =
     let _typ1 = as_iter_typ List "list" env Check t e.at in
     valid_exp env e1 t;
     valid_exp env e2 t
-  | CaseE (op, e1) ->
+  | CaseE (op, e1, _ch) ->
     let cases = as_variant_typ "case" env Check t e.at in
     let t1, _qs, _prems = find_case cases op e1.at in
     valid_mixop env op;

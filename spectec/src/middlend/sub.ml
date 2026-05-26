@@ -148,7 +148,7 @@ and t_exp' env = function
   | SliceE (exp1, exp2, exp3) -> SliceE (t_exp env exp1, t_exp env exp2, t_exp env exp3)
   | UpdE (exp1, path, exp2) -> UpdE (t_exp env exp1, t_path env path, t_exp env exp2)
   | ExtE (exp1, path, exp2) -> ExtE (t_exp env exp1, t_path env path, t_exp env exp2)
-  | StrE fields -> StrE (List.map (fun (a, e) -> a, t_exp env e) fields)
+  | StrE (fields, ch) -> StrE (List.map (fun (a, e) -> a, t_exp env e) fields, ch)
   | DotE (e, a) -> DotE (t_exp env e, a)
   | CompE (exp1, exp2) -> CompE (t_exp env exp1, t_exp env exp2)
   | LiftE exp -> LiftE (t_exp env exp)
@@ -164,7 +164,7 @@ and t_exp' env = function
   | ListE es -> ListE (List.map (t_exp env) es)
   | CatE (exp1, exp2) -> CatE (t_exp env exp1, t_exp env exp2)
   | MemE (exp1, exp2) -> MemE (t_exp env exp1, t_exp env exp2)
-  | CaseE (mixop, e) -> CaseE (mixop, t_exp env e)
+  | CaseE (mixop, e, ch) -> CaseE (mixop, t_exp env e, ch)
   | CvtE (exp, t1, t2) -> CvtE (t_exp env exp, t1, t2)
   | SubE (e, t1, t2) -> SubE (e, t1, t2)
 
@@ -334,14 +334,14 @@ let insert_injections env (def : def) : def list =
         in
         let xe = TupE xes $$ no_region % arg_typ in
         DefD (params,
-          [ExpA (CaseE (a, xe) $$ no_region % real_ty) $ no_region],
-          CaseE (a, xe) $$ no_region % sup_ty, []) $ no_region
+          [ExpA (CaseE (a, xe, Unchecked) $$ no_region % real_ty) $ no_region],
+          CaseE (a, xe, Unchecked) $$ no_region % sup_ty, []) $ no_region
       | _ ->
         let x = "x" $ no_region in
         let xe = VarE x $$ no_region % arg_typ in
         DefD ([ExpP (x, arg_typ) $ x.at],
-          [ExpA (CaseE (a, xe) $$ no_region % real_ty) $ no_region],
-          CaseE (a, xe) $$ no_region % sup_ty, []) $ no_region
+          [ExpA (CaseE (a, xe, Unchecked) $$ no_region % real_ty) $ no_region],
+          CaseE (a, xe, Unchecked) $$ no_region % sup_ty, []) $ no_region
       ) cases_sub in
     DecD (name, params_sub @ params_sup' @ [ExpP ("_" $ no_region, sub_ty) $ no_region], sup_ty, clauses) $ no_region
   ) pairs

@@ -91,11 +91,11 @@ let rec t_exp env e : prem list =
   -> t_exp env exp1 @ t_path env path @ t_exp env exp2
   | CallE (_, args)
   -> List.concat_map (t_arg env) args
-  | CaseE (_, exp)
+  | CaseE (_, exp, _)
   | UncaseE (exp, _)
   | DotE (exp, _)
   -> t_exp env exp
-  | StrE fields
+  | StrE (fields, _)
   -> List.concat_map (fun (_, exp) -> t_exp env exp) fields
   | TupE es | ListE es
   -> List.concat_map (t_exp env) es

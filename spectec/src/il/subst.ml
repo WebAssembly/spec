@@ -166,7 +166,7 @@ and subst_exp s e =
   | SliceE (e1, e2, e3) -> SliceE (subst_exp s e1, subst_exp s e2, subst_exp s e3)
   | UpdE (e1, p, e2) -> UpdE (subst_exp s e1, subst_path s p, subst_exp s e2)
   | ExtE (e1, p, e2) -> ExtE (subst_exp s e1, subst_path s p, subst_exp s e2)
-  | StrE efs -> StrE (subst_list subst_expfield s efs)
+  | StrE (efs, ch) -> StrE (subst_list subst_expfield s efs, ch)
   | DotE (e1, atom) -> DotE (subst_exp s e1, atom)
   | CompE (e1, e2) -> CompE (subst_exp s e1, subst_exp s e2)
   | MemE (e1, e2) -> MemE (subst_exp s e1, subst_exp s e2)
@@ -186,9 +186,9 @@ and subst_exp s e =
   | ListE es -> ListE (subst_list subst_exp s es)
   | LiftE e -> LiftE (subst_exp s e)
   | CatE (e1, e2) -> CatE (subst_exp s e1, subst_exp s e2)
-  | CaseE (op, e1) ->
+  | CaseE (op, e1, ch) ->
     assert (match e.note.it with VarT _ -> true | _ -> false);
-    CaseE (op, subst_exp s e1)
+    CaseE (op, subst_exp s e1, ch)
   | CvtE (e1, nt1, nt2) -> CvtE (subst_exp s e1, nt1, nt2)
   | SubE (e1, t1, t2) -> SubE (subst_exp s e1, subst_typ s t1, subst_typ s t2)
   ) $$ e.at % subst_typ s e.note

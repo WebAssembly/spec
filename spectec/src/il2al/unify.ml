@@ -138,8 +138,8 @@ let rec overlap env e1 e2 = if eq_exp e1 e2 then e1 else
       UpdE (overlap env e1 e2, path1, overlap env e1' e2') |> replace_it
     | ExtE (e1, path1, e1'), ExtE (e2, path2, e2') when eq_path path1 path2 ->
       ExtE (overlap env e1 e2, path1, overlap env e1' e2') |> replace_it
-    | StrE efs1, StrE efs2 when List.map (fun (a, _) -> a) efs1 = List.map (fun (a, _) -> a) efs2 ->
-      StrE (List.map2 (fun (a1, e1) (_, e2) -> (a1, overlap env e1 e2)) efs1 efs2) |> replace_it
+    | StrE (efs1, _), StrE (efs2, _) when List.map (fun (a, _) -> a) efs1 = List.map (fun (a, _) -> a) efs2 ->
+      StrE (List.map2 (fun (a1, e1) (_, e2) -> (a1, overlap env e1 e2)) efs1 efs2, Unchecked) |> replace_it
     | DotE (e1, atom1), DotE (e2, atom2) when eq_atom atom1 atom2 ->
       DotE (overlap env e1 e2, atom1) |> replace_it
     | CompE (e1, e1'), CompE (e2, e2') ->
@@ -168,8 +168,8 @@ let rec overlap env e1 e2 = if eq_exp e1 e2 then e1 else
       CatE (overlap env e1 e2, overlap env e1' e2') |> replace_it
     | MemE (e1, e1'), MemE (e2, e2') ->
       MemE (overlap env e1 e2, overlap env e1' e2') |> replace_it
-    | CaseE (mixop1, e1), CaseE (mixop2, e2) when eq_mixop mixop1 mixop2 ->
-      CaseE (mixop1, overlap env e1 e2) |> replace_it
+    | CaseE (mixop1, e1, _), CaseE (mixop2, e2, _) when eq_mixop mixop1 mixop2 ->
+      CaseE (mixop1, overlap env e1 e2, Unchecked) |> replace_it
     | SubE (e1, typ1, typ1'), SubE (e2, typ2, typ2') when eq_typ typ1 typ2 && eq_typ typ1' typ2' ->
       SubE (overlap env e1 e2, typ1, typ1') |> replace_it
     (* HARDCODE: Prevent vals overlapped into instr *)
@@ -253,10 +253,10 @@ let rec collect_unified template e = if eq_exp template e then [], [] else
     | MemE (e1, e1'), MemE (e2, e2') -> pairwise_concat (collect_unified e1 e2) (collect_unified e1' e2')
     | DotE (e1, _), DotE (e2, _)
     | UncaseE (e1, _), UncaseE (e2, _)
-    | CaseE (_, e1), CaseE (_, e2) -> collect_unified e1 e2
+    | CaseE (_, e1, _), CaseE (_, e2, _) -> collect_unified e1 e2
     | SliceE (e1, e1', e1''), SliceE (e2, e2', e2'') ->
       pairwise_concat (pairwise_concat (collect_unified e1 e2) (collect_unified e1' e2')) (collect_unified e1'' e2'')
-    | StrE efs1, StrE efs2 ->
+    | StrE (efs1, _), StrE (efs2, _) ->
       List.fold_left2 (fun acc (_, e1) (_, e2) -> pairwise_concat acc (collect_unified e1 e2)) ([], []) efs1 efs2
     | TupE es1, TupE es2
     | ListE es1, ListE es2 ->

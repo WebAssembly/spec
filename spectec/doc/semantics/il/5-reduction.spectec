@@ -315,8 +315,7 @@ rule Step_exp/CAT-list:
   S |- CAT (LIST e_1*) (LIST e_2*) ~> LIST e_1* e_2*
 
 rule Step_exp/CAT-str:
-  S |- CAT (STR t (a `= e_1 `- $trueqpr)*) (STR t (a `= e_2 `- $trueqpr)*) ~> STR t (a `= (CAT e_1 e_2) `- eps)*
-  ;; Note: premises reset on result to trigger recheck
+  S |- CAT (STR t (a `= e_1 `- $trueqpr)*) (STR t (a `= e_2 `- $trueqpr)*) ~> STR t (a `= (CAT e_1 e_2) `- $trueqpr)*
 
 
 rule Step_exp/STR:

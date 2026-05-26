@@ -135,7 +135,7 @@ and recover_iterexp iterexp pr = Source.map (recover_iterexp' iterexp) pr
 (* is this assign premise a if-let? *)
 let is_cond_assign prem =
   match prem.it with
-  | LetPr (_, {it = CaseE (_, _); _}, _) -> true
+  | LetPr (_, {it = CaseE (_, _, _); _}, _) -> true
   | _ -> false
 
 (* is this assign premise encoded premise for popping one value? *)
@@ -272,7 +272,14 @@ let is_not_lhs e = match e.it with
 
 (* Hack to handle RETURN_CALL_ADDR, eventually should be removed *)
 let is_atomic_lhs e = match e.it with
-| CaseE (op, { it = CaseE (Xl.Mixop.(Infix (Arg (), {it = Arrow; _}, Arg ())), { it = TupE [ { it = IterE (_, (ListN _, _)); _} ; { it = IterE (_, (ListN _, _)); _} ] ; _} ); _ }) ->
+| CaseE (op,
+    { it = CaseE (
+        Xl.Mixop.(Infix (Arg (), {it = Arrow; _}, Arg ())),
+        { it = TupE [ { it = IterE (_, (ListN _, _)); _} ; { it = IterE (_, (ListN _, _)); _} ] ; _},
+        _
+      ); _ },
+    _
+  ) ->
   Il2al_util.case_head op = "FUNC"
 | _ -> false
 

@@ -69,8 +69,8 @@ and free_exp e =
   | OptE eo -> free_opt free_exp eo
   | TupE es | ListE es -> free_list free_exp es
   | UpdE (e1, p, e2) | ExtE (e1, p, e2) -> free_exp e1 ++ free_path p ++ free_exp e2
-  | StrE efs -> free_list free_expfield efs
-  | DotE (e1, _) | CaseE (_, e1) | UncaseE (e1, _) -> free_exp e1
+  | StrE (efs, _) -> free_list free_expfield efs
+  | DotE (e1, _) | CaseE (_, e1, _) | UncaseE (e1, _) -> free_exp e1
   | CallE (x, as1) -> free_defid x ++ free_args as1
   | IterE (e1, ite) -> (free_exp e1 -- bound_iterexp ite) ++ free_iterexp ite
   | CvtE (e1, _nt1, _nt2) -> free_exp e1

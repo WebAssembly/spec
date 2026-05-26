@@ -207,8 +207,8 @@ and is_value_exp e =
   | BoolE _ | NumE _ | TextE _ -> true
   | ListE es | TupE es -> List.for_all is_value_exp es
   | OptE None -> true
-  | OptE (Some e) | CaseE (_, e) | SubE (e, _, _) -> is_value_exp e
-  | StrE efs -> List.for_all (fun (_, e) -> is_value_exp e) efs
+  | OptE (Some e) | CaseE (_, e, Checked) | SubE (e, _, _) -> is_value_exp e
+  | StrE (efs, Checked) -> List.for_all (fun (_, e) -> is_value_exp e) efs
   | _ -> false
 
 and reduce_exp env e : exp result =
@@ -297,14 +297,16 @@ and reduce_exp env e : exp result =
         then reduce_exp env (CatE (e', e2') $> e')
         else Ok (ExtE (e', p', e2') $> e')
       )
-  | StrE efs ->
+  | StrE (efs, ch) ->
     let tfs = as_struct_typ env e.note e.at in
-    let** efs' = map_results (reduce_expfield env e.note tfs) efs in
-    Ok (StrE efs' $> e)
+    let** ef_chs' = map_results (reduce_expfield env e.note tfs ch) efs in
+    let efs', chs' = List.split ef_chs' in
+    let ch' = if List.for_all ((=) Checked) chs' then Checked else Unchecked in
+    Ok (StrE (efs', ch') $> e)
   | DotE (e1, atom) ->
     let** e1' = reduce_exp env e1 in
     (match e1'.it with
-    | StrE efs ->
+    | StrE (efs, Checked) ->
       Ok (snd (List.find (fun (atomN, _) -> Atom.eq atomN atom) efs))
     | _ -> Ok (DotE (e1', atom) $> e)
     )
@@ -316,15 +318,16 @@ and reduce_exp env e : exp result =
     | ListE es1, ListE es2 -> Ok (ListE (es1 @ es2) $> e)
     | OptE None, OptE _ -> Ok e2'
     | OptE _, OptE None -> Ok e1'
-    | StrE efs1, StrE efs2 ->
+    | StrE (efs1, Checked), StrE (efs2, Checked) ->
       let tfs = as_struct_typ env e.note e.at in
       let merge ((atom1, e1), (atom2, e2)) =
         assert (Atom.eq atom1 atom2);
-        reduce_expfield env e.note tfs (atom1, CompE (e1, e2) $> e1)
+        reduce_expfield env e.note tfs Checked (atom1, CompE (e1, e2) $> e1)
       in
       assert (List.length efs1 = List.length efs2);
-      let** efs' = map_results merge (List.combine efs1 efs2) in
-      Ok (StrE efs' $> e)
+      let** ef_chs' = map_results merge (List.combine efs1 efs2) in
+      let efs', _chs = List.split ef_chs' in
+      Ok (StrE (efs', Checked) $> e)
     | _ -> Ok (CompE (e1', e2') $> e)
     )
   | MemE (e1, e2) ->
@@ -417,8 +420,9 @@ and reduce_exp env e : exp result =
   | UncaseE (e1, mixop) ->
     let** e1' = reduce_exp env e1 in
     (match e1'.it with
-    | CaseE (mixop', e11') when Mixop.eq mixop mixop' -> Ok e11'
-    | CaseE _ -> Error (UncaseE (e1', mixop) $> e)
+    | CaseE (mixop', e11', Checked) when Mixop.eq mixop mixop' -> Ok e11'
+    | CaseE (mixop', _, _) when not (Mixop.eq mixop mixop') ->
+      Error (UncaseE (e1', mixop) $> e)
     | _ -> Ok (UncaseE (e1', mixop) $> e)
     )
   | OptE eo ->
@@ -455,12 +459,15 @@ and reduce_exp env e : exp result =
     | OptE _, OptE _ -> Error (CatE (e1', e2') $> e)
     | _ -> Ok (CatE (e1', e2') $> e)
     )
-  | CaseE (op, e1) ->
+  | CaseE (op, e1, Unchecked) ->
     let tcs = as_variant_typ env e.note e.at in
     let _t, _qs, prems = find_typcase e.note tcs op e.at in
     let** e1' = reduce_exp env e1 in
-    let** _b = reduce_prems env Subst.empty prems in
-    Ok (CaseE (op, e1') $> e)
+    let** so = reduce_prems env Subst.empty prems in
+    Ok (CaseE (op, e1', if so = None then Unchecked else Checked) $> e)
+  | CaseE (op, e1, Checked) ->
+    let** e1' = reduce_exp env e1 in
+    Ok (CaseE (op, e1', Checked) $> e)
   | CvtE (e1, nt1, nt2) ->
     let** e1' = reduce_exp env e1 in
     (match e1'.it with
@@ -493,7 +500,7 @@ and reduce_exp env e : exp result =
           Ok (s1', s2', eI'::res')
         ) (Ok (Subst.empty, Subst.empty, [])) es' (List.combine xts1 xts2)
       in Ok (TupE (List.rev res') $> e)
-    | StrE efs' ->
+    | StrE (efs', _ch) ->
       let tfs1 = as_struct_typ env t1' t1.at in
       let tfs2 = as_struct_typ env t2' t2.at in
       let efs'' =
@@ -502,13 +509,14 @@ and reduce_exp env e : exp result =
           assert (Atom.eq atomI atom2I);
           (atomI, SubE (eI, t1I, t2I) $$ eI.at % t2I)
         ) efs' (List.combine tfs1 tfs2)
-      in reduce_exp env (StrE efs'' $> e)
-    | CaseE (op, e11') ->
+      in reduce_exp env (StrE (efs'', Unchecked) $> e)
+    | CaseE (op, e11', _ch) ->
       let tcs1 = as_variant_typ env t1' t1.at in
       let tcs2 = as_variant_typ env t2' t2.at in
       let t1', _qs, _prems = find_typcase t1' tcs1 op t1.at in
       let t2', _qs, _prems = find_typcase t2' tcs2 op t2.at in
-      reduce_exp env (CaseE (op, SubE (e11', t1', t2') $$ e11'.at % t2') $> e)
+      reduce_exp env
+        (CaseE (op, SubE (e11', t1', t2') $$ e11'.at % t2', Unchecked) $> e)
     | _ when is_head_normal_exp e1' ->
       Ok {e1' with note = e.note}
     | _ -> Ok (SubE (e1', t1', t2') $> e)
@@ -526,11 +534,16 @@ and reduce_iterexp env (iter, xes) : iterexp result =
   let** es' = map_results (reduce_exp env) (List.map snd xes) in
   Ok (iter', List.map2 (fun (xI, _) eI' -> xI, eI') xes es')
 
-and reduce_expfield env t tfs (atom, e) : expfield result =
-  let _t, _qs, prems = find_typfield t tfs atom atom.at in
-  let** e' = reduce_exp env e in
-  let** _b = reduce_prems env Subst.empty prems in
-  Ok (atom, e')
+and reduce_expfield env t tfs ch (atom, e) : (expfield * check) result =
+  match ch with
+  | Unchecked ->
+    let _t, _qs, prems = find_typfield t tfs atom atom.at in
+    let** e' = reduce_exp env e in
+    let** so = reduce_prems env Subst.empty prems in
+    Ok ((atom, e'), if so = None then Unchecked else Checked)
+  | Checked ->
+    let** e' = reduce_exp env e in
+    Ok ((atom, e'), Checked)
 
 and reduce_path env e p k : exp result =
   match p.it with
@@ -574,16 +587,19 @@ and reduce_path env e p k : exp result =
   | DotP (p1, atom) ->
     let k' e' p1' =
       match e'.it with
-      | StrE efs ->
+      | StrE (efs, Checked) ->
         let tfs = as_struct_typ env e'.note e'.at in
-        let** efs' =
+        let** ef_chs' =
           map_results (fun (atomI, eI) ->
             if Eq.eq_atom atomI atom then
               let** eI' = k eI p1' in
-              reduce_expfield env e'.note tfs (atomI, eI')
-            else Ok (atomI, eI)
+              reduce_expfield env e'.note tfs Unchecked (atomI, eI')
+            else Ok ((atomI, eI), Checked)
           ) efs
-        in Ok (StrE efs' $> e')
+        in
+        let efs', chs' = List.split ef_chs' in
+        let ch' = if List.for_all ((=) Checked) chs' then Checked else Unchecked in
+        Ok (StrE (efs', ch') $> e')
       | _ ->
         k e' (DotP (p1', atom) $> p)
     in
@@ -633,6 +649,10 @@ and reduce_exp_call env id args clauses at : exp option result =
         | ok -> ok
 
 and reduce_prems env s prems : subst option result =
+  Debug.(log "il.reduce_prems"
+    (fun _ -> fmt "%s" (list il_prem prems))
+    (fun r -> fmt "%s" (il_opt_result il_subst r))
+  ) @@ fun _ ->
   match prems with
   | [] -> Ok (Some s)
   | prem::prems ->
@@ -890,20 +910,30 @@ and match_exp' env s e1 e2 : subst option result =
     let** s'' = match_path env s' p1 p2 in
     match_exp' env s'' e12 e22
 *)
-  | StrE efs1, StrE efs2 -> match_list match_expfield env s efs1 efs2
+  | StrE (efs1, Checked), StrE (efs2, _) ->
+    match_list match_expfield env s efs1 efs2
 (*
   | DotE (e11, atom1), DotE (e21, atom2) when Eq.eq_atom atom1 atom2 ->
     match_exp' env s e11 e21
   | LenE e11, LenE e21 -> match_exp' env s e11 e21
 *)
-  | CaseE (op1, e11), CaseE (op2, e21) when Eq.eq_mixop op1 op2 ->
-    match_exp' env s e11 e21
+  | CaseE (op1, _, _), CaseE (op2, e21, _) when Eq.eq_mixop op1 op2 ->
+    (* Beta-expand to allow unchecked e1 without losing checks *)
+    let** e11' = reduce_exp env (UncaseE (e1, op2) $> e21) in
+    match_exp' env s e11' e21
+  | _, CaseE (op2, e21, _)
+    when List.length (as_variant_typ env e2.note e2.at) = 1 ->
+    (* Beta-expand irrefutable case pattern *)
+    let** e11' = reduce_exp env (UncaseE (e1, op2) $> e21) in
+    match_exp' env s e11' e21
 (*
   | CallE (id1, args1), CallE (id2, args2) when id1.it = id2.it ->
     match_list match_arg env s args1 args2
 *)
   | _, UncaseE (e21, mixop) ->
-    match_exp' env s (CaseE (mixop, e1) $$ e1.at % e21.note) e21
+    let** e1' =
+      reduce_exp env (CaseE (mixop, e1, Unchecked) $$ e1.at % e21.note) in
+    match_exp' env s e1' e21
   | _, ProjE (e21, 0) ->  (* only valid on unary tuples! *)
     match_exp' env s (TupE [e1] $$ e1.at % e21.note) e21
 (*
@@ -983,7 +1013,7 @@ and match_exp' env s e1 e2 : subst option result =
         | BoolE _, BoolT
         | NumE _, NumT _
         | TextE _, TextT -> Ok true
-        | CaseE (op, _), VarT _ ->
+        | CaseE (op, _, _), VarT _ ->
           let** dt = reduce_typdef env t21 in
           (match dt.it with
           | VariantT tcs ->

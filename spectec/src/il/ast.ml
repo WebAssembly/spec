@@ -49,6 +49,7 @@ and typcase = mixop * (typ * quant list * prem list) * hint list  (* variant cas
 and unop = [Bool.unop | Num.unop]
 and binop = [Bool.binop | Num.binop]
 and cmpop = [Bool.cmpop | Num.cmpop]
+and check = Unchecked | Checked
 
 and exp = (exp', typ) note_phrase
 and exp' =
@@ -61,11 +62,11 @@ and exp' =
   | CmpE of cmpop * optyp * exp * exp       (* exp cmpop exp *)
   | TupE of exp list                        (* ( exp* ) *)
   | ProjE of exp * int                      (* exp.i *)
-  | CaseE of mixop * exp                    (* atom exp? *)
+  | CaseE of mixop * exp * check            (* atom exp? *)
   | UncaseE of exp * mixop                  (* exp!mixop *)
   | OptE of exp option                      (* exp? *)
   | TheE of exp                             (* exp! *)
-  | StrE of expfield list                   (* { expfield* } *)
+  | StrE of expfield list * check           (* { expfield* } *)
   | DotE of exp * atom                      (* exp.atom *)
   | CompE of exp * exp                      (* exp @ exp *)
   | ListE of exp list                       (* [exp ... exp] *)

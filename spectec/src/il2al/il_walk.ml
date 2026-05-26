@@ -35,7 +35,7 @@ let rec transform_exp t e =
     | SliceE (e1, e2, e3) -> SliceE (t_exp e1, t_exp e2, t_exp e3)
     | UpdE (e1, p, e2) -> UpdE (t_exp e1, p, t_exp e2)
     | ExtE (e1, p, e2) -> ExtE (t_exp e1, p, t_exp e2)
-    | StrE efs -> StrE (List.map (fun (a, e) -> (a, t_exp e)) efs)
+    | StrE (efs, ch) -> StrE (List.map (fun (a, e) -> (a, t_exp e)) efs, ch)
     | DotE (e1, atom) -> DotE (t_exp e1, atom)
     | CompE (e1, e2) -> CompE (t_exp e1, t_exp e2)
     | LenE e1 -> LenE (t_exp e1)
@@ -50,7 +50,7 @@ let rec transform_exp t e =
     | LiftE e1 -> LiftE (t_exp e1)
     | CatE (e1, e2) -> CatE (t_exp e1, t_exp e2)
     | MemE (e1, e2) -> MemE (t_exp e1, t_exp e2)
-    | CaseE (mixop, e1) -> CaseE (mixop, t_exp e1)
+    | CaseE (mixop, e1, ch) -> CaseE (mixop, t_exp e1, ch)
     | SubE (e1, _t1, t2) -> SubE (t_exp e1, _t1, t2)
   in
   f { e with it }

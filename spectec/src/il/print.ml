@@ -112,6 +112,10 @@ and string_of_typcase ?(layout = `H) (op, (t, qs, prems), _hints) =
 
 (* Expressions *)
 
+and string_of_check = function
+  | Unchecked -> ""
+  | Checked -> "^"
+
 and string_of_exp e =
   (if !print_notes then "(" else "") ^
   (match e.it with
@@ -134,7 +138,9 @@ and string_of_exp e =
   | ExtE (e1, p, e2) ->
     string_of_exp e1 ^
       "[" ^ string_of_path p ^ " =++ " ^ string_of_exp e2 ^ "]"
-  | StrE efs -> "{" ^ concat ", " (List.map string_of_expfield efs) ^ "}"
+  | StrE (efs, ch) ->
+    string_of_check ch ^
+    "{" ^ concat ", " (List.map string_of_expfield efs) ^ "}"
   | DotE (e1, atom) ->
     string_of_exp e1 ^ "." ^
     string_of_mixop (Mixop.Atom atom) ^ "_" ^ string_of_typ_name e1.note
@@ -153,7 +159,8 @@ and string_of_exp e =
   | ListE es -> "[" ^ string_of_exps " " es ^ "]"
   | LiftE e1 -> "lift(" ^ string_of_exp e1 ^ ")"
   | CatE (e1, e2) -> string_of_exp e1 ^ " ++ " ^ string_of_exp e2
-  | CaseE (op, e1) ->
+  | CaseE (op, e1, ch) ->
+    string_of_check ch ^
     string_of_mixop op ^ "_" ^ string_of_typ_name e.note ^ string_of_exp_args e1
   | CvtE (e1, nt1, nt2) ->
     "(" ^ string_of_exp e1 ^ " : " ^ string_of_numtyp nt1 ^ " <:> " ^ string_of_numtyp nt2 ^ ")"
