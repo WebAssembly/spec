@@ -6,31 +6,42 @@ open Ds
 
 module FuncMap = Map.Make (String)
 
+(* predicate: r's principal reftype matches target rt *)
 let ref_ok =
   (* TODO: some / none *)
   let null = some "NULL" in
   let nonull = none "NULL" in
 
+  let get_principal = function
+    (* null *)
+    | CaseV ("REF.NULL_ADDR", []) -> CaseV ("REF", [ null; nullary "BOT"])
+    (* i31 *)
+    | CaseV ("REF.I31_NUM", [ _ ]) -> CaseV ("REF", [ nonull; nullary "I31"])
+    (* host *)
+    | CaseV ("REF.HOST_ADDR", [ _ ]) -> CaseV ("REF", [ nonull; nullary "ANY"])
+    (* exception *)
+    | CaseV ("REF.EXN_ADDR", [ _ ]) -> CaseV ("REF", [ nonull; nullary "EXN"])
+    (* array/func/struct addr *)
+    | CaseV (name, [ NumV (`Nat i) ])
+      when String.starts_with ~prefix:"REF." name && String.ends_with ~suffix:"_ADDR" name ->
+      let field_name = String.sub name 4 (String.length name - 9) in
+      let object_ = listv_nth (Ds.Store.access (field_name ^ "S")) (Z.to_int i) in
+      let dt = strv_access "TYPE" object_ in
+      CaseV ("REF", [ nonull; dt])
+    (* extern *)
+    (* TODO: check null *)
+    | CaseV ("REF.EXTERN", [ _ ]) -> CaseV ("REF", [ nonull; nullary "EXTERN"])
+    | v -> Numerics.error_values "$Ref_ok" [v]
+  in
+
   function
-  (* null *)
-  | [CaseV ("REF.NULL_ADDR", [])] -> CaseV ("REF", [ null; nullary "BOT"])
-  (* i31 *)
-  | [CaseV ("REF.I31_NUM", [ _ ])] -> CaseV ("REF", [ nonull; nullary "I31"])
-  (* host *)
-  | [CaseV ("REF.HOST_ADDR", [ _ ])] -> CaseV ("REF", [ nonull; nullary "ANY"])
-  (* exception *)
-  | [CaseV ("REF.EXN_ADDR", [ _ ])] -> CaseV ("REF", [ nonull; nullary "EXN"])
-  (* array/func/struct addr *)
-  | [CaseV (name, [ NumV (`Nat i) ])]
-  when String.starts_with ~prefix:"REF." name && String.ends_with ~suffix:"_ADDR" name ->
-    let field_name = String.sub name 4 (String.length name - 9) in
-    let object_ = listv_nth (Ds.Store.access (field_name ^ "S")) (Z.to_int i) in
-    let dt = strv_access "TYPE" object_ in
-    CaseV ("REF", [ nonull; dt])
-  (* extern *)
-  (* TODO: check null *)
-  | [CaseV ("REF.EXTERN", [ _ ])] -> CaseV ("REF", [ nonull; nullary "EXTERN"])
-  | vs -> Numerics.error_values "$Reftype" vs
+  | [ r; rt ] ->
+    (try
+      let p = Construct.al_to_reftype (get_principal r) in
+      let t = Construct.al_to_reftype rt in
+      boolV (Match.match_reftype [] p t)
+    with exn -> raise (Exception.Invalid (exn, Printexc.get_raw_backtrace ())))
+  | vs -> Numerics.error_values "$Ref_ok" vs
 
 let module_ok v =
   if !Construct.version <> 3 then failwith "This hardcoded function ($Module_ok) should be only called with test version 3.0";
