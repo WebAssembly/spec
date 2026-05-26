@@ -65,6 +65,7 @@ rule Ref_ok/extern:
 rule Ref_ok/sub:
   s |- ref : rt
   -- Ref_ok: s |- ref : rt'
+  -- Reftype_ok: {} |- rt : OK
   -- Reftype_sub: {} |- rt' <: rt
 
 

@@ -17538,6 +17538,8 @@ The reference value :math:`{\mathit{ref}}` is :ref:`valid <valid-val>` with the 
 
       * The reference value :math:`{\mathit{ref}}` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{rt}'}`.
 
+      * Under the context :math:`\{ \mathsf{return}~\epsilon \}`, the reference type :math:`{\mathit{rt}}` is :ref:`valid <valid-val>`.
+
       * The reference type :math:`{\mathit{rt}'}` :ref:`matches <match>` the reference type :math:`{\mathit{rt}}`.
 
 
@@ -17610,6 +17612,8 @@ The reference value :math:`{\mathit{ref}}` is :ref:`valid <valid-val>` with the 
 
 
    * The reference value :math:`{\mathit{ref}}` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{rt}'}`.
+
+   * Under the context :math:`\{ \mathsf{return}~\epsilon \}`, the reference type :math:`{\mathit{rt}}` is :ref:`valid <valid-val>`.
 
    * The reference type :math:`{\mathit{rt}'}` :ref:`matches <match>` the reference type :math:`{\mathit{rt}}`.
 
@@ -18441,7 +18445,7 @@ The state :math:`(s, f)` is :ref:`valid <valid-val>` with the context :math:`C` 
 
 
 
-The configuration :math:`z~;~{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` if:
+The configuration :math:`z~;~{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` with the result type :math:`{t^\ast}` if:
 
 
    * The state :math:`z` is :ref:`valid <valid-val>` with the context :math:`C`.
@@ -29651,6 +29655,7 @@ Ref_ok
     - ref' is not REF.NULL_ADDR.
   - Or:
     - ref is valid with the reference type rt'.
+    - Under the context { RETURN: ?() }, rt is valid.
     - rt' matches rt.
 
 Ref_ok/null
@@ -29689,6 +29694,7 @@ Ref_ok/extern
 Ref_ok/sub
 - the reference value ref is valid with the reference type rt if:
   - ref is valid with the reference type rt'.
+  - Under the context { RETURN: ?() }, rt is valid.
   - rt' matches rt.
 
 Val_ok
@@ -30112,9 +30118,9 @@ State_ok
   - the frame f is valid with C.
 
 Config_ok
-- the configuration z ; instr* is valid if:
+- the configuration z ; instr* is valid with the result type t* if:
   - the state z is valid with the context C.
-  - the expression instr* is valid with the result type t*.
+  - the expression instr* is valid with t*.
 
 NotationTypingInstrScheme
 - the instruction sequence [instr] is valid with the instruction type valtype* -> valtype'* if:

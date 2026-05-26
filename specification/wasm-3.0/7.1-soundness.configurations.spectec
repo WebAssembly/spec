@@ -319,7 +319,7 @@ rule Extend_store:
 relation Localval_ok: store |- val? : localtype
 relation Frame_ok: store |- frame : context
 relation State_ok: |- state : context
-relation Config_ok: |- config : OK
+relation Config_ok: |- config : resulttype
 
 rule Localval_ok/set:
   s |- val : SET t
@@ -339,6 +339,6 @@ rule State_ok:
   -- Frame_ok: s |- f : C
 
 rule Config_ok:
-  |- z; instr* : OK
+  |- z; instr* : t*
   -- State_ok: |- z : C
   -- Expr_ok: C |- instr* : t*

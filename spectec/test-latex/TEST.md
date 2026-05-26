@@ -9549,6 +9549,8 @@ $$
 \frac{
 s \vdash {\mathit{ref}} : {\mathit{rt}'}
  \qquad
+\{  \} \vdash {\mathit{rt}} : \mathsf{ok}
+ \qquad
 \{  \} \vdash {\mathit{rt}'} \leq {\mathit{rt}}
 }{
 s \vdash {\mathit{ref}} : {\mathit{rt}}
@@ -14802,7 +14804,7 @@ $\boxed{{\mathit{store}} \vdash {\mathit{frame}} : {\mathit{context}}}$
 
 $\boxed{{\vdash}\, {\mathit{state}} : {\mathit{context}}}$
 
-$\boxed{{\vdash}\, {\mathit{config}} : \mathsf{ok}}$
+$\boxed{{\vdash}\, {\mathit{config}} : {\mathit{resulttype}}}$
 
 $$
 \begin{array}{@{}c@{}}\displaystyle
@@ -14858,7 +14860,7 @@ $$
  \qquad
 C \vdash {{\mathit{instr}}^\ast} : {t^\ast}
 }{
-{\vdash}\, z ; {{\mathit{instr}}^\ast} : \mathsf{ok}
+{\vdash}\, z ; {{\mathit{instr}}^\ast} : {t^\ast}
 } \, {[\textsc{\scriptsize Config\_ok}]}
 \qquad
 \end{array}

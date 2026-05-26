@@ -6377,10 +6377,11 @@ relation Ref_ok: `%|-%:%`(store, ref, reftype)
     -- Ref_ok: `%|-%:%`(s, ref, REF_reftype(?(), ANY_heaptype))
     -- if (ref =/= `REF.NULL_ADDR`_ref)
 
-  ;; ../../../../specification/wasm-latest/4.1-execution.values.spectec:65.1-68.34
+  ;; ../../../../specification/wasm-latest/4.1-execution.values.spectec:65.1-69.34
   rule sub{s : store, ref : ref, rt : reftype, rt' : reftype}:
     `%|-%:%`(s, ref, rt)
     -- Ref_ok: `%|-%:%`(s, ref, rt')
+    -- Reftype_ok: `%|-%:OK`({TYPES [], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [], RETURN ?(), REFS [], RECS []}, rt)
     -- Reftype_sub: `%|-%<:%`({TYPES [], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [], RETURN ?(), REFS [], RECS []}, rt', rt)
 }
 
@@ -6422,34 +6423,34 @@ relation Fieldval_ok: `%|-%:%`(store, fieldval, storagetype)
 ;; ../../../../specification/wasm-latest/4.1-execution.values.spectec
 rec {
 
-;; ../../../../specification/wasm-latest/4.1-execution.values.spectec:103.1-103.84
+;; ../../../../specification/wasm-latest/4.1-execution.values.spectec:104.1-104.84
 relation Externaddr_ok: `%|-%:%`(store, externaddr, externtype)
-  ;; ../../../../specification/wasm-latest/4.1-execution.values.spectec:105.1-107.28
+  ;; ../../../../specification/wasm-latest/4.1-execution.values.spectec:106.1-108.28
   rule tag{s : store, a : addr, taginst : taginst}:
     `%|-%:%`(s, TAG_externaddr(a), TAG_externtype(taginst.TYPE_taginst))
     -- if (s.TAGS_store[a] = taginst)
 
-  ;; ../../../../specification/wasm-latest/4.1-execution.values.spectec:109.1-111.34
+  ;; ../../../../specification/wasm-latest/4.1-execution.values.spectec:110.1-112.34
   rule global{s : store, a : addr, globalinst : globalinst}:
     `%|-%:%`(s, GLOBAL_externaddr(a), GLOBAL_externtype(globalinst.TYPE_globalinst))
     -- if (s.GLOBALS_store[a] = globalinst)
 
-  ;; ../../../../specification/wasm-latest/4.1-execution.values.spectec:113.1-115.28
+  ;; ../../../../specification/wasm-latest/4.1-execution.values.spectec:114.1-116.28
   rule mem{s : store, a : addr, meminst : meminst}:
     `%|-%:%`(s, MEM_externaddr(a), MEM_externtype(meminst.TYPE_meminst))
     -- if (s.MEMS_store[a] = meminst)
 
-  ;; ../../../../specification/wasm-latest/4.1-execution.values.spectec:117.1-119.32
+  ;; ../../../../specification/wasm-latest/4.1-execution.values.spectec:118.1-120.32
   rule table{s : store, a : addr, tableinst : tableinst}:
     `%|-%:%`(s, TABLE_externaddr(a), TABLE_externtype(tableinst.TYPE_tableinst))
     -- if (s.TABLES_store[a] = tableinst)
 
-  ;; ../../../../specification/wasm-latest/4.1-execution.values.spectec:121.1-123.30
+  ;; ../../../../specification/wasm-latest/4.1-execution.values.spectec:122.1-124.30
   rule func{s : store, a : addr, funcinst : funcinst}:
     `%|-%:%`(s, FUNC_externaddr(a), FUNC_externtype((funcinst.TYPE_funcinst : deftype <: typeuse)))
     -- if (s.FUNCS_store[a] = funcinst)
 
-  ;; ../../../../specification/wasm-latest/4.1-execution.values.spectec:125.1-128.37
+  ;; ../../../../specification/wasm-latest/4.1-execution.values.spectec:126.1-129.37
   rule sub{s : store, externaddr : externaddr, xt : externtype, xt' : externtype}:
     `%|-%:%`(s, externaddr, xt)
     -- Externaddr_ok: `%|-%:%`(s, externaddr, xt')
@@ -8512,10 +8513,10 @@ relation State_ok: `|-%:%`(state, context)
     -- Frame_ok: `%|-%:%`(s, f, C)
 
 ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
-relation Config_ok: `|-%:OK`(config)
+relation Config_ok: `|-%:%`(config, resulttype)
   ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
-  rule _{z : state, `instr*` : instr*, C : context, `t*` : valtype*}:
-    `|-%:OK`(`%;%`_config(z, instr*{instr <- `instr*`}))
+  rule _{z : state, `instr*` : instr*, `t*` : valtype*, C : context}:
+    `|-%:%`(`%;%`_config(z, instr*{instr <- `instr*`}), `%`_resulttype(t*{t <- `t*`}))
     -- State_ok: `|-%:%`(z, C)
     -- Expr_ok: `%|-%:%`(C, instr*{instr <- `instr*`}, `%`_resulttype(t*{t <- `t*`}))
 
