@@ -33,33 +33,33 @@ rule Vec_ok:
 
 
 rule Ref_ok/null:
-  s |- REF.NULL_ADDR : (REF NULL BOT)
+  s |- REF.NULL_ADDR : REF NULL BOT
 
 rule Ref_ok/i31:
-  s |- REF.I31_NUM i : (REF I31)
+  s |- REF.I31_NUM i : REF I31
 
 rule Ref_ok/struct:
-  s |- REF.STRUCT_ADDR a : (REF dt)
+  s |- REF.STRUCT_ADDR a : REF dt
   -- if s.STRUCTS[a].TYPE = dt
 
 rule Ref_ok/array:
-  s |- REF.ARRAY_ADDR a : (REF dt)
+  s |- REF.ARRAY_ADDR a : REF dt
   -- if s.ARRAYS[a].TYPE = dt
 
 rule Ref_ok/func:
-  s |- REF.FUNC_ADDR a : (REF dt)
+  s |- REF.FUNC_ADDR a : REF dt
   -- if s.FUNCS[a].TYPE = dt
 
 rule Ref_ok/exn:
-  s |- REF.EXN_ADDR a : (REF EXN)
+  s |- REF.EXN_ADDR a : REF EXN
   -- if s.EXNS[a] = exn
 
 rule Ref_ok/host:
-  s |- REF.HOST_ADDR a : (REF ANY)
+  s |- REF.HOST_ADDR a : REF ANY
 
 rule Ref_ok/extern:
-  s |- REF.EXTERN ref : (REF EXTERN)
-  -- Ref_ok: s |- ref : (REF ANY)
+  s |- REF.EXTERN ref : REF EXTERN
+  -- Ref_ok: s |- ref : REF ANY
   -- if ref =/= REF.NULL_ADDR
 
 rule Ref_ok/sub:
