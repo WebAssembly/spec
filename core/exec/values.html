@@ -5,11 +5,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Values &#8212; WebAssembly 3.0 (2026-05-14)</title>
+    <title>Values &#8212; WebAssembly 3.0 (2026-05-26)</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=686e5160" />
     <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=057308f9" />
-    <script src="../_static/documentation_options.js?v=f7bb093f"></script>
+    <script src="../_static/documentation_options.js?v=235bd9a3"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>window.MathJax = {"tex": {"maxBuffer": 30720, "macros": {"multicolumn": ["", 2]}}, "options": {"menuOptions": {"settings": {"enrich": false}}}}</script>
@@ -123,7 +123,7 @@ s \href{../exec/values.html#valid-vec}{\vdash} {\mathit{vt}}{.}\href{../syntax/i
 \[\begin{array}{&#64;{}c&#64;{}}\displaystyle
 \frac{
 }{
-s \href{../exec/values.html#valid-ref}{\vdash} \href{../exec/runtime.html#syntax-ref}{\mathsf{ref{.}null}} : (\href{../syntax/types.html#syntax-reftype}{\mathsf{ref}}~\href{../syntax/types.html#syntax-reftype}{\mathsf{null}}~\href{../valid/conventions.html#syntax-valtype-ext}{\mathsf{bot}})
+s \href{../exec/values.html#valid-ref}{\vdash} \href{../exec/runtime.html#syntax-ref}{\mathsf{ref{.}null}} : \href{../syntax/types.html#syntax-reftype}{\mathsf{ref}}~\href{../syntax/types.html#syntax-reftype}{\mathsf{null}}~\href{../valid/conventions.html#syntax-valtype-ext}{\mathsf{bot}}
 }
 \qquad
 \end{array}\]</div>
@@ -135,7 +135,7 @@ s \href{../exec/values.html#valid-ref}{\vdash} \href{../exec/runtime.html#syntax
 \[\begin{array}{&#64;{}c&#64;{}}\displaystyle
 \frac{
 }{
-s \href{../exec/values.html#valid-ref}{\vdash} \href{../exec/runtime.html#syntax-ref}{\mathsf{ref{.}i\scriptstyle31}}~i : (\href{../syntax/types.html#syntax-reftype}{\mathsf{ref}}~\href{../syntax/types.html#syntax-heaptype}{\mathsf{i\scriptstyle31}})
+s \href{../exec/values.html#valid-ref}{\vdash} \href{../exec/runtime.html#syntax-ref}{\mathsf{ref{.}i\scriptstyle31}}~i : \href{../syntax/types.html#syntax-reftype}{\mathsf{ref}}~\href{../syntax/types.html#syntax-heaptype}{\mathsf{i\scriptstyle31}}
 }
 \qquad
 \end{array}\]</div>
@@ -154,7 +154,7 @@ s \href{../exec/values.html#valid-ref}{\vdash} \href{../exec/runtime.html#syntax
 \frac{
 s{.}\href{../exec/runtime.html#syntax-store}{\mathsf{structs}}{}[a]{.}\href{../exec/runtime.html#syntax-structinst}{\mathsf{type}} = {\mathit{dt}}
 }{
-s \href{../exec/values.html#valid-ref}{\vdash} \href{../exec/runtime.html#syntax-ref}{\mathsf{ref{.}struct}}~a : (\href{../syntax/types.html#syntax-reftype}{\mathsf{ref}}~{\mathit{dt}})
+s \href{../exec/values.html#valid-ref}{\vdash} \href{../exec/runtime.html#syntax-ref}{\mathsf{ref{.}struct}}~a : \href{../syntax/types.html#syntax-reftype}{\mathsf{ref}}~{\mathit{dt}}
 }
 \qquad
 \end{array}\]</div>
@@ -173,7 +173,7 @@ s \href{../exec/values.html#valid-ref}{\vdash} \href{../exec/runtime.html#syntax
 \frac{
 s{.}\href{../exec/runtime.html#syntax-store}{\mathsf{arrays}}{}[a]{.}\href{../exec/runtime.html#syntax-arrayinst}{\mathsf{type}} = {\mathit{dt}}
 }{
-s \href{../exec/values.html#valid-ref}{\vdash} \href{../exec/runtime.html#syntax-ref}{\mathsf{ref{.}array}}~a : (\href{../syntax/types.html#syntax-reftype}{\mathsf{ref}}~{\mathit{dt}})
+s \href{../exec/values.html#valid-ref}{\vdash} \href{../exec/runtime.html#syntax-ref}{\mathsf{ref{.}array}}~a : \href{../syntax/types.html#syntax-reftype}{\mathsf{ref}}~{\mathit{dt}}
 }
 \qquad
 \end{array}\]</div>
@@ -191,7 +191,7 @@ s \href{../exec/values.html#valid-ref}{\vdash} \href{../exec/runtime.html#syntax
 \frac{
 s{.}\href{../exec/runtime.html#syntax-store}{\mathsf{exns}}{}[a] = {\mathit{exn}}
 }{
-s \href{../exec/values.html#valid-ref}{\vdash} \href{../exec/runtime.html#syntax-ref}{\mathsf{ref{.}exn}}~a : (\href{../syntax/types.html#syntax-reftype}{\mathsf{ref}}~\href{../syntax/types.html#syntax-heaptype}{\mathsf{exn}})
+s \href{../exec/values.html#valid-ref}{\vdash} \href{../exec/runtime.html#syntax-ref}{\mathsf{ref{.}exn}}~a : \href{../syntax/types.html#syntax-reftype}{\mathsf{ref}}~\href{../syntax/types.html#syntax-heaptype}{\mathsf{exn}}
 }
 \qquad
 \end{array}\]</div>
@@ -210,7 +210,7 @@ s \href{../exec/values.html#valid-ref}{\vdash} \href{../exec/runtime.html#syntax
 \frac{
 s{.}\href{../exec/runtime.html#syntax-store}{\mathsf{funcs}}{}[a]{.}\href{../exec/runtime.html#syntax-funcinst}{\mathsf{type}} = {\mathit{dt}}
 }{
-s \href{../exec/values.html#valid-ref}{\vdash} \href{../exec/runtime.html#syntax-ref}{\mathsf{ref{.}func}}~a : (\href{../syntax/types.html#syntax-reftype}{\mathsf{ref}}~{\mathit{dt}})
+s \href{../exec/values.html#valid-ref}{\vdash} \href{../exec/runtime.html#syntax-ref}{\mathsf{ref{.}func}}~a : \href{../syntax/types.html#syntax-reftype}{\mathsf{ref}}~{\mathit{dt}}
 }
 \qquad
 \end{array}\]</div>
@@ -222,7 +222,7 @@ s \href{../exec/values.html#valid-ref}{\vdash} \href{../exec/runtime.html#syntax
 \[\begin{array}{&#64;{}c&#64;{}}\displaystyle
 \frac{
 }{
-s \href{../exec/values.html#valid-ref}{\vdash} \href{../exec/runtime.html#syntax-ref}{\mathsf{ref{.}host}}~a : (\href{../syntax/types.html#syntax-reftype}{\mathsf{ref}}~\href{../syntax/types.html#syntax-heaptype}{\mathsf{any}})
+s \href{../exec/values.html#valid-ref}{\vdash} \href{../exec/runtime.html#syntax-ref}{\mathsf{ref{.}host}}~a : \href{../syntax/types.html#syntax-reftype}{\mathsf{ref}}~\href{../syntax/types.html#syntax-heaptype}{\mathsf{any}}
 }
 \qquad
 \end{array}\]</div>
@@ -243,11 +243,11 @@ s \href{../exec/values.html#valid-ref}{\vdash} \href{../exec/runtime.html#syntax
 <div class="math notranslate nohighlight">
 \[\begin{array}{&#64;{}c&#64;{}}\displaystyle
 \frac{
-s \href{../exec/values.html#valid-ref}{\vdash} {\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}} : (\href{../syntax/types.html#syntax-reftype}{\mathsf{ref}}~\href{../syntax/types.html#syntax-heaptype}{\mathsf{any}})
+s \href{../exec/values.html#valid-ref}{\vdash} {\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}} : \href{../syntax/types.html#syntax-reftype}{\mathsf{ref}}~\href{../syntax/types.html#syntax-heaptype}{\mathsf{any}}
  \qquad
 {\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}} \neq \href{../exec/runtime.html#syntax-ref}{\mathsf{ref{.}null}}
 }{
-s \href{../exec/values.html#valid-ref}{\vdash} \href{../exec/runtime.html#syntax-ref}{\mathsf{ref{.}extern}}~{\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}} : (\href{../syntax/types.html#syntax-reftype}{\mathsf{ref}}~\href{../syntax/types.html#syntax-heaptype}{\mathsf{extern}})
+s \href{../exec/values.html#valid-ref}{\vdash} \href{../exec/runtime.html#syntax-ref}{\mathsf{ref{.}extern}}~{\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}} : \href{../syntax/types.html#syntax-reftype}{\mathsf{ref}}~\href{../syntax/types.html#syntax-heaptype}{\mathsf{extern}}
 }
 \qquad
 \end{array}\]</div>
@@ -258,6 +258,7 @@ s \href{../exec/values.html#valid-ref}{\vdash} \href{../exec/runtime.html#syntax
 <blockquote>
 <div><ul class="simple">
 <li><p>The <a class="reference internal" href="runtime.html#syntax-ref"><span class="std std-ref">reference value</span></a> <span class="math notranslate nohighlight">\({\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}}\)</span> is <a class="reference internal" href="#valid-ref"><span class="std std-ref">valid</span></a> with the <a class="reference internal" href="../syntax/types.html#syntax-reftype"><span class="std std-ref">reference type</span></a> <span class="math notranslate nohighlight">\({\mathit{rt}'}\)</span>.</p></li>
+<li><p>Under the context <span class="math notranslate nohighlight">\(\{ \href{../valid/conventions.html#context}{\mathsf{return}}~\epsilon \}\)</span>, the <a class="reference internal" href="../syntax/types.html#syntax-reftype"><span class="std std-ref">reference type</span></a> <span class="math notranslate nohighlight">\({\mathit{rt}}\)</span> is <a class="reference internal" href="../valid/types.html#valid-reftype"><span class="std std-ref">valid</span></a>.</p></li>
 <li><p>The <a class="reference internal" href="../syntax/types.html#syntax-reftype"><span class="std std-ref">reference type</span></a> <span class="math notranslate nohighlight">\({\mathit{rt}'}\)</span> <a class="reference internal" href="../valid/matching.html#match-reftype"><span class="std std-ref">matches</span></a> the <a class="reference internal" href="../syntax/types.html#syntax-reftype"><span class="std std-ref">reference type</span></a> <span class="math notranslate nohighlight">\({\mathit{rt}}\)</span>.</p></li>
 </ul>
 </div></blockquote>
@@ -265,6 +266,8 @@ s \href{../exec/values.html#valid-ref}{\vdash} \href{../exec/runtime.html#syntax
 \[\begin{array}{&#64;{}c&#64;{}}\displaystyle
 \frac{
 s \href{../exec/values.html#valid-ref}{\vdash} {\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}} : {\mathit{rt}'}
+ \qquad
+\{  \} \href{../valid/types.html#valid-reftype}{\vdash} {\mathit{rt}} : \href{../valid/types.html#valid-reftype}{\mathsf{ok}}
  \qquad
 \{  \} \href{../valid/matching.html#match-reftype}{\vdash} {\mathit{rt}'} \href{../valid/matching.html#match-reftype}{\leq} {\mathit{rt}}
 }{
