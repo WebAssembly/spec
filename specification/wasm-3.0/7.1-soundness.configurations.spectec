@@ -339,6 +339,6 @@ rule State_ok:
   -- Frame_ok: s |- f : C
 
 rule Config_ok:
-  |- z; instr* : t*
-  -- State_ok: |- z : C
-  -- Expr_ok: C |- instr* : t*
+  |- s; f; instr* : t*
+  -- State_ok: |- s; f : C
+  -- Expr_ok2: s; C |- instr* : t*

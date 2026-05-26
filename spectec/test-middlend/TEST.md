@@ -8034,10 +8034,10 @@ relation State_ok: `|-%:%`(state, context)
 ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
 relation Config_ok: `|-%:%`(config, resulttype)
   ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
-  rule _{z : state, `instr*` : instr*, `t*` : valtype*, C : context}:
-    `|-%:%`(`%;%`_config(z, instr*{instr <- `instr*`}), `%`_resulttype(t*{t <- `t*`}))
-    -- State_ok: `|-%:%`(z, C)
-    -- Expr_ok: `%|-%:%`(C, instr*{instr <- `instr*`}, `%`_resulttype(t*{t <- `t*`}))
+  rule _{s : store, f : frame, `instr*` : instr*, `t*` : valtype*, C : context}:
+    `|-%:%`(`%;%`_config(`%;%`_state(s, f), instr*{instr <- `instr*`}), `%`_resulttype(t*{t <- `t*`}))
+    -- State_ok: `|-%:%`(`%;%`_state(s, f), C)
+    -- Expr_ok2: `%;%|-%:%`(s, C, instr*{instr <- `instr*`}, `%`_resulttype(t*{t <- `t*`}))
 
 ;; ../../../../specification/wasm-latest/X.1-notation.syntax.spectec
 syntax A = nat
@@ -19885,10 +19885,10 @@ relation State_ok: `|-%:%`(state, context)
 ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
 relation Config_ok: `|-%:%`(config, resulttype)
   ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
-  rule _{z : state, `instr*` : instr*, `t*` : valtype*, C : context}:
-    `|-%:%`(`%;%`_config(z, instr*{instr <- `instr*`}), `%`_resulttype(t*{t <- `t*`}))
-    -- State_ok: `|-%:%`(z, C)
-    -- Expr_ok: `%|-%:%`(C, instr*{instr <- `instr*`}, `%`_resulttype(t*{t <- `t*`}))
+  rule _{s : store, f : frame, `instr*` : instr*, `t*` : valtype*, C : context}:
+    `|-%:%`(`%;%`_config(`%;%`_state(s, f), instr*{instr <- `instr*`}), `%`_resulttype(t*{t <- `t*`}))
+    -- State_ok: `|-%:%`(`%;%`_state(s, f), C)
+    -- Expr_ok2: `%;%|-%:%`(s, C, instr*{instr <- `instr*`}, `%`_resulttype(t*{t <- `t*`}))
 
 ;; ../../../../specification/wasm-latest/X.1-notation.syntax.spectec
 syntax A = nat
@@ -31976,10 +31976,10 @@ relation State_ok: `|-%:%`(state, context)
 ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
 relation Config_ok: `|-%:%`(config, resulttype)
   ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
-  rule _{z : state, `instr*` : instr*, `t*` : valtype*, C : context}:
-    `|-%:%`(`%;%`_config(z, instr*{instr <- `instr*`}), `%`_resulttype(t*{t <- `t*`}))
-    -- State_ok: `|-%:%`(z, C)
-    -- Expr_ok: `%|-%:%`(C, instr*{instr <- `instr*`}, `%`_resulttype(t*{t <- `t*`}))
+  rule _{s : store, f : frame, `instr*` : instr*, `t*` : valtype*, C : context}:
+    `|-%:%`(`%;%`_config(`%;%`_state(s, f), instr*{instr <- `instr*`}), `%`_resulttype(t*{t <- `t*`}))
+    -- State_ok: `|-%:%`(`%;%`_state(s, f), C)
+    -- Expr_ok2: `%;%|-%:%`(s, C, instr*{instr <- `instr*`}, `%`_resulttype(t*{t <- `t*`}))
 
 ;; ../../../../specification/wasm-latest/X.1-notation.syntax.spectec
 syntax A = nat

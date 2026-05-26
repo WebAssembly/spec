@@ -14840,11 +14840,11 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-{\vdash}\, z : C
+{\vdash}\, s ; f : C
  \qquad
-C \vdash {{\mathit{instr}}^\ast} : {t^\ast}
+s ; C \vdash {{\mathit{instr}}^\ast} : {t^\ast}
 }{
-{\vdash}\, z ; {{\mathit{instr}}^\ast} : {t^\ast}
+{\vdash}\, s ; f ; {{\mathit{instr}}^\ast} : {t^\ast}
 } \, {[\textsc{\scriptsize Config\_ok}]}
 \qquad
 \end{array}

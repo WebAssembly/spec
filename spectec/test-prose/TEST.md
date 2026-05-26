@@ -18445,12 +18445,12 @@ The state :math:`(s, f)` is :ref:`valid <valid-val>` with the context :math:`C` 
 
 
 
-The configuration :math:`z~;~{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` with the result type :math:`{t^\ast}` if:
+The configuration :math:`(s, f)~;~{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` with the result type :math:`{t^\ast}` if:
 
 
-   * The state :math:`z` is :ref:`valid <valid-val>` with the context :math:`C`.
+   * The state :math:`(s, f)` is :ref:`valid <valid-val>` with the context :math:`C`.
 
-   * The expression :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` with the result type :math:`{t^\ast}`.
+   * :math:`{{\mathit{instr}}^\ast}` is valid with :math:`{t^\ast}`.
 
 
 
@@ -30110,9 +30110,9 @@ State_ok
   - the frame f is valid with C.
 
 Config_ok
-- the configuration z ; instr* is valid with the result type t* if:
-  - the state z is valid with the context C.
-  - the expression instr* is valid with t*.
+- the configuration (s, f) ; instr* is valid with the result type t* if:
+  - the state (s, f) is valid with the context C.
+  - instr* is valid with t*.
 
 NotationTypingInstrScheme
 - the instruction sequence [instr] is valid with the instruction type valtype* -> valtype'* if:
