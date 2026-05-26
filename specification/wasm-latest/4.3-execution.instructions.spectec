@@ -148,9 +148,7 @@ rule Step_pure/br_on_non_null-addr:
 
 rule Step_read/br_on_cast-succeed:
   s; f; ref (BR_ON_CAST l rt_1 rt_2)  ~>  ref (BR l)
-  ;; TODO(3, rossberg): -- Ref_ok: s |- ref : $inst_reftype(f.MODULE, rt_2)
-  -- Ref_ok: s |- ref : rt
-  -- Reftype_sub: {} |- rt <: $inst_reftype(f.MODULE, rt_2)
+  -- Ref_ok: s |- ref : $inst_reftype(f.MODULE, rt_2)
 
 rule Step_read/br_on_cast-fail:
   s; f; ref (BR_ON_CAST l rt_1 rt_2)  ~>  ref
@@ -159,9 +157,7 @@ rule Step_read/br_on_cast-fail:
 
 rule Step_read/br_on_cast_fail-succeed:
   s; f; ref (BR_ON_CAST_FAIL l rt_1 rt_2)  ~>  ref
-  ;; TODO(3, rossberg): -- Ref_ok: s |- ref : $inst_reftype(f.MODULE, rt_2)
-  -- Ref_ok: s |- ref : rt
-  -- Reftype_sub: {} |- rt <: $inst_reftype(f.MODULE, rt_2)
+  -- Ref_ok: s |- ref : $inst_reftype(f.MODULE, rt_2)
 
 rule Step_read/br_on_cast_fail-fail:
   s; f; ref (BR_ON_CAST_FAIL l rt_1 rt_2)  ~>  ref (BR l)
@@ -666,9 +662,7 @@ rule Step_pure/ref.eq-false:
 
 rule Step_read/ref.test-true:
   s; f; ref (REF.TEST rt)  ~>  (CONST I32 1)
-  ;; TODO(3, rossberg): -- Ref_ok: s |- ref : $inst_reftype(f.MODULE, rt)
-  -- Ref_ok: s |- ref : rt'
-  -- Reftype_sub: {} |- rt' <: $inst_reftype(f.MODULE, rt)
+  -- Ref_ok: s |- ref : $inst_reftype(f.MODULE, rt)
 
 rule Step_read/ref.test-false:
   s; f; ref (REF.TEST rt)  ~>  (CONST I32 0)
@@ -677,9 +671,7 @@ rule Step_read/ref.test-false:
 
 rule Step_read/ref.cast-succeed:
   s; f; ref (REF.CAST rt)  ~>  ref
-  ;; TODO(3, rossberg): -- Ref_ok: s |- ref : $inst_reftype(f.MODULE, rt)
-  -- Ref_ok: s |- ref : rt'
-  -- Reftype_sub: {} |- rt' <: $inst_reftype(f.MODULE, rt)
+  -- Ref_ok: s |- ref : $inst_reftype(f.MODULE, rt)
 
 rule Step_read/ref.cast-fail:
   s; f; ref (REF.CAST rt)  ~>  TRAP
