@@ -126,4 +126,5 @@ rule Externaddr_ok/func:
 rule Externaddr_ok/sub:
   s |- externaddr : xt
   -- Externaddr_ok: s |- externaddr : xt'
+  -- Externtype_ok: {} |- xt : OK
   -- Externtype_sub: {} |- xt' <: xt

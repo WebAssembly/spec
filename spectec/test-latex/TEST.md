@@ -9696,6 +9696,8 @@ $$
 \frac{
 s \vdash {\mathit{externaddr}} : {\mathit{xt}'}
  \qquad
+\{  \} \vdash {\mathit{xt}} : \mathsf{ok}
+ \qquad
 \{  \} \vdash {\mathit{xt}'} \leq {\mathit{xt}}
 }{
 s \vdash {\mathit{externaddr}} : {\mathit{xt}}
