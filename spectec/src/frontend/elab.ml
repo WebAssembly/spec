@@ -1073,15 +1073,16 @@ and elab_typ_notation' env tid (t : typ) : Il.mixop * (Il.id * Il.typ) list =
     let l' = elab_atom l tid in
     let r' = elab_atom r tid in
     Brack (l', mixop1, r'), xts1'
-  | VarT _ | IterT _ | ParenT _ ->
+  | VarT _ | NumT _ | BoolT | TextT | IterT _ | ParenT _ ->
     let rec id_of t ctx =
       match t.it with
-      | VarT (x, []) -> Dim.annot_varid x ctx
       | ParenT t1 -> id_of t1 ctx
       | IterT (t1, iter) ->
         let iter' = match iter with Opt -> Il.Opt | _ -> Il.List in
         id_of t1 (iter'::ctx)
-      | _ -> "_" $ t.at
+      | _ ->
+        let x = Convert.varid_of_typ t in
+        if x.it = "_" then x else Dim.annot_varid x ctx
     in
     let x' = id_of t [] in
     let t' = elab_typ env t in
@@ -2659,7 +2660,6 @@ let rec elab_def_pass1 env (d : def) : Il.def list =
     let dims = Dim.check Map.empty ps' [] [t'] [] [] [] in
     let t' = Dim.annot_typ dims t' in
     infer_no_quants env dims Det.empty ps' [] [t'] [] [] [] d.at;
-Printf.printf "$%s%s : %s\n%!" x.it (Il.Print.string_of_params ps') (Il.Print.string_of_typ t');
     env.defs <- bind "definition" env.defs x (ps', t', []);
     [d'] @ elab_hintdef env (DecH (x, hints) $ d.at)
 

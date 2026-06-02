@@ -441,11 +441,11 @@ rule Instr_ok/data.drop:
 
 (;
 rule Instr_ok/load:
-  C |- LOAD nt (N _ sx)? x memarg : at -> nt
+  C |- LOAD nt (K _ sx)? x memarg : at -> nt
   -- if C.MEMS[x] = at lim PAGE
   -- if $(2^(memarg.ALIGN) <= $size(nt)/8)
   -- if $(2^(memarg.ALIGN) <= N/8 < $size(nt)/8)?
-  -- if N? = eps \/ nt = Inn
+  -- if K? = eps \/ nt = Inn
 ;)
 
 rule Instr_ok/load-val:
@@ -454,17 +454,17 @@ rule Instr_ok/load-val:
   -- Memarg_ok: |- memarg : at -> $size(nt)
 
 rule Instr_ok/load-pack:
-  C |- LOAD Inn (M _ sx) x memarg : at -> Inn
+  C |- LOAD Inn (K _ sx) x memarg : at -> Inn
   -- if C.MEMS[x] = at lim PAGE
-  -- Memarg_ok: |- memarg : at -> M
+  -- Memarg_ok: |- memarg : at -> K
 
 (;
 rule Instr_ok/store:
-  C |- STORE nt N? x memarg : at nt -> eps
+  C |- STORE nt K? x memarg : at nt -> eps
   -- if C.MEMS[x] = at lim PAGE
   -- if $(2^(memarg.ALIGN) <= $size(nt)/8)
-  -- if $(2^(memarg.ALIGN) <= N/8 < $size(nt)/8)?
-  -- if N? = eps \/ nt = Inn
+  -- if $(2^(memarg.ALIGN) <= K/8 < $size(nt)/8)?
+  -- if K? = eps \/ nt = Inn
 ;)
 
 rule Instr_ok/store-val:
@@ -473,9 +473,9 @@ rule Instr_ok/store-val:
   -- Memarg_ok: |- memarg : at -> $size(nt)
 
 rule Instr_ok/store-pack:
-  C |- STORE Inn M x memarg : at Inn -> eps
+  C |- STORE Inn K x memarg : at Inn -> eps
   -- if C.MEMS[x] = at lim PAGE
-  -- Memarg_ok: |- memarg : at -> M
+  -- Memarg_ok: |- memarg : at -> K
 
 rule Instr_ok/vload-val:
   C |- VLOAD V128 x memarg : at -> V128
@@ -483,9 +483,9 @@ rule Instr_ok/vload-val:
   -- Memarg_ok: |- memarg : at -> $vsize(V128)
 
 rule Instr_ok/vload-pack:
-  C |- VLOAD V128 (SHAPE M X N _ sx) x memarg : at -> V128
+  C |- VLOAD V128 (SHAPE N X M _ sx) x memarg : at -> V128
   -- if C.MEMS[x] = at lim PAGE
-  -- Memarg_ok: |- memarg : at -> $(M*N)
+  -- Memarg_ok: |- memarg : at -> $(N*M)
 
 rule Instr_ok/vload-splat:
   C |- VLOAD V128 (SPLAT N) x memarg : at -> V128

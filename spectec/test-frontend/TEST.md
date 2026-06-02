@@ -486,9 +486,6 @@ spectec 0.5 generator
 syntax N = nat
 
 ;; ../../../../specification/wasm-latest/0.1-aux.vars.spectec
-syntax M = nat
-
-;; ../../../../specification/wasm-latest/0.1-aux.vars.spectec
 syntax K = nat
 
 ;; ../../../../specification/wasm-latest/0.1-aux.vars.spectec
@@ -2179,19 +2176,22 @@ syntax shape =
     -- if (($lsize(lanetype) * dim!`%`_dim.0) = 128)
 
 ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec
+syntax M = dim
+
+;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec
 def $dim(shape : shape) : dim
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec
-  def $dim{Lnn : Lnn, N : N}(`%X%`_shape(Lnn, `%`_dim(N))) = `%`_dim(N)
+  def $dim{Lnn : Lnn, M : M}(`%X%`_shape(Lnn, M)) = M
 
 ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec
 def $lanetype(shape : shape) : lanetype
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec
-  def $lanetype{Lnn : Lnn, N : N}(`%X%`_shape(Lnn, `%`_dim(N))) = Lnn
+  def $lanetype{Lnn : Lnn, M : M}(`%X%`_shape(Lnn, M)) = Lnn
 
 ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec
 def $unpackshape(shape : shape) : numtype
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec
-  def $unpackshape{Lnn : Lnn, N : N}(`%X%`_shape(Lnn, `%`_dim(N))) = $lunpack(Lnn)
+  def $unpackshape{Lnn : Lnn, M : M}(`%X%`_shape(Lnn, M)) = $lunpack(Lnn)
 
 ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec
 syntax ishape =
@@ -2234,7 +2234,7 @@ syntax vvtestop =
 ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec
 syntax vunop_(shape : shape)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec
-  syntax vunop_{Jnn : Jnn, M : M}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))) =
+  syntax vunop_{Jnn : Jnn, M : M}(`%X%`_shape((Jnn : Jnn <: lanetype), M)) =
   | ABS
   | NEG
   | POPCNT
@@ -2242,7 +2242,7 @@ syntax vunop_(shape : shape)
 
 
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec
-  syntax vunop_{Fnn : Fnn, M : M}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M))) =
+  syntax vunop_{Fnn : Fnn, M : M}(`%X%`_shape((Fnn : Fnn <: lanetype), M)) =
   | ABS
   | NEG
   | SQRT
@@ -2255,7 +2255,7 @@ syntax vunop_(shape : shape)
 ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec
 syntax vbinop_(shape : shape)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec
-  syntax vbinop_{Jnn : Jnn, M : M}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))) =
+  syntax vbinop_{Jnn : Jnn, M : M}(`%X%`_shape((Jnn : Jnn <: lanetype), M)) =
   | ADD
   | SUB
   | ADD_SAT(sx : sx)
@@ -2277,7 +2277,7 @@ syntax vbinop_(shape : shape)
 
 
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec
-  syntax vbinop_{Fnn : Fnn, M : M}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M))) =
+  syntax vbinop_{Fnn : Fnn, M : M}(`%X%`_shape((Fnn : Fnn <: lanetype), M)) =
   | ADD
   | SUB
   | MUL
@@ -2293,24 +2293,24 @@ syntax vbinop_(shape : shape)
 ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec
 syntax vternop_(shape : shape)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec
-  syntax vternop_{Jnn : Jnn, M : M}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))) =
+  syntax vternop_{Jnn : Jnn, M : M}(`%X%`_shape((Jnn : Jnn <: lanetype), M)) =
   | RELAXED_LANESELECT
 
 
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec
-  syntax vternop_{Fnn : Fnn, M : M}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M))) =
+  syntax vternop_{Fnn : Fnn, M : M}(`%X%`_shape((Fnn : Fnn <: lanetype), M)) =
   | RELAXED_MADD
   | RELAXED_NMADD
 
 
 ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec
-syntax vtestop_{Jnn : Jnn, M : M}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))) =
+syntax vtestop_{Jnn : Jnn, M : M}(`%X%`_shape((Jnn : Jnn <: lanetype), M)) =
   | ALL_TRUE
 
 ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec
 syntax vrelop_(shape : shape)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec
-  syntax vrelop_{Jnn : Jnn, M : M}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))) =
+  syntax vrelop_{Jnn : Jnn, M : M}(`%X%`_shape((Jnn : Jnn <: lanetype), M)) =
   | EQ
   | NE
   | LT(sx : sx)
@@ -2324,7 +2324,7 @@ syntax vrelop_(shape : shape)
 
 
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec
-  syntax vrelop_{Fnn : Fnn, M : M}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M))) =
+  syntax vrelop_{Fnn : Fnn, M : M}(`%X%`_shape((Fnn : Fnn <: lanetype), M)) =
   | EQ
   | NE
   | LT
@@ -2334,22 +2334,22 @@ syntax vrelop_(shape : shape)
 
 
 ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec
-syntax vshiftop_{Jnn : Jnn, M : M}(`%`_ishape(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)))) =
+syntax vshiftop_{Jnn : Jnn, M : M}(`%`_ishape(`%X%`_shape((Jnn : Jnn <: lanetype), M))) =
   | SHL
   | SHR(sx : sx)
 
 ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec
-syntax vswizzlop_{M : M}(`%`_bshape(`%X%`_shape(I8_lanetype, `%`_dim(M)))) =
+syntax vswizzlop_{M : M}(`%`_bshape(`%X%`_shape(I8_lanetype, M))) =
   | SWIZZLE
   | RELAXED_SWIZZLE
 
 ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec
-syntax vextunop__{Jnn_1 : Jnn, M_1 : M, Jnn_2 : Jnn, M_2 : M}(`%`_ishape(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1))), `%`_ishape(`%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(M_2)))) =
+syntax vextunop__{Jnn_1 : Jnn, M_1 : M, Jnn_2 : Jnn, M_2 : M}(`%`_ishape(`%X%`_shape((Jnn_1 : Jnn <: lanetype), M_1)), `%`_ishape(`%X%`_shape((Jnn_2 : Jnn <: lanetype), M_2))) =
   | EXTADD_PAIRWISE(sx : sx)
     -- if ((16 <= (2 * $lsizenn1((Jnn_1 : Jnn <: lanetype)))) /\ (((2 * $lsizenn1((Jnn_1 : Jnn <: lanetype))) = $lsizenn2((Jnn_2 : Jnn <: lanetype))) /\ ($lsizenn2((Jnn_2 : Jnn <: lanetype)) <= 32)))
 
 ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec
-syntax vextbinop__{Jnn_1 : Jnn, M_1 : M, Jnn_2 : Jnn, M_2 : M}(`%`_ishape(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1))), `%`_ishape(`%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(M_2)))) =
+syntax vextbinop__{Jnn_1 : Jnn, M_1 : M, Jnn_2 : Jnn, M_2 : M}(`%`_ishape(`%X%`_shape((Jnn_1 : Jnn <: lanetype), M_1)), `%`_ishape(`%X%`_shape((Jnn_2 : Jnn <: lanetype), M_2))) =
   | EXTMUL(half : half, sx : sx)
     -- if (((2 * $lsizenn1((Jnn_1 : Jnn <: lanetype))) = $lsizenn2((Jnn_2 : Jnn <: lanetype))) /\ ($lsizenn2((Jnn_2 : Jnn <: lanetype)) >= 16))
   | DOTS
@@ -2358,26 +2358,26 @@ syntax vextbinop__{Jnn_1 : Jnn, M_1 : M, Jnn_2 : Jnn, M_2 : M}(`%`_ishape(`%X%`_
     -- if (((2 * $lsizenn1((Jnn_1 : Jnn <: lanetype))) = $lsizenn2((Jnn_2 : Jnn <: lanetype))) /\ ($lsizenn2((Jnn_2 : Jnn <: lanetype)) = 16))
 
 ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec
-syntax vextternop__{Jnn_1 : Jnn, M_1 : M, Jnn_2 : Jnn, M_2 : M}(`%`_ishape(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1))), `%`_ishape(`%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(M_2)))) =
+syntax vextternop__{Jnn_1 : Jnn, M_1 : M, Jnn_2 : Jnn, M_2 : M}(`%`_ishape(`%X%`_shape((Jnn_1 : Jnn <: lanetype), M_1)), `%`_ishape(`%X%`_shape((Jnn_2 : Jnn <: lanetype), M_2))) =
   | RELAXED_DOT_ADDS
     -- if (((4 * $lsizenn1((Jnn_1 : Jnn <: lanetype))) = $lsizenn2((Jnn_2 : Jnn <: lanetype))) /\ ($lsizenn2((Jnn_2 : Jnn <: lanetype)) = 32))
 
 ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec
 syntax vcvtop__(shape_1 : shape, shape_2 : shape)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec
-  syntax vcvtop__{Jnn_1 : Jnn, M_1 : M, Jnn_2 : Jnn, M_2 : M}(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1)), `%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(M_2))) =
+  syntax vcvtop__{Jnn_1 : Jnn, M_1 : M, Jnn_2 : Jnn, M_2 : M}(`%X%`_shape((Jnn_1 : Jnn <: lanetype), M_1), `%X%`_shape((Jnn_2 : Jnn <: lanetype), M_2)) =
   | EXTEND(half : half, sx : sx)
     -- if ($lsizenn2((Jnn_2 : Jnn <: lanetype)) = (2 * $lsizenn1((Jnn_1 : Jnn <: lanetype))))
 
 
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec
-  syntax vcvtop__{Jnn_1 : Jnn, M_1 : M, Fnn_2 : Fnn, M_2 : M}(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1)), `%X%`_shape((Fnn_2 : Fnn <: lanetype), `%`_dim(M_2))) =
+  syntax vcvtop__{Jnn_1 : Jnn, M_1 : M, Fnn_2 : Fnn, M_2 : M}(`%X%`_shape((Jnn_1 : Jnn <: lanetype), M_1), `%X%`_shape((Fnn_2 : Fnn <: lanetype), M_2)) =
   | CONVERT(`half?` : half?, sx : sx)
     -- if (((($sizenn2((Fnn_2 : Fnn <: numtype)) = $lsizenn1((Jnn_1 : Jnn <: lanetype))) /\ ($lsizenn1((Jnn_1 : Jnn <: lanetype)) = 32)) /\ (half?{half <- `half?`} = ?())) \/ (($sizenn2((Fnn_2 : Fnn <: numtype)) = (2 * $lsizenn1((Jnn_1 : Jnn <: lanetype)))) /\ (half?{half <- `half?`} = ?(LOW_half))))
 
 
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec
-  syntax vcvtop__{Fnn_1 : Fnn, M_1 : M, Jnn_2 : Jnn, M_2 : M}(`%X%`_shape((Fnn_1 : Fnn <: lanetype), `%`_dim(M_1)), `%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(M_2))) =
+  syntax vcvtop__{Fnn_1 : Fnn, M_1 : M, Jnn_2 : Jnn, M_2 : M}(`%X%`_shape((Fnn_1 : Fnn <: lanetype), M_1), `%X%`_shape((Jnn_2 : Jnn <: lanetype), M_2)) =
   | TRUNC_SAT(sx : sx, `zero?` : zero?)
     -- if (((($sizenn1((Fnn_1 : Fnn <: numtype)) = $lsizenn2((Jnn_2 : Jnn <: lanetype))) /\ ($lsizenn2((Jnn_2 : Jnn <: lanetype)) = 32)) /\ (zero?{zero <- `zero?`} = ?())) \/ (($sizenn1((Fnn_1 : Fnn <: numtype)) = (2 * $lsizenn2((Jnn_2 : Jnn <: lanetype)))) /\ (zero?{zero <- `zero?`} = ?(ZERO_zero))))
   | RELAXED_TRUNC(sx : sx, `zero?` : zero?)
@@ -2385,7 +2385,7 @@ syntax vcvtop__(shape_1 : shape, shape_2 : shape)
 
 
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec
-  syntax vcvtop__{Fnn_1 : Fnn, M_1 : M, Fnn_2 : Fnn, M_2 : M}(`%X%`_shape((Fnn_1 : Fnn <: lanetype), `%`_dim(M_1)), `%X%`_shape((Fnn_2 : Fnn <: lanetype), `%`_dim(M_2))) =
+  syntax vcvtop__{Fnn_1 : Fnn, M_1 : M, Fnn_2 : Fnn, M_2 : M}(`%X%`_shape((Fnn_1 : Fnn <: lanetype), M_1), `%X%`_shape((Fnn_2 : Fnn <: lanetype), M_2)) =
   | DEMOTE(zero : zero)
     -- if ($sizenn1((Fnn_1 : Fnn <: numtype)) = (2 * $sizenn2((Fnn_2 : Fnn <: numtype))))
   | PROMOTELOW
@@ -2412,7 +2412,7 @@ syntax storeop_{Inn : Inn}((Inn : Inn <: numtype)) =
 ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec
 syntax vloadop_{vectype : vectype}(vectype) =
   | `SHAPE%X%_%`(sz : sz, M : M, sx : sx)
-    -- if (((sz!`%`_sz.0 * M) : nat <:> rat) = (($vsize(vectype) : nat <:> rat) / (2 : nat <:> rat)))
+    -- if (((sz!`%`_sz.0 * M!`%`_M.0) : nat <:> rat) = (($vsize(vectype) : nat <:> rat) / (2 : nat <:> rat)))
   | SPLAT(sz : sz)
   | ZERO(sz : sz)
     -- if (sz!`%`_sz.0 >= 32)
@@ -2696,233 +2696,233 @@ def $free_catch(catch : catch) : free
 ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec
 rec {
 
-;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:584.1-584.44
+;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:585.1-585.44
 def $shift_labelidxs(labelidx*) : labelidx*
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:585.1-585.32
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:586.1-586.32
   def $shift_labelidxs([]) = []
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:586.1-586.66
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:587.1-587.66
   def $shift_labelidxs{`labelidx'*` : labelidx*}([`%`_labelidx(0)] ++ labelidx'*{labelidx' <- `labelidx'*`}) = $shift_labelidxs(labelidx'*{labelidx' <- `labelidx'*`})
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:587.1-587.91
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:588.1-588.91
   def $shift_labelidxs{labelidx : labelidx, `labelidx'*` : labelidx*}([labelidx] ++ labelidx'*{labelidx' <- `labelidx'*`}) = [`%`_labelidx((((labelidx!`%`_labelidx.0 : nat <:> int) - (1 : nat <:> int)) : int <:> nat))] ++ $shift_labelidxs(labelidx'*{labelidx' <- `labelidx'*`})
 }
 
 ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec
 rec {
 
-;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:420.1-420.30
+;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:421.1-421.30
 def $free_instr(instr : instr) : free
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:435.1-435.26
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:436.1-436.26
   def $free_instr(NOP_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], TAGS []}
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:436.1-436.34
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:437.1-437.34
   def $free_instr(UNREACHABLE_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], TAGS []}
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:437.1-437.27
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:438.1-438.27
   def $free_instr(DROP_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], TAGS []}
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:438.1-438.86
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:439.1-439.86
   def $free_instr{`valtype*?` : valtype*?}(SELECT_instr(valtype*{valtype <- `valtype*`}?{`valtype*` <- `valtype*?`})) = $free_opt($free_list($free_valtype(valtype)*{valtype <- `valtype*`})?{`valtype*` <- `valtype*?`})
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:440.1-440.92
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:441.1-441.92
   def $free_instr{blocktype : blocktype, `instr*` : instr*}(BLOCK_instr(blocktype, instr*{instr <- `instr*`})) = $free_blocktype(blocktype) +++ $free_block(instr*{instr <- `instr*`})
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:441.1-441.91
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:442.1-442.91
   def $free_instr{blocktype : blocktype, `instr*` : instr*}(LOOP_instr(blocktype, instr*{instr <- `instr*`})) = $free_blocktype(blocktype) +++ $free_block(instr*{instr <- `instr*`})
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:442.1-443.79
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:443.1-444.79
   def $free_instr{blocktype : blocktype, `instr_1*` : instr*, `instr_2*` : instr*}(`IF%%ELSE%`_instr(blocktype, instr_1*{instr_1 <- `instr_1*`}, instr_2*{instr_2 <- `instr_2*`})) = $free_blocktype(blocktype) +++ $free_block(instr_1*{instr_1 <- `instr_1*`}) +++ $free_block(instr_2*{instr_2 <- `instr_2*`})
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:445.1-445.56
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:446.1-446.56
   def $free_instr{labelidx : labelidx}(BR_instr(labelidx)) = $free_labelidx(labelidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:446.1-446.59
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:447.1-447.59
   def $free_instr{labelidx : labelidx}(BR_IF_instr(labelidx)) = $free_labelidx(labelidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:447.1-448.69
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:448.1-449.69
   def $free_instr{`labelidx*` : labelidx*, labelidx' : labelidx}(BR_TABLE_instr(labelidx*{labelidx <- `labelidx*`}, labelidx')) = $free_list($free_labelidx(labelidx)*{labelidx <- `labelidx*`}) +++ $free_labelidx(labelidx')
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:449.1-449.64
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:450.1-450.64
   def $free_instr{labelidx : labelidx}(BR_ON_NULL_instr(labelidx)) = $free_labelidx(labelidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:450.1-450.68
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:451.1-451.68
   def $free_instr{labelidx : labelidx}(BR_ON_NON_NULL_instr(labelidx)) = $free_labelidx(labelidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:451.1-452.83
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:452.1-453.83
   def $free_instr{labelidx : labelidx, reftype_1 : reftype, reftype_2 : reftype}(BR_ON_CAST_instr(labelidx, reftype_1, reftype_2)) = $free_labelidx(labelidx) +++ $free_reftype(reftype_1) +++ $free_reftype(reftype_2)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:453.1-454.83
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:454.1-455.83
   def $free_instr{labelidx : labelidx, reftype_1 : reftype, reftype_2 : reftype}(BR_ON_CAST_FAIL_instr(labelidx, reftype_1, reftype_2)) = $free_labelidx(labelidx) +++ $free_reftype(reftype_1) +++ $free_reftype(reftype_2)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:456.1-456.55
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:457.1-457.55
   def $free_instr{funcidx : funcidx}(CALL_instr(funcidx)) = $free_funcidx(funcidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:457.1-457.59
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:458.1-458.59
   def $free_instr{typeuse : typeuse}(CALL_REF_instr(typeuse)) = $free_typeuse(typeuse)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:458.1-459.53
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:459.1-460.53
   def $free_instr{tableidx : tableidx, typeuse : typeuse}(CALL_INDIRECT_instr(tableidx, typeuse)) = $free_tableidx(tableidx) +++ $free_typeuse(typeuse)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:460.1-460.29
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:461.1-461.29
   def $free_instr(RETURN_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], TAGS []}
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:461.1-461.62
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:462.1-462.62
   def $free_instr{funcidx : funcidx}(RETURN_CALL_instr(funcidx)) = $free_funcidx(funcidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:462.1-462.66
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:463.1-463.66
   def $free_instr{typeuse : typeuse}(RETURN_CALL_REF_instr(typeuse)) = $free_typeuse(typeuse)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:463.1-464.53
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:464.1-465.53
   def $free_instr{tableidx : tableidx, typeuse : typeuse}(RETURN_CALL_INDIRECT_instr(tableidx, typeuse)) = $free_tableidx(tableidx) +++ $free_typeuse(typeuse)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:466.1-466.53
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:467.1-467.53
   def $free_instr{tagidx : tagidx}(THROW_instr(tagidx)) = $free_tagidx(tagidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:467.1-467.32
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:468.1-468.32
   def $free_instr(THROW_REF_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], TAGS []}
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:468.1-469.99
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:469.1-470.99
   def $free_instr{blocktype : blocktype, `catch*` : catch*, `instr*` : instr*}(TRY_TABLE_instr(blocktype, `%`_list(catch*{catch <- `catch*`}), instr*{instr <- `instr*`})) = $free_blocktype(blocktype) +++ $free_list($free_catch(catch)*{catch <- `catch*`}) +++ $free_list($free_instr(instr)*{instr <- `instr*`})
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:471.1-471.63
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:472.1-472.63
   def $free_instr{numtype : numtype, numlit : num_(numtype)}(CONST_instr(numtype, numlit)) = $free_numtype(numtype)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:472.1-472.60
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:473.1-473.60
   def $free_instr{numtype : numtype, unop : unop_(numtype)}(UNOP_instr(numtype, unop)) = $free_numtype(numtype)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:473.1-473.62
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:474.1-474.62
   def $free_instr{numtype : numtype, binop : binop_(numtype)}(BINOP_instr(numtype, binop)) = $free_numtype(numtype)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:474.1-474.64
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:475.1-475.64
   def $free_instr{numtype : numtype, testop : testop_(numtype)}(TESTOP_instr(numtype, testop)) = $free_numtype(numtype)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:475.1-475.62
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:476.1-476.62
   def $free_instr{numtype : numtype, relop : relop_(numtype)}(RELOP_instr(numtype, relop)) = $free_numtype(numtype)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:476.1-477.55
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:477.1-478.55
   def $free_instr{numtype_1 : numtype, numtype_2 : numtype, cvtop : cvtop__(numtype_2, numtype_1)}(CVTOP_instr(numtype_1, numtype_2, cvtop)) = $free_numtype(numtype_1) +++ $free_numtype(numtype_2)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:479.1-479.64
-  def $free_instr{vectype : vectype, veclit : vec_(vectype)}(VCONST_instr(vectype, veclit)) = $free_vectype(vectype)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:480.1-480.64
+  def $free_instr{vectype : vectype, veclit : vec_(vectype)}(VCONST_instr(vectype, veclit)) = $free_vectype(vectype)
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:481.1-481.64
   def $free_instr{vectype : vectype, vvunop : vvunop}(VVUNOP_instr(vectype, vvunop)) = $free_vectype(vectype)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:481.1-481.66
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:482.1-482.66
   def $free_instr{vectype : vectype, vvbinop : vvbinop}(VVBINOP_instr(vectype, vvbinop)) = $free_vectype(vectype)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:482.1-482.68
-  def $free_instr{vectype : vectype, vvternop : vvternop}(VVTERNOP_instr(vectype, vvternop)) = $free_vectype(vectype)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:483.1-483.68
+  def $free_instr{vectype : vectype, vvternop : vvternop}(VVTERNOP_instr(vectype, vvternop)) = $free_vectype(vectype)
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:484.1-484.68
   def $free_instr{vectype : vectype, vvtestop : vvtestop}(VVTESTOP_instr(vectype, vvtestop)) = $free_vectype(vectype)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:484.1-484.56
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:485.1-485.56
   def $free_instr{shape : shape, vunop : vunop_(shape)}(VUNOP_instr(shape, vunop)) = $free_shape(shape)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:485.1-485.58
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:486.1-486.58
   def $free_instr{shape : shape, vbinop : vbinop_(shape)}(VBINOP_instr(shape, vbinop)) = $free_shape(shape)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:486.1-486.60
-  def $free_instr{shape : shape, vternop : vternop_(shape)}(VTERNOP_instr(shape, vternop)) = $free_shape(shape)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:487.1-487.60
+  def $free_instr{shape : shape, vternop : vternop_(shape)}(VTERNOP_instr(shape, vternop)) = $free_shape(shape)
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:488.1-488.60
   def $free_instr{shape : shape, vtestop : vtestop_(shape)}(VTESTOP_instr(shape, vtestop)) = $free_shape(shape)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:488.1-488.58
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:489.1-489.58
   def $free_instr{shape : shape, vrelop : vrelop_(shape)}(VRELOP_instr(shape, vrelop)) = $free_shape(shape)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:489.1-489.64
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:490.1-490.64
   def $free_instr{ishape : ishape, vshiftop : vshiftop_(ishape)}(VSHIFTOP_instr(ishape, vshiftop)) = $free_shape(ishape!`%`_ishape.0)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:490.1-490.55
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:491.1-491.55
   def $free_instr{ishape : ishape}(VBITMASK_instr(ishape)) = $free_shape(ishape!`%`_ishape.0)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:491.1-491.66
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:492.1-492.66
   def $free_instr{bshape : bshape, vswizzlop : vswizzlop_(bshape)}(VSWIZZLOP_instr(bshape, vswizzlop)) = $free_shape(bshape!`%`_bshape.0)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:492.1-492.64
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:493.1-493.64
   def $free_instr{bshape : bshape, `laneidx*` : laneidx*}(VSHUFFLE_instr(bshape, laneidx*{laneidx <- `laneidx*`})) = $free_shape(bshape!`%`_bshape.0)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:493.1-494.49
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:494.1-495.49
   def $free_instr{ishape_1 : ishape, ishape_2 : ishape, vextunop : vextunop__(ishape_2, ishape_1)}(VEXTUNOP_instr(ishape_1, ishape_2, vextunop)) = $free_shape(ishape_1!`%`_ishape.0) +++ $free_shape(ishape_2!`%`_ishape.0)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:495.1-496.49
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:496.1-497.49
   def $free_instr{ishape_1 : ishape, ishape_2 : ishape, vextbinop : vextbinop__(ishape_2, ishape_1)}(VEXTBINOP_instr(ishape_1, ishape_2, vextbinop)) = $free_shape(ishape_1!`%`_ishape.0) +++ $free_shape(ishape_2!`%`_ishape.0)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:497.1-498.49
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:498.1-499.49
   def $free_instr{ishape_1 : ishape, ishape_2 : ishape, vextternop : vextternop__(ishape_2, ishape_1)}(VEXTTERNOP_instr(ishape_1, ishape_2, vextternop)) = $free_shape(ishape_1!`%`_ishape.0) +++ $free_shape(ishape_2!`%`_ishape.0)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:499.1-500.49
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:500.1-501.49
   def $free_instr{ishape_1 : ishape, ishape_2 : ishape, sx : sx}(VNARROW_instr(ishape_1, ishape_2, sx)) = $free_shape(ishape_1!`%`_ishape.0) +++ $free_shape(ishape_2!`%`_ishape.0)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:501.1-502.47
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:502.1-503.47
   def $free_instr{shape_1 : shape, shape_2 : shape, vcvtop : vcvtop__(shape_2, shape_1)}(VCVTOP_instr(shape_1, shape_2, vcvtop)) = $free_shape(shape_1) +++ $free_shape(shape_2)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:503.1-503.51
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:504.1-504.51
   def $free_instr{shape : shape}(VSPLAT_instr(shape)) = $free_shape(shape)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:504.1-504.70
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:505.1-505.70
   def $free_instr{shape : shape, `sx?` : sx?, laneidx : laneidx}(VEXTRACT_LANE_instr(shape, sx?{sx <- `sx?`}, laneidx)) = $free_shape(shape)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:505.1-505.66
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:506.1-506.66
   def $free_instr{shape : shape, laneidx : laneidx}(VREPLACE_LANE_instr(shape, laneidx)) = $free_shape(shape)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:507.1-507.62
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:508.1-508.62
   def $free_instr{heaptype : heaptype}(`REF.NULL`_instr(heaptype)) = $free_heaptype(heaptype)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:508.1-508.34
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:509.1-509.34
   def $free_instr(`REF.IS_NULL`_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], TAGS []}
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:509.1-509.38
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:510.1-510.38
   def $free_instr(`REF.AS_NON_NULL`_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], TAGS []}
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:510.1-510.29
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:511.1-511.29
   def $free_instr(`REF.EQ`_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], TAGS []}
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:511.1-511.59
-  def $free_instr{reftype : reftype}(`REF.TEST`_instr(reftype)) = $free_reftype(reftype)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:512.1-512.59
-  def $free_instr{reftype : reftype}(`REF.CAST`_instr(reftype)) = $free_reftype(reftype)
+  def $free_instr{reftype : reftype}(`REF.TEST`_instr(reftype)) = $free_reftype(reftype)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:513.1-513.59
+  def $free_instr{reftype : reftype}(`REF.CAST`_instr(reftype)) = $free_reftype(reftype)
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:514.1-514.59
   def $free_instr{funcidx : funcidx}(`REF.FUNC`_instr(funcidx)) = $free_funcidx(funcidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:514.1-514.30
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:515.1-515.30
   def $free_instr(`REF.I31`_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], TAGS []}
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:516.1-516.33
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:517.1-517.33
   def $free_instr{sx : sx}(`I31.GET`_instr(sx)) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], TAGS []}
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:518.1-518.61
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:519.1-519.61
   def $free_instr{typeidx : typeidx}(`STRUCT.NEW`_instr(typeidx)) = $free_typeidx(typeidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:519.1-519.69
-  def $free_instr{typeidx : typeidx}(`STRUCT.NEW_DEFAULT`_instr(typeidx)) = $free_typeidx(typeidx)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:520.1-520.69
+  def $free_instr{typeidx : typeidx}(`STRUCT.NEW_DEFAULT`_instr(typeidx)) = $free_typeidx(typeidx)
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:521.1-521.69
   def $free_instr{`sx?` : sx?, typeidx : typeidx, u32 : u32}(`STRUCT.GET`_instr(sx?{sx <- `sx?`}, typeidx, u32)) = $free_typeidx(typeidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:521.1-521.65
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:522.1-522.65
   def $free_instr{typeidx : typeidx, u32 : u32}(`STRUCT.SET`_instr(typeidx, u32)) = $free_typeidx(typeidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:523.1-523.60
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:524.1-524.60
   def $free_instr{typeidx : typeidx}(`ARRAY.NEW`_instr(typeidx)) = $free_typeidx(typeidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:524.1-524.68
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:525.1-525.68
   def $free_instr{typeidx : typeidx}(`ARRAY.NEW_DEFAULT`_instr(typeidx)) = $free_typeidx(typeidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:525.1-525.70
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:526.1-526.70
   def $free_instr{typeidx : typeidx, u32 : u32}(`ARRAY.NEW_FIXED`_instr(typeidx, u32)) = $free_typeidx(typeidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:526.1-527.51
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:527.1-528.51
   def $free_instr{typeidx : typeidx, dataidx : dataidx}(`ARRAY.NEW_DATA`_instr(typeidx, dataidx)) = $free_typeidx(typeidx) +++ $free_dataidx(dataidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:528.1-529.51
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:529.1-530.51
   def $free_instr{typeidx : typeidx, elemidx : elemidx}(`ARRAY.NEW_ELEM`_instr(typeidx, elemidx)) = $free_typeidx(typeidx) +++ $free_elemidx(elemidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:530.1-530.64
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:531.1-531.64
   def $free_instr{`sx?` : sx?, typeidx : typeidx}(`ARRAY.GET`_instr(sx?{sx <- `sx?`}, typeidx)) = $free_typeidx(typeidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:531.1-531.60
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:532.1-532.60
   def $free_instr{typeidx : typeidx}(`ARRAY.SET`_instr(typeidx)) = $free_typeidx(typeidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:532.1-532.32
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:533.1-533.32
   def $free_instr(`ARRAY.LEN`_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], TAGS []}
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:533.1-533.61
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:534.1-534.61
   def $free_instr{typeidx : typeidx}(`ARRAY.FILL`_instr(typeidx)) = $free_typeidx(typeidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:534.1-535.55
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:535.1-536.55
   def $free_instr{typeidx_1 : typeidx, typeidx_2 : typeidx}(`ARRAY.COPY`_instr(typeidx_1, typeidx_2)) = $free_typeidx(typeidx_1) +++ $free_typeidx(typeidx_2)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:536.1-537.51
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:537.1-538.51
   def $free_instr{typeidx : typeidx, dataidx : dataidx}(`ARRAY.INIT_DATA`_instr(typeidx, dataidx)) = $free_typeidx(typeidx) +++ $free_dataidx(dataidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:538.1-539.51
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:539.1-540.51
   def $free_instr{typeidx : typeidx, elemidx : elemidx}(`ARRAY.INIT_ELEM`_instr(typeidx, elemidx)) = $free_typeidx(typeidx) +++ $free_elemidx(elemidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:541.1-541.41
-  def $free_instr(`EXTERN.CONVERT_ANY`_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], TAGS []}
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:542.1-542.41
+  def $free_instr(`EXTERN.CONVERT_ANY`_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], TAGS []}
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:543.1-543.41
   def $free_instr(`ANY.CONVERT_EXTERN`_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], TAGS []}
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:544.1-544.63
-  def $free_instr{localidx : localidx}(`LOCAL.GET`_instr(localidx)) = $free_localidx(localidx)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:545.1-545.63
-  def $free_instr{localidx : localidx}(`LOCAL.SET`_instr(localidx)) = $free_localidx(localidx)
+  def $free_instr{localidx : localidx}(`LOCAL.GET`_instr(localidx)) = $free_localidx(localidx)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:546.1-546.63
+  def $free_instr{localidx : localidx}(`LOCAL.SET`_instr(localidx)) = $free_localidx(localidx)
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:547.1-547.63
   def $free_instr{localidx : localidx}(`LOCAL.TEE`_instr(localidx)) = $free_localidx(localidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:548.1-548.67
-  def $free_instr{globalidx : globalidx}(`GLOBAL.GET`_instr(globalidx)) = $free_globalidx(globalidx)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:549.1-549.67
+  def $free_instr{globalidx : globalidx}(`GLOBAL.GET`_instr(globalidx)) = $free_globalidx(globalidx)
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:550.1-550.67
   def $free_instr{globalidx : globalidx}(`GLOBAL.SET`_instr(globalidx)) = $free_globalidx(globalidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:551.1-551.63
-  def $free_instr{tableidx : tableidx}(`TABLE.GET`_instr(tableidx)) = $free_tableidx(tableidx)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:552.1-552.63
+  def $free_instr{tableidx : tableidx}(`TABLE.GET`_instr(tableidx)) = $free_tableidx(tableidx)
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:553.1-553.63
   def $free_instr{tableidx : tableidx}(`TABLE.SET`_instr(tableidx)) = $free_tableidx(tableidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:553.1-553.64
-  def $free_instr{tableidx : tableidx}(`TABLE.SIZE`_instr(tableidx)) = $free_tableidx(tableidx)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:554.1-554.64
-  def $free_instr{tableidx : tableidx}(`TABLE.GROW`_instr(tableidx)) = $free_tableidx(tableidx)
+  def $free_instr{tableidx : tableidx}(`TABLE.SIZE`_instr(tableidx)) = $free_tableidx(tableidx)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:555.1-555.64
+  def $free_instr{tableidx : tableidx}(`TABLE.GROW`_instr(tableidx)) = $free_tableidx(tableidx)
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:556.1-556.64
   def $free_instr{tableidx : tableidx}(`TABLE.FILL`_instr(tableidx)) = $free_tableidx(tableidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:556.1-557.59
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:557.1-558.59
   def $free_instr{tableidx_1 : tableidx, tableidx_2 : tableidx}(`TABLE.COPY`_instr(tableidx_1, tableidx_2)) = $free_tableidx(tableidx_1) +++ $free_tableidx(tableidx_2)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:558.1-559.53
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:559.1-560.53
   def $free_instr{tableidx : tableidx, elemidx : elemidx}(`TABLE.INIT`_instr(tableidx, elemidx)) = $free_tableidx(tableidx) +++ $free_elemidx(elemidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:560.1-560.60
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:561.1-561.60
   def $free_instr{elemidx : elemidx}(`ELEM.DROP`_instr(elemidx)) = $free_elemidx(elemidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:562.1-563.49
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:563.1-564.49
   def $free_instr{numtype : numtype, `loadop?` : loadop_(numtype)?, memidx : memidx, memarg : memarg}(LOAD_instr(numtype, loadop?{loadop <- `loadop?`}, memidx, memarg)) = $free_numtype(numtype) +++ $free_memidx(memidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:564.1-565.49
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:565.1-566.49
   def $free_instr{numtype : numtype, `storeop?` : storeop_(numtype)?, memidx : memidx, memarg : memarg}(STORE_instr(numtype, storeop?{storeop <- `storeop?`}, memidx, memarg)) = $free_numtype(numtype) +++ $free_memidx(memidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:566.1-567.49
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:567.1-568.49
   def $free_instr{vectype : vectype, `vloadop?` : vloadop_(vectype)?, memidx : memidx, memarg : memarg}(VLOAD_instr(vectype, vloadop?{vloadop <- `vloadop?`}, memidx, memarg)) = $free_vectype(vectype) +++ $free_memidx(memidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:568.1-569.49
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:569.1-570.49
   def $free_instr{vectype : vectype, sz : sz, memidx : memidx, memarg : memarg, laneidx : laneidx}(VLOAD_LANE_instr(vectype, sz, memidx, memarg, laneidx)) = $free_vectype(vectype) +++ $free_memidx(memidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:570.1-571.49
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:571.1-572.49
   def $free_instr{vectype : vectype, memidx : memidx, memarg : memarg}(VSTORE_instr(vectype, memidx, memarg)) = $free_vectype(vectype) +++ $free_memidx(memidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:572.1-573.49
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:573.1-574.49
   def $free_instr{vectype : vectype, sz : sz, memidx : memidx, memarg : memarg, laneidx : laneidx}(VSTORE_LANE_instr(vectype, sz, memidx, memarg, laneidx)) = $free_vectype(vectype) +++ $free_memidx(memidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:574.1-574.59
-  def $free_instr{memidx : memidx}(`MEMORY.SIZE`_instr(memidx)) = $free_memidx(memidx)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:575.1-575.59
-  def $free_instr{memidx : memidx}(`MEMORY.GROW`_instr(memidx)) = $free_memidx(memidx)
+  def $free_instr{memidx : memidx}(`MEMORY.SIZE`_instr(memidx)) = $free_memidx(memidx)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:576.1-576.59
+  def $free_instr{memidx : memidx}(`MEMORY.GROW`_instr(memidx)) = $free_memidx(memidx)
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:577.1-577.59
   def $free_instr{memidx : memidx}(`MEMORY.FILL`_instr(memidx)) = $free_memidx(memidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:577.1-578.51
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:578.1-579.51
   def $free_instr{memidx_1 : memidx, memidx_2 : memidx}(`MEMORY.COPY`_instr(memidx_1, memidx_2)) = $free_memidx(memidx_1) +++ $free_memidx(memidx_2)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:579.1-580.49
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:580.1-581.49
   def $free_instr{memidx : memidx, dataidx : dataidx}(`MEMORY.INIT`_instr(memidx, dataidx)) = $free_memidx(memidx) +++ $free_dataidx(dataidx)
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:581.1-581.60
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:582.1-582.60
   def $free_instr{dataidx : dataidx}(`DATA.DROP`_instr(dataidx)) = $free_dataidx(dataidx)
 
-;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:421.1-421.31
+;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:422.1-422.31
 def $free_block(instr*) : free
-  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:589.1-590.47
+  ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:590.1-591.47
   def $free_block{`instr*` : instr*, free : free}(instr*{instr <- `instr*`}) = free[LABELS_free = $shift_labelidxs(free.LABELS_free)]
     -- if (free = $free_list($free_instr(instr)*{instr <- `instr*`}))
 }
@@ -3184,7 +3184,7 @@ relation Vectype_ok: `%|-%:OK`(context, vectype)
 
 ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec
 syntax oktypenat =
-  | OK(nat)
+  | OK(nat : nat)
 
 ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec
 relation Packtype_ok: `%|-%:OK`(context, packtype)
@@ -4281,10 +4281,10 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
     -- Memarg_ok: `|-%:%->%`(memarg, at, $size(nt))
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec:456.1-459.36
-  rule `load-pack`{C : context, Inn : Inn, M : M, sx : sx, x : idx, memarg : memarg, at : addrtype, lim : limits}:
-    `%|-%:%`(C, LOAD_instr((Inn : Inn <: numtype), ?(`%_%`_loadop_(`%`_sz(M), sx)), x, memarg), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype)]), [], `%`_resulttype([(Inn : Inn <: valtype)])))
+  rule `load-pack`{C : context, Inn : Inn, K : K, sx : sx, x : idx, memarg : memarg, at : addrtype, lim : limits}:
+    `%|-%:%`(C, LOAD_instr((Inn : Inn <: numtype), ?(`%_%`_loadop_(`%`_sz(K), sx)), x, memarg), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype)]), [], `%`_resulttype([(Inn : Inn <: valtype)])))
     -- if (C.MEMS_context[x!`%`_idx.0] = `%%PAGE`_memtype(at, lim))
-    -- Memarg_ok: `|-%:%->%`(memarg, at, M)
+    -- Memarg_ok: `|-%:%->%`(memarg, at, K)
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec:470.1-473.44
   rule `store-val`{C : context, nt : numtype, x : idx, memarg : memarg, at : addrtype, lim : limits}:
@@ -4293,10 +4293,10 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
     -- Memarg_ok: `|-%:%->%`(memarg, at, $size(nt))
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec:475.1-478.36
-  rule `store-pack`{C : context, Inn : Inn, M : M, x : idx, memarg : memarg, at : addrtype, lim : limits}:
-    `%|-%:%`(C, STORE_instr((Inn : Inn <: numtype), ?(`%`_storeop_(`%`_sz(M))), x, memarg), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype) (Inn : Inn <: valtype)]), [], `%`_resulttype([])))
+  rule `store-pack`{C : context, Inn : Inn, K : K, x : idx, memarg : memarg, at : addrtype, lim : limits}:
+    `%|-%:%`(C, STORE_instr((Inn : Inn <: numtype), ?(`%`_storeop_(`%`_sz(K))), x, memarg), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype) (Inn : Inn <: valtype)]), [], `%`_resulttype([])))
     -- if (C.MEMS_context[x!`%`_idx.0] = `%%PAGE`_memtype(at, lim))
-    -- Memarg_ok: `|-%:%->%`(memarg, at, M)
+    -- Memarg_ok: `|-%:%->%`(memarg, at, K)
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec:480.1-483.47
   rule `vload-val`{C : context, x : idx, memarg : memarg, at : addrtype, lim : limits}:
@@ -4305,10 +4305,10 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
     -- Memarg_ok: `|-%:%->%`(memarg, at, $vsize(V128_vectype))
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec:485.1-488.41
-  rule `vload-pack`{C : context, M : M, N : N, sx : sx, x : idx, memarg : memarg, at : addrtype, lim : limits}:
-    `%|-%:%`(C, VLOAD_instr(V128_vectype, ?(`SHAPE%X%_%`_vloadop_(`%`_sz(M), N, sx)), x, memarg), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype)]), [], `%`_resulttype([V128_valtype])))
+  rule `vload-pack`{C : context, N : N, M : M, sx : sx, x : idx, memarg : memarg, at : addrtype, lim : limits}:
+    `%|-%:%`(C, VLOAD_instr(V128_vectype, ?(`SHAPE%X%_%`_vloadop_(`%`_sz(N), M, sx)), x, memarg), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype)]), [], `%`_resulttype([V128_valtype])))
     -- if (C.MEMS_context[x!`%`_idx.0] = `%%PAGE`_memtype(at, lim))
-    -- Memarg_ok: `|-%:%->%`(memarg, at, (M * N))
+    -- Memarg_ok: `|-%:%->%`(memarg, at, (N * M!`%`_M.0))
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec:490.1-493.36
   rule `vload-splat`{C : context, N : N, x : idx, memarg : memarg, at : addrtype, lim : limits}:
@@ -4995,11 +4995,11 @@ def $ictz_(N : N, iN : iN(N)) : iN(N)
 def $ipopcnt_(N : N, iN : iN(N)) : iN(N)
 
 ;; ../../../../specification/wasm-latest/3.1-numerics.scalar.spectec
-def $iextend_(N : N, M : M, sx : sx, iN : iN(N)) : iN(N)
+def $iextend_(N : N, K : K, sx : sx, iN : iN(N)) : iN(N)
   ;; ../../../../specification/wasm-latest/3.1-numerics.scalar.spectec
-  def $iextend_{N : N, M : M, i : iN(N)}(N, M, U_sx, i) = `%`_iN((i!`%`_iN.0 \ (2 ^ M)))
+  def $iextend_{N : N, K : K, i : iN(N)}(N, K, U_sx, i) = `%`_iN((i!`%`_iN.0 \ (2 ^ K)))
   ;; ../../../../specification/wasm-latest/3.1-numerics.scalar.spectec
-  def $iextend_{N : N, M : M, i : iN(N)}(N, M, S_sx, i) = `%`_iN($inv_signed_(N, $signed_(M, (i!`%`_iN.0 \ (2 ^ M)))))
+  def $iextend_{N : N, K : K, i : iN(N)}(N, K, S_sx, i) = `%`_iN($inv_signed_(N, $signed_(K, (i!`%`_iN.0 \ (2 ^ K)))))
 
 ;; ../../../../specification/wasm-latest/3.1-numerics.scalar.spectec
 def $iadd_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
@@ -5258,31 +5258,31 @@ def $frelaxed_madd_(N : N, fN : fN(N), fN : fN(N), fN : fN(N)) : fN(N)*
 def $frelaxed_nmadd_(N : N, fN : fN(N), fN : fN(N), fN : fN(N)) : fN(N)*
 
 ;; ../../../../specification/wasm-latest/3.1-numerics.scalar.spectec
-def $wrap__(M : M, N : N, iN : iN(M)) : iN(N)
+def $wrap__(N : N, N' : N, iN : iN(N)) : iN(N')
 
 ;; ../../../../specification/wasm-latest/3.1-numerics.scalar.spectec
-def $extend__(M : M, N : N, sx : sx, iN : iN(M)) : iN(N)
+def $extend__(N : N, N' : N, sx : sx, iN : iN(N)) : iN(N')
 
 ;; ../../../../specification/wasm-latest/3.1-numerics.scalar.spectec
-def $trunc__(M : M, N : N, sx : sx, fN : fN(M)) : iN(N)?
+def $trunc__(N : N, N' : N, sx : sx, fN : fN(N)) : iN(N')?
 
 ;; ../../../../specification/wasm-latest/3.1-numerics.scalar.spectec
-def $trunc_sat__(M : M, N : N, sx : sx, fN : fN(M)) : iN(N)?
+def $trunc_sat__(N : N, N' : N, sx : sx, fN : fN(N)) : iN(N')?
 
 ;; ../../../../specification/wasm-latest/3.1-numerics.scalar.spectec
-def $relaxed_trunc__(M : M, N : N, sx : sx, fN : fN(M)) : iN(N)?
+def $relaxed_trunc__(N : N, N' : N, sx : sx, fN : fN(N)) : iN(N')?
 
 ;; ../../../../specification/wasm-latest/3.1-numerics.scalar.spectec
-def $demote__(M : M, N : N, fN : fN(M)) : fN(N)*
+def $demote__(N : N, N' : N, fN : fN(N)) : fN(N')*
 
 ;; ../../../../specification/wasm-latest/3.1-numerics.scalar.spectec
-def $promote__(M : M, N : N, fN : fN(M)) : fN(N)*
+def $promote__(N : N, N' : N, fN : fN(N)) : fN(N')*
 
 ;; ../../../../specification/wasm-latest/3.1-numerics.scalar.spectec
-def $convert__(M : M, N : N, sx : sx, iN : iN(M)) : fN(N)
+def $convert__(N : N, N' : N, sx : sx, iN : iN(N)) : fN(N')
 
 ;; ../../../../specification/wasm-latest/3.1-numerics.scalar.spectec
-def $narrow__(M : M, N : N, sx : sx, iN : iN(M)) : iN(N)
+def $narrow__(N : N, N' : N, sx : sx, iN : iN(N)) : iN(N')
 
 ;; ../../../../specification/wasm-latest/3.1-numerics.scalar.spectec
 def $reinterpret__(numtype_1 : numtype, numtype_2 : numtype, num_ : num_(numtype_1)) : num_(numtype_2)
@@ -5324,7 +5324,7 @@ def $unop_(numtype : numtype, unop_ : unop_(numtype), num_ : num_(numtype)) : nu
   ;; ../../../../specification/wasm-latest/3.1-numerics.scalar.spectec
   def $unop_{Inn : Inn, i : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), POPCNT_unop_, i) = [$ipopcnt_($sizenn((Inn : Inn <: numtype)), i)]
   ;; ../../../../specification/wasm-latest/3.1-numerics.scalar.spectec
-  def $unop_{Inn : Inn, M : M, i : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), EXTEND_unop_(`%`_sz(M)), i) = [$iextend_($sizenn((Inn : Inn <: numtype)), M, S_sx, i)]
+  def $unop_{Inn : Inn, N' : N, i : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), EXTEND_unop_(`%`_sz(N')), i) = [$iextend_($sizenn((Inn : Inn <: numtype)), N', S_sx, i)]
   ;; ../../../../specification/wasm-latest/3.1-numerics.scalar.spectec
   def $unop_{Fnn : Fnn, f : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), ABS_unop_, f) = $fabs_($sizenn((Fnn : Fnn <: numtype)), f)
   ;; ../../../../specification/wasm-latest/3.1-numerics.scalar.spectec
@@ -5445,32 +5445,32 @@ def $inv_lanes_(shape : shape, lane_($lanetype(shape))*) : vec_(V128_Vnn)
 ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
 def $zeroop(shape_1 : shape, shape_2 : shape, vcvtop__ : vcvtop__(shape_1, shape_2)) : zero?
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $zeroop{Jnn_1 : Jnn, M_1 : M, Jnn_2 : Jnn, M_2 : M, half : half, sx : sx}(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1)), `%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(M_2)), EXTEND_vcvtop__(half, sx)) = ?()
+  def $zeroop{Jnn_1 : Jnn, M_1 : M, Jnn_2 : Jnn, M_2 : M, half : half, sx : sx}(`%X%`_shape((Jnn_1 : Jnn <: lanetype), M_1), `%X%`_shape((Jnn_2 : Jnn <: lanetype), M_2), EXTEND_vcvtop__(half, sx)) = ?()
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $zeroop{Jnn_1 : Jnn, M_1 : M, Fnn_2 : Fnn, M_2 : M, `half?` : half?, sx : sx}(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1)), `%X%`_shape((Fnn_2 : Fnn <: lanetype), `%`_dim(M_2)), CONVERT_vcvtop__(half?{half <- `half?`}, sx)) = ?()
+  def $zeroop{Jnn_1 : Jnn, M_1 : M, Fnn_2 : Fnn, M_2 : M, `half?` : half?, sx : sx}(`%X%`_shape((Jnn_1 : Jnn <: lanetype), M_1), `%X%`_shape((Fnn_2 : Fnn <: lanetype), M_2), CONVERT_vcvtop__(half?{half <- `half?`}, sx)) = ?()
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $zeroop{Fnn_1 : Fnn, M_1 : M, Jnn_2 : Jnn, M_2 : M, sx : sx, `zero?` : zero?}(`%X%`_shape((Fnn_1 : Fnn <: lanetype), `%`_dim(M_1)), `%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(M_2)), TRUNC_SAT_vcvtop__(sx, zero?{zero <- `zero?`})) = zero?{zero <- `zero?`}
+  def $zeroop{Fnn_1 : Fnn, M_1 : M, Jnn_2 : Jnn, M_2 : M, sx : sx, `zero?` : zero?}(`%X%`_shape((Fnn_1 : Fnn <: lanetype), M_1), `%X%`_shape((Jnn_2 : Jnn <: lanetype), M_2), TRUNC_SAT_vcvtop__(sx, zero?{zero <- `zero?`})) = zero?{zero <- `zero?`}
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $zeroop{Fnn_1 : Fnn, M_1 : M, Jnn_2 : Jnn, M_2 : M, sx : sx, `zero?` : zero?}(`%X%`_shape((Fnn_1 : Fnn <: lanetype), `%`_dim(M_1)), `%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(M_2)), RELAXED_TRUNC_vcvtop__(sx, zero?{zero <- `zero?`})) = zero?{zero <- `zero?`}
+  def $zeroop{Fnn_1 : Fnn, M_1 : M, Jnn_2 : Jnn, M_2 : M, sx : sx, `zero?` : zero?}(`%X%`_shape((Fnn_1 : Fnn <: lanetype), M_1), `%X%`_shape((Jnn_2 : Jnn <: lanetype), M_2), RELAXED_TRUNC_vcvtop__(sx, zero?{zero <- `zero?`})) = zero?{zero <- `zero?`}
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $zeroop{Fnn_1 : Fnn, M_1 : M, Fnn_2 : Fnn, M_2 : M, zero : zero}(`%X%`_shape((Fnn_1 : Fnn <: lanetype), `%`_dim(M_1)), `%X%`_shape((Fnn_2 : Fnn <: lanetype), `%`_dim(M_2)), DEMOTE_vcvtop__(zero)) = ?(zero)
+  def $zeroop{Fnn_1 : Fnn, M_1 : M, Fnn_2 : Fnn, M_2 : M, zero : zero}(`%X%`_shape((Fnn_1 : Fnn <: lanetype), M_1), `%X%`_shape((Fnn_2 : Fnn <: lanetype), M_2), DEMOTE_vcvtop__(zero)) = ?(zero)
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $zeroop{Fnn_1 : Fnn, M_1 : M, Fnn_2 : Fnn, M_2 : M}(`%X%`_shape((Fnn_1 : Fnn <: lanetype), `%`_dim(M_1)), `%X%`_shape((Fnn_2 : Fnn <: lanetype), `%`_dim(M_2)), PROMOTELOW_vcvtop__) = ?()
+  def $zeroop{Fnn_1 : Fnn, M_1 : M, Fnn_2 : Fnn, M_2 : M}(`%X%`_shape((Fnn_1 : Fnn <: lanetype), M_1), `%X%`_shape((Fnn_2 : Fnn <: lanetype), M_2), PROMOTELOW_vcvtop__) = ?()
 
 ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
 def $halfop(shape_1 : shape, shape_2 : shape, vcvtop__ : vcvtop__(shape_1, shape_2)) : half?
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $halfop{Jnn_1 : Jnn, M_1 : M, Jnn_2 : Jnn, M_2 : M, half : half, sx : sx}(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1)), `%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(M_2)), EXTEND_vcvtop__(half, sx)) = ?(half)
+  def $halfop{Jnn_1 : Jnn, M_1 : M, Jnn_2 : Jnn, M_2 : M, half : half, sx : sx}(`%X%`_shape((Jnn_1 : Jnn <: lanetype), M_1), `%X%`_shape((Jnn_2 : Jnn <: lanetype), M_2), EXTEND_vcvtop__(half, sx)) = ?(half)
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $halfop{Jnn_1 : Jnn, M_1 : M, Fnn_2 : Fnn, M_2 : M, `half?` : half?, sx : sx}(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1)), `%X%`_shape((Fnn_2 : Fnn <: lanetype), `%`_dim(M_2)), CONVERT_vcvtop__(half?{half <- `half?`}, sx)) = half?{half <- `half?`}
+  def $halfop{Jnn_1 : Jnn, M_1 : M, Fnn_2 : Fnn, M_2 : M, `half?` : half?, sx : sx}(`%X%`_shape((Jnn_1 : Jnn <: lanetype), M_1), `%X%`_shape((Fnn_2 : Fnn <: lanetype), M_2), CONVERT_vcvtop__(half?{half <- `half?`}, sx)) = half?{half <- `half?`}
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $halfop{Fnn_1 : Fnn, M_1 : M, Jnn_2 : Jnn, M_2 : M, sx : sx, `zero?` : zero?}(`%X%`_shape((Fnn_1 : Fnn <: lanetype), `%`_dim(M_1)), `%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(M_2)), TRUNC_SAT_vcvtop__(sx, zero?{zero <- `zero?`})) = ?()
+  def $halfop{Fnn_1 : Fnn, M_1 : M, Jnn_2 : Jnn, M_2 : M, sx : sx, `zero?` : zero?}(`%X%`_shape((Fnn_1 : Fnn <: lanetype), M_1), `%X%`_shape((Jnn_2 : Jnn <: lanetype), M_2), TRUNC_SAT_vcvtop__(sx, zero?{zero <- `zero?`})) = ?()
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $halfop{Fnn_1 : Fnn, M_1 : M, Jnn_2 : Jnn, M_2 : M, sx : sx, `zero?` : zero?}(`%X%`_shape((Fnn_1 : Fnn <: lanetype), `%`_dim(M_1)), `%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(M_2)), RELAXED_TRUNC_vcvtop__(sx, zero?{zero <- `zero?`})) = ?()
+  def $halfop{Fnn_1 : Fnn, M_1 : M, Jnn_2 : Jnn, M_2 : M, sx : sx, `zero?` : zero?}(`%X%`_shape((Fnn_1 : Fnn <: lanetype), M_1), `%X%`_shape((Jnn_2 : Jnn <: lanetype), M_2), RELAXED_TRUNC_vcvtop__(sx, zero?{zero <- `zero?`})) = ?()
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $halfop{Fnn_1 : Fnn, M_1 : M, Fnn_2 : Fnn, M_2 : M, zero : zero}(`%X%`_shape((Fnn_1 : Fnn <: lanetype), `%`_dim(M_1)), `%X%`_shape((Fnn_2 : Fnn <: lanetype), `%`_dim(M_2)), DEMOTE_vcvtop__(zero)) = ?()
+  def $halfop{Fnn_1 : Fnn, M_1 : M, Fnn_2 : Fnn, M_2 : M, zero : zero}(`%X%`_shape((Fnn_1 : Fnn <: lanetype), M_1), `%X%`_shape((Fnn_2 : Fnn <: lanetype), M_2), DEMOTE_vcvtop__(zero)) = ?()
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $halfop{Fnn_1 : Fnn, M_1 : M, Fnn_2 : Fnn, M_2 : M}(`%X%`_shape((Fnn_1 : Fnn <: lanetype), `%`_dim(M_1)), `%X%`_shape((Fnn_2 : Fnn <: lanetype), `%`_dim(M_2)), PROMOTELOW_vcvtop__) = ?(LOW_half)
+  def $halfop{Fnn_1 : Fnn, M_1 : M, Fnn_2 : Fnn, M_2 : M}(`%X%`_shape((Fnn_1 : Fnn <: lanetype), M_1), `%X%`_shape((Fnn_2 : Fnn <: lanetype), M_2), PROMOTELOW_vcvtop__) = ?(LOW_half)
 
 ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
 def $half(half : half, nat : nat, nat : nat) : nat
@@ -5503,127 +5503,127 @@ def $irelaxed_swizzle_lane_(N : N, iN(N)*, iN : iN(N)) : iN(N)
 ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
 def $ivunop_(shape : shape, def $f_(N : N, iN : iN(N)) : iN(N), vec_ : vec_(V128_Vnn)) : vec_(V128_Vnn)*
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $ivunop_{Jnn : Jnn, M : M, def $f_(N : N, iN : iN(N)) : iN(N), v_1 : vec_(V128_Vnn), `c*` : iN($lsizenn((Jnn : Jnn <: lanetype)))*, `c_1*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))))*}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $f_, v_1) = [$inv_lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), c*{c <- `c*`})]
-    -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), v_1))
+  def $ivunop_{Jnn : Jnn, M : M, def $f_(N : N, iN : iN(N)) : iN(N), v_1 : vec_(V128_Vnn), `c*` : iN($lsizenn((Jnn : Jnn <: lanetype)))*, `c_1*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), M)))*}(`%X%`_shape((Jnn : Jnn <: lanetype), M), def $f_, v_1) = [$inv_lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), M), c*{c <- `c*`})]
+    -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), M), v_1))
     -- if (c*{c <- `c*`} = $f_($lsizenn((Jnn : Jnn <: lanetype)), c_1)*{c_1 <- `c_1*`})
 
 ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
 def $fvunop_(shape : shape, def $f_(N : N, fN : fN(N)) : fN(N)*, vec_ : vec_(V128_Vnn)) : vec_(V128_Vnn)*
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $fvunop_{Fnn : Fnn, M : M, def $f_(N : N, fN : fN(N)) : fN(N)*, v_1 : vec_(V128_Vnn), `c**` : lane_((Fnn : Fnn <: lanetype))**, `c_1*` : lane_($lanetype(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M))))*}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $f_, v_1) = $inv_lanes_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), c*{c <- `c*`})*{`c*` <- `c**`}
-    -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), v_1))
+  def $fvunop_{Fnn : Fnn, M : M, def $f_(N : N, fN : fN(N)) : fN(N)*, v_1 : vec_(V128_Vnn), `c**` : lane_((Fnn : Fnn <: lanetype))**, `c_1*` : lane_($lanetype(`%X%`_shape((Fnn : Fnn <: lanetype), M)))*}(`%X%`_shape((Fnn : Fnn <: lanetype), M), def $f_, v_1) = $inv_lanes_(`%X%`_shape((Fnn : Fnn <: lanetype), M), c*{c <- `c*`})*{`c*` <- `c**`}
+    -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape((Fnn : Fnn <: lanetype), M), v_1))
     -- if (c*{c <- `c*`}*{`c*` <- `c**`} = $setproduct_(syntax lane_((Fnn : Fnn <: lanetype)), $f_($sizenn((Fnn : Fnn <: numtype)), c_1)*{c_1 <- `c_1*`}))
 
 ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
 def $ivbinop_(shape : shape, def $f_(N : N, iN : iN(N), iN : iN(N)) : iN(N), vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn)) : vec_(V128_Vnn)*
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $ivbinop_{Jnn : Jnn, M : M, def $f_(N : N, iN : iN(N), iN : iN(N)) : iN(N), v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn), `c*` : iN($lsizenn((Jnn : Jnn <: lanetype)))*, `c_1*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))))*, `c_2*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))))*}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $f_, v_1, v_2) = [$inv_lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), c*{c <- `c*`})]
-    -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), v_1))
-    -- if (c_2*{c_2 <- `c_2*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), v_2))
+  def $ivbinop_{Jnn : Jnn, M : M, def $f_(N : N, iN : iN(N), iN : iN(N)) : iN(N), v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn), `c*` : iN($lsizenn((Jnn : Jnn <: lanetype)))*, `c_1*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), M)))*, `c_2*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), M)))*}(`%X%`_shape((Jnn : Jnn <: lanetype), M), def $f_, v_1, v_2) = [$inv_lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), M), c*{c <- `c*`})]
+    -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), M), v_1))
+    -- if (c_2*{c_2 <- `c_2*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), M), v_2))
     -- if (c*{c <- `c*`} = $f_($lsizenn((Jnn : Jnn <: lanetype)), c_1, c_2)*{c_1 <- `c_1*`, c_2 <- `c_2*`})
 
 ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
 def $ivbinopsx_(shape : shape, def $f_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : iN(N), sx : sx, vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn)) : vec_(V128_Vnn)*
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $ivbinopsx_{Jnn : Jnn, M : M, def $f_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : iN(N), sx : sx, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn), `c*` : iN($lsizenn((Jnn : Jnn <: lanetype)))*, `c_1*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))))*, `c_2*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))))*}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $f_, sx, v_1, v_2) = [$inv_lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), c*{c <- `c*`})]
-    -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), v_1))
-    -- if (c_2*{c_2 <- `c_2*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), v_2))
+  def $ivbinopsx_{Jnn : Jnn, M : M, def $f_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : iN(N), sx : sx, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn), `c*` : iN($lsizenn((Jnn : Jnn <: lanetype)))*, `c_1*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), M)))*, `c_2*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), M)))*}(`%X%`_shape((Jnn : Jnn <: lanetype), M), def $f_, sx, v_1, v_2) = [$inv_lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), M), c*{c <- `c*`})]
+    -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), M), v_1))
+    -- if (c_2*{c_2 <- `c_2*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), M), v_2))
     -- if (c*{c <- `c*`} = $f_($lsizenn((Jnn : Jnn <: lanetype)), sx, c_1, c_2)*{c_1 <- `c_1*`, c_2 <- `c_2*`})
 
 ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
 def $ivbinopsxnd_(shape : shape, def $f_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : iN(N)*, sx : sx, vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn)) : vec_(V128_Vnn)*
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $ivbinopsxnd_{Jnn : Jnn, M : M, def $f_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : iN(N)*, sx : sx, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn), `c**` : lane_((Jnn : Jnn <: lanetype))**, `c_1*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))))*, `c_2*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))))*}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $f_, sx, v_1, v_2) = $inv_lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), c*{c <- `c*`})*{`c*` <- `c**`}
-    -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), v_1))
-    -- if (c_2*{c_2 <- `c_2*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), v_2))
+  def $ivbinopsxnd_{Jnn : Jnn, M : M, def $f_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : iN(N)*, sx : sx, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn), `c**` : lane_((Jnn : Jnn <: lanetype))**, `c_1*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), M)))*, `c_2*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), M)))*}(`%X%`_shape((Jnn : Jnn <: lanetype), M), def $f_, sx, v_1, v_2) = $inv_lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), M), c*{c <- `c*`})*{`c*` <- `c**`}
+    -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), M), v_1))
+    -- if (c_2*{c_2 <- `c_2*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), M), v_2))
     -- if (c*{c <- `c*`}*{`c*` <- `c**`} = $setproduct_(syntax lane_((Jnn : Jnn <: lanetype)), $f_($lsizenn((Jnn : Jnn <: lanetype)), sx, c_1, c_2)*{c_1 <- `c_1*`, c_2 <- `c_2*`}))
 
 ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
 def $fvbinop_(shape : shape, def $f_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*, vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn)) : vec_(V128_Vnn)*
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $fvbinop_{Fnn : Fnn, M : M, def $f_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn), `c**` : lane_((Fnn : Fnn <: lanetype))**, `c_1*` : lane_($lanetype(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M))))*, `c_2*` : lane_($lanetype(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M))))*}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $f_, v_1, v_2) = $inv_lanes_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), c*{c <- `c*`})*{`c*` <- `c**`}
-    -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), v_1))
-    -- if (c_2*{c_2 <- `c_2*`} = $lanes_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), v_2))
+  def $fvbinop_{Fnn : Fnn, M : M, def $f_(N : N, fN : fN(N), fN : fN(N)) : fN(N)*, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn), `c**` : lane_((Fnn : Fnn <: lanetype))**, `c_1*` : lane_($lanetype(`%X%`_shape((Fnn : Fnn <: lanetype), M)))*, `c_2*` : lane_($lanetype(`%X%`_shape((Fnn : Fnn <: lanetype), M)))*}(`%X%`_shape((Fnn : Fnn <: lanetype), M), def $f_, v_1, v_2) = $inv_lanes_(`%X%`_shape((Fnn : Fnn <: lanetype), M), c*{c <- `c*`})*{`c*` <- `c**`}
+    -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape((Fnn : Fnn <: lanetype), M), v_1))
+    -- if (c_2*{c_2 <- `c_2*`} = $lanes_(`%X%`_shape((Fnn : Fnn <: lanetype), M), v_2))
     -- if (c*{c <- `c*`}*{`c*` <- `c**`} = $setproduct_(syntax lane_((Fnn : Fnn <: lanetype)), $f_($sizenn((Fnn : Fnn <: numtype)), c_1, c_2)*{c_1 <- `c_1*`, c_2 <- `c_2*`}))
 
 ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
 def $ivternopnd_(shape : shape, def $f_(N : N, iN : iN(N), iN : iN(N), iN : iN(N)) : iN(N)*, vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn)) : vec_(V128_Vnn)*
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $ivternopnd_{Jnn : Jnn, M : M, def $f_(N : N, iN : iN(N), iN : iN(N), iN : iN(N)) : iN(N)*, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn), v_3 : vec_(V128_Vnn), `c**` : lane_((Jnn : Jnn <: lanetype))**, `c_1*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))))*, `c_2*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))))*, `c_3*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))))*}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $f_, v_1, v_2, v_3) = $inv_lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), c*{c <- `c*`})*{`c*` <- `c**`}
-    -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), v_1))
-    -- if (c_2*{c_2 <- `c_2*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), v_2))
-    -- if (c_3*{c_3 <- `c_3*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), v_3))
+  def $ivternopnd_{Jnn : Jnn, M : M, def $f_(N : N, iN : iN(N), iN : iN(N), iN : iN(N)) : iN(N)*, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn), v_3 : vec_(V128_Vnn), `c**` : lane_((Jnn : Jnn <: lanetype))**, `c_1*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), M)))*, `c_2*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), M)))*, `c_3*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), M)))*}(`%X%`_shape((Jnn : Jnn <: lanetype), M), def $f_, v_1, v_2, v_3) = $inv_lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), M), c*{c <- `c*`})*{`c*` <- `c**`}
+    -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), M), v_1))
+    -- if (c_2*{c_2 <- `c_2*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), M), v_2))
+    -- if (c_3*{c_3 <- `c_3*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), M), v_3))
     -- if (c*{c <- `c*`}*{`c*` <- `c**`} = $setproduct_(syntax lane_((Jnn : Jnn <: lanetype)), $f_($lsizenn((Jnn : Jnn <: lanetype)), c_1, c_2, c_3)*{c_1 <- `c_1*`, c_2 <- `c_2*`, c_3 <- `c_3*`}))
 
 ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
 def $fvternop_(shape : shape, def $f_(N : N, fN : fN(N), fN : fN(N), fN : fN(N)) : fN(N)*, vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn)) : vec_(V128_Vnn)*
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $fvternop_{Fnn : Fnn, M : M, def $f_(N : N, fN : fN(N), fN : fN(N), fN : fN(N)) : fN(N)*, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn), v_3 : vec_(V128_Vnn), `c**` : lane_((Fnn : Fnn <: lanetype))**, `c_1*` : lane_($lanetype(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M))))*, `c_2*` : lane_($lanetype(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M))))*, `c_3*` : lane_($lanetype(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M))))*}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $f_, v_1, v_2, v_3) = $inv_lanes_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), c*{c <- `c*`})*{`c*` <- `c**`}
-    -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), v_1))
-    -- if (c_2*{c_2 <- `c_2*`} = $lanes_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), v_2))
-    -- if (c_3*{c_3 <- `c_3*`} = $lanes_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), v_3))
+  def $fvternop_{Fnn : Fnn, M : M, def $f_(N : N, fN : fN(N), fN : fN(N), fN : fN(N)) : fN(N)*, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn), v_3 : vec_(V128_Vnn), `c**` : lane_((Fnn : Fnn <: lanetype))**, `c_1*` : lane_($lanetype(`%X%`_shape((Fnn : Fnn <: lanetype), M)))*, `c_2*` : lane_($lanetype(`%X%`_shape((Fnn : Fnn <: lanetype), M)))*, `c_3*` : lane_($lanetype(`%X%`_shape((Fnn : Fnn <: lanetype), M)))*}(`%X%`_shape((Fnn : Fnn <: lanetype), M), def $f_, v_1, v_2, v_3) = $inv_lanes_(`%X%`_shape((Fnn : Fnn <: lanetype), M), c*{c <- `c*`})*{`c*` <- `c**`}
+    -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape((Fnn : Fnn <: lanetype), M), v_1))
+    -- if (c_2*{c_2 <- `c_2*`} = $lanes_(`%X%`_shape((Fnn : Fnn <: lanetype), M), v_2))
+    -- if (c_3*{c_3 <- `c_3*`} = $lanes_(`%X%`_shape((Fnn : Fnn <: lanetype), M), v_3))
     -- if (c*{c <- `c*`}*{`c*` <- `c**`} = $setproduct_(syntax lane_((Fnn : Fnn <: lanetype)), $f_($sizenn((Fnn : Fnn <: numtype)), c_1, c_2, c_3)*{c_1 <- `c_1*`, c_2 <- `c_2*`, c_3 <- `c_3*`}))
 
 ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
 def $ivrelop_(shape : shape, def $f_(N : N, iN : iN(N), iN : iN(N)) : u32, vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn)) : vec_(V128_Vnn)
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $ivrelop_{Jnn : Jnn, M : M, def $f_(N : N, iN : iN(N), iN : iN(N)) : u32, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn), `c*` : iN($lsizenn((Jnn : Jnn <: lanetype)))*, `c_1*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))))*, `c_2*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))))*}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $f_, v_1, v_2) = $inv_lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), c*{c <- `c*`})
-    -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), v_1))
-    -- if (c_2*{c_2 <- `c_2*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), v_2))
+  def $ivrelop_{Jnn : Jnn, M : M, def $f_(N : N, iN : iN(N), iN : iN(N)) : u32, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn), `c*` : iN($lsizenn((Jnn : Jnn <: lanetype)))*, `c_1*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), M)))*, `c_2*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), M)))*}(`%X%`_shape((Jnn : Jnn <: lanetype), M), def $f_, v_1, v_2) = $inv_lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), M), c*{c <- `c*`})
+    -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), M), v_1))
+    -- if (c_2*{c_2 <- `c_2*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), M), v_2))
     -- if (c*{c <- `c*`} = $extend__(1, $lsizenn((Jnn : Jnn <: lanetype)), S_sx, `%`_iN($f_($lsizenn((Jnn : Jnn <: lanetype)), c_1, c_2)!`%`_u32.0))*{c_1 <- `c_1*`, c_2 <- `c_2*`})
 
 ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
 def $ivrelopsx_(shape : shape, def $f_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : u32, sx : sx, vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn)) : vec_(V128_Vnn)
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $ivrelopsx_{Jnn : Jnn, M : M, def $f_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : u32, sx : sx, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn), `c*` : iN($lsizenn((Jnn : Jnn <: lanetype)))*, `c_1*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))))*, `c_2*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))))*}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $f_, sx, v_1, v_2) = $inv_lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), c*{c <- `c*`})
-    -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), v_1))
-    -- if (c_2*{c_2 <- `c_2*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), v_2))
+  def $ivrelopsx_{Jnn : Jnn, M : M, def $f_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : u32, sx : sx, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn), `c*` : iN($lsizenn((Jnn : Jnn <: lanetype)))*, `c_1*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), M)))*, `c_2*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), M)))*}(`%X%`_shape((Jnn : Jnn <: lanetype), M), def $f_, sx, v_1, v_2) = $inv_lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), M), c*{c <- `c*`})
+    -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), M), v_1))
+    -- if (c_2*{c_2 <- `c_2*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), M), v_2))
     -- if (c*{c <- `c*`} = $extend__(1, $lsizenn((Jnn : Jnn <: lanetype)), S_sx, `%`_iN($f_($lsizenn((Jnn : Jnn <: lanetype)), sx, c_1, c_2)!`%`_u32.0))*{c_1 <- `c_1*`, c_2 <- `c_2*`})
 
 ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
 def $fvrelop_(shape : shape, def $f_(N : N, fN : fN(N), fN : fN(N)) : u32, vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn)) : vec_(V128_Vnn)
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $fvrelop_{Fnn : Fnn, M : M, def $f_(N : N, fN : fN(N), fN : fN(N)) : u32, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn), Inn : Inn, `c*` : iN($sizenn((Fnn : Fnn <: numtype)))*, `c_1*` : lane_($lanetype(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M))))*, `c_2*` : lane_($lanetype(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M))))*}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $f_, v_1, v_2) = $inv_lanes_(`%X%`_shape((Inn : Inn <: lanetype), `%`_dim(M)), `%`_lane_(c!`%`_iN.0)*{c <- `c*`})
-    -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), v_1))
-    -- if (c_2*{c_2 <- `c_2*`} = $lanes_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), v_2))
+  def $fvrelop_{Fnn : Fnn, M : M, def $f_(N : N, fN : fN(N), fN : fN(N)) : u32, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn), Inn : Inn, `c*` : iN($sizenn((Fnn : Fnn <: numtype)))*, `c_1*` : lane_($lanetype(`%X%`_shape((Fnn : Fnn <: lanetype), M)))*, `c_2*` : lane_($lanetype(`%X%`_shape((Fnn : Fnn <: lanetype), M)))*}(`%X%`_shape((Fnn : Fnn <: lanetype), M), def $f_, v_1, v_2) = $inv_lanes_(`%X%`_shape((Inn : Inn <: lanetype), M), `%`_lane_(c!`%`_iN.0)*{c <- `c*`})
+    -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape((Fnn : Fnn <: lanetype), M), v_1))
+    -- if (c_2*{c_2 <- `c_2*`} = $lanes_(`%X%`_shape((Fnn : Fnn <: lanetype), M), v_2))
     -- if (c*{c <- `c*`} = $extend__(1, $sizenn((Fnn : Fnn <: numtype)), S_sx, `%`_iN($f_($sizenn((Fnn : Fnn <: numtype)), c_1, c_2)!`%`_u32.0))*{c_1 <- `c_1*`, c_2 <- `c_2*`})
     -- if ($isize(Inn) = $fsize(Fnn))
 
 ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
 def $ivshiftop_(shape : shape, def $f_(N : N, iN : iN(N), u32 : u32) : iN(N), vec_ : vec_(V128_Vnn), u32 : u32) : vec_(V128_Vnn)
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $ivshiftop_{Jnn : Jnn, M : M, def $f_(N : N, iN : iN(N), u32 : u32) : iN(N), v_1 : vec_(V128_Vnn), i : u32, `c*` : iN($lsizenn((Jnn : Jnn <: lanetype)))*, `c_1*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))))*}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $f_, v_1, i) = $inv_lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), c*{c <- `c*`})
-    -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), v_1))
+  def $ivshiftop_{Jnn : Jnn, M : M, def $f_(N : N, iN : iN(N), u32 : u32) : iN(N), v_1 : vec_(V128_Vnn), i : u32, `c*` : iN($lsizenn((Jnn : Jnn <: lanetype)))*, `c_1*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), M)))*}(`%X%`_shape((Jnn : Jnn <: lanetype), M), def $f_, v_1, i) = $inv_lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), M), c*{c <- `c*`})
+    -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), M), v_1))
     -- if (c*{c <- `c*`} = $f_($lsizenn((Jnn : Jnn <: lanetype)), c_1, i)*{c_1 <- `c_1*`})
 
 ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
 def $ivshiftopsx_(shape : shape, def $f_(N : N, sx : sx, iN : iN(N), u32 : u32) : iN(N), sx : sx, vec_ : vec_(V128_Vnn), u32 : u32) : vec_(V128_Vnn)
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $ivshiftopsx_{Jnn : Jnn, M : M, def $f_(N : N, sx : sx, iN : iN(N), u32 : u32) : iN(N), sx : sx, v_1 : vec_(V128_Vnn), i : u32, `c*` : iN($lsizenn((Jnn : Jnn <: lanetype)))*, `c_1*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))))*}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $f_, sx, v_1, i) = $inv_lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), c*{c <- `c*`})
-    -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), v_1))
+  def $ivshiftopsx_{Jnn : Jnn, M : M, def $f_(N : N, sx : sx, iN : iN(N), u32 : u32) : iN(N), sx : sx, v_1 : vec_(V128_Vnn), i : u32, `c*` : iN($lsizenn((Jnn : Jnn <: lanetype)))*, `c_1*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), M)))*}(`%X%`_shape((Jnn : Jnn <: lanetype), M), def $f_, sx, v_1, i) = $inv_lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), M), c*{c <- `c*`})
+    -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), M), v_1))
     -- if (c*{c <- `c*`} = $f_($lsizenn((Jnn : Jnn <: lanetype)), sx, c_1, i)*{c_1 <- `c_1*`})
 
 ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
 def $ivbitmaskop_(shape : shape, vec_ : vec_(V128_Vnn)) : u32
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $ivbitmaskop_{Jnn : Jnn, M : M, v_1 : vec_(V128_Vnn), c : iN(32), `c_1*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))))*}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), v_1) = $irev_(32, c)
-    -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), v_1))
-    -- if ($ibits_(32, c) = `%`_bit($ilt_($lsizenn((Jnn : Jnn <: lanetype)), S_sx, c_1, `%`_iN(0))!`%`_u32.0)*{c_1 <- `c_1*`} ++ `%`_bit(0)^(((32 : nat <:> int) - (M : nat <:> int)) : int <:> nat){})
+  def $ivbitmaskop_{Jnn : Jnn, M : M, v_1 : vec_(V128_Vnn), c : iN(32), `c_1*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), M)))*}(`%X%`_shape((Jnn : Jnn <: lanetype), M), v_1) = $irev_(32, c)
+    -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), M), v_1))
+    -- if ($ibits_(32, c) = `%`_bit($ilt_($lsizenn((Jnn : Jnn <: lanetype)), S_sx, c_1, `%`_iN(0))!`%`_u32.0)*{c_1 <- `c_1*`} ++ `%`_bit(0)^(((32 : nat <:> int) - (M!`%`_M.0 : nat <:> int)) : int <:> nat){})
 
 ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
 def $ivswizzlop_(shape : shape, def $f_(N : N, iN(N)*, iN : iN(N)) : iN(N), vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn)) : vec_(V128_Vnn)
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $ivswizzlop_{Jnn : Jnn, M : M, def $f_(N : N, iN(N)*, iN : iN(N)) : iN(N), v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn), `c*` : iN($lsizenn((Jnn : Jnn <: lanetype)))*, `c_1*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))))*, `c_2*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))))*}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $f_, v_1, v_2) = $inv_lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), c*{c <- `c*`})
-    -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), v_1))
-    -- if (c_2*{c_2 <- `c_2*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), v_2))
+  def $ivswizzlop_{Jnn : Jnn, M : M, def $f_(N : N, iN(N)*, iN : iN(N)) : iN(N), v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn), `c*` : iN($lsizenn((Jnn : Jnn <: lanetype)))*, `c_1*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), M)))*, `c_2*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), M)))*}(`%X%`_shape((Jnn : Jnn <: lanetype), M), def $f_, v_1, v_2) = $inv_lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), M), c*{c <- `c*`})
+    -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), M), v_1))
+    -- if (c_2*{c_2 <- `c_2*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), M), v_2))
     -- if (c*{c <- `c*`} = $f_($lsizenn((Jnn : Jnn <: lanetype)), c_1*{c_1 <- `c_1*`}, c_2)*{c_2 <- `c_2*`})
 
 ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
 def $ivshufflop_(shape : shape, laneidx*, vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn)) : vec_(V128_Vnn)
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $ivshufflop_{Jnn : Jnn, M : M, `i*` : laneidx*, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn), `c*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))))*, `c_1*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))))*, `c_2*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))))*}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), i*{i <- `i*`}, v_1, v_2) = $inv_lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), c*{c <- `c*`})
-    -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), v_1))
-    -- if (c_2*{c_2 <- `c_2*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), v_2))
+  def $ivshufflop_{Jnn : Jnn, M : M, `i*` : laneidx*, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn), `c*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), M)))*, `c_1*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), M)))*, `c_2*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), M)))*}(`%X%`_shape((Jnn : Jnn <: lanetype), M), i*{i <- `i*`}, v_1, v_2) = $inv_lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), M), c*{c <- `c*`})
+    -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), M), v_1))
+    -- if (c_2*{c_2 <- `c_2*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), M), v_2))
     -- if (c*{c <- `c*`} = c_1*{c_1 <- `c_1*`} ++ c_2*{c_2 <- `c_2*`}[i!`%`_laneidx.0]*{i <- `i*`})
 
 ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
@@ -5650,180 +5650,180 @@ def $vvternop_(vectype : vectype, vvternop : vvternop, vec_ : vec_(vectype), vec
 ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
 def $vunop_(shape : shape, vunop_ : vunop_(shape), vec_ : vec_(V128_Vnn)) : vec_(V128_Vnn)*
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $vunop_{Fnn : Fnn, M : M, v : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), ABS_vunop_, v) = $fvunop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $fabs_, v)
+  def $vunop_{Fnn : Fnn, M : M, v : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), M), ABS_vunop_, v) = $fvunop_(`%X%`_shape((Fnn : Fnn <: lanetype), M), def $fabs_, v)
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $vunop_{Fnn : Fnn, M : M, v : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), NEG_vunop_, v) = $fvunop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $fneg_, v)
+  def $vunop_{Fnn : Fnn, M : M, v : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), M), NEG_vunop_, v) = $fvunop_(`%X%`_shape((Fnn : Fnn <: lanetype), M), def $fneg_, v)
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $vunop_{Fnn : Fnn, M : M, v : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), SQRT_vunop_, v) = $fvunop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $fsqrt_, v)
+  def $vunop_{Fnn : Fnn, M : M, v : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), M), SQRT_vunop_, v) = $fvunop_(`%X%`_shape((Fnn : Fnn <: lanetype), M), def $fsqrt_, v)
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $vunop_{Fnn : Fnn, M : M, v : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), CEIL_vunop_, v) = $fvunop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $fceil_, v)
+  def $vunop_{Fnn : Fnn, M : M, v : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), M), CEIL_vunop_, v) = $fvunop_(`%X%`_shape((Fnn : Fnn <: lanetype), M), def $fceil_, v)
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $vunop_{Fnn : Fnn, M : M, v : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), FLOOR_vunop_, v) = $fvunop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $ffloor_, v)
+  def $vunop_{Fnn : Fnn, M : M, v : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), M), FLOOR_vunop_, v) = $fvunop_(`%X%`_shape((Fnn : Fnn <: lanetype), M), def $ffloor_, v)
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $vunop_{Fnn : Fnn, M : M, v : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), TRUNC_vunop_, v) = $fvunop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $ftrunc_, v)
+  def $vunop_{Fnn : Fnn, M : M, v : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), M), TRUNC_vunop_, v) = $fvunop_(`%X%`_shape((Fnn : Fnn <: lanetype), M), def $ftrunc_, v)
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $vunop_{Fnn : Fnn, M : M, v : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), NEAREST_vunop_, v) = $fvunop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $fnearest_, v)
+  def $vunop_{Fnn : Fnn, M : M, v : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), M), NEAREST_vunop_, v) = $fvunop_(`%X%`_shape((Fnn : Fnn <: lanetype), M), def $fnearest_, v)
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $vunop_{Jnn : Jnn, M : M, v : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), ABS_vunop_, v) = $ivunop_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $iabs_, v)
+  def $vunop_{Jnn : Jnn, M : M, v : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), M), ABS_vunop_, v) = $ivunop_(`%X%`_shape((Jnn : Jnn <: lanetype), M), def $iabs_, v)
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $vunop_{Jnn : Jnn, M : M, v : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), NEG_vunop_, v) = $ivunop_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $ineg_, v)
+  def $vunop_{Jnn : Jnn, M : M, v : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), M), NEG_vunop_, v) = $ivunop_(`%X%`_shape((Jnn : Jnn <: lanetype), M), def $ineg_, v)
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $vunop_{Jnn : Jnn, M : M, v : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), POPCNT_vunop_, v) = $ivunop_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $ipopcnt_, v)
+  def $vunop_{Jnn : Jnn, M : M, v : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), M), POPCNT_vunop_, v) = $ivunop_(`%X%`_shape((Jnn : Jnn <: lanetype), M), def $ipopcnt_, v)
 
 ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
 def $vbinop_(shape : shape, vbinop_ : vbinop_(shape), vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn)) : vec_(V128_Vnn)*
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $vbinop_{Jnn : Jnn, M : M, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), ADD_vbinop_, v_1, v_2) = $ivbinop_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $iadd_, v_1, v_2)
+  def $vbinop_{Jnn : Jnn, M : M, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), M), ADD_vbinop_, v_1, v_2) = $ivbinop_(`%X%`_shape((Jnn : Jnn <: lanetype), M), def $iadd_, v_1, v_2)
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $vbinop_{Jnn : Jnn, M : M, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), SUB_vbinop_, v_1, v_2) = $ivbinop_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $isub_, v_1, v_2)
+  def $vbinop_{Jnn : Jnn, M : M, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), M), SUB_vbinop_, v_1, v_2) = $ivbinop_(`%X%`_shape((Jnn : Jnn <: lanetype), M), def $isub_, v_1, v_2)
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $vbinop_{Jnn : Jnn, M : M, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), MUL_vbinop_, v_1, v_2) = $ivbinop_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $imul_, v_1, v_2)
+  def $vbinop_{Jnn : Jnn, M : M, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), M), MUL_vbinop_, v_1, v_2) = $ivbinop_(`%X%`_shape((Jnn : Jnn <: lanetype), M), def $imul_, v_1, v_2)
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $vbinop_{Jnn : Jnn, M : M, sx : sx, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), ADD_SAT_vbinop_(sx), v_1, v_2) = $ivbinopsx_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $iadd_sat_, sx, v_1, v_2)
+  def $vbinop_{Jnn : Jnn, M : M, sx : sx, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), M), ADD_SAT_vbinop_(sx), v_1, v_2) = $ivbinopsx_(`%X%`_shape((Jnn : Jnn <: lanetype), M), def $iadd_sat_, sx, v_1, v_2)
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $vbinop_{Jnn : Jnn, M : M, sx : sx, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), SUB_SAT_vbinop_(sx), v_1, v_2) = $ivbinopsx_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $isub_sat_, sx, v_1, v_2)
+  def $vbinop_{Jnn : Jnn, M : M, sx : sx, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), M), SUB_SAT_vbinop_(sx), v_1, v_2) = $ivbinopsx_(`%X%`_shape((Jnn : Jnn <: lanetype), M), def $isub_sat_, sx, v_1, v_2)
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $vbinop_{Jnn : Jnn, M : M, sx : sx, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), MIN_vbinop_(sx), v_1, v_2) = $ivbinopsx_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $imin_, sx, v_1, v_2)
+  def $vbinop_{Jnn : Jnn, M : M, sx : sx, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), M), MIN_vbinop_(sx), v_1, v_2) = $ivbinopsx_(`%X%`_shape((Jnn : Jnn <: lanetype), M), def $imin_, sx, v_1, v_2)
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $vbinop_{Jnn : Jnn, M : M, sx : sx, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), MAX_vbinop_(sx), v_1, v_2) = $ivbinopsx_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $imax_, sx, v_1, v_2)
+  def $vbinop_{Jnn : Jnn, M : M, sx : sx, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), M), MAX_vbinop_(sx), v_1, v_2) = $ivbinopsx_(`%X%`_shape((Jnn : Jnn <: lanetype), M), def $imax_, sx, v_1, v_2)
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $vbinop_{Jnn : Jnn, M : M, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), AVGRU_vbinop_, v_1, v_2) = $ivbinopsx_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $iavgr_, U_sx, v_1, v_2)
+  def $vbinop_{Jnn : Jnn, M : M, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), M), AVGRU_vbinop_, v_1, v_2) = $ivbinopsx_(`%X%`_shape((Jnn : Jnn <: lanetype), M), def $iavgr_, U_sx, v_1, v_2)
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $vbinop_{Jnn : Jnn, M : M, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), Q15MULR_SATS_vbinop_, v_1, v_2) = $ivbinopsx_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $iq15mulr_sat_, S_sx, v_1, v_2)
+  def $vbinop_{Jnn : Jnn, M : M, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), M), Q15MULR_SATS_vbinop_, v_1, v_2) = $ivbinopsx_(`%X%`_shape((Jnn : Jnn <: lanetype), M), def $iq15mulr_sat_, S_sx, v_1, v_2)
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $vbinop_{Jnn : Jnn, M : M, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), RELAXED_Q15MULRS_vbinop_, v_1, v_2) = $ivbinopsxnd_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $irelaxed_q15mulr_, S_sx, v_1, v_2)
+  def $vbinop_{Jnn : Jnn, M : M, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), M), RELAXED_Q15MULRS_vbinop_, v_1, v_2) = $ivbinopsxnd_(`%X%`_shape((Jnn : Jnn <: lanetype), M), def $irelaxed_q15mulr_, S_sx, v_1, v_2)
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $vbinop_{Fnn : Fnn, M : M, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), ADD_vbinop_, v_1, v_2) = $fvbinop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $fadd_, v_1, v_2)
+  def $vbinop_{Fnn : Fnn, M : M, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), M), ADD_vbinop_, v_1, v_2) = $fvbinop_(`%X%`_shape((Fnn : Fnn <: lanetype), M), def $fadd_, v_1, v_2)
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $vbinop_{Fnn : Fnn, M : M, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), SUB_vbinop_, v_1, v_2) = $fvbinop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $fsub_, v_1, v_2)
+  def $vbinop_{Fnn : Fnn, M : M, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), M), SUB_vbinop_, v_1, v_2) = $fvbinop_(`%X%`_shape((Fnn : Fnn <: lanetype), M), def $fsub_, v_1, v_2)
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $vbinop_{Fnn : Fnn, M : M, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), MUL_vbinop_, v_1, v_2) = $fvbinop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $fmul_, v_1, v_2)
+  def $vbinop_{Fnn : Fnn, M : M, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), M), MUL_vbinop_, v_1, v_2) = $fvbinop_(`%X%`_shape((Fnn : Fnn <: lanetype), M), def $fmul_, v_1, v_2)
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $vbinop_{Fnn : Fnn, M : M, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), DIV_vbinop_, v_1, v_2) = $fvbinop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $fdiv_, v_1, v_2)
+  def $vbinop_{Fnn : Fnn, M : M, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), M), DIV_vbinop_, v_1, v_2) = $fvbinop_(`%X%`_shape((Fnn : Fnn <: lanetype), M), def $fdiv_, v_1, v_2)
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $vbinop_{Fnn : Fnn, M : M, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), MIN_vbinop_, v_1, v_2) = $fvbinop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $fmin_, v_1, v_2)
+  def $vbinop_{Fnn : Fnn, M : M, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), M), MIN_vbinop_, v_1, v_2) = $fvbinop_(`%X%`_shape((Fnn : Fnn <: lanetype), M), def $fmin_, v_1, v_2)
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $vbinop_{Fnn : Fnn, M : M, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), MAX_vbinop_, v_1, v_2) = $fvbinop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $fmax_, v_1, v_2)
+  def $vbinop_{Fnn : Fnn, M : M, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), M), MAX_vbinop_, v_1, v_2) = $fvbinop_(`%X%`_shape((Fnn : Fnn <: lanetype), M), def $fmax_, v_1, v_2)
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $vbinop_{Fnn : Fnn, M : M, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), PMIN_vbinop_, v_1, v_2) = $fvbinop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $fpmin_, v_1, v_2)
+  def $vbinop_{Fnn : Fnn, M : M, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), M), PMIN_vbinop_, v_1, v_2) = $fvbinop_(`%X%`_shape((Fnn : Fnn <: lanetype), M), def $fpmin_, v_1, v_2)
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $vbinop_{Fnn : Fnn, M : M, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), PMAX_vbinop_, v_1, v_2) = $fvbinop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $fpmax_, v_1, v_2)
+  def $vbinop_{Fnn : Fnn, M : M, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), M), PMAX_vbinop_, v_1, v_2) = $fvbinop_(`%X%`_shape((Fnn : Fnn <: lanetype), M), def $fpmax_, v_1, v_2)
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $vbinop_{Fnn : Fnn, M : M, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), RELAXED_MIN_vbinop_, v_1, v_2) = $fvbinop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $frelaxed_min_, v_1, v_2)
+  def $vbinop_{Fnn : Fnn, M : M, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), M), RELAXED_MIN_vbinop_, v_1, v_2) = $fvbinop_(`%X%`_shape((Fnn : Fnn <: lanetype), M), def $frelaxed_min_, v_1, v_2)
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $vbinop_{Fnn : Fnn, M : M, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), RELAXED_MAX_vbinop_, v_1, v_2) = $fvbinop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $frelaxed_max_, v_1, v_2)
+  def $vbinop_{Fnn : Fnn, M : M, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), M), RELAXED_MAX_vbinop_, v_1, v_2) = $fvbinop_(`%X%`_shape((Fnn : Fnn <: lanetype), M), def $frelaxed_max_, v_1, v_2)
 
 ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
 def $vternop_(shape : shape, vternop_ : vternop_(shape), vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn)) : vec_(V128_Vnn)*
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $vternop_{Jnn : Jnn, M : M, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn), v_3 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), RELAXED_LANESELECT_vternop_, v_1, v_2, v_3) = $ivternopnd_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $irelaxed_laneselect_, v_1, v_2, v_3)
+  def $vternop_{Jnn : Jnn, M : M, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn), v_3 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), M), RELAXED_LANESELECT_vternop_, v_1, v_2, v_3) = $ivternopnd_(`%X%`_shape((Jnn : Jnn <: lanetype), M), def $irelaxed_laneselect_, v_1, v_2, v_3)
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $vternop_{Fnn : Fnn, M : M, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn), v_3 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), RELAXED_MADD_vternop_, v_1, v_2, v_3) = $fvternop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $frelaxed_madd_, v_1, v_2, v_3)
+  def $vternop_{Fnn : Fnn, M : M, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn), v_3 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), M), RELAXED_MADD_vternop_, v_1, v_2, v_3) = $fvternop_(`%X%`_shape((Fnn : Fnn <: lanetype), M), def $frelaxed_madd_, v_1, v_2, v_3)
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $vternop_{Fnn : Fnn, M : M, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn), v_3 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), RELAXED_NMADD_vternop_, v_1, v_2, v_3) = $fvternop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $frelaxed_nmadd_, v_1, v_2, v_3)
+  def $vternop_{Fnn : Fnn, M : M, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn), v_3 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), M), RELAXED_NMADD_vternop_, v_1, v_2, v_3) = $fvternop_(`%X%`_shape((Fnn : Fnn <: lanetype), M), def $frelaxed_nmadd_, v_1, v_2, v_3)
 
 ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
 def $vrelop_(shape : shape, vrelop_ : vrelop_(shape), vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn)) : vec_(V128_Vnn)
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $vrelop_{Jnn : Jnn, M : M, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), EQ_vrelop_, v_1, v_2) = $ivrelop_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $ieq_, v_1, v_2)
+  def $vrelop_{Jnn : Jnn, M : M, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), M), EQ_vrelop_, v_1, v_2) = $ivrelop_(`%X%`_shape((Jnn : Jnn <: lanetype), M), def $ieq_, v_1, v_2)
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $vrelop_{Jnn : Jnn, M : M, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), NE_vrelop_, v_1, v_2) = $ivrelop_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $ine_, v_1, v_2)
+  def $vrelop_{Jnn : Jnn, M : M, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), M), NE_vrelop_, v_1, v_2) = $ivrelop_(`%X%`_shape((Jnn : Jnn <: lanetype), M), def $ine_, v_1, v_2)
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $vrelop_{Jnn : Jnn, M : M, sx : sx, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), LT_vrelop_(sx), v_1, v_2) = $ivrelopsx_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $ilt_, sx, v_1, v_2)
+  def $vrelop_{Jnn : Jnn, M : M, sx : sx, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), M), LT_vrelop_(sx), v_1, v_2) = $ivrelopsx_(`%X%`_shape((Jnn : Jnn <: lanetype), M), def $ilt_, sx, v_1, v_2)
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $vrelop_{Jnn : Jnn, M : M, sx : sx, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), GT_vrelop_(sx), v_1, v_2) = $ivrelopsx_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $igt_, sx, v_1, v_2)
+  def $vrelop_{Jnn : Jnn, M : M, sx : sx, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), M), GT_vrelop_(sx), v_1, v_2) = $ivrelopsx_(`%X%`_shape((Jnn : Jnn <: lanetype), M), def $igt_, sx, v_1, v_2)
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $vrelop_{Jnn : Jnn, M : M, sx : sx, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), LE_vrelop_(sx), v_1, v_2) = $ivrelopsx_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $ile_, sx, v_1, v_2)
+  def $vrelop_{Jnn : Jnn, M : M, sx : sx, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), M), LE_vrelop_(sx), v_1, v_2) = $ivrelopsx_(`%X%`_shape((Jnn : Jnn <: lanetype), M), def $ile_, sx, v_1, v_2)
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $vrelop_{Jnn : Jnn, M : M, sx : sx, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), GE_vrelop_(sx), v_1, v_2) = $ivrelopsx_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $ige_, sx, v_1, v_2)
+  def $vrelop_{Jnn : Jnn, M : M, sx : sx, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn)}(`%X%`_shape((Jnn : Jnn <: lanetype), M), GE_vrelop_(sx), v_1, v_2) = $ivrelopsx_(`%X%`_shape((Jnn : Jnn <: lanetype), M), def $ige_, sx, v_1, v_2)
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $vrelop_{Fnn : Fnn, M : M, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), EQ_vrelop_, v_1, v_2) = $fvrelop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $feq_, v_1, v_2)
+  def $vrelop_{Fnn : Fnn, M : M, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), M), EQ_vrelop_, v_1, v_2) = $fvrelop_(`%X%`_shape((Fnn : Fnn <: lanetype), M), def $feq_, v_1, v_2)
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $vrelop_{Fnn : Fnn, M : M, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), NE_vrelop_, v_1, v_2) = $fvrelop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $fne_, v_1, v_2)
+  def $vrelop_{Fnn : Fnn, M : M, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), M), NE_vrelop_, v_1, v_2) = $fvrelop_(`%X%`_shape((Fnn : Fnn <: lanetype), M), def $fne_, v_1, v_2)
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $vrelop_{Fnn : Fnn, M : M, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), LT_vrelop_, v_1, v_2) = $fvrelop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $flt_, v_1, v_2)
+  def $vrelop_{Fnn : Fnn, M : M, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), M), LT_vrelop_, v_1, v_2) = $fvrelop_(`%X%`_shape((Fnn : Fnn <: lanetype), M), def $flt_, v_1, v_2)
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $vrelop_{Fnn : Fnn, M : M, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), GT_vrelop_, v_1, v_2) = $fvrelop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $fgt_, v_1, v_2)
+  def $vrelop_{Fnn : Fnn, M : M, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), M), GT_vrelop_, v_1, v_2) = $fvrelop_(`%X%`_shape((Fnn : Fnn <: lanetype), M), def $fgt_, v_1, v_2)
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $vrelop_{Fnn : Fnn, M : M, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), LE_vrelop_, v_1, v_2) = $fvrelop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $fle_, v_1, v_2)
+  def $vrelop_{Fnn : Fnn, M : M, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), M), LE_vrelop_, v_1, v_2) = $fvrelop_(`%X%`_shape((Fnn : Fnn <: lanetype), M), def $fle_, v_1, v_2)
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $vrelop_{Fnn : Fnn, M : M, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), GE_vrelop_, v_1, v_2) = $fvrelop_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(M)), def $fge_, v_1, v_2)
+  def $vrelop_{Fnn : Fnn, M : M, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn)}(`%X%`_shape((Fnn : Fnn <: lanetype), M), GE_vrelop_, v_1, v_2) = $fvrelop_(`%X%`_shape((Fnn : Fnn <: lanetype), M), def $fge_, v_1, v_2)
 
 ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
 def $lcvtop__(shape_1 : shape, shape_2 : shape, vcvtop__ : vcvtop__(shape_1, shape_2), lane_ : lane_($lanetype(shape_1))) : lane_($lanetype(shape_2))*
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $lcvtop__{Jnn_1 : Jnn, M_1 : M, Jnn_2 : Jnn, M_2 : M, half : half, sx : sx, c_1 : lane_($lanetype(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1)))), c : iN($lsizenn2((Jnn_2 : Jnn <: lanetype)))}(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1)), `%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(M_2)), EXTEND_vcvtop__(half, sx), c_1) = [c]
+  def $lcvtop__{Jnn_1 : Jnn, M_1 : M, Jnn_2 : Jnn, M_2 : M, half : half, sx : sx, c_1 : lane_($lanetype(`%X%`_shape((Jnn_1 : Jnn <: lanetype), M_1))), c : iN($lsizenn2((Jnn_2 : Jnn <: lanetype)))}(`%X%`_shape((Jnn_1 : Jnn <: lanetype), M_1), `%X%`_shape((Jnn_2 : Jnn <: lanetype), M_2), EXTEND_vcvtop__(half, sx), c_1) = [c]
     -- if (c = $extend__($lsizenn1((Jnn_1 : Jnn <: lanetype)), $lsizenn2((Jnn_2 : Jnn <: lanetype)), sx, c_1))
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $lcvtop__{Jnn_1 : Jnn, M_1 : M, Fnn_2 : Fnn, M_2 : M, `half?` : half?, sx : sx, c_1 : lane_($lanetype(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1)))), c : fN($lsizenn2((Fnn_2 : Fnn <: lanetype)))}(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1)), `%X%`_shape((Fnn_2 : Fnn <: lanetype), `%`_dim(M_2)), CONVERT_vcvtop__(half?{half <- `half?`}, sx), c_1) = [c]
+  def $lcvtop__{Jnn_1 : Jnn, M_1 : M, Fnn_2 : Fnn, M_2 : M, `half?` : half?, sx : sx, c_1 : lane_($lanetype(`%X%`_shape((Jnn_1 : Jnn <: lanetype), M_1))), c : fN($lsizenn2((Fnn_2 : Fnn <: lanetype)))}(`%X%`_shape((Jnn_1 : Jnn <: lanetype), M_1), `%X%`_shape((Fnn_2 : Fnn <: lanetype), M_2), CONVERT_vcvtop__(half?{half <- `half?`}, sx), c_1) = [c]
     -- if (c = $convert__($lsizenn1((Jnn_1 : Jnn <: lanetype)), $lsizenn2((Fnn_2 : Fnn <: lanetype)), sx, c_1))
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $lcvtop__{Fnn_1 : Fnn, M_1 : M, Inn_2 : Inn, M_2 : M, sx : sx, `zero?` : zero?, c_1 : lane_($lanetype(`%X%`_shape((Fnn_1 : Fnn <: lanetype), `%`_dim(M_1)))), `c?` : iN($lsizenn2((Inn_2 : Inn <: lanetype)))?}(`%X%`_shape((Fnn_1 : Fnn <: lanetype), `%`_dim(M_1)), `%X%`_shape((Inn_2 : Inn <: lanetype), `%`_dim(M_2)), TRUNC_SAT_vcvtop__(sx, zero?{zero <- `zero?`}), c_1) = lift(c?{c <- `c?`})
+  def $lcvtop__{Fnn_1 : Fnn, M_1 : M, Inn_2 : Inn, M_2 : M, sx : sx, `zero?` : zero?, c_1 : lane_($lanetype(`%X%`_shape((Fnn_1 : Fnn <: lanetype), M_1))), `c?` : iN($lsizenn2((Inn_2 : Inn <: lanetype)))?}(`%X%`_shape((Fnn_1 : Fnn <: lanetype), M_1), `%X%`_shape((Inn_2 : Inn <: lanetype), M_2), TRUNC_SAT_vcvtop__(sx, zero?{zero <- `zero?`}), c_1) = lift(c?{c <- `c?`})
     -- if (c?{c <- `c?`} = $trunc_sat__($lsizenn1((Fnn_1 : Fnn <: lanetype)), $lsizenn2((Inn_2 : Inn <: lanetype)), sx, c_1))
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $lcvtop__{Fnn_1 : Fnn, M_1 : M, Inn_2 : Inn, M_2 : M, sx : sx, `zero?` : zero?, c_1 : lane_($lanetype(`%X%`_shape((Fnn_1 : Fnn <: lanetype), `%`_dim(M_1)))), `c?` : iN($lsizenn2((Inn_2 : Inn <: lanetype)))?}(`%X%`_shape((Fnn_1 : Fnn <: lanetype), `%`_dim(M_1)), `%X%`_shape((Inn_2 : Inn <: lanetype), `%`_dim(M_2)), RELAXED_TRUNC_vcvtop__(sx, zero?{zero <- `zero?`}), c_1) = lift(c?{c <- `c?`})
+  def $lcvtop__{Fnn_1 : Fnn, M_1 : M, Inn_2 : Inn, M_2 : M, sx : sx, `zero?` : zero?, c_1 : lane_($lanetype(`%X%`_shape((Fnn_1 : Fnn <: lanetype), M_1))), `c?` : iN($lsizenn2((Inn_2 : Inn <: lanetype)))?}(`%X%`_shape((Fnn_1 : Fnn <: lanetype), M_1), `%X%`_shape((Inn_2 : Inn <: lanetype), M_2), RELAXED_TRUNC_vcvtop__(sx, zero?{zero <- `zero?`}), c_1) = lift(c?{c <- `c?`})
     -- if (c?{c <- `c?`} = $relaxed_trunc__($lsizenn1((Fnn_1 : Fnn <: lanetype)), $lsizenn2((Inn_2 : Inn <: lanetype)), sx, c_1))
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $lcvtop__{Fnn_1 : Fnn, M_1 : M, Fnn_2 : Fnn, M_2 : M, c_1 : lane_($lanetype(`%X%`_shape((Fnn_1 : Fnn <: lanetype), `%`_dim(M_1)))), `c*` : fN($lsizenn2((Fnn_2 : Fnn <: lanetype)))*}(`%X%`_shape((Fnn_1 : Fnn <: lanetype), `%`_dim(M_1)), `%X%`_shape((Fnn_2 : Fnn <: lanetype), `%`_dim(M_2)), DEMOTE_vcvtop__(ZERO_zero), c_1) = c*{c <- `c*`}
+  def $lcvtop__{Fnn_1 : Fnn, M_1 : M, Fnn_2 : Fnn, M_2 : M, c_1 : lane_($lanetype(`%X%`_shape((Fnn_1 : Fnn <: lanetype), M_1))), `c*` : fN($lsizenn2((Fnn_2 : Fnn <: lanetype)))*}(`%X%`_shape((Fnn_1 : Fnn <: lanetype), M_1), `%X%`_shape((Fnn_2 : Fnn <: lanetype), M_2), DEMOTE_vcvtop__(ZERO_zero), c_1) = c*{c <- `c*`}
     -- if (c*{c <- `c*`} = $demote__($lsizenn1((Fnn_1 : Fnn <: lanetype)), $lsizenn2((Fnn_2 : Fnn <: lanetype)), c_1))
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $lcvtop__{Fnn_1 : Fnn, M_1 : M, Fnn_2 : Fnn, M_2 : M, c_1 : lane_($lanetype(`%X%`_shape((Fnn_1 : Fnn <: lanetype), `%`_dim(M_1)))), `c*` : fN($lsizenn2((Fnn_2 : Fnn <: lanetype)))*}(`%X%`_shape((Fnn_1 : Fnn <: lanetype), `%`_dim(M_1)), `%X%`_shape((Fnn_2 : Fnn <: lanetype), `%`_dim(M_2)), PROMOTELOW_vcvtop__, c_1) = c*{c <- `c*`}
+  def $lcvtop__{Fnn_1 : Fnn, M_1 : M, Fnn_2 : Fnn, M_2 : M, c_1 : lane_($lanetype(`%X%`_shape((Fnn_1 : Fnn <: lanetype), M_1))), `c*` : fN($lsizenn2((Fnn_2 : Fnn <: lanetype)))*}(`%X%`_shape((Fnn_1 : Fnn <: lanetype), M_1), `%X%`_shape((Fnn_2 : Fnn <: lanetype), M_2), PROMOTELOW_vcvtop__, c_1) = c*{c <- `c*`}
     -- if (c*{c <- `c*`} = $promote__($lsizenn1((Fnn_1 : Fnn <: lanetype)), $lsizenn2((Fnn_2 : Fnn <: lanetype)), c_1))
 
 ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
 def $vcvtop__(shape_1 : shape, shape_2 : shape, vcvtop__ : vcvtop__(shape_1, shape_2), vec_ : vec_(V128_Vnn)) : vec_(V128_Vnn)
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $vcvtop__{Lnn_1 : Lnn, M : M, Lnn_2 : Lnn, vcvtop : vcvtop__(`%X%`_shape(Lnn_1, `%`_dim(M)), `%X%`_shape(Lnn_2, `%`_dim(M))), v_1 : vec_(V128_Vnn), v : vec_(V128_Vnn), `c_1*` : lane_($lanetype(`%X%`_shape(Lnn_1, `%`_dim(M))))*, `c**` : lane_(Lnn_2)**}(`%X%`_shape(Lnn_1, `%`_dim(M)), `%X%`_shape(Lnn_2, `%`_dim(M)), vcvtop, v_1) = v
-    -- if (($halfop(`%X%`_shape(Lnn_1, `%`_dim(M)), `%X%`_shape(Lnn_2, `%`_dim(M)), vcvtop) = ?()) /\ ($zeroop(`%X%`_shape(Lnn_1, `%`_dim(M)), `%X%`_shape(Lnn_2, `%`_dim(M)), vcvtop) = ?()))
-    -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape(Lnn_1, `%`_dim(M)), v_1))
-    -- if (c*{c <- `c*`}*{`c*` <- `c**`} = $setproduct_(syntax lane_(Lnn_2), $lcvtop__(`%X%`_shape(Lnn_1, `%`_dim(M)), `%X%`_shape(Lnn_2, `%`_dim(M)), vcvtop, c_1)*{c_1 <- `c_1*`}))
-    -- if (v <- $inv_lanes_(`%X%`_shape(Lnn_2, `%`_dim(M)), c*{c <- `c*`})*{`c*` <- `c**`})
+  def $vcvtop__{Lnn_1 : Lnn, M : M, Lnn_2 : Lnn, vcvtop : vcvtop__(`%X%`_shape(Lnn_1, M), `%X%`_shape(Lnn_2, M)), v_1 : vec_(V128_Vnn), v : vec_(V128_Vnn), `c_1*` : lane_($lanetype(`%X%`_shape(Lnn_1, M)))*, `c**` : lane_(Lnn_2)**}(`%X%`_shape(Lnn_1, M), `%X%`_shape(Lnn_2, M), vcvtop, v_1) = v
+    -- if (($halfop(`%X%`_shape(Lnn_1, M), `%X%`_shape(Lnn_2, M), vcvtop) = ?()) /\ ($zeroop(`%X%`_shape(Lnn_1, M), `%X%`_shape(Lnn_2, M), vcvtop) = ?()))
+    -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape(Lnn_1, M), v_1))
+    -- if (c*{c <- `c*`}*{`c*` <- `c**`} = $setproduct_(syntax lane_(Lnn_2), $lcvtop__(`%X%`_shape(Lnn_1, M), `%X%`_shape(Lnn_2, M), vcvtop, c_1)*{c_1 <- `c_1*`}))
+    -- if (v <- $inv_lanes_(`%X%`_shape(Lnn_2, M), c*{c <- `c*`})*{`c*` <- `c**`})
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $vcvtop__{Lnn_1 : Lnn, M_1 : M, Lnn_2 : Lnn, M_2 : M, vcvtop : vcvtop__(`%X%`_shape(Lnn_1, `%`_dim(M_1)), `%X%`_shape(Lnn_2, `%`_dim(M_2))), v_1 : vec_(V128_Vnn), v : vec_(V128_Vnn), half : half, `c_1*` : lane_($lanetype(`%X%`_shape(Lnn_1, `%`_dim(M_1))))*, `c**` : lane_(Lnn_2)**}(`%X%`_shape(Lnn_1, `%`_dim(M_1)), `%X%`_shape(Lnn_2, `%`_dim(M_2)), vcvtop, v_1) = v
-    -- if ($halfop(`%X%`_shape(Lnn_1, `%`_dim(M_1)), `%X%`_shape(Lnn_2, `%`_dim(M_2)), vcvtop) = ?(half))
-    -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape(Lnn_1, `%`_dim(M_1)), v_1)[$half(half, 0, M_2) : M_2])
-    -- if (c*{c <- `c*`}*{`c*` <- `c**`} = $setproduct_(syntax lane_(Lnn_2), $lcvtop__(`%X%`_shape(Lnn_1, `%`_dim(M_1)), `%X%`_shape(Lnn_2, `%`_dim(M_2)), vcvtop, c_1)*{c_1 <- `c_1*`}))
-    -- if (v <- $inv_lanes_(`%X%`_shape(Lnn_2, `%`_dim(M_2)), c*{c <- `c*`})*{`c*` <- `c**`})
+  def $vcvtop__{Lnn_1 : Lnn, M_1 : M, Lnn_2 : Lnn, M_2 : M, vcvtop : vcvtop__(`%X%`_shape(Lnn_1, M_1), `%X%`_shape(Lnn_2, M_2)), v_1 : vec_(V128_Vnn), v : vec_(V128_Vnn), half : half, `c_1*` : lane_($lanetype(`%X%`_shape(Lnn_1, M_1)))*, `c**` : lane_(Lnn_2)**}(`%X%`_shape(Lnn_1, M_1), `%X%`_shape(Lnn_2, M_2), vcvtop, v_1) = v
+    -- if ($halfop(`%X%`_shape(Lnn_1, M_1), `%X%`_shape(Lnn_2, M_2), vcvtop) = ?(half))
+    -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape(Lnn_1, M_1), v_1)[$half(half, 0, M_2!`%`_M.0) : M_2!`%`_M.0])
+    -- if (c*{c <- `c*`}*{`c*` <- `c**`} = $setproduct_(syntax lane_(Lnn_2), $lcvtop__(`%X%`_shape(Lnn_1, M_1), `%X%`_shape(Lnn_2, M_2), vcvtop, c_1)*{c_1 <- `c_1*`}))
+    -- if (v <- $inv_lanes_(`%X%`_shape(Lnn_2, M_2), c*{c <- `c*`})*{`c*` <- `c**`})
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $vcvtop__{Lnn_1 : Lnn, M_1 : M, Lnn_2 : Lnn, M_2 : M, vcvtop : vcvtop__(`%X%`_shape(Lnn_1, `%`_dim(M_1)), `%X%`_shape(Lnn_2, `%`_dim(M_2))), v_1 : vec_(V128_Vnn), v : vec_(V128_Vnn), `c_1*` : lane_($lanetype(`%X%`_shape(Lnn_1, `%`_dim(M_1))))*, `c**` : lane_(Lnn_2)**}(`%X%`_shape(Lnn_1, `%`_dim(M_1)), `%X%`_shape(Lnn_2, `%`_dim(M_2)), vcvtop, v_1) = v
-    -- if ($zeroop(`%X%`_shape(Lnn_1, `%`_dim(M_1)), `%X%`_shape(Lnn_2, `%`_dim(M_2)), vcvtop) = ?(ZERO_zero))
-    -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape(Lnn_1, `%`_dim(M_1)), v_1))
-    -- if (c*{c <- `c*`}*{`c*` <- `c**`} = $setproduct_(syntax lane_(Lnn_2), $lcvtop__(`%X%`_shape(Lnn_1, `%`_dim(M_1)), `%X%`_shape(Lnn_2, `%`_dim(M_2)), vcvtop, c_1)*{c_1 <- `c_1*`} ++ [$zero(Lnn_2)]^M_1{}))
-    -- if (v <- $inv_lanes_(`%X%`_shape(Lnn_2, `%`_dim(M_2)), c*{c <- `c*`})*{`c*` <- `c**`})
+  def $vcvtop__{Lnn_1 : Lnn, M_1 : M, Lnn_2 : Lnn, M_2 : M, vcvtop : vcvtop__(`%X%`_shape(Lnn_1, M_1), `%X%`_shape(Lnn_2, M_2)), v_1 : vec_(V128_Vnn), v : vec_(V128_Vnn), `c_1*` : lane_($lanetype(`%X%`_shape(Lnn_1, M_1)))*, `c**` : lane_(Lnn_2)**}(`%X%`_shape(Lnn_1, M_1), `%X%`_shape(Lnn_2, M_2), vcvtop, v_1) = v
+    -- if ($zeroop(`%X%`_shape(Lnn_1, M_1), `%X%`_shape(Lnn_2, M_2), vcvtop) = ?(ZERO_zero))
+    -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape(Lnn_1, M_1), v_1))
+    -- if (c*{c <- `c*`}*{`c*` <- `c**`} = $setproduct_(syntax lane_(Lnn_2), $lcvtop__(`%X%`_shape(Lnn_1, M_1), `%X%`_shape(Lnn_2, M_2), vcvtop, c_1)*{c_1 <- `c_1*`} ++ [$zero(Lnn_2)]^M_1!`%`_M.0{}))
+    -- if (v <- $inv_lanes_(`%X%`_shape(Lnn_2, M_2), c*{c <- `c*`})*{`c*` <- `c**`})
 
 ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
 def $vshiftop_(ishape : ishape, vshiftop_ : vshiftop_(ishape), vec_ : vec_(V128_Vnn), u32 : u32) : vec_(V128_Vnn)
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $vshiftop_{Jnn : Jnn, M : M, v : vec_(V128_Vnn), i : u32}(`%`_ishape(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))), SHL_vshiftop_, v, i) = $ivshiftop_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $ishl_, v, i)
+  def $vshiftop_{Jnn : Jnn, M : M, v : vec_(V128_Vnn), i : u32}(`%`_ishape(`%X%`_shape((Jnn : Jnn <: lanetype), M)), SHL_vshiftop_, v, i) = $ivshiftop_(`%X%`_shape((Jnn : Jnn <: lanetype), M), def $ishl_, v, i)
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $vshiftop_{Jnn : Jnn, M : M, sx : sx, v : vec_(V128_Vnn), i : u32}(`%`_ishape(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))), SHR_vshiftop_(sx), v, i) = $ivshiftopsx_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), def $ishr_, sx, v, i)
+  def $vshiftop_{Jnn : Jnn, M : M, sx : sx, v : vec_(V128_Vnn), i : u32}(`%`_ishape(`%X%`_shape((Jnn : Jnn <: lanetype), M)), SHR_vshiftop_(sx), v, i) = $ivshiftopsx_(`%X%`_shape((Jnn : Jnn <: lanetype), M), def $ishr_, sx, v, i)
 
 ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
 def $vbitmaskop_(ishape : ishape, vec_ : vec_(V128_Vnn)) : u32
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $vbitmaskop_{Jnn : Jnn, M : M, v : vec_(V128_Vnn)}(`%`_ishape(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))), v) = $ivbitmaskop_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), v)
+  def $vbitmaskop_{Jnn : Jnn, M : M, v : vec_(V128_Vnn)}(`%`_ishape(`%X%`_shape((Jnn : Jnn <: lanetype), M)), v) = $ivbitmaskop_(`%X%`_shape((Jnn : Jnn <: lanetype), M), v)
 
 ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
 def $vswizzlop_(bshape : bshape, vswizzlop_ : vswizzlop_(bshape), vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn)) : vec_(V128_Vnn)
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $vswizzlop_{M : M, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn)}(`%`_bshape(`%X%`_shape(I8_lanetype, `%`_dim(M))), SWIZZLE_vswizzlop_, v_1, v_2) = $ivswizzlop_(`%X%`_shape(I8_lanetype, `%`_dim(M)), def $iswizzle_lane_, v_1, v_2)
+  def $vswizzlop_{M : M, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn)}(`%`_bshape(`%X%`_shape(I8_lanetype, M)), SWIZZLE_vswizzlop_, v_1, v_2) = $ivswizzlop_(`%X%`_shape(I8_lanetype, M), def $iswizzle_lane_, v_1, v_2)
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $vswizzlop_{M : M, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn)}(`%`_bshape(`%X%`_shape(I8_lanetype, `%`_dim(M))), RELAXED_SWIZZLE_vswizzlop_, v_1, v_2) = $ivswizzlop_(`%X%`_shape(I8_lanetype, `%`_dim(M)), def $irelaxed_swizzle_lane_, v_1, v_2)
+  def $vswizzlop_{M : M, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn)}(`%`_bshape(`%X%`_shape(I8_lanetype, M)), RELAXED_SWIZZLE_vswizzlop_, v_1, v_2) = $ivswizzlop_(`%X%`_shape(I8_lanetype, M), def $irelaxed_swizzle_lane_, v_1, v_2)
 
 ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
 def $vshufflop_(bshape : bshape, laneidx*, vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn)) : vec_(V128_Vnn)
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $vshufflop_{M : M, `i*` : laneidx*, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn)}(`%`_bshape(`%X%`_shape(I8_lanetype, `%`_dim(M))), i*{i <- `i*`}, v_1, v_2) = $ivshufflop_(`%X%`_shape(I8_lanetype, `%`_dim(M)), i*{i <- `i*`}, v_1, v_2)
+  def $vshufflop_{M : M, `i*` : laneidx*, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn)}(`%`_bshape(`%X%`_shape(I8_lanetype, M)), i*{i <- `i*`}, v_1, v_2) = $ivshufflop_(`%X%`_shape(I8_lanetype, M), i*{i <- `i*`}, v_1, v_2)
 
 ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
 def $vnarrowop__(shape_1 : shape, shape_2 : shape, sx : sx, vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn)) : vec_(V128_Vnn)
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $vnarrowop__{Jnn_1 : Jnn, M_1 : M, Jnn_2 : Jnn, M_2 : M, sx : sx, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn), v : vec_(V128_Vnn), `c_1*` : lane_($lanetype(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1))))*, `c_2*` : lane_($lanetype(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1))))*, `c'_1*` : iN($lsize((Jnn_2 : Jnn <: lanetype)))*, `c'_2*` : iN($lsize((Jnn_2 : Jnn <: lanetype)))*}(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1)), `%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(M_2)), sx, v_1, v_2) = v
-    -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1)), v_1))
-    -- if (c_2*{c_2 <- `c_2*`} = $lanes_(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1)), v_2))
+  def $vnarrowop__{Jnn_1 : Jnn, M_1 : M, Jnn_2 : Jnn, M_2 : M, sx : sx, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn), v : vec_(V128_Vnn), `c_1*` : lane_($lanetype(`%X%`_shape((Jnn_1 : Jnn <: lanetype), M_1)))*, `c_2*` : lane_($lanetype(`%X%`_shape((Jnn_1 : Jnn <: lanetype), M_1)))*, `c'_1*` : iN($lsize((Jnn_2 : Jnn <: lanetype)))*, `c'_2*` : iN($lsize((Jnn_2 : Jnn <: lanetype)))*}(`%X%`_shape((Jnn_1 : Jnn <: lanetype), M_1), `%X%`_shape((Jnn_2 : Jnn <: lanetype), M_2), sx, v_1, v_2) = v
+    -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape((Jnn_1 : Jnn <: lanetype), M_1), v_1))
+    -- if (c_2*{c_2 <- `c_2*`} = $lanes_(`%X%`_shape((Jnn_1 : Jnn <: lanetype), M_1), v_2))
     -- if (c'_1*{c'_1 <- `c'_1*`} = $narrow__($lsize((Jnn_1 : Jnn <: lanetype)), $lsize((Jnn_2 : Jnn <: lanetype)), sx, c_1)*{c_1 <- `c_1*`})
     -- if (c'_2*{c'_2 <- `c'_2*`} = $narrow__($lsize((Jnn_1 : Jnn <: lanetype)), $lsize((Jnn_2 : Jnn <: lanetype)), sx, c_2)*{c_2 <- `c_2*`})
-    -- if (v = $inv_lanes_(`%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(M_2)), c'_1*{c'_1 <- `c'_1*`} ++ c'_2*{c'_2 <- `c'_2*`}))
+    -- if (v = $inv_lanes_(`%X%`_shape((Jnn_2 : Jnn <: lanetype), M_2), c'_1*{c'_1 <- `c'_1*`} ++ c'_2*{c'_2 <- `c'_2*`}))
 
 ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
 def $ivadd_pairwise_(N : N, iN(N)*) : iN(N)*
@@ -5834,15 +5834,15 @@ def $ivadd_pairwise_(N : N, iN(N)*) : iN(N)*
 ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
 def $ivextunop__(shape_1 : shape, shape_2 : shape, def $f_(N : N, iN(N)*) : iN(N)*, sx : sx, vec_ : vec_(V128_Vnn)) : vec_(V128_Vnn)
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $ivextunop__{Jnn_1 : Jnn, M_1 : M, Jnn_2 : Jnn, M_2 : M, def $f_(N : N, iN(N)*) : iN(N)*, sx : sx, v_1 : vec_(V128_Vnn), `c*` : iN($lsizenn2((Jnn_2 : Jnn <: lanetype)))*, `c_1*` : lane_($lanetype(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1))))*, `c'_1*` : iN($lsizenn2((Jnn_2 : Jnn <: lanetype)))*}(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1)), `%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(M_2)), def $f_, sx, v_1) = $inv_lanes_(`%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(M_2)), c*{c <- `c*`})
-    -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1)), v_1))
+  def $ivextunop__{Jnn_1 : Jnn, M_1 : M, Jnn_2 : Jnn, M_2 : M, def $f_(N : N, iN(N)*) : iN(N)*, sx : sx, v_1 : vec_(V128_Vnn), `c*` : iN($lsizenn2((Jnn_2 : Jnn <: lanetype)))*, `c_1*` : lane_($lanetype(`%X%`_shape((Jnn_1 : Jnn <: lanetype), M_1)))*, `c'_1*` : iN($lsizenn2((Jnn_2 : Jnn <: lanetype)))*}(`%X%`_shape((Jnn_1 : Jnn <: lanetype), M_1), `%X%`_shape((Jnn_2 : Jnn <: lanetype), M_2), def $f_, sx, v_1) = $inv_lanes_(`%X%`_shape((Jnn_2 : Jnn <: lanetype), M_2), c*{c <- `c*`})
+    -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape((Jnn_1 : Jnn <: lanetype), M_1), v_1))
     -- if (c'_1*{c'_1 <- `c'_1*`} = $extend__($lsizenn1((Jnn_1 : Jnn <: lanetype)), $lsizenn2((Jnn_2 : Jnn <: lanetype)), sx, c_1)*{c_1 <- `c_1*`})
     -- if (c*{c <- `c*`} = $f_($lsizenn2((Jnn_2 : Jnn <: lanetype)), c'_1*{c'_1 <- `c'_1*`}))
 
 ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
 def $vextunop__(ishape_1 : ishape, ishape_2 : ishape, vextunop__ : vextunop__(ishape_1, ishape_2), vec_ : vec_(V128_Vnn)) : vec_(V128_Vnn)
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $vextunop__{Jnn_1 : Jnn, M_1 : M, Jnn_2 : Jnn, M_2 : M, sx : sx, v_1 : vec_(V128_Vnn)}(`%`_ishape(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1))), `%`_ishape(`%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(M_2))), EXTADD_PAIRWISE_vextunop__(sx), v_1) = $ivextunop__(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1)), `%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(M_2)), def $ivadd_pairwise_, sx, v_1)
+  def $vextunop__{Jnn_1 : Jnn, M_1 : M, Jnn_2 : Jnn, M_2 : M, sx : sx, v_1 : vec_(V128_Vnn)}(`%`_ishape(`%X%`_shape((Jnn_1 : Jnn <: lanetype), M_1)), `%`_ishape(`%X%`_shape((Jnn_2 : Jnn <: lanetype), M_2)), EXTADD_PAIRWISE_vextunop__(sx), v_1) = $ivextunop__(`%X%`_shape((Jnn_1 : Jnn <: lanetype), M_1), `%X%`_shape((Jnn_2 : Jnn <: lanetype), M_2), def $ivadd_pairwise_, sx, v_1)
 
 ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
 def $ivdot_(N : N, iN(N)*, iN(N)*) : iN(N)*
@@ -5859,9 +5859,9 @@ def $ivdot_sat_(N : N, iN(N)*, iN(N)*) : iN(N)*
 ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
 def $ivextbinop__(shape_1 : shape, shape_2 : shape, def $f_(N : N, iN(N)*, iN(N)*) : iN(N)*, sx : sx, sx : sx, laneidx : laneidx, laneidx : laneidx, vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn)) : vec_(V128_Vnn)
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $ivextbinop__{Jnn_1 : Jnn, M_1 : M, Jnn_2 : Jnn, M_2 : M, def $f_(N : N, iN(N)*, iN(N)*) : iN(N)*, sx_1 : sx, sx_2 : sx, i : laneidx, k : laneidx, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn), `c*` : iN($lsizenn2((Jnn_2 : Jnn <: lanetype)))*, `c_1*` : lane_($lanetype(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1))))*, `c_2*` : lane_($lanetype(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1))))*, `c'_1*` : iN($lsizenn2((Jnn_2 : Jnn <: lanetype)))*, `c'_2*` : iN($lsizenn2((Jnn_2 : Jnn <: lanetype)))*}(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1)), `%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(M_2)), def $f_, sx_1, sx_2, i, k, v_1, v_2) = $inv_lanes_(`%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(M_2)), c*{c <- `c*`})
-    -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1)), v_1)[i!`%`_laneidx.0 : k!`%`_laneidx.0])
-    -- if (c_2*{c_2 <- `c_2*`} = $lanes_(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1)), v_2)[i!`%`_laneidx.0 : k!`%`_laneidx.0])
+  def $ivextbinop__{Jnn_1 : Jnn, M_1 : M, Jnn_2 : Jnn, M_2 : M, def $f_(N : N, iN(N)*, iN(N)*) : iN(N)*, sx_1 : sx, sx_2 : sx, i : laneidx, k : laneidx, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn), `c*` : iN($lsizenn2((Jnn_2 : Jnn <: lanetype)))*, `c_1*` : lane_($lanetype(`%X%`_shape((Jnn_1 : Jnn <: lanetype), M_1)))*, `c_2*` : lane_($lanetype(`%X%`_shape((Jnn_1 : Jnn <: lanetype), M_1)))*, `c'_1*` : iN($lsizenn2((Jnn_2 : Jnn <: lanetype)))*, `c'_2*` : iN($lsizenn2((Jnn_2 : Jnn <: lanetype)))*}(`%X%`_shape((Jnn_1 : Jnn <: lanetype), M_1), `%X%`_shape((Jnn_2 : Jnn <: lanetype), M_2), def $f_, sx_1, sx_2, i, k, v_1, v_2) = $inv_lanes_(`%X%`_shape((Jnn_2 : Jnn <: lanetype), M_2), c*{c <- `c*`})
+    -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape((Jnn_1 : Jnn <: lanetype), M_1), v_1)[i!`%`_laneidx.0 : k!`%`_laneidx.0])
+    -- if (c_2*{c_2 <- `c_2*`} = $lanes_(`%X%`_shape((Jnn_1 : Jnn <: lanetype), M_1), v_2)[i!`%`_laneidx.0 : k!`%`_laneidx.0])
     -- if (c'_1*{c'_1 <- `c'_1*`} = $extend__($lsizenn1((Jnn_1 : Jnn <: lanetype)), $lsizenn2((Jnn_2 : Jnn <: lanetype)), sx_1, c_1)*{c_1 <- `c_1*`})
     -- if (c'_2*{c'_2 <- `c'_2*`} = $extend__($lsizenn1((Jnn_1 : Jnn <: lanetype)), $lsizenn2((Jnn_2 : Jnn <: lanetype)), sx_2, c_2)*{c_2 <- `c_2*`})
     -- if (c*{c <- `c*`} = $f_($lsizenn2((Jnn_2 : Jnn <: lanetype)), c'_1*{c'_1 <- `c'_1*`}, c'_2*{c'_2 <- `c'_2*`}))
@@ -5874,21 +5874,21 @@ def $ivmul_(N : N, iN(N)*, iN(N)*) : iN(N)*
 ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
 def $vextbinop__(ishape_1 : ishape, ishape_2 : ishape, vextbinop__ : vextbinop__(ishape_1, ishape_2), vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn)) : vec_(V128_Vnn)
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $vextbinop__{Jnn_1 : Jnn, M_1 : M, Jnn_2 : Jnn, M_2 : M, half : half, sx : sx, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn)}(`%`_ishape(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1))), `%`_ishape(`%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(M_2))), EXTMUL_vextbinop__(half, sx), v_1, v_2) = $ivextbinop__(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1)), `%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(M_2)), def $ivmul_, sx, sx, `%`_laneidx($half(half, 0, M_2)), `%`_laneidx(M_2), v_1, v_2)
+  def $vextbinop__{Jnn_1 : Jnn, M_1 : M, Jnn_2 : Jnn, M_2 : M, half : half, sx : sx, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn)}(`%`_ishape(`%X%`_shape((Jnn_1 : Jnn <: lanetype), M_1)), `%`_ishape(`%X%`_shape((Jnn_2 : Jnn <: lanetype), M_2)), EXTMUL_vextbinop__(half, sx), v_1, v_2) = $ivextbinop__(`%X%`_shape((Jnn_1 : Jnn <: lanetype), M_1), `%X%`_shape((Jnn_2 : Jnn <: lanetype), M_2), def $ivmul_, sx, sx, `%`_laneidx($half(half, 0, M_2!`%`_M.0)), `%`_laneidx(M_2!`%`_M.0), v_1, v_2)
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $vextbinop__{Jnn_1 : Jnn, M_1 : M, Jnn_2 : Jnn, M_2 : M, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn)}(`%`_ishape(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1))), `%`_ishape(`%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(M_2))), DOTS_vextbinop__, v_1, v_2) = $ivextbinop__(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1)), `%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(M_2)), def $ivdot_, S_sx, S_sx, `%`_laneidx(0), `%`_laneidx(M_1), v_1, v_2)
+  def $vextbinop__{Jnn_1 : Jnn, M_1 : M, Jnn_2 : Jnn, M_2 : M, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn)}(`%`_ishape(`%X%`_shape((Jnn_1 : Jnn <: lanetype), M_1)), `%`_ishape(`%X%`_shape((Jnn_2 : Jnn <: lanetype), M_2)), DOTS_vextbinop__, v_1, v_2) = $ivextbinop__(`%X%`_shape((Jnn_1 : Jnn <: lanetype), M_1), `%X%`_shape((Jnn_2 : Jnn <: lanetype), M_2), def $ivdot_, S_sx, S_sx, `%`_laneidx(0), `%`_laneidx(M_1!`%`_M.0), v_1, v_2)
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $vextbinop__{Jnn_1 : Jnn, M_1 : M, Jnn_2 : Jnn, M_2 : M, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn)}(`%`_ishape(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1))), `%`_ishape(`%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(M_2))), RELAXED_DOTS_vextbinop__, v_1, v_2) = $ivextbinop__(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1)), `%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(M_2)), def $ivdot_sat_, S_sx, $relaxed2($R_idot, syntax sx, S_sx, U_sx), `%`_laneidx(0), `%`_laneidx(M_1), v_1, v_2)
+  def $vextbinop__{Jnn_1 : Jnn, M_1 : M, Jnn_2 : Jnn, M_2 : M, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn)}(`%`_ishape(`%X%`_shape((Jnn_1 : Jnn <: lanetype), M_1)), `%`_ishape(`%X%`_shape((Jnn_2 : Jnn <: lanetype), M_2)), RELAXED_DOTS_vextbinop__, v_1, v_2) = $ivextbinop__(`%X%`_shape((Jnn_1 : Jnn <: lanetype), M_1), `%X%`_shape((Jnn_2 : Jnn <: lanetype), M_2), def $ivdot_sat_, S_sx, $relaxed2($R_idot, syntax sx, S_sx, U_sx), `%`_laneidx(0), `%`_laneidx(M_1!`%`_M.0), v_1, v_2)
 
 ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
 def $vextternop__(ishape_1 : ishape, ishape_2 : ishape, vextternop__ : vextternop__(ishape_1, ishape_2), vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn)) : vec_(V128_Vnn)
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $vextternop__{Jnn_1 : Jnn, M_1 : M, Jnn_2 : Jnn, M_2 : M, c_1 : vec_(V128_Vnn), c_2 : vec_(V128_Vnn), c_3 : vec_(V128_Vnn), c : vec_(V128_Vnn), Jnn : Jnn, M : M, c' : vec_(V128_Vnn), c'' : vec_(V128_Vnn)}(`%`_ishape(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1))), `%`_ishape(`%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(M_2))), RELAXED_DOT_ADDS_vextternop__, c_1, c_2, c_3) = c
+  def $vextternop__{Jnn_1 : Jnn, M_1 : M, Jnn_2 : Jnn, M_2 : M, c_1 : vec_(V128_Vnn), c_2 : vec_(V128_Vnn), c_3 : vec_(V128_Vnn), c : vec_(V128_Vnn), Jnn : Jnn, M : M, c' : vec_(V128_Vnn), c'' : vec_(V128_Vnn)}(`%`_ishape(`%X%`_shape((Jnn_1 : Jnn <: lanetype), M_1)), `%`_ishape(`%X%`_shape((Jnn_2 : Jnn <: lanetype), M_2)), RELAXED_DOT_ADDS_vextternop__, c_1, c_2, c_3) = c
     -- if ($jsizenn(Jnn) = (2 * $lsizenn1((Jnn_1 : Jnn <: lanetype))))
-    -- if (M = (2 * M_2))
-    -- if (c' = $vextbinop__(`%`_ishape(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(M_1))), `%`_ishape(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))), RELAXED_DOTS_vextbinop__, c_1, c_2))
-    -- if (c'' = $vextunop__(`%`_ishape(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))), `%`_ishape(`%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(M_2))), EXTADD_PAIRWISE_vextunop__(S_sx), c'))
-    -- if (c <- $vbinop_(`%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(M_2)), ADD_vbinop_, c'', c_3))
+    -- if (M!`%`_M.0 = (2 * M_2!`%`_M.0))
+    -- if (c' = $vextbinop__(`%`_ishape(`%X%`_shape((Jnn_1 : Jnn <: lanetype), M_1)), `%`_ishape(`%X%`_shape((Jnn : Jnn <: lanetype), M)), RELAXED_DOTS_vextbinop__, c_1, c_2))
+    -- if (c'' = $vextunop__(`%`_ishape(`%X%`_shape((Jnn : Jnn <: lanetype), M)), `%`_ishape(`%X%`_shape((Jnn_2 : Jnn <: lanetype), M_2)), EXTADD_PAIRWISE_vextunop__(S_sx), c'))
+    -- if (c <- $vbinop_(`%X%`_shape((Jnn_2 : Jnn <: lanetype), M_2), ADD_vbinop_, c'', c_3))
 
 ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
 syntax num =
@@ -6785,9 +6785,9 @@ relation Step_pure: `%~>%`(instr*, instr*)
     -- if ($vternop_(sh, vternop, c_1, c_2, c_3) = [])
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
-  rule vtestop{c_1 : vec_(V128_Vnn), Jnn : Jnn, M : M, c : num_(I32_numtype), `i*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M))))*}:
-    `%~>%`([VCONST_instr(V128_vectype, c_1) VTESTOP_instr(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), ALL_TRUE_vtestop_)], [CONST_instr(I32_numtype, c)])
-    -- if (i*{i <- `i*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), c_1))
+  rule vtestop{c_1 : vec_(V128_Vnn), Jnn : Jnn, M : M, c : num_(I32_numtype), `i*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), M)))*}:
+    `%~>%`([VCONST_instr(V128_vectype, c_1) VTESTOP_instr(`%X%`_shape((Jnn : Jnn <: lanetype), M), ALL_TRUE_vtestop_)], [CONST_instr(I32_numtype, c)])
+    -- if (i*{i <- `i*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), M), c_1))
     -- if (c!`%`_num_.0 = $prod($inez_($jsizenn(Jnn), i)!`%`_u32.0*{i <- `i*`}))
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
@@ -6817,23 +6817,23 @@ relation Step_pure: `%~>%`(instr*, instr*)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule vsplat{Lnn : Lnn, c_1 : num_($lunpack(Lnn)), M : M, c : vec_(V128_Vnn)}:
-    `%~>%`([CONST_instr($lunpack(Lnn), c_1) VSPLAT_instr(`%X%`_shape(Lnn, `%`_dim(M)))], [VCONST_instr(V128_vectype, c)])
-    -- if (c = $inv_lanes_(`%X%`_shape(Lnn, `%`_dim(M)), $lpacknum_(Lnn, c_1)^M{}))
+    `%~>%`([CONST_instr($lunpack(Lnn), c_1) VSPLAT_instr(`%X%`_shape(Lnn, M))], [VCONST_instr(V128_vectype, c)])
+    -- if (c = $inv_lanes_(`%X%`_shape(Lnn, M), $lpacknum_(Lnn, c_1)^M!`%`_M.0{}))
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `vextract_lane-num`{c_1 : vec_(V128_Vnn), nt : numtype, M : M, i : laneidx, c_2 : num_(nt)}:
-    `%~>%`([VCONST_instr(V128_vectype, c_1) VEXTRACT_LANE_instr(`%X%`_shape((nt : numtype <: lanetype), `%`_dim(M)), ?(), i)], [CONST_instr(nt, c_2)])
-    -- if (c_2 = $lanes_(`%X%`_shape((nt : numtype <: lanetype), `%`_dim(M)), c_1)[i!`%`_laneidx.0])
+    `%~>%`([VCONST_instr(V128_vectype, c_1) VEXTRACT_LANE_instr(`%X%`_shape((nt : numtype <: lanetype), M), ?(), i)], [CONST_instr(nt, c_2)])
+    -- if (c_2 = $lanes_(`%X%`_shape((nt : numtype <: lanetype), M), c_1)[i!`%`_laneidx.0])
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `vextract_lane-pack`{c_1 : vec_(V128_Vnn), pt : packtype, M : M, sx : sx, i : laneidx, c_2 : num_(I32_numtype)}:
-    `%~>%`([VCONST_instr(V128_vectype, c_1) VEXTRACT_LANE_instr(`%X%`_shape((pt : packtype <: lanetype), `%`_dim(M)), ?(sx), i)], [CONST_instr(I32_numtype, c_2)])
-    -- if (c_2 = $extend__($psize(pt), 32, sx, $lanes_(`%X%`_shape((pt : packtype <: lanetype), `%`_dim(M)), c_1)[i!`%`_laneidx.0]))
+    `%~>%`([VCONST_instr(V128_vectype, c_1) VEXTRACT_LANE_instr(`%X%`_shape((pt : packtype <: lanetype), M), ?(sx), i)], [CONST_instr(I32_numtype, c_2)])
+    -- if (c_2 = $extend__($psize(pt), 32, sx, $lanes_(`%X%`_shape((pt : packtype <: lanetype), M), c_1)[i!`%`_laneidx.0]))
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule vreplace_lane{c_1 : vec_(V128_Vnn), Lnn : Lnn, c_2 : num_($lunpack(Lnn)), M : M, i : laneidx, c : vec_(V128_Vnn)}:
-    `%~>%`([VCONST_instr(V128_vectype, c_1) CONST_instr($lunpack(Lnn), c_2) VREPLACE_LANE_instr(`%X%`_shape(Lnn, `%`_dim(M)), i)], [VCONST_instr(V128_vectype, c)])
-    -- if (c = $inv_lanes_(`%X%`_shape(Lnn, `%`_dim(M)), $lanes_(`%X%`_shape(Lnn, `%`_dim(M)), c_1)[[i!`%`_laneidx.0] = $lpacknum_(Lnn, c_2)]))
+    `%~>%`([VCONST_instr(V128_vectype, c_1) CONST_instr($lunpack(Lnn), c_2) VREPLACE_LANE_instr(`%X%`_shape(Lnn, M), i)], [VCONST_instr(V128_vectype, c)])
+    -- if (c = $inv_lanes_(`%X%`_shape(Lnn, M), $lanes_(`%X%`_shape(Lnn, M), c_1)[[i!`%`_laneidx.0] = $lpacknum_(Lnn, c_2)]))
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule vextunop{c_1 : vec_(V128_Vnn), sh_2 : ishape, sh_1 : ishape, vextunop : vextunop__(sh_1, sh_2), c : vec_(V128_Vnn)}:
@@ -7101,15 +7101,15 @@ relation Step_read: `%~>%`(config, instr*)
     -- if ($vbytes_(V128_vectype, c) = $mem(z, x).BYTES_meminst[(i!`%`_num_.0 + ao.OFFSET_memarg!`%`_u64.0) : ((($vsize(V128_vectype) : nat <:> rat) / (8 : nat <:> rat)) : rat <:> nat)])
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
-  rule `vload-pack-oob`{z : state, at : addrtype, i : num_((at : addrtype <: numtype)), M : M, K : K, sx : sx, x : idx, ao : memarg}:
-    `%~>%`(`%;%`_config(z, [CONST_instr((at : addrtype <: numtype), i) VLOAD_instr(V128_vectype, ?(`SHAPE%X%_%`_vloadop_(`%`_sz(M), K, sx)), x, ao)]), [TRAP_instr])
-    -- if (((i!`%`_num_.0 + ao.OFFSET_memarg!`%`_u64.0) + ((((M * K) : nat <:> rat) / (8 : nat <:> rat)) : rat <:> nat)) > |$mem(z, x).BYTES_meminst|)
+  rule `vload-pack-oob`{z : state, at : addrtype, i : num_((at : addrtype <: numtype)), K : K, M : M, sx : sx, x : idx, ao : memarg}:
+    `%~>%`(`%;%`_config(z, [CONST_instr((at : addrtype <: numtype), i) VLOAD_instr(V128_vectype, ?(`SHAPE%X%_%`_vloadop_(`%`_sz(K), M, sx)), x, ao)]), [TRAP_instr])
+    -- if (((i!`%`_num_.0 + ao.OFFSET_memarg!`%`_u64.0) + ((((K * M!`%`_M.0) : nat <:> rat) / (8 : nat <:> rat)) : rat <:> nat)) > |$mem(z, x).BYTES_meminst|)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
-  rule `vload-pack-val`{z : state, at : addrtype, i : num_((at : addrtype <: numtype)), M : M, K : K, sx : sx, x : idx, ao : memarg, c : vec_(V128_Vnn), `j*` : iN(M)*, Jnn : Jnn}:
-    `%~>%`(`%;%`_config(z, [CONST_instr((at : addrtype <: numtype), i) VLOAD_instr(V128_vectype, ?(`SHAPE%X%_%`_vloadop_(`%`_sz(M), K, sx)), x, ao)]), [VCONST_instr(V128_vectype, c)])
-    -- (if ($ibytes_(M, j) = $mem(z, x).BYTES_meminst[((i!`%`_num_.0 + ao.OFFSET_memarg!`%`_u64.0) + ((((k * M) : nat <:> rat) / (8 : nat <:> rat)) : rat <:> nat)) : (((M : nat <:> rat) / (8 : nat <:> rat)) : rat <:> nat)]))^(k<K){j <- `j*`}
-    -- if ((c = $inv_lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(K)), $extend__(M, $jsizenn(Jnn), sx, j)^K{j <- `j*`})) /\ ($jsizenn(Jnn) = (M * 2)))
+  rule `vload-pack-val`{z : state, at : addrtype, i : num_((at : addrtype <: numtype)), K : K, M : M, sx : sx, x : idx, ao : memarg, c : vec_(V128_Vnn), `j*` : iN(K)*, Jnn : Jnn}:
+    `%~>%`(`%;%`_config(z, [CONST_instr((at : addrtype <: numtype), i) VLOAD_instr(V128_vectype, ?(`SHAPE%X%_%`_vloadop_(`%`_sz(K), M, sx)), x, ao)]), [VCONST_instr(V128_vectype, c)])
+    -- (if ($ibytes_(K, j) = $mem(z, x).BYTES_meminst[((i!`%`_num_.0 + ao.OFFSET_memarg!`%`_u64.0) + ((((k * K) : nat <:> rat) / (8 : nat <:> rat)) : rat <:> nat)) : (((K : nat <:> rat) / (8 : nat <:> rat)) : rat <:> nat)]))^(k<M!`%`_M.0){j <- `j*`}
+    -- if ((c = $inv_lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), M), $extend__(K, $jsizenn(Jnn), sx, j)^M!`%`_M.0{j <- `j*`})) /\ ($jsizenn(Jnn) = (K * 2)))
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `vload-splat-oob`{z : state, at : addrtype, i : num_((at : addrtype <: numtype)), N : N, x : idx, ao : memarg}:
@@ -7121,8 +7121,8 @@ relation Step_read: `%~>%`(config, instr*)
     `%~>%`(`%;%`_config(z, [CONST_instr((at : addrtype <: numtype), i) VLOAD_instr(V128_vectype, ?(SPLAT_vloadop_(`%`_sz(N))), x, ao)]), [VCONST_instr(V128_vectype, c)])
     -- if ($ibytes_(N, j) = $mem(z, x).BYTES_meminst[(i!`%`_num_.0 + ao.OFFSET_memarg!`%`_u64.0) : (((N : nat <:> rat) / (8 : nat <:> rat)) : rat <:> nat)])
     -- if (N = $jsize(Jnn))
-    -- if ((M : nat <:> rat) = ((128 : nat <:> rat) / (N : nat <:> rat)))
-    -- if (c = $inv_lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), `%`_lane_(j!`%`_iN.0)^M{}))
+    -- if ((M!`%`_M.0 : nat <:> rat) = ((128 : nat <:> rat) / (N : nat <:> rat)))
+    -- if (c = $inv_lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), M), `%`_lane_(j!`%`_iN.0)^M!`%`_M.0{}))
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `vload-zero-oob`{z : state, at : addrtype, i : num_((at : addrtype <: numtype)), N : N, x : idx, ao : memarg}:
@@ -7145,8 +7145,8 @@ relation Step_read: `%~>%`(config, instr*)
     `%~>%`(`%;%`_config(z, [CONST_instr((at : addrtype <: numtype), i) VCONST_instr(V128_vectype, c_1) VLOAD_LANE_instr(V128_vectype, `%`_sz(N), x, ao, j)]), [VCONST_instr(V128_vectype, c)])
     -- if ($ibytes_(N, k) = $mem(z, x).BYTES_meminst[(i!`%`_num_.0 + ao.OFFSET_memarg!`%`_u64.0) : (((N : nat <:> rat) / (8 : nat <:> rat)) : rat <:> nat)])
     -- if (N = $jsize(Jnn))
-    -- if ((M : nat <:> rat) = (($vsize(V128_vectype) : nat <:> rat) / (N : nat <:> rat)))
-    -- if (c = $inv_lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), c_1)[[j!`%`_laneidx.0] = `%`_lane_(k!`%`_iN.0)]))
+    -- if ((M!`%`_M.0 : nat <:> rat) = (($vsize(V128_vectype) : nat <:> rat) / (N : nat <:> rat)))
+    -- if (c = $inv_lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), M), $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), M), c_1)[[j!`%`_laneidx.0] = `%`_lane_(k!`%`_iN.0)]))
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `memory.size`{z : state, x : idx, at : addrtype, n : n, lim : limits}:
@@ -7526,8 +7526,8 @@ relation Step: `%~>%`(config, config)
   rule `vstore_lane-val`{z : state, at : addrtype, i : num_((at : addrtype <: numtype)), c : vec_(V128_Vnn), N : N, x : idx, ao : memarg, j : laneidx, `b*` : byte*, Jnn : Jnn, M : M}:
     `%~>%`(`%;%`_config(z, [CONST_instr((at : addrtype <: numtype), i) VCONST_instr(V128_vectype, c) VSTORE_LANE_instr(V128_vectype, `%`_sz(N), x, ao, j)]), `%;%`_config($with_mem(z, x, (i!`%`_num_.0 + ao.OFFSET_memarg!`%`_u64.0), (((N : nat <:> rat) / (8 : nat <:> rat)) : rat <:> nat), b*{b <- `b*`}), []))
     -- if (N = $jsize(Jnn))
-    -- if ((M : nat <:> rat) = ((128 : nat <:> rat) / (N : nat <:> rat)))
-    -- if (b*{b <- `b*`} = $ibytes_(N, `%`_iN($lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), c)[j!`%`_laneidx.0]!`%`_lane_.0)))
+    -- if ((M!`%`_M.0 : nat <:> rat) = ((128 : nat <:> rat) / (N : nat <:> rat)))
+    -- if (b*{b <- `b*`} = $ibytes_(N, `%`_iN($lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), M), c)[j!`%`_laneidx.0]!`%`_lane_.0)))
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec:549.1-552.37
   rule `memory.grow-succeed`{z : state, at : addrtype, n : n, x : idx, mi : meminst}:
@@ -9514,17 +9514,17 @@ grammar Binstr : instr
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:396.5-396.50
   prod{x : idx, ao : memarg} {{0xFD} {`%`_u32(0):Bu32} {(x, ao):Bmemarg}} => VLOAD_instr(V128_vectype, ?(), x, ao)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:397.5-397.70
-  prod{x : idx, ao : memarg} {{0xFD} {`%`_u32(1):Bu32} {(x, ao):Bmemarg}} => VLOAD_instr(V128_vectype, ?(`SHAPE%X%_%`_vloadop_(`%`_sz(8), 8, S_sx)), x, ao)
+  prod{x : idx, ao : memarg} {{0xFD} {`%`_u32(1):Bu32} {(x, ao):Bmemarg}} => VLOAD_instr(V128_vectype, ?(`SHAPE%X%_%`_vloadop_(`%`_sz(8), `%`_M(8), S_sx)), x, ao)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:398.5-398.70
-  prod{x : idx, ao : memarg} {{0xFD} {`%`_u32(2):Bu32} {(x, ao):Bmemarg}} => VLOAD_instr(V128_vectype, ?(`SHAPE%X%_%`_vloadop_(`%`_sz(8), 8, U_sx)), x, ao)
+  prod{x : idx, ao : memarg} {{0xFD} {`%`_u32(2):Bu32} {(x, ao):Bmemarg}} => VLOAD_instr(V128_vectype, ?(`SHAPE%X%_%`_vloadop_(`%`_sz(8), `%`_M(8), U_sx)), x, ao)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:399.5-399.71
-  prod{x : idx, ao : memarg} {{0xFD} {`%`_u32(3):Bu32} {(x, ao):Bmemarg}} => VLOAD_instr(V128_vectype, ?(`SHAPE%X%_%`_vloadop_(`%`_sz(16), 4, S_sx)), x, ao)
+  prod{x : idx, ao : memarg} {{0xFD} {`%`_u32(3):Bu32} {(x, ao):Bmemarg}} => VLOAD_instr(V128_vectype, ?(`SHAPE%X%_%`_vloadop_(`%`_sz(16), `%`_M(4), S_sx)), x, ao)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:400.5-400.71
-  prod{x : idx, ao : memarg} {{0xFD} {`%`_u32(4):Bu32} {(x, ao):Bmemarg}} => VLOAD_instr(V128_vectype, ?(`SHAPE%X%_%`_vloadop_(`%`_sz(16), 4, U_sx)), x, ao)
+  prod{x : idx, ao : memarg} {{0xFD} {`%`_u32(4):Bu32} {(x, ao):Bmemarg}} => VLOAD_instr(V128_vectype, ?(`SHAPE%X%_%`_vloadop_(`%`_sz(16), `%`_M(4), U_sx)), x, ao)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:401.5-401.71
-  prod{x : idx, ao : memarg} {{0xFD} {`%`_u32(5):Bu32} {(x, ao):Bmemarg}} => VLOAD_instr(V128_vectype, ?(`SHAPE%X%_%`_vloadop_(`%`_sz(32), 2, S_sx)), x, ao)
+  prod{x : idx, ao : memarg} {{0xFD} {`%`_u32(5):Bu32} {(x, ao):Bmemarg}} => VLOAD_instr(V128_vectype, ?(`SHAPE%X%_%`_vloadop_(`%`_sz(32), `%`_M(2), S_sx)), x, ao)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:402.5-402.71
-  prod{x : idx, ao : memarg} {{0xFD} {`%`_u32(6):Bu32} {(x, ao):Bmemarg}} => VLOAD_instr(V128_vectype, ?(`SHAPE%X%_%`_vloadop_(`%`_sz(32), 2, U_sx)), x, ao)
+  prod{x : idx, ao : memarg} {{0xFD} {`%`_u32(6):Bu32} {(x, ao):Bmemarg}} => VLOAD_instr(V128_vectype, ?(`SHAPE%X%_%`_vloadop_(`%`_sz(32), `%`_M(2), U_sx)), x, ao)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:403.5-403.61
   prod{x : idx, ao : memarg} {{0xFD} {`%`_u32(7):Bu32} {(x, ao):Bmemarg}} => VLOAD_instr(V128_vectype, ?(SPLAT_vloadop_(`%`_sz(8))), x, ao)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:404.5-404.62
@@ -11130,17 +11130,17 @@ grammar Tplaininstr_(I : I) : instr
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
   prod{x : idx, ao : memarg} {{"v128.load"} {x:Tmemidx_(I)} {ao:Tmemarg_(16)}} => VLOAD_instr(V128_vectype, ?(), x, ao)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod{x : idx, ao : memarg} {{"v128.load8x8_s"} {x:Tmemidx_(I)} {ao:Tmemarg_(8)}} => VLOAD_instr(V128_vectype, ?(`SHAPE%X%_%`_vloadop_(`%`_sz(8), 8, S_sx)), x, ao)
+  prod{x : idx, ao : memarg} {{"v128.load8x8_s"} {x:Tmemidx_(I)} {ao:Tmemarg_(8)}} => VLOAD_instr(V128_vectype, ?(`SHAPE%X%_%`_vloadop_(`%`_sz(8), `%`_M(8), S_sx)), x, ao)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod{x : idx, ao : memarg} {{"v128.load8x8_u"} {x:Tmemidx_(I)} {ao:Tmemarg_(8)}} => VLOAD_instr(V128_vectype, ?(`SHAPE%X%_%`_vloadop_(`%`_sz(8), 8, U_sx)), x, ao)
+  prod{x : idx, ao : memarg} {{"v128.load8x8_u"} {x:Tmemidx_(I)} {ao:Tmemarg_(8)}} => VLOAD_instr(V128_vectype, ?(`SHAPE%X%_%`_vloadop_(`%`_sz(8), `%`_M(8), U_sx)), x, ao)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod{x : idx, ao : memarg} {{"v128.load16x4_s"} {x:Tmemidx_(I)} {ao:Tmemarg_(8)}} => VLOAD_instr(V128_vectype, ?(`SHAPE%X%_%`_vloadop_(`%`_sz(16), 4, S_sx)), x, ao)
+  prod{x : idx, ao : memarg} {{"v128.load16x4_s"} {x:Tmemidx_(I)} {ao:Tmemarg_(8)}} => VLOAD_instr(V128_vectype, ?(`SHAPE%X%_%`_vloadop_(`%`_sz(16), `%`_M(4), S_sx)), x, ao)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod{x : idx, ao : memarg} {{"v128.load16x4_u"} {x:Tmemidx_(I)} {ao:Tmemarg_(8)}} => VLOAD_instr(V128_vectype, ?(`SHAPE%X%_%`_vloadop_(`%`_sz(16), 4, U_sx)), x, ao)
+  prod{x : idx, ao : memarg} {{"v128.load16x4_u"} {x:Tmemidx_(I)} {ao:Tmemarg_(8)}} => VLOAD_instr(V128_vectype, ?(`SHAPE%X%_%`_vloadop_(`%`_sz(16), `%`_M(4), U_sx)), x, ao)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod{x : idx, ao : memarg} {{"v128.load32x2_s"} {x:Tmemidx_(I)} {ao:Tmemarg_(8)}} => VLOAD_instr(V128_vectype, ?(`SHAPE%X%_%`_vloadop_(`%`_sz(32), 2, S_sx)), x, ao)
+  prod{x : idx, ao : memarg} {{"v128.load32x2_s"} {x:Tmemidx_(I)} {ao:Tmemarg_(8)}} => VLOAD_instr(V128_vectype, ?(`SHAPE%X%_%`_vloadop_(`%`_sz(32), `%`_M(2), S_sx)), x, ao)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod{x : idx, ao : memarg} {{"v128.load32x2_u"} {x:Tmemidx_(I)} {ao:Tmemarg_(8)}} => VLOAD_instr(V128_vectype, ?(`SHAPE%X%_%`_vloadop_(`%`_sz(32), 2, U_sx)), x, ao)
+  prod{x : idx, ao : memarg} {{"v128.load32x2_u"} {x:Tmemidx_(I)} {ao:Tmemarg_(8)}} => VLOAD_instr(V128_vectype, ?(`SHAPE%X%_%`_vloadop_(`%`_sz(32), `%`_M(2), U_sx)), x, ao)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
   prod{x : idx, ao : memarg} {{"v128.load8_splat"} {x:Tmemidx_(I)} {ao:Tmemarg_(1)}} => VLOAD_instr(V128_vectype, ?(SPLAT_vloadop_(`%`_sz(8))), x, ao)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec

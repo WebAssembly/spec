@@ -1,5 +1,5 @@
 (* List of actively logged functions' labels *)
-let active : string list ref = ref ["il.match";"il.reduce_exp";"il.reduce_prems"]
+let active : string list ref = ref []
 
 let fmt = Printf.sprintf
 let loc = Source.string_of_region

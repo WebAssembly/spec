@@ -446,15 +446,15 @@ rule Step_read/vload-val:
 
 
 rule Step_read/vload-pack-oob:
-  z; (CONST at i) (VLOAD V128 (SHAPE M X K _ sx) x ao)  ~>  TRAP
-  -- if $(i + ao.OFFSET + M * K/8) > |$mem(z, x).BYTES|
+  z; (CONST at i) (VLOAD V128 (SHAPE K X M _ sx) x ao)  ~>  TRAP
+  -- if $(i + ao.OFFSET + K * M/8) > |$mem(z, x).BYTES|
 
 rule Step_read/vload-pack-val:
-  z; (CONST at i) (VLOAD V128 (SHAPE M X K _ sx) x ao)  ~>  (VCONST V128 c)
+  z; (CONST at i) (VLOAD V128 (SHAPE K X M _ sx) x ao)  ~>  (VCONST V128 c)
   ---- ----
-  -- (if $ibytes_(M, j) = $mem(z, x).BYTES[i + ao.OFFSET + k * M/8 : M/8])^(k<K)
-  -- if c = $inv_lanes_(Jnn X K, $extend__(M, $jsizenn(Jnn), sx, j)^K)
-     /\ $jsizenn(Jnn) = $(M * 2)
+  -- (if $ibytes_(K, j) = $mem(z, x).BYTES[i + ao.OFFSET + k * K/8 : K/8])^(k<M)
+  -- if c = $inv_lanes_(Jnn X M, $extend__(K, $jsizenn(Jnn), sx, j)^M)
+     /\ $jsizenn(Jnn) = $(K * 2)
 
 
 rule Step_read/vload-splat-oob:

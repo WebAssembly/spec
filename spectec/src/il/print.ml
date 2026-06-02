@@ -114,7 +114,7 @@ and string_of_typcase ?(layout = `H) (op, (t, qs, prems), _hints) =
 
 and string_of_check = function
   | Unchecked -> ""
-  | Checked -> "^"
+  | Checked -> ""
 
 and string_of_exp e =
   (if !print_notes then "(" else "") ^

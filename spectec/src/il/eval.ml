@@ -15,7 +15,13 @@ type subst = Subst.t
 
 let assume_coherent_matches = ref true
 
-type 'a result = ('a, 'a) Result.t 
+type 'a result = ('a, 'a) Result.t
+
+let static f env x =
+  let (Ok y | Error y) = f true env x in Ok y
+
+let static3 f env x1 x2 x3 =
+  let (Ok y | Error y) = f true env x1 x2 x3 in Ok y
 
 let (let*) = Option.bind
 
@@ -105,7 +111,7 @@ let rec reduce_typ env t : typ result =
   ) @@ fun _ ->
   match t.it with
   | VarT (id, as_) ->
-    let** as' = map_results (reduce_arg env) as_ in
+    let** as' = map_results (static reduce_arg env) as_ in
     let** dto = reduce_typ_app env id as' (Env.find_opt_typ env id) t.at in
     (match dto with
     | Some {it = AliasT t'; _} -> reduce_typ env t'
@@ -133,7 +139,7 @@ and reduce_typ_app env id as_ tdo at : deftyp option result =
   | None -> Ok None  (* id is a type parameter *)
   | Some (_ps, []) -> if !assume_coherent_matches then Ok None else Error None
   | Some (ps, {it = InstD (_ps, as', dt); _}::insts') ->
-    match match_list match_arg env Subst.empty as_ as' with
+    match match_list (static3 match_arg) env Subst.empty as_ as' with
     | Ok (Some s) -> Ok (Some (Subst.subst_deftyp s dt))
     | Error _ -> reduce_typ_app env id as_ (Some (ps, insts')) at
     | Ok None ->
@@ -187,12 +193,12 @@ and find_typcase t tcs op at =
 
 (* Expression Reduction *)
 
-and is_normal_arg env a =  (* only for assertions *)
-  match reduce_arg env a with
+and is_normal_arg static env a =  (* only for assertions *)
+  match reduce_arg static env a with
   | Ok a' | Error a' -> Eq.eq_arg a a'
 
-and is_normal_exp env e =  (* only for assertions *)
-  match reduce_exp env e with
+and is_normal_exp static env e =  (* only for assertions *)
+  match reduce_exp static env e with
   | Ok e' | Error e' -> Eq.eq_exp e e'
 
 and is_head_normal_exp e =
@@ -211,15 +217,15 @@ and is_value_exp e =
   | StrE (efs, Checked) -> List.for_all (fun (_, e) -> is_value_exp e) efs
   | _ -> false
 
-and reduce_exp env e : exp result =
-  Debug.(log "il.reduce_exp"
+and reduce_exp static env e : exp result =
+  Debug.(log ("il.reduce_exp" ^ if static then " static" else "")
     (fun _ -> fmt "%s" (il_exp e))
     (fun e' -> fmt "%s" (il_result il_exp e'))
   ) @@ fun _ ->
   match e.it with
   | VarE _ | BoolE _ | NumE _ | TextE _ -> Ok e
   | UnE (op, ot, e1) ->
-    let** e1' = reduce_exp env e1 in
+    let** e1' = reduce_exp static env e1 in
     (match op, e1'.it with
     | #Bool.unop as op', BoolE b1 -> Ok (BoolE (Bool.un op' b1) $> e)
     | #Num.unop as op', NumE n1 ->
@@ -232,8 +238,8 @@ and reduce_exp env e : exp result =
     | _ -> Ok (UnE (op, ot, e1') $> e)
     )
   | BinE (op, ot, e1, e2) ->
-    let** e1' = reduce_exp env e1 in
-    let** e2' = reduce_exp env e2 in
+    let** e1' = reduce_exp static env e1 in
+    let** e2' = reduce_exp static env e2 in
     (match op with
     | #Bool.binop as op' ->
       (match Bool.bin_partial op' e1'.it e2'.it of_bool_exp to_bool_exp with
@@ -248,10 +254,10 @@ and reduce_exp env e : exp result =
       )
     )
   | CmpE (op, ot, e1, e2) ->
-    let** e1' = reduce_exp env e1 in
-    let** e2' = reduce_exp env e2 in
+    let** e1' = reduce_exp static env e1 in
+    let** e2' = reduce_exp static env e2 in
     (match op, e1'.it, e2'.it with
-    | `EqOp, _, _ when is_value_exp e1' && is_value_exp e2' ->
+    | `EqOp, _, _ when static || is_value_exp e1' && is_value_exp e2' ->
       Ok (BoolE (Eq.eq_exp e1' e2') $> e)
     | `NeOp, _, _ when is_value_exp e1' && is_value_exp e2' ->
       Ok (BoolE (not (Eq.eq_exp e1' e2')) $> e)
@@ -263,57 +269,57 @@ and reduce_exp env e : exp result =
     | _ -> Ok (CmpE (op, ot, e1', e2') $> e)
     )
   | IdxE (e1, e2) ->
-    let** e1' = reduce_exp env e1 in
-    let** e2' = reduce_exp env e2 in
+    let** e1' = reduce_exp static env e1 in
+    let** e2' = reduce_exp static env e2 in
     (match e1'.it, e2'.it with
     | ListE es, NumE (`Nat i) when i < Z.of_int (List.length es) ->
       Ok (List.nth es (Z.to_int i))
     | _ -> Error (IdxE (e1', e2') $> e)
     )
   | SliceE (e1, e2, e3) ->
-    let** e1' = reduce_exp env e1 in
-    let** e2' = reduce_exp env e2 in
-    let** e3' = reduce_exp env e3 in
+    let** e1' = reduce_exp static env e1 in
+    let** e2' = reduce_exp static env e2 in
+    let** e3' = reduce_exp static env e3 in
     (match e1'.it, e2'.it, e3'.it with
     | ListE es, NumE (`Nat i), NumE (`Nat n) when Z.(i + n) < Z.of_int (List.length es) ->
       Ok (ListE (Lib.List.take (Z.to_int n) (Lib.List.drop (Z.to_int i) es)) $> e)
     | _ -> Error (SliceE (e1', e2', e3') $> e)
     )
   | UpdE (e1, p, e2) ->
-    let** e1' = reduce_exp env e1 in
-    let** e2' = reduce_exp env e2 in
-    reduce_path env e1' p
+    let** e1' = reduce_exp static env e1 in
+    let** e2' = reduce_exp static env e2 in
+    reduce_path static env e1' p
       (fun e' p' ->
         if p'.it = RootP
         then Ok e2'
         else Ok (UpdE (e', p', e2') $> e')
       )
   | ExtE (e1, p, e2) ->
-    let** e1' = reduce_exp env e1 in
-    let** e2' = reduce_exp env e2 in
-    reduce_path env e1' p
+    let** e1' = reduce_exp static env e1 in
+    let** e2' = reduce_exp static env e2 in
+    reduce_path static env e1' p
       (fun e' p' ->
         if p'.it = RootP
-        then reduce_exp env (CatE (e', e2') $> e')
+        then reduce_exp static env (CatE (e', e2') $> e')
         else Ok (ExtE (e', p', e2') $> e')
       )
   | StrE (efs, ch) ->
     let tfs = as_struct_typ env e.note e.at in
-    let** ef_chs' = map_results (reduce_expfield env e.note tfs ch) efs in
+    let** ef_chs' = map_results (reduce_expfield static env e.note tfs ch) efs in
     let efs', chs' = List.split ef_chs' in
     let ch' = if List.for_all ((=) Checked) chs' then Checked else Unchecked in
     Ok (StrE (efs', ch') $> e)
   | DotE (e1, atom) ->
-    let** e1' = reduce_exp env e1 in
+    let** e1' = reduce_exp static env e1 in
     (match e1'.it with
-    | StrE (efs, Checked) ->
+    | StrE (efs, Checked) when static || is_value_exp e1' ->
       Ok (snd (List.find (fun (atomN, _) -> Atom.eq atomN atom) efs))
     | _ -> Ok (DotE (e1', atom) $> e)
     )
   | CompE (e1, e2) ->
     (* TODO(4, rossberg): avoid overlap with CatE? *)
-    let** e1' = reduce_exp env e1 in
-    let** e2' = reduce_exp env e2 in
+    let** e1' = reduce_exp static env e1 in
+    let** e2' = reduce_exp static env e2 in
     (match e1'.it, e2'.it with
     | ListE es1, ListE es2 -> Ok (ListE (es1 @ es2) $> e)
     | OptE None, OptE _ -> Ok e2'
@@ -322,7 +328,7 @@ and reduce_exp env e : exp result =
       let tfs = as_struct_typ env e.note e.at in
       let merge ((atom1, e1), (atom2, e2)) =
         assert (Atom.eq atom1 atom2);
-        reduce_expfield env e.note tfs Checked (atom1, CompE (e1, e2) $> e1)
+        reduce_expfield static env e.note tfs Checked (atom1, CompE (e1, e2) $> e1)
       in
       assert (List.length efs1 = List.length efs2);
       let** ef_chs' = map_results merge (List.combine efs1 efs2) in
@@ -331,41 +337,42 @@ and reduce_exp env e : exp result =
     | _ -> Ok (CompE (e1', e2') $> e)
     )
   | MemE (e1, e2) ->
-    let** e1' = reduce_exp env e1 in
-    let** e2' = reduce_exp env e2 in
+    let** e1' = reduce_exp static env e1 in
+    let** e2' = reduce_exp static env e2 in
     (match e2'.it with
     | OptE None -> Ok (BoolE false $> e)
-    | OptE (Some e2') when is_value_exp e1' && is_value_exp e2' ->
+    | OptE (Some e2') when static || is_value_exp e1' && is_value_exp e2' ->
       Ok (BoolE (Eq.eq_exp e1' e2') $> e)
     | ListE [] -> Ok (BoolE false $> e)
-    | ListE es2' when is_value_exp e1' && List.for_all is_value_exp es2' ->
+    | ListE es2' when static || is_value_exp e1' && List.for_all is_value_exp es2' ->
       Ok (BoolE (List.exists (Eq.eq_exp e1') es2') $> e)
     | _ -> Ok (MemE (e1', e2') $> e)
     )
   | LenE e1 ->
-    let** e1' = reduce_exp env e1 in
+    let** e1' = reduce_exp static env e1 in
     (match e1'.it with
-    | ListE es -> Ok (NumE (`Nat (Z.of_int (List.length es))) $> e)
+    | ListE es when static || is_value_exp e1' ->
+      Ok (NumE (`Nat (Z.of_int (List.length es))) $> e)
     | _ -> Ok (LenE e1' $> e)
     )
   | TupE es ->
-    let** es' = map_results (reduce_exp env) es in
+    let** es' = map_results (reduce_exp static env) es in
     Ok (TupE es' $> e)
   | CallE (id, as_) ->
     let _ps, _t, clauses = Env.find_def env id in
-    let** as' = map_results (reduce_arg env) as_ in
+    let** as' = map_results (reduce_arg static env) as_ in
     (* Allow for parameters or uninterpreted functions *)
     if clauses = [] then
       Ok (CallE (id, as') $> e)
     else
-      let** eo = reduce_exp_call env id as' clauses e.at in
+      let** eo = reduce_exp_call static env id as' clauses e.at in
       (match eo with
       | None -> Ok (CallE (id, as') $> e)
-      | Some e -> reduce_exp env e
+      | Some e -> reduce_exp static env e
       )
   | IterE (e1, iterexp) ->
-    let** e1' = reduce_exp env e1 in
-    let** (iter', xes') as iterexp' = reduce_iterexp env iterexp in
+    let** e1' = reduce_exp static env e1 in
+    let** (iter', xes') as iterexp' = reduce_iterexp static env iterexp in
     let ids, es' = List.split xes' in
     if iter' <= List1 && es' = [] then
       (* Lists with no iteration vars are invalid except as patterns *)
@@ -381,14 +388,14 @@ and reduce_exp env e : exp result =
         else if List.for_all Option.is_some eos' then
           let es1' = List.map Option.get eos' in
           let s = List.fold_left2 Subst.add_varid Subst.empty ids es1' in
-          reduce_exp env (Subst.subst_exp s e1')
+          reduce_exp static env (Subst.subst_exp s e1')
         else
           Ok (IterE (e1', iterexp') $> e)
       | List | List1 ->
         let n = List.length (as_list_exp (List.hd es')) in
         if iter' = List || n >= 1 then
           let en = NumE (`Nat (Z.of_int n)) $$ e.at % (NumT `NatT $ e.at) in
-          reduce_exp env (IterE (e1', (ListN (en, None), xes')) $> e)
+          reduce_exp static env (IterE (e1', (ListN (en, None), xes')) $> e)
         else
           Error (IterE (e1', iterexp') $> e)
       | ListN ({it = NumE (`Nat n'); _}, ido) ->
@@ -405,20 +412,20 @@ and reduce_exp env e : exp result =
                 Subst.add_varid s id en
               )
             in Subst.subst_exp s' e1'
-          )) $> e) |> reduce_exp env
+          )) $> e) |> reduce_exp static env
         else
           Error (IterE (e1', iterexp') $> e)
       | ListN _ ->
         Ok (IterE (e1', iterexp') $> e)
       )
   | ProjE (e1, i) ->
-    let** e1' = reduce_exp env e1 in
+    let** e1' = reduce_exp static env e1 in
     (match e1'.it with
-    | TupE es -> Ok (List.nth es i)
+    | TupE es when static || is_value_exp e1' -> Ok (List.nth es i)
     | _ -> Ok (ProjE (e1', i) $> e)
     )
   | UncaseE (e1, mixop) ->
-    let** e1' = reduce_exp env e1 in
+    let** e1' = reduce_exp static env e1 in
     (match e1'.it with
     | CaseE (mixop', e11', Checked) when Mixop.eq mixop mixop' -> Ok e11'
     | CaseE (mixop', _, _) when not (Mixop.eq mixop mixop') ->
@@ -429,29 +436,29 @@ and reduce_exp env e : exp result =
     (match eo with
     | None -> Ok e
     | Some e1 ->
-      let** e1' = reduce_exp env e1 in
+      let** e1' = reduce_exp static env e1 in
       Ok (OptE (Some e1') $> e)
     )
   | TheE e1 ->
-    let** e1' = reduce_exp env e1 in
+    let** e1' = reduce_exp static env e1 in
     (match e1'.it with
     | OptE (Some e11) -> Ok e11
     | OptE None -> Error (TheE e1' $> e)
     | _ -> Ok (TheE e1' $> e)
     )
   | ListE es ->
-    let** es' = map_results (reduce_exp env) es in
+    let** es' = map_results (reduce_exp static env) es in
     Ok (ListE es' $> e)
   | LiftE e1 ->
-    let** e1' = reduce_exp env e1 in
+    let** e1' = reduce_exp static env e1 in
     (match e1'.it with
     | OptE None -> Ok (ListE [] $> e)
     | OptE (Some e11') -> Ok (ListE [e11'] $> e)
     | _ -> Ok (LiftE e1' $> e)
     )
   | CatE (e1, e2) ->
-    let** e1' = reduce_exp env e1 in
-    let** e2' = reduce_exp env e2 in
+    let** e1' = reduce_exp static env e1 in
+    let** e2' = reduce_exp static env e2 in
     (match e1'.it, e2'.it with
     | ListE es1, ListE es2 -> Ok (ListE (es1 @ es2) $> e)
     | OptE None, OptE _ -> Ok e2'
@@ -459,17 +466,23 @@ and reduce_exp env e : exp result =
     | OptE _, OptE _ -> Error (CatE (e1', e2') $> e)
     | _ -> Ok (CatE (e1', e2') $> e)
     )
-  | CaseE (op, e1, Unchecked) ->
+  | CaseE (op, e1, Unchecked) when not static ->
     let tcs = as_variant_typ env e.note e.at in
-    let _t, _qs, prems = find_typcase e.note tcs op e.at in
-    let** e1' = reduce_exp env e1 in
-    let** so = reduce_prems env Subst.empty prems in
-    Ok (CaseE (op, e1', if so = None then Unchecked else Checked) $> e)
-  | CaseE (op, e1, Checked) ->
-    let** e1' = reduce_exp env e1 in
+    let t, _qs, prems = find_typcase e.note tcs op e.at in
+    let** e1' = reduce_exp static env e1 in
+    let** so = match_exp_typ static env Subst.empty e1' t in
+    (match so with
+    | Some s ->
+      let** so' = reduce_prems env s prems in
+      Ok (CaseE (op, e1', if so' <> None then Checked else Unchecked) $> e)
+    | None ->
+      Ok (CaseE (op, e1', Unchecked) $> e)
+    )
+  | CaseE (op, e1, _ch) ->
+    let** e1' = reduce_exp static env e1 in
     Ok (CaseE (op, e1', Checked) $> e)
   | CvtE (e1, nt1, nt2) ->
-    let** e1' = reduce_exp env e1 in
+    let** e1' = reduce_exp static env e1 in
     (match e1'.it with
     | NumE n ->
       (match Num.cvt nt2 n with
@@ -479,13 +492,13 @@ and reduce_exp env e : exp result =
     | _ -> Ok (CvtE (e1', nt1, nt2) $> e)
     )
   | SubE (e1, t1, t2) ->
-    let** e1' = reduce_exp env e1 in
+    let** e1' = reduce_exp static env e1 in
     let** t1' = reduce_typ env t1 in
     let** t2' = reduce_typ env t2 in
     if equiv_typ env t1' t2' then Ok e1' else
     (match e1'.it with
     | SubE (e11', t11', _t12') ->
-      reduce_exp env (SubE (e11', t11', t2') $> e)
+      reduce_exp static env (SubE (e11', t11', t2') $> e)
     | TupE es' ->
       let xts1 = as_tup_typ env t1' t1.at in
       let xts2 = as_tup_typ env t2' t2.at in
@@ -496,7 +509,8 @@ and reduce_exp env e : exp result =
           let t2I' = Subst.subst_typ s2 t2I in
           let s1' = Subst.add_varid s1 x1I eI in
           let s2' = Subst.add_varid s2 x2I eI in
-          let** eI' = reduce_exp env (SubE (eI, t1I', t2I') $$ eI.at % t2I') in
+          let** eI' =
+            reduce_exp static env (SubE (eI, t1I', t2I') $$ eI.at % t2I') in
           Ok (s1', s2', eI'::res')
         ) (Ok (Subst.empty, Subst.empty, [])) es' (List.combine xts1 xts2)
       in Ok (TupE (List.rev res') $> e)
@@ -509,50 +523,57 @@ and reduce_exp env e : exp result =
           assert (Atom.eq atomI atom2I);
           (atomI, SubE (eI, t1I, t2I) $$ eI.at % t2I)
         ) efs' (List.combine tfs1 tfs2)
-      in reduce_exp env (StrE (efs'', Unchecked) $> e)
+      in reduce_exp static env (StrE (efs'', Unchecked) $> e)
     | CaseE (op, e11', _ch) ->
       let tcs1 = as_variant_typ env t1' t1.at in
       let tcs2 = as_variant_typ env t2' t2.at in
       let t1', _qs, _prems = find_typcase t1' tcs1 op t1.at in
       let t2', _qs, _prems = find_typcase t2' tcs2 op t2.at in
-      reduce_exp env
+      reduce_exp static env
         (CaseE (op, SubE (e11', t1', t2') $$ e11'.at % t2', Unchecked) $> e)
     | _ when is_head_normal_exp e1' ->
       Ok {e1' with note = e.note}
     | _ -> Ok (SubE (e1', t1', t2') $> e)
     )
 
-and reduce_iter env iter : iter result =
+and reduce_iter static env iter : iter result =
   match iter with
   | ListN (e, ido) ->
-    let** e' = reduce_exp env e in
+    let** e' = reduce_exp static env e in
     Ok (ListN (e', ido))
   | iter -> Ok iter
 
-and reduce_iterexp env (iter, xes) : iterexp result =
-  let** iter' = reduce_iter env iter in
-  let** es' = map_results (reduce_exp env) (List.map snd xes) in
+and reduce_iterexp static env (iter, xes) : iterexp result =
+  let** iter' = reduce_iter static env iter in
+  let** es' = map_results (reduce_exp static env) (List.map snd xes) in
   Ok (iter', List.map2 (fun (xI, _) eI' -> xI, eI') xes es')
 
-and reduce_expfield env t tfs ch (atom, e) : (expfield * check) result =
+and reduce_expfield static env t tfs ch (atom, e) : (expfield * check) result =
   match ch with
-  | Unchecked ->
+  | Unchecked when not static ->
     let _t, _qs, prems = find_typfield t tfs atom atom.at in
-    let** e' = reduce_exp env e in
-    let** so = reduce_prems env Subst.empty prems in
-    Ok ((atom, e'), if so = None then Unchecked else Checked)
-  | Checked ->
-    let** e' = reduce_exp env e in
+    let** e' = reduce_exp static env e in
+    let** so = match_exp_typ static env Subst.empty e' t in
+    (match so with
+    | Some s ->
+      let** so' = reduce_prems env s prems in
+      Ok ((atom, e'), if so' <> None then Checked else Unchecked)
+    | None ->
+      Ok ((atom, e'), Unchecked)
+    )
+  | _ch ->
+    let** e' = reduce_exp static env e in
     Ok ((atom, e'), Checked)
 
-and reduce_path env e p k : exp result =
+and reduce_path static env e p k : exp result =
   match p.it with
   | RootP -> k e p
   | IdxP (p1, e1) ->
-    let** e1' = reduce_exp env e1 in
+    let** e1' = reduce_exp static env e1 in
     let k' e' p1' =
       match e'.it, e1'.it with
-      | ListE es, NumE (`Nat i) when i < Z.of_int (List.length es) ->
+      | ListE es, NumE (`Nat i)
+        when (static || is_value_exp e') && i < Z.of_int (List.length es) ->
         let** es' =
           map_results (fun (j, eJ) ->
             if Z.of_int j = i then k eJ p1' else Ok eJ
@@ -565,10 +586,10 @@ and reduce_path env e p k : exp result =
       | _ ->
         k e' (IdxP (p1', e1') $> p)
     in
-    reduce_path env e p1 k'
+    reduce_path static env e p1 k'
   | SliceP (p1, e1, e2) ->
-    let** e1' = reduce_exp env e1 in
-    let** e2' = reduce_exp env e2 in
+    let** e1' = reduce_exp static env e1 in
+    let** e2' = reduce_exp static env e2 in
     let k' e' p1' =
       match e'.it, e1'.it, e2'.it with
       | ListE es, NumE (`Nat i), NumE (`Nat n) when Z.(i + n) < Z.of_int (List.length es) ->
@@ -576,14 +597,14 @@ and reduce_path env e p k : exp result =
         let e2' = ListE Lib.List.(take (Z.to_int n) (drop (Z.to_int i) es)) $> e' in
         let e3' = ListE Lib.List.(drop Z.(to_int (i + n)) es) $> e' in
         let** e2'' = k e2' p1' in
-        reduce_exp env (CatE (e1', CatE (e2'', e3') $> e') $> e')
+        reduce_exp static env (CatE (e1', CatE (e2'', e3') $> e') $> e')
       | ListE _es, NumE (`Nat _), NumE (`Nat _) ->
         let** e'' = k e' (SliceP (p1', e1', e2') $> p) in
         Error e''
       | _ ->
         k e' (SliceP (p1', e1', e2') $> p)
     in
-    reduce_path env e p1 k'
+    reduce_path static env e p1 k'
   | DotP (p1, atom) ->
     let k' e' p1' =
       match e'.it with
@@ -593,7 +614,7 @@ and reduce_path env e p k : exp result =
           map_results (fun (atomI, eI) ->
             if Eq.eq_atom atomI atom then
               let** eI' = k eI p1' in
-              reduce_expfield env e'.note tfs Unchecked (atomI, eI')
+              reduce_expfield static env e'.note tfs Unchecked (atomI, eI')
             else Ok ((atomI, eI), Checked)
           ) efs
         in
@@ -603,54 +624,54 @@ and reduce_path env e p k : exp result =
       | _ ->
         k e' (DotP (p1', atom) $> p)
     in
-    reduce_path env e p1 k'
+    reduce_path static env e p1 k'
 
-and reduce_arg env a : arg result =
+and reduce_arg static env a : arg result =
   Debug.(log "il.reduce_arg"
     (fun _ -> fmt "%s" (il_arg a))
     (fun a' -> fmt "%s" (il_result il_arg a'))
   ) @@ fun _ ->
   match a.it with
-  | ExpA e -> let** e' = reduce_exp env e in Ok (ExpA e' $ a.at)
+  | ExpA e -> let** e' = reduce_exp static env e in Ok (ExpA e' $ a.at)
   | TypA _t -> Ok a  (* types are reduced on demand *)
   | DefA _id -> Ok a
   | GramA _g -> Ok a
 
-and reduce_exp_call env id args clauses at : exp option result =
+and reduce_exp_call static env id args clauses at : exp option result =
   match clauses with
   | [] ->
     Debug.(log "il.reduce_exp_call"
-      (fun _ -> fmt "$%s(%s) / -" id.it (il_args args))
+      (fun _ -> fmt "$%s%s / -" id.it (il_args args))
       (fun r -> fmt "%s" (il_opt_result il_exp r))
     ) @@ fun _ ->
     Error None
   | {it = DefD (_ps, args', e, prems); _}::clauses' ->
     Debug.(log "il.reduce_exp_call"
-      (fun _ -> fmt "$%s(%s) / $%s(%s)" id.it (il_args args) id.it (il_args args'))
+      (fun _ -> fmt "$%s%s / $%s%s" id.it (il_args args) id.it (il_args args'))
       (fun r -> fmt "%s" (il_opt_result il_exp r))
     ) @@ fun _ ->
-    assert (List.for_all (is_normal_arg env) args);
-    match match_list match_arg env Subst.empty args args' with
-    | Error _ -> reduce_exp_call env id args clauses' at
+    assert (List.for_all (is_normal_arg static env) args);
+    match match_list (match_arg static) env Subst.empty args args' with
+    | Error _ -> reduce_exp_call static env id args clauses' at
     | Ok None ->
       if not !assume_coherent_matches then Ok None else
-      (match reduce_exp_call env id args clauses' at with
+      (match reduce_exp_call static env id args clauses' at with
       | Error _ -> Ok None
       | ok -> ok
       )
     | Ok (Some s) ->
       match reduce_prems env s prems with
       | Ok (Some _s') -> Ok (Some (Subst.subst_exp s e))
-      | Error _ -> reduce_exp_call env id args clauses' at
+      | Error _ -> reduce_exp_call static env id args clauses' at
       | Ok None ->
         if not !assume_coherent_matches then Ok None else
-        match reduce_exp_call env id args clauses' at with
+        match reduce_exp_call static env id args clauses' at with
         | Error _ -> Ok None
         | ok -> ok
 
 and reduce_prems env s prems : subst option result =
   Debug.(log "il.reduce_prems"
-    (fun _ -> fmt "%s" (list il_prem prems))
+    (fun _ -> fmt "%s [%s]" (list il_prem prems) (il_subst s))
     (fun r -> fmt "%s" (il_opt_result il_subst r))
   ) @@ fun _ ->
   match prems with
@@ -665,18 +686,18 @@ and reduce_prem env prem : subst option result =
   match prem.it with
   | RulePr _ -> Ok None
   | IfPr e ->
-    let** e' = reduce_exp env e in
+    let** e' = reduce_exp false env e in
     (match e'.it with
     | BoolE b -> if b then Ok (Some Subst.empty) else Error None
     | _ -> Ok None
     )
   | ElsePr -> Ok (Some Subst.empty)
   | LetPr (_qs, e1, e2) ->
-    let** e1' = reduce_exp env e1 in
-    let** e2' = reduce_exp env e2 in
-    match_exp env Subst.empty e2' e1'
+    let** e1' = reduce_exp false env e1 in
+    let** e2' = reduce_exp false env e2 in
+    match_exp false env Subst.empty e2' e1'
   | IterPr (prem1, iterexp) ->
-    let** iter', xes' = reduce_iterexp env iterexp in
+    let** iter', xes' = reduce_iterexp false env iterexp in
     (* Distinguish between let-defined variables, which flow outwards,
      * and others, which are assumed to flow inwards. *)
     let rec is_let_bound prem (x, _) =
@@ -713,7 +734,7 @@ and reduce_prem env prem : subst option result =
           List.fold_left (fun r (xI, eI) ->
             let*** s = r in
             let tI = match eI.note.it with IterT (tI, _) -> tI | _ -> assert false in
-            match_exp' env s (OptE (Some (Subst.subst_exp s' (VarE xI $$ xI.at % tI))) $> eI) eI
+            match_exp' false env s (OptE (Some (Subst.subst_exp s' (VarE xI $$ xI.at % tI))) $> eI) eI
           ) (Ok (Some Subst.empty)) xes_out
         else
           (* Inconsistent arity of iteration values. *)
@@ -766,7 +787,7 @@ and reduce_prem env prem : subst option result =
             ) xs_out es_out
           in
           (* Reverse-match out-bound list values against iteration sources. *)
-          match_list match_exp env Subst.empty es_out' es_out
+          match_list (match_exp false) env Subst.empty es_out' es_out
         else
           (* Inconsistent list lengths: can't perform mapping.
            * (This is a stuck computation, i.e., undefined.) *)
@@ -779,12 +800,12 @@ and reduce_prem env prem : subst option result =
 
 (* Iteration *)
 
-and match_iter env s iter1 iter2 : subst option result =
+and match_iter static env s iter1 iter2 : subst option result =
   match iter1, iter2 with
   | Opt, Opt -> Ok (Some s)
   | List, List -> Ok (Some s)
   | List1, List1 -> Ok (Some s)
-  | ListN (e1, _ido1), ListN (e2, _ido2) -> match_exp env s e1 e2
+  | ListN (e1, _ido1), ListN (e2, _ido2) -> match_exp static env s e1 e2
   | (Opt | List1 | ListN _), List -> Ok (Some s)
   | _, _ -> Error None
 
@@ -804,7 +825,7 @@ and match_typ env s t1 t2 : subst option result =
     Ok (Some (Subst.add_typid s id t1))
   | VarT (id1, args1), VarT (id2, args2) when id1.it = id2.it ->
     (* Optimization for the common case where args are absent or equivalent. *)
-    (match match_list match_arg env s args1 args2 with
+    (match match_list (static3 match_arg) env s args1 args2 with
     | Ok so -> Ok so
     | Error _ ->
       (* If that fails, fall back to reduction. *)
@@ -825,7 +846,7 @@ and match_typ env s t1 t2 : subst option result =
     match_list match_typbind env s xts1 xts2
   | IterT (t11, iter1), IterT (t21, iter2) ->
     let*** s' = match_typ env s t11 t21 in
-    match_iter env s' iter1 iter2
+    static3 match_iter env s' iter1 iter2
   | _, _ -> Ok None
 
 and match_typbind env s (x1, t1) (x2, t2) =
@@ -835,41 +856,55 @@ and match_typbind env s (x1, t1) (x2, t2) =
 
 (* Expressions *)
 
-and match_exp env s e1 e2 : subst option result =
-  let** e1' = reduce_exp env e1 in
-  match_exp' env s e1' e2
+and match_exp_typ static env s e t : subst option result =
+  Debug.(log "il.match_exp_typ"
+    (fun _ -> fmt "%s / %s [%s]" (il_exp e) (il_typ t) (il_subst s))
+    (fun r -> fmt "%s" (il_result (opt il_subst) r))
+  ) @@ fun _ ->
+  let** e' = reduce_exp static env e in
+  let** t' = reduce_typ env t in
+  match e'.it, t'.it with
+  | TupE es, TupT xts when List.length es = List.length xts ->
+    Ok (Some (List.fold_left (fun s (e, (x, _)) ->
+      Subst.add_varid s x (Subst.subst_exp s e)
+    ) s (List.combine es xts)))
+  | _, _ -> Error None
 
-and match_exp' env s e1 e2 : subst option result =
+and match_exp static env s e1 e2 : subst option result =
+  let** e1' = reduce_exp static env e1 in
+  match_exp' static env s e1' e2
+
+and match_exp' static env s e1 e2 : subst option result =
   Debug.(log "il.match_exp"
     (fun _ -> fmt "%s : %s / %s" (il_exp e1) (il_typ e1.note) (il_exp (Subst.subst_exp s e2)))
     (fun r -> fmt "%s" (il_result (opt il_subst) r))
   ) @@ fun _ ->
-  assert (is_normal_exp env e1);
-  let** e2' = reduce_exp env (Subst.subst_exp s e2) in
+  assert (is_normal_exp static env e1);
+  let** e2' = reduce_exp static env (Subst.subst_exp s e2) in
   (* HACK around subtype elim pass introducing calls on LHS's *)
-  if Eq.eq_exp e1 e2 && is_value_exp e1 && is_value_exp e2 then Ok (Some s) else
+  if Eq.eq_exp e1 e2 && (static || is_value_exp e1 && is_value_exp e2) then Ok (Some s) else
   match e1.it, e2'.it with
   | _, VarE id when Subst.mem_varid s id ->
     (* A pattern variable already in the substitution is non-linear *)
-    if equiv_exp env e1 (Subst.subst_exp s e2) then
+    if equiv_exp static env e1 (Subst.subst_exp s e2) then
       Ok (Some s)
     else
       Error None
   | _, VarE id ->
     (* Treat as a fresh pattern variable. *)
-    let** e1' = reduce_exp env (SubE (e1, e1.note, e2.note) $$ e1.at % e2.note) in
+    let** e1' = reduce_exp static env (SubE (e1, e1.note, e2.note) $$ e1.at % e2.note) in
     Ok (Some (Subst.add_varid s id e1'))
   | BoolE b1, BoolE b2 when b1 = b2 -> Ok (Some s)
   | NumE n1, NumE n2 when n1 = n2 -> Ok (Some s)
   | TextE s1, TextE s2 when s1 = s2 -> Ok (Some s)
   | NumE n1, UnE (`PlusOp, _, e21) when not (Num.is_neg n1) ->
-    match_exp env s e1 e21
+    match_exp static env s e1 e21
   | NumE n1, UnE (`MinusOp, _, e21) when Num.is_neg n1 ->
-    let** e1' = reduce_exp env (NumE (Num.abs n1) $> e1) in
-    match_exp env s e1' e21
+    let** e1' = reduce_exp static env (NumE (Num.abs n1) $> e1) in
+    match_exp static env s e1' e21
   | NumE n1, CvtE (e21, nt1, _nt2) ->
     (match Num.cvt nt1 n1 with
-    | Some n1' -> match_exp env s (NumE n1' $> e1) e21
+    | Some n1' -> match_exp static env s (NumE n1' $> e1) e21
     | None -> Error None
     )
 (*
@@ -881,20 +916,20 @@ and match_exp' env s e1 e2 : subst option result =
   | (EpsE | SeqE []), (EpsE | SeqE []) -> Some s
 *)
   | ListE es1, ListE es2
-  | TupE es1, TupE es2 -> match_list match_exp' env s es1 es2
+  | TupE es1, TupE es2 -> match_list (match_exp' static) env s es1 es2
   | _, TupE es2 ->
     let es1 = eta_tup_exp env e1 in
-    match_list match_exp' env s es1 es2
+    match_list (match_exp' static) env s es1 es2
   | ListE es1, CatE ({it = ListE es21; _} as e21, e22)
     when List.length es21 <= List.length es1 ->
     let es11, es12 = Lib.List.split (List.length es21) es1 in
-    let*** s' = match_exp' env s (ListE es11 $> e1) e21 in
-    match_exp' env s' (ListE es12 $> e1) e22
+    let*** s' = match_exp' static env s (ListE es11 $> e1) e21 in
+    match_exp' static env s' (ListE es12 $> e1) e22
   | ListE es1, CatE (e21, ({it = ListE es22; _} as e22))
     when List.length es22 <= List.length es1 ->
     let es11, es12 = Lib.List.split (List.length es22) es1 in
-    let*** s' = match_exp' env s (ListE es11 $> e1) e21 in
-    match_exp' env s' (ListE es12 $> e1) e22
+    let*** s' = match_exp' static env s (ListE es11 $> e1) e21 in
+    match_exp' static env s' (ListE es12 $> e1) e22
 (*
   | IdxE (e11, e12), IdxE (e21, e22)
   | CommaE (e11, e12), CommaE (e21, e22)
@@ -911,7 +946,7 @@ and match_exp' env s e1 e2 : subst option result =
     match_exp' env s'' e12 e22
 *)
   | StrE (efs1, Checked), StrE (efs2, _) ->
-    match_list match_expfield env s efs1 efs2
+    match_list (match_expfield static) env s efs1 efs2
 (*
   | DotE (e11, atom1), DotE (e21, atom2) when Eq.eq_atom atom1 atom2 ->
     match_exp' env s e11 e21
@@ -919,23 +954,23 @@ and match_exp' env s e1 e2 : subst option result =
 *)
   | CaseE (op1, _, _), CaseE (op2, e21, _) when Eq.eq_mixop op1 op2 ->
     (* Beta-expand to allow unchecked e1 without losing checks *)
-    let** e11' = reduce_exp env (UncaseE (e1, op2) $> e21) in
-    match_exp' env s e11' e21
+    let** e11' = reduce_exp static env (UncaseE (e1, op2) $> e21) in
+    match_exp' static env s e11' e21
   | _, CaseE (op2, e21, _)
     when List.length (as_variant_typ env e2.note e2.at) = 1 ->
     (* Beta-expand irrefutable case pattern *)
-    let** e11' = reduce_exp env (UncaseE (e1, op2) $> e21) in
-    match_exp' env s e11' e21
+    let** e11' = reduce_exp static env (UncaseE (e1, op2) $> e21) in
+    match_exp' static env s e11' e21
 (*
   | CallE (id1, args1), CallE (id2, args2) when id1.it = id2.it ->
-    match_list match_arg env s args1 args2
+    match_list (match_arg static) env s args1 args2
 *)
   | _, UncaseE (e21, mixop) ->
     let** e1' =
-      reduce_exp env (CaseE (mixop, e1, Unchecked) $$ e1.at % e21.note) in
-    match_exp' env s e1' e21
+      reduce_exp static env (CaseE (mixop, e1, Unchecked) $$ e1.at % e21.note) in
+    match_exp' static env s e1' e21
   | _, ProjE (e21, 0) ->  (* only valid on unary tuples! *)
-    match_exp' env s (TupE [e1] $$ e1.at % e21.note) e21
+    match_exp' static env s (TupE [e1] $$ e1.at % e21.note) e21
 (*
   | IterE (e11, iter1), IterE (e21, iter2) ->
     let** s' = match_exp' env s e11 e21 in
@@ -947,27 +982,27 @@ and match_exp' env s e1 e2 : subst option result =
 *)
   | OptE None, IterE (_e21, (Opt, xes)) ->
     List.fold_left (fun r (_xI, eI) ->
-      let*** s = r in match_exp' env s e1 eI
+      let*** s = r in match_exp' static env s e1 eI
     ) (Ok (Some s)) xes
   | OptE (Some e11), IterE (e21, (Opt, xes)) ->
-    let*** s' = match_exp' env s e11 e21 in
+    let*** s' = match_exp' static env s e11 e21 in
     let*** s'' =
       List.fold_left (fun r (xI, exI) ->
         let*** s = r in
         let tI = match exI.note.it with IterT (tI, _) -> tI | _ -> assert false in
-        match_exp' env s (OptE (Some (Subst.subst_exp s' (VarE xI $$ exI.at % tI))) $> e2) exI
+        match_exp' static env s (OptE (Some (Subst.subst_exp s' (VarE xI $$ exI.at % tI))) $> e2) exI
       ) (Ok (Some (List.fold_left Subst.remove_varid s (List.map fst xes)))) xes
     in Ok (Some (Subst.union s'' s))  (* re-add possibly locally shadowed bindings *)
   | ListE _es1, IterE (e21, (List, xes)) ->
     let en = VarE ("_" $ e2.at) $$ e2.at % (NumT `NatT $ e2.at) in
-    match_exp' env s e1 (IterE (e21, (ListN (en, None), xes)) $> e2)
+    match_exp' static env s e1 (IterE (e21, (ListN (en, None), xes)) $> e2)
   | ListE es1, IterE (e21, (List1, xes)) ->
     if es1 = [] then Error None else
     let en = VarE ("_" $ e2.at) $$ e2.at % (NumT `NatT $ e2.at) in
-    match_exp' env s e1 (IterE (e21, (ListN (en, None), xes)) $> e2)
+    match_exp' static env s e1 (IterE (e21, (ListN (en, None), xes)) $> e2)
   | ListE es1, IterE (e21, (ListN (en, id_opt), xes)) ->
     let en' = NumE (`Nat (Z.of_int (List.length es1))) $$ e1.at % (NumT `NatT $ e1.at) in
-    let*** s' = match_exp' env s en' en in
+    let*** s' = match_exp' static env s en' en in
     let s'' = List.fold_left Subst.remove_varid s' (List.map fst xes) in  (* local subst *)
     (* match each list element against iteration body for corresponding subst *)
     let** sos =
@@ -978,7 +1013,7 @@ and match_exp' env s e1 e2 : subst option result =
           | Some xJ ->
             Subst.add_varid s'' xJ
               (NumE (`Nat (Z.of_int j)) $$ e1.at % (NumT `NatT $ e1.at))
-        in match_exp' env s''' e1J (Subst.subst_exp s''' e21)
+        in match_exp' static env s''' e1J (Subst.subst_exp s''' e21)
       ) (List.mapi Pair.make es1)
     in
     let*** ss = Ok (Lib.List.flatten_opt sos) in
@@ -988,24 +1023,24 @@ and match_exp' env s e1 e2 : subst option result =
       match_list (fun env s xI exI ->
         let tI = match exI.note.it with IterT (tI, _) -> tI | _ -> assert false in
         let eI = ListE (List.map (fun sJ -> Subst.subst_exp sJ (VarE xI $$ exI.at % tI)) ss) $> e2 in
-        match_exp' env s eI exI
+        match_exp' static env s eI exI
       ) env s' xs exs
     in Ok (Some (Subst.union s''' s))  (* re-add possibly locally shadowed bindings *)
   | _, IterE (e21, iter2) ->
     let e11, iter1 = eta_iter_exp env e1 in
-    let** e11' = reduce_exp env e11 in
-    let** iter1' = reduce_iterexp env iter1 in
-    let*** s' = match_exp' env s e11' e21 in
-    match_iterexp env s' iter1' iter2
+    let** e11' = reduce_exp static env e11 in
+    let** iter1' = reduce_iterexp static env iter1 in
+    let*** s' = match_exp' static env s e11' e21 in
+    match_iterexp static env s' iter1' iter2
   | SubE (e11, t11, _t12), SubE (e21, t21, _t22) when sub_typ env t11 t21 ->
-    let** e11' = reduce_exp env (SubE (e11, t11, t21) $> e21) in
-    match_exp' env s e11' e21
+    let** e11' = reduce_exp static env (SubE (e11, t11, t21) $> e21) in
+    match_exp' static env s e11' e21
   | SubE (_e11, t11, _t12), SubE (_e21, t21, _t22) when disj_typ env t11 t21 ->
     Error None
   | _, SubE (e21, t21, _t22) ->
     if sub_typ env e1.note t21 then
-      let** e1' = reduce_exp env (SubE (e1, e1.note, t21) $> e21) in
-      match_exp' env s e1' e21
+      let** e1' = reduce_exp static env (SubE (e1, e1.note, t21) $> e21) in
+      match_exp' static env s e1' e21
     else if is_head_normal_exp e1 then
       let** t21' = reduce_typ env t21 in
       let** b =
@@ -1028,18 +1063,18 @@ and match_exp' env s e1 e2 : subst option result =
         | _, _ -> Error false
       in
       if b
-      then match_exp' env s {e1 with note = t21} e21
+      then match_exp' static env s {e1 with note = t21} e21
       else Ok None
     else Ok None
   | _, _ when is_head_normal_exp e1 -> Error None
   | _, _ -> Ok None
 
-and match_expfield env s (atom1, e1) (atom2, e2) =
+and match_expfield static env s (atom1, e1) (atom2, e2) =
   assert (Eq.eq_atom atom1 atom2);
-  match_exp' env s e1 (Subst.subst_exp s e2)
+  match_exp' static env s e1 (Subst.subst_exp s e2)
 
-and match_iterexp env s (iter1, _ids1) (iter2, _ids2) =
-  match_iter env s iter1 iter2
+and match_iterexp static env s (iter1, _ids1) (iter2, _ids2) =
+  match_iter static env s iter1 iter2
 
 
 and eta_tup_exp env e : exp list =
@@ -1076,22 +1111,22 @@ and match_sym env s g1 g2 : subst option result =
     (* An unbound grammar is treated as a pattern variable *)
     Ok (Some (Subst.add_gramid s id g1))
   | VarG (id1, args1), VarG (id2, args2) when id1.it = id2.it ->
-    match_list match_arg env s args1 args2
+    match_list (static3 match_arg) env s args1 args2
   | IterG (g11, iter1), IterG (g21, iter2) ->
     let*** s' = match_sym env s g11 g21 in
-    match_iterexp env s' iter1 iter2
+    static3 match_iterexp env s' iter1 iter2
   | _, _ -> Ok None
 
 
 (* Parameters *)
 
-and match_arg env s a1 a2 : subst option result =
+and match_arg static env s a1 a2 : subst option result =
   Debug.(log "il.match_arg"
     (fun _ -> fmt "%s / %s" (il_arg a1) (il_arg a2))
     (fun r -> fmt "%s" (il_result (opt il_subst) r))
   ) @@ fun _ ->
   match a1.it, a2.it with
-  | ExpA e1, ExpA e2 -> match_exp env s e1 e2
+  | ExpA e1, ExpA e2 -> match_exp static env s e1 e2
   | TypA t1, TypA t2 -> match_typ env s t1 t2
   | DefA id1, DefA id2 -> Ok (Some (Subst.add_defid s id1 id2))
   | GramA g1, GramA g2 -> match_sym env s g1 g2
@@ -1106,7 +1141,8 @@ and equiv_typ env t1 t2 =
   ) @@ fun _ ->
   match t1.it, t2.it with
   | VarT (id1, as1), VarT (id2, as2) ->
-    id1.it = id2.it && equiv_list equiv_arg env as1 as2 || (* optimization *)
+    id1.it = id2.it && equiv_list equiv_arg env as1 as2 ||
+    (* optimization *)
     let t1' = reduce_typ_ok env t1 in
     let t2' = reduce_typ_ok env t2 in
     (* TODO(3, rossberg): be more expressive *)
@@ -1134,7 +1170,7 @@ and equiv_tup env s xts1 xts2 =
 and equiv_iter env iter1 iter2 =
   match iter1, iter2 with
   | ListN (e1, ido1), ListN (e2, ido2) ->
-    equiv_exp env e1 e2 && Option.equal (fun id1 id2 -> id1.it = id2.it) ido1 ido2
+    equiv_exp true env e1 e2 && Option.equal (fun id1 id2 -> id1.it = id2.it) ido1 ido2
   | _, _ -> iter1 = iter2
 
 (*
@@ -1150,19 +1186,20 @@ and equiv_prem env pr1 pr2 =
   | pr1', pr2' -> pr1' = pr2'
 *)
 
-and equiv_exp env e1 e2 =
+and equiv_exp static env e1 e2 =
   Debug.(log "il.equiv_exp"
     (fun _ -> fmt "%s == %s" (il_exp e1) (il_exp e2)) Bool.to_string
   ) @@ fun _ ->
   (* TODO(3, rossberg): this does not reduce inner type arguments *)
-  match reduce_exp env e1, reduce_exp env e2 with
+  match reduce_exp static env e1, reduce_exp static env e2 with
   | Ok e1', Ok e2' -> Eq.eq_exp e1' e2'
+  | (Ok e1' | Error e1'), (Ok e2' | Error e2') when static -> Eq.eq_exp e1' e2'
   | Error _, _ ->
     Error.error e1.at "validation"
-      "expression failed to evaluate during type-checking"
+      "expression failed to evaluate during pattern-matching"
   | _, Error _ ->
     Error.error e2.at "validation"
-      "expression failed to evaluate during type-checking"
+      "expression failed to evaluate during pattern-matching"
 
 and equiv_sym _env g1 g2 =
   Debug.(log "il.equiv_sym"
@@ -1175,7 +1212,7 @@ and equiv_arg env a1 a2 =
     (fun _ -> fmt "%s == %s" (il_arg a1) (il_arg a2)) Bool.to_string
   ) @@ fun _ ->
   match a1.it, a2.it with
-  | ExpA e1, ExpA e2 -> equiv_exp env e1 e2
+  | ExpA e1, ExpA e2 -> equiv_exp true env e1 e2
   | TypA t1, TypA t2 -> equiv_typ env t1 t2
   | DefA id1, DefA id2 -> id1.it = id2.it
   | GramA g1, GramA g2 -> equiv_sym env g1 g2
@@ -1309,3 +1346,14 @@ and disj_tup env s xts1 xts2 =
     disj_typ env t1 (Subst.subst_typ s t2) ||
     disj_tup env (Subst.add_varid s x2 (VarE x1 $$ x1.at % t1)) xts1' xts2'
   | _, _ -> xts1 <> xts2
+
+
+
+(* Export (since OCaml's signature match can't instantiate opt args) *)
+
+let reduce_exp = reduce_exp false
+let reduce_arg = reduce_arg false
+
+let match_iter = match_iter false
+let match_exp = match_exp false
+let match_arg = match_arg false

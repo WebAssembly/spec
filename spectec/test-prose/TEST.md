@@ -8408,9 +8408,9 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
    #. If :math:`{\mathit{unop}}` is some :math:`\mathsf{extend}~n`, then:
 
-      1) Let :math:`(\mathsf{extend}~M)` be the destructuring of :math:`{\mathit{unop}}`.
+      1) Let :math:`(\mathsf{extend}~N)` be the destructuring of :math:`{\mathit{unop}}`.
 
-      #) Return :math:`{{{{\mathrm{extend}}}_{M, N}^{\mathsf{s}}}}{({{\mathrm{wrap}}}_{N, M}({\mathit{iN}}))}`.
+      #) Return :math:`{{{{\mathrm{extend}}}_{N, N}^{\mathsf{s}}}}{({{\mathrm{wrap}}}_{N, N}({\mathit{iN}}))}`.
 
 #. Assert: Due to validation, :math:`{\mathit{numtype}}` is :math:`{\mathsf{f}}{n}`.
 
@@ -12634,8 +12634,8 @@ unop_ numtype unop_ iN
   c. If (unop_ = POPCNT), then:
     1) Return [$ipopcnt_($sizenn(numtype), iN)].
   d. If unop_ is some EXTEND, then:
-    1) Let (EXTEND M) be unop_.
-    2) Return [$extend__(M, $sizenn(numtype), S, $wrap__($sizenn(numtype), M, iN))].
+    1) Let (EXTEND N) be unop_.
+    2) Return [$extend__(N, $sizenn(numtype), S, $wrap__($sizenn(numtype), N, iN))].
 2. Assert: Due to validation, numtype is Fnn.
 3. If (unop_ = ABS), then:
   a. Return $fabs_($sizenn(numtype), iN).
@@ -16184,11 +16184,11 @@ The instruction :math:`({{\mathit{nt}}{.}\mathsf{load}}{{{\mathit{loadop}}^?}}~x
 
       * The number type :math:`{\mathit{nt}}` is of the form :math:`{\mathsf{i}}{N}`.
 
-      * :math:`{{\mathit{loadop}}^?}` is of the form :math:`{M}{\mathsf{\_}}{{\mathit{sx}}}`.
+      * :math:`{{\mathit{loadop}}^?}` is of the form :math:`{K}{\mathsf{\_}}{{\mathit{sx}}}`.
 
       * The value type :math:`{\mathit{valtype}}` is of the form :math:`{\mathsf{i}}{N}`.
 
-      * :math:`{\mathit{memarg}}` is valid for :math:`{\mathit{at}}` and :math:`M`.
+      * :math:`{\mathit{memarg}}` is valid for :math:`{\mathit{at}}` and :math:`K`.
 
 
 
@@ -16212,11 +16212,11 @@ The instruction :math:`({{\mathit{nt}}{.}\mathsf{store}}{{{\mathit{storeop}}^?}}
 
       * The number type :math:`{\mathit{nt}}` is of the form :math:`{\mathsf{i}}{N}`.
 
-      * :math:`{{\mathit{storeop}}^?}` is of the form :math:`M`.
+      * :math:`{{\mathit{storeop}}^?}` is of the form :math:`K`.
 
       * The value type :math:`{\mathit{valtype}}` is of the form :math:`{\mathsf{i}}{N}`.
 
-      * :math:`{\mathit{memarg}}` is valid for :math:`{\mathit{at}}` and :math:`M`.
+      * :math:`{\mathit{memarg}}` is valid for :math:`{\mathit{at}}` and :math:`K`.
 
 
 
@@ -16236,9 +16236,9 @@ The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{{\mathit
 
    * Or:
 
-      * :math:`{{\mathit{vloadop}}^?}` is of the form :math:`({M}{\mathsf{x}}{N}{\mathsf{\_}}{{\mathit{sx}}})`.
+      * :math:`{{\mathit{vloadop}}^?}` is of the form :math:`({N}{\mathsf{x}}{M}{\mathsf{\_}}{{\mathit{sx}}})`.
 
-      * :math:`{\mathit{memarg}}` is valid for :math:`{\mathit{at}}` and :math:`M \cdot N`.
+      * :math:`{\mathit{memarg}}` is valid for :math:`{\mathit{at}}` and :math:`N \cdot M`.
    * Or:
 
       * :math:`{{\mathit{vloadop}}^?}` is of the form :math:`({N}{\mathsf{\_}}{\mathsf{splat}})`.
@@ -16483,14 +16483,14 @@ The instruction :math:`({\mathit{nt}}{.}\mathsf{load}~x~{\mathit{memarg}})` is :
 
 
 
-The instruction :math:`({{\mathsf{i}}{N}{.}\mathsf{load}}{{M}{\mathsf{\_}}{{\mathit{sx}}}}~x~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}~\rightarrow~{\mathsf{i}}{N}` if:
+The instruction :math:`({{\mathsf{i}}{N}{.}\mathsf{load}}{{K}{\mathsf{\_}}{{\mathit{sx}}}}~x~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}~\rightarrow~{\mathsf{i}}{N}` if:
 
 
    * The memory :math:`C{.}\mathsf{mems}{}[x]` exists.
 
    * The memory :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
 
-   * :math:`{\mathit{memarg}}` is valid for :math:`{\mathit{at}}` and :math:`M`.
+   * :math:`{\mathit{memarg}}` is valid for :math:`{\mathit{at}}` and :math:`K`.
 
 
 
@@ -16507,14 +16507,14 @@ The instruction :math:`({\mathit{nt}}{.}\mathsf{store}~x~{\mathit{memarg}})` is 
 
 
 
-The instruction :math:`({{\mathsf{i}}{N}{.}\mathsf{store}}{M}~x~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}~{\mathsf{i}}{N}~\rightarrow~\epsilon` if:
+The instruction :math:`({{\mathsf{i}}{N}{.}\mathsf{store}}{K}~x~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}~{\mathsf{i}}{N}~\rightarrow~\epsilon` if:
 
 
    * The memory :math:`C{.}\mathsf{mems}{}[x]` exists.
 
    * The memory :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
 
-   * :math:`{\mathit{memarg}}` is valid for :math:`{\mathit{at}}` and :math:`M`.
+   * :math:`{\mathit{memarg}}` is valid for :math:`{\mathit{at}}` and :math:`K`.
 
 
 
@@ -16531,14 +16531,14 @@ The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~x~{\mathit{
 
 
 
-The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{M}{\mathsf{x}}{N}{\mathsf{\_}}{{\mathit{sx}}}}~x~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
+The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{N}{\mathsf{x}}{M}{\mathsf{\_}}{{\mathit{sx}}}}~x~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{at}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
 
 
    * The memory :math:`C{.}\mathsf{mems}{}[x]` exists.
 
    * The memory :math:`C{.}\mathsf{mems}{}[x]` is of the form :math:`({\mathit{at}}~{\mathit{lim}}~\mathsf{page})`.
 
-   * :math:`{\mathit{memarg}}` is valid for :math:`{\mathit{at}}` and :math:`M \cdot N`.
+   * :math:`{\mathit{memarg}}` is valid for :math:`{\mathit{at}}` and :math:`N \cdot M`.
 
 
 
@@ -18744,7 +18744,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Push the value :math:`({\mathsf{i}}{N}{.}\mathsf{const}~{{{{\mathrm{extend}}}_{n, {|{\mathsf{i}}{N}|}}^{{\mathit{sx}}}}}{(c)})` to the stack.
 
 
-:math:`{\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{M}{\mathsf{x}}{K}{\mathsf{\_}}{{\mathit{sx}}}}~x~{\mathit{ao}}`
+:math:`{\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{K}{\mathsf{x}}{M}{\mathsf{\_}}{{\mathit{sx}}}}~x~{\mathit{ao}}`
 ......................................................................................................................
 
 
@@ -18754,15 +18754,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~i)` from the stack.
 
-#. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + M \cdot K / 8 > {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
+#. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + K \cdot M / 8 > {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
 
    a. Trap.
 
-#. Let :math:`{j^{K}}` be the result for which :math:`{({{\mathrm{bytes}}}_{{\mathsf{i}}{M}}({j^{K}}) = z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} + k \cdot M / 8 : M / 8])^{k<K}}`.
+#. Let :math:`{j^{M}}` be the result for which :math:`{({{\mathrm{bytes}}}_{{\mathsf{i}}{K}}({j^{M}}) = z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} + k \cdot K / 8 : K / 8])^{k<M}}`.
 
-#. Let :math:`{\mathsf{i}}{N}` be the result for which :math:`N` :math:`=` :math:`M \cdot 2`.
+#. Let :math:`{\mathsf{i}}{N}` be the result for which :math:`N` :math:`=` :math:`K \cdot 2`.
 
-#. Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{K}}^{{-1}}}}{({{{{{\mathrm{extend}}}_{M, N}^{{\mathit{sx}}}}}{(j)}^{K}})}`.
+#. Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}^{{-1}}}}{({{{{{\mathrm{extend}}}_{K, N}^{{\mathit{sx}}}}}{(j)}^{M}})}`.
 
 #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
@@ -20554,17 +20554,17 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. If :math:`{\mathit{vloadop}}_0` is some :math:`{{\mathit{sz}}}{\mathsf{x}}{M}{\mathsf{\_}}{{\mathit{sx}}}`, then:
 
-      1) Let :math:`({M}{\mathsf{x}}{K}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{vloadop}}_0`.
+      1) Let :math:`({K}{\mathsf{x}}{M}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{vloadop}}_0`.
 
-      #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + M \cdot K / 8 > {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
+      #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + K \cdot M / 8 > {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
 
          a) Trap.
 
-      #) Let :math:`{j^{K}}` be the result for which :math:`{({{\mathrm{bytes}}}_{{\mathsf{i}}{M}}({j^{K}}) = z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} + k \cdot M / 8 : M / 8])^{k<K}}`.
+      #) Let :math:`{j^{M}}` be the result for which :math:`{({{\mathrm{bytes}}}_{{\mathsf{i}}{K}}({j^{M}}) = z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} + k \cdot K / 8 : K / 8])^{k<M}}`.
 
-      #) Let :math:`{\mathsf{i}}{N}` be the result for which :math:`N` :math:`=` :math:`M \cdot 2`.
+      #) Let :math:`{\mathsf{i}}{N}` be the result for which :math:`N` :math:`=` :math:`K \cdot 2`.
 
-      #) Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{K}}^{{-1}}}}{({{{{{\mathrm{extend}}}_{M, N}^{{\mathit{sx}}}}}{(j)}^{K}})}`.
+      #) Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}^{{-1}}}}{({{{{{\mathrm{extend}}}_{K, N}^{{\mathit{sx}}}}}{(j)}^{M}})}`.
 
       #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
@@ -23444,21 +23444,21 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return `$free_list($free_externtype(externtype_1)*{externtype_1 <- externtype_1*}) ++ $free_list($free_externtype(externtype_2)*{externtype_2 <- externtype_2*})`.
 
 
-:math:`{\mathrm{dim}}({{\mathsf{i}}{N}}{\mathsf{x}}{N})`
+:math:`{\mathrm{dim}}({{\mathsf{i}}{N}}{\mathsf{x}}{M})`
 ........................................................
 
 
-1. Return :math:`N`.
+1. Return :math:`M`.
 
 
-:math:`{\mathrm{lanetype}}({{\mathsf{i}}{N}}{\mathsf{x}}{N})`
+:math:`{\mathrm{lanetype}}({{\mathsf{i}}{N}}{\mathsf{x}}{M})`
 .............................................................
 
 
 1. Return :math:`{\mathsf{i}}{N}`.
 
 
-:math:`{\mathrm{unpack}}({{\mathsf{i}}{N}}{\mathsf{x}}{N})`
+:math:`{\mathrm{unpack}}({{\mathsf{i}}{N}}{\mathsf{x}}{M})`
 ...........................................................
 
 
@@ -24612,17 +24612,17 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`{{\mathrm{ineg}}}_{N}(i_1)`.
 
 
-:math:`{{{{\mathrm{iextend}}}_{N, M}^{{\mathit{sx}}}}}{(i)}`
+:math:`{{{{\mathrm{iextend}}}_{N, K}^{{\mathit{sx}}}}}{(i)}`
 ............................................................
 
 
 1. If :math:`{\mathit{sx}} = \mathsf{u}`, then:
 
-   a. Return :math:`i \mathbin{\mathrm{mod}} ({2^{M}})`.
+   a. Return :math:`i \mathbin{\mathrm{mod}} ({2^{K}})`.
 
 #. Assert: Due to validation, :math:`{\mathit{sx}} = \mathsf{s}`.
 
-#. Return :math:`{{{{\mathrm{signed}}}_{N}^{{-1}}}}{({{\mathrm{signed}}}_{M}(i \mathbin{\mathrm{mod}} ({2^{M}})))}`.
+#. Return :math:`{{{{\mathrm{signed}}}_{N}^{{-1}}}}{({{\mathrm{signed}}}_{K}(i \mathbin{\mathrm{mod}} ({2^{K}})))}`.
 
 
 :math:`{{\mathrm{iadd}}}_{N}(i_1, i_2)`
@@ -24916,9 +24916,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. If :math:`{\mathit{unop}}` is some :math:`{\mathsf{extend}}{{\mathit{sz}}}{\mathsf{\_}}{\mathsf{s}}`, then:
 
-      1) Let :math:`({\mathsf{extend}}{M}{\mathsf{\_}}{\mathsf{s}})` be the destructuring of :math:`{\mathit{unop}}`.
+      1) Let :math:`({\mathsf{extend}}{N}{\mathsf{\_}}{\mathsf{s}})` be the destructuring of :math:`{\mathit{unop}}`.
 
-      #) Return :math:`{{{{\mathrm{iextend}}}_{N, M}^{\mathsf{s}}}}{(i)}`.
+      #) Return :math:`{{{{\mathrm{iextend}}}_{N, N}^{\mathsf{s}}}}{(i)}`.
 
 #. Assert: Due to validation, :math:`{\mathit{numtype}}` is :math:`{\mathsf{f}}{N}`.
 
@@ -28820,9 +28820,9 @@ Instr_ok/load
     - memarg is valid for at and $size(nt).
   - Or:
     - the number type nt is Inn.
-    - loadop_? is ?(M _ sx).
+    - loadop_? is ?(K _ sx).
     - valtype is Inn.
-    - memarg is valid for at and M.
+    - memarg is valid for at and K.
 
 Instr_ok/store
 - the instruction (STORE nt storeop_? x memarg) is valid with the instruction type [at, valtype] -> [] if:
@@ -28834,9 +28834,9 @@ Instr_ok/store
     - memarg is valid for at and $size(nt).
   - Or:
     - the number type nt is Inn.
-    - storeop_? is ?(M).
+    - storeop_? is ?(K).
     - valtype is Inn.
-    - memarg is valid for at and M.
+    - memarg is valid for at and K.
 
 Instr_ok/vload
 - the instruction (VLOAD V128 vloadop_? x memarg) is valid with the instruction type [at] -> [V128] if:
@@ -28846,8 +28846,8 @@ Instr_ok/vload
     - vloadop_? is ?().
     - memarg is valid for at and $vsize(V128).
   - Or:
-    - vloadop_? is ?((SHAPE M X N _ sx)).
-    - memarg is valid for at and (M * N).
+    - vloadop_? is ?((SHAPE N X M _ sx)).
+    - memarg is valid for at and (N * M).
   - Or:
     - vloadop_? is ?((SPLAT N)).
     - memarg is valid for at and N.
@@ -28983,10 +28983,10 @@ Instr_ok/load-val
   - memarg is valid for at and $size(nt).
 
 Instr_ok/load-pack
-- the instruction (LOAD Inn ?(M _ sx) x memarg) is valid with the instruction type [at] -> [Inn] if:
+- the instruction (LOAD Inn ?(K _ sx) x memarg) is valid with the instruction type [at] -> [Inn] if:
   - the memory C.MEMS[x] exists.
   - C.MEMS[x] is at lim PAGE.
-  - memarg is valid for at and M.
+  - memarg is valid for at and K.
 
 Instr_ok/store-val
 - the instruction (STORE nt ?() x memarg) is valid with the instruction type [at, nt] -> [] if:
@@ -28995,10 +28995,10 @@ Instr_ok/store-val
   - memarg is valid for at and $size(nt).
 
 Instr_ok/store-pack
-- the instruction (STORE Inn ?(M) x memarg) is valid with the instruction type [at, Inn] -> [] if:
+- the instruction (STORE Inn ?(K) x memarg) is valid with the instruction type [at, Inn] -> [] if:
   - the memory C.MEMS[x] exists.
   - C.MEMS[x] is at lim PAGE.
-  - memarg is valid for at and M.
+  - memarg is valid for at and K.
 
 Instr_ok/vload-val
 - the instruction (VLOAD V128 ?() x memarg) is valid with the instruction type [at] -> [V128] if:
@@ -29007,10 +29007,10 @@ Instr_ok/vload-val
   - memarg is valid for at and $vsize(V128).
 
 Instr_ok/vload-pack
-- the instruction (VLOAD V128 ?((SHAPE M X N _ sx)) x memarg) is valid with the instruction type [at] -> [V128] if:
+- the instruction (VLOAD V128 ?((SHAPE N X M _ sx)) x memarg) is valid with the instruction type [at] -> [V128] if:
   - the memory C.MEMS[x] exists.
   - C.MEMS[x] is at lim PAGE.
-  - memarg is valid for at and (M * N).
+  - memarg is valid for at and (N * M).
 
 Instr_ok/vload-splat
 - the instruction (VLOAD V128 ?((SPLAT N)) x memarg) is valid with the instruction type [at] -> [V128] if:
@@ -30134,15 +30134,15 @@ Step_read/load-pack-* Inn ?(n _ sx) x ao
 5. Let c be $ibytes__1^-1(n, $mem(z, x).BYTES[(i + ao.OFFSET) : (n / 8)]).
 6. Push the value (Inn.CONST $extend__(n, $size(Inn), sx, c)) to the stack.
 
-Step_read/vload-pack-* V128 ?((SHAPE M X K _ sx)) x ao
+Step_read/vload-pack-* V128 ?((SHAPE K X M _ sx)) x ao
 1. Let z be the current state.
 2. Assert: Due to validation, a value of value type num is on the top of the stack.
 3. Pop the value (at.CONST i) from the stack.
-4. If (((i + ao.OFFSET) + ((M * K) / 8)) > |$mem(z, x).BYTES|), then:
+4. If (((i + ao.OFFSET) + ((K * M) / 8)) > |$mem(z, x).BYTES|), then:
   a. Trap.
-5. Let j^K be $ibytes__1^-1(M, $mem(z, x).BYTES[((i + ao.OFFSET) + ((k * M) / 8)) : (M / 8)])^(k<K).
-6. Let Jnn be $jsizenn^-1((M * 2)).
-7. Let c be $inv_lanes_(Jnn X K, $extend__(M, $jsizenn(Jnn), sx, j)^K).
+5. Let j^M be $ibytes__1^-1(K, $mem(z, x).BYTES[((i + ao.OFFSET) + ((k * K) / 8)) : (K / 8)])^(k<M).
+6. Let Jnn be $jsizenn^-1((K * 2)).
+7. Let c be $inv_lanes_(Jnn X M, $extend__(K, $jsizenn(Jnn), sx, j)^M).
 8. Push the value (V128.CONST c) to the stack.
 
 Step_read/vload-splat-* V128 ?((SPLAT N)) x ao
@@ -30983,12 +30983,12 @@ Step_read/vload V128 vloadop_? x ao
 5. Else:
   a. Let ?(vloadop_0) be vloadop_?.
   b. If vloadop_0 is some SHAPE, then:
-    1) Let (SHAPE M X K _ sx) be vloadop_0.
-    2) If (((i + ao.OFFSET) + ((M * K) / 8)) > |$mem(z, x).BYTES|), then:
+    1) Let (SHAPE K X M _ sx) be vloadop_0.
+    2) If (((i + ao.OFFSET) + ((K * M) / 8)) > |$mem(z, x).BYTES|), then:
       a) Trap.
-    3) Let j^K be $ibytes__1^-1(M, $mem(z, x).BYTES[((i + ao.OFFSET) + ((k * M) / 8)) : (M / 8)])^(k<K).
-    4) Let Jnn be $jsizenn^-1((M * 2)).
-    5) Let c be $inv_lanes_(Jnn X K, $extend__(M, $jsizenn(Jnn), sx, j)^K).
+    3) Let j^M be $ibytes__1^-1(K, $mem(z, x).BYTES[((i + ao.OFFSET) + ((k * K) / 8)) : (K / 8)])^(k<M).
+    4) Let Jnn be $jsizenn^-1((K * 2)).
+    5) Let c be $inv_lanes_(Jnn X M, $extend__(K, $jsizenn(Jnn), sx, j)^M).
     6) Push the value (V128.CONST c) to the stack.
   c. If vloadop_0 is some SPLAT, then:
     1) Let (SPLAT N) be vloadop_0.
@@ -32335,13 +32335,13 @@ free_externtype externtype
 free_moduletype externtype_1* -> externtype_2*
 1. Return $free_list($free_externtype(externtype_1)*) ++ $free_list($free_externtype(externtype_2)*).
 
-dim Lnn X N
-1. Return N.
+dim Lnn X M
+1. Return M.
 
-lanetype Lnn X N
+lanetype Lnn X M
 1. Return Lnn.
 
-unpackshape Lnn X N
+unpackshape Lnn X M
 1. Return $lunpack(Lnn).
 
 memarg0
@@ -32893,11 +32893,11 @@ iabs_ N i_1
   a. Return i_1.
 2. Return $ineg_(N, i_1).
 
-iextend_ N M sx i
+iextend_ N K sx i
 1. If (sx = U), then:
-  a. Return (i \ (2 ^ M)).
+  a. Return (i \ (2 ^ K)).
 2. Assert: Due to validation, (sx = S).
-3. Return $inv_signed_(N, $signed_(M, (i \ (2 ^ M)))).
+3. Return $inv_signed_(N, $signed_(K, (i \ (2 ^ K)))).
 
 iadd_ N i_1 i_2
 1. Return ((i_1 + i_2) \ (2 ^ N)).
@@ -33033,8 +33033,8 @@ unop_ numtype unop_ i
   c. If (unop_ = POPCNT), then:
     1) Return [$ipopcnt_($sizenn(numtype), i)].
   d. If unop_ is some EXTEND, then:
-    1) Let (EXTEND M) be unop_.
-    2) Return [$iextend_($sizenn(numtype), M, S, i)].
+    1) Let (EXTEND N) be unop_.
+    2) Return [$iextend_($sizenn(numtype), N, S, i)].
 2. Assert: Due to validation, numtype is Fnn.
 3. If (unop_ = ABS), then:
   a. Return $fabs_($sizenn(numtype), i).

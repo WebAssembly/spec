@@ -2358,7 +2358,6 @@ $ (../src/exe-spectec/main.exe ../../../../specification/wasm-latest/*.spectec -
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}}
 & N & ::= & 0 ~~|~~ 1 ~~|~~ 2 ~~|~~ \dots \\
-& M & ::= & 0 ~~|~~ 1 ~~|~~ 2 ~~|~~ \dots \\
 & K & ::= & 0 ~~|~~ 1 ~~|~~ 2 ~~|~~ \dots \\
 & n & ::= & 0 ~~|~~ 1 ~~|~~ 2 ~~|~~ \dots \\
 & m & ::= & 0 ~~|~~ 1 ~~|~~ 2 ~~|~~ \dots \\
@@ -3720,26 +3719,25 @@ $$
 \begin{array}[t]{@{}lrrl@{}l@{}}
 \mbox{(dimension)} & {\mathit{dim}} & ::= & \mathsf{{\scriptstyle 1}} ~~|~~ \mathsf{{\scriptstyle 2}} ~~|~~ \mathsf{{\scriptstyle 4}} ~~|~~ \mathsf{{\scriptstyle 8}} ~~|~~ \mathsf{{\scriptstyle 16}} \\
 \mbox{(shape)} & {\mathit{shape}} & ::= & {{\mathit{lanetype}}}{\mathsf{x}}{{\mathit{dim}}} & \quad \mbox{if}~ {|{\mathit{lanetype}}|} \cdot {\mathit{dim}} = 128 \\
-\end{array}
-$$
-
-\vspace{1ex}
-
-$$
-\begin{array}[t]{@{}lcl@{}l@{}}
-{\mathrm{dim}}({{\mathsf{i}}{N}}{\mathsf{x}}{N}) & = & N \\
+& M & ::= & {\mathit{dim}} \\
 \end{array}
 $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-{\mathrm{lanetype}}({{\mathsf{i}}{N}}{\mathsf{x}}{N}) & = & {\mathsf{i}}{N} \\
+{\mathrm{dim}}({{\mathsf{i}}{N}}{\mathsf{x}}{M}) & = & M \\
 \end{array}
 $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-{\mathrm{unpack}}({{\mathsf{i}}{N}}{\mathsf{x}}{N}) & = & {\mathrm{unpack}}({\mathsf{i}}{N}) \\
+{\mathrm{lanetype}}({{\mathsf{i}}{N}}{\mathsf{x}}{M}) & = & {\mathsf{i}}{N} \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+{\mathrm{unpack}}({{\mathsf{i}}{N}}{\mathsf{x}}{M}) & = & {\mathrm{unpack}}({\mathsf{i}}{N}) \\
 \end{array}
 $$
 
@@ -6903,9 +6901,9 @@ $$
 \frac{
 C{.}\mathsf{mems}{}[x] = {\mathit{at}}~{\mathit{lim}}~\mathsf{page}
  \qquad
-{\vdash}\, {\mathit{memarg}} : {\mathit{at}} \rightarrow M
+{\vdash}\, {\mathit{memarg}} : {\mathit{at}} \rightarrow K
 }{
-C \vdash {{\mathsf{i}}{N}{.}\mathsf{load}}{{M}{\mathsf{\_}}{{\mathit{sx}}}}~x~{\mathit{memarg}} : {\mathit{at}} \rightarrow {\mathsf{i}}{N}
+C \vdash {{\mathsf{i}}{N}{.}\mathsf{load}}{{K}{\mathsf{\_}}{{\mathit{sx}}}}~x~{\mathit{memarg}} : {\mathit{at}} \rightarrow {\mathsf{i}}{N}
 } \, {[\textsc{\scriptsize T{-}instr{-}load{-}pack}]}
 \qquad
 \end{array}
@@ -6929,9 +6927,9 @@ $$
 \frac{
 C{.}\mathsf{mems}{}[x] = {\mathit{at}}~{\mathit{lim}}~\mathsf{page}
  \qquad
-{\vdash}\, {\mathit{memarg}} : {\mathit{at}} \rightarrow M
+{\vdash}\, {\mathit{memarg}} : {\mathit{at}} \rightarrow K
 }{
-C \vdash {{\mathsf{i}}{N}{.}\mathsf{store}}{M}~x~{\mathit{memarg}} : {\mathit{at}}~{\mathsf{i}}{N} \rightarrow \epsilon
+C \vdash {{\mathsf{i}}{N}{.}\mathsf{store}}{K}~x~{\mathit{memarg}} : {\mathit{at}}~{\mathsf{i}}{N} \rightarrow \epsilon
 } \, {[\textsc{\scriptsize T{-}instr{-}store{-}pack}]}
 \qquad
 \end{array}
@@ -6955,9 +6953,9 @@ $$
 \frac{
 C{.}\mathsf{mems}{}[x] = {\mathit{at}}~{\mathit{lim}}~\mathsf{page}
  \qquad
-{\vdash}\, {\mathit{memarg}} : {\mathit{at}} \rightarrow M \cdot N
+{\vdash}\, {\mathit{memarg}} : {\mathit{at}} \rightarrow N \cdot M
 }{
-C \vdash {\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{M}{\mathsf{x}}{N}{\mathsf{\_}}{{\mathit{sx}}}}~x~{\mathit{memarg}} : {\mathit{at}} \rightarrow \mathsf{v{\scriptstyle 128}}
+C \vdash {\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{N}{\mathsf{x}}{M}{\mathsf{\_}}{{\mathit{sx}}}}~x~{\mathit{memarg}} : {\mathit{at}} \rightarrow \mathsf{v{\scriptstyle 128}}
 } \, {[\textsc{\scriptsize T{-}instr{-}vload{-}pack}]}
 \qquad
 \end{array}
@@ -8110,8 +8108,8 @@ $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-{{{{\mathrm{iextend}}}_{N, M}^{\mathsf{u}}}}{(i)} & = & i \mathbin{\mathrm{mod}} {2^{M}} \\
-{{{{\mathrm{iextend}}}_{N, M}^{\mathsf{s}}}}{(i)} & = & {{{{\mathrm{signed}}}_{N}^{{-1}}}}{({{\mathrm{signed}}}_{M}(i \mathbin{\mathrm{mod}} {2^{M}}))} \\
+{{{{\mathrm{iextend}}}_{N, K}^{\mathsf{u}}}}{(i)} & = & i \mathbin{\mathrm{mod}} {2^{K}} \\
+{{{{\mathrm{iextend}}}_{N, K}^{\mathsf{s}}}}{(i)} & = & {{{{\mathrm{signed}}}_{N}^{{-1}}}}{({{\mathrm{signed}}}_{K}(i \mathbin{\mathrm{mod}} {2^{K}}))} \\
 \end{array}
 $$
 
@@ -8289,7 +8287,7 @@ $$
 {\mathsf{clz}}{{}_{{\mathsf{i}}{N}}(i)} & = & {{\mathrm{iclz}}}_{N}(i) \\
 {\mathsf{ctz}}{{}_{{\mathsf{i}}{N}}(i)} & = & {{\mathrm{ictz}}}_{N}(i) \\
 {\mathsf{popcnt}}{{}_{{\mathsf{i}}{N}}(i)} & = & {{\mathrm{ipopcnt}}}_{N}(i) \\
-{{\mathsf{extend}}{M}{\mathsf{\_}}{\mathsf{s}}}{{}_{{\mathsf{i}}{N}}(i)} & = & {{{{\mathrm{iextend}}}_{N, M}^{\mathsf{s}}}}{(i)} \\
+{{\mathsf{extend}}{{N'}}{\mathsf{\_}}{\mathsf{s}}}{{}_{{\mathsf{i}}{N}}(i)} & = & {{{{\mathrm{iextend}}}_{N, {N'}}^{\mathsf{s}}}}{(i)} \\
 {\mathsf{abs}}{{}_{{\mathsf{f}}{N}}(f)} & = & {{\mathrm{fabs}}}_{N}(f) \\
 {\mathsf{neg}}{{}_{{\mathsf{f}}{N}}(f)} & = & {{\mathrm{fneg}}}_{N}(f) \\
 {\mathsf{sqrt}}{{}_{{\mathsf{f}}{N}}(f)} & = & {{\mathrm{fsqrt}}}_{N}(f) \\
@@ -10197,13 +10195,13 @@ $$
 
 $$
 \begin{array}[t]{@{}lrcl@{}l@{}}
-{[\textsc{\scriptsize E{-}vload{-}pack{-}oob}]} \quad & z ; ({\mathit{at}}{.}\mathsf{const}~i)~({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{M}{\mathsf{x}}{K}{\mathsf{\_}}{{\mathit{sx}}}}~x~{\mathit{ao}}) & \hookrightarrow & \mathsf{trap} & \quad \mbox{if}~ i + {\mathit{ao}}{.}\mathsf{offset} + M \cdot K / 8 > {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|} \\
-{[\textsc{\scriptsize E{-}vload{-}pack{-}val}]} \quad & z ; ({\mathit{at}}{.}\mathsf{const}~i)~({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{M}{\mathsf{x}}{K}{\mathsf{\_}}{{\mathit{sx}}}}~x~{\mathit{ao}}) & \hookrightarrow & (\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c) &  \\
+{[\textsc{\scriptsize E{-}vload{-}pack{-}oob}]} \quad & z ; ({\mathit{at}}{.}\mathsf{const}~i)~({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{K}{\mathsf{x}}{M}{\mathsf{\_}}{{\mathit{sx}}}}~x~{\mathit{ao}}) & \hookrightarrow & \mathsf{trap} & \quad \mbox{if}~ i + {\mathit{ao}}{.}\mathsf{offset} + K \cdot M / 8 > {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|} \\
+{[\textsc{\scriptsize E{-}vload{-}pack{-}val}]} \quad & z ; ({\mathit{at}}{.}\mathsf{const}~i)~({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{K}{\mathsf{x}}{M}{\mathsf{\_}}{{\mathit{sx}}}}~x~{\mathit{ao}}) & \hookrightarrow & (\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c) &  \\
 & \multicolumn{4}{@{}l@{}}{\quad
 \quad
 \begin{array}[t]{@{}l@{}}
-\mbox{if}~ ({{\mathrm{bytes}}}_{{\mathsf{i}}{M}}(j) = z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} + k \cdot M / 8 : M / 8])^{k<K} \\
-{\land}~ c = {{{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{K}}^{{-1}}}}{({{{{{\mathrm{extend}}}_{M, N}^{{\mathit{sx}}}}}{(j)}^{K}})} \land N = M \cdot 2 \\
+\mbox{if}~ ({{\mathrm{bytes}}}_{{\mathsf{i}}{K}}(j) = z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} + k \cdot K / 8 : K / 8])^{k<M} \\
+{\land}~ c = {{{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}^{{-1}}}}{({{{{{\mathrm{extend}}}_{K, N}^{{\mathit{sx}}}}}{(j)}^{M}})} \land N = K \cdot 2 \\
 \end{array}
 } \\
 \end{array}
