@@ -108,7 +108,7 @@ rule Ok_typ/optyp:
 
 rule Ok_typ/VAR:
   E |- VAR x a* : OK
-  -- if (x, p* `-> OK `= inst*) <- E.TYP
+  -- if $lookup_typ(E, x) = (p* `-> OK `= inst*)
   -- Ok_args: E |- a* : p* => s
 
 rule Ok_typ/TUP-empty:
@@ -126,7 +126,7 @@ rule Ok_typ/ITER:
 
 rule Ok_typ/MATCH:
   E |- MATCH x a* WITH inst* : OK
-  -- if (x, p* `-> OK `= inst'*) <- E.TYP
+  -- if $lookup_typ(E, x) = (p* `-> OK `= inst'*)
   -- Ok_args: E |- a* : p* => s
   -- (Ok_inst: E |- inst : p* -> OK)*
 
@@ -243,7 +243,7 @@ rule Ok_exp/TEXT:
 
 rule Ok_exp/VAR:
   E |- VAR x : t
-  -- if (x, t) <- E.EXP
+  -- if $lookup_exp(E, x) = t
 
 
 rule Ok_exp/UN-BOOL:
@@ -361,7 +361,7 @@ rule Ok_exp/EXT:
 
 rule Ok_exp/CALL:
   E |- CALL x a* : $subst_typ(s, t)
-  -- if (x, (p* `-> t `= cl*)) <- E.FUN
+  -- if $lookup_fun(E, x) = (p* `-> t `= cl*)
   -- Ok_args: E |- a* : p* => s
 
 
@@ -445,7 +445,7 @@ relation Ok_sym: E |- sym : typ
 
 rule Ok_sym/VAR:
   E |- VAR x a* : $subst_typ(s, t)
-  -- if (x, (p* `-> t `= prod*)) <- E.GRAM
+  -- if $lookup_gram(E, x) = (p* `-> t `= prod*)
   -- Ok_args: E |- a* : p* => s
 
 rule Ok_sym/NUM:
@@ -511,7 +511,7 @@ rule Ok_prems/cons:
 
 rule Ok_prem/REL:
   E |- REL x a* `: e : OK -| {}
-  -- if (x, (p* `-> t `= rul*)) <- E.REL
+  -- if $lookup_rel(E, x) = (p* `-> t `= rul*)
   -- Ok_args: E |- a* : p* => s
   -- Ok_exp: E |- e : $subst_typ(s, t)
 
@@ -586,7 +586,7 @@ rule Ok_arg/EXP:
 
 rule Ok_arg/FUN:
   E |- FUN y : FUN x `: p* `-> t => {FUN (x, y)}
-  -- if (y, (p'* `-> t' `= clause*)) <- E.FUN
+  -- if $lookup_fun(E, y) = (p'* `-> t' `= clause*)
   -- Sub_params: E |- p* <: p'* => s
   -- Sub_typ: E |- $subst_typ(s, t') <: t
 
@@ -596,7 +596,7 @@ rule Ok_arg/GRAM-ground:
 
 rule Ok_arg/GRAM-higher:
   E |- GRAM (VAR y) : GRAM x `: p* `-> t => {GRAM (x, VAR y)}
-  -- if (y, (p'* `-> t' `= prod*)) <- E.GRAM
+  -- if $lookup_gram(E, y) = (p'* `-> t' `= prod*)
   -- Sub_params: E |- p* <: p'* => s
   -- Sub_typ: E |- $subst_typ(s, t') <: t
 
