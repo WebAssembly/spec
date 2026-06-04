@@ -14165,9 +14165,9 @@ $$
 \frac{
 (C \vdash {\mathit{catch}} : \mathsf{ok})^\ast
  \qquad
-s ; C \vdash {{\mathit{instr}}^\ast} : {t_1^\ast} \rightarrow_{{x^\ast}} {t_2^\ast}
+s ; C \vdash {{\mathit{instr}}^\ast} : \epsilon \rightarrow_{{x^\ast}} {t^\ast}
 }{
-s ; C \vdash {{\mathsf{handler}}_{n}}{\{ {{\mathit{catch}}^\ast} \}}~{{\mathit{instr}}^\ast} : {t_1^\ast} \rightarrow {t_2^\ast}
+s ; C \vdash {{\mathsf{handler}}_{n}}{\{ {{\mathit{catch}}^\ast} \}}~{{\mathit{instr}}^\ast} : \epsilon \rightarrow {t^\ast}
 } \, {[\textsc{\scriptsize Instr\_ok2{-}handler}]}
 \qquad
 \end{array}
