@@ -785,21 +785,22 @@ rec {
 
 ;; ../../../../specification/wasm-latest/1.1-syntax.values.spectec:91.1-91.25
 def $utf8(char*) : byte*
-  ;; ../../../../specification/wasm-latest/5.1-binary.values.spectec:52.1-52.44
+  ;; ../../../../specification/wasm-latest/5.1-binary.values.spectec:52.1-53.18
   def $utf8{`ch*` : char*}(ch*{ch <- `ch*`}) = $concat_(syntax byte, $utf8([ch])*{ch <- `ch*`})
-  ;; ../../../../specification/wasm-latest/5.1-binary.values.spectec:53.1-55.15
+    -- if (|ch*{ch <- `ch*`}| > 1)
+  ;; ../../../../specification/wasm-latest/5.1-binary.values.spectec:54.1-56.15
   def $utf8{ch : char, b : byte}([ch]) = [b]
     -- if (ch!`%`_char.0 < 128)
     -- if (`%`_byte(ch!`%`_char.0) = b)
-  ;; ../../../../specification/wasm-latest/5.1-binary.values.spectec:56.1-58.46
+  ;; ../../../../specification/wasm-latest/5.1-binary.values.spectec:57.1-59.46
   def $utf8{ch : char, b_1 : byte, b_2 : byte}([ch]) = [b_1 b_2]
     -- if ((128 <= ch!`%`_char.0) /\ (ch!`%`_char.0 < 2048))
     -- if (ch!`%`_char.0 = (((2 ^ 6) * (((b_1!`%`_byte.0 : nat <:> int) - (192 : nat <:> int)) : int <:> nat)) + $cont(b_2)))
-  ;; ../../../../specification/wasm-latest/5.1-binary.values.spectec:59.1-61.64
+  ;; ../../../../specification/wasm-latest/5.1-binary.values.spectec:60.1-62.64
   def $utf8{ch : char, b_1 : byte, b_2 : byte, b_3 : byte}([ch]) = [b_1 b_2 b_3]
     -- if (((2048 <= ch!`%`_char.0) /\ (ch!`%`_char.0 < 55296)) \/ ((57344 <= ch!`%`_char.0) /\ (ch!`%`_char.0 < 65536)))
     -- if (ch!`%`_char.0 = ((((2 ^ 12) * (((b_1!`%`_byte.0 : nat <:> int) - (224 : nat <:> int)) : int <:> nat)) + ((2 ^ 6) * $cont(b_2))) + $cont(b_3)))
-  ;; ../../../../specification/wasm-latest/5.1-binary.values.spectec:62.1-64.82
+  ;; ../../../../specification/wasm-latest/5.1-binary.values.spectec:63.1-65.82
   def $utf8{ch : char, b_1 : byte, b_2 : byte, b_3 : byte, b_4 : byte}([ch]) = [b_1 b_2 b_3 b_4]
     -- if ((65536 <= ch!`%`_char.0) /\ (ch!`%`_char.0 < 69632))
     -- if (ch!`%`_char.0 = (((((2 ^ 18) * (((b_1!`%`_byte.0 : nat <:> int) - (240 : nat <:> int)) : int <:> nat)) + ((2 ^ 12) * $cont(b_2))) + ((2 ^ 6) * $cont(b_3))) + $cont(b_4)))

@@ -592,7 +592,10 @@ and valid_sym env g : typ =
 (* Premises *)
 
 and valid_prem env prem =
-  Debug.(log_in_at "il.valid_prem" prem.at (fun _ -> il_prem prem));
+  Debug.(log_at "il.valid_prem" prem.at
+    (fun _ -> il_prem prem)
+    (fun _ -> "")
+  ) @@ fun _ ->
   match prem.it with
   | RulePr (x, as_, mixop, e) ->
     let ps, mixop', t, _rules = Env.find_rel env x in
@@ -600,6 +603,11 @@ and valid_prem env prem =
     let s = valid_args env as_ ps Subst.empty prem.at in
     valid_expmix env mixop e (mixop, Subst.subst_typ s t) e.at;
     env
+  | IfPr ({it = CmpE (`EqOp, _t, e1, e2); _} as e) ->
+    valid_exp env e (BoolT $ e.at);
+    let Ok e1' | Error e1' = Eval.reduce_exp env e1 in
+    let Ok e2' | Error e2' = Eval.reduce_exp env e2 in
+    Env.record_eq env e1' e2'
   | IfPr e ->
     valid_exp env e (BoolT $ e.at);
     env
@@ -616,7 +624,9 @@ and valid_prem env prem =
           List.map (fun x -> "`" ^ x ^ "`") |>
           String.concat ", " ) ^
         " do not occur in left-hand side expression");
-    env'
+    let Ok e1' | Error e1' = Eval.reduce_exp env e1 in
+    let Ok e2' | Error e2' = Eval.reduce_exp env e2 in
+    Env.record_eq env' e1' e2'
   | ElsePr ->
     env
   | IterPr (prem', ite) ->

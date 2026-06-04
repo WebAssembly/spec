@@ -225,6 +225,7 @@ let to_il_env env =
     defs;
     rels = Map.empty;
     grams;
+    eqs = [];
   }
 
 

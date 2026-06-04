@@ -50,6 +50,7 @@ def $cont(b) = $(b - 0x80) -- if (0x80 < b < 0xC0)
 
 ;; def $utf8(char*) : byte*
 def $utf8(ch*) = $concat_(byte, $utf8(ch)*)
+  -- if |ch*| > 1
 def $utf8(ch) = b
   -- if ch < U+0080
   -- if ch = b

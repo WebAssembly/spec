@@ -1192,8 +1192,10 @@ and equiv_exp static env e1 e2 =
   ) @@ fun _ ->
   (* TODO(3, rossberg): this does not reduce inner type arguments *)
   match reduce_exp static env e1, reduce_exp static env e2 with
-  | Ok e1', Ok e2' -> Eq.eq_exp e1' e2'
-  | (Ok e1' | Error e1'), (Ok e2' | Error e2') when static -> Eq.eq_exp e1' e2'
+  | Ok e1', Ok e2' ->
+    Eq.eq_exp e1' e2' || Env.recall_eq env e1' e2'
+  | (Ok e1' | Error e1'), (Ok e2' | Error e2') when static ->
+    Eq.eq_exp e1' e2' || Env.recall_eq env e1' e2'
   | Error _, _ ->
     Error.error e1.at "validation"
       "expression failed to evaluate during pattern-matching"

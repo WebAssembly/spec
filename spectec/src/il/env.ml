@@ -26,6 +26,7 @@ type t =
     defs : def_def Map.t;
     rels : rel_def Map.t;
     grams : gram_def Map.t;
+    eqs : (exp * exp) list;
   }
 
 
@@ -37,6 +38,7 @@ let empty =
     defs = Map.empty;
     rels = Map.empty;
     grams = Map.empty;
+    eqs = [];
   }
 
 let mem map id = Map.mem id.it map
@@ -92,6 +94,13 @@ let rebind_typ env id rhs = {env with typs = rebind "type" env.typs id rhs}
 let rebind_def env id rhs = {env with defs = rebind "definition" env.defs id rhs}
 let rebind_rel env id rhs = {env with rels = rebind "relation" env.rels id rhs}
 let rebind_gram env id rhs = {env with grams = rebind "grammar" env.grams id rhs}
+
+let record_eq env e1 e2 = {env with eqs = (e1, e2)::env.eqs}
+let recall_eq env e1 e2 =
+  List.exists (fun (x, y) ->
+    Eq.eq_exp x e1 && Eq.eq_exp y e2 ||
+    Eq.eq_exp x e2 && Eq.eq_exp y e1
+  ) env.eqs
 
 
 (* Extraction *)
