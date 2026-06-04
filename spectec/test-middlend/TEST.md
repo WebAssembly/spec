@@ -7758,11 +7758,11 @@ relation Instr_ok2: `%;%|-%:%`(store, context, instr, instrtype)
     -- Frame_ok: `%|-%:%`(s, f, C')
     -- Expr_ok2: `%;%|-%:%`(s, C', instr*{instr <- `instr*`}, `%`_resulttype(t^n{t <- `t*`}))
 
-  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:28.1-31.52
-  rule handler{s : store, C : context, n : n, `catch*` : catch*, `instr*` : instr*, `t_1*` : valtype*, `t_2*` : valtype*, `x*` : idx*}:
-    `%;%|-%:%`(s, C, `HANDLER_%{%}%`_instr(n, catch*{catch <- `catch*`}, instr*{instr <- `instr*`}), `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), [], `%`_resulttype(t_2*{t_2 <- `t_2*`})))
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:28.1-31.49
+  rule handler{s : store, C : context, n : n, `catch*` : catch*, `instr*` : instr*, `t*` : valtype*, `x*` : idx*}:
+    `%;%|-%:%`(s, C, `HANDLER_%{%}%`_instr(n, catch*{catch <- `catch*`}, instr*{instr <- `instr*`}), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype(t*{t <- `t*`})))
     -- (Catch_ok: `%|-%:OK`(C, catch))*{catch <- `catch*`}
-    -- Instrs_ok2: `%;%|-%:%`(s, C, instr*{instr <- `instr*`}, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), x*{x <- `x*`}, `%`_resulttype(t_2*{t_2 <- `t_2*`})))
+    -- Instrs_ok2: `%;%|-%:%`(s, C, instr*{instr <- `instr*`}, `%->_%%`_instrtype(`%`_resulttype([]), x*{x <- `x*`}, `%`_resulttype(t*{t <- `t*`})))
 
   ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:33.1-35.42
   rule trap{s : store, C : context, `t_1*` : valtype*, `t_2*` : valtype*}:
@@ -19610,11 +19610,11 @@ relation Instr_ok2: `%;%|-%:%`(store, context, instr, instrtype)
     -- Frame_ok: `%|-%:%`(s, f, C')
     -- Expr_ok2: `%;%|-%:%`(s, C', instr*{instr <- `instr*`}, `%`_resulttype(t^n{t <- `t*`}))
 
-  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:28.1-31.52
-  rule handler{s : store, C : context, n : n, `catch*` : catch*, `instr*` : instr*, `t_1*` : valtype*, `t_2*` : valtype*, `x*` : idx*}:
-    `%;%|-%:%`(s, C, `HANDLER_%{%}%`_instr(n, catch*{catch <- `catch*`}, instr*{instr <- `instr*`}), `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), [], `%`_resulttype(t_2*{t_2 <- `t_2*`})))
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:28.1-31.49
+  rule handler{s : store, C : context, n : n, `catch*` : catch*, `instr*` : instr*, `t*` : valtype*, `x*` : idx*}:
+    `%;%|-%:%`(s, C, `HANDLER_%{%}%`_instr(n, catch*{catch <- `catch*`}, instr*{instr <- `instr*`}), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype(t*{t <- `t*`})))
     -- (Catch_ok: `%|-%:OK`(C, catch))*{catch <- `catch*`}
-    -- Instrs_ok2: `%;%|-%:%`(s, C, instr*{instr <- `instr*`}, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), x*{x <- `x*`}, `%`_resulttype(t_2*{t_2 <- `t_2*`})))
+    -- Instrs_ok2: `%;%|-%:%`(s, C, instr*{instr <- `instr*`}, `%->_%%`_instrtype(`%`_resulttype([]), x*{x <- `x*`}, `%`_resulttype(t*{t <- `t*`})))
 
   ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:33.1-35.42
   rule trap{s : store, C : context, `t_1*` : valtype*, `t_2*` : valtype*}:
@@ -31657,11 +31657,11 @@ relation Instr_ok2: `%;%|-%:%`(store, context, instr, instrtype)
     -- Frame_ok: `%|-%:%`(s, f, C')
     -- Expr_ok2: `%;%|-%:%`(s, C', instr*{instr <- `instr*`}, `%`_resulttype(t^n{t <- `t*`}))
 
-  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:28.1-31.52
-  rule handler{s : store, C : context, n : n, `catch*` : catch*, `instr*` : instr*, `t_1*` : valtype*, `t_2*` : valtype*, `x*` : idx*}:
-    `%;%|-%:%`(s, C, `HANDLER_%{%}%`_instr(n, catch*{catch <- `catch*`}, instr*{instr <- `instr*`}), `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), [], `%`_resulttype(t_2*{t_2 <- `t_2*`})))
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:28.1-31.49
+  rule handler{s : store, C : context, n : n, `catch*` : catch*, `instr*` : instr*, `t*` : valtype*, `x*` : idx*}:
+    `%;%|-%:%`(s, C, `HANDLER_%{%}%`_instr(n, catch*{catch <- `catch*`}, instr*{instr <- `instr*`}), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype(t*{t <- `t*`})))
     -- (Catch_ok: `%|-%:OK`(C, catch))*{catch <- `catch*`}
-    -- Instrs_ok2: `%;%|-%:%`(s, C, instr*{instr <- `instr*`}, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`}), x*{x <- `x*`}, `%`_resulttype(t_2*{t_2 <- `t_2*`})))
+    -- Instrs_ok2: `%;%|-%:%`(s, C, instr*{instr <- `instr*`}, `%->_%%`_instrtype(`%`_resulttype([]), x*{x <- `x*`}, `%`_resulttype(t*{t <- `t*`})))
 
   ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:33.1-35.42
   rule trap{s : store, C : context, `t_1*` : valtype*, `t_2*` : valtype*}:

@@ -17987,13 +17987,15 @@ The frame :math:`\{ \mathsf{locals}~{({{\mathit{val}}^?})^\ast},\;\allowbreak \m
 
       * The instruction :math:`{\mathit{instr}}` is of the form :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}}^\ast}~\}~{{\mathit{instr}''}^\ast})`.
 
+      * The value type sequence :math:`{{\mathit{valtype}}^\ast}` is empty.
+
       * The local index sequence :math:`{{\mathit{localidx}}^\ast}` is empty.
 
       * For all :math:`{\mathit{catch}}` in :math:`{{\mathit{catch}}^\ast}`:
 
          * The catch clause :math:`{\mathit{catch}}` is :ref:`valid <valid-val>`.
 
-      * :math:`{{\mathit{instr}''}^\ast}` is valid with :math:`{{\mathit{valtype}}^\ast}~{\rightarrow}_{{x^\ast}}\,{{\mathit{valtype}'}^\ast}`.
+      * :math:`{{\mathit{instr}''}^\ast}` is valid with :math:`\epsilon~{\rightarrow}_{{x^\ast}}\,{{\mathit{valtype}'}^\ast}`.
    * Or:
 
       * The instruction :math:`{\mathit{instr}}` is of the form :math:`\mathsf{trap}`.
@@ -18041,14 +18043,14 @@ The frame :math:`\{ \mathsf{locals}~{({{\mathit{val}}^?})^\ast},\;\allowbreak \m
 
 
 
-:math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}}^\ast}~\}~{{\mathit{instr}}^\ast})` is valid with :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
+:math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}}^\ast}~\}~{{\mathit{instr}}^\ast})` is valid with :math:`\epsilon~\rightarrow~{t^\ast}` if:
 
 
    * For all :math:`{\mathit{catch}}` in :math:`{{\mathit{catch}}^\ast}`:
 
       * The catch clause :math:`{\mathit{catch}}` is :ref:`valid <valid-val>`.
 
-   * :math:`{{\mathit{instr}}^\ast}` is valid with :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}`.
+   * :math:`{{\mathit{instr}}^\ast}` is valid with :math:`\epsilon~{\rightarrow}_{{x^\ast}}\,{t^\ast}`.
 
 
 
@@ -29764,10 +29766,11 @@ Instr_ok2
     - instr''* is valid with valtype'^n.
   - Or:
     - instr is (HANDLER_ n { catch* } instr''*).
+    - valtype* is [].
     - localidx* is [].
     - For all catch in catch*:
       - the catch clause catch is valid.
-    - instr''* is valid with valtype* ->_ x* valtype'*.
+    - instr''* is valid with [] ->_ x* valtype'*.
   - Or:
     - instr is TRAP.
     - localidx* is [].
@@ -29792,10 +29795,10 @@ Instr_ok2/frame
   - instr* is valid with t^n.
 
 Instr_ok2/handler
-- (HANDLER_ n { catch* } instr*) is valid with t_1* -> t_2* if:
+- (HANDLER_ n { catch* } instr*) is valid with [] -> t* if:
   - For all catch in catch*:
     - the catch clause catch is valid.
-  - instr* is valid with t_1* ->_ x* t_2*.
+  - instr* is valid with [] ->_ x* t*.
 
 Instr_ok2/trap
 - TRAP is valid with t_1* -> t_2* if:
