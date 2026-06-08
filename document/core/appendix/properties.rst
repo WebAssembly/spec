@@ -1037,10 +1037,10 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
      \begin{array}{c}
      (C \vdashcatch \catch : \OKcatch)^\ast
      \qquad
-     S; C \vdashinstrs \instr^\ast : [t_1^\ast] \to [t_2^\ast] \\
+     S; C \vdashinstrs \instr^\ast : [] \to [t^\ast] \\
      \end{array}
    }{
-     S; C \vdashadmininstr \HANDLER_n\{\catch^\ast\}~\instr^\ast : [t_1^\ast] \to [t_2^\ast]
+     S; C \vdashadmininstr \HANDLER_n\{\catch^\ast\}~\instr^\ast : [] \to [t^\ast]
    }
 
 
