@@ -1013,7 +1013,7 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
 
 .. math::
    \frac{
-     C \vdashresulttype [t^n] : \OKresulttype
+     \{\} \vdashresulttype [t^n] : \OKresulttype
      \qquad
      S; [t^n] \vdashinstrs F; \instr^\ast : [t^n]
    }{
