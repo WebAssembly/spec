@@ -14153,6 +14153,8 @@ $$
 s \vdash f : {C'}
  \qquad
 s ; {C'} \vdash {{\mathit{instr}}^\ast} : {t^{n}}
+ \qquad
+\{  \} \vdash {t^{n}} : \mathsf{ok}
 }{
 s ; C \vdash {{\mathsf{frame}}_{n}}{\{ f \}}~{{\mathit{instr}}^\ast} : \epsilon \rightarrow {t^{n}}
 } \, {[\textsc{\scriptsize Instr\_ok2{-}frame}]}
