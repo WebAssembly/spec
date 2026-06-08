@@ -17983,6 +17983,8 @@ The frame :math:`\{ \mathsf{locals}~{({{\mathit{val}}^?})^\ast},\;\allowbreak \m
       * The frame :math:`f` is :ref:`valid <valid-val>` with the context :math:`{C'}`.
 
       * :math:`{{\mathit{instr}''}^\ast}` is valid with :math:`{{\mathit{valtype}'}^{n}}`.
+
+      * Under the context :math:`\{ \mathsf{return}~\epsilon \}`, the result type :math:`{{\mathit{valtype}'}^{n}}` is :ref:`valid <valid-val>`.
    * Or:
 
       * The instruction :math:`{\mathit{instr}}` is of the form :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}}^\ast}~\}~{{\mathit{instr}''}^\ast})`.
@@ -18039,6 +18041,8 @@ The frame :math:`\{ \mathsf{locals}~{({{\mathit{val}}^?})^\ast},\;\allowbreak \m
    * The frame :math:`f` is :ref:`valid <valid-val>` with the context :math:`{C'}`.
 
    * :math:`{{\mathit{instr}}^\ast}` is valid with :math:`{t^{n}}`.
+
+   * Under the context :math:`\{ \mathsf{return}~\epsilon \}`, the result type :math:`{t^{n}}` is :ref:`valid <valid-val>`.
 
 
 
@@ -29764,6 +29768,7 @@ Instr_ok2
     - localidx* is [].
     - the frame f is valid with the context C'.
     - instr''* is valid with valtype'^n.
+    - Under the context { RETURN: ?() }, the result type valtype'^n is valid.
   - Or:
     - instr is (HANDLER_ n { catch* } instr''*).
     - valtype* is [].
@@ -29793,6 +29798,7 @@ Instr_ok2/frame
 - (FRAME_ n { f } instr*) is valid with [] -> t^n if:
   - the frame f is valid with the context C'.
   - instr* is valid with t^n.
+  - Under the context { RETURN: ?() }, the result type t^n is valid.
 
 Instr_ok2/handler
 - (HANDLER_ n { catch* } instr*) is valid with [] -> t* if:
