@@ -17983,9 +17983,13 @@ The frame :math:`\{ \mathsf{locals}~{({{\mathit{val}}^?})^\ast},\;\allowbreak \m
       * The frame :math:`f` is :ref:`valid <valid-val>` with the context :math:`{C'}`.
 
       * :math:`{{\mathit{instr}''}^\ast}` is valid with :math:`{{\mathit{valtype}'}^{n}}`.
+
+      * Under the context :math:`\{ \mathsf{return}~\epsilon \}`, the result type :math:`{{\mathit{valtype}'}^{n}}` is :ref:`valid <valid-val>`.
    * Or:
 
       * The instruction :math:`{\mathit{instr}}` is of the form :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}}^\ast}~\}~{{\mathit{instr}''}^\ast})`.
+
+      * The value type sequence :math:`{{\mathit{valtype}}^\ast}` is empty.
 
       * The local index sequence :math:`{{\mathit{localidx}}^\ast}` is empty.
 
@@ -17993,7 +17997,7 @@ The frame :math:`\{ \mathsf{locals}~{({{\mathit{val}}^?})^\ast},\;\allowbreak \m
 
          * The catch clause :math:`{\mathit{catch}}` is :ref:`valid <valid-val>`.
 
-      * :math:`{{\mathit{instr}''}^\ast}` is valid with :math:`{{\mathit{valtype}}^\ast}~{\rightarrow}_{{x^\ast}}\,{{\mathit{valtype}'}^\ast}`.
+      * :math:`{{\mathit{instr}''}^\ast}` is valid with :math:`\epsilon~{\rightarrow}_{{x^\ast}}\,{{\mathit{valtype}'}^\ast}`.
    * Or:
 
       * The instruction :math:`{\mathit{instr}}` is of the form :math:`\mathsf{trap}`.
@@ -18038,17 +18042,19 @@ The frame :math:`\{ \mathsf{locals}~{({{\mathit{val}}^?})^\ast},\;\allowbreak \m
 
    * :math:`{{\mathit{instr}}^\ast}` is valid with :math:`{t^{n}}`.
 
+   * Under the context :math:`\{ \mathsf{return}~\epsilon \}`, the result type :math:`{t^{n}}` is :ref:`valid <valid-val>`.
 
 
 
-:math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}}^\ast}~\}~{{\mathit{instr}}^\ast})` is valid with :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
+
+:math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}}^\ast}~\}~{{\mathit{instr}}^\ast})` is valid with :math:`\epsilon~\rightarrow~{t^\ast}` if:
 
 
    * For all :math:`{\mathit{catch}}` in :math:`{{\mathit{catch}}^\ast}`:
 
       * The catch clause :math:`{\mathit{catch}}` is :ref:`valid <valid-val>`.
 
-   * :math:`{{\mathit{instr}}^\ast}` is valid with :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}`.
+   * :math:`{{\mathit{instr}}^\ast}` is valid with :math:`\epsilon~{\rightarrow}_{{x^\ast}}\,{t^\ast}`.
 
 
 
@@ -29762,12 +29768,14 @@ Instr_ok2
     - localidx* is [].
     - the frame f is valid with the context C'.
     - instr''* is valid with valtype'^n.
+    - Under the context { RETURN: ?() }, the result type valtype'^n is valid.
   - Or:
     - instr is (HANDLER_ n { catch* } instr''*).
+    - valtype* is [].
     - localidx* is [].
     - For all catch in catch*:
       - the catch clause catch is valid.
-    - instr''* is valid with valtype* ->_ x* valtype'*.
+    - instr''* is valid with [] ->_ x* valtype'*.
   - Or:
     - instr is TRAP.
     - localidx* is [].
@@ -29790,12 +29798,13 @@ Instr_ok2/frame
 - (FRAME_ n { f } instr*) is valid with [] -> t^n if:
   - the frame f is valid with the context C'.
   - instr* is valid with t^n.
+  - Under the context { RETURN: ?() }, the result type t^n is valid.
 
 Instr_ok2/handler
-- (HANDLER_ n { catch* } instr*) is valid with t_1* -> t_2* if:
+- (HANDLER_ n { catch* } instr*) is valid with [] -> t* if:
   - For all catch in catch*:
     - the catch clause catch is valid.
-  - instr* is valid with t_1* ->_ x* t_2*.
+  - instr* is valid with [] ->_ x* t*.
 
 Instr_ok2/trap
 - TRAP is valid with t_1* -> t_2* if:

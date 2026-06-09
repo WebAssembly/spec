@@ -35,3 +35,24 @@ def $paramenv(TYP x) = {TYP (x, eps `-> OK `= eps)}
 def $paramenv(FUN x `: p* `-> t) = {FUN (x, p* `-> t `= eps)}
 def $paramenv(GRAM x `: p* `-> t) = {GRAM (x, p* `-> t `= eps)}
 def $paramenv(param*) = $composeenvs($paramenv(param)*)  -- otherwise
+
+
+;; Lookup
+
+
+def $lookup_typ(S, id) : typdef? hint(show %.TYP#(%))
+def $lookup_fun(S, id) : fundef? hint(show %.FUN#(%))
+def $lookup_rel(S, id) : reldef? hint(show %.REL#(%))
+def $lookup_gram(S, id) : gramdef? hint(show %.GRAM#(%))
+def $lookup_exp(S, id) : typ? hint(show %.EXP#(%))
+
+def $lookup_(syntax Y, (id, Y)*, id) : Y?
+def $lookup_(syntax Y, eps, x') = eps
+def $lookup_(syntax Y, (x, y)* (x', y'), x') = y'
+def $lookup_(syntax Y, (x, y)* (x'', y'), x') = $lookup_(Y, (x, y)*, x') -- if x'' =/= x'
+
+def $lookup_typ(S, x) = $lookup_(typdef, S.TYP, x)
+def $lookup_fun(S, x) = $lookup_(fundef, S.FUN, x)
+def $lookup_rel(S, x) = $lookup_(reldef, S.REL, x)
+def $lookup_gram(S, x) = $lookup_(gramdef, S.GRAM, x)
+def $lookup_exp(E, x) = $lookup_(typ, E.EXP, x)

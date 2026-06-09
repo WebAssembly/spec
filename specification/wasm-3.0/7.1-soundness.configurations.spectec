@@ -24,11 +24,12 @@ rule Instr_ok2/frame:
   s; C |- FRAME_ n `{f} instr* : eps -> t^n
   -- Frame_ok: s |- f : C'
   -- Expr_ok2: s; C' |- instr* : t^n
+  -- Resulttype_ok: {} |- t^n : OK
 
 rule Instr_ok2/handler:
-  s; C |- HANDLER_ n `{catch*} instr* : t_1* -> t_2*
+  s; C |- HANDLER_ n `{catch*} instr* : eps -> t*
   -- (Catch_ok: C |- catch : OK)*
-  -- Instrs_ok2: s; C |- instr* : t_1* ->_(x*) t_2*
+  -- Instrs_ok2: s; C |- instr* : eps ->_(x*) t*
 
 rule Instr_ok2/trap:
   s; C |- TRAP : t_1* -> t_2*

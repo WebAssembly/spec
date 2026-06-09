@@ -35,7 +35,7 @@ rule Reduce_typ/step:
 
 rule Step_typ/VAR-apply:
   S |- VAR x a* ~> MATCH x a* WITH inst*
-  -- if (x, p* `-> OK `= inst*) <- S.TYP
+  -- if $lookup_typ(S, x) = (p* `-> OK `= inst*)
 
 rule Step_typ/MATCH-alias:
   S |- MATCH x eps WITH (INST `{} eps `=> ALIAS t) inst* ~> t
@@ -455,7 +455,7 @@ rule Step_exp/ITER-SUP-bad:
 
 rule Step_exp/CALL-apply:
   S |- CALL x a* ~> MATCH a* WITH clause*
-  -- if (x, p* `-> t `= clause*) <- S.FUN
+  -- if $lookup_fun(S, x) = (p* `-> t `= clause*)
 
 
 rule Step_exp/CVT-NUM-good:
@@ -1419,7 +1419,7 @@ rule Step_prems/ctx-fail:
 
 rule Step_prems/REL:
   S |- REL x a* `: e ~>_{} (pr'* (IF (CMP EQ $subst_exp(s ++ s', e') e)))
-  -- if (x, p* `-> t `= rul*) <- S.REL
+  -- if $lookup_rel(S, x) = (p* `-> t `= rul*)
   -- if (RULE `{q*} (e' `- pr*)) <- $subst_rule($args_for_params(a*, p*), rul)*
   -- Ok_subst: $storeenv(S) |- s : q*
   -- if (pr'*, s') = $refresh_prems(pr*)
