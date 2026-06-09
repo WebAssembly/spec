@@ -36,6 +36,11 @@ let (let***) xor f =
   | None -> Ok None
   | Some x -> f x
 
+let (|>**) xr f =
+  match xr with
+  | Ok x -> Ok (f x)
+  | Error x -> Error (f x)
+
 let rec map_results f = function
   | [] -> Ok []
   | x::xs -> let** y = f x in let** ys = map_results f xs in Ok (y::ys)
@@ -46,7 +51,7 @@ let error_typ at t expect =
     ("type `" ^ Print.string_of_typ t ^ "` is not " ^ expect)
 
 
-let ($>) it e = {e with it}
+let ($>) it e = {e with it; mark = 0}
 
 let unordered s1 s2 = not Set.(subset s1 s2 || subset s2 s1)
 
@@ -60,14 +65,21 @@ let il_opt_result f = function
   | Error _ -> "FAIL"
 
 
-let is_cnf x = x.mark
+let is_snf x = x.mark land 4 = 4  (* static normal form *)
+let is_dnf x = x.mark land 2 = 2  (* dynamic normal form *)
+let is_cnf x = x.mark land 1 = 1  (* closed normal form *)
 
-let cnf x = {x with mark = true}
+let snf x = {x with mark = x.mark lor 4}
+let dnf x = {x with mark = x.mark lor 6}  (* implies snf *)
+let cnf x = {x with mark = x.mark lor 7}  (* implies dnf *)
+
+let is_nf static = if static then is_snf else is_dnf
+let nf static = if static then snf else dnf
 
 let cnf_if xs x = if List.for_all is_cnf xs then cnf x else x
 
 let cnf_if_prim e =
-  if e.mark then e else
+  if is_cnf e then e else
   match e.it with
   | BoolE _ | NumE _ | TextE _ -> cnf e
   | _ -> e
@@ -117,13 +129,18 @@ let equiv_list equiv_x env xs1 xs2 =
 
 (* Type Reduction (weak-head) *)
 
+let il_cnf t = if is_cnf t then " (cnf)" else ""
+let il_dnf t = let s = il_cnf t in if s = "" && is_dnf t then " (dnf)" else s
+let il_snf t = let s = il_dnf t in if s = "" && is_snf t then " (snf)" else s
+let il_nf static = if static then il_snf else il_dnf
+
 let rec reduce_typ env t : typ result =
   Debug.(log_if "il.reduce_typ" (t.it <> NumT `NatT)
     (fun _ -> fmt "%s" (il_typ t))
-    (fun r -> fmt "%s" (il_result il_typ r))
+    (fun r -> fmt "%s%s" (il_result il_typ r) (il_snf t))
   ) @@ fun _ ->
-  if is_cnf t then Ok t else
-  match t.it with
+  if is_snf t then Ok t else
+  (match t.it with
   | VarT (id, as_) ->
     let** as' = map_results (static reduce_arg env) as_ in
     let** dto = reduce_typ_app env id as' (Env.find_opt_typ env id) t.at in
@@ -132,6 +149,7 @@ let rec reduce_typ env t : typ result =
     | _ -> Ok (VarT (id, as') $ t.at |> cnf_if as')
     )
   | _ -> Ok t
+  ) |>** snf
 
 and reduce_typdef env t : deftyp result =
   let** t' = reduce_typ env t in
@@ -208,10 +226,12 @@ and find_typcase t tcs op at =
 (* Expression Reduction *)
 
 and is_normal_arg static env a =  (* only for assertions *)
+  is_nf static a ||
   match reduce_arg static env a with
   | Ok a' | Error a' -> Eq.eq_arg a a'
 
 and is_normal_exp static env e =  (* only for assertions *)
+  is_nf static e ||
   match reduce_exp static env e with
   | Ok e' | Error e' -> Eq.eq_exp e e'
 
@@ -236,10 +256,10 @@ and is_value_exp e =
 and reduce_exp static env e : exp result =
   Debug.(log ("il.reduce_exp" ^ if static then " static" else "")
     (fun _ -> fmt "%s" (il_exp e))
-    (fun e' -> fmt "%s" (il_result il_exp e'))
+    (fun e' -> fmt "%s%s" (il_result il_exp e') (il_nf static e))
   ) @@ fun _ ->
-  if is_cnf e then Ok e else
-  match e.it with
+  if is_nf static e then Ok e else
+  (match e.it with
   | VarE _ -> Ok e
   | BoolE _ | NumE _ | TextE _ -> Ok (cnf e)
   | UnE (op, ot, e1) ->
@@ -556,6 +576,7 @@ and reduce_exp static env e : exp result =
       Ok {e1' with note = e.note}
     | _ -> Ok (SubE (e1', t1', t2') $> e)
     )
+  ) |>** nf static
 
 and reduce_iter static env iter : iter result =
   match iter with
@@ -650,16 +671,17 @@ and reduce_path static env e p k : exp result =
 and reduce_arg static env a : arg result =
   Debug.(log "il.reduce_arg"
     (fun _ -> fmt "%s" (il_arg a))
-    (fun a' -> fmt "%s" (il_result il_arg a'))
+    (fun a' -> fmt "%s%s" (il_result il_arg a') (il_nf static a))
   ) @@ fun _ ->
-  if is_cnf a then Ok a else
-  match a.it with
+  if is_nf static a then Ok a else
+  (match a.it with
   | ExpA e ->
     let** e' = reduce_exp static env e in
     Ok (ExpA e' $ a.at |> cnf_if [e'])
   | TypA _t -> Ok a  (* types are reduced on demand *)
   | DefA _id -> Ok a
   | GramA _g -> Ok a
+  ) |>** nf static
 
 and reduce_exp_call static env id args clauses at : exp option result =
   match clauses with

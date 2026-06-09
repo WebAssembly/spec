@@ -18,7 +18,7 @@ val string_of_region : region -> string
 
 (* Phrases *)
 
-type ('a, 'b) note_phrase = {at : region; it : 'a; note : 'b; mark : bool}
+type ('a, 'b) note_phrase = {at : region; it : 'a; note : 'b; mark : int}
 type 'a phrase = ('a, unit) note_phrase
 
 val ($) : 'a -> region -> 'a phrase
@@ -28,7 +28,7 @@ val (%) : region -> 'b -> region * 'b
 val it : ('a, 'b) note_phrase -> 'a
 val at : ('a, 'b) note_phrase -> region
 val note : ('a, 'b) note_phrase -> 'b
-val mark : ('a, 'b) note_phrase -> bool
+val mark : ('a, 'b) note_phrase -> int
 
 
 (* Utilities *)

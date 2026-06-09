@@ -106,7 +106,7 @@ and subst_iterexp : 'a. subst -> (subst -> 'a -> 'a) -> 'a -> _ -> 'a * _ =
 (* Types *)
 
 and subst_typ s t =
-  if t.mark then t else
+  if t.mark land 1 = 1 then t else
   (match t.it with
   | VarT (x, as_) ->
     (match Map.find_opt x.it s.typid with
@@ -153,7 +153,7 @@ and subst_typcase s (op, (t, qs, prems), hints) =
 (* Expressions *)
 
 and subst_exp s e =
-  if e.mark then e else
+  if e.mark land 1 = 1 then e else
   (match e.it with
   | VarE x ->
     (match Map.find_opt x.it s.varid with
@@ -251,7 +251,7 @@ and subst_prems s prems =
 (* Definitions *)
 
 and subst_arg s a =
-  if a.mark then a else
+  if a.mark land 1 = 1 then a else
   (match a.it with
   | ExpA e -> ExpA (subst_exp s e)
   | TypA t -> TypA (subst_typ s t)
