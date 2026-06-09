@@ -16,3 +16,14 @@ val eq_param : param -> param -> bool
 
 val eq_opt : ('a -> 'a -> bool) -> 'a option -> 'a option -> bool
 val eq_list : ('a -> 'a -> bool) -> 'a list -> 'a list -> bool
+
+val compare_id : id -> id -> int
+val compare_atom : atom -> atom -> int
+val compare_mixop : mixop -> mixop -> int
+val compare_iter : iter -> iter -> int
+val compare_iterexp : iterexp -> iterexp -> int
+val compare_typ : typ -> typ -> int
+val compare_exp : exp -> exp -> int
+val compare_path : path -> path -> int
+val compare_sym : sym -> sym -> int
+val compare_arg : arg -> arg -> int

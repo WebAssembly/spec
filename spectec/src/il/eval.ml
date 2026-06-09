@@ -1191,17 +1191,23 @@ and equiv_exp static env e1 e2 =
     (fun _ -> fmt "%s == %s" (il_exp e1) (il_exp e2)) Bool.to_string
   ) @@ fun _ ->
   (* TODO(3, rossberg): this does not reduce inner type arguments *)
-  match reduce_exp static env e1, reduce_exp static env e2 with
-  | Ok e1', Ok e2' ->
-    Eq.eq_exp e1' e2' || Env.recall_eq env e1' e2'
-  | (Ok e1' | Error e1'), (Ok e2' | Error e2') when static ->
-    Eq.eq_exp e1' e2' || Env.recall_eq env e1' e2'
-  | Error _, _ ->
-    Error.error e1.at "validation"
-      "expression failed to evaluate during pattern-matching"
-  | _, Error _ ->
-    Error.error e2.at "validation"
-      "expression failed to evaluate during pattern-matching"
+  let e1', e2' =
+    match reduce_exp static env e1, reduce_exp static env e2 with
+    | Ok e1', Ok e2' -> e1', e2'
+    | (Ok e1' | Error e1'), (Ok e2' | Error e2') when static -> e1', e2'
+    | Error _, _ ->
+      Error.error e1.at "validation"
+        "expression failed to evaluate during pattern-matching"
+    | _, Error _ ->
+      Error.error e2.at "validation"
+        "expression failed to evaluate during pattern-matching"
+  in
+  Eq.eq_exp e1' e2' || Eq.eq_exp (recall_exp env e1') (recall_exp env e2')
+
+and recall_exp env e =
+  match Env.recall_eq_simp env e with
+  | None -> e
+  | Some e' -> recall_exp env e'
 
 and equiv_sym _env g1 g2 =
   Debug.(log "il.equiv_sym"

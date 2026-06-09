@@ -12,6 +12,83 @@ rule Catable_typ/STRUCT:
   -- (Catable_typ: E |- t' CATABLE)*
 
 
+;; Equivalence
+
+relation Eq_typ: E |- typ == typ
+relation Eq_exp: E |- exp == exp
+relation Eq_arg: E |- arg == arg
+
+rule Eq_typ/var:
+  E |- VAR x a_1* == VAR x a_2*
+  -- (Eq_arg: E |- a_1 == a_2)*
+
+rule Eq_typ/tup:
+  E |- TUP (x_1 `: t_1) tb_1* == TUP (x_2 `: t_2) tb_2*
+  -- Eq_typ: E |- t_1 == t_2
+  -- Eq_typ: E ++ {EXP (x_1, t_1)} |- TUP tb_1* == $subst_typ({EXP (x_2, VAR x_1)}, TUP tb2*)
+
+rule Eq_typ/iter:
+  E |- ITER t_1 it == ITER t_2 it
+  -- Eq_typ: E |- t_1 == t_2
+
+rule Eq_typ/refl:
+  E |- t == t
+
+rule Eq_typ/trans:
+  E |- t_1 == t_2
+  -- Eq_typ: E |- t_1 == t'
+  -- Eq_typ: E |- t' == t_2
+
+rule Eq_typ/reduce:
+  E |- t_1 == t_2
+  -- Reduce_typ: E |- t_1 ~>* t'_1
+  -- Reduce_typ: E |- t_2 ~>* t'_2
+  -- if t'_1 = t'_2
+  ;; Note: defined types are nominal
+
+
+rule Eq_exp/refl:
+  E |- e == e
+
+rule Eq_exp/trans:
+  E |- e_1 == e_2
+  -- Eq_exp: E |- e_1 == e'
+  -- Eq_exp: E |- e' == e_2
+
+rule Eq_exp/reduce:
+  E |- e_1 == e_2
+  -- Reduce_exp: E |- e_1 ~>* e'_1
+  -- Reduce_exp: E |- e_2 ~>* e'_2
+  -- if e'_1 = e'_2
+
+rule Eq_exp/recall:
+  E |- e_1 == e_2
+  -- if (e_1, e_2) <- E.EQ
+
+
+rule Eq_arg/EXP:
+  E |- EXP e_1 == EXP e_2
+  -- Eq_exp: E |- e_1 == e_2
+
+rule Eq_arg/TYP:
+  E |- TYP t_1== TYP t_2
+  -- Eq_typ: E |- t_1 == t_2
+
+rule Eq_arg/refl:
+  E |- a == a
+
+rule Eq_arg/trans:
+  E |- a_1 == a_2
+  -- Eq_arg: E |- a_1 == a'
+  -- Eq_arg: E |- a' == a_2
+
+rule Eq_arg/reduce:
+  E |- a_1 == a_2
+  -- Reduce_arg: E |- a_1 ~>* a'_1
+  -- Reduce_arg: E |- a_2 ~>* a'_2
+  -- if a'_1 = a'_2
+
+
 ;; Subtyping
 
 relation Sub_numtyp: |- numtyp <: numtyp
@@ -519,6 +596,10 @@ rule Ok_prem/IF:
   E |- IF e : OK -| {}
   -- Ok_exp: E |- e : BOOL
 
+rule Ok_prem/IF-EQ:
+  E |- IF (CMP EQ e_1 e_2) : OK -| {EQ (e1, e2)}
+  -- Ok_exp: E |- CMP EQ e_1 e_2 : BOOL
+
 rule Ok_prem/ELSE:
   E |- ELSE : OK -| {}
 
@@ -527,7 +608,7 @@ rule Ok_prem/NOT:
   -- Ok_prem: E |- pr : OK -| {}
 
 rule Ok_prem/LET:
-  E |- LET `{q*} e_1 `= e_2 : OK -| $paramenv(q*)
+  E |- LET `{q*} e_1 `= e_2 : OK -| $paramenv(q*) ++ {EQ (e1, e2)}
   -- Ok_exp: E ++ $paramenv(q*) |- e_1 : t
   -- Ok_exp: E |- e_2 : t
 

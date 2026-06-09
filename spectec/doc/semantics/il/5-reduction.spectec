@@ -1,8 +1,7 @@
 ;; Types
 
-relation Reduce_typ: S |- typ ~>* typ?
 relation Step_typ: S |- typ ~> typ?
-relation Eq_typ: S |- typ == typ
+relation Reduce_typ: S |- typ ~>* typ?
 relation Expand_typ: S |- typ ~~ deftyp
 
 
@@ -14,14 +13,6 @@ rule Expand_typ/plain:
 rule Expand_typ/def:
   S |- t ~~ dt
   -- Reduce_typ: S |- t ~>* MATCH x WITH (INST `{} `=> dt) inst*
-
-
-rule Eq_typ:
-  S |- t_1 == t_2
-  -- Reduce_typ: S |- t_1 ~>* t'_1
-  -- Reduce_typ: S |- t_2 ~>* t'_2
-  -- if t'_1 = t'_2
-  ;; Note: defined types are nominal
 
 
 rule Reduce_typ/refl:
@@ -230,14 +221,6 @@ rule Step_exppush/ctx-fail2:
 relation Reduce_exp: S |- exp ~>* exp?
 relation Step_exp: S |- exp ~> exp?
 relation Step_expfield: S |- expfield ~> expfield?
-relation Eq_exp: S |- exp == exp
-
-
-rule Eq_exp:
-  S |- e_1 == e_2
-  -- Reduce_exp: S |- e_1 ~>* e'_1
-  -- Reduce_exp: S |- e_2 ~>* e'_2
-  -- if e'_1 = e'_2
 
 
 rule Reduce_exp/refl:
@@ -1249,14 +1232,6 @@ rule Step_expmatch_plain/SUB-TUP:
 
 relation Reduce_arg: S |- arg ~>* arg?
 relation Step_arg: S |- arg ~> arg?
-relation Eq_arg: S |- arg == arg
-
-
-rule Eq_arg:
-  S |- a_1 == a_2
-  -- Reduce_arg: S |- a_1 ~>* a'_1
-  -- Reduce_arg: S |- a_2 ~>* a'_2
-  -- if a'_1 = a'_2
 
 
 rule Reduce_arg/refl:
@@ -1388,14 +1363,6 @@ rule Step_param/FGRAM-ctx-fail2:
 
 relation Reduce_prems: S |- prem* ~>* prem*?
 relation Step_prems: S |- prem* ~>_subst prem*?
-relation Eq_prems: S |- prem* == prem*
-
-
-rule Eq_prems:
-  S |- pr_1* == pr_2*
-  -- Reduce_prems: S |- pr_1* ~>* pr'_1*
-  -- Reduce_prems: S |- pr_2* ~>* pr'_2*
-  -- if pr'_1* = pr'_2*
 
 
 rule Reduce_prems/refl:

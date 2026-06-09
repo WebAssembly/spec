@@ -95,12 +95,20 @@ let rebind_def env id rhs = {env with defs = rebind "definition" env.defs id rhs
 let rebind_rel env id rhs = {env with rels = rebind "relation" env.rels id rhs}
 let rebind_gram env id rhs = {env with grams = rebind "grammar" env.grams id rhs}
 
-let record_eq env e1 e2 = {env with eqs = (e1, e2)::env.eqs}
+let record_eq env e1 e2 =
+  match Eq.compare_exp e1 e2 with
+  | +1 -> {env with eqs = (e1, e2)::env.eqs}
+  | -1 -> {env with eqs = (e2, e1)::env.eqs}
+  | _ -> env
+
 let recall_eq env e1 e2 =
   List.exists (fun (x, y) ->
     Eq.eq_exp x e1 && Eq.eq_exp y e2 ||
     Eq.eq_exp x e2 && Eq.eq_exp y e1
   ) env.eqs
+
+let recall_eq_simp env e =
+  Option.map snd (List.find_opt (fun (x, _) -> Eq.eq_exp e x) env.eqs)
 
 
 (* Extraction *)

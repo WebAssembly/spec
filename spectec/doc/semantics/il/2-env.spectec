@@ -9,14 +9,17 @@ syntax S =
   { TYP (id, typdef)*,
     FUN (id, fundef)*,
     REL (id, reldef)*,
-    GRAM (id, gramdef)*
+    GRAM (id, gramdef)*,
   }
 
 
 ;; Environment
 
-syntax E = {S, EXP (id, typ)*}
-
+syntax E =
+  { S,
+    EXP (id, typ)*,
+    EQ (exp, exp)*
+  }
 
 def $composeenvs(E*) : E  hint(show (++)%)
 def $composeenvs(eps) = {}
@@ -39,20 +42,22 @@ def $paramenv(param*) = $composeenvs($paramenv(param)*)  -- otherwise
 
 ;; Lookup
 
-
 def $lookup_typ(S, id) : typdef? hint(show %.TYP#(%))
 def $lookup_fun(S, id) : fundef? hint(show %.FUN#(%))
 def $lookup_rel(S, id) : reldef? hint(show %.REL#(%))
 def $lookup_gram(S, id) : gramdef? hint(show %.GRAM#(%))
-def $lookup_exp(S, id) : typ? hint(show %.EXP#(%))
+def $lookup_exp(E, id) : typ? hint(show %.EXP#(%))
+def $lookup_eq(E, exp) : exp? hint(show %.EQ#(%))
 
-def $lookup_(syntax Y, (id, Y)*, id) : Y?
-def $lookup_(syntax Y, eps, x') = eps
-def $lookup_(syntax Y, (x, y)* (x', y'), x') = y'
-def $lookup_(syntax Y, (x, y)* (x'', y'), x') = $lookup_(Y, (x, y)*, x') -- if x'' =/= x'
+def $lookup__(syntax X, syntax Y, (X, Y)*, X) : Y?
+def $lookup__(syntax X, syntax Y, eps, x') = eps
+def $lookup__(syntax X, syntax Y, (x, y)* (x', y'), x') = y'
+def $lookup__(syntax X, syntax Y, (x, y)* (x'', y'), x') =
+  $lookup__(X, Y, (x, y)*, x') -- if x'' =/= x'
 
-def $lookup_typ(S, x) = $lookup_(typdef, S.TYP, x)
-def $lookup_fun(S, x) = $lookup_(fundef, S.FUN, x)
-def $lookup_rel(S, x) = $lookup_(reldef, S.REL, x)
-def $lookup_gram(S, x) = $lookup_(gramdef, S.GRAM, x)
-def $lookup_exp(E, x) = $lookup_(typ, E.EXP, x)
+def $lookup_typ(S, x) = $lookup__(id, typdef, S.TYP, x)
+def $lookup_fun(S, x) = $lookup__(id, fundef, S.FUN, x)
+def $lookup_rel(S, x) = $lookup__(id, reldef, S.REL, x)
+def $lookup_gram(S, x) = $lookup__(id, gramdef, S.GRAM, x)
+def $lookup_exp(E, x) = $lookup__(id, typ, E.EXP, x)
+def $lookup_eq(E, e) = $lookup__(exp, exp, E.EQ, e)

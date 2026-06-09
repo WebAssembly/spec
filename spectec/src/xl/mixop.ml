@@ -71,8 +71,19 @@ let rec flatten = function
   | Infix (mixop1, atom, mixop2) -> flatten mixop1 ++ [[atom]] ++ flatten mixop2
   | Seq mixops -> List.fold_left (++) [[]] (List.map flatten mixops)
 
-let compare mixop1 mixop2 =
-  List.compare (List.compare Atom.compare) (flatten mixop1) (flatten mixop2)
+let (>>) o1 o2 = if o1 = 0 then o2 else o1
+
+let rec compare mixop1 mixop2 =
+  match mixop1, mixop2 with
+  | Arg x1, Arg x2 -> Stdlib.compare x1 x2
+  | Atom a1, Atom a2 -> Atom.compare a1 a2
+  | Brack (a11, op11, a12), Brack (a21, op21, a22) ->
+    Atom.compare a11 a21 >> compare op11 op21 >> Atom.compare a12 a22
+  | Infix (op11, a1, op12), Infix (op21, a2, op22) ->
+    compare op11 op21 >> Atom.compare a1 a2 >> compare op12 op22
+  | Seq (op1::ops1), Seq (op2::ops2) ->
+    (match compare op1 op2 with 0 -> compare (Seq ops1) (Seq ops2) | o -> o)
+  | _, _ -> Stdlib.compare mixop1 mixop2
 
 let eq mixop1 mixop2 =
   compare mixop1 mixop2 = 0
