@@ -1,0 +1,32 @@
+;;
+;; Auxiliary definitions used for describing typing notations
+;;
+
+;; Typing notation
+
+syntax T hint(macro none) = nat
+
+relation NotationTypingPremise: nat
+relation NotationTypingPremisedots: `... hint(macro none)
+relation NotationTypingScheme: nat
+
+rule NotationTypingScheme:
+  conclusion
+  -- NotationTypingPremise: premise_1
+  -- NotationTypingPremise: premise_2
+  -- NotationTypingPremisedots: `...
+  -- NotationTypingPremise: premise_n
+
+relation NotationTypingInstrScheme: context |- instr* : instrtype hint(macro none)
+
+rule NotationTypingInstrScheme/i32.add:
+  C |- BINOP I32 ADD : I32 I32 -> I32
+
+rule NotationTypingInstrScheme/global.get:
+  C |- GLOBAL.GET x : eps -> t
+  -- if C.GLOBALS[x] = mut t
+
+rule NotationTypingInstrScheme/block:
+  C |- BLOCK blocktype instr* : t_1* -> t_2*
+  -- Blocktype_ok: C |- blocktype : t_1* -> t_2*
+  -- NotationTypingInstrScheme: {LABELS (t_2*)} ++ C |- instr* : t_1* -> t_2*

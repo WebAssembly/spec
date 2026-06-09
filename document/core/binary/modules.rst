@@ -42,7 +42,7 @@ All basic :ref:`indices <syntax-index>` are encoded with their respective value.
 
 $${grammar: {
   Btypeidx Bfuncidx Btableidx Bmemidx Bglobalidx Btagidx Belemidx Bdataidx
-  Blocalidx Blabelidx
+  Blocalidx Bfieldidx Blabelidx
 }}
 
 :ref:`External indices <syntax-externidx>` are encoded by a distiguishing byte followed by an encoding of their respective value.

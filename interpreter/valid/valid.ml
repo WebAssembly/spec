@@ -178,12 +178,15 @@ let check_subtype_sub (c : context) (sut : subtype) x at =
 let check_rectype (c : context) (rt : rectype) at : context =
   let RecT sts = rt in
   let x = Lib.List32.length c.types in
-  let c' = {c with types = c.types @ roll_deftypes x rt} in
+  let dts =
+    try List.map (subst_deftype (subst_of c.types)) (roll_deftypes x rt)
+    with UnknownIndex x -> [type_ c (x @@ at)]  (* force error *)
+  in
+  let c' = {c with types = c.types @ dts} in
   List.iter (fun st -> check_subtype c' st at) sts;
   Lib.List32.iteri
     (fun i st -> check_subtype_sub c' st (Int32.add x i) at) sts;
   c'
-
 
 let check_tagtype (c : context) (tt : tagtype) at =
   let TagT ut = tt in

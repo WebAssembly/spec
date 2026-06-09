@@ -152,11 +152,12 @@ let argspec = Arg.align (
   "--print-all-il", Arg.Set print_all_il, " Print IL after each step";
   "--print-al", Arg.Set print_al, " Print al";
   "--print-al-o", Arg.Set_string print_al_o, " Print al with given name";
+  "--print-il-notes", Arg.Set Il.Print.print_notes, " Print IL with type annotations";
   "--print-no-pos", Arg.Set print_no_pos, " Suppress position info in output";
 ] @ List.map pass_argspec all_passes @ [
   "--all-passes", Arg.Unit (fun () -> List.iter enable_pass all_passes)," Run all passes";
 
-  "--test-version", Arg.Int (fun i -> Backend_interpreter.Construct.version := i), " Wasm version to assume for tests (default: 3)";
+  "--test-version", Arg.Int (fun i -> Backend_interpreter.Construct.version := i; Il2al.Translate.version := i), " Wasm version to assume for tests (default: 3)";
 
   "-help", Arg.Unit ignore, "";
   "--help", Arg.Unit ignore, "";
@@ -222,8 +223,8 @@ let () =
     let match_algo_name algo_name al_elt =
       algo_name = "" ||
       (match al_elt.Util.Source.it with
-      | Al.Ast.RuleA (a, _, _, _) ->
-        Al.Print.string_of_atom a = String.uppercase_ascii algo_name
+      | Al.Ast.RuleA (m, _, _, _) ->
+        Al.Print.string_of_mixop m = String.uppercase_ascii algo_name
       | Al.Ast.FuncA (id , _, _) ->
         id = String.lowercase_ascii algo_name)
     in

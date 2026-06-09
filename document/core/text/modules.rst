@@ -266,10 +266,6 @@ The data is written as a :ref:`string <text-string>`, which may be split up into
 
 $${grammar: Tdata_ Tdatastring {Tmemuse_/plain Toffset_/plain}}
 
-.. note::
-   In the current version of WebAssembly, the only valid memory index is 0
-   or a symbolic :ref:`memory identifier <text-id>` resolving to the same value.
-
 
 Abbreviations
 .............
@@ -434,6 +430,6 @@ $${definition-ignore: typesd importsd tagsd globalsd memsd tablesd funcsd datasd
 Abbreviations
 .............
 
-In a source file, the toplevel ${grammar-case: "(" "module" Tdecldots ")"} surrounding the module body may be omitted.
+In a source file, the toplevel ${grammar-case: "(" "module" Tdecldots_(I) ")"} surrounding the module body may be omitted.
 
 $${grammar: Tmodule/abbrev}

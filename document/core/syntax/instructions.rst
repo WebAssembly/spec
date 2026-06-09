@@ -254,7 +254,7 @@ The former merely returns the result of the test,
 while the latter performs a downcast and :ref:`traps <trap>` if the operand's type does not match.
 
 .. note::
-   The ${:BR_ON_NULL} and ${:BR_ON_NON_NULL} instructions provide versions of ${:REF.AS_NULL} that branch depending on the success of failure of a null test instead of trapping.
+   The ${:BR_ON_NULL} and ${:BR_ON_NON_NULL} instructions provide versions of ${:REF.AS_NON_NULL} that branch depending on the success or failure of a null test instead of trapping.
    Similarly, the ${:BR_ON_CAST} and ${:BR_ON_CAST_FAIL} instructions provides versions of ${:REF.CAST} that branch depending on the success of the downcast instead of trapping.
 
    An additional instruction operating on function references is the :ref:`control instruction <syntax-instr-control>` ${:CALL_REF}.
@@ -407,7 +407,8 @@ Instructions prefixed with ${:V128} do not involve a specific interpretation, an
 
 $${syntax:
   vvunop vvbinop vvternop vvtestop
-  vunop_ vbinop_ vternop_ vtestop_ vrelop_ vswizzlop_ vshiftop_ vextunop__ vextbinop__ vextternop__ vcvtop__
+  vunop_ vbinop_ vternop_ vtestop_ vrelop_ vswizzlop_ vshiftop_
+  vextunop__ vextbinop__ vextternop__ vcvtop__
 }
 
 Vector instructions can be grouped into several subcategories:

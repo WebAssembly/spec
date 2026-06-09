@@ -40,11 +40,15 @@ let imap : idxs ref = ref Map.empty
 let init_env frees = { idxs = !imap; frees }
 
 
+let ids_of_quants qs =
+  List.filter_map (fun q ->
+    match q.it with
+    | ExpP (id, _) -> Some id.it
+    | _ -> None
+  ) qs
+
 let gen_new_unified ?prefix env ty =
-  let var =
-    match prefix with
-    | Some prefix -> introduce_fresh_variable ~prefix env.frees ty
-    | _ -> introduce_fresh_variable env.frees ty in
+  let var = introduce_fresh_variable ?prefix env.frees ty in
   env.frees <- Set.add var env.frees;
   unified_prefix ^ var $ ty.at
 
@@ -58,6 +62,11 @@ let rename_string _env s =
 
 let rename_id env id = { id with it = rename_string env id.it }
 
+let rename_quant env q =
+  match q.it with
+  | ExpP (id, t) -> ExpP (rename_id env id, t) $ q.at
+  | _ -> q
+
 let rename_iterexp env (iter, ides) = (iter, List.map (fun (id, e) -> (rename_id env id, e)) ides)
 
 let rename_exp env exp =
@@ -68,7 +77,7 @@ let rename_exp env exp =
 
 let rename_prem env p =
   {p with it = match p.it with
-  | LetPr (e1, e2, ss) -> LetPr (e1, e2, List.map (rename_string env) ss)
+  | LetPr (qs, e1, e2) -> LetPr (List.map (rename_quant env) qs, e1, e2)
   | p' -> p' }
 
 let rename_rule_def (env, rd) =
@@ -98,12 +107,19 @@ let rename_rule (env, r) =
     } in
   Il_walk.transform_rule transformer r
 
+(* HARDCODE: Prevent falsely unifying mixture of instr and val into `__unify:val` *)
+let generalize_unified_wasm_val env u e =
+  if Il2al_util.is_val u && not (Il2al_util.is_val e) then (
+    let t = e.note in
+    VarE (gen_new_unified env t) $$ no_region % t
+  ) else u
+
 let rec overlap env e1 e2 = if eq_exp e1 e2 then e1 else
   let replace_it it = { e1 with it = it } in
   match e1.it, e2.it with
     (* Already unified *)
     | VarE _, _ when is_unified_exp e1 ->
-      e1
+      generalize_unified_wasm_val env e1 e2
     | IterE ({ it = VarE id; _} as e, i), _ when is_unified_id id.it ->
       let t = overlap_typ env e1.note e2.note in
       { e1 with it = IterE (e, i); note = t }
@@ -122,8 +138,8 @@ let rec overlap env e1 e2 = if eq_exp e1 e2 then e1 else
       UpdE (overlap env e1 e2, path1, overlap env e1' e2') |> replace_it
     | ExtE (e1, path1, e1'), ExtE (e2, path2, e2') when eq_path path1 path2 ->
       ExtE (overlap env e1 e2, path1, overlap env e1' e2') |> replace_it
-    | StrE efs1, StrE efs2 when List.map fst efs1 = List.map fst efs2 ->
-      StrE (List.map2 (fun (a1, e1) (_, e2) -> (a1, overlap env e1 e2)) efs1 efs2) |> replace_it
+    | StrE (efs1, _), StrE (efs2, _) when List.map (fun (a, _) -> a) efs1 = List.map (fun (a, _) -> a) efs2 ->
+      StrE (List.map2 (fun (a1, e1) (_, e2) -> (a1, overlap env e1 e2)) efs1 efs2, Unchecked) |> replace_it
     | DotE (e1, atom1), DotE (e2, atom2) when eq_atom atom1 atom2 ->
       DotE (overlap env e1 e2, atom1) |> replace_it
     | CompE (e1, e1'), CompE (e2, e2') ->
@@ -152,8 +168,8 @@ let rec overlap env e1 e2 = if eq_exp e1 e2 then e1 else
       CatE (overlap env e1 e2, overlap env e1' e2') |> replace_it
     | MemE (e1, e1'), MemE (e2, e2') ->
       MemE (overlap env e1 e2, overlap env e1' e2') |> replace_it
-    | CaseE (mixop1, e1), CaseE (mixop2, e2) when eq_mixop mixop1 mixop2 ->
-      CaseE (mixop1, overlap env e1 e2) |> replace_it
+    | CaseE (mixop1, e1, _), CaseE (mixop2, e2, _) when eq_mixop mixop1 mixop2 ->
+      CaseE (mixop1, overlap env e1 e2, Unchecked) |> replace_it
     | SubE (e1, typ1, typ1'), SubE (e2, typ2, typ2') when eq_typ typ1 typ2 && eq_typ typ1' typ2' ->
       SubE (overlap env e1 e2, typ1, typ1') |> replace_it
     (* HARDCODE: Prevent vals overlapped into instr *)
@@ -203,8 +219,8 @@ and overlap_typ env t1 t2 = if eq_typ t1 t2 then t1 else
   (match t1.it, t2.it with
     | VarT (id1, args1), VarT (id2, args2) when id1 = id2 ->
       VarT (id1, List.map2 (overlap_arg env) args1 args2)
-    | TupT ets1, TupT ets2 when List.for_all2 (fun (e1, _) (e2, _) -> eq_exp e1 e2) ets1 ets2 ->
-      TupT (List.map2 (fun (e1, t1) (_, t2) -> (e1, (overlap_typ env) t1 t2)) ets1 ets2)
+    | TupT xts1, TupT xts2 when List.for_all2 (fun (x1, _) (x2, _) -> eq_id x1 x2) xts1 xts2 ->
+      TupT (List.map2 (fun (x1, t1) (_, t2) -> (x1, (overlap_typ env) t1 t2)) xts1 xts2)
     | IterT (t1, iter1), IterT (t2, iter2) when eq_iter iter1 iter2 ->
       IterT (overlap_typ env t1 t2, iter1)
     | _ -> assert false (* Unreachable due to IL validation *)
@@ -218,17 +234,14 @@ let rec collect_unified template e = if eq_exp template e then [], [] else
     | IterE ({ it = VarE id; _}, _) , _
       when is_unified_id id.it ->
       [IfPr (CmpE (`EqOp, `BoolT, template, e) $$ e.at % (BoolT $ e.at)) $ e.at],
-      [ExpB (id, template.note) $ e.at]
+      [ExpP (id, template.note) $ e.at]
     | UnE (_, _, e1), UnE (_, _, e2)
-    | DotE (e1, _), DotE (e2, _)
     | LiftE e1, LiftE e2
     | LenE e1, LenE e2
     | IterE (e1, _), IterE (e2, _)
     | ProjE (e1, _), ProjE (e2, _)
-    | UncaseE (e1, _), UncaseE (e2, _)
     | OptE (Some e1), OptE (Some e2)
     | TheE e1, TheE e2
-    | CaseE (_, e1), CaseE (_, e2)
     | SubE (e1, _, _), SubE (e2, _, _) -> collect_unified e1 e2
     | BinE (_, _, e1, e1'), BinE (_, _, e2, e2')
     | CmpE (_, _, e1, e1'), CmpE (_, _, e2, e2')
@@ -236,11 +249,14 @@ let rec collect_unified template e = if eq_exp template e then [], [] else
     | UpdE (e1, _, e1'), UpdE (e2, _, e2')
     | ExtE (e1, _, e1'), ExtE (e2, _, e2')
     | CompE (e1, e1'), CompE (e2, e2')
-    | CatE (e1, e1'), CatE (e2, e2') -> pairwise_concat (collect_unified e1 e2) (collect_unified e1' e2')
+    | CatE (e1, e1'), CatE (e2, e2')
     | MemE (e1, e1'), MemE (e2, e2') -> pairwise_concat (collect_unified e1 e2) (collect_unified e1' e2')
+    | DotE (e1, _), DotE (e2, _)
+    | UncaseE (e1, _), UncaseE (e2, _)
+    | CaseE (_, e1, _), CaseE (_, e2, _) -> collect_unified e1 e2
     | SliceE (e1, e1', e1''), SliceE (e2, e2', e2'') ->
       pairwise_concat (pairwise_concat (collect_unified e1 e2) (collect_unified e1' e2')) (collect_unified e1'' e2'')
-    | StrE efs1, StrE efs2 ->
+    | StrE (efs1, _), StrE (efs2, _) ->
       List.fold_left2 (fun acc (_, e1) (_, e2) -> pairwise_concat acc (collect_unified e1 e2)) ([], []) efs1 efs2
     | TupE es1, TupE es2
     | ListE es1, ListE es2 ->
@@ -319,14 +335,14 @@ let unify_enc env premss encs =
 
 let is_encoded_ctxt pr =
   match pr.it with
-  | LetPr (_, e, _) ->
+  | LetPr (_, _, e) ->
     (match e.note.it with
     | VarT (id, []) -> List.mem id.it ["inputT"; "stackT"; "contextT"]
     | _ -> false)
   | _ -> false
 let is_encoded_pop_or_winstr pr =
   match pr.it with
-  | LetPr (_, e, _) ->
+  | LetPr (_, _, e) ->
     (match e.note.it with
     | VarT (id, []) -> List.mem id.it ["inputT"; "stackT"]
     | _ -> false)
@@ -409,7 +425,7 @@ let rec group_rules : (id * rule) list -> rule_def list = function
 (* extract reduction rules for wasm instructions *)
 let extract_rules def =
   match def.it with
-  | RelD (id, _, _, rules) -> List.map (fun rule -> id, rule) rules
+  | RelD (id, _, _, _, rules) -> List.map (fun rule -> id, rule) rules
   | _ -> []
 
 let unify_ctxt (env: env) (input_vars: string list) (clauses: rule_clause list) : rule_clause list =
@@ -433,7 +449,7 @@ let unify_rule_def (env: env) (rule: rule_def) : rule_def =
             List.concat_map
               (fun p ->
                 match p.it with
-                | LetPr (_, _, ids) -> ids
+                | LetPr (qs, _, _) -> ids_of_quants qs
                 | _ -> assert false
               )
               pops
@@ -461,7 +477,7 @@ let reorder_unified_args args prems =
   (* Helpers *)
   let has_uarg_on_rhs p =
     match p.it with
-    | LetPr (_, {it = VarE id; _}, _) -> is_unified_id id.it
+    | LetPr (_, _, {it = VarE id; _}) -> is_unified_id id.it
     | _ -> false
   in
   let on_rhs p a =

@@ -124,10 +124,7 @@ and al_to_resulttype: value -> resulttype = function
 and al_to_comptype: value -> comptype = function
   | CaseV ("STRUCT", [ ftl ]) -> StructT (al_to_list al_to_fieldtype ftl)
   | CaseV ("ARRAY", [ ft ]) -> ArrayT (al_to_fieldtype ft)
-  | CaseV ("FUNC", [ CaseV ("->", [ rt1; rt2 ]) ]) when !version <= 2 ->
-    FuncT (al_to_resulttype rt1, (al_to_resulttype rt2))
-  | CaseV ("FUNC", [ rt1; rt2 ]) ->
-    FuncT (al_to_resulttype rt1, (al_to_resulttype rt2))
+  | CaseV ("->", [ rt1; rt2 ]) -> FuncT (al_to_resulttype rt1, (al_to_resulttype rt2))
   | v -> error_value "comptype" v
 
 and al_to_subtype: value -> subtype = function
@@ -1019,8 +1016,9 @@ and al_to_funcinst: value -> Instance.funcinst = function
   | v -> error_value "funcinst" v
 
 and al_to_ref: value -> ref_ = function
-  | CaseV ("REF.NULL", [ ht ]) -> NullRef (al_to_heaptype ht)
   | CaseV ("REF.I31_NUM", [ i ]) -> I31.I31Ref (al_to_nat i)
+  | CaseV ("REF.NULL_ADDR", []) -> NullRef
+  | CaseV ("REF.NULL", [ _ht ]) when !version <= 2 -> NullRef
   | CaseV ("REF.STRUCT_ADDR", [ addr ]) ->
     let struct_insts = Ds.Store.access "STRUCTS" in
     let struct_ = addr |> al_to_nat |> listv_nth struct_insts |> al_to_struct in
@@ -1139,11 +1137,7 @@ and al_of_resulttype rt = al_of_list al_of_valtype rt
 and al_of_comptype = function
   | StructT ftl -> CaseV ("STRUCT", [ al_of_list al_of_fieldtype ftl ])
   | ArrayT ft -> CaseV ("ARRAY", [ al_of_fieldtype ft ])
-  | FuncT (rt1, rt2) ->
-    if !version <= 2 then
-      CaseV ("FUNC", [ CaseV ("->", [ al_of_resulttype rt1; al_of_resulttype rt2 ])])
-    else
-      CaseV ("FUNC", [ al_of_resulttype rt1; al_of_resulttype rt2 ])
+  | FuncT (rt1, rt2) -> CaseV ("->", [ al_of_resulttype rt1; al_of_resulttype rt2 ])
 
 and al_of_subtype = function
   | SubT (fin, tul, st) ->
@@ -1244,7 +1238,8 @@ let al_of_vec_shape shape (lanes: int64 list) =
   ))
 
 let rec al_of_ref = function
-  | NullRef ht -> CaseV ("REF.NULL", [ al_of_heaptype ht ])
+  | NullRef when !version <= 2 -> CaseV ("REF.NULL", [ al_of_heaptype NoneHT ])
+  | NullRef -> CaseV ("REF.NULL_ADDR", [])
   (*
   | I31.I31Ref i ->
     CaseV ("REF.I31_NUM", [ NumV (Int64.of_int i) ])
@@ -1900,7 +1895,7 @@ let al_of_type ty =
 
     match subtypes with
     | [ subtype ] ->
-      let rt = subtype |> arg_of_case "SUB" 2 |> arg_of_case "FUNC" 0 in
+      let rt = subtype |> arg_of_case "SUB" 2 in
       CaseV ("TYPE", [ rt ])
     | _ -> failwith ("Rectype is not supported in Wasm " ^ (string_of_int !version))
   else

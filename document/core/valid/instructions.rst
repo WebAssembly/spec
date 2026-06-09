@@ -33,7 +33,7 @@ Two degrees of polymorphism can be distinguished:
   the entire (or most of the) :ref:`instruction type <syntax-instrtype>` ${instrtype: t_1* -> t_2*} of the instruction is unconstrained.
   That is the case for all :ref:`control instructions <valid-instr-control>` that perform an *unconditional control transfer*, such as ${:UNREACHABLE}, ${:BR}, or ${:RETURN}.
 
-In both cases, the unconstrained types or type sequences can be chosen arbitrarily, as long as they meet the constraints imposed for the surrounding parts of the program.
+In both cases, the unconstrained types or type sequences can be chosen arbitrarily, as long as they are valid in the current :ref:`context <context>` and meet the constraints imposed for the surrounding parts of the program.
 
 .. note::
    For example, the ${:SELECT} instruction is valid with type ${instrtype: t t I32 -> t}, for any possible :ref:`number type <syntax-numtype>` ${:t}.
@@ -43,7 +43,7 @@ In both cases, the unconstrained types or type sequences can be chosen arbitrari
 
    and
 
-   $${instr*: (CONST F64 $fnat(64, 1)) (CONST F64 $fnat(64, 2)) (CONST F64 $fnat(64, 3)) (SELECT)}
+   $${instr*: (CONST F64 $fnat(64, 1)) (CONST F64 $fnat(64, 2)) (CONST I32 3) (SELECT)}
 
    are valid, with ${:t} in the typing of ${:SELECT} being instantiated to ${:I32} or ${:F64}, respectively.
 
@@ -1353,10 +1353,6 @@ Instruction Sequences
 
 Typing of instruction sequences is defined recursively.
 
-
-Empty Instruction Sequence: :math:`\epsilon`
-............................................
-
 $${rule-prose: Instrs_ok}
 
 
@@ -1375,7 +1371,7 @@ $${rule: {Instrs_ok/sub Instrs_ok/frame}}
 
    To type this sequence, its subsequence ${instr*: (CONST I32 2) (BINOP I32 ADD)} needs to be valid with an intermediate type.
    But the direct type of ${instr: (CONST I32 2)} is ${instrtype: eps -> I32}, not matching the two inputs expected by ${instr: $($(BINOP I32 ADD))}.
-   The subsumption rule allows to weaken the type of ${:(CONST I32 2)} to the supertype ${instrtype: I32 -> I32 I32}, such that it can be composed with ${instr: $($(BINOP I32 ADD))} and yields the intermediate type ${instrtype: I32 -> I32 I32} for the subsequence. That can in turn be composed with the first constant.
+   The subsumption rule allows to weaken the type of ${instr: (CONST I32 2)} to the supertype ${instrtype: I32 -> I32 I32}, such that it can be composed with ${instr: $($(BINOP I32 ADD))} and yields the intermediate type ${instrtype: I32 -> I32 I32} for the subsequence. That can in turn be composed with the first constant.
 
    Furthermore, subsumption allows to drop init variables ${:x*} from the instruction type in a context where they are not needed, for example, at the end of the body of a :ref:`block <valid-block>`.
 

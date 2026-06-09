@@ -1,7 +1,7 @@
 open Al
-open Xl
 open Ast
 open Util
+open Il2al_util
 open Source
 
 let rec merge_pop_assert' instrs =
@@ -11,8 +11,8 @@ let rec merge_pop_assert' instrs =
     ({ it = PopI e2; _ } as i2) ::
     ({ it = AssertI ({ it = BinE (`EqOp, e31, e32); _ }); _ } as i3) :: il ->
       (match e2.it, e32.it with
-      | CaseE ([{ it = Atom.Atom ("CONST" | "VCONST"); _ }]::_, hd::_), VarE _
-      when Eq.eq_expr e31 hd ->
+      | CaseE (op, hd::_), VarE _
+      when List.mem (case_head op) ["CONST"; "VCONST"] && Eq.eq_expr e31 hd ->
         let e1 = { e1 with it = TopValueE (Some e32) } in
         let i1 = { i1 with it = AssertI e1 } in
         merge_helper (i2 :: i1 :: acc) il
@@ -22,15 +22,15 @@ let rec merge_pop_assert' instrs =
     | ({ it = AssertI ({ it = TopValueE None; _ } as e1); _ } as i1) ::
     ({ it = PopI e2; _ } as i2) :: il ->
       (match e2.it with
-      | CaseE ([{ it = Atom.Atom ("CONST" | "VCONST"); _ }]::_,
-        ({ it = CaseE (_, []); _ } as hd)::_tl) ->
+      | CaseE (op, ({ it = CaseE (_, []); _ } as hd)::_tl)
+        when List.mem (case_head op) ["CONST"; "VCONST"] ->
         let e1 = { e1 with it = TopValueE (Some hd) } in
         let i1 = { i1 with it = AssertI e1 } in
         merge_helper (i2 :: i1 :: acc) il
-      | CaseE ([{ it = Atom.Atom ("CONST" | "VCONST" as cons); _ }]::_ ,
-      { it = VarE _; _ }::_tl) ->
+      | CaseE (op, { it = VarE _; _ }::_tl)
+        when List.mem (case_head op) ["CONST"; "VCONST"] ->
         (* HARDCODE: name of type according to constructor *)
-        let vt = if cons = "CONST" then "num" else "vec" in
+        let vt = if case_head op = "CONST" then "num" else "vec" in
         let hd = VarE vt $$ no_region % (Il.Ast.VarT (vt $ no_region, []) $ no_region) in
         let e1 = { e1 with it = TopValueE (Some hd) } in
         let i1 = { i1 with it = AssertI e1 } in

@@ -96,10 +96,10 @@ Moreover, the following conventions are employed:
   but implicitly also defines ${:i^n} to be the sequence of values ${:0} to ${:($(n-1))}.
 
 .. note::
-   For example, if ${:x^n} is the sequence ${:a b c}, then ${:($($f(x) + 1))^n} denotes the sequence ${:($($f(a) + 1)) ($($f(b) + 1)) ($($f(c) + 1))}.
+   For example, if ${:x^n} is the sequence ${:a b c}, then ${-:($($f(x) + 1))^n} denotes the sequence ${-:($($f(a) + 1)) ($($f(b) + 1)) ($($f(c) + 1))}.
 
    The form ${:e^(i<n)} additionally gives access to an index variable inside the iteration.
-   For example, ${:($($f(x) + i))^(i<n)} denotes the sequence ${:($($f(a) + 0)) ($($f(b) + 1)) ($($f(c) + 2))}.
+   For example, ${-:($($f(x) + i))^(i<n)} denotes the sequence ${-:($($f(a) + 0)) ($($f(b) + 1)) ($($f(c) + 2))}.
 
 Productions of the following form are interpreted as *records* that map a fixed set of fields ${:FIELD_ i} to "values" ${:A_i}, respectively:
 

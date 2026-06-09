@@ -78,14 +78,14 @@ size(nt)
 
 ### Usage Examples
 
-The following command generates prose for the given spec files in the `spec/wasm-3.0` directory and prints it to stdout in plain text:
+The following command generates prose for the given spec files in the `spec/wasm-latest` directory and prints it to stdout in plain text:
 ```sh
-./spectec spec/wasm-3.0/*.spectec --prose
+./spectec spec/wasm-latest/*.spectec --prose
 ```
 
 To generate prose in ReStructuredText format, use:
 ```sh
-./spectec spec/wasm-3.0/*.spectec --prose-rst
+./spectec spec/wasm-latest/*.spectec --prose-rst
 ```
 
 ### Caveats

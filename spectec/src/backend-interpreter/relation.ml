@@ -6,51 +6,42 @@ open Ds
 
 module FuncMap = Map.Make (String)
 
+(* predicate: r's principal reftype matches target rt *)
 let ref_ok =
   (* TODO: some / none *)
   let null = some "NULL" in
   let nonull = none "NULL" in
-  let none = nullary "NONE" in
-  let nofunc = nullary "NOFUNC" in
-  let noexn = nullary "NOEXN" in
-  let noextern = nullary "NOEXTERN" in
 
-  let match_heaptype v1 v2 =
-    let ht1 = Construct.al_to_heaptype v1 in
-    let ht2 = Construct.al_to_heaptype v2 in
-    Match.match_reftype [] (Types.Null, ht1) (Types.Null, ht2)
+  let get_principal = function
+    (* null *)
+    | CaseV ("REF.NULL_ADDR", []) -> CaseV ("REF", [ null; nullary "BOT"])
+    (* i31 *)
+    | CaseV ("REF.I31_NUM", [ _ ]) -> CaseV ("REF", [ nonull; nullary "I31"])
+    (* host *)
+    | CaseV ("REF.HOST_ADDR", [ _ ]) -> CaseV ("REF", [ nonull; nullary "ANY"])
+    (* exception *)
+    | CaseV ("REF.EXN_ADDR", [ _ ]) -> CaseV ("REF", [ nonull; nullary "EXN"])
+    (* array/func/struct addr *)
+    | CaseV (name, [ NumV (`Nat i) ])
+      when String.starts_with ~prefix:"REF." name && String.ends_with ~suffix:"_ADDR" name ->
+      let field_name = String.sub name 4 (String.length name - 9) in
+      let object_ = listv_nth (Ds.Store.access (field_name ^ "S")) (Z.to_int i) in
+      let dt = strv_access "TYPE" object_ in
+      CaseV ("REF", [ nonull; dt])
+    (* extern *)
+    (* TODO: check null *)
+    | CaseV ("REF.EXTERN", [ _ ]) -> CaseV ("REF", [ nonull; nullary "EXTERN"])
+    | v -> Numerics.error_values "$Ref_ok" [v]
   in
 
   function
-  (* null *)
-  | [CaseV ("REF.NULL", [ ht ]) as v] ->
-    if match_heaptype none ht then
-      CaseV ("REF", [ null; none])
-    else if match_heaptype nofunc ht then
-      CaseV ("REF", [ null; nofunc])
-    else if match_heaptype noexn ht then
-      CaseV ("REF", [ null; noexn])
-    else if match_heaptype noextern ht then
-      CaseV ("REF", [ null; noextern])
-    else
-      Numerics.error_typ_value "$Reftype" "null reference" v
-  (* i31 *)
-  | [CaseV ("REF.I31_NUM", [ _ ])] -> CaseV ("REF", [ nonull; nullary "I31"])
-  (* host *)
-  | [CaseV ("REF.HOST_ADDR", [ _ ])] -> CaseV ("REF", [ nonull; nullary "ANY"])
-  (* exception *)
-  | [CaseV ("REF.EXN_ADDR", [ _ ])] -> CaseV ("REF", [ nonull; nullary "EXN"])
-  (* array/func/struct addr *)
-  | [CaseV (name, [ NumV (`Nat i) ])]
-  when String.starts_with ~prefix:"REF." name && String.ends_with ~suffix:"_ADDR" name ->
-    let field_name = String.sub name 4 (String.length name - 9) in
-    let object_ = listv_nth (Ds.Store.access (field_name ^ "S")) (Z.to_int i) in
-    let dt = strv_access "TYPE" object_ in
-    CaseV ("REF", [ nonull; dt])
-  (* extern *)
-  (* TODO: check null *)
-  | [CaseV ("REF.EXTERN", [ _ ])] -> CaseV ("REF", [ nonull; nullary "EXTERN"])
-  | vs -> Numerics.error_values "$Reftype" vs
+  | [ r; rt ] ->
+    (try
+      let p = Construct.al_to_reftype (get_principal r) in
+      let t = Construct.al_to_reftype rt in
+      boolV (Match.match_reftype [] p t)
+    with exn -> raise (Exception.Invalid (exn, Printexc.get_raw_backtrace ())))
+  | vs -> Numerics.error_values "$Ref_ok" vs
 
 let module_ok v =
   if !Construct.version <> 3 then failwith "This hardcoded function ($Module_ok) should be only called with test version 3.0";

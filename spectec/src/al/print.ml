@@ -152,11 +152,11 @@ and string_of_expr expr =
   | VarE id -> id
   | SubE (id, _) -> id
   | IterE (e, ie) -> string_of_expr e ^ string_of_iterexp ie
-  | CaseE ([{ it=Atom.Atom ("CONST" | "VCONST"); _ }]::_tl, hd::tl) ->
+  | CaseE (Mixop.(Seq (Atom { it=Atom.Atom ("CONST" | "VCONST"); _ }::_tl)), hd::tl) ->
     "(" ^ string_of_expr hd ^ ".CONST " ^ string_of_exprs " " tl ^ ")"
-  | CaseE ([[ atom ]], []) -> string_of_atom atom
+  | CaseE (Mixop.Atom atom, []) -> string_of_atom atom
   | CaseE (op, el) ->
-    let op' = List.map (fun al -> String.concat "" (List.map string_of_atom al)) op in
+    let op' = List.map (fun al -> String.concat "" (List.map string_of_atom al)) (Mixop.flatten op) in
     (match op' with
     | [] -> "()"
     | _::tl when List.length tl != List.length el ->
@@ -186,6 +186,7 @@ and string_of_expr expr =
     sprintf "%s <: %s"
       (string_of_expr e1)
       (string_of_expr e2)
+  | RelE (id, es) -> sprintf "rel(%s, [%s])" id (string_of_exprs ", " es)
   | YetE s -> sprintf "YetE (%s)" s
 
 and string_of_exprs sep = string_of_list string_of_expr sep
@@ -504,6 +505,10 @@ and structured_string_of_expr expr =
     Printf.sprintf "Matches (%s, %s)"
       (structured_string_of_expr e1)
       (structured_string_of_expr e2)
+  | RelE (id, el) ->
+    Printf.sprintf "RelE (%s, [%s])"
+      id
+      (structured_string_of_exprs el)
   | YetE s -> "YetE (" ^ s ^ ")"
 
 and structured_string_of_exprs el = string_of_list structured_string_of_expr ", " el

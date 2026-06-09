@@ -4,6 +4,9 @@ open Print
 
 let el_id = Util.Source.it
 let el_atom = string_of_atom
+let el_unop = string_of_unop
+let el_binop = string_of_binop
+let el_cmpop = string_of_cmpop
 let el_iter = string_of_iter
 let el_typ = string_of_typ ~short:true
 let el_typfield = string_of_typfield ~short:true
@@ -19,18 +22,3 @@ let el_params = list el_param
 let el_def = string_of_def
 
 let nl_list f xs = list f (Convert.filter_nl xs)
-
-let el_free s = String.concat " "
-  Free.[
-    set s.typid;
-    set s.varid;
-    set s.gramid;
-    set s.defid;
-  ]
-let el_subst s = String.concat " "
-  Subst.[
-    mapping el_typ s.typid;
-    mapping el_exp s.varid;
-    mapping el_sym s.gramid;
-    mapping el_id s.defid;
-  ]

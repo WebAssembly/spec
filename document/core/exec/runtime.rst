@@ -12,7 +12,6 @@ Runtime Structure
 .. _syntax-num:
 .. _syntax-vec:
 .. _syntax-ref:
-.. _syntax-addrref:
 .. _syntax-ref.i31num:
 .. _syntax-ref.struct:
 .. _syntax-ref.array:
@@ -34,6 +33,7 @@ It is convenient to reuse the same notation as for the ${:CONST} :ref:`instructi
 
 References other than null are represented with additional :ref:`administrative instructions <syntax-instr-admin>`.
 They either are *scalar references*, containing a 31-bit :ref:`integer <syntax-int>`,
+*null references*,
 *structure references*, pointing to a specific :ref:`structure address <syntax-structaddr>`,
 *array references*, pointing to a specific :ref:`array address <syntax-arrayaddr>`,
 *function references*, pointing to a specific :ref:`function address <syntax-funcaddr>`,
@@ -41,7 +41,7 @@ They either are *scalar references*, containing a 31-bit :ref:`integer <syntax-i
 or *host references* pointing to an uninterpreted form of :ref:`host address <syntax-hostaddr>` defined by the :ref:`embedder <embedder>`.
 Any of the aformentioned references can furthermore be wrapped up as an *external reference*.
 
-$${syntax: val num vec ref addrref}
+$${syntax: val num vec ref}
 
 .. note::
    Future versions of WebAssembly may add additional forms of values.
@@ -146,8 +146,8 @@ Convention
 .. _syntax-elemaddr:
 .. _syntax-dataaddr:
 .. _syntax-structaddr:
-.. _syntax-exnaddr:
 .. _syntax-arrayaddr:
+.. _syntax-exnaddr:
 .. _syntax-hostaddr:
 .. _syntax-addr:
 
@@ -169,7 +169,7 @@ in the :ref:`store <syntax-store>` are referenced with abstract *addresses*.
 These are simply indices into the respective store component.
 In addition, an :ref:`embedder <embedder>` may supply an uninterpreted set of *host addresses*.
 
-$${syntax: {addr funcaddr tableaddr memaddr globaladdr tagaddr elemaddr dataaddr structaddr arrayaddr hostaddr}}
+$${syntax: {addr funcaddr tableaddr memaddr globaladdr tagaddr elemaddr dataaddr structaddr arrayaddr exnaddr hostaddr}}
 
 An :ref:`embedder <embedder>` may assign identity to :ref:`exported <syntax-export>` store objects corresponding to their addresses,
 even where this identity is not observable from within WebAssembly code itself
@@ -590,7 +590,7 @@ In order to express the reduction of :ref:`traps <trap>`, :ref:`calls <syntax-ca
 
 $${syntax: {instr/admin}}
 
-An :ref:`address reference <syntax-addrref>` represents an allocated :ref:`reference <syntax-ref>` value of respective form :ref:`"on the stack" <exec-notation>`.
+A :ref:`reference <syntax-ref>` represents a :ref:`reference <syntax-ref>` value of respective form :ref:`"on the stack" <exec-notation>`.
 
 The ${:LABEL}, ${:FRAME}, and ${:HANDLER} instructions model :ref:`labels <syntax-label>`, :ref:`frames <syntax-frame>`, and active :ref:`exception handlers <syntax-handler>`, respectively, :ref:`"on the stack" <exec-notation>`.
 Moreover, the administrative syntax maintains the nesting structure of the original :ref:`structured control instruction <syntax-instr-control>` or :ref:`function body <syntax-func>` and their :ref:`instruction sequences <syntax-instrs>`.
@@ -621,7 +621,7 @@ Traps are bubbled up through nested instruction sequences, ultimately reducing t
 .. _syntax-config:
 
 Configurations
-..............
+~~~~~~~~~~~~~~
 
 A *configuration* describes the current computation.
 It consists of the computations's *state* and the sequence of :ref:`instructions <syntax-instr>` left to execute.
@@ -646,3 +646,28 @@ $${syntax: config state}
 .. note::
    The current version of WebAssembly is single-threaded,
    but configurations with multiple threads may be supported in the future.
+
+
+Conventions
+...........
+
+* The meta variable ${state: z} ranges over frame states where clear from context.
+
+* The following shorthands are defined for accessing a state ${:z = (s; f)}:
+
+  - ${definition: type}
+  - ${definition: tag}
+  - ${definition: global}
+  - ${definition: mem}
+  - ${definition: table}
+  - ${definition: func}
+  - ${definition: data}
+  - ${definition: elem}
+  - ${definition: local}
+
+* These shorthands also extend to :ref:`notation <notation-replace>` for updating state:
+
+  - ${definition: with_global}
+  - ${definition: with_mem}
+  - ${definition: with_table}
+  - ${definition: with_local}

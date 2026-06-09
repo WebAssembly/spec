@@ -158,7 +158,7 @@ let is_case e =
 
 let atom_of_case e =
   match e.it with
-  | CaseE ((atom :: _) :: _, _) -> atom
+  | CaseE (op, _) when Mixop.head op <> None -> Option.get (Mixop.head op)
   | _ -> Error.error e.at "prose transformation" "expected a CaseE"
 
 let rec replace_names binds instr =
@@ -332,8 +332,22 @@ let extract_last_ifs il =
   in
   extract_first_ifs [] (List.rev il)
 
-(* Unify more than 3 ifs at once, by extracting the common conditions *)
-let unify_multi_if instrs =
+(* Unify more than 3 ifs at once, by extracting the common conditions
+  if (... if A ...); if (... if A ...)
+  -->
+  if A (...; ...)
+*)
+let rec unify_multi_if instrs =
+  (* Apply recursively *)
+  let instrs = List.map (fun instr ->
+    let at = instr.at in
+    match instr.it with
+    | IfI (c, il1, il2) -> ifI (c, unify_multi_if il1, unify_multi_if il2) ~at
+    | OtherwiseI il -> otherwiseI (unify_multi_if il) ~at
+    | EitherI (il1, il2) -> eitherI (unify_multi_if il1, unify_multi_if il2) ~at
+    | _ -> instr
+  ) instrs in
+
   let hd, ifs = extract_last_ifs instrs in
   hd @ merge_disjoint_ifs ifs
 
@@ -665,6 +679,9 @@ let simplify_dot_access e =
     )
   | _ -> e
 
+(* If there is exactly one form of case check (i.e. fi.CODE is some FUNC)
+   regard it as an assertion *)
+
 type count = One of string | Many
 module Counter = Map.Make (String)
 let infer_case_assert instrs =
@@ -672,6 +689,7 @@ let infer_case_assert instrs =
 
   let rec handle_cond c mt_then mt_else =
     match c.it with
+    | BinE (`EqOp, e, {it = CaseE (Atom atom, _); _})
     | IsCaseOfE (e, atom) ->
       let k = Print.string_of_expr e in
       let v = One (Print.string_of_atom atom) in
@@ -795,7 +813,7 @@ let remove_trivial_case_check instr =
     | IsCaseOfE (expr, atom) ->
       (match get_typ_cases expr.note with
       | Some [ mixop, _, _ ] ->
-        List.exists (List.mem atom) mixop
+        List.exists (List.mem atom) (Mixop.flatten mixop)
       | _  -> false
       )
     | _ -> false
@@ -876,7 +894,7 @@ let rec enhance_readability instrs =
   in
 
   if !loop_cnt = 0 || Eq.eq_instrs instrs instrs' then (
-    if !loop_cnt = 0 then print_endline "[WARNING] enhance_readability did not reach fixpoint. (Hint: Missed case for eq.ml?)";
+    if !loop_cnt = 0 then print_endline "[WARNING] enhance_readability did not reach fixpoint. (Hint: Missed case for al/eq.ml?)";
     loop_cnt := loop_max;
     instrs
   ) else (
@@ -946,6 +964,7 @@ let hide_state_expr expr =
       | CallE (f, args) -> CallE (f, hide_state_args args)
       | TupE [ s; e ] when is_store s -> e.it
       | TupE [ z; e ] when is_state z -> e.it
+      | VarE id when is_state expr && String.starts_with ~prefix:"z" id -> VarE "z"
       | e -> e
     in
     { expr with it = expr' }
@@ -1006,7 +1025,7 @@ let hide_state instr =
     let access = { (mk_access ps s) with note } in
     [ appendI (access, e) ~at:at ]
   (* Return *)
-  | ReturnI (Some e) when is_state e || is_store e -> [ returnI None ~at:at ]
+  | ReturnI (Some ({it = VarE _; _} as e)) when is_state e || is_store e -> [ returnI None ~at:at ]
   | _ -> [ instr ]
 
 let remove_state algo =
@@ -1166,8 +1185,9 @@ let handle_unframed_algo instrs =
 
   let post_instr instr =
     let ret =
-    match !frame_arg with
-    | Some { it = ExpA f; _ } ->
+    match instr.it, !frame_arg with
+    | IfI _, _ -> [instr]
+    | _, Some { it = ExpA f; _ } -> (* Ignore if current instr is IfI *)
       let zeroE = natE Z.zero ~note:natT in
       let frame = frameE (zeroE, postprocess_frame f) ~at:f.at ~note:evalctxT in
       let _f = frameE (zeroE, varE "_f" ~note:f.note) ~note:evalctxT in
@@ -1292,7 +1312,7 @@ let remove_exit algo =
       let unused_var = varE "_" ~note:no_note in
       let control_frame_expr =
         caseE (
-          [[atom]; [{ atom with it=Atom.LBrace}]; [{ atom with it=Atom.RBrace}]; []],
+          Mixop.(Seq [Atom atom; Arg (); Brack ({ atom with it=Atom.LBrace}, Arg (), { atom with it=Atom.RBrace}); Arg ()]),
           [ unused_var; unused_var ]
         ) ~note:evalctxT
       in
@@ -1313,7 +1333,8 @@ let remove_exit algo =
 let remove_enter algo =
   let enter_frame_to_push instr =
     match instr.it with
-    | EnterI (e_frame, { it = ListE ([ { it = CaseE ([[{ it = Atom.Atom "FRAME_"; _ }]], []); _ } ]); _ }, il) ->
+    | EnterI (e_frame, { it = ListE ([ { it = CaseE (op, []); _ } ]); _ }, il)
+      when case_head op = "FRAME_" ->
         pushI e_frame ~at:instr.at :: il
     | _ -> [ instr ]
   in
@@ -1322,13 +1343,13 @@ let remove_enter algo =
     match instr.it with
     | EnterI (
       e_label,
-      { it = CatE (e_instrs, { it = ListE ([ { it = CaseE ([[{ it = Atom.Atom "LABEL_"; _ }]], []); _ } ]); _ }); note; _ },
-      [ { it = PushI e_vals; _ } ]) ->
+      { it = CatE (e_instrs, { it = ListE ([ { it = CaseE (op, []); _ } ]); _ }); note; _ },
+      [ { it = PushI e_vals; _ } ]) when case_head op = "LABEL_" ->
         enterI (e_label, catE (e_vals, e_instrs) ~note:note, []) ~at:instr.at
     | EnterI (
       e_label,
-      { it = CatE (e_instrs, { it = ListE ([ { it = CaseE ([[{ it = Atom.Atom "LABEL_"; _ }]], []); _ } ]); _ }); _ },
-      []) ->
+      { it = CatE (e_instrs, { it = ListE ([ { it = CaseE (op, []); _ } ]); _ }); _ },
+      []) when case_head op = "LABEL_" ->
         enterI (e_label, e_instrs, []) ~at:instr.at
     | _ -> instr
   in
@@ -1382,7 +1403,7 @@ let prosify_control_frame algo =
 
   let walk_instr walker instr =
     match instr.it with
-    | LetI ({ it = CaseE ([{ it = Atom "LABEL_"; _ }] :: _, [ _; cont ]); _ }, _) ->
+    | LetI ({ it = CaseE (op, [ _; cont ]); _ }, _) when case_head op = "LABEL_" ->
       cont_ref := cont; [ instr ]
     | ExecuteSeqI expr when Eq.eq_expr expr !cont_ref ->
       [ { instr with it = ExecuteSeqI (callE ("__prose:_jump_to_the_cont", [expA expr]) ~note:no_note) } ]
