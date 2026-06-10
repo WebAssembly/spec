@@ -252,7 +252,7 @@ rule Instr_ok/struct.new_default:
   -- Expand: C.TYPES[x] ~~ STRUCT (mut? zt)*
   -- (Defaultable: |- $unpack(zt) DEFAULTABLE)*
 
-def $is_packtype(storagetype) : bool             hint(show %1 = $unpack(%1)) hint(prose "%1 is a packed type")
+def $is_packtype(storagetype) : bool             hint(show %1 =/= $unpack(%1)) hint(prose "%1 is a packed type")
 def $is_packtype(zt) = zt =/= $unpack(zt)
 
 rule Instr_ok/struct.get:
