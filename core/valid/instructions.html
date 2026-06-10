@@ -1749,7 +1749,7 @@ C{.}\href{../valid/conventions.html#context}{\mathsf{types}}{}[x] \mathrel{\href
  \qquad
 {{\mathit{ft}}^\ast}{}[i] = {\href{../syntax/types.html#syntax-mut}{\mathsf{mut}}^?}~{\mathit{zt}}
  \qquad
-{{\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}}^?} \neq \epsilon \Leftrightarrow {\mathit{zt}} = {\href{../syntax/types.html#aux-unpack}{\mathrm{unpack}}}({\mathit{zt}})
+{{\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}}^?} \neq \epsilon \Leftrightarrow {\mathit{zt}} \neq {\href{../syntax/types.html#aux-unpack}{\mathrm{unpack}}}({\mathit{zt}})
 }{
 C \href{../valid/instructions.html#valid-instr}{\vdash} {\href{../syntax/instructions.html#syntax-instr-struct}{\mathsf{struct{.}get}}}{\mathsf{\_}}{{{\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}}^?}}~x~i : (\href{../syntax/types.html#syntax-reftype}{\mathsf{ref}}~\href{../syntax/types.html#syntax-reftype}{\mathsf{null}}~x) \rightarrow {\href{../syntax/types.html#aux-unpack}{\mathrm{unpack}}}({\mathit{zt}})
 }
@@ -1907,7 +1907,7 @@ C \href{../valid/instructions.html#valid-instr}{\vdash} \href{../syntax/instruct
 \frac{
 C{.}\href{../valid/conventions.html#context}{\mathsf{types}}{}[x] \mathrel{\href{../valid/conventions.html#aux-expand-deftype}{\approx}} \href{../syntax/types.html#syntax-comptype}{\mathsf{array}}~({\href{../syntax/types.html#syntax-mut}{\mathsf{mut}}^?}~{\mathit{zt}})
  \qquad
-{{\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}}^?} \neq \epsilon \Leftrightarrow {\mathit{zt}} = {\href{../syntax/types.html#aux-unpack}{\mathrm{unpack}}}({\mathit{zt}})
+{{\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}}^?} \neq \epsilon \Leftrightarrow {\mathit{zt}} \neq {\href{../syntax/types.html#aux-unpack}{\mathrm{unpack}}}({\mathit{zt}})
 }{
 C \href{../valid/instructions.html#valid-instr}{\vdash} {\href{../syntax/instructions.html#syntax-instr-array}{\mathsf{array{.}get}}}{\mathsf{\_}}{{{\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}}^?}}~x : (\href{../syntax/types.html#syntax-reftype}{\mathsf{ref}}~\href{../syntax/types.html#syntax-reftype}{\mathsf{null}}~x)~\href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}} \rightarrow {\href{../syntax/types.html#aux-unpack}{\mathrm{unpack}}}({\mathit{zt}})
 }
