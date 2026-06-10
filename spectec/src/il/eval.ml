@@ -36,6 +36,11 @@ let (let***) xor f =
   | None -> Ok None
   | Some x -> f x
 
+let (|>**) xr f =
+  match xr with
+  | Ok x -> Ok (f x)
+  | Error x -> Error (f x)
+
 let rec map_results f = function
   | [] -> Ok []
   | x::xs -> let** y = f x in let** ys = map_results f xs in Ok (y::ys)
@@ -46,7 +51,7 @@ let error_typ at t expect =
     ("type `" ^ Print.string_of_typ t ^ "` is not " ^ expect)
 
 
-let ($>) it e = {e with it}
+let ($>) it e = {e with it; mark = 0}
 
 let unordered s1 s2 = not Set.(subset s1 s2 || subset s2 s1)
 
@@ -58,6 +63,26 @@ let il_opt_result f = function
   | Ok (Some x) -> f x
   | Ok None -> "?"
   | Error _ -> "FAIL"
+
+
+let is_snf x = x.mark land 4 = 4  (* static normal form *)
+let is_dnf x = x.mark land 2 = 2  (* dynamic normal form *)
+let is_cnf x = x.mark land 1 = 1  (* closed normal form *)
+
+let snf x = {x with mark = x.mark lor 4}
+let dnf x = {x with mark = x.mark lor 6}  (* implies snf *)
+let cnf x = {x with mark = x.mark lor 7}  (* implies dnf *)
+
+let is_nf static = if static then is_snf else is_dnf
+let nf static = if static then snf else dnf
+
+let cnf_if xs x = if List.for_all is_cnf xs then cnf x else x
+
+let cnf_if_prim e =
+  if is_cnf e then e else
+  match e.it with
+  | BoolE _ | NumE _ | TextE _ -> cnf e
+  | _ -> e
 
 
 let of_bool_exp = function
@@ -104,20 +129,27 @@ let equiv_list equiv_x env xs1 xs2 =
 
 (* Type Reduction (weak-head) *)
 
+let il_cnf t = if is_cnf t then " (cnf)" else ""
+let il_dnf t = let s = il_cnf t in if s = "" && is_dnf t then " (dnf)" else s
+let il_snf t = let s = il_dnf t in if s = "" && is_snf t then " (snf)" else s
+let il_nf static = if static then il_snf else il_dnf
+
 let rec reduce_typ env t : typ result =
   Debug.(log_if "il.reduce_typ" (t.it <> NumT `NatT)
     (fun _ -> fmt "%s" (il_typ t))
-    (fun r -> fmt "%s" (il_result il_typ r))
+    (fun r -> fmt "%s%s" (il_result il_typ r) (il_snf t))
   ) @@ fun _ ->
-  match t.it with
+  if is_snf t then Ok t else
+  (match t.it with
   | VarT (id, as_) ->
     let** as' = map_results (static reduce_arg env) as_ in
     let** dto = reduce_typ_app env id as' (Env.find_opt_typ env id) t.at in
     (match dto with
     | Some {it = AliasT t'; _} -> reduce_typ env t'
-    | _ -> Ok (VarT (id, as') $ t.at)
+    | _ -> Ok (VarT (id, as') $ t.at |> cnf_if as')
     )
   | _ -> Ok t
+  ) |>** snf
 
 and reduce_typdef env t : deftyp result =
   let** t' = reduce_typ env t in
@@ -194,14 +226,17 @@ and find_typcase t tcs op at =
 (* Expression Reduction *)
 
 and is_normal_arg static env a =  (* only for assertions *)
+  is_nf static a ||
   match reduce_arg static env a with
   | Ok a' | Error a' -> Eq.eq_arg a a'
 
 and is_normal_exp static env e =  (* only for assertions *)
+  is_nf static e ||
   match reduce_exp static env e with
   | Ok e' | Error e' -> Eq.eq_exp e e'
 
 and is_head_normal_exp e =
+  is_cnf e ||
   match e.it with
   | BoolE _ | NumE _ | TextE _
   | OptE _ | ListE _ | TupE _ | CaseE _ | StrE _ -> true
@@ -209,6 +244,7 @@ and is_head_normal_exp e =
   | _ -> false
 
 and is_value_exp e =
+  is_cnf e ||
   match e.it with
   | BoolE _ | NumE _ | TextE _ -> true
   | ListE es | TupE es -> List.for_all is_value_exp es
@@ -220,17 +256,19 @@ and is_value_exp e =
 and reduce_exp static env e : exp result =
   Debug.(log ("il.reduce_exp" ^ if static then " static" else "")
     (fun _ -> fmt "%s" (il_exp e))
-    (fun e' -> fmt "%s" (il_result il_exp e'))
+    (fun e' -> fmt "%s%s" (il_result il_exp e') (il_nf static e))
   ) @@ fun _ ->
-  match e.it with
-  | VarE _ | BoolE _ | NumE _ | TextE _ -> Ok e
+  if is_nf static e then Ok e else
+  (match e.it with
+  | VarE _ -> Ok e
+  | BoolE _ | NumE _ | TextE _ -> Ok (cnf e)
   | UnE (op, ot, e1) ->
     let** e1' = reduce_exp static env e1 in
     (match op, e1'.it with
-    | #Bool.unop as op', BoolE b1 -> Ok (BoolE (Bool.un op' b1) $> e)
+    | #Bool.unop as op', BoolE b1 -> Ok (BoolE (Bool.un op' b1) $> e |> cnf)
     | #Num.unop as op', NumE n1 ->
       (match Num.un op' n1 with
-      | Some n -> Ok (NumE n $> e)
+      | Some n -> Ok (NumE n $> e |> cnf)
       | None -> Error (UnE (op, ot, e1') $> e)
       )
     | `NotOp, UnE (`NotOp, _, e11') -> Ok e11'
@@ -244,13 +282,13 @@ and reduce_exp static env e : exp result =
     | #Bool.binop as op' ->
       (match Bool.bin_partial op' e1'.it e2'.it of_bool_exp to_bool_exp with
       | None -> Ok (BinE (op, ot, e1', e2') $> e)
-      | Some e' -> Ok (e' $> e)
+      | Some e' -> Ok (e' $> e |> cnf_if_prim)
       )
     | #Num.binop as op' ->
       (match Num.bin_partial op' e1'.it e2'.it of_num_exp to_num_exp with
       | None -> Ok (BinE (op, ot, e1', e2') $> e)
       | Some None -> Error (BinE (op, ot, e1', e2') $> e)
-      | Some (Some e') -> Ok (e' $> e)
+      | Some (Some e') -> Ok (e' $> e |> cnf_if_prim)
       )
     )
   | CmpE (op, ot, e1, e2) ->
@@ -258,12 +296,12 @@ and reduce_exp static env e : exp result =
     let** e2' = reduce_exp static env e2 in
     (match op, e1'.it, e2'.it with
     | `EqOp, _, _ when static || is_value_exp e1' && is_value_exp e2' ->
-      Ok (BoolE (Eq.eq_exp e1' e2') $> e)
+      Ok (BoolE (Eq.eq_exp e1' e2') $> e |> cnf)
     | `NeOp, _, _ when is_value_exp e1' && is_value_exp e2' ->
-      Ok (BoolE (not (Eq.eq_exp e1' e2')) $> e)
+      Ok (BoolE (not (Eq.eq_exp e1' e2')) $> e |> cnf)
     | #Num.cmpop as op', NumE n1, NumE n2 ->
       (match Num.cmp op' n1 n2 with
-      | Some b -> Ok (BoolE b $> e)
+      | Some b -> Ok (BoolE b $> e |> cnf)
       | None -> Ok (CmpE (op, ot, e1', e2') $> e)
       )
     | _ -> Ok (CmpE (op, ot, e1', e2') $> e)
@@ -282,7 +320,7 @@ and reduce_exp static env e : exp result =
     let** e3' = reduce_exp static env e3 in
     (match e1'.it, e2'.it, e3'.it with
     | ListE es, NumE (`Nat i), NumE (`Nat n) when Z.(i + n) < Z.of_int (List.length es) ->
-      Ok (ListE (Lib.List.take (Z.to_int n) (Lib.List.drop (Z.to_int i) es)) $> e)
+      Ok (ListE (Lib.List.take (Z.to_int n) (Lib.List.drop (Z.to_int i) es)) $> e |> cnf_if [e1'])
     | _ -> Error (SliceE (e1', e2', e3') $> e)
     )
   | UpdE (e1, p, e2) ->
@@ -300,7 +338,7 @@ and reduce_exp static env e : exp result =
     reduce_path static env e1' p
       (fun e' p' ->
         if p'.it = RootP
-        then reduce_exp static env (CatE (e', e2') $> e')
+        then reduce_exp static env (CatE (e', e2') $> e' |> cnf_if [e'; e2'])
         else Ok (ExtE (e', p', e2') $> e')
       )
   | StrE (efs, ch) ->
@@ -308,7 +346,7 @@ and reduce_exp static env e : exp result =
     let** ef_chs' = map_results (reduce_expfield static env e.note tfs ch) efs in
     let efs', chs' = List.split ef_chs' in
     let ch' = if List.for_all ((=) Checked) chs' then Checked else Unchecked in
-    Ok (StrE (efs', ch') $> e)
+    Ok (StrE (efs', ch') $> e |> cnf_if (List.map snd efs'))
   | DotE (e1, atom) ->
     let** e1' = reduce_exp static env e1 in
     (match e1'.it with
@@ -321,7 +359,7 @@ and reduce_exp static env e : exp result =
     let** e1' = reduce_exp static env e1 in
     let** e2' = reduce_exp static env e2 in
     (match e1'.it, e2'.it with
-    | ListE es1, ListE es2 -> Ok (ListE (es1 @ es2) $> e)
+    | ListE es1, ListE es2 -> Ok (ListE (es1 @ es2) $> e |> cnf_if [e1'; e2'])
     | OptE None, OptE _ -> Ok e2'
     | OptE _, OptE None -> Ok e1'
     | StrE (efs1, Checked), StrE (efs2, Checked) ->
@@ -333,31 +371,31 @@ and reduce_exp static env e : exp result =
       assert (List.length efs1 = List.length efs2);
       let** ef_chs' = map_results merge (List.combine efs1 efs2) in
       let efs', _chs = List.split ef_chs' in
-      Ok (StrE (efs', Checked) $> e)
+      Ok (StrE (efs', Checked) $> e |> cnf_if [e1'; e2'])
     | _ -> Ok (CompE (e1', e2') $> e)
     )
   | MemE (e1, e2) ->
     let** e1' = reduce_exp static env e1 in
     let** e2' = reduce_exp static env e2 in
     (match e2'.it with
-    | OptE None -> Ok (BoolE false $> e)
+    | OptE None -> Ok (BoolE false $> e |> cnf)
     | OptE (Some e2') when static || is_value_exp e1' && is_value_exp e2' ->
-      Ok (BoolE (Eq.eq_exp e1' e2') $> e)
-    | ListE [] -> Ok (BoolE false $> e)
+      Ok (BoolE (Eq.eq_exp e1' e2') $> e |> cnf)
+    | ListE [] -> Ok (BoolE false $> e |> cnf)
     | ListE es2' when static || is_value_exp e1' && List.for_all is_value_exp es2' ->
-      Ok (BoolE (List.exists (Eq.eq_exp e1') es2') $> e)
+      Ok (BoolE (List.exists (Eq.eq_exp e1') es2') $> e |> cnf)
     | _ -> Ok (MemE (e1', e2') $> e)
     )
   | LenE e1 ->
     let** e1' = reduce_exp static env e1 in
     (match e1'.it with
     | ListE es when static || is_value_exp e1' ->
-      Ok (NumE (`Nat (Z.of_int (List.length es))) $> e)
+      Ok (NumE (`Nat (Z.of_int (List.length es))) $> e |> cnf)
     | _ -> Ok (LenE e1' $> e)
     )
   | TupE es ->
     let** es' = map_results (reduce_exp static env) es in
-    Ok (TupE es' $> e)
+    Ok (TupE es' $> e |> cnf_if es')
   | CallE (id, as_) ->
     let _ps, _t, clauses = Env.find_def env id in
     let** as' = map_results (reduce_arg static env) as_ in
@@ -384,7 +422,7 @@ and reduce_exp static env e : exp result =
       | Opt ->
         let eos' = List.map as_opt_exp es' in
         if List.for_all Option.is_none eos' then
-          Ok (OptE None $> e)
+          Ok (OptE None $> e |> cnf)
         else if List.for_all Option.is_some eos' then
           let es1' = List.map Option.get eos' in
           let s = List.fold_left2 Subst.add_varid Subst.empty ids es1' in
@@ -434,10 +472,10 @@ and reduce_exp static env e : exp result =
     )
   | OptE eo ->
     (match eo with
-    | None -> Ok e
+    | None -> Ok (e |> cnf)
     | Some e1 ->
       let** e1' = reduce_exp static env e1 in
-      Ok (OptE (Some e1') $> e)
+      Ok (OptE (Some e1') $> e |> cnf_if [e1'])
     )
   | TheE e1 ->
     let** e1' = reduce_exp static env e1 in
@@ -448,19 +486,19 @@ and reduce_exp static env e : exp result =
     )
   | ListE es ->
     let** es' = map_results (reduce_exp static env) es in
-    Ok (ListE es' $> e)
+    Ok (ListE es' $> e |> cnf_if es')
   | LiftE e1 ->
     let** e1' = reduce_exp static env e1 in
     (match e1'.it with
-    | OptE None -> Ok (ListE [] $> e)
-    | OptE (Some e11') -> Ok (ListE [e11'] $> e)
+    | OptE None -> Ok (ListE [] $> e |> cnf)
+    | OptE (Some e11') -> Ok (ListE [e11'] $> e |> cnf_if [e11'])
     | _ -> Ok (LiftE e1' $> e)
     )
   | CatE (e1, e2) ->
     let** e1' = reduce_exp static env e1 in
     let** e2' = reduce_exp static env e2 in
     (match e1'.it, e2'.it with
-    | ListE es1, ListE es2 -> Ok (ListE (es1 @ es2) $> e)
+    | ListE es1, ListE es2 -> Ok (ListE (es1 @ es2) $> e |> cnf_if [e1'; e2'])
     | OptE None, OptE _ -> Ok e2'
     | OptE _, OptE None -> Ok e1'
     | OptE _, OptE _ -> Error (CatE (e1', e2') $> e)
@@ -474,19 +512,22 @@ and reduce_exp static env e : exp result =
     (match so with
     | Some s ->
       let** so' = reduce_prems env s prems in
-      Ok (CaseE (op, e1', if so' <> None then Checked else Unchecked) $> e)
+      if so' <> None then
+        Ok (CaseE (op, e1', Checked) $> e |> cnf_if [e1'])
+      else
+        Ok (CaseE (op, e1', Unchecked) $> e)
     | None ->
       Ok (CaseE (op, e1', Unchecked) $> e)
     )
   | CaseE (op, e1, _ch) ->
     let** e1' = reduce_exp static env e1 in
-    Ok (CaseE (op, e1', Checked) $> e)
+    Ok (CaseE (op, e1', Checked) $> e |> cnf_if [e1'])
   | CvtE (e1, nt1, nt2) ->
     let** e1' = reduce_exp static env e1 in
     (match e1'.it with
     | NumE n ->
       (match Num.cvt nt2 n with
-      | Some n' -> Ok (NumE n' $> e)
+      | Some n' -> Ok (NumE n' $> e |> cnf)
       | None -> Error (CvtE (e1', nt1, nt2) $> e)
       )
     | _ -> Ok (CvtE (e1', nt1, nt2) $> e)
@@ -513,7 +554,7 @@ and reduce_exp static env e : exp result =
             reduce_exp static env (SubE (eI, t1I', t2I') $$ eI.at % t2I') in
           Ok (s1', s2', eI'::res')
         ) (Ok (Subst.empty, Subst.empty, [])) es' (List.combine xts1 xts2)
-      in Ok (TupE (List.rev res') $> e)
+      in Ok (TupE (List.rev res') $> e |> cnf_if res')
     | StrE (efs', _ch) ->
       let tfs1 = as_struct_typ env t1' t1.at in
       let tfs2 = as_struct_typ env t2' t2.at in
@@ -535,6 +576,7 @@ and reduce_exp static env e : exp result =
       Ok {e1' with note = e.note}
     | _ -> Ok (SubE (e1', t1', t2') $> e)
     )
+  ) |>** nf static
 
 and reduce_iter static env iter : iter result =
   match iter with
@@ -629,13 +671,17 @@ and reduce_path static env e p k : exp result =
 and reduce_arg static env a : arg result =
   Debug.(log "il.reduce_arg"
     (fun _ -> fmt "%s" (il_arg a))
-    (fun a' -> fmt "%s" (il_result il_arg a'))
+    (fun a' -> fmt "%s%s" (il_result il_arg a') (il_nf static a))
   ) @@ fun _ ->
-  match a.it with
-  | ExpA e -> let** e' = reduce_exp static env e in Ok (ExpA e' $ a.at)
+  if is_nf static a then Ok a else
+  (match a.it with
+  | ExpA e ->
+    let** e' = reduce_exp static env e in
+    Ok (ExpA e' $ a.at |> cnf_if [e'])
   | TypA _t -> Ok a  (* types are reduced on demand *)
   | DefA _id -> Ok a
   | GramA _g -> Ok a
+  ) |>** nf static
 
 and reduce_exp_call static env id args clauses at : exp option result =
   match clauses with

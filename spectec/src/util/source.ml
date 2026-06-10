@@ -38,18 +38,19 @@ let string_of_region r =
 
 (* Phrases *)
 
-type ('a, 'b) note_phrase = {at : region; it : 'a; note : 'b}
+type ('a, 'b) note_phrase = {at : region; it : 'a; note : 'b; mark : int}
 type 'a phrase = ('a, unit) note_phrase
 
-let ($) it at = {it; at; note = ()}
-let ($$) it (at, note) = {it; at; note}
+let ($) it at = {it; at; note = (); mark = 0}
+let ($$) it (at, note) = {it; at; note; mark = 0}
 let (%) at note = (at, note)
 
-let it {it; _} = it
-let at {at; _} = at
-let note {note; _} = note
+let it phrase = phrase.it
+let at phrase = phrase.at
+let note phrase = phrase.note
+let mark phrase = phrase.mark
 
 
 (* Utilities *)
 
-let map f {it; at; note} = {it = f it; at; note}
+let map f {it; at; note; mark} = {it = f it; at; note; mark}
