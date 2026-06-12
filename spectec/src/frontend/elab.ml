@@ -531,8 +531,8 @@ let expand_notation env t =
       let as_ = List.map il_arg_of_param ps in
       (match Il.Eval.(match_list match_arg (to_il_env env) Il.Subst.empty as' as_) with
       | Ok (Some s) ->
-        let mixop, (t, _qs, _prems), _ = Il.Subst.subst_typcase s tc in
-        Some (t, mixop, Mixop.apply mixop (untup_typ' t))
+        let mixop, (t, _qs, prems), _ = Il.Subst.subst_typcase s tc in
+        Some (t, mixop, Mixop.apply mixop (untup_typ' t), prems)
       | Ok None -> None
       | Error _ -> error_typ env t.at "term" t
       )
@@ -578,7 +578,7 @@ let as_tup_typ_opt env t : (Il.id * Il.typ) list option =
 
 let as_empty_notation_typ_opt env t : unit option =
   match expand_notation env t with
-  | Some (_, _, Seq []) -> Some ()
+  | Some (_, _, Seq [], _) -> Some ()
   | _ -> None
 
 
@@ -623,7 +623,7 @@ let rec as_cat_typ phrase env dir t at : unit attempt =
   | _ ->
     fail at (phrase ^ "'s type " ^ typ_string env t ^ " is not concatenable")
 
-let as_notation_typ phrase env dir t at : (Il.typ * _ Mixop.mixop * notation) attempt =
+let as_notation_typ phrase env dir t at : (Il.typ * _ Mixop.mixop * notation * Il.prem list) attempt =
   match expand_notation env t with
   | Some not -> Ok not
   | _ -> fail_dir_typ env at phrase dir t "_ ... _"
@@ -634,6 +634,7 @@ let is_x_typ as_x_typ env t =
   | Fail _ -> false
 
 let is_nat_typ = is_x_typ as_nat_typ
+let is_tup_typ = is_x_typ as_tup_typ
 let is_iter_typ = is_x_typ as_iter_typ
 let is_variant_typ = is_x_typ as_variant_typ
 let is_notation_typ = is_x_typ as_notation_typ
@@ -1024,7 +1025,11 @@ and elab_typ_notation env outer_dims tid at (t : typ) (prems : prem nl_list) :
   let xs', ts' = List.split xts' in
   let dims1 = Dim.check outer_dims [] [] ts' [] [] [] in
   let ts' = List.map (Dim.annot_typ dims1) ts' in
-  let t' = Il.TupT (List.combine xs' ts') $ t.at in
+  let t' =
+    match ts' with
+    | [t'] when prems = [] -> t'
+    | _ -> Il.TupT (List.combine xs' ts') $ t.at
+  in
   let det1 = Det.det_typ t' in
   infer_no_quants env dims1 det1 [] [] [t'] [] [] [] at;
 
@@ -1559,11 +1564,16 @@ and elab_exp_iter' ?(side = `Rhs) env (es : exp list) (t1, iter) t at : Il.exp' 
   | _, (List1 | ListN _) ->
     assert false
 
-and elab_exp_notation ?(side = `Rhs) env tid (e : exp) (t1, mixop, not) t : Il.exp attempt =
+and elab_exp_notation ?(side = `Rhs) env tid (e : exp) (t1, mixop, not, prems) t : Il.exp attempt =
   (* Convert notation into applications of mixin operators *)
   assert (valid_tid tid);
   let* es', _s = nest e.at t (elab_exp_notation' ~side env tid e not) in
-  Ok (Il.CaseE (mixop, Il.TupE es' $$ e.at % t1, Unchecked) $$ e.at % t)
+  let e' =
+    match es' with
+    | [e'] when prems = [] -> e'
+    | _ -> Il.TupE es' $$ e.at % t1
+  in
+  Ok (Il.CaseE (mixop, e', Unchecked) $$ e.at % t)
 
 and elab_exp_notation' ?(side = `Rhs) env tid (e : exp) not : (Il.exp list * Il.Subst.t) attempt =
   Debug.(log_at "el.elab_exp_notation" e.at
@@ -1778,12 +1788,22 @@ and elab_exp_variant ?(side = `Rhs) env tid (e : exp) (tcs : Il.typcase list) t 
     | _ -> fail_typ env at "expression" t
   in
   let* atom = head e in
-  let* mixop, (tC, _, _), _ = attempt (find_case_atom tcs atom atom.at) t in
-  let* xts = as_tup_typ "tuple" env Check tC e.at in
+  let* mixop, (tC, _, prems), _ = attempt (find_case_atom tcs atom atom.at) t in
+  let* xts =
+    if is_tup_typ env tC then
+      as_tup_typ "tuple" env Check tC e.at
+    else
+      Ok [("_" $ tC.at, tC)]
+  in
   let not = Mixop.apply mixop xts in
   let* es', _s = elab_exp_notation' ~side env tid e not in
+  let e' =
+    match es' with
+    | [e'] when prems = [] -> e'
+    | _ -> Il.TupE es' $$ e.at % tC
+  in
   let ch' = if side = `Lhs then Il.Checked else Il.Unchecked in
-  Ok (Il.CaseE (mixop, Il.TupE es' $$ e.at % tC, ch') $$ at % t)
+  Ok (Il.CaseE (mixop, e', ch') $$ at % t)
 
 
 (*
@@ -1831,7 +1851,7 @@ and cast_empty phrase env (t : Il.typ) at : Il.exp attempt =
     | Il.IterT (_, List) -> Ok (Il.ListE [] $$ at % t)
     | VarT _ when is_notation_typ env t ->
       (match expand_notation env t with
-      | Some (_, _, Mixop.Seq []) -> Ok (Il.ListE [] $$ at % t)
+      | Some (_, _, Mixop.Seq [], _) -> Ok (Il.ListE [] $$ at % t)
       | _ -> fail_typ env at phrase t
       )
     | _ -> fail_typ env at phrase t
@@ -1863,18 +1883,27 @@ and cast_exp' ?(side = `Rhs) phrase env (e' : Il.exp) t1 t2 : Il.exp' attempt =
 
   | Il.VarT (x1, _), Il.VarT (x2, _) ->
     (match expand_def env t1', expand_def env t2' with
-    | (Il.VariantT [mixop1, (tC1, _, _), _], NoDots),
-      (Il.VariantT [mixop2, (tC2, _, _), _], NoDots) ->
+    | (Il.VariantT [mixop1, (tC1, _, prems1), _], NoDots),
+      (Il.VariantT [mixop2, (tC2, _, prems2), _], NoDots) ->
       if mixop1 = mixop2 then
       (
         (* Two ConT's with the same operator can be cast pointwise *)
         let ts1 = match tC1.it with Il.TupT xts -> List.map snd xts | _ -> [tC1] in
         let ts2 = match tC2.it with Il.TupT xts -> List.map snd xts | _ -> [tC2] in
         let e'' = Il.UncaseE (e', mixop1) $$ e'.at % tC1 in
-        let es' = List.mapi (fun i t1I -> Il.ProjE (e'', i) $$ e''.at % t1I) ts1 in
+        let es' =
+          match ts1 with
+          | [_] when prems1 = [] -> [e'']
+          | _ -> List.mapi (fun i t1I -> Il.ProjE (e'', i) $$ e''.at % t1I) ts1
+        in
         let* es'' = map2_attempt (fun eI' (t1I, t2I) ->
           cast_exp ~side phrase env eI' t1I t2I) es' (List.combine ts1 ts2) in
-        Ok (Il.CaseE (mixop2, Il.TupE es'' $$ e'.at % tC2, Unchecked))
+        let e''' =
+          match es'' with
+          | [e'''] when prems2 = [] -> e'''
+          | _ -> Il.TupE es'' $$ e'.at % tC2
+        in
+        Ok (Il.CaseE (mixop2, e''', Unchecked))
       )
       else
       (
@@ -1891,7 +1920,8 @@ and cast_exp' ?(side = `Rhs) phrase env (e' : Il.exp) t1 t2 : Il.exp' attempt =
         match expand env tC1 with
         | Il.TupT [(_, t11')] ->
           let e'' = Il.UncaseE (e', mixop1) $$ e'.at % tC1 in
-          cast_exp' ~side phrase env (Il.ProjE (e'', 0) $$ e'.at % t11') t11' t2'
+          let e''' = if prems1 = [] then e'' else Il.ProjE (e'', 0) $$ e'.at % t11' in
+          cast_exp' ~side phrase env e''' t11' t2'
         | _ -> fail_typ2 env e'.at phrase t1 t2 ""
       )
 
@@ -1925,7 +1955,7 @@ and cast_exp' ?(side = `Rhs) phrase env (e' : Il.exp) t1 t2 : Il.exp' attempt =
 
   | Il.VarT _, _ ->
     (match expand_def env t1' with
-    | Il.VariantT [mixop1, (tC1, _, _), _], NoDots ->
+    | Il.VariantT [mixop1, (tC1, _, prems1), _], NoDots ->
       choice env [
         (fun env ->
           (* A ConT can always be cast to a (singleton) iteration *)
@@ -1952,7 +1982,8 @@ and cast_exp' ?(side = `Rhs) phrase env (e' : Il.exp) t1 t2 : Il.exp' attempt =
           match expand env tC1 with
           | Il.TupT [(_, t11')] ->
             let e'' = Il.UncaseE (e', mixop1) $$ e'.at % tC1 in
-            cast_exp' ~side phrase env (Il.ProjE (e'', 0) $$ e'.at % t11') t11' t2'
+            let e''' = if prems1 = [] then e'' else Il.ProjE (e'', 0) $$ e'.at % t11' in
+            cast_exp' ~side phrase env e''' t11' t2'
           | _ -> fail_typ2 env e'.at phrase t1 t2 ""
         );
       ]
@@ -1963,12 +1994,13 @@ and cast_exp' ?(side = `Rhs) phrase env (e' : Il.exp) t1 t2 : Il.exp' attempt =
 
   | _, Il.VarT _ ->
     (match expand_def env t2' with
-    | Il.VariantT [mixop2, (tC2, _, _), _], NoDots ->
+    | Il.VariantT [mixop2, (tC2, _, prems2), _], NoDots ->
       (* A ConT payload can be cast to the ConT *)
       (match expand env tC2 with
       | Il.TupT [(_, t21')] ->
         let* e1' = cast_exp ~side phrase env e' t1' t21' in
-        Ok (Il.CaseE (mixop2, Il.TupE [e1'] $$ e'.at % tC2, Unchecked))
+        let e'' = if prems2 = [] then e1' else Il.TupE [e1'] $$ e'.at % tC2 in
+        Ok (Il.CaseE (mixop2, e'', Unchecked))
       | _ -> fail_typ2 env e'.at phrase t1 t2 ""
       )
 

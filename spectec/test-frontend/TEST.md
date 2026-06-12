@@ -729,8 +729,8 @@ syntax fNmag{N : N}(N) =
 
 ;; ../../../../specification/wasm-latest/1.1-syntax.values.spectec
 syntax fN{N : N}(N) =
-  | POS(fNmag(N),)
-  | NEG(fNmag(N),)
+  | POS(fNmag(N))
+  | NEG(fNmag(N))
 
 ;; ../../../../specification/wasm-latest/1.1-syntax.values.spectec
 syntax f32 = fN(32)
@@ -741,17 +741,17 @@ syntax f64 = fN(64)
 ;; ../../../../specification/wasm-latest/1.1-syntax.values.spectec
 def $fzero(N : N) : fN(N)
   ;; ../../../../specification/wasm-latest/1.1-syntax.values.spectec
-  def $fzero{N : N}(N) = POS_fN(SUBNORM_fNmag(0,),)
+  def $fzero{N : N}(N) = POS_fN(SUBNORM_fNmag(0,))
 
 ;; ../../../../specification/wasm-latest/1.1-syntax.values.spectec
 def $fnat(N : N, nat : nat) : fN(N)
   ;; ../../../../specification/wasm-latest/1.1-syntax.values.spectec
-  def $fnat{N : N, n : n}(N, n) = POS_fN(NORM_fNmag(n, (0 : nat <:> int)),)
+  def $fnat{N : N, n : n}(N, n) = POS_fN(NORM_fNmag(n, (0 : nat <:> int)))
 
 ;; ../../../../specification/wasm-latest/1.1-syntax.values.spectec
 def $fone(N : N) : fN(N)
   ;; ../../../../specification/wasm-latest/1.1-syntax.values.spectec
-  def $fone{N : N}(N) = POS_fN(NORM_fNmag(1, (0 : nat <:> int)),)
+  def $fone{N : N}(N) = POS_fN(NORM_fNmag(1, (0 : nat <:> int)))
 
 ;; ../../../../specification/wasm-latest/1.1-syntax.values.spectec
 def $canon_(N : N) : nat
@@ -851,11 +851,11 @@ syntax fieldidx = idx
 
 ;; ../../../../specification/wasm-latest/1.1-syntax.values.spectec
 syntax externidx =
-  | FUNC(funcidx : funcidx,)
-  | GLOBAL(globalidx : globalidx,)
-  | TABLE(tableidx : tableidx,)
-  | MEM(memidx : memidx,)
-  | TAG(tagidx : tagidx,)
+  | FUNC(funcidx)
+  | GLOBAL(globalidx)
+  | TABLE(tableidx)
+  | MEM(memidx)
+  | TAG(tagidx)
 
 ;; ../../../../specification/wasm-latest/1.1-syntax.values.spectec
 rec {
@@ -865,7 +865,7 @@ def $funcsxx(externidx*) : typeidx*
   ;; ../../../../specification/wasm-latest/1.1-syntax.values.spectec:135.1-135.24
   def $funcsxx([]) = []
   ;; ../../../../specification/wasm-latest/1.1-syntax.values.spectec:136.1-136.45
-  def $funcsxx{x : idx, `xx*` : externidx*}([FUNC_externidx(x,)] ++ xx*{xx <- `xx*`}) = [x] ++ $funcsxx(xx*{xx <- `xx*`})
+  def $funcsxx{x : idx, `xx*` : externidx*}([FUNC_externidx(x)] ++ xx*{xx <- `xx*`}) = [x] ++ $funcsxx(xx*{xx <- `xx*`})
   ;; ../../../../specification/wasm-latest/1.1-syntax.values.spectec:137.1-137.58
   def $funcsxx{externidx : externidx, `xx*` : externidx*}([externidx] ++ xx*{xx <- `xx*`}) = $funcsxx(xx*{xx <- `xx*`})
     -- otherwise
@@ -879,7 +879,7 @@ def $globalsxx(externidx*) : globalidx*
   ;; ../../../../specification/wasm-latest/1.1-syntax.values.spectec:139.1-139.26
   def $globalsxx([]) = []
   ;; ../../../../specification/wasm-latest/1.1-syntax.values.spectec:140.1-140.51
-  def $globalsxx{x : idx, `xx*` : externidx*}([GLOBAL_externidx(x,)] ++ xx*{xx <- `xx*`}) = [x] ++ $globalsxx(xx*{xx <- `xx*`})
+  def $globalsxx{x : idx, `xx*` : externidx*}([GLOBAL_externidx(x)] ++ xx*{xx <- `xx*`}) = [x] ++ $globalsxx(xx*{xx <- `xx*`})
   ;; ../../../../specification/wasm-latest/1.1-syntax.values.spectec:141.1-141.62
   def $globalsxx{externidx : externidx, `xx*` : externidx*}([externidx] ++ xx*{xx <- `xx*`}) = $globalsxx(xx*{xx <- `xx*`})
     -- otherwise
@@ -893,7 +893,7 @@ def $tablesxx(externidx*) : tableidx*
   ;; ../../../../specification/wasm-latest/1.1-syntax.values.spectec:143.1-143.25
   def $tablesxx([]) = []
   ;; ../../../../specification/wasm-latest/1.1-syntax.values.spectec:144.1-144.48
-  def $tablesxx{x : idx, `xx*` : externidx*}([TABLE_externidx(x,)] ++ xx*{xx <- `xx*`}) = [x] ++ $tablesxx(xx*{xx <- `xx*`})
+  def $tablesxx{x : idx, `xx*` : externidx*}([TABLE_externidx(x)] ++ xx*{xx <- `xx*`}) = [x] ++ $tablesxx(xx*{xx <- `xx*`})
   ;; ../../../../specification/wasm-latest/1.1-syntax.values.spectec:145.1-145.60
   def $tablesxx{externidx : externidx, `xx*` : externidx*}([externidx] ++ xx*{xx <- `xx*`}) = $tablesxx(xx*{xx <- `xx*`})
     -- otherwise
@@ -907,7 +907,7 @@ def $memsxx(externidx*) : memidx*
   ;; ../../../../specification/wasm-latest/1.1-syntax.values.spectec:147.1-147.23
   def $memsxx([]) = []
   ;; ../../../../specification/wasm-latest/1.1-syntax.values.spectec:148.1-148.42
-  def $memsxx{x : idx, `xx*` : externidx*}([MEM_externidx(x,)] ++ xx*{xx <- `xx*`}) = [x] ++ $memsxx(xx*{xx <- `xx*`})
+  def $memsxx{x : idx, `xx*` : externidx*}([MEM_externidx(x)] ++ xx*{xx <- `xx*`}) = [x] ++ $memsxx(xx*{xx <- `xx*`})
   ;; ../../../../specification/wasm-latest/1.1-syntax.values.spectec:149.1-149.56
   def $memsxx{externidx : externidx, `xx*` : externidx*}([externidx] ++ xx*{xx <- `xx*`}) = $memsxx(xx*{xx <- `xx*`})
     -- otherwise
@@ -921,7 +921,7 @@ def $tagsxx(externidx*) : tagidx*
   ;; ../../../../specification/wasm-latest/1.1-syntax.values.spectec:151.1-151.23
   def $tagsxx([]) = []
   ;; ../../../../specification/wasm-latest/1.1-syntax.values.spectec:152.1-152.42
-  def $tagsxx{x : idx, `xx*` : externidx*}([TAG_externidx(x,)] ++ xx*{xx <- `xx*`}) = [x] ++ $tagsxx(xx*{xx <- `xx*`})
+  def $tagsxx{x : idx, `xx*` : externidx*}([TAG_externidx(x)] ++ xx*{xx <- `xx*`}) = [x] ++ $tagsxx(xx*{xx <- `xx*`})
   ;; ../../../../specification/wasm-latest/1.1-syntax.values.spectec:153.1-153.56
   def $tagsxx{externidx : externidx, `xx*` : externidx*}([externidx] ++ xx*{xx <- `xx*`}) = $tagsxx(xx*{xx <- `xx*`})
     -- otherwise
@@ -1013,15 +1013,15 @@ def $free_tagidx(tagidx : tagidx) : free
 ;; ../../../../specification/wasm-latest/1.1-syntax.values.spectec
 def $free_externidx(externidx : externidx) : free
   ;; ../../../../specification/wasm-latest/1.1-syntax.values.spectec
-  def $free_externidx{funcidx : funcidx}(FUNC_externidx(funcidx,)) = $free_funcidx(funcidx)
+  def $free_externidx{funcidx : funcidx}(FUNC_externidx(funcidx)) = $free_funcidx(funcidx)
   ;; ../../../../specification/wasm-latest/1.1-syntax.values.spectec
-  def $free_externidx{globalidx : globalidx}(GLOBAL_externidx(globalidx,)) = $free_globalidx(globalidx)
+  def $free_externidx{globalidx : globalidx}(GLOBAL_externidx(globalidx)) = $free_globalidx(globalidx)
   ;; ../../../../specification/wasm-latest/1.1-syntax.values.spectec
-  def $free_externidx{tableidx : tableidx}(TABLE_externidx(tableidx,)) = $free_tableidx(tableidx)
+  def $free_externidx{tableidx : tableidx}(TABLE_externidx(tableidx)) = $free_tableidx(tableidx)
   ;; ../../../../specification/wasm-latest/1.1-syntax.values.spectec
-  def $free_externidx{memidx : memidx}(MEM_externidx(memidx,)) = $free_memidx(memidx)
+  def $free_externidx{memidx : memidx}(MEM_externidx(memidx)) = $free_memidx(memidx)
   ;; ../../../../specification/wasm-latest/1.1-syntax.values.spectec
-  def $free_externidx{tagidx : tagidx}(TAG_externidx(tagidx,)) = $free_tagidx(tagidx)
+  def $free_externidx{tagidx : tagidx}(TAG_externidx(tagidx)) = $free_tagidx(tagidx)
 
 ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec
 syntax null =
@@ -1080,9 +1080,9 @@ rec {
 
 ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec:37.1-38.43
 syntax typeuse =
-  | _IDX(typeidx : typeidx,)
+  | _IDX(typeidx)
   | _DEF(rectype : rectype, n : n)
-  | REC(n : n,)
+  | REC(n)
 
 ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec:43.1-44.26
 syntax heaptype =
@@ -1099,9 +1099,9 @@ syntax heaptype =
   | EXTERN
   | NOEXTERN
   | BOT
-  | _IDX(typeidx : typeidx,)
+  | _IDX(typeidx)
   | _DEF(rectype : rectype, n : n)
-  | REC(n : n,)
+  | REC(n)
 
 ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec:51.1-52.14
 syntax valtype =
@@ -1134,8 +1134,8 @@ syntax fieldtype =
 
 ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec:114.1-117.34
 syntax comptype =
-  | STRUCT(list(syntax fieldtype),)
-  | ARRAY(fieldtype : fieldtype,)
+  | STRUCT(list(syntax fieldtype))
+  | ARRAY(fieldtype)
   | `FUNC%->%`(resulttype : resulttype, resulttype : resulttype)
 
 ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec:119.1-120.33
@@ -1144,7 +1144,7 @@ syntax subtype =
 
 ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec:122.1-123.22
 syntax rectype =
-  | REC(list(syntax subtype),)
+  | REC(list(syntax subtype))
 }
 
 ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec
@@ -1153,8 +1153,8 @@ syntax deftype =
 
 ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec
 syntax typevar =
-  | _IDX(typeidx : typeidx,)
-  | REC(n : n,)
+  | _IDX(typeidx)
+  | REC(n)
 
 ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec
 syntax reftype =
@@ -1303,11 +1303,11 @@ syntax elemtype = reftype
 
 ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec
 syntax externtype =
-  | TAG(tagtype : tagtype,)
-  | GLOBAL(globaltype : globaltype,)
-  | MEM(memtype : memtype,)
-  | TABLE(tabletype : tabletype,)
-  | FUNC(typeuse : typeuse,)
+  | TAG(tagtype)
+  | GLOBAL(globaltype)
+  | MEM(memtype)
+  | TABLE(tabletype)
+  | FUNC(typeuse)
 
 ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec
 syntax moduletype =
@@ -1529,7 +1529,7 @@ def $tagsxt(externtype*) : tagtype*
   ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec:314.1-314.23
   def $tagsxt([]) = []
   ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec:315.1-315.44
-  def $tagsxt{jt : tagtype, `xt*` : externtype*}([TAG_externtype(jt,)] ++ xt*{xt <- `xt*`}) = [jt] ++ $tagsxt(xt*{xt <- `xt*`})
+  def $tagsxt{jt : tagtype, `xt*` : externtype*}([TAG_externtype(jt)] ++ xt*{xt <- `xt*`}) = [jt] ++ $tagsxt(xt*{xt <- `xt*`})
   ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec:316.1-316.57
   def $tagsxt{externtype : externtype, `xt*` : externtype*}([externtype] ++ xt*{xt <- `xt*`}) = $tagsxt(xt*{xt <- `xt*`})
     -- otherwise
@@ -1543,7 +1543,7 @@ def $globalsxt(externtype*) : globaltype*
   ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec:318.1-318.26
   def $globalsxt([]) = []
   ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec:319.1-319.53
-  def $globalsxt{gt : globaltype, `xt*` : externtype*}([GLOBAL_externtype(gt,)] ++ xt*{xt <- `xt*`}) = [gt] ++ $globalsxt(xt*{xt <- `xt*`})
+  def $globalsxt{gt : globaltype, `xt*` : externtype*}([GLOBAL_externtype(gt)] ++ xt*{xt <- `xt*`}) = [gt] ++ $globalsxt(xt*{xt <- `xt*`})
   ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec:320.1-320.63
   def $globalsxt{externtype : externtype, `xt*` : externtype*}([externtype] ++ xt*{xt <- `xt*`}) = $globalsxt(xt*{xt <- `xt*`})
     -- otherwise
@@ -1557,7 +1557,7 @@ def $memsxt(externtype*) : memtype*
   ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec:322.1-322.23
   def $memsxt([]) = []
   ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec:323.1-323.44
-  def $memsxt{mt : memtype, `xt*` : externtype*}([MEM_externtype(mt,)] ++ xt*{xt <- `xt*`}) = [mt] ++ $memsxt(xt*{xt <- `xt*`})
+  def $memsxt{mt : memtype, `xt*` : externtype*}([MEM_externtype(mt)] ++ xt*{xt <- `xt*`}) = [mt] ++ $memsxt(xt*{xt <- `xt*`})
   ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec:324.1-324.57
   def $memsxt{externtype : externtype, `xt*` : externtype*}([externtype] ++ xt*{xt <- `xt*`}) = $memsxt(xt*{xt <- `xt*`})
     -- otherwise
@@ -1571,7 +1571,7 @@ def $tablesxt(externtype*) : tabletype*
   ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec:326.1-326.25
   def $tablesxt([]) = []
   ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec:327.1-327.50
-  def $tablesxt{tt : tabletype, `xt*` : externtype*}([TABLE_externtype(tt,)] ++ xt*{xt <- `xt*`}) = [tt] ++ $tablesxt(xt*{xt <- `xt*`})
+  def $tablesxt{tt : tabletype, `xt*` : externtype*}([TABLE_externtype(tt)] ++ xt*{xt <- `xt*`}) = [tt] ++ $tablesxt(xt*{xt <- `xt*`})
   ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec:328.1-328.61
   def $tablesxt{externtype : externtype, `xt*` : externtype*}([externtype] ++ xt*{xt <- `xt*`}) = $tablesxt(xt*{xt <- `xt*`})
     -- otherwise
@@ -1585,7 +1585,7 @@ def $funcsxt(externtype*) : deftype*
   ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec:330.1-330.24
   def $funcsxt([]) = []
   ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec:331.1-331.47
-  def $funcsxt{dt : deftype, `xt*` : externtype*}([FUNC_externtype((dt : deftype <: typeuse),)] ++ xt*{xt <- `xt*`}) = [dt] ++ $funcsxt(xt*{xt <- `xt*`})
+  def $funcsxt{dt : deftype, `xt*` : externtype*}([FUNC_externtype(dt : deftype <: typeuse)] ++ xt*{xt <- `xt*`}) = [dt] ++ $funcsxt(xt*{xt <- `xt*`})
   ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec:332.1-332.59
   def $funcsxt{externtype : externtype, `xt*` : externtype*}([externtype] ++ xt*{xt <- `xt*`}) = $funcsxt(xt*{xt <- `xt*`})
     -- otherwise
@@ -1614,9 +1614,9 @@ def $minus_recs(typevar*, typeuse*) : (typevar*, typeuse*)
   ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec:402.1-402.39
   def $minus_recs([], []) = ([], [])
   ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec:403.1-403.63
-  def $minus_recs{n : n, `tv*` : typevar*, tu_1 : typeuse, `tu*` : typeuse*}([REC_typevar(n,)] ++ tv*{tv <- `tv*`}, [tu_1] ++ tu*{tu <- `tu*`}) = $minus_recs(tv*{tv <- `tv*`}, tu*{tu <- `tu*`})
+  def $minus_recs{n : n, `tv*` : typevar*, tu_1 : typeuse, `tu*` : typeuse*}([REC_typevar(n)] ++ tv*{tv <- `tv*`}, [tu_1] ++ tu*{tu <- `tu*`}) = $minus_recs(tv*{tv <- `tv*`}, tu*{tu <- `tu*`})
   ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec:404.1-405.45
-  def $minus_recs{x : idx, `tv*` : typevar*, tu_1 : typeuse, `tu*` : typeuse*, `tv'*` : typevar*, `tu'*` : typeuse*}([_IDX_typevar(x,)] ++ tv*{tv <- `tv*`}, [tu_1] ++ tu*{tu <- `tu*`}) = ([_IDX_typevar(x,)] ++ tv'*{tv' <- `tv'*`}, [tu_1] ++ tu'*{tu' <- `tu'*`})
+  def $minus_recs{x : idx, `tv*` : typevar*, tu_1 : typeuse, `tu*` : typeuse*, `tv'*` : typevar*, `tu'*` : typeuse*}([_IDX_typevar(x)] ++ tv*{tv <- `tv*`}, [tu_1] ++ tu*{tu <- `tu*`}) = ([_IDX_typevar(x)] ++ tv'*{tv' <- `tv'*`}, [tu_1] ++ tu'*{tu' <- `tu'*`})
     -- if ((tv'*{tv' <- `tv'*`}, tu'*{tu' <- `tu'*`}) = $minus_recs(tv*{tv <- `tv*`}, tu*{tu <- `tu*`}))
 }
 
@@ -1686,9 +1686,9 @@ def $subst_fieldtype(fieldtype : fieldtype, typevar*, typeuse*) : fieldtype
 ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec:351.1-351.112
 def $subst_comptype(comptype : comptype, typevar*, typeuse*) : comptype
   ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec:394.1-394.85
-  def $subst_comptype{`ft*` : fieldtype*, `tv*` : typevar*, `tu*` : typeuse*}(STRUCT_comptype(`%`_list(ft*{ft <- `ft*`},),), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = STRUCT_comptype(`%`_list($subst_fieldtype(ft, tv*{tv <- `tv*`}, tu*{tu <- `tu*`})*{ft <- `ft*`},),)
+  def $subst_comptype{`ft*` : fieldtype*, `tv*` : typevar*, `tu*` : typeuse*}(STRUCT_comptype(`%`_list(ft*{ft <- `ft*`},)), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = STRUCT_comptype(`%`_list($subst_fieldtype(ft, tv*{tv <- `tv*`}, tu*{tu <- `tu*`})*{ft <- `ft*`},))
   ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec:395.1-395.81
-  def $subst_comptype{ft : fieldtype, `tv*` : typevar*, `tu*` : typeuse*}(ARRAY_comptype(ft,), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ARRAY_comptype($subst_fieldtype(ft, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}),)
+  def $subst_comptype{ft : fieldtype, `tv*` : typevar*, `tu*` : typeuse*}(ARRAY_comptype(ft), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = ARRAY_comptype($subst_fieldtype(ft, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}))
   ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec:396.1-396.123
   def $subst_comptype{`t_1*` : valtype*, `t_2*` : valtype*, `tv*` : typevar*, `tu*` : typeuse*}(`FUNC%->%`_comptype(`%`_resulttype(t_1*{t_1 <- `t_1*`},), `%`_resulttype(t_2*{t_2 <- `t_2*`},)), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = `FUNC%->%`_comptype(`%`_resulttype($subst_valtype(t_1, tv*{tv <- `tv*`}, tu*{tu <- `tu*`})*{t_1 <- `t_1*`},), `%`_resulttype($subst_valtype(t_2, tv*{tv <- `tv*`}, tu*{tu <- `tu*`})*{t_2 <- `t_2*`},))
 
@@ -1700,7 +1700,7 @@ def $subst_subtype(subtype : subtype, typevar*, typeuse*) : subtype
 ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec:353.1-353.112
 def $subst_rectype(rectype : rectype, typevar*, typeuse*) : rectype
   ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec:407.1-408.45
-  def $subst_rectype{`st*` : subtype*, `tv*` : typevar*, `tu*` : typeuse*, `tv'*` : typevar*, `tu'*` : typeuse*}(REC_rectype(`%`_list(st*{st <- `st*`},),), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = REC_rectype(`%`_list($subst_subtype(st, tv'*{tv' <- `tv'*`}, tu'*{tu' <- `tu'*`})*{st <- `st*`},),)
+  def $subst_rectype{`st*` : subtype*, `tv*` : typevar*, `tu*` : typeuse*, `tv'*` : typevar*, `tu'*` : typeuse*}(REC_rectype(`%`_list(st*{st <- `st*`},)), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = REC_rectype(`%`_list($subst_subtype(st, tv'*{tv' <- `tv'*`}, tu'*{tu' <- `tu'*`})*{st <- `st*`},))
     -- if ((tv'*{tv' <- `tv'*`}, tu'*{tu' <- `tu'*`}) = $minus_recs(tv*{tv <- `tv*`}, tu*{tu <- `tu*`}))
 
 ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec:354.1-354.112
@@ -1737,15 +1737,15 @@ def $subst_tabletype(tabletype : tabletype, typevar*, typeuse*) : tabletype
 ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec
 def $subst_externtype(externtype : externtype, typevar*, typeuse*) : externtype
   ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec
-  def $subst_externtype{jt : tagtype, `tv*` : typevar*, `tu*` : typeuse*}(TAG_externtype(jt,), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = TAG_externtype($subst_tagtype(jt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}),)
+  def $subst_externtype{jt : tagtype, `tv*` : typevar*, `tu*` : typeuse*}(TAG_externtype(jt), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = TAG_externtype($subst_tagtype(jt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}))
   ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec
-  def $subst_externtype{gt : globaltype, `tv*` : typevar*, `tu*` : typeuse*}(GLOBAL_externtype(gt,), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = GLOBAL_externtype($subst_globaltype(gt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}),)
+  def $subst_externtype{gt : globaltype, `tv*` : typevar*, `tu*` : typeuse*}(GLOBAL_externtype(gt), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = GLOBAL_externtype($subst_globaltype(gt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}))
   ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec
-  def $subst_externtype{tt : tabletype, `tv*` : typevar*, `tu*` : typeuse*}(TABLE_externtype(tt,), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = TABLE_externtype($subst_tabletype(tt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}),)
+  def $subst_externtype{tt : tabletype, `tv*` : typevar*, `tu*` : typeuse*}(TABLE_externtype(tt), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = TABLE_externtype($subst_tabletype(tt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}))
   ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec
-  def $subst_externtype{mt : memtype, `tv*` : typevar*, `tu*` : typeuse*}(MEM_externtype(mt,), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = MEM_externtype($subst_memtype(mt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}),)
+  def $subst_externtype{mt : memtype, `tv*` : typevar*, `tu*` : typeuse*}(MEM_externtype(mt), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = MEM_externtype($subst_memtype(mt, tv*{tv <- `tv*`}, tu*{tu <- `tu*`}))
   ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec
-  def $subst_externtype{tu' : typeuse, `tv*` : typevar*, `tu*` : typeuse*}(FUNC_externtype(tu',), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = FUNC_externtype($subst_typeuse(tu', tv*{tv <- `tv*`}, tu*{tu <- `tu*`}),)
+  def $subst_externtype{tu' : typeuse, `tv*` : typevar*, `tu*` : typeuse*}(FUNC_externtype(tu'), tv*{tv <- `tv*`}, tu*{tu <- `tu*`}) = FUNC_externtype($subst_typeuse(tu', tv*{tv <- `tv*`}, tu*{tu <- `tu*`}))
 
 ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec
 def $subst_moduletype(moduletype : moduletype, typevar*, typeuse*) : moduletype
@@ -1755,47 +1755,47 @@ def $subst_moduletype(moduletype : moduletype, typevar*, typeuse*) : moduletype
 ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec
 def $subst_all_valtype(valtype : valtype, typeuse*) : valtype
   ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec
-  def $subst_all_valtype{t : valtype, n : n, `tu*` : typeuse*, i : nat}(t, tu^n{tu <- `tu*`}) = $subst_valtype(t, _IDX_typevar(`%`_typeidx(i,),)^(i<n){}, tu^n{tu <- `tu*`})
+  def $subst_all_valtype{t : valtype, n : n, `tu*` : typeuse*, i : nat}(t, tu^n{tu <- `tu*`}) = $subst_valtype(t, _IDX_typevar(`%`_typeidx(i,))^(i<n){}, tu^n{tu <- `tu*`})
 
 ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec
 def $subst_all_reftype(reftype : reftype, typeuse*) : reftype
   ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec
-  def $subst_all_reftype{rt : reftype, n : n, `tu*` : typeuse*, i : nat}(rt, tu^n{tu <- `tu*`}) = $subst_reftype(rt, _IDX_typevar(`%`_typeidx(i,),)^(i<n){}, tu^n{tu <- `tu*`})
+  def $subst_all_reftype{rt : reftype, n : n, `tu*` : typeuse*, i : nat}(rt, tu^n{tu <- `tu*`}) = $subst_reftype(rt, _IDX_typevar(`%`_typeidx(i,))^(i<n){}, tu^n{tu <- `tu*`})
 
 ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec
 def $subst_all_deftype(deftype : deftype, typeuse*) : deftype
   ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec
-  def $subst_all_deftype{dt : deftype, n : n, `tu*` : typeuse*, i : nat}(dt, tu^n{tu <- `tu*`}) = $subst_deftype(dt, _IDX_typevar(`%`_typeidx(i,),)^(i<n){}, tu^n{tu <- `tu*`})
+  def $subst_all_deftype{dt : deftype, n : n, `tu*` : typeuse*, i : nat}(dt, tu^n{tu <- `tu*`}) = $subst_deftype(dt, _IDX_typevar(`%`_typeidx(i,))^(i<n){}, tu^n{tu <- `tu*`})
 
 ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec
 def $subst_all_tagtype(tagtype : tagtype, typeuse*) : tagtype
   ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec
-  def $subst_all_tagtype{jt : tagtype, n : n, `tu*` : typeuse*, i : nat}(jt, tu^n{tu <- `tu*`}) = $subst_tagtype(jt, _IDX_typevar(`%`_typeidx(i,),)^(i<n){}, tu^n{tu <- `tu*`})
+  def $subst_all_tagtype{jt : tagtype, n : n, `tu*` : typeuse*, i : nat}(jt, tu^n{tu <- `tu*`}) = $subst_tagtype(jt, _IDX_typevar(`%`_typeidx(i,))^(i<n){}, tu^n{tu <- `tu*`})
 
 ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec
 def $subst_all_globaltype(globaltype : globaltype, typeuse*) : globaltype
   ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec
-  def $subst_all_globaltype{gt : globaltype, n : n, `tu*` : typeuse*, i : nat}(gt, tu^n{tu <- `tu*`}) = $subst_globaltype(gt, _IDX_typevar(`%`_typeidx(i,),)^(i<n){}, tu^n{tu <- `tu*`})
+  def $subst_all_globaltype{gt : globaltype, n : n, `tu*` : typeuse*, i : nat}(gt, tu^n{tu <- `tu*`}) = $subst_globaltype(gt, _IDX_typevar(`%`_typeidx(i,))^(i<n){}, tu^n{tu <- `tu*`})
 
 ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec
 def $subst_all_memtype(memtype : memtype, typeuse*) : memtype
   ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec
-  def $subst_all_memtype{mt : memtype, n : n, `tu*` : typeuse*, i : nat}(mt, tu^n{tu <- `tu*`}) = $subst_memtype(mt, _IDX_typevar(`%`_typeidx(i,),)^(i<n){}, tu^n{tu <- `tu*`})
+  def $subst_all_memtype{mt : memtype, n : n, `tu*` : typeuse*, i : nat}(mt, tu^n{tu <- `tu*`}) = $subst_memtype(mt, _IDX_typevar(`%`_typeidx(i,))^(i<n){}, tu^n{tu <- `tu*`})
 
 ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec
 def $subst_all_tabletype(tabletype : tabletype, typeuse*) : tabletype
   ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec
-  def $subst_all_tabletype{tt : tabletype, n : n, `tu*` : typeuse*, i : nat}(tt, tu^n{tu <- `tu*`}) = $subst_tabletype(tt, _IDX_typevar(`%`_typeidx(i,),)^(i<n){}, tu^n{tu <- `tu*`})
+  def $subst_all_tabletype{tt : tabletype, n : n, `tu*` : typeuse*, i : nat}(tt, tu^n{tu <- `tu*`}) = $subst_tabletype(tt, _IDX_typevar(`%`_typeidx(i,))^(i<n){}, tu^n{tu <- `tu*`})
 
 ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec
 def $subst_all_externtype(externtype : externtype, typeuse*) : externtype
   ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec
-  def $subst_all_externtype{xt : externtype, n : n, `tu*` : typeuse*, i : nat}(xt, tu^n{tu <- `tu*`}) = $subst_externtype(xt, _IDX_typevar(`%`_typeidx(i,),)^(i<n){}, tu^n{tu <- `tu*`})
+  def $subst_all_externtype{xt : externtype, n : n, `tu*` : typeuse*, i : nat}(xt, tu^n{tu <- `tu*`}) = $subst_externtype(xt, _IDX_typevar(`%`_typeidx(i,))^(i<n){}, tu^n{tu <- `tu*`})
 
 ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec
 def $subst_all_moduletype(moduletype : moduletype, typeuse*) : moduletype
   ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec
-  def $subst_all_moduletype{mmt : moduletype, n : n, `tu*` : typeuse*, i : nat}(mmt, tu^n{tu <- `tu*`}) = $subst_moduletype(mmt, _IDX_typevar(`%`_typeidx(i,),)^(i<n){}, tu^n{tu <- `tu*`})
+  def $subst_all_moduletype{mmt : moduletype, n : n, `tu*` : typeuse*, i : nat}(mmt, tu^n{tu <- `tu*`}) = $subst_moduletype(mmt, _IDX_typevar(`%`_typeidx(i,))^(i<n){}, tu^n{tu <- `tu*`})
 
 ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec
 rec {
@@ -1811,26 +1811,26 @@ def $subst_all_deftypes(deftype*, typeuse*) : deftype*
 ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec
 def $rollrt(typeidx : typeidx, rectype : rectype) : rectype
   ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec
-  def $rollrt{x : idx, rectype : rectype, i : nat, n : n, `subtype*` : subtype*}(x, rectype) = REC_rectype(`%`_list($subst_subtype(subtype, _IDX_typevar(`%`_typeidx((x!`%`_idx.0 + i),),)^(i<n){}, REC_typeuse(i,)^(i<n){})^n{subtype <- `subtype*`},),)
-    -- if (rectype = REC_rectype(`%`_list(subtype^n{subtype <- `subtype*`},),))
+  def $rollrt{x : idx, rectype : rectype, i : nat, n : n, `subtype*` : subtype*}(x, rectype) = REC_rectype(`%`_list($subst_subtype(subtype, _IDX_typevar(`%`_typeidx((x!`%`_idx.0 + i),))^(i<n){}, REC_typeuse(i)^(i<n){})^n{subtype <- `subtype*`},))
+    -- if (rectype = REC_rectype(`%`_list(subtype^n{subtype <- `subtype*`},)))
 
 ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec
 def $unrollrt(rectype : rectype) : rectype
   ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec
-  def $unrollrt{rectype : rectype, i : nat, n : n, `subtype*` : subtype*}(rectype) = REC_rectype(`%`_list($subst_subtype(subtype, REC_typevar(i,)^(i<n){}, _DEF_typeuse(rectype, i)^(i<n){})^n{subtype <- `subtype*`},),)
-    -- if (rectype = REC_rectype(`%`_list(subtype^n{subtype <- `subtype*`},),))
+  def $unrollrt{rectype : rectype, i : nat, n : n, `subtype*` : subtype*}(rectype) = REC_rectype(`%`_list($subst_subtype(subtype, REC_typevar(i)^(i<n){}, _DEF_typeuse(rectype, i)^(i<n){})^n{subtype <- `subtype*`},))
+    -- if (rectype = REC_rectype(`%`_list(subtype^n{subtype <- `subtype*`},)))
 
 ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec
 def $rolldt(typeidx : typeidx, rectype : rectype) : deftype*
   ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec
-  def $rolldt{x : idx, rectype : rectype, n : n, `subtype*` : subtype*}(x, rectype) = _DEF_deftype(REC_rectype(`%`_list(subtype^n{subtype <- `subtype*`},),), i)^(i<n){}
-    -- if ($rollrt(x, rectype) = REC_rectype(`%`_list(subtype^n{subtype <- `subtype*`},),))
+  def $rolldt{x : idx, rectype : rectype, n : n, `subtype*` : subtype*}(x, rectype) = _DEF_deftype(REC_rectype(`%`_list(subtype^n{subtype <- `subtype*`},)), i)^(i<n){}
+    -- if ($rollrt(x, rectype) = REC_rectype(`%`_list(subtype^n{subtype <- `subtype*`},)))
 
 ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec
 def $unrolldt(deftype : deftype) : subtype
   ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec
   def $unrolldt{rectype : rectype, i : n, `subtype*` : subtype*}(_DEF_deftype(rectype, i)) = subtype*{subtype <- `subtype*`}[i]
-    -- if ($unrollrt(rectype) = REC_rectype(`%`_list(subtype*{subtype <- `subtype*`},),))
+    -- if ($unrollrt(rectype) = REC_rectype(`%`_list(subtype*{subtype <- `subtype*`},)))
 
 ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec
 def $free_addrtype(addrtype : addrtype) : free
@@ -1874,9 +1874,9 @@ def $free_absheaptype(absheaptype : absheaptype) : free
 ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec
 def $free_typevar(typevar : typevar) : free
   ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec
-  def $free_typevar{typeidx : typeidx}(_IDX_typevar(typeidx,)) = $free_typeidx(typeidx)
+  def $free_typevar{typeidx : typeidx}(_IDX_typevar(typeidx)) = $free_typeidx(typeidx)
   ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec
-  def $free_typevar{n : n}(REC_typevar(n,)) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], TAGS []}
+  def $free_typevar{n : n}(REC_typevar(n)) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], TAGS []}
 
 ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec
 rec {
@@ -1931,9 +1931,9 @@ def $free_fieldtype(fieldtype : fieldtype) : free
 ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec:490.1-490.36
 def $free_comptype(comptype : comptype) : free
   ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec:546.1-546.80
-  def $free_comptype{`fieldtype*` : fieldtype*}(STRUCT_comptype(`%`_list(fieldtype*{fieldtype <- `fieldtype*`},),)) = $free_list($free_fieldtype(fieldtype)*{fieldtype <- `fieldtype*`})
+  def $free_comptype{`fieldtype*` : fieldtype*}(STRUCT_comptype(`%`_list(fieldtype*{fieldtype <- `fieldtype*`},))) = $free_list($free_fieldtype(fieldtype)*{fieldtype <- `fieldtype*`})
   ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec:547.1-547.65
-  def $free_comptype{fieldtype : fieldtype}(ARRAY_comptype(fieldtype,)) = $free_fieldtype(fieldtype)
+  def $free_comptype{fieldtype : fieldtype}(ARRAY_comptype(fieldtype)) = $free_fieldtype(fieldtype)
   ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec:548.1-548.121
   def $free_comptype{resulttype_1 : resulttype, resulttype_2 : resulttype}(`FUNC%->%`_comptype(resulttype_1, resulttype_2)) = $free_resulttype(resulttype_1) +++ $free_resulttype(resulttype_2)
 
@@ -1945,7 +1945,7 @@ def $free_subtype(subtype : subtype) : free
 ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec:492.1-492.34
 def $free_rectype(rectype : rectype) : free
   ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec:553.1-553.70
-  def $free_rectype{`subtype*` : subtype*}(REC_rectype(`%`_list(subtype*{subtype <- `subtype*`},),)) = $free_list($free_subtype(subtype)*{subtype <- `subtype*`})
+  def $free_rectype{`subtype*` : subtype*}(REC_rectype(`%`_list(subtype*{subtype <- `subtype*`},))) = $free_list($free_subtype(subtype)*{subtype <- `subtype*`})
 
 ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec:520.1-520.34
 def $free_deftype(deftype : deftype) : free
@@ -1986,15 +1986,15 @@ def $free_elemtype(elemtype : elemtype) : free
 ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec
 def $free_externtype(externtype : externtype) : free
   ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec
-  def $free_externtype{tagtype : tagtype}(TAG_externtype(tagtype,)) = $free_tagtype(tagtype)
+  def $free_externtype{tagtype : tagtype}(TAG_externtype(tagtype)) = $free_tagtype(tagtype)
   ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec
-  def $free_externtype{globaltype : globaltype}(GLOBAL_externtype(globaltype,)) = $free_globaltype(globaltype)
+  def $free_externtype{globaltype : globaltype}(GLOBAL_externtype(globaltype)) = $free_globaltype(globaltype)
   ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec
-  def $free_externtype{memtype : memtype}(MEM_externtype(memtype,)) = $free_memtype(memtype)
+  def $free_externtype{memtype : memtype}(MEM_externtype(memtype)) = $free_memtype(memtype)
   ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec
-  def $free_externtype{tabletype : tabletype}(TABLE_externtype(tabletype,)) = $free_tabletype(tabletype)
+  def $free_externtype{tabletype : tabletype}(TABLE_externtype(tabletype)) = $free_tabletype(tabletype)
   ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec
-  def $free_externtype{typeuse : typeuse}(FUNC_externtype(typeuse,)) = $free_typeuse(typeuse)
+  def $free_externtype{typeuse : typeuse}(FUNC_externtype(typeuse)) = $free_typeuse(typeuse)
 
 ;; ../../../../specification/wasm-latest/1.2-syntax.types.spectec
 def $free_moduletype(moduletype : moduletype) : free
@@ -2084,13 +2084,13 @@ syntax binop_(numtype : numtype)
   | ADD
   | SUB
   | MUL
-  | DIV(sx : sx,)
-  | REM(sx : sx,)
+  | DIV(sx)
+  | REM(sx)
   | AND
   | OR
   | XOR
   | SHL
-  | SHR(sx : sx,)
+  | SHR(sx)
   | ROTL
   | ROTR
 
@@ -2116,10 +2116,10 @@ syntax relop_(numtype : numtype)
   syntax relop_{Inn : Inn}((Inn : Inn <: numtype)) =
   | EQ
   | NE
-  | LT(sx : sx,)
-  | GT(sx : sx,)
-  | LE(sx : sx,)
-  | GE(sx : sx,)
+  | LT(sx)
+  | GT(sx)
+  | LE(sx)
+  | GE(sx)
 
 
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec
@@ -2144,15 +2144,15 @@ syntax cvtop__(numtype_1 : numtype, numtype_2 : numtype)
 
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec
   syntax cvtop__{Inn_1 : Inn, Fnn_2 : Fnn}((Inn_1 : Inn <: numtype), (Fnn_2 : Fnn <: numtype)) =
-  | CONVERT(sx : sx,)
+  | CONVERT(sx)
   | REINTERPRET
     -- if ($sizenn1((Inn_1 : Inn <: numtype)) = $sizenn2((Fnn_2 : Fnn <: numtype)))
 
 
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec
   syntax cvtop__{Fnn_1 : Fnn, Inn_2 : Inn}((Fnn_1 : Fnn <: numtype), (Inn_2 : Inn <: numtype)) =
-  | TRUNC(sx : sx,)
-  | TRUNC_SAT(sx : sx,)
+  | TRUNC(sx)
+  | TRUNC_SAT(sx)
   | REINTERPRET
     -- if ($sizenn1((Fnn_1 : Fnn <: numtype)) = $sizenn2((Inn_2 : Inn <: numtype)))
 
@@ -2336,7 +2336,7 @@ syntax vrelop_(shape : shape)
 ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec
 syntax vshiftop_{Jnn : Jnn, M : M}(`%`_ishape(`%X%`_shape((Jnn : Jnn <: lanetype), M),)) =
   | SHL
-  | SHR(sx : sx,)
+  | SHR(sx)
 
 ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec
 syntax vswizzlop_{M : M}(`%`_bshape(`%X%`_shape(I8_lanetype, M),)) =
@@ -2413,14 +2413,14 @@ syntax storeop_{Inn : Inn}((Inn : Inn <: numtype)) =
 syntax vloadop_{vectype : vectype}(vectype) =
   | `SHAPE%X%_%`(sz : sz, M : M, sx : sx)
     -- if (((sz!`%`_sz.0 * M!`%`_M.0) : nat <:> rat) = (($vsize(vectype) : nat <:> rat) / (2 : nat <:> rat)))
-  | SPLAT(sz : sz,)
+  | SPLAT(sz)
   | ZERO(sz : sz,)
     -- if (sz!`%`_sz.0 >= 32)
 
 ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec
 syntax blocktype =
-  | _RESULT(`valtype?` : valtype?,)
-  | _IDX(typeidx : typeidx,)
+  | _RESULT(valtype?)
+  | _IDX(typeidx)
 
 ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
 syntax addr = nat
@@ -2432,8 +2432,8 @@ syntax arrayaddr = addr
 syntax catch =
   | CATCH(tagidx : tagidx, labelidx : labelidx)
   | CATCH_REF(tagidx : tagidx, labelidx : labelidx)
-  | CATCH_ALL(labelidx : labelidx,)
-  | CATCH_ALL_REF(labelidx : labelidx,)
+  | CATCH_ALL(labelidx)
+  | CATCH_ALL_REF(labelidx)
 
 ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
 syntax exnaddr = addr
@@ -2461,11 +2461,11 @@ syntax tagaddr = addr
 
 ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
 syntax externaddr =
-  | TAG(tagaddr : tagaddr,)
-  | GLOBAL(globaladdr : globaladdr,)
-  | MEM(memaddr : memaddr,)
-  | TABLE(tableaddr : tableaddr,)
-  | FUNC(funcaddr : funcaddr,)
+  | TAG(tagaddr)
+  | GLOBAL(globaladdr)
+  | MEM(memaddr)
+  | TABLE(tableaddr)
+  | FUNC(funcaddr)
 
 ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
 syntax exportinst =
@@ -2499,28 +2499,28 @@ rec {
 
 ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec:35.1-43.19
 syntax ref =
-  | `REF.I31_NUM`(u31 : u31,)
+  | `REF.I31_NUM`(u31)
   | `REF.NULL_ADDR`
-  | `REF.STRUCT_ADDR`(structaddr : structaddr,)
-  | `REF.ARRAY_ADDR`(arrayaddr : arrayaddr,)
-  | `REF.FUNC_ADDR`(funcaddr : funcaddr,)
-  | `REF.EXN_ADDR`(exnaddr : exnaddr,)
-  | `REF.HOST_ADDR`(hostaddr : hostaddr,)
-  | `REF.EXTERN`(ref : ref,)
+  | `REF.STRUCT_ADDR`(structaddr)
+  | `REF.ARRAY_ADDR`(arrayaddr)
+  | `REF.FUNC_ADDR`(funcaddr)
+  | `REF.EXN_ADDR`(exnaddr)
+  | `REF.HOST_ADDR`(hostaddr)
+  | `REF.EXTERN`(ref)
 }
 
 ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
 syntax val =
   | CONST(numtype : numtype, num_(numtype))
   | VCONST(vectype : vectype, vec_(vectype))
-  | `REF.I31_NUM`(u31 : u31,)
+  | `REF.I31_NUM`(u31)
   | `REF.NULL_ADDR`
-  | `REF.STRUCT_ADDR`(structaddr : structaddr,)
-  | `REF.ARRAY_ADDR`(arrayaddr : arrayaddr,)
-  | `REF.FUNC_ADDR`(funcaddr : funcaddr,)
-  | `REF.EXN_ADDR`(exnaddr : exnaddr,)
-  | `REF.HOST_ADDR`(hostaddr : hostaddr,)
-  | `REF.EXTERN`(ref : ref,)
+  | `REF.STRUCT_ADDR`(structaddr)
+  | `REF.ARRAY_ADDR`(arrayaddr)
+  | `REF.FUNC_ADDR`(funcaddr)
+  | `REF.EXN_ADDR`(exnaddr)
+  | `REF.HOST_ADDR`(hostaddr)
+  | `REF.EXTERN`(ref)
 
 ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
 syntax frame =
@@ -2537,74 +2537,74 @@ syntax instr =
   | NOP
   | UNREACHABLE
   | DROP
-  | SELECT(`valtype*?` : valtype*?,)
+  | SELECT(valtype*?)
   | BLOCK(blocktype : blocktype, `instr*` : instr*)
   | LOOP(blocktype : blocktype, `instr*` : instr*)
   | `IF%%ELSE%`(blocktype : blocktype, `instr*` : instr*, `instr*` : instr*)
-  | BR(labelidx : labelidx,)
-  | BR_IF(labelidx : labelidx,)
+  | BR(labelidx)
+  | BR_IF(labelidx)
   | BR_TABLE(`labelidx*` : labelidx*, labelidx : labelidx)
-  | BR_ON_NULL(labelidx : labelidx,)
-  | BR_ON_NON_NULL(labelidx : labelidx,)
+  | BR_ON_NULL(labelidx)
+  | BR_ON_NON_NULL(labelidx)
   | BR_ON_CAST(labelidx : labelidx, reftype : reftype, reftype : reftype)
   | BR_ON_CAST_FAIL(labelidx : labelidx, reftype : reftype, reftype : reftype)
-  | CALL(funcidx : funcidx,)
-  | CALL_REF(typeuse : typeuse,)
+  | CALL(funcidx)
+  | CALL_REF(typeuse)
   | CALL_INDIRECT(tableidx : tableidx, typeuse : typeuse)
   | RETURN
-  | RETURN_CALL(funcidx : funcidx,)
-  | RETURN_CALL_REF(typeuse : typeuse,)
+  | RETURN_CALL(funcidx)
+  | RETURN_CALL_REF(typeuse)
   | RETURN_CALL_INDIRECT(tableidx : tableidx, typeuse : typeuse)
-  | THROW(tagidx : tagidx,)
+  | THROW(tagidx)
   | THROW_REF
   | TRY_TABLE(blocktype : blocktype, list(syntax catch), `instr*` : instr*)
-  | `LOCAL.GET`(localidx : localidx,)
-  | `LOCAL.SET`(localidx : localidx,)
-  | `LOCAL.TEE`(localidx : localidx,)
-  | `GLOBAL.GET`(globalidx : globalidx,)
-  | `GLOBAL.SET`(globalidx : globalidx,)
-  | `TABLE.GET`(tableidx : tableidx,)
-  | `TABLE.SET`(tableidx : tableidx,)
-  | `TABLE.SIZE`(tableidx : tableidx,)
-  | `TABLE.GROW`(tableidx : tableidx,)
-  | `TABLE.FILL`(tableidx : tableidx,)
+  | `LOCAL.GET`(localidx)
+  | `LOCAL.SET`(localidx)
+  | `LOCAL.TEE`(localidx)
+  | `GLOBAL.GET`(globalidx)
+  | `GLOBAL.SET`(globalidx)
+  | `TABLE.GET`(tableidx)
+  | `TABLE.SET`(tableidx)
+  | `TABLE.SIZE`(tableidx)
+  | `TABLE.GROW`(tableidx)
+  | `TABLE.FILL`(tableidx)
   | `TABLE.COPY`(tableidx : tableidx, tableidx : tableidx)
   | `TABLE.INIT`(tableidx : tableidx, elemidx : elemidx)
-  | `ELEM.DROP`(elemidx : elemidx,)
+  | `ELEM.DROP`(elemidx)
   | LOAD(numtype : numtype, loadop_(numtype)?, memidx : memidx, memarg : memarg)
   | STORE(numtype : numtype, storeop_(numtype)?, memidx : memidx, memarg : memarg)
   | VLOAD(vectype : vectype, vloadop_(vectype)?, memidx : memidx, memarg : memarg)
   | VLOAD_LANE(vectype : vectype, sz : sz, memidx : memidx, memarg : memarg, laneidx : laneidx)
   | VSTORE(vectype : vectype, memidx : memidx, memarg : memarg)
   | VSTORE_LANE(vectype : vectype, sz : sz, memidx : memidx, memarg : memarg, laneidx : laneidx)
-  | `MEMORY.SIZE`(memidx : memidx,)
-  | `MEMORY.GROW`(memidx : memidx,)
-  | `MEMORY.FILL`(memidx : memidx,)
+  | `MEMORY.SIZE`(memidx)
+  | `MEMORY.GROW`(memidx)
+  | `MEMORY.FILL`(memidx)
   | `MEMORY.COPY`(memidx : memidx, memidx : memidx)
   | `MEMORY.INIT`(memidx : memidx, dataidx : dataidx)
-  | `DATA.DROP`(dataidx : dataidx,)
-  | `REF.NULL`(heaptype : heaptype,)
+  | `DATA.DROP`(dataidx)
+  | `REF.NULL`(heaptype)
   | `REF.IS_NULL`
   | `REF.AS_NON_NULL`
   | `REF.EQ`
-  | `REF.TEST`(reftype : reftype,)
-  | `REF.CAST`(reftype : reftype,)
-  | `REF.FUNC`(funcidx : funcidx,)
+  | `REF.TEST`(reftype)
+  | `REF.CAST`(reftype)
+  | `REF.FUNC`(funcidx)
   | `REF.I31`
-  | `I31.GET`(sx : sx,)
-  | `STRUCT.NEW`(typeidx : typeidx,)
-  | `STRUCT.NEW_DEFAULT`(typeidx : typeidx,)
+  | `I31.GET`(sx)
+  | `STRUCT.NEW`(typeidx)
+  | `STRUCT.NEW_DEFAULT`(typeidx)
   | `STRUCT.GET`(`sx?` : sx?, typeidx : typeidx, fieldidx : fieldidx)
   | `STRUCT.SET`(typeidx : typeidx, fieldidx : fieldidx)
-  | `ARRAY.NEW`(typeidx : typeidx,)
-  | `ARRAY.NEW_DEFAULT`(typeidx : typeidx,)
+  | `ARRAY.NEW`(typeidx)
+  | `ARRAY.NEW_DEFAULT`(typeidx)
   | `ARRAY.NEW_FIXED`(typeidx : typeidx, u32 : u32)
   | `ARRAY.NEW_DATA`(typeidx : typeidx, dataidx : dataidx)
   | `ARRAY.NEW_ELEM`(typeidx : typeidx, elemidx : elemidx)
   | `ARRAY.GET`(`sx?` : sx?, typeidx : typeidx)
-  | `ARRAY.SET`(typeidx : typeidx,)
+  | `ARRAY.SET`(typeidx)
   | `ARRAY.LEN`
-  | `ARRAY.FILL`(typeidx : typeidx,)
+  | `ARRAY.FILL`(typeidx)
   | `ARRAY.COPY`(typeidx : typeidx, typeidx : typeidx)
   | `ARRAY.INIT_DATA`(typeidx : typeidx, dataidx : dataidx)
   | `ARRAY.INIT_ELEM`(typeidx : typeidx, elemidx : elemidx)
@@ -2627,7 +2627,7 @@ syntax instr =
   | VTESTOP(shape : shape, vtestop_(shape))
   | VRELOP(shape : shape, vrelop_(shape))
   | VSHIFTOP(ishape : ishape, vshiftop_(ishape))
-  | VBITMASK(ishape : ishape,)
+  | VBITMASK(ishape)
   | VSWIZZLOP(bshape : bshape, vswizzlop_(bshape))
   | VSHUFFLE(bshape : bshape, `laneidx*` : laneidx*)
     -- if (`%`_dim(|laneidx*{laneidx <- `laneidx*`}|,) = $dim(bshape!`%`_bshape.0))
@@ -2637,18 +2637,18 @@ syntax instr =
   | VNARROW(ishape_1 : ishape, ishape_2 : ishape, sx : sx)
     -- if (($lsize($lanetype(ishape_2!`%`_ishape.0)) = (2 * $lsize($lanetype(ishape_1!`%`_ishape.0)))) /\ ((2 * $lsize($lanetype(ishape_1!`%`_ishape.0))) <= 32))
   | VCVTOP(shape_1 : shape, shape_2 : shape, vcvtop__(shape_2, shape_1))
-  | VSPLAT(shape : shape,)
+  | VSPLAT(shape)
   | VEXTRACT_LANE(shape : shape, `sx?` : sx?, laneidx : laneidx)
     -- if ((sx?{sx <- `sx?`} = ?()) <=> ($lanetype(shape) <- [I32_lanetype I64_lanetype F32_lanetype F64_lanetype]))
   | VREPLACE_LANE(shape : shape, laneidx : laneidx)
-  | `REF.I31_NUM`(u31 : u31,)
+  | `REF.I31_NUM`(u31)
   | `REF.NULL_ADDR`
-  | `REF.STRUCT_ADDR`(structaddr : structaddr,)
-  | `REF.ARRAY_ADDR`(arrayaddr : arrayaddr,)
-  | `REF.FUNC_ADDR`(funcaddr : funcaddr,)
-  | `REF.EXN_ADDR`(exnaddr : exnaddr,)
-  | `REF.HOST_ADDR`(hostaddr : hostaddr,)
-  | `REF.EXTERN`(ref : ref,)
+  | `REF.STRUCT_ADDR`(structaddr)
+  | `REF.ARRAY_ADDR`(arrayaddr)
+  | `REF.FUNC_ADDR`(funcaddr)
+  | `REF.EXN_ADDR`(exnaddr)
+  | `REF.HOST_ADDR`(hostaddr)
+  | `REF.EXTERN`(ref)
   | `LABEL_%{%}%`(n : n, `instr*` : instr*, `instr*` : instr*)
   | `FRAME_%{%}%`(n : n, frame : frame, `instr*` : instr*)
   | `HANDLER_%{%}%`(n : n, `catch*` : catch*, `instr*` : instr*)
@@ -2678,9 +2678,9 @@ def $free_shape(shape : shape) : free
 ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec
 def $free_blocktype(blocktype : blocktype) : free
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec
-  def $free_blocktype{`valtype?` : valtype?}(_RESULT_blocktype(valtype?{valtype <- `valtype?`},)) = $free_opt($free_valtype(valtype)?{valtype <- `valtype?`})
+  def $free_blocktype{`valtype?` : valtype?}(_RESULT_blocktype(valtype?{valtype <- `valtype?`})) = $free_opt($free_valtype(valtype)?{valtype <- `valtype?`})
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec
-  def $free_blocktype{typeidx : typeidx}(_IDX_blocktype(typeidx,)) = $free_typeidx(typeidx)
+  def $free_blocktype{typeidx : typeidx}(_IDX_blocktype(typeidx)) = $free_typeidx(typeidx)
 
 ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec
 def $free_catch(catch : catch) : free
@@ -2689,9 +2689,9 @@ def $free_catch(catch : catch) : free
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec
   def $free_catch{tagidx : tagidx, labelidx : labelidx}(CATCH_REF_catch(tagidx, labelidx)) = $free_tagidx(tagidx) +++ $free_labelidx(labelidx)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec
-  def $free_catch{labelidx : labelidx}(CATCH_ALL_catch(labelidx,)) = $free_labelidx(labelidx)
+  def $free_catch{labelidx : labelidx}(CATCH_ALL_catch(labelidx)) = $free_labelidx(labelidx)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec
-  def $free_catch{labelidx : labelidx}(CATCH_ALL_REF_catch(labelidx,)) = $free_labelidx(labelidx)
+  def $free_catch{labelidx : labelidx}(CATCH_ALL_REF_catch(labelidx)) = $free_labelidx(labelidx)
 
 ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec
 rec {
@@ -2718,7 +2718,7 @@ def $free_instr(instr : instr) : free
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:438.1-438.27
   def $free_instr(DROP_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], TAGS []}
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:439.1-439.86
-  def $free_instr{`valtype*?` : valtype*?}(SELECT_instr(valtype*{valtype <- `valtype*`}?{`valtype*` <- `valtype*?`},)) = $free_opt($free_list($free_valtype(valtype)*{valtype <- `valtype*`})?{`valtype*` <- `valtype*?`})
+  def $free_instr{`valtype*?` : valtype*?}(SELECT_instr(valtype*{valtype <- `valtype*`}?{`valtype*` <- `valtype*?`})) = $free_opt($free_list($free_valtype(valtype)*{valtype <- `valtype*`})?{`valtype*` <- `valtype*?`})
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:441.1-441.92
   def $free_instr{blocktype : blocktype, `instr*` : instr*}(BLOCK_instr(blocktype, instr*{instr <- `instr*`})) = $free_blocktype(blocktype) +++ $free_block(instr*{instr <- `instr*`})
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:442.1-442.91
@@ -2726,35 +2726,35 @@ def $free_instr(instr : instr) : free
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:443.1-444.79
   def $free_instr{blocktype : blocktype, `instr_1*` : instr*, `instr_2*` : instr*}(`IF%%ELSE%`_instr(blocktype, instr_1*{instr_1 <- `instr_1*`}, instr_2*{instr_2 <- `instr_2*`})) = $free_blocktype(blocktype) +++ $free_block(instr_1*{instr_1 <- `instr_1*`}) +++ $free_block(instr_2*{instr_2 <- `instr_2*`})
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:446.1-446.56
-  def $free_instr{labelidx : labelidx}(BR_instr(labelidx,)) = $free_labelidx(labelidx)
+  def $free_instr{labelidx : labelidx}(BR_instr(labelidx)) = $free_labelidx(labelidx)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:447.1-447.59
-  def $free_instr{labelidx : labelidx}(BR_IF_instr(labelidx,)) = $free_labelidx(labelidx)
+  def $free_instr{labelidx : labelidx}(BR_IF_instr(labelidx)) = $free_labelidx(labelidx)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:448.1-449.69
   def $free_instr{`labelidx*` : labelidx*, labelidx' : labelidx}(BR_TABLE_instr(labelidx*{labelidx <- `labelidx*`}, labelidx')) = $free_list($free_labelidx(labelidx)*{labelidx <- `labelidx*`}) +++ $free_labelidx(labelidx')
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:450.1-450.64
-  def $free_instr{labelidx : labelidx}(BR_ON_NULL_instr(labelidx,)) = $free_labelidx(labelidx)
+  def $free_instr{labelidx : labelidx}(BR_ON_NULL_instr(labelidx)) = $free_labelidx(labelidx)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:451.1-451.68
-  def $free_instr{labelidx : labelidx}(BR_ON_NON_NULL_instr(labelidx,)) = $free_labelidx(labelidx)
+  def $free_instr{labelidx : labelidx}(BR_ON_NON_NULL_instr(labelidx)) = $free_labelidx(labelidx)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:452.1-453.83
   def $free_instr{labelidx : labelidx, reftype_1 : reftype, reftype_2 : reftype}(BR_ON_CAST_instr(labelidx, reftype_1, reftype_2)) = $free_labelidx(labelidx) +++ $free_reftype(reftype_1) +++ $free_reftype(reftype_2)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:454.1-455.83
   def $free_instr{labelidx : labelidx, reftype_1 : reftype, reftype_2 : reftype}(BR_ON_CAST_FAIL_instr(labelidx, reftype_1, reftype_2)) = $free_labelidx(labelidx) +++ $free_reftype(reftype_1) +++ $free_reftype(reftype_2)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:457.1-457.55
-  def $free_instr{funcidx : funcidx}(CALL_instr(funcidx,)) = $free_funcidx(funcidx)
+  def $free_instr{funcidx : funcidx}(CALL_instr(funcidx)) = $free_funcidx(funcidx)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:458.1-458.59
-  def $free_instr{typeuse : typeuse}(CALL_REF_instr(typeuse,)) = $free_typeuse(typeuse)
+  def $free_instr{typeuse : typeuse}(CALL_REF_instr(typeuse)) = $free_typeuse(typeuse)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:459.1-460.53
   def $free_instr{tableidx : tableidx, typeuse : typeuse}(CALL_INDIRECT_instr(tableidx, typeuse)) = $free_tableidx(tableidx) +++ $free_typeuse(typeuse)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:461.1-461.29
   def $free_instr(RETURN_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], TAGS []}
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:462.1-462.62
-  def $free_instr{funcidx : funcidx}(RETURN_CALL_instr(funcidx,)) = $free_funcidx(funcidx)
+  def $free_instr{funcidx : funcidx}(RETURN_CALL_instr(funcidx)) = $free_funcidx(funcidx)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:463.1-463.66
-  def $free_instr{typeuse : typeuse}(RETURN_CALL_REF_instr(typeuse,)) = $free_typeuse(typeuse)
+  def $free_instr{typeuse : typeuse}(RETURN_CALL_REF_instr(typeuse)) = $free_typeuse(typeuse)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:464.1-465.53
   def $free_instr{tableidx : tableidx, typeuse : typeuse}(RETURN_CALL_INDIRECT_instr(tableidx, typeuse)) = $free_tableidx(tableidx) +++ $free_typeuse(typeuse)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:467.1-467.53
-  def $free_instr{tagidx : tagidx}(THROW_instr(tagidx,)) = $free_tagidx(tagidx)
+  def $free_instr{tagidx : tagidx}(THROW_instr(tagidx)) = $free_tagidx(tagidx)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:468.1-468.32
   def $free_instr(THROW_REF_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], TAGS []}
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:469.1-470.99
@@ -2794,7 +2794,7 @@ def $free_instr(instr : instr) : free
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:490.1-490.64
   def $free_instr{ishape : ishape, vshiftop : vshiftop_(ishape)}(VSHIFTOP_instr(ishape, vshiftop)) = $free_shape(ishape!`%`_ishape.0)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:491.1-491.55
-  def $free_instr{ishape : ishape}(VBITMASK_instr(ishape,)) = $free_shape(ishape!`%`_ishape.0)
+  def $free_instr{ishape : ishape}(VBITMASK_instr(ishape)) = $free_shape(ishape!`%`_ishape.0)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:492.1-492.66
   def $free_instr{bshape : bshape, vswizzlop : vswizzlop_(bshape)}(VSWIZZLOP_instr(bshape, vswizzlop)) = $free_shape(bshape!`%`_bshape.0)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:493.1-493.64
@@ -2810,13 +2810,13 @@ def $free_instr(instr : instr) : free
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:502.1-503.47
   def $free_instr{shape_1 : shape, shape_2 : shape, vcvtop : vcvtop__(shape_2, shape_1)}(VCVTOP_instr(shape_1, shape_2, vcvtop)) = $free_shape(shape_1) +++ $free_shape(shape_2)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:504.1-504.51
-  def $free_instr{shape : shape}(VSPLAT_instr(shape,)) = $free_shape(shape)
+  def $free_instr{shape : shape}(VSPLAT_instr(shape)) = $free_shape(shape)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:505.1-505.70
   def $free_instr{shape : shape, `sx?` : sx?, laneidx : laneidx}(VEXTRACT_LANE_instr(shape, sx?{sx <- `sx?`}, laneidx)) = $free_shape(shape)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:506.1-506.66
   def $free_instr{shape : shape, laneidx : laneidx}(VREPLACE_LANE_instr(shape, laneidx)) = $free_shape(shape)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:508.1-508.62
-  def $free_instr{heaptype : heaptype}(`REF.NULL`_instr(heaptype,)) = $free_heaptype(heaptype)
+  def $free_instr{heaptype : heaptype}(`REF.NULL`_instr(heaptype)) = $free_heaptype(heaptype)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:509.1-509.34
   def $free_instr(`REF.IS_NULL`_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], TAGS []}
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:510.1-510.38
@@ -2824,27 +2824,27 @@ def $free_instr(instr : instr) : free
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:511.1-511.29
   def $free_instr(`REF.EQ`_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], TAGS []}
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:512.1-512.59
-  def $free_instr{reftype : reftype}(`REF.TEST`_instr(reftype,)) = $free_reftype(reftype)
+  def $free_instr{reftype : reftype}(`REF.TEST`_instr(reftype)) = $free_reftype(reftype)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:513.1-513.59
-  def $free_instr{reftype : reftype}(`REF.CAST`_instr(reftype,)) = $free_reftype(reftype)
+  def $free_instr{reftype : reftype}(`REF.CAST`_instr(reftype)) = $free_reftype(reftype)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:514.1-514.59
-  def $free_instr{funcidx : funcidx}(`REF.FUNC`_instr(funcidx,)) = $free_funcidx(funcidx)
+  def $free_instr{funcidx : funcidx}(`REF.FUNC`_instr(funcidx)) = $free_funcidx(funcidx)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:515.1-515.30
   def $free_instr(`REF.I31`_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], TAGS []}
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:517.1-517.33
-  def $free_instr{sx : sx}(`I31.GET`_instr(sx,)) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], TAGS []}
+  def $free_instr{sx : sx}(`I31.GET`_instr(sx)) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], TAGS []}
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:519.1-519.61
-  def $free_instr{typeidx : typeidx}(`STRUCT.NEW`_instr(typeidx,)) = $free_typeidx(typeidx)
+  def $free_instr{typeidx : typeidx}(`STRUCT.NEW`_instr(typeidx)) = $free_typeidx(typeidx)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:520.1-520.69
-  def $free_instr{typeidx : typeidx}(`STRUCT.NEW_DEFAULT`_instr(typeidx,)) = $free_typeidx(typeidx)
+  def $free_instr{typeidx : typeidx}(`STRUCT.NEW_DEFAULT`_instr(typeidx)) = $free_typeidx(typeidx)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:521.1-521.69
   def $free_instr{`sx?` : sx?, typeidx : typeidx, u32 : u32}(`STRUCT.GET`_instr(sx?{sx <- `sx?`}, typeidx, u32)) = $free_typeidx(typeidx)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:522.1-522.65
   def $free_instr{typeidx : typeidx, u32 : u32}(`STRUCT.SET`_instr(typeidx, u32)) = $free_typeidx(typeidx)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:524.1-524.60
-  def $free_instr{typeidx : typeidx}(`ARRAY.NEW`_instr(typeidx,)) = $free_typeidx(typeidx)
+  def $free_instr{typeidx : typeidx}(`ARRAY.NEW`_instr(typeidx)) = $free_typeidx(typeidx)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:525.1-525.68
-  def $free_instr{typeidx : typeidx}(`ARRAY.NEW_DEFAULT`_instr(typeidx,)) = $free_typeidx(typeidx)
+  def $free_instr{typeidx : typeidx}(`ARRAY.NEW_DEFAULT`_instr(typeidx)) = $free_typeidx(typeidx)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:526.1-526.70
   def $free_instr{typeidx : typeidx, u32 : u32}(`ARRAY.NEW_FIXED`_instr(typeidx, u32)) = $free_typeidx(typeidx)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:527.1-528.51
@@ -2854,11 +2854,11 @@ def $free_instr(instr : instr) : free
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:531.1-531.64
   def $free_instr{`sx?` : sx?, typeidx : typeidx}(`ARRAY.GET`_instr(sx?{sx <- `sx?`}, typeidx)) = $free_typeidx(typeidx)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:532.1-532.60
-  def $free_instr{typeidx : typeidx}(`ARRAY.SET`_instr(typeidx,)) = $free_typeidx(typeidx)
+  def $free_instr{typeidx : typeidx}(`ARRAY.SET`_instr(typeidx)) = $free_typeidx(typeidx)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:533.1-533.32
   def $free_instr(`ARRAY.LEN`_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], TAGS []}
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:534.1-534.61
-  def $free_instr{typeidx : typeidx}(`ARRAY.FILL`_instr(typeidx,)) = $free_typeidx(typeidx)
+  def $free_instr{typeidx : typeidx}(`ARRAY.FILL`_instr(typeidx)) = $free_typeidx(typeidx)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:535.1-536.55
   def $free_instr{typeidx_1 : typeidx, typeidx_2 : typeidx}(`ARRAY.COPY`_instr(typeidx_1, typeidx_2)) = $free_typeidx(typeidx_1) +++ $free_typeidx(typeidx_2)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:537.1-538.51
@@ -2870,31 +2870,31 @@ def $free_instr(instr : instr) : free
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:543.1-543.41
   def $free_instr(`ANY.CONVERT_EXTERN`_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], TAGS []}
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:545.1-545.63
-  def $free_instr{localidx : localidx}(`LOCAL.GET`_instr(localidx,)) = $free_localidx(localidx)
+  def $free_instr{localidx : localidx}(`LOCAL.GET`_instr(localidx)) = $free_localidx(localidx)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:546.1-546.63
-  def $free_instr{localidx : localidx}(`LOCAL.SET`_instr(localidx,)) = $free_localidx(localidx)
+  def $free_instr{localidx : localidx}(`LOCAL.SET`_instr(localidx)) = $free_localidx(localidx)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:547.1-547.63
-  def $free_instr{localidx : localidx}(`LOCAL.TEE`_instr(localidx,)) = $free_localidx(localidx)
+  def $free_instr{localidx : localidx}(`LOCAL.TEE`_instr(localidx)) = $free_localidx(localidx)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:549.1-549.67
-  def $free_instr{globalidx : globalidx}(`GLOBAL.GET`_instr(globalidx,)) = $free_globalidx(globalidx)
+  def $free_instr{globalidx : globalidx}(`GLOBAL.GET`_instr(globalidx)) = $free_globalidx(globalidx)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:550.1-550.67
-  def $free_instr{globalidx : globalidx}(`GLOBAL.SET`_instr(globalidx,)) = $free_globalidx(globalidx)
+  def $free_instr{globalidx : globalidx}(`GLOBAL.SET`_instr(globalidx)) = $free_globalidx(globalidx)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:552.1-552.63
-  def $free_instr{tableidx : tableidx}(`TABLE.GET`_instr(tableidx,)) = $free_tableidx(tableidx)
+  def $free_instr{tableidx : tableidx}(`TABLE.GET`_instr(tableidx)) = $free_tableidx(tableidx)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:553.1-553.63
-  def $free_instr{tableidx : tableidx}(`TABLE.SET`_instr(tableidx,)) = $free_tableidx(tableidx)
+  def $free_instr{tableidx : tableidx}(`TABLE.SET`_instr(tableidx)) = $free_tableidx(tableidx)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:554.1-554.64
-  def $free_instr{tableidx : tableidx}(`TABLE.SIZE`_instr(tableidx,)) = $free_tableidx(tableidx)
+  def $free_instr{tableidx : tableidx}(`TABLE.SIZE`_instr(tableidx)) = $free_tableidx(tableidx)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:555.1-555.64
-  def $free_instr{tableidx : tableidx}(`TABLE.GROW`_instr(tableidx,)) = $free_tableidx(tableidx)
+  def $free_instr{tableidx : tableidx}(`TABLE.GROW`_instr(tableidx)) = $free_tableidx(tableidx)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:556.1-556.64
-  def $free_instr{tableidx : tableidx}(`TABLE.FILL`_instr(tableidx,)) = $free_tableidx(tableidx)
+  def $free_instr{tableidx : tableidx}(`TABLE.FILL`_instr(tableidx)) = $free_tableidx(tableidx)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:557.1-558.59
   def $free_instr{tableidx_1 : tableidx, tableidx_2 : tableidx}(`TABLE.COPY`_instr(tableidx_1, tableidx_2)) = $free_tableidx(tableidx_1) +++ $free_tableidx(tableidx_2)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:559.1-560.53
   def $free_instr{tableidx : tableidx, elemidx : elemidx}(`TABLE.INIT`_instr(tableidx, elemidx)) = $free_tableidx(tableidx) +++ $free_elemidx(elemidx)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:561.1-561.60
-  def $free_instr{elemidx : elemidx}(`ELEM.DROP`_instr(elemidx,)) = $free_elemidx(elemidx)
+  def $free_instr{elemidx : elemidx}(`ELEM.DROP`_instr(elemidx)) = $free_elemidx(elemidx)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:563.1-564.49
   def $free_instr{numtype : numtype, `loadop?` : loadop_(numtype)?, memidx : memidx, memarg : memarg}(LOAD_instr(numtype, loadop?{loadop <- `loadop?`}, memidx, memarg)) = $free_numtype(numtype) +++ $free_memidx(memidx)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:565.1-566.49
@@ -2908,17 +2908,17 @@ def $free_instr(instr : instr) : free
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:573.1-574.49
   def $free_instr{vectype : vectype, sz : sz, memidx : memidx, memarg : memarg, laneidx : laneidx}(VSTORE_LANE_instr(vectype, sz, memidx, memarg, laneidx)) = $free_vectype(vectype) +++ $free_memidx(memidx)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:575.1-575.59
-  def $free_instr{memidx : memidx}(`MEMORY.SIZE`_instr(memidx,)) = $free_memidx(memidx)
+  def $free_instr{memidx : memidx}(`MEMORY.SIZE`_instr(memidx)) = $free_memidx(memidx)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:576.1-576.59
-  def $free_instr{memidx : memidx}(`MEMORY.GROW`_instr(memidx,)) = $free_memidx(memidx)
+  def $free_instr{memidx : memidx}(`MEMORY.GROW`_instr(memidx)) = $free_memidx(memidx)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:577.1-577.59
-  def $free_instr{memidx : memidx}(`MEMORY.FILL`_instr(memidx,)) = $free_memidx(memidx)
+  def $free_instr{memidx : memidx}(`MEMORY.FILL`_instr(memidx)) = $free_memidx(memidx)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:578.1-579.51
   def $free_instr{memidx_1 : memidx, memidx_2 : memidx}(`MEMORY.COPY`_instr(memidx_1, memidx_2)) = $free_memidx(memidx_1) +++ $free_memidx(memidx_2)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:580.1-581.49
   def $free_instr{memidx : memidx, dataidx : dataidx}(`MEMORY.INIT`_instr(memidx, dataidx)) = $free_memidx(memidx) +++ $free_dataidx(dataidx)
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:582.1-582.60
-  def $free_instr{dataidx : dataidx}(`DATA.DROP`_instr(dataidx,)) = $free_dataidx(dataidx)
+  def $free_instr{dataidx : dataidx}(`DATA.DROP`_instr(dataidx)) = $free_dataidx(dataidx)
 
 ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec:422.1-422.31
 def $free_block(instr*) : free
@@ -2945,11 +2945,11 @@ syntax datamode =
 
 ;; ../../../../specification/wasm-latest/1.4-syntax.modules.spectec
 syntax type =
-  | TYPE(rectype : rectype,)
+  | TYPE(rectype)
 
 ;; ../../../../specification/wasm-latest/1.4-syntax.modules.spectec
 syntax tag =
-  | TAG(tagtype : tagtype,)
+  | TAG(tagtype)
 
 ;; ../../../../specification/wasm-latest/1.4-syntax.modules.spectec
 syntax global =
@@ -2957,7 +2957,7 @@ syntax global =
 
 ;; ../../../../specification/wasm-latest/1.4-syntax.modules.spectec
 syntax mem =
-  | MEMORY(memtype : memtype,)
+  | MEMORY(memtype)
 
 ;; ../../../../specification/wasm-latest/1.4-syntax.modules.spectec
 syntax table =
@@ -2969,7 +2969,7 @@ syntax data =
 
 ;; ../../../../specification/wasm-latest/1.4-syntax.modules.spectec
 syntax local =
-  | LOCAL(valtype : valtype,)
+  | LOCAL(valtype)
 
 ;; ../../../../specification/wasm-latest/1.4-syntax.modules.spectec
 syntax func =
@@ -2981,7 +2981,7 @@ syntax elem =
 
 ;; ../../../../specification/wasm-latest/1.4-syntax.modules.spectec
 syntax start =
-  | START(funcidx : funcidx,)
+  | START(funcidx)
 
 ;; ../../../../specification/wasm-latest/1.4-syntax.modules.spectec
 syntax import =
@@ -2998,12 +2998,12 @@ syntax module =
 ;; ../../../../specification/wasm-latest/1.4-syntax.modules.spectec
 def $free_type(type : type) : free
   ;; ../../../../specification/wasm-latest/1.4-syntax.modules.spectec
-  def $free_type{rectype : rectype}(TYPE_type(rectype,)) = $free_rectype(rectype)
+  def $free_type{rectype : rectype}(TYPE_type(rectype)) = $free_rectype(rectype)
 
 ;; ../../../../specification/wasm-latest/1.4-syntax.modules.spectec
 def $free_tag(tag : tag) : free
   ;; ../../../../specification/wasm-latest/1.4-syntax.modules.spectec
-  def $free_tag{tagtype : tagtype}(TAG_tag(tagtype,)) = $free_tagtype(tagtype)
+  def $free_tag{tagtype : tagtype}(TAG_tag(tagtype)) = $free_tagtype(tagtype)
 
 ;; ../../../../specification/wasm-latest/1.4-syntax.modules.spectec
 def $free_global(global : global) : free
@@ -3013,7 +3013,7 @@ def $free_global(global : global) : free
 ;; ../../../../specification/wasm-latest/1.4-syntax.modules.spectec
 def $free_mem(mem : mem) : free
   ;; ../../../../specification/wasm-latest/1.4-syntax.modules.spectec
-  def $free_mem{memtype : memtype}(MEMORY_mem(memtype,)) = $free_memtype(memtype)
+  def $free_mem{memtype : memtype}(MEMORY_mem(memtype)) = $free_memtype(memtype)
 
 ;; ../../../../specification/wasm-latest/1.4-syntax.modules.spectec
 def $free_table(table : table) : free
@@ -3023,7 +3023,7 @@ def $free_table(table : table) : free
 ;; ../../../../specification/wasm-latest/1.4-syntax.modules.spectec
 def $free_local(local : local) : free
   ;; ../../../../specification/wasm-latest/1.4-syntax.modules.spectec
-  def $free_local{t : valtype}(LOCAL_local(t,)) = $free_valtype(t)
+  def $free_local{t : valtype}(LOCAL_local(t)) = $free_valtype(t)
 
 ;; ../../../../specification/wasm-latest/1.4-syntax.modules.spectec
 def $free_func(func : func) : free
@@ -3059,7 +3059,7 @@ def $free_elem(elem : elem) : free
 ;; ../../../../specification/wasm-latest/1.4-syntax.modules.spectec
 def $free_start(start : start) : free
   ;; ../../../../specification/wasm-latest/1.4-syntax.modules.spectec
-  def $free_start{funcidx : funcidx}(START_start(funcidx,)) = $free_funcidx(funcidx)
+  def $free_start{funcidx : funcidx}(START_start(funcidx)) = $free_funcidx(funcidx)
 
 ;; ../../../../specification/wasm-latest/1.4-syntax.modules.spectec
 def $free_import(import : import) : free
@@ -3184,7 +3184,7 @@ relation Vectype_ok: `%|-%:OK`(context, vectype)
 
 ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec
 syntax oktypenat =
-  | OK(nat : nat,)
+  | OK(nat)
 
 ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec
 relation Packtype_ok: `%|-%:OK`(context, packtype)
@@ -3220,7 +3220,7 @@ relation Vectype_sub: `%|-%<:%`(context, vectype, vectype)
 ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec
 def $before(typeuse : typeuse, nat : nat) : bool
   ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec
-  def $before{j : n, i : nat}(REC_typeuse(j,), i) = (j < i)
+  def $before{j : n, i : nat}(REC_typeuse(j), i) = (j < i)
   ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec
   def $before{typeuse : typeuse, i : nat}(typeuse, i) = true
     -- otherwise
@@ -3230,9 +3230,9 @@ def $unrollht_(context : context, heaptype : heaptype) : subtype
   ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec
   def $unrollht_{C : context, deftype : deftype}(C, (deftype : deftype <: heaptype)) = $unrolldt(deftype)
   ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec
-  def $unrollht_{C : context, typeidx : typeidx}(C, _IDX_heaptype(typeidx,)) = $unrolldt(C.TYPES_context[typeidx!`%`_typeidx.0])
+  def $unrollht_{C : context, typeidx : typeidx}(C, _IDX_heaptype(typeidx)) = $unrolldt(C.TYPES_context[typeidx!`%`_typeidx.0])
   ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec
-  def $unrollht_{C : context, i : n}(C, REC_heaptype(i,)) = C.RECS_context[i]
+  def $unrollht_{C : context, i : n}(C, REC_heaptype(i)) = C.RECS_context[i]
 
 ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec
 rec {
@@ -3284,12 +3284,12 @@ relation Valtype_ok: `%|-%:OK`(context, valtype)
 relation Typeuse_ok: `%|-%:OK`(context, typeuse)
   ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:106.1-108.30
   rule typeidx{C : context, typeidx : typeidx, dt : deftype}:
-    `%|-%:OK`(C, _IDX_typeuse(typeidx,))
+    `%|-%:OK`(C, _IDX_typeuse(typeidx))
     -- if (C.TYPES_context[typeidx!`%`_typeidx.0] = dt)
 
   ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:110.1-112.23
   rule rec{C : context, i : n, st : subtype}:
-    `%|-%:OK`(C, REC_typeuse(i,))
+    `%|-%:OK`(C, REC_typeuse(i))
     -- if (C.RECS_context[i] = st)
 
   ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:114.1-116.35
@@ -3327,12 +3327,12 @@ relation Storagetype_ok: `%|-%:OK`(context, storagetype)
 relation Comptype_ok: `%|-%:OK`(context, comptype)
   ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:135.1-137.42
   rule struct{C : context, `fieldtype*` : fieldtype*}:
-    `%|-%:OK`(C, STRUCT_comptype(`%`_list(fieldtype*{fieldtype <- `fieldtype*`},),))
+    `%|-%:OK`(C, STRUCT_comptype(`%`_list(fieldtype*{fieldtype <- `fieldtype*`},)))
     -- (Fieldtype_ok: `%|-%:OK`(C, fieldtype))*{fieldtype <- `fieldtype*`}
 
   ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:139.1-141.39
   rule array{C : context, fieldtype : fieldtype}:
-    `%|-%:OK`(C, ARRAY_comptype(fieldtype,))
+    `%|-%:OK`(C, ARRAY_comptype(fieldtype))
     -- Fieldtype_ok: `%|-%:OK`(C, fieldtype)
 
   ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:143.1-146.35
@@ -3345,7 +3345,7 @@ relation Comptype_ok: `%|-%:OK`(context, comptype)
 relation Subtype_ok2: `%|-%:%`(context, subtype, oktypenat)
   ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:167.1-176.49
   rule _{C : context, `typeuse*` : typeuse*, comptype : comptype, i : nat, `comptype'*` : comptype*, `typeuse'**` : typeuse**}:
-    `%|-%:%`(C, SUB_subtype(FINAL_final?{}, typeuse*{typeuse <- `typeuse*`}, comptype), OK_oktypenat(i,))
+    `%|-%:%`(C, SUB_subtype(FINAL_final?{}, typeuse*{typeuse <- `typeuse*`}, comptype), OK_oktypenat(i))
     -- if (|typeuse*{typeuse <- `typeuse*`}| <= 1)
     -- (Typeuse_ok: `%|-%:OK`(C, typeuse))*{typeuse <- `typeuse*`}
     -- (if $before(typeuse, i))*{typeuse <- `typeuse*`}
@@ -3357,33 +3357,33 @@ relation Subtype_ok2: `%|-%:%`(context, subtype, oktypenat)
 relation Rectype_ok2: `%|-%:%`(context, rectype, oktypenat)
   ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:188.1-189.23
   rule empty{C : context, i : nat}:
-    `%|-%:%`(C, REC_rectype(`%`_list([],),), OK_oktypenat(i,))
+    `%|-%:%`(C, REC_rectype(`%`_list([],)), OK_oktypenat(i))
 
   ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:191.1-194.49
   rule cons{C : context, subtype_1 : subtype, `subtype*` : subtype*, i : nat}:
-    `%|-%:%`(C, REC_rectype(`%`_list([subtype_1] ++ subtype*{subtype <- `subtype*`},),), OK_oktypenat(i,))
-    -- Subtype_ok2: `%|-%:%`(C, subtype_1, OK_oktypenat(i,))
-    -- Rectype_ok2: `%|-%:%`(C, REC_rectype(`%`_list(subtype*{subtype <- `subtype*`},),), OK_oktypenat((i + 1),))
+    `%|-%:%`(C, REC_rectype(`%`_list([subtype_1] ++ subtype*{subtype <- `subtype*`},)), OK_oktypenat(i))
+    -- Subtype_ok2: `%|-%:%`(C, subtype_1, OK_oktypenat(i))
+    -- Rectype_ok2: `%|-%:%`(C, REC_rectype(`%`_list(subtype*{subtype <- `subtype*`},)), OK_oktypenat(i + 1))
 
 ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:99.1-99.102
 relation Deftype_ok: `%|-%:OK`(context, deftype)
   ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:197.1-201.14
   rule _{C : context, rectype : rectype, i : n, n : n, `subtype*` : subtype*}:
     `%|-%:OK`(C, _DEF_deftype(rectype, i))
-    -- Rectype_ok2: `%|-%:%`({TYPES [], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [], RETURN ?(), REFS [], RECS subtype^n{subtype <- `subtype*`}} +++ C, rectype, OK_oktypenat(0,))
-    -- if (rectype = REC_rectype(`%`_list(subtype^n{subtype <- `subtype*`},),))
+    -- Rectype_ok2: `%|-%:%`({TYPES [], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [], RETURN ?(), REFS [], RECS subtype^n{subtype <- `subtype*`}} +++ C, rectype, OK_oktypenat(0))
+    -- if (rectype = REC_rectype(`%`_list(subtype^n{subtype <- `subtype*`},)))
     -- if (i < n)
 
 ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:102.1-102.108
 relation Comptype_sub: `%|-%<:%`(context, comptype, comptype)
   ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:181.1-183.41
   rule struct{C : context, `ft_1*` : fieldtype*, `ft'_1*` : fieldtype*, `ft_2*` : fieldtype*}:
-    `%|-%<:%`(C, STRUCT_comptype(`%`_list(ft_1*{ft_1 <- `ft_1*`} ++ ft'_1*{ft'_1 <- `ft'_1*`},),), STRUCT_comptype(`%`_list(ft_2*{ft_2 <- `ft_2*`},),))
+    `%|-%<:%`(C, STRUCT_comptype(`%`_list(ft_1*{ft_1 <- `ft_1*`} ++ ft'_1*{ft'_1 <- `ft'_1*`},)), STRUCT_comptype(`%`_list(ft_2*{ft_2 <- `ft_2*`},)))
     -- (Fieldtype_sub: `%|-%<:%`(C, ft_1, ft_2))*{ft_1 <- `ft_1*`, ft_2 <- `ft_2*`}
 
   ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:185.1-187.38
   rule array{C : context, ft_1 : fieldtype, ft_2 : fieldtype}:
-    `%|-%<:%`(C, ARRAY_comptype(ft_1,), ARRAY_comptype(ft_2,))
+    `%|-%<:%`(C, ARRAY_comptype(ft_1), ARRAY_comptype(ft_2))
     -- Fieldtype_sub: `%|-%<:%`(C, ft_1, ft_2)
 
   ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:189.1-192.41
@@ -3437,12 +3437,12 @@ relation Heaptype_sub: `%|-%<:%`(context, heaptype, heaptype)
   ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:41.1-43.42
   rule struct{C : context, deftype : deftype, `fieldtype*` : fieldtype*}:
     `%|-%<:%`(C, (deftype : deftype <: heaptype), STRUCT_heaptype)
-    -- Expand: `%~~%`(deftype, STRUCT_comptype(`%`_list(fieldtype*{fieldtype <- `fieldtype*`},),))
+    -- Expand: `%~~%`(deftype, STRUCT_comptype(`%`_list(fieldtype*{fieldtype <- `fieldtype*`},)))
 
   ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:45.1-47.40
   rule array{C : context, deftype : deftype, fieldtype : fieldtype}:
     `%|-%<:%`(C, (deftype : deftype <: heaptype), ARRAY_heaptype)
-    -- Expand: `%~~%`(deftype, ARRAY_comptype(fieldtype,))
+    -- Expand: `%~~%`(deftype, ARRAY_comptype(fieldtype))
 
   ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:49.1-51.42
   rule func{C : context, deftype : deftype, `t_1*` : valtype*, `t_2*` : valtype*}:
@@ -3456,32 +3456,32 @@ relation Heaptype_sub: `%|-%<:%`(context, heaptype, heaptype)
 
   ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:57.1-59.53
   rule `typeidx-l`{C : context, typeidx : typeidx, heaptype : heaptype}:
-    `%|-%<:%`(C, _IDX_heaptype(typeidx,), heaptype)
+    `%|-%<:%`(C, _IDX_heaptype(typeidx), heaptype)
     -- Heaptype_sub: `%|-%<:%`(C, (C.TYPES_context[typeidx!`%`_typeidx.0] : deftype <: heaptype), heaptype)
 
   ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:61.1-63.53
   rule `typeidx-r`{C : context, heaptype : heaptype, typeidx : typeidx}:
-    `%|-%<:%`(C, heaptype, _IDX_heaptype(typeidx,))
+    `%|-%<:%`(C, heaptype, _IDX_heaptype(typeidx))
     -- Heaptype_sub: `%|-%<:%`(C, heaptype, (C.TYPES_context[typeidx!`%`_typeidx.0] : deftype <: heaptype))
 
   ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:65.1-67.51
   rule `rec-struct`{C : context, i : n, `final?` : final?, `fieldtype*` : fieldtype*}:
-    `%|-%<:%`(C, REC_heaptype(i,), STRUCT_heaptype)
-    -- if (C.RECS_context[i] = SUB_subtype(final?{final <- `final?`}, [], STRUCT_comptype(`%`_list(fieldtype*{fieldtype <- `fieldtype*`},),)))
+    `%|-%<:%`(C, REC_heaptype(i), STRUCT_heaptype)
+    -- if (C.RECS_context[i] = SUB_subtype(final?{final <- `final?`}, [], STRUCT_comptype(`%`_list(fieldtype*{fieldtype <- `fieldtype*`},))))
 
   ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:69.1-71.49
   rule `rec-array`{C : context, i : n, `final?` : final?, fieldtype : fieldtype}:
-    `%|-%<:%`(C, REC_heaptype(i,), ARRAY_heaptype)
-    -- if (C.RECS_context[i] = SUB_subtype(final?{final <- `final?`}, [], ARRAY_comptype(fieldtype,)))
+    `%|-%<:%`(C, REC_heaptype(i), ARRAY_heaptype)
+    -- if (C.RECS_context[i] = SUB_subtype(final?{final <- `final?`}, [], ARRAY_comptype(fieldtype)))
 
   ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:73.1-75.51
   rule `rec-func`{C : context, i : n, `final?` : final?, `t_1*` : valtype*, `t_2*` : valtype*}:
-    `%|-%<:%`(C, REC_heaptype(i,), FUNC_heaptype)
+    `%|-%<:%`(C, REC_heaptype(i), FUNC_heaptype)
     -- if (C.RECS_context[i] = SUB_subtype(final?{final <- `final?`}, [], `FUNC%->%`_comptype(`%`_resulttype(t_1*{t_1 <- `t_1*`},), `%`_resulttype(t_2*{t_2 <- `t_2*`},))))
 
   ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:77.1-79.43
   rule `rec-sub`{C : context, i : n, `typeuse*` : typeuse*, j : nat, `final?` : final?, ct : comptype}:
-    `%|-%<:%`(C, REC_heaptype(i,), (typeuse*{typeuse <- `typeuse*`}[j] : typeuse <: heaptype))
+    `%|-%<:%`(C, REC_heaptype(i), (typeuse*{typeuse <- `typeuse*`}[j] : typeuse <: heaptype))
     -- if (C.RECS_context[i] = SUB_subtype(final?{final <- `final?`}, typeuse*{typeuse <- `typeuse*`}, ct))
 
   ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:81.1-84.25
@@ -3603,18 +3603,18 @@ relation Expand_use: `%~~_%%`(typeuse, context, comptype)
 
   ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec
   rule typeidx{typeidx : typeidx, C : context, comptype : comptype}:
-    `%~~_%%`(_IDX_typeuse(typeidx,), C, comptype)
+    `%~~_%%`(_IDX_typeuse(typeidx), C, comptype)
     -- Expand: `%~~%`(C.TYPES_context[typeidx!`%`_typeidx.0], comptype)
 
 ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec
 syntax oktypeidx =
-  | OK(typeidx : typeidx,)
+  | OK(typeidx)
 
 ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec
 relation Subtype_ok: `%|-%:%`(context, subtype, oktypeidx)
   ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec
   rule _{C : context, `x*` : idx*, comptype : comptype, x_0 : idx, `comptype'*` : comptype*, `yy**` : typeuse**}:
-    `%|-%:%`(C, SUB_subtype(FINAL_final?{}, _IDX_typeuse(x,)*{x <- `x*`}, comptype), OK_oktypeidx(x_0,))
+    `%|-%:%`(C, SUB_subtype(FINAL_final?{}, _IDX_typeuse(x)*{x <- `x*`}, comptype), OK_oktypeidx(x_0))
     -- if (|x*{x <- `x*`}| <= 1)
     -- (if (x!`%`_idx.0 < x_0!`%`_idx.0))*{x <- `x*`}
     -- (if ($unrolldt(C.TYPES_context[x!`%`_idx.0]) = SUB_subtype(?(), yy*{yy <- `yy*`}, comptype')))*{comptype' <- `comptype'*`, x <- `x*`, `yy*` <- `yy**`}
@@ -3628,13 +3628,13 @@ rec {
 relation Rectype_ok: `%|-%:%`(context, rectype, oktypeidx)
   ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:179.1-180.23
   rule empty{C : context, x : idx}:
-    `%|-%:%`(C, REC_rectype(`%`_list([],),), OK_oktypeidx(x,))
+    `%|-%:%`(C, REC_rectype(`%`_list([],)), OK_oktypeidx(x))
 
   ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec:182.1-185.48
   rule cons{C : context, subtype_1 : subtype, `subtype*` : subtype*, x : idx}:
-    `%|-%:%`(C, REC_rectype(`%`_list([subtype_1] ++ subtype*{subtype <- `subtype*`},),), OK_oktypeidx(x,))
-    -- Subtype_ok: `%|-%:%`(C, subtype_1, OK_oktypeidx(x,))
-    -- Rectype_ok: `%|-%:%`(C, REC_rectype(`%`_list(subtype*{subtype <- `subtype*`},),), OK_oktypeidx(`%`_typeidx((x!`%`_idx.0 + 1),),))
+    `%|-%:%`(C, REC_rectype(`%`_list([subtype_1] ++ subtype*{subtype <- `subtype*`},)), OK_oktypeidx(x))
+    -- Subtype_ok: `%|-%:%`(C, subtype_1, OK_oktypeidx(x))
+    -- Rectype_ok: `%|-%:%`(C, REC_rectype(`%`_list(subtype*{subtype <- `subtype*`},)), OK_oktypeidx(`%`_typeidx((x!`%`_idx.0 + 1),)))
 }
 
 ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec
@@ -3679,27 +3679,27 @@ relation Tabletype_ok: `%|-%:OK`(context, tabletype)
 relation Externtype_ok: `%|-%:OK`(context, externtype)
   ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec
   rule tag{C : context, tagtype : tagtype}:
-    `%|-%:OK`(C, TAG_externtype(tagtype,))
+    `%|-%:OK`(C, TAG_externtype(tagtype))
     -- Tagtype_ok: `%|-%:OK`(C, tagtype)
 
   ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec
   rule global{C : context, globaltype : globaltype}:
-    `%|-%:OK`(C, GLOBAL_externtype(globaltype,))
+    `%|-%:OK`(C, GLOBAL_externtype(globaltype))
     -- Globaltype_ok: `%|-%:OK`(C, globaltype)
 
   ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec
   rule mem{C : context, memtype : memtype}:
-    `%|-%:OK`(C, MEM_externtype(memtype,))
+    `%|-%:OK`(C, MEM_externtype(memtype))
     -- Memtype_ok: `%|-%:OK`(C, memtype)
 
   ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec
   rule table{C : context, tabletype : tabletype}:
-    `%|-%:OK`(C, TABLE_externtype(tabletype,))
+    `%|-%:OK`(C, TABLE_externtype(tabletype))
     -- Tabletype_ok: `%|-%:OK`(C, tabletype)
 
   ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec
   rule func{C : context, typeuse : typeuse, `t_1*` : valtype*, `t_2*` : valtype*}:
-    `%|-%:OK`(C, FUNC_externtype(typeuse,))
+    `%|-%:OK`(C, FUNC_externtype(typeuse))
     -- Typeuse_ok: `%|-%:OK`(C, typeuse)
     -- Expand_use: `%~~_%%`(typeuse, C, `FUNC%->%`_comptype(`%`_resulttype(t_1*{t_1 <- `t_1*`},), `%`_resulttype(t_2*{t_2 <- `t_2*`},)))
 
@@ -3767,39 +3767,39 @@ relation Tabletype_sub: `%|-%<:%`(context, tabletype, tabletype)
 relation Externtype_sub: `%|-%<:%`(context, externtype, externtype)
   ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec
   rule tag{C : context, tagtype_1 : tagtype, tagtype_2 : tagtype}:
-    `%|-%<:%`(C, TAG_externtype(tagtype_1,), TAG_externtype(tagtype_2,))
+    `%|-%<:%`(C, TAG_externtype(tagtype_1), TAG_externtype(tagtype_2))
     -- Tagtype_sub: `%|-%<:%`(C, tagtype_1, tagtype_2)
 
   ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec
   rule global{C : context, globaltype_1 : globaltype, globaltype_2 : globaltype}:
-    `%|-%<:%`(C, GLOBAL_externtype(globaltype_1,), GLOBAL_externtype(globaltype_2,))
+    `%|-%<:%`(C, GLOBAL_externtype(globaltype_1), GLOBAL_externtype(globaltype_2))
     -- Globaltype_sub: `%|-%<:%`(C, globaltype_1, globaltype_2)
 
   ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec
   rule mem{C : context, memtype_1 : memtype, memtype_2 : memtype}:
-    `%|-%<:%`(C, MEM_externtype(memtype_1,), MEM_externtype(memtype_2,))
+    `%|-%<:%`(C, MEM_externtype(memtype_1), MEM_externtype(memtype_2))
     -- Memtype_sub: `%|-%<:%`(C, memtype_1, memtype_2)
 
   ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec
   rule table{C : context, tabletype_1 : tabletype, tabletype_2 : tabletype}:
-    `%|-%<:%`(C, TABLE_externtype(tabletype_1,), TABLE_externtype(tabletype_2,))
+    `%|-%<:%`(C, TABLE_externtype(tabletype_1), TABLE_externtype(tabletype_2))
     -- Tabletype_sub: `%|-%<:%`(C, tabletype_1, tabletype_2)
 
   ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec
   rule func{C : context, deftype_1 : deftype, deftype_2 : deftype}:
-    `%|-%<:%`(C, FUNC_externtype((deftype_1 : deftype <: typeuse),), FUNC_externtype((deftype_2 : deftype <: typeuse),))
+    `%|-%<:%`(C, FUNC_externtype(deftype_1 : deftype <: typeuse), FUNC_externtype(deftype_2 : deftype <: typeuse))
     -- Deftype_sub: `%|-%<:%`(C, deftype_1, deftype_2)
 
 ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec
 relation Blocktype_ok: `%|-%:%`(context, blocktype, instrtype)
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec
   rule valtype{C : context, `valtype?` : valtype?}:
-    `%|-%:%`(C, _RESULT_blocktype(valtype?{valtype <- `valtype?`},), `%->_%%`_instrtype(`%`_resulttype([],), [], `%`_resulttype(lift(valtype?{valtype <- `valtype?`}),)))
+    `%|-%:%`(C, _RESULT_blocktype(valtype?{valtype <- `valtype?`}), `%->_%%`_instrtype(`%`_resulttype([],), [], `%`_resulttype(lift(valtype?{valtype <- `valtype?`}),)))
     -- (Valtype_ok: `%|-%:OK`(C, valtype))?{valtype <- `valtype?`}
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec
   rule typeidx{C : context, typeidx : typeidx, `t_1*` : valtype*, `t_2*` : valtype*}:
-    `%|-%:%`(C, _IDX_blocktype(typeidx,), `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`},), [], `%`_resulttype(t_2*{t_2 <- `t_2*`},)))
+    `%|-%:%`(C, _IDX_blocktype(typeidx), `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`},), [], `%`_resulttype(t_2*{t_2 <- `t_2*`},)))
     -- Expand: `%~~%`(C.TYPES_context[typeidx!`%`_typeidx.0], `FUNC%->%`_comptype(`%`_resulttype(t_1*{t_1 <- `t_1*`},), `%`_resulttype(t_2*{t_2 <- `t_2*`},)))
 
 ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec
@@ -3818,12 +3818,12 @@ relation Catch_ok: `%|-%:OK`(context, catch)
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec
   rule catch_all{C : context, l : labelidx}:
-    `%|-%:OK`(C, CATCH_ALL_catch(l,))
+    `%|-%:OK`(C, CATCH_ALL_catch(l))
     -- Resulttype_sub: `%|-%<:%`(C, `%`_resulttype([],), C.LABELS_context[l!`%`_labelidx.0])
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec
   rule catch_all_ref{C : context, l : labelidx}:
-    `%|-%:OK`(C, CATCH_ALL_REF_catch(l,))
+    `%|-%:OK`(C, CATCH_ALL_REF_catch(l))
     -- Resulttype_sub: `%|-%<:%`(C, `%`_resulttype([REF_valtype(?(), EXN_heaptype)],), C.LABELS_context[l!`%`_labelidx.0])
 
 ;; ../../../../specification/wasm-latest/4.1-execution.values.spectec
@@ -3880,12 +3880,12 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec:29.1-31.29
   rule `select-expl`{C : context, t : valtype}:
-    `%|-%:%`(C, SELECT_instr(?([t]),), `%->_%%`_instrtype(`%`_resulttype([t t I32_valtype],), [], `%`_resulttype([t],)))
+    `%|-%:%`(C, SELECT_instr(?([t])), `%->_%%`_instrtype(`%`_resulttype([t t I32_valtype],), [], `%`_resulttype([t],)))
     -- Valtype_ok: `%|-%:OK`(C, t)
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec:33.1-37.37
   rule `select-impl`{C : context, t : valtype, t' : valtype, numtype : numtype, vectype : vectype}:
-    `%|-%:%`(C, SELECT_instr(?(),), `%->_%%`_instrtype(`%`_resulttype([t t I32_valtype],), [], `%`_resulttype([t],)))
+    `%|-%:%`(C, SELECT_instr(?()), `%->_%%`_instrtype(`%`_resulttype([t t I32_valtype],), [], `%`_resulttype([t],)))
     -- Valtype_ok: `%|-%:OK`(C, t)
     -- Valtype_sub: `%|-%<:%`(C, t, t')
     -- if ((t' = (numtype : numtype <: valtype)) \/ (t' = (vectype : vectype <: valtype)))
@@ -3911,13 +3911,13 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec:72.1-75.42
   rule br{C : context, l : labelidx, `t_1*` : valtype*, `t*` : valtype*, `t_2*` : valtype*}:
-    `%|-%:%`(C, BR_instr(l,), `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`} ++ t*{t <- `t*`},), [], `%`_resulttype(t_2*{t_2 <- `t_2*`},)))
+    `%|-%:%`(C, BR_instr(l), `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`} ++ t*{t <- `t*`},), [], `%`_resulttype(t_2*{t_2 <- `t_2*`},)))
     -- if (C.LABELS_context[l!`%`_labelidx.0]!`%`_resulttype.0 = t*{t <- `t*`})
     -- Instrtype_ok: `%|-%:OK`(C, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`},), [], `%`_resulttype(t_2*{t_2 <- `t_2*`},)))
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec:77.1-79.25
   rule br_if{C : context, l : labelidx, `t*` : valtype*}:
-    `%|-%:%`(C, BR_IF_instr(l,), `%->_%%`_instrtype(`%`_resulttype(t*{t <- `t*`} ++ [I32_valtype],), [], `%`_resulttype(t*{t <- `t*`},)))
+    `%|-%:%`(C, BR_IF_instr(l), `%->_%%`_instrtype(`%`_resulttype(t*{t <- `t*`} ++ [I32_valtype],), [], `%`_resulttype(t*{t <- `t*`},)))
     -- if (C.LABELS_context[l!`%`_labelidx.0]!`%`_resulttype.0 = t*{t <- `t*`})
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec:81.1-85.49
@@ -3929,13 +3929,13 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec:87.1-90.31
   rule br_on_null{C : context, l : labelidx, `t*` : valtype*, ht : heaptype}:
-    `%|-%:%`(C, BR_ON_NULL_instr(l,), `%->_%%`_instrtype(`%`_resulttype(t*{t <- `t*`} ++ [REF_valtype(?(NULL_null), ht)],), [], `%`_resulttype(t*{t <- `t*`} ++ [REF_valtype(?(), ht)],)))
+    `%|-%:%`(C, BR_ON_NULL_instr(l), `%->_%%`_instrtype(`%`_resulttype(t*{t <- `t*`} ++ [REF_valtype(?(NULL_null), ht)],), [], `%`_resulttype(t*{t <- `t*`} ++ [REF_valtype(?(), ht)],)))
     -- if (C.LABELS_context[l!`%`_labelidx.0]!`%`_resulttype.0 = t*{t <- `t*`})
     -- Heaptype_ok: `%|-%:OK`(C, ht)
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec:92.1-94.40
   rule br_on_non_null{C : context, l : labelidx, `t*` : valtype*, ht : heaptype}:
-    `%|-%:%`(C, BR_ON_NON_NULL_instr(l,), `%->_%%`_instrtype(`%`_resulttype(t*{t <- `t*`} ++ [REF_valtype(?(NULL_null), ht)],), [], `%`_resulttype(t*{t <- `t*`},)))
+    `%|-%:%`(C, BR_ON_NON_NULL_instr(l), `%->_%%`_instrtype(`%`_resulttype(t*{t <- `t*`} ++ [REF_valtype(?(NULL_null), ht)],), [], `%`_resulttype(t*{t <- `t*`},)))
     -- if (C.LABELS_context[l!`%`_labelidx.0] = `%`_resulttype(t*{t <- `t*`} ++ [REF_valtype(NULL_null?{}, ht)],))
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec:96.1-102.34
@@ -3958,17 +3958,17 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec:115.1-117.45
   rule call{C : context, x : idx, `t_1*` : valtype*, `t_2*` : valtype*}:
-    `%|-%:%`(C, CALL_instr(x,), `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`},), [], `%`_resulttype(t_2*{t_2 <- `t_2*`},)))
+    `%|-%:%`(C, CALL_instr(x), `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`},), [], `%`_resulttype(t_2*{t_2 <- `t_2*`},)))
     -- Expand: `%~~%`(C.FUNCS_context[x!`%`_idx.0], `FUNC%->%`_comptype(`%`_resulttype(t_1*{t_1 <- `t_1*`},), `%`_resulttype(t_2*{t_2 <- `t_2*`},)))
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec:119.1-121.45
   rule call_ref{C : context, x : idx, `t_1*` : valtype*, `t_2*` : valtype*}:
-    `%|-%:%`(C, CALL_REF_instr(_IDX_typeuse(x,),), `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`} ++ [REF_valtype(?(NULL_null), _IDX_heaptype(x,))],), [], `%`_resulttype(t_2*{t_2 <- `t_2*`},)))
+    `%|-%:%`(C, CALL_REF_instr(_IDX_typeuse(x)), `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`} ++ [REF_valtype(?(NULL_null), _IDX_heaptype(x))],), [], `%`_resulttype(t_2*{t_2 <- `t_2*`},)))
     -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], `FUNC%->%`_comptype(`%`_resulttype(t_1*{t_1 <- `t_1*`},), `%`_resulttype(t_2*{t_2 <- `t_2*`},)))
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec:123.1-127.45
   rule call_indirect{C : context, x : idx, y : idx, `t_1*` : valtype*, at : addrtype, `t_2*` : valtype*, lim : limits, rt : reftype}:
-    `%|-%:%`(C, CALL_INDIRECT_instr(x, _IDX_typeuse(y,)), `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`} ++ [(at : addrtype <: valtype)],), [], `%`_resulttype(t_2*{t_2 <- `t_2*`},)))
+    `%|-%:%`(C, CALL_INDIRECT_instr(x, _IDX_typeuse(y)), `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`} ++ [(at : addrtype <: valtype)],), [], `%`_resulttype(t_2*{t_2 <- `t_2*`},)))
     -- if (C.TABLES_context[x!`%`_idx.0] = `%%%`_tabletype(at, lim, rt))
     -- Reftype_sub: `%|-%<:%`(C, rt, REF_reftype(?(NULL_null), FUNC_heaptype))
     -- Expand: `%~~%`(C.TYPES_context[y!`%`_idx.0], `FUNC%->%`_comptype(`%`_resulttype(t_1*{t_1 <- `t_1*`},), `%`_resulttype(t_2*{t_2 <- `t_2*`},)))
@@ -3981,7 +3981,7 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec:135.1-140.42
   rule return_call{C : context, x : idx, `t_3*` : valtype*, `t_1*` : valtype*, `t_4*` : valtype*, `t_2*` : valtype*, `t'_2*` : valtype*}:
-    `%|-%:%`(C, RETURN_CALL_instr(x,), `%->_%%`_instrtype(`%`_resulttype(t_3*{t_3 <- `t_3*`} ++ t_1*{t_1 <- `t_1*`},), [], `%`_resulttype(t_4*{t_4 <- `t_4*`},)))
+    `%|-%:%`(C, RETURN_CALL_instr(x), `%->_%%`_instrtype(`%`_resulttype(t_3*{t_3 <- `t_3*`} ++ t_1*{t_1 <- `t_1*`},), [], `%`_resulttype(t_4*{t_4 <- `t_4*`},)))
     -- Expand: `%~~%`(C.FUNCS_context[x!`%`_idx.0], `FUNC%->%`_comptype(`%`_resulttype(t_1*{t_1 <- `t_1*`},), `%`_resulttype(t_2*{t_2 <- `t_2*`},)))
     -- if (C.RETURN_context = ?(`%`_resulttype(t'_2*{t'_2 <- `t'_2*`},)))
     -- Resulttype_sub: `%|-%<:%`(C, `%`_resulttype(t_2*{t_2 <- `t_2*`},), `%`_resulttype(t'_2*{t'_2 <- `t'_2*`},))
@@ -3989,7 +3989,7 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec:143.1-148.42
   rule return_call_ref{C : context, x : idx, `t_3*` : valtype*, `t_1*` : valtype*, `t_4*` : valtype*, `t_2*` : valtype*, `t'_2*` : valtype*}:
-    `%|-%:%`(C, RETURN_CALL_REF_instr(_IDX_typeuse(x,),), `%->_%%`_instrtype(`%`_resulttype(t_3*{t_3 <- `t_3*`} ++ t_1*{t_1 <- `t_1*`} ++ [REF_valtype(?(NULL_null), _IDX_heaptype(x,))],), [], `%`_resulttype(t_4*{t_4 <- `t_4*`},)))
+    `%|-%:%`(C, RETURN_CALL_REF_instr(_IDX_typeuse(x)), `%->_%%`_instrtype(`%`_resulttype(t_3*{t_3 <- `t_3*`} ++ t_1*{t_1 <- `t_1*`} ++ [REF_valtype(?(NULL_null), _IDX_heaptype(x))],), [], `%`_resulttype(t_4*{t_4 <- `t_4*`},)))
     -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], `FUNC%->%`_comptype(`%`_resulttype(t_1*{t_1 <- `t_1*`},), `%`_resulttype(t_2*{t_2 <- `t_2*`},)))
     -- if (C.RETURN_context = ?(`%`_resulttype(t'_2*{t'_2 <- `t'_2*`},)))
     -- Resulttype_sub: `%|-%<:%`(C, `%`_resulttype(t_2*{t_2 <- `t_2*`},), `%`_resulttype(t'_2*{t'_2 <- `t'_2*`},))
@@ -3997,7 +3997,7 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec:151.1-159.42
   rule return_call_indirect{C : context, x : idx, y : idx, `t_3*` : valtype*, `t_1*` : valtype*, at : addrtype, `t_4*` : valtype*, lim : limits, rt : reftype, `t_2*` : valtype*, `t'_2*` : valtype*}:
-    `%|-%:%`(C, RETURN_CALL_INDIRECT_instr(x, _IDX_typeuse(y,)), `%->_%%`_instrtype(`%`_resulttype(t_3*{t_3 <- `t_3*`} ++ t_1*{t_1 <- `t_1*`} ++ [(at : addrtype <: valtype)],), [], `%`_resulttype(t_4*{t_4 <- `t_4*`},)))
+    `%|-%:%`(C, RETURN_CALL_INDIRECT_instr(x, _IDX_typeuse(y)), `%->_%%`_instrtype(`%`_resulttype(t_3*{t_3 <- `t_3*`} ++ t_1*{t_1 <- `t_1*`} ++ [(at : addrtype <: valtype)],), [], `%`_resulttype(t_4*{t_4 <- `t_4*`},)))
     -- if (C.TABLES_context[x!`%`_idx.0] = `%%%`_tabletype(at, lim, rt))
     -- Reftype_sub: `%|-%<:%`(C, rt, REF_reftype(?(NULL_null), FUNC_heaptype))
     -- Expand: `%~~%`(C.TYPES_context[y!`%`_idx.0], `FUNC%->%`_comptype(`%`_resulttype(t_1*{t_1 <- `t_1*`},), `%`_resulttype(t_2*{t_2 <- `t_2*`},)))
@@ -4007,7 +4007,7 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec:166.1-169.42
   rule throw{C : context, x : idx, `t_1*` : valtype*, `t*` : valtype*, `t_2*` : valtype*}:
-    `%|-%:%`(C, THROW_instr(x,), `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`} ++ t*{t <- `t*`},), [], `%`_resulttype(t_2*{t_2 <- `t_2*`},)))
+    `%|-%:%`(C, THROW_instr(x), `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`} ++ t*{t <- `t*`},), [], `%`_resulttype(t_2*{t_2 <- `t_2*`},)))
     -- Expand: `%~~%`($as_deftype(C.TAGS_context[x!`%`_idx.0]), `FUNC%->%`_comptype(`%`_resulttype(t*{t <- `t*`},), `%`_resulttype([],)))
     -- Instrtype_ok: `%|-%:OK`(C, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`},), [], `%`_resulttype(t_2*{t_2 <- `t_2*`},)))
 
@@ -4025,12 +4025,12 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec:202.1-204.31
   rule `ref.null`{C : context, ht : heaptype}:
-    `%|-%:%`(C, `REF.NULL`_instr(ht,), `%->_%%`_instrtype(`%`_resulttype([],), [], `%`_resulttype([REF_valtype(?(NULL_null), ht)],)))
+    `%|-%:%`(C, `REF.NULL`_instr(ht), `%->_%%`_instrtype(`%`_resulttype([],), [], `%`_resulttype([REF_valtype(?(NULL_null), ht)],)))
     -- Heaptype_ok: `%|-%:OK`(C, ht)
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec:206.1-209.20
   rule `ref.func`{C : context, x : idx, dt : deftype}:
-    `%|-%:%`(C, `REF.FUNC`_instr(x,), `%->_%%`_instrtype(`%`_resulttype([],), [], `%`_resulttype([REF_valtype(?(), (dt : deftype <: heaptype))],)))
+    `%|-%:%`(C, `REF.FUNC`_instr(x), `%->_%%`_instrtype(`%`_resulttype([],), [], `%`_resulttype([REF_valtype(?(), (dt : deftype <: heaptype))],)))
     -- if (C.FUNCS_context[x!`%`_idx.0] = dt)
     -- if (x <- C.REFS_context)
 
@@ -4054,85 +4054,85 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec:225.1-229.33
   rule `ref.test`{C : context, rt : reftype, rt' : reftype}:
-    `%|-%:%`(C, `REF.TEST`_instr(rt,), `%->_%%`_instrtype(`%`_resulttype([(rt' : reftype <: valtype)],), [], `%`_resulttype([I32_valtype],)))
+    `%|-%:%`(C, `REF.TEST`_instr(rt), `%->_%%`_instrtype(`%`_resulttype([(rt' : reftype <: valtype)],), [], `%`_resulttype([I32_valtype],)))
     -- Reftype_ok: `%|-%:OK`(C, rt)
     -- Reftype_ok: `%|-%:OK`(C, rt')
     -- Reftype_sub: `%|-%<:%`(C, rt, rt')
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec:231.1-235.33
   rule `ref.cast`{C : context, rt : reftype, rt' : reftype}:
-    `%|-%:%`(C, `REF.CAST`_instr(rt,), `%->_%%`_instrtype(`%`_resulttype([(rt' : reftype <: valtype)],), [], `%`_resulttype([(rt : reftype <: valtype)],)))
+    `%|-%:%`(C, `REF.CAST`_instr(rt), `%->_%%`_instrtype(`%`_resulttype([(rt' : reftype <: valtype)],), [], `%`_resulttype([(rt : reftype <: valtype)],)))
     -- Reftype_ok: `%|-%:OK`(C, rt)
     -- Reftype_ok: `%|-%:OK`(C, rt')
     -- Reftype_sub: `%|-%<:%`(C, rt, rt')
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec:240.1-241.42
   rule `i31.get`{C : context, sx : sx}:
-    `%|-%:%`(C, `I31.GET`_instr(sx,), `%->_%%`_instrtype(`%`_resulttype([REF_valtype(?(NULL_null), I31_heaptype)],), [], `%`_resulttype([I32_valtype],)))
+    `%|-%:%`(C, `I31.GET`_instr(sx), `%->_%%`_instrtype(`%`_resulttype([REF_valtype(?(NULL_null), I31_heaptype)],), [], `%`_resulttype([I32_valtype],)))
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec:246.1-248.45
   rule `struct.new`{C : context, x : idx, `zt*` : storagetype*, `mut?*` : mut?*}:
-    `%|-%:%`(C, `STRUCT.NEW`_instr(x,), `%->_%%`_instrtype(`%`_resulttype($unpack(zt)*{zt <- `zt*`},), [], `%`_resulttype([REF_valtype(?(), _IDX_heaptype(x,))],)))
-    -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], STRUCT_comptype(`%`_list(`%%`_fieldtype(mut?{mut <- `mut?`}, zt)*{`mut?` <- `mut?*`, zt <- `zt*`},),))
+    `%|-%:%`(C, `STRUCT.NEW`_instr(x), `%->_%%`_instrtype(`%`_resulttype($unpack(zt)*{zt <- `zt*`},), [], `%`_resulttype([REF_valtype(?(), _IDX_heaptype(x))],)))
+    -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], STRUCT_comptype(`%`_list(`%%`_fieldtype(mut?{mut <- `mut?`}, zt)*{`mut?` <- `mut?*`, zt <- `zt*`},)))
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec:250.1-253.48
   rule `struct.new_default`{C : context, x : idx, `mut?*` : mut?*, `zt*` : storagetype*}:
-    `%|-%:%`(C, `STRUCT.NEW_DEFAULT`_instr(x,), `%->_%%`_instrtype(`%`_resulttype([],), [], `%`_resulttype([REF_valtype(?(), _IDX_heaptype(x,))],)))
-    -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], STRUCT_comptype(`%`_list(`%%`_fieldtype(mut?{mut <- `mut?`}, zt)*{`mut?` <- `mut?*`, zt <- `zt*`},),))
+    `%|-%:%`(C, `STRUCT.NEW_DEFAULT`_instr(x), `%->_%%`_instrtype(`%`_resulttype([],), [], `%`_resulttype([REF_valtype(?(), _IDX_heaptype(x))],)))
+    -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], STRUCT_comptype(`%`_list(`%%`_fieldtype(mut?{mut <- `mut?`}, zt)*{`mut?` <- `mut?*`, zt <- `zt*`},)))
     -- (Defaultable: `|-%DEFAULTABLE`($unpack(zt),))*{zt <- `zt*`}
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec:258.1-262.41
   rule `struct.get`{C : context, `sx?` : sx?, x : idx, i : fieldidx, zt : storagetype, `ft*` : fieldtype*, `mut?` : mut?}:
-    `%|-%:%`(C, `STRUCT.GET`_instr(sx?{sx <- `sx?`}, x, i), `%->_%%`_instrtype(`%`_resulttype([REF_valtype(?(NULL_null), _IDX_heaptype(x,))],), [], `%`_resulttype([$unpack(zt)],)))
-    -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], STRUCT_comptype(`%`_list(ft*{ft <- `ft*`},),))
+    `%|-%:%`(C, `STRUCT.GET`_instr(sx?{sx <- `sx?`}, x, i), `%->_%%`_instrtype(`%`_resulttype([REF_valtype(?(NULL_null), _IDX_heaptype(x))],), [], `%`_resulttype([$unpack(zt)],)))
+    -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], STRUCT_comptype(`%`_list(ft*{ft <- `ft*`},)))
     -- if (ft*{ft <- `ft*`}[i!`%`_fieldidx.0] = `%%`_fieldtype(mut?{mut <- `mut?`}, zt))
     -- if ((sx?{sx <- `sx?`} =/= ?()) <=> $is_packtype(zt))
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec:264.1-267.24
   rule `struct.set`{C : context, x : idx, i : fieldidx, zt : storagetype, `ft*` : fieldtype*}:
-    `%|-%:%`(C, `STRUCT.SET`_instr(x, i), `%->_%%`_instrtype(`%`_resulttype([REF_valtype(?(NULL_null), _IDX_heaptype(x,)) $unpack(zt)],), [], `%`_resulttype([],)))
-    -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], STRUCT_comptype(`%`_list(ft*{ft <- `ft*`},),))
+    `%|-%:%`(C, `STRUCT.SET`_instr(x, i), `%->_%%`_instrtype(`%`_resulttype([REF_valtype(?(NULL_null), _IDX_heaptype(x)) $unpack(zt)],), [], `%`_resulttype([],)))
+    -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], STRUCT_comptype(`%`_list(ft*{ft <- `ft*`},)))
     -- if (ft*{ft <- `ft*`}[i!`%`_fieldidx.0] = `%%`_fieldtype(?(MUT_mut), zt))
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec:272.1-274.43
   rule `array.new`{C : context, x : idx, zt : storagetype, `mut?` : mut?}:
-    `%|-%:%`(C, `ARRAY.NEW`_instr(x,), `%->_%%`_instrtype(`%`_resulttype([$unpack(zt) I32_valtype],), [], `%`_resulttype([REF_valtype(?(), _IDX_heaptype(x,))],)))
-    -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], ARRAY_comptype(`%%`_fieldtype(mut?{mut <- `mut?`}, zt),))
+    `%|-%:%`(C, `ARRAY.NEW`_instr(x), `%->_%%`_instrtype(`%`_resulttype([$unpack(zt) I32_valtype],), [], `%`_resulttype([REF_valtype(?(), _IDX_heaptype(x))],)))
+    -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], ARRAY_comptype(`%%`_fieldtype(mut?{mut <- `mut?`}, zt)))
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec:276.1-279.45
   rule `array.new_default`{C : context, x : idx, `mut?` : mut?, zt : storagetype}:
-    `%|-%:%`(C, `ARRAY.NEW_DEFAULT`_instr(x,), `%->_%%`_instrtype(`%`_resulttype([I32_valtype],), [], `%`_resulttype([REF_valtype(?(), _IDX_heaptype(x,))],)))
-    -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], ARRAY_comptype(`%%`_fieldtype(mut?{mut <- `mut?`}, zt),))
+    `%|-%:%`(C, `ARRAY.NEW_DEFAULT`_instr(x), `%->_%%`_instrtype(`%`_resulttype([I32_valtype],), [], `%`_resulttype([REF_valtype(?(), _IDX_heaptype(x))],)))
+    -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], ARRAY_comptype(`%%`_fieldtype(mut?{mut <- `mut?`}, zt)))
     -- Defaultable: `|-%DEFAULTABLE`($unpack(zt),)
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec:281.1-283.43
   rule `array.new_fixed`{C : context, x : idx, n : n, zt : storagetype, `mut?` : mut?}:
-    `%|-%:%`(C, `ARRAY.NEW_FIXED`_instr(x, `%`_u32(n,)), `%->_%%`_instrtype(`%`_resulttype($unpack(zt)^n{},), [], `%`_resulttype([REF_valtype(?(), _IDX_heaptype(x,))],)))
-    -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], ARRAY_comptype(`%%`_fieldtype(mut?{mut <- `mut?`}, zt),))
+    `%|-%:%`(C, `ARRAY.NEW_FIXED`_instr(x, `%`_u32(n,)), `%->_%%`_instrtype(`%`_resulttype($unpack(zt)^n{},), [], `%`_resulttype([REF_valtype(?(), _IDX_heaptype(x))],)))
+    -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], ARRAY_comptype(`%%`_fieldtype(mut?{mut <- `mut?`}, zt)))
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec:285.1-288.40
   rule `array.new_elem`{C : context, x : idx, y : idx, `mut?` : mut?, rt : reftype}:
-    `%|-%:%`(C, `ARRAY.NEW_ELEM`_instr(x, y), `%->_%%`_instrtype(`%`_resulttype([I32_valtype I32_valtype],), [], `%`_resulttype([REF_valtype(?(), _IDX_heaptype(x,))],)))
-    -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], ARRAY_comptype(`%%`_fieldtype(mut?{mut <- `mut?`}, (rt : reftype <: storagetype)),))
+    `%|-%:%`(C, `ARRAY.NEW_ELEM`_instr(x, y), `%->_%%`_instrtype(`%`_resulttype([I32_valtype I32_valtype],), [], `%`_resulttype([REF_valtype(?(), _IDX_heaptype(x))],)))
+    -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], ARRAY_comptype(`%%`_fieldtype(mut?{mut <- `mut?`}, (rt : reftype <: storagetype))))
     -- Reftype_sub: `%|-%<:%`(C, C.ELEMS_context[y!`%`_idx.0], rt)
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec:290.1-294.24
   rule `array.new_data`{C : context, x : idx, y : idx, `mut?` : mut?, zt : storagetype, numtype : numtype, vectype : vectype}:
-    `%|-%:%`(C, `ARRAY.NEW_DATA`_instr(x, y), `%->_%%`_instrtype(`%`_resulttype([I32_valtype I32_valtype],), [], `%`_resulttype([REF_valtype(?(), _IDX_heaptype(x,))],)))
-    -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], ARRAY_comptype(`%%`_fieldtype(mut?{mut <- `mut?`}, zt),))
+    `%|-%:%`(C, `ARRAY.NEW_DATA`_instr(x, y), `%->_%%`_instrtype(`%`_resulttype([I32_valtype I32_valtype],), [], `%`_resulttype([REF_valtype(?(), _IDX_heaptype(x))],)))
+    -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], ARRAY_comptype(`%%`_fieldtype(mut?{mut <- `mut?`}, zt)))
     -- if (($unpack(zt) = (numtype : numtype <: valtype)) \/ ($unpack(zt) = (vectype : vectype <: valtype)))
     -- if (C.DATAS_context[y!`%`_idx.0] = OK_datatype)
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec:296.1-299.41
   rule `array.get`{C : context, `sx?` : sx?, x : idx, zt : storagetype, `mut?` : mut?}:
-    `%|-%:%`(C, `ARRAY.GET`_instr(sx?{sx <- `sx?`}, x), `%->_%%`_instrtype(`%`_resulttype([REF_valtype(?(NULL_null), _IDX_heaptype(x,)) I32_valtype],), [], `%`_resulttype([$unpack(zt)],)))
-    -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], ARRAY_comptype(`%%`_fieldtype(mut?{mut <- `mut?`}, zt),))
+    `%|-%:%`(C, `ARRAY.GET`_instr(sx?{sx <- `sx?`}, x), `%->_%%`_instrtype(`%`_resulttype([REF_valtype(?(NULL_null), _IDX_heaptype(x)) I32_valtype],), [], `%`_resulttype([$unpack(zt)],)))
+    -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], ARRAY_comptype(`%%`_fieldtype(mut?{mut <- `mut?`}, zt)))
     -- if ((sx?{sx <- `sx?`} =/= ?()) <=> $is_packtype(zt))
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec:301.1-303.42
   rule `array.set`{C : context, x : idx, zt : storagetype}:
-    `%|-%:%`(C, `ARRAY.SET`_instr(x,), `%->_%%`_instrtype(`%`_resulttype([REF_valtype(?(NULL_null), _IDX_heaptype(x,)) I32_valtype $unpack(zt)],), [], `%`_resulttype([],)))
-    -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], ARRAY_comptype(`%%`_fieldtype(?(MUT_mut), zt),))
+    `%|-%:%`(C, `ARRAY.SET`_instr(x), `%->_%%`_instrtype(`%`_resulttype([REF_valtype(?(NULL_null), _IDX_heaptype(x)) I32_valtype $unpack(zt)],), [], `%`_resulttype([],)))
+    -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], ARRAY_comptype(`%%`_fieldtype(?(MUT_mut), zt)))
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec:305.1-306.43
   rule `array.len`{C : context}:
@@ -4140,26 +4140,26 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec:308.1-310.42
   rule `array.fill`{C : context, x : idx, zt : storagetype}:
-    `%|-%:%`(C, `ARRAY.FILL`_instr(x,), `%->_%%`_instrtype(`%`_resulttype([REF_valtype(?(NULL_null), _IDX_heaptype(x,)) I32_valtype $unpack(zt) I32_valtype],), [], `%`_resulttype([],)))
-    -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], ARRAY_comptype(`%%`_fieldtype(?(MUT_mut), zt),))
+    `%|-%:%`(C, `ARRAY.FILL`_instr(x), `%->_%%`_instrtype(`%`_resulttype([REF_valtype(?(NULL_null), _IDX_heaptype(x)) I32_valtype $unpack(zt) I32_valtype],), [], `%`_resulttype([],)))
+    -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], ARRAY_comptype(`%%`_fieldtype(?(MUT_mut), zt)))
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec:312.1-316.40
   rule `array.copy`{C : context, x_1 : idx, x_2 : idx, zt_1 : storagetype, `mut?` : mut?, zt_2 : storagetype}:
-    `%|-%:%`(C, `ARRAY.COPY`_instr(x_1, x_2), `%->_%%`_instrtype(`%`_resulttype([REF_valtype(?(NULL_null), _IDX_heaptype(x_1,)) I32_valtype REF_valtype(?(NULL_null), _IDX_heaptype(x_2,)) I32_valtype I32_valtype],), [], `%`_resulttype([],)))
-    -- Expand: `%~~%`(C.TYPES_context[x_1!`%`_idx.0], ARRAY_comptype(`%%`_fieldtype(?(MUT_mut), zt_1),))
-    -- Expand: `%~~%`(C.TYPES_context[x_2!`%`_idx.0], ARRAY_comptype(`%%`_fieldtype(mut?{mut <- `mut?`}, zt_2),))
+    `%|-%:%`(C, `ARRAY.COPY`_instr(x_1, x_2), `%->_%%`_instrtype(`%`_resulttype([REF_valtype(?(NULL_null), _IDX_heaptype(x_1)) I32_valtype REF_valtype(?(NULL_null), _IDX_heaptype(x_2)) I32_valtype I32_valtype],), [], `%`_resulttype([],)))
+    -- Expand: `%~~%`(C.TYPES_context[x_1!`%`_idx.0], ARRAY_comptype(`%%`_fieldtype(?(MUT_mut), zt_1)))
+    -- Expand: `%~~%`(C.TYPES_context[x_2!`%`_idx.0], ARRAY_comptype(`%%`_fieldtype(mut?{mut <- `mut?`}, zt_2)))
     -- Storagetype_sub: `%|-%<:%`(C, zt_2, zt_1)
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec:318.1-321.44
   rule `array.init_elem`{C : context, x : idx, y : idx, zt : storagetype}:
-    `%|-%:%`(C, `ARRAY.INIT_ELEM`_instr(x, y), `%->_%%`_instrtype(`%`_resulttype([REF_valtype(?(NULL_null), _IDX_heaptype(x,)) I32_valtype I32_valtype I32_valtype],), [], `%`_resulttype([],)))
-    -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], ARRAY_comptype(`%%`_fieldtype(?(MUT_mut), zt),))
+    `%|-%:%`(C, `ARRAY.INIT_ELEM`_instr(x, y), `%->_%%`_instrtype(`%`_resulttype([REF_valtype(?(NULL_null), _IDX_heaptype(x)) I32_valtype I32_valtype I32_valtype],), [], `%`_resulttype([],)))
+    -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], ARRAY_comptype(`%%`_fieldtype(?(MUT_mut), zt)))
     -- Storagetype_sub: `%|-%<:%`(C, (C.ELEMS_context[y!`%`_idx.0] : reftype <: storagetype), zt)
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec:323.1-327.24
   rule `array.init_data`{C : context, x : idx, y : idx, zt : storagetype, numtype : numtype, vectype : vectype}:
-    `%|-%:%`(C, `ARRAY.INIT_DATA`_instr(x, y), `%->_%%`_instrtype(`%`_resulttype([REF_valtype(?(NULL_null), _IDX_heaptype(x,)) I32_valtype I32_valtype I32_valtype],), [], `%`_resulttype([],)))
-    -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], ARRAY_comptype(`%%`_fieldtype(?(MUT_mut), zt),))
+    `%|-%:%`(C, `ARRAY.INIT_DATA`_instr(x, y), `%->_%%`_instrtype(`%`_resulttype([REF_valtype(?(NULL_null), _IDX_heaptype(x)) I32_valtype I32_valtype I32_valtype],), [], `%`_resulttype([],)))
+    -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], ARRAY_comptype(`%%`_fieldtype(?(MUT_mut), zt)))
     -- if (($unpack(zt) = (numtype : numtype <: valtype)) \/ ($unpack(zt) = (vectype : vectype <: valtype)))
     -- if (C.DATAS_context[y!`%`_idx.0] = OK_datatype)
 
@@ -4175,52 +4175,52 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec:343.1-345.28
   rule `local.get`{C : context, x : idx, t : valtype}:
-    `%|-%:%`(C, `LOCAL.GET`_instr(x,), `%->_%%`_instrtype(`%`_resulttype([],), [], `%`_resulttype([t],)))
+    `%|-%:%`(C, `LOCAL.GET`_instr(x), `%->_%%`_instrtype(`%`_resulttype([],), [], `%`_resulttype([t],)))
     -- if (C.LOCALS_context[x!`%`_idx.0] = `%%`_localtype(SET_init, t))
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec:347.1-349.29
   rule `local.set`{C : context, x : idx, t : valtype, init : init}:
-    `%|-%:%`(C, `LOCAL.SET`_instr(x,), `%->_%%`_instrtype(`%`_resulttype([t],), [x], `%`_resulttype([],)))
+    `%|-%:%`(C, `LOCAL.SET`_instr(x), `%->_%%`_instrtype(`%`_resulttype([t],), [x], `%`_resulttype([],)))
     -- if (C.LOCALS_context[x!`%`_idx.0] = `%%`_localtype(init, t))
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec:351.1-353.29
   rule `local.tee`{C : context, x : idx, t : valtype, init : init}:
-    `%|-%:%`(C, `LOCAL.TEE`_instr(x,), `%->_%%`_instrtype(`%`_resulttype([t],), [x], `%`_resulttype([t],)))
+    `%|-%:%`(C, `LOCAL.TEE`_instr(x), `%->_%%`_instrtype(`%`_resulttype([t],), [x], `%`_resulttype([t],)))
     -- if (C.LOCALS_context[x!`%`_idx.0] = `%%`_localtype(init, t))
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec:358.1-360.30
   rule `global.get`{C : context, x : idx, t : valtype, `mut?` : mut?}:
-    `%|-%:%`(C, `GLOBAL.GET`_instr(x,), `%->_%%`_instrtype(`%`_resulttype([],), [], `%`_resulttype([t],)))
+    `%|-%:%`(C, `GLOBAL.GET`_instr(x), `%->_%%`_instrtype(`%`_resulttype([],), [], `%`_resulttype([t],)))
     -- if (C.GLOBALS_context[x!`%`_idx.0] = `%%`_globaltype(mut?{mut <- `mut?`}, t))
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec:362.1-364.29
   rule `global.set`{C : context, x : idx, t : valtype}:
-    `%|-%:%`(C, `GLOBAL.SET`_instr(x,), `%->_%%`_instrtype(`%`_resulttype([t],), [], `%`_resulttype([],)))
+    `%|-%:%`(C, `GLOBAL.SET`_instr(x), `%->_%%`_instrtype(`%`_resulttype([t],), [], `%`_resulttype([],)))
     -- if (C.GLOBALS_context[x!`%`_idx.0] = `%%`_globaltype(?(MUT_mut), t))
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec:369.1-371.32
   rule `table.get`{C : context, x : idx, at : addrtype, rt : reftype, lim : limits}:
-    `%|-%:%`(C, `TABLE.GET`_instr(x,), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype)],), [], `%`_resulttype([(rt : reftype <: valtype)],)))
+    `%|-%:%`(C, `TABLE.GET`_instr(x), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype)],), [], `%`_resulttype([(rt : reftype <: valtype)],)))
     -- if (C.TABLES_context[x!`%`_idx.0] = `%%%`_tabletype(at, lim, rt))
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec:373.1-375.32
   rule `table.set`{C : context, x : idx, at : addrtype, rt : reftype, lim : limits}:
-    `%|-%:%`(C, `TABLE.SET`_instr(x,), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype) (rt : reftype <: valtype)],), [], `%`_resulttype([],)))
+    `%|-%:%`(C, `TABLE.SET`_instr(x), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype) (rt : reftype <: valtype)],), [], `%`_resulttype([],)))
     -- if (C.TABLES_context[x!`%`_idx.0] = `%%%`_tabletype(at, lim, rt))
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec:377.1-379.32
   rule `table.size`{C : context, x : idx, at : addrtype, lim : limits, rt : reftype}:
-    `%|-%:%`(C, `TABLE.SIZE`_instr(x,), `%->_%%`_instrtype(`%`_resulttype([],), [], `%`_resulttype([(at : addrtype <: valtype)],)))
+    `%|-%:%`(C, `TABLE.SIZE`_instr(x), `%->_%%`_instrtype(`%`_resulttype([],), [], `%`_resulttype([(at : addrtype <: valtype)],)))
     -- if (C.TABLES_context[x!`%`_idx.0] = `%%%`_tabletype(at, lim, rt))
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec:381.1-383.32
   rule `table.grow`{C : context, x : idx, rt : reftype, at : addrtype, lim : limits}:
-    `%|-%:%`(C, `TABLE.GROW`_instr(x,), `%->_%%`_instrtype(`%`_resulttype([(rt : reftype <: valtype) (at : addrtype <: valtype)],), [], `%`_resulttype([(at : addrtype <: valtype)],)))
+    `%|-%:%`(C, `TABLE.GROW`_instr(x), `%->_%%`_instrtype(`%`_resulttype([(rt : reftype <: valtype) (at : addrtype <: valtype)],), [], `%`_resulttype([(at : addrtype <: valtype)],)))
     -- if (C.TABLES_context[x!`%`_idx.0] = `%%%`_tabletype(at, lim, rt))
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec:385.1-387.32
   rule `table.fill`{C : context, x : idx, at : addrtype, rt : reftype, lim : limits}:
-    `%|-%:%`(C, `TABLE.FILL`_instr(x,), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype) (rt : reftype <: valtype) (at : addrtype <: valtype)],), [], `%`_resulttype([],)))
+    `%|-%:%`(C, `TABLE.FILL`_instr(x), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype) (rt : reftype <: valtype) (at : addrtype <: valtype)],), [], `%`_resulttype([],)))
     -- if (C.TABLES_context[x!`%`_idx.0] = `%%%`_tabletype(at, lim, rt))
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec:389.1-393.36
@@ -4239,22 +4239,22 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec:401.1-403.24
   rule `elem.drop`{C : context, x : idx, rt : reftype}:
-    `%|-%:%`(C, `ELEM.DROP`_instr(x,), `%->_%%`_instrtype(`%`_resulttype([],), [], `%`_resulttype([],)))
+    `%|-%:%`(C, `ELEM.DROP`_instr(x), `%->_%%`_instrtype(`%`_resulttype([],), [], `%`_resulttype([],)))
     -- if (C.ELEMS_context[x!`%`_idx.0] = rt)
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec:416.1-418.32
   rule `memory.size`{C : context, x : idx, at : addrtype, lim : limits}:
-    `%|-%:%`(C, `MEMORY.SIZE`_instr(x,), `%->_%%`_instrtype(`%`_resulttype([],), [], `%`_resulttype([(at : addrtype <: valtype)],)))
+    `%|-%:%`(C, `MEMORY.SIZE`_instr(x), `%->_%%`_instrtype(`%`_resulttype([],), [], `%`_resulttype([(at : addrtype <: valtype)],)))
     -- if (C.MEMS_context[x!`%`_idx.0] = `%%PAGE`_memtype(at, lim))
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec:420.1-422.32
   rule `memory.grow`{C : context, x : idx, at : addrtype, lim : limits}:
-    `%|-%:%`(C, `MEMORY.GROW`_instr(x,), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype)],), [], `%`_resulttype([(at : addrtype <: valtype)],)))
+    `%|-%:%`(C, `MEMORY.GROW`_instr(x), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype)],), [], `%`_resulttype([(at : addrtype <: valtype)],)))
     -- if (C.MEMS_context[x!`%`_idx.0] = `%%PAGE`_memtype(at, lim))
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec:424.1-426.32
   rule `memory.fill`{C : context, x : idx, at : addrtype, lim : limits}:
-    `%|-%:%`(C, `MEMORY.FILL`_instr(x,), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype) I32_valtype (at : addrtype <: valtype)],), [], `%`_resulttype([],)))
+    `%|-%:%`(C, `MEMORY.FILL`_instr(x), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype) I32_valtype (at : addrtype <: valtype)],), [], `%`_resulttype([],)))
     -- if (C.MEMS_context[x!`%`_idx.0] = `%%PAGE`_memtype(at, lim))
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec:428.1-431.38
@@ -4271,7 +4271,7 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec:438.1-440.24
   rule `data.drop`{C : context, x : idx}:
-    `%|-%:%`(C, `DATA.DROP`_instr(x,), `%->_%%`_instrtype(`%`_resulttype([],), [], `%`_resulttype([],)))
+    `%|-%:%`(C, `DATA.DROP`_instr(x), `%->_%%`_instrtype(`%`_resulttype([],), [], `%`_resulttype([],)))
     -- if (C.DATAS_context[x!`%`_idx.0] = OK_datatype)
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec:451.1-454.44
@@ -4312,7 +4312,7 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec:490.1-493.36
   rule `vload-splat`{C : context, N : N, x : idx, memarg : memarg, at : addrtype, lim : limits}:
-    `%|-%:%`(C, VLOAD_instr(V128_vectype, ?(SPLAT_vloadop_(`%`_sz(N,),)), x, memarg), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype)],), [], `%`_resulttype([V128_valtype],)))
+    `%|-%:%`(C, VLOAD_instr(V128_vectype, ?(SPLAT_vloadop_(`%`_sz(N,))), x, memarg), `%->_%%`_instrtype(`%`_resulttype([(at : addrtype <: valtype)],), [], `%`_resulttype([V128_valtype],)))
     -- if (C.MEMS_context[x!`%`_idx.0] = `%%PAGE`_memtype(at, lim))
     -- Memarg_ok: `|-%:%->%`(memarg, at, N)
 
@@ -4412,7 +4412,7 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec:574.1-575.33
   rule vbitmask{C : context, sh : ishape}:
-    `%|-%:%`(C, VBITMASK_instr(sh,), `%->_%%`_instrtype(`%`_resulttype([V128_valtype],), [], `%`_resulttype([I32_valtype],)))
+    `%|-%:%`(C, VBITMASK_instr(sh), `%->_%%`_instrtype(`%`_resulttype([V128_valtype],), [], `%`_resulttype([I32_valtype],)))
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec:577.1-578.50
   rule vswizzlop{C : context, sh : bshape, vswizzlop : vswizzlop_(sh)}:
@@ -4425,7 +4425,7 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec:584.1-585.44
   rule vsplat{C : context, sh : shape}:
-    `%|-%:%`(C, VSPLAT_instr(sh,), `%->_%%`_instrtype(`%`_resulttype([($unpackshape(sh) : numtype <: valtype)],), [], `%`_resulttype([V128_valtype],)))
+    `%|-%:%`(C, VSPLAT_instr(sh), `%->_%%`_instrtype(`%`_resulttype([($unpackshape(sh) : numtype <: valtype)],), [], `%`_resulttype([V128_valtype],)))
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec:587.1-589.21
   rule vextract_lane{C : context, sh : shape, `sx?` : sx?, i : laneidx}:
@@ -4510,7 +4510,7 @@ relation Instr_const: `%|-%CONST`(context, instr)
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec
   rule `ref.null`{C : context, ht : heaptype}:
-    `%|-%CONST`(C, `REF.NULL`_instr(ht,))
+    `%|-%CONST`(C, `REF.NULL`_instr(ht))
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec
   rule `ref.i31`{C : context}:
@@ -4518,23 +4518,23 @@ relation Instr_const: `%|-%CONST`(context, instr)
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec
   rule `ref.func`{C : context, x : idx}:
-    `%|-%CONST`(C, `REF.FUNC`_instr(x,))
+    `%|-%CONST`(C, `REF.FUNC`_instr(x))
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec
   rule `struct.new`{C : context, x : idx}:
-    `%|-%CONST`(C, `STRUCT.NEW`_instr(x,))
+    `%|-%CONST`(C, `STRUCT.NEW`_instr(x))
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec
   rule `struct.new_default`{C : context, x : idx}:
-    `%|-%CONST`(C, `STRUCT.NEW_DEFAULT`_instr(x,))
+    `%|-%CONST`(C, `STRUCT.NEW_DEFAULT`_instr(x))
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec
   rule `array.new`{C : context, x : idx}:
-    `%|-%CONST`(C, `ARRAY.NEW`_instr(x,))
+    `%|-%CONST`(C, `ARRAY.NEW`_instr(x))
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec
   rule `array.new_default`{C : context, x : idx}:
-    `%|-%CONST`(C, `ARRAY.NEW_DEFAULT`_instr(x,))
+    `%|-%CONST`(C, `ARRAY.NEW_DEFAULT`_instr(x))
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec
   rule `array.new_fixed`{C : context, x : idx, n : n}:
@@ -4550,7 +4550,7 @@ relation Instr_const: `%|-%CONST`(context, instr)
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec
   rule `global.get`{C : context, x : idx, t : valtype}:
-    `%|-%CONST`(C, `GLOBAL.GET`_instr(x,))
+    `%|-%CONST`(C, `GLOBAL.GET`_instr(x))
     -- if (C.GLOBALS_context[x!`%`_idx.0] = `%%`_globaltype(?(), t))
 
   ;; ../../../../specification/wasm-latest/2.3-validation.instructions.spectec
@@ -4578,16 +4578,16 @@ relation Expr_ok_const: `%|-%:%CONST`(context, expr, valtype)
 relation Type_ok: `%|-%:%`(context, type, deftype*)
   ;; ../../../../specification/wasm-latest/2.4-validation.modules.spectec
   rule _{C : context, rectype : rectype, `dt*` : deftype*, x : idx}:
-    `%|-%:%`(C, TYPE_type(rectype,), dt*{dt <- `dt*`})
+    `%|-%:%`(C, TYPE_type(rectype), dt*{dt <- `dt*`})
     -- if (x!`%`_idx.0 = |C.TYPES_context|)
     -- if (dt*{dt <- `dt*`} = $rolldt(x, rectype))
-    -- Rectype_ok: `%|-%:%`(C +++ {TYPES dt*{dt <- `dt*`}, TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [], RETURN ?(), REFS [], RECS []}, rectype, OK_oktypeidx(x,))
+    -- Rectype_ok: `%|-%:%`(C +++ {TYPES dt*{dt <- `dt*`}, TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [], RETURN ?(), REFS [], RECS []}, rectype, OK_oktypeidx(x))
 
 ;; ../../../../specification/wasm-latest/2.4-validation.modules.spectec
 relation Tag_ok: `%|-%:%`(context, tag, tagtype)
   ;; ../../../../specification/wasm-latest/2.4-validation.modules.spectec
   rule _{C : context, tagtype : tagtype}:
-    `%|-%:%`(C, TAG_tag(tagtype,), $clos_tagtype(C, tagtype))
+    `%|-%:%`(C, TAG_tag(tagtype), $clos_tagtype(C, tagtype))
     -- Tagtype_ok: `%|-%:OK`(C, tagtype)
 
 ;; ../../../../specification/wasm-latest/2.4-validation.modules.spectec
@@ -4603,7 +4603,7 @@ relation Global_ok: `%|-%:%`(context, global, globaltype)
 relation Mem_ok: `%|-%:%`(context, mem, memtype)
   ;; ../../../../specification/wasm-latest/2.4-validation.modules.spectec
   rule _{C : context, memtype : memtype}:
-    `%|-%:%`(C, MEMORY_mem(memtype,), memtype)
+    `%|-%:%`(C, MEMORY_mem(memtype), memtype)
     -- Memtype_ok: `%|-%:OK`(C, memtype)
 
 ;; ../../../../specification/wasm-latest/2.4-validation.modules.spectec
@@ -4619,12 +4619,12 @@ relation Table_ok: `%|-%:%`(context, table, tabletype)
 relation Local_ok: `%|-%:%`(context, local, localtype)
   ;; ../../../../specification/wasm-latest/2.4-validation.modules.spectec
   rule set{C : context, t : valtype}:
-    `%|-%:%`(C, LOCAL_local(t,), `%%`_localtype(SET_init, t))
+    `%|-%:%`(C, LOCAL_local(t), `%%`_localtype(SET_init, t))
     -- Defaultable: `|-%DEFAULTABLE`(t,)
 
   ;; ../../../../specification/wasm-latest/2.4-validation.modules.spectec
   rule unset{C : context, t : valtype}:
-    `%|-%:%`(C, LOCAL_local(t,), `%%`_localtype(UNSET_init, t))
+    `%|-%:%`(C, LOCAL_local(t), `%%`_localtype(UNSET_init, t))
     -- Nondefaultable: `|-%NONDEFAULTABLE`(t,)
 
 ;; ../../../../specification/wasm-latest/2.4-validation.modules.spectec
@@ -4685,7 +4685,7 @@ relation Elem_ok: `%|-%:%`(context, elem, elemtype)
 relation Start_ok: `%|-%:OK`(context, start)
   ;; ../../../../specification/wasm-latest/2.4-validation.modules.spectec
   rule _{C : context, x : idx}:
-    `%|-%:OK`(C, START_start(x,))
+    `%|-%:OK`(C, START_start(x))
     -- Expand: `%~~%`(C.FUNCS_context[x!`%`_idx.0], `FUNC%->%`_comptype(`%`_resulttype([],), `%`_resulttype([],)))
 
 ;; ../../../../specification/wasm-latest/2.4-validation.modules.spectec
@@ -4699,27 +4699,27 @@ relation Import_ok: `%|-%:%`(context, import, externtype)
 relation Externidx_ok: `%|-%:%`(context, externidx, externtype)
   ;; ../../../../specification/wasm-latest/2.4-validation.modules.spectec
   rule tag{C : context, x : idx, jt : tagtype}:
-    `%|-%:%`(C, TAG_externidx(x,), TAG_externtype(jt,))
+    `%|-%:%`(C, TAG_externidx(x), TAG_externtype(jt))
     -- if (C.TAGS_context[x!`%`_idx.0] = jt)
 
   ;; ../../../../specification/wasm-latest/2.4-validation.modules.spectec
   rule global{C : context, x : idx, gt : globaltype}:
-    `%|-%:%`(C, GLOBAL_externidx(x,), GLOBAL_externtype(gt,))
+    `%|-%:%`(C, GLOBAL_externidx(x), GLOBAL_externtype(gt))
     -- if (C.GLOBALS_context[x!`%`_idx.0] = gt)
 
   ;; ../../../../specification/wasm-latest/2.4-validation.modules.spectec
   rule mem{C : context, x : idx, mt : memtype}:
-    `%|-%:%`(C, MEM_externidx(x,), MEM_externtype(mt,))
+    `%|-%:%`(C, MEM_externidx(x), MEM_externtype(mt))
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
 
   ;; ../../../../specification/wasm-latest/2.4-validation.modules.spectec
   rule table{C : context, x : idx, tt : tabletype}:
-    `%|-%:%`(C, TABLE_externidx(x,), TABLE_externtype(tt,))
+    `%|-%:%`(C, TABLE_externidx(x), TABLE_externtype(tt))
     -- if (C.TABLES_context[x!`%`_idx.0] = tt)
 
   ;; ../../../../specification/wasm-latest/2.4-validation.modules.spectec
   rule func{C : context, x : idx, dt : deftype}:
-    `%|-%:%`(C, FUNC_externidx(x,), FUNC_externtype((dt : deftype <: typeuse),))
+    `%|-%:%`(C, FUNC_externidx(x), FUNC_externtype(dt : deftype <: typeuse))
     -- if (C.FUNCS_context[x!`%`_idx.0] = dt)
 
 ;; ../../../../specification/wasm-latest/2.4-validation.modules.spectec
@@ -5349,9 +5349,9 @@ def $binop_(numtype : numtype, binop_ : binop_(numtype), num_ : num_(numtype), n
   ;; ../../../../specification/wasm-latest/3.1-numerics.scalar.spectec
   def $binop_{Inn : Inn, i_1 : num_((Inn : Inn <: numtype)), i_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), MUL_binop_, i_1, i_2) = [$imul_($sizenn((Inn : Inn <: numtype)), i_1, i_2)]
   ;; ../../../../specification/wasm-latest/3.1-numerics.scalar.spectec
-  def $binop_{Inn : Inn, sx : sx, i_1 : num_((Inn : Inn <: numtype)), i_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), DIV_binop_(sx,), i_1, i_2) = lift($idiv_($sizenn((Inn : Inn <: numtype)), sx, i_1, i_2))
+  def $binop_{Inn : Inn, sx : sx, i_1 : num_((Inn : Inn <: numtype)), i_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), DIV_binop_(sx), i_1, i_2) = lift($idiv_($sizenn((Inn : Inn <: numtype)), sx, i_1, i_2))
   ;; ../../../../specification/wasm-latest/3.1-numerics.scalar.spectec
-  def $binop_{Inn : Inn, sx : sx, i_1 : num_((Inn : Inn <: numtype)), i_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), REM_binop_(sx,), i_1, i_2) = lift($irem_($sizenn((Inn : Inn <: numtype)), sx, i_1, i_2))
+  def $binop_{Inn : Inn, sx : sx, i_1 : num_((Inn : Inn <: numtype)), i_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), REM_binop_(sx), i_1, i_2) = lift($irem_($sizenn((Inn : Inn <: numtype)), sx, i_1, i_2))
   ;; ../../../../specification/wasm-latest/3.1-numerics.scalar.spectec
   def $binop_{Inn : Inn, i_1 : num_((Inn : Inn <: numtype)), i_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), AND_binop_, i_1, i_2) = [$iand_($sizenn((Inn : Inn <: numtype)), i_1, i_2)]
   ;; ../../../../specification/wasm-latest/3.1-numerics.scalar.spectec
@@ -5361,7 +5361,7 @@ def $binop_(numtype : numtype, binop_ : binop_(numtype), num_ : num_(numtype), n
   ;; ../../../../specification/wasm-latest/3.1-numerics.scalar.spectec
   def $binop_{Inn : Inn, i_1 : num_((Inn : Inn <: numtype)), i_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), SHL_binop_, i_1, i_2) = [$ishl_($sizenn((Inn : Inn <: numtype)), i_1, `%`_u32(i_2!`%`_num_.0,))]
   ;; ../../../../specification/wasm-latest/3.1-numerics.scalar.spectec
-  def $binop_{Inn : Inn, sx : sx, i_1 : num_((Inn : Inn <: numtype)), i_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), SHR_binop_(sx,), i_1, i_2) = [$ishr_($sizenn((Inn : Inn <: numtype)), sx, i_1, `%`_u32(i_2!`%`_num_.0,))]
+  def $binop_{Inn : Inn, sx : sx, i_1 : num_((Inn : Inn <: numtype)), i_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), SHR_binop_(sx), i_1, i_2) = [$ishr_($sizenn((Inn : Inn <: numtype)), sx, i_1, `%`_u32(i_2!`%`_num_.0,))]
   ;; ../../../../specification/wasm-latest/3.1-numerics.scalar.spectec
   def $binop_{Inn : Inn, i_1 : num_((Inn : Inn <: numtype)), i_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), ROTL_binop_, i_1, i_2) = [$irotl_($sizenn((Inn : Inn <: numtype)), i_1, i_2)]
   ;; ../../../../specification/wasm-latest/3.1-numerics.scalar.spectec
@@ -5393,13 +5393,13 @@ def $relop_(numtype : numtype, relop_ : relop_(numtype), num_ : num_(numtype), n
   ;; ../../../../specification/wasm-latest/3.1-numerics.scalar.spectec
   def $relop_{Inn : Inn, i_1 : num_((Inn : Inn <: numtype)), i_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), NE_relop_, i_1, i_2) = $ine_($sizenn((Inn : Inn <: numtype)), i_1, i_2)
   ;; ../../../../specification/wasm-latest/3.1-numerics.scalar.spectec
-  def $relop_{Inn : Inn, sx : sx, i_1 : num_((Inn : Inn <: numtype)), i_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), LT_relop_(sx,), i_1, i_2) = $ilt_($sizenn((Inn : Inn <: numtype)), sx, i_1, i_2)
+  def $relop_{Inn : Inn, sx : sx, i_1 : num_((Inn : Inn <: numtype)), i_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), LT_relop_(sx), i_1, i_2) = $ilt_($sizenn((Inn : Inn <: numtype)), sx, i_1, i_2)
   ;; ../../../../specification/wasm-latest/3.1-numerics.scalar.spectec
-  def $relop_{Inn : Inn, sx : sx, i_1 : num_((Inn : Inn <: numtype)), i_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), GT_relop_(sx,), i_1, i_2) = $igt_($sizenn((Inn : Inn <: numtype)), sx, i_1, i_2)
+  def $relop_{Inn : Inn, sx : sx, i_1 : num_((Inn : Inn <: numtype)), i_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), GT_relop_(sx), i_1, i_2) = $igt_($sizenn((Inn : Inn <: numtype)), sx, i_1, i_2)
   ;; ../../../../specification/wasm-latest/3.1-numerics.scalar.spectec
-  def $relop_{Inn : Inn, sx : sx, i_1 : num_((Inn : Inn <: numtype)), i_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), LE_relop_(sx,), i_1, i_2) = $ile_($sizenn((Inn : Inn <: numtype)), sx, i_1, i_2)
+  def $relop_{Inn : Inn, sx : sx, i_1 : num_((Inn : Inn <: numtype)), i_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), LE_relop_(sx), i_1, i_2) = $ile_($sizenn((Inn : Inn <: numtype)), sx, i_1, i_2)
   ;; ../../../../specification/wasm-latest/3.1-numerics.scalar.spectec
-  def $relop_{Inn : Inn, sx : sx, i_1 : num_((Inn : Inn <: numtype)), i_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), GE_relop_(sx,), i_1, i_2) = $ige_($sizenn((Inn : Inn <: numtype)), sx, i_1, i_2)
+  def $relop_{Inn : Inn, sx : sx, i_1 : num_((Inn : Inn <: numtype)), i_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), GE_relop_(sx), i_1, i_2) = $ige_($sizenn((Inn : Inn <: numtype)), sx, i_1, i_2)
   ;; ../../../../specification/wasm-latest/3.1-numerics.scalar.spectec
   def $relop_{Fnn : Fnn, f_1 : num_((Fnn : Fnn <: numtype)), f_2 : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), EQ_relop_, f_1, f_2) = $feq_($sizenn((Fnn : Fnn <: numtype)), f_1, f_2)
   ;; ../../../../specification/wasm-latest/3.1-numerics.scalar.spectec
@@ -5420,11 +5420,11 @@ def $cvtop__(numtype_1 : numtype, numtype_2 : numtype, cvtop__ : cvtop__(numtype
   ;; ../../../../specification/wasm-latest/3.1-numerics.scalar.spectec
   def $cvtop__{Inn_1 : Inn, Inn_2 : Inn, i_1 : num_((Inn_1 : Inn <: numtype))}((Inn_1 : Inn <: numtype), (Inn_2 : Inn <: numtype), WRAP_cvtop__, i_1) = [$wrap__($sizenn1((Inn_1 : Inn <: numtype)), $sizenn2((Inn_2 : Inn <: numtype)), i_1)]
   ;; ../../../../specification/wasm-latest/3.1-numerics.scalar.spectec
-  def $cvtop__{Fnn_1 : Fnn, Inn_2 : Inn, sx : sx, f_1 : num_((Fnn_1 : Fnn <: numtype))}((Fnn_1 : Fnn <: numtype), (Inn_2 : Inn <: numtype), TRUNC_cvtop__(sx,), f_1) = lift($trunc__($sizenn1((Fnn_1 : Fnn <: numtype)), $sizenn2((Inn_2 : Inn <: numtype)), sx, f_1))
+  def $cvtop__{Fnn_1 : Fnn, Inn_2 : Inn, sx : sx, f_1 : num_((Fnn_1 : Fnn <: numtype))}((Fnn_1 : Fnn <: numtype), (Inn_2 : Inn <: numtype), TRUNC_cvtop__(sx), f_1) = lift($trunc__($sizenn1((Fnn_1 : Fnn <: numtype)), $sizenn2((Inn_2 : Inn <: numtype)), sx, f_1))
   ;; ../../../../specification/wasm-latest/3.1-numerics.scalar.spectec
-  def $cvtop__{Fnn_1 : Fnn, Inn_2 : Inn, sx : sx, f_1 : num_((Fnn_1 : Fnn <: numtype))}((Fnn_1 : Fnn <: numtype), (Inn_2 : Inn <: numtype), TRUNC_SAT_cvtop__(sx,), f_1) = lift($trunc_sat__($sizenn1((Fnn_1 : Fnn <: numtype)), $sizenn2((Inn_2 : Inn <: numtype)), sx, f_1))
+  def $cvtop__{Fnn_1 : Fnn, Inn_2 : Inn, sx : sx, f_1 : num_((Fnn_1 : Fnn <: numtype))}((Fnn_1 : Fnn <: numtype), (Inn_2 : Inn <: numtype), TRUNC_SAT_cvtop__(sx), f_1) = lift($trunc_sat__($sizenn1((Fnn_1 : Fnn <: numtype)), $sizenn2((Inn_2 : Inn <: numtype)), sx, f_1))
   ;; ../../../../specification/wasm-latest/3.1-numerics.scalar.spectec
-  def $cvtop__{Inn_1 : Inn, Fnn_2 : Fnn, sx : sx, i_1 : num_((Inn_1 : Inn <: numtype))}((Inn_1 : Inn <: numtype), (Fnn_2 : Fnn <: numtype), CONVERT_cvtop__(sx,), i_1) = [$convert__($sizenn1((Inn_1 : Inn <: numtype)), $sizenn2((Fnn_2 : Fnn <: numtype)), sx, i_1)]
+  def $cvtop__{Inn_1 : Inn, Fnn_2 : Fnn, sx : sx, i_1 : num_((Inn_1 : Inn <: numtype))}((Inn_1 : Inn <: numtype), (Fnn_2 : Fnn <: numtype), CONVERT_cvtop__(sx), i_1) = [$convert__($sizenn1((Inn_1 : Inn <: numtype)), $sizenn2((Fnn_2 : Fnn <: numtype)), sx, i_1)]
   ;; ../../../../specification/wasm-latest/3.1-numerics.scalar.spectec
   def $cvtop__{Fnn_1 : Fnn, Fnn_2 : Fnn, f_1 : num_((Fnn_1 : Fnn <: numtype))}((Fnn_1 : Fnn <: numtype), (Fnn_2 : Fnn <: numtype), PROMOTE_cvtop__, f_1) = $promote__($sizenn1((Fnn_1 : Fnn <: numtype)), $sizenn2((Fnn_2 : Fnn <: numtype)), f_1)
   ;; ../../../../specification/wasm-latest/3.1-numerics.scalar.spectec
@@ -5796,7 +5796,7 @@ def $vshiftop_(ishape : ishape, vshiftop_ : vshiftop_(ishape), vec_ : vec_(V128_
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
   def $vshiftop_{Jnn : Jnn, M : M, v : vec_(V128_Vnn), i : u32}(`%`_ishape(`%X%`_shape((Jnn : Jnn <: lanetype), M),), SHL_vshiftop_, v, i) = $ivshiftop_(`%X%`_shape((Jnn : Jnn <: lanetype), M), def $ishl_, v, i)
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $vshiftop_{Jnn : Jnn, M : M, sx : sx, v : vec_(V128_Vnn), i : u32}(`%`_ishape(`%X%`_shape((Jnn : Jnn <: lanetype), M),), SHR_vshiftop_(sx,), v, i) = $ivshiftopsx_(`%X%`_shape((Jnn : Jnn <: lanetype), M), def $ishr_, sx, v, i)
+  def $vshiftop_{Jnn : Jnn, M : M, sx : sx, v : vec_(V128_Vnn), i : u32}(`%`_ishape(`%X%`_shape((Jnn : Jnn <: lanetype), M),), SHR_vshiftop_(sx), v, i) = $ivshiftopsx_(`%X%`_shape((Jnn : Jnn <: lanetype), M), def $ishr_, sx, v, i)
 
 ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
 def $vbitmaskop_(ishape : ishape, vec_ : vec_(V128_Vnn)) : u32
@@ -5900,8 +5900,8 @@ syntax vec =
 
 ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
 syntax result =
-  | _VALS(`val*` : val*,)
-  | `(REF.EXN_ADDR%)THROW_REF`(exnaddr : exnaddr,)
+  | _VALS(val*)
+  | `(REF.EXN_ADDR%)THROW_REF`(exnaddr)
   | TRAP
 
 ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
@@ -5969,14 +5969,14 @@ syntax packval =
 syntax fieldval =
   | CONST(numtype : numtype, num_(numtype))
   | VCONST(vectype : vectype, vec_(vectype))
-  | `REF.I31_NUM`(u31 : u31,)
+  | `REF.I31_NUM`(u31)
   | `REF.NULL_ADDR`
-  | `REF.STRUCT_ADDR`(structaddr : structaddr,)
-  | `REF.ARRAY_ADDR`(arrayaddr : arrayaddr,)
-  | `REF.FUNC_ADDR`(funcaddr : funcaddr,)
-  | `REF.EXN_ADDR`(exnaddr : exnaddr,)
-  | `REF.HOST_ADDR`(hostaddr : hostaddr,)
-  | `REF.EXTERN`(ref : ref,)
+  | `REF.STRUCT_ADDR`(structaddr)
+  | `REF.ARRAY_ADDR`(arrayaddr)
+  | `REF.FUNC_ADDR`(funcaddr)
+  | `REF.EXN_ADDR`(exnaddr)
+  | `REF.HOST_ADDR`(hostaddr)
+  | `REF.EXTERN`(ref)
   | PACK(packtype : packtype, iN($psizenn(packtype)))
 
 ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
@@ -6050,7 +6050,7 @@ def $tagsxa(externaddr*) : tagaddr*
   ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec:196.1-196.23
   def $tagsxa([]) = []
   ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec:197.1-197.42
-  def $tagsxa{a : addr, `xa*` : externaddr*}([TAG_externaddr(a,)] ++ xa*{xa <- `xa*`}) = [a] ++ $tagsxa(xa*{xa <- `xa*`})
+  def $tagsxa{a : addr, `xa*` : externaddr*}([TAG_externaddr(a)] ++ xa*{xa <- `xa*`}) = [a] ++ $tagsxa(xa*{xa <- `xa*`})
   ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec:198.1-198.57
   def $tagsxa{externaddr : externaddr, `xa*` : externaddr*}([externaddr] ++ xa*{xa <- `xa*`}) = $tagsxa(xa*{xa <- `xa*`})
     -- otherwise
@@ -6064,7 +6064,7 @@ def $globalsxa(externaddr*) : globaladdr*
   ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec:200.1-200.26
   def $globalsxa([]) = []
   ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec:201.1-201.51
-  def $globalsxa{a : addr, `xa*` : externaddr*}([GLOBAL_externaddr(a,)] ++ xa*{xa <- `xa*`}) = [a] ++ $globalsxa(xa*{xa <- `xa*`})
+  def $globalsxa{a : addr, `xa*` : externaddr*}([GLOBAL_externaddr(a)] ++ xa*{xa <- `xa*`}) = [a] ++ $globalsxa(xa*{xa <- `xa*`})
   ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec:202.1-202.63
   def $globalsxa{externaddr : externaddr, `xa*` : externaddr*}([externaddr] ++ xa*{xa <- `xa*`}) = $globalsxa(xa*{xa <- `xa*`})
     -- otherwise
@@ -6078,7 +6078,7 @@ def $memsxa(externaddr*) : memaddr*
   ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec:204.1-204.23
   def $memsxa([]) = []
   ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec:205.1-205.42
-  def $memsxa{a : addr, `xa*` : externaddr*}([MEM_externaddr(a,)] ++ xa*{xa <- `xa*`}) = [a] ++ $memsxa(xa*{xa <- `xa*`})
+  def $memsxa{a : addr, `xa*` : externaddr*}([MEM_externaddr(a)] ++ xa*{xa <- `xa*`}) = [a] ++ $memsxa(xa*{xa <- `xa*`})
   ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec:206.1-206.57
   def $memsxa{externaddr : externaddr, `xa*` : externaddr*}([externaddr] ++ xa*{xa <- `xa*`}) = $memsxa(xa*{xa <- `xa*`})
     -- otherwise
@@ -6092,7 +6092,7 @@ def $tablesxa(externaddr*) : tableaddr*
   ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec:208.1-208.25
   def $tablesxa([]) = []
   ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec:209.1-209.48
-  def $tablesxa{a : addr, `xa*` : externaddr*}([TABLE_externaddr(a,)] ++ xa*{xa <- `xa*`}) = [a] ++ $tablesxa(xa*{xa <- `xa*`})
+  def $tablesxa{a : addr, `xa*` : externaddr*}([TABLE_externaddr(a)] ++ xa*{xa <- `xa*`}) = [a] ++ $tablesxa(xa*{xa <- `xa*`})
   ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec:210.1-210.61
   def $tablesxa{externaddr : externaddr, `xa*` : externaddr*}([externaddr] ++ xa*{xa <- `xa*`}) = $tablesxa(xa*{xa <- `xa*`})
     -- otherwise
@@ -6106,7 +6106,7 @@ def $funcsxa(externaddr*) : funcaddr*
   ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec:212.1-212.24
   def $funcsxa([]) = []
   ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec:213.1-213.45
-  def $funcsxa{a : addr, `xa*` : externaddr*}([FUNC_externaddr(a,)] ++ xa*{xa <- `xa*`}) = [a] ++ $funcsxa(xa*{xa <- `xa*`})
+  def $funcsxa{a : addr, `xa*` : externaddr*}([FUNC_externaddr(a)] ++ xa*{xa <- `xa*`}) = [a] ++ $funcsxa(xa*{xa <- `xa*`})
   ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec:214.1-214.59
   def $funcsxa{externaddr : externaddr, `xa*` : externaddr*}([externaddr] ++ xa*{xa <- `xa*`}) = $funcsxa(xa*{xa <- `xa*`})
     -- otherwise
@@ -6345,35 +6345,35 @@ relation Ref_ok: `%|-%:%`(store, ref, reftype)
 
   ;; ../../../../specification/wasm-latest/4.1-execution.values.spectec:38.1-39.31
   rule i31{s : store, i : u31}:
-    `%|-%:%`(s, `REF.I31_NUM`_ref(i,), REF_reftype(?(), I31_heaptype))
+    `%|-%:%`(s, `REF.I31_NUM`_ref(i), REF_reftype(?(), I31_heaptype))
 
   ;; ../../../../specification/wasm-latest/4.1-execution.values.spectec:41.1-43.31
   rule struct{s : store, a : addr, dt : deftype}:
-    `%|-%:%`(s, `REF.STRUCT_ADDR`_ref(a,), REF_reftype(?(), (dt : deftype <: heaptype)))
+    `%|-%:%`(s, `REF.STRUCT_ADDR`_ref(a), REF_reftype(?(), (dt : deftype <: heaptype)))
     -- if (s.STRUCTS_store[a].TYPE_structinst = dt)
 
   ;; ../../../../specification/wasm-latest/4.1-execution.values.spectec:45.1-47.30
   rule array{s : store, a : addr, dt : deftype}:
-    `%|-%:%`(s, `REF.ARRAY_ADDR`_ref(a,), REF_reftype(?(), (dt : deftype <: heaptype)))
+    `%|-%:%`(s, `REF.ARRAY_ADDR`_ref(a), REF_reftype(?(), (dt : deftype <: heaptype)))
     -- if (s.ARRAYS_store[a].TYPE_arrayinst = dt)
 
   ;; ../../../../specification/wasm-latest/4.1-execution.values.spectec:49.1-51.29
   rule func{s : store, a : addr, dt : deftype}:
-    `%|-%:%`(s, `REF.FUNC_ADDR`_ref(a,), REF_reftype(?(), (dt : deftype <: heaptype)))
+    `%|-%:%`(s, `REF.FUNC_ADDR`_ref(a), REF_reftype(?(), (dt : deftype <: heaptype)))
     -- if (s.FUNCS_store[a].TYPE_funcinst = dt)
 
   ;; ../../../../specification/wasm-latest/4.1-execution.values.spectec:53.1-55.24
   rule exn{s : store, a : addr, exn : exninst}:
-    `%|-%:%`(s, `REF.EXN_ADDR`_ref(a,), REF_reftype(?(), EXN_heaptype))
+    `%|-%:%`(s, `REF.EXN_ADDR`_ref(a), REF_reftype(?(), EXN_heaptype))
     -- if (s.EXNS_store[a] = exn)
 
   ;; ../../../../specification/wasm-latest/4.1-execution.values.spectec:57.1-58.33
   rule host{s : store, a : addr}:
-    `%|-%:%`(s, `REF.HOST_ADDR`_ref(a,), REF_reftype(?(), ANY_heaptype))
+    `%|-%:%`(s, `REF.HOST_ADDR`_ref(a), REF_reftype(?(), ANY_heaptype))
 
   ;; ../../../../specification/wasm-latest/4.1-execution.values.spectec:60.1-63.30
   rule extern{s : store, ref : ref}:
-    `%|-%:%`(s, `REF.EXTERN`_ref(ref,), REF_reftype(?(), EXTERN_heaptype))
+    `%|-%:%`(s, `REF.EXTERN`_ref(ref), REF_reftype(?(), EXTERN_heaptype))
     -- Ref_ok: `%|-%:%`(s, ref, REF_reftype(?(), ANY_heaptype))
     -- if (ref =/= `REF.NULL_ADDR`_ref)
 
@@ -6427,27 +6427,27 @@ rec {
 relation Externaddr_ok: `%|-%:%`(store, externaddr, externtype)
   ;; ../../../../specification/wasm-latest/4.1-execution.values.spectec:106.1-108.28
   rule tag{s : store, a : addr, taginst : taginst}:
-    `%|-%:%`(s, TAG_externaddr(a,), TAG_externtype(taginst.TYPE_taginst,))
+    `%|-%:%`(s, TAG_externaddr(a), TAG_externtype(taginst.TYPE_taginst))
     -- if (s.TAGS_store[a] = taginst)
 
   ;; ../../../../specification/wasm-latest/4.1-execution.values.spectec:110.1-112.34
   rule global{s : store, a : addr, globalinst : globalinst}:
-    `%|-%:%`(s, GLOBAL_externaddr(a,), GLOBAL_externtype(globalinst.TYPE_globalinst,))
+    `%|-%:%`(s, GLOBAL_externaddr(a), GLOBAL_externtype(globalinst.TYPE_globalinst))
     -- if (s.GLOBALS_store[a] = globalinst)
 
   ;; ../../../../specification/wasm-latest/4.1-execution.values.spectec:114.1-116.28
   rule mem{s : store, a : addr, meminst : meminst}:
-    `%|-%:%`(s, MEM_externaddr(a,), MEM_externtype(meminst.TYPE_meminst,))
+    `%|-%:%`(s, MEM_externaddr(a), MEM_externtype(meminst.TYPE_meminst))
     -- if (s.MEMS_store[a] = meminst)
 
   ;; ../../../../specification/wasm-latest/4.1-execution.values.spectec:118.1-120.32
   rule table{s : store, a : addr, tableinst : tableinst}:
-    `%|-%:%`(s, TABLE_externaddr(a,), TABLE_externtype(tableinst.TYPE_tableinst,))
+    `%|-%:%`(s, TABLE_externaddr(a), TABLE_externtype(tableinst.TYPE_tableinst))
     -- if (s.TABLES_store[a] = tableinst)
 
   ;; ../../../../specification/wasm-latest/4.1-execution.values.spectec:122.1-124.30
   rule func{s : store, a : addr, funcinst : funcinst}:
-    `%|-%:%`(s, FUNC_externaddr(a,), FUNC_externtype((funcinst.TYPE_funcinst : deftype <: typeuse),))
+    `%|-%:%`(s, FUNC_externaddr(a), FUNC_externtype(funcinst.TYPE_funcinst : deftype <: typeuse))
     -- if (s.FUNCS_store[a] = funcinst)
 
   ;; ../../../../specification/wasm-latest/4.1-execution.values.spectec:126.1-130.37
@@ -6499,12 +6499,12 @@ relation Step_pure: `%~>%`(instr*, instr*)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `select-true`{val_1 : val, val_2 : val, c : num_(I32_numtype), `t*?` : valtype*?}:
-    `%~>%`([(val_1 : val <: instr) (val_2 : val <: instr) CONST_instr(I32_numtype, c) SELECT_instr(t*{t <- `t*`}?{`t*` <- `t*?`},)], [(val_1 : val <: instr)])
+    `%~>%`([(val_1 : val <: instr) (val_2 : val <: instr) CONST_instr(I32_numtype, c) SELECT_instr(t*{t <- `t*`}?{`t*` <- `t*?`})], [(val_1 : val <: instr)])
     -- if (c!`%`_num_.0 =/= 0)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `select-false`{val_1 : val, val_2 : val, c : num_(I32_numtype), `t*?` : valtype*?}:
-    `%~>%`([(val_1 : val <: instr) (val_2 : val <: instr) CONST_instr(I32_numtype, c) SELECT_instr(t*{t <- `t*`}?{`t*` <- `t*?`},)], [(val_2 : val <: instr)])
+    `%~>%`([(val_1 : val <: instr) (val_2 : val <: instr) CONST_instr(I32_numtype, c) SELECT_instr(t*{t <- `t*`}?{`t*` <- `t*?`})], [(val_2 : val <: instr)])
     -- if (c!`%`_num_.0 = 0)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
@@ -6523,65 +6523,65 @@ relation Step_pure: `%~>%`(instr*, instr*)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `br-label-zero`{n : n, `instr'*` : instr*, `val'*` : val*, `val*` : val*, l : labelidx, `instr*` : instr*}:
-    `%~>%`([`LABEL_%{%}%`_instr(n, instr'*{instr' <- `instr'*`}, (val' : val <: instr)*{val' <- `val'*`} ++ (val : val <: instr)^n{val <- `val*`} ++ [BR_instr(l,)] ++ instr*{instr <- `instr*`})], (val : val <: instr)^n{val <- `val*`} ++ instr'*{instr' <- `instr'*`})
+    `%~>%`([`LABEL_%{%}%`_instr(n, instr'*{instr' <- `instr'*`}, (val' : val <: instr)*{val' <- `val'*`} ++ (val : val <: instr)^n{val <- `val*`} ++ [BR_instr(l)] ++ instr*{instr <- `instr*`})], (val : val <: instr)^n{val <- `val*`} ++ instr'*{instr' <- `instr'*`})
     -- if (l!`%`_labelidx.0 = 0)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `br-label-succ`{n : n, `instr'*` : instr*, `val*` : val*, l : labelidx, `instr*` : instr*}:
-    `%~>%`([`LABEL_%{%}%`_instr(n, instr'*{instr' <- `instr'*`}, (val : val <: instr)*{val <- `val*`} ++ [BR_instr(l,)] ++ instr*{instr <- `instr*`})], (val : val <: instr)*{val <- `val*`} ++ [BR_instr(`%`_labelidx((((l!`%`_labelidx.0 : nat <:> int) - (1 : nat <:> int)) : int <:> nat),),)])
+    `%~>%`([`LABEL_%{%}%`_instr(n, instr'*{instr' <- `instr'*`}, (val : val <: instr)*{val <- `val*`} ++ [BR_instr(l)] ++ instr*{instr <- `instr*`})], (val : val <: instr)*{val <- `val*`} ++ [BR_instr(`%`_labelidx((((l!`%`_labelidx.0 : nat <:> int) - (1 : nat <:> int)) : int <:> nat),))])
     -- if (l!`%`_labelidx.0 > 0)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `br-handler`{n : n, `catch*` : catch*, `val*` : val*, l : labelidx, `instr*` : instr*}:
-    `%~>%`([`HANDLER_%{%}%`_instr(n, catch*{catch <- `catch*`}, (val : val <: instr)*{val <- `val*`} ++ [BR_instr(l,)] ++ instr*{instr <- `instr*`})], (val : val <: instr)*{val <- `val*`} ++ [BR_instr(l,)])
+    `%~>%`([`HANDLER_%{%}%`_instr(n, catch*{catch <- `catch*`}, (val : val <: instr)*{val <- `val*`} ++ [BR_instr(l)] ++ instr*{instr <- `instr*`})], (val : val <: instr)*{val <- `val*`} ++ [BR_instr(l)])
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `br_if-true`{c : num_(I32_numtype), l : labelidx}:
-    `%~>%`([CONST_instr(I32_numtype, c) BR_IF_instr(l,)], [BR_instr(l,)])
+    `%~>%`([CONST_instr(I32_numtype, c) BR_IF_instr(l)], [BR_instr(l)])
     -- if (c!`%`_num_.0 =/= 0)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `br_if-false`{c : num_(I32_numtype), l : labelidx}:
-    `%~>%`([CONST_instr(I32_numtype, c) BR_IF_instr(l,)], [])
+    `%~>%`([CONST_instr(I32_numtype, c) BR_IF_instr(l)], [])
     -- if (c!`%`_num_.0 = 0)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `br_table-lt`{i : num_(I32_numtype), `l*` : labelidx*, l' : labelidx}:
-    `%~>%`([CONST_instr(I32_numtype, i) BR_TABLE_instr(l*{l <- `l*`}, l')], [BR_instr(l*{l <- `l*`}[i!`%`_num_.0],)])
+    `%~>%`([CONST_instr(I32_numtype, i) BR_TABLE_instr(l*{l <- `l*`}, l')], [BR_instr(l*{l <- `l*`}[i!`%`_num_.0])])
     -- if (i!`%`_num_.0 < |l*{l <- `l*`}|)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `br_table-ge`{i : num_(I32_numtype), `l*` : labelidx*, l' : labelidx}:
-    `%~>%`([CONST_instr(I32_numtype, i) BR_TABLE_instr(l*{l <- `l*`}, l')], [BR_instr(l',)])
+    `%~>%`([CONST_instr(I32_numtype, i) BR_TABLE_instr(l*{l <- `l*`}, l')], [BR_instr(l')])
     -- if (i!`%`_num_.0 >= |l*{l <- `l*`}|)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `br_on_null-null`{val : val, l : labelidx}:
-    `%~>%`([(val : val <: instr) BR_ON_NULL_instr(l,)], [BR_instr(l,)])
+    `%~>%`([(val : val <: instr) BR_ON_NULL_instr(l)], [BR_instr(l)])
     -- if (val = `REF.NULL_ADDR`_val)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `br_on_null-addr`{val : val, l : labelidx}:
-    `%~>%`([(val : val <: instr) BR_ON_NULL_instr(l,)], [(val : val <: instr)])
+    `%~>%`([(val : val <: instr) BR_ON_NULL_instr(l)], [(val : val <: instr)])
     -- otherwise
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `br_on_non_null-null`{val : val, l : labelidx}:
-    `%~>%`([(val : val <: instr) BR_ON_NON_NULL_instr(l,)], [])
+    `%~>%`([(val : val <: instr) BR_ON_NON_NULL_instr(l)], [])
     -- if (val = `REF.NULL_ADDR`_val)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `br_on_non_null-addr`{val : val, l : labelidx}:
-    `%~>%`([(val : val <: instr) BR_ON_NON_NULL_instr(l,)], [(val : val <: instr) BR_instr(l,)])
+    `%~>%`([(val : val <: instr) BR_ON_NON_NULL_instr(l)], [(val : val <: instr) BR_instr(l)])
     -- otherwise
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule call_indirect{x : idx, yy : typeuse}:
-    `%~>%`([CALL_INDIRECT_instr(x, yy)], [`TABLE.GET`_instr(x,) `REF.CAST`_instr(REF_reftype(?(NULL_null), (yy : typeuse <: heaptype)),) CALL_REF_instr(yy,)])
+    `%~>%`([CALL_INDIRECT_instr(x, yy)], [`TABLE.GET`_instr(x) `REF.CAST`_instr(REF_reftype(?(NULL_null), (yy : typeuse <: heaptype))) CALL_REF_instr(yy)])
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule return_call_indirect{x : idx, yy : typeuse}:
-    `%~>%`([RETURN_CALL_INDIRECT_instr(x, yy)], [`TABLE.GET`_instr(x,) `REF.CAST`_instr(REF_reftype(?(NULL_null), (yy : typeuse <: heaptype)),) RETURN_CALL_REF_instr(yy,)])
+    `%~>%`([RETURN_CALL_INDIRECT_instr(x, yy)], [`TABLE.GET`_instr(x) `REF.CAST`_instr(REF_reftype(?(NULL_null), (yy : typeuse <: heaptype))) RETURN_CALL_REF_instr(yy)])
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `frame-vals`{n : n, f : frame, `val*` : val*}:
@@ -6622,11 +6622,11 @@ relation Step_pure: `%~>%`(instr*, instr*)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `local.tee`{val : val, x : idx}:
-    `%~>%`([(val : val <: instr) `LOCAL.TEE`_instr(x,)], [(val : val <: instr) (val : val <: instr) `LOCAL.SET`_instr(x,)])
+    `%~>%`([(val : val <: instr) `LOCAL.TEE`_instr(x)], [(val : val <: instr) (val : val <: instr) `LOCAL.SET`_instr(x)])
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `ref.i31`{i : num_(I32_numtype)}:
-    `%~>%`([CONST_instr(I32_numtype, i) `REF.I31`_instr], [`REF.I31_NUM`_instr($wrap__(32, 31, i),)])
+    `%~>%`([CONST_instr(I32_numtype, i) `REF.I31`_instr], [`REF.I31_NUM`_instr($wrap__(32, 31, i))])
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `ref.is_null-true`{ref : ref}:
@@ -6666,15 +6666,15 @@ relation Step_pure: `%~>%`(instr*, instr*)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `i31.get-null`{sx : sx}:
-    `%~>%`([`REF.NULL_ADDR`_instr `I31.GET`_instr(sx,)], [TRAP_instr])
+    `%~>%`([`REF.NULL_ADDR`_instr `I31.GET`_instr(sx)], [TRAP_instr])
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `i31.get-num`{i : u31, sx : sx}:
-    `%~>%`([`REF.I31_NUM`_instr(i,) `I31.GET`_instr(sx,)], [CONST_instr(I32_numtype, $extend__(31, 32, sx, i))])
+    `%~>%`([`REF.I31_NUM`_instr(i) `I31.GET`_instr(sx)], [CONST_instr(I32_numtype, $extend__(31, 32, sx, i))])
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `array.new`{val : val, n : n, x : idx}:
-    `%~>%`([(val : val <: instr) CONST_instr(I32_numtype, `%`_num_(n,)) `ARRAY.NEW`_instr(x,)], (val : val <: instr)^n{} ++ [`ARRAY.NEW_FIXED`_instr(x, `%`_u32(n,))])
+    `%~>%`([(val : val <: instr) CONST_instr(I32_numtype, `%`_num_(n,)) `ARRAY.NEW`_instr(x)], (val : val <: instr)^n{} ++ [`ARRAY.NEW_FIXED`_instr(x, `%`_u32(n,))])
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `extern.convert_any-null`{ref : ref}:
@@ -6683,7 +6683,7 @@ relation Step_pure: `%~>%`(instr*, instr*)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `extern.convert_any-addr`{ref : ref}:
-    `%~>%`([(ref : ref <: instr) `EXTERN.CONVERT_ANY`_instr], [`REF.EXTERN`_instr(ref,)])
+    `%~>%`([(ref : ref <: instr) `EXTERN.CONVERT_ANY`_instr], [`REF.EXTERN`_instr(ref)])
     -- otherwise
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
@@ -6692,7 +6692,7 @@ relation Step_pure: `%~>%`(instr*, instr*)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `any.convert_extern-addr`{ref : ref}:
-    `%~>%`([`REF.EXTERN`_instr(ref,) `ANY.CONVERT_EXTERN`_instr], [(ref : ref <: instr)])
+    `%~>%`([`REF.EXTERN`_instr(ref) `ANY.CONVERT_EXTERN`_instr], [(ref : ref <: instr)])
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `unop-val`{nt : numtype, c_1 : num_(nt), unop : unop_(nt), c : num_(nt)}:
@@ -6802,7 +6802,7 @@ relation Step_pure: `%~>%`(instr*, instr*)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule vbitmask{c_1 : vec_(V128_Vnn), sh : ishape, c : num_(I32_numtype)}:
-    `%~>%`([VCONST_instr(V128_vectype, c_1) VBITMASK_instr(sh,)], [CONST_instr(I32_numtype, c)])
+    `%~>%`([VCONST_instr(V128_vectype, c_1) VBITMASK_instr(sh)], [CONST_instr(I32_numtype, c)])
     -- if (c = $vbitmaskop_(sh, c_1))
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
@@ -6817,7 +6817,7 @@ relation Step_pure: `%~>%`(instr*, instr*)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule vsplat{Lnn : Lnn, c_1 : num_($lunpack(Lnn)), M : M, c : vec_(V128_Vnn)}:
-    `%~>%`([CONST_instr($lunpack(Lnn), c_1) VSPLAT_instr(`%X%`_shape(Lnn, M),)], [VCONST_instr(V128_vectype, c)])
+    `%~>%`([CONST_instr($lunpack(Lnn), c_1) VSPLAT_instr(`%X%`_shape(Lnn, M))], [VCONST_instr(V128_vectype, c)])
     -- if (c = $inv_lanes_(`%X%`_shape(Lnn, M), $lpacknum_(Lnn, c_1)^M!`%`_M.0{}))
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
@@ -6863,10 +6863,10 @@ relation Step_pure: `%~>%`(instr*, instr*)
 ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
 def $blocktype_(state : state, blocktype : blocktype) : instrtype
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
-  def $blocktype_{z : state, x : idx, `t_1*` : valtype*, `t_2*` : valtype*}(z, _IDX_blocktype(x,)) = `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`},), [], `%`_resulttype(t_2*{t_2 <- `t_2*`},))
+  def $blocktype_{z : state, x : idx, `t_1*` : valtype*, `t_2*` : valtype*}(z, _IDX_blocktype(x)) = `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`},), [], `%`_resulttype(t_2*{t_2 <- `t_2*`},))
     -- Expand: `%~~%`($type(z, x), `FUNC%->%`_comptype(`%`_resulttype(t_1*{t_1 <- `t_1*`},), `%`_resulttype(t_2*{t_2 <- `t_2*`},)))
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
-  def $blocktype_{z : state, `t?` : valtype?}(z, _RESULT_blocktype(t?{t <- `t?`},)) = `%->_%%`_instrtype(`%`_resulttype([],), [], `%`_resulttype(lift(t?{t <- `t?`}),))
+  def $blocktype_{z : state, `t?` : valtype?}(z, _RESULT_blocktype(t?{t <- `t?`})) = `%->_%%`_instrtype(`%`_resulttype([],), [], `%`_resulttype(lift(t?{t <- `t?`}),))
 
 ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
 relation Step_read: `%~>%`(config, instr*)
@@ -6882,7 +6882,7 @@ relation Step_read: `%~>%`(config, instr*)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `br_on_cast-succeed`{s : store, f : frame, ref : ref, l : labelidx, rt_1 : reftype, rt_2 : reftype}:
-    `%~>%`(`%;%`_config(`%;%`_state(s, f), [(ref : ref <: instr) BR_ON_CAST_instr(l, rt_1, rt_2)]), [(ref : ref <: instr) BR_instr(l,)])
+    `%~>%`(`%;%`_config(`%;%`_state(s, f), [(ref : ref <: instr) BR_ON_CAST_instr(l, rt_1, rt_2)]), [(ref : ref <: instr) BR_instr(l)])
     -- Ref_ok: `%|-%:%`(s, ref, $inst_reftype(f.MODULE_frame, rt_2))
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
@@ -6897,46 +6897,46 @@ relation Step_read: `%~>%`(config, instr*)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `br_on_cast_fail-fail`{s : store, f : frame, ref : ref, l : labelidx, rt_1 : reftype, rt_2 : reftype}:
-    `%~>%`(`%;%`_config(`%;%`_state(s, f), [(ref : ref <: instr) BR_ON_CAST_FAIL_instr(l, rt_1, rt_2)]), [(ref : ref <: instr) BR_instr(l,)])
+    `%~>%`(`%;%`_config(`%;%`_state(s, f), [(ref : ref <: instr) BR_ON_CAST_FAIL_instr(l, rt_1, rt_2)]), [(ref : ref <: instr) BR_instr(l)])
     -- otherwise
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule call{z : state, x : idx, a : addr}:
-    `%~>%`(`%;%`_config(z, [CALL_instr(x,)]), [`REF.FUNC_ADDR`_instr(a,) CALL_REF_instr(($funcinst(z)[a].TYPE_funcinst : deftype <: typeuse),)])
+    `%~>%`(`%;%`_config(z, [CALL_instr(x)]), [`REF.FUNC_ADDR`_instr(a) CALL_REF_instr($funcinst(z)[a].TYPE_funcinst : deftype <: typeuse)])
     -- if ($moduleinst(z).FUNCS_moduleinst[x!`%`_idx.0] = a)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `call_ref-null`{z : state, yy : typeuse}:
-    `%~>%`(`%;%`_config(z, [`REF.NULL_ADDR`_instr CALL_REF_instr(yy,)]), [TRAP_instr])
+    `%~>%`(`%;%`_config(z, [`REF.NULL_ADDR`_instr CALL_REF_instr(yy)]), [TRAP_instr])
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `call_ref-func`{z : state, n : n, `val*` : val*, a : addr, yy : typeuse, m : m, f : frame, `instr*` : instr*, fi : funcinst, `t_1*` : valtype*, `t_2*` : valtype*, x : idx, `t*` : valtype*}:
-    `%~>%`(`%;%`_config(z, (val : val <: instr)^n{val <- `val*`} ++ [`REF.FUNC_ADDR`_instr(a,) CALL_REF_instr(yy,)]), [`FRAME_%{%}%`_instr(m, f, [`LABEL_%{%}%`_instr(m, [], instr*{instr <- `instr*`})])])
+    `%~>%`(`%;%`_config(z, (val : val <: instr)^n{val <- `val*`} ++ [`REF.FUNC_ADDR`_instr(a) CALL_REF_instr(yy)]), [`FRAME_%{%}%`_instr(m, f, [`LABEL_%{%}%`_instr(m, [], instr*{instr <- `instr*`})])])
     -- if ($funcinst(z)[a] = fi)
     -- Expand: `%~~%`(fi.TYPE_funcinst, `FUNC%->%`_comptype(`%`_resulttype(t_1^n{t_1 <- `t_1*`},), `%`_resulttype(t_2^m{t_2 <- `t_2*`},)))
-    -- if (fi.CODE_funcinst = FUNC_funccode(x, LOCAL_local(t,)*{t <- `t*`}, instr*{instr <- `instr*`}))
+    -- if (fi.CODE_funcinst = FUNC_funccode(x, LOCAL_local(t)*{t <- `t*`}, instr*{instr <- `instr*`}))
     -- if (f = {LOCALS ?(val)^n{val <- `val*`} ++ $default_(t)*{t <- `t*`}, MODULE fi.MODULE_funcinst})
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule return_call{z : state, x : idx, a : addr}:
-    `%~>%`(`%;%`_config(z, [RETURN_CALL_instr(x,)]), [`REF.FUNC_ADDR`_instr(a,) RETURN_CALL_REF_instr(($funcinst(z)[a].TYPE_funcinst : deftype <: typeuse),)])
+    `%~>%`(`%;%`_config(z, [RETURN_CALL_instr(x)]), [`REF.FUNC_ADDR`_instr(a) RETURN_CALL_REF_instr($funcinst(z)[a].TYPE_funcinst : deftype <: typeuse)])
     -- if ($moduleinst(z).FUNCS_moduleinst[x!`%`_idx.0] = a)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `return_call_ref-label`{z : state, k : n, `instr'*` : instr*, `val*` : val*, yy : typeuse, `instr*` : instr*}:
-    `%~>%`(`%;%`_config(z, [`LABEL_%{%}%`_instr(k, instr'*{instr' <- `instr'*`}, (val : val <: instr)*{val <- `val*`} ++ [RETURN_CALL_REF_instr(yy,)] ++ instr*{instr <- `instr*`})]), (val : val <: instr)*{val <- `val*`} ++ [RETURN_CALL_REF_instr(yy,)])
+    `%~>%`(`%;%`_config(z, [`LABEL_%{%}%`_instr(k, instr'*{instr' <- `instr'*`}, (val : val <: instr)*{val <- `val*`} ++ [RETURN_CALL_REF_instr(yy)] ++ instr*{instr <- `instr*`})]), (val : val <: instr)*{val <- `val*`} ++ [RETURN_CALL_REF_instr(yy)])
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `return_call_ref-handler`{z : state, k : n, `catch*` : catch*, `val*` : val*, yy : typeuse, `instr*` : instr*}:
-    `%~>%`(`%;%`_config(z, [`HANDLER_%{%}%`_instr(k, catch*{catch <- `catch*`}, (val : val <: instr)*{val <- `val*`} ++ [RETURN_CALL_REF_instr(yy,)] ++ instr*{instr <- `instr*`})]), (val : val <: instr)*{val <- `val*`} ++ [RETURN_CALL_REF_instr(yy,)])
+    `%~>%`(`%;%`_config(z, [`HANDLER_%{%}%`_instr(k, catch*{catch <- `catch*`}, (val : val <: instr)*{val <- `val*`} ++ [RETURN_CALL_REF_instr(yy)] ++ instr*{instr <- `instr*`})]), (val : val <: instr)*{val <- `val*`} ++ [RETURN_CALL_REF_instr(yy)])
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `return_call_ref-frame-null`{z : state, k : n, f : frame, `val*` : val*, yy : typeuse, `instr*` : instr*}:
-    `%~>%`(`%;%`_config(z, [`FRAME_%{%}%`_instr(k, f, (val : val <: instr)*{val <- `val*`} ++ [`REF.NULL_ADDR`_instr] ++ [RETURN_CALL_REF_instr(yy,)] ++ instr*{instr <- `instr*`})]), [TRAP_instr])
+    `%~>%`(`%;%`_config(z, [`FRAME_%{%}%`_instr(k, f, (val : val <: instr)*{val <- `val*`} ++ [`REF.NULL_ADDR`_instr] ++ [RETURN_CALL_REF_instr(yy)] ++ instr*{instr <- `instr*`})]), [TRAP_instr])
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `return_call_ref-frame-addr`{z : state, k : n, f : frame, `val'*` : val*, n : n, `val*` : val*, a : addr, yy : typeuse, `instr*` : instr*, `t_1*` : valtype*, m : m, `t_2*` : valtype*}:
-    `%~>%`(`%;%`_config(z, [`FRAME_%{%}%`_instr(k, f, (val' : val <: instr)*{val' <- `val'*`} ++ (val : val <: instr)^n{val <- `val*`} ++ [`REF.FUNC_ADDR`_instr(a,)] ++ [RETURN_CALL_REF_instr(yy,)] ++ instr*{instr <- `instr*`})]), (val : val <: instr)^n{val <- `val*`} ++ [`REF.FUNC_ADDR`_instr(a,) CALL_REF_instr(yy,)])
+    `%~>%`(`%;%`_config(z, [`FRAME_%{%}%`_instr(k, f, (val' : val <: instr)*{val' <- `val'*`} ++ (val : val <: instr)^n{val <- `val*`} ++ [`REF.FUNC_ADDR`_instr(a)] ++ [RETURN_CALL_REF_instr(yy)] ++ instr*{instr <- `instr*`})]), (val : val <: instr)^n{val <- `val*`} ++ [`REF.FUNC_ADDR`_instr(a) CALL_REF_instr(yy)])
     -- Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, `FUNC%->%`_comptype(`%`_resulttype(t_1^n{t_1 <- `t_1*`},), `%`_resulttype(t_2^m{t_2 <- `t_2*`},)))
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
@@ -6945,44 +6945,44 @@ relation Step_read: `%~>%`(config, instr*)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `throw_ref-instrs`{z : state, `val*` : val*, a : addr, `instr*` : instr*}:
-    `%~>%`(`%;%`_config(z, (val : val <: instr)*{val <- `val*`} ++ [`REF.EXN_ADDR`_instr(a,)] ++ [THROW_REF_instr] ++ instr*{instr <- `instr*`}), [`REF.EXN_ADDR`_instr(a,) THROW_REF_instr])
+    `%~>%`(`%;%`_config(z, (val : val <: instr)*{val <- `val*`} ++ [`REF.EXN_ADDR`_instr(a)] ++ [THROW_REF_instr] ++ instr*{instr <- `instr*`}), [`REF.EXN_ADDR`_instr(a) THROW_REF_instr])
     -- if ((val*{val <- `val*`} =/= []) \/ (instr*{instr <- `instr*`} =/= []))
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `throw_ref-label`{z : state, n : n, `instr'*` : instr*, a : addr}:
-    `%~>%`(`%;%`_config(z, [`LABEL_%{%}%`_instr(n, instr'*{instr' <- `instr'*`}, [`REF.EXN_ADDR`_instr(a,) THROW_REF_instr])]), [`REF.EXN_ADDR`_instr(a,) THROW_REF_instr])
+    `%~>%`(`%;%`_config(z, [`LABEL_%{%}%`_instr(n, instr'*{instr' <- `instr'*`}, [`REF.EXN_ADDR`_instr(a) THROW_REF_instr])]), [`REF.EXN_ADDR`_instr(a) THROW_REF_instr])
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `throw_ref-frame`{z : state, n : n, f : frame, a : addr}:
-    `%~>%`(`%;%`_config(z, [`FRAME_%{%}%`_instr(n, f, [`REF.EXN_ADDR`_instr(a,) THROW_REF_instr])]), [`REF.EXN_ADDR`_instr(a,) THROW_REF_instr])
+    `%~>%`(`%;%`_config(z, [`FRAME_%{%}%`_instr(n, f, [`REF.EXN_ADDR`_instr(a) THROW_REF_instr])]), [`REF.EXN_ADDR`_instr(a) THROW_REF_instr])
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `throw_ref-handler-empty`{z : state, n : n, a : addr}:
-    `%~>%`(`%;%`_config(z, [`HANDLER_%{%}%`_instr(n, [], [`REF.EXN_ADDR`_instr(a,) THROW_REF_instr])]), [`REF.EXN_ADDR`_instr(a,) THROW_REF_instr])
+    `%~>%`(`%;%`_config(z, [`HANDLER_%{%}%`_instr(n, [], [`REF.EXN_ADDR`_instr(a) THROW_REF_instr])]), [`REF.EXN_ADDR`_instr(a) THROW_REF_instr])
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `throw_ref-handler-catch`{z : state, n : n, x : idx, l : labelidx, `catch'*` : catch*, a : addr, `val*` : val*}:
-    `%~>%`(`%;%`_config(z, [`HANDLER_%{%}%`_instr(n, [CATCH_catch(x, l)] ++ catch'*{catch' <- `catch'*`}, [`REF.EXN_ADDR`_instr(a,) THROW_REF_instr])]), (val : val <: instr)*{val <- `val*`} ++ [BR_instr(l,)])
+    `%~>%`(`%;%`_config(z, [`HANDLER_%{%}%`_instr(n, [CATCH_catch(x, l)] ++ catch'*{catch' <- `catch'*`}, [`REF.EXN_ADDR`_instr(a) THROW_REF_instr])]), (val : val <: instr)*{val <- `val*`} ++ [BR_instr(l)])
     -- if ($exninst(z)[a].TAG_exninst = $tagaddr(z)[x!`%`_idx.0])
     -- if (val*{val <- `val*`} = $exninst(z)[a].FIELDS_exninst)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `throw_ref-handler-catch_ref`{z : state, n : n, x : idx, l : labelidx, `catch'*` : catch*, a : addr, `val*` : val*}:
-    `%~>%`(`%;%`_config(z, [`HANDLER_%{%}%`_instr(n, [CATCH_REF_catch(x, l)] ++ catch'*{catch' <- `catch'*`}, [`REF.EXN_ADDR`_instr(a,) THROW_REF_instr])]), (val : val <: instr)*{val <- `val*`} ++ [`REF.EXN_ADDR`_instr(a,) BR_instr(l,)])
+    `%~>%`(`%;%`_config(z, [`HANDLER_%{%}%`_instr(n, [CATCH_REF_catch(x, l)] ++ catch'*{catch' <- `catch'*`}, [`REF.EXN_ADDR`_instr(a) THROW_REF_instr])]), (val : val <: instr)*{val <- `val*`} ++ [`REF.EXN_ADDR`_instr(a) BR_instr(l)])
     -- if ($exninst(z)[a].TAG_exninst = $tagaddr(z)[x!`%`_idx.0])
     -- if (val*{val <- `val*`} = $exninst(z)[a].FIELDS_exninst)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `throw_ref-handler-catch_all`{z : state, n : n, l : labelidx, `catch'*` : catch*, a : addr}:
-    `%~>%`(`%;%`_config(z, [`HANDLER_%{%}%`_instr(n, [CATCH_ALL_catch(l,)] ++ catch'*{catch' <- `catch'*`}, [`REF.EXN_ADDR`_instr(a,) THROW_REF_instr])]), [BR_instr(l,)])
+    `%~>%`(`%;%`_config(z, [`HANDLER_%{%}%`_instr(n, [CATCH_ALL_catch(l)] ++ catch'*{catch' <- `catch'*`}, [`REF.EXN_ADDR`_instr(a) THROW_REF_instr])]), [BR_instr(l)])
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `throw_ref-handler-catch_all_ref`{z : state, n : n, l : labelidx, `catch'*` : catch*, a : addr}:
-    `%~>%`(`%;%`_config(z, [`HANDLER_%{%}%`_instr(n, [CATCH_ALL_REF_catch(l,)] ++ catch'*{catch' <- `catch'*`}, [`REF.EXN_ADDR`_instr(a,) THROW_REF_instr])]), [`REF.EXN_ADDR`_instr(a,) BR_instr(l,)])
+    `%~>%`(`%;%`_config(z, [`HANDLER_%{%}%`_instr(n, [CATCH_ALL_REF_catch(l)] ++ catch'*{catch' <- `catch'*`}, [`REF.EXN_ADDR`_instr(a) THROW_REF_instr])]), [`REF.EXN_ADDR`_instr(a) BR_instr(l)])
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `throw_ref-handler-next`{z : state, n : n, catch : catch, `catch'*` : catch*, a : addr}:
-    `%~>%`(`%;%`_config(z, [`HANDLER_%{%}%`_instr(n, [catch] ++ catch'*{catch' <- `catch'*`}, [`REF.EXN_ADDR`_instr(a,) THROW_REF_instr])]), [`HANDLER_%{%}%`_instr(n, catch'*{catch' <- `catch'*`}, [`REF.EXN_ADDR`_instr(a,) THROW_REF_instr])])
+    `%~>%`(`%;%`_config(z, [`HANDLER_%{%}%`_instr(n, [catch] ++ catch'*{catch' <- `catch'*`}, [`REF.EXN_ADDR`_instr(a) THROW_REF_instr])]), [`HANDLER_%{%}%`_instr(n, catch'*{catch' <- `catch'*`}, [`REF.EXN_ADDR`_instr(a) THROW_REF_instr])])
     -- otherwise
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
@@ -6992,44 +6992,44 @@ relation Step_read: `%~>%`(config, instr*)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `local.get`{z : state, x : idx, val : val}:
-    `%~>%`(`%;%`_config(z, [`LOCAL.GET`_instr(x,)]), [(val : val <: instr)])
+    `%~>%`(`%;%`_config(z, [`LOCAL.GET`_instr(x)]), [(val : val <: instr)])
     -- if ($local(z, x) = ?(val))
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `global.get`{z : state, x : idx, val : val}:
-    `%~>%`(`%;%`_config(z, [`GLOBAL.GET`_instr(x,)]), [(val : val <: instr)])
+    `%~>%`(`%;%`_config(z, [`GLOBAL.GET`_instr(x)]), [(val : val <: instr)])
     -- if ($global(z, x).VALUE_globalinst = val)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `table.get-oob`{z : state, at : addrtype, i : num_((at : addrtype <: numtype)), x : idx}:
-    `%~>%`(`%;%`_config(z, [CONST_instr((at : addrtype <: numtype), i) `TABLE.GET`_instr(x,)]), [TRAP_instr])
+    `%~>%`(`%;%`_config(z, [CONST_instr((at : addrtype <: numtype), i) `TABLE.GET`_instr(x)]), [TRAP_instr])
     -- if (i!`%`_num_.0 >= |$table(z, x).REFS_tableinst|)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `table.get-val`{z : state, at : addrtype, i : num_((at : addrtype <: numtype)), x : idx}:
-    `%~>%`(`%;%`_config(z, [CONST_instr((at : addrtype <: numtype), i) `TABLE.GET`_instr(x,)]), [($table(z, x).REFS_tableinst[i!`%`_num_.0] : ref <: instr)])
+    `%~>%`(`%;%`_config(z, [CONST_instr((at : addrtype <: numtype), i) `TABLE.GET`_instr(x)]), [($table(z, x).REFS_tableinst[i!`%`_num_.0] : ref <: instr)])
     -- if (i!`%`_num_.0 < |$table(z, x).REFS_tableinst|)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `table.size`{z : state, x : idx, at : addrtype, n : n, lim : limits, rt : reftype}:
-    `%~>%`(`%;%`_config(z, [`TABLE.SIZE`_instr(x,)]), [CONST_instr((at : addrtype <: numtype), `%`_num_(n,))])
+    `%~>%`(`%;%`_config(z, [`TABLE.SIZE`_instr(x)]), [CONST_instr((at : addrtype <: numtype), `%`_num_(n,))])
     -- if (|$table(z, x).REFS_tableinst| = n)
     -- if ($table(z, x).TYPE_tableinst = `%%%`_tabletype(at, lim, rt))
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `table.fill-oob`{z : state, at : addrtype, i : num_((at : addrtype <: numtype)), val : val, n : n, x : idx}:
-    `%~>%`(`%;%`_config(z, [CONST_instr((at : addrtype <: numtype), i) (val : val <: instr) CONST_instr((at : addrtype <: numtype), `%`_num_(n,)) `TABLE.FILL`_instr(x,)]), [TRAP_instr])
+    `%~>%`(`%;%`_config(z, [CONST_instr((at : addrtype <: numtype), i) (val : val <: instr) CONST_instr((at : addrtype <: numtype), `%`_num_(n,)) `TABLE.FILL`_instr(x)]), [TRAP_instr])
     -- if ((i!`%`_num_.0 + n) > |$table(z, x).REFS_tableinst|)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `table.fill-zero`{z : state, at : addrtype, i : num_((at : addrtype <: numtype)), val : val, n : n, x : idx}:
-    `%~>%`(`%;%`_config(z, [CONST_instr((at : addrtype <: numtype), i) (val : val <: instr) CONST_instr((at : addrtype <: numtype), `%`_num_(n,)) `TABLE.FILL`_instr(x,)]), [])
+    `%~>%`(`%;%`_config(z, [CONST_instr((at : addrtype <: numtype), i) (val : val <: instr) CONST_instr((at : addrtype <: numtype), `%`_num_(n,)) `TABLE.FILL`_instr(x)]), [])
     -- otherwise
     -- if (n = 0)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `table.fill-succ`{z : state, at : addrtype, i : num_((at : addrtype <: numtype)), val : val, n : n, x : idx}:
-    `%~>%`(`%;%`_config(z, [CONST_instr((at : addrtype <: numtype), i) (val : val <: instr) CONST_instr((at : addrtype <: numtype), `%`_num_(n,)) `TABLE.FILL`_instr(x,)]), [CONST_instr((at : addrtype <: numtype), i) (val : val <: instr) `TABLE.SET`_instr(x,) CONST_instr((at : addrtype <: numtype), `%`_num_((i!`%`_num_.0 + 1),)) (val : val <: instr) CONST_instr((at : addrtype <: numtype), `%`_num_((((n : nat <:> int) - (1 : nat <:> int)) : int <:> nat),)) `TABLE.FILL`_instr(x,)])
+    `%~>%`(`%;%`_config(z, [CONST_instr((at : addrtype <: numtype), i) (val : val <: instr) CONST_instr((at : addrtype <: numtype), `%`_num_(n,)) `TABLE.FILL`_instr(x)]), [CONST_instr((at : addrtype <: numtype), i) (val : val <: instr) `TABLE.SET`_instr(x) CONST_instr((at : addrtype <: numtype), `%`_num_((i!`%`_num_.0 + 1),)) (val : val <: instr) CONST_instr((at : addrtype <: numtype), `%`_num_((((n : nat <:> int) - (1 : nat <:> int)) : int <:> nat),)) `TABLE.FILL`_instr(x)])
     -- otherwise
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
@@ -7045,13 +7045,13 @@ relation Step_read: `%~>%`(config, instr*)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `table.copy-le`{z : state, at_1 : addrtype, i_1 : num_((at_1 : addrtype <: numtype)), at_2 : addrtype, i_2 : num_((at_2 : addrtype <: numtype)), at' : addrtype, n : n, x : idx, y : idx}:
-    `%~>%`(`%;%`_config(z, [CONST_instr((at_1 : addrtype <: numtype), i_1) CONST_instr((at_2 : addrtype <: numtype), i_2) CONST_instr((at' : addrtype <: numtype), `%`_num_(n,)) `TABLE.COPY`_instr(x, y)]), [CONST_instr((at_1 : addrtype <: numtype), i_1) CONST_instr((at_2 : addrtype <: numtype), i_2) `TABLE.GET`_instr(y,) `TABLE.SET`_instr(x,) CONST_instr((at_1 : addrtype <: numtype), `%`_num_((i_1!`%`_num_.0 + 1),)) CONST_instr((at_2 : addrtype <: numtype), `%`_num_((i_2!`%`_num_.0 + 1),)) CONST_instr((at' : addrtype <: numtype), `%`_num_((((n : nat <:> int) - (1 : nat <:> int)) : int <:> nat),)) `TABLE.COPY`_instr(x, y)])
+    `%~>%`(`%;%`_config(z, [CONST_instr((at_1 : addrtype <: numtype), i_1) CONST_instr((at_2 : addrtype <: numtype), i_2) CONST_instr((at' : addrtype <: numtype), `%`_num_(n,)) `TABLE.COPY`_instr(x, y)]), [CONST_instr((at_1 : addrtype <: numtype), i_1) CONST_instr((at_2 : addrtype <: numtype), i_2) `TABLE.GET`_instr(y) `TABLE.SET`_instr(x) CONST_instr((at_1 : addrtype <: numtype), `%`_num_((i_1!`%`_num_.0 + 1),)) CONST_instr((at_2 : addrtype <: numtype), `%`_num_((i_2!`%`_num_.0 + 1),)) CONST_instr((at' : addrtype <: numtype), `%`_num_((((n : nat <:> int) - (1 : nat <:> int)) : int <:> nat),)) `TABLE.COPY`_instr(x, y)])
     -- otherwise
     -- if (i_1!`%`_num_.0 <= i_2!`%`_num_.0)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `table.copy-gt`{z : state, at_1 : addrtype, i_1 : num_((at_1 : addrtype <: numtype)), at_2 : addrtype, i_2 : num_((at_2 : addrtype <: numtype)), at' : addrtype, n : n, x : idx, y : idx}:
-    `%~>%`(`%;%`_config(z, [CONST_instr((at_1 : addrtype <: numtype), i_1) CONST_instr((at_2 : addrtype <: numtype), i_2) CONST_instr((at' : addrtype <: numtype), `%`_num_(n,)) `TABLE.COPY`_instr(x, y)]), [CONST_instr((at_1 : addrtype <: numtype), `%`_num_(((((i_1!`%`_num_.0 + n) : nat <:> int) - (1 : nat <:> int)) : int <:> nat),)) CONST_instr((at_2 : addrtype <: numtype), `%`_num_(((((i_2!`%`_num_.0 + n) : nat <:> int) - (1 : nat <:> int)) : int <:> nat),)) `TABLE.GET`_instr(y,) `TABLE.SET`_instr(x,) CONST_instr((at_1 : addrtype <: numtype), i_1) CONST_instr((at_2 : addrtype <: numtype), i_2) CONST_instr((at' : addrtype <: numtype), `%`_num_((((n : nat <:> int) - (1 : nat <:> int)) : int <:> nat),)) `TABLE.COPY`_instr(x, y)])
+    `%~>%`(`%;%`_config(z, [CONST_instr((at_1 : addrtype <: numtype), i_1) CONST_instr((at_2 : addrtype <: numtype), i_2) CONST_instr((at' : addrtype <: numtype), `%`_num_(n,)) `TABLE.COPY`_instr(x, y)]), [CONST_instr((at_1 : addrtype <: numtype), `%`_num_(((((i_1!`%`_num_.0 + n) : nat <:> int) - (1 : nat <:> int)) : int <:> nat),)) CONST_instr((at_2 : addrtype <: numtype), `%`_num_(((((i_2!`%`_num_.0 + n) : nat <:> int) - (1 : nat <:> int)) : int <:> nat),)) `TABLE.GET`_instr(y) `TABLE.SET`_instr(x) CONST_instr((at_1 : addrtype <: numtype), i_1) CONST_instr((at_2 : addrtype <: numtype), i_2) CONST_instr((at' : addrtype <: numtype), `%`_num_((((n : nat <:> int) - (1 : nat <:> int)) : int <:> nat),)) `TABLE.COPY`_instr(x, y)])
     -- otherwise
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
@@ -7067,7 +7067,7 @@ relation Step_read: `%~>%`(config, instr*)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `table.init-succ`{z : state, at : addrtype, i : num_((at : addrtype <: numtype)), j : num_(I32_numtype), n : n, x : idx, y : idx}:
-    `%~>%`(`%;%`_config(z, [CONST_instr((at : addrtype <: numtype), i) CONST_instr(I32_numtype, j) CONST_instr(I32_numtype, `%`_num_(n,)) `TABLE.INIT`_instr(x, y)]), [CONST_instr((at : addrtype <: numtype), i) ($elem(z, y).REFS_eleminst[j!`%`_num_.0] : ref <: instr) `TABLE.SET`_instr(x,) CONST_instr((at : addrtype <: numtype), `%`_num_((i!`%`_num_.0 + 1),)) CONST_instr(I32_numtype, `%`_num_((j!`%`_num_.0 + 1),)) CONST_instr(I32_numtype, `%`_num_((((n : nat <:> int) - (1 : nat <:> int)) : int <:> nat),)) `TABLE.INIT`_instr(x, y)])
+    `%~>%`(`%;%`_config(z, [CONST_instr((at : addrtype <: numtype), i) CONST_instr(I32_numtype, j) CONST_instr(I32_numtype, `%`_num_(n,)) `TABLE.INIT`_instr(x, y)]), [CONST_instr((at : addrtype <: numtype), i) ($elem(z, y).REFS_eleminst[j!`%`_num_.0] : ref <: instr) `TABLE.SET`_instr(x) CONST_instr((at : addrtype <: numtype), `%`_num_((i!`%`_num_.0 + 1),)) CONST_instr(I32_numtype, `%`_num_((j!`%`_num_.0 + 1),)) CONST_instr(I32_numtype, `%`_num_((((n : nat <:> int) - (1 : nat <:> int)) : int <:> nat),)) `TABLE.INIT`_instr(x, y)])
     -- otherwise
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
@@ -7113,12 +7113,12 @@ relation Step_read: `%~>%`(config, instr*)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `vload-splat-oob`{z : state, at : addrtype, i : num_((at : addrtype <: numtype)), N : N, x : idx, ao : memarg}:
-    `%~>%`(`%;%`_config(z, [CONST_instr((at : addrtype <: numtype), i) VLOAD_instr(V128_vectype, ?(SPLAT_vloadop_(`%`_sz(N,),)), x, ao)]), [TRAP_instr])
+    `%~>%`(`%;%`_config(z, [CONST_instr((at : addrtype <: numtype), i) VLOAD_instr(V128_vectype, ?(SPLAT_vloadop_(`%`_sz(N,))), x, ao)]), [TRAP_instr])
     -- if (((i!`%`_num_.0 + ao.OFFSET_memarg!`%`_u64.0) + (((N : nat <:> rat) / (8 : nat <:> rat)) : rat <:> nat)) > |$mem(z, x).BYTES_meminst|)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `vload-splat-val`{z : state, at : addrtype, i : num_((at : addrtype <: numtype)), N : N, x : idx, ao : memarg, c : vec_(V128_Vnn), j : iN(N), Jnn : Jnn, M : M}:
-    `%~>%`(`%;%`_config(z, [CONST_instr((at : addrtype <: numtype), i) VLOAD_instr(V128_vectype, ?(SPLAT_vloadop_(`%`_sz(N,),)), x, ao)]), [VCONST_instr(V128_vectype, c)])
+    `%~>%`(`%;%`_config(z, [CONST_instr((at : addrtype <: numtype), i) VLOAD_instr(V128_vectype, ?(SPLAT_vloadop_(`%`_sz(N,))), x, ao)]), [VCONST_instr(V128_vectype, c)])
     -- if ($ibytes_(N, j) = $mem(z, x).BYTES_meminst[(i!`%`_num_.0 + ao.OFFSET_memarg!`%`_u64.0) : (((N : nat <:> rat) / (8 : nat <:> rat)) : rat <:> nat)])
     -- if (N = $jsize(Jnn))
     -- if ((M!`%`_M.0 : nat <:> rat) = ((128 : nat <:> rat) / (N : nat <:> rat)))
@@ -7150,24 +7150,24 @@ relation Step_read: `%~>%`(config, instr*)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `memory.size`{z : state, x : idx, at : addrtype, n : n, lim : limits}:
-    `%~>%`(`%;%`_config(z, [`MEMORY.SIZE`_instr(x,)]), [CONST_instr((at : addrtype <: numtype), `%`_num_(n,))])
+    `%~>%`(`%;%`_config(z, [`MEMORY.SIZE`_instr(x)]), [CONST_instr((at : addrtype <: numtype), `%`_num_(n,))])
     -- if ((n * (64 * $Ki)) = |$mem(z, x).BYTES_meminst|)
     -- if ($mem(z, x).TYPE_meminst = `%%PAGE`_memtype(at, lim))
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `memory.fill-oob`{z : state, at : addrtype, i : num_((at : addrtype <: numtype)), val : val, n : n, x : idx}:
-    `%~>%`(`%;%`_config(z, [CONST_instr((at : addrtype <: numtype), i) (val : val <: instr) CONST_instr((at : addrtype <: numtype), `%`_num_(n,)) `MEMORY.FILL`_instr(x,)]), [TRAP_instr])
+    `%~>%`(`%;%`_config(z, [CONST_instr((at : addrtype <: numtype), i) (val : val <: instr) CONST_instr((at : addrtype <: numtype), `%`_num_(n,)) `MEMORY.FILL`_instr(x)]), [TRAP_instr])
     -- if ((i!`%`_num_.0 + n) > |$mem(z, x).BYTES_meminst|)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `memory.fill-zero`{z : state, at : addrtype, i : num_((at : addrtype <: numtype)), val : val, n : n, x : idx}:
-    `%~>%`(`%;%`_config(z, [CONST_instr((at : addrtype <: numtype), i) (val : val <: instr) CONST_instr((at : addrtype <: numtype), `%`_num_(n,)) `MEMORY.FILL`_instr(x,)]), [])
+    `%~>%`(`%;%`_config(z, [CONST_instr((at : addrtype <: numtype), i) (val : val <: instr) CONST_instr((at : addrtype <: numtype), `%`_num_(n,)) `MEMORY.FILL`_instr(x)]), [])
     -- otherwise
     -- if (n = 0)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `memory.fill-succ`{z : state, at : addrtype, i : num_((at : addrtype <: numtype)), val : val, n : n, x : idx}:
-    `%~>%`(`%;%`_config(z, [CONST_instr((at : addrtype <: numtype), i) (val : val <: instr) CONST_instr((at : addrtype <: numtype), `%`_num_(n,)) `MEMORY.FILL`_instr(x,)]), [CONST_instr((at : addrtype <: numtype), i) (val : val <: instr) STORE_instr(I32_numtype, ?(`%`_storeop_(`%`_sz(8,),)), x, $memarg0) CONST_instr((at : addrtype <: numtype), `%`_num_((i!`%`_num_.0 + 1),)) (val : val <: instr) CONST_instr((at : addrtype <: numtype), `%`_num_((((n : nat <:> int) - (1 : nat <:> int)) : int <:> nat),)) `MEMORY.FILL`_instr(x,)])
+    `%~>%`(`%;%`_config(z, [CONST_instr((at : addrtype <: numtype), i) (val : val <: instr) CONST_instr((at : addrtype <: numtype), `%`_num_(n,)) `MEMORY.FILL`_instr(x)]), [CONST_instr((at : addrtype <: numtype), i) (val : val <: instr) STORE_instr(I32_numtype, ?(`%`_storeop_(`%`_sz(8,),)), x, $memarg0) CONST_instr((at : addrtype <: numtype), `%`_num_((i!`%`_num_.0 + 1),)) (val : val <: instr) CONST_instr((at : addrtype <: numtype), `%`_num_((((n : nat <:> int) - (1 : nat <:> int)) : int <:> nat),)) `MEMORY.FILL`_instr(x)])
     -- otherwise
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
@@ -7210,36 +7210,36 @@ relation Step_read: `%~>%`(config, instr*)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `ref.null`{z : state, ht : heaptype}:
-    `%~>%`(`%;%`_config(z, [`REF.NULL`_instr(ht,)]), [`REF.NULL_ADDR`_instr])
+    `%~>%`(`%;%`_config(z, [`REF.NULL`_instr(ht)]), [`REF.NULL_ADDR`_instr])
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `ref.func`{z : state, x : idx}:
-    `%~>%`(`%;%`_config(z, [`REF.FUNC`_instr(x,)]), [`REF.FUNC_ADDR`_instr($moduleinst(z).FUNCS_moduleinst[x!`%`_idx.0],)])
+    `%~>%`(`%;%`_config(z, [`REF.FUNC`_instr(x)]), [`REF.FUNC_ADDR`_instr($moduleinst(z).FUNCS_moduleinst[x!`%`_idx.0])])
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `ref.test-true`{s : store, f : frame, ref : ref, rt : reftype}:
-    `%~>%`(`%;%`_config(`%;%`_state(s, f), [(ref : ref <: instr) `REF.TEST`_instr(rt,)]), [CONST_instr(I32_numtype, `%`_num_(1,))])
+    `%~>%`(`%;%`_config(`%;%`_state(s, f), [(ref : ref <: instr) `REF.TEST`_instr(rt)]), [CONST_instr(I32_numtype, `%`_num_(1,))])
     -- Ref_ok: `%|-%:%`(s, ref, $inst_reftype(f.MODULE_frame, rt))
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `ref.test-false`{s : store, f : frame, ref : ref, rt : reftype}:
-    `%~>%`(`%;%`_config(`%;%`_state(s, f), [(ref : ref <: instr) `REF.TEST`_instr(rt,)]), [CONST_instr(I32_numtype, `%`_num_(0,))])
+    `%~>%`(`%;%`_config(`%;%`_state(s, f), [(ref : ref <: instr) `REF.TEST`_instr(rt)]), [CONST_instr(I32_numtype, `%`_num_(0,))])
     -- otherwise
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `ref.cast-succeed`{s : store, f : frame, ref : ref, rt : reftype}:
-    `%~>%`(`%;%`_config(`%;%`_state(s, f), [(ref : ref <: instr) `REF.CAST`_instr(rt,)]), [(ref : ref <: instr)])
+    `%~>%`(`%;%`_config(`%;%`_state(s, f), [(ref : ref <: instr) `REF.CAST`_instr(rt)]), [(ref : ref <: instr)])
     -- Ref_ok: `%|-%:%`(s, ref, $inst_reftype(f.MODULE_frame, rt))
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `ref.cast-fail`{s : store, f : frame, ref : ref, rt : reftype}:
-    `%~>%`(`%;%`_config(`%;%`_state(s, f), [(ref : ref <: instr) `REF.CAST`_instr(rt,)]), [TRAP_instr])
+    `%~>%`(`%;%`_config(`%;%`_state(s, f), [(ref : ref <: instr) `REF.CAST`_instr(rt)]), [TRAP_instr])
     -- otherwise
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `struct.new_default`{z : state, x : idx, `val*` : val*, `mut?*` : mut?*, `zt*` : storagetype*}:
-    `%~>%`(`%;%`_config(z, [`STRUCT.NEW_DEFAULT`_instr(x,)]), (val : val <: instr)*{val <- `val*`} ++ [`STRUCT.NEW`_instr(x,)])
-    -- Expand: `%~~%`($type(z, x), STRUCT_comptype(`%`_list(`%%`_fieldtype(mut?{mut <- `mut?`}, zt)*{`mut?` <- `mut?*`, zt <- `zt*`},),))
+    `%~>%`(`%;%`_config(z, [`STRUCT.NEW_DEFAULT`_instr(x)]), (val : val <: instr)*{val <- `val*`} ++ [`STRUCT.NEW`_instr(x)])
+    -- Expand: `%~~%`($type(z, x), STRUCT_comptype(`%`_list(`%%`_fieldtype(mut?{mut <- `mut?`}, zt)*{`mut?` <- `mut?*`, zt <- `zt*`},)))
     -- (if ($default_($unpack(zt)) = ?(val)))*{val <- `val*`, zt <- `zt*`}
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
@@ -7248,13 +7248,13 @@ relation Step_read: `%~>%`(config, instr*)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `struct.get-struct`{z : state, a : addr, `sx?` : sx?, x : idx, i : fieldidx, `zt*` : storagetype*, `mut?*` : mut?*}:
-    `%~>%`(`%;%`_config(z, [`REF.STRUCT_ADDR`_instr(a,) `STRUCT.GET`_instr(sx?{sx <- `sx?`}, x, i)]), [($unpackfield_(zt*{zt <- `zt*`}[i!`%`_fieldidx.0], sx?{sx <- `sx?`}, $structinst(z)[a].FIELDS_structinst[i!`%`_fieldidx.0]) : val <: instr)])
-    -- Expand: `%~~%`($type(z, x), STRUCT_comptype(`%`_list(`%%`_fieldtype(mut?{mut <- `mut?`}, zt)*{`mut?` <- `mut?*`, zt <- `zt*`},),))
+    `%~>%`(`%;%`_config(z, [`REF.STRUCT_ADDR`_instr(a) `STRUCT.GET`_instr(sx?{sx <- `sx?`}, x, i)]), [($unpackfield_(zt*{zt <- `zt*`}[i!`%`_fieldidx.0], sx?{sx <- `sx?`}, $structinst(z)[a].FIELDS_structinst[i!`%`_fieldidx.0]) : val <: instr)])
+    -- Expand: `%~~%`($type(z, x), STRUCT_comptype(`%`_list(`%%`_fieldtype(mut?{mut <- `mut?`}, zt)*{`mut?` <- `mut?*`, zt <- `zt*`},)))
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `array.new_default`{z : state, n : n, x : idx, val : val, `mut?` : mut?, zt : storagetype}:
-    `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(n,)) `ARRAY.NEW_DEFAULT`_instr(x,)]), (val : val <: instr)^n{} ++ [`ARRAY.NEW_FIXED`_instr(x, `%`_u32(n,))])
-    -- Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`_fieldtype(mut?{mut <- `mut?`}, zt),))
+    `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(n,)) `ARRAY.NEW_DEFAULT`_instr(x)]), (val : val <: instr)^n{} ++ [`ARRAY.NEW_FIXED`_instr(x, `%`_u32(n,))])
+    -- Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`_fieldtype(mut?{mut <- `mut?`}, zt)))
     -- if ($default_($unpack(zt)) = ?(val))
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
@@ -7270,13 +7270,13 @@ relation Step_read: `%~>%`(config, instr*)
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `array.new_data-oob`{z : state, i : num_(I32_numtype), n : n, x : idx, y : idx, `mut?` : mut?, zt : storagetype}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, i) CONST_instr(I32_numtype, `%`_num_(n,)) `ARRAY.NEW_DATA`_instr(x, y)]), [TRAP_instr])
-    -- Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`_fieldtype(mut?{mut <- `mut?`}, zt),))
+    -- Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`_fieldtype(mut?{mut <- `mut?`}, zt)))
     -- if ((i!`%`_num_.0 + ((((n * $zsize(zt)) : nat <:> rat) / (8 : nat <:> rat)) : rat <:> nat)) > |$data(z, y).BYTES_datainst|)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `array.new_data-num`{z : state, i : num_(I32_numtype), n : n, x : idx, y : idx, zt : storagetype, `c*` : lit_(zt)*, `mut?` : mut?}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, i) CONST_instr(I32_numtype, `%`_num_(n,)) `ARRAY.NEW_DATA`_instr(x, y)]), $const($cunpack(zt), $cunpacknum_(zt, c))^n{c <- `c*`} ++ [`ARRAY.NEW_FIXED`_instr(x, `%`_u32(n,))])
-    -- Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`_fieldtype(mut?{mut <- `mut?`}, zt),))
+    -- Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`_fieldtype(mut?{mut <- `mut?`}, zt)))
     -- if ($concatn_(syntax byte, $zbytes_(zt, c)^n{c <- `c*`}, ((($zsize(zt) : nat <:> rat) / (8 : nat <:> rat)) : rat <:> nat)) = $data(z, y).BYTES_datainst[i!`%`_num_.0 : ((((n * $zsize(zt)) : nat <:> rat) / (8 : nat <:> rat)) : rat <:> nat)])
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
@@ -7285,13 +7285,13 @@ relation Step_read: `%~>%`(config, instr*)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `array.get-oob`{z : state, a : addr, i : num_(I32_numtype), `sx?` : sx?, x : idx}:
-    `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a,) CONST_instr(I32_numtype, i) `ARRAY.GET`_instr(sx?{sx <- `sx?`}, x)]), [TRAP_instr])
+    `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a) CONST_instr(I32_numtype, i) `ARRAY.GET`_instr(sx?{sx <- `sx?`}, x)]), [TRAP_instr])
     -- if (i!`%`_num_.0 >= |$arrayinst(z)[a].FIELDS_arrayinst|)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `array.get-array`{z : state, a : addr, i : num_(I32_numtype), `sx?` : sx?, x : idx, zt : storagetype, `mut?` : mut?}:
-    `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a,) CONST_instr(I32_numtype, i) `ARRAY.GET`_instr(sx?{sx <- `sx?`}, x)]), [($unpackfield_(zt, sx?{sx <- `sx?`}, $arrayinst(z)[a].FIELDS_arrayinst[i!`%`_num_.0]) : val <: instr)])
-    -- Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`_fieldtype(mut?{mut <- `mut?`}, zt),))
+    `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a) CONST_instr(I32_numtype, i) `ARRAY.GET`_instr(sx?{sx <- `sx?`}, x)]), [($unpackfield_(zt, sx?{sx <- `sx?`}, $arrayinst(z)[a].FIELDS_arrayinst[i!`%`_num_.0]) : val <: instr)])
+    -- Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`_fieldtype(mut?{mut <- `mut?`}, zt)))
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `array.len-null`{z : state}:
@@ -7299,26 +7299,26 @@ relation Step_read: `%~>%`(config, instr*)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `array.len-array`{z : state, a : addr}:
-    `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a,) `ARRAY.LEN`_instr]), [CONST_instr(I32_numtype, `%`_num_(|$arrayinst(z)[a].FIELDS_arrayinst|,))])
+    `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a) `ARRAY.LEN`_instr]), [CONST_instr(I32_numtype, `%`_num_(|$arrayinst(z)[a].FIELDS_arrayinst|,))])
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `array.fill-null`{z : state, i : num_(I32_numtype), val : val, n : n, x : idx}:
-    `%~>%`(`%;%`_config(z, [`REF.NULL_ADDR`_instr CONST_instr(I32_numtype, i) (val : val <: instr) CONST_instr(I32_numtype, `%`_num_(n,)) `ARRAY.FILL`_instr(x,)]), [TRAP_instr])
+    `%~>%`(`%;%`_config(z, [`REF.NULL_ADDR`_instr CONST_instr(I32_numtype, i) (val : val <: instr) CONST_instr(I32_numtype, `%`_num_(n,)) `ARRAY.FILL`_instr(x)]), [TRAP_instr])
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `array.fill-oob`{z : state, a : addr, i : num_(I32_numtype), val : val, n : n, x : idx}:
-    `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a,) CONST_instr(I32_numtype, i) (val : val <: instr) CONST_instr(I32_numtype, `%`_num_(n,)) `ARRAY.FILL`_instr(x,)]), [TRAP_instr])
+    `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a) CONST_instr(I32_numtype, i) (val : val <: instr) CONST_instr(I32_numtype, `%`_num_(n,)) `ARRAY.FILL`_instr(x)]), [TRAP_instr])
     -- if ((i!`%`_num_.0 + n) > |$arrayinst(z)[a].FIELDS_arrayinst|)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `array.fill-zero`{z : state, a : addr, i : num_(I32_numtype), val : val, n : n, x : idx}:
-    `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a,) CONST_instr(I32_numtype, i) (val : val <: instr) CONST_instr(I32_numtype, `%`_num_(n,)) `ARRAY.FILL`_instr(x,)]), [])
+    `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a) CONST_instr(I32_numtype, i) (val : val <: instr) CONST_instr(I32_numtype, `%`_num_(n,)) `ARRAY.FILL`_instr(x)]), [])
     -- otherwise
     -- if (n = 0)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `array.fill-succ`{z : state, a : addr, i : num_(I32_numtype), val : val, n : n, x : idx}:
-    `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a,) CONST_instr(I32_numtype, i) (val : val <: instr) CONST_instr(I32_numtype, `%`_num_(n,)) `ARRAY.FILL`_instr(x,)]), [`REF.ARRAY_ADDR`_instr(a,) CONST_instr(I32_numtype, i) (val : val <: instr) `ARRAY.SET`_instr(x,) `REF.ARRAY_ADDR`_instr(a,) CONST_instr(I32_numtype, `%`_num_((i!`%`_num_.0 + 1),)) (val : val <: instr) CONST_instr(I32_numtype, `%`_num_((((n : nat <:> int) - (1 : nat <:> int)) : int <:> nat),)) `ARRAY.FILL`_instr(x,)])
+    `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a) CONST_instr(I32_numtype, i) (val : val <: instr) CONST_instr(I32_numtype, `%`_num_(n,)) `ARRAY.FILL`_instr(x)]), [`REF.ARRAY_ADDR`_instr(a) CONST_instr(I32_numtype, i) (val : val <: instr) `ARRAY.SET`_instr(x) `REF.ARRAY_ADDR`_instr(a) CONST_instr(I32_numtype, `%`_num_((i!`%`_num_.0 + 1),)) (val : val <: instr) CONST_instr(I32_numtype, `%`_num_((((n : nat <:> int) - (1 : nat <:> int)) : int <:> nat),)) `ARRAY.FILL`_instr(x)])
     -- otherwise
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
@@ -7331,32 +7331,32 @@ relation Step_read: `%~>%`(config, instr*)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `array.copy-oob1`{z : state, a_1 : addr, i_1 : num_(I32_numtype), a_2 : addr, i_2 : num_(I32_numtype), n : n, x_1 : idx, x_2 : idx}:
-    `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a_1,) CONST_instr(I32_numtype, i_1) `REF.ARRAY_ADDR`_instr(a_2,) CONST_instr(I32_numtype, i_2) CONST_instr(I32_numtype, `%`_num_(n,)) `ARRAY.COPY`_instr(x_1, x_2)]), [TRAP_instr])
+    `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a_1) CONST_instr(I32_numtype, i_1) `REF.ARRAY_ADDR`_instr(a_2) CONST_instr(I32_numtype, i_2) CONST_instr(I32_numtype, `%`_num_(n,)) `ARRAY.COPY`_instr(x_1, x_2)]), [TRAP_instr])
     -- if ((i_1!`%`_num_.0 + n) > |$arrayinst(z)[a_1].FIELDS_arrayinst|)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `array.copy-oob2`{z : state, a_1 : addr, i_1 : num_(I32_numtype), a_2 : addr, i_2 : num_(I32_numtype), n : n, x_1 : idx, x_2 : idx}:
-    `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a_1,) CONST_instr(I32_numtype, i_1) `REF.ARRAY_ADDR`_instr(a_2,) CONST_instr(I32_numtype, i_2) CONST_instr(I32_numtype, `%`_num_(n,)) `ARRAY.COPY`_instr(x_1, x_2)]), [TRAP_instr])
+    `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a_1) CONST_instr(I32_numtype, i_1) `REF.ARRAY_ADDR`_instr(a_2) CONST_instr(I32_numtype, i_2) CONST_instr(I32_numtype, `%`_num_(n,)) `ARRAY.COPY`_instr(x_1, x_2)]), [TRAP_instr])
     -- if ((i_2!`%`_num_.0 + n) > |$arrayinst(z)[a_2].FIELDS_arrayinst|)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `array.copy-zero`{z : state, a_1 : addr, i_1 : num_(I32_numtype), a_2 : addr, i_2 : num_(I32_numtype), n : n, x_1 : idx, x_2 : idx}:
-    `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a_1,) CONST_instr(I32_numtype, i_1) `REF.ARRAY_ADDR`_instr(a_2,) CONST_instr(I32_numtype, i_2) CONST_instr(I32_numtype, `%`_num_(n,)) `ARRAY.COPY`_instr(x_1, x_2)]), [])
+    `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a_1) CONST_instr(I32_numtype, i_1) `REF.ARRAY_ADDR`_instr(a_2) CONST_instr(I32_numtype, i_2) CONST_instr(I32_numtype, `%`_num_(n,)) `ARRAY.COPY`_instr(x_1, x_2)]), [])
     -- otherwise
     -- if (n = 0)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `array.copy-le`{z : state, a_1 : addr, i_1 : num_(I32_numtype), a_2 : addr, i_2 : num_(I32_numtype), n : n, x_1 : idx, x_2 : idx, `sx?` : sx?, `mut?` : mut?, zt_2 : storagetype}:
-    `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a_1,) CONST_instr(I32_numtype, i_1) `REF.ARRAY_ADDR`_instr(a_2,) CONST_instr(I32_numtype, i_2) CONST_instr(I32_numtype, `%`_num_(n,)) `ARRAY.COPY`_instr(x_1, x_2)]), [`REF.ARRAY_ADDR`_instr(a_1,) CONST_instr(I32_numtype, i_1) `REF.ARRAY_ADDR`_instr(a_2,) CONST_instr(I32_numtype, i_2) `ARRAY.GET`_instr(sx?{sx <- `sx?`}, x_2) `ARRAY.SET`_instr(x_1,) `REF.ARRAY_ADDR`_instr(a_1,) CONST_instr(I32_numtype, `%`_num_((i_1!`%`_num_.0 + 1),)) `REF.ARRAY_ADDR`_instr(a_2,) CONST_instr(I32_numtype, `%`_num_((i_2!`%`_num_.0 + 1),)) CONST_instr(I32_numtype, `%`_num_((((n : nat <:> int) - (1 : nat <:> int)) : int <:> nat),)) `ARRAY.COPY`_instr(x_1, x_2)])
+    `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a_1) CONST_instr(I32_numtype, i_1) `REF.ARRAY_ADDR`_instr(a_2) CONST_instr(I32_numtype, i_2) CONST_instr(I32_numtype, `%`_num_(n,)) `ARRAY.COPY`_instr(x_1, x_2)]), [`REF.ARRAY_ADDR`_instr(a_1) CONST_instr(I32_numtype, i_1) `REF.ARRAY_ADDR`_instr(a_2) CONST_instr(I32_numtype, i_2) `ARRAY.GET`_instr(sx?{sx <- `sx?`}, x_2) `ARRAY.SET`_instr(x_1) `REF.ARRAY_ADDR`_instr(a_1) CONST_instr(I32_numtype, `%`_num_((i_1!`%`_num_.0 + 1),)) `REF.ARRAY_ADDR`_instr(a_2) CONST_instr(I32_numtype, `%`_num_((i_2!`%`_num_.0 + 1),)) CONST_instr(I32_numtype, `%`_num_((((n : nat <:> int) - (1 : nat <:> int)) : int <:> nat),)) `ARRAY.COPY`_instr(x_1, x_2)])
     -- otherwise
-    -- Expand: `%~~%`($type(z, x_2), ARRAY_comptype(`%%`_fieldtype(mut?{mut <- `mut?`}, zt_2),))
+    -- Expand: `%~~%`($type(z, x_2), ARRAY_comptype(`%%`_fieldtype(mut?{mut <- `mut?`}, zt_2)))
     -- if ((i_1!`%`_num_.0 <= i_2!`%`_num_.0) /\ (sx?{sx <- `sx?`} = $sx(zt_2)))
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `array.copy-gt`{z : state, a_1 : addr, i_1 : num_(I32_numtype), a_2 : addr, i_2 : num_(I32_numtype), n : n, x_1 : idx, x_2 : idx, `sx?` : sx?, `mut?` : mut?, zt_2 : storagetype}:
-    `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a_1,) CONST_instr(I32_numtype, i_1) `REF.ARRAY_ADDR`_instr(a_2,) CONST_instr(I32_numtype, i_2) CONST_instr(I32_numtype, `%`_num_(n,)) `ARRAY.COPY`_instr(x_1, x_2)]), [`REF.ARRAY_ADDR`_instr(a_1,) CONST_instr(I32_numtype, `%`_num_(((((i_1!`%`_num_.0 + n) : nat <:> int) - (1 : nat <:> int)) : int <:> nat),)) `REF.ARRAY_ADDR`_instr(a_2,) CONST_instr(I32_numtype, `%`_num_(((((i_2!`%`_num_.0 + n) : nat <:> int) - (1 : nat <:> int)) : int <:> nat),)) `ARRAY.GET`_instr(sx?{sx <- `sx?`}, x_2) `ARRAY.SET`_instr(x_1,) `REF.ARRAY_ADDR`_instr(a_1,) CONST_instr(I32_numtype, i_1) `REF.ARRAY_ADDR`_instr(a_2,) CONST_instr(I32_numtype, i_2) CONST_instr(I32_numtype, `%`_num_((((n : nat <:> int) - (1 : nat <:> int)) : int <:> nat),)) `ARRAY.COPY`_instr(x_1, x_2)])
+    `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a_1) CONST_instr(I32_numtype, i_1) `REF.ARRAY_ADDR`_instr(a_2) CONST_instr(I32_numtype, i_2) CONST_instr(I32_numtype, `%`_num_(n,)) `ARRAY.COPY`_instr(x_1, x_2)]), [`REF.ARRAY_ADDR`_instr(a_1) CONST_instr(I32_numtype, `%`_num_(((((i_1!`%`_num_.0 + n) : nat <:> int) - (1 : nat <:> int)) : int <:> nat),)) `REF.ARRAY_ADDR`_instr(a_2) CONST_instr(I32_numtype, `%`_num_(((((i_2!`%`_num_.0 + n) : nat <:> int) - (1 : nat <:> int)) : int <:> nat),)) `ARRAY.GET`_instr(sx?{sx <- `sx?`}, x_2) `ARRAY.SET`_instr(x_1) `REF.ARRAY_ADDR`_instr(a_1) CONST_instr(I32_numtype, i_1) `REF.ARRAY_ADDR`_instr(a_2) CONST_instr(I32_numtype, i_2) CONST_instr(I32_numtype, `%`_num_((((n : nat <:> int) - (1 : nat <:> int)) : int <:> nat),)) `ARRAY.COPY`_instr(x_1, x_2)])
     -- otherwise
-    -- Expand: `%~~%`($type(z, x_2), ARRAY_comptype(`%%`_fieldtype(mut?{mut <- `mut?`}, zt_2),))
+    -- Expand: `%~~%`($type(z, x_2), ARRAY_comptype(`%%`_fieldtype(mut?{mut <- `mut?`}, zt_2)))
     -- if (sx?{sx <- `sx?`} = $sx(zt_2))
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
@@ -7365,23 +7365,23 @@ relation Step_read: `%~>%`(config, instr*)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `array.init_elem-oob1`{z : state, a : addr, i : num_(I32_numtype), j : num_(I32_numtype), n : n, x : idx, y : idx}:
-    `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a,) CONST_instr(I32_numtype, i) CONST_instr(I32_numtype, j) CONST_instr(I32_numtype, `%`_num_(n,)) `ARRAY.INIT_ELEM`_instr(x, y)]), [TRAP_instr])
+    `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a) CONST_instr(I32_numtype, i) CONST_instr(I32_numtype, j) CONST_instr(I32_numtype, `%`_num_(n,)) `ARRAY.INIT_ELEM`_instr(x, y)]), [TRAP_instr])
     -- if ((i!`%`_num_.0 + n) > |$arrayinst(z)[a].FIELDS_arrayinst|)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `array.init_elem-oob2`{z : state, a : addr, i : num_(I32_numtype), j : num_(I32_numtype), n : n, x : idx, y : idx}:
-    `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a,) CONST_instr(I32_numtype, i) CONST_instr(I32_numtype, j) CONST_instr(I32_numtype, `%`_num_(n,)) `ARRAY.INIT_ELEM`_instr(x, y)]), [TRAP_instr])
+    `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a) CONST_instr(I32_numtype, i) CONST_instr(I32_numtype, j) CONST_instr(I32_numtype, `%`_num_(n,)) `ARRAY.INIT_ELEM`_instr(x, y)]), [TRAP_instr])
     -- if ((j!`%`_num_.0 + n) > |$elem(z, y).REFS_eleminst|)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `array.init_elem-zero`{z : state, a : addr, i : num_(I32_numtype), j : num_(I32_numtype), n : n, x : idx, y : idx}:
-    `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a,) CONST_instr(I32_numtype, i) CONST_instr(I32_numtype, j) CONST_instr(I32_numtype, `%`_num_(n,)) `ARRAY.INIT_ELEM`_instr(x, y)]), [])
+    `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a) CONST_instr(I32_numtype, i) CONST_instr(I32_numtype, j) CONST_instr(I32_numtype, `%`_num_(n,)) `ARRAY.INIT_ELEM`_instr(x, y)]), [])
     -- otherwise
     -- if (n = 0)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `array.init_elem-succ`{z : state, a : addr, i : num_(I32_numtype), j : num_(I32_numtype), n : n, x : idx, y : idx, ref : ref}:
-    `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a,) CONST_instr(I32_numtype, i) CONST_instr(I32_numtype, j) CONST_instr(I32_numtype, `%`_num_(n,)) `ARRAY.INIT_ELEM`_instr(x, y)]), [`REF.ARRAY_ADDR`_instr(a,) CONST_instr(I32_numtype, i) (ref : ref <: instr) `ARRAY.SET`_instr(x,) `REF.ARRAY_ADDR`_instr(a,) CONST_instr(I32_numtype, `%`_num_((i!`%`_num_.0 + 1),)) CONST_instr(I32_numtype, `%`_num_((j!`%`_num_.0 + 1),)) CONST_instr(I32_numtype, `%`_num_((((n : nat <:> int) - (1 : nat <:> int)) : int <:> nat),)) `ARRAY.INIT_ELEM`_instr(x, y)])
+    `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a) CONST_instr(I32_numtype, i) CONST_instr(I32_numtype, j) CONST_instr(I32_numtype, `%`_num_(n,)) `ARRAY.INIT_ELEM`_instr(x, y)]), [`REF.ARRAY_ADDR`_instr(a) CONST_instr(I32_numtype, i) (ref : ref <: instr) `ARRAY.SET`_instr(x) `REF.ARRAY_ADDR`_instr(a) CONST_instr(I32_numtype, `%`_num_((i!`%`_num_.0 + 1),)) CONST_instr(I32_numtype, `%`_num_((j!`%`_num_.0 + 1),)) CONST_instr(I32_numtype, `%`_num_((((n : nat <:> int) - (1 : nat <:> int)) : int <:> nat),)) `ARRAY.INIT_ELEM`_instr(x, y)])
     -- otherwise
     -- if (ref = $elem(z, y).REFS_eleminst[j!`%`_num_.0])
 
@@ -7391,26 +7391,26 @@ relation Step_read: `%~>%`(config, instr*)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `array.init_data-oob1`{z : state, a : addr, i : num_(I32_numtype), j : num_(I32_numtype), n : n, x : idx, y : idx}:
-    `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a,) CONST_instr(I32_numtype, i) CONST_instr(I32_numtype, j) CONST_instr(I32_numtype, `%`_num_(n,)) `ARRAY.INIT_DATA`_instr(x, y)]), [TRAP_instr])
+    `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a) CONST_instr(I32_numtype, i) CONST_instr(I32_numtype, j) CONST_instr(I32_numtype, `%`_num_(n,)) `ARRAY.INIT_DATA`_instr(x, y)]), [TRAP_instr])
     -- if ((i!`%`_num_.0 + n) > |$arrayinst(z)[a].FIELDS_arrayinst|)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `array.init_data-oob2`{z : state, a : addr, i : num_(I32_numtype), j : num_(I32_numtype), n : n, x : idx, y : idx, `mut?` : mut?, zt : storagetype}:
-    `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a,) CONST_instr(I32_numtype, i) CONST_instr(I32_numtype, j) CONST_instr(I32_numtype, `%`_num_(n,)) `ARRAY.INIT_DATA`_instr(x, y)]), [TRAP_instr])
-    -- Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`_fieldtype(mut?{mut <- `mut?`}, zt),))
+    `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a) CONST_instr(I32_numtype, i) CONST_instr(I32_numtype, j) CONST_instr(I32_numtype, `%`_num_(n,)) `ARRAY.INIT_DATA`_instr(x, y)]), [TRAP_instr])
+    -- Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`_fieldtype(mut?{mut <- `mut?`}, zt)))
     -- if ((j!`%`_num_.0 + ((((n * $zsize(zt)) : nat <:> rat) / (8 : nat <:> rat)) : rat <:> nat)) > |$data(z, y).BYTES_datainst|)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `array.init_data-zero`{z : state, a : addr, i : num_(I32_numtype), j : num_(I32_numtype), n : n, x : idx, y : idx}:
-    `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a,) CONST_instr(I32_numtype, i) CONST_instr(I32_numtype, j) CONST_instr(I32_numtype, `%`_num_(n,)) `ARRAY.INIT_DATA`_instr(x, y)]), [])
+    `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a) CONST_instr(I32_numtype, i) CONST_instr(I32_numtype, j) CONST_instr(I32_numtype, `%`_num_(n,)) `ARRAY.INIT_DATA`_instr(x, y)]), [])
     -- otherwise
     -- if (n = 0)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `array.init_data-num`{z : state, a : addr, i : num_(I32_numtype), j : num_(I32_numtype), n : n, x : idx, y : idx, zt : storagetype, c : lit_(zt), `mut?` : mut?}:
-    `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a,) CONST_instr(I32_numtype, i) CONST_instr(I32_numtype, j) CONST_instr(I32_numtype, `%`_num_(n,)) `ARRAY.INIT_DATA`_instr(x, y)]), [`REF.ARRAY_ADDR`_instr(a,) CONST_instr(I32_numtype, i) $const($cunpack(zt), $cunpacknum_(zt, c)) `ARRAY.SET`_instr(x,) `REF.ARRAY_ADDR`_instr(a,) CONST_instr(I32_numtype, `%`_num_((i!`%`_num_.0 + 1),)) CONST_instr(I32_numtype, `%`_num_((j!`%`_num_.0 + ((($zsize(zt) : nat <:> rat) / (8 : nat <:> rat)) : rat <:> nat)),)) CONST_instr(I32_numtype, `%`_num_((((n : nat <:> int) - (1 : nat <:> int)) : int <:> nat),)) `ARRAY.INIT_DATA`_instr(x, y)])
+    `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a) CONST_instr(I32_numtype, i) CONST_instr(I32_numtype, j) CONST_instr(I32_numtype, `%`_num_(n,)) `ARRAY.INIT_DATA`_instr(x, y)]), [`REF.ARRAY_ADDR`_instr(a) CONST_instr(I32_numtype, i) $const($cunpack(zt), $cunpacknum_(zt, c)) `ARRAY.SET`_instr(x) `REF.ARRAY_ADDR`_instr(a) CONST_instr(I32_numtype, `%`_num_((i!`%`_num_.0 + 1),)) CONST_instr(I32_numtype, `%`_num_((j!`%`_num_.0 + ((($zsize(zt) : nat <:> rat) / (8 : nat <:> rat)) : rat <:> nat)),)) CONST_instr(I32_numtype, `%`_num_((((n : nat <:> int) - (1 : nat <:> int)) : int <:> nat),)) `ARRAY.INIT_DATA`_instr(x, y)])
     -- otherwise
-    -- Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`_fieldtype(mut?{mut <- `mut?`}, zt),))
+    -- Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`_fieldtype(mut?{mut <- `mut?`}, zt)))
     -- if ($zbytes_(zt, c) = $data(z, y).BYTES_datainst[j!`%`_num_.0 : ((($zsize(zt) : nat <:> rat) / (8 : nat <:> rat)) : rat <:> nat)])
 
 ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
@@ -7451,41 +7451,41 @@ relation Step: `%~>%`(config, config)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec:227.1-231.49
   rule throw{z : state, n : n, `val*` : val*, x : idx, exn : exninst, a : addr, `t*` : valtype*}:
-    `%~>%`(`%;%`_config(z, (val : val <: instr)^n{val <- `val*`} ++ [THROW_instr(x,)]), `%;%`_config($add_exninst(z, [exn]), [`REF.EXN_ADDR`_instr(a,) THROW_REF_instr]))
+    `%~>%`(`%;%`_config(z, (val : val <: instr)^n{val <- `val*`} ++ [THROW_instr(x)]), `%;%`_config($add_exninst(z, [exn]), [`REF.EXN_ADDR`_instr(a) THROW_REF_instr]))
     -- Expand: `%~~%`($as_deftype($tag(z, x).TYPE_taginst), `FUNC%->%`_comptype(`%`_resulttype(t^n{t <- `t*`},), `%`_resulttype([],)))
     -- if (a = |$exninst(z)|)
     -- if (exn = {TAG $tagaddr(z)[x!`%`_idx.0], FIELDS val^n{val <- `val*`}})
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec:305.1-306.56
   rule `local.set`{z : state, val : val, x : idx}:
-    `%~>%`(`%;%`_config(z, [(val : val <: instr) `LOCAL.SET`_instr(x,)]), `%;%`_config($with_local(z, x, val), []))
+    `%~>%`(`%;%`_config(z, [(val : val <: instr) `LOCAL.SET`_instr(x)]), `%;%`_config($with_local(z, x, val), []))
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec:318.1-319.58
   rule `global.set`{z : state, val : val, x : idx}:
-    `%~>%`(`%;%`_config(z, [(val : val <: instr) `GLOBAL.SET`_instr(x,)]), `%;%`_config($with_global(z, x, val), []))
+    `%~>%`(`%;%`_config(z, [(val : val <: instr) `GLOBAL.SET`_instr(x)]), `%;%`_config($with_global(z, x, val), []))
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec:332.1-334.33
   rule `table.set-oob`{z : state, at : addrtype, i : num_((at : addrtype <: numtype)), ref : ref, x : idx}:
-    `%~>%`(`%;%`_config(z, [CONST_instr((at : addrtype <: numtype), i) (ref : ref <: instr) `TABLE.SET`_instr(x,)]), `%;%`_config(z, [TRAP_instr]))
+    `%~>%`(`%;%`_config(z, [CONST_instr((at : addrtype <: numtype), i) (ref : ref <: instr) `TABLE.SET`_instr(x)]), `%;%`_config(z, [TRAP_instr]))
     -- if (i!`%`_num_.0 >= |$table(z, x).REFS_tableinst|)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec:336.1-338.32
   rule `table.set-val`{z : state, at : addrtype, i : num_((at : addrtype <: numtype)), ref : ref, x : idx}:
-    `%~>%`(`%;%`_config(z, [CONST_instr((at : addrtype <: numtype), i) (ref : ref <: instr) `TABLE.SET`_instr(x,)]), `%;%`_config($with_table(z, x, i!`%`_num_.0, ref), []))
+    `%~>%`(`%;%`_config(z, [CONST_instr((at : addrtype <: numtype), i) (ref : ref <: instr) `TABLE.SET`_instr(x)]), `%;%`_config($with_table(z, x, i!`%`_num_.0, ref), []))
     -- if (i!`%`_num_.0 < |$table(z, x).REFS_tableinst|)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec:347.1-350.46
   rule `table.grow-succeed`{z : state, ref : ref, at : addrtype, n : n, x : idx, ti : tableinst}:
-    `%~>%`(`%;%`_config(z, [(ref : ref <: instr) CONST_instr((at : addrtype <: numtype), `%`_num_(n,)) `TABLE.GROW`_instr(x,)]), `%;%`_config($with_tableinst(z, x, ti), [CONST_instr((at : addrtype <: numtype), `%`_num_(|$table(z, x).REFS_tableinst|,))]))
+    `%~>%`(`%;%`_config(z, [(ref : ref <: instr) CONST_instr((at : addrtype <: numtype), `%`_num_(n,)) `TABLE.GROW`_instr(x)]), `%;%`_config($with_tableinst(z, x, ti), [CONST_instr((at : addrtype <: numtype), `%`_num_(|$table(z, x).REFS_tableinst|,))]))
     -- if (ti = $growtable($table(z, x), n, ref))
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec:352.1-353.87
   rule `table.grow-fail`{z : state, ref : ref, at : addrtype, n : n, x : idx}:
-    `%~>%`(`%;%`_config(z, [(ref : ref <: instr) CONST_instr((at : addrtype <: numtype), `%`_num_(n,)) `TABLE.GROW`_instr(x,)]), `%;%`_config(z, [CONST_instr((at : addrtype <: numtype), `%`_num_($inv_signed_($size((at : addrtype <: numtype)), - (1 : nat <:> int)),))]))
+    `%~>%`(`%;%`_config(z, [(ref : ref <: instr) CONST_instr((at : addrtype <: numtype), `%`_num_(n,)) `TABLE.GROW`_instr(x)]), `%;%`_config(z, [CONST_instr((at : addrtype <: numtype), `%`_num_($inv_signed_($size((at : addrtype <: numtype)), - (1 : nat <:> int)),))]))
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec:413.1-414.51
   rule `elem.drop`{z : state, x : idx}:
-    `%~>%`(`%;%`_config(z, [`ELEM.DROP`_instr(x,)]), `%;%`_config($with_elem(z, x, []), []))
+    `%~>%`(`%;%`_config(z, [`ELEM.DROP`_instr(x)]), `%;%`_config($with_elem(z, x, []), []))
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec:497.1-500.60
   rule `store-num-oob`{z : state, at : addrtype, i : num_((at : addrtype <: numtype)), nt : numtype, c : num_(nt), x : idx, ao : memarg}:
@@ -7531,21 +7531,21 @@ relation Step: `%~>%`(config, config)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec:549.1-552.37
   rule `memory.grow-succeed`{z : state, at : addrtype, n : n, x : idx, mi : meminst}:
-    `%~>%`(`%;%`_config(z, [CONST_instr((at : addrtype <: numtype), `%`_num_(n,)) `MEMORY.GROW`_instr(x,)]), `%;%`_config($with_meminst(z, x, mi), [CONST_instr((at : addrtype <: numtype), `%`_num_((((|$mem(z, x).BYTES_meminst| : nat <:> rat) / ((64 * $Ki) : nat <:> rat)) : rat <:> nat),))]))
+    `%~>%`(`%;%`_config(z, [CONST_instr((at : addrtype <: numtype), `%`_num_(n,)) `MEMORY.GROW`_instr(x)]), `%;%`_config($with_meminst(z, x, mi), [CONST_instr((at : addrtype <: numtype), `%`_num_((((|$mem(z, x).BYTES_meminst| : nat <:> rat) / ((64 * $Ki) : nat <:> rat)) : rat <:> nat),))]))
     -- if (mi = $growmem($mem(z, x), n))
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec:554.1-555.84
   rule `memory.grow-fail`{z : state, at : addrtype, n : n, x : idx}:
-    `%~>%`(`%;%`_config(z, [CONST_instr((at : addrtype <: numtype), `%`_num_(n,)) `MEMORY.GROW`_instr(x,)]), `%;%`_config(z, [CONST_instr((at : addrtype <: numtype), `%`_num_($inv_signed_($size((at : addrtype <: numtype)), - (1 : nat <:> int)),))]))
+    `%~>%`(`%;%`_config(z, [CONST_instr((at : addrtype <: numtype), `%`_num_(n,)) `MEMORY.GROW`_instr(x)]), `%;%`_config(z, [CONST_instr((at : addrtype <: numtype), `%`_num_($inv_signed_($size((at : addrtype <: numtype)), - (1 : nat <:> int)),))]))
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec:615.1-616.51
   rule `data.drop`{z : state, x : idx}:
-    `%~>%`(`%;%`_config(z, [`DATA.DROP`_instr(x,)]), `%;%`_config($with_data(z, x, []), []))
+    `%~>%`(`%;%`_config(z, [`DATA.DROP`_instr(x)]), `%;%`_config($with_data(z, x, []), []))
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec:692.1-696.65
   rule `struct.new`{z : state, n : n, `val*` : val*, x : idx, si : structinst, a : addr, `mut?*` : mut?*, `zt*` : storagetype*}:
-    `%~>%`(`%;%`_config(z, (val : val <: instr)^n{val <- `val*`} ++ [`STRUCT.NEW`_instr(x,)]), `%;%`_config($add_structinst(z, [si]), [`REF.STRUCT_ADDR`_instr(a,)]))
-    -- Expand: `%~~%`($type(z, x), STRUCT_comptype(`%`_list(`%%`_fieldtype(mut?{mut <- `mut?`}, zt)^n{`mut?` <- `mut?*`, zt <- `zt*`},),))
+    `%~>%`(`%;%`_config(z, (val : val <: instr)^n{val <- `val*`} ++ [`STRUCT.NEW`_instr(x)]), `%;%`_config($add_structinst(z, [si]), [`REF.STRUCT_ADDR`_instr(a)]))
+    -- Expand: `%~~%`($type(z, x), STRUCT_comptype(`%`_list(`%%`_fieldtype(mut?{mut <- `mut?`}, zt)^n{`mut?` <- `mut?*`, zt <- `zt*`},)))
     -- if (a = |$structinst(z)|)
     -- if (si = {TYPE $type(z, x), FIELDS $packfield_(zt, val)^n{val <- `val*`, zt <- `zt*`}})
 
@@ -7555,28 +7555,28 @@ relation Step: `%~>%`(config, config)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec:716.1-719.46
   rule `struct.set-struct`{z : state, a : addr, val : val, x : idx, i : fieldidx, `zt*` : storagetype*, `mut?*` : mut?*}:
-    `%~>%`(`%;%`_config(z, [`REF.STRUCT_ADDR`_instr(a,) (val : val <: instr) `STRUCT.SET`_instr(x, i)]), `%;%`_config($with_struct(z, a, i!`%`_fieldidx.0, $packfield_(zt*{zt <- `zt*`}[i!`%`_fieldidx.0], val)), []))
-    -- Expand: `%~~%`($type(z, x), STRUCT_comptype(`%`_list(`%%`_fieldtype(mut?{mut <- `mut?`}, zt)*{`mut?` <- `mut?*`, zt <- `zt*`},),))
+    `%~>%`(`%;%`_config(z, [`REF.STRUCT_ADDR`_instr(a) (val : val <: instr) `STRUCT.SET`_instr(x, i)]), `%;%`_config($with_struct(z, a, i!`%`_fieldidx.0, $packfield_(zt*{zt <- `zt*`}[i!`%`_fieldidx.0], val)), []))
+    -- Expand: `%~~%`($type(z, x), STRUCT_comptype(`%`_list(`%%`_fieldtype(mut?{mut <- `mut?`}, zt)*{`mut?` <- `mut?*`, zt <- `zt*`},)))
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec:732.1-737.65
   rule `array.new_fixed`{z : state, n : n, `val*` : val*, x : idx, ai : arrayinst, a : addr, `mut?` : mut?, zt : storagetype}:
-    `%~>%`(`%;%`_config(z, (val : val <: instr)^n{val <- `val*`} ++ [`ARRAY.NEW_FIXED`_instr(x, `%`_u32(n,))]), `%;%`_config($add_arrayinst(z, [ai]), [`REF.ARRAY_ADDR`_instr(a,)]))
-    -- Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`_fieldtype(mut?{mut <- `mut?`}, zt),))
+    `%~>%`(`%;%`_config(z, (val : val <: instr)^n{val <- `val*`} ++ [`ARRAY.NEW_FIXED`_instr(x, `%`_u32(n,))]), `%;%`_config($add_arrayinst(z, [ai]), [`REF.ARRAY_ADDR`_instr(a)]))
+    -- Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`_fieldtype(mut?{mut <- `mut?`}, zt)))
     -- if ((a = |$arrayinst(z)|) /\ (ai = {TYPE $type(z, x), FIELDS $packfield_(zt, val)^n{val <- `val*`}}))
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec:777.1-778.66
   rule `array.set-null`{z : state, i : num_(I32_numtype), val : val, x : idx}:
-    `%~>%`(`%;%`_config(z, [`REF.NULL_ADDR`_instr CONST_instr(I32_numtype, i) (val : val <: instr) `ARRAY.SET`_instr(x,)]), `%;%`_config(z, [TRAP_instr]))
+    `%~>%`(`%;%`_config(z, [`REF.NULL_ADDR`_instr CONST_instr(I32_numtype, i) (val : val <: instr) `ARRAY.SET`_instr(x)]), `%;%`_config(z, [TRAP_instr]))
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec:780.1-782.39
   rule `array.set-oob`{z : state, a : addr, i : num_(I32_numtype), val : val, x : idx}:
-    `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a,) CONST_instr(I32_numtype, i) (val : val <: instr) `ARRAY.SET`_instr(x,)]), `%;%`_config(z, [TRAP_instr]))
+    `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a) CONST_instr(I32_numtype, i) (val : val <: instr) `ARRAY.SET`_instr(x)]), `%;%`_config(z, [TRAP_instr]))
     -- if (i!`%`_num_.0 >= |$arrayinst(z)[a].FIELDS_arrayinst|)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec:784.1-787.44
   rule `array.set-array`{z : state, a : addr, i : num_(I32_numtype), val : val, x : idx, zt : storagetype, `mut?` : mut?}:
-    `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a,) CONST_instr(I32_numtype, i) (val : val <: instr) `ARRAY.SET`_instr(x,)]), `%;%`_config($with_array(z, a, i!`%`_num_.0, $packfield_(zt, val)), []))
-    -- Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`_fieldtype(mut?{mut <- `mut?`}, zt),))
+    `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a) CONST_instr(I32_numtype, i) (val : val <: instr) `ARRAY.SET`_instr(x)]), `%;%`_config($with_array(z, a, i!`%`_num_.0, $packfield_(zt, val)), []))
+    -- Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`_fieldtype(mut?{mut <- `mut?`}, zt)))
 }
 
 ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
@@ -7612,7 +7612,7 @@ def $alloctypes(type*) : deftype*
   ;; ../../../../specification/wasm-latest/4.4-execution.modules.spectec:9.1-13.24
   def $alloctypes{`type'*` : type*, type : type, `deftype'*` : deftype*, `deftype*` : deftype*, rectype : rectype, x : idx}(type'*{type' <- `type'*`} ++ [type]) = deftype'*{deftype' <- `deftype'*`} ++ deftype*{deftype <- `deftype*`}
     -- if (deftype'*{deftype' <- `deftype'*`} = $alloctypes(type'*{type' <- `type'*`}))
-    -- if (type = TYPE_type(rectype,))
+    -- if (type = TYPE_type(rectype))
     -- if (deftype*{deftype <- `deftype*`} = $subst_all_deftypes($rolldt(x, rectype), (deftype' : deftype <: typeuse)*{deftype' <- `deftype'*`}))
     -- if (x!`%`_idx.0 = |deftype'*{deftype' <- `deftype'*`}|)
 }
@@ -7753,15 +7753,15 @@ def $allocelems(store : store, elemtype*, ref**) : (store, elemaddr*)
 ;; ../../../../specification/wasm-latest/4.4-execution.modules.spectec
 def $allocexport(moduleinst : moduleinst, export : export) : exportinst
   ;; ../../../../specification/wasm-latest/4.4-execution.modules.spectec
-  def $allocexport{moduleinst : moduleinst, name : name, x : idx}(moduleinst, EXPORT_export(name, TAG_externidx(x,))) = {NAME name, ADDR TAG_externaddr(moduleinst.TAGS_moduleinst[x!`%`_idx.0],)}
+  def $allocexport{moduleinst : moduleinst, name : name, x : idx}(moduleinst, EXPORT_export(name, TAG_externidx(x))) = {NAME name, ADDR TAG_externaddr(moduleinst.TAGS_moduleinst[x!`%`_idx.0])}
   ;; ../../../../specification/wasm-latest/4.4-execution.modules.spectec
-  def $allocexport{moduleinst : moduleinst, name : name, x : idx}(moduleinst, EXPORT_export(name, GLOBAL_externidx(x,))) = {NAME name, ADDR GLOBAL_externaddr(moduleinst.GLOBALS_moduleinst[x!`%`_idx.0],)}
+  def $allocexport{moduleinst : moduleinst, name : name, x : idx}(moduleinst, EXPORT_export(name, GLOBAL_externidx(x))) = {NAME name, ADDR GLOBAL_externaddr(moduleinst.GLOBALS_moduleinst[x!`%`_idx.0])}
   ;; ../../../../specification/wasm-latest/4.4-execution.modules.spectec
-  def $allocexport{moduleinst : moduleinst, name : name, x : idx}(moduleinst, EXPORT_export(name, MEM_externidx(x,))) = {NAME name, ADDR MEM_externaddr(moduleinst.MEMS_moduleinst[x!`%`_idx.0],)}
+  def $allocexport{moduleinst : moduleinst, name : name, x : idx}(moduleinst, EXPORT_export(name, MEM_externidx(x))) = {NAME name, ADDR MEM_externaddr(moduleinst.MEMS_moduleinst[x!`%`_idx.0])}
   ;; ../../../../specification/wasm-latest/4.4-execution.modules.spectec
-  def $allocexport{moduleinst : moduleinst, name : name, x : idx}(moduleinst, EXPORT_export(name, TABLE_externidx(x,))) = {NAME name, ADDR TABLE_externaddr(moduleinst.TABLES_moduleinst[x!`%`_idx.0],)}
+  def $allocexport{moduleinst : moduleinst, name : name, x : idx}(moduleinst, EXPORT_export(name, TABLE_externidx(x))) = {NAME name, ADDR TABLE_externaddr(moduleinst.TABLES_moduleinst[x!`%`_idx.0])}
   ;; ../../../../specification/wasm-latest/4.4-execution.modules.spectec
-  def $allocexport{moduleinst : moduleinst, name : name, x : idx}(moduleinst, EXPORT_export(name, FUNC_externidx(x,))) = {NAME name, ADDR FUNC_externaddr(moduleinst.FUNCS_moduleinst[x!`%`_idx.0],)}
+  def $allocexport{moduleinst : moduleinst, name : name, x : idx}(moduleinst, EXPORT_export(name, FUNC_externidx(x))) = {NAME name, ADDR FUNC_externaddr(moduleinst.FUNCS_moduleinst[x!`%`_idx.0])}
 
 ;; ../../../../specification/wasm-latest/4.4-execution.modules.spectec
 def $allocexports(moduleinst : moduleinst, export*) : exportinst*
@@ -7773,9 +7773,9 @@ def $allocmodule(store : store, module : module, externaddr*, val*, ref*, ref**)
   ;; ../../../../specification/wasm-latest/4.4-execution.modules.spectec
   def $allocmodule{s : store, module : module, `externaddr*` : externaddr*, `val_G*` : val*, `ref_T*` : ref*, `ref_E**` : ref**, s_7 : store, moduleinst : moduleinst, `type*` : type*, `import*` : import*, `tag*` : tag*, `global*` : global*, `mem*` : mem*, `table*` : table*, `func*` : func*, `data*` : data*, `elem*` : elem*, `start?` : start?, `export*` : export*, `tagtype*` : tagtype*, `expr_G*` : expr*, `globaltype*` : globaltype*, `memtype*` : memtype*, `expr_T*` : expr*, `tabletype*` : tabletype*, `expr_F*` : expr*, `local**` : local**, `x*` : idx*, `byte**` : byte**, `datamode*` : datamode*, `elemmode*` : elemmode*, `elemtype*` : elemtype*, `expr_E**` : expr**, `aa_I*` : tagaddr*, `ga_I*` : globaladdr*, `ma_I*` : memaddr*, `ta_I*` : tableaddr*, `fa_I*` : funcaddr*, `dt*` : deftype*, `fa*` : nat*, s_1 : store, `aa*` : tagaddr*, s_2 : store, `ga*` : globaladdr*, s_3 : store, `ma*` : memaddr*, s_4 : store, `ta*` : tableaddr*, s_5 : store, `da*` : dataaddr*, s_6 : store, `ea*` : elemaddr*, `xi*` : exportinst*}(s, module, externaddr*{externaddr <- `externaddr*`}, val_G*{val_G <- `val_G*`}, ref_T*{ref_T <- `ref_T*`}, ref_E*{ref_E <- `ref_E*`}*{`ref_E*` <- `ref_E**`}) = (s_7, moduleinst)
     -- if (module = MODULE_module(`%`_list(type*{type <- `type*`},), `%`_list(import*{import <- `import*`},), `%`_list(tag*{tag <- `tag*`},), `%`_list(global*{global <- `global*`},), `%`_list(mem*{mem <- `mem*`},), `%`_list(table*{table <- `table*`},), `%`_list(func*{func <- `func*`},), `%`_list(data*{data <- `data*`},), `%`_list(elem*{elem <- `elem*`},), start?{start <- `start?`}, `%`_list(export*{export <- `export*`},)))
-    -- if (tag*{tag <- `tag*`} = TAG_tag(tagtype,)*{tagtype <- `tagtype*`})
+    -- if (tag*{tag <- `tag*`} = TAG_tag(tagtype)*{tagtype <- `tagtype*`})
     -- if (global*{global <- `global*`} = GLOBAL_global(globaltype, expr_G)*{expr_G <- `expr_G*`, globaltype <- `globaltype*`})
-    -- if (mem*{mem <- `mem*`} = MEMORY_mem(memtype,)*{memtype <- `memtype*`})
+    -- if (mem*{mem <- `mem*`} = MEMORY_mem(memtype)*{memtype <- `memtype*`})
     -- if (table*{table <- `table*`} = TABLE_table(tabletype, expr_T)*{expr_T <- `expr_T*`, tabletype <- `tabletype*`})
     -- if (func*{func <- `func*`} = FUNC_func(x, local*{local <- `local*`}, expr_F)*{expr_F <- `expr_F*`, `local*` <- `local**`, x <- `x*`})
     -- if (data*{data <- `data*`} = DATA_data(byte*{byte <- `byte*`}, datamode)*{`byte*` <- `byte**`, datamode <- `datamode*`})
@@ -7802,16 +7802,16 @@ def $rundata_(dataidx : dataidx, data : data) : instr*
   ;; ../../../../specification/wasm-latest/4.4-execution.modules.spectec
   def $rundata_{x : idx, n : n, `b*` : byte*}(x, DATA_data(b^n{b <- `b*`}, PASSIVE_datamode)) = []
   ;; ../../../../specification/wasm-latest/4.4-execution.modules.spectec
-  def $rundata_{x : idx, n : n, `b*` : byte*, y : idx, `instr*` : instr*}(x, DATA_data(b^n{b <- `b*`}, ACTIVE_datamode(y, instr*{instr <- `instr*`}))) = instr*{instr <- `instr*`} ++ [CONST_instr(I32_numtype, `%`_num_(0,)) CONST_instr(I32_numtype, `%`_num_(n,)) `MEMORY.INIT`_instr(y, x) `DATA.DROP`_instr(x,)]
+  def $rundata_{x : idx, n : n, `b*` : byte*, y : idx, `instr*` : instr*}(x, DATA_data(b^n{b <- `b*`}, ACTIVE_datamode(y, instr*{instr <- `instr*`}))) = instr*{instr <- `instr*`} ++ [CONST_instr(I32_numtype, `%`_num_(0,)) CONST_instr(I32_numtype, `%`_num_(n,)) `MEMORY.INIT`_instr(y, x) `DATA.DROP`_instr(x)]
 
 ;; ../../../../specification/wasm-latest/4.4-execution.modules.spectec
 def $runelem_(elemidx : elemidx, elem : elem) : instr*
   ;; ../../../../specification/wasm-latest/4.4-execution.modules.spectec
   def $runelem_{x : idx, rt : reftype, n : n, `e*` : expr*}(x, ELEM_elem(rt, e^n{e <- `e*`}, PASSIVE_elemmode)) = []
   ;; ../../../../specification/wasm-latest/4.4-execution.modules.spectec
-  def $runelem_{x : idx, rt : reftype, n : n, `e*` : expr*}(x, ELEM_elem(rt, e^n{e <- `e*`}, DECLARE_elemmode)) = [`ELEM.DROP`_instr(x,)]
+  def $runelem_{x : idx, rt : reftype, n : n, `e*` : expr*}(x, ELEM_elem(rt, e^n{e <- `e*`}, DECLARE_elemmode)) = [`ELEM.DROP`_instr(x)]
   ;; ../../../../specification/wasm-latest/4.4-execution.modules.spectec
-  def $runelem_{x : idx, rt : reftype, n : n, `e*` : expr*, y : idx, `instr*` : instr*}(x, ELEM_elem(rt, e^n{e <- `e*`}, ACTIVE_elemmode(y, instr*{instr <- `instr*`}))) = instr*{instr <- `instr*`} ++ [CONST_instr(I32_numtype, `%`_num_(0,)) CONST_instr(I32_numtype, `%`_num_(n,)) `TABLE.INIT`_instr(y, x) `ELEM.DROP`_instr(x,)]
+  def $runelem_{x : idx, rt : reftype, n : n, `e*` : expr*, y : idx, `instr*` : instr*}(x, ELEM_elem(rt, e^n{e <- `e*`}, ACTIVE_elemmode(y, instr*{instr <- `instr*`}))) = instr*{instr <- `instr*`} ++ [CONST_instr(I32_numtype, `%`_num_(0,)) CONST_instr(I32_numtype, `%`_num_(n,)) `TABLE.INIT`_instr(y, x) `ELEM.DROP`_instr(x)]
 
 ;; ../../../../specification/wasm-latest/4.4-execution.modules.spectec
 rec {
@@ -7865,7 +7865,7 @@ def $instantiate(store : store, module : module, externaddr*) : config
     -- if (table*{table <- `table*`} = TABLE_table(tabletype, expr_T)*{expr_T <- `expr_T*`, tabletype <- `tabletype*`})
     -- if (data*{data <- `data*`} = DATA_data(byte*{byte <- `byte*`}, datamode)*{`byte*` <- `byte**`, datamode <- `datamode*`})
     -- if (elem*{elem <- `elem*`} = ELEM_elem(reftype, expr_E*{expr_E <- `expr_E*`}, elemmode)*{elemmode <- `elemmode*`, `expr_E*` <- `expr_E**`, reftype <- `reftype*`})
-    -- if (start?{start <- `start?`} = START_start(x,)?{x <- `x?`})
+    -- if (start?{start <- `start?`} = START_start(x)?{x <- `x?`})
     -- if (moduleinst_0 = {TYPES $alloctypes(type*{type <- `type*`}), TAGS [], GLOBALS $globalsxa(externaddr*{externaddr <- `externaddr*`}), MEMS [], TABLES [], FUNCS $funcsxa(externaddr*{externaddr <- `externaddr*`}) ++ (|s.FUNCS_store| + i_F)^(i_F<|func*{func <- `func*`}|){}, DATAS [], ELEMS [], EXPORTS []})
     -- if (z = `%;%`_state(s, {LOCALS [], MODULE moduleinst_0}))
     -- if ((z', val_G*{val_G <- `val_G*`}) = $evalglobals(z, globaltype*{globaltype <- `globaltype*`}, expr_G*{expr_G <- `expr_G*`}))
@@ -7875,12 +7875,12 @@ def $instantiate(store : store, module : module, externaddr*) : config
     -- if ((s'''', moduleinst) = $allocmodule(s''', module, externaddr*{externaddr <- `externaddr*`}, val_G*{val_G <- `val_G*`}, ref_T*{ref_T <- `ref_T*`}, ref_E*{ref_E <- `ref_E*`}*{`ref_E*` <- `ref_E**`}))
     -- if (instr_D*{instr_D <- `instr_D*`} = $concat_(syntax instr, $rundata_(`%`_dataidx(i_D,), data*{data <- `data*`}[i_D])^(i_D<|data*{data <- `data*`}|){}))
     -- if (instr_E*{instr_E <- `instr_E*`} = $concat_(syntax instr, $runelem_(`%`_elemidx(i_E,), elem*{elem <- `elem*`}[i_E])^(i_E<|elem*{elem <- `elem*`}|){}))
-    -- if (instr_S?{instr_S <- `instr_S?`} = CALL_instr(x,)?{x <- `x?`})
+    -- if (instr_S?{instr_S <- `instr_S?`} = CALL_instr(x)?{x <- `x?`})
 
 ;; ../../../../specification/wasm-latest/4.4-execution.modules.spectec
 def $invoke(store : store, funcaddr : funcaddr, val*) : config
   ;; ../../../../specification/wasm-latest/4.4-execution.modules.spectec
-  def $invoke{s : store, funcaddr : funcaddr, `val*` : val*, `t_1*` : valtype*, `t_2*` : valtype*}(s, funcaddr, val*{val <- `val*`}) = `%;%`_config(`%;%`_state(s, {LOCALS [], MODULE {TYPES [], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], EXPORTS []}}), (val : val <: instr)*{val <- `val*`} ++ [`REF.FUNC_ADDR`_instr(funcaddr,) CALL_REF_instr((s.FUNCS_store[funcaddr].TYPE_funcinst : deftype <: typeuse),)])
+  def $invoke{s : store, funcaddr : funcaddr, `val*` : val*, `t_1*` : valtype*, `t_2*` : valtype*}(s, funcaddr, val*{val <- `val*`}) = `%;%`_config(`%;%`_state(s, {LOCALS [], MODULE {TYPES [], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], EXPORTS []}}), (val : val <: instr)*{val <- `val*`} ++ [`REF.FUNC_ADDR`_instr(funcaddr) CALL_REF_instr(s.FUNCS_store[funcaddr].TYPE_funcinst : deftype <: typeuse)])
     -- Expand: `%~~%`(s.FUNCS_store[funcaddr].TYPE_funcinst, `FUNC%->%`_comptype(`%`_resulttype(t_1*{t_1 <- `t_1*`},), `%`_resulttype(t_2*{t_2 <- `t_2*`},)))
     -- (Val_ok: `%|-%:%`(s, val, t_1))*{t_1 <- `t_1*`, val <- `val*`}
 
@@ -7956,16 +7956,16 @@ def $dots : ()
 
 ;; ../../../../specification/wasm-latest/6.4-text.modules.spectec
 syntax decl =
-  | TYPE(rectype : rectype,)
+  | TYPE(rectype)
   | IMPORT(name : name, name : name, externtype : externtype)
-  | TAG(tagtype : tagtype,)
+  | TAG(tagtype)
   | GLOBAL(globaltype : globaltype, expr : expr)
-  | MEMORY(memtype : memtype,)
+  | MEMORY(memtype)
   | TABLE(tabletype : tabletype, expr : expr)
   | FUNC(typeidx : typeidx, `local*` : local*, expr : expr)
   | DATA(`byte*` : byte*, datamode : datamode)
   | ELEM(reftype : reftype, `expr*` : expr*, elemmode : elemmode)
-  | START(funcidx : funcidx,)
+  | START(funcidx)
   | EXPORT(name : name, externidx : externidx)
 
 ;; ../../../../specification/wasm-latest/6.4-text.modules.spectec
@@ -8138,7 +8138,7 @@ relation Context_ok: `|-%:OK`(context,)
     -- if (C = {TYPES dt^n{dt <- `dt*`}, TAGS jt*{jt <- `jt*`}, GLOBALS gt*{gt <- `gt*`}, MEMS mt*{mt <- `mt*`}, TABLES tt*{tt <- `tt*`}, FUNCS dt_F*{dt_F <- `dt_F*`}, DATAS ok*{ok <- `ok*`}, ELEMS et*{et <- `et*`}, LOCALS lct*{lct <- `lct*`}, LABELS [`%`_resulttype((rt : reftype <: valtype)*{rt <- `rt*`},)], RETURN ?(`%`_resulttype(lift((rt' : reftype <: valtype)?{rt' <- `rt'?`}),)), REFS x*{x <- `x*`}, RECS st^m{st <- `st*`}})
     -- if (C_0 = {TYPES dt^n{dt <- `dt*`}, TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [], RETURN ?(), REFS [], RECS []})
     -- (Deftype_ok: `%|-%:OK`({TYPES dt^n{dt <- `dt*`}[0 : i], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [], RETURN ?(), REFS [], RECS []}, dt))^(i<n){dt <- `dt*`}
-    -- (Subtype_ok2: `%|-%:%`({TYPES dt^n{dt <- `dt*`}, TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [], RETURN ?(), REFS [], RECS st^m{st <- `st*`}}, st, OK_oktypenat(i,)))^(i<m){st <- `st*`}
+    -- (Subtype_ok2: `%|-%:%`({TYPES dt^n{dt <- `dt*`}, TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [], RETURN ?(), REFS [], RECS st^m{st <- `st*`}}, st, OK_oktypenat(i)))^(i<m){st <- `st*`}
     -- (Tagtype_ok: `%|-%:OK`(C_0, jt))*{jt <- `jt*`}
     -- (Globaltype_ok: `%|-%:OK`(C_0, gt))*{gt <- `gt*`}
     -- (Memtype_ok: `%|-%:OK`(C_0, mt))*{mt <- `mt*`}
@@ -8189,16 +8189,16 @@ relation Moduleinst_ok: `%|-%:%`(store, moduleinst, context)
   rule _{s : store, `deftype*` : deftype*, `tagaddr*` : tagaddr*, `globaladdr*` : globaladdr*, `memaddr*` : memaddr*, `tableaddr*` : tableaddr*, `funcaddr*` : funcaddr*, `dataaddr*` : dataaddr*, `elemaddr*` : elemaddr*, `exportinst*` : exportinst*, `tagtype*` : tagtype*, `globaltype*` : globaltype*, `memtype*` : memtype*, `tabletype*` : tabletype*, `deftype_F*` : deftype*, `datatype*` : datatype*, `elemtype*` : elemtype*, `subtype*` : subtype*}:
     `%|-%:%`(s, {TYPES deftype*{deftype <- `deftype*`}, TAGS tagaddr*{tagaddr <- `tagaddr*`}, GLOBALS globaladdr*{globaladdr <- `globaladdr*`}, MEMS memaddr*{memaddr <- `memaddr*`}, TABLES tableaddr*{tableaddr <- `tableaddr*`}, FUNCS funcaddr*{funcaddr <- `funcaddr*`}, DATAS dataaddr*{dataaddr <- `dataaddr*`}, ELEMS elemaddr*{elemaddr <- `elemaddr*`}, EXPORTS exportinst*{exportinst <- `exportinst*`}}, {TYPES deftype*{deftype <- `deftype*`}, TAGS tagtype*{tagtype <- `tagtype*`}, GLOBALS globaltype*{globaltype <- `globaltype*`}, MEMS memtype*{memtype <- `memtype*`}, TABLES tabletype*{tabletype <- `tabletype*`}, FUNCS deftype_F*{deftype_F <- `deftype_F*`}, DATAS datatype*{datatype <- `datatype*`}, ELEMS elemtype*{elemtype <- `elemtype*`}, LOCALS [], LABELS [], RETURN ?(), REFS `%`_funcidx(i,)^(i<|funcaddr*{funcaddr <- `funcaddr*`}|){}, RECS subtype*{subtype <- `subtype*`}})
     -- (Deftype_ok: `%|-%:OK`({TYPES [], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [], RETURN ?(), REFS [], RECS []}, deftype))*{deftype <- `deftype*`}
-    -- (Externaddr_ok: `%|-%:%`(s, TAG_externaddr(tagaddr,), TAG_externtype(tagtype,)))*{tagaddr <- `tagaddr*`, tagtype <- `tagtype*`}
-    -- (Externaddr_ok: `%|-%:%`(s, GLOBAL_externaddr(globaladdr,), GLOBAL_externtype(globaltype,)))*{globaladdr <- `globaladdr*`, globaltype <- `globaltype*`}
-    -- (Externaddr_ok: `%|-%:%`(s, FUNC_externaddr(funcaddr,), FUNC_externtype((deftype_F : deftype <: typeuse),)))*{deftype_F <- `deftype_F*`, funcaddr <- `funcaddr*`}
-    -- (Externaddr_ok: `%|-%:%`(s, MEM_externaddr(memaddr,), MEM_externtype(memtype,)))*{memaddr <- `memaddr*`, memtype <- `memtype*`}
-    -- (Externaddr_ok: `%|-%:%`(s, TABLE_externaddr(tableaddr,), TABLE_externtype(tabletype,)))*{tableaddr <- `tableaddr*`, tabletype <- `tabletype*`}
+    -- (Externaddr_ok: `%|-%:%`(s, TAG_externaddr(tagaddr), TAG_externtype(tagtype)))*{tagaddr <- `tagaddr*`, tagtype <- `tagtype*`}
+    -- (Externaddr_ok: `%|-%:%`(s, GLOBAL_externaddr(globaladdr), GLOBAL_externtype(globaltype)))*{globaladdr <- `globaladdr*`, globaltype <- `globaltype*`}
+    -- (Externaddr_ok: `%|-%:%`(s, FUNC_externaddr(funcaddr), FUNC_externtype(deftype_F : deftype <: typeuse)))*{deftype_F <- `deftype_F*`, funcaddr <- `funcaddr*`}
+    -- (Externaddr_ok: `%|-%:%`(s, MEM_externaddr(memaddr), MEM_externtype(memtype)))*{memaddr <- `memaddr*`, memtype <- `memtype*`}
+    -- (Externaddr_ok: `%|-%:%`(s, TABLE_externaddr(tableaddr), TABLE_externtype(tabletype)))*{tableaddr <- `tableaddr*`, tabletype <- `tabletype*`}
     -- (Datainst_ok: `%|-%:%`(s, s.DATAS_store[dataaddr], datatype))*{dataaddr <- `dataaddr*`, datatype <- `datatype*`}
     -- (Eleminst_ok: `%|-%:%`(s, s.ELEMS_store[elemaddr], elemtype))*{elemaddr <- `elemaddr*`, elemtype <- `elemtype*`}
     -- (Exportinst_ok: `%|-%:OK`(s, exportinst))*{exportinst <- `exportinst*`}
     -- if $disjoint_(syntax name, exportinst.NAME_exportinst*{exportinst <- `exportinst*`})
-    -- (if (exportinst.ADDR_exportinst <- TAG_externaddr(tagaddr,)*{tagaddr <- `tagaddr*`} ++ GLOBAL_externaddr(globaladdr,)*{globaladdr <- `globaladdr*`} ++ MEM_externaddr(memaddr,)*{memaddr <- `memaddr*`} ++ TABLE_externaddr(tableaddr,)*{tableaddr <- `tableaddr*`} ++ FUNC_externaddr(funcaddr,)*{funcaddr <- `funcaddr*`}))*{exportinst <- `exportinst*`}
+    -- (if (exportinst.ADDR_exportinst <- TAG_externaddr(tagaddr)*{tagaddr <- `tagaddr*`} ++ GLOBAL_externaddr(globaladdr)*{globaladdr <- `globaladdr*`} ++ MEM_externaddr(memaddr)*{memaddr <- `memaddr*`} ++ TABLE_externaddr(tableaddr)*{tableaddr <- `tableaddr*`} ++ FUNC_externaddr(funcaddr)*{funcaddr <- `funcaddr*`}))*{exportinst <- `exportinst*`}
 
 ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
 relation Frame_ok: `%|-%:%`(store, frame, context)
@@ -8328,7 +8328,7 @@ relation Structinst_ok: `%|-%:OK`(store, structinst)
   ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
   rule _{s : store, dt : deftype, `fv*` : fieldval*, `mut?*` : mut?*, `zt*` : storagetype*}:
     `%|-%:OK`(s, {TYPE dt, FIELDS fv*{fv <- `fv*`}})
-    -- Expand: `%~~%`(dt, STRUCT_comptype(`%`_list(`%%`_fieldtype(mut?{mut <- `mut?`}, zt)*{`mut?` <- `mut?*`, zt <- `zt*`},),))
+    -- Expand: `%~~%`(dt, STRUCT_comptype(`%`_list(`%%`_fieldtype(mut?{mut <- `mut?`}, zt)*{`mut?` <- `mut?*`, zt <- `zt*`},)))
     -- (Fieldval_ok: `%|-%:%`(s, fv, zt))*{fv <- `fv*`, zt <- `zt*`}
 
 ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
@@ -8336,7 +8336,7 @@ relation Arrayinst_ok: `%|-%:OK`(store, arrayinst)
   ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
   rule _{s : store, dt : deftype, `fv*` : fieldval*, `mut?` : mut?, zt : storagetype}:
     `%|-%:OK`(s, {TYPE dt, FIELDS fv*{fv <- `fv*`}})
-    -- Expand: `%~~%`(dt, ARRAY_comptype(`%%`_fieldtype(mut?{mut <- `mut?`}, zt),))
+    -- Expand: `%~~%`(dt, ARRAY_comptype(`%%`_fieldtype(mut?{mut <- `mut?`}, zt)))
     -- (Fieldval_ok: `%|-%:%`(s, fv, zt))*{fv <- `fv*`}
 
 ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
@@ -8361,22 +8361,22 @@ relation ImmutReachable: `%>>_%%`(fieldval, store, fieldval)
 
   ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:228.1-231.20
   rule `ref.struct`{a : addr, s : store, i : nat, `ft*` : fieldtype*, zt : storagetype}:
-    `%>>_%%`(`REF.STRUCT_ADDR`_fieldval(a,), s, s.STRUCTS_store[a].FIELDS_structinst[i])
-    -- Expand: `%~~%`(s.STRUCTS_store[a].TYPE_structinst, STRUCT_comptype(`%`_list(ft*{ft <- `ft*`},),))
+    `%>>_%%`(`REF.STRUCT_ADDR`_fieldval(a), s, s.STRUCTS_store[a].FIELDS_structinst[i])
+    -- Expand: `%~~%`(s.STRUCTS_store[a].TYPE_structinst, STRUCT_comptype(`%`_list(ft*{ft <- `ft*`},)))
     -- if (ft*{ft <- `ft*`}[i] = `%%`_fieldtype(?(), zt))
 
   ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:233.1-235.42
   rule `ref.array`{a : addr, s : store, i : nat, zt : storagetype}:
-    `%>>_%%`(`REF.ARRAY_ADDR`_fieldval(a,), s, s.ARRAYS_store[a].FIELDS_arrayinst[i])
-    -- Expand: `%~~%`(s.ARRAYS_store[a].TYPE_arrayinst, ARRAY_comptype(`%%`_fieldtype(?(), zt),))
+    `%>>_%%`(`REF.ARRAY_ADDR`_fieldval(a), s, s.ARRAYS_store[a].FIELDS_arrayinst[i])
+    -- Expand: `%~~%`(s.ARRAYS_store[a].TYPE_arrayinst, ARRAY_comptype(`%%`_fieldtype(?(), zt)))
 
   ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:237.1-238.44
   rule `ref.exn`{a : addr, s : store, i : nat}:
-    `%>>_%%`(`REF.EXN_ADDR`_fieldval(a,), s, (s.EXNS_store[a].FIELDS_exninst[i] : val <: fieldval))
+    `%>>_%%`(`REF.EXN_ADDR`_fieldval(a), s, (s.EXNS_store[a].FIELDS_exninst[i] : val <: fieldval))
 
   ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:240.1-241.28
   rule `ref.extern`{ref : ref, s : store}:
-    `%>>_%%`(`REF.EXTERN`_fieldval(ref,), s, (ref : ref <: fieldval))
+    `%>>_%%`(`REF.EXTERN`_fieldval(ref), s, (ref : ref <: fieldval))
 }
 
 ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
@@ -8410,9 +8410,9 @@ relation Store_ok: `|-%:OK`(store,)
     -- (Structinst_ok: `%|-%:OK`(s, structinst))*{structinst <- `structinst*`}
     -- (Arrayinst_ok: `%|-%:OK`(s, arrayinst))*{arrayinst <- `arrayinst*`}
     -- (Exninst_ok: `%|-%:OK`(s, exninst))*{exninst <- `exninst*`}
-    -- (NotImmutReachable: `~%>>_%%`(`REF.STRUCT_ADDR`_fieldval(a,), s, `REF.STRUCT_ADDR`_fieldval(a,)))^(a<|structinst*{structinst <- `structinst*`}|){}
-    -- (NotImmutReachable: `~%>>_%%`(`REF.ARRAY_ADDR`_fieldval(a,), s, `REF.ARRAY_ADDR`_fieldval(a,)))^(a<|arrayinst*{arrayinst <- `arrayinst*`}|){}
-    -- (NotImmutReachable: `~%>>_%%`(`REF.EXN_ADDR`_fieldval(a,), s, `REF.EXN_ADDR`_fieldval(a,)))^(a<|exninst*{exninst <- `exninst*`}|){}
+    -- (NotImmutReachable: `~%>>_%%`(`REF.STRUCT_ADDR`_fieldval(a), s, `REF.STRUCT_ADDR`_fieldval(a)))^(a<|structinst*{structinst <- `structinst*`}|){}
+    -- (NotImmutReachable: `~%>>_%%`(`REF.ARRAY_ADDR`_fieldval(a), s, `REF.ARRAY_ADDR`_fieldval(a)))^(a<|arrayinst*{arrayinst <- `arrayinst*`}|){}
+    -- (NotImmutReachable: `~%>>_%%`(`REF.EXN_ADDR`_fieldval(a), s, `REF.EXN_ADDR`_fieldval(a)))^(a<|exninst*{exninst <- `exninst*`}|){}
     -- if (s = {TAGS taginst*{taginst <- `taginst*`}, GLOBALS globalinst*{globalinst <- `globalinst*`}, MEMS meminst*{meminst <- `meminst*`}, TABLES tableinst*{tableinst <- `tableinst*`}, FUNCS funcinst*{funcinst <- `funcinst*`}, DATAS datainst*{datainst <- `datainst*`}, ELEMS eleminst*{eleminst <- `eleminst*`}, STRUCTS structinst*{structinst <- `structinst*`}, ARRAYS arrayinst*{arrayinst <- `arrayinst*`}, EXNS exninst*{exninst <- `exninst*`}})
 
 ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
@@ -8469,7 +8469,7 @@ relation Extend_structinst: `%<=%`(structinst, structinst)
   ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
   rule _{dt : deftype, `fv*` : fieldval*, `fv'*` : fieldval*, `mut?*` : mut?*, `zt*` : storagetype*}:
     `%<=%`({TYPE dt, FIELDS fv*{fv <- `fv*`}}, {TYPE dt, FIELDS fv'*{fv' <- `fv'*`}})
-    -- Expand: `%~~%`(dt, STRUCT_comptype(`%`_list(`%%`_fieldtype(mut?{mut <- `mut?`}, zt)*{`mut?` <- `mut?*`, zt <- `zt*`},),))
+    -- Expand: `%~~%`(dt, STRUCT_comptype(`%`_list(`%%`_fieldtype(mut?{mut <- `mut?`}, zt)*{`mut?` <- `mut?*`, zt <- `zt*`},)))
     -- (if ((mut?{mut <- `mut?`} = ?(MUT_mut)) \/ (fv = fv')))*{fv <- `fv*`, fv' <- `fv'*`, `mut?` <- `mut?*`}
 
 ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
@@ -8477,7 +8477,7 @@ relation Extend_arrayinst: `%<=%`(arrayinst, arrayinst)
   ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
   rule _{dt : deftype, `fv*` : fieldval*, `fv'*` : fieldval*, `mut?` : mut?, zt : storagetype}:
     `%<=%`({TYPE dt, FIELDS fv*{fv <- `fv*`}}, {TYPE dt, FIELDS fv'*{fv' <- `fv'*`}})
-    -- Expand: `%~~%`(dt, ARRAY_comptype(`%%`_fieldtype(mut?{mut <- `mut?`}, zt),))
+    -- Expand: `%~~%`(dt, ARRAY_comptype(`%%`_fieldtype(mut?{mut <- `mut?`}, zt)))
     -- (if ((mut?{mut <- `mut?`} = ?(MUT_mut)) \/ (fv = fv')))*{fv <- `fv*`, fv' <- `fv'*`}
 
 ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
@@ -8526,14 +8526,14 @@ syntax B = nat
 
 ;; ../../../../specification/wasm-latest/X.1-notation.syntax.spectec
 syntax sym =
-  | _FIRST(A_1 : A,)
+  | _FIRST(A)
   | _DOTS
-  | _LAST(A_n : A,)
+  | _LAST(A)
 
 ;; ../../../../specification/wasm-latest/X.1-notation.syntax.spectec
 syntax symsplit =
-  | _FIRST(A_1 : A,)
-  | _LAST(A_2 : A,)
+  | _FIRST(A)
+  | _LAST(A)
 
 ;; ../../../../specification/wasm-latest/X.1-notation.syntax.spectec
 syntax recorddots = ()
@@ -8580,7 +8580,7 @@ relation NotationTypingInstrScheme: `%|-%:%`(context, instr*, instrtype)
 
   ;; ../../../../specification/wasm-latest/X.2-notation.typing.spectec:25.1-27.29
   rule `global.get`{C : context, x : idx, t : valtype, mut : mut}:
-    `%|-%:%`(C, [`GLOBAL.GET`_instr(x,)], `%->_%%`_instrtype(`%`_resulttype([],), [], `%`_resulttype([t],)))
+    `%|-%:%`(C, [`GLOBAL.GET`_instr(x)], `%->_%%`_instrtype(`%`_resulttype([],), [], `%`_resulttype([t],)))
     -- if (C.GLOBALS_context[x!`%`_idx.0] = `%%`_globaltype(?(mut), t))
 
   ;; ../../../../specification/wasm-latest/X.2-notation.typing.spectec:29.1-32.78
@@ -8798,15 +8798,15 @@ grammar Blabelidx : labelidx
 ;; ../../../../specification/wasm-latest/5.1-binary.values.spectec
 grammar Bexternidx : externidx
   ;; ../../../../specification/wasm-latest/5.1-binary.values.spectec
-  prod{x : idx} {{0x00} {x:Bfuncidx}} => FUNC_externidx(x,)
+  prod{x : idx} {{0x00} {x:Bfuncidx}} => FUNC_externidx(x)
   ;; ../../../../specification/wasm-latest/5.1-binary.values.spectec
-  prod{x : idx} {{0x01} {x:Btableidx}} => TABLE_externidx(x,)
+  prod{x : idx} {{0x01} {x:Btableidx}} => TABLE_externidx(x)
   ;; ../../../../specification/wasm-latest/5.1-binary.values.spectec
-  prod{x : idx} {{0x02} {x:Bmemidx}} => MEM_externidx(x,)
+  prod{x : idx} {{0x02} {x:Bmemidx}} => MEM_externidx(x)
   ;; ../../../../specification/wasm-latest/5.1-binary.values.spectec
-  prod{x : idx} {{0x03} {x:Bglobalidx}} => GLOBAL_externidx(x,)
+  prod{x : idx} {{0x03} {x:Bglobalidx}} => GLOBAL_externidx(x)
   ;; ../../../../specification/wasm-latest/5.1-binary.values.spectec
-  prod{x : idx} {{0x04} {x:Btagidx}} => TAG_externidx(x,)
+  prod{x : idx} {{0x04} {x:Btagidx}} => TAG_externidx(x)
 
 ;; ../../../../specification/wasm-latest/5.2-binary.types.spectec
 grammar Bnumtype : numtype
@@ -8856,7 +8856,7 @@ grammar Bheaptype : heaptype
   ;; ../../../../specification/wasm-latest/5.2-binary.types.spectec
   prod{ht : heaptype} ht:Babsheaptype => ht
   ;; ../../../../specification/wasm-latest/5.2-binary.types.spectec
-  prod{x33 : s33} x33:Bs33 => _IDX_heaptype($s33_to_u32(x33),)
+  prod{x33 : s33} x33:Bs33 => _IDX_heaptype($s33_to_u32(x33))
     -- if (x33!`%`_s33.0 >= (0 : nat <:> int))
 
 ;; ../../../../specification/wasm-latest/5.2-binary.types.spectec
@@ -8911,27 +8911,27 @@ grammar Bfieldtype : fieldtype
 ;; ../../../../specification/wasm-latest/5.2-binary.types.spectec
 grammar Bcomptype : comptype
   ;; ../../../../specification/wasm-latest/5.2-binary.types.spectec
-  prod{ft : fieldtype} {{0x5E} {ft:Bfieldtype}} => ARRAY_comptype(ft,)
+  prod{ft : fieldtype} {{0x5E} {ft:Bfieldtype}} => ARRAY_comptype(ft)
   ;; ../../../../specification/wasm-latest/5.2-binary.types.spectec
-  prod{`ft*` : fieldtype*} {{0x5F} {ft*{ft <- `ft*`}:Blist(syntax fieldtype, grammar Bfieldtype)}} => STRUCT_comptype(`%`_list(ft*{ft <- `ft*`},),)
+  prod{`ft*` : fieldtype*} {{0x5F} {ft*{ft <- `ft*`}:Blist(syntax fieldtype, grammar Bfieldtype)}} => STRUCT_comptype(`%`_list(ft*{ft <- `ft*`},))
   ;; ../../../../specification/wasm-latest/5.2-binary.types.spectec
   prod{`t_1*` : valtype*, `t_2*` : valtype*} {{0x60} {`%`_resulttype(t_1*{t_1 <- `t_1*`},):Bresulttype} {`%`_resulttype(t_2*{t_2 <- `t_2*`},):Bresulttype}} => `FUNC%->%`_comptype(`%`_resulttype(t_1*{t_1 <- `t_1*`},), `%`_resulttype(t_2*{t_2 <- `t_2*`},))
 
 ;; ../../../../specification/wasm-latest/5.2-binary.types.spectec
 grammar Bsubtype : subtype
   ;; ../../../../specification/wasm-latest/5.2-binary.types.spectec
-  prod{`x*` : idx*, ct : comptype} {{0x4F} {x*{x <- `x*`}:Blist(syntax typeidx, grammar Btypeidx)} {ct:Bcomptype}} => SUB_subtype(?(FINAL_final), _IDX_typeuse(x,)*{x <- `x*`}, ct)
+  prod{`x*` : idx*, ct : comptype} {{0x4F} {x*{x <- `x*`}:Blist(syntax typeidx, grammar Btypeidx)} {ct:Bcomptype}} => SUB_subtype(?(FINAL_final), _IDX_typeuse(x)*{x <- `x*`}, ct)
   ;; ../../../../specification/wasm-latest/5.2-binary.types.spectec
-  prod{`x*` : idx*, ct : comptype} {{0x50} {x*{x <- `x*`}:Blist(syntax typeidx, grammar Btypeidx)} {ct:Bcomptype}} => SUB_subtype(?(), _IDX_typeuse(x,)*{x <- `x*`}, ct)
+  prod{`x*` : idx*, ct : comptype} {{0x50} {x*{x <- `x*`}:Blist(syntax typeidx, grammar Btypeidx)} {ct:Bcomptype}} => SUB_subtype(?(), _IDX_typeuse(x)*{x <- `x*`}, ct)
   ;; ../../../../specification/wasm-latest/5.2-binary.types.spectec
   prod{ct : comptype} ct:Bcomptype => SUB_subtype(?(FINAL_final), [], ct)
 
 ;; ../../../../specification/wasm-latest/5.2-binary.types.spectec
 grammar Brectype : rectype
   ;; ../../../../specification/wasm-latest/5.2-binary.types.spectec
-  prod{`st*` : subtype*} {{0x4E} {st*{st <- `st*`}:Blist(syntax subtype, grammar Bsubtype)}} => REC_rectype(`%`_list(st*{st <- `st*`},),)
+  prod{`st*` : subtype*} {{0x4E} {st*{st <- `st*`}:Blist(syntax subtype, grammar Bsubtype)}} => REC_rectype(`%`_list(st*{st <- `st*`},))
   ;; ../../../../specification/wasm-latest/5.2-binary.types.spectec
-  prod{st : subtype} st:Bsubtype => REC_rectype(`%`_list([st],),)
+  prod{st : subtype} st:Bsubtype => REC_rectype(`%`_list([st],))
 
 ;; ../../../../specification/wasm-latest/5.2-binary.types.spectec
 grammar Blimits : (addrtype, limits)
@@ -8947,7 +8947,7 @@ grammar Blimits : (addrtype, limits)
 ;; ../../../../specification/wasm-latest/5.2-binary.types.spectec
 grammar Btagtype : tagtype
   ;; ../../../../specification/wasm-latest/5.2-binary.types.spectec
-  prod{x : idx} {{0x00} {x:Btypeidx}} => _IDX_tagtype(x,)
+  prod{x : idx} {{0x00} {x:Btypeidx}} => _IDX_tagtype(x)
 
 ;; ../../../../specification/wasm-latest/5.2-binary.types.spectec
 grammar Bglobaltype : globaltype
@@ -8967,15 +8967,15 @@ grammar Btabletype : tabletype
 ;; ../../../../specification/wasm-latest/5.2-binary.types.spectec
 grammar Bexterntype : externtype
   ;; ../../../../specification/wasm-latest/5.2-binary.types.spectec
-  prod{x : idx} {{0x00} {x:Btypeidx}} => FUNC_externtype(_IDX_typeuse(x,),)
+  prod{x : idx} {{0x00} {x:Btypeidx}} => FUNC_externtype(_IDX_typeuse(x))
   ;; ../../../../specification/wasm-latest/5.2-binary.types.spectec
-  prod{tt : tabletype} {{0x01} {tt:Btabletype}} => TABLE_externtype(tt,)
+  prod{tt : tabletype} {{0x01} {tt:Btabletype}} => TABLE_externtype(tt)
   ;; ../../../../specification/wasm-latest/5.2-binary.types.spectec
-  prod{mt : memtype} {{0x02} {mt:Bmemtype}} => MEM_externtype(mt,)
+  prod{mt : memtype} {{0x02} {mt:Bmemtype}} => MEM_externtype(mt)
   ;; ../../../../specification/wasm-latest/5.2-binary.types.spectec
-  prod{gt : globaltype} {{0x03} {gt:Bglobaltype}} => GLOBAL_externtype(gt,)
+  prod{gt : globaltype} {{0x03} {gt:Bglobaltype}} => GLOBAL_externtype(gt)
   ;; ../../../../specification/wasm-latest/5.2-binary.types.spectec
-  prod{jt : tagtype} {{0x04} {jt:Btagtype}} => TAG_externtype(jt,)
+  prod{jt : tagtype} {{0x04} {jt:Btagtype}} => TAG_externtype(jt)
 
 ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec
 grammar Bcastop : castop
@@ -8991,11 +8991,11 @@ grammar Bcastop : castop
 ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec
 grammar Bblocktype : blocktype
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec
-  prod 0x40 => _RESULT_blocktype(?(),)
+  prod 0x40 => _RESULT_blocktype(?())
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec
-  prod{t : valtype} t:Bvaltype => _RESULT_blocktype(?(t),)
+  prod{t : valtype} t:Bvaltype => _RESULT_blocktype(?(t))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec
-  prod{i : s33} i:Bs33 => _IDX_blocktype(`%`_typeidx((i!`%`_s33.0 : int <:> nat),),)
+  prod{i : s33} i:Bs33 => _IDX_blocktype(`%`_typeidx((i!`%`_s33.0 : int <:> nat),))
     -- if (i!`%`_s33.0 >= (0 : nat <:> int))
 
 ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec
@@ -9005,9 +9005,9 @@ grammar Bcatch : catch
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec
   prod{x : idx, l : labelidx} {{0x01} {x:Btagidx} {l:Blabelidx}} => CATCH_REF_catch(x, l)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec
-  prod{l : labelidx} {{0x02} {l:Blabelidx}} => CATCH_ALL_catch(l,)
+  prod{l : labelidx} {{0x02} {l:Blabelidx}} => CATCH_ALL_catch(l)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec
-  prod{l : labelidx} {{0x03} {l:Blabelidx}} => CATCH_ALL_REF_catch(l,)
+  prod{l : labelidx} {{0x03} {l:Blabelidx}} => CATCH_ALL_REF_catch(l)
 
 ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec
 grammar Bmemarg : memidxop
@@ -9035,9 +9035,9 @@ grammar Binstr : instr
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:10.5-10.17
   prod 0x1A => DROP_instr
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:11.5-11.19
-  prod 0x1B => SELECT_instr(?(),)
+  prod 0x1B => SELECT_instr(?())
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:12.5-12.41
-  prod{`t*` : valtype*} {{0x1C} {t*{t <- `t*`}:Blist(syntax valtype, grammar Bvaltype)}} => SELECT_instr(?(t*{t <- `t*`}),)
+  prod{`t*` : valtype*} {{0x1C} {t*{t <- `t*`}:Blist(syntax valtype, grammar Bvaltype)}} => SELECT_instr(?(t*{t <- `t*`}))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:32.5-32.57
   prod{bt : blocktype, `in*` : instr*} {{0x02} {bt:Bblocktype} {in:Binstr*{in <- `in*`}} {0x0B}} => BLOCK_instr(bt, in*{in <- `in*`})
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:33.5-33.56
@@ -9047,65 +9047,65 @@ grammar Binstr : instr
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:35.5-36.55
   prod{bt : blocktype, `in_1*` : instr*, `in_2*` : instr*} {{0x04} {bt:Bblocktype} {in_1:Binstr*{in_1 <- `in_1*`}} {0x05} {in_2:Binstr*{in_2 <- `in_2*`}} {0x0B}} => `IF%%ELSE%`_instr(bt, in_1*{in_1 <- `in_1*`}, in_2*{in_2 <- `in_2*`})
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:40.5-40.30
-  prod{x : idx} {{0x08} {x:Btagidx}} => THROW_instr(x,)
+  prod{x : idx} {{0x08} {x:Btagidx}} => THROW_instr(x)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:41.5-41.22
   prod 0x0A => THROW_REF_instr
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:42.5-42.29
-  prod{l : labelidx} {{0x0C} {l:Blabelidx}} => BR_instr(l,)
+  prod{l : labelidx} {{0x0C} {l:Blabelidx}} => BR_instr(l)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:43.5-43.32
-  prod{l : labelidx} {{0x0D} {l:Blabelidx}} => BR_IF_instr(l,)
+  prod{l : labelidx} {{0x0D} {l:Blabelidx}} => BR_IF_instr(l)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:44.5-44.62
   prod{`l*` : labelidx*, l_n : labelidx} {{0x0E} {l*{l <- `l*`}:Blist(syntax labelidx, grammar Blabelidx)} {l_n:Blabelidx}} => BR_TABLE_instr(l*{l <- `l*`}, l_n)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:45.5-45.19
   prod 0x0F => RETURN_instr
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:46.5-46.30
-  prod{x : idx} {{0x10} {x:Bfuncidx}} => CALL_instr(x,)
+  prod{x : idx} {{0x10} {x:Bfuncidx}} => CALL_instr(x)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:47.5-47.60
-  prod{x : idx, y : idx} {{0x11} {y:Btypeidx} {x:Btableidx}} => CALL_INDIRECT_instr(x, _IDX_typeuse(y,))
+  prod{x : idx, y : idx} {{0x11} {y:Btypeidx} {x:Btableidx}} => CALL_INDIRECT_instr(x, _IDX_typeuse(y))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:48.5-48.37
-  prod{x : idx} {{0x12} {x:Bfuncidx}} => RETURN_CALL_instr(x,)
+  prod{x : idx} {{0x12} {x:Bfuncidx}} => RETURN_CALL_instr(x)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:49.5-49.67
-  prod{x : idx, y : idx} {{0x13} {y:Btypeidx} {x:Btableidx}} => RETURN_CALL_INDIRECT_instr(x, _IDX_typeuse(y,))
+  prod{x : idx, y : idx} {{0x13} {y:Btypeidx} {x:Btableidx}} => RETURN_CALL_INDIRECT_instr(x, _IDX_typeuse(y))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:50.5-50.41
-  prod{x : idx} {{0x14} {x:Btypeidx}} => CALL_REF_instr(_IDX_typeuse(x,),)
+  prod{x : idx} {{0x14} {x:Btypeidx}} => CALL_REF_instr(_IDX_typeuse(x))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:51.5-51.48
-  prod{x : idx} {{0x15} {x:Btypeidx}} => RETURN_CALL_REF_instr(_IDX_typeuse(x,),)
+  prod{x : idx} {{0x15} {x:Btypeidx}} => RETURN_CALL_REF_instr(_IDX_typeuse(x))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:52.5-52.81
   prod{bt : blocktype, `c*` : catch*, `in*` : instr*} {{0x1F} {bt:Bblocktype} {c*{c <- `c*`}:Blist(syntax catch, grammar Bcatch)} {in:Binstr*{in <- `in*`}} {0x0B}} => TRY_TABLE_instr(bt, `%`_list(c*{c <- `c*`},), in*{in <- `in*`})
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:53.5-53.37
-  prod{l : labelidx} {{0xD5} {l:Blabelidx}} => BR_ON_NULL_instr(l,)
+  prod{l : labelidx} {{0xD5} {l:Blabelidx}} => BR_ON_NULL_instr(l)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:54.5-54.41
-  prod{l : labelidx} {{0xD6} {l:Blabelidx}} => BR_ON_NON_NULL_instr(l,)
+  prod{l : labelidx} {{0xD6} {l:Blabelidx}} => BR_ON_NON_NULL_instr(l)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:55.5-56.100
   prod{l : labelidx, `null_1?` : null?, ht_1 : heaptype, `null_2?` : null?, ht_2 : heaptype} {{0xFB} {`%`_u32(24,):Bu32} {(null_1?{null_1 <- `null_1?`}, null_2?{null_2 <- `null_2?`}):Bcastop} {l:Blabelidx} {ht_1:Bheaptype} {ht_2:Bheaptype}} => BR_ON_CAST_instr(l, REF_reftype(null_1?{null_1 <- `null_1?`}, ht_1), REF_reftype(null_2?{null_2 <- `null_2?`}, ht_2))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:57.5-58.105
   prod{l : labelidx, `null_1?` : null?, ht_1 : heaptype, `null_2?` : null?, ht_2 : heaptype} {{0xFB} {`%`_u32(25,):Bu32} {(null_1?{null_1 <- `null_1?`}, null_2?{null_2 <- `null_2?`}):Bcastop} {l:Blabelidx} {ht_1:Bheaptype} {ht_2:Bheaptype}} => BR_ON_CAST_FAIL_instr(l, REF_reftype(null_1?{null_1 <- `null_1?`}, ht_1), REF_reftype(null_2?{null_2 <- `null_2?`}, ht_2))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:71.5-71.36
-  prod{x : idx} {{0x20} {x:Blocalidx}} => `LOCAL.GET`_instr(x,)
+  prod{x : idx} {{0x20} {x:Blocalidx}} => `LOCAL.GET`_instr(x)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:72.5-72.36
-  prod{x : idx} {{0x21} {x:Blocalidx}} => `LOCAL.SET`_instr(x,)
+  prod{x : idx} {{0x21} {x:Blocalidx}} => `LOCAL.SET`_instr(x)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:73.5-73.36
-  prod{x : idx} {{0x22} {x:Blocalidx}} => `LOCAL.TEE`_instr(x,)
+  prod{x : idx} {{0x22} {x:Blocalidx}} => `LOCAL.TEE`_instr(x)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:77.5-77.38
-  prod{x : idx} {{0x23} {x:Bglobalidx}} => `GLOBAL.GET`_instr(x,)
+  prod{x : idx} {{0x23} {x:Bglobalidx}} => `GLOBAL.GET`_instr(x)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:78.5-78.38
-  prod{x : idx} {{0x24} {x:Bglobalidx}} => `GLOBAL.SET`_instr(x,)
+  prod{x : idx} {{0x24} {x:Bglobalidx}} => `GLOBAL.SET`_instr(x)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:85.5-85.36
-  prod{x : idx} {{0x25} {x:Btableidx}} => `TABLE.GET`_instr(x,)
+  prod{x : idx} {{0x25} {x:Btableidx}} => `TABLE.GET`_instr(x)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:86.5-86.36
-  prod{x : idx} {{0x26} {x:Btableidx}} => `TABLE.SET`_instr(x,)
+  prod{x : idx} {{0x26} {x:Btableidx}} => `TABLE.SET`_instr(x)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:87.5-87.58
   prod{x : idx, y : idx} {{0xFC} {`%`_u32(12,):Bu32} {y:Belemidx} {x:Btableidx}} => `TABLE.INIT`_instr(x, y)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:88.5-88.43
-  prod{x : idx} {{0xFC} {`%`_u32(13,):Bu32} {x:Belemidx}} => `ELEM.DROP`_instr(x,)
+  prod{x : idx} {{0xFC} {`%`_u32(13,):Bu32} {x:Belemidx}} => `ELEM.DROP`_instr(x)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:89.5-89.67
   prod{x_1 : idx, x_2 : idx} {{0xFC} {`%`_u32(14,):Bu32} {x_1:Btableidx} {x_2:Btableidx}} => `TABLE.COPY`_instr(x_1, x_2)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:90.5-90.45
-  prod{x : idx} {{0xFC} {`%`_u32(15,):Bu32} {x:Btableidx}} => `TABLE.GROW`_instr(x,)
+  prod{x : idx} {{0xFC} {`%`_u32(15,):Bu32} {x:Btableidx}} => `TABLE.GROW`_instr(x)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:91.5-91.45
-  prod{x : idx} {{0xFC} {`%`_u32(16,):Bu32} {x:Btableidx}} => `TABLE.SIZE`_instr(x,)
+  prod{x : idx} {{0xFC} {`%`_u32(16,):Bu32} {x:Btableidx}} => `TABLE.SIZE`_instr(x)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:92.5-92.45
-  prod{x : idx} {{0xFC} {`%`_u32(17,):Bu32} {x:Btableidx}} => `TABLE.FILL`_instr(x,)
+  prod{x : idx} {{0xFC} {`%`_u32(17,):Bu32} {x:Btableidx}} => `TABLE.FILL`_instr(x)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:105.5-105.41
   prod{x : idx, ao : memarg} {{0x28} {(x, ao):Bmemarg}} => LOAD_instr(I32_numtype, ?(), x, ao)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:106.5-106.41
@@ -9153,39 +9153,39 @@ grammar Binstr : instr
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:127.5-127.46
   prod{x : idx, ao : memarg} {{0x3E} {(x, ao):Bmemarg}} => STORE_instr(I64_numtype, ?(`%`_storeop_(`%`_sz(32,),)), x, ao)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:128.5-128.36
-  prod{x : idx} {{0x3F} {x:Bmemidx}} => `MEMORY.SIZE`_instr(x,)
+  prod{x : idx} {{0x3F} {x:Bmemidx}} => `MEMORY.SIZE`_instr(x)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:129.5-129.36
-  prod{x : idx} {{0x40} {x:Bmemidx}} => `MEMORY.GROW`_instr(x,)
+  prod{x : idx} {{0x40} {x:Bmemidx}} => `MEMORY.GROW`_instr(x)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:130.5-130.56
   prod{x : idx, y : idx} {{0xFC} {`%`_u32(8,):Bu32} {y:Bdataidx} {x:Bmemidx}} => `MEMORY.INIT`_instr(x, y)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:131.5-131.42
-  prod{x : idx} {{0xFC} {`%`_u32(9,):Bu32} {x:Bdataidx}} => `DATA.DROP`_instr(x,)
+  prod{x : idx} {{0xFC} {`%`_u32(9,):Bu32} {x:Bdataidx}} => `DATA.DROP`_instr(x)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:132.5-132.64
   prod{x_1 : idx, x_2 : idx} {{0xFC} {`%`_u32(10,):Bu32} {x_1:Bmemidx} {x_2:Bmemidx}} => `MEMORY.COPY`_instr(x_1, x_2)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:133.5-133.44
-  prod{x : idx} {{0xFC} {`%`_u32(11,):Bu32} {x:Bmemidx}} => `MEMORY.FILL`_instr(x,)
+  prod{x : idx} {{0xFC} {`%`_u32(11,):Bu32} {x:Bmemidx}} => `MEMORY.FILL`_instr(x)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:140.5-140.37
-  prod{ht : heaptype} {{0xD0} {ht:Bheaptype}} => `REF.NULL`_instr(ht,)
+  prod{ht : heaptype} {{0xD0} {ht:Bheaptype}} => `REF.NULL`_instr(ht)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:141.5-141.24
   prod 0xD1 => `REF.IS_NULL`_instr
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:142.5-142.34
-  prod{x : idx} {{0xD2} {x:Bfuncidx}} => `REF.FUNC`_instr(x,)
+  prod{x : idx} {{0xD2} {x:Bfuncidx}} => `REF.FUNC`_instr(x)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:143.5-143.19
   prod 0xD3 => `REF.EQ`_instr
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:144.5-144.28
   prod 0xD4 => `REF.AS_NON_NULL`_instr
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:145.5-145.51
-  prod{ht : heaptype} {{0xFB} {`%`_u32(20,):Bu32} {ht:Bheaptype}} => `REF.TEST`_instr(REF_reftype(?(), ht),)
+  prod{ht : heaptype} {{0xFB} {`%`_u32(20,):Bu32} {ht:Bheaptype}} => `REF.TEST`_instr(REF_reftype(?(), ht))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:146.5-146.56
-  prod{ht : heaptype} {{0xFB} {`%`_u32(21,):Bu32} {ht:Bheaptype}} => `REF.TEST`_instr(REF_reftype(?(NULL_null), ht),)
+  prod{ht : heaptype} {{0xFB} {`%`_u32(21,):Bu32} {ht:Bheaptype}} => `REF.TEST`_instr(REF_reftype(?(NULL_null), ht))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:147.5-147.51
-  prod{ht : heaptype} {{0xFB} {`%`_u32(22,):Bu32} {ht:Bheaptype}} => `REF.CAST`_instr(REF_reftype(?(), ht),)
+  prod{ht : heaptype} {{0xFB} {`%`_u32(22,):Bu32} {ht:Bheaptype}} => `REF.CAST`_instr(REF_reftype(?(), ht))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:148.5-148.56
-  prod{ht : heaptype} {{0xFB} {`%`_u32(23,):Bu32} {ht:Bheaptype}} => `REF.CAST`_instr(REF_reftype(?(NULL_null), ht),)
+  prod{ht : heaptype} {{0xFB} {`%`_u32(23,):Bu32} {ht:Bheaptype}} => `REF.CAST`_instr(REF_reftype(?(NULL_null), ht))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:152.5-152.43
-  prod{x : idx} {{0xFB} {`%`_u32(0,):Bu32} {x:Btypeidx}} => `STRUCT.NEW`_instr(x,)
+  prod{x : idx} {{0xFB} {`%`_u32(0,):Bu32} {x:Btypeidx}} => `STRUCT.NEW`_instr(x)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:153.5-153.51
-  prod{x : idx} {{0xFB} {`%`_u32(1,):Bu32} {x:Btypeidx}} => `STRUCT.NEW_DEFAULT`_instr(x,)
+  prod{x : idx} {{0xFB} {`%`_u32(1,):Bu32} {x:Btypeidx}} => `STRUCT.NEW_DEFAULT`_instr(x)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:154.5-154.57
   prod{x : idx, i : fieldidx} {{0xFB} {`%`_u32(2,):Bu32} {x:Btypeidx} {i:Bfieldidx}} => `STRUCT.GET`_instr(?(), x, i)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:155.5-155.59
@@ -9195,9 +9195,9 @@ grammar Binstr : instr
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:157.5-157.57
   prod{x : idx, i : fieldidx} {{0xFB} {`%`_u32(5,):Bu32} {x:Btypeidx} {i:Bfieldidx}} => `STRUCT.SET`_instr(x, i)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:161.5-161.42
-  prod{x : idx} {{0xFB} {`%`_u32(6,):Bu32} {x:Btypeidx}} => `ARRAY.NEW`_instr(x,)
+  prod{x : idx} {{0xFB} {`%`_u32(6,):Bu32} {x:Btypeidx}} => `ARRAY.NEW`_instr(x)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:162.5-162.50
-  prod{x : idx} {{0xFB} {`%`_u32(7,):Bu32} {x:Btypeidx}} => `ARRAY.NEW_DEFAULT`_instr(x,)
+  prod{x : idx} {{0xFB} {`%`_u32(7,):Bu32} {x:Btypeidx}} => `ARRAY.NEW_DEFAULT`_instr(x)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:163.5-163.57
   prod{x : idx, n : n} {{0xFB} {`%`_u32(8,):Bu32} {x:Btypeidx} {`%`_u32(n,):Bu32}} => `ARRAY.NEW_FIXED`_instr(x, `%`_u32(n,))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:164.5-164.60
@@ -9211,11 +9211,11 @@ grammar Binstr : instr
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:168.5-168.45
   prod{x : idx} {{0xFB} {`%`_u32(13,):Bu32} {x:Btypeidx}} => `ARRAY.GET`_instr(?(U_sx), x)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:169.5-169.43
-  prod{x : idx} {{0xFB} {`%`_u32(14,):Bu32} {x:Btypeidx}} => `ARRAY.SET`_instr(x,)
+  prod{x : idx} {{0xFB} {`%`_u32(14,):Bu32} {x:Btypeidx}} => `ARRAY.SET`_instr(x)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:170.5-170.30
   prod {{0xFB} {`%`_u32(15,):Bu32}} => `ARRAY.LEN`_instr
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:171.5-171.44
-  prod{x : idx} {{0xFB} {`%`_u32(16,):Bu32} {x:Btypeidx}} => `ARRAY.FILL`_instr(x,)
+  prod{x : idx} {{0xFB} {`%`_u32(16,):Bu32} {x:Btypeidx}} => `ARRAY.FILL`_instr(x)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:172.5-172.65
   prod{x_1 : idx, x_2 : idx} {{0xFB} {`%`_u32(17,):Bu32} {x_1:Btypeidx} {x_2:Btypeidx}} => `ARRAY.COPY`_instr(x_1, x_2)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:173.5-173.62
@@ -9229,9 +9229,9 @@ grammar Binstr : instr
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:183.5-183.28
   prod {{0xFB} {`%`_u32(28,):Bu32}} => `REF.I31`_instr
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:184.5-184.30
-  prod {{0xFB} {`%`_u32(29,):Bu32}} => `I31.GET`_instr(S_sx,)
+  prod {{0xFB} {`%`_u32(29,):Bu32}} => `I31.GET`_instr(S_sx)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:185.5-185.30
-  prod {{0xFB} {`%`_u32(30,):Bu32}} => `I31.GET`_instr(U_sx,)
+  prod {{0xFB} {`%`_u32(30,):Bu32}} => `I31.GET`_instr(U_sx)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:192.5-192.31
   prod{i : i32} {{0x41} {i:Bi32}} => CONST_instr(I32_numtype, i)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:193.5-193.31
@@ -9247,21 +9247,21 @@ grammar Binstr : instr
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:204.5-204.25
   prod 0x47 => RELOP_instr(I32_numtype, NE_relop_)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:205.5-205.27
-  prod 0x48 => RELOP_instr(I32_numtype, LT_relop_(S_sx,))
+  prod 0x48 => RELOP_instr(I32_numtype, LT_relop_(S_sx))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:206.5-206.27
-  prod 0x49 => RELOP_instr(I32_numtype, LT_relop_(U_sx,))
+  prod 0x49 => RELOP_instr(I32_numtype, LT_relop_(U_sx))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:207.5-207.27
-  prod 0x4A => RELOP_instr(I32_numtype, GT_relop_(S_sx,))
+  prod 0x4A => RELOP_instr(I32_numtype, GT_relop_(S_sx))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:208.5-208.27
-  prod 0x4B => RELOP_instr(I32_numtype, GT_relop_(U_sx,))
+  prod 0x4B => RELOP_instr(I32_numtype, GT_relop_(U_sx))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:209.5-209.27
-  prod 0x4C => RELOP_instr(I32_numtype, LE_relop_(S_sx,))
+  prod 0x4C => RELOP_instr(I32_numtype, LE_relop_(S_sx))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:210.5-210.27
-  prod 0x4D => RELOP_instr(I32_numtype, LE_relop_(U_sx,))
+  prod 0x4D => RELOP_instr(I32_numtype, LE_relop_(U_sx))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:211.5-211.27
-  prod 0x4E => RELOP_instr(I32_numtype, GE_relop_(S_sx,))
+  prod 0x4E => RELOP_instr(I32_numtype, GE_relop_(S_sx))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:212.5-212.27
-  prod 0x4F => RELOP_instr(I32_numtype, GE_relop_(U_sx,))
+  prod 0x4F => RELOP_instr(I32_numtype, GE_relop_(U_sx))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:216.5-216.27
   prod 0x50 => TESTOP_instr(I64_numtype, EQZ_testop_)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:220.5-220.25
@@ -9269,21 +9269,21 @@ grammar Binstr : instr
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:221.5-221.25
   prod 0x52 => RELOP_instr(I64_numtype, NE_relop_)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:222.5-222.27
-  prod 0x53 => RELOP_instr(I64_numtype, LT_relop_(S_sx,))
+  prod 0x53 => RELOP_instr(I64_numtype, LT_relop_(S_sx))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:223.5-223.27
-  prod 0x54 => RELOP_instr(I64_numtype, LT_relop_(U_sx,))
+  prod 0x54 => RELOP_instr(I64_numtype, LT_relop_(U_sx))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:224.5-224.27
-  prod 0x55 => RELOP_instr(I64_numtype, GT_relop_(S_sx,))
+  prod 0x55 => RELOP_instr(I64_numtype, GT_relop_(S_sx))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:225.5-225.27
-  prod 0x56 => RELOP_instr(I64_numtype, GT_relop_(U_sx,))
+  prod 0x56 => RELOP_instr(I64_numtype, GT_relop_(U_sx))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:226.5-226.27
-  prod 0x57 => RELOP_instr(I64_numtype, LE_relop_(S_sx,))
+  prod 0x57 => RELOP_instr(I64_numtype, LE_relop_(S_sx))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:227.5-227.27
-  prod 0x58 => RELOP_instr(I64_numtype, LE_relop_(U_sx,))
+  prod 0x58 => RELOP_instr(I64_numtype, LE_relop_(U_sx))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:228.5-228.27
-  prod 0x59 => RELOP_instr(I64_numtype, GE_relop_(S_sx,))
+  prod 0x59 => RELOP_instr(I64_numtype, GE_relop_(S_sx))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:229.5-229.27
-  prod 0x5A => RELOP_instr(I64_numtype, GE_relop_(U_sx,))
+  prod 0x5A => RELOP_instr(I64_numtype, GE_relop_(U_sx))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:233.5-233.25
   prod 0x5B => RELOP_instr(F32_numtype, EQ_relop_)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:234.5-234.25
@@ -9321,13 +9321,13 @@ grammar Binstr : instr
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:259.5-259.26
   prod 0x6C => BINOP_instr(I32_numtype, MUL_binop_)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:260.5-260.28
-  prod 0x6D => BINOP_instr(I32_numtype, DIV_binop_(S_sx,))
+  prod 0x6D => BINOP_instr(I32_numtype, DIV_binop_(S_sx))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:261.5-261.28
-  prod 0x6E => BINOP_instr(I32_numtype, DIV_binop_(U_sx,))
+  prod 0x6E => BINOP_instr(I32_numtype, DIV_binop_(U_sx))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:262.5-262.28
-  prod 0x6F => BINOP_instr(I32_numtype, REM_binop_(S_sx,))
+  prod 0x6F => BINOP_instr(I32_numtype, REM_binop_(S_sx))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:263.5-263.28
-  prod 0x70 => BINOP_instr(I32_numtype, REM_binop_(U_sx,))
+  prod 0x70 => BINOP_instr(I32_numtype, REM_binop_(U_sx))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:264.5-264.26
   prod 0x71 => BINOP_instr(I32_numtype, AND_binop_)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:265.5-265.25
@@ -9337,9 +9337,9 @@ grammar Binstr : instr
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:267.5-267.26
   prod 0x74 => BINOP_instr(I32_numtype, SHL_binop_)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:268.5-268.28
-  prod 0x75 => BINOP_instr(I32_numtype, SHR_binop_(S_sx,))
+  prod 0x75 => BINOP_instr(I32_numtype, SHR_binop_(S_sx))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:269.5-269.28
-  prod 0x76 => BINOP_instr(I32_numtype, SHR_binop_(U_sx,))
+  prod 0x76 => BINOP_instr(I32_numtype, SHR_binop_(U_sx))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:270.5-270.27
   prod 0x77 => BINOP_instr(I32_numtype, ROTL_binop_)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:271.5-271.27
@@ -9367,13 +9367,13 @@ grammar Binstr : instr
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:294.5-294.26
   prod 0x7E => BINOP_instr(I64_numtype, MUL_binop_)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:295.5-295.28
-  prod 0x7F => BINOP_instr(I64_numtype, DIV_binop_(S_sx,))
+  prod 0x7F => BINOP_instr(I64_numtype, DIV_binop_(S_sx))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:296.5-296.28
-  prod 0x80 => BINOP_instr(I64_numtype, DIV_binop_(U_sx,))
+  prod 0x80 => BINOP_instr(I64_numtype, DIV_binop_(U_sx))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:297.5-297.28
-  prod 0x81 => BINOP_instr(I64_numtype, REM_binop_(S_sx,))
+  prod 0x81 => BINOP_instr(I64_numtype, REM_binop_(S_sx))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:298.5-298.28
-  prod 0x82 => BINOP_instr(I64_numtype, REM_binop_(U_sx,))
+  prod 0x82 => BINOP_instr(I64_numtype, REM_binop_(U_sx))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:299.5-299.26
   prod 0x83 => BINOP_instr(I64_numtype, AND_binop_)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:300.5-300.25
@@ -9383,9 +9383,9 @@ grammar Binstr : instr
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:302.5-302.26
   prod 0x86 => BINOP_instr(I64_numtype, SHL_binop_)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:303.5-303.28
-  prod 0x87 => BINOP_instr(I64_numtype, SHR_binop_(S_sx,))
+  prod 0x87 => BINOP_instr(I64_numtype, SHR_binop_(S_sx))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:304.5-304.28
-  prod 0x88 => BINOP_instr(I64_numtype, SHR_binop_(U_sx,))
+  prod 0x88 => BINOP_instr(I64_numtype, SHR_binop_(U_sx))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:305.5-305.27
   prod 0x89 => BINOP_instr(I64_numtype, ROTL_binop_)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:306.5-306.27
@@ -9449,43 +9449,43 @@ grammar Binstr : instr
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:351.5-351.31
   prod 0xA7 => CVTOP_instr(I32_numtype, I64_numtype, WRAP_cvtop__)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:352.5-352.34
-  prod 0xA8 => CVTOP_instr(I32_numtype, F32_numtype, TRUNC_cvtop__(S_sx,))
+  prod 0xA8 => CVTOP_instr(I32_numtype, F32_numtype, TRUNC_cvtop__(S_sx))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:353.5-353.34
-  prod 0xA9 => CVTOP_instr(I32_numtype, F32_numtype, TRUNC_cvtop__(U_sx,))
+  prod 0xA9 => CVTOP_instr(I32_numtype, F32_numtype, TRUNC_cvtop__(U_sx))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:354.5-354.34
-  prod 0xAA => CVTOP_instr(I32_numtype, F64_numtype, TRUNC_cvtop__(S_sx,))
+  prod 0xAA => CVTOP_instr(I32_numtype, F64_numtype, TRUNC_cvtop__(S_sx))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:355.5-355.34
-  prod 0xAB => CVTOP_instr(I32_numtype, F64_numtype, TRUNC_cvtop__(U_sx,))
+  prod 0xAB => CVTOP_instr(I32_numtype, F64_numtype, TRUNC_cvtop__(U_sx))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:356.5-356.35
   prod 0xAC => CVTOP_instr(I64_numtype, I32_numtype, EXTEND_cvtop__(S_sx,))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:357.5-357.35
   prod 0xAD => CVTOP_instr(I64_numtype, I32_numtype, EXTEND_cvtop__(U_sx,))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:358.5-358.34
-  prod 0xAE => CVTOP_instr(I64_numtype, F32_numtype, TRUNC_cvtop__(S_sx,))
+  prod 0xAE => CVTOP_instr(I64_numtype, F32_numtype, TRUNC_cvtop__(S_sx))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:359.5-359.34
-  prod 0xAF => CVTOP_instr(I64_numtype, F32_numtype, TRUNC_cvtop__(U_sx,))
+  prod 0xAF => CVTOP_instr(I64_numtype, F32_numtype, TRUNC_cvtop__(U_sx))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:360.5-360.34
-  prod 0xB0 => CVTOP_instr(I64_numtype, F64_numtype, TRUNC_cvtop__(S_sx,))
+  prod 0xB0 => CVTOP_instr(I64_numtype, F64_numtype, TRUNC_cvtop__(S_sx))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:361.5-361.34
-  prod 0xB1 => CVTOP_instr(I64_numtype, F64_numtype, TRUNC_cvtop__(U_sx,))
+  prod 0xB1 => CVTOP_instr(I64_numtype, F64_numtype, TRUNC_cvtop__(U_sx))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:362.5-362.36
-  prod 0xB2 => CVTOP_instr(F32_numtype, I32_numtype, CONVERT_cvtop__(S_sx,))
+  prod 0xB2 => CVTOP_instr(F32_numtype, I32_numtype, CONVERT_cvtop__(S_sx))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:363.5-363.36
-  prod 0xB3 => CVTOP_instr(F32_numtype, I32_numtype, CONVERT_cvtop__(U_sx,))
+  prod 0xB3 => CVTOP_instr(F32_numtype, I32_numtype, CONVERT_cvtop__(U_sx))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:364.5-364.36
-  prod 0xB4 => CVTOP_instr(F32_numtype, I64_numtype, CONVERT_cvtop__(S_sx,))
+  prod 0xB4 => CVTOP_instr(F32_numtype, I64_numtype, CONVERT_cvtop__(S_sx))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:365.5-365.36
-  prod 0xB5 => CVTOP_instr(F32_numtype, I64_numtype, CONVERT_cvtop__(U_sx,))
+  prod 0xB5 => CVTOP_instr(F32_numtype, I64_numtype, CONVERT_cvtop__(U_sx))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:366.5-366.33
   prod 0xB6 => CVTOP_instr(F32_numtype, F64_numtype, DEMOTE_cvtop__)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:367.5-367.36
-  prod 0xB7 => CVTOP_instr(F64_numtype, I32_numtype, CONVERT_cvtop__(S_sx,))
+  prod 0xB7 => CVTOP_instr(F64_numtype, I32_numtype, CONVERT_cvtop__(S_sx))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:368.5-368.36
-  prod 0xB8 => CVTOP_instr(F64_numtype, I32_numtype, CONVERT_cvtop__(U_sx,))
+  prod 0xB8 => CVTOP_instr(F64_numtype, I32_numtype, CONVERT_cvtop__(U_sx))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:369.5-369.36
-  prod 0xB9 => CVTOP_instr(F64_numtype, I64_numtype, CONVERT_cvtop__(S_sx,))
+  prod 0xB9 => CVTOP_instr(F64_numtype, I64_numtype, CONVERT_cvtop__(S_sx))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:370.5-370.36
-  prod 0xBA => CVTOP_instr(F64_numtype, I64_numtype, CONVERT_cvtop__(U_sx,))
+  prod 0xBA => CVTOP_instr(F64_numtype, I64_numtype, CONVERT_cvtop__(U_sx))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:371.5-371.34
   prod 0xBB => CVTOP_instr(F64_numtype, F32_numtype, PROMOTE_cvtop__)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:372.5-372.38
@@ -9497,21 +9497,21 @@ grammar Binstr : instr
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:375.5-375.38
   prod 0xBF => CVTOP_instr(F64_numtype, I64_numtype, REINTERPRET_cvtop__)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:379.5-379.45
-  prod {{0xFC} {`%`_u32(0,):Bu32}} => CVTOP_instr(I32_numtype, F32_numtype, TRUNC_SAT_cvtop__(S_sx,))
+  prod {{0xFC} {`%`_u32(0,):Bu32}} => CVTOP_instr(I32_numtype, F32_numtype, TRUNC_SAT_cvtop__(S_sx))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:380.5-380.45
-  prod {{0xFC} {`%`_u32(1,):Bu32}} => CVTOP_instr(I32_numtype, F32_numtype, TRUNC_SAT_cvtop__(U_sx,))
+  prod {{0xFC} {`%`_u32(1,):Bu32}} => CVTOP_instr(I32_numtype, F32_numtype, TRUNC_SAT_cvtop__(U_sx))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:381.5-381.45
-  prod {{0xFC} {`%`_u32(2,):Bu32}} => CVTOP_instr(I32_numtype, F64_numtype, TRUNC_SAT_cvtop__(S_sx,))
+  prod {{0xFC} {`%`_u32(2,):Bu32}} => CVTOP_instr(I32_numtype, F64_numtype, TRUNC_SAT_cvtop__(S_sx))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:382.5-382.45
-  prod {{0xFC} {`%`_u32(3,):Bu32}} => CVTOP_instr(I32_numtype, F64_numtype, TRUNC_SAT_cvtop__(U_sx,))
+  prod {{0xFC} {`%`_u32(3,):Bu32}} => CVTOP_instr(I32_numtype, F64_numtype, TRUNC_SAT_cvtop__(U_sx))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:383.5-383.45
-  prod {{0xFC} {`%`_u32(4,):Bu32}} => CVTOP_instr(I64_numtype, F32_numtype, TRUNC_SAT_cvtop__(S_sx,))
+  prod {{0xFC} {`%`_u32(4,):Bu32}} => CVTOP_instr(I64_numtype, F32_numtype, TRUNC_SAT_cvtop__(S_sx))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:384.5-384.45
-  prod {{0xFC} {`%`_u32(5,):Bu32}} => CVTOP_instr(I64_numtype, F32_numtype, TRUNC_SAT_cvtop__(U_sx,))
+  prod {{0xFC} {`%`_u32(5,):Bu32}} => CVTOP_instr(I64_numtype, F32_numtype, TRUNC_SAT_cvtop__(U_sx))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:385.5-385.45
-  prod {{0xFC} {`%`_u32(6,):Bu32}} => CVTOP_instr(I64_numtype, F64_numtype, TRUNC_SAT_cvtop__(S_sx,))
+  prod {{0xFC} {`%`_u32(6,):Bu32}} => CVTOP_instr(I64_numtype, F64_numtype, TRUNC_SAT_cvtop__(S_sx))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:386.5-386.45
-  prod {{0xFC} {`%`_u32(7,):Bu32}} => CVTOP_instr(I64_numtype, F64_numtype, TRUNC_SAT_cvtop__(U_sx,))
+  prod {{0xFC} {`%`_u32(7,):Bu32}} => CVTOP_instr(I64_numtype, F64_numtype, TRUNC_SAT_cvtop__(U_sx))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:396.5-396.50
   prod{x : idx, ao : memarg} {{0xFD} {`%`_u32(0,):Bu32} {(x, ao):Bmemarg}} => VLOAD_instr(V128_vectype, ?(), x, ao)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:397.5-397.70
@@ -9527,13 +9527,13 @@ grammar Binstr : instr
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:402.5-402.71
   prod{x : idx, ao : memarg} {{0xFD} {`%`_u32(6,):Bu32} {(x, ao):Bmemarg}} => VLOAD_instr(V128_vectype, ?(`SHAPE%X%_%`_vloadop_(`%`_sz(32,), `%`_M(2,), U_sx)), x, ao)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:403.5-403.61
-  prod{x : idx, ao : memarg} {{0xFD} {`%`_u32(7,):Bu32} {(x, ao):Bmemarg}} => VLOAD_instr(V128_vectype, ?(SPLAT_vloadop_(`%`_sz(8,),)), x, ao)
+  prod{x : idx, ao : memarg} {{0xFD} {`%`_u32(7,):Bu32} {(x, ao):Bmemarg}} => VLOAD_instr(V128_vectype, ?(SPLAT_vloadop_(`%`_sz(8,))), x, ao)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:404.5-404.62
-  prod{x : idx, ao : memarg} {{0xFD} {`%`_u32(8,):Bu32} {(x, ao):Bmemarg}} => VLOAD_instr(V128_vectype, ?(SPLAT_vloadop_(`%`_sz(16,),)), x, ao)
+  prod{x : idx, ao : memarg} {{0xFD} {`%`_u32(8,):Bu32} {(x, ao):Bmemarg}} => VLOAD_instr(V128_vectype, ?(SPLAT_vloadop_(`%`_sz(16,))), x, ao)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:405.5-405.62
-  prod{x : idx, ao : memarg} {{0xFD} {`%`_u32(9,):Bu32} {(x, ao):Bmemarg}} => VLOAD_instr(V128_vectype, ?(SPLAT_vloadop_(`%`_sz(32,),)), x, ao)
+  prod{x : idx, ao : memarg} {{0xFD} {`%`_u32(9,):Bu32} {(x, ao):Bmemarg}} => VLOAD_instr(V128_vectype, ?(SPLAT_vloadop_(`%`_sz(32,))), x, ao)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:406.5-406.63
-  prod{x : idx, ao : memarg} {{0xFD} {`%`_u32(10,):Bu32} {(x, ao):Bmemarg}} => VLOAD_instr(V128_vectype, ?(SPLAT_vloadop_(`%`_sz(64,),)), x, ao)
+  prod{x : idx, ao : memarg} {{0xFD} {`%`_u32(10,):Bu32} {(x, ao):Bmemarg}} => VLOAD_instr(V128_vectype, ?(SPLAT_vloadop_(`%`_sz(64,))), x, ao)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:407.5-407.52
   prod{x : idx, ao : memarg} {{0xFD} {`%`_u32(11,):Bu32} {(x, ao):Bmemarg}} => VSTORE_instr(V128_vectype, x, ao)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:408.5-408.72
@@ -9565,17 +9565,17 @@ grammar Binstr : instr
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:427.5-427.58
   prod {{0xFD} {`%`_u32(256,):Bu32}} => VSWIZZLOP_instr(`%`_bshape(`%X%`_shape(I8_lanetype, `%`_dim(16,)),), RELAXED_SWIZZLE_vswizzlop_)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:431.5-431.38
-  prod {{0xFD} {`%`_u32(15,):Bu32}} => VSPLAT_instr(`%X%`_shape(I8_lanetype, `%`_dim(16,)),)
+  prod {{0xFD} {`%`_u32(15,):Bu32}} => VSPLAT_instr(`%X%`_shape(I8_lanetype, `%`_dim(16,)))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:432.5-432.38
-  prod {{0xFD} {`%`_u32(16,):Bu32}} => VSPLAT_instr(`%X%`_shape(I16_lanetype, `%`_dim(8,)),)
+  prod {{0xFD} {`%`_u32(16,):Bu32}} => VSPLAT_instr(`%X%`_shape(I16_lanetype, `%`_dim(8,)))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:433.5-433.38
-  prod {{0xFD} {`%`_u32(17,):Bu32}} => VSPLAT_instr(`%X%`_shape(I32_lanetype, `%`_dim(4,)),)
+  prod {{0xFD} {`%`_u32(17,):Bu32}} => VSPLAT_instr(`%X%`_shape(I32_lanetype, `%`_dim(4,)))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:434.5-434.38
-  prod {{0xFD} {`%`_u32(18,):Bu32}} => VSPLAT_instr(`%X%`_shape(I64_lanetype, `%`_dim(2,)),)
+  prod {{0xFD} {`%`_u32(18,):Bu32}} => VSPLAT_instr(`%X%`_shape(I64_lanetype, `%`_dim(2,)))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:435.5-435.38
-  prod {{0xFD} {`%`_u32(19,):Bu32}} => VSPLAT_instr(`%X%`_shape(F32_lanetype, `%`_dim(4,)),)
+  prod {{0xFD} {`%`_u32(19,):Bu32}} => VSPLAT_instr(`%X%`_shape(F32_lanetype, `%`_dim(4,)))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:436.5-436.38
-  prod {{0xFD} {`%`_u32(20,):Bu32}} => VSPLAT_instr(`%X%`_shape(F64_lanetype, `%`_dim(2,)),)
+  prod {{0xFD} {`%`_u32(20,):Bu32}} => VSPLAT_instr(`%X%`_shape(F64_lanetype, `%`_dim(2,)))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:440.5-440.60
   prod{l : labelidx} {{0xFD} {`%`_u32(21,):Bu32} {`%`_laneidx(l!`%`_labelidx.0,):Blaneidx}} => VEXTRACT_LANE_instr(`%X%`_shape(I8_lanetype, `%`_dim(16,)), ?(S_sx), `%`_laneidx(l!`%`_labelidx.0,))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:441.5-441.60
@@ -9711,7 +9711,7 @@ grammar Binstr : instr
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:539.5-539.48
   prod {{0xFD} {`%`_u32(99,):Bu32}} => VTESTOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16,)), ALL_TRUE_vtestop_)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:543.5-543.41
-  prod {{0xFD} {`%`_u32(100,):Bu32}} => VBITMASK_instr(`%`_ishape(`%X%`_shape(I8_lanetype, `%`_dim(16,)),),)
+  prod {{0xFD} {`%`_u32(100,):Bu32}} => VBITMASK_instr(`%`_ishape(`%X%`_shape(I8_lanetype, `%`_dim(16,)),))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:547.5-547.53
   prod {{0xFD} {`%`_u32(101,):Bu32}} => VNARROW_instr(`%`_ishape(`%X%`_shape(I8_lanetype, `%`_dim(16,)),), `%`_ishape(`%X%`_shape(I16_lanetype, `%`_dim(8,)),), S_sx)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:548.5-548.53
@@ -9719,9 +9719,9 @@ grammar Binstr : instr
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:552.5-552.45
   prod {{0xFD} {`%`_u32(107,):Bu32}} => VSHIFTOP_instr(`%`_ishape(`%X%`_shape(I8_lanetype, `%`_dim(16,)),), SHL_vshiftop_)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:553.5-553.47
-  prod {{0xFD} {`%`_u32(108,):Bu32}} => VSHIFTOP_instr(`%`_ishape(`%X%`_shape(I8_lanetype, `%`_dim(16,)),), SHR_vshiftop_(S_sx,))
+  prod {{0xFD} {`%`_u32(108,):Bu32}} => VSHIFTOP_instr(`%`_ishape(`%X%`_shape(I8_lanetype, `%`_dim(16,)),), SHR_vshiftop_(S_sx))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:554.5-554.47
-  prod {{0xFD} {`%`_u32(109,):Bu32}} => VSHIFTOP_instr(`%`_ishape(`%X%`_shape(I8_lanetype, `%`_dim(16,)),), SHR_vshiftop_(U_sx,))
+  prod {{0xFD} {`%`_u32(109,):Bu32}} => VSHIFTOP_instr(`%`_ishape(`%X%`_shape(I8_lanetype, `%`_dim(16,)),), SHR_vshiftop_(U_sx))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:558.5-558.43
   prod {{0xFD} {`%`_u32(110,):Bu32}} => VBINOP_instr(`%X%`_shape(I8_lanetype, `%`_dim(16,)), ADD_vbinop_)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:559.5-559.49
@@ -9783,7 +9783,7 @@ grammar Binstr : instr
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:599.5-599.49
   prod {{0xFD} {`%`_u32(131,):Bu32}} => VTESTOP_instr(`%X%`_shape(I16_lanetype, `%`_dim(8,)), ALL_TRUE_vtestop_)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:603.5-603.41
-  prod {{0xFD} {`%`_u32(132,):Bu32}} => VBITMASK_instr(`%`_ishape(`%X%`_shape(I16_lanetype, `%`_dim(8,)),),)
+  prod {{0xFD} {`%`_u32(132,):Bu32}} => VBITMASK_instr(`%`_ishape(`%X%`_shape(I16_lanetype, `%`_dim(8,)),))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:607.5-607.53
   prod {{0xFD} {`%`_u32(133,):Bu32}} => VNARROW_instr(`%`_ishape(`%X%`_shape(I16_lanetype, `%`_dim(8,)),), `%`_ishape(`%X%`_shape(I32_lanetype, `%`_dim(4,)),), S_sx)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:608.5-608.53
@@ -9799,9 +9799,9 @@ grammar Binstr : instr
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:619.5-619.45
   prod {{0xFD} {`%`_u32(139,):Bu32}} => VSHIFTOP_instr(`%`_ishape(`%X%`_shape(I16_lanetype, `%`_dim(8,)),), SHL_vshiftop_)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:620.5-620.47
-  prod {{0xFD} {`%`_u32(140,):Bu32}} => VSHIFTOP_instr(`%`_ishape(`%X%`_shape(I16_lanetype, `%`_dim(8,)),), SHR_vshiftop_(S_sx,))
+  prod {{0xFD} {`%`_u32(140,):Bu32}} => VSHIFTOP_instr(`%`_ishape(`%X%`_shape(I16_lanetype, `%`_dim(8,)),), SHR_vshiftop_(S_sx))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:621.5-621.47
-  prod {{0xFD} {`%`_u32(141,):Bu32}} => VSHIFTOP_instr(`%`_ishape(`%X%`_shape(I16_lanetype, `%`_dim(8,)),), SHR_vshiftop_(U_sx,))
+  prod {{0xFD} {`%`_u32(141,):Bu32}} => VSHIFTOP_instr(`%`_ishape(`%X%`_shape(I16_lanetype, `%`_dim(8,)),), SHR_vshiftop_(U_sx))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:625.5-625.66
   prod {{0xFD} {`%`_u32(156,):Bu32}} => VEXTBINOP_instr(`%`_ishape(`%X%`_shape(I16_lanetype, `%`_dim(8,)),), `%`_ishape(`%X%`_shape(I8_lanetype, `%`_dim(16,)),), EXTMUL_vextbinop__(LOW_half, S_sx))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:626.5-626.67
@@ -9823,7 +9823,7 @@ grammar Binstr : instr
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:643.5-643.49
   prod {{0xFD} {`%`_u32(163,):Bu32}} => VTESTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4,)), ALL_TRUE_vtestop_)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:647.5-647.41
-  prod {{0xFD} {`%`_u32(164,):Bu32}} => VBITMASK_instr(`%`_ishape(`%X%`_shape(I32_lanetype, `%`_dim(4,)),),)
+  prod {{0xFD} {`%`_u32(164,):Bu32}} => VBITMASK_instr(`%`_ishape(`%X%`_shape(I32_lanetype, `%`_dim(4,)),))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:651.5-651.63
   prod {{0xFD} {`%`_u32(167,):Bu32}} => VCVTOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4,)), `%X%`_shape(I16_lanetype, `%`_dim(8,)), EXTEND_vcvtop__(LOW_half, S_sx))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:652.5-652.64
@@ -9835,9 +9835,9 @@ grammar Binstr : instr
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:658.5-658.45
   prod {{0xFD} {`%`_u32(171,):Bu32}} => VSHIFTOP_instr(`%`_ishape(`%X%`_shape(I32_lanetype, `%`_dim(4,)),), SHL_vshiftop_)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:659.5-659.49
-  prod {{0xFD} {`%`_u32(172,):Bu32}} => VSHIFTOP_instr(`%`_ishape(`%X%`_shape(I32_lanetype, `%`_dim(4,)),), SHR_vshiftop_(S_sx,))
+  prod {{0xFD} {`%`_u32(172,):Bu32}} => VSHIFTOP_instr(`%`_ishape(`%X%`_shape(I32_lanetype, `%`_dim(4,)),), SHR_vshiftop_(S_sx))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:660.5-660.49
-  prod {{0xFD} {`%`_u32(173,):Bu32}} => VSHIFTOP_instr(`%`_ishape(`%X%`_shape(I32_lanetype, `%`_dim(4,)),), SHR_vshiftop_(U_sx,))
+  prod {{0xFD} {`%`_u32(173,):Bu32}} => VSHIFTOP_instr(`%`_ishape(`%X%`_shape(I32_lanetype, `%`_dim(4,)),), SHR_vshiftop_(U_sx))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:664.5-664.43
   prod {{0xFD} {`%`_u32(174,):Bu32}} => VBINOP_instr(`%X%`_shape(I32_lanetype, `%`_dim(4,)), ADD_vbinop_)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:665.5-665.43
@@ -9871,7 +9871,7 @@ grammar Binstr : instr
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:691.5-691.49
   prod {{0xFD} {`%`_u32(195,):Bu32}} => VTESTOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2,)), ALL_TRUE_vtestop_)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:695.5-695.41
-  prod {{0xFD} {`%`_u32(196,):Bu32}} => VBITMASK_instr(`%`_ishape(`%X%`_shape(I64_lanetype, `%`_dim(2,)),),)
+  prod {{0xFD} {`%`_u32(196,):Bu32}} => VBITMASK_instr(`%`_ishape(`%X%`_shape(I64_lanetype, `%`_dim(2,)),))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:699.5-699.63
   prod {{0xFD} {`%`_u32(199,):Bu32}} => VCVTOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2,)), `%X%`_shape(I32_lanetype, `%`_dim(4,)), EXTEND_vcvtop__(LOW_half, S_sx))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:700.5-700.64
@@ -9883,9 +9883,9 @@ grammar Binstr : instr
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:706.5-706.45
   prod {{0xFD} {`%`_u32(203,):Bu32}} => VSHIFTOP_instr(`%`_ishape(`%X%`_shape(I64_lanetype, `%`_dim(2,)),), SHL_vshiftop_)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:707.5-707.49
-  prod {{0xFD} {`%`_u32(204,):Bu32}} => VSHIFTOP_instr(`%`_ishape(`%X%`_shape(I64_lanetype, `%`_dim(2,)),), SHR_vshiftop_(S_sx,))
+  prod {{0xFD} {`%`_u32(204,):Bu32}} => VSHIFTOP_instr(`%`_ishape(`%X%`_shape(I64_lanetype, `%`_dim(2,)),), SHR_vshiftop_(S_sx))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:708.5-708.49
-  prod {{0xFD} {`%`_u32(205,):Bu32}} => VSHIFTOP_instr(`%`_ishape(`%X%`_shape(I64_lanetype, `%`_dim(2,)),), SHR_vshiftop_(U_sx,))
+  prod {{0xFD} {`%`_u32(205,):Bu32}} => VSHIFTOP_instr(`%`_ishape(`%X%`_shape(I64_lanetype, `%`_dim(2,)),), SHR_vshiftop_(U_sx))
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:712.5-712.43
   prod {{0xFD} {`%`_u32(206,):Bu32}} => VBINOP_instr(`%X%`_shape(I64_lanetype, `%`_dim(2,)), ADD_vbinop_)
   ;; ../../../../specification/wasm-latest/5.3-binary.instructions.spectec:713.5-713.43
@@ -10052,7 +10052,7 @@ grammar Bcustomsec : ()
 ;; ../../../../specification/wasm-latest/5.4-binary.modules.spectec
 grammar Btype : type
   ;; ../../../../specification/wasm-latest/5.4-binary.modules.spectec
-  prod{qt : rectype} qt:Brectype => TYPE_type(qt,)
+  prod{qt : rectype} qt:Brectype => TYPE_type(qt)
 
 ;; ../../../../specification/wasm-latest/5.4-binary.modules.spectec
 grammar Btypesec : type*
@@ -10077,7 +10077,7 @@ grammar Bfuncsec : typeidx*
 ;; ../../../../specification/wasm-latest/5.4-binary.modules.spectec
 grammar Btable : table
   ;; ../../../../specification/wasm-latest/5.4-binary.modules.spectec
-  prod{tt : tabletype, ht : heaptype, at : addrtype, lim : limits} tt:Btabletype => TABLE_table(tt, [`REF.NULL`_instr(ht,)])
+  prod{tt : tabletype, ht : heaptype, at : addrtype, lim : limits} tt:Btabletype => TABLE_table(tt, [`REF.NULL`_instr(ht)])
     -- if (tt = `%%%`_tabletype(at, lim, REF_reftype(NULL_null?{}, ht)))
   ;; ../../../../specification/wasm-latest/5.4-binary.modules.spectec
   prod{tt : tabletype, e : expr} {{0x40} {0x00} {tt:Btabletype} {e:Bexpr}} => TABLE_table(tt, e)
@@ -10090,7 +10090,7 @@ grammar Btablesec : table*
 ;; ../../../../specification/wasm-latest/5.4-binary.modules.spectec
 grammar Bmem : mem
   ;; ../../../../specification/wasm-latest/5.4-binary.modules.spectec
-  prod{mt : memtype} mt:Bmemtype => MEMORY_mem(mt,)
+  prod{mt : memtype} mt:Bmemtype => MEMORY_mem(mt)
 
 ;; ../../../../specification/wasm-latest/5.4-binary.modules.spectec
 grammar Bmemsec : mem*
@@ -10120,7 +10120,7 @@ grammar Bexportsec : export*
 ;; ../../../../specification/wasm-latest/5.4-binary.modules.spectec
 grammar Bstart : start*
   ;; ../../../../specification/wasm-latest/5.4-binary.modules.spectec
-  prod{x : idx} x:Bfuncidx => [START_start(x,)]
+  prod{x : idx} x:Bfuncidx => [START_start(x)]
 
 ;; ../../../../specification/wasm-latest/5.4-binary.modules.spectec
 grammar Bstartsec : start?
@@ -10135,13 +10135,13 @@ grammar Belemkind : reftype
 ;; ../../../../specification/wasm-latest/5.4-binary.modules.spectec
 grammar Belem : elem
   ;; ../../../../specification/wasm-latest/5.4-binary.modules.spectec
-  prod{`y*` : idx*, e_o : expr} {{`%`_u32(0,):Bu32} {e_o:Bexpr} {y*{y <- `y*`}:Blist(syntax funcidx, grammar Bfuncidx)}} => ELEM_elem(REF_reftype(?(), FUNC_heaptype), [`REF.FUNC`_instr(y,)*{y <- `y*`}], ACTIVE_elemmode(`%`_tableidx(0,), e_o))
+  prod{`y*` : idx*, e_o : expr} {{`%`_u32(0,):Bu32} {e_o:Bexpr} {y*{y <- `y*`}:Blist(syntax funcidx, grammar Bfuncidx)}} => ELEM_elem(REF_reftype(?(), FUNC_heaptype), [`REF.FUNC`_instr(y)*{y <- `y*`}], ACTIVE_elemmode(`%`_tableidx(0,), e_o))
   ;; ../../../../specification/wasm-latest/5.4-binary.modules.spectec
-  prod{rt : reftype, `y*` : idx*} {{`%`_u32(1,):Bu32} {rt:Belemkind} {y*{y <- `y*`}:Blist(syntax funcidx, grammar Bfuncidx)}} => ELEM_elem(rt, [`REF.FUNC`_instr(y,)*{y <- `y*`}], PASSIVE_elemmode)
+  prod{rt : reftype, `y*` : idx*} {{`%`_u32(1,):Bu32} {rt:Belemkind} {y*{y <- `y*`}:Blist(syntax funcidx, grammar Bfuncidx)}} => ELEM_elem(rt, [`REF.FUNC`_instr(y)*{y <- `y*`}], PASSIVE_elemmode)
   ;; ../../../../specification/wasm-latest/5.4-binary.modules.spectec
-  prod{rt : reftype, `y*` : idx*, x : idx, e : expr} {{`%`_u32(2,):Bu32} {x:Btableidx} {e:Bexpr} {rt:Belemkind} {y*{y <- `y*`}:Blist(syntax funcidx, grammar Bfuncidx)}} => ELEM_elem(rt, [`REF.FUNC`_instr(y,)*{y <- `y*`}], ACTIVE_elemmode(x, e))
+  prod{rt : reftype, `y*` : idx*, x : idx, e : expr} {{`%`_u32(2,):Bu32} {x:Btableidx} {e:Bexpr} {rt:Belemkind} {y*{y <- `y*`}:Blist(syntax funcidx, grammar Bfuncidx)}} => ELEM_elem(rt, [`REF.FUNC`_instr(y)*{y <- `y*`}], ACTIVE_elemmode(x, e))
   ;; ../../../../specification/wasm-latest/5.4-binary.modules.spectec
-  prod{rt : reftype, `y*` : idx*} {{`%`_u32(3,):Bu32} {rt:Belemkind} {y*{y <- `y*`}:Blist(syntax funcidx, grammar Bfuncidx)}} => ELEM_elem(rt, [`REF.FUNC`_instr(y,)*{y <- `y*`}], DECLARE_elemmode)
+  prod{rt : reftype, `y*` : idx*} {{`%`_u32(3,):Bu32} {rt:Belemkind} {y*{y <- `y*`}:Blist(syntax funcidx, grammar Bfuncidx)}} => ELEM_elem(rt, [`REF.FUNC`_instr(y)*{y <- `y*`}], DECLARE_elemmode)
   ;; ../../../../specification/wasm-latest/5.4-binary.modules.spectec
   prod{`e*` : expr*, e_O : expr} {{`%`_u32(4,):Bu32} {e_O:Bexpr} {e*{e <- `e*`}:Blist(syntax expr, grammar Bexpr)}} => ELEM_elem(REF_reftype(?(NULL_null), FUNC_heaptype), e*{e <- `e*`}, ACTIVE_elemmode(`%`_tableidx(0,), e_O))
   ;; ../../../../specification/wasm-latest/5.4-binary.modules.spectec
@@ -10159,7 +10159,7 @@ grammar Belemsec : elem*
 ;; ../../../../specification/wasm-latest/5.4-binary.modules.spectec
 grammar Blocals : local*
   ;; ../../../../specification/wasm-latest/5.4-binary.modules.spectec
-  prod{t : valtype, n : n} {{`%`_u32(n,):Bu32} {t:Bvaltype}} => LOCAL_local(t,)^n{}
+  prod{t : valtype, n : n} {{`%`_u32(n,):Bu32} {t:Bvaltype}} => LOCAL_local(t)^n{}
 
 ;; ../../../../specification/wasm-latest/5.4-binary.modules.spectec
 grammar Bfunc : code
@@ -10205,7 +10205,7 @@ grammar Bdatacntsec : u32?
 ;; ../../../../specification/wasm-latest/5.4-binary.modules.spectec
 grammar Btag : tag
   ;; ../../../../specification/wasm-latest/5.4-binary.modules.spectec
-  prod{jt : tagtype} jt:Btagtype => TAG_tag(jt,)
+  prod{jt : tagtype} jt:Btagtype => TAG_tag(jt)
 
 ;; ../../../../specification/wasm-latest/5.4-binary.modules.spectec
 grammar Btagsec : tag*
@@ -10644,9 +10644,9 @@ grammar TfNmag(N : N) : fNmag(N)
 ;; ../../../../specification/wasm-latest/6.1-text.values.spectec
 grammar TfN(N : N) : fN(N)
   ;; ../../../../specification/wasm-latest/6.1-text.values.spectec
-  prod{q : fNmag(N)} {{+ (1 : nat <:> int):Tsign} {q:TfNmag(N)}} => POS_fN(q,)
+  prod{q : fNmag(N)} {{+ (1 : nat <:> int):Tsign} {q:TfNmag(N)}} => POS_fN(q)
   ;; ../../../../specification/wasm-latest/6.1-text.values.spectec
-  prod{q : fNmag(N)} {{- (1 : nat <:> int):Tsign} {q:TfNmag(N)}} => NEG_fN(q,)
+  prod{q : fNmag(N)} {{- (1 : nat <:> int):Tsign} {q:TfNmag(N)}} => NEG_fN(q)
 
 ;; ../../../../specification/wasm-latest/6.1-text.values.spectec
 grammar Tu8 : u8
@@ -10765,15 +10765,15 @@ grammar Tfieldidx__(I : I, x : idx) : fieldidx
 ;; ../../../../specification/wasm-latest/6.1-text.values.spectec
 grammar Texternidx_(I : I) : externidx
   ;; ../../../../specification/wasm-latest/6.1-text.values.spectec
-  prod{x : idx} {{"("} {"tag"} {x:Ttagidx_(I)} {")"}} => TAG_externidx(x,)
+  prod{x : idx} {{"("} {"tag"} {x:Ttagidx_(I)} {")"}} => TAG_externidx(x)
   ;; ../../../../specification/wasm-latest/6.1-text.values.spectec
-  prod{x : idx} {{"("} {"global"} {x:Tglobalidx_(I)} {")"}} => GLOBAL_externidx(x,)
+  prod{x : idx} {{"("} {"global"} {x:Tglobalidx_(I)} {")"}} => GLOBAL_externidx(x)
   ;; ../../../../specification/wasm-latest/6.1-text.values.spectec
-  prod{x : idx} {{"("} {"memory"} {x:Tmemidx_(I)} {")"}} => MEM_externidx(x,)
+  prod{x : idx} {{"("} {"memory"} {x:Tmemidx_(I)} {")"}} => MEM_externidx(x)
   ;; ../../../../specification/wasm-latest/6.1-text.values.spectec
-  prod{x : idx} {{"("} {"table"} {x:Ttableidx_(I)} {")"}} => TABLE_externidx(x,)
+  prod{x : idx} {{"("} {"table"} {x:Ttableidx_(I)} {")"}} => TABLE_externidx(x)
   ;; ../../../../specification/wasm-latest/6.1-text.values.spectec
-  prod{x : idx} {{"("} {"func"} {x:Tfuncidx_(I)} {")"}} => FUNC_externidx(x,)
+  prod{x : idx} {{"("} {"func"} {x:Tfuncidx_(I)} {")"}} => FUNC_externidx(x)
 
 ;; ../../../../specification/wasm-latest/6.2-text.types.spectec
 grammar Tnumtype : numtype
@@ -10823,7 +10823,7 @@ grammar Theaptype_(I : I) : heaptype
   ;; ../../../../specification/wasm-latest/6.2-text.types.spectec
   prod{ht : heaptype} ht:Tabsheaptype => ht
   ;; ../../../../specification/wasm-latest/6.2-text.types.spectec
-  prod{x : idx} x:Ttypeidx_(I) => _IDX_heaptype(x,)
+  prod{x : idx} x:Ttypeidx_(I) => _IDX_heaptype(x)
 
 ;; ../../../../specification/wasm-latest/6.2-text.types.spectec
 grammar Tnull : null
@@ -10883,9 +10883,9 @@ grammar Tresult_(I : I) : valtype
 ;; ../../../../specification/wasm-latest/6.2-text.types.spectec
 grammar Tcomptype_(I : I) : (comptype, idctxt)
   ;; ../../../../specification/wasm-latest/6.2-text.types.spectec
-  prod{`ft*` : fieldtype*, `id?*` : char?*} {{"("} {"struct"} {(ft, ?(`%`_name(lift(id?{id <- `id?`}),)))*{ft <- `ft*`, `id?` <- `id?*`}:Tlist(syntax (fieldtype, name?), grammar Tfield_(I))} {")"}} => (STRUCT_comptype(`%`_list(ft*{ft <- `ft*`},),), {TYPES [], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [], FIELDS [?(`%`_name(lift(id?{id <- `id?`}),))*{`id?` <- `id?*`}], TYPEDEFS []})
+  prod{`ft*` : fieldtype*, `id?*` : char?*} {{"("} {"struct"} {(ft, ?(`%`_name(lift(id?{id <- `id?`}),)))*{ft <- `ft*`, `id?` <- `id?*`}:Tlist(syntax (fieldtype, name?), grammar Tfield_(I))} {")"}} => (STRUCT_comptype(`%`_list(ft*{ft <- `ft*`},)), {TYPES [], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [], FIELDS [?(`%`_name(lift(id?{id <- `id?`}),))*{`id?` <- `id?*`}], TYPEDEFS []})
   ;; ../../../../specification/wasm-latest/6.2-text.types.spectec
-  prod{ft : fieldtype} {{"("} {"array"} {ft:Tfieldtype_(I)} {")"}} => (ARRAY_comptype(ft,), {TYPES [], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [], FIELDS [[?(`%`_name([],))]], TYPEDEFS []})
+  prod{ft : fieldtype} {{"("} {"array"} {ft:Tfieldtype_(I)} {")"}} => (ARRAY_comptype(ft), {TYPES [], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [], FIELDS [[?(`%`_name([],))]], TYPEDEFS []})
   ;; ../../../../specification/wasm-latest/6.2-text.types.spectec
   prod{`t_1*` : valtype*, `t_2*` : valtype*, `id?*` : char?*} {{"("} {"func"} {(t_1, ?(`%`_name(lift(id?{id <- `id?`}),)))*{`id?` <- `id?*`, t_1 <- `t_1*`}:Tlist(syntax (valtype, name?), grammar Tparam_(I))} {t_2*{t_2 <- `t_2*`}:Tlist(syntax valtype, grammar Tresult_(I))} {")"}} => (`FUNC%->%`_comptype(`%`_resulttype(t_1*{t_1 <- `t_1*`},), `%`_resulttype(t_2*{t_2 <- `t_2*`},)), {TYPES [], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [], FIELDS [[?(`%`_name([],))]], TYPEDEFS []})
 
@@ -10897,7 +10897,7 @@ grammar Tfinal : final
 ;; ../../../../specification/wasm-latest/6.2-text.types.spectec
 grammar Tsubtype_(I : I) : (subtype, idctxt)
   ;; ../../../../specification/wasm-latest/6.2-text.types.spectec
-  prod{`fin?` : final?, `x*` : idx*, ct : comptype, I' : I} {{"("} {"sub"} {fin?{fin <- `fin?`}:Tfinal?{}} {x*{x <- `x*`}:Tlist(syntax typeidx, grammar Ttypeidx_(I))} {(ct, I'):Tcomptype_(I)} {")"}} => (SUB_subtype(fin?{fin <- `fin?`}, _IDX_typeuse(x,)*{x <- `x*`}, ct), I')
+  prod{`fin?` : final?, `x*` : idx*, ct : comptype, I' : I} {{"("} {"sub"} {fin?{fin <- `fin?`}:Tfinal?{}} {x*{x <- `x*`}:Tlist(syntax typeidx, grammar Ttypeidx_(I))} {(ct, I'):Tcomptype_(I)} {")"}} => (SUB_subtype(fin?{fin <- `fin?`}, _IDX_typeuse(x)*{x <- `x*`}, ct), I')
 
 ;; ../../../../specification/wasm-latest/6.2-text.types.spectec
 grammar Ttypedef_(I : I) : (subtype, idctxt)
@@ -10907,7 +10907,7 @@ grammar Ttypedef_(I : I) : (subtype, idctxt)
 ;; ../../../../specification/wasm-latest/6.2-text.types.spectec
 grammar Trectype_(I : I) : (rectype, idctxt)
   ;; ../../../../specification/wasm-latest/6.2-text.types.spectec
-  prod{`st*` : subtype*, `I'*` : I*} {{"("} {"rec"} {(st, I')*{I' <- `I'*`, st <- `st*`}:Tlist(syntax (subtype, idctxt), grammar Ttypedef_(I))} {")"}} => (REC_rectype(`%`_list(st*{st <- `st*`},),), $concat_idctxt(I'*{I' <- `I'*`}))
+  prod{`st*` : subtype*, `I'*` : I*} {{"("} {"rec"} {(st, I')*{I' <- `I'*`, st <- `st*`}:Tlist(syntax (subtype, idctxt), grammar Ttypedef_(I))} {")"}} => (REC_rectype(`%`_list(st*{st <- `st*`},)), $concat_idctxt(I'*{I' <- `I'*`}))
 
 ;; ../../../../specification/wasm-latest/6.2-text.types.spectec
 grammar Taddrtype : addrtype
@@ -10927,12 +10927,12 @@ grammar Tlimits : limits
 grammar Ttypeuse_(I : I) : (typeidx, idctxt)
   ;; ../../../../specification/wasm-latest/6.2-text.types.spectec
   prod{x : idx, I' : I, `st*` : subtype*, i : n, `t_1*` : valtype*, `t_2*` : valtype*} {{"("} {"type"} {x:Ttypeidx_(I)} {")"}} => (x, I')
-    -- if (I.TYPEDEFS_I[x!`%`_idx.0] = ?(_DEF_deftype(REC_rectype(`%`_list(st*{st <- `st*`},),), i)))
+    -- if (I.TYPEDEFS_I[x!`%`_idx.0] = ?(_DEF_deftype(REC_rectype(`%`_list(st*{st <- `st*`},)), i)))
     -- if (st*{st <- `st*`}[i] = SUB_subtype(?(FINAL_final), [], `FUNC%->%`_comptype(`%`_resulttype(t_1*{t_1 <- `t_1*`},), `%`_resulttype(t_2*{t_2 <- `t_2*`},))))
     -- if (I' = {TYPES [], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS ?(`%`_name([],))^|t_1*{t_1 <- `t_1*`}|{}, LABELS [], FIELDS [], TYPEDEFS []})
   ;; ../../../../specification/wasm-latest/6.2-text.types.spectec
   prod{x : idx, I' : I, `id?*` : char?*, `t_1*` : valtype*, `t_2*` : valtype*, `st*` : subtype*, i : n} {{"("} {"type"} {x:Ttypeidx_(I)} {")"} {(t_1, ?(`%`_name(lift(id?{id <- `id?`}),)))*{`id?` <- `id?*`, t_1 <- `t_1*`}:Tparam_(I)*{}} {t_2*{t_2 <- `t_2*`}:Tresult_(I)*{}}} => (x, I')
-    -- if (I.TYPEDEFS_I[x!`%`_idx.0] = ?(_DEF_deftype(REC_rectype(`%`_list(st*{st <- `st*`},),), i)))
+    -- if (I.TYPEDEFS_I[x!`%`_idx.0] = ?(_DEF_deftype(REC_rectype(`%`_list(st*{st <- `st*`},)), i)))
     -- if (st*{st <- `st*`}[i] = SUB_subtype(?(FINAL_final), [], `FUNC%->%`_comptype(`%`_resulttype(t_1*{t_1 <- `t_1*`},), `%`_resulttype(t_2*{t_2 <- `t_2*`},))))
     -- if (I' = {TYPES [], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS ?(`%`_name(lift(id?{id <- `id?`}),))*{`id?` <- `id?*`}, LABELS [], FIELDS [], TYPEDEFS []})
     -- Idctxt_ok: `|-%:OK`(I',)
@@ -10940,7 +10940,7 @@ grammar Ttypeuse_(I : I) : (typeidx, idctxt)
 ;; ../../../../specification/wasm-latest/6.2-text.types.spectec
 grammar Ttagtype_(I : I) : tagtype
   ;; ../../../../specification/wasm-latest/6.2-text.types.spectec
-  prod{x : idx, I' : I} (x, I'):Ttypeuse_(I) => _IDX_tagtype(x,)
+  prod{x : idx, I' : I} (x, I'):Ttypeuse_(I) => _IDX_tagtype(x)
 
 ;; ../../../../specification/wasm-latest/6.2-text.types.spectec
 grammar Tglobaltype_(I : I) : globaltype
@@ -10962,15 +10962,15 @@ grammar Ttabletype_(I : I) : tabletype
 ;; ../../../../specification/wasm-latest/6.2-text.types.spectec
 grammar Texterntype_(I : I) : (externtype, idctxt)
   ;; ../../../../specification/wasm-latest/6.2-text.types.spectec
-  prod{jt : tagtype, `id?` : char?} {{"("} {"tag"} {?(`%`_name(lift(id?{id <- `id?`}),)):Tid?{}} {jt:Ttagtype_(I)} {")"}} => (TAG_externtype(jt,), {TYPES [], TAGS [?(`%`_name(lift(id?{id <- `id?`}),))], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [], FIELDS [], TYPEDEFS []})
+  prod{jt : tagtype, `id?` : char?} {{"("} {"tag"} {?(`%`_name(lift(id?{id <- `id?`}),)):Tid?{}} {jt:Ttagtype_(I)} {")"}} => (TAG_externtype(jt), {TYPES [], TAGS [?(`%`_name(lift(id?{id <- `id?`}),))], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [], FIELDS [], TYPEDEFS []})
   ;; ../../../../specification/wasm-latest/6.2-text.types.spectec
-  prod{gt : globaltype, `id?` : char?} {{"("} {"global"} {?(`%`_name(lift(id?{id <- `id?`}),)):Tid?{}} {gt:Tglobaltype_(I)} {")"}} => (GLOBAL_externtype(gt,), {TYPES [], TAGS [], GLOBALS [?(`%`_name(lift(id?{id <- `id?`}),))], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [], FIELDS [], TYPEDEFS []})
+  prod{gt : globaltype, `id?` : char?} {{"("} {"global"} {?(`%`_name(lift(id?{id <- `id?`}),)):Tid?{}} {gt:Tglobaltype_(I)} {")"}} => (GLOBAL_externtype(gt), {TYPES [], TAGS [], GLOBALS [?(`%`_name(lift(id?{id <- `id?`}),))], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [], FIELDS [], TYPEDEFS []})
   ;; ../../../../specification/wasm-latest/6.2-text.types.spectec
-  prod{mt : memtype, `id?` : char?} {{"("} {"memory"} {?(`%`_name(lift(id?{id <- `id?`}),)):Tid?{}} {mt:Tmemtype_(I)} {")"}} => (MEM_externtype(mt,), {TYPES [], TAGS [], GLOBALS [], MEMS [?(`%`_name(lift(id?{id <- `id?`}),))], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [], FIELDS [], TYPEDEFS []})
+  prod{mt : memtype, `id?` : char?} {{"("} {"memory"} {?(`%`_name(lift(id?{id <- `id?`}),)):Tid?{}} {mt:Tmemtype_(I)} {")"}} => (MEM_externtype(mt), {TYPES [], TAGS [], GLOBALS [], MEMS [?(`%`_name(lift(id?{id <- `id?`}),))], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [], FIELDS [], TYPEDEFS []})
   ;; ../../../../specification/wasm-latest/6.2-text.types.spectec
-  prod{tt : tabletype, `id?` : char?} {{"("} {"table"} {?(`%`_name(lift(id?{id <- `id?`}),)):Tid?{}} {tt:Ttabletype_(I)} {")"}} => (TABLE_externtype(tt,), {TYPES [], TAGS [], GLOBALS [], MEMS [], TABLES [?(`%`_name(lift(id?{id <- `id?`}),))], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [], FIELDS [], TYPEDEFS []})
+  prod{tt : tabletype, `id?` : char?} {{"("} {"table"} {?(`%`_name(lift(id?{id <- `id?`}),)):Tid?{}} {tt:Ttabletype_(I)} {")"}} => (TABLE_externtype(tt), {TYPES [], TAGS [], GLOBALS [], MEMS [], TABLES [?(`%`_name(lift(id?{id <- `id?`}),))], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [], FIELDS [], TYPEDEFS []})
   ;; ../../../../specification/wasm-latest/6.2-text.types.spectec
-  prod{x : idx, `id?` : char?, I' : I} {{"("} {"func"} {?(`%`_name(lift(id?{id <- `id?`}),)):Tid?{}} {(x, I'):Ttypeuse_(I)} {")"}} => (FUNC_externtype(_IDX_typeuse(x,),), {TYPES [], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [?(`%`_name(lift(id?{id <- `id?`}),))], DATAS [], ELEMS [], LOCALS [], LABELS [], FIELDS [], TYPEDEFS []})
+  prod{x : idx, `id?` : char?, I' : I} {{"("} {"func"} {?(`%`_name(lift(id?{id <- `id?`}),)):Tid?{}} {(x, I'):Ttypeuse_(I)} {")"}} => (FUNC_externtype(_IDX_typeuse(x)), {TYPES [], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [?(`%`_name(lift(id?{id <- `id?`}),))], DATAS [], ELEMS [], LOCALS [], LABELS [], FIELDS [], TYPEDEFS []})
 
 ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
 grammar Tlabel_(I : I) : (name?, I)
@@ -10986,9 +10986,9 @@ grammar Tlabel_(I : I) : (name?, I)
 ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
 grammar Tblocktype_(I : I) : blocktype
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod{`t?` : valtype?} t?{t <- `t?`}:Tresult_(I)?{} => _RESULT_blocktype(t?{t <- `t?`},)
+  prod{`t?` : valtype?} t?{t <- `t?`}:Tresult_(I)?{} => _RESULT_blocktype(t?{t <- `t?`})
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod{x : idx, I' : I} (x, I'):Ttypeuse_(I) => _IDX_blocktype(x,)
+  prod{x : idx, I' : I} (x, I'):Ttypeuse_(I) => _IDX_blocktype(x)
     -- if (I' = {TYPES [], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS ?(`%`_name([],))*{}, LABELS [], FIELDS [], TYPEDEFS []})
 
 ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
@@ -10998,9 +10998,9 @@ grammar Tcatch_(I : I) : catch
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
   prod{x : idx, l : labelidx} {{"("} {"catch_ref"} {x:Ttagidx_(I)} {l:Tlabelidx_(I)} {")"}} => CATCH_REF_catch(x, l)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod{l : labelidx} {{"("} {"catch_all"} {l:Tlabelidx_(I)} {")"}} => CATCH_ALL_catch(l,)
+  prod{l : labelidx} {{"("} {"catch_all"} {l:Tlabelidx_(I)} {")"}} => CATCH_ALL_catch(l)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod{l : labelidx} {{"("} {"catch_all_ref"} {l:Tlabelidx_(I)} {")"}} => CATCH_ALL_REF_catch(l,)
+  prod{l : labelidx} {{"("} {"catch_all_ref"} {l:Tlabelidx_(I)} {")"}} => CATCH_ALL_REF_catch(l)
 
 ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
 grammar Tfoldedinstr_(I : I) : instr*
@@ -11039,67 +11039,67 @@ grammar Tplaininstr_(I : I) : instr
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
   prod "drop" => DROP_instr
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod{`t*?` : valtype*?} {{"select"} {t*{t <- `t*`}:Tresult_(I)*{}?{`t*` <- `t*?`}}} => SELECT_instr(t*{t <- `t*`}?{`t*` <- `t*?`},)
+  prod{`t*?` : valtype*?} {{"select"} {t*{t <- `t*`}:Tresult_(I)*{}?{`t*` <- `t*?`}}} => SELECT_instr(t*{t <- `t*`}?{`t*` <- `t*?`})
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod{l : labelidx} {{"br"} {l:Tlabelidx_(I)}} => BR_instr(l,)
+  prod{l : labelidx} {{"br"} {l:Tlabelidx_(I)}} => BR_instr(l)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod{l : labelidx} {{"br_if"} {l:Tlabelidx_(I)}} => BR_IF_instr(l,)
+  prod{l : labelidx} {{"br_if"} {l:Tlabelidx_(I)}} => BR_IF_instr(l)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
   prod{`l*` : labelidx*, l' : labelidx} {{"br_table"} {l*{l <- `l*`}:Tlabelidx_(I)*{}} {l':Tlabelidx_(I)}} => BR_TABLE_instr(l*{l <- `l*`}, l')
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod{l : labelidx} {{"br_on_null"} {l:Tlabelidx_(I)}} => BR_ON_NULL_instr(l,)
+  prod{l : labelidx} {{"br_on_null"} {l:Tlabelidx_(I)}} => BR_ON_NULL_instr(l)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod{l : labelidx} {{"br_on_non_null"} {l:Tlabelidx_(I)}} => BR_ON_NON_NULL_instr(l,)
+  prod{l : labelidx} {{"br_on_non_null"} {l:Tlabelidx_(I)}} => BR_ON_NON_NULL_instr(l)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
   prod{l : labelidx, rt_1 : reftype, rt_2 : reftype} {{"br_on_cast"} {l:Tlabelidx_(I)} {rt_1:Treftype_(I)} {rt_2:Treftype_(I)}} => BR_ON_CAST_instr(l, rt_1, rt_2)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
   prod{l : labelidx, rt_1 : reftype, rt_2 : reftype} {{"br_on_cast_fail"} {l:Tlabelidx_(I)} {rt_1:Treftype_(I)} {rt_2:Treftype_(I)}} => BR_ON_CAST_FAIL_instr(l, rt_1, rt_2)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod{x : idx} {{"call"} {x:Tfuncidx_(I)}} => CALL_instr(x,)
+  prod{x : idx} {{"call"} {x:Tfuncidx_(I)}} => CALL_instr(x)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod{x : idx} {{"call_ref"} {x:Ttypeidx_(I)}} => CALL_REF_instr(_IDX_typeuse(x,),)
+  prod{x : idx} {{"call_ref"} {x:Ttypeidx_(I)}} => CALL_REF_instr(_IDX_typeuse(x))
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod{x : idx, y : idx, I' : I} {{"call_indirect"} {x:Ttableidx_(I)} {(y, I'):Ttypeuse_(I)}} => CALL_INDIRECT_instr(x, _IDX_typeuse(y,))
+  prod{x : idx, y : idx, I' : I} {{"call_indirect"} {x:Ttableidx_(I)} {(y, I'):Ttypeuse_(I)}} => CALL_INDIRECT_instr(x, _IDX_typeuse(y))
     -- if (I' = {TYPES [], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS ?(`%`_name([],))*{}, LABELS [], FIELDS [], TYPEDEFS []})
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
   prod "return" => RETURN_instr
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod{x : idx} {{"return_call"} {x:Tfuncidx_(I)}} => RETURN_CALL_instr(x,)
+  prod{x : idx} {{"return_call"} {x:Tfuncidx_(I)}} => RETURN_CALL_instr(x)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod{x : idx} {{"return_call_ref"} {x:Ttypeidx_(I)}} => RETURN_CALL_REF_instr(_IDX_typeuse(x,),)
+  prod{x : idx} {{"return_call_ref"} {x:Ttypeidx_(I)}} => RETURN_CALL_REF_instr(_IDX_typeuse(x))
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod{x : idx, y : idx, I' : I} {{"return_call_indirect"} {x:Ttableidx_(I)} {(y, I'):Ttypeuse_(I)}} => RETURN_CALL_INDIRECT_instr(x, _IDX_typeuse(y,))
+  prod{x : idx, y : idx, I' : I} {{"return_call_indirect"} {x:Ttableidx_(I)} {(y, I'):Ttypeuse_(I)}} => RETURN_CALL_INDIRECT_instr(x, _IDX_typeuse(y))
     -- if (I' = {TYPES [], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS ?(`%`_name([],))*{}, LABELS [], FIELDS [], TYPEDEFS []})
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod{x : idx} {{"throw"} {x:Ttagidx_(I)}} => THROW_instr(x,)
+  prod{x : idx} {{"throw"} {x:Ttagidx_(I)}} => THROW_instr(x)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
   prod "throw_ref" => THROW_REF_instr
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod{x : idx} {{"local.get"} {x:Tlocalidx_(I)}} => `LOCAL.GET`_instr(x,)
+  prod{x : idx} {{"local.get"} {x:Tlocalidx_(I)}} => `LOCAL.GET`_instr(x)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod{x : idx} {{"local.set"} {x:Tlocalidx_(I)}} => `LOCAL.SET`_instr(x,)
+  prod{x : idx} {{"local.set"} {x:Tlocalidx_(I)}} => `LOCAL.SET`_instr(x)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod{x : idx} {{"local.tee"} {x:Tlocalidx_(I)}} => `LOCAL.TEE`_instr(x,)
+  prod{x : idx} {{"local.tee"} {x:Tlocalidx_(I)}} => `LOCAL.TEE`_instr(x)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod{x : idx} {{"global.get"} {x:Tglobalidx_(I)}} => `GLOBAL.GET`_instr(x,)
+  prod{x : idx} {{"global.get"} {x:Tglobalidx_(I)}} => `GLOBAL.GET`_instr(x)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod{x : idx} {{"global.set"} {x:Tglobalidx_(I)}} => `GLOBAL.SET`_instr(x,)
+  prod{x : idx} {{"global.set"} {x:Tglobalidx_(I)}} => `GLOBAL.SET`_instr(x)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod{x : idx} {{"table.get"} {x:Ttableidx_(I)}} => `TABLE.GET`_instr(x,)
+  prod{x : idx} {{"table.get"} {x:Ttableidx_(I)}} => `TABLE.GET`_instr(x)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod{x : idx} {{"table.set"} {x:Ttableidx_(I)}} => `TABLE.SET`_instr(x,)
+  prod{x : idx} {{"table.set"} {x:Ttableidx_(I)}} => `TABLE.SET`_instr(x)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod{x : idx} {{"table.size"} {x:Ttableidx_(I)}} => `TABLE.SIZE`_instr(x,)
+  prod{x : idx} {{"table.size"} {x:Ttableidx_(I)}} => `TABLE.SIZE`_instr(x)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod{x : idx} {{"table.grow"} {x:Ttableidx_(I)}} => `TABLE.GROW`_instr(x,)
+  prod{x : idx} {{"table.grow"} {x:Ttableidx_(I)}} => `TABLE.GROW`_instr(x)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod{x : idx} {{"table.fill"} {x:Ttableidx_(I)}} => `TABLE.FILL`_instr(x,)
+  prod{x : idx} {{"table.fill"} {x:Ttableidx_(I)}} => `TABLE.FILL`_instr(x)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
   prod{x_1 : idx, x_2 : idx} {{"table.copy"} {x_1:Ttableidx_(I)} {x_2:Ttableidx_(I)}} => `TABLE.COPY`_instr(x_1, x_2)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
   prod{x : idx, y : idx} {{"table.init"} {x:Ttableidx_(I)} {y:Telemidx_(I)}} => `TABLE.INIT`_instr(x, y)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod{x : idx} {{"elem.drop"} {x:Telemidx_(I)}} => `ELEM.DROP`_instr(x,)
+  prod{x : idx} {{"elem.drop"} {x:Telemidx_(I)}} => `ELEM.DROP`_instr(x)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
   prod{x : idx, ao : memarg} {{"i32.load"} {x:Tmemidx_(I)} {ao:Tmemarg_(4)}} => LOAD_instr(I32_numtype, ?(), x, ao)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
@@ -11143,13 +11143,13 @@ grammar Tplaininstr_(I : I) : instr
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
   prod{x : idx, ao : memarg} {{"v128.load32x2_u"} {x:Tmemidx_(I)} {ao:Tmemarg_(8)}} => VLOAD_instr(V128_vectype, ?(`SHAPE%X%_%`_vloadop_(`%`_sz(32,), `%`_M(2,), U_sx)), x, ao)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod{x : idx, ao : memarg} {{"v128.load8_splat"} {x:Tmemidx_(I)} {ao:Tmemarg_(1)}} => VLOAD_instr(V128_vectype, ?(SPLAT_vloadop_(`%`_sz(8,),)), x, ao)
+  prod{x : idx, ao : memarg} {{"v128.load8_splat"} {x:Tmemidx_(I)} {ao:Tmemarg_(1)}} => VLOAD_instr(V128_vectype, ?(SPLAT_vloadop_(`%`_sz(8,))), x, ao)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod{x : idx, ao : memarg} {{"v128.load16_splat"} {x:Tmemidx_(I)} {ao:Tmemarg_(2)}} => VLOAD_instr(V128_vectype, ?(SPLAT_vloadop_(`%`_sz(16,),)), x, ao)
+  prod{x : idx, ao : memarg} {{"v128.load16_splat"} {x:Tmemidx_(I)} {ao:Tmemarg_(2)}} => VLOAD_instr(V128_vectype, ?(SPLAT_vloadop_(`%`_sz(16,))), x, ao)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod{x : idx, ao : memarg} {{"v128.load32_splat"} {x:Tmemidx_(I)} {ao:Tmemarg_(4)}} => VLOAD_instr(V128_vectype, ?(SPLAT_vloadop_(`%`_sz(32,),)), x, ao)
+  prod{x : idx, ao : memarg} {{"v128.load32_splat"} {x:Tmemidx_(I)} {ao:Tmemarg_(4)}} => VLOAD_instr(V128_vectype, ?(SPLAT_vloadop_(`%`_sz(32,))), x, ao)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod{x : idx, ao : memarg} {{"v128.load64_splat"} {x:Tmemidx_(I)} {ao:Tmemarg_(8)}} => VLOAD_instr(V128_vectype, ?(SPLAT_vloadop_(`%`_sz(64,),)), x, ao)
+  prod{x : idx, ao : memarg} {{"v128.load64_splat"} {x:Tmemidx_(I)} {ao:Tmemarg_(8)}} => VLOAD_instr(V128_vectype, ?(SPLAT_vloadop_(`%`_sz(64,))), x, ao)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
   prod{x : idx, ao : memarg} {{"v128.load32_zero"} {x:Tmemidx_(I)} {ao:Tmemarg_(4)}} => VLOAD_instr(V128_vectype, ?(ZERO_vloadop_(`%`_sz(32,),)), x, ao)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
@@ -11191,21 +11191,21 @@ grammar Tplaininstr_(I : I) : instr
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
   prod{x : idx, ao : memarg, i : laneidx} {{"v128.store64_lane"} {x:Tmemidx_(I)} {ao:Tmemarg_(8)} {i:Tlaneidx}} => VSTORE_LANE_instr(V128_vectype, `%`_sz(64,), x, ao, i)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod{x : idx} {{"memory.size"} {x:Tmemidx_(I)}} => `MEMORY.SIZE`_instr(x,)
+  prod{x : idx} {{"memory.size"} {x:Tmemidx_(I)}} => `MEMORY.SIZE`_instr(x)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod{x : idx} {{"memory.grow"} {x:Tmemidx_(I)}} => `MEMORY.GROW`_instr(x,)
+  prod{x : idx} {{"memory.grow"} {x:Tmemidx_(I)}} => `MEMORY.GROW`_instr(x)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod{x : idx} {{"memory.fill"} {x:Tmemidx_(I)}} => `MEMORY.FILL`_instr(x,)
+  prod{x : idx} {{"memory.fill"} {x:Tmemidx_(I)}} => `MEMORY.FILL`_instr(x)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
   prod{x_1 : idx, x_2 : idx} {{"memory.copy"} {x_1:Tmemidx_(I)} {x_2:Tmemidx_(I)}} => `MEMORY.COPY`_instr(x_1, x_2)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
   prod{x : idx, y : idx} {{"memory.init"} {x:Tmemidx_(I)} {y:Tdataidx_(I)}} => `MEMORY.INIT`_instr(x, y)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod{x : idx} {{"data.drop"} {x:Tdataidx_(I)}} => `DATA.DROP`_instr(x,)
+  prod{x : idx} {{"data.drop"} {x:Tdataidx_(I)}} => `DATA.DROP`_instr(x)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod{ht : heaptype} {{"ref.null"} {ht:Theaptype_(I)}} => `REF.NULL`_instr(ht,)
+  prod{ht : heaptype} {{"ref.null"} {ht:Theaptype_(I)}} => `REF.NULL`_instr(ht)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod{x : idx} {{"ref.func"} {x:Tfuncidx_(I)}} => `REF.FUNC`_instr(x,)
+  prod{x : idx} {{"ref.func"} {x:Tfuncidx_(I)}} => `REF.FUNC`_instr(x)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
   prod "ref.is_null" => `REF.IS_NULL`_instr
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
@@ -11213,19 +11213,19 @@ grammar Tplaininstr_(I : I) : instr
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
   prod "ref.eq" => `REF.EQ`_instr
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod{rt : reftype} {{"ref.test"} {rt:Treftype_(I)}} => `REF.TEST`_instr(rt,)
+  prod{rt : reftype} {{"ref.test"} {rt:Treftype_(I)}} => `REF.TEST`_instr(rt)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod{rt : reftype} {{"ref.cast"} {rt:Treftype_(I)}} => `REF.CAST`_instr(rt,)
+  prod{rt : reftype} {{"ref.cast"} {rt:Treftype_(I)}} => `REF.CAST`_instr(rt)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
   prod "ref.i31" => `REF.I31`_instr
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod "i31.get_s" => `I31.GET`_instr(S_sx,)
+  prod "i31.get_s" => `I31.GET`_instr(S_sx)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod "i31.get_u" => `I31.GET`_instr(U_sx,)
+  prod "i31.get_u" => `I31.GET`_instr(U_sx)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod{x : idx} {{"struct.new"} {x:Ttypeidx_(I)}} => `STRUCT.NEW`_instr(x,)
+  prod{x : idx} {{"struct.new"} {x:Ttypeidx_(I)}} => `STRUCT.NEW`_instr(x)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod{x : idx} {{"struct.new_default"} {x:Ttypeidx_(I)}} => `STRUCT.NEW_DEFAULT`_instr(x,)
+  prod{x : idx} {{"struct.new_default"} {x:Ttypeidx_(I)}} => `STRUCT.NEW_DEFAULT`_instr(x)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
   prod{x : idx, i : fieldidx} {{"struct.get"} {x:Ttypeidx_(I)} {i:Tfieldidx__(I, x)}} => `STRUCT.GET`_instr(?(), x, i)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
@@ -11235,9 +11235,9 @@ grammar Tplaininstr_(I : I) : instr
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
   prod{x : idx, i : fieldidx} {{"struct.set"} {x:Ttypeidx_(I)} {i:Tfieldidx__(I, x)}} => `STRUCT.SET`_instr(x, i)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod{x : idx} {{"array.new"} {x:Ttypeidx_(I)}} => `ARRAY.NEW`_instr(x,)
+  prod{x : idx} {{"array.new"} {x:Ttypeidx_(I)}} => `ARRAY.NEW`_instr(x)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod{x : idx} {{"array.new_default"} {x:Ttypeidx_(I)}} => `ARRAY.NEW_DEFAULT`_instr(x,)
+  prod{x : idx} {{"array.new_default"} {x:Ttypeidx_(I)}} => `ARRAY.NEW_DEFAULT`_instr(x)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
   prod{x : idx, n : n} {{"array.new_fixed"} {x:Ttypeidx_(I)} {`%`_u32(n,):Tu32}} => `ARRAY.NEW_FIXED`_instr(x, `%`_u32(n,))
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
@@ -11251,11 +11251,11 @@ grammar Tplaininstr_(I : I) : instr
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
   prod{x : idx} {{"array.get_u"} {x:Ttypeidx_(I)}} => `ARRAY.GET`_instr(?(U_sx), x)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod{x : idx} {{"array.set"} {x:Ttypeidx_(I)}} => `ARRAY.SET`_instr(x,)
+  prod{x : idx} {{"array.set"} {x:Ttypeidx_(I)}} => `ARRAY.SET`_instr(x)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
   prod "array.len" => `ARRAY.LEN`_instr
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod{x : idx} {{"array.fill"} {x:Ttypeidx_(I)}} => `ARRAY.FILL`_instr(x,)
+  prod{x : idx} {{"array.fill"} {x:Ttypeidx_(I)}} => `ARRAY.FILL`_instr(x)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
   prod{x_1 : idx, x_2 : idx} {{"array.copy"} {x_1:Ttypeidx_(I)} {x_2:Ttypeidx_(I)}} => `ARRAY.COPY`_instr(x_1, x_2)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
@@ -11283,41 +11283,41 @@ grammar Tplaininstr_(I : I) : instr
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
   prod "i32.ne" => RELOP_instr(I32_numtype, NE_relop_)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod "i32.lt_s" => RELOP_instr(I32_numtype, LT_relop_(S_sx,))
+  prod "i32.lt_s" => RELOP_instr(I32_numtype, LT_relop_(S_sx))
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod "i32.lt_u" => RELOP_instr(I32_numtype, LT_relop_(U_sx,))
+  prod "i32.lt_u" => RELOP_instr(I32_numtype, LT_relop_(U_sx))
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod "i32.gt_s" => RELOP_instr(I32_numtype, GT_relop_(S_sx,))
+  prod "i32.gt_s" => RELOP_instr(I32_numtype, GT_relop_(S_sx))
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod "i32.gt_u" => RELOP_instr(I32_numtype, GT_relop_(U_sx,))
+  prod "i32.gt_u" => RELOP_instr(I32_numtype, GT_relop_(U_sx))
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod "i32.le_s" => RELOP_instr(I32_numtype, LE_relop_(S_sx,))
+  prod "i32.le_s" => RELOP_instr(I32_numtype, LE_relop_(S_sx))
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod "i32.le_u" => RELOP_instr(I32_numtype, LE_relop_(U_sx,))
+  prod "i32.le_u" => RELOP_instr(I32_numtype, LE_relop_(U_sx))
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod "i32.ge_s" => RELOP_instr(I32_numtype, GE_relop_(S_sx,))
+  prod "i32.ge_s" => RELOP_instr(I32_numtype, GE_relop_(S_sx))
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod "i32.ge_u" => RELOP_instr(I32_numtype, GE_relop_(U_sx,))
+  prod "i32.ge_u" => RELOP_instr(I32_numtype, GE_relop_(U_sx))
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
   prod "i64.eq" => RELOP_instr(I64_numtype, EQ_relop_)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
   prod "i64.ne" => RELOP_instr(I64_numtype, NE_relop_)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod "i64.lt_s" => RELOP_instr(I64_numtype, LT_relop_(S_sx,))
+  prod "i64.lt_s" => RELOP_instr(I64_numtype, LT_relop_(S_sx))
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod "i64.lt_u" => RELOP_instr(I64_numtype, LT_relop_(U_sx,))
+  prod "i64.lt_u" => RELOP_instr(I64_numtype, LT_relop_(U_sx))
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod "i64.gt_s" => RELOP_instr(I64_numtype, GT_relop_(S_sx,))
+  prod "i64.gt_s" => RELOP_instr(I64_numtype, GT_relop_(S_sx))
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod "i64.gt_u" => RELOP_instr(I64_numtype, GT_relop_(U_sx,))
+  prod "i64.gt_u" => RELOP_instr(I64_numtype, GT_relop_(U_sx))
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod "i64.le_s" => RELOP_instr(I64_numtype, LE_relop_(S_sx,))
+  prod "i64.le_s" => RELOP_instr(I64_numtype, LE_relop_(S_sx))
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod "i64.le_u" => RELOP_instr(I64_numtype, LE_relop_(U_sx,))
+  prod "i64.le_u" => RELOP_instr(I64_numtype, LE_relop_(U_sx))
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod "i64.ge_s" => RELOP_instr(I64_numtype, GE_relop_(S_sx,))
+  prod "i64.ge_s" => RELOP_instr(I64_numtype, GE_relop_(S_sx))
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod "i64.ge_u" => RELOP_instr(I64_numtype, GE_relop_(U_sx,))
+  prod "i64.ge_u" => RELOP_instr(I64_numtype, GE_relop_(U_sx))
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
   prod "f32.eq" => RELOP_instr(F32_numtype, EQ_relop_)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
@@ -11399,13 +11399,13 @@ grammar Tplaininstr_(I : I) : instr
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
   prod "i32.mul" => BINOP_instr(I32_numtype, MUL_binop_)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod "i32.div_s" => BINOP_instr(I32_numtype, DIV_binop_(S_sx,))
+  prod "i32.div_s" => BINOP_instr(I32_numtype, DIV_binop_(S_sx))
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod "i32.div_u" => BINOP_instr(I32_numtype, DIV_binop_(U_sx,))
+  prod "i32.div_u" => BINOP_instr(I32_numtype, DIV_binop_(U_sx))
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod "i32.rem_s" => BINOP_instr(I32_numtype, REM_binop_(S_sx,))
+  prod "i32.rem_s" => BINOP_instr(I32_numtype, REM_binop_(S_sx))
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod "i32.rem_u" => BINOP_instr(I32_numtype, REM_binop_(U_sx,))
+  prod "i32.rem_u" => BINOP_instr(I32_numtype, REM_binop_(U_sx))
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
   prod "i32.and" => BINOP_instr(I32_numtype, AND_binop_)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
@@ -11415,9 +11415,9 @@ grammar Tplaininstr_(I : I) : instr
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
   prod "i32.shl" => BINOP_instr(I32_numtype, SHL_binop_)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod "i32.shr_s" => BINOP_instr(I32_numtype, SHR_binop_(S_sx,))
+  prod "i32.shr_s" => BINOP_instr(I32_numtype, SHR_binop_(S_sx))
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod "i32.shr_u" => BINOP_instr(I32_numtype, SHR_binop_(U_sx,))
+  prod "i32.shr_u" => BINOP_instr(I32_numtype, SHR_binop_(U_sx))
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
   prod "i32.rotl" => BINOP_instr(I32_numtype, ROTL_binop_)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
@@ -11429,13 +11429,13 @@ grammar Tplaininstr_(I : I) : instr
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
   prod "i64.mul" => BINOP_instr(I64_numtype, MUL_binop_)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod "i64.div_s" => BINOP_instr(I64_numtype, DIV_binop_(S_sx,))
+  prod "i64.div_s" => BINOP_instr(I64_numtype, DIV_binop_(S_sx))
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod "i64.div_u" => BINOP_instr(I64_numtype, DIV_binop_(U_sx,))
+  prod "i64.div_u" => BINOP_instr(I64_numtype, DIV_binop_(U_sx))
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod "i64.rem_s" => BINOP_instr(I64_numtype, REM_binop_(S_sx,))
+  prod "i64.rem_s" => BINOP_instr(I64_numtype, REM_binop_(S_sx))
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod "i64.rem_u" => BINOP_instr(I64_numtype, REM_binop_(U_sx,))
+  prod "i64.rem_u" => BINOP_instr(I64_numtype, REM_binop_(U_sx))
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
   prod "i64.and" => BINOP_instr(I64_numtype, AND_binop_)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
@@ -11445,9 +11445,9 @@ grammar Tplaininstr_(I : I) : instr
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
   prod "i64.shl" => BINOP_instr(I64_numtype, SHL_binop_)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod "i64.shr_s" => BINOP_instr(I64_numtype, SHR_binop_(S_sx,))
+  prod "i64.shr_s" => BINOP_instr(I64_numtype, SHR_binop_(S_sx))
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod "i64.shr_u" => BINOP_instr(I64_numtype, SHR_binop_(U_sx,))
+  prod "i64.shr_u" => BINOP_instr(I64_numtype, SHR_binop_(U_sx))
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
   prod "i64.rotl" => BINOP_instr(I64_numtype, ROTL_binop_)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
@@ -11483,61 +11483,61 @@ grammar Tplaininstr_(I : I) : instr
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
   prod "i32.wrap_i64" => CVTOP_instr(I32_numtype, I64_numtype, WRAP_cvtop__)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod "i32.trunc_f32_s" => CVTOP_instr(I32_numtype, F32_numtype, TRUNC_cvtop__(S_sx,))
+  prod "i32.trunc_f32_s" => CVTOP_instr(I32_numtype, F32_numtype, TRUNC_cvtop__(S_sx))
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod "i32.trunc_f32_u" => CVTOP_instr(I32_numtype, F32_numtype, TRUNC_cvtop__(U_sx,))
+  prod "i32.trunc_f32_u" => CVTOP_instr(I32_numtype, F32_numtype, TRUNC_cvtop__(U_sx))
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod "i32.trunc_f64_s" => CVTOP_instr(I32_numtype, F64_numtype, TRUNC_cvtop__(S_sx,))
+  prod "i32.trunc_f64_s" => CVTOP_instr(I32_numtype, F64_numtype, TRUNC_cvtop__(S_sx))
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod "i32.trunc_f64_u" => CVTOP_instr(I32_numtype, F64_numtype, TRUNC_cvtop__(U_sx,))
+  prod "i32.trunc_f64_u" => CVTOP_instr(I32_numtype, F64_numtype, TRUNC_cvtop__(U_sx))
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod "i32.trunc_sat_f32_s" => CVTOP_instr(I32_numtype, F32_numtype, TRUNC_SAT_cvtop__(S_sx,))
+  prod "i32.trunc_sat_f32_s" => CVTOP_instr(I32_numtype, F32_numtype, TRUNC_SAT_cvtop__(S_sx))
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod "i32.trunc_sat_f32_u" => CVTOP_instr(I32_numtype, F32_numtype, TRUNC_SAT_cvtop__(U_sx,))
+  prod "i32.trunc_sat_f32_u" => CVTOP_instr(I32_numtype, F32_numtype, TRUNC_SAT_cvtop__(U_sx))
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod "i32.trunc_sat_f64_s" => CVTOP_instr(I32_numtype, F64_numtype, TRUNC_SAT_cvtop__(S_sx,))
+  prod "i32.trunc_sat_f64_s" => CVTOP_instr(I32_numtype, F64_numtype, TRUNC_SAT_cvtop__(S_sx))
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod "i32.trunc_sat_f64_u" => CVTOP_instr(I32_numtype, F64_numtype, TRUNC_SAT_cvtop__(U_sx,))
+  prod "i32.trunc_sat_f64_u" => CVTOP_instr(I32_numtype, F64_numtype, TRUNC_SAT_cvtop__(U_sx))
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
   prod "i64.extend_i32_s" => CVTOP_instr(I64_numtype, I32_numtype, EXTEND_cvtop__(S_sx,))
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
   prod "i64.extend_i32_u" => CVTOP_instr(I64_numtype, I32_numtype, EXTEND_cvtop__(U_sx,))
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod "i64.trunc_f32_s" => CVTOP_instr(I64_numtype, F32_numtype, TRUNC_cvtop__(S_sx,))
+  prod "i64.trunc_f32_s" => CVTOP_instr(I64_numtype, F32_numtype, TRUNC_cvtop__(S_sx))
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod "i64.trunc_f32_u" => CVTOP_instr(I64_numtype, F32_numtype, TRUNC_cvtop__(U_sx,))
+  prod "i64.trunc_f32_u" => CVTOP_instr(I64_numtype, F32_numtype, TRUNC_cvtop__(U_sx))
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod "i64.trunc_f64_s" => CVTOP_instr(I64_numtype, F64_numtype, TRUNC_cvtop__(S_sx,))
+  prod "i64.trunc_f64_s" => CVTOP_instr(I64_numtype, F64_numtype, TRUNC_cvtop__(S_sx))
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod "i64.trunc_f64_u" => CVTOP_instr(I64_numtype, F64_numtype, TRUNC_cvtop__(U_sx,))
+  prod "i64.trunc_f64_u" => CVTOP_instr(I64_numtype, F64_numtype, TRUNC_cvtop__(U_sx))
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod "i64.trunc_sat_f32_s" => CVTOP_instr(I64_numtype, F32_numtype, TRUNC_SAT_cvtop__(S_sx,))
+  prod "i64.trunc_sat_f32_s" => CVTOP_instr(I64_numtype, F32_numtype, TRUNC_SAT_cvtop__(S_sx))
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod "i64.trunc_sat_f32_u" => CVTOP_instr(I64_numtype, F32_numtype, TRUNC_SAT_cvtop__(U_sx,))
+  prod "i64.trunc_sat_f32_u" => CVTOP_instr(I64_numtype, F32_numtype, TRUNC_SAT_cvtop__(U_sx))
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod "i64.trunc_sat_f64_s" => CVTOP_instr(I64_numtype, F64_numtype, TRUNC_SAT_cvtop__(S_sx,))
+  prod "i64.trunc_sat_f64_s" => CVTOP_instr(I64_numtype, F64_numtype, TRUNC_SAT_cvtop__(S_sx))
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod "i64.trunc_sat_f64_u" => CVTOP_instr(I64_numtype, F64_numtype, TRUNC_SAT_cvtop__(U_sx,))
+  prod "i64.trunc_sat_f64_u" => CVTOP_instr(I64_numtype, F64_numtype, TRUNC_SAT_cvtop__(U_sx))
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
   prod "f32.demote_f64" => CVTOP_instr(F32_numtype, F64_numtype, DEMOTE_cvtop__)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod "f32.convert_i32_s" => CVTOP_instr(F32_numtype, I32_numtype, CONVERT_cvtop__(S_sx,))
+  prod "f32.convert_i32_s" => CVTOP_instr(F32_numtype, I32_numtype, CONVERT_cvtop__(S_sx))
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod "f32.convert_i32_u" => CVTOP_instr(F32_numtype, I32_numtype, CONVERT_cvtop__(U_sx,))
+  prod "f32.convert_i32_u" => CVTOP_instr(F32_numtype, I32_numtype, CONVERT_cvtop__(U_sx))
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod "f32.convert_i64_s" => CVTOP_instr(F32_numtype, I64_numtype, CONVERT_cvtop__(S_sx,))
+  prod "f32.convert_i64_s" => CVTOP_instr(F32_numtype, I64_numtype, CONVERT_cvtop__(S_sx))
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod "f32.convert_i64_u" => CVTOP_instr(F32_numtype, I64_numtype, CONVERT_cvtop__(U_sx,))
+  prod "f32.convert_i64_u" => CVTOP_instr(F32_numtype, I64_numtype, CONVERT_cvtop__(U_sx))
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
   prod "f64.promote_f32" => CVTOP_instr(F64_numtype, F32_numtype, PROMOTE_cvtop__)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod "f64.convert_i32_s" => CVTOP_instr(F64_numtype, I32_numtype, CONVERT_cvtop__(S_sx,))
+  prod "f64.convert_i32_s" => CVTOP_instr(F64_numtype, I32_numtype, CONVERT_cvtop__(S_sx))
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod "f64.convert_i32_u" => CVTOP_instr(F64_numtype, I32_numtype, CONVERT_cvtop__(U_sx,))
+  prod "f64.convert_i32_u" => CVTOP_instr(F64_numtype, I32_numtype, CONVERT_cvtop__(U_sx))
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod "f64.convert_i64_s" => CVTOP_instr(F64_numtype, I64_numtype, CONVERT_cvtop__(S_sx,))
+  prod "f64.convert_i64_s" => CVTOP_instr(F64_numtype, I64_numtype, CONVERT_cvtop__(S_sx))
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod "f64.convert_i64_u" => CVTOP_instr(F64_numtype, I64_numtype, CONVERT_cvtop__(U_sx,))
+  prod "f64.convert_i64_u" => CVTOP_instr(F64_numtype, I64_numtype, CONVERT_cvtop__(U_sx))
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
   prod "i32.reinterpret_f32" => CVTOP_instr(I32_numtype, F32_numtype, REINTERPRET_cvtop__)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
@@ -11565,17 +11565,17 @@ grammar Tplaininstr_(I : I) : instr
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
   prod "i8x16.relaxed_swizzle" => VSWIZZLOP_instr(`%`_bshape(`%X%`_shape(I8_lanetype, `%`_dim(16,)),), RELAXED_SWIZZLE_vswizzlop_)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod "i8x16.splat" => VSPLAT_instr(`%X%`_shape(I8_lanetype, `%`_dim(16,)),)
+  prod "i8x16.splat" => VSPLAT_instr(`%X%`_shape(I8_lanetype, `%`_dim(16,)))
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod "i16x8.splat" => VSPLAT_instr(`%X%`_shape(I16_lanetype, `%`_dim(8,)),)
+  prod "i16x8.splat" => VSPLAT_instr(`%X%`_shape(I16_lanetype, `%`_dim(8,)))
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod "i32x4.splat" => VSPLAT_instr(`%X%`_shape(I32_lanetype, `%`_dim(4,)),)
+  prod "i32x4.splat" => VSPLAT_instr(`%X%`_shape(I32_lanetype, `%`_dim(4,)))
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod "i64x2.splat" => VSPLAT_instr(`%X%`_shape(I64_lanetype, `%`_dim(2,)),)
+  prod "i64x2.splat" => VSPLAT_instr(`%X%`_shape(I64_lanetype, `%`_dim(2,)))
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod "f32x4.splat" => VSPLAT_instr(`%X%`_shape(F32_lanetype, `%`_dim(4,)),)
+  prod "f32x4.splat" => VSPLAT_instr(`%X%`_shape(F32_lanetype, `%`_dim(4,)))
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod "f64x2.splat" => VSPLAT_instr(`%X%`_shape(F64_lanetype, `%`_dim(2,)),)
+  prod "f64x2.splat" => VSPLAT_instr(`%X%`_shape(F64_lanetype, `%`_dim(2,)))
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
   prod{i : laneidx} {{"i8x16.extract_lane_s"} {i:Tlaneidx}} => VEXTRACT_LANE_instr(`%X%`_shape(I8_lanetype, `%`_dim(16,)), ?(S_sx), i)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
@@ -11897,35 +11897,35 @@ grammar Tplaininstr_(I : I) : instr
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
   prod "i8x16.shl" => VSHIFTOP_instr(`%`_ishape(`%X%`_shape(I8_lanetype, `%`_dim(16,)),), SHL_vshiftop_)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod "i8x16.shr_s" => VSHIFTOP_instr(`%`_ishape(`%X%`_shape(I8_lanetype, `%`_dim(16,)),), SHR_vshiftop_(S_sx,))
+  prod "i8x16.shr_s" => VSHIFTOP_instr(`%`_ishape(`%X%`_shape(I8_lanetype, `%`_dim(16,)),), SHR_vshiftop_(S_sx))
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod "i8x16.shr_u" => VSHIFTOP_instr(`%`_ishape(`%X%`_shape(I8_lanetype, `%`_dim(16,)),), SHR_vshiftop_(U_sx,))
+  prod "i8x16.shr_u" => VSHIFTOP_instr(`%`_ishape(`%X%`_shape(I8_lanetype, `%`_dim(16,)),), SHR_vshiftop_(U_sx))
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
   prod "i16x8.shl" => VSHIFTOP_instr(`%`_ishape(`%X%`_shape(I16_lanetype, `%`_dim(8,)),), SHL_vshiftop_)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod "i16x8.shr_s" => VSHIFTOP_instr(`%`_ishape(`%X%`_shape(I16_lanetype, `%`_dim(8,)),), SHR_vshiftop_(S_sx,))
+  prod "i16x8.shr_s" => VSHIFTOP_instr(`%`_ishape(`%X%`_shape(I16_lanetype, `%`_dim(8,)),), SHR_vshiftop_(S_sx))
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod "i16x8.shr_u" => VSHIFTOP_instr(`%`_ishape(`%X%`_shape(I16_lanetype, `%`_dim(8,)),), SHR_vshiftop_(U_sx,))
+  prod "i16x8.shr_u" => VSHIFTOP_instr(`%`_ishape(`%X%`_shape(I16_lanetype, `%`_dim(8,)),), SHR_vshiftop_(U_sx))
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
   prod "i32x4.shl" => VSHIFTOP_instr(`%`_ishape(`%X%`_shape(I32_lanetype, `%`_dim(4,)),), SHL_vshiftop_)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod "i32x4.shr_s" => VSHIFTOP_instr(`%`_ishape(`%X%`_shape(I32_lanetype, `%`_dim(4,)),), SHR_vshiftop_(S_sx,))
+  prod "i32x4.shr_s" => VSHIFTOP_instr(`%`_ishape(`%X%`_shape(I32_lanetype, `%`_dim(4,)),), SHR_vshiftop_(S_sx))
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod "i32x4.shr_u" => VSHIFTOP_instr(`%`_ishape(`%X%`_shape(I32_lanetype, `%`_dim(4,)),), SHR_vshiftop_(U_sx,))
+  prod "i32x4.shr_u" => VSHIFTOP_instr(`%`_ishape(`%X%`_shape(I32_lanetype, `%`_dim(4,)),), SHR_vshiftop_(U_sx))
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
   prod "i64x2.shl" => VSHIFTOP_instr(`%`_ishape(`%X%`_shape(I64_lanetype, `%`_dim(2,)),), SHL_vshiftop_)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod "i64x2.shr_s" => VSHIFTOP_instr(`%`_ishape(`%X%`_shape(I64_lanetype, `%`_dim(2,)),), SHR_vshiftop_(S_sx,))
+  prod "i64x2.shr_s" => VSHIFTOP_instr(`%`_ishape(`%X%`_shape(I64_lanetype, `%`_dim(2,)),), SHR_vshiftop_(S_sx))
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod "i64x2.shr_u" => VSHIFTOP_instr(`%`_ishape(`%X%`_shape(I64_lanetype, `%`_dim(2,)),), SHR_vshiftop_(U_sx,))
+  prod "i64x2.shr_u" => VSHIFTOP_instr(`%`_ishape(`%X%`_shape(I64_lanetype, `%`_dim(2,)),), SHR_vshiftop_(U_sx))
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod "i8x16.bitmask" => VBITMASK_instr(`%`_ishape(`%X%`_shape(I8_lanetype, `%`_dim(16,)),),)
+  prod "i8x16.bitmask" => VBITMASK_instr(`%`_ishape(`%X%`_shape(I8_lanetype, `%`_dim(16,)),))
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod "i16x8.bitmask" => VBITMASK_instr(`%`_ishape(`%X%`_shape(I16_lanetype, `%`_dim(8,)),),)
+  prod "i16x8.bitmask" => VBITMASK_instr(`%`_ishape(`%X%`_shape(I16_lanetype, `%`_dim(8,)),))
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod "i32x4.bitmask" => VBITMASK_instr(`%`_ishape(`%X%`_shape(I32_lanetype, `%`_dim(4,)),),)
+  prod "i32x4.bitmask" => VBITMASK_instr(`%`_ishape(`%X%`_shape(I32_lanetype, `%`_dim(4,)),))
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod "i64x2.bitmask" => VBITMASK_instr(`%`_ishape(`%X%`_shape(I64_lanetype, `%`_dim(2,)),),)
+  prod "i64x2.bitmask" => VBITMASK_instr(`%`_ishape(`%X%`_shape(I64_lanetype, `%`_dim(2,)),))
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
   prod "i8x16.narrow_i16x8_s" => VNARROW_instr(`%`_ishape(`%X%`_shape(I8_lanetype, `%`_dim(16,)),), `%`_ishape(`%X%`_shape(I16_lanetype, `%`_dim(8,)),), S_sx)
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
@@ -12066,14 +12066,14 @@ grammar Texpr_(I : I) : expr
 ;; ../../../../specification/wasm-latest/6.4-text.modules.spectec
 grammar Ttype_(I : I) : (type, idctxt)
   ;; ../../../../specification/wasm-latest/6.4-text.modules.spectec
-  prod{qt : rectype, I' : I, I'' : I, n : n, `st*` : subtype*} (qt, I'):Trectype_(I) => (TYPE_type(qt,), I' +++ I'')
-    -- if (qt = REC_rectype(`%`_list(st^n{st <- `st*`},),))
+  prod{qt : rectype, I' : I, I'' : I, n : n, `st*` : subtype*} (qt, I'):Trectype_(I) => (TYPE_type(qt), I' +++ I'')
+    -- if (qt = REC_rectype(`%`_list(st^n{st <- `st*`},)))
     -- if (I'' = {TYPES [], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [], FIELDS [], TYPEDEFS ?(_DEF_deftype(qt, i))^(i<n){}})
 
 ;; ../../../../specification/wasm-latest/6.4-text.modules.spectec
 grammar Ttag_(I : I) : (tag, idctxt)
   ;; ../../../../specification/wasm-latest/6.4-text.modules.spectec
-  prod{jt : tagtype, `id?` : char?} {{"("} {"tag"} {?(`%`_name(lift(id?{id <- `id?`}),)):Tid?{}} {jt:Ttagtype_(I)} {")"}} => (TAG_tag(jt,), {TYPES [], TAGS [?(`%`_name(lift(id?{id <- `id?`}),))], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [], FIELDS [], TYPEDEFS []})
+  prod{jt : tagtype, `id?` : char?} {{"("} {"tag"} {?(`%`_name(lift(id?{id <- `id?`}),)):Tid?{}} {jt:Ttagtype_(I)} {")"}} => (TAG_tag(jt), {TYPES [], TAGS [?(`%`_name(lift(id?{id <- `id?`}),))], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [], FIELDS [], TYPEDEFS []})
 
 ;; ../../../../specification/wasm-latest/6.4-text.modules.spectec
 grammar Tglobal_(I : I) : (global, idctxt)
@@ -12083,7 +12083,7 @@ grammar Tglobal_(I : I) : (global, idctxt)
 ;; ../../../../specification/wasm-latest/6.4-text.modules.spectec
 grammar Tmem_(I : I) : (mem, idctxt)
   ;; ../../../../specification/wasm-latest/6.4-text.modules.spectec
-  prod{mt : memtype, `id?` : char?} {{"("} {"memory"} {?(`%`_name(lift(id?{id <- `id?`}),)):Tid?{}} {mt:Tmemtype_(I)} {")"}} => (MEMORY_mem(mt,), {TYPES [], TAGS [], GLOBALS [], MEMS [?(`%`_name(lift(id?{id <- `id?`}),))], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [], FIELDS [], TYPEDEFS []})
+  prod{mt : memtype, `id?` : char?} {{"("} {"memory"} {?(`%`_name(lift(id?{id <- `id?`}),)):Tid?{}} {mt:Tmemtype_(I)} {")"}} => (MEMORY_mem(mt), {TYPES [], TAGS [], GLOBALS [], MEMS [?(`%`_name(lift(id?{id <- `id?`}),))], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [], FIELDS [], TYPEDEFS []})
 
 ;; ../../../../specification/wasm-latest/6.4-text.modules.spectec
 grammar Ttable_(I : I) : (table, idctxt)
@@ -12093,7 +12093,7 @@ grammar Ttable_(I : I) : (table, idctxt)
 ;; ../../../../specification/wasm-latest/6.4-text.modules.spectec
 grammar Tlocal_(I : I) : (local*, idctxt)
   ;; ../../../../specification/wasm-latest/6.4-text.modules.spectec
-  prod{t : valtype, `id?` : char?} {{"("} {"local"} {?(`%`_name(lift(id?{id <- `id?`}),)):Tid?{}} {t:Tvaltype_(I)} {")"}} => ([LOCAL_local(t,)], {TYPES [], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [?(`%`_name(lift(id?{id <- `id?`}),))], LABELS [], FIELDS [], TYPEDEFS []})
+  prod{t : valtype, `id?` : char?} {{"("} {"local"} {?(`%`_name(lift(id?{id <- `id?`}),)):Tid?{}} {t:Tvaltype_(I)} {")"}} => ([LOCAL_local(t)], {TYPES [], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [?(`%`_name(lift(id?{id <- `id?`}),))], LABELS [], FIELDS [], TYPEDEFS []})
 
 ;; ../../../../specification/wasm-latest/6.4-text.modules.spectec
 grammar Tfunc_(I : I) : (func, idctxt)
@@ -12151,7 +12151,7 @@ grammar Telem_(I : I) : (elem, idctxt)
 ;; ../../../../specification/wasm-latest/6.4-text.modules.spectec
 grammar Tstart_(I : I) : (start, idctxt)
   ;; ../../../../specification/wasm-latest/6.4-text.modules.spectec
-  prod{x : idx} {{"("} {"start"} {x:Tfuncidx_(I)} {")"}} => (START_start(x,), {TYPES [], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [], FIELDS [], TYPEDEFS []})
+  prod{x : idx} {{"("} {"start"} {x:Tfuncidx_(I)} {")"}} => (START_start(x), {TYPES [], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [], FIELDS [], TYPEDEFS []})
 
 ;; ../../../../specification/wasm-latest/6.4-text.modules.spectec
 grammar Timport_(I : I) : (import, idctxt)
