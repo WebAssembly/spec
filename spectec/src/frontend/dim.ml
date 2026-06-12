@@ -430,7 +430,9 @@ and annot_iterexp side dims occur1 (it, xes) at : iterexp * occur =
     List.filter_map (fun (x, (t, its)) ->
       match its with
       | [] -> None
-      | it::its' -> Some (x, (annot_varid' x it, (IterT (t, it) $ at, its')))
+      | it::its' ->
+        let it' = match it with Opt -> Opt | _ -> List in
+        Some (x, (annot_varid' x it, (IterT (t, it') $ at, its')))
     ) (Map.bindings occur1)
   in
   List.iter (fun (x, _) -> assert (not (Map.mem x.it dims))) xes;

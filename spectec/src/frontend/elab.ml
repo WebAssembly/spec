@@ -55,17 +55,7 @@ let untup_typ' t' =
   | _ -> [("_" $ t'.at, t')]
 
 let tup_typ' ts' at =
-  match ts' with
-  | [t'] -> t'
-  | _ -> Il.TupT (List.map (fun t' -> "_" $ t'.at, t') ts') $ at
-
-let tup_exp' es' at =
-  Il.TupE es' $$ (at, tup_typ' (List.map note es') at)
-
-let tup_exp_nary' es' at =
-  match es' with
-  | [e'] -> e'
-  | _ -> tup_exp' es' at
+  Il.TupT (List.map (fun t' -> "_" $ t'.at, t') ts') $ at
 
 let lift_exp' e' iter' =
   if iter' = Il.Opt then
@@ -848,7 +838,7 @@ and elab_iterexp : 'a 'b. ?side: [`Lhs | `Rhs] -> env -> (env -> 'a -> 'b attemp
         | Some t -> Map.add x.it t env.vars
     ) xo;
     (* Iterator list is injected after dimension analysis, leave it empty here *)
-    Ok (body', (it', []), match it with Opt -> Il.Opt | _ -> Il.List)
+    Ok (body', (it', []), it'')
   )
 
 
@@ -968,7 +958,7 @@ and typ_rep env t : Il.typ =
     | Il.VariantT [_, (t1, _, _), _], NoDots -> typ_rep env t1
     | _ -> t' $ t.at
     )
-  | Il.TupT [_, t1] -> typ_rep env t1
+  | Il.TupT [(_, t1)] -> typ_rep env t1
   | t' -> t' $ t.at
 
 and elab_typfield env outer_dims tid at (tf : typfield) : Il.typfield =
@@ -1528,7 +1518,7 @@ and elab_expfields' ?(side = `Rhs) env tid (efs : expfield list) (tfs : Il.typfi
   | [], (atom, (tF, _qs, prems), _)::tfs2 ->
     let atom' = string_of_atom atom in
     let* e1' = cast_empty ("omitted record field `" ^ atom' ^ "`") env tF at in
-    let e' = if prems = [] then e1' else tup_exp' [e1'] at in
+    let e' = if prems = [] then e1' else Il.TupE [e1'] $$ at % tF in
     let* efs2' = elab_expfields ~side env tid efs tfs2 t0 at in
     Ok ((elab_atom atom tid, e') :: efs2')
   | (atom, e)::efs2, tfs ->
@@ -1537,7 +1527,7 @@ and elab_expfields' ?(side = `Rhs) env tid (efs : expfield list) (tfs : Il.typfi
     | Some ((_, (tF, _qs, prems), _), tfs2) ->
       let* e' = elab_exp ~side env e tF in
       let* efs2' = elab_expfields ~side env tid efs2 tfs2 t0 at in
-      let e' = if prems = [] then e' else tup_exp' [e'] e.at in
+      let e' = if prems = [] then e' else Il.TupE [e'] $$ e.at % tF in
       Ok ((elab_atom atom tid, e') :: efs2')
 
 and elab_exp_iter ?(side = `Rhs) env (es : exp list) (t1, iter) t at : Il.exp attempt =
@@ -1793,7 +1783,7 @@ and elab_exp_variant ?(side = `Rhs) env tid (e : exp) (tcs : Il.typcase list) t 
   let not = Mixop.apply mixop xts in
   let* es', _s = elab_exp_notation' ~side env tid e not in
   let ch' = if side = `Lhs then Il.Checked else Il.Unchecked in
-  Ok (Il.CaseE (mixop, tup_exp' es' e.at, ch') $$ at % t)
+  Ok (Il.CaseE (mixop, Il.TupE es' $$ e.at % tC, ch') $$ at % t)
 
 
 (*
@@ -1884,7 +1874,7 @@ and cast_exp' ?(side = `Rhs) phrase env (e' : Il.exp) t1 t2 : Il.exp' attempt =
         let es' = List.mapi (fun i t1I -> Il.ProjE (e'', i) $$ e''.at % t1I) ts1 in
         let* es'' = map2_attempt (fun eI' (t1I, t2I) ->
           cast_exp ~side phrase env eI' t1I t2I) es' (List.combine ts1 ts2) in
-        Ok (Il.CaseE (mixop2, tup_exp' es'' e'.at, Unchecked))
+        Ok (Il.CaseE (mixop2, Il.TupE es'' $$ e'.at % tC2, Unchecked))
       )
       else
       (
@@ -1899,8 +1889,8 @@ and cast_exp' ?(side = `Rhs) phrase env (e' : Il.exp) t1 t2 : Il.exp' attempt =
           )
         ) in
         match expand env tC1 with
-        | Il.TupT [_, t11'] ->
-          let e'' = Il.UncaseE (e', mixop1) $$ e'.at % t11' in
+        | Il.TupT [(_, t11')] ->
+          let e'' = Il.UncaseE (e', mixop1) $$ e'.at % tC1 in
           cast_exp' ~side phrase env (Il.ProjE (e'', 0) $$ e'.at % t11') t11' t2'
         | _ -> fail_typ2 env e'.at phrase t1 t2 ""
       )
@@ -1960,8 +1950,8 @@ and cast_exp' ?(side = `Rhs) phrase env (e' : Il.exp) t1 t2 : Il.exp' attempt =
             )
           );
           match expand env tC1 with
-          | Il.TupT [_, t11'] ->
-            let e'' = Il.UncaseE (e', mixop1) $$ e'.at % t11' in
+          | Il.TupT [(_, t11')] ->
+            let e'' = Il.UncaseE (e', mixop1) $$ e'.at % tC1 in
             cast_exp' ~side phrase env (Il.ProjE (e'', 0) $$ e'.at % t11') t11' t2'
           | _ -> fail_typ2 env e'.at phrase t1 t2 ""
         );
@@ -1976,7 +1966,7 @@ and cast_exp' ?(side = `Rhs) phrase env (e' : Il.exp) t1 t2 : Il.exp' attempt =
     | Il.VariantT [mixop2, (tC2, _, _), _], NoDots ->
       (* A ConT payload can be cast to the ConT *)
       (match expand env tC2 with
-      | Il.TupT [_, t21'] ->
+      | Il.TupT [(_, t21')] ->
         let* e1' = cast_exp ~side phrase env e' t1' t21' in
         Ok (Il.CaseE (mixop2, Il.TupE [e1'] $$ e'.at % tC2, Unchecked))
       | _ -> fail_typ2 env e'.at phrase t1 t2 ""
@@ -2019,7 +2009,7 @@ and elab_prem env (pr : prem) : Il.prem list =
     let as', s = elab_args env as_ ps' pr.at in
     let not' = Xl.Mixop.map (fun (x, t) -> x, Il.Subst.subst_typ s t) not in
     let es', _s = checkpoint (nest pr.at t (elab_exp_notation' env id e not')) in
-    [Il.RulePr (id, as', mixop, tup_exp_nary' es' e.at) $ pr.at]
+    [Il.RulePr (id, as', mixop, Il.TupE es' $$ e.at % t) $ pr.at]
   | IfPr e ->
     let e' = checkpoint (elab_exp env e (Il.BoolT $ e.at)) in
     [Il.IfPr e' $ pr.at]
@@ -2730,7 +2720,7 @@ let rec elab_def_pass2 env (d : def) : Il.def list =
     let prems' = List.concat (map_filter_nl_list (elab_prem env') prems) in
     let dims = Dim.check Map.empty [] [] [] es' [] prems' in
     let es' = List.map (Dim.annot_exp dims) es' in
-    let e' = tup_exp_nary' es' e.at in
+    let e' = Il.TupE es' $$ e.at % t' in
     let prems' = List.map (Dim.annot_prem dims) prems' in
     let det = Det.(det_exp e' ++ det_list det_prem prems') in
     let qs = infer_quants env env' dims det [] [] [] es' [] prems' d.at in

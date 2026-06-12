@@ -64,6 +64,7 @@ and string_of_typ t =
   | BoolT -> "bool"
   | NumT t -> string_of_numtyp t
   | TextT -> "text"
+  | TupT [xt] -> "(" ^ string_of_typbind xt ^ ",)"
   | TupT xts -> "(" ^ concat ", " (List.map string_of_typbind xts) ^ ")"
   | IterT (t1, iter) -> string_of_typ t1 ^ string_of_iter iter
 
@@ -147,6 +148,7 @@ and string_of_exp e =
   | CompE (e1, e2) -> string_of_exp e1 ^ " +++ " ^ string_of_exp e2
   | MemE (e1, e2) -> "(" ^ string_of_exp e1 ^ " <- " ^ string_of_exp e2 ^ ")"
   | LenE e1 -> "|" ^ string_of_exp e1 ^ "|"
+  | TupE [e] -> "(" ^ string_of_exp e ^ ",)"
   | TupE es -> "(" ^ string_of_exps ", " es ^ ")"
   | CallE (x, as1) -> "$" ^ string_of_id x ^ string_of_args as1
   | IterE (e1, iter) -> string_of_exp e1 ^ string_of_iterexp iter
