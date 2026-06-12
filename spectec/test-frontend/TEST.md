@@ -8299,17 +8299,17 @@ relation Globalinst_ok: `%|-%:%`(store, globalinst, globaltype)
 ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
 relation Meminst_ok: `%|-%:%`(store, meminst, memtype)
   ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
-  rule _{s : store, at : addrtype, n : n, m : m, `b*` : byte*}:
-    `%|-%:%`(s, {TYPE `%%PAGE`_memtype(at, `[%..%]`_limits(`%`_u64(n,), ?(`%`_u64(m,)))), BYTES b*{b <- `b*`}}, `%%PAGE`_memtype(at, `[%..%]`_limits(`%`_u64(n,), ?(`%`_u64(m,)))))
-    -- Memtype_ok: `%|-%:OK`({TYPES [], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [], RETURN ?(), REFS [], RECS []}, `%%PAGE`_memtype(at, `[%..%]`_limits(`%`_u64(n,), ?(`%`_u64(m,)))))
+  rule _{s : store, at : addrtype, n : n, `m?` : m?, `b*` : byte*}:
+    `%|-%:%`(s, {TYPE `%%PAGE`_memtype(at, `[%..%]`_limits(`%`_u64(n,), `%`_u64(m,)?{m <- `m?`})), BYTES b*{b <- `b*`}}, `%%PAGE`_memtype(at, `[%..%]`_limits(`%`_u64(n,), `%`_u64(m,)?{m <- `m?`})))
+    -- Memtype_ok: `%|-%:OK`({TYPES [], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [], RETURN ?(), REFS [], RECS []}, `%%PAGE`_memtype(at, `[%..%]`_limits(`%`_u64(n,), `%`_u64(m,)?{m <- `m?`})))
     -- if (|b*{b <- `b*`}| = (n * (64 * $Ki)))
 
 ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
 relation Tableinst_ok: `%|-%:%`(store, tableinst, tabletype)
   ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
-  rule _{s : store, at : addrtype, n : n, m : m, rt : reftype, `ref*` : ref*}:
-    `%|-%:%`(s, {TYPE `%%%`_tabletype(at, `[%..%]`_limits(`%`_u64(n,), ?(`%`_u64(m,))), rt), REFS ref*{ref <- `ref*`}}, `%%%`_tabletype(at, `[%..%]`_limits(`%`_u64(n,), ?(`%`_u64(m,))), rt))
-    -- Tabletype_ok: `%|-%:OK`({TYPES [], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [], RETURN ?(), REFS [], RECS []}, `%%%`_tabletype(at, `[%..%]`_limits(`%`_u64(n,), ?(`%`_u64(m,))), rt))
+  rule _{s : store, at : addrtype, n : n, `m?` : m?, rt : reftype, `ref*` : ref*}:
+    `%|-%:%`(s, {TYPE `%%%`_tabletype(at, `[%..%]`_limits(`%`_u64(n,), `%`_u64(m,)?{m <- `m?`}), rt), REFS ref*{ref <- `ref*`}}, `%%%`_tabletype(at, `[%..%]`_limits(`%`_u64(n,), `%`_u64(m,)?{m <- `m?`}), rt))
+    -- Tabletype_ok: `%|-%:OK`({TYPES [], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [], RETURN ?(), REFS [], RECS []}, `%%%`_tabletype(at, `[%..%]`_limits(`%`_u64(n,), `%`_u64(m,)?{m <- `m?`}), rt))
     -- if (|ref*{ref <- `ref*`}| = n)
     -- (Ref_ok: `%|-%:%`(s, ref, rt))*{ref <- `ref*`}
 
@@ -8431,16 +8431,16 @@ relation Extend_globalinst: `%<=%`(globalinst, globalinst)
 ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
 relation Extend_meminst: `%<=%`(meminst, meminst)
   ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
-  rule _{at : addrtype, n : n, m : m, `b*` : byte*, n' : n, `b'*` : byte*}:
-    `%<=%`({TYPE `%%PAGE`_memtype(at, `[%..%]`_limits(`%`_u64(n,), ?(`%`_u64(m,)))), BYTES b*{b <- `b*`}}, {TYPE `%%PAGE`_memtype(at, `[%..%]`_limits(`%`_u64(n',), ?(`%`_u64(m,)))), BYTES b'*{b' <- `b'*`}})
+  rule _{at : addrtype, n : n, `m?` : m?, `b*` : byte*, n' : n, `b'*` : byte*}:
+    `%<=%`({TYPE `%%PAGE`_memtype(at, `[%..%]`_limits(`%`_u64(n,), `%`_u64(m,)?{m <- `m?`})), BYTES b*{b <- `b*`}}, {TYPE `%%PAGE`_memtype(at, `[%..%]`_limits(`%`_u64(n',), `%`_u64(m,)?{m <- `m?`})), BYTES b'*{b' <- `b'*`}})
     -- if (n <= n')
     -- if (|b*{b <- `b*`}| <= |b'*{b' <- `b'*`}|)
 
 ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
 relation Extend_tableinst: `%<=%`(tableinst, tableinst)
   ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
-  rule _{at : addrtype, n : n, m : m, rt : reftype, `ref*` : ref*, n' : n, `ref'*` : ref*}:
-    `%<=%`({TYPE `%%%`_tabletype(at, `[%..%]`_limits(`%`_u64(n,), ?(`%`_u64(m,))), rt), REFS ref*{ref <- `ref*`}}, {TYPE `%%%`_tabletype(at, `[%..%]`_limits(`%`_u64(n',), ?(`%`_u64(m,))), rt), REFS ref'*{ref' <- `ref'*`}})
+  rule _{at : addrtype, n : n, `m?` : m?, rt : reftype, `ref*` : ref*, n' : n, `ref'*` : ref*}:
+    `%<=%`({TYPE `%%%`_tabletype(at, `[%..%]`_limits(`%`_u64(n,), `%`_u64(m,)?{m <- `m?`}), rt), REFS ref*{ref <- `ref*`}}, {TYPE `%%%`_tabletype(at, `[%..%]`_limits(`%`_u64(n',), `%`_u64(m,)?{m <- `m?`}), rt), REFS ref'*{ref' <- `ref'*`}})
     -- if (n <= n')
     -- if (|ref*{ref <- `ref*`}| <= |ref'*{ref' <- `ref'*`}|)
 

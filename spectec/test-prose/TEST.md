@@ -18180,20 +18180,20 @@ The global instance :math:`\{ \mathsf{type}~({\mathsf{mut}^?}~t),\;\allowbreak \
 
 
 
-The memory instance :math:`\{ \mathsf{type}~({\mathit{at}}~{}[ n .. m ]~\mathsf{page}),\;\allowbreak \mathsf{bytes}~{b^\ast} \}` is :ref:`valid <valid-val>` with the memory type :math:`({\mathit{at}}~{}[ n .. m ]~\mathsf{page})` if:
+The memory instance :math:`\{ \mathsf{type}~({\mathit{at}}~{}[ n .. {m^?} ]~\mathsf{page}),\;\allowbreak \mathsf{bytes}~{b^\ast} \}` is :ref:`valid <valid-val>` with the memory type :math:`({\mathit{at}}~{}[ n .. {m^?} ]~\mathsf{page})` if:
 
 
-   * Under the context :math:`\{ \mathsf{return}~\epsilon \}`, the memory type :math:`({\mathit{at}}~{}[ n .. m ]~\mathsf{page})` is :ref:`valid <valid-val>`.
+   * Under the context :math:`\{ \mathsf{return}~\epsilon \}`, the memory type :math:`({\mathit{at}}~{}[ n .. {m^?} ]~\mathsf{page})` is :ref:`valid <valid-val>`.
 
    * The length of :math:`{b^\ast}` is equal to :math:`n \cdot 64 \, {\mathrm{Ki}}`.
 
 
 
 
-The table instance :math:`\{ \mathsf{type}~({\mathit{at}}~{}[ n .. m ]~{\mathit{rt}}),\;\allowbreak \mathsf{refs}~{{\mathit{ref}}^\ast} \}` is :ref:`valid <valid-val>` with the table type :math:`({\mathit{at}}~{}[ n .. m ]~{\mathit{rt}})` if:
+The table instance :math:`\{ \mathsf{type}~({\mathit{at}}~{}[ n .. {m^?} ]~{\mathit{rt}}),\;\allowbreak \mathsf{refs}~{{\mathit{ref}}^\ast} \}` is :ref:`valid <valid-val>` with the table type :math:`({\mathit{at}}~{}[ n .. {m^?} ]~{\mathit{rt}})` if:
 
 
-   * Under the context :math:`\{ \mathsf{return}~\epsilon \}`, the table type :math:`({\mathit{at}}~{}[ n .. m ]~{\mathit{rt}})` is :ref:`valid <valid-val>`.
+   * Under the context :math:`\{ \mathsf{return}~\epsilon \}`, the table type :math:`({\mathit{at}}~{}[ n .. {m^?} ]~{\mathit{rt}})` is :ref:`valid <valid-val>`.
 
    * The length of :math:`{{\mathit{ref}}^\ast}` is equal to :math:`n`.
 
@@ -29869,13 +29869,13 @@ Globalinst_ok
   - the value val is valid with the value type t.
 
 Meminst_ok
-- the memory instance { TYPE: at ([ n .. ?(m) ]) PAGE; BYTES: b* } is valid with the memory type at ([ n .. ?(m) ]) PAGE if:
-  - Under the context { RETURN: ?() }, at ([ n .. ?(m) ]) PAGE is valid.
+- the memory instance { TYPE: at ([ n .. m? ]) PAGE; BYTES: b* } is valid with the memory type at ([ n .. m? ]) PAGE if:
+  - Under the context { RETURN: ?() }, at ([ n .. m? ]) PAGE is valid.
   - |b*| is (n * (64 * $Ki())).
 
 Tableinst_ok
-- the table instance { TYPE: (at ([ n .. ?(m) ]) rt); REFS: ref* } is valid with the table type (at ([ n .. ?(m) ]) rt) if:
-  - Under the context { RETURN: ?() }, (at ([ n .. ?(m) ]) rt) is valid.
+- the table instance { TYPE: (at ([ n .. m? ]) rt); REFS: ref* } is valid with the table type (at ([ n .. m? ]) rt) if:
+  - Under the context { RETURN: ?() }, (at ([ n .. m? ]) rt) is valid.
   - |ref*| is n.
   - For all ref in ref*:
     - the reference value ref is valid with the reference type rt.

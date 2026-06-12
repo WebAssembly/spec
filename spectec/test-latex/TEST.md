@@ -6428,7 +6428,7 @@ $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-{\mathit{zt}} = {\mathrm{unpack}}({\mathit{zt}}) & = & {\mathit{zt}} \neq {\mathrm{unpack}}({\mathit{zt}}) \\
+{\mathit{zt}} \neq {\mathrm{unpack}}({\mathit{zt}}) & = & {\mathit{zt}} \neq {\mathrm{unpack}}({\mathit{zt}}) \\
 \end{array}
 $$
 
@@ -6439,7 +6439,7 @@ C{.}\mathsf{types}{}[x] \approx \mathsf{struct}~{{\mathit{ft}}^\ast}
  \qquad
 {{\mathit{ft}}^\ast}{}[i] = {\mathsf{mut}^?}~{\mathit{zt}}
  \qquad
-{{\mathit{sx}}^?} \neq \epsilon \Leftrightarrow {\mathit{zt}} = {\mathrm{unpack}}({\mathit{zt}})
+{{\mathit{sx}}^?} \neq \epsilon \Leftrightarrow {\mathit{zt}} \neq {\mathrm{unpack}}({\mathit{zt}})
 }{
 C \vdash {\mathsf{struct{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~x~i : (\mathsf{ref}~\mathsf{null}~x) \rightarrow {\mathrm{unpack}}({\mathit{zt}})
 } \, {[\textsc{\scriptsize T{-}instr{-}struct.get}]}
@@ -6530,7 +6530,7 @@ $$
 \frac{
 C{.}\mathsf{types}{}[x] \approx \mathsf{array}~({\mathsf{mut}^?}~{\mathit{zt}})
  \qquad
-{{\mathit{sx}}^?} \neq \epsilon \Leftrightarrow {\mathit{zt}} = {\mathrm{unpack}}({\mathit{zt}})
+{{\mathit{sx}}^?} \neq \epsilon \Leftrightarrow {\mathit{zt}} \neq {\mathrm{unpack}}({\mathit{zt}})
 }{
 C \vdash {\mathsf{array{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~x : (\mathsf{ref}~\mathsf{null}~x)~\mathsf{i{\scriptstyle 32}} \rightarrow {\mathrm{unpack}}({\mathit{zt}})
 } \, {[\textsc{\scriptsize T{-}instr{-}array.get}]}
@@ -14305,11 +14305,11 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-\{  \} \vdash {\mathit{at}}~{}[ n .. m ]~\mathsf{page} : \mathsf{ok}
+\{  \} \vdash {\mathit{at}}~{}[ n .. {m^?} ]~\mathsf{page} : \mathsf{ok}
  \qquad
 {|{b^\ast}|} = n \cdot 64 \, {\mathrm{Ki}}
 }{
-s \vdash \{ \mathsf{type}~{\mathit{at}}~{}[ n .. m ]~\mathsf{page},\;\allowbreak \mathsf{bytes}~{b^\ast} \} : {\mathit{at}}~{}[ n .. m ]~\mathsf{page}
+s \vdash \{ \mathsf{type}~{\mathit{at}}~{}[ n .. {m^?} ]~\mathsf{page},\;\allowbreak \mathsf{bytes}~{b^\ast} \} : {\mathit{at}}~{}[ n .. {m^?} ]~\mathsf{page}
 } \, {[\textsc{\scriptsize Meminst\_ok}]}
 \qquad
 \end{array}
@@ -14318,13 +14318,13 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-\{  \} \vdash {\mathit{at}}~{}[ n .. m ]~{\mathit{rt}} : \mathsf{ok}
+\{  \} \vdash {\mathit{at}}~{}[ n .. {m^?} ]~{\mathit{rt}} : \mathsf{ok}
  \qquad
 {|{{\mathit{ref}}^\ast}|} = n
  \qquad
 (s \vdash {\mathit{ref}} : {\mathit{rt}})^\ast
 }{
-s \vdash \{ \mathsf{type}~{\mathit{at}}~{}[ n .. m ]~{\mathit{rt}},\;\allowbreak \mathsf{refs}~{{\mathit{ref}}^\ast} \} : {\mathit{at}}~{}[ n .. m ]~{\mathit{rt}}
+s \vdash \{ \mathsf{type}~{\mathit{at}}~{}[ n .. {m^?} ]~{\mathit{rt}},\;\allowbreak \mathsf{refs}~{{\mathit{ref}}^\ast} \} : {\mathit{at}}~{}[ n .. {m^?} ]~{\mathit{rt}}
 } \, {[\textsc{\scriptsize Tableinst\_ok}]}
 \qquad
 \end{array}
@@ -14662,7 +14662,7 @@ n \leq {n'}
  \qquad
 {|{b^\ast}|} \leq {|{{b'}^\ast}|}
 }{
-\{ \mathsf{type}~{\mathit{at}}~{}[ n .. m ]~\mathsf{page},\;\allowbreak \mathsf{bytes}~{b^\ast} \}~\leq~\{ \mathsf{type}~{\mathit{at}}~{}[ {n'} .. m ]~\mathsf{page},\;\allowbreak \mathsf{bytes}~{{b'}^\ast} \}
+\{ \mathsf{type}~{\mathit{at}}~{}[ n .. {m^?} ]~\mathsf{page},\;\allowbreak \mathsf{bytes}~{b^\ast} \}~\leq~\{ \mathsf{type}~{\mathit{at}}~{}[ {n'} .. {m^?} ]~\mathsf{page},\;\allowbreak \mathsf{bytes}~{{b'}^\ast} \}
 } \, {[\textsc{\scriptsize Extend\_meminst}]}
 \qquad
 \end{array}
@@ -14675,7 +14675,7 @@ n \leq {n'}
  \qquad
 {|{{\mathit{ref}}^\ast}|} \leq {|{{\mathit{ref}'}^\ast}|}
 }{
-\{ \mathsf{type}~{\mathit{at}}~{}[ n .. m ]~{\mathit{rt}},\;\allowbreak \mathsf{refs}~{{\mathit{ref}}^\ast} \}~\leq~\{ \mathsf{type}~{\mathit{at}}~{}[ {n'} .. m ]~{\mathit{rt}},\;\allowbreak \mathsf{refs}~{{\mathit{ref}'}^\ast} \}
+\{ \mathsf{type}~{\mathit{at}}~{}[ n .. {m^?} ]~{\mathit{rt}},\;\allowbreak \mathsf{refs}~{{\mathit{ref}}^\ast} \}~\leq~\{ \mathsf{type}~{\mathit{at}}~{}[ {n'} .. {m^?} ]~{\mathit{rt}},\;\allowbreak \mathsf{refs}~{{\mathit{ref}'}^\ast} \}
 } \, {[\textsc{\scriptsize Extend\_tableinst}]}
 \qquad
 \end{array}
