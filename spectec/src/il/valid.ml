@@ -370,6 +370,8 @@ and valid_exp ?(side = `Rhs) env e t =
   );
   match e.it with
   | VarE x when x.it = "_" && side = `Lhs -> ()
+  | VarE x when !mode = Annotate && not (Env.mem_var env x) ->
+    out_env := Env.bind_var env x t
   | VarE x ->
     let t' = Env.find_var env x in
     equiv_typ env t' t e.at
