@@ -10,6 +10,14 @@ open Print
 let error at msg = Error.error at "validation" msg
 
 
+(* Mode *)
+
+type mode = Validate | Annotate
+
+let mode = ref Validate
+let out_env = ref Env.empty
+
+
 (* Environment *)
 
 let find_field fs atom at =
@@ -184,7 +192,10 @@ let rec valid_binders valid_x env xs : Env.t =
   | [] -> env
   | x::xs -> valid_binders valid_x (valid_x env x) xs
 
-let rec valid_iter ?(side = `Rhs) env iter : Env.t =
+let rec valid_iter ?(side = `Rhs) env iter at : Env.t =
+  Debug.(log_at "il.valid_iter" at
+    (fun _ -> il_iter iter) (fun _ -> "ok")
+  ) @@ fun _ ->
   match iter with
   | Opt | List | List1 -> env
   | ListN (e, id_opt) ->
@@ -198,7 +209,7 @@ and valid_iterexp ?(side = `Rhs) env (it, xes) at : iter * Env.t =
     (fun _ -> il_iter it)
     (fun (it', _) -> il_iter it')
   ) @@ fun _ ->
-  let env' = valid_iter ~side env it in
+  let env' = valid_iter ~side env it at in
   if xes = [] && it <= List1 && side = `Rhs then error at "vacuous iteration";
   let it' = match it with Opt -> Opt | _ -> List in
   it',
@@ -236,7 +247,7 @@ and valid_typ_bind env t : Env.t =
     match iter with
     | ListN (e, _) -> error e.at "definite iterator not allowed in type"
     | _ ->
-      let env' = valid_iter env iter in
+      let env' = valid_iter env iter t.at in
       valid_typ env' t1;
       env
 
@@ -353,6 +364,10 @@ and valid_exp ?(side = `Rhs) env e t =
     (Fun.const "ok")
   ) @@ fun _ ->
   valid_typ env t;
+  (match !mode with
+  | Validate -> equiv_typ env e.note t e.at
+  | Annotate -> e.note <- t
+  );
   match e.it with
   | VarE x when x.it = "_" && side = `Lhs -> ()
   | VarE x ->
@@ -546,7 +561,10 @@ and valid_path env p t : typ =
       let t, _qs, _prems = find_field tfs atom p1.at in
       t
   in
-  equiv_typ env p.note t' p.at;
+  (match !mode with
+  | Validate -> equiv_typ env p.note t' p.at
+  | Annotate -> p.note <- t'
+  );
   t'
 
 
@@ -713,7 +731,9 @@ let valid_rule env mixop t rule =
 let valid_clause env x ps t clause =
   Debug.(log_in "il.valid_clause" line);
   Debug.(log_in_at "il.valid_clause" clause.at
-    (fun _ -> fmt "%s : (%s) -> %s" (il_id x) (il_params ps) (il_typ t))
+    (fun _ -> fmt "%s : (%s) -> %s%s"
+      (il_id x) (il_params ps) (il_typ t) (il_clause x clause)
+    )
   );
   match clause.it with
   | DefD (qs, as_, e, prems) ->
@@ -800,3 +820,23 @@ let rec valid_def env d : Env.t =
 
 let valid ds =
   ignore (valid_binders valid_def Env.empty ds)
+
+
+(* (Re)Annotation *)
+
+let with_annotate_mode f x =
+  assert (!mode = Validate);
+  mode := Annotate;
+  out_env := Env.empty;
+  match f x with
+  | y -> mode := Validate; y
+  | exception exn -> mode := Validate; raise exn
+
+let annotate = with_annotate_mode valid
+
+let annotate_exp side env e = function
+  | None -> ignore (with_annotate_mode (infer_exp env) e); !out_env
+  | Some t -> with_annotate_mode (valid_exp ~side env e) t; !out_env
+
+let annotate_lhs_exp = annotate_exp `Lhs
+let annotate_rhs_exp = annotate_exp `Rhs
