@@ -14,6 +14,7 @@ let il_typfield = string_of_typfield ~layout: `H
 let il_typcase = string_of_typcase ~layout: `H
 let il_deftyp = string_of_deftyp ~layout: `H
 let il_exp = string_of_exp
+let il_path = string_of_path
 let il_sym = string_of_sym
 let il_prod = string_of_prod
 let il_clause = string_of_clause

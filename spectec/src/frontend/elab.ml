@@ -415,9 +415,6 @@ let rec map_attempt f = function
 let iter_attempt f xs =
   let* _ = map_attempt f xs in Ok ()
 
-let map2_attempt f xs ys =
-  map_attempt (fun (x, y) -> f x y) (List.combine xs ys)
-
 let fail at msg = Fail [Trace (at, msg, [])]
 let fail_silent = Fail []
 
@@ -531,8 +528,8 @@ let expand_notation env t =
       let as_ = List.map il_arg_of_param ps in
       (match Il.Eval.(match_list match_arg (to_il_env env) Il.Subst.empty as' as_) with
       | Ok (Some s) ->
-        let mixop, (t, _qs, prems), _ = Il.Subst.subst_typcase s tc in
-        Some (t, mixop, Mixop.apply mixop (untup_typ' t), prems)
+        let mixop, (t, _qs, _prems), _ = Il.Subst.subst_typcase s tc in
+        Some (t, mixop, Mixop.apply mixop (untup_typ' t))
       | Ok None -> None
       | Error _ -> error_typ env t.at "term" t
       )
@@ -578,7 +575,7 @@ let as_tup_typ_opt env t : (Il.id * Il.typ) list option =
 
 let as_empty_notation_typ_opt env t : unit option =
   match expand_notation env t with
-  | Some (_, _, Seq [], _) -> Some ()
+  | Some (_, _, Seq []) -> Some ()
   | _ -> None
 
 
@@ -623,7 +620,7 @@ let rec as_cat_typ phrase env dir t at : unit attempt =
   | _ ->
     fail at (phrase ^ "'s type " ^ typ_string env t ^ " is not concatenable")
 
-let as_notation_typ phrase env dir t at : (Il.typ * _ Mixop.mixop * notation * Il.prem list) attempt =
+let as_notation_typ phrase env dir t at : (Il.typ * _ Mixop.mixop * notation) attempt =
   match expand_notation env t with
   | Some not -> Ok not
   | _ -> fail_dir_typ env at phrase dir t "_ ... _"
@@ -634,7 +631,6 @@ let is_x_typ as_x_typ env t =
   | Fail _ -> false
 
 let is_nat_typ = is_x_typ as_nat_typ
-let is_tup_typ = is_x_typ as_tup_typ
 let is_iter_typ = is_x_typ as_iter_typ
 let is_variant_typ = is_x_typ as_variant_typ
 let is_notation_typ = is_x_typ as_notation_typ
@@ -845,6 +841,26 @@ and elab_iterexp : 'a 'b. ?side: [`Lhs | `Rhs] -> env -> (env -> 'a -> 'b attemp
 
 (* Types *)
 
+and unbox_field_typ t =
+  match t.it with
+  | Il.TupT [(_, t1)] -> t1
+  | _ -> t
+
+and unbox_case_typ t =
+  match t.it with
+  | Il.TupT xts -> List.map snd xts
+  | _ -> [t]
+
+and is_unboxed_field_typ t =
+  match t.it with
+  | Il.TupT [_] -> false
+  | _ -> true
+
+and is_unboxed_case_typ t =
+  match t.it with
+  | Il.TupT _ -> false
+  | _ -> true
+
 and elab_typ env ?(fwd = true) (t : typ) : Il.typ =
   match t.it with
   | VarT (x, as_) ->
@@ -964,24 +980,19 @@ and typ_rep env t : Il.typ =
 
 and elab_typfield env outer_dims tid at (tf : typfield) : Il.typfield =
   let atom, (t, prems), hints = tf in
-  let _mixop, t', qs, prems' = elab_typ_notation env outer_dims tid at t prems in
+  let _mixop, t', qs, prems' = elab_typ_notation is_unboxed_field_typ env outer_dims tid at t prems in
   let hints' = elab_hints tid "" hints in
-  let t'' =
-    match t'.it with
-    | Il.TupT [(_, t1')] when prems' = [] -> t1'
-    | _ -> t'
-  in
-  (elab_atom atom tid, (t'', qs, prems'), hints')
+  (elab_atom atom tid, (t', qs, prems'), hints')
 
 and elab_typcase env outer_dims tid at (tc : typcase) : Il.typcase =
   let _atom, (t, prems), hints = tc in
-  let mixop, t', qs, prems' = elab_typ_notation env outer_dims tid at t prems in
+  let mixop, t', qs, prems' = elab_typ_notation is_unboxed_case_typ env outer_dims tid at t prems in
   let hints' = elab_hints tid "" hints in
   (mixop, (t', qs, prems'), hints')
 
 and elab_typcon env outer_dims tid at (tc : typcon) : Il.typcase =
   let (t, prems), hints = tc in
-  let mixop, t', qs, prems' = elab_typ_notation env outer_dims tid at t prems in
+  let mixop, t', qs, prems' = elab_typ_notation is_unboxed_case_typ env outer_dims tid at t prems in
   let hints' = elab_hints tid tid.it hints in
   (mixop, (t', qs, prems'), hints')
 
@@ -1017,7 +1028,7 @@ and elab_typenum env outer_dims tid (te : typenum) : Il.typ * (Il.exp -> numtyp 
     ) $$ at % (Il.BoolT $ at))
 
 
-and elab_typ_notation env outer_dims tid at (t : typ) (prems : prem nl_list) :
+and elab_typ_notation is_unboxed env outer_dims tid at (t : typ) (prems : prem nl_list) :
     Il.mixop * Il.typ * Il.quant list * Il.prem list =
   assert (valid_tid tid);
   let env1 = local_env env in
@@ -1025,11 +1036,7 @@ and elab_typ_notation env outer_dims tid at (t : typ) (prems : prem nl_list) :
   let xs', ts' = List.split xts' in
   let dims1 = Dim.check outer_dims [] [] ts' [] [] [] in
   let ts' = List.map (Dim.annot_typ dims1) ts' in
-  let t' =
-    match ts' with
-    | [t'] when prems = [] -> t'
-    | _ -> Il.TupT (List.combine xs' ts') $ t.at
-  in
+  let t' = Il.TupT (List.combine xs' ts') $ t.at in
   let det1 = Det.det_typ t' in
   infer_no_quants env dims1 det1 [] [] [t'] [] [] [] at;
 
@@ -1039,7 +1046,14 @@ and elab_typ_notation env outer_dims tid at (t : typ) (prems : prem nl_list) :
   let prems' = List.map (Dim.annot_prem dims2) prems' in
   let det2 = Det.(det_list det_prem prems') in
   let qs = infer_quants env1 env2 dims2 det2 [] [] [] [] [] prems' at in
-  mixop, t', qs, prems'
+  let t'' =
+    match xs', ts' with
+    | [x1'], [t1']
+      when is_unboxed t1' && not Il.Free.(Set.mem x1'.it (free_prems prems').varid) ->
+      t1'
+    | _ -> t'
+  in
+  mixop, t'', qs, prems'
 
 and elab_typ_notation' env tid (t : typ) : Il.mixop * (Il.id * Il.typ) list =
   Debug.(log_at "el.elab_typ_notation" t.at
@@ -1207,10 +1221,13 @@ and infer_exp' env e : (Il.exp' * Il.typ') attempt =
     let* tfs, dots = as_struct_typ "expression" env Infer t1 e1.at in
     if dots = Dots then
       error e1.at "used record type is only partially defined at this point";
-    let* _, (tF, _qs, prems), _ = attempt (find_field tfs atom e1.at) t1 in
+    let* _, (tF, _qs, _prems), _ = attempt (find_field tfs atom e1.at) t1 in
     let e' = Il.DotE (e1', elab_atom atom (expand_id env t1)) in
-    let e'' = if prems = [] then e' else Il.ProjE (e' $$ e.at % tF, 0) in
-    Ok (e'', tF.it)
+    let e'' =
+      if is_unboxed_field_typ tF then e' else
+      Il.ProjE (e' $$ e.at % tF, 0)
+    in
+    Ok (e'', (unbox_field_typ tF).it)
   | CommaE (e1, e2) ->
     let* e1', t1 = infer_exp env e1 in
     let* tfs, dots = as_struct_typ "expression" env Infer t1 e1.at in
@@ -1520,19 +1537,18 @@ and elab_expfields' ?(side = `Rhs) env tid (efs : expfield list) (tfs : Il.typfi
   assert (valid_tid tid);
   match efs, tfs with
   | [], [] -> Ok []
-  | [], (atom, (tF, _qs, prems), _)::tfs2 ->
+  | [], (atom, (tF, _qs, _prems), _)::tfs2 ->
     let atom' = string_of_atom atom in
-    let* e1' = cast_empty ("omitted record field `" ^ atom' ^ "`") env tF at in
-    let e' = if prems = [] then e1' else Il.TupE [e1'] $$ at % tF in
+    let* e' = cast_empty ("omitted record field `" ^ atom' ^ "`") env tF at in
     let* efs2' = elab_expfields ~side env tid efs tfs2 t0 at in
     Ok ((elab_atom atom tid, e') :: efs2')
   | (atom, e)::efs2, tfs ->
     match find_typfield atom tfs with
     | None -> fail_atom e.at atom t0 "undefined or misplaced record field"
-    | Some ((_, (tF, _qs, prems), _), tfs2) ->
+    | Some ((_, (tF, _qs, _prems), _), tfs2) ->
       let* e' = elab_exp ~side env e tF in
       let* efs2' = elab_expfields ~side env tid efs2 tfs2 t0 at in
-      let e' = if prems = [] then e' else Il.TupE [e'] $$ e.at % tF in
+      let e' = if is_unboxed_field_typ tF then e' else Il.TupE [e'] $$ e.at % tF in
       Ok ((elab_atom atom tid, e') :: efs2')
 
 and elab_exp_iter ?(side = `Rhs) env (es : exp list) (t1, iter) t at : Il.exp attempt =
@@ -1564,13 +1580,13 @@ and elab_exp_iter' ?(side = `Rhs) env (es : exp list) (t1, iter) t at : Il.exp' 
   | _, (List1 | ListN _) ->
     assert false
 
-and elab_exp_notation ?(side = `Rhs) env tid (e : exp) (t1, mixop, not, prems) t : Il.exp attempt =
+and elab_exp_notation ?(side = `Rhs) env tid (e : exp) (t1, mixop, not) t : Il.exp attempt =
   (* Convert notation into applications of mixin operators *)
   assert (valid_tid tid);
   let* es', _s = nest e.at t (elab_exp_notation' ~side env tid e not) in
   let e' =
     match es' with
-    | [e'] when prems = [] -> e'
+    | [e'] when is_unboxed_case_typ t1 -> e'
     | _ -> Il.TupE es' $$ e.at % t1
   in
   Ok (Il.CaseE (mixop, e', Unchecked) $$ e.at % t)
@@ -1788,18 +1804,18 @@ and elab_exp_variant ?(side = `Rhs) env tid (e : exp) (tcs : Il.typcase list) t 
     | _ -> fail_typ env at "expression" t
   in
   let* atom = head e in
-  let* mixop, (tC, _, prems), _ = attempt (find_case_atom tcs atom atom.at) t in
+  let* mixop, (tC, _, _), _ = attempt (find_case_atom tcs atom atom.at) t in
   let* xts =
-    if is_tup_typ env tC then
-      as_tup_typ "tuple" env Check tC e.at
-    else
+    if is_unboxed_case_typ tC then
       Ok [("_" $ tC.at, tC)]
+    else
+      as_tup_typ "tuple" env Check tC e.at
   in
   let not = Mixop.apply mixop xts in
   let* es', _s = elab_exp_notation' ~side env tid e not in
   let e' =
     match es' with
-    | [e'] when prems = [] -> e'
+    | [e'] when is_unboxed_case_typ tC -> e'
     | _ -> Il.TupE es' $$ e.at % tC
   in
   let ch' = if side = `Lhs then Il.Checked else Il.Unchecked in
@@ -1817,6 +1833,10 @@ and elab_path env (p : path) (t : Il.typ) : (Il.path * Il.typ) attempt =
   Ok (p' $$ p.at % t', t')
 
 and elab_path' env (p : path) (t : Il.typ) : (Il.path' * Il.typ) attempt =
+  Debug.(log_at "el.elab_path" p.at
+    (fun _ -> fmt "%s : %s" (el_path p) (il_typ t))
+    (function Ok (p', t') -> fmt "%s : %s" (il_path (p' $$ p.at % t')) (il_typ t') | _ -> "fail")
+  ) @@ fun _ ->
   match p.it with
   | RootP ->
     Ok (Il.RootP, t)
@@ -1837,7 +1857,12 @@ and elab_path' env (p : path) (t : Il.typ) : (Il.path' * Il.typ) attempt =
     if dots = Dots then
       error p1.at "used record type is only partially defined at this point";
     let* _, (tF, _, _), _ = attempt (find_field tfs atom p1.at) t1 in
-    Ok (Il.DotP (p1', elab_atom atom (expand_id env t1)), tF)
+    let p1' = Il.DotP (p1', elab_atom atom (expand_id env t1)) in
+    if is_unboxed_field_typ tF then
+      Ok (p1', tF)
+    else
+      (*Ok (Il.ProjP (p1' $$ p1.at % tF, 0), unbox_field_typ tF)*)
+      error p1.at "not implemented: cannot use field paths for fields with premises"
 
 
 and cast_empty phrase env (t : Il.typ) at : Il.exp attempt =
@@ -1851,7 +1876,7 @@ and cast_empty phrase env (t : Il.typ) at : Il.exp attempt =
     | Il.IterT (_, List) -> Ok (Il.ListE [] $$ at % t)
     | VarT _ when is_notation_typ env t ->
       (match expand_notation env t with
-      | Some (_, _, Mixop.Seq [], _) -> Ok (Il.ListE [] $$ at % t)
+      | Some (_, _, Mixop.Seq []) -> Ok (Il.ListE [] $$ at % t)
       | _ -> fail_typ env at phrase t
       )
     | _ -> fail_typ env at phrase t
@@ -1881,131 +1906,99 @@ and cast_exp' ?(side = `Rhs) phrase env (e' : Il.exp) t1 t2 : Il.exp' attempt =
   | Il.TupT [], Il.VarT _ when is_empty_notation_typ env t2' ->
     Ok e'.it
 
-  | Il.VarT (x1, _), Il.VarT (x2, _) ->
-    (match expand_def env t1', expand_def env t2' with
-    | (Il.VariantT [mixop1, (tC1, _, prems1), _], NoDots),
-      (Il.VariantT [mixop2, (tC2, _, prems2), _], NoDots) ->
-      if mixop1 = mixop2 then
-      (
-        (* Two ConT's with the same operator can be cast pointwise *)
-        let ts1 = match tC1.it with Il.TupT xts -> List.map snd xts | _ -> [tC1] in
-        let ts2 = match tC2.it with Il.TupT xts -> List.map snd xts | _ -> [tC2] in
-        let e'' = Il.UncaseE (e', mixop1) $$ e'.at % tC1 in
-        let es' =
-          match ts1 with
-          | [_] when prems1 = [] -> [e'']
-          | _ -> List.mapi (fun i t1I -> Il.ProjE (e'', i) $$ e''.at % t1I) ts1
-        in
-        let* es'' = map2_attempt (fun eI' (t1I, t2I) ->
-          cast_exp ~side phrase env eI' t1I t2I) es' (List.combine ts1 ts2) in
-        let e''' =
-          match es'' with
-          | [e'''] when prems2 = [] -> e'''
-          | _ -> Il.TupE es'' $$ e'.at % tC2
-        in
-        Ok (Il.CaseE (mixop2, e''', Unchecked))
-      )
-      else
-      (
-        (* Two unary ConT's can be cast transitively
-         * (composing the to/from payload cases below). *)
-        let _ = Debug.(log_in_at "el.cast_exp" e'.at
-          (fun _ -> fmt "%s <: %s  >>  (%s) <: (%s) = (%s) # backtrack 1"
-            (il_typ t1) (il_typ t2)
-            (il_deftyp (fst (expand_def env t1) $ t1.at))
-            (il_deftyp (fst (expand_def env t2) $ t2.at))
-            (il_typ (reduce env t2))
-          )
-        ) in
-        match expand env tC1 with
-        | Il.TupT [(_, t11')] ->
-          let e'' = Il.UncaseE (e', mixop1) $$ e'.at % tC1 in
-          let e''' = if prems1 = [] then e'' else Il.ProjE (e'', 0) $$ e'.at % t11' in
-          cast_exp' ~side phrase env e''' t11' t2'
-        | _ -> fail_typ2 env e'.at phrase t1 t2 ""
-      )
+  | Il.VarT (x1, _), _ ->
+    choice env [
+      (fun env ->
+        match expand_def env t1' with
+        | Il.VariantT [mixop1, (tC1, _, _), _], NoDots ->
+          (match unbox_case_typ tC1 with
+          | [t11] ->
+            choice env [
+              (fun env ->
+                (* A ConT can always be cast to a (singleton) iteration *)
+                match t2'.it with
+                | Il.IterT (t21, iter) ->
+                  let* e1' = cast_exp ~side phrase env e' t1 t21 in
+                  (match iter with
+                  | Opt -> Ok (Il.OptE (Some e1'))
+                  | List -> Ok (Il.ListE [e1'])
+                  | _ -> assert false
+                  )
+                | _ -> fail_silent
+              );
 
-    | (Il.VariantT tcs1, dots1), (Il.VariantT tcs2, dots2) ->
-      let* () =
-        (* Recursive subtyping on variants *)
-        match
-          iter_attempt (fun (mixop, (tC1, _, _), _) ->
-            let* _, (tC2, _, _), _ = attempt (find_case tcs2 mixop t1.at) t2 in
-            if sub_typ env tC1 tC2 then
-              Ok ()
-            else
-              fail_mixop e'.at mixop t1 "type mismatch for case"
-          ) tcs1
-        with
-        | Ok () -> Ok ()
-        | Fail (Trace (_, msg, _) :: _) -> fail_typ2 env e'.at phrase t1 t2 (", " ^ msg)
-        | Fail [] -> assert false
-      in
-      if dots1 = Dots then
-        error e'.at ("used variant type `" ^ x1.it ^
-          "` is only partially defined at this point")
-      else if dots2 = Dots then
-        error e'.at ("used variant type `" ^ x2.it ^
-          "` is only partially defined at this point");
-      Ok (Il.SubE (e', t1', t2'))
+              (fun env ->
+                (* A ConT can be cast to its payload type *)
+                Debug.(log_in_at "el.cast_exp" e'.at
+                  (fun _ -> fmt "%s <: %s  >>  (%s) <: (%s) = (%s) # backtrack 2"
+                    (il_typ t1) (il_typ t2)
+                    (il_deftyp (fst (expand_def env t1) $ t1.at))
+                    (il_deftyp (fst (expand_def env t2) $ t2.at))
+                    (il_typ (reduce env t2))
+                  )
+                );
+                let e'' = Il.UncaseE (e', mixop1) $$ e'.at % tC1 in
+                let e1' =
+                  if is_unboxed_case_typ tC1 then e'' else
+                  Il.ProjE (e'', 0) $$ e''.at % t11
+                in
+                cast_exp' ~side phrase env e1' t11 t2'
+              );
+            ]
 
-    | _, _ ->
-      fail_typ2 env e'.at phrase t1 t2 ""
-    )
-
-  | Il.VarT _, _ ->
-    (match expand_def env t1' with
-    | Il.VariantT [mixop1, (tC1, _, prems1), _], NoDots ->
-      choice env [
-        (fun env ->
-          (* A ConT can always be cast to a (singleton) iteration *)
-          match t2'.it with
-          | Il.IterT (t21, iter) ->
-            let* e1' = cast_exp ~side phrase env e' t1 t21 in
-            (match iter with
-            | Opt -> Ok (Il.OptE (Some e1'))
-            | List -> Ok (Il.ListE [e1'])
-            | _ -> assert false
-            )
-          | _ -> fail_silent
-        );
-        (fun env ->
-          (* A ConT can be cast to its payload *)
-          Debug.(log_in_at "el.cast_exp" e'.at
-            (fun _ -> fmt "%s <: %s  >>  (%s) <: (%s) = (%s) # backtrack 2"
-              (il_typ t1) (il_typ t2)
-              (il_deftyp (fst (expand_def env t1) $ t1.at))
-              (il_deftyp (fst (expand_def env t2) $ t2.at))
-              (il_typ (reduce env t2))
-            )
-          );
-          match expand env tC1 with
-          | Il.TupT [(_, t11')] ->
-            let e'' = Il.UncaseE (e', mixop1) $$ e'.at % tC1 in
-            let e''' = if prems1 = [] then e'' else Il.ProjE (e'', 0) $$ e'.at % t11' in
-            cast_exp' ~side phrase env e''' t11' t2'
           | _ -> fail_typ2 env e'.at phrase t1 t2 ""
-        );
-      ]
+          )
 
-    | _ ->
-      fail_typ2 env e'.at phrase t1 t2 ""
-    )
+        | _ -> fail_typ2 env e'.at phrase t1 t2 ""
+      );
+
+      (fun env ->
+        match expand_def env t1', expand_def env t2', t2'.it with
+        | (Il.VariantT tcs1, dots1), (Il.VariantT tcs2, dots2), Il.VarT (x2, _) ->
+          let* () =
+            (* Recursive subtyping on variants *)
+            match
+              iter_attempt (fun (mixop, (tC1, _, _), _) ->
+                let* _, (tC2, _, _), _ = attempt (find_case tcs2 mixop t1.at) t2 in
+                if sub_typ env tC1 tC2 then
+                  Ok ()
+                else
+                  fail_mixop e'.at mixop t1 "type mismatch for case"
+              ) tcs1
+            with
+            | Ok () -> Ok ()
+            | Fail (Trace (_, msg, _) :: _) -> fail_typ2 env e'.at phrase t1 t2 (", " ^ msg)
+            | Fail [] -> assert false
+          in
+          if dots1 = Dots then
+            error e'.at ("used variant type `" ^ x1.it ^
+              "` is only partially defined at this point")
+          else if dots2 = Dots then
+            error e'.at ("used variant type `" ^ x2.it ^
+              "` is only partially defined at this point");
+          Ok (Il.SubE (e', t1', t2'))
+
+        | _ -> fail_typ2 env e'.at phrase t1 t2 ""
+      );
+    ]
 
   | _, Il.VarT _ ->
     (match expand_def env t2' with
-    | Il.VariantT [mixop2, (tC2, _, prems2), _], NoDots ->
+    | Il.VariantT [mixop2, (tC2, _, _), _], NoDots ->
       (* A ConT payload can be cast to the ConT *)
-      (match expand env tC2 with
-      | Il.TupT [(_, t21')] ->
-        let* e1' = cast_exp ~side phrase env e' t1' t21' in
-        let e'' = if prems2 = [] then e1' else Il.TupE [e1'] $$ e'.at % tC2 in
+      (match unbox_case_typ tC2 with
+      | [t21] ->
+        let* e1' = cast_exp ~side phrase env e' t1' t21 in
+        let e'' =
+          if is_unboxed_case_typ tC2 then e1' else
+          Il.TupE [e1'] $$ e'.at % tC2
+        in
         Ok (Il.CaseE (mixop2, e'', Unchecked))
+
       | _ -> fail_typ2 env e'.at phrase t1 t2 ""
       )
 
-    | _ ->
-      fail_typ2 env e'.at phrase t1 t2 ""
+    | _ -> fail_typ2 env e'.at phrase t1 t2 ""
     )
 
   | Il.IterT (t11, Opt), Il.IterT (t21, List) ->
@@ -2193,7 +2186,7 @@ and elab_sym_list env (gs : sym list) (t : Il.typ) : Il.sym list attempt =
     Ok (g'::gs')
 
 and cast_sym env (g' : Il.sym) t1 t2 : Il.sym attempt =
-  Debug.(log_at "el.elab_cast_sym" g'.at
+  Debug.(log_at "el.elab_sym_cast" g'.at
     (fun _ -> fmt "%s : %s :> %s" (il_sym g') (il_typ t1) (il_typ t2))
     (function Ok g'' -> fmt "%s" (il_sym g'') | _ -> "fail")
   ) @@ fun _ ->
