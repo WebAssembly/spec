@@ -17952,6 +17952,30 @@ The frame :math:`\{ \mathsf{locals}~{({{\mathit{val}}^?})^\ast},\;\allowbreak \m
 
    * Or:
 
+      * The instruction :math:`{\mathit{instr}}` is of the form :math:`(\mathsf{call\_ref}~y)`.
+
+      * The value type sequence :math:`{{\mathit{valtype}}^\ast}` is of the form :math:`{t_1^\ast}~(\mathsf{ref}~\mathsf{null}~y)`.
+
+      * The local index sequence :math:`{{\mathit{localidx}}^\ast}` is empty.
+
+      * The :ref:`expansion <aux-expand-typeuse>` of :math:`C` is :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{{\mathit{valtype}'}^\ast})`.
+   * Or:
+
+      * The instruction :math:`{\mathit{instr}}` is of the form :math:`(\mathsf{return\_call\_ref}~y)`.
+
+      * The value type sequence :math:`{{\mathit{valtype}}^\ast}` is of the form :math:`{t_3^\ast}~{t_1^\ast}~(\mathsf{ref}~\mathsf{null}~y)`.
+
+      * The local index sequence :math:`{{\mathit{localidx}}^\ast}` is empty.
+
+      * The :ref:`expansion <aux-expand-typeuse>` of :math:`C` is :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
+
+      * The result type :math:`C{.}\mathsf{return}` is of the form :math:`{{t'}_2^\ast}`.
+
+      * The result type :math:`{t_2^\ast}` :ref:`matches <match>` the result type :math:`{{t'}_2^\ast}`.
+
+      * The instruction type :math:`{t_3^\ast}~\rightarrow~{{\mathit{valtype}'}^\ast}` is :ref:`valid <valid-val>`.
+   * Or:
+
       * The instruction :math:`{\mathit{instr}}` is of the form :math:`{\mathit{ref}}`.
 
       * The value type sequence :math:`{{\mathit{valtype}}^\ast}` is empty.
@@ -18013,6 +18037,28 @@ The frame :math:`\{ \mathsf{locals}~{({{\mathit{val}}^?})^\ast},\;\allowbreak \m
 
 
    * The instruction :math:`{\mathit{instr}}` is :ref:`valid <valid-val>` with the instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}`.
+
+
+
+
+:math:`(\mathsf{call\_ref}~y)` is valid with :math:`{t_1^\ast}~(\mathsf{ref}~\mathsf{null}~y)~\rightarrow~{t_2^\ast}` if:
+
+
+   * The :ref:`expansion <aux-expand-typeuse>` of :math:`C` is :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
+
+
+
+
+:math:`(\mathsf{return\_call\_ref}~y)` is valid with :math:`{t_3^\ast}~{t_1^\ast}~(\mathsf{ref}~\mathsf{null}~y)~\rightarrow~{t_4^\ast}` if:
+
+
+   * The :ref:`expansion <aux-expand-typeuse>` of :math:`C` is :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
+
+   * The result type :math:`C{.}\mathsf{return}` is of the form :math:`{{t'}_2^\ast}`.
+
+   * The result type :math:`{t_2^\ast}` :ref:`matches <match>` the result type :math:`{{t'}_2^\ast}`.
+
+   * The instruction type :math:`{t_3^\ast}~\rightarrow~{t_4^\ast}` is :ref:`valid <valid-val>`.
 
 
 
@@ -29751,9 +29797,22 @@ Instr_ok2
   - Either:
     - the instruction instr is valid with the instruction type valtype* ->_ localidx* valtype'*.
   - Or:
-    - instr is ref.
-    - the value type sequence valtype* is [].
+    - instr is (CALL_REF yy).
+    - the value type sequence valtype* is t_1* :: [(REF ?(NULL) yy)].
     - the local index sequence localidx* is [].
+    - The :ref:`expansion <aux-expand-typeuse>` of C is (FUNC t_1* -> valtype'*).
+  - Or:
+    - instr is (RETURN_CALL_REF yy).
+    - valtype* is t_3* :: t_1* :: [(REF ?(NULL) yy)].
+    - localidx* is [].
+    - The :ref:`expansion <aux-expand-typeuse>` of C is (FUNC t_1* -> t_2*).
+    - the result type C.RETURN is ?(t'_2*).
+    - the result type t_2* matches the result type t'_2*.
+    - the instruction type t_3* -> valtype'* is valid.
+  - Or:
+    - instr is ref.
+    - valtype* is [].
+    - localidx* is [].
     - the value type sequence valtype'* is [rt].
     - the reference value ref is valid with the reference type rt.
   - Or:
@@ -29784,6 +29843,17 @@ Instr_ok2
 Instr_ok2/plain
 - instr is valid with t_1* ->_ x* t_2* if:
   - the instruction instr is valid with the instruction type t_1* ->_ x* t_2*.
+
+Instr_ok2/call_ref
+- (CALL_REF yy) is valid with t_1* :: [(REF ?(NULL) yy)] -> t_2* if:
+  - The :ref:`expansion <aux-expand-typeuse>` of C is (FUNC t_1* -> t_2*).
+
+Instr_ok2/return_call_ref
+- (RETURN_CALL_REF yy) is valid with t_3* :: t_1* :: [(REF ?(NULL) yy)] -> t_4* if:
+  - The :ref:`expansion <aux-expand-typeuse>` of C is (FUNC t_1* -> t_2*).
+  - the result type C.RETURN is ?(t'_2*).
+  - the result type t_2* matches the result type t'_2*.
+  - the instruction type t_3* -> t_4* is valid.
 
 Instr_ok2/ref
 - ref is valid with [] -> [rt] if:
