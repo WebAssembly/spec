@@ -1184,6 +1184,8 @@ warning: rule `Instr_ok/vextternop` was never spliced
 warning: rule `Instr_ok/vnarrow` was never spliced
 warning: rule `Instr_ok/vcvtop` was never spliced
 warning: rule `Instr_ok2/plain` was never spliced
+warning: rule `Instr_ok2/call_ref` was never spliced
+warning: rule `Instr_ok2/return_call_ref` was never spliced
 warning: rule `Instr_ok2/ref` was never spliced
 warning: rule `Instr_ok2/label` was never spliced
 warning: rule `Instr_ok2/frame` was never spliced
@@ -2197,11 +2199,13 @@ warning: rule prose `Instr_ok/vvternop` was never spliced
 warning: rule prose `Instr_ok/vvtestop` was never spliced
 warning: rule prose `Instr_ok/vvunop` was never spliced
 warning: rule prose `Instr_ok2` was never spliced
+warning: rule prose `Instr_ok2/call_ref` was never spliced
 warning: rule prose `Instr_ok2/frame` was never spliced
 warning: rule prose `Instr_ok2/handler` was never spliced
 warning: rule prose `Instr_ok2/label` was never spliced
 warning: rule prose `Instr_ok2/plain` was never spliced
 warning: rule prose `Instr_ok2/ref` was never spliced
+warning: rule prose `Instr_ok2/return_call_ref` was never spliced
 warning: rule prose `Instr_ok2/trap` was never spliced
 warning: rule prose `Instrs_ok` was never spliced
 warning: rule prose `Instrs_ok/empty` was never spliced

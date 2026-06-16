@@ -14126,6 +14126,38 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
+C \vdash y : \mathsf{ok}
+ \qquad
+y \approx_{C} \mathsf{func}~{t_1^\ast} \rightarrow {t_2^\ast}
+}{
+s ; C \vdash \mathsf{call\_ref}~y : {t_1^\ast}~(\mathsf{ref}~\mathsf{null}~y) \rightarrow {t_2^\ast}
+} \, {[\textsc{\scriptsize Instr\_ok2{-}call\_ref}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+C \vdash y : \mathsf{ok}
+ \qquad
+y \approx_{C} \mathsf{func}~{t_1^\ast} \rightarrow {t_2^\ast}
+ \qquad
+C{.}\mathsf{return} = ({{t'}_2^\ast})
+ \qquad
+C \vdash {t_2^\ast} \leq {{t'}_2^\ast}
+ \qquad
+C \vdash {t_3^\ast} \rightarrow {t_4^\ast} : \mathsf{ok}
+}{
+s ; C \vdash \mathsf{return\_call\_ref}~y : {t_3^\ast}~{t_1^\ast}~(\mathsf{ref}~\mathsf{null}~y) \rightarrow {t_4^\ast}
+} \, {[\textsc{\scriptsize Instr\_ok2{-}return\_call\_ref}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
 s \vdash {\mathit{ref}} : {\mathit{rt}}
 }{
 s ; C \vdash {\mathit{ref}} : \epsilon \rightarrow {\mathit{rt}}
