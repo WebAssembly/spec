@@ -11,20 +11,6 @@ rule Instr_ok2/plain:
   s; C |- instr : t_1* ->_(x*) t_2*
   -- Instr_ok: C |- instr : t_1* ->_(x*) t_2*
 
-rule Instr_ok2/call_ref:
-  s; C |- CALL_REF yy : t_1* (REF NULL yy) -> t_2*
-  -- Typeuse_ok: C |- yy : OK
-  -- Expand_use: yy ~~_C FUNC t_1* -> t_2*
-
-;; TODO(3, rossberg): enable t_2* <: C.RETURN
-rule Instr_ok2/return_call_ref:
-  s; C |- RETURN_CALL_REF yy : t_3* t_1* (REF NULL yy) -> t_4*
-  -- Typeuse_ok: C |- yy : OK
-  -- Expand_use: yy ~~_C FUNC t_1* -> t_2*
-  -- if C.RETURN = (t'_2*)
-  -- Resulttype_sub: C |- t_2* <: t'_2*
-  -- Instrtype_ok: C |- t_3* -> t_4* : OK
-
 rule Instr_ok2/ref:
   s; C |- ref : eps -> rt
   -- Ref_ok: s |- ref : rt
@@ -44,6 +30,25 @@ rule Instr_ok2/handler:
   s; C |- HANDLER_ n `{catch*} instr* : eps -> t*
   -- (Catch_ok: C |- catch : OK)*
   -- Instrs_ok2: s; C |- instr* : eps ->_(x*) t*
+
+rule Instr_ok2/call_addr:
+  s; C |- CALL_ADDR a : t_1* (REF NULL dt) -> t_2*
+  -- if s.FUNCS[a].TYPE = dt
+  -- Expand: dt ~~ FUNC t_1* -> t_2*
+
+;; TODO(3, rossberg): enable t_2* <: C.RETURN
+rule Instr_ok2/return_call_addr:
+  s; C |- RETURN_CALL_ADDR a : t_3* t_1* (REF NULL dt) -> t_4*
+  -- if s.FUNCS[a].TYPE = dt
+  -- Expand: dt ~~ FUNC t_1* -> t_2*
+  -- if C.RETURN = (t'_2*)
+  -- Resulttype_sub: C |- t_2* <: t'_2*
+  -- Instrtype_ok: C |- t_3* -> t_4* : OK
+
+rule Instr_ok2/throw_addr:
+  s; C |- THROW_ADDR a : t_1* t* -> t_2*
+  -- Expand_use: s.TAGS[s.EXNS[a].TAG].TYPE ~~_C FUNC t* -> eps
+  -- Instrtype_ok: C |- t_1* -> t_2* : OK
 
 rule Instr_ok2/trap:
   s; C |- TRAP : t_1* -> t_2*

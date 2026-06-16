@@ -147,11 +147,6 @@ and al_to_typeuse: value -> typeuse = function
   | CaseV ("_DEF", _) as dt -> Def (al_to_deftype dt)
   | v -> error_value "typeuse" v
 
-and al_to_idx_of_typeuse: value -> idx = function
-  | v when !version <= 2 -> al_to_idx v
-  | CaseV ("_IDX", [ idx ]) -> al_to_idx idx
-  | v -> error_value "idx_of_typeuse" v
-
 and al_to_heaptype: value -> heaptype = function
   | CaseV (tag, []) as v ->
     (match tag with
@@ -791,13 +786,13 @@ and al_to_instr': value -> Ast.instr' = function
     BrOnCastFail (al_to_idx idx, al_to_reftype rt1, al_to_reftype rt2)
   | CaseV ("RETURN", []) -> Return
   | CaseV ("CALL", [ idx ]) -> Call (al_to_idx idx)
-  | CaseV ("CALL_REF", [ typeuse ]) -> CallRef (al_to_idx_of_typeuse typeuse)
-  | CaseV ("CALL_INDIRECT", [ idx1; typeuse2 ]) ->
-    CallIndirect (al_to_idx idx1, al_to_idx_of_typeuse typeuse2)
+  | CaseV ("CALL_REF", [ idx ]) -> CallRef (al_to_idx idx)
+  | CaseV ("CALL_INDIRECT", [ idx1; idx2 ]) ->
+    CallIndirect (al_to_idx idx1, al_to_idx idx2)
   | CaseV ("RETURN_CALL", [ idx ]) -> ReturnCall (al_to_idx idx)
-  | CaseV ("RETURN_CALL_REF", [ typeuse ]) -> ReturnCallRef (al_to_idx_of_typeuse typeuse)
-  | CaseV ("RETURN_CALL_INDIRECT", [ idx1; typeuse2 ]) ->
-    ReturnCallIndirect (al_to_idx idx1, al_to_idx_of_typeuse typeuse2)
+  | CaseV ("RETURN_CALL_REF", [ idx ]) -> ReturnCallRef (al_to_idx idx)
+  | CaseV ("RETURN_CALL_INDIRECT", [ idx1; idx2 ]) ->
+    ReturnCallIndirect (al_to_idx idx1, al_to_idx idx2)
   | CaseV ("THROW", [ idx ]) -> Throw (al_to_idx idx)
   | CaseV ("THROW_REF", []) -> ThrowRef
   | CaseV ("TRY_TABLE", [ bt; catches; instrs ]) ->
@@ -1154,10 +1149,6 @@ and al_of_typeuse = function
   | Idx idx -> CaseV ("_IDX", [ al_of_nat32 idx ])
   | Rec n -> CaseV ("REC", [ al_of_nat32 n ])
   | Def dt -> al_of_deftype dt
-
-and al_of_typeuse_of_idx = function
-  | idx when !version <= 2 -> al_of_idx idx
-  | idx -> CaseV ("_IDX", [ al_of_idx idx ])
 
 and al_of_heaptype = function
   | UseHT tu -> al_of_typeuse tu
@@ -1815,14 +1806,14 @@ let rec al_of_instr instr =
     CaseV ("BR_ON_CAST_FAIL", [ al_of_idx idx; al_of_reftype rt1; al_of_reftype rt2 ])
   | Return -> nullary "RETURN"
   | Call idx -> CaseV ("CALL", [ al_of_idx idx ])
-  | CallRef idx -> CaseV ("CALL_REF", [ al_of_typeuse_of_idx idx ])
+  | CallRef idx -> CaseV ("CALL_REF", [ al_of_idx idx ])
   | CallIndirect (idx1, idx2) ->
-    let args = (if !version = 1 then [] else [ al_of_idx idx1 ]) @ [ al_of_typeuse_of_idx idx2 ] in
+    let args = (if !version = 1 then [] else [ al_of_idx idx1 ]) @ [ al_of_idx idx2 ] in
     CaseV ("CALL_INDIRECT", args)
   | ReturnCall idx -> CaseV ("RETURN_CALL", [ al_of_idx idx ])
   | ReturnCallRef idx -> CaseV ("RETURN_CALL_REF", [ al_of_idx idx ])
   | ReturnCallIndirect (idx1, idx2) ->
-    CaseV ("RETURN_CALL_INDIRECT", [ al_of_idx idx1; al_of_typeuse_of_idx idx2 ])
+    CaseV ("RETURN_CALL_INDIRECT", [ al_of_idx idx1; al_of_idx idx2 ])
   | Throw idx -> CaseV ("THROW", [ al_of_idx idx ])
   | ThrowRef -> nullary "THROW_REF"
   | TryTable (bt, catches, instrs) ->
