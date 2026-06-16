@@ -14126,6 +14126,8 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
+C \vdash y : \mathsf{ok}
+ \qquad
 y \approx_{C} \mathsf{func}~{t_1^\ast} \rightarrow {t_2^\ast}
 }{
 s ; C \vdash \mathsf{call\_ref}~y : {t_1^\ast}~(\mathsf{ref}~\mathsf{null}~y) \rightarrow {t_2^\ast}
@@ -14137,6 +14139,8 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
+C \vdash y : \mathsf{ok}
+ \qquad
 y \approx_{C} \mathsf{func}~{t_1^\ast} \rightarrow {t_2^\ast}
  \qquad
 C{.}\mathsf{return} = ({{t'}_2^\ast})

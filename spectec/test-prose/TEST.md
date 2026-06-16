@@ -17958,6 +17958,8 @@ The frame :math:`\{ \mathsf{locals}~{({{\mathit{val}}^?})^\ast},\;\allowbreak \m
 
       * The local index sequence :math:`{{\mathit{localidx}}^\ast}` is empty.
 
+      * The type use :math:`y` is :ref:`valid <valid-val>`.
+
       * The :ref:`expansion <aux-expand-typeuse>` of :math:`C` is :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{{\mathit{valtype}'}^\ast})`.
    * Or:
 
@@ -17966,6 +17968,8 @@ The frame :math:`\{ \mathsf{locals}~{({{\mathit{val}}^?})^\ast},\;\allowbreak \m
       * The value type sequence :math:`{{\mathit{valtype}}^\ast}` is of the form :math:`{t_3^\ast}~{t_1^\ast}~(\mathsf{ref}~\mathsf{null}~y)`.
 
       * The local index sequence :math:`{{\mathit{localidx}}^\ast}` is empty.
+
+      * The type use :math:`y` is :ref:`valid <valid-val>`.
 
       * The :ref:`expansion <aux-expand-typeuse>` of :math:`C` is :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
 
@@ -18044,6 +18048,8 @@ The frame :math:`\{ \mathsf{locals}~{({{\mathit{val}}^?})^\ast},\;\allowbreak \m
 :math:`(\mathsf{call\_ref}~y)` is valid with :math:`{t_1^\ast}~(\mathsf{ref}~\mathsf{null}~y)~\rightarrow~{t_2^\ast}` if:
 
 
+   * The type use :math:`y` is :ref:`valid <valid-val>`.
+
    * The :ref:`expansion <aux-expand-typeuse>` of :math:`C` is :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
 
 
@@ -18051,6 +18057,8 @@ The frame :math:`\{ \mathsf{locals}~{({{\mathit{val}}^?})^\ast},\;\allowbreak \m
 
 :math:`(\mathsf{return\_call\_ref}~y)` is valid with :math:`{t_3^\ast}~{t_1^\ast}~(\mathsf{ref}~\mathsf{null}~y)~\rightarrow~{t_4^\ast}` if:
 
+
+   * The type use :math:`y` is :ref:`valid <valid-val>`.
 
    * The :ref:`expansion <aux-expand-typeuse>` of :math:`C` is :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
 
@@ -29800,11 +29808,13 @@ Instr_ok2
     - instr is (CALL_REF yy).
     - the value type sequence valtype* is t_1* :: [(REF ?(NULL) yy)].
     - the local index sequence localidx* is [].
+    - the type use yy is valid.
     - The :ref:`expansion <aux-expand-typeuse>` of C is (FUNC t_1* -> valtype'*).
   - Or:
     - instr is (RETURN_CALL_REF yy).
     - valtype* is t_3* :: t_1* :: [(REF ?(NULL) yy)].
     - localidx* is [].
+    - yy is valid.
     - The :ref:`expansion <aux-expand-typeuse>` of C is (FUNC t_1* -> t_2*).
     - the result type C.RETURN is ?(t'_2*).
     - the result type t_2* matches the result type t'_2*.
@@ -29846,10 +29856,12 @@ Instr_ok2/plain
 
 Instr_ok2/call_ref
 - (CALL_REF yy) is valid with t_1* :: [(REF ?(NULL) yy)] -> t_2* if:
+  - the type use yy is valid.
   - The :ref:`expansion <aux-expand-typeuse>` of C is (FUNC t_1* -> t_2*).
 
 Instr_ok2/return_call_ref
 - (RETURN_CALL_REF yy) is valid with t_3* :: t_1* :: [(REF ?(NULL) yy)] -> t_4* if:
+  - the type use yy is valid.
   - The :ref:`expansion <aux-expand-typeuse>` of C is (FUNC t_1* -> t_2*).
   - the result type C.RETURN is ?(t'_2*).
   - the result type t_2* matches the result type t'_2*.

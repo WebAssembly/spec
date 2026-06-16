@@ -13,11 +13,13 @@ rule Instr_ok2/plain:
 
 rule Instr_ok2/call_ref:
   s; C |- CALL_REF yy : t_1* (REF NULL yy) -> t_2*
+  -- Typeuse_ok: C |- yy : OK
   -- Expand_use: yy ~~_C FUNC t_1* -> t_2*
 
 ;; TODO(3, rossberg): enable t_2* <: C.RETURN
 rule Instr_ok2/return_call_ref:
   s; C |- RETURN_CALL_REF yy : t_3* t_1* (REF NULL yy) -> t_4*
+  -- Typeuse_ok: C |- yy : OK
   -- Expand_use: yy ~~_C FUNC t_1* -> t_2*
   -- if C.RETURN = (t'_2*)
   -- Resulttype_sub: C |- t_2* <: t'_2*
