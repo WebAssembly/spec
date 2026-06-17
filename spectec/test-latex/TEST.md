@@ -14180,11 +14180,9 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-s{.}\mathsf{funcs}{}[a]{.}\mathsf{type} = {\mathit{dt}}
- \qquad
-{\mathit{dt}} \approx \mathsf{func}~{t_1^\ast} \rightarrow {t_2^\ast}
+s{.}\mathsf{funcs}{}[a]{.}\mathsf{type} \approx \mathsf{func}~{t_1^\ast} \rightarrow {t_2^\ast}
 }{
-s ; C \vdash \mathsf{call\_addr}~a : {t_1^\ast}~(\mathsf{ref}~\mathsf{null}~{\mathit{dt}}) \rightarrow {t_2^\ast}
+s ; C \vdash \mathsf{call\_addr}~a : {t_1^\ast} \rightarrow {t_2^\ast}
 } \, {[\textsc{\scriptsize Instr\_ok2{-}call\_addr}]}
 \qquad
 \end{array}
@@ -14193,9 +14191,7 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-s{.}\mathsf{funcs}{}[a]{.}\mathsf{type} = {\mathit{dt}}
- \qquad
-{\mathit{dt}} \approx \mathsf{func}~{t_1^\ast} \rightarrow {t_2^\ast}
+s{.}\mathsf{funcs}{}[a]{.}\mathsf{type} \approx \mathsf{func}~{t_1^\ast} \rightarrow {t_2^\ast}
  \qquad
 C{.}\mathsf{return} = ({{t'}_2^\ast})
  \qquad
@@ -14203,7 +14199,7 @@ C \vdash {t_2^\ast} \leq {{t'}_2^\ast}
  \qquad
 C \vdash {t_3^\ast} \rightarrow {t_4^\ast} : \mathsf{ok}
 }{
-s ; C \vdash \mathsf{return\_call\_addr}~a : {t_3^\ast}~{t_1^\ast}~(\mathsf{ref}~\mathsf{null}~{\mathit{dt}}) \rightarrow {t_4^\ast}
+s ; C \vdash \mathsf{return\_call\_addr}~a : {t_3^\ast}~{t_1^\ast} \rightarrow {t_4^\ast}
 } \, {[\textsc{\scriptsize Instr\_ok2{-}return\_call\_addr}]}
 \qquad
 \end{array}
@@ -14216,7 +14212,7 @@ s{.}\mathsf{tags}{}[s{.}\mathsf{exns}{}[a]{.}\mathsf{tag}]{.}\mathsf{type} \appr
  \qquad
 C \vdash {t_1^\ast} \rightarrow {t_2^\ast} : \mathsf{ok}
 }{
-s ; C \vdash \mathsf{throw\_addr}~a : {t_1^\ast}~{t^\ast} \rightarrow {t_2^\ast}
+s ; C \vdash \mathsf{throw\_addr}~a : {t_1^\ast} \rightarrow {t_2^\ast}
 } \, {[\textsc{\scriptsize Instr\_ok2{-}throw\_addr}]}
 \qquad
 \end{array}

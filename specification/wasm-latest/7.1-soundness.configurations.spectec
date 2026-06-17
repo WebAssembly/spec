@@ -32,22 +32,20 @@ rule Instr_ok2/handler:
   -- Instrs_ok2: s; C |- instr* : eps ->_(x*) t*
 
 rule Instr_ok2/call_addr:
-  s; C |- CALL_ADDR a : t_1* (REF NULL dt) -> t_2*
-  -- if s.FUNCS[a].TYPE = dt
-  -- Expand: dt ~~ FUNC t_1* -> t_2*
+  s; C |- CALL_ADDR a : t_1* -> t_2*
+  -- Expand: s.FUNCS[a].TYPE ~~ FUNC t_1* -> t_2*
 
 ;; TODO(3, rossberg): enable t_2* <: C.RETURN
 rule Instr_ok2/return_call_addr:
-  s; C |- RETURN_CALL_ADDR a : t_3* t_1* (REF NULL dt) -> t_4*
-  -- if s.FUNCS[a].TYPE = dt
-  -- Expand: dt ~~ FUNC t_1* -> t_2*
+  s; C |- RETURN_CALL_ADDR a : t_3* t_1* -> t_4*
+  -- Expand: s.FUNCS[a].TYPE ~~ FUNC t_1* -> t_2*
   -- if C.RETURN = (t'_2*)
   -- Resulttype_sub: C |- t_2* <: t'_2*
   -- Instrtype_ok: C |- t_3* -> t_4* : OK
 
 rule Instr_ok2/throw_addr:
-  s; C |- THROW_ADDR a : t_1* t* -> t_2*
-  -- Expand_use: s.TAGS[s.EXNS[a].TAG].TYPE ~~_C FUNC t* -> eps
+  s; C |- THROW_ADDR a : t_1* -> t_2*
+  -- if s.EXNS[a] = exn
   -- Instrtype_ok: C |- t_1* -> t_2* : OK
 
 rule Instr_ok2/trap:
