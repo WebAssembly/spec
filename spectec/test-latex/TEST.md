@@ -9966,10 +9966,7 @@ $$
 $$
 \begin{array}[t]{@{}lrcl@{}l@{}}
 {[\textsc{\scriptsize E{-}throw\_ref{-}null}]} \quad & z ; (\mathsf{ref{.}null})~\mathsf{throw\_ref} & \hookrightarrow & \mathsf{trap} \\
-{[\textsc{\scriptsize E{-}throw\_ref{-}addr}]} \quad & z ; {{\mathit{val}}^\ast}~(\mathsf{ref{.}exn}~a)~\mathsf{throw\_ref}~{{\mathit{instr}}^\ast} & \hookrightarrow & (\mathsf{throw\_addr}~a) &  \\
-&&& \multicolumn{2}{@{}l@{}}{\quad
-\quad \mbox{if}~ {{\mathit{val}}^\ast} \neq \epsilon \lor {{\mathit{instr}}^\ast} \neq \epsilon
-} \\
+{[\textsc{\scriptsize E{-}throw\_ref{-}addr}]} \quad & z ; (\mathsf{ref{.}exn}~a)~\mathsf{throw\_ref} & \hookrightarrow & (\mathsf{throw\_addr}~a) \\
 {[\textsc{\scriptsize E{-}throw\_addr{-}instrs}]} \quad & z ; {{\mathit{val}}^\ast}~(\mathsf{throw\_addr}~a)~{{\mathit{instr}}^\ast} & \hookrightarrow & (\mathsf{throw\_addr}~a) &  \\
 &&& \multicolumn{2}{@{}l@{}}{\quad
 \quad \mbox{if}~ {{\mathit{val}}^\ast} \neq \epsilon \lor {{\mathit{instr}}^\ast} \neq \epsilon
@@ -14208,7 +14205,7 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-s{.}\mathsf{tags}{}[s{.}\mathsf{exns}{}[a]{.}\mathsf{tag}]{.}\mathsf{type} \approx_{C} \mathsf{func}~{t^\ast} \rightarrow \epsilon
+s{.}\mathsf{exns}{}[a] = {\mathit{exn}}
  \qquad
 C \vdash {t_1^\ast} \rightarrow {t_2^\ast} : \mathsf{ok}
 }{

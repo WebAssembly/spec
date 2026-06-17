@@ -1178,8 +1178,8 @@ let rec translate_rgroup' (rule: rule_def) =
     | (None, b) -> Some b, List.tl blocks
   in
 
-  (* HARDCODE: Insert ThrowI if the current wasm instruction is throw_addr *)
-  let throw_block = if instr_name <> "throw_addr" then [] else
+  (* HARDCODE: Insert ThrowI if the current wasm instruction is throw_ref *)
+  let throw_block = if instr_name <> "throw_ref" then [] else
     match List.hd pops |> lhs_of_prem |> it with
     | TupE (e :: _) -> [throwI (translate_exp e)]
     | _ -> assert false

@@ -239,9 +239,7 @@ rule Step_read/throw_ref-null:
   z; (REF.NULL_ADDR) THROW_REF  ~>  TRAP
 
 rule Step_read/throw_ref-addr:
-  z; val* (REF.EXN_ADDR a) THROW_REF instr*  ~>  (THROW_ADDR a)
-  ----
-  -- if val* =/= eps \/ instr* =/= eps
+  z; (REF.EXN_ADDR a) THROW_REF  ~>  (THROW_ADDR a)
 
 rule Step_read/throw_addr-instrs:
   z; val* (THROW_ADDR a) instr*  ~>  (THROW_ADDR a)
