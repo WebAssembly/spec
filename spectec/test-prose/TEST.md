@@ -17873,7 +17873,7 @@ The export instance :math:`\{ \mathsf{name}~{\mathit{nm}},\;\allowbreak \mathsf{
 
 
 
-The module instance :math:`\{ \mathsf{types}~{{\mathit{deftype}}^\ast},\;\allowbreak \mathsf{tags}~{{\mathit{tagaddr}}^\ast},\;\allowbreak \mathsf{globals}~{{\mathit{globaladdr}}^\ast},\;\allowbreak \mathsf{mems}~{{\mathit{memaddr}}^\ast},\;\allowbreak \mathsf{tables}~{{\mathit{tableaddr}}^\ast},\;\allowbreak \mathsf{funcs}~{{\mathit{funcaddr}}^\ast},\;\allowbreak \mathsf{datas}~{{\mathit{dataaddr}}^\ast},\;\allowbreak \mathsf{elems}~{{\mathit{elemaddr}}^\ast},\;\allowbreak \mathsf{exports}~{{\mathit{exportinst}}^\ast} \}` is :ref:`valid <valid-val>` with the context :math:`\{ \mathsf{types}~{{\mathit{deftype}}^\ast},\;\allowbreak \mathsf{tags}~{{\mathit{tagtype}}^\ast},\;\allowbreak \mathsf{globals}~{{\mathit{globaltype}}^\ast},\;\allowbreak \mathsf{mems}~{{\mathit{memtype}}^\ast},\;\allowbreak \mathsf{tables}~{{\mathit{tabletype}}^\ast},\;\allowbreak \mathsf{funcs}~{{\mathit{deftype}}_{\mathsf{f}}^\ast},\;\allowbreak \mathsf{datas}~{{\mathit{datatype}}^\ast},\;\allowbreak \mathsf{elems}~{{\mathit{elemtype}}^\ast},\;\allowbreak \mathsf{return}~\epsilon,\;\allowbreak \mathsf{refs}~{i^{i<{|{{\mathit{funcaddr}}^\ast}|}}},\;\allowbreak \mathsf{recs}~{{\mathit{subtype}}^\ast} \}` if:
+The module instance :math:`\{ \mathsf{types}~{{\mathit{deftype}}^\ast},\;\allowbreak \mathsf{tags}~{{\mathit{tagaddr}}^\ast},\;\allowbreak \mathsf{globals}~{{\mathit{globaladdr}}^\ast},\;\allowbreak \mathsf{mems}~{{\mathit{memaddr}}^\ast},\;\allowbreak \mathsf{tables}~{{\mathit{tableaddr}}^\ast},\;\allowbreak \mathsf{funcs}~{{\mathit{funcaddr}}^\ast},\;\allowbreak \mathsf{datas}~{{\mathit{dataaddr}}^\ast},\;\allowbreak \mathsf{elems}~{{\mathit{elemaddr}}^\ast},\;\allowbreak \mathsf{exports}~{{\mathit{exportinst}}^\ast} \}` is :ref:`valid <valid-val>` with the context :math:`\{ \mathsf{types}~{{\mathit{deftype}}^\ast},\;\allowbreak \mathsf{tags}~{{\mathit{tagtype}}^\ast},\;\allowbreak \mathsf{globals}~{{\mathit{globaltype}}^\ast},\;\allowbreak \mathsf{mems}~{{\mathit{memtype}}^\ast},\;\allowbreak \mathsf{tables}~{{\mathit{tabletype}}^\ast},\;\allowbreak \mathsf{funcs}~{{\mathit{deftype}}_{\mathsf{f}}^\ast},\;\allowbreak \mathsf{datas}~{{\mathit{datatype}}^\ast},\;\allowbreak \mathsf{elems}~{{\mathit{elemtype}}^\ast},\;\allowbreak \mathsf{return}~\epsilon,\;\allowbreak \mathsf{refs}~{i^{i<k}},\;\allowbreak \mathsf{recs}~{{\mathit{subtype}}^\ast} \}` if:
 
 
    * For all :math:`{\mathit{deftype}}` in :math:`{{\mathit{deftype}}^\ast}`:
@@ -17927,6 +17927,8 @@ The module instance :math:`\{ \mathsf{types}~{{\mathit{deftype}}^\ast},\;\allowb
    * For all :math:`{\mathit{exportinst}}` in :math:`{{\mathit{exportinst}}^\ast}`:
 
       * :math:`{\mathit{exportinst}}{.}\mathsf{addr}` is contained in :math:`{(\mathsf{tag}~{\mathit{tagaddr}})^\ast}~{(\mathsf{global}~{\mathit{globaladdr}})^\ast}~{(\mathsf{mem}~{\mathit{memaddr}})^\ast}~{(\mathsf{table}~{\mathit{tableaddr}})^\ast}~{(\mathsf{func}~{\mathit{funcaddr}})^\ast}`.
+
+   * The length of :math:`{{\mathit{funcaddr}}^\ast}` is greater than or equal to :math:`k`.
 
 
 
@@ -29766,7 +29768,7 @@ Exportinst_ok
   - the external address xa is valid with the external type xt.
 
 Moduleinst_ok
-- the module instance { TYPES: deftype*; TAGS: tagaddr*; GLOBALS: globaladdr*; MEMS: memaddr*; TABLES: tableaddr*; FUNCS: funcaddr*; DATAS: dataaddr*; ELEMS: elemaddr*; EXPORTS: exportinst* } is valid with the context { TYPES: deftype*; TAGS: tagtype*; GLOBALS: globaltype*; MEMS: memtype*; TABLES: tabletype*; FUNCS: deftype_F*; DATAS: datatype*; ELEMS: elemtype*; RETURN: ?(); REFS: i^(i<|funcaddr*|); RECS: subtype* } if:
+- the module instance { TYPES: deftype*; TAGS: tagaddr*; GLOBALS: globaladdr*; MEMS: memaddr*; TABLES: tableaddr*; FUNCS: funcaddr*; DATAS: dataaddr*; ELEMS: elemaddr*; EXPORTS: exportinst* } is valid with the context { TYPES: deftype*; TAGS: tagtype*; GLOBALS: globaltype*; MEMS: memtype*; TABLES: tabletype*; FUNCS: deftype_F*; DATAS: datatype*; ELEMS: elemtype*; RETURN: ?(); REFS: i^(i<k); RECS: subtype* } if:
   - For all deftype in deftype*:
     - Under the context { RETURN: ?() }, the defined type deftype is valid.
   - For all tagaddr in tagaddr*, and corresponding tagtype in tagtype*:
@@ -29793,6 +29795,7 @@ Moduleinst_ok
   - |(TAG tagaddr)* :: (GLOBAL globaladdr)* :: (MEM memaddr)* :: (TABLE tableaddr)* :: (FUNC funcaddr)*| is greater than 0.
   - For all exportinst in exportinst*:
     - exportinst.ADDR is contained in (TAG tagaddr)* :: (GLOBAL globaladdr)* :: (MEM memaddr)* :: (TABLE tableaddr)* :: (FUNC funcaddr)*.
+  - |funcaddr*| is greater than or equal to k.
 
 Frame_ok
 - the frame { LOCALS: val?*; MODULE: moduleinst } is valid with the context C with .LOCALS appended by lct* if:

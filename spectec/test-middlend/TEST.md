@@ -7709,8 +7709,8 @@ relation Exportinst_ok: `%|-%:OK`(store, exportinst)
 ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
 relation Moduleinst_ok: `%|-%:%`(store, moduleinst, context)
   ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
-  rule _{s : store, `deftype*` : deftype*, `tagaddr*` : tagaddr*, `globaladdr*` : globaladdr*, `memaddr*` : memaddr*, `tableaddr*` : tableaddr*, `funcaddr*` : funcaddr*, `dataaddr*` : dataaddr*, `elemaddr*` : elemaddr*, `exportinst*` : exportinst*, `tagtype*` : tagtype*, `globaltype*` : globaltype*, `memtype*` : memtype*, `tabletype*` : tabletype*, `deftype_F*` : deftype*, `datatype*` : datatype*, `elemtype*` : elemtype*, `subtype*` : subtype*}:
-    `%|-%:%`(s, {TYPES deftype*{deftype <- `deftype*`}, TAGS tagaddr*{tagaddr <- `tagaddr*`}, GLOBALS globaladdr*{globaladdr <- `globaladdr*`}, MEMS memaddr*{memaddr <- `memaddr*`}, TABLES tableaddr*{tableaddr <- `tableaddr*`}, FUNCS funcaddr*{funcaddr <- `funcaddr*`}, DATAS dataaddr*{dataaddr <- `dataaddr*`}, ELEMS elemaddr*{elemaddr <- `elemaddr*`}, EXPORTS exportinst*{exportinst <- `exportinst*`}}, {TYPES deftype*{deftype <- `deftype*`}, TAGS tagtype*{tagtype <- `tagtype*`}, GLOBALS globaltype*{globaltype <- `globaltype*`}, MEMS memtype*{memtype <- `memtype*`}, TABLES tabletype*{tabletype <- `tabletype*`}, FUNCS deftype_F*{deftype_F <- `deftype_F*`}, DATAS datatype*{datatype <- `datatype*`}, ELEMS elemtype*{elemtype <- `elemtype*`}, LOCALS [], LABELS [], RETURN ?(), REFS `%`_funcidx(i,)^(i<|funcaddr*{funcaddr <- `funcaddr*`}|){}, RECS subtype*{subtype <- `subtype*`}})
+  rule _{s : store, `deftype*` : deftype*, `tagaddr*` : tagaddr*, `globaladdr*` : globaladdr*, `memaddr*` : memaddr*, `tableaddr*` : tableaddr*, `funcaddr*` : funcaddr*, `dataaddr*` : dataaddr*, `elemaddr*` : elemaddr*, `exportinst*` : exportinst*, `tagtype*` : tagtype*, `globaltype*` : globaltype*, `memtype*` : memtype*, `tabletype*` : tabletype*, `deftype_F*` : deftype*, `datatype*` : datatype*, `elemtype*` : elemtype*, k : nat, `subtype*` : subtype*}:
+    `%|-%:%`(s, {TYPES deftype*{deftype <- `deftype*`}, TAGS tagaddr*{tagaddr <- `tagaddr*`}, GLOBALS globaladdr*{globaladdr <- `globaladdr*`}, MEMS memaddr*{memaddr <- `memaddr*`}, TABLES tableaddr*{tableaddr <- `tableaddr*`}, FUNCS funcaddr*{funcaddr <- `funcaddr*`}, DATAS dataaddr*{dataaddr <- `dataaddr*`}, ELEMS elemaddr*{elemaddr <- `elemaddr*`}, EXPORTS exportinst*{exportinst <- `exportinst*`}}, {TYPES deftype*{deftype <- `deftype*`}, TAGS tagtype*{tagtype <- `tagtype*`}, GLOBALS globaltype*{globaltype <- `globaltype*`}, MEMS memtype*{memtype <- `memtype*`}, TABLES tabletype*{tabletype <- `tabletype*`}, FUNCS deftype_F*{deftype_F <- `deftype_F*`}, DATAS datatype*{datatype <- `datatype*`}, ELEMS elemtype*{elemtype <- `elemtype*`}, LOCALS [], LABELS [], RETURN ?(), REFS `%`_funcidx(i,)^(i<k){}, RECS subtype*{subtype <- `subtype*`}})
     -- (Deftype_ok: `%|-%:OK`({TYPES [], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [], RETURN ?(), REFS [], RECS []}, deftype))*{deftype <- `deftype*`}
     -- (Externaddr_ok: `%|-%:%`(s, TAG_externaddr(tagaddr), TAG_externtype(tagtype)))*{tagaddr <- `tagaddr*`, tagtype <- `tagtype*`}
     -- (Externaddr_ok: `%|-%:%`(s, GLOBAL_externaddr(globaladdr), GLOBAL_externtype(globaltype)))*{globaladdr <- `globaladdr*`, globaltype <- `globaltype*`}
@@ -7722,6 +7722,7 @@ relation Moduleinst_ok: `%|-%:%`(store, moduleinst, context)
     -- (Exportinst_ok: `%|-%:OK`(s, exportinst))*{exportinst <- `exportinst*`}
     -- if $disjoint_(syntax name, exportinst.NAME_exportinst*{exportinst <- `exportinst*`})
     -- (if (exportinst.ADDR_exportinst <- TAG_externaddr(tagaddr)*{tagaddr <- `tagaddr*`} ++ GLOBAL_externaddr(globaladdr)*{globaladdr <- `globaladdr*`} ++ MEM_externaddr(memaddr)*{memaddr <- `memaddr*`} ++ TABLE_externaddr(tableaddr)*{tableaddr <- `tableaddr*`} ++ FUNC_externaddr(funcaddr)*{funcaddr <- `funcaddr*`}))*{exportinst <- `exportinst*`}
+    -- if (k <= |funcaddr*{funcaddr <- `funcaddr*`}|)
 
 ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
 relation Frame_ok: `%|-%:%`(store, frame, context)
@@ -7889,30 +7890,30 @@ relation Exninst_ok: `%|-%:OK`(store, exninst)
 ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
 rec {
 
-;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:223.1-224.50
+;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:225.1-226.50
 relation ImmutReachable: `%>>_%%`(fieldval, store, fieldval)
-  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:237.1-240.35
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:239.1-242.35
   rule trans{fv_1 : fieldval, s : store, fv_2 : fieldval, fv' : fieldval}:
     `%>>_%%`(fv_1, s, fv_2)
     -- ImmutReachable: `%>>_%%`(fv_1, s, fv')
     -- ImmutReachable: `%>>_%%`(fv', s, fv_2)
 
-  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:242.1-245.20
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:244.1-247.20
   rule `ref.struct`{a : addr, s : store, i : nat, `ft*` : fieldtype*, zt : storagetype}:
     `%>>_%%`(`REF.STRUCT_ADDR`_fieldval(a), s, s.STRUCTS_store[a].FIELDS_structinst[i])
     -- Expand: `%~~%`(s.STRUCTS_store[a].TYPE_structinst, STRUCT_comptype(`%`_list(ft*{ft <- `ft*`},)))
     -- if (ft*{ft <- `ft*`}[i] = `%%`_fieldtype(?(), zt))
 
-  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:247.1-249.42
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:249.1-251.42
   rule `ref.array`{a : addr, s : store, i : nat, zt : storagetype}:
     `%>>_%%`(`REF.ARRAY_ADDR`_fieldval(a), s, s.ARRAYS_store[a].FIELDS_arrayinst[i])
     -- Expand: `%~~%`(s.ARRAYS_store[a].TYPE_arrayinst, ARRAY_comptype(`%%`_fieldtype(?(), zt)))
 
-  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:251.1-252.44
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:253.1-254.44
   rule `ref.exn`{a : addr, s : store, i : nat}:
     `%>>_%%`(`REF.EXN_ADDR`_fieldval(a), s, (s.EXNS_store[a].FIELDS_exninst[i] : val <: fieldval))
 
-  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:254.1-255.28
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:256.1-257.28
   rule `ref.extern`{ref : ref, s : store}:
     `%>>_%%`(`REF.EXTERN`_fieldval(ref), s, (ref : ref <: fieldval))
 }
@@ -19577,8 +19578,8 @@ relation Exportinst_ok: `%|-%:OK`(store, exportinst)
 ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
 relation Moduleinst_ok: `%|-%:%`(store, moduleinst, context)
   ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
-  rule _{s : store, `deftype*` : deftype*, `tagaddr*` : tagaddr*, `globaladdr*` : globaladdr*, `memaddr*` : memaddr*, `tableaddr*` : tableaddr*, `funcaddr*` : funcaddr*, `dataaddr*` : dataaddr*, `elemaddr*` : elemaddr*, `exportinst*` : exportinst*, `tagtype*` : tagtype*, `globaltype*` : globaltype*, `memtype*` : memtype*, `tabletype*` : tabletype*, `deftype_F*` : deftype*, `datatype*` : datatype*, `elemtype*` : elemtype*, `subtype*` : subtype*}:
-    `%|-%:%`(s, {TYPES deftype*{deftype <- `deftype*`}, TAGS tagaddr*{tagaddr <- `tagaddr*`}, GLOBALS globaladdr*{globaladdr <- `globaladdr*`}, MEMS memaddr*{memaddr <- `memaddr*`}, TABLES tableaddr*{tableaddr <- `tableaddr*`}, FUNCS funcaddr*{funcaddr <- `funcaddr*`}, DATAS dataaddr*{dataaddr <- `dataaddr*`}, ELEMS elemaddr*{elemaddr <- `elemaddr*`}, EXPORTS exportinst*{exportinst <- `exportinst*`}}, {TYPES deftype*{deftype <- `deftype*`}, TAGS tagtype*{tagtype <- `tagtype*`}, GLOBALS globaltype*{globaltype <- `globaltype*`}, MEMS memtype*{memtype <- `memtype*`}, TABLES tabletype*{tabletype <- `tabletype*`}, FUNCS deftype_F*{deftype_F <- `deftype_F*`}, DATAS datatype*{datatype <- `datatype*`}, ELEMS elemtype*{elemtype <- `elemtype*`}, LOCALS [], LABELS [], RETURN ?(), REFS `%`_funcidx(i,)^(i<|funcaddr*{funcaddr <- `funcaddr*`}|){}, RECS subtype*{subtype <- `subtype*`}})
+  rule _{s : store, `deftype*` : deftype*, `tagaddr*` : tagaddr*, `globaladdr*` : globaladdr*, `memaddr*` : memaddr*, `tableaddr*` : tableaddr*, `funcaddr*` : funcaddr*, `dataaddr*` : dataaddr*, `elemaddr*` : elemaddr*, `exportinst*` : exportinst*, `tagtype*` : tagtype*, `globaltype*` : globaltype*, `memtype*` : memtype*, `tabletype*` : tabletype*, `deftype_F*` : deftype*, `datatype*` : datatype*, `elemtype*` : elemtype*, k : nat, `subtype*` : subtype*}:
+    `%|-%:%`(s, {TYPES deftype*{deftype <- `deftype*`}, TAGS tagaddr*{tagaddr <- `tagaddr*`}, GLOBALS globaladdr*{globaladdr <- `globaladdr*`}, MEMS memaddr*{memaddr <- `memaddr*`}, TABLES tableaddr*{tableaddr <- `tableaddr*`}, FUNCS funcaddr*{funcaddr <- `funcaddr*`}, DATAS dataaddr*{dataaddr <- `dataaddr*`}, ELEMS elemaddr*{elemaddr <- `elemaddr*`}, EXPORTS exportinst*{exportinst <- `exportinst*`}}, {TYPES deftype*{deftype <- `deftype*`}, TAGS tagtype*{tagtype <- `tagtype*`}, GLOBALS globaltype*{globaltype <- `globaltype*`}, MEMS memtype*{memtype <- `memtype*`}, TABLES tabletype*{tabletype <- `tabletype*`}, FUNCS deftype_F*{deftype_F <- `deftype_F*`}, DATAS datatype*{datatype <- `datatype*`}, ELEMS elemtype*{elemtype <- `elemtype*`}, LOCALS [], LABELS [], RETURN ?(), REFS `%`_funcidx(i,)^(i<k){}, RECS subtype*{subtype <- `subtype*`}})
     -- (Deftype_ok: `%|-%:OK`({TYPES [], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [], RETURN ?(), REFS [], RECS []}, deftype))*{deftype <- `deftype*`}
     -- (Externaddr_ok: `%|-%:%`(s, TAG_externaddr(tagaddr), TAG_externtype(tagtype)))*{tagaddr <- `tagaddr*`, tagtype <- `tagtype*`}
     -- (Externaddr_ok: `%|-%:%`(s, GLOBAL_externaddr(globaladdr), GLOBAL_externtype(globaltype)))*{globaladdr <- `globaladdr*`, globaltype <- `globaltype*`}
@@ -19590,6 +19591,7 @@ relation Moduleinst_ok: `%|-%:%`(store, moduleinst, context)
     -- (Exportinst_ok: `%|-%:OK`(s, exportinst))*{exportinst <- `exportinst*`}
     -- if $disjoint_(syntax name, exportinst.NAME_exportinst*{exportinst <- `exportinst*`})
     -- (if (exportinst.ADDR_exportinst <- TAG_externaddr(tagaddr)*{tagaddr <- `tagaddr*`} ++ GLOBAL_externaddr(globaladdr)*{globaladdr <- `globaladdr*`} ++ MEM_externaddr(memaddr)*{memaddr <- `memaddr*`} ++ TABLE_externaddr(tableaddr)*{tableaddr <- `tableaddr*`} ++ FUNC_externaddr(funcaddr)*{funcaddr <- `funcaddr*`}))*{exportinst <- `exportinst*`}
+    -- if (k <= |funcaddr*{funcaddr <- `funcaddr*`}|)
 
 ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
 relation Frame_ok: `%|-%:%`(store, frame, context)
@@ -19757,30 +19759,30 @@ relation Exninst_ok: `%|-%:OK`(store, exninst)
 ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
 rec {
 
-;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:223.1-224.50
+;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:225.1-226.50
 relation ImmutReachable: `%>>_%%`(fieldval, store, fieldval)
-  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:237.1-240.35
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:239.1-242.35
   rule trans{fv_1 : fieldval, s : store, fv_2 : fieldval, fv' : fieldval}:
     `%>>_%%`(fv_1, s, fv_2)
     -- ImmutReachable: `%>>_%%`(fv_1, s, fv')
     -- ImmutReachable: `%>>_%%`(fv', s, fv_2)
 
-  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:242.1-245.20
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:244.1-247.20
   rule `ref.struct`{a : addr, s : store, i : nat, `ft*` : fieldtype*, zt : storagetype}:
     `%>>_%%`(`REF.STRUCT_ADDR`_fieldval(a), s, s.STRUCTS_store[a].FIELDS_structinst[i])
     -- Expand: `%~~%`(s.STRUCTS_store[a].TYPE_structinst, STRUCT_comptype(`%`_list(ft*{ft <- `ft*`},)))
     -- if (ft*{ft <- `ft*`}[i] = `%%`_fieldtype(?(), zt))
 
-  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:247.1-249.42
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:249.1-251.42
   rule `ref.array`{a : addr, s : store, i : nat, zt : storagetype}:
     `%>>_%%`(`REF.ARRAY_ADDR`_fieldval(a), s, s.ARRAYS_store[a].FIELDS_arrayinst[i])
     -- Expand: `%~~%`(s.ARRAYS_store[a].TYPE_arrayinst, ARRAY_comptype(`%%`_fieldtype(?(), zt)))
 
-  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:251.1-252.44
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:253.1-254.44
   rule `ref.exn`{a : addr, s : store, i : nat}:
     `%>>_%%`(`REF.EXN_ADDR`_fieldval(a), s, (s.EXNS_store[a].FIELDS_exninst[i] : val <: fieldval))
 
-  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:254.1-255.28
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:256.1-257.28
   rule `ref.extern`{ref : ref, s : store}:
     `%>>_%%`(`REF.EXTERN`_fieldval(ref), s, (ref : ref <: fieldval))
 }
@@ -31629,8 +31631,8 @@ relation Exportinst_ok: `%|-%:OK`(store, exportinst)
 ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
 relation Moduleinst_ok: `%|-%:%`(store, moduleinst, context)
   ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
-  rule _{s : store, `deftype*` : deftype*, `tagaddr*` : tagaddr*, `globaladdr*` : globaladdr*, `memaddr*` : memaddr*, `tableaddr*` : tableaddr*, `funcaddr*` : funcaddr*, `dataaddr*` : dataaddr*, `elemaddr*` : elemaddr*, `exportinst*` : exportinst*, `tagtype*` : tagtype*, `globaltype*` : globaltype*, `memtype*` : memtype*, `tabletype*` : tabletype*, `deftype_F*` : deftype*, `datatype*` : datatype*, `elemtype*` : elemtype*, `subtype*` : subtype*}:
-    `%|-%:%`(s, {TYPES deftype*{deftype <- `deftype*`}, TAGS tagaddr*{tagaddr <- `tagaddr*`}, GLOBALS globaladdr*{globaladdr <- `globaladdr*`}, MEMS memaddr*{memaddr <- `memaddr*`}, TABLES tableaddr*{tableaddr <- `tableaddr*`}, FUNCS funcaddr*{funcaddr <- `funcaddr*`}, DATAS dataaddr*{dataaddr <- `dataaddr*`}, ELEMS elemaddr*{elemaddr <- `elemaddr*`}, EXPORTS exportinst*{exportinst <- `exportinst*`}}, {TYPES deftype*{deftype <- `deftype*`}, TAGS tagtype*{tagtype <- `tagtype*`}, GLOBALS globaltype*{globaltype <- `globaltype*`}, MEMS memtype*{memtype <- `memtype*`}, TABLES tabletype*{tabletype <- `tabletype*`}, FUNCS deftype_F*{deftype_F <- `deftype_F*`}, DATAS datatype*{datatype <- `datatype*`}, ELEMS elemtype*{elemtype <- `elemtype*`}, LOCALS [], LABELS [], RETURN ?(), REFS `%`_funcidx(i,)^(i<|funcaddr*{funcaddr <- `funcaddr*`}|){}, RECS subtype*{subtype <- `subtype*`}})
+  rule _{s : store, `deftype*` : deftype*, `tagaddr*` : tagaddr*, `globaladdr*` : globaladdr*, `memaddr*` : memaddr*, `tableaddr*` : tableaddr*, `funcaddr*` : funcaddr*, `dataaddr*` : dataaddr*, `elemaddr*` : elemaddr*, `exportinst*` : exportinst*, `tagtype*` : tagtype*, `globaltype*` : globaltype*, `memtype*` : memtype*, `tabletype*` : tabletype*, `deftype_F*` : deftype*, `datatype*` : datatype*, `elemtype*` : elemtype*, k : nat, `subtype*` : subtype*}:
+    `%|-%:%`(s, {TYPES deftype*{deftype <- `deftype*`}, TAGS tagaddr*{tagaddr <- `tagaddr*`}, GLOBALS globaladdr*{globaladdr <- `globaladdr*`}, MEMS memaddr*{memaddr <- `memaddr*`}, TABLES tableaddr*{tableaddr <- `tableaddr*`}, FUNCS funcaddr*{funcaddr <- `funcaddr*`}, DATAS dataaddr*{dataaddr <- `dataaddr*`}, ELEMS elemaddr*{elemaddr <- `elemaddr*`}, EXPORTS exportinst*{exportinst <- `exportinst*`}}, {TYPES deftype*{deftype <- `deftype*`}, TAGS tagtype*{tagtype <- `tagtype*`}, GLOBALS globaltype*{globaltype <- `globaltype*`}, MEMS memtype*{memtype <- `memtype*`}, TABLES tabletype*{tabletype <- `tabletype*`}, FUNCS deftype_F*{deftype_F <- `deftype_F*`}, DATAS datatype*{datatype <- `datatype*`}, ELEMS elemtype*{elemtype <- `elemtype*`}, LOCALS [], LABELS [], RETURN ?(), REFS `%`_funcidx(i,)^(i<k){}, RECS subtype*{subtype <- `subtype*`}})
     -- (Deftype_ok: `%|-%:OK`({TYPES [], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [], RETURN ?(), REFS [], RECS []}, deftype))*{deftype <- `deftype*`}
     -- if (|`tagaddr*`| = |`tagtype*`|)
     -- (Externaddr_ok: `%|-%:%`(s, TAG_externaddr(tagaddr), TAG_externtype(tagtype)))*{tagaddr <- `tagaddr*`, tagtype <- `tagtype*`}
@@ -31652,6 +31654,7 @@ relation Moduleinst_ok: `%|-%:%`(store, moduleinst, context)
     -- if $disjoint_(syntax name, exportinst.NAME_exportinst*{exportinst <- `exportinst*`})
     -- if (|TAG_externaddr(tagaddr)*{tagaddr <- `tagaddr*`} ++ GLOBAL_externaddr(globaladdr)*{globaladdr <- `globaladdr*`} ++ MEM_externaddr(memaddr)*{memaddr <- `memaddr*`} ++ TABLE_externaddr(tableaddr)*{tableaddr <- `tableaddr*`} ++ FUNC_externaddr(funcaddr)*{funcaddr <- `funcaddr*`}| > 0)
     -- (if (exportinst.ADDR_exportinst <- TAG_externaddr(tagaddr)*{tagaddr <- `tagaddr*`} ++ GLOBAL_externaddr(globaladdr)*{globaladdr <- `globaladdr*`} ++ MEM_externaddr(memaddr)*{memaddr <- `memaddr*`} ++ TABLE_externaddr(tableaddr)*{tableaddr <- `tableaddr*`} ++ FUNC_externaddr(funcaddr)*{funcaddr <- `funcaddr*`}))*{exportinst <- `exportinst*`}
+    -- if (k <= |funcaddr*{funcaddr <- `funcaddr*`}|)
 
 ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
 relation Frame_ok: `%|-%:%`(store, frame, context)
@@ -31826,15 +31829,15 @@ relation Exninst_ok: `%|-%:OK`(store, exninst)
 ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
 rec {
 
-;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:223.1-224.50
+;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:225.1-226.50
 relation ImmutReachable: `%>>_%%`(fieldval, store, fieldval)
-  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:237.1-240.35
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:239.1-242.35
   rule trans{fv_1 : fieldval, s : store, fv_2 : fieldval, fv' : fieldval}:
     `%>>_%%`(fv_1, s, fv_2)
     -- ImmutReachable: `%>>_%%`(fv_1, s, fv')
     -- ImmutReachable: `%>>_%%`(fv', s, fv_2)
 
-  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:242.1-245.20
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:244.1-247.20
   rule `ref.struct`{a : addr, s : store, i : nat, `ft*` : fieldtype*, zt : storagetype}:
     `%>>_%%`(`REF.STRUCT_ADDR`_fieldval(a), s, s.STRUCTS_store[a].FIELDS_structinst[i])
     -- if (i < |s.STRUCTS_store[a].FIELDS_structinst|)
@@ -31843,20 +31846,20 @@ relation ImmutReachable: `%>>_%%`(fieldval, store, fieldval)
     -- if (i < |ft*{ft <- `ft*`}|)
     -- if (ft*{ft <- `ft*`}[i] = `%%`_fieldtype(?(), zt))
 
-  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:247.1-249.42
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:249.1-251.42
   rule `ref.array`{a : addr, s : store, i : nat, zt : storagetype}:
     `%>>_%%`(`REF.ARRAY_ADDR`_fieldval(a), s, s.ARRAYS_store[a].FIELDS_arrayinst[i])
     -- if (i < |s.ARRAYS_store[a].FIELDS_arrayinst|)
     -- if (a < |s.ARRAYS_store|)
     -- Expand: `%~~%`(s.ARRAYS_store[a].TYPE_arrayinst, ARRAY_comptype(`%%`_fieldtype(?(), zt)))
 
-  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:251.1-252.44
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:253.1-254.44
   rule `ref.exn`{a : addr, s : store, i : nat}:
     `%>>_%%`(`REF.EXN_ADDR`_fieldval(a), s, (s.EXNS_store[a].FIELDS_exninst[i] : val <: fieldval))
     -- if (i < |s.EXNS_store[a].FIELDS_exninst|)
     -- if (a < |s.EXNS_store|)
 
-  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:254.1-255.28
+  ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec:256.1-257.28
   rule `ref.extern`{ref : ref, s : store}:
     `%>>_%%`(`REF.EXTERN`_fieldval(ref), s, (ref : ref <: fieldval))
 }

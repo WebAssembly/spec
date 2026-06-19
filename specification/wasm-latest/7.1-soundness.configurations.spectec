@@ -172,7 +172,7 @@ rule Moduleinst_ok:
              FUNCS deftype_F*,
              DATAS datatype*,
              ELEMS elemtype*,
-             REFS (i)^(i<|funcaddr*|)
+             REFS (i)^(i<k)
            }
   -- (Deftype_ok: {} |- deftype : OK)*
   -- (Externaddr_ok: s |- TAG tagaddr : TAG tagtype)*
@@ -190,6 +190,8 @@ rule Moduleinst_ok:
   -- if $disjoint_(name, (exportinst.NAME)*)
   ----
   -- (if exportinst.ADDR <- (TAG tagaddr)* (GLOBAL globaladdr)* (MEM memaddr)* (TABLE tableaddr)* (FUNC funcaddr)*)*
+  ----
+  -- if k <= |funcaddr*|
 
 
 ;; Store

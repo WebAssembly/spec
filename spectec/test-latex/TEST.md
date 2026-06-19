@@ -14487,6 +14487,8 @@ $$
 {({\mathit{exportinst}}{.}\mathsf{name})^\ast}~{\mathrm{disjoint}}
  \\
 ({\mathit{exportinst}}{.}\mathsf{addr} \in {(\mathsf{tag}~{\mathit{tagaddr}})^\ast}~{(\mathsf{global}~{\mathit{globaladdr}})^\ast}~{(\mathsf{mem}~{\mathit{memaddr}})^\ast}~{(\mathsf{table}~{\mathit{tableaddr}})^\ast}~{(\mathsf{func}~{\mathit{funcaddr}})^\ast})^\ast
+ \\
+k \leq {|{{\mathit{funcaddr}}^\ast}|}
 \end{array}
 }{
 s \vdash \{ \begin{array}[t]{@{}l@{}}
@@ -14508,7 +14510,7 @@ s \vdash \{ \begin{array}[t]{@{}l@{}}
   \mathsf{funcs}~{{\mathit{deftype}}_{\mathsf{f}}^\ast},\; \\
   \mathsf{datas}~{{\mathit{datatype}}^\ast},\; \\
   \mathsf{elems}~{{\mathit{elemtype}}^\ast},\; \\
-  \mathsf{refs}~{(i)^{i<{|{{\mathit{funcaddr}}^\ast}|}}} \}\end{array}
+  \mathsf{refs}~{(i)^{i<k}} \}\end{array}
 } \, {[\textsc{\scriptsize Moduleinst\_ok}]}
 \qquad
 \end{array}
