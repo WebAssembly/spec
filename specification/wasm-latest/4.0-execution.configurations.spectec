@@ -46,7 +46,7 @@ syntax val hint(desc "value") =
   | num | vec | ref
 
 syntax result hint(desc "result") =
-  | _VALS val* | `(REF.EXN_ADDR exnaddr) THROW_REF | TRAP
+  | _VALS val* | THROW_ADDR exnaddr | TRAP
 
 var r : ref
 var res : result
@@ -136,6 +136,9 @@ syntax instr/admin hint(desc "administrative instruction") =
   | LABEL_ n `{instr*} instr*   hint(show LABEL_%#% %%)
   | FRAME_ n `{frame} instr*    hint(show FRAME_%#% %%)
   | HANDLER_ n `{catch*} instr* hint(show HANDLER_%#% %%)
+  | CALL_ADDR funcaddr
+  | RETURN_CALL_ADDR funcaddr
+  | THROW_ADDR exnaddr
   | TRAP
 
 

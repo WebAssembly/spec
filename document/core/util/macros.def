@@ -1543,6 +1543,9 @@
 .. |REFEXNADDR| mathdef:: \xref{exec/runtime}{syntax-ref}{\K{ref{.}exn}}
 .. |REFHOSTADDR| mathdef:: \xref{exec/runtime}{syntax-ref}{\K{ref{.}host}}
 .. |REFEXTERN| mathdef:: \xref{exec/runtime}{syntax-ref}{\K{ref{.}extern}}
+.. |CALLADDR| mathdef:: \xref{exec/runtime}{syntax-call_addr}{\K{call}}
+.. |RETURNCALLADDR| mathdef:: \xref{exec/runtime}{syntax-return_call_addr}{\K{return_call}}
+.. |THROWADDR| mathdef:: \xref{exec/runtime}{syntax-throw_addr}{\K{throw}}
 .. |TRAP| mathdef:: \xref{exec/runtime}{syntax-trap}{\K{trap}}
 
 

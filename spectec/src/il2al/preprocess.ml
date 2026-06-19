@@ -91,7 +91,7 @@ let remove_or def =
     DecD (id, params, typ, List.concat_map remove_or_clause clauses) $ def.at
   | _ -> def
 
-(* HARDCODE: Remove a reduction rule for the block context, specifically, for THROW_REF *)
+(* HARDCODE: Remove a reduction rule for the block context, specifically, for THROW_ADDR *)
 let is_block_context_exp e =
   match e.it with
   (* instr* =/= [] *)
