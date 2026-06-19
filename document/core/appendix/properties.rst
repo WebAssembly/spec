@@ -735,7 +735,7 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
 
 * Let :math:`m` be the length of :math:`\moduleinst.\MIFUNCS`.
 
-* Let :math:`x^\ast` be the sequence of :ref:`function indices <syntax-funcidx>` from :math:`0` to :math:`m-1`.
+* Let :math:`x^\ast` be the sequence of :ref:`function indices <syntax-funcidx>` from :math:`0` to :math:`k-1` for some :math:`k` that is smaller than or equal to the number of functions in the instance.
 
 * Then the module instance is valid with :ref:`context <context>`
   :math:`\{\CTYPES~\deftype^\ast,` :math:`\CTAGS~\tagtype^\ast,` :math:`\CGLOBALS~\globaltype^\ast,` :math:`\CMEMS~\memtype^\ast,` :math:`\CTABLES~\tabletype^\ast,` :math:`\CFUNCS~\deftype_{\K{F}}^\ast,` :math:`\CDATAS~\X{ok}^\ast,` :math:`\CELEMS~\reftype^\ast,` :math:`\CREFS~x^\ast\}`.
@@ -763,6 +763,8 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
      (S \vdashexportinst \exportinst : \OKexportinst)^\ast
      \qquad
      (\exportinst.\XINAME)^\ast ~\mbox{disjoint}
+     \\
+     k \le |\funcaddr^\ast|
      \end{array}
    }{
      S \vdashmoduleinst \{
@@ -785,10 +787,19 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
          \CFUNCS & \deftype_{\K{F}}^\ast, \\
          \CDATAS & \X{ok}^\ast, \\
          \CELEMS & \reftype^\ast, \\
-         \CREFS & 0 \dots (|\funcaddr^\ast|-1) ~\}
+         \CREFS & 0 \dots k-1 ~\}
          \end{array}
        \end{array}
    }
+
+.. note::
+   The field ${:C.REFS} from the resulting context is meant to be constructed to contain all :ref:`function indices <syntax-funcidx>` from the module.
+   However, modules and their instances can contain more than ${:2^32} functions
+   (at most ${:2^32} definitions plus ${:2^32} imports),
+   while the highest representable function index is ${:$(2^32-1)}.
+   The variable ${:k} in the rule hence allows picking an upper limit for ${:C.REFS} that is smaller than the total number of functions,
+   in case that is necessary for ${:C.REFS} to be syntactically well-formed.
+   In practice, ${:k = $min(|funcaddr*|, 2^32)} always is the maximally permissive choice.
 
 
 .. scratch
