@@ -799,7 +799,7 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
    while the highest representable function index is ${:$(2^32-1)}.
    The variable ${:k} in the rule hence allows picking an upper limit for ${:C.REFS} that is smaller than the total number of functions,
    in case that is necessary for ${:C.REFS} to be syntactically well-formed.
-   In practice, it is always okay to pick ${:k = $min(|funcaddr*|, $(2^32-1))} as the maximally permissive choice.
+   In practice, ${:k = $min(|funcaddr*|, $(2^32-1))} always is the maximally permissive choice.
 
 
 .. scratch
