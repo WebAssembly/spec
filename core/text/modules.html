@@ -5,11 +5,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Modules &#8212; WebAssembly 3.0 (2026-06-16)</title>
+    <title>Modules &#8212; WebAssembly 3.0 (2026-06-19)</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=686e5160" />
     <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=057308f9" />
-    <script src="../_static/documentation_options.js?v=6ea72662"></script>
+    <script src="../_static/documentation_options.js?v=d8b489e6"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>window.MathJax = {"tex": {"maxBuffer": 30720, "macros": {"multicolumn": ["", 2]}}, "options": {"menuOptions": {"settings": {"enrich": false}}}}</script>
@@ -411,7 +411,7 @@ Consequently, a function declaration can contain any number of exports, possibly
 </section>
 </section>
 <section id="data-segments">
-<span id="text-memuse"></span><span id="text-data"></span><span id="text-datastring"></span><span id="index-21"></span><h2>Data Segments<a class="headerlink" href="#data-segments" title="Link to this heading">¶</a></h2>
+<span id="text-offsetexpr"></span><span id="text-memuse"></span><span id="text-data"></span><span id="text-datastring"></span><span id="index-21"></span><h2>Data Segments<a class="headerlink" href="#data-segments" title="Link to this heading">¶</a></h2>
 <p>Data segments allow for an optional <a class="reference internal" href="#text-memidx"><span class="std std-ref">memory index</span></a> to identify the memory to initialize.
 The data is written as a <a class="reference internal" href="values.html#text-string"><span class="std std-ref">string</span></a>, which may be split up into a possibly empty sequence of individual string literals.</p>
 <div class="math notranslate nohighlight">
@@ -422,7 +422,7 @@ The data is written as a <a class="reference internal" href="values.html#text-st
 (\href{../syntax/modules.html#syntax-data}{\mathsf{data}}~{b^\ast}~\href{../syntax/modules.html#syntax-datamode}{\mathsf{passive}}, \{ \href{../text/conventions.html#text-context}{\mathsf{datas}}~({{\mathit{id}}^?}) \}) \\
 \end{array}
 } \\
-&amp; &amp; | &amp; \mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{data}’}~~{{\mathit{id}}^?}{:}{{\href{../text/values.html#text-id}{\mathtt{id}}}^?}~~x{:}{{\href{../text/modules.html#text-memuse}{\mathtt{memuse}}}}_{{\href{../text/conventions.html#text-context}{I}}}~~e{:}{{\href{../text/instructions.html#text-memarg}{\mathtt{offset}}}}_{{\href{../text/conventions.html#text-context}{I}}}~~{b^\ast}{:}{\href{../text/modules.html#text-datastring}{\mathtt{datastring}}}~~\mbox{‘\texttt{{)}}’} &amp; \quad\Rightarrow\quad{} &amp; &amp; \\
+&amp; &amp; | &amp; \mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{data}’}~~{{\mathit{id}}^?}{:}{{\href{../text/values.html#text-id}{\mathtt{id}}}^?}~~x{:}{{\href{../text/modules.html#text-memuse}{\mathtt{memuse}}}}_{{\href{../text/conventions.html#text-context}{I}}}~~e{:}{{\href{../text/modules.html#text-offsetexpr}{\mathtt{offsetexpr}}}}_{{\href{../text/conventions.html#text-context}{I}}}~~{b^\ast}{:}{\href{../text/modules.html#text-datastring}{\mathtt{datastring}}}~~\mbox{‘\texttt{{)}}’} &amp; \quad\Rightarrow\quad{} &amp; &amp; \\
 &amp;&amp;&amp; \multicolumn{4}{&#64;{}l&#64;{}}{\quad
 \begin{array}[t]{&#64;{}l&#64;{}}
 (\href{../syntax/modules.html#syntax-data}{\mathsf{data}}~{b^\ast}~(\href{../syntax/modules.html#syntax-datamode}{\mathsf{active}}~x~e), \{ \href{../text/conventions.html#text-context}{\mathsf{datas}}~({{\mathit{id}}^?}) \}) \\
@@ -430,14 +430,14 @@ The data is written as a <a class="reference internal" href="values.html#text-st
 } \\[0.8ex]
 &amp; {\href{../text/modules.html#text-datastring}{\mathtt{datastring}}} &amp; ::= &amp; {{b^\ast}^\ast}{:}{{\href{../text/values.html#text-string}{\mathtt{string}}}^\ast} &amp; \quad\Rightarrow\quad{} &amp; {\href{../syntax/conventions.html#notation-concat}{\bigoplus}}\, {{b^\ast}^\ast} \\[0.8ex]
 &amp; {{\href{../text/modules.html#text-memuse}{\mathtt{memuse}}}}_{{\href{../text/conventions.html#text-context}{I}}} &amp; ::= &amp; \mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{memory}’}~~x{:}{{\href{../text/modules.html#text-memidx}{\mathtt{memidx}}}}_{{\href{../text/conventions.html#text-context}{I}}}~~\mbox{‘\texttt{{)}}’} &amp; \quad\Rightarrow\quad{} &amp; x \\
-&amp; {{\href{../text/instructions.html#text-memarg}{\mathtt{offset}}}}_{{\href{../text/conventions.html#text-context}{I}}} &amp; ::= &amp; \mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{offset}’}~~e{:}{{\href{../text/instructions.html#text-expr}{\mathtt{expr}}}}_{{\href{../text/conventions.html#text-context}{I}}}~~\mbox{‘\texttt{{)}}’} &amp; \quad\Rightarrow\quad{} &amp; e \\
+&amp; {{\href{../text/modules.html#text-offsetexpr}{\mathtt{offsetexpr}}}}_{{\href{../text/conventions.html#text-context}{I}}} &amp; ::= &amp; \mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{offset}’}~~e{:}{{\href{../text/instructions.html#text-expr}{\mathtt{expr}}}}_{{\href{../text/conventions.html#text-context}{I}}}~~\mbox{‘\texttt{{)}}’} &amp; \quad\Rightarrow\quad{} &amp; e \\
 \end{array}\end{split}\]</div>
 <section id="id5">
 <h3>Abbreviations<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h3>
 <p>As an abbreviation, a single <a class="reference internal" href="instructions.html#text-foldedinstr"><span class="std std-ref">folded instruction</span></a> may occur in place of the offset of an active segment:</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}[t]{&#64;{}l&#64;{}rrl&#64;{}l&#64;{}l&#64;{}l&#64;{}}
-&amp; {{\href{../text/instructions.html#text-memarg}{\mathtt{offset}}}}_{{\href{../text/conventions.html#text-context}{I}}} &amp; ::= &amp; \dots ~~|~~ {{\href{../text/instructions.html#text-foldedinstr}{\mathtt{foldedinstr}}}}_{{\href{../text/conventions.html#text-context}{I}}} &amp; \quad\equiv\quad{} &amp; \mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{offset}’}~~{{\href{../text/instructions.html#text-foldedinstr}{\mathtt{foldedinstr}}}}_{{\href{../text/conventions.html#text-context}{I}}}~~\mbox{‘\texttt{{)}}’} \\
+&amp; {{\href{../text/modules.html#text-offsetexpr}{\mathtt{offsetexpr}}}}_{{\href{../text/conventions.html#text-context}{I}}} &amp; ::= &amp; \dots ~~|~~ {{\href{../text/instructions.html#text-foldedinstr}{\mathtt{foldedinstr}}}}_{{\href{../text/conventions.html#text-context}{I}}} &amp; \quad\equiv\quad{} &amp; \mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{offset}’}~~{{\href{../text/instructions.html#text-foldedinstr}{\mathtt{foldedinstr}}}}_{{\href{../text/conventions.html#text-context}{I}}}~~\mbox{‘\texttt{{)}}’} \\
 \end{array}\end{split}\]</div>
 <p>Also, a memory use can be omitted, defaulting to <span class="math notranslate nohighlight">\(0\)</span>.</p>
 <div class="math notranslate nohighlight">
@@ -458,7 +458,7 @@ The data is written as a <a class="reference internal" href="values.html#text-st
 (\href{../syntax/modules.html#syntax-elem}{\mathsf{elem}}~{\mathit{rt}}~{e^\ast}~\href{../syntax/modules.html#syntax-elemmode}{\mathsf{passive}}, \{ \href{../text/conventions.html#text-context}{\mathsf{elems}}~({{\mathit{id}}^?}) \}) \\
 \end{array}
 } \\
-&amp; &amp; | &amp; \mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{elem}’}~~{{\mathit{id}}^?}{:}{{\href{../text/values.html#text-id}{\mathtt{id}}}^?}~~x{:}{{\href{../text/modules.html#text-tableuse}{\mathtt{tableuse}}}}_{{\href{../text/conventions.html#text-context}{I}}}~~{e'}{:}{{\href{../text/instructions.html#text-memarg}{\mathtt{offset}}}}_{{\href{../text/conventions.html#text-context}{I}}}~~({\mathit{rt}}, {e^\ast}){:}{{\href{../text/modules.html#text-elemlist}{\mathtt{elemlist}}}}_{{\href{../text/conventions.html#text-context}{I}}}~~\mbox{‘\texttt{{)}}’} &amp; \quad\Rightarrow\quad{} &amp; &amp; \\
+&amp; &amp; | &amp; \mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{elem}’}~~{{\mathit{id}}^?}{:}{{\href{../text/values.html#text-id}{\mathtt{id}}}^?}~~x{:}{{\href{../text/modules.html#text-tableuse}{\mathtt{tableuse}}}}_{{\href{../text/conventions.html#text-context}{I}}}~~{e'}{:}{{\href{../text/modules.html#text-offsetexpr}{\mathtt{offsetexpr}}}}_{{\href{../text/conventions.html#text-context}{I}}}~~({\mathit{rt}}, {e^\ast}){:}{{\href{../text/modules.html#text-elemlist}{\mathtt{elemlist}}}}_{{\href{../text/conventions.html#text-context}{I}}}~~\mbox{‘\texttt{{)}}’} &amp; \quad\Rightarrow\quad{} &amp; &amp; \\
 &amp;&amp;&amp; \multicolumn{4}{&#64;{}l&#64;{}}{\quad
 \begin{array}[t]{&#64;{}l&#64;{}}
 (\href{../syntax/modules.html#syntax-elem}{\mathsf{elem}}~{\mathit{rt}}~{e^\ast}~(\href{../syntax/modules.html#syntax-elemmode}{\mathsf{active}}~x~{e'}), \{ \href{../text/conventions.html#text-context}{\mathsf{elems}}~({{\mathit{id}}^?}) \}) \\
@@ -495,10 +495,10 @@ The data is written as a <a class="reference internal" href="values.html#text-st
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}[t]{&#64;{}l&#64;{}rrl&#64;{}l&#64;{}l&#64;{}l&#64;{}}
 &amp; {{\href{../text/modules.html#text-elem}{\mathtt{elem}}}}_{{\href{../text/conventions.html#text-context}{I}}} &amp; ::= &amp; \dots \\
-&amp; &amp; | &amp; \mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{elem}’}~~{{\href{../text/instructions.html#text-memarg}{\mathtt{offset}}}}_{{\href{../text/conventions.html#text-context}{I}}}~~{\href{../text/conventions.html#text-list}{\mathtt{list}}}({{\href{../text/modules.html#text-funcidx}{\mathtt{funcidx}}}}_{{\href{../text/conventions.html#text-context}{I}}})~~\mbox{‘\texttt{{)}}’} &amp; \quad\equiv\quad{} &amp; &amp; \\
+&amp; &amp; | &amp; \mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{elem}’}~~{{\href{../text/modules.html#text-offsetexpr}{\mathtt{offsetexpr}}}}_{{\href{../text/conventions.html#text-context}{I}}}~~{\href{../text/conventions.html#text-list}{\mathtt{list}}}({{\href{../text/modules.html#text-funcidx}{\mathtt{funcidx}}}}_{{\href{../text/conventions.html#text-context}{I}}})~~\mbox{‘\texttt{{)}}’} &amp; \quad\equiv\quad{} &amp; &amp; \\
 &amp;&amp;&amp; \multicolumn{4}{&#64;{}l&#64;{}}{\quad
 \begin{array}[t]{&#64;{}l&#64;{}}
-\mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{elem}’}~~{{\href{../text/instructions.html#text-memarg}{\mathtt{offset}}}}_{{\href{../text/conventions.html#text-context}{I}}}~~\mbox{‘\texttt{func}’}~~{\href{../text/conventions.html#text-list}{\mathtt{list}}}({{\href{../text/modules.html#text-funcidx}{\mathtt{funcidx}}}}_{{\href{../text/conventions.html#text-context}{I}}})~~\mbox{‘\texttt{{)}}’} \\
+\mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{elem}’}~~{{\href{../text/modules.html#text-offsetexpr}{\mathtt{offsetexpr}}}}_{{\href{../text/conventions.html#text-context}{I}}}~~\mbox{‘\texttt{func}’}~~{\href{../text/conventions.html#text-list}{\mathtt{list}}}({{\href{../text/modules.html#text-funcidx}{\mathtt{funcidx}}}}_{{\href{../text/conventions.html#text-context}{I}}})~~\mbox{‘\texttt{{)}}’} \\
 \end{array}
 } \\
 \end{array}\end{split}\]</div>
