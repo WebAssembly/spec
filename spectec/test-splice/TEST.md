@@ -803,8 +803,8 @@ warning: grammar `Tnull` was never spliced
 warning: grammar `Tnum` was never spliced
 warning: grammar `Tnumtype` was never spliced
 warning: grammar `Toffset` was never spliced
-warning: grammar `Toffset_/plain` was never spliced
-warning: grammar `Toffset_/abbrev` was never spliced
+warning: grammar `Toffsetexpr_/plain` was never spliced
+warning: grammar `Toffsetexpr_/abbrev` was never spliced
 warning: grammar `Tpacktype` was never spliced
 warning: grammar `Tparam_/base` was never spliced
 warning: grammar `Tparam_/abbrev` was never spliced
