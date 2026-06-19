@@ -789,7 +789,7 @@ That way, the function itself is able to make sufficient assumptions about futur
 <li><p>Let <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-reftype}{\mathit{reftype}}^\ast\)</span> be the concatenation of all <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-reftype}{\mathit{reftype}}_i\)</span> in order.</p></li>
 <li><p>Let <span class="math notranslate nohighlight">\(\mathit{ok}^\ast\)</span> be the concatenation of all <span class="math notranslate nohighlight">\(\mathit{ok}_i\)</span> in order.</p></li>
 <li><p>Let <span class="math notranslate nohighlight">\(m\)</span> be the length of <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-moduleinst}{\mathit{moduleinst}}.\href{../exec/runtime.html#syntax-moduleinst}{\mathsf{funcs}}\)</span>.</p></li>
-<li><p>Let <span class="math notranslate nohighlight">\(x^\ast\)</span> be the sequence of <a class="reference internal" href="../syntax/modules.html#syntax-funcidx"><span class="std std-ref">function indices</span></a> from <span class="math notranslate nohighlight">\(0\)</span> to <span class="math notranslate nohighlight">\(m-1\)</span>.</p></li>
+<li><p>Let <span class="math notranslate nohighlight">\(x^\ast\)</span> be the sequence of <a class="reference internal" href="../syntax/modules.html#syntax-funcidx"><span class="std std-ref">function indices</span></a> from <span class="math notranslate nohighlight">\(0\)</span> to <span class="math notranslate nohighlight">\(k-1\)</span> for some <span class="math notranslate nohighlight">\(k\)</span> that is smaller than or equal to the number of functions in the instance.</p></li>
 <li><p>Then the module instance is valid with <a class="reference internal" href="../valid/conventions.html#context"><span class="std std-ref">context</span></a>
 <span class="math notranslate nohighlight">\(\{\href{../valid/conventions.html#context}{\mathsf{types}}~\href{../valid/conventions.html#syntax-deftype}{\mathit{deftype}}^\ast,\)</span> <span class="math notranslate nohighlight">\(\href{../valid/conventions.html#context}{\mathsf{tags}}~\href{../syntax/types.html#syntax-tagtype}{\mathit{tagtype}}^\ast,\)</span> <span class="math notranslate nohighlight">\(\href{../valid/conventions.html#context}{\mathsf{globals}}~\href{../syntax/types.html#syntax-globaltype}{\mathit{globaltype}}^\ast,\)</span> <span class="math notranslate nohighlight">\(\href{../valid/conventions.html#context}{\mathsf{mems}}~\href{../syntax/types.html#syntax-memtype}{\mathit{memtype}}^\ast,\)</span> <span class="math notranslate nohighlight">\(\href{../valid/conventions.html#context}{\mathsf{tables}}~\href{../syntax/types.html#syntax-tabletype}{\mathit{tabletype}}^\ast,\)</span> <span class="math notranslate nohighlight">\(\href{../valid/conventions.html#context}{\mathsf{funcs}}~\href{../valid/conventions.html#syntax-deftype}{\mathit{deftype}}_{\mathsf{F}}^\ast,\)</span> <span class="math notranslate nohighlight">\(\href{../valid/conventions.html#context}{\mathsf{datas}}~\mathit{ok}^\ast,\)</span> <span class="math notranslate nohighlight">\(\href{../valid/conventions.html#context}{\mathsf{elems}}~\href{../syntax/types.html#syntax-reftype}{\mathit{reftype}}^\ast,\)</span> <span class="math notranslate nohighlight">\(\href{../valid/conventions.html#context}{\mathsf{refs}}~x^\ast\}\)</span>.</p></li>
 </ul>
@@ -816,6 +816,8 @@ That way, the function itself is able to make sufficient assumptions about futur
   (S \href{../appendix/properties.html#valid-exportinst}{\vdash} \href{../exec/runtime.html#syntax-exportinst}{\mathit{exportinst}} : \href{../appendix/properties.html#valid-exportinst}{\mathsf{ok}})^\ast
   \qquad
   (\href{../exec/runtime.html#syntax-exportinst}{\mathit{exportinst}}.\href{../exec/runtime.html#syntax-exportinst}{\mathsf{name}})^\ast ~\mbox{disjoint}
+  \\
+  k \le |\href{../exec/runtime.html#syntax-funcaddr}{\mathit{funcaddr}}^\ast|
   \end{array}
 }{
   S \href{../appendix/properties.html#valid-moduleinst}{\vdash} \{
@@ -838,10 +840,20 @@ That way, the function itself is able to make sufficient assumptions about futur
       \href{../valid/conventions.html#context}{\mathsf{funcs}} &amp; \href{../valid/conventions.html#syntax-deftype}{\mathit{deftype}}_{\mathsf{F}}^\ast, \\
       \href{../valid/conventions.html#context}{\mathsf{datas}} &amp; \mathit{ok}^\ast, \\
       \href{../valid/conventions.html#context}{\mathsf{elems}} &amp; \href{../syntax/types.html#syntax-reftype}{\mathit{reftype}}^\ast, \\
-      \href{../valid/conventions.html#context}{\mathsf{refs}} &amp; 0 \dots (|\href{../exec/runtime.html#syntax-funcaddr}{\mathit{funcaddr}}^\ast|-1) ~\}
+      \href{../valid/conventions.html#context}{\mathsf{refs}} &amp; 0 \dots k-1 ~\}
       \end{array}
     \end{array}
 }\end{split}\]</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The field <span class="math notranslate nohighlight">\(C{.}\mathsf{refs}\)</span> from the resulting context is meant to be constructed to contain all <a class="reference internal" href="../syntax/modules.html#syntax-funcidx"><span class="std std-ref">function indices</span></a> from the module.
+However, modules and their instances can contain more than <span class="math notranslate nohighlight">\({2^{32}}\)</span> functions
+(at most <span class="math notranslate nohighlight">\({2^{32}}\)</span> definitions plus <span class="math notranslate nohighlight">\({2^{32}}\)</span> imports),
+while the highest representable function index is <span class="math notranslate nohighlight">\({2^{32}} - 1\)</span>.
+The variable <span class="math notranslate nohighlight">\(k\)</span> in the rule hence allows picking an upper limit for <span class="math notranslate nohighlight">\(C{.}\mathsf{refs}\)</span> that is smaller than the total number of functions,
+in case that is necessary for <span class="math notranslate nohighlight">\(C{.}\mathsf{refs}\)</span> to be syntactically well-formed.
+In practice, <span class="math notranslate nohighlight">\(k = {\min}({|{{\href{../exec/runtime.html#syntax-funcaddr}{\mathit{funcaddr}}}^\ast}|}, {2^{32}})\)</span> always is the maximally permissive choice.</p>
+</div>
 </section>
 </section>
 <section id="configuration-validity">
