@@ -804,7 +804,7 @@ Immediately after a WebAssembly [=memory.grow=] instruction executes, perform th
 <div algorithm="memory.grow">
     1. If the top of the stack is not [=i32.const=] (−1),
         1. Let |frame| be the [=current frame=].
-        1. Assert: Due to validation, |frame|.[=frame/module=].[=moduleinst/memaddrs=][0] exists.
+        1. Assert: due to validation, |frame|.[=frame/module=].[=moduleinst/memaddrs=][0] exists.
         1. Let |memaddr| be the memory address |frame|.[=frame/module=].[=moduleinst/memaddrs=][0].
         1. [=Refresh the memory buffer=] of |memaddr|.
 </div>
