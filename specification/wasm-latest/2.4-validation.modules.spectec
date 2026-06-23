@@ -45,10 +45,12 @@ rule Table_ok:
 
 rule Local_ok/set:
   C |- LOCAL t : SET t
+  -- Valtype_ok: C |- t : OK
   -- Defaultable: |- t DEFAULTABLE
 
 rule Local_ok/unset:
   C |- LOCAL t : UNSET t
+  -- Valtype_ok: C |- t : OK
   -- Nondefaultable: |- t NONDEFAULTABLE
 
 rule Func_ok:
