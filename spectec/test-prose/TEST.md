@@ -545,7 +545,7 @@ The instruction sequence :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-v
 
       * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is of the form :math:`{\mathit{instr}'}`.
 
-      * The instruction :math:`{\mathit{instr}}_1` is :ref:`valid <valid-val>` with the function type :math:`{{\mathit{valtype}}^\ast}~\rightarrow~{{\mathit{valtype}'}^\ast}`.
+      * The instruction :math:`{\mathit{instr}'}` is :ref:`valid <valid-val>` with the function type :math:`{{\mathit{valtype}}^\ast}~\rightarrow~{{\mathit{valtype}'}^\ast}`.
    * Or:
 
       * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is of the form :math:`{{\mathit{instr}}_1^\ast}~{{\mathit{instr}}_2^\ast}`.
@@ -572,7 +572,7 @@ The instruction sequence :math:`\epsilon` is :ref:`valid <valid-val>` with the f
 The instruction sequence :math:`{\mathit{instr}}` is :ref:`valid <valid-val>` with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
-   * The instruction :math:`{\mathit{instr}}_1` is :ref:`valid <valid-val>` with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+   * The instruction :math:`{\mathit{instr}}` is :ref:`valid <valid-val>` with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
 
 
@@ -3326,7 +3326,7 @@ Instrs_ok
     - the number type sequence valtype'* is [].
   - Or:
     - instr* is [instr'].
-    - the instruction instr_1 is valid with valtype* -> valtype'*.
+    - the instruction instr' is valid with valtype* -> valtype'*.
   - Or:
     - instr* is instr_1* :: instr_2*.
     - the instruction sequence instr_1* is valid with the function type valtype* -> t_2*.
@@ -3341,7 +3341,7 @@ Instrs_ok/empty
 
 Instrs_ok/instr
 - the instruction sequence [instr] is valid with the function type t_1* -> t_2* if:
-  - the instruction instr_1 is valid with t_1* -> t_2*.
+  - the instruction instr is valid with t_1* -> t_2*.
 
 Instrs_ok/seq
 - the instruction sequence instr_1* :: instr_2* is valid with the function type t_1* -> t_3* if:
@@ -5482,7 +5482,7 @@ The instruction sequence :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-v
 
       * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is of the form :math:`{\mathit{instr}'}`.
 
-      * The instruction :math:`{\mathit{instr}}_1` is :ref:`valid <valid-val>` with the function type :math:`{{\mathit{valtype}}^\ast}~\rightarrow~{{\mathit{valtype}'}^\ast}`.
+      * The instruction :math:`{\mathit{instr}'}` is :ref:`valid <valid-val>` with the function type :math:`{{\mathit{valtype}}^\ast}~\rightarrow~{{\mathit{valtype}'}^\ast}`.
    * Or:
 
       * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is of the form :math:`{{\mathit{instr}}_1^\ast}~{{\mathit{instr}}_2^\ast}`.
@@ -5516,7 +5516,7 @@ The instruction sequence :math:`\epsilon` is :ref:`valid <valid-val>` with the f
 The instruction sequence :math:`{\mathit{instr}}` is :ref:`valid <valid-val>` with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
 
 
-   * The instruction :math:`{\mathit{instr}}_1` is :ref:`valid <valid-val>` with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+   * The instruction :math:`{\mathit{instr}}` is :ref:`valid <valid-val>` with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
 
 
 
@@ -11259,7 +11259,7 @@ Instrs_ok
     - the value type sequence valtype'* is [].
   - Or:
     - instr* is [instr'].
-    - the instruction instr_1 is valid with valtype* -> valtype'*.
+    - the instruction instr' is valid with valtype* -> valtype'*.
   - Or:
     - instr* is instr_1* :: instr_2*.
     - the instruction sequence instr_1* is valid with the function type valtype* -> t_2*.
@@ -11278,7 +11278,7 @@ Instrs_ok/empty
 
 Instrs_ok/instr
 - the instruction sequence [instr] is valid with the function type t_1* -> t_2* if:
-  - the instruction instr_1 is valid with t_1* -> t_2*.
+  - the instruction instr is valid with t_1* -> t_2*.
 
 Instrs_ok/seq
 - the instruction sequence instr_1* :: instr_2* is valid with the function type t_1* -> t_3* if:
@@ -16622,7 +16622,7 @@ The instruction sequence :math:`{{\mathit{instr}}^\ast}` is :ref:`valid <valid-v
 
       * The instruction type :math:`{\mathit{it}}` is of the form :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}`.
 
-      * The instruction :math:`{\mathit{instr}}_1` is :ref:`valid <valid-val>` with the instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}`.
+      * The instruction :math:`{\mathit{instr}'}` is :ref:`valid <valid-val>` with the instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}`.
    * Or:
 
       * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is of the form :math:`{{\mathit{instr}}_1^\ast}~{{\mathit{instr}}_2^\ast}`.
@@ -16664,7 +16664,7 @@ The instruction sequence :math:`\epsilon` is :ref:`valid <valid-val>` with the i
 The instruction sequence :math:`{\mathit{instr}}` is :ref:`valid <valid-val>` with the instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}` if:
 
 
-   * The instruction :math:`{\mathit{instr}}_1` is :ref:`valid <valid-val>` with the instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}`.
+   * The instruction :math:`{\mathit{instr}}` is :ref:`valid <valid-val>` with the instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}`.
 
 
 
@@ -29149,7 +29149,7 @@ Instrs_ok
   - Or:
     - instr* is [instr'].
     - it is t_1* ->_ x* t_2*.
-    - the instruction instr_1 is valid with the instruction type t_1* ->_ x* t_2*.
+    - the instruction instr' is valid with the instruction type t_1* ->_ x* t_2*.
   - Or:
     - instr* is instr_1* :: instr_2*.
     - it is t_1* ->_ x_1* :: x_2* t_3*.
@@ -29172,7 +29172,7 @@ Instrs_ok/empty
 
 Instrs_ok/instr
 - the instruction sequence [instr] is valid with the instruction type t_1* ->_ x* t_2* if:
-  - the instruction instr_1 is valid with t_1* ->_ x* t_2*.
+  - the instruction instr is valid with t_1* ->_ x* t_2*.
 
 Instrs_ok/seq
 - the instruction sequence instr_1* :: instr_2* is valid with the instruction type t_1* ->_ x_1* :: x_2* t_3* if:

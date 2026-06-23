@@ -615,7 +615,7 @@ rule Instrs_ok/empty:
 
 rule Instrs_ok/instr:
   C |- instr : t_1* ->_(x*) t_2*
-  -- Instr_ok: C |- instr_1 : t_1* ->_(x*) t_2*
+  -- Instr_ok: C |- instr : t_1* ->_(x*) t_2*
 
 ;; TODO(3, rossberg): enable x_1*#x_2* to avoid space
 rule Instrs_ok/seq:

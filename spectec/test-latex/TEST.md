@@ -7332,7 +7332,7 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C \vdash {\mathit{instr}}_1 : {t_1^\ast} \rightarrow_{{x^\ast}} {t_2^\ast}
+C \vdash {\mathit{instr}} : {t_1^\ast} \rightarrow_{{x^\ast}} {t_2^\ast}
 }{
 C \vdash {\mathit{instr}} : {t_1^\ast} \rightarrow_{{x^\ast}} {t_2^\ast}
 } \, {[\textsc{\scriptsize T{-}instr*{-}instr}]}
